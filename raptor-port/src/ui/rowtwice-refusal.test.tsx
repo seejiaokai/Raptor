@@ -204,6 +204,16 @@ describe('the drag door (ui/drag applyDrop)', () => {
     expect(toasts.at(-1)).toBe('Havoc — already on ROW A 13:00–14:00 · not added twice')
     expect(d.ground[g].more || [], 'no extra written').toEqual([])
   })
+  it(`arm the "+ add", then DRAG: Ranger's refused drop leaves the arm; Havoc's drop lands and puts the arm down (Fable S-23)`, async () => {
+    await act(async () => { view.armSlot(`a:0.${FS}.+`) })
+    setDrag({ kind: 'roster', id: 'bane' })
+    expect(await dropOn('data-fill', `a:0.${FS}.+`)).toBe(false)
+    expect(view.armedKey(), 'a refusal is not a placement').toBe(`a:0.${FS}.+`)
+    setDrag({ kind: 'roster', id: 'boosh' })
+    expect(await dropOn('data-fill', `a:0.${FS}.+`)).toBe(true)
+    expect(crowd()).toEqual(['bane', 'boosh'])
+    expect(view.armedKey(), "the drop did the arm's job").toBe('')
+  })
   it('a man on two DIFFERENT rows at once is still planted and only warned, as today (reading 1)', async () => {
     ;(DAYS[0] as any).allhands[1].end = '0845'                                    // MET + NOTAM now overlaps the stand-down
     setDrag({ kind: 'roster', id: 'nact' })

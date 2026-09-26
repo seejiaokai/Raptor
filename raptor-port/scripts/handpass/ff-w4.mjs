@@ -1,3 +1,6 @@
+/* RETIRED 27 Sep 26 (owner, D275 — "I still prefer these"): the room beside the ‹ arrow this script asserts was taken
+   out before it merged ([ARROW-ROOM-OUT]). Kept as the first walk's evidence (docs/handpass/2026-09-26-five-flags.md
+   §3d, §5); re-running it now reports the room missing, which is correct. Do not re-run it as a check. */
 /* W4 — [VIEW-ARROW-OVER-LIST] walk (five-flags batch, 26 Sep 26). Walker W4 of the fanned-out FULL walk
    (brief: raptor-port/docs/superpowers/briefs/2026-09-26-five-flags-walk-brief.md §W4; Fable F7, F8, F9, F19, §2.4).
    Drives the REAL production bundle already served at http://localhost:4176 (never rebuilds, never writes through

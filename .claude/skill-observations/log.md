@@ -644,3 +644,18 @@ resolved statuses always carry their resolution date
 **Suggested improvement:** In the bug-check order (or the look card's rules): any item that changes the LOOK or LAYOUT of a surface he uses daily — whoever filed it, and even when it is framed as a defect — gets a full-screen before/after picture put to him before it is built. The look card then carries only questions about behaviour.
 
 **Principle:** Whether a visual change is an improvement is the user's call, not the finder's; show the whole screen before and after before paying for the build and the check.
+
+### Observation 298: A walk script's picture folder must default to its OWN checkout, never an absolute worktree path
+
+**Status:** OPEN
+**Date:** 2026-09-27
+**Session context:** re-walking the five-flags batch after building D270–D272 and reverting the arrow room, in a different worktree folder from the one that wrote the walk scripts
+**Skill:** bug-check order (raptor-port/docs/bug-check-order.md §7.2, the walk drivers in raptor-port/scripts/handpass/)
+**Type:** internal
+**Phase/Area:** the re-walk — "write walk scripts as assertions of the RIGHT behaviour so re-running them IS the re-walk"
+
+**Issue:** ff-w1.mjs and ff-w3.mjs defaulted their picture folder to an ABSOLUTE path inside the worktree that wrote them (`.claude/worktrees/five-flags-batch-build-ef7d85/...`). By the next day that folder had been reused by ANOTHER chat for a different branch, so a plain re-run from this chat's worktree would have written its re-walk pictures into the other chat's checkout (and its git status). Caught only because the header was read before running; fixed by defaulting to `new URL('../../docs/img/handpass/…', import.meta.url)` and passing FF_SHOTS explicitly. The shared libs (`am/w2-lib.mjs`, `am/w1-lib.mjs`) still hard-code the MAIN checkout for their fixture state files.
+
+**Suggested improvement:** in bug-check-order §7.2 (or `docs/handpass/README.md`'s traps), one line: a walk script resolves every path it WRITES relative to itself (`import.meta.url`), never an absolute worktree path; reads of shared fixtures name their source. And a quick grep in the docs gate for `.claude/worktrees/` inside `scripts/handpass/*.mjs` write paths.
+
+**Principle:** A script meant to be re-run later must not remember WHERE it was first run — worktree folders are reused by other sessions, so any absolute path into one is a write into someone else's work.

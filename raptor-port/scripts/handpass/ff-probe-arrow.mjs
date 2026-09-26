@@ -1,3 +1,6 @@
+/* RETIRED 27 Sep 26 (owner, D275 — "I still prefer these"): the room beside the ‹ arrow this script asserts was taken
+   out before it merged ([ARROW-ROOM-OUT]). Kept as the first walk's evidence (docs/handpass/2026-09-26-five-flags.md
+   §3d, §5); re-running it now reports the room missing, which is correct. Do not re-run it as a check. */
 /* [VIEW-ARROW-OVER-LIST] probe (26 Sep 26, the five-flags batch): where the week's floating ‹ › arrows sit
    against the day cards and an opened warning list, on View-only Sched and Edit Schedule, at desktop widths.
    Usage (from raptor-port/, a preview serving dist/): HP_URL=http://localhost:4176 HP_SHOTS=<dir> node scripts/handpass/ff-probe-arrow.mjs [tag] */

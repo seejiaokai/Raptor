@@ -4242,10 +4242,10 @@ body:not(.tdrag) .sb-slot.empty:hover{border-color:var(--accent);color:var(--acc
      ghost's case below; the veil stays for that reason.)
    - THE MOUSE's ghost (fix wave, 7 Sep 26). It IS the puck — setDragImage and
      tdArm clone `.puck`, not the seat — so it inherits every state rule the
-     puck already wears, and five of those carry !important: `.puck.me` (the
-     View-as purple ring), `.puck.boxred` and `.puck.me.boxred` (a hard
-     conflict), `.puck.boxdash` and `.puck.me.boxdash` (three since D270, 27 Sep
-     26: the "you" ring now steps aside for a flag, and its two twins went). No specificity beats an
+     puck already wears, and three of those carry !important: the "this is you"
+     purple ring (`.puck.me:not(…)`, unflagged only since D270, 27 Sep 26),
+     `.puck.boxred` (a hard conflict) and `.puck.boxdash` (7 Sep 26 there were
+     five — `.puck.me.boxred` / `.puck.me.boxdash` went with D270). No specificity beats an
      !important declaration, so dragging your own puck or a conflicted one
      showed the state ring and no cyan at all — and, the depth shadow being
      replaced with it, nothing that read as picked up. (`.puck.warn.hard` is the

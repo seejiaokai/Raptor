@@ -114,6 +114,26 @@ describe('a man put on a row he already stands on is refused, and told why (D271
     expect(rowTwice('nact', `a:0.${FS}.+`)).toBe('')
     expect(slotBar('nact', `a:0.${FS}.+`)).toBe('already on MET + NOTAM BRIEF 08:15–08:45')
   })
+  /* Fable's scenario read (27 Sep 26), S-13 / S-15 / S-21: the kinds of row and the orders no test named yet */
+  it('an ⓘ info-only row is held too (an FYI row lists anyone, but not the same man twice); another man is silent there', () => {
+    DAYS[0].allhands[FS].info = true; validate()
+    expect(slotBar('bane', `a:0.${FS}.+`), 'Ranger again on the FYI crowd').toMatch(/· not added twice$/)
+    expect(slotBar('boosh', `a:0.${FS}.+`), 'Havoc: an FYI row raises nothing').toBe('')
+  })
+  it('a row with no times still names the refusal ("already on this row")', () => {
+    const g = DAYS[0].ground
+    g.push({ prog: 'NO TIMES', str: '', end: '', who: 'boosh' }); const a = g.length - 1
+    validate()
+    expect(rowTwice('boosh', `g:0.${a}.+`)).toMatch(/^already on (this row|NO TIMES)/)
+    expect(rowTwice('boosh', `g:0.${a}.+`)).toMatch(/· not added twice$/)
+  })
+  it("across days: Monday's man dragged onto Tuesday's crowd he is also on is refused, naming TUESDAY's row", () => {
+    const t: any = DAYS[1].allhands
+    t.push({ prog: 'TUE CROWD', str: '1000', end: '1100', who: ['bane'] }); const ri = t.length - 1
+    validate()
+    expect(rowTwice('bane', `a:1.${ri}.+`, `a:0.${FS}.0`)).toBe('already on TUE CROWD 10:00–11:00 · not added twice')
+    expect(rowTwice('bane', `a:1.${ri}.+`, `a:1.${ri}.0`), 'his own Tuesday place moved to the end: no').toBe('')
+  })
   it('a placeholder is not a man: ALL AVAIL is not held to it', () => {
     setSlotVal(`a:0.${FS}.1`, 'allavail'); validate()
     expect(rowTwice('allavail', `a:0.${FS}.+`)).toBe('')

@@ -5,10 +5,11 @@
    the app's own controls (+ Item, + Row, + Line, typed times, the palette); window.* is READ for the tables only.
    Every check asserts the RIGHT behaviour (PASS = correct), so re-running this IS the re-walk.
    Usage, from raptor-port/:  node scripts/handpass/ff-w3.mjs [part ...]
-     parts: f4d f4p f2d f2p f3 f5 f6 f1a f1b f1c f1d f1e f20   (none = all)
+     parts: f4d f4p f2d f2p f3 f5 f6 f7 f8 f9 f10 f1a f1b f1c f1d f1e f20   (none = all) — f7–f10: D271's other doors (27 Sep 26)
    Pictures: docs/img/handpass/2026-09-26-five-flags/w3/ · every check prints PASS / FAIL / NOTE; W3_RESULTS=<folder> also writes JSON */
 process.env.HP_URL = 'http://localhost:4176'
-const SHOTS = process.env.FF_SHOTS || 'C:/Users/User/projects/Raptor/.claude/worktrees/five-flags-batch-build-ef7d85/raptor-port/docs/img/handpass/2026-09-26-five-flags/w3'
+/* this checkout's own folder by default (a hard-coded worktree path once pointed a re-walk at another chat's folder) */
+const SHOTS = process.env.FF_SHOTS || new URL('../../docs/img/handpass/2026-09-26-five-flags/w3', import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1')
 process.env.HP_SHOTS = SHOTS
 const L = await import('./am/am-lib.mjs')
 const W = await import('./am/w1-lib.mjs')
@@ -499,7 +500,8 @@ async function f5() {
 
 /* ============================================================================================================
    F6 — the duplicate door: (a) palette drag onto his own row's + add, (b) arm + tap, (c) his own puck onto the
-   same row's + add; a published Monday for the no-op.
+   same row's + add; a published Monday for the no-op. SINCE D271 (27 Sep 26, "Q1 refused") every door REFUSES a man
+   already on the row: one copy, the reason on the toast ("· not added twice"), said before the drop too.
    ============================================================================================================ */
 async function f6() {
   const w = await openW(), { page, errors } = w
@@ -510,7 +512,8 @@ async function f6() {
     const h = await dragRead(w, page.locator(`#sbRoster .rpuck[data-person="${RANGER}"]`).first(), page.locator(`#schedBoard [data-fill="a:${MON}.2.+"] .addz:visible`).first(), 'f6-a-hover-palette-ranger-onto-own-row', { at: (b) => ({ x: b.x + b.width / 2, y: b.y + b.height / 2 }) })
     let t = await toasts(page), n = await dup(), wa = await warnsOf(page, MON)
     const pa = await boxPic(page, 'f6-a-after-palette-drag', `#schedBoard [data-fill="a:${MON}.2.+"]`, '.sb-arow')
-    check('F6-a', n === 1, '(a) palette drag of Ranger onto FLIGHT SAFETY\'s + add: he is never listed twice', { count: n, crowd: await crowd(page, MON, 2), caption: h.caption, toasts: t, rangerWarn: wa.filter(x => x.includes(RANGER)) }, pa)
+    const TW = /already on FLIGHT SAFETY STAND-DOWN 08:30–09:00 · not added twice/
+    check('F6-a', n === 1 && t.some(x => TW.test(x)) && TW.test(h.caption || ''), '(a) palette drag of Ranger onto FLIGHT SAFETY\'s + add: REFUSED (D271) — one copy, the caption and the toast say "not added twice"', { count: n, crowd: await crowd(page, MON, 2), caption: h.caption, toasts: t, rangerWarn: wa.filter(x => x.includes(RANGER)) }, pa)
     if (n > 1) await sbUndo(page)
     await toasts(page)
     // (b)
@@ -519,9 +522,16 @@ async function f6() {
     await tapName(page, RANGER)
     t = await toasts(page); n = await dup(); wa = await warnsOf(page, MON)
     const pb = await boxPic(page, 'f6-b-after-arm-and-tap', `#schedBoard [data-fill="a:${MON}.2.+"]`, '.sb-arow')
-    check('F6-b', n === 1, '(b) arm FLIGHT SAFETY\'s + add, tap Ranger: he is never listed twice', { armed: ak, paletteSays: { no: pr.no, why: pr.why }, count: n, crowd: await crowd(page, MON, 2), toasts: t, rangerWarn: wa.filter(x => x.includes(RANGER)) }, pb)
+    check('F6-b', n === 1 && TW.test(pr.why || '') && t.some(x => TW.test(x)), '(b) arm FLIGHT SAFETY\'s + add, tap Ranger: REFUSED (D271) — struck with the reason before the tap, one copy, the toast says why', { armed: ak, paletteSays: { no: pr.no, why: pr.why }, count: n, crowd: await crowd(page, MON, 2), toasts: t, rangerWarn: wa.filter(x => x.includes(RANGER)) }, pb)
     if (n > 1) await sbUndo(page)
     await toasts(page)
+    /* D271 (27 Sep 26), as D33's refusal: a refused tap leaves the "+ add" ARMED for the next man — then the arm is put
+       down with its own ✕ before (d)'s fixture, or the fixture's tap on the "+ add" would disarm it instead (the first
+       re-walk read that as a failure of (d): its premise, not the app) */
+    const stillArmed = await page.evaluate(() => window.ARM && window.ARM.key)
+    check('F6-b2', stillArmed === `a:${MON}.2.+`, '(b) after the refused tap the "+ add" is still armed (a refusal is not a placement)', { armed: stillArmed })
+    await page.evaluate(() => { const x = document.querySelector('#schedBoard [data-disarm]'); if (x && (x.offsetWidth || x.offsetHeight)) x.click() }); await page.waitForTimeout(300)
+    if (await page.evaluate(() => window.ARM && window.ARM.key)) { await page.keyboard.press('Escape'); await page.waitForTimeout(250) }
     /* (d)/(e) — the route that DID speak on main: Ranger put onto ANOTHER man's seat in the crowd he is already on.
        main's trim made that seat's row (`a:0.2.1` → `a:0.2`) differ from the event's (`a:0.2` → `a:0`), so the drag caption,
        the drop toast and the armed palette all said "already on FLIGHT SAFETY STAND-DOWN"; this branch matches them. */
@@ -532,7 +542,7 @@ async function f6() {
     t = await toasts(page); n = await dup()
     const cd = await crowd(page, MON, 2)
     const pd = await boxPic(page, 'f6-d-after-palette-ranger-onto-reaper', `#schedBoard [data-fill="a:${MON}.2.+"]`, '.sb-arow')
-    check('F6-d', n === 1 || !!hd.caption || t.length > 0, '(d) palette Ranger dropped onto Reaper\'s seat in the crowd Ranger is already on: never a silent second copy (either one copy, or the caption / a toast says so)', { caption: hd.caption, crowd: cd, count: n, toasts: t, rangerWarn: (await warnsOf(page, MON)).filter(x => x.includes(RANGER) && /FLIGHT SAFETY/.test(x)) }, hd.pic)
+    check('F6-d', n === 1 && cd.includes(REAPER) && TW.test(hd.caption || '') && t.some(x => TW.test(x)), '(d) palette Ranger dropped onto Reaper\'s seat in the crowd Ranger is already on: REFUSED (D271 reading 3) — Reaper stays, one Ranger, the caption and the toast say why', { caption: hd.caption, crowd: cd, count: n, toasts: t, rangerWarn: (await warnsOf(page, MON)).filter(x => x.includes(RANGER) && /FLIGHT SAFETY/.test(x)) }, hd.pic)
     note('F6-d-pic', 'after the drop', '', pd)
     if (await page.evaluate(s0 => JSON.stringify(window.DAYS[0]) !== s0, snapD)) { await sbUndo(page); await toasts(page) }
     // (e) arm Reaper's seat (tap it) and tap Ranger in the palette
@@ -545,7 +555,7 @@ async function f6() {
       const ppE = await boxPic(page, 'f6-e-palette-reaper-seat-armed-ranger', `#sbRoster .rpuck[data-person="${RANGER}"]`, '.rcol')
       await tapName(page, RANGER)
       t = await toasts(page); n = await dup()
-      check('F6-e', n === 1 || prE.no || t.some(x => !/planned$/.test(x)), '(e) Reaper\'s seat armed, Ranger tapped: never a silent second copy (struck before the tap, or a warning after)', { armed: armE, paletteBefore: { no: prE.no, why: prE.why }, crowd: await crowd(page, MON, 2), count: n, toasts: t }, ppE)
+      check('F6-e', n === 1 && TW.test(prE.why || '') && t.some(x => TW.test(x)), '(e) Reaper\'s seat armed, Ranger tapped: REFUSED (D271) — struck with the reason before the tap, one copy, the toast says why', { armed: armE, paletteBefore: { no: prE.no, why: prE.why }, crowd: await crowd(page, MON, 2), count: n, toasts: t }, ppE)
       await boxPic(page, 'f6-e-after-tap', `#schedBoard [data-fill="a:${MON}.2.+"]`, '.sb-arow')
       if (await page.evaluate(s0 => JSON.stringify(window.DAYS[0]) !== s0, snapD)) { await sbUndo(page); await toasts(page) }
     } else note('F6-e', 'a tap on Reaper\'s filled seat does not arm it (it selects him) — route (e) is not reachable this way', { armE })
@@ -763,8 +773,188 @@ async function f20() {
   await w.browser.close()
 }
 
+/* ============================================================================================================
+   F7 / F8 — D271 (owner, 27 Sep 26 — "Q1 refused"): ONE MAN, ONCE PER ROW, at the doors F6 does not reach.
+   F7 (desktop, a PUBLISHED Monday — a refusal must write nothing, so nothing reads pending and Undo has no new step):
+   a puck MOVED from another row onto the crowd he is already in (its "+ add", and another man's place — the swap's
+   first end), a swap whose SECOND end would be the copy (the man swapped OUT lands on a row he is on), and then a
+   legitimate cross-row move that must still plant. F8 (the phone, a real finger): the same move by finger, and the
+   armed "+ add" tapped with him — refused, the drawer stays open as the picker and the "+ add" stays armed.
+   ============================================================================================================ */
+const undoTitle = (page) => page.evaluate(() => { const b = document.querySelector('#sbUndo'); return b ? `${b.title}|${b.disabled}` : null })
+const TW7 = /already on FLIGHT SAFETY STAND-DOWN 08:30–09:00 · not added twice/
+/* "the other row": WPNS & TACTICS SYNC (Monday's Common Programme row 3, 11:30–12:00, Trident on it), the crowd just
+   below FLIGHT SAFETY — both on one screen, so a drag between them is a person's drag (the first cut used STAFF MTG on
+   the Ground Programme, far below: the press landed off the screen and nothing was picked up — the walk's own miss) */
+const OTH = 3
+const other = (page) => crowd(page, MON, OTH)
+const otherKey = (page, id) => page.evaluate(([id, ri]) => { const a = window.DAYS[0].allhands[ri]; const w = Array.isArray(a.who) ? a.who : [a.who]; const i = w.indexOf(id); return i >= 0 ? `a:0.${ri}.${i}` : null }, [id, OTH])
+async function f7() {
+  const w = await openW(), { page, errors } = w
+  try {
+    await board(page, MON)
+    await plant(page, `a:${MON}.2.+`, REAPER)                      // FLIGHT SAFETY: Ranger, Reaper
+    await plant(page, `a:${MON}.${OTH}.+`, RANGER)                 // WPNS & TACTICS SYNC: Trident, + Ranger
+    await toasts(page)
+    const oname = await page.evaluate(ri => window.DAYS[0].allhands[ri].prog, OTH)
+    const rk = await otherKey(page, RANGER)
+    check('F7-0', (await crowd(page, MON, 2)).join() === [RANGER, REAPER].join() && !!rk, `fixture: FLIGHT SAFETY holds Ranger and Reaper; ${oname} holds Ranger (${rk})`, { crowd: await crowd(page, MON, 2), other: await other(page) })
+    await closeBoard(page); await editWeek(page)
+    const sg = await signDay(page, MON, 0), pb = await publishDay(page, MON)
+    await toasts(page); await board(page, MON)
+    let pend = await pendingOn(page, MON); const u0 = await undoTitle(page)
+    check('F7-P', pb.pressed && pnum(pend) === 0, 'Monday published — nothing pending', { sg, pb, pend })
+    const c0 = JSON.stringify(await crowd(page, MON, 2)), s0 = JSON.stringify(await other(page))
+    const same = async () => {
+      const c = JSON.stringify(await crowd(page, MON, 2)), s = JSON.stringify(await other(page)), p = await pendingOn(page, MON), u = await undoTitle(page)
+      return { ok: c === c0 && s === s0 && pnum(p) === 0 && u === u0, c, s, p, u }
+    }
+    // (a) MOVE: Ranger's WPNS puck onto FLIGHT SAFETY's "+ add"
+    let h = await dragRead(w, page.locator(`#schedBoard [data-slot="${rk}"] .puck:visible`).first(), page.locator(`#schedBoard [data-fill="a:${MON}.2.+"] .addz:visible`).first(), 'f7-a-hover-move-ranger-from-wpns-onto-his-crowd', { at: (b) => ({ x: b.x + b.width / 2, y: b.y + b.height / 2 }) })
+    let t = await toasts(page), r = await same()
+    check('F7-a', !!h.ghost && r.ok && TW7.test(h.caption || '') && t.some(x => TW7.test(x)), `(a) Ranger MOVED from ${oname} onto FLIGHT SAFETY's "+ add": refused — both rows as they were, 0 pending, no Undo step; caption and toast say "not added twice"`, { ghost: h.ghost, caption: h.caption, toasts: t, ...r }, h.pic)
+    // (b) SWAP, first end: Ranger's WPNS puck onto Reaper's place in the crowd
+    h = await dragRead(w, page.locator(`#schedBoard [data-slot="${rk}"] .puck:visible`).first(), page.locator(`#schedBoard [data-slot="a:${MON}.2.1"]:visible`).first(), 'f7-b-hover-swap-ranger-onto-reaper-in-his-crowd')
+    t = await toasts(page); r = await same()
+    check('F7-b', !!h.ghost && r.ok && TW7.test(h.caption || '') && t.some(x => TW7.test(x)), `(b) a SWAP of Ranger (from ${oname}) with Reaper in the crowd Ranger is in: refused whole — neither row written, 0 pending, no Undo step`, { ghost: h.ghost, caption: h.caption, toasts: t, ...r }, h.pic)
+    // (c) SWAP, second end: Reaper's crowd puck onto Ranger's WPNS place — Ranger would be swapped INTO the crowd twice
+    h = await dragRead(w, page.locator(`#schedBoard [data-slot="a:${MON}.2.1"] .puck:visible`).first(), page.locator(`#schedBoard [data-slot="${rk}"]:visible`).first(), 'f7-c-hover-swap-reaper-onto-ranger-other-end')
+    t = await toasts(page); r = await same()
+    check('F7-c', !!h.ghost && r.ok && t.some(x => TW7.test(x) && /^Ranger/.test(x)), `(c) the swap's OTHER end: Reaper onto Ranger's ${oname} place would put Ranger into the crowd twice — refused whole, the toast names Ranger`, { ghost: h.ghost, caption: h.caption, toasts: t, ...r }, h.pic)
+    note('F7-c-caption', "the hover speaks for the man CARRIED (Reaper — nothing to say); the refusal names the man swapped out, on the drop (D33's swap refusal has the same shape)", h.caption)
+    // (d) a legitimate cross-row move still plants: Reaper from the crowd onto WPNS's "+ add"
+    h = await dragRead(w, page.locator(`#schedBoard [data-slot="a:${MON}.2.1"] .puck:visible`).first(), page.locator(`#schedBoard [data-fill="a:${MON}.${OTH}.+"] .addz:visible`).first(), 'f7-d-hover-reaper-onto-wpns-add', { at: (b) => ({ x: b.x + b.width / 2, y: b.y + b.height / 2 }) })
+    t = await toasts(page); pend = await pendingOn(page, MON)
+    const cd = await crowd(page, MON, 2), sd = await other(page)
+    check('F7-d', !cd.includes(REAPER) && sd.includes(REAPER) && pnum(pend) >= 1 && !t.some(x => /twice/.test(x)), `(d) Reaper MOVED from the crowd onto ${oname}'s "+ add": planted, the day reads pending — the rule refuses only a second copy`, { crowd: cd, other: sd, pend, toasts: t }, await boxPic(page, 'f7-d-after-legit-move', `#schedBoard [data-fill="a:${MON}.${OTH}.+"]`, '.sb-arow'))
+    await sbUndo(page); pend = await pendingOn(page, MON)
+    check('F7-e', JSON.stringify(await crowd(page, MON, 2)) === c0 && pnum(pend) === 0, 'Undo puts Reaper back — 0 pending (the refusals left nothing to undo)', { crowd: await crowd(page, MON, 2), pend })
+    await reloadW(w); await board(page, MON)
+    check('F7-f', JSON.stringify(await crowd(page, MON, 2)) === c0 && JSON.stringify(await other(page)) === s0 && pnum(await pendingOn(page, MON)) === 0, 'after a reload: both rows as published, 0 pending', { crowd: await crowd(page, MON, 2), other: await other(page) })
+  } catch (e) { check('F7-CRASH', false, String(e && e.stack || e)) }
+  check('F7-ERR', !errors.length, 'browser error list empty', errors.slice(0, 6))
+  await w.browser.close()
+}
+async function f8() {
+  const w = await openW({ phone: true, dpr: 2 }), { page, errors } = w
+  try {
+    await board(page, MON)
+    await plant(page, `a:${MON}.${OTH}.+`, RANGER); await toasts(page)
+    const rk = await otherKey(page, RANGER)
+    const c0 = JSON.stringify(await crowd(page, MON, 2)), s0 = JSON.stringify(await other(page))
+    // (a) by finger: Ranger's WPNS puck onto FLIGHT SAFETY's "+ add"
+    const h = await dragRead(w, page.locator(`#schedBoard [data-slot="${rk}"] .puck:visible`).first(), page.locator(`#schedBoard [data-fill="a:${MON}.2.+"] .addz:visible`).first(), 'f8-a-phone-finger-ranger-onto-his-crowd', { touch: true, at: (b) => ({ x: b.x + b.width / 2, y: b.y + b.height / 2 }) })
+    let t = await toasts(page)
+    check('F8-a', !!h.ghost && JSON.stringify(await crowd(page, MON, 2)) === c0 && JSON.stringify(await other(page)) === s0 && t.some(x => TW7.test(x)), 'phone · Ranger moved by finger onto the crowd he is in: refused, both rows as they were, the toast says why', { ghost: h.ghost, caption: h.caption, toasts: t }, h.pic)
+    // (b) arm the crowd's "+ add", tap Ranger in the drawer
+    const ak = await armFill(page, `a:${MON}.2.+`)
+    const pr = await palette(page, RANGER)
+    const pp = await pic(page, 'f8-b-phone-drawer-armed-ranger-struck')
+    await tapName(page, RANGER); t = await toasts(page)
+    const after = await page.evaluate(() => ({ armed: window.ARM && window.ARM.key, drawer: document.body.classList.contains('ros-open') }))
+    check('F8-b', ak === `a:${MON}.2.+` && TW7.test(pr.why || '') && JSON.stringify(await crowd(page, MON, 2)) === c0 && t.some(x => TW7.test(x)), 'phone · "+ add" armed, Ranger struck with the reason in the drawer, tapped anyway: refused, the toast says why', { ak, why: pr.why, toasts: t }, pp)
+    check('F8-c', after.armed === `a:${MON}.2.+` && after.drawer, 'phone · after the refusal the "+ add" is still armed and the drawer stays open as the picker', after, await pic(page, 'f8-c-phone-after-refused-tap'))
+    // (c) the next man lands, and the drawer parks as after any placement
+    await tapName(page, REAPER); t = await toasts(page)
+    const fin = await page.evaluate(() => ({ armed: window.ARM && window.ARM.key, drawer: document.body.classList.contains('ros-open') }))
+    check('F8-d', (await crowd(page, MON, 2)).includes(REAPER) && !fin.armed && !fin.drawer, 'phone · then Reaper tapped: planted, the arm put down, the drawer parked', { crowd: await crowd(page, MON, 2), fin, toasts: t }, await pic(page, 'f8-d-phone-reaper-planted'))
+  } catch (e) { check('F8-CRASH', false, String(e && e.stack || e)) }
+  check('F8-ERR', !errors.length, 'browser error list empty', errors.slice(0, 6))
+  await w.browser.close()
+}
+
+/* ============================================================================================================
+   F9 — Fable's F1 (the scenario read, 27 Sep 26): a request ACCEPTED onto the Ground Programme, a second man added to its
+   row as an extra, then the request handed to THAT man on the Inputs page (✎ → Person → ✓). The relink rebuilds the row
+   as the new holder and puts the extras back — he must come back ONCE (the holder), with a word that says so (D271).
+   F10 — Fable's S-33: the refusal on the EDIT WEEK (not the board) — the week's own crew palette dropped onto the
+   crowd's cell on #eWeek; nothing written, no landing flash on the week.
+   ============================================================================================================ */
+async function f9() {
+  const w = await openW(), { page, errors } = w
+  const W4 = await import('./am/w4-lib.mjs')
+  try {
+    const REM = 'F9 hand-over'
+    const f = await W4.fileInput(page, { person: SABER, type: 'Meeting', from: '2026-07-13', to: '2026-07-13', span: 'custom', start: '10:00', end: '11:00', remarks: REM })
+    await toasts(page)
+    const iid = await page.evaluate(r => { const x = window.INPUTS.find(y => y.remarks === r); return x ? (x.iid || x.id) : null }, REM)
+    check('F9-0', !!iid, 'a Meeting request for Saber filed on the Inputs page (Mon 10:00–11:00)', { added: f && f.added, iid })
+    await board(page, MON)
+    const { openInputs } = await import('./lib.mjs')
+    await openInputs(page, MON)
+    const acc = page.locator(`#schedBoard [data-acc="g"][data-acck="${iid}"]:visible`).first()
+    if (await acc.count()) { await acc.evaluate(e => e.scrollIntoView({ block: 'center' })); await acc.click(); await page.waitForTimeout(700) }
+    await toasts(page)
+    const ri = await page.evaluate(id => ((window.DAYS[0] || {}).ground || []).findIndex(g => g && g.src === id), iid)
+    check('F9-1', ri >= 0, 'accepted onto Monday\'s Ground Programme from the board\'s Personal Inputs (Accept)', { ri })
+    await plant(page, `g:${MON}.${ri}.+`, RANGER); await toasts(page)
+    const before = await page.evaluate(i => { const r = window.DAYS[0].ground[i]; return [r.who, ...(r.more || [])] }, ri)
+    check('F9-2', before[0] === SABER && before.includes(RANGER), 'Ranger added to the request\'s row as an extra (+ add, the drawer\'s name tapped)', before, await boxPic(page, 'f9-2-row-saber-plus-ranger', `#schedBoard [data-fill="g:${MON}.${ri}.+"]`, '.sb-arow'))
+    await closeBoard(page)
+    // the Inputs page: ✎ on the request, Person → Ranger, ✓
+    await L.go(page, 'inputs'); await page.waitForTimeout(500)
+    /* the list row is found by its remarks (its id is the stored one, read now — a probe found the form's own id and
+       the stored one differ), and the edit row by the same id */
+    const liid = await page.evaluate(r => { const x = window.INPUTS.find(y => y.remarks === r); return x ? x.iid : null }, REM)
+    const pen = page.locator(`tr[data-iid="${liid}"] [data-edit]`).first()
+    /* the list opens on TODAY's fortnight (the real date), and the demo request is in July: "All dates", the list's own
+       control (the second walk's miss — the row was simply not listed) */
+    if (!(await pen.count())) {
+      if (!(await page.locator('#inRangePop').count())) { await page.locator('#inRangeBtn').click(); await page.waitForTimeout(300) }
+      await page.locator('#inRangeAll').click(); await page.waitForTimeout(500)
+    }
+    await pen.evaluate(e => e.scrollIntoView({ block: 'center' })); await pen.click(); await page.waitForTimeout(400)
+    await page.locator(`tr.ined[data-iid="${liid}"] select[data-ed="person"]`).first().selectOption(RANGER); await page.waitForTimeout(200)
+    const pe = await pic(page, 'f9-3-inputs-page-person-to-ranger')
+    await page.locator(`tr.ined[data-iid="${liid}"] [data-save]`).first().click(); await page.waitForTimeout(900)
+    /* the app has ONE toast: the note must be the one LEFT on screen, not replaced by "Input updated" (the first re-walk
+       found it replaced within the same tick) */
+    const shown = await page.evaluate(() => { const t = document.getElementById('toastEl'); return t ? { text: t.textContent, op: t.style.opacity } : null })
+    check('F9-3b', shown && /kept once, as its holder/.test(shown.text) && shown.op === '1', 'the note is what the screen shows after the save (not replaced by "Input updated")', shown, await pic(page, 'f9-3b-inputs-page-after-save-toast'))
+    const t = await toasts(page)
+    const after = await page.evaluate(rem => { const x = window.INPUTS.find(y => y.remarks === rem); const r = x && ((window.DAYS[0] || {}).ground || []).find(g => g && g.src === (x.iid || x.id)); return r ? [r.who, ...(r.more || [])] : null }, REM)
+    const n = (after || []).filter(v => v === RANGER).length
+    check('F9-3', after && after[0] === RANGER && n === 1 && t.some(x => /Ranger — already on this row as an extra · kept once, as its holder/.test(x)),
+      'the request handed to Ranger: its row comes back with Ranger ONCE, as the holder — and the toast says so (D271, Fable F1)', { after, toasts: t }, pe)
+    await board(page, MON)
+    const ri2 = await page.evaluate(rem => { const x = window.INPUTS.find(y => y.remarks === rem); return ((window.DAYS[0] || {}).ground || []).findIndex(g => g && x && g.src === (x.iid || x.id)) }, REM)
+    note('F9-4', 'the row on the board after the hand-over', await page.evaluate(i => window.DAYS[0].ground[i], ri2), await boxPic(page, 'f9-4-row-after-hand-over', `#schedBoard [data-fill="g:${MON}.${ri2}.+"]`, '.sb-arow'))
+  } catch (e) { check('F9-CRASH', false, String(e && e.stack || e)) }
+  check('F9-ERR', !errors.length, 'browser error list empty', errors.slice(0, 6))
+  await w.browser.close()
+}
+async function f10() {
+  const w = await openW(), { page, errors } = w
+  try {
+    await editWeek(page)
+    const c0 = JSON.stringify(await crowd(page, MON, 2))
+    const src = page.locator(`#eRoster .rpuck[data-person="${RANGER}"]`).first()
+    const dst = page.locator(`#eWeek [data-fill="a:${MON}.2.+"]:visible`).first()
+    if (!(await src.count()) || !(await dst.count())) { note('F10', 'the week\'s crew palette or the crowd cell is not on screen', { src: await src.count(), dst: await dst.count() }); }
+    else {
+      await dst.evaluate(e => e.scrollIntoView({ block: 'center' })); await page.waitForTimeout(300)
+      await src.evaluate(e => { const box = e.closest('#eRoster'); if (box) { const r = e.getBoundingClientRect(), b = box.getBoundingClientRect(); box.scrollTop += r.top - b.top - 120 } }); await page.waitForTimeout(300)
+      const a = await src.boundingBox(), b = await dst.boundingBox(), vh = page.viewportSize().height
+      if (!a || !b || a.y < 0 || a.y > vh || b.y < 0 || b.y > vh) throw new Error('not both on screen: ' + JSON.stringify({ a, b }))
+      const tx = b.x + Math.min(b.width - 8, 60), ty = b.y + b.height / 2
+      await page.mouse.move(a.x + a.width / 2, a.y + a.height / 2); await page.mouse.down()
+      for (let i = 1; i <= 14; i++) { await page.mouse.move(a.x + a.width / 2 + (tx - a.x - a.width / 2) * i / 14, a.y + a.height / 2 + (ty - a.y - a.height / 2) * i / 14); await page.waitForTimeout(16) }
+      await page.waitForTimeout(200)
+      const h = await page.evaluate(() => { const g = document.querySelector('.dragimg, .tdghost'), c = g && g.querySelector('.dwhy'); return { ghost: g ? g.className.split(' ')[0] : null, caption: c ? c.textContent : '' } })
+      h.pic = await pic(page, 'f10-week-hover-ranger-onto-his-crowd')
+      await page.mouse.up(); await page.waitForTimeout(900)
+      const t = await toasts(page)
+      const flash = await page.evaluate(() => !!document.querySelector('#eWeek .lift-land, #eWeek [class*="landflash"]'))
+      check('F10', !!h.ghost && JSON.stringify(await crowd(page, MON, 2)) === c0 && t.some(x => /not added twice/.test(x)) && /not added twice/.test(h.caption) && !flash,
+        'edit week · Ranger from the week\'s crew palette onto FLIGHT SAFETY\'s cell: refused — nothing written, the toast says why, no landing flash', { caption: h.caption, toasts: t, flash }, h.pic)
+    }
+  } catch (e) { check('F10-CRASH', false, String(e && e.stack || e)) }
+  check('F10-ERR', !errors.length, 'browser error list empty', errors.slice(0, 6))
+  await w.browser.close()
+}
+
 /* ---------- run ---------- */
-const PARTS = { f4d, f4p, f2d: () => f2(false), f2p: () => f2(true), f3, f5, f6, f1a: () => f1('a'), f1b: () => f1('b'), f1c: () => f1('c'), f1d: () => f1('d'), f1e: () => f1('e'), f20 }
+const PARTS = { f4d, f4p, f2d: () => f2(false), f2p: () => f2(true), f3, f5, f6, f7, f8, f9, f10, f1a: () => f1('a'), f1b: () => f1('b'), f1c: () => f1('c'), f1d: () => f1('d'), f1e: () => f1('e'), f20 }
 const want = process.argv.slice(2).length ? process.argv.slice(2) : Object.keys(PARTS)
 for (const p of want) {
   PART = p; RES = []
