@@ -467,6 +467,8 @@ day-level row; the rest becomes queryable.
 
 ### EditLog
 
+*To grow (D263, 27 Sep 26): it also carries every change to an absence — edited, cut, moved, deleted, and the Leave War's decisions — with who and when; built with the one changes window (`[DRAFT-PENDING]`).*
+
 Owner: **Scheduler**. One recorded edit. Today session-only and capped at
 400 rows; in the database it is durable and shared.
 
