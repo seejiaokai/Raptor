@@ -47,7 +47,7 @@ const OUTCOMES = `
   <div class="bidsheet-row postout mk-out" style="flex-wrap:wrap;gap:6px">
     <span class="lab">Posting</span>
     <button class="pchip on">✓ Overseas Sqn</button>
-    <button class="pchip">Fully delete</button>
+    <button class="pchip">Delete</button>
     <button class="pchip">SANS</button>
     <button class="pchip" disabled style="opacity:.45" title="Comes with the shared database">Transfer to Sqn</button>
   </div>
