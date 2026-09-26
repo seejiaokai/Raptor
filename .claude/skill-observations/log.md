@@ -584,3 +584,18 @@ resolved statuses always carry their resolution date
 **Suggested improvement:** For every NEW card, form or panel a build adds, the walk asserts its geometry, not only its content: primary controls aligned with the fields above (left and right edges equal) and inside the container. Cheap in a scripted walk (bounding boxes), and the assertion catches what a glance normalises.
 
 **Principle:** Looking confirms the picture matches your expectation of the content; it rarely notices a few pixels of misalignment. Measure what "looks right" means for new surfaces.
+
+### Observation 279: A ready-to-paste opening line must not carry a bracketed choice the owner has to edit
+
+**Status:** OPEN
+**Date:** 2026-09-26
+**Session context:** `[ACCOUNTS-NEW-PERSON]` — the new chat opened with the handoff's pasted line.
+**Skill:** session-handoff
+**Type:** open-source
+**Phase/Area:** the ready-to-paste opening line for the next chat
+
+**Issue:** The previous chat's handoff gave the owner an opening line reading "The mock-up … is approved [or: change X]. Build …". He pasted it as it stood, bracket and all, so the new chat had to guess whether he approved the mock-up or meant to name a change. It read it as approved (no change was named) and said so, but an approval gate was left resting on an unedited template.
+
+**Suggested improvement:** In session-handoff's closing step (the ready-to-paste line), when the next step waits on a decision of his, give one complete line per answer ("If you approve it: …" / "If you want a change: tell me the change, then …"), never a single line with a bracketed alternative to fill in.
+
+**Principle:** A non-technical user pastes a handoff prompt exactly as given. Any placeholder or bracketed alternative in it will reach the next session unedited, so every line must already be a complete, true instruction.
