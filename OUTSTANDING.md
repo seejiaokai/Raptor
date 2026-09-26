@@ -57,8 +57,9 @@ whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaini
    its own small branch and check).
 2. **Now, beside the building — [IT-QUESTIONS]:** talk to the IT side (his, not code); their approvals take weeks.
 3. **Development as normal — [HUMAN-RETEST]**'s remaining three, in HIS order (D147): the absence record TOGETHER with
-   [S4-HUNT-REST] — **WALKED 26 Sep 26** on `claude/absence-record-d147-af6a50` (its FULL check closing there; his look,
-   its questions [ABSENCE-ASK] and "merge live" next) — then change-recording (with [UNDO-ROSTER-SETTINGS] and D148),
+   [S4-HUNT-REST] — **WALKED 26 Sep 26** on `claude/absence-record-d147-af6a50`; his answers to its questions (D260–D263)
+   recorded, and D260–D262 BUILT and FULL-checked there 27 Sep 26 (D263 goes with [DRAFT-PENDING]); his look and "merge
+   live" next — then change-recording (with [UNDO-ROSTER-SETTINGS] and D148),
    then the Leave War links LAST (with the 7 Sep phone check). Then "after the hunt" (21 Sep 26): [LW-LOCKMARK] →
    [LW-WEEKDAY-WORK] (talk to him before building any of it) — its first, the published day's unavailable list, was
    closed by the same re-test (built by [LEAVE-LATE-PUBLISHED]; archived).
@@ -76,7 +77,7 @@ whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaini
 
 **Placed by their own lines — not his rulings:** the Leave War — [LW-FROZEN-BAR-GAP] (after [HUMAN-RETEST]; show him
 first), [LW-FIGSEL-SLOW] and [LW-SCRUBBER-FLAKY] (test-only), [LW-ISO-DATES] and [LW-MOVE-BENEATH] (both low, from the
-absence-record re-test), [PO-RESTORE-POSTING] (low, from its final code read), [LW-MOVE-ONE-CHIP] (his D262 — the NEXT chat builds it, with [ABSENCE-ASK]'s answers), [LW-OFFER-ONLY-TAKEABLE] (low, with [LW-LOCKMARK]), [ABSENCE-SMALL-SEEN] (any time); the Inputs calendar — [INPUTSCAL-TAP-FLAKY] (test-only). The background-command guard — [BG-GUARD-FALSE] (small; tooling). The Tracker — [TRK-RETEST-NOTES] and
+absence-record re-test), [PO-RESTORE-POSTING] (low, from its final code read), [LW-MOVE-TAPLIST-ASK] (a question for him, on the D260–D262 look card), [LW-OFFER-ONLY-TAKEABLE] (low, with [LW-LOCKMARK]), [ABSENCE-SMALL-SEEN] (any time); the Inputs calendar — [INPUTSCAL-TAP-FLAKY] (test-only). The background-command guard — [BG-GUARD-FALSE] (small; tooling). The Tracker — [TRK-RETEST-NOTES] and
 [TRK-EDIT-SIDEWAYS] (their gates have passed), [TRK-PINCH-ASK] (his next Tracker session), [TRK-SESSION-PICK] (low, the next Tracker change), [TRK-DLG-LEFTOVERS] (low, with the next question-box change), [TRK-PALETTE-ASK] (his answer D157: Raptor's colours
 fully — being built on `claude/tracker-palette`), [TRK-FLEXBAR-INK] (a question for him, on that branch's look card),
 [TRK-BAKE-STALE] (low). The Leave War — [LW-RESET-ORDER] (his yes, D160 — a small build).
@@ -325,7 +326,7 @@ here, in his order (D147): the absence record with [S4-HUNT-REST], then change-r
 **THE ABSENCE RECORD PART — WALKED 26 Sep 26** on `claude/absence-record-d147-af6a50`, together with [S4-HUNT-REST]
 (all seven of its grounds) and the published day's unavailable list: a host walk and five walkers at both widths, every
 defect reproduced and fixed red first (evidence `raptor-port/docs/handpass/2026-09-26-absence.md`; plan
-`raptor-port/docs/superpowers/plans/2026-09-26-absence-retest-plan.md`). Its questions for him are [ABSENCE-ASK]; what
+`raptor-port/docs/superpowers/plans/2026-09-26-absence-retest-plan.md`). Its questions for him were [ABSENCE-ASK] (all answered — D260–D263; archived); what
 it filed is [LW-ISO-DATES], [LW-MOVE-BENEATH] and a line in [AMEND-SMALL-SEEN] item 6. It closes with the final code
 reads, his look and his "merge live". **Next here: change-recording** (with [UNDO-ROSTER-SETTINGS] and D148), then the
 Leave War links.
@@ -1338,7 +1339,9 @@ window (`[DRAFT-PENDING]`) or any time.
 The bid sheet's header and its PI / PO buttons ("Ranger 2026-07-17", "Post in from 2026-08-10"), the selection sheet's
 header for ONE day ("Saint 2026-08-06 · 1 day" — a two-day one reads "6 Aug 26 – 7 Aug 26") and the move banner's refusal
 ("That lands on 2026-08-12 which is already booked") print the stored date; the tap list beside them reads "Sat 18 Jul".
-The day-first date voice everywhere else (`raptor-port/docs/ui-contracts.md`). **Build:** one wording batch over every
+The day-first date voice everywhere else (`raptor-port/docs/ui-contracts.md`). **Added 27 Sep 26:** the member's
+read-only "Your OIL award" sheet (D261, `BidPicker.tsx AwardSheet`) prints its date the same way as its siblings, on
+purpose, so the batch changes them together. **Build:** one wording batch over every
 Leave War sheet together, with their tests (many tests pin these strings). Evidence
 `raptor-port/docs/handpass/parts/2026-09-26-absence-w4.md` §W4-2. **Place:** low, any time; not his ruling.
 
@@ -1352,25 +1355,20 @@ the TOP record today). **Build:** decide whether the bid travels alone (landing 
 or the whole day is refused with a sentence naming the filed leave; then red first. Evidence
 `raptor-port/docs/handpass/parts/2026-09-26-absence-w3.md` §W3-F3. **Place:** low; with [LW-LOCKMARK] (the lock by day
 vs by record is the same root).
+**Its sibling (Fable's D260–D262 scenarios, S3, 27 Sep 26):** a bid that shares its day with an OIL AWARD cannot be moved
+by any door — the ladder puts the award above the bid, so the day's top record is not movable: the one-day sheet does not
+open (two records open the tap list, whose bid line has no Move), and a dragged block's Move… does not offer it. The same
+root — a move reads the day's TOP record — and the same decision (the bid travels alone, landing where its half is free).
+Pre-existing; not his ruling.
 
-### [ABSENCE-ASK] Three questions for him from the absence-record re-test (26 Sep 26)
-Put to him with his look at the re-test (its look card, `raptor-port/docs/handpass/2026-09-26-absence.md` §12):
-1. **ANSWERED 27 Sep 26 — D260 ("B"): a dragged block's Delete removes everything in it, awards included, and its
-   confirm names each award first; the one-day Clear does the same (names it, asks once); Move and drag keep leaving
-   awards where they are. TO BUILD in the next chat (his word), with its own red-first tests and check — the agent's
-   reading: on this branch, before his "merge live".** The question as it was put: **An OIL award under Clear and bulk Delete (AB1, AB2).** The bid sheet's Clear on a day holding an award removes the
-   award, and a dragged block's Delete removes every award in it — no word in either, and the man's OIL drops. An award
-   has its own Remove (N11: an award is the admin's). An existing test pins Clear removing the award as MEANT, so which
-   is right is his: (a) Clear and Delete leave awards alone (Remove is the one door), or (b) they take them, and say so
-   in the confirm ("…and 2 OIL awards").
-2. **ANSWERED 27 Sep 26 — D263 ("2 yes"): the change history records every change to an absence (an input edited, cut, moved, deleted; the war's approve, refuse, back-to-bid, move) with who and when — built INTO the one changes window (`[DRAFT-PENDING]`), not before.** The question as it was put: **What the Edit history should record (AB8 (b)).** Today it records the schedule, and of inputs only an add or a
-   removal. Should the war's approvals and moves, and an input's edits and cuts, join it? Belongs with the one changes
-   window ([DRAFT-PENDING], D169's transparency). (AB8 (a) — the Inputs page's own Add writing no line — is fixed.)
-3. **ANSWERED 27 Sep 26 — D261 ("3 yes"): a member opens his own OIL award, read only, at every stage. TO BUILD in the next chat (his word).** The question as it was put: **A member's own award outside the bidding window (W3-F10).** Inside the window his own FO / HO opens read-only
-   (reason, given by, days); outside it, nothing opens. The OIL tracker shows the same facts. Should his own award open
-   read-only at every stage?
-**Place:** his look at the re-test; each answer becomes a ruling (D260–D269 on that branch) and, where it changes the
-app, a small build.
+### [LW-MOVE-TAPLIST-ASK] The tap list's per-record Move… still moves by a date box — a question for him (27 Sep 26)
+D262 ("one chip, one Move … The calendar can be removed") was read, and stated to him, as the two ONE-DAY sheets (the
+bid sheet's decision row, and the decide sheet it replaced). A day holding several records opens the TAP LIST instead,
+where a war-approved leave's own line has "Move…" with a date box and a Move button (`DayList.tsx`, `moveAbsenceById`) —
+it has to name WHICH record, which the grid's move mode cannot (it moves the day's top record). **The question:** should
+that line's Move… also pick the one record up and land it on a day of the grid (a move mode that carries the record's
+id), or keep its date box? **Place:** on the D260–D262 look card (`raptor-port/docs/handpass/2026-09-27-d260-d262.md`
+§10); a build only if he says so.
 
 ### [PO-RESTORE-POSTING] The Quals Restore clears a posting it did not make — low (Fable's final code read, N7, 26 Sep 26)
 Unchanged `main` code, found by Fable's read of the absence-record re-test: `sync.ts restoreArchivedPerson` (the Quals
@@ -1412,16 +1410,3 @@ None breaks an absence rule; each is a line to fix or ask about, from the re-wal
    not reproduced by a dedicated probe (4 / 4) — watch for it (W4).
 **Place:** any time; items 1–2 with the Leave War links re-test (D147, last).
 
-### [LW-MOVE-ONE-CHIP] One chip, one Move — no date box; edge scroll, months keep it, a click outside cancels (D262, 27 Sep 26)
-**His ruling (D262, `.claude/rules/decisions/leave-war.md`):** tap a single chip on the Leave War and its sheet's **Move** is
-pressable at once and picks the chip up; the date box ("the calendar") beside it goes. While moving: dragging to the grid's
-edges scrolls it; the month buttons still work and the move stays on; a click on an empty area outside the grid cancels.
-**Today:** the one-day sheet's Move is greyed until a date is typed in its date box, then moves there
-(`raptor-port/src/leavewar/ui/BidPicker.tsx`, the two `decide-shift` rows). **Build (the agent's readings in D262):** both
-one-day sheets' Moves start the grid's move mode (the drag-selection's own, `Matrix.tsx` moveSel), landing rules unchanged
-(refused whole and said; the dotted "moved" mark once bidding is closed; lands undecided); desktop lands on the click or
-release, the phone keeps tap-then-Confirm; the drag-selection's "Move…" gains the same edge scroll, months and outside-click
-cancel; a stage or war change and Undo still end it. **Tier:** WALK at least (a new gesture; a walk at both widths, both
-orders, a break test) — FULL if the landing rules are touched. **Place:** the NEXT chat, with `[ABSENCE-ASK]`'s answers (his
-word, 27 Sep 26), before this branch's "merge live" (the agent's reading). Fix what it leaves behind (D201):
-`raptor-port/docs/ui-contracts.md` §Selecting on the Leave War grid, and the tests that type a date into `shift-date`.
