@@ -1,0 +1,15 @@
+FAIL  [H5] edit — expected: step ran | observed: THREW locator.click: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for locator('#inpEditSave')[22m
+[2m    - locator resolved to <button id="inpEditSave" class="abtn primary">Save</button>[22m
+[2m  - attempting click action[22m
+[2m    2 × waiting for element to be visible, enabled and stable[2
+NOTE  [H5] war-unapprove-sheet — {"open":"NO CELL DRAWN"}
+NOTE  [H5] history-full — ["Input removed — Vandal, LL, Jul 21 Saber · 26/9 22:19","Input removed — Vandal, LL, Jul 21 Saber · 26/9 22:19","Input added — Vandal, ATT C, Jul 22 Saber · 26/9 22:19","Input added — Vandal, ATT C, Jul 22 Saber · 26/9 22:19","Input added — Vandal, LL, Jul 21–Jul 22 Saber · 26/9 22:18","Input added — Vandal, LL, Jul 21–Jul 22 Saber · 26/9 22:18"]
+NOTE  [H5] after: Inputs page: add LL — {"lines":2,"newest":["Input added — Vandal, LL, Jul 21–Jul 22 Saber · 26/9 22:18","Input added — Vandal, LL, Jul 21–Jul 22 Saber · 26/9 22:18"]}
+NOTE  [H5] after: Leave War: bid then Approve — {"lines":2,"newest":["Input added — Vandal, LL, Jul 21–Jul 22 Saber · 26/9 22:18","Input added — Vandal, LL, Jul 21–Jul 22 Saber · 26/9 22:18"]}
+NOTE  [H5] after: Leave War: approved leave back to Ack — {"lines":2,"newest":["Input added — Vandal, LL, Jul 21–Jul 22 Saber · 26/9 22:18","Input added — Vandal, LL, Jul 21–Jul 22 Saber · 26/9 22:18"]}
+NOTE  [H5] after: Inputs page: medical cutting leave — {"lines":4,"newest":["Input added — Vandal, ATT C, Jul 22 Saber · 26/9 22:19","Input added — Vandal, ATT C, Jul 22 Saber · 26/9 22:19","Input added — Vandal, LL, Jul 21–Jul 22 Saber · 26/9 22:18"]}
+NOTE  [H5] after: Inputs page: delete — {"lines":6,"newest":["Input removed — Vandal, LL, Jul 21 Saber · 26/9 22:19","Input removed — Vandal, LL, Jul 21 Saber · 26/9 22:19","Input added — Vandal, ATT C, Jul 22 Saber · 26/9 22:19"]}
+PASS  [H5] design-lines-name-callsign — expected: an input added writes its line (the design's own), naming who (D166 (5)) | observed: ["Inputs page: add LL: Input added — Vandal, LL, Jul 21–Jul 22 Saber · 26/9 22:18","Leave War: bid then Approve: Input added — Vandal, LL, Jul 21–Jul 22 Saber · 26/9 22:18","Leave War: approved leave back to Ack: Input added — Vandal, LL, Jul 21–Jul 22 Saber · 26/9 22:18","Inputs page: medical cutting leave: Input added — Vandal, ATT C, Jul 22 Saber · 26/9 22:19","Inputs page: delete: Input removed — Vandal, LL, Jul 21 Saber · 26/9 22:19"]
+NOTE  [H5] errors — []

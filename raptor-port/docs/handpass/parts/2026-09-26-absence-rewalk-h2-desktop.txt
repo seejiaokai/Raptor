@@ -1,0 +1,11 @@
+NOTE  [H2-desktop] F1-setup — {"given":{"given":true,"label":"Give FO","err":""},"sheet":"bid-picker","sheetText":"Ranger 2026-07-21 NOW FO ✕ HOW MANY Just this day Pick a range HOW MUCH Whole day AM PM WHICH LEAVE LL OL OIL CCL FCL PL EL CL Clear FO · a day PO PI REASON H2 callout GIVEN BY Not given DAYS a day","clearPressed":true}
+FAIL  [H2-desktop] F1-clear-keeps-award — expected: the bid sheet's Clear leaves the day's OIL award (the award has its own Remove) | observed: {"before":{"box":"FO","oil":"1"},"after":{"box":"","oil":"0"}}
+NOTE  [H2-desktop] F3-typed-pieces — {"filed":[1,2],"toastB":"Wildcard's LL on 22 Jul–23 Jul is cut for the ATT C — that leave goes back to the balance","pieces":[{"iid":"imuih6173vdfahz","type":"LL","date":"Jul 20","endDate":"Jul 21","allday":true,"s":0,"e":1439,"remarks":"Bali till 21 Jul","lw":""},{"iid":"imuih633movfnph","type":"LL","date":"Jul 24","endDate":"","allday":true,"s":0,"e":1439,"remarks":"Bali till 24 Jul","lw":""}]}
+PASS  [H2-desktop] F3-typed-till-follows-cut — expected: each leave piece's "till <date>" matches its own last day after the medical cut | observed: ["Jul 20–Jul 21: \"Bali till 21 Jul\"","Jul 24: \"Bali till 24 Jul\""]
+NOTE  [H2-desktop] F3-war-setup — {"tap":"bid-picker","rangePick":["span-day-2026-07-31"],"approve":false,"approved":[],"medical":1,"toast":""}
+FAIL  [H2-desktop] F3-war-till-follows-cut — expected: the war-approved leave's pieces each say "till" their own last day after the medical cut | observed: []
+NOTE  [H2-desktop] F5-setup — {"piPressed":true,"afterPi":"nothing","poPressed":true}
+PASS  [H2-desktop] F5-refusal-said — expected: a Post out dated before the Post in keeps the sheet open and says why | observed: {"open":"bid-picker","text":"Ranger 2026-07-28 ✕ HOW MANY Just this day Pick a range HOW MUCH Whole day AM PM WHICH LEAVE LL OL OIL CCL FCL PL EL CL Clear PO FROM ✓ Archive on PO date Post out from 2026-05-01 Off the manpower from that day on. Past schedules keep their pucks. Posted in on 2026-06-01 — the post-out has to be aft"}
+NOTE  [H2-desktop] F5-may-row — ["05-01:·","05-04:·","06-01:·"]
+NOTE  [H2-desktop] toasts — ["Wildcard's LL on 22 Jul–23 Jul is cut for the ATT C — that leave goes back to the balance"]
+NOTE  [H2-desktop] errors — []
