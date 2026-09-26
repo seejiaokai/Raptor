@@ -200,7 +200,10 @@ export function guestEntry(): SignIn | null {
 /* the session a sign-in result starts (state/store.ts resetSession is the one writer) */
 export function sessionFor(r: SignIn): any {
   switch (r.kind) {
-    case 'ok': return { user: r.account.id, role: r.account.role, pid: r.account.pid, name: r.account.name }
+    /* `acct` — the ACCOUNT's role, kept apart from `role` (the role in force): an admin may switch himself to the
+       member view and back (D292, 27 Sep 26), and `acct` is what says the way back exists — never changed by the
+       switch, so a member can never climb (state/perms.ts mayViewAsMember) */
+    case 'ok': return { user: r.account.id, role: r.account.role, pid: r.account.pid, name: r.account.name, acct: r.account.role }
     case 'off': return { user: `principal:${r.name}`, role: 'off', pid: null, name: r.name }
     case 'guest': return { user: `principal:${r.name}`, role: 'guest', pid: null, name: r.name }
     case 'new': case 'waiting': return { user: `principal:${r.name}`, role: 'pending', pid: null, name: r.name }

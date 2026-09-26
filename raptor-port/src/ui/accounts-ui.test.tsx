@@ -57,13 +57,15 @@ afterAll(async () => {
 })
 beforeEach(async () => { await act(async () => { resetSession(null); notify() }) })
 
-describe('AC10 — no "View as", no role toggle; the badge names the signed-in person (D166 (3))', () => {
-  it('an admin: no picker, an inert badge "Saber · Admin", no toggle in the drawer', async () => {
+/* D292 (27 Sep 26) REPLACED D166 (3)'s "no preview as a member": an admin's badge is the switch to the member view and
+   back again (its tests: ui/memberview.test.tsx, PO11); "View as" another PERSON stays gone */
+describe('AC10 — no "View as"; the badge names the signed-in person (D166 (3), D292)', () => {
+  it('an admin: no picker; the badge "Saber · Admin" is his member-view switch (D292), and the drawer carries it', async () => {
     await signInAs('ad', 'a')
     expect($('#viewAs')).toBeFalsy()
     expect($('#drawerViewAs')).toBeFalsy()
-    expect($('#drawerRole')).toBeFalsy()
-    expect($('#roleBadge').tagName).toBe('SPAN')
+    expect($('#drawerRole').textContent).toBe('Switch to the member view')
+    expect($('#roleBadge').tagName).toBe('BUTTON')
     expect($('#roleBadge').textContent).toBe(`${PEOPLE.stiff.cs} · Admin`)
     expect($('#drawerAcct').textContent).toContain(PEOPLE.stiff.cs)
     expect(lwState().role).toBe('admin')

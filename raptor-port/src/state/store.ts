@@ -35,8 +35,8 @@ import { stashPut, stashGet, stashHas, setPreservedBlob, clearPreservedBlob, isP
 import { afterSchedMutate } from './view'
 import * as view from './view'
 import { histPush, histInit, histSnap, histRestore, schedFields } from './history'
-import { setSession as authSetSession, canEditSched, SESSION, setMe, DEFAULT_ME } from './auth'
-import { me, roleOf } from './perms'
+import { setSession as authSetSession, canEditSched, SESSION, setMe, DEFAULT_ME, setLgEdit } from './auth'
+import { me, roleOf, isAdmin, mayViewAsMember, switchRoleInForce } from './perms'
 import { endUndoSession } from '../undo/timeline'
 import { setRole as lwSetRole } from '../leavewar/state/store'
 import { endTrackerSession } from '../tracker/role.js'
@@ -355,12 +355,39 @@ export function resetSession(s: any) {
   elogClear()
 }
 
-/* ---- THE ADMIN'S ROLE TOGGLE — REMOVED 26 Sep 26 ([ACCOUNTS], D166 (3): "There isint
-   a need for preview as a member"). It flipped a real admin between admin and member
-   view (27 Aug 26); with personal accounts every account IS one person with one role,
-   so the peek had nothing left to preview. resetSession is now the ONE production
-   writer of the Leave War's role. The localhost probe bridge keeps a role switch for
-   the e2e suite and the walk (auth.ts setEffectiveRole). */
+/* ---- THE ADMIN'S MEMBER VIEW (owner D292, 27 Sep 26 — "6. yes") -------------------
+   The old role toggle (27 Aug 26) was removed with [ACCOUNTS] (D166 (3), "There isint a
+   need for preview as a member"); D292 brings it back in the new form: an admin taps his
+   name badge ("SABER · ADMIN" ↔ "SABER · MEMBER"; on a phone the drawer's switch) and the
+   app behaves exactly as for a member; a tap switches back; every sign-in starts as admin.
+   WHO may switch is perms.ts's (mayViewAsMember — the session's ACCOUNT is an admin's;
+   switchRoleInForce refuses anything else, a hand-made call included). What moves is the
+   role in force only; three pieces of state don't re-derive and are walked here, the
+   resetSession discipline in miniature (the old toggle's list):
+   - an admin-only PAGE left open (Edit Schedule, Admin) would render as a dead surface
+     for the member view → View-only Sched;
+   - an ARMED slot is edit machinery mid-gesture → disarm; the Logic tab's edit mode off;
+   - an Admin → Users opening intent (ADMINOPEN) is admin-only → cleared.
+   The Leave War's role follows the role in force through the same seam resetSession
+   drives (lwSetRole — the SECOND production writer of that role, as it was). Deliberately
+   NOT a resetSession: the week, the selection, the filters and the undo list all stay —
+   the same person looking through the other role's eyes. It is not a logout either, so the
+   Tracker's session and its unsaved-edits question are untouched (D129). This file never
+   reads the session's role itself (the perms scan): it asks perms.ts. */
+export function switchRoleView() {
+  if (!mayViewAsMember()) return
+  const toMember = isAdmin()
+  if (!switchRoleInForce(toMember ? 'main' : 'admin')) return
+  view.bumpNav()                  // a role change invalidates a pending day-template-apply confirm (P2-REV2-07)
+  if (toMember) {
+    if (view.CURPAGE === 'editsched' || view.CURPAGE === 'admin') view.setPage('viewsched')
+    view.armDrop()
+    setLgEdit(false)
+    view.clearAdminOpen()
+  }
+  lwSetRole(isAdmin() ? 'admin' : 'member')
+  notify()
+}
 
 /* ---- PER-WEEK SESSION STASH (the other half of the .wk selector) ----
    loadWeek used to always rebuild DAYS from weekBundle's PURE seed on a

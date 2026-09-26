@@ -24,7 +24,7 @@
    "No session" (SESSION null) is the headless engine — a unit test, the boot, the
    parity harness — never a user: every question below answers it the way the gate it
    replaced did (stated per question), so no headless test changes meaning. */
-import { SESSION, ME } from './auth'
+import { SESSION, ME, setEffectiveRole } from './auth'
 import type { Actor, CommitEnvelope } from '../command/types'
 
 export type Act = 'C' | 'R' | 'U' | 'D'
@@ -128,6 +128,25 @@ function may(table: string, act: Act, owner: string | null | undefined, headless
   const who = roleOf()
   if (who === null) return headless
   return allows(who, table, act, owner, identityOf(who))
+}
+
+/* THE ADMIN'S MEMBER VIEW (owner D292, 27 Sep 26 — "6. yes"; it replaces D166 (3)'s "no preview as a member"). An
+   admin taps his name badge and the app behaves exactly as for a member; a tap switches back; every sign-in starts as
+   admin (the session's role is the account's, set by resetSession). THE ROLE IN FORCE IS THE SESSION'S ROLE — roleOf,
+   every question below, the command actor (command/actor.ts) and the ownership check read it, so the switch reaches all
+   of them with no second switch. Who may switch is the session's ACCOUNT role (`acct`, set at sign-in by
+   accounts.ts sessionFor and never changed by the switch — Astra's plan read A6): only a real admin, only between admin
+   and member, never another person. A pending person, a guest, an account suspended, a member — no switch, and a
+   hand-made call changes nothing. */
+export function mayViewAsMember(): boolean {
+  const w = roleOf()
+  return !!SESSION && SESSION.acct === 'admin' && (w === 'admin' || w === 'member')
+}
+export function switchRoleInForce(next: any): boolean {
+  if (next !== 'admin' && next !== 'main') return false
+  if (!mayViewAsMember()) return false
+  setEffectiveRole(next)
+  return true
 }
 
 /* 2. THE NAMED QUESTIONS ------------------------------------------------------ */

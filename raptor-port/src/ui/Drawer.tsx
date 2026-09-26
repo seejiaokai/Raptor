@@ -6,10 +6,10 @@
    reference's handlers all end with classList.remove('open'). */
 import { useEffect } from 'react'
 import { PEOPLE } from '../engine/people'
-import { isAdmin, me } from '../state/perms'
+import { isAdmin, me, mayViewAsMember } from '../state/perms'
 import { waitingCount } from '../state/accounts'
 import { CURPAGE } from '../state/view'
-import { notify, setPage } from '../state/store'
+import { notify, setPage, switchRoleView } from '../state/store'
 import { logOut } from './logout'
 import { DRAWER, setDrawer, setWeekCal, setInsights } from './pops'
 import { useVersion } from './useStore'
@@ -92,6 +92,10 @@ export function Drawer() {
             not. Clear it here so a second login in the same tab does not
             reopen the drawer from the previous user's session. */}
         <p className="drawer-acct" id="drawerAcct">Signed in as <b>{mineCs || '—'}</b> · {admin ? 'Admin' : 'Member'}</p>
+        {/* D292 (27 Sep 26): on a phone the badge is hidden, so the admin's switch to the member view and back sits
+            here, under his name (the approved picture 7c); it closes the menu first, as every drawer action does */}
+        {mayViewAsMember() && <div className="drawer-row"><button className="abtn" id="drawerRole"
+          onClick={() => { setDrawer(false); switchRoleView() }}>{admin ? 'Switch to the member view' : 'Back to the admin view'}</button></div>}
         <div className="drawer-row"><button className="abtn" id="drawerLogout"
           onClick={() => { setDrawer(false); void logOut() }}>Logout</button></div>
       </div>
