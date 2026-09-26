@@ -9,10 +9,10 @@ import { initStore as raptorInitStore, writeInputs } from '../state/store'
 import { setMe, setSession } from '../state/auth'
 import { projectPeople } from './state/raptorRoster'
 import {
-  ackReplacement, advanceStage, getState, setBidState, initStore as lwInitStore, lwEditLists, lwHistInit, rawState, setCell, setPeople, setRole, setViewer,
+  ackReplacement, advanceStage, getState, setBidState, initStore as lwInitStore, lwEditLists, lwHistInit, rawState, setCell, setCells, clearCells, setBidStates, setPeople, setRole, setViewer,
 } from './state/store'
 import { memoryBackend } from './state/storage'
-import { wireLeaveWarSync, sliceInput } from './sync'
+import { wireLeaveWarSync, sliceInput, syncAbsences } from './sync'
 import { globalRedo, globalUndo } from '../undo'
 import { _resetTimeline } from '../undo/timeline'
 import { installGlobalUndo } from '../state/undo-wire'
@@ -261,5 +261,63 @@ describe('a cut leave says its own last day (AB3)', () => {
     expect(sliceInput(row, '2026-02-09', '2026-02-10', true).remarks).toBe('till 10 Feb Bali')
     expect(sliceInput(row, '2026-02-12', '2026-02-12', false).remarks).toBe('till 12 Feb Bali')
     expect(sliceInput({ ...row, remarks: 'on 9 Feb' }, '2026-02-16', '2026-02-16', false).remarks).toBe('on 16 Feb')
+  })
+})
+
+/* A BID IS NOT PUT BACK OVER A MEDICAL BY UNDO OR REDO (the absence-record re-test, W3-F8, 26 Sep 26 — found by the war
+   walker, reproduced by the host). Bid on a day, Undo it, file a medical there, Redo: the bid came back and stood on
+   the sick day (amber), where filing the same medical while the bid existed replaces it with a notice. The medical is a
+   change to the Inputs and the bid a change to the war, so the timeline's own "touches the same thing" test never met
+   them; B7 says the rules hold at every door, undo and redo included. The restore now asks the war first. */
+describe('undo and redo do not put a bid back over a medical (B7, W3-F8)', () => {
+  it('Redo of a bid, after a medical was filed on its day, is refused by name — the bid stays gone', () => {
+    setRole('admin')
+    setCells([{ personId: 'ammo', date: '2026-02-10' }], 'LL')
+    expect(recsAt('ammo', '2026-02-10').some((r: any) => r.kind === 'request')).toBe(true)
+    expect(globalUndo().ok).toBe(true)
+    expect(recsAt('ammo', '2026-02-10').some((r: any) => r.kind === 'request')).toBe(false)
+    expect(file('ammo', 'ATT C', 'Feb 10')).toBe(true)
+    const r = globalRedo()
+    expect(r.ok).toBe(false)
+    expect(r.reason).toMatch(/ATT C now holds 10 Feb/)
+    expect(recsAt('ammo', '2026-02-10').some((x: any) => x.kind === 'request')).toBe(false)
+  })
+  it('Undo of a bid’s deletion, after a medical was filed on its day, is refused the same way', () => {
+    setRole('admin')
+    setCells([{ personId: 'ammo', date: '2026-02-11' }], 'LL')
+    setCells([{ personId: 'ammo', date: '2026-02-11' }], '')
+    expect(recsAt('ammo', '2026-02-11').some((r: any) => r.kind === 'request')).toBe(false)
+    INPUTS.unshift({ iid: 'medx', person: 'ammo', type: 'ATT C', date: 'Feb 11', yr: 2026, allday: true, remarks: '', mod: '2026-02-01' })
+    syncAbsences()
+    const r = globalUndo()
+    expect(r.ok).toBe(false)
+    expect(r.reason).toMatch(/ATT C now holds 11 Feb/)
+  })
+})
+
+/* THE BULK GESTURES OVER A DAY WHOSE TOP RECORD IS FILED LEAVE (the absence-record re-test, 26 Sep 26 — the war walker
+   W3). Delete asked only the day's TOP record: a morning filed on the Inputs page sits above the afternoon bid (the
+   ladder), so the bid was "skipped — locked, owned by Raptor" and left where it was (W3-F3; old plan D3: delete removes
+   the editable requests). And Approve counted an already-approved leave as "decided" — "3 decided" for two changes
+   (AB7, Fable F7). */
+describe('bulk Delete and Approve over mixed days (W3-F3, AB7)', () => {
+  it('Delete takes the bid beneath Inputs-filed leave, and leaves the filed leave alone', () => {
+    setRole('admin')
+    expect(file('ammo', 'LL', 'Feb 10', { allday: false, half: 'am', s: 0, e: 720 })).toBe(true)
+    setCells([{ personId: 'ammo', date: '2026-02-10' }], 'LL*')
+    expect(recsAt('ammo', '2026-02-10').some((r: any) => r.kind === 'request')).toBe(true)
+    const r = clearCells([{ personId: 'ammo', date: '2026-02-10' }])
+    expect(r).toEqual({ written: 1, skipped: 0 })
+    expect(recsAt('ammo', '2026-02-10').some((x: any) => x.kind === 'request')).toBe(false)
+    expect(rowsOf('ammo', 'LL')).toHaveLength(1)
+  })
+  it('Approve does not count a leave that was already approved as a decision', () => {
+    setRole('admin')
+    setCells([{ personId: 'ammo', date: '2026-02-16' }, { personId: 'ammo', date: '2026-02-17' }], 'LL')
+    advanceStage()
+    setBidStates([{ personId: 'ammo', date: '2026-02-16' }], 'approved')
+    const r = setBidStates([{ personId: 'ammo', date: '2026-02-16' }, { personId: 'ammo', date: '2026-02-17' }], 'approved')
+    expect(r.decided).toBe(1)
+    expect(r.already).toBe(1)
   })
 })

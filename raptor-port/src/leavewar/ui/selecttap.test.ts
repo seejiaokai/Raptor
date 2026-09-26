@@ -37,6 +37,21 @@ describe('the trailing tap of a finger is swallowed, not only a mouse click (W4-
     vi.advanceTimersByTime(30)
     expect(heardAClick()).toBe(false)
   })
+  it('a NEW press ends the wait: a finger that lifts and taps afresh has its tap land', () => {
+    cell.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, pointerId: 1, pointerType: 'touch', clientX: 5, clientY: 5, button: 0 }))
+    vi.advanceTimersByTime(200)
+    window.dispatchEvent(new PointerEvent('pointerup', { pointerId: 1, pointerType: 'touch', button: 0 }))
+    vi.advanceTimersByTime(30)
+    document.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, pointerId: 2, pointerType: 'touch' }))
+    expect(heardAClick()).toBe(true)
+  })
+  it('the grid going away ends the wait too', () => {
+    cell.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, pointerId: 1, pointerType: 'touch', clientX: 5, clientY: 5, button: 0 }))
+    vi.advanceTimersByTime(200)
+    window.dispatchEvent(new PointerEvent('pointerup', { pointerId: 1, pointerType: 'touch', button: 0 }))
+    teardown(); teardown = () => {}
+    expect(heardAClick()).toBe(true)
+  })
   it('a mouse drag keeps the instant sweep — the next real click 30 ms later still lands', () => {
     cell.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, pointerId: 1, pointerType: 'mouse', clientX: 5, clientY: 5, button: 0 }))
     window.dispatchEvent(new PointerEvent('pointermove', { pointerId: 1, pointerType: 'mouse', clientX: 40, clientY: 5 }))

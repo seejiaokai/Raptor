@@ -437,10 +437,23 @@ function wireGesture<A, P>(wrap: HTMLElement, spec: GestureSpec<A, P>): () => vo
   // finger held on ONE day and lifted opened the selection sheet, and its own tap landed on the day and closed it.
   // A touch gesture waits TOUCH_TAP_WAIT for its tap; a mouse keeps the 0 ms sweep, so a desktop's next real click is
   // never eaten. (A second deliberate tap inside that window is not a thing a hand does.)
+  //   It also ends at the NEXT press (a new gesture beginning means the old one's tap has come or never will — a
+  // finger dragged across days sends none) and when the grid goes away, so a waiting swallow can never eat a real
+  // tap that starts fresh (the Inputs calendar's click eater, caldrag.ts, keeps the same three exits).
+  let endSwallow: (() => void) | null = null
   const swallowNextClick = (touch: boolean) => {
-    const swallow = (ev: Event) => { ev.stopPropagation(); ev.preventDefault() }
-    document.addEventListener('click', swallow, { capture: true, once: true })
-    setTimeout(() => document.removeEventListener('click', swallow, true), touch ? TOUCH_TAP_WAIT : 0)
+    endSwallow?.()
+    const swallow = (ev: Event) => { ev.stopPropagation(); ev.preventDefault(); off() }
+    const off = () => {
+      document.removeEventListener('click', swallow, true)
+      document.removeEventListener('pointerdown', off, true)
+      clearTimeout(timer)
+      if (endSwallow === off) endSwallow = null
+    }
+    document.addEventListener('click', swallow, true)
+    document.addEventListener('pointerdown', off, true)
+    const timer = setTimeout(off, touch ? TOUCH_TAP_WAIT : 0)
+    endSwallow = off
   }
   const finish = (commit: boolean) => {
     const wasArmed = armed, touch = touchGesture
@@ -530,7 +543,7 @@ function wireGesture<A, P>(wrap: HTMLElement, spec: GestureSpec<A, P>): () => vo
   }
 
   wrap.addEventListener('pointerdown', onDown)
-  return () => { wrap.removeEventListener('pointerdown', onDown); teardown(); clearPaint() }
+  return () => { wrap.removeEventListener('pointerdown', onDown); teardown(); clearPaint(); endSwallow?.() }
 }
 
 export function wireSelect(wrap: HTMLElement, ctx: SelectCtx): () => void {

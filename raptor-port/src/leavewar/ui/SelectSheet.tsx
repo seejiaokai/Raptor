@@ -97,11 +97,13 @@ export function SelectSheet({
   }
 
   const decide = (bid: BidState) => {
-    const { decided, skipped } = setBidStates(sel.cells, bid)
-    if (skipped === 0) return onDone(decided > 0)
+    const { decided, skipped, already } = setBidStates(sel.cells, bid)
+    if (skipped === 0 && !already) return onDone(decided > 0)
+    /* an already-approved leave is said as such, never counted as a decision (AB7) */
+    const was = already ? ` ${already} already approved.` : ''
     setNote(decided === 0
-      ? 'None of those could be decided — a decision needs a bid that is not Raptor-owned.'
-      : `${decided} decided. ${skipped} skipped (no bid, or Raptor-owned).`)
+      ? (skipped ? 'None of those could be decided — a decision needs a bid that is not Raptor-owned.' + was : `Nothing to decide —${was}`)
+      : `${decided} decided.${was}${skipped ? ` ${skipped} skipped (no bid, or Raptor-owned).` : ''}`)
     if (decided > 0) onDone(true, true)
   }
 
