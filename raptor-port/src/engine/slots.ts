@@ -3,7 +3,7 @@ import { PEOPLE, nameToId, whoId, ID_BY_CS, isSpecial } from './people'
 import { SCHED, markEdit, markDeletion, deletionWasIssued, markInputFiling, markStructuralAdd, dayApproved, dropRowMarks, protectedWeek, dayCurVer, daySnapOf } from './publish'
 import { parseHM, hhmm, hmOK } from './time'
 import { INPUTS, DATES, inpId, inputCoversDate, isUnavail, isPersonal, inpLabel, dateIx } from './inputs'
-import { shiftKeys } from './keys'
+import { shiftKeys, seatRow } from './keys'
 import { inputProtected } from './quarantine'
 import { VCONF } from './rules'
 import { HOOKS } from './hooks'
@@ -212,6 +212,13 @@ export function fillSlot(key:any,id:any):boolean{
   /* the belt, ahead of every branch — so the append doors cannot reach a
      cockpit by a route the preflight was not asked about */
   if(!sentinelSeatOK(key,id))return false;
+  /* …and ONE MAN, ONCE PER ROW (owner, D271, 27 Sep 26). An append puts him on the row at a NEW place, so any place he
+     already holds there refuses it and nothing is written. The doors ask first, with their own words (avail.ts
+     rowTwice, called by drag.ts applyDrop and state/view.ts placeArmed — a move clears the place he leaves BEFORE this
+     runs, so his own move to the end of his crowd is not refused here); this belt is for a caller nobody remembered to
+     guard, as sentinelSeatOK's is. Never in setSlotVal: a swap inside one crowd is two writes, and between them the
+     first man briefly stands on the row twice. */
+  if(id&&PEOPLE[id]&&!isSpecial(id)&&rowPlaces(seatRow(key)).some((x:any)=>x.id===id))return false;
   if(/\.\*$/.test(key)){const b=key.slice(0,-1);            // sims: front seat, else rear
     return putAt(slotVal(b+'p')?b+'w':b+'p',id);}
   /* sims pax: append to the end of the list. This MUST be tested before the generic

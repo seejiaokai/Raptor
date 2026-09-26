@@ -15,7 +15,7 @@
 import { beforeEach, describe, expect, it } from 'vitest'
 import { DAYS } from './data'
 import { INPUTS } from './inputs'
-import { slotBar } from './avail'
+import { slotBar, rowTwice } from './avail'
 import { setSlotVal, fillSlot, lastFilled } from './slots'
 import { validate, WARN } from './validate'
 import { SCHED } from './publish'
@@ -51,53 +51,72 @@ describe('a man moved inside the Common Programme crowd he is on is not "already
   })
 })
 
-/* ONE MAN, ONE PLACE ON A ROW (W3's walk of this batch, 26 Sep 26 — its F6). The fix above made a man's own row stop
-   calling him busy, and with it went the ONLY voice on putting him on a row he already stands on: Ranger dragged from
-   the crew list onto Reaper's puck in the FLIGHT SAFETY crowd Ranger was already in replaced Reaper with a second
-   Ranger, silently — on main the (accidental) busy words had said "already on FLIGHT SAFETY STAND-DOWN". Two older
-   doors (the crowd's own "+ add", by drag or by an armed tap) were silent on main too. The check: he stands on this
-   row at ANOTHER place than the one asked about, and not the place he is being moved from. Advisory like every bar
-   here — "everything plants, warning after" (owner, 13 Aug 26). */
-describe('a man put on a row he already stands on is told so', () => {
+/* ONE MAN, ONCE PER ROW (W3's walk of this batch, 26 Sep 26 — its F6; REFUSED since the owner's D271, 27 Sep 26 —
+   "Q1 refused"). The fix above made a man's own row stop calling him busy, and with it went the ONLY voice on putting
+   him on a row he already stands on: Ranger dragged from the crew list onto Reaper's puck in the FLIGHT SAFETY crowd
+   Ranger was already in replaced Reaper with a second Ranger, silently. The batch first WARNED ("everything plants,
+   warning after", 13 Aug 26); shown the choice, he ruled it REFUSED — so the words end "· not added twice", the doors
+   write nothing (ui/rowtwice-refusal.test.tsx walks them), and an append refuses in the writer too. The question: he
+   stands on this row at ANOTHER place than the one asked about, and not the place he is being moved from. */
+const TWICE = 'already on FLIGHT SAFETY STAND-DOWN 08:30–09:00 · not added twice'
+describe('a man put on a row he already stands on is refused, and told why (D271)', () => {
   it("the crowd's '+ add', armed or dropped on, names the row he is already in", () => {
     setSlotVal(`a:0.${FS}.1`, 'boosh'); validate()
-    expect(slotBar('boosh', `a:0.${FS}.+`)).toBe('already on FLIGHT SAFETY STAND-DOWN 08:30–09:00')
+    expect(rowTwice('boosh', `a:0.${FS}.+`)).toBe(TWICE)
+    expect(slotBar('boosh', `a:0.${FS}.+`), 'the caption and the crew list say it before the drop').toBe(TWICE)
   })
-  it("from the crew list onto ANOTHER man's puck in his own crowd (the walk's find): before and after the drop", () => {
+  it("from the crew list onto ANOTHER man's puck in his own crowd (the walk's find): refused before the drop", () => {
     setSlotVal(`a:0.${FS}.1`, 'beams'); validate()                     // Ranger (bane) at 0, Comet (beams) at 1
-    expect(slotBar('bane', `a:0.${FS}.1`), 'the caption before the drop').toBe('already on FLIGHT SAFETY STAND-DOWN 08:30–09:00')
-    setSlotVal(`a:0.${FS}.1`, 'bane'); validate()                      // the drop's write: Comet replaced by a second Ranger
-    expect(slotBar('bane', `a:0.${FS}.1`), 'the toast after it').toBe('already on FLIGHT SAFETY STAND-DOWN 08:30–09:00')
+    expect(rowTwice('bane', `a:0.${FS}.1`), 'no place he is moved from').toBe(TWICE)
+    expect(slotBar('bane', `a:0.${FS}.1`), 'the caption before the drop').toBe(TWICE)
   })
-  it('a move INSIDE the row stays silent: the place he leaves is his one place there', () => {
+  it('a move INSIDE the row, and a swap inside one crowd, stay silent: the place he leaves is his one place there', () => {
     setSlotVal(`a:0.${FS}.1`, 'beams'); validate()
+    expect(rowTwice('bane', `a:0.${FS}.1`, `a:0.${FS}.0`)).toBe('')
+    expect(rowTwice('beams', `a:0.${FS}.0`, `a:0.${FS}.1`), "the swap's other end").toBe('')
+    expect(rowTwice('bane', `a:0.${FS}.+`, `a:0.${FS}.0`), 'to the end of his own crowd').toBe('')
     expect(slotBar('bane', `a:0.${FS}.1`, undefined, `a:0.${FS}.0`)).toBe('')
-    expect(slotBar('bane', `a:0.${FS}.+`, undefined, `a:0.${FS}.0`)).toBe('')
   })
-  it('after an append the question is asked of the place he landed on (fillSlot tells it): silent once, named twice', () => {
-    expect(fillSlot(`a:0.${FS}.+`, 'boosh')).toBe(true)
+  it('his own place is not a second one: asked of the place he stands on, nothing', () => {
+    expect(rowTwice('bane', `a:0.${FS}.0`)).toBe('')
+  })
+  it('an append of a man already on the row is refused IN THE WRITER too: nothing written, the row keeps one copy', () => {
+    expect(fillSlot(`a:0.${FS}.+`, 'boosh'), 'a plain add').toBe(true)
     expect(lastFilled()).toBe(`a:0.${FS}.1`)
     validate()
     expect(slotBar('boosh', lastFilled()), 'a plain add says nothing').toBe('')
-    fillSlot(`a:0.${FS}.+`, 'boosh'); validate()
-    expect(lastFilled()).toBe(`a:0.${FS}.2`)
-    expect(slotBar('boosh', lastFilled()), 'a second copy is named').toBe('already on FLIGHT SAFETY STAND-DOWN 08:30–09:00')
+    const before = JSON.stringify(crowd())
+    expect(fillSlot(`a:0.${FS}.+`, 'boosh'), 'the same man again').toBe(false)
+    expect(JSON.stringify(crowd()), 'nothing written').toBe(before)
+    expect(lastFilled(), 'and nothing landed').toBeNull()
   })
   it("the same for a desk's extras, a ground row's extras and a sim's seats", () => {
     const d: any = DAYS[0], g = d.ground
     g.push({ prog: 'ROW A', str: '1000', end: '1100', who: 'boosh' }); const a = g.length - 1
     validate()
-    expect(slotBar('boosh', `g:0.${a}.+`)).toBe('already on ROW A 10:00–11:00')
+    expect(slotBar('boosh', `g:0.${a}.+`)).toBe('already on ROW A 10:00–11:00 · not added twice')
+    expect(fillSlot(`g:0.${a}.+`, 'boosh'), 'the writer refuses the ground row too').toBe(false)
     expect(slotBar('beams', `g:0.${a}.+`), 'another man: nothing').toBe('')
     d.dutywaves.push({ label: 'DESK', rows: [{ role: 'SDO', str: '1300', end: '1400', id: 'boosh', more: [] }] }); const w = d.dutywaves.length - 1
     validate()
-    expect(slotBar('boosh', `d:0.${w}.0.+`)).toBe('already on SDO duty 13:00–14:00')
+    expect(slotBar('boosh', `d:0.${w}.0.+`)).toBe('already on SDO duty 13:00–14:00 · not added twice')
+    expect(fillSlot(`d:0.${w}.0.+`, 'boosh')).toBe(false)
     d.sims.oft.push({ label: 'X', str: '1500', end: '1600', p: 'boosh', w: '' }); const r = d.sims.oft.length - 1
     validate()
-    expect(slotBar('boosh', `s:0.oft.${r}.w`)).toBe('already on Sim X 15:00–16:00')
+    expect(slotBar('boosh', `s:0.oft.${r}.w`), 'the rear seat of the sim he is in front of').toBe('already on Sim X 15:00–16:00 · not added twice')
+    expect(fillSlot(`s:0.oft.${r}.+`, 'boosh')).toBe(false)
   })
   it("the seed's own man, arming his own crowd, is named too", () => {
-    expect(slotBar('bane', `a:0.${FS}.+`)).toBe('already on FLIGHT SAFETY STAND-DOWN 08:30–09:00')
+    expect(slotBar('bane', `a:0.${FS}.+`)).toBe(TWICE)
+  })
+  it('a man on two DIFFERENT rows is still only warned, as before (his reading (1)): no "not added twice"', () => {
+    DAYS[0].allhands[1].end = '0845'; validate()                              // MET + NOTAM now overlaps the stand-down
+    expect(rowTwice('nact', `a:0.${FS}.+`)).toBe('')
+    expect(slotBar('nact', `a:0.${FS}.+`)).toBe('already on MET + NOTAM BRIEF 08:15–08:45')
+  })
+  it('a placeholder is not a man: ALL AVAIL is not held to it', () => {
+    setSlotVal(`a:0.${FS}.1`, 'allavail'); validate()
+    expect(rowTwice('allavail', `a:0.${FS}.+`)).toBe('')
   })
 })
 
@@ -164,8 +183,9 @@ describe('an SC shift drag reads the week after the move', () => {
 })
 
 /* Astra's read (26 Sep 26, finding 1): the seat he is dragged FROM is excluded because he LEAVES it — but a man who
-   stands on that row twice (the app warns, and still plants the second copy — "everything plants, warning after")
-   does not leave it when ONE copy moves. The source row is excluded only when he has no other place on it. */
+   stands on that row twice does not leave it when ONE copy moves. The source row is excluded only when he has no other
+   place on it. (Since D271, 27 Sep 26, no door puts a second copy on a row — they are refused — so two copies exist only
+   in a day written before it or by a direct write, as here; the reading stays right for them.) */
 describe('dragging one of two copies off a row: the copy left behind still counts', () => {
   it('the hover still names the row a second copy of him stays on', () => {
     DAYS[0].allhands[1].end = '0845'                                       // MET + NOTAM now overlaps the stand-down

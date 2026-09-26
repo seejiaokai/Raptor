@@ -4,7 +4,7 @@ import { PEOPLE } from '../engine/people'
 import { keyDay } from '../engine/keys'
 import { slotVal, setSlotVal, fillSlot, lastFilled, armTargetExists, sentinelSeatOK } from '../engine/slots'
 import { popReorderedDay } from '../engine/reorder'
-import { slotBar, personCount } from '../engine/avail'
+import { slotBar, personCount, rowTwice } from '../engine/avail'
 import { validate, WARN, officialWarn, versionFaceWarn, workingWarn } from '../engine/validate'
 import { markEdit, daySnapOf, dayApproved } from '../engine/publish'
 import { curDraftId, reconcileIssuedMarks, isDraftVer } from '../engine/drafts'
@@ -227,31 +227,11 @@ export function setPeekLand(v:{di:number,x:number}|null){ PEEKLAND=v }
    own sense of "the leftmost day" flips too. Null, never a guess, when there is
    no DOM (the headless state tests) or no week built yet — the caller then
    leaves the destination's own scroll alone, the pre-existing behaviour. */
-/* THE ROOM THE WEEK KEEPS AT ITS EDGES for the desktop's floating ‹ › arrows ([VIEW-ARROW-OVER-LIST], 26 Sep 26). The
-   desktop week declares it as its scroll-padding (scheduler.css, beside its padding), so "the day at the front" sits
-   beside the arrow instead of under it — read here by every landing that puts a day at the front, and by the reading of
-   which day that is. 0 on a phone (no arrows; nothing declared, `auto`), in jsdom (no computed style) and anywhere the
-   read fails. `side` 'right' is the › arrow's edge — and counts only where that arrow actually sits OVER the week box:
-   on Edit Schedule the week ends at the crew palette and the › floats over the palette, so nothing on the week's own
-   right edge is hidden (W4's walk, 26 Sep 26 — a warning tap on a man fully visible beside the palette swung the
-   week sideways, against "hold the lateral view", 6 Aug 26). */
-export function weekInset(el:any,side:'left'|'right'='left'):number{
-  try{
-    /* the ONE declared room (scheduler.css scroll-padding-left); the right side uses the same number where the › sits */
-    const v=parseFloat((getComputedStyle(el) as any).scrollPaddingLeft);
-    if(!(Number.isFinite(v)&&v>0))return 0
-    if(side==='left')return v
-    const a:any=document.getElementById('weekNext'); if(!a||a.hidden)return 0
-    const ar=a.getBoundingClientRect(), wr=el.getBoundingClientRect()
-    return ar.width>0&&ar.left<wr.right?v:0
-  }catch(_){return 0}
-}
 export function weekLeftDay(el:any):any{
   if(!el||typeof el.querySelectorAll!=='function'||typeof el.getBoundingClientRect!=='function')return null
   const ds=Array.from(el.querySelectorAll('.day[data-day]')) as any[]
   if(!ds.length)return null
-  /* the front is beside the arrow, not the box's own edge (weekInset) */
-  const vl=el.getBoundingClientRect().left+weekInset(el)
+  const vl=el.getBoundingClientRect().left
   let best:any=ds[0], bestD=Infinity
   for(const d of ds){
     if(typeof d.getBoundingClientRect!=='function')continue
@@ -270,8 +250,7 @@ export function scrollWeekToDay(el:any,di:any){
   if(!el||di==null||typeof el.querySelector!=='function')return
   const d=el.querySelector(`.day[data-day="${di}"]`)
   if(!d||typeof d.getBoundingClientRect!=='function')return
-  /* …and lands it beside the desktop's ‹ arrow, where an arrow press lands it too (weekInset) */
-  el.scrollLeft+=d.getBoundingClientRect().left-el.getBoundingClientRect().left-weekInset(el)
+  el.scrollLeft+=d.getBoundingClientRect().left-el.getBoundingClientRect().left
 }
 /* the PEEKLAND write half — park live day `di` at viewport x `x` (not the
    week's own left edge, which is what scrollWeekToDay always targets). Same
@@ -1068,7 +1047,7 @@ export function placeArmed(id:any){
      slot arms (13 Aug 26) — tap the placeholder in the slot, then tap the
      same placeholder on the palette's row. */
   if(!/\.\+$/.test(key)&&slotVal(base)===id){toast(`${PEOPLE[id].cs} — already in that seat`);return false;}
-  /* THE SECOND REFUSAL, AND THE ONLY HARD ONE (D33, 22 Sep 26;
+  /* THE SECOND REFUSAL, AND THE FIRST HARD ONE (D33, 22 Sep 26;
      [OIL-SEATS-CAN-EARN] step 2). Asked BEFORE the write, not after it: a
      placeholder that plants and is then warned about has already drawn the jet
      as crewed with nobody on it, and `isSpecial` keeps it out of every
@@ -1077,8 +1056,13 @@ export function placeArmed(id:any){
      and making the scheduler re-arm the seat to try a real man would charge him
      for the app's own rule. */
   if(!sentinelSeatOK(base,id)){toast(`${PEOPLE[id].cs} — ${slotBar(id,base)}`,'warn');return false;}
+  /* THE THIRD: ONE MAN, ONCE PER ROW (owner, D271, 27 Sep 26 — engine/avail.ts rowTwice). Asked of the key AS ARMED
+     — a "+ add" is a new place, so any place he holds on that row refuses it; an armed place refuses him only if he
+     stands on the row somewhere else. Before the write, and the seat stays armed, for D33's reasons: a refusal is not a
+     placement, and the next tap on another man should still land. */
+  {const t=rowTwice(id,key); if(t){toast(`${PEOPLE[id].cs} — ${t}`,'warn');return false;}}
   /* A DARKENED NAME PLANTS TOO (owner, 13 Aug 26 — "everything plants,
-     warning after"). The tap used to refuse where a drag warned-and-allowed,
+     warning after" — narrowed by D271 above for a man already on the row). The tap used to refuse where a drag warned-and-allowed,
      so the two ways of planting the same man disagreed. The reason is on the
      list BEFORE the tap (the strike, and the printed reason line while
      armed); planting repeats it as the warn toast after the write — the same

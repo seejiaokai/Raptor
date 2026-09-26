@@ -90,20 +90,25 @@ describe('a section wrapper rings the shape the eye sees', () => {
    with a host rowdrag.ts can pick up, so a state rule added tomorrow fails this
    test instead of quietly taking the ring away again. */
 describe('the lift out-ranks every state box a picked-up row already wears', () => {
-  type Shadow = { sel: string; classes: string[]; important: boolean; at: number; value: string }
+  type Shadow = { sel: string; classes: string[]; not: string[]; important: boolean; at: number; value: string }
   /** Every rule that sets box-shadow through a plain compound of CLASSES —
    *  `.a`, `.a.b`, `.a.b.c`. That is all this cascade needs: nothing that paints
    *  one of these hosts uses an id, an attribute or a combinator (the descendant
    *  rules that do, like `.seat[data-alc] .puck`, cannot match a detached clone
-   *  or a board row at all). */
+   *  or a board row at all). A `:not(.x)` counts as one class of specificity and
+   *  matches only without `.x` — the "this is you" ring is written that way since
+   *  D270 (27 Sep 26: `.puck.me:not(.warn)…:not(.oilglow)`), and a reader blind to
+   *  it would call the ring gone when it still wins on an unflagged puck. */
   const SHADOWS: Shadow[] = []
   for (const r of RULES) {
     const decls = [...r.body.matchAll(/box-shadow:\s*([^;}]+)/g)]
     if (!decls.length) continue
     const value = decls[decls.length - 1]![1]!.trim()
     for (const s of r.sels) {
-      if (!/^(\.[A-Za-z0-9_-]+)+$/.test(s)) continue
-      SHADOWS.push({ sel: s, classes: s.slice(1).split('.'), important: /!important/.test(value), at: r.at, value })
+      if (!/^(\.[A-Za-z0-9_-]+|:not\(\.[A-Za-z0-9_-]+\))+$/.test(s)) continue
+      const not = [...s.matchAll(/:not\(\.([A-Za-z0-9_-]+)\)/g)].map(m => m[1]!)
+      const classes = s.replace(/:not\(\.[A-Za-z0-9_-]+\)/g, '').slice(1).split('.')
+      SHADOWS.push({ sel: s, classes, not, important: /!important/.test(value), at: r.at, value })
     }
   }
   /** Which box-shadow declaration WINS on an element carrying `classes`:
@@ -112,11 +117,12 @@ describe('the lift out-ranks every state box a picked-up row already wears', () 
     const has = new Set(classes)
     let best: Shadow | null = null
     for (const c of SHADOWS) {
-      if (!c.classes.every(x => has.has(x))) continue
+      if (!c.classes.every(x => has.has(x)) || c.not.some(x => has.has(x))) continue
+      const spec = (x: Shadow) => x.classes.length + x.not.length
       const better = !best
         ? true
         : c.important !== best.important ? c.important
-        : c.classes.length !== best.classes.length ? c.classes.length > best.classes.length
+        : spec(c) !== spec(best) ? spec(c) > spec(best)
         : c.at > best.at
       if (better) best = c
     }

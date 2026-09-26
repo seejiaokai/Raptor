@@ -313,6 +313,33 @@ export function sansGate(id:any,dt:any,domain:any,s:any,e:any):any{
    that seat (a run counts the day off if it was his only event; a leg being
    moved cannot break its own crew rest), so the hover reason describes the
    schedule AFTER the move, not before. Omitted by every other caller. */
+/* ONE MAN, ONCE PER ROW — REFUSED (owner, D271, 27 Sep 26 — "Q1 refused", to the five-flags mock-up's Question 1:
+   "A man put on a row he's already on: warn, or refuse? … Recommended: refuse."). A crowd, a desk's or a ground row's
+   extras and a sim's seats each hold PEOPLE'S places; the same man on two of them says nothing a scheduler wants and
+   hides a mistake. So a drop (from the crew list or from another row) and the armed palette tap that would put him on
+   a row where he already stands WRITE NOTHING: the row keeps its one copy, nothing reads pending, and the message says
+   why — `<callsign> — ` + this sentence ("Ranger — already on FLIGHT SAFETY STAND-DOWN 08:30–09:00 · not added twice").
+   It NARROWS "everything plants, warning after" (owner, 13 Aug 26) for this one case, the second hard refusal after
+   D33's placeholder in a cockpit, and like D33's it is asked BEFORE anything is written, at every door — drag.ts
+   applyDrop (a seat, a swap, a "+ add" cell) and state/view.ts placeArmed (an armed place, an armed "+ add") — so a
+   swap's second write never runs behind a refused first one. It is also the reason the busy check below gives (slotBar),
+   so the drag caption and the crew list's struck line say it before the drop does.
+   The question: does he stand on this row at ANOTHER place than the one asked about (`key` — none for a "+ add", which
+   is a new place), and not the place he is being moved FROM (`fromKey`)? So (his readings, stated to him): a man on
+   two DIFFERENT rows is still only warned (the busy check); a swap of two men inside one crowd moves nobody onto a
+   second place and still works (D274 item 3); a man from the crew list dropped onto ANOTHER man's place in a crowd he
+   is already in — which would replace that man and leave him there twice — is refused the same way. A placeholder
+   (ALL, ALL AVAIL) is not a man and is left out (it is silent on every row it may stand on, D33). A crowd's or a sim
+   box's own bare key (`a:0.2`, `s:2.oft.0`) names the ROW, not a place, and no door asks with one; older callers and
+   tests reading it as "this row" are left to the busy check, as before. */
+export function rowTwice(id:any,key:any,fromKey?:any):string{
+  if(!id||!PEOPLE[id]||isSpecial(id))return '';
+  const ks=String(key), row=selfKey(key), here=/\.\+$/.test(ks)?null:ks, from=fromKey!=null?String(fromKey):null;
+  if(row===ks&&/^[as]:/.test(ks))return '';
+  if(!rowPlaces(row).some((x:any)=>x.id===id&&x.key!==here&&x.key!==from))return '';
+  const di=keyDay(ks), ev=di>=0?dayEvents(di,id).find((e:any)=>selfKey(e.slot||e.key)===row):null;
+  return (ev&&ev.s!=null&&ev.e!=null?`already on ${ev.label} ${hm24(ev.s)}–${hm24(ev.e)}`:'already on this row')+' · not added twice';
+}
 export function slotBar(id:any,key:any,rules?:any,fromKey?:any){
   const p=PEOPLE[id]; if(!p)return '';
   /* THE ONE HARD REFUSAL (D33). A placeholder is silent on every seat it is
@@ -322,28 +349,14 @@ export function slotBar(id:any,key:any,rules?:any,fromKey?:any){
      string, one source: ui cannot spell it differently. */
   if(p.special)return sentinelSeatOK(key,id)?'':SENTINEL_JET_BAR;
   const r=rules||slotRules(key);
+  /* ONE MAN, ONCE PER ROW — refused, so said before the drop as well as by it (rowTwice, above; D271). Ahead of the ⓘ
+     info-only exit: an FYI row lists anyone, absences and clashes included, but not the same man twice. */
+  {const t=rowTwice(id,key,fromKey); if(t)return t;}
   /* an ⓘ info-only row raises nothing after planting (it never enters the event
      stream), so the picker must raise nothing before it — the standing rule that
      the picker and the warning list may not drift. Anyone may be listed on an
      FYI item, absences and clashes included. */
   if(r.infoRow)return '';
-  /* ONE MAN, ONE PLACE ON A ROW ([CROWD-SWAP-SAYS-BUSY], W3's walk, 26 Sep 26). A crowd, a desk's or a ground row's
-     extras and a sim's seats each hold PEOPLE'S places, and nothing stopped the same man standing on one row twice —
-     the list, deduplicating his events, says nothing about it. Its only voice used to be the busy check below, and
-     only by accident: its programme trim missed his own row, so "already on FLIGHT SAFETY STAND-DOWN" happened to
-     warn a man dropped onto another man's puck in the crowd he was already in. Fixing that trim silenced it, so the
-     question is asked here on purpose: does he stand on this row at ANOTHER place than the one asked about, and not
-     the place he is being moved from? `here` is the place asked about — none for a "+ add" (a new place); a caller
-     asking AFTER a write names the place the fill landed on (slots.ts lastFilled), or every ordinary add would read
-     as a second copy. Advisory, like every bar here ("everything plants, warning after", owner, 13 Aug 26); the
-     words are the busy check's own, so a man reads the same sentence whichever of the two finds him. */
-  /* A crowd's or a sim box's own bare key (`a:0.2`, `s:2.oft.0`) names the ROW, not a place in it — asked by older
-     callers and tests as "this row", where the busy check below has always read him as on it, not as a second copy;
-     it is left to the busy check. (A desk's or a ground row's bare key IS its first seat, so it is a place.) */
-  {const ks=String(key), row=selfKey(key), here=/\.\+$/.test(ks)?null:ks, from=fromKey!=null?String(fromKey):null;
-   if(!(row===ks&&/^[as]:/.test(ks))&&rowPlaces(row).some((x:any)=>x.id===id&&x.key!==here&&x.key!==from)){
-     const ev=r.di>=0?dayEvents(r.di,id).find((e:any)=>selfKey(e.slot||e.key)===row):null;
-     return ev&&ev.s!=null&&ev.e!=null?`already on ${ev.label} ${hm24(ev.s)}–${hm24(ev.e)}`:'already on this row';}}
   /* Personnel (ground crew) may ride a REAR seat (an incentive ride) and do
      ground work, but never a front seat — flying or sim. Their seat is 'GND',
      so the FCP/RCP checks below never catch them; this is the whole front-seat

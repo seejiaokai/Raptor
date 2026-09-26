@@ -1190,12 +1190,18 @@ putting a man onto a row he ALREADY stands on (a crowd, a desk's or a ground row
 from the crew list onto Reaper's puck in the crowd Ranger was in replaced Reaper with a second Ranger, and on `main` the
 accidental busy words had warned. `slotBar` now asks it on purpose, before the busy scan: he stands on this row
 (`slots.ts rowPlaces`) at ANOTHER place than the one asked about, and not the place he is dragged from → the busy
-check's own words ("already on FLIGHT SAFETY STAND-DOWN 08:30–09:00"). A "+ add" key is a NEW place; a caller asking
-AFTER a write names the place the fill landed on (`slots.ts lastFilled` — `drag.ts` and `view.ts placeArmed`), or every
-ordinary add would read as a second copy; a crowd's or a sim box's bare row key names no place and is left to the busy
-scan. Advisory ("everything plants, warning after", 13 Aug 26) — **TO CHANGE — D271 (27 Sep 26, "Q1 refused"): a man put on a
-row he is already on is REFUSED, judged before anything is written, at every door; not built yet (`OUTSTANDING.md`
-`[CROWD-DUP-REFUSE]`) — until then this paragraph describes the app.** **And the SC shift-window scan reads the seat he is dragged from too** (W3): a MAIN man dragged to
+check's own words with " · not added twice" ("already on FLIGHT SAFETY STAND-DOWN 08:30–09:00 · not added twice"). A
+"+ add" key is a NEW place; a caller asking AFTER a write names the place the fill landed on (`slots.ts lastFilled` —
+`drag.ts` and `view.ts placeArmed`), or every ordinary add would read as a second copy; a crowd's or a sim box's bare row
+key names no place and is left to the busy scan. **REFUSED since D271 (owner, 27 Sep 26 — "Q1 refused"), no longer
+advisory:** the one question is `avail.ts rowTwice` (slotBar returns its sentence, so the drag caption and the crew list's
+struck line say it before the drop), PREFLIGHTED at every door before anything is written — `drag.ts applyDrop` (a crew-list
+drop on a place or a "+ add" cell, a move from another row, BOTH ends of a swap) and `state/view.ts placeArmed` (an armed
+place, an armed "+ add"; the slot stays armed) — with `fillSlot` returning `false` as the belt behind them (never
+`setSlotVal`: a swap inside one crowd is two writes). It NARROWS "everything plants, warning after" (13 Aug 26) for this one
+case. Left as they were (his readings): a man on two DIFFERENT rows is only warned; a swap of two men inside one crowd is
+no second copy; a placeholder (ALL, ALL AVAIL) is not a man and is not held to it. Pins: `engine/crowdself.test.ts`,
+`ui/rowtwice-refusal.test.tsx` (every door, a break test each). **And the SC shift-window scan reads the seat he is dragged from too** (W3): a MAIN man dragged to
 another MAIN seat of the same shift was captioned "inside this shift" about the shift he was leaving.
 
 **A second accept that would mint a duplicate content key is refused.**

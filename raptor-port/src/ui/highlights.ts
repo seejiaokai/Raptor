@@ -2,7 +2,7 @@
    the reference. Runs after every week render; the markup it decorates is
    the verbatim dayHTML output, so the selectors line up exactly. */
 import { PEOPLE, isSpecial } from '../engine/people'
-import { HLSET, SEARCH, SELID, WFOCUS, ARM, FRESHADD, FRESHOUT, warnFocusMap, personMatchesHL, CURPAGE, SBDAY, lookWearsFlags, weekInset } from '../state/view'
+import { HLSET, SEARCH, SELID, WFOCUS, ARM, FRESHADD, FRESHOUT, warnFocusMap, personMatchesHL, CURPAGE, SBDAY, lookWearsFlags } from '../state/view'
 import { isMe } from '../state/perms'
 import { slotBar } from '../engine/avail'
 import { slotVal } from '../engine/slots'
@@ -386,16 +386,12 @@ export function bringIntoView(root:any,tgt:any,weekId:string|null){
        and the honest reading of "I cannot tell" is the old unconditional pan,
        so the behaviour under test stays the behaviour that shipped. */
     if(week){
-      /* "on screen" is between the desktop's two floating arrows, not the week box's own edges: a puck under the ‹ or
-         the › is hidden, and a day landed at the front sits beside the ‹ ([VIEW-ARROW-OVER-LIST], weekInset — 0 on
-         a phone) */
       const wr=week.getBoundingClientRect(), tr=tgt.getBoundingClientRect();
-      const inL=weekInset(week), inR=weekInset(week,'right');
-      const inView=wr.width>0&&tr.left>=wr.left+inL-1&&tr.right<=wr.right-inR+1;
+      const inView=wr.width>0&&tr.left>=wr.left-1&&tr.right<=wr.right+1;
       if(!inView){
         /* rect delta, not offsetLeft: .week is position:static, so a day's
            offsetParent is not the scroller */
-        hsSet(week,week.scrollLeft+root.getBoundingClientRect().left-wr.left-inL);
+        hsSet(week,week.scrollLeft+root.getBoundingClientRect().left-wr.left);
         hsSync();   // the bar geometry, now that the horizontal is final
       }
     }

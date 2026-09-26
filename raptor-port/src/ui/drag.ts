@@ -5,7 +5,7 @@
    notify(), folded into applyDrop's done(). */
 import { PEOPLE } from '../engine/people'
 import { slotVal, setSlotVal, fillSlot, lastFilled, sentinelSeatOK } from '../engine/slots'
-import { slotBar } from '../engine/avail'
+import { slotBar, rowTwice } from '../engine/avail'
 import { WARN } from '../engine/validate'
 import { keyDay } from '../engine/keys'
 import { HOOKS } from '../engine/hooks'
@@ -310,14 +310,25 @@ export function applyDrop(el: any, x: any, y: any) {
       HOOKS.toast(`${PEOPLE[id] ? PEOPLE[id].cs + ' — ' : ''}${slotBar(id, key)}`, 'warn')
       DRAG = null; dndOff(); return false
     }
+    /* …AND ONE MAN, ONCE PER ROW (D271, 27 Sep 26 — engine/avail.ts rowTwice): the same preflight, for the same
+       reason — both ends of a swap judged before either is written. `from` is the place he is leaving (a swap's other
+       end), so a swap inside one crowd is no second copy; a crew-list man has no `from`, so dropping him onto another
+       man's place in a crowd he is already in is refused rather than leaving him there twice. */
+    const twice = (id: any, key: any, from?: any) => {
+      const t = rowTwice(id, key, from); if (!t) return false
+      HOOKS.toast(`${PEOPLE[id] ? PEOPLE[id].cs + ' — ' : ''}${t}`, 'warn')
+      DRAG = null; dndOff(); return true
+    }
     if (DRAG.kind === 'roster') {
       if (!sentinelSeatOK(targetKey, DRAG.id)) return refuse(DRAG.id, targetKey)
+      if (twice(DRAG.id, targetKey)) return false
       setSlotVal(targetKey, DRAG.id); asks = [[DRAG.id, targetKey]]
     }
     else if (DRAG.key !== targetKey) {
       const a = slotVal(DRAG.key), b = slotVal(targetKey)
       if (!sentinelSeatOK(targetKey, a)) return refuse(a, targetKey)
       if (!sentinelSeatOK(DRAG.key, b)) return refuse(b, DRAG.key)
+      if (twice(a, targetKey, DRAG.key) || twice(b, DRAG.key, targetKey)) return false
       setSlotVal(targetKey, a); setSlotVal(DRAG.key, b)
       asks = [[a, targetKey], [b, DRAG.key]]
     }
@@ -350,6 +361,10 @@ export function applyDrop(el: any, x: any, y: any) {
       HOOKS.toast(`${PEOPLE[moving] ? PEOPLE[moving].cs + ' — ' : ''}${slotBar(moving, fillKey)}`, 'warn')
       DRAG = null; dndOff(); return false
     }
+    /* one man, once per row (D271): a "+ add" is a NEW place, so any place he already holds on that row refuses it —
+       except the one he is being moved from (a move to the end of his own crowd) */
+    { const t = rowTwice(moving, fillKey, DRAG.kind === 'slot' ? DRAG.key : undefined)
+      if (t) { HOOKS.toast(`${PEOPLE[moving] ? PEOPLE[moving].cs + ' — ' : ''}${t}`, 'warn'); DRAG = null; dndOff(); return false } }
     /* the ask names the PLACE the fill landed on, not the row's "+ add": asked after the write, a row key would read an
        ordinary add as a second copy of him ([CROWD-SWAP-SAYS-BUSY], slots.ts lastFilled) */
     if (DRAG.kind === 'roster') { fillSlot(fillKey, DRAG.id); asks = [[DRAG.id, lastFilled() || fillKey]] }

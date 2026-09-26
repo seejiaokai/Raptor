@@ -187,19 +187,12 @@ looked at. So the day is also PICKABLE (owner, 15 Aug 26):
   (which is why the edge hint above is retired). The "day a–b of n" read-out
   (`pan.ts:dayRangeText`) counts from the day step, never `scrollWidth ÷ n`,
   because the spacer is part of `scrollWidth`. Gated in `e2e/geometry.spec.ts`.
-- **TO BE TAKEN OUT — D275 (27 Sep 26): he prefers the week without this room (the day flush at the left, the arrow over
-  it, as on `main`); `OUTSTANDING.md` `[ARROW-ROOM-OUT]` — until the revert, this paragraph describes the app.**
-  **The day at the front sits BESIDE the floating ‹ arrow, never under it** ([VIEW-ARROW-OVER-LIST], 26 Sep 26). The
-  arrows (`.week-nav`, fixed 8px in, 38px wide) used to cover the first 26–38px of the day at the front — the first
-  letters of an opened "⚠ N issues" list, a row's name, a puck. The desktop `.week` keeps 54px of room at its left:
-  its `padding-left` (Monday at rest; every arrow press, which lands whole day steps from there) and its
-  `scroll-padding-left` (the same room, declared where the other landings read it — `state/view.ts weekInset`:
-  `scrollWeekToDay` for a page switch's carried day and a week-jump to a day, `weekLeftDay` for "which day is at the
-  front", `ui/highlights.ts bringIntoView` for a warning or change tap that pans, whose "is it on screen" test also
-  stops at the › arrow's edge — only where that arrow sits OVER the week box (on Edit Schedule it floats over the crew
-  palette; W4's walk), so the right room is measured, never declared; the browser's own `scrollIntoView` honours the scroll-padding by itself). Phones draw no
-  arrows and keep their own padding (`weekInset` reads 0 there). Gated in `e2e/geometry.spec.ts` ("sit clear of the
-  ‹ arrow at every landing", 1500px and 1024px), with a break test per landing.
+- **No room beside the ‹ arrow — the day at the front sits flush at the week's left edge** (owner, D275, 27 Sep 26 —
+  "I still prefer these", of the full-screen before and after). The floating ‹ arrow (`.week-nav`, fixed 8px in, 38px
+  wide) sits over the first few pixels of that day, by his choice: it can cover the start of an opened "⚠ N issues"
+  list and of the front day's first line. A 54px room was built ([VIEW-ARROW-OVER-LIST], 26 Sep 26) and taken out before
+  it merged (`[ARROW-ROOM-OUT]`); do not put it back, nor the lighter idea first named with it (the arrow fading until
+  the pointer is near), without his ask. The build's roll-call of every landing is the five-flags evidence sheet §3d.
 - **The desktop arrow glide cannot be cancelled mid-day** (owner, 23-24 Aug 26 —
   the recurring "arrows don't go day by day … stuck halfway then zoom past", and
   its 25 Aug follow-up "make sure it's not just an easy fix"). `panDays` fires a
@@ -2162,9 +2155,15 @@ persisted and never in a history snapshot. The toggle builder is `notePubTog`
   A palette tap ALWAYS plants: a darkened name plants too, its reason toasted
   after, mirroring drag ("everything plants, warning after") — the one
   refusal left is the seat's own occupant ("Already in that seat").
-  **TO CHANGE — D271 (27 Sep 26, "Q1 refused"): a THIRD hard refusal — a man put on a row he is already
-  on (drag, palette tap, "+ add") writes nothing and says why; not built yet (`OUTSTANDING.md`
-  `[CROWD-DUP-REFUSE]`).**
+  **AND, SINCE D271 (owner, 27 Sep 26 — "Q1 refused"), A THIRD HARD REFUSAL: ONE MAN, ONCE PER ROW.** A man
+  put on a row he already stands on — a crowd, a desk's or a ground row's extras, a sim's seats — by a drop
+  (from the crew list, onto a place or the "+ add" cell; a puck moved in from another row; either end of a
+  swap) or an armed palette tap writes nothing: the row keeps its one copy, nothing reads pending, and the
+  toast says why ("Ranger — already on FLIGHT SAFETY STAND-DOWN 08:30–09:00 · not added twice"); a tapped
+  slot stays armed. The same sentence is the drag caption and the crew list's struck line, so it is said
+  BEFORE the drop too. One body, `avail.ts rowTwice`, preflighted at every door with `fillSlot` as the belt
+  (D33's shape). Still allowed: a swap inside one crowd, a move to the end of his own crowd, and a man on two
+  DIFFERENT rows (warned, as before).
   **AND, SINCE D33/D47 (22 Sep 26), A SECOND AND HARDER ONE: ALL / ALL AVAIL
   ARE REFUSED ON FLYING-LINE COCKPIT SEATS.** `sentinelSeatOK(key,id)`
   (`engine/slots.ts`) is the one body; `SENTINEL_JET_BAR` is the one sentence,
@@ -3241,16 +3240,19 @@ only prove which CLASS was emitted, never what it draws:
   Its total reach is still 3px, the same as the dashed ring's, so it clears the
   3px gap between the two pucks of a crew pair.
 
-**No flag ring glows — the "this is you" puck included (owner, D164, 24 Sep 26: "can u not make it glow").** The
-signed-in man's own puck (purple, `.puck.me`) used to lay a blurred red halo over its solid or dashed ring, so his own
-flagged puck glowed while every other flagged puck showed the plain ring. `.puck.me.boxred` now draws the plain 2px
-ring (it keeps its own rule only to out-rank `.puck.me`'s later `!important` ring at the same specificity) and
-`.puck.me.boxdash` draws nothing behind its dashes, as `.boxdash` does; the purple fill stays. **Any other flag on his
-own puck — the dotted cause ring, the amber / thin red / grey severity rings — keeps the purple ring and loses its
-glow** (`.puck.me.warn`, `.puck.me.boxdot`, written BEFORE the red rings so a solid or dashed red ring still wins;
-Fable's read). **TO CHANGE — D270 (27 Sep 26, "Q2 yes"):** flagged, his own puck will show the flag's own ring (amber, thin red, grey, dotted) exactly as another man's does, instead of the purple ring; the purple fill stays. Not built yet — `OUTSTANDING.md` `[ME-PUCK-SEVERITY-RING]`; until then the sentence above describes the app. Two glows are NOT flags and stay: the purple "this is you" glow on his UNFLAGGED puck and the clicked-warning focus (`.puck.wfoc`, a transient answer to a tap). Pinned by
-`src/ui/flagglow-css.test.ts`, which walks EVERY ring rule in the stylesheet for a blurred layer — a ring rule written
-later is caught the same way.
+**No flag ring glows — the "this is you" puck included (owner, D164, 24 Sep 26: "can u not make it glow").** Every
+flag ring — solid, dashed or dotted red, the amber / thin red / grey severity rings — is drawn with no blurred layer.
+**And on his own puck any other ring wins over the purple "this is you" ring (owner, D270 and D272, 27 Sep 26 — "Q2
+yes", "question 2 yes").** The signed-in man's puck keeps its purple FILL always; its purple RING and glow are drawn
+only while it has nothing else to say (`.puck.me:not(.warn):not(.boxred):not(.boxdash):not(.boxdot):not(.oilglow)`).
+Flagged — amber, thin red, grey, a solid or dashed red box, the dotted "causes tomorrow's breach" ring (alone, nothing
+purple behind it) — or earning in OIL Earn mode (the green OIL ring, full or half), it wears exactly the ring another
+man's puck wears there, through the same rules. Until D270 the purple ring sat on every "you" puck with `!important`,
+hid the severity rings and buried the OIL ring, and `.puck.me.boxred` / `.boxdash` / `.boxdot` / `.warn` existed only to
+fight it — they are gone. Two glows are NOT flags and stay: the purple "this is you" glow on his UNFLAGGED puck and the
+clicked-warning focus (`.puck.wfoc`, a transient answer to a tap). Pinned by `src/ui/flagglow-css.test.ts`, which walks
+every ring rule for a blurred layer AND resolves the cascade for every set of ring classes a puck can wear (severity x
+red box x trace x OIL mode), requiring his puck's winning ring to equal another man's.
 
 ### The previous-day trace: a standing MARK, an on-demand STORY
 
