@@ -5158,8 +5158,10 @@ BidPicker's look and vocabulary, not instead of it.
   one-day **Clear**, and its range Clear, follow the same rule: on a day or span
   holding an award the first tap names it ("Clear also takes Hunter's OIL award
   (1 day) — tap Clear again to go ahead", the button reading "Clear — sure?"), the
-  second takes it; a changed span asks again. Pins `awardclear.test.tsx`,
-  `inputgate.test.ts`.
+  second takes it; a changed span asks again. The range Clear goes through the
+  same door as the one-day Clear (`clearCells`), so a war-approved leave in the
+  span is removed or counted, never skipped unsaid (Fable's final read, F5).
+  Pins `awardclear.test.tsx`, `inputgate.test.ts`, `rangeclear.test.tsx`.
   Post-out shows only
   for a single-person selection. Partial writes report in the `sel-note` voice
   and keep the sheet up. The per-person negative-balance confirm the single
@@ -5213,15 +5215,24 @@ BidPicker's look and vocabulary, not instead of it.
     its date box. **While a move is on** (the chip's, the drag-selection's
     "Move…" and the event move alike — one `wireMove`): **the grid scrolls at its
     edges** — the picked-up chip follows the mouse, so the mouse carried into the
-    36px band at the days' left edge (past the frozen columns / drawer, the
-    drag-select's `leftEdge`) or the grid's right edge scrolls the days
-    18px/frame, only while over the grid (`isGrid`: the card, the floating date
-    header, the desktop's foot scrollbar) and only once the mouse has been out of
-    every band since the move began (the sheet closes under a still mouse — Fable's
-    S2); a PRESS-AND-DRAG carries it too, on the drag-select's own gesture machine
-    (a mouse arms at 4px, a finger by holding 180ms — a quick swipe still scrolls
-    the grid), whose bands scroll both ways, and the RELEASE picks the day under
-    the pointer (desktop lands, phone stages for Confirm); **the month buttons keep
+    36px band at the days' own left edge (from where the days begin, past the
+    frozen columns / drawer — the drag-select's `leftEdge`) or the grid's right
+    edge, within the days' box top to bottom, scrolls the days 18px/frame, only
+    while over the days (`.mx-wrap`, the floating date header, the desktop's foot
+    scrollbar — never the card's own controls, the frozen names or the month
+    buttons: resting there used to run the grid off toward January, Fable's final
+    read F1), only once the mouse has been out of every band since the move began
+    (judged by geometry alone — the sheet closes under a still mouse, S2, F4), and
+    it stops at the grid's end; a PRESS-AND-DRAG carries it too, on the
+    drag-select's own gesture machine (a mouse arms at 4px, a finger by holding
+    180ms — a quick swipe still scrolls the grid), whose bands scroll both ways,
+    and the RELEASE picks the day under the pointer NOW (desktop lands, phone
+    stages for Confirm) — released off the days it lands nothing and the preview
+    comes down (both final reads); **while a sheet is up the move reads no tap and
+    no press** (a phone's sheet shade lets a tap through to the grid — F2); **one
+    move at a time** — while one is on the event rows open nothing and each move's
+    entry ends the other kind (Astra's final read, 1); the phone's two-step follows
+    the screen's width AT THE TAP (Astra 4); **the month buttons keep
     it on** (they are the grid's own); **a click on an EMPTY spot outside the grid
     ends it** — never a control, the banner, a sheet, or a popup's shade (the
     Legend's, the under-manned list's: `[data-testid$="scrim"]`); Escape and a
