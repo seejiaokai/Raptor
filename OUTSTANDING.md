@@ -52,7 +52,8 @@ whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaini
 1. **Now — [ACCOUNTS-NEW-PERSON]** (D214, D216, D217, D219, D220, D222 — one door for a new person on Admin → Users, the
    sign-up asking the same things, the admins' bell; the mock-up `raptor-port/docs/mock/new-person-account.html`, his
    approval first), on `claude/accounts-new-person`, its own FULL check — DONE, the PR open for his look and "merge
-   live"; then **[DRAFT-PENDING]** — the one changes window,
+   live"; then — **the agent's recommendation, his to confirm** — **[POST-OUT-OUTCOMES]** (D229, D280: a posting out
+   says which outcome; accounts suspended / deleted); then **[DRAFT-PENDING]** — the one changes window,
    on top of accounts, its own FULL check (D210). `[ACCOUNTS]` itself MERGED 26 Sep 26 (PR #442, his "merge live").
 2. **Now, beside the building — [IT-QUESTIONS]:** talk to the IT side (his, not code); their approvals take weeks.
 3. **Development as normal — [HUMAN-RETEST]**'s remaining three, in HIS order (D147): the absence record TOGETHER with
@@ -288,6 +289,11 @@ from leaving the system entirely, which is a fresh return. The identity model mu
 person move between squadrons with data intact.
 - **Context:** memory `multi-squadron-and-person-transfer`; ties to
   `docs/architecture-direction.md` and [DB-STEP].
+- **D281 (26 Sep 26) — the posting-out date and the neighbours:** a posting to another squadron IS this transfer — on
+  the posting-out date he belongs to the other squadron, moved automatically on that date or by the admin's hand; and
+  because the squadrons are local and near each other, another squadron (e.g. 149) may PLAN a 142 man meanwhile, his
+  leave and quals staying his own squadron's (`docs/architecture-direction.md` §3, More than one squadron). The Leave
+  War's post-out sheet will offer it as its fourth outcome (`[POST-OUT-OUTCOMES]`, D229) once this is built.
 
 ### [TRK-ATTEMPTS] Keep a student's attempt history — OPEN (small, feature)
 Remember a student's *earlier* tries at an event, not just the latest grade. More a
@@ -1174,6 +1180,23 @@ he has opened it). **And the sign-up form asks the same things** (his "signs up 
 roster-only person (a SANS man); Quals' "+ Add person" becomes a button to Admin → Users (its form and tests retired, D201).
 **And D219:** the field reads "Callsign/Name" (some people have no callsign) — the sign-up, Admin → Users and the Quals head. **D220:** the seat choice reads "Pilot", "WSO", "Personnel (ground crew)". **D222:** on the sign-up card only, that field reads "Displayed callsign/name". **D225:** initials asked on both forms, required on neither. **D226:** the callsign/name stays at 14 letters and the form says so — never cut silently. **D227:** each admin's bell is his own (out once HE has had the waiting list on screen). The plan (red-teamed round 1): `raptor-port/docs/superpowers/plans/2026-09-26-accounts-new-person-plan.md`.
 **Place:** straight after `[ACCOUNTS]` merges, on its own branch, before `[DRAFT-PENDING]`.
+
+### [POST-OUT-OUTCOMES] A posting out says WHICH of its outcomes it is, and accounts can be suspended and deleted (D229, D280, filed 26 Sep 26)
+**His rulings:** a posting out is one of four things — overseas to another squadron (archive; the account SUSPENDED,
+enabled when he is back), leaving flying for good (the account DELETED), another workplace but still flying with us
+(he becomes SANS — still shown posted out on the Leave War, which stops tracking his leave), or a transfer to another
+squadron (future — `[XFER]`). **Today:** the Leave War's post-out sheet has one choice, "Archive on PO date"
+(on, or stay on the roster); an archived man KEEPS a working account and can still sign in; there is "Switch off /
+Switch on" on Admin → Users but no delete. **To build (the agent's proposal, put to him 26 Sep 26 — his answers
+first):** the post-out sheet asks which outcome, and on the posting-out date the app does it (archive + suspend;
+archive + delete the account; SANS); suspend = today's switch-off, named in his words; delete an account = the sign-in
+gone, the PERSON archived and kept (his name is on published schedules and the history); each also by hand. Touches
+the Leave War (the sheet, `runPoArchive`), Quals (archive, SANS), Admin → Users (suspend, delete), data-model §11
+(`User` D) and `perms.ts` — so FULL tier. **Open questions for him:** see this chat's answer of 26 Sep 26 (the
+outcomes' exact actions; whether a man back from overseas returns with his old quals or fresh — his 13 Sep 26 rule says
+fresh for someone who left the system; the words on the buttons). **Place:** the agent recommends straight after
+`[ACCOUNTS-NEW-PERSON]` merges and before `[DRAFT-PENDING]` (it completes the accounts' life cycle before the changes
+window is built on accounts) — HIS to confirm.
 
 ### [LOOK-435] His inputs from the look at PR #435 — the order is D173 (25 Sep 26)
 **Step 1 DONE 25 Sep 26:** D114's FULL check — evidence `raptor-port/docs/handpass/2026-09-25-amendment-batch.md` §9; two

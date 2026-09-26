@@ -41,7 +41,7 @@ paths:
 Leave War file** (OIL is leave the war banks) — among them **D79, D80, D81, D82** (a hand-typed award: any
 day; never flags a leave day; a worked weekend that earns nobody says so; an award and a worked day add up),
 **D19** (a weekend no Leave War period covers says so and offers to create it) and **D21** (an Off day earns
-no OIL). **Also read** — in `how-we-work.md`: **D166** (accounts: the war follows the signed-in callsign, not "View as"). In `scheduler.md`: **D44, D45** (nothing on a published day changes without the
+no OIL). **Also read** — in `how-we-work.md`: **D166** (accounts: the war follows the signed-in callsign, not "View as"); **D229, D280, D281** (a posting out's four outcomes — archive + suspend, delete, SANS, transfer — which change the war's post-out sheet). In `scheduler.md`: **D44, D45** (nothing on a published day changes without the
 scheduler acknowledging it; the pending mark is the mechanism).
 
 **Where the detail lives:** the grid, its sheets and its window of months — `raptor-port/docs/ui-contracts.md`

@@ -592,7 +592,7 @@ moved here so the Leave War writes its own table and never the shell's.
 | `personId` | ref Person | yes | Unique — at most one profile per person |
 | `band` | choice `instructor\|ops` | no | `personedits.band` |
 | `fromDate`, `toDate` | date | no | in-squadron window; `toDate` null = open (`Person.from`/`to`) |
-| `poArchive` | bool | no | posting-out archive flag (`postouts`) |
+| `poArchive` | bool | no | posting-out archive flag (`postouts`) — **to become the posting-out OUTCOME** (overseas: archive + account suspended / leaving flying: account deleted / SANS / transfer — D229, D280, D281; `OUTSTANDING.md` `[POST-OUT-OUTCOMES]`) |
 | `label` | string | no | the `perslabels` entry for this person |
 
 Relationships: 1–1 `Person` (optional on the Person side).

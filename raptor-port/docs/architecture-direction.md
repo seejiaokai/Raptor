@@ -136,6 +136,18 @@ same rule the Leave War sync already follows in the browser.
 lives beside its code (an OpenAPI file per module). A change to a shared table
 is a shell change with its own review.
 
+**More than one squadron (owner, 13 Sep 26; D281, 26 Sep 26).** The database will
+hold several squadrons, so a Person is not "the squadron's" — he BELONGS to one
+squadron at a time, and that is a fact that changes on a date. A posting to
+another squadron is a **transfer**: on the posting-out date (automatically, or by
+the admin's hand) he belongs to the new squadron and all his data goes with him.
+Someone who leaves the whole system and later returns starts fresh instead. And
+because the squadrons are local and near each other, **a neighbouring squadron
+may plan a man who still belongs to his own** (149 putting a 142 man on its
+schedule) — so "who may appear on this squadron's schedule" is wider than "who
+belongs to it", while his leave and quals stay his own squadron's. Nothing here
+is built before the database step (`OUTSTANDING.md` `[XFER]`).
+
 ## 4. The order of work
 
 Each stage is independently deployable and reversible; none needs the next.
