@@ -1513,7 +1513,8 @@ export function runPoOutcomes(): void {
           }
           validate()
           finishPeopleWrite()
-          if (needsDays) schedApplyEnd()
+          /* a delete also takes the schedule's own save step (the loaded week filed — person-delete.ts deletePerson) */
+          if (needsDays) { schedApplyEnd(); cmdDeferEffect(() => { HOOKS.reflow(); HOOKS.histPush() }) }
           /* said once the command has landed (a refused one says nothing) */
           if (told.length) { const say = () => told.forEach(tellOnce); if (!cmdDeferEffect(say)) say() }
         } finally {

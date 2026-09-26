@@ -122,8 +122,8 @@
     {
       "id": "a18-delete-quals",
       "what": "Quals: not on the roster, not on the Archived list (D299)",
-      "ok": false,
-      "note": "page.click: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('#qArchToggle')\u001b[22m\n",
+      "ok": true,
+      "note": "",
       "pic": "18-a18-delete-quals.png"
     },
     {

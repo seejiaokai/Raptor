@@ -14,7 +14,9 @@ import { storeBackend, HOOKS } from '../engine/hooks'
 import { PEOPLE, indexCallsigns } from '../engine/people'
 import { DAYS } from '../engine/data'
 import { slotVal, setSlotVal, renameCallsign } from '../engine/slots'
-import { initStore as raptorInitStore, notify as raptorNotify, resetSession } from '../state/store'
+import { initStore as raptorInitStore, notify as raptorNotify, resetSession, weekStashSnap, weekDirty } from '../state/store'
+import { Whiteboard } from '../storage/whiteboard'
+import { wirePersist } from '../state/persist'
 import { accountsLoad, accountByName, signIn, sessionFor, updateAccount } from '../state/accounts'
 import { BACKPROMPT } from '../state/view'
 import { commit } from '../command'
@@ -213,6 +215,14 @@ describe('PO5 / PO6 / PO7 — delete: his account and his person; days he flew k
     expect(war('rocky')!.gone).toBe(true)
     expect(slotVal(toCome)).toBe('')
     expect(slotVal(flown)).toBe('rocky')
+  })
+  it('the posting’s delete is SAVED: the week on screen filed without him on a day to come (a reload keeps it)', () => {
+    const wb = new Whiteboard()
+    wirePersist(wb, { weekSnap: weekStashSnap, weekDirty })
+    plantGround(4, 'rocky'); HOOKS.histPush()
+    expect(JSON.stringify(JSON.parse(wb.get('weeks', '13-07-2026')!).d[4])).toContain('"rocky"')
+    expect(postOut('rocky', TODAY, 'delete')).toBe(true)
+    expect(JSON.stringify(JSON.parse(wb.get('weeks', '13-07-2026')!).d[4]), 'a day to come, as saved').not.toContain('"rocky"')
   })
   it('no door takes it back or changes it — Undo post out, a new posting, Restore, Restore-as', () => {
     expect(postOut('rocky', TODAY, 'delete')).toBe(true)

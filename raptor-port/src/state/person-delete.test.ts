@@ -14,7 +14,10 @@ import { INPUTS } from '../engine/inputs'
 import { setSlotVal, slotVal } from '../engine/slots'
 import { SCHED, setSign, setDayApproved, dayDelta, daySnapOf, dayCurVer } from '../engine/publish'
 import { stashPut, stashGet, stashDrop } from '../engine/weekstash'
-import { initStore, resetSession, notify } from './store'
+import { initStore, resetSession, notify, weekStashSnap, weekDirty } from './store'
+import { Whiteboard } from '../storage/whiteboard'
+import { wirePersist } from './persist'
+import { HOOKS } from '../engine/hooks'
 import { accountsLoad, accountByName, signIn, sessionFor } from './accounts'
 import { PLANPUCKS } from './plan'
 import { newPersonProblem } from './roster-add'
@@ -165,6 +168,23 @@ describe('PO6 — loading a published version never brings a deleted man back on
     expect(loadVersionToWorkingCopy(PAST, dayCurVer(PAST))).toBeTruthy()
     for (const k of flown) expect(slotVal(k), `${k} after the load (a day he flew)`).toBe(HIM)
     expect(ROWSLEFT.some(x => x.dead), 'nothing to leave out on a day he flew').toBe(false)
+  })
+})
+
+/* THE DELETE IS SAVED (found by the walk, 27 Sep 26 — every unit test here read the live model, none the saved copy):
+   the loaded week is filed without him on the days from the cutoff, so a reload does not put him back. */
+describe('PO6 — the delete is saved: the loaded week filed without him', () => {
+  it('after the delete the saved copy of the week on screen no longer holds him on a day to come; a day he flew still does', () => {
+    const wb = new Whiteboard()
+    wirePersist(wb, { weekSnap: weekStashSnap, weekDirty })
+    plantEveryKind(TO_COME); plantEveryKind(PAST)
+    HOOKS.histPush()
+    const before = JSON.parse(wb.get('weeks', '13-07-2026')!)
+    expect(JSON.stringify(before.d[TO_COME]), 'the fixture is saved').toContain(`"${HIM}"`)
+    expect(deletePerson(HIM)).toBe(null)
+    const after = JSON.parse(wb.get('weeks', '13-07-2026')!)
+    expect(JSON.stringify(after.d[TO_COME]), 'a day to come, as saved').not.toContain(`"${HIM}"`)
+    expect(JSON.stringify(after.d[PAST]), 'a day he flew, as saved').toContain(`"${HIM}"`)
   })
 })
 

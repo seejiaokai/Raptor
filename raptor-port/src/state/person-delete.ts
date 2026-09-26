@@ -59,6 +59,7 @@ import { deleteAccountProblem, dropAccountOfPid } from './accounts'
 import { saidOf } from './roster-add'
 import { deletePersonOnWar } from '../leavewar/sync'
 import { HOOKS } from '../engine/hooks'
+import { deferEffect as cmdDeferEffect } from '../command'
 
 /* ---- the one clock and the cutoff ---- */
 export const effectiveToday = (): string => localToday()
@@ -339,6 +340,10 @@ export function deletePerson(id: string, dateIso?: string | null): string | null
       deletePersonOnWar(txn, id, cutoff)
       finishPeopleWrite()
       schedApplyEnd()
+      /* …and the schedule's own save step, as every schedule command ends (sched-commit.ts): validate + persist the
+         live week at the transaction boundary. Without it the loaded week's emptied days were never filed — a reload
+         put him back on every day to come of the week on screen (found by the walk, 27 Sep 26) */
+      cmdDeferEffect(() => { HOOKS.reflow(); HOOKS.histPush() })
     },
   }))
 }
