@@ -512,7 +512,11 @@ const PersonMonth = memo(function PersonMonth({ p, period, days, grid, states, v
            small PO tag after posting-out — and never counts for manning (the
            hatch stays). */
         const view = views[p.id]?.[d.date]
-        const outLeave = !here && !!code && !!view?.main && codeOf(view.main.code)?.spends != null
+        /* …and an OIL AWARD dated there too (Astra's final read, 3, 27 Sep 26): one may be given after a man posts out or
+           before he posts in ("Place leave or OIL here instead…", N12), and the day drew a bare PO (or blank) that
+           nobody could tap — his own award hidden from him, and from the admin's eye. It shows with the posting hatch,
+           like the leave beside it, counts nobody (the hatch stays), and his own tap opens it read only (D261). */
+        const outLeave = !here && !!code && !!view?.main && (codeOf(view.main.code)?.spends != null || view.main.kind === 'credit')
         const mark = view?.mark ?? ''
         const cls = [
           here ? '' : 'gone',
@@ -1098,6 +1102,17 @@ export function Matrix() {
   const bandRef = useRef<HTMLDivElement>(null)
   const rosterBodyRef = useRef<HTMLTableSectionElement>(null)
   const [phone, setPhone] = useState(false)
+  /* THE PHONE'S TWO-STEP FOLLOWS THE SCREEN AS IT IS NOW (Astra's final read, 4, 27 Sep 26): the move's tap handler is
+     wired once, when the move begins, and read `phone` as it was then — a move begun at desktop width and carried on
+     after the window narrowed landed at once, with no Confirm. It reads this ref at the tap instead; a change of width
+     takes down a staged landing (the effect below). */
+  const phoneRef = useRef(false)
+  phoneRef.current = phone
+  useEffect(() => {
+    setMovePreview(null); setEventMovePreview(null)
+    const w = wrapRef.current
+    if (w) clearLanding(w)
+  }, [phone])
   const [bandTop, setBandTop] = useState<number | null>(null)
 
   // FIGURE SELECT (owner, 6 Sep 26): a run of people down one figure column,
@@ -1239,11 +1254,12 @@ export function Matrix() {
         // hover, so a tap stages the landing and waits for Confirm — but only a
         // landing the store would accept stages (a refused one shows its reason
         // where the Confirm button would be, never a Confirm under an error).
-        if (phone && onItsOwnDay(date)) { clearLanding(w); setMovePreview(null); setMoveErr(ownDayWords()); return }
-        if (phone) setMovePreview(previewAt(date) ? date : null)
+        if (phoneRef.current && onItsOwnDay(date)) { clearLanding(w); setMovePreview(null); setMoveErr(ownDayWords()); return }
+        if (phoneRef.current) setMovePreview(previewAt(date) ? date : null)
         else commitMove(date)
       },
       onCancel: () => { clearLanding(w); setMoveSel(null); setMovePreview(null); setMoveErr('') },
+      onOff: () => { clearLanding(w); setMoveErr('') },
       leftEdge: moveLeftEdge,
       isGrid: inGrid,
     })
@@ -1296,8 +1312,9 @@ export function Matrix() {
       count: 1,
       dateAt: eventMoveDateAt,
       onHover: date => previewEventAt(date),
-      onPick: date => { if (phone) setEventMovePreview(previewEventAt(date) ? date : null); else commitEventMove(date) },
+      onPick: date => { if (phoneRef.current) setEventMovePreview(previewEventAt(date) ? date : null); else commitEventMove(date) },
       onCancel: () => { clearLanding(w); setEventMoveSel(null); setEventMovePreview(null); setEventMoveErr('') },
+      onOff: () => { clearLanding(w); setEventMoveErr('') },
       leftEdge: moveLeftEdge,
       isGrid: inGrid,
     })
@@ -3752,7 +3769,10 @@ export function Matrix() {
               defs={eventDefs}
               rows={eventRows}
               editable={role === 'admin'}
-              onEdit={(line, date) => setEventEdit({ line, date })}
+              /* ONE MOVE AT A TIME (Astra's final read, 1, 27 Sep 26): with a chip picked up, a tap on an event row opened
+                 its sheet, whose Move started a SECOND move — and one click then moved both. While any move is on, the
+                 event rows open nothing. */
+              onEdit={(line, date) => { if (moveSel || eventMoveSel) return; setEventEdit({ line, date }) }}
               padL={padL}
               padR={padR}
               phL={phL}
@@ -4208,7 +4228,7 @@ export function Matrix() {
           role={role}
           canDecide={canDecide(period.stage, role)}
           onPostOut={role === 'admin' ? (pid, from, archive) => postOutOr(pid, from, archive) : undefined}
-          onMove={s => setMoveSel(s)}
+          onMove={s => { setEventMoveSel(null); setEventMovePreview(null); setMoveSel(s) }}
           /* a PARTIAL write keeps the sheet up (keepOpen) so its "N written,
              M skipped" note is actually read — closing here killed the note
              in the same tap that set it (27 Aug 26 overnight find) */
@@ -4398,7 +4418,7 @@ export function Matrix() {
           date={eventEdit.date}
           to={eventEdit.to}
           onClose={() => setEventEdit(null)}
-          onMove={m => { setEventEdit(null); setEventMoveSel(m) }}
+          onMove={m => { setEventEdit(null); setSel(null); setMoveSel(null); setMovePreview(null); setEventMoveSel(m) }}
         />
       )}
       {/* A manning row's explainer — every role's way in from the row's name;
@@ -4500,6 +4520,7 @@ export function Matrix() {
             if (!movableCells(cells).length) return 'There is nothing here that can be moved.'
             setSel(null)
             close()
+            setEventMoveSel(null); setEventMovePreview(null)
             setMoveSel({ people: [open.id], from: open.date, to: open.date, cells })
           }}
           creditShown={openAnyCredit

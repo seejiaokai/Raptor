@@ -13,6 +13,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { wireMove } from './select'
 
 let grid: HTMLElement, wrap: HTMLElement, a: HTMLElement, b: HTMLElement, outside: HTMLElement
+let under: () => Element | null = () => b        // what elementFromPoint answers
 let teardown: () => void
 let sl = 0
 const origEFP = document.elementFromPoint
@@ -45,7 +46,8 @@ beforeEach(() => {
   frames = []; picks = []; hovers = []; cancels = 0
   vi.spyOn(window, 'requestAnimationFrame').mockImplementation(cb => { frames.push(cb); return frames.length })
   vi.spyOn(window, 'cancelAnimationFrame').mockImplementation(() => {})
-  document.elementFromPoint = () => b
+  under = () => b
+  document.elementFromPoint = () => under()
   vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout', 'Date'] })
   mount()
   vi.advanceTimersByTime(500)                     // past the double-click guard
@@ -99,6 +101,58 @@ describe('the edge scroll while a chip is picked up (D262)', () => {
   })
 })
 
+/* THE FINAL READS (27 Sep 26) — Fable F1 / F4: the hover scroll ran over the card's own controls, the frozen names and
+   the month buttons, and its held-band rule could be reset without the mouse leaving the band. */
+describe('the edge scroll runs only at the DAYS’ own edges (the final reads)', () => {
+  it('the card’s frame beside the days (the Manning / OIL row) scrolls nothing, even at the right edge’s x', () => {
+    mouseMove(a, 200)
+    mouseMove(grid, 390)                          // inside the card, not the days
+    runFrame()
+    expect(sl).toBe(0)
+  })
+  it('left of the days (the frozen names, the month buttons) scrolls nothing', () => {
+    sl = 400
+    mouseMove(a, 200)
+    mouseMove(a, 60)                              // x < leftEdge (100)
+    runFrame()
+    expect(sl).toBe(400)
+  })
+  it('above or below the days’ box scrolls nothing', () => {
+    mouseMove(a, 200)
+    mouseMove(a, 390, 350)                        // y below the wrap's box (bottom 300)
+    runFrame()
+    expect(sl).toBe(0)
+  })
+  it('at the end of the grid the loop stops asking for frames', () => {
+    Object.defineProperty(wrap, 'scrollLeft', { configurable: true, get: () => sl, set: v => { sl = Math.max(0, v) } })
+    mouseMove(a, 200)
+    mouseMove(a, 110)                             // the left band, scrollLeft already 0
+    runFrame()
+    expect(frames.length).toBe(0)
+  })
+  it('a band the mouse began in stays dead through a held button or a pass over the banner (F4)', () => {
+    mouseMove(a, 390)                             // the move begins with the mouse in the right band
+    mouseMove(a, 392, 150, 1)                     // a button held, still in the band
+    mouseMove(outside, 391)                       // over something that is not the grid, still in the band's x
+    mouseMove(a, 393)                             // back, never having left the band
+    runFrame()
+    expect(sl).toBe(0)
+  })
+})
+
+/* Fable F2 (the phone): a sheet opened mid-move lets a tap through its shade on a coarse pointer — the move must not
+   read that tap. */
+describe('while a sheet is up the move reads no tap (the final reads)', () => {
+  it('a tap on a day or on the page, with a sheet open, neither picks nor cancels', () => {
+    const sheet = document.createElement('div'); sheet.className = 'bidsheet'; document.body.appendChild(sheet)
+    b.dispatchEvent(new MouseEvent('click', { bubbles: true }))
+    outside.dispatchEvent(new MouseEvent('click', { bubbles: true }))
+    sheet.remove()
+    expect(picks).toEqual([])
+    expect(cancels).toBe(0)
+  })
+})
+
 describe('a press-and-drag carries it and lands on the lift (D262)', () => {
   const down = (el: HTMLElement, type: string, x = 150) => el.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, pointerId: 3, pointerType: type, clientX: x, clientY: 150, button: 0 }))
   const move = (type: string, x: number) => window.dispatchEvent(new PointerEvent('pointermove', { bubbles: true, pointerId: 3, pointerType: type, clientX: x, clientY: 150 }))
@@ -119,6 +173,13 @@ describe('a press-and-drag carries it and lands on the lift (D262)', () => {
     vi.advanceTimersByTime(30)
     b.dispatchEvent(new MouseEvent('click', { bubbles: true }))   // the finger's trailing tap
     expect(picks).toEqual(['2026-01-09'])
+  })
+
+  it('a drag released OFF the days lands nothing — not the last day it crossed (both reads, F3 / Astra 2)', () => {
+    down(a, 'mouse'); move('mouse', 170); move('mouse', 260)      // across 9 Jan
+    under = () => outside                                            // then off the grid
+    move('mouse', 50); up('mouse', 50)
+    expect(picks).toEqual([])
   })
 
   it('a quick swipe scrolls the grid and lands nothing', () => {

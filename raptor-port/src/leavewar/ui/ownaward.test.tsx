@@ -10,7 +10,7 @@
 
 import { act, fireEvent, render, screen } from '@testing-library/react'
 import { beforeEach, describe, expect, it } from 'vitest'
-import { advanceStage, initStore, reopenStage, setManualCredit, setRole, setViewer } from '../state/store'
+import { advanceStage, initStore, reopenStage, setManualCredit, setPostIn, setPostOut, setRole, setViewer } from '../state/store'
 import { memoryBackend } from '../state/storage'
 import { Matrix } from './Matrix'
 
@@ -77,6 +77,41 @@ describe('his own award opens read only at every stage (D261)', () => {
     fireEvent.click(screen.getByTestId(`cell-${ME}-${OUTSIDE}`))
     fireEvent.click(screen.getByTestId('award-close'))
     expect(screen.queryByTestId('award-sheet')).toBeNull()
+  })
+})
+
+/* OUTSIDE HIS POSTING DATES (Astra's final read, 3, 27 Sep 26): an award may be given on a day after he posts out or
+   before he posts in ("Place leave or OIL here instead…", N12), and the grid drew that day as a bare PO (or blank) and
+   let nobody tap it — his own award was hidden from him, and from the admin's eye too. Leave dated there already shows
+   with the posting hatch (answer C); an award now does the same, and his tap opens it read only. */
+describe('his own award outside his posting dates (the final read)', () => {
+  it('after his post-out: the day shows his FO, and his tap opens it read only', () => {
+    setPostOut(ME, '2026-05-01', false)
+    advanceStage()
+    asMember()
+    render(<Matrix />)
+    const cell = screen.getByTestId(`cell-${ME}-${OUTSIDE}`)
+    expect(cell.textContent).toContain('FO')
+    fireEvent.click(cell)
+    expectReadOnlyAward('Recall', 'OC Ops', '3 days')
+  })
+  it('before his post-in: the same', () => {
+    setPostIn(ME, '2026-06-01')
+    advanceStage()
+    asMember()
+    render(<Matrix />)
+    const cell = screen.getByTestId(`cell-${ME}-${OUTSIDE}`)
+    expect(cell.textContent).toContain('FO')
+    fireEvent.click(cell)
+    expectReadOnlyAward('Recall', 'OC Ops', '3 days')
+  })
+  it('an admin still gets the posting sheet first on such a day, and sees the FO on the grid', () => {
+    setPostOut(ME, '2026-05-01', false)
+    render(<Matrix />)
+    const cell = screen.getByTestId(`cell-${ME}-${OUTSIDE}`)
+    expect(cell.textContent).toContain('FO')
+    fireEvent.click(cell)
+    expect(screen.getByTestId('postout-sheet')).toBeTruthy()
   })
 })
 

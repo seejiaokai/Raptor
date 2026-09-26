@@ -298,7 +298,11 @@ export function BidPicker({
     // writes what it may and says what it did not. Refusing the whole range
     // would make a fortnight that happens to include one such day impossible
     // to ask for at all.
-    const { written, skipped } = setCellRange(personId, range.from, range.to, code)
+    /* A RANGE'S CLEAR GOES THROUGH THE SAME DOOR AS THE ONE-DAY CLEAR (Fable's final read, F5, 27 Sep 26): an empty
+       code written over each day strips only the war's own records, so a leave the WAR approved inside the span stayed,
+       unsaid, and the sheet closed as done. `clearCells` removes it through the absence door (or counts it where it may
+       not go — a published war's finished paperwork), exactly as the one-day Clear and a dragged block's Delete do. */
+    const { written, skipped } = code ? setCellRange(personId, range.from, range.to, code) : clearCells(spanCells(range))
     if (written > 0) onWrote?.(code)
     if (skipped === 0) return onClose()
     setNote(
