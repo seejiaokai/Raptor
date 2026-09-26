@@ -82,7 +82,16 @@ the x it was clicked at), `ui/highlights.ts bringIntoView` (a warning tap, a cha
 | The week's left padding | `padding-left` put back to 20px | `geometry.spec.ts` "sit clear of the ‹ arrow" (1500, 1024): at rest |
 | The page-switch landing | `weekInset` taken out of `scrollWeekToDay` | the same test: Edit Schedule at rest (the carried day) |
 | The warning-tap landing | `weekInset` taken out of `bringIntoView` | the same test: "a warning tap lands its day clear of the arrow" |
-| The guard | — (tooling) | `node --test .claude/hooks/bg-cwd-guard.test.mjs`: 11 cases, from two starting folders |
+| The guard | — (tooling) | `node --test .claude/hooks/bg-cwd-guard.test.mjs`: 14 cases (order, start folders, lookalikes), from two starting folders |
+| Reset order's two arms (W2) | before `disarmCounterReset` existed (red first) | `settingssheet.test.tsx` "arming one reset takes the other one's question back" |
+| One man, one place on a row (W3 F6) | before the check existed (red first) | `crowdself.test.ts` ×5 |
+| The landed place after an append | `placeArmed` asking of the row again | `store.test.ts` "an armed crowd: an ordinary add is planned…" |
+| The crew list's armed key | the `.+` stripped again | `palette.test.ts` "an armed crowd strikes a man already in it" |
+| The SC shift scan's leaving seat (W3 F20) | `main`'s scan (red first) | `crowdself.test.ts` "an SC shift drag…" |
+| The › arrow's room (W4) | before the arrow was measured (red first) | `weekinset.test.ts` ×2 |
+| A copy left behind (Astra 1) | before `leaves` (red first) | `crowdself.test.ts`, `runtrace.test.ts` |
+| The severity rings in the ring test (Astra 4) | a glow added to the grey ring | `flagglow-css.test.ts` "every ring rule…" |
+| His own flagged puck's glow (Fable 1) | before `.puck.me.warn,.puck.me.boxdot` (red first) | `flagglow-css.test.ts` "the shadow that wins…" |
 
 ## 5. The walk
 

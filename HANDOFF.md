@@ -16,17 +16,33 @@ the later merge keeps both (D78).
 ## Now
 
 <!-- now:claude/five-flags-batch-build-ef7d85 -->
-### `claude/five-flags-batch-build-ef7d85` — the five-flags batch (D164, D160, [CROWD-SWAP-SAYS-BUSY], [VIEW-ARROW-OVER-LIST], [BG-GUARD-FALSE]): BUILT, FULL check in progress — written 26 Sep 26 — verify before use
-- **Parallel** with `claude/accounts-new-person` and the absence-record re-test (his instruction, 26 Sep 26): preview port
-  4176, browser tests `E2E_PORT=4193`, rulings D270–D279; the full checks take turns through the PC-wide lock (D228,
-  `C:/Users/User/projects/Raptor/raptor-port/scripts/gatelock.mjs`). Whichever merges later takes `main` in first.
-- **Built:** the "this is you" puck's red glow gone (`scheduler.css`); ⚙ Settings → Reset order (`resetRosterOrder`,
-  clears the saved order); the busy check's one key shape (`engine/keys.ts seatRow`) and the from-seat excluded; the
-  desktop week's 54px room beside the arrows (`state/view.ts weekInset`); the background guard measured and corrected.
-- **The check:** evidence `raptor-port/docs/handpass/2026-09-26-five-flags.md`; Fable's scenarios
-  `docs/superpowers/specs/2026-09-26-five-flags-scenarios-fable.md`; the fanned-out walk's brief
-  `docs/superpowers/briefs/2026-09-26-five-flags-walk-brief.md`. Next: the walk (four walkers, under the lock) → fix →
-  Fable and Astra read the code → gates → his look card → "merge live".
+### `claude/five-flags-batch-build-ef7d85` — the five-flags batch (D164, D160, [CROWD-SWAP-SAYS-BUSY], [VIEW-ARROW-OVER-LIST], [BG-GUARD-FALSE]): BUILT, walked, both reads done and fixed — the LAST re-walk and the full gates left — written 27 Sep 26 — verify before use
+- **Parallel** with `claude/accounts-new-person` and the absence-record re-test (`claude/absence-record-d147-af6a50`): preview
+  port 4176 (`.claude/launch.json` "raptor-walk-4"), browser tests `E2E_PORT=4193`, rulings D270–D279 (none used yet). Full
+  checks take turns through the PC-wide lock (D228, `node C:/Users/User/projects/Raptor/raptor-port/scripts/gatelock.mjs
+  take|release|status|run`). Whichever merges later takes `main` in first. Nothing to `main` without his "merge live".
+- **Built** (all committed and pushed; no PR yet): the "this is you" puck never glows when flagged (`scheduler.css`,
+  `flagglow-css.test.ts`); ⚙ Settings → Reset order (`resetRosterOrder`, `rosterFollowsDefault`; the two resets take each
+  other's question back); the busy check's one key shape (`keys.ts seatRow`), one man one place on a row (`slots.ts
+  rowPlaces`/`lastFilled`, `avail.ts`), a copy left behind still counts, the SC shift scan reads the seat he leaves; the
+  desktop week's 54px room beside the ‹ (`view.ts weekInset`, the › side measured); the background guard follows a line
+  step by step and knows where a background shell starts.
+- **The check (FULL):** evidence `raptor-port/docs/handpass/2026-09-26-five-flags.md` — §1 tier, §2 rulings, §3 roll-calls,
+  §4 break tests, §5 the walk (W1 64/0, W2 97/0, W3 123/5, W4 1838/2 — every fail fixed, reproduced, re-walked), §6 not
+  walked, §8 both reads (Astra A1–A4, Fable F1–F4: all fixed except F4, filed), §9 his look card. §7 (gates) is EMPTY.
+- **Next, in this order:** (1) `npm run build` in `raptor-port/`; (2) re-walk what the reads' fixes touched, into the
+  re-walk folder: `FF_SHOTS=<…>/docs/img/handpass/2026-09-26-five-flags/rewalk/w1 HP_URL=http://localhost:4176 node
+  scripts/handpass/ff-w1.mjs A,C,D,F` and `…/rewalk/w3 … ff-w3.mjs f1a f1b f1c f1d f1e f3 f6 f20` (single scripts need no
+  lock; W1's D pictures will now show the flagged own puck WITHOUT the purple glow — expected); (3) under the lock
+  (`gatelock.mjs run`, `E2E_PORT=4193`) the full gate set; baseline to beat: `HANDOFF.md` §Gate baseline; fill §7;
+  (4) open the PR, unsubscribe, hand him the Vercel link and the look card (§9: four looks + Q1–Q3).
+- **Open question from him, 27 Sep 26, unanswered:** *"i think my computer can handle 2 chats working"* — said while this
+  chat queued for the lock behind the absence-record chat. Ask what he means before recording it: two chats working side
+  by side is already fine (only FULL gate runs take the lock; single walk scripts do not); two FULL gate runs at once is
+  what D86 measured as giving false failures (86–97% CPU). If he wants two full runs at once, that narrows D228/D86 —
+  record it (a D270s row) and fix gatelock.mjs's one-slot lock.
+- **Filed from it:** [CROWD-DUP-REFUSE] (Q1), [ME-PUCK-SEVERITY-RING] (Q2), [ARROW-GUTTER-STRIP] (Q3), [GHOST-FLAG-SHADOW],
+  [LW-SETTINGS-SMALL], [ALLAVAIL-OPEN-ROW]. The five items are archived (built here).
 <!-- /now -->
 
 <!-- now:claude/accounts -->
