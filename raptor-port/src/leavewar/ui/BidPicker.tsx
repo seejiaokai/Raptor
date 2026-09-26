@@ -806,7 +806,7 @@ export function DecisionSheet({
         <span className="who">{callsign}</span>
         <span className="dt">{date}</span>
         <span className="cur">
-          {code}{state ? ` · ${state}` : ''}{movedFrom ? ` · moved from ${movedFrom}` : ''}
+          {displayCell(code)}{state ? ` · ${state}` : ''}{movedFrom ? ` · moved from ${movedFrom}` : ''}
         </span>
         <button className="x" data-testid="bid-cancel" onClick={onClose} aria-label="Cancel">
           ✕
@@ -923,7 +923,8 @@ export function RaptorSheet({
       <div className="bidsheet-hd">
         <span className="who">{callsign}</span>
         <span className="dt">{date}</span>
-        <span className="cur">{code}{creditShown || leave ? ' · approved' : ''}</span>
+        {/* the box's notation, as the bid sheet's "now" (W5's re-walk, NF2) */}
+        <span className="cur">{displayCell(code)}{creditShown || leave ? ' · approved' : ''}</span>
         <button className="x" data-testid="bid-cancel" onClick={onClose} aria-label="Close">
           ✕
         </button>

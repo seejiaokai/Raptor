@@ -7,6 +7,7 @@
 import { render, screen } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import { RaptorSheet } from './BidPicker'
+import { displayCell } from '../engine'
 
 const open = (code: string) => render(<RaptorSheet callsign="Grit" date="2026-07-14" code={code} onClose={() => {}} />)
 
@@ -25,4 +26,15 @@ describe('the read-only sheet names an Inputs-filed absence in its own words', (
       expect(screen.getByTestId('raptor-note').textContent).toBe('Filed on the Inputs page — change it there, not here.')
     })
   }
+})
+
+/* the heading speaks the box's notation (W5's re-walk, NF2, 26 Sep 26): a morning ATT C read "*ATTC" in the heading
+   while its box read "<C" — the same fix the bid sheet's "now" had (W5-F5) */
+describe('the read-only sheet heading reads as the box does', () => {
+  it('a morning ATT C reads "<C", not "*ATTC"', () => {
+    open('*ATTC')
+    const hd = screen.getByTestId('raptor-sheet').querySelector('.bidsheet-hd .cur')!.textContent || ''
+    expect(hd).toContain(displayCell('*ATTC'))
+    expect(hd).not.toContain('*ATTC')
+  })
 })
