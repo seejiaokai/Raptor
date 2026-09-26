@@ -155,10 +155,19 @@ const chipSel = (e: Entry) => e.kind === 'puck' ? `[data-pid="${e.pid}"]` : `[da
    listener is what lets several calendars mount and unmount in the same
    session (tests included) without leaking state into one another. Returns
    the detach fn for React's effect cleanup. */
-export function initCalDrag(root: HTMLElement, opts: { onTap: (entry: any) => void }): () => void {
+export function initCalDrag(root: HTMLElement, opts: {
+  onTap: (entry: any) => void
+  /** a finger's release after a sideways swipe that began ON a chip — its whole travel from the press, for the
+   *  calendar to read as it reads a swipe over empty space (the re-walk's NEW-1, 26 Sep 26) */
+  onSwipe?: (dx: number, dy: number) => void
+}): () => void {
   let st: {
     entry: Entry, pointerId: number, mouse: boolean,
     x0: number, y0: number, armed: boolean,
+    /** where the finger LANDED — the wobble rule re-centres x0 / y0, so travel is read from here */
+    ox: number, oy: number,
+    /** travelled past GIVEUP from where it landed: a pan or a swipe, never a pick-up or a tap */
+    gaveUp: boolean,
     ghost: HTMLElement | null, over: HTMLElement | null, timer: any,
     /** the reader may not move this chip — it never lifts, a tap still opens it (W1-F3) */
     fixed: boolean,
@@ -252,6 +261,7 @@ export function initCalDrag(root: HTMLElement, opts: { onTap: (entry: any) => vo
     st = {
       entry, pointerId: e.pointerId, mouse: e.pointerType === 'mouse',
       x0: e.clientX, y0: e.clientY, armed: false, ghost: null, over: null, timer: 0, fixed,
+      ox: e.clientX, oy: e.clientY, gaveUp: false,
     }
     if (!st.mouse) st.timer = setTimeout(arm, HOLD)
     // mouse arms purely off movement, in onPointerMove below — no hold timer at all
@@ -272,7 +282,14 @@ export function initCalDrag(root: HTMLElement, opts: { onTap: (entry: any) => vo
          from wherever the finger actually is, and only a movement big
          enough to read as a deliberate pan gives up and lets the page
          scroll under it. */
-      if (dx > GIVEUP || dy > GIVEUP) { clearGesture(); return }
+      /* GIVEUP is read from where the finger LANDED, not from the last re-centre (the re-walk's NEW-1): re-centring
+         on every small move meant a steady sideways swipe never travelled "far", and its lift read as a tap — the
+         chip's edit opened instead of the month paging. Past it the hold is off for good, but the gesture is kept
+         so its release can be read as a swipe. (A vertical pan is the browser's — pan-y — and cancels the pointer.) */
+      if (st.gaveUp) return
+      if (Math.abs(e.clientX - st.ox) > GIVEUP || Math.abs(e.clientY - st.oy) > GIVEUP) {
+        clearTimeout(st.timer); st.gaveUp = true; return
+      }
       if (dx > SLOP || dy > SLOP) {
         st.x0 = e.clientX; st.y0 = e.clientY
         clearTimeout(st.timer); st.timer = setTimeout(arm, HOLD)
@@ -291,7 +308,7 @@ export function initCalDrag(root: HTMLElement, opts: { onTap: (entry: any) => vo
 
   function onPointerUp(e: PointerEvent) {
     if (!st || e.pointerId !== st.pointerId) return
-    const { entry, armed, x0, y0 } = st
+    const { entry, armed, x0, y0, ox, oy, gaveUp } = st
     const x = e.clientX, y = e.clientY
     const target = armed
       ? ((document.elementFromPoint(x, y) as HTMLElement | null)?.closest('[data-icday]') as HTMLElement | null)
@@ -313,6 +330,8 @@ export function initCalDrag(root: HTMLElement, opts: { onTap: (entry: any) => vo
       if (to && commitChipMove(entry, entry.fromIso, to)) markLand(`[data-icday="${to}"] ${chipSel(entry)}`)
       else if (to && to === entry.fromIso) landOn(entry.el)
       installClickEater() // a real drag happened — its own release click must not fall through to the chip
+    } else if (gaveUp) {
+      opts.onSwipe?.(x - ox, y - oy)   // the calendar decides, by the same rule as a swipe over empty space
     } else {
       const dx = Math.abs(x - x0), dy = Math.abs(y - y0)
       if (dx <= SLOP && dy <= SLOP) {

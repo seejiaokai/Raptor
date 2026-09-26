@@ -63,3 +63,37 @@ describe('a finger’s tap on a chip opens its edit once (W1-F2)', () => {
     expect(nextClickHeard()).toBe(true)
   })
 })
+
+/* A SIDEWAYS SWIPE THAT STARTS ON A CHIP (the re-walk, 26 Sep 26 — W1's re-walker, NEW-1, caused by W1-F1's fix). With
+   the browser no longer taking a sideways finger, the chip saw the whole swipe; its wobble rule re-centres on every
+   small move, so a steady swipe never read as travel and the lift read as a TAP — the chip's edit opened instead of the
+   month paging. The chip now reads the release as the empty space does: its TOTAL travel from where the finger landed. */
+describe('a sideways swipe that starts on a chip pages the month, never opens the chip', () => {
+  let root: HTMLElement, chip: HTMLElement, off: () => void, taps = 0, swipes: number[] = []
+  const at = (type: string, x: number, y = 10) => new PointerEvent(type,
+    { bubbles: true, cancelable: true, clientX: x, clientY: y, pointerId: 1, pointerType: 'touch', isPrimary: true })
+  beforeEach(() => {
+    vi.useFakeTimers()
+    document.body.innerHTML = `<div id="root"><div class="ic-day" data-icday="2026-07-20"><div class="ic-chip" data-icdrag data-iid="t1">chip</div></div></div>`
+    root = document.getElementById('root')!
+    chip = root.querySelector('[data-icdrag]') as HTMLElement
+    taps = 0; swipes = []
+    off = initCalDrag(root, { onTap: () => { taps++ }, onSwipe: (dx: number) => { swipes.push(dx) } })
+  })
+  afterEach(() => { off(); vi.runOnlyPendingTimers(); vi.useRealTimers(); document.body.innerHTML = '' })
+
+  it('a steady leftward swipe in small steps: no tap, one swipe with its whole travel', () => {
+    chip.dispatchEvent(at('pointerdown', 200))
+    for (let x = 190; x >= 110; x -= 10) { chip.dispatchEvent(at('pointermove', x)); vi.advanceTimersByTime(16) }
+    chip.dispatchEvent(at('pointerup', 110))
+    expect(taps).toBe(0)
+    expect(swipes).toEqual([-90])
+  })
+  it('a finger that settles a few pixels and lifts is still a tap', () => {
+    chip.dispatchEvent(at('pointerdown', 200))
+    chip.dispatchEvent(at('pointermove', 204))
+    chip.dispatchEvent(at('pointerup', 204))
+    expect(taps).toBe(1)
+    expect(swipes).toEqual([])
+  })
+})
