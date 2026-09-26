@@ -132,10 +132,11 @@ the later merge keeps both (D78).
 
 ## Gate baseline
 
-The latest counts watched — 27 Sep 26, `claude/five-flags-batch-continue-2cfa70` (`a0a164a3`, the five-flags batch's final
-code, bundle `index-C-k_umJP.js`), one run under the lock (`raptor-port/docs/handpass/2026-09-26-five-flags.md` §7): unit
-**6237 / 6237** (382 files) · build clean · tfin **728 / 0** · e2e **474 passed**, 48 skipped (the whole suite again after
-five older landing tests moved to the new front — tests only) · smoke **443 / 0** · rulecheck OK · docsize OK. Restate a count only
+The latest counts watched — 27 Sep 26, `claude/five-flags-batch-continue-2cfa70` (`869c7197`, D270–D275 built on the
+five-flags batch), under the lock (`raptor-port/docs/handpass/2026-09-27-five-flags-answers.md` §7): unit **6256 / 6256**
+(382 files; the full run's one failure was `[INPUTSCAL-TAP-FLAKY]`, green on its re-run) · build clean · tfin **728 / 0** ·
+e2e **472 passed**, 48 skipped (474 − the two arrow-room tests, gone with the room) · smoke **443 / 0** · rulecheck OK ·
+docsize OK. GitHub on `869c7197`: every job green. Restate a count only
 from a run you watched, and REPLACE the previous counts — never stack a history. How to run them: `raptor-port/CLAUDE.md`
 §Build & verify; how they mislead, and the checks on his PC: `raptor-port/docs/gates-and-deploy.md`.
 

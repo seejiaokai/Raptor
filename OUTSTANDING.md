@@ -989,6 +989,9 @@ order- or load-dependent: some earlier file in the same worker leaves the docume
 listener behind. **Do:** find the file that runs before it in the same worker when it fails (vitest `--sequence.seed` /
 the shard order), and make the test install its own `elementFromPoint` stub and restore it, or reset what the other file
 leaves. **Place:** test-only, any time.
+**Seen again 27 Sep 26** on `claude/five-flags-batch-continue-2cfa70` (`869c7197`, the final gate run): the same test, the
+same "elementFromPoint is not a function"; that branch does not touch the calendar either; alone 3 / 3, and the whole
+unit suite green on its re-run (6256 / 6256). Three branches now — the order- or load-dependence is the lead.
 
 ### [INSIGHTS-WORKING-COPY] Week Insights shows the working copy's week to everyone, members included — a question for him (filed 26 Sep 26)
 Astra's second read of `[LEAVE-LATE-PUBLISHED]` (`raptor-port/docs/handpass/2026-09-26-late-pub-astra-read2.md` #2): the
@@ -1346,7 +1349,9 @@ person at ordinary pace would not hit it (the window is well under a second; a l
 redone). **FIXED (tests only, D87):** `e2e/leavewar.spec.ts` "offers Move" and "right-click cancels" wait for the fill to
 land and its sheet to close, then drag with `dragSelectStable`; "a loose box" drags with `dragSelectStable`. **Left:**
 confirm on the next GitHub runs of this branch (the test fix cannot be proven on the PC, where it never failed), then
-archive this. Filed beside it: `[LW-HARNESS-VIEWER-PIN]`, `[CI-FAIL-PICTURES]`.
+archive this. **First run after the fix** (36265413334, 869c7197, 27 Sep 26): `geometry (lw-desktop)` green, the three
+passed FIRST time, 169 passed, none flaky — one clean run; before the fix a run failed first about half the time, so one
+more clean run before archiving. Filed beside it: `[LW-HARNESS-VIEWER-PIN]`, `[CI-FAIL-PICTURES]`.
 
 ### [D271-LOOK-ASKS] Four small questions the D270–D275 build raised — for his look card (filed 27 Sep 26)
 From Fable's scenario read of the build (`raptor-port/docs/superpowers/specs/2026-09-27-five-flags-builds-scenarios-fable.md`

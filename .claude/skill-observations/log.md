@@ -659,3 +659,33 @@ resolved statuses always carry their resolution date
 **Suggested improvement:** in bug-check-order §7.2 (or `docs/handpass/README.md`'s traps), one line: a walk script resolves every path it WRITES relative to itself (`import.meta.url`), never an absolute worktree path; reads of shared fixtures name their source. And a quick grep in the docs gate for `.claude/worktrees/` inside `scripts/handpass/*.mjs` write paths.
 
 **Principle:** A script meant to be re-run later must not remember WHERE it was first run — worktree folders are reused by other sessions, so any absolute path into one is a write into someone else's work.
+
+### Observation 299: A walk step that proves a REFUSAL must also prove the gesture happened
+
+**Status:** OPEN
+**Date:** 2026-09-27
+**Session context:** walking D271 (a man put on a row he is already on is refused) — scripted drags whose expected outcome is "nothing written"
+**Skill:** bug-check order (raptor-port/docs/bug-check-order.md §7.8, §8)
+**Type:** open-source
+**Phase/Area:** the walk — gesture steps whose correct result is NO change
+
+**Issue:** Three walk parts (a move from another row, a finger drag on the phone, a drop on the edit week) came back "nothing written" — exactly what a refusal looks like — while the press had in fact landed off the screen (the source below the fold) or been let go over the tab bar: no ghost ever rode the pointer. Only the missing toast gave it away; had the check read just the data ("both rows as they were, 0 pending"), all three would have PASSED on a drag that never happened. Fixed by requiring a ghost (`!!h.ghost`) and the refusal's own caption before the data check counts.
+
+**Suggested improvement:** §7.8 ("a gesture step asserts what the person SEES") gains a line: when the correct outcome of a gesture is that NOTHING changes (a refusal, a no-op), the step must also assert positive evidence that the gesture was performed — the drag ghost, the caption under it, the refusal's own words — or a missed press passes as a correct refusal.
+
+**Principle:** An assertion that "nothing changed" cannot tell a correct refusal from an action that never happened; pair every negative outcome with positive proof the action was attempted.
+
+### Observation 300: Check the message the screen is LEFT showing, not the list of messages raised
+
+**Status:** OPEN
+**Date:** 2026-09-27
+**Session context:** D271's hand-over fix — a note raised inside a shared save path ("kept once, as its holder")
+**Skill:** bug-check order (§7.8) and test-driven-development (assertions on user-visible state)
+**Type:** open-source
+**Phase/Area:** the walk / the test spy
+
+**Issue:** The unit test and the first walk both captured every toast raised (a spy on the toast hook) and found the note among them — PASS. The screen, which has ONE toast slot, showed "Input updated" instead: the caller's own success line followed the save and replaced the note in the same tick. Only a walk step reading the toast element's final text caught it. Fixed by raising the note on the next tick and asserting on the element's text and opacity; the unit test now asserts the note is the LAST message.
+
+**Suggested improvement:** where the UI has a single-slot surface (a toast, a banner, a status line), tests and walk steps assert what the slot SHOWS after the whole action, not that a message was emitted; and a message raised deep in a shared path is checked against every caller's own follow-up message.
+
+**Principle:** Emitting a message is not showing it — assert on the final visible state of a single-slot surface, because a later message in the same action silently wins.

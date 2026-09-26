@@ -147,7 +147,15 @@ F1 fix: **unit 6249 / 6249** (382 files) · **build** clean · **tfin 728 / 0** 
 **FAIL** on one home — D275's row named the deleted arrow-room test; the four rulings' rows now name their built homes →
 docsize OK: `Docs: OUTSTANDING 75 items (+8 −5, −5 all in ARCHIVE) · DECISIONS D1–D275 · homes OK` · `docsize: OVER by
 43, deferred (D29)` (a code change never trims the backlog). The Leave War "Move" tests passed in this run
-(`[LW-MOVE-CI-RED]`, §10). A second full run follows the reads' fixes.
+(`[LW-MOVE-CI-RED]`, §10).
+
+**The second full run, on the final code** (`869c7197`: F1, the reads' fixes, the three Leave War tests; under the lock,
+27 Sep 26): **unit 6255 / 6256** — the one is `[INPUTSCAL-TAP-FLAKY]`, the Inputs calendar's chip-tap test that fails
+now and then inside a full run and never alone ("elementFromPoint is not a function", the same symptom as filed; its
+files untouched by this branch; alone 3 / 3) — so the unit suite was run once more under the lock: **6256 / 6256** (382
+files) · **build** clean · **tfin 728 / 0** · **e2e 472 passed**, 0 failed, 48 skipped · **smoke 443 / 0** · **rulecheck** OK ·
+**docsize** OK (`homes OK`; OUTSTANDING over its tripwire, deferred — D29). **GitHub** on `869c7197` (run 36265413334):
+every job green, `geometry (lw-desktop)` included, the three Move tests passing first time.
 
 ## 8. The code reads (Fable and Astra, blind to each other, with this sheet)
 
