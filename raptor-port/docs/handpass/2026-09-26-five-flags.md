@@ -249,7 +249,8 @@ after F1/A4.
 **Your questions — each is a choice the walk raised; nothing is built for any of them:**
 - **Q1 — A man put on a row he is already on.** The app now WARNS ("already on FLIGHT SAFETY STAND-DOWN") but still
   plants the second copy, per your 13 Aug 26 rule "everything plants, warning after". Should it REFUSE instead — one
-  man, once per row? (Recommended: refuse — there is no reason to have the same man twice on one row.)
+  man, once per row? (Recommended: refuse — there is no reason to have the same man twice on one row.) **ANSWERED 27 Sep
+  26 after the mock-up — "Q1 refused" (D271);** built next, on this branch.
 - **Q2 — Your own puck's other warning rings.** On your purple "this is you" puck, the amber advisory ring, the thin red
   ring and the grey note ring are REPLACED by the purple ring (no glow now) — only the letter chip shows the flag
   (`w1/D1-*`, the first walk, before the glow went). Same on `main`. Show the warning's ring instead of the purple one
@@ -258,7 +259,8 @@ after F1/A4.
   the mock-up (`[ME-PUCK-SEVERITY-RING]`). Q1 and Q3: he asked for mock-ups first (27 Sep 26).
 - **Q3 — The strip beside the ‹ arrow.** The day before the front day now shows a 42px strip at the left edge, under the
   arrow (`w4/GUTTER-prevday-tail-view-1440x900.png`) — it was 8px. Keep it (it hints there is a day to the left), or
-  leave that strip empty? (Recommended: keep.)
+  leave that strip empty? (Recommended: keep.) **ANSWERED 27 Sep 26 — "Q3 keep" (D273).** Part 1 of the mock-up: items
+  1–3 approved as built, item 4 (this room) asked for full-screen first (D274); Q2b answered yes (D272).
 
 **Only your iPhone can prove:** the phone week and its swipes are untouched by this branch (measured in Chromium), but
 Safari's own landing after a swipe is yours to glance at.

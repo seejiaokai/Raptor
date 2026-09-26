@@ -2160,6 +2160,9 @@ persisted and never in a history snapshot. The toggle builder is `notePubTog`
   A palette tap ALWAYS plants: a darkened name plants too, its reason toasted
   after, mirroring drag ("everything plants, warning after") — the one
   refusal left is the seat's own occupant ("Already in that seat").
+  **TO CHANGE — D271 (27 Sep 26, "Q1 refused"): a THIRD hard refusal — a man put on a row he is already
+  on (drag, palette tap, "+ add") writes nothing and says why; not built yet (`OUTSTANDING.md`
+  `[CROWD-DUP-REFUSE]`).**
   **AND, SINCE D33/D47 (22 Sep 26), A SECOND AND HARDER ONE: ALL / ALL AVAIL
   ARE REFUSED ON FLYING-LINE COCKPIT SEATS.** `sentinelSeatOK(key,id)`
   (`engine/slots.ts`) is the one body; `SENTINEL_JET_BAR` is the one sentence,

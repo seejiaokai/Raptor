@@ -1193,8 +1193,9 @@ accidental busy words had warned. `slotBar` now asks it on purpose, before the b
 check's own words ("already on FLIGHT SAFETY STAND-DOWN 08:30–09:00"). A "+ add" key is a NEW place; a caller asking
 AFTER a write names the place the fill landed on (`slots.ts lastFilled` — `drag.ts` and `view.ts placeArmed`), or every
 ordinary add would read as a second copy; a crowd's or a sim box's bare row key names no place and is left to the busy
-scan. Advisory ("everything plants, warning after", 13 Aug 26) — whether a duplicate should be REFUSED is his question
-(the look card). **And the SC shift-window scan reads the seat he is dragged from too** (W3): a MAIN man dragged to
+scan. Advisory ("everything plants, warning after", 13 Aug 26) — **TO CHANGE — D271 (27 Sep 26, "Q1 refused"): a man put on a
+row he is already on is REFUSED, judged before anything is written, at every door; not built yet (`OUTSTANDING.md`
+`[CROWD-DUP-REFUSE]`) — until then this paragraph describes the app.** **And the SC shift-window scan reads the seat he is dragged from too** (W3): a MAIN man dragged to
 another MAIN seat of the same shift was captioned "inside this shift" about the shift he was leaving.
 
 **A second accept that would mint a duplicate content key is refused.**
