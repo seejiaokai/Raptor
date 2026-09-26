@@ -641,6 +641,20 @@ unchanged. The approved mock-up: `docs/mock/amend-seat-marks.html` (its `C_CSS`)
 
 ## The pending list, the one jump, and what the day head says (owner, 25 Sep 26 — the amendment batch)
 
+**An input's line, and the "what this day shows" line ([LEAVE-LATE-PUBLISHED], D177–D179, 26 Sep 26).** An input changed
+since the day was issued is ONE line — whose and what, then what moved: "Bane · LL — filed", "Taipan · OL — all day →
+09:00–12:00", "… Bane → Hunter", "… deleted", "… moved off this day" (never its dates — whether it covers the day is
+filed / moved off, and its far end is another day's business, Fable F1); a medical takeover's trimmed downchit and its
+tail read as one edit of the man's downchit (F2); a request whose filing moved too keeps the request's words ("on the
+programme → deleted", D114). When the same edit moved what the day earns, the line ends "· what the day earns changes
+with it". An input line whose edit re-landed a request's row on the day takes the view to that row (F4); one with no
+row (a leave) is a still line. What the day shows, judged today against what it went out with, is ONE line: "<the
+warning> — new / cleared", "<Callsign> · CAT A → B" (or seat, ground crew, SANS, SXO, posted out), "A blank brief — its
+suggested lead 140 min → 90 min", or "What this day shows" with a line for each (Astra's code read #4) — no tap. The
+warnings that stay LIVE on a published face (a crew-rest breach, the 7-day run, a lapsed qualification, the OIL
+warnings — D184, D185; `engine-rules.md` §Publishing) are never on it: the face shows them at once. The Amendments
+panel counts "N input changes" and names "what the published day shows changed" (F6).
+
 **"N pending ▾" opens the list of what will go out (D99, D100).** On a PUBLISHED day's working copy, on the edit
 week's day head and the board's publish strip (`html.ts dayStatHTML`), for the scheduler, the count is a button
 (`data-pendlist`) — never on View-only Sched, never under a preview, never on a draft day (nothing there goes out as an
@@ -709,13 +723,20 @@ React `.dver` select set `DPREV` (state/view.ts, di → `'orig'`|AL n).
 stand in for the live model: it swaps `DAYS[di]`/`SCHED.changes`/
 `SCHED.pending`, sets the PV flag, and restores everything in `finally` —
 a throw mid-build must never leave the snapshot installed as the real
-schedule. Under PV: no WARN reads (a snapshot is never validated), no
-sev/chip rings, no `data-slot`/`data-fill`/`data-drag`/`draggable` (those keys address
+schedule. Under PV: no `data-slot`/`data-fill`/`data-drag`/`draggable` (those keys address
 the LIVE model), pucks keep `data-person` so selection works, and the
 frozen `data-alc` marks come from the snapshot's own changes slice. The
 board renders `boardHTML(di, pv)` read-only (disabled fields, no mbtn/arm
 targets, no sign-off bar) inside `.pv-frozen`, and its live-checks panel
-becomes the preview banner. Belt-and-braces gates on stale markup:
+becomes the preview banner.
+**A look at a PUBLISHED version wears its warnings (owner, D187, 26 Sep 26 — "Q5 it should"; was: no WARN reads, no
+rings under PV).** The week's and the board's preview of an issued version draws that version's rings, flags and warning
+list (`html.ts withVersionFlags` → `validate.ts versionFaceWarn`): the day's CURRENT version exactly as View-only Sched
+draws it (the warnings it went out with, the live ones — D183–D185 — on top); an OLDER version the warnings IT went out
+with, without today's live ones or the next-day mark. On the board the checks list sits under the preview banner, read
+only (no mute, no "create the period" — `boardWarnHTML(di, true)`), and a tap on a warning resolves against the same list
+(`view.ts displayedBundle`). A parked plan ('d:') — and a version kept before the freeze, with no warnings stored — stays
+flag-free, as every preview was. The write surfaces stay gated on PV alone. Belt-and-braces gates on stale markup:
 `armSlot`, `boardChange`/`boardMbtn`/`boardArmClick`, `dragFrom`
 (`.preview`/`.pv-frozen`), Shell's contextmenu clear. Previews are pruned
 lazily (EditWeek/SchedBoard), on `histApply`, and on week switch.
@@ -2847,7 +2868,7 @@ Board pucks take `wfoc`/`advf`/`dim` but never `echo`: the board is one day, so
 the cross-day echo has nothing to say there. The roster palettes still keep
 their normal look (a palette puck is a drag source for a day you may not be
 looking at, so dimming it would fight arm-and-plant), and `.pv-frozen` is
-excluded — `WARN` is live and a version preview is a published snapshot.
+excluded — the preview's marks are its own version's (D187), never the live day's.
 See §Jumping from a warning to the puck that caused it.
 
 The "you" indicator (`ME`, purple) is **passive**: it marks your own view-as
@@ -7454,7 +7475,8 @@ window breaking it, and "fixes" it.
 
 **What it is.** Tapping either counter chip — on the board **or on the week**,
 both draw it — opens one window of real pucks. Pilots in the left column, WSOs in
-the right (the same pairing the sim seat grid uses). One puck per row at every
+the right (the same pairing the sim seat grid uses) — on a published day's issued face, by the seat each man went out
+with, as his puck draws him (`engine/faceattrs.ts seatShown`, [LEAVE-LATE-PUBLISHED] 26 Sep 26). One puck per row at every
 width, because a full row per man is what gives his flag and his figure room;
 that is the whole reason it replaced the bubble of names.
 
@@ -7518,8 +7540,8 @@ subject tapped while it is open keeps its place. **Stacking: z-index 410** —
 above the board (400), below every dialog (420–480); the toast (540) shows over it.
 
 **It reads the world its chip was drawn in — ALL of it.** The chip says which:
-the working copy, a version preview (a past AL or a parked plan: read, not
-checked — no flags), the view page's issued face (its OFFICIAL flags), or a
+the working copy, a version preview (a published version wears its own warnings — D187; a parked plan none), the view
+page's issued face (its OFFICIAL flags), or a
 draft day the view page resolves in the official world (`data-oilver` /
 `data-oilofw`). The crowd, the flags, the figures, the puck marks and the title
 all come from that one world (`html.ts withChipWorld`), and the window names the

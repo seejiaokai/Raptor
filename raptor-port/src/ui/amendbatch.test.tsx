@@ -10,7 +10,7 @@ import { DAYS } from '../engine/data'
 import { INPUTS, inpId } from '../engine/inputs'
 import { acceptInput, unacceptInput } from '../engine/slots'
 import { loadVersionToWorkingCopy, LOADLEFT, LOADMOVED } from '../engine/drafts'
-import { SCHED, signOf, setSign, setDayApproved, dayDelta, dayDiscardCount, alCount, dayShownPendCount, dayCurVer } from '../engine/publish'
+import { SCHED, signOf, setSign, setDayApproved, dayDelta, dayDiscardCount, alCount, dayShownPendCount, dayCurVer, dayPendingItems } from '../engine/publish'
 import { validate, WARN } from '../engine/validate'
 import { HOOKS } from '../engine/hooks'
 import { initStore, writeSlot } from '../state/store'
@@ -179,13 +179,19 @@ describe('item 6 — "Load onto working copy" puts back what that version had fi
     expect(dayDelta(MON), 'nothing pending').toEqual([])
     expect(LOADLEFT).toEqual([])
   })
-  it('a request filed AFTER the version comes off again and reads fresh — the version never had it', () => {
+  /* CHANGED 25 Sep 26 by the owner's D178 ("whenever there is a change, in terms of input from a member … the admin
+     should see the pending after the schedule is published"): a request FILED after the version is a member's input
+     change on a published day, so it reads pending until an AL (or Unpublish and publish again) takes it in. The load
+     still puts its filing back (fresh, as at the Original — D98's half that the load can do), but a load never deletes
+     a member's record, so the request itself stays pending: ONE item, its details — and nothing about its filing. */
+  it('a request filed AFTER the version comes off again and reads fresh — and stays pending as filed since (D178)', () => {
     publishDay(MON)
     const inp = req()
     acceptInput(MON, inp, 'u')                                  // filed under Unavailable on the working copy
     expect(loadVersionToWorkingCopy(MON, dayCurVer(MON))).toBe(true)
     expect(inp.acc || '', 'fresh, as at the Original').toBe('')
-    expect(dayDelta(MON)).toEqual([])
+    expect(dayDelta(MON).map((e: any) => e.kind + ':' + String(e.addr).split('.')[0])).toEqual([`input:inv:${MON}`])
+    expect(dayPendingItems(MON).length, 'one item — the request, filed since').toBe(1)
   })
   it('a two-day request whose row the version PUTS BACK on this day is back on the programme — never "taken off" beside its own row (Fable’s code read #1)', () => {
     const inp: any = { person: 'bane', date: 'Jul 13', endDate: 'Jul 14', allday: true, type: 'Meeting', remarks: 'Fable two-day', mod: '2026-07-02' }
@@ -330,7 +336,7 @@ describe('a request taken off (or put on) a published day is ONE change — its 
     expect(alCount(SCHED.als[0])).toBe(1)
     const tag = alPanelText()
     expect(tag, "the issued AL's line").toMatch(/1 item · 1 removal/)
-    expect(tag, 'no separate filing on it').not.toMatch(/input filing/)
+    expect(tag, 'no separate filing on it').not.toMatch(/input (filing|change)/)
   })
   it('the mirror: accepting a request onto a published day is 1, and its line can be tapped to the row', async () => {
     const { pendListHTML } = await import('./pendlist')

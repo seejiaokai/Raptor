@@ -49,7 +49,9 @@ export function publishedDays() {
   return DAYS.map((d: any, di: number) => {
     if (!dayApproved(di)) return d
     const snap = daySnapOf(di, dayCurVer(di) as any)
-    return (snap && snap.d) ? snap.d : d
+    /* …with what its face drew from the roster and the rules as issued ([LEAVE-LATE-PUBLISHED], D179) — a copy, so the
+       stored snapshot is never touched */
+    return (snap && snap.d) ? (snap.pa || snap.rv ? { ...snap.d, faceIssued: { pa: snap.pa || null, rv: snap.rv || null } } : snap.d) : d
   })
 }
 /* has this day gone out as a signed document? (drives the per-day "Published ALn /
@@ -62,14 +64,15 @@ export function dayIssuedLabel(di: number): string {
 export function schedRows(days: any[] = DAYS) {
   const rows = [['Day', 'Date', 'Wave', 'CS', 'Mission', 'Brief', 'TO', 'Land', 'FCP', 'FCP lvl', 'RCP', 'RCP lvl', 'Area', 'Area time', 'Rmks', 'Stores']]
   days.forEach((d: any) => (d.waves || []).forEach((w: any) => w.formations.forEach((f: any) => f.aircraft.forEach((a: any) => {
-    const F = PEOPLE[a.p] || {}, W = PEOPLE[a.w] || {}, o = a.opts || {}
+    const fi = (d as any).faceIssued, pa = (fi && fi.pa) || {}
+    const F = { ...(PEOPLE[a.p] || {}), ...(pa[a.p] ? { q: pa[a.p].q } : {}) }, W = { ...(PEOPLE[a.w] || {}), ...(pa[a.w] ? { q: pa[a.w].q } : {}) }, o = a.opts || {}
     const st = STORE_CFG.filter(([k]) => o[k]).map(([, lab]) => lab).concat(o.bombs ? [o.bombs] : []).join(' ')
     const at = f.atime != null ? f.atime : (a.area ? `${f.to.replace(':', '')}-${f.ld.replace(':', '')}` : '')
     /* the INDICATED brief (owner, 6 Aug 26) wins when the scheduler has typed
        one; live VCONF.briefLead is only the fallback for a blank line, and
        that fallback still has to agree with the rule the engine validates
        against, so it stays computed rather than hard-coded. */
-    const brief = parseHM(f.br) != null ? f.br : minus(f.to, VCONF.briefLead)
+    const brief = parseHM(f.br) != null ? f.br : minus(f.to, fi && fi.rv && fi.rv.briefLead != null ? fi.rv.briefLead : VCONF.briefLead)
     rows.push([d.dow, d.dt, w.label, f.cs, f.msn, brief, f.to, f.ld, F.cs || '', F.q || '', W.cs || '', W.q || '', a.area || '', at, a.rmks || '', st])
   }))))
   return rows

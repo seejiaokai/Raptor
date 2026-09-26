@@ -67,13 +67,14 @@ whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaini
 [OIL-PERSONAL-PLACEHOLDER] (FULL tier), [CROWD-SIM-BRIEF] (WALK tier), [OIL-RELINK-XWEEK].
 
 **Placed by their own lines — not his rulings:** the Leave War — [LW-FROZEN-BAR-GAP] (after [HUMAN-RETEST]; show him
-first), [LW-FIGSEL-SLOW] and [LW-SCRUBBER-FLAKY] (test-only). The Tracker — [TRK-RETEST-NOTES] and
+first), [LW-FIGSEL-SLOW] and [LW-SCRUBBER-FLAKY] (test-only); the Inputs calendar — [INPUTSCAL-TAP-FLAKY] (test-only). The Tracker — [TRK-RETEST-NOTES] and
 [TRK-EDIT-SIDEWAYS] (their gates have passed), [TRK-PINCH-ASK] (his next Tracker session), [TRK-DLG-LEFTOVERS] (low, with the next question-box change), [TRK-PALETTE-ASK] (his answer D157: Raptor's colours
 fully — a small build), [TRK-BAKE-STALE] (low). The Leave War — [LW-RESET-ORDER] (his yes, D160 — a small build).
-The amendment batch's look — HIS ORDER (D173): (1) [LOOK-435] — D114's full check (DONE 25 Sep 26, evidence §9; [REQUEST-OFF-ONE] archived), his look, "merge live" of PR #435 (MERGED 25 Sep 26); (2) [ACCOUNTS] on a new branch; (3) [DRAFT-PENDING] — the one changes window, on top of accounts; (4) one full check of 2 and 3. Found by D114's reads, older than it: [REQ-TWO-ROWS] and [REQ-DECLINED-PENDING] — HIS ORDER (D174, D175) — BUILT on `claude/request-one-row` (FULL check done, archived; his look and "merge live" next, BEFORE [ACCOUNTS]); its look card's two questions answered: [REQ-DECLINED-DELETED] (D176 — built there, archived) and [LEAVE-LATE-PUBLISHED] (D177 — its OWN branch; scope: the sweep in `raptor-port/docs/superpowers/specs/2026-09-25-published-face-live-inputs.md`; its place in his order to be asked — the agent recommends right after `claude/request-one-row` merges, before [ACCOUNTS]); then [REQ-ORPHAN-ROW] and [REQ-DOOR-WORDS] (both low). The board — [PUCK-FLAG-GLOW] (D164: a flagged puck does not glow — a small build), [CROWD-SWAP-SAYS-BUSY] (small; found by the batch's re-walk). The amendment batch (D91–D111) is BUILT on `claude/amendment-batch`, its pull request waiting for his look and "merge live" — its eleven items closed and archived 25 Sep 26 (`OUTSTANDING-ARCHIVE.md`; the spec `raptor-port/docs/superpowers/specs/2026-09-25-amendment-batch.md`); left from that area: [AVAILWIN-PREVIEW-BAR] (low), [AMEND-SMALL-SEEN] (any time). The docs and the checks — [DEPLOY-DOCS] (its operational half), [DOC-POINTERS-CODE] and
-[RULINGS-LF-PIN] (with the next code change), [DOC-SUBHEADS] and [RULING-HOMES-AUDIT] (any time, docs only),
+The amendment batch's look — HIS ORDER (D173): (1) [LOOK-435] — D114's full check (DONE 25 Sep 26, evidence §9; [REQUEST-OFF-ONE] archived), his look, "merge live" of PR #435 (MERGED 25 Sep 26); (2) [ACCOUNTS] on a new branch; (3) [DRAFT-PENDING] — the one changes window, on top of accounts; (4) one full check of 2 and 3. Found by D114's reads, older than it: [REQ-TWO-ROWS] and [REQ-DECLINED-PENDING] — HIS ORDER (D174, D175) — BUILT on `claude/request-one-row` (FULL check done, archived; his look and "merge live" next, BEFORE [ACCOUNTS]); its look card's two questions answered: [REQ-DECLINED-DELETED] (D176 — built there, archived) and [LEAVE-LATE-PUBLISHED] (D177–D189 — MERGED 26 Sep 26 on his "merge live", archived); then [REQ-ORPHAN-ROW] and [REQ-DOOR-WORDS] (both low). The board — [PUCK-FLAG-GLOW] (D164: a flagged puck does not glow — a small build), [CROWD-SWAP-SAYS-BUSY] (small; found by the batch's re-walk). The amendment batch (D91–D111) is BUILT on `claude/amendment-batch`, its pull request waiting for his look and "merge live" — its eleven items closed and archived 25 Sep 26 (`OUTSTANDING-ARCHIVE.md`; the spec `raptor-port/docs/superpowers/specs/2026-09-25-amendment-batch.md`); left from that area: [AVAILWIN-PREVIEW-BAR] (low), [AMEND-SMALL-SEEN] (any time). The docs and the checks — [DEPLOY-DOCS] (its operational half), [DOC-POINTERS-CODE] and
+[RULINGS-LF-PIN] (with the next code change), [DOC-SUBHEADS], [RULING-HOMES-AUDIT] and [HANDOFF-SHAPE-GUARD] (any time, docs only), [PEEK-ISSUED] (a question for him, low),
 [BG-CWD-GUARD] (his go, D162 — any time). Roles — [QUALS-MEMBER-SCOPE] (his answer D149: own row only; a small
-FULL-tier build, any time).
+FULL-tier build, any time), and beside it [QUALS-PROTO-TOAST] (low, one line of words). View-only Sched — [VIEW-ARROW-OVER-LIST] (low, LOOK tier).
+Insights — [INSIGHTS-WORKING-COPY] (a question for him, with the one changes window or any time).
 
 **Waiting on him — no order exists:** [OIL-EARNED-VS-GRANTED] (his figure — ask first, when the award fix reaches it;
 D147), [LW-COMMIT-MANNING] (his call), [LEAVE-YEAR] ("we will do this next time", 19 Sep — no slot since),
@@ -927,6 +928,51 @@ permissions, so FULL tier. **Place:** any time, none blocking. The question as i
     rule; if own-row-only quals is wanted, the gate belongs in the same three
     places the authority-sweep fix touched.
 
+### [PEEK-ISSUED] The desktop next-week preview on View-only Sched shows next week's working copy, even for a published day — a question for him (filed 26 Sep 26)
+Noted by the sweep behind `[LEAVE-LATE-PUBLISHED]` (Astra, its plan read; carried in `[LATE-PUB-FACE-LIVE]`, archived
+26 Sep 26): the peek of next week at the right of the desktop week (`raptor-port/src/ui/peek.ts`) draws next week's live
+working copy, so on View-only Sched a published next-week day shows edits not yet issued. Astra recommends the issued
+content there too, as the published face does (D178, D179). **The question:** should the peek show the published version
+of a published day? **Place:** low; its own small WALK-tier build if yes.
+
+### [INPUTSCAL-TAP-FLAKY] The calendar's chip-tap test fails now and then inside the full unit run, never alone — test-only (filed 26 Sep 26)
+`raptor-port/src/ui/inputscal.test.tsx` "a real pointerdown+pointerup on an input chip sets INPEDIT to that EXACT record":
+seen twice in full runs on `claude/leave-late-published` — once by Fable's first code read (`document.elementFromPoint is
+not a function` ×7), once in the final gate run on `2cfceae2` (INPEDIT stayed null) — and green in the run before it
+(5972 / 5972) and alone 3 / 3. That branch does not touch the file or the calendar (no diff against `main`), so it is
+order- or load-dependent: some earlier file in the same worker leaves the document without `elementFromPoint`, or a
+listener behind. **Do:** find the file that runs before it in the same worker when it fails (vitest `--sequence.seed` /
+the shard order), and make the test install its own `elementFromPoint` stub and restore it, or reset what the other file
+leaves. **Place:** test-only, any time.
+
+### [INSIGHTS-WORKING-COPY] Week Insights shows the working copy's week to everyone, members included — a question for him (filed 26 Sep 26)
+Astra's second read of `[LEAVE-LATE-PUBLISHED]` (`raptor-port/docs/handpass/2026-09-26-late-pub-astra-read2.md` #2): the
+top bar's Insights (`raptor-port/src/engine/insights.ts computeInsights`, `raptor-port/src/ui/Modals.tsx insightsHTML`)
+validates and reads the WORKING week — its warnings, sorties and hours — for every role, while View-only Sched shows each
+published day as issued. So a member reading Insights sees the admin's unpublished edits (and, since that branch, a
+member's late input) counted in. The same on `main` (it always read the working copy); Fable's second read calls it the
+working copy "by design". **The question:** should Insights show the published schedule on View-only Sched / for a member,
+and the working copy on Edit Schedule? If yes, Astra's fix steps are in the read (a displayed-world model passed in; the
+issued days through `withChipWorld` / `faceWarn`). **Place:** a question for him; with the one changes window
+(`[DRAFT-PENDING]`, the next time the working-versus-published split is designed) or any time.
+
+### [VIEW-ARROW-OVER-LIST] The week's floating "‹" arrow covers the start of an opened warning list on a desktop (filed 26 Sep 26)
+Seen by the Leave War walker of `[LEAVE-LATE-PUBLISHED]`'s check (picture
+`raptor-port/docs/img/handpass/2026-09-26-late-pub/leavewar/desktop/desktop-LW1b-1-face-warnings.png`): on View-only
+Sched at 1440 px, a day's "⚠ N issues" list opened on the day at the left edge sits under the week's floating "‹"
+scroll arrow, which hides the first letters of the list's lines. Not new with that branch (the arrow and the list are
+unchanged there). **Do:** give the arrow room (an inset on the scroller, or the arrow above the list only while the
+pointer is near it), walk both widths with a list open on the first and last day. **Place:** low, any time.
+
+### [QUALS-PROTO-TOAST] The Quals page's "Save changes" says "prototype — writes to Dataverse in the full build" (filed 26 Sep 26)
+Found by the Quals walker of `[LEAVE-LATE-PUBLISHED]`'s check (evidence `raptor-port/docs/handpass/2026-09-26-late-pub.md`
+§4c): pressing Save changes toasts "Quals saved (prototype — writes to Dataverse in the full build)."
+(`raptor-port/src/ui/QualsPage.tsx`, the Save button). That breaks his 25 Aug 26 rule that UI copy reads production,
+never prototype (`raptor-port/CLAUDE.md` §Product bar): the database-era user would read "Qualifications saved". The same
+on `main`; out of that branch's scope. **Do:** reword the toast; keep the prototype truth as a code comment beside it;
+grep the app for other "prototype" / "full build" / "Dataverse" words on screen. LOOK tier. **Place:** low, with
+`[QUALS-MEMBER-SCOPE]` or any time.
+
 ### [TRK-PALETTE-ASK] The Tracker's own dark palette, or Raptor's? — ask him once (filed 24 Sep 26)
 **ANSWERED (D157, 24 Sep 26): Raptor's, FULLY** — backgrounds, text and the event colours (`tracker.css` variables and
 `app/core.js` `TYPE_COLOR` / `GRADE_FILL`). Shown to him first as three versions of the real chart. LOOK tier plus a
@@ -990,6 +1036,15 @@ config change, not a guide change (D146). A `run_in_background` shell starts at 
 `cd raptor-port`, or a root `package.json` whose scripts `cd raptor-port && npm run …` (it would start the full
 checks and could change what Vercel detects). **Place:** any time, none blocking — but ask him first: a hook runs in
 every chat, and it is standing configuration.
+
+### [HANDOFF-SHAPE-GUARD] The document gate does not notice HANDOFF.md losing a section or a block's end marker (found 25 Sep 26)
+One span replace in `119dff45` (D176's check, on `claude/request-one-row`) ate everything from a `## Now` block's Gates
+line to the gate counts — the block's last lines, its `<!-- /now -->`, the whole `## Next, in order` and the
+`## Gate baseline` heading — and `npm run docsize` passed it, three commits running, into `main` (PR #437). Found and
+restored from `d13162dc` by the overnight chat (`claude/leave-late-published`, 25 Sep 26). **The fix:** `docsize.mjs`
+checks HANDOFF.md's shape — every `<!-- now:… -->` has its `<!-- /now -->` before the next block or heading, and the
+headings `## Now`, `## Next, in order`, `## Gate baseline` are each present once, in that order. Docs/scripts only; its
+own small change (a script under the gate, so a docs-only PR).
 
 ### [RULING-HOMES-AUDIT] Check once that each ruling's named home really carries it (filed 24 Sep 26)
 Found in the 24 Sep 26 skills review (D146): D16 and D17 named `raptor-port/docs/bug-check-order.md` as their home,
@@ -1165,30 +1220,6 @@ the stashed weeks' `ground` by `src`, read by all four, closes both. `engine-rul
 ("taken off"), then the plan switched to: the row is back beside a request reading "taken off" (`reconcileDayFiling`
 leaves 'r' alone), its Accept does nothing, and deleting the request leaves the row with a dead link. Fix: re-file 'r' to
 'g' when its own row stands on a loaded day, or `dropInputRow` removes any row with the deleted id whatever the filing.
-
-### [LEAVE-LATE-PUBLISHED] A leave filed after a day is published shows on its published face at once, with nothing pending — a question for him (25 Sep 26)
-**WIDENED 25 Sep 26 — D178:** EVERY member input change after publishing (filed, edited, deleted, moved) reads pending for the
-admin, and the published face keeps what it was issued with; the admin publishes an AL, or Unpublishes and publishes again
-if it affects no one. **What stays live — D179 ("freeze everything for now"): nothing.** Medical downchits and a lapsed
-qualification freeze too (the 15 Sep 26 crew-rest plan's §4 "safety facts are never versioned" set aside); only a reader's own
-view choices stay. Provisional — show him on the build and ask again.
-**ANSWERED 25 Sep 26 — D177 ("Question 2 yes"): it reads "1 pending", the four fall, and the published face keeps what it
-was issued with until the next AL — ITS OWN BRANCH.** His follow-up ("is there anything else that does this too?") is
-answered by a sweep of the published face's readers of live inputs — **its list is this item's scope: Context
-`raptor-port/docs/superpowers/specs/2026-09-25-published-face-live-inputs.md`** (A0–A7 to freeze; B1 medical and B2–B4, B6
-live on purpose; B5 — a neighbour day's input moving a published day's warnings — to put to him under D45).
-Fable's code read F2 on D175's branch (`raptor-port/docs/handpass/2026-09-25-req-one-row-fable-read.md`), reproduced in a unit
-probe on `8fc6dba2`: Monday published and signed; a leave (OL) filed for Hunter on Monday → View-only Sched shows him under
-Unavailable at once (the Unavailable block reads the live inputs on every face — `raptor-port/src/ui/html.ts`), while Monday
-reads 0 pending, keeps its four and offers no AL. Older (the same on `main`): a leave never takes a filing state, and the
-comparison and the signature both read an unfiled request as nothing new. **Against the record:** D44/D45 ("nothing on a
-published schedule may change without the scheduler acknowledging it"; a leave taken after publishing is what the scheduler
-amends or publishes the EOD version for), and `OUTSTANDING-ARCHIVE.md` `[AMEND-D45-FILING]`'s closing line ("a leave landing on
-a published day keeps wiping them (as built)") — the code does not. **The agent's recommendation, to put to him:** a late
-leave reads "1 pending" and takes the four down, and the published face keeps what it was issued with until the next AL;
-its own branch (the published-face half is the bigger build — every Unavailable reader on the view face). Medical is the
-standing exception (a safety fact, never versioned — `raptor-port/src/engine/events.ts`). **Place:** on the look card of
-`claude/request-one-row`; then its own branch, in his order.
 
 ### [REQ-DOOR-WORDS] Two small door-wording gaps around a request's row — low (25 Sep 26)
 Fable's code read on D175's branch (F4, F5), both older: (1) one act, two sentences — the preview banner's "Switch to this plan"

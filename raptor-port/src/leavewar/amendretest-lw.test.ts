@@ -7,8 +7,8 @@
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { INPUTS } from '../engine/inputs'
 import { DAYS } from '../engine/data'
-import { SCHED, signOf } from '../engine/publish'
-import { WARN } from '../engine/validate'
+import { SCHED, signOf, dayPendingItems } from '../engine/publish'
+import { WARN, officialWarn } from '../engine/validate'
 import { stashClear } from '../engine/weekstash'
 import { initStore as raptorInitStore } from '../state/store'
 import { commitSetDayApproved } from '../state/sched-commit'
@@ -48,5 +48,23 @@ describe('a Leave War change that moves what a published day earns re-checks the
     expect(codesOn(TUE), 'the day says why it now reads pending').toContain('OIL_STALE_DAY')
     setDayEvent(TUE_ISO, 0, '')                             // and taken away again
     expect(codesOn(TUE), 'the advisory goes with it').not.toContain('OIL_STALE_DAY')
+  })
+})
+
+/* FABLE'S CODE READ F3 (26 Sep 26): the advisory explains the OIL line the day already reads pending — so it is live on
+   the published face (the day says so, D2) and is not compared: one holiday is ONE pending change, not two. */
+describe('a holiday declared after publishing is ONE pending change, and the published face says so (Fable F3)', () => {
+  const faceCodes = (di: number) => ((officialWarn().byDay[di] && officialWarn().byDay[di].warns) || []).map((w: any) => w.code)
+  it('declared: one item — what the day earns — and the advisory on the face; taken away: nothing', () => {
+    const g = signOf(TUE); g.cur = 'ignite'; g.sked = 'bane'; g.plan = 'stiff'; g.appr = 'pump'
+    commitSetDayApproved(TUE, true)
+    setRole('admin')
+    setDayEvent(TUE_ISO, 0, 'PH')
+    const items = dayPendingItems(TUE)
+    expect(items.map((x: any) => x.kind), 'the OIL line alone').toEqual(['oil'])
+    expect(faceCodes(TUE), 'the published face says why').toContain('OIL_STALE_DAY')
+    setDayEvent(TUE_ISO, 0, '')
+    expect(dayPendingItems(TUE)).toEqual([])
+    expect(faceCodes(TUE)).not.toContain('OIL_STALE_DAY')
   })
 })

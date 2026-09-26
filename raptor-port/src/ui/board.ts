@@ -3,7 +3,8 @@
    store's notify(). The CX-with-a-reason dialog state lives here too. */
 import { DAYS } from '../engine/data'
 import { mkNote, noteText } from '../engine/note'
-import { INPUTS, inputCoversDate, inpById, inpTimeText, inpId } from '../engine/inputs'
+import { briefLeadShown } from '../engine/faceattrs'
+import { INPUTS, inputsOn, inputCoversDate, inpById, inpTimeText, inpId } from '../engine/inputs'
 import { PEOPLE, whoId, isSpecial } from '../engine/people'
 import { isStandalone, makeStandalone, DUTY_PICK, SAWAVE } from '../engine/waves'
 import { waveInTime } from '../engine/events'
@@ -194,7 +195,7 @@ function boardHTMLBody(di: number, pv?: boolean) {
          generic txtSet path below, no new wiring needed. Wrapped so the
          optional ghost never changes this row's grid-item count — see the
          mobile column notes in scheduler.css. */
-      const brief = minus(f.to, VCONF.briefLead)
+      const brief = minus(f.to, briefLeadShown())
       /* D49's MARK, ON THE LINE (owner, 22 Sep 26; the walk's rules-sweep FAIL
          3) — the board's half of the same change as the week's (ui/html.ts).
          A line typed with the same take-off and landing still earns; what was
@@ -347,7 +348,7 @@ function boardHTMLBody(di: number, pv?: boolean) {
      the board reads the way the week does. */
   /* one pass over INPUTS for the three input-backed crew panels — the board
      rebuilds on every edit */
-  const dayInp = INPUTS.filter((i: any) => inputCoversDate(i, d.dt))
+  const dayInp = inputsOn(d.dt)
   const sect: Record<string, string> = {
     notes: sbNotesPanel(d, di, pv, mvRO), prog: sbProgPanel(d, di, pv, mvRO), waves: wavesPanel,
     duty: sbDutyPanel(d, di, pv, mvRO), sims: sbSimRowsPanel(d, di, pv, mvRO), ground: sbGroundPanel(d, di, pv, mvRO),
@@ -423,7 +424,9 @@ function boardSignBody(di: number, pv?: boolean) {
     + `<div class="sb-pub">${planSelectorHTML(di)}${verTagHTML(di)}${nysMarkHTML(di)}${dayStatHTML(di, ed)}</div></div>`
 }
 
-export function boardWarnHTML(di: number) {
+/* `look`: drawn under a look at a published version (D187) — the day's checks as that version shows them, read only:
+   no mute and no "create the period" (they act on today's day, not on the record) */
+export function boardWarnHTML(di: number, look = false) {
   const d = DAYS[di]
   const dw = (WARN.byDay[di] && WARN.byDay[di].warns) || []
   /* .sbwrap/.open + data-sbwtog + .sbw-car exist for the PHONE fold (owner,
@@ -447,7 +450,7 @@ export function boardWarnHTML(di: number) {
       : `No conflicts flagged for ${esc(d.dow)} ✓`)
     + `</div>`
   if (dw.length) {
-    const canMute = canEditSched()
+    const canMute = !look && canEditSched()
     const wtext = (w: any) => {
       const names = (w.who || []).map((id: any) => PEOPLE[id] ? PEOPLE[id].cs : id).join(', ')
       return `${esc(names)}${names ? ' — ' : ''}${esc(wlbl(w.msg || WCODE[w.code] || w.code || ''))}`
@@ -463,7 +466,7 @@ export function boardWarnHTML(di: number) {
        purpose — muting declutters the list, it does not change what the day is. */
     const muted: number[] = []
     dw.forEach((w: any, ix: number) => {
-      if (!view.warnShown(w)) { muted.push(ix); return }
+      if (!look && !view.warnShown(w)) { muted.push(ix); return }   // a look shows the whole record (D187)
       /* the selected state goes in the STRING, not on a class painted later:
          SchedBoard diffs this html against the last one to decide whether to
          re-hang the panel, so a class added afterwards is lost on the next
@@ -485,7 +488,7 @@ export function boardWarnHTML(di: number) {
            himself. Same helper as the week (mkPeriod), so the button and the
            sentence cannot name different years, and no other check grows an
            action. */
-        + (mkPeriod(w, di) ? `<button class="wln-act" data-mkperiod="${esc(mkPeriod(w, di))}" title="Creates the ${esc(mkPeriod(w, di))} leave war period in draft and takes you to the Leave War to set its bidding window">Create the ${esc(mkPeriod(w, di))} period</button>` : '')
+        + (!look && mkPeriod(w, di) ? `<button class="wln-act" data-mkperiod="${esc(mkPeriod(w, di))}" title="Creates the ${esc(mkPeriod(w, di))} leave war period in draft and takes you to the Leave War to set its bidding window">Create the ${esc(mkPeriod(w, di))} period</button>` : '')
         + `</div>`
     })
     if (muted.length) {
@@ -496,7 +499,7 @@ export function boardWarnHTML(di: number) {
         const w = dw[ix]
         wh += `<div class="wln ${w.sev} muted" data-wdi="${di}" data-wix="${ix}" title="Jump to the puck that caused this">`
           + `<span class="wln-t">${wtext(w)}</span>`
-          + `<button class="wln-mute" data-woff="${di}.${ix}" title="Show this check again">↺</button>`
+          + (look ? '' : `<button class="wln-mute" data-woff="${di}.${ix}" title="Show this check again">↺</button>`)
           + `</div>`
       })
     }

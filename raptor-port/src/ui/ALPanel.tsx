@@ -44,7 +44,8 @@ export function ALPanel() {
               const bits = [`${c.total} change${c.total === 1 ? '' : 's'}`]
               if (c.del) bits.push(`${c.del} removal${c.del > 1 ? 's' : ''}`)
               if (c.mov) bits.push(`${c.mov} reorder${c.mov > 1 ? 's' : ''}`)
-              if (c.inp) bits.push(`${c.inp} input filing${c.inp > 1 ? 's' : ''}`)
+              /* "change", not "filing" (Fable's code read F6, 26 Sep 26): since D178 the input items count an edited leave too */
+              if (c.inp) bits.push(`${c.inp} input change${c.inp > 1 ? 's' : ''}`)
               /* SAY WHAT AN OIL CHANGE IS (fix 3 / Fable F5, 22 Sep 26). The
                  whole OIL block goes out as ONE item under one per-day address,
                  so this counted it and then said nothing about it: a day whose
@@ -53,6 +54,9 @@ export function ALPanel() {
                  himself the bare count read as a change nobody made. The count
                  was never wrong; it just had to say what it was. */
               if (c.oil) bits.push('what this day earns changed')
+              /* what the published day shows — its warnings, a man's CAT, a printed rule value — differs from what it went
+                 out with ([LEAVE-LATE-PUBLISHED], D179) */
+              if ((c as any).warn) bits.push('what the published day shows changed')
               return (
                 <div className="al-pubday" key={di}>
                   <span className="al-pd-lbl"><b>{dowShort(di)}</b> · {bits.join(' · ')}</span>
@@ -70,7 +74,7 @@ export function ALPanel() {
             /* the split in the unit the person counted (D109, D114); an AL issued before falls back to its diff's */
             const c = a.ukinds || diffCounts(a.diff), s = (a.sign && a.sign[a.di]) || null
             const sigTitle = s ? SIGN_ROLES.map((r: any) => r[1] + ' ' + (s[r[0]] || '—')).join(' · ') : 'signed before sign-off was introduced'
-            return `<span class="al-tag" data-alc="${a.seq}" title="${esc(dowShort(a.di) + ': ' + sigTitle)}"><b>${verLabel(a.id)}</b> <i class="al-days">${dowShort(a.di)}</i> · ${alCount(a)} item${alCount(a) === 1 ? '' : 's'}${c.del ? ` · ${c.del} removal${c.del > 1 ? 's' : ''}` : ''}${c.mov ? ` · ${c.mov} reorder${c.mov > 1 ? 's' : ''}` : ''}${c.inp ? ` · ${c.inp} input filing${c.inp > 1 ? 's' : ''}` : ''}${s && s.appr ? ` · <i class="al-days">appr ${esc(s.appr)}</i>` : ''}</span>`
+            return `<span class="al-tag" data-alc="${a.seq}" title="${esc(dowShort(a.di) + ': ' + sigTitle)}"><b>${verLabel(a.id)}</b> <i class="al-days">${dowShort(a.di)}</i> · ${alCount(a)} item${alCount(a) === 1 ? '' : 's'}${c.del ? ` · ${c.del} removal${c.del > 1 ? 's' : ''}` : ''}${c.mov ? ` · ${c.mov} reorder${c.mov > 1 ? 's' : ''}` : ''}${c.inp ? ` · ${c.inp} input change${c.inp > 1 ? 's' : ''}` : ''}${c.warn ? ' · what the day shows' : ''}${s && s.appr ? ` · <i class="al-days">appr ${esc(s.appr)}</i>` : ''}</span>`
           }).join('')
         }} />
         : <div className="al-list"><span className="al-none">No amendments published yet — publish a day, edit it, then publish an AL.</span></div>}

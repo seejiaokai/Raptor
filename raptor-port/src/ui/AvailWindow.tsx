@@ -25,7 +25,8 @@
    remove him from the list. Do not let this drift into filtering him out. */
 import { useEffect, useLayoutEffect, useRef } from 'react'
 import { notify } from '../state/store'
-import { PEOPLE, byCrew } from '../engine/people'
+import { PEOPLE } from '../engine/people'
+import { seatShown, byCrewShown } from '../engine/faceattrs'
 import { HOOKS } from '../engine/hooks'
 import { useVersion } from './useStore'
 import { canEditSched } from '../state/auth'
@@ -72,7 +73,9 @@ export function openAvailWinFrom(osn: HTMLElement) {
    seat colours the app already paints. A WSO is the rear-cockpit seat, which is
    the same test `puck()` itself uses to decide the `r` class — asked of the one
    record, never re-derived from a qualification letter. */
-const isWso = (id: string) => ((PEOPLE as any)[id] || {}).seat === 'RCP'
+/* …read as the face being drawn shows him: on an issued day's window (inside the chip's world) the seat he went out with,
+   so his column always matches the puck he wears (Fable's second read #2; engine/faceattrs.ts) */
+const isWso = (id: string) => seatShown(id) === 'RCP'
 
 /* THE PHONE LAYOUT — the stylesheet's own breakpoint for the window (the
    ≤620px rule in scheduler.css), asked of the browser, so the two can never
@@ -215,8 +218,8 @@ export function AvailWindow() {
        new place. He is counted, and said out loud under the columns. */
     const known = people.filter(id => !!(PEOPLE as any)[id])
     const gone = people.filter(id => !(PEOPLE as any)[id])
-    const pilots = known.filter(id => !isWso(id)).sort(byCrew)
-    const wsos = known.filter(id => isWso(id)).sort(byCrew)
+    const pilots = known.filter(id => !isWso(id)).sort(byCrewShown)
+    const wsos = known.filter(id => isWso(id)).sort(byCrewShown)
 
     const earners = (ids: string[]) =>
       ids.filter(id => !!oilFigureFor(di, id, item)).length

@@ -34,7 +34,7 @@ number is one above the highest of `main`'s own run below D150 (the map shows it
 parallel chat holds (D90–D119 is the amendment chat's; D150–D156 are used). **Since 24 Sep 26 main's run below D150
 is full (D135–D149), so it continues from D157**, skipping D170+ (the demo chat's range, D154). **D190–D199 is the
 Tracker smoke chat's range** (`claude/trk-smoke-add-race-bug-007eed`, D190, 25 Sep 26); **D176–D189 is the D175 chat's**
-(`claude/request-one-row`, his instruction of 25 Sep 26).
+(`claude/request-one-row`, his instruction of 25 Sep 26). **D180–D189 pass to the overnight chat** (`claude/leave-late-published`, 25 Sep 26 — the D175 chat merged having used D176–D179).
 
 **What counts.** A ruling ("do it this way from now on"), a product decision ("green only where it
 counted"), a correction to how I work, a preference, a "leave it", a supersession of an earlier
@@ -47,12 +47,12 @@ ruling, or an explicit no. **Not** ordinary task instructions ("run the tests", 
 
 | Area | File | Loads by itself | Rulings, newest first |
 |---|---|---|---|
-| How we work | `.claude/rules/decisions/how-we-work.md` | in EVERY session | D173, D166, D165, D106, D90, D162, D148, D147, D145, D144, D143, D141, D140, D138, D137, D136, D135, D151, D89, D87, D86, D85, D84, D78, D73, D72, D70, D69, D68, D67, D63, D62, D60, D59, D58, D57, D56, D54, D53, D30, D29, D23, D22, D17, D16, D14, D13, D12, D11, D10, D9, D8, D7, D6, D5, D4 |
+| How we work | `.claude/rules/decisions/how-we-work.md` | in EVERY session | D182, D180, D173, D166, D165, D106, D90, D162, D148, D147, D145, D144, D143, D141, D140, D138, D137, D136, D135, D151, D89, D87, D86, D85, D84, D78, D73, D72, D70, D69, D68, D67, D63, D62, D60, D59, D58, D57, D56, D54, D53, D30, D29, D23, D22, D17, D16, D14, D13, D12, D11, D10, D9, D8, D7, D6, D5, D4 |
 | Tracker | `.claude/rules/decisions/tracker.md` | when a Tracker file is read (its code, docs, scripts, evidence) | D191, D190, D158, D157, D134, D132, D131, D130, D129, D128, D127, D126, D124, D123, D122, D121, D120, D64 |
 | Leave War | `.claude/rules/decisions/leave-war.md` | when a Leave War file is read (its code, docs, e2e, evidence) | D160, D159 |
-| Scheduler & amendments | `.claude/rules/decisions/scheduler.md` | when a scheduler, board, engine, amendment or storage file is read | D179, D178, D177, D176, D175, D174, D172, D171, D170, D169, D168, D167, D119, D118, D117, D116, D114, D113, D111, D110, D109, D108, D107, D105, D104, D103, D102, D101, D100, D99, D98, D97, D96, D95, D94, D93, D92, D91, D164, D161, D149, D77, D66, D65, D51, D50, D47, D45, D44, D41, D40, D39, D38, D37, D36, D33, D27 |
+| Scheduler & amendments | `.claude/rules/decisions/scheduler.md` | when a scheduler, board, engine, amendment or storage file is read | D189, D188, D187, D186, D185, D184, D183, D179, D178, D177, D176, D175, D174, D172, D171, D170, D169, D168, D167, D119, D118, D117, D116, D114, D113, D111, D110, D109, D108, D107, D105, D104, D103, D102, D101, D100, D99, D98, D97, D96, D95, D94, D93, D92, D91, D164, D161, D149, D77, D66, D65, D51, D50, D47, D45, D44, D41, D40, D39, D38, D37, D36, D33, D27 |
 | OIL | `.claude/rules/decisions/oil.md` | when an OIL, Leave War, placeholder-puck or publishing file is read | D163, D142, D82, D81, D80, D79, D52, D49, D48, D46, D43, D42, D35, D32, D31, D28, D26, D25, D24, D21, D20, D19, D18, D15, D3, D2, D1 |
-| Archive | `DECISIONS-ARCHIVE.md` | never — SEARCH it before telling him anything is undecided | D156, D133, D125, D155, D154, D153, D152, D150, D88, D83, D71, D61, D55, D34, D139, D146, D112, D115 |
+| Archive | `DECISIONS-ARCHIVE.md` | never — SEARCH it before telling him anything is undecided | D156, D133, D125, D155, D154, D153, D152, D150, D88, D83, D71, D61, D55, D34, D139, D146, D112, D115, D181 |
 
 ## Carried, still open for him
 

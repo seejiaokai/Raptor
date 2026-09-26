@@ -7,10 +7,11 @@ import { DAYS } from '../engine/data'
 import { PEOPLE } from '../engine/people'
 import { dayCount } from '../engine/waves'
 import { lgT } from '../engine/time'
-import { validate, WARN, WCODE, wlbl, withOfficialWarn } from '../engine/validate'
+import { validate, WARN, WCODE, wlbl, withOfficialWarn, versionFaceWarn } from '../engine/validate'
+import { isDraftVer } from '../engine/drafts'
 import { computeInsights } from '../engine/insights'
 import { markEdit } from '../engine/publish'
-import { esc, afterSchedMutate, dayDisplaysOfficial } from '../state/view'
+import { esc, afterSchedMutate, dayDisplaysOfficial, CURPAGE, DPREV } from '../state/view'
 import { SESSION } from '../state/auth'
 import { notify } from '../state/store'
 import { dayInfoHTML, issuedFaceVer, withChipWorld } from './html'
@@ -36,7 +37,12 @@ export function DayPop() {
     return { title: `${d.dow} · ${d.dt}` + (wc ? ` · ${wc}` : ''), body: dayInfoHTML(di) }
   }
   const face = issuedFaceVer(di)
+  /* …and beside a LOOK at a published version on Edit Schedule or the board, the version on screen — its tasking, its
+     warnings (D187), no pending — never the working copy behind it (Fable's and Astra's reads of D187). A plan's look
+     keeps today's behaviour. */
+  const lv = CURPAGE === 'editsched' && DPREV.has(di) && !isDraftVer(DPREV.get(di)) ? DPREV.get(di) : null
   const { title, body } = face != null ? withChipWorld(di, face, true, () => draw())
+    : lv != null ? withChipWorld(di, lv, !!versionFaceWarn(di, lv), () => draw())
     : dayDisplaysOfficial(di) ? withOfficialWarn(draw) : draw()
   const close = () => { setDayPop(null); notify() }
   return (

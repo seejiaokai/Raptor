@@ -5,7 +5,7 @@ import { keyDay } from '../engine/keys'
 import { slotVal, setSlotVal, fillSlot, armTargetExists, sentinelSeatOK } from '../engine/slots'
 import { popReorderedDay } from '../engine/reorder'
 import { slotBar, personCount } from '../engine/avail'
-import { validate, WARN, officialWarn } from '../engine/validate'
+import { validate, WARN, officialWarn, versionFaceWarn, workingWarn } from '../engine/validate'
 import { markEdit, daySnapOf, dayApproved } from '../engine/publish'
 import { curDraftId, reconcileIssuedMarks, isDraftVer } from '../engine/drafts'
 import { isLead, isInstr, isOcu } from '../engine/people'
@@ -537,7 +537,7 @@ export function selectPerson(id:any,inWeek?:any){
       const days:any[]=[];
       for(let di=0;di<7;di++){
         const g=displayedByDay(di);
-        const tr=(dayDisplaysOfficial(di)?officialWarn():WARN).trace;
+        const tr=displayedBundle(di).trace;
         const hasWarn=!!(g&&g.warns&&g.warns.some((w:any)=>(w.who||[]).includes(id)));
         if(hasWarn||(tr&&tr[di]&&tr[di][id]))days.push(di);
       }
@@ -578,7 +578,23 @@ export function displayedByDay(di:any){
      WORKING warning at that index (the missing-index guard cannot catch a collision).
      An edit-page 'd:' preview is ignored for APPROVED days, so draftPreview gates on
      !dayApproved; VWORK never holds a draft, so it only bites the approved case. */
-  return (dayDisplaysOfficial(di)?officialWarn():WARN).byDay[di]
+  return displayedBundle(di).byDay[di]
+}
+/* the warning bundle day di is drawn from: a look at one of its PUBLISHED versions (DPREV, not a plan) shows that
+   version's warnings (owner, D187 — validate.ts versionFaceWarn), so its taps and highlights resolve there; else the
+   page's own world, as before */
+export function displayedBundle(di:any){
+  const ver=DPREV.get(+di)
+  if(CURPAGE==='editsched'&&ver!=null&&!isDraftVer(ver)){ const f=versionFaceWarn(di,ver); if(f)return f; }
+  /* the working bundle by name, not WARN: while a face or a look is being drawn WARN is swapped for the render, and the
+     answer must be the one a tap will read after it */
+  return dayDisplaysOfficial(di)?officialWarn():workingWarn()
+}
+/* is day di drawn as a look at a published version that wears its warnings (D187)? — only on Edit Schedule and the
+   board, where the look is painted (the view page draws its own issued face and ignores an edit-page look) */
+export function lookWearsFlags(di:any){
+  const ver=DPREV.get(+di)
+  return CURPAGE==='editsched'&&ver!=null&&!isDraftVer(ver)&&!!versionFaceWarn(di,ver)
 }
 /* Does the VIEW page render THIS day's flags from the OFFICIAL world? The single
    source of truth for "which world day di is showing", so displayedByDay (the click/
@@ -823,7 +839,10 @@ export function resetViewState(scope: ResetScope){ for(const e of VIEW_RESET) if
 export let RESTARM:any=null
 export function setRestArm(di:any,ver:any){ RESTARM = di==null?null:{di:+di,ver} }
 export function restArmed(di:any,ver:any){ return !!RESTARM && RESTARM.di===+di && String(RESTARM.ver)===String(ver) }
-export function setDayPreview(di:any,ver:any){ RESTARM=null; UNPUBARM=null; if(ver==null||ver==='live')DPREV.delete(+di); else DPREV.set(+di,ver) }
+export function setDayPreview(di:any,ver:any){ RESTARM=null; UNPUBARM=null; if(ver==null||ver==='live')DPREV.delete(+di); else DPREV.set(+di,ver)
+  /* a focused warning is an index into the list on screen; another version's list is another list, so the focus on this
+     day lets go (Fable's and Astra's reads of D187) */
+  if(WFOCUS&&+WFOCUS.di===+di)WFOCUS=null }
 /* [GLOBAL-UNDO] §6.6 — the Unpublish confirm arm (see the registry entry above). A
    day whose OIL credits are bid against takes two taps to unpublish: the first arms
    this + warns, the second (while armed) commits. A day with no clash unpublishes on

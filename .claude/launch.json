@@ -4,14 +4,92 @@
     {
       "name": "raptor-preview",
       "runtimeExecutable": "npx",
-      "runtimeArgs": ["--prefix", "raptor-port", "vite", "preview", "raptor-port", "--port", "4180", "--strictPort"],
+      "runtimeArgs": [
+        "--prefix",
+        "raptor-port",
+        "vite",
+        "preview",
+        "raptor-port",
+        "--port",
+        "4180",
+        "--strictPort"
+      ],
       "port": 4180
     },
     {
       "name": "raptor-walk",
       "runtimeExecutable": "npx",
-      "runtimeArgs": ["--prefix", "raptor-port", "vite", "preview", "raptor-port", "--port", "4173", "--strictPort"],
+      "runtimeArgs": [
+        "--prefix",
+        "raptor-port",
+        "vite",
+        "preview",
+        "raptor-port",
+        "--port",
+        "4173",
+        "--strictPort"
+      ],
       "port": 4173
+    },
+    {
+      "name": "raptor-walk-2",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "--prefix",
+        "raptor-port",
+        "vite",
+        "preview",
+        "raptor-port",
+        "--port",
+        "4174",
+        "--strictPort"
+      ],
+      "port": 4174
+    },
+    {
+      "name": "raptor-walk-3",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "--prefix",
+        "raptor-port",
+        "vite",
+        "preview",
+        "raptor-port",
+        "--port",
+        "4175",
+        "--strictPort"
+      ],
+      "port": 4175
+    },
+    {
+      "name": "raptor-walk-4",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "--prefix",
+        "raptor-port",
+        "vite",
+        "preview",
+        "raptor-port",
+        "--port",
+        "4176",
+        "--strictPort"
+      ],
+      "port": 4176
+    },
+    {
+      "name": "raptor-walk-5",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "--prefix",
+        "raptor-port",
+        "vite",
+        "preview",
+        "raptor-port",
+        "--port",
+        "4177",
+        "--strictPort"
+      ],
+      "port": 4177
     }
   ]
 }

@@ -38,6 +38,12 @@ export const HOOKS = {
      Saturday and Sunday from the day's own name; the wire sharpens it to the
      squadron's real non-working days. */
   oilEarningDay: (_di: number): boolean => false,
+  /* THE DAY'S WARNINGS AS ISSUED ([LEAVE-LATE-PUBLISHED], D179 — publish.ts): the validator lends publishing its
+     judgement — at issue, the day's slice of the official warnings to keep (`issuedWarn`), and on every read today's
+     slice to compare it with (`warnNow`). engine/validate.ts sets both at load (publish.ts cannot import it — the
+     validator imports publishing). Null → nothing is frozen and the face reads the official pass, as before. */
+  issuedWarn: null as null | ((di: number) => any),
+  warnNow: null as null | ((di: number) => any),
   /* THE DAY'S REAL DATE, and WHO AN ALL / ALL AVAIL PUCK STANDS FOR — the two
      other facts the OIL evidence block needs and the engine cannot know
      ([OIL-AUTO-REMOVE] §7.1/§7.3, engine/oilev.ts). The date is the week's own

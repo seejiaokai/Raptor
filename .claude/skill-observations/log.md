@@ -314,3 +314,108 @@ resolved statuses always carry their resolution date
 **Suggested improvement:** In the disposition step, split "reproduce" into two checks: (a) the observed behaviour happens, and (b) the reviewer's stated reason it is wrong holds — enumerate every reader of the state the finding says is "unchanged" / "invisible" (renderers, validators, availability, downstream consumers) and probe each. Record findings that fail (b) as "not a defect — checked", with the reader that disproves them, and pin the correct behaviour with a test so a later rule cannot absorb it.
 
 **Principle:** A finding is two claims — "this happens" and "this is wrong because…". Reproduction usually tests only the first. The second is where false positives live, and a false positive with a ready-made fix is more dangerous than a missed finding, because it arrives looking verified.
+
+### Observation 254: A background test run over files still being edited reports failures that are not there
+
+**Status:** OPEN
+**Date:** 2026-09-26
+**Session context:** Overnight build of [LEAVE-LATE-PUBLISHED] (D181); a full unit run was started in the background after step 1, and step 2's source edits were applied while it ran.
+**Skill:** New skill candidate: background verification discipline (or raptor-executor / bug-check-order §5 "between fix rounds")
+**Type:** open-source
+**Phase/Area:** verification while building
+
+**Issue:** The runner loads each test file (and its imports) when it reaches it, not at start. Source edits made during the run reached the later test files half-applied: 113 failures, every one a phantom — a clean re-run of the same code was 4 of 5,939, all expected. Only the timing showed which were real; the failure list itself looked like genuine regressions.
+
+**Suggested improvement:** When a full suite runs in the background, stage the next edits in a scratch file (a script of exact replacements) and apply them only after the run ends; or run it in a separate worktree. A run that overlapped any source edit is discarded, never triaged.
+
+**Principle:** A test result is evidence only about the exact code it loaded. If the code changed while the run was loading it, the result describes no revision at all — throw it away rather than read it.
+
+### Observation 255: The one handoff file lost a whole section to a span replace, and the document gate passed it into main
+
+**Status:** OPEN
+**Date:** 2026-09-26
+**Session context:** Picking up from HANDOFF.md at the start of the overnight session; the `## Next, in order` section, a block's end marker and the `## Gate baseline` heading were missing on main.
+**Skill:** session-handoff (and the docs gate it relies on)
+**Type:** internal
+**Phase/Area:** writing / checking HANDOFF.md
+
+**Issue:** A replacement anchored on text inside one `## Now` block ran to text in the gate-baseline paragraph, silently deleting everything between (commit 119dff45). Three later commits and a merge carried the damage; `npm run docsize` checks backlog items and rulings line by line but not the handoff file's own shape. The next chat only noticed because its own block write needed the missing end marker.
+
+**Suggested improvement:** The handoff skill re-reads HANDOFF.md's headings and markers after every write and compares them with before (one `<!-- /now -->` per `<!-- now:`, each of `## Now`, `## Next, in order`, `## Gate baseline` once, in order); the gate enforces the same (filed as OUTSTANDING.md [HANDOFF-SHAPE-GUARD]).
+
+**Principle:** A file that every session starts from needs a structural invariant checked by machine after each edit; a content check that ignores the file's skeleton lets the skeleton disappear unnoticed.
+
+### Observation 256: An OPEN observation held "in awareness" was repeated the same night it was logged
+
+**Status:** OPEN
+**Date:** 2026-09-26
+**Session context:** Morning continuation of [LEAVE-LATE-PUBLISHED]; observation 254 (a background suite run over files still being edited describes no revision) was scanned at session start, then the agent started the full unit suite in the background and applied three source edits while it ran.
+**Skill:** task-observer (Session Start Protocol step 2) and raptor-executor (verification)
+**Type:** open-source
+**Phase/Area:** applying open observations during work
+
+**Issue:** The run happened to pass (5964/5964), which made it look like evidence; by 254's own principle it describes no single revision and had to be repeated on the committed code. Scanning OPEN observations at session start did not stop the exact failure hours later, because nothing at the moment of starting a background run points back to them.
+
+**Suggested improvement:** When an OPEN observation names a trigger action ("start a background run", "replace a span in HANDOFF.md"), copy its one-line rule into the place that action is taken — here the Bash description habit: a background test run is started only on a committed, clean tree (`git status --short` empty), checked in the same command.
+
+**Principle:** A lesson scanned at the start of a session is not in force at the moment it matters; tie it to the action that triggers it, ideally as a check inside that action.
+
+### Observation 257: A break test with no red can be a redundant guard, and the order's rule "write a test" then contradicts D56
+
+**Status:** OPEN
+**Date:** 2026-09-26
+**Session context:** Break tests on [LEAVE-LATE-PUBLISHED]: cutting the medical line in `events.ts inpShow` turned nothing red, because the frozen inputs (layer 1) already keep a late downchit off the published face and out of the detector; the cut line is reached only by a version issued before the freeze — stored demo data.
+**Skill:** bug-check order (raptor-port/docs/bug-check-order.md §8 rule 4)
+**Type:** internal
+**Phase/Area:** break tests
+
+**Issue:** §8.4 says "if nothing goes red, that surface has no test, by proof — write one before continuing". Here the only test that could go red would build a pre-freeze version, which D56 forbids spending time on. The honest disposition was: name the layer that pins the behaviour (its own break test is red) and why the cut wire is unreachable for new data.
+
+**Suggested improvement:** Add to §8.4: a no-red break is either a missing test OR a redundant guard; for the second, record which other wire's break test pins the same behaviour and why the cut one is unreachable for new data — and consider deleting the redundant guard in a later, separate change.
+
+**Principle:** A break test measures whether a wire is observed, not whether it is needed; "no red" has two readings, and the disposition must say which.
+
+### Observation 258: A handoff's build list narrowed the ruling it was built from
+
+**Status:** OPEN
+**Date:** 2026-09-26
+**Session context:** Picking up [LEAVE-LATE-PUBLISHED]: HANDOFF.md said "LIVE_ON_FACE += CREW_REST, DAYS_RUN, QUAL" for his "a lapsed qualification" (D185). The code shows a lapsed SC or AAR currency raises SC_QUAL / AAR_QUAL / AAR_INSTR, not QUAL; and the crew-rest check's other answer (CREW_TIGHT) left frozen made a neighbour's change read pending on the published day.
+**Skill:** session-handoff (what a handoff's "to build" list is)
+**Type:** open-source
+**Phase/Area:** turning a ruling into a build list at handoff
+
+**Issue:** The list was written from memory of the code's names at handoff, as a finished spec. Built literally, the most literal case of his ruling (a lapsed currency) would have stayed frozen, and a new test would have shown a published day going pending for a change the ruling made live.
+
+**Suggested improvement:** In the handoff skill: a "to build" line that turns a ruling into code names says so ("the agent's reading") and the next session re-derives the list from the ruling's words against the code before building, recording any widening on the ruling's row.
+
+**Principle:** A code-name list in a handoff is a pointer to a ruling, not a replacement for it; re-derive it from the ruling at build time.
+
+### Observation 259: In this Windows Bash tool a doubled backslash inside a quoted heredoc reaches the program single
+
+**Status:** OPEN
+**Date:** 2026-09-26
+**Session context:** [LEAVE-LATE-PUBLISHED] morning; Python edit scripts passed through `python - <<'EOF'` failed their exact-match assertions four times on strings holding an escaped quote (`Monday\'s` in the source).
+**Skill:** New skill candidate: repo edit-script discipline (beside the memory "Python edits turn LF into CRLF")
+**Type:** internal
+**Phase/Area:** mechanical source edits from the shell
+
+**Issue:** A quoted heredoc should pass text verbatim, but here a Python source line written with a doubled backslash arrived with one, so the literal Python saw was different from the file's text and the replacement matched nothing (the scripts asserted, so nothing was damaged — only time lost). Writing the same script with the Write tool into the scratchpad and running it worked every time.
+
+**Suggested improvement:** For any edit script whose search text contains a backslash, write the script with the Write tool and run it; keep the assert-exactly-one-match guard in every such script.
+
+**Principle:** When a shell layer might rewrite escapes, move the program text out of the shell (a file written by a tool that does not interpret it), and keep an exact-match assertion so a mangled pattern fails loudly instead of editing nothing — or the wrong thing.
+
+### Observation 260: A pin that calls a builder differently from its real caller can pass with the fix cut out
+
+**Status:** OPEN
+**Date:** 2026-09-26
+**Session context:** [LEAVE-LATE-PUBLISHED], the pins for D187's read fixes; an exempt-desk pin drew the board's duty panel with the "look" flag as its THIRD argument, while the board passes it as the FOURTH (read only) — so the pin drew the working copy and passed with the fix cut out (break test B36: 0 red). Redrawn as the board draws it, it went red.
+**Skill:** raptor-port/docs/bug-check-order.md (break tests) — no skill file yet
+**Type:** open-source
+**Phase/Area:** writing a regression test for a render fix
+
+**Issue:** The test called an internal builder directly and guessed its arguments from its signature's names (`pv`, `ro`); the real caller passes a different value in the slot the fix reads. The test asserted the right outcome of the wrong drawing, and only the break test showed it.
+
+**Suggested improvement:** When a pin calls an internal builder directly, copy the arguments from its real caller (grep the call site) and assert one fact that proves the drawing is the intended mode (here: no write surface under a look). Keep the break test for every new pin — it is what caught this.
+
+**Principle:** A test that reaches past the public door must reproduce the door's exact call, and prove it did; otherwise only cutting the fix shows whether the test was ever looking at it.

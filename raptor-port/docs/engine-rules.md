@@ -2352,6 +2352,87 @@ line (`docs/superpowers/specs/2026-09-24-amendment-behaviour-register.md`).**
 - **A day template is refused on a published day (D96).** `applyDayTpl` returns false on a published day — see
   §Day templates.
 
+**A PUBLISHED DAY KEEPS WHAT IT WENT OUT WITH (26 Sep 26 — owner, D177, D178, D179 "freeze everything for now",
+provisional; D183, D184, D185 what stays live; `OUTSTANDING.md` `[LEAVE-LATE-PUBLISHED]`; plan
+`docs/superpowers/plans/2026-09-25-late-published-plan.md`).**
+Every change that would move a published day's face now waits for the admin: it reads pending, the four fall (D103), and
+the face keeps what it was issued with until the next AL (or Unpublish and publish again) — except the few warnings that
+stay LIVE (below), which the face draws from today and which never make the day pending.
+- **What an issued version freezes, beside its content, marks, filings and OIL:** `snap.inp` — every input covering the
+  day, a full copy (`publish.ts dayInputsFrozen`); `snap.w` — the day's slice of the official warnings as they stood the
+  moment it went out (the warnings that freeze, and the rings, flags and dashes THEY raise — `validate.ts warnSliceOf`
+  reads the bundle's `fz` class; `freezeWarn`, the validator judging the week once through `HOOKS.issuedWarn`), with
+  `w.cs` the callsigns its warnings were worded with; `snap.pa` / `snap.rv` — the men on the day as the roster drew them
+  (CAT, seat, posting — every man in a PERSON SLOT of its content (a seat, a sim seat or passenger, a desk, a ground or
+  Common Programme name, the extras — never free text that spells an id), every man behind its placeholder pucks as
+  frozen, and every man of its frozen inputs; Astra's reads #2, second #1 and #4) and the rule value it prints (a blank
+  brief's lead) — kept as published until the next AL, owner D186 ("Q1 yes", 26 Sep 26): the face, the CSV and the print
+  draw these (`engine/faceattrs.ts` — the ALL AVAIL window's columns and
+  order too), and the pending comparison measures today's `pa` against them, and `rv` only where a FLYING line prints a
+  suggested brief (a standby line prints none on screen — Fable's second read #1); `snap.ros` — the aircrew roster at
+  issue, which the day panel's "free all day" counts on the issued face; drawn, never compared (a man joining the squadron
+  would otherwise make every published day pending — Astra's second read #3).
+- **The inputs on a date — ONE reader, `inputs.ts inputsOn(dt)`** (with `inputOn`, `inputOnAny`). While a frozen version is
+  installed (`withFrozenInputs` — by `ui/html.ts withDaySnap` for an issued version, and by `validate.ts withIssuedWeek`
+  for every approved date plus the stashed neighbours' `weekctx.ts windowInputs`) it answers from that version; otherwise
+  from the live records. Every schedule-surface and validator reader goes through it; the records' own readers (the
+  Inputs page, the medical tracker, the Leave War, the live filing and OIL candidates) stay on `INPUTS`.
+- **Medical freezes too (D179; D185 "1 frozen still"):** `events.ts inpShow` no longer exempts a downchit from the frozen
+  filing, and the frozen copies carry its dates — the crew-rest plan's "current safety facts are never versioned" (§4)
+  is set aside.
+- **The input-details axis** (`publish.ts inputAxes` → `inputs.ts frozenInputMatch`): an input covering the day whose
+  details (`inpDetailKey`: whose, type, all day / half / times, remarks, SANS offer — not its filing, id, lateness
+  stamp, war tag, paperwork or OIL answer, and NOT its dates: whether it covers this day is the membership of the two
+  sides, and the far end of a multi-day input is another day's business — Fable's code read F1, 26 Sep 26: with the dates
+  in, a Mon–Tue leave stretched to Wednesday made Monday and Tuesday pending with their faces unchanged) differ from the
+  version's copy — filed since, edited, deleted, re-dated on or off, handed to another man. Matched BY CONTENT first, so
+  a record replaced by an identical one (a Leave War move, a medical tail) is no change on either axis; then by id; then
+  BY MAN — one man's record gone and another of his filed, of the same type or both downchits, neither with a filing
+  state, is ONE edit, carried with both records (a medical takeover trims the old downchit and mints its tail with
+  "till …" in its remarks: one line, not "moved off" and "filed" — F2); an upchit is out (the downchit it trims is the
+  change — but the trim writes "till <date>" into the downchit's remarks, which the face prints, so the days it still
+  covers read that one remark change — kept, owner D189 ("Q4 follow ur recommendation", 26 Sep 26): the words those days
+  printed are out of date, so each reads "1 pending" on the admin's working copy while View-only Sched keeps the old words
+  until the next AL); a request taken off on one side and absent, or
+  taken off on both, shows on neither face (D174, D176).
+- **One act, one item** (D109): `dayPendingItemsIn` folds an input's filing and details into ONE item, with the units of
+  the request row its edit re-landed (`unitRequestSrc`), the ground programme's order when that row is all that moved in
+  it (`groundOrderMovedOnlyBy`), and the OIL line when the inputs alone moved it — crowd included
+  (`oilev.ts oilMovedInputsOnly`; the line says "what the day earns changes with it"). The folded row's place comes with
+  it, so the one line in the pending list takes the view to the row (F4); a leave with no row stays a still line.
+- **The warnings axis** (`warnDelta`, kind `warn`): today's official judgement of the issued day against `snap.w` —
+  a quals, posting or rule change, or a neighbour day, that would change what the day flags. Kept OUT of the official
+  pass's own gate (`dayDeltaCore`), so the validator never depends on its output. The official pass reads each published
+  date's frozen inputs, so the axis never moves on the day's own input changes (those are the details axis's). A rename
+  is a label: warnings compare with callsigns keyed out (`warnMsgKey`), and the face re-words a frozen warning with
+  today's callsign.
+- **What stays LIVE on the face — drawn from today's judgement, never stored, never compared, so it alone never makes the
+  day pending (`validate.ts LIVE_ON_FACE`, and the next-day mark):**
+  - the dotted "breaks tomorrow's crew rest" mark and its run twin (`trace` — owner D183, "should be live to see the
+    break of crew rest");
+  - a crew-rest breach and the 7-day run on the day itself (`CREW_REST`, `DAYS_RUN` — D184, D185), with the crew-rest
+    check's other answer, a tight turn (`CREW_TIGHT` — one check answers breach OR tight turn, so the face never shows a
+    frozen tight turn beside a live breach; the agent's reading, on the look card);
+  - a lapsed qualification (D185; the reading confirmed, D188) — the warnings the app marks with its Qualification flag: an illegal seat (`QUAL`), SC
+    currency (`SC_QUAL`), AAR currency (`AAR_QUAL`, `AAR_INSTR`); the crew-pairing warnings stay frozen (on the look
+    card). A man's CAT / seat / posting change still reads pending through `snap.pa` and still draws as issued on his
+    puck — only the warning it raises is live; a currency tick is not in `snap.pa`, so a lapsed currency shows at once
+    and reads nothing pending;
+  - every OIL warning (`OIL_NO_PERIOD` — D19; `OIL_STALE_DAY`, `OIL_STALE_HOLIDAY`, `OIL_OLD_BLOCK`, `OIL_NO_TIMES`,
+    `OIL_UNPUBLISHED`): they speak from what the day earns under today's calendar, which on a published day moves only
+    when the war declares or lifts a holiday — the OIL line already reads that pending (D2, "the day says so"; Fable's
+    code read F3: compared too, one holiday read two changes).
+  A medical downchit stays FROZEN (D185).
+- **The face** (`validate.ts faceWarn`, what `officialWarn()` and `withOfficialWarn` now read): the official bundle with
+  each published day's slice replaced by its current version's `w`, and the live warnings laid over it with the rings
+  and flags they raise. A ring is the worst of a man's warnings, so the validator files every mark twice — in the day's
+  whole map (what the edit surfaces read) and in its class, `fz` (raised by a warning that freezes) or `lv` (by one that
+  stays live); the face takes the worse of the frozen and the live by the day loop's own order. `officialRaw()` is the
+  detector.
+- **The load** ("Load onto working copy") cannot put a member's input back — it is his record, and may cover other days
+  (AM1): an input change stays pending after a load, "Discard N edits" does not count it, and the load's message says
+  so (`drafts.ts inputsLeftSaid`, F5).
+
 **A REQUEST'S ROW AND ITS FILING ON A PUBLISHED DAY (25 Sep 26, evening — owner, D174 and D175, on their own branch
 before accounts; evidence `docs/handpass/2026-09-25-req-one-row.md`).**
 - **Filed since, then taken off, is no change (D174, AM20).** A request the current issued version's filing record does

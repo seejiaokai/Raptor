@@ -21,8 +21,9 @@
    by the per-block repaint, which would throw a list hung inside them away mid-read. */
 import { DAYS } from '../engine/data'
 import { PEOPLE } from '../engine/people'
-import { INPUTS, inpId, inpLabel } from '../engine/inputs'
-import { dayPendingItems, daySnapOf, dayCurVer, nextSeq, MOVE_LABELS, requestRow } from '../engine/publish'
+import { INPUTS, inpId, inpLabel, inputCoversDate } from '../engine/inputs'
+import { officialSliceNow } from '../engine/validate'
+import { dayPendingItems, daySnapOf, dayCurVer, nextSeq, MOVE_LABELS, requestRow, warnMsgKey, warnCallsigns, peopleAttrsNow, faceRuleVals, faceRuleValsCompared } from '../engine/publish'
 import type { PendItem } from '../engine/publish'
 import { ELOG, elogWhen, keyLabel } from '../engine/editlog'
 import { oilEvidence } from '../engine/oilev'
@@ -97,7 +98,7 @@ function valueWords(addr: string, v: any): string {
 }
 const FIL: any = { '': 'not on the programme', g: 'on the programme', u: 'under Unavailable', r: 'taken off' }
 
-type Words = { where: string; from: string; to: string; who: string; when: string; jump: boolean }
+type Words = { where: string; from: string; to: string; who: string; when: string; jump: boolean; edited?: boolean }
 /* a request's filing entry in words: whose request, what it is, where it stood → where it stands. A request DELETED on
    the Inputs page is no longer there to name — its row, when the change has one, still carries whose and what (the
    landing mints the row from the request: who, the type, the remarks), so the line names it from the row and says it was
@@ -124,8 +125,102 @@ function lastEdit(keys: string[]) {
   for (let i = ELOG.rows.length - 1; i >= 0; i--) { const r = ELOG.rows[i]!; if (r.key && set.has(r.key)) return r }
   return null
 }
+/* AN INPUT CHANGED SINCE THE DAY WAS ISSUED ([LEAVE-LATE-PUBLISHED], owner D178 — every member input change after
+   publishing is pending for the admin): whose and what, then what moved — "Hunter · OL (leave) — filed under
+   Unavailable", "… all day → 09:00–12:00", "… Bane → Hunter", "… deleted", "… moved off this day". The issued copy
+   (the version's own, snap.inp) says what it was; the live record what it is — so a deleted leave is still named. */
+const hm = (m: any) => { const n = +m; if (!isFinite(n)) return ''; const x = ((n % 1440) + 1440) % 1440; return `${String(Math.floor(x / 60)).padStart(2, '0')}:${String(x % 60).padStart(2, '0')}` }
+const winWords = (r: any) => r.half === 'am' ? 'AM' : r.half === 'pm' ? 'PM' : r.allday ? 'all day' : (r.s != null && r.e != null ? `${hm(r.s)}–${hm(r.e)}` : 'no times')
+const clip = (t: any) => { const s = String(t || ''); return s.length > 40 ? s.slice(0, 39) + '…' : s }
+function inputWords(di: number, it: PendItem): Words {
+  const e: any = it.val || {}, id = String(e.addr || '').split('.').slice(1).join('.')
+  /* the two records the comparison paired — the live one may be another record of the same man's (a medical takeover's
+     tail, Fable F2), so it comes off the item before the record by this id */
+  const snap: any = daySnapOf(di, dayCurVer(di)), was = it.was || (snap && snap.inp && snap.inp[id]) || null
+  const now = it.now || INPUTS.find((x: any) => inpId(x) === id) || null
+  const here = !!now && !!DAYS[di] && inputCoversDate(now, (DAYS[di] as any).dt)
+  /* a line whose input re-landed a row on this day takes the view to it (Fable F4); a leave with no row stays still */
+  const none = { who: '', when: '', jump: !!(it.jump && it.jump.length) }
+  const name = requestName(here ? now : (was || now))
+  if (!was) {
+    const f: any = it.inp || (it.entry && String((it.entry as any).addr || '').startsWith('inp:') ? it.entry : null)
+    return { where: name, from: '', to: f && f.to === 'u' ? 'filed under Unavailable' : f && f.to === 'g' ? 'filed — on the programme' : 'filed', ...none }
+  }
+  if (!here) return { where: name, from: '', to: now ? 'moved off this day' : 'deleted', ...none }
+  const from: string[] = [], to: string[] = []
+  const pair = (a: string, b: string) => { if (a !== b) { from.push(a); to.push(b) } }
+  pair(cs(was.person), cs(now.person))
+  pair(String(was.type || ''), String(now.type || ''))
+  /* no dates: whether it covers this day is filed / moved off; its far end is another day's business (Fable F1) */
+  pair(winWords(was), winWords(now))
+  if (String(was.remarks || '') !== String(now.remarks || '')) { from.push(`“${clip(was.remarks)}”`); to.push(`“${clip(now.remarks)}”`) }
+  const earns = it.oilFold ? ' · what the day earns changes with it' : ''
+  if (!from.length) return { where: name, from: '', to: 'changed' + earns, ...none, edited: true } as Words
+  return { where: name, from: from.join(' · '), to: to.join(' · ') + earns, ...none, edited: true } as Words
+}
+/* WHAT THE PUBLISHED DAY SHOWS, judged today, against what it went out with ([LEAVE-LATE-PUBLISHED], owner D179 — "freeze
+   everything for now"): its warnings that freeze, a man's CAT / seat / posting as his puck draws it, the brief lead a
+   blank line prints — anything that is not the day's own content or inputs. (What stays live — the next-day crew-rest
+   mark, D183; a crew-rest breach, the 7-day run and a lapsed qualification, D184/D185 — is in neither side, so it never
+   reads here.) ONE change; each thing
+   that moved is a line of its own, named (Astra's code read #4). Warnings are matched with the men's callsigns keyed out,
+   so a rename (a label) never reads as a warning cleared and another new (#3); a cleared one is worded with today's
+   callsign. */
+const CATW: any = { q: 'CAT', seat: 'seat', pers: 'ground crew', san: 'SANS', sxo: 'SXO', archived: 'posted out' }
+function faceWords(di: number): Words & { rows?: CrowdRow[] } {
+  const snap: any = daySnapOf(di, dayCurVer(di)), w: any = snap && snap.w
+  const was: any[] = (w && w.byDay && w.byDay.warns) || []
+  const nowSlice: any = officialSliceNow(di), now: any[] = (nowSlice.byDay && nowSlice.byDay.warns) || []
+  const namesWas = (w && w.cs) || warnCallsigns(w), namesNow = warnCallsigns(nowSlice)
+  const k = (x: any, names: any) => `${x.code}|${warnMsgKey(x.msg, names)}`
+  const a = new Set(was.map((x: any) => k(x, namesWas))), b = new Set(now.map((x: any) => k(x, namesNow)))
+  const reword = (m: any) => { let t = String(m || ''); Object.keys(namesWas || {}).forEach((id: any) => { const c = cs(id); if (c && namesWas[id] && c !== namesWas[id]) t = t.split(String(namesWas[id])).join(c) }); return t }
+  const rows: CrowdRow[] = []
+  /* the same warning on the same men, re-worded — a rule change moved its time or its figure (the Logic walker, 26 Sep
+     26: a brief-lead change read each "No time for the flight brief" twice, cleared and new) — is ONE line, "changed",
+     in today's words */
+  const who = (x: any) => `${x.code}|${[...(x.who || [])].map(String).sort().join(',')}`
+  const added = now.filter((x: any) => !a.has(k(x, namesNow))), gone = was.filter((x: any) => !b.has(k(x, namesWas)))
+  added.forEach((x: any) => {
+    const j = gone.findIndex((y: any) => who(y) === who(x))
+    if (j >= 0) { gone.splice(j, 1); rows.push({ where: String(x.msg || x.code || 'A warning'), from: '', to: 'changed', keys: [] }) }
+    else rows.push({ where: String(x.msg || x.code || 'A warning'), from: '', to: 'new', keys: [] })
+  })
+  gone.forEach((x: any) => rows.push({ where: reword(x.msg || x.code || 'A warning'), from: '', to: 'cleared', keys: [] }))
+  /* the men as their pucks draw them */
+  if (snap && snap.pa) {
+    const nowPa: any = peopleAttrsNow(snap.pa)
+    Object.keys(snap.pa).forEach((id: any) => {
+      const o = snap.pa[id], n = nowPa[id]; if (!o) return
+      /* a man deleted from the roster outright: his puck has nothing left to draw */
+      if (!n) { rows.push({ where: `${cs(id) || id} · no longer on the roster`, from: '', to: 'removed', keys: [] }); return }
+      Object.keys(CATW).forEach((f: any) => {
+        const x = o[f] ?? null, y = n[f] ?? null
+        if (JSON.stringify(x) === JSON.stringify(y)) return
+        const v = (z: any) => typeof z === 'boolean' ? (z ? 'yes' : 'no') : (z == null || z === '' ? '—' : String(z))
+        rows.push({ where: `${cs(id)} · ${CATW[f]}`, from: v(x), to: v(y), keys: [] })
+      })
+    })
+  }
+  /* the brief lead a blank line prints */
+  if (snap && snap.rv && snap.rv.briefLead != null && faceRuleValsCompared(snap.d)) {
+    const nb = (faceRuleVals(snap.d) || {}).briefLead
+    if (nb != null && +nb !== +snap.rv.briefLead) rows.push({ where: 'A blank brief — its suggested lead', from: `${snap.rv.briefLead} min`, to: `${nb} min`, keys: [] })
+  }
+  const none = { who: '', when: '', jump: false }
+  if (!rows.length) return { where: 'What this day shows', from: '', to: 'changed', ...none }
+  if (rows.length === 1) return { where: rows[0]!.where, from: rows[0]!.from, to: rows[0]!.to, ...none }
+  return { where: 'What this day shows', from: '', to: '', ...none, rows }
+}
 export function pendItemWords(di: number, it: PendItem): Words {
   const e: any = it.entry || {}
+  if (it.val) {
+    /* a request whose filing moved too — filed, taken off, deleted — keeps the request's own words below ("on the
+       programme → deleted"); the details words speak where the record itself was edited, or where it has no filing */
+    const w = inputWords(di, it), fil = !!it.inp || String(e.addr || '').startsWith('inp:')
+    if (!fil || (w as any).edited) return w
+  }
+  if (it.kind === 'warn') return faceWords(di)
   const byLog = (): { who: string; when: string } => {
     const r = lastEdit(it.keys || [])
     return r ? { who: r.who, when: elogWhen(r.t) } : { who: 'earlier', when: '' }
@@ -234,7 +329,7 @@ const RANK = (it: PendItem) => {
   const a = String(it.addr || (it.entry && it.entry.addr) || ''), c = a.indexOf(':'), p = c < 0 ? '' : a.slice(0, c)
   if (it.kind === 'move') return 7
   if (it.kind === 'input') return 8
-  if (it.kind === 'oil') return 9
+  if (it.kind === 'oil' || it.kind === 'warn') return 9
   if (!p || ['ff', 'fr', 'wl', 'it', 'tr', 'st', 'ar', 'at', 'fa', 'ft', 'aa', 'au'].includes(p)) return 1
   if (p === 'a' || p === 'ap' || p === 'pn' || p === 'dn') return 2
   if (p === 's' || p === 'sr' || p === 'sn') return 3
