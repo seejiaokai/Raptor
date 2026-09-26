@@ -4649,3 +4649,24 @@ test('the bottom scrollbar shows the grid\'s place the moment it appears', async
   expect(t.grid, 'the grid is parked well along the year').toBeGreaterThan(0.4)
   expect(Math.abs(t.bar - t.grid), 'the thumb starts where the grid is, not at January').toBeLessThan(0.02)
 })
+
+/* A POST-OUT KEEPS THE ROW OF THE MONTH ON SCREEN (the absence-record re-test, W5-F2 — found by the orders walker, its
+   real trigger found by the re-walk, 26 Sep 26). The grid notes which months are on screen only when the set of rows
+   would change (a whole-grid repaint is the cost it saves), so going SEP → JUL — the same people — left the note at
+   September. A man then posted out from a July date was asked "is he here in September?", and his July row, with
+   everything on it, disappeared until another month was pressed. Needs a real layout: jsdom has no visible months. */
+test('a post-out dated in July keeps his July row, after the war was first shown on a later month', async ({ page }) => {
+  await openLeaveWar(page, 'a')
+  await lwRole(page, 'admin')
+  await page.locator('[data-testid="month-SEP"]').click()
+  await gridAtRest(page, '2026-09-01')
+  await page.locator('[data-testid="month-JUL"]').click()
+  await gridAtRest(page, '2026-07-01')
+  await page.locator('[data-testid="cell-slipway-2026-07-14"]').click()
+  await page.locator('[data-testid="bid-postout"]').click()
+  await page.locator('[data-testid="po-date"]').fill('2026-07-15')
+  await page.locator('[data-testid="po-confirm"]').click()
+  await expect(page.locator('[data-testid="bid-picker"]')).toHaveCount(0)
+  await expect(page.locator('[data-testid="row-slipway"]'), 'his row is still drawn in July').toBeVisible()
+  await expect(page.locator('[data-testid="cell-slipway-2026-07-13"]'), 'his last days in are still there to read').toBeVisible()
+})

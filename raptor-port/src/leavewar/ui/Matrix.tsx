@@ -1571,6 +1571,12 @@ export function Matrix() {
   // scroll-responsiveness gate exists to refuse.
   const [visWindow, setVisWindow] = useState('')
   const visSigRef = useRef<string | null>(null)
+  /* THE MONTHS ACTUALLY ON SCREEN, always (the absence-record re-test, W5-F2, 26 Sep 26 — the re-walk found its real
+     trigger). The state above is only written when the ROW SET changes, so SEP → JUL — the same people — left it at
+     September; a man then posted out from a July date was asked "is he here in September?" and his July row, with
+     everything on it, vanished until another month was pressed. The row filter reads THIS note, written at every
+     measure without a repaint; the state stays the repaint trigger, so the scroll gate's saving is kept. */
+  const visWinRef = useRef('')
   // Where a named day column sat the instant the row set changed, so the
   // repaint can put it back. Removing (or restoring) a row lets the table's
   // auto layout re-narrow every column that row's chips had widened — all of
@@ -2558,6 +2564,7 @@ export function Matrix() {
         .filter(x => Math.min(x.s.right, viewR) - Math.max(x.s.left, viewL) > 2)
       if (vis.length) {
         const win = `${vis[0]!.key}|${vis[vis.length - 1]!.key}`
+        visWinRef.current = win   // the true months, whether or not the rows change (W5-F2)
         const sig = people.filter(p => rowInWindow(p, win, liveRef.current.rowSpans)).map(p => p.id).join(',')
         if (sig !== visSigRef.current) {
           // Capture where the FIRST VISIBLE DAY column sits NOW; the layout
@@ -3281,7 +3288,7 @@ export function Matrix() {
     | { kind: 'catsub'; g: string; cat: string }
     | { kind: 'person'; p: Person }
   const rosterSequence = (): RSeq[] => {
-    const roster = displayRoster().filter(p => rowInWindow(p, visWindow, rowSpans))
+    const roster = displayRoster().filter(p => rowInWindow(p, visWinRef.current, rowSpans))
     const out: RSeq[] = []
     let prevG: string | null = null
     let prevCat = ''
@@ -3722,7 +3729,7 @@ export function Matrix() {
                 // rowInWindow above): the heads/counts below derive from the
                 // filtered list, so an emptied group takes its heading with
                 // it. visWindow '' (jsdom, first paint) shows everyone.
-                const roster = displayRoster().filter(p => rowInWindow(p, visWindow, rowSpans))
+                const roster = displayRoster().filter(p => rowInWindow(p, visWinRef.current, rowSpans))
                 const span = 2 + dayCols
                 let prevG: string | null = null
                 let prevCat = ''
