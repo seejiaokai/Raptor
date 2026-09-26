@@ -2471,7 +2471,8 @@ plans and the format/rid stamps — and a book persisted without `amV` is classi
 UNSUPPORTED and read-only-quarantined (`engine/publish.ts`), so a serializer built from
 the old list would freeze every week it wrote.
 
-Four sign-offs per day (`SIGN_ROLES`) → "Publish day" clears that day's pending and spends
+Four sign-offs per day (`SIGN_ROLES`) — **an admin picks all four names**, whoever is signed in (D212, 26 Sep 26: personal
+accounts do not tie a box to the person signed in; only an admin writes the boxes) → "Publish day" clears that day's pending and spends
 its signatures. Later edits become pending; "Publish AL" appends a **single-day** record
 `{id, di, iso, seq, snap:{d,c,fil}, diff, sign:{[di]:names}}` — not the old
 `{n, keys, sign, days, n0}`, and there is no week-wide `days`/`n0` pair to recalculate

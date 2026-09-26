@@ -1650,3 +1650,14 @@ config change, not a guide change (D146). A `run_in_background` shell starts at 
 checks and could change what Vercel detects). **Place:** any time, none blocking — but ask him first: a hook runs in
 every chat, and it is standing configuration.
 
+
+*Moved here 2026-09-26 by backlog-archive.mjs ([SIGNOFF-SELF]). Forward facts: `.claude/rules/decisions/scheduler.md`.*
+
+### [SIGNOFF-SELF] With personal accounts, should each of the four sign-offs sign as himself? — a question for him (filed 26 Sep 26)
+**ANSWERED 26 Sep 26 — D212, "admin picks all four names. its more convenient": the boxes stay as they are. Nothing to build.**
+Found by the `[ACCOUNTS]` consumer sweep. Today an admin picks all four names on a day (CUR CK, SKED CK, PLANNED BY,
+APPROVED BY — `raptor-port/src/engine/publish.ts SIGN_ROLES`); nothing ties a name to who is signed in. With accounts the
+app knows who is signed in, so each sign-off could be signed only by that person, signed in. A change to how a day is
+approved — his call. `[ACCOUNTS]` leaves the boxes as they are and makes the write admin-only at the command gate.
+**Place:** ask him with `[ACCOUNTS]`'s look card.
+

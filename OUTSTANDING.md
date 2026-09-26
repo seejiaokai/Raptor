@@ -80,7 +80,7 @@ The amendment area — PR #434, #435, #437 and #438 MERGED (25–26 Sep 26); [LO
 Roles — [QUALS-MEMBER-SCOPE] (folded into [ACCOUNTS], D200), and beside it [QUALS-PROTO-TOAST] (low, one line of words). View-only Sched — [VIEW-ARROW-OVER-LIST] (low, LOOK tier).
 Insights — [INSIGHTS-WORKING-COPY] (a question for him, with the one changes window or any time).
 
-**Waiting on him — no order exists:** [SIGNOFF-SELF] (raised by [ACCOUNTS]; put to him on its look card),
+**Waiting on him — no order exists:**
 [OIL-EARNED-VS-GRANTED] (his figure — ask first, when the award fix reaches it;
 D147), [LW-COMMIT-MANNING] (his call), [LEAVE-YEAR] ("we will do this next time", 19 Sep — no slot since),
 [REPO-PRIVATE]'s sharing half, [EOD] (design first; no slot
@@ -1193,13 +1193,6 @@ by default) for a read-only guest view.** The question was: how a new user joins
 admin can change it later. Also noted: an untagged signed-in person sees the programme as a GUEST (his parked plan of
 1 Sep 26, `raptor-port/docs/architecture-direction.md`). Found 26 Sep 26: §11 already covers Leave War bids (own row while open) and the
 leave / OIL ledger (admin writes, a member reads his own) — check, do not re-add.
-
-### [SIGNOFF-SELF] With personal accounts, should each of the four sign-offs sign as himself? — a question for him (filed 26 Sep 26)
-Found by the `[ACCOUNTS]` consumer sweep. Today an admin picks all four names on a day (CUR CK, SKED CK, PLANNED BY,
-APPROVED BY — `raptor-port/src/engine/publish.ts SIGN_ROLES`); nothing ties a name to who is signed in. With accounts the
-app knows who is signed in, so each sign-off could be signed only by that person, signed in. A change to how a day is
-approved — his call. `[ACCOUNTS]` leaves the boxes as they are and makes the write admin-only at the command gate.
-**Place:** ask him with `[ACCOUNTS]`'s look card.
 
 ### [LOOK-435] His inputs from the look at PR #435 — the order is D173 (25 Sep 26)
 **Step 1 DONE 25 Sep 26:** D114's FULL check — evidence `raptor-port/docs/handpass/2026-09-25-amendment-batch.md` §9; two
