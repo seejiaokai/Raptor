@@ -690,7 +690,13 @@ export function Matrix() {
   // derived from the stage and the role, so a period that moves on — or a
   // role that changes — while a sheet is open cannot leave the wrong
   // controls on screen.
-  const [open, setOpen] = useState<{ id: string; callsign: string; date: string } | null>(null)
+  /* `posting` — the posting sheet the tap opened, PINNED for as long as the sheet is up (the absence-record re-test,
+     W3-F5, 26 Sep 26 — found by the war walker). The Post out sheet commits on change and stays up so the admin can
+     see the grid move behind it; moving the date PAST the tapped day made that day an in-squadron day, and the grid
+     re-chose the sheet from the day's new state, so a bid sheet appeared under his hands, one tap from placing leave.
+     Read at the tap, from the day as it stood; unset for every other sheet, which still follows the day live (a PO
+     placed from the bid sheet still turns it into the Post out sheet). */
+  const [open, setOpen] = useState<{ id: string; callsign: string; date: string; posting?: 'po' | 'pi' } | null>(null)
   const close = () => { setOpen(null); setPlaceAt(null) }
   /* the published note editor opened FROM the tap list, for one Input */
   const [listRemark, setListRemark] = useState<{ at: string; row: any } | null>(null)
@@ -716,15 +722,17 @@ export function Matrix() {
   // undo it, owner 18 Aug 26). A day before the person joined is blank, not a
   // post-out, so it is excluded — there is nothing to undo there.
   const openPerson = open ? people.find(p => p.id === open.id) : undefined
-  const openPostedOut =
-    !!open && !!openPerson && !inSquadron(openPerson, open.date) &&
-    !(openPerson.from !== null && open.date < openPerson.from)
+  const openPostedOut = open?.posting
+    ? open.posting === 'po' && !!openPerson && openPerson.to !== null
+    : !!open && !!openPerson && !inSquadron(openPerson, open.date) &&
+      !(openPerson.from !== null && open.date < openPerson.from)
   // …and its mirror at the other end: a day BEFORE the person posted in
   // (owner, 20 Sep 26). For an ADMIN this opens the post-in sheet, exactly as
   // a posted-out day opens the post-out one; for a member it falls through to
   // the bid picker, which is answer C's "filed or bid" on a pre-joining day.
-  const openNotYetArrived =
-    !!open && !!openPerson && openPerson.from !== null && open.date < openPerson.from
+  const openNotYetArrived = open?.posting
+    ? open.posting === 'pi' && !!openPerson && openPerson.from !== null
+    : !!open && !!openPerson && openPerson.from !== null && open.date < openPerson.from
   /* "Place leave or OIL here instead" (owner, 20 Sep 26 — "we should also allow
      putting inputs when we click on days that were posted out"). An admin's tap
      on a day outside someone's time in the squadron opens the POSTING sheet,
@@ -1731,7 +1739,13 @@ export function Matrix() {
     startRowDrag,
     setWhoOpen,
     setBalOpen,
-    setOpen,
+    /* the tap pins the posting sheet it opens (W3-F5) — read off the day as it stands at the tap */
+    setOpen: v => {
+      const p = people.find(x => x.id === v.id)
+      const pre = !!p && p.from !== null && v.date < p.from
+      const posting = !p ? undefined : pre ? 'pi' as const : !inSquadron(p, v.date) ? 'po' as const : undefined
+      setOpen(posting ? { ...v, posting } : v)
+    },
     chipEnter: openQualsAt,
     chipLeave: () => setQualPop(null),
     chipClick: (p, el) => { if (qualPop?.id === p.id) setQualPop(null); else openQualsAt(p.id, el) },
