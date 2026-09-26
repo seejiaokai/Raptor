@@ -262,6 +262,19 @@ describe('review findings (5 Sep 26) — the question reads the week AFTER a mov
     validate()
     const extraKey = `g:5.${DAYS[5].ground.length - 1}.x0`
     expect(crossDayIfPlaced(ID, 'g:6.0', extraKey), 'moved off as an extra: six, not seven').toBe('')
+    /* …and a sim's front seat and a duty desk's extras line (Fable F1 (b), (c)): the box and the desk are the rows */
+    DAYS[5].ground.pop()
+    DAYS[5].sims = { ...(DAYS[5].sims || {}), oft: [...((DAYS[5].sims || {}).oft || []), { label: 'SAT OFT', str: '0900', end: '1000', p: ID, w: '' }] }
+    validate()
+    const simKey = `s:5.oft.${DAYS[5].sims.oft.length - 1}.p`
+    expect(slotBar(ID, 'g:6.0'), 'the sim is his only Saturday event').toMatch(/7th day in a row/)
+    expect(crossDayIfPlaced(ID, 'g:6.0', simKey), 'moved off the sim seat: six, not seven').toBe('')
+    DAYS[5].sims.oft.pop()
+    DAYS[5].dutywaves = [...(DAYS[5].dutywaves || []), { label: 'SAT DUTY', rows: [{ role: 'SDO', str: '0900', end: '1000', id: '', more: [ID] }] }]
+    validate()
+    const deskKey = `d:5.${DAYS[5].dutywaves.length - 1}.0.x0`
+    expect(slotBar(ID, 'g:6.0'), 'the desk extra is his only Saturday event').toMatch(/7th day in a row/)
+    expect(crossDayIfPlaced(ID, 'g:6.0', deskKey), 'moved off the desk extras line: six, not seven').toBe('')
   })
   it('a same-day crew-rest move: the leg being moved cannot break its own crew rest', () => {
     const d1 = DAYS[1].waves[0].formations[0]; d1.to = '20:00'; d1.ld = '23:00'; d1.br = ''

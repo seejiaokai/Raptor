@@ -584,3 +584,18 @@ resolved statuses always carry their resolution date
 **Suggested improvement:** For every NEW card, form or panel a build adds, the walk asserts its geometry, not only its content: primary controls aligned with the fields above (left and right edges equal) and inside the container. Cheap in a scripted walk (bounding boxes), and the assertion catches what a glance normalises.
 
 **Principle:** Looking confirms the picture matches your expectation of the content; it rarely notices a few pixels of misalignment. Measure what "looks right" means for new surfaces.
+
+### Observation 285: A guard hook built on an unmeasured claim about the harness
+
+**Status:** OPEN
+**Date:** 2026-09-26
+**Session context:** five-flags batch, [BG-GUARD-FALSE] (numbered 285, past 279 on the parallel `claude/accounts-new-person` and a gap for the absence-record chat)
+**Skill:** New skill candidate: guard hooks in `.claude/hooks/` (how a PreToolUse guard is written and tested)
+**Type:** open-source
+**Phase/Area:** writing a hook that encodes an environment fact
+
+**Issue:** A background-command guard was built on the project note "a background shell starts at the REPO ROOT". Another chat, whose session had started inside the sub-folder, was refused and then misled by the guard's own advice. Measuring it (a foreground `cd`, then a background `pwd`) showed background shells start in the chat's STARTING folder, not the repo root and not the foreground's current folder.
+
+**Suggested improvement:** When a hook or rule encodes how the harness behaves (where shells start, what env vars exist, what a tool returns), measure it in the current harness first, write the measurement into the hook's header, and make the hook's tests take the environment as an explicit input (so they pass from any starting folder).
+
+**Principle:** An environment fact written as a rule is a claim until it is measured in the environment the rule runs in; a guard built on an unmeasured claim refuses the wrong things and gives wrong advice with authority.

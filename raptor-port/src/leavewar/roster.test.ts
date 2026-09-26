@@ -25,6 +25,7 @@ import {
   autoSortRoster,
   displayRoster,
   resetRosterOrder,
+  rosterFollowsDefault,
   getState,
   initStore as lwInitStore,
   manningRowIds,
@@ -249,6 +250,15 @@ describe('roster order + labels are admin-gated writers', () => {
     setPeople(CREW); autoSortRoster(); setPeople([...CREW, joiner])
     const frozen = displayRoster().map(p => p.id)
     expect(frozen.indexOf('ops_b'), 'under a saved order he sinks below D').toBeGreaterThan(frozen.indexOf('ops_d'))
+  })
+
+  it('rosterFollowsDefault reads the roster AS DRAWN: a man dragged away and back is the default again (Fable F10)', () => {
+    expect(rosterFollowsDefault()).toBe(true)
+    moveRosterRow('ops_c', 'ops_a')
+    expect(rosterFollowsDefault(), 'a real change').toBe(false)
+    moveRosterRow('ops_a', 'ops_c')                                   // and back to exactly where the default has them
+    expect(getState().rosterOrder.length, 'a hand order is still saved').toBeGreaterThan(0)
+    expect(rosterFollowsDefault(), '…but it draws the default').toBe(true)
   })
 
   it('resetRosterOrder is admin-only, and writes nothing when the roster already follows the default', () => {

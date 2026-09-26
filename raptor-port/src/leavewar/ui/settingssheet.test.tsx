@@ -1,6 +1,6 @@
 import { act, fireEvent, render, screen } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { getState, groupsInOrder, initStore, setRole, setRosterOrder } from '../state/store'
+import { displayRoster, getState, groupsInOrder, initStore, setRole, setRosterOrder } from '../state/store'
 import { memoryBackend } from '../state/storage'
 import { LIFT_LAND_MS } from '../../ui/lift'
 import { Matrix } from './Matrix'
@@ -402,6 +402,13 @@ describe('⚙ Settings — Reset order', () => {
     expect(getState().rosterOrder).toEqual([])
     expect(btn().disabled, 'greyed again once it follows the default').toBe(true)
     expect(btn().textContent).toMatch(/Reset order/)
+  })
+  it('a saved order that draws exactly the default reads as the default — greyed (a drag away and back, Fable F10)', () => {
+    setRosterOrder(displayRoster().map(p => p.id))
+    expect(getState().rosterOrder.length).toBeGreaterThan(0)
+    open()
+    expect(btn().disabled).toBe(true)
+    expect(screen.getByTestId('roster-order-hint').textContent).toMatch(/In the default order/)
   })
   it('closing the sheet takes the question back', () => {
     setRosterOrder(['ramp', 'ace'])

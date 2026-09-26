@@ -5741,7 +5741,8 @@ appears, the phone's word is hidden).
 **His ask came 24 Sep 26 (D160, "9 yes"): a RESET ORDER line in ⚙ Settings** — its own small "Roster order" tray
 between the counters and the groups, admin-only like the whole sheet (`roster-reset-order`). It **asks once**
 ("Really reset?", the Reset counters idiom; closing the sheet takes the question back) and is **greyed, with a line
-saying so, while the roster already follows the default** (`roster-order-hint`); a hand-arranged roster's line says
+saying so, while the roster already follows the default** (`roster-order-hint`) — judged by the roster AS DRAWN
+(`rosterFollowsDefault`), so a man dragged away and back reads as the default, never a press that moves nothing; a hand-arranged roster's line says
 what the default is (each group as listed, pilots above WSOs, then CAT and callsign) and that Undo brings the
 arrangement back. The store's `resetRosterOrder` CLEARS the saved order (not `autoSortRoster`'s freeze of today's
 default), so the roster goes on following the default — a man who joins later, or whose CAT changes, lands in his

@@ -91,6 +91,24 @@ test('the full-path forms the accounts chat reported are let through, from any s
     'npm --prefix "C:/Users/User/projects/Raptor/raptor-port" run build',
   ]) assert.equal(refusal(bg(c), env), null, `${c} (${JSON.stringify(env)})`);
 });
+/* Fable's matrix (F17, 26 Sep 26): the folder must BE raptor-port or lie inside it; PowerShell's Push-Location and a
+   `cd --` are moves too */
+test('Push-Location, a `cd --`, a trailing slash, a sub-folder and a quoted path with a space move in', () => {
+  for (const c of [
+    'Push-Location raptor-port; npm test',
+    'cd -- raptor-port && npm test',
+    'cd "C:/Users/User/projects/Raptor/raptor-port/" && npm test',
+    'cd raptor-port/scripts && npm run docsize',
+    'cd "C:/My Projects/Raptor/raptor-port" && npm test',
+    'cd ./raptor-port && npm test',
+    'cd ../raptor-port && npm test',
+    'npm --prefix ./raptor-port run build',
+  ]) assert.equal(refusal(bg(c), ROOT), null, c);
+});
+test('a folder that only STARTS with the name is another folder — refused', () => {
+  for (const c of ['cd raptor-port-old && npm test', 'cd raptor-portal && npm test', 'npm --prefix raptor-port.bak run build'])
+    assert.ok(refusal(bg(c), ROOT), c);
+});
 test('a chat started at the root is still refused a bare npm, as before', () => {
   for (const env of [ROOT, TREE, {}]) assert.ok(refusal(bg('npm run test:e2e'), env), JSON.stringify(env));
 });

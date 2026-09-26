@@ -23,10 +23,13 @@ import { fileURLToPath } from 'node:url';
 
 // npm, npx or pnpm as a command word (start of the line, or after ; & | ( or a space), .cmd included.
 const RUNS_NPM = /(^|[\s;&|(])(npm|npx|pnpm)(\.cmd)?(?=\s|$|;|&|\|)/i;
-// A move into raptor-port before it: cd / pushd / Set-Location / sl / chdir, or npm's own --prefix.
+// A move into raptor-port before it: cd / pushd / Push-Location / Set-Location / sl / chdir, or npm's own --prefix.
+// The folder must BE raptor-port or lie inside it (`raptor-port`, `…/raptor-port/`, `raptor-port/scripts` — npm walks up
+// to its package.json from a sub-folder); `raptor-port-old` or `raptor-portal` are other folders (Fable F17, 26 Sep 26).
+// `cd -- raptor-port` and PowerShell's `-LiteralPath` are flags before the path.
 const MOVES_IN = [
-  /(^|[\s;&|(])(cd|pushd|chdir|set-location|sl)(\s+-\w+)*\s+["']?[^;&|\n]*raptor-port/i,
-  /--prefix(=|\s+)["']?[^\s;&|]*raptor-port/i,
+  /(^|[\s;&|(])(cd|pushd|push-location|chdir|set-location|sl)(\s+--?[\w-]*)*\s+["']?[^;&|\n]*raptor-port(?![\w.-])/i,
+  /--prefix(=|\s+)["']?[^\s;&|]*raptor-port(?![\w.-])/i,
 ];
 /** The folder a background shell starts in — the chat's own starting folder. '' when unknown. */
 const startDir = (env) => String((env && env.CLAUDE_PROJECT_DIR) || '').replace(/[\\/]+$/, '');

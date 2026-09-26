@@ -42,6 +42,7 @@ import {
   removeEventRow,
   resetGroups,
   resetRosterOrder,
+  rosterFollowsDefault,
   setGroupColor,
   setGroupDefs,
   setShowSans,
@@ -79,9 +80,10 @@ export function SettingsSheet({
    *  so the bar is drawn on its bottom edge (the roster rows' `.after`). */
   dragAfter?: boolean
 }) {
-  const { people, qualCatalog, eventRows, showSans, groupColors, rosterOrder } = getState()
-  // a saved hand order exists — the roster no longer follows the default (Reset order has something to do)
-  const handOrder = rosterOrder.length > 0
+  const { people, qualCatalog, eventRows, showSans, groupColors } = getState()
+  // the roster, as drawn, is out of the default order — Reset order has something to do (judged by what the grid
+  // SHOWS, so a drag away and back reads as the default: rosterFollowsDefault)
+  const handOrder = !rosterFollowsDefault()
   // Reset order ARMS first (the Reset counters idiom); local, so closing the sheet takes the question back
   const [armOrder, setArmOrder] = useState(false)
   const chosen = groupsInOrder()
