@@ -15,80 +15,48 @@ the later merge keeps both (D78).
 
 ## Now
 
-<!-- now:claude/accounts -->
-### `claude/accounts` — `[ACCOUNTS]` (D165, D166, D200, D204, D210, D211): BUILT and FULL-checked; on its PR, waiting for his look and "merge live" — written 26 Sep 26 — verify before use
-- **What it is:** sign in as yourself (every account is one callsign; "View as" and the role toggle gone); request access /
-  waiting / switched off / the admin's guest-view switch; Admin → Users; one permissions module (`src/state/perms.ts`)
-  mirroring `docs/data-model.md` §11 with a drift test and a source scan; D149 on Quals. Plan (3 red-team rounds):
-  `docs/superpowers/plans/2026-09-26-accounts-plan.md`; register AC1–AC15.
-- **The check:** walk 1 38/38, walk 2 40/40 (Fable's scenarios), the bridge off-host — re-walked on the final build; both
-  code reads (Fable: no blocker; Astra: four findings) answered — every finding fixed red-first or filed with its place;
-  final gates 6156 / 728 / 471 e2e / 442 Tracker, all green. Evidence sheet `docs/handpass/2026-09-26-accounts.md`
-  (§6 walk findings, §8 the reads, §9 his look card).
-- **Next:** his five-minute look (the sheet's §9, on the branch's Vercel link) → his "merge live" → then `[DRAFT-PENDING]`
-  (the one changes window) on top of accounts, with its own full check (D210).
-- **Filed from it:** `[TRK-SESSION-PICK]` (the Tracker's last pick per person); `[DB-STEP]`'s "access changes take effect
-  at once" (Astra's read, finding 1).
-<!-- /now -->
-
-<!-- now:claude/tracker-palette -->
-### `claude/tracker-palette` — `[TRK-PALETTE-ASK]` (D157): the Tracker in Raptor's colours, fully — BUILT, WALK-checked; written 26 Sep 26 — verify before use
-- **Parallel with `[ACCOUNTS]`** (`claude/accounts`, rulings D210–D229) on his instruction of 26 Sep 26: this chat serves on
-  port 4180, numbers its rulings D230–D239, never runs the full checks while the accounts chat runs its own, and whichever
-  merges second takes `main` in first (D78). Nothing to `main` without his "merge live".
-- **What it is:** `tracker.css`'s colour tokens and `app/core.js` `PAL` / `TYPE_COLOR` / `GRADE_FILL` copy Raptor's
-  `scheduler.css :root` (sim yellow → amber); `src/tracker/trk-palette.test.ts` pins every copy. Built = the picture he
-  chose on 24 Sep 26 (its exact colours were recovered from that chat's comparison script).
-- **The check (WALK tier):** evidence `raptor-port/docs/handpass/2026-09-26-trk-palette.md` — roll-call (18 places), walk
-  65/65 at desktop and phone with 35 pictures, breaks 21/21; the walk found and fixed three (failure chips' red outline
-  never drawn; the details bubble's record had no divider; "Sim (yellow)"); Fable and Astra read it blind — 10 small
-  findings, all fixed, pinned and re-walked (sheet §7 F7–F14, §9); filed `[TRK-FLEXBAR-INK]` (his question). Gates on the
-  final code (sheet §10): unit 6029/6030 (the one: `[LW-FIGSEL-SLOW]`, load-only, 12/12 alone) · build clean · tfin 728/0 ·
-  e2e 471 passed, 48 skipped · smoke 443/0 · rulecheck OK · docsize OK.
-- **RULING NOT YET FILED — the rulings file refused the write (auto mode):** D230 for `.claude/rules/decisions/tracker.md`,
-  top of its table — *"Build [TRK-PALETTE-ASK] … on a new branch … use port 4180, number any rulings of yours D230–D239,
-  never run the full checks while the other chat is running them … whichever of us merges second takes main in first …
-  Nothing goes to main without my 'merge live'."* → `[TRK-PALETTE-ASK]` built now, on its own branch, in parallel with
-  `[ACCOUNTS]`, under those conditions. File it (then `node raptor-port/scripts/backlog-archive.mjs --rulings`) once he
-  approves the edit, or leave it if he says so.
-- **Next:** his look (the sheet §11), his answer to `[TRK-FLEXBAR-INK]`, then "merge live" — one at a time with the
-  accounts chat.
-<!-- /now -->
-
-<!-- now:claude/leave-late-published -->
-### `claude/leave-late-published` — `[LEAVE-LATE-PUBLISHED]` (D177–D189): MERGED 26 Sep 26 on his "merge live" (PR #438) — this block goes at the next handoff; written 26 Sep 26 — verify before use
-- **What it is:** a published day keeps what it went out with — its inputs (`snap.inp`), its warnings that freeze and
-  their marks (`snap.w`), its men's CAT / seat / posting and the brief lead it prints (`snap.pa` / `snap.rv`, drawn by
-  `engine/faceattrs.ts`), the roster its day panel counts (`snap.ros`); a change since reads pending (the four fall) and
-  goes out with the next AL. What stays LIVE (D183–D185): the dotted next-day mark, a crew-rest breach and tight turn, the
-  7-day run, the Qualification-flag warnings, every OIL warning (`validate.ts LIVE_ON_FACE`; the day loop files each mark
-  by class `fz` / `lv`, `faceWarn` lays the live over the frozen). Medical stays frozen. Rule text:
-  `raptor-port/docs/engine-rules.md` §Publishing.
-- **The check (FULL):** evidence `raptor-port/docs/handpass/2026-09-26-late-pub.md` — the roll-call (21 surfaces), the
-  walks (the re-walk, the host walk, four parallel walkers: Quals, Logic, neighbour day, Leave War — 593 pictures, no
-  console errors), 36 break tests, blind reads by Fable and Astra of the first build, the final code and the D187 change
-  (all dispositioned §9 — D187's nine fixed and pinned, B29–B36), the gates (§6). His look card is §10.
-- **The PR:** #438, merged on his "merge live" (26 Sep 26). The backlog items `[LEAVE-LATE-PUBLISHED]`,
-  `[LATE-PUB-FACE-LIVE]` and `[PV-NO-FLAGS]` are archived; the one residue left open is `[PEEK-ISSUED]` (low, his question).
-- **His questions (the card, §10) — ALL ANSWERED:** Q1 — D186 "yes" (a man's CAT and a blank brief's time stay as
-  published). Q4 — D189 "follow ur recommendation" (the app's own "till" note counts: each published day a stretched leave
-  still covers shows "1 pending" on the admin's working copy, never on View-only Sched). Q5 — D187 "it should" (BUILT: a
-  look at a published version wears its warnings — the whole record it went out with, read only, its own ⓘ panel and
-  taps; read by both providers after the build, their findings fixed). Q6 — D188 "yes" (the Qualification-flag reading).
-- **Filed this session:** `[PV-NO-FLAGS]` (answered and built, archived), `[PEEK-ISSUED]`, `[INSIGHTS-WORKING-COPY]` (his question),
-  `[QUALS-PROTO-TOAST]`, `[VIEW-ARROW-OVER-LIST]`, `[INPUTSCAL-TAP-FLAKY]`. Rulings this chat: D186–D189 (and D185's row
-  gained the agent's widened reading, confirmed by D188). The chat's range D180–D189 is used up — a later chat on this
-  branch takes the next free number above `main`'s (DECISIONS.md).
-- **Usage (D182, until Monday 28 Sep 26):** unlimited — spend it on his look's follow-ups.
-- **Next (D180, D173):** `[ACCOUNTS]` on a new branch, in a FRESH chat — its plan not started; the `OUTSTANDING.md` tidy (over
-  its tripwire) on its own docs branch.
+<!-- now:claude/accounts-new-person -->
+### `claude/accounts-new-person` — `[ACCOUNTS-NEW-PERSON]` FULL check done, PR #443 waiting for his look; then his posting-out rulings (D229, D280–D299) and their APPROVED mock-up — written 27 Sep 26, verify before use
+- **Where it started:** fix the two code reads' findings (Fable 1, Astra 1, 2, 4 + the record items), break tests, re-walk,
+  the gates under the lock, the sheet, the PR. Then, in conversation, he ruled how a posting out and accounts should work.
+- **Shipped:** PR #443 — open when written; its checks green on `5fb2cab5` (11 pass, 2 skipped; the handoff push re-runs
+  them on GitHub's machines). Three read rounds by Fable + Astra, every finding dispositioned (sheet §6); walk3 **58/58**;
+  break tests **32/32 red**; gates on the final code unit **6259/6259** · tfin **728/0** · e2e **476** · smoke **443/0** ·
+  rulecheck · docsize. Evidence `raptor-port/docs/handpass/2026-09-26-accounts-new-person.md`.
+- **Then — rulings and a mock-up only, no code:** D229, D280–D299 (`.claude/rules/decisions/how-we-work.md`): a posting
+  out's four outcomes (chips "Overseas Sqn · Delete · SANS · Transfer to Sqn"); accounts Suspend / Enable / Delete
+  account; a deleted man kept underneath as a hidden mark — the past keeps its record of him, today and the future lose
+  him (the list: mock-up §5, D299); SANS on the date; back from overseas as he was, with a prompt; an archived man's
+  callsign reusable, renamed right on the archived list; the admin's member view back (D292); no Sign-up button (D293);
+  squadrons plan each other's people (D282), callsigns unique per community, a guest's orange corner (D288, D289, D296).
+  **Mock-up APPROVED (D299):** `raptor-port/docs/mock/post-out.html` (Artifact
+  https://claude.ai/artifact/BjZgFjGxRxohuoV1vgEFjp), made by `raptor-port/scripts/handpass/am/mk-post-out.mjs`.
+  Build: `[POST-OUT-OUTCOMES]` (next, D291); transfers and guests: `[XFER]` (with the database).
+- **Done 27 Sep 26 (next chat):** the mock-up's word trim (D300) — each thing said once on the page and in every drawn
+  piece (the approval once, in the header; the table rows use his chip names; D299's stays/goes list kept whole);
+  republished to the same Artifact link as **Version 6**, with the D300 sheet pictures that Version 5 had missed.
+- **Unfinished:** PR #443 awaits his look and "merge live" (`main` still `e27e15fe`, already in the branch).
+- **Branch:** `claude/accounts-new-person`, PR #443. If it has MERGED, reset before new work:
+  `git fetch origin main && git checkout -B <new-branch> origin/main`.
+- **Gates:** as above; `probes:adapted` · `perf` NOT RUN (the dense surfaces they measure are untouched).
+- **Parallel chats (D228):** every heavy run takes `node raptor-port/scripts/gatelock.mjs`. This chat used preview 4174
+  (`raptor-walk-2`) and `E2E_PORT=4191`; 4173 is another chat's.
+- **Traps met:** seeded callsigns (Nomad, Bolt…) are demo people — never new names in a test; a walk step's picture is
+  taken after the step (skill-observation #280); a break test left green may be aimed at the wrong tests (#282) and runs
+  in a scratch worktree (#281, `np-breaks.mjs`'s header); Bash heredocs mangle backslashes — use the Edit tool.
+- **Open questions for him:** none.
+- **Pick up here:** after his "merge live" of PR #443, archive `[ACCOUNTS-NEW-PERSON]`
+  (`node raptor-port/scripts/backlog-archive.mjs ACCOUNTS-NEW-PERSON --homes raptor-port/docs/handpass/2026-09-26-accounts-new-person.md`),
+  then plan `[POST-OUT-OUTCOMES]` from the approved mock-up and D229, D280–D299 (Opus 5.5 high; Fable + Astra red-team;
+  FULL check).
 <!-- /now -->
 
 ## Next, in order
 
 1. **HIS ORDER to the database step, about two months away (D203, 26 Sep 26):** now `[ACCOUNTS]` (with D200, D202 —
-   answer his "how does a new user join" question first — answered, D204) with ITS OWN full check (D210) → the one changes
-   window (`[DRAFT-PENDING]`) with its own full check →
+   answer his "how does a new user join" question first — answered, D204) with ITS OWN full check (D210) → its follow-on
+   `[ACCOUNTS-NEW-PERSON]` (PR #443, waiting for his look) → **`[POST-OUT-OUTCOMES]`** (D291 — a posting out's outcomes;
+   accounts suspended and deleted) with its own full check → the one changes window (`[DRAFT-PENDING]`) with its own full check →
    "merge live" (D173); beside it, he talks to the IT side (`[IT-QUESTIONS]`). Development as normal: `[HUMAN-RETEST]`'s
    remaining three in his order (D147 — the absence record with `[S4-HUNT-REST]`, change-recording, the Leave War links
    last), then `[PUB-UNAVAIL]` → `[LW-LOCKMARK]` → `[LW-WEEKDAY-WORK]`.
@@ -100,11 +68,10 @@ the later merge keeps both (D78).
 
 ## Gate baseline
 
-The latest counts watched — 26 Sep 26 morning, `claude/leave-late-published` (`09276503`, the final code of
-`[LEAVE-LATE-PUBLISHED]` with D187 and its reads' fixes), one run on a quiet PC
-(`raptor-port/docs/handpass/2026-09-26-late-pub.md` §6): unit **5988 / 5988** (368 files) · build clean · tfin **728 / 0** ·
-e2e **471 passed**, 48 skipped · smoke **442 / 0** · rulecheck OK · docsize OK. Two tests added after it (no source
-change): their file alone 45 / 45. Restate a count only
+The latest counts watched — 26 Sep 26 evening, `claude/accounts-new-person` (`facb1bc1`, the `[ACCOUNTS-NEW-PERSON]` final
+code), one run under the PC-wide lock (`raptor-port/docs/handpass/2026-09-26-accounts-new-person.md` §9):
+unit **6259 / 6259** (381 files) · build clean · tfin **728 / 0** · e2e **476 passed**, 48 skipped · smoke **443 / 0** ·
+rulecheck OK · docsize OK. Restate a count only
 from a run you watched, and REPLACE the previous counts — never stack a history. How to run them: `raptor-port/CLAUDE.md`
 §Build & verify; how they mislead, and the checks on his PC: `raptor-port/docs/gates-and-deploy.md`.
 

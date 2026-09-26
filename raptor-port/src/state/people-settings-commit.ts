@@ -211,6 +211,22 @@ export function commitSettingsIntent(type: string, meta: any, fn: () => void): C
   const cmd: Command = { type, scope: settingsScope(), meta, apply: (txn) => { txn.enlist(settingsStore); fn() } }
   return commit(cmd)
 }
+/* [ACCOUNTS-NEW-PERSON] (D214, D217) — a NAMED people intent (`person.add`: Person C, never
+   `people.edit`'s Person U — Astra's plan read 3), and the ONE command that makes a person
+   and his account together (`account.addNew`, `access.approveNew`): it enlists BOTH stores,
+   so a refusal or a throw anywhere inside restores both — the person, the callsign index,
+   the people baseline and every settings key (command/commit.ts phase 6). Both finish the
+   people half with the same body every roster command uses (advancePeople). */
+export function commitPeopleIntent(type: string, meta: any, fn: () => void): CommitResult {
+  return commitPeople(type, () => { fn(); advancePeople() }, meta)
+}
+export function commitPeopleSettingsIntent(type: string, meta: any, fn: () => void): CommitResult {
+  const cmd: Command = {
+    type, scope: peopleScope(), meta,
+    apply: (txn) => { txn.enlist(peopleStore); txn.enlist(settingsStore); fn(); advancePeople() },
+  }
+  return commit(cmd)
+}
 function commitPeopleProjectionCmd(type: string, fn: () => void): CommitResult {
   const cmd: Command = { type, scope: peopleScope(), apply: (txn) => { txn.enlist(peopleStore); fn() } }
   return commitProjection(cmd)

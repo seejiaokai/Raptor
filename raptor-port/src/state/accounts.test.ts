@@ -3,16 +3,22 @@
    the guards, and the session they start. Rulings named per test: D165, D166, D204,
    D211, D200 (3). The register lines are AC1… (docs/superpowers/specs/2026-09-26-
    accounts-behaviour-register.md). */
-import { beforeEach, afterAll, describe, expect, it } from 'vitest'
+import { beforeEach, afterAll, describe, expect, it, vi } from 'vitest'
 import { storeBackend, HOOKS } from '../engine/hooks'
-import { PEOPLE } from '../engine/people'
+import { PEOPLE, ID_BY_CS } from '../engine/people'
 import { SESSION, ME, DEFAULT_ME, setSession } from './auth'
 import { initStore, resetSession, notify, writeInputs } from './store'
 import { commitSettingsIntent } from './people-settings-commit'
 import {
   accountsLoad, signIn, sessionFor, addAccount, updateAccount, approveRequest, declineRequest,
   requestAccess, setGuestView, ACCOUNTS_LIST, ACCESS_REQS, GUESTVIEW, accountByName, accountById,
+  addPersonAndAccount, approveRequestNew, requestByName, requestSummary, accessAlert, unseenRequests,
+  markRequestsSeen, currentAdminAccountId,
 } from './accounts'
+import { commandStream } from '../command'
+import { peopleStore, commitPeopleSettingsIntent } from './people-settings-commit'
+import { putNewPerson } from './roster-add'
+import { subscribe } from './store'
 import { me, isMe, roleOf, viewerId } from './perms'
 import { store } from '../engine/hooks'
 import { INPUTS, DATES, mintInpIds } from '../engine/inputs'
@@ -29,6 +35,9 @@ const fake = {
   setItem: (k: string, v: string) => { writes++; mem[k] = v },
 }
 const signInAs = (name: string, pass = 'x') => { const r = signIn(name, pass); resetSession(sessionFor(r)); notify(); return r }
+/* a sign-up as the card sends it ([ACCOUNTS-NEW-PERSON] — D214: callsign/name, initials, seat, CAT) */
+const ask = (cs: string, o: { ini?: string; seat?: string; cat?: string } = {}) =>
+  requestAccess({ cs, ini: o.ini ?? 'JB', seat: o.seat ?? 'FCP', cat: o.cat ?? 'C' })
 
 beforeEach(() => {
   Object.keys(mem).forEach(k => delete mem[k])
@@ -90,10 +99,10 @@ describe('AC3 — a new user joins either way (D204)', () => {
   it('on no list → pending; asks once, as himself; then waiting; the admin approves → in', () => {
     expect(signInAs('viper@mail')).toEqual({ kind: 'new', name: 'viper@mail' })
     expect(roleOf()).toBe('pending'); expect(me()).toBe(null)
-    expect(requestAccess('Viper', 'Jo Bloggs')).toBe(null)
+    expect(ask('Viper')).toBe(null)
     expect(ACCESS_REQS).toHaveLength(1)
-    expect(ACCESS_REQS[0]).toMatchObject({ name: 'viper@mail', cs: 'Viper', full: 'Jo Bloggs' })
-    expect(requestAccess('Viper', 'Jo Bloggs')).toMatch(/already asked/)
+    expect(ACCESS_REQS[0]).toMatchObject({ name: 'viper@mail', cs: 'Viper', ini: 'JB', seat: 'FCP', cat: 'C', seenBy: [] })
+    expect(ask('Viper')).toMatch(/already asked/)
     expect(signInAs('viper@mail')).toEqual({ kind: 'waiting', name: 'viper@mail' })
     signInAs('ad', 'a')
     expect(approveRequest(ACCESS_REQS[0].id, 'pike', 'main')).toBe(null)
@@ -103,23 +112,23 @@ describe('AC3 — a new user joins either way (D204)', () => {
     expect(ME).toBe('pike')
   })
   it('a typed callsign never claims a puck — the admin must pick one', () => {
-    signInAs('viper@mail'); requestAccess('Ranger', 'Someone')
+    signInAs('viper@mail'); ask('Ranger')
     signInAs('ad', 'a')
     expect(approveRequest(ACCESS_REQS[0].id, '', 'main')).toMatch(/Pick the callsign/)
     expect(approveRequest(ACCESS_REQS[0].id, 'bane', 'main')).toMatch(/already has an account/)   // Ranger is us's
   })
   it('declined, he may ask again; adding an account for a waiting name answers the request', () => {
-    signInAs('viper@mail'); requestAccess('Viper', 'Jo')
+    signInAs('viper@mail'); ask('Viper')
     signInAs('ad', 'a')
     expect(declineRequest(ACCESS_REQS[0].id)).toBe(null)
     expect(signInAs('viper@mail')).toEqual({ kind: 'new', name: 'viper@mail' })
-    requestAccess('Viper', 'Jo')
+    ask('Viper')
     signInAs('ad', 'a')
     expect(addAccount('viper@mail', 'pike', 'main')).toBe(null)
     expect(ACCESS_REQS).toHaveLength(0)
   })
   it('renaming an account onto a waiting name answers the request too (Fable scenario S1)', () => {
-    signInAs('viper@mail'); requestAccess('Viper', 'Jo')
+    signInAs('viper@mail'); ask('Viper')
     signInAs('ad', 'a')
     expect(updateAccount('achex', { name: 'viper@mail' })).toBe(null)
     expect(ACCESS_REQS, 'the request is answered, not left to be refused').toHaveLength(0)
@@ -129,10 +138,13 @@ describe('AC3 — a new user joins either way (D204)', () => {
     mem['sqn142_accessreqs'] = JSON.stringify([{ id: 'r1', name: 'hex', cs: 'H', full: 'H', at: 1 }, { id: 'r2', name: 'kite@mail', cs: 'K', full: 'K', at: 2 }])
     accountsLoad()
     expect(ACCESS_REQS.map(r => r.name)).toEqual(['kite@mail'])
+    /* a request an older build stored (a name, no seat — D56: read, never migrated) loads with
+       its missing parts blank, for the admin to pick when he approves */
+    expect(ACCESS_REQS[0]).toMatchObject({ cs: 'K', ini: '', seat: '', cat: '', seenBy: [] })
   })
   it('the guest switch is off by default; on, a waiting person signs in as a guest', () => {
     expect(GUESTVIEW).toBe(false)
-    signInAs('viper@mail'); requestAccess('Viper', 'Jo')
+    signInAs('viper@mail'); ask('Viper')
     signInAs('ad', 'a'); expect(setGuestView(true)).toBe(null)
     expect(signInAs('viper@mail')).toEqual({ kind: 'guest', name: 'viper@mail' })
     expect(roleOf()).toBe('guest'); expect(me()).toBe(null); expect(HOOKS.whoami()).toBe('Guest')
@@ -229,7 +241,7 @@ describe('AC6 — an account change is one command; its keys roll back together 
 
 describe('AC7 — a member\'s command changes only his own records (perms.ts ownershipViolation)', () => {
   it('a guest files nothing; a member files only for himself', () => {
-    signInAs('viper@mail'); requestAccess('V', 'J')
+    signInAs('viper@mail'); ask('V')
     signInAs('ad', 'a'); setGuestView(true)
     signInAs('viper@mail')
     const n = INPUTS.length
@@ -258,5 +270,207 @@ describe('AC7 — a member\'s command changes only his own records (perms.ts own
     ;(DAYS[di] as any).notes = [...(DAYS[di].notes || []), { rid: 'nmember', t: 'a member writing the schedule directly' }]
     afterSchedMutate()
     expect(JSON.stringify(DAYS[di].notes || []), 'rolled back to the last committed schedule').toBe(notes)
+  })
+})
+
+/* ---- [ACCOUNTS-NEW-PERSON] (26 Sep 26) — D214, D216, D217, D225, D226, D227 ----
+   Register lines NP3–NP6, NP8. The one add itself (the callsign rule, personnel) is
+   roster-add.test.ts; here, the person WITH his account, approving with New person, the
+   sign-up's fields and the admins' bell. */
+const csOf = (cs: string) => Object.keys(PEOPLE).find(k => (PEOPLE as any)[k].cs === cs)
+const drop = (...css: string[]) => { for (const cs of css) { const id = csOf(cs); if (id) delete (PEOPLE as any)[id]; delete (ID_BY_CS as any)[cs.toLowerCase()] } }
+const NEW = { cs: 'Blaze', ini: 'rtk', seat: 'RCP', cat: 'D' }
+const fresh = () => { drop('Blaze', 'Vyper', 'Viper', 'Gecko', 'Chris'); initStore(); resetSession(null) }
+
+describe('NP4 — the sign-up asks what the admin asks (D214, D222, D225, D226)', () => {
+  beforeEach(fresh)
+  it('refuses a missing pick or an over-long name with its reason; initials may be blank', () => {
+    signInAs('fresh@mail')
+    expect(requestAccess({ cs: '', ini: '', seat: 'FCP', cat: 'C' })).toBe('Type the callsign or name')
+    expect(requestAccess({ cs: 'Christopher Tan', ini: '', seat: 'FCP', cat: 'C' })).toMatch(/at most 14 letters/)
+    expect(requestAccess({ cs: 'Chris', ini: '', seat: '', cat: '' })).toBe('Pick pilot, WSO or personnel')
+    expect(requestAccess({ cs: 'Chris', ini: '', seat: 'FCP', cat: '' })).toBe('Pick the CAT')
+    expect(ACCESS_REQS).toHaveLength(0)
+    expect(requestAccess({ cs: 'Chris', ini: '', seat: 'GND', cat: 'C' }), 'personnel: no CAT; blank initials').toBe(null)
+    expect(ACCESS_REQS[0]).toMatchObject({ cs: 'Chris', ini: '', seat: 'GND', cat: '' })
+  })
+  it('never tells a person not yet let in whether a callsign is taken', () => {
+    signInAs('fresh@mail')
+    expect(ask('Ranger')).toBe(null)
+    expect(ACCESS_REQS[0].cs).toBe('Ranger')
+  })
+  it('requestSummary — one line for the waiting screen and the admin: blank parts drop out', () => {
+    signInAs('fresh@mail'); ask('Viper', { ini: 'jkb' })
+    expect(requestSummary(ACCESS_REQS[0])).toBe('JKB · Pilot · CAT C')
+    signInAs('bolt@mail'); requestAccess({ cs: 'Bolt', ini: '', seat: 'GND', cat: '' })
+    expect(requestSummary(ACCESS_REQS.find(r => r.name === 'bolt@mail')!)).toBe('Personnel')
+  })
+})
+
+describe('NP3 — a new person with his account is ONE step (D214, D217)', () => {
+  beforeEach(fresh)
+  it('person and account together, one account.addNew command, and he signs in as himself', () => {
+    signInAs('ad', 'a')
+    const n = commandStream().length
+    expect(addPersonAndAccount('Blaze@Mail', NEW, 'main')).toBe(null)
+    const pid = csOf('Blaze')!
+    expect(PEOPLE[pid]).toMatchObject({ cs: 'Blaze', initials: 'RTK', seat: 'RCP', q: 'D', flight: '-' })
+    expect(accountByName('blaze@mail')).toMatchObject({ pid, role: 'main', on: true })
+    const envs = commandStream().slice(n)
+    expect(envs.map(e => e.type)).toEqual(['account.addNew'])
+    expect(envs[0].changes.map(c => `${c.collection}/${c.id}`).sort()).toEqual([`people/${pid}`, 'settings/accounts'])
+    expect(signInAs('blaze@mail')).toMatchObject({ kind: 'ok' })
+    expect(ME).toBe(pid)
+  })
+  it('D217: a blank sign-in makes a roster-only person — no account, a person.add command', () => {
+    signInAs('ad', 'a')
+    const accounts = ACCOUNTS_LIST.length, n = commandStream().length
+    expect(addPersonAndAccount('  ', { cs: 'Gecko', ini: '', seat: 'FCP', cat: 'OCU' }, 'main')).toBe(null)
+    expect(csOf('Gecko')).toBeTruthy()
+    expect(ACCOUNTS_LIST.length).toBe(accounts)
+    expect(commandStream().slice(n).map(e => e.type)).toEqual(['person.add'])
+  })
+  it('a refusal on either half leaves NOTHING — no person, no account', () => {
+    signInAs('ad', 'a')
+    const people = Object.keys(PEOPLE).length, accounts = JSON.stringify(ACCOUNTS_LIST)
+    expect(addPersonAndAccount('hex', NEW, 'main')).toBe('hex already has an account')
+    expect(addPersonAndAccount('blaze@mail', { ...NEW, cs: 'Saber' }, 'main')).toMatch(/already taken/)
+    expect(addPersonAndAccount('blaze@mail', { ...NEW, cat: '' }, 'main')).toBe('Pick the CAT')
+    expect(addPersonAndAccount('blaze@mail', NEW, 'boss' as any)).toBe('Pick member or admin')
+    expect(Object.keys(PEOPLE).length).toBe(people)
+    expect(JSON.stringify(ACCOUNTS_LIST)).toBe(accounts)
+  })
+  it('a sign-in name that has asked is answered by the add, in the same step', () => {
+    signInAs('blaze@mail'); ask('Blaze')
+    signInAs('ad', 'a')
+    expect(addPersonAndAccount('blaze@mail', NEW, 'main')).toBe(null)
+    expect(requestByName('blaze@mail')).toBeUndefined()
+  })
+  it("a throw after the person is written, before the account, rolls BOTH back (Astra's plan read 7)", () => {
+    signInAs('ad', 'a')
+    const err = vi.spyOn(console, 'error').mockImplementation(() => {})
+    const people = peopleStore.capture(), stored = mem['sqn142_accounts'] ?? null
+    try {
+      const r: any = commitPeopleSettingsIntent('account.addNew', null, () => { putNewPerson(NEW); throw new Error('boom') })
+      expect(r.ok).toBe(false)
+      expect(csOf('Blaze')).toBeUndefined()
+      expect(peopleStore.capture()).toBe(people)
+      expect(JSON.parse(mem['sqn142_accounts'] ?? 'null')).toEqual(JSON.parse(stored ?? 'null'))
+    } finally { err.mockRestore() }
+  })
+  it('a throw after BOTH are written rolls both back, and no screen hears of the half-made person', () => {
+    signInAs('ad', 'a')
+    const err = vi.spyOn(console, 'error').mockImplementation(() => {})
+    let heard = 0; const off = subscribe(() => { heard++ })
+    try {
+      const r: any = commitPeopleSettingsIntent('account.addNew', null, () => {
+        const pid = putNewPerson(NEW)
+        store.set('accounts', [...ACCOUNTS_LIST, { id: 'acx', name: 'blaze@mail', role: 'main', pid, on: true }])
+        throw new Error('boom')
+      })
+      expect(r.ok).toBe(false)
+      expect(csOf('Blaze')).toBeUndefined()
+      accountsLoad()
+      expect(accountByName('blaze@mail')).toBeUndefined()
+      expect(heard, 'the Leave War / Tracker projections run on notify — they never saw him').toBe(0)
+    } finally { off(); err.mockRestore() }
+  })
+  it("the ownership check refuses a member's person-and-account write after both halves changed", () => {
+    signInAs('us', 'us')
+    const people = Object.keys(PEOPLE).length
+    /* the gate lets his own-row people command through; the invariant then reads what it DID */
+    const r: any = commitPeopleSettingsIntent('people.edit', { owner: 'bane' }, () => {
+      const pid = putNewPerson(NEW)
+      store.set('accounts', [...ACCOUNTS_LIST, { id: 'acx', name: 'blaze@mail', role: 'main', pid, on: true }])
+    })
+    expect(r.ok).toBe(false)
+    expect(Object.keys(PEOPLE).length).toBe(people)
+    accountsLoad()
+    expect(accountByName('blaze@mail')).toBeUndefined()
+  })
+})
+
+describe('NP5 — approving with New person, filled from what he gave (D214, D204)', () => {
+  beforeEach(fresh)
+  it("the admin's corrections win; person, account and the request answered in one step", () => {
+    signInAs('viper@mail'); ask('Viper', { ini: 'jkb', seat: 'RCP', cat: 'C' })
+    signInAs('ad', 'a')
+    const rq = ACCESS_REQS[0], n = commandStream().length
+    expect(approveRequestNew(rq.id, { cs: 'Vyper', ini: rq.ini, seat: rq.seat, cat: 'D' }, 'main')).toBe(null)
+    const pid = csOf('Vyper')!
+    expect(PEOPLE[pid]).toMatchObject({ cs: 'Vyper', initials: 'JKB', seat: 'RCP', q: 'D' })
+    expect(csOf('Viper'), 'what he typed never became a person by itself').toBeUndefined()
+    expect(accountByName('viper@mail')).toMatchObject({ pid })
+    expect(ACCESS_REQS).toHaveLength(0)
+    const envs = commandStream().slice(n)
+    expect(envs.map(e => e.type)).toEqual(['access.approveNew'])
+    expect(envs[0].changes.map(c => `${c.collection}/${c.id}`).sort()).toEqual([`people/${pid}`, 'settings/accessreqs', 'settings/accounts'])
+  })
+  it("a typed callsign that is someone's is refused as New person; the request stays", () => {
+    signInAs('viper@mail'); ask('Ranger')
+    signInAs('ad', 'a')
+    const rq = ACCESS_REQS[0]
+    expect(approveRequestNew(rq.id, { cs: rq.cs, ini: rq.ini, seat: rq.seat, cat: rq.cat }, 'main')).toMatch(/Ranger is already taken/)
+    expect(ACCESS_REQS).toHaveLength(1)
+    expect(approveRequestNew('rq-gone', NEW, 'main')).toBe('That request is gone')
+  })
+})
+
+describe("NP6 — each admin's bell is his own (D216, D227)", () => {
+  beforeEach(fresh)
+  it('lights for every admin until HE has seen the list; a later request lights it again', () => {
+    signInAs('ad', 'a')
+    expect(addAccount('b@mail', 'pike', 'admin')).toBe(null)
+    expect(accessAlert()).toBe(false)
+    signInAs('kite@mail'); ask('Kite')
+    signInAs('ad', 'a'); expect(accessAlert()).toBe(true)
+    const n = commandStream().length
+    expect(markRequestsSeen()).toBe(null)
+    expect(commandStream().slice(n).map(e => e.type)).toEqual(['access.seen'])
+    expect(accessAlert()).toBe(false)
+    expect(markRequestsSeen()).toBe(null)
+    expect(commandStream().length, 'nothing new — nothing written').toBe(n + 1)
+    signInAs('b@mail'); expect(accessAlert(), 'the other admin has not seen it').toBe(true)
+    markRequestsSeen(); expect(accessAlert()).toBe(false)
+    signInAs('ad', 'a'); expect(accessAlert()).toBe(false)
+    signInAs('wren@mail'); ask('Wren')
+    signInAs('ad', 'a'); expect(accessAlert(), 'a new request lights it again').toBe(true)
+    expect(unseenRequests().map(r => r.cs)).toEqual(['Wren'])
+  })
+  it('survives a reload; a request answered before it was seen puts the bell out', () => {
+    signInAs('kite@mail'); ask('Kite')
+    signInAs('ad', 'a'); markRequestsSeen()
+    accountsLoad(); expect(accessAlert()).toBe(false)
+    signInAs('wren@mail'); ask('Wren')
+    signInAs('ad', 'a'); expect(accessAlert()).toBe(true)
+    declineRequest(ACCESS_REQS.find(r => r.cs === 'Wren')!.id)
+    expect(accessAlert()).toBe(false)
+  })
+  it("never a member's, a pending person's, or a made-up admin with no account (Astra's plan read 6)", () => {
+    signInAs('kite@mail'); ask('Kite')
+    signInAs('us', 'us'); expect(accessAlert()).toBe(false); expect(markRequestsSeen()).toBe(null)
+    signInAs('wren@mail'); expect(accessAlert()).toBe(false)
+    resetSession({ user: 'principal:kite@mail', role: 'admin', pid: null, name: 'kite@mail' })
+    expect(currentAdminAccountId()).toBe(null)
+    expect(accessAlert()).toBe(false)
+    markRequestsSeen()
+    expect(ACCESS_REQS[0].seenBy).toEqual([])
+  })
+})
+
+describe('NP8 — only an admin adds a person, approves or marks seen', () => {
+  beforeEach(fresh)
+  it('a member and a pending person are refused at the function, and nothing moves', () => {
+    signInAs('viper@mail'); ask('Viper')
+    const rq = ACCESS_REQS[0]
+    for (const who of [() => signInAs('us', 'us'), () => signInAs('nobody@mail')]) {
+      who()
+      const people = Object.keys(PEOPLE).length
+      expect(addPersonAndAccount('blaze@mail', NEW, 'main')).toMatch(/Only an admin/)
+      expect(addPersonAndAccount('', NEW, 'main')).toBe('Only an admin can add someone')
+      expect(approveRequestNew(rq.id, NEW, 'main')).toMatch(/Only an admin/)
+      expect(Object.keys(PEOPLE).length).toBe(people)
+      expect(ACCESS_REQS).toHaveLength(1)
+    }
   })
 })

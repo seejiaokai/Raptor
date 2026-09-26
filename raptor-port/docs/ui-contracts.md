@@ -3731,7 +3731,17 @@ except where noted:
   wired trigger, 25 Aug 26; `markBell(page, who)` stays the seam for the
   rest), OR when the view-as person has an unanswered weekend/PH OIL
   question (`oilPendingFor(ME)` — the third wired trigger, 28 Aug 26; §The
-  bell's OIL trigger carries its contract). A tap with a bug alert live
+  bell's OIL trigger carries its contract), OR — the fourth, FIRST in the tap's
+  order (`[ACCOUNTS-NEW-PERSON]`, D216, D227, 26 Sep 26) — when an ADMIN has an
+  access request he has not yet had on screen (`accessAlert()`,
+  `state/accounts.ts`: each request carries `seenBy`, the admins who have seen
+  it, so every admin's bell is his own). That tap toasts "N waiting for access —
+  opening Admin → Users" and opens Admin → Users (`ui/adminopen.ts
+  openAdminUsers`, from any page, the Admin page itself included); the list on
+  his screen — the Users pane beside the rail on a desktop, the drilled-in list on
+  a phone, never the category list alone — puts it out (`markRequestsSeen`, one
+  `access.seen` command); the Admin tab's count stays until each is answered; a
+  member's, a guest's or a pending person's bell never lights for it. A tap with a bug alert live
   toasts the count and goes straight to
   the Help page, whose admin view is the acknowledgement (§The Help page);
   with an OIL question pending it lands the Inputs page on the exact input,
@@ -3791,9 +3801,12 @@ Both are board-side, admin-only, session-only, and DESKTOP-scoped for the resize
 
 ## The Quals page's editable columns
 
-`CALLSIGN` heads the table (it is what every puck prints) with `INITIALS`
-beside it; Add person takes callsign / initials / pilot-WSO / cat, and the
-callsign is the only required field — first and last name are gone (owner,
+`CALLSIGN/NAME` heads the table in every view (it is what every puck prints — D219, 26 Sep 26: "Some people have no
+call signs"; it replaced the 26 Aug 26 split, Callsign/Name under Personnel only) with `INITIALS` beside it; the frozen
+header mirror and the exported LoX head the same. **A person is added on Admin → Users since 26 Sep 26** (D217,
+`[ACCOUNTS-NEW-PERSON]`): Quals' "+ Add person" (`#qAddToggle`, admin only) is a plain button that opens Admin → Users with
+New person chosen; the one add is `state/roster-add.ts`. *(Was, 15 Aug 26 — replaced by D217: "Add person takes callsign
+/ initials / pilot-WSO / cat, and the callsign is the only required field".)* First and last name are gone (owner,
 Aug 26; the seed roster never carried them).
 
 In edit mode callsign, initials and **flight** become inputs, and all three
@@ -3893,9 +3906,10 @@ does, then leaves **every column from CAT rightward blank** (no CAT chip, no
 qualification ticks: they hold none), and its **Remarks cell is an editable
 free-text `<input>`** bound to `PEOPLE[id].remarks` — the one place person-level
 remarks exist. It commits on change (blur/Enter), like the initials and flight
-beside it, and no rule reads it, so it only re-renders. `Add person` offers a
-**Personnel (ground crew)** seat option; picking it hides the CAT select and
-mints a `pers:true, q:''` record. The group head reads `Personnel (ground
+beside it, and no rule reads it, so it only re-renders. Adding a person (Admin → Users since 26 Sep 26, D217) offers
+**Personnel (ground crew)**; picking it takes the CAT away and mints a `pers:true, q:''` record (the one add). *(Was —
+replaced by D217: "`Add person` offers a **Personnel (ground crew)** seat option; picking it hides the CAT select and
+mints a `pers:true, q:''` record.")* The group head reads `Personnel (ground
 crew)`. Pinned by `ui/quals.test.tsx`.
 
 **The palette carries a third column, `Personnel`, shown only when the squadron
@@ -3936,8 +3950,8 @@ when the session is admin AND editing is on, and every delegated handler
 re-checks all three (`canEditQuals()`) rather than trusting that a button was
 once rendered. `Enable editing` itself is NOT admin-only — a member ticks
 their own qualifications (owner, 5 Aug 26; the full split is in
-`engine-rules.md` §Auth / roles). `Add person` stays admin, like this mode:
-neither is the table's contents. It starts OFF each time editing is switched on, and `Save
+`engine-rules.md` §Auth / roles). Adding a person stays admin, like this mode — on Admin → Users since 26 Sep 26
+(D217; Quals keeps only the button there): neither is the table's contents. It starts OFF each time editing is switched on, and `Save
 changes` closes both.
 
 The button reads the way `Enable editing` does (owner, 5 Aug 26): **blue
@@ -4601,16 +4615,43 @@ The three category panels:
 
 - **`#admUsers` Users — the ACCOUNTS** (`[ACCOUNTS]`, 26 Sep 26 — D166 (1), D204; `ui/UsersPanel.tsx`). Replaces the
   old Manage-users list (`#userList`, `state/users.ts` — it drove nothing and is gone). Four blocks, top to bottom:
-  **Waiting for access** (`#admWaiting`, one `[data-req]` row each: the sign-in name, "asked as <callsign> · <name> ·
-  <when>"; **Approve** `[data-approve]` opens the puck picker `#apvPid` — people with no account, not archived, not ALL /
-  ALL AVAIL; the typed callsign is only shown as a hint — and the role `#apvRole`, then "Give access" `#apvGo`;
-  **Decline** `[data-decline]`), or "Nobody is waiting for access." (`#admNoWaiting`); **Accounts** (`#accList`, one
+  **Waiting for access** (`#admWaiting`, one `[data-req]` row each: the sign-in name, "asked as <callsign> · <initials
+  · Pilot/WSO/Personnel · CAT> · <when>" — `requestSummary`, blank parts dropped; **Approve** `[data-approve]` opens
+  PERSON — "On the roster" `#apvModeRoster` | "New person" `#apvModeNew` (`[ACCOUNTS-NEW-PERSON]`, D214) — **New person**
+  the default when the typed callsign is nobody's: the four fields `#apvCs` / `#apvIni` / `#apvSeat` / `#apvCat` in two
+  columns, filled from what he gave, the note `#apvNote` "Filled from what he gave when he signed up — change anything
+  before you give access.", then "Add person and give access" `#apvGo` (one command: the person, his account, the request
+  answered); **On the roster** the default when it is someone's: the picker `#apvPid` (people with no account, not
+  archived, not ALL / ALL AVAIL) NEVER pre-picked (D204), the note naming the matched person by his callsign (one who
+  already has an account — archived or not, the account is checked FIRST: says so, names that account's sign-in, says he
+  can't be picked here and names both ways out: him on a new sign-in → change that account's sign-in under Accounts,
+  which answers the request (archived: "and restore them on the Quals page if they are back" — said, never done for
+  him, Restore wipes his posting-out window); the signed-in admin's OWN account → "another admin must change its
+  sign-in", his row being locked to him; someone else → New person with another callsign or name — Fable's code read
+  #1, both fix checks; an archived one with no account: restore on Quals first, or New person if it is someone else), then
+  "Give access"; the role `#apvRole` either way; Cancel `#apvCancel` discards edits —
+  the next Approve starts again from the request; within one open, each half keeps its entries; **Decline**
+  `[data-decline]`), or "Nobody is waiting for access." (`#admNoWaiting`); **Accounts** (`#accList`, one
   `[data-acct]` row each: sign-in name over the live callsign, the role pill, tags "archived callsign" / "switched off" /
-  "you"; a tap (`.acc-tap`) opens its editor `[data-editing]` — sign-in name, callsign, role, Save / Switch off-on /
-  Cancel — except his OWN account, whose row is disabled); **Add an account** (`#accAddName`, `#accAddPid`,
-  `#accAddRole`, `#accAdd`); **Guest view** (`#admGuestView`, a checkbox, OFF by default). Every refusal toasts its reason
-  (at least one admin keeps access; never your own account; one person one account; one sign-in name one account). The
+  "you"; a tap (`.acc-tap`) opens its editor `[data-editing]` — sign-in name, callsign (its picker keeps the account's
+  own person even once he is archived — never a blank "Pick…" over a hidden value; Astra's fix check #2), role, Save / Switch off-on /
+  Cancel — except his OWN account, whose row is disabled; its picker reads "Callsign/Name", D219); **Add an account**
+  (`#accAddBlock`: the sign-in `#accAddName`, then PERSON `#accModeRoster` | `#accModeNew`, default On the roster — **the
+  ONE door for a new person**, D217: **On the roster** = the picker `#accAddPid`, the role, "Add account"; **New person** =
+  the four fields `#accAddCs` / `#accAddIni` / `#accAddSeat` / `#accAddCat` and the mock-up's note — with a sign-in, the
+  role and "Add person and account" (the person and his account in one command); with the sign-in BLANK, no role and "Add
+  person" (a roster-only person — someone who won't use the app, a SANS man); the form clears back to On the roster);
+  **Guest view** (`#admGuestView`, a checkbox, OFF by default). The words: "Callsign/Name" on every picker and field (D219),
+  "Pilot" / "WSO" / "Personnel (ground crew)" (D220); a callsign/name over 14 letters is said under its box (`…CsLong`) and
+  refused, never cut (D226); initials never required (D225). Every refusal toasts its reason (at least one admin keeps
+  access; never your own account; one person one account; one sign-in name one account; the one callsign rule). The
   rail's Users entry and the Admin tab (`#admWaitBadge` top nav, `#drawerWaitBadge` drawer) carry the count waiting.
+  **Opening it from elsewhere** — the bell's access alert and Quals' "+ Add person" call `ui/adminopen.ts openAdminUsers`,
+  which sets `state/view.ts ADMINOPEN` (`{ seq, newPerson }`); the Admin page is its ONE consumer (keyed on `seq`, so it
+  works when the page is already up on another category): Users chosen, on a phone drilled in, and `newPerson` handed to
+  the Users panel, which chooses New person, scrolls the form into view and focuses the Callsign/Name box on a desktop.
+  A sign-in or sign-out clears a pending one (`VIEW_RESET`). The Users panel is told `shown` (Users chosen, and on a phone
+  drilled in) — the bell's "seen" (§The top bar carries the bell).
 - **`#admConfig` Squadron configuration** — `#admDutyTpl` / `#admDayTpl`
   open the duty-template and day-template editors by setting the SAME
   `pops.ts` flags the picker pencils set (`setTplEdit` / `setDayTplEdit`).
@@ -5033,16 +5074,29 @@ table's action cell, ungated, opening the viewer.
 
 The far-right chip (`#roleBadge`, `.rolechip`) is an inert `<span>` for everyone, reading the signed-in callsign and
 role — "Saber · Admin", "Ranger · Member". The admin's "View as member" toggle it used to be (27 Aug 26) is REMOVED —
-"There isint a need for preview as a member" (D166 (3)) — and so are the topbar's "View as" picker (`#viewAs`) and the
+"There isint a need for preview as a member" (D166 (3); *to come back — D292, 27 Sep 26: a tap switches an admin to
+the member view and back, `[POST-OUT-OUTCOMES]`*) — and so are the topbar's "View as" picker (`#viewAs`) and the
 drawer's View-as chips (`#drawerViewAs`) and toggle (`#drawerRole`). The chip is hidden on the phone bar (as ever); the
 DRAWER's Account row reads "Signed in as <callsign> · <role>" (`#drawerAcct`) above Logout. Pinned in
 `ui/accounts-ui.test.tsx` (which replaced `roletoggle.test.tsx`).
 
 ## The access screens and the guest view (`[ACCOUNTS]`, D204, 26 Sep 26)
 
+**No "Sign up" button on the sign-in page (D293, 27 Sep 26):** whoever signs in and is on no list lands on Request access
+by itself; held in reserve only, if new people are confused once live — one line under the button, "New here? Sign in
+with your defence mail to ask for access."
+
 Someone signed in but without access sees one of three cards in the sign-in's own look (`ui/AccessScreen.tsx`, `.login`
-classes): **Request access** (`#accessRequest` — "Signed in as <name>", Callsign `#accCs`, Name `#accFull`, "Request
-access" `#accSend`, errors in `#accErr`); **Waiting** (`#accessWaiting` — what he asked, "an admin will answer it"; with the guest switch ON, "View the schedule" `#accGuest` takes him straight into the guest view, D221);
+classes): **Request access** (`#accessRequest` — "Signed in as <name>", then what the admin's New person form asks
+(`[ACCOUNTS-NEW-PERSON]`, D214): "Displayed callsign/name" `#accCs` (D222 — this card only; no length cap on the box: over
+14 letters a line `#accCsLong` says so at once and the request is refused, never cut — D226), "Initials" `#accIni` (never
+required — D225), "Pilot, WSO or personnel" `#accSeat` ("Pick…", Pilot, WSO, Personnel (ground crew) — D220), "CAT"
+`#accCat` ("Pick…" then the seat's CATs; absent for personnel; back to Pick… when the seat changes to one that cannot hold
+it); the two selects wear the boxes' look (`.login select`); "Request access" `#accSend`, errors in `#accErr` — never
+whether a callsign is taken (a person not yet let in may not read the roster). *(Was, 26 Sep 26 `[ACCOUNTS]`: Callsign
+`#accCs`, Name `#accFull` — the Name box gave way to the initials, D219.)*); **Waiting** (`#accessWaiting` — what he
+asked, one line `#accAsked`: "You asked for access as **Viper** (JKB · Pilot · CAT C).", "an admin will answer it"; with
+the guest switch ON, "View the schedule" `#accGuest` takes him straight into the guest view, D221);
 **Switched off** (`#accessOff`). Each has Sign out (`#accOut`, through `ui/logout.ts`). With the admin's guest switch ON a
 person waiting instead gets the GUEST VIEW (`ui/GuestApp.tsx`, `#guestApp`): a slim bar (the mark, "Waiting for access —
 view only" `#guestNote`, Sign out `#guestOut`), the week window, and the week from the view page's builder — what a

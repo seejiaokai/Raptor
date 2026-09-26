@@ -2,7 +2,13 @@
    the same things. Pictures of the REAL app (the production build on 4173) with the proposed fields
    drawn into its own markup and classes — nothing is built yet. Desktop 1440×900 and phone 390×844.
    Output: docs/mock/img/new-person-account/*.png; the page is docs/mock/new-person-account.html.
-   Run from raptor-port/: node scripts/handpass/am/mk-new-person.mjs */
+   Run from raptor-port/: node scripts/handpass/am/mk-new-person.mjs
+
+   A RECORD, NOT A TOOL TO RE-RUN (Fable's code read #4, 26 Sep 26). It drew the proposal on
+   the app as it was BEFORE [ACCOUNTS-NEW-PERSON] was built — the old sign-up's Name box
+   (#accFull) among them. The build has since replaced those screens with the real thing, so
+   run now it stops at #accFull, and drawing the proposal into the built screens would picture
+   neither. The approved design (D224) is the page and its pictures, which stay as drawn. */
 import { existsSync, mkdirSync } from 'node:fs'
 import { chromium } from '@playwright/test'
 

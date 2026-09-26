@@ -49,12 +49,12 @@ list (13–23 Sep 26), its finished entries and the "In plain terms" block are i
 whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaining).
 
 **His order — to the database step, about two months away (D203, 26 Sep 26; D173, D147 within it):**
-1. **Now — [ACCOUNTS]** (D165, D166, D200, D202; its open question: how a new user joins), then **[DRAFT-PENDING]** — the
-   one changes window, on top of accounts. **Each gets its own FULL check (D210, 26 Sep 26 — amends D173's one check of
-   both):** accounts is planned, red-teamed, built, walked and FULL-checked by itself on `claude/accounts`, then "merge live";
-   the window then gets its own.
-   **Before the window: [ACCOUNTS-NEW-PERSON]** (D214 — make a brand-new person from Admin → Users; mock-up first, then
-   its own small branch and check).
+1. **Now — [ACCOUNTS-NEW-PERSON]** (D214, D216, D217, D219, D220, D222 — one door for a new person on Admin → Users, the
+   sign-up asking the same things, the admins' bell; the mock-up `raptor-port/docs/mock/new-person-account.html`, his
+   approval first), on `claude/accounts-new-person`, its own FULL check — DONE, the PR open for his look and "merge
+   live"; then **[POST-OUT-OUTCOMES]** (D291 — D229, D280, D283–D287, D290: a posting out says which outcome;
+   accounts suspended / deleted), its own FULL check; then **[DRAFT-PENDING]** — the one changes window,
+   on top of accounts, its own FULL check (D210). `[ACCOUNTS]` itself MERGED 26 Sep 26 (PR #442, his "merge live").
 2. **Now, beside the building — [IT-QUESTIONS]:** talk to the IT side (his, not code); their approvals take weeks.
 3. **Development as normal — [HUMAN-RETEST]**'s remaining three, in HIS order (D147): the absence record TOGETHER with
    **[S4-HUNT-REST]** (its ground IS the absence record), then change-recording (with [UNDO-ROSTER-SETTINGS] and D148),
@@ -271,7 +271,9 @@ below: `git log -S"GU-P2" -- OUTSTANDING.md` (`docs/session-state.md` was delete
   failed restore. Both LOW.
 
 ### [RECALL] Fresh recall from archive — FUTURE FEATURE
-An admin recalls an archived person back into Quals. **Behaviour (owner, 13 Sep 26):**
+An admin recalls an archived person back into Quals. **NARROWED 26 Sep 26 BY D284: a man archived while OVERSEAS
+(D229) comes back AS HE WAS, with a prompt to update his quals — "fresh" below now covers someone who left flying for
+good (account deleted) and is ever taken back; `[POST-OUT-OUTCOMES]` builds the overseas return.** **Behaviour (owner, 13 Sep 26):**
 leaving the whole app SYSTEM then being posted back = **FRESH** — new/updated quals and
 new Leave War balances; only past history stays frozen. NOT "restored exactly as they
 left." Replaces the current Quals ✕ / "Restore exactly" behaviour (see [SYNC-INTEG] P6).
@@ -289,6 +291,15 @@ from leaving the system entirely, which is a fresh return. The identity model mu
 person move between squadrons with data intact.
 - **Context:** memory `multi-squadron-and-person-transfer`; ties to
   `docs/architecture-direction.md` and [DB-STEP].
+- **D281 (26 Sep 26) — the posting-out date and the neighbours:** a posting to another squadron IS this transfer — on
+  the posting-out date he belongs to the other squadron, moved automatically on that date or by the admin's hand; and
+  because the squadrons are local and near each other, another squadron (e.g. 149) may PLAN a 142 man — **normally, at
+  any time, not only during a posting (D282)** — his leave, quals and account staying his own squadron's (`docs/architecture-direction.md` §3, More than one squadron). The Leave
+  War's post-out sheet will offer it as its fourth outcome (`[POST-OUT-OUTCOMES]`, D229) once this is built.
+- **D288 (27 Sep 26) — communities and guest flyers:** callsigns unique within a community (the F-15 one), not
+  app-wide; a future F-16 community reuses them, and its men may fly with us as guests (tagged "Viper · F-16",
+  picked from a guest list, never by typing a bare callsign). **D289:** a community = the squadrons of one aircraft
+  type; a guest always marked — on a puck an orange corner (D296, option A of `docs/mock/post-out.html` §8).
 
 ### [TRK-ATTEMPTS] Keep a student's attempt history — OPEN (small, feature)
 Remember a student's *earlier* tries at an event, not just the latest grade. More a
@@ -941,18 +952,6 @@ section folds are next touched. (Its first half — the wave show/hide toggle le
   file true as rules are added.** Still to gather: the day/AL publishing flow,
   the roles split, what each warning means in practice, the phone gestures.
 
-### [QUALS-MEMBER-SCOPE] May a member edit ANY row on the Quals page? — a question for him (moved from HANDOFF.md, 24 Sep 26)
-
-**FOLDED INTO `[ACCOUNTS]` 26 Sep 26 (D200) — BUILT there 26 Sep 26 (`raptor-port/src/state/quals-write.ts`,
-pinned per column in `quals-write.test.ts`); to the archive with `[ACCOUNTS]`' merge.** **ANSWERED (D149, 24 Sep 26) — now a small build:** a member edits his OWN row only, and every column of it (SXO and
-SCHEDULER included); an admin edits any row. The gate goes at the page and the write path, with a test per column;
-permissions, so FULL tier. **Place:** any time, none blocking. The question as it was put:
-  - **Member Quals-editing scope** — a member in Quals editing mode can tick/edit
-    ANY row's table contents (callsign, CAT, SXO, SANS). The 5 Aug decision reads
-    that as intended, but it sits oddly beside the Inputs page's own-row-only
-    rule; if own-row-only quals is wanted, the gate belongs in the same three
-    places the authority-sweep fix touched.
-
 ### [DB-READINESS] Our side of the database, built against the fake database — about a month before it (D203, filed 26 Sep 26)
 The requirements are `raptor-port/docs/data-model.md` §7 (from the 9 Sep 26 stress test; pinned as GAP tests in
 `raptor-port/src/storage/dbreadiness.test.ts`). Ours to build now-able, none needing Manfred's tables: (1) **saving in small
@@ -1176,39 +1175,34 @@ None breaks an amendment rule; each is a line to fix or ask about, from the walk
 only people already on Quals. **Build:** "Add an account" (and Approve, filled from the callsign and name the person typed)
 gets a **New person** choice — callsign, **initials**, pilot / WSO / personnel, CAT — which creates his Quals row and his
 account together through the SAME add the Quals page uses (one callsign rule), as one command. Flight and quals stay on
-Quals. **Mock-up first:** `raptor-port/docs/mock/new-person-account.html` (his approval before any code). **Tier:** FULL
+Quals. **Mock-up first:** `raptor-port/docs/mock/new-person-account.html` — **APPROVED 26 Sep 26 (D224)**, the design of
+record; planned (Opus 5.5), red-teamed (Fable, Astra), built and walked on `claude/accounts-new-person` (26 Sep 26); its
+FULL check DONE the same day — three read rounds by Fable and Astra, every finding fixed red first, re-walked 58/58,
+break tests 32/32, the full checks green (evidence `raptor-port/docs/handpass/2026-09-26-accounts-new-person.md`); the PR
+is open, **waiting for his look (the sheet's §10 card) and his "merge live"**. **Tier:** FULL
 (roles and saved data). **With it — D216:** a new access request lights the admins' bell (a tap → Admin → Users; out once
 he has opened it). **And the sign-up form asks the same things** (his "signs up for an account", on D214's row).
 **And D217 — one door:** a new person is created ONLY on Admin → Users (or his approved sign-up); a blank sign-in makes a
 roster-only person (a SANS man); Quals' "+ Add person" becomes a button to Admin → Users (its form and tests retired, D201).
-**And D219:** the field reads "Callsign/Name" (some people have no callsign) — the sign-up, Admin → Users and the Quals head. **D220:** the seat choice reads "Pilot", "WSO", "Personnel (ground crew)". **D222:** on the sign-up card only, that field reads "Displayed callsign/name".
+**And D219:** the field reads "Callsign/Name" (some people have no callsign) — the sign-up, Admin → Users and the Quals head. **D220:** the seat choice reads "Pilot", "WSO", "Personnel (ground crew)". **D222:** on the sign-up card only, that field reads "Displayed callsign/name". **D225:** initials asked on both forms, required on neither. **D226:** the callsign/name stays at 14 letters and the form says so — never cut silently. **D227:** each admin's bell is his own (out once HE has had the waiting list on screen). The plan (red-teamed round 1): `raptor-port/docs/superpowers/plans/2026-09-26-accounts-new-person-plan.md`.
 **Place:** straight after `[ACCOUNTS]` merges, on its own branch, before `[DRAFT-PENDING]`.
 
-### [ACCOUNTS] Accounts in the app now, shaped as the defence-mail sign-in will be (owner, D166, 25 Sep 26)
-**BUILT 26 Sep 26 on `claude/accounts` — in its FULL check (D210); the plan (red-teamed three rounds by Fable and Astra)
-is `raptor-port/docs/superpowers/plans/2026-09-26-accounts-plan.md`; the behaviour register
-`raptor-port/docs/superpowers/specs/2026-09-26-accounts-behaviour-register.md`.** To the archive with its merge.
-The Admin tab creates accounts (sign-in name, admin or member, the callsign it belongs to); the sign-in screen stands
-for the defence mail sign-in; signing in makes you that callsign, so "View as" and any member preview go; the Leave
-War follows the signed-in callsign; every "who" (edit record, pending list, hand over) names the callsign. Replaces
-the fixed `ad` / `us` logins and merges Admin's "Manage users" list. The real address is tied by IT at the database
-step (D165). Permissions → FULL tier. **Place (the agent's recommendation, not yet his word):** after this round's
-smaller inputs in `[LOOK-435]` and BEFORE the hand over (D118), which then shows real callsigns and "since YOU last
-looked" from the start. **SETTLED by D173:** step 2 of the order, on a NEW branch, after PR #435 merges.
-**WIDENED 26 Sep 26 — D200 ("yes"; "so all these 3 things to be done inside the accounts work"): it carries the
-permissions work.** (1) D149 built here (`[QUALS-MEMBER-SCOPE]` folds in). (2) `raptor-port/docs/data-model.md` §11 — the
-list IT builds the database's security from — matches every ruling: a member's own Person row, every column (D149; the
-table still says members only READ `Person`); the change history readable by members (D169; the table gives members no
-`EditLog` access), a medical input's details excepted; accounts tied to callsigns (D166); OIL awards written by admins only,
-who gave each and when kept (D79, D82). (3) One place in the app answers "may this person do this?", mirroring §11, with a
-test that fails when the two disagree. **ANSWERED — D204 (26 Sep 26): both ways; a waiting screen, with an admin switch (off
-by default) for a read-only guest view.** The question was: how a new user joins —
-(a) the admin adds the defence mail, callsign and role first, so the first sign-in has its access at once (D165's plan);
-(b) a new user signs up (callsign, name) and the admin is notified, approves and sets member or admin; either way the
-admin can change it later. Also noted: an untagged signed-in person sees the programme as a GUEST (his parked plan of
-1 Sep 26, `raptor-port/docs/architecture-direction.md`). Found 26 Sep 26: §11 already covers Leave War bids (own row while open) and the
-leave / OIL ledger (admin writes, a member reads his own) — check, do not re-add.
-
+### [POST-OUT-OUTCOMES] A posting out says WHICH of its outcomes it is; accounts suspended and deleted (D229, D280, D283–D285, filed 26 Sep 26)
+**His rulings:** a posting out is (1) overseas to another squadron → archived, account SUSPENDED, back AS HE WAS with a
+prompt to update his quals (D284); (2) leaving flying for good → account DELETED; (3) another workplace, still flying
+with us → SANS on the date: with Show SANS off the Leave War shows him posted out, untracked, with it on he joins the SANS
+group that day, tracked (D283); (4) a transfer — future, `[XFER]`. Buttons: "Suspend" / "Enable", "Delete account"
+(D285). **Today:** the post-out sheet's one choice is "Archive on PO date"; an archived man keeps a WORKING account;
+Admin → Users has "Switch off / on", no delete. **To build:** the sheet asks which outcome and the app does it on the
+date (each also by hand); touches the Leave War (the sheet, `runPoArchive`), Quals, Admin → Users, data-model §11 (`User`
+D), `perms.ts` — FULL tier. **Leaving flying for good — D287, his pick "B, truly delete him":** account AND person
+deleted; **D297: every day he already flew keeps his puck, published or not; days still to come lose him**;
+everything that is his goes too (inputs, Leave War leave and OIL — nothing left stored unseen); a day still to come
+takes him off (pending on a published day); asks twice, cannot be undone. **Underneath — D290 "hidden mark":** his
+row is kept, marked deleted and invisible everywhere (the data model's tombstone), never erased. **And names — D286:** an archived man's callsign may go to a new person (today it is refused); restoring him while it
+is in use needs one of the two renamed first (Restore says so, renames nobody). Update `roster-add.ts` (its PID-01
+header and test), `ID_BY_CS` (points at the roster's man). **Mock-up APPROVED 27 Sep 26 (D299) — the design of record:** `raptor-port/docs/mock/post-out.html` (+ its Artifact; §5 holds what stays after a delete; D300 — the date once, the button "Post out", FEWER WORDS: done 27 Sep 26, Artifact Version 6; the BUILD carries the same short words — the sheet's line, the delete's second tap, the suspended sign-in, the back-prompt, the Restore rename line — and the post-in button reads just "Post in"); his first look: D294 (short chips "Overseas Sqn" · "Delete" (D298) · "SANS" · "Transfer to Sqn"), D295 (rename an archived man directly), D296 (guest mark A). **With it — D292:** the admin's member view back (tap the badge: "SABER · ADMIN" ↔ "MEMBER"; perms read the role in
+force). **Place — D291:** straight after `[ACCOUNTS-NEW-PERSON]` merges, before `[DRAFT-PENDING]`.
 ### [LOOK-435] His inputs from the look at PR #435 — the order is D173 (25 Sep 26)
 **Step 1 DONE 25 Sep 26:** D114's FULL check — evidence `raptor-port/docs/handpass/2026-09-25-amendment-batch.md` §9; two
 gaps fixed, three older findings filed (`[REQ-TWO-ROWS]`, `[REQ-DECLINED-PENDING]`, `[REQ-ORPHAN-ROW]`); waiting for his look.

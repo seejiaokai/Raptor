@@ -41,7 +41,7 @@ paths:
 Leave War file** (OIL is leave the war banks) — among them **D79, D80, D81, D82** (a hand-typed award: any
 day; never flags a leave day; a worked weekend that earns nobody says so; an award and a worked day add up),
 **D19** (a weekend no Leave War period covers says so and offers to create it) and **D21** (an Off day earns
-no OIL). **Also read** — in `how-we-work.md`: **D166** (accounts: the war follows the signed-in callsign, not "View as"). In `scheduler.md`: **D44, D45** (nothing on a published day changes without the
+no OIL). **Also read** — in `how-we-work.md`: **D166** (accounts: the war follows the signed-in callsign, not "View as"); **D229, D280, D281, D283, D284** (a posting out's four outcomes — archive + suspend, delete, SANS, transfer — which change the war's post-out sheet; a man posted out as SANS joins the SANS group that day when Show SANS is on, else stays shown as posted out, untracked; a man back from overseas returns as he was). In `scheduler.md`: **D44, D45** (nothing on a published day changes without the
 scheduler acknowledging it; the pending mark is the mechanism).
 
 **Where the detail lives:** the grid, its sheets and its window of months — `raptor-port/docs/ui-contracts.md`
@@ -236,7 +236,7 @@ derives its role from the Raptor login (`store.ts:toggleRole` — the admin's
 view-as-member flip, 27 Aug 26 — is the only other production writer, riding
 this same seam so the war always reads the session's EFFECTIVE role; on the
 Leave War itself, moving the cycle stage forward became admin-only the same
-day — members still bid) *[AMENDED 26 Sep 26 by `[ACCOUNTS]` (D166 (3)): the toggle is gone — `resetSession` is now the
+day — members still bid) *[AMENDED 26 Sep 26 by `[ACCOUNTS]` (D166 (3)): the toggle is gone (to come back as the admin's member view, D292, 27 Sep 26) — `resetSession` is now the
 ONE production writer of the war's role]*, `probe-bridge.ts`
 exposes `w.lwSetRole` for its e2e suite *[the whole bridge on the developer's PC only since `[ACCOUNTS]`]*, and **`src/leavewar/sync.ts`** — the
 sync wires (17 Aug 26; this seam also mirrors Raptor's "View as" person *[since `[ACCOUNTS]`, 26 Sep 26 — D166 (4): the

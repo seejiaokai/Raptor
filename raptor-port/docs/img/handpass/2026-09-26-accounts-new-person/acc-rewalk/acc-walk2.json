@@ -1,0 +1,302 @@
+{
+ "at": "2026-09-26T10:51:45.780Z",
+ "pass": 42,
+ "fail": 0,
+ "results": [
+  {
+   "id": "d-board-me-puck",
+   "what": "the scheduler board draws the admin's own puck as \"this is you\" (Saber), nobody else's",
+   "ok": true,
+   "note": "",
+   "pic": "01-d-board-me-puck.png"
+  },
+  {
+   "id": "d-member-report",
+   "what": "a member files a report; \"Your reports\" lists it",
+   "ok": true,
+   "note": "",
+   "pic": "02-d-member-report.png"
+  },
+  {
+   "id": "d-member-lw-doors",
+   "what": "the Leave War as a member: no \"New war\", no stage button",
+   "ok": true,
+   "note": "",
+   "pic": "03-d-member-lw-doors.png"
+  },
+  {
+   "id": "d-member-lw-other",
+   "what": "a tap on another person's day opens nothing for a member",
+   "ok": true,
+   "note": "",
+   "pic": "04-d-member-lw-other.png"
+  },
+  {
+   "id": "d-member-lw-own",
+   "what": "a member bids LL on his own Saturday (14 Feb, inside the bidding window)",
+   "ok": true,
+   "note": "",
+   "pic": "05-d-member-lw-own.png"
+  },
+  {
+   "id": "d-member-lw-undo",
+   "what": "his own bid lights the Leave War's Undo (the member's undo door)",
+   "ok": true,
+   "note": "",
+   "pic": "06-d-member-lw-undo.png"
+  },
+  {
+   "id": "d-member-own-bid-replaced",
+   "what": "he files leave on the Inputs page over his own bid: it saves, and the message says \"your\" bid",
+   "ok": true,
+   "note": "This replaces your LL bid on 14 Feb on the Leave War",
+   "pic": "07-d-member-own-bid-replaced.png"
+  },
+  {
+   "id": "d-member-inputs-rows",
+   "what": "Inputs as a member (filter: Everyone): he files his own leave; ✎ and ✕ sit on his own rows only",
+   "ok": true,
+   "note": "1 editable, all his",
+   "pic": "08-d-member-inputs-rows.png"
+  },
+  {
+   "id": "d-next-member-undo",
+   "what": "another member signs in on the same browser: the Leave War's Undo is dark",
+   "ok": true,
+   "note": "",
+   "pic": "09-d-next-member-undo.png"
+  },
+  {
+   "id": "d-next-member-rows",
+   "what": "and on Inputs (filter: Everyone), Ranger's leave is listed but carries no ✎ ✕ for him",
+   "ok": true,
+   "note": "",
+   "pic": "10-d-next-member-rows.png"
+  },
+  {
+   "id": "d-member-medical-view",
+   "what": "the medical view as a member: another person's card opens read-only (no Edit input, no Upchit)",
+   "ok": true,
+   "note": "Grit · ATT C · Jul 13 → Jul 17",
+   "pic": "11-d-member-medical-view.png"
+  },
+  {
+   "id": "d-rename-users",
+   "what": "renamed on Quals: Admin → Users shows the new callsign on his account",
+   "ok": true,
+   "note": "",
+   "pic": "12-d-rename-users.png"
+  },
+  {
+   "id": "d-rename-badge",
+   "what": "renamed: he signs in as \"Rangr · Member\"",
+   "ok": true,
+   "note": "",
+   "pic": "13-d-rename-badge.png"
+  },
+  {
+   "id": "d-rename-reports",
+   "what": "renamed: \"Your reports\" still lists his report",
+   "ok": true,
+   "note": "",
+   "pic": "14-d-rename-reports.png"
+  },
+  {
+   "id": "d-member-no-rename",
+   "what": "a member with editing on: his callsign reads as text — only an admin renames (D218)",
+   "ok": true,
+   "note": "",
+   "pic": "15-d-member-no-rename.png"
+  },
+  {
+   "id": "d-member-renamed-back",
+   "what": "the admin renames him back on Quals: he signs in as \"Ranger · Member\"",
+   "ok": true,
+   "note": "",
+   "pic": "16-d-member-renamed-back.png"
+  },
+  {
+   "id": "d-relink",
+   "what": "relinked: \"hex\" signs in as the callsign the admin picked",
+   "ok": true,
+   "note": "",
+   "pic": "17-d-relink.png"
+  },
+  {
+   "id": "d-second-admin",
+   "what": "promoted: \"outlaw\" signs in as an admin (the Admin tab shows)",
+   "ok": true,
+   "note": "",
+   "pic": "18-d-second-admin.png"
+  },
+  {
+   "id": "d-only-admin-own",
+   "what": "now the only admin: his own account still reads \"you\" and cannot be opened (no way to lock everyone out)",
+   "ok": true,
+   "note": "",
+   "pic": "19-d-only-admin-own.png"
+  },
+  {
+   "id": "d-demoted",
+   "what": "demoted: \"ad\" signs in as a member (no Admin tab)",
+   "ok": true,
+   "note": "",
+   "pic": "20-d-demoted.png"
+  },
+  {
+   "id": "d-restored",
+   "what": "back as it was: \"ad\" is admin again, \"outlaw\" a member",
+   "ok": true,
+   "note": "",
+   "pic": "21-d-restored.png"
+  },
+  {
+   "id": "d-rename-onto-request",
+   "what": "an account renamed to a name that is waiting: the request is answered, the count goes",
+   "ok": true,
+   "note": "",
+   "pic": "22-d-rename-onto-request.png"
+  },
+  {
+   "id": "d-add-duplicate-name",
+   "what": "adding \"US\" (an existing sign-in, any case) is refused and says why",
+   "ok": true,
+   "note": "us already has an account",
+   "pic": "23-d-add-duplicate-name.png"
+  },
+  {
+   "id": "d-picker-free-only",
+   "what": "the callsign picker never offers a person who already has an account",
+   "ok": true,
+   "note": "",
+   "pic": "24-d-picker-free-only.png"
+  },
+  {
+   "id": "d-badge-counts",
+   "what": "two waiting → \"2\"; one declined → \"1\"; the other approved → the count goes, at once",
+   "ok": true,
+   "note": "",
+   "pic": "25-d-badge-counts.png"
+  },
+  {
+   "id": "d-admin-bell-reports",
+   "what": "the member's report lights the admin's bell",
+   "ok": true,
+   "note": "",
+   "pic": "26-d-admin-bell-reports.png"
+  },
+  {
+   "id": "d-member-no-others-reports",
+   "what": "another member sees no one else's report under \"Your reports\"",
+   "ok": true,
+   "note": "",
+   "pic": "27-d-member-no-others-reports.png"
+  },
+  {
+   "id": "d-reload-mid",
+   "what": "reloads mid-way: the sent request is still there; the one typed but never sent never became one",
+   "ok": true,
+   "note": "",
+   "pic": "28-d-reload-mid.png"
+  },
+  {
+   "id": "d-archive",
+   "what": "the admin archives the callsign \"hex\" belongs to, with the row's ✕",
+   "ok": true,
+   "note": "",
+   "pic": "29-d-archive.png"
+  },
+  {
+   "id": "d-archived-list",
+   "what": "archived on Quals: the account stays on Admin → Users",
+   "ok": true,
+   "note": "hexNomadarchived callsignMember",
+   "pic": "30-d-archived-list.png"
+  },
+  {
+   "id": "d-archived-signin",
+   "what": "archived: \"hex\" still signs in, as his callsign",
+   "ok": true,
+   "note": "Nomad · Member",
+   "pic": "31-d-archived-signin.png"
+  },
+  {
+   "id": "d-guest-on",
+   "what": "guest switch on: the waiting person sees the guest view",
+   "ok": true,
+   "note": "",
+   "pic": "32-d-guest-on.png"
+  },
+  {
+   "id": "d-guest-button",
+   "what": "asking while guest access is on: the waiting screen offers \"View the schedule\", one tap into the guest view (D221)",
+   "ok": true,
+   "note": "",
+   "pic": "33-d-guest-button.png"
+  },
+  {
+   "id": "d-guest-weeks",
+   "what": "the guest moves weeks with the week chips: every day drawn as members see it, nothing else opens (Fable S5, D215)",
+   "ok": true,
+   "note": "",
+   "pic": "34-d-guest-weeks.png"
+  },
+  {
+   "id": "d-guest-off",
+   "what": "guest switch off: his next sign-in shows the waiting screen again",
+   "ok": true,
+   "note": "",
+   "pic": "35-d-guest-off.png"
+  },
+  {
+   "id": "d-window-covers-logout",
+   "what": "Edit history open: it covers the top bar, so signing out means closing it first (a modal, by design)",
+   "ok": true,
+   "note": "",
+   "pic": "36-d-window-covers-logout.png"
+  },
+  {
+   "id": "d-scheduler-tick",
+   "what": "a member who ticks SCHEDULER on his own row is offered in the sign-off boxes (on the look card)",
+   "ok": true,
+   "note": "Outlaw is offered",
+   "pic": "37-d-scheduler-tick.png"
+  },
+  {
+   "id": "d-reload-session",
+   "what": "a reload signs you out (as today) and keeps every account",
+   "ok": true,
+   "note": "",
+   "pic": "38-d-reload-session.png"
+  },
+  {
+   "id": "p-member-drawer",
+   "what": "phone, member: the drawer reads \"Signed in as Ranger · Member\" and has no Admin",
+   "ok": true,
+   "note": "",
+   "pic": "39-p-member-drawer.png"
+  },
+  {
+   "id": "p-board-covers-menu",
+   "what": "phone: with the board open the menu button is covered, so signing out means closing the board first",
+   "ok": true,
+   "note": "",
+   "pic": "40-p-board-covers-menu.png"
+  },
+  {
+   "id": "p-account-editor",
+   "what": "phone: an account's editor (name, callsign, role, Switch off) fits the screen",
+   "ok": true,
+   "note": "",
+   "pic": "41-p-account-editor.png"
+  },
+  {
+   "id": "p-switched-off",
+   "what": "phone: the switched-off card",
+   "ok": true,
+   "note": "",
+   "pic": "42-p-switched-off.png"
+  }
+ ],
+ "errors": []
+}

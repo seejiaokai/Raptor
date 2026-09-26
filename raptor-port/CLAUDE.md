@@ -535,9 +535,10 @@ ONE id-first resolver every ground/programme consumer shares
 resolves; free text like 'EXT SQN' stays text). So **renaming is a label change
 that moves nothing** (`renameCallsign` sets `cs` + remaps `ID_BY_CS`; the old
 DAYS-walk that rewrote row strings — and missed snapshots/drafts/other weeks —
-is gone), and no reused callsign can cross two people. `addPerson` refuses a
-callsign that resolves to any existing person by id OR callsign (the closed
-add back-door). Sim `who` is FREE TEXT only now — never resolved to a person.
+is gone), and no reused callsign can cross two people. The one add
+(`state/roster-add.ts newPersonProblem`, Admin → Users — the only door for a new
+person since `[ACCOUNTS-NEW-PERSON]`, D217) refuses a callsign that resolves to
+any existing person by id OR callsign (the closed add back-door) — *to narrow, D286: an archived man's callsign becomes free; restoring him while it is in use needs one renamed first (`[POST-OUT-OUTCOMES]`)*. Sim `who` is FREE TEXT only now — never resolved to a person.
 Parity holds byte-for-byte: `data-person` and the printed name both derive from
 the resolved id, so an id-form `who` renders identically to a callsign one.
 

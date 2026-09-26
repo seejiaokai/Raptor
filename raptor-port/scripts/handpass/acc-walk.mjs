@@ -100,7 +100,7 @@ async function go(page, to) { await page.evaluate(p => window.go(p), to); await 
   await signIn(page, 'viper@mail', 'whatever')
   await step(page, 'd-request-screen', 'a name on no list lands on "Request access", naming the sign-in', async () =>
     (await page.locator('#accessRequest').count()) === 1 && (await text(page, '#accName')) === 'viper@mail' && (await page.locator('#shell').count()) === 0)
-  await page.fill('#accCs', 'Viper'); await page.fill('#accFull', 'Jo Bloggs')
+  await page.fill('#accCs', 'Viper'); await page.fill('#accIni', 'JOBLOGGS'); await page.selectOption('#accSeat', 'FCP'); await page.selectOption('#accCat', 'C')
   await page.click('#accSend'); await page.waitForTimeout(400)
   await step(page, 'd-waiting-screen', 'after asking: the waiting screen, what he asked, Sign out', async () =>
     (await page.locator('#accessWaiting').count()) === 1 && (await text(page, '#accessWaiting')).includes('Viper'))
@@ -121,8 +121,13 @@ async function go(page, to) { await page.evaluate(p => window.go(p), to); await 
     return own && req === 1 && g === false ? true : `own disabled ${own}, requests ${req}, guest ${g}`
   })
   await page.click('#admWaiting [data-approve]'); await page.waitForTimeout(300)
-  await step(page, 'd-approve-form', 'Approve asks for the puck (typed callsign only a hint) and the role', async () =>
-    (await page.locator('#apvPid').count()) === 1 && (await page.locator('#apvPid').inputValue()) === '')
+  /* since [ACCOUNTS-NEW-PERSON] (D214) a callsign nobody has opens "New person"; this walk
+     links an existing puck, so it takes "On the roster" first (Astra's code read #4) */
+  const opensNew = (await page.locator('#apvModeNew[aria-pressed="true"]').count()) === 1
+  await page.click('#apvModeRoster'); await page.waitForSelector('#apvPid')
+  await step(page, 'd-approve-form', 'Approve opens New person for a callsign nobody has (D214); On the roster asks for the puck (typed callsign only a hint) and the role', async () =>
+    opensNew && (await page.locator('#apvPid').count()) === 1 && (await page.locator('#apvPid').inputValue()) === ''
+      ? true : `opens New person ${opensNew}, picker ${await page.locator('#apvPid').count()}`)
   await page.click('#apvGo'); await page.waitForTimeout(300)
   await step(page, 'd-approve-needs-puck', 'giving access with no puck picked is refused, the request stays', async () =>
     (await page.locator('#admWaiting [data-req]').count()) === 1)
@@ -141,13 +146,13 @@ async function go(page, to) { await page.evaluate(p => window.go(p), to); await 
   await signOut(page)
 
   /* ---- decline, ask again; add for a waiting name ---- */
-  await signIn(page, 'wren@mail'); await page.fill('#accCs', 'Wren'); await page.fill('#accFull', 'W'); await page.click('#accSend'); await page.waitForTimeout(300)
+  await signIn(page, 'wren@mail'); await page.fill('#accCs', 'Wren'); await page.fill('#accIni', 'W'); await page.selectOption('#accSeat', 'FCP'); await page.selectOption('#accCat', 'C'); await page.click('#accSend'); await page.waitForTimeout(300)
   await signOut(page); await signIn(page, 'ad', 'a'); await go(page, 'admin')
   await page.click('#admWaiting [data-decline]'); await page.waitForTimeout(300)
   await signOut(page); await signIn(page, 'wren@mail')
   await step(page, 'd-declined-asks-again', 'declined: signing in again offers "Request access" again', async () =>
     (await page.locator('#accessRequest').count()) === 1)
-  await page.fill('#accCs', 'Wren'); await page.fill('#accFull', 'W'); await page.click('#accSend'); await page.waitForTimeout(300)
+  await page.fill('#accCs', 'Wren'); await page.fill('#accIni', 'W'); await page.selectOption('#accSeat', 'FCP'); await page.selectOption('#accCat', 'C'); await page.click('#accSend'); await page.waitForTimeout(300)
   await signOut(page); await signIn(page, 'ad', 'a'); await go(page, 'admin')
   await page.fill('#accAddName', 'wren@mail'); await page.selectOption('#accAddPid', 'dj'); await page.click('#accAdd'); await page.waitForTimeout(400)
   await step(page, 'd-add-answers-request', 'adding an account for a waiting name answers the request', async () =>
@@ -236,7 +241,7 @@ async function go(page, to) { await page.evaluate(p => window.go(p), to); await 
     undoBefore && await page.locator('#undoBtn').isDisabled() ? true : `undo lit before: ${undoBefore}`)
   await go(page, 'admin'); await page.check('#admGuestView'); await page.waitForTimeout(300)
   await signOut(page)
-  await signIn(page, 'guesty@mail'); await page.fill('#accCs', 'G'); await page.fill('#accFull', 'Guest'); await page.click('#accSend'); await page.waitForTimeout(300)
+  await signIn(page, 'guesty@mail'); await page.fill('#accCs', 'G'); await page.fill('#accIni', 'GUEST'); await page.selectOption('#accSeat', 'FCP'); await page.selectOption('#accCat', 'C'); await page.click('#accSend'); await page.waitForTimeout(300)
   await signOut(page); await signIn(page, 'guesty@mail')
   await step(page, 'd-guest', 'guest: the walled-off view — no tabs, no app windows, "Waiting for access — view only"', async () => {
     const g = await page.locator('#guestApp').count()
@@ -298,7 +303,7 @@ async function go(page, to) { await page.evaluate(p => window.go(p), to); await 
     const w = await page.locator('.acc-card').evaluate(e => e.getBoundingClientRect().right)
     return w <= 390 ? true : `card right edge ${w}`
   })
-  await page.fill('#accCs', 'Kite'); await page.fill('#accFull', 'K'); await page.click('#accSend'); await page.waitForTimeout(300)
+  await page.fill('#accCs', 'Kite'); await page.fill('#accIni', 'K'); await page.selectOption('#accSeat', 'FCP'); await page.selectOption('#accCat', 'C'); await page.click('#accSend'); await page.waitForTimeout(300)
   await step(page, 'p-waiting', 'phone: the waiting card', async () => (await page.locator('#accessWaiting').count()) === 1)
   await page.click('#accOut'); await page.waitForTimeout(300)
   await signIn(page, 'ad', 'a')

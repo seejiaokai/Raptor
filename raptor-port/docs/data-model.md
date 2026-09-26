@@ -71,7 +71,10 @@ module** (section 8): only that module writes it.
 Owner: **Shell**. The one identity in the application. The scheduler
 roster, the Leave War's projected roster and the Tracker's student link all
 point at this row; no second identity is minted anywhere. **Never
-hard-deleted** — `archived` and the tombstone are the only ways out.
+hard-deleted** — `archived` and the tombstone are the only ways out. **— NARROWED 26 Sep 26 BY D287 (owner: "truly
+delete him"): a man who leaves flying for good is DELETED — gone from every list; D297 (27 Sep 26): every day he
+already flew keeps his puck, days still to come lose him. HOW the database does it — **answered 27 Sep 26, D290 ("hidden mark"): the tombstone below** — the row kept, marked
+deleted, invisible everywhere; never erased (`OUTSTANDING.md` `[POST-OUT-OUTCOMES]`).**
 
 | Field | Type | Req | Meaning |
 |---|---|---|---|
@@ -592,7 +595,7 @@ moved here so the Leave War writes its own table and never the shell's.
 | `personId` | ref Person | yes | Unique — at most one profile per person |
 | `band` | choice `instructor\|ops` | no | `personedits.band` |
 | `fromDate`, `toDate` | date | no | in-squadron window; `toDate` null = open (`Person.from`/`to`) |
-| `poArchive` | bool | no | posting-out archive flag (`postouts`) |
+| `poArchive` | bool | no | posting-out archive flag (`postouts`) — **to become the posting-out OUTCOME** (overseas: archive + account suspended / leaving flying: account deleted / SANS / transfer — D229, D280, D281; `OUTSTANDING.md` `[POST-OUT-OUTCOMES]`) |
 | `label` | string | no | the `perslabels` entry for this person |
 
 Relationships: 1–1 `Person` (optional on the Person side).
@@ -642,7 +645,7 @@ to it — every account IS one callsign (owner, D166, 25 Sep 26).
 | `signInName` | string | yes | the provider's principal name — the person's defence mail address (D165). Unique |
 | `role` | choice `admin\|main` | yes | today's two roles |
 | `personId` | ref Person | **yes** | the callsign the account belongs to (D166); one account per person (unique) |
-| `enabled` | bool | yes | false = switched off — the exit; an account is never deleted (§10) |
+| `enabled` | bool | yes | false = switched off — the exit; an account is never deleted (§10) — **NARROWED 26 Sep 26: D280 an account can be DELETED (its button "Delete account", D285), and "switched off" is renamed "suspended" (D285); D287 deletes the person with it when he leaves flying for good** |
 | `lastSignInAt` | datetime | no | (new) |
 
 The displayed name is the person's callsign, read live — a rename moves nothing (the one-identity rule).
@@ -659,13 +662,20 @@ Owner: **Shell**. Someone signed in with his defence mail but on no list, asking
 | Field | Type | Req | Meaning |
 |---|---|---|---|
 | `signInName` | string | yes | the principal who asked — from the sign-in, never typed. Unique while waiting |
-| `callsign` | string | yes | what he typed — text only; it never claims a `Person` (the admin picks one on approval) |
-| `name` | string | yes | what he typed |
+| `callsign` | string (≤ 14) | yes | the displayed callsign/name he typed (D219, D222) — text only; it never claims a `Person` (the admin picks one on approval, or makes a new one from it) |
+| `initials` | string (≤ 12) | no | what he typed — asked, never required (D225) |
+| `seat` | choice `FCP\|RCP\|GND` | yes | pilot, WSO or personnel (D220) |
+| `cat` | string | for aircrew | his CAT — one the seat may hold; none for personnel |
 | `requestedAt` | datetime | yes | |
+| `seenBy` | ref `User`, many | no | the admins who have had the waiting list on screen since it arrived — each admin's bell goes out for it (D216, D227) |
 
-Approving creates the `User` (linked to the person the admin picks, member or admin) and removes the request in one
-step; declining removes it. The admin sees a count of waiting requests on the Admin tab (a Teams message at the
-database step). From today: the `accessreqs` settings record. The admin's **guest switch** (people waiting may read the
+He asks for exactly what the admin's New person form asks (D214, `[ACCOUNTS-NEW-PERSON]`, 26 Sep 26). Approving either
+links the `User` to a `Person` the admin picks on the roster, or — **New person** — creates the `Person` from what he gave,
+with the admin's corrections, together with the `User`, removing the request in the same step; declining removes it. A
+`User` added or renamed onto a waiting sign-in name answers (removes) its request too. The admin sees a count of waiting
+requests on the Admin tab, and his bell lights until he has had the list on screen (a Teams message at the database step).
+From today: the `accessreqs` settings record (the typed name field of 26 Sep 26 `[ACCOUNTS]` gave way to the initials —
+D219). The admin's **guest switch** (people waiting may read the
 published week) is a `Setting` (`guestview`), off by default.
 
 ### Layout
@@ -949,7 +959,7 @@ relationship behaviours are the terms.
 
 | Parent → child | On delete | Why |
 |---|---|---|
-| `Person` → everything | **Restrict** — `Person` is never hard-deleted; `archived` + the tombstone are the only exits | Every seat, mark, bid and input points at a person; history must keep pointing |
+| `Person` → everything | **Restrict** — `Person` is never hard-deleted; `archived` + the tombstone are the only exits (**D287, 26 Sep 26: a man who leaves flying for good is deleted — by the tombstone, never erased: D290, see §3 Person**) | Every seat, mark, bid and input points at a person; history must keep pointing |
 | `Course` → `Enrolment`, `CoursePlan` | **Restrict** (soft delete: `archived`) | An old intake is retired, never removed; its attempts stay reportable |
 | `Syllabus` → `TrainingEvent`, `Layout`, `Enrolment` | **Restrict** (soft delete: `tombstoned` / `hidden`) | A chart with marks against it cannot go; hide it |
 | `TrainingEvent` → `Attempt`, `EventPrerequisite` | **Restrict** (soft delete) | A mark records an attempt at *that* event |
@@ -979,12 +989,12 @@ update, delete (delete is the soft delete throughout).
 
 | Table | Admin | Member | Guest | Pending | Own-row rule and notes |
 |---|---|---|---|---|---|
-| `Person` | C R U D | R, U **own** | R (callsigns) | — | `personId` = my person: every column of his own row — CAT, initials, flight, SXO, SCHEDULER, SANS — except the callsign (D218: an admin's to change), `archived`, `special` and `id` (D149); adding, archiving and restoring a person stay the admin's |
+| `Person` | C R U D | R, U **own** | R (callsigns) | — | `personId` = my person: every column of his own row — CAT, initials, flight, SXO, SCHEDULER, SANS — except the callsign (D218: an admin's to change), `archived`, `special` and `id` (D149); adding, archiving and restoring a person stay the admin's — a person is created only on Admin → Users, alone or with his `User` in one step (D217) |
 | `Qualification` | C R U D | R | — | — | the list of qualification columns (Quals → Edit quals) |
 | `QualMark` | C R U D | R, C U D **own** | — | — | `personId` = my person — a member ticks his own quals, every one (D149) |
 | `Setting`, `SchemaVersion` | C R U D | R (`Setting` only) | — | — | the guest switch is a `Setting` (D204) |
-| `User` | C R U | R **own** | — | — | one account per person, tied to it (D166); the sign-in name (the defence mail address) unique; switched off, never deleted (`enabled`); **no password is ever stored** — the organisation's sign-in checks it; at least one enabled admin always remains; an admin never changes his own account |
-| `AccessRequest` | R D | — | — | C **own** | a person signed in but on no list asks once, with a callsign and a name as typed text (D204); an admin approves — creating the `User`, linked to a person he picks, a typed callsign never claims one — or declines, each one step |
+| `User` | C R U | R **own** | — | — | one account per person, tied to it (D166); created with a new `Person` in one step, or linked to one already on the roster (D214, D217); the sign-in name (the defence mail address) unique; switched off, never deleted (`enabled`); **no password is ever stored** — the organisation's sign-in checks it; at least one enabled admin always remains; an admin never changes his own account |
+| `AccessRequest` | R U D | — | — | C **own** | a person signed in but on no list asks once, giving what the admin's New person form asks — callsign/name, initials, seat, CAT — as typed text (D204, D214); an admin approves — creating the `User`, linked to a person he picks (a typed callsign never claims one) or to a new `Person` made from the request with his corrections — or declines, each one step; a `User` added or renamed onto a waiting sign-in name deletes its request; U — which admins have had it on screen, each admin's bell (D216, D227) |
 | ScheduleWeek family, `DayDraft`, `RowPerson` | C R U D | R | R | — | a member reads the programme; only a scheduler writes it; a guest reads what a member reads on View-only Sched — a published day as issued, another as it stands (D204, D215) |
 | `Amendment`, `Signoff` | C R | R | R (published) | — | append-only for everyone |
 | `EditLog` | R | R | — | — | written by the store, not a role; members read it, a medical change in full (D169, D211) — gap: `[DRAFT-PENDING]` (shown to admins only until the changes window); retention is Open question 4 |

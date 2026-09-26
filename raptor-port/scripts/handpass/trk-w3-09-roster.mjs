@@ -26,11 +26,13 @@ L.ok('1. the list has its heading, search box and the type-a-callsign box', (awa
 await shot(page, 'w3-09-1-add-dialog')
 /* 2. leave it OPEN and go to the Quals page by keyboard (the dialog's scrim covers the nav for a pointer) */
 await page.focus('#topnav a[data-page="quals"]'); await page.keyboard.press('Enter'); await page.waitForFunction(() => window.CURPAGE === 'quals'); await sleep(400)
-if (!(await page.locator('#qCS').isVisible().catch(() => false))) { await page.click('#qAddToggle'); await sleep(250) }
-await page.fill('#qCS', 'ZULU9'); await page.fill('#qInitials', 'ZZ'); await page.selectOption('#qSeat', 'FCP'); await sleep(100)
-if (await page.locator('#qLevel').count()) await page.selectOption('#qLevel', 'OCU')
-await page.click('#qAddPerson'); await sleep(400)
-L.note('2. Quals: + Add person ZULU9 (Pilot, OCU)', await toastText(page))
+/* [ACCOUNTS-NEW-PERSON] (D217, 26 Sep 26): Quals' "+ Add person" is a button to Admin → Users, New person chosen —
+   the one door for a new person; a blank sign-in adds him to the roster only */
+await page.click('#qAddToggle'); await page.waitForFunction(() => window.CURPAGE === 'admin'); await sleep(400)
+await page.fill('#accAddCs', 'ZULU9'); await page.fill('#accAddIni', 'ZZ'); await page.selectOption('#accAddSeat', 'FCP'); await sleep(100)
+await page.selectOption('#accAddCat', 'OCU')
+await page.click('#accAdd'); await sleep(400)
+L.note('2. Quals → + Add person → Admin → Users: New person ZULU9 (Pilot, OCU), no sign-in', await toastText(page))
 await page.click('#topnav a[data-page="tracker"]'); await page.waitForFunction(() => window.CURPAGE === 'tracker'); await sleep(500)
 const lOpen = await addList(page)
 L.note('2. the + Add dialog left OPEN across the trip — lists ZULU9?', (lOpen.some(x => /ZULU9/.test(x)) ? 'YES' : 'no (the old list)') + ` · ${lOpen.length} rows`)

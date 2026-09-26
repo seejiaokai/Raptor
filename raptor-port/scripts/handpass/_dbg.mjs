@@ -12,7 +12,7 @@ console.log('Monday inputs', med)
 await p.evaluate(() => window.go('admin')); await p.waitForTimeout(300); await p.check('#admGuestView'); await p.waitForTimeout(200)
 await p.click('#logout'); await p.waitForSelector('#luser')
 await p.fill('#luser', 'g@mail'); await p.fill('#lpass', 'x'); await p.click('#loginForm button[type=submit]'); await p.waitForTimeout(400)
-await p.fill('#accCs', 'G'); await p.fill('#accFull', 'G'); await p.click('#accSend'); await p.waitForTimeout(300)
+await p.fill('#accCs', 'G'); await p.fill('#accIni', 'G'); await p.selectOption('#accSeat', 'FCP'); await p.selectOption('#accCat', 'C'); await p.click('#accSend'); await p.waitForTimeout(300)
 await p.click('#accOut'); await p.waitForSelector('#luser')
 await p.fill('#luser', 'g@mail'); await p.fill('#lpass', 'x'); await p.click('#loginForm button[type=submit]'); await p.waitForTimeout(800)
 const words = /OML|ATT ?[BC]|medical|Medical|DNIF|downchit|Medic/

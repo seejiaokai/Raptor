@@ -3,11 +3,12 @@
    is signed off after DAAR, SC NIGHT after SC DAY, and withdrawing the day
    qualification takes the night one with it. */
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
-import { PEOPLE, QORDER, QCHIP, QCOLOR, LEVELNAME, deriveQuals, ID_BY_CS, nameToId } from '../engine/people'
-import { newId } from '../engine/newid'
+import { PEOPLE, QORDER, QCHIP, QCOLOR, LEVELNAME } from '../engine/people'
 import { validate } from '../engine/validate'
 import { HOOKS } from '../engine/hooks'
 import { isAdmin, mayEditQualsOf, mayManageRoster, mayRenameCallsign } from '../state/perms'
+import { catsFor, CALLSIGN_LABEL } from '../state/roster-add'
+import { openAdminUsers } from './adminopen'
 import { updatePersonField } from '../state/quals-write'
 import { esc } from '../state/view'
 import { notify } from '../state/store'
@@ -90,7 +91,8 @@ const qualNA = (p: any, c: any) => !!(c.fcpOnly && p && p.seat !== 'FCP')
 /* the CAT dropdowns are seat-filtered so the inconsistent combinations can't
    be picked at all: IW is a WSO-only category, IP and IR are pilot-only, FI
    goes both ways. The validator still guards the hand-edited case. */
-const catsFor = (seat: any) => Object.keys(QCHIP).filter(k => seat === 'FCP' ? k !== 'IW' : (k !== 'IP' && k !== 'IR'))
+/* catsFor — the CATs a seat may hold — lives in state/roster-add.ts now, the ONE list the
+   sign-up, Admin → Users and this page's CAT box read ([ACCOUNTS-NEW-PERSON]) */
 
 /* ---- sorting (owner, 5 Aug 26) -------------------------------------------
    The Sort chips are gone; the headings themselves sort, the way the Inputs
@@ -143,12 +145,13 @@ function qualsHead(cols: any[], qSeatView: string, qSort: any, qualsEdit: boolea
   }
   /* CALLSIGN is the identity the whole app plans by — it is what every puck
      prints — so it heads the table; INITIALS sits beside it as the admin
-     record (owner, Aug 26). Under the Personnel view the column reads
-     Callsign/Name (owner, 26 Aug 26): ground crew go by name as much as by
-     callsign, and the cell is where either is typed. The aircrew views keep
-     the plain word — a pilot's identity here is the callsign, full stop. */
+     record (owner, Aug 26). The column reads "Callsign/Name" in EVERY view
+     (D219, 26 Sep 26 — "Lets change it to Callsign/Name. Some people have no
+     call signs"), replacing the 26 Aug 26 split (Callsign/Name under Personnel
+     only, the plain word for aircrew). One constant, shared with the sign-up and
+     Admin → Users (state/roster-add.ts); the frozen header mirror reuses this. */
   return `<thead><tr>`
-    + sortTh('cs', qSeatView === 'GND' ? 'Callsign/Name' : 'Callsign', '', 'Sort by callsign', ' style="text-align:left"')
+    + sortTh('cs', CALLSIGN_LABEL, '', 'Sort by callsign', ' style="text-align:left"')
     + sortTh('initials', 'Initials', '', 'Sort by initials')
     + sortTh('flight', 'Flight', '', 'Sort by flight — groups each flight together')
     + sortTh('cat', 'CAT', '', 'Sort by CAT — most senior first') +
@@ -189,7 +192,8 @@ function qualsGrpRow(qSeatView: string, n: number, colsLen: number) {
 
 /* renderQuals' head + rows, verbatim strings.
    `canArch` — whether the row's archive ✕ is drawn at all. Archiving is
-   roster MEMBERSHIP, the same class as Add person and Restore ("stays with
+   roster MEMBERSHIP, the same class as adding a person (Admin → Users since
+   [ACCOUNTS-NEW-PERSON], D217) and Restore ("stays with
    the admin", the owner's 5 Aug line), NOT table contents a member may edit.
    The reference never had to say so — only a scheduler could enable editing
    there — but opening Enable editing to members (5 Aug 26) silently opened
@@ -216,7 +220,7 @@ function qualsTable(cols: any[], qSeatView: string, qSort: any, qEditing: boolea
     if (p.pers) {
       /* the callsign box is the admin's (D218) — a member's own row shows it as text */
       const cs = rowEd && canRename
-        ? `<input class="qcs" data-cs="${id}" value="${esc(p.cs)}" maxlength="14" aria-label="Callsign for ${esc(p.cs)}" />`
+        ? `<input class="qcs" data-cs="${id}" value="${esc(p.cs)}" maxlength="14" aria-label="${CALLSIGN_LABEL} for ${esc(p.cs)}" />`
         : esc(p.cs)
       const init = rowEd
         ? `<input class="qinit" data-init="${id}" value="${esc(p.initials || '')}" maxlength="12" aria-label="Initials for ${esc(p.cs)}" />`
@@ -260,7 +264,7 @@ function qualsTable(cols: any[], qSeatView: string, qSort: any, qEditing: boolea
        anything. Same commit-on-change reasoning as the initials. */
     /* the callsign box is the admin's (D218) — a member's own row shows it as text */
     const cs = rowEd && canRename
-      ? `<input class="qcs" data-cs="${id}" value="${esc(p.cs)}" maxlength="14" aria-label="Callsign for ${esc(p.cs)}" />`
+      ? `<input class="qcs" data-cs="${id}" value="${esc(p.cs)}" maxlength="14" aria-label="${CALLSIGN_LABEL} for ${esc(p.cs)}" />`
       : esc(p.cs)
     /* Flight is editable for the same reason the initials are — the roster
        arrived with the column blank, and the heading now sorts by it, so
@@ -291,13 +295,10 @@ export function QualsPage() {
   const [newQual, setNewQual] = useState('')
   /* the column whose ✕ has been pressed once — see WIRED above */
   const [armDel, setArmDel] = useState('')
-  const [addP, setAddP] = useState({ initials: '', cs: '', flight: '', seat: 'FCP', level: 'OCU' })
-  /* Add person folds behind a button now (owner, 15 Aug 26): the seat-view
-     switch is the everyday control, so it moves out of the toolbar to sit
-     above the table, and the occasional add-person form opens on demand
-     instead of taking an open row on every visit. Admin-only, so a member
-     never sees the toggle or the form. */
-  const [showAdd, setShowAdd] = useState(false)
+  /* ADD PERSON IS A BUTTON TO ADMIN → USERS now (D217, 26 Sep 26 — "one door"): a new
+     person is made only there, with his account or with a blank sign-in, through the one
+     add (state/roster-add.ts); the form that folded here (owner, 15 Aug 26) is retired.
+     Everything AFTER the add — quals, CAT, flight, archive, restore — stays on this page. */
   /* the Archived section under the table (owner, 19 Aug 26): folded to a
      count by default — it is a records drawer, not the roster */
   const [showArch, setShowArch] = useState(false)
@@ -638,53 +639,13 @@ export function QualsPage() {
     else frameLift(qLiftRef.current, null)   // nothing to flash: take the frame down
   })
 
-  const addPerson = () => {
-    /* roster membership is the admin's, asked at the write as archive and restore do (Fable's
-       code read, 26 Sep 26: a stale element or a hand-made call reached the add, toasted
-       "added", and only then was rolled back by the command gate) */
-    if (!mayManageRoster()) return HOOKS.toast('Only an admin can add someone', 'warn')
-    const cs = addP.cs.trim()
-    if (!cs) return HOOKS.toast('A person needs a callsign')   // was a silent no-op
-    /* TWO PEOPLE CANNOT SHARE A CALLSIGN, AND A CALLSIGN CANNOT COLLIDE WITH AN
-       INTERNAL ID (audit 12 Aug 26; hardened ARCH-STACK 1C, 14 Sep 26). Since 1C
-       ground/programme rows store the stable id, so a new callsign that RESOLVES
-       to an existing person — by callsign OR by bare id (nameToId is id-tolerant)
-       — would let the add back-door reopen the crossing bug: adding callsign
-       "Bane" when `bane` is an id repoints ID_BY_CS['bane'] and any residual
-       callsign lookup at the new body (red-team PID-01). renameCallsign already
-       guards with nameToId; the add path now uses the SAME guard (was ID_BY_CS
-       alone, which missed the id collision). Same refusal, same words. */
-    if (nameToId(cs)) return HOOKS.toast(`${cs} is already taken — callsigns must be unique`)
-    /* an opaque, collision-resistant id (newId, shared with rid/iid) — not
-       'p'+Date.now(), which two adds in the same millisecond could duplicate. */
-    const id = newId('p')
-    /* the callsign IS the person here — it is what every puck prints and what
-       ID_BY_CS resolves — so it is the only required field; initials are the
-       administrative record beside it (owner, Aug 26, replacing first/last). */
-    /* Personnel (ground crew) carry no CAT — pers:true and an empty q, so
-       deriveQuals grants them nothing and they land in the Personnel table. */
-    PEOPLE[id] = addP.seat === 'GND'
-      ? { cs, initials: addP.initials.trim().toUpperCase(), seat: 'GND', pers: true, q: '', flight: addP.flight.trim() || '-', remarks: '' }
-      : { cs, initials: addP.initials.trim().toUpperCase(), seat: addP.seat, q: addP.level, flight: addP.flight.trim() || '-' }
-    deriveQuals(PEOPLE[id]); ID_BY_CS[cs.toLowerCase()] = id
-    setAddP({ initials: '', cs: '', flight: '', seat: addP.seat, level: addP.level })
-    /* ALL already shows them, so only a seat-specific view has to follow the
-       person who was just added into the view they landed in */
-    if (qSeatView !== 'ALL' && PEOPLE[id].seat !== qSeatView) setSeat(PEOPLE[id].seat)
-    /* the two refusals above already speak; the success path was the one
-       silent branch — a tap that adds a whole person to the roster with
-       nothing said (owner audit) */
-    HOOKS.toast(`${cs} added`, 'ok')
-    persistPeople(); notify()
-  }
-
   /* the export is what is on the screen: the same view, the same filter and
      the same sort order, so a printed LoX matches the one it was taken from.
      ALL mixes pilots and WSOs, so that view — and only that view — carries a
      Seat column, since the rows no longer say which is which. */
   const doExport = () => {
     const all = qSeatView === 'ALL'
-    const head = ['Callsign', 'Initials', 'Flight', ...(all ? ['Seat'] : []), 'CAT', ...cols.map(c => c.h)]
+    const head = [CALLSIGN_LABEL, 'Initials', 'Flight', ...(all ? ['Seat'] : []), 'CAT', ...cols.map(c => c.h)]
     const rows: any[][] = [head]
     qualsIds(qSeatView, qSort, qSearch).forEach(id => {
       const p = PEOPLE[id]
@@ -746,8 +707,9 @@ export function QualsPage() {
       {/* the seat view + Add person, right above the table (owner, 15 Aug 26).
           The four seat buttons keep their ids so every caller and test that
           reaches them by #qViewP etc is unchanged; they read as one segmented
-          control here rather than loose chips in the toolbar. Add person is
-          admin-only and folds behind its own button. */}
+          control here rather than loose chips in the toolbar. "+ Add person" is
+          admin-only and takes him to Admin → Users with New person chosen — the
+          one door for a new person (D217). */}
       <div className="qtablehead">
         <span className="seglab">Viewing</span>
         <div className="segview" role="group" aria-label="Which people to show">
@@ -757,19 +719,9 @@ export function QualsPage() {
           <button id="qViewA" className={qSeatView === 'ALL' ? 'on' : ''} aria-pressed={qSeatView === 'ALL'} onClick={() => setSeat('ALL')}>All</button>
         </div>
         <div className="grow"></div>
-        {admin && <button className="abtn" id="qAddToggle" aria-expanded={showAdd}
-          onClick={() => setShowAdd(v => !v)}>{showAdd ? '✕ Close' : '+ Add person'}</button>}
+        {admin && <button className="abtn" id="qAddToggle" title="Add a new person on Admin → Users"
+          onClick={() => openAdminUsers({ newPerson: true })}>+ Add person</button>}
       </div>
-      {admin && showAdd && <div className="qadd qadd-person" data-admin="">
-        <input id="qCS" placeholder="Callsign" maxLength={14} style={{ width: 110 }} value={addP.cs} onChange={e => setAddP({ ...addP, cs: e.target.value })} />
-        <input id="qInitials" placeholder="Initials" maxLength={12} style={{ width: 120 }} value={addP.initials} onChange={e => setAddP({ ...addP, initials: e.target.value })} />
-        <input id="qFlight" placeholder="Flight" maxLength={10} style={{ width: 70 }} value={addP.flight} onChange={e => setAddP({ ...addP, flight: e.target.value })} />
-        <select id="qSeat" aria-label="Pilot, WSO or personnel" value={addP.seat}
-          onChange={e => { const seat = e.target.value; setAddP({ ...addP, seat, level: seat === 'GND' ? addP.level : catsFor(seat).includes(addP.level) ? addP.level : 'OCU' }) }}><option value="FCP">Pilot (FCP)</option><option value="RCP">WSO (RCP)</option><option value="GND">Personnel (ground crew)</option></select>
-        {/* personnel hold no CAT, so the level picker is hidden for them */}
-        {addP.seat !== 'GND' && <select id="qLevel" aria-label="Cat" value={addP.level} onChange={e => setAddP({ ...addP, level: e.target.value })}>{catsFor(addP.seat).map(k => <option key={k}>{k}</option>)}</select>}
-        <button className="abtn primary" id="qAddPerson" onClick={addPerson}>Add</button>
-      </div>}
       <div className="qwrap" ref={wrapRef}>
         <table className={'qtbl' + (qEditing ? ' editing' : '') + (canEditQuals() ? ' qediting' : '')} id="qtbl" ref={tblRef}
           dangerouslySetInnerHTML={{ __html: qualsTable(cols, qSeatView, qSort, qEditing, qSearch, canEditQuals(), armDel, admin) }} />

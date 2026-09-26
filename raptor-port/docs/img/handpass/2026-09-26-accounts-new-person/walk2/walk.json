@@ -1,0 +1,338 @@
+{
+  "at": "2026-09-26T10:07:09.281Z",
+  "base": "http://localhost:4174",
+  "pass": 47,
+  "total": 47,
+  "results": [
+    {
+      "id": "d-S9-card",
+      "what": "the sign-up card: four labelled fields, \"Displayed callsign/name\", no Name box; the selects look like the boxes",
+      "ok": true,
+      "note": "",
+      "pic": "01-d-S9-card.png"
+    },
+    {
+      "id": "d-S9-refusals",
+      "what": "refusals: blank → \"Type the callsign or name\"; 15 letters said at once and refused; a missing pick refused",
+      "ok": true,
+      "note": "",
+      "pic": "02-d-S9-refusals.png"
+    },
+    {
+      "id": "d-S9-seatcat",
+      "what": "the seat drives the CAT: WSO has no IP/IR; a CAT the new seat cannot hold goes back to Pick…; personnel have no CAT box",
+      "ok": true,
+      "note": "",
+      "pic": "03-d-S9-seatcat.png"
+    },
+    {
+      "id": "d-S9-waiting",
+      "what": "a valid request → the waiting screen reads what he gave; a reload keeps it",
+      "ok": true,
+      "note": "",
+      "pic": "04-d-S9-waiting.png"
+    },
+    {
+      "id": "d-S10-pending-nobell",
+      "what": "a person waiting has no bell and no app (not signed in to it)",
+      "ok": true,
+      "note": "",
+      "pic": "05-d-S10-pending-nobell.png"
+    },
+    {
+      "id": "d-S1-bell-lit",
+      "what": "the admin signs in to a lit bell; the Admin tab counts 1",
+      "ok": true,
+      "note": "",
+      "pic": "06-d-S1-bell-lit.png"
+    },
+    {
+      "id": "d-S1-tab-seen",
+      "what": "desktop: the Admin TAB alone (Users beside the rail) shows the list — \"asked as Viper · JKB · WSO · CAT C\" — and puts the bell out",
+      "ok": true,
+      "note": "",
+      "pic": "07-d-S1-tab-seen.png"
+    },
+    {
+      "id": "d-S1-reload",
+      "what": "a reload: the bell stays out, the count stays 1",
+      "ok": true,
+      "note": "",
+      "pic": "08-d-S1-reload.png"
+    },
+    {
+      "id": "d-S4-approve-open",
+      "what": "Approve opens on New person (Viper is on no roster), filled from what he gave",
+      "ok": true,
+      "note": "",
+      "pic": "09-d-S4-approve-open.png"
+    },
+    {
+      "id": "d-S4-approve-go",
+      "what": "the admin corrects (Vyper, CAT D) and gives access: the request, the badge and the bell go; Vyper · MEMBER listed",
+      "ok": true,
+      "note": "",
+      "pic": "10-d-S4-approve-go.png"
+    },
+    {
+      "id": "d-S4-quals",
+      "what": "Quals → WSOs: Vyper · JKB · flight \"-\" · CAT D",
+      "ok": true,
+      "note": "",
+      "pic": "11-d-S4-quals.png"
+    },
+    {
+      "id": "d-S4-palette",
+      "what": "Edit Schedule: the aircrew palette offers Vyper",
+      "ok": true,
+      "note": "",
+      "pic": "12-d-S4-palette.png"
+    },
+    {
+      "id": "d-S4-inputs",
+      "what": "Inputs: the admin's person picker lists Vyper",
+      "ok": true,
+      "note": "",
+      "pic": "13-d-S4-inputs.png"
+    },
+    {
+      "id": "d-S4-search",
+      "what": "View-only Sched: the name / callsign search takes \"Vyper\"",
+      "ok": true,
+      "note": "",
+      "pic": "14-d-S4-search.png"
+    },
+    {
+      "id": "d-S4-leavewar",
+      "what": "Leave War: Vyper is on the roster",
+      "ok": true,
+      "note": "",
+      "pic": "15-d-S4-leavewar.png"
+    },
+    {
+      "id": "d-S4-tracker",
+      "what": "Tracker \"+ Add\": Vyper (a WSO) is listed",
+      "ok": true,
+      "note": "",
+      "pic": "16-d-S4-tracker.png"
+    },
+    {
+      "id": "d-S4-reload",
+      "what": "a reload keeps the person AND the account (never an account without its person)",
+      "ok": true,
+      "note": "",
+      "pic": "17-d-S4-reload.png"
+    },
+    {
+      "id": "d-S4-signin-as-him",
+      "what": "he signs in as himself: \"Vyper · Member\"; his own Quals row edits, but not its callsign (D218)",
+      "ok": true,
+      "note": "",
+      "pic": "18-d-S4-signin-as-him.png"
+    },
+    {
+      "id": "d-S5-blank-form",
+      "what": "Add → New person with a blank sign-in: no Role box, the button reads \"Add person\"",
+      "ok": true,
+      "note": "",
+      "pic": "19-d-S5-blank-form.png"
+    },
+    {
+      "id": "d-S5-add",
+      "what": "Gecko · GK · Pilot · OCU → \"added to the roster\"; no new account; the form back on On the roster",
+      "ok": true,
+      "note": "",
+      "pic": "20-d-S5-add.png"
+    },
+    {
+      "id": "d-S5-seams",
+      "what": "Gecko on Quals (Pilots, GK), the Leave War and the Tracker \"+ Add\"",
+      "ok": true,
+      "note": "",
+      "pic": "21-d-S5-seams.png"
+    },
+    {
+      "id": "d-S5-link-later",
+      "what": "later: an account for gecko@mail On the roster → he signs in as Gecko",
+      "ok": true,
+      "note": "",
+      "pic": "22-d-S5-link-later.png"
+    },
+    {
+      "id": "d-S6-refusals",
+      "what": "refused: a taken sign-in, a taken callsign, \"ALL\" (taken, never \"restore\"), a missing seat — and nothing half-made",
+      "ok": true,
+      "note": "",
+      "pic": "23-d-S6-refusals.png"
+    },
+    {
+      "id": "d-S6-personnel",
+      "what": "Personnel: the CAT box greys to \"None — personnel\"; Zephyr with zephyr@mail is made — Quals Personnel",
+      "ok": true,
+      "note": "",
+      "pic": "24-d-S6-personnel.png"
+    },
+    {
+      "id": "d-S6-double-tap",
+      "what": "a double tap makes ONE person and ONE account; the second tap meets an empty form and says so",
+      "ok": true,
+      "note": "",
+      "pic": "25-d-S6-double-tap.png"
+    },
+    {
+      "id": "d-S8-ranger",
+      "what": "\"Ranger\": On the roster, NOT pre-picked, the note names him; New person refuses him as taken",
+      "ok": true,
+      "note": "",
+      "pic": "26-d-S8-ranger.png"
+    },
+    {
+      "id": "d-S8-bane",
+      "what": "\"bane\" (Ranger's hidden id): the note names Ranger, never the id",
+      "ok": true,
+      "note": "",
+      "pic": "27-d-S8-bane.png"
+    },
+    {
+      "id": "d-S8-all",
+      "what": "\"ALL\": New person, refused as taken (no restore door named)",
+      "ok": true,
+      "note": "",
+      "pic": "28-d-S8-all.png"
+    },
+    {
+      "id": "d-S17-cancel",
+      "what": "Cancel discards: the next Approve starts from what he gave; each half keeps its entries while open",
+      "ok": true,
+      "note": "",
+      "pic": "29-d-S17-cancel.png"
+    },
+    {
+      "id": "d-S3-quals-button",
+      "what": "Quals \"+ Add person\" → Admin → Users, New person chosen, the Callsign/Name box focused — every press",
+      "ok": true,
+      "note": "",
+      "pic": "30-d-S3-quals-button.png"
+    },
+    {
+      "id": "d-S11-words",
+      "what": "Quals heads \"Callsign/Name\" in all four views; the pickers ask for a \"callsign or name\"; no (FCP)/(RCP) anywhere",
+      "ok": true,
+      "note": "",
+      "pic": "31-d-S11-words.png"
+    },
+    {
+      "id": "d-S11-csv",
+      "what": "the exported LoX heads its first column \"Callsign/Name\"",
+      "ok": true,
+      "note": "",
+      "pic": "32-d-S11-csv.png"
+    },
+    {
+      "id": "d-S7-two-admins",
+      "what": "admin 1 sees the list → out for him; admin 2 still lit until he looks; admin 1 still out",
+      "ok": true,
+      "note": "",
+      "pic": "33-d-S7-two-admins.png"
+    },
+    {
+      "id": "d-S7-decline",
+      "what": "a request declined by one admin before the other saw it: nobody's bell stays lit; a personnel line reads \"· Personnel ·\"",
+      "ok": true,
+      "note": "",
+      "pic": "34-d-S7-decline.png"
+    },
+    {
+      "id": "d-S10-member",
+      "what": "a member: the bell stays dark with a request waiting; no Admin tab; Quals has no \"+ Add person\" and heads \"Callsign/Name\"",
+      "ok": true,
+      "note": "",
+      "pic": "35-d-S10-member.png"
+    },
+    {
+      "id": "d-S13-order",
+      "what": "with a bug report too, the first tap opens Admin → Users, the next the Help page",
+      "ok": true,
+      "note": "",
+      "pic": "36-d-S13-order.png"
+    },
+    {
+      "id": "d-S16-personnel",
+      "what": "personnel Zephyr: on the Leave War; NOT in the Tracker \"+ Add\" (aircrew only, by design); in the Inputs picker",
+      "ok": true,
+      "note": "",
+      "pic": "37-d-S16-personnel.png"
+    },
+    {
+      "id": "d-S12-undo",
+      "what": "a schedule change, then a person added: Undo takes back the schedule change; the person stays",
+      "ok": true,
+      "note": "",
+      "pic": "38-d-S12-undo.png"
+    },
+    {
+      "id": "p-S9-card",
+      "what": "phone: the sign-up card, four fields, the selects as wide as the boxes",
+      "ok": true,
+      "note": "",
+      "pic": "39-p-S9-card.png"
+    },
+    {
+      "id": "p-S9-waiting",
+      "what": "phone: the waiting line",
+      "ok": true,
+      "note": "",
+      "pic": "40-p-S9-waiting.png"
+    },
+    {
+      "id": "p-S2-rail",
+      "what": "phone: the Admin category list alone (\"Users · 1 waiting for access\") does NOT put the bell out",
+      "ok": true,
+      "note": "",
+      "pic": "41-p-S2-rail.png"
+    },
+    {
+      "id": "p-S3-config-then-bell",
+      "what": "phone: on Admin → Squadron config, the bell opens Users drilled in and puts itself out",
+      "ok": true,
+      "note": "",
+      "pic": "42-p-S3-config-then-bell.png"
+    },
+    {
+      "id": "p-S15-approve",
+      "what": "phone: Approve → New person, the two-column fields fit the pane (no sideways scroll)",
+      "ok": true,
+      "note": "",
+      "pic": "43-p-S15-approve.png"
+    },
+    {
+      "id": "p-S15-give",
+      "what": "phone: \"Add person and give access\" makes Hawk",
+      "ok": true,
+      "note": "",
+      "pic": "44-p-S15-give.png"
+    },
+    {
+      "id": "p-S3-quals-button",
+      "what": "phone: Quals \"+ Add person\" lands drilled into Users on New person",
+      "ok": true,
+      "note": "",
+      "pic": "45-p-S3-quals-button.png"
+    },
+    {
+      "id": "p-S5-add-form",
+      "what": "phone: the New person add form fits the pane",
+      "ok": true,
+      "note": "",
+      "pic": "46-p-S5-add-form.png"
+    },
+    {
+      "id": "s-S9-card",
+      "what": "a short window: the whole sign-up card reaches its Request access and Sign out",
+      "ok": true,
+      "note": "",
+      "pic": "47-s-S9-card.png"
+    }
+  ],
+  "errors": []
+}

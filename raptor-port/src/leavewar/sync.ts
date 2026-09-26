@@ -1257,7 +1257,8 @@ export function runOilPass(): void {
  * "when I add personnel through quals, the new personnel will appear on leave
  * war too"). The roster is a boot-time projection; without this a body added
  * on the Quals page mid-session never reached Leave War, and reload no longer
- * helps now the app is session-only.
+ * helps now the app is session-only. (A person is added on Admin → Users since
+ * [ACCOUNTS-NEW-PERSON], 26 Sep 26 — D217; the projection is the same.)
  *
  * ADDITIONS AND REMOVALS ONLY. A body Quals gains is appended; a body it loses
  * is dropped; every EXISTING person's record is left exactly as it is. This is
