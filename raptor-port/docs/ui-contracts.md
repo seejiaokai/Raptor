@@ -160,6 +160,10 @@ looked at. So the day is also PICKABLE (owner, 15 Aug 26):
   week cannot scroll to is still reachable. Drawn only when NOT armed (an armed
   slot pins the panel to its own day). Absent on the board, which passes
   `{head:false}` — the header, and so the arrows, render on the edit week alone.
+  **The board's crew column answers for the BOARD'S day** (the absence-record re-test, W6 R19, 26 Sep 26 — on
+  main it asked `paletteDay()`, the edit week's answer, so Thursday's board listed the crew of the day the week
+  behind was scrolled to and showed a man on leave Thursday as free): the armed slot's day, else the board's own
+  (`SchedBoard.tsx`; pinned by `boardcrew.test.tsx`).
 - **An explicit pick WINS over the scroll-follow** (`pan.ts:pickRosDay`). Both
   the click and the arrows route through it: it cancels any queued follow and
   suppresses a new one for ~0.5s, so the scroll the pick settles into cannot

@@ -577,3 +577,19 @@ questions it left for him are `OUTSTANDING.md` `[ABSENCE-ASK]`.
 - **The Inputs page's own Add writes "Input added — …" to the Edit history**, as the edit window's already did.
   (AB8 (a); (b) is his question.)
 - **The Inputs export carries From and To** — a multi-day input no longer exports as its first day. (AB10.)
+
+**Added by the re-walk (26 Sep 26), each red first — the evidence sheet §11:**
+- **A post-out dated in the month on screen keeps that man's row** — the grid's note of the months on screen is kept
+  true at every measure, so a month jump that shows the same people never leaves it stale (W5-F2's real cause; a real
+  browser test, `e2e/leavewar.spec.ts`).
+- **A finger held on one day and lifted keeps the selection sheet on a touch screen** — the drag's swallowed tap is
+  stopped before the open sheet's own tap shield sees it (W4-1, second fix; `holdsheet.test.tsx` mounts the real sheet on
+  a coarse pointer).
+- **A sideways swipe that starts on a calendar chip pages the month**, as one over empty space does, and never opens the
+  chip (the re-walk's NEW-1, caused by W1-F1's fix).
+- **The scheduler board's crew column is the board's own day** — a man on leave that day is never offered as free
+  (R19; on main).
+- **Every war sheet's heading speaks the box's notation** ("<C", never "*ATTC") (NF2), and **a posting refusal reads
+  day-first** ("Posted in on 8 Jul 26 — …").
+- **A dragged medical whose move kept the other medical's days says where it landed** ("Moved to 25 Jul"), and the
+  same-type refusal reads "An ATT C" (W2's re-walk).
