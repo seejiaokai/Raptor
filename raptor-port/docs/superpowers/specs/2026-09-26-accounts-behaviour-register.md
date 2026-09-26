@@ -13,11 +13,11 @@ fails when a line here has no test naming its id (`raptor-port/scripts/rulecheck
 | AC5 | The accounts load safely: loading never writes; a list with no admin gets the seed admin added, and the seed admin wins any collision; bad entries are dropped | Fable R2-6, Astra R3-4 | `state/accounts.test.ts` |
 | AC6 | An account change is one command; its keys roll back together | Astra R2-3 | `state/accounts.test.ts` |
 | AC7 | A member's command changes only his own records; a guest files nothing | D200 (3), D149 | `state/accounts.test.ts`, `state/quals-write.test.ts` |
-| AC8 | On the Quals page a member edits his OWN row, every column; never another's; an admin any | D149 | `state/quals-write.test.ts`, `ui/quals.test.tsx` |
+| AC8 | On the Quals page a member edits his OWN row, every column but the callsign (an admin's, D218); never another's; an admin any | D149, D218 | `state/quals-write.test.ts`, `ui/quals.test.tsx` |
 | AC9 | The Leave War's own writers agree with the permissions table | D200 (3) | `leavewar/permsparity.test.ts` |
 | AC10 | No "View as", no role toggle; the badge names the signed-in person | D166 (3) | `ui/accounts-ui.test.tsx` |
-| AC11 | The access screens: request access, waiting, switched off — each with Sign out | D204 | `ui/accounts-ui.test.tsx` |
-| AC12 | The guest sees the published week only, walled off, and no medical detail | D204, D211 | `ui/accounts-ui.test.tsx` |
+| AC11 | The access screens: request access, waiting, switched off — each with Sign out; waiting, with the guest switch on, one tap into the guest view | D204, D221 | `ui/accounts-ui.test.tsx` |
+| AC12 | The guest sees what a member sees on View-only Sched, read only and walled off — a medical input in full | D204, D213, D215 | `ui/accounts-ui.test.tsx` |
 | AC13 | Admin → Users: the waiting count on the Admin tab, approve, add, never your own account | D166 (1), D204 | `ui/accounts-ui.test.tsx` |
 | AC14 | One place answers "may this person do this?": the app's matrix IS data-model §11, and no file decides authority outside it | D200 (2)–(3), D202 | `state/perms.test.ts`, `state/perms-scan.test.ts` |
 | AC15 | Every window closes at a sign-in and a sign-out; the undo list empties | Astra R1-3, D148, 13 Sep 26 | `ui/pops.test.ts`, `state/session-undo.test.ts` |

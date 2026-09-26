@@ -8,7 +8,7 @@ import { beforeEach, afterEach, describe, expect, it } from 'vitest'
 import { PEOPLE, ID_BY_CS } from '../engine/people'
 import { setSession, setMe } from './auth'
 import { initStore, resetSession } from './store'
-import { updatePersonField, OWN_ROW_ONLY, type QualsOp } from './quals-write'
+import { updatePersonField, OWN_ROW_ONLY, RENAME_ADMIN_ONLY, type QualsOp } from './quals-write'
 import { commitPeopleEdit } from './people-settings-commit'
 import { defineInvariant } from '../command'
 import { HOOKS } from '../engine/hooks'
@@ -36,8 +36,9 @@ const COLUMNS: [string, (id: string) => QualsOp, (id: string) => any][] = [
   ['CAT', () => ({ cat: 'A' }), id => PEOPLE[id].q],
   ['initials', () => ({ initials: 'zz' }), id => PEOPLE[id].initials],
   ['flight', () => ({ flight: 'q' }), id => PEOPLE[id].flight],
-  ['the callsign', () => ({ callsign: 'Zulu9' }), id => PEOPLE[id].cs],
 ]
+/* the callsign is the admin's to change (D218, narrowing D149) — its own tests below */
+const CALLSIGN: [string, (id: string) => QualsOp, (id: string) => any] = ['the callsign', () => ({ callsign: 'Zulu9' }), id => PEOPLE[id].cs]
 
 describe('D149 — a member edits his own Quals row, every column; never another\'s', () => {
   for (const [col, op, read] of COLUMNS) {
@@ -83,16 +84,31 @@ describe('D149 — a member edits his own Quals row, every column; never another
   })
 })
 
+describe('D218 — on Quals only an admin changes a callsign; a member keeps every other column of his row', () => {
+  const [, op, read] = CALLSIGN
+  it('a member on his own row — refused, with its reason; nothing changes', () => {
+    asMember('bane')
+    const before = read('bane')
+    expect(updatePersonField('bane', op('bane'))).toBe(RENAME_ADMIN_ONLY)
+    expect(read('bane')).toBe(before)
+  })
+  it('an admin, on any row — renamed', () => {
+    asAdmin()
+    expect(updatePersonField('bane', op('bane'))).toBe(null)
+    expect(read('bane')).toBe('Zulu9')
+  })
+})
+
 describe('the callsign goes through renameCallsign — unique, the index kept (Astra R3-5)', () => {
   it('a taken callsign is refused and nothing moves', () => {
-    asMember('bane')
+    asAdmin()
     const cs = PEOPLE.bane.cs, taken = PEOPLE.stiff.cs
     expect(updatePersonField('bane', { callsign: taken })).toMatch(/already taken/)
     expect(PEOPLE.bane.cs).toBe(cs)
     expect(ID_BY_CS[taken.toLowerCase()]).toBe('stiff')
   })
   it('a rename moves the index with it', () => {
-    asMember('bane')
+    asAdmin()
     expect(updatePersonField('bane', { callsign: 'Nomad7' })).toBe(null)
     expect(ID_BY_CS['nomad7']).toBe('bane')
   })

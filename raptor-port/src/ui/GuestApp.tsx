@@ -13,7 +13,7 @@
    window, "Waiting for access — view only", Sign out) and the published week from the
    same builder the view page uses (ui/html.ts viewDayHTML), which for a guest draws a
    published day's ISSUED face only — no working copy — says "Not published yet" on any
-   other day, and shows a medical input only as "Unavailable" (D211 was about members;
+   other day, and shows a medical input in full as members see it (D211, D213 — asked of
    perms.ts mayReadMedicalOf). The day swipe / arrows (ui/pan.ts) move the week — reading
    is not editing. Every write refuses him anyway, at the command gate (perms.ts). */
 import { useEffect } from 'react'

@@ -41,7 +41,7 @@
 import { store } from '../engine/hooks'
 import { PEOPLE } from '../engine/people'
 import { SESSION } from './auth'
-import { mayManageAccounts, mayRequestAccess, me } from './perms'
+import { mayManageAccounts, mayRequestAccess, me, roleOf } from './perms'
 import { commitSettingsIntent } from './people-settings-commit'
 
 export type AccountRole = 'admin' | 'main'
@@ -159,6 +159,14 @@ export function signIn(nameIn: any, pass: any): SignIn {
   }
   if (requestByName(name)) return GUESTVIEW ? { kind: 'guest', name } : { kind: 'waiting', name }
   return { kind: 'new', name }
+}
+/* D221 (26 Sep 26): a person on the waiting screen goes straight into the guest view when the
+   admin's guest switch is on — the same answer a fresh sign-in would give him (signIn → 'guest'),
+   so no sign-out and in. Null when the switch is off or he is not a person waiting. */
+export function guestEntry(): SignIn | null {
+  if (roleOf() !== 'pending' || !GUESTVIEW) return null
+  const name = normName(SESSION && SESSION.name)
+  return name && requestByName(name) ? { kind: 'guest', name } : null
 }
 /* the session a sign-in result starts (state/store.ts resetSession is the one writer) */
 export function sessionFor(r: SignIn): any {

@@ -183,11 +183,12 @@ async function go(page, to) { await page.evaluate(p => window.go(p), to); await 
   await go(page, 'quals')
   await page.click('#qViewA').catch(() => {}); await page.waitForTimeout(200)
   await page.click('#qEdit'); await page.waitForTimeout(300)
-  await step(page, 'd-member-quals', 'Quals editing (D149): his own row has boxes, others read as text', async () => {
-    const own = await page.locator('#qtbl input[data-cs="bane"]').count()
-    const other = await page.locator('#qtbl input[data-cs="stiff"]').count()
+  await step(page, 'd-member-quals', 'Quals editing (D149): his own row has boxes, others read as text; his callsign is the admin\'s (D218)', async () => {
+    const own = await page.locator('#qtbl input[data-init="bane"]').count()
+    const other = await page.locator('#qtbl input[data-init="stiff"]').count()
+    const ownCs = await page.locator('#qtbl input[data-cs="bane"]').count()
     const ro = await page.locator('#qtbl tr.qro').count()
-    return own === 1 && other === 0 && ro > 5 ? true : `own ${own} other ${other} ro ${ro}`
+    return own === 1 && other === 0 && ownCs === 0 && ro > 5 ? true : `own ${own} other ${other} his callsign box ${ownCs} ro ${ro}`
   })
   const qk = await page.evaluate(() => { const c = [...document.querySelectorAll('#qtbl td[data-q^="bane|"]')].map(x => x.getAttribute('data-q').split('|')[1]).find(k => !['san', 'sxo', 'sched'].includes(k)); return c || null })
   const held = (id) => page.evaluate(([i, k]) => !!(window.PEOPLE[i].quals || {})[k], [id, qk])
@@ -243,13 +244,16 @@ async function go(page, to) { await page.evaluate(p => window.go(p), to); await 
     const note = await page.locator('#guestNote').innerText().catch(() => '')
     return g === 1 && nav === 0 && note.includes('Waiting') ? true : `guest ${g} nav ${nav}`
   })
-  await step(page, 'd-guest-medical', 'guest: a medical input reads "Unavailable" — no type, no remarks', async () => {
+  await step(page, 'd-guest-medical', 'guest: a medical input reads in full, as a member sees it — its type and remark (D213)', async () => {
     const t = await page.locator('#guestApp').innerText()
-    if (t.includes('Medical leave 13 Jul')) return 'the medical remark is visible'
-    return t.includes('Unavailable') ? true : 'no "Unavailable" line seen'
+    return t.includes('Medical leave 13 Jul') ? true : 'the medical remark is not shown to the guest'
   })
-  await step(page, 'd-guest-unpublished', 'guest: a day not yet published says so', async () =>
-    (await page.locator('#guestApp').innerText()).includes('Not published yet'))
+  await step(page, 'd-guest-unpublished', 'guest: a day not yet published shows as it stands, as members see it — no "Not published yet", no buttons (D215)', async () => {
+    const t = await page.locator('#guestApp').innerText()
+    const tue = await page.locator('#guestApp .day[data-day="1"]').innerText()
+    const btns = await page.locator('#guestApp .day button').count()
+    return !t.includes('Not published yet') && /COMMON PROGRAMME/i.test(tue) && btns === 0 ? true : `"Not published yet" ${t.includes('Not published yet')}, Tuesday drawn ${/COMMON PROGRAMME/i.test(tue)}, buttons ${btns}`
+  })
   await step(page, 'd-guest-no-working-copy', 'guest: no working-draft picker on a published day', async () =>
     (await page.locator('#guestApp select[data-vwork]').count()) === 0)
   await step(page, 'd-guest-no-dead-doors', 'guest: no ⓘ, no "tap to review", no tappable day name (his view has no panel for them)', async () => {

@@ -5021,3 +5021,20 @@ test('the weekend says it is unpublished from the first paint, not after an unre
   expect(await codesOn(5), 'a Tuesday edit does not change what Saturday says').toEqual(satFirst)
   expect(await codesOn(6), 'nor the Sunday').toEqual(sunFirst)
 })
+
+/* THE SIGN-IN CARDS' MAIN BUTTON LINES UP WITH THE BOXES ABOVE IT (26 Sep 26 — the owner's
+   picture of the Request access card: the button sat 10px right and poked past the card). The
+   schedule's `.go` (a flying-wave block) gave it 10px side margins; `.login .go` now sets its
+   margin in full. Both cards share the class, so both are measured. */
+test('the sign-in and Request access buttons sit square under their boxes, inside the card', async ({ page }) => {
+  const square = () => page.evaluate(() => {
+    const f = document.querySelector('.login-card')!, g = f.querySelector('.go')!, i = f.querySelector('input')!
+    const a = f.getBoundingClientRect(), c = g.getBoundingClientRect(), n = i.getBoundingClientRect()
+    return { dl: Math.round(c.left - n.left), dr: Math.round(c.right - n.right), inside: c.right <= a.right - 1 }
+  })
+  await page.goto('/'); await page.waitForSelector('#luser')
+  expect(await square(), 'the sign-in card').toEqual({ dl: 0, dr: 0, inside: true })
+  await page.fill('#luser', 'square@mail'); await page.fill('#lpass', 'x')
+  await page.click('#loginForm button[type=submit]'); await page.waitForSelector('#accessRequest')
+  expect(await square(), 'the Request access card').toEqual({ dl: 0, dr: 0, inside: true })
+})

@@ -2870,7 +2870,7 @@ admin or member, and the CALLSIGN (person) it belongs to; one person, one accoun
 the database step); an added account takes any password, the two seeded sign-ins keep theirs — `ad/a` = admin (Saber),
 `us/us` = member (Ranger), the owner's 24 Aug 26 names, not printed on the card. A person signed in but on no list asks
 for access (callsign + name) and waits; an admin approves (linking a puck he picks) or declines; an admin switch, OFF by
-default, lets people waiting read the published week as a GUEST; an account switched off sees only "switched off"
+default, lets people waiting read the schedule as a GUEST — what a member reads on View-only Sched, read only (D215); an account switched off sees only "switched off"
 (D204). **Who may do what is decided in ONE place, `state/perms.ts`**, which mirrors `docs/data-model.md` §11 and is
 drift-tested against it (`perms.test.ts`); no other file decides authority (`perms-scan.test.ts`), and the command gate
 itself delegates to it — plus a commit-gate check that a member's command changed only his own records. `canEditSched()`
@@ -2887,7 +2887,7 @@ the squadron's programme*, not read vs write:
 |---|---|---|
 | Inputs — add / edit / delete | **yes** | yes |
 | Inputs — choosing WHO an input is for | no — always the signed-in person (his own account's callsign — D166) | yes |
-| Quals — `Enable editing`: tick a qualification, edit initials / flight / CAT / callsign / remarks | **yes — his OWN row only, every column of it incl. SXO and SCHEDULER (D149, 24 Sep 26; BUILT by `[ACCOUNTS]`, 26 Sep 26: `state/quals-write.ts updatePersonField`, checked before anything moves; other rows read as text for him)** | yes, any row |
+| Quals — `Enable editing`: tick a qualification, edit initials / flight / CAT / callsign / remarks | **yes — his OWN row only, every column of it incl. SXO and SCHEDULER but NOT the callsign, which is an admin's to change (D149, 24 Sep 26; D218, 26 Sep 26; BUILT by `[ACCOUNTS]`, 26 Sep 26: `state/quals-write.ts updatePersonField`, checked before anything moves; other rows read as text for him)** | yes, any row |
 | Admin → Users — accounts, requests, the guest switch | no | yes (never his own account; at least one admin always keeps access) |
 | Quals — `Edit quals` (which columns the LoX carries) | no | yes |
 | Quals — `Add person` (put someone on the roster) | no | yes |
@@ -2991,7 +2991,8 @@ page a member LANDS on their own inputs (the person filter defaults to `ME`
 for a member, `all` for a scheduler) with "Everyone" one pick away; on every
 other person's row the ✎ and ✕ are not rendered, but the document paperclip
 stays (anyone may VIEW any attachment — owner, same day; RE-CONFIRMED 26 Sep 26 by D211 for every member, a medical
-input's type, remarks and documents included; a waiting guest sees none). The write-path
+input's type, remarks and documents included; and by D213 the same day a waiting guest sees a medical input on the
+published schedule too — he has no door to a document). The write-path
 backstop behind the hidden controls is in `commitInputEdit` / `removeInput`,
 gated on the one permissions rule (`perms.ts mayEditInputOf` / `mayDeleteInputOf` since `[ACCOUNTS]` — a member his
 own, an admin any, a guest none) — the render gate asks the same module.

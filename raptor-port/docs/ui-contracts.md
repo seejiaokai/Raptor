@@ -5042,12 +5042,12 @@ DRAWER's Account row reads "Signed in as <callsign> · <role>" (`#drawerAcct`) a
 
 Someone signed in but without access sees one of three cards in the sign-in's own look (`ui/AccessScreen.tsx`, `.login`
 classes): **Request access** (`#accessRequest` — "Signed in as <name>", Callsign `#accCs`, Name `#accFull`, "Request
-access" `#accSend`, errors in `#accErr`); **Waiting** (`#accessWaiting` — what he asked, "an admin will answer it");
+access" `#accSend`, errors in `#accErr`); **Waiting** (`#accessWaiting` — what he asked, "an admin will answer it"; with the guest switch ON, "View the schedule" `#accGuest` takes him straight into the guest view, D221);
 **Switched off** (`#accessOff`). Each has Sign out (`#accOut`, through `ui/logout.ts`). With the admin's guest switch ON a
 person waiting instead gets the GUEST VIEW (`ui/GuestApp.tsx`, `#guestApp`): a slim bar (the mark, "Waiting for access —
-view only" `#guestNote`, Sign out `#guestOut`), the week window, and the week from the view page's builder — a published
-day's ISSUED face only (no working-draft picker), "Not published yet" on any other day, and a medical input only as
-"Unavailable" with its times (D211 was about members). Nothing else of the app is mounted — no windows, no tabs, no
+view only" `#guestNote`, Sign out `#guestOut`), the week window, and the week from the view page's builder — what a
+member reads on View-only Sched, read only (D215): a published day's ISSUED face (no working-draft picker) and a day not
+yet published as it stands; a medical input in full (D211, D213); no ⓘ, warning list, pending list or Traffic button. Nothing else of the app is mounted — no windows, no tabs, no
 document-wide listeners.
 
 The LEAVE WAR change of the same day (engine-rules §Auth / roles): moving

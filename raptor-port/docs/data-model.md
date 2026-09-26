@@ -979,16 +979,16 @@ update, delete (delete is the soft delete throughout).
 
 | Table | Admin | Member | Guest | Pending | Own-row rule and notes |
 |---|---|---|---|---|---|
-| `Person` | C R U D | R, U **own** | R (callsigns) | — | `personId` = my person: every column of his own row — callsign, CAT, initials, flight, SXO, SCHEDULER, SANS — except `archived`, `special` and `id` (D149); adding, archiving and restoring a person stay the admin's |
+| `Person` | C R U D | R, U **own** | R (callsigns) | — | `personId` = my person: every column of his own row — CAT, initials, flight, SXO, SCHEDULER, SANS — except the callsign (D218: an admin's to change), `archived`, `special` and `id` (D149); adding, archiving and restoring a person stay the admin's |
 | `Qualification` | C R U D | R | — | — | the list of qualification columns (Quals → Edit quals) |
 | `QualMark` | C R U D | R, C U D **own** | — | — | `personId` = my person — a member ticks his own quals, every one (D149) |
 | `Setting`, `SchemaVersion` | C R U D | R (`Setting` only) | — | — | the guest switch is a `Setting` (D204) |
 | `User` | C R U | R **own** | — | — | one account per person, tied to it (D166); the sign-in name (the defence mail address) unique; switched off, never deleted (`enabled`); **no password is ever stored** — the organisation's sign-in checks it; at least one enabled admin always remains; an admin never changes his own account |
 | `AccessRequest` | R D | — | — | C **own** | a person signed in but on no list asks once, with a callsign and a name as typed text (D204); an admin approves — creating the `User`, linked to a person he picks, a typed callsign never claims one — or declines, each one step |
-| ScheduleWeek family, `DayDraft`, `RowPerson` | C R U D | R | R (published days) | — | a member reads the programme; only a scheduler writes it; a guest reads the published week only (D204) |
+| ScheduleWeek family, `DayDraft`, `RowPerson` | C R U D | R | R | — | a member reads the programme; only a scheduler writes it; a guest reads what a member reads on View-only Sched — a published day as issued, another as it stands (D204, D215) |
 | `Amendment`, `Signoff` | C R | R | R (published) | — | append-only for everyone |
 | `EditLog` | R | R | — | — | written by the store, not a role; members read it, a medical change in full (D169, D211) — gap: `[DRAFT-PENDING]` (shown to admins only until the changes window); retention is Open question 4 |
-| `Input` | C R U D | C R U D **own**; R | R (no medical detail) | — | `personId` = my person, or filed for me by a scheduler; every member reads every input, a medical one in full (D211 — his 27 Aug 26 rule re-confirmed); a guest reads the published week's unavailability, a medical one only as "Unavailable" and its times |
+| `Input` | C R U D | C R U D **own**; R | R | — | `personId` = my person, or filed for me by a scheduler; every member reads every input, a medical one in full (D211 — his 27 Aug 26 rule re-confirmed); a guest reads the week's inputs as a member does, a medical one in full too (D213, D215) |
 | `Attachment`, `InputAttachment` | R (D by sweep only) | C R **own**; R | — | — | owned by the person who uploaded it; every member may open it (D211) |
 | `LeaveWar` | C R U D | R | — | — | the stage and the bid window are the admin's |
 | `LeaveBid` | C R U D (decide, move) | R, C U D **own** (while `stage = open`) | — | — | `personId` = my person — the `canEditRow` rule the store enforces; deciding, moving an approved leave and "OK, seen" on another's notice are the admin's |

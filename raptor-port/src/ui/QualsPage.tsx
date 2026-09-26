@@ -7,7 +7,7 @@ import { PEOPLE, QORDER, QCHIP, QCOLOR, LEVELNAME, deriveQuals, ID_BY_CS, nameTo
 import { newId } from '../engine/newid'
 import { validate } from '../engine/validate'
 import { HOOKS } from '../engine/hooks'
-import { isAdmin, mayEditQualsOf, mayManageRoster } from '../state/perms'
+import { isAdmin, mayEditQualsOf, mayManageRoster, mayRenameCallsign } from '../state/perms'
 import { updatePersonField } from '../state/quals-write'
 import { esc } from '../state/view'
 import { notify } from '../state/store'
@@ -199,6 +199,7 @@ function qualsGrpRow(qSeatView: string, n: number, colsLen: number) {
 function qualsTable(cols: any[], qSeatView: string, qSort: any, qEditing: boolean, qSearch: string, qualsEdit: boolean, armDel: string, canArch: boolean) {
   const ids = qualsIds(qSeatView, qSort, qSearch)
   const archCell = (id: string) => `<td>${canArch ? `<span class="qarch" data-arch="${id}" title="Archive">✕</span>` : ''}</td>`
+  const canRename = mayRenameCallsign()
   const rows = ids.map(id => {
     const p = PEOPLE[id]
     /* D149 ([ACCOUNTS]): with editing on, a member's OWN row is editable, every column;
@@ -213,7 +214,8 @@ function qualsTable(cols: any[], qSeatView: string, qSort: any, qEditing: boolea
        p.pers, not the seat view, so a personnel row reads the same under the
        Personnel view and under All. */
     if (p.pers) {
-      const cs = rowEd
+      /* the callsign box is the admin's (D218) — a member's own row shows it as text */
+      const cs = rowEd && canRename
         ? `<input class="qcs" data-cs="${id}" value="${esc(p.cs)}" maxlength="14" aria-label="Callsign for ${esc(p.cs)}" />`
         : esc(p.cs)
       const init = rowEd
@@ -256,7 +258,8 @@ function qualsTable(cols: any[], qSeatView: string, qSort: any, qEditing: boolea
        id→cs via whoId), so the commit's notify() re-prints every puck under the
        new name — including on other weeks and issued snapshots — without moving
        anything. Same commit-on-change reasoning as the initials. */
-    const cs = rowEd
+    /* the callsign box is the admin's (D218) — a member's own row shows it as text */
+    const cs = rowEd && canRename
       ? `<input class="qcs" data-cs="${id}" value="${esc(p.cs)}" maxlength="14" aria-label="Callsign for ${esc(p.cs)}" />`
       : esc(p.cs)
     /* Flight is editable for the same reason the initials are — the roster

@@ -83,10 +83,11 @@ export const PERMS: Record<string, PermRow> = {
 }
 
 /* 4. WHO READS A MEDICAL INPUT IN FULL (D211, 26 Sep 26 — "Keep as today": every member;
-   the agent's reading, on his look card: a guest, not yet a member, never). §11's
-   Input row carries it as the Guest cell's note, "(no medical detail)" — perms.test.ts
-   ties the two together. */
-export const MEDICAL_DETAIL: Role[] = ['admin', 'member']
+   D213, the same day — "a guest should also see medical inputs": a guest too, on the
+   published schedule he is shown). §11's Input row carries it in the Guest cell — a note
+   "(no medical detail)" there would mean a guest is left out; perms.test.ts ties the two
+   together. The question stays one place, so a later ruling moves one line. */
+export const MEDICAL_DETAIL: Role[] = ['admin', 'member', 'guest']
 
 /* ---- who is signed in ------------------------------------------------------ */
 export type Who = Role | 'off' | null
@@ -161,7 +162,7 @@ export function viewerId(): string | null { return SESSION ? (me() ?? '') : (ME 
 export const mayFileInputFor = (pid: any): boolean => may(T.input, 'C', pid, true)
 export const mayEditInputOf = (pid: any): boolean => may(T.input, 'U', pid, true)
 export const mayDeleteInputOf = (pid: any): boolean => may(T.input, 'D', pid, true)
-/* a medical input's type, remarks and documents (D211) */
+/* a medical input's type, remarks and documents (D211; a guest too, D213 — he has no door to a document) */
 export function mayReadMedicalOf(_pid?: any): boolean {
   const who = roleOf()
   if (who === null) return true
@@ -171,6 +172,8 @@ export function mayReadMedicalOf(_pid?: any): boolean {
 /* the Quals page (D149): his OWN row, every column. No session → true (the headless
    page tests, as before). */
 export const mayEditQualsOf = (pid: any): boolean => may(T.person, 'U', pid, true)
+/* the callsign on his row is the admin's to change (D218, narrowing D149); no session → true */
+export const mayRenameCallsign = (): boolean => roleOf() === null || isAdmin()
 /* adding, archiving, restoring a person; the LoX column list. No session → true (the
    write-path backstops these replace passed a sessionless call). */
 export const mayManageRoster = (): boolean => may(T.person, 'C', null, true) && may(T.person, 'D', null, true)

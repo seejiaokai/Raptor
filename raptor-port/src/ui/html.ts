@@ -232,17 +232,14 @@ export function dayIssuedHTML(di:any){
      content-swapped render as-is (its flags were computed on the live day, not
      the previewed snapshot), so it is left un-wrapped. */
 export function viewDayHTML(di:any){
-  /* A GUEST ([ACCOUNTS], D204) — signed in, waiting for access, the admin's guest switch
-     on — reads the PUBLISHED week and nothing else: a published day's issued face (never
-     the working copy — VWORK is cleared at every sign-in and its picker is not drawn
-     for him), and a day not yet published only says so. Never reached with no session,
-     so the byte-exact comparison with the original (sessionless) is untouched. */
-  if(isGuest()){
-    if(!dayApproved(di)){const d=DAYS[+di];return `<section class="day ${d.today?'today':''}" data-day="${+di}">`
-      +`<div class="day-head"><span class="dow">${d.dow}</span><span class="dt">${esc(d.dt)}${d.today?' · Today':''}</span></div>`
-      +`<div class="dprev-bar">Not published yet</div></section>`}
-    return dayIssuedHTML(di)
-  }
+  /* A GUEST ([ACCOUNTS], D204; D215 — "What members see") — signed in, waiting for access,
+     the admin's guest switch on — reads what a member reads here, read only: a published
+     day's issued face (never the working copy — VWORK is cleared at every sign-in and its
+     picker is not drawn for him) and a day not yet published as it stands now. His tree
+     mounts no day panel, warning list or pending list, so the builder draws none of their
+     doors for him. Never reached with no session, so the byte-exact comparison with the
+     original (sessionless) is untouched. */
+  if(isGuest()) return dayApproved(di)?dayIssuedHTML(di):withOfficialWarn(()=>dayHTML(di,false))
   if(dayApproved(di)) return VWORK.has(di)?dayHTML(di,false):dayIssuedHTML(di)
   const ver=DPREV.get(di)
   if(!isDraftVer(ver)) return withOfficialWarn(()=>dayHTML(di,false))
@@ -1613,7 +1610,7 @@ function dayHTMLBody(di:any,ed:any,vsel?:any){
       h+=`<div class="go ${w.night?'night':''} ${sa?'sa sa-'+(w.kind||'x'):''}"${ed?` data-move="mv:w.${di}.${gi}"`:''} style="border-left-color:${sa?'var(--san)':(w.night?'var(--hard)':edge)}">
         <div class="go-tab">${ed?'<span class="wvgrip" title="Drag to reorder this wave" aria-label="Reorder this wave">⠿</span>':''}<span class="asd">${ted(`wl:${di}.${gi}`,w.label,ed,'ntx')}${!sa&&w.night&&!/night/i.test(w.label)?' · NIGHT':''}`
         +`${sa?`<span class="satag" title="${esc((SAWAVE[w.kind]||{}).note||'Standalone — outside the day\u2019s flying count')}">standalone${w.noconf?' · availability, currency and seat checks only':''}</span>`:''}</span>
-        ${sa?'':`<button class="airbtn" data-air="${di}|${gi}">Traffic</button>`}${sa||!ed?'':`<button class="airbtn" data-itadd="${di}|${gi}" title="Add an in-time line to this wave">+ In time</button>`}</div>`;
+        ${sa||isGuest()?'':`<button class="airbtn" data-air="${di}|${gi}">Traffic</button>`}${sa||!ed?'':`<button class="airbtn" data-itadd="${di}|${gi}" title="Add an in-time line to this wave">+ In time</button>`}</div>`;
       /* "+ In time" renders whether or not the wave has lines — the always-there
          add control is the fix for the old trap where deleting the last line
          dropped the whole block with no way back (owner, 21 Aug 26). Standalone
@@ -2017,8 +2014,10 @@ export function inpTimeCells(inp:any,ed:any){
    must read the same on every day it covers, not just its start date. Same
    prefix idiom as lateTag just above: printed ahead of the free text, never
    nested inside it, so it survives the contenteditable span untouched. */
-/* [ACCOUNTS] D211: does this reader see a medical input only as "Unavailable"? Only a
-   guest — every member and admin reads a medical input in full. */
+/* [ACCOUNTS] does this reader see a medical input only as "Unavailable"? Nobody who is
+   shown the schedule today — every member and admin (D211) and a guest (D213) reads a
+   medical input in full; the one question (perms.ts mayReadMedicalOf) is kept so a later
+   ruling moves one line. */
 const hideMed=(inp:any)=>isDownchit(inp.type)&&!mayReadMedicalOf(inp.person);
 export function inpRmkCell(inp:any,ed:any,dt?:any){
   const lt=lateTag(inp), lc=lt?' has-late':'';

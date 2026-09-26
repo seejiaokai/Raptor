@@ -18,8 +18,8 @@
 import { useState } from 'react'
 import { SESSION } from '../state/auth'
 import { roleOf } from '../state/perms'
-import { requestAccess, requestByName, MAX_CS, MAX_FULL } from '../state/accounts'
-import { notify } from '../state/store'
+import { requestAccess, requestByName, guestEntry, sessionFor, MAX_CS, MAX_FULL } from '../state/accounts'
+import { notify, resetSession } from '../state/store'
 import { logOut } from './logout'
 import { useVersion } from './useStore'
 
@@ -63,6 +63,11 @@ export function AccessScreen() {
           <h2 className="acc-h">Your request is with the admins</h2>
           {who}
           <p className="acc-p">You asked for access as <b>{req.cs}</b> ({req.full}). You'll be able to sign in as soon as an admin approves it.</p>
+          {/* D221 — with the admin's guest switch on, straight into the guest view */}
+          {guestEntry() && <>
+            <p className="acc-p">Meanwhile you can look at the schedule, read only.</p>
+            <button type="button" className="go" id="accGuest" onClick={() => { const g = guestEntry(); if (g) { resetSession(sessionFor(g)); notify() } }}>View the schedule</button>
+          </>}
           {signOut}
         </div>
       </div>

@@ -53,6 +53,8 @@ whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaini
    one changes window, on top of accounts. **Each gets its own FULL check (D210, 26 Sep 26 — amends D173's one check of
    both):** accounts is planned, red-teamed, built, walked and FULL-checked by itself on `claude/accounts`, then "merge live";
    the window then gets its own.
+   **Before the window: [ACCOUNTS-NEW-PERSON]** (D214 — make a brand-new person from Admin → Users; mock-up first, then
+   its own small branch and check).
 2. **Now, beside the building — [IT-QUESTIONS]:** talk to the IT side (his, not code); their approvals take weeks.
 3. **Development as normal — [HUMAN-RETEST]**'s remaining three, in HIS order (D147): the absence record TOGETHER with
    **[S4-HUNT-REST]** (its ground IS the absence record), then change-recording (with [UNDO-ROSTER-SETTINGS] and D148),
@@ -1168,6 +1170,19 @@ None breaks an amendment rule; each is a line to fix or ask about, from the walk
    array without changing what is shown — and blanks the four sign-offs though "no changes to publish" (the final read,
    Fable #1's mirror; the digest keys ground rows by position). A false re-sign, never a false publish.
 **Place:** any time; items 6–8 with the Leave War links re-test (D147, last).
+
+### [ACCOUNTS-NEW-PERSON] Admin → Users makes a brand-new person with his account, in one step (D214, filed 26 Sep 26)
+**His ruling (D214):** *"2 can u show me a mock up, also ill need his initials"* — after he found the callsign list offers
+only people already on Quals. **Build:** "Add an account" (and Approve, filled from the callsign and name the person typed)
+gets a **New person** choice — callsign, **initials**, pilot / WSO / personnel, CAT — which creates his Quals row and his
+account together through the SAME add the Quals page uses (one callsign rule), as one command. Flight and quals stay on
+Quals. **Mock-up first:** `raptor-port/docs/mock/new-person-account.html` (his approval before any code). **Tier:** FULL
+(roles and saved data). **With it — D216:** a new access request lights the admins' bell (a tap → Admin → Users; out once
+he has opened it). **And the sign-up form asks the same things** (his "signs up for an account", on D214's row).
+**And D217 — one door:** a new person is created ONLY on Admin → Users (or his approved sign-up); a blank sign-in makes a
+roster-only person (a SANS man); Quals' "+ Add person" becomes a button to Admin → Users (its form and tests retired, D201).
+**And D219:** the field reads "Callsign/Name" (some people have no callsign) — the sign-up, Admin → Users and the Quals head. **D220:** the seat choice reads "Pilot", "WSO", "Personnel (ground crew)". **D222:** on the sign-up card only, that field reads "Displayed callsign/name".
+**Place:** straight after `[ACCOUNTS]` merges, on its own branch, before `[DRAFT-PENDING]`.
 
 ### [ACCOUNTS] Accounts in the app now, shaped as the defence-mail sign-in will be (owner, D166, 25 Sep 26)
 **BUILT 26 Sep 26 on `claude/accounts` — in its FULL check (D210); the plan (red-teamed three rounds by Fable and Astra)

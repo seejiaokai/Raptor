@@ -75,10 +75,10 @@ describe('D200 (3): the permissions matrix IS data-model.md §11', () => {
       expect([...PERMS[key].gaps].sort()).toEqual([...rows[key].gaps].sort())
     })
   }
-  it('D211: the medical-detail rule and §11 agree — a guest reads no medical detail, every member does', () => {
+  it('D211 + D213: the medical-detail rule and §11 agree — every member reads a medical input in full, and a guest too', () => {
     const guestNote = rows[T.input].guestNote
     expect(MEDICAL_DETAIL.includes('guest')).toBe(!/no medical detail/.test(guestNote))
-    expect(MEDICAL_DETAIL).toEqual(expect.arrayContaining(['admin', 'member']))
+    expect(MEDICAL_DETAIL).toEqual(expect.arrayContaining(['admin', 'member', 'guest']))
   })
   it('the parser itself reads the forms the table uses', () => {
     expect(parseCell('R, C U D **own** (while `stage = open`)')).toEqual({ all: ['R'], own: ['C', 'U', 'D'] })

@@ -78,8 +78,8 @@ For the person designing RAPTOR's Dataverse tables. Written 10 Sep 26.
 - **Medical information — AMENDED 26 Sep 26 by the owner (D211, "Keep as today").** Every member of the
   squadron may read a medical absence, its remarks and any attached document, as the app does today (his
   27 Aug 26 rule, re-confirmed knowing it departs from what this line first said: "readable by the person and
-  admins only"). Someone signed in but not yet given access (a guest, D204) sees no medical detail, and nobody
-  outside the squadron's own accounts reads it at all.
+  admins only"). Someone signed in but not yet given access (a guest, D204) sees it too on the published schedule he
+  is shown (D213, the same day), and nobody outside the squadron's own accounts reads it at all.
 - **No real names in the public repository.** Demo data only; anything with
   a real person in it stays in the tenant.
 - **A change to someone's access takes effect on his very next request** (added 26 Sep 26, from Astra's read

@@ -140,7 +140,7 @@ img,a{-webkit-user-drag:none;user-drag:none}
 .login input:focus{outline:2px solid var(--accent);outline-offset:0}
 .login .go{display:block;width:100%;box-sizing:border-box;-webkit-appearance:none;appearance:none;
   background:var(--accent);color:var(--accent-ink);border:none;font-size:14px;font-weight:700;
-  padding:12px;border-radius:10px;cursor:pointer;margin-top:5px;letter-spacing:.04em}
+  padding:12px;border-radius:10px;cursor:pointer;margin:5px 0 0;letter-spacing:.04em}   /* margin in full: the schedule's `.go` (a flying-wave block) gives 10px sides, which pushed this button 10px right and past the card's edge — on the sign-in and Request access cards alike (26 Sep 26) */
 .login .go:hover{filter:brightness(1.06)}
 /* the error line takes no room until there is one to print */
 .login .err{color:#FBB4B9;font-size:12px;margin:0 0 8px}

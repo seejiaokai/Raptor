@@ -569,3 +569,18 @@ resolved statuses always carry their resolution date
 **Suggested improvement:** Before the sheet is handed to reviewers, every file or test named in a "proved by" cell is checked to exist (a one-line glob per cell, or a small script over the sheet's backticked paths). A plan's "proved by" column is a promise; the sheet's must be a fact.
 
 **Principle:** A cell that names its proof is a claim until the proof is opened; check it exists before anyone relies on it (the anti-pattern "the comment that vouches", applied to evidence).
+
+### Observation 278: A defect in the walk's own picture, missed by looking — measure new cards, don't only look
+
+**Status:** OPEN
+**Date:** 2026-09-26
+**Session context:** [ACCOUNTS] — the owner's look after "merge live"
+**Skill:** New skill candidate: bug-check order (raptor-port/docs/bug-check-order.md) — §7 the walk, §9 the pictures
+**Type:** open-source
+**Phase/Area:** looking at the walk's pictures
+
+**Issue:** The owner found a button sitting 10px right of the boxes above it and poking past its card's edge. The walk had photographed that exact screen twice, and the agent looked at both pictures and passed them. A shared class lent the button another component's side margins; nothing on the page asserted alignment.
+
+**Suggested improvement:** For every NEW card, form or panel a build adds, the walk asserts its geometry, not only its content: primary controls aligned with the fields above (left and right edges equal) and inside the container. Cheap in a scripted walk (bounding boxes), and the assertion catches what a glance normalises.
+
+**Principle:** Looking confirms the picture matches your expectation of the content; it rarely notices a few pixels of misalignment. Measure what "looks right" means for new surfaces.

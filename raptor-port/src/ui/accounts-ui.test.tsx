@@ -17,7 +17,7 @@ import { INPUTS } from '../engine/inputs'
 import { DAYS } from '../engine/data'
 import { accountsLoad, signIn, sessionFor, requestAccess, setGuestView, ACCESS_REQS, accountByName } from '../state/accounts'
 import { getState as lwState } from '../leavewar/state/store'
-import { viewerId } from '../state/perms'
+import { viewerId, roleOf } from '../state/perms'
 import { setPage } from '../state/view'
 import { setDayApproved, setSign, dayApproved } from '../engine/publish'
 
@@ -101,10 +101,29 @@ describe('AC11 — the access screens (D204)', () => {
     expect($('#shell')).toBeFalsy()
     await signInAs('ad', 'a'); updateAccount('achex', { on: true })
   })
+  it('waiting, with the guest switch on: "View the schedule" goes straight into the guest view (D221); off, no button', async () => {
+    await signInAs('wait1@mail')
+    await type($('#accCs') as HTMLInputElement, 'W1')
+    await type($('#accFull') as HTMLInputElement, 'Wait One')
+    await act(async () => { $('#accForm').dispatchEvent(new Event('submit', { bubbles: true, cancelable: true })) })
+    expect($('#accessWaiting')).toBeTruthy()
+    expect($('#accGuest'), 'the switch is off: no button').toBeFalsy()
+    await signInAs('ad', 'a'); setGuestView(true)
+    await signInAs('wait1@mail')
+    expect($('#guestApp'), 'a fresh sign-in with the switch on is already the guest view').toBeTruthy()
+    await click($('#guestOut')); await act(async () => { await Promise.resolve() })
+    /* the waiting screen itself, while the switch is on: the button */
+    await act(async () => { resetSession({ user: 'principal:wait1@mail', role: 'pending', pid: null, name: 'wait1@mail' }); notify() })
+    expect($('#accessWaiting')).toBeTruthy()
+    await click($('#accGuest'))
+    expect($('#guestApp'), 'one tap into the guest view').toBeTruthy()
+    expect(roleOf()).toBe('guest')
+    await signInAs('ad', 'a'); setGuestView(false)
+  })
 })
 
-describe('AC12 — the guest sees the published week only, walled off (D204; D211 — no medical detail)', () => {
-  it('none of the app is mounted; an unpublished day says so; a medical input reads "Unavailable"', async () => {
+describe('AC12 — the guest sees the published week only, walled off (D204; medical in full, D213)', () => {
+  it('none of the app is mounted; an unpublished day shows as members see it (D215); a medical input reads in full (D213)', async () => {
     /* a published day carrying a medical input */
     const dt = DAYS[0].dt
     INPUTS.unshift({ iid: 'medg', person: 'dj', type: 'OML', date: dt, allday: true, remarks: 'secret diagnosis', mod: '2026-01-01' } as any)
@@ -123,10 +142,12 @@ describe('AC12 — the guest sees the published week only, walled off (D204; D21
     expect($('#shell')).toBeFalsy()
     for (const sel of ['#topnav', '#viewAs', '#notifyBell', '#insightBtn', '#page-editsched', '#page-inputs', '#page-admin'])
       expect($(sel), `${sel} is not mounted for a guest`).toBeFalsy()
-    expect($('#guestApp').textContent).not.toContain('secret diagnosis')
+    expect($('#guestApp').textContent, 'D213 — a guest sees medical inputs too').toContain('secret diagnosis')
     expect($('#guestApp .day[data-day="0"]')!.textContent, 'the published day is drawn').not.toContain('Not published yet')
-    expect($('#guestApp .day[data-day="0"]')!.textContent).toContain('Unavailable')
-    expect($('#guestApp').textContent).toContain('Not published yet')
+    expect($('#guestApp .day[data-day="0"]')!.textContent).toContain('OML')
+    /* D215 — "What members see": a day not yet published shows as it stands, read only */
+    expect($('#guestApp').textContent).not.toContain('Not published yet')
+    expect($$('#guestApp .day[data-day="1"] .day-body').length, 'an unpublished day is drawn').toBe(1)
     expect($$('#guestApp select[data-vwork]')).toHaveLength(0)
     /* the walk (26 Sep 26): his tree mounts no day panel and no warning list, so neither
        door is drawn — no ⓘ, no "tap to review", no day name that looks tappable */

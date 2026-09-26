@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>New person, one door</title>
+<style>
+  :root { --bg:#0b0d10; --panel:#15181d; --ink:#e8edf2; --ink-2:#aeb8c3; --edge:#262b33; --accent:#3cc6e6 }
+  body { margin:0; background:var(--bg); color:var(--ink); font:15px/1.5 system-ui, sans-serif }
+  main { max-width:1100px; margin:0 auto; padding:24px 16px 48px }
+  h1 { font-size:22px; margin:0 0 4px } p.sub { color:var(--ink-2); margin:0 0 24px }
+  section { background:var(--panel); border:1px solid var(--edge); border-radius:12px; padding:16px; margin:0 0 20px }
+  h2 { font-size:16px; margin:0 0 6px } p { margin:0 0 12px; color:var(--ink-2) }
+  .pics { display:flex; gap:12px; flex-wrap:wrap; align-items:flex-start }
+  .pics img { border:1px solid var(--edge); border-radius:8px; max-width:100% }
+  .pics img.desk { flex:1 1 640px; min-width:0; width:100% } .pics img.phone { width:260px }
+</style>
+</head>
+<body>
+<main>
+<h1>A new person: one door, Admin → Users</h1>
+<p class="sub">The mock-up for D214, D216, D217, D219 and D220 (26 Sep 26) — pictures of the real app with the proposed fields drawn in. Nothing is built until he approves it.</p>
+
+<section>
+  <h2>1 · He signs up</h2>
+  <p>Signing in with a defence mail that isn't on the list asks what the admin's form asks: callsign/name, initials, pilot / WSO / personnel, CAT.</p>
+  <div class="pics"><img class="desk" src="img/new-person-account/desktop-1-signup.png" alt="The sign-up card"><img class="phone" src="img/new-person-account/phone-1-signup.png" alt="The sign-up card on a phone"></div>
+</section>
+
+<section>
+  <h2>2 · The admins' bell lights; the admin approves — "New person", filled from what he gave</h2>
+  <p>A new request lights the admins' bell (D216); a tap says so and goes to Admin → Users.</p>
+  <div class="pics"><img class="desk" src="img/new-person-account/desktop-2a-bell.png" alt="The bell lit for a request"></div>
+  <div class="pics"><img class="desk" src="img/new-person-account/desktop-2-approve.png" alt="Approving with New person"><img class="phone" src="img/new-person-account/phone-2-approve.png" alt="Approving on a phone"></div>
+</section>
+
+<section>
+  <h2>3 · The admin adds someone himself</h2>
+  <p>The one place a new callsign is made (D217). A blank sign-in makes someone who won't use the app (a SANS man). Quals' "+ Add person" becomes a button to here.</p>
+  <div class="pics"><img class="desk" src="img/new-person-account/desktop-3-add.png" alt="Adding a new person"><img class="phone" src="img/new-person-account/phone-3-add.png" alt="Adding on a phone"></div>
+</section>
+</main>
+</body>
+</html>

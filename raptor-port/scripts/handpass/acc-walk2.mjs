@@ -176,10 +176,17 @@ async function editAccount(page, id, fn) {
   await step(page, 'd-rename-reports', 'renamed: "Your reports" still lists his report', async () =>
     (await text(page, '#bugMine')).includes('walk2') ? true : 'his report is gone')
   await go(page, 'quals'); await page.click('#qViewA').catch(() => {}); await page.click('#qEdit'); await page.waitForTimeout(300)
-  const ownBox = page.locator('#qtbl input[data-cs="bane"]')
-  await ownBox.scrollIntoViewIfNeeded(); await ownBox.fill('Ranger'); await ownBox.press('Tab'); await page.waitForTimeout(400)
+  await step(page, 'd-member-no-rename', 'a member with editing on: his callsign reads as text — only an admin renames (D218)', async () =>
+    (await page.locator('#qtbl input[data-cs="bane"]').count()) === 0 && (await page.locator('#qtbl input[data-init="bane"]').count()) === 1 ? true : 'his callsign box is drawn')
   await page.click('#qSave').catch(() => {}); await page.waitForTimeout(300)
-  await step(page, 'd-member-renames-self', 'a member renames his own callsign on Quals (D149): the badge follows at once', async () =>
+  /* the admin puts his callsign back */
+  await signIn(page, 'ad', 'a')
+  await go(page, 'quals'); await page.click('#qViewA').catch(() => {}); await page.click('#qEdit'); await page.waitForTimeout(300)
+  const backBox = page.locator('#qtbl input[data-cs="bane"]')
+  await backBox.scrollIntoViewIfNeeded(); await backBox.fill('Ranger'); await backBox.press('Tab'); await page.waitForTimeout(400)
+  await page.click('#qSave').catch(() => {}); await page.waitForTimeout(300)
+  await signIn(page, 'us', 'us')
+  await step(page, 'd-member-renamed-back', 'the admin renames him back on Quals: he signs in as "Ranger · Member"', async () =>
     (await text(page, '#roleBadge')) === 'Ranger · Member' ? true : `badge "${await text(page, '#roleBadge')}"`)
 
   /* ---- relink an account to another callsign → the next sign-in is the new person ---- */
@@ -292,10 +299,17 @@ async function editAccount(page, id, fn) {
   await signIn(page, 'ad', 'a'); await users(page); await page.check('#admGuestView'); await page.waitForTimeout(200)
   await signIn(page, 'kite@mail')
   await step(page, 'd-guest-on', 'guest switch on: the waiting person sees the guest view', async () => (await page.locator('#guestApp').count()) === 1)
+  /* D221 — someone asking while the switch is on: one tap from the waiting screen */
+  await signIn(page, 'kite9@mail'); await page.fill('#accCs', 'K9'); await page.fill('#accFull', 'K9'); await page.click('#accSend'); await page.waitForTimeout(300)
+  const hasBtn = await page.locator('#accGuest').count()
+  if (hasBtn) { await page.click('#accGuest'); await page.waitForTimeout(500) }
+  await step(page, 'd-guest-button', 'asking while guest access is on: the waiting screen offers "View the schedule", one tap into the guest view (D221)', async () =>
+    hasBtn === 1 && (await page.locator('#guestApp').count()) === 1 ? true : `button ${hasBtn}, guest view ${await page.locator('#guestApp').count()}`)
+  await signIn(page, 'kite@mail')
   const wks = page.locator('#guestApp [data-wk]')
   const nw = await wks.count()
   if (nw > 1) { await wks.nth(nw - 1).click(); await page.waitForTimeout(700); await wks.first().click(); await page.waitForTimeout(700) }
-  await step(page, 'd-guest-weeks', 'the guest moves weeks with the week chips: every day is issued or "Not published yet", nothing else opens (Fable S5)', async () => {
+  await step(page, 'd-guest-weeks', 'the guest moves weeks with the week chips: every day drawn as members see it, nothing else opens (Fable S5, D215)', async () => {
     const shell = await page.locator('#shell, .modal:not([hidden])').count()
     const days = await page.locator('#guestApp .day').count()
     return nw > 1 && days > 0 && shell === 0 && (await page.locator('#guestApp').count()) === 1 ? true : `chips ${nw} days ${days} shell/modal ${shell}`

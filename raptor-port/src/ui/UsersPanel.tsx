@@ -162,7 +162,7 @@ export function UsersPanel() {
       <label className="acc-switch">
         <input type="checkbox" id="admGuestView" checked={GUESTVIEW}
           onChange={e => done(setGuestView(e.target.checked), e.target.checked ? 'People waiting can now view the schedule' : 'Guest view is off')} />
-        <span>Let people waiting for access view the published schedule (read only)</span>
+        <span>Let people waiting for access view the schedule (read only)</span>
       </label>
     </>
   )
