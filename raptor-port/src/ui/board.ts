@@ -1764,6 +1764,9 @@ export function toggleWide() {
   SBWIDE = !SBWIDE
   toast(SBWIDE ? 'Desktop layout — pan sideways to read the whole day' : 'Phone layout')
 }
+/* …but not into the next person's: a sign-in or sign-out puts the standard layout back
+   ([ACCOUNTS] — what the next person inherits; Astra's code read, 26 Sep 26) */
+view.VIEW_RESET.push({ name: 'SBWIDE', scopes: ['session'], reset: () => { SBWIDE = false } })
 
 /* the phone board's Live checks fold (owner, 8 Aug 26): module state like
    SBWIDE, collapsed afresh on every openScheduler — a board visit starts

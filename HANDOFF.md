@@ -15,6 +15,22 @@ the later merge keeps both (D78).
 
 ## Now
 
+<!-- now:claude/accounts -->
+### `claude/accounts` — `[ACCOUNTS]` (D165, D166, D200, D204, D210, D211): BUILT and FULL-checked; on its PR, waiting for his look and "merge live" — written 26 Sep 26 — verify before use
+- **What it is:** sign in as yourself (every account is one callsign; "View as" and the role toggle gone); request access /
+  waiting / switched off / the admin's guest-view switch; Admin → Users; one permissions module (`src/state/perms.ts`)
+  mirroring `docs/data-model.md` §11 with a drift test and a source scan; D149 on Quals. Plan (3 red-team rounds):
+  `docs/superpowers/plans/2026-09-26-accounts-plan.md`; register AC1–AC15.
+- **The check:** walk 1 38/38, walk 2 40/40 (Fable's scenarios), the bridge off-host — re-walked on the final build; both
+  code reads (Fable: no blocker; Astra: four findings) answered — every finding fixed red-first or filed with its place;
+  final gates 6156 / 728 / 471 e2e / 442 Tracker, all green. Evidence sheet `docs/handpass/2026-09-26-accounts.md`
+  (§6 walk findings, §8 the reads, §9 his look card).
+- **Next:** his five-minute look (the sheet's §9, on the branch's Vercel link) → his "merge live" → then `[DRAFT-PENDING]`
+  (the one changes window) on top of accounts, with its own full check (D210).
+- **Filed from it:** `[TRK-SESSION-PICK]` (the Tracker's last pick per person); `[DB-STEP]`'s "access changes take effect
+  at once" (Astra's read, finding 1).
+<!-- /now -->
+
 <!-- now:claude/tracker-palette -->
 ### `claude/tracker-palette` — `[TRK-PALETTE-ASK]` (D157): the Tracker in Raptor's colours, fully — BUILT, WALK-checked; written 26 Sep 26 — verify before use
 - **Parallel with `[ACCOUNTS]`** (`claude/accounts`, rulings D210–D229) on his instruction of 26 Sep 26: this chat serves on
@@ -71,7 +87,8 @@ the later merge keeps both (D78).
 ## Next, in order
 
 1. **HIS ORDER to the database step, about two months away (D203, 26 Sep 26):** now `[ACCOUNTS]` (with D200, D202 —
-   answer his "how does a new user join" question first) → the one changes window (`[DRAFT-PENDING]`) → one full check →
+   answer his "how does a new user join" question first — answered, D204) with ITS OWN full check (D210) → the one changes
+   window (`[DRAFT-PENDING]`) with its own full check →
    "merge live" (D173); beside it, he talks to the IT side (`[IT-QUESTIONS]`). Development as normal: `[HUMAN-RETEST]`'s
    remaining three in his order (D147 — the absence record with `[S4-HUNT-REST]`, change-recording, the Leave War links
    last), then `[PUB-UNAVAIL]` → `[LW-LOCKMARK]` → `[LW-WEEKDAY-WORK]`.
@@ -100,13 +117,13 @@ wearing a different hat.
   edits. Needs a server or sync backend; touches the storage seam (`raptor-port/src/storage/`,
   `raptor-port/CLAUDE.md` §Where things live) and the mutation funnel. *(Corrected 24 Sep 26: it used to name
   `engine/hooks.ts:storeBackend`, which the storage seam replaced for everything but the `sqn142_*` settings.)*
-- **Prototype auth.** Hard-coded accounts. *(Corrected 24 Sep 26: "the deployed site is public" stopped being
-  true with D59 — the repo is private and the app sits behind his Vercel sign-in, which is Vercel's lock, not the
-  app's.)*
-  Manage-users edits the in-memory list only. A member is NOT view-only: they
-  add, edit and delete their own Inputs and tick the qualifications they hold.
-  Roles table `docs/engine-rules.md` §Auth / roles; enforcement (page and write
-  path, never the nav) pinned by `src/state/session.test.ts`.
+- **Prototype auth.** *(Rewritten 26 Sep 26 by `[ACCOUNTS]`, on its branch.)* Accounts — one per person, tied to a
+  callsign, managed on Admin → Users; the sign-in stands for the defence mail's and the app keeps no password; people on
+  no list ask for access (D166, D204). Like all data, they live in one browser until the database, and the sign-in is no
+  security (the app sits behind his Vercel sign-in — Vercel's lock, not the app's). A member is NOT view-only: they
+  add, edit and delete their own Inputs and edit their own Quals row (D149).
+  Roles table `docs/engine-rules.md` §Auth / roles; ONE permissions module (`raptor-port/src/state/perms.ts`,
+  mirroring `data-model.md` §11, drift-tested); enforcement at the page, the write path and the command gate.
 - **One dataset.** The schedule is the demo week (Mon 13 – Sun 19 Jul 26; the
   weekend is non-flying, duty crew only). Week chips re-label but every week
   shows the same data. *(Corrected 24 Sep 26: a second demo week is authored from Mon 20 Jul —

@@ -31,6 +31,7 @@ import {
 import type { WaveKind } from '../engine/wavetpl'
 import { hmOK } from '../engine/time'
 import { canEditSched, SESSION } from '../state/auth'
+import { isAdmin } from '../state/perms'
 import { WAVEEDIT, setWaveEdit } from './pops'
 import { useVersion } from './useStore'
 import { HOOKS } from '../engine/hooks'
@@ -57,7 +58,7 @@ export function WaveTplModal() {
      The test is `SESSION && role !== 'admin'`, NOT `!canEditSched()`, so a
      sessionless test/boot context is not mistaken for a member (the same idiom
      the archive and inputedit write-path backstops use). */
-  if (!WAVEEDIT || (SESSION && SESSION.role !== 'admin')) return <div className="modal" id="waveTplModal" hidden />
+  if (!WAVEEDIT || (SESSION && !isAdmin())) return <div className="modal" id="waveTplModal" hidden />
 
   const canEdit = canEditSched()
   /* the selected id can go stale (a delete, or first open), so fall back to the

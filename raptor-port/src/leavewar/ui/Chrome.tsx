@@ -129,7 +129,7 @@ export function Topbar() {
           <span
             className="lw-viewing"
             data-testid="lw-viewing"
-            title={`Every number on this page is ${me.callsign}'s. Change whose with "View as" in the top bar.`}
+            title={`Every number on this page is ${me.callsign}'s — the person signed in.`}
           >
             <svg className="eye" viewBox="0 0 24 24" width="13" height="13" aria-hidden="true">
               <path d="M12 5c-5 0-8.5 4.5-9.5 7 1 2.5 4.5 7 9.5 7s8.5-4.5 9.5-7c-1-2.5-4.5-7-9.5-7Z" fill="none" stroke="currentColor" strokeWidth="1.7" />

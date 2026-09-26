@@ -50,8 +50,12 @@ For the person designing RAPTOR's Dataverse tables. Written 10 Sep 26.
   3. how a signed-in person is matched to a `Person` row the first time — **answered by the owner, 25 Sep 26
      (D165):** by an admin mapping step. Everyone signs in with their own defence mail (Microsoft) account;
      the app's admin creates each `Person` (callsign, name, admin or member) and records that person's
-     defence mail address on it; the first sign-in with that address becomes that person. The app's
-     "View as" picker then goes away — every account already is a callsign. Who may enter the app at
+     defence mail address on it; the first sign-in with that address becomes that person. **Built in the app
+     26 Sep 26 (`[ACCOUNTS]`):** accounts managed on Admin → Users, one per person, tied to a callsign; the
+     "View as" picker is gone; a person on no list asks for access and the admin approves (links a puck,
+     sets member or admin) or declines (D204); an admin switch, off by default, lets people waiting read the
+     published week as a guest; the app keeps no password. The `User` and `AccessRequest` tables, and the
+     permissions table the app mirrors (drift-tested), are `data-model.md` §3 and §11. Who may enter the app at
      all (the security group / environment roles) is set in your environment, not by the app;
   4. how long the edit log is kept and who may read it;
   5. whether the attempt-by-attempt training history is built from day one
@@ -71,10 +75,18 @@ For the person designing RAPTOR's Dataverse tables. Written 10 Sep 26.
   `modifiedby`, `modifiedon` are fine for this.
 - **Published records never change.** An issued amendment and a sign-off are
   history; they are appended to, not edited.
-- **Medical information is restricted.** A medical absence and any attached
-  document are readable by the person and admins only.
+- **Medical information — AMENDED 26 Sep 26 by the owner (D211, "Keep as today").** Every member of the
+  squadron may read a medical absence, its remarks and any attached document, as the app does today (his
+  27 Aug 26 rule, re-confirmed knowing it departs from what this line first said: "readable by the person and
+  admins only"). Someone signed in but not yet given access (a guest, D204) sees it too on the published schedule he
+  is shown (D213, the same day), and nobody outside the squadron's own accounts reads it at all.
 - **No real names in the public repository.** Demo data only; anything with
   a real person in it stays in the tenant.
+- **A change to someone's access takes effect on his very next request** (added 26 Sep 26, from Astra's read
+  of `[ACCOUNTS]`). Switching an account off, demoting an admin, or tying it to a different person must stop the
+  old rights at once — in every open tab and on every device — so the server checks the CURRENT account and its
+  role on every write, never a copy the app took when he signed in. Today's app cannot: its accounts live in one
+  browser and its open tabs share nothing, so a change reaches only the next sign-in on that same browser.
 
 ## What happens next, on our side
 

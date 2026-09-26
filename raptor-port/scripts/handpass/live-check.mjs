@@ -1,3 +1,8 @@
+/* RETIRED 26 Sep 26 ([ACCOUNTS], Astra R2-5): this checked the GitHub Pages site, gone
+   since D59 (23 Sep 26 — the app is viewed on Vercel, behind the owner's own sign-in), and
+   it read the probe bridge, which since [ACCOUNTS] is installed on this PC only. "Done"
+   is now his look at the live app on Vercel (D143). Kept for its history; it refuses to run. */
+throw new Error('live-check.mjs is retired: GitHub Pages is gone (D59) and the probe bridge is localhost-only ([ACCOUNTS]).')
 /* The deployed page, not the local preview — the one thing the local build
    cannot prove (a stale cache, a base path wrong as served). */
 import { chromium } from '@playwright/test'

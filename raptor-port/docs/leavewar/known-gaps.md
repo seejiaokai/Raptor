@@ -9,8 +9,10 @@
 >   below described the standalone app's on-screen member/admin toggle.
 >   Since the merge the role is derived from the Raptor login on every
 >   session change (`resetSession` → leavewar `setRole`) and is no longer
->   persisted. The affordance-not-security caveat still stands — Raptor's
->   auth is itself a prototype with hard-coded accounts.
+>   persisted. The affordance-not-security caveat still stands — until the
+>   database, Raptor's accounts live in one browser and its sign-in stands for
+>   Microsoft's (`[ACCOUNTS]`, 26 Sep 26: one account per person, no hard-coded
+>   logins, the admin's view toggle gone — resetSession is the war role's one writer).
 > - **Its claims about Raptor are stale.** Entries below saying Raptor
 >   holds only LL/OL/OIL, or reads every leave as a whole day, predate
 >   Raptor's INPUT_META growing all eight leave types with half-day
@@ -101,17 +103,17 @@ the shape it will keep.
 A member no longer bids on anyone's row, though (owner, 27 Aug 26 — "if I am
 viewing as a member and I view as ranger… I shouldn't be able to input on
 other people's row except mine"). The identity the bidding plan reserved for
-`ME` now exists as `viewer` — the war mirrors Raptor's "View as" person — and
+`ME` now exists as `viewer` — the war mirrors the SIGNED-IN person (since `[ACCOUNTS]`, 26 Sep 26, D166 (4); it was
+Raptor's "View as" person) — and
 `canEditRow` (engine/stages.ts) scopes a member to that one row at the write
 path (setCell, the range/batch writers, move and shift) as well as in the grid
 (a member's tap and drag reach only their own row). An admin is scoped to none.
-This is real for the `member` role, but it is still not a security boundary:
-the role switch itself is unguarded, so a member can flip to admin and bid
-anywhere. The scoping and the identity are the shape the accounts will keep;
-the missing check is the login that stops the flip. (`viewer` is only ever
-null in the raw store / tests — the "View as" picker has no empty option and
-boot mirrors `ME`, always a person — so an un-scoped session imposes no row
-rule, which is why the tests still bid on whichever row they name.)
+Since `[ACCOUNTS]` (26 Sep 26) the flip is gone: the role is the account's, written only by `resetSession`, and the
+probe bridge that could set it from the browser's console is installed on the developer's PC only. It is still a
+browser-side mirror — the server enforces at the database step (data-model §11). (`viewer` is only ever
+null in the raw store / tests — production mirrors the signed-in person, and '' (no row) for someone signed in without
+access — so an un-scoped session imposes no row rule, which is why the mechanics tests still bid on whichever row they
+name.)
 
 ## What balances do not yet do
 
@@ -403,7 +405,7 @@ set, each titled with the sign it carries:
   and every row carries the figure's own `desc` as its caption — not just the
   aggregates, as in the thirteen-figure version. **Since 17 Aug 26 its rows
   answer with the VIEWER's own numbers**, drawn as the same two-line box the
-  grid shows — the viewer being Raptor's "View as" person, mirrored into
+  grid shows — the viewer being the signed-in person (Raptor's "View as" person until `[ACCOUNTS]`), mirrored into
   `state.viewer` by the sync wire (never persisted). **With no viewer on the
   roster the row reads a DASH, not a squadron-wide sum** (owner, 18 Aug 26:
   "I don't need to see totals when no one is picked… it defaults to the account

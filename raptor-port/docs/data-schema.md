@@ -319,15 +319,22 @@ on file" (never fabricated) until the data is cleared.
 
 ### Edit log — `ELOG.rows`, `src/engine/editlog.ts`
 
-`{ t, who, di, key, lbl, from, to }` — wall-clock, display name (from
-`HOOKS.whoami()`), day index or null, slot key, a frozen label of what it
+`{ t, who, pid, di, key, lbl, from, to }` — wall-clock, display name (from
+`HOOKS.whoami()` — the signed-in CALLSIGN since `[ACCOUNTS]`, 26 Sep 26), the person behind it (`HOOKS.whoamiId()`,
+so a rename moves nothing), day index or null, slot key, a frozen label of what it
 was, before and after. Capped at 400 rows, oldest falls off.
 
-### Accounts and session — `src/state/auth.ts`, `src/state/users.ts`
+### Accounts and session — `src/state/accounts.ts`, `src/state/auth.ts` (`[ACCOUNTS]`, 26 Sep 26 — D166, D204)
 
-- `ACCOUNTS`: `{ username: { pass, role: 'admin' | 'main', label } }` — **two hard-coded prototype accounts**
-- `SESSION`: `{ user, role }`; `ME`: the logged-in person's PEOPLE id
-- `USERS[]`: `{ name, role }` — the Admin page's list
+Three durable settings keys below (`accounts`, `accessreqs`, `guestview`), written ONLY by `state/accounts.ts` through
+its intent commands; the session is memory only (a reload lands on the sign-in, as always).
+- `SESSION`: `{ user, role, pid, name }` — `user` the account id (or `principal:<name>` for someone signed in without
+  access), `role` `'admin' | 'main' | 'pending' | 'guest' | 'off'`, `pid` his person (null without access), `name` the
+  sign-in name (it stands for the defence mail address)
+- `ME`: the signed-in person's PEOPLE id — set only by `resetSession` from the account (the "View as" picker is gone)
+- **No password is stored anywhere** (data-model §3): an added account takes any password; the two seeded sign-ins'
+  passwords (`ad`, `us`) live in code only (`accounts.ts SEED_PASS`)
+- (`ACCOUNTS` — the two hard-coded logins — and `USERS[]` — the old Manage-users list, which drove nothing — are gone)
 
 ### Settings and templates — the `sqn142_*` keys
 
@@ -346,6 +353,9 @@ a later change to the standard is picked up rather than frozen in a browser.
 | `secdefault` | `string[]` | section order, from `notes, prog, waves, duty, sims, ground, inputs, avail, sans, unav` |
 | `stores` | `[[key, label]]` | the stores list |
 | `qualcols` | `QualCol[]` | the LoX column list — `{ k, h, lav?, apt?, scq?, aar?, fcpOnly? }` in display order (saved since the 8 Sep 26 bug pass: the ticks under a column persist, so the column must too) |
+| `accounts` | `Account[]` | `{ id, name, role: 'admin' \| 'main', pid, on }` — `name` the sign-in name (lower-case, unique; stands for the defence mail address), `pid` the person (one account each), `on` false = switched off (never deleted). **No password.** Null = the four seeded demo accounts (`[ACCOUNTS]`, D166) |
+| `accessreqs` | `AccessRequest[]` | `{ id, name, cs, full, at }` — who asked (the signed-in principal, from the session), the callsign and name he typed (text only — never a link to a puck), when (D204) |
+| `guestview` | `true` or null | the admin's switch letting people waiting for access read the published week as a guest — OFF (null) by default (D204) |
 | `rules` | `{ v: { rule: number }, s: { kind: boolean } }` | overrides only: `v` for thresholds off the standard (`briefLead, dur, step, dekit, minTurn, tightTurn, crewRest, debrief, reportLead, longDay, epBrief, simDebrief, amtDebrief, openEnd, maxRun, inputLead, scDayFrom, scDayTo, simLen, oilFullMin`), `s` for which kinds hard-clash a shift (`fly, sim, duty, shift, ground, prog`) |
 
 ---

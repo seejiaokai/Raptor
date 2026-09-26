@@ -3,12 +3,12 @@
    is signed off after DAAR, SC NIGHT after SC DAY, and withdrawing the day
    qualification takes the night one with it. */
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
-import { PEOPLE, QORDER, QCHIP, QCOLOR, LEVELNAME, deriveQuals, isInstrPilot, ID_BY_CS, nameToId } from '../engine/people'
+import { PEOPLE, QORDER, QCHIP, QCOLOR, LEVELNAME, deriveQuals, ID_BY_CS, nameToId } from '../engine/people'
 import { newId } from '../engine/newid'
-import { renameCallsign } from '../engine/slots'
 import { validate } from '../engine/validate'
 import { HOOKS } from '../engine/hooks'
-import { SESSION } from '../state/auth'
+import { isAdmin, mayEditQualsOf, mayManageRoster, mayRenameCallsign } from '../state/perms'
+import { updatePersonField } from '../state/quals-write'
 import { esc } from '../state/view'
 import { notify } from '../state/store'
 /* [ARCH-STACK] phase 3: the command-routed persistPeople (a roster write now
@@ -86,8 +86,7 @@ const qualNA = (p: any, c: any) => !!(c.fcpOnly && p && p.seat !== 'FCP')
    the same pairing the engine uses at validate.ts and avail.ts. Scoped to the
    two AAR keys by name because that is exactly what the owner asked for: a
    third state on a column no rule reads would be a mark that means nothing. */
-const AAR_I_KEYS = ['daar', 'naar']
-const qualI = (p: any, k: string) => !!(p && AAR_I_KEYS.indexOf(k) >= 0 && p.seat === 'FCP' && isInstrPilot(p.q))
+/* (the AAR instructor rung's helper moved with the tick to state/quals-write.ts — [ACCOUNTS] / D149) */
 /* the CAT dropdowns are seat-filtered so the inconsistent combinations can't
    be picked at all: IW is a WSO-only category, IP and IR are pilot-only, FI
    goes both ways. The validator still guards the hand-edited case. */
@@ -200,8 +199,14 @@ function qualsGrpRow(qSeatView: string, n: number, colsLen: number) {
 function qualsTable(cols: any[], qSeatView: string, qSort: any, qEditing: boolean, qSearch: string, qualsEdit: boolean, armDel: string, canArch: boolean) {
   const ids = qualsIds(qSeatView, qSort, qSearch)
   const archCell = (id: string) => `<td>${canArch ? `<span class="qarch" data-arch="${id}" title="Archive">✕</span>` : ''}</td>`
+  const canRename = mayRenameCallsign()
   const rows = ids.map(id => {
     const p = PEOPLE[id]
+    /* D149 ([ACCOUNTS]): with editing on, a member's OWN row is editable, every column;
+       everyone else's reads as text for him (and a stray click is refused, with its
+       reason, by state/quals-write.ts). An admin edits every row. */
+    const rowEd = qEditing && mayEditQualsOf(id)
+    const trRo = qEditing && !rowEd ? ' qro' : ''
     /* Personnel (ground crew) hold no CAT and no qualifications, so every column
        from CAT rightward is blank; their Remarks cell is a free-text note they
        own — editable in edit mode — where aircrew show their CAT description.
@@ -209,22 +214,23 @@ function qualsTable(cols: any[], qSeatView: string, qSort: any, qEditing: boolea
        p.pers, not the seat view, so a personnel row reads the same under the
        Personnel view and under All. */
     if (p.pers) {
-      const cs = qEditing
+      /* the callsign box is the admin's (D218) — a member's own row shows it as text */
+      const cs = rowEd && canRename
         ? `<input class="qcs" data-cs="${id}" value="${esc(p.cs)}" maxlength="14" aria-label="Callsign for ${esc(p.cs)}" />`
         : esc(p.cs)
-      const init = qEditing
+      const init = rowEd
         ? `<input class="qinit" data-init="${id}" value="${esc(p.initials || '')}" maxlength="12" aria-label="Initials for ${esc(p.cs)}" />`
         : esc(p.initials || '')
-      const flt = qEditing
+      const flt = rowEd
         ? `<input class="qinit qflt" data-flt="${id}" value="${esc(p.flight || '')}" maxlength="10" aria-label="Flight for ${esc(p.cs)}" />`
         : esc(p.flight || '')
-      const rmk = qEditing
+      const rmk = rowEd
         ? `<input class="qinit qrmk" data-prmk="${id}" value="${esc(p.remarks || '')}" maxlength="80" aria-label="Remarks for ${esc(p.cs)}" />`
         : esc(p.remarks || '')
       const blanks = cols.map(() => `<td class="qcell na"></td>`).join('')
-      return `<tr class="persrow"><td class="qname" data-person="${id}" title="${esc(p.name || '')}">${cs}</td><td class="qinitc">${init}</td><td class="qfltc">${flt}</td><td class="qcell na"></td>${blanks}<td class="qprmk" style="text-align:left">${rmk}</td>${archCell(id)}</tr>`
+      return `<tr class="persrow${trRo}"><td class="qname" data-person="${id}" title="${esc(p.name || '')}">${cs}</td><td class="qinitc">${init}</td><td class="qfltc">${flt}</td><td class="qcell na"></td>${blanks}<td class="qprmk" style="text-align:left">${rmk}</td>${archCell(id)}</tr>`
     }
-    const lvl = qEditing
+    const lvl = rowEd
       ? `<select class="qlvlsel" data-lvl="${id}" aria-label="CAT for ${esc(p.cs)}">${catsFor(p.seat).map(k => `<option ${k === p.q ? 'selected' : ''}>${k}</option>`).join('')}</select>`
       : `<span class="lvl"><span class="qmini" style="background:${QCOLOR[p.q]};${(p.q === 'C' || p.q === 'B') ? 'color:#04222b' : ''}">${QCHIP[p.q]}</span>${p.q}</span>`
     const cells = cols.map(c => {
@@ -244,7 +250,7 @@ function qualsTable(cols: any[], qSeatView: string, qSort: any, qEditing: boolea
        (blur / Enter), never on input: the table is an innerHTML string that
        notify() rebuilds, so a per-keystroke commit would tear the field out
        from under the cursor. */
-    const init = qEditing
+    const init = rowEd
       ? `<input class="qinit" data-init="${id}" value="${esc(p.initials || '')}" maxlength="12" aria-label="Initials for ${esc(p.cs)}" />`
       : esc(p.initials || '')
     /* the callsign is editable in edit mode too. Since ARCH-STACK 1C
@@ -252,17 +258,18 @@ function qualsTable(cols: any[], qSeatView: string, qSort: any, qEditing: boolea
        id→cs via whoId), so the commit's notify() re-prints every puck under the
        new name — including on other weeks and issued snapshots — without moving
        anything. Same commit-on-change reasoning as the initials. */
-    const cs = qEditing
+    /* the callsign box is the admin's (D218) — a member's own row shows it as text */
+    const cs = rowEd && canRename
       ? `<input class="qcs" data-cs="${id}" value="${esc(p.cs)}" maxlength="14" aria-label="Callsign for ${esc(p.cs)}" />`
       : esc(p.cs)
     /* Flight is editable for the same reason the initials are — the roster
        arrived with the column blank, and the heading now sorts by it, so
        there has to be a way to fill it in (owner, 5 Aug 26). Same
        commit-on-change rule as the two beside it. */
-    const flt = qEditing
+    const flt = rowEd
       ? `<input class="qinit qflt" data-flt="${id}" value="${esc(p.flight || '')}" maxlength="10" aria-label="Flight for ${esc(p.cs)}" />`
       : esc(p.flight || '')
-    return `<tr><td class="qname" data-person="${id}" title="${esc(p.name || '')}">${cs}</td><td class="qinitc">${init}</td><td class="qfltc">${flt}</td><td>${lvl}</td>${cells}<td style="text-align:left;color:var(--ink-3)">${LEVELNAME[p.q]}</td>${archCell(id)}</tr>`
+    return `<tr class="${trRo.trim()}"><td class="qname" data-person="${id}" title="${esc(p.name || '')}">${cs}</td><td class="qinitc">${init}</td><td class="qfltc">${flt}</td><td>${lvl}</td>${cells}<td style="text-align:left;color:var(--ink-3)">${LEVELNAME[p.q]}</td>${archCell(id)}</tr>`
   }).join('')
   return qualsHead(cols, qSeatView, qSort, qualsEdit, armDel)
     + `<tbody>${qualsGrpRow(qSeatView, ids.length, cols.length)}${rows}</tbody>`
@@ -308,7 +315,7 @@ export function QualsPage() {
   const qLiftRef = useRef<HTMLDivElement | null>(null)
   const qLandRef = useRef<string | null>(null)
   const [stuck, setStuck] = useState<{ top: number; left: number; width: number; cols: number[] } | null>(null)
-  const admin = !!SESSION && SESSION.role === 'admin'
+  const admin = isAdmin()
 
   /* WHO MAY EDIT WHAT HERE (owner, 5 Aug 26). `Enable editing` is open to a
      squadron member now: they tick the qualifications they have been signed
@@ -401,63 +408,13 @@ export function QualsPage() {
       if (!(tbl.classList.contains('editing'))) return
       const cell = t.closest('[data-q]') as HTMLElement | null
       if (cell) {
+        /* EVERY ROW EDIT GOES THROUGH ONE FUNCTION ([ACCOUNTS] / D149): a member edits his
+           own row only, every column; the permission is asked before anything moves,
+           and the write names its row (state/quals-write.ts — the tick ladder, the
+           DAAR/NAAR and SC cascades, the SANS/SXO wiring and the re-validation moved
+           there unchanged) */
         const [id, k] = cell.dataset.q!.split('|') as [string, string]
-        const p = PEOPLE[id]
-        /* THREE STATES on an instructor pilot's AAR cells (owner, 10 Aug 26):
-           blank → ✓ → I → blank. Every other cell keeps the plain flip, so
-           this is one extra rung on the same ladder rather than a new
-           mechanism. `next` is the whole difference. */
-        const cur = p.quals[k]
-        /* the I rung is OFFERED only where it is legal, rather than offered
-           and then refused. Refusing it mid-cycle would strand the cell: a
-           NAAR tick whose promotion is rejected has nowhere left to go, and
-           the next click rejects it again — blank becomes unreachable and the
-           loop the owner asked for stops being a loop. Gating instead makes
-           the cycle degrade cleanly to the ordinary two states. */
-        const canI = qualI(p, k) && (k === 'daar' || p.quals.daar === 'I')
-        const next = canI ? (!cur ? true : cur === true ? 'I' : false) : !cur
-        /* night AAR is signed off after day AAR, never before it */
-        if (k === 'naar' && next && !p.quals.daar) { notify(); return HOOKS.toast(`${p.cs} needs DAAR before NAAR can be ticked`) }
-        /* and say WHY the I was not offered — the click still unticks, but an
-           instructor who expected a third state deserves the reason */
-        if (k === 'naar' && qualI(p, k) && cur === true && p.quals.daar !== 'I') HOOKS.toast(`${p.cs} needs the DAAR instructor mark before NAAR can carry it — the tick comes off instead`)
-        /* SC night is signed off after SC day, exactly as NAAR is after DAAR */
-        if (k === 'scNight' && next && !p.quals.scDay) { notify(); return HOOKS.toast(`${p.cs} needs SC DAY before SC NIGHT can be ticked`) }
-        p.quals[k] = next
-        /* SANS membership is read everywhere off PEOPLE[id].san, never
-           p.quals.san — deriveQuals copies ONE WAY, p.san → quals.san, so the
-           tick above set only the derived copy and did nothing to who can file
-           availability, who the palette strikes, or who sansGate judges (owner,
-           15 Aug 26 — the tick was a no-op). Wire it through to p.san so it
-           actually grants/removes SANS, and mint the currency counters the boot
-           SANS loop gives a member so sanStatus has its numbers.
-           CORRECTED 17 Sep 26: a qual tick is NOT session-only — this handler
-           calls persistPeople(), so PEOPLE (and p.san with it) is stored and
-           hydrated at boot; the seed roster and SANS_IDS only stand in when
-           nothing was stored. */
-        if (k === 'san') { p.san = !!next; if (next) p.sanQ = p.sanQ || { flown: 0, carry: 0, missedQtrs: 0 } }
-        /* SXO is the SAME one-way-copy trap as SANS above: deriveQuals copies
-           p.sxo -> quals.sxo, so the tick set only the derived flag and left the
-           RAW p.sxo untouched. Leave War's roster projection reads p.sxo, so a
-           man marked SXO here never showed as SXO there (owner, 18 Aug 26).
-           Wire it through so the projection — and anything else reading the raw
-           flag — sees it. (Persisted, like every qual tick — corrected
-           17 Sep 26; see the SANS note above.) */
-        if (k === 'sxo') p.sxo = !!next
-        if (k === 'daar' && !next && p.quals.naar) { p.quals.naar = false; HOOKS.toast(`${p.cs} — NAAR removed too, it cannot stand without DAAR`) }
-        /* DEMOTED, not removed: withdrawing the day instructor mark costs him
-           the night one as well, but he keeps night currency itself. */
-        if (k === 'daar' && next === true && p.quals.naar === 'I') { p.quals.naar = true; HOOKS.toast(`${p.cs} — NAAR instructor mark removed too, it cannot stand without DAAR's`) }
-        if (k === 'scDay' && !next && p.quals.scNight) { p.quals.scNight = false; HOOKS.toast(`${p.cs} — SC NIGHT removed too, it cannot stand without SC DAY`) }
-        /* RE-CHECK THE WEEK (owner, 10 Aug 26 — reported as "the warning is
-           still there" after signing someone off). A qual is an INPUT to the
-           rules: daar/naar drive the AAR warnings, scDay/scNight the SC ones.
-           notify() only repaints, and the pucks are painted from WARN, which
-           nothing has recomputed — so the board kept showing a warning the
-           roster no longer justified until some unrelated schedule edit
-           happened to run the validator. The callsign path below already
-           re-validated for exactly this reason; the tick never did. */
-        validate(); persistPeople(); notify(); return
+        updatePersonField(id, { tick: k }); notify(); return
       }
       /* archiving takes a body off the roster, which can change what the
          warnings say about the lines he was on. Write-path role backstop
@@ -467,40 +424,29 @@ export function QualsPage() {
          idiom (a sessionless test/boot context is not a member). */
       const arch = t.closest('[data-arch]') as HTMLElement | null
       if (arch) {
-        if (SESSION && SESSION.role !== 'admin') return HOOKS.toast('Only an admin can archive someone', 'warn')
+        if (!mayManageRoster()) return HOOKS.toast('Only an admin can archive someone', 'warn')
         PEOPLE[arch.dataset.arch!].archived = true; validate(); persistPeople(); notify()
       }
     }
     const onChange = (e: Event) => {
-      const s = (e.target as HTMLElement).closest('[data-lvl]') as HTMLSelectElement | null
-      /* a CAT change moves MORE rules than a tick does — the seat rules, the
-         combination matrix, OCU-without-IP — so this one especially cannot
-         leave the week showing what it worked out for the old category */
-      if (s) { PEOPLE[s.dataset.lvl!].q = s.value; deriveQuals(PEOPLE[s.dataset.lvl!]); validate(); persistPeople(); notify(); return }
-      const ini = (e.target as HTMLElement).closest('[data-init]') as HTMLInputElement | null
-      if (ini) { PEOPLE[ini.dataset.init!].initials = ini.value.trim().toUpperCase(); persistPeople(); notify(); return }
-      /* upper-cased on the way in, like the initials: the column is sorted by
-         GROUPING, and "a" typed on one row and "A" on another would read as
-         two flights in the table even though they sort together */
-      const flt = (e.target as HTMLElement).closest('[data-flt]') as HTMLInputElement | null
-      if (flt) { PEOPLE[flt.dataset.flt!].flight = flt.value.trim().toUpperCase(); persistPeople(); notify(); return }
-      /* a personnel (ground crew) row's Remarks is free-text prose the person
-         owns — kept as typed (only trimmed), unlike the identity fields above.
-         Nothing in the engine reads it, so a plain re-render is enough. */
-      const prmk = (e.target as HTMLElement).closest('[data-prmk]') as HTMLInputElement | null
-      if (prmk) { PEOPLE[prmk.dataset.prmk!].remarks = prmk.value.trim(); persistPeople(); notify(); return }
-      const cs = (e.target as HTMLElement).closest('[data-cs]') as HTMLInputElement | null
+      /* every row field through the ONE Quals write ([ACCOUNTS] / D149) — CAT, initials,
+         flight, a personnel row's remarks, the callsign (renameCallsign: unique, the
+         callsign index kept). A refusal puts the box back to the stored value. */
+      const el = e.target as HTMLElement
+      const lvl = el.closest('[data-lvl]') as HTMLSelectElement | null
+      if (lvl) { if (updatePersonField(lvl.dataset.lvl!, { cat: lvl.value })) lvl.value = PEOPLE[lvl.dataset.lvl!].q; notify(); return }
+      const ini = el.closest('[data-init]') as HTMLInputElement | null
+      if (ini) { if (updatePersonField(ini.dataset.init!, { initials: ini.value })) ini.value = PEOPLE[ini.dataset.init!].initials || ''; notify(); return }
+      const flt = el.closest('[data-flt]') as HTMLInputElement | null
+      if (flt) { if (updatePersonField(flt.dataset.flt!, { flight: flt.value })) flt.value = PEOPLE[flt.dataset.flt!].flight || ''; notify(); return }
+      const prmk = el.closest('[data-prmk]') as HTMLInputElement | null
+      if (prmk) { if (updatePersonField(prmk.dataset.prmk!, { remarks: prmk.value })) prmk.value = PEOPLE[prmk.dataset.prmk!].remarks || ''; notify(); return }
+      const cs = el.closest('[data-cs]') as HTMLInputElement | null
       if (cs) {
-        const id = cs.dataset.cs!, was = PEOPLE[id].cs, want = cs.value.trim()
-        if (!renameCallsign(id, want)) {
-          cs.value = was                       // put the old name back in the box
-          if (want && want !== was) HOOKS.toast(`${want} is already taken — callsigns must be unique`)
-          return
-        }
-        /* warning text embeds the callsign, so re-run the engine or the issue
-           strips would keep naming them by the name they no longer have */
-        validate(); persistPeople(); notify()
-        HOOKS.toast(`${was} is now ${PEOPLE[id].cs} — every puck follows`)
+        const id = cs.dataset.cs!, was = PEOPLE[id].cs
+        if (updatePersonField(id, { callsign: cs.value })) { cs.value = was; return }   // put the old name back in the box
+        notify()
+        if (PEOPLE[id].cs !== was) HOOKS.toast(`${was} is now ${PEOPLE[id].cs} — every puck follows`)
       }
     }
     /* ---- dragging a heading to move its column --------------------------
@@ -693,6 +639,10 @@ export function QualsPage() {
   })
 
   const addPerson = () => {
+    /* roster membership is the admin's, asked at the write as archive and restore do (Fable's
+       code read, 26 Sep 26: a stale element or a hand-made call reached the add, toasted
+       "added", and only then was rolled back by the command gate) */
+    if (!mayManageRoster()) return HOOKS.toast('Only an admin can add someone', 'warn')
     const cs = addP.cs.trim()
     if (!cs) return HOOKS.toast('A person needs a callsign')   // was a silent no-op
     /* TWO PEOPLE CANNOT SHARE A CALLSIGN, AND A CALLSIGN CANNOT COLLIDE WITH AN

@@ -71,8 +71,12 @@ describe('the reset registry', () => {
   it("resetViewState('session') does not touch the week-only fields (they belong to the week swap)", () => {
     view.setRosDay(6); view.setSecDefOffer(4)
     view.resetViewState('session')
-    expect(view.ROSDAY).toBe(6)
     expect(view.SECDEFOFFER).toBe(4)
+  })
+  it("…except the crew palette's day, which the next person does not inherit ([ACCOUNTS], Astra code read)", () => {
+    view.setRosDay(6)
+    view.resetViewState('session')
+    expect(view.ROSDAY).toBe(0)
   })
 
   /* THE DRIFT GUARD. Every exported Set/Map is either in VIEW_RESET or exempt

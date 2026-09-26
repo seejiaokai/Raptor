@@ -114,9 +114,10 @@ export function canEditCell(period: Period, role: Role, date: string): boolean {
 /**
  * Whether this role may write THIS PERSON'S row.
  *
- * A member edits only their OWN row — the person they are viewing as, which
- * the war mirrors from Raptor's "View as" into `viewer`. An admin edits any
- * row. This is the ROW half of the permission, the companion to
+ * A member edits only their OWN row — the SIGNED-IN person, which the war
+ * mirrors into `viewer` (since [ACCOUNTS], 26 Sep 26 — D166 (4): "leave war
+ * should not be tagged to view as, it should be tagged to callsigns"). An admin
+ * edits any row. This is the ROW half of the permission, the companion to
  * `canEditCell`'s stage/window/date half: a cell is writable only when BOTH
  * pass, and it is checked at the store's write path as well as the grid's
  * affordance, because the interface hiding a control is not the same as the
@@ -126,16 +127,16 @@ export function canEditCell(period: Period, role: Role, date: string): boolean {
  * for the same reasons `canEditCell` is itself separate from `canEdit`: it
  * answers a different question ("whose row", not "which day"), it reads state
  * — `viewer` — the date check never needed, and one body keeps the grid and
- * the store from drifting apart. In this prototype the identity IS the "View
- * as" selection (there is no login); the future server replaces `viewer` with
- * the real account and this rule is unchanged.
+ * the store from drifting apart. Since [ACCOUNTS] the identity is the account's
+ * person (state/perms.ts viewerId); the server replaces the browser's check at
+ * the database step and this rule is unchanged.
  *
  * `viewer === null` means the session is NOT scoped to any person — an
  * un-scoped view, which imposes no "other people's rows" to protect, so the
- * row rule does not bite. Production never reaches it for a real user: the
- * "View as" picker is a person selector with no empty option, and the war
- * boot mirrors that selection (Raptor's `ME`, itself always a person) into
- * `viewer` before the grid renders. It is only the raw-store / test state.
+ * row rule does not bite. Production never reaches it for a signed-in user: the
+ * sync mirrors the signed-in person into `viewer` — or '' (matches NO row) for
+ * someone signed in without access — before the grid renders. It is only the
+ * raw-store / test state.
  *
  * Owner, 27 Aug 26 — "if I am viewing as a member and I view as ranger on the
  * leave war, I shouldn't be able to input on other people's row except mine"

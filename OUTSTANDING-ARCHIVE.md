@@ -1619,6 +1619,23 @@ standing exception (a safety fact, never versioned — `raptor-port/src/engine/e
 **PLACE SETTLED 25 Sep 26 — D180:** NEXT, on its own branch `claude/leave-late-published`, BEFORE `[ACCOUNTS]`; built overnight (D181).
 
 
+*Moved here 2026-09-26 by backlog-archive.mjs ([MED-VISIBILITY]). Forward facts: `.claude/rules/decisions/how-we-work.md`.*
+
+### [MED-VISIBILITY] May other members see a medical input's type, remarks and documents? — a question for him (filed 26 Sep 26)
+**ANSWERED the same day — D211, "Keep as today": every member sees a medical input's type, remarks and documents; the
+database brief's restriction is set aside (amended in `raptor-port/docs/handover-dataverse.md`). Nothing to build.** The
+question as it was put:
+Found by Astra's read of the `[ACCOUNTS]` plan (R1-2). **Two of his rules point different ways:** his 27 Aug 26 rule,
+"anyone may VIEW any attachment" (`raptor-port/docs/engine-rules.md` §Auth / roles, the Inputs row), and the database's
+non-negotiable of 10 Sep 26, "a medical absence and any attached document are readable by the person and admins only"
+(`raptor-port/docs/handover-dataverse.md`), which D169's reading repeats for the change history. Today every member sees
+a medical input's type and remarks on View-only Sched's Unavailable list and can open its documents. **Put to him:** keep
+that, or show other members only "Unavailable" and its times (the person and admins still see everything)? Changes what
+every member sees, so it is his, not built silently. `[ACCOUNTS]` gives the new guest view (D204) the strict rule from
+the start and lists this as a known gap in its permissions test. **Tier:** FULL (who can see personal details, D202).
+**Place:** ask him with `[ACCOUNTS]`'s look card; build it after his answer, with `[DRAFT-PENDING]` (the change history
+shares the rule).
+
 *Moved here 2026-09-26 by backlog-archive.mjs ([BG-CWD-GUARD]). Forward facts: `.claude/hooks/bg-cwd-guard.mjs`, `raptor-port/CLAUDE.md`.*
 
 ### [BG-CWD-GUARD] A backgrounded npm command that starts at the repo root dies at once — guard it, don't re-warn (filed 24 Sep 26)
@@ -1632,4 +1649,15 @@ config change, not a guide change (D146). A `run_in_background` shell starts at 
 `cd raptor-port`, or a root `package.json` whose scripts `cd raptor-port && npm run …` (it would start the full
 checks and could change what Vercel detects). **Place:** any time, none blocking — but ask him first: a hook runs in
 every chat, and it is standing configuration.
+
+
+*Moved here 2026-09-26 by backlog-archive.mjs ([SIGNOFF-SELF]). Forward facts: `.claude/rules/decisions/scheduler.md`.*
+
+### [SIGNOFF-SELF] With personal accounts, should each of the four sign-offs sign as himself? — a question for him (filed 26 Sep 26)
+**ANSWERED 26 Sep 26 — D212, "admin picks all four names. its more convenient": the boxes stay as they are. Nothing to build.**
+Found by the `[ACCOUNTS]` consumer sweep. Today an admin picks all four names on a day (CUR CK, SKED CK, PLANNED BY,
+APPROVED BY — `raptor-port/src/engine/publish.ts SIGN_ROLES`); nothing ties a name to who is signed in. With accounts the
+app knows who is signed in, so each sign-off could be signed only by that person, signed in. A change to how a day is
+approved — his call. `[ACCOUNTS]` leaves the boxes as they are and makes the write admin-only at the command gate.
+**Place:** ask him with `[ACCOUNTS]`'s look card.
 

@@ -34,6 +34,21 @@ export function ownOrAdmin(ownerOf: (meta: any) => string | undefined): PermChec
 
 const PERMS = new Map<string, PermCheck>()
 
+/* [ACCOUNTS] D200 (3) — ONE place answers "may this person do this?". Once the app
+   boots (state/store.ts initStore), `state/perms.ts` installs a resolver here and
+   EVERY non-system authorization goes through it: its COMMAND_OPS table maps each
+   registered type to a row of the permissions matrix that mirrors data-model.md §11
+   (drift-tested). The check a module passed to definePermission is then only the
+   declaration that the type exists — and the headless fallback for a unit test that
+   never boots the store. A registered type the resolver does not know is REFUSED
+   (fail closed); `perms.test.ts` proves every registered type has a row. */
+type Resolver = (type: string, actor: Actor, meta?: any) => boolean
+let RESOLVER: Resolver | null = null
+export function setPermissionResolver(fn: Resolver | null): void { RESOLVER = fn }
+/* every registered command type — read by the coverage test after every module
+   has registered (scheduler, people/settings, undo, the Leave War, the Tracker) */
+export function registeredTypes(): string[] { return [...PERMS.keys()] }
+
 export function definePermission(type: string, check: PermCheck): void {
   const dup = PERMS.get(type)
   if (dup && dup !== check) throw new Error(`permission: conflicting re-register of ${type}`)
@@ -50,10 +65,12 @@ export function authorize(type: string, actor: Actor, meta?: any): boolean {
   if (actor.role === 'system') return true
   const check = PERMS.get(type)
   if (!check) return false
+  if (RESOLVER) return RESOLVER(type, actor, meta)
   return check(actor, meta)
 }
 
 /* test-only: clear registered permissions between suites */
 export function _resetPermissions(): void {
   PERMS.clear()
+  RESOLVER = null
 }

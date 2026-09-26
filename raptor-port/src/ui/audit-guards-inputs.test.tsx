@@ -9,7 +9,8 @@
    time, or a span that cannot mean anything), warn about DECISIONS. An
    overnight absence, a clash, a late submission all still go straight in. */
 import { beforeEach, afterEach, describe, expect, it } from 'vitest'
-import { INPUTS, dateOrd, inputCoversDate } from '../engine/inputs'
+import { INPUTS, dateOrd, inputCoversDate, mintInpIds } from '../engine/inputs'
+import { resyncSchedBaseline } from '../state/sched-commit'
 import { DAYS } from '../engine/data'
 import { HOOKS } from '../engine/hooks'
 import { commitInputEdit, setInpField, draftOf, removeInput, commitNewInput } from './inputedit'
@@ -218,7 +219,10 @@ describe('what is still allowed, because it is a decision and not a typo', () =>
 // call is refused too. A scheduler (admin) still works every row.
 describe('a member edits and deletes only their own inputs', () => {
   let savedSession: any, savedMe: any
-  beforeEach(() => { savedSession = SESSION; savedMe = ME })
+  /* the file reloads the demo inputs before every test; stamp their ids and re-baseline
+     the scheduler's record before a MEMBER commits — since [ACCOUNTS] a member's command
+     that changes anyone else's input (here: stamping their ids) is rolled back */
+  beforeEach(() => { savedSession = SESSION; savedMe = ME; mintInpIds(); resyncSchedBaseline() })
   afterEach(() => { setSession(savedSession); setMe(savedMe) })
 
   const twoPeople = () => {

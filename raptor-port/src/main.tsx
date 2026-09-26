@@ -10,7 +10,7 @@ import { initStore as lwInitStore, lwHistInit } from './leavewar/state/store'
 import { installDemoWorld } from './leavewar/state/demoworld'
 import { wireLeaveWarSync } from './leavewar/sync'
 import { validate } from './engine/validate'
-import { installProbeBridge } from './probe-bridge'
+import { installProbeBridge, isLocalHost } from './probe-bridge'
 import { bootStorage, chooseBackend, guardUnload } from './storage/boot'
 import { BrowserBackend } from './storage/browser'
 import { idbDocStore } from './storage/docstore'
@@ -111,7 +111,14 @@ async function boot(): Promise<void> {
   setSaveStatusSource(postman)
   guardUnload(postman)
 
-  installProbeBridge()
+  /* THE PROBE BRIDGE IS INSTALLED ON THIS PC ONLY ([ACCOUNTS], 26 Sep 26 — Astra R1-1,
+     Fable R1-3): it puts the app's data and writers (PEOPLE, INPUTS, setSlotVal, the
+     Leave War's role and viewer, publish…) on `window` for the e2e suite, the probes,
+     the Tracker smoke and the hand-pass drivers, all of which run here. On any other
+     host — the deployed app — none of it exists, so a person with the browser's
+     console open cannot sidestep who they signed in as. Nothing in the app itself
+     reads a bridge global (checked 26 Sep 26). */
+  if (isLocalHost()) installProbeBridge()
   createRoot(document.getElementById('root')!).render(
     <StrictMode>
       <App />

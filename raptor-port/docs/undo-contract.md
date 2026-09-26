@@ -245,11 +245,13 @@ for `seed`/`projection`/`loadWeek` — never for a user restore. Snapshot the ac
 creation.
 
 **Authorization** is at the gate (`permissions.ts`): `definePermission` per type, `authorize`
-checks it; the system actor short-circuits. At step 2 forward writes are permissive (`anyone`) — the
-real edit gate (`canEditSched`) is untouched and still authoritative; the mechanism is in place, not
-yet tightened. Undo/redo are ungated at step 2; **reversal authorization is step 3**: for every
+checks it; the system actor short-circuits. At step 2 forward writes were permissive (`anyone`); **since
+`[ACCOUNTS]` (26 Sep 26) the gate's authority IS `state/perms.ts` (COMMAND_OPS, the §11 matrix) through one resolver
+— every registered type mapped, an unmapped one refused — plus a commit-gate check that a member's command changed only
+his own records; people waiting for access run nothing.** The edit gates (`canEditSched`, the write functions) stay. Undo/redo are ungated at step 2; **reversal authorization is step 3**: for every
 change in an inverse, `permission(originating type)` is evaluated against the CURRENT actor +
-ownership, so admin-decides → view-as-member → undo-own-admin-decision is REFUSED. A joined child's
+ownership, so admin-decides → view-as-member → undo-own-admin-decision is REFUSED (the view-as-member flip is gone since
+`[ACCOUNTS]`; the undo list now also empties at every sign-in and sign-out — `endUndoSession`, D148). A joined child's
 permission is the PARENT command's declared permission — never caller-selected.
 
 **Publish boundary — the UNPUBLISH model** (`Boundary`; step-3 design §6, owner 18 Sep 26 —

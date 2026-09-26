@@ -11,6 +11,11 @@ const launchOptions = existsSync(CHROMIUM) ? { executablePath: CHROMIUM } : {}
 export const SHOTS = process.env.HP_SHOTS
   || 'C:/Users/User/projects/Raptor/raptor-port/docs/img/handpass/2026-09-21-oil'
 export const BASE = process.env.HP_URL || 'http://localhost:4173'
+/* the drivers read the app's probe bridge, which exists on THIS PC only since [ACCOUNTS]
+   (26 Sep 26 — src/main.tsx): refuse a deployed URL rather than report missing
+   behaviour that is really a missing bridge (Astra R2-5) */
+{ const h = new URL(BASE).hostname
+  if (!['localhost', '127.0.0.1', '[::1]', '::1'].includes(h)) throw new Error(`HP_URL must be a local build (localhost): the probe bridge the drivers read is not installed on ${h}`) }
 
 export const STATE = process.env.HP_STATE
   || 'C:/Users/User/AppData/Local/Temp/claude/C--Users-User-projects-Raptor/f98d5224-18e3-4e42-8a4f-bd4fe1b84782/scratchpad/hp/state-sat.json'

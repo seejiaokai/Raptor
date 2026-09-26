@@ -19,10 +19,11 @@
    the other. Every category panel stays mounted (only the active one shows), so
    the template openers and the user tools keep their stable ids wherever the
    rail happens to be pointing. */
-import { useRef, useState } from 'react'
-import { SESSION, canEditSched } from '../state/auth'
-import { USERS, addUser, delUser } from '../state/users'
-import { esc } from '../state/view'
+import { useState } from 'react'
+import { canEditSched } from '../state/auth'
+import { isAdmin } from '../state/perms'
+import { waitingCount } from '../state/accounts'
+import { UsersPanel } from './UsersPanel'
 import { notify } from '../state/store'
 import { HOOKS } from '../engine/hooks'
 import { setTplEdit, setDayTplEdit, setWaveEdit } from './pops'
@@ -167,25 +168,16 @@ function ArrangeDefaults() {
 
 export function AdminPage() {
   useVersion()
-  const nameRef = useRef<HTMLInputElement>(null)
-  const roleRef = useRef<HTMLSelectElement>(null)
   /* which category the pane shows; `drilled` only matters on a phone, where the
      rail and pane share the screen — it flips from the list to the detail */
   const [cat, setCat] = useState('users')
   const [drilled, setDrilled] = useState(false)
-  const admin = SESSION && SESSION.role === 'admin'
+  const admin = isAdmin()
+  const waiting = admin ? waitingCount() : 0
   /* the forced-member render — this is what makes the page gate non-vacuous:
      the nav already hides the tab, so the only way here as a member is state
      poking, and the answer is a message, never the tools */
   if (!admin) return <div className="adm-deny" id="admDeny">Admin tools are for schedulers. Ask an admin to change users or templates.</div>
-  const add = () => {
-    if (!canEditSched()) return
-    const name = nameRef.current!.value.trim(), role = roleRef.current!.value
-    /* a silent no-op reads as a broken button (audit, 12 Aug 26): pressing Add
-       with an empty box did nothing at all and said nothing about why */
-    if (!name) return HOOKS.toast('A user needs a name')
-    addUser(name, role); nameRef.current!.value = ''; notify()
-  }
   const open = (id: string) => { setCat(id); setDrilled(true) }
   const active = CATS.find(c => c.id === cat) || CATS[0]
   return (
@@ -200,8 +192,8 @@ export function AdminPage() {
               aria-current={c.id === cat ? 'page' : undefined} onClick={() => open(c.id)}>
               <span className="adm-cat-ic">{c.icon}</span>
               <span className="adm-cat-tx">
-                <span className="adm-cat-l">{c.label}</span>
-                <span className="adm-cat-s">{c.sub}</span>
+                <span className="adm-cat-l">{c.label}{c.id === 'users' && waiting > 0 && <span className="navbadge">{waiting}</span>}</span>
+                <span className="adm-cat-s">{c.id === 'users' && waiting > 0 ? `${waiting} waiting for access` : c.sub}</span>
               </span>
               <span className="adm-cat-chev" aria-hidden="true">›</span>
             </button>
@@ -215,30 +207,12 @@ export function AdminPage() {
             <h3>{active.label}</h3>
           </div>
           <div className="adm-pane-body">
-            {/* ---- Manage users — the reference's userModal body verbatim
-                (ids, classes and mutations unchanged so the tests port);
-                prototype-only, no server ---- */}
+            {/* ---- Users — the accounts ([ACCOUNTS], D166 (1), D204, 26 Sep 26): who can
+                sign in, as which callsign, admin or member; the requests waiting; the
+                guest switch. Replaces the reference's Manage-users list, which drove
+                nothing. ---- */}
             <section className={'adm-panel' + (cat === 'users' ? ' on' : '')} id="admUsers">
-              <div className="mfield"><label>Callsign / name</label><input id="newName" ref={nameRef} placeholder="e.g. Viper" maxLength={24} /></div>
-              <div className="mfield"><label>Role</label><select id="newRole" ref={roleRef} aria-label="Role for the new user"><option value="main">Squadron member (own inputs &amp; quals)</option><option value="admin">Scheduler / admin (edit)</option></select></div>
-              <button className="abtn primary" id="userAdd" style={{ width: '100%' }} onClick={add}>Add user</button>
-              <div className="userlist" id="userList" dangerouslySetInnerHTML={{
-                __html: USERS.map((u: any, i: number) =>
-                  `<div class="urow"><span>${esc(u.name)}</span><span class="ub ${u.role}">${u.role === 'admin' ? 'Admin' : 'Member'}</span>
-      <button class="abtn" data-deluser="${i}" style="padding:2px 8px">Remove</button></div>`).join('')
-              }} onClick={e => {
-                if (!canEditSched()) return
-                const d = (e.target as HTMLElement).closest('[data-deluser]') as HTMLElement | null
-                if (d) { delUser(+d.dataset.deluser!); notify() }
-              }} />
-              {/* PROTOTYPE TRUTH, off-screen by owner's word (25 Aug 26 — "design
-                  it and word it such that when this goes to database what would
-                  the user actually see"): this list drives the demo login only;
-                  no server behind it, a user added here lasts one browser
-                  session. When the shared database lands, these become real
-                  accounts and this comment comes out. Until then the UI reads
-                  production — the caveat lives here and in HANDOFF, not on the
-                  screen. */}
+              <UsersPanel />
             </section>
             {/* ---- Squadron configuration — front doors to the two template
                 editors. The modals are App-level siblings (App.tsx), so they

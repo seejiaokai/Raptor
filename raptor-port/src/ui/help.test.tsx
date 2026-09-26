@@ -15,6 +15,9 @@ import { act } from 'react'
 import { createRoot, type Root } from 'react-dom/client'
 import { App } from './App'
 import { initStore, setSession, notify, setPage } from '../state/store'
+import { setMe } from '../state/auth'
+import { PEOPLE } from '../engine/people'
+import { renameCallsign } from '../engine/slots'
 import { REPORTS, BUG_CATS, fileReport, reportRows, unseenReports, bugAlert } from '../state/reports'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
@@ -129,6 +132,15 @@ describe('the Help tab', () => {
     expect($('#notifyBell').classList.contains('on')).toBe(false)
   })
 
+  it('the admin list names the filer by his LIVE callsign — a rename moves nothing (Fable scenario S7)', async () => {
+    await act(async () => { setSession({ user: 'acus', role: 'main', pid: 'bane', name: 'us' }); setMe('bane'); fileReport('Leave War', 'renamed filer'); notify() })
+    const was = PEOPLE.bane.cs
+    try {
+      await act(async () => { renameCallsign('bane', 'Rgr'); setSession({ user: 'acad', role: 'admin', pid: 'stiff', name: 'ad' }); setMe('stiff'); setPage('help'); notify() })
+      const row = $$('#bugList .bugrow').find(r => r.querySelector('.bugtext')!.textContent === 'renamed filer')!
+      expect(row.querySelector('.bugwhen')!.textContent).toContain('Rgr')
+    } finally { renameCallsign('bane', was); setMe('bane') }
+  })
   it('the bell tap with a bug alert goes to Help', async () => {
     fileReport(BUG_CATS[0]!, 'squeak')
     await click($('#notifyBell'))

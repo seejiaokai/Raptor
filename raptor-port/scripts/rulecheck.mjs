@@ -174,12 +174,28 @@ const RULES = {
   AM51g: 'no tally on the publish button, no publish-or-discard reminder',
   /* the amendment batch (25 Sep 26, D112): the register's new lines, each named by a test */
   AM53: '"N pending" opens the list of what will go out; a tap takes the view there (D99, D100)',
-  AM54: 'who made a change is the shared account until the database (D104)',
+  AM54: 'who made a change is the signed-in callsign (D166 (5), replacing D104)',
   AM55: 'the change bubble stays, hover or tap; a long one scrolls inside itself (D105)',
   AM56: 'a jump from Edit history or the pending list stays on the page you are on (D107)',
   AM57: 'the Signed line names who signed the version on screen, the Original included (D95, D102)',
   AM58: 'a day template is refused on a published day, with the reason at every door (D96)',
   AM59: 'the board draws the dashed and dotted warning rings as the week does (D94)',
+  /* [ACCOUNTS] (26 Sep 26) — docs/superpowers/specs/2026-09-26-accounts-behaviour-register.md */
+  AC1: 'the sign-in stands for the defence mail; no password is stored',
+  AC2: 'signing in makes you that callsign; every "who" names it',
+  AC3: 'a new user joins either way — asks and waits, or is added',
+  AC4: 'the account guards (own account, one admin, one person one account)',
+  AC5: 'the accounts load safely; the seed admin wins a lock-out collision',
+  AC6: 'an account change is one command; its keys roll back together',
+  AC7: "a member's command changes only his own records",
+  AC8: 'a member edits his own Quals row, every column (D149)',
+  AC9: "the Leave War's writers agree with the permissions table",
+  AC10: 'no View as, no role toggle; the badge names the signed-in person',
+  AC11: 'the access screens: request, waiting, switched off',
+  AC12: 'the guest sees the published week only, no medical detail',
+  AC13: 'Admin → Users: the waiting count, approve, add, never your own',
+  AC14: 'one place answers may-this-person-do-this, and it IS data-model §11',
+  AC15: 'every window closes and the undo list empties at a sign-in',
 }
 
 /* Rules with no test naming them on 20 Sep 26. The check fails if this set

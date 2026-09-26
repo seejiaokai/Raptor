@@ -77,7 +77,7 @@ export function CounterSheet({
           {me ? <>VIEWING AS <b className="vwname">{me.callsign}</b></> : 'WHAT THIS COLUMN SHOWS'}
         </span>
         <span className="dt">
-          {me ? 'your numbers' : 'view a callsign to see numbers'}
+          {me ? 'your numbers' : 'numbers show for the person signed in'}
           {arranging ? ' · tap a figure · ▲▼ to reorder · eye to hide' : ' · tap a figure to show it in the column'}
         </span>
         <button className="x" data-testid="counter-cancel" onClick={onClose} aria-label="Cancel">

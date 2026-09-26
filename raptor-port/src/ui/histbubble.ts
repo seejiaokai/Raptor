@@ -1,5 +1,5 @@
 import { HOOKS } from '../engine/hooks'
-import { elogFor, elogAllFor, elogWhen } from '../engine/editlog'
+import { elogFor, elogAllFor, elogWhen, elogWho } from '../engine/editlog'
 import type { ELogRow } from '../engine/editlog'
 import { HISTMODE, esc } from '../state/view'
 
@@ -222,7 +222,7 @@ function paint(key: string, row: ELogRow) {
   b.innerHTML = `<div class="hb-what">${esc(row.lbl)}</div>`
     + `<ol class="hb-all">` + rows.map(r =>
       `<li><span class="hb-chg">${chgHTML(r)}</span>`
-      + `<span class="hb-who">${esc(r.who)} · ${esc(elogWhen(r.t))}</span></li>`).join('') + `</ol>`
+      + `<span class="hb-who">${esc(elogWho(r))} · ${esc(elogWhen(r.t))}</span></li>`).join('') + `</ol>`
   /* THE ONE TAPPABLE THING ON A PHONE (owner, 11 Aug 26 — "I change the
      option to click on the bubble to expand the history"). It is a child
      with pointer-events:auto inside a bubble that keeps pointer-events:none,

@@ -1,7 +1,14 @@
 /* The login page — markup mirrored 1:1 from the reference (same classes,
-   same ids, same copy), behaviour through the store's session state. */
+   same ids, same copy), behaviour through the store's session state.
+   [ACCOUNTS] (26 Sep 26): the card stands for the defence-mail sign-in (D166 (2)) —
+   the username plays the defence mail address, the password the organisation's
+   (Microsoft checks both at the database step; the app never keeps a password).
+   state/accounts.ts signIn turns what was typed into one of: in, as that callsign;
+   his account switched off; on no list (ask for access); asked and waiting; or, with
+   the admin's guest switch on, the published week as a guest (D204). The card
+   itself is unchanged (the 7 Aug 26 "login page stays simple"). */
 import { useState } from 'react'
-import { ACCOUNTS } from '../state/auth'
+import { signIn, sessionFor } from '../state/accounts'
 import { resetSession, notify } from '../state/store'
 
 export function Login() {
@@ -11,14 +18,13 @@ export function Login() {
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault()
-    const u = user.trim().toLowerCase()
-    const a = ACCOUNTS[u]
-    if (!a || a.pass !== pass) { setErr('Incorrect username or password.'); return }
+    const r = signIn(user, pass)
+    if (r.kind === 'bad') { setErr('Incorrect username or password.'); return }
     setErr('')
     /* resetSession (state/store.ts), not the bare setSession — a login must land
        the incoming session on a clean view, not whatever page/selection/preview
        the PREVIOUS session (on a shared browser) left behind. */
-    resetSession({ user: u, role: a.role })
+    resetSession(sessionFor(r))
     notify()
   }
 

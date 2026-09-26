@@ -11,7 +11,7 @@ import { DAYS } from '../engine/data'
 import { ridKey } from '../engine/rowids'
 import { CURWEEK, WEEKS } from '../engine/waves'
 import { SCHED } from '../engine/publish'
-import { USERS } from '../state/users'
+import { ACCOUNTS_LIST, accountByName } from '../state/accounts'
 import { schedRows } from './export'
 import { openScheduler, closeScheduler } from './board'
 
@@ -129,27 +129,16 @@ describe('the mobile drawer', () => {
   })
 })
 
-/* Manage users moved off the topbar modal and onto the Admin page whole
-   (owner, 23 Aug 26) — same ids, same list, same mutations, reached by the
-   admin nav tab instead of #manageUsers. */
-describe('Manage users (Admin page)', () => {
-  it('the Admin tab reaches it, listing the users with their roles', async () => {
+/* The Users panel on the Admin page (owner, 23 Aug 26 — Manage users moved off the topbar
+   onto the Admin page). Since [ACCOUNTS] (D166 (1), 26 Sep 26) it lists the ACCOUNTS — the
+   old in-memory list drove nothing and is gone; the full flows are ui/accounts-ui.test.tsx. */
+describe('Users (Admin page)', () => {
+  it('the Admin tab reaches it, listing every account with its role', async () => {
     await click($$('.nav a[data-page]').find(a => a.dataset.page === 'admin')!)
     expect($('#page-admin').classList.contains('on')).toBe(true)
-    expect($$('#userList .urow').length).toBe(USERS.length)
-    expect(/Admin/.test($('#userList').textContent!)).toBe(true)
-  })
-
-  it('adds a user from the fields, removes one by row', async () => {
-    const n = USERS.length
-    ;($('#newName') as HTMLInputElement).value = 'Viper'
-    ;($('#newRole') as HTMLSelectElement).value = 'main'
-    await click($('#userAdd'))
-    expect(USERS.length).toBe(n + 1)
-    expect(USERS[USERS.length - 1].name).toBe('Viper')
-    expect($$('#userList .urow').length).toBe(n + 1)
-    await click($(`#userList [data-deluser="${n}"]`))
-    expect(USERS.length).toBe(n)
+    expect($$('#accList [data-acct]').length).toBe(ACCOUNTS_LIST.length)
+    expect(/Admin/.test($('#accList').textContent!)).toBe(true)
+    expect(accountByName('ad')).toBeTruthy()
     await click($$('.nav a[data-page]').find(a => a.dataset.page === 'viewsched')!)
   })
 })

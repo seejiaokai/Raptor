@@ -1,0 +1,274 @@
+{
+ "at": "2026-09-26T07:46:04.276Z",
+ "pass": 38,
+ "fail": 0,
+ "results": [
+  {
+   "id": "d-signin-card",
+   "what": "the sign-in card is unchanged (the login page stays simple)",
+   "ok": true,
+   "note": "",
+   "pic": "01-d-signin-card.png"
+  },
+  {
+   "id": "d-admin-topbar",
+   "what": "admin: no \"View as\" picker; the badge reads \"Saber · Admin\" and is inert",
+   "ok": true,
+   "note": "",
+   "pic": "02-d-admin-topbar.png"
+  },
+  {
+   "id": "d-admin-me-puck",
+   "what": "the purple \"this is you\" puck is the admin's own (Saber), nobody else's",
+   "ok": true,
+   "note": "",
+   "pic": "03-d-admin-me-puck.png"
+  },
+  {
+   "id": "d-admin-wrong-pass",
+   "what": "a wrong password on a seeded sign-in is still refused",
+   "ok": true,
+   "note": "",
+   "pic": "04-d-admin-wrong-pass.png"
+  },
+  {
+   "id": "d-request-screen",
+   "what": "a name on no list lands on \"Request access\", naming the sign-in",
+   "ok": true,
+   "note": "",
+   "pic": "05-d-request-screen.png"
+  },
+  {
+   "id": "d-waiting-screen",
+   "what": "after asking: the waiting screen, what he asked, Sign out",
+   "ok": true,
+   "note": "",
+   "pic": "06-d-waiting-screen.png"
+  },
+  {
+   "id": "d-waiting-again",
+   "what": "signing in again while waiting shows the waiting screen, not the form",
+   "ok": true,
+   "note": "",
+   "pic": "07-d-waiting-again.png"
+  },
+  {
+   "id": "d-admin-badge",
+   "what": "the Admin tab carries the count waiting (D204)",
+   "ok": true,
+   "note": "",
+   "pic": "08-d-admin-badge.png"
+  },
+  {
+   "id": "d-users-panel",
+   "what": "Admin → Users: the request, the accounts (his own reads \"you\"), add, the guest switch",
+   "ok": true,
+   "note": "",
+   "pic": "09-d-users-panel.png"
+  },
+  {
+   "id": "d-approve-form",
+   "what": "Approve asks for the puck (typed callsign only a hint) and the role",
+   "ok": true,
+   "note": "",
+   "pic": "10-d-approve-form.png"
+  },
+  {
+   "id": "d-approve-needs-puck",
+   "what": "giving access with no puck picked is refused, the request stays",
+   "ok": true,
+   "note": "",
+   "pic": "11-d-approve-needs-puck.png"
+  },
+  {
+   "id": "d-approved",
+   "what": "approved: the request clears, the account appears, the badge goes",
+   "ok": true,
+   "note": "",
+   "pic": "12-d-approved.png"
+  },
+  {
+   "id": "d-viper-in",
+   "what": "the approved person signs in AS the puck the admin picked",
+   "ok": true,
+   "note": "",
+   "pic": "13-d-viper-in.png"
+  },
+  {
+   "id": "d-declined-asks-again",
+   "what": "declined: signing in again offers \"Request access\" again",
+   "ok": true,
+   "note": "",
+   "pic": "14-d-declined-asks-again.png"
+  },
+  {
+   "id": "d-add-answers-request",
+   "what": "adding an account for a waiting name answers the request",
+   "ok": true,
+   "note": "",
+   "pic": "15-d-add-answers-request.png"
+  },
+  {
+   "id": "d-switched-off",
+   "what": "an account switched off sees only \"Your access is switched off\"",
+   "ok": true,
+   "note": "",
+   "pic": "16-d-switched-off.png"
+  },
+  {
+   "id": "d-switched-on",
+   "what": "switched back on, he is in again",
+   "ok": true,
+   "note": "",
+   "pic": "17-d-switched-on.png"
+  },
+  {
+   "id": "d-reload-keeps-accounts",
+   "what": "after a reload the accounts are still there (the session is not)",
+   "ok": true,
+   "note": "",
+   "pic": "18-d-reload-keeps-accounts.png"
+  },
+  {
+   "id": "d-member-topbar",
+   "what": "member: \"Ranger · Member\", no Edit Schedule, no Admin",
+   "ok": true,
+   "note": "",
+   "pic": "19-d-member-topbar.png"
+  },
+  {
+   "id": "d-member-quals",
+   "what": "Quals editing (D149): his own row has boxes, others read as text; his callsign is the admin's (D218)",
+   "ok": true,
+   "note": "",
+   "pic": "20-d-member-quals.png"
+  },
+  {
+   "id": "d-member-quals-own",
+   "what": "he ticks his own qualification (scDay)",
+   "ok": true,
+   "note": "",
+   "pic": "21-d-member-quals-own.png"
+  },
+  {
+   "id": "d-member-quals-other",
+   "what": "a tick on another person's row is refused, with the reason",
+   "ok": true,
+   "note": "",
+   "pic": "22-d-member-quals-other.png"
+  },
+  {
+   "id": "d-member-inputs",
+   "what": "Inputs: his Person is fixed to Ranger; ✎ only on his own rows",
+   "ok": true,
+   "note": "",
+   "pic": "23-d-member-inputs.png"
+  },
+  {
+   "id": "d-member-leavewar",
+   "what": "Leave War: the war follows him — \"Viewing as Ranger\", his own row lit",
+   "ok": true,
+   "note": "",
+   "pic": "24-d-member-leavewar.png"
+  },
+  {
+   "id": "d-undo-fresh",
+   "what": "the admin publishes (undo lit), signs out, a member signs in and out, the admin again: nothing to undo",
+   "ok": true,
+   "note": "",
+   "pic": "25-d-undo-fresh.png"
+  },
+  {
+   "id": "d-guest",
+   "what": "guest: the walled-off view — no tabs, no app windows, \"Waiting for access — view only\"",
+   "ok": true,
+   "note": "",
+   "pic": "26-d-guest.png"
+  },
+  {
+   "id": "d-guest-medical",
+   "what": "guest: a medical input reads in full, as a member sees it — its type and remark (D213)",
+   "ok": true,
+   "note": "",
+   "pic": "27-d-guest-medical.png"
+  },
+  {
+   "id": "d-guest-unpublished",
+   "what": "guest: a day not yet published shows as it stands, as members see it — no \"Not published yet\", no buttons (D215)",
+   "ok": true,
+   "note": "",
+   "pic": "28-d-guest-unpublished.png"
+  },
+  {
+   "id": "d-guest-no-working-copy",
+   "what": "guest: no working-draft picker on a published day",
+   "ok": true,
+   "note": "",
+   "pic": "29-d-guest-no-working-copy.png"
+  },
+  {
+   "id": "d-guest-no-dead-doors",
+   "what": "guest: no ⓘ, no \"tap to review\", no tappable day name (his view has no panel for them)",
+   "ok": true,
+   "note": "",
+   "pic": "30-d-guest-no-dead-doors.png"
+  },
+  {
+   "id": "d-member-medical",
+   "what": "a member sees the medical input in full (D211 — \"Keep as today\")",
+   "ok": true,
+   "note": "",
+   "pic": "31-d-member-medical.png"
+  },
+  {
+   "id": "d-who",
+   "what": "Edit history names the admin who signed and published — his callsign",
+   "ok": true,
+   "note": "",
+   "pic": "32-d-who.png"
+  },
+  {
+   "id": "p-drawer",
+   "what": "phone drawer: no View-as chips, no toggle; \"Signed in as Saber · Admin\"",
+   "ok": true,
+   "note": "",
+   "pic": "33-p-drawer.png"
+  },
+  {
+   "id": "p-request",
+   "what": "phone: the Request access card fits",
+   "ok": true,
+   "note": "",
+   "pic": "34-p-request.png"
+  },
+  {
+   "id": "p-waiting",
+   "what": "phone: the waiting card",
+   "ok": true,
+   "note": "",
+   "pic": "35-p-waiting.png"
+  },
+  {
+   "id": "p-users",
+   "what": "phone: Admin → Users drills in; the request and the accounts read",
+   "ok": true,
+   "note": "",
+   "pic": "36-p-users.png"
+  },
+  {
+   "id": "p-drawer-badge",
+   "what": "phone drawer: the Admin entry carries the count waiting",
+   "ok": true,
+   "note": "",
+   "pic": "37-p-drawer-badge.png"
+  },
+  {
+   "id": "p-guest",
+   "what": "phone: the guest view — its bar fits, the week reads",
+   "ok": true,
+   "note": "",
+   "pic": "38-p-guest.png"
+  }
+ ],
+ "errors": []
+}

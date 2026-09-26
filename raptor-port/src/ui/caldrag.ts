@@ -23,7 +23,8 @@
 import { draftOf, commitInputEdit, fmtDay, askOilIfPending } from './inputedit'
 import { movePlanPuck, PLANPUCKS } from '../state/plan'
 import { writeInputs } from '../state/store'
-import { canEditSched, ME } from '../state/auth'
+import { canEditSched } from '../state/auth'
+import { isMe } from '../state/perms'
 import { INPUTS } from '../engine/inputs'
 import { HOOKS } from '../engine/hooks'
 import { landOn, liftOn, markLand } from './lift'
@@ -85,7 +86,7 @@ export function commitChipMove(entry: any, fromIso: string, toIso: string): bool
   /* Page-rights parity with every other write on the Inputs page: a member
      may move their OWN input (the same reach they already have to edit its
      times), a scheduler may move anyone's. */
-  if (!canEditSched() && r.person !== ME) {
+  if (!canEditSched() && !isMe(r.person)) {
     HOOKS.toast("Only a scheduler can move someone else's input", 'warn')
     return false
   }

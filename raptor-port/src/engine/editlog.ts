@@ -24,7 +24,8 @@ import { ridKey, posKey } from './rowids'
 
 export type ELogRow = {
   t: number           // wall clock at the moment of the edit
-  who: string         // display name, from HOOKS.whoami()
+  who: string         // display name, from HOOKS.whoami() -- the signed-in callsign since [ACCOUNTS]
+  pid?: string | null  // the person behind it (HOOKS.whoamiId), so the changes window can draw a renamed callsign live
   di: number | null   // which schedule day it landed on (null for a structural note)
   key: string         // the slot key, '' for a structural note
   lbl: string         // WHAT it was, in words — frozen at log time, see below
@@ -211,7 +212,7 @@ export function logEdit(key: any, from: any, to: any) {
   const store = String(ridKey(key, DAYS))
   const a = say(store, from), b = say(store, to)
   if (a === b) return
-  push({ t: Date.now(), who: HOOKS.whoami(), di: dayOf(store), key: store, lbl: keyLabel(key), from: a, to: b })
+  push({ t: Date.now(), who: HOOKS.whoami(), pid: HOOKS.whoamiId(), di: dayOf(store), key: store, lbl: keyLabel(key), from: a, to: b })
 }
 
 /* Record something that is not a value change — a line, wave, row or note
@@ -220,7 +221,7 @@ export function logEdit(key: any, from: any, to: any) {
    for logEdit to compare; the calling site names the action instead, in the
    same words its toast already uses. */
 export function logAction(di: any, text: string) {
-  push({ t: Date.now(), who: HOOKS.whoami(), di: di == null ? null : +di, key: '', lbl: text, from: '', to: '' })
+  push({ t: Date.now(), who: HOOKS.whoami(), pid: HOOKS.whoamiId(), di: di == null ? null : +di, key: '', lbl: text, from: '', to: '' })
 }
 
 /* newest first, optionally narrowed to one day — the listed view's whole
@@ -291,6 +292,12 @@ export function elogGroups(di?: any): ELogGroup[] {
    planned. The date removes that, and a tab left open past midnight stops
    silently relabelling yesterday's work as today's.
    `now` is still taken for the tests; nothing reads it any more. */
+/* WHO made a change, by his LIVE callsign ([ACCOUNTS] — D166 (5) and the one-identity rule;
+   Fable's code read, 26 Sep 26): read through the person the row keeps, so a rename since is
+   followed, as every other list follows it; the name as recorded only when the row has none. */
+export function elogWho(r: { who?: any; pid?: string | null }): string {
+  return String((r.pid && (PEOPLE as any)[r.pid] && (PEOPLE as any)[r.pid].cs) || r.who || '')
+}
 export function elogWhen(t: number, _now?: number) {
   const d = new Date(t)
   const hm = String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0')

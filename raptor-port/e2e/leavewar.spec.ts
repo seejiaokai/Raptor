@@ -671,6 +671,7 @@ test('the four bid states read as three colours and one plain cell', async ({ pa
 // squadron must be able to tell a bid nobody has looked at from one already
 // in management's hands, and a freshly typed bid is the former.
 test('a bid can be placed, and lands plain because nobody has answered it', async ({ page }) => {
+  await lwView(page, 'ammo')   // a member bids on his OWN row ([ACCOUNTS] — the one-person-writes-his-own check)
   await page.locator('[data-testid="cell-ammo-2026-02-11"]').click()
   await page.locator('[data-testid="bid-LL"]').click()
   const chip = page.locator('[data-testid="cell-ammo-2026-02-11"] .c')
@@ -691,6 +692,7 @@ test('a bid can be placed, and lands plain because nobody has answered it', asyn
 // The reload comes straight after the bid, inside the postman's coalesce wait —
 // the page-leaving flush (storage/boot.ts guardUnload) is what lands it.
 test('a placed bid survives a reload — the war persists per browser', async ({ page }) => {
+  await lwView(page, 'ammo')   // a member bids on his OWN row ([ACCOUNTS] — the one-person-writes-his-own check)
   await page.locator('[data-testid="cell-ammo-2026-02-11"]').click()
   await page.locator('[data-testid="bid-LL"]').click()
   await expect(page.locator('[data-testid="cell-ammo-2026-02-11"] .c')).toHaveText('LL')
@@ -905,6 +907,7 @@ const desktopOnly = () => test.skip(test.info().project.name !== 'lw-desktop', '
 
 test('drag-selecting a row fills the leave across the whole span', async ({ page }) => {
   desktopOnly()
+  await lwView(page, 'slipway')   // a member bids on his OWN row ([ACCOUNTS] — the one-person-writes-his-own check)
   await dragSelect(page, 'cell-slipway-2026-01-06', 'cell-slipway-2026-01-08')
   await expect(page.locator('[data-testid="select-sheet"]')).toBeVisible()
   // On this viewport slipway's row sits inside the drag's bottom edge band, and

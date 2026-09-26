@@ -6,6 +6,8 @@ import { act } from 'react'
 import { createRoot, type Root } from 'react-dom/client'
 import { App } from './App'
 import { initStore, setSession, notify } from '../state/store'
+import { setMe } from '../state/auth'
+import { resyncPeopleBaseline } from '../state/people-settings-commit'
 import { DAYS } from '../engine/data'
 import { validate, WARN } from '../engine/validate'
 import { PEOPLE, isScheduler, isInstr, isInstrPilot, deriveQuals, ID_BY_CS, QCHIP, QCOLOR, QORDER, LEVELNAME } from '../engine/people'
@@ -285,27 +287,38 @@ describe('the Quals page (tfin)', () => {
      they have been signed off for — while the roster and the LoX's shape
      stay with the admin */
   it('a member may enable editing and tick, but not add people or reshape the LoX', async () => {
-    await act(async () => { setSession({ user: 'user', role: 'main' }); notify() })
+    /* D149 (24 Sep 26, built by [ACCOUNTS]): a member edits HIS OWN row only — every
+       column of it — never another's. The member here is signed in as Ranger (bane). */
+    /* earlier tests reset the roster directly, behind the command layer; re-baseline it
+       before a MEMBER commits — since [ACCOUNTS] a member's command that changed anyone
+       else's row (here: that reset) is rolled back */
+    resyncPeopleBaseline()
+    await act(async () => { setSession({ user: 'acus', role: 'main', pid: 'bane', name: 'us' }); setMe('bane'); notify() })
     expect($$('#qtbl tbody tr').length).toBeGreaterThan(10)
     expect($('#qEdit'), 'Enable editing is theirs now').toBeTruthy()
     await click($('#qEdit'))
     expect($('#qEditQuals'), 'but EDIT QUALS is not').toBeFalsy()
     expect($('#qAddPerson'), 'and neither is Add person').toBeFalsy()
-    /* the mode really works for them, it is not just a button */
-    const td = $$('#qtbl td[data-q$="|tf"]').find(x => !x.querySelector('.qchk'))!
-    const id = td.dataset.q!.split('|')[0]
-    await click($(`#qtbl td[data-q="${id}|tf"]`))
-    expect(PEOPLE[id].quals.tf, 'a member can record a qualification').toBe(true)
-    await click($(`#qtbl td[data-q="${id}|tf"]`))
-    expect(PEOPLE[id].quals.tf).toBe(false)
+    /* the mode really works for them, on their own row — it is not just a button */
+    const had = PEOPLE.bane.quals.tf
+    await click($('#qtbl td[data-q="bane|tf"]'))
+    expect(PEOPLE.bane.quals.tf, 'a member can record his own qualification').toBe(!had)
+    await click($('#qtbl td[data-q="bane|tf"]'))
+    expect(!!PEOPLE.bane.quals.tf).toBe(!!had)
+    /* …and only there (D149): another person's row is refused, nothing moves */
+    const other = $$('#qtbl td[data-q$="|tf"]').map(x => x.dataset.q!.split('|')[0]).find(id => id !== 'bane')!
+    const was = PEOPLE[other].quals.tf
+    await click($(`#qtbl td[data-q="${other}|tf"]`))
+    expect(PEOPLE[other].quals.tf, 'another person\'s row is not his').toBe(was)
+    expect($(`#qtbl tr:has(td[data-q="${other}|tf"])`)?.classList.contains('qro'), 'and it reads as text').toBe(true)
     /* roster MEMBERSHIP stays the admin's (bug hunt, 31 Aug 26): the archive
        ✕ used to render for a member in editing mode — one click took anyone
        off every roster surface, with Restore admin-only, so they could not
        even undo it. No ✕ for a member, and the restore write refuses too. */
     expect($('#qtbl [data-arch]'), 'no archive ✕ for a member').toBeFalsy()
-    PEOPLE[id].archived = true
-    expect(restoreArchivedPerson(id), 'restore refuses a member').toBe(false)
-    PEOPLE[id].archived = false
+    PEOPLE[other].archived = true
+    expect(restoreArchivedPerson(other), 'restore refuses a member').toBe(false)
+    PEOPLE[other].archived = false
     await click($('#qSave'))
     await act(async () => { setSession({ user: 'a', role: 'admin' }); notify() })
   })
@@ -351,6 +364,21 @@ describe('the callsign / initials columns', () => {
     expect($('#qCS'), 'opens on click').toBeTruthy()
     await click($('#qAddToggle'))
     expect($('#qCS'), 'and closes again').toBeFalsy()
+  })
+
+  it('a stale Add person button pressed by a member adds nobody and says why (Fable code read, 26 Sep 26)', async () => {
+    await click($('#qAddToggle'))
+    await setV($('#qCS') as HTMLElement, 'Stale')
+    const btn = $('#qAddPerson')
+    const toasts: string[] = []
+    const origToast = HOOKS.toast
+    HOOKS.toast = (m: any) => { toasts.push(String(m)) }
+    setSession({ user: 'acus', role: 'main', pid: 'bane', name: 'us' }); setMe('bane')   // no repaint: the button is still on screen
+    try { await click(btn) } finally { HOOKS.toast = origToast; setSession({ user: 'acad', role: 'admin', pid: 'stiff', name: 'ad' }); setMe('stiff'); await act(async () => { notify() }) }
+    expect(toasts).toContain('Only an admin can add someone')
+    expect(toasts.some(t => t.includes('added'))).toBe(false)
+    expect(Object.keys(PEOPLE).some(k => PEOPLE[k].cs === 'Stale')).toBe(false)
+    await click($('#qAddToggle'))
   })
 
   it('Add person takes callsign + initials + pilot/WSO + cat, with no name fields', async () => {

@@ -13,6 +13,7 @@ import { act } from 'react'
 import { createRoot, type Root } from 'react-dom/client'
 import { App } from './App'
 import { initStore, setSession, resetSession, notify } from '../state/store'
+import { setMe } from '../state/auth'
 import { DAYS } from '../engine/data'
 import { SCHED } from '../engine/publish'
 import { setSlotVal, slotVal, txtSet, txtGet } from '../engine/slots'
@@ -70,7 +71,9 @@ beforeAll(async () => {
   document.body.appendChild(host)
   root = createRoot(host)
   await act(async () => { root.render(<App />) })
-  await act(async () => { setSession({ user: 'a', role: 'admin' }); notify() })
+  /* [ACCOUNTS] (D166 (5)): "who" on a change is the signed-in CALLSIGN now — sign the
+     admin in as Saber, so the bubble's "who" never reads as a name the edits wrote */
+  await act(async () => { setSession({ user: 'a', role: 'admin' }); setMe('stiff'); notify() })
   await click($$('.nav a[data-page]').find(a => a.dataset.page === 'editsched')!)
   await act(async () => { openScheduler(0) })
 })

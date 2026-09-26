@@ -1,5 +1,5 @@
 import { DAYS } from '../engine/data'
-import { elogRows, elogGroups, elogWhen, ELOG } from '../engine/editlog'
+import { elogRows, elogGroups, elogWhen, elogWho, ELOG } from '../engine/editlog'
 import type { ELogRow } from '../engine/editlog'
 import { esc, SBDAY } from '../state/view'
 import { notify } from '../state/store'
@@ -41,7 +41,7 @@ function chg(r: ELogRow) {
     : `<b>${esc(r.from)}</b> <i class="hbar">→</i> <b>${esc(r.to)}</b>`
 }
 const dow = (di: any) => di == null ? '' : `<span class="hl-day">${esc((DAYS[di] || {}).dow || '')}</span>`
-const meta = (r: ELogRow) => `<span class="hl-meta">${esc(r.who)} · ${esc(elogWhen(r.t))}</span>`
+const meta = (r: ELogRow) => `<span class="hl-meta">${esc(elogWho(r))} · ${esc(elogWhen(r.t))}</span>`
 
 /* one clickable change. `hit` carries the address the jump needs. A row is a
    button only where the board can actually SHOW that detail: no key at all (a

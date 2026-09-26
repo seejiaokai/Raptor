@@ -2471,7 +2471,8 @@ plans and the format/rid stamps — and a book persisted without `amV` is classi
 UNSUPPORTED and read-only-quarantined (`engine/publish.ts`), so a serializer built from
 the old list would freeze every week it wrote.
 
-Four sign-offs per day (`SIGN_ROLES`) → "Publish day" clears that day's pending and spends
+Four sign-offs per day (`SIGN_ROLES`) — **an admin picks all four names**, whoever is signed in (D212, 26 Sep 26: personal
+accounts do not tie a box to the person signed in; only an admin writes the boxes) → "Publish day" clears that day's pending and spends
 its signatures. Later edits become pending; "Publish AL" appends a **single-day** record
 `{id, di, iso, seq, snap:{d,c,fil}, diff, sign:{[di]:names}}` — not the old
 `{n, keys, sign, days, n0}`, and there is no week-wide `days`/`n0` pair to recalculate
@@ -2861,9 +2862,19 @@ the Originals and every AL. (The earlier sentence here said the opposite.)
 
 ## Auth / roles
 
-`ad/a` = admin, `us/us` = member (owner, 24 Aug 26 — renamed from a/a and
-user/user; the sign-in card no longer prints them). `canEditSched()` =
-session AND admin.
+**ACCOUNTS (`[ACCOUNTS]`, 26 Sep 26 — D165, D166, D204, D200).** Everyone signs in as HIMSELF: each account
+(`state/accounts.ts`, managed on Admin → Users) is a sign-in name — which stands for the defence mail address —,
+admin or member, and the CALLSIGN (person) it belongs to; one person, one account. Signing in makes you that callsign
+(`ME` = the account's person, set only by `resetSession`); the "View as" picker and the admin's role toggle are GONE
+(D166 (3)). The sign-in card stands for the defence-mail sign-in: the app never keeps a password (Microsoft checks it at
+the database step); an added account takes any password, the two seeded sign-ins keep theirs — `ad/a` = admin (Saber),
+`us/us` = member (Ranger), the owner's 24 Aug 26 names, not printed on the card. A person signed in but on no list asks
+for access (callsign + name) and waits; an admin approves (linking a puck he picks) or declines; an admin switch, OFF by
+default, lets people waiting read the schedule as a GUEST — what a member reads on View-only Sched, read only (D215); an account switched off sees only "switched off"
+(D204). **Who may do what is decided in ONE place, `state/perms.ts`**, which mirrors `docs/data-model.md` §11 and is
+drift-tested against it (`perms.test.ts`); no other file decides authority (`perms-scan.test.ts`), and the command gate
+itself delegates to it — plus a commit-gate check that a member's command changed only his own records. `canEditSched()`
+= session AND admin (now asked of `perms.ts`).
 Logout closes the scheduler board (a sibling of the shell) and resets LGEDIT.
 The login is a prototype gate, not security — the deployed app is public. *(Corrected 24 Sep 26: since D59
 (23 Sep 26) the repo is private and the app sits behind his Vercel sign-in — Vercel's lock, not the app's; the
@@ -2875,8 +2886,9 @@ the squadron's programme*, not read vs write:
 | | member | admin |
 |---|---|---|
 | Inputs — add / edit / delete | **yes** | yes |
-| Inputs — choosing WHO an input is for | no — always the view-as person | yes |
-| Quals — `Enable editing`: tick a qualification, edit initials / flight / CAT | **yes — his OWN row only, every column of it incl. SXO and SCHEDULER (D149, 24 Sep 26; to build: today a member can still edit any row)** | yes, any row |
+| Inputs — choosing WHO an input is for | no — always the signed-in person (his own account's callsign — D166) | yes |
+| Quals — `Enable editing`: tick a qualification, edit initials / flight / CAT / callsign / remarks | **yes — his OWN row only, every column of it incl. SXO and SCHEDULER but NOT the callsign, which is an admin's to change (D149, 24 Sep 26; D218, 26 Sep 26; BUILT by `[ACCOUNTS]`, 26 Sep 26: `state/quals-write.ts updatePersonField`, checked before anything moves; other rows read as text for him)** | yes, any row |
+| Admin → Users — accounts, requests, the guest switch | no | yes (never his own account; at least one admin always keeps access) |
 | Quals — `Edit quals` (which columns the LoX carries) | no | yes |
 | Quals — `Add person` (put someone on the roster) | no | yes |
 | Quals — archive a person (the row's ✕) / Restore from the Archived drawer | no | yes |
@@ -2894,8 +2906,9 @@ Day-template, Flying-waves and per-day Drafts editors (`DutyTplModal`,
 `DayTplModal`, `WaveTplModal`, `DraftsModal`) are opened only from admin-gated
 affordances (the board's edit-mode menus and the Admin page), so a plain member
 can never reach them. But the pop flag each sets (`TPLEDIT` / `DAYTPLEDIT` /
-`WAVEEDIT` / `DRAFTSEDIT`) is NOT cleared by `toggleRole`'s admin→member "View
-as member" peek, and their store mutators carry no write-path guard of their
+`WAVEEDIT` / `DRAFTSEDIT`) was NOT cleared by `toggleRole`'s admin→member "View
+as member" peek (the toggle is gone since `[ACCOUNTS]`, 26 Sep 26 — D166 (3); every window now closes at a sign-in and
+sign-out, `ui/pops.ts POPS_RESET`), and their store mutators carry no write-path guard of their
 own — so an admin who opened one and then flipped to member view used to keep a
 fully live editor on screen, the preview lying about what a member can do. Each
 modal now returns its hidden shell when `SESSION && SESSION.role !== 'admin'`
@@ -2977,10 +2990,12 @@ seat, `leavewar/inputgate.ts`.
 page a member LANDS on their own inputs (the person filter defaults to `ME`
 for a member, `all` for a scheduler) with "Everyone" one pick away; on every
 other person's row the ✎ and ✕ are not rendered, but the document paperclip
-stays (anyone may VIEW any attachment — owner, same day). The write-path
+stays (anyone may VIEW any attachment — owner, same day; RE-CONFIRMED 26 Sep 26 by D211 for every member, a medical
+input's type, remarks and documents included; and by D213 the same day a waiting guest sees a medical input on the
+published schedule too — he has no door to a document). The write-path
 backstop behind the hidden controls is in `commitInputEdit` / `removeInput`,
-gated on a signed-in session that CANNOT edit the schedule (`SESSION &&
-!canEditSched() && r.person !== ME`) — the render gate's own predicate.
+gated on the one permissions rule (`perms.ts mayEditInputOf` / `mayDeleteInputOf` since `[ACCOUNTS]` — a member his
+own, an admin any, a guest none) — the render gate asks the same module.
 NOT the role literal `'member'`: the first cut compared against that string,
 which no account ever carries (the member login is role `'main'`, auth.ts),
 so the gate never fired in production while its tests logged in with the
@@ -2988,28 +3003,19 @@ fabricated shape and stayed green (27 Aug 26 overnight find — the fixtures
 now use the real role). The app's own edit cascades (sync retraction,
 medical trims, the accepted-row relink) stay person-scoped to the row's own
 person, and a sessionless test/boot context is not gated. `resetSession`
-also resets `ME` to the boot default now — the "View as" identity every
-member gate keys on used to survive a logout, handing the next login the
-previous session's person. This SITS BESIDE the
+sets `ME` from the account on every sign-in and back to the headless default on sign-out (`[ACCOUNTS]` — it used to be
+the "View as" identity, which survived a logout). This SITS BESIDE the
 existing 22 Aug person-MOVE guard (a member may not reassign an input to
 another person), which stays. Pinned in `audit-guards-inputs.test.ts`
 (a member is refused another's edit and delete, allowed their own, a
 scheduler allowed any).
 
-**An admin can VIEW AS a member — the role badge is a toggle (owner, 27 Aug
-26).** Clicking the topbar's Admin/Member chip (or the drawer's Account-row
-button on a phone) flips the EFFECTIVE role the whole app reads; a member
-account's chip stays an inert label. `auth.ts` keeps `LOGINROLE`, the true
-role captured at login and never moved by the toggle — the ceiling that
-means a member can never climb and a parked admin always has the way back.
-`store.ts:toggleRole` is the one coordinator: it flips `SESSION.role`
-(every gate reads it live), falls an admin-only page back to View-only
-Sched, disarms any armed slot, drops Logic edit mode, and walks the Leave
-War's role through the same `lwSetRole` seam `resetSession` drives — the
-second and last production writer of that role. Deliberately NOT a full
-`resetSession`: the week, selection, filters and undo history stay, because
-the point is seeing the SAME screen through the other role's eyes. Pinned
-in `roletoggle.test.tsx`.
+**The admin's "View as member" toggle (27 Aug 26) is REMOVED — `[ACCOUNTS]`, 26 Sep 26, D166 (3): "There isint a need
+for preview as a member".** Every account is one person with one role, so the peek had nothing left to preview; the
+badge is an inert label naming the signed-in person and role ("Saber · Admin"), and `resetSession` is the ONE production
+writer of the Leave War's role. Its absence is pinned in `ui/accounts-ui.test.tsx` (which replaced `roletoggle.test.tsx`);
+the localhost probe bridge keeps a role switch for the e2e suite and the walk. **Undo is per sign-in:** `resetSession`
+empties the one undo list on every sign-in and sign-out (`undo/timeline.ts endUndoSession` — the 13 Sep 26 rule, D148).
 
 Inputs opened because they are the crews' OWN leave, downchits and
 detachments — the reference's `View only — ask a scheduler` gate made the
@@ -3019,9 +3025,9 @@ is the scheduler's (`interactions.ts`, `canEditSched()`).
 
 **Who an input is FOR is part of that line (owner, 22 Aug 26 — "for normal
 user account they can only input their own self. Which is whoever they are
-viewing as").** An admin picks anyone, on the Inputs page's form and the
-month calendar alike; a member's input always lands on the view-as person
-(`ME`), read live at commit. The Person control is therefore a scheduler's
+viewing as"; since `[ACCOUNTS]` "whoever they are" is the signed-in person — D166).** An admin picks anyone, on the
+Inputs page's form and the month calendar alike; a member's input always lands on the signed-in person
+(`perms.ts me()`), read live at commit; a guest files nothing. The Person control is therefore a scheduler's
 on every editor — the page's add form and row editor print a member's
 person as a plain value, the shared dialog hides the field
 (`inputedit.tsx`, `canEditSched()`-gated) — and the write paths repeat the

@@ -635,23 +635,38 @@ against a store it does not understand (section 6).
 ### User
 
 Owner: **Shell**. The sign-in identity. **Separate from `Person`**, linked
-to it.
+to it — every account IS one callsign (owner, D166, 25 Sep 26).
 
 | Field | Type | Req | Meaning |
 |---|---|---|---|
-| `signInName` | string | yes | the provider's principal name. Unique |
-| `displayName` | string | yes | what `HOOKS.whoami()` returns and the edit log records |
+| `signInName` | string | yes | the provider's principal name — the person's defence mail address (D165). Unique |
 | `role` | choice `admin\|main` | yes | today's two roles |
-| `personId` | ref Person | no | null for an account with no roster body (a service or an admin who does not fly) |
-| `enabled` | bool | yes | |
+| `personId` | ref Person | **yes** | the callsign the account belongs to (D166); one account per person (unique) |
+| `enabled` | bool | yes | false = switched off — the exit; an account is never deleted (§10) |
 | `lastSignInAt` | datetime | no | (new) |
 
-Relationships: 0–1 `Person`; referenced by every `createdBy`/`updatedBy`.
-From today: `ACCOUNTS` — two hard-coded prototype accounts in
-`src/state/auth.ts` — plus `SESSION`, `ME` and the Admin page's `USERS[]`.
-App change: **no password is ever stored in this model.** The auth provider
-owns credentials; this table maps a signed-in principal to a role and a roster
-body. Stage 4, and a separate step from storage.
+The displayed name is the person's callsign, read live — a rename moves nothing (the one-identity rule).
+Relationships: 1 `Person`; referenced by every `createdBy`/`updatedBy`.
+From today: the `accounts` settings record, `state/accounts.ts` (`[ACCOUNTS]`, 26 Sep 26), managed on Admin → Users.
+**No password is ever stored in this model — nor in the app today** (the two seeded demo sign-ins' passwords live in code
+only). The auth provider owns credentials; this table maps a signed-in principal to a role and a person. **Two guards the
+server keeps too:** at least one enabled admin always remains; an admin never changes his own account.
+
+### AccessRequest
+
+Owner: **Shell**. Someone signed in with his defence mail but on no list, asking for access (owner, D204, 26 Sep 26).
+
+| Field | Type | Req | Meaning |
+|---|---|---|---|
+| `signInName` | string | yes | the principal who asked — from the sign-in, never typed. Unique while waiting |
+| `callsign` | string | yes | what he typed — text only; it never claims a `Person` (the admin picks one on approval) |
+| `name` | string | yes | what he typed |
+| `requestedAt` | datetime | yes | |
+
+Approving creates the `User` (linked to the person the admin picks, member or admin) and removes the request in one
+step; declining removes it. The admin sees a count of waiting requests on the Admin tab (a Teams message at the
+database step). From today: the `accessreqs` settings record. The admin's **guest switch** (people waiting may read the
+published week) is a `Setting` (`guestview`), off by default.
 
 ### Layout
 
@@ -949,33 +964,38 @@ relationship behaviours are the terms.
 
 ## 11. Security roles
 
-**Behind the rulings, to bring up to date in `[ACCOUNTS]` (D200, 26 Sep 26):** a member edits every column of his own
-`Person` row (D149); members read the change history, `EditLog` (D169); an account is tied to a callsign (D166); OIL
-awards are written by admins only, with who gave each and when (D79, D82). Until then, where a line below disagrees,
-the ruling wins (D90, D201).
+**Brought up to every ruling by `[ACCOUNTS]`, 26 Sep 26 (D200 (2); D149, D166, D169, D204, D211, D79, D82).** The app
+mirrors this table in ONE place — `src/state/perms.ts` `PERMS` — and `src/state/perms.test.ts` reads THIS table and fails
+when the two differ in a row, a letter, a column or a named gap. **Edit the table and `PERMS` together.** The test reads
+the letters C R U D in each cell; `own` makes the letters of its clause the own-row rule; words in parentheses are notes;
+`gap: [ITEM-ID]` names a rule the app does not obey yet and the backlog item that builds it.
 
-Two roles today (`admin`, `main` — a squadron member); the matrix is written
-for those two and gains a column when the directory brings more. In
-Dataverse terms: two **security roles**, one **business unit** (single
-tenant — one squadron, one environment, no cross-squadron rows), **row
-ownership** by the person's `User` where the own-row rule applies. C R U D
-= create, read, update, delete (delete is the soft delete throughout).
+Four roles (D166, D204): **admin**; **member** (`main`); **guest** — signed in with his defence mail, on no list, has
+asked for access, and the admin's guest switch is on (OFF by default): he reads the published week and nothing else;
+**pending** — signed in, on no list: he may ask for access, once. An account switched off reads and writes nothing. In
+Dataverse terms: security roles, one **business unit** (single tenant — one squadron, one environment, no
+cross-squadron rows), **row ownership** by the person's `User` where the own-row rule applies. C R U D = create, read,
+update, delete (delete is the soft delete throughout).
 
-| Table | Admin | Member | Own-row rule (member) |
-|---|---|---|---|
-| `Person`, `Qualification` | C R U D | R | — |
-| `QualMark` | C R U D | R, C U D **own** | `personId` = my person — a member ticks their own quals |
-| `Setting`, `SchemaVersion`, `User` | C R U D | R (`Setting` only) | — |
-| ScheduleWeek family, `DayDraft`, `RowPerson` | C R U D | R | — (a member reads the programme; only a scheduler writes it) |
-| `Amendment`, `Signoff` | C R | R | — (append-only for everyone) |
-| `EditLog` | R | — | — (written by the store, not a role; retention is Open question 4) |
-| `Input` | C R U D | C R U D **own**; R others' non-medical | `personId` = my person, or filed for me by a scheduler. A **medical** input (`InputType.group = med`) is readable by its person and admins only: its `remarks` sit behind Dataverse column-level security (a field security profile: admin + the row's owner), and the row itself is owned by the person so a member's user-level read reaches only their own |
-| `Attachment`, `InputAttachment` | R (D by sweep only) | C R **own** | owned by the person who uploaded it; readable by that person and admins only — every attachment today is medical evidence |
-| `LeaveWar` | C R U D | R | — |
-| `LeaveBid` | C R U D (decide, move) | R, C U **own** while `stage = open` | `personId` = my person — the `canEditRow` rule the store already enforces |
-| `LeaveOpening`, `LeaveLedger`, `LeaveCounter` | C R U D | R **own** | `personId` = my person |
-| `LeavePersonProfile` | C R U D | R | — |
-| `Course`, `Syllabus`, `TrainingEvent`, `EventPrerequisite`, `Layout`, `CoursePlan`, `Enrolment`, `Attempt` | C R U D | C R U D | — (**everyone edits** the Tracker — owner, 7 Sep 26; since D121, 23 Sep 26, Import / Export too: admin and member have the same access) |
+| Table | Admin | Member | Guest | Pending | Own-row rule and notes |
+|---|---|---|---|---|---|
+| `Person` | C R U D | R, U **own** | R (callsigns) | — | `personId` = my person: every column of his own row — CAT, initials, flight, SXO, SCHEDULER, SANS — except the callsign (D218: an admin's to change), `archived`, `special` and `id` (D149); adding, archiving and restoring a person stay the admin's |
+| `Qualification` | C R U D | R | — | — | the list of qualification columns (Quals → Edit quals) |
+| `QualMark` | C R U D | R, C U D **own** | — | — | `personId` = my person — a member ticks his own quals, every one (D149) |
+| `Setting`, `SchemaVersion` | C R U D | R (`Setting` only) | — | — | the guest switch is a `Setting` (D204) |
+| `User` | C R U | R **own** | — | — | one account per person, tied to it (D166); the sign-in name (the defence mail address) unique; switched off, never deleted (`enabled`); **no password is ever stored** — the organisation's sign-in checks it; at least one enabled admin always remains; an admin never changes his own account |
+| `AccessRequest` | R D | — | — | C **own** | a person signed in but on no list asks once, with a callsign and a name as typed text (D204); an admin approves — creating the `User`, linked to a person he picks, a typed callsign never claims one — or declines, each one step |
+| ScheduleWeek family, `DayDraft`, `RowPerson` | C R U D | R | R | — | a member reads the programme; only a scheduler writes it; a guest reads what a member reads on View-only Sched — a published day as issued, another as it stands (D204, D215) |
+| `Amendment`, `Signoff` | C R | R | R (published) | — | append-only for everyone |
+| `EditLog` | R | R | — | — | written by the store, not a role; members read it, a medical change in full (D169, D211) — gap: `[DRAFT-PENDING]` (shown to admins only until the changes window); retention is Open question 4 |
+| `Input` | C R U D | C R U D **own**; R | R | — | `personId` = my person, or filed for me by a scheduler; every member reads every input, a medical one in full (D211 — his 27 Aug 26 rule re-confirmed); a guest reads the week's inputs as a member does, a medical one in full too (D213, D215) |
+| `Attachment`, `InputAttachment` | R (D by sweep only) | C R **own**; R | — | — | owned by the person who uploaded it; every member may open it (D211) |
+| `LeaveWar` | C R U D | R | — | — | the stage and the bid window are the admin's |
+| `LeaveBid` | C R U D (decide, move) | R, C U D **own** (while `stage = open`) | — | — | `personId` = my person — the `canEditRow` rule the store enforces; deciding, moving an approved leave and "OK, seen" on another's notice are the admin's |
+| `LeaveBid` (a hand-typed OIL award) | C R U D | R | — | — | written by an admin only, any day (D79); an award and a worked day add up (D82); keeps its typed "Given by" and its date — and who entered it and when, gap: `[OIL-AWARD-IS-A-GRANT]` |
+| `LeaveOpening`, `LeaveLedger`, `LeaveCounter` | C R U D | R **own** | — | — | `personId` = my person; a ledger grant keeps the approving admin's callsign |
+| `LeavePersonProfile` | C R U D | R | — | — | — |
+| `Course`, `Syllabus`, `TrainingEvent`, `EventPrerequisite`, `Layout`, `CoursePlan`, `Enrolment`, `Attempt` | C R U D | C R U D | — | — | **everyone edits** the Tracker — owner, 7 Sep 26; since D121, 23 Sep 26, Import / Export too: admin and member have the same access |
 
 **The server enforces, the browser mirrors.** Every rule above is a
 privilege on the store (a Dataverse security role) and a check at the API's

@@ -3,7 +3,7 @@
    the verbatim dayHTML output, so the selectors line up exactly. */
 import { PEOPLE, isSpecial } from '../engine/people'
 import { HLSET, SEARCH, SELID, WFOCUS, ARM, FRESHADD, FRESHOUT, warnFocusMap, personMatchesHL, CURPAGE, SBDAY, lookWearsFlags } from '../state/view'
-import { ME } from '../state/auth'
+import { isMe } from '../state/perms'
 import { slotBar } from '../engine/avail'
 import { slotVal } from '../engine/slots'
 import { WARN } from '../engine/validate'
@@ -94,7 +94,7 @@ export function refreshHighlights(){
        selecting another puck dims your own view-as puck like the rest of the
        board instead of leaving it lit (owner, Aug 26). Idle, it still marks
        your puck, and the legend "you" swatch stays meaningful. */
-    if(id===ME&&!focusActive)el.classList.add('me');
+    if(isMe(id)&&!focusActive)el.classList.add('me');
     const isFocus=matchHL||isSel;
     if(focusActive&&!isFocus)el.classList.add('dim');
   });

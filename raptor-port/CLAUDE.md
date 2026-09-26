@@ -352,11 +352,14 @@ in what this repo actually has rather than a generic checklist:
 - **Security.** No secrets, tokens or credentials in the repo or its
   history — the deploy needs none. Every user-entered string is escaped at
   the builder (two unescaped sinks were found 6 Aug; assume more is
-  possible). Role checks live at the PAGE and the write path, not the nav
-  (`canEditSched`, `resetSession` — the 6 Aug lesson). And never present
+  possible). Role checks live at the PAGE, the write path and the command gate, not the nav
+  (the 6 Aug lesson) — and since `[ACCOUNTS]` (26 Sep 26, D200 (3)) every one of them asks ONE module,
+  `src/state/perms.ts`, which mirrors `docs/data-model.md` §11 (drift-tested; a gate anywhere else fails
+  `perms-scan.test.ts`): a new rule goes into `perms.ts` and §11 TOGETHER. And never present
   the prototype auth as security: since D59 (23 Sep 26) the repo is private and the
-  app sits behind his Vercel sign-in, but that is Vercel's lock, not the app's — accounts are
-  hard-coded, and anything genuinely sensitive stays out of the demo data.
+  app sits behind his Vercel sign-in, but that is Vercel's lock, not the app's — until the database,
+  accounts live in one browser and the sign-in only stands for Microsoft's, and anything genuinely
+  sensitive stays out of the demo data.
 - **Future development & DevOps.** Ship through the gated pipeline only —
   five gates in CI on every PR and push (the Tracker smoke is one of them),
   plus the two local-only gates for UI work; nothing deploys red. Write for the next session: comments say
@@ -452,12 +455,13 @@ fails with the very "Executable doesn't exist" error it warned about).
 container symlink when it is there, Playwright's own browser otherwise. IN THE
 CONTAINER ONLY, never run `npx playwright install` — it re-downloads for
 nothing. The probes in `reference/probes/` still hardcode the container path.
-Login is `ad`/`a` (admin) or `us`/`us` (squadron member — NOT view-only
-since 5 Aug 26: a member edits their own Inputs and ticks their own quals;
-the split is in `docs/engine-rules.md` §Auth / roles). The account names
-changed from a/a · user/user on 24 Aug 26 (owner ask, which also removed
-the credentials hint from the sign-in card — don't re-print them there).
-The username is lowercased before matching, the PASSWORD is compared
+Login is `ad`/`a` (admin, signed in as Saber) or `us`/`us` (squadron member, signed in as Ranger — NOT view-only
+since 5 Aug 26: a member edits their own Inputs and their own Quals row; the split is in `docs/engine-rules.md` §Auth /
+roles). Since `[ACCOUNTS]` (26 Sep 26, D166) these are two SEEDED accounts among others on Admin → Users — every account
+is one person — not hard-coded logins; an account the admin adds takes any password (the sign-in stands for the
+defence mail's; the app keeps no password), a name on no list lands on "Request access". The account names changed from
+a/a · user/user on 24 Aug 26 (owner ask, which also removed the credentials hint from the sign-in card — don't re-print
+them there). The username is lowercased before matching; the two seeded passwords are compared
 exactly, so `AD`/`a` works and `ad`/`A` is rejected.
 Login is `#luser` / `#lpass` / `#loginForm button[type=submit]`, same
 as `e2e/app.ts`, and `#vWeek .day` is the "week is up" signal. Watch console
@@ -566,7 +570,7 @@ the projection goes in a persisted record laid back on by `setPeople`.
 "session-only" sentence elsewhere in this file).** A BUILT SITE runs on the
 Browser backend (`storage/boot.ts chooseBackend`), and across a reload it KEEPS:
 `INPUTS`, `PEOPLE`, the `plan` layer (PLANPUCKS/DAYRMK), every stashed week AND
-the live week (`persistAll`), the 11 durable settings keys (incl. `qualcols`),
+the live week (`persistAll`), the 14 durable settings keys (incl. `qualcols` and, since `[ACCOUNTS]`, `accounts`, `accessreqs`, `guestview`),
 the whole Leave War world, the Tracker's `ocu:` data, and medical documents
 (IndexedDB). MEMORY-ONLY is now just the `vite` dev server, `MODE==='test'`,
 `?fresh=1`, or a browser whose storage cannot be touched. Genuinely still
@@ -705,5 +709,5 @@ opening its code? Open its area file first — `../.claude/rules/doc-structure.m
 | The rules engine | `src/engine/` — `validate.ts` is the heart |
 | Store / UI state / undo | `src/state/` |
 | Components + HTML builders | `src/ui/` |
-| **The Leave War tab** (vendored app: engine, store, UI, tests) | `src/leavewar/` — its own store and `leavewar:` storage keys; role written only by `resetSession` + the admin's `toggleRole`; stage-advance is admin-only (27 Aug 26, members still bid); a member bids only on their OWN row — the "View as" person, mirrored to `viewer` — while an admin edits any row (`canEditRow`, 27 Aug 26; enforced at the write path and the grid affordance alike); an admin decides bids at closed OR published (`canDecide`, 27 Aug 26 — since the 27 Aug overnight pass the STORE enforces it too: `setBidState`/`setBidStates` refuse anyone else, `shiftBid` carries `moveCells`' whole stage/window/war-day law, `moveProblem` is the one validation body the landing preview and the commit share, a chain of closed moves keeps the ORIGINAL `shiftedFrom`, and NO ONE writes a medical mark on the war — medical is MEMBER-FILED only since 13 Sep 26, reversing the 17 Aug "management's" rule: blocked at `setCell`/`setCellRange`/`setCells` for every role incl admin, the pickers removed; the war still DISPLAYS member-filed medical, read from the Inputs (step 4, 20 Sep 26)); a drag selects a block to batch fill/decide/move/delete and a plain click still opens the single-cell sheet (`select.ts`, capture taken in `arm()`); the dotted "moved" mark is recorded AND shown only for a move made once bidding is closed (`biddingClosed`, 27 Aug 26 — an open-bidding shuffle stores no `shiftedFrom`, so it never sprouts the stripe when the war later closes); the colour pop-out is "Legend"; at PUBLISHED a tap on an approved leave opens the remarks editor (`RemarksSheet` → `sync.ts:leaveInputAt` + `inputedit.ts:setLeaveRemarks`, member edits own / admin any); CSS scoped under `#page-leavewar`; gaps in `docs/leavewar/known-gaps.md`, future sync in `docs/superpowers/specs/leavewar-sync.md` |
+| **The Leave War tab** (vendored app: engine, store, UI, tests) | `src/leavewar/` — its own store and `leavewar:` storage keys; role written only by `resetSession` (the admin's `toggleRole` is gone since `[ACCOUNTS]`, 26 Sep 26 — D166 (3)); stage-advance is admin-only (27 Aug 26, members still bid); a member bids only on their OWN row — the SIGNED-IN person (D166 (4); the "View as" person until `[ACCOUNTS]`), mirrored to `viewer` — while an admin edits any row (`canEditRow`, 27 Aug 26; enforced at the write path and the grid affordance alike); an admin decides bids at closed OR published (`canDecide`, 27 Aug 26 — since the 27 Aug overnight pass the STORE enforces it too: `setBidState`/`setBidStates` refuse anyone else, `shiftBid` carries `moveCells`' whole stage/window/war-day law, `moveProblem` is the one validation body the landing preview and the commit share, a chain of closed moves keeps the ORIGINAL `shiftedFrom`, and NO ONE writes a medical mark on the war — medical is MEMBER-FILED only since 13 Sep 26, reversing the 17 Aug "management's" rule: blocked at `setCell`/`setCellRange`/`setCells` for every role incl admin, the pickers removed; the war still DISPLAYS member-filed medical, read from the Inputs (step 4, 20 Sep 26)); a drag selects a block to batch fill/decide/move/delete and a plain click still opens the single-cell sheet (`select.ts`, capture taken in `arm()`); the dotted "moved" mark is recorded AND shown only for a move made once bidding is closed (`biddingClosed`, 27 Aug 26 — an open-bidding shuffle stores no `shiftedFrom`, so it never sprouts the stripe when the war later closes); the colour pop-out is "Legend"; at PUBLISHED a tap on an approved leave opens the remarks editor (`RemarksSheet` → `sync.ts:leaveInputAt` + `inputedit.ts:setLeaveRemarks`, member edits own / admin any); CSS scoped under `#page-leavewar`; gaps in `docs/leavewar/known-gaps.md`, future sync in `docs/superpowers/specs/leavewar-sync.md` |
 | **The Tracker tab** (vendored OCU progress tracker: syllabus flow charts, marks, pace) | `src/tracker/` — plain JS/JSX, its own store (`app/core.js`) and storage doorway (`storage.js`, `ocu:` keys), CSS scoped under `#page-tracker`; no role — admin and member have the same access, File menu included (D121, 23 Sep 26); `role.js` carries only the login-session end from `resetSession` (the file is a format, not a store — 9 Sep 26); page seam `TrackerPage.tsx`, kept mounted once visited; its browser suite `scripts/tracker/smoke.mjs` (`npm run smoke:tracker`, a CI job); gaps `docs/tracker/known-gaps.md`; the design specs it was built from `docs/tracker/specs/` |

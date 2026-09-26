@@ -479,3 +479,108 @@ resolved statuses always carry their resolution date
 **Suggested improvement:** §8.4 gains one line: when the change is a mapping, at least one break per wired place swaps in ANOTHER CURRENT value (a neighbour's token, a real colour the app uses elsewhere), not only the retired one; a break that is caught only by the "retired value" guard does not count as that place's test.
 
 **Principle:** A break test proves a check only if the break is one the retired-value guard cannot see; swap in a legitimate-but-wrong value, not just the old one.
+
+### Observation 261: Text written between tool calls did not reach the owner; a copy-paste prompt had to be re-sent as a file
+
+**Status:** OPEN
+**Date:** 2026-09-26
+**Session context:** `[ACCOUNTS]` planning; the owner asked mid-turn for a prompt to start a parallel worktree chat
+**Skill:** New skill candidate: parallel-chat launcher (and the session-handoff skill's "ready-to-paste opening line")
+**Type:** open-source
+**Phase/Area:** answering a mid-turn question while tool calls continue
+
+**Issue:** The owner asked, mid-turn, what he could run in parallel and then for the opening prompt. The answer (with the prompt in a fenced block) was written as text between tool calls; he replied "I dont see the prompt". Re-sent as a file with SendUserFile, it arrived. The same happened to be true for the next answer, which went straight to a file.
+
+**Suggested improvement:** When a mid-turn answer carries something the person must COPY or ACT on (a prompt, a command, a decision), deliver it as a file (SendUserFile) or end the turn with it — never only as interleaved text. A parallel-chat launcher skill could standardise the prompt it hands over: the worktree, the model, a claimed ruling range, the port, "never two full check runs at once", "later merge takes main first".
+
+**Principle:** A deliverable the person has to act on must travel by a channel that is guaranteed to reach them; interleaved narration between tool calls is not one.
+
+### Observation 262: Reverting a break test with `git checkout <file>` threw away the file's uncommitted rewrite
+
+**Status:** OPEN
+**Date:** 2026-09-26
+**Session context:** `[ACCOUNTS]` build step 1 — the drift test's break test on `docs/data-model.md` §11
+**Skill:** bug-check order §8 rule 4 (the break test) / test-driven-development
+**Type:** open-source
+**Phase/Area:** the break test's undo step
+
+**Issue:** To prove the new drift test goes red, one letter of the (uncommitted, freshly rewritten) permissions table was changed, the test run, and the change undone with `git checkout docs/data-model.md`. That restored the LAST COMMIT — the old table — silently discarding the whole rewrite. Only a `cp` taken before the edit (made by habit, not by rule) saved it.
+
+**Suggested improvement:** The break-test step says: break the wire, watch a named test go red, then restore FROM A COPY TAKEN JUST BEFORE THE BREAK (or break with a reversible in-place edit and reverse that exact edit) — never `git checkout`/`git restore` on a file with uncommitted work; or commit before breaking.
+
+**Principle:** An undo must return to the state just before the break, not to the last commit; on a dirty file those are different, and the tool that confuses them reports success.
+
+### Observation 274: A test that calls the loader by hand hides a loader nobody calls at boot
+
+**Status:** OPEN
+**Date:** 2026-09-26
+**Session context:** [ACCOUNTS] FULL bug check — the walk (numbered past 273, the highest on the parallel branches claude/tracker-palette and claude/bg-cwd-guard)
+**Skill:** New skill candidate: bug-check order (raptor-port/docs/bug-check-order.md) — the walk's reload step
+**Type:** open-source
+**Phase/Area:** test fixtures vs the boot path; the walk's "reload" step
+
+**Issue:** A new settings loader was registered in the settings-rollback list but never called in the app's start-up routine, so every account an admin added was forgotten at the next page reload. 6,137 unit tests were green: the accounts suite's setup called the loader by hand right after the start-up routine, so no test ever exercised "start-up alone". The walk's reload step caught it in the first run.
+
+**Suggested improvement:** (1) The walk's roll-call always includes "reload the page and check the new data is still there" for any feature that stores something. (2) A test's setup should run the SAME start-up path the app runs, never add the step under test by hand after it; where two lists must stay in step (the rollback loaders and the boot loaders), a structural test compares them.
+
+**Principle:** A fixture that performs the step under test by hand proves the step works, not that anything performs it; test the path the product actually takes, and test "survives a reload" for anything stored.
+
+### Observation 275: A fixture helper that refuses silently makes every assertion after it vacuous
+
+**Status:** OPEN
+**Date:** 2026-09-26
+**Session context:** [ACCOUNTS] FULL bug check — the guest-view test
+**Skill:** New skill candidate: bug-check order (raptor-port/docs/bug-check-order.md) — writing the test that pins a walk finding
+**Type:** open-source
+**Phase/Area:** red-first proof of a fix
+
+**Issue:** A test meant to prove "the guest sees a published day, with medical detail hidden" called the publish function without the four sign-offs it requires; publish refused silently, every day read "Not published yet", and the test's "no medical detail" check passed because nothing was drawn at all. Found only because a new assertion added for a walk finding passed WITHOUT its fix — the red-first step exposed it.
+
+**Suggested improvement:** Every fixture step that can refuse gets an assertion that it landed (e.g. "the fixture day is published") before the assertions that depend on it; and the red-first run (revert the fix, watch the test fail) is mandatory for every new assertion, not only new tests.
+
+**Principle:** Assert the fixture before the behaviour; a negative check ("X is not shown") passes trivially on an empty screen.
+
+### Observation 276: A results folder with a shared name is read as your own run
+
+**Status:** OPEN
+**Date:** 2026-09-26
+**Session context:** [ACCOUNTS] FULL check — the gate run
+**Skill:** New skill candidate: bug-check order (raptor-port/docs/bug-check-order.md) — running the gates
+**Type:** open-source
+**Phase/Area:** reading gate results while parallel sessions share a machine
+
+**Issue:** The gates were logged to `/tmp/gates/`, a folder another session had used that morning. Its old summary file said "unit tests failed, browser tests failed", and the agent reported that to the owner as its own result before noticing the timestamps — its own run was still in progress. Corrected within a minute, but the owner was briefly told something false.
+
+**Suggested improvement:** Every gate run writes to a folder named for the run (branch + time), created fresh; a report of a gate result quotes the log's own timestamp or the run's start line. Never read a summary file you did not create in this run.
+
+**Principle:** A shared scratch location is someone else's evidence until proven otherwise; name results by the run that produced them.
+
+### Observation 277: An evidence cell that names a test must be checked against the file tree
+
+**Status:** OPEN
+**Date:** 2026-09-26
+**Session context:** [ACCOUNTS] FULL check — the evidence sheet's roll-call
+**Skill:** New skill candidate: bug-check order (raptor-port/docs/bug-check-order.md) — §6 roll-call and §9 evidence
+**Type:** open-source
+**Phase/Area:** the roll-call's "proved by" column
+
+**Issue:** The roll-call row for a security-relevant surface claimed "pinned by the unit test that loads it under a non-local host". No such test existed; the claim was carried from the plan's intention into the sheet. An independent code reviewer's remark led to a search that found none; the test was then written (and the behaviour hardened).
+
+**Suggested improvement:** Before the sheet is handed to reviewers, every file or test named in a "proved by" cell is checked to exist (a one-line glob per cell, or a small script over the sheet's backticked paths). A plan's "proved by" column is a promise; the sheet's must be a fact.
+
+**Principle:** A cell that names its proof is a claim until the proof is opened; check it exists before anyone relies on it (the anti-pattern "the comment that vouches", applied to evidence).
+
+### Observation 278: A defect in the walk's own picture, missed by looking — measure new cards, don't only look
+
+**Status:** OPEN
+**Date:** 2026-09-26
+**Session context:** [ACCOUNTS] — the owner's look after "merge live"
+**Skill:** New skill candidate: bug-check order (raptor-port/docs/bug-check-order.md) — §7 the walk, §9 the pictures
+**Type:** open-source
+**Phase/Area:** looking at the walk's pictures
+
+**Issue:** The owner found a button sitting 10px right of the boxes above it and poking past its card's edge. The walk had photographed that exact screen twice, and the agent looked at both pictures and passed them. A shared class lent the button another component's side margins; nothing on the page asserted alignment.
+
+**Suggested improvement:** For every NEW card, form or panel a build adds, the walk asserts its geometry, not only its content: primary controls aligned with the fields above (left and right edges equal) and inside the container. Cheap in a scripted walk (bounding boxes), and the assertion catches what a glance normalises.
+
+**Principle:** Looking confirms the picture matches your expectation of the content; it rarely notices a few pixels of misalignment. Measure what "looks right" means for new surfaces.

@@ -2,10 +2,11 @@
 // Each test names the finding it closes; each drives the REAL wired stores.
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { INPUTS } from '../engine/inputs'
+import { PEOPLE } from '../engine/people'
 import { HOOKS } from '../engine/hooks'
 import { stashClear, stashPut } from '../engine/weekstash'
 import { initStore as raptorInitStore, writeInputs } from '../state/store'
-import { setEffectiveRole, setMe, setSession } from '../state/auth'
+import { setMe, setSession } from '../state/auth'
 import { projectPeople } from './state/raptorRoster'
 import {
   advanceStage, changeAbsenceById, decideRequestById, getState, getVersion, initStore as lwInitStore, lwEditLists, lwHistInit,
@@ -149,11 +150,17 @@ describe('Codex AS4-003 / AS4-004 — notices', () => {
     expect(a.seq).not.toBe(b.seq)
   })
 
-  it('an admin LOGIN toggled to member and viewing as the person still leaves a notice', () => {
-    setRole('admin'); setCell('ammo', '2026-02-10', 'LL')
-    setEffectiveRole('main'); setMe('ammo')
+  /* REPLACED 26 Sep 26 ([ACCOUNTS], D166 (3)/(5); Fable R1-6): the admin's "view as member"
+     toggle this pinned is gone. Whose bid it was is now decided by the SIGNED-IN PERSON,
+     whatever the role: an admin filing over his OWN bid gets "your … bid" and no notice;
+     over someone else's, a notice naming him by callsign. */
+  it('an admin filing over his OWN bid leaves no notice; over another\'s, a notice naming him', () => {
+    setRole('admin'); setCell('ammo', '2026-02-10', 'LL'); setCell('pain', '2026-02-11', 'LL')
+    setMe('ammo')
     expect(file('ammo', 'ATT C', 'Feb 10')).toBe(true)
-    expect(recsAt('ammo', '2026-02-10').find(r => r.kind === 'notice')).toMatchObject({ byWho: 'an admin' })
+    expect(recsAt('ammo', '2026-02-10').find(r => r.kind === 'notice')).toBeUndefined()
+    expect(file('pain', 'ATT C', 'Feb 11')).toBe(true)
+    expect(recsAt('pain', '2026-02-11').find(r => r.kind === 'notice')).toMatchObject({ byWho: PEOPLE.ammo.cs })
   })
 })
 

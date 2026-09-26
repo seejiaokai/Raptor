@@ -20,7 +20,8 @@
 import { INPUTS, DATES, baseYear, dateOrd, inpId, inpWin, isAway, isLeave, isPersonal, canWork, oilAsks, withRemarksTail, inputCoversDate, nowStamp } from '../engine/inputs'
 import { dayEngaged, personBusy } from '../engine/avail'
 import { inputProtected, protectedDates } from '../engine/quarantine'
-import { ME, SESSION } from '../state/auth'
+import { mayManageRoster, viewerId, me } from '../state/perms'
+import { SESSION } from '../state/auth'
 /* [ARCH-STACK] phase 3: the command-routed persistPeople (the cross-seam roster
    writers — PO-archive, restore — emit a people change too). */
 import { persistPeopleProjection, commitPeopleEdit } from '../state/people-settings-commit'
@@ -74,6 +75,7 @@ import {
   setPostOut,
   setQualCatalog,
   setViewer,
+  setViewerCallsign,
   subscribe as lwSubscribe,
 } from './state/store'
 import { HOOKS } from '../engine/hooks'
@@ -1390,7 +1392,7 @@ export function restoreArchivedPerson(id: string): boolean {
      The commitInputEdit idiom: a signed-in non-admin is refused here too,
      so a hand-made call cannot do what the page will not offer; a
      sessionless test/boot context is not a member and passes. */
-  if (SESSION && SESSION.role !== 'admin') return false
+  if (!mayManageRoster()) return false
   const body = (PEOPLE as any)[id]
   if (!body || !body.archived || body.special) return false
   // [CMDL-FINISH] C10 — ONE command for the whole cross-seam gesture: setPostOut
@@ -1415,13 +1417,31 @@ export function restoreArchivedPerson(id: string): boolean {
  * reconcilers cannot see coming, like an Undo that removes an lw-tagged row.
  * Both passes are cheap no-ops when nothing they read has changed.
  */
+/* THE PROBE PIN — the developer's-PC bridge only (probe-bridge.ts w.lwSetViewer, which is
+   never installed on a deployed host). The Leave War's MECHANICS e2e drive rows as nobody in
+   particular (null: canEditRow imposes no row rule) or as a named person; since [ACCOUNTS]
+   the mirror below re-derives the viewer from the signed-in person on EVERY Raptor notify,
+   so a plain setViewer from the bridge was overwritten by the next repaint (53 e2e failures,
+   26 Sep 26). A pin holds for the sign-in it was set in and no longer: it is keyed to the
+   SESSION object, which resetSession replaces at every sign-in and sign-out, so no pin can
+   outlive the person who set it. No production caller. */
+let VIEWER_PIN: { v: string | null; s: unknown } | null = null
+export function pinViewer(v: string | null): void { VIEWER_PIN = { v, s: SESSION }; setViewer(v) }
+const mirroredViewer = (): string | null => (VIEWER_PIN && VIEWER_PIN.s === SESSION ? VIEWER_PIN.v : viewerId())
+/* and the signed-in person's callsign beside it, read off Raptor's whole roster (the war's own
+   roster may not hold him — a SANS or archived callsign): the approver stamp's fallback */
+const mirrorCallsign = (): void => { const m = me(); setViewerCallsign(m && (PEOPLE as any)[m] ? (PEOPLE as any)[m].cs : null) }
+
 export function wireLeaveWarSync(): void {
   /* The VIEWING PERSON rides this same wire (owner, 17 Aug 26 — the matrix
      lights the viewer's row and the counter picker answers with their
-     numbers). Raptor's "View as" (`ME`) notifies on every change, so pushing
-     it here — once at boot, again on every Raptor notify below — keeps the
-     mirror converged without a new seam; setViewer no-ops on a same value. */
-  setViewer(ME)
+     numbers). Since [ACCOUNTS] (D166 (4), 26 Sep 26) it is the SIGNED-IN person —
+     "View as" is retired — read through state/perms.ts viewerId(): his person, or ''
+     (matches NO row) for a guest, a pending person or an account switched off, and
+     null only with no session. Pushing it here — once at boot, again on every Raptor
+     notify below — keeps the mirror converged without a new seam; setViewer no-ops on
+     a same value. */
+  setViewer(mirroredViewer()); mirrorCallsign()
   /* the absence door — the war's changes to approved leave (design §5.2) */
   installAbsenceDoor()
   runPoArchive()
@@ -1430,7 +1450,7 @@ export function wireLeaveWarSync(): void {
   runOilPass()
   lastOilDaySig = oilDaySig()
   raptorSubscribe(() => {
-    setViewer(ME)
+    setViewer(mirroredViewer()); mirrorCallsign()
     // Before the passes: a body added on the Quals page must be on the roster
     // before inbound tries to land any of its leave (owner, 18 Aug 26).
     reprojectRoster()

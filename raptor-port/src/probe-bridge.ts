@@ -35,13 +35,26 @@ import { commandStream } from './command'
 import { resyncSchedBaseline, schedBaselineClean } from './state/sched-commit'
 import { HOOKS } from './engine/hooks'
 import * as view from './state/view'
-import { setLgEdit, setEffectiveRole } from './state/auth'
+import { setLgEdit, setEffectiveRole, setMe } from './state/auth'
 import { notify, loadWeek, moveSection, moveSectionTo, writeInputs } from './state/store'
 import { globalUndo, globalRedo } from './undo'
 import { secOrder, SECTIONS, secDefault, setSecDefault, moveSecDefault } from './engine/order'
-import { setRole as lwSetRole, setViewer as lwSetViewer, loadWars as lwLoadWars, setCell as lwSetCell, setPostOut as lwSetPostOut } from './leavewar/state/store'
+import { setRole as lwSetRole, loadWars as lwLoadWars, setCell as lwSetCell, setPostOut as lwSetPostOut } from './leavewar/state/store'
+import { pinViewer } from './leavewar/sync'
 
+/* the hosts the bridge is installed on ([ACCOUNTS], 26 Sep 26): this PC only — the
+   e2e suite, the probes, the Tracker smoke and the hand-pass drivers all serve the
+   build here; a deployed host never gets a bridge (main.tsx) */
+export function isLocalHost(): boolean {
+  if (typeof location === 'undefined') return false
+  const h = location.hostname
+  return h === 'localhost' || h === '127.0.0.1' || h === '[::1]' || h === '::1'
+}
 export function installProbeBridge() {
+  /* the whole bridge, and every global it hangs on window, exists on the developer's PC only —
+     asked here as well as by its one caller (main.tsx), so no future caller can install it on a
+     deployed host (Fable's code read, 26 Sep 26) */
+  if (!isLocalHost()) return
   const w = window as any
   /* the engine singletons the probes read */
   w.DAYS = DAYS; w.PEOPLE = PEOPLE; w.INPUTS = INPUTS; w.VCONF = VCONF
@@ -115,8 +128,8 @@ export function installProbeBridge() {
   w.setPage = (p: string) => { view.setPage(p); notify() }
   /* Shell.tsx and ui-contracts already claim this mirror exists — make it true */
   w.openWarns = (sev: any) => { view.openWarns(sev); notify() }
-  /* the Leave War role, same precedent as w.setPage: production writes it
-     only from resetSession (the Raptor login), but the vendored e2e suite
+  /* the Leave War role, same precedent as w.setPage (this PC only, like the whole
+     bridge): production writes it only from resetSession (the Raptor login), but the vendored e2e suite
      needs mid-test member↔admin switches that no click path reaches since
      the standalone app's on-screen toggle was removed at the merge. */
   w.lwSetRole = (r: 'admin' | 'member') => lwSetRole(r)
@@ -130,14 +143,19 @@ export function installProbeBridge() {
   // re-renders the grid and races a drag-select fired right after (fails on CI's
   // slower runners). mayReverse reads the role at undo-CLICK time, and the buttons
   // refresh off the timeline, so the flip needs no re-render.
-  if (typeof location !== 'undefined' && (location.hostname === 'localhost' || location.hostname === '127.0.0.1'))
+  if (isLocalHost()) {
     w.raptorRole = (r: 'admin' | 'member') => { setEffectiveRole(r) }
-  /* the Leave War VIEWER — the "View as" person the war scopes a member to
-     (canEditRow). Production mirrors Raptor's ME onto it through the sync; the
-     e2e needs to pin the member's identity to the row it edits without driving
-     the Raptor "View as" picker from the Leave War tab. Same precedent as
-     w.lwSetRole. */
-  w.lwSetViewer = (id: string | null) => lwSetViewer(id)
+    /* [ACCOUNTS] — the signed-in PERSON in place, the partner of raptorRole: the e2e
+       and the walk switch who is signed in without a re-sign-in (which would reload a
+       fresh demo world — bug-check order §7.7). It replaces the one e2e step that
+       drove the retired "View as" picker. */
+    w.raptorMe = (pid: string | null) => { setMe(pid); notify() }
+  }
+  /* the Leave War VIEWER — the person the war scopes a member to (canEditRow).
+     Production mirrors the SIGNED-IN person onto it through the sync (D166 (4)); the
+     e2e pins the member's identity to the row it edits. Same precedent as
+     w.lwSetRole — and, like the whole bridge since [ACCOUNTS], this PC only. */
+  w.lwSetViewer = (id: string | null) => pinViewer(id)   // held for this sign-in (leavewar/sync.ts pinViewer)
   /* Inject a full war set into the live store. Same reason as w.lwSetRole: the
      under-manned e2e fixtures cannot seed a red-day war through localStorage
      before boot — they boot, then push it in through here. CORRECTED 17 Sep 26:
@@ -151,7 +169,7 @@ export function installProbeBridge() {
      it), and read the Inputs back. Localhost only, like w.raptorRole: e2e and
      screenshot scenarios plant a filed leave / medical without driving the
      whole Inputs form each time. */
-  if (typeof location !== 'undefined' && (location.hostname === 'localhost' || location.hostname === '127.0.0.1')) {
+  if (isLocalHost()) {
     w.fileInput = (row: any) => writeInputs(() => { INPUTS.unshift({ remarks: '', mod: '2026-01-01', ...row }) })
     w.INPUTS = INPUTS
     w.lwSetCell = (p: string, d: string, code: string) => lwSetCell(p, d, code)

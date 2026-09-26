@@ -18,8 +18,9 @@
      points here (Shell.tsx) — seeing the list is what clears it, so an
      admin can never lose the alert without the reports on screen. */
 import { useEffect, useRef, useState } from 'react'
-import { SESSION } from '../state/auth'
+import { isAdmin, me } from '../state/perms'
 import { HOOKS } from '../engine/hooks'
+import { PEOPLE } from '../engine/people'
 import { notify } from '../state/store'
 import { elogWhen } from '../engine/editlog'
 import { BUG_CATS, REPORTS, fileReport, reportRows, markReportsSeen, type BugReport } from '../state/reports'
@@ -36,7 +37,10 @@ function Row({ r, fresh, who }: { r: BugReport; fresh?: boolean; who?: boolean }
       <div className="bughead">
         <span className="bugcat" style={{ ['--h' as any]: hue }}>{r.cat}</span>
         {fresh && <span className="bugnew">NEW</span>}
-        <span className="bugwhen">{elogWhen(r.t)}{who ? ` · ${r.who}` : ''}</span>
+        {/* the filer's LIVE callsign, read through his person (a rename moves nothing — the
+            one-identity rule; Fable's scenario read, 26 Sep 26), the name as filed only when
+            the report carries no person */}
+        <span className="bugwhen">{elogWhen(r.t)}{who ? ` · ${(r.pid && (PEOPLE as any)[r.pid]?.cs) || r.who}` : ''}</span>
       </div>
       <div className="bugtext">{r.text}</div>
     </div>
@@ -45,8 +49,10 @@ function Row({ r, fresh, who }: { r: BugReport; fresh?: boolean; who?: boolean }
 
 export function HelpPage() {
   useVersion()
-  const admin = SESSION && SESSION.role === 'admin'
-  const me = HOOKS.whoami()
+  const admin = isAdmin()
+  /* "Your reports" is keyed by the PERSON, never the callsign: a rename keeps them his,
+     and a reused callsign never inherits them ([ACCOUNTS]; Astra R1-9) */
+  const mine_pid = me()
   const catRef = useRef<HTMLSelectElement>(null)
   const txtRef = useRef<HTMLTextAreaElement>(null)
   /* which rows were UNSEEN when this admin opened the page — captured once,
@@ -69,7 +75,7 @@ export function HelpPage() {
     notify()
   }
   const rows = reportRows()
-  const mine = rows.filter(r => r.who === me)
+  const mine = rows.filter(r => mine_pid != null && r.pid === mine_pid)
   return (
     <div className="help-inner">
       <h2>Help</h2>

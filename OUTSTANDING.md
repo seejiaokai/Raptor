@@ -50,7 +50,11 @@ whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaini
 
 **His order — to the database step, about two months away (D203, 26 Sep 26; D173, D147 within it):**
 1. **Now — [ACCOUNTS]** (D165, D166, D200, D202; its open question: how a new user joins), then **[DRAFT-PENDING]** — the
-   one changes window, on top of accounts — then one FULL check of both and "merge live" (D173).
+   one changes window, on top of accounts. **Each gets its own FULL check (D210, 26 Sep 26 — amends D173's one check of
+   both):** accounts is planned, red-teamed, built, walked and FULL-checked by itself on `claude/accounts`, then "merge live";
+   the window then gets its own.
+   **Before the window: [ACCOUNTS-NEW-PERSON]** (D214 — make a brand-new person from Admin → Users; mock-up first, then
+   its own small branch and check).
 2. **Now, beside the building — [IT-QUESTIONS]:** talk to the IT side (his, not code); their approvals take weeks.
 3. **Development as normal — [HUMAN-RETEST]**'s remaining three, in HIS order (D147): the absence record TOGETHER with
    **[S4-HUNT-REST]** (its ground IS the absence record), then change-recording (with [UNDO-ROSTER-SETTINGS] and D148),
@@ -69,8 +73,8 @@ whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaini
 [OIL-PERSONAL-PLACEHOLDER] (FULL tier), [CROWD-SIM-BRIEF] (WALK tier), [OIL-RELINK-XWEEK].
 
 **Placed by their own lines — not his rulings:** the Leave War — [LW-FROZEN-BAR-GAP] (after [HUMAN-RETEST]; show him
-first), [LW-FIGSEL-SLOW] and [LW-SCRUBBER-FLAKY] (test-only); the Inputs calendar — [INPUTSCAL-TAP-FLAKY] (test-only). The Tracker — [TRK-RETEST-NOTES] and
-[TRK-EDIT-SIDEWAYS] (their gates have passed), [TRK-PINCH-ASK] (his next Tracker session), [TRK-DLG-LEFTOVERS] (low, with the next question-box change), [TRK-PALETTE-ASK] (his answer D157: Raptor's colours
+first), [LW-FIGSEL-SLOW] and [LW-SCRUBBER-FLAKY] (test-only); the Inputs calendar — [INPUTSCAL-TAP-FLAKY] (test-only). The background-command guard — [BG-GUARD-FALSE] (small; tooling). The Tracker — [TRK-RETEST-NOTES] and
+[TRK-EDIT-SIDEWAYS] (their gates have passed), [TRK-PINCH-ASK] (his next Tracker session), [TRK-SESSION-PICK] (low, the next Tracker change), [TRK-DLG-LEFTOVERS] (low, with the next question-box change), [TRK-PALETTE-ASK] (his answer D157: Raptor's colours
 fully — being built on `claude/tracker-palette`), [TRK-FLEXBAR-INK] (a question for him, on that branch's look card),
 [TRK-BAKE-STALE] (low). The Leave War — [LW-RESET-ORDER] (his yes, D160 — a small build).
 The amendment area — PR #434, #435, #437 and #438 MERGED (25–26 Sep 26); [LOOK-435]'s steps 2–4 are items 1 above; left: [REQ-ORPHAN-ROW] and [REQ-DOOR-WORDS] (both low). The board — [PUCK-FLAG-GLOW] (D164: a flagged puck does not glow — a small build), [CROWD-SWAP-SAYS-BUSY] (small; found by the batch's re-walk). Left from the amendment batch (D91–D111, merged): [AVAILWIN-PREVIEW-BAR] (low), [AMEND-SMALL-SEEN] (any time). The docs and the checks — [DEPLOY-DOCS] (its operational half), [DOC-POINTERS-CODE] and
@@ -78,7 +82,8 @@ The amendment area — PR #434, #435, #437 and #438 MERGED (25–26 Sep 26); [LO
 Roles — [QUALS-MEMBER-SCOPE] (folded into [ACCOUNTS], D200), and beside it [QUALS-PROTO-TOAST] (low, one line of words). View-only Sched — [VIEW-ARROW-OVER-LIST] (low, LOOK tier).
 Insights — [INSIGHTS-WORKING-COPY] (a question for him, with the one changes window or any time).
 
-**Waiting on him — no order exists:** [OIL-EARNED-VS-GRANTED] (his figure — ask first, when the award fix reaches it;
+**Waiting on him — no order exists:**
+[OIL-EARNED-VS-GRANTED] (his figure — ask first, when the award fix reaches it;
 D147), [LW-COMMIT-MANNING] (his call), [LEAVE-YEAR] ("we will do this next time", 19 Sep — no slot since),
 [REPO-PRIVATE]'s sharing half, [EOD] (design first; no slot
 ruled), [CRP-FLAG]'s remainder and then [FLAG-EXPORT], the [AMEND] leftovers, [ADMIN-DISPLAY] ("next time we revisit",
@@ -511,6 +516,10 @@ contribution from the ledger on read, exactly the way an absence is derived from
 the three cell editors become one ledger edit; a one-time conversion of stored hand-typed credits
 and of the demo seed. **Priority: after the bug hunt, and below [PUB-UNAVAIL] — it is tidiness with
 a real risk attached, not a hole in the paperwork.**
+**ADDED 26 Sep 26 by `[ACCOUNTS]` (D200 (2), Astra's plan read R1-8): a hand-typed award must also keep WHO ENTERED IT
+AND WHEN** — the signed-in person (by id, drawn by his live callsign) and the time, stamped by the store from the session,
+separate from the typed "Given by" (on whose say-so). Not built in `[ACCOUNTS]`: the award's record changes here, once
+(D203). `data-model.md` §11 states the rule.
 **Related, deferred on purpose from `[ARCH-STACK-4]` (merged; archived 24 Sep 26):** OIL itself as a read-time
 derivation — the step-4 design §7 (`specs/2026-09-19-arch-stack-4-one-absence-design.md`). Decide both together.
 
@@ -724,6 +733,10 @@ carry-over rules, and which year a leave crossing 31 Dec charges. Context: clash
 
 ### [DB-STEP] The shared-database step (Dataverse) — FUTURE MILESTONE
 
+**ACCESS CHANGES TAKE EFFECT AT ONCE (Astra's read of `[ACCOUNTS]`, 26 Sep 26):** switching an account off, demoting
+an admin or relinking a person must stop the old rights on his very next request, in every open tab and device — the
+server checks the current account on every write (`raptor-port/docs/handover-dataverse.md`, the non-negotiables). Today
+it cannot: accounts live in one browser and open tabs share nothing, so a change reaches that browser's next sign-in.
 **ACCOUNTS (owner, D165, 25 Sep 26):** everyone signs in with their own defence mail account; the admin creates each
 person in the app (callsign, name, admin or member) tied to their defence mail address; "View as" goes away. Per-person
 "what changed since YOU last looked" follows (`[DRAFT-PENDING]`). The Microsoft side (access, licences, whether code
@@ -870,6 +883,14 @@ Marked **his call** where the answer is product direction, not a defect.
 0px — nothing to see, drag or pinch (picture `docs/img/handpass/2026-09-23-tracker-pinch/after-phone-sideways-edit-no-room.png`).
 Upright it keeps 446px. Older than the pinch fix (F-C in its sheet). A layout job: fold or scroll the strip sideways.
 
+### [TRK-SESSION-PICK] The Tracker reopens on the previous person's course and student after a sign-in (filed 26 Sep 26)
+Astra's read of `[ACCOUNTS]` (finding 3): `tracker/app/core.js endSession` clears undo, dialogs, modes and search, but not
+the selected course and student, and the "last course / last crew" it remembers is per browser, not per person — so the
+next person on the same browser opens on the last one's pick. Not a leak (the Tracker is everyone's, D121), a wrong
+starting point. **Do:** start each sign-in on the default course and no student, or keep the "last pick" per person
+(`tracker/role.js` would carry who signed in); extend `retest.test.tsx` F10 across a sign-out. **Place:** low — the next
+Tracker change; its smoke suite pins the "last pick" behaviour, so it is not a one-liner.
+
 ### [TRK-PINCH-ASK] His iPhone look at the pinch fix (24 Sep 26)
 **Place:** his next Tracker session — nothing is broken; `[TRK-PINCH-DRAGS-BALL]` merged on D133 without his look.
 The two feel questions are ANSWERED — **D134: keep both as built** (a deliberate drag joined by a second finger goes
@@ -922,7 +943,8 @@ section folds are next touched. (Its first half — the wave show/hide toggle le
 
 ### [QUALS-MEMBER-SCOPE] May a member edit ANY row on the Quals page? — a question for him (moved from HANDOFF.md, 24 Sep 26)
 
-**FOLDED INTO `[ACCOUNTS]` 26 Sep 26 (D200) — built there.** **ANSWERED (D149, 24 Sep 26) — now a small build:** a member edits his OWN row only, and every column of it (SXO and
+**FOLDED INTO `[ACCOUNTS]` 26 Sep 26 (D200) — BUILT there 26 Sep 26 (`raptor-port/src/state/quals-write.ts`,
+pinned per column in `quals-write.test.ts`); to the archive with `[ACCOUNTS]`' merge.** **ANSWERED (D149, 24 Sep 26) — now a small build:** a member edits his OWN row only, and every column of it (SXO and
 SCHEDULER included); an admin edits any row. The gate goes at the page and the write path, with a test per column;
 permissions, so FULL tier. **Place:** any time, none blocking. The question as it was put:
   - **Member Quals-editing scope** — a member in Quals editing mode can tick/edit
@@ -962,6 +984,15 @@ Noted by the sweep behind `[LEAVE-LATE-PUBLISHED]` (Astra, its plan read; carrie
 working copy, so on View-only Sched a published next-week day shows edits not yet issued. Astra recommends the issued
 content there too, as the published face does (D178, D179). **The question:** should the peek show the published version
 of a published day? **Place:** low; its own small WALK-tier build if yes.
+
+### [BG-GUARD-FALSE] The background-command guard refuses two commands that do move into raptor-port (filed 26 Sep 26)
+Found by the accounts chat on its first background run after `[BG-CWD-GUARD]` merged (D162): the hook
+(`.claude/hooks/bg-cwd-guard.mjs`) refused `cd /c/Users/User/projects/Raptor/raptor-port && npm …` (a full path), and
+the form it asks for, `cd raptor-port && npm …`, then FAILED — this background shell started inside `raptor-port`
+already (the session's folder), not at the repo root the hook and `raptor-port/CLAUDE.md` assume. What worked:
+`cd /c/Users/User/projects/Raptor && cd raptor-port && npm …`. **Do:** accept a `cd` whose target ends in `raptor-port`
+(full or relative path), and correct the "starts at the REPO ROOT" note — a background shell starts in the session's
+current folder. **Place:** small, tooling, any time.
 
 ### [INPUTSCAL-TAP-FLAKY] The calendar's chip-tap test fails now and then inside the full unit run, never alone — test-only (filed 26 Sep 26)
 `raptor-port/src/ui/inputscal.test.tsx` "a real pointerdown+pointerup on an input chip sets INPEDIT to that EXACT record":
@@ -1086,6 +1117,8 @@ audit is mechanical — then consider making the gate require a NEW row's docume
 **Place:** any time, none blocking.
 
 ### [PUCK-FLAG-GLOW] A red-flagged "View as" puck glows; no flagged puck should (his ask, D164, 24 Sep 26)
+*(Since `[ACCOUNTS]` (26 Sep 26) the purple "this is you" puck is the SIGNED-IN person's — "View as" is gone; the glow
+rule below is unchanged.)*
 He sent two pictures: a red-flagged puck with a red glow (Ranger, the person being viewed as) and one without (Saber).
 The glow comes from `raptor-port/src/ui/scheduler.css`: `.puck.me.boxred` and `.puck.me.boxdash` add
 `0 0 10px 1px rgba(240,85,95,.7)` on top of the red ring when the View-as puck is flagged. **Do:** drop that glow, so
@@ -1104,6 +1137,10 @@ and settings edits ARE undoable — ordinary user changes, never amendments. The
 renaming a callsign or changing a Logic setting cannot be undone. **Place:** the change-recording re-test (D147,
 second after the absence record) — it is the one undo's own subject; build it there with D148 (undo only your own
 changes). Walk it first: confirm on screen that Undo stays greyed or skips a roster / settings edit.
+**Accounts (26 Sep 26, `[ACCOUNTS]`):** the accounts, the access requests and the guest switch are three more settings
+records, so they join this item: when settings are cut over to the one undo, an account restore must re-check the
+guards `[ACCOUNTS]` enforces at the write (at least one admin keeps access; an admin never changes his own account),
+or an undo could lock the squadron out.
 
 ### [AVAILWIN-PREVIEW-BAR] On the desktop board the ALL AVAIL window, opened from a preview, covers the preview bar (found 24 Sep 26)
 Found by the amendment re-test's walker W2 (W2-F7). Saturday's board → plans selector → Original → tap the ALL AVAIL
@@ -1134,7 +1171,23 @@ None breaks an amendment rule; each is a line to fix or ask about, from the walk
    Fable #1's mirror; the digest keys ground rows by position). A false re-sign, never a false publish.
 **Place:** any time; items 6–8 with the Leave War links re-test (D147, last).
 
+### [ACCOUNTS-NEW-PERSON] Admin → Users makes a brand-new person with his account, in one step (D214, filed 26 Sep 26)
+**His ruling (D214):** *"2 can u show me a mock up, also ill need his initials"* — after he found the callsign list offers
+only people already on Quals. **Build:** "Add an account" (and Approve, filled from the callsign and name the person typed)
+gets a **New person** choice — callsign, **initials**, pilot / WSO / personnel, CAT — which creates his Quals row and his
+account together through the SAME add the Quals page uses (one callsign rule), as one command. Flight and quals stay on
+Quals. **Mock-up first:** `raptor-port/docs/mock/new-person-account.html` (his approval before any code). **Tier:** FULL
+(roles and saved data). **With it — D216:** a new access request lights the admins' bell (a tap → Admin → Users; out once
+he has opened it). **And the sign-up form asks the same things** (his "signs up for an account", on D214's row).
+**And D217 — one door:** a new person is created ONLY on Admin → Users (or his approved sign-up); a blank sign-in makes a
+roster-only person (a SANS man); Quals' "+ Add person" becomes a button to Admin → Users (its form and tests retired, D201).
+**And D219:** the field reads "Callsign/Name" (some people have no callsign) — the sign-up, Admin → Users and the Quals head. **D220:** the seat choice reads "Pilot", "WSO", "Personnel (ground crew)". **D222:** on the sign-up card only, that field reads "Displayed callsign/name".
+**Place:** straight after `[ACCOUNTS]` merges, on its own branch, before `[DRAFT-PENDING]`.
+
 ### [ACCOUNTS] Accounts in the app now, shaped as the defence-mail sign-in will be (owner, D166, 25 Sep 26)
+**BUILT 26 Sep 26 on `claude/accounts` — in its FULL check (D210); the plan (red-teamed three rounds by Fable and Astra)
+is `raptor-port/docs/superpowers/plans/2026-09-26-accounts-plan.md`; the behaviour register
+`raptor-port/docs/superpowers/specs/2026-09-26-accounts-behaviour-register.md`.** To the archive with its merge.
 The Admin tab creates accounts (sign-in name, admin or member, the callsign it belongs to); the sign-in screen stands
 for the defence mail sign-in; signing in makes you that callsign, so "View as" and any member preview go; the Leave
 War follows the signed-in callsign; every "who" (edit record, pending list, hand over) names the callsign. Replaces
@@ -1161,7 +1214,8 @@ leave / OIL ledger (admin writes, a member reads his own) — check, do not re-a
 gaps fixed, three older findings filed (`[REQ-TWO-ROWS]`, `[REQ-DECLINED-PENDING]`, `[REQ-ORPHAN-ROW]`); waiting for his look.
 **D173 REPLACES the plan below (D115's one check at the end):** (1) D114's FULL check on PR #435, then his look and
 "merge live"; (2) `[ACCOUNTS]` on a NEW branch; (3) `[DRAFT-PENDING]` — the one changes window, which absorbs D116's
-list, D117 and D119 (not built separately); (4) one FULL check of 2 and 3. The text below is the plan as it stood.
+list, D117 and D119 (not built separately); (4) one FULL check of 2 and 3 — **AMENDED 26 Sep 26 BY D210: accounts gets its
+own FULL check first, the window its own later.** The text below is the plan as it stood.
 Built on `claude/amendment-batch` before the full check (D115): **D114** (a request taken off / put on a published day
 is one change — built, red first, NOT yet walked or read), **D116** (Edit Schedule's History button a toggle like the
 board's), **D117** (the Edit history list: the whole week, a day picker), **D118** (`[DRAFT-PENDING]` — waits on his
@@ -1170,7 +1224,11 @@ and Astra's reads — the D114 brief is `raptor-port/docs/superpowers/briefs/202
 the rest — the walk on desktop and phone, the full gates, the evidence sheet). Nothing is "ready for merge live" before
 that check. **Place:** now, on this branch.
 
-### [DRAFT-PENDING] The one CHANGES WINDOW — D118, D167–D172 (25 Sep 26); step 3 of D173, after `[ACCOUNTS]`
+### [DRAFT-PENDING] The one CHANGES WINDOW — D118, D167–D172 (25 Sep 26); step 3 of D173, after `[ACCOUNTS]` (its own FULL check — D210)
+**From `[ACCOUNTS]` (26 Sep 26), to settle here:** the edit log is cleared at every sign-in and sign-out (`resetSession`
+→ `elogClear`, session-only as today); with personal accounts, should the change history outlive a sign-out? The
+window's "new to you" needs it to. A member's history shows a medical change in full (D211, which narrows D169's
+reading). The edit log's rows carry the person's id beside the callsign from `[ACCOUNTS]` on.
 **WHAT IS SETTLED (read the rulings, not the working notes below):** D168 one changes window (New to you / All changes,
 a day picker, Group by Who / Where) replacing the pending list, the hand-over idea and the Edit history list; D167 its
 shape (movable, resizable, a tap takes the schedule to the change and the window stays; the phone's panel shrinks to a

@@ -140,7 +140,7 @@ img,a{-webkit-user-drag:none;user-drag:none}
 .login input:focus{outline:2px solid var(--accent);outline-offset:0}
 .login .go{display:block;width:100%;box-sizing:border-box;-webkit-appearance:none;appearance:none;
   background:var(--accent);color:var(--accent-ink);border:none;font-size:14px;font-weight:700;
-  padding:12px;border-radius:10px;cursor:pointer;margin-top:5px;letter-spacing:.04em}
+  padding:12px;border-radius:10px;cursor:pointer;margin:5px 0 0;letter-spacing:.04em}   /* margin in full: the schedule's `.go` (a flying-wave block) gives 10px sides, which pushed this button 10px right and past the card's edge — on the sign-in and Request access cards alike (26 Sep 26) */
 .login .go:hover{filter:brightness(1.06)}
 /* the error line takes no room until there is one to print */
 .login .err{color:#FBB4B9;font-size:12px;margin:0 0 8px}
@@ -166,6 +166,34 @@ img,a{-webkit-user-drag:none;user-drag:none}
   .lb-word{font-size:32px}
   .lb-glyph{width:32px;height:32px}
 }
+
+/* ---- the access screens ([ACCOUNTS], D204): request access, waiting, switched off —
+   the sign-in card's siblings, so a person signed in without access stays on the same
+   quiet page. Sign out is a plain text button under the card's main action. ---- */
+.acc-card{margin-top:14px}
+.acc-h{margin:0 0 6px;font-size:17px;font-weight:700;color:var(--ink);letter-spacing:.01em}
+.acc-who{margin:0 0 12px;font-size:12px;color:var(--ink-3);overflow-wrap:anywhere}
+.acc-who b{color:var(--ink-2);font-weight:600}
+.acc-p{margin:0 0 16px;font-size:13px;line-height:1.55;color:var(--ink-2)}
+.acc-p b{color:var(--ink)}
+.acc-out{display:block;width:100%;margin-top:12px;padding:10px;border-radius:10px;
+  background:transparent;border:1px solid var(--edge);color:var(--ink-2);font-size:13px;font-weight:600;cursor:pointer}
+.acc-out:hover{color:var(--ink);border-color:var(--edge-2)}
+/* the guest view's slim bar: the mark, the note, Sign out — and the week window stays
+   on a phone too (the member's phone reaches weeks from the calendar, which a guest
+   does not mount) */
+.guestbar{gap:12px}
+.guest-note{font-size:12px;color:var(--ink-3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.guestbar .right{margin-left:auto}
+#guestApp .guest-wks{display:inline-flex;flex-wrap:wrap}
+/* the Admin tab's count of access requests waiting (D204 "a badge on the Admin tab") —
+   the top nav and the phone drawer; admins only */
+.navbadge{display:inline-block;min-width:16px;height:16px;padding:0 4px;margin-left:6px;border-radius:8px;
+  background:var(--accent);color:var(--accent-ink);font-size:10px;font-weight:700;line-height:16px;
+  text-align:center;vertical-align:1px;box-sizing:border-box}
+/* the drawer's Account line — who is signed in (D166 (3)) */
+.drawer-acct{margin:0 0 8px;font-size:12.5px;color:var(--ink-3)}
+.drawer-acct b{color:var(--ink);font-weight:600}
 
 
 /* ============ LOGIC ============
@@ -5863,6 +5891,32 @@ button.sbi-ty.inpedit:hover{text-decoration:none;filter:brightness(1.3)}
 #page-admin .adm-2col input[type=date]{width:100%;box-sizing:border-box}
 #page-admin #admConfig .abtn{display:block;width:100%;text-align:left;margin-top:2px}
 #page-admin #admConfig .adm-note{margin-bottom:12px}
+/* Admin → Users ([ACCOUNTS], D166, D204): the requests waiting and the accounts, one row
+   each — sign-in name over callsign, the role pill at the right; a tapped row opens its
+   editor underneath (never on your own account) */
+#page-admin .acc-list{border-top:1px solid var(--edge)}
+#page-admin .acc-row{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;padding:8px 0;border-bottom:1px solid var(--edge)}
+#page-admin .acc-row.off .acc-name{color:var(--ink-3);text-decoration:line-through}
+#page-admin .acc-main{flex:1 1 180px;min-width:0;display:flex;flex-direction:column;gap:2px;text-align:left;
+  background:none;border:none;padding:0;color:inherit;font:inherit}
+#page-admin .acc-tap{cursor:pointer}
+#page-admin .acc-tap:disabled{cursor:default}
+#page-admin .acc-tap:not(:disabled):hover .acc-name{color:var(--accent)}
+#page-admin .acc-name{font-size:13px;font-weight:600;color:var(--ink);overflow-wrap:anywhere}
+#page-admin .acc-sub{font-size:11.5px;color:var(--ink-3);display:flex;flex-wrap:wrap;gap:4px 8px;align-items:center}
+#page-admin .acc-sub b{color:var(--ink-2);font-weight:600}
+#page-admin .acc-tag{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;padding:1px 7px;border-radius:999px;
+  background:rgba(245,166,35,.14);color:#F5C06A}
+#page-admin .acc-tag.you{background:rgba(59,198,232,.14);color:var(--accent)}
+#page-admin .acc-row .ub{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;padding:2px 8px;border-radius:999px}
+#page-admin .acc-row .ub.admin{background:rgba(59,198,232,.16);color:var(--accent)}
+#page-admin .acc-row .ub.main{background:rgba(138,150,163,.16);color:var(--ink-2)}
+#page-admin .acc-acts{display:flex;flex-wrap:wrap;gap:6px}
+#page-admin .acc-edit{flex:1 1 100%;padding:10px 0 4px}
+#page-admin .acc-edit .mfield select,#page-admin .acc-edit .mfield input{width:100%;box-sizing:border-box}
+#page-admin #admUsers .mfield select,#page-admin #admUsers .mfield input{width:100%;box-sizing:border-box}
+#page-admin .acc-switch{display:flex;gap:10px;align-items:flex-start;font-size:12.5px;color:var(--ink-2);cursor:pointer;line-height:1.45}
+#page-admin .acc-switch input{margin-top:2px;flex:0 0 auto;width:16px;height:16px;accent-color:var(--accent)}
 /* (the Admin + Wave show/hide list was removed 29 Aug 26 pt.3 — show/hide/delete
    moved to the + Wave menu, and on 30 Aug 26 folded into the one Flying-waves sheet;
    its .wvmng-* row/eye styles live by the modal and are reused there.) */
@@ -6290,3 +6344,9 @@ button.sbi-ty.inpedit:hover{text-decoration:none;filter:brightness(1.3)}
 .availwin .win-lost{padding:10px 4px;font-size:11px;line-height:1.4;color:var(--ink-2);font-style:italic}
 .availwin .rgone{margin-top:6px;padding-top:6px;border-top:1px dashed var(--edge-2);
   font-size:10px;line-height:1.35;color:var(--ink-3)}
+
+/* D149 ([ACCOUNTS], 26 Sep 26): with editing on, a member's OWN Quals row is editable and
+   the others read as plain text — their tick cells lose the editing hover so nothing
+   looks tappable that is not his */
+.qtbl.editing tr.qro .qcell{cursor:default}
+.qtbl.editing tr.qro .qcell:hover{background:none}

@@ -11,7 +11,7 @@
 import { beforeAll, beforeEach, afterEach, describe, expect, it } from 'vitest'
 import { initStore, setSession, undo, writeInputs, histInit } from '../state/store'
 import { setMe } from '../state/auth'
-import { INPUTS, inpId } from '../engine/inputs'
+import { INPUTS, inpId, mintInpIds } from '../engine/inputs'
 import { PLANPUCKS, addPlanPuck, addPuckRow, togglePuckPerson } from '../state/plan'
 import { HOOKS } from '../engine/hooks'
 import { commitChipMove, initCalDrag } from './caldrag'
@@ -52,6 +52,10 @@ beforeAll(() => { initStore() })
 
 beforeEach(() => {
   INPUTS.length = 0; JSON.parse(ISNAP).forEach((i: any) => INPUTS.push(i))
+  /* stamp the reloaded inputs' ids BEFORE the baseline (histInit below), as the app's
+     boot does: otherwise the first command stamps everyone's and — since [ACCOUNTS] —
+     a member's command that changed other people's inputs is rolled back */
+  mintInpIds()
   PLANPUCKS.length = 0
   setSession({ user: 'a', role: 'admin' } as any)
   setMe('bane')

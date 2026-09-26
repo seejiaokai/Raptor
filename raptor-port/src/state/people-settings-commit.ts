@@ -51,6 +51,7 @@ import {
   secDefaultLoad, waveDefaultLoad,
 } from '../engine'
 import { persistPeople as rawPersistPeople } from './persist'
+import { accountsLoad, ACCOUNT_TYPES } from './accounts'
 
 /* ---- the SETTINGS EnlistableStore ---------------------------------------- */
 /* the 11 durable settings keys (design §3.1). `wavetpl` + `wavehide` are two
@@ -59,12 +60,16 @@ import { persistPeople as rawPersistPeople } from './persist'
 export const SETTINGS_KEYS = [
   'rules', 'stores', 'cxreasons', 'daytpl', 'dutytpl', 'wavetpl', 'wavehide',
   'qualcols', 'lookahead', 'secdefault', 'wavedefault',
+  /* [ACCOUNTS] (D166, D204, 26 Sep 26): the accounts, the access requests and the
+     guest switch — the Shell's `User` / `AccessRequest` and one `Setting` (data-model
+     §3, §11). Written ONLY by state/accounts.ts, through its intent commands. */
+  'accounts', 'accessreqs', 'guestview',
 ] as const
 /* every xLoad(), run to rebuild the module CFGs from the (restored) store on a
    rollback — deduped (waveTplLoad rebuilds both wavetpl + wavehide). */
 const SETTINGS_LOADERS: Array<() => void> = [
   rulesLoad, storesLoad, cxReasonsLoad, dayTplLoad, dutyTplLoad, waveTplLoad,
-  qualColsLoad, lookaheadLoad, secDefaultLoad, waveDefaultLoad,
+  qualColsLoad, lookaheadLoad, secDefaultLoad, waveDefaultLoad, accountsLoad,
 ]
 function settingsRecords(): Map<string, RecordEntry> {
   const m = new Map<string, RecordEntry>()
@@ -192,8 +197,18 @@ function commitSettings(type: string, fn: () => void): CommitResult {
   const cmd: Command = { type, scope: settingsScope(), apply: (txn) => { txn.enlist(settingsStore); fn() } }
   return commit(cmd)
 }
-function commitPeople(type: string, fn: () => void): CommitResult {
-  const cmd: Command = { type, scope: peopleScope(), apply: (txn) => { txn.enlist(peopleStore); fn() } }
+function commitPeople(type: string, fn: () => void, meta?: any): CommitResult {
+  const cmd: Command = { type, scope: peopleScope(), meta, apply: (txn) => { txn.enlist(peopleStore); fn() } }
+  return commit(cmd)
+}
+/* [ACCOUNTS] — ONE intent command over the settings store (Astra R2-3, Fable R2-3): an
+   account change that touches two keys (approve = a new account AND the request
+   cleared) writes both inside this one command, so they commit or roll back together.
+   `fn` writes through store.set, which writes raw while a command is running. `meta`
+   carries what the gate reads (perms.ts cmdAuthorize: meta.owner for a pending
+   person's own request). */
+export function commitSettingsIntent(type: string, meta: any, fn: () => void): CommitResult {
+  const cmd: Command = { type, scope: settingsScope(), meta, apply: (txn) => { txn.enlist(settingsStore); fn() } }
   return commit(cmd)
 }
 function commitPeopleProjectionCmd(type: string, fn: () => void): CommitResult {
@@ -219,8 +234,8 @@ export function persistPeopleProjection(): void {
 /* wrap a user roster action (its mutations + the persist) in ONE command so a
    cross-seam gesture is a SINGLE envelope — restoreArchivedPerson's setPostOut
    (LW, child-joins) + archived flip + persist (C10). */
-export function commitPeopleEdit(fn: () => void): void {
-  commitPeople(PEOPLE_TYPES.edit, () => { fn(); advancePeople() })
+export function commitPeopleEdit(fn: () => void, meta?: any): CommitResult {
+  return commitPeople(PEOPLE_TYPES.edit, () => { fn(); advancePeople() }, meta)
 }
 
 /* ---- one-time registration (called from initStore, after the scheduler) --- */
@@ -231,6 +246,9 @@ export function registerPeopleSettingsCommandLayer(): void {
   PEOPLE_BASELINE = JSON.stringify(PEOPLE)   // the seed/hydrated roster is the first baseline
   definePermission(PEOPLE_TYPES.edit, anyone)
   for (const k of SETTINGS_KEYS) definePermission(settingsType(k), anyone)
+  /* the account intents; `anyone` only DECLARES them — their authority is perms.ts
+     COMMAND_OPS through the resolver store.ts wireStore installs */
+  for (const t of ACCOUNT_TYPES) definePermission(t, anyone)
   registerGuardedStore(peopleStore)
   registerGuardedStore(settingsStore)
   // route every durable settings write (store.set) through a named command.

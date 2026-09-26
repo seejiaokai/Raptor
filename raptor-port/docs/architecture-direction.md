@@ -206,7 +206,7 @@ Each stage is independently deployable and reversible; none needs the next.
   sign-in replacing the prototype `ACCOUNTS`; an admin-managed access table
   tagging each work email to a puck and a role; anyone signed in but not yet
   tagged sees the programme as a GUEST (no puck, no bids, no own-inputs) [NARROWED 26 Sep 26 by D204: he
-  sees a waiting screen and can request access; the guest view is an admin switch, off by default]; an
+  sees a waiting screen and can request access; the guest view is an admin switch, off by default] [BUILT 26 Sep 26 by `[ACCOUNTS]`: the accounts, the request / waiting / switched-off screens and the guest switch — `src/state/accounts.ts`, `src/state/perms.ts`; Microsoft sign-in and the real addresses remain the database step's]; an
   upchit nudge to the person via Teams from a scheduled flow. Licensing is
   confirmed (every account is paid). Open tenant-admin questions: code apps
   enabled in the environment; Dataverse available. NOTHING of this is built —

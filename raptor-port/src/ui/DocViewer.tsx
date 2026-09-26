@@ -14,7 +14,8 @@ import { inpMeta, baseYear } from '../engine/inputs'
 import { fmt } from './inputedit'
 import { TODAY, keyToIso } from './weeknav'
 import { docGet, rowDocIds } from '../state/docs'
-import { ME, canEditSched } from '../state/auth'
+import { canEditSched } from '../state/auth'
+import { isMe } from '../state/perms'
 import { notify } from '../state/store'
 import { DOCVIEW, setDocView, setInpEdit } from './pops'
 import { useVersion } from './useStore'
@@ -64,7 +65,7 @@ export function DocViewer() {
   }, [r])
 
   const close = () => { setDocView(null); notify() }
-  const mine = r && (canEditSched() || r.person === ME)
+  const mine = r && (canEditSched() || isMe(r.person))
   const edit = () => { setDocView(null); setInpEdit(r); notify() }
   /* the pending card's own Upchit path (owner, 27 Aug 26 — "the user can
      click on their own puck and upload their document to upchit"): a seed
