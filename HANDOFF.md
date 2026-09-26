@@ -15,6 +15,27 @@ the later merge keeps both (D78).
 
 ## Now
 
+<!-- now:claude/post-out-outcomes -->
+### `claude/post-out-outcomes` — `[POST-OUT-OUTCOMES]` planned, red team next; started before #443 merges (D301) — written 27 Sep 26, verify before use
+- **Where it stands:** cut from `claude/accounts-new-person` (PR #443). The plan (draft, red-team round 1 next):
+  `raptor-port/docs/superpowers/plans/2026-09-27-post-out-outcomes-plan.md`. Tier FULL. Built in two parts: A (accounts,
+  the callsign rule, the delete core, the member view — none of #444's files) then B (the Leave War posting outcomes, on
+  PR #444's posting code once it merges or its branch is taken in).
+- **Coordination (D302 — the chats talk so they do not clash; merges stay his):** told the absence-record chat (PR #444)
+  and the five-flags chat (PR #445) what this branch changes in files they also change. **Promised:** in
+  `leavewar/state/store.ts` only the posting record, `setPeople`'s lay-on and a new `forgetPersonFrom`; in `engine/slots.ts`
+  only `renameCallsign`; in `state/view.ts` only a new `BACKPROMPT`; in `Matrix.tsx` only the posting sheets' wiring;
+  CSS appended. **They promised:** #444 leaves `postOut`, `undoPostOut`, `restoreArchivedPerson`, `runPoArchive`,
+  `archivedBy`, the posting sheets and SelectSheet's PO alone (its nearby changes: BidPicker's decision row and
+  AwardSheet, SelectSheet's Delete/Move row, store `awardsIn`/`clearCells`, `select.ts`, Matrix's move wiring); its
+  rulings from D264. #445 promised it leaves `renameCallsign`, `setPeople`, postings, the role badge and the Quals
+  Archived list alone (its changes: `fillSlot`'s "one man, once per row" refusal, `placeArmed`, `weekInset` removed,
+  the `.puck.me` CSS split, `drag.ts` / `avail.ts` refusals); its rulings D276–D279.
+- **Merge order to put to him (his "merge live" each):** #443 and #445 in either order → #444 → this branch last (`main`
+  merged in first, the full checks re-run). A one-screen merge list for him in the morning is promised.
+- **Rulings:** D301 (start now), D302 (chats coordinate). Range D301–D309.
+<!-- /now -->
+
 <!-- now:claude/accounts-new-person -->
 ### `claude/accounts-new-person` — `[ACCOUNTS-NEW-PERSON]` FULL check done, PR #443 waiting for his look; then his posting-out rulings (D229, D280–D299) and their APPROVED mock-up — written 27 Sep 26, verify before use
 - **Where it started:** fix the two code reads' findings (Fable 1, Astra 1, 2, 4 + the record items), break tests, re-walk,
