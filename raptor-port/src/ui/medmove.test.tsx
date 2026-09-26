@@ -18,7 +18,7 @@ import { setMe } from '../state/auth'
 import { INPUTS, inpId } from '../engine/inputs'
 import { HOOKS } from '../engine/hooks'
 import { commitChipMove } from './caldrag'
-import { reassignInput } from './inputedit'
+import { medOverlapRefusal, reassignInput } from './inputedit'
 import { MEDMOVE, setMedMove } from './pops'
 import { MedMoveConfirm } from './MedMoveConfirm'
 
@@ -82,6 +82,20 @@ describe('the calendar drag of a medical onto a different-type medical', () => {
     expect(MEDMOVE, 'the sheet is done').toBe(null)
   })
 
+  /* the words say where it LANDED (W2's re-walk, 26 Sep 26): keeping the other medical's days moves the new one's start,
+     and the toast was fixed at the drop — "Moved to 24 Jul" for an ATT C now on the 25th only */
+  it('kept the other medical: the toast names the day the moved one now starts', async () => {
+    plant({ person: 'bapster', type: 'HL', date: 'Jul 20', endDate: 'Jul 24' })
+    const c = plant({ person: 'bapster', type: 'ATT C', date: 'Jul 27', endDate: 'Jul 28' })
+    commitChipMove({ kind: 'input', iid: c.iid }, '2026-07-27', '2026-07-24')
+    await mount()
+    await click(byText(/Keep HL/))
+    await click($('[data-testid="medclash-save"]'))
+    expect(spans('bapster')).toEqual(['ATT C Jul 25', 'HL Jul 20-Jul 24'])
+    expect(said).toContain('Moved to 25 Jul')
+    expect(said).not.toContain('Moved to 24 Jul')
+  })
+
   it('cancelled, nothing moves and nothing is cut', async () => {
     plant({ person: 'bapster', type: 'HL', date: 'Jul 20', endDate: 'Jul 24' })
     const c = plant({ person: 'bapster', type: 'ATT C', date: 'Jul 27' })
@@ -120,5 +134,16 @@ describe('the schedule’s reassign of a medical to another man', () => {
     expect(reassignInput(c.iid, 'haowen')).toBe(false)
     expect(JSON.stringify(INPUTS)).toBe(before)
     expect(MEDMOVE?.ask?.kind).toBe('clash')
+  })
+})
+
+/* "An ATT C", not "A ATT C" (W2's re-walk, 26 Sep 26): the same-type refusal's article follows the initials as they are
+   said — an A-T-T, an H-L, an O-M-L */
+describe('the same-type medical refusal reads as English', () => {
+  it('says "An ATT C" and "An HL"', () => {
+    plant({ person: 'bapster', type: 'ATT C', date: 'Jul 20' })
+    plant({ person: 'bapster', type: 'HL', date: 'Jul 22' })
+    expect(medOverlapRefusal('bapster', 'ATT C', 'Jul 20', '', null)).toMatch(/^An ATT C is already filed/)
+    expect(medOverlapRefusal('bapster', 'HL', 'Jul 22', '', null)).toMatch(/^An HL is already filed/)
   })
 })

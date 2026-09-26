@@ -17,7 +17,8 @@ import { notify } from '../state/store'
 import { MEDMOVE, setMedMove } from './pops'
 import { MedClashConfirm } from './MedClashConfirm'
 import { UpchitConfirm } from './UpchitConfirm'
-import { commitEditMedChoices, commitEditUpchit } from './inputedit'
+import { commitEditMedChoices, commitEditUpchit, fmtDay, ordISO } from './inputedit'
+import { dateOrd } from '../engine/inputs'
 import { useVersion } from './useStore'
 
 export function MedMoveConfirm() {
@@ -30,8 +31,15 @@ export function MedMoveConfirm() {
   const finish = (write: (r: any) => boolean) => {
     const r = row()
     if (!r) { HOOKS.toast('That input is no longer there — nothing was changed', 'warn'); return done() }
-    /* a refusal inside the commit has already said why; only the gesture's own success words are said here */
-    if (write(r) && m.said) HOOKS.toast(m.said, 'ok')
+    /* a refusal inside the commit has already said why; only the gesture's own success words are said here. A DRAG
+       says where it LANDED, read off the row once written (W2's re-walk, 26 Sep 26): keeping the other medical's days
+       moves this one's start, and "Moved to <the drop day>" named a day it no longer covers */
+    if (write(r)) {
+      const now = m.via === 'drag' ? row() : null
+      const o = now ? dateOrd(now.date, now.yr) : null
+      const said = now && o != null ? 'Moved to ' + fmtDay(ordISO(o)) : m.said
+      if (said) HOOKS.toast(said, 'ok')
+    }
     done()
   }
   if (m.ask.kind === 'up') {

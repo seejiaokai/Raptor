@@ -251,7 +251,9 @@ export function medOverlapRefusal(person: any, type: any, date: any, endDate: an
     const a = dateOrd(x.date, x.yr), b = dateOrd(x.endDate || x.date, x.yr)
     return a != null && b != null && na <= b && a <= nb
   })
-  return clash ? `A ${t} is already filed over these days — edit that entry instead, and attach the new document to it` : ''
+  /* the article follows the initials as they are said — an A-T-T C, an H-L, an O-M-L (W2's re-walk, 26 Sep 26) */
+  const an = /^[AEFHILMNORSX]/i.test(String(t)) ? 'An' : 'A'
+  return clash ? `${an} ${t} is already filed over these days — edit that entry instead, and attach the new document to it` : ''
 }
 /* An upchit is ONE date closing a real, still-open medical-down period —
    four refusals: a ranged upchit, an upchit with nothing on file to close,
