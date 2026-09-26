@@ -1191,13 +1191,12 @@ group that day, tracked (D283); (4) a transfer — future, `[XFER]`. Buttons: "S
 (D285). **Today:** the post-out sheet's one choice is "Archive on PO date"; an archived man keeps a WORKING account;
 Admin → Users has "Switch off / on", no delete. **To build:** the sheet asks which outcome and the app does it on the
 date (each also by hand); touches the Leave War (the sheet, `runPoArchive`), Quals, Admin → Users, data-model §11 (`User`
-D), `perms.ts` — FULL tier. **Still open — his pick:** someone leaving flying for good — archive the person, truly
-delete him (tested 26 Sep 26: nothing crashes, but he vanishes from every day he was ever on, published ones included,
-and his leave, OIL and inputs stay stored unseen), or — after his worry *"I scared my archive list will be huge"* — the
-agent's third way: delete him from every list, the Archived one too, keeping only his callsign so old schedules read
-right. **And names:** today an archived man's callsign can never be given to a new person (the one callsign rule
-refuses anyone's, archived included — his *"will i face the issue of not being able to reuse names?"*); the third way
-frees a departed man's callsign for reuse (rows hold ids, so old schedules stay his). **Place:** the agent recommends straight after `[ACCOUNTS-NEW-PERSON]` merges, before `[DRAFT-PENDING]` — HIS to
+D), `perms.ts` — FULL tier. **Leaving flying for good — D287, his pick "B, truly delete him":** account AND person
+deleted; every day he was on shows his seat empty, published days included (tested 26 Sep 26: nothing crashes);
+everything that is his goes too (inputs, Leave War leave and OIL — nothing left stored unseen); a day still to come
+takes him off (pending on a published day); asks twice, cannot be undone. **And names — D286:** an archived man's callsign may go to a new person (today it is refused); restoring him while it
+is in use needs one of the two renamed first (Restore says so, renames nobody). Update `roster-add.ts` (its PID-01
+header and test), `ID_BY_CS` (points at the roster's man). **Place:** the agent recommends straight after `[ACCOUNTS-NEW-PERSON]` merges, before `[DRAFT-PENDING]` — HIS to
 confirm.
 ### [LOOK-435] His inputs from the look at PR #435 — the order is D173 (25 Sep 26)
 **Step 1 DONE 25 Sep 26:** D114's FULL check — evidence `raptor-port/docs/handpass/2026-09-25-amendment-batch.md` §9; two

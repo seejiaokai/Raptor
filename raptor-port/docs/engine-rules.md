@@ -2308,7 +2308,8 @@ DAYS-walk that rewrote row strings is GONE — and it was not merely redundant, 
 wrong: it missed snapshots, parked drafts and every other week. The one add
 (`state/roster-add.ts newPersonProblem` — Admin → Users since `[ACCOUNTS-NEW-PERSON]`, 26 Sep 26, D217; the Quals
 page's own `addPerson` is retired) refuses a callsign that resolves to any existing person by id OR callsign, which
-closes the reuse back-door. Rename still refuses a blank, a no-op and a duplicate (`ID_BY_CS` can only
+closes the reuse back-door. *(To change — D286, 26 Sep 26: a callsign held only by an ARCHIVED man becomes free for a
+new person; restoring him while it is in use needs one of the two renamed first. Built with `[POST-OUT-OUTCOMES]`.)* Rename still refuses a blank, a no-op and a duplicate (`ID_BY_CS` can only
 point one way), and it deliberately marks **nothing
 pending**: the person in the seat has not changed, only the spelling, and
 `rowCrew` diffs identically — an AL full of spelling would be noise. *(Corrected 26 Sep 26: this said "Published day
