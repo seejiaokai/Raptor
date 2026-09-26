@@ -71,7 +71,11 @@ module** (section 8): only that module writes it.
 Owner: **Shell**. The one identity in the application. The scheduler
 roster, the Leave War's projected roster and the Tracker's student link all
 point at this row; no second identity is minted anywhere. **Never
-hard-deleted** — `archived` and the tombstone are the only ways out.
+hard-deleted** — `archived` and the tombstone are the only ways out. **— NARROWED 26 Sep 26 BY D287 (owner: "truly
+delete him"): a man who leaves flying for good is DELETED — gone from every list, his seats reading empty on every day
+he was on. HOW the database does it (a tombstone — the row kept, marked deleted, invisible everywhere — or erasing the
+row and everything pointing at it) is put to him, 27 Sep 26 (`OUTSTANDING.md` `[POST-OUT-OUTCOMES]`); until he answers,
+the tombstone below is how a delete reaches the database.**
 
 | Field | Type | Req | Meaning |
 |---|---|---|---|
@@ -642,7 +646,7 @@ to it — every account IS one callsign (owner, D166, 25 Sep 26).
 | `signInName` | string | yes | the provider's principal name — the person's defence mail address (D165). Unique |
 | `role` | choice `admin\|main` | yes | today's two roles |
 | `personId` | ref Person | **yes** | the callsign the account belongs to (D166); one account per person (unique) |
-| `enabled` | bool | yes | false = switched off — the exit; an account is never deleted (§10) |
+| `enabled` | bool | yes | false = switched off — the exit; an account is never deleted (§10) — **NARROWED 26 Sep 26: D280 an account can be DELETED (its button "Delete account", D285), and "switched off" is renamed "suspended" (D285); D287 deletes the person with it when he leaves flying for good** |
 | `lastSignInAt` | datetime | no | (new) |
 
 The displayed name is the person's callsign, read live — a rename moves nothing (the one-identity rule).
@@ -956,7 +960,7 @@ relationship behaviours are the terms.
 
 | Parent → child | On delete | Why |
 |---|---|---|
-| `Person` → everything | **Restrict** — `Person` is never hard-deleted; `archived` + the tombstone are the only exits | Every seat, mark, bid and input points at a person; history must keep pointing |
+| `Person` → everything | **Restrict** — `Person` is never hard-deleted; `archived` + the tombstone are the only exits (**D287, 26 Sep 26: a man who leaves flying for good is deleted — the HOW is his to answer, see §3 Person**) | Every seat, mark, bid and input points at a person; history must keep pointing |
 | `Course` → `Enrolment`, `CoursePlan` | **Restrict** (soft delete: `archived`) | An old intake is retired, never removed; its attempts stay reportable |
 | `Syllabus` → `TrainingEvent`, `Layout`, `Enrolment` | **Restrict** (soft delete: `tombstoned` / `hidden`) | A chart with marks against it cannot go; hide it |
 | `TrainingEvent` → `Attempt`, `EventPrerequisite` | **Restrict** (soft delete) | A mark records an attempt at *that* event |

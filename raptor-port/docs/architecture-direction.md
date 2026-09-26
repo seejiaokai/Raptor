@@ -146,7 +146,10 @@ because the squadrons are local and near each other, **neighbouring squadrons
 plan each other's people as a matter of course** — 149 puts a 142 man on its
 schedule at any time, not only during a posting (D282) — so "who may appear on
 this squadron's schedule" is wider than "who belongs to it", while his leave,
-quals and account stay his own squadron's. Nothing here
+quals and account stay his own squadron's. **Callsigns are unique within a COMMUNITY, not across the app
+(D288, 27 Sep 26):** a future F-16 community will reuse callsigns the F-15 one has, and its people may fly with an
+F-15 squadron as guest flyers — so the database must never make a callsign unique app-wide; a person is known by
+his id, and a guest from another community is shown with his community beside his callsign. Nothing here
 is built before the database step (`OUTSTANDING.md` `[XFER]`).
 
 ## 4. The order of work

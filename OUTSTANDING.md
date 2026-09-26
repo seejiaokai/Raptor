@@ -296,6 +296,9 @@ person move between squadrons with data intact.
   because the squadrons are local and near each other, another squadron (e.g. 149) may PLAN a 142 man — **normally, at
   any time, not only during a posting (D282)** — his leave, quals and account staying his own squadron's (`docs/architecture-direction.md` §3, More than one squadron). The Leave
   War's post-out sheet will offer it as its fourth outcome (`[POST-OUT-OUTCOMES]`, D229) once this is built.
+- **D288 (27 Sep 26) — communities and guest flyers:** callsigns unique within a community (the F-15 one), not
+  app-wide; a future F-16 community reuses them, and its men may fly with us as guests (tagged "Viper · F-16",
+  picked from a guest list, never by typing a bare callsign — the agent's proposal, his answers pending).
 
 ### [TRK-ATTEMPTS] Keep a student's attempt history — OPEN (small, feature)
 Remember a student's *earlier* tries at an event, not just the latest grade. More a
@@ -1194,7 +1197,9 @@ date (each also by hand); touches the Leave War (the sheet, `runPoArchive`), Qua
 D), `perms.ts` — FULL tier. **Leaving flying for good — D287, his pick "B, truly delete him":** account AND person
 deleted; every day he was on shows his seat empty, published days included (tested 26 Sep 26: nothing crashes);
 everything that is his goes too (inputs, Leave War leave and OIL — nothing left stored unseen); a day still to come
-takes him off (pending on a published day); asks twice, cannot be undone. **And names — D286:** an archived man's callsign may go to a new person (today it is refused); restoring him while it
+takes him off (pending on a published day); asks twice, cannot be undone. **Put to him 27 Sep 26:** the data model
+for IT says a person is never hard-deleted (every record points at him; the database refuses) — on screen it is B
+either way; underneath, a hidden "deleted" mark (recommended) or erase the row and all that points at it? **And names — D286:** an archived man's callsign may go to a new person (today it is refused); restoring him while it
 is in use needs one of the two renamed first (Restore says so, renames nobody). Update `roster-add.ts` (its PID-01
 header and test), `ID_BY_CS` (points at the roster's man). **Place:** the agent recommends straight after `[ACCOUNTS-NEW-PERSON]` merges, before `[DRAFT-PENDING]` — HIS to
 confirm.
