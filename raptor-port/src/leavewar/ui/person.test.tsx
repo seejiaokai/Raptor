@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@testing-library/react'
+import { act, fireEvent, render, screen } from '@testing-library/react'
 import { beforeEach, describe, expect, it } from 'vitest'
 import { getState, initStore, setRole } from '../state/store'
 import { memoryBackend } from '../state/storage'
@@ -116,5 +116,20 @@ describe('editing who somebody is', () => {
     expect(getState().people.find(p => p.id === 'tata')!.seat).toBe('wso')
     initStore(backend)
     expect(getState().people.find(p => p.id === 'tata')!.seat).toBe('pilot')
+  })
+})
+
+/* THE ADMIN'S MEMBER VIEW (D292) — the admin's editors close when the role in force stops being admin (Astra's code read
+   5, 27 Sep 26: Edit aircrew stayed open with live controls after the switch), and switching back never reopens it. */
+describe('switching to the member view with the editor open', () => {
+  it('Edit aircrew closes, and does not come back when he switches back', () => {
+    setRole('admin')
+    render(<Matrix />)
+    openEditor('ramp')
+    expect(screen.getByTestId('person-sheet')).toBeTruthy()
+    act(() => { setRole('member') })
+    expect(screen.queryByTestId('person-sheet'), 'gone in the member view').toBeNull()
+    act(() => { setRole('admin') })
+    expect(screen.queryByTestId('person-sheet'), 'not reopened on the way back').toBeNull()
   })
 })

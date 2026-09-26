@@ -1007,6 +1007,10 @@ export function Matrix() {
   // component unmounts or the role stops being admin (a logout mid-arrange).
   useEffect(() => () => { dragCleanup.current?.() }, [])
   useEffect(() => { if (role !== 'admin' && arranging) setArranging(false) }, [role, arranging])
+  /* the admin's editors close when the role in force stops being admin — the admin's switch to the member view (D292;
+     Astra's code read 5, 27 Sep 26: Edit aircrew and the counter form stayed open with live controls), so switching back
+     never reopens a stale draft either */
+  useEffect(() => { if (role !== 'admin') { setEditing(null); setCounterEdit(false) } }, [role])
   // Falls back to the first visible figure when `shownId` names one an admin
   // has since hidden (or a stale saved id) — `shownIx` is then DERIVED from
   // `shown`, not the other way round, so the dots and the cycle never point
@@ -4398,7 +4402,7 @@ export function Matrix() {
           onGranted={() => showFigure('oil')}
         />
       )}
-      {editingWho && people.some(p => p.id === editingWho) && (
+      {editingWho && role === 'admin' && people.some(p => p.id === editingWho) && (
         <PersonSheet
           person={people.find(p => p.id === editingWho)!}
           onClose={() => setEditing(null)}
@@ -4428,7 +4432,7 @@ export function Matrix() {
       )}
       {/* The counter form — new counter (null) or a rework of one row's rule.
           Keyed so switching counters resets every draft field. */}
-      {counterEdit !== false && (
+      {counterEdit !== false && role === 'admin' && (
         <CounterForm key={counterEdit ?? 'new'} ruleId={counterEdit} onClose={() => setCounterEdit(false)} />
       )}
       {/* The ⚙ SETTINGS sheet — all admin config (counters, event rows, Show

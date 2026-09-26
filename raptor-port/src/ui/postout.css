@@ -5,6 +5,8 @@
 /* the account editor's delete, armed by its first tap — "Tap again to delete Hex" (the approved picture 2b) */
 .abtn.danger.del-armed{background:rgba(240,85,95,.18);color:#fff;border-color:#f0555f}
 .acc-del-note{color:#FBB4B9}
+/* a posting that has come and waits (the last admin …) — on its account row, under it (a full line) */
+.acc-held{flex:1 1 100%;color:#f0c36d;font-size:12px;padding:2px 0 6px}
 
 /* Quals' Archived list — Rename right on the row (D295; the approved picture 6b) */
 .qarch-rename{display:flex;flex-wrap:wrap;gap:8px;align-items:center;flex:1 1 100%;padding:8px 0 10px}

@@ -89,9 +89,9 @@ import {
 import { HOOKS } from '../engine/hooks'
 import { deferEffect as cmdDeferEffect, commitProjection as cmdCommitProjection, commit as cmdCommit } from '../command'
 /* [POST-OUT-OUTCOMES] (27 Sep 26): the posting's outcomes cross the seam HERE, the one place the war meets Raptor */
-import { suspendForPosting, enableAfterPosting, lastAdminIfGone, accountSuspendedByPosting, accountOfPid } from '../state/accounts'
+import { suspendForPosting, enableAfterPosting, lastAdminIfGone, accountOfPid } from '../state/accounts'
 import { markBack } from '../state/view'
-import { applyDelete, deleteCutoff, effectiveToday } from '../state/person-delete'
+import { applyDelete, deleteCutoff, effectiveToday, stashPreflight } from '../state/person-delete'
 import { peopleStore, settingsStore, finishPeopleWrite } from '../state/people-settings-commit'
 import { schedStore, schedApplyEnd, resyncSchedBaseline } from '../state/sched-commit'
 import { weekstashStore } from '../state/store'
@@ -1430,8 +1430,10 @@ function reprojectRoster(): void {
    posting per session (never on every notify — Fable's round 2), and retried silently on later passes.
    ONE projection command for the whole pass (a reconciler, the system actor — never the signed-in person's door),
    enlisting every store an outcome writes; a delete also writes the schedule and the week stash. */
+/* said once per POSTING (its person, date and outcome) and reason — a changed posting may say it again (Astra's code
+   read 2: keyed by the sentence alone, a posting changed away and back never said it again) */
 const PO_TOLD = new Set<string>()
-const tellOnce = (t: string): void => { if (!PO_TOLD.has(t)) { PO_TOLD.add(t); HOOKS.toast(t, 'warn') } }
+const tellOnce = (key: string, t: string): void => { const k = `${key}|${t}`; if (!PO_TOLD.has(k)) { PO_TOLD.add(k); HOOKS.toast(t, 'warn') } }
 /* the pass's command QUEUED behind another command (the pass runs from a notify, and a notify inside another command's
    release runs while that command is still delivering — its projection then waits its turn, commit.ts §3.2 ph.9).
    Until it runs, the world still reads "due", and re-queueing it on every notify was an endless loop (found by the
@@ -1451,11 +1453,28 @@ function poDueNow(id: string, today: string): PoDue | null {
   if (!body || body.special || body.deleted) return null
   return { id, poDate, outcome, key: `${id}@${poDate}:${outcome}` }
 }
-/* an overseas posting that has archived him but cannot suspend the last admin who can sign in has nothing left to do
-   until an admin changes something — waiting, it is said once and never opens a command (no churn on every notify) */
-const overseasStuck = (id: string): boolean => {
-  const a = accountOfPid(id)
-  return !!(PEOPLE as any)[id]?.archived && !!a && a.on && !!lastAdminIfGone(id)
+/* WHY A POSTING WAITS — the one answer the pass, the posting sheets and Admin → Users all read (the plan's Round 2 item
+   3; Astra's code read 1 and 2, 27 Sep 26). A posting that cannot be carried out WHOLE does nothing at all — never half:
+   - Overseas Sqn for the last admin who can sign in: neither archived nor suspended (it used to archive him first and
+     only then find the account could not be suspended — half done);
+   - Delete for the last admin who can sign in, or while a stored week to come cannot be read or changed (the same
+     preflight Admin → Users' delete runs — the posting's door skipped it and could delete him with a week still
+     holding him).
+   It runs as soon as the reason goes (another admin can sign in; the week is repaired). The sentence, or null. */
+export function poHeldReason(id: string, outcome: PostOutcome, poDate: string = effectiveToday()): string | null {
+  const body: any = (PEOPLE as any)[id]
+  if (!body) return null
+  if (outcome === 'overseas') {
+    const a = accountOfPid(id)
+    return a && a.on && lastAdminIfGone(id) ? `${body.cs} is the last admin who can sign in — the posting waits until another admin can` : null
+  }
+  if (outcome === 'delete') return deleteBlocked(id) || stashPreflight(id, deleteCutoff(poDate))
+  return null
+}
+/* for Admin → Users' account row: his posting has come and is waiting — why, or null */
+export function postingHeldNote(id: string): string | null {
+  const d = poDueNow(id, effectiveToday())
+  return d ? poHeldReason(id, d.outcome, d.poDate) : null
 }
 export function runPoOutcomes(): void {
   if (SYNCING) return
@@ -1464,9 +1483,8 @@ export function runPoOutcomes(): void {
   for (const id of Object.keys(getState().postOuts)) {
     const d = poDueNow(id, today)
     if (!d || PO_INFLIGHT.has(d.key)) continue
-    const cs = (PEOPLE as any)[id].cs
-    if (d.outcome === 'overseas' && overseasStuck(id)) { tellOnce(`${cs} is the last admin who can sign in — his account was not suspended`); continue }
-    if (d.outcome === 'delete') { const problem = deleteBlocked(id); if (problem) { tellOnce(problem); continue } }
+    const held = poHeldReason(id, d.outcome, d.poDate)
+    if (held) { tellOnce(d.key, held); continue }
     due.push(d)
   }
   if (!due.length) return
@@ -1487,14 +1505,17 @@ export function runPoOutcomes(): void {
           if (needsDays) resyncSchedBaseline()
           txn.enlist(peopleStore); txn.enlist(settingsStore); txn.enlist(lwStore)
           if (needsDays) { txn.enlist(schedStore); txn.enlist(weekstashStore) }
-          const told: string[] = []
+          const told: Array<[string, string]> = []
           for (const d0 of due) {
             const d = poDueNow(d0.id, effectiveToday())
             if (!d || d.key !== d0.key) continue
+            /* asked again when the command runs (it may run later, queued): held → nothing changes, not marked done */
+            const held = poHeldReason(d.id, d.outcome, d.poDate)
+            if (held) { told.push([d.key, held]); continue }
             const body: any = (PEOPLE as any)[d.id]
             if (d.outcome === 'overseas') {
               if (!body.archived) { body.archived = true; body.archivedBy = 'po' }
-              if (suspendForPosting(d.id) === 'lock') { told.push(`${body.cs} is the last admin who can sign in — his account was not suspended`); continue }
+              suspendForPosting(d.id)
             } else if (d.outcome === 'sans') {
               if (!body.san) {
                 body.san = true
@@ -1504,10 +1525,11 @@ export function runPoOutcomes(): void {
                 body.sanBy = 'po'
               }
             } else if (d.outcome === 'delete') {
-              const problem = deleteBlocked(d.id)
-              if (problem) { told.push(problem); continue }
               applyDelete(d.id, deleteCutoff(d.poDate))
               forgetPersonFrom(d.id, deleteCutoff(d.poDate))
+              /* the person signed in, deleted by his own posting (another admin made it): said, so he is not left working
+                 as a man who is no longer there (Fable's code read 6) */
+              if (me() != null && d.id === me()) told.push([d.key, 'You have been deleted by your posting out — please sign out'])
             }
             markPostingDone(d.id, d.poDate)
           }
@@ -1516,7 +1538,7 @@ export function runPoOutcomes(): void {
           /* a delete also takes the schedule's own save step (the loaded week filed — person-delete.ts deletePerson) */
           if (needsDays) { schedApplyEnd(); cmdDeferEffect(() => { HOOKS.reflow(); HOOKS.histPush() }) }
           /* said once the command has landed (a refused one says nothing) */
-          if (told.length) { const say = () => told.forEach(tellOnce); if (!cmdDeferEffect(say)) say() }
+          if (told.length) { const say = () => told.forEach(([k, t]) => tellOnce(k, t)); if (!cmdDeferEffect(say)) say() }
         } finally {
           SYNCING = was
         }
@@ -1532,9 +1554,20 @@ export function runPoOutcomes(): void {
 /* a DELETE's war half, for the admin's own delete (state/person-delete.ts deletePerson — Admin → Users): the war's
    store enlisted in that command, his records from the cutoff gone, his window closed the day before, `gone` set. The
    ONE place a Raptor command reaches the war's store — here, at the seam. */
-export function deletePersonOnWar(txn: any, id: string, cutoff: string): void {
+export function deletePersonOnWar(txn: any, id: string, cutoff: string, frozen: any = null): void {
   txn.enlist(lwStore)
-  forgetPersonFrom(id, cutoff)
+  /* a hidden man's row is kept only when he has a past there: a war record before the cutoff, or an input (leave,
+     medical, course…) the delete left him (it starts before the cutoff) — the war derives his leave from those */
+  const cut = +cutoff.replace(/-/g, '')
+  const past = !!frozen && (getState().wars.some(w => Object.keys(((w as any).recs || {})[id] || {}).some(d => d < cutoff))
+    || INPUTS.some((r: any) => r && r.person === id && (dateOrd(r.date, r.yr) ?? Infinity) < cut))
+  forgetPersonFrom(id, cutoff, past ? frozen : null)
+}
+/* the war's picture of a man it does NOT show right now (a SANS man with Show SANS off), taken before a delete's mark
+   takes him off every projection — null when the war already has his row (the kept rule then carries him) */
+export function warIdentityIfHidden(id: string): any {
+  if (getState().people.some(p => p.id === id)) return null
+  return projectPeople(true).find(p => p.id === id) || null
 }
 /* the auto-archive's old name — every caller and test that runs it now runs the outcomes (an 'overseas' posting IS
    the old "Archive on PO date") */
@@ -1544,7 +1577,7 @@ export const runPoArchive = runPoOutcomes
 function deleteBlocked(id: string): string | null {
   const body: any = (PEOPLE as any)[id]
   const lastAdmin = lastAdminIfGone(id)
-  return lastAdmin ? `${body.cs} is the last admin who can sign in — he was not deleted` : null
+  return lastAdmin ? `${body.cs} is the last admin who can sign in — he is not deleted until another admin can` : null
 }
 
 /**
@@ -1642,8 +1675,10 @@ export function undoPostOut(id: string): boolean {
   if (body && body.archived && body.archivedBy === 'po') return restoreArchivedPerson(id)
   /* [POST-OUT-OUTCOMES]: what else the posting made is taken back with it — the SANS tick it put on (`sanBy: 'po'`);
      an account it suspended is only ever suspended with its archive, so Restore above enables it */
-  if (body && body.sanBy === 'po') return takeBack(id, () => setPostOut(id, null))
-  return setPostOut(id, null)
+  /* …and otherwise the date alone — always as the posting command (`lw.postout`, never a bare war write routed as a
+     generic `lw.edit` — Astra's code read 4, 27 Sep 26), taking back what else the posting made (the SANS tick it put on;
+     an account it suspended is only ever suspended with its archive, so Restore above enables it) */
+  return takeBack(id, () => setPostOut(id, null))
 }
 /* a posting write that also takes back what the posting made and no longer makes TODAY — the archive (#444's rule),
    the account's suspension and the SANS tick — in ONE command over the people, settings and war stores. It is NOT
@@ -1656,7 +1691,7 @@ function takeBack(id: string, write: () => boolean, keep: { archive?: boolean; s
     apply: (txn: any) => {
       txn.enlist(peopleStore); txn.enlist(settingsStore); txn.enlist(lwStore)
       ok = write()
-      if (!ok) return
+      if (!ok || !body) return
       if (!keep.archive && body.archived && body.archivedBy === 'po') { body.archived = false; delete body.archivedBy }
       if (!keep.suspend) enableAfterPosting(id)
       if (!keep.sans && body.sanBy === 'po') { body.san = false; if (body.quals) body.quals.san = false; delete body.sanBy }
@@ -1693,9 +1728,10 @@ export function postOut(id: string, from: string, archive: boolean | PostOutcome
      comes back in the same command. When the new posting makes it today too, it stands (the pass then records it). */
   const due = effectiveToday() > addDays(from, -1)
   const keep = { archive: due && outcome === 'overseas', suspend: due && outcome === 'overseas', sans: due && outcome === 'sans' }
-  const made = !!body && ((body.archived && body.archivedBy === 'po') || body.sanBy === 'po' || accountSuspendedByPosting(id))
-  const takes = made && ((!keep.archive && body.archivedBy === 'po') || (!keep.suspend && accountSuspendedByPosting(id)) || (!keep.sans && body.sanBy === 'po'))
-  if (!takes || !mayManageRoster()) return setPostOut(id, from, outcome)
+  /* ALWAYS the posting command (`lw.postout` — its permission row, its envelope, what the database will authorise), a
+     first posting and a change with nothing to take back included: a bare war write was routed as a generic `lw.edit`,
+     a member's own-bid row (Astra's code read 4, 27 Sep 26). The command's gate decides who may; the take-back inside it
+     touches only what the posting made. */
   return takeBack(id, () => setPostOut(id, from, outcome), keep)
 }
 
@@ -1728,12 +1764,7 @@ export function wireLeaveWarSync(): void {
   /* [POST-OUT-OUTCOMES]: the posting's one line names his account only when he has one — the answer installed here, at
      the seam (the war never reads Raptor's accounts itself) */
   setAccountLookup(id => !!accountOfPid(id))
-  setPostingBlockLookup((id, outcome) => {
-    const cs = (PEOPLE as any)[id]?.cs || ''
-    if (outcome === 'delete') return deleteBlocked(id) ? `Can’t delete ${cs} yet — he is the last admin who can sign in` : null
-    if (outcome === 'overseas') { const a = accountOfPid(id); return a && a.on && lastAdminIfGone(id) ? `${cs}’s account can’t be suspended — he is the last admin who can sign in` : null }
-    return null
-  })
+  setPostingBlockLookup((id, outcome) => poHeldReason(id, outcome))
   /* The VIEWING PERSON rides this same wire (owner, 17 Aug 26 — the matrix
      lights the viewer's row and the counter picker answers with their
      numbers). Since [ACCOUNTS] (D166 (4), 26 Sep 26) it is the SIGNED-IN person —

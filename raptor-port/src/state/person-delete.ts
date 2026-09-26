@@ -50,14 +50,14 @@ import { stashKeys, stashGet, stashEditWeek, stashWeekState } from '../engine/we
 import { validate } from '../engine/validate'
 import { localToday } from '../leavewar/engine/period'
 import { PLANPUCKS } from './plan'
-import { commit } from '../command'
+import { commit, CmdRefused, isCommitting } from '../command'
 import { peopleStore, settingsStore, finishPeopleWrite } from './people-settings-commit'
 import { schedStore, schedApplyEnd, resyncSchedBaseline } from './sched-commit'
 import { weekstashStore } from './store'
 import { mayDeletePerson } from './perms'
 import { deleteAccountProblem, dropAccountOfPid } from './accounts'
 import { saidOf } from './roster-add'
-import { deletePersonOnWar } from '../leavewar/sync'
+import { deletePersonOnWar, warIdentityIfHidden } from '../leavewar/sync'
 import { HOOKS } from '../engine/hooks'
 import { deferEffect as cmdDeferEffect } from '../command'
 
@@ -215,8 +215,15 @@ export function stashPreflight(id: string, cutoff: string): string | null {
 
 /* ---- THE MUTATION — inside a command that enlisted the people, settings, scheduler and week-stash stores ---- */
 export function applyDelete(id: string, cutoff: string): void {
+  /* only inside a command — its writes (the mark, the account, the inputs) have no other rollback (Fable's code read 5) */
+  if (!isCommitting()) throw new Error('applyDelete runs only inside a command')
   const p = (PEOPLE as any)[id]
   if (!p || p.special || p.deleted) return
+  /* the stored weeks, asked again INSIDE the command (every door asks before it; this catches a week that became
+     unreadable in between): refused, the whole command rolls back — never a delete with a week still holding him
+     (Astra's code read 1, 27 Sep 26) */
+  const pre = stashPreflight(id, cutoff)
+  if (pre) throw new CmdRefused(pre)
   const cut = isoOrd(cutoff)
   /* 1. the mark (and the callsign index follows — his callsign is free) */
   Object.assign(p, { deleted: true, deletedFrom: cutoff, archived: true, archivedBy: 'del' })
@@ -235,12 +242,20 @@ export function applyDelete(id: string, cutoff: string): void {
   }
   const srcs = new Set<string>([...gone, ...ended].map(r => String(inpId(r))))
   const bySrc = new Map<string, any>([...gone, ...ended].map(r => [String(inpId(r)), r]))
+  const endedSet = new Set<any>(ended)
   /* 3. the loaded week, day by day from the cutoff, through the funnel */
   for (let di = 0; di < DAYS.length; di++) {
     if (dayIso(CURWEEK, di) < cutoff) continue
     const d: any = (DAYS as any)[di]; if (!d) continue
     /* a row that came from one of those inputs goes with it (the input's own un-landing) */
-    for (const r of [...(d.ground || [])]) if (r && r.src && bySrc.has(String(r.src))) unacceptInput(di, bySrc.get(String(r.src)))
+    for (const r of [...(d.ground || [])]) if (r && r.src && bySrc.has(String(r.src))) {
+      const inp = bySrc.get(String(r.src)); const was = inp.acc
+      unacceptInput(di, inp)
+      /* the kept part of a request that SPANS the cutoff stays accepted: un-landing its row from a day to come must never
+         park it "taken off" on the days before the cutoff it still covers — it vanished from those days and a published
+         day he flew read pending through its crowd (Fable's code read 1, 27 Sep 26) */
+      if (endedSet.has(inp)) inp.acc = was
+    }
     for (const k of personKeysOnDay(di, id)) setSlotVal(k, '')
     for (const role of ROLES) if (((SCHED.sign || {})[di] || {})[role] === id) setSign(di, role, '')
     stripOilSwitches(d, id)
@@ -335,9 +350,12 @@ export function deletePerson(id: string, dateIso?: string | null): string | null
       /* the baseline to LIVE before enlisting (the input batch's own rule, sched-commit.ts commitInputsWith) */
       resyncSchedBaseline()
       txn.enlist(peopleStore); txn.enlist(settingsStore); txn.enlist(schedStore); txn.enlist(weekstashStore)
+      /* a man the war does not show (a SANS man with Show SANS off) is caught as the war would draw him BEFORE the mark
+         takes him off every projection — so the months he was here keep his row (D299; Astra 3, Fable 3) */
+      const frozen = warIdentityIfHidden(id)
       applyDelete(id, cutoff)
       /* the war half — his records from the cutoff, his window closed, `gone` (through the sync, the one seam) */
-      deletePersonOnWar(txn, id, cutoff)
+      deletePersonOnWar(txn, id, cutoff, frozen)
       finishPeopleWrite()
       schedApplyEnd()
       /* …and the schedule's own save step, as every schedule command ends (sched-commit.ts): validate + persist the

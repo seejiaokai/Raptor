@@ -19,14 +19,17 @@ import { Whiteboard } from '../storage/whiteboard'
 import { wirePersist } from '../state/persist'
 import { accountsLoad, accountByName, signIn, sessionFor, updateAccount } from '../state/accounts'
 import { BACKPROMPT } from '../state/view'
-import { commit } from '../command'
+import { commit, commandStream } from '../command'
 import { getState, initStore as lwInitStore, lwStore, postingBlocked, setPeople, setPostIn, setPostOut, setRole, setShowSans } from './state/store'
 import { memoryBackend } from './state/storage'
 import { projectPeople } from './state/raptorRoster'
 import {
-  availableFor, postOut, postOutProblem, restoreArchivedAs, restoreArchivedPerson, runPoOutcomes, undoPostOut, undoPostOutProblem, wireLeaveWarSync,
+  availableFor, postOut, postOutProblem, postingHeldNote, restoreArchivedAs, restoreArchivedPerson, runPoOutcomes, undoPostOut, undoPostOutProblem, wireLeaveWarSync,
 } from './sync'
 import { updatePersonField } from '../state/quals-write'
+import { stashPut, stashDrop } from '../engine/weekstash'
+import { deletePerson } from '../state/person-delete'
+import { INPUTS } from '../engine/inputs'
 
 const TODAY = '2026-07-15'
 const mem: Record<string, string> = {}
@@ -56,6 +59,7 @@ beforeEach(() => {
   const p0 = JSON.parse(PEOPLE0)
   for (const k of Object.keys(PEOPLE)) delete (PEOPLE as any)[k]
   Object.assign(PEOPLE, p0); indexCallsigns()
+  for (let i = INPUTS.length - 1; i >= 0; i--) if (String((INPUTS as any)[i].iid || '').startsWith('ipd')) INPUTS.splice(i, 1)
   /* the war's store FIRST: the last test's posting (a stuck one never records it ran) must not meet the fresh roster
      through the still-wired sync when the scheduler's store re-inits */
   lwInitStore(memoryBackend())
@@ -108,18 +112,26 @@ describe('PO2 — overseas: archived on Quals and his account suspended, on the 
 })
 
 describe('PO2 / PO4 — the last admin who can sign in is never suspended or deleted by a posting; said once', () => {
-  it('overseas: archived, the account left on, the reason said once however many passes follow', () => {
+  it('overseas for the last admin: NOTHING happens (never half — Astra 2), said once; another admin able to sign in → both at once', () => {
     const toast = vi.spyOn(HOOKS, 'toast')
+    const WAITS = 'Saber is the last admin who can sign in — the posting waits until another admin can'
     expect(postOut('stiff', TODAY, 'overseas')).toBe(true)
-    expect(P('stiff').archived).toBe(true)
+    expect(P('stiff').archived, 'not archived while it waits').toBeFalsy()
     expect(accountByName('ad')!.on).toBe(true)
+    expect(war('stiff')!.poDone, 'not done — it will run when it can').toBeUndefined()
     raptorNotify(); raptorNotify(); runPoOutcomes()
-    const said = toast.mock.calls.filter(c => c[0] === 'Saber is the last admin who can sign in — his account was not suspended')
-    expect(said.length).toBe(1)
+    expect(toast.mock.calls.filter(c => c[0] === WAITS).length, 'said once').toBe(1)
+    expect(postingHeldNote('stiff'), 'his account row says why').toBe(WAITS)
+    expect(updateAccount('acus', { role: 'admin' })).toBe(null)       // Ranger made an admin — Saber is no longer the last
+    raptorNotify(); runPoOutcomes()
+    expect(P('stiff').archived).toBe(true)
+    expect(P('stiff').archivedBy).toBe('po')
+    expect(accountByName('ad')!.on).toBe(false)
+    expect(postingHeldNote('stiff')).toBe(null)
   })
   it('the sheets are told beforehand: the seam answers which postings the last admin holds back', () => {
-    expect(postingBlocked('stiff', 'delete')).toBe('Can’t delete Saber yet — he is the last admin who can sign in')
-    expect(postingBlocked('stiff', 'overseas')).toBe('Saber’s account can’t be suspended — he is the last admin who can sign in')
+    expect(postingBlocked('stiff', 'delete')).toBe('Saber is the last admin who can sign in — he is not deleted until another admin can')
+    expect(postingBlocked('stiff', 'overseas')).toBe('Saber is the last admin who can sign in — the posting waits until another admin can')
     expect(postingBlocked('stiff', 'sans')).toBe(null)
     expect(postingBlocked('bane', 'delete'), 'a member: nothing held back').toBe(null)
   })
@@ -136,7 +148,7 @@ describe('PO2 / PO4 — the last admin who can sign in is never suspended or del
     expect(postOut('stiff', TODAY, 'delete')).toBe(true)
     expect(P('stiff').deleted).toBeFalsy()
     expect(accountByName('ad')).toBeTruthy()
-    expect(toast.mock.calls.map(c => c[0])).toContain('Saber is the last admin who can sign in — he was not deleted')
+    expect(toast.mock.calls.map(c => c[0])).toContain('Saber is the last admin who can sign in — he is not deleted until another admin can')
   })
 })
 
@@ -290,5 +302,67 @@ describe('a posting written inside another command', () => {
     expect(P('bane').archived).toBe(true)
     expect(accountByName('us')!.on).toBe(false)
     expect(war('bane')!.poDone).toBe(TODAY)
+  })
+})
+
+/* THE CODE READS (Fable 5.1 and Astra, blind to each other, 27 Sep 26) — each finding red first. */
+describe('from the code reads', () => {
+  it('Astra 4 — every Post out and Undo post out is the posting command (lw.postout), never a bare war edit', () => {
+    const n0 = commandStream().length
+    expect(postOut('bane', '2026-08-01', 'overseas')).toBe(true)                 // a first posting, nothing to take back
+    expect(commandStream().slice(n0).map(e => e.type)).toContain('lw.postout')
+    expect(commandStream().slice(n0).map(e => e.type)).not.toContain('lw.edit')
+    const n1 = commandStream().length
+    expect(undoPostOut('bane')).toBe(true)
+    expect(commandStream().slice(n1).map(e => e.type)).toContain('lw.postout')
+  })
+  it('Astra 4 — a member cannot post anyone out, by a hand-made call', () => {
+    signInAs('us', 'us')
+    expect(postOut('rocky', TODAY, 'overseas')).toBe(false)
+    expect(war('rocky')!.to).toBeNull()
+  })
+  it('Fable 2 — Undo post out takes back the posting’s suspension even when the archive was made by hand', () => {
+    expect(postOut('bane', '2026-07-20', 'overseas')).toBe(true)
+    P('bane').archived = true                                                    // archived by hand on Quals (no 'po' mark)
+    vi.setSystemTime(new Date(2026, 6, 20, 9, 0, 0)); runPoOutcomes()
+    expect(accountByName('us')!.offBy).toBe('po')
+    expect(undoPostOut('bane')).toBe(true)
+    expect(accountByName('us')!.on, 'the posting’s suspension goes with the posting').toBe(true)
+    expect(P('bane').archived, 'the hand archive stays').toBe(true)
+  })
+  it('Astra 1 — a posting’s Delete waits while a stored week to come cannot be read (nothing changes); repaired, it runs', () => {
+    const toast = vi.spyOn(HOOKS, 'toast')
+    stashPut('27/07/2026', 'not a week')
+    expect(postOut('rocky', TODAY, 'delete')).toBe(true)
+    expect(P('rocky').deleted, 'nothing deleted').toBeFalsy()
+    expect(accountByName('hex'), 'his account stays').toBeTruthy()
+    expect(war('rocky')!.poDone).toBeUndefined()
+    expect(toast.mock.calls.map(c => c[0]).join(' | ')).toContain('The week of 27/07/2026 can’t be read'.replace('’', "'"))
+    stashDrop('27/07/2026')
+    raptorNotify(); runPoOutcomes()
+    expect(P('rocky').deleted).toBe(true)
+  })
+  it('Astra 3 / Fable 3 — a SANS man the war does not show (Show SANS off), deleted: his past months keep his row', () => {
+    Object.assign(P('rocky'), { san: true }); P('rocky').quals = { ...(P('rocky').quals || {}), san: true }
+    raptorNotify()
+    expect(war('rocky'), 'Show SANS off: not on the war').toBeFalsy()
+    /* a past he has on the war: a leave on 6 Jul, filed on the Inputs page (the war derives it from there) */
+    INPUTS.push({ iid: 'ipdS', person: 'rocky', date: 'Jul 6', yr: 2026, allday: true, type: 'LL', remarks: 'Local leave', mod: '2026-07-01' } as any)
+    expect(deletePerson('rocky')).toBe(null)
+    expect(war('rocky'), 'his row is kept for the months he was here').toBeTruthy()
+    expect(war('rocky')!.gone).toBe(true)
+    expect(war('rocky')!.to).toBe('2026-07-14')
+    expect(setShowSans(true)).toBe(true); raptorNotify()
+    expect(war('rocky'), 'and with Show SANS on').toBeTruthy()
+  })
+  it('Fable 6 — a posting’s Delete of the person signed in says so', () => {
+    const toast = vi.spyOn(HOOKS, 'toast')
+    expect(updateAccount('acus', { role: 'admin' })).toBe(null)                  // a second admin, so Saber is not the last
+    resetSession(null); setRole('admin')
+    expect(postOut('stiff', '2026-07-16', 'delete')).toBe(true)                  // made by "another admin" (nobody signed in)
+    signInAs('ad', 'a')
+    vi.setSystemTime(new Date(2026, 6, 16, 9, 0, 0)); runPoOutcomes()
+    expect(P('stiff').deleted).toBe(true)
+    expect(toast.mock.calls.map(c => c[0])).toContain('You have been deleted by your posting out — please sign out')
   })
 })

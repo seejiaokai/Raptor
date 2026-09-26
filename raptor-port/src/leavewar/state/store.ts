@@ -1567,7 +1567,7 @@ export function markPostingDone(id: string, poDate: string): void {
  *  window closes the day before (kept if it already closes earlier); he is marked `gone` — kept as a posted-out man is,
  *  so the months he was here keep his leave and OIL. Runs ONLY inside the delete's command (sync.ts
  *  deletePersonOnWar enlists this store); the command's gate has decided, so no role check here. */
-export function forgetPersonFrom(id: string, iso: string): void {
+export function forgetPersonFrom(id: string, iso: string, frozen: Person | null = null): void {
   const wars = state.wars.map(w => {
     const pr = (w.recs as any)?.[id]
     if (!pr) return w
@@ -1579,10 +1579,15 @@ export function forgetPersonFrom(id: string, iso: string): void {
   })
   const last = addDays(iso, -1)
   const had = state.people.some(p => p.id === id)
+  /* a man the war did not show (a SANS man with Show SANS off) with a past to keep: his row comes back as the war drew
+     him (`frozen` — the seam passes it only when he has a record from the months he was here: a war record, or an
+     input, which the war cannot see), closed the day before and `gone`, so those months keep his leave and OIL whatever
+     Show SANS says after (D299; Astra 3, Fable 3) */
+  const hadPast = !had && !!frozen
   const people = had
     ? state.people.map(p => (p.id === id ? { ...p, to: p.to !== null && p.to < last ? p.to : last, gone: true } : p))
-    : state.people
-  const postOuts = had ? windowRecord(people, id) : state.postOuts
+    : hadPast ? [...state.people, { ...(frozen as Person), to: last, gone: true }] : state.people
+  const postOuts = had || hadPast ? windowRecord(people, id) : state.postOuts
   state = withCurrent({ ...state, wars, people, postOuts })
   persistNotify()
 }

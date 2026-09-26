@@ -11,7 +11,7 @@ import { PEOPLE, nameToId, indexCallsigns, archivedHolders } from '../engine/peo
 import { DAYS } from '../engine/data'
 import { CURWEEK } from '../engine/waves'
 import { INPUTS } from '../engine/inputs'
-import { setSlotVal, slotVal } from '../engine/slots'
+import { setSlotVal, slotVal, acceptInput } from '../engine/slots'
 import { SCHED, setSign, setDayApproved, dayDelta, daySnapOf, dayCurVer } from '../engine/publish'
 import { stashPut, stashGet, stashDrop } from '../engine/weekstash'
 import { initStore, resetSession, notify, weekStashSnap, weekDirty } from './store'
@@ -185,6 +185,23 @@ describe('PO6 — the delete is saved: the loaded week filed without him', () =>
     const after = JSON.parse(wb.get('weeks', '13-07-2026')!)
     expect(JSON.stringify(after.d[TO_COME]), 'a day to come, as saved').not.toContain(`"${HIM}"`)
     expect(JSON.stringify(after.d[PAST]), 'a day he flew, as saved').toContain(`"${HIM}"`)
+  })
+})
+
+/* FABLE'S CODE READ 1 (27 Sep 26): a request that SPANS the cutoff, its row landed on a day from the cutoff — un-landing
+   that row must not leave the kept part "taken off" (dormant) on the days before the cutoff it still covers. */
+describe('PO7 — a request spanning the cutoff, landed on a day to come, stays accepted for the days before', () => {
+  it('its row leaves the day to come; it ends the day before, still accepted (\u2018g\u2019), its till tail written', () => {
+    const inp: any = { iid: 'ipdL', person: HIM, date: 'Jul 14', endDate: 'Jul 17', yr: 2026, allday: false, s: '09:00', e: '11:00', type: 'TRNG', remarks: 'Training', mod: '2026-07-01' }
+    INPUTS.push(inp)
+    acceptInput(TO_COME, inp, 'g')
+    expect(inp.acc).toBe('g')
+    expect(JSON.stringify((DAYS as any)[TO_COME].ground || []), 'its row is on the day to come').toContain(String(inp.iid))
+    expect(deletePerson(HIM)).toBe(null)
+    expect(JSON.stringify((DAYS as any)[TO_COME].ground || []), 'the row left the day to come').not.toContain(String(inp.iid))
+    expect(inp.acc, 'the kept part is still accepted — never "taken off"').toBe('g')
+    expect(inp.endDate === undefined || inp.endDate === 'Jul 14', 'it ends the day before the cutoff').toBe(true)
+    expect(INPUTS.includes(inp)).toBe(true)
   })
 })
 

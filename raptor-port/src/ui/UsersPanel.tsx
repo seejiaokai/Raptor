@@ -42,6 +42,7 @@ import { me } from '../state/perms'
 import { notify } from '../state/store'
 import { deletePerson } from '../state/person-delete'
 import { markBack } from '../state/view'
+import { postingHeldNote } from '../leavewar/sync'
 import './postout.css'
 
 const cs = (pid: string) => ((PEOPLE as any)[pid] ? String((PEOPLE as any)[pid].cs) : '')
@@ -237,6 +238,7 @@ function AccountRow(p: { a: Account; editing: boolean; onEdit: () => void; onClo
     if (!Object.keys(patch).length) return p.onClose()
     if (done(updateAccount(a.id, patch), 'Account saved')) p.onClose()
   }
+  const heldNote = postingHeldNote(a.pid)
   return (
     <div className={'acc-row' + (a.on ? '' : ' off')} data-acct={a.id}>
       <button className="acc-main acc-tap" disabled={own} onClick={p.onEdit}
@@ -250,6 +252,9 @@ function AccountRow(p: { a: Account; editing: boolean; onEdit: () => void; onClo
           {own && <span className="acc-tag you">you</span>}
         </span>
       </button>
+      {/* his posting out has come and is waiting — why (the last admin; a stored week), on his row, his own included
+          ([POST-OUT-OUTCOMES] — the plan's Round 2 item 3, Astra's code read 2) */}
+      {heldNote && <span className="acc-held" data-testid={`acc-held-${a.id}`}>{heldNote}</span>}
       <span className={'ub ' + a.role}>{isAdminAccount(a) ? 'Admin' : 'Member'}</span>
       {p.editing && !own && <div className="acc-edit" data-editing={a.id}>
         <div className="mfield"><label htmlFor="accEdName">Sign-in (defence mail)</label>
