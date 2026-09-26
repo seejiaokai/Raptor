@@ -644,3 +644,18 @@ resolved statuses always carry their resolution date
 **Suggested improvement:** When the evidence sheet is created, lay down EVERY §9 section as an empty heading, and the roll-call table with one row per surface and its columns already drawn. Each walker's hand-back then fills rows of the ONE table (the host copies them in as each report lands), so a row nobody walked is visible as a blank during the walk, not at the report. Add the skeleton to the walker brief template.
 
 **Principle:** A required output format is scaffolded at the start, so a missing part shows as a visible gap while there is still time to fill it, instead of being discovered when the work is being closed.
+
+### Observation 294: A red-first test that reproduces the symptom in the wrong environment passes a fix the app still fails
+
+**Status:** OPEN
+**Date:** 2026-09-26
+**Session context:** [HUMAN-RETEST] the absence record; a phone finding (a held finger's trailing tap closing the sheet it opened) fixed red first, then re-walked on the rebuilt app. Numbered past the parallel branches' logs (highest seen elsewhere: 293).
+**Skill:** internal — the bug-check standing order (`raptor-port/docs/bug-check-order.md` §8.4, "red first") and the executor's fix loop
+**Type:** open-source
+**Phase/Area:** fixing a walk finding; the red-first test
+
+**Issue:** The fix's test went red before and green after, and the defect survived in the running app at every hold length. The test drove the gesture machine on a bare DOM: no sheet mounted, and the test environment has no `matchMedia`, so the touch-only listener that actually closed the sheet (a second document listener the open sheet installs on a coarse pointer) was never present. The test reproduced the symptom's first cause (a timing window) and missed the second (a sibling listener on the same node that `stopPropagation` does not stop). Only the re-walk on the rebuilt bundle caught it.
+
+**Suggested improvement:** When a finding's evidence came from a device-specific walk (phone, touch, a coarse pointer), the red-first test must mount the real surface the walk saw (the sheet, the popup) and stub the environment switch the code branches on (`matchMedia('(pointer: coarse)')`), or it is renamed to say what it proves. And the re-walk of such a fix is never skipped on the strength of the unit test.
+
+**Principle:** A test proves a fix only in the environment it reproduces; when the defect was found on a specific device, the test must stand up that device's branches, or the walk remains the only proof.
