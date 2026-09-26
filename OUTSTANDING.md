@@ -52,8 +52,9 @@ whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaini
 1. **Now — [ACCOUNTS-NEW-PERSON]** (D214, D216, D217, D219, D220, D222 — one door for a new person on Admin → Users, the
    sign-up asking the same things, the admins' bell; the mock-up `raptor-port/docs/mock/new-person-account.html`, his
    approval first), on `claude/accounts-new-person`, its own FULL check — DONE, the PR open for his look and "merge
-   live"; then **[POST-OUT-OUTCOMES]** (D291 — D229, D280, D283–D287, D290: a posting out says which outcome;
-   accounts suspended / deleted), its own FULL check; then **[DRAFT-PENDING]** — the one changes window,
+   live"; **[POST-OUT-OUTCOMES]** STARTED 27 Sep 26 beside it, before #443 merges (D301, amending D291), on
+   `claude/post-out-outcomes` cut from `claude/accounts-new-person` (D291 — D229, D280, D283–D300: a posting out says
+   which outcome; accounts suspended / deleted), its own FULL check, its merge after #443's; then **[DRAFT-PENDING]** — the one changes window,
    on top of accounts, its own FULL check (D210). `[ACCOUNTS]` itself MERGED 26 Sep 26 (PR #442, his "merge live").
 2. **Now, beside the building — [IT-QUESTIONS]:** talk to the IT side (his, not code); their approvals take weeks.
 3. **Development as normal — [HUMAN-RETEST]**'s remaining three, in HIS order (D147): the absence record TOGETHER with
@@ -1202,7 +1203,8 @@ takes him off (pending on a published day); asks twice, cannot be undone. **Unde
 row is kept, marked deleted and invisible everywhere (the data model's tombstone), never erased. **And names — D286:** an archived man's callsign may go to a new person (today it is refused); restoring him while it
 is in use needs one of the two renamed first (Restore says so, renames nobody). Update `roster-add.ts` (its PID-01
 header and test), `ID_BY_CS` (points at the roster's man). **Mock-up APPROVED 27 Sep 26 (D299) — the design of record:** `raptor-port/docs/mock/post-out.html` (+ its Artifact; §5 holds what stays after a delete; D300 — the date once, the button "Post out", FEWER WORDS: done 27 Sep 26, Artifact Version 6; the BUILD carries the same short words — the sheet's line, the delete's second tap, the suspended sign-in, the back-prompt, the Restore rename line — and the post-in button reads just "Post in"); his first look: D294 (short chips "Overseas Sqn" · "Delete" (D298) · "SANS" · "Transfer to Sqn"), D295 (rename an archived man directly), D296 (guest mark A). **With it — D292:** the admin's member view back (tap the badge: "SABER · ADMIN" ↔ "MEMBER"; perms read the role in
-force). **Place — D291:** straight after `[ACCOUNTS-NEW-PERSON]` merges, before `[DRAFT-PENDING]`.
+force). **Place — D291:** straight after `[ACCOUNTS-NEW-PERSON]` merges, before `[DRAFT-PENDING]` — **amended by D301
+(27 Sep 26): started beside #443 before it merges, on `claude/post-out-outcomes` cut from it; its merge follows #443's.**
 ### [LOOK-435] His inputs from the look at PR #435 — the order is D173 (25 Sep 26)
 **Step 1 DONE 25 Sep 26:** D114's FULL check — evidence `raptor-port/docs/handpass/2026-09-25-amendment-batch.md` §9; two
 gaps fixed, three older findings filed (`[REQ-TWO-ROWS]`, `[REQ-DECLINED-PENDING]`, `[REQ-ORPHAN-ROW]`); waiting for his look.
