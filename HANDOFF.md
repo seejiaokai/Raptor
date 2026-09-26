@@ -47,7 +47,8 @@ the later merge keeps both (D78).
 ## Next, in order
 
 1. **HIS ORDER to the database step, about two months away (D203, 26 Sep 26):** now `[ACCOUNTS]` (with D200, D202 —
-   answer his "how does a new user join" question first) → the one changes window (`[DRAFT-PENDING]`) → one full check →
+   answer his "how does a new user join" question first — answered, D204) with ITS OWN full check (D210) → the one changes
+   window (`[DRAFT-PENDING]`) with its own full check →
    "merge live" (D173); beside it, he talks to the IT side (`[IT-QUESTIONS]`). Development as normal: `[HUMAN-RETEST]`'s
    remaining three in his order (D147 — the absence record with `[S4-HUNT-REST]`, change-recording, the Leave War links
    last), then `[PUB-UNAVAIL]` → `[LW-LOCKMARK]` → `[LW-WEEKDAY-WORK]`.

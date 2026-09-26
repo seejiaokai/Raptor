@@ -50,7 +50,9 @@ whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaini
 
 **His order — to the database step, about two months away (D203, 26 Sep 26; D173, D147 within it):**
 1. **Now — [ACCOUNTS]** (D165, D166, D200, D202; its open question: how a new user joins), then **[DRAFT-PENDING]** — the
-   one changes window, on top of accounts — then one FULL check of both and "merge live" (D173).
+   one changes window, on top of accounts. **Each gets its own FULL check (D210, 26 Sep 26 — amends D173's one check of
+   both):** accounts is planned, red-teamed, built, walked and FULL-checked by itself on `claude/accounts`, then "merge live";
+   the window then gets its own.
 2. **Now, beside the building — [IT-QUESTIONS]:** talk to the IT side (his, not code); their approvals take weeks.
 3. **Development as normal — [HUMAN-RETEST]**'s remaining three, in HIS order (D147): the absence record TOGETHER with
    **[S4-HUNT-REST]** (its ground IS the absence record), then change-recording (with [UNDO-ROSTER-SETTINGS] and D148),
@@ -1160,7 +1162,8 @@ leave / OIL ledger (admin writes, a member reads his own) — check, do not re-a
 gaps fixed, three older findings filed (`[REQ-TWO-ROWS]`, `[REQ-DECLINED-PENDING]`, `[REQ-ORPHAN-ROW]`); waiting for his look.
 **D173 REPLACES the plan below (D115's one check at the end):** (1) D114's FULL check on PR #435, then his look and
 "merge live"; (2) `[ACCOUNTS]` on a NEW branch; (3) `[DRAFT-PENDING]` — the one changes window, which absorbs D116's
-list, D117 and D119 (not built separately); (4) one FULL check of 2 and 3. The text below is the plan as it stood.
+list, D117 and D119 (not built separately); (4) one FULL check of 2 and 3 — **AMENDED 26 Sep 26 BY D210: accounts gets its
+own FULL check first, the window its own later.** The text below is the plan as it stood.
 Built on `claude/amendment-batch` before the full check (D115): **D114** (a request taken off / put on a published day
 is one change — built, red first, NOT yet walked or read), **D116** (Edit Schedule's History button a toggle like the
 board's), **D117** (the Edit history list: the whole week, a day picker), **D118** (`[DRAFT-PENDING]` — waits on his
@@ -1169,7 +1172,7 @@ and Astra's reads — the D114 brief is `raptor-port/docs/superpowers/briefs/202
 the rest — the walk on desktop and phone, the full gates, the evidence sheet). Nothing is "ready for merge live" before
 that check. **Place:** now, on this branch.
 
-### [DRAFT-PENDING] The one CHANGES WINDOW — D118, D167–D172 (25 Sep 26); step 3 of D173, after `[ACCOUNTS]`
+### [DRAFT-PENDING] The one CHANGES WINDOW — D118, D167–D172 (25 Sep 26); step 3 of D173, after `[ACCOUNTS]` (its own FULL check — D210)
 **WHAT IS SETTLED (read the rulings, not the working notes below):** D168 one changes window (New to you / All changes,
 a day picker, Group by Who / Where) replacing the pending list, the hand-over idea and the Edit history list; D167 its
 shape (movable, resizable, a tap takes the schedule to the change and the window stays; the phone's panel shrinks to a
