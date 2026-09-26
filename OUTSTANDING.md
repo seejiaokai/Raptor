@@ -1195,7 +1195,9 @@ D), `perms.ts` — FULL tier. **Still open — his pick:** someone leaving flyin
 delete him (tested 26 Sep 26: nothing crashes, but he vanishes from every day he was ever on, published ones included,
 and his leave, OIL and inputs stay stored unseen), or — after his worry *"I scared my archive list will be huge"* — the
 agent's third way: delete him from every list, the Archived one too, keeping only his callsign so old schedules read
-right. **Place:** the agent recommends straight after `[ACCOUNTS-NEW-PERSON]` merges, before `[DRAFT-PENDING]` — HIS to
+right. **And names:** today an archived man's callsign can never be given to a new person (the one callsign rule
+refuses anyone's, archived included — his *"will i face the issue of not being able to reuse names?"*); the third way
+frees a departed man's callsign for reuse (rows hold ids, so old schedules stay his). **Place:** the agent recommends straight after `[ACCOUNTS-NEW-PERSON]` merges, before `[DRAFT-PENDING]` — HIS to
 confirm.
 ### [LOOK-435] His inputs from the look at PR #435 — the order is D173 (25 Sep 26)
 **Step 1 DONE 25 Sep 26:** D114's FULL check — evidence `raptor-port/docs/handpass/2026-09-25-amendment-batch.md` §9; two

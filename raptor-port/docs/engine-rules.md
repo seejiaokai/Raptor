@@ -2311,9 +2311,11 @@ page's own `addPerson` is retired) refuses a callsign that resolves to any exist
 closes the reuse back-door. Rename still refuses a blank, a no-op and a duplicate (`ID_BY_CS` can only
 point one way), and it deliberately marks **nothing
 pending**: the person in the seat has not changed, only the spelling, and
-`rowCrew` diffs identically — an AL full of spelling would be noise. Published
-day snapshots keep the spelling they were issued with, which is correct for a
-historical document.
+`rowCrew` diffs identically — an AL full of spelling would be noise. *(Corrected 26 Sep 26: this said "Published day
+snapshots keep the spelling they were issued with" — not so, and against D186: a published day reads the callsign
+LIVE, a rename updating it at once (`engine/faceattrs.ts` — the issued face keeps CAT, seat, ground crew, SANS and SXO,
+"the callsign stays live"). The same live read is why a person deleted outright vanishes from every day he was on,
+published ones included — `[POST-OUT-OUTCOMES]`.)*
 
 ## Publishing / amendments
 
