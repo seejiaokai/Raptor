@@ -1,0 +1,166 @@
+{
+  "results": [
+    {
+      "id": "a01-bid-po-chips",
+      "what": "the bid sheet's PO: four chips, Overseas Sqn chosen, Transfer not pressable, one line, \"Post out\"",
+      "ok": true,
+      "note": "",
+      "pic": "01-a01-bid-po-chips.png"
+    },
+    {
+      "id": "a02-bid-po-delete-asks",
+      "what": "Delete asks twice: the first tap names him and writes nothing",
+      "ok": true,
+      "note": "",
+      "pic": "02-a02-bid-po-delete-asks.png"
+    },
+    {
+      "id": "a03-overseas-ran",
+      "what": "an Overseas Sqn posting dated today runs at once: archived on Quals by the posting",
+      "ok": true,
+      "note": "",
+      "pic": "03-a03-overseas-ran.png"
+    },
+    {
+      "id": "a04-users-suspended",
+      "what": "Admin → Users: his account reads \"suspended\"",
+      "ok": true,
+      "note": "",
+      "pic": "04-a04-users-suspended.png"
+    },
+    {
+      "id": "a05-quals-archived",
+      "what": "Quals: he is off the roster and on the Archived list",
+      "ok": true,
+      "note": "",
+      "pic": "05-a05-quals-archived.png"
+    },
+    {
+      "id": "a06-signin-suspended",
+      "what": "his sign-in: \"Your access is suspended — Ask an admin to enable it when you're back.\"",
+      "ok": true,
+      "note": "",
+      "pic": "06-a06-signin-suspended.png"
+    },
+    {
+      "id": "a07-restore-prompt",
+      "what": "Restore: he is back on the roster, his account enabled, and the prompt asks to check his quals",
+      "ok": true,
+      "note": "",
+      "pic": "07-a07-restore-prompt.png"
+    },
+    {
+      "id": "a08-check-quals",
+      "what": "Check his quals: the prompt answered, his row outlined",
+      "ok": true,
+      "note": "",
+      "pic": "08-a08-check-quals.png"
+    },
+    {
+      "id": "a09-users-enabled",
+      "what": "Admin → Users: his account no longer reads \"suspended\"",
+      "ok": true,
+      "note": "",
+      "pic": "09-a09-users-enabled.png"
+    },
+    {
+      "id": "a10-sans-line",
+      "what": "SANS chosen: the one line reads \"becomes SANS\"",
+      "ok": true,
+      "note": "",
+      "pic": "10-a10-sans-line.png"
+    },
+    {
+      "id": "a11-sans-ran",
+      "what": "the SANS posting ran: ticked SANS by the posting",
+      "ok": true,
+      "note": "",
+      "pic": "11-a11-sans-ran.png"
+    },
+    {
+      "id": "a12-sans-show-off",
+      "what": "Show SANS off: his row stays in its old place, the days from the posting hatched",
+      "ok": true,
+      "note": "",
+      "pic": "12-a12-sans-show-off.png"
+    },
+    {
+      "id": "a13-postout-sheet",
+      "what": "the struck day opens the Post out sheet: the same chips, SANS chosen, one line",
+      "ok": true,
+      "note": "",
+      "pic": "13-a13-postout-sheet.png"
+    },
+    {
+      "id": "a14-sans-taken-back",
+      "what": "un-choosing SANS (\"nothing else\"): the SANS tick the posting made is taken back",
+      "ok": true,
+      "note": "",
+      "pic": "14-a14-sans-taken-back.png"
+    },
+    {
+      "id": "a15-undo-post-out",
+      "what": "Undo post out: he is back in the squadron, no posting left",
+      "ok": true,
+      "note": "",
+      "pic": "15-a15-undo-post-out.png"
+    },
+    {
+      "id": "a16-delete-ran",
+      "what": "a Delete posting dated today, second tap: the hidden mark from today",
+      "ok": true,
+      "note": "",
+      "pic": "16-a16-delete-ran.png"
+    },
+    {
+      "id": "a17-delete-users",
+      "what": "Admin → Users: his account is gone",
+      "ok": true,
+      "note": "",
+      "pic": "17-a17-delete-users.png"
+    },
+    {
+      "id": "a18-delete-quals",
+      "what": "Quals: not on the roster, not on the Archived list (D299)",
+      "ok": true,
+      "note": "",
+      "pic": "18-a18-delete-quals.png"
+    },
+    {
+      "id": "a19-lw-month-before",
+      "what": "the Leave War, the month he left: his row kept (the past keeps its record), hatched from today",
+      "ok": true,
+      "note": "",
+      "pic": "19-a19-lw-month-before.png"
+    },
+    {
+      "id": "a20-lw-month-after",
+      "what": "the Leave War, the month after: no row for him",
+      "ok": true,
+      "note": "",
+      "pic": "20-a20-lw-month-after.png"
+    },
+    {
+      "id": "a21-lw-delete-no-door",
+      "what": "no posting door for a deleted man: his struck day opens nothing that changes his posting",
+      "ok": true,
+      "note": "",
+      "pic": "21-a21-lw-delete-no-door.png"
+    },
+    {
+      "id": "a22-deleted-signin",
+      "what": "his sign-in now lands on Request access (his account is gone)",
+      "ok": true,
+      "note": "",
+      "pic": "22-a22-deleted-signin.png"
+    },
+    {
+      "id": "a23-reload",
+      "what": "after a reload: Outlaw still deleted, Hex back and not SANS, no posting on Hex",
+      "ok": true,
+      "note": "",
+      "pic": "23-a23-reload.png"
+    }
+  ],
+  "errors": []
+}

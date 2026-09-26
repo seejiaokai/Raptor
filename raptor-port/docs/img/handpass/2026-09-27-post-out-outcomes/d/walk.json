@@ -1,0 +1,26 @@
+{
+  "results": [
+    {
+      "id": "d01-sheet-says-it-waits",
+      "what": "the sheet says beforehand the posting will wait (he is the last admin)",
+      "ok": true,
+      "note": "",
+      "pic": "01-d01-sheet-says-it-waits.png"
+    },
+    {
+      "id": "d02-nothing-half-done",
+      "what": "confirmed: Saber is NOT archived and can still sign in (nothing half done)",
+      "ok": true,
+      "note": "",
+      "pic": "02-d02-nothing-half-done.png"
+    },
+    {
+      "id": "d03-account-row-says-why",
+      "what": "Admin → Users: his own row says the posting waits, and why",
+      "ok": true,
+      "note": "",
+      "pic": "03-d03-account-row-says-why.png"
+    }
+  ],
+  "errors": []
+}

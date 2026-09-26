@@ -252,10 +252,10 @@ function AccountRow(p: { a: Account; editing: boolean; onEdit: () => void; onClo
           {own && <span className="acc-tag you">you</span>}
         </span>
       </button>
-      {/* his posting out has come and is waiting — why (the last admin; a stored week), on his row, his own included
+      <span className={'ub ' + a.role}>{isAdminAccount(a) ? 'Admin' : 'Member'}</span>
+      {/* his posting out has come and is waiting — why (the last admin; a stored week), on his row (under it, after the role tag), his own included
           ([POST-OUT-OUTCOMES] — the plan's Round 2 item 3, Astra's code read 2) */}
       {heldNote && <span className="acc-held" data-testid={`acc-held-${a.id}`}>{heldNote}</span>}
-      <span className={'ub ' + a.role}>{isAdminAccount(a) ? 'Admin' : 'Member'}</span>
       {p.editing && !own && <div className="acc-edit" data-editing={a.id}>
         <div className="mfield"><label htmlFor="accEdName">Sign-in (defence mail)</label>
           <input id="accEdName" value={name} maxLength={MAX_SIGNIN} onChange={e => setName(e.target.value)} /></div>
