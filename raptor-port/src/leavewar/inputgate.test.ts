@@ -3,6 +3,7 @@
 // inputs door (writeInputs) and the real global undo, over both wired stores.
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { INPUTS } from '../engine/inputs'
+import { PEOPLE } from '../engine/people'
 import { HOOKS } from '../engine/hooks'
 import { initStore as raptorInitStore, writeInputs } from '../state/store'
 import { setMe, setSession } from '../state/auth'
@@ -163,12 +164,15 @@ describe('a clashing input replaces an undecided bid (owner rule, H1, answer B, 
   }
 
   it('an admin filing over a pending bid replaces it and leaves a notice until "OK, seen"', () => {
+    /* [ACCOUNTS] (D166 (5), 26 Sep 26): the admin is a person now — signed in as Saber —
+       and the notice names him by callsign, not "an admin" */
+    setMe('stiff')
     bid('ammo', '2026-02-10')
     expect(file('ammo', 'ATT C', 'Feb 10')).toBe(true)
     const list = recsAt('ammo', '2026-02-10')
     expect(list.some(r => r.kind === 'request')).toBe(false)
     const notice = list.find(r => r.kind === 'notice') as any
-    expect(notice).toMatchObject({ code: 'LL', was: 'pending', byType: 'ATT C', byWho: 'an admin' })
+    expect(notice).toMatchObject({ code: 'LL', was: 'pending', byType: 'ATT C', byWho: PEOPLE.stiff.cs })
     expect(getState().wars[0]!.views.ammo['2026-02-10']!.mark).toBe('!')
     expect(said.some(m => m.includes('bid on 10 Feb'))).toBe(true)
     // OK, seen — the person or an admin

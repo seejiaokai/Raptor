@@ -9,8 +9,9 @@ import { CURWEEK } from '../engine/waves'
 import { weekWindow } from './weeknav'
 import { CalIcon, XlsIcon, PdfIcon, HistIcon, HlIcon, SrchIcon } from './icons'
 import { rulesOffCount } from '../engine/rules'
-import { SESSION, ME, setMe, canToggleRole } from '../state/auth'
-import { toggleRole, notify, setPage } from '../state/store'
+import { isAdmin, me } from '../state/perms'
+import { waitingCount } from '../state/accounts'
+import { notify, setPage } from '../state/store'
 import { logOut } from './logout'
 import { HLSET, SEARCH, HLOPEN, toggleHlOpen, HLGROUP, setSearch, CURPAGE, setDayPreview, toggleViewWork, bellLit, clearBell } from '../state/view'
 import { HlChips } from './hlchips'
@@ -250,7 +251,12 @@ export function Shell() {
   /* NO validate() here: the reference never validates during a repaint — every
      mutation path has already validated, and a second engine pass per paint is
      what blew the phone budget */
-  const admin = SESSION && SESSION.role === 'admin'
+  const admin = isAdmin()
+  /* the signed-in person ([ACCOUNTS], D166 (3)) — the badge names him; "View as" is gone */
+  const mine = me()
+  const mineCs = mine && PEOPLE[mine] ? PEOPLE[mine].cs : ''
+  /* access requests waiting (D204 "a badge on the Admin tab") — admins only */
+  const waiting = admin ? waitingCount() : 0
   const nav = (p: string) => { setPage(p); notify() }
   /* The five page tabs are <a>s with no href — visually a nav, but the reference
      built them as links, so a keyboard user could not Tab to them and could not
@@ -265,8 +271,6 @@ export function Shell() {
   const navKey = (p: string) => (e: ReactKeyboardEvent) => {
     if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); nav(p) }
   }
-  const people = Object.keys(PEOPLE).filter(id => !PEOPLE[id].archived)
-    .sort((a, b) => PEOPLE[a].cs.localeCompare(PEOPLE[b].cs))
   /* memoized chrome: a store tick that changes nothing in the topbar or a
      page's controls must not re-reconcile their few hundred elements — the
      reference's equivalent guarantee is "a no-op state change repaints
@@ -279,7 +283,7 @@ export function Shell() {
   /* computed ONCE per render — the bell's class and the memo deps both read
      it (bug pass, 28 Aug 26: two full INPUTS scans per render was waste);
      the tap handler re-derives its own fresh copy at click time. */
-  const oilPend = oilPendingFor(ME).length
+  const oilPend = mine ? oilPendingFor(mine).length : 0
   const topbar = useMemo(() => (
       /* The top bar wears a blue-tinted gradient while on Edit Schedule (owner,
          22 Aug 26) so it is unmistakable from the near-identical View-only mode
@@ -309,7 +313,8 @@ export function Shell() {
           {/* the Admin tab sits LAST, always (owner, 23 Aug 26) — the tools
               tab after the work tabs; hidden for a member like the Edit tab,
               but the PAGE is the gate, not this attribute (AdminPage.tsx) */}
-          <a data-page="admin" data-admin="" hidden={!admin} role="button" tabIndex={0} className={page === 'admin' ? 'on' : ''} onClick={() => nav('admin')} onKeyDown={navKey('admin')}>Admin</a>
+          <a data-page="admin" data-admin="" hidden={!admin} role="button" tabIndex={0} className={page === 'admin' ? 'on' : ''} onClick={() => nav('admin')} onKeyDown={navKey('admin')}
+            aria-label={waiting ? `Admin — ${waiting} waiting for access` : undefined}>Admin{waiting > 0 && <span className="navbadge" id="admWaitBadge">{waiting}</span>}</a>
         </nav>
         <SaveStatus />
         <div className="spring">
@@ -339,14 +344,8 @@ export function Shell() {
             <button className="abtn" id="histBtn" title="Edit history — every change this session"
               onClick={() => { setHistList('all'); notify() }}><span className="bi"><HistIcon /></span><span className="bl"> Edit history</span></button>
           </div>}
-          <div className="acct">
-            <div className="sel"><label>View as</label>
-              <select id="viewAs" aria-label="View the schedule as" value={ME} onChange={e => { setMe(e.target.value); notify() }}>
-                {people.map(id => <option key={id} value={id}>{PEOPLE[id].cs}</option>)}
-              </select></div>
-            {/* the Manage users button moved to the Admin page (owner,
-                23 Aug 26) — the topbar gives its slot back */}
-          </div>
+          {/* THE "VIEW AS" PICKER IS GONE ([ACCOUNTS], D166 (3), 26 Sep 26): signing in
+              makes you your own callsign — the badge at the far right names him */}
           <button className={'fastsync' + (fast ? ' on' : '')} id="fastSync" title="Toggle 1-second sync (for publishing / meetings)"
             onClick={() => setFast(f => !f)}><span className="dot"></span><span id="syncLbl">{fast ? 'Sync · 1 s' : 'Sync · slow'}</span></button>
           {/* THE THREE WEEK-WIDE COUNT PILLS ARE GONE (owner, 20 Aug 26 — "what's
@@ -386,7 +385,7 @@ export function Shell() {
                 HOOKS.toast(`${n} new bug report${n === 1 ? '' : 's'}`)
                 nav('help'); return
               }
-              const oilHit = oilPendingFor(ME)[0]
+              const oilHit = mine ? oilPendingFor(mine)[0] : null
               if (oilHit) {
                 const row = inpById(oilHit.iid)
                 if (row) {
@@ -411,25 +410,17 @@ export function Shell() {
           {/* through the ONE logout (ui/logout.ts), which asks the Tracker about
               unsaved chart edits first (D129) */}
           <button className="abtn ghost" id="logout" onClick={() => { void logOut() }}>Logout</button>
-          {/* The role indicator, moved to the FAR RIGHT of the bar, after every
-              other control (owner, 22 Aug 26 — "move the admin button to always
-              the far right … same design as the others"). Styled as one of the
-              .abtn buttons rather than the old pill; the accent tint keeps the
-              Admin state legible. Hidden on a phone, as it was in its old spot,
-              so the tight one-row phone bar stays uncrowded — the drawer's
-              Account row carries the toggle there.
-              FOR A REAL ADMIN it is now a BUTTON (owner, 27 Aug 26): clicking
-              flips the whole app between admin and member view (store.ts's
-              toggleRole — the gate is LOGINROLE, so a member's badge stays the
-              inert label it always was, same id either way). */}
-          {canToggleRole()
-            ? <button className={'abtn rolechip tgl' + (admin ? ' admin' : '')} id="roleBadge"
-              title={admin ? 'See the app as a member — click again to switch back' : 'Return to admin'}
-              onClick={() => toggleRole()}>{admin ? 'Admin' : 'Member'}</button>
-            : <span className={'abtn rolechip' + (admin ? ' admin' : '')} id="roleBadge">{admin ? 'Admin' : 'Member'}</span>}
+          {/* The role indicator, at the FAR RIGHT of the bar, after every other
+              control (owner, 22 Aug 26), styled as one of the .abtn buttons; hidden on a
+              phone (the drawer's Account row names him there). Since [ACCOUNTS]
+              (D166 (3), 26 Sep 26) it names the signed-in person and his role, and it is
+              an inert label for everyone: the admin's "View as member" toggle (27 Aug 26)
+              is gone — "There isint a need for preview as a member". */}
+          <span className={'abtn rolechip' + (admin ? ' admin' : '')} id="roleBadge"
+            title={mineCs ? `Signed in as ${mineCs}` : undefined}>{mineCs ? `${mineCs} · ` : ''}{admin ? 'Admin' : 'Member'}</span>
         </div>
       </div>
-  ), [page, admin, ME, fast, uv, us.canUndo, us.canRedo, us.undoLabel, us.redoLabel, bellLit(), bugAlert(), oilPend])
+  ), [page, admin, mine, mineCs, waiting, fast, uv, us.canUndo, us.canRedo, us.undoLabel, us.redoLabel, bellLit(), bugAlert(), oilPend])
 
   const viewPage = useMemo(() => (
       <section className={'page' + (page === 'viewsched' ? ' on' : '')} id="page-viewsched">

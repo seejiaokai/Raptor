@@ -37,7 +37,8 @@ import { CmdRefused } from '../command'
 import { HOOKS } from '../engine/hooks'
 import { INPUTS, inpId, isLeave, nowStamp } from '../engine/inputs'
 import { PEOPLE } from '../engine/people'
-import { LOGINROLE, ME, SESSION } from '../state/auth'
+import { SESSION } from '../state/auth'
+import { isMe, me } from '../state/perms'
 import { setInputGate } from '../state/inputgate-hook'
 import { buildAbsenceIndex, contribsOfInput, inputDates, warCodeOf, warVisible } from './absences'
 import { addDays, warHolding } from './engine'
@@ -313,12 +314,15 @@ export function replaceClashingBids(claims: readonly BidClaim[], byWho: string, 
 }
 
 function replaceBids(changed: any[]): string[] {
-  /* B6 — decided by the LOGIN, not by the admin's "view as member" toggle or
-     "View as" (Codex AS4-004): a real admin login is always someone else acting
-     for the member; a member login is the person they view as */
-  const adminLogin = LOGINROLE === 'admin'
-  const own = (p: string) => !!SESSION && !adminLogin && String(ME) === p
-  const who = SESSION ? (adminLogin ? 'an admin' : cs(String(ME))) : 'the Inputs page'
+  /* B6 — whose bid it was is decided by the SIGNED-IN PERSON ([ACCOUNTS], D166 (5),
+     26 Sep 26), whatever his role: his own bid replaced by his own input says "your …
+     bid" and leaves no notice; anyone else's gets a notice naming who did it, by
+     callsign. (It used to be decided by the login's role — a real admin was "always
+     someone else acting for the member" and wrote "an admin" — because the admin had no
+     person of his own: "View as" was only a lens. Fable R1-6.) */
+  const own = (p: string) => isMe(p)
+  const mine = me()
+  const who = SESSION ? (mine ? cs(mine) : 'someone') : 'the Inputs page'
   const claims: BidClaim[] = []
   for (const row of changed) {
     if (!isLeave(row.type) && !isSickCode(warCodeOf(row.type))) continue

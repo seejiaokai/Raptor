@@ -928,7 +928,8 @@ section folds are next touched. (Its first half — the wave show/hide toggle le
 
 ### [QUALS-MEMBER-SCOPE] May a member edit ANY row on the Quals page? — a question for him (moved from HANDOFF.md, 24 Sep 26)
 
-**FOLDED INTO `[ACCOUNTS]` 26 Sep 26 (D200) — built there.** **ANSWERED (D149, 24 Sep 26) — now a small build:** a member edits his OWN row only, and every column of it (SXO and
+**FOLDED INTO `[ACCOUNTS]` 26 Sep 26 (D200) — BUILT there 26 Sep 26 (`raptor-port/src/state/quals-write.ts`,
+pinned per column in `quals-write.test.ts`); to the archive with `[ACCOUNTS]`' merge.** **ANSWERED (D149, 24 Sep 26) — now a small build:** a member edits his OWN row only, and every column of it (SXO and
 SCHEDULER included); an admin edits any row. The gate goes at the page and the write path, with a test per column;
 permissions, so FULL tier. **Place:** any time, none blocking. The question as it was put:
   - **Member Quals-editing scope** — a member in Quals editing mode can tick/edit
@@ -1092,6 +1093,8 @@ audit is mechanical — then consider making the gate require a NEW row's docume
 **Place:** any time, none blocking.
 
 ### [PUCK-FLAG-GLOW] A red-flagged "View as" puck glows; no flagged puck should (his ask, D164, 24 Sep 26)
+*(Since `[ACCOUNTS]` (26 Sep 26) the purple "this is you" puck is the SIGNED-IN person's — "View as" is gone; the glow
+rule below is unchanged.)*
 He sent two pictures: a red-flagged puck with a red glow (Ranger, the person being viewed as) and one without (Saber).
 The glow comes from `raptor-port/src/ui/scheduler.css`: `.puck.me.boxred` and `.puck.me.boxdash` add
 `0 0 10px 1px rgba(240,85,95,.7)` on top of the red ring when the View-as puck is flagged. **Do:** drop that glow, so
@@ -1145,6 +1148,9 @@ None breaks an amendment rule; each is a line to fix or ask about, from the walk
 **Place:** any time; items 6–8 with the Leave War links re-test (D147, last).
 
 ### [ACCOUNTS] Accounts in the app now, shaped as the defence-mail sign-in will be (owner, D166, 25 Sep 26)
+**BUILT 26 Sep 26 on `claude/accounts` — in its FULL check (D210); the plan (red-teamed three rounds by Fable and Astra)
+is `raptor-port/docs/superpowers/plans/2026-09-26-accounts-plan.md`; the behaviour register
+`raptor-port/docs/superpowers/specs/2026-09-26-accounts-behaviour-register.md`.** To the archive with its merge.
 The Admin tab creates accounts (sign-in name, admin or member, the callsign it belongs to); the sign-in screen stands
 for the defence mail sign-in; signing in makes you that callsign, so "View as" and any member preview go; the Leave
 War follows the signed-in callsign; every "who" (edit record, pending list, hand over) names the callsign. Replaces

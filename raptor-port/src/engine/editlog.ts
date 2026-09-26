@@ -24,7 +24,8 @@ import { ridKey, posKey } from './rowids'
 
 export type ELogRow = {
   t: number           // wall clock at the moment of the edit
-  who: string         // display name, from HOOKS.whoami()
+  who: string         // display name, from HOOKS.whoami() -- the signed-in callsign since [ACCOUNTS]
+  pid?: string | null  // the person behind it (HOOKS.whoamiId), so the changes window can draw a renamed callsign live
   di: number | null   // which schedule day it landed on (null for a structural note)
   key: string         // the slot key, '' for a structural note
   lbl: string         // WHAT it was, in words — frozen at log time, see below
@@ -211,7 +212,7 @@ export function logEdit(key: any, from: any, to: any) {
   const store = String(ridKey(key, DAYS))
   const a = say(store, from), b = say(store, to)
   if (a === b) return
-  push({ t: Date.now(), who: HOOKS.whoami(), di: dayOf(store), key: store, lbl: keyLabel(key), from: a, to: b })
+  push({ t: Date.now(), who: HOOKS.whoami(), pid: HOOKS.whoamiId(), di: dayOf(store), key: store, lbl: keyLabel(key), from: a, to: b })
 }
 
 /* Record something that is not a value change — a line, wave, row or note
@@ -220,7 +221,7 @@ export function logEdit(key: any, from: any, to: any) {
    for logEdit to compare; the calling site names the action instead, in the
    same words its toast already uses. */
 export function logAction(di: any, text: string) {
-  push({ t: Date.now(), who: HOOKS.whoami(), di: di == null ? null : +di, key: '', lbl: text, from: '', to: '' })
+  push({ t: Date.now(), who: HOOKS.whoami(), pid: HOOKS.whoamiId(), di: di == null ? null : +di, key: '', lbl: text, from: '', to: '' })
 }
 
 /* newest first, optionally narrowed to one day — the listed view's whole

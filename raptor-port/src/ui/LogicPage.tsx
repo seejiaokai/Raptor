@@ -7,7 +7,8 @@ import { VCONF, SHIFT_HARD, RULE_SPEC, RULE_STD, KIND_LABEL, ruleFmt, ruleParse,
 import { WARN, validate, lgFired } from '../engine/validate'
 import { dowShort } from '../engine/publish'
 import { HOOKS } from '../engine/hooks'
-import { SESSION, setLgEdit, lgCanEdit } from '../state/auth'
+import { setLgEdit, lgCanEdit } from '../state/auth'
+import { isAdmin } from '../state/perms'
 import { esc } from '../state/view'
 import { notify } from '../state/store'
 import { useVersion } from './useStore'
@@ -78,7 +79,7 @@ export function LogicPage() {
   const [LGF, setLGF] = useState('all')
   const bodyRef = useRef<HTMLDivElement>(null)
 
-  const admin = !!SESSION && SESSION.role === 'admin'
+  const admin = isAdmin()
   const b = logicBody(LGQ, LGF)
   const off = rulesOffCount()
 
@@ -105,7 +106,7 @@ export function LogicPage() {
       const t = e.target as HTMLElement
       const i = t.closest('[data-lgset]') as HTMLInputElement | null
       if (i) {
-        if (SESSION.role !== 'admin') return
+        if (!isAdmin()) return
         const k = i.dataset.lgset!, spec = RULE_SPEC[k], v = ruleParse(k, i.value)
         if (v == null || v < spec.lo || v > spec.hi) {
           /* put the LIVE value back, the way every other refusing path in the
@@ -125,7 +126,7 @@ export function LogicPage() {
       }
       const c = t.closest('[data-lgkind]') as HTMLInputElement | null
       if (c) {
-        if (SESSION.role !== 'admin') return
+        if (!isAdmin()) return
         const k = c.dataset.lgkind!
         SHIFT_HARD[k] = c.checked; lgReapply()
         HOOKS.toast(`A shift against ${KIND_LABEL[k]} is now ${c.checked ? 'a Warning' : 'an Advisory'}`)
@@ -168,7 +169,7 @@ export function LogicPage() {
             onClick={() => { setLgEdit(false); notify() }}>Done</button>
           <button className="abtn ghost" id="lgReset" hidden={!admin || !off}
             onClick={() => {
-              if (SESSION.role !== 'admin') return
+              if (!isAdmin()) return
               const n = rulesOffCount(); if (!n) return
               rulesReset(); ruleApply()
               HOOKS.toast(`${n} rule${n > 1 ? 's' : ''} back to squadron standard`)

@@ -22,6 +22,7 @@ import { DAYTPLEDIT, setDayTplEdit } from './pops'
 import { useVersion } from './useStore'
 import { HOOKS } from '../engine/hooks'
 import { SESSION } from '../state/auth'
+import { isAdmin } from '../state/perms'
 
 export function DayTplModal() {
   useVersion()
@@ -39,7 +40,7 @@ export function DayTplModal() {
      manager and flipped to member view kept live rename/delete/reset controls
      (renameDayTpl/delDayTpl/dayTplReset) that carry no write-path gate. The test
      is `SESSION && role !== 'admin'`, so a sessionless test/boot is not a member. */
-  if (!DAYTPLEDIT || (SESSION && SESSION.role !== 'admin')) return <div className="modal" id="daytplModal" hidden />
+  if (!DAYTPLEDIT || (SESSION && !isAdmin())) return <div className="modal" id="daytplModal" hidden />
 
   /* the selected id can go stale — a delete elsewhere, the modal opening for
      the first time, or a library that has nothing in it at all yet */

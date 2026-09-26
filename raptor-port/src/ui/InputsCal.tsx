@@ -25,7 +25,8 @@ import { PLANPUCKS, DAYRMK, setDayRemark, addPlanPuck, editPlanPuck, removePlanP
 import { notify, writeInputs } from '../state/store'
 import { CALMONTH, setCalMonth, matchesHiSet } from '../state/view'
 import { HL_GROUPS } from './hlchips'
-import { canEditSched, ME } from '../state/auth'
+import { canEditSched } from '../state/auth'
+import { me } from '../state/perms'
 import { fmt, fmtDay, inputTone, firstPersonalType } from './inputedit'
 import { INPEDIT, setInpEdit } from './pops'
 import { initCalDrag } from './caldrag'
@@ -275,7 +276,7 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, onClose }:
      it. */
   const openAdd = (iso: string) => {
     const t = firstPersonalType()
-    setInpEdit({ _new: true, _ctx: '', person: ME, type: t, date: fmt(iso), allday: defaultAllday(t), s: 360, e: 1080 })
+    setInpEdit({ _new: true, _ctx: '', person: me(), type: t, date: fmt(iso), allday: defaultAllday(t), s: 360, e: 1080 })
     notify()
   }
   const closePop = () => { setPopIso(null); setPopPuckEdit(null) }

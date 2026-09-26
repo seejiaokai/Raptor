@@ -317,7 +317,7 @@ test('the member files leave over their own bid: bid gone, a message, no notice 
   rulesOnDesktop()
   await openWar(page, 'user')
   const P = 'ammo', D = '2026-02-11'
-  await page.selectOption('#viewAs', P)          // the member IS ammo
+  await page.evaluate(id => (window as any).raptorMe(id), P)   // the member IS ammo (the signed-in person — [ACCOUNTS]; "View as" is gone)
   await lwView(page, P)
   await showMonth(page, D)
   await tap(page, P, D)

@@ -333,12 +333,12 @@ reason it could write down, the answer is YES:**
 **YES to 1, 2, 3, 7 or 8 → FULL. Otherwise YES to 4, 5 or 6 → WALK. Otherwise cosmetic on one
 surface → LOOK. Words only → NONE.**
 
-**The server question (owner, D202, 26 Sep 26) — asked of EVERY change, whatever the tier:** does it change **who may do
-something**, **what someone is owed** (OIL credits and awards, leave balances, a Leave War decision), **an official record**
-(a published day, its amendments, sign-offs, the change history) or **who can see personal details** (medical)? If yes,
-the rule must hold on the server at the database step, so update the permissions table — `docs/data-model.md` §11 — in
-the same change, and say so on the evidence sheet. Until `[ACCOUNTS]` puts the app's permission checks in one place with a
-test tied to that table (D200); from then on the test catches a missed update, and this paragraph points at it.
+**The server question (owner, D202, 26 Sep 26) — CARRIED BY A TEST since `[ACCOUNTS]` (26 Sep 26; D202 spent):** a
+change to **who may do something**, **what someone is owed**, **an official record** or **who can see personal details**
+is made in ONE place — `src/state/perms.ts` — and `perms.test.ts` fails until `docs/data-model.md` §11 (the table the
+database's security is built from) says the same; `perms-scan.test.ts` fails if the rule is decided anywhere else. So a
+bug check no longer asks it by hand: it checks those two tests ran green, and the evidence sheet names any §11 row the
+change touched.
 
 Note what this does to "display only": the green edge was display only, and three of its defects
 lived in a shared drawer and a new mode. **A cosmetic change to a shared drawer is never LOOK.**

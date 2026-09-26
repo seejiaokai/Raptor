@@ -77,13 +77,13 @@ wearing a different hat.
   edits. Needs a server or sync backend; touches the storage seam (`raptor-port/src/storage/`,
   `raptor-port/CLAUDE.md` §Where things live) and the mutation funnel. *(Corrected 24 Sep 26: it used to name
   `engine/hooks.ts:storeBackend`, which the storage seam replaced for everything but the `sqn142_*` settings.)*
-- **Prototype auth.** Hard-coded accounts. *(Corrected 24 Sep 26: "the deployed site is public" stopped being
-  true with D59 — the repo is private and the app sits behind his Vercel sign-in, which is Vercel's lock, not the
-  app's.)*
-  Manage-users edits the in-memory list only. A member is NOT view-only: they
-  add, edit and delete their own Inputs and tick the qualifications they hold.
-  Roles table `docs/engine-rules.md` §Auth / roles; enforcement (page and write
-  path, never the nav) pinned by `src/state/session.test.ts`.
+- **Prototype auth.** *(Rewritten 26 Sep 26 by `[ACCOUNTS]`, on its branch.)* Accounts — one per person, tied to a
+  callsign, managed on Admin → Users; the sign-in stands for the defence mail's and the app keeps no password; people on
+  no list ask for access (D166, D204). Like all data, they live in one browser until the database, and the sign-in is no
+  security (the app sits behind his Vercel sign-in — Vercel's lock, not the app's). A member is NOT view-only: they
+  add, edit and delete their own Inputs and edit their own Quals row (D149).
+  Roles table `docs/engine-rules.md` §Auth / roles; ONE permissions module (`raptor-port/src/state/perms.ts`,
+  mirroring `data-model.md` §11, drift-tested); enforcement at the page, the write path and the command gate.
 - **One dataset.** The schedule is the demo week (Mon 13 – Sun 19 Jul 26; the
   weekend is non-flying, duty crew only). Week chips re-label but every week
   shows the same data. *(Corrected 24 Sep 26: a second demo week is authored from Mon 20 Jul —

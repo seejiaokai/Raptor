@@ -19,7 +19,7 @@ import { keyDay } from '../engine/keys'
 import { VCONF } from '../engine/rules'
 import { esc, SBDAY, WFOCUS, PFOCUS, DWOPEN, DPREV, AVSHUT, PIOPEN, VWORK, CURPAGE, lateShown, restArmed, unpubArmed, notePub, stSavedOn, warnShown, WMOPEN, displayedBundle } from '../state/view'
 import { canEditSched } from '../state/auth'
-import { ME } from '../state/auth'
+import { isGuest, mayReadMedicalOf } from '../state/perms'
 import { HOOKS } from '../engine/hooks'
 import { oilBarOf, oilItemOfKey, inputItemKey, oilSentinelSummary, oilFromWords } from './oilmode'
 import { oilReadPass } from '../engine/oilev'
@@ -232,6 +232,17 @@ export function dayIssuedHTML(di:any){
      content-swapped render as-is (its flags were computed on the live day, not
      the previewed snapshot), so it is left un-wrapped. */
 export function viewDayHTML(di:any){
+  /* A GUEST ([ACCOUNTS], D204) — signed in, waiting for access, the admin's guest switch
+     on — reads the PUBLISHED week and nothing else: a published day's issued face (never
+     the working copy — VWORK is cleared at every sign-in and its picker is not drawn
+     for him), and a day not yet published only says so. Never reached with no session,
+     so the byte-exact comparison with the original (sessionless) is untouched. */
+  if(isGuest()){
+    if(!dayApproved(di)){const d=DAYS[+di];return `<section class="day ${d.today?'today':''}" data-day="${+di}">`
+      +`<div class="day-head"><span class="dow">${d.dow}</span><span class="dt">${esc(d.dt)}${d.today?' · Today':''}</span></div>`
+      +`<div class="dprev-bar">Not published yet</div></section>`}
+    return dayIssuedHTML(di)
+  }
   if(dayApproved(di)) return VWORK.has(di)?dayHTML(di,false):dayIssuedHTML(di)
   const ver=DPREV.get(di)
   if(!isDraftVer(ver)) return withOfficialWarn(()=>dayHTML(di,false))
@@ -364,6 +375,7 @@ export function viewDraftSelHTML(di:any){
    drafts-only picker unchanged. */
 export function viewVerSelHTML(di:any){
   di=+di
+  if(isGuest())return ''   // a guest reads the issued face only (D204) — no working-draft picker
   if(!dayApproved(di))return viewDraftSelHTML(di)
   const cv=dayCurVer(di)
   if(cv==null)return ''   // published with no snapshot — probe/import state, nothing to offer
@@ -1908,8 +1920,11 @@ function dayHTMLBody(di:any,ed:any,vsel?:any){
         /* the input's own free text now reads in the RMKS column, so the NAME column
            carries the type and every block lines up on the same five columns */
         s+=`<div class="pl-row${acc&&inp.acc&&inp.acc!=='r'?' accd':''}${acc?dormRowCls(inp):''}"${acc?dormRowTitle(inp):''}>`
-          +`<span class="nm">${inpEditLabel(inp,ed,inpLabel(inp),'ntx')}</span>${inpTimeCells(inp,ed)}`
-          +`<div class="ppl one">${pk}</div>${inpRmkCell(inp,ed,d.dt)}`
+          /* a medical input's type and remarks are for the squadron's members (D211 —
+             every member reads them, his 27 Aug 26 rule); a GUEST, not yet a member,
+             reads it only as "Unavailable" and its times (perms.ts mayReadMedicalOf) */
+          +`<span class="nm">${hideMed(inp)?'<span class="ntx">Unavailable</span>':inpEditLabel(inp,ed,inpLabel(inp),'ntx')}</span>${inpTimeCells(inp,ed)}`
+          +`<div class="ppl one">${pk}</div>${hideMed(inp)?'<span class="rmk rk-e"><span class="ntx"></span></span>':inpRmkCell(inp,ed,d.dt)}`
           +(acc||unfile?accCtl(di,inp):'')+`</div>`; });
       return s+`</div>`; };
     /* THE FOUR CREW WORKING-AID PANELS. In EDIT mode they join the SAME draggable
@@ -1997,6 +2012,9 @@ export function inpTimeCells(inp:any,ed:any){
    must read the same on every day it covers, not just its start date. Same
    prefix idiom as lateTag just above: printed ahead of the free text, never
    nested inside it, so it survives the contenteditable span untouched. */
+/* [ACCOUNTS] D211: does this reader see a medical input only as "Unavailable"? Only a
+   guest — every member and admin reads a medical input in full. */
+const hideMed=(inp:any)=>isDownchit(inp.type)&&!mayReadMedicalOf(inp.person);
 export function inpRmkCell(inp:any,ed:any,dt?:any){
   const lt=lateTag(inp), lc=lt?' has-late':'';
   const sb=isSansAvail(inp.type)&&dt?sansBadge(inp.person,dt):'';

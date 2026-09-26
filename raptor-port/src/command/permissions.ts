@@ -72,4 +72,5 @@ export function authorize(type: string, actor: Actor, meta?: any): boolean {
 /* test-only: clear registered permissions between suites */
 export function _resetPermissions(): void {
   PERMS.clear()
+  RESOLVER = null
 }

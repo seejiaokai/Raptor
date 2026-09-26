@@ -23,7 +23,7 @@ import { storage } from './storage.js'
 import Header from './components/Header.jsx'
 import SidePanel from './components/SidePanel.jsx'
 import { DlgModal } from './components/Modals.jsx'
-import { initStore, notify as raptorNotify, resetSession, toggleRole } from '../state/store'
+import { initStore, notify as raptorNotify, resetSession } from '../state/store'
 import { PEOPLE } from '../engine/people'
 import { readFileSync, readdirSync } from 'node:fs'
 import { join } from 'node:path'
@@ -60,14 +60,9 @@ describe('D121 — the Tracker reads no role: admin and member have the same acc
     core.closeCopy()
   })
 
-  it("the admin's view-as-member flip leaves an open Export window open — same person, same access", () => {
-    resetSession({ user: 'ad', role: 'admin' })
-    core.openCopy()
-    toggleRole()
-    expect(core.copyOpen).toBe(true)
-    toggleRole()
-    core.closeCopy()
-  })
+  /* (the admin's view-as-member flip this used to walk is gone — [ACCOUNTS], D166 (3),
+     26 Sep 26: every account is one person with one role; the Tracker's D121 "same access"
+     is pinned by the two tests above) */
 
   it('no entry point reads a role any more — the old admin lock is gone from the code', () => {
     const src = readFileSync(join(__dirname, 'app/core.js'), 'utf8')

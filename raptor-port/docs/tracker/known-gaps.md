@@ -42,7 +42,7 @@
 >   File menu (⇪ Import, ⤓ Export) are every login's. This supersedes the
 >   7 Sep 26 second word, "everyone edits; only the file portion is the
 >   admin's", whose lock (`core.js fileLocked`, written from Raptor's login
->   and the view-as flip through `tracker/role.js`) is gone. `role.js` now
+>   and the view-as flip — itself retired by `[ACCOUNTS]`, 26 Sep 26 — through `tracker/role.js`) is gone. `role.js` now
 >   carries only the login-session end (`resetSession`), which clears the
 >   Tracker's undo, windows and modes ([HUMAN-RETEST] F10).
 >   `src/tracker/tracker.test.tsx` pins the member shape.

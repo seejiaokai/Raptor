@@ -434,3 +434,18 @@ resolved statuses always carry their resolution date
 **Suggested improvement:** When a mid-turn answer carries something the person must COPY or ACT on (a prompt, a command, a decision), deliver it as a file (SendUserFile) or end the turn with it — never only as interleaved text. A parallel-chat launcher skill could standardise the prompt it hands over: the worktree, the model, a claimed ruling range, the port, "never two full check runs at once", "later merge takes main first".
 
 **Principle:** A deliverable the person has to act on must travel by a channel that is guaranteed to reach them; interleaved narration between tool calls is not one.
+
+### Observation 262: Reverting a break test with `git checkout <file>` threw away the file's uncommitted rewrite
+
+**Status:** OPEN
+**Date:** 2026-09-26
+**Session context:** `[ACCOUNTS]` build step 1 — the drift test's break test on `docs/data-model.md` §11
+**Skill:** bug-check order §8 rule 4 (the break test) / test-driven-development
+**Type:** open-source
+**Phase/Area:** the break test's undo step
+
+**Issue:** To prove the new drift test goes red, one letter of the (uncommitted, freshly rewritten) permissions table was changed, the test run, and the change undone with `git checkout docs/data-model.md`. That restored the LAST COMMIT — the old table — silently discarding the whole rewrite. Only a `cp` taken before the edit (made by habit, not by rule) saved it.
+
+**Suggested improvement:** The break-test step says: break the wire, watch a named test go red, then restore FROM A COPY TAKEN JUST BEFORE THE BREAK (or break with a reversible in-place edit and reverse that exact edit) — never `git checkout`/`git restore` on a file with uncommitted work; or commit before breaking.
+
+**Principle:** An undo must return to the state just before the break, not to the last commit; on a dirty file those are different, and the tool that confuses them reports success.

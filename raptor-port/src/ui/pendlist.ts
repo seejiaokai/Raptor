@@ -11,8 +11,8 @@
    and the number can never disagree. It is the NET difference from the published version (AM20): a change made and
    put back is not on it.
 
-   WHO / WHEN (D104): the newest edit-log row for the change's own cells — the shared account the app records today
-   ("Admin" / "Member"; a callsign waits for personal accounts at the database step) and its clock. The edit log is
+   WHO / WHEN: the newest edit-log row for the change's own cells — since [ACCOUNTS] (D166 (5), 26 Sep 26; D104's
+   "the shared account until the database" replaced) the signed-in person's CALLSIGN — and its clock. The edit log is
    kept only while the page is open (CLAUDE.md §What actually persists), so a change whose cell has no row reads
    "earlier"; a change that has no single cell (a row added, removed or reordered, a request's filing, what the day
    earns) names no who at all rather than guess one.

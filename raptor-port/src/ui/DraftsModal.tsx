@@ -21,6 +21,7 @@ import { switchDraft } from './board'
 import { DRAFTSEDIT, setDraftsEdit } from './pops'
 import { useVersion } from './useStore'
 import { SESSION } from '../state/auth'
+import { isAdmin } from '../state/perms'
 import { CURPAGE } from '../state/view'
 
 export function DraftsModal() {
@@ -45,7 +46,7 @@ export function DraftsModal() {
      round trip lands on View-only Sched, where the editor used to come back with a Select that
      could not act (switchDraft needs the edit page) and said nothing ([HUMAN-RETEST] walk W2-F8,
      24 Sep 26). Hidden there, it returns with its context when he goes back to Edit Schedule. */
-  if (!open || (SESSION && SESSION.role !== 'admin') || CURPAGE !== 'editsched') return <div className="modal" id="draftsModal" hidden />
+  if (!open || (SESSION && !isAdmin()) || CURPAGE !== 'editsched') return <div className="modal" id="draftsModal" hidden />
 
   const di = open.di
   const d: any = DAYS[di]

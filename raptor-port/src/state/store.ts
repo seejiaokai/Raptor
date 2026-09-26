@@ -20,6 +20,7 @@ import { lookaheadLoad } from '../engine/lookahead'
 import { rulesLoad } from '../engine/rules'
 import { mintInpIds, INPUTS, DATES, isPersonal, baseYear, dateIx, inputCoversDate, inpId } from '../engine/inputs'
 import { DAYS } from '../engine/data'
+import { PEOPLE } from '../engine/people'
 import { ensureRowIds, backfillSnapshotIds, migrateBookKeys, migrateLegacyIds } from '../engine/rowids'
 import { CURWEEK, setCurWeek } from '../engine/waves'
 import { weekBundle, otherWeekInputs } from '../engine/weeks-data'
@@ -34,12 +35,15 @@ import { stashPut, stashGet, stashHas, setPreservedBlob, clearPreservedBlob, isP
 import { afterSchedMutate } from './view'
 import * as view from './view'
 import { histPush, histInit, histSnap, histRestore, schedFields } from './history'
-import { setSession as authSetSession, canEditSched, SESSION, ACCOUNTS, canToggleRole, setEffectiveRole, setLgEdit, setMe } from './auth'
+import { setSession as authSetSession, canEditSched, SESSION, setMe, DEFAULT_ME } from './auth'
+import { me, roleOf } from './perms'
+import { endUndoSession } from '../undo/timeline'
 import { setRole as lwSetRole } from '../leavewar/state/store'
 import { endTrackerSession } from '../tracker/role.js'
 import { isHydrated, weekSwapBegin, weekSwapEnd } from './persist'
 import { deferEffect, CmdRefused, setPermissionResolver } from '../command'
-import { cmdAuthorize } from './perms'
+import { defineInvariant } from '../command/harness'
+import { cmdAuthorize, ownershipViolation } from './perms'
 import type { EnlistableStore, RecordEntry, CommitResult } from '../command'
 import { snapshotStash, restoreStash, stashEntries, writeStashRecords } from '../engine/weekstash'
 import { registerSchedCommandLayer, commitSchedVoid, commitSchedValue, commitInputs, commitInputsProjection, commitInputsWith, SCHED_TYPES, resyncSchedBaseline } from './sched-commit'
@@ -309,23 +313,29 @@ export function resetSession(s: any) {
      no snapshot restore, so histInit/histRestore never fire — re-sync explicitly,
      or a mute → logout → login → edit would emit a bogus mute-clear. */
   resyncSchedBaseline()
-  /* the "View as" IDENTITY goes back to the boot default too. It is what
-     every member-own gate keys on — the Inputs page's person filter and
-     edit/delete reach, the Leave War's own-row rule (mirrored into its
-     `viewer` by the sync) — so carrying it across a logout handed the next
-     login the PREVIOUS session's person: an admin who left "View as ranger"
-     open bequeathed ranger's identity, filter and war row to the next member
-     to sign in on that browser. The picker still offers any person (the
-     prototype has no per-person accounts, known-gaps); this only stops a
-     session INHERITING one nobody chose. */
-  setMe('bane')
+  /* THE SIGNED-IN PERSON ([ACCOUNTS], D166 (3), 26 Sep 26): signing in makes you that
+     callsign — `s.pid` is the account's person (null for someone signed in without
+     access: pending, a guest, an account switched off). It is what every own-row rule
+     asks (state/perms.ts), and what the Leave War's own-row rule reads (the sync mirrors
+     it into the war's `viewer`). "View as" is retired, so nothing else sets it in
+     production. A logout, or a headless call with no `pid` (the unit tests' bare
+     { user, role }), puts back the headless default. */
+  setMe(s && Object.prototype.hasOwnProperty.call(s, 'pid') ? s.pid : DEFAULT_ME)
+  /* the undo list is per sign-in (13 Sep 26; D148 — "the list clears when they sign
+     out"): the global undo never cleared it, so an admin signing in after a member
+     could reverse the member's change (Fable R1-7, Astra R1-10) */
+  endUndoSession()
+  /* (every window and sheet the outgoing person left open closed above, in
+     resetViewState('session') — ui/pops.ts registers its POPS_RESET list there, so
+     the next person never inherits an open input editor, document or history list —
+     Astra R1-3) */
   /* the Leave War page's role rides the Raptor session: an admin login is a
      Leave War admin, everyone else (and a logout) is a member. This is the
      ONE production writer of that role — the standalone app's own toggle was
      removed at the merge (see leavewar/ui/Chrome.tsx), and the leavewar
      store neither persists nor re-reads it, so nothing can disagree with
      the session that is actually looking at the page. */
-  lwSetRole(s && s.role === 'admin' ? 'admin' : 'member')
+  lwSetRole(roleOf(s) === 'admin' ? 'admin' : 'member')
   /* the Tracker tab rides the same seam (7 Sep 26), but reads NO role: admin
      and member have the same access there, File menu included (owner,
      23 Sep 26 — D121, superseding the 7 Sep "file portion is the admin's" lock
@@ -344,41 +354,12 @@ export function resetSession(s: any) {
   elogClear()
 }
 
-/* ---- THE ADMIN'S ROLE TOGGLE (owner, 27 Aug 26) --------------------------
-   Clicking the role badge flips a REAL admin between admin and member view,
-   so he can check what a member sees without logging out; a member account
-   has no toggle at all (auth.ts's canToggleRole — LOGINROLE is the ceiling,
-   captured at login and untouched here, so the way back always exists and a
-   member can never climb).
-   Only the EFFECTIVE role moves. Every gate in the app reads SESSION.role
-   live (canEditSched, lgCanEdit, HOOKS.editMode), so the flip reaches them
-   with no second switch — but three pieces of state don't re-derive and are
-   walked here, the resetSession discipline in miniature:
-   - an admin-only PAGE left open would render as a dead editable surface
-     for the member view → fall back to View-only Sched;
-   - an ARMED slot is edit machinery mid-gesture → disarm;
-   - the Logic tab's edit mode is admin-only → off.
-   The Leave War's role follows the effective role through the same lwSetRole
-   seam resetSession drives — an admin viewing as member must read the war as
-   a member too, or the preview lies. That makes this the SECOND (and last)
-   production writer of that role; both write what the current view of the
-   session is entitled to.
-   Deliberately NOT a full resetSession: the week, selection, filters and
-   undo history all stay — the whole point is looking at the SAME screen
-   through the other role's eyes. */
-export function toggleRole() {
-  if (!canToggleRole()) return
-  view.bumpNav()                  // a role change invalidates a pending day-template-apply confirm (P2-REV2-07)
-  const toAdmin = !(SESSION && SESSION.role === 'admin')
-  setEffectiveRole(toAdmin ? 'admin' : 'main')
-  if (!toAdmin) {
-    if (view.CURPAGE === 'editsched' || view.CURPAGE === 'admin') view.setPage('viewsched')
-    view.armDrop()
-    setLgEdit(false)
-  }
-  lwSetRole(toAdmin ? 'admin' : 'member')
-  notify()
-}
+/* ---- THE ADMIN'S ROLE TOGGLE — REMOVED 26 Sep 26 ([ACCOUNTS], D166 (3): "There isint
+   a need for preview as a member"). It flipped a real admin between admin and member
+   view (27 Aug 26); with personal accounts every account IS one person with one role,
+   so the peek had nothing left to preview. resetSession is now the ONE production
+   writer of the Leave War's role. The localhost probe bridge keeps a role switch for
+   the e2e suite and the walk (auth.ts setEffectiveRole). */
 
 /* ---- PER-WEEK SESSION STASH (the other half of the .wk selector) ----
    loadWeek used to always rebuild DAYS from weekBundle's PURE seed on a
@@ -698,6 +679,9 @@ export function wireStore() {
      and the Tracker's — is decided by perms.ts COMMAND_OPS; a type it does not know is
      refused. */
   setPermissionResolver(cmdAuthorize)
+  /* and what a member's command actually changed — never another person's record
+     (perms.ts ownershipViolation; a HARD invariant, so a breach rolls it back) */
+  defineInvariant({ id: 'member-writes-own', cls: 'hard', check: ownershipViolation })
   /* the reference's editMode(): the edit page is open. The reference also
      ANDed its #editToggle switch here; that toggle was removed 9 Aug 26
      (owner) — being on Edit Schedule is the intent to edit, and View-only
@@ -745,16 +729,20 @@ export function wireStore() {
      palette drag on a phone never parked the drawer — the drop could only land
      back on the drawer itself, a silent no-op — and arming a slot never slid
      the drawer open. Guarded for jsdom, which has no matchMedia. */
-  /* the name the edit log stamps on every change. The accounts are hard-coded
-     and there are two of them, so today this is only ever "Admin" or
-     "Squadron member" — which is the truth of a prototype login, not a
-     placeholder standing in for something better. When accounts become real
-     this returns a person's name and the whole log starts naming people, with
-     no change anywhere else. */
+  /* the name the edit log (and a bug report, and the Tracker's mark stamps) records:
+     since [ACCOUNTS] (D166 (5), 26 Sep 26) the signed-in CALLSIGN — replacing D104's
+     shared "Admin" / "Squadron member". A guest reads "Guest". */
   HOOKS.whoami = () => {
     if (!SESSION) return 'Unknown'
-    return (ACCOUNTS[SESSION.user] && ACCOUNTS[SESSION.user].label) || String(SESSION.user)
+    if (roleOf() === 'guest') return 'Guest'
+    const pid = me()
+    const p = pid ? (PEOPLE as any)[pid] : null
+    return p ? String(p.cs) : String(SESSION.name || SESSION.user)
   }
+  /* the person behind whoami — kept beside the name on every record that stores a
+     "who", so a callsign rename moves nothing and a reused callsign inherits nothing
+     (the one-identity rule; Astra R1-9) */
+  HOOKS.whoamiId = () => me()
   HOOKS.isPhone = () => {
     if (typeof window === 'undefined') return false
     try { if (window.matchMedia) return window.matchMedia('(max-width:820px)').matches } catch (_) {}

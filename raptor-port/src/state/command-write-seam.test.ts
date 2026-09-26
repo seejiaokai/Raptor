@@ -24,7 +24,7 @@ import {
   initStore as lwInit, getState as lwGetState, subscribe as lwSubscribe, lwStore,
 } from '../leavewar/state/store'
 import { memoryBackend as lwMemoryBackend } from '../leavewar/state/storage'
-import { commit, definePermission, anyone, isOk } from '../command'
+import { commit, definePermission, anyone, isOk, setPermissionResolver } from '../command'
 import type { EnlistableStore, RecordEntry, CommitResult } from '../command'
 
 const DSNAP = JSON.stringify(DAYS)
@@ -57,6 +57,10 @@ beforeEach(() => {
   for (const id of Object.keys(PEOPLE)) { const cs = (PEOPLE as any)[id].cs; if (typeof cs === 'string') (ID_BY_CS as any)[cs.toLowerCase()] = id }
   resyncPeopleBaseline()
   definePermission('test.restore', anyone)
+  /* this file drives the stores' write() seam with its own 'test.restore' command — a
+     mechanics test, not a permissions one; the [ACCOUNTS] resolver (perms.ts COMMAND_OPS)
+     rightly refuses a command type it does not know, so switch it off here */
+  setPermissionResolver(null)
 })
 afterEach(() => { storeBackend.impl = null })
 

@@ -635,23 +635,38 @@ against a store it does not understand (section 6).
 ### User
 
 Owner: **Shell**. The sign-in identity. **Separate from `Person`**, linked
-to it.
+to it — every account IS one callsign (owner, D166, 25 Sep 26).
 
 | Field | Type | Req | Meaning |
 |---|---|---|---|
-| `signInName` | string | yes | the provider's principal name. Unique |
-| `displayName` | string | yes | what `HOOKS.whoami()` returns and the edit log records |
+| `signInName` | string | yes | the provider's principal name — the person's defence mail address (D165). Unique |
 | `role` | choice `admin\|main` | yes | today's two roles |
-| `personId` | ref Person | no | null for an account with no roster body (a service or an admin who does not fly) |
-| `enabled` | bool | yes | |
+| `personId` | ref Person | **yes** | the callsign the account belongs to (D166); one account per person (unique) |
+| `enabled` | bool | yes | false = switched off — the exit; an account is never deleted (§10) |
 | `lastSignInAt` | datetime | no | (new) |
 
-Relationships: 0–1 `Person`; referenced by every `createdBy`/`updatedBy`.
-From today: `ACCOUNTS` — two hard-coded prototype accounts in
-`src/state/auth.ts` — plus `SESSION`, `ME` and the Admin page's `USERS[]`.
-App change: **no password is ever stored in this model.** The auth provider
-owns credentials; this table maps a signed-in principal to a role and a roster
-body. Stage 4, and a separate step from storage.
+The displayed name is the person's callsign, read live — a rename moves nothing (the one-identity rule).
+Relationships: 1 `Person`; referenced by every `createdBy`/`updatedBy`.
+From today: the `accounts` settings record, `state/accounts.ts` (`[ACCOUNTS]`, 26 Sep 26), managed on Admin → Users.
+**No password is ever stored in this model — nor in the app today** (the two seeded demo sign-ins' passwords live in code
+only). The auth provider owns credentials; this table maps a signed-in principal to a role and a person. **Two guards the
+server keeps too:** at least one enabled admin always remains; an admin never changes his own account.
+
+### AccessRequest
+
+Owner: **Shell**. Someone signed in with his defence mail but on no list, asking for access (owner, D204, 26 Sep 26).
+
+| Field | Type | Req | Meaning |
+|---|---|---|---|
+| `signInName` | string | yes | the principal who asked — from the sign-in, never typed. Unique while waiting |
+| `callsign` | string | yes | what he typed — text only; it never claims a `Person` (the admin picks one on approval) |
+| `name` | string | yes | what he typed |
+| `requestedAt` | datetime | yes | |
+
+Approving creates the `User` (linked to the person the admin picks, member or admin) and removes the request in one
+step; declining removes it. The admin sees a count of waiting requests on the Admin tab (a Teams message at the
+database step). From today: the `accessreqs` settings record. The admin's **guest switch** (people waiting may read the
+published week) is a `Setting` (`guestview`), off by default.
 
 ### Layout
 

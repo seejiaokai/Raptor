@@ -622,6 +622,21 @@ export function undoMark(): number {
   return u ? u.seq : -1
 }
 
+/* ---- the end of a sign-in ([ACCOUNTS], 26 Sep 26) ----------------------------
+   Undo is per login session (owner, 13 Sep 26) and "the list clears when they sign
+   out" (D148). The global undo never cleared it, so an admin who signed in after a
+   member could reverse the member's change under his own name (Fable R1-7, Astra
+   R1-10). state/store.ts resetSession calls this on every sign-in and sign-out.
+   Empties the entries AND the seq maps (bySeq, rootOfSeq — so a projection caused by a
+   pre-sign-in command cannot fold into an entry no longer listed, Fable R2-7); KEEPS
+   the installed stream subscription, the registered stores, the cutover, `expected`
+   (D148's conflict detection rides it) and `barrier` (the publication barrier). */
+export function endUndoSession(): void {
+  entries = []
+  bySeq.clear(); rootOfSeq.clear()
+  bumpUndo()
+}
+
 /* ---- test-only inspectors + reset ---------------------------------------- */
 export function _timelineEntries(): readonly UndoEntry[] { return entries }
 export function _undoConflict(entry: UndoEntry): string | null { return undoConflict(entry) }

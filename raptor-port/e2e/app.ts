@@ -204,14 +204,13 @@ export async function openLeaveWar(page: Page, who: 'a' | 'user' = 'user', viewA
   await login(page, who)
   await go(page, 'leavewar')
   await page.waitForSelector('[data-testid="row-slipway"]')
-  /* The generic 'us' member has NO fixed identity in this prototype (there are
-     no per-person accounts yet — known-gaps.md), so the war is left UNSCOPED by
-     default: `viewer` null means canEditRow imposes no row rule, and the member
-     edits whatever row a mechanics test drives, exactly as before. The member
-     row rule (canEditRow, 27 Aug 26 — "viewing as ranger, only my row") is a
-     preview of the accounts-era behaviour; the tests that exercise it pass a
-     `viewAs` so the war scopes to that person, the way Raptor's "View as" mirror
-     will in production. */
+  /* The Leave War's MECHANICS tests run UNSCOPED by default: `viewer` null means
+     canEditRow imposes no row rule, so a member test drives whatever row it needs,
+     exactly as before. In production the war is ALWAYS scoped — since [ACCOUNTS]
+     (D166 (4), 26 Sep 26) the sync mirrors the signed-in person ('us' is Ranger) and
+     never null for a session; the tests of the member row rule pass a `viewAs` so the
+     war scopes to that person, the way production does. (This probe hook is on this
+     PC only — the bridge is never installed on a deployed host.) */
   await page.evaluate(id => (window as any).lwSetViewer(id), viewAs)
 }
 
@@ -234,9 +233,9 @@ export async function raptorRole(page: Page, role: 'admin' | 'member') {
   await page.waitForTimeout(50)
 }
 
-/* Scope the war to a person — the "View as" identity a member is restricted to
-   (canEditRow). Production mirrors Raptor's ME onto it; the e2e sets it directly
-   so a member test can prove it edits its own row and no other. */
+/* Scope the war to a person — the identity a member is restricted to (canEditRow).
+   Production mirrors the SIGNED-IN person onto it ([ACCOUNTS], D166 (4)); the e2e sets
+   it directly so a member test can prove it edits its own row and no other. */
 export async function lwView(page: Page, id: string | null) {
   await page.evaluate(i => (window as any).lwSetViewer(i), id)
   await page.waitForTimeout(150)

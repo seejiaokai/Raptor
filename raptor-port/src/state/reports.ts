@@ -1,5 +1,5 @@
 import { HOOKS } from '../engine/hooks'
-import { SESSION } from './auth'
+import { isAdmin, isMember } from './perms'
 
 /* BUG REPORTS (owner, 25 Aug 26 — "a new tab called Help, inside it allows
    anyone to type in Bug reports. In which admin can view them"). A flat
@@ -17,7 +17,8 @@ import { SESSION } from './auth'
 export type BugReport = {
   id: string
   t: number        // wall clock at filing — the list's date column
-  who: string      // display name, from HOOKS.whoami()
+  who: string      // display name, from HOOKS.whoami() — the filer's callsign as filed
+  pid: string | null // the filer's person ([ACCOUNTS]): "Your reports" is keyed by this, never by the name (Astra R1-9)
   cat: string      // one of BUG_CATS, chosen by the filer
   text: string
   seen: boolean    // has an admin viewed it yet — the bell reads this
@@ -46,10 +47,10 @@ let rid = 0
    point of the page); the guards are honesty guards: a blank description
    or an unknown category files nothing, and the caller toasts. */
 export function fileReport(cat: string, text: string): BugReport | null {
-  if (!SESSION) return null
+  if (!isMember()) return null   // an admin or a member — never a guest or someone waiting for access
   const tx = String(text || '').trim()
   if (!tx || !BUG_CATS.includes(cat)) return null
-  const r: BugReport = { id: 'bug' + (++rid), t: Date.now(), who: HOOKS.whoami(), cat, text: tx, seen: false }
+  const r: BugReport = { id: 'bug' + (++rid), t: Date.now(), who: HOOKS.whoami(), pid: HOOKS.whoamiId(), cat, text: tx, seen: false }
   REPORTS.push(r)
   return r
 }
@@ -76,5 +77,5 @@ export function markReportsSeen() {
    filed the report, they don't need telling about it. Composed with the
    per-view bellLit() in the shell, never replacing it. */
 export function bugAlert(): boolean {
-  return !!(SESSION && SESSION.role === 'admin') && unseenReports() > 0
+  return isAdmin() && unseenReports() > 0
 }

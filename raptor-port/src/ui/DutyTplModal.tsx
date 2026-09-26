@@ -17,6 +17,7 @@ import { TPLEDIT, setTplEdit } from './pops'
 import { useVersion } from './useStore'
 import { HOOKS } from '../engine/hooks'
 import { SESSION } from '../state/auth'
+import { isAdmin } from '../state/perms'
 
 /* what each "For wave" answer DOES, in the app's own words — instruction, not
    apology (owner, 25 Aug 26). Kept beside the control so a change to the rule
@@ -40,7 +41,7 @@ export function DutyTplModal() {
      editor and flipped to member view kept a live editor whose store mutators
      (addTpl/setTplRow/delTpl/dutyTplReset) carry no write-path gate. The test is
      `SESSION && role !== 'admin'`, so a sessionless test/boot is not a member. */
-  if (!TPLEDIT || (SESSION && SESSION.role !== 'admin')) return <div className="modal" id="tplModal" hidden />
+  if (!TPLEDIT || (SESSION && !isAdmin())) return <div className="modal" id="tplModal" hidden />
 
   /* the selected id can go stale — a delete elsewhere, or the modal opening
      for the first time — so every render falls back to the first template

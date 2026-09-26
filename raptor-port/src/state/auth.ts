@@ -1,32 +1,37 @@
-/* Session / role state — the minimum the store needs so armSlot and the Logic
-   tab's edit gate keep their reference bodies. The login page itself is
-   phase-4 UI. ACCOUNTS and both gate functions are verbatim from the
-   reference; SESSION is reassigned only through setSession because an ESM
-   binding cannot be reassigned from outside its module. */
-/* the account NAMES diverge from the reference deliberately (owner, 24 Aug
-   26 — "Change the admin account ad user, and a for password. User account
-   to be us for user and us for password"): admin is ad/a, member is us/us.
-   The gate functions below stay verbatim. */
-export const ACCOUNTS: any = { ad: { pass: 'a', role: 'admin', label: 'Admin' }, us: { pass: 'us', role: 'main', label: 'Squadron member' } }
-export let SESSION: any = null                 // {user, role} — role is the EFFECTIVE role every gate reads
-/* the TRUE role of the signed-in account, captured at login and never moved
-   by the admin's view toggle (owner, 27 Aug 26 — "allow admin account to
-   toggle between admin and member role… normal logged in account cant do
-   this"). It is the CEILING: only a real admin login may flip the effective
-   role, so a member can never lift themselves by toggling, and an admin
-   parked in member view still owns the way back. Cleared with the session. */
-export let LOGINROLE: any = null
+/* Session / role state. SESSION is reassigned only through setSession (an ESM binding
+   cannot be reassigned from outside its module), and every login and logout goes
+   through state/store.ts resetSession, the ONE session-change path.
+
+   [ACCOUNTS] (26 Sep 26, D166): signing in makes you THAT callsign. The two hard-coded
+   logins are gone — accounts live in state/accounts.ts, managed on the Admin tab, and
+   the sign-in resolves one (or a person on no list — D204) into a session:
+     { user, role, pid, name }
+   `role` is the account's: 'admin' or 'main' (a member); or, for someone signed in
+   without access, 'pending' (on no list), 'guest' (asked, and the admin's guest switch
+   is on) or 'off' (his account is switched off). `pid` is his person (null for the last
+   three). `name` is the sign-in name (the defence mail address it stands for).
+   The admin's role toggle ("View as member" / "Back to admin", 27 Aug 26) and the
+   "View as" person picker are GONE — "There isint a need for preview as a member"
+   (D166 (3)). WHO MAY DO WHAT is decided in ONE place, state/perms.ts. */
+import { mayEditSched } from './perms'
+
+export let SESSION: any = null
 export let LGEDIT: any = false                 // Logic-tab edit mode; reset on login/logout
-export function setSession(s: any) { SESSION = s; LOGINROLE = s ? s.role : null; LGEDIT = false }
-/* flip ONLY the effective role — LOGINROLE stays the account's truth. The
-   gate functions below keep their verbatim bodies (they read SESSION.role),
-   so every edit gate in the app follows the toggle with no second check.
-   The page/board/Leave-War coordination lives in store.ts's toggleRole, the
-   one production caller — this is just the state write. */
+export function setSession(s: any) { SESSION = s; LGEDIT = false }
+/* the localhost probe bridge's role switch (e2e + the hand-pass walk, bug-check order
+   §7.7): it changes the role in place, never the world. No production caller. */
 export function setEffectiveRole(role: any) { if (SESSION) SESSION = { ...SESSION, role } }
-export const canToggleRole = () => LOGINROLE === 'admin'
-export let ME: any = 'bane'                    // "view as" — selected person, own puck = purple
+
+/* THE SIGNED-IN PERSON. Set ONLY by resetSession, from the account (and by the
+   localhost probe's raptorMe). Every own-row rule asks state/perms.ts, which reads it:
+   his own inputs, his own Quals row (D149), his own Leave War row (the sync mirrors it
+   into the war's viewer — D166 (4)), the purple "this is you" puck, "who" on a change.
+   `bane` is only the HEADLESS default — the person a unit test that never signs in
+   acts as; with no session the app draws the sign-in, never a person. */
+export const DEFAULT_ME = 'bane'
+export let ME: any = DEFAULT_ME
 export function setMe(id: any) { ME = id }
 export function setLgEdit(on: any) { LGEDIT = !!on }
-export function canEditSched(){return !!SESSION&&SESSION.role==='admin';}
-export const lgCanEdit=()=>LGEDIT&&!!SESSION&&SESSION.role==='admin';
+/* kept as the name ~160 call sites use; the rule is perms.ts's */
+export function canEditSched() { return mayEditSched() }
+export const lgCanEdit = () => LGEDIT && mayEditSched()

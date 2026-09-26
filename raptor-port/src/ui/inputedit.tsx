@@ -38,7 +38,8 @@ import { PLANPUCKS, DAYRMK } from '../state/plan'
 import { stashKeys, stashGet } from '../engine/weekstash'
 import { CURWEEK } from '../engine/waves'
 import { keyToIso, mondayOf } from './weeknav'
-import { canEditSched, ME, SESSION } from '../state/auth'
+import { canEditSched } from '../state/auth'
+import { me, mayEditInputOf, mayDeleteInputOf } from '../state/perms'
 import { INPEDIT, setInpEdit, OILASK, setOilAsk } from './pops'
 import { useVersion } from './useStore'
 import { RangeCal } from './RangeCal'
@@ -803,7 +804,13 @@ export function commitNewInput(draft: any, toGround?: boolean, keepTail?: any, e
      it is the net for a hand-made call, the same place-and-shape as
      reassignInput's own gate below. Pinned BEFORE normalize so the SANS
      aircrew check judges the person actually being written. */
-  if (!canEditSched()) draft = { ...draft, person: ME }
+  if (!canEditSched()) {
+    /* [ACCOUNTS]: filed for the SIGNED-IN person (perms.ts me()); someone signed in
+       without access (a guest) is nobody's person and files nothing */
+    const mine = me()
+    if (mine == null) { HOOKS.toast('Sign in with your own account to file an input', 'warn'); return false }
+    draft = { ...draft, person: mine }
+  }
   const n = normalizeInputDraft(draft, null)
   if (!n) return false
   if (protectedInput(normDest(n, draft.yr))) return false   // read-only quarantine, NORMALIZED destination (P2-REREVIEW-01/02)
@@ -928,7 +935,7 @@ export function commitInputEdit(r: any, draft: any, keepTail?: any, entryEnd?: a
      relink) stay person-scoped to the row's own person, so a member's cascade
      is their own row and still passes; a sessionless test/boot context is not
      a member and is not gated. */
-  if (SESSION && !canEditSched() && r.person !== ME) {
+  if (!mayEditInputOf(r.person)) {   // [ACCOUNTS]: the one rule, perms.ts (member own, admin any, no one else)
     HOOKS.toast('You can only edit your own inputs', 'warn')
     return false
   }
@@ -1321,7 +1328,7 @@ export function removeInput(r: any) {
      (and the render gate): any signed-in session that cannot edit the
      schedule — not the role literal 'member', which no account carries and
      which left this gate inert in production. */
-  if (SESSION && !canEditSched() && r.person !== ME) {
+  if (!mayDeleteInputOf(r.person)) {   // [ACCOUNTS]: the one rule, perms.ts
     HOOKS.toast('You can only delete your own inputs', 'warn')
     return false
   }

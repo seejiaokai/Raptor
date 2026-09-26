@@ -10,7 +10,8 @@ import { markEdit, daySnapOf, dayApproved } from '../engine/publish'
 import { curDraftId, reconcileIssuedMarks, isDraftVer } from '../engine/drafts'
 import { isLead, isInstr, isOcu } from '../engine/people'
 import { HOOKS, runSchedEpilogue } from '../engine/hooks'
-import { canEditSched, ME } from './auth'
+import { canEditSched } from './auth'
+import { me } from './perms'
 import { flagDrop } from './dropflag'
 
 /* the repaint/gesture call sites inside these verbatim bodies route through
@@ -716,8 +717,8 @@ export function togglePInputs(di:any){ if(PIOPEN.has(+di))PIOPEN.delete(+di); el
 export const BELLLIT=new Set<string>()
 const bellKeyOf=(page:any,who:any)=>`${page}|${who}`
 export function markBell(page:any,who:any,on=true){ const k=bellKeyOf(page,who); if(on)BELLLIT.add(k); else BELLLIT.delete(k) }
-export function bellLit(){ return BELLLIT.has(bellKeyOf(CURPAGE,ME)) }
-export function clearBell(){ BELLLIT.delete(bellKeyOf(CURPAGE,ME)) }
+export function bellLit(){ return BELLLIT.has(bellKeyOf(CURPAGE,me())) }
+export function clearBell(){ BELLLIT.delete(bellKeyOf(CURPAGE,me())) }
 /* MUTING A SPECIFIC BOARD WARNING (owner, Aug 26 — "turn off that specific
    warning advisory in scheduler board mode, but if things change that warning
    will appear again"). A session-only registry keyed by the warning's CONTENT

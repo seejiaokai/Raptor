@@ -1,19 +1,25 @@
-/* The mobile drawer — burger menu, page nav (admin-gated Edit tab), view-as
-   chips, week chips and logout, markup 1:1 with the reference. Open/close is
+/* The mobile drawer — burger menu, page nav (admin-gated Edit tab), week chips,
+   the account and logout, markup 1:1 with the reference. The View-as chips and the
+   admin's role toggle are GONE ([ACCOUNTS], D166 (3), 26 Sep 26): signing in makes you
+   your own callsign, and the Account row names him. Open/close is
    the DRAWER flag in pops.ts; every action closes the drawer, as the
    reference's handlers all end with classList.remove('open'). */
 import { useEffect } from 'react'
 import { PEOPLE } from '../engine/people'
-import { SESSION, ME, setMe, canToggleRole } from '../state/auth'
+import { isAdmin, me } from '../state/perms'
+import { waitingCount } from '../state/accounts'
 import { CURPAGE } from '../state/view'
-import { notify, setPage, toggleRole } from '../state/store'
+import { notify, setPage } from '../state/store'
 import { logOut } from './logout'
 import { DRAWER, setDrawer, setWeekCal, setInsights } from './pops'
 import { useVersion } from './useStore'
 
 export function Drawer() {
   useVersion()
-  const admin = SESSION && SESSION.role === 'admin'
+  const admin = isAdmin()
+  const mine = me()
+  const mineCs = mine && PEOPLE[mine] ? PEOPLE[mine].cs : ''
+  const waiting = admin ? waitingCount() : 0
   const items: [string, string, boolean][] = [
     ['editsched', 'Edit Schedule', !!admin], ['viewsched', 'View-only Sched', true],
     ['inputs', 'Inputs', true], ['quals', 'Quals', true], ['logic', 'Logic', true],
@@ -48,8 +54,6 @@ export function Drawer() {
       el.scrollTop = y; el.scrollLeft = x
     }
   }, [DRAWER])
-  const people = Object.keys(PEOPLE).filter(id => !PEOPLE[id].archived)
-    .sort((a, b) => PEOPLE[a].cs.localeCompare(PEOPLE[b].cs))
   return (
     <div className={'drawer' + (DRAWER ? ' open' : '')} id="drawer"
       onClick={e => { if ((e.target as HTMLElement).id === 'drawer') close() }}>
@@ -63,14 +67,9 @@ export function Drawer() {
           {items.filter(i => i[2]).map(([p, label]) => {
             const go = () => { setPage(p); setDrawer(false); notify() }
             return <a key={p} data-page={p} role="button" tabIndex={0} className={p === CURPAGE ? 'on' : ''}
-              onClick={go} onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go() } }}>{label}</a>
+              onClick={go} onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go() } }}>{label}{p === 'admin' && waiting > 0 && <span className="navbadge" id="drawerWaitBadge">{waiting}</span>}</a>
           })}
         </nav>
-        <h4>View as</h4>
-        <div className="drawer-row" id="drawerViewAs">
-          {people.map(id => <button key={id} className={'fchip' + (id === ME ? ' on' : '')} data-va={id}
-            onClick={() => { setMe(id); setDrawer(false); notify() }}>{PEOPLE[id].cs}</button>)}
-        </div>
         {/* Week chips became a single calendar opener (owner, 22 Aug 26): the
             phone jumps weeks from the month picker, and steps day-to-day by
             swiping the schedule (continuous across weeks). */}
@@ -92,16 +91,9 @@ export function Drawer() {
         {/* The menu unmounts with the outgoing shell, but its module flag does
             not. Clear it here so a second login in the same tab does not
             reopen the drawer from the previous user's session. */}
+        <p className="drawer-acct" id="drawerAcct">Signed in as <b>{mineCs || '—'}</b> · {admin ? 'Admin' : 'Member'}</p>
         <div className="drawer-row"><button className="abtn" id="drawerLogout"
-          onClick={() => { setDrawer(false); void logOut() }}>Logout</button>
-          {/* the phone home of the admin's role toggle (owner, 27 Aug 26) —
-              the topbar badge is hidden on the tight phone bar, so the
-              switch lives here; same LOGINROLE gate, so a member account
-              never sees it (toggleRole itself refuses too — the button is
-              convenience, the gate is in store/auth). */}
-          {canToggleRole() && <button className="abtn" id="drawerRole"
-            onClick={() => { setDrawer(false); toggleRole() }}>
-            {admin ? 'View as member' : 'Back to admin'}</button>}</div>
+          onClick={() => { setDrawer(false); void logOut() }}>Logout</button></div>
       </div>
     </div>
   )

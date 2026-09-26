@@ -15,7 +15,8 @@ import { hhmm, parseHM } from '../engine/time'
 import { HOOKS } from '../engine/hooks'
 import { autoAcceptInput } from '../engine/slots'
 import { LOOK_CFG, LOOK_MAX, LOOK_MIN, lookaheadLabel, lookaheadRange, setLookahead } from '../engine/lookahead'
-import { ME, SESSION, canEditSched } from '../state/auth'
+import { canEditSched } from '../state/auth'
+import { me, isMe, isAdmin } from '../state/perms'
 import { writeInputsBatch, notify, inputProtected } from '../state/store'
 import { INPVIEW, setInpView } from '../state/view'
 import { setDocView } from './pops'
@@ -222,7 +223,7 @@ function TypeLegend() {
 
 export function InputsPage() {
   useVersion()
-  const [person, setPerson] = useState(ME)
+  const [person, setPerson] = useState(me() ?? '')
   const [type, setType] = useState(INPUT_TYPES[0])
   const [start, setStart] = useState('')
   const [end, setEnd] = useState('')
@@ -246,7 +247,7 @@ export function InputsPage() {
   /* A member lands on THEIR OWN inputs (owner, 27 Aug 26) — the page is their
      paperwork first — with "Everyone" one pick away in the same filter. A
      scheduler (admin) still opens on the whole squadron. */
-  const [fPerson, setFPerson] = useState(canEditSched() ? 'all' : ME)
+  const [fPerson, setFPerson] = useState(canEditSched() ? 'all' : (me() ?? ''))
   const [fType, setFType] = useState('all')
   const [fSearch, setFSearch] = useState('')
   const [editRow, setEditRow] = useState<any>(null)
@@ -346,7 +347,7 @@ export function InputsPage() {
      control left to move it) would silently lag it. The calendar's add
      already worked exactly this way (InputsCal.tsx openAdd seeds ME and the
      dialog hides Person for a member); this is the page catching up. */
-  const filedFor = () => canEditSched() ? person : ME
+  const filedFor = (): string => canEditSched() ? person : (me() ?? '')
   const add = (skipDoc = false) => {
     /* the calendar asks for a pick and the readout says so — accepting the
        click anyway and quietly dating it Monday was a trap */
@@ -801,7 +802,7 @@ export function InputsPage() {
                 {people().map(id => <option key={id} value={id}>{PEOPLE[id].cs}</option>)}
                 <ArchivedGroup />
               </select>
-              : <div className="inper-fixed" id="inPersonFixed" aria-label="Person">{PEOPLE[ME] ? PEOPLE[ME].cs : String(ME)}</div>}</div>
+              : <div className="inper-fixed" id="inPersonFixed" aria-label="Person">{(() => { const m = me(); return m && PEOPLE[m] ? PEOPLE[m].cs : String(m ?? '') })()}</div>}</div>
           <div className="ifield cal"><label>Dates</label>
             <RangeCal idPrefix="in" start={start} end={end}
               onPick={(s2, e2) => { setStart(s2); setEnd(e2); setRemarks(r => withTill(r, s2, e2)) }} />
@@ -897,7 +898,7 @@ export function InputsPage() {
               {/* The admin's pencil: how far ahead the page looks by default.
                   Admin only, and re-checked at the write (`setLookahead` is the
                   one path) rather than merely hidden here. */}
-              {SESSION && SESSION.role === 'admin' && (
+              {isAdmin() && (
                 <div className="inrange-cfg" id="inRangeCfg">
                   {!lookEdit && (
                     <button className="abtn ghost" id="inRangeEdit" onClick={() => { setLookWeeks(String(LOOK_CFG.weeks)); setLookSun(LOOK_CFG.toSunday); setLookEdit(true) }}>
@@ -914,7 +915,7 @@ export function InputsPage() {
                         run to that week&rsquo;s Sunday
                       </label>
                       <button className="abtn primary" id="inLookSave" onClick={() => {
-                        if (!SESSION || SESSION.role !== 'admin') return
+                        if (!isAdmin()) return
                         if (!setLookahead(lookWeeks, lookSun)) {
                           // a refused value goes back to the live one on screen,
                           // never left looking saved
@@ -1104,7 +1105,7 @@ export function InputsPage() {
                         a member only their own — someone else's row is view
                         only (the document clip above stays, so they can still
                         read the paperwork). The write path repeats this gate. */}
-                    {(canEditSched() || r.person === ME) && <>
+                    {(canEditSched() || isMe(r.person)) && <>
                       {/* revise a recorded OIL answer in place (owner, 29 Aug
                           26) — shown exactly where a decision exists to
                           change (oilAnswered), same right as editing the row */}

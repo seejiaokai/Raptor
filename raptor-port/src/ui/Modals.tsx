@@ -12,7 +12,7 @@ import { isDraftVer } from '../engine/drafts'
 import { computeInsights } from '../engine/insights'
 import { markEdit } from '../engine/publish'
 import { esc, afterSchedMutate, dayDisplaysOfficial, CURPAGE, DPREV } from '../state/view'
-import { SESSION } from '../state/auth'
+import { isAdmin } from '../state/perms'
 import { notify } from '../state/store'
 import { dayInfoHTML, issuedFaceVer, withChipWorld } from './html'
 import { DAYPOP, setDayPop, INSIGHTS, setInsights, AIRKEY, setAirKey } from './pops'
@@ -147,7 +147,7 @@ export function AirPop() {
        command) init/mutate it themselves; an input/del row only renders when
        traffic already exists. */
     const traffic = (g.traffic || []) as any[]
-    const admin = SESSION && SESSION.role === 'admin', body = bodyRef.current!
+    const admin = isAdmin(), body = bodyRef.current!
     if (admin) {
       body.innerHTML = traffic.map((a: any, i: number) => `<div class="airrow"><span class="adot"></span>
       <input value="${esc(a)}" data-airi="${i}" aria-label="Airspace line ${i + 1}"><button class="del" data-airdel="${i}">✕</button></div>`).join('')
@@ -162,7 +162,7 @@ export function AirPop() {
   })
   if (!open) return <div className="airpop" id="airpop" hidden />
   const close = () => { setAirKey(null); notify() }
-  const admin = SESSION && SESSION.role === 'admin'
+  const admin = isAdmin()
   return (
     <div className="airpop" id="airpop" onClick={e => { if ((e.target as HTMLElement).id === 'airpop') close() }}>
       <div className="airpop-box">

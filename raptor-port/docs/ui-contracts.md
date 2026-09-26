@@ -4599,14 +4599,18 @@ without first selecting their category. A new settings category is one `CATS`
 entry plus its `.adm-panel` section; the owner is filling this in over time.
 The three category panels:
 
-- **`#admUsers` Manage users** — the old `#userModal` body moved here WHOLE
-  (same ids and classes: `#newName`, `#newRole`, `#userAdd`, `#userList`,
-  `.urow`/`.ub`, `[data-deluser]`; same `USERS` store and mutations in
-  `state/users.ts`). The topbar `#manageUsers` button, the modal, and its
-  `USERM`/`setUserModal` flag in `pops.ts` are gone — logout no longer has
-  a modal to close, because `resetSession` lands the next session on
-  viewsched and the page unmounts with it. The card ends with the honesty
-  note: this list drives the demo login only, no server behind it yet.
+- **`#admUsers` Users — the ACCOUNTS** (`[ACCOUNTS]`, 26 Sep 26 — D166 (1), D204; `ui/UsersPanel.tsx`). Replaces the
+  old Manage-users list (`#userList`, `state/users.ts` — it drove nothing and is gone). Four blocks, top to bottom:
+  **Waiting for access** (`#admWaiting`, one `[data-req]` row each: the sign-in name, "asked as <callsign> · <name> ·
+  <when>"; **Approve** `[data-approve]` opens the puck picker `#apvPid` — people with no account, not archived, not ALL /
+  ALL AVAIL; the typed callsign is only shown as a hint — and the role `#apvRole`, then "Give access" `#apvGo`;
+  **Decline** `[data-decline]`), or "Nobody is waiting for access." (`#admNoWaiting`); **Accounts** (`#accList`, one
+  `[data-acct]` row each: sign-in name over the live callsign, the role pill, tags "archived callsign" / "switched off" /
+  "you"; a tap (`.acc-tap`) opens its editor `[data-editing]` — sign-in name, callsign, role, Save / Switch off-on /
+  Cancel — except his OWN account, whose row is disabled); **Add an account** (`#accAddName`, `#accAddPid`,
+  `#accAddRole`, `#accAdd`); **Guest view** (`#admGuestView`, a checkbox, OFF by default). Every refusal toasts its reason
+  (at least one admin keeps access; never your own account; one person one account; one sign-in name one account). The
+  rail's Users entry and the Admin tab (`#admWaitBadge` top nav, `#drawerWaitBadge` drawer) carry the count waiting.
 - **`#admConfig` Squadron configuration** — `#admDutyTpl` / `#admDayTpl`
   open the duty-template and day-template editors by setting the SAME
   `pops.ts` flags the picker pencils set (`setTplEdit` / `setDayTplEdit`).
@@ -5025,19 +5029,26 @@ the in-table row editor, the board/modal editor — exactly when
 documented row wears a paperclip (`.rclip`, `ClipIcon`) in the Inputs
 table's action cell, ungated, opening the viewer.
 
-## The role badge is the admin's view toggle (owner, 27 Aug 26)
+## The role badge names the signed-in person — the view toggle is GONE (`[ACCOUNTS]`, 26 Sep 26)
 
-The far-right Admin/Member chip (`#roleBadge`, `.rolechip`) is a BUTTON for
-a real admin login and stays an inert `<span>` for a member — same id and
-look either way, plus `.tgl` (pointer cursor + hover) only on the button.
-Clicking it runs `store.ts:toggleRole` (see `engine-rules.md` §Auth /
-roles): the whole app — nav tabs, edit gates, the Leave War — flips to the
-member view, and the same click flips back; `LOGINROLE` in `auth.ts` is the
-ceiling that keeps a member's chip inert and the admin's way back alive.
-The chip is hidden on the phone bar (as ever), so the DRAWER's Account row
-carries the phone toggle (`#drawerRole`, "View as member" / "Back to
-admin"), rendered only for a real admin. Flipping to member off an
-admin-only page lands on View-only Sched. Pinned in `roletoggle.test.tsx`.
+The far-right chip (`#roleBadge`, `.rolechip`) is an inert `<span>` for everyone, reading the signed-in callsign and
+role — "Saber · Admin", "Ranger · Member". The admin's "View as member" toggle it used to be (27 Aug 26) is REMOVED —
+"There isint a need for preview as a member" (D166 (3)) — and so are the topbar's "View as" picker (`#viewAs`) and the
+drawer's View-as chips (`#drawerViewAs`) and toggle (`#drawerRole`). The chip is hidden on the phone bar (as ever); the
+DRAWER's Account row reads "Signed in as <callsign> · <role>" (`#drawerAcct`) above Logout. Pinned in
+`ui/accounts-ui.test.tsx` (which replaced `roletoggle.test.tsx`).
+
+## The access screens and the guest view (`[ACCOUNTS]`, D204, 26 Sep 26)
+
+Someone signed in but without access sees one of three cards in the sign-in's own look (`ui/AccessScreen.tsx`, `.login`
+classes): **Request access** (`#accessRequest` — "Signed in as <name>", Callsign `#accCs`, Name `#accFull`, "Request
+access" `#accSend`, errors in `#accErr`); **Waiting** (`#accessWaiting` — what he asked, "an admin will answer it");
+**Switched off** (`#accessOff`). Each has Sign out (`#accOut`, through `ui/logout.ts`). With the admin's guest switch ON a
+person waiting instead gets the GUEST VIEW (`ui/GuestApp.tsx`, `#guestApp`): a slim bar (the mark, "Waiting for access —
+view only" `#guestNote`, Sign out `#guestOut`), the week window, and the week from the view page's builder — a published
+day's ISSUED face only (no working-draft picker), "Not published yet" on any other day, and a medical input only as
+"Unavailable" with its times (D211 was about members). Nothing else of the app is mounted — no windows, no tabs, no
+document-wide listeners.
 
 The LEAVE WAR change of the same day (engine-rules §Auth / roles): moving
 the cycle forward is admin-only, so the stage-advance chip
@@ -5057,7 +5068,7 @@ BidPicker's look and vocabulary, not instead of it.
 - **A member's reach is their OWN row; an admin's is every row** (owner,
   27 Aug 26 — "if I am viewing as a member and I view as ranger on the leave
   war, I shouldn't be able to input on other people's row except mine"). The
-  "own" row is the person the session is viewing as (`viewer`, mirrored from
+  "own" row is the SIGNED-IN person (`viewer`, mirrored by the sync — since `[ACCOUNTS]`, D166 (4); it was
   Raptor's "View as"). For a member the drag's row list is that one row, so the
   rectangle only ever covers their own row — a date RANGE along it still selects
   freely — and a single tap opens the editing sheet only on their own row

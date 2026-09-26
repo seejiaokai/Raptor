@@ -3,7 +3,7 @@
    against every command type the app registers.
 
    "One place in the app answers 'may this person do this?', mirroring that table, with a
-   test that fails when they disagree" — owner, D200, 26 Sep 26. This is that test. */
+   test that fails when they disagree" — owner, D200, 26 Sep 26. This is that test. Register line AC14. */
 import { describe, it, expect, beforeAll } from 'vitest'
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'

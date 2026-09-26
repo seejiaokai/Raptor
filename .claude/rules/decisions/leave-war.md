@@ -236,9 +236,11 @@ derives its role from the Raptor login (`store.ts:toggleRole` — the admin's
 view-as-member flip, 27 Aug 26 — is the only other production writer, riding
 this same seam so the war always reads the session's EFFECTIVE role; on the
 Leave War itself, moving the cycle stage forward became admin-only the same
-day — members still bid), `probe-bridge.ts`
-exposes `w.lwSetRole` for its e2e suite, and **`src/leavewar/sync.ts`** — the
-sync wires (17 Aug 26; this seam also mirrors Raptor's "View as" person into
+day — members still bid) *[AMENDED 26 Sep 26 by `[ACCOUNTS]` (D166 (3)): the toggle is gone — `resetSession` is now the
+ONE production writer of the war's role]*, `probe-bridge.ts`
+exposes `w.lwSetRole` for its e2e suite *[the whole bridge on the developer's PC only since `[ACCOUNTS]`]*, and **`src/leavewar/sync.ts`** — the
+sync wires (17 Aug 26; this seam also mirrors Raptor's "View as" person *[since `[ACCOUNTS]`, 26 Sep 26 — D166 (4): the
+SIGNED-IN person, `state/perms.ts viewerId()`; '' (no row) for someone signed in without access]* into
 the Leave War store's `viewer` on every Raptor notify — what lights the
 viewer's row and personalises the counter picker — a rider on this seam, not
 a fifth): Leave War's roster is a boot-time PROJECTION of

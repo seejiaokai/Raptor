@@ -18,7 +18,7 @@
      points here (Shell.tsx) — seeing the list is what clears it, so an
      admin can never lose the alert without the reports on screen. */
 import { useEffect, useRef, useState } from 'react'
-import { SESSION } from '../state/auth'
+import { isAdmin, me } from '../state/perms'
 import { HOOKS } from '../engine/hooks'
 import { notify } from '../state/store'
 import { elogWhen } from '../engine/editlog'
@@ -45,8 +45,10 @@ function Row({ r, fresh, who }: { r: BugReport; fresh?: boolean; who?: boolean }
 
 export function HelpPage() {
   useVersion()
-  const admin = SESSION && SESSION.role === 'admin'
-  const me = HOOKS.whoami()
+  const admin = isAdmin()
+  /* "Your reports" is keyed by the PERSON, never the callsign: a rename keeps them his,
+     and a reused callsign never inherits them ([ACCOUNTS]; Astra R1-9) */
+  const mine_pid = me()
   const catRef = useRef<HTMLSelectElement>(null)
   const txtRef = useRef<HTMLTextAreaElement>(null)
   /* which rows were UNSEEN when this admin opened the page — captured once,
@@ -69,7 +71,7 @@ export function HelpPage() {
     notify()
   }
   const rows = reportRows()
-  const mine = rows.filter(r => r.who === me)
+  const mine = rows.filter(r => mine_pid != null && r.pid === mine_pid)
   return (
     <div className="help-inner">
       <h2>Help</h2>

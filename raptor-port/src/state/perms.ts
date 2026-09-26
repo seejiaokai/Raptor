@@ -25,7 +25,7 @@
    parity harness — never a user: every question below answers it the way the gate it
    replaced did (stated per question), so no headless test changes meaning. */
 import { SESSION, ME } from './auth'
-import type { Actor } from '../command/types'
+import type { Actor, CommitEnvelope } from '../command/types'
 
 export type Act = 'C' | 'R' | 'U' | 'D'
 export type Role = 'admin' | 'member' | 'guest' | 'pending'
@@ -135,8 +135,14 @@ export const isAdmin = (): boolean => roleOf() === 'admin'
 export const isMember = (): boolean => { const w = roleOf(); return w === 'admin' || w === 'member' }
 export const isGuest = (): boolean => roleOf() === 'guest'
 /* the signed-in person (an admin or a member), or null — a guest, a pending person
-   and an account switched off are nobody's person */
-export function me(): string | null { return isMember() && ME != null && ME !== '' ? String(ME) : null }
+   and an account switched off are nobody's person. Headless (no session) it is the
+   headless default person (auth.ts DEFAULT_ME), exactly as the ME every gate read
+   before [ACCOUNTS] — so no sessionless unit test changes meaning. */
+export function me(): string | null {
+  const w = roleOf()
+  if (w !== null && w !== 'admin' && w !== 'member') return null
+  return ME == null || ME === '' ? null : String(ME)
+}
 /* "is this the signed-in person?" — the own-row test and the "this is you" display */
 export function isMe(pid: any): boolean { const m = me(); return m != null && pid != null && String(pid) === m }
 
@@ -146,8 +152,9 @@ export const mayEditSched = (): boolean => !!SESSION && may(T.sched, 'U', null, 
 /* the Leave War's person as the sync mirrors it: the signed-in person; for a guest,
    a pending person or an account switched off '' — which matches NO row (the war's
    canEditRow reads null as "unscoped", so it must never be null for a session). No
-   session → null, the war's own headless state. */
-export function viewerId(): string | null { return SESSION ? (me() ?? '') : null }
+   session → the headless default person, exactly as the ME the sync mirrored before
+   [ACCOUNTS] (nothing is drawn before sign-in; the headless tests keep their scope). */
+export function viewerId(): string | null { return SESSION ? (me() ?? '') : (ME == null ? null : String(ME)) }
 
 /* personal inputs (the member-own rule, 27 Aug 26). No session → true: "a sessionless
    test/boot context is not a member and is not gated" (the gates these replace). */
@@ -273,4 +280,55 @@ export function cmdAuthorize(type: string, actor: Actor, meta?: any): boolean {
   const named = owners(meta)
   if (!named || !named.length) return o.own === 'optional'
   return named.every(x => x === String(identity))
+}
+
+/* 5. WHAT A MEMBER'S COMMAND MAY ACTUALLY CHANGE — checked on the command's REAL changes,
+   after it ran and before it is kept (a HARD invariant at the commit gate, so a breach
+   rolls the whole command back). The command gate above reads a command's TYPE; this
+   reads what it DID — so a member's write can never touch another person's record,
+   whatever door reached it and whatever owner a caller claimed (Astra R3-1/2/3, Fable
+   R2-5). An admin and the system actor are not limited here. For a member:
+   - `inputs`   every changed input is his (its person before AND after); the input
+                order record rides along;
+   - `people`   only his own row (D149);
+   - `lw.cell`  only his own war row (id `war:person:date`); `lw.current` (which war is
+                shown) is his own view; every other war record — the war itself, the
+                ledger, balances, OIL policy, postings, config — is the admin's;
+   - `settings` and `plan` (the planning calendar) — none;
+   - the schedule's records and the week stash — left to the command's TYPE: a member's
+                own input can land a row on a published day's working copy (16 Sep 26),
+                a child of his authorised input command;
+   - the Tracker — everyone's (D121).
+   A guest, a pending person and an account switched off change NOTHING, except a
+   pending person's own access request (the `accessreqs` settings record). */
+const INPUT_ORDER = '__order'
+const personOfInput = (v: any): string | null => (v && v.person != null ? String(v.person) : null)
+export function ownershipViolation(env: CommitEnvelope): string | null {
+  const a = env.actor
+  if (!a || a.role === 'system' || a.role === 'admin') return null
+  for (const c of env.changes) {
+    const where = `${c.collection}/${c.id}`
+    if (a.role !== 'member') {
+      if (a.role === 'pending' && env.type === 'access.request' && c.collection === 'settings' && c.id === 'accessreqs') continue
+      return `${a.role} may not change ${where}`
+    }
+    const pid = a.personId == null ? null : String(a.personId)
+    if (!pid) return `no person to own ${where}`
+    switch (c.collection) {
+      case 'inputs': {
+        if (c.id === INPUT_ORDER) break
+        const b = personOfInput(c.before), f = personOfInput(c.after)
+        if ((b != null && b !== pid) || (f != null && f !== pid)) return `another person's input (${where})`
+        break
+      }
+      case 'people': if (c.id !== pid) return `another person's row (${where})`; break
+      case 'lw.cell': { const parts = c.id.split(':'); if (parts[parts.length - 2] !== pid) return `another person's war row (${where})`; break }
+      case 'lw.current': break
+      case 'lw.bid': case 'lw.war': case 'lw.ledger': case 'lw.balances': case 'lw.oilpolicy': case 'lw.postouts': case 'lw.config':
+      case 'settings': case 'plan':
+        return `an admin's record (${where})`
+      default: break                       // the schedule, the week stash, the Tracker
+    }
+  }
+  return null
 }

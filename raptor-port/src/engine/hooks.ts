@@ -71,6 +71,11 @@ export const HOOKS = {
      returns a person's name here and the log starts naming other people with
      no other edit. Headless, and before login, it is 'Unknown'. */
   whoami: (): string => 'Unknown',
+  /* the PERSON behind whoami ([ACCOUNTS], 26 Sep 26): the signed-in person's id, kept
+     beside the name on every record that stores a "who" — a callsign rename moves
+     nothing, a reused callsign inherits nothing (the one-identity rule). Headless and
+     for someone without access: null. */
+  whoamiId: (): string | null => null,
   /* the board's own dialog state (the CX-with-a-reason box, Sort all's
      confirm) lives in ui/board.ts as module `let`s, not here — but
      state/view.ts's closeBoardState() needs to clear them the moment the

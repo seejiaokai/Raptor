@@ -6,7 +6,7 @@ import { act } from 'react'
 import { createRoot, type Root } from 'react-dom/client'
 import { App } from './App'
 import { initStore, setSession, notify } from '../state/store'
-import { ACCOUNTS } from '../state/auth'
+import { signIn } from '../state/accounts'
 import { DAYS } from '../engine/data'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
@@ -45,13 +45,15 @@ describe('the app shell', () => {
     expect(host.querySelector('#login')!.textContent).not.toMatch(/full edit|member/)
   })
 
-  /* the accounts are ad/a (admin) and us/us (member) — owner, 24 Aug 26; the
-     old a/a and user/user must be gone */
+  /* the sign-ins ad/a (admin) and us/us (member) — owner, 24 Aug 26 — are SEEDED
+     accounts since [ACCOUNTS] (D166 (1), 26 Sep 26), no longer hard-coded; the old
+     a/a and user/user are names on no list, so they land on "Request access" (D204) */
   it('the accounts are ad/a and us/us, and the old names are gone', () => {
-    expect(ACCOUNTS.a).toBeFalsy()
-    expect(ACCOUNTS.user).toBeFalsy()
-    expect(ACCOUNTS.ad).toMatchObject({ pass: 'a', role: 'admin' })
-    expect(ACCOUNTS.us).toMatchObject({ pass: 'us', role: 'main' })
+    expect(signIn('ad', 'a')).toMatchObject({ kind: 'ok', account: { role: 'admin' } })
+    expect(signIn('us', 'us')).toMatchObject({ kind: 'ok', account: { role: 'main' } })
+    expect(signIn('ad', 'x')).toEqual({ kind: 'bad' })
+    expect(signIn('a', 'a')).toMatchObject({ kind: 'new' })
+    expect(signIn('user', 'user')).toMatchObject({ kind: 'new' })
   })
 
   it('admin login opens the shell', async () => {
