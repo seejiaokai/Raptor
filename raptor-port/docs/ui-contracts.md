@@ -4623,7 +4623,9 @@ The three category panels:
   before you give access.", then "Add person and give access" `#apvGo` (one command: the person, his account, the request
   answered); **On the roster** the default when it is someone's: the picker `#apvPid` (people with no account, not
   archived, not ALL / ALL AVAIL) NEVER pre-picked (D204), the note naming the matched person by his callsign (an archived
-  one: restore on Quals first), then "Give access"; the role `#apvRole` either way; Cancel `#apvCancel` discards edits —
+  one: restore on Quals first; one who already has an account: says so, names that account's sign-in and says he can't be
+  picked here — if the asker is someone else, New person with another callsign or name; Fable's code read #1), then
+  "Give access"; the role `#apvRole` either way; Cancel `#apvCancel` discards edits —
   the next Approve starts again from the request; within one open, each half keeps its entries; **Decline**
   `[data-decline]`), or "Nobody is waiting for access." (`#admNoWaiting`); **Accounts** (`#accList`, one
   `[data-acct]` row each: sign-in name over the live callsign, the role pill, tags "archived callsign" / "switched off" /

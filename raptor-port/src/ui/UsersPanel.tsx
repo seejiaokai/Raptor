@@ -32,7 +32,7 @@ import { PEOPLE, nameToId } from '../engine/people'
 import { HOOKS } from '../engine/hooks'
 import { elogWhen } from '../engine/editlog'
 import {
-  ACCOUNTS_LIST, ACCESS_REQS, GUESTVIEW, accountCallsign, linkablePeople, addAccount, updateAccount,
+  ACCOUNTS_LIST, ACCESS_REQS, GUESTVIEW, accountCallsign, accountOfPid, linkablePeople, addAccount, updateAccount,
   approveRequest, approveRequestNew, addPersonAndAccount, declineRequest, setGuestView, isAdminAccount,
   requestSummary, accessAlert, markRequestsSeen, MAX_SIGNIN, type Account, type AccountRole, type AccessRequest,
 } from '../state/accounts'
@@ -112,13 +112,19 @@ function PersonFields(p: { idp: string; np: NewPerson; onChange: (np: NewPerson)
 
 /* what a request's typed callsign matches on the roster, for the approve form's default and
    its note — named by the matched person's CALLSIGN, never an id (Fable F14); a placeholder
-   (ALL / ALL AVAIL) is nobody to link, so it opens New person, which refuses it as taken */
+   (ALL / ALL AVAIL) is nobody to link, so it opens New person, which refuses it as taken.
+   A person who ALREADY HAS AN ACCOUNT is not in the picker (one account per person, D166),
+   so the note says so instead of asking the admin to pick him (Fable's code read #1) — it
+   does not claim the asker is someone else: it may be him on a new sign-in, which is the
+   account editor's job, not this form's */
 function rosterMatch(r: AccessRequest): { pid: string; note: string } | null {
   const hit = r.cs ? nameToId(r.cs) : undefined
   const p = hit && (PEOPLE as any)[hit]
   if (!hit || !p || p.special) return null
   const same = String(p.cs).toLowerCase() === r.cs.trim().toLowerCase()
   if (p.archived) return { pid: hit, note: `He typed ${r.cs} — ${p.cs} is archived; restore them on the Quals page to link them.` }
+  const acct = accountOfPid(hit)
+  if (acct) return { pid: hit, note: `He typed ${r.cs} — ${same ? `${p.cs} already has` : `that is ${p.cs}, who already has`} an account (${acct.name}), so they can't be picked here. If this is someone else, choose New person and give them another callsign or name.` }
   return { pid: hit, note: same ? `He typed ${r.cs} — ${p.cs} is on the roster. Pick them if this is them.`
     : `He typed ${r.cs} — that is ${p.cs}. Pick them if this is them.` }
 }
@@ -271,15 +277,20 @@ export function UsersPanel(p: { shown?: boolean; openNew?: number } = {}) {
   })
 
   const hasName = !!name.trim()
+  /* after an add, EVERY half is cleared — the one not in view too. Each success used to
+     clear only its own half, so a roster pick made before a New person add was still
+     chosen afterwards, and a half-typed New person came back after an On the roster add
+     (Astra's code read #1) */
+  const resetAddForm = () => { setName(''); setPid(''); setNp(BLANK); setRole('main'); setMode('roster') }
   const add = () => {
     const nm = name.trim().toLowerCase()
     if (mode === 'roster') {
-      if (done(addAccount(name, pid, role), `${nm} can sign in now`)) { setName(''); setPid(''); setRole('main') }
+      if (done(addAccount(name, pid, role), `${nm} can sign in now`)) resetAddForm()
       return
     }
     const who = np.cs.trim()
     const ok = hasName ? `${who} added — ${nm} can sign in now` : `${who} added to the roster — set flight and quals on the Quals page`
-    if (done(addPersonAndAccount(name, np, role), ok)) { setName(''); setNp(BLANK); setRole('main'); setMode('roster') }
+    if (done(addPersonAndAccount(name, np, role), ok)) resetAddForm()
   }
   const list = ACCOUNTS_LIST.slice().sort((x, y) => accountCallsign(x).localeCompare(accountCallsign(y)))
   return (

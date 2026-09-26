@@ -38,9 +38,14 @@ export const SEATS: { v: 'FCP' | 'RCP' | 'GND'; l: string }[] = [
   { v: 'GND', l: 'Personnel (ground crew)' },
 ]
 export const seatLabel = (v: any): string => (SEATS.find(s => s.v === v)?.l ?? '')
-/* the CATs a seat may hold — moved from the Quals page (its CAT box imports it back) */
+/* the CATs a seat may hold — moved from the Quals page (its CAT box imports it back).
+   Only a pilot and a WSO hold one: personnel, a blank seat and anything else get NONE
+   (26 Aug 26). It used to treat every non-pilot as a WSO, so a CAT picked for a pilot
+   rode through Personnel unseen and came back on WSO (Astra's code read #2) */
 export const catsFor = (seat: any): string[] =>
-  Object.keys(QCHIP).filter(k => seat === 'FCP' ? k !== 'IW' : (k !== 'IP' && k !== 'IR'))
+  seat === 'FCP' ? Object.keys(QCHIP).filter(k => k !== 'IW')
+    : seat === 'RCP' ? Object.keys(QCHIP).filter(k => k !== 'IP' && k !== 'IR')
+      : []
 
 /* the Quals boxes' limits: a callsign/name fits a puck; initials the Quals column */
 export const MAX_CS = 14

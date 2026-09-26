@@ -13,7 +13,8 @@ import { initStore, notify, resetSession } from '../state/store'
 import { storeBackend, HOOKS, store } from '../engine/hooks'
 import { PEOPLE, ID_BY_CS } from '../engine/people'
 import {
-  accountsLoad, signIn, sessionFor, requestAccess, ACCESS_REQS, accountByName, accessAlert, declineRequest,
+  accountsLoad, signIn, sessionFor, requestAccess, ACCESS_REQS, accountByName, accessAlert, declineRequest, linkablePeople,
+  accountOfPid,
 } from '../state/accounts'
 import { fileReport, REPORTS } from '../state/reports'
 import { setPage, CURPAGE, ADMINOPEN, requestAdminUsers } from '../state/view'
@@ -129,18 +130,40 @@ describe('NP5 — approving: On the roster | New person, filled from what he gav
     expect(toasts).toContain('Vyper added — viper@mail can sign in now')
   })
   it('a callsign on the roster opens On the roster, NEVER pre-picked, with a note naming him (by callsign, never an id)', async () => {
-    await signInAs('r1@mail'); ask('Ranger')
-    await signInAs('r2@mail'); ask('bane')
+    /* someone on Quals with NO account yet — the picker offers him (Fable's read #1: the
+       first version of this test used Ranger, who already HAS an account, so the note it
+       pinned told the admin to pick a man the picker could not offer) */
+    const free = linkablePeople().find(id => String((PEOPLE as any)[id].cs).toLowerCase() !== id)!
+    const fcs = String((PEOPLE as any)[free].cs)
+    await signInAs('r1@mail'); ask(fcs)
+    await signInAs('r2@mail'); ask(free)
     await signInAs('ad', 'a')
     await act(async () => { setPage('admin'); notify() })
     const [a, b] = ACCESS_REQS
     await click($(`[data-approve="${a.id}"]`))
     expect($('#apvModeRoster').getAttribute('aria-pressed')).toBe('true')
     expect(($('#apvPid') as HTMLSelectElement).value, 'D204: a typed callsign never claims a puck').toBe('')
-    expect($('#apvNote').textContent).toBe('He typed Ranger — Ranger is on the roster. Pick them if this is them.')
+    expect(optTexts('#apvPid'), 'the one the note names is there to pick').toContain(fcs)
+    expect($('#apvNote').textContent).toBe(`He typed ${fcs} — ${fcs} is on the roster. Pick them if this is them.`)
     await click($('#apvCancel'))
     await click($(`[data-approve="${b.id}"]`))
-    expect($('#apvNote').textContent).toBe('He typed bane — that is Ranger. Pick them if this is them.')
+    expect($('#apvNote').textContent).toBe(`He typed ${free} — that is ${fcs}. Pick them if this is them.`)
+  })
+  it('a callsign whose person ALREADY has an account: the note says so and never asks him to pick them (Fable read #1)', async () => {
+    const bane = accountOfPid('bane')!
+    expect(bane, 'the seed: Ranger (bane) holds an account').toBeTruthy()
+    await signInAs('r1@mail'); ask('Ranger')
+    await signInAs('r2@mail'); ask('bane')
+    await signInAs('ad', 'a')
+    await act(async () => { setPage('admin'); notify() })
+    const [a, b] = ACCESS_REQS
+    await click($(`[data-approve="${a.id}"]`))
+    expect(optTexts('#apvPid'), 'one account per person: the picker cannot offer him').not.toContain('Ranger')
+    expect($('#apvNote').textContent).toBe(`He typed Ranger — Ranger already has an account (${bane.name}), so they can't be picked here. If this is someone else, choose New person and give them another callsign or name.`)
+    expect($('#apvNote').textContent).not.toMatch(/Pick them/)
+    await click($('#apvCancel'))
+    await click($(`[data-approve="${b.id}"]`))
+    expect($('#apvNote').textContent).toBe(`He typed bane — that is Ranger, who already has an account (${bane.name}), so they can't be picked here. If this is someone else, choose New person and give them another callsign or name.`)
   })
   it('Cancel discards edits: the next Approve starts again from what he gave; switching halves keeps each', async () => {
     await signInAs('viper3@mail'); ask('Viper')
@@ -194,6 +217,72 @@ describe('NP1 — adding on Admin → Users: New person with an account, or alon
     await click($('#accAdd'))
     expect(accountByName('blaze@mail')).toMatchObject({ pid: csOf('Blaze') })
     expect(toasts).toContain('Blaze added — blaze@mail can sign in now')
+  })
+  it('a New person add clears the WHOLE form — the roster pick made before it is gone too (Astra read #1)', async () => {
+    await signInAs('ad', 'a')
+    await act(async () => { setPage('admin'); notify() })
+    const pick = linkablePeople()[0]
+    await type($('#accAddPid') as HTMLSelectElement, pick)
+    await click($('#accModeNew'))
+    await type($('#accAddCs') as HTMLInputElement, 'Gecko')
+    await type($('#accAddSeat') as HTMLSelectElement, 'FCP'); await type($('#accAddCat') as HTMLSelectElement, 'OCU')
+    await click($('#accAdd'))
+    expect(csOf('Gecko')).toBeTruthy()
+    expect($('#accModeRoster').getAttribute('aria-pressed')).toBe('true')
+    expect(($('#accAddPid') as HTMLSelectElement).value, 'the earlier roster pick did not survive the add').toBe('')
+    expect(($('#accAddName') as HTMLInputElement).value).toBe('')
+    expect(($('#accAddRole') as HTMLSelectElement).value).toBe('main')
+  })
+  it('an On the roster add clears the WHOLE form — New person reopens blank (Astra read #1)', async () => {
+    await signInAs('ad', 'a')
+    await act(async () => { setPage('admin'); notify() })
+    await click($('#accModeNew'))
+    await type($('#accAddCs') as HTMLInputElement, 'Leftover')
+    await type($('#accAddIni') as HTMLInputElement, 'LO')
+    await type($('#accAddSeat') as HTMLSelectElement, 'RCP'); await type($('#accAddCat') as HTMLSelectElement, 'D')
+    await click($('#accModeRoster'))
+    await type($('#accAddName') as HTMLInputElement, 'gecko@mail')
+    await type($('#accAddPid') as HTMLSelectElement, linkablePeople()[0])
+    await type($('#accAddRole') as HTMLSelectElement, 'admin')
+    await click($('#accAdd'))
+    expect(accountByName('gecko@mail'), 'the account was made').toBeTruthy()
+    expect(($('#accAddName') as HTMLInputElement).value).toBe('')
+    expect(($('#accAddRole') as HTMLSelectElement).value).toBe('main')
+    await click($('#accModeNew'))
+    expect(($('#accAddCs') as HTMLInputElement).value, 'no half-typed person comes back').toBe('')
+    expect(($('#accAddIni') as HTMLInputElement).value).toBe('')
+    expect(($('#accAddSeat') as HTMLSelectElement).value).toBe('')
+    expect(($('#accAddCat') as HTMLSelectElement).value).toBe('')
+  })
+})
+
+describe('NP4 — a CAT never rides through Personnel (26 Aug 26; Astra read #2)', () => {
+  it('the sign-up: Pilot + CAT C → Personnel → WSO shows CAT "Pick…"', async () => {
+    await signInAs('fresh@mail')
+    await type($('#accSeat') as HTMLSelectElement, 'FCP'); await type($('#accCat') as HTMLSelectElement, 'C')
+    await type($('#accSeat') as HTMLSelectElement, 'GND')
+    expect($('#accCat'), 'personnel hold no CAT').toBeFalsy()
+    await type($('#accSeat') as HTMLSelectElement, 'RCP')
+    expect(($('#accCat') as HTMLSelectElement).value, 'the pilot\'s C did not survive Personnel').toBe('')
+  })
+  it('Admin → Users New person: Pilot + CAT C → Personnel → WSO shows CAT "Pick…"', async () => {
+    await signInAs('ad', 'a')
+    await act(async () => { setPage('admin'); notify() })
+    await click($('#accModeNew'))
+    await type($('#accAddSeat') as HTMLSelectElement, 'FCP'); await type($('#accAddCat') as HTMLSelectElement, 'C')
+    await type($('#accAddSeat') as HTMLSelectElement, 'GND')
+    expect(($('#accAddCat') as HTMLSelectElement).disabled, 'personnel: "None — personnel"').toBe(true)
+    await type($('#accAddSeat') as HTMLSelectElement, 'RCP')
+    expect(($('#accAddCat') as HTMLSelectElement).value, 'the pilot\'s C did not survive Personnel').toBe('')
+  })
+  it('approving: the same, on the approve form', async () => {
+    await signInAs('viper-seat@mail'); expect(ask('Viper', { seat: 'FCP', cat: 'C' })).toBe(null)
+    await signInAs('ad', 'a')
+    await act(async () => { setPage('admin'); notify() })
+    await click($(`[data-approve="${ACCESS_REQS[0].id}"]`))
+    await type($('#apvSeat') as HTMLSelectElement, 'GND')
+    await type($('#apvSeat') as HTMLSelectElement, 'RCP')
+    expect(($('#apvCat') as HTMLSelectElement).value).toBe('')
   })
 })
 

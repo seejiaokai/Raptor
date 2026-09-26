@@ -44,6 +44,12 @@ describe('NP7 — one list of seats, CATs, limits and words (D219, D220, D222, D
     expect(catsFor('FCP')).toContain('IP'); expect(catsFor('FCP')).not.toContain('IW')
     expect(catsFor('RCP')).toContain('IW'); expect(catsFor('RCP')).not.toContain('IP'); expect(catsFor('RCP')).not.toContain('IR')
   })
+  it('personnel, a blank seat and a made-up one hold NO CAT (26 Aug 26) — the list is empty, so a CAT picked for a pilot cannot ride through Personnel (Astra read #2)', () => {
+    expect(catsFor('GND')).toEqual([])
+    expect(catsFor('')).toEqual([])
+    expect(catsFor(undefined)).toEqual([])
+    expect(catsFor('XYZ')).toEqual([])
+  })
   it('the words and the limits', () => {
     expect(CALLSIGN_LABEL).toBe('Callsign/Name')
     expect(SIGNUP_CALLSIGN_LABEL).toBe('Displayed callsign/name')

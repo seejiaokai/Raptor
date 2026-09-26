@@ -128,7 +128,10 @@ async function qualsRow(page, view, cs) {
     await page.selectOption('#accSeat', 'RCP'); const w = await page.$$eval('#accCat option', os => os.map(o => o.value))
     await page.selectOption('#accCat', 'IW'); await page.selectOption('#accSeat', 'FCP'); const back = await page.inputValue('#accCat')
     await page.selectOption('#accSeat', 'GND'); const none = await page.locator('#accCat').count()
-    return !w.includes('IP') && !w.includes('IR') && back === '' && none === 0 ? true : `${w.join(',')} / "${back}" / ${none}`
+    /* Astra's code read #2: a CAT picked for a pilot must not ride through Personnel */
+    await page.selectOption('#accSeat', 'FCP'); await page.selectOption('#accCat', 'C')
+    await page.selectOption('#accSeat', 'GND'); await page.selectOption('#accSeat', 'RCP'); const via = await page.inputValue('#accCat')
+    return !w.includes('IP') && !w.includes('IR') && back === '' && none === 0 && via === '' ? true : `${w.join(',')} / "${back}" / ${none} / through Personnel "${via}"`
   })
   await step(page, 'd-S9-waiting', 'a valid request → the waiting screen reads what he gave; a reload keeps it', async () => {
     await page.selectOption('#accSeat', 'RCP'); await page.selectOption('#accCat', 'C'); await page.fill('#accIni', 'jkb')
@@ -181,10 +184,31 @@ async function qualsRow(page, view, cs) {
     await go(page, 'editsched'); await page.waitForTimeout(800)
     return (await page.locator(`#eRoster .rpuck[data-person="${vyper}"]`).count()) > 0 ? true : `no palette puck for ${vyper}`
   })
-  await step(page, 'd-S4-inputs', 'Inputs: the admin\'s person picker lists Vyper', async () => {
+  /* Fable's code read #2(a): the roll-call's row 18 names the board's Available crew too */
+  await step(page, 'd-S4-board-avail', 'the scheduler board: Available crew offers Vyper', async () => {
+    await page.evaluate(() => window.openScheduler(0)); await page.waitForTimeout(1000)
+    const panel = () => page.evaluate(() => { const s = document.querySelector('#schedBoard .sec-avail'); return s ? s.textContent.replace(/\s+/g, ' ') : null })
+    let t = await panel()
+    if (t && !/close/.test(t)) { await page.click('#schedBoard .sec-avail [data-avtog]'); await page.waitForTimeout(500); t = await panel() }
+    await page.locator('#schedBoard .sec-avail').scrollIntoViewIfNeeded().catch(() => {})
+    const has = await page.evaluate(id => !!document.querySelector(`#schedBoard .sec-avail [data-person="${id}"]`), vyper)
+    return has ? true : `panel ${t ? t.slice(0, 120) : 'missing'}`
+  })
+  /* the next weekday two or more days ahead — inside the Inputs list's default "today → two weeks" */
+  const soon = (() => { const d = new Date(); d.setDate(d.getDate() + 2); while (d.getDay() === 0 || d.getDay() === 6) d.setDate(d.getDate() + 1)
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}` })()
+  await step(page, 'd-S4-inputs', 'Inputs: the admin\'s person picker lists Vyper, and files a Training for him', async () => {
     await go(page, 'inputs')
     const opts = await page.$$eval('#inPerson option', os => os.map(o => o.textContent))
-    return opts.includes('Vyper') ? true : `${opts.length} options, no Vyper`
+    if (!opts.includes('Vyper')) return `${opts.length} options, no Vyper`
+    /* Fable's code read #2(b): an input the admin files for him, to read back as his */
+    await page.selectOption('#inPerson', vyper); await page.selectOption('#inType', 'Training')
+    for (let i = 0; i < 14 && !(await page.locator(`#inCal [data-cal="${soon}"]`).count()); i++) { await page.locator('#inCal button[aria-label="Next month"]').click(); await page.waitForTimeout(120) }
+    await page.click(`#inCal [data-cal="${soon}"]`); await page.waitForTimeout(200)
+    await page.click(`#inCal [data-cal="${soon}"]`); await page.waitForTimeout(200)
+    await page.fill('#inRemarks', 'walk: filed by the admin'); await page.click('#inAdd'); await page.waitForTimeout(900)
+    const row = await page.evaluate(() => [...document.querySelectorAll('tr[data-iid]')].some(r => r.textContent.includes('walk: filed by the admin')))
+    return row ? true : `no row for the filed input (${soon})`
   })
   await step(page, 'd-S4-search', 'View-only Sched: the name / callsign search takes "Vyper"', async () => {
     await go(page, 'viewsched'); await page.fill('#searchV', 'Vyper'); await page.waitForTimeout(400)
@@ -211,6 +235,20 @@ async function qualsRow(page, view, cs) {
     await page.click('#qSave')
     return badge === 'Vyper · Member' && own.ini && !own.cs ? true : `${badge} ${JSON.stringify(own)}`
   })
+  /* Fable's code read #2(b): the roll-call's row 25 promised his Inputs and the Leave War too */
+  await step(page, 'd-S4-his-inputs', 'signed in as Vyper: Inputs is his ("Vyper" fixed), and the Training the admin filed reads as his, with its ✎', async () => {
+    await go(page, 'inputs')
+    const fixed = await text(page, '#inPersonFixed')
+    const row = await page.evaluate(() => { const r = [...document.querySelectorAll('tr[data-iid]')].find(x => x.textContent.includes('walk: filed by the admin'))
+      return r ? { name: r.querySelector('td[data-label="Name"]')?.textContent.trim(), edit: !!r.querySelector('[data-edit]') } : null })
+    return fixed === 'Vyper' && row && row.name === 'Vyper' && row.edit ? true : `${fixed} ${JSON.stringify(row)}`
+  })
+  await step(page, 'd-S4-his-leavewar', 'signed in as Vyper: the Leave War lights HIS row ("this is you")', async () => {
+    await go(page, 'leavewar'); await page.waitForTimeout(1500)
+    const me = await page.evaluate(id => { const r = document.querySelector(`#page-leavewar [data-testid="row-${id}"]`); if (r) r.scrollIntoView({ block: 'center' }); return r ? r.className : null }, vyper)
+    await page.waitForTimeout(300)
+    return me != null && /\bme\b/.test(me) ? true : `row class "${me}"`
+  })
 
   /* S5 — a roster-only person (blank sign-in), linked later */
   await signIn(page, 'ad', 'a'); await go(page, 'admin')
@@ -234,6 +272,35 @@ async function qualsRow(page, view, cs) {
     await page.fill('#accAddName', 'gecko@mail'); await page.selectOption('#accAddPid', await pidOf(page, 'Gecko')); await page.click('#accAdd'); await page.waitForTimeout(300)
     await signIn(page, 'gecko@mail'); const b = await text(page, '#roleBadge')
     return b === 'Gecko · Member' ? true : b
+  })
+
+  /* Astra's code read #1 — after an add the WHOLE form clears, the half not in view too */
+  await signIn(page, 'ad', 'a')
+  await step(page, 'd-A1-form-clears', 'after an add the whole form clears: a roster pick made before a New person add is gone; a half-typed New person never comes back after an On the roster add', async () => {
+    await go(page, 'admin')
+    await page.selectOption('#accAddPid', await page.$eval('#accAddPid', s => s.options[1].value))
+    await page.click('#accModeNew'); await page.fill('#accAddName', ''); await page.fill('#accAddCs', 'Clearo')
+    await page.selectOption('#accAddSeat', 'FCP'); await page.selectOption('#accAddCat', 'C')
+    await page.click('#accAdd'); await page.waitForTimeout(400)
+    const pidAfter = await page.inputValue('#accAddPid')
+    await page.click('#accModeNew'); await page.fill('#accAddCs', 'Leftov'); await page.fill('#accAddIni', 'LO')
+    await page.selectOption('#accAddSeat', 'RCP'); await page.selectOption('#accAddCat', 'D')
+    await page.click('#accModeRoster'); await page.fill('#accAddName', 'clearo@mail'); await page.selectOption('#accAddPid', await pidOf(page, 'Clearo'))
+    await page.click('#accAdd'); await page.waitForTimeout(400)
+    const linked = await page.evaluate(() => [...document.querySelectorAll('#accList [data-acct]')].some(r => r.textContent.includes('clearo@mail')))
+    await page.click('#accModeNew')
+    const np = { cs: await page.inputValue('#accAddCs'), ini: await page.inputValue('#accAddIni'), seat: await page.inputValue('#accAddSeat'), cat: await page.inputValue('#accAddCat') }
+    await page.click('#accModeRoster')
+    return pidAfter === '' && linked && !np.cs && !np.ini && !np.seat && !np.cat ? true : JSON.stringify({ pidAfter, linked, np })
+  })
+  /* Astra's code read #2 — the same on the admin's form */
+  await step(page, 'd-A2-cat-personnel', 'Admin → Users New person: Pilot + CAT C → Personnel → WSO puts the CAT back to "Pick…"', async () => {
+    await page.click('#accModeNew')
+    await page.selectOption('#accAddSeat', 'FCP'); await page.selectOption('#accAddCat', 'C')
+    await page.selectOption('#accAddSeat', 'GND'); const dis = await page.locator('#accAddCat').isDisabled()
+    await page.selectOption('#accAddSeat', 'RCP'); const v = await page.inputValue('#accAddCat')
+    await page.selectOption('#accAddSeat', ''); await page.click('#accModeRoster')
+    return dis && v === '' ? true : `disabled ${dis}, CAT "${v}"`
   })
 
   /* S6 — refusals and one-step atomicity, by the screen */
@@ -266,24 +333,45 @@ async function qualsRow(page, view, cs) {
     return n === 1 && a === 1 ? true : `people ${n} accounts ${a}`
   })
 
-  /* S8 — approving when the typed callsign is someone's */
+  /* S8 — approving when the typed callsign is someone's. Ranger (bane) already HAS an account
+     (the seeded "us"), so the picker cannot offer him (one account per person): the note says so
+     (Fable's code read #1 — the first walk pinned "Pick them", an instruction nobody could follow).
+     A person on Quals with NO account is the "Pick them" case: the first free one in the picker. */
+  await go(page, 'admin')
+  const freeCs = await page.$eval('#accAddPid', s => s.options[1].textContent)
   await signUp(page, 'r1@mail', { cs: 'Ranger', seat: 'FCP', cat: 'C' })
   await signUp(page, 'r2@mail', { cs: 'bane', seat: 'FCP', cat: 'C' })
   await signUp(page, 'r3@mail', { cs: 'ALL', seat: 'FCP', cat: 'C' })
+  await signUp(page, 'r4@mail', { cs: freeCs, seat: 'FCP', cat: 'C' })
   await signIn(page, 'ad', 'a'); await go(page, 'admin')
   const reqId = cs => page.evaluate(c => { const r = [...document.querySelectorAll('#admWaiting [data-req]')].find(x => x.querySelector('.acc-sub b')?.textContent === c); return r ? r.getAttribute('data-req') : null }, cs)
-  await step(page, 'd-S8-ranger', '"Ranger": On the roster, NOT pre-picked, the note names him; New person refuses him as taken', async () => {
-    await page.click(`[data-approve="${await reqId('Ranger')}"]`); await page.waitForTimeout(200)
-    const v = { mode: await page.getAttribute('#apvModeRoster', 'aria-pressed'), pid: await page.inputValue('#apvPid'), note: await text(page, '#apvNote') }
+  const HAS = 'already has an account (us), so they can\'t be picked here. If this is someone else, choose New person and give them another callsign or name.'
+  /* each approve form stays OPEN for its picture (the note is the evidence); Cancel comes after */
+  const openApv = async cs => { await page.click(`[data-approve="${await reqId(cs)}"]`); await page.waitForTimeout(200); await page.locator('[data-approving]').scrollIntoViewIfNeeded() }
+  await step(page, 'd-S8-ranger', '"Ranger" (he already has an account): On the roster, NOT pre-picked, the picker does not offer him and the note SAYS so', async () => {
+    await openApv('Ranger')
+    const v = { mode: await page.getAttribute('#apvModeRoster', 'aria-pressed'), pid: await page.inputValue('#apvPid'), note: await text(page, '#apvNote'),
+      offered: (await page.$$eval('#apvPid option', os => os.map(o => o.textContent))).includes('Ranger') }
+    return v.mode === 'true' && v.pid === '' && !v.offered && v.note === `He typed Ranger — Ranger ${HAS}` ? true : JSON.stringify(v)
+  })
+  await step(page, 'd-S8-ranger-new', '"Ranger" on New person: refused as taken, said on screen', async () => {
     await page.click('#apvModeNew'); await page.click('#apvGo'); await page.waitForTimeout(250); const t = await toastText(page)
-    await page.click('#apvCancel')
-    return v.mode === 'true' && v.pid === '' && v.note === 'He typed Ranger — Ranger is on the roster. Pick them if this is them.' && /Ranger is already taken/.test(t) ? true : JSON.stringify(v) + ' ' + t
+    return /Ranger is already taken/.test(t) ? true : t
   })
-  await step(page, 'd-S8-bane', '"bane" (Ranger\'s hidden id): the note names Ranger, never the id', async () => {
-    await page.click(`[data-approve="${await reqId('bane')}"]`); await page.waitForTimeout(200)
-    const n = await text(page, '#apvNote'); await page.click('#apvCancel')
-    return n === 'He typed bane — that is Ranger. Pick them if this is them.' ? true : n
+  await page.click('#apvCancel')
+  await step(page, 'd-S8-bane', '"bane" (Ranger\'s hidden id): the note names Ranger, never the id, and says he has an account', async () => {
+    await openApv('bane')
+    const n = await text(page, '#apvNote')
+    return n === `He typed bane — that is Ranger, who ${HAS}` ? true : n
   })
+  await page.click('#apvCancel')
+  await step(page, 'd-S8-free', `"${freeCs}" (on Quals, no account): On the roster, NOT pre-picked, the note says "Pick them" — and the picker offers him`, async () => {
+    await openApv(freeCs)
+    const v = { mode: await page.getAttribute('#apvModeRoster', 'aria-pressed'), pid: await page.inputValue('#apvPid'), note: await text(page, '#apvNote'),
+      offered: (await page.$$eval('#apvPid option', os => os.map(o => o.textContent))).includes(freeCs) }
+    return v.mode === 'true' && v.pid === '' && v.offered && v.note === `He typed ${freeCs} — ${freeCs} is on the roster. Pick them if this is them.` ? true : JSON.stringify(v)
+  })
+  await page.click('#apvCancel')
   await step(page, 'd-S8-all', '"ALL": New person, refused as taken (no restore door named)', async () => {
     await page.click(`[data-approve="${await reqId('ALL')}"]`); await page.waitForTimeout(200)
     const m = await page.getAttribute('#apvModeNew', 'aria-pressed')
@@ -300,7 +388,7 @@ async function qualsRow(page, view, cs) {
     const fresh = await page.inputValue('#apvCs'); await page.click('#apvCancel')
     return kept === 'Edited' && keptPid === opt && fresh === 'ALL' ? true : `${kept} ${keptPid} ${fresh}`
   })
-  for (const c of ['Ranger', 'bane', 'ALL']) { const id = await reqId(c); if (id) { await page.click(`[data-decline="${id}"]`); await page.waitForTimeout(200) } }
+  for (const c of ['Ranger', 'bane', 'ALL', freeCs]) { const id = await reqId(c); if (id) { await page.click(`[data-decline="${id}"]`); await page.waitForTimeout(200) } }
 
   /* S3 — Quals' "+ Add person", twice; the tab afterwards is On the roster again */
   await step(page, 'd-S3-quals-button', 'Quals "+ Add person" → Admin → Users, New person chosen, the Callsign/Name box focused — every press', async () => {
@@ -453,6 +541,29 @@ async function qualsRow(page, view, cs) {
   await step(page, 's-S9-card', 'a short window: the whole sign-up card reaches its Request access and Sign out', async () => {
     await page.selectOption('#accSeat', 'FCP'); await page.locator('#accOut').scrollIntoViewIfNeeded()
     return (await page.locator('#accSend').isVisible()) && (await page.locator('#accOut').isVisible())
+  })
+  W.errors.forEach(e => errorsAll.push(e))
+  await W.browser.close()
+}
+
+/* ============================== A FRESH WORLD 1440×900 (§7.7; Fable's code read #2(c)) ==============================
+   The roll-call's row 26: a person AND his account as the FIRST write on a world nobody has written to, then
+   a reload — the trap in bug-check order §7.7 (a fresh world reloaded before any write comes back different). */
+{
+  const W = await world(1440, 900, 'fresh'); const page = W.page
+  await signIn(page, 'ad', 'a'); await go(page, 'admin')
+  await page.click('#accModeNew'); await page.fill('#accAddName', 'first@mail'); await page.fill('#accAddCs', 'Firsty'); await page.fill('#accAddIni', 'FY')
+  await page.selectOption('#accAddSeat', 'FCP'); await page.selectOption('#accAddCat', 'C')
+  await page.click('#accAdd'); await page.waitForTimeout(500)
+  await step(page, 'f-S14-first-write-reload', 'a fresh world: "Add person and account" as its FIRST write, then a reload — Firsty on Quals, first@mail on Admin → Users, both kept; he signs in as himself', async () => {
+    const before = { pid: await pidOf(page, 'Firsty') }
+    await page.reload(); await page.waitForTimeout(1000)
+    if (await page.locator('#luser').count()) await signIn(page, 'ad', 'a')
+    const r = await qualsRow(page, '#qViewP', 'Firsty')
+    await go(page, 'admin')
+    const acct = await page.evaluate(() => [...document.querySelectorAll('#accList [data-acct]')].map(x => x.textContent.replace(/\s+/g, ' ').trim()).find(x => x.startsWith('first@mail')) || '')
+    await signIn(page, 'first@mail'); const badge = await text(page, '#roleBadge')
+    return before.pid && r && r.ini === 'FY' && /Firsty/.test(acct) && badge === 'Firsty · Member' ? true : JSON.stringify({ before, r, acct, badge })
   })
   W.errors.forEach(e => errorsAll.push(e))
   await W.browser.close()

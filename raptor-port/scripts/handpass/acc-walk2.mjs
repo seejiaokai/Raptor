@@ -250,6 +250,9 @@ async function editAccount(page, id, fn) {
   await page.locator('#admWaiting [data-decline]').first().click(); await page.waitForTimeout(300)
   const c1 = await text(page, '#admWaitBadge')
   await page.locator('#admWaiting [data-approve]').first().click(); await page.waitForTimeout(200)
+  /* a callsign nobody has opens "New person" since [ACCOUNTS-NEW-PERSON]; this step links a
+     puck, so "On the roster" first (Astra's code read #4) */
+  await page.click('#apvModeRoster'); await page.waitForSelector('#apvPid')
   await page.selectOption('#apvPid', { index: 1 }); await page.click('#apvGo'); await page.waitForTimeout(300)
   await step(page, 'd-badge-counts', 'two waiting → "2"; one declined → "1"; the other approved → the count goes, at once', async () =>
     c2 === '2' && c1 === '1' && (await page.locator('#admWaitBadge').count()) === 0 ? true : `${c2} → ${c1} → ${await page.locator('#admWaitBadge').count()}`)

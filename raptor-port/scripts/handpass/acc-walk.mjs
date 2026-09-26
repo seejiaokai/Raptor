@@ -121,8 +121,13 @@ async function go(page, to) { await page.evaluate(p => window.go(p), to); await 
     return own && req === 1 && g === false ? true : `own disabled ${own}, requests ${req}, guest ${g}`
   })
   await page.click('#admWaiting [data-approve]'); await page.waitForTimeout(300)
-  await step(page, 'd-approve-form', 'Approve asks for the puck (typed callsign only a hint) and the role', async () =>
-    (await page.locator('#apvPid').count()) === 1 && (await page.locator('#apvPid').inputValue()) === '')
+  /* since [ACCOUNTS-NEW-PERSON] (D214) a callsign nobody has opens "New person"; this walk
+     links an existing puck, so it takes "On the roster" first (Astra's code read #4) */
+  const opensNew = (await page.locator('#apvModeNew[aria-pressed="true"]').count()) === 1
+  await page.click('#apvModeRoster'); await page.waitForSelector('#apvPid')
+  await step(page, 'd-approve-form', 'Approve opens New person for a callsign nobody has (D214); On the roster asks for the puck (typed callsign only a hint) and the role', async () =>
+    opensNew && (await page.locator('#apvPid').count()) === 1 && (await page.locator('#apvPid').inputValue()) === ''
+      ? true : `opens New person ${opensNew}, picker ${await page.locator('#apvPid').count()}`)
   await page.click('#apvGo'); await page.waitForTimeout(300)
   await step(page, 'd-approve-needs-puck', 'giving access with no puck picked is refused, the request stays', async () =>
     (await page.locator('#admWaiting [data-req]').count()) === 1)
