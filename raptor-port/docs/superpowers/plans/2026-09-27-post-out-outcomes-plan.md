@@ -4,7 +4,10 @@ Builder: Opus 5.5. Reviewers: Fable 5.1 and Astra — both, independently (permi
 published record, the Leave War's leave and OIL). Tier: **FULL**. Branch `claude/post-out-outcomes`, cut from
 `claude/accounts-new-person` (PR #443, not yet merged — D301). Rulings this chat: D301 onwards (its range D280–D309).
 
-**Status: DRAFT for red-team round 1.** The approved mock-up (D299, trimmed D300) is the design of record:
+**Status: REVISED after red-team round 1** (Fable: APPROVE WITH CHANGES; Astra: REVISE). Every finding is dispositioned
+in §Round 1 at the end, and where a section changed it says so; both reports are kept verbatim
+(`docs/superpowers/specs/2026-09-27-post-out-outcomes-redteam-r1-{fable,astra}.md`). **Where a section below and §Round 1
+disagree, §Round 1 wins.** The approved mock-up (D299, trimmed D300) is the design of record:
 `raptor-port/docs/mock/post-out.html` (its pictures `docs/mock/img/post-out/*.png`, drawn by
 `scripts/handpass/am/mk-post-out.mjs`; Artifact Version 6).
 
@@ -512,3 +515,175 @@ code reads with the evidence sheet → fixes → re-walk → gates → the sheet
 - Whether archiving a man (the overseas outcome) should make his published days BEFORE the posting date read pending
   (today it does — D186's posting attribute) — the question goes to him with the walk's picture; this build changes it
   only for a DELETE (§4.4).
+
+## Round 1 — what changed (every finding dispositioned; this section wins over the text above)
+
+**Fable 5.1 — APPROVE WITH CHANGES (F1–F13); Astra — REVISE (A1–A8).** Both read blind. **Fixed** = the plan now says so
+here; **asked** = put to him (the build takes the stated default, so nothing is baked in that one line cannot change).
+
+### The rulings the plan forgot (Fable Q1)
+D91 (taking a man off leaves no mark on the row — the sweep's emptied seats read empty), D109/D113 (one removal, one
+pending change per place — the attribute rule below keeps it), D174/D176 (the filing axis: a deleted input reads as a
+change only where the issued day showed it), D189 (an input's rewritten "till" is a change on the published days it still
+covers), D204/D221 (a deleted man who signs in again lands on Request access, and approving him opens New person with no
+"archived" note), D129 (the member-view switch is not a logout — the Tracker's unsaved-edits question never fires). Added
+to the sweep; each is obeyed by the design below.
+
+### §1 / §4 — the delete (Fable F1–F4, F6, F8, F9, F13; Astra A1, A7)
+- **The cutoff — `deleteCutoff(dateIso)`, ONE helper (`state/person-delete.ts`):** the later of its date and **the app's
+  today** — the scheduler's notional today (`ui/weeknav.ts TODAY`, 13 Jul 26 in the demo, the day the app highlights) —
+  NOT the wall clock. *Changed from the draft (the wall clock), the agent's call after Astra A2: he sees the app through
+  its own today; with the wall clock a demo delete would leave the man on every demo day he looks at, which reads as a
+  defect. The posting pass still FIRES on the wall clock (`localToday()` — unchanged, #444's), so a posting's cutoff is
+  the later of its PO date and the app's today.* **Asked** (question 3), one line to change.
+- **Two functions (F4):** `applyDelete(id, from)` — the mutation only, inside any command that enlisted every store it
+  writes; `deletePerson(id, dateIso)` — the admin's door: `mayDeletePerson()`, the refusals, then ONE command. The posting
+  pass runs `applyDelete` inside a projection command, `commitPeopleSettingsProjection` (new, `people-settings-commit.ts`,
+  beside `persistPeopleProjection`), enlisting people, settings, the Leave War, the schedule, the week stash, inputs and
+  the plan layer. In the pass the "last admin" refusal is a skip with a toast naming him (the posting stands, `poDone`
+  unset — retried); "you cannot delete yourself" is the door's only.
+- **The mark:** `deleted: true`, `deletedFrom`, `archived: true`, and **`archivedBy: 'del'`** — never `'po'`, so #444's
+  `undoPostOut` / `postOut` never read the delete's archive as the Post out's own and restore him (F3, Fable Q5).
+- **Preflight (A1):** before the command, every stashed week holding a day on or after the cutoff is parsed; one that
+  cannot be read or is byte-preserved REFUSES the whole delete with its reason ("The week of 5 Oct can't be changed — the
+  delete was not made"). Nothing is skipped silently.
+- **The stash (F9, A1):** a new `stashEditWeek(v, edit(blob) => changed)` (`engine/weekstash.ts`, beside
+  `stashEditDays`, the same preserved-week rule, written only if changed) — the sweep reaches the blob's days `d`, its sign
+  boxes `sg` AND their bindings `sb`, every parked plan `dr[di][k].d`, `.sign`, `.signBind`, and the `oild.people` keys,
+  on every day on or after the cutoff.
+- **The live week:** as §4.3, plus every parked plan's `sign` and `signBind` (`setSign` for the live boxes — it clears
+  the binding — F13); `PLANPUCKS` blanked as a GAP, not spliced (F13), the plan store enlisted.
+- **The belt — wherever a day is materialised (A1, F2):** ONE `stripDeleted(day, iso)` runs (1) in `applyWeekModel`'s
+  stash branch AND seed branch, and (2) in `initStore`'s no-stash boot path — both BEFORE the baseline, so it is the
+  week's starting state, not an edit; (3) in `rowsLeftOut` (a version loaded, a plan switched — said in the load's
+  message, as today's LOADLEFT). **Undo and redo REFUSE** (never repair) a restore whose images would put a deleted man on
+  a day, input, plan or parked plan on or after his cutoff — "Hex has been deleted — that change can't be undone" —
+  through #444's `restoreRefusal` hook (`state/undo-wire.ts`, Part B). Input re-landing needs no belt: his inputs on those
+  days are gone (checked by Fable). One function, one test per call site.
+- **The past never reads pending (F1, F8, A7):** (a) `leavewar/sync.ts availableFor` reads a deleted man by DATE —
+  available on a day before his cutoff exactly as he was, out on or after it (`p.deleted ? iso >= p.deletedFrom :
+  p.archived`), so the ALL / ALL AVAIL crowd on a day he flew compares equal (`publish.ts oilDelta`); (b)
+  `engine/publish.ts peopleAttrsNow` returns a deleted man's SNAPSHOT attributes (`pa[id]`) on every day — never compared:
+  before the cutoff the day is the past, on or after it the seat removal is the one change (no second "posted out" line —
+  D109, D113). It is the ONE function `warnDelta` and `ui/pendlist.ts` both call, so the banner and the list agree (A7).
+  Tests: past published, past unpublished, today published, a day to come published — the banner, the list, the four,
+  the version preview.
+- **The war (F6):** the war's `Person` gains `gone?: true`, set in `reprojectRoster`'s keep branch when the Raptor body is
+  deleted (in its change-guard `sig`, and on the frozen copy by `windowRecord`). Readers: the OIL tracker (`!p.gone`),
+  `setPostOut` / `setPostIn` (refuse), `Matrix.tsx` (no posting doors on a gone row), `SelectSheet` (no PO for a gone man).
+  The war still never imports `PEOPLE` — only `sync.ts` crosses.
+- **Accounts (F13):** `canSignInAsAdmin` / `personOk` add `!deleted`; the delete's last-admin refusal uses the same body
+  (`ADMIN_LOCK`); pinned: no account is ever loaded whose person is deleted.
+- **Inputs (F5):** removed and ended INSIDE `person-delete.ts` from engine helpers only (`INPUTS` splice,
+  `engine/slots.ts unacceptInput`, `engine/inputs.ts withRemarksTail`), never importing `ui/inputedit.tsx` (a #444 file).
+  The "till" tail IS rewritten (the truth — D189): the published days before the cutoff that the ended input still covers
+  read one pending change for it. On the look card.
+
+### §3 / §6 / §7 / §8 — the posting side (Fable F3, F10; Astra A4, A5)
+- **Every posting writer and door refuses a deleted man (F3):** `postOut`, `undoPostOut`, `restoreArchivedPerson` return
+  false with the reason through `postingProblem` ("Hex has been deleted — the posting can't be changed"); the war's
+  `setPostOut` / `setPostIn` refuse `gone`; the doors are not drawn (F6).
+- **The outcome fields travel (F10):** `reprojectRoster`'s carry-over, its `sig`, `setPeople`'s lay-on, `readPostOuts` and
+  `windowRecord` carry `poOutcome` and `poDone`; an old `poArchive` reads as today's meaning (tolerant, D56).
+- **SANS (A4):** #444's `reprojectRoster` lays the window on the projection AND `setPeople` lays it again — so ONE helper,
+  `windowFor(record, showSans)`, is called by BOTH (not a removal of #444's carry-over — D302's promise): a SANS outcome
+  with Show SANS on lays no window. His whole row moves to the SANS group on the date (rows are people — the approved
+  picture 4b, D299); a per-month group is not built (**asked**, question 6). Tested through the REAL posting route before
+  / on / after the date, Show SANS off → on → off, reloads, and `inSquadron`, `availableFor`, `rowInWindow`, manning and
+  OIL in each state.
+- **`sanBy` (A5):** every user SANS write (`state/quals-write.ts`) deletes `sanBy`; only the posting pass sets it; a
+  take-back clears SANS only while `sanBy === 'po'`. The same for `offBy` (Enable by hand deletes it) and #444's
+  `archivedBy` (Restore deletes it). Tests: automatic → hand off → hand on → outcome changed: the hand value stays.
+- **Back from overseas (A2, Fable Q1):** D284 names both acts — **Restore AND Enable each arm the back prompt** for that
+  man (one handler, `markBack(pid)`, once per man per session). Restore also enables an account the Post out suspended
+  (`offBy === 'po'`). Enable alone does NOT put him back on the roster (**asked**, question 4) — while he is still archived
+  the prompt's "Check his quals" opens Quals' Archived list with his row outlined (Restore is there). Undo post out IS
+  #444's Restore, so it is a door to the prompt too.
+- **A delete door for a man the war does not show (F7):** a roster-only SANS man with Show SANS off has no war row and no
+  account. The door today: turn Show SANS on, then his post-out sheet. A "Delete" on Quals' Archived rows would change the
+  approved mock-up (**asked**, question 2) — not built without his yes.
+
+### §9 — the callsign rule (Astra A3, Fable F11)
+- **D286 (2) literally:** a typed callsign finds the roster man, **never** an archived one. So `ID_BY_CS` /
+  `indexCallsigns()` hold ONLY people on the roster and the placeholders; an archived-only callsign resolves to nobody;
+  `nameToId` and `whoId` never return an archived man for a typed string (a stored ID still resolves to its own man —
+  unchanged). **`archivedHolders(cs)`** (new, many results) serves the approve note and Restore / Rename. *Changed from the
+  draft, which let an archived man be found when no roster man held the callsign — Fable read it as a reading, Astra as a
+  contradiction; the literal reading wins.* A legacy callsign STRING in a stored `who` (only in demo data written before
+  14 Sep 26 — D56) resolves to nobody until an active man takes that callsign.
+- **`callsignProblem(cs, exceptId?)`** refuses a blank ("Type the callsign or name") and over 14 letters (`CS_TOO_LONG`,
+  D226) FIRST, then a callsign an active or placeholder person holds, then one equal to any person's id (deleted
+  included). The Rename box and "Restore as" take no `maxLength` and show the reason; the "<cs> N" suggestion is shortened
+  to fit 14. Tests: two archived men and one new active man sharing a callsign across add, approve, rename, restore,
+  search and the ground / programme rows.
+
+### §10 — the member view (Astra A6, Fable F12, F13)
+- **A guarded switch (A6):** `switchEffectiveRole(next)` in `state/auth.ts` accepts only `'admin'` / `'main'`, and only
+  when the session's ACCOUNT role (`SESSION.acct`, set at sign-in, never changed by the switch) is admin; it never changes
+  the person or the account. The probe bridge's raw `setEffectiveRole` stays localhost-only (its comment corrected — F13).
+  Tests: a member, a guest, a pending person, a suspended account and a hand-made call cannot gain admin.
+- The drawer's account line reads "· Member" in the member view (`isAdmin()` follows).
+- **Undo's words (F12, Part B, `undo/timeline.ts` — a #444 file):** an entry he made as admin, refused in the member view,
+  reads "Switch back to the admin view to undo that."
+
+### §12 — permissions (Astra A6)
+- **The posting's own commands** (Part B): `lw.postout`, `lw.postin`, `lw.postoutUndo` → `LeavePersonProfile` U (with the
+  people / account tables each outcome writes in `more`) — no longer the generic `lw.edit` (`LeaveBid` U).
+- `person.delete` adds `LeavePersonProfile` U; `person.restoreAs` is `own: 'never'` (a member's `Person U own` must not
+  reach it — Fable Q6). Every command's `more` lists exactly the tables its final code writes; `perms.test.ts` holds it.
+
+### §13 — the overlap with #444, corrected (Fable F5, Astra A8)
+Part A is NOT free of #444's files, as the draft said. **The table:**
+
+| File (#444 changes it) | This build | When |
+|---|---|---|
+| `ui/inputedit.tsx` | `archivedOptions` `!deleted` | Part B |
+| `ui/InputsPage.tsx` | `ArchivedGroup` (reads `archivedOptions`) | Part B |
+| `undo/timeline.ts` | the member-view Undo words | Part B |
+| `state/undo-wire.ts` | the delete's `restoreRefusal` | Part B |
+| `leavewar/sync.ts`, `state/store.ts`, `ui/BidPicker.tsx`, `ui/SelectSheet.tsx`, `ui/Matrix.tsx` | the posting side | Part B |
+| `ui/scheduler.css` | nothing — the badge button reuses `.rolechip.tgl` (already there); new styles go in a NEW `src/ui/postout.css` | A, B |
+| `engine/schema.ts` | the person's new optional fields | Part B (beside #444's `archivedBy`) |
+| `HANDOFF.md`, `OUTSTANDING.md`, `rulecheck.mjs`, the docs | each chat edits only its own block / items; a merge reconciles | — |
+
+Before editing any of them after taking #444 in, the #444 chat is told (D302). After the integration, `postOut`,
+`undoPostOut`, `restoreArchivedPerson`, `runPoArchive`, `reprojectRoster` and `setPeople` are re-read and re-tested as
+ONE unit, and the full posting / absence / undo / input / permission / Leave War checks run.
+
+### The roll-call gains (Fable Q9, Astra Q9)
+The search box (`#searchB`) never finds a deleted man; the CSV export and the print of a past day that holds him (kept);
+the guest view on a past published day (kept) and on a day to come (without him); the day ⓘ's "free all day" on an issued
+face (kept); the ALL AVAIL window on an issued face (his puck, kept) and on the working copy (gone); Undo post out as a
+door to the back prompt; the drawer's "· Member"; the Leave War's manning after his date (zero); Restore-as in the toast;
+the Tracker's "+ Add" roster (he is not offered); a reload between EVERY step of a delete; a hand-made call on each posting
+writer; the first visit to an unstashed week after a delete; a boot with no current-week stash; a sign box and its
+binding; a parked plan; remove-before-delete then Undo; add → Undo → delete → Redo; a preserved or unreadable future stash
+(the whole delete refused, nothing changed); two archived holders of one callsign; a hand SANS change after the outcome;
+the SANS outcome through the real posting route with Show SANS toggled; a direct role-escalation call; Enable vs Restore
+arming the prompt; the #444 integration and a reload.
+
+### The Tracker — an approved item NOT built (Astra A2, Fable Q1)
+D299 lists "his place on a course still running — goes". The Tracker has no "still running"; the build cannot decide what
+it means without him. **Said as it is: the item is approved and NOT done** — on the look card as a question (question 5);
+nothing here claims it. His answer is built as a follow-up (`[POST-OUT-TRACKER]`), or D299 is narrowed in his words if he
+defers it.
+
+### For him — the questions (each built to the stated default until he answers)
+1. **A posting with no choice:** tapping the chosen chip again leaves "off the manpower, nothing else" (today's switch-off
+   case; the only way to record a transfer until Transfer is built). *Default built: yes.*
+2. **A Delete button on Quals' Archived rows** (the one sure door for a man with no account whom the war does not show —
+   archive him, then delete him there)? It changes the approved mock-up. *Default: not built; the door is Show SANS on →
+   his post-out sheet.*
+3. **Which "today" a delete counts from:** the app's own today (13 Jul 26 in the demo — deleting Vector now takes him off
+   13 and 20 Jul, which the app shows as today and to come) or the calendar date (27 Sep 26 — he would stay on every demo
+   day)? *Default built: the app's today.*
+4. **Enable alone:** pressing Enable on a suspended account whose man is still archived from an overseas posting — only let
+   him sign in (with the "he's back" prompt), or also put him back on the roster? *Default built: sign in + the prompt;
+   Restore puts him back.*
+5. **The Tracker:** what makes a course "still running", so a deleted man comes off it — or leave his name on his courses
+   for now? *Default: left, unlinked; not done.*
+6. **SANS on the date:** his whole Leave War row moves into the SANS group on the date (the approved picture) — earlier
+   months included. Fine, or should the months before stay in his old group? *Default built: the whole row, as approved.*
+7. **Overseas and the past:** archiving a man for an overseas posting makes his published days BEFORE the posting date read
+   "1 pending" (his posting on the puck, and the crowd behind any ALL AVAIL puck he was in) — today's behaviour. Keep, or
+   stop it as a delete now does? *Default: kept (unchanged).*

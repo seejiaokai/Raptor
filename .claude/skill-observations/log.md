@@ -659,3 +659,18 @@ resolved statuses always carry their resolution date
 **Suggested improvement:** In the mock-up workflow: before any republish, list the page's published files and compare each with the local copy (size is enough to flag a difference); pass every file that differs, whoever changed it. After a redraw, `git status` on the picture folder is the other half: it names exactly which pictures the redraw changed, so nothing unchanged is re-uploaded and nothing changed is missed.
 
 **Principle:** When a published copy and a working copy can drift across sessions, a republish is a sync of the whole set against what is live, not an upload of what this session touched.
+
+### Observation 284: Diff the other open branches before planning — an overlap decides the build order
+
+**Status:** OPEN
+**Date:** 2026-09-27
+**Session context:** Planning [POST-OUT-OUTCOMES] while two other chats had open PRs on the same repo.
+**Skill:** writing-plans (and the claudex-loop planning step)
+**Type:** open-source
+**Phase/Area:** before the plan is written — scoping the files a feature will touch
+
+**Issue:** The feature had to extend the posting-out code. A quick `git diff --name-only $(git merge-base origin/main <branch>) <branch>` over the other two open branches showed one of them had already reworked exactly that code (a single route for every posting door, a new "made by the post out" mark, undo taking back only its own archive). Planning against main's version would have produced a large merge conflict and, worse, two changes that each work but disagree. Knowing it at plan time let the plan split the build (the parts in no other branch's files first; the overlapping part on the other branch's code) and let the chats agree who touches what before any code was written.
+
+**Suggested improvement:** In writing-plans: a step before the design — list the other open branches (open PRs, worktrees), diff their changed files against the files the plan will touch, and for each overlap write in the plan which version the build sits on and in what order; tell the other chat (or its owner) what you will and will not change there.
+
+**Principle:** Parallel work fails at the merge, but the collision is visible at the plan: compare the files every open branch changes before deciding what to build first, and settle overlaps between the workers before either writes code.
