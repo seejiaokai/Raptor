@@ -291,9 +291,13 @@ filed) and writes no Edit history row.
   the bell.
 - `raptor-port/CLAUDE.md` §Architecture rules, the person-identity paragraph ("`addPerson` refuses a callsign…") → names
   `state/roster-add.ts newPersonProblem`, the one add.
-- `docs/ui-contracts.md` — the three Quals "Add person" passages (~3795, ~3896, ~3939) MOVED WHOLE to
-  `docs/archive/` by `scripts/backlog-archive.mjs --move` with a one-line pointer (D138), then the button's contract
-  written; §The access screens (the four fields, the waiting line); Admin → Users (New person, approve with New person, the
+- `docs/ui-contracts.md` — the three Quals "Add person" passages (~3795, ~3896, ~3939): **as built, NOT moved** — the
+  first two KEPT WORD FOR WORD IN PLACE inside a "*(Was … — replaced by D217: …)*" pointer that names the ruling, the
+  third (a one-sentence "stays admin") corrected in place to name the new door, its meaning unchanged (D138 holds either
+  way: the old words are unchanged, or the correction keeps the meaning). *Corrected 26 Sep 26 after Fable's code read
+  #3: this line first said the passages would be "MOVED WHOLE to `docs/archive/` by `scripts/backlog-archive.mjs
+  --move`"; ui-contracts is read when the job needs it, not by every chat, so keeping them in place is what the
+  build did.* Then the button's contract written; §The access screens (the four fields, the waiting line); Admin → Users (New person, approve with New person, the
   opening intent); the bell's access trigger, its order and "seen".
 - `docs/feature-impact.md` — the "Leave War tab" row's "a Quals-page add" and the Tracker row's bridge sentence → the one
   door; a flow "a new person" (the one door → PEOPLE → every projection).
@@ -417,7 +421,7 @@ Archived → Restore → back → On the roster).
 
 **Fable (APPROVE WITH CHANGES):** F1 `shown` defined, both widths tested → §4. F2 one consumer with a nonce, works when
 already mounted → §5.3a. F3 `CmdRefused` + the message kept → §2, §3. F4 placeholder vs archived wording → §2 item 3.
-F5 `.login select` + e2e → §5.1, build 6. F6 the missed documents and scripts → §8. F7 moved whole → §8 (ui-contracts).
+F5 `.login select` + e2e → §5.1, build 6. F6 the missed documents and scripts → §8. F7 kept whole → §8 (ui-contracts: kept in place with the ruling named, not moved — see §8's correction).
 F8 the words split → §5.7, look card 6. F9 initials — put to him: **D225, required on neither** → §2, §5. F10 the silent
 cut — put to him: **D226, keep 14 and say so** → §2, §5. F11 `perms.test.ts` reads `more` → §3. F12 headless / bridge →
 §4 (`currentAdminAccountId`). F13 roll-call rows and doors → roll-call 2–4, 13, 15–16, 22–23, 27; door check; §5.2 form
