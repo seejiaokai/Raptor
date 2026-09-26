@@ -20,7 +20,8 @@ it: `.claude/rules/record-decisions.md`; closing reports carry a `Rulings:` line
    ruling that spans areas goes in the one it mostly governs; the other area's "Also read" line names it.
 2. **If it wholly REPLACES an earlier ruling**, start that earlier row's ruling cell with
    `**REPLACED BY D<n> (<date>).**`; **a one-off permission, once used**, with `**SPENT <date> — <what used it>.**`
-   A ruling changed only IN PART stays live and says so in its own words.
+   A ruling changed only IN PART stays live and says so in its own words. **Either way, fix what the old ruling left
+   behind in the same change — the documents, the app (file the build), the lists (D201; `record-decisions.md`).**
 3. **Run `node raptor-port/scripts/backlog-archive.mjs --rulings`** — it moves every marked row to the archive
    and rewrites the map from the files. The gate (`npm run docsize`, and the check at the end of every turn)
    fails until the map matches the files, while a marked row is still in an area file, and if a row is
@@ -32,7 +33,7 @@ clashes, the later branch renumbers ITS OWN rows — never the ones already on `
 may SKIP (a parallel branch can hold a range); a number is never reused and never lost. The next
 number is one above the highest of `main`'s own run below D150 (the map shows it), skipping any range a
 parallel chat holds (D90–D119 is the amendment chat's; D150–D156 are used). **Since 24 Sep 26 main's run below D150
-is full (D135–D149), so it continues from D157**, skipping D170+ (the demo chat's range, D154). **D190–D199 is the
+is full (D135–D149), so it continues from D157**, skipping D170+ (the demo chat's range, D154). **D200–D209 is the late-published chat's follow-on range** (`claude/rulings-supersede-sweep`, 26 Sep 26). **D190–D199 is the
 Tracker smoke chat's range** (`claude/trk-smoke-add-race-bug-007eed`, D190, 25 Sep 26); **D176–D189 is the D175 chat's**
 (`claude/request-one-row`, his instruction of 25 Sep 26). **D180–D189 pass to the overnight chat** (`claude/leave-late-published`, 25 Sep 26 — the D175 chat merged having used D176–D179).
 
@@ -47,7 +48,7 @@ ruling, or an explicit no. **Not** ordinary task instructions ("run the tests", 
 
 | Area | File | Loads by itself | Rulings, newest first |
 |---|---|---|---|
-| How we work | `.claude/rules/decisions/how-we-work.md` | in EVERY session | D182, D180, D173, D166, D165, D106, D90, D162, D148, D147, D145, D144, D143, D141, D140, D138, D137, D136, D135, D151, D89, D87, D86, D85, D84, D78, D73, D72, D70, D69, D68, D67, D63, D62, D60, D59, D58, D57, D56, D54, D53, D30, D29, D23, D22, D17, D16, D14, D13, D12, D11, D10, D9, D8, D7, D6, D5, D4 |
+| How we work | `.claude/rules/decisions/how-we-work.md` | in EVERY session | D201, D200, D182, D180, D173, D166, D165, D106, D90, D162, D148, D147, D145, D144, D143, D141, D140, D138, D137, D136, D135, D151, D89, D87, D86, D85, D84, D78, D73, D72, D70, D69, D68, D67, D63, D62, D60, D59, D58, D57, D56, D54, D53, D30, D29, D23, D22, D17, D16, D14, D13, D12, D11, D10, D9, D8, D7, D6, D5, D4 |
 | Tracker | `.claude/rules/decisions/tracker.md` | when a Tracker file is read (its code, docs, scripts, evidence) | D191, D190, D158, D157, D134, D132, D131, D130, D129, D128, D127, D126, D124, D123, D122, D121, D120, D64 |
 | Leave War | `.claude/rules/decisions/leave-war.md` | when a Leave War file is read (its code, docs, e2e, evidence) | D160, D159 |
 | Scheduler & amendments | `.claude/rules/decisions/scheduler.md` | when a scheduler, board, engine, amendment or storage file is read | D189, D188, D187, D186, D185, D184, D183, D179, D178, D177, D176, D175, D174, D172, D171, D170, D169, D168, D167, D119, D118, D117, D116, D114, D113, D111, D110, D109, D108, D107, D105, D104, D103, D102, D101, D100, D99, D98, D97, D96, D95, D94, D93, D92, D91, D164, D161, D149, D77, D66, D65, D51, D50, D47, D45, D44, D41, D40, D39, D38, D37, D36, D33, D27 |

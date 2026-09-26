@@ -919,7 +919,7 @@ section folds are next touched. (Its first half — the wave show/hide toggle le
 
 ### [QUALS-MEMBER-SCOPE] May a member edit ANY row on the Quals page? — a question for him (moved from HANDOFF.md, 24 Sep 26)
 
-**ANSWERED (D149, 24 Sep 26) — now a small build:** a member edits his OWN row only, and every column of it (SXO and
+**FOLDED INTO `[ACCOUNTS]` 26 Sep 26 (D200) — built there.** **ANSWERED (D149, 24 Sep 26) — now a small build:** a member edits his OWN row only, and every column of it (SXO and
 SCHEDULER included); an admin edits any row. The gate goes at the page and the write path, with a test per column;
 permissions, so FULL tier. **Place:** any time, none blocking. The question as it was put:
   - **Member Quals-editing scope** — a member in Quals editing mode can tick/edit
@@ -1114,6 +1114,14 @@ the fixed `ad` / `us` logins and merges Admin's "Manage users" list. The real ad
 step (D165). Permissions → FULL tier. **Place (the agent's recommendation, not yet his word):** after this round's
 smaller inputs in `[LOOK-435]` and BEFORE the hand over (D118), which then shows real callsigns and "since YOU last
 looked" from the start. **SETTLED by D173:** step 2 of the order, on a NEW branch, after PR #435 merges.
+**WIDENED 26 Sep 26 — D200 ("yes"; "so all these 3 things to be done inside the accounts work"): it carries the
+permissions work.** (1) D149 built here (`[QUALS-MEMBER-SCOPE]` folds in). (2) `raptor-port/docs/data-model.md` §11 — the
+list IT builds the database's security from — matches every ruling: a member's own Person row, every column (D149; the
+table still says members only READ `Person`); the change history readable by members (D169; the table gives members no
+`EditLog` access), a medical input's details excepted; accounts tied to callsigns (D166); OIL awards written by admins only,
+who gave each and when kept (D79, D82). (3) One place in the app answers "may this person do this?", mirroring §11, with a
+test that fails when the two disagree. Found 26 Sep 26: §11 already covers Leave War bids (own row while open) and the
+leave / OIL ledger (admin writes, a member reads his own) — check, do not re-add.
 
 ### [LOOK-435] His inputs from the look at PR #435 — the order is D173 (25 Sep 26)
 **Step 1 DONE 25 Sep 26:** D114's FULL check — evidence `raptor-port/docs/handpass/2026-09-25-amendment-batch.md` §9; two
