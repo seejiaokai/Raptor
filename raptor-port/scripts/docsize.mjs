@@ -107,8 +107,9 @@ const FILES = [
      (D141): crossing it asks "is a finished item still sitting here?", never "cut to a number". 1150 -> 1260,
      26 Sep 26: two days of filing from the amendment, accounts and late-published work crossed it; the answer to
      "what is finished here?" needs a reading of each item, so it is its own docs pass, filed as [BACKLOG-TIDY] —
-     not a trim squeezed into a rulings change (D29). */
-  ['OUTSTANDING.md',                     1, 1260],
+     not a trim squeezed into a rulings change (D29). 1260 -> 1290 the same day: D203 filed [DB-READINESS] and
+     [IT-QUESTIONS]; the tidy stays [BACKLOG-TIDY]'s. */
+  ['OUTSTANDING.md',                     1, 1290],
   /* THE RULINGS (owner, D136 + D137, 24 Sep 26). They are MEANT to grow, so each ceiling is its target,
      and a rulings file is NEVER trimmed to fit: at a ceiling, archive what is replaced or spent
      (DECISIONS.md, step 2) and then RAISE the ceiling here, with the reason. DECISIONS.md is now only

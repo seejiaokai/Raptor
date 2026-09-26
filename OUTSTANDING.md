@@ -48,21 +48,23 @@ said as such, never dressed up as his. One line per item, in plain words; the de
 list (13–23 Sep 26), its finished entries and the "In plain terms" block are in `OUTSTANDING-ARCHIVE.md`, moved
 whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaining).
 
-**His order:**
-1. **[HUMAN-RETEST]** — the amendment system MERGED 25 Sep 26 (PR #434); its decided batch is BUILT (overnight, D112)
-   on `claude/amendment-batch`, its pull request waiting for his look and "merge live"; next, in HIS order (D147, 24 Sep 26): the absence record TOGETHER with [S4-HUNT-REST], then change-recording,
-   then the Leave War links LAST (with the 7 Sep phone check).
-   *(24 Sep 26: the change-recording re-test also carries [UNDO-ROSTER-SETTINGS] and D148 — both the one undo's.)*
-2. **[S4-HUNT-REST]** — the bug hunt's untouched ground, in his own 1–7 order, walked WITH the absence-record re-test
-   (D147: its ground IS the absence record).
-3. **[BACKLOG-ORDER]** — "after the hunt" (21 Sep 26): [PUB-UNAVAIL] → [LW-LOCKMARK] → [LW-WEEKDAY-WORK] (talk to
-   him before building any of it) → then (D147) [OIL-AWARD-IS-A-GRANT] with [OIL-EARNED-VS-GRANTED], and the small OIL
-   follow-ups below as ONE batch → [DB-STEP], then the [AMEND] work queued behind it. The architecture comes first,
-   then the individual bugs (D144): the stack ([ARCH-STACK]) resumes at [DB-STEP], with its step 6 still to come.
-4. **Before ANY collaborator is added** — an event, not a slot: take the checks runner off this repo (SEC-101, in
-   [REPO-PRIVATE]).
+**His order — to the database step, about two months away (D203, 26 Sep 26; D173, D147 within it):**
+1. **Now — [ACCOUNTS]** (D165, D166, D200, D202; its open question: how a new user joins), then **[DRAFT-PENDING]** — the
+   one changes window, on top of accounts — then one FULL check of both and "merge live" (D173).
+2. **Now, beside the building — [IT-QUESTIONS]:** talk to the IT side (his, not code); their approvals take weeks.
+3. **Development as normal — [HUMAN-RETEST]**'s remaining three, in HIS order (D147): the absence record TOGETHER with
+   **[S4-HUNT-REST]** (its ground IS the absence record), then change-recording (with [UNDO-ROSTER-SETTINGS] and D148),
+   then the Leave War links LAST (with the 7 Sep phone check). Then "after the hunt" (21 Sep 26): [PUB-UNAVAIL] →
+   [LW-LOCKMARK] → [LW-WEEKDAY-WORK] (talk to him before building any of it).
+4. **About a month before the database (D203) — ONE batch, done last so it is done once:** **[DB-READINESS]**, with
+   [OIL-AWARD-IS-A-GRANT] and [OIL-EARNED-VS-GRANTED] (D147) and the small OIL follow-ups below.
+5. **When Manfred is ready — [DB-STEP]:** the data model to him, then the one adapter to his tables; the stack
+   ([ARCH-STACK]) resumes there, with its step 6 still to come; the [AMEND] work is queued behind it. Architecture first,
+   then the individual bugs (D144).
+6. **Before ANY collaborator is added** — an event, not a slot: take the checks runner off this repo (SEC-101, in
+   [REPO-PRIVATE]); and make the repo private again once the public period (D106) ends — his.
 
-**The small OIL follow-ups — ONE batch, after the OIL award fix and before the database (D147):** [OIL-READ-LEFTOVERS] (its items 1, 2, 4),
+**The small OIL follow-ups — ONE batch, with the OIL award fix, about a month before the database (D147, D203):** [OIL-READ-LEFTOVERS] (its items 1, 2, 4),
 [STORE-READER-SWEEP], [OIL-REQ-NAMEBOX] (a walk question for him), [OIL-WORDS],
 [OIL-PERSONAL-PLACEHOLDER] (FULL tier), [CROWD-SIM-BRIEF] (WALK tier), [OIL-RELINK-XWEEK].
 
@@ -70,10 +72,9 @@ whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaini
 first), [LW-FIGSEL-SLOW] and [LW-SCRUBBER-FLAKY] (test-only); the Inputs calendar — [INPUTSCAL-TAP-FLAKY] (test-only). The Tracker — [TRK-RETEST-NOTES] and
 [TRK-EDIT-SIDEWAYS] (their gates have passed), [TRK-PINCH-ASK] (his next Tracker session), [TRK-DLG-LEFTOVERS] (low, with the next question-box change), [TRK-PALETTE-ASK] (his answer D157: Raptor's colours
 fully — a small build), [TRK-BAKE-STALE] (low). The Leave War — [LW-RESET-ORDER] (his yes, D160 — a small build).
-The amendment batch's look — HIS ORDER (D173): (1) [LOOK-435] — D114's full check (DONE 25 Sep 26, evidence §9; [REQUEST-OFF-ONE] archived), his look, "merge live" of PR #435 (MERGED 25 Sep 26); (2) [ACCOUNTS] on a new branch; (3) [DRAFT-PENDING] — the one changes window, on top of accounts; (4) one full check of 2 and 3. Found by D114's reads, older than it: [REQ-TWO-ROWS] and [REQ-DECLINED-PENDING] — HIS ORDER (D174, D175) — BUILT on `claude/request-one-row` (FULL check done, archived; his look and "merge live" next, BEFORE [ACCOUNTS]); its look card's two questions answered: [REQ-DECLINED-DELETED] (D176 — built there, archived) and [LEAVE-LATE-PUBLISHED] (D177–D189 — MERGED 26 Sep 26 on his "merge live", archived); then [REQ-ORPHAN-ROW] and [REQ-DOOR-WORDS] (both low). The board — [PUCK-FLAG-GLOW] (D164: a flagged puck does not glow — a small build), [CROWD-SWAP-SAYS-BUSY] (small; found by the batch's re-walk). The amendment batch (D91–D111) is BUILT on `claude/amendment-batch`, its pull request waiting for his look and "merge live" — its eleven items closed and archived 25 Sep 26 (`OUTSTANDING-ARCHIVE.md`; the spec `raptor-port/docs/superpowers/specs/2026-09-25-amendment-batch.md`); left from that area: [AVAILWIN-PREVIEW-BAR] (low), [AMEND-SMALL-SEEN] (any time). The docs and the checks — [DEPLOY-DOCS] (its operational half), [DOC-POINTERS-CODE] and
+The amendment area — PR #434, #435, #437 and #438 MERGED (25–26 Sep 26); [LOOK-435]'s steps 2–4 are items 1 above; left: [REQ-ORPHAN-ROW] and [REQ-DOOR-WORDS] (both low). The board — [PUCK-FLAG-GLOW] (D164: a flagged puck does not glow — a small build), [CROWD-SWAP-SAYS-BUSY] (small; found by the batch's re-walk). Left from the amendment batch (D91–D111, merged): [AVAILWIN-PREVIEW-BAR] (low), [AMEND-SMALL-SEEN] (any time). The docs and the checks — [DEPLOY-DOCS] (its operational half), [DOC-POINTERS-CODE] and
 [RULINGS-LF-PIN] (with the next code change), [DOC-SUBHEADS], [RULING-HOMES-AUDIT], [HANDOFF-SHAPE-GUARD] and [BACKLOG-TIDY] (any time, docs only), [PEEK-ISSUED] (a question for him, low),
-[BG-CWD-GUARD] (his go, D162 — any time). Roles — [QUALS-MEMBER-SCOPE] (his answer D149: own row only; a small
-FULL-tier build, any time), and beside it [QUALS-PROTO-TOAST] (low, one line of words). View-only Sched — [VIEW-ARROW-OVER-LIST] (low, LOOK tier).
+[BG-CWD-GUARD] (his go, D162 — any time). Roles — [QUALS-MEMBER-SCOPE] (folded into [ACCOUNTS], D200), and beside it [QUALS-PROTO-TOAST] (low, one line of words). View-only Sched — [VIEW-ARROW-OVER-LIST] (low, LOOK tier).
 Insights — [INSIGHTS-WORKING-COPY] (a question for him, with the one changes window or any time).
 
 **Waiting on him — no order exists:** [OIL-EARNED-VS-GRANTED] (his figure — ask first, when the award fix reaches it;
@@ -83,7 +84,7 @@ ruled), [CRP-FLAG]'s remainder and then [FLAG-EXPORT], the [AMEND] leftovers, [A
 D161), with [USER-GUIDE] (wanted, not urgent) and [PERF-RESIDUALS] (two of them change wording
 or feel — his call).
 
-**Future milestones:** [DB-STEP] (with [TRK-DISK] inside it), [XFER], [RECALL], [TRK-ATTEMPTS] (low urgency).
+**Future milestones:** [DB-STEP] (item 5 above, with [TRK-DISK] inside it), [XFER], [RECALL], [TRK-ATTEMPTS] (low urgency).
 
 **Kept live as a warning, nothing to build:** [OIL-AUTO-REMOVE] — it warns a later session off re-doing the four
 walk defects and off assuming he looked at the walked Saturday (his look was waived).
@@ -494,7 +495,8 @@ already touches those files; the definition now heads the OIL behaviour register
 **Raised by the [OIL-AWARD-ADD] design review as the real architectural root cause. NOT built, and
 deliberately not bundled — it moves persisted balances again and touches ~28 test files, so it is
 its own escalated session. It needs the owner's go before anything is written.** **GO GIVEN (D147, 24 Sep 26):**
-after his after-the-hunt items and BEFORE [DB-STEP], so the database stores one kind of award; [OIL-EARNED-VS-GRANTED]
+after his after-the-hunt items and BEFORE [DB-STEP], so the database stores one kind of award — **timed by D203 (26 Sep 26):
+with the `[DB-READINESS]` batch, about a month before the database**; [OIL-EARNED-VS-GRANTED]
 folds in (its label is still his figure — ask him when it comes); then the small OIL follow-ups as one batch.
 
 After his two rulings an award now: flags nothing, stands nobody down from flying, counts nobody on
@@ -928,6 +930,24 @@ permissions, so FULL tier. **Place:** any time, none blocking. The question as i
     rule; if own-row-only quals is wanted, the gate belongs in the same three
     places the authority-sweep fix touched.
 
+### [DB-READINESS] Our side of the database, built against the fake database — about a month before it (D203, filed 26 Sep 26)
+The requirements are `raptor-port/docs/data-model.md` §7 (from the 9 Sep 26 stress test; pinned as GAP tests in
+`raptor-port/src/storage/dbreadiness.test.ts`). Ours to build now-able, none needing Manfred's tables: (1) **saving in small
+pieces** — `inputs/all`, `people/all` and `leavewar/wars` are one record each, so two people editing different leaves
+overwrite each other; one record per leave / person / war row; (2) **honest refusals** — a save the store refuses (signed
+out, not allowed, someone changed it first) says so and stops, instead of retrying for ever (the top bar's "Not saved —
+Retry" is for network failures); his look at the words first; (3) **a safe start-up** — a slow or half load says so, never a
+blank app, never re-seeds demo data; (4) **never seed demo data into a shared store**; (5) a stuck record never marks the whole
+app unsaved. With `[OIL-AWARD-IS-A-GRANT]` and the small OIL follow-ups as ONE batch. **Tier:** FULL (saved data).
+
+### [IT-QUESTIONS] Talk to the IT side now — their approvals take weeks (his, not code; D203, filed 26 Sep 26)
+The checklist is the primer's §7 (Artifact "Raptor Backend Primer"; its questions, kept here so they outlive it): code apps
+switched on in our environment? a separate development environment? Dataverse available, Manfred owning the tables? a
+developer ("maker") seat in dev? how people get in (a security group, security roles)? which connectors are allowed?
+how work moves from dev to production, and who presses it? auditing and backups on, and how to restore? where settings and
+secrets live? can server-side rules be plug-ins, and who may deploy them? **and: can our squadron admin set a person's role
+from inside the app, or must IT assign it?** (decides whether "make Hex an admin" is one tap or an IT request).
+
 ### [BACKLOG-TIDY] This file crossed its size tripwire — read each item, archive what is finished (filed 26 Sep 26)
 `OUTSTANDING.md` reached 1,242 lines against the 1,150 tripwire (D141: the question is "is a finished item still sitting
 here?", never "cut to a number"); the tripwire was raised to 1,260 so the rulings change D200/D201 did not trim under
@@ -1127,7 +1147,11 @@ list IT builds the database's security from — matches every ruling: a member's
 table still says members only READ `Person`); the change history readable by members (D169; the table gives members no
 `EditLog` access), a medical input's details excepted; accounts tied to callsigns (D166); OIL awards written by admins only,
 who gave each and when kept (D79, D82). (3) One place in the app answers "may this person do this?", mirroring §11, with a
-test that fails when the two disagree. Found 26 Sep 26: §11 already covers Leave War bids (own row while open) and the
+test that fails when the two disagree. **HIS QUESTION (26 Sep 26), to answer before the plan:** how a new user joins —
+(a) the admin adds the defence mail, callsign and role first, so the first sign-in has its access at once (D165's plan);
+(b) a new user signs up (callsign, name) and the admin is notified, approves and sets member or admin; either way the
+admin can change it later. Also noted: an untagged signed-in person sees the programme as a GUEST (his parked plan of
+1 Sep 26, `raptor-port/docs/architecture-direction.md`). Found 26 Sep 26: §11 already covers Leave War bids (own row while open) and the
 leave / OIL ledger (admin writes, a member reads his own) — check, do not re-add.
 
 ### [LOOK-435] His inputs from the look at PR #435 — the order is D173 (25 Sep 26)
