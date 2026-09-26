@@ -19,16 +19,22 @@
    loses Raptor's 120px bottom pad, so the viewport-tall .tr-root column is
    the whole page. Toggled by TrackerPage.tsx; the same shape as body.sb-lock. */
 body.tr-on{padding-bottom:0;overflow:hidden}
-#detailBubble{position:fixed;z-index:66;display:none;max-width:260px;background:var(--panel);border:1px solid var(--accent);border-radius:9px;padding:9px 11px;font-size:12.5px;line-height:1.5;color:var(--ink);box-shadow:0 8px 26px rgba(0,0,0,.6);pointer-events:none}
-#detailBubble .dbId{font-weight:700;font-size:12px;letter-spacing:.4px;color:var(--accent);margin-bottom:3px}
+#detailBubble{position:fixed;z-index:66;display:none;max-width:260px;background:var(--panel,#14181D);border:1px solid var(--accent,#3BC6E8);border-radius:9px;padding:9px 11px;font-size:12.5px;line-height:1.5;color:var(--ink,#F1F4F7);box-shadow:0 8px 26px rgba(0,0,0,.6);pointer-events:none}
+#detailBubble .dbId{font-weight:700;font-size:12px;letter-spacing:.4px;color:var(--accent,#3BC6E8);margin-bottom:3px}
 /* The student's own record inside the bubble, under the event's details. It sat
    INSIDE the #page-tracker wrapper below, which made it "#page-tracker
    #detailBubble .mkrec" — a bubble hung off <body> never matched it, so the record
    had no divider and no room above it (found by the D157 walk, 26 Sep 26). Out
-   here with the bubble's other rules, and in Raptor's own --edge: like --panel /
-   --accent / --ink above, it must be a name Raptor's :root sets, since the
-   Tracker's own names (--line …) are set on the wrapper only. */
-#detailBubble .mkrec{margin-top:5px;padding-top:5px;border-top:1px dashed var(--edge)}
+   here with the bubble's other rules, in Raptor's own names: the Tracker's names
+   (--line …) are set on the wrapper only, which the bubble is not inside. Every
+   colour here also carries Raptor's VALUE as its fallback, so a Tracker lifted out
+   of Raptor (the standalone rule, 9 Sep 26) — no scheduler.css, no :root — still
+   draws the bubble in the same colours (Fable F-C, Astra #1; trk-palette.test.ts
+   pins each fallback to Raptor's token). Every class the bubble's content uses has
+   its rule HERE — .mini ("No details yet …") sat inside the wrapper too and never
+   reached it (Fable F-B). */
+#detailBubble .mkrec{margin-top:5px;padding-top:5px;border-top:1px dashed var(--edge,#2A313A)}
+#detailBubble .mini{font-size:11px;color:var(--ink-3,#8A96A3)}
 
 #page-tracker {
 /* RAPTOR COLLISION RESETS — first inside the wrapper so every Tracker rule
@@ -68,6 +74,7 @@ body.tr-on{padding-bottom:0;overflow:hidden}
  --dco:#000;--dpco:#1f6dff;--marg:#57C97A;--na:#cdbb8e;--fail:#F0555F; /* marg --ok, fail --hard; the other three are the Tracker's own */
  --orange:#E5A83B;--red:#F0555F;--grey:#5a6172; /* --adv --hard; grey is the Tracker's own */
  --red-ink:#FBB4B9;--red-wash:rgba(240,85,95,.12);--red-edge:rgba(240,85,95,.55); /* Raptor's text and tints on --hard */
+ color-scheme:dark; /* Raptor sets it on <html>; here too, so the date boxes and dropdowns stay dark standalone (Astra #1) */
 }
 *{box-sizing:border-box}
 /* Column flex so the board absorbs whatever the header and the edit strip
@@ -123,6 +130,9 @@ header h1{font-size:16px;margin:0;letter-spacing:.5px}
    moment Save appeared. It only takes room while it has something to say. */
 .findstat{font-size:11px;color:var(--muted);white-space:nowrap}
 select,button,input{background:var(--panel2);color:var(--ink);border:1px solid var(--line);border-radius:7px;padding:6px 9px;font-size:12.5px}
+/* A ticked box in Raptor's accent, the way Raptor's own are (.lgtog, .ifield.chk) — the
+   Export window and Copy lull periods drew the browser's own blue (Astra #2, D157). */
+input[type=checkbox]{accent-color:var(--accent)}
 button{cursor:pointer}button:hover{border-color:var(--accent)}
 button.primary{background:var(--on);border-color:var(--accent)}
 button.sm{padding:3px 7px;font-size:11px}
@@ -377,7 +387,7 @@ svg.perf .edgehit{pointer-events:none}
 .cal .dow{font-size:9px;color:var(--muted);text-align:center;padding:2px}
 .cal .day{aspect-ratio:1;display:flex;align-items:center;justify-content:center;border-radius:6px;font-size:11px;cursor:pointer;border:1px solid transparent}
 .cal .day:hover{border-color:var(--accent)}.cal .day.out{color:#475}.cal .today{outline:2px solid var(--accent)}
-.cal .lull{background:#3a3030;color:#ffb3a0}.cal .end{background:var(--on)}.cal .ls{background:#2a3550}.cal .lc{background:#203a2a}
+.cal .lull{background:var(--red-wash);color:var(--red-ink)}.cal .end{background:var(--on)}.cal .ls{background:#2a3550}.cal .lc{background:#203a2a}
 .chips{display:flex;flex-wrap:wrap;gap:5px}.chip{background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:3px 9px;font-size:12px;display:flex;align-items:center;gap:6px}
 .chip b{font-weight:600}.chip .x{cursor:pointer;color:var(--muted)}.chip .x:hover{color:var(--red)}
 .chip .ren{cursor:pointer;color:var(--muted);font-size:11px}.chip .ren:hover{color:var(--accent)}

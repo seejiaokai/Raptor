@@ -20,8 +20,15 @@ const BREAKS = [
   ['Legend.jsx: the Sim swatch hard-coded in the old yellow', 'src/tracker/components/Legend.jsx', "background: 'var(--sim)'", "background: '#ffe000'"],
   ['ShowAllPanel.jsx: a grade badge\'s dark text back to the old ink', 'src/tracker/components/ShowAllPanel.jsx', "'var(--bg)'", "'#10131a'"],
   ['Pop.jsx: the pop-up divider back to the old hairline', 'src/tracker/components/Pop.jsx', "borderTop: '1px dashed var(--line)'", "borderTop: '1px dashed #262c38'"],
-  ['tracker.css: the bubble\'s divider named in a Tracker colour it cannot see', 'src/tracker/tracker.css', 'border-top:1px dashed var(--edge)}', 'border-top:1px dashed var(--line)}'],
+  ['tracker.css: the bubble\'s divider named in a Tracker colour it cannot see', 'src/tracker/tracker.css', 'border-top:1px dashed var(--edge,#2A313A)}', 'border-top:1px dashed var(--line,#2A313A)}'],
   ['Modals.jsx: the editor calls a sim "yellow" again', 'src/tracker/components/Modals.jsx', 'Sim (amber)', 'Sim (yellow)'],
+  /* after Fable's and Astra's reads: breaks that use ANOTHER CURRENT colour, not a retired one */
+  ['Legend.jsx: the Sim swatch painted in the Test token', 'src/tracker/components/Legend.jsx', "background: 'var(--sim)'", "background: 'var(--test)'"],
+  ['Pop.jsx: the DPCO dot painted in the Marginal token', 'src/tracker/components/Pop.jsx', "popGrade('dpco')}><span className=\"dot\" style={{ background: 'var(--dpco)' }}", "popGrade('dpco')}><span className=\"dot\" style={{ background: 'var(--marg)' }}"],
+  ['tracker.css: the unsaved Save changes washed in an orange Raptor does not use', 'src/tracker/tracker.css', 'background:rgba(229,168,59,.16)', 'background:rgba(255,152,0,.16)'],
+  ['tracker.css: the bubble falls back to a colour that is not Raptor\'s', 'src/tracker/tracker.css', 'background:var(--panel,#14181D)', 'background:var(--panel,#101010)'],
+  ['tracker.css: tick boxes back to the browser\'s own colour', 'src/tracker/tracker.css', 'input[type=checkbox]{accent-color:var(--accent)}', 'input[type=checkbox]{accent-color:auto}'],
+  ['SidePanel.jsx: the lull calendar\'s start day back to the old teal', 'src/tracker/components/SidePanel.jsx', "cols.push('var(--on)')", "cols.push('#16584a')"],
   ['scheduler.css: RAPTOR\'s amber changes and the Tracker is left behind', 'src/ui/scheduler.css', '--adv:#E5A83B;', '--adv:#E0A030;'],
 ]
 

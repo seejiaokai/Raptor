@@ -23,8 +23,10 @@ function LullCalendar() {
     let cls = 'day'; if (d.getMonth() !== m) cls += ' out';
     if (d.getTime() === today.getTime()) cls += ' today';
     const cols = [];
-    if (iso === pick.start) cols.push('#16584a');
-    if (spans.some(([a, b]) => d >= a && d <= b)) cols.push('#3a3030');
+    /* Raptor's tones (D157; Fable F-A, Astra #3): the day just picked as the start
+       wears the "switched on" wash, a day inside another lull Raptor's red tint. */
+    if (iso === pick.start) cols.push('var(--on)');
+    if (spans.some(([a, b]) => d >= a && d <= b)) cols.push('var(--red-wash)');
     const bg = core.sliceBg(cols);
     cells.push(
       <div key={iso} className={cls} data-iso={iso} style={bg ? { background: bg } : undefined}

@@ -449,3 +449,18 @@ resolved statuses always carry their resolution date
 **Suggested improvement:** Add one line to `.claude/rules/record-decisions.md`: if the rulings file cannot be written (a permission refusal), say so to him in the same message, park the row's exact text in this chat's `HANDOFF.md` block under "rulings to file", and file it once he approves the edit — never skip it silently, never route around the refusal. Optionally the owner adds a permission rule for `.claude/rules/decisions/**` so the step works under auto mode.
 
 **Principle:** A process whose first step writes to a protected location needs a stated fallback for when the write is refused; otherwise the refusal quietly removes the step.
+
+### Observation 264: A break test that puts back a RETIRED value only proves the retired list — break with another CURRENT value too
+
+**Status:** OPEN
+**Date:** 2026-09-26
+**Session context:** `[TRK-PALETTE-ASK]` (D157) bug check. The first 15 break tests each put an OLD Tracker colour back; all went red — but most went red only through the "no retired colour anywhere" test. Astra's read showed a key that painted Sim in the Test token (both current colours) would have passed every test. Six new breaks using another current value then drove three new, sharper tests.
+**Skill:** internal — `raptor-port/docs/bug-check-order.md` §8.4 (the break test)
+**Type:** internal
+**Phase/Area:** Break tests for a mapping (a palette, a lookup table, a label → token wiring)
+
+**Issue:** For a change that maps many things to many values, breaking a wire by restoring its OLD value is caught by any "the old value must not come back" guard, so every break goes red even when nothing checks that each thing maps to the RIGHT new value. The break test reported 15/15 while a whole class of wrong wiring (two current values swapped) was unguarded.
+
+**Suggested improvement:** §8.4 gains one line: when the change is a mapping, at least one break per wired place swaps in ANOTHER CURRENT value (a neighbour's token, a real colour the app uses elsewhere), not only the retired one; a break that is caught only by the "retired value" guard does not count as that place's test.
+
+**Principle:** A break test proves a check only if the break is one the retired-value guard cannot see; swap in a legitimate-but-wrong value, not just the old one.

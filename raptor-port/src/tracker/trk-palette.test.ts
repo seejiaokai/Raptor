@@ -29,7 +29,8 @@ const schedCss = readFileSync(join(__dirname, '..', 'ui', 'scheduler.css'), 'utf
 const RAPTOR = vars(schedCss.slice(schedCss.indexOf(':root{'), schedCss.indexOf('\n}', schedCss.indexOf(':root{'))))
 const trkCss = readFileSync(join(__dirname, 'tracker.css'), 'utf8')
 const at = trkCss.indexOf("THE PALETTE IS RAPTOR'S")
-const TRK = vars(trkCss.slice(trkCss.indexOf('&{', at), trkCss.indexOf('\n}', at)))
+const TRK_BLOCK = trkCss.slice(trkCss.indexOf('&{', at), trkCss.indexOf('\n}', at))
+const TRK = vars(TRK_BLOCK)
 
 /* The Tracker's name for each colour → the Raptor token it copies. */
 const MAP: Record<string, string> = {
@@ -59,21 +60,28 @@ describe("the Tracker's page colours are Raptor's (tracker.css)", () => {
     expect(rule![1]).toContain('border:1px solid var(--red-edge)')
     expect(rule![1]).toContain('background:transparent')
   })
-  it("what the Tracker draws outside its page (the details bubble) names only Raptor's colours", () => {
+  it("what the Tracker draws outside its page (the details bubble) names Raptor's colours, with Raptor's values to fall back on", () => {
     /* The Tracker's names (--line, --muted, --panel2 …) are set on #page-tracker;
        the details bubble hangs off <body>, so a Tracker name there matches
        nothing and the browser falls back — the bubble's divider drew in the text
-       colour that way (the D157 walk). Everything above the wrapper may only
-       name a colour Raptor's :root defines — and no bubble rule may sit INSIDE
-       the wrapper, where nesting makes it "#page-tracker #detailBubble …", which
-       never matches (the record's divider was missing that way until 26 Sep 26). */
+       colour that way (the D157 walk). Everything above the wrapper names a colour
+       Raptor's :root defines AND carries Raptor's value as its fallback, so a
+       Tracker lifted out of Raptor (no :root — the standalone rule) draws the same
+       (Fable F-C, Astra #1). No bubble rule may sit INSIDE the wrapper, where
+       nesting makes it "#page-tracker #detailBubble …", which never matches — and
+       every class the bubble's content uses has its rule out here (Fable F-B). */
     const wrap = trkCss.indexOf('#page-tracker {')
     const outside = strip(trkCss.slice(0, wrap))
-    const names = [...outside.matchAll(/var\(--([\w-]+)/g)].map(m => m[1]!)
-    expect(names.length).toBeGreaterThan(3)
-    expect(names.filter(n => !(n in RAPTOR))).toEqual([])
-    expect(outside).toMatch(/#detailBubble \.mkrec\{[^}]*border-top:1px dashed var\(--edge\)/)
+    const uses = [...outside.matchAll(/var\(--([\w-]+)(?:\s*,\s*([^)]+))?\)/g)].map(m => ({ name: m[1]!, fb: m[2] }))
+    expect(uses.length).toBeGreaterThan(5)
+    const bad = uses.filter(u => !(u.name in RAPTOR) || !u.fb || hex(u.fb) !== hex(RAPTOR[u.name]!))
+    expect(bad).toEqual([])
     expect(strip(trkCss.slice(wrap))).not.toContain('#detailBubble')
+    for (const c of ['dbId', 'mkrec', 'mini']) expect(outside, c).toContain(`#detailBubble .${c}{`)
+    expect(outside).toMatch(/#detailBubble \.mkrec\{[^}]*border-top:1px dashed var\(--edge,/)
+    // and the classes the bubble's content emits are exactly those three
+    const coreSrc = readFileSync(join(__dirname, 'app', 'core.js'), 'utf8')
+    for (const fn of ['infoHtml', 'markHtml', 'showDetailBubble']) expect(coreSrc, fn).toMatch(new RegExp(`function ${fn}\\(`))
   })
   it("the washes and the light-red text are Raptor's own recipes", () => {
     const [ar, ag, ab] = rgbOf(RAPTOR.accent!), [hr, hg, hb] = rgbOf(RAPTOR.hard!)
@@ -83,15 +91,46 @@ describe("the Tracker's page colours are Raptor's (tracker.css)", () => {
     // Raptor writes its light red on the dark as a literal, not a token
     expect(schedCss).toContain(`color:${TRK['red-ink']}`)
   })
+  it("every see-through tint anywhere in the Tracker is one of Raptor's colours (or a shadow's black)", () => {
+    /* A tint written as rgba() is a copy no token can follow: the drag band, the
+       unsaved Save changes, the row being edited, a hovered arrow's glow. If
+       Raptor's accent, red or amber moves, these would keep the old one under a
+       new edge (Fable F-D). */
+    const allowed = new Set([rgbOf(RAPTOR.accent!), rgbOf(RAPTOR.hard!), rgbOf(RAPTOR.adv!), [0, 0, 0]].map(t => t.join(',')))
+    const srcs = [trkCss, readFileSync(join(__dirname, 'app', 'core.js'), 'utf8'),
+      ...['Legend', 'Pop', 'Modals', 'SidePanel', 'ShowAllPanel', 'ArrangeTools', 'Header', 'ZoomControls'].map(n => readFileSync(join(__dirname, 'components', `${n}.jsx`), 'utf8'))]
+    const triples = srcs.flatMap(s => [...strip(s).matchAll(/rgba\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,/g)].map(m => `${m[1]},${m[2]},${m[3]}`))
+    expect(triples.length).toBeGreaterThan(8)
+    expect([...new Set(triples)].filter(t => !allowed.has(t))).toEqual([])
+  })
+  it('a ticked box, and the browser\'s own controls, follow Raptor', () => {
+    /* Raptor's checkboxes wear its accent (.lgtog, .ifield.chk) and its <html> is
+       color-scheme:dark; the Tracker's Export window and Copy lull periods drew the
+       browser's own blue, and standalone its date boxes would turn light (Astra #1, #2). */
+    expect(strip(trkCss)).toMatch(/input\[type=checkbox\]\{accent-color:var\(--accent\)\}/)
+    expect(strip(TRK_BLOCK)).toMatch(/color-scheme:dark/)
+  })
 })
 
 describe("the chart's colours are the same tokens (core.js)", () => {
-  it('each event type is drawn in its Raptor colour, the same one the legend shows', () => {
+  it('each event type is drawn in its Raptor colour, the same one its token carries', () => {
     for (const t of ['flight', 'acad', 'test', 'sim', 'device'] as const) {
       expect(hex(core.TYPE_COLOR[t]), t).toBe(hex(TRK[t]!))
       expect(hex(core.TYPE_COLOR[t]), t).toBe(hex(RAPTOR[MAP[t]!]!))
     }
     expect(Object.keys(core.TYPE_COLOR).sort()).toEqual(['acad', 'device', 'flight', 'sim', 'test'])
+  })
+  it('the colour key, the grade pop-up and the edit strip each name the right token for each label', () => {
+    /* Reading the token block alone could not see a key that paints Sim in the
+       Test token (Astra #4): each swatch is read off its own file, label by label. */
+    const src = (n: string) => readFileSync(join(__dirname, 'components', `${n}.jsx`), 'utf8')
+    const legend = Object.fromEntries([...src('Legend').matchAll(/background: 'var\(--([\w-]+)\)' \}\}><\/i>([^<]+)</g)].map(m => [m[2]!.trim(), m[1]!]))
+    expect(legend).toEqual({ Flight: 'flight', 'Acad/Spec': 'acad', Test: 'test', Sim: 'sim', 'CFT/IAT/EPT': 'device', DPCO: 'dpco', Marginal: 'marg', NA: 'na' })
+    const pop = Object.fromEntries([...src('Pop').matchAll(/popGrade\('(\w+)'\)\}><span className="dot" style=\{\{ background: 'var\(--([\w-]+)\)' \}\}/g)].map(m => [m[1]!, m[2]!]))
+    expect(pop).toEqual({ dpco: 'dpco', marg: 'marg', na: 'na' })
+    const adds = [...src('ArrangeTools').matchAll(/\{ a: '(\w+)', label: '[^']+', style: \{ borderLeft: '4px solid var\(--([\w-]+)\)' \} \}/g)].map(m => [m[1]!, m[2]!])
+    expect(adds.length).toBe(5)
+    for (const [a, v] of adds) expect(v, a).toBe(a)
   })
   it('the grade fills match the legend: Marginal is Raptor\'s green, DCO / DPCO / N.A. the Tracker\'s own', () => {
     expect(hex(core.GRADE_FILL.marg)).toBe(hex(RAPTOR.ok!))
@@ -145,7 +184,8 @@ describe('the retired Tracker colours do not come back', () => {
      the token instead. */
   const RETIRED = ['#19b6e8', '#27d64a', '#ff4040', '#ffe000', '#b063ff', '#36c2ff', '#ff2b2b', '#0f1115',
     '#161922', '#1d212b', '#2b313d', '#e9ecf2', '#98a2b3', '#ff9800', '#16384a', '#5ec8ff', '#262c38',
-    '#151b26', '#ff9b9b', '#10131a', '#04121b', '#8a93a3', '#39d353', '#ff6b6b', '#4a2f16', '54,194,255']
+    '#151b26', '#ff9b9b', '#10131a', '#04121b', '#8a93a3', '#39d353', '#ff6b6b', '#4a2f16', '54,194,255',
+    '#16584a', '#3a3030', '#ffb3a0']  /* the lull calendar's start / span / text (Fable F-A, Astra #3) */
   const files: string[] = []
   const walk = (d: string) => {
     for (const n of readdirSync(d)) {

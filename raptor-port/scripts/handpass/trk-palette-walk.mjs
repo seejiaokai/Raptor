@@ -182,6 +182,57 @@ async function grade(page, id, label, fails = 0, picture = null) {
   await page.keyboard.press('Escape'); await sleep(300)
   if (await page.locator('#failLog:visible').count()) { await page.locator('#failLog button', { hasText: '✕' }).first().click().catch(() => {}); await sleep(300) }
 
+  /* S4 Currency & Flex: all three colours the bars can take, set through the date
+     boxes as a person does (Astra #4 — the first walk only ever saw the grey bars) */
+  const iso = n => page.evaluate(n => { const d = new Date(); d.setDate(d.getDate() - n); return d.toISOString().slice(0, 10) }, n)
+  const bars = () => page.evaluate(() => [...document.querySelectorAll('#page-tracker .flexbar')].map(f => [f.textContent.trim(), getComputedStyle(f).backgroundColor]))
+  const seen = {}
+  for (const [n, want] of [[2, C.ok], [10, C.adv], [16, C.hard]]) {
+    await page.fill('#lastSyll', await iso(n)); await page.locator('#lastSyll').blur(); await sleep(350)
+    const b = await bars(); seen['syllabus ' + n + ' days'] = b[1]
+    if (n === 10) await shot(page, 'd07b-flex-amber', { el: '#page-tracker .c-curr' })
+    L.ok(`S4 Currency & Flex: a syllabus flight ${n} days ago draws its bar in Raptor's ${n < 7 ? 'green' : n <= 13 ? 'amber' : 'red'}`, !!b[1] && b[1][1] === want, JSON.stringify(b))
+  }
+  for (const [n, want] of [[2, C.ok], [10, C.hard]]) {
+    await page.fill('#lastCurr', await iso(n)); await page.locator('#lastCurr').blur(); await sleep(350)
+    const b = await bars(); seen['currency ' + n + ' days'] = b[0]
+    L.ok(`S4 Currency & Flex: a currency flight ${n} days ago draws the landing bar in Raptor's ${n < 7 ? 'green' : 'red'}`, !!b[0] && b[0][1] === want, JSON.stringify(b))
+  }
+
+  /* S17 the lull calendar (Fable F-A, Astra #3): today's ring, the start just
+     picked, and the days of a lull already set */
+  await page.locator('#setLullBtn').click(); await page.waitForSelector('#lullCal.on'); await sleep(300)
+  const today = await cs(page, '#lullCal .cal .today', ['outlineColor'])
+  L.ok('S17 lull calendar: today is ringed in Raptor\'s accent', !!today && today.outlineColor === C.accent, JSON.stringify(today))
+  const cells = page.locator('#lullCal .cal .grid .day:not(.out)')
+  await cells.nth(3).click(); await sleep(300)
+  const startBg = await page.evaluate(() => { const c = [...document.querySelectorAll('#lullCal .cal .grid .day:not(.out)')][3]; return c && getComputedStyle(c).backgroundColor })
+  L.ok('S17 lull calendar: the day picked as the start wears Raptor\'s "on" wash', startBg === C.on, String(startBg))
+  await shot(page, 'd21-lull-start-picked')
+  await cells.nth(6).click(); await sleep(400)
+  await page.locator('#setLullBtn').click(); await page.waitForSelector('#lullCal.on'); await sleep(300)
+  const spanBg = await page.evaluate(() => { const c = [...document.querySelectorAll('#lullCal .cal .grid .day:not(.out)')][4]; return c && getComputedStyle(c).backgroundColor })
+  L.ok('S17 lull calendar: a day inside a lull already set wears Raptor\'s red tint', spanBg === C.redWash, String(spanBg))
+  await shot(page, 'd22-lull-span')
+  await page.keyboard.press('Escape'); await sleep(300)
+  if (await page.locator('#lullCal:visible').count()) { await page.click('#lullClose').catch(() => {}); await sleep(250) }
+
+  /* S18 ticked boxes (Astra #2): Copy lull periods, and the Export window */
+  await page.locator('#page-tracker button', { hasText: 'Copy to' }).first().click(); await sleep(350)
+  const ck1 = await page.evaluate(() => { const c = document.querySelector('#lullCopy input[type=checkbox]'); return c && getComputedStyle(c).accentColor })
+  L.ok('S18 Copy lull periods: its tick boxes wear Raptor\'s accent', ck1 === C.accent, String(ck1))
+  await page.locator('#lullCopy input[type=checkbox]').first().check().catch(() => {}); await sleep(200)
+  await shot(page, 'd23-copy-lull-ticks')
+  await page.keyboard.press('Escape'); await sleep(250)
+  if (await page.locator('#lullCopy:visible').count()) { await page.locator('#lullCopy button', { hasText: /Cancel|✕/ }).first().click().catch(() => {}); await sleep(250) }
+  await page.click('#fileMenuBtn'); await sleep(250)
+  await page.click('#exportBtn'); await sleep(400)
+  const ck2 = await page.evaluate(() => [...document.querySelectorAll('#copyCharts, #copyStudents')].map(c => getComputedStyle(c).accentColor))
+  L.ok('S18 Export window: its tick boxes wear Raptor\'s accent', ck2.length === 2 && ck2.every(c => c === C.accent), JSON.stringify(ck2))
+  await shot(page, 'd24-export-ticks')
+  await page.keyboard.press('Escape'); await sleep(250)
+  if (await page.locator('#copyCharts:visible').count()) { await page.locator('button', { hasText: /^Cancel$/ }).first().click().catch(() => {}); await sleep(250) }
+
   /* S7 find: the predictions and the searched ball */
   await page.fill('#hSearch', ids[0].slice(0, 3)); await sleep(500)
   const fd = await page.evaluate(() => [...document.querySelectorAll('.findlist.on .fdot')].map(d => [d.className, getComputedStyle(d).backgroundColor]))
@@ -323,6 +374,16 @@ async function grade(page, id, label, fails = 0, picture = null) {
   const stat = await page.evaluate(() => { const s = document.querySelector('.savestat'); return s && [s.className, s.textContent.trim(), getComputedStyle(s).color] })
   L.ok('S10 leaving Edit chart layout unsaved: the save slot\'s words are Raptor\'s amber', !!stat && /saving/.test(stat[0]) && stat[2] === C.adv, JSON.stringify(stat))
   await shot(page, 'd20-unsaved-words')
+
+  /* S12 the bubble's "No details yet" line (Fable F-B): the new ball has no details */
+  await page.click('#detailsBtn'); await sleep(250)
+  if (await reveal(page, 'PAL-1') !== false && await ball(page, 'PAL-1').count()) {
+    await ball(page, 'PAL-1').click(); await sleep(450)
+    const mini = await page.evaluate(() => { const m = document.querySelector('#detailBubble .mini'); return m && [m.textContent.trim().slice(0, 40), getComputedStyle(m).color, getComputedStyle(m).fontSize] })
+    L.ok('S12 details bubble: "No details yet" is Raptor\'s muted grey, small — its rule reaches the bubble now', !!mini && mini[1] === C.muted && mini[2] === '11px', JSON.stringify(mini))
+    await shot(page, 'd25-bubble-no-details')
+  } else L.ok('S12 details bubble: the new ball PAL-1 was found to test "No details yet" on', false, 'PAL-1 not on the chart')
+  await page.click('#detailsBtn'); await sleep(250)
 
   L.ok('desktop: no console error, failed request or page error', errors.length === 0, errors.join(' | ') || 'none')
   await browser.close()

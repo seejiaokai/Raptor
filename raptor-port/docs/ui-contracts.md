@@ -7060,9 +7060,12 @@ screen:
   keeps the retired Tracker colours out. The Tracker's own, because Raptor has no word
   for them: the DCO / DPCO / N.A. grade fills, the white "not done" wedge, the yellow
   "available" ring, the turquoise search ring, the chart's grey lines, the Edit chart
-  layout handles, the lull calendar's marks and the key ball's gold centre. The
-  details bubble hangs off `<body>`, outside the wrapper, so its rules sit above it
-  and name only Raptor's `:root` colours (pinned there too). Five class
+  layout handles and the key ball's gold centre. The lull calendar's picked start is
+  the "on" wash and a lull's days Raptor's red tint; a ticked box wears the accent
+  (`accent-color`); the page is `color-scheme:dark` as Raptor's `<html>` is. The
+  details bubble hangs off `<body>`, outside the wrapper, so its rules — every class
+  its content uses — sit above it and name Raptor's `:root` colours with Raptor's
+  VALUES as fallbacks, so it draws the same standalone (pinned there too). Five class
   names collide with `scheduler.css` (`.day`, `.day.today`, `.legend`, `.modal`,
   `.sub`) and are reset first inside the wrapper; the standalone app's own
   geometry contracts — the one-row bar at 1440, the phone's two-row bar with

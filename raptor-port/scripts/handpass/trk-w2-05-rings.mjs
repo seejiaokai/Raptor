@@ -65,7 +65,7 @@ L.ok('4.1 a press on the centre opens grading for the PICKED student (B)', /ACG-
 await grade('DPCO')
 const w = await wedges(page, 'ACG-02'); const m = await mine(page, 'ACG-02')
 L.ok('4.2 B\'s wedge takes the DPCO colour, A\'s does not', w[1] !== '#ffffff' && w[0] === '#ffffff', JSON.stringify(w))
-L.ok('4.3 the picked student\'s wedge wears a cyan EDGE, never a fill (the DPCO colour still shows)', m && m.wi === '1' && m.fill === 'none' && /36c2ff/i.test(m.stroke), JSON.stringify(m))
+L.ok('4.3 the picked student\'s wedge wears a cyan EDGE, never a fill (the DPCO colour still shows)', m && m.wi === '1' && m.fill === 'none' && /3bc6e8/i.test(m.stroke) /* Raptor's accent since D157 */, JSON.stringify(m))
 const c = await centreOf(page, 'ACG-02')
 await page.screenshot({ path: (await import('./trk-lib.mjs')).SHOTS + '/w2-07-cyan-edge-zoom.png', clip: { x: c.x - 70, y: c.y - 70, width: 140, height: 140 } })
 const allEdged = await page.evaluate(() => { const gs = [...document.querySelectorAll('#flowSvg .ball')]; return { balls: gs.length, edged: gs.filter(g => { const m = g.querySelector('path.mine'); return m && m.dataset.wi === '1' && m.getAttribute('fill') === 'none' }).length } })
@@ -90,7 +90,7 @@ await tapBall(page, 'BFM-3', { noReveal: true }); await page.click('#popFailPlus
 await pickFrom(page, '#activeSel', /STUDENT A/)
 await reveal(page, 'BFM-3'); await sleep(200)
 const tick = await page.evaluate(() => {
-  const g = [...document.querySelectorAll('#flowSvg .ball')].find(x => x.dataset.id === 'BFM-3'); const l = g && g.querySelector('line[stroke="#ff2b2b"]'); if (!l) return null
+  const g = [...document.querySelectorAll('#flowSvg .ball')].find(x => x.dataset.id === 'BFM-3'); const l = g && g.querySelector('line.ftick'); if (!l) return null
   const r = l.getBoundingClientRect(); const x = r.left + r.width / 2, y = r.top + r.height / 2; const hit = document.elementFromPoint(x, y)
   return { x, y, hit: hit ? hit.tagName + (hit.getAttribute('class') ? '.' + hit.getAttribute('class') : '') : null }
 })

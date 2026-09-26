@@ -110,6 +110,56 @@
     "said": "{\"backgroundColor\":\"rgb(26, 31, 38)\",\"borderTopColor\":\"rgb(42, 49, 58)\"}"
   },
   {
+    "step": "S4 Currency & Flex: a syllabus flight 2 days ago draws its bar in Raptor's green",
+    "pass": true,
+    "said": "[[\"Landing Current — No IP Required\",\"rgb(87, 201, 122)\"],[\"Current — no flex required\",\"rgb(87, 201, 122)\"]]"
+  },
+  {
+    "step": "S4 Currency & Flex: a syllabus flight 10 days ago draws its bar in Raptor's amber",
+    "pass": true,
+    "said": "[[\"Landing Not Current — IP Required\",\"rgb(240, 85, 95)\"],[\"1 Optional Flex\",\"rgb(229, 168, 59)\"]]"
+  },
+  {
+    "step": "S4 Currency & Flex: a syllabus flight 16 days ago draws its bar in Raptor's red",
+    "pass": true,
+    "said": "[[\"Landing Not Current — IP Required\",\"rgb(240, 85, 95)\"],[\"1 Mando Flex (Convertible)\",\"rgb(240, 85, 95)\"]]"
+  },
+  {
+    "step": "S4 Currency & Flex: a currency flight 2 days ago draws the landing bar in Raptor's green",
+    "pass": true,
+    "said": "[[\"Landing Current — No IP Required\",\"rgb(87, 201, 122)\"],[\"1 Mando Flex (Convertible)\",\"rgb(240, 85, 95)\"]]"
+  },
+  {
+    "step": "S4 Currency & Flex: a currency flight 10 days ago draws the landing bar in Raptor's red",
+    "pass": true,
+    "said": "[[\"Landing Not Current — IP Required\",\"rgb(240, 85, 95)\"],[\"1 Mando Flex (Convertible)\",\"rgb(240, 85, 95)\"]]"
+  },
+  {
+    "step": "S17 lull calendar: today is ringed in Raptor's accent",
+    "pass": true,
+    "said": "{\"outlineColor\":\"rgb(59, 198, 232)\"}"
+  },
+  {
+    "step": "S17 lull calendar: the day picked as the start wears Raptor's \"on\" wash",
+    "pass": true,
+    "said": "rgba(59, 198, 232, 0.16)"
+  },
+  {
+    "step": "S17 lull calendar: a day inside a lull already set wears Raptor's red tint",
+    "pass": true,
+    "said": "rgba(240, 85, 95, 0.12)"
+  },
+  {
+    "step": "S18 Copy lull periods: its tick boxes wear Raptor's accent",
+    "pass": true,
+    "said": "rgb(59, 198, 232)"
+  },
+  {
+    "step": "S18 Export window: its tick boxes wear Raptor's accent",
+    "pass": true,
+    "said": "[\"rgb(59, 198, 232)\",\"rgb(59, 198, 232)\"]"
+  },
+  {
     "step": "S7 find list: each prediction's dot is its type's Raptor colour",
     "pass": true,
     "said": "17 dots; wrong []"
@@ -237,6 +287,11 @@
     "step": "S10 leaving Edit chart layout unsaved: the save slot's words are Raptor's amber",
     "pass": true,
     "said": "[\"savestat saving\",\"● unsaved flow edits — hit “Save changes”\",\"rgb(229, 168, 59)\"]"
+  },
+  {
+    "step": "S12 details bubble: \"No details yet\" is Raptor's muted grey, small — its rule reaches the bubble now",
+    "pass": true,
+    "said": "[\"No details yet — turn ⓘ off, then tap th\",\"rgb(138, 150, 163)\",\"11px\"]"
   },
   {
     "step": "desktop: no console error, failed request or page error",
