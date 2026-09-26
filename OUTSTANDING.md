@@ -76,7 +76,7 @@ whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaini
 
 **Placed by their own lines — not his rulings:** the Leave War — [LW-FROZEN-BAR-GAP] (after [HUMAN-RETEST]; show him
 first), [LW-FIGSEL-SLOW] and [LW-SCRUBBER-FLAKY] (test-only), [LW-ISO-DATES] and [LW-MOVE-BENEATH] (both low, from the
-absence-record re-test), [PO-RESTORE-POSTING] (low, from its final code read), [LW-OFFER-ONLY-TAKEABLE] (low, with [LW-LOCKMARK]); the Inputs calendar — [INPUTSCAL-TAP-FLAKY] (test-only). The background-command guard — [BG-GUARD-FALSE] (small; tooling). The Tracker — [TRK-RETEST-NOTES] and
+absence-record re-test), [PO-RESTORE-POSTING] (low, from its final code read), [LW-OFFER-ONLY-TAKEABLE] (low, with [LW-LOCKMARK]), [ABSENCE-SMALL-SEEN] (any time); the Inputs calendar — [INPUTSCAL-TAP-FLAKY] (test-only). The background-command guard — [BG-GUARD-FALSE] (small; tooling). The Tracker — [TRK-RETEST-NOTES] and
 [TRK-EDIT-SIDEWAYS] (their gates have passed), [TRK-PINCH-ASK] (his next Tracker session), [TRK-SESSION-PICK] (low, the next Tracker change), [TRK-DLG-LEFTOVERS] (low, with the next question-box change), [TRK-PALETTE-ASK] (his answer D157: Raptor's colours
 fully — being built on `claude/tracker-palette`), [TRK-FLEXBAR-INK] (a question for him, on that branch's look card),
 [TRK-BAKE-STALE] (low). The Leave War — [LW-RESET-ORDER] (his yes, D160 — a small build).
@@ -1282,6 +1282,17 @@ means published). Other options: a hollow dotted tag with no word (a small neutr
 or a warning colour. **A mock-up first** (the house rule for a visual change): the three side by side on the edit week
 and the board, desktop and phone, beside a published day's AL1 tag. **Place:** his answer, then with `[LOOK-435]`.
 
+**FROM THE ABSENCE-RECORD RE-TEST (W6's first walk of roll-call row R30, 26 Sep 26 — for the window to carry):** a
+late input on a published day is named in today's pending list ("Drifter · LL filed") but its line cannot be tapped —
+its hover says "This change has no place of its own on the schedule to go to", though the input's row stands in the
+day's Unavailable block. D99 says a tap "brings the view to that pending area"; the list's own rule ("a leave with no
+row stays a still line", `raptor-port/docs/engine-rules.md`) was the builder's call, not his. **The window's jump must
+reach an input's Unavailable row.** Beside it: a member's "1 pending" on the working draft is a plain label whose hover
+says "until you publish an AL" (his list is this window), and the late row carries LATE but no pending mark — both for
+the window's design. Pictures `raptor-port/docs/img/handpass/2026-09-26-absence/rewalk/w6/w6-desktop-admin-R30-01-pending-list-week`,
+`-R30-02b-the-row-it-could-go-to`, `w6-phone-admin-R30-01-pending-list-week`; sheet
+`raptor-port/docs/handpass/parts/2026-09-26-absence-rewalk-w6.md`.
+
 ### [CROWD-SWAP-SAYS-BUSY] Swapping two men inside one crowd warns "already on" that row — found 25 Sep 26
 Seen in the amendment batch's re-walk (`raptor-port/scripts/handpass/am/hr-03-batch-reads.mjs`, picture
 `docs/img/handpass/2026-09-25-amendment-batch/rewalk-reads/desktop/A-2-pending-list.png`): on the board, dragging
@@ -1382,3 +1393,17 @@ re-test applied elsewhere (item D, W5-F4: a half is offered only when it can be 
 blocker in any refusal that remains. **Place:** low, with `[LW-LOCKMARK]` (the lock by day vs by record is the same
 root). Not checked against `main` by the walker; the free-half rule predates this branch. Evidence
 `raptor-port/docs/handpass/parts/2026-09-26-absence-rewalk-w3.md`.
+
+### [ABSENCE-SMALL-SEEN] Small things the absence-record re-test saw in passing (26 Sep 26)
+None breaks an absence rule; each is a line to fix or ask about, from the re-walkers' sheets
+(`raptor-port/docs/handpass/parts/2026-09-26-absence-rewalk-w{1..6}.md`):
+1. **The Leave War's clash strip** says "… — resolve on the sheet", but the day's sheet has no control to resolve it
+   with (W6 N2).
+2. **The war's "VIEWING AS" chip** is cut off at 390 px (W6 N6).
+3. **A six-letter callsign** (W6's test line "W6LINE") shows as "…" on View-only Sched — the same family as
+   `[AMEND-SMALL-SEEN]` item 3 (five-letter callsigns).
+4. **The read-only edit window** (a member opening another man's input) draws its locked fields as if they were live —
+   a look question for him (W1).
+5. **A member's leave drawn over the frozen balance column** once, in one phone picture (`rewalk/w4/w4-touch-G1e-member-two-rows`),
+   not reproduced by a dedicated probe (4 / 4) — watch for it (W4).
+**Place:** any time; items 1–2 with the Leave War links re-test (D147, last).
