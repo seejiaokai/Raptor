@@ -4,9 +4,10 @@ Builder: Opus 5.5. Reviewers: Fable 5.1 and Astra — both, independently (permi
 (roles, saved data; the permissions table the database's security will be built from). Branch `claude/accounts`.
 Rulings this chat: D210–D229.
 
-**Status: REVISED after red-team round 1 (Fable: REVISE; Astra: BLOCK) — for round 2.** Nothing is built. Round 1's
-reports are kept verbatim (`docs/superpowers/specs/2026-09-26-accounts-redteam-r1-fable.md`, `…-astra.md`) and every
-finding is dispositioned in §Round 1 — what changed, at the end.
+**Status: REVISED after red-team round 2 (Fable: APPROVE with its findings 1–3 written into §4.3; Astra: BLOCK, on the
+same three plus medical visibility, which he then ruled — D211).** Nothing is built. Every report is kept verbatim
+(`docs/superpowers/specs/2026-09-26-accounts-redteam-r{1,2}-{fable,astra}.md`) and every finding is dispositioned in
+§Round 1 and §Round 2 at the end.
 
 ## What he ruled, in one paragraph
 
@@ -39,15 +40,16 @@ FULL check, before the changes window (`[DRAFT-PENDING]`) is built on top.
 | D165 | the admin maps each person to a defence mail; IT ties the real address at the database (25 Sep) | the account's sign-in name is that mapping, in the shape `data-model.md` §3 `User` keeps |
 | D200 | accounts carries: D149 built; §11 brought up to date; one permissions module + drift test (26 Sep) | `state/perms.ts` + `perms.test.ts` + the source scan; §3 and §11 rewritten |
 | D149 | Quals: a member edits his OWN row only, every column (24 Sep) | one Quals write function, checked BEFORE any change; a test per column |
-| D169 | members read the change history; a medical input's details hidden (25 Sep) | §11 `EditLog`: member R, medical details excepted — built with `[DRAFT-PENDING]`; a known, listed gap here |
+| D169 | members read the change history (25 Sep); its medical limit narrowed by D211 | §11 `EditLog`: member R, medical detail included (D211) — built with `[DRAFT-PENDING]`; a known, listed gap here |
 | D79, D82 | an OIL award by hand, any day; award + worked day add up (20–21 Sep) | §11: awards admin-only; "who entered it and when" is a requirement filed on `[OIL-AWARD-IS-A-GRANT]` (§Q-A) |
 | D203 | the order to the database: the OIL award fix with the readiness batch, done once (26 Sep) | the award's record shape is NOT changed here |
 | D202 | every bug check asks the server question until the drift test carries it (26 Sep) | when the drift test lands, the bug-check order §5 paragraph points at it and D202 is marked spent |
 | D201 | a new ruling fixes what the old one left: documents, app, lists (26 Sep) | D104, the 27 Aug role toggle, the "View as" wording across docs, code comments and test names (§9) |
 | 16 Sep 26 | roster and settings edits are undoable (`[UNDO-ROSTER-SETTINGS]`, not yet built) | account edits are NOT undoable in this build (settings are not cut over); the filed item gains the accounts note (§7) |
 | 13 Sep 26 + D148 | undo is per login session; the list clears on sign-out; undo reverses only your own changes | sign-in and sign-out now really end the undo list (§3 — it did not); D148's "own changes only" rides `mayReverse` with a real person |
-| 10 Sep 26 (handover non-negotiables) | one identity by id, never a callsign as a key; medical restricted to the person and admins | every stored "who" keeps the person's id; the guest never sees medical detail |
-| 27 Aug 26 | "anyone may VIEW any attachment" (engine-rules §Auth / roles) | **clashes** with the 10 Sep non-negotiable and D169's reading — named, put to him as `[MED-VISIBILITY]`, members unchanged here |
+| 10 Sep 26 (handover non-negotiables) | one identity by id, never a callsign as a key; (medical restricted — **set aside by D211**) | every stored "who" keeps the person's id |
+| D211 | "Keep as today": every member sees a medical input's type, remarks and documents (26 Sep) | members unchanged; the guest (not a member) sees no medical detail — the agent's reading on the look card |
+| 27 Aug 26 | "anyone may VIEW any attachment" (engine-rules §Auth / roles) | **re-confirmed by D211** for every member |
 | 5 Aug 26 | a member edits his own record, not the squadron's programme | unchanged, now keyed to the account's person |
 | 27 Aug 26 | a member edits/deletes only his own inputs | unchanged, keyed to the account's person, through `perms` |
 | 27 Aug 26 | the admin's role toggle — "View as member" / "Back to admin" | **removed by D166 (3)** ("There isint a need for preview as a member") — the agent's reading, on the look card |
@@ -67,9 +69,8 @@ FULL check, before the changes window (`[DRAFT-PENDING]`) is built on top.
 **Clashes found, each named to him:** (1) D104 vs D166 (5) — D166 is later; D104 is replaced. (2) The 27 Aug 26 role
 toggle vs D166 (3) — the toggle IS a preview as a member (its label reads "View as member"); D166 wins. (3) The 27 Aug 26
 "anyone may view any attachment" vs the 10 Sep 26 database non-negotiable and D169's reading (a medical input's details
-for the person and admins only) — the later rule points one way, but it changes what every member sees on the
-schedule, so it is put to him (`[MED-VISIBILITY]`) rather than built silently; the guest (new, D204) gets the strict rule
-from the start.
+for the person and admins only) — **put to him the same day and RULED, D211: "Keep as today"** — every member sees it all;
+the database brief and D169's row are amended; the guest (not a member) gets no medical detail.
 
 ## The design
 
@@ -92,8 +93,10 @@ one command layer (the "new modules follow the command layer" rule):
 `initStore` calls it at boot beside the others. **The loader never writes** (it runs inside every settings rollback):
 when a key is null the seeds are the in-memory default, and the first admin edit writes the list. An unreadable or
 invalid stored value is cleaned entry by entry (bad entries dropped); **if what remains has no enabled admin whose
-person exists, the seeds are the in-memory answer** — the prototype's way back from a lock-out, stated in a code comment
-(at the database step there are no seeds: the environment's own admin restores access). The "11 durable settings keys"
+person exists, the seed admin `ad` is ADDED to the cleaned list** (its name and person when free) — the prototype's way
+back from a lock-out, keeping every real account (Fable R2-6), stated in a code comment (at the database step there are
+no seeds: the environment's own admin restores access). Test: a stored list of two members and no admin loads as those
+two plus `ad`. The "11 durable settings keys"
 wording in the docs becomes 14.
 
 **Seeds** (demo data, D56), as ordinary accounts (no longer hard-coded):
@@ -155,14 +158,18 @@ as the headless/test person; production always passes `pid` (null for the last t
 sets ME back to that default and SESSION to null — the Login shows.
 
 On every `resetSession` (sign-in AND sign-out), besides what it does today:
-- **`endUndoSession()`** (new, `undo/timeline.ts`): empties the global undo and redo entries and bumps the version,
-  keeping the installed hooks, the registered stores and the cutover — the 13 Sep 26 rule and D148's "the list clears
-  when they sign out", which the global undo never did (Fable R1-7, Astra R1-10). Pinned admin→admin, admin→member,
-  member→member.
-- **`resetPopsForSession()`** (new, `ui/pops.ts`): closes every window and sheet whose flag lives in `pops.ts`
-  (`INPEDIT`, `DOCVIEW`, `HISTLIST`, the template and drafts sheets, `OILASK`, the drawer, the week calendar,
-  insights, …) — one list, so the next person never inherits an open editor or a document (Astra R1-3). Each window
-  keeps its own permission check as well.
+- **`endUndoSession()`** (new, `undo/timeline.ts`): empties the undo and redo entries AND the seq maps `bySeq` and
+  `rootOfSeq` (so a projection caused by a pre-sign-in command cannot fold into an entry no longer listed), bumps the
+  version, and keeps the installed hooks, the registered stores, the cutover, `expected` and `barrier` (D148's conflict
+  detection rides `expected`) — the 13 Sep 26 rule and D148's "the list clears when they sign out", which the global
+  undo never did (Fable R1-7 / R2-7, Astra R1-10). Pinned admin→admin, admin→member, member→member, and "A commits,
+  signs out, B signs in, a projection caused by A's seq arrives: nothing throws, nothing is undoable".
+- **`resetPopsForSession()`** (new, `ui/pops.ts`): closes every window and sheet whose flag lives in `pops.ts`, from a
+  `POPS_RESET` registry beside the flags (the `VIEW_RESET` pattern in `state/view.ts`) — `DAYPOP`, `INSIGHTS`,
+  `AIRKEY`, `TPLEDIT`, `WAVEEDIT`, `DAYTPLEDIT`, `DRAFTSEDIT`, `INPEDIT`, `OILASK`, `DOCVIEW`, `DRAWER`, `WEEKCAL`,
+  `HISTLIST` with `HISTGROUP` / `HISTOPEN` — and a test that every `export let` in `pops.ts` has an entry, so a new window
+  cannot be missed (Fable R2-8). So the next person never inherits an open editor or a document (Astra R1-3); each
+  window keeps its own permission check as well.
 - the Leave War: `lwSetRole(admin ? 'admin' : 'member')` as today; `viewer` = `SESSION ? (ME ?? '') : null` — a guest or
   pending person scopes to NO row (`''` matches nothing), never `null` (null is "unscoped" to the war's `canEditRow`).
 - `LOGINROLE`, `canToggleRole`, `setEffectiveRole`'s UI use and `toggleRole` are removed. The actor: `deriveActor()` maps
@@ -175,60 +182,95 @@ New module `src/state/perms.ts` — the only file that decides authority. Four p
 
 1. **`PERMS` — the matrix as data**, one row per table of `data-model.md` §11: for each role (`admin`, `member`, `guest`,
    `pending`) the operations C / R / U / D, the member's own-row letters, and the named sensitive reads (a medical
-   input's details, a document, the change history's medical detail). Rows the app does not yet obey carry a
-   `gap: '[ITEM-ID]'` naming the filed build (`EditLog` member R → `[DRAFT-PENDING]`; medical detail for other members →
-   `[MED-VISIBILITY]`).
+   input's details, a document, the change history's medical detail — every member YES, the guest NO, D211). Rows the
+   app does not yet obey carry a `gap: '[ITEM-ID]'` naming the filed build (today one: `EditLog` member R →
+   `[DRAFT-PENDING]`).
 2. **`may(op, ctx)`** — the one evaluator, `op` a typed `PermOp` (`{ table, act, own? }` or a named action such as
    `account.manage`, `access.request`, `guest.toggle`), `ctx` the owner's person id where the rule is own-row. The named
    questions every gate asks are one-line wrappers over it: `isAdmin()`, `me()` (null for guest/pending/off),
    `mayEditSched()` (today's `canEditSched`, kept as a re-export so ~160 call sites do not move), `mayEditInputOf(pid)`,
    `mayFileInputFor(pid)`, `mayEditQualsOf(pid)`, `mayManageRoster()`, `mayManageAccounts()`, `mayRequestAccess()`,
    `mayAwardOil()`, `mayReadMedicalOf(pid)`, `mayReadDocOf(pid)`.
-3. **The command gate delegates to it** (Fable R1-4, Astra R1-5). `COMMAND_OPS` in `perms.ts` maps EVERY registered
-   command type to a `PermOp`; the registrations in `sched-commit.ts`, `people-settings-commit.ts` and the undo timeline
-   call `definePermission(t, cmdCheck(t))` instead of `anyone`. What each gets:
-   - **refused for `guest`, `pending`, `off`: every forward command**, except `settings.accessreqs` for `pending`
-     (to ask). This is the one line that makes the command layer fail closed for anyone who is not a member.
-   - **admin only:** `sched.approve`, `sched.publishAL`, `sched.discard`, `sched.unpublish`, `sched.sign`,
-     `sched.signClear`, `sched.section.move`, `sched.section.reorder`, `sched.stores`, `sched.warnMute`, `sched.oil`,
-     `sched.draft.rename`, `sched.draft.delete`, every other `settings.<key>`, `settings.accounts`,
-     `settings.guestview`.
-   - **own-or-admin by the command's `meta.owner`:** `people.edit` (the Quals write function passes the row's person;
-     add, archive and restore pass none, so they stay admin; the posting-out pass is a projection).
-   - **member-and-admin, gated at the write function:** `sched.slot`, `sched.fill`, `sched.text`, `sched.delete`,
-     `sched.mutate`, `inputs.write`, `inputs.batch` — a member's own input can land a row on a published day's working
-     copy (the 16 Sep 26 rule), and those cascades run through these types; their authority is the input write
-     functions' own `perms` check, stated beside each mapping. `undo.restore` keeps `mayReverse`.
-   A coverage test fails when a registered command type has no `COMMAND_OPS` entry, or an entry names an op `PERMS`
-   does not have.
+3. **The command gate delegates to it** (Fable R1-4 and R2-1/2/3, Astra R1-5 and R2-2/3). `COMMAND_OPS` in `perms.ts`
+   maps EVERY registered command type — all five registration sites: `state/sched-commit.ts`,
+   `state/people-settings-commit.ts`, `undo/timeline.ts`, `leavewar/state/store.ts` (its eight `lw.*` types) and
+   `tracker/app/core.js` (its eleven `trk.<collection>` types and `trk.gesture`) — each calling
+   `definePermission(t, cmdCheck(t))` instead of `anyone`. `cmdCheck` returns ONE memoised function per type
+   (`definePermission` throws on a conflicting re-register). A joined child command is never re-authorised (it runs
+   inside its authorised parent — `command/permissions.ts`), so the top-level mapping can be strict without breaking a
+   cascade. What each gets:
+   - **refused for `guest`, `pending`, `off`: every forward command**, except `access.request` for `pending` (below).
+     The one line that makes the command layer fail closed for anyone who is not a member.
+   - **admin only:** the four board writes `sched.slot`, `sched.fill`, `sched.text`, `sched.delete` (their opening
+     functions `writeSlot` / `writeFill` / `writeText` / `writeDelete` carry no role check of their own — Fable R2-2);
+     `sched.approve`, `sched.publishAL`, `sched.discard`, `sched.unpublish`, `sched.sign`, `sched.signClear`,
+     `sched.section.move`, `sched.section.reorder`, `sched.stores`, `sched.warnMute`, `sched.oil`,
+     `sched.draft.rename`, `sched.draft.delete`; EVERY `settings.<key>` (the three new ones included); the account
+     commands below; `lw.decide`, `lw.approve`, `lw.decideApproved`, `lw.removeApproved`, `lw.moveApproved`.
+   - **member-and-admin:** `sched.mutate` (the epilogue backstop an input's own landing can fire outside a command);
+     `inputs.write` and `inputs.batch` — with `meta.owner` (or `meta.owners`) passed by `commitNewInput`,
+     `commitInputEdit`, `removeInput`, `setInpField`, `setLeaveRemarks`: a member is refused when an owner is present
+     and is not his person; with no owner meta the writer's own `perms` check stands (the Leave War absence door, the
+     calendar drag); `lw.edit`, `lw.move`, `lw.ack` (authority at the war's writer: `canEditRow` with the viewer,
+     `canDecide`); every `trk.*` type and `trk.gesture` (D121 — everyone edits the Tracker; guests never mount it).
+   - **own-or-admin by `meta.owner`:** `people.edit` — the Quals write function passes the row's person (and checks
+     what actually changed, §5); add, archive and restore pass none, so they stay admin; the posting-out pass is a
+     projection.
+   - **The account commands** (intent-specific, each enlisting the settings store ONCE and writing every key it needs
+     inside that one command, so a pair rolls back together — Astra R2-3, Fable R2-3): `access.request` (**pending
+     only**; appends exactly one entry built from `SESSION.name`, refused if one exists or the name has an account),
+     `access.decline`, `access.approve` (creates the account AND clears the request in one command), `account.add`
+     (clears a waiting request for that name in the same command), `account.update`, `guestview.set` — all admin only.
+     Failure injected after each constituent write rolls all three keys back to their before-image.
+   - `undo.restore` keeps `mayReverse`.
+   **The coverage test enumerates the registry itself** (`registeredTypes()`, exported from `command/permissions.ts`
+   beside `hasPermission`, read after every module has registered): every entry has a `COMMAND_OPS` row, every row names
+   an op `PERMS` has, and no registered type is `anyone`. Red first: a member actor committing `sched.slot` is refused;
+   a pending actor committing `settings.accessreqs` is refused; `access.request` twice is refused.
 4. **The Leave War is a second app with its own store** (its architecture rule): its writers keep their `state.role` /
-   `canEditRow` / `canDecide` checks, and a **parity test drives its public writers** — `setCell` (own / other),
-   `setBidStates`, `ackReplacement`, `setManualCredit`, `grantTo`, `advanceStage` — as admin, member-own, member-other
-   and guest (role `member`, viewer `''`), and compares each outcome with the §11 rows for `LeaveWar`, `LeaveBid`, the
-   hand-typed award and `LeaveLedger`.
+   `canEditRow` / `canDecide` checks — its `role` and `viewer` are written ONLY by `resetSession` (the one seam) — and a
+   **parity test drives its public writers** as admin, member-own, member-other and guest (role `member`, viewer `''`),
+   comparing each outcome with the §11 rows for `LeaveWar`, `LeaveBid`, the hand-typed award, `LeaveLedger`,
+   `LeaveOpening` and `LeavePersonProfile`: at least two writers per row, and every writer the war's UI offers only to an
+   admin (the stage, the bid window, decisions, the ledger, balances, manning, post-out / in, the settings) at least
+   once. Astra R2-2 asked for every one of its ~70 checks and for splitting its command types; declined as out of
+   proportion (§Round 2) — the war's own store tests already pin its role refusals one by one, and the command gate now
+   refuses every non-member.
 
 **The drift test** (`perms.test.ts`) reads `docs/data-model.md` §11 from disk, parses each row (the letters C/R/U/D per
 column, "own" applying to the letters of its clause; parenthesised words are notes), and fails when a row, a letter, a
 column or a `gap` differs from `PERMS` — so the table IT builds from and the app's matrix cannot drift apart, and a known
-gap cannot close or open silently. **The source scan** (`perms-scan.test.ts`, Fable R1-5, Astra R1-5) fails on
-`SESSION.role`, `LOGINROLE`, `=== ME` / `!== ME` and `.role === 'admin'` outside an allow-list (`perms.ts`, `auth.ts`,
-`command/actor.ts`, and the Leave War's own store and engine), so a new gate cannot grow outside the one place. The
-direct role reads that exist today (Shell, Drawer, AdminPage, HelpPage, LogicPage, Modals, InputsPage, QualsPage,
-reports, the four template sheets, `sync.ts` restore, `inputgate.ts`, `caldrag.ts`, `DocViewer.tsx`, `inputedit.tsx`,
-`InputsCal.tsx`) are rewritten to the named questions. When the drift test lands, the bug-check order §5's server
+gap cannot close or open silently. **The source scan** (`perms-scan.test.ts`, Fable R1-5 / R2-4, Astra R1-5 / R2-2)
+fails on the authority forms the code actually uses — `\bSESSION\s*(\.|\[\s*['"])role\b`, a destructured `role` from
+`SESSION`, `\bLOGINROLE\b`, `\bME\s*(===|!==)` / `(===|!==)\s*ME\b`, and `\.role\s*(===|!==)\s*'(admin|member|main)'`
+— outside an allow-list with a stated reason per entry: `state/perms.ts`, `state/auth.ts`, `command/actor.ts`,
+`command/permissions.ts`, `undo/timeline.ts` (`mayReverse` compares actor roles), and the `leavewar/` tree (its
+`role` / `viewer` are the war's own, written only by `resetSession`, proved by the parity test). DISPLAY uses of the
+signed-in person (the purple "this is you" puck, the war's own-row tint) are allowed by a separate, documented
+display list, each entry a `file` + the expression. The scan carries its own fixtures (aliased, bracketed and
+destructured forms must be caught), is red on today's tree, and is green only after build step 7. (Astra R2-2 asked for
+an AST boundary check instead; declined — the regex over these forms, with fixtures, catches every form the code base
+uses today at a fraction of the cost.) The direct role reads that exist today (Shell, Drawer, AdminPage, HelpPage,
+LogicPage, Modals, InputsPage, QualsPage, reports, the four template sheets, `sync.ts` restore, `inputgate.ts`,
+`caldrag.ts`, `DocViewer.tsx`, `inputedit.tsx`, `InputsCal.tsx`) are rewritten to the named questions (`inputgate`'s
+own-bid test becomes `isMe(person)`). When the drift test lands, the bug-check order §5's server
 question points at it and **D202 is marked spent** (D202's own words).
 
 ### 5. The Quals own-row rule (D149) — one write function, checked before anything moves
 
-`src/state/quals-write.ts` (new): `updatePerson(pid, change)` — checks `mayEditQualsOf(pid)` FIRST (refusal: "You can
-only edit your own row", nothing touched), then runs the change, the derived fields (`deriveQuals`, the SANS / SXO
-wiring, the DAAR/NAAR and SC day/night cascades), `validate()` and the persist inside ONE `commitPeopleEdit` with
-`meta.owner = pid` (so the command gate checks it a second time). Every Quals page handler that edits a row calls it:
-the qualification ticks (incl. SXO, SCHEDULER, SANS), CAT, initials, flight, the personnel remarks, the callsign
-(`renameCallsign`). Add person, archive, restore and "Edit quals" (the LoX columns) stay separate admin-only functions
+`src/state/quals-write.ts` (new): `updatePersonField(pid, op)` where `op` is a CLOSED set, not a free function (Astra
+R2-4, Fable R2-5): `{ tick: qualKey }` (the three-state AAR ladder, SXO, SCHEDULER, SANS and every LoX column),
+`{ cat }`, `{ initials }`, `{ flight }`, `{ remarks }`, `{ callsign }`. It checks `mayEditQualsOf(pid)` FIRST (refusal:
+"You can only edit your own row", nothing touched), then — inside ONE `commitPeopleEdit` with `meta.owner = pid`, so the
+command gate checks it a second time — applies the op to that row, the derived fields (`deriveQuals`, the SANS / SXO
+wiring, the DAAR/NAAR and SC day/night cascades) and `validate()`; and BEFORE the persist it diffs `PEOPLE` against the
+people baseline and refuses the whole command (rolled back) if any person other than `pid` changed. The Quals page's
+handlers become thin: read the row's id and the op from the element, call `updatePersonField`, show its refusal.
+`commitPeopleEdit` gains its `meta` parameter (it takes only `fn` today). Add person, archive, restore and "Edit quals" (the LoX columns) stay separate admin-only functions
 (unchanged in behaviour, now asking `mayManageRoster()`). The table renders editable controls on the member's own row
-only; other rows read as text for him. Tests: each column through `updatePerson` for admin, member-own, member-other,
-guest, pending, no session; a stale delegated click naming another row; the render per role.
+only; other rows read as text for him. Tests: each op through `updatePersonField` for admin, member-own, member-other,
+guest, pending, no session; a stale delegated click naming another row; a command that changes two rows rolls back;
+a validation failure rolls back; the render per role.
 
 ### 6. The screens
 
@@ -292,14 +334,19 @@ probes, the Tracker smoke and the hand-pass drivers all run there, and nothing i
 (checked: no inline handler reads one). On any other host none of its globals exist — a test with a non-local hostname
 asserts every bridge name is absent. `raptorRole(r)` stays; new `raptorMe(pid)` changes the person in place, replacing
 the one e2e step that drove `#viewAs` (`step4-leavewar.spec.ts:320`). The comments calling `lwSetRole` / `lwSetViewer`
-production seams are corrected.
+production seams are corrected. **Out of the bridge's scope, stated:** the Tracker's own test hooks
+(`window.__coreForTests` and four siblings, `tracker/app/core.js`) are installed by the vendored Tracker on every host;
+they grant nothing a member lacks (D121) and a guest never mounts the Tracker — the absence test lists them as out of
+scope with that reason (Fable R2-9). **The drivers** (Astra R2-5): the shared hand-pass helpers (`scripts/handpass/lib.mjs`,
+`trk-lib.mjs`) refuse a non-loopback `HP_URL` with a clear message; `scripts/handpass/live-check.mjs` (a GitHub Pages
+check, dead since D59) refuses to run and says why.
 
 ### 10. The documents (D201, D200 (2))
 
 - `data-model.md` §3 `User`: `personId` required (D166); `enabled`; no password; the new `AccessRequest` table
   (`signInName`, `callsign` and `name` as typed text, `at`); `EditLog` gains `byUser` / `byPerson`.
 - `data-model.md` §11 (Fable R1-12): every ruling — the member's own `Person` row, every column except `archived`,
-  `special` and `id` (D149); `EditLog` member R, medical details excepted (D169); `User` tied to a person, member reads
+  `special` and `id` (D149); `EditLog` member R, medical detail included (D169, D211); `User` tied to a person, member reads
   his own row only (D166); `AccessRequest` created by a signed-in principal on no list, read and deleted by admins
   (D204); a hand-typed OIL award admin-only, keeping who entered it and when (D79/D82 — the app half filed); the GUEST as
   a third named security role reading the issued programme and people's callsigns, no medical detail (D204); the
@@ -340,7 +387,7 @@ The THING: the signed-in identity (the person and the role). Columns: after the 
 | 7 | `commitNewInput` / `commitInputEdit` / `removeInput` / `setInpField` / `setLeaveRemarks` | `perms` (member own; guest/pending/off none) | unit (red first for guest/pending) | `r.person !== ME` |
 | 8 | Inputs calendar chip move (`caldrag`) | `perms` | unit | ME |
 | 9 | Document viewer — open, Upchit, Edit input | `perms`; fails closed for a non-member even if its flag is set | unit + walk | ME; opens for anyone |
-| 10 | Medical view | the document viewer's gates; unchanged for members (`[MED-VISIBILITY]`) | walk | ungated |
+| 10 | Medical view | unchanged for members (D211); never mounted for a guest | walk | ungated |
 | 11 | Leave War `viewer` (sync mirror) | the account's person; `''` for guest/pending/off; null only with no session | unit | ME, null possible |
 | 12 | Leave War "Viewing as" badge (Chrome) | names the signed-in person; no "use View as" words | walk | stale words |
 | 13 | Leave War counter sheet "your numbers" | own numbers; no "view a callsign" words | walk | stale words |
@@ -402,7 +449,7 @@ another's refused; undo of own change / another's refused.
 6. D149: `quals-write.ts updatePerson` + the page wired to it (a test per column).
 7. The scattered checks rewritten to the named questions until the source scan is green; the Leave War parity test.
 8. The documents (§10); `rulecheck` gains the accounts register's ids (`AC1`…); the file map; the backlog items filed
-   (`[MED-VISIBILITY]`, `[SIGNOFF-SELF]`, the notes on `[OIL-AWARD-IS-A-GRANT]`, `[UNDO-ROSTER-SETTINGS]`,
+   (`[SIGNOFF-SELF]` — filed; `[MED-VISIBILITY]` — filed and answered, D211; the notes on `[OIL-AWARD-IS-A-GRANT]`, `[UNDO-ROSTER-SETTINGS]`,
    `[DRAFT-PENDING]`).
 9. Gates → the walk (roll-call-driven, both widths, pictures) → gates → Fable and Astra read the final code with the
    evidence sheet → fix → re-walk → gates → his look card.
@@ -410,13 +457,12 @@ another's refused; undo of own change / another's refused.
 **His look card will carry, as the agent's readings he can correct:** the admin's role toggle removed (D166 (3)); one
 person, one account; an archived callsign keeps its account; an admin cannot change his own account; the guest sees the
 published week only, without medical detail; an added account signs in with any password until Microsoft's sign-in;
-a member may now tick SCHEDULER on his own row, which puts his name in three sign-off boxes (D149's consequence).
+a member may now tick SCHEDULER on his own row, which puts his name in three sign-off boxes (D149's consequence);
+until Microsoft's sign-in, the "who" on every change can be claimed by anyone who types another account's sign-in name on
+a shared browser; a guest sees no medical detail (D211 was about members).
 
 ## Questions for him this build does NOT answer (filed, not blocking)
 
-- **`[MED-VISIBILITY]`** — may other members see a medical input's type, remarks and documents on the schedule and the
-  Inputs page? His 27 Aug 26 "anyone may view any attachment" vs the database's "the person and admins only" (10 Sep 26)
-  and D169's reading.
 - **`[SIGNOFF-SELF]`** — with personal accounts, should each of the four sign-offs be signed by that person, signed in,
   instead of an admin picking all four names?
 - **The edit history is cleared at every sign-in** (session-only, as today) — with personal accounts, should it outlive
@@ -451,9 +497,30 @@ to each other. Where they disagreed, settled by evidence (bug-check order §4 st
 | Fable 12 — §3 / §11 lines for IT | **Accepted** (§10). |
 | Fable 13 — the D201 sweep misses stale text | **Accepted** (§10). |
 | Fable 14 — decisions that are his | **Accepted:** the look card list. |
-| Astra 2 (BLOCKER) — medical visibility | **Partly accepted:** the guest gets the strict rule and the document viewer fails closed; for MEMBERS it is a clash between two of his rules and a change to what every member sees — named and filed as `[MED-VISIBILITY]`, a listed known gap in the drift test, not built silently. |
+| Astra 2 (BLOCKER) — medical visibility | **Put to him and RULED the same day — D211, "Keep as today":** every member sees a medical input's type, remarks and documents; the database brief is amended. The guest (not a member) gets no medical detail and the document viewer fails closed for him. |
 | Astra 4 (BLOCKER) — an unmapped principal runs as `system` | **Accepted:** every post-sign-in state is a session with its own role (§3). |
 | Astra 6 — no pre-mutation Quals funnel | **Accepted:** `quals-write.ts updatePerson` (§5). |
 | Astra 7 — a password persisted in `accounts` | **Accepted:** no password persisted; the seeds' two in code only; a raw-storage test (§2). |
 | Astra 8 — OIL awards keep no entering account or time | **Accepted as a requirement, filed not built:** D203 puts the award's record change in `[OIL-AWARD-IS-A-GRANT]`, done once; the requirement is added there and to §11 (§Q-A). Fable found the deferral sound. |
 | Astra 9 — "Your reports" keyed by callsign | **Accepted:** `pid` on the report (§8). |
+
+## Round 2 — what changed (every finding dispositioned)
+
+Reports: `docs/superpowers/specs/2026-09-26-accounts-redteam-r2-fable.md` (APPROVE with findings 1–3 in §4.3) and
+`…-r2-astra.md` (BLOCK). Both saw both round-1 reports.
+
+| Finding | Disposition |
+|---|---|
+| Fable 1 / Astra 2 — `COMMAND_OPS` misses the Leave War's 8 and the Tracker's 12 command types | **Accepted:** all five registration sites; the coverage test reads the registry (`registeredTypes()`); `cmdCheck` memoised (§4.3). |
+| Fable 2 / Astra 2 — the four board writes left member-capable on a false premise | **Accepted:** admin only; `sched.mutate` stays member-and-admin; `inputs.write` / `inputs.batch` carry `meta.owner` (§4.3). |
+| Fable 3 / Astra 3 — `settings.accessreqs` open to a pending person is a whole-list write; approve not atomic | **Accepted:** intent commands (`access.request` pending-only, `access.approve` / `account.add` one command each), failure injection (§4.3). |
+| Astra 2 — every Leave War check exhaustively, and split its command types | **Declined, with the reason:** the war is a second app whose store already pins its role refusals test by test; the command gate now refuses every non-member; the parity test covers every §11 row and every admin-only door at least once (§4.4). |
+| Astra 2 / Fable 4 — the source scan's forms and allow-list | **Accepted** with regex forms matching the code, fixtures, a reasoned allow-list and a separate display list; the AST check **declined** as out of proportion (§4). |
+| Fable 5 / Astra 4 — the Quals function trusts a caller's owner and runs any change | **Accepted:** a closed set of ops, and a changed-rows check before the persist (§5). |
+| Fable 6 — the lock-out fallback replaces the whole list | **Accepted:** the seed admin is added to the cleaned list (§1). |
+| Fable 7 — `endUndoSession` must clear the seq maps | **Accepted** (§3). |
+| Fable 8 — `resetPopsForSession` has no completeness check | **Accepted:** `POPS_RESET` registry + test (§3). |
+| Fable 9 — the Tracker's own test hooks on every host | **Accepted as a stated exclusion** with its reason (§9). |
+| Astra 5 — drivers that expect the bridge off localhost | **Accepted:** the helpers refuse a non-loopback URL; the dead Pages check refuses to run (§9). |
+| Astra 1 (BLOCKER) — medical visibility for members | **Ruled by him, D211 ("Keep as today"):** members see it all; the guest sees none. |
+| Fable, R1-1 note — "who" stamps forgeable on a shared browser | **Accepted:** on his look card in those words. |

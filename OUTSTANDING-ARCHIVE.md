@@ -1618,3 +1618,21 @@ standing exception (a safety fact, never versioned — `raptor-port/src/engine/e
 `claude/request-one-row`; then its own branch, in his order.
 **PLACE SETTLED 25 Sep 26 — D180:** NEXT, on its own branch `claude/leave-late-published`, BEFORE `[ACCOUNTS]`; built overnight (D181).
 
+
+*Moved here 2026-09-26 by backlog-archive.mjs ([MED-VISIBILITY]). Forward facts: `.claude/rules/decisions/how-we-work.md`.*
+
+### [MED-VISIBILITY] May other members see a medical input's type, remarks and documents? — a question for him (filed 26 Sep 26)
+**ANSWERED the same day — D211, "Keep as today": every member sees a medical input's type, remarks and documents; the
+database brief's restriction is set aside (amended in `raptor-port/docs/handover-dataverse.md`). Nothing to build.** The
+question as it was put:
+Found by Astra's read of the `[ACCOUNTS]` plan (R1-2). **Two of his rules point different ways:** his 27 Aug 26 rule,
+"anyone may VIEW any attachment" (`raptor-port/docs/engine-rules.md` §Auth / roles, the Inputs row), and the database's
+non-negotiable of 10 Sep 26, "a medical absence and any attached document are readable by the person and admins only"
+(`raptor-port/docs/handover-dataverse.md`), which D169's reading repeats for the change history. Today every member sees
+a medical input's type and remarks on View-only Sched's Unavailable list and can open its documents. **Put to him:** keep
+that, or show other members only "Unavailable" and its times (the person and admins still see everything)? Changes what
+every member sees, so it is his, not built silently. `[ACCOUNTS]` gives the new guest view (D204) the strict rule from
+the start and lists this as a known gap in its permissions test. **Tier:** FULL (who can see personal details, D202).
+**Place:** ask him with `[ACCOUNTS]`'s look card; build it after his answer, with `[DRAFT-PENDING]` (the change history
+shares the rule).
+

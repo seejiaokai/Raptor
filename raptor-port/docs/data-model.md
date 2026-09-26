@@ -949,7 +949,9 @@ relationship behaviours are the terms.
 
 ## 11. Security roles
 
-**Behind the rulings, to bring up to date in `[ACCOUNTS]` (D200, 26 Sep 26):** a member edits every column of his own
+**D211 (26 Sep 26):** every member reads a medical input and its documents (his 27 Aug 26 rule re-confirmed — the
+`Input` and `Attachment` rows below still say otherwise until `[ACCOUNTS]` rewrites this table). **Behind the rulings, to
+bring up to date in `[ACCOUNTS]` (D200, 26 Sep 26):** a member edits every column of his own
 `Person` row (D149); members read the change history, `EditLog` (D169); an account is tied to a callsign (D166); OIL
 awards are written by admins only, with who gave each and when (D79, D82). Until then, where a line below disagrees,
 the ruling wins (D90, D201).

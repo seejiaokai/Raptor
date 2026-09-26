@@ -2977,7 +2977,8 @@ seat, `leavewar/inputgate.ts`.
 page a member LANDS on their own inputs (the person filter defaults to `ME`
 for a member, `all` for a scheduler) with "Everyone" one pick away; on every
 other person's row the ✎ and ✕ are not rendered, but the document paperclip
-stays (anyone may VIEW any attachment — owner, same day). The write-path
+stays (anyone may VIEW any attachment — owner, same day; RE-CONFIRMED 26 Sep 26 by D211 for every member, a medical
+input's type, remarks and documents included; a waiting guest sees none). The write-path
 backstop behind the hidden controls is in `commitInputEdit` / `removeInput`,
 gated on a signed-in session that CANNOT edit the schedule (`SESSION &&
 !canEditSched() && r.person !== ME`) — the render gate's own predicate.

@@ -79,8 +79,8 @@ The amendment area — PR #434, #435, #437 and #438 MERGED (25–26 Sep 26); [LO
 [BG-CWD-GUARD] (his go, D162 — any time). Roles — [QUALS-MEMBER-SCOPE] (folded into [ACCOUNTS], D200), and beside it [QUALS-PROTO-TOAST] (low, one line of words). View-only Sched — [VIEW-ARROW-OVER-LIST] (low, LOOK tier).
 Insights — [INSIGHTS-WORKING-COPY] (a question for him, with the one changes window or any time).
 
-**Waiting on him — no order exists:** [MED-VISIBILITY] and [SIGNOFF-SELF] (both raised by [ACCOUNTS]; put to him on its
-look card), [OIL-EARNED-VS-GRANTED] (his figure — ask first, when the award fix reaches it;
+**Waiting on him — no order exists:** [SIGNOFF-SELF] (raised by [ACCOUNTS]; put to him on its look card),
+[OIL-EARNED-VS-GRANTED] (his figure — ask first, when the award fix reaches it;
 D147), [LW-COMMIT-MANNING] (his call), [LEAVE-YEAR] ("we will do this next time", 19 Sep — no slot since),
 [REPO-PRIVATE]'s sharing half, [EOD] (design first; no slot
 ruled), [CRP-FLAG]'s remainder and then [FLAG-EXPORT], the [AMEND] leftovers, [ADMIN-DISPLAY] ("next time we revisit",
@@ -1166,18 +1166,6 @@ admin can change it later. Also noted: an untagged signed-in person sees the pro
 1 Sep 26, `raptor-port/docs/architecture-direction.md`). Found 26 Sep 26: §11 already covers Leave War bids (own row while open) and the
 leave / OIL ledger (admin writes, a member reads his own) — check, do not re-add.
 
-### [MED-VISIBILITY] May other members see a medical input's type, remarks and documents? — a question for him (filed 26 Sep 26)
-Found by Astra's read of the `[ACCOUNTS]` plan (R1-2). **Two of his rules point different ways:** his 27 Aug 26 rule,
-"anyone may VIEW any attachment" (`raptor-port/docs/engine-rules.md` §Auth / roles, the Inputs row), and the database's
-non-negotiable of 10 Sep 26, "a medical absence and any attached document are readable by the person and admins only"
-(`raptor-port/docs/handover-dataverse.md`), which D169's reading repeats for the change history. Today every member sees
-a medical input's type and remarks on View-only Sched's Unavailable list and can open its documents. **Put to him:** keep
-that, or show other members only "Unavailable" and its times (the person and admins still see everything)? Changes what
-every member sees, so it is his, not built silently. `[ACCOUNTS]` gives the new guest view (D204) the strict rule from
-the start and lists this as a known gap in its permissions test. **Tier:** FULL (who can see personal details, D202).
-**Place:** ask him with `[ACCOUNTS]`'s look card; build it after his answer, with `[DRAFT-PENDING]` (the change history
-shares the rule).
-
 ### [SIGNOFF-SELF] With personal accounts, should each of the four sign-offs sign as himself? — a question for him (filed 26 Sep 26)
 Found by the `[ACCOUNTS]` consumer sweep. Today an admin picks all four names on a day (CUR CK, SKED CK, PLANNED BY,
 APPROVED BY — `raptor-port/src/engine/publish.ts SIGN_ROLES`); nothing ties a name to who is signed in. With accounts the
@@ -1203,8 +1191,8 @@ that check. **Place:** now, on this branch.
 ### [DRAFT-PENDING] The one CHANGES WINDOW — D118, D167–D172 (25 Sep 26); step 3 of D173, after `[ACCOUNTS]` (its own FULL check — D210)
 **From `[ACCOUNTS]` (26 Sep 26), to settle here:** the edit log is cleared at every sign-in and sign-out (`resetSession`
 → `elogClear`, session-only as today); with personal accounts, should the change history outlive a sign-out? The
-window's "new to you" needs it to. And `[MED-VISIBILITY]`'s answer decides what a member's history shows of a medical
-input. The edit log's rows carry the person's id beside the callsign from `[ACCOUNTS]` on.
+window's "new to you" needs it to. A member's history shows a medical change in full (D211, which narrows D169's
+reading). The edit log's rows carry the person's id beside the callsign from `[ACCOUNTS]` on.
 **WHAT IS SETTLED (read the rulings, not the working notes below):** D168 one changes window (New to you / All changes,
 a day picker, Group by Who / Where) replacing the pending list, the hand-over idea and the Edit history list; D167 its
 shape (movable, resizable, a tap takes the schedule to the change and the window stays; the phone's panel shrinks to a
