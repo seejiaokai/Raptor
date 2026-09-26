@@ -29,6 +29,11 @@ not see each other's report before both exist (bug-check order §4).
   `src/leavewar/ui/SettingsSheet.tsx`; `src/engine/keys.ts` (`seatRow`), `src/engine/avail.ts` (`selfKey`, the busy
   scan), `src/engine/validate.ts` (`crossDayIfPlaced`, `restIfPlaced`); `src/state/view.ts` (`weekInset`,
   `weekLeftDay`, `scrollWeekToDay`) and `src/ui/highlights.ts` (`bringIntoView`); `.claude/hooks/bg-cwd-guard.mjs`.
+  **Added after the walk (§5 of the sheet):** one man, one place on a row — `src/engine/avail.ts` (the check before the
+  busy scan), `src/engine/slots.ts` (`rowPlaces`, `lastFilled`, fillSlot's `putAt`), `src/ui/drag.ts` (the hover and
+  `barDrop` keys, the cell branch), `src/state/view.ts` (`placeArmed`), `src/ui/palette-html.ts` (the armed key as
+  armed); the SC shift scan's leaving seat (`avail.ts`); `weekInset` 'right' measured against the › arrow; the two
+  resets in ⚙ Settings take each other's question back (`SettingsSheet.tsx`, `Matrix.tsx`).
 
 ## The job — find what is MISSING, not only what is wrong
 > Do not merely review the changed code. Starting from the user promise and the applicable rulings, enumerate every
@@ -39,6 +44,11 @@ not see each other's report before both exist (bug-check order §4).
 > least-shared or most specialised surface.
 
 Concretely:
+0. **The walk's own fixes (§5)** — one man, one place on a row: every caller that asks the busy check AFTER a write
+   must name the place the man landed on (`lastFilled`), or an ordinary add reads as a second copy; every caller that
+   asks BEFORE a write must keep a "+ add" key as it is. Find a caller that does neither (the green rings, the board's
+   own drop paths, the Inputs page's accept into a row, a request row, `iu:` reassign, the ALL AVAIL window, undo/redo
+   repaints). And: does `rowPlaces` list every place a man can stand on each kind of row?
 1. **Every other key-shape compare.** `seatRow` is now the one "which row is this" — is any other place still comparing
    a seat key with an event's key raw, or trimming a Common Programme key its own way (the pending list, the change
    jump, the drop flag, the OIL claims, the amendment marks, the selection rings, the history)? Does widening the busy
