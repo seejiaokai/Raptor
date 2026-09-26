@@ -1549,10 +1549,14 @@ export function postingProblem(id: string, kind: 'in' | 'out', date: string): st
   const person = state.people.find(p => p.id === id)
   if (!person) return null
   if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) return 'Pick a whole date first.'
+  /* the day-first date voice ("15 Jun 26" — ui/dates.ts shortDate's wording), never the stored 2026-06-15 (the
+     absence-record re-test's re-walk: this sentence first printed the machine date; `[LW-ISO-DATES]` is the rest) */
+  const MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+  const said = (iso: string) => `${Number(iso.slice(8, 10))} ${MON[Number(iso.slice(5, 7)) - 1]} ${iso.slice(2, 4)}`
   if (kind === 'out' && person.from !== null && addDays(date, -1) < person.from)
-    return `Posted in on ${person.from} — the post-out has to be after that day.`
+    return `Posted in on ${said(person.from)} — the post-out has to be after that day.`
   if (kind === 'in' && person.to !== null && date > person.to)
-    return `Posted out from ${addDays(person.to, 1)} — the post-in has to be before that day.`
+    return `Posted out from ${said(addDays(person.to, 1))} — the post-in has to be before that day.`
   return null
 }
 

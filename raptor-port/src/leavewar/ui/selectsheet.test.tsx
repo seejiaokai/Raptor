@@ -141,7 +141,7 @@ describe('the selection sheet', () => {
 describe('a refused post-out on the selection sheet', () => {
   it('keeps the sheet open with the reason, and reports nothing done', () => {
     const onDone = vi.fn()
-    const onPostOut = vi.fn(() => 'Posted in on 2026-01-10 — the post-out has to be after that day.')
+    const onPostOut = vi.fn(() => 'Posted in on 10 Jan 26 — the post-out has to be after that day.')
     mount(rampTwo, { onDone, onPostOut })
     fireEvent.click(screen.getByTestId('sel-postout'))
     fireEvent.change(screen.getByTestId('sel-po-date'), { target: { value: '2026-01-05' } })

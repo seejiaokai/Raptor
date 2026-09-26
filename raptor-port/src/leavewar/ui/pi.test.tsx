@@ -169,7 +169,7 @@ describe('a posting that would close before it opens is refused with its reason'
     fireEvent.click(screen.getByTestId('po-confirm'))
     expect(person(id).to).toBeNull()
     expect(screen.getByTestId('bid-picker')).toBeTruthy()
-    expect(screen.getByTestId('post-err').textContent).toMatch(/Posted in on 2026-06-15 — the post-out has to be after that day/)
+    expect(screen.getByTestId('post-err').textContent).toMatch(/Posted in on 15 Jun 26 — the post-out has to be after that day/)
   })
 
   it('the bid sheet: a PI dated after the PO keeps the sheet open and says why', () => {
@@ -182,7 +182,7 @@ describe('a posting that would close before it opens is refused with its reason'
     fireEvent.change(screen.getByTestId('pi-date'), { target: { value: '2026-09-01' } })
     fireEvent.click(screen.getByTestId('pi-confirm'))
     expect(person(id).from).toBeNull()
-    expect(screen.getByTestId('post-err').textContent).toMatch(/Posted out from 2026-08-01 — the post-in has to be before that day/)
+    expect(screen.getByTestId('post-err').textContent).toMatch(/Posted out from 1 Aug 26 — the post-in has to be before that day/)
   })
 
   it('the Post out sheet: moving the date before the PI is refused with the reason', () => {
@@ -193,7 +193,7 @@ describe('a posting that would close before it opens is refused with its reason'
     fireEvent.click(screen.getByTestId(`cell-${id}-2026-08-05`))
     fireEvent.change(screen.getByTestId('postout-date'), { target: { value: '2026-06-01' } })
     expect(person(id).to).toBe('2026-07-31')
-    expect(screen.getByTestId('postout-err').textContent).toMatch(/Posted in on 2026-06-15/)
+    expect(screen.getByTestId('postout-err').textContent).toMatch(/Posted in on 15 Jun 26/)
   })
 
   it('the Post in sheet: moving the date after the PO is refused with the reason', () => {
@@ -204,6 +204,6 @@ describe('a posting that would close before it opens is refused with its reason'
     fireEvent.click(screen.getByTestId(`cell-${id}-2026-06-10`))
     fireEvent.change(screen.getByTestId('postin-date'), { target: { value: '2026-09-01' } })
     expect(person(id).from).toBe('2026-06-15')
-    expect(screen.getByTestId('postin-err').textContent).toMatch(/Posted out from 2026-08-01/)
+    expect(screen.getByTestId('postin-err').textContent).toMatch(/Posted out from 1 Aug 26/)
   })
 })
