@@ -419,3 +419,18 @@ resolved statuses always carry their resolution date
 **Suggested improvement:** When a pin calls an internal builder directly, copy the arguments from its real caller (grep the call site) and assert one fact that proves the drawing is the intended mode (here: no write surface under a look). Keep the break test for every new pin — it is what caught this.
 
 **Principle:** A test that reaches past the public door must reproduce the door's exact call, and prove it did; otherwise only cutting the fix shows whether the test was ever looking at it.
+
+### Observation 261: Text written between tool calls did not reach the owner; a copy-paste prompt had to be re-sent as a file
+
+**Status:** OPEN
+**Date:** 2026-09-26
+**Session context:** `[ACCOUNTS]` planning; the owner asked mid-turn for a prompt to start a parallel worktree chat
+**Skill:** New skill candidate: parallel-chat launcher (and the session-handoff skill's "ready-to-paste opening line")
+**Type:** open-source
+**Phase/Area:** answering a mid-turn question while tool calls continue
+
+**Issue:** The owner asked, mid-turn, what he could run in parallel and then for the opening prompt. The answer (with the prompt in a fenced block) was written as text between tool calls; he replied "I dont see the prompt". Re-sent as a file with SendUserFile, it arrived. The same happened to be true for the next answer, which went straight to a file.
+
+**Suggested improvement:** When a mid-turn answer carries something the person must COPY or ACT on (a prompt, a command, a decision), deliver it as a file (SendUserFile) or end the turn with it — never only as interleaved text. A parallel-chat launcher skill could standardise the prompt it hands over: the worktree, the model, a claimed ruling range, the port, "never two full check runs at once", "later merge takes main first".
+
+**Principle:** A deliverable the person has to act on must travel by a channel that is guaranteed to reach them; interleaved narration between tool calls is not one.
