@@ -16,31 +16,36 @@ the later merge keeps both (D78).
 ## Now
 
 <!-- now:claude/accounts-new-person -->
-### `claude/accounts-new-person` — `[ACCOUNTS-NEW-PERSON]` (D214, D216, D217, D219, D220, D222, D224–D227): FULL check DONE — PR open, waiting for his look and "merge live" — written 26 Sep 26, verify before use
-- **Where it stands:** built, walked, read three rounds by Fable and Astra, every finding fixed red first, re-walked
-  (walk3 **58/58**, 0 browser errors), break tests **32/32 red**, the full checks green (§9 of the sheet), the PR open
-  from this branch (`gh pr list --head claude/accounts-new-person`). **Next: his look (the sheet's §10 card), then his
-  "merge live"** — then archive `[ACCOUNTS-NEW-PERSON]` (`backlog-archive.mjs`) and start **`[POST-OUT-OUTCOMES]`** (D291),
-  then `[DRAFT-PENDING]`. After the check he ruled on posting out and accounts (D229, D280–D291 — how-we-work.md).
-- **Evidence:** `raptor-port/docs/handpass/2026-09-26-accounts-new-person.md` (§3 roll-call, §5 walks, §6 the three read
-  rounds and every disposition, §7 breaks, §9 gates, §10 the look card). Reads: `…-{fable,astra}-read.md` (round 1),
-  `…-{fable,astra}-fixcheck.md` (round 2), `…-{fable,astra}-fixcheck2.md` (round 3 — Fable CLEAN; Astra's one fixed).
-  Walk `raptor-port/scripts/handpass/np-walk.mjs` → `docs/img/handpass/2026-09-26-accounts-new-person/walk3/`; breaks
-  `scripts/handpass/np-breaks.mjs` (run it in a scratch worktree — its header says how).
-- **What the reads changed (all on this branch):** the approve note never asks the admin to do what the screen can't —
-  someone who already has an account (archived or not) is said so, with both ways out (him on a new sign-in: change that
-  account's sign-in, another admin's job when it is your own; someone else: New person); the Add form clears whole after
-  an add; personnel hold no CAT anywhere (`catsFor`); an account's editor keeps its archived person in its picker (on
-  `main` since `[ACCOUNTS]`, fixed here); the two older `[ACCOUNTS]` walks run again (38/38, 42/42).
-- **Not run, with the reason:** `probes:adapted` and `perf` — the dense surfaces they measure (board, week, palette) are
-  untouched; a real iPhone (nothing here depends on touch timing).
-- **Parallel chats (D228):** every heavy run takes the PC-wide lock (`node raptor-port/scripts/gatelock.mjs`). This chat:
-  preview 4174 (`raptor-walk-2`), browser tests `E2E_PORT=4191`. Port 4173 is another chat's — leave it.
-- **Traps met:** "Nomad" and "Bolt" (and every seeded callsign) are demo people — never use them as new names in a test;
-  a walk step's picture is taken AFTER its step, so a step must leave on screen what it asserted (observation #280); a
-  break that stays green may be aimed at tests that cannot see the layer (#282); Bash heredocs mangle backslashes —
-  edit with the Edit tool.
-- **Open questions for him:** none — the look card §10 lists the agent's calls for him to correct.
+### `claude/accounts-new-person` — `[ACCOUNTS-NEW-PERSON]` FULL check done, PR #443 waiting for his look; then his posting-out rulings (D229, D280–D299) and their APPROVED mock-up — written 27 Sep 26, verify before use
+- **Where it started:** fix the two code reads' findings (Fable 1, Astra 1, 2, 4 + the record items), break tests, re-walk,
+  the gates under the lock, the sheet, the PR. Then, in conversation, he ruled how a posting out and accounts should work.
+- **Shipped:** PR #443 — open when written; its checks green on `5fb2cab5` (11 pass, 2 skipped; the handoff push re-runs
+  them on GitHub's machines). Three read rounds by Fable + Astra, every finding dispositioned (sheet §6); walk3 **58/58**;
+  break tests **32/32 red**; gates on the final code unit **6259/6259** · tfin **728/0** · e2e **476** · smoke **443/0** ·
+  rulecheck · docsize. Evidence `raptor-port/docs/handpass/2026-09-26-accounts-new-person.md`.
+- **Then — rulings and a mock-up only, no code:** D229, D280–D299 (`.claude/rules/decisions/how-we-work.md`): a posting
+  out's four outcomes (chips "Overseas Sqn · Delete · SANS · Transfer to Sqn"); accounts Suspend / Enable / Delete
+  account; a deleted man kept underneath as a hidden mark — the past keeps its record of him, today and the future lose
+  him (the list: mock-up §5, D299); SANS on the date; back from overseas as he was, with a prompt; an archived man's
+  callsign reusable, renamed right on the archived list; the admin's member view back (D292); no Sign-up button (D293);
+  squadrons plan each other's people (D282), callsigns unique per community, a guest's orange corner (D288, D289, D296).
+  **Mock-up APPROVED (D299):** `raptor-port/docs/mock/post-out.html` (Artifact
+  https://claude.ai/artifact/BjZgFjGxRxohuoV1vgEFjp), made by `raptor-port/scripts/handpass/am/mk-post-out.mjs`.
+  Build: `[POST-OUT-OUTCOMES]` (next, D291); transfers and guests: `[XFER]` (with the database).
+- **Unfinished:** none — PR #443 awaits his look and "merge live" (`main` still `e27e15fe`, already in the branch).
+- **Branch:** `claude/accounts-new-person`, PR #443. If it has MERGED, reset before new work:
+  `git fetch origin main && git checkout -B <new-branch> origin/main`.
+- **Gates:** as above; `probes:adapted` · `perf` NOT RUN (the dense surfaces they measure are untouched).
+- **Parallel chats (D228):** every heavy run takes `node raptor-port/scripts/gatelock.mjs`. This chat used preview 4174
+  (`raptor-walk-2`) and `E2E_PORT=4191`; 4173 is another chat's.
+- **Traps met:** seeded callsigns (Nomad, Bolt…) are demo people — never new names in a test; a walk step's picture is
+  taken after the step (skill-observation #280); a break test left green may be aimed at the wrong tests (#282) and runs
+  in a scratch worktree (#281, `np-breaks.mjs`'s header); Bash heredocs mangle backslashes — use the Edit tool.
+- **Open questions for him:** none.
+- **Pick up here:** after his "merge live" of PR #443, archive `[ACCOUNTS-NEW-PERSON]`
+  (`node raptor-port/scripts/backlog-archive.mjs ACCOUNTS-NEW-PERSON --homes raptor-port/docs/handpass/2026-09-26-accounts-new-person.md`),
+  then plan `[POST-OUT-OUTCOMES]` from the approved mock-up and D229, D280–D299 (Opus 5.5 high; Fable + Astra red-team;
+  FULL check).
 <!-- /now -->
 
 ## Next, in order
