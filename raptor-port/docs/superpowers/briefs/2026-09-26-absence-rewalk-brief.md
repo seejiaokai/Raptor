@@ -2,7 +2,7 @@
 
 For the re-walkers (Opus 5.5 helpers), one per walker. The first walk (W1–W5) found defects on the OLD build; each was
 fixed with a test that failed first. The app is now REBUILT with every fix and served at http://localhost:4175 (the
-bundle `index-DmyqQvbj.js` — if the page loads a different `index-*.js`, stop and say so: someone rebuilt under you).
+bundle `index-KbvILaPW.js` — if the page loads a different `index-*.js`, stop and say so: someone rebuilt under you).
 Bug-check order §5, "The re-walk": re-run the scripts that showed each finding, into a SEPARATE output folder, and read
 every result against the NEW flow.
 
@@ -32,7 +32,9 @@ every result against the NEW flow.
 ## What each of you re-walks
 - **W1** (the Inputs calendar): W1-F1 (a phone swipe pages the month), W1-F2 (a finger's tap on a chip opens its edit
   once), W1-F3 (a member's calendar: another man's chip does not lift; his input opens READ ONLY — no Delete / Save,
-  "Only … or an admin can change this."), W1-F4 (a noon leave prints 12:00 in the war's tap list). Scripts:
+  "Only … or an admin can change this."), W1-F4 (a noon leave prints 12:00 in the war's tap list), and FR3 from the final code reads (a leave or a medical
+  DRAGGED on the calendar rewrites its remark's "till <date>" / "on <date>" to the new dates and keeps the other
+  words — the Inputs page's Remarks column and the week's Unavailable row). Scripts:
   `w1-05-phone-finger.mjs`, `w1-06-probe-swipe-tap.mjs`, `w1-07-probe-ghostclick.mjs`, `w1-08-member.mjs`,
   `w1-09-probe-member-cal.mjs`, `w1-03-desk-cal-doors.mjs`, `w1-10-desk-topbar-undo.mjs`.
 - **W2** (medical): AB4 at all four doors (a medical / upchit dragged on the calendar or reassigned on the schedule now
@@ -46,7 +48,9 @@ every result against the NEW flow.
   OIL tracker and the tap list), W3-F7 (a keyboard cannot leave an open sheet; a war switch closes the open cell — try
   every road to a switch you can find), W3-F8 (Redo / Undo refuse to put a bid back over a medical filed since, naming
   it; undoing a filing that replaced a bid still gives the bid back), W3-F9 (the war's cuts: each piece says its own
-  "till"). AB2 is unchanged on purpose (a question for the owner) — confirm it only. Scripts: `w3-01-bulk.mjs`,
+  "till"). From the final code reads: FR1 (Refuse a bid, Ack it, Undo, file a medical on its day on the Inputs page,
+  Redo — refused by name, the bid stays refused), FR5 (a dragged block's Delete over a morning the WAR approved plus an
+  afternoon bid takes both). AB2 is unchanged on purpose (a question for the owner) — confirm it only. Scripts: `w3-01-bulk.mjs`,
   `w3-03-postings.mjs`, `w3-03b-po-archive.mjs`, `w3-04d-code-follows-days.mjs`, `w3-05-switch.mjs`,
   `w3-05b-stale-sheet.mjs`, `w3-05c-tab-reach.mjs`, `w3-06-till.mjs`.
 - **W4** (phone and money): AB6 (an overnight leave's tail is named in the tap list of the day it ambers — admin and
@@ -55,7 +59,10 @@ every result against the NEW flow.
   `w4-06-saturday.mjs`, `w4-07-hold-probe.mjs`, `w4-08-hold-why.mjs`, `w4-03-touch.mjs`, `w4-04-eight.mjs`.
 - **W5** (orders and lifecycle): W5-F1 / F2 ("Undo post out" brings the man's row, bids and leave back; a later Post out
   does not make it vanish), W5-F3 (Tab stays in the open sheet; a war switch closes it), W5-F4 / F5 (beside a 09:00–14:00
-  ATT C no afternoon is offered; a refusal names a timed medical's hours; the heading reads "now <LL"). Scripts:
+  ATT C no afternoon is offered; a refusal names a timed medical's hours; the heading reads "now <LL"). From the final code reads: FR2 (a Post out that has archived him — a past date, the
+  switch on — moved to a date still to come, or with "Archive on PO date" turned off: he is back on the Quals roster at
+  once), FR4 (a man archived BY HAND on Quals who has a future Post out: the posting sheet's Undo clears the date and
+  he STAYS archived). Scripts:
   `w5-05-postout-file.mjs`, `w5-05b-postout-row-probe.mjs`, `w5-05d-vanish-trigger-probe.mjs`,
   `w5-06b-stale-sheet-probe.mjs`, `w5-02b-medical-hours-control.mjs`.
 
