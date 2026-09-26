@@ -25,6 +25,8 @@ file that will now carry it; mark any row it replaces or one-off permission it
 spends; then run `node raptor-port/scripts/backlog-archive.mjs --rulings` (it puts
 the new number into the map and archives marked rows). Then make sure the named
 file actually carries it. The work absorbing a ruling is not the record keeping it.
+If it OVERWRITES or narrows an earlier ruling, fix what the old one left behind in the
+same change: the documents stating it, the app (file the build), the lists (D201).
 
 If no (an ordinary task instruction), ignore this and carry on.
 

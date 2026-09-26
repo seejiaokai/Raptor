@@ -46,14 +46,13 @@ the later merge keeps both (D78).
 
 ## Next, in order
 
-1. **HIS ORDER — D173, amended by D175 and D180** (the `## Now` block above): PR #435 and PR #437 MERGED 25 Sep 26 →
-   `[LEAVE-LATE-PUBLISHED]` (D180, D181 — MERGED 26 Sep 26, PR #438) →
-   `[ACCOUNTS]` on a new branch → the one changes window (`[DRAFT-PENDING]`) → one full check → "merge live". **`[HUMAN-RETEST]`** — the amendment system MERGED 25 Sep 26 (PR #434; evidence
-   `raptor-port/docs/handpass/2026-09-24-amendment.md`). Next, in his order (D147): the absence record
-   together with `[S4-HUNT-REST]`, then change-recording (with D148 and `[UNDO-ROSTER-SETTINGS]`), then the Leave War
-   links last. The two evidence sheets (Tracker 23 Sep, amendment 24 Sep) are the worked examples.
-2. Then his after-the-hunt order: `[PUB-UNAVAIL]` → `[LW-LOCKMARK]` → `[LW-WEEKDAY-WORK]` → the OIL award fix and the
-   small OIL follow-ups as one batch (D147) → `[DB-STEP]`. The whole list: `OUTSTANDING.md`'s priority list.
+1. **HIS ORDER to the database step, about two months away (D203, 26 Sep 26):** now `[ACCOUNTS]` (with D200, D202 —
+   answer his "how does a new user join" question first) → the one changes window (`[DRAFT-PENDING]`) → one full check →
+   "merge live" (D173); beside it, he talks to the IT side (`[IT-QUESTIONS]`). Development as normal: `[HUMAN-RETEST]`'s
+   remaining three in his order (D147 — the absence record with `[S4-HUNT-REST]`, change-recording, the Leave War links
+   last), then `[PUB-UNAVAIL]` → `[LW-LOCKMARK]` → `[LW-WEEKDAY-WORK]`.
+2. **About a month before the database:** `[DB-READINESS]` with the OIL award fix and the small OIL follow-ups as ONE
+   batch (D147, D203) → `[DB-STEP]` when Manfred is ready. The whole list: `OUTSTANDING.md`'s priority list.
 3. Filed, none blocking: `[TRK-PINCH-ASK]` (his iPhone look), `[TRK-DLG-LEFTOVERS]`, `[TRK-RETEST-NOTES]`,
    `[LW-FROZEN-BAR-GAP]`, `[LW-FIGSEL-SLOW]`. Everything else: `OUTSTANDING.md`'s priority list.
 4. **Before ANY collaborator:** take the checks runner off this repo (Astra SEC-101, `[REPO-PRIVATE]`).

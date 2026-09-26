@@ -56,6 +56,21 @@ misses shared.
    A field that cannot be filled without doing the thing makes a miss visible to HIM, not just to
    you. That is the same shape as the `Walk:` line, and for the same reason.
 
+## When a ruling overwrites another — fix what it leaves behind (D201, 26 Sep 26)
+
+**Owner:** *"every new ruling if it overwrites the old ones make sure u fix the things u mentioned."* The later ruling wins
+(D90) — but the older one lives on in every file that still states it, in the app that still does it, and by its absence
+from the lists that should carry the new one. Nobody reading those later knows the rule changed. So, **in the same change
+that records the ruling**:
+1. **The documents.** Search for the rule's SUBJECT (the thing it governs — "own row", "change history", "OIL award"), not
+   only its D-number, across `raptor-port/docs/` (the reference docs, `data-model.md` and its §11 permissions table,
+   `handover-dataverse.md`, specs, look cards), code comments and test names. Correct each, or mark it with a pointer.
+2. **The app.** If the app does not yet do what the new ruling says, file the build in `OUTSTANDING.md` with its place.
+3. **The lists.** Add the ruling to every list it belongs in that does not carry it (the permissions table, a register).
+
+The new row's "Where it lives now" names what was fixed and what was filed. A change inside `raptor-port/src` still never
+trims a document (D29) — a correction is not a trim.
+
 ## If you notice a ruling you never recorded
 
 Say so plainly and record it, however old. Do not quietly fold it in — he has no way to tell the

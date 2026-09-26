@@ -949,6 +949,11 @@ relationship behaviours are the terms.
 
 ## 11. Security roles
 
+**Behind the rulings, to bring up to date in `[ACCOUNTS]` (D200, 26 Sep 26):** a member edits every column of his own
+`Person` row (D149); members read the change history, `EditLog` (D169); an account is tied to a callsign (D166); OIL
+awards are written by admins only, with who gave each and when (D79, D82). Until then, where a line below disagrees,
+the ruling wins (D90, D201).
+
 Two roles today (`admin`, `main` — a squadron member); the matrix is written
 for those two and gains a column when the directory brings more. In
 Dataverse terms: two **security roles**, one **business unit** (single
