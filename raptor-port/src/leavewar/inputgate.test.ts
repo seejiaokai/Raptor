@@ -307,6 +307,23 @@ describe('undo and redo do not put a bid back over a medical (B7, W3-F8)', () =>
     expect(r.ok).toBe(false)
     expect(r.reason).toMatch(/ATT C now holds 11 Feb/)
   })
+  /* and the Undo of a REFUSAL (Fable's final code read, F2): the refused bid would come back undecided on the sick day.
+     Reached when the medical is NOT the latest step on the admin's own list — filed by someone else once Undo reverses
+     only your own changes (D148, decided) — so it goes in here without a timeline entry, as the test above does. */
+  it('Undo of a bid’s refusal, after a medical was filed on its day, is refused by name — the bid stays refused', () => {
+    setRole('admin')
+    setCells([{ personId: 'ammo', date: '2026-02-13' }], 'LL')
+    advanceStage()
+    setBidStates([{ personId: 'ammo', date: '2026-02-13' }], 'refused')
+    const st = () => (recsAt('ammo', '2026-02-13').find((x: any) => x.kind === 'request') as any)?.state
+    expect(st()).toBe('refused')
+    INPUTS.unshift({ iid: 'medr', person: 'ammo', type: 'ATT C', date: 'Feb 13', yr: 2026, allday: true, remarks: '', mod: '2026-02-01' })
+    syncAbsences()
+    const r = globalUndo()
+    expect(r.ok).toBe(false)
+    expect(r.reason).toMatch(/ATT C now holds 13 Feb/)
+    expect(st()).toBe('refused')
+  })
   /* THE SAME BID, A DIFFERENT STATE (Astra's final code read, finding 1, 26 Sep 26): a refused bid is history and a
      medical filed beside it leaves it be — but a Redo that turns it back into an acknowledged bid made it live again on
      the sick day. The first fix only asked about a bid that was not there at all. */
@@ -344,6 +361,20 @@ describe('bulk Delete and Approve over mixed days (W3-F3, AB7)', () => {
     expect(r).toEqual({ written: 1, skipped: 0 })
     expect(recsAt('ammo', '2026-02-10').some((x: any) => x.kind === 'request')).toBe(false)
     expect(rowsOf('ammo', 'LL')).toHaveLength(1)
+  })
+  /* THE SAME GESTURE UNDER A WAR-APPROVED LEAVE (Fable's final code read, F3, 26 Sep 26): the bid beneath a leave the
+     war approved stayed behind a Delete, where under Inputs-filed leave it went — same gesture, two answers. */
+  it('Delete over a WAR-approved morning takes the afternoon bid beside it too', () => {
+    setRole('admin')
+    setCells([{ personId: 'ammo', date: '2026-02-18' }], '*LL')
+    advanceStage()
+    setBidStates([{ personId: 'ammo', date: '2026-02-18' }], 'approved')
+    expect(rowsOf('ammo', 'LL').some((r: any) => r.lw)).toBe(true)
+    setCells([{ personId: 'ammo', date: '2026-02-18' }], 'LL*')
+    expect(recsAt('ammo', '2026-02-18').some((r: any) => r.kind === 'request')).toBe(true)
+    clearCells([{ personId: 'ammo', date: '2026-02-18' }])
+    expect(recsAt('ammo', '2026-02-18').some((r: any) => r.kind === 'request')).toBe(false)
+    expect(rowsOf('ammo', 'LL').some((r: any) => r.lw)).toBe(false)
   })
   it('Approve does not count a leave that was already approved as a decision', () => {
     setRole('admin')

@@ -2340,12 +2340,15 @@ export function clearCells(cells: { personId: string; date: string }[]): RangeWr
     for (const c of cells) {
       const m = mainAt(c.personId, c.date)
       if (m && m.kind === 'absence') {
-        if (state.role === 'admin' && canDecide(state.period.stage, state.role) && warEditable(c.personId, c.date)) approved.push({ ...c, iid: m.id })
         /* THE BIDS BENEATH FILED LEAVE GO TOO (the absence-record re-test, W3-F3, 26 Sep 26): a morning filed on the
            Inputs page sits ABOVE an afternoon bid (the ladder), and this asked only the top record — so the bid was
            counted "skipped, owned by Raptor" and left where it was, while Approve / Refuse / Ack in the same box already
-           reached it. The filed leave itself stays (it is the Inputs page's); only the war's own requests leave. */
-        else if (clearRequestsAt(c.personId, c.date)) written++
+           reached it. Taken FIRST, whoever owns the leave on top (Fable's final code read, F3: under a leave the WAR
+           approved the bid stayed while the leave went — same gesture, two answers). A leave filed on the Inputs page
+           itself stays (it is the Inputs page's); a war-approved one goes by the door, which reads the Input by id. */
+        const reqs = clearRequestsAt(c.personId, c.date)
+        if (state.role === 'admin' && canDecide(state.period.stage, state.role) && warEditable(c.personId, c.date)) approved.push({ ...c, iid: m.id })
+        else if (reqs) written++
         else skipped++
       } else rest.push(c)
     }
@@ -3641,7 +3644,9 @@ export function setCellDays(personId: string, date: string, days: number | null)
   }
   const rest = { ...had }
   delete (rest as { days?: unknown }).days
-  const rec: CreditRec = days === null ? rest : { ...rest, days }
+  /* the code follows the number (N19; W3-F6 — as editManualCredit does), so a later caller of this writer cannot
+     reopen a 2-day award reading HO (Fable's final code read, N2) */
+  const rec: CreditRec = days === null ? rest : { ...rest, days, code: days < 1 ? 'HO' : 'FO' }
   if (JSON.stringify(rec) === JSON.stringify(had)) return null
   return putList(personId, date, list.map(r => (r === had ? rec : r))) ? null : 'Could not change that'
 }

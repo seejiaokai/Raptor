@@ -56,4 +56,14 @@ describe('a war switch closes the sheet that was open on the old war', () => {
     act(() => selectWar(getState().wars[1].period.id))
     expect(screen.queryByTestId('bid-picker')).toBeNull()
   })
+  /* the event sheet too (Fable's final code read, F4, 26 Sep 26): its line and date would apply to the war now on
+     screen — the one day-acting sheet the first guard left out */
+  it('the event sheet does not survive the switch', () => {
+    setRole('admin')
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId('event-0-2026-01-05'))
+    expect(screen.getByTestId('event-sheet')).toBeTruthy()
+    act(() => selectWar(getState().wars[1].period.id))
+    expect(screen.queryByTestId('event-sheet')).toBeNull()
+  })
 })

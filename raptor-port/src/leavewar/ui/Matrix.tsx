@@ -695,8 +695,8 @@ export function Matrix() {
      W3-F5, 26 Sep 26 — found by the war walker). The Post out sheet commits on change and stays up so the admin can
      see the grid move behind it; moving the date PAST the tapped day made that day an in-squadron day, and the grid
      re-chose the sheet from the day's new state, so a bid sheet appeared under his hands, one tap from placing leave.
-     Read at the tap, from the day as it stood; unset for every other sheet, which still follows the day live (a PO
-     placed from the bid sheet still turns it into the Post out sheet). */
+     Read at the tap, from the day as it stood; unset for every other sheet, which follows the day live (a PO placed
+     from the bid sheet closes that sheet — the next tap on the greyed day opens the Post out sheet). */
   const [open, setOpen] = useState<{ id: string; callsign: string; date: string; posting?: 'po' | 'pi' } | null>(null)
   const close = () => { setOpen(null); setPlaceAt(null) }
   /* the published note editor opened FROM the tap list, for one Input */
@@ -1077,7 +1077,7 @@ export function Matrix() {
      its controls still wrote to the day it was opened on — in the war no longer on screen. The Sheet now holds the
      keyboard too, so the switch cannot be reached from inside one; this is the second guard, for any other road to a
      switch (an undo that snaps the war, a reload of the picker). */
-  useEffect(() => { setOpen(null); setPlaceAt(null) }, [period.id])
+  useEffect(() => { setOpen(null); setPlaceAt(null); setEventEdit(null) }, [period.id])   // the event sheet too (Fable F4)
   // MOVE MODE is wired further down, after the `phone` breakpoint state it
   // reads to choose commit-on-click (desktop) vs preview-then-Confirm (phone).
   // The frozen-column overlay's own anchors (see the .mxband block below and
