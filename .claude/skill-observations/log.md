@@ -599,3 +599,18 @@ resolved statuses always carry their resolution date
 **Suggested improvement:** When a hook or rule encodes how the harness behaves (where shells start, what env vars exist, what a tool returns), measure it in the current harness first, write the measurement into the hook's header, and make the hook's tests take the environment as an explicit input (so they pass from any starting folder).
 
 **Principle:** An environment fact written as a rule is a claim until it is measured in the environment the rule runs in; a guard built on an unmeasured claim refuses the wrong things and gives wrong advice with authority.
+
+### Observation 295: A walk script's NOTE that states the state goes stale the moment a fix changes it
+
+**Status:** OPEN
+**Date:** 2026-09-27
+**Session context:** five-flags batch, the re-walk after the code reads (numbered 295, past 294 on the parallel `claude/absence-record-d147-af6a50`)
+**Skill:** New skill candidate: bug-check order (raptor-port/docs/bug-check-order.md) — §5 "the re-walk", the walk scripts in `raptor-port/scripts/handpass/`
+**Type:** open-source
+**Phase/Area:** walk scripts written as assertions, re-run as the re-walk
+
+**Issue:** The first walk wrote its "report, don't judge" findings as NOTE lines whose TEXT described what it saw ("the purple ring AND its purple glow stay under the dots"). A reviewer's later finding removed that glow. On the re-walk the script printed the same sentence beside data that now read "no blur layers" — the log said the opposite of the measurement, and every check still passed, because a note is never judged. Only reading the raw values caught it.
+
+**Suggested improvement:** In §5's re-walk paragraph (and the walk brief): a NOTE's words are built from what was measured (a ternary on the reading), never a fixed description; and once a reviewer's finding is fixed, the note that observed it becomes a CHECK asserting the fixed behaviour before the re-walk runs — so the re-walk proves the fix instead of printing the old story.
+
+**Principle:** Anything a script prints as a description of the screen must be computed from the screen; a hard-coded observation is a comment that vouches, and a re-run makes it lie.

@@ -104,10 +104,22 @@ error list stayed empty in every world of every walker.
 
 | Walker | Item | First walk | What failed | Disposition | Re-walk (`…/rewalk/`) |
 |---|---|---|---|---|---|
-| W1 | [PUCK-FLAG-GLOW] | 64 pass · 0 fail · 72 pictures | — | — | not needed (no code of its item changed after) |
+| W1 | [PUCK-FLAG-GLOW] | 64 pass · 0 fail · 72 pictures | — | — | after the reads (Fable F1 changed its rings): A 10/0, C 8/0, D 4/0, F 12/0 — see below |
 | W2 | [LW-RESET-ORDER] | 97 pass · 0 fail · 60 pictures | — (a note: both "Really reset?" could stand at once) | **fixed** — arming either takes the other back (`settingssheet.test.tsx`, red first) | F11: 20 pass · 0 fail |
 | W3 | [CROWD-SWAP-SAYS-BUSY] | 123 pass · 5 fail · 63 pictures | **F6-d, NEW:** Ranger from the crew list onto Reaper's puck in the crowd Ranger was in → Reaper replaced by a second Ranger, silently (the fix had removed the accidental busy words); F6-a, F6-b (same on main): a second copy via the crowd's "+ add"; F20-sc-3/4 (same on main): the SC shift caption named the shift he was leaving | **fixed:** one man, one place on a row (`avail.ts`, `slots.ts rowPlaces`/`lastFilled`, `drag.ts`, `view.ts placeArmed`, `palette-html.ts`); the SC shift scan reads the seat he leaves. F6-a/b still PLANT a second copy — now named on the caption, the toast and the crew list — per "everything plants, warning after" (13 Aug 26): **his question, the look card** | f6 4/2 (the two "never listed twice" — his question), f20 9/0, f4d 22/0, f2d 10/0, f2p 11/0, f5 6/0 |
 | W4 | [VIEW-ARROW-OVER-LIST] | 1838 pass · 2 fail · 284 pictures | **F-W4-1, NEW:** on Edit Schedule a warning tap on a man fully visible beside the crew palette swung the week sideways (the right-hand room applied where the › floats over the palette) | **fixed:** the right room counts only where the › sits over the week (`weekInset`, `weekinset.test.ts` red first); the room is declared on the LEFT only (a declared right room made scrollIntoView nudge 34px — the first re-walk's find) | warn+pend: 95 pass · 4 fail — the four are W4's stricter "every lit puck in view" (the man's second puck, in the Unavailable block far down and behind the palette): the app brings the warning's OWN puck into view, and `main` does the same; read against the new flow, not a regression |
+
+**The re-walk after the code reads** (27 Sep 26, on the final build `index-C-k_umJP.js` at `http://localhost:4176`, the
+fixes of §8 in; single scripts, no lock needed). Pictures in `…/rewalk/w1/` (28, new) and `…/rewalk/w3/` (37 of its 58
+retaken). The browser error list stayed empty in every part.
+
+| What the reads' fixes touched | Re-walked | Result |
+|---|---|---|
+| F1 — his own flagged puck loses the glow for EVERY kind of flag | W1 A (the card's before / after), C (solid, dashed, dotted, as Outlaw), D (amber, thin red, grey, as Wildcard and Static), F (the orders: flag on / undo / redo, a chip, publish, reload, the Leave War row, OIL mode) | **34 pass · 0 fail.** The notes that had described the old glow became checks before the run (C2g, D1g, D2g: the purple ring, no blur layer) and pass; the pictures show it (`rewalk/w1/C2-…-mon-dotted-you`, `D1-…-amber-you-beside-tally`; unflagged, `F1-desktop-you-no-flag` still glows) |
+| A1 / F3 — a man with a copy left on the row does not leave it; the crew-rest strip takes his entries only | W3 f1a–f1e (the 7-day run across every kind of row he can leave), f3 (four overlapping targets), f20 (the leaving seat: desk, ground extra, sim, the info row, SC shifts) | f1a–f1e 35 / 0, f3 21 / 0, f20 9 / 0 |
+| A1 on the crowd rows | W3 f6 | 4 pass · 2 fail — the same two as the first re-walk (F6-a, F6-b: a second copy is planted, named on the caption, the toast and the crew list — "everything plants, warning after", 13 Aug 26). **His Q1**, not a regression (`rewalk/w3/f6-a-after-palette-drag.png`) |
+| A2 / A3 — the guard's order and starting folders | no app surface — `bg-cwd-guard.test.mjs` in the gates (§7) | — |
+| A4 — the ring test walks the severity rings | a test only — `flagglow-css.test.ts` in the gates (§7) | — |
 
 **Every finding was reproduced by the builder** before it was entered: F6-d by the engine test (the caption and the
 toast words) and W3's re-walk; F-W4-1 by W4's re-walk before and after the fix; F20-sc by `crowdself.test.ts` (red with

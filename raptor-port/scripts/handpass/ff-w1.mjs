@@ -526,8 +526,10 @@ if (want('C')) {
     C.log('C2 Tue (you, solid)', rd(t)); C.log('C2 Mon (you, dotted)', rd(m))
     C.check('C2', t && /\bme\b/.test(t.cls) && plainMe(t), 'signed in as Outlaw: his SOLID crew-rest puck is "you" with the plain red ring, no glow (D164)', rd(t))
     await close(page, 'C2-desktop-as-outlaw-tue-solid-you', [`${wk} .day[data-day="1"] [data-slot="1.0.0.1.p"]`, `${wk} .day[data-day="1"] [data-slot="1.0.0.0.p"]`])
-    C.note('C2d', 'the DOTTED ring on his own puck (Fable F13 asks: report) — the purple "you" ring AND its purple glow stay under the dots (.puck.me.boxdot sets no box-shadow; unchanged from main)',
-      m && { bs: m.bs, outline: `${m.os} ${m.ow} off ${m.oo}`, blurredLayers: blurred(m.bs) })
+    /* Fable's read, F1 (27 Sep 26): a flagged "you" puck keeps its purple ring but loses the blur for EVERY kind of
+       flag — the dotted one included (`.puck.me.boxdot`). Asserted, so the re-walk proves the fix. */
+    C.check('C2g', m && /\bme\b/.test(m.cls) && m.os === 'dotted' && m.bs === 'rgb(240, 182, 255) 0px 0px 0px 2px' && blurred(m.bs).length === 0,
+      'the DOTTED ring on his own puck: the purple "you" ring under the dots, NO purple glow (Fable F1)', m && { bs: m.bs, outline: `${m.os} ${m.ow} off ${m.oo}`, blurredLayers: blurred(m.bs) })
     await close(page, 'C2-desktop-as-outlaw-mon-dotted-you', [`${wk} .day[data-day="0"] .puck.boxdot[data-person="${OUTLAW}"]`], 22)
   })
   await step(C, 'C3', 'crew rest 8h — the breach becomes sanctioned', async () => {
@@ -594,10 +596,15 @@ if (want('D')) {
     C.log('D1 Mon Wildcard (you, amber)', mon.map(rd)); C.log('D1 Mon Tally (amber)', tal.map(rd))
     C.log('D1 Thu Wildcard (you, thin red)', thu.map(rd)); C.log('D1 Thu Pixel (thin red)', pix.map(rd))
     const amberShown = mon.some(m => /\bme\b/.test(m.cls) && /229, 168, 59/.test(m.bs)), amberOther = tal.some(m => /229, 168, 59/.test(m.bs))
-    C.note('D1a', `AMBER ring on your own puck (Wildcard, CP advisory) vs Tally's: Tally ${amberOther ? 'shows' : 'does NOT show'} the 1.5px amber ring; Wildcard ("you") ${amberShown ? 'shows it' : 'shows the purple "you" ring + purple glow INSTEAD — the amber ring is hidden, only the amber CP chip says it'}. Unchanged from main (.puck.me\'s !important shadow beats .puck.warn)`,
+    const glow = (a) => a.some(m => blurred(m.bs).length) ? 'purple ring + purple glow' : 'purple ring, no glow'
+    C.note('D1a', `AMBER ring on your own puck (Wildcard, CP advisory) vs Tally's: Tally ${amberOther ? 'shows' : 'does NOT show'} the 1.5px amber ring; Wildcard ("you") ${amberShown ? 'shows it' : `shows the "you" ${glow(mon)} INSTEAD — the amber ring is hidden, only the amber CP chip says it`}. The ring swap is unchanged from main (.puck.me\'s !important shadow beats .puck.warn) — his Q2`,
       { you: mon.map(m => m.bs), other: tal.map(m => m.bs) })
+    /* Fable F1: flagged, his own puck wears no glow — for the amber and the thin red ring too. */
+    const meFlagged = [...mon, ...thu].filter(m => /\bme\b/.test(m.cls))
+    C.check('D1g', meFlagged.length >= 2 && meFlagged.every(m => m.bs === 'rgb(240, 182, 255) 0px 0px 0px 2px' && blurred(m.bs).length === 0 && m.bg === ME_BG),
+      'Wildcard\'s own flagged pucks (amber Monday, thin red Thursday): the purple "you" ring, NO glow (Fable F1)', meFlagged.map(rd))
     const thinShown = thu.some(m => /\bme\b/.test(m.cls) && /240, 85, 95\) 0px 0px 0px 1.5px/.test(m.bs)), thinOther = pix.some(m => /240, 85, 95\) 0px 0px 0px 1.5px/.test(m.bs))
-    C.note('D1b', `THIN RED ring on your own puck (Wildcard, CP not authorised — a hard flag with no box) vs Pixel's: Pixel ${thinOther ? 'shows' : 'does NOT show'} the 1.5px red ring; Wildcard ("you") ${thinShown ? 'shows it' : 'shows the purple "you" ring + purple glow INSTEAD — the red ring is hidden, only the red CP chip says it'}. Unchanged from main`,
+    C.note('D1b', `THIN RED ring on your own puck (Wildcard, CP not authorised — a hard flag with no box) vs Pixel's: Pixel ${thinOther ? 'shows' : 'does NOT show'} the 1.5px red ring; Wildcard ("you") ${thinShown ? 'shows it' : `shows the "you" ${glow(thu)} INSTEAD — the red ring is hidden, only the red CP chip says it`}. The ring swap is unchanged from main — his Q2`,
       { you: thu.map(m => m.bs), other: pix.map(m => m.bs) })
     await close(page, 'D1-desktop-as-wildcard-mon-amber-you-beside-tally', ['#eWeek .day[data-day="0"] [data-slot="0.1.0.1.p"]', '#eWeek .day[data-day="0"] [data-slot="0.1.0.1.w"]'])
     await close(page, 'D1-desktop-as-wildcard-thu-thinred-you-beside-pixel', [`#eWeek .day[data-day="3"] .puck.warn[data-person="${WILDCARD}"]`, `#eWeek .day[data-day="3"] .puck.warn[data-person="${PIXEL}"]`])
@@ -612,8 +619,12 @@ if (want('D')) {
     const st = await ringRead(page, 1, STATIC)
     C.log('D2 Tue Static (you, grey note)', st.map(rd)); C.log('D2 the same as Saber saw it', base.staticTue.map(rd))
     const greyShown = st.some(m => /\bme\b/.test(m.cls) && /138, 150, 163/.test(m.bs)), greyOther = base.staticTue.some(m => /138, 150, 163/.test(m.bs))
-    C.note('D2a', `GREY NOTE ring on your own puck (Static, long work day): seen by Saber the puck ${greyOther ? 'shows' : 'does NOT show'} the 1.5px grey ring; signed in as Static ("you") ${greyShown ? 'it shows' : 'the purple "you" ring + glow shows INSTEAD — the grey ring is hidden, only the grey L chip says it'}. Unchanged from main`,
+    const stGlow = st.some(m => blurred(m.bs).length) ? 'purple ring + glow' : 'purple ring, no glow'
+    C.note('D2a', `GREY NOTE ring on your own puck (Static, long work day): seen by Saber the puck ${greyOther ? 'shows' : 'does NOT show'} the 1.5px grey ring; signed in as Static ("you") ${greyShown ? 'it shows' : `the "you" ${stGlow} shows INSTEAD — the grey ring is hidden, only the grey L chip says it`}. The ring swap is unchanged from main — his Q2`,
       { you: st.map(m => m.bs), other: base.staticTue.map(m => m.bs) })
+    const stMe = st.filter(m => /\bme\b/.test(m.cls))
+    C.check('D2g', stMe.length >= 1 && stMe.every(m => m.bs === 'rgb(240, 182, 255) 0px 0px 0px 2px' && blurred(m.bs).length === 0 && m.bg === ME_BG),
+      'Static\'s own grey-note pucks: the purple "you" ring, NO glow (Fable F1)', stMe.map(rd))
     await close(page, 'D2-desktop-as-static-tue-grey-you', ['#eWeek .day[data-day="1"] [data-slot="1.1.0.0.w"]', '#eWeek .day[data-day="1"] [data-slot="1.1.0.0.p"]'])
     await close(page, 'D2-desktop-as-static-tue-desk-grey-you', ['#eWeek .day[data-day="1"] [data-slot="d:1.0.2"]'], 30)
   })
