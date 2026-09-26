@@ -45,7 +45,7 @@ is right here: an account switched off is not something Ctrl-Z should bring back
 
 | Key | Shape | Default (never written until changed) |
 |---|---|---|
-| `accounts` | `Account[]` — `{ id, signIn, pass?, role: 'admin'\|'main', personId, enabled, lastSignInAt? }` | the demo accounts (§2a) |
+| `accounts` | `Account[]` — `{ id, signIn, pass?, role: 'admin'\|'main', personId, enabled }` (§14 F2: no sign-in stamp) | the demo accounts (§2a) |
 | `accessreq` | `AccessRequest[]` — `{ signIn, callsign, name, at, status: 'pending'\|'declined' }`, one per sign-in name | `[]` |
 | `guestview` | `boolean` | `false` (D204: off by default) |
 
@@ -84,7 +84,7 @@ his own habit all use them). **At the database step these four are deleted, neve
 
 | What was typed | The answer | What he sees |
 |---|---|---|
-| a sign-in name on an account, switched on, right password (or any non-empty one where the account has none) | signed in as that account | the app, as that callsign; `lastSignInAt` stamped |
+| a sign-in name on an account, switched on, right password (or any non-empty one where the account has none) | signed in as that account | the app, as that callsign |
 | the same with the wrong password (demo accounts only) | refused | "Incorrect username or password." (as today) |
 | an empty password | refused | the same message |
 | a sign-in name on a switched-off account | signed in, no access | a screen: "Your access has been switched off. Ask an admin." + Sign out |
@@ -132,9 +132,8 @@ The rail's first category, **Users — "Who can sign in"**, becomes three blocks
 2. **Accounts** — the add form: **Defence mail**, **Puck** (the same no-account list), **Role** → **Add account**
    (refused, with the reason, for an empty or taken sign-in, no puck, or a puck already taken; a pending request under
    the same sign-in is resolved by it). Then the list, sorted by callsign: callsign (puck colours), defence mail,
-   Role select, Puck select, an On/Off switch, and **Remove** only for an account never signed in (a typo fix; an
-   account that has signed in is switched off instead — `data-model.md` §10: `User` is Restrict, `enabled = false` is
-   the exit). Rows for switched-off accounts read dimmed "Off". A person posted out (archived) keeps his account and
+   an editable Defence mail, Role select, Puck select and an On/Off switch — no Remove (`data-model.md` §10: `User` is
+   Restrict, `enabled = false` is the exit; §14 F2, F5). Rows for switched-off accounts read dimmed "Off". A person posted out (archived) keeps his account and
    reads "posted out" beside it (§13 Q3).
 3. **Access while waiting** — a switch: "Let people waiting for approval read the programme", off by default, with the
    line: "When on, anyone who signs in before an admin approves them can read View-only Sched. They cannot see who is
@@ -258,7 +257,7 @@ The THING: the signed-in person (his account, his puck, his role). Columns: SHOW
 | 5 | Top bar (desktop) | no View as; inert badge (Admin/Member/Guest); Admin tab badge |
 | 6 | Phone drawer | no View-as chips; "Signed in as …"; Admin entry badge; ☰ dot |
 | 7 | Admin → Users: Requests | approve (needs a puck), decline, role, the no-account puck list |
-| 8 | Admin → Users: Accounts | add; role / puck / on-off per row; Remove only never-used; own-row and last-admin refusals |
+| 8 | Admin → Users: Accounts | add; defence mail / role / puck / on-off per row; own-row and last-admin refusals |
 | 9 | Admin → Users: Access while waiting | the switch, off by default, persisted |
 | 10 | The purple "you" puck (week, board) | on the signed-in person's puck only |
 | 11 | Inputs page | a member lands on his own; files for himself only; edits/deletes only his own |
@@ -288,7 +287,7 @@ inputs are not his); reload between each.
 ## 11. Tests (written red first where they pin a change)
 
 - `state/accounts.test.ts` — every §3 answer; sanitising stored junk; uniqueness; the guard rails; approve/decline/ask
-  again; the defaults are never written until a change; `lastSignInAt`; Remove only never-used.
+  again; the defaults are never written until a change; editing the sign-in; the no-admin fallback.
 - `state/permissions.test.ts` — the drift test (both directions), the ratchet, `may()` per role/table/own, the Leave War
   agreement test.
 - `ui/login.test.tsx` — the sign-in outcomes through the real form; `App` routes to `Waiting` / guest shell / Shell.
@@ -342,4 +341,31 @@ accounts; Microsoft sign-in replaces the screen; Teams notice on a request"); `H
 
 ## 14. Red team — findings and what was done
 
-*(filled after the reads: Fable here; Astra on his PC — its brief is the same file)*
+**Fable 5.1** (`docs/superpowers/specs/2026-09-26-accounts-plan-fable.md`, read blind): 17 findings — 4 high, 8 medium,
+5 low. Every one is taken; where this section and an earlier one disagree, **this section wins** (it is the later
+word). **Astra**: its brief is the same file; it runs on the owner's PC — its findings will be added here when back,
+and nothing is reported ready for "merge live" before they are dispositioned.
+
+| # | Finding | What the build does instead |
+|---|---|---|
+| F1 high | D148 is not "no code change": today ANY admin undoes ANYONE's change, and two admin accounts make that live | **Built here** — accounts make a ruling's breach reachable, so it is this work's: `mayReverse` = the SAME ACCOUNT only (a member's entry also only on his own records); the undo list clears at sign-out (D148's second sentence). The e2e tests that pinned an admin undoing a member's cell are rewritten to undo as the actor who made it. D148's third half (refuse and say who when someone else changed the same thing since) stays with the change-recording build — checked at the build whether it already exists |
+| F2 high | `lastSignInAt` makes every member a writer of `User` | **Dropped** with "Remove only if never used" (F5 makes it unnecessary): the only way out for an account is switching it off; its sign-in name and puck are editable, so a typo or a mistake is corrected, never stranded. No sign-in writes anything |
+| F3 high | the drift test never runs on a docs-only edit to §11 | The table's data lives in ONE JSON file (`src/state/permissions.json`) that the app imports AND `scripts/docsize.mjs` reads: the drift check runs in the Docs guard (every PR, every push, no install), at the end of every turn (the Stop hook), and in vitest |
+| F4 high | the test measures §11 ↔ module, not module ↔ app; three cells already disagree with the app | `GATES` in `permissions.ts` names the op and table each non-schedule gate claims (settings, edit history, inputs, people…); `canEditSched()` stays the named alias for the true schedule writers; a ratchet test fails any `may(` call whose op and table are not a cell of the table. §11 corrected: `Amendment` admin D = Unpublish withdraws the latest version (kept, marked); `Signoff` admin U D on the working copy, append-only once issued; `LeaveBid` member own D while open |
+| F5 medium | a changed defence mail leaves a man with no working account | the sign-in name is editable per row (unique; a pending request under the new name is resolved) |
+| F6 medium | approved while reading as a guest → stuck | the app upgrades him in place the moment an enabled account carries his sign-in ("Your access was approved") |
+| F7 medium | the Leave War's "no viewer = every row" escape | `canEditRow` for a member needs a real viewer equal to the row; the e2e helper that left the war unscoped scopes it to the member it drives |
+| F8 medium | a demoted / switched-off account keeps its powers until it signs out | `may()` reads the LIVE account (its role and switch) on every call; switched off → no rights, and the app shows the switched-off screen |
+| F9 medium | stored junk with no working admin locks everyone out | the loader falls back to the demo accounts (not saved) when no switched-on admin is left, and says so; a save that would leave none is refused |
+| F10 medium | the ratchet is easy to walk round | an IMPORT rule: only named files import `SESSION`; everyone else asks `signedIn()`, `may()`, `ME`, `whoami()`. `LOGINROLE` and `canToggleRole` deleted; the probe's `raptorRole` becomes `setRoleForTest` (localhost only) |
+| F11 medium | §11 not buildable by IT in three places | a **Waiting** role in its own table (a principal with no `User` row), reading `Setting` always and the programme only while the guest switch is on (the server checks the switch); `User` own row = the principal; `EditLog` medical details column-secured like `Input` remarks; a Notes column the parser ignores |
+| F12 medium | tests the plan did not list; `rulecheck` | a bare `{user, role}` session is the TEST shape (the person stays the boot default); a real sign-in passes the account. The listed tests are read and fixed; each ruling built here is named in a test title |
+| F13 low | Approve is two commands | one `settings.accounts` command writes both records |
+| F14 low | the guest's screen: three unnamed places | `Waiting` renders alone (no overlays); the Leave War pre-warm bails for a guest; the drawer holds View-only Sched and Logout only |
+| F15 low | `whoami()` for a guest; "mine" by display string | a guest's whoami is his sign-in; a bug report stores the account id and "mine" compares ids |
+| F16 low | roll-call rows missing | added to the walk: Admin → Data, the admin view toggles, the "Set default order?" offer, Unpublish's `by`, the replaced-bid notice's words, the Quals "Save changes" toast (its prototype words replaced — `[QUALS-PROTO-TOAST]`, the page is open anyway) |
+| F17 low | doc and comment consistency | the defence mail is recorded on the ACCOUNT (not the person) everywhere; `User.personId` required; the stale comments named are fixed |
+
+**Fable's owner questions**, folded into §13's list for his look (the built answer first): an account always needs a
+puck (a non-flying scheduler is added as Personnel); a guest sees no warning list either (the reasons can name an
+absence); `saber`/`outlaw` take any password; a declined person may ask again without limit.
