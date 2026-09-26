@@ -240,3 +240,54 @@ then file, file then Post out — on a published day and an unpublished one; aft
 The brief is `docs/superpowers/briefs/2026-09-26-absence-retest-scenarios-brief.md`: attack THIS plan for what it
 MISSES — a surface, a door, a role, an order, a rule — and design the ranked failure scenarios the walk must
 execute. Their findings fold into §4–§6 before the walk starts (capped at one round — the design review cap).
+
+## 9. What the two reviews changed (26 Sep 26) — folded in before the walk (one round, the cap)
+
+The reports, verbatim: `docs/handpass/2026-09-26-absence-fable-scenarios.md` (40 scenarios, F1–F8) and
+`docs/handpass/2026-09-26-absence-astra-scenarios.md` (40 scenarios, defects A–B). Blind to each other; they agree on
+the biggest one (AB4) independently.
+
+**Their findings, each reproduced by the host through the real screens before anything is fixed** (order §4):
+
+| # | finding | by | status |
+|---|---|---|---|
+| AB1 | the bid sheet's **Clear**, on a day holding an OIL award, removes the award — no word, the OIL figure drops | Fable F1 / S1 | **REPRODUCED** (H2: FO → blank, OIL 1 → 0) |
+| AB2 | the drag-selection's **Delete** removes every award in the rectangle | Fable F2 / S2 | to reproduce — W3 |
+| AB3 | a leave piece cut by a medical (or cut, un-approved or moved by the war) keeps its old **"till <date>"** | Fable F3 / S5 | **REPRODUCED** for a typed remark (H2: 20–21 Jul reads "till 24 Jul"); the war-written remark — W3 |
+| AB4 | the Inputs calendar's **drag of a medical or an upchit**, and the schedule's **reassign** of one to another man, skip the "who holds the shared days" and upchit questions the edit window asks | Fable F4 / S4; Astra A, 1–3 | to reproduce — W2 |
+| AB5 | a **posting that closes before it opens** is refused silently — the sheet closes, nothing saved, nothing said | Fable F5 / S3 | **REPRODUCED** (H2) |
+| AB6 | an overnight leave's tail ambers the next day, whose tap list does not show the tail | Fable F6 / S6 (predicted) | to walk — W4 |
+| AB7 | bulk Approve's "N decided" counts an already-approved leave | Fable F7 / S16 (predicted) | to walk — W3 |
+| AB8 | **History** has no line for an input edit, a calendar move, a reassign, the war's approve / move | Astra B / S4 | to walk — host |
+
+**Plan corrections:**
+- **R9 was the wrong sheet** (`PersonSheet` is seat / band / SXO). The postings are **R9a** the bid sheet's PI / PO / +OIL
+  row; **R9b** the Post in / Post out sheets an admin's tap on a hatched day opens (with "Place leave or OIL here
+  instead…"); **R9c** the drag-selection's Post out (one person; there is no bulk Post in — record, not a defect).
+- **R10 is the bid sheet's inline award** — one number in halves, a reason, a giver, **no hours** (N13 left an award
+  nothing to clash with and N19 made it one number; the hours box went). `CreditForm` is the counters' form. "An award
+  with hours" is struck from §5; B8 / N5 are not tested as live (register §11).
+- **New rows:** R25 the read-only "Leave from Raptor" / "OIL the app credited" sheet (it routes the reader to the Inputs
+  page or the schedule); R26 the header's save status (the ONLY sign of a storage fault); R27 the war's clash strip
+  (admin only); R28 the war's Undo / Redo — the one global timeline, where a posting is NOT undoable; R29 a notice's
+  actor (the callsign); R30 the pending list; R31 the Amendments panel; R32 the four confirm sheets (medical clash,
+  upchit, OIL ask, document ask) — stacking, Cancel, Escape, Save, phone fit; R33 the document viewer; R34 the figure
+  readers (the cell, the breakdown, a person's every-figure sheet); R35 the toast; R36 print.
+- **R12 says both halves:** the manning row counts bodies; the DUTY line counts a man the schedule credited, never an
+  award (N17's own exception) — neither is a defect.
+- **A draft war shows no decision row** — N15's "every stage" is open, closed and published.
+- **D189 per path:** the medical trim and the war's approve-extend rewrite a "till"; a leave cut by a medical or by the
+  war does not (AB3) — the expected result is stated per path.
+- **`[PUB-UNAVAIL]`:** closed — both reads by the code, and H1 on screen (the published face kept its Unavailable list
+  through a late leave, a late medical, a war approval and a medical cutting issued leave). Archived at the end.
+
+**The walkers, re-split** (Fable M14; Astra 15, 16): the orders get their OWN walker, the storage faults go to the host.
+
+| walker | ground |
+|---|---|
+| W1 | the Inputs calendar — leave / course / OD drags, hold-to-add, the month swipe, a refusal never strands the ghost, phone by finger (C1–C3, Fable S15, M11) |
+| W2 | the medical cascade — the dialogs (B2–B6), **AB4** (the calendar's medical and upchit drags, the reassign of a medical), the same-type refusal at every door, custom hours (§7), the six-hour boundary, an overnight medical, the document ask and viewer, the medical on a published day (D179) |
+| W3 | the war's gestures — bulk fill / approve / refuse / back-to-bid / delete / move by real drag (**AB2, AB7**), the one window in every stage incl. a DRAFT war, the posting sheets (R9a–c, AB5's other doors), awards (AB1's twins), the read-only sheet's routing, switching wars with a sheet open, undo after switching, the war-written "till" (AB3) |
+| W4 | phone and money — touch drag-select and the two-step move, eight records at 390px, four records on a day, posted-out / pre-posting leave, a notice-only day, the 15-day run, **AB6**, every figure after every gesture |
+| W5 | the ORDERS and the lifecycle — file↔bid, approve↔medical, publish↔file, award↔work, Post out↔file, each both ways on a published day and an unpublished one, with undo / redo / reload; switch war, change week and back, sign out and in as the other person, phone ↔ desktop with a sheet open (Fable S7–S11, S14; Astra 5–9, 11, 12, 14) |
+| host | the schedule side (R16–R24, R30, R31 — H1 done), roles and the guest (Fable S12, Astra 13), History (**AB8**), exports, the storage faults (R26) |

@@ -151,7 +151,8 @@ So, exactly:
   outside the bidding window, and it counts as already approved with no admin step. `[no test names it]`
 - **Deliberate, not bugs** — one undecided plus one refused request may share a half; windows that
   only touch do not clash; a notice says "(an admin)" rather than a name, because there is no
-  login-to-person map yet.
+  login-to-person map yet. *(That last one SET ASIDE 26 Sep 26 by D166: the notice names who did it by
+  callsign — §11.)*
 
 ## 9. What nothing points at
 
@@ -484,3 +485,39 @@ within the hour, once the cost was put to him.
 *Leaves untouched:* the Inputs page, where leave is whole or half days by construction with no
 quantity to type; and the AUTOMATIC credit, where the published schedule still decides FO or HO by
 the six-hour rule.
+
+## 11. Rulings since the hunt (21–26 Sep 26) — what they did to an absence
+
+Added 26 Sep 26 by the absence-record re-test (`[HUMAN-RETEST]` with `[S4-HUNT-REST]`; the plan
+`plans/2026-09-26-absence-retest-plan.md` §3). The rules sweep's output: each later ruling that reaches an
+absence, in the words the app uses. Newest wins (D90); where one changes a line above, that line is named.
+
+- **D79–D82 (recorded 23 Sep 26)** — the ids for N11, N13, N14, N16 above. Nothing new.
+- **D142 (24 Sep 26)** — a day's OIL comes from its LATEST published version, however long ago: an AL that takes a
+  man off a worked weekend takes his credit with it (and with it the amber on a leave beside that work, N2).
+- **D163 (24 Sep 26)** — two demo oddities (awards dated after the demo week; a man flying in July though posted out
+  in January) are demo data only. Not findings.
+- **D166 (25 Sep 26; built 26 Sep in `[ACCOUNTS]`)** — the war follows the SIGNED-IN callsign, not "View as" (gone):
+  a member bids, files and clears only on HIS own row; whose bid was replaced is decided by the signed-in person, so
+  a notice now names who did it BY CALLSIGN. **Sets aside §8's "a notice says (an admin) rather than a name"** — the
+  login-to-person map exists now (`leavewar/inputgate.ts replaceBids`).
+- **D174, D176 (25 Sep 26)** — a request filed on a published day since it was published, then taken off or
+  deleted, reads nothing pending.
+- **D177, D178, D179 (25 Sep 26), D185 (26 Sep 26)** — every input change after a day is published — filed, edited,
+  deleted, moved, from any door — reads "1 pending" on the admin's working copy and drops the four sign-offs; the
+  published face (View-only Sched, the issued version) keeps what it went out with until the next AL. **A medical
+  downchit freezes too** (D179, D185) — D177's own reading that it "stays live" is set aside, marked in its row.
+  Taking a late input back out reads 0 (D98).
+- **D189 (26 Sep 26)** — stretching or trimming a leave or a downchit rewrites its "till <date>" remark, and each
+  published day it still covers reads pending for that reason.
+- **D103 (25 Sep 26)** — any change that shows as pending on a published day wipes the sign-offs.
+- **D211, D213, D215 (26 Sep 26)** — every member sees a medical input's type, remarks and documents; a guest sees a
+  medical row on View-only Sched as a member does, read only.
+- **D148 (24 Sep 26)** — undo reverses only your own changes. DECIDED, NOT BUILT: the change-recording re-test's.
+- **`[PUB-UNAVAIL]` (19 Sep 26, filed)** — "a new absence silently changes a published day's Unavailable list" is
+  what D177–D179 built against (`[LEAVE-LATE-PUBLISHED]`, PR #438). The re-test confirms it on screen before the
+  item is archived.
+- **N5 / B8 (the hours on a hand-typed credit)** — no longer live. N13 (the same night) left an award nothing to clash
+  with and N19 (21 Sep) made it ONE number in halves; the build took the hours box away with them (the bid sheet's award
+  asks a quantity, a reason and a giver only — `leavewar/ui/BidPicker.tsx`). Found by Astra's plan read (26 Sep 26).
+  Not a finding; the re-test does not test it as live.

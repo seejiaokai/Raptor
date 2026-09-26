@@ -1,0 +1,45 @@
+NOTE  [H1-phone] cast — {"X":"Drifter","Y":"Hunter","Z":"Piston","V":"Cinch","U":"Reaper","free":12}
+PASS  [H1-phone] setup-Z-leave — expected: Z LL Thu-Fri filed on the Inputs page | observed: {"added":1,"asked":[],"toast":"","iid":"imui9n21mu9j2rk"}
+PASS  [H1-phone] setup-U-medical — expected: U ATT C Fri filed (certificate asked, answered none) | observed: {"added":1,"asked":["certificate"],"toast":"","iid":"imui9n3pqitnc96"}
+PASS  [H1-phone] setup-V-war-approved — expected: V bid LL Fri on the war, then Approve | observed: {"bid":true,"tap":"bid-picker","approve":true,"cell":{"box":"LL","mark":"","title":"","cls":"c appr"}}
+PASS  [H1-phone] publish-fri — expected: Friday published and signed again: 0 pending everywhere, the four signed | observed: {"pub":{"pressed":true,"label":"Publish day"},"bad":"","c":{"week":"","nys":false,"infoWeek":"(none)","panel":"(no panel at this width)","board":"","signLine":"Published at Original — no changes to publish","infoBoard":"(none)","signs":["Ace","Anvil","Anvil","Anvil"],"n":{"week":0,"board":0,"infoWeek":0,"infoBoard":0},"fell":false}}
+PASS  [H1-phone] publish-fri-face — expected: the published face lists Z (LL), V (LL) and U (ATT C) as Unavailable | observed: ["ATT C:dice","LL:pump","ATT C:sufa","OD:pike","LL:snap"]
+PASS  [H1-phone] A-inputs-file-count — expected: a leave filed on the Inputs page onto published Friday: 1 pending on every count | observed: {"bad":"","c":{"week":"1 pending","nys":true,"infoWeek":"1 unpublished edit","panel":"(no panel at this width)","board":"1 pending","signLine":"4 to sign · CUR CK, SKED CK, PLANNED BY, APPROVED BY","infoBoard":"1 unpublished edit","signs":["— name —","— name —","— name —","— name —"],"n":{"week":1,"board":1,"infoWeek":1,"infoBoard":1},"fell":true}}
+PASS  [H1-phone] A-inputs-file-signs — expected: the four sign-offs fall (D103) | observed: ["— name —","— name —","— name —","— name —"]
+PASS  [H1-phone] A-inputs-file-face — expected: the published face keeps what it went out with (no X); the working copy shows X | observed: {"face":["ATT C:dice","LL:pump","ATT C:sufa","OD:pike","LL:snap"],"work":["LL:slipway","ATT C:dice","LL:pump","ATT C:sufa","OD:pike","LL:snap"]}
+FAIL  [H1-phone] A-inputs-delete — expected: step ran | observed: THREW locator.click: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for locator('#inRangeBtn')[22m
+[2m    - locator resolved to <button id="inRangeBtn" class="abtn primary" aria-expanded="true">📅 17 Jul → 17 Jul</button>[22m
+[2m  - attempting click action[22m
+[2m    2 × waiting for element to 
+FAIL  [H1-phone] B-war-approve — expected: step ran | observed: THREW locator.click: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for locator('[data-testid="cell-slipway-2026-07-17"]').first()[22m
+[2m    - locator resolved to <td class=" act" data-testid="cell-slipway-2026-07-17">…</td>[22m
+[2m  - attempting click action[22m
+[2m    - waiting for element t
+FAIL  [H1-phone] B-war-clear — expected: step ran | observed: THREW locator.click: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for locator('[data-testid="month-JUL"]:visible').first()[22m
+[2m    - locator resolved to <button class="mjump on" title="Jump to JUL" aria-current="true" data-testid="month-JUL">JUL</button>[22m
+[2m  - attempting click action[2
+FAIL  [H1-phone] C-medical-late-count — expected: a medical filed late onto published Friday: 1 pending, the four fall | observed: {"bad":"week=2, board=2, infoWeek=2, infoBoard=2","c":{"week":"2 pending","nys":true,"infoWeek":"2 unpublished edits","panel":"(no panel at this width)","board":"2 pending","signLine":"4 to sign · CUR CK, SKED CK, PLANNED BY, APPROVED BY","infoBoard":"2 unpublished edits","signs":["— name —","— name —","— name —","— name —"],"n":{"week":2,"board":2,"infoWeek":2,"infoBoard":2},"fell":true}}
+PASS  [H1-phone] C-medical-late-face — expected: the face stays as issued — a medical too (D179, D185) | observed: {"face":["ATT C:dice","LL:pump","ATT C:sufa","OD:pike","LL:snap"],"work":["ATT C:prowler","LL:slipway","ATT C:dice","LL:pump","ATT C:sufa","OD:pike","LL:snap"]}
+NOTE  [H1-phone] D-medical-cuts-inputs — {"before":[{"iid":"imui9n21mu9j2rk","type":"LL","date":"Jul 16","endDate":"Jul 17","allday":true,"s":0,"e":1439,"remarks":"H1 Z leave Thu-Fri","lw":""}],"after":[{"iid":"imui9q1cv77kyif","type":"ATT C","date":"Jul 17","endDate":"","allday":true,"s":0,"e":1439,"remarks":"H1 Z sick on his last leave day","lw":""},{"iid":"imui9n21mu9j2rk","type":"LL","date":"Jul 16","endDate":"","allday":true,"s":0,"e":1439,"remarks":"H1 Z leave Thu-Fri","lw":""}],"toast":"Piston's LL on 17 Jul is cut for the ATT C — that leave goes back to the balance"}
+PASS  [H1-phone] D-medical-cuts-count — expected: Friday pending (the leave cut + the medical), every count agreeing, the four fall | observed: {"week":"4 pending","nys":true,"infoWeek":"4 unpublished edits","panel":"(no panel at this width)","board":"4 pending","signLine":"4 to sign · CUR CK, SKED CK, PLANNED BY, APPROVED BY","infoBoard":"4 unpublished edits","signs":["— name —","— name —","— name —","— name —"],"n":{"week":4,"board":4,"infoWeek":4,"infoBoard":4},"fell":true}
+PASS  [H1-phone] D-medical-cuts-face — expected: the face still shows Z as it went out | observed: {"face":["ATT C:dice","LL:pump","ATT C:sufa","OD:pike","LL:snap"],"work":["ATT C:pump","ATT C:prowler","LL:slipway","ATT C:dice","ATT C:sufa","OD:pike","LL:snap"]}
+NOTE  [H1-phone] D-medical-cuts-thursday — {"thu":{"week":0,"board":0,"infoWeek":0,"infoBoard":0},"note":"Thursday is unpublished — nothing pending expected"}
+FAIL  [H1-phone] D-medical-cuts-issued-leave — expected: step ran | observed: THREW locator.click: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for locator('[data-testid="month-JUL"]:visible').first()[22m
+[2m    - locator resolved to <button class="mjump" title="Jump to JUL" data-testid="month-JUL">JUL</button>[22m
+[2m  - attempting click action[22m
+[2m    2 × waiting 
+FAIL  [H1-phone] F-war-move — expected: step ran | observed: THREW locator.click: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for locator('[data-testid="month-JUL"]:visible').first()[22m
+[2m    - locator resolved to <button class="mjump" title="Jump to JUL" data-testid="month-JUL">JUL</button>[22m
+[2m  - attempting click action[22m
+[2m    2 × waiting 
+NOTE  [H1-phone] errors — []
