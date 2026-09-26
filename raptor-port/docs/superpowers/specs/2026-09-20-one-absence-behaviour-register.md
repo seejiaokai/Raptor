@@ -593,3 +593,20 @@ questions it left for him are `OUTSTANDING.md` `[ABSENCE-ASK]`.
   day-first** ("Posted in on 8 Jul 26 — …").
 - **A dragged medical whose move kept the other medical's days says where it landed** ("Moved to 25 Jul"), and the
   same-type refusal reads "An ATT C" (W2's re-walk).
+
+**Added by his answers to the re-test's questions (27 Sep 26), each red first — evidence
+`docs/handpass/2026-09-27-d260-d262.md`:**
+- **A clear that takes an OIL award names it first (D260).** A dragged block's Delete removes everything in it, the
+  admin's awards included — beneath any leave too — and its confirm names each award ("…including 2 OIL awards (Dash
+  1 day, Fable 1 day)"); the bid sheet's one-day Clear and its range Clear name theirs and ask once; one Undo brings
+  every award back; a member's clear takes and names none; Move and drag never take an award. A block of awards alone
+  offers Delete, never Move. On a published war the approved leave in the block stays, and the note says so. Answers
+  AB1 / AB2 (`store.ts awardsIn`, `ui/awardwords.ts`).
+- **A member opens his own award, read only, at every stage (D261).** Outside the bidding window, once bidding has
+  closed, and on a published war his tap on his own FO / HO opens "Your OIL award" — reason, given by, days, "Given by
+  an admin — only an admin can change it", nothing to press but ✕; inside the window the bid sheet reads it back as
+  before; another man's award stays shut. Answers W3-F10 (`Matrix.tsx ownAwardOnly`, `BidPicker.tsx AwardSheet`).
+- **One chip, one Move (D262).** The day sheet's Move has no date box and is never greyed; it picks the chip up into the
+  grid's move mode (the drag-selection's own — the same landing rules); while moving the grid scrolls at its edges,
+  the month buttons keep it on, an empty tap outside the grid ends it, and so does leaving the Leave War; a double-click
+  on Move lands nothing; its own day says it is already there. `ui-contracts.md` §Selecting on the Leave War grid.
