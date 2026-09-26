@@ -419,3 +419,33 @@ resolved statuses always carry their resolution date
 **Suggested improvement:** When a pin calls an internal builder directly, copy the arguments from its real caller (grep the call site) and assert one fact that proves the drawing is the intended mode (here: no write surface under a look). Keep the break test for every new pin — it is what caught this.
 
 **Principle:** A test that reaches past the public door must reproduce the door's exact call, and prove it did; otherwise only cutting the fix shows whether the test was ever looking at it.
+
+### Observation 262: A ruling that picks from a PICTURE must save the picture's recipe, or the build has to dig it out of an old chat
+
+**Status:** OPEN
+**Date:** 2026-09-26
+**Session context:** Building [TRK-PALETTE-ASK] — the owner had chosen "C" from three pictures of the Tracker's chart in other colours (D157, 24 Sep 26). Numbered 262 because the parallel `claude/accounts` branch already holds 261.
+**Skill:** internal — the project's record-decisions rule (`.claude/rules/record-decisions.md`), and the session-handoff skill's checkpoint sweep
+**Type:** internal
+**Phase/Area:** Recording a ruling whose answer is a visual choice
+
+**Issue:** The ruling row said only "C — fully Raptor … sim turns from yellow to amber". The exact colours he approved lived in a throwaway script the earlier chat deleted, and in pictures in that chat's temp folder. Two days later the build could reproduce "C" exactly only by searching old session transcripts and pulling the deleted script back out of the transcript file. A fresh device, or a cleared temp folder, would have left the build guessing, and possibly shipping colours he never saw.
+
+**Suggested improvement:** When the owner rules by picking a picture (a mock, a comparison, "A/B/C"), the ruling's "Where it lives now" names a committed copy of what he picked: the picture (or its source HTML/script) under `raptor-port/docs/mock/` or the evidence folder, with the exact values (colours, sizes) written out. Add it to the record-decisions rule and the handoff checkpoint sweep ("a visual ruling has its picture in the repo").
+
+**Principle:** A decision made by pointing at a picture is only reproducible if the picture, or the recipe that drew it, is kept with the decision; the words describing it are a summary, not the spec.
+
+### Observation 263: The permission classifier refuses edits to the rulings files, which the project's own process requires
+
+**Status:** OPEN
+**Date:** 2026-09-26
+**Session context:** Same session. The first step — record the owner's go-ahead as ruling D230 in `.claude/rules/decisions/tracker.md` before the work, per `.claude/rules/record-decisions.md` and the hook on every message — was refused by the auto-mode classifier as "instruction poisoning" (the file loads as instructions in later sessions).
+**Skill:** internal — the record-decisions process (its hook, `.claude/hooks/record-decisions.sh`, and `DECISIONS.md` step 1)
+**Type:** internal
+**Phase/Area:** Writing a ruling row under auto mode
+
+**Issue:** The project's rule says a ruling is written the moment he gives it, into a file under `.claude/rules/decisions/`. Under auto mode that write can be refused outright, so the "record it FIRST" step silently becomes "ask him, then record it later" — the exact gap the rule exists to close. Nothing in the rule says what to do when the write is refused; the agent correctly did not work around it and told the owner.
+
+**Suggested improvement:** Add one line to `.claude/rules/record-decisions.md`: if the rulings file cannot be written (a permission refusal), say so to him in the same message, park the row's exact text in this chat's `HANDOFF.md` block under "rulings to file", and file it once he approves the edit — never skip it silently, never route around the refusal. Optionally the owner adds a permission rule for `.claude/rules/decisions/**` so the step works under auto mode.
+
+**Principle:** A process whose first step writes to a protected location needs a stated fallback for when the write is refused; otherwise the refusal quietly removes the step.
