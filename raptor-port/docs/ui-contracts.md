@@ -191,10 +191,11 @@ looked at. So the day is also PICKABLE (owner, 15 Aug 26):
   arrows (`.week-nav`, fixed 8px in, 38px wide) used to cover the first 26–38px of the day at the front — the first
   letters of an opened "⚠ N issues" list, a row's name, a puck. The desktop `.week` keeps 54px of room at its left:
   its `padding-left` (Monday at rest; every arrow press, which lands whole day steps from there) and its
-  `scroll-padding-inline` (the same room, declared where the other landings read it — `state/view.ts weekInset`:
+  `scroll-padding-left` (the same room, declared where the other landings read it — `state/view.ts weekInset`:
   `scrollWeekToDay` for a page switch's carried day and a week-jump to a day, `weekLeftDay` for "which day is at the
   front", `ui/highlights.ts bringIntoView` for a warning or change tap that pans, whose "is it on screen" test also
-  stops at the › arrow's edge; the browser's own `scrollIntoView` honours the scroll-padding by itself). Phones draw no
+  stops at the › arrow's edge — only where that arrow sits OVER the week box (on Edit Schedule it floats over the crew
+  palette; W4's walk), so the right room is measured, never declared; the browser's own `scrollIntoView` honours the scroll-padding by itself). Phones draw no
   arrows and keep their own padding (`weekInset` reads 0 there). Gated in `e2e/geometry.spec.ts` ("sit clear of the
   ‹ arrow at every landing", 1500px and 1024px), with a break test per landing.
 - **The desktop arrow glide cannot be cancelled mid-day** (owner, 23-24 Aug 26 —

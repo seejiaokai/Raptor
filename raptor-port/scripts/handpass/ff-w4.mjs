@@ -16,7 +16,7 @@
      · NO HOP — the week's scroll, sampled every frame from the action to rest, never moves again after it first
                 reaches its resting value (the landing frame IS the rest frame) */
 process.env.HP_URL = 'http://localhost:4176'
-process.env.HP_SHOTS = 'C:/Users/User/projects/Raptor/.claude/worktrees/five-flags-batch-build-ef7d85/raptor-port/docs/img/handpass/2026-09-26-five-flags/w4'
+process.env.HP_SHOTS = process.env.FF_SHOTS || 'C:/Users/User/projects/Raptor/.claude/worktrees/five-flags-batch-build-ef7d85/raptor-port/docs/img/handpass/2026-09-26-five-flags/w4'
 const L = await import('./am/am-lib.mjs')
 const { open, go } = L
 import { mkdirSync } from 'node:fs'

@@ -650,7 +650,7 @@ check the other):
   compare never matched a crowd seat or an extra with its row. A new "exclude this place" question uses `seatRow`.
 - **The week's front edge has ONE room** ([VIEW-ARROW-OVER-LIST], 26 Sep 26). The desktop week keeps 54px at its
   sides for the floating ‹ › arrows, declared twice in ONE rule of `scheduler.css` (`padding-left` for where Monday
-  and every arrow press land, `scroll-padding-inline` for everything else) and read in JS only through
+  and every arrow press land, `scroll-padding-left` for everything else; the › side is measured against the arrow) and read in JS only through
   `state/view.ts weekInset`. A new way of putting a day "at the front" lands it at `weekInset`, never at the week box's
   own edge — or the day slides back under the arrow (`e2e/geometry.spec.ts` "sit clear of the ‹ arrow").
 - **Three editors over one list.** The Inputs page, the week cell and the board

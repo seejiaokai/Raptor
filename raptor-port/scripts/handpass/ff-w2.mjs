@@ -12,7 +12,7 @@
 const WIDTH = process.argv[2] || 'all'
 const ONLY = (process.argv[3] || '').toUpperCase()
 process.env.HP_URL = 'http://localhost:4176'
-process.env.HP_SHOTS = 'C:/Users/User/projects/Raptor/.claude/worktrees/five-flags-batch-build-ef7d85/raptor-port/docs/img/handpass/2026-09-26-five-flags/w2'
+process.env.HP_SHOTS = process.env.FF_SHOTS || 'C:/Users/User/projects/Raptor/.claude/worktrees/five-flags-batch-build-ef7d85/raptor-port/docs/img/handpass/2026-09-26-five-flags/w2'
 const L = await import('./lib.mjs')
 const { existsSync, mkdirSync } = await import('node:fs')
 const { chromium } = await import('@playwright/test')

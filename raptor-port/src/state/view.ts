@@ -231,9 +231,20 @@ export function setPeekLand(v:{di:number,x:number}|null){ PEEKLAND=v }
    desktop week declares it as its scroll-padding (scheduler.css, beside its padding), so "the day at the front" sits
    beside the arrow instead of under it — read here by every landing that puts a day at the front, and by the reading of
    which day that is. 0 on a phone (no arrows; nothing declared, `auto`), in jsdom (no computed style) and anywhere the
-   read fails. `side` 'right' is the › arrow's edge. */
+   read fails. `side` 'right' is the › arrow's edge — and counts only where that arrow actually sits OVER the week box:
+   on Edit Schedule the week ends at the crew palette and the › floats over the palette, so nothing on the week's own
+   right edge is hidden (W4's walk, 26 Sep 26 — a warning tap on a man fully visible beside the palette swung the
+   week sideways, against "hold the lateral view", 6 Aug 26). */
 export function weekInset(el:any,side:'left'|'right'='left'):number{
-  try{const v=parseFloat((getComputedStyle(el) as any)[side==='left'?'scrollPaddingLeft':'scrollPaddingRight']);return Number.isFinite(v)&&v>0?v:0}catch(_){return 0}
+  try{
+    /* the ONE declared room (scheduler.css scroll-padding-left); the right side uses the same number where the › sits */
+    const v=parseFloat((getComputedStyle(el) as any).scrollPaddingLeft);
+    if(!(Number.isFinite(v)&&v>0))return 0
+    if(side==='left')return v
+    const a:any=document.getElementById('weekNext'); if(!a||a.hidden)return 0
+    const ar=a.getBoundingClientRect(), wr=el.getBoundingClientRect()
+    return ar.width>0&&ar.left<wr.right?v:0
+  }catch(_){return 0}
 }
 export function weekLeftDay(el:any):any{
   if(!el||typeof el.querySelectorAll!=='function'||typeof el.getBoundingClientRect!=='function')return null

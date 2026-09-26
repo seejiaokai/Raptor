@@ -3543,9 +3543,11 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
      list, a row's name, a puck. 54px = 8 + 38 + 8 clear. The PADDING puts Monday there at rest and after every arrow
      press (the press lands a whole day step, pan.ts panDays); the SCROLL-PADDING is the same room declared where the
      landings can read it — a page switch, a week-jump to a day, a warning tap (state/view.ts weekInset) — and where
-     the browser's own scrollIntoView honours it. Both sides: the › arrow sits over the right edge the same way.
+     the browser's own scrollIntoView honours it. LEFT only: the › arrow's room on the right is MEASURED
+     (weekInset 'right' — only where the arrow sits over the week box; on Edit Schedule it floats over the crew
+     palette), because a declared right room made scrollIntoView nudge a man beside the palette 34px (W4's re-walk).
      Desktop only: a phone draws no arrows and keeps its own padding. */
-  .week{scroll-snap-type:none;padding:2px 20px 40px 54px;gap:12px;scroll-padding-inline:54px}
+  .week{scroll-snap-type:none;padding:2px 20px 40px 54px;gap:12px;scroll-padding-left:54px}
   /* tighter day column — less width, less wasted space */
   .day{flex:0 0 552px}
   /* LET THE LAST DAYS REACH THE FRONT (owner, 23 Aug 26 — the arrows "totally

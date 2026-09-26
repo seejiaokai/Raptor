@@ -8,7 +8,7 @@
      parts: f4d f4p f2d f2p f3 f5 f6 f1a f1b f1c f1d f1e f20   (none = all)
    Pictures: docs/img/handpass/2026-09-26-five-flags/w3/ · every check prints PASS / FAIL / NOTE; W3_RESULTS=<folder> also writes JSON */
 process.env.HP_URL = 'http://localhost:4176'
-const SHOTS = 'C:/Users/User/projects/Raptor/.claude/worktrees/five-flags-batch-build-ef7d85/raptor-port/docs/img/handpass/2026-09-26-five-flags/w3'
+const SHOTS = process.env.FF_SHOTS || 'C:/Users/User/projects/Raptor/.claude/worktrees/five-flags-batch-build-ef7d85/raptor-port/docs/img/handpass/2026-09-26-five-flags/w3'
 process.env.HP_SHOTS = SHOTS
 const L = await import('./am/am-lib.mjs')
 const W = await import('./am/w1-lib.mjs')
