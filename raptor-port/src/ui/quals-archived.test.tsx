@@ -141,3 +141,20 @@ describe('PO8 / PO10 — Restore, a taken callsign, and "he is back"', () => {
     expect($('[data-testid="back-casper"]').textContent).toMatch(/Outlaw 2 is back/)
   })
 })
+
+/* D299 — a deleted man's past inputs stay on record, so the Inputs filter must still find them (Fable's scenario 7): a
+   "Deleted" group lists the deleted men who still have an input; he is never offered as who a NEW input is for. */
+describe('PO7 — the Inputs page finds a deleted man’s kept inputs', () => {
+  it('the filter’s "Deleted" group lists him; the new-input person box does not', async () => {
+    const { INPUTS } = await import('../engine/inputs')
+    const pid = String((INPUTS as any).find((r: any) => r && r.person && (PEOPLE as any)[r.person] && !(PEOPLE as any)[r.person].special).person)
+    Object.assign((PEOPLE as any)[pid], { deleted: true, deletedFrom: '2026-09-27', archived: true, archivedBy: 'del' })
+    indexCallsigns()
+    await act(async () => { setPage('inputs'); notify() })
+    const grp = [...document.querySelectorAll('#inFPerson optgroup')].find(g => g.getAttribute('label') === 'Deleted')
+    expect(grp, 'the filter has a Deleted group').toBeTruthy()
+    expect([...grp!.querySelectorAll('option')].map(o => (o as HTMLOptionElement).value)).toContain(pid)
+    const offered = [...document.querySelectorAll('#inPerson option')].map(o => (o as HTMLOptionElement).value)
+    expect(offered, 'never offered for a new input').not.toContain(pid)
+  })
+})

@@ -1675,11 +1675,18 @@ function takeBack(id: string, write: () => boolean, keep: { archive?: boolean; s
  * sheet said he stays or before his date). When the new date has also come, the archive stands. The pass
  * (runPoArchive) archives him again on the date, as for any Post out.
  */
+/* a posting door's own refusal before anything is written: an admin never deletes HIMSELF by posting himself out with
+   Delete — Admin → Users' door refuses the same (accounts.ts deleteAccountProblem); without this the pass deleted the
+   signed-in admin on the spot (Fable's scenario 5). The sentence, or null. */
+export function postOutProblem(id: string, outcome: PostOutcome): string | null {
+  return outcome === 'delete' && me() != null && id === me() ? "You can't delete yourself — ask another admin" : null
+}
 export function postOut(id: string, from: string, archive: boolean | PostOutcome = true): boolean {
   const body = (PEOPLE as any)[id]
   /* a DELETED man's posting is final ([POST-OUT-OUTCOMES], D287 — Fable F3) */
   if (body && body.deleted) return false
   const outcome: PostOutcome = typeof archive === 'string' ? archive : (archive ? 'overseas' : 'none')
+  if (postOutProblem(id, outcome)) return false
   /* [POST-OUT-OUTCOMES] — #444's take-back, widened: what the posting made (its archive, the account it suspended, the
      SANS tick it put on) and the NEW posting no longer makes today — its date still to come, or its outcome changed —
      comes back in the same command. When the new posting makes it today too, it stands (the pass then records it). */

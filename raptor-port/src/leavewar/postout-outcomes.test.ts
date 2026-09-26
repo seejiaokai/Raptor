@@ -18,11 +18,11 @@ import { initStore as raptorInitStore, notify as raptorNotify, resetSession } fr
 import { accountsLoad, accountByName, signIn, sessionFor, updateAccount } from '../state/accounts'
 import { BACKPROMPT } from '../state/view'
 import { commit } from '../command'
-import { getState, initStore as lwInitStore, lwStore, postingBlocked, setPeople, setPostIn, setPostOut, setShowSans } from './state/store'
+import { getState, initStore as lwInitStore, lwStore, postingBlocked, setPeople, setPostIn, setPostOut, setRole, setShowSans } from './state/store'
 import { memoryBackend } from './state/storage'
 import { projectPeople } from './state/raptorRoster'
 import {
-  availableFor, postOut, restoreArchivedAs, restoreArchivedPerson, runPoOutcomes, undoPostOut, undoPostOutProblem, wireLeaveWarSync,
+  availableFor, postOut, postOutProblem, restoreArchivedAs, restoreArchivedPerson, runPoOutcomes, undoPostOut, undoPostOutProblem, wireLeaveWarSync,
 } from './sync'
 import { updatePersonField } from '../state/quals-write'
 
@@ -121,7 +121,15 @@ describe('PO2 / PO4 — the last admin who can sign in is never suspended or del
     expect(postingBlocked('stiff', 'sans')).toBe(null)
     expect(postingBlocked('bane', 'delete'), 'a member: nothing held back').toBe(null)
   })
-  it('delete: not deleted, and said', () => {
+  it('an admin never deletes HIMSELF by posting himself out with Delete (Fable’s scenario 5) — refused, nothing written', () => {
+    expect(postOutProblem('stiff', 'delete')).toBe("You can't delete yourself — ask another admin")
+    expect(postOutProblem('stiff', 'overseas'), 'only a Delete').toBe(null)
+    expect(postOut('stiff', TODAY, 'delete')).toBe(false)
+    expect(P('stiff').deleted).toBeFalsy()
+    expect(war('stiff')!.to).toBeNull()
+  })
+  it('delete: not deleted, and said (a posting made with no one signed in — the pass is nobody acting)', () => {
+    resetSession(null); setRole('admin')
     const toast = vi.spyOn(HOOKS, 'toast')
     expect(postOut('stiff', TODAY, 'delete')).toBe(true)
     expect(P('stiff').deleted).toBeFalsy()

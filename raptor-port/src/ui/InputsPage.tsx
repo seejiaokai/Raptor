@@ -75,6 +75,19 @@ function ArchivedGroup() {
   if (!ids.length) return null
   return <optgroup label="Posted out / archived">{ids.map(id => <option key={id} value={id}>{PEOPLE[id].cs}</option>)}</optgroup>
 }
+/* A DELETED man's past inputs stay on record (D299 — [POST-OUT-OUTCOMES], 27 Sep 26), so the filter must still find them:
+   the deleted men who still have an input, as their own group. Never offered as WHO a new input is for (they are on no
+   picker — D287); in a row's own editor his name is kept as the row's value (DeletedSelf). */
+function DeletedGroup() {
+  const ids = Object.keys(PEOPLE).filter(id => PEOPLE[id].deleted && INPUTS.some((r: any) => r && r.person === id))
+  if (!ids.length) return null
+  return <optgroup label="Deleted">{ids.map(id => <option key={id} value={id}>{PEOPLE[id].cs} (deleted)</option>)}</optgroup>
+}
+/* the row's own person when he has been deleted — kept as its value, so the box shows HIS name (with no option the box
+   drew the first man on the list while the row still belonged to him; Fable's scenario 7) */
+function DeletedSelf({ id }: { id: string }) {
+  return PEOPLE[id] && PEOPLE[id].deleted ? <option value={id}>{PEOPLE[id].cs} (deleted)</option> : null
+}
 
 export const DEFAULT_SPAN_MONTHS = 2
 /* The quick button now applies the SQUADRON'S look-ahead rather than a fixed
@@ -831,6 +844,7 @@ export function InputsPage() {
           <option value="all">Everyone</option>
           {people().map(id => <option key={id} value={id}>{PEOPLE[id].cs}</option>)}
           <ArchivedGroup />
+          <DeletedGroup />
         </select>
         <select id="inFType" aria-label="Filter by type" value={fType} onChange={e => { unpin(); setFType(e.target.value); notify() }}>
           <option value="all">Show all types</option>
@@ -954,6 +968,7 @@ export function InputsPage() {
                   <td data-fld="Person">{canEditSched()
                     ? <select aria-label="Person" data-ed="person" value={draft.person}
                       onChange={e => setDraft({ ...draft, person: e.target.value })}>
+                      <DeletedSelf id={draft.person} />
                       {people().map(id => <option key={id} value={id}>{PEOPLE[id].cs}</option>)}
                       <ArchivedGroup />
                     </select>

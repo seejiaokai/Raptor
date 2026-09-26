@@ -78,7 +78,7 @@ import { groupColorOf, inkFor } from './groupColor'
 import { SelectSheet } from './SelectSheet'
 import { BalanceBar } from './BalanceBar'
 import { RemarksSheet } from './RemarksSheet'
-import { leaveInputAt, postOut, undoPostOut, undoPostOutProblem } from '../sync'
+import { leaveInputAt, postOut, postOutProblem, undoPostOut, undoPostOutProblem } from '../sync'
 import { useVersion } from './useStore'
 import { DayListSheet } from './DayList'
 import type { Views } from '../engine/dayview'
@@ -88,6 +88,9 @@ import './matrix.css'
  *  26): every posting door — the bid sheet's PI / PO, the two posting sheets, the drag-selection's PO — shows it and
  *  stays open, where each used to close (or snap back) with nothing said. */
 function postOutOr(id: string, from: string, archive?: boolean | PostOutcome): string | undefined {
+  /* never Delete oneself (the posting door's own refusal — sync.ts postOutProblem) */
+  const self = postOutProblem(id, typeof archive === 'string' ? archive : (archive === false ? 'none' : 'overseas'))
+  if (self) return self
   /* through the bridge, so a Post out's own archive follows the new date and switch (Astra's final read, finding 2) */
   return postOut(id, from, archive) ? undefined : (postingProblem(id, 'out', from) || 'That posting date was not taken.')
 }
