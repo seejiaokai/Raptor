@@ -1354,7 +1354,10 @@ vs by record is the same root).
 
 ### [ABSENCE-ASK] Three questions for him from the absence-record re-test (26 Sep 26)
 Put to him with his look at the re-test (its look card, `raptor-port/docs/handpass/2026-09-26-absence.md` §12):
-1. **An OIL award under Clear and bulk Delete (AB1, AB2).** The bid sheet's Clear on a day holding an award removes the
+1. **ANSWERED 27 Sep 26 — D260 ("B"): a dragged block's Delete removes everything in it, awards included, and its
+   confirm names each award first; the one-day Clear does the same (names it, asks once); Move and drag keep leaving
+   awards where they are. TO BUILD in the next chat (his word), with its own red-first tests and check — the agent's
+   reading: on this branch, before his "merge live".** The question as it was put: **An OIL award under Clear and bulk Delete (AB1, AB2).** The bid sheet's Clear on a day holding an award removes the
    award, and a dragged block's Delete removes every award in it — no word in either, and the man's OIL drops. An award
    has its own Remove (N11: an award is the admin's). An existing test pins Clear removing the award as MEANT, so which
    is right is his: (a) Clear and Delete leave awards alone (Remove is the one door), or (b) they take them, and say so
