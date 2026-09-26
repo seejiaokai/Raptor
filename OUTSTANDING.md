@@ -1144,7 +1144,10 @@ None breaks an amendment rule; each is a line to fix or ask about, from the walk
 3. **Five-letter callsigns** (VIPER, COBRA) drawn "…" in the edit week's callsign column; on the phone board they wrap
    ("VIP/R").
 4. At 390px the solid **"AL1" tag** beside a time is clipped to "AL"; on the desktop week the **left scroll arrow** sits
-   over the first sign-off pill of the leftmost day.
+   over the first sign-off pill of the leftmost day. **The same arrow also covers the left day's Unavailable type**
+   ("ATT C") on the desktop week (the absence-record re-test's re-walk, W2, 26 Sep 26 — pictures
+   `raptor-port/docs/img/handpass/2026-09-26-absence/rewalk/w2/rw-w2-05-desktop-P4a-face`, `-P4b-working-copy`); one fix
+   with `[VIEW-ARROW-OVER-LIST]`.
 5. **AL7 and AL8** are the same orange; the register names no colour past AL7 (ask him if it matters).
 6. **Leave War, phone:** a man's figure sheet sends the grid back to 1 January, and it stays there after the sheet
    closes (desktop keeps its place). **Its sharper form (the absence-record re-test, W4, 26 Sep 26):** for a late joiner
