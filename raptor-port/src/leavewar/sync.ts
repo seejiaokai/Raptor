@@ -1415,6 +1415,22 @@ export function restoreArchivedPerson(id: string): boolean {
   return true
 }
 
+/**
+ * The posting sheet's "Undo post out (PO)" — he is back, AS HE WAS BEFORE THE POST OUT (the absence-record re-test,
+ * W5-F1, 26 Sep 26 — found by the orders walker). A Post out with "Archive on PO date" on (the sheet's default)
+ * archives his body the moment its date has come; the sheet's Undo used to clear the date and LEAVE the archive, and
+ * an archived man with no posting dates is dropped from the war's roster — so his row, his bids and his leave vanished
+ * from every month, a reload included, with nothing on screen to say where he went. When the archive is the Post
+ * out's own (the switch was on), the undo is the Quals page's Restore — the posting cleared and the body back, ONE
+ * command; otherwise it is the date alone, as before.
+ */
+export function undoPostOut(id: string): boolean {
+  const body = (PEOPLE as any)[id]
+  const p = getState().people.find(x => x.id === id)
+  if (body && body.archived && p && p.poArchive === true) return restoreArchivedPerson(id)
+  return setPostOut(id, null)
+}
+
 /* ---- wiring -------------------------------------------------------------- */
 
 /**

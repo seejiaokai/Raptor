@@ -101,6 +101,7 @@ import {
   isLeaveCode,
   parseCell,
   FULL,
+  winsOf,
   MAX_GIVEN_BY,
   MAX_GRANT_DAYS,
   MAX_REC_NOTE,
@@ -2145,7 +2146,16 @@ export function cellProblem(personId: string, date: string, code: string): strin
   const staying = list.filter(r => !replaced.includes(r as RequestRec))
   const blocker = [...recContribs(staying), ...absencesAt(personId, date)].find(o => barsWrite(c, o))
   if (!blocker) return null
-  if (isSickCode(blocker.code)) return `That day is already ${blocker.code === 'ATTC' ? 'ATT C' : blocker.code} — leave can't go over a medical.`
+  if (isSickCode(blocker.code)) {
+    const name = blocker.code === 'ATTC' ? 'ATT C' : blocker.code
+    /* a medical recorded with HOURS says them (the absence-record re-test, W5-F4, 26 Sep 26): "That day is already
+       ATT C" read as the whole day to a man looking at a morning-drawn box, when the medical ran 09:00–14:00 */
+    const ws = winsOf(blocker)
+    const hm = (m: number) => `${String(Math.floor(m / 60)).padStart(2, '0')}:${String(m % 60).padStart(2, '0')}`
+    if (ws.length === 1 && !(ws[0]![0] === FULL[0] && ws[0]![1] === FULL[1]))
+      return `${name} runs ${hm(ws[0]![0])}–${hm(ws[0]![1])} that day — leave can't go over a medical.`
+    return `That day is already ${name} — leave can't go over a medical.`
+  }
   return `That time is already taken by ${blocker.code} — clear it first.`
 }
 

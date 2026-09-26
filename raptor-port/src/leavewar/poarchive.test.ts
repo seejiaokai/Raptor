@@ -15,7 +15,7 @@ import { addDays } from './engine'
 import { getState, initStore as lwInitStore, setPeople, setPostOut, setRole } from './state/store'
 import { memoryBackend } from './state/storage'
 import { projectPeople } from './state/raptorRoster'
-import { restoreArchivedPerson, runPoArchive, wireLeaveWarSync } from './sync'
+import { restoreArchivedPerson, runPoArchive, undoPostOut, wireLeaveWarSync } from './sync'
 import { Whiteboard } from '../storage/whiteboard'
 import { wirePersist } from '../state/persist'
 import { weekStashSnap, weekDirty } from '../state/store'
@@ -119,5 +119,31 @@ describe('restoreArchivedPerson', () => {
     expect(restoreArchivedPerson(id)).toBe(false)
     expect(restoreArchivedPerson('allavail')).toBe(false)
     expect((PEOPLE as any).allavail.archived).toBe(true)
+  })
+})
+
+/* THE POSTING SHEET'S "UNDO POST OUT" TAKES THE ARCHIVE BACK TOO (the absence-record re-test, W5-F1, 26 Sep 26 —
+   found by the orders walker, reproduced by the host). A Post out with "Archive on PO date" on (the default) archives
+   him at once when the date has come; the sheet's Undo cleared the date and LEFT the archive — and an archived man
+   with no posting dates is dropped from the war, so his row, bids and leave vanished from every month, a reload
+   included. Undo means "as he was before the Post out": the Quals page's Restore already does exactly that. */
+describe('undoPostOut — the posting sheet’s Undo', () => {
+  it('a Post out that archived him is taken back whole: the date AND the archive — he stays on the war', () => {
+    const id = anAircrewId()
+    setPostOut(id, today)
+    expect((PEOPLE as any)[id].archived).toBe(true)
+    expect(undoPostOut(id)).toBe(true)
+    expect((PEOPLE as any)[id].archived).toBeFalsy()
+    raptorNotify()
+    const p = getState().people.find(x => x.id === id)
+    expect(p, 'his row is still on the war').toBeTruthy()
+    expect(p!.to).toBeNull()
+  })
+  it('a Post out that archived nobody is taken back as before — the date only', () => {
+    const id = anAircrewId()
+    setPostOut(id, addDays(today, 30))
+    expect((PEOPLE as any)[id].archived).toBeFalsy()
+    expect(undoPostOut(id)).toBe(true)
+    expect(getState().people.find(x => x.id === id)!.to).toBeNull()
   })
 })

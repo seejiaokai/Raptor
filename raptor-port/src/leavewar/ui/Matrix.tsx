@@ -62,7 +62,7 @@ import { EventSheet } from './EventSheet'
 import { monthInView } from './monthview'
 import { popAt } from './popat'
 import { clampWin, rollingTarget, stepAllowedInMotion, stepToward, visibleSpan, windowAround, WINDOW_FROM_MONTHS, type ColWin } from './colwindow'
-import { touchesAM, touchesPM, type DayView } from '../engine/dayview'
+import { touchesAM, touchesPM, winsOf, type DayView } from '../engine/dayview'
 import type { Portion } from '../engine'
 import { isLwOnScreen, subLwScreen } from '../state/screen'
 import type { RecordSpans } from '../state/merge'
@@ -77,7 +77,7 @@ import { groupColorOf, inkFor } from './groupColor'
 import { SelectSheet } from './SelectSheet'
 import { BalanceBar } from './BalanceBar'
 import { RemarksSheet } from './RemarksSheet'
-import { leaveInputAt } from '../sync'
+import { leaveInputAt, undoPostOut } from '../sync'
 import { useVersion } from './useStore'
 import { DayListSheet } from './DayList'
 import type { Views } from '../engine/dayview'
@@ -260,8 +260,11 @@ function freeHalfBeside(v: DayView | undefined): Portion | null {
   if (!v) return null
   const holding = v.all.filter(c => c.kind === 'absence' || (c.kind === 'request' && c.state !== 'refused'))
   if (!holding.length) return null
-  const am = holding.some(c => touchesAM(c.win))
-  const pm = holding.some(c => touchesPM(c.win))
+  /* by the REAL hours (the absence-record re-test, W5-F4, 26 Sep 26): a medical recorded 09:00–14:00 is drawn as a
+     morning (the six-hour rule) but its hours run into the afternoon, and every clash is judged on real hours (§7) —
+     so the afternoon was offered here and then refused by the door. winsOf is what the doors read. */
+  const am = holding.some(c => winsOf(c).some(touchesAM))
+  const pm = holding.some(c => winsOf(c).some(touchesPM))
   return am && !pm ? 'pm' : pm && !am ? 'am' : null
 }
 
@@ -1061,6 +1064,11 @@ export function Matrix() {
   // message lingers.
   const histEpoch = lwHistEpoch()
   useEffect(() => { setSel(null); setMoveSel(null); setMovePreview(null); setMoveErr(''); setEventMoveSel(null); setEventMovePreview(null); setEventMoveErr('') }, [period.stage, period.id, histEpoch])
+  /* ...and a WAR change closes the sheet open on the old war (the absence-record re-test, W5-F3, 26 Sep 26): left open,
+     its controls still wrote to the day it was opened on — in the war no longer on screen. The Sheet now holds the
+     keyboard too, so the switch cannot be reached from inside one; this is the second guard, for any other road to a
+     switch (an undo that snaps the war, a reload of the picker). */
+  useEffect(() => { setOpen(null); setPlaceAt(null) }, [period.id])
   // MOVE MODE is wired further down, after the `phone` breakpoint state it
   // reads to choose commit-on-click (desktop) vs preview-then-Confirm (phone).
   // The frozen-column overlay's own anchors (see the .mxband block below and
@@ -4201,7 +4209,7 @@ export function Matrix() {
           poFrom={addDays(openPerson!.to!, 1)}
           archive={openPerson!.poArchive === true}
           onChange={(from, archive) => postOutOr(open.id, from, archive)}
-          onUndo={() => { setPostOut(open.id, null); close() }}
+          onUndo={() => { undoPostOut(open.id); close() }}   // the archive the Post out made goes too (W5-F1)
           onPlace={() => setPlaceAt(openKey)}
           onClose={close}
         />

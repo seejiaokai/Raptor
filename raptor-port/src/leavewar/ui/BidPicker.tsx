@@ -285,7 +285,8 @@ export function BidPicker({
       <div className="bidsheet-hd">
         <span className="who">{callsign}</span>
         <span className="dt">{date}</span>
-        {current && <span className="cur">now {current}</span>}
+        {/* the box's own voice — "<LL", not the stored "*LL" (W5-F5, 26 Sep 26) */}
+        {current && <span className="cur">now {displayCell(current)}</span>}
         <button className="x" data-testid="bid-cancel" onClick={onClose} aria-label="Cancel">
           ✕
         </button>
