@@ -20,6 +20,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { isAdmin, me } from '../state/perms'
 import { HOOKS } from '../engine/hooks'
+import { PEOPLE } from '../engine/people'
 import { notify } from '../state/store'
 import { elogWhen } from '../engine/editlog'
 import { BUG_CATS, REPORTS, fileReport, reportRows, markReportsSeen, type BugReport } from '../state/reports'
@@ -36,7 +37,10 @@ function Row({ r, fresh, who }: { r: BugReport; fresh?: boolean; who?: boolean }
       <div className="bughead">
         <span className="bugcat" style={{ ['--h' as any]: hue }}>{r.cat}</span>
         {fresh && <span className="bugnew">NEW</span>}
-        <span className="bugwhen">{elogWhen(r.t)}{who ? ` · ${r.who}` : ''}</span>
+        {/* the filer's LIVE callsign, read through his person (a rename moves nothing — the
+            one-identity rule; Fable's scenario read, 26 Sep 26), the name as filed only when
+            the report carries no person */}
+        <span className="bugwhen">{elogWhen(r.t)}{who ? ` · ${(r.pid && (PEOPLE as any)[r.pid]?.cs) || r.who}` : ''}</span>
       </div>
       <div className="bugtext">{r.text}</div>
     </div>

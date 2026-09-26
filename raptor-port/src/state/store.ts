@@ -48,6 +48,7 @@ import type { EnlistableStore, RecordEntry, CommitResult } from '../command'
 import { snapshotStash, restoreStash, stashEntries, writeStashRecords } from '../engine/weekstash'
 import { registerSchedCommandLayer, commitSchedVoid, commitSchedValue, commitInputs, commitInputsProjection, commitInputsWith, SCHED_TYPES, resyncSchedBaseline } from './sched-commit'
 import { registerPeopleSettingsCommandLayer, resyncPeopleBaseline } from './people-settings-commit'
+import { accountsLoad } from './accounts'
 
 let VERSION = 0
 const listeners = new Set<() => void>()
@@ -779,6 +780,12 @@ export function initStore() {
      the never-booting parity harness stays blind to them. */
   secDefaultLoad()
   waveDefaultLoad()
+  /* [ACCOUNTS] (26 Sep 26): the accounts, the access requests and the guest switch
+     (three durable settings keys) load here like every other setting. The loader sat
+     only in the settings rollback list, so a built site forgot every account the admin
+     added at the next reload — found by the walk, not by any test (every test ran in
+     one page life). After hydrate(): the lock-out check reads the stored roster. */
+  accountsLoad()
   /* THE SEED MERGES ARE SKIPPED WHEN STATE CAME BACK FROM STORAGE (the
      storage seam, 8 Sep 26). A hydrated INPUTS already carries every week's
      rows and the demo SANS/medical lifecycle that were saved last session;

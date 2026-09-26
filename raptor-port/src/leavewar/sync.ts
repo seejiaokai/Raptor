@@ -21,6 +21,7 @@ import { INPUTS, DATES, baseYear, dateOrd, inpId, inpWin, isAway, isLeave, isPer
 import { dayEngaged, personBusy } from '../engine/avail'
 import { inputProtected, protectedDates } from '../engine/quarantine'
 import { mayManageRoster, viewerId } from '../state/perms'
+import { SESSION } from '../state/auth'
 /* [ARCH-STACK] phase 3: the command-routed persistPeople (the cross-seam roster
    writers — PO-archive, restore — emit a people change too). */
 import { persistPeopleProjection, commitPeopleEdit } from '../state/people-settings-commit'
@@ -1415,6 +1416,18 @@ export function restoreArchivedPerson(id: string): boolean {
  * reconcilers cannot see coming, like an Undo that removes an lw-tagged row.
  * Both passes are cheap no-ops when nothing they read has changed.
  */
+/* THE PROBE PIN — the developer's-PC bridge only (probe-bridge.ts w.lwSetViewer, which is
+   never installed on a deployed host). The Leave War's MECHANICS e2e drive rows as nobody in
+   particular (null: canEditRow imposes no row rule) or as a named person; since [ACCOUNTS]
+   the mirror below re-derives the viewer from the signed-in person on EVERY Raptor notify,
+   so a plain setViewer from the bridge was overwritten by the next repaint (53 e2e failures,
+   26 Sep 26). A pin holds for the sign-in it was set in and no longer: it is keyed to the
+   SESSION object, which resetSession replaces at every sign-in and sign-out, so no pin can
+   outlive the person who set it. No production caller. */
+let VIEWER_PIN: { v: string | null; s: unknown } | null = null
+export function pinViewer(v: string | null): void { VIEWER_PIN = { v, s: SESSION }; setViewer(v) }
+const mirroredViewer = (): string | null => (VIEWER_PIN && VIEWER_PIN.s === SESSION ? VIEWER_PIN.v : viewerId())
+
 export function wireLeaveWarSync(): void {
   /* The VIEWING PERSON rides this same wire (owner, 17 Aug 26 — the matrix
      lights the viewer's row and the counter picker answers with their
@@ -1424,7 +1437,7 @@ export function wireLeaveWarSync(): void {
      null only with no session. Pushing it here — once at boot, again on every Raptor
      notify below — keeps the mirror converged without a new seam; setViewer no-ops on
      a same value. */
-  setViewer(viewerId())
+  setViewer(mirroredViewer())
   /* the absence door — the war's changes to approved leave (design §5.2) */
   installAbsenceDoor()
   runPoArchive()
@@ -1433,7 +1446,7 @@ export function wireLeaveWarSync(): void {
   runOilPass()
   lastOilDaySig = oilDaySig()
   raptorSubscribe(() => {
-    setViewer(viewerId())
+    setViewer(mirroredViewer())
     // Before the passes: a body added on the Quals page must be on the roster
     // before inbound tries to land any of its leave (owner, 18 Aug 26).
     reprojectRoster()

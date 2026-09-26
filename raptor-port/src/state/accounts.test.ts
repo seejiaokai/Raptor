@@ -29,8 +29,7 @@ const signInAs = (name: string, pass = 'x') => { const r = signIn(name, pass); r
 beforeEach(() => {
   Object.keys(mem).forEach(k => delete mem[k])
   storeBackend.impl = fake
-  initStore()
-  accountsLoad()
+  initStore()               // loads the accounts itself since the walk's reload finding
   resetSession(null)
 })
 afterAll(() => { storeBackend.impl = null })
@@ -114,6 +113,18 @@ describe('AC3 — a new user joins either way (D204)', () => {
     signInAs('ad', 'a')
     expect(addAccount('viper@mail', 'pike', 'main')).toBe(null)
     expect(ACCESS_REQS).toHaveLength(0)
+  })
+  it('renaming an account onto a waiting name answers the request too (Fable scenario S1)', () => {
+    signInAs('viper@mail'); requestAccess('Viper', 'Jo')
+    signInAs('ad', 'a')
+    expect(updateAccount('achex', { name: 'viper@mail' })).toBe(null)
+    expect(ACCESS_REQS, 'the request is answered, not left to be refused').toHaveLength(0)
+    expect(signIn('viper@mail', 'x')).toMatchObject({ kind: 'ok', account: { id: 'achex' } })
+  })
+  it('a stored request under a name that has an account is never listed (the load, in memory)', () => {
+    mem['sqn142_accessreqs'] = JSON.stringify([{ id: 'r1', name: 'hex', cs: 'H', full: 'H', at: 1 }, { id: 'r2', name: 'kite@mail', cs: 'K', full: 'K', at: 2 }])
+    accountsLoad()
+    expect(ACCESS_REQS.map(r => r.name)).toEqual(['kite@mail'])
   })
   it('the guest switch is off by default; on, a waiting person signs in as a guest', () => {
     expect(GUESTVIEW).toBe(false)

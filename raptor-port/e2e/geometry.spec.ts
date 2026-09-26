@@ -1578,7 +1578,12 @@ test('board at 390px: taps near the right edge land where they aim', async ({ pa
    must move nothing. The page is scrolled down first so a leak would show as
    scrollY changing either way. */
 test('the burger drawer at 390px scrolls only itself — the page behind it holds still', async ({ page }) => {
-  await page.setViewportSize({ width: 390, height: 780 })
+  /* RE-MEASURED 26 Sep 26 ([ACCOUNTS]): the drawer lost its "View as" chips (D166 (3)) and
+     is now shorter than a 780px screen, so it no longer scrolled there and the first check
+     below lost its premise. The rule is unchanged — a drawer taller than the screen scrolls
+     itself and the page behind holds still — so the screen is made shorter than the
+     drawer, and the premise is asserted before the wheel. */
+  await page.setViewportSize({ width: 390, height: 460 })
   await login(page); await go(page, 'viewsched')
   await page.evaluate(() => window.scrollTo(0, 300))
   await page.waitForTimeout(100)
@@ -1588,6 +1593,7 @@ test('the burger drawer at 390px scrolls only itself — the page behind it hold
   expect(await page.evaluate(() => document.body.classList.contains('dw-lock'))).toBe(true)
   const panel = page.locator('.drawer-panel')
   const box = (await panel.boundingBox())!
+  expect(await panel.evaluate(el => el.scrollHeight > el.clientHeight + 40), 'the drawer is taller than the screen').toBe(true)
   // wheel over the panel, far past its end
   await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2)
   for (let i = 0; i < 6; i++) await page.mouse.wheel(0, 1200)

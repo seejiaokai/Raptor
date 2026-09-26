@@ -108,7 +108,9 @@ export function accountsLoad(): void {
   const seenReq = new Set<string>()
   for (const x of Array.isArray(rq) ? rq : []) {
     const name = normName(x && x.name)
-    if (!x || typeof x.id !== 'string' || !name || seenReq.has(name)) continue
+    /* a request under a name that already has an account is answered, whatever wrote it —
+       dropped here in memory (the load never writes) so it is never listed or counted */
+    if (!x || typeof x.id !== 'string' || !name || seenReq.has(name) || accountByName(name)) continue
     seenReq.add(name)
     reqs.push({ id: x.id, name, cs: String(x.cs ?? '').slice(0, MAX_CS), full: String(x.full ?? '').slice(0, MAX_FULL), at: Number(x.at) || 0 })
   }
@@ -172,7 +174,8 @@ export function sessionFor(r: SignIn): any {
 /* ---- WRITES — each one intent command; a string back is the refusal, said on screen ---- */
 function commitIntent(type: typeof ACCOUNT_TYPES[number], meta: any, fn: () => void): string | null {
   const r: any = commitSettingsIntent(type, meta, fn)
-  if (r && r.ok === false) return r.reason === 'unauthorized' ? 'You are not allowed to do that' : (r.message || 'That did not save')
+  /* never the command layer's own message on screen — it names records, not people */
+  if (r && r.ok === false) return r.reason === 'unauthorized' ? 'You are not allowed to do that' : 'That did not save'
   return null
 }
 function writeAccounts(next: Account[]) { store.set('accounts', next); ACCOUNTS_LIST = next }
@@ -223,7 +226,14 @@ export function updateAccount(id: string, patch: { name?: any; role?: AccountRol
   if (patch.on !== undefined) next.on = !!patch.on
   const list = ACCOUNTS_LIST.map(x => x.id === a.id ? next : x)
   if (!list.some(canSignInAsAdmin)) return ADMIN_LOCK
-  return commitIntent('account.update', null, () => writeAccounts(list))
+  /* a sign-in name taken by a rename answers a request waiting under it, as adding an
+     account does (Fable's scenario read, 26 Sep 26: the request stayed listed, could never
+     be approved — "already has an account" — and kept the Admin tab's count up) */
+  const answered = next.name !== a.name && !!requestByName(next.name)
+  return commitIntent('account.update', null, () => {
+    writeAccounts(list)
+    if (answered) writeReqs(ACCESS_REQS.filter(r => r.name !== next.name))
+  })
 }
 
 /* the admin approves a request: the account AND the request cleared, one command */

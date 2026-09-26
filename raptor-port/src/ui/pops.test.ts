@@ -1,3 +1,4 @@
+// @vitest-environment jsdom
 /* [ACCOUNTS] (26 Sep 26) — every window closes at a sign-in and a sign-out (Astra R1-3):
    POPS_RESET must list every flag ui/pops.ts holds, or a new window could survive into
    the next person's session (Fable R2-8). Register line AC15. */
@@ -6,6 +7,7 @@ import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import * as pops from './pops'
 import { VIEW_RESET, resetViewState } from '../state/view'
+import { toast } from './toast'
 
 describe('POPS_RESET covers every window flag', () => {
   it('every `export let` in pops.ts has an entry', () => {
@@ -21,5 +23,15 @@ describe('POPS_RESET covers every window flag', () => {
     resetViewState('session')
     expect(pops.INPEDIT).toBe(null); expect(pops.DOCVIEW).toBe(null); expect(pops.HISTLIST).toBe(false)
     expect(pops.TPLEDIT).toBe(false); expect(pops.DRAWER).toBe(false)
+  })
+})
+
+describe('the toast ends with the session too (the walk, 26 Sep 26)', () => {
+  it('a message one person raised is taken down when the next signs in', () => {
+    toast('viper@mail can sign in now', null)
+    const t = document.getElementById('toastEl')!
+    expect(t.style.opacity).toBe('1')
+    resetViewState('session')
+    expect(t.style.opacity).toBe('0')
   })
 })

@@ -10,6 +10,8 @@ import { setSession, setMe } from './auth'
 import { initStore, resetSession } from './store'
 import { updatePersonField, OWN_ROW_ONLY, type QualsOp } from './quals-write'
 import { commitPeopleEdit } from './people-settings-commit'
+import { defineInvariant } from '../command'
+import { HOOKS } from '../engine/hooks'
 
 const PSNAP = JSON.stringify(PEOPLE)
 const restorePeople = () => {
@@ -108,5 +110,28 @@ describe('a member\'s command that changes someone else\'s row rolls back (the o
     const r: any = commitPeopleEdit(() => { PEOPLE.bane.initials = 'MINE'; PEOPLE.stiff.initials = 'HACK' }, { owner: 'bane' })
     expect(r.ok).toBe(false)
     expect(PEOPLE.bane.initials).not.toBe('MINE')
+  })
+})
+
+/* Fable's scenario read (26 Sep 26): any rollback used to say "You can only edit your own
+   row" — an admin refused for another reason was told something untrue. A switchable test
+   rule (inert unless switched on) stands in for "another reason". */
+let refuseForTest = false
+defineInvariant({ id: 'test-quals-other-reason', cls: 'hard', check: () => (refuseForTest ? 'refused for another reason' : null) })
+describe('a refusal says "your own row" only when that is the reason', () => {
+  it('an admin whose edit rolls back for another reason is told it did not save', () => {
+    resetSession({ user: 'acad', role: 'admin', pid: 'stiff', name: 'ad' })
+    const said: string[] = []; const t = HOOKS.toast
+    HOOKS.toast = (m: any) => { said.push(String(m)) }
+    refuseForTest = true
+    try {
+      const msg = updatePersonField('stiff', { initials: 'ZZ' } as QualsOp)
+      expect(msg).toBe('That did not save')
+      expect(said).not.toContain(OWN_ROW_ONLY)
+    } finally { refuseForTest = false; HOOKS.toast = t }
+  })
+  it("a member on another person's row is still told \"your own row\"", () => {
+    asMember('bane')
+    expect(updatePersonField('stiff', { initials: 'ZZ' } as QualsOp)).toBe(OWN_ROW_ONLY)
   })
 })

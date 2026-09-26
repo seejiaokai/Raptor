@@ -218,7 +218,11 @@ export async function openLeaveWar(page: Page, who: 'a' | 'user' = 'user', viewA
    why it exists). The wait lets React commit the re-render the switch causes
    before the test reads the controls it changed. */
 export async function lwRole(page: Page, role: 'admin' | 'member') {
-  await page.evaluate(r => (window as any).lwSetRole(r), role)
+  /* [ACCOUNTS] (26 Sep 26): in the app the war's role and the command layer's actor come
+     from the ONE sign-in, and since the one permissions module the war's writes are asked
+     of the actor too — so a switch of the war's role alone (a member signed in, the war
+     told "admin") is refused at the write. The switch moves both, as signing in would. */
+  await page.evaluate(r => { (window as any).raptorRole(r); (window as any).lwSetRole(r) }, role)
   await page.waitForTimeout(150)
 }
 
@@ -237,7 +241,10 @@ export async function raptorRole(page: Page, role: 'admin' | 'member') {
    Production mirrors the SIGNED-IN person onto it ([ACCOUNTS], D166 (4)); the e2e sets
    it directly so a member test can prove it edits its own row and no other. */
 export async function lwView(page: Page, id: string | null) {
-  await page.evaluate(i => (window as any).lwSetViewer(i), id)
+  /* a member scoped to a person IS that person ([ACCOUNTS]): the signed-in person moves
+     with the war's viewer, so the member's own writes pass the one-person-writes-his-own
+     check exactly as they do for a real sign-in; null leaves the war unscoped for reading */
+  await page.evaluate(i => { if (i) (window as any).raptorMe(i); (window as any).lwSetViewer(i) }, id)
   await page.waitForTimeout(150)
 }
 

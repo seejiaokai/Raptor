@@ -39,7 +39,8 @@ import { setLgEdit, setEffectiveRole, setMe } from './state/auth'
 import { notify, loadWeek, moveSection, moveSectionTo, writeInputs } from './state/store'
 import { globalUndo, globalRedo } from './undo'
 import { secOrder, SECTIONS, secDefault, setSecDefault, moveSecDefault } from './engine/order'
-import { setRole as lwSetRole, setViewer as lwSetViewer, loadWars as lwLoadWars, setCell as lwSetCell, setPostOut as lwSetPostOut } from './leavewar/state/store'
+import { setRole as lwSetRole, loadWars as lwLoadWars, setCell as lwSetCell, setPostOut as lwSetPostOut } from './leavewar/state/store'
+import { pinViewer } from './leavewar/sync'
 
 /* the hosts the bridge is installed on ([ACCOUNTS], 26 Sep 26): this PC only — the
    e2e suite, the probes, the Tracker smoke and the hand-pass drivers all serve the
@@ -150,7 +151,7 @@ export function installProbeBridge() {
      Production mirrors the SIGNED-IN person onto it through the sync (D166 (4)); the
      e2e pins the member's identity to the row it edits. Same precedent as
      w.lwSetRole — and, like the whole bridge since [ACCOUNTS], this PC only. */
-  w.lwSetViewer = (id: string | null) => lwSetViewer(id)
+  w.lwSetViewer = (id: string | null) => pinViewer(id)   // held for this sign-in (leavewar/sync.ts pinViewer)
   /* Inject a full war set into the live store. Same reason as w.lwSetRole: the
      under-manned e2e fixtures cannot seed a red-day war through localStorage
      before boot — they boot, then push it in through here. CORRECTED 17 Sep 26:

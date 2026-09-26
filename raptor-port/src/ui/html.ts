@@ -1444,7 +1444,7 @@ export function dayStatHTML(di:any,ed:any){
       : '';
     /* the ⓘ chip is the ONLY way into the day panel on the view page, and it opens a
        read-only panel — clicking a day in view mode must never lead into editing. */
-    const infoChip=`<button class="dinfobtn" data-dayinfo="${di}" title="${d.dow} — approval, AL versions, advisories">i</button>`;
+    const infoChip=isGuest()?'':`<button class="dinfobtn" data-dayinfo="${di}" title="${d.dow} — approval, AL versions, advisories">i</button>`;   /* a guest has no day panel (GuestApp) */
     /* the "Publishes Plan B" chip is RETIRED (owner, 15 Sep 26): the plans
        selector's own label already names the live plan, so a second chip saying
        the same thing is the clutter the redesign removes. */
@@ -1520,6 +1520,8 @@ function dayHTMLBody(di:any,ed:any,vsel?:any){
     let h=`<section class="day ${d.today?'today':''} ${ok?'dok':''}${PV?(PVQ?' issued':' preview'):''}" data-day="${di}">
       <div class="day-head">${ed
         ? `<span class="dow crewday" data-crewday="${di}" title="Show this day's crew in the aircrew panel">${d.dow}</span><span class="dt sb-open" data-sbday="${di}" title="Open scheduler board">${d.dt}${d.today?' · Today':''}</span>`
+        : isGuest()   /* a guest's tree has no day panel (GuestApp) — plain text, never a dead door */
+        ? `<span class="dow">${d.dow}</span><span class="dt">${d.dt}${d.today?' · Today':''}</span>`
         : `<span class="dow di-open" data-dayinfo="${di}" title="Day details">${d.dow}</span><span class="dt di-open" data-dayinfo="${di}" title="Day details">${d.dt}${d.today?' · Today':''}</span>`}${(ed||vsel)?`<span class="dhtpl">${ed?`<button class="dhbtn" data-daytplopen="${di}" title="Save this day, or apply a saved template">Templates</button>`:''}${planSelectorHTML(di)}</span>`:''}<span class="dhver">${verTagHTML(di)}${nysMarkHTML(di)}</span>
       <span class="badge" title="Aircraft per wave · standalone lines after the slash">${dayCount(d)}</span>
       <span class="dstat">${(!ed&&!vsel)?viewVerSelHTML(di):''}${dayStatHTML(di,ed)}</span></div>`
@@ -1553,7 +1555,10 @@ function dayHTMLBody(di:any,ed:any,vsel?:any){
       +(ed?`<div class="signoff day-sign" data-signbar="${di}">${signoffHTML(di,false)}</div>`:'')
       +`<div class="day-body">`;
     /* warnings are live-model state — a snapshot is never validated */
-    if(!PV||OFW)h+=dayWarnHTML(di);
+    /* A GUEST ([ACCOUNTS], D204) gets no warning box: his tree mounts no handler to open
+       it (a "tap to review" that does nothing), and the list names people and their
+       reasons — a guest reads the published programme only (the walk, 26 Sep 26). */
+    if((!PV||OFW)&&!isGuest())h+=dayWarnHTML(di);
     /* THE SCHEDULE SECTIONS are captured by slicing `h` at these boundary marks
        and re-emitted in the day's own order (owner, 29 Aug 26 — engine/order.ts
        secOrder), so a re-arrange costs no churn in the dense builders below and

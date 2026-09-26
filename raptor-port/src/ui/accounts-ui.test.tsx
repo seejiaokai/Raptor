@@ -19,7 +19,7 @@ import { accountsLoad, signIn, sessionFor, requestAccess, setGuestView, ACCESS_R
 import { getState as lwState } from '../leavewar/state/store'
 import { viewerId } from '../state/perms'
 import { setPage } from '../state/view'
-import { setDayApproved } from '../engine/publish'
+import { setDayApproved, setSign, dayApproved } from '../engine/publish'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 const $ = (sel: string) => document.querySelector(sel) as HTMLElement
@@ -109,7 +109,13 @@ describe('AC12 — the guest sees the published week only, walled off (D204; D21
     const dt = DAYS[0].dt
     INPUTS.unshift({ iid: 'medg', person: 'dj', type: 'OML', date: dt, allday: true, remarks: 'secret diagnosis', mod: '2026-01-01' } as any)
     await signInAs('ad', 'a')
-    await act(async () => { setDayApproved(0, true); notify() })
+    /* the four sign-offs first, or setDayApproved refuses and every day reads "Not
+       published yet" — which made this test pass vacuously until the walk (26 Sep 26) */
+    await act(async () => {
+      setSign(0, 'cur', 'ignite'); setSign(0, 'sked', 'bane'); setSign(0, 'plan', 'stiff'); setSign(0, 'appr', 'pump')
+      setDayApproved(0, true); notify()
+    })
+    expect(dayApproved(0), 'the fixture day is published').toBe(true)
     await signInAs('guesty@mail'); requestAccess('G', 'Guest Person')
     await signInAs('ad', 'a'); setGuestView(true)
     await signInAs('guesty@mail')
@@ -118,8 +124,16 @@ describe('AC12 — the guest sees the published week only, walled off (D204; D21
     for (const sel of ['#topnav', '#viewAs', '#notifyBell', '#insightBtn', '#page-editsched', '#page-inputs', '#page-admin'])
       expect($(sel), `${sel} is not mounted for a guest`).toBeFalsy()
     expect($('#guestApp').textContent).not.toContain('secret diagnosis')
+    expect($('#guestApp .day[data-day="0"]')!.textContent, 'the published day is drawn').not.toContain('Not published yet')
+    expect($('#guestApp .day[data-day="0"]')!.textContent).toContain('Unavailable')
     expect($('#guestApp').textContent).toContain('Not published yet')
     expect($$('#guestApp select[data-vwork]')).toHaveLength(0)
+    /* the walk (26 Sep 26): his tree mounts no day panel and no warning list, so neither
+       door is drawn — no ⓘ, no "tap to review", no day name that looks tappable */
+    expect($$('#guestApp .day[data-day="0"]')).toHaveLength(1)
+    expect($$('#guestApp [data-dayinfo]')).toHaveLength(0)
+    expect($$('#guestApp .dinfobtn')).toHaveLength(0)
+    expect($$('#guestApp [data-daywarn], #guestApp .dwbox')).toHaveLength(0)
     INPUTS.splice(INPUTS.findIndex((r: any) => r.iid === 'medg'), 1)
     await signInAs('ad', 'a'); setGuestView(false)
   })

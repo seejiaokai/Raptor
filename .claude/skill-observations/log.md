@@ -449,3 +449,33 @@ resolved statuses always carry their resolution date
 **Suggested improvement:** The break-test step says: break the wire, watch a named test go red, then restore FROM A COPY TAKEN JUST BEFORE THE BREAK (or break with a reversible in-place edit and reverse that exact edit) — never `git checkout`/`git restore` on a file with uncommitted work; or commit before breaking.
 
 **Principle:** An undo must return to the state just before the break, not to the last commit; on a dirty file those are different, and the tool that confuses them reports success.
+
+### Observation 274: A test that calls the loader by hand hides a loader nobody calls at boot
+
+**Status:** OPEN
+**Date:** 2026-09-26
+**Session context:** [ACCOUNTS] FULL bug check — the walk (numbered past 273, the highest on the parallel branches claude/tracker-palette and claude/bg-cwd-guard)
+**Skill:** New skill candidate: bug-check order (raptor-port/docs/bug-check-order.md) — the walk's reload step
+**Type:** open-source
+**Phase/Area:** test fixtures vs the boot path; the walk's "reload" step
+
+**Issue:** A new settings loader was registered in the settings-rollback list but never called in the app's start-up routine, so every account an admin added was forgotten at the next page reload. 6,137 unit tests were green: the accounts suite's setup called the loader by hand right after the start-up routine, so no test ever exercised "start-up alone". The walk's reload step caught it in the first run.
+
+**Suggested improvement:** (1) The walk's roll-call always includes "reload the page and check the new data is still there" for any feature that stores something. (2) A test's setup should run the SAME start-up path the app runs, never add the step under test by hand after it; where two lists must stay in step (the rollback loaders and the boot loaders), a structural test compares them.
+
+**Principle:** A fixture that performs the step under test by hand proves the step works, not that anything performs it; test the path the product actually takes, and test "survives a reload" for anything stored.
+
+### Observation 275: A fixture helper that refuses silently makes every assertion after it vacuous
+
+**Status:** OPEN
+**Date:** 2026-09-26
+**Session context:** [ACCOUNTS] FULL bug check — the guest-view test
+**Skill:** New skill candidate: bug-check order (raptor-port/docs/bug-check-order.md) — writing the test that pins a walk finding
+**Type:** open-source
+**Phase/Area:** red-first proof of a fix
+
+**Issue:** A test meant to prove "the guest sees a published day, with medical detail hidden" called the publish function without the four sign-offs it requires; publish refused silently, every day read "Not published yet", and the test's "no medical detail" check passed because nothing was drawn at all. Found only because a new assertion added for a walk finding passed WITHOUT its fix — the red-first step exposed it.
+
+**Suggested improvement:** Every fixture step that can refuse gets an assertion that it landed (e.g. "the fixture day is published") before the assertions that depend on it; and the red-first run (revert the fix, watch the test fail) is mandatory for every new assertion, not only new tests.
+
+**Principle:** Assert the fixture before the behaviour; a negative check ("X is not shown") passes trivially on an empty screen.

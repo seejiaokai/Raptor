@@ -1,4 +1,5 @@
 /* The toast — verbatim; wired into the engine's HOOKS.toast at app boot */
+import { VIEW_RESET } from '../state/view'
 const $=(id:any)=>document.getElementById(id)
 export let toastT:any=null;
 /* kind==='warn' tints the toast amber — used when something was allowed but is
@@ -48,4 +49,10 @@ export function toast(msg:any,kind:any){
   const hold=Math.min(12000,Math.max(tint?4200:2600,String(msg).length*60+1200));
   if(toastT)clearTimeout(toastT); toastT=setTimeout(()=>t.style.opacity='0',hold);
 }
-
+/* A SIGN-IN OR SIGN-OUT TAKES THE TOAST DOWN ([ACCOUNTS], 26 Sep 26 — found by the walk):
+   a message raised by one person ("viper@mail can sign in now") held for its full
+   reading time and was still on screen when the next person signed in on the same
+   browser. Every other transient already ends at the session reset (VIEW_RESET
+   'session', ui/pops.ts); the toast joins them. */
+export function clearToast(){ if(toastT){clearTimeout(toastT);toastT=null} if(typeof document==='undefined')return; const t=$('toastEl'); if(t)t.style.opacity='0' }   // no DOM in the node tests that sign in and out
+VIEW_RESET.push({ name: 'TOAST', scopes: ['session'], reset: clearToast })

@@ -84,7 +84,12 @@ export function updatePersonField(pid: string, op: QualsOp): string | null {
   }, { owner: pid })
   if (refused != null) { if (refused) HOOKS.toast(refused); return refused || 'unchanged' }
   if (r && r.ok === false) {
-    const msg = r.reason === 'unauthorized' || r.reason === 'invalid' ? OWN_ROW_ONLY : (r.message || 'That did not save')
+    /* "your own row" only when that IS the reason — the gate, or the one-person-writes-
+       his-own check; any other rollback says plainly that it did not save (Fable's
+       scenario read, 26 Sep 26: an admin's edit refused for another reason was told
+       "You can only edit your own row") */
+    const own = r.reason === 'unauthorized' || (r.reason === 'invalid' && /^member-writes-own:/.test(String(r.message || '')))
+    const msg = own ? OWN_ROW_ONLY : 'That did not save'
     HOOKS.toast(msg, 'warn')
     return msg
   }
