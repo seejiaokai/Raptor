@@ -1,0 +1,154 @@
+<title>Five-Flags Mock-ups</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Inter+Tight:wght@400;500;600;700&display=swap">
+<style>
+  /* the app's own palette and faces (raptor-port/src/ui/scheduler.css). Every picture is the dark app, so the page
+     commits to that one dark look on purpose and paints every colour itself. */
+  :root{color-scheme:dark;
+    --bg:#0B0D10;--panel:#14181D;--raised:#20262E;--edge:#2A313A;--edge-2:#39424D;
+    --ink:#F1F4F7;--ink-2:#B6C0CB;--ink-3:#8A96A3;
+    --accent:#3BC6E8;--me:#9B2FAE;--me-ring:#F0B6FF;--adv:#E5A83B;--hard:#F0555F;--ok:#4FC98A}
+  html,body{background:var(--bg);color:var(--ink)}
+  body{font-family:'Inter Tight',system-ui,-apple-system,'Segoe UI',sans-serif;font-size:15px;line-height:1.55;
+    padding-inline:16px;padding-block:20px 64px}
+  .wrap{max-width:1160px;margin:0 auto;display:flex;flex-direction:column;gap:40px}
+  h1,h2{font-family:'Barlow Condensed','Arial Narrow',sans-serif;font-weight:800;letter-spacing:.02em;margin:0;text-wrap:balance}
+  h1{font-size:34px;line-height:1.05}
+  h2{font-size:25px;line-height:1.1}
+  h3{font-size:13px;font-weight:700;margin:0;color:var(--ink-2);text-transform:uppercase;letter-spacing:.08em}
+  p{margin:0;max-width:70ch;color:var(--ink-2)}
+  p b{color:var(--ink);font-weight:600}
+  header{display:flex;flex-direction:column;gap:10px;border-bottom:1px solid var(--edge);padding-bottom:20px}
+  .lbl{font-family:'Barlow Condensed','Arial Narrow',sans-serif;text-transform:uppercase;letter-spacing:.12em;font-weight:700;font-size:12px;color:var(--ink-3)}
+  section{display:flex;flex-direction:column;gap:18px}
+  .item{display:flex;flex-direction:column;gap:12px;padding:18px;border:1px solid var(--edge);border-radius:10px;background:var(--panel)}
+  .row{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:14px;align-items:start}
+  figure{margin:0;display:flex;flex-direction:column;gap:8px;min-width:0}
+  figure img{display:block;max-width:100%;height:auto;border-radius:6px;border:1px solid var(--edge)}
+  figcaption{font-size:13.5px;color:var(--ink-2);max-width:60ch}
+  .tag{align-self:flex-start;font-family:'Barlow Condensed','Arial Narrow',sans-serif;font-weight:700;font-size:13px;letter-spacing:.1em;
+    text-transform:uppercase;padding:2px 9px;border-radius:5px;border:1px solid var(--edge-2);color:var(--ink-2);background:var(--raised)}
+  .tag.after{color:var(--ok);border-color:color-mix(in srgb,var(--ok) 55%,transparent)}
+  .tag.rec{color:var(--accent);border-color:color-mix(in srgb,var(--accent) 60%,transparent)}
+  .ask{border-left:3px solid var(--accent);padding:10px 14px;background:color-mix(in srgb,var(--accent) 7%,var(--panel));border-radius:0 8px 8px 0;
+    display:flex;flex-direction:column;gap:6px}
+  .ask p{color:var(--ink)}
+  .done{border-left-color:var(--ok);background:color-mix(in srgb,var(--ok) 7%,var(--panel))}
+  .note{font-size:13.5px;color:var(--ink-3)}
+  ul{margin:0;padding-left:20px;color:var(--ink-2);display:flex;flex-direction:column;gap:4px;max-width:70ch}
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="lbl">Raptor · the five-flags batch · 27 Sep 26</div>
+    <h1>Five-flags batch: before and after, and your three questions</h1>
+    <p>Every picture is the real app on this branch. A <b>before</b> is today's app with the old rule put back just for the
+      picture; a <b>proposal</b> is drawn onto the real app the same way. Nothing here is built yet except Part 1.</p>
+  </header>
+
+  <!-- ============================================================ PART 1 -->
+  <section>
+    <div class="lbl">Part 1 · built, waiting for your "merge live"</div>
+    <h2>What this batch changed</h2>
+
+    <div class="item">
+      <h3>1 · Your own puck stops glowing when it carries a flag</h3>
+      <div class="row">
+        <figure><span class="tag">Before</span><img src="img/five-flags/1-glow-before.png" width="230" height="183" alt="Saber, your own purple puck, with a red haze around its red ring, beside Ranger"><figcaption>Your purple Saber puck (top) glows red; Ranger's, with the same flag, doesn't.</figcaption></figure>
+        <figure><span class="tag after">After</span><img src="img/five-flags/1-glow-after.png" width="230" height="183" alt="Saber with the same plain red ring as Ranger"><figcaption>The same plain red ring as Ranger's. Still purple, so you know it's you.</figcaption></figure>
+        <figure><span class="tag">Before</span><img src="img/five-flags/1-dash-before.png" width="230" height="183" alt="A dashed red ring with a solid red haze filling the gaps"><figcaption>The dashed ring (a late show allowed by the rules) was filled in by the haze.</figcaption></figure>
+        <figure><span class="tag after">After</span><img src="img/five-flags/1-dash-after.png" width="230" height="183" alt="A clean dashed red ring"><figcaption>Clean dashes, as on anyone else's puck.</figcaption></figure>
+      </div>
+    </div>
+
+    <div class="item">
+      <h3>2 · Leave War → ⚙ Settings gains "Reset order"</h3>
+      <div class="row">
+        <figure><span class="tag">Before</span><img src="img/five-flags/2-reset-before.png" width="560" height="215" alt="The settings sheet with no roster order line"><figcaption>No way back to the default order once you'd rearranged the roster.</figcaption></figure>
+        <figure><span class="tag after">After · nothing to do</span><img src="img/five-flags/2-reset-after-greyed.png" width="560" height="325" alt="Reset order greyed out, reading In the default order"><figcaption>Greyed while the roster is already in the default order.</figcaption></figure>
+        <figure><span class="tag after">After · rearranged</span><img src="img/five-flags/2-reset-after-lit.png" width="560" height="339" alt="Reset order lit, Arranged by hand"><figcaption>Lights up once you've dragged someone out of order.</figcaption></figure>
+        <figure><span class="tag after">After · first tap</span><img src="img/five-flags/2-reset-after-armed.png" width="560" height="337" alt="The button reads Really reset?"><figcaption>One tap asks "Really reset?"; the second puts everyone back. Undo brings your arrangement back.</figcaption></figure>
+      </div>
+    </div>
+
+    <div class="item">
+      <h3>3 · Swapping two men inside one crowd no longer says "already on"</h3>
+      <div class="row">
+        <figure><span class="tag">Before</span><img src="img/five-flags/3-swap-before.png" width="430" height="69" alt="Dragging Reaper onto Ranger shows already on FLIGHT SAFETY STAND-DOWN"><figcaption>Dragging Reaper onto Ranger in FLIGHT SAFETY STAND-DOWN warned "already on" that very row.</figcaption></figure>
+        <figure><span class="tag after">After</span><img src="img/five-flags/3-swap-after.png" width="430" height="69" alt="The same drag with no warning under the ghost"><figcaption>No warning: it's a swap within the row. A real clash elsewhere is still named.</figcaption></figure>
+      </div>
+    </div>
+
+    <div class="item">
+      <h3>4 · The front day sits clear of the ‹ arrow (desktop)</h3>
+      <div class="row">
+        <figure><span class="tag">Before</span><img src="img/five-flags/4-arrow-before.png" width="520" height="365" alt="The warning list's rows start under the arrow"><figcaption>Monday's "⚠ issues" list ran under the ‹ arrow (bottom left): the start of the Gambit and Grit rows is hidden.</figcaption></figure>
+        <figure><span class="tag after">After</span><img src="img/five-flags/4-arrow-after.png" width="520" height="365" alt="The warning list starts clear of the arrow"><figcaption>The week keeps a gap for the arrow, so nothing hides under it. Same after every › press, page switch and warning tap.</figcaption></figure>
+      </div>
+    </div>
+
+    <p class="note">5 · The background-command guard: a fix to the chats' own tooling, not the app. Nothing to see.</p>
+  </section>
+
+  <!-- ============================================================ Q2 -->
+  <section>
+    <div class="lbl">Question 2 · you said yes · not built yet</div>
+    <h2>Your own puck shows the warning's ring</h2>
+    <div class="ask done"><p>With any warning on it, your own puck shows that warning's own ring, exactly like anyone else's. The purple fill still says "you". With no warning, it keeps the purple ring and glow.</p></div>
+    <div class="item">
+      <div class="row">
+        <figure><span class="tag">Today · amber</span><img src="img/five-flags/q2-amber-today.png" width="262" height="58" alt="Your puck with the purple ring; Tally with the amber ring"><figcaption>Yours (left) shows purple; Tally's shows the amber advisory.</figcaption></figure>
+        <figure><span class="tag after">After · amber</span><img src="img/five-flags/q2-amber-after.png" width="262" height="58" alt="Both pucks with the amber ring"><figcaption>Both amber.</figcaption></figure>
+        <figure><span class="tag">Today · thin red</span><img src="img/five-flags/q2-thinred-today.png" width="262" height="58" alt="Your puck purple ring; Pixel thin red"><figcaption>Purple, where Pixel shows thin red.</figcaption></figure>
+        <figure><span class="tag after">After · thin red</span><img src="img/five-flags/q2-thinred-after.png" width="262" height="58" alt="Both thin red"><figcaption>Both thin red.</figcaption></figure>
+        <figure><span class="tag">Today · grey note</span><img src="img/five-flags/q2-grey-today.png" width="262" height="58" alt="Static with the purple ring"><figcaption>Purple hides the grey long-day note.</figcaption></figure>
+        <figure><span class="tag after">After · grey note</span><img src="img/five-flags/q2-grey-after.png" width="262" height="58" alt="Static with the grey ring"><figcaption>The grey ring shows.</figcaption></figure>
+        <figure><span class="tag">Today · dotted</span><img src="img/five-flags/q2-dotted-today.png" width="147" height="58" alt="Outlaw with the dotted ring over the purple ring"><figcaption>Dots over a purple ring.</figcaption></figure>
+        <figure><span class="tag after">After · dotted</span><img src="img/five-flags/q2-dotted-after.png" width="147" height="58" alt="Outlaw with the dotted ring alone"><figcaption>Just the dots ("causes tomorrow's crew-rest break").</figcaption></figure>
+      </div>
+    </div>
+    <div class="ask"><p><b>Q2b, one small follow-up.</b> In OIL Earn mode, the green OIL ring on your own puck is hidden under the purple ring the same way, so you can't see whether you earn. Treat it the same: green ring, purple fill? <b>Recommended: yes.</b></p></div>
+  </section>
+
+  <!-- ============================================================ Q1 -->
+  <section>
+    <div class="lbl">Question 1 · your call</div>
+    <h2>A man put on a row he's already on: warn, or refuse?</h2>
+    <p>Ranger is already on FLIGHT SAFETY STAND-DOWN. You drag him onto the same row again from the crew list, or tap its "+ add" and pick him.</p>
+    <div class="item">
+      <h3>Today (as built): warned, then added twice</h3>
+      <div class="row">
+        <figure><span class="tag">While dragging</span><img src="img/five-flags/q1-today-hover.png" width="520" height="54" alt="The drag shows already on FLIGHT SAFETY STAND-DOWN"><figcaption>The warning shows under the puck.</figcaption></figure>
+        <figure><span class="tag">After the drop</span><img src="img/five-flags/q1-today-after.png" width="520" height="46" alt="Two Ranger pucks on the row, both ringed red"><figcaption>A second Ranger lands anyway, both ringed red. Your 13 Aug rule: "everything plants, warning after".</figcaption></figure>
+      </div>
+    </div>
+    <div class="item">
+      <h3>Proposed: refused</h3>
+      <div class="row">
+        <figure><span class="tag rec">While dragging</span><img src="img/five-flags/q1-today-hover.png" width="520" height="54" alt="The same warning under the puck"><figcaption>The same warning under the puck.</figcaption></figure>
+        <figure><span class="tag rec">After the drop</span><img src="img/five-flags/q1-refuse-row.png" width="520" height="40" alt="The row still has one Ranger"><figcaption>Nothing is added: the row keeps its one Ranger.</figcaption></figure>
+        <figure><span class="tag rec">And it says why</span><img src="img/five-flags/q1-refuse-toast.png" width="506" height="58" alt="Ranger — already on FLIGHT SAFETY STAND-DOWN 08:30–09:00 · not added twice"><figcaption>The same message a refused placeholder drop gives today. Tapping him in the crew list with "+ add" armed does the same.</figcaption></figure>
+      </div>
+    </div>
+    <div class="ask"><p><b>Recommended: refuse.</b> There's no reason to have the same man twice on one row. A man on two <i>different</i> rows at once is still only warned, as today.</p></div>
+  </section>
+
+  <!-- ============================================================ Q3 -->
+  <section>
+    <div class="lbl">Question 3 · your call · desktop only</div>
+    <h2>The strip beside the ‹ arrow</h2>
+    <p>With the new gap, the last ~42 pixels of the day before (here Monday, with Tuesday at the front) show at the left edge, around the arrow. It used to be 8 pixels.</p>
+    <div class="item">
+      <div class="row">
+        <figure><span class="tag rec">Keep · recommended</span><img src="img/five-flags/q3-keep.png" width="460" height="430" alt="A strip of Monday shows at the left edge"><figcaption>A glimpse of Monday: tells you there's a day to the left.</figcaption></figure>
+        <figure><span class="tag">Empty</span><img src="img/five-flags/q3-empty.png" width="460" height="430" alt="The strip at the left edge is blank"><figcaption>The strip is blank: only the arrow sits there.</figcaption></figure>
+        <figure><span class="tag">Fade</span><img src="img/five-flags/q3-fade.png" width="460" height="430" alt="Monday's strip faded almost out"><figcaption>In between: Monday fades out towards the edge.</figcaption></figure>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="ask"><p><b>Reply in the chat:</b> Q1 (refuse / warn as today), Q2b (yes / no), Q3 (keep / empty / fade). A word each is enough.</p></div>
+  </section>
+</div>

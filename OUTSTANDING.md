@@ -1264,7 +1264,8 @@ NAMES it ("already on FLIGHT SAFETY STAND-DOWN 08:30–09:00" — the caption, t
 but still plants the second copy, per his 13 Aug 26 "everything plants, warning after". **The question (the look card,
 Q1):** refuse it instead — one man, once per row? If yes: a hard refusal beside D33's in `avail.ts slotBar`'s
 one-man-one-place check and the three doors (`drag.ts`, `view.ts placeArmed`, `fillSlot`), with the pending count left
-at 0. **Place:** his answer; then a small WALK-tier build.
+at 0. **Mock-up shown 27 Sep 26** (his ask, *"q1 can u show me a mock upp"*): `raptor-port/docs/mock/five-flags.html` §Question 1 —
+today vs refused. **Place:** his answer; then a small WALK-tier build.
 
 ### [ME-PUCK-SEVERITY-RING] On his own puck, the purple "this is you" ring hides the amber / thin red / grey rings — a question for him (filed 26 Sep 26)
 The five-flags walk (W1, `raptor-port/docs/img/handpass/2026-09-26-five-flags/w1/D1-*`, `D2-*`): `.puck.me`'s purple ring
@@ -1274,13 +1275,14 @@ is the look card's Q2 — **ANSWERED 27 Sep 26: "Q2 yes" (D270)** — flagged, h
 thin red, grey, dotted) as another man's does, the purple fill stays; unflagged, the purple ring and glow as today. **To build:**
 `scheduler.css` `.puck.me.warn` / `.puck.me.boxdot` (and its comment), `flagglow-css.test.ts`, `ui-contracts.md` (the
 "no flag ring glows" paragraph), a mock-up first (his ask, 27 Sep 26); WALK tier (a shared drawer — not LOOK). Still OPEN,
-not part of D270: in OIL mode the green OIL ring on his own puck is hidden under the purple ring (`w1/F9-*`) — ask with the
-mock-up. **Place:** on the five-flags branch before "merge live", or its own small branch after — with the mock-up.
+not part of D270: in OIL mode the green OIL ring on his own puck is hidden under the purple ring (`w1/F9-*`) — put to him
+27 Sep 26 as Q2b on the mock-up (`raptor-port/docs/mock/five-flags.html` §Question 2, recommended: the same treatment). **Place:** on the five-flags branch before "merge live", or its own small branch after — with the mock-up.
 
 ### [ARROW-GUTTER-STRIP] The day before the front one shows a 42px strip beside the ‹ arrow — a question for him (filed 26 Sep 26)
 The five-flags walk (W4, `raptor-port/docs/img/handpass/2026-09-26-five-flags/w4/GUTTER-prevday-tail-view-1440x900.png`):
 the desktop week's 54px room ([VIEW-ARROW-OVER-LIST]) leaves the previous day's last 42px visible around the arrow (8px
-on `main`). The look card's Q3: keep (it hints at a day to the left — recommended) or leave that strip empty. Also from
+on `main`). The look card's Q3: keep (it hints at a day to the left — recommended) or leave that strip empty — **mock-up shown
+27 Sep 26** (his ask): `raptor-port/docs/mock/five-flags.html` §Question 3, keep / empty / fade. Also from
 the same walk, small: straight after a window resize a day can sit partly under the ‹ until the next press (a resize
 never re-lands the week); "day a–b of 7" counts a third day that shows only ~212px at 1440. **Place:** his answer; low.
 
