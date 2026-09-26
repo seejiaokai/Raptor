@@ -28,7 +28,7 @@
    and IT ties the real address at the database step (D165) — live in state/accounts.ts,
    not on screen. */
 import { useEffect, useRef, useState } from 'react'
-import { PEOPLE, nameToId } from '../engine/people'
+import { PEOPLE, nameToId, archivedHolders } from '../engine/people'
 import { HOOKS } from '../engine/hooks'
 import { elogWhen } from '../engine/editlog'
 import {
@@ -124,24 +124,34 @@ const SOMEONE_ELSE = 'If it is someone else, choose New person and give them ano
 /* the signed-in admin's OWN account — its row cannot be opened (another admin changes it) */
 const isOwnAccount = (a: Account) => !!(SESSION && SESSION.user === a.id) || (me() != null && a.pid === me())
 function rosterMatch(r: AccessRequest): { pid: string; note: string } | null {
+  /* a typed callsign finds the man ON THE ROSTER only ([POST-OUT-OUTCOMES], D286 (2)) — an
+     archived man's callsign is free, so a request under it opens on New person (archivedNote) */
   const hit = r.cs ? nameToId(r.cs) : undefined
   const p = hit && (PEOPLE as any)[hit]
-  if (!hit || !p || p.special) return null
+  /* an archived man is reached only by a typed bare id (nameToId's id tolerance) — never picked here either */
+  if (!hit || !p || p.special || p.archived) return null
   const same = String(p.cs).toLowerCase() === r.cs.trim().toLowerCase()
-  const who = `${p.cs}${p.archived ? ' (archived)' : ''}`
   const acct = accountOfPid(hit)
   if (acct) {
     /* the "it is him" door, said so it can be used: his OWN account's row is locked to him
-       (Astra's second fix check), and an archived man who is back still needs restoring —
-       said, never done for him: Restore wipes his posting-out window (Fable's second) */
+       (Astra's second fix check) */
     const him = isOwnAccount(acct)
       ? "It is your own account: if it is you on a new sign-in, another admin must change its sign-in under Accounts — you can't change your own."
-      : `If it is them on a new sign-in, change that account's sign-in under Accounts — that answers this request${p.archived ? ', and restore them on the Quals page if they are back' : ''}.`
-    return { pid: hit, note: `He typed ${r.cs} — ${same ? `${who} already has` : `that is ${who}, who already has`} an account (${acct.name}), so they can't be picked here. ${him} ${SOMEONE_ELSE}` }
+      : `If it is them on a new sign-in, change that account's sign-in under Accounts — that answers this request.`
+    return { pid: hit, note: `He typed ${r.cs} — ${same ? `${p.cs} already has` : `that is ${p.cs}, who already has`} an account (${acct.name}), so they can't be picked here. ${him} ${SOMEONE_ELSE}` }
   }
-  if (p.archived) return { pid: hit, note: `He typed ${r.cs} — ${p.cs} is archived; restore them on the Quals page to link them. ${SOMEONE_ELSE}` }
   return { pid: hit, note: same ? `He typed ${r.cs} — ${p.cs} is on the roster. Pick them if this is them.`
     : `He typed ${r.cs} — that is ${p.cs}. Pick them if this is them.` }
+}
+/* D286 reading (5) (26 Sep 26), in D300's few words: a request whose callsign only an ARCHIVED man holds opens on New
+   person, saying so — "An archived man is already Ace — this makes a new person." When that archived man has an account
+   (an overseas man, suspended), the way it is HIM on a new sign-in is named too, so he is not made twice. */
+function archivedNote(r: AccessRequest): string | null {
+  const held = r.cs ? archivedHolders(r.cs) : []
+  if (!held.length) return null
+  const acct = held.map(id => accountOfPid(id)).find(Boolean)
+  return `An archived man is already ${r.cs.trim()} — this makes a new person.`
+    + (acct ? ` If it is him, change his account's sign-in (${acct.name}) instead.` : '')
 }
 
 /* one open approve form's state — started afresh from the request at every Approve (Cancel
@@ -179,7 +189,7 @@ function Waiting() {
                   {a.mode === 'new'
                     ? <>
                         <PersonFields idp="apv" np={a.np} onChange={np => setOpen({ ...a, np })} />
-                        <p className="adm-note acc-note" id="apvNote">Filled from what he gave when he signed up — change anything before you give access.</p>
+                        <p className="adm-note acc-note" id="apvNote">{archivedNote(r) ?? 'Filled from what he gave when he signed up — change anything before you give access.'}</p>
                       </>
                     : <>
                         <div className="mfield"><label htmlFor="apvPid">{CALLSIGN_LABEL}</label>

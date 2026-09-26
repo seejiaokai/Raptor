@@ -1,5 +1,5 @@
 import { DAYS } from './data'
-import { PEOPLE, nameToId, whoId, ID_BY_CS, isSpecial } from './people'
+import { PEOPLE, whoId, isSpecial, callsignTakenBy, indexCallsigns } from './people'
 import { SCHED, markEdit, markDeletion, deletionWasIssued, markInputFiling, markStructuralAdd, dayApproved, dropRowMarks, protectedWeek, dayCurVer, daySnapOf } from './publish'
 import { parseHM, hhmm, hmOK } from './time'
 import { INPUTS, DATES, inpId, inputCoversDate, isUnavail, isPersonal, inpLabel, dateIx } from './inputs'
@@ -692,14 +692,15 @@ export function unacceptInput(di:any,inp:any){
    ID_BY_CS can point only one way; the one add (state/roster-add.ts
    newPersonProblem — Admin → Users since [ACCOUNTS-NEW-PERSON], D217) enforces the
    same guard so a new callsign can never collide with an existing id either. */
+/* [POST-OUT-OUTCOMES] (D286, D295): "taken" is the one rule, callsignTakenBy — a man on the roster, a placeholder or a
+   bare id holding it; a callsign only an ARCHIVED man holds is free, so an archived man may be renamed on the Archived
+   list and a roster man may take an archived man's old callsign. The index is rebuilt by its one body. */
 export function renameCallsign(id:any,next:any){
   const p=PEOPLE[id]; if(!p)return false;
   const cs=String(next==null?'':next).trim();
   if(!cs||cs===p.cs)return false;
-  const taken=nameToId(cs);
-  if(taken&&taken!==id)return false;
-  const oldK=String(p.cs||'').toLowerCase().trim();
+  if(callsignTakenBy(cs,id))return false;
   p.cs=cs;
-  delete ID_BY_CS[oldK]; ID_BY_CS[cs.toLowerCase()]=id;
+  indexCallsigns();
   return true;
 }

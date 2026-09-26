@@ -41,7 +41,7 @@ import {
   commit, commitProjection, isCommitting, definePermission, anyone, registerRecord, registerGuardedStore,
   cmdDeferEffect,
 } from '../command'
-import { PEOPLE, ID_BY_CS } from '../engine/people'
+import { PEOPLE, indexCallsigns } from '../engine/people'
 import { store, setSettingsWriteHook, HOOKS } from '../engine/hooks'
 import { rulesLoad, rulesResetMem } from '../engine/rules'
 import { lookaheadLoad } from '../engine/lookahead'
@@ -147,22 +147,13 @@ function restorePeople(snap: string): void {
   const obj = JSON.parse(snap)
   for (const k of Object.keys(PEOPLE)) delete (PEOPLE as any)[k]
   Object.assign(PEOPLE, obj)
-  for (const k of Object.keys(ID_BY_CS)) delete (ID_BY_CS as any)[k]
-  for (const id of Object.keys(PEOPLE)) {
-    const cs = (PEOPLE as any)[id] && (PEOPLE as any)[id].cs
-    if (typeof cs === 'string') (ID_BY_CS as any)[cs.toLowerCase()] = id
-  }
+  indexCallsigns()
 }
 /* rebuild ID_BY_CS from the whole live PEOPLE (a delete must drop the old cs
    mapping, so a touched-ids-only pass would leave a stale entry — full rebuild is
-   the same work restorePeople does). */
-function rebuildIdByCs(): void {
-  for (const k of Object.keys(ID_BY_CS)) delete (ID_BY_CS as any)[k]
-  for (const id of Object.keys(PEOPLE)) {
-    const cs = (PEOPLE as any)[id] && (PEOPLE as any)[id].cs
-    if (typeof cs === 'string') (ID_BY_CS as any)[cs.toLowerCase()] = id
-  }
-}
+   the same work restorePeople does). The ONE index body — the roster and the
+   placeholders only ([POST-OUT-OUTCOMES], D286: an archived man's callsign is free). */
+const rebuildIdByCs = indexCallsigns
 export const peopleStore: EnlistableStore = {
   key: 'people',
   capture: () => baseline(),
@@ -231,7 +222,10 @@ function commitPeopleProjectionCmd(type: string, fn: () => void): CommitResult {
   const cmd: Command = { type, scope: peopleScope(), apply: (txn) => { txn.enlist(peopleStore); fn() } }
   return commitProjection(cmd)
 }
-const advancePeople = () => { rawPersistPeople(); PEOPLE_BASELINE = JSON.stringify(PEOPLE) }
+/* every roster command's finish — and so the one place the callsign index follows an archive, a restore, a rename, an
+   add, the posting pass or a delete ([POST-OUT-OUTCOMES], D286: who is ON the roster decides what a typed callsign
+   means, so it is re-read after every change to the roster) */
+const advancePeople = () => { indexCallsigns(); rawPersistPeople(); PEOPLE_BASELINE = JSON.stringify(PEOPLE) }
 
 /* [CMDL-FINISH] C10 — a durable roster write, ALWAYS through a command (never the
    old raw branch). A raw persist while a command is in flight changes PEOPLE

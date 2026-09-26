@@ -8,7 +8,7 @@
    No import of state/store.ts here — store.ts imports isHydrated from us,
    and the two snapshot helpers it owns arrive through wirePersist. */
 import { INPUTS } from '../engine/inputs'
-import { PEOPLE, ID_BY_CS } from '../engine/people'
+import { PEOPLE, indexCallsigns } from '../engine/people'
 import { CURWEEK } from '../engine/waves'
 import { HOOKS } from '../engine/hooks'
 import { stashPut, stashKeys, stashGet, stashHas, isPreservedWeek, preservedBlob } from '../engine/weekstash'
@@ -65,11 +65,8 @@ export function hydrate(wb: Whiteboard): void {
        (engine/people.ts) — rebuild it for the stored one, or a person added
        or renamed on the Quals page stops resolving after a reload while the
        old callsign still does (8 Sep 26 bug pass) */
-    for (const k of Object.keys(ID_BY_CS)) delete ID_BY_CS[k]
-    for (const id of Object.keys(PEOPLE)) {
-      const cs = PEOPLE[id] && PEOPLE[id].cs
-      if (typeof cs === 'string') ID_BY_CS[cs.toLowerCase()] = id
-    }
+    /* the ONE index body — the roster and the placeholders only ([POST-OUT-OUTCOMES], D286) */
+    indexCallsigns()
   }
   const plan = parse(wb.get('plan', 'all'))
   if (plan && Array.isArray(plan.pp)) {

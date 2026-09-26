@@ -11,7 +11,7 @@ import { createRoot, type Root } from 'react-dom/client'
 import { App } from './App'
 import { initStore, notify, resetSession } from '../state/store'
 import { storeBackend, HOOKS, store } from '../engine/hooks'
-import { PEOPLE, ID_BY_CS } from '../engine/people'
+import { PEOPLE, ID_BY_CS, indexCallsigns } from '../engine/people'
 import {
   accountsLoad, signIn, sessionFor, requestAccess, ACCESS_REQS, accountByName, accessAlert, declineRequest, linkablePeople,
   accountOfPid,
@@ -177,41 +177,40 @@ describe('NP5 — approving: On the roster | New person, filled from what he gav
     expect(note).toBe("He typed Saber — Saber already has an account (ad), so they can't be picked here. It is your own account: if it is you on a new sign-in, another admin must change its sign-in under Accounts — you can't change your own. If it is someone else, choose New person and give them another callsign or name.")
     expect(($('[data-acct="acad"] .acc-tap') as HTMLButtonElement).disabled, 'his own row cannot be opened — the note must not send him there').toBe(true)
   })
-  it('ARCHIVED and holding an account: the account wins — never "restore to link", which could not work (both fix checks #1)', async () => {
-    /* Hex (rocky) holds the seeded `hex` account; posting out archives a man and keeps his account */
+  /* D286 (26 Sep 26, [POST-OUT-OUTCOMES]) REPLACED the two "archived → restore to link" tests: an archived man's callsign
+     is free — a request under it opens on New person, saying so (D286 reading (5), the D300 words). Register line PO10. */
+  it('D286: an archived man with an account — New person, "An archived man is already Hex", and the way it is him', async () => {
+    /* Hex (rocky) holds the seeded `hex` account; an overseas posting archives him and suspends it */
     const was = (PEOPLE as any).rocky.archived
-    ;(PEOPLE as any).rocky.archived = true
+    ;(PEOPLE as any).rocky.archived = true; indexCallsigns()
     try {
       await signInAs('r1@mail'); ask('Hex')
       await signInAs('r2@mail'); ask('rocky')
       await signInAs('ad', 'a')
       await act(async () => { setPage('admin'); notify() })
       const [a, b] = ACCESS_REQS
-      for (const [r, typed] of [[a, 'He typed Hex — Hex (archived)'], [b, 'He typed rocky — that is Hex (archived), who']] as const) {
-        await click($(`[data-approve="${r.id}"]`))
-        expect($('#apvModeRoster').getAttribute('aria-pressed')).toBe('true')
-        expect(optTexts('#apvPid')).not.toContain('Hex')
-        const note = $('#apvNote').textContent!
-        expect(note.startsWith(typed), note).toBe(true)
-        expect(note).toMatch(/already has an account \(hex\)/)
-        /* never "restore … to link" (it cannot link); the returning man's restore is said as a step after */
-        expect(note).not.toMatch(/to link them|Pick them/i)
-        expect(note).toMatch(/that answers this request, and restore them on the Quals page if they are back\./)
-        await click($('#apvCancel'))
-      }
-    } finally { (PEOPLE as any).rocky.archived = was }
+      await click($(`[data-approve="${a.id}"]`))
+      expect($('#apvModeNew').getAttribute('aria-pressed')).toBe('true')
+      expect($('#apvNote').textContent).toBe("An archived man is already Hex — this makes a new person. If it is him, change his account's sign-in (hex) instead.")
+      await click($('#apvCancel'))
+      /* his hidden id typed: never the archived man either — New person */
+      await click($(`[data-approve="${b.id}"]`))
+      expect($('#apvModeNew').getAttribute('aria-pressed')).toBe('true')
+      await click($('#apvCancel'))
+    } finally { (PEOPLE as any).rocky.archived = was; indexCallsigns() }
   })
-  it('archived with NO account: "restore to link" — and the someone-else way out too (Fable\'s fix check #3)', async () => {
+  it('D286: an archived man with NO account — New person, "An archived man is already …"', async () => {
     const free = linkablePeople().find(id => String((PEOPLE as any)[id].cs).toLowerCase() !== id)!
     const fcs = String((PEOPLE as any)[free].cs)
-    ;(PEOPLE as any)[free].archived = true
+    ;(PEOPLE as any)[free].archived = true; indexCallsigns()
     try {
       await signInAs('r1@mail'); ask(fcs)
       await signInAs('ad', 'a')
       await act(async () => { setPage('admin'); notify() })
       await click($(`[data-approve="${ACCESS_REQS[0].id}"]`))
-      expect($('#apvNote').textContent).toBe(`He typed ${fcs} — ${fcs} is archived; restore them on the Quals page to link them. If it is someone else, choose New person and give them another callsign or name.`)
-    } finally { delete (PEOPLE as any)[free].archived }
+      expect($('#apvModeNew').getAttribute('aria-pressed')).toBe('true')
+      expect($('#apvNote').textContent).toBe(`An archived man is already ${fcs} — this makes a new person.`)
+    } finally { delete (PEOPLE as any)[free].archived; indexCallsigns() }
   })
   it("the account editor of an ARCHIVED person still shows his callsign in its picker (Astra's fix check #2)", async () => {
     const was = (PEOPLE as any).rocky.archived

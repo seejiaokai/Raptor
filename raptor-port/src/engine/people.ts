@@ -258,7 +258,31 @@ Object.keys(PEOPLE).forEach((id:any)=>{const q=PEOPLE[id].quals; if(!q)return;
   if(q.naar&&!q.daar)q.naar=false;
   if(q.naar==='I'&&q.daar!=='I')q.naar=true;
   if(q.scNight&&!q.scDay)q.scNight=false;});
-export const ID_BY_CS:any={}; Object.keys(PEOPLE).forEach((id:any)=>ID_BY_CS[PEOPLE[id].cs.toLowerCase()]=id);
+/* THE CALLSIGN INDEX — a typed callsign means the man ON THE ROSTER, never an archived one ([POST-OUT-OUTCOMES],
+   owner D286, 26 Sep 26: "an archived man's callsign may be given to a new person" — reading (2), "a typed callsign
+   finds the person on the roster, never the archived one"; Astra's plan read A3 took it literally). So the index holds
+   the roster and the ALL / ALL AVAIL placeholders only: an archived man's callsign is FREE (a new person may take it,
+   and it resolves to nobody until someone does), and a deleted man (D287, D290 — kept underneath, archived) is never in
+   it. A stored ID still resolves to its own man (whoId is id-first) — every schedule row keeps pointing at the man it
+   held. ONE body builds it — boot, the stored roster's load (state/persist.ts), every roster command's finish
+   (state/people-settings-commit.ts advancePeople — archive, restore, rename, add, the posting pass, a delete) and the
+   undo/rollback rebuilds — so no writer can keep an archived man in it. */
+export const onRosterBody=(p:any)=>!!p&&!p.deleted&&(!p.archived||!!p.special);
+export const ID_BY_CS:any={};
+export function indexCallsigns(){for(const k of Object.keys(ID_BY_CS))delete ID_BY_CS[k];
+  Object.keys(PEOPLE).forEach((id:any)=>{const p=PEOPLE[id]; if(onRosterBody(p)&&typeof p.cs==='string')ID_BY_CS[p.cs.toLowerCase()]=id;});}
+indexCallsigns();
+/* the ARCHIVED men who hold a callsign (not deleted, not a placeholder) — many may: each was archived holding it, and
+   a new person may take it meanwhile (D286). What the approve note and Restore / Rename read (never a typed lookup). */
+export function archivedHolders(cs:any):string[]{const k=String(cs??'').trim().toLowerCase(); if(!k)return [];
+  return Object.keys(PEOPLE).filter((id:any)=>{const p=PEOPLE[id]; return p&&p.archived&&!p.special&&!p.deleted&&String(p.cs||'').toLowerCase()===k;});}
+/* who a callsign is TAKEN by, other than `exceptId`: a man on the roster or a placeholder holding it, or any person —
+   deleted included, ids are never reused — whose ID it equals (nameToId is id-tolerant, so a callsign equal to an id
+   would cross every row that stores that id — PID-01). An archived-only holder does not take it (D286). */
+export function callsignTakenBy(cs:any,exceptId?:any):string|null{const s=String(cs??'').trim(); if(!s)return null;
+  const k=s.toLowerCase(); const h=ID_BY_CS[k]; if(h&&h!==exceptId)return h;
+  const idHit=PEOPLE[s]?s:(PEOPLE[k]?k:null); if(idHit&&idHit!==exceptId)return idHit;
+  return null;}
 /* sentinel bodies (ALL AVAIL) occupy slots but are not people: no conflicts,
    no crew rest, no qual rules, never counted as busy or engaged. */
 export function isSpecial(id:any){return !!(PEOPLE[id]&&PEOPLE[id].special);}
