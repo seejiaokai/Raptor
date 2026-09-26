@@ -1,0 +1,163 @@
+<title>Posting Out and Accounts</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;600;700&display=swap">
+<style>
+  /* One visual world on purpose: the app's own dark palette (scheduler.css), so the pictures sit in their own light. */
+  :root {
+    color-scheme: dark;
+    --bg: #0b0d10; --panel: #15181d; --panel-2: #1b1f26; --ink: #e8edf2; --ink-2: #aeb8c3; --ink-3: #7d8894;
+    --edge: #262b33; --accent: #3cc6e6; --warn: #f0c36d; --hard: #f0555f; --later: #f5a524;
+  }
+  body { background: var(--bg); color: var(--ink); font: 15px/1.55 'Inter Tight', system-ui, -apple-system, 'Segoe UI', sans-serif; }
+  main { max-width: 1120px; margin: 0 auto; padding-inline: 16px; padding-block: 28px 56px; display: grid; gap: 22px; }
+  header h1 { font-size: 26px; line-height: 1.2; margin: 0 0 6px; text-wrap: balance; letter-spacing: -.01em; }
+  header p { color: var(--ink-2); margin: 0; max-width: 72ch; }
+  .legend { display: flex; flex-wrap: wrap; gap: 8px 16px; margin-top: 12px; color: var(--ink-2); font-size: 13px; }
+  .legend span { display: inline-flex; align-items: center; gap: 6px; }
+  .dot { width: 9px; height: 9px; border-radius: 50%; display: inline-block; }
+  section { background: var(--panel); border: 1px solid var(--edge); border-radius: 12px; padding: 18px; display: grid; gap: 12px; }
+  .head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 12px; }
+  h2 { font-size: 17px; margin: 0; text-wrap: balance; }
+  .rul { font: 600 11px/1 'Inter Tight', system-ui, sans-serif; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-3); }
+  .rul.later { color: var(--later); }
+  section > p { margin: 0; color: var(--ink-2); max-width: 78ch; }
+  section > p b { color: var(--ink); }
+  .pics { display: flex; flex-wrap: wrap; gap: 14px; align-items: flex-start; }
+  figure { margin: 0; display: grid; gap: 6px; min-width: 0; }
+  figure.wide { flex: 1 1 560px; }
+  figure.mid { flex: 1 1 340px; max-width: 600px; }
+  figure.phone { flex: 0 1 260px; }
+  figure img { display: block; width: 100%; height: auto; border: 1px solid var(--edge); border-radius: 8px; background: #000; }
+  figcaption { color: var(--ink-3); font-size: 13px; }
+  figcaption .tag { font-weight: 600; font-size: 11px; letter-spacing: .05em; text-transform: uppercase; padding: 1px 6px; border-radius: 4px; margin-right: 6px; }
+  .real { color: #0b0d10; background: var(--accent); }
+  .drawn { color: #0b0d10; background: var(--warn); }
+  .ask { border-color: var(--accent); background: linear-gradient(0deg, rgba(60,198,230,.06), rgba(60,198,230,.06)), var(--panel); }
+  .ask ol { margin: 0; padding-left: 22px; display: grid; gap: 6px; }
+  .ask li { color: var(--ink-2); } .ask li b { color: var(--ink); }
+  table.what { border-collapse: collapse; width: 100%; font-size: 14px; }
+  .tablewrap { overflow-x: auto; }
+  table.what th, table.what td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--edge); vertical-align: top; }
+  table.what th { color: var(--ink-3); font-weight: 600; font-size: 12px; letter-spacing: .05em; text-transform: uppercase; }
+  table.what td:first-child { color: var(--ink); font-weight: 600; white-space: nowrap; }
+  table.what td { color: var(--ink-2); }
+</style>
+
+<main>
+  <header>
+    <h1>Posting out, accounts and guest flyers — the mock-up</h1>
+    <p>Pictures of the real app (the demo world) with the new pieces drawn into it, for the rulings you gave on 26–27 Sep 26
+      (D229, D280–D293). Nothing here is built yet: approve it, or tell me what to change.</p>
+    <div class="legend">
+      <span><span class="tag real" style="font:600 11px 'Inter Tight',sans-serif;padding:1px 6px;border-radius:4px;color:#0b0d10;background:#3cc6e6">REAL</span> the app doing it today, through its own controls</span>
+      <span><span style="font:600 11px 'Inter Tight',sans-serif;padding:1px 6px;border-radius:4px;color:#0b0d10;background:#f0c36d">DRAWN</span> the new piece, drawn in the app's own style</span>
+    </div>
+  </header>
+
+  <section>
+    <div class="head"><h2>At a glance — what each kind of posting does on its date</h2><span class="rul">D229 · D283 · D287 · D281</span></div>
+    <div class="tablewrap">
+      <table class="what">
+        <tr><th>The posting</th><th>His row on Quals</th><th>His account</th><th>When he's back</th></tr>
+        <tr><td>Overseas to another squadron</td><td>archived</td><td>suspended</td><td>restore him, enable the account — the app prompts you to check his quals</td></tr>
+        <tr><td>Leaving flying for good</td><td>deleted</td><td>deleted</td><td>only as a new person</td></tr>
+        <tr><td>Another workplace, still flies with us</td><td>becomes SANS</td><td>stays on</td><td>—</td></tr>
+        <tr><td>Transfer to another squadron</td><td colspan="3">later, with the shared database</td></tr>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <div class="head"><h2>1 · On the Leave War, you say what the posting is</h2><span class="rul">D229</span></div>
+    <p>Tap a day on his row, then <b>PO</b>. After the date, the one "Archive on PO date" switch becomes a choice of four.
+      Nothing happens until that day; on it, the app does what the posting says.</p>
+    <div class="pics">
+      <figure class="wide"><img src="img/post-out/desktop-1-postout-sheet.png" alt="The Leave War post-out sheet asking what the posting is, with four choices"><figcaption><span class="tag drawn">drawn</span>the four choices · desktop</figcaption></figure>
+      <figure class="phone"><img src="img/post-out/phone-1-postout-sheet.png" alt="The same post-out sheet on a phone"><figcaption><span class="tag drawn">drawn</span>on a phone</figcaption></figure>
+    </div>
+  </section>
+
+  <section>
+    <div class="head"><h2>2 · Overseas: archived, and his account suspended</h2><span class="rul">D280 · D285</span></div>
+    <p>On Admin → Users his account reads <b>suspended</b>. Its buttons are <b>Enable</b> and <b>Delete account</b>
+      (today's "Switch off / on" in your words). If he tries to sign in, he's told his access is suspended.</p>
+    <div class="pics">
+      <figure class="mid"><img src="img/post-out/desktop-2-suspended.png" alt="Admin, Users: Hex's account marked suspended and archived, with Enable and Delete account buttons"><figcaption><span class="tag real">real</span>switched off · <span class="tag drawn">drawn</span>the words, Delete account</figcaption></figure>
+      <figure class="mid"><img src="img/post-out/desktop-2c-signin-suspended.png" alt="The sign-in screen: Your access is suspended"><figcaption><span class="tag real">real</span>his screen · <span class="tag drawn">drawn</span>"suspended"</figcaption></figure>
+    </div>
+  </section>
+
+  <section>
+    <div class="head"><h2>3 · He's back: restore him, and the app asks you to check his quals</h2><span class="rul">D284</span></div>
+    <p>His quals and CAT are kept exactly as he left them. When you restore him on Quals (and enable his account), a line
+      asks you to check them, with a button straight to his row. It changes nothing by itself.</p>
+    <div class="pics">
+      <figure class="wide"><img src="img/post-out/desktop-3-back.png" alt="Quals, WSOs: a banner saying Hex is back, check his quals, with his row outlined"><figcaption><span class="tag drawn">drawn</span>the prompt on Quals</figcaption></figure>
+    </div>
+  </section>
+
+  <section>
+    <div class="head"><h2>4 · Another workplace, still flies with us: he becomes SANS</h2><span class="rul">D283</span></div>
+    <p>With <b>Show SANS off</b>, the Leave War still shows him in his old place, posted out from the date and no longer
+      tracked. With <b>Show SANS on</b>, from that day he sits in the SANS group and his leave is tracked there.</p>
+    <div class="pics">
+      <figure class="wide"><img src="img/post-out/desktop-4a-sans-off.png" alt="Leave War: Hex's row posted out from 14 Oct, marked SANS"><figcaption><span class="tag real">real</span>the post-out from 14 Oct · <span class="tag drawn">drawn</span>the SANS label · Show SANS off</figcaption></figure>
+      <figure class="wide"><img src="img/post-out/desktop-4b-sans-on.png" alt="Leave War with SANS shown: Hex listed in the SANS group"><figcaption><span class="tag real">real</span>Hex made SANS on Quals, Show SANS on — the app files him in the SANS group</figcaption></figure>
+    </div>
+  </section>
+
+  <section>
+    <div class="head"><h2>5 · Leaving flying for good: deleted — account and person</h2><span class="rul">D287 · D290</span></div>
+    <p>Delete asks twice and says what goes. Afterwards he's on no list and his callsign is free; every day he was on
+      shows an empty seat, published days included. Underneath, his record is kept as a hidden "deleted" mark, never
+      erased.</p>
+    <div class="pics">
+      <figure class="mid"><img src="img/post-out/desktop-2b-delete-confirm.png" alt="The account editor asking to tap again to delete Hex, listing what goes"><figcaption><span class="tag drawn">drawn</span>the second tap, and what goes</figcaption></figure>
+      <figure class="mid"><img src="img/post-out/desktop-5a-before-delete.png" alt="Tuesday's RU line: Drifter and Vector"><figcaption><span class="tag real">real</span>before — Tuesday's RU line: Drifter and Vector</figcaption></figure>
+      <figure class="mid"><img src="img/post-out/desktop-5b-after-delete.png" alt="The same line after Vector is deleted: Drifter and an empty seat"><figcaption><span class="tag real">real</span>after Vector is deleted — an empty seat</figcaption></figure>
+    </div>
+  </section>
+
+  <section>
+    <div class="head"><h2>6 · Names: an archived man's callsign can go to someone new</h2><span class="rul">D286</span></div>
+    <p>When someone asks for access with a callsign only an archived man holds, Approve opens on <b>New person</b> with a
+      line saying so. If the archived man is ever restored while his callsign is in use, Restore stops and says one of the
+      two must be renamed first; it never renames anyone by itself.</p>
+    <div class="pics">
+      <figure class="mid"><img src="img/post-out/desktop-6a-approve-archived-name.png" alt="Approve on New person for Ace, with a line saying an archived man already has the callsign Ace"><figcaption><span class="tag drawn">drawn</span>approving a new Ace</figcaption></figure>
+      <figure class="wide"><img src="img/post-out/desktop-6b-restore-refused.png" alt="Quals archived list with Ace, and a message: Ace is taken on the roster, rename one of them before restoring"><figcaption><span class="tag drawn">drawn</span>Restore refused while the name is taken</figcaption></figure>
+    </div>
+  </section>
+
+  <section>
+    <div class="head"><h2>7 · Your member view: tap your name badge</h2><span class="rul">D292</span></div>
+    <p>Tap <b>SABER · ADMIN</b> and it becomes <b>SABER · MEMBER</b>: Edit Schedule and Admin go, and you can change only
+      your own row and inputs, exactly as a member. Tap again to switch back; every sign-in starts as admin. On a phone the
+      switch is in the menu, under your name.</p>
+    <div class="pics">
+      <figure class="wide"><img src="img/post-out/desktop-7a-badge-admin.png" alt="The top bar with the SABER ADMIN badge outlined"><figcaption><span class="tag drawn">drawn</span>the badge you tap</figcaption></figure>
+      <figure class="wide"><img src="img/post-out/desktop-7b-badge-member.png" alt="The top bar in the member view: SABER MEMBER, no Edit Schedule or Admin tabs"><figcaption><span class="tag drawn">drawn</span>the member view</figcaption></figure>
+      <figure class="phone"><img src="img/post-out/phone-7c-drawer-switch.png" alt="The phone menu with a Switch to the member view button under the account line"><figcaption><span class="tag drawn">drawn</span>on a phone</figcaption></figure>
+    </div>
+  </section>
+
+  <section>
+    <div class="head"><h2>8 · Guest flyers from another community — a mark on the puck</h2><span class="rul later">later · D288 · D289</span></div>
+    <p>A puck is a fixed width and already shows only about 9–10 letters, so a guest's mark can't be text. Three ways to
+      mark him without taking a letter, including next to a warning chip. Wherever there's room (lists, pickers, a tap or
+      hover) he reads in full: <b>Viper · F-16</b>.</p>
+    <div class="pics">
+      <figure class="wide"><img src="img/post-out/desktop-8-guest-marks.png" alt="Pucks: ours, and three ways to mark a guest — an orange corner, an orange line along the top, an orange dot — alone and beside a warning chip"><figcaption><span class="tag drawn">drawn</span>A, B and C — pick one</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="ask">
+    <div class="head"><h2>What I need from you</h2></div>
+    <ol>
+      <li><b>Approve the mock-up</b>, or tell me what to change (a section number is enough).</li>
+      <li><b>The guest mark (section 8): A, B or C?</b> I lean to <b>A, the orange corner</b>: the easiest to spot on an
+        ordinary puck. On a puck with a red warning chip it's a little less distinct; B looks the same either way but is
+        subtler. It's only needed later, with the shared database.</li>
+    </ol>
+  </section>
+</main>
