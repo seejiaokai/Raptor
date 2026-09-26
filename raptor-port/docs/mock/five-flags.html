@@ -37,6 +37,10 @@
   .done{border-left-color:var(--ok);background:color-mix(in srgb,var(--ok) 7%,var(--panel))}
   .note{font-size:13.5px;color:var(--ink-3)}
   ul{margin:0;padding-left:20px;color:var(--ink-2);display:flex;flex-direction:column;gap:4px;max-width:70ch}
+  .full{display:flex;flex-direction:column;gap:22px}
+  .full img{width:100%}
+  .answers{border:1px solid color-mix(in srgb,var(--ok) 45%,transparent);background:color-mix(in srgb,var(--ok) 6%,var(--panel));border-radius:8px;padding:10px 14px}
+  .answers p{color:var(--ink)}
 </style>
 
 <div class="wrap">
@@ -45,6 +49,7 @@
     <h1>Five-flags batch: before and after, and your three questions</h1>
     <p>Every picture is the real app on this branch. A <b>before</b> is today's app with the old rule put back just for the
       picture; a <b>proposal</b> is drawn onto the real app the same way. Nothing here is built yet except Part 1.</p>
+    <div class="answers"><p><b>Your answers, 27 Sep 26:</b> Part 1 items 1–3 approved as built · item 4: full screen asked, <a href="#full" style="color:var(--accent)">now below</a> · Q1 refused · Q2 and Q2b yes · Q3 keep.</p></div>
   </header>
 
   <!-- ============================================================ PART 1 -->
@@ -85,6 +90,16 @@
       <div class="row">
         <figure><span class="tag">Before</span><img src="img/five-flags/4-arrow-before.png" width="520" height="365" alt="The warning list's rows start under the arrow"><figcaption>Monday's "⚠ issues" list ran under the ‹ arrow (bottom left): the start of the Gambit and Grit rows is hidden.</figcaption></figure>
         <figure><span class="tag after">After</span><img src="img/five-flags/4-arrow-after.png" width="520" height="365" alt="The warning list starts clear of the arrow"><figcaption>The week keeps a gap for the arrow, so nothing hides under it. Same after every › press, page switch and warning tap.</figcaption></figure>
+      </div>
+      <h3 id="full">Item 4 · full screen (your ask)</h3>
+      <p class="note">The whole desktop window at 1440 × 900. Look at the ‹ arrow on the left edge, halfway down. Pinch to zoom on a phone.</p>
+      <div class="full">
+        <figure><span class="tag">Before · View-only, Monday's warning list open</span><img src="img/five-flags/4f-view-list-before.png" width="1440" height="900" alt="Full window before: the arrow covers the start of the Gambit and Grit rows"><figcaption>The arrow covers the start of the Gambit and Grit rows.</figcaption></figure>
+        <figure><span class="tag after">After · the same</span><img src="img/five-flags/4f-view-list-after.png" width="1440" height="900" alt="Full window after: Monday starts right of the arrow"><figcaption>Monday starts right of the arrow; every row reads in full.</figcaption></figure>
+        <figure><span class="tag">Before · View-only after two › presses</span><img src="img/five-flags/4f-view-pressed-before.png" width="1440" height="900" alt="Full window before: the arrow sits over Wednesday's first flying line"><figcaption>Wednesday at the front, the arrow over its first flying line ("VL ACM").</figcaption></figure>
+        <figure><span class="tag after">After · the same</span><img src="img/five-flags/4f-view-pressed-after.png" width="1440" height="900" alt="Full window after: Wednesday clear of the arrow, Tuesday's thin strip beside it"><figcaption>Wednesday clear of the arrow, with Tuesday's thin strip beside it (your Q3: keep).</figcaption></figure>
+        <figure><span class="tag">Before · Edit Schedule at rest</span><img src="img/five-flags/4f-edit-rest-before.png" width="1440" height="900" alt="Full window before: the arrow covers the start of Monday's warning bar"><figcaption>The arrow covers the start of Monday's "⚠ 14 issues" bar.</figcaption></figure>
+        <figure><span class="tag after">After · the same</span><img src="img/five-flags/4f-edit-rest-after.png" width="1440" height="900" alt="Full window after: Monday clear of the arrow"><figcaption>Monday clear of the arrow. On the right, the › still floats over the crew list's edge, as before.</figcaption></figure>
       </div>
     </div>
 

@@ -1,6 +1,7 @@
 /* THE MOCK-UP for the five-flags batch's look (27 Sep 26). His words: "q1 can u show me a mock upp · Q2 yes · Q3 show me
    a mock up · can u show mock of what u changed before and after".
-   Part 1 — what the batch changed, before and after (the glow, Reset order, the crowd swap, the arrow's room). Where a
+   Part 1 — what the batch changed, before and after (the glow, Reset order, the crowd swap, the arrow's room); `p4full`,
+            the arrow's room as the whole desktop window (his ask, 27 Sep 26). Where a
             walk already photographed the real before / after, the picture is COPIED from it (named below); the rest is
             shot here. A "before" is today's app with main's rule put back for the picture only (main's CSS, the words
             main's caption printed — `git show main:…`), exactly as the walk's own "before" pictures were made.
@@ -130,6 +131,35 @@ async function arrowList(name, before) {
 }
 await arrowList('4-arrow-before', true)
 await arrowList('4-arrow-after', false)
+}
+
+/* 4, full screen (his ask, 27 Sep 26: "4 can u show me a full screen mock up") — the whole desktop window, before (main's
+   20px, no declared room) and after, in three places: View-only with Monday's "⚠ issues" list open; Edit Schedule at rest;
+   View-only after two › presses (Wednesday at the front, Tuesday's strip beside the arrow — D273 keeps it) */
+if (want('p4full')) {
+  log('Part 1, item 4 — full screen')
+  const OLD = `@media (min-width:821px){.week{padding-left:20px!important;scroll-padding-left:0!important}}`
+  for (const before of [true, false]) {
+    const tag = before ? 'before' : 'after'
+    const { browser, page, errors } = await openHi({ width: 1440, height: 900, dpr: 1 }); const drain = watch(errors, 'p4full')
+    await go(page, 'viewsched')
+    if (before) await inject(page, OLD)
+    const rest = async () => { await page.evaluate(() => { const w = document.querySelector('#vWeek'); w.scrollLeft = 0; window.scrollTo(0, 0) }); await page.waitForTimeout(400) }
+    await rest()
+    await page.locator('#vWeek .day[data-day="0"] [data-daywarn]').first().click(); await page.waitForSelector('#vWeek .day[data-day="0"] .dwlist')
+    await rest()
+    await page.screenshot({ path: `${OUT}/4f-view-list-${tag}.png` }); log(`  4f-view-list-${tag}.png`)
+    await page.locator('#vWeek .day[data-day="0"] [data-daywarn]').first().click(); await page.waitForTimeout(300)   // fold it again
+    await rest()
+    for (let i = 0; i < 2; i++) { await page.locator('#weekNext').click(); await page.waitForTimeout(900) }
+    await page.evaluate(() => window.scrollTo(0, 0)); await page.waitForTimeout(200)
+    await page.screenshot({ path: `${OUT}/4f-view-pressed-${tag}.png` }); log(`  4f-view-pressed-${tag}.png`)
+    await go(page, 'editsched'); await page.waitForTimeout(500)
+    if (before) await inject(page, OLD)
+    await page.evaluate(() => { const w = document.querySelector('#eWeek'); w.scrollLeft = 0; window.scrollTo(0, 0) }); await page.waitForTimeout(400)
+    await page.screenshot({ path: `${OUT}/4f-edit-rest-${tag}.png` }); log(`  4f-edit-rest-${tag}.png`)
+    drain(); await browser.close()
+  }
 }
 
 /* ---------------------------------------------------------------------------------------------- Part 2 — Q2 (D270) */
