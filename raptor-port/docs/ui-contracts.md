@@ -187,7 +187,9 @@ looked at. So the day is also PICKABLE (owner, 15 Aug 26):
   (which is why the edge hint above is retired). The "day a–b of n" read-out
   (`pan.ts:dayRangeText`) counts from the day step, never `scrollWidth ÷ n`,
   because the spacer is part of `scrollWidth`. Gated in `e2e/geometry.spec.ts`.
-- **The day at the front sits BESIDE the floating ‹ arrow, never under it** ([VIEW-ARROW-OVER-LIST], 26 Sep 26). The
+- **TO BE TAKEN OUT — D275 (27 Sep 26): he prefers the week without this room (the day flush at the left, the arrow over
+  it, as on `main`); `OUTSTANDING.md` `[ARROW-ROOM-OUT]` — until the revert, this paragraph describes the app.**
+  **The day at the front sits BESIDE the floating ‹ arrow, never under it** ([VIEW-ARROW-OVER-LIST], 26 Sep 26). The
   arrows (`.week-nav`, fixed 8px in, 38px wide) used to cover the first 26–38px of the day at the front — the first
   letters of an opened "⚠ N issues" list, a row's name, a puck. The desktop `.week` keeps 54px of room at its left:
   its `padding-left` (Monday at rest; every arrow press, which lands whole day steps from there) and its

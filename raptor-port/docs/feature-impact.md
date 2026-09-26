@@ -648,7 +648,7 @@ check the other):
   — and all of them go through `engine/keys.ts seatRow`. Two private trims had drifted: the programme one cut the
   row's own number off an event's key (a man moved inside his own crowd was "already on" it), the validator's raw
   compare never matched a crowd seat or an extra with its row. A new "exclude this place" question uses `seatRow`.
-- **The week's front edge has ONE room** ([VIEW-ARROW-OVER-LIST], 26 Sep 26). The desktop week keeps 54px at its
+- **TO BE TAKEN OUT — D275 (27 Sep 26): the room goes (`OUTSTANDING.md` `[ARROW-ROOM-OUT]`); until then:** **The week's front edge has ONE room** ([VIEW-ARROW-OVER-LIST], 26 Sep 26). The desktop week keeps 54px at its
   sides for the floating ‹ › arrows, declared twice in ONE rule of `scheduler.css` (`padding-left` for where Monday
   and every arrow press land, `scroll-padding-left` for everything else; the › side is measured against the arrow) and read in JS only through
   `state/view.ts weekInset`. A new way of putting a day "at the front" lands it at `weekInset`, never at the week box's
