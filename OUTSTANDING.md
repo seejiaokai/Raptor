@@ -1183,31 +1183,20 @@ roster-only person (a SANS man); Quals' "+ Add person" becomes a button to Admin
 **And D219:** the field reads "Callsign/Name" (some people have no callsign) — the sign-up, Admin → Users and the Quals head. **D220:** the seat choice reads "Pilot", "WSO", "Personnel (ground crew)". **D222:** on the sign-up card only, that field reads "Displayed callsign/name". **D225:** initials asked on both forms, required on neither. **D226:** the callsign/name stays at 14 letters and the form says so — never cut silently. **D227:** each admin's bell is his own (out once HE has had the waiting list on screen). The plan (red-teamed round 1): `raptor-port/docs/superpowers/plans/2026-09-26-accounts-new-person-plan.md`.
 **Place:** straight after `[ACCOUNTS]` merges, on its own branch, before `[DRAFT-PENDING]`.
 
-### [POST-OUT-OUTCOMES] A posting out says WHICH of its outcomes it is, and accounts can be suspended and deleted (D229, D280, filed 26 Sep 26)
-**His rulings:** a posting out is one of four things — overseas to another squadron (archive; the account SUSPENDED,
-enabled when he is back), leaving flying for good (the account DELETED), another workplace but still flying with us
-(he becomes SANS — still shown posted out on the Leave War, which stops tracking his leave), or a transfer to another
-squadron (future — `[XFER]`). **Today:** the Leave War's post-out sheet has one choice, "Archive on PO date"
-(on, or stay on the roster); an archived man KEEPS a working account and can still sign in; there is "Switch off /
-Switch on" on Admin → Users but no delete. **To build (the agent's proposal, put to him 26 Sep 26 — his answers
-first):** the post-out sheet asks which outcome, and on the posting-out date the app does it (archive + suspend;
-archive + delete the account; SANS); suspend = today's switch-off, named in his words; delete an account = the sign-in
-gone, the PERSON archived and kept (his name is on published schedules and the history); each also by hand. Touches
-the Leave War (the sheet, `runPoArchive`), Quals (archive, SANS), Admin → Users (suspend, delete), data-model §11
-(`User` D) and `perms.ts` — so FULL tier. **His answers (26 Sep 26):** D283 — posted out as SANS: with Show SANS
-off the Leave War still shows him, posted out, leave not tracked; with it on he moves into the SANS group that day and
-is tracked. D284 — back from overseas: kept as he was, and a prompt to update his quals (narrows the 13 Sep "fresh",
-`[RECALL]`). D285 — the buttons read "Suspend" / "Enable" and "Delete account". **Still open:** for someone leaving
-flying for good — archive the person (recommended: off every list and every future schedule, old schedules keep his
-name) or truly delete him (old schedules show an empty seat — tested in the running app 26 Sep 26: nothing crashes, he
-vanishes from every day he was ever on, published ones included, and his leave, OIL and inputs stay stored with no
-screen showing them). **His worry (26 Sep 26): "I scared my archive list will be huge next time"** — the agent's
-answer, put to him: a third way — DELETE the person from every list, the Archived list included, while the app quietly
-keeps his callsign so old schedules still read right; the Archived list then holds only people who may come back
-(overseas). His pick is awaited. **Place:** the agent recommends straight after
-`[ACCOUNTS-NEW-PERSON]` merges and before `[DRAFT-PENDING]` (it completes the accounts' life cycle before the changes
-window is built on accounts) — HIS to confirm.
-
+### [POST-OUT-OUTCOMES] A posting out says WHICH of its outcomes it is; accounts suspended and deleted (D229, D280, D283–D285, filed 26 Sep 26)
+**His rulings:** a posting out is (1) overseas to another squadron → archived, account SUSPENDED, back AS HE WAS with a
+prompt to update his quals (D284); (2) leaving flying for good → account DELETED; (3) another workplace, still flying
+with us → SANS on the date: with Show SANS off the Leave War shows him posted out, untracked, with it on he joins the SANS
+group that day, tracked (D283); (4) a transfer — future, `[XFER]`. Buttons: "Suspend" / "Enable", "Delete account"
+(D285). **Today:** the post-out sheet's one choice is "Archive on PO date"; an archived man keeps a WORKING account;
+Admin → Users has "Switch off / on", no delete. **To build:** the sheet asks which outcome and the app does it on the
+date (each also by hand); touches the Leave War (the sheet, `runPoArchive`), Quals, Admin → Users, data-model §11 (`User`
+D), `perms.ts` — FULL tier. **Still open — his pick:** someone leaving flying for good — archive the person, truly
+delete him (tested 26 Sep 26: nothing crashes, but he vanishes from every day he was ever on, published ones included,
+and his leave, OIL and inputs stay stored unseen), or — after his worry *"I scared my archive list will be huge"* — the
+agent's third way: delete him from every list, the Archived one too, keeping only his callsign so old schedules read
+right. **Place:** the agent recommends straight after `[ACCOUNTS-NEW-PERSON]` merges, before `[DRAFT-PENDING]` — HIS to
+confirm.
 ### [LOOK-435] His inputs from the look at PR #435 — the order is D173 (25 Sep 26)
 **Step 1 DONE 25 Sep 26:** D114's FULL check — evidence `raptor-port/docs/handpass/2026-09-25-amendment-batch.md` §9; two
 gaps fixed, three older findings filed (`[REQ-TWO-ROWS]`, `[REQ-DECLINED-PENDING]`, `[REQ-ORPHAN-ROW]`); waiting for his look.
