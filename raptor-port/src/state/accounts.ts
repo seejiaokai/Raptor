@@ -13,9 +13,11 @@
    THE RECORDS (the Shell's `User` and `AccessRequest`, and one `Setting` — data-model
    §3, §11), three durable settings keys written ONLY here, through intent commands
    (commitSettingsIntent — one command per intent, every key it needs inside it):
-   - `accounts`   Account[] — { id, name, role, pid, on }. `name` is the sign-in name,
+   - `accounts`   Account[] — { id, name, role, pid, on, offBy? }. `name` is the sign-in name,
                   which stands for the defence mail address; `pid` the person it belongs
-                  to (one person, one account); `on` false = switched off (never deleted).
+                  to (one person, one account); `on` false = suspended (D285; `offBy: 'po'`
+                  when a posting out suspended it). Removed only with its person, by a delete
+                  ([POST-OUT-OUTCOMES], D287 — state/person-delete.ts).
    - `accessreqs` AccessRequest[] — { id, name, cs, ini, seat, cat, at, seenBy }: the
                   signed-in principal who asked (from the session, never a typed field);
                   what he typed — the displayed callsign/name, initials, pilot / WSO /

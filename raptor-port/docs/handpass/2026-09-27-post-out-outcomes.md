@@ -119,7 +119,38 @@ not reproduce it and is labelled so).
 - The Tracker (row 27) — not built, `[POST-OUT-TRACKER]`.
 
 ## 9. The gates
-*To come.*
+Run under the shared lock (`gatelock.mjs run`, browser tests on port 4191), 27 Sep 26 ~05:05–05:25, on the branch at
+`db15e3b2` (walk C's commit; after it only documents changed): **unit 6,461 passed (399 files) · build passed · the
+original's checks 728 passed, 0 failed · browser tests 478 passed, 48 skipped, 0 failed · the Tracker smoke 443 passed,
+0 failed · rulecheck passed (171 rulings, PO1–PO12 all named) · docsize passed** (`OVER by 94, deferred (D29)` — a code
+change never trims a document). An earlier run the same night was lost to a port another server held (4186) and is
+not counted (`docs/gates-and-deploy.md`, the trap written down).
 
 ## 10. His look — the look card
-*To come, with the plan's seven questions.*
+**What to try (about five minutes, on the preview link):** Leave War → tap Hex on today → Post out: the four chips, the one
+line, "Post out". Choose Overseas Sqn → Hex leaves Quals for the Archived list, his account reads "suspended". Quals →
+Archived → Restore: "Hex is back — quals and CAT as he left them" → Check his quals. Admin → Users → another man → Delete
+account → it asks again → second tap. Tap your name badge ("Saber · Admin") → you are a member until you tap it again.
+
+**The questions (each built to the default shown until you say otherwise):**
+1. **A posting with no chip chosen** (tap the chosen one again) = "off the manpower, nothing else" — the only way to
+   record a transfer until Transfer is built. *Built: yes.*
+2. **A "Delete" button on Quals' Archived rows?** Today a man archived by hand with no account has no delete door
+   (Restore him, then post him out with Delete). Adding it changes the approved mock-up. *Built: no.*
+3. **Which "today" a delete counts from:** the calendar date (built) — so deleting someone now leaves him on the July
+   demo days, which the app draws around its own "today" (13 Jul). *At the database step the two are the same.*
+4. **Enable on its own** (Admin → Users) lets an archived man sign in and asks you to check his quals, but does not put
+   him back on the roster — Restore does that. *Built so.*
+5. **The Tracker:** D299 says "his place on a course still running — goes". The Tracker has no idea of "still running";
+   what should it mean — or leave his name on his courses for now? *Not built.*
+6. **SANS on the date:** his whole Leave War row moves into the SANS group, earlier months included (the approved
+   picture). *Built so.*
+7. **Overseas and the past:** archiving a man makes his published days before the posting date read "1 pending" (as
+   today). Keep? *Kept.*
+8. **Undo and postings:** a posting out is not a step of the Undo button — its own "Undo post out" takes it back (the
+   Leave War's Undo stays grey after one). Keep? *Kept, as before.*
+9. **The last admin:** a posting that would delete or suspend the last admin who can sign in waits, and the posting
+   sheets say so. His own account row does not (it reads "you" and cannot be opened). Enough? *Built so.*
+10. **An admin may still add leave or OIL on a deleted man's past days** (the past keeps his record). Wanted? *Allowed.*
+11. **Enable on a man who was only suspended by hand** (never archived) also shows "he's back". Keep, or only after an
+    overseas posting? *Shows.*
