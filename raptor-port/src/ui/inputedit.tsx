@@ -12,7 +12,7 @@
    `till` remarks tail, the pins and the flashes. Those belong to a page that
    is a list; the dialog is a single row, opened from a day. */
 import { useEffect, useRef, useState } from 'react'
-import { INPUTS, INPUT_TYPES, TYPE_GROUPS, DATES, inpId, inpMeta, inpType, typeGroup, inputCoversDate, isPersonal, isUnavail, isSansAvail, isUpchit, isDownchit, needsDoc, defaultAllday, dateOrd, dateIx, baseYear, withRemarksTail, oilAsks, nowStamp } from '../engine/inputs'
+import { INPUTS, INPUT_TYPES, TYPE_GROUPS, DATES, inpId, inpMeta, inpType, typeGroup, inputCoversDate, isPersonal, isUnavail, isSansAvail, isUpchit, isDownchit, needsDoc, defaultAllday, dateOrd, dateIx, baseYear, withRemarksTail, remarksTailWord, oilAsks, nowStamp } from '../engine/inputs'
 import { upchitTrimPlan, upchitEffects, newMedTrimPlan, medClashes, subtractSpans, medStartOrd, medEndOrd, ordLabel } from '../engine/medical'
 import { UpchitConfirm } from './UpchitConfirm'
 import { MedClashConfirm } from './MedClashConfirm'
@@ -1029,7 +1029,16 @@ export function commitInputEdit(r: any, draft: any, keepTail?: any, entryEnd?: a
     }
     if (wasAcc) unacceptInput(wasDi, r)
     r.person = draft.person; r.type = draft.type; r.allday = draft.allday
-    r.s = s; r.e = e; r.date = date; r.remarks = String(draft.remarks || '').trim(); r.mod = nowStamp()
+    /* THE REMARK'S DATE TOKEN FOLLOWS THE DATES (the absence-record re-test's final code reads — Fable F1, Astra 3,
+       26 Sep 26): "till <last day>" / "on <day>" is the app's own wording (D189). The form's pickers rewrite it as the
+       dates are picked; the calendar's drag and the upchit's date box did not, so a moved leave kept its old last day.
+       Rewritten here, the one save every door uses, ONLY when the dates changed — a remarks-only edit keeps whatever
+       was typed. Idempotent where a picker already wrote it. */
+    let rem = String(draft.remarks || '').trim()
+    const redated = date !== r.date || (endDate || '') !== (r.endDate || '')
+    const word = redated ? remarksTailWord(rem) : null
+    if (word) rem = withRemarksTail(rem, ordISO(dateOrd(date, baseYear())), ordISO(dateOrd(endDate || date, baseYear())), word)
+    r.s = s; r.e = e; r.date = date; r.remarks = rem; r.mod = nowStamp()
     /* the edit re-derived its labels against the CURRENT loaded year (fmt),
        so the anchor moves with them — an edit is a re-statement of the date */
     r.yr = baseYear()

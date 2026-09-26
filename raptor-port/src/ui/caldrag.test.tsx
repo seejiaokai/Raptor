@@ -126,6 +126,23 @@ describe('commitChipMove — inputs', () => {
     expect(said_()).toContain('Moved to 19 Jul')
   })
 
+  /* THE REMARK'S DATE TOKEN FOLLOWS A DRAG (the absence-record re-test's final code reads — Fable F1, Astra 3, 26 Sep
+     26): the form and the edit window write "till <last day>" into the remark as the dates are picked, and every other
+     date-moving door rewrites it (D189; AB3's cut) — the drag carried the old one, so a leave moved to 19–21 Jul still
+     said "till 17 Jul" on the Inputs page, the week, the board, the print and the export. */
+  it('a drag rewrites the remark’s "till" / "on", keeps the rest of the words, and leaves a remark with none alone', () => {
+    const a: any = { person: 'bane', date: 'Jul 15', endDate: 'Jul 17', allday: true, type: 'LL', remarks: 'Bali till 17 Jul', mod: 'now' }
+    const b: any = { person: 'bane', date: 'Jul 6', allday: true, type: 'LL', remarks: 'on 6 Jul', mod: 'now' }
+    const c: any = { person: 'bane', date: 'Jul 1', allday: true, type: 'OL', remarks: 'Bali', mod: 'now' }
+    for (const r of [a, b, c]) { inpId(r); INPUTS.unshift(r) }
+    expect(commitChipMove({ kind: 'input', iid: a.iid }, '2026-07-15', '2026-07-19')).toBe(true)
+    expect(a.remarks).toBe('Bali till 21 Jul')
+    expect(commitChipMove({ kind: 'input', iid: b.iid }, '2026-07-06', '2026-07-08')).toBe(true)
+    expect(b.remarks).toBe('on 8 Jul')
+    expect(commitChipMove({ kind: 'input', iid: c.iid }, '2026-07-01', '2026-07-02')).toBe(true)
+    expect(c.remarks).toBe('Bali')
+  })
+
   it('rolls the year forward, and the labels pick up the trailing year (baseYear 2026)', () => {
     const row: any = { person: 'bane', date: 'Dec 30', endDate: 'Dec 31', allday: true, type: 'LL', remarks: '', mod: 'now' }
     inpId(row)
