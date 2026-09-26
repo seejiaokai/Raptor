@@ -84,6 +84,7 @@ hard-deleted** — `archived` and the tombstone are the only ways out.
 | `isGroundPersonnel` | bool | no | `pers` — no flying quals derive |
 | `isSentinel` | bool | no | `special` — `ALL`, `ALL AVAIL`; occupies slots, is not a person |
 | `archived` | bool | no | kept out of every roster |
+| `archivedBy` | choice (`po`) | no | who archived him: the Post out's own archive, which the posting takes back; empty = by hand (26 Sep 26) |
 | `isExternal` | bool | no | (new) a visitor from another unit: enrolled on a course, never on the roster, the schedule or a leave war. Open question 7 of the first draft, decided |
 | `isSans` | bool | no | `san` |
 | `sansFlown`, `sansCarry`, `sansMissedQtrs` | int | no | `sanQ`, present only when `isSans` |
@@ -862,7 +863,7 @@ The rules that follow from the table:
   endpoint on another module's table, and the server's role check
   (section 11) refuses one that is tried.
 - **`Person` changes go through one shell function.** The Leave War's
-  posting-out pass, which today sets `archived` on the person, becomes a
+  posting-out pass, which today sets `archived` (and `archivedBy: po`) on the person, becomes a
   call to that function, not a write to the row.
 - **Cross-module reads are API views**, read-only and versioned: the
   scheduler exposes `schedule/published` (issued days) and `inputs/leave`

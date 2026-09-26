@@ -76,7 +76,7 @@ whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaini
 
 **Placed by their own lines — not his rulings:** the Leave War — [LW-FROZEN-BAR-GAP] (after [HUMAN-RETEST]; show him
 first), [LW-FIGSEL-SLOW] and [LW-SCRUBBER-FLAKY] (test-only), [LW-ISO-DATES] and [LW-MOVE-BENEATH] (both low, from the
-absence-record re-test); the Inputs calendar — [INPUTSCAL-TAP-FLAKY] (test-only). The background-command guard — [BG-GUARD-FALSE] (small; tooling). The Tracker — [TRK-RETEST-NOTES] and
+absence-record re-test), [PO-RESTORE-POSTING] (low, from its final code read); the Inputs calendar — [INPUTSCAL-TAP-FLAKY] (test-only). The background-command guard — [BG-GUARD-FALSE] (small; tooling). The Tracker — [TRK-RETEST-NOTES] and
 [TRK-EDIT-SIDEWAYS] (their gates have passed), [TRK-PINCH-ASK] (his next Tracker session), [TRK-SESSION-PICK] (low, the next Tracker change), [TRK-DLG-LEFTOVERS] (low, with the next question-box change), [TRK-PALETTE-ASK] (his answer D157: Raptor's colours
 fully — being built on `claude/tracker-palette`), [TRK-FLEXBAR-INK] (a question for him, on that branch's look card),
 [TRK-BAKE-STALE] (low). The Leave War — [LW-RESET-ORDER] (his yes, D160 — a small build).
@@ -1353,3 +1353,12 @@ Put to him with his look at the re-test (its look card, `raptor-port/docs/handpa
    read-only at every stage?
 **Place:** his look at the re-test; each answer becomes a ruling (D260–D269 on that branch) and, where it changes the
 app, a small build.
+
+### [PO-RESTORE-POSTING] The Quals Restore clears a posting it did not make — low (Fable's final code read, N7, 26 Sep 26)
+Unchanged `main` code, found by Fable's read of the absence-record re-test: `sync.ts restoreArchivedPerson` (the Quals
+page's Restore) always clears the man's post-out, because a surviving past-dated posting with "Archive on PO date" on
+would archive him again on the next pass. But a man archived BY HAND on Quals who also carries a posting the admin set
+on purpose — a future date, or the custom "Archive on PO date" off — loses that posting on Restore, with nothing said.
+Since the re-test the Post out's own archive is marked (`PEOPLE` body `archivedBy: 'po'`). **Build:** clear the posting
+only when it made the archive (`archivedBy === 'po'`) or would re-archive him at once (switch on, date come); keep it
+otherwise; a test per case. **Place:** low, with the next posting or Quals roster change; not his ruling.

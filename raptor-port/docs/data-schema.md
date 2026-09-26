@@ -107,6 +107,7 @@ the schedule, the inputs and the Leave War all use.
 | `pers` | boolean | ground personnel (no flying quals derive) |
 | `special` | boolean | a sentinel body (`ALL`, `ALL AVAIL`) — occupies slots, is not a person |
 | `archived` | boolean | kept out of every roster |
+| `archivedBy` | `'po'` | present only when the Leave War's Post out pass archived him ("Archive on PO date", its date come) — the archive the posting's Undo, a later date or the switch turned off takes back; absent = archived by hand on Quals (the absence-record re-test's final read, 26 Sep 26) |
 | `san`, `sanQ` | boolean, `{flown, carry, missedQtrs}` | SANS member and their quarter progress |
 | `tf`, `sched` | boolean | terrain-following mark; scheduler appointment (both granted, never derived) |
 | `quals` | object | **derived at boot** by `deriveQuals`: `sxo, imc, nvg, tf, san, sched, scDay, scNight, daar, naar` (booleans; `daar`/`naar` may also be `'I'` = instructor) |

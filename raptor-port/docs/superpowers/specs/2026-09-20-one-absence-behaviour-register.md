@@ -531,22 +531,29 @@ questions it left for him are `OUTSTANDING.md` `[ABSENCE-ASK]`.
 **Every door keeps the same rules (B7):**
 - **A cut rewrites "till".** Every cut of a leave — a medical laid over it, the war's un-approve, Delete or Move of part
   of it — gives each surviving piece its OWN last day in the remark ("till 10 Feb Bali"); one body does every cut
-  (`leavewar/sync.ts sliceInput`). (AB3, W3-F9; D189's words.)
+  (`leavewar/sync.ts sliceInput`). **A re-dated input too** — a calendar drag, the upchit's date box, any save that
+  moves its dates rewrites the token and keeps the other words; a remarks-only edit keeps what was typed
+  (`ui/inputedit.tsx commitInputEdit`). (AB3, W3-F9, FR3; D189's words.)
 - **A medical or an upchit MOVED asks what filing it asks.** The calendar's drag and the schedule's reassign hand the
   new dates to the same questions as the form — who holds the shared days, and the upchit's leftovers — before
   anything is written (`ui/MedMoveConfirm.tsx`). (AB4; owner 27 Aug 26, "never resolves silently".)
-- **Undo and Redo obey the bid rule.** A bid is never put back over a medical filed since; the refusal names what now
-  holds the day ("…Warden's ATT C now holds 8 Dec, and a bid can't go over it"). Undoing a filing that had replaced a
-  bid still gives the bid back, in one step. (W3-F8.)
-- **A dragged block's Delete takes the war's own bids beneath filed leave** and leaves the filed leave (it is the Inputs
-  page's). Its Move does not yet — `OUTSTANDING.md` `[LW-MOVE-BENEATH]`. (W3-F3.)
+- **Undo and Redo obey the bid rule.** A bid is never made live over a medical filed since — put back, or turned from
+  refused back into a live bid; the refusal names what now holds the day ("…Warden's ATT C now holds 8 Dec, and a bid
+  can't go over it"). The day is judged as the restore will leave it, so undoing a filing that had replaced a bid still
+  gives the bid back, in one step. (W3-F8, FR1.)
+- **A dragged block's Delete takes the war's own bids beneath filed or war-approved leave**; a leave filed on the
+  Inputs page stays (it is the Inputs page's), a war-approved one goes by the door. Its Move does not yet —
+  `OUTSTANDING.md` `[LW-MOVE-BENEATH]`. (W3-F3, FR5.)
 
 **What the war's sheets say:**
 - **A posting that closes before it opens is refused AND said**, at every door — the bid sheet's PI / PO, the Post out
   and Post in sheets' date boxes, the drag-selection's Post out: "Posted in on 6 Jul — the post-out has to be after
   that day." The box snaps back to the date that stands. (AB5, W3-F4.)
 - **The posting sheet a tap opened stays that sheet** while its date moves, even past the day tapped. (W3-F5.)
-- **"Undo post out" takes back the archive the Post out made** — the man's row, bids and leave come back. (W5-F1, F2.)
+- **The archive a Post out makes belongs to the posting.** "Undo post out" takes it back — the man's row, bids and
+  leave come back; a date moved later, or "Archive on PO date" turned off, puts him back on the roster until the
+  posting archives him again. An archive made by hand on Quals is never taken back by a posting door. (W5-F1, F2, FR2,
+  FR4.)
 - **A tapped medical, course or OD reads "Filed on the Inputs page — change it there, not here"**; only leave says
   "approved". (AB9.)
 - **A half is offered only when it can be taken, read off the real hours**: beside an ATT C recorded 09:00–14:00 no
@@ -561,8 +568,8 @@ questions it left for him are `OUTSTANDING.md` `[ABSENCE-ASK]`.
 
 **The screen itself:**
 - **Every Leave War sheet holds the keyboard** (Tab / Shift+Tab stay in the topmost sheet), and **a war switch closes the
-  open cell** — its sheet, tap list and note editor — so nothing is re-read against, or written past the lock of, the
-  war no longer on screen. (W5-F3, W3-F7.)
+  open cell** — its sheet, tap list and note editor — and the event sheet, so nothing is re-read against, or written
+  past the lock of, the war no longer on screen. (W5-F3, W3-F7, FR6.)
 - **A finger held on one day and lifted keeps the selection sheet** on a phone. (W4-1.)
 - **The Inputs calendar on a phone:** a sideways swipe pages the month; a tap on a chip opens its edit once. A member's
   calendar does not lift another man's chip, and an input he may not change opens READ ONLY — no Delete, no Save, "Only
