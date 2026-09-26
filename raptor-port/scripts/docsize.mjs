@@ -43,6 +43,7 @@ import { readFileSync, existsSync } from 'node:fs'
 import { join, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { execFileSync } from 'node:child_process'
+import { checkPermissions } from './permcheck.mjs'
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..')
 const REPO = join(ROOT, '..')
@@ -560,6 +561,14 @@ if (process.argv.includes('--moves')) {
   process.exit(0)
 }
 
+/* ---------- the permissions drift (owner, D200 (3), 26 Sep 26; Fable F3) ----------
+   docs/data-model.md §11 is the table IT builds the database's security from; src/state/permissions.json is the
+   app's copy, which may() answers from. A docs-only change skips every gate in deploy.yml, so the comparison runs
+   HERE — in the Docs guard on every change and in the Stop hook at the end of every turn. scripts/permcheck.mjs. */
+function permissionDrift() {
+  return checkPermissions(join(dirname(fileURLToPath(import.meta.url)), '..'))
+}
+
 /* ---------- run ---------- */
 const allow = allowances()
 const paths = changedPaths()
@@ -570,7 +579,7 @@ if (allow.size) console.log(`  declared exceptions: ${[...allow].join(', ')}\n`)
 const inv = inventory(allow)
 const hm = homes(paths, allow)
 const st = structure()
-let failures = [...inv.fails.map(f => `inventory: ${f}`), ...hm.fails.map(f => `homes: ${f}`), ...rulings(allow).map(f => `rulings: ${f}`), ...st.fails.map(f => `structure: ${f}`)]
+let failures = [...inv.fails.map(f => `inventory: ${f}`), ...hm.fails.map(f => `homes: ${f}`), ...rulings(allow).map(f => `rulings: ${f}`), ...st.fails.map(f => `structure: ${f}`), ...permissionDrift().map(f => `permissions: ${f}`)]
 for (const w of [...inv.warns, ...st.warns]) console.log(`  note: ${w}`)
 
 let docsizeLine = null

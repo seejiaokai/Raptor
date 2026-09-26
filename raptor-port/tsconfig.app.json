@@ -11,6 +11,9 @@
     "allowImportingTsExtensions": true,
     "verbatimModuleSyntax": true,
     "moduleDetection": "force",
+    /* src/state/permissions.json — the app's copy of docs/data-model.md §11, read by may() and by the
+       document gate (scripts/permcheck.mjs), one data file for both (D200, 26 Sep 26) */
+    "resolveJsonModule": true,
     "noEmit": true,
     "jsx": "react-jsx",
     /* src/tracker/ is the vendored OCU Progress Tracker (7 Sep 26), written

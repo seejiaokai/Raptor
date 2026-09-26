@@ -1,0 +1,28 @@
+{
+  "_what": "WHO MAY DO WHAT — the app's copy of docs/data-model.md section 11 (owner, D200, 26 Sep 26). Every cell here equals the same cell there; scripts/permcheck.mjs compares the two in the document gate (docsize, CI and every turn) and in src/state/permissions.test.ts. Change a permission in BOTH, in the same change. Ops are the letters CRUD (create, read, update, delete) or empty. 'member' is any row; 'own' is added on top for a row that is his own. The Waiting rows are a principal signed in with no account (D204); 'guestSwitch' means only while the admin's guest switch is on.",
+  "tables": [
+    { "tables": ["Person"], "admin": "CRUD", "member": "R", "own": "U" },
+    { "tables": ["Qualification"], "admin": "CRUD", "member": "R", "own": "" },
+    { "tables": ["QualMark"], "admin": "CRUD", "member": "R", "own": "CUD" },
+    { "tables": ["Setting"], "admin": "CRUD", "member": "R", "own": "" },
+    { "tables": ["SchemaVersion"], "admin": "CRUD", "member": "", "own": "" },
+    { "tables": ["User"], "admin": "CRUD", "member": "", "own": "R" },
+    { "tables": ["AccessRequest"], "admin": "CRUD", "member": "", "own": "" },
+    { "tables": ["ScheduleWeek", "ScheduleDay", "DayDraft", "Wave", "Formation", "Sortie", "DutyBlock", "DutyRow", "SimRow", "ProgrammeRow", "RowPerson"], "admin": "CRUD", "member": "R", "own": "" },
+    { "tables": ["Amendment"], "admin": "CRD", "member": "R", "own": "" },
+    { "tables": ["Signoff"], "admin": "CRUD", "member": "R", "own": "" },
+    { "tables": ["EditLog"], "admin": "RD", "member": "R", "own": "" },
+    { "tables": ["Input"], "admin": "CRUD", "member": "R", "own": "CUD" },
+    { "tables": ["Attachment", "InputAttachment"], "admin": "RD", "member": "", "own": "CR" },
+    { "tables": ["LeaveWar"], "admin": "CRUD", "member": "R", "own": "" },
+    { "tables": ["LeaveBid"], "admin": "CRUD", "member": "R", "own": "CUD" },
+    { "tables": ["LeaveOpening", "LeaveLedger", "LeaveCounter"], "admin": "CRUD", "member": "", "own": "R" },
+    { "tables": ["LeavePersonProfile"], "admin": "CRUD", "member": "R", "own": "" },
+    { "tables": ["Course", "Syllabus", "TrainingEvent", "EventPrerequisite", "Layout", "CoursePlan", "Enrolment", "Attempt"], "admin": "CRUD", "member": "CRUD", "own": "" }
+  ],
+  "waiting": [
+    { "tables": ["AccessRequest"], "any": "", "own": "CRU", "guestSwitch": false },
+    { "tables": ["Setting"], "any": "R", "own": "", "guestSwitch": false },
+    { "tables": ["Person", "ScheduleWeek", "ScheduleDay", "DayDraft", "Wave", "Formation", "Sortie", "DutyBlock", "DutyRow", "SimRow", "ProgrammeRow", "RowPerson", "Amendment", "Signoff"], "any": "R", "own": "", "guestSwitch": true }
+  ]
+}

@@ -45,6 +45,10 @@ function makeRepo(live = LIVE0) {
   g('config', 'user.email', 'selftest@example.invalid'); g('config', 'user.name', 'selftest'); g('config', 'core.autocrlf', 'false')
   w('raptor-port/scripts/docsize.mjs', readFileSync(GATE, 'utf8'))
   w('raptor-port/scripts/backlog-archive.mjs', readFileSync(MOVER, 'utf8'))
+  /* the permissions drift check (D200) the gate imports, with the two files it compares — the real ones */
+  w('raptor-port/scripts/permcheck.mjs', readFileSync(join(HERE, 'permcheck.mjs'), 'utf8'))
+  w('raptor-port/docs/data-model.md', readFileSync(join(HERE, '..', 'docs', 'data-model.md'), 'utf8'))
+  w('raptor-port/src/state/permissions.json', readFileSync(join(HERE, '..', 'src', 'state', 'permissions.json'), 'utf8'))
   w('raptor-port/scripts/rulecheck.mjs', RULES0)
   w('raptor-port/docs/superpowers/specs/x-behaviour-register.md', REG0)
   w('OUTSTANDING.md', live); w('OUTSTANDING-ARCHIVE.md', ARCH0); w('DECISIONS.md', DEC0); w(AREA, AREA0); w('DECISIONS-ARCHIVE.md', DARCH0)
@@ -98,6 +102,10 @@ scenario('over a ceiling inside a code change is deferred, not failed', false, c
    these two scenarios would pass for the wrong reason (the "nothing changed" check below guards it) */
 const raiseDecisions = t => { const u = t.replace(/(\['DECISIONS\.md',\s+1,\s+)\d+\]/, '$1400]'); if (u === t) throw new Error('the DECISIONS.md ceiling row was not found — update this self-test'); return u }
 scenario('a ceiling moved in a commit that also touches src', true, c => { c.edit('raptor-port/scripts/docsize.mjs', raiseDecisions); c.edit('raptor-port/src/app.ts', t => t + 'export const b = 2\n'); c.commit('sneak') }, { mustSay: 'touches raptor-port/src' })
+/* THE PERMISSIONS DRIFT (owner, D200, 26 Sep 26; Fable F3): a docs-only edit to §11 must fail here, because the
+   full gates skip a docs-only change */
+scenario('a permission changed in the data model only (D200)', true, c => { c.edit('raptor-port/docs/data-model.md', t => t.replace('| `Person` | C R U D | R | U |', '| `Person` | C R U D | R | — |')); c.commit('docs only') }, { mustSay: 'permissions: main table: Person' })
+scenario('a permission changed in both, together (D200)', false, c => { c.edit('raptor-port/docs/data-model.md', t => t.replace('| `Qualification` | C R U D | R | — |', '| `Qualification` | C R U D | R | U |')); c.edit('raptor-port/src/state/permissions.json', t => t.replace('{ "tables": ["Qualification"], "admin": "CRUD", "member": "R", "own": "" }', '{ "tables": ["Qualification"], "admin": "CRUD", "member": "R", "own": "U" }')); c.commit('both') })
 scenario('a ceiling moved in a docs-only commit', false, c => { c.edit('raptor-port/scripts/docsize.mjs', raiseDecisions); c.commit('raise, with its reason') })
 
 scenario('a ruling number lost from its area file (F7)', true, c => c.edit(AREA, t => t.replace(/^\| D1 \|.*\n/m, '')), { mustSay: 'D1 is GONE' })

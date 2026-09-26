@@ -1134,6 +1134,7 @@ None breaks an amendment rule; each is a line to fix or ask about, from the walk
 **Place:** any time; items 6–8 with the Leave War links re-test (D147, last).
 
 ### [ACCOUNTS] Accounts in the app now, shaped as the defence-mail sign-in will be (owner, D166, 25 Sep 26)
+**IN PROGRESS 26 Sep 26 on `claude/nifty-albattani-j7975f` (no PR yet) — stopped mid-build for the owner's PC; where it stands: `HANDOFF.md` (that branch's block).** The plan of record: `raptor-port/docs/superpowers/plans/2026-09-26-accounts-plan.md` (§14 — Fable's 17 findings, all taken — wins over the sections above it); Fable's read `raptor-port/docs/superpowers/specs/2026-09-26-accounts-plan-fable.md`; Astra's plan read NOT YET RUN (brief `raptor-port/docs/superpowers/briefs/2026-09-26-accounts-plan-redteam-brief.md`, on his PC). Tier FULL.
 The Admin tab creates accounts (sign-in name, admin or member, the callsign it belongs to); the sign-in screen stands
 for the defence mail sign-in; signing in makes you that callsign, so "View as" and any member preview go; the Leave
 War follows the signed-in callsign; every "who" (edit record, pending list, hand over) names the callsign. Replaces

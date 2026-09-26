@@ -634,24 +634,42 @@ against a store it does not understand (section 6).
 
 ### User
 
-Owner: **Shell**. The sign-in identity. **Separate from `Person`**, linked
-to it.
+Owner: **Shell**. The sign-in identity — one account per person. **Separate from `Person`**, linked to it.
 
 | Field | Type | Req | Meaning |
 |---|---|---|---|
-| `signInName` | string | yes | the provider's principal name. Unique |
-| `displayName` | string | yes | what `HOOKS.whoami()` returns and the edit log records |
-| `role` | choice `admin\|main` | yes | today's two roles |
-| `personId` | ref Person | no | null for an account with no roster body (a service or an admin who does not fly) |
-| `enabled` | bool | yes | |
-| `lastSignInAt` | datetime | no | (new) |
+| `signInName` | string | yes | the provider's principal name — the person's defence mail (D165, D166). Unique. Editable by an admin (a mail that changed) |
+| `displayName` | string | yes | what `HOOKS.whoami()` returns and the edit log records — the linked person's callsign (D166 (5)) |
+| `role` | choice `admin\|main` | yes | admin or member (`main`) |
+| `personId` | ref Person | yes | the callsign (puck) the account belongs to (D166, 25 Sep 26). **Unique**: one person, one account. A scheduler who does not fly is on the roster as Personnel |
+| `enabled` | bool | yes | the only way out — an account is switched off, never deleted (§10) |
 
-Relationships: 0–1 `Person`; referenced by every `createdBy`/`updatedBy`.
-From today: `ACCOUNTS` — two hard-coded prototype accounts in
-`src/state/auth.ts` — plus `SESSION`, `ME` and the Admin page's `USERS[]`.
-App change: **no password is ever stored in this model.** The auth provider
-owns credentials; this table maps a signed-in principal to a role and a roster
-body. Stage 4, and a separate step from storage.
+Relationships: 1–1 `Person`; referenced by every `createdBy`/`updatedBy`.
+From today: `settings/accounts` (`src/state/accounts.ts`) — the accounts an admin manages on Admin → Users; the four
+demo accounts are the default until one is changed, and **are deleted, never imported, at the database step** (demo
+data, D54, D56; §7 "never seed demo data into the shared store").
+App change: **no password is ever stored in this model.** The auth provider (Microsoft sign-in) owns credentials; this
+table maps a signed-in principal to a role and a roster body. The app's sign-in screen stands for it until then
+(D166 (2)); the demo accounts' passwords are not security and never real ones. Nothing is written at sign-in. Stage 4,
+and a separate step from storage.
+
+### AccessRequest
+
+Owner: **Shell**. A principal who signed in with a defence mail no `User` row carries, asking for an account (D204,
+26 Sep 26). One per principal.
+
+| Field | Type | Req | Meaning |
+|---|---|---|---|
+| `signInName` | string | yes | the principal — given by the sign-in, never typed. Unique |
+| `callsign` | string | yes | what he typed — shown to the admin as text; it never claims a puck by itself |
+| `name` | string | yes | what he typed, so the admin knows who is asking |
+| `requestedAt` | datetime | yes | |
+| `status` | choice `pending\|declined` | yes | approved requests are removed — the new `User` row is the record |
+
+Relationships: none; approving it creates a `User` (the admin picks the role and the puck).
+From today: `settings/accessreq` (`src/state/accounts.ts`). The admin sees a badge on the Admin tab while one is
+pending; at the database step a Teams message to the admins is added (D204). Whether people waiting may read the
+programme is the `Setting` `guestview` (D204 — off by default; §11's Waiting table).
 
 ### Layout
 
@@ -831,7 +849,7 @@ own side of the difference).
 
 | Owner (the only writer) | Tables | Read by | Written through |
 |---|---|---|---|
-| **Shell** | `Person`, `User`, `Qualification`, `QualMark`, `Setting`, `SchemaVersion` | every module | one shell function per table — `Person` through the people writer the Quals page already uses (`persistPeople` today); a module that needs a person changed calls it, never the table |
+| **Shell** | `Person`, `User`, `AccessRequest`, `Qualification`, `QualMark`, `Setting`, `SchemaVersion` | every module | one shell function per table — `Person` through the people writer the Quals page already uses (`persistPeople` today); a module that needs a person changed calls it, never the table |
 | **Scheduler** | `ScheduleWeek`, `ScheduleDay`, `DayDraft`, `Wave`, `Formation`, `Sortie`, `DutyBlock`, `DutyRow`, `SimRow`, `ProgrammeRow`, `RowPerson`, `Input`, `InputType`, `InputAttachment`, `Attachment`, `Amendment`, `Signoff`, `EditLog` | Leave War (the published schedule and the leave / medical inputs, as API views); Tracker (nothing today) | the mutation funnel → the storage seam |
 | **Leave War** | `LeaveWar`, `LeaveBid`, `LeaveLedger`, `LeaveCounter`, `LeaveOpening`, `LeavePersonProfile` | Scheduler (approved leave and the four medical markers, as an API view) | its own store → its own doorway |
 | **Tracker** | `Course`, `Syllabus`, `TrainingEvent`, `EventPrerequisite`, `Enrolment`, `Attempt`, `Layout`, `CoursePlan` | Shell (a qualification picture from marks, later) | `core.js` → `storage.js`, `Attempt` only through `applySummary` |
@@ -949,41 +967,53 @@ relationship behaviours are the terms.
 
 ## 11. Security roles
 
-**Behind the rulings, to bring up to date in `[ACCOUNTS]` (D200, 26 Sep 26):** a member edits every column of his own
-`Person` row (D149); members read the change history, `EditLog` (D169); an account is tied to a callsign (D166); OIL
-awards are written by admins only, with who gave each and when (D79, D82). Until then, where a line below disagrees,
-the ruling wins (D90, D201).
+**This section is read by the app** (owner, D200, 26 Sep 26): `src/state/permissions.json` holds the same two tables,
+the app's one permission check (`may()`, `src/state/auth.ts`) answers from it, and the document gate
+(`scripts/docsize.mjs`, run in CI on every change — docs-only included — and at the end of every turn) and a unit test
+fail when a cell here and a cell there disagree. **Change a permission in both, in the same change.** The two ops
+columns hold only the letters `C R U D` (create, read, update, delete — delete is the soft delete throughout) or `—`;
+the "Own row is…" and Notes columns are for the reader and are not compared.
 
-Two roles today (`admin`, `main` — a squadron member); the matrix is written
-for those two and gains a column when the directory brings more. In
-Dataverse terms: two **security roles**, one **business unit** (single
-tenant — one squadron, one environment, no cross-squadron rows), **row
-ownership** by the person's `User` where the own-row rule applies. C R U D
-= create, read, update, delete (delete is the soft delete throughout).
+Three roles: **Admin**, **Member** (a squadron member — the app's `main`), and **Waiting** — a principal who signed in
+with a defence mail that no `User` row carries (D204; the second table). In Dataverse terms: three **security roles**,
+one **business unit** (single tenant — one squadron, one environment, no cross-squadron rows), **row ownership** by the
+person's `User` where the own-row rule applies. "Member, own row" is what a member may do to a row that is his own, on
+top of the Member column.
 
-| Table | Admin | Member | Own-row rule (member) |
-|---|---|---|---|
-| `Person`, `Qualification` | C R U D | R | — |
-| `QualMark` | C R U D | R, C U D **own** | `personId` = my person — a member ticks their own quals |
-| `Setting`, `SchemaVersion`, `User` | C R U D | R (`Setting` only) | — |
-| ScheduleWeek family, `DayDraft`, `RowPerson` | C R U D | R | — (a member reads the programme; only a scheduler writes it) |
-| `Amendment`, `Signoff` | C R | R | — (append-only for everyone) |
-| `EditLog` | R | — | — (written by the store, not a role; retention is Open question 4) |
-| `Input` | C R U D | C R U D **own**; R others' non-medical | `personId` = my person, or filed for me by a scheduler. A **medical** input (`InputType.group = med`) is readable by its person and admins only: its `remarks` sit behind Dataverse column-level security (a field security profile: admin + the row's owner), and the row itself is owned by the person so a member's user-level read reaches only their own |
-| `Attachment`, `InputAttachment` | R (D by sweep only) | C R **own** | owned by the person who uploaded it; readable by that person and admins only — every attachment today is medical evidence |
-| `LeaveWar` | C R U D | R | — |
-| `LeaveBid` | C R U D (decide, move) | R, C U **own** while `stage = open` | `personId` = my person — the `canEditRow` rule the store already enforces |
-| `LeaveOpening`, `LeaveLedger`, `LeaveCounter` | C R U D | R **own** | `personId` = my person |
-| `LeavePersonProfile` | C R U D | R | — |
-| `Course`, `Syllabus`, `TrainingEvent`, `EventPrerequisite`, `Layout`, `CoursePlan`, `Enrolment`, `Attempt` | C R U D | C R U D | — (**everyone edits** the Tracker — owner, 7 Sep 26; since D121, 23 Sep 26, Import / Export too: admin and member have the same access) |
+| Table | Admin | Member | Member, own row | Own row is… | Notes |
+|---|---|---|---|---|---|
+| `Person` | C R U D | R | U | `id` = my person | every column of his own row — callsign, CAT, SXO, SCHEDULER, SANS, initials, flight, remarks (D149, 24 Sep 26); never another person's. D is the archive (`archived`, a soft delete); Restore is U |
+| `Qualification` | C R U D | R | — | — | the LoX's columns |
+| `QualMark` | C R U D | R | C U D | `personId` = my person | a member ticks his own qualifications (D149) |
+| `Setting` | C R U D | R | — | — | the rules, the templates, the defaults — and the guest switch `guestview` (D204) |
+| `SchemaVersion` | C R U D | — | — | — | |
+| `User` | C R U D | — | R | `signInName` = my principal | an account is tied to ONE callsign: `personId` required and unique (D166, 25 Sep 26). D is switching it off (`enabled = false`), never a hard delete (§10). The sign-in name is editable (a defence mail that changed). Nothing is written at sign-in |
+| `AccessRequest` | C R U D | — | — | — | a principal with no `User` row asks for one; the admin approves (setting role and puck — a typed callsign never claims a puck by itself) or declines (D204). The requester's own rights are in the Waiting table |
+| `ScheduleWeek`, `ScheduleDay`, `DayDraft`, `Wave`, `Formation`, `Sortie`, `DutyBlock`, `DutyRow`, `SimRow`, `ProgrammeRow`, `RowPerson` | C R U D | R | — | — | a member reads the programme; only a scheduler writes it — the planning layer, the day's view toggles (a dropped LATE mark, a muted warning) and its OIL earn decisions included |
+| `Amendment` | C R D | R | — | — | append-only; D = Unpublish withdraws the latest version — the row is kept and marked withdrawn (D101) |
+| `Signoff` | C R U D | R | — | — | re-picked or cleared on the working copy, and all four cleared by any pending change (D103); append-only once issued with a version |
+| `EditLog` | R D | R | — | — | written by the store, never by a role. Members read the change history (D169, 25 Sep 26); the details of a change to a MEDICAL input sit behind column-level security (admin + the input's person), as `Input` remarks do. D = the Admin page's "Clear edit history" (25 Aug 26). Retention: Open question 4 |
+| `Input` | C R U D | R | C U D | `personId` = my person, or filed for me by a scheduler | a member reads others' NON-medical inputs. A **medical** input (`InputType.group = med`) is readable by its person and admins only: its `remarks` sit behind column-level security (a field security profile: admin + the row's owner), and the row itself is owned by the person so a member's user-level read reaches only his own |
+| `Attachment`, `InputAttachment` | R D | — | C R | uploaded by me | readable by that person and admins only — every attachment today is medical evidence. D by the orphan sweep only |
+| `LeaveWar` | C R U D | R | — | — | |
+| `LeaveBid` | C R U D | R | C U D | `personId` = my person, while `stage = open` | a member bids on and clears his own row only (D166 (4) — the row his account is tied to); decide and move: admin only, at closed or published (`canDecide`) |
+| `LeaveOpening`, `LeaveLedger`, `LeaveCounter` | C R U D | — | R | `personId` = my person | an OIL award is written by admins only, and keeps who gave it and when (D79, D82) |
+| `LeavePersonProfile` | C R U D | R | — | — | |
+| `Course`, `Syllabus`, `TrainingEvent`, `EventPrerequisite`, `Layout`, `CoursePlan`, `Enrolment`, `Attempt` | C R U D | C R U D | — | — | **everyone edits** the Tracker (owner, 7 Sep 26); since D121 (23 Sep 26) Import / Export too |
 
-**The server enforces, the browser mirrors.** Every rule above is a
-privilege on the store (a Dataverse security role) and a check at the API's
-write path; the browser keeps its `canEditSched` / `canEditRow` / role
-checks for feedback only, and a screen that lets a member try something the
-role refuses is a bug in the mirror, not a hole. **Retention** (placeholder
-until the team answers Open question 4): tombstoned rows and the `EditLog`
-are kept for a period the squadron sets, then purged by a scheduled job;
+**Waiting for access** — the third role, held by any signed-in principal with no `User` row (D204, 26 Sep 26). Everything
+not listed here, it may not touch.
+
+| Table | Waiting | Waiting, own row | Own row is… | Needs the guest switch | Notes |
+|---|---|---|---|---|---|
+| `AccessRequest` | — | C R U | `signInName` = my principal | — | he sends his request, reads it, and changes his details or asks again after a decline |
+| `Setting` | R | — | — | — | so the server and the app can answer "is the guest switch on?" |
+| `Person`, `ScheduleWeek`, `ScheduleDay`, `DayDraft`, `Wave`, `Formation`, `Sortie`, `DutyBlock`, `DutyRow`, `SimRow`, `ProgrammeRow`, `RowPerson`, `Amendment`, `Signoff` | R | — | — | yes | the programme, read-only, ONLY while the admin's guest switch (`Setting.guestview`) is on — off by default. The server checks the switch on every read; the role's privilege alone is not enough. No absences: `Input` stays unreadable, so who is away and why is never shown |
+
+**The server enforces, the browser mirrors.** Every rule above is a privilege on the store (a Dataverse security
+role) and a check at the API's write path; the browser asks `may()` for feedback, and a screen that lets someone try
+something the role refuses is a bug in the mirror, not a hole. **Retention** (placeholder until the team answers Open
+question 4): tombstoned rows and the `EditLog` are kept for a period the squadron sets, then purged by a scheduled job;
 `Person`, `Amendment` and `Signoff` are never purged.
 
 ## 12. Open questions for the technical team
@@ -997,8 +1027,9 @@ are kept for a period the squadron sets, then purged by a scheduled job;
 3. **Auth provider** — Entra ID is assumed. How is a signed-in principal
    matched to a `Person` on first sign-in: by callsign, by an admin mapping
    step, or automatically by email? **ANSWERED by the owner, 25 Sep 26 (D165): an
-   admin mapping step** — the admin creates the `Person` and records their defence
-   mail address; the first sign-in with it becomes that person; "View as" retires.
+   admin mapping step** — the admin creates the account (`User`: the defence mail, the person it belongs to, the
+   role); the first sign-in with it becomes that person; "View as" retires. **And (D204, 26 Sep 26) a second
+   route:** someone signed in on no account asks for one (`AccessRequest`) and the admin approves it.
 4. **EditLog retention** — the app caps it at 400 rows in memory. Shared and
    durable, how long is it kept, who may read it, and is it a compliance
    record or an operational convenience?

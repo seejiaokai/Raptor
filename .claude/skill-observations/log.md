@@ -434,3 +434,5 @@ resolved statuses always carry their resolution date
 **Suggested improvement:** In the bug-check order §4a (and any Claudex skill), add one line: "Astra runs on the owner's PC; a cloud session writes the brief to docs/superpowers/briefs/, runs Fable here, tells the owner at the start, and holds 'ready for merge live' until Astra's report is back." The handoff block should name the environment the next chat will run in.
 
 **Principle:** A review step that depends on a tool only one environment has must say which environment, or every other environment discovers the gap at the worst moment.
+
+<!-- checkpoint 2026-09-26, [ACCOUNTS] chat (claude/nifty-albattani-j7975f): no observations beyond #261 -->

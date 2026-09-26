@@ -15,39 +15,49 @@ the later merge keeps both (D78).
 
 ## Now
 
-<!-- now:claude/leave-late-published -->
-### `claude/leave-late-published` — `[LEAVE-LATE-PUBLISHED]` (D177–D189): MERGED 26 Sep 26 on his "merge live" (PR #438) — this block goes at the next handoff; written 26 Sep 26 — verify before use
-- **What it is:** a published day keeps what it went out with — its inputs (`snap.inp`), its warnings that freeze and
-  their marks (`snap.w`), its men's CAT / seat / posting and the brief lead it prints (`snap.pa` / `snap.rv`, drawn by
-  `engine/faceattrs.ts`), the roster its day panel counts (`snap.ros`); a change since reads pending (the four fall) and
-  goes out with the next AL. What stays LIVE (D183–D185): the dotted next-day mark, a crew-rest breach and tight turn, the
-  7-day run, the Qualification-flag warnings, every OIL warning (`validate.ts LIVE_ON_FACE`; the day loop files each mark
-  by class `fz` / `lv`, `faceWarn` lays the live over the frozen). Medical stays frozen. Rule text:
-  `raptor-port/docs/engine-rules.md` §Publishing.
-- **The check (FULL):** evidence `raptor-port/docs/handpass/2026-09-26-late-pub.md` — the roll-call (21 surfaces), the
-  walks (the re-walk, the host walk, four parallel walkers: Quals, Logic, neighbour day, Leave War — 593 pictures, no
-  console errors), 36 break tests, blind reads by Fable and Astra of the first build, the final code and the D187 change
-  (all dispositioned §9 — D187's nine fixed and pinned, B29–B36), the gates (§6). His look card is §10.
-- **The PR:** #438, merged on his "merge live" (26 Sep 26). The backlog items `[LEAVE-LATE-PUBLISHED]`,
-  `[LATE-PUB-FACE-LIVE]` and `[PV-NO-FLAGS]` are archived; the one residue left open is `[PEEK-ISSUED]` (low, his question).
-- **His questions (the card, §10) — ALL ANSWERED:** Q1 — D186 "yes" (a man's CAT and a blank brief's time stay as
-  published). Q4 — D189 "follow ur recommendation" (the app's own "till" note counts: each published day a stretched leave
-  still covers shows "1 pending" on the admin's working copy, never on View-only Sched). Q5 — D187 "it should" (BUILT: a
-  look at a published version wears its warnings — the whole record it went out with, read only, its own ⓘ panel and
-  taps; read by both providers after the build, their findings fixed). Q6 — D188 "yes" (the Qualification-flag reading).
-- **Filed this session:** `[PV-NO-FLAGS]` (answered and built, archived), `[PEEK-ISSUED]`, `[INSIGHTS-WORKING-COPY]` (his question),
-  `[QUALS-PROTO-TOAST]`, `[VIEW-ARROW-OVER-LIST]`, `[INPUTSCAL-TAP-FLAKY]`. Rulings this chat: D186–D189 (and D185's row
-  gained the agent's widened reading, confirmed by D188). The chat's range D180–D189 is used up — a later chat on this
-  branch takes the next free number above `main`'s (DECISIONS.md).
-- **Usage (D182, until Monday 28 Sep 26):** unlimited — spend it on his look's follow-ups.
-- **Next (D180, D173):** `[ACCOUNTS]` on a new branch, in a FRESH chat — its plan not started; the `OUTSTANDING.md` tidy (over
-  its tripwire) on its own docs branch.
+<!-- now:claude/nifty-albattani-j7975f -->
+### `claude/nifty-albattani-j7975f` — `[ACCOUNTS]` (D165, D166, D200, D202, D204, D149), STOPPED MID-BUILD for his PC; written 26 Sep 26 — verify before use
+- **Where it started:** his ask — plan `[ACCOUNTS]` (Opus 5.5), Fable and Astra red-team the plan, build, walk, FULL check.
+  Stopped by him mid-build ("i want to do this on my local computer"). The cloud session could not reach Astra (no
+  Codex there — observation #261), so **Astra's plan read has NOT run**: brief
+  `raptor-port/docs/superpowers/briefs/2026-09-26-accounts-plan-redteam-brief.md`, report to
+  `raptor-port/docs/superpowers/specs/2026-09-26-accounts-plan-astra.md`, blind to Fable's.
+- **The plan of record:** `raptor-port/docs/superpowers/plans/2026-09-26-accounts-plan.md` — **its §14 wins over the
+  sections above it** (Fable's 17 findings, all taken: `raptor-port/docs/superpowers/specs/2026-09-26-accounts-plan-fable.md`).
+- **Built (WIP commit — THE APP DOES NOT COMPILE at this commit; the callers are the next step):**
+  `docs/data-model.md` §11 rewritten in the strict shape (+ `User`, new `AccessRequest`, §8, §12 Q3);
+  `src/state/permissions.json` + `permissions.ts` (`allowed`, `GATES`); `scripts/permcheck.mjs` wired into
+  `docsize.mjs` (+ two self-test scenarios — self-test green, `permcheck` green, break test red as it should);
+  `src/state/accounts.ts` (records, sign-in answers, admin writes, guards, fallback); `src/state/auth.ts` rewritten
+  (`may`, `roleNow` reading the live account, `canEditSched` = `may('U','ScheduleWeek')`; `LOGINROLE`,
+  `canToggleRole`, `setEffectiveRole`, `ACCOUNTS` removed); `tsconfig.app.json` `resolveJsonModule`. Nothing else yet.
+- **Pick up here, in order:** (1) the callers of the removed auth exports — `state/store.ts` (import line; delete
+  `toggleRole`; `resetSession`: ME = the account's `personId`, `''` for a guest, `'bane'` for the bare test shape; the
+  undo list clears at sign-out — D148, `undo/timeline.ts` has only a test-only reset; `HOOKS.whoami` → the callsign),
+  `ui/Login.tsx` (`checkSignIn`/`sessionOf`), `ui/Shell.tsx` + `ui/Drawer.tsx` (no View as, inert badge, Admin
+  badge), `leavewar/inputgate.ts` (`LOGINROLE` → `may('C','Input')`), `probe-bridge.ts` (`raptorRole` →
+  `setRoleForTest`; add `raptorMe`); (2) `state/people-settings-commit.ts` — the three keys into `SETTINGS_KEYS`,
+  `accountsLoad` into `SETTINGS_LOADERS` and `initStore`, install `setAccountsCommit`; (3) `ui/App.tsx` + a new
+  `ui/Waiting.tsx` and the guest shell (plan §3, §6, F6, F14); (4) Admin → Users, delete `state/users.ts`; (5) D149 on
+  Quals (+ `[QUALS-PROTO-TOAST]`); (6) the `GATES` rewiring, the import-rule ratchet and `permissions.test.ts` (plan §8,
+  F4, F10); (7) `leavewar/engine/stages.ts canEditRow` null viewer (F7); (8) `mayReverse` same-account (F1) and the e2e
+  undo tests; (9) tests per plan §11 + F12, each ruling named in a test title (`rulecheck`); (10) the docs (plan §12,
+  F17; D104 marked overtaken by D166); (11) the FULL check — walk, gates, Fable AND Astra code reads, evidence sheet.
+- **Branch:** `claude/nifty-albattani-j7975f`; no PR (none opened on purpose while it does not compile). Its base is
+  `main` at `0495e6b` (PR #439).
+- **Gates:** unit **5990 / 5990** on the base commit (watched, before any change); nothing since — the build is broken
+  by design at the WIP commit. `node raptor-port/scripts/permcheck.mjs` and `docsize-selftest.mjs` green.
+- **Open questions for him:** the plan's §13 (five built defaults — `us` is Torch; any password for accounts an admin
+  creates; a posted-out man keeps his account; the guest sees no absences; no admin edits his own account) and the
+  four in §14 (every account needs a puck; the guest sees no warning list; `saber`/`outlaw` take any password; ask
+  again without limit) — put to him on the look card, not before. His "ok" of 26 Sep 26 was taken as "carry on", not
+  as a yes to them.
 <!-- /now -->
 
 ## Next, in order
 
-1. **HIS ORDER to the database step, about two months away (D203, 26 Sep 26):** now `[ACCOUNTS]` (with D200, D202 —
-   answer his "how does a new user join" question first) → the one changes window (`[DRAFT-PENDING]`) → one full check →
+1. **HIS ORDER to the database step, about two months away (D203, 26 Sep 26):** now `[ACCOUNTS]` (with D200, D202, D204 —
+   in progress, `claude/nifty-albattani-j7975f`) → the one changes window (`[DRAFT-PENDING]`) → one full check →
    "merge live" (D173); beside it, he talks to the IT side (`[IT-QUESTIONS]`). Development as normal: `[HUMAN-RETEST]`'s
    remaining three in his order (D147 — the absence record with `[S4-HUNT-REST]`, change-recording, the Leave War links
    last), then `[PUB-UNAVAIL]` → `[LW-LOCKMARK]` → `[LW-WEEKDAY-WORK]`.
