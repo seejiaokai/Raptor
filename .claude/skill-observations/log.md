@@ -419,3 +419,18 @@ resolved statuses always carry their resolution date
 **Suggested improvement:** When a pin calls an internal builder directly, copy the arguments from its real caller (grep the call site) and assert one fact that proves the drawing is the intended mode (here: no write surface under a look). Keep the break test for every new pin — it is what caught this.
 
 **Principle:** A test that reaches past the public door must reproduce the door's exact call, and prove it did; otherwise only cutting the fix shows whether the test was ever looking at it.
+
+### Observation 270: A hook wired as `test && run || exit 0` swallows its own refusal
+
+**Status:** OPEN
+**Date:** 2026-09-26
+**Session context:** [BG-CWD-GUARD] — a PreToolUse hook that refuses a backgrounded npm command outside raptor-port (numbered 270, past 260, because two parallel chats — claude/accounts and a Tracker-colours chat — may be appending unpushed entries)
+**Skill:** repo hook wiring (.claude/settings.json; the pattern in `record-decisions.sh`'s and `task-observer`'s entries)
+**Type:** open-source
+**Phase/Area:** writing a blocking hook's settings command
+
+**Issue:** The repo's existing hook commands use `[ -f script ] && bash script || exit 0` for fail-open. That is harmless for hooks that always exit 0, but copied onto a BLOCKING hook it turns the hook's exit 2 (refuse) into exit 0 (allow): `||` fires on any non-zero exit of the script, not only on a missing file. The guard was written with `if [ -f … ] && command -v node …; then node …; else exit 0; fi` instead, and proved live (refused, then allowed).
+
+**Suggested improvement:** Where this repo documents how to add a hook (file-map row for `settings.json`, or a note beside the hooks), say: a hook that can BLOCK uses `if …; then …; else exit 0; fi`, never `&& … || exit 0`; and prove a new blocking hook live with one refused and one allowed call.
+
+**Principle:** Fail-open wrappers must distinguish "the check could not run" from "the check said no"; a shell `a && b || c` conflates them and silently disables every refusal.
