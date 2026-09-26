@@ -73,7 +73,8 @@ whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaini
 [OIL-PERSONAL-PLACEHOLDER] (FULL tier), [CROWD-SIM-BRIEF] (WALK tier), [OIL-RELINK-XWEEK].
 
 **Placed by their own lines — not his rulings:** the Leave War — [LW-FROZEN-BAR-GAP] (after [HUMAN-RETEST]; show him
-first), [LW-FIGSEL-SLOW] and [LW-SCRUBBER-FLAKY] (test-only); the Inputs calendar — [INPUTSCAL-TAP-FLAKY] (test-only). The Tracker — [TRK-RETEST-NOTES] and
+first), [LW-FIGSEL-SLOW] and [LW-SCRUBBER-FLAKY] (test-only), [LW-MOVE-CI-RED] (NEXT among the checks — it turns every PR red on GitHub; before
+the next "merge live" that needs a green run); the Inputs calendar — [INPUTSCAL-TAP-FLAKY] (test-only). The Tracker — [TRK-RETEST-NOTES] and
 [TRK-EDIT-SIDEWAYS] (their gates have passed), [TRK-PINCH-ASK] (his next Tracker session), [TRK-SESSION-PICK] (low, the next Tracker change), [TRK-DLG-LEFTOVERS] (low, with the next question-box change), [TRK-PALETTE-ASK] (his answer D157: Raptor's colours
 fully — being built on `claude/tracker-palette`), [TRK-FLEXBAR-INK] (a question for him, on that branch's look card),
 [TRK-BAKE-STALE] (low).
@@ -1339,3 +1340,21 @@ created", and it removes the OTHER day's row (`html.ts accCtl`); a label such as
 Unavailable → deleted" — Fable's D176 read F2; the name must come from the edit log's own "Input removed — …" line
 (`removeInput` writes it) or a frozen name. D175's own sentence is in every door. **Place:** low, with the one changes
 window (`[DRAFT-PENDING]`) or any time.
+
+### [LW-MOVE-CI-RED] The Leave War desktop "Move" browser tests fail on GitHub's machines, on more than one branch — found 27 Sep 26
+**What:** on 26 Sep 26 (UTC) the `geometry (lw-desktop)` job failed on `claude/five-flags-batch-continue-2cfa70` twice
+(runs 36256124235 at 16:37Z — passed on its one D84 re-run — and 36257950418 at 17:08Z) and on
+`claude/absence-record-d147-af6a50` (run 36257132635 at 16:54Z), which carries none of the five-flags code. The same tests
+each time, in `e2e/leavewar.spec.ts`: "a drag-selection offers Move, and the move banner appears on entering it" (959 —
+the Move button never appears within 5 s, both tries), "right-click cancels a move on desktop" (1005 — its click on Move
+times out at 30 s), and on the absence-record run also "a loose box moves the inputs present…" (984) and "-1.5 subtracts…"
+(2180, flaky). All four pass on his PC: the full run (474/0) and the two alone 8/8 with the page slowed 4×
+(`E2E_CPU_THROTTLE=4`). `main` (16:09Z and earlier) and `claude/accounts-new-person` (16:40Z) passed. **Not the five-flags
+batch** (a branch without it fails the same way; its Leave War change is the ⚙ sheet's Reset order line, drawn only when
+the sheet is open, and `displayRoster()` is called bare everywhere). **D84 was used and the group failed again — stop and
+report, which this is.** **To do:** the systematic-debugging skill, not another re-run: what those tests share (fill a
+block with `sel-LL`, drag-select it again, the sheet must offer Move — `movableCells`); read the job's own failure
+pictures (the trace / error-context artifacts); what changed on GitHub's side (the runner image, the browser build);
+whether a person at ordinary pace can reach "no Move offered" (then it is the app's bug, D87's reasoning). **Place:** NEXT
+among the checks, before the next "merge live" that needs a green GitHub run (the five-flags PR #445's own checks are red
+on it).

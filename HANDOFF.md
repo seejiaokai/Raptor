@@ -16,41 +16,36 @@ the later merge keeps both (D78).
 ## Now
 
 <!-- now:claude/five-flags-batch-continue-2cfa70 -->
-### `claude/five-flags-batch-continue-2cfa70` — the five-flags batch (D164, D160, [CROWD-SWAP-SAYS-BUSY], [VIEW-ARROW-OVER-LIST], [BG-GUARD-FALSE]): BUILT, FULL-checked, all gates green (PR #445, GitHub green after one D84 re-run); Q2 answered (D270, not built), Q1 / Q3 / Q2b shown as mock-ups, his answers awaited — written 27 Sep 26 — verify before use
+### `claude/five-flags-batch-continue-2cfa70` — the five-flags batch: BUILT and FULL-checked (PR #445); his look answered — Q1 refuse, Q2 + Q2b yes, Q3 keep (D270–D274) — the three builds NOT started; GitHub's Leave War desktop group red (not this batch) — written 27 Sep 26 — verify before use
 - **The branch:** started from `claude/five-flags-batch-build-ef7d85` (built, walked and read there, 26 Sep 26), which it
-  carries whole; the PR is from THIS branch (`gh pr list --head claude/five-flags-batch-continue-2cfa70`). The old branch
-  has no PR and nothing of its own left — delete it once this merges.
+  carries whole; PR #445 is from THIS branch. The old branch has no PR and nothing of its own — delete it once this merges.
 - **Parallel** with `claude/accounts-new-person` (PR #443) and the absence-record re-test (PR #444): preview port 4176
-  (`.claude/launch.json` "raptor-walk-4"), browser tests `E2E_PORT=4193`, rulings D270–D279 (none used). Full checks take
-  turns through the PC-wide lock (D228, `node C:/Users/User/projects/Raptor/raptor-port/scripts/gatelock.mjs … run --from
-  <this worktree>/raptor-port` — without `--from` it runs the MAIN checkout's code). Whichever merges later takes `main` in
+  (`.claude/launch.json` "raptor-walk-4"), browser tests `E2E_PORT=4193`, rulings D270–D279 (D270–D274 used). Full checks
+  take turns through the PC-wide lock (D228, `node C:/Users/User/projects/Raptor/raptor-port/scripts/gatelock.mjs … run
+  --from <this worktree>/raptor-port` — without `--from` it runs the MAIN checkout's code). The later merge takes `main` in
   first. Nothing to `main` without his "merge live".
-- **Built:** his own purple puck never glows when flagged, for every kind of flag (`scheduler.css`, `flagglow-css.test.ts`);
-  ⚙ Settings → Reset order (the two resets take each other's question back); one man one place on a row, a copy left
-  behind still counts, the SC shift scan reads the seat he leaves; the desktop week's 54px room beside the ‹ (`view.ts
-  weekInset`, the › side measured); the background guard follows a line step by step.
-- **The check (FULL), done:** evidence `raptor-port/docs/handpass/2026-09-26-five-flags.md` — the walk (§5: W1 64/0, W2 97/0,
-  W3 123/5, W4 1838/2, every fail fixed or his question), both reads (§8: Astra A1–A4, Fable F1–F4 — all fixed but F4,
-  filed), the re-walk after the reads (§5: W1 34/0; W3 69/2, the two = his Q1), the gates (§7: unit 6237/6237, build,
-  tfin 728/0, e2e 474/0 after five older week-landing tests were moved to the new front — measured, not a wrong landing,
-  break-tested — smoke 443/0, rulecheck, docsize), his look card (§9: four looks + Q1–Q3).
-- **His answers so far (27 Sep 26):** Q2 **"yes"** → **D270** (his own flagged puck shows the flag's own ring; purple fill
-  stays) — recorded, carried into the docs, the build filed in `[ME-PUCK-SEVERITY-RING]`, NOT built. Q1 and Q3: *"show me a
-  mock up"*, and *"can u show mock of what u changed before and after"* → `raptor-port/docs/mock/five-flags.html` (Artifact
-  https://claude.ai/artifact/NACjL873LZ3P9VxbAJRWPZ), pictures by `scripts/handpass/am/mk-five-flags.mjs` (parts p1, q2, q1,
-  q3; the app served on :4176). It also puts Q2b (the OIL ring on his own puck, recommended: same treatment).
-- **Next:** his answers to Q1 (refuse / warn), Q2b, Q3 (keep / empty / fade) → record each (D271 on) → build D270 and his
-  answers ON THIS BRANCH (the same lines this batch changed: `scheduler.css` rings, `avail.ts`/`drag.ts`/`view.ts` one man one
-  place, `.week` room) → WALK-tier check (re-run ff-w1 C,D and ff-w3 f6 as assertions of the new behaviour; the Q3 walk) →
-  gates under the lock → his look → "merge live" — one at a time with #443 and #444, the later taking `main` in first. GitHub's
-  Leave War desktop group flaked once on the first run (the Move tests; D84 re-run passed).
-- **His "2 chats" remark (27 Sep 26), still unanswered:** *"i think my computer can handle 2 chats working"*. The opening
-  line of this chat carried a blank where his answer was meant to go. Put to him in this chat's report: two chats working
-  side by side needs nothing (only full check runs queue); two full runs at once is what D86 measured as false failures —
-  recommended: keep the queue. If he wants two full runs at once, that narrows D228/D86 — record it (D270) and give
-  `gatelock.mjs` two slots.
-- **Filed from it:** [CROWD-DUP-REFUSE] (Q1), [ME-PUCK-SEVERITY-RING] (Q2), [ARROW-GUTTER-STRIP] (Q3), [GHOST-FLAG-SHADOW],
-  [LW-SETTINGS-SMALL], [ALLAVAIL-OPEN-ROW]. The five items are archived (built here).
+- **Done and checked (the evidence sheet `raptor-port/docs/handpass/2026-09-26-five-flags.md`):** the walk, both reads, the
+  re-walk after the reads (§5), the full gates (§7: unit 6237/6237, build, tfin 728/0, e2e 474/0 after five older
+  week-landing tests moved to the new front, smoke 443/0, rulecheck, docsize), his look card (§9).
+- **His answers, 27 Sep 26, all recorded (`.claude/rules/decisions/scheduler.md`):** **D270** Q2 yes — his own flagged puck
+  shows the flag's own ring (amber / thin red / grey / dotted), purple fill stays; **D271** Q1 refused — a man put on a
+  row he is already on is refused at every door, with the reason (narrows the 13 Aug "everything plants" rule; readings
+  (1)–(4) in the row); **D272** Q2b yes — in OIL Earn mode his own puck shows the green OIL ring; **D273** Q3 keep — the
+  strip stays, nothing to build; **D274** Part 1 items 1–3 approved as built, **item 4 (the arrow's room) NOT yet approved**
+  — he asked for it full screen, now on the mock-up. The mock-up: `raptor-port/docs/mock/five-flags.html` (Artifact
+  https://claude.ai/artifact/NACjL873LZ3P9VxbAJRWPZ, version 2), made by `scripts/handpass/am/mk-five-flags.mjs`.
+- **Next, in order:** (1) his word on item 4 (full screen) — record it (D275); (2) **build D270, D271, D272 on this
+  branch** — read `raptor-port/docs/bug-check-order.md` first and state the tier (D271 changes how a rule is read →
+  FULL: the other model designs the scenarios, the roll-call of every door — drag, the armed palette tap, the "+ add"
+  append, a crew-list drop onto another man's place in a crowd he is in — both reads); the files: `scheduler.css`
+  (`.puck.me.warn` / `.boxdot` / the OIL ring), `flagglow-css.test.ts`, `avail.ts` / `slots.ts` / `drag.ts` / `view.ts
+  placeArmed`, the docs marked "TO CHANGE — D270 / D271" (`ui-contracts.md`, `engine-rules.md`); the walk scripts to
+  re-run as the new behaviour (ff-w1 C,D; ff-w3 f6 — its F6-a/F6-b become PASS on a refusal); (3) **[LW-MOVE-CI-RED]** —
+  GitHub's `geometry (lw-desktop)` job fails the Leave War "Move" tests on this branch AND on the absence-record branch
+  (none of this batch there); D84's one re-run is spent — investigate, don't re-run; (4) gates under the lock → his look
+  → "merge live", one at a time with #443 and #444.
+- **His "2 chats" remark (27 Sep 26)** is still unanswered — put to him once; recommended: keep the one-at-a-time queue
+  for full check runs (two chats working side by side needs nothing).
 <!-- /now -->
 
 <!-- now:claude/accounts -->
