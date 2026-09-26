@@ -443,7 +443,11 @@ function wireGesture<A, P>(wrap: HTMLElement, spec: GestureSpec<A, P>): () => vo
   let endSwallow: (() => void) | null = null
   const swallowNextClick = (touch: boolean) => {
     endSwallow?.()
-    const swallow = (ev: Event) => { ev.stopPropagation(); ev.preventDefault(); off() }
+    /* stopIMMEDIATEpropagation (the re-walk, 26 Sep 26 — W4's re-walker): on a touch screen the sheet this gesture just
+       opened puts its own tap shield on the document too (Sheet.tsx useGridPan), and it closes the sheet on a click
+       under it; plain stopPropagation does not stop another listener on the same node, so the swallowed tap still
+       closed the sheet 22 ms after it opened. The swallow is added first (before the sheet mounts), so it runs first. */
+    const swallow = (ev: Event) => { ev.stopImmediatePropagation(); ev.preventDefault(); off() }
     const off = () => {
       document.removeEventListener('click', swallow, true)
       document.removeEventListener('pointerdown', off, true)
