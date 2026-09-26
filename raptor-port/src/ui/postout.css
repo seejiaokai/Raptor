@@ -5,3 +5,9 @@
 /* the account editor's delete, armed by its first tap — "Tap again to delete Hex" (the approved picture 2b) */
 .abtn.danger.del-armed{background:rgba(240,85,95,.18);color:#fff;border-color:#f0555f}
 .acc-del-note{color:#FBB4B9}
+
+/* Quals' Archived list — Rename right on the row (D295; the approved picture 6b) */
+.qarch-rename{display:flex;flex-wrap:wrap;gap:8px;align-items:center;flex:1 1 100%;padding:8px 0 10px}
+.qarch-rename input{background:var(--bg,#0b0d10);border:1px solid var(--accent,#3cc6e6);border-radius:8px;color:var(--ink,#e8edf2);padding:6px 10px;font:inherit;width:160px;max-width:100%}
+.qarch-rename-err{flex:1 1 100%;color:#f0c36d;font-size:13px}
+.qarchrow .qrename{margin-right:6px}

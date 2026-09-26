@@ -7,7 +7,8 @@ import { PEOPLE, QORDER, QCHIP, QCOLOR, LEVELNAME } from '../engine/people'
 import { validate } from '../engine/validate'
 import { HOOKS } from '../engine/hooks'
 import { isAdmin, mayEditQualsOf, mayManageRoster, mayRenameCallsign } from '../state/perms'
-import { catsFor, CALLSIGN_LABEL } from '../state/roster-add'
+import { catsFor, CALLSIGN_LABEL, callsignProblem } from '../state/roster-add'
+import './postout.css'
 import { openAdminUsers } from './adminopen'
 import { updatePersonField } from '../state/quals-write'
 import { esc } from '../state/view'
@@ -302,6 +303,10 @@ export function QualsPage() {
   /* the Archived section under the table (owner, 19 Aug 26): folded to a
      count by default — it is a records drawer, not the roster */
   const [showArch, setShowArch] = useState(false)
+  /* D295: the archived man being renamed on the Archived list, what is typed, and the reason a name was refused */
+  const [renaming, setRenaming] = useState<string | null>(null)
+  const [renameTo, setRenameTo] = useState('')
+  const [renameErr, setRenameErr] = useState('')
   const tblRef = useRef<HTMLTableElement>(null)
   /* the frozen-header mirror (see the effect below): the scroll wrap it pins
      over, the mirror's own horizontal scroller, and the activation state
@@ -775,8 +780,10 @@ export function QualsPage() {
           bodies (ALL AVAIL) are archived by construction and are not people,
           so they never list here. */}
       {(() => {
+        /* a DELETED man is on no list, this one included ([POST-OUT-OUTCOMES], D287, D290, D299 — kept underneath,
+           invisible) */
         const archived = Object.keys(PEOPLE)
-          .filter(id => PEOPLE[id].archived && !PEOPLE[id].special)
+          .filter(id => PEOPLE[id].archived && !PEOPLE[id].special && !PEOPLE[id].deleted)
           .sort((a, b) => cmp(SORTKEY.cs(PEOPLE[a]), SORTKEY.cs(PEOPLE[b])))
         if (!archived.length) return null
         return (
@@ -795,6 +802,13 @@ export function QualsPage() {
                       <span className="qarchmeta">
                         {p.pers ? 'Personnel' : `${p.seat === 'FCP' ? 'Pilot' : 'WSO'} · ${p.q}`}
                       </span>
+                      {/* D295 (27 Sep 26): an archived man is renamed right here — the one callsign rule, its reason said */}
+                      {admin && (
+                        <button className="abtn qrename" data-rename={id}
+                          onClick={() => { setRenaming(id); setRenameTo(String(p.cs)); setRenameErr('') }}>
+                          Rename
+                        </button>
+                      )}
                       {admin && (
                         <button className="abtn qrestore" data-restore={id}
                           onClick={() => {
@@ -802,6 +816,22 @@ export function QualsPage() {
                           }}>
                           Restore
                         </button>
+                      )}
+                      {admin && renaming === id && (
+                        <div className="qarch-rename" data-testid={`qrename-${id}`}>
+                          <input id="qRenameCs" value={renameTo} aria-label={`New callsign/name for ${p.cs}`}
+                            onChange={e => { setRenameTo(e.target.value); setRenameErr('') }} />
+                          <button className="abtn primary" id="qRenameGo" onClick={() => {
+                            const want = renameTo.trim()
+                            const bad = callsignProblem(want, id)
+                            if (bad) { setRenameErr(bad); return }
+                            const r = updatePersonField(id, { callsign: want })
+                            if (r && r !== 'unchanged') { setRenameErr(r); return }
+                            setRenaming(null); notify()
+                          }}>Save</button>
+                          <button className="abtn" id="qRenameCancel" onClick={() => setRenaming(null)}>Cancel</button>
+                          {renameErr && <span className="qarch-rename-err" id="qRenameErr">{renameErr}</span>}
+                        </div>
                       )}
                     </div>
                   )
