@@ -16,7 +16,7 @@ the later merge keeps both (D78).
 ## Now
 
 <!-- now:claude/accounts-new-person -->
-### `claude/accounts-new-person` — `[ACCOUNTS-NEW-PERSON]` (D214, D216, D217, D219, D220, D222): NOT STARTED — the mock-up waits for his word; written 26 Sep 26 — verify before use
+### `claude/accounts-new-person` — `[ACCOUNTS-NEW-PERSON]` (D214, D216, D217, D219, D220, D222): IN PROGRESS — mock-up APPROVED (D224), planning; written 26 Sep 26 — verify before use
 - **Where things stand:** `[ACCOUNTS]` MERGED 26 Sep 26 (PR #442) — accounts, request access / waiting / switched off, the
   guest view (what a member sees on View-only Sched, medical included — D213, D215; one tap from the waiting screen — D221),
   Admin → Users, the one permissions module; only an admin renames a callsign on Quals (D218). Evidence

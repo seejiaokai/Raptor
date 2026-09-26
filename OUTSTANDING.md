@@ -1162,7 +1162,8 @@ None breaks an amendment rule; each is a line to fix or ask about, from the walk
 only people already on Quals. **Build:** "Add an account" (and Approve, filled from the callsign and name the person typed)
 gets a **New person** choice — callsign, **initials**, pilot / WSO / personnel, CAT — which creates his Quals row and his
 account together through the SAME add the Quals page uses (one callsign rule), as one command. Flight and quals stay on
-Quals. **Mock-up first:** `raptor-port/docs/mock/new-person-account.html` (his approval before any code). **Tier:** FULL
+Quals. **Mock-up first:** `raptor-port/docs/mock/new-person-account.html` — **APPROVED 26 Sep 26 (D224)**, the design of
+record; planned (Opus 5.5), red-teamed (Fable, Astra), built, walked and FULL-checked on `claude/accounts-new-person`. **Tier:** FULL
 (roles and saved data). **With it — D216:** a new access request lights the admins' bell (a tap → Admin → Users; out once
 he has opened it). **And the sign-up form asks the same things** (his "signs up for an account", on D214's row).
 **And D217 — one door:** a new person is created ONLY on Admin → Users (or his approved sign-up); a blank sign-in makes a
