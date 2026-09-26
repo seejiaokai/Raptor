@@ -271,7 +271,9 @@ below: `git log -S"GU-P2" -- OUTSTANDING.md` (`docs/session-state.md` was delete
   failed restore. Both LOW.
 
 ### [RECALL] Fresh recall from archive — FUTURE FEATURE
-An admin recalls an archived person back into Quals. **Behaviour (owner, 13 Sep 26):**
+An admin recalls an archived person back into Quals. **NARROWED 26 Sep 26 BY D284: a man archived while OVERSEAS
+(D229) comes back AS HE WAS, with a prompt to update his quals — "fresh" below now covers someone who left flying for
+good (account deleted) and is ever taken back; `[POST-OUT-OUTCOMES]` builds the overseas return.** **Behaviour (owner, 13 Sep 26):**
 leaving the whole app SYSTEM then being posted back = **FRESH** — new/updated quals and
 new Leave War balances; only past history stays frozen. NOT "restored exactly as they
 left." Replaces the current Quals ✕ / "Restore exactly" behaviour (see [SYNC-INTEG] P6).
@@ -1192,9 +1194,14 @@ first):** the post-out sheet asks which outcome, and on the posting-out date the
 archive + delete the account; SANS); suspend = today's switch-off, named in his words; delete an account = the sign-in
 gone, the PERSON archived and kept (his name is on published schedules and the history); each also by hand. Touches
 the Leave War (the sheet, `runPoArchive`), Quals (archive, SANS), Admin → Users (suspend, delete), data-model §11
-(`User` D) and `perms.ts` — so FULL tier. **Open questions for him:** see this chat's answer of 26 Sep 26 (the
-outcomes' exact actions; whether a man back from overseas returns with his old quals or fresh — his 13 Sep 26 rule says
-fresh for someone who left the system; the words on the buttons). **Place:** the agent recommends straight after
+(`User` D) and `perms.ts` — so FULL tier. **His answers (26 Sep 26):** D283 — posted out as SANS: with Show SANS
+off the Leave War still shows him, posted out, leave not tracked; with it on he moves into the SANS group that day and
+is tracked. D284 — back from overseas: kept as he was, and a prompt to update his quals (narrows the 13 Sep "fresh",
+`[RECALL]`). D285 — the buttons read "Suspend" / "Enable" and "Delete account". **Still open:** for someone leaving
+flying for good — archive the person (recommended: off every list and every future schedule, old schedules keep his
+name) or truly delete him (old schedules show an empty seat — tested in the running app 26 Sep 26: nothing crashes, he
+vanishes from every day he was ever on, published ones included, and his leave, OIL and inputs stay stored with no
+screen showing them). **Place:** the agent recommends straight after
 `[ACCOUNTS-NEW-PERSON]` merges and before `[DRAFT-PENDING]` (it completes the accounts' life cycle before the changes
 window is built on accounts) — HIS to confirm.
 
