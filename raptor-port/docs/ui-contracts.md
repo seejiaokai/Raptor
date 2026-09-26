@@ -5226,8 +5226,9 @@ BidPicker's look and vocabulary, not instead of it.
     ends it** — never a control, the banner, a sheet, or a popup's shade (the
     Legend's, the under-manned list's: `[data-testid$="scrim"]`); Escape and a
     MOUSE right-click still end it, a finger's long press (Android's right-click)
-    never does; the first 400ms ignore clicks (a double-click on Move landed the
-    chip — S1); and **leaving the Leave War ends it** (`subLwScreen` — the ghost
+    never does; for its first 400ms a click on the SAME spot Move was pressed is
+    ignored (a double-click on Move landed the chip — S1; a place as well as a time,
+    so a quick deliberate click on another day still lands); and **leaving the Leave War ends it** (`subLwScreen` — the ghost
     and its listeners had followed onto the next page, S9). A stage or war change
     and Undo still end it (the existing guard). Pins `moveone.test.tsx`,
     `movewire.test.ts`, `deciding.test.tsx`; e2e `moveOneTo` (`e2e/app.ts`);

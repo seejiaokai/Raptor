@@ -8,10 +8,10 @@ const M = await import('./mv-lib.mjs')
 const { WIDTH, PHONE, ROOT, openMv, lwOpen, tapCell, sheetNow, sheetPress, closeSheets, recsOf, grid, dragRect, selPress,
   lwHist, stageNow, stageGo, figures, shot, resultBook, centre, at, tapAt, press, fingerHoldDrag, fingerSwipe, banner, gridState,
   dayAt, gridBox, go } = M
-const R = resultBook(`MV20-${WIDTH}`, `${ROOT}/docs/handpass/parts/2026-09-27-d260-d262-mv20-${WIDTH}.txt`)
+const ONLY = process.env.ONLY || ''                 // one step alone — its own result file, never the full record's
+const R = resultBook(`MV20-${WIDTH}`, `${ROOT}/docs/handpass/parts/2026-09-27-d260-d262-mv20-${WIDTH}${ONLY ? '-only-' + ONLY : ''}.txt`)
 const { browser, page, errors, cdp } = await openMv('a')
 const pic = n => shot(page, `mv20-${WIDTH}-${n}`)
-const ONLY = process.env.ONLY || ''
 async function step(name, fn) {
   if (ONLY && !name.startsWith(ONLY)) return
   try { await fn() } catch (e) { R.ck(name, false, 'step ran', 'THREW ' + String(e && e.message || e).slice(0, 300)); await pic(`THREW-${name}`).catch(() => {}) }
@@ -325,6 +325,23 @@ if (PHONE) await step('C12-swipe-and-long-press', async () => {
   const b2 = await banner(page)
   await pic('C12-after-long-press')
   R.ck('C12-long-press', !!q?.ok && /Move 1 entry here\?/.test(b2), 'a long press on a free day does not cancel the move: the day under the finger is staged for Confirm', { day: cands[0]?.id, b2 })
+})
+
+/* ---- C13: the event move shares the machine — an outside tap ends it; a day on its line lands it ---- */
+await step('C13-event-move', async () => {
+  await lwOpen(page, '2026-01-05')
+  await page.locator('[data-testid="event-0-2026-01-01"], [data-testid^="event-band-0-2026-01-01"]').first().scrollIntoViewIfNeeded()
+  const ev = await page.evaluate(() => { const e = document.querySelector('[data-testid="event-0-2026-01-01"]') || document.querySelector('[data-testid^="event-band-0-2026-01-01"]'); if (!e) return null; const b = e.getBoundingClientRect(); return { id: e.getAttribute('data-testid'), x: b.left + b.width / 2, y: b.top + b.height / 2, text: (e.innerText || '').trim() } })
+  await tapAt(page, ev.x, ev.y)
+  const s = await sheetNow(page)
+  await press(page, 'event-move')
+  const b0 = await page.locator('[data-testid="event-move-banner"]:visible').count()
+  await page.waitForTimeout(450)
+  const spot = await page.evaluate(() => { const c = document.querySelector('.stage > .card').getBoundingClientRect(); return { x: Math.max(2, Math.round(c.left / 2)), y: Math.round(innerHeight / 2) } })
+  await tapAt(page, spot.x, spot.y)
+  const b1 = await page.locator('[data-testid="event-move-banner"]:visible').count()
+  await pic('C13-event-move-cancelled-outside')
+  R.ck('C13-event-outside-cancels', !!ev && /PH/.test(ev.text) && b0 === 1 && b1 === 0, 'the PH event’s Move… picks it up (the event banner), and an empty tap outside the grid ends it', { ev, sheet: s.open, b0, b1 })
 })
 
 R.note('errors', errors.length ? errors : 'none')

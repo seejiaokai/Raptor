@@ -48,7 +48,7 @@ BREAKS = [
   ('W12 D262 an empty tap outside the grid does not cancel', 'src/leavewar/ui/select.ts',
    'if (t && opts.isGrid && !opts.isGrid(t) && !t.closest(NOT_EMPTY)) opts.onCancel()', 'void t', MV),
   ('W13 D262 no double-click guard', 'src/leavewar/ui/select.ts',
-   'if (Date.now() - began < MOVE_SETTLE || Date.now() - dragPickedAt < DRAG_TAIL) {', 'if (Date.now() - dragPickedAt < DRAG_TAIL) {', MV),
+   'if (secondOfDouble || Date.now() - dragPickedAt < DRAG_TAIL) {', 'if (Date.now() - dragPickedAt < DRAG_TAIL) {', MV),
   ('W14 D262 a long press cancels', 'src/leavewar/ui/select.ts',
    "if (lastPointer === 'mouse') opts.onCancel()", 'opts.onCancel()', MV),
   ('W15 D262 leaving the war keeps the move', 'src/leavewar/ui/Matrix.tsx',

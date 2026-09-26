@@ -137,6 +137,13 @@ await step('B1-member-open-outside-window', async () => {
     R.ck('B1-read-only-sheet', readOnly(s) && /SIM/.test(s.text) && /a day/.test(s.text) && /only an admin can change it/.test(s.text),
       'OPEN, outside the bidding window: his tap opens the award, read only — reason, given by, days; nothing to press but ✕', { open: s.open, text: s.text, buttons: s.buttons })
     await closeSheets(page)
+    /* the same tap as a person's — a finger on the phone (the trailing tap must not shut the sheet it opened, W4-1) */
+    const own = await centre(page, 'cell-bane-2026-04-20')
+    await M.tapAt(page, own.x, own.y)
+    await page.waitForTimeout(700)
+    const sf = await sheetNow(page)
+    R.ck('B1-finger-or-click-tap-stays', sf.open === 'award-sheet', 'a person’s own tap (a finger on the phone) opens the award and it stays open', sf.open)
+    await closeSheets(page)
     await lwOpen(page, '2026-01-20')
     const s2 = await tapCell(page, 'bane', '2026-01-20')
     await pic('B1-member-own-award-inside-window')

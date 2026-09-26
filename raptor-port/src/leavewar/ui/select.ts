@@ -746,9 +746,20 @@ export function wireFigureSelect(outer: HTMLElement, ctx: FigureSelectCtx): () =
    popup and its shade — a sheet's, the Legend's, the under-manned list's (found writing the walk: a tap on the Legend's
    shade to close it also ended the move). Pressing one is a thing a person does ON PURPOSE, never "an empty area". */
 const NOT_EMPTY = 'button, a[href], input, select, textarea, label, summary, [role="button"], [role="dialog"], [role="menu"], [role="menuitem"], [role="tab"], [contenteditable=""], [contenteditable="true"], .bidsheet, .mv-banner, [data-testid$="scrim"]'
-/* A move just begun ignores clicks for this long (D262, Fable's S1): the sheet's Move closes the sheet on the first
-   click of a double-click, and the second then fell on whatever day sat under the button. */
+/* A move just begun ignores, for this long, a click on the SPOT where Move was pressed (D262, Fable's S1): the sheet's
+   Move closes the sheet on the first click of a double-click, and the second then fell on whatever day sat under the
+   button. A PLACE as well as a time (the gate run, 27 Sep 26): a time alone also dropped a deliberate click made
+   quickly on another day — a double-click's second click lands where the first did, a deliberate one elsewhere. */
 const MOVE_SETTLE = 400
+const SETTLE_PX = 12
+/* where the last press landed — read by a move as it begins (the press that pressed Move). A pointerdown or, for a
+   keyboard or test that clicks without pressing, the click itself; module-wide, passive, a plain assignment. */
+let LAST_PRESS: { x: number; y: number } | null = null
+if (typeof document !== 'undefined') {
+  const note = (e: MouseEvent) => { LAST_PRESS = { x: e.clientX, y: e.clientY } }
+  document.addEventListener('pointerdown', note as EventListener, true)
+  document.addEventListener('click', note, true)
+}
 /* The click a press-and-drag's own release (or a finger's lift) leaves behind arrives inside this — the gesture core's
    TOUCH_TAP_WAIT and a margin; it is the drag's, not a second pick. */
 const DRAG_TAIL = 450
@@ -820,6 +831,7 @@ export function wireMove(
   let lastHover = ''
   const hover = (date: string | null) => { if (date && date !== lastHover) { lastHover = date; opts.onHover(date) } }
   const began = Date.now()
+  const pressedAt = LAST_PRESS
   let dragPickedAt = -Infinity
 
   /* THE MOUSE'S EDGE SCROLL (owner, D262, 27 Sep 26 — "when i drag to the edges of the leave war it should auto
@@ -893,8 +905,10 @@ export function wireMove(
 
   const onClick = (e: MouseEvent) => {
     const date = dateAt(e.target)
-    /* the second click of a double-click on Move, or the tail of a drag already landed — swallowed, never a pick */
-    if (Date.now() - began < MOVE_SETTLE || Date.now() - dragPickedAt < DRAG_TAIL) {
+    /* the second click of a double-click on Move (the same spot, straight away), or the tail of a drag already landed —
+       swallowed, never a pick */
+    const secondOfDouble = Date.now() - began < MOVE_SETTLE && !!pressedAt && Math.hypot(e.clientX - pressedAt.x, e.clientY - pressedAt.y) < SETTLE_PX
+    if (secondOfDouble || Date.now() - dragPickedAt < DRAG_TAIL) {
       if (date) { e.stopPropagation(); e.preventDefault() }
       return
     }

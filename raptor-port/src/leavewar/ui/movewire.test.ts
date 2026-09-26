@@ -168,10 +168,22 @@ describe('a click while a chip is picked up (D262)', () => {
     expect(picks).toEqual([])
   })
 
-  it('in the first moments of the move (the second click of a double-click) lands nothing', () => {
+  /* THE DOUBLE-CLICK GUARD IS A PLACE AS WELL AS A TIME (the gate run, 27 Sep 26): a time-only guard also dropped a
+     deliberate click on another day made quickly after Move — the existing "loose box" browser test does exactly that.
+     A double-click's second click lands where the first pressed Move; a deliberate one lands somewhere else. */
+  const pressAt = (x: number, y: number) => document.body.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, clientX: x, clientY: y, button: 0 }))
+  it('in the first moments of the move, a click on the SAME spot as the Move press (a double-click) lands nothing', () => {
     teardown(); grid.remove(); outside.remove()
+    pressAt(150, 150)                             // the press on Move
     mount()                                       // a fresh move, no time passed
-    b.dispatchEvent(new MouseEvent('click', { bubbles: true }))
+    b.dispatchEvent(new MouseEvent('click', { bubbles: true, clientX: 151, clientY: 150 }))
     expect(picks).toEqual([])
+  })
+  it('in the first moments of the move, a deliberate click on ANOTHER spot lands it', () => {
+    teardown(); grid.remove(); outside.remove()
+    pressAt(150, 150)
+    mount()
+    b.dispatchEvent(new MouseEvent('click', { bubbles: true, clientX: 260, clientY: 150 }))
+    expect(picks).toEqual(['2026-01-09'])
   })
 })
