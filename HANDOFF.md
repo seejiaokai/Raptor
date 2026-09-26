@@ -16,7 +16,7 @@ the later merge keeps both (D78).
 ## Now
 
 <!-- now:claude/leave-late-published -->
-### `claude/leave-late-published` — `[LEAVE-LATE-PUBLISHED]` (D177–D189): FULL check done, PR open — his look and "merge live" next; written 26 Sep 26 (morning, after D187's reads) — verify before use
+### `claude/leave-late-published` — `[LEAVE-LATE-PUBLISHED]` (D177–D189): MERGED 26 Sep 26 on his "merge live" (PR #438) — this block goes at the next handoff; written 26 Sep 26 — verify before use
 - **What it is:** a published day keeps what it went out with — its inputs (`snap.inp`), its warnings that freeze and
   their marks (`snap.w`), its men's CAT / seat / posting and the brief lead it prints (`snap.pa` / `snap.rv`, drawn by
   `engine/faceattrs.ts`), the roster its day panel counts (`snap.ros`); a change since reads pending (the four fall) and
@@ -28,26 +28,26 @@ the later merge keeps both (D78).
   walks (the re-walk, the host walk, four parallel walkers: Quals, Logic, neighbour day, Leave War — 593 pictures, no
   console errors), 36 break tests, blind reads by Fable and Astra of the first build, the final code and the D187 change
   (all dispositioned §9 — D187's nine fixed and pinned, B29–B36), the gates (§6). His look card is §10.
-- **The PR:** see the PR list for `claude/leave-late-published` (its checks run on GitHub's machines while the repo is
-  public, D106). **Next:** his look (the card's four "look here" lines and Q1, Q4, Q5, Q6), then his "merge live".
+- **The PR:** #438, merged on his "merge live" (26 Sep 26). The backlog items `[LEAVE-LATE-PUBLISHED]`,
+  `[LATE-PUB-FACE-LIVE]` and `[PV-NO-FLAGS]` are archived; the one residue left open is `[PEEK-ISSUED]` (low, his question).
 - **His questions (the card, §10) — ALL ANSWERED:** Q1 — D186 "yes" (a man's CAT and a blank brief's time stay as
   published). Q4 — D189 "follow ur recommendation" (the app's own "till" note counts: each published day a stretched leave
   still covers shows "1 pending" on the admin's working copy, never on View-only Sched). Q5 — D187 "it should" (BUILT: a
   look at a published version wears its warnings — the whole record it went out with, read only, its own ⓘ panel and
   taps; read by both providers after the build, their findings fixed). Q6 — D188 "yes" (the Qualification-flag reading).
-- **Filed this session:** `[PV-NO-FLAGS]` (answered and built), `[INSIGHTS-WORKING-COPY]` (his question),
+- **Filed this session:** `[PV-NO-FLAGS]` (answered and built, archived), `[PEEK-ISSUED]`, `[INSIGHTS-WORKING-COPY]` (his question),
   `[QUALS-PROTO-TOAST]`, `[VIEW-ARROW-OVER-LIST]`, `[INPUTSCAL-TAP-FLAKY]`. Rulings this chat: D186–D189 (and D185's row
   gained the agent's widened reading, confirmed by D188). The chat's range D180–D189 is used up — a later chat on this
   branch takes the next free number above `main`'s (DECISIONS.md).
 - **Usage (D182, until Monday 28 Sep 26):** unlimited — spend it on his look's follow-ups.
-- **After this merges (D180, D173):** `[ACCOUNTS]` on a new branch — its plan not started; the `OUTSTANDING.md` tidy (over
+- **Next (D180, D173):** `[ACCOUNTS]` on a new branch, in a FRESH chat — its plan not started; the `OUTSTANDING.md` tidy (over
   its tripwire) on its own docs branch.
 <!-- /now -->
 
 ## Next, in order
 
 1. **HIS ORDER — D173, amended by D175 and D180** (the `## Now` block above): PR #435 and PR #437 MERGED 25 Sep 26 →
-   `[LEAVE-LATE-PUBLISHED]` on its own branch, full check, his look, "merge live" (D180; built overnight, D181) →
+   `[LEAVE-LATE-PUBLISHED]` (D180, D181 — MERGED 26 Sep 26, PR #438) →
    `[ACCOUNTS]` on a new branch → the one changes window (`[DRAFT-PENDING]`) → one full check → "merge live". **`[HUMAN-RETEST]`** — the amendment system MERGED 25 Sep 26 (PR #434; evidence
    `raptor-port/docs/handpass/2026-09-24-amendment.md`). Next, in his order (D147): the absence record
    together with `[S4-HUNT-REST]`, then change-recording (with D148 and `[UNDO-ROSTER-SETTINGS]`), then the Leave War

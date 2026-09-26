@@ -1546,3 +1546,75 @@ filingDelta`: a record "taken off" matches a request no longer covering the day;
 to fresh stays a change. The signature must agree (`filingKey`). **Place:** on the look card of `claude/request-one-row`
 (D175's branch); if yes, built there before "merge live".
 
+
+*Moved here 2026-09-26 by backlog-archive.mjs ([PV-NO-FLAGS]). Forward facts: `raptor-port/docs/ui-contracts.md`.*
+
+### [PV-NO-FLAGS] The board's 👁 look at a published version shows no warnings at all — a question for him (filed 26 Sep 26)
+**ANSWERED AND BUILT 26 Sep 26 — D187 ("Q5 it should"):** a look at a published version wears its warnings (the current
+version as View-only Sched draws it, an older one as it went out, a plan none) — `raptor-port/docs/ui-contracts.md`
+§Version preview; pinned in `raptor-port/src/ui/latepub.test.tsx` "D187 …".
+Found by two walkers of `[LEAVE-LATE-PUBLISHED]`'s check (Quals, Logic — evidence
+`raptor-port/docs/handpass/2026-09-26-late-pub.md` §4c): the board's plans menu → the Original (or an AL) draws the day
+with no rings, no flags and no warning bar — neither the warnings it went out with nor the ones that stay live (D184,
+D185); View-only Sched shows both. As built long before (`html.ts`: a version preview "reads and does not check" — PV;
+the same on `main`); a blank B there also prints no suggested time where View-only Sched prints one. **The question:**
+should the board's look at a published version show its warnings as View-only Sched does? **Place:** on the look card;
+if yes, a small WALK-tier build (the board's PV branch reads the face bundle, `withOfficialWarn`).
+
+
+*Moved here 2026-09-26 by backlog-archive.mjs ([LATE-PUB-FACE-LIVE]). Forward facts: `raptor-port/docs/engine-rules.md`, `raptor-port/docs/handpass/2026-09-26-late-pub.md`.*
+
+### [LATE-PUB-FACE-LIVE] What still DRAWS live on a published day's face — questions for him on the look card (26 Sep 26)
+Found by Astra's and Fable's reads of the `[LEAVE-LATE-PUBLISHED]` plan; each is a place where D179 ("freeze everything
+for now") meets another ruling, so each is his call (newest-instruction-wins does not settle a case the newer ruling does
+not clearly cover). **Where each stands, 26 Sep 26 (morning):** 1 and 2 are BUILT FROZEN (Astra's code read #2 —
+`engine/faceattrs.ts`: the face, the CSV and the print draw the issued CAT / seat / posting and the issued brief lead) and
+still read pending when they change — **SETTLED by D186 ("Q1 yes", 26 Sep 26): keep them frozen** (it narrows the
+7 Aug 26 "no rule versioning" for the one printed value); 3 and 4 are SETTLED and BUILT live (D183–D185). The look card
+(`raptor-port/docs/handpass/2026-09-26-late-pub.md` §10) carries the rest of his questions.
+1. **A man's CAT letter / seat colour on a puck** — was read live from the roster (`html.ts puck`); now drawn from
+   `snap.pa`. Freezing it keeps a copy of the day's men's attributes per published version.
+2. **A printed rule value** — a blank brief's time (`VCONF.briefLead`, in `html.ts`, `board.ts`, `export.ts`); now drawn
+   from `snap.rv`. His **7 Aug 26 "no rule versioning"** invariant: D48 held that a marker is not versioning; a stored
+   rule value is closer to it — hence his question.
+4. **SETTLED 26 Sep 26 — D184: the 7-day run warning (and, by the agent's reading, a crew-rest breach on the day itself) stays LIVE**; **D185: a lapsed qualification live too; a medical downchit stays FROZEN** ("1 frozen still"). **BUILT 26 Sep 26 (morning)** — `validate.ts LIVE_ON_FACE` (`CREW_REST`, `CREW_TIGHT`, `DAYS_RUN`, `QUAL`, `SC_QUAL`, `AAR_QUAL`, `AAR_INSTR`, and every OIL warning — Fable F3), the day loop files each mark by class (`fz` / `lv`), `faceWarn` lays the live ones over the frozen slice. The reading widened at the build (the Qualification-flag family, not `QUAL` alone; the crew-rest tight turn with the breach) is on D185's row and the look card.
+3. **SETTLED 26 Sep 26 — D183: the dotted crew-rest mark stays LIVE** (not stored, not compared; built). Was: the
+   next-day crew-rest mark (the dotted ring "his day-end breaks tomorrow") on a published day follows the day it
+   points at — live while that day is a draft (Fable F4). Frozen, every edit to a draft Tuesday would take a published
+   Monday's four down and the mark could point at a warning that is gone. Built that way; show him and ask.
+Also outside the question, noted by the sweep: the desktop next-week preview on View-only Sched shows next week's working
+copy even for a published day (`peek.ts`) — Astra recommends the issued content there too (its own small item if he wants it).
+
+
+*Moved here 2026-09-26 by backlog-archive.mjs ([LEAVE-LATE-PUBLISHED]). Forward facts: `raptor-port/docs/engine-rules.md`, `raptor-port/docs/handpass/2026-09-26-late-pub.md`.*
+
+### [LEAVE-LATE-PUBLISHED] A leave filed after a day is published shows on its published face at once, with nothing pending — a question for him (25 Sep 26)
+**BUILT 26 Sep 26 (overnight, D181) on `claude/leave-late-published` — its full check and his look next.** A published
+version now freezes the day's inputs (`snap.inp`) and its warnings (`snap.w`); the issued face reads only frozen things;
+the pending comparison gains the input-details axis and the warnings axis (one item per act). Plan
+`raptor-port/docs/superpowers/plans/2026-09-25-late-published-plan.md`; the reviews `raptor-port/docs/handpass/2026-09-25-late-pub-*`.
+What still draws live on the issued face, and why: `[LATE-PUB-FACE-LIVE]`.
+**WIDENED 25 Sep 26 — D178:** EVERY member input change after publishing (filed, edited, deleted, moved) reads pending for the
+admin, and the published face keeps what it was issued with; the admin publishes an AL, or Unpublishes and publishes again
+if it affects no one. **What stays live — D179 ("freeze everything for now"): nothing.** Medical downchits and a lapsed
+qualification freeze too (the 15 Sep 26 crew-rest plan's §4 "safety facts are never versioned" set aside); only a reader's own
+view choices stay. Provisional — show him on the build and ask again.
+**ANSWERED 25 Sep 26 — D177 ("Question 2 yes"): it reads "1 pending", the four fall, and the published face keeps what it
+was issued with until the next AL — ITS OWN BRANCH.** His follow-up ("is there anything else that does this too?") is
+answered by a sweep of the published face's readers of live inputs — **its list is this item's scope: Context
+`raptor-port/docs/superpowers/specs/2026-09-25-published-face-live-inputs.md`** (A0–A7 to freeze; B1 medical and B2–B4, B6
+live on purpose; B5 — a neighbour day's input moving a published day's warnings — to put to him under D45).
+Fable's code read F2 on D175's branch (`raptor-port/docs/handpass/2026-09-25-req-one-row-fable-read.md`), reproduced in a unit
+probe on `8fc6dba2`: Monday published and signed; a leave (OL) filed for Hunter on Monday → View-only Sched shows him under
+Unavailable at once (the Unavailable block reads the live inputs on every face — `raptor-port/src/ui/html.ts`), while Monday
+reads 0 pending, keeps its four and offers no AL. Older (the same on `main`): a leave never takes a filing state, and the
+comparison and the signature both read an unfiled request as nothing new. **Against the record:** D44/D45 ("nothing on a
+published schedule may change without the scheduler acknowledging it"; a leave taken after publishing is what the scheduler
+amends or publishes the EOD version for), and `OUTSTANDING-ARCHIVE.md` `[AMEND-D45-FILING]`'s closing line ("a leave landing on
+a published day keeps wiping them (as built)") — the code does not. **The agent's recommendation, to put to him:** a late
+leave reads "1 pending" and takes the four down, and the published face keeps what it was issued with until the next AL;
+its own branch (the published-face half is the bigger build — every Unavailable reader on the view face). Medical is the
+standing exception (a safety fact, never versioned — `raptor-port/src/engine/events.ts`). **Place:** on the look card of
+`claude/request-one-row`; then its own branch, in his order.
+**PLACE SETTLED 25 Sep 26 — D180:** NEXT, on its own branch `claude/leave-late-published`, BEFORE `[ACCOUNTS]`; built overnight (D181).
+
