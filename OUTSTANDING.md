@@ -1201,7 +1201,10 @@ is tracked. D284 — back from overseas: kept as he was, and a prompt to update 
 flying for good — archive the person (recommended: off every list and every future schedule, old schedules keep his
 name) or truly delete him (old schedules show an empty seat — tested in the running app 26 Sep 26: nothing crashes, he
 vanishes from every day he was ever on, published ones included, and his leave, OIL and inputs stay stored with no
-screen showing them). **Place:** the agent recommends straight after
+screen showing them). **His worry (26 Sep 26): "I scared my archive list will be huge next time"** — the agent's
+answer, put to him: a third way — DELETE the person from every list, the Archived list included, while the app quietly
+keeps his callsign so old schedules still read right; the Archived list then holds only people who may come back
+(overseas). His pick is awaited. **Place:** the agent recommends straight after
 `[ACCOUNTS-NEW-PERSON]` merges and before `[DRAFT-PENDING]` (it completes the accounts' life cycle before the changes
 window is built on accounts) — HIS to confirm.
 
