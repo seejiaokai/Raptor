@@ -1728,3 +1728,52 @@ already (the session's folder), not at the repo root the hook and `raptor-port/C
 (full or relative path), and correct the "starts at the REPO ROOT" note — a background shell starts in the session's
 current folder. **Place:** small, tooling, any time.
 
+
+*Moved here 2026-09-27 by backlog-archive.mjs ([CROWD-DUP-REFUSE]). Forward facts: `raptor-port/docs/engine-rules.md`, `raptor-port/docs/ui-contracts.md`, `raptor-port/docs/handpass/2026-09-27-five-flags-answers.md`.*
+
+### [CROWD-DUP-REFUSE] A man put on a row he is already on: warn (today) or refuse? — a question for him (filed 26 Sep 26)
+From the five-flags batch's walk (W3, F6; evidence `raptor-port/docs/handpass/2026-09-26-five-flags.md` §5): the app now
+NAMES it ("already on FLIGHT SAFETY STAND-DOWN 08:30–09:00" — the caption, the toast, the struck name in the crew list)
+but still plants the second copy, per his 13 Aug 26 "everything plants, warning after". **The question (the look card,
+Q1):** refuse it instead — one man, once per row? If yes: a hard refusal beside D33's in `avail.ts slotBar`'s
+one-man-one-place check and the three doors (`drag.ts`, `view.ts placeArmed`, `fillSlot`), with the pending count left
+at 0. **Mock-up shown 27 Sep 26** (his ask, *"q1 can u show me a mock upp"*): `raptor-port/docs/mock/five-flags.html` §Question 1 —
+today vs refused. **ANSWERED 27 Sep 26 — "Q1 refused" (D271): refuse, at every door, with the reason; a man on two
+different rows stays warned; a crew-list drop onto another man's place in a crowd he is already in is refused too.**
+**Place:** built next, on `claude/five-flags-batch-continue-2cfa70` before its "merge live" (with D270, D272).
+**DONE 27 Sep 26** on that branch, FULL-checked: `raptor-port/docs/handpass/2026-09-27-five-flags-answers.md` (and Fable's F1, the request hand-over, with it).
+
+
+*Moved here 2026-09-27 by backlog-archive.mjs ([ME-PUCK-SEVERITY-RING]). Forward facts: `raptor-port/docs/ui-contracts.md`, `raptor-port/docs/handpass/2026-09-27-five-flags-answers.md`.*
+
+### [ME-PUCK-SEVERITY-RING] On his own puck, the purple "this is you" ring hides the amber / thin red / grey rings — a question for him (filed 26 Sep 26)
+The five-flags walk (W1, `raptor-port/docs/img/handpass/2026-09-26-five-flags/w1/D1-*`, `D2-*`): `.puck.me`'s purple ring
+replaces the severity ring, so only the letter chip shows the flag on his own puck (another man's shows the ring). The
+batch took the GLOW off every flagged own puck (D164); whether the severity ring should show INSTEAD of the purple ring
+is the look card's Q2 — **ANSWERED 27 Sep 26: "Q2 yes" (D270)** — flagged, his own puck shows the flag's own ring (amber,
+thin red, grey, dotted) as another man's does, the purple fill stays; unflagged, the purple ring and glow as today. **To build:**
+`scheduler.css` `.puck.me.warn` / `.puck.me.boxdot` (and its comment), `flagglow-css.test.ts`, `ui-contracts.md` (the
+"no flag ring glows" paragraph), a mock-up first (his ask, 27 Sep 26); WALK tier (a shared drawer — not LOOK). Still OPEN,
+not part of D270: in OIL mode the green OIL ring on his own puck is hidden under the purple ring (`w1/F9-*`) — put to him
+27 Sep 26 as Q2b on the mock-up (`raptor-port/docs/mock/five-flags.html` §Question 2, recommended: the same treatment) — **ANSWERED "question 2 yes" (D272): in OIL Earn mode his own puck shows the green
+OIL ring, the purple fill stays.** **Place:** built next, on `claude/five-flags-batch-continue-2cfa70` before its "merge
+live" (with D270, D271).
+**DONE 27 Sep 26** (D270 and D272 together), FULL-checked: `raptor-port/docs/handpass/2026-09-27-five-flags-answers.md`.
+
+
+*Moved here 2026-09-27 by backlog-archive.mjs ([ARROW-ROOM-OUT]). Forward facts: `raptor-port/docs/ui-contracts.md`, `raptor-port/docs/feature-impact.md`, `raptor-port/docs/handpass/2026-09-27-five-flags-answers.md`.*
+
+### [ARROW-ROOM-OUT] Take the room beside the ‹ arrow back out of the desktop week — his D275 (filed 27 Sep 26)
+**Why:** shown the five-flags batch's item 4 full screen (`raptor-port/docs/mock/five-flags.html`), he chose the BEFORE
+pictures — *"I still prefer these"* (D275): the day at the front flush at the left, the ‹ arrow floating over its first few
+pixels, as on `main`. **Take out everything `[VIEW-ARROW-OVER-LIST]` added:** `scheduler.css` (`.week` back to
+`padding:2px 20px 40px`, no `scroll-padding-left`, the comment), `state/view.ts` (`weekInset` and its use in `weekLeftDay`
+and `scrollWeekToDay`), `ui/highlights.ts` (`bringIntoView` back to the box's edges), `state/weekinset.test.ts` (deleted),
+`e2e/geometry.spec.ts` (the "sit clear of the ‹ arrow" test out; the five older landing tests back to measuring from the box's
+edge — `git show main:raptor-port/e2e/geometry.spec.ts` for their words), the docs marked "TO BE TAKEN OUT — D275"
+(`ui-contracts.md`, `feature-impact.md`), `docs/file-map.md` (the test file's row), the walk scripts that assert the room
+(`scripts/handpass/ff-w4.mjs`, `ff-probe-arrow.mjs` — note them as retired). `git diff origin/main...HEAD` on those files is the
+list; the rest of the batch stays. **Check:** the week's browser tests (the whole `geometry.spec.ts`) and a look at desktop.
+**Place:** on `claude/five-flags-batch-continue-2cfa70` with D270–D272, before its "merge live".
+**DONE 27 Sep 26** on that branch, FULL-checked: `raptor-port/docs/handpass/2026-09-27-five-flags-answers.md` (W6; `geometry.spec.ts` main's again).
+

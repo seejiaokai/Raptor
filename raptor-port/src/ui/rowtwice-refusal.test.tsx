@@ -26,6 +26,7 @@ import * as view from '../state/view'
 import { applyDrop, setDrag } from './drag'
 import { elogClear, elogRows } from '../engine/editlog'
 import { validate } from '../engine/validate'
+import { HIST } from '../state/history'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
@@ -73,11 +74,15 @@ afterEach(async () => { await act(async () => { view.disarmSlot() }) })
 const FS = 2
 const crowd = () => whoArr((DAYS[0] as any).allhands[FS])
 const RANGER_TWICE = 'Ranger — already on FLIGHT SAFETY STAND-DOWN 08:30–09:00 · not added twice'
-/* nothing written anywhere: the row, the pending marks, the history */
+/* nothing written anywhere: the row, the pending marks, the edit log AND the undo history (Fable's read, 27 Sep 26:
+   the edit log alone would miss a refusal that pushed an empty Undo step — it records only keyed writes) */
+let HIX = -1, HLEN = -1
+const markHist = () => { HIX = HIST.ix; HLEN = HIST.stack.length }
 const untouched = (row: string) => {
   expect(JSON.stringify(crowd()), 'the crowd is as it was').toBe(row)
   expect(Object.keys(SCHED.pending).length, 'nothing reads pending').toBe(0)
-  expect(elogRows(0).length, 'and no history step').toBe(0)
+  expect(elogRows(0).length, 'no edit-log line').toBe(0)
+  expect([HIST.ix, HIST.stack.length], 'and no Undo step').toEqual([HIX, HLEN])
 }
 /* the drop hit-tests a live element carrying the address, the same way a finger does */
 const dropOn = async (attr: 'data-slot' | 'data-fill', key: string) => {
@@ -93,7 +98,7 @@ const dropOn = async (attr: 'data-slot' | 'data-fill', key: string) => {
 
 describe('the armed palette tap (state/view placeArmed)', () => {
   it("Ranger on his own crowd's armed \"+ add\": refused, said why, nothing written, still armed", async () => {
-    const row = JSON.stringify(crowd())
+    const row = JSON.stringify(crowd()); markHist()
     let took = true, still = ''
     await act(async () => { view.armSlot(`a:0.${FS}.+`); took = view.placeArmed('bane'); still = view.armedKey() })
     expect(took).toBe(false)
@@ -121,7 +126,7 @@ describe('the armed palette tap (state/view placeArmed)', () => {
 
 describe('the drag door (ui/drag applyDrop)', () => {
   it('from the crew list onto the crowd\'s "+ add" cell: refused, said why, nothing written', async () => {
-    const row = JSON.stringify(crowd())
+    const row = JSON.stringify(crowd()); markHist()
     setDrag({ kind: 'roster', id: 'bane' })
     expect(await dropOn('data-fill', `a:0.${FS}.+`)).toBe(false)
     expect(toasts.at(-1)).toBe(RANGER_TWICE)
@@ -130,7 +135,7 @@ describe('the drag door (ui/drag applyDrop)', () => {
   it("from the crew list onto ANOTHER man's place in the crowd he is in: refused — that man is not replaced (reading 3)", async () => {
     await act(async () => { view.armSlot(`a:0.${FS}.+`); view.placeArmed('beams') })   // Comet joins: [Ranger, Comet]
     SCHED.pending = {}; elogClear(); toasts = []
-    const row = JSON.stringify(crowd())
+    const row = JSON.stringify(crowd()); markHist()
     setDrag({ kind: 'roster', id: 'bane' })
     expect(await dropOn('data-slot', `a:0.${FS}.1`)).toBe(false)
     expect(toasts.at(-1)).toBe(RANGER_TWICE)
@@ -142,7 +147,7 @@ describe('the drag door (ui/drag applyDrop)', () => {
     d.ground.push({ prog: 'ROW A', str: '1300', end: '1400', who: 'bane' }); const g = d.ground.length - 1
     await act(async () => { view.armSlot(`a:0.${FS}.+`); view.placeArmed('beams') })
     SCHED.pending = {}; elogClear(); toasts = []
-    const row = JSON.stringify(crowd())
+    const row = JSON.stringify(crowd()); markHist()
     for (const [attr, key] of [['data-fill', `a:0.${FS}.+`], ['data-slot', `a:0.${FS}.1`]] as const) {
       setDrag({ kind: 'slot', key: `g:0.${g}`, id: 'bane' })
       expect(await dropOn(attr, key), `${attr} ${key}`).toBe(false)
@@ -158,7 +163,7 @@ describe('the drag door (ui/drag applyDrop)', () => {
     d.ground.push({ prog: 'ROW A', str: '1300', end: '1400', who: 'beams' }); const g = d.ground.length - 1
     await act(async () => { view.armSlot(`a:0.${FS}.+`); view.placeArmed('beams') })   // [Ranger, Comet]
     SCHED.pending = {}; elogClear(); toasts = []
-    const row = JSON.stringify(crowd())
+    const row = JSON.stringify(crowd()); markHist()
     setDrag({ kind: 'slot', key: `g:0.${g}`, id: 'beams' })
     expect(await dropOn('data-slot', `a:0.${FS}.0`)).toBe(false)
     expect(toasts.at(-1)).toBe('Comet — already on FLIGHT SAFETY STAND-DOWN 08:30–09:00 · not added twice')
@@ -171,7 +176,7 @@ describe('the drag door (ui/drag applyDrop)', () => {
     const d: any = DAYS[0]
     d.ground.push({ prog: 'ROW A', str: '1300', end: '1400', who: 'beams', more: ['bane'] }); const g = d.ground.length - 1
     ensureRowIds(DAYS); validate()
-    const row = JSON.stringify(crowd())
+    const row = JSON.stringify(crowd()); markHist()
     setDrag({ kind: 'slot', key: `g:0.${g}`, id: 'beams' })
     expect(await dropOn('data-slot', `a:0.${FS}.0`)).toBe(false)
     expect(toasts.at(-1)).toBe('Ranger — already on ROW A 13:00–14:00 · not added twice')

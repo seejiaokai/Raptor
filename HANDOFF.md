@@ -16,38 +16,33 @@ the later merge keeps both (D78).
 ## Now
 
 <!-- now:claude/five-flags-batch-continue-2cfa70 -->
-### `claude/five-flags-batch-continue-2cfa70` — the five-flags batch: BUILT and FULL-checked (PR #445); his look answered — Q1 refuse, Q2 + Q2b yes, item 4 (the arrow's room) REJECTED (D270–D275) — three builds and one revert NOT started; GitHub's Leave War desktop group red (not this batch) — written 27 Sep 26 — verify before use
-- **The branch:** started from `claude/five-flags-batch-build-ef7d85` (built, walked and read there, 26 Sep 26), which it
-  carries whole; PR #445 is from THIS branch. The old branch has no PR and nothing of its own — delete it once this merges.
-- **Parallel** with `claude/accounts-new-person` (PR #443) and the absence-record re-test (PR #444): preview port 4176
-  (`.claude/launch.json` "raptor-walk-4"), browser tests `E2E_PORT=4193`, rulings D270–D279 (D270–D275 used; next D276). Full checks
-  take turns through the PC-wide lock (D228, `node C:/Users/User/projects/Raptor/raptor-port/scripts/gatelock.mjs … run
-  --from <this worktree>/raptor-port` — without `--from` it runs the MAIN checkout's code). The later merge takes `main` in
-  first. Nothing to `main` without his "merge live".
-- **Done and checked (the evidence sheet `raptor-port/docs/handpass/2026-09-26-five-flags.md`):** the walk, both reads, the
-  re-walk after the reads (§5), the full gates (§7: unit 6237/6237, build, tfin 728/0, e2e 474/0 after five older
-  week-landing tests moved to the new front, smoke 443/0, rulecheck, docsize), his look card (§9).
-- **His answers, 27 Sep 26, all recorded (`.claude/rules/decisions/scheduler.md`):** **D270** Q2 yes — his own flagged puck
-  shows the flag's own ring (amber / thin red / grey / dotted), purple fill stays; **D271** Q1 refused — a man put on a
-  row he is already on is refused at every door, with the reason (narrows the 13 Aug "everything plants" rule; readings
-  (1)–(4) in the row); **D272** Q2b yes — in OIL Earn mode his own puck shows the green OIL ring; **D273** Q3 keep — the
-  strip stays — **then REPLACED by D275 (archived)**; **D274** Part 1 items 1–3 approved as built; **D275** item 4 seen full
-  screen, *"I still prefer these"* (the BEFORE pictures) — the room beside the ‹ arrow comes OUT (`[ARROW-ROOM-OUT]`). The mock-up: `raptor-port/docs/mock/five-flags.html` (Artifact
-  https://claude.ai/artifact/NACjL873LZ3P9VxbAJRWPZ, version 2), made by `scripts/handpass/am/mk-five-flags.mjs`.
-- **Next, in order:** (1) **take the arrow's room out** (`[ARROW-ROOM-OUT]` lists every file) and (2) **build D270, D271, D272 on this
-  branch** — read `raptor-port/docs/bug-check-order.md` first and state the tier (D271 changes how a rule is read →
-  FULL: the other model designs the scenarios, the roll-call of every door — drag, the armed palette tap, the "+ add"
-  append, a crew-list drop onto another man's place in a crowd he is in — both reads); the files: `scheduler.css`
-  (`.puck.me.warn` / `.boxdot` / the OIL ring), `flagglow-css.test.ts`, `avail.ts` / `slots.ts` / `drag.ts` / `view.ts
-  placeArmed`, the docs marked "TO CHANGE — D270 / D271" (`ui-contracts.md`, `engine-rules.md`); the walk scripts to
-  re-run as the new behaviour (ff-w1 C,D; ff-w3 f6 — its F6-a/F6-b become PASS on a refusal); (3) **[LW-MOVE-CI-RED]** —
-  GitHub's `geometry (lw-desktop)` job fails the Leave War "Move" tests on this branch AND on the absence-record branch
-  (none of this batch there); D84's one re-run is spent — investigate, don't re-run; (4) gates under the lock (the WHOLE
-  `geometry.spec.ts` after the revert) → his look → "merge live", one at a time with #443 and #444.
-- **The other chats running on his PC (27 Sep 26):** "Post-out mock-up trim per D300" (the main checkout, branch
-  `claude/accounts-new-person`, rulings D280s–D300) and "Rulings D260–D262 for absence/leave-war" (it reuses the folder
-  `.claude/worktrees/five-flags-batch-build-ef7d85` for `claude/absence-record-d147-af6a50-c451ac`) — this chat's own folder
-  is `.claude/worktrees/five-flags-batch-continue-2cfa70`.
+### `claude/five-flags-batch-continue-2cfa70` — the five-flags batch AND his answers D270–D275: BUILT and FULL-checked (PR #445) — waiting for his look and "merge live"; the red Leave War tests' cause found and fixed (confirm on GitHub) — written 27 Sep 26 — verify before use
+- **The branch:** carries `claude/five-flags-batch-build-ef7d85` whole (that branch has no PR and nothing of its own —
+  delete it once this merges). PR #445 is from THIS branch. This chat worked in the folder
+  `.claude/worktrees/trk-smoke-add-race-bug-007eed` (the block's earlier folder, `five-flags-batch-continue-2cfa70`, is
+  another checkout at the same commit).
+- **Parallel** with `claude/accounts-new-person` (PR #443) / the post-out work on `claude/post-out-outcomes` (the main
+  checkout — its chat asked to coordinate: told the files this branch touches; it won't touch ours) and the absence-record
+  re-test (PR #444, folder `five-flags-batch-build-ef7d85`). Ports: preview 4176 (`.claude/launch.json` "raptor-walk-4"),
+  browser tests `E2E_PORT=4193`; rulings D276–D279 (none used). Full checks take turns through the PC-wide lock (D228,
+  `gatelock.mjs … run --from <this worktree>/raptor-port`). The later merge takes `main` in first. Nothing to `main`
+  without his "merge live".
+- **Done 27 Sep 26 (the evidence sheet `raptor-port/docs/handpass/2026-09-27-five-flags-answers.md`):** D275 — the room
+  beside the ‹ arrow taken out (`[ARROW-ROOM-OUT]`); D270 / D272 — his own puck wears any other ring (a flag's, the green
+  OIL one), the purple fill stays; D271 — one man, once per row, REFUSED at every door with the reason, plus Fable's F1 (a
+  request handed to a man already on its row keeps him once). FULL tier: Fable's scenarios, the roll-calls, the walk (W1
+  71/0, W3 f6–f10 all green, W6 18/0 — pictures `docs/img/handpass/2026-09-27-five-flags-answers/`), the gates (§7), Fable
+  and Astra's blind reads (no defect against the rulings; two test gaps fixed), the re-walk, the look card (§9). The three
+  items archived; four questions for him filed as `[D271-LOOK-ASKS]`.
+- **`[LW-MOVE-CI-RED]` — cause found, tests fixed:** a timing race in three Leave War tests (the second drag straight after
+  an admin's fill, which since `[ACCOUNTS]` re-renders longer on GitHub's machines); fixed with the 18 Sep stable drag
+  (`e2e/leavewar.spec.ts`). It never failed on the PC — **the proof is this branch's next GitHub runs**: green → archive it.
+  Side-findings filed: `[LW-HARNESS-VIEWER-PIN]`, `[CI-FAIL-PICTURES]` (his call — public pictures while the repo is public).
+- **Next, in order:** (1) **his look** — the card is the sheet's §9 (four things to see, four questions); his answers are
+  rulings from D276; (2) the next GitHub run of this branch: `geometry (lw-desktop)` green → archive `[LW-MOVE-CI-RED]`;
+  (3) "merge live", one at a time with #443 and #444. **The absence chat's D262 reworks `select.ts` wireMove** (PR #444) —
+  if it merges first, bring `main` in and re-run the three Move tests here; a conflict in those test lines keeps BOTH its
+  behaviour and the stable drag (told to that chat).
 - **His "2 chats" remark (27 Sep 26)** is still unanswered — put to him once; recommended: keep the one-at-a-time queue
   for full check runs (two chats working side by side needs nothing).
 <!-- /now -->

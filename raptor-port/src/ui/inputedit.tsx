@@ -22,7 +22,7 @@ import { docAdd, docFields, docGet, rowDocIds } from '../state/docs'
 import { UploadIcon } from './icons'
 import { acceptInput, autoAcceptInput, unacceptInput, acceptedDay } from '../engine/slots'
 import { DAYS } from '../engine/data'
-import { PEOPLE, isSpecial } from '../engine/people'
+import { PEOPLE, isSpecial, whoId } from '../engine/people'
 import { hhmm, parseHM, hmOK } from '../engine/time'
 import { HOOKS } from '../engine/hooks'
 import { logAction, elogSweep } from '../engine/editlog'
@@ -1148,8 +1148,9 @@ export function commitInputEdit(r: any, draft: any, keepTail?: any, entryEnd?: a
                held as a removed extra always is, and the toast says so. Every other door onto a row refuses a second
                copy before writing (engine/avail.ts rowTwice); this one is a hand-over, not an add, so it keeps the
                edit and drops the copy. */
-            if (extras.more?.length && extras.more.some((v: any) => v === r.person)) {
-              const more = extras.more.map((v: any) => v === r.person ? '' : v)
+            /* compared through whoId, as slots.ts rowPlaces reads a place (Fable's read) */
+            if (extras.more?.length && extras.more.some((v: any) => whoId(v) === r.person)) {
+              const more = extras.more.map((v: any) => whoId(v) === r.person ? '' : v)
               while (more.length && !more[more.length - 1]) more.pop()
               extras.more = more
               /* raised on the NEXT tick: the app has one toast, and every caller of this save shows its own success

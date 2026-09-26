@@ -17,7 +17,13 @@
 
    What is NOT a flag and keeps its glow: the purple "you" ring on an unflagged puck, and the clicked-warning focus
    (`.puck.wfoc` — the rule that a clicked warning lights its crew in the warning colours, a transient answer to a tap,
-   not a standing flag). */
+   not a standing flag).
+
+   WHAT THIS DOES NOT PROVE (Astra's read, 27 Sep 26): it resolves rules written on the puck itself — `.puck` plus
+   classes and `:not()`. Rules that reach a puck through a CONTEXT (the crew list's standby / busy inset, the drag
+   ghost, the board, a published look, the ALL AVAIL window) are the walk's to see (the evidence sheet §3a, W1); and the
+   focus is kept off the purple by ORDER in highlights.ts (it returns before adding "you"), pinned in interact.test.tsx
+   "a focused warning takes the purple…". */
 import { readFileSync } from 'node:fs'
 import { describe, it, expect } from 'vitest'
 
@@ -108,7 +114,7 @@ describe('D270 / D272 — on his own puck, any other ring wins over the purple "
     expect(shadowWin(['me'])).toBe(PURPLE)
     expect(outlineWin(['boxdot'])).toBe('1.5px dotted var(--hard)')
   })
-  it('flagged or earning, his puck wears exactly the ring another man\'s puck wears — every combination', () => {
+  it('flagged or earning, his puck wears exactly the ring another man\'s puck wears — every set of ring classes on the puck itself', () => {
     const sets = SETS.filter(RINGED)
     expect(sets.length).toBeGreaterThan(60)
     for (const s of sets) {

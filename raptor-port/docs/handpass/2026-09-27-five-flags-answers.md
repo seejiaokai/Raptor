@@ -148,3 +148,70 @@ F1 fix: **unit 6249 / 6249** (382 files) · **build** clean · **tfin 728 / 0** 
 docsize OK: `Docs: OUTSTANDING 75 items (+8 −5, −5 all in ARCHIVE) · DECISIONS D1–D275 · homes OK` · `docsize: OVER by
 43, deferred (D29)` (a code change never trims the backlog). The Leave War "Move" tests passed in this run
 (`[LW-MOVE-CI-RED]`, §10). A second full run follows the reads' fixes.
+
+## 8. The code reads (Fable and Astra, blind to each other, with this sheet)
+
+Both read the code at `f81bb395` with this sheet in hand (brief `docs/superpowers/briefs/2026-09-27-five-flags-answers-read-brief.md`),
+started together; Fable was told not to open Astra's file and did not. Reports kept whole:
+`docs/superpowers/specs/2026-09-27-five-flags-answers-astra-read.md`, `…-fable-read.md`. **Neither found a defect against
+any of the four rulings.**
+
+| # | Reader | Finding | New / on main | Disposition |
+|---|---|---|---|---|
+| A1 | Astra (low, tests) | the ring test's "the clicked-warning focus keeps its glow" only reads the `.puck.wfoc` rule; nothing pins that the focus is kept OFF the purple (highlights.ts returns before adding "you") — remove that return and every test stays green; and its "every combination" covers classes on the puck, not contexts | the order on main, the test new | **fixed** — `interact.test.tsx` "a focused warning takes the purple…" (signed in as Saber, his clash focused: lit pucks wear the focus, never the purple; cleared and folded: "you" again), break test red (the purple put on focused pucks); the ring test's claim reworded, with where the rest is proved |
+| F-5 | Fable (low, tests) | `rowtwice-refusal.test.tsx`'s "no history step" read the edit log, not the Undo history — a refusal that pushed an empty Undo step would pass | new | **fixed** — every refusal case now checks `HIST` unchanged; break test red (a refusal made to push a step: 2 tests) |
+| F-6 | Fable (observation) | with a man SELECTED, the green "where can he go" rings show none on his own crowd's "+ add" (he is already there), yet dragging his own crowd puck there moves him to its end — the rings answer "add him", the drop "move him" | on the batch, not main | **look card** (`[D271-LOOK-ASKS]` item 4's note) — consistent with D271 (selecting a man is not picking up one of his pucks) |
+| F-7 | Fable (hardening) | the F1 filter compared ids with `===`; `whoId(v)` is how a row's places are read | — | **applied** (`inputedit.tsx`) |
+| F-9 | Fable (negative) | the sims' `.*` / `.pax.+` keys would mis-trim in `seatRow`, but no surface emits them and the belt matches by id | — | noted, nothing to do |
+
+Both confirmed as negatives: every door asks `rowTwice` before writing (both ends of a swap; the cell before the source is
+cleared); the reverse cases pass as ruled; the `:not()` list covers every class `puck()` emits; no context rule selects
+`.puck.me`; the ring test's cascade is right; the arrow revert is complete (`pan.ts`, `highlights.ts`, `geometry.spec.ts`
+byte-identical to main); Fable's F1 fix is right and complete (both doors reach it; the note survives the caller's line).
+
+**The re-walk after the reads** (27 Sep 26, the final build `index-D0v7ZkLD.js`): the reads' fixes were tests (A1, F-5) and
+one comparison in the hand-over (F-7) — W3 f9 re-run into `…/rewalk/`: **6 pass · 0 fail**, the note on screen after the
+save. Nothing else in the app changed after the first walk.
+
+## 9. His look — five minutes, on the branch's Vercel link, pictures first
+
+**Look here** (desktop; the phone behaves the same):
+1. **Your own puck shows its flag's ring.** Sign in as `outlaw` (any password) → View-only Sched: Monday, your purple
+   puck wears the red DOTTED ring alone (it causes Tuesday's crew-rest breach); Tuesday, the solid red box. Unflagged,
+   still the purple ring and glow. Pictures: `docs/img/handpass/2026-09-27-five-flags-answers/w1/C2-desktop-as-outlaw-mon-dotted-you.png`
+   and, as Wildcard beside Tally, the same amber ring on both (`…/w1/D1-desktop-as-wildcard-mon-amber-you-beside-tally.png`).
+2. **OIL Earn mode:** your own earning puck wears the green OIL ring, purple fill (`…/w1/F9-desktop-oil-mode-you-puck.png`).
+3. **One man, once per row.** Edit Schedule → Monday's board: drag Ranger from the crew list onto FLIGHT SAFETY
+   STAND-DOWN — the note under the puck says "already on FLIGHT SAFETY STAND-DOWN 08:30–09:00 · not added twice" and,
+   let go, nothing is added. Drag Havoc there — he lands. Two men already in the crowd still swap. (`…/w3/f6-d-hover-palette-ranger-onto-reaper-in-his-own-crowd.png`)
+4. **The arrow's room is gone.** View-only Sched: Monday flush at the left, the ‹ arrow over its first letters — the
+   picture you chose, now from the real app (`…/w6/W6-view-list-1440.png`).
+
+**The agent's readings, for you to correct** (stated so a wrong one costs a sentence):
+- A request handed to a man who is already on its row as an extra keeps him ONCE, as its holder, and says so
+  ("Ranger — already on this row as an extra · kept once, as its holder") — Fable found this door; refusing the
+  hand-over instead would block a legitimate correction of whose request it is.
+- A placeholder (ALL / ALL AVAIL) is not held to "once per row" (see Q3).
+
+**Your questions — nothing is built for any of them** (`OUTSTANDING.md` `[D271-LOOK-ASKS]`):
+- **Q1 — A jet line's two seats.** One man in FCP AND RCP of the same jet is only warned (red, "two events at once").
+  Refuse it too? (Recommended: yes — it can never be right.)
+- **Q2 — Your puck in OIL Earn mode when you earn nothing** keeps its faded purple ring; other men's are just faded.
+  Keep? (Recommended: keep — the fade says "nothing", the purple says "you".)
+- **Q3 — ALL AVAIL twice on one row** is allowed, silently. Leave it? (Recommended: leave it.)
+- **Q4 — A struck name in the crew list** looks the same whether a tap will be refused or only warned; only its
+  printed reason differs. Leave it? (Recommended: leave it — the words say it.)
+
+**Only your iPhone can prove:** the finger drags were walked in Chromium's emulated touch; Safari's own delivery is yours
+to glance at (the refusal by finger on the phone is `…/w3/f8-a-phone-finger-ranger-onto-his-crowd.png`).
+
+## 10. [LW-MOVE-CI-RED] — the red Leave War "Move" tests on GitHub (investigated, not re-run)
+An Opus investigator read 25 GitHub runs' logs (no failure pictures exist — the workflow uploads none) and drove the tests
+on the PC under the lock. **The cause is a timing race in three tests, not the app:** each starts its second drag
+straight after an admin's fill; since `[ACCOUNTS]` (26 Sep 26) that fill is an admin edit on Raptor's side too, and on
+GitHub's slower machines its re-render swallows a drag started too soon (9 of 16 runs failed first after 26 Sep 06:44Z;
+9 of 9 passed before). The same race the undo tests met on 18 Sep; these three never got its fix. A person would not
+meet it at ordinary pace (a lost drag writes nothing). **Fixed, tests only (D87):** wait for the fill to land and its
+sheet to close, then a drag that retries until its sheet opens (`e2e/leavewar.spec.ts`). It never failed on the PC, so
+the proof is the next GitHub runs of this branch. Its report in full: `OUTSTANDING.md` `[LW-MOVE-CI-RED]`; side-findings
+filed: `[LW-HARNESS-VIEWER-PIN]`, `[CI-FAIL-PICTURES]`.

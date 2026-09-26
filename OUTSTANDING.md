@@ -73,16 +73,16 @@ whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaini
 [OIL-PERSONAL-PLACEHOLDER] (FULL tier), [CROWD-SIM-BRIEF] (WALK tier), [OIL-RELINK-XWEEK].
 
 **Placed by their own lines — not his rulings:** the Leave War — [LW-FROZEN-BAR-GAP] (after [HUMAN-RETEST]; show him
-first), [LW-FIGSEL-SLOW] and [LW-SCRUBBER-FLAKY] (test-only), [LW-MOVE-CI-RED] (NEXT among the checks — it turns every PR red on GitHub; before
-the next "merge live" that needs a green run); the Inputs calendar — [INPUTSCAL-TAP-FLAKY] (test-only). The Tracker — [TRK-RETEST-NOTES] and
+first), [LW-FIGSEL-SLOW] and [LW-SCRUBBER-FLAKY] (test-only), [LW-MOVE-CI-RED] (its cause found and the tests fixed 27 Sep 26 — confirm
+on the next GitHub runs, then archive), [LW-HARNESS-VIEWER-PIN] (test-only, low), [CI-FAIL-PICTURES] (his call, low); the Inputs calendar — [INPUTSCAL-TAP-FLAKY] (test-only). The Tracker — [TRK-RETEST-NOTES] and
 [TRK-EDIT-SIDEWAYS] (their gates have passed), [TRK-PINCH-ASK] (his next Tracker session), [TRK-SESSION-PICK] (low, the next Tracker change), [TRK-DLG-LEFTOVERS] (low, with the next question-box change), [TRK-PALETTE-ASK] (his answer D157: Raptor's colours
 fully — being built on `claude/tracker-palette`), [TRK-FLEXBAR-INK] (a question for him, on that branch's look card),
 [TRK-BAKE-STALE] (low).
 The amendment area — PR #434, #435, #437 and #438 MERGED (25–26 Sep 26); [LOOK-435]'s steps 2–4 are items 1 above; left: [REQ-ORPHAN-ROW] and [REQ-DOOR-WORDS] (both low). Left from the amendment batch (D91–D111, merged): [AVAILWIN-PREVIEW-BAR] (low), [AMEND-SMALL-SEEN] (any time). The docs and the checks — [DEPLOY-DOCS] (its operational half), [DOC-POINTERS-CODE] and
 [RULINGS-LF-PIN] (with the next code change), [DOC-SUBHEADS], [RULING-HOMES-AUDIT], [HANDOFF-SHAPE-GUARD] and [BACKLOG-TIDY] (any time, docs only), [PEEK-ISSUED] (a question for him, low),
 Roles — [QUALS-MEMBER-SCOPE] (folded into [ACCOUNTS], D200), and beside it [QUALS-PROTO-TOAST] (low, one line of words).
-The five-flags batch (built on `claude/five-flags-batch-build-ef7d85`, 26 Sep 26; FULL-checked and its PR from `claude/five-flags-batch-continue-2cfa70`, 27 Sep 26 — its five items archived) — his three look-card questions, ANSWERED 27 Sep 26 (D270–D275; D270–D272 and [ARROW-ROOM-OUT] built next, on that branch) [CROWD-DUP-REFUSE],
-[ME-PUCK-SEVERITY-RING] and [ARROW-GUTTER-STRIP] (answer, then small builds); low: [GHOST-FLAG-SHADOW], [LW-SETTINGS-SMALL],
+The five-flags batch (built on `claude/five-flags-batch-build-ef7d85`, 26 Sep 26; FULL-checked and its PR from `claude/five-flags-batch-continue-2cfa70`, 27 Sep 26 — its five items archived) — his answers D270–D275 BUILT and FULL-checked on that branch, 27 Sep 26 (their three items archived); his look card's four new questions [D271-LOOK-ASKS] (his answer; low);
+[ARROW-GUTTER-STRIP] (its strip moot by D275; one small leftover, low); low: [GHOST-FLAG-SHADOW], [LW-SETTINGS-SMALL],
 [ALLAVAIL-OPEN-ROW] (investigate first).
 Insights — [INSIGHTS-WORKING-COPY] (a question for him, with the one changes window or any time).
 
@@ -1259,31 +1259,7 @@ means published). Other options: a hollow dotted tag with no word (a small neutr
 or a warning colour. **A mock-up first** (the house rule for a visual change): the three side by side on the edit week
 and the board, desktop and phone, beside a published day's AL1 tag. **Place:** his answer, then with `[LOOK-435]`.
 
-### [CROWD-DUP-REFUSE] A man put on a row he is already on: warn (today) or refuse? — a question for him (filed 26 Sep 26)
-From the five-flags batch's walk (W3, F6; evidence `raptor-port/docs/handpass/2026-09-26-five-flags.md` §5): the app now
-NAMES it ("already on FLIGHT SAFETY STAND-DOWN 08:30–09:00" — the caption, the toast, the struck name in the crew list)
-but still plants the second copy, per his 13 Aug 26 "everything plants, warning after". **The question (the look card,
-Q1):** refuse it instead — one man, once per row? If yes: a hard refusal beside D33's in `avail.ts slotBar`'s
-one-man-one-place check and the three doors (`drag.ts`, `view.ts placeArmed`, `fillSlot`), with the pending count left
-at 0. **Mock-up shown 27 Sep 26** (his ask, *"q1 can u show me a mock upp"*): `raptor-port/docs/mock/five-flags.html` §Question 1 —
-today vs refused. **ANSWERED 27 Sep 26 — "Q1 refused" (D271): refuse, at every door, with the reason; a man on two
-different rows stays warned; a crew-list drop onto another man's place in a crowd he is already in is refused too.**
-**Place:** built next, on `claude/five-flags-batch-continue-2cfa70` before its "merge live" (with D270, D272).
-
-### [ME-PUCK-SEVERITY-RING] On his own puck, the purple "this is you" ring hides the amber / thin red / grey rings — a question for him (filed 26 Sep 26)
-The five-flags walk (W1, `raptor-port/docs/img/handpass/2026-09-26-five-flags/w1/D1-*`, `D2-*`): `.puck.me`'s purple ring
-replaces the severity ring, so only the letter chip shows the flag on his own puck (another man's shows the ring). The
-batch took the GLOW off every flagged own puck (D164); whether the severity ring should show INSTEAD of the purple ring
-is the look card's Q2 — **ANSWERED 27 Sep 26: "Q2 yes" (D270)** — flagged, his own puck shows the flag's own ring (amber,
-thin red, grey, dotted) as another man's does, the purple fill stays; unflagged, the purple ring and glow as today. **To build:**
-`scheduler.css` `.puck.me.warn` / `.puck.me.boxdot` (and its comment), `flagglow-css.test.ts`, `ui-contracts.md` (the
-"no flag ring glows" paragraph), a mock-up first (his ask, 27 Sep 26); WALK tier (a shared drawer — not LOOK). Still OPEN,
-not part of D270: in OIL mode the green OIL ring on his own puck is hidden under the purple ring (`w1/F9-*`) — put to him
-27 Sep 26 as Q2b on the mock-up (`raptor-port/docs/mock/five-flags.html` §Question 2, recommended: the same treatment) — **ANSWERED "question 2 yes" (D272): in OIL Earn mode his own puck shows the green
-OIL ring, the purple fill stays.** **Place:** built next, on `claude/five-flags-batch-continue-2cfa70` before its "merge
-live" (with D270, D271).
-
-### [ARROW-GUTTER-STRIP] The day before the front one shows a 42px strip beside the ‹ arrow — a question for him (filed 26 Sep 26)
+### [ARROW-GUTTER-STRIP] The day before the front one shows a 42px strip beside the ‹ arrow — MOOT (D275, the room taken out 27 Sep 26); one small leftover (filed 26 Sep 26)
 The five-flags walk (W4, `raptor-port/docs/img/handpass/2026-09-26-five-flags/w4/GUTTER-prevday-tail-view-1440x900.png`):
 the desktop week's 54px room ([VIEW-ARROW-OVER-LIST]) leaves the previous day's last 42px visible around the arrow (8px
 on `main`). The look card's Q3: keep (it hints at a day to the left — recommended) or leave that strip empty — **mock-up shown
@@ -1358,16 +1334,56 @@ pictures (the trace / error-context artifacts); what changed on GitHub's side (t
 whether a person at ordinary pace can reach "no Move offered" (then it is the app's bug, D87's reasoning). **Place:** NEXT
 among the checks, before the next "merge live" that needs a green GitHub run (the five-flags PR #445's own checks are red
 on it).
+**INVESTIGATED 27 Sep 26 (the five-flags chat; an Opus investigator's report, its logs under that chat's scratch — the
+findings are here whole):** a TIMING RACE IN THE TESTS, not the app. Tallied over 25 GitHub runs of the job: 9 before
+26 Sep 06:44Z all passed first time; 16 after, 9 failed first — the onset is `[ACCOUNTS]` (562d96a6), whose `lwRole()` now
+also calls `raptorRole()`, so the admin's fill is an admin edit on Raptor's side too and its re-derive and re-render last
+longer. The failure is always the SECOND drag, straight after the fill: on a slow runner a drag started inside that
+re-render is silently lost and no sheet opens. The same race the undo tests met on 18 Sep ([GLOBAL-UNDO], 519de0b8,
+`dragSelectStable` — re-fire the drag until the sheet opens); these three never got it. No runner-image or browser change;
+no failure pictures exist (the workflow uploads none); not reproduced on the PC (15/15, 24/24 at 2×, 24/24 at 3×). A
+person at ordinary pace would not hit it (the window is well under a second; a lost drag writes nothing and is simply
+redone). **FIXED (tests only, D87):** `e2e/leavewar.spec.ts` "offers Move" and "right-click cancels" wait for the fill to
+land and its sheet to close, then drag with `dragSelectStable`; "a loose box" drags with `dragSelectStable`. **Left:**
+confirm on the next GitHub runs of this branch (the test fix cannot be proven on the PC, where it never failed), then
+archive this. Filed beside it: `[LW-HARNESS-VIEWER-PIN]`, `[CI-FAIL-PICTURES]`.
 
-### [ARROW-ROOM-OUT] Take the room beside the ‹ arrow back out of the desktop week — his D275 (filed 27 Sep 26)
-**Why:** shown the five-flags batch's item 4 full screen (`raptor-port/docs/mock/five-flags.html`), he chose the BEFORE
-pictures — *"I still prefer these"* (D275): the day at the front flush at the left, the ‹ arrow floating over its first few
-pixels, as on `main`. **Take out everything `[VIEW-ARROW-OVER-LIST]` added:** `scheduler.css` (`.week` back to
-`padding:2px 20px 40px`, no `scroll-padding-left`, the comment), `state/view.ts` (`weekInset` and its use in `weekLeftDay`
-and `scrollWeekToDay`), `ui/highlights.ts` (`bringIntoView` back to the box's edges), `state/weekinset.test.ts` (deleted),
-`e2e/geometry.spec.ts` (the "sit clear of the ‹ arrow" test out; the five older landing tests back to measuring from the box's
-edge — `git show main:raptor-port/e2e/geometry.spec.ts` for their words), the docs marked "TO BE TAKEN OUT — D275"
-(`ui-contracts.md`, `feature-impact.md`), `docs/file-map.md` (the test file's row), the walk scripts that assert the room
-(`scripts/handpass/ff-w4.mjs`, `ff-probe-arrow.mjs` — note them as retired). `git diff origin/main...HEAD` on those files is the
-list; the rest of the batch stays. **Check:** the week's browser tests (the whole `geometry.spec.ts`) and a look at desktop.
-**Place:** on `claude/five-flags-batch-continue-2cfa70` with D270–D272, before its "merge live".
+### [D271-LOOK-ASKS] Four small questions the D270–D275 build raised — for his look card (filed 27 Sep 26)
+From Fable's scenario read of the build (`raptor-port/docs/superpowers/specs/2026-09-27-five-flags-builds-scenarios-fable.md`
+§6 Q-A–Q-C and its look-card observation), put to him on the look card (`raptor-port/docs/handpass/2026-09-27-five-flags-answers.md`
+§9); nothing is built for any of them.
+1. **A jet line's two seats** — one man put in FCP AND RCP of the same jet is only WARNED (the red "two events at once"),
+   because a flying line is not one of the rows D271 names (crowds, extras, sim seats). Refuse it too? *Agent's
+   recommendation: yes — it can never be right, and a move between the two seats is still a move.* If yes: a flying
+   branch in `avail.ts rowTwice` (the other seat of the same aircraft), the doors already ask it.
+2. **His own puck NOT earning in OIL Earn mode** keeps the faded purple ring and glow, where another man's non-earning
+   puck is just faded (D272 spoke of the green ring). Keep, or show it faded only? *Recommendation: keep — the fade
+   already says "earns nothing", the purple still says "you".*
+3. **A placeholder twice on one row** (ALL / ALL AVAIL dropped twice) is allowed, silently (not a man — D33 keeps a
+   placeholder silent). *Recommendation: leave it.*
+4. **A struck name in the crew list looks the same** whether a tap on it will be REFUSED (already on this row) or only
+   warned after planting; only the printed reason differs ("· not added twice"). Want the refusing strike to look
+   different? *Recommendation: leave it — the words say it.* Also noted, no question: dragging a man over a row's NAME
+   cell shows no caption, though a drop there is refused with the reason (the caption speaks over the people cell).
+   And (Fable's read, F-6): with a man SELECTED, the green "where can he go" rings show none on his own crowd's "+ add"
+   (he is already there), though dragging his own puck there moves him to its end — the rings answer "add", the drop "move".
+**Place:** his answers, with his look at PR #445; low.
+
+### [LW-HARNESS-VIEWER-PIN] In the Leave War browser tests, switching the role quietly undoes the pinned viewer (filed 27 Sep 26)
+Found by the `[LW-MOVE-CI-RED]` investigation, confirmed in the running bundle: the test bridge's `raptorRole()` →
+`setEffectiveRole()` (`raptor-port/src/state/auth.ts`) REPLACES the session object, and the viewer pin `lwSetViewer` sets
+(`raptor-port/src/leavewar/sync.ts` ~1428–1430) is tied to that object — so after `lwRole('admin')` the next Raptor refresh
+re-lights the signed-in man's row (`row-bane`) instead of the pinned one. Not the cause of the red Move tests (the fill
+triggers no such refresh within 1.5 s), but a test that pins a viewer and then switches role is testing a different man
+than it thinks. **Do:** tie the pin to the sign-in rather than the session object, or re-pin inside the bridge's
+`raptorRole` (the bridge is the developer's PC only since `[ACCOUNTS]`); a test that pins, switches role and asserts the
+pinned row. **Place:** low, test-only — with the next Leave War test change.
+
+### [CI-FAIL-PICTURES] GitHub's browser-test jobs keep no pictures of a failure (filed 27 Sep 26)
+The `[LW-MOVE-CI-RED]` investigation found NO artifacts on any failed run: `.github/workflows/deploy.yml`'s geometry jobs
+upload no Playwright report, trace or error picture, so a red run on GitHub can only be read from its log. **Do, if he
+agrees:** upload `raptor-port/test-results/` from the geometry jobs `if: failure()` (traces stay off — too slow on the Leave
+War grid). **His call, because:** while the repo is PUBLIC (D106) anything uploaded is downloadable by anyone with a GitHub
+login — the pictures show only the invented demo world (no real names — D58, D62), but it is publishing. **Place:** low —
+ask him with the next change to the checks; the agent's recommendation: yes, once the repo is private again (D106's
+"afterwards").
