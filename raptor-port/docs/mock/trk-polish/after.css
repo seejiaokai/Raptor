@@ -1,0 +1,52 @@
+/* MOCK-UP (26 Sep 26), not built: the design improvements proposed after [TRK-PALETTE-ASK] (D157), laid over the REAL
+   Tracker by docs/mock/trk-polish/mock.mjs so every colour is the app's own. Each block is one proposal; the mock
+   injects `common` always and ONE of the flex-bar options. Every value is a Raptor token or a Raptor recipe
+   (scheduler.css), so nothing here invents a colour. */
+
+/* ---- common ------------------------------------------------------------------------------------------------ */
+
+/* 2. The colour key and the grade dots: a hairline ring, so the black DCO dot and the white "not done" dot both
+      show on the dark (the DCO dot disappears into the background today). Raptor's --pers-line, the ring its
+      white personnel pucks wear for the same reason. */
+#page-tracker .legend .sw, #page-tracker .pop .dot { box-shadow: 0 0 0 1px #7C8AA0; border: 0 !important }
+#page-tracker .sst:not(.undone) { box-shadow: 0 0 0 1px #7C8AA0 }
+
+/* 3. A window's main button (OK, Save, Export…) is Raptor's primary action — solid accent, dark words — so
+      "do it" no longer looks like a switched-on toggle (the wash stays for toggles: an open menu, Details on,
+      the chosen edit tool). Raptor's .abtn.primary. */
+#dlgOk, #edSave, #ifSave, #sylSave, #ordSave, #copyOk {
+  background: var(--accent) !important; color: var(--accent-ink) !important; border-color: var(--accent) !important; font-weight: 600 }
+
+/* 4. Unsaved chart edits: Save changes becomes the loudest thing on the bar — solid amber, dark words (Raptor's
+      amber chip recipe) — the one button that must not be missed before leaving. */
+#saveChanges.dirty { background: var(--orange) !important; color: #1B1305 !important; border-color: var(--orange) !important; font-weight: 600 }
+
+/* 5. The key ball's centre: the gold disc was the loudest thing on the Students card and the one colour not in
+      Raptor's palette. Raptor's raised grey with a thin accent ring; the course name in ink. */
+#page-tracker .keyball svg circle[fill="#f6c21a"] { fill: #20262E; stroke: var(--accent); stroke-width: 1.2 }
+#page-tracker .keyball svg text:not([fill]) { fill: var(--ink) }
+
+/* ---- flex-a: the Currency & Flex bars keep their solid colour, words dark (white stays only on the grey) ---- */
+/* FLEX-A */
+#page-tracker .flexbar { color: #0B0D10 }
+#page-tracker .flexbar[style*="--grey"] { color: #fff }
+/* /FLEX-A */
+
+/* ---- flex-b: the bars become Raptor's tinted status strip — a wash, a coloured edge, light coloured words —
+        so they read as a status, not as a big button (Raptor's own tinted chips: .fastsync.on, the red and
+        amber tags). The words are Raptor's light green / amber / red. ---- */
+/* FLEX-B */
+#page-tracker .flexbar { border: 1px solid; font-weight: 600 }
+#page-tracker .flexbar[style*="--marg"] { background: rgba(87,201,122,.12) !important; border-color: rgba(87,201,122,.55); color: #A8E6BC }
+#page-tracker .flexbar[style*="--orange"] { background: rgba(229,168,59,.13) !important; border-color: rgba(229,168,59,.6); color: #F2D699 }
+#page-tracker .flexbar[style*="--red"] { background: rgba(240,85,95,.13) !important; border-color: rgba(240,85,95,.6); color: #FBB4B9 }
+#page-tracker .flexbar[style*="--grey"] { background: #20262E !important; border-color: #39424D; color: #C4CCD5 }
+/* /FLEX-B */
+
+/* ---- wedge (OPTIONAL, 6): the "not done" part of each ball's ring in Raptor's soft grey instead of pure white,
+        so the brightest thing on the chart is a MARK, not an empty ring. Changes the key too. ---- */
+/* WEDGE */
+#flowSvg .ball path.wedge[fill="#ffffff"] { fill: #B6C0CB }
+#page-tracker .keyball svg path[fill="#fff"] { fill: #B6C0CB }
+#page-tracker .legend .sw[style*="255, 255, 255"], #page-tracker .pop .dot[style*="255, 255, 255"] { background: #B6C0CB !important }
+/* /WEDGE */
