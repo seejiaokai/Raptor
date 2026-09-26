@@ -15,7 +15,9 @@ import { addDays } from './engine'
 import { getState, initStore as lwInitStore, setPeople, setPostOut, setRole } from './state/store'
 import { memoryBackend } from './state/storage'
 import { projectPeople } from './state/raptorRoster'
-import { restoreArchivedPerson, runPoArchive, undoPostOut, wireLeaveWarSync } from './sync'
+import { postOut, restoreArchivedPerson, runPoArchive, undoPostOut, wireLeaveWarSync } from './sync'
+/* the posting's own route (Matrix postOutOr) */
+const POST = (id: string, from: string, archive?: boolean) => postOut(id, from, archive)
 import { Whiteboard } from '../storage/whiteboard'
 import { wirePersist } from '../state/persist'
 import { weekStashSnap, weekDirty } from '../state/store'
@@ -44,7 +46,7 @@ beforeEach(() => {
 })
 
 afterEach(() => {
-  for (const id of touched) delete (PEOPLE as any)[id]?.archived
+  for (const id of touched) { delete (PEOPLE as any)[id]?.archived; delete (PEOPLE as any)[id]?.archivedBy }
   touched.length = 0
 })
 
@@ -145,5 +147,44 @@ describe('undoPostOut — the posting sheet’s Undo', () => {
     expect((PEOPLE as any)[id].archived).toBeFalsy()
     expect(undoPostOut(id)).toBe(true)
     expect(getState().people.find(x => x.id === id)!.to).toBeNull()
+  })
+})
+
+/* THE ARCHIVE A POST OUT MADE FOLLOWS THE POSTING (Astra's final code read, findings 2 and 4, 26 Sep 26). A Post out
+   whose date has come archives him (the switch on); moving that date into the future, or turning the switch off, left
+   him archived — off the Quals roster while the posting sheet said he stays, or before his date. And the sheet's Undo
+   (W5-F1's fix) read ANY archive on a man with the switch on as the Post out's own, so a man archived by hand on the
+   Quals page came back. The archive now carries who made it (`archivedBy: 'po'`, set only by the Post out's pass). */
+describe('the archive a Post out made follows the posting (findings 2 and 4)', () => {
+  it('moving a Post out that has archived him to a date still to come puts him back until then', () => {
+    const id = anAircrewId()
+    setPostOut(id, today)
+    expect((PEOPLE as any)[id].archived).toBe(true)
+    expect(POST(id, addDays(today, 10))).toBe(true)
+    expect((PEOPLE as any)[id].archived).toBeFalsy()
+    expect(getState().people.find(p => p.id === id)!.to).toBe(addDays(today, 9))
+  })
+  it('turning "Archive on PO date" off puts him back on the roster', () => {
+    const id = anAircrewId()
+    setPostOut(id, today)
+    expect((PEOPLE as any)[id].archived).toBe(true)
+    expect(POST(id, today, false)).toBe(true)
+    expect((PEOPLE as any)[id].archived).toBeFalsy()
+  })
+  it('moving it to another date that has also come keeps the archive', () => {
+    const id = anAircrewId()
+    setPostOut(id, addDays(today, -3))
+    expect((PEOPLE as any)[id].archived).toBe(true)
+    expect(POST(id, addDays(today, -1))).toBe(true)
+    expect((PEOPLE as any)[id].archived).toBe(true)
+  })
+  it('the posting sheet’s Undo keeps an archive made by hand on the Quals page', () => {
+    const id = anAircrewId()
+    setPostOut(id, addDays(today, 10))
+    expect((PEOPLE as any)[id].archived).toBeFalsy()
+    ;(PEOPLE as any)[id].archived = true            // the Quals page's ✕ (QualsPage.tsx), by hand
+    expect(undoPostOut(id)).toBe(true)
+    expect((PEOPLE as any)[id].archived).toBe(true)
+    expect(getState().people.find(p => p.id === id)?.to ?? null).toBeNull()
   })
 })

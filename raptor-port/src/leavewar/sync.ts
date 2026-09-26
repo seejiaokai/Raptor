@@ -1385,7 +1385,10 @@ export function runPoArchive(): void {
   if (!due.length) return
   SYNCING = true
   try {
-    for (const p of due) (PEOPLE as any)[p.id].archived = true
+    /* `archivedBy: 'po'` — THIS archive is the Post out's own (Astra's final code read, findings 2 and 4, 26 Sep 26):
+       what the posting sheet's Undo, a date moved later and the switch turned off take back — never an archive the
+       admin made by hand on the Quals page. Cleared with the archive by the Quals Restore. */
+    for (const p of due) { (PEOPLE as any)[p.id].archived = true; (PEOPLE as any)[p.id].archivedBy = 'po' }
     // A body leaving the roster can change what the warnings say about the
     // lines it was on — the same reason the Quals ✕ re-validates.
     validate()
@@ -1424,6 +1427,7 @@ export function restoreArchivedPerson(id: string): boolean {
   commitPeopleEdit(() => {
     setPostOut(id, null)
     body.archived = false
+    delete body.archivedBy
     validate()
   })
   raptorNotify()
@@ -1441,9 +1445,31 @@ export function restoreArchivedPerson(id: string): boolean {
  */
 export function undoPostOut(id: string): boolean {
   const body = (PEOPLE as any)[id]
-  const p = getState().people.find(x => x.id === id)
-  if (body && body.archived && p && p.poArchive === true) return restoreArchivedPerson(id)
+  /* the Post out's OWN archive only (finding 4): a man archived by hand on the Quals page stays archived — the Undo
+     then clears the date alone */
+  if (body && body.archived && body.archivedBy === 'po') return restoreArchivedPerson(id)
   return setPostOut(id, null)
+}
+
+/**
+ * Set or move a post-out — every posting door's route (Matrix postOutOr: the bid sheet's PO, the Post out sheet's date
+ * and switch, the drag-selection's Post out). When the Post out has ALREADY archived him and the new posting no longer
+ * archives him today — its date still to come, or "Archive on PO date" turned off — he comes back on the roster in the
+ * same command (Astra's final code read, finding 2, 26 Sep 26: he stayed archived, off the Quals roster, while the
+ * sheet said he stays or before his date). When the new date has also come, the archive stands. The pass
+ * (runPoArchive) archives him again on the date, as for any Post out.
+ */
+export function postOut(id: string, from: string, archive = true): boolean {
+  const body = (PEOPLE as any)[id]
+  const poMade = !!body && body.archived && body.archivedBy === 'po'
+  if (!poMade || !mayManageRoster() || (archive && localToday() > addDays(from, -1))) return setPostOut(id, from, archive)
+  let ok = false
+  commitPeopleEdit(() => {
+    ok = setPostOut(id, from, archive)
+    if (ok) { body.archived = false; delete body.archivedBy; validate() }
+  })
+  if (ok) raptorNotify()
+  return ok
 }
 
 /* ---- wiring -------------------------------------------------------------- */
