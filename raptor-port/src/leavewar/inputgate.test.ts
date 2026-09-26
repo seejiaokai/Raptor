@@ -9,7 +9,7 @@ import { initStore as raptorInitStore, writeInputs } from '../state/store'
 import { setMe, setSession } from '../state/auth'
 import { projectPeople } from './state/raptorRoster'
 import {
-  ackReplacement, advanceStage, getState, setBidState, initStore as lwInitStore, lwEditLists, lwHistInit, rawState, setCell, setCells, clearCells, setBidStates, setPeople, setRole, setViewer,
+  ackReplacement, advanceStage, cellProblem, getState, setBidState, initStore as lwInitStore, lwEditLists, lwHistInit, rawState, setCell, setCells, clearCells, setBidStates, setPeople, setRole, setViewer,
 } from './state/store'
 import { memoryBackend } from './state/storage'
 import { wireLeaveWarSync, sliceInput, syncAbsences } from './sync'
@@ -319,5 +319,21 @@ describe('bulk Delete and Approve over mixed days (W3-F3, AB7)', () => {
     const r = setBidStates([{ personId: 'ammo', date: '2026-02-16' }, { personId: 'ammo', date: '2026-02-17' }], 'approved')
     expect(r.decided).toBe(1)
     expect(r.already).toBe(1)
+  })
+})
+
+/* THE BID SHEET NAMES WHAT HOLDS THE TIME (the absence-record re-test's break tests, 26 Sep 26 — bug-check order §8.4):
+   switching off every clash refusal the bid sheet gives past its stage / row / medical-code checks turned only ONE test
+   red, the timed-medical one. The two sentences a bidder meets most — a leave filed on the Inputs page already there,
+   and a whole-day medical — are pinned here, through the store's own question (`cellProblem`, what the sheet asks
+   before it writes). */
+describe('the bid sheet refuses by name (the break test for its refusals)', () => {
+  it('a bid onto leave filed on the Inputs page, and onto a whole-day medical, is refused and names what holds it', () => {
+    setRole('admin')
+    expect(file('ammo', 'LL', 'Feb 10')).toBe(true)
+    expect(cellProblem('ammo', '2026-02-10', 'OL')).toBe('That time is already taken by LL — clear it first.')
+    expect(file('ammo', 'ATT C', 'Feb 12')).toBe(true)
+    expect(cellProblem('ammo', '2026-02-12', 'LL')).toBe("That day is already ATT C — leave can't go over a medical.")
+    expect(cellProblem('ammo', '2026-02-11', 'LL')).toBeNull()
   })
 })
