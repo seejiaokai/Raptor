@@ -73,10 +73,11 @@ whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaini
 **Placed by their own lines — not his rulings:** the Leave War — [LW-FROZEN-BAR-GAP] (after [HUMAN-RETEST]; show him
 first), [LW-FIGSEL-SLOW] and [LW-SCRUBBER-FLAKY] (test-only); the Inputs calendar — [INPUTSCAL-TAP-FLAKY] (test-only). The Tracker — [TRK-RETEST-NOTES] and
 [TRK-EDIT-SIDEWAYS] (their gates have passed), [TRK-PINCH-ASK] (his next Tracker session), [TRK-SESSION-PICK] (low, the next Tracker change), [TRK-DLG-LEFTOVERS] (low, with the next question-box change), [TRK-PALETTE-ASK] (his answer D157: Raptor's colours
-fully — a small build), [TRK-BAKE-STALE] (low). The Leave War — [LW-RESET-ORDER] (his yes, D160 — a small build).
+fully — being built on `claude/tracker-palette`), [TRK-FLEXBAR-INK] (a question for him, on that branch's look card),
+[TRK-BAKE-STALE] (low). The Leave War — [LW-RESET-ORDER] (his yes, D160 — a small build).
 The amendment area — PR #434, #435, #437 and #438 MERGED (25–26 Sep 26); [LOOK-435]'s steps 2–4 are items 1 above; left: [REQ-ORPHAN-ROW] and [REQ-DOOR-WORDS] (both low). The board — [PUCK-FLAG-GLOW] (D164: a flagged puck does not glow — a small build), [CROWD-SWAP-SAYS-BUSY] (small; found by the batch's re-walk). Left from the amendment batch (D91–D111, merged): [AVAILWIN-PREVIEW-BAR] (low), [AMEND-SMALL-SEEN] (any time). The docs and the checks — [DEPLOY-DOCS] (its operational half), [DOC-POINTERS-CODE] and
 [RULINGS-LF-PIN] (with the next code change), [DOC-SUBHEADS], [RULING-HOMES-AUDIT], [HANDOFF-SHAPE-GUARD] and [BACKLOG-TIDY] (any time, docs only), [PEEK-ISSUED] (a question for him, low),
-[BG-CWD-GUARD] (his go, D162 — any time). Roles — [QUALS-MEMBER-SCOPE] (folded into [ACCOUNTS], D200), and beside it [QUALS-PROTO-TOAST] (low, one line of words). View-only Sched — [VIEW-ARROW-OVER-LIST] (low, LOOK tier).
+Roles — [QUALS-MEMBER-SCOPE] (folded into [ACCOUNTS], D200), and beside it [QUALS-PROTO-TOAST] (low, one line of words). View-only Sched — [VIEW-ARROW-OVER-LIST] (low, LOOK tier).
 Insights — [INSIGHTS-WORKING-COPY] (a question for him, with the one changes window or any time).
 
 **Waiting on him — no order exists:** [SIGNOFF-SELF] (raised by [ACCOUNTS]; put to him on its look card),
@@ -1023,11 +1024,22 @@ grep the app for other "prototype" / "full build" / "Dataverse" words on screen.
 ### [TRK-PALETTE-ASK] The Tracker's own dark palette, or Raptor's? — ask him once (filed 24 Sep 26)
 **ANSWERED (D157, 24 Sep 26): Raptor's, FULLY** — backgrounds, text and the event colours (`tracker.css` variables and
 `app/core.js` `TYPE_COLOR` / `GRADE_FILL`). Shown to him first as three versions of the real chart. LOOK tier plus a
-phone look that the chart still reads at a glance. **Place:** any time, none blocking.
+phone look that the chart still reads at a glance. **Place:** NOW — being built on `claude/tracker-palette`, in
+parallel with `[ACCOUNTS]` (his instruction of 26 Sep 26: port 4180, rulings D230–D239).
 From the 7 Sep 26 device pass (`HANDOFF.md` §Open, "OWNER'S DEVICE PASS", archived 24 Sep 26 in
 `raptor-port/docs/archive/handoff-2026-09-24.md`): one open question rode the retired bug-testing list's row
 #376 — whether the Tracker keeps its own dark palette or takes Raptor's. It was recorded nowhere else. Ask him
 once, in his next Tracker session; build nothing until he answers.
+
+### [TRK-FLEXBAR-INK] The Tracker's Currency & Flex bars print white words on green and amber — hard to read (filed 26 Sep 26)
+Found by the `[TRK-PALETTE-ASK]` walk (evidence `raptor-port/docs/handpass/2026-09-26-trk-palette.md` §7 F4). The bars
+under Currency & Flex ("Current — no flex required", "1 Optional Flex", "Landing Current — No IP Required") are a
+coloured fill with WHITE words (`tracker.css .flexbar{color:#fff}`; the fill comes from `app/core.js`'s flex and
+currency functions). White on the green reads ~2.1:1 and on the amber ~2.1:1, against a floor of 4.5:1; the red 3.4:1,
+the grey 6.2:1. **Not new:** before D157 the same bars read 1.9 / 2.2 / 3.7:1. **Recommended:** dark words (Raptor's
+`--bg`) on the green, amber and red bars, white only on the grey — the recipe Raptor's own amber chips use; the functions
+return an ink with the colour. A design choice, so his: it is question 4 on that branch's look card. LOOK tier.
+**Place:** after his answer; low, none blocking.
 
 ### [DOC-POINTERS-CODE] Code comments that point at documentation moved in the spring clean (filed 24 Sep 26)
 **Place:** ride the next change that touches `raptor-port/src` anyway — a pointer-only edit there starts the full
@@ -1072,17 +1084,6 @@ session can read one section" — and the spring clean did not do it. The rule i
 `engine-rules.md` 5 (its §Validation runs 927 lines), `feature-impact.md` 1 (550), `performance.md` 1 (313). Adding
 headings rewords nothing; anything more is a move (D138, `backlog-archive.mjs --move`). Docs only — no full check
 run. **Place:** any time, none blocking; sooner if a chat has to read one of those sections whole.
-
-### [BG-CWD-GUARD] A backgrounded npm command that starts at the repo root dies at once — guard it, don't re-warn (filed 24 Sep 26)
-**HIS GO (D162, 24 Sep 26): build the hook.**
-From the skills notebook, observation #42 (1 Sep 26), which the 23 Sep and 24 Sep reviews both judged a code or
-config change, not a guide change (D146). A `run_in_background` shell starts at the REPO ROOT, where there is no
-`package.json`, so a bare `npm run …` fails instantly — and the wrapper's exit code can read 0. The bold warning in
-`raptor-port/CLAUDE.md` §Build & verify is text, and it has been broken three times. **The fix is structural:** a
-`PreToolUse` hook (under `.claude/`, so no full check run) that refuses a backgrounded `npm` command without
-`cd raptor-port`, or a root `package.json` whose scripts `cd raptor-port && npm run …` (it would start the full
-checks and could change what Vercel detects). **Place:** any time, none blocking — but ask him first: a hook runs in
-every chat, and it is standing configuration.
 
 ### [HANDOFF-SHAPE-GUARD] The document gate does not notice HANDOFF.md losing a section or a block's end marker (found 25 Sep 26)
 One span replace in `119dff45` (D176's check, on `claude/request-one-row`) ate everything from a `## Now` block's Gates

@@ -420,6 +420,66 @@ resolved statuses always carry their resolution date
 
 **Principle:** A test that reaches past the public door must reproduce the door's exact call, and prove it did; otherwise only cutting the fix shows whether the test was ever looking at it.
 
+### Observation 270: A hook wired as `test && run || exit 0` swallows its own refusal
+
+**Status:** OPEN
+**Date:** 2026-09-26
+**Session context:** [BG-CWD-GUARD] — a PreToolUse hook that refuses a backgrounded npm command outside raptor-port (numbered 270, past 260, because two parallel chats — claude/accounts and a Tracker-colours chat — may be appending unpushed entries)
+**Skill:** repo hook wiring (.claude/settings.json; the pattern in `record-decisions.sh`'s and `task-observer`'s entries)
+**Type:** open-source
+**Phase/Area:** writing a blocking hook's settings command
+
+**Issue:** The repo's existing hook commands use `[ -f script ] && bash script || exit 0` for fail-open. That is harmless for hooks that always exit 0, but copied onto a BLOCKING hook it turns the hook's exit 2 (refuse) into exit 0 (allow): `||` fires on any non-zero exit of the script, not only on a missing file. The guard was written with `if [ -f … ] && command -v node …; then node …; else exit 0; fi` instead, and proved live (refused, then allowed).
+
+**Suggested improvement:** Where this repo documents how to add a hook (file-map row for `settings.json`, or a note beside the hooks), say: a hook that can BLOCK uses `if …; then …; else exit 0; fi`, never `&& … || exit 0`; and prove a new blocking hook live with one refused and one allowed call.
+
+**Principle:** Fail-open wrappers must distinguish "the check could not run" from "the check said no"; a shell `a && b || c` conflates them and silently disables every refusal.
+
+### Observation 271: A ruling that picks from a PICTURE must save the picture's recipe, or the build has to dig it out of an old chat
+
+**Status:** OPEN
+**Date:** 2026-09-26
+**Session context:** Building [TRK-PALETTE-ASK] — the owner had chosen "C" from three pictures of the Tracker's chart in other colours (D157, 24 Sep 26). Numbered 271–273 (first written as 262–264): the parallel `claude/accounts` branch holds 261 and `main` reached 270 (`claude/bg-cwd-guard`) before this merged.
+**Skill:** internal — the project's record-decisions rule (`.claude/rules/record-decisions.md`), and the session-handoff skill's checkpoint sweep
+**Type:** internal
+**Phase/Area:** Recording a ruling whose answer is a visual choice
+
+**Issue:** The ruling row said only "C — fully Raptor … sim turns from yellow to amber". The exact colours he approved lived in a throwaway script the earlier chat deleted, and in pictures in that chat's temp folder. Two days later the build could reproduce "C" exactly only by searching old session transcripts and pulling the deleted script back out of the transcript file. A fresh device, or a cleared temp folder, would have left the build guessing, and possibly shipping colours he never saw.
+
+**Suggested improvement:** When the owner rules by picking a picture (a mock, a comparison, "A/B/C"), the ruling's "Where it lives now" names a committed copy of what he picked: the picture (or its source HTML/script) under `raptor-port/docs/mock/` or the evidence folder, with the exact values (colours, sizes) written out. Add it to the record-decisions rule and the handoff checkpoint sweep ("a visual ruling has its picture in the repo").
+
+**Principle:** A decision made by pointing at a picture is only reproducible if the picture, or the recipe that drew it, is kept with the decision; the words describing it are a summary, not the spec.
+
+### Observation 272: The permission classifier refuses edits to the rulings files, which the project's own process requires
+
+**Status:** OPEN
+**Date:** 2026-09-26
+**Session context:** Same session. The first step — record the owner's go-ahead as ruling D230 in `.claude/rules/decisions/tracker.md` before the work, per `.claude/rules/record-decisions.md` and the hook on every message — was refused by the auto-mode classifier as "instruction poisoning" (the file loads as instructions in later sessions).
+**Skill:** internal — the record-decisions process (its hook, `.claude/hooks/record-decisions.sh`, and `DECISIONS.md` step 1)
+**Type:** internal
+**Phase/Area:** Writing a ruling row under auto mode
+
+**Issue:** The project's rule says a ruling is written the moment he gives it, into a file under `.claude/rules/decisions/`. Under auto mode that write can be refused outright, so the "record it FIRST" step silently becomes "ask him, then record it later" — the exact gap the rule exists to close. Nothing in the rule says what to do when the write is refused; the agent correctly did not work around it and told the owner.
+
+**Suggested improvement:** Add one line to `.claude/rules/record-decisions.md`: if the rulings file cannot be written (a permission refusal), say so to him in the same message, park the row's exact text in this chat's `HANDOFF.md` block under "rulings to file", and file it once he approves the edit — never skip it silently, never route around the refusal. Optionally the owner adds a permission rule for `.claude/rules/decisions/**` so the step works under auto mode.
+
+**Principle:** A process whose first step writes to a protected location needs a stated fallback for when the write is refused; otherwise the refusal quietly removes the step.
+
+### Observation 273: A break test that puts back a RETIRED value only proves the retired list — break with another CURRENT value too
+
+**Status:** OPEN
+**Date:** 2026-09-26
+**Session context:** `[TRK-PALETTE-ASK]` (D157) bug check. The first 15 break tests each put an OLD Tracker colour back; all went red — but most went red only through the "no retired colour anywhere" test. Astra's read showed a key that painted Sim in the Test token (both current colours) would have passed every test. Six new breaks using another current value then drove three new, sharper tests.
+**Skill:** internal — `raptor-port/docs/bug-check-order.md` §8.4 (the break test)
+**Type:** internal
+**Phase/Area:** Break tests for a mapping (a palette, a lookup table, a label → token wiring)
+
+**Issue:** For a change that maps many things to many values, breaking a wire by restoring its OLD value is caught by any "the old value must not come back" guard, so every break goes red even when nothing checks that each thing maps to the RIGHT new value. The break test reported 15/15 while a whole class of wrong wiring (two current values swapped) was unguarded.
+
+**Suggested improvement:** §8.4 gains one line: when the change is a mapping, at least one break per wired place swaps in ANOTHER CURRENT value (a neighbour's token, a real colour the app uses elsewhere), not only the retired one; a break that is caught only by the "retired value" guard does not count as that place's test.
+
+**Principle:** A break test proves a check only if the break is one the retired-value guard cannot see; swap in a legitimate-but-wrong value, not just the old one.
+
 ### Observation 261: Text written between tool calls did not reach the owner; a copy-paste prompt had to be re-sent as a file
 
 **Status:** OPEN

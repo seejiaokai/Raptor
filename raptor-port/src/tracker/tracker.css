@@ -19,8 +19,22 @@
    loses Raptor's 120px bottom pad, so the viewport-tall .tr-root column is
    the whole page. Toggled by TrackerPage.tsx; the same shape as body.sb-lock. */
 body.tr-on{padding-bottom:0;overflow:hidden}
-#detailBubble{position:fixed;z-index:66;display:none;max-width:260px;background:var(--panel);border:1px solid var(--accent);border-radius:9px;padding:9px 11px;font-size:12.5px;line-height:1.5;color:var(--ink);box-shadow:0 8px 26px rgba(0,0,0,.6);pointer-events:none}
-#detailBubble .dbId{font-weight:700;font-size:12px;letter-spacing:.4px;color:var(--accent);margin-bottom:3px}
+#detailBubble{position:fixed;z-index:66;display:none;max-width:260px;background:var(--panel,#14181D);border:1px solid var(--accent,#3BC6E8);border-radius:9px;padding:9px 11px;font-size:12.5px;line-height:1.5;color:var(--ink,#F1F4F7);box-shadow:0 8px 26px rgba(0,0,0,.6);pointer-events:none}
+#detailBubble .dbId{font-weight:700;font-size:12px;letter-spacing:.4px;color:var(--accent,#3BC6E8);margin-bottom:3px}
+/* The student's own record inside the bubble, under the event's details. It sat
+   INSIDE the #page-tracker wrapper below, which made it "#page-tracker
+   #detailBubble .mkrec" — a bubble hung off <body> never matched it, so the record
+   had no divider and no room above it (found by the D157 walk, 26 Sep 26). Out
+   here with the bubble's other rules, in Raptor's own names: the Tracker's names
+   (--line …) are set on the wrapper only, which the bubble is not inside. Every
+   colour here also carries Raptor's VALUE as its fallback, so a Tracker lifted out
+   of Raptor (the standalone rule, 9 Sep 26) — no scheduler.css, no :root — still
+   draws the bubble in the same colours (Fable F-C, Astra #1; trk-palette.test.ts
+   pins each fallback to Raptor's token). Every class the bubble's content uses has
+   its rule HERE — .mini ("No details yet …") sat inside the wrapper too and never
+   reached it (Fable F-B). */
+#detailBubble .mkrec{margin-top:5px;padding-top:5px;border-top:1px dashed var(--edge,#2A313A)}
+#detailBubble .mini{font-size:11px;color:var(--ink-3,#8A96A3)}
 
 #page-tracker {
 /* RAPTOR COLLISION RESETS — first inside the wrapper so every Tracker rule
@@ -40,11 +54,27 @@ body.tr-on{padding-bottom:0;overflow:hidden}
 .legend{padding:4px 16px;font-size:11.5px;color:var(--muted);gap:14px;align-items:normal}
 .modal{inset:auto;background:var(--panel2);align-items:normal;justify-content:normal;padding:18px;z-index:60}
 .sub{margin:0}
+/* THE PALETTE IS RAPTOR'S, FULLY (owner, D157, 24 Sep 26 — "7 c": backgrounds,
+   text AND the event colours). Each value is Raptor's own token from scheduler.css
+   :root — named in the comment beside it — COPIED rather than var()-linked, so the
+   Tracker keeps its colours if it is ever lifted back out as a standalone app (the
+   standalone rule, 9 Sep 26). trk-palette.test.ts pins every copy to its Raptor
+   source, and core.js's PAL / TYPE_COLOR / GRADE_FILL (the chart's SVG colours) to
+   the same tokens, so a change to Raptor's palette turns that test red here rather
+   than leaving the two apps apart. It also lists the retired Tracker colours and
+   fails if one comes back. What stays the Tracker's own, because Raptor has no word
+   for it: the DCO / DPCO / N.A. grade fills, the neutral --grey (the chart's
+   arrowheads, a "not yet" chip, a grey flex bar), the chart's own marks (the yellow
+   "available" ring, the turquoise search ring, the Edit chart layout handles) and
+   the lull calendar's marks. */
 &{
- --bg:#0f1115;--panel:#161922;--panel2:#1d212b;--line:#2b313d;--ink:#e9ecf2;--muted:#98a2b3;--accent:#36c2ff;
- --flight:#19b6e8;--acad:#27d64a;--test:#ff4040;--sim:#ffe000;--device:#b063ff;
- --dco:#000;--dpco:#1f6dff;--marg:#27d64a;--na:#cdbb8e;--fail:#ff2b2b;
- --orange:#ff9800;--red:#ff2b2b;--grey:#5a6172;
+ --bg:#0B0D10;--panel:#14181D;--panel2:#1A1F26;--line:#2A313A;--ink:#F1F4F7;--muted:#8A96A3; /* --bg --panel --panel-2 --edge --ink --ink-3 */
+ --accent:#3BC6E8;--accent-ink:#052A34;--on:rgba(59,198,232,.16); /* --accent --accent-ink; --on is Raptor's "switched on" wash (.fchip.on, .stchip.on) */
+ --flight:#3BC6E8;--acad:#57C97A;--test:#F0555F;--sim:#E5A83B;--device:#B24DEA; /* --flight --ok --hard --adv --san */
+ --dco:#000;--dpco:#1f6dff;--marg:#57C97A;--na:#cdbb8e;--fail:#F0555F; /* marg --ok, fail --hard; the other three are the Tracker's own */
+ --orange:#E5A83B;--red:#F0555F;--grey:#5a6172; /* --adv --hard; grey is the Tracker's own */
+ --red-ink:#FBB4B9;--red-wash:rgba(240,85,95,.12);--red-edge:rgba(240,85,95,.55); /* Raptor's text and tints on --hard */
+ color-scheme:dark; /* Raptor sets it on <html>; here too, so the date boxes and dropdowns stay dark standalone (Astra #1) */
 }
 *{box-sizing:border-box}
 /* Column flex so the board absorbs whatever the header and the edit strip
@@ -56,7 +86,7 @@ body.tr-on{padding-bottom:0;overflow:hidden}
 /* The page section itself is a plain block Raptor shows and hides; the
    column the standalone app hung on <body> + #root is .tr-root, sized to the
    viewport minus Raptor's sticky top bar (--tr-top, measured by TrackerPage.tsx).
-   The Tracker keeps its own dark palette and type inside that box. */
+   The Tracker keeps its own type inside that box; its colours are Raptor's (D157). */
 & .tr-root{margin:0;background:var(--bg);color:var(--ink);font:13.5px/1.45 "Segoe UI",Roboto,Arial,sans-serif;height:calc(100vh - var(--tr-top,0px));height:calc(100dvh - var(--tr-top,0px));overflow:hidden;display:flex;flex-direction:column;min-height:0;width:100%;max-width:100%;min-width:0}
 /* The column has to live on #root: React mounts the header, the edit strip and
    the layout inside it, so a flex column on body would only ever lay out #root. */
@@ -100,8 +130,11 @@ header h1{font-size:16px;margin:0;letter-spacing:.5px}
    moment Save appeared. It only takes room while it has something to say. */
 .findstat{font-size:11px;color:var(--muted);white-space:nowrap}
 select,button,input{background:var(--panel2);color:var(--ink);border:1px solid var(--line);border-radius:7px;padding:6px 9px;font-size:12.5px}
+/* A ticked box in Raptor's accent, the way Raptor's own are (.lgtog, .ifield.chk) — the
+   Export window and Copy lull periods drew the browser's own blue (Astra #2, D157). */
+input[type=checkbox]{accent-color:var(--accent)}
 button{cursor:pointer}button:hover{border-color:var(--accent)}
-button.primary{background:#16384a;border-color:var(--accent)}
+button.primary{background:var(--on);border-color:var(--accent)}
 button.sm{padding:3px 7px;font-size:11px}
 /* The Course / Syllabus edit pencils and the ⓘ info toggle are glyph-only: a
    touch bigger than the 11px .sm text so the icon reads, and centred. */
@@ -118,7 +151,7 @@ button:disabled:hover{border-color:var(--line)}
 .findlist.on{display:block}
 .findrow{display:flex;align-items:center;gap:7px;padding:5px 8px;border-radius:6px;cursor:pointer;font-size:12px;white-space:nowrap;min-width:0}
 .findrow:hover{background:var(--panel)}
-.findrow.on{background:#16384a}
+.findrow.on{background:var(--on)}
 .findrow b{flex:0 0 auto}
 .fname{color:var(--muted);font-size:11px;overflow:hidden;text-overflow:ellipsis;min-width:0}
 .fdot{width:8px;height:8px;border-radius:50%;flex:0 0 auto;background:var(--muted)}
@@ -136,7 +169,7 @@ button:disabled:hover{border-color:var(--line)}
 .resizer{background:var(--line);cursor:col-resize}.resizer:hover{background:var(--accent)}
 .viewtabs{display:none;gap:6px;padding:6px 10px;border-bottom:1px solid var(--line);background:var(--panel);position:sticky;top:0;z-index:35}
 .viewtabs button{flex:1;padding:8px;font-size:13px}
-.viewtabs button.active{background:#16384a;border-color:var(--accent)}
+.viewtabs button.active{background:var(--on);border-color:var(--accent)}
 @media(max-width:1050px){
  .layout{grid-template-columns:1fr}
  .resizer{display:none}
@@ -151,7 +184,7 @@ button:disabled:hover{border-color:var(--line)}
 #showAllPanel .sahd h2{margin:0;font-size:15px;flex:1}
 #saBody{overflow:auto;padding:10px 14px}
 .saphase{font-size:10px;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted);margin:12px 0 5px;border-bottom:1px solid var(--line);padding-bottom:3px}
-.sarow{display:grid;grid-template-columns:14px 1fr auto;gap:8px;align-items:start;padding:7px 0;border-bottom:1px dashed #262c38}
+.sarow{display:grid;grid-template-columns:14px 1fr auto;gap:8px;align-items:start;padding:7px 0;border-bottom:1px dashed var(--line)}
 .ordrow{display:flex;align-items:center;gap:8px;padding:8px 10px;border-bottom:1px solid var(--line);background:var(--panel2);cursor:grab;user-select:none}
 .ordrow:last-child{border-bottom:0}
 .ordrow.drag{opacity:.45}
@@ -163,14 +196,18 @@ button:disabled:hover{border-color:var(--line)}
 .sarow .sdot{width:11px;height:11px;border-radius:50%;margin-top:3px}
 .sarow .sid{font-weight:700}.sarow .snm{color:var(--ink)}
 /* Failures. Outlined, never solid: --red (danger) and --test (an event type) are
-   near-identical, and a solid red chip beside a red Test ball would read as the
+   the SAME red since D157 (both Raptor's --hard), and a solid red chip beside a red Test ball would read as the
    same thing meaning two different things. The list has a ceiling and scrolls
-   inside it, because the number of failures has no ceiling. */
+   inside it, because the number of failures has no ceiling.
+   `.chip.failchip`, not `.failchip`: every failure chip is also a `.chip`, whose
+   rule sits further down this file at the same weight, so a bare `.failchip` lost
+   its red outline and clear fill to the plain grey chip — the outline this
+   comment describes had never been drawn (found by the D157 walk, 26 Sep 26). */
 .c-fails h3{display:flex;align-items:center;gap:6px}
-.failtot{margin-left:auto;background:#ff2b2b1f;border:1px solid #ff2b2b88;color:#ff9b9b;border-radius:20px;padding:1px 8px;font-size:10.5px;font-weight:600;letter-spacing:0}
+.failtot{margin-left:auto;background:var(--red-wash);border:1px solid var(--red-edge);color:var(--red-ink);border-radius:20px;padding:1px 8px;font-size:10.5px;font-weight:600;letter-spacing:0}
 .failchips{max-height:104px;overflow:auto;align-content:flex-start}
-.failchip{border:1px solid #ff2b2b88;color:#ff9b9b;background:transparent;white-space:nowrap;cursor:default;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
-.failchips .failchip:hover{border-color:#ff2b2b}
+.chip.failchip{border:1px solid var(--red-edge);color:var(--red-ink);background:transparent;white-space:nowrap;cursor:default;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+.failchips .failchip:hover{border-color:var(--red)}
 /* The card's title opens the full list — dotted underline so it reads as a
    thing you can press, the same colour as the heading until hovered. */
 .failTitle{cursor:pointer;text-decoration:underline dotted;text-underline-offset:3px}
@@ -183,10 +220,8 @@ button:disabled:hover{border-color:var(--line)}
 .faillog .frow .mini{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .faillog .lullhd .failtot{margin-left:0}
 /* The pop-up's list of this student's failures on the event, each with its day. */
-.pop .fdates{margin-top:5px;display:flex;flex-wrap:wrap;gap:3px 8px;font-size:10.5px;color:#ff9b9b;line-height:1.4}
+.pop .fdates{margin-top:5px;display:flex;flex-wrap:wrap;gap:3px 8px;font-size:10.5px;color:var(--red-ink);line-height:1.4}
 .pop .fdates b{font-weight:600}
-/* The student's own record inside the details bubble, under the event's details. */
-#detailBubble .mkrec{margin-top:5px;padding-top:5px;border-top:1px dashed var(--line)}
 /* Status badge: dark ink on the grade's own fill, matching the ring colours on
    the board so one vocabulary covers both surfaces. */
 .sst{display:inline-block;margin-left:6px;padding:1px 7px;border-radius:20px;font-size:10.5px;font-weight:600;vertical-align:1px}
@@ -194,7 +229,7 @@ button:disabled:hover{border-color:var(--line)}
 .sarow .smeta{font-size:11.5px;color:var(--muted);margin-top:2px;line-height:1.5}
 .sarow .smeta b{color:var(--ink);font-weight:600}
 .sarow .sedit{align-self:center}
-.sarow.editing{background:#151b26;border-bottom-color:var(--accent)}
+.sarow.editing{background:rgba(59,198,232,.05);border-bottom-color:var(--accent)}
 .saedit{display:grid;grid-template-columns:1fr 1fr;gap:6px 10px;margin:6px 6px 4px 0}
 .saedit label{display:flex;flex-direction:column;gap:3px;font-size:10px;letter-spacing:.7px;text-transform:uppercase;color:var(--muted)}
 .saedit .full{grid-column:1/-1}
@@ -249,7 +284,7 @@ button:disabled:hover{border-color:var(--line)}
 .ball{width:60px;height:60px;cursor:pointer;flex:0 0 auto}
 .ball{cursor:pointer}.ball:hover{filter:brightness(1.12)}
 /* the ring is the crew picker: a hovered wedge hints it is its own target */
-#flowSvg:not(.arrange) .ball .wedge:hover{stroke:#36c2ff;stroke-width:1.6}
+#flowSvg:not(.arrange) .ball .wedge:hover{stroke:var(--accent);stroke-width:1.6}
 svg.perf{shape-rendering:optimizeSpeed;text-rendering:optimizeSpeed}
 svg.perf #viewport{will-change:transform}
 svg.perf .avail{filter:none;stroke-width:3.4}
@@ -258,7 +293,7 @@ svg.perf .ball:hover{filter:none}
 svg.perf .edgehit{pointer-events:none}
 #flowSvg.arrange{touch-action:none}
 .avail{filter:drop-shadow(0 0 5px #ffd23f)}
-/* The searched ball. Turquoise rather than the accent blue #36c2ff, which
+/* The searched ball. Turquoise rather than the accent blue (--accent), which
    already means "selected" while editing, and it carries a glow those rings do
    not — two ways to tell them apart, not one. */
 .found{filter:drop-shadow(0 0 6px #00e5c8)}
@@ -275,22 +310,22 @@ svg.perf .edgehit{pointer-events:none}
    reserved while editing so the legend and the phone's view tabs sit below
    the hint instead of under it. Fixed, so a longer hint cannot move the board. */
 .arrhintwrap.on{height:26.4px}
-.arrhint{position:absolute;top:0;left:0;right:0;background:#16384a;border-bottom:1px solid var(--accent);color:#dff;padding:4px 12px;font-size:12px;display:none;text-align:center;pointer-events:none;opacity:.97}
+.arrhint{position:absolute;top:0;left:0;right:0;background:linear-gradient(var(--on),var(--on)) var(--panel);border-bottom:1px solid var(--accent);color:var(--ink);padding:4px 12px;font-size:12px;display:none;text-align:center;pointer-events:none;opacity:.97}
 .arrhint.on{display:block}
 /* The Details-mode hint takes its own room: nothing changes under it. */
 .arrhint.inflow{position:static;opacity:1}
 /* The bar itself stays click-transparent so it cannot swallow chart clicks;
    only the escape button takes the pointer back. */
-.hintoff{pointer-events:auto;margin-left:10px;background:var(--accent);color:#04121b;border:0;border-radius:5px;padding:2px 9px;font-size:12px;font-weight:600;cursor:pointer;min-height:24px}
+.hintoff{pointer-events:auto;margin-left:10px;background:var(--accent);color:var(--accent-ink);border:0;border-radius:5px;padding:2px 9px;font-size:12px;font-weight:600;cursor:pointer;min-height:24px}
 /* ONE fixed width, dirty or clean (R115): min-width alone was a floor, and the
    button plus the words needed ~291px, so at ~1200-1250px the first edit wrapped
    the bar and slid the chart 36px down under the pointer ([HUMAN-RETEST] w3-F5).
    The words take what the button leaves and shorten (…); Save never moves. */
 .saveslot{display:inline-flex;align-items:center;gap:6px;justify-content:flex-end;flex:0 0 172px;width:172px;min-width:172px}
 .saveslot #saveChanges{flex:0 0 auto}
-.savestat{font-size:11px;color:#8a93a3;white-space:nowrap;max-width:170px;overflow:hidden;text-overflow:ellipsis;flex:0 1 auto;min-width:0}
-.savestat.ok{color:#39d353}.savestat.saving{color:#ffb84d}.savestat.err{color:#ff6b6b}
-.ball text.lbl{font:600 8.5px "Segoe UI",Arial;fill:#10131a;pointer-events:none}
+.savestat{font-size:11px;color:var(--muted);white-space:nowrap;max-width:170px;overflow:hidden;text-overflow:ellipsis;flex:0 1 auto;min-width:0}
+.savestat.ok{color:var(--acad)}.savestat.saving{color:var(--orange)}.savestat.err{color:var(--red)}
+.ball text.lbl{font:600 8.5px "Segoe UI",Arial;fill:var(--bg);pointer-events:none}
 .ball text.lbll{fill:#fff}
 .legend{display:flex;gap:14px;flex-wrap:wrap;font-size:11.5px;color:var(--muted);padding:4px 16px}
 .legend b{color:var(--ink)} .sw{display:inline-block;width:10px;height:10px;border-radius:50%;vertical-align:-1px;margin-right:4px}
@@ -299,8 +334,8 @@ svg.perf .edgehit{pointer-events:none}
 /* Two buttons in one heading, kept together on the right. */
 .card h3 .hbtns{display:inline-flex;gap:4px}
 .card h3 .hbtns button{text-transform:none;letter-spacing:0}
-.bar{height:8px;border-radius:5px;background:#262c38;overflow:hidden;margin:3px 0 8px}.bar>div{height:100%;background:linear-gradient(90deg,#19b6e8,#27d64a)}
-.kv{display:flex;justify-content:space-between;gap:8px;font-size:12.5px;padding:3px 0;border-bottom:1px dashed #262c38}
+.bar{height:8px;border-radius:5px;background:var(--line);overflow:hidden;margin:3px 0 8px}.bar>div{height:100%;background:linear-gradient(90deg,var(--flight),var(--acad))}
+.kv{display:flex;justify-content:space-between;gap:8px;font-size:12.5px;padding:3px 0;border-bottom:1px dashed var(--line)}
 .kv:last-child{border-bottom:0}.kv span:first-child{color:var(--muted)}.kv b{font-variant-numeric:tabular-nums;text-align:right}
 .big{display:flex;gap:8px;flex-wrap:wrap}.big .num{flex:1;min-width:60px;text-align:center;background:var(--panel);border:1px solid var(--line);border-radius:9px;padding:7px}
 .big .num .v{font-size:20px;font-weight:700}.big .num .l{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px}
@@ -352,7 +387,7 @@ svg.perf .edgehit{pointer-events:none}
 .cal .dow{font-size:9px;color:var(--muted);text-align:center;padding:2px}
 .cal .day{aspect-ratio:1;display:flex;align-items:center;justify-content:center;border-radius:6px;font-size:11px;cursor:pointer;border:1px solid transparent}
 .cal .day:hover{border-color:var(--accent)}.cal .day.out{color:#475}.cal .today{outline:2px solid var(--accent)}
-.cal .lull{background:#3a3030;color:#ffb3a0}.cal .end{background:#16384a}.cal .ls{background:#2a3550}.cal .lc{background:#203a2a}
+.cal .lull{background:var(--red-wash);color:var(--red-ink)}.cal .end{background:var(--on)}.cal .ls{background:#2a3550}.cal .lc{background:#203a2a}
 .chips{display:flex;flex-wrap:wrap;gap:5px}.chip{background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:3px 9px;font-size:12px;display:flex;align-items:center;gap:6px}
 .chip b{font-weight:600}.chip .x{cursor:pointer;color:var(--muted)}.chip .x:hover{color:var(--red)}
 .chip .ren{cursor:pointer;color:var(--muted);font-size:11px}.chip .ren:hover{color:var(--accent)}
@@ -382,13 +417,13 @@ small.hint{color:var(--muted);font-size:11px}
 .arrtools{display:none;gap:6px;background:var(--panel2);border-bottom:1px solid var(--line);padding:6px 10px;flex-wrap:wrap;justify-content:center;align-items:center}
 .arrtools.on{display:flex}
 .arrtools .sep{width:1px;background:var(--line);margin:0 2px}
-.edgehit{cursor:pointer}.edgehit:hover{stroke:rgba(54,194,255,.25)!important}
+.edgehit{cursor:pointer}.edgehit:hover{stroke:rgba(59,198,232,.25)!important}
 .linehandle{cursor:move}
 .port{cursor:crosshair}.endhandle{cursor:move}
 .arrtools input.fontnum{width:52px}
 .arrtools .arrnote{flex-basis:100%;text-align:center;color:var(--muted);font-size:11.5px;margin-top:3px}
-#flowSvg.arrange{background:#0c0e12;border:1px dashed #2b313d;border-radius:10px;touch-action:none}
-#saveChanges.dirty{background:#4a2f16;border-color:var(--orange)}
+#flowSvg.arrange{background:#0c0e12;border:1px dashed var(--line);border-radius:10px;touch-action:none}
+#saveChanges.dirty{background:rgba(229,168,59,.16);border-color:var(--orange)}
 #delSyl:hover,#delCourse:hover{border-color:var(--red)}
 /* Grouping for the 22 controls that used to wrap onto six rows at 1440.
    z-index 50: over the board and the sticky view tabs (35), under .modal (60). */

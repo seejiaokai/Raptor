@@ -386,7 +386,9 @@ Run from `raptor-port/`, not the repo root. All FIVE, after any change:
 > script) fails INSTANTLY with `ENOENT … package.json`, and the wrapper's own
 > exit code can read 0, masking it. ALWAYS `cd` into `raptor-port/` inside a
 > backgrounded gate. This bit twice (test:e2e, 30 Aug 26)
-> and each miss wastes a full ~10-minute re-run.
+> and each miss wastes a full ~10-minute re-run. **Enforced since 26 Sep 26** ([BG-CWD-GUARD],
+> D162): a hook, `../.claude/hooks/bg-cwd-guard.mjs`, refuses a backgrounded `npm`/`npx` that never
+> moves into `raptor-port/` (`cd raptor-port &&`, `Set-Location raptor-port;` or `npm --prefix raptor-port`).
 
 
 ```

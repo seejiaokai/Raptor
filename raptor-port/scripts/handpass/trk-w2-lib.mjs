@@ -49,7 +49,7 @@ export const wedges = (page, id) => page.evaluate(id => {
 /** Red failure ticks drawn on a ball. */
 export const ticks = (page, id) => page.evaluate(id => {
   const g = [...document.querySelectorAll('#flowSvg .ball')].find(x => x.dataset.id === id)
-  return g ? g.querySelectorAll('line[stroke="#ff2b2b"]').length : null
+  return g ? g.querySelectorAll('line.ftick').length : null
 }, id)
 /** The picked student's edge on a ball: which wedge, its fill and stroke. */
 export const mine = (page, id) => page.evaluate(id => {
