@@ -33,6 +33,7 @@ import {
   medOverlapRefusal, upchitRefusal, downOverUpchitRefusal, applyMedPlan, normalizeInputDraft,
   medKeptSegments, mintMedSegments, ordISO, DocField, oilGate, oilAnswered, oilUnansweredDay, docGate,
   rosterOptions as people, archivedOptions, inputTone, medPlanProtected, medSegmentsProtected,
+  medAskFor, commitEditMedChoices, commitEditUpchit,
 } from './inputedit'
 import { DocConfirm } from './DocConfirm'
 import { docFields, docHas, rowDocIds } from '../state/docs'
@@ -588,75 +589,27 @@ export function InputsPage() {
       })
       return
     }
-    /* an upchit EDIT re-runs its trims against the (possibly moved) date, so
-       it goes through the same save-time summary a new upchit does (owner,
-       27 Aug 26 — nothing silent); the sheet's Save then commits the edit and
-       the ticked leftover removals as ONE undo step (the nested batch is
-       safe: the inner writeInputsBatch's push is a no-op under the outer). A
-       missing date skips straight to the commit, whose own refusal says so. */
-    if (isUpchit(draft.type) && draft.start) {
-      /* the shared refusals run FIRST — a bad draft toasts at once instead
-         of after the summary sheet was already shown */
-      if (!normalizeInputDraft(draft, editRow)) return
-      const dateLabel = fmt(draft.start)
-      setUpConf({
-        who: PEOPLE[draft.person] ? PEOPLE[draft.person].cs : draft.person,
-        dateLabel,
-        effects: upchitEffects(draft.person, dateOrd(dateLabel, editRow.yr), editRow),
-        commit: (removals: any[]) => {
-          if (medPlanProtected(removals.map(row => ({ row })))) {
-            return HOOKS.toast('This week is locked — it was published by an older version and can’t be edited', 'warn')
-          }
-          let ok = false
-          writeInputsBatch(() => {
-            ok = commitInputEdit(editRow, draft)
-            if (ok && removals.length)
-              applyMedPlan(removals.map((lr: any) => ({ row: lr, action: 'delete', why: 'removed with the upchit' })))
-          })
-          if (ok) { setEditRow(null); setDraft(null); HOOKS.toast('Input updated', 'ok') }
-          else if (INPUTS.indexOf(editRow) < 0) { setEditRow(null); setDraft(null) }
-        },
-      })
+    /* THE MEDICAL QUESTIONS on an EDIT (owner, 27 Aug 26 — nothing silent): an upchit re-runs its trims against the
+       (possibly moved) date through the summary sheet; a DIFFERENT-type medical overlap goes to the clash sheet, the
+       edited row becoming the first kept segment. What to ask and what each Save writes are the ONE body the
+       calendar's drag and the schedule's reassign now share too (inputedit.tsx medAskFor / commitEditUpchit /
+       commitEditMedChoices — the absence-record re-test, AB4, 26 Sep 26), so the three doors cannot drift. The shared
+       refusals run first; each Save is one undo step. */
+    const after = (ok: boolean) => {
+      if (ok) { setEditRow(null); setDraft(null); HOOKS.toast('Input updated', 'ok') }
+      else if (INPUTS.indexOf(editRow) < 0) { setEditRow(null); setDraft(null) }
+    }
+    const ask = medAskFor(editRow, draft)
+    if (ask === 'refused') return
+    if (ask && ask.kind === 'up') {
+      setUpConf({ who: ask.who, dateLabel: ask.dateLabel, effects: ask.effects,
+        commit: (removals: any[]) => after(commitEditUpchit(editRow, draft, removals)) })
       return
     }
-    /* a DIFFERENT-type medical overlap on an EDIT asks too (owner, 27 Aug 26
-       — the clash sheet): the edited row becomes the first kept segment, the
-       rest are minted as siblings, all one undo step */
-    if (isDownchit(draft.type) && draft.start) {
-      if (!normalizeInputDraft(draft, editRow)) return
-      const aOrd = dateOrd(fmt(draft.start), editRow.yr)
-      const bOrd = dateOrd(draft.end ? fmt(draft.end) : fmt(draft.start), editRow.yr)
-      const clashes = medClashes(draft.person, draft.type, aOrd, bOrd, editRow)
-      if (clashes.length) {
-        setMedConf({
-          who: PEOPLE[draft.person] ? PEOPLE[draft.person].cs : draft.person,
-          newType: draft.type,
-          span: fmt(draft.start) + (draft.end && draft.end !== draft.start ? ' – ' + fmt(draft.end) : ''),
-          clashes, a: aOrd, b: bOrd,
-          commit: (choices: string[], keepTail: any[]) => {
-            const segs = medKeptSegments(aOrd, bOrd, clashes, choices)
-            if (!segs.length) return
-            if (medSegmentsProtected({ ...draft, yr: editRow.yr }, segs, keepTail, bOrd, editRow)) {
-              return HOOKS.toast('This week is locked — it was published by an older version and can’t be edited', 'warn')
-            }
-            const g0 = segs[0]
-            const d2 = {
-              ...draft,
-              start: ordISO(g0.startOrd),
-              end: g0.endOrd > g0.startOrd ? ordISO(g0.endOrd) : '',
-              remarks: withRemarksTail(draft.remarks, ordISO(g0.startOrd), ordISO(g0.endOrd), 'till'),
-            }
-            let ok = false
-            writeInputsBatch(() => {
-              ok = commitInputEdit(editRow, d2, keepTail, bOrd)
-              if (ok) mintMedSegments(editRow, segs.slice(1), keepTail, bOrd)
-            })
-            if (ok) { setEditRow(null); setDraft(null); HOOKS.toast('Input updated', 'ok') }
-            else if (INPUTS.indexOf(editRow) < 0) { setEditRow(null); setDraft(null) }
-          },
-        })
-        return
-      }
+    if (ask && ask.kind === 'clash') {
+      setMedConf({ who: ask.who, newType: ask.newType, span: ask.span, clashes: ask.clashes, a: ask.a, b: ask.b,
+        commit: (choices: string[], keepTail: any[]) => after(commitEditMedChoices(editRow, draft, ask, choices, keepTail)) })
+      return
     }
     /* the OIL ask on an EDIT (owner, 28 Aug 26) — oilGate runs the shared
        refusals first (a bad draft toasts at once) and re-asks only when the

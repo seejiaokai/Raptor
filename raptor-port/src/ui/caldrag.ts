@@ -20,9 +20,10 @@
    so it is unit-testable on its own and reusable by anything that ever wants
    to redate a chip without a drag (a keyboard move, say).
    --------------------------------------------------------------------------- */
-import { draftOf, commitInputEdit, fmtDay, askOilIfPending } from './inputedit'
+import { draftOf, commitInputEdit, fmtDay, askOilIfPending, medAskFor } from './inputedit'
 import { movePlanPuck, PLANPUCKS } from '../state/plan'
-import { writeInputs } from '../state/store'
+import { writeInputs, notify } from '../state/store'
+import { setMedMove } from './pops'
 import { canEditSched } from '../state/auth'
 import { isMe } from '../state/perms'
 import { INPUTS } from '../engine/inputs'
@@ -109,6 +110,15 @@ export function commitChipMove(entry: any, fromIso: string, toIso: string): bool
      that could forget to check it, so the span's length (including "no end
      at all") can never drift across a move */
   if (d.end) d.end = shiftIso(d.end, days)
+
+  /* A MEDICAL MOVE IS ASKED ABOUT FIRST (the absence-record re-test, AB4, 26 Sep 26 — Fable F4 and Astra A). Onto a
+     different-type medical, or an upchit anywhere, the edit window puts the question to the filer before anything is
+     written (owner, 27 Aug 26 — "never resolved silently … NO default"); this door went straight to the commit, whose
+     trim plan resolved it with its safety default. Now the move waits on the same sheet (ui/MedMoveConfirm.tsx) and
+     nothing lands until it is answered. Returns false: nothing moved YET, so the drag runs no success feedback. */
+  const ask = medAskFor(r, d)
+  if (ask === 'refused') return false
+  if (ask) { setMedMove({ iid: r.iid, draft: d, ask, via: 'drag', said: 'Moved to ' + fmtDay(d.start) }); notify(); return false }
 
   const ok = commitInputEdit(r, d)
   /* commitInputEdit already toasts every refusal it can produce (a SANS

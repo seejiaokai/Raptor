@@ -11,7 +11,7 @@ process.env.AB_WHO = `host/h1-${W}`
 const L = await import('./ab-lib.mjs')
 const S = await import('./ab-sched.mjs')
 const { openHi } = await import('../am/w2-lib.mjs')
-const { go, lwOpen, lwBid, tapCell, sheetPress, closeSheets, sheetNow, fileInput, inputsWindow, deleteInputRow, inputsOf, shot, toastSpy, toasts, resultBook, ROOT, rowRun } = L
+const { go, lwOpen, bidOn: lwBid, tapCell, sheetPress, closeSheets, sheetNow, fileInput, inputsWindow, deleteInputRow, inputsOf, shot, toastSpy, toasts, resultBook, ROOT, rowRun } = L
 const { counts, agree, unavOn, shotUnav, pubAndSign, freeMen, ISO } = S
 const PHONE = W === 'phone'
 const R = resultBook(`H1-${W}`, `${ROOT}/docs/handpass/parts/2026-09-26-absence-h1-${W}.txt`)

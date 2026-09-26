@@ -584,3 +584,48 @@ resolved statuses always carry their resolution date
 **Suggested improvement:** For every NEW card, form or panel a build adds, the walk asserts its geometry, not only its content: primary controls aligned with the fields above (left and right edges equal) and inside the container. Cheap in a scripted walk (bounding boxes), and the assertion catches what a glance normalises.
 
 **Principle:** Looking confirms the picture matches your expectation of the content; it rarely notices a few pixels of misalignment. Measure what "looks right" means for new surfaces.
+
+### Observation 290: One blind round can be both the plan's red team and the scenario design
+
+**Status:** OPEN
+**Date:** 2026-09-26
+**Session context:** [HUMAN-RETEST] the absence record — planning the re-test (numbered past the parallel branches: claude/five-flags-batch-build at 285)
+**Skill:** New skill candidate: bug-check order (raptor-port/docs/bug-check-order.md) — §4 rank 1 and rank 3, §4a
+**Type:** open-source
+**Phase/Area:** where to spend the other models before a walk
+
+**Issue:** For a re-test the "plan" IS a test plan (roll-call, doors, fixture, walker split). One brief asked both outside models, blind, to attack the plan for what it misses AND to design ranked failure scenarios. Both independently found the same top defect (a drag door that skips a confirmation sheet the dialog door asks) and the same plan error (a roll-call row naming the wrong component) — two findings that a code review and the builder's own plan had both missed.
+
+**Suggested improvement:** In the order's §4 / §4a, say that when the work is a re-test or a walk, the plan red team and the scenario design are one round with one brief (the finder wording + "what does this plan miss"), capped at one round, folded in before the walk.
+
+**Principle:** When the plan is itself a test plan, reviewing it and designing its scenarios are the same question — ask it once, blind, to two models.
+
+### Observation 291: An inherited walk helper found the "new" record by position — identity must come from the difference
+
+**Status:** OPEN
+**Date:** 2026-09-26
+**Session context:** [HUMAN-RETEST] the absence record — the host's first walk
+**Skill:** New skill candidate: bug-check order — §7.2 the scripted drivers (raptor-port/scripts/handpass/)
+**Type:** open-source
+**Phase/Area:** reusing a previous walk's helpers
+
+**Issue:** A helper from an earlier walk returned "the last record in the list" as the one it had just filed. This app puts a new record at the TOP of that list (another door puts it at the bottom), so the helper named an unrelated record; the walk then deleted the wrong one, and the app's (correct) count of 2 read like a defect for several minutes.
+
+**Suggested improvement:** Walk helpers name what they created by the DIFFERENCE between the ids before and after the action, never by position; and the first use of any inherited helper is on a case whose answer is known.
+
+**Principle:** Identify what an action created by the before/after difference, never by where it landed — position is an implementation detail that differs by door.
+
+### Observation 292: A reviewer's "confirmed defect" that a test pins as intended is a question, not a fix
+
+**Status:** OPEN
+**Date:** 2026-09-26
+**Session context:** [HUMAN-RETEST] the absence record — dispositioning the plan reviews' findings
+**Skill:** New skill candidate: bug-check order — §4 "what to do with what they hand back"
+**Type:** open-source
+**Phase/Area:** dispositioning a reviewer's finding
+
+**Issue:** A reviewer marked a behaviour CONFIRMED-defective (a sheet's Clear removes an award on the same day) with an exact fix. Reproduced on screen, it was real — and an existing test pinned it as the intended "admin's clear". Applying the fix would have silently reversed a design someone chose; leaving it would have left money disappearing with no word.
+
+**Suggested improvement:** Add a step to §4's list: before fixing a confirmed finding, search the tests for one that pins the opposite as intended; if one exists, the finding goes to the owner as a question (with the safe interim — e.g. make the action SAY what it removes), not into a fix.
+
+**Principle:** A reproduced behaviour that a test deliberately pins is a design disagreement; settle it with the owner, not with the reviewer's fix.

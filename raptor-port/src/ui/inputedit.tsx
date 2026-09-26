@@ -40,7 +40,7 @@ import { CURWEEK } from '../engine/waves'
 import { keyToIso, mondayOf } from './weeknav'
 import { canEditSched } from '../state/auth'
 import { me, mayEditInputOf, mayDeleteInputOf } from '../state/perms'
-import { INPEDIT, setInpEdit, OILASK, setOilAsk } from './pops'
+import { INPEDIT, setInpEdit, OILASK, setOilAsk, setMedMove } from './pops'
 import { useVersion } from './useStore'
 import { RangeCal } from './RangeCal'
 
@@ -1174,6 +1174,73 @@ export function commitInputEdit(r: any, draft: any, keepTail?: any, entryEnd?: a
   return ok
 }
 
+/* ---- THE MEDICAL QUESTIONS FOLLOW A DRAG AND A REASSIGN (the absence-record re-test, AB4, 26 Sep 26 — Fable F4 and
+   Astra A, found independently) ------------------------------------------------------------------------------------
+   The edit window and the Inputs table put a different-type medical overlap to the filer (the clash sheet — "choose who
+   holds the shared days", NO default) and an upchit's effects to him (the summary sheet) BEFORE anything is written
+   (owner, 27 Aug 26). The calendar's chip drag and the schedule's reassign went straight to commitInputEdit, whose trim
+   plan then resolved the clash with the safety default (every tail kept) — silently. These three are the one body the
+   sheets' callers share: what to ask, and what each sheet's Save writes for an EDIT of an existing row. The Inputs
+   table's edit runs through them, and so does the move hand-off (ui/MedMoveConfirm.tsx), so a drag, a reassign and
+   an edit answer the same question the same way. */
+export type MedAsk =
+  | { kind: 'clash'; who: string; newType: string; span: string; clashes: any[]; a: number; b: number }
+  | { kind: 'up'; who: string; dateLabel: string; effects: { plan: any[]; leftovers: any[] } }
+
+/** What saving `draft` over the existing row `r` must put to the filer first: null when nothing (not a medical, or a
+ *  downchit that meets no different-type medical), 'refused' when the shared refusals toasted. */
+export function medAskFor(r: any, draft: any): MedAsk | null | 'refused' {
+  if (!draft || !draft.start || !(isUpchit(draft.type) || isDownchit(draft.type))) return null
+  /* the shared refusals FIRST — a bad draft toasts at once, never after a sheet was shown */
+  if (!normalizeInputDraft(draft, r)) return 'refused'
+  const who = PEOPLE[draft.person] ? PEOPLE[draft.person].cs : String(draft.person || '')
+  if (isUpchit(draft.type)) {
+    /* an upchit is NEVER saved silently: the summary runs whatever it finds */
+    const dateLabel = fmt(draft.start)
+    return { kind: 'up', who, dateLabel, effects: upchitEffects(draft.person, dateOrd(dateLabel, r.yr), r) }
+  }
+  const a = dateOrd(fmt(draft.start), r.yr)
+  const b = dateOrd(draft.end ? fmt(draft.end) : fmt(draft.start), r.yr)
+  const clashes = medClashes(draft.person, draft.type, a, b, r)
+  if (!clashes.length) return null
+  return { kind: 'clash', who, newType: draft.type,
+    span: fmt(draft.start) + (draft.end && draft.end !== draft.start ? ' – ' + fmt(draft.end) : ''), clashes, a, b }
+}
+
+/** The clash sheet's Save for an EDIT: the edited row becomes the first kept segment, the rest are minted as
+ *  siblings — all one undo step. */
+export function commitEditMedChoices(r: any, draft: any, ask: { clashes: any[]; a: number; b: number }, choices: string[], keepTail: any[]): boolean {
+  const segs = medKeptSegments(ask.a, ask.b, ask.clashes, choices)
+  if (!segs.length) return false
+  if (medSegmentsProtected({ ...draft, yr: r.yr }, segs, keepTail, ask.b, r)) { medicalLocked(); return false }
+  const g0 = segs[0]
+  const d2 = {
+    ...draft,
+    start: ordISO(g0.startOrd),
+    end: g0.endOrd > g0.startOrd ? ordISO(g0.endOrd) : '',
+    remarks: withRemarksTail(draft.remarks, ordISO(g0.startOrd), ordISO(g0.endOrd), 'till'),
+  }
+  let ok = false
+  writeInputsBatch(() => {
+    ok = commitInputEdit(r, d2, keepTail, ask.b)
+    if (ok) mintMedSegments(r, segs.slice(1), keepTail, ask.b)
+  })
+  return ok
+}
+
+/** The upchit sheet's Save for an EDIT: the edit and the ticked leftover removals as ONE undo step (the nested batch
+ *  is safe — the inner writeInputsBatch's push is a no-op under the outer). */
+export function commitEditUpchit(r: any, draft: any, removals: any[]): boolean {
+  if (medPlanProtected(removals.map((row: any) => ({ row })))) { medicalLocked(); return false }
+  let ok = false
+  writeInputsBatch(() => {
+    ok = commitInputEdit(r, draft)
+    if (ok && removals.length)
+      applyMedPlan(removals.map((lr: any) => ({ row: lr, action: 'delete', why: 'removed with the upchit' })))
+  })
+  return ok
+}
+
 /* ---- CHANGING THE PUCK (owner, 14 Aug 26 — "allow Unavailable to be
    editable too... even down to changing the puck") ---------------------
    The Unavailable row's person cell plants and drops like any other seat
@@ -1206,6 +1273,16 @@ export function reassignInput(iid: any, personId: any) {
   const was = PEOPLE[r.person] ? PEOPLE[r.person].cs : String(r.person || '')
   const draft = draftOf(r)
   draft.person = personId
+  /* a MEDICAL handed to a man who already carries a different medical there (or an upchit) is asked about first,
+     exactly as the edit window asks (AB4, 26 Sep 26 — the second door both plan reviews named): the move waits on
+     ui/MedMoveConfirm.tsx and nothing is written until it is answered */
+  const ask = medAskFor(r, draft)
+  if (ask === 'refused') return false
+  if (ask) {
+    setMedMove({ iid: r.iid, draft, ask, via: 'reassign', said: `${PEOPLE[personId].cs} is now unavailable instead of ${was}` })
+    notify()
+    return false
+  }
   if (!commitInputEdit(r, draft)) return false
   HOOKS.toast(`${PEOPLE[personId].cs} is now unavailable instead of ${was}`, 'ok')
   /* THE SECOND DOOR ONTO THE SAME BUG (Fable M2, 22 Sep 26). This helper goes
