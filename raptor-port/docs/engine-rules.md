@@ -2868,7 +2868,7 @@ admin or member, and the CALLSIGN (person) it belongs to; one person, one accoun
 (`ME` = the account's person, set only by `resetSession`); the "View as" picker and the admin's role toggle are GONE
 (D166 (3)). The sign-in card stands for the defence-mail sign-in: the app never keeps a password (Microsoft checks it at
 the database step); an added account takes any password, the two seeded sign-ins keep theirs — `ad/a` = admin (Saber),
-`us/us` = member (Ranger), the owner's 24 Aug 26 names, not printed on the card. A person signed in but on no list asks
+`us/us` = member (Ranger), the owner's 24 Aug 26 names, not printed on the card. The password box STAYS until the database step, when Microsoft's sign-in replaces the whole page (D223, 26 Sep 26) — the app never stores a password. A person signed in but on no list asks
 for access (callsign + name) and waits; an admin approves (linking a puck he picks) or declines; an admin switch, OFF by
 default, lets people waiting read the schedule as a GUEST — what a member reads on View-only Sched, read only (D215); an account switched off sees only "switched off"
 (D204). **Who may do what is decided in ONE place, `state/perms.ts`**, which mirrors `docs/data-model.md` §11 and is

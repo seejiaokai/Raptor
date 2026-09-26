@@ -15,20 +15,20 @@ the later merge keeps both (D78).
 
 ## Now
 
-<!-- now:claude/accounts -->
-### `claude/accounts` — `[ACCOUNTS]` (D165, D166, D200, D204, D210, D211): BUILT and FULL-checked; on its PR, waiting for his look and "merge live" — written 26 Sep 26 — verify before use
-- **What it is:** sign in as yourself (every account is one callsign; "View as" and the role toggle gone); request access /
-  waiting / switched off / the admin's guest-view switch; Admin → Users; one permissions module (`src/state/perms.ts`)
-  mirroring `docs/data-model.md` §11 with a drift test and a source scan; D149 on Quals. Plan (3 red-team rounds):
-  `docs/superpowers/plans/2026-09-26-accounts-plan.md`; register AC1–AC15.
-- **The check:** walk 1 38/38, walk 2 40/40 (Fable's scenarios), the bridge off-host — re-walked on the final build; both
-  code reads (Fable: no blocker; Astra: four findings) answered — every finding fixed red-first or filed with its place;
-  final gates 6156 / 728 / 471 e2e / 442 Tracker, all green. Evidence sheet `docs/handpass/2026-09-26-accounts.md`
-  (§6 walk findings, §8 the reads, §9 his look card).
-- **Next:** his five-minute look (the sheet's §9, on the branch's Vercel link) → his "merge live" → then `[DRAFT-PENDING]`
-  (the one changes window) on top of accounts, with its own full check (D210).
-- **Filed from it:** `[TRK-SESSION-PICK]` (the Tracker's last pick per person); `[DB-STEP]`'s "access changes take effect
-  at once" (Astra's read, finding 1).
+<!-- now:claude/accounts-new-person -->
+### `claude/accounts-new-person` — `[ACCOUNTS-NEW-PERSON]` (D214, D216, D217, D219, D220, D222): NOT STARTED — the mock-up waits for his word; written 26 Sep 26 — verify before use
+- **Where things stand:** `[ACCOUNTS]` MERGED 26 Sep 26 (PR #442) — accounts, request access / waiting / switched off, the
+  guest view (what a member sees on View-only Sched, medical included — D213, D215; one tap from the waiting screen — D221),
+  Admin → Users, the one permissions module; only an admin renames a callsign on Quals (D218). Evidence
+  `raptor-port/docs/handpass/2026-09-26-accounts.md` (§10: his look). This branch starts from that merge and carries D223 (keep
+  the password box until the database step) and the archive of `[ACCOUNTS]` / `[QUALS-MEMBER-SCOPE]`.
+- **The job:** one door for a new person on Admin → Users (callsign/name, initials, pilot / WSO / personnel, CAT; a blank
+  sign-in for someone who won't use the app); the sign-up asks the same (its field reads "Displayed callsign/name"); approving
+  fills from it; a new request lights the admins' bell; Quals' "+ Add person" becomes a button to Admin → Users. The mock-up:
+  `raptor-port/docs/mock/new-person-account.html` (pictures by `scripts/handpass/am/mk-new-person.mjs`). **His approval first.**
+- **Next:** his "mock-up approved" (or changes) → plan (Opus 5.5) → Fable and Astra red-team → build → walk → FULL check → his look
+  → "merge live"; then `[DRAFT-PENDING]`.
+- **Noticed, not this chat's:** the `claude/tracker-palette` block below says its ruling D230 was never filed — ask him.
 <!-- /now -->
 
 <!-- now:claude/tracker-palette -->
@@ -53,35 +53,6 @@ the later merge keeps both (D78).
   approves the edit, or leave it if he says so.
 - **Next:** his look (the sheet §11), his answer to `[TRK-FLEXBAR-INK]`, then "merge live" — one at a time with the
   accounts chat.
-<!-- /now -->
-
-<!-- now:claude/leave-late-published -->
-### `claude/leave-late-published` — `[LEAVE-LATE-PUBLISHED]` (D177–D189): MERGED 26 Sep 26 on his "merge live" (PR #438) — this block goes at the next handoff; written 26 Sep 26 — verify before use
-- **What it is:** a published day keeps what it went out with — its inputs (`snap.inp`), its warnings that freeze and
-  their marks (`snap.w`), its men's CAT / seat / posting and the brief lead it prints (`snap.pa` / `snap.rv`, drawn by
-  `engine/faceattrs.ts`), the roster its day panel counts (`snap.ros`); a change since reads pending (the four fall) and
-  goes out with the next AL. What stays LIVE (D183–D185): the dotted next-day mark, a crew-rest breach and tight turn, the
-  7-day run, the Qualification-flag warnings, every OIL warning (`validate.ts LIVE_ON_FACE`; the day loop files each mark
-  by class `fz` / `lv`, `faceWarn` lays the live over the frozen). Medical stays frozen. Rule text:
-  `raptor-port/docs/engine-rules.md` §Publishing.
-- **The check (FULL):** evidence `raptor-port/docs/handpass/2026-09-26-late-pub.md` — the roll-call (21 surfaces), the
-  walks (the re-walk, the host walk, four parallel walkers: Quals, Logic, neighbour day, Leave War — 593 pictures, no
-  console errors), 36 break tests, blind reads by Fable and Astra of the first build, the final code and the D187 change
-  (all dispositioned §9 — D187's nine fixed and pinned, B29–B36), the gates (§6). His look card is §10.
-- **The PR:** #438, merged on his "merge live" (26 Sep 26). The backlog items `[LEAVE-LATE-PUBLISHED]`,
-  `[LATE-PUB-FACE-LIVE]` and `[PV-NO-FLAGS]` are archived; the one residue left open is `[PEEK-ISSUED]` (low, his question).
-- **His questions (the card, §10) — ALL ANSWERED:** Q1 — D186 "yes" (a man's CAT and a blank brief's time stay as
-  published). Q4 — D189 "follow ur recommendation" (the app's own "till" note counts: each published day a stretched leave
-  still covers shows "1 pending" on the admin's working copy, never on View-only Sched). Q5 — D187 "it should" (BUILT: a
-  look at a published version wears its warnings — the whole record it went out with, read only, its own ⓘ panel and
-  taps; read by both providers after the build, their findings fixed). Q6 — D188 "yes" (the Qualification-flag reading).
-- **Filed this session:** `[PV-NO-FLAGS]` (answered and built, archived), `[PEEK-ISSUED]`, `[INSIGHTS-WORKING-COPY]` (his question),
-  `[QUALS-PROTO-TOAST]`, `[VIEW-ARROW-OVER-LIST]`, `[INPUTSCAL-TAP-FLAKY]`. Rulings this chat: D186–D189 (and D185's row
-  gained the agent's widened reading, confirmed by D188). The chat's range D180–D189 is used up — a later chat on this
-  branch takes the next free number above `main`'s (DECISIONS.md).
-- **Usage (D182, until Monday 28 Sep 26):** unlimited — spend it on his look's follow-ups.
-- **Next (D180, D173):** `[ACCOUNTS]` on a new branch, in a FRESH chat — its plan not started; the `OUTSTANDING.md` tidy (over
-  its tripwire) on its own docs branch.
 <!-- /now -->
 
 ## Next, in order
