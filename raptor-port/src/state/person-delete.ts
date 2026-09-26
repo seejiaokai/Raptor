@@ -58,6 +58,7 @@ import { mayDeletePerson } from './perms'
 import { deleteAccountProblem, dropAccountOfPid } from './accounts'
 import { saidOf } from './roster-add'
 import { deletePersonOnWar } from '../leavewar/sync'
+import { HOOKS } from '../engine/hooks'
 
 /* ---- the one clock and the cutoff ---- */
 export const effectiveToday = (): string => localToday()
@@ -167,6 +168,25 @@ function stripSign(sign: any, bind: any, id: string): boolean {
 }
 
 /* ---- the refusals, in the app's words, first one found ---- */
+/* THE LOAD BELT (the plan's Round 2 — D297): a version loaded onto the working copy or a saved plan switched in is a
+   whole-day replacement; on a day FROM a deleted man's cutoff it never brings him back. Strips every such man from the
+   incoming day model `nd` (every kind of slot, his landed rows, his OIL switches — stripPersonFromDay) and returns their
+   callsigns for the door's message. Installed on the engine's hook below (engine/drafts.ts calls it). */
+export function stripDeletedFromDay(di: number, nd: any): string[] {
+  if (!nd) return []
+  const iso = dayIso(CURWEEK, +di)
+  const out: string[] = []
+  for (const id of Object.keys(PEOPLE)) {
+    const p: any = (PEOPLE as any)[id]
+    if (!p || !p.deleted || iso < String(p.deletedFrom || '')) continue
+    /* his landed rows: a row that came from one of his inputs (the input itself is gone or ended by the delete) */
+    const srcs = new Set<string>(((nd.ground || []) as any[]).filter(r => r && r.src && whoId(r.who) === id).map(r => String(r.src)))
+    if (stripPersonFromDay(nd, id, srcs)) out.push(String(p.cs))
+  }
+  return out
+}
+HOOKS.stripDeleted = stripDeletedFromDay
+
 export function deleteProblem(id: string): string | null {
   const p = (PEOPLE as any)[id]
   if (!p || p.special) return 'That is not a person'

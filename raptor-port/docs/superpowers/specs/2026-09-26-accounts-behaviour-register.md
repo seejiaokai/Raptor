@@ -35,3 +35,24 @@ fails when a line here has no test naming its id (`raptor-port/scripts/rulecheck
 | NP6 | A new request lights each admin's bell until HE has had the waiting list on screen (the phone's category list does not count); a member's never; the tap goes to Admin → Users first, from any page | D216, D227 | `state/accounts.test.ts`, `ui/accounts-newperson.test.tsx` |
 | NP7 | The words: "Callsign/Name" (sign-up card: "Displayed callsign/name") at 14 letters, said when over — the Quals head, its CSV and every picker; "Pilot", "WSO", "Personnel (ground crew)" | D219, D220, D222, D226 | `state/roster-add.test.ts`, `ui/accounts-newperson.test.tsx`, `ui/quals.test.tsx` |
 | NP8 | Only an admin adds a person, approves or marks requests seen — at the function, the command gate (every table the command writes) and the ownership check | D200, D217 | `state/perms.test.ts`, `state/accounts.test.ts`, `state/roster-add.test.ts` |
+
+## `[POST-OUT-OUTCOMES]` (27 Sep 26) — rows PO1–PO12
+
+The posting out's four outcomes, a delete, suspend / enable, the admin's member view. Plan:
+`docs/superpowers/plans/2026-09-27-post-out-outcomes-plan.md` (its Round 2 wins); the approved mock-up
+`docs/mock/post-out.html` (D299).
+
+| Id | The rule | Ruling | Named by |
+|---|---|---|---|
+| PO1 | A posting out says which it is — four chips "Overseas Sqn" · "Delete" · "SANS" · "Transfer to Sqn" (the last not pressable, later), the date once, one line saying what happens on it, the button "Post out"; the same on every posting door; a Delete asks twice | D229, D294, D298, D300 | `leavewar/ui/po.test.tsx` |
+| PO2 | On the date the app does the chosen outcome once — overseas: archived + account suspended; delete: deleted; SANS: SANS ticked — and never undoes a later hand change; a later date or another outcome takes back only what the posting made | D229, D280, D283 | `leavewar/postout-outcomes.test.ts` |
+| PO3 | "Suspend" / "Enable", "Delete account"; the tag "suspended"; the sign-in "Your access is suspended — Ask an admin to enable it when you're back." | D285, D300 | `ui/accounts-ui.test.tsx` |
+| PO4 | A delete asks twice and names what goes; it cannot be undone; never one's own; never the last admin (a posting's too — said once) | D287, D298 | `ui/accounts-ui.test.tsx`, `leavewar/postout-outcomes.test.ts` |
+| PO5 | A deleted man is kept underneath, marked deleted: gone from every list and picker (the Archived list too), his callsign free, his account gone; no door brings him back (Undo passes over the step and says why) | D287, D290, D299 | `ui/quals-archived.test.tsx`, `state/person-delete.test.ts`, `leavewar/postout-outcomes.test.ts`, `undo/timeline.test.ts` |
+| PO6 | Days he already flew keep his puck, published or not, and never read pending for the delete; every day from the later of his date and today (the calendar date) loses him (a published one reads pending) | D297, D299 | `state/person-delete.test.ts`, `leavewar/postout-outcomes.test.ts` |
+| PO7 | His past inputs, war leave and OIL, signatures and history stay; his inputs, bids and records from the date go (one spanning it ends the day before); he earns no OIL and is not in ALL AVAIL from the date | D299 | `state/person-delete.test.ts`, `leavewar/postout-outcomes.test.ts` |
+| PO8 | Back from overseas: Restore (or Undo post out) brings him back as he was and enables the account the posting suspended — never one suspended by hand; Restore and Enable arm a prompt to check his quals, which changes nothing | D280, D284 | `leavewar/postout-outcomes.test.ts`, `ui/quals-archived.test.tsx`, `ui/accounts-ui.test.tsx` |
+| PO9 | A SANS posting: SANS on the date; Show SANS off — in his place, posted out, untracked; on — in the SANS group, tracked | D283 | `leavewar/postout-outcomes.test.ts` |
+| PO10 | An archived man's callsign may go to a new person; a typed callsign finds the roster man; Restore meeting a taken callsign asks for another on the spot and restores under it in one step; Rename on the Archived list | D286, D295 | `ui/quals-archived.test.tsx`, `leavewar/postout-outcomes.test.ts`, `state/callsign.test.ts` |
+| PO11 | An admin switches to the member view and back (the badge; on a phone the menu) and is then exactly a member; each sign-in starts as admin; a member has no switch; his own admin step, refused while a member, says "switch back" | D292 | `ui/memberview.test.tsx`, `undo/timeline.test.ts` |
+| PO12 | "Post in" reads just "Post in" | D300 | `leavewar/ui/pi.test.tsx` |

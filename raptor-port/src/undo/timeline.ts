@@ -641,14 +641,19 @@ export function globalRedo(): UndoResult {
 }
 
 /* ---- UI state (for the buttons the cutover wires, phase 2) --------------- */
-export function undoState(): { canUndo: boolean; canRedo: boolean; undoLabel: string | null; redoLabel: string | null } {
+export function undoState(): { canUndo: boolean; canRedo: boolean; undoLabel: string | null; redoLabel: string | null; undoWhy: string | null; redoWhy: string | null } {
   const u = newestUndoable()
+  /* [POST-OUT-OUTCOMES]: nothing left but steps that can never be taken — the greyed button says why (its hover) */
+  const undoWhy = u ? null : LAST_DEAD
   const r = mostRecentlyUndone()
+  const redoWhy = r ? null : LAST_DEAD
   return {
     canUndo: !!u,
     canRedo: !!r,
     undoLabel: u ? u.label : null,
     redoLabel: r ? r.label : null,
+    undoWhy,
+    redoWhy,
   }
 }
 

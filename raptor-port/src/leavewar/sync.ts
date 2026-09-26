@@ -80,6 +80,7 @@ import {
   forgetPersonFrom,
   windowFor,
   setAccountLookup,
+  setPostingBlockLookup,
   setQualCatalog,
   setViewer,
   setViewerCallsign,
@@ -1709,6 +1710,12 @@ export function wireLeaveWarSync(): void {
   /* [POST-OUT-OUTCOMES]: the posting's one line names his account only when he has one — the answer installed here, at
      the seam (the war never reads Raptor's accounts itself) */
   setAccountLookup(id => !!accountOfPid(id))
+  setPostingBlockLookup((id, outcome) => {
+    const cs = (PEOPLE as any)[id]?.cs || ''
+    if (outcome === 'delete') return deleteBlocked(id) ? `Can’t delete ${cs} yet — he is the last admin who can sign in` : null
+    if (outcome === 'overseas') { const a = accountOfPid(id); return a && a.on && lastAdminIfGone(id) ? `${cs}’s account can’t be suspended — he is the last admin who can sign in` : null }
+    return null
+  })
   /* The VIEWING PERSON rides this same wire (owner, 17 Aug 26 — the matrix
      lights the viewer's row and the counter picker answers with their
      numbers). Since [ACCOUNTS] (D166 (4), 26 Sep 26) it is the SIGNED-IN person —

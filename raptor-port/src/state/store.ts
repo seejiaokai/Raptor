@@ -343,8 +343,9 @@ export function resetSession(s: any) {
      that used to be written here and in toggleRole). What it takes from a
      login or logout is the end of its own SESSION — its undo history, open
      windows and modes (undo is per login session, owner 13 Sep 26;
-     [HUMAN-RETEST] F10). toggleRole does NOT end it: the view-as flip is the
-     same person looking through the other role's eyes. */
+     [HUMAN-RETEST] F10). The admin's member-view switch (switchRoleView, D292 — the old
+     toggleRole's successor) does NOT end it: the same person looking through the other
+     role's eyes. */
   endTrackerSession()
   /* and the log itself goes. It is stamped with WHO made each change, so
      carrying it across a logout would show the incoming user a list of

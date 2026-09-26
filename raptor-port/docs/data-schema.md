@@ -107,7 +107,9 @@ the schedule, the inputs and the Leave War all use.
 | `pers` | boolean | ground personnel (no flying quals derive) |
 | `special` | boolean | a sentinel body (`ALL`, `ALL AVAIL`) — occupies slots, is not a person |
 | `archived` | boolean | kept out of every roster |
-| `archivedBy` | `'po'` | present only when the Leave War's Post out pass archived him ("Archive on PO date", its date come) — the archive the posting's Undo, a later date or the switch turned off takes back; absent = archived by hand on Quals (the absence-record re-test's final read, 26 Sep 26) |
+| `archivedBy` | `'po'` \| `'del'` | `'po'` when the Leave War's posting pass archived him (an "Overseas Sqn" posting, its date come) — the archive the posting's Undo, a later date or another outcome takes back; `'del'` when a delete did (below); absent = archived by hand on Quals (the absence-record re-test's final read, 26 Sep 26) |
+| `deleted`, `deletedFrom` | boolean, `'YYYY-MM-DD'` | **the delete's hidden mark** (`[POST-OUT-OUTCOMES]`, D287, D290, 27 Sep 26 — `state/person-delete.ts`): the record is KEPT (every day he flew still points at him, D297) but read as gone everywhere — no list, no picker, the Archived one included; his callsign free (the callsign index skips him); `deletedFrom` the first day he is gone, the later of the delete's date and the calendar date. Written with `archived: true, archivedBy: 'del'`. Never cleared — a delete is final |
+| `sanBy` | `'po'` | present only when a SANS posting ticked `san` on its date (D283) — what the posting takes back; absent = ticked by hand |
 | `san`, `sanQ` | boolean, `{flown, carry, missedQtrs}` | SANS member and their quarter progress |
 | `tf`, `sched` | boolean | terrain-following mark; scheduler appointment (both granted, never derived) |
 | `quals` | object | **derived at boot** by `deriveQuals`: `sxo, imc, nvg, tf, san, sched, scDay, scNight, daar, naar` (booleans; `daar`/`naar` may also be `'I'` = instructor) |
@@ -354,7 +356,7 @@ a later change to the standard is picked up rather than frozen in a browser.
 | `secdefault` | `string[]` | section order, from `notes, prog, waves, duty, sims, ground, inputs, avail, sans, unav` |
 | `stores` | `[[key, label]]` | the stores list |
 | `qualcols` | `QualCol[]` | the LoX column list — `{ k, h, lav?, apt?, scq?, aar?, fcpOnly? }` in display order (saved since the 8 Sep 26 bug pass: the ticks under a column persist, so the column must too) |
-| `accounts` | `Account[]` | `{ id, name, role: 'admin' \| 'main', pid, on }` — `name` the sign-in name (lower-case, unique; stands for the defence mail address), `pid` the person (one account each), `on` false = switched off (never deleted). **No password.** Null = the four seeded demo accounts (`[ACCOUNTS]`, D166) |
+| `accounts` | `Account[]` | `{ id, name, role: 'admin' \| 'main', pid, on, offBy? }` — `name` the sign-in name (lower-case, unique; stands for the defence mail address), `pid` the person (one account each), `on` false = **suspended** (D285); `offBy: 'po'` only when an "Overseas Sqn" posting suspended it on its date (what "he's back" enables — any hand Suspend / Enable drops it). An account is removed only with its person, by a delete (D287, `[POST-OUT-OUTCOMES]`). **No password.** Null = the four seeded demo accounts (`[ACCOUNTS]`, D166) |
 | `accessreqs` | `AccessRequest[]` | `{ id, name, cs, ini, seat, cat, at, seenBy }` — who asked (the signed-in principal, from the session); what he typed, text only — the displayed callsign/name (≤ 14), initials (may be blank), `seat` `FCP`/`RCP`/`GND`, `cat` (`''` for personnel) — never a link to a puck; when; `seenBy` the account ids of the admins who have had it on screen (each admin's bell). (D204; `[ACCOUNTS-NEW-PERSON]` D214, D216, D227 — the typed name field gave way to the initials, D219) |
 | `guestview` | `true` or null | the admin's switch letting people waiting for access read the published week as a guest — OFF (null) by default (D204) |
 | `rules` | `{ v: { rule: number }, s: { kind: boolean } }` | overrides only: `v` for thresholds off the standard (`briefLead, dur, step, dekit, minTurn, tightTurn, crewRest, debrief, reportLead, longDay, epBrief, simDebrief, amtDebrief, openEnd, maxRun, inputLead, scDayFrom, scDayTo, simLen, oilFullMin`), `s` for which kinds hard-clash a shift (`fly, sim, duty, shift, ground, prog`) |
@@ -380,8 +382,12 @@ The last two are the only per-person records Leave War keeps (8 Sep 26 bug
 pass — a posting-out date used to vanish on reload): `personedits` is
 `{ [personId]: { seat?, band?, sxo? } }`, an admin's identity overrides;
 `postouts` is `{ [personId]: Person }`, the person as last projected with
-the posting-out window (`to`, `poArchive`) on them — an entry exists only
-while `to` is set. `people` itself is never stored: it is re-projected from
+the posting-out window (`to`, `poOutcome`, `poDone`, and the older
+`poArchive` kept in step — `true` = `'overseas'`) on them, and `gone: true`
+once he is deleted — an entry exists while either date is set.
+`poOutcome` is which posting it is (`'overseas' | 'delete' | 'sans' | 'none'`,
+`[POST-OUT-OUTCOMES]`, D229); `poDone` the posting date its outcome has run
+for (so it runs once). `people` itself is never stored: it is re-projected from
 Raptor's `PEOPLE` on every boot and these two are laid back on top.
 
 ### The state — `src/leavewar/state/store.ts`
@@ -406,7 +412,7 @@ personEdits: { personId: { seat?, band?, sxo? } }
 
 | Record | Fields |
 |---|---|
-| `Person` | `id, callsign, seat: 'pilot' \| 'wso' \| 'gnd', band: 'instructor' \| 'ops', sxo, from, to` (dates in squadron, null = open), `poArchive?, q?, scd?, scn?, xq?: string[], san?, pers?, label?` — built from the scheduler's PEOPLE, **same ids** |
+| `Person` | `id, callsign, seat: 'pilot' \| 'wso' \| 'gnd', band: 'instructor' \| 'ops', sxo, from, to` (dates in squadron, null = open), `poArchive?, poOutcome?, poDone?, gone?, q?, scd?, scn?, xq?: string[], san?, pers?, label?` — built from the scheduler's PEOPLE, **same ids** |
 | `LeaveWar` | `{ period, recs }` — one war (stored) |
 | `Recs` | `personId → date → WarRec[]` — the war's OWN records only ([ARCH-STACK] step 4) |
 | `WarRec` | one of: **request** `{ id, kind:'request', code, state: 'pending' \| 'acknowledged' \| 'refused', shiftedFrom?, carried? }` · **OIL credit** `{ id, kind:'credit', code: 'FO' \| 'HO', oil: 'auto' \| 'manual', note?, spans? }` · **notice** `{ id, kind:'notice', code, was, byType, byWho, seq, at }` (a replaced bid, until "OK, seen"). Nothing "approved" is ever stored here — approved leave is the Input with `lw` |

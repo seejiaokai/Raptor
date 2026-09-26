@@ -47,7 +47,7 @@ import {
   type Figure,
   type FigureCtx,
 } from '../engine'
-import { clearRecordById, figureCtxOf, recordsAt, setBalance, setManualCredit, groupsInOrder, groupPriorityIds, lwHistEpoch, moveGroupTo, moveGroupPriorityTo, displayRoster, getState, moveCells, movableCells, moveManningRowTo, moveProblem, moveEvent, moveEventProblem, moveRosterRow, orderedManningIds, resetManningRules, setPostIn, postingProblem, visibleFigures, hasAccount, type MoveResult, type EventMoveResult } from '../state/store'
+import { clearRecordById, figureCtxOf, recordsAt, setBalance, setManualCredit, groupsInOrder, groupPriorityIds, lwHistEpoch, moveGroupTo, moveGroupPriorityTo, displayRoster, getState, moveCells, movableCells, moveManningRowTo, moveProblem, moveEvent, moveEventProblem, moveRosterRow, orderedManningIds, resetManningRules, setPostIn, postingProblem, visibleFigures, hasAccount, postingBlocked, type MoveResult, type EventMoveResult } from '../state/store'
 import { AwardSheet, BidPicker, PostInSheet, PostOutSheet, RaptorSheet } from './BidPicker'
 import { CounterSheet, FigureBreakdownSheet, PersonFiguresSheet } from './CounterSheet'
 import { FigureCell, show } from './FigureCell'
@@ -4290,6 +4290,7 @@ export function Matrix() {
           poFrom={addDays(openPerson!.to!, 1)}
           outcome={outcomeOf(openPerson) ?? 'none'}
           hasAccount={hasAccount(open.id)}
+          blockedFor={o => postingBlocked(open.id, o)}
           onChange={(from, outcome) => postOutOr(open.id, from, outcome)}
           onUndo={() => { undoPostOut(open.id); close() }}   // the archive the Post out made goes too (W5-F1)
           onPlace={() => setPlaceAt(openKey)}
@@ -4473,6 +4474,7 @@ export function Matrix() {
             ? (from, outcome) => { const why = postOutOr(open.id, from, outcome); if (why) return why; close() }
             : undefined}
           hasAccount={hasAccount(open.id)}
+          blockedFor={o => postingBlocked(open.id, o)}
           /* Admin-only, the mirror of the above (owner, 20 Sep 26): the first
              day they ARE in the squadron. */
           onPostIn={role === 'admin' && !openPerson?.gone

@@ -54,6 +54,7 @@ export function BidPicker({
   wouldLeave,
   onPostOut,
   hasAccount,
+  blockedFor,
   onPostIn,
   onCredit,
   credit,
@@ -87,6 +88,8 @@ export function BidPicker({
   onPostOut?: (fromDate: string, outcome: PostOutcome) => string | void
   /** whether he has an account — the posting's one line names it only then (the sync answers it, at the seam) */
   hasAccount?: boolean
+  /** why the chosen posting would be held back on its date (the last admin — the sync's lookup), or null */
+  blockedFor?: (outcome: PostOutcome) => string | null
   /** Admin-only: post this person IN from a date (owner, 20 Sep 26 — "we need
    *  a post in button just like post out"). The mirror of `onPostOut`: it sets
    *  the first day they ARE here, where the post-out sets the first day they
@@ -684,6 +687,9 @@ export function BidPicker({
           {outcomeLine(poOutcome, poDate, !!hasAccount) && (
             <div className="bidsheet-row postout"><span className="note" data-testid="po-line">{outcomeLine(poOutcome, poDate, !!hasAccount)}</span></div>
           )}
+          {blockedFor && blockedFor(poOutcome) && (
+            <div className="bidsheet-row postout"><span className="note warn" data-testid="po-blocked">{blockedFor(poOutcome)}</span></div>
+          )}
           <div className="bidsheet-row postout">
             <button
               className={`dchip po${delArmed ? ' del-armed' : ''}`}
@@ -919,6 +925,7 @@ export function PostOutSheet({
   poFrom,
   outcome,
   hasAccount,
+  blockedFor,
   onChange,
   onUndo,
   onPlace,
@@ -932,6 +939,8 @@ export function PostOutSheet({
   outcome: PostOutcome
   /** whether he has an account (the line names it only then) */
   hasAccount?: boolean
+  /** why the posting would be held back on its date (the last admin), or null */
+  blockedFor?: (outcome: PostOutcome) => string | null
   /** Re-post with a new date and/or outcome. Commits on change — the
    *  sheet stays up so the admin can see the grid move behind it. */
   onChange: (fromDate: string, outcome: PostOutcome) => string | void
@@ -982,6 +991,9 @@ export function PostOutSheet({
       <div className="bidsheet-row postout">
         <span className="note" data-testid="postout-line">{outcomeLine(delArm ? 'delete' : outcome, poFrom, !!hasAccount)}</span>
       </div>
+      {blockedFor && blockedFor(delArm ? 'delete' : outcome) && (
+        <div className="bidsheet-row postout"><span className="note warn" data-testid="postout-blocked">{blockedFor(delArm ? 'delete' : outcome)}</span></div>
+      )}
       {delArm && (
         <div className="bidsheet-row postout">
           <button className="dchip po del-armed" data-testid="postout-delete-go"

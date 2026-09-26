@@ -37,7 +37,7 @@ export function DutyTplModal() {
   const timeBuf = useRef('')
   /* self-hide for a non-admin, not just at the admin-gated opener (bug hunt,
      31 Aug 26 — point-2 authority sweep): TPLEDIT is not cleared by toggleRole's
-     admin→member peek, so without this an admin who opened the duty-template
+     admin→member peek (the old toggleRole's peek, gone with [ACCOUNTS]; its successor since D292, 27 Sep 26, is the admin's switch to the member view — state/store.ts switchRoleView, which does not close this sheet either), so without this an admin who opened the duty-template
      editor and flipped to member view kept a live editor whose store mutators
      (addTpl/setTplRow/delTpl/dutyTplReset) carry no write-path gate. The test is
      `SESSION && role !== 'admin'`, so a sessionless test/boot is not a member. */

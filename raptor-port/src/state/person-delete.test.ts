@@ -19,6 +19,7 @@ import { accountsLoad, accountByName, signIn, sessionFor } from './accounts'
 import { PLANPUCKS } from './plan'
 import { newPersonProblem } from './roster-add'
 import { deletePerson, deleteCutoff, personKeysOnDay, effectiveToday } from './person-delete'
+import { loadVersionToWorkingCopy, ROWSLEFT, rowsLeftSaid } from '../engine/drafts'
 
 const mem: Record<string, string> = {}
 let PEOPLE0 = ''
@@ -145,6 +146,25 @@ describe('PO6 — a published day: the one he flew never reads pending; one to c
     for (const k of keys) expect(slotVal(k)).toBe('')
     expect(dayDelta(TO_COME).length, 'it reads pending').toBeGreaterThan(0)
     expect(JSON.stringify(daySnapOf(TO_COME, dayCurVer(TO_COME))), 'the issued version is a record — never rewritten').toBe(issued)
+  })
+})
+
+/* THE LOAD BELT (the plan's Round 2 — D297): the issued version of a day to come still holds him (a record, never
+   rewritten), so "Load onto working copy" would put him straight back. It never does, and its message says why. A day he
+   flew is left alone — loading its version there puts back exactly what was issued. Register PO6. */
+describe('PO6 — loading a published version never brings a deleted man back on a day from his cutoff', () => {
+  it('a day to come: loaded, he stays off and the message names him; a day he flew: loaded as issued', () => {
+    const toCome = plantEveryKind(TO_COME)
+    const flown = plantEveryKind(PAST)
+    publish(TO_COME); publish(PAST)
+    expect(deletePerson(HIM)).toBe(null)
+    expect(loadVersionToWorkingCopy(TO_COME, dayCurVer(TO_COME))).toBeTruthy()
+    for (const k of toCome) expect(slotVal(k), `${k} after the load (a day to come)`).toBe('')
+    expect(ROWSLEFT.some(x => x.dead && x.who === 'Hex')).toBe(true)
+    expect(rowsLeftSaid(ROWSLEFT)).toContain('Hex left out — he has been deleted')
+    expect(loadVersionToWorkingCopy(PAST, dayCurVer(PAST))).toBeTruthy()
+    for (const k of flown) expect(slotVal(k), `${k} after the load (a day he flew)`).toBe(HIM)
+    expect(ROWSLEFT.some(x => x.dead), 'nothing to leave out on a day he flew').toBe(false)
   })
 })
 

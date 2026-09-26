@@ -20,7 +20,7 @@ import { useState } from 'react'
 import { formatCell, LEAVE_TYPES, type BidState, type Portion, type PostOutcome } from '../engine'
 import { OutcomeChips, outcomeLine } from './OutcomeChips'
 import '../../ui/postout.css'
-import { awardsIn, clearCells, movableCells, setBidStates, setCells } from '../state/store'
+import { awardsIn, clearCells, movableCells, postingBlocked, setBidStates, setCells } from '../state/store'
 import { awardsClause } from './awardwords'
 import { Sheet } from './Sheet'
 import { shortSpan } from './dates'
@@ -207,6 +207,9 @@ export function SelectSheet({
           <OutcomeChips value={poOutcome} testid="sel-po" onChange={o => { setPoOutcome(o); setDelArmed(false) }} />
           {outcomeLine(poOutcome, poDate, !!(hasAccount && hasAccount(sel.people[0]))) && (
             <div className="bidsheet-row postout"><span className="note" data-testid="sel-po-line">{outcomeLine(poOutcome, poDate, !!(hasAccount && hasAccount(sel.people[0])))}</span></div>
+          )}
+          {postingBlocked(sel.people[0], poOutcome) && (
+            <div className="bidsheet-row postout"><span className="note warn" data-testid="sel-po-blocked">{postingBlocked(sel.people[0], poOutcome)}</span></div>
           )}
           <div className="bidsheet-row postout">
             <button className={`dchip po${delArmed ? ' del-armed' : ''}`} data-testid="sel-po-confirm"

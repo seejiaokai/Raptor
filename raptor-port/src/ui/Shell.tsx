@@ -336,7 +336,7 @@ export function Shell() {
               list) from the shell itself, so the log is reachable without
               opening the board first. */}
           {page === 'editsched' && <div className="tb-hist">
-            <button className="abtn hbtn" id="undoBtn" title={us.undoLabel ? `Undo — ${us.undoLabel}` : 'Undo'} disabled={!us.canUndo} onClick={() => {
+            <button className="abtn hbtn" id="undoBtn" title={us.undoLabel ? `Undo — ${us.undoLabel}` : (us.undoWhy || 'Undo')} disabled={!us.canUndo} onClick={() => {
               /* UNDO STOPS AT THE DOOR OF THE MODE (fix 5, 22 Sep 26). Inside OIL
                  Earn, Undo walks back OIL decisions freely — taking back a mis-tap
                  is what it is for — but the press that would reach PAST the point
@@ -441,7 +441,7 @@ export function Shell() {
                 title={mineCs ? `Signed in as ${mineCs}` : undefined}>{mineCs ? `${mineCs} · ` : ''}{admin ? 'Admin' : 'Member'}</span>}
         </div>
       </div>
-  ), [page, admin, mine, mineCs, canSwitch, waiting, fast, uv, us.canUndo, us.canRedo, us.undoLabel, us.redoLabel, bellLit(), bugAlert(), oilPend, accAlert])
+  ), [page, admin, mine, mineCs, canSwitch, waiting, fast, uv, us.canUndo, us.canRedo, us.undoLabel, us.redoLabel, us.undoWhy, bellLit(), bugAlert(), oilPend, accAlert])
 
   const viewPage = useMemo(() => (
       <section className={'page' + (page === 'viewsched' ? ' on' : '')} id="page-viewsched">

@@ -54,7 +54,8 @@ whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaini
    approval first), on `claude/accounts-new-person`, its own FULL check — DONE, the PR open for his look and "merge
    live"; **[POST-OUT-OUTCOMES]** STARTED 27 Sep 26 beside it, before #443 merges (D301, amending D291), on
    `claude/post-out-outcomes` cut from `claude/accounts-new-person` (D291 — D229, D280, D283–D300: a posting out says
-   which outcome; accounts suspended / deleted), its own FULL check, its merge after #443's; then **[DRAFT-PENDING]** — the one changes window,
+   which outcome; accounts suspended / deleted), its own FULL check, its merge after #443's — BUILT, the check under way
+   (with `[POST-OUT-TRACKER]` after it, on his answer); then **[DRAFT-PENDING]** — the one changes window,
    on top of accounts, its own FULL check (D210). `[ACCOUNTS]` itself MERGED 26 Sep 26 (PR #442, his "merge live").
 2. **Now, beside the building — [IT-QUESTIONS]:** talk to the IT side (his, not code); their approvals take weeks.
 3. **Development as normal — [HUMAN-RETEST]**'s remaining three, in HIS order (D147): the absence record TOGETHER with
@@ -1196,6 +1197,21 @@ is in use needs one of the two renamed first (Restore says so, renames nobody). 
 header and test), `ID_BY_CS` (points at the roster's man). **Mock-up APPROVED 27 Sep 26 (D299) — the design of record:** `raptor-port/docs/mock/post-out.html` (+ its Artifact; §5 holds what stays after a delete; D300 — the date once, the button "Post out", FEWER WORDS: done 27 Sep 26, Artifact Version 6; the BUILD carries the same short words — the sheet's line, the delete's second tap, the suspended sign-in, the back-prompt, the Restore rename line — and the post-in button reads just "Post in"); his first look: D294 (short chips "Overseas Sqn" · "Delete" (D298) · "SANS" · "Transfer to Sqn"), D295 (rename an archived man directly), D296 (guest mark A). **With it — D292:** the admin's member view back (tap the badge: "SABER · ADMIN" ↔ "MEMBER"; perms read the role in
 force). **Place — D291:** straight after `[ACCOUNTS-NEW-PERSON]` merges, before `[DRAFT-PENDING]` — **amended by D301
 (27 Sep 26): started beside #443 before it merges, on `claude/post-out-outcomes` cut from it; its merge follows #443's.**
+**BUILT 27 Sep 26 on `claude/post-out-outcomes`** (Part A: the callsign index, Suspend / Enable / Delete account, the
+member view, the delete, Quals' Archived list; Part B, on PR #444's posting code: the four chips on every posting door,
+the outcomes on the date, take-back, Restore and Restore-as, the "he's back" prompt, SANS with Show SANS, a deleted man
+read by date, Undo passing over a step that would bring him back). Plan: `raptor-port/docs/superpowers/plans/2026-09-27-post-out-outcomes-plan.md`;
+register PO1–PO12 (`raptor-port/docs/superpowers/specs/2026-09-26-accounts-behaviour-register.md`). **Still owed before
+"merge live":** the FULL check (gates, the walk on desktop and phone, Fable and Astra's code reads, the evidence sheet
+`raptor-port/docs/handpass/2026-09-27-post-out-outcomes.md`) and his look — with the plan's seven questions on the look
+card. **Not built, said so:** the Tracker half of D299 (`[POST-OUT-TRACKER]`).
+
+### [POST-OUT-TRACKER] A deleted man and the Tracker's courses "still running" (D299 — approved, NOT built; filed 27 Sep 26)
+D299 lists "his place on any course still running — goes". The Tracker has no notion of a course "still running", and the
+build cannot decide what it means without him, so a deleted man is left on his Tracker courses, unlinked (his name as
+text). **Put to him on the `[POST-OUT-OUTCOMES]` look card (question 5):** what makes a course still running — or leave
+his name on his courses for now (then D299 is narrowed in his words). **Place:** after `[POST-OUT-OUTCOMES]` merges, on
+his answer. Touches `raptor-port/src/tracker/` (its own store) — its own small check.
 ### [LOOK-435] His inputs from the look at PR #435 — the order is D173 (25 Sep 26)
 **Step 1 DONE 25 Sep 26:** D114's FULL check — evidence `raptor-port/docs/handpass/2026-09-25-amendment-batch.md` §9; two
 gaps fixed, three older findings filed (`[REQ-TWO-ROWS]`, `[REQ-DECLINED-PENDING]`, `[REQ-ORPHAN-ROW]`); waiting for his look.

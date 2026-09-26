@@ -348,7 +348,7 @@ describe('the derived publication barrier (§6.3)', () => {
    can never be taken, so the dispatcher PASSES OVER it — the button never stalls behind it — and says why when nothing
    else is left (the plan's Round 2; state/person-delete.ts deletedRestoreProblem is the app's rule). And the admin's
    member view (D292): his own admin step, refused while he is a member, tells him to switch back — it was never
-   "someone else's change" (Fable F12). Register PO12. */
+   "someone else's change" (Fable F12). Register PO5 (a delete is final), PO11 (the member view). */
 describe('a step that can never be taken, and the member view’s words', () => {
   it('passes over a dead step to the older one; with only dead steps left it says why', () => {
     const s = makeStore('S', 'settings'); s.set('x', { v: 1 }); s.set('y', { v: 1 })
@@ -363,6 +363,7 @@ describe('a step that can never be taken, and the member view’s words', () => 
     const r = globalUndo()
     expect(r.ok).toBe(false)
     expect(r.reason).toBe(DEAD)
+    expect(undoState(), 'the button greyed, and its hover says why').toMatchObject({ canUndo: false, undoWhy: DEAD })
   })
   it('his own admin step, refused in the member view, says "switch back"; another member still reads "someone else"', () => {
     const s = makeStore('S', 'settings')

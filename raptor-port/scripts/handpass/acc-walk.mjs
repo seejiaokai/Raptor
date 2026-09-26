@@ -6,7 +6,10 @@
    except two stated shortcuts: a day published and a medical input filed through the
    localhost probe (the routes under test are the guest's view of them, not publishing or
    filing). Results → HP_OUT (JSON), pictures → HP_SHOTS.
-   Run: HP_SHOTS=… HP_OUT=… node scripts/handpass/acc-walk.mjs            */
+   Run: HP_SHOTS=… HP_OUT=… node scripts/handpass/acc-walk.mjs
+   27 Sep 26 — a RECORD of the 26 Sep walk: its step d-admin-topbar asserts the badge is an inert <span>, true then (D166
+   (3)); since D292 ([POST-OUT-OUTCOMES]) an admin's badge is a BUTTON — the switch to the member view — so that step
+   now reads FAIL by design. The member view is walked in scripts/handpass/po-walk-c.mjs.            */
 import { existsSync, mkdirSync, writeFileSync } from 'node:fs'
 import { chromium } from '@playwright/test'
 process.env.HP_SHOTS ||= 'C:/Users/User/projects/Raptor/raptor-port/docs/img/handpass/2026-09-26-accounts'

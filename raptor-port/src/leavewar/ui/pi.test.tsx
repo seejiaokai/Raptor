@@ -119,6 +119,8 @@ describe('placing and managing PI from the grid', () => {
     expect(screen.queryByTestId('pi-confirm')).toBeNull()   // folded behind one button
     fireEvent.click(screen.getByTestId('bid-postin'))
     expect((screen.getByTestId('pi-date') as HTMLInputElement).value).toBe(day)
+    // the date sits in its own box, so the button says it once — just "Post in" (D300; register PO12)
+    expect(screen.getByTestId('pi-confirm').textContent).toBe('Post in')
     fireEvent.click(screen.getByTestId('pi-confirm'))
     expect(person(id).from).toBe(day)
 

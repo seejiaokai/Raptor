@@ -100,8 +100,8 @@ describe('PO5 — a deleted man is on no list, the Archived one included (D287, 
 /* D286 (1) / D295 — Restore meeting a callsign a man ON THE ROSTER now holds: it never renames anyone by itself; it asks
    for another callsign on the spot, suggesting the first free "<callsign> 2", and "Restore as …" does both in one step.
    D284 — then "<callsign> is back — quals and CAT as he left them", with "Check his quals" (his row outlined) and
-   "Later"; it changes nothing. Register PO9, PO10. */
-describe('PO9 / PO10 — Restore, a taken callsign, and "he is back"', () => {
+   "Later"; it changes nothing. Register PO8, PO10. */
+describe('PO8 / PO10 — Restore, a taken callsign, and "he is back"', () => {
   const clearPrompts = () => { for (const id of [...BACKPROMPT]) clearBack(id) }
   it('his callsign free: Restore puts him back and the prompt asks to check his quals', async () => {
     clearPrompts()

@@ -205,6 +205,19 @@ const RULES = {
   NP6: 'a new request lights each admin\'s own bell until he has had the list on screen',
   NP7: 'the words: Callsign/Name (Displayed callsign/name on the sign-up); Pilot, WSO, Personnel (ground crew)',
   NP8: 'only an admin adds a person, approves or marks seen — every table the command writes',
+  /* [POST-OUT-OUTCOMES] (27 Sep 26) — the same register, rows PO1–PO12 */
+  PO1: 'a posting says which it is — four chips, the date once, one line, "Post out"; a Delete asks twice (D229, D294, D298, D300)',
+  PO2: 'on the date the outcome runs once, never undoing a hand change; a take-back undoes only what the posting made',
+  PO3: '"Suspend" / "Enable", "Delete account", "suspended" (D285, D300)',
+  PO4: 'a delete asks twice, names what goes; never one’s own, never the last admin (D287)',
+  PO5: 'a deleted man is kept underneath, on no list, his callsign free; nothing brings him back (D290, D299)',
+  PO6: 'days he flew keep his puck, never pending for the delete; days from the cutoff lose him (D297)',
+  PO7: 'his past records stay; from the date his inputs, bids and records go, no OIL, no ALL AVAIL (D299)',
+  PO8: 'back from overseas: Restore enables the posting’s suspension; Restore and Enable prompt to check his quals (D284)',
+  PO9: 'a SANS posting: SANS on the date; Show SANS decides his group (D283)',
+  PO10: 'an archived man’s callsign is free; Restore asks for another on the spot; Rename on the Archived list (D286, D295)',
+  PO11: 'the admin’s member view and back; a member has no switch (D292)',
+  PO12: '"Post in" reads just "Post in" (D300)',
 }
 
 /* Rules with no test naming them on 20 Sep 26. The check fails if this set

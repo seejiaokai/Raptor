@@ -38,7 +38,7 @@ export function DraftsModal() {
   }, [open && open.di, open && open.id])
   /* self-hide for a non-admin, not just at the admin-gated opener (bug hunt,
      31 Aug 26 — point-2 authority sweep): DRAFTSEDIT survives toggleRole's
-     admin→member peek, so without this an admin who opened the drafts manager
+     admin→member peek (the old toggleRole's peek, gone with [ACCOUNTS]; its successor since D292, 27 Sep 26, is the admin's switch to the member view — state/store.ts switchRoleView, which does not close this sheet either), so without this an admin who opened the drafts manager
      and flipped to member view kept live rename/delete controls (draftRename/
      draftDelete) that carry no write-path gate. The test is `SESSION && role !==
      'admin'`, so a sessionless test/boot is not mistaken for a member. */

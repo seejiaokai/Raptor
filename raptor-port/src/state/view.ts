@@ -444,7 +444,7 @@ export const WEEK_EL:any={viewsched:'vWeek',editsched:'eWeek'}
    yields the identical arm key, so a stale arm silently applied on one pick.
    Folding this token into the arm key makes any navigation gesture — a week
    swap (loadWeek), a page change (setPage), a session/role change
-   (resetSession/toggleRole) — bump it, so the recomputed key can never match an
+   (resetSession, or the admin's member-view switch switchRoleView — the old toggleRole's successor, D292) — bump it, so the recomputed key can never match an
    arm raised before the gesture. Read-only to everyone but bumpNav(). */
 let NAVGEN=0
 export function bumpNav(){ NAVGEN++ }

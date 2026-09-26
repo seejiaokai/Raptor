@@ -1525,6 +1525,12 @@ export function setPostOut(id: string, fromDate: string | null, archive: boolean
 let ACCOUNT_LOOKUP: ((id: string) => boolean) | null = null
 export function setAccountLookup(fn: ((id: string) => boolean) | null): void { ACCOUNT_LOOKUP = fn }
 export const hasAccount = (id: string): boolean => !!(ACCOUNT_LOOKUP && ACCOUNT_LOOKUP(id))
+/* would this posting's outcome be held back on its date — the last admin who can sign in is never deleted, nor his
+   account suspended, by a posting (the plan's Round 2, Fable 3: the sheet says so, not only a one-time message). The
+   sentence, or null; installed by the sync, like the account lookup above. */
+let BLOCK_LOOKUP: ((id: string, outcome: PostOutcome) => string | null) | null = null
+export function setPostingBlockLookup(fn: ((id: string, outcome: PostOutcome) => string | null) | null): void { BLOCK_LOOKUP = fn }
+export const postingBlocked = (id: string, outcome: PostOutcome): string | null => (BLOCK_LOOKUP ? BLOCK_LOOKUP(id, outcome) : null)
 
 /** THE POSTING WINDOW A STORED RECORD LAYS ON ITS PERSON — the ONE body `setPeople` and the sync's re-projection both
  *  use ([POST-OUT-OUTCOMES]; Astra's plan read A4: two overlays laying it differently would defeat the SANS rule).

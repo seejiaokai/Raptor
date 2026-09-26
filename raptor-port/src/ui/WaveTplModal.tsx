@@ -48,7 +48,7 @@ export function WaveTplModal() {
   /* GATE THE WHOLE EDITOR ON THE ROLE, not just the two admin-gated openers
      (bug hunt, 31 Aug 26 — point-2 authority sweep). The + Wave ⚙ and the Admin
      button both refuse a member, but the flag they set (WAVEEDIT) is NOT cleared
-     by toggleRole's admin→member "View as member" peek, so an admin who opened
+     by toggleRole's admin→member "View as member" peek (the old toggleRole's peek, gone with [ACCOUNTS]; its successor since D292, 27 Sep 26, is the admin's switch to the member view — state/store.ts switchRoleView, which does not close this sheet either), so an admin who opened
      this sheet and then flipped to member view kept a fully live template editor
      on screen — the preview lying about what a member can do, and every store
      mutator below (addWaveTpl/setWaveTplLine/delWaveTpl/waveTplReset) ungated at

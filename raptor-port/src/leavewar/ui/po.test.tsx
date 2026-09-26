@@ -11,7 +11,7 @@
 
 import { fireEvent, render, screen } from '@testing-library/react'
 import { beforeEach, describe, expect, it } from 'vitest'
-import { getState, initStore, setAccountLookup, setPostOut, setRole } from '../state/store'
+import { getState, initStore, setAccountLookup, setPostingBlockLookup, setPostOut, setRole } from '../state/store'
 import { countsFor, inSquadron } from '../engine'
 import { memoryBackend } from '../state/storage'
 import { Matrix } from './Matrix'
@@ -238,6 +238,19 @@ describe('the four posting chips', () => {
     fireEvent.click(screen.getByTestId('postout-delete-go'))         // the second tap
     expect(p().poOutcome).toBe('delete')
     expect(p().to).toBe('2026-06-14')
+  })
+  it('a posting the date would hold back (the last admin) says so on the sheet — not only once, in a passing message', () => {
+    const id = anId()
+    setRole('admin')
+    setPostingBlockLookup((x, o) => (x === id && o === 'delete' ? 'Can’t delete him yet — he is the last admin who can sign in' : null))
+    try {
+      render(<Matrix />)
+      fireEvent.click(screen.getByTestId(`cell-${id}-2026-06-15`))
+      fireEvent.click(screen.getByTestId('bid-postout'))
+      expect(screen.queryByTestId('po-blocked'), 'Overseas Sqn: nothing held back').toBeNull()
+      fireEvent.click(screen.getByTestId('po-delete'))
+      expect(screen.getByTestId('po-blocked').textContent).toMatch(/last admin/)
+    } finally { setPostingBlockLookup(null) }
   })
   it('the line names his account only when he has one', () => {
     const id = anId()

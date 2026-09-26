@@ -1,7 +1,8 @@
 /* The mobile drawer — burger menu, page nav (admin-gated Edit tab), week chips,
-   the account and logout, markup 1:1 with the reference. The View-as chips and the
-   admin's role toggle are GONE ([ACCOUNTS], D166 (3), 26 Sep 26): signing in makes you
-   your own callsign, and the Account row names him. Open/close is
+   the account and logout, markup 1:1 with the reference. The View-as chips are GONE
+   ([ACCOUNTS], D166 (3), 26 Sep 26): signing in makes you your own callsign, and the Account
+   row names him; under it, for a real admin, the switch to the member view and back
+   (#drawerRole — D292, 27 Sep 26, [POST-OUT-OUTCOMES]; the old role toggle's successor). Open/close is
    the DRAWER flag in pops.ts; every action closes the drawer, as the
    reference's handlers all end with classList.remove('open'). */
 import { useEffect } from 'react'

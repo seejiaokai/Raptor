@@ -7,7 +7,7 @@
    D297 / D299 (a delete: his account and person, a hidden mark; days he flew keep his puck; final). The plan's Round 1
    and Round 2: each effect ONCE (never undoing a later hand change), each carrying its maker's mark so a take-back
    takes back only what the posting made; ONE clock — the calendar date — fixed here at 15 Jul 26 (the demo week).
-   Register lines PO3, PO8, PO9, PO10, PO12. Its own file, like poarchive.test.ts: the wired sync leaves a live Raptor
+   Register lines PO2, PO5, PO6, PO7, PO8, PO9, PO10. Its own file, like poarchive.test.ts: the wired sync leaves a live Raptor
    subscription behind. */
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 import { storeBackend, HOOKS } from '../engine/hooks'
@@ -18,7 +18,7 @@ import { initStore as raptorInitStore, notify as raptorNotify, resetSession } fr
 import { accountsLoad, accountByName, signIn, sessionFor, updateAccount } from '../state/accounts'
 import { BACKPROMPT } from '../state/view'
 import { commit } from '../command'
-import { getState, initStore as lwInitStore, lwStore, setPeople, setPostIn, setPostOut, setShowSans } from './state/store'
+import { getState, initStore as lwInitStore, lwStore, postingBlocked, setPeople, setPostIn, setPostOut, setShowSans } from './state/store'
 import { memoryBackend } from './state/storage'
 import { projectPeople } from './state/raptorRoster'
 import {
@@ -64,7 +64,7 @@ beforeEach(() => {
 })
 afterEach(() => { resetSession(null); vi.restoreAllMocks() })
 
-describe('PO3 — overseas: archived on Quals and his account suspended, on the date, once', () => {
+describe('PO2 — overseas: archived on Quals and his account suspended, on the date, once', () => {
   it('runs on the date; a hand Enable afterwards is never undone by a later pass', () => {
     expect(postOut('bane', TODAY, 'overseas')).toBe(true)
     expect(P('bane').archived).toBe(true)
@@ -104,7 +104,7 @@ describe('PO3 — overseas: archived on Quals and his account suspended, on the 
   })
 })
 
-describe('PO3 — the last admin who can sign in is never suspended or deleted by a posting; said once', () => {
+describe('PO2 / PO4 — the last admin who can sign in is never suspended or deleted by a posting; said once', () => {
   it('overseas: archived, the account left on, the reason said once however many passes follow', () => {
     const toast = vi.spyOn(HOOKS, 'toast')
     expect(postOut('stiff', TODAY, 'overseas')).toBe(true)
@@ -113,6 +113,12 @@ describe('PO3 — the last admin who can sign in is never suspended or deleted b
     raptorNotify(); raptorNotify(); runPoOutcomes()
     const said = toast.mock.calls.filter(c => c[0] === 'Saber is the last admin who can sign in — his account was not suspended')
     expect(said.length).toBe(1)
+  })
+  it('the sheets are told beforehand: the seam answers which postings the last admin holds back', () => {
+    expect(postingBlocked('stiff', 'delete')).toBe('Can’t delete Saber yet — he is the last admin who can sign in')
+    expect(postingBlocked('stiff', 'overseas')).toBe('Saber’s account can’t be suspended — he is the last admin who can sign in')
+    expect(postingBlocked('stiff', 'sans')).toBe(null)
+    expect(postingBlocked('bane', 'delete'), 'a member: nothing held back').toBe(null)
   })
   it('delete: not deleted, and said', () => {
     const toast = vi.spyOn(HOOKS, 'toast')
@@ -123,7 +129,7 @@ describe('PO3 — the last admin who can sign in is never suspended or deleted b
   })
 })
 
-describe('PO8 — SANS: he becomes SANS on the date (D283)', () => {
+describe('PO9 — SANS: he becomes SANS on the date (D283)', () => {
   it('with Show SANS off he stays shown, posted out; with it on he joins the SANS group, no window; taken back whole', () => {
     expect(postOut('rocky', TODAY, 'sans')).toBe(true)
     expect(P('rocky').san).toBe(true)
@@ -147,7 +153,7 @@ describe('PO8 — SANS: he becomes SANS on the date (D283)', () => {
   })
 })
 
-describe('PO4 / PO6 — delete: his account and his person; days he flew keep his puck; final', () => {
+describe('PO5 / PO6 / PO7 — delete: his account and his person; days he flew keep his puck; final', () => {
   it('on the date: the hidden mark, the account gone, gone on the war; a day to come loses him, a day he flew does not', () => {
     const flown = plantGround(0, 'rocky')
     const toCome = plantGround(4, 'rocky')
@@ -179,7 +185,7 @@ describe('PO4 / PO6 — delete: his account and his person; days he flew keep hi
   })
 })
 
-describe('PO9 / PO10 — take-back and Restore', () => {
+describe('PO2 / PO8 / PO10 — take-back and Restore', () => {
   it('moving a posting that has run to a date still to come takes back the archive AND the suspension — no prompt', () => {
     expect(postOut('bane', TODAY, 'overseas')).toBe(true)
     expect(postOut('bane', '2026-07-25', 'overseas')).toBe(true)
