@@ -71,7 +71,8 @@ whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaini
 **Placed by their own lines — not his rulings:** the Leave War — [LW-FROZEN-BAR-GAP] (after [HUMAN-RETEST]; show him
 first), [LW-FIGSEL-SLOW] and [LW-SCRUBBER-FLAKY] (test-only); the Inputs calendar — [INPUTSCAL-TAP-FLAKY] (test-only). The Tracker — [TRK-RETEST-NOTES] and
 [TRK-EDIT-SIDEWAYS] (their gates have passed), [TRK-PINCH-ASK] (his next Tracker session), [TRK-DLG-LEFTOVERS] (low, with the next question-box change), [TRK-PALETTE-ASK] (his answer D157: Raptor's colours
-fully — a small build), [TRK-BAKE-STALE] (low). The Leave War — [LW-RESET-ORDER] (his yes, D160 — a small build).
+fully — being built on `claude/tracker-palette`), [TRK-FLEXBAR-INK] (a question for him, on that branch's look card),
+[TRK-BAKE-STALE] (low). The Leave War — [LW-RESET-ORDER] (his yes, D160 — a small build).
 The amendment area — PR #434, #435, #437 and #438 MERGED (25–26 Sep 26); [LOOK-435]'s steps 2–4 are items 1 above; left: [REQ-ORPHAN-ROW] and [REQ-DOOR-WORDS] (both low). The board — [PUCK-FLAG-GLOW] (D164: a flagged puck does not glow — a small build), [CROWD-SWAP-SAYS-BUSY] (small; found by the batch's re-walk). Left from the amendment batch (D91–D111, merged): [AVAILWIN-PREVIEW-BAR] (low), [AMEND-SMALL-SEEN] (any time). The docs and the checks — [DEPLOY-DOCS] (its operational half), [DOC-POINTERS-CODE] and
 [RULINGS-LF-PIN] (with the next code change), [DOC-SUBHEADS], [RULING-HOMES-AUDIT], [HANDOFF-SHAPE-GUARD] and [BACKLOG-TIDY] (any time, docs only), [PEEK-ISSUED] (a question for him, low),
 Roles — [QUALS-MEMBER-SCOPE] (folded into [ACCOUNTS], D200), and beside it [QUALS-PROTO-TOAST] (low, one line of words). View-only Sched — [VIEW-ARROW-OVER-LIST] (low, LOOK tier).
@@ -1003,11 +1004,22 @@ grep the app for other "prototype" / "full build" / "Dataverse" words on screen.
 ### [TRK-PALETTE-ASK] The Tracker's own dark palette, or Raptor's? — ask him once (filed 24 Sep 26)
 **ANSWERED (D157, 24 Sep 26): Raptor's, FULLY** — backgrounds, text and the event colours (`tracker.css` variables and
 `app/core.js` `TYPE_COLOR` / `GRADE_FILL`). Shown to him first as three versions of the real chart. LOOK tier plus a
-phone look that the chart still reads at a glance. **Place:** any time, none blocking.
+phone look that the chart still reads at a glance. **Place:** NOW — being built on `claude/tracker-palette`, in
+parallel with `[ACCOUNTS]` (his instruction of 26 Sep 26: port 4180, rulings D230–D239).
 From the 7 Sep 26 device pass (`HANDOFF.md` §Open, "OWNER'S DEVICE PASS", archived 24 Sep 26 in
 `raptor-port/docs/archive/handoff-2026-09-24.md`): one open question rode the retired bug-testing list's row
 #376 — whether the Tracker keeps its own dark palette or takes Raptor's. It was recorded nowhere else. Ask him
 once, in his next Tracker session; build nothing until he answers.
+
+### [TRK-FLEXBAR-INK] The Tracker's Currency & Flex bars print white words on green and amber — hard to read (filed 26 Sep 26)
+Found by the `[TRK-PALETTE-ASK]` walk (evidence `raptor-port/docs/handpass/2026-09-26-trk-palette.md` §7 F4). The bars
+under Currency & Flex ("Current — no flex required", "1 Optional Flex", "Landing Current — No IP Required") are a
+coloured fill with WHITE words (`tracker.css .flexbar{color:#fff}`; the fill comes from `app/core.js`'s flex and
+currency functions). White on the green reads ~2.1:1 and on the amber ~2.1:1, against a floor of 4.5:1; the red 3.4:1,
+the grey 6.2:1. **Not new:** before D157 the same bars read 1.9 / 2.2 / 3.7:1. **Recommended:** dark words (Raptor's
+`--bg`) on the green, amber and red bars, white only on the grey — the recipe Raptor's own amber chips use; the functions
+return an ink with the colour. A design choice, so his: it is question 4 on that branch's look card. LOOK tier.
+**Place:** after his answer; low, none blocking.
 
 ### [DOC-POINTERS-CODE] Code comments that point at documentation moved in the spring clean (filed 24 Sep 26)
 **Place:** ride the next change that touches `raptor-port/src` anyway — a pointer-only edit there starts the full

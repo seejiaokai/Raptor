@@ -1,0 +1,160 @@
+[
+  {
+    "what": "tracker.css: the sim token back to the old yellow",
+    "red": true,
+    "failed": [
+      "the Tracker's page colours are Raptor's (tracker.css) > --sim is Raptor's --adv",
+      "the chart's colours are the same tokens (core.js) > each event type is drawn in its Raptor colour, the same one its token carries",
+      "the retired Tracker colours do not come back > none of them uses a retired colour"
+    ]
+  },
+  {
+    "what": "tracker.css: the page background back to the old one",
+    "red": true,
+    "failed": [
+      "the Tracker's page colours are Raptor's (tracker.css) > --bg is Raptor's --bg",
+      "the retired Tracker colours do not come back > none of them uses a retired colour"
+    ]
+  },
+  {
+    "what": "core.js: a CFT/IAT/EPT ball drawn in the old purple",
+    "red": true,
+    "failed": [
+      "the chart's colours are the same tokens (core.js) > each event type is drawn in its Raptor colour, the same one its token carries",
+      "the retired Tracker colours do not come back > none of them uses a retired colour"
+    ]
+  },
+  {
+    "what": "core.js: the failure ticks back to the old red",
+    "red": true,
+    "failed": [
+      "the chart's colours are the same tokens (core.js) > selected, the failure ticks and the key ball's names are Raptor's accent, red and ink",
+      "the retired Tracker colours do not come back > none of them uses a retired colour"
+    ]
+  },
+  {
+    "what": "core.js: the Marginal wedge back to the old green",
+    "red": true,
+    "failed": [
+      "the chart's colours are the same tokens (core.js) > the grade fills match the legend: Marginal is Raptor's green, DCO / DPCO / N.A. the Tracker's own",
+      "the retired Tracker colours do not come back > none of them uses a retired colour"
+    ]
+  },
+  {
+    "what": "core.js: the selected-student edge back to the old accent",
+    "red": true,
+    "failed": [
+      "the chart's colours are the same tokens (core.js) > selected, the failure ticks and the key ball's names are Raptor's accent, red and ink",
+      "the retired Tracker colours do not come back > none of them uses a retired colour"
+    ]
+  },
+  {
+    "what": "tracker.css: a picked find row back to the old dark teal",
+    "red": true,
+    "failed": [
+      "the retired Tracker colours do not come back > none of them uses a retired colour"
+    ]
+  },
+  {
+    "what": "tracker.css: the code on a ball printed in muted grey",
+    "red": true,
+    "failed": [
+      "every event code stays readable on its ball > the label ink is the page background token"
+    ]
+  },
+  {
+    "what": "tracker.css: the failure chip rule back to one class",
+    "red": true,
+    "failed": [
+      "the Tracker's page colours are Raptor's (tracker.css) > a failure chip keeps its red outline over the plain grey chip it also is"
+    ]
+  },
+  {
+    "what": "Legend.jsx: the Sim swatch hard-coded in the old yellow",
+    "red": true,
+    "failed": [
+      "the chart's colours are the same tokens (core.js) > the colour key, the grade pop-up and the edit strip each name the right token for each label",
+      "the retired Tracker colours do not come back > none of them uses a retired colour"
+    ]
+  },
+  {
+    "what": "ShowAllPanel.jsx: a grade badge's dark text back to the old ink",
+    "red": true,
+    "failed": [
+      "the retired Tracker colours do not come back > none of them uses a retired colour"
+    ]
+  },
+  {
+    "what": "Pop.jsx: the pop-up divider back to the old hairline",
+    "red": true,
+    "failed": [
+      "the retired Tracker colours do not come back > none of them uses a retired colour"
+    ]
+  },
+  {
+    "what": "tracker.css: the bubble's divider named in a Tracker colour it cannot see",
+    "red": true,
+    "failed": [
+      "the Tracker's page colours are Raptor's (tracker.css) > what the Tracker draws outside its page (the details bubble) names Raptor's colours, with Raptor's values to fall back on"
+    ]
+  },
+  {
+    "what": "Modals.jsx: the editor calls a sim \"yellow\" again",
+    "red": true,
+    "failed": [
+      "the words that name a colour say the one drawn > the sim option names amber"
+    ]
+  },
+  {
+    "what": "Legend.jsx: the Sim swatch painted in the Test token",
+    "red": true,
+    "failed": [
+      "the chart's colours are the same tokens (core.js) > the colour key, the grade pop-up and the edit strip each name the right token for each label"
+    ]
+  },
+  {
+    "what": "Pop.jsx: the DPCO dot painted in the Marginal token",
+    "red": true,
+    "failed": [
+      "the chart's colours are the same tokens (core.js) > the colour key, the grade pop-up and the edit strip each name the right token for each label"
+    ]
+  },
+  {
+    "what": "tracker.css: the unsaved Save changes washed in an orange Raptor does not use",
+    "red": true,
+    "failed": [
+      "the Tracker's page colours are Raptor's (tracker.css) > every see-through tint anywhere in the Tracker is one of Raptor's colours (or a shadow's black)"
+    ]
+  },
+  {
+    "what": "tracker.css: the bubble falls back to a colour that is not Raptor's",
+    "red": true,
+    "failed": [
+      "the Tracker's page colours are Raptor's (tracker.css) > what the Tracker draws outside its page (the details bubble) names Raptor's colours, with Raptor's values to fall back on"
+    ]
+  },
+  {
+    "what": "tracker.css: tick boxes back to the browser's own colour",
+    "red": true,
+    "failed": [
+      "the Tracker's page colours are Raptor's (tracker.css) > a ticked box, and the browser's own controls, follow Raptor"
+    ]
+  },
+  {
+    "what": "SidePanel.jsx: the lull calendar's start day back to the old teal",
+    "red": true,
+    "failed": [
+      "the retired Tracker colours do not come back > none of them uses a retired colour"
+    ]
+  },
+  {
+    "what": "scheduler.css: RAPTOR's amber changes and the Tracker is left behind",
+    "red": true,
+    "failed": [
+      "the Tracker's page colours are Raptor's (tracker.css) > --sim is Raptor's --adv",
+      "the Tracker's page colours are Raptor's (tracker.css) > --orange is Raptor's --adv",
+      "the Tracker's page colours are Raptor's (tracker.css) > every see-through tint anywhere in the Tracker is one of Raptor's colours (or a shadow's black)",
+      "the chart's colours are the same tokens (core.js) > each event type is drawn in its Raptor colour, the same one its token carries"
+    ]
+  }
+]

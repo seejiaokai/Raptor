@@ -7048,8 +7048,24 @@ screen:
   run — has nothing left to do. `App.jsx`'s mount effect therefore calls
   `renderBoard()` when the engine is already `ready` (found by the 7 Sep 26
   bug sweep: no chart after logging back in). Pinned in `tracker.test.tsx`.
-- **Its own look, inside the section.** The Tracker keeps its dark palette,
-  type and controls (`tracker.css`, wrapped under `#page-tracker`). Five class
+- **Its own look, inside the section — in RAPTOR'S COLOURS (owner, D157, 24 Sep 26: "7 c").**
+  The Tracker keeps its own type and controls (`tracker.css`, wrapped under
+  `#page-tracker`), but every colour is Raptor's: backgrounds, text and the event
+  colours (flight blue, acad green, test red, sim AMBER — no longer yellow — and
+  CFT/IAT/EPT purple, from `scheduler.css` `:root`'s `--flight --ok --hard --adv
+  --san`), Marginal and the failure ticks in Raptor's green and red, "selected /
+  switched on" in Raptor's accent and its wash. The tokens are COPIED into
+  `tracker.css` (the page) and `app/core.js` `PAL` / `TYPE_COLOR` / `GRADE_FILL` (the
+  chart's SVG), and `src/tracker/trk-palette.test.ts` pins every copy to Raptor's and
+  keeps the retired Tracker colours out. The Tracker's own, because Raptor has no word
+  for them: the DCO / DPCO / N.A. grade fills, the white "not done" wedge, the yellow
+  "available" ring, the turquoise search ring, the chart's grey lines, the Edit chart
+  layout handles and the key ball's gold centre. The lull calendar's picked start is
+  the "on" wash and a lull's days Raptor's red tint; a ticked box wears the accent
+  (`accent-color`); the page is `color-scheme:dark` as Raptor's `<html>` is. The
+  details bubble hangs off `<body>`, outside the wrapper, so its rules — every class
+  its content uses — sit above it and name Raptor's `:root` colours with Raptor's
+  VALUES as fallbacks, so it draws the same standalone (pinned there too). Five class
   names collide with `scheduler.css` (`.day`, `.day.today`, `.legend`, `.modal`,
   `.sub`) and are reset first inside the wrapper; the standalone app's own
   geometry contracts — the one-row bar at 1440, the phone's two-row bar with
@@ -7098,7 +7114,8 @@ screen:
   wedge (`path.wedge[data-wi]`, one per student, student 0 at the top) is
   its own tap target outside arrange mode (`core.js ballTap`): tapping
   somebody else's wedge PICKS them — the Crew dropdown follows, every ball
-  edges that student's wedge in cyan (`path.mine`, the key ball's `#36c2ff`,
+  edges that student's wedge in cyan (`path.mine`, the key ball's accent — Raptor's
+  `--accent` since D157, `core.js PAL.accent`,
   a 2.4px edge and never a fill, so a DCO/DPCO colour is never hidden — the
   owner picked "cyan edge only" from a three-way comp) and nothing opens;
   tapping the SELECTED student's own wedge, or the centre icon (`g.core`),

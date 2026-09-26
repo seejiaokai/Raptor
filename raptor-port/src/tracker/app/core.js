@@ -105,9 +105,20 @@ function endSession() {
 }
 
 export const DEFAULT_SYLLABUS = SYLLABI[DEFAULT_SYL_NAME];
-export const TYPE_COLOR = { flight: '#19b6e8', acad: '#27d64a', test: '#ff4040', sim: '#ffe000', device: '#b063ff' };
+/* D157 (owner, 24 Sep 26 — "7 c"): the Tracker wears RAPTOR'S colours, fully —
+   backgrounds, text and the event colours. The chart is drawn as SVG attribute
+   strings, which cannot read a CSS variable in every browser, so its colours are
+   literals here: each one is Raptor's own token (scheduler.css :root, named in the
+   comment), and trk-palette.test.ts pins every one to it, so a change to Raptor's
+   palette turns that test red instead of leaving the two apps apart. The page's
+   colours are the same tokens in tracker.css. Kept as the Tracker's own, because
+   Raptor has no word for them: the DCO / DPCO / N.A. grade fills, the white "not
+   done" wedge, the yellow "available" ring, the turquoise search ring, the chart's
+   grey lines and the Edit chart layout handles. */
+export const PAL = { accent: '#3BC6E8', fail: '#F0555F', ink: '#F1F4F7', on: 'rgba(59,198,232,.16)' }; /* --accent, --hard, --ink, Raptor's "switched on" wash */
+export const TYPE_COLOR = { flight: '#3BC6E8', acad: '#57C97A', test: '#F0555F', sim: '#E5A83B', device: '#B24DEA' }; /* --flight, --ok, --hard, --adv, --san */
 const DARKC = new Set(['sim', 'acad', 'na', 'flight', 'test', 'device']); // labels needing dark text on light fills
-export const GRADE_FILL = { dco: '#000000', dpco: '#1f6dff', marg: '#27d64a', na: '#cdbb8e' };
+export const GRADE_FILL = { dco: '#000000', dpco: '#1f6dff', marg: '#57C97A', na: '#cdbb8e' }; /* marg is Raptor's --ok; the other three are the Tracker's own */
 export const DONE = new Set(['dco', 'dpco', 'marg']);
 /* Event details, PER CHART (owner, 23 Sep 26 — D126): { [sylId]: { [eventId]:
    fields } }, only what differs from that chart's shipped wording. One table
@@ -2007,7 +2018,7 @@ function ballGroup(ev, available) {
       for (let t = 0; t < shown; t++) {
         const ang = first + t * gap, rad = ang * Math.PI / 180;
         const x1 = cx + rO * 0.80 * Math.cos(rad), y1 = cy + rO * 0.80 * Math.sin(rad), x2 = cx + (rO + 3) * Math.cos(rad), y2 = cy + (rO + 3) * Math.sin(rad);
-        segs += `<line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}" stroke="#ff2b2b" stroke-width="2.2" stroke-linecap="round"/>`;
+        segs += `<line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}" class="ftick" stroke="${PAL.fail}" stroke-width="2.2" stroke-linecap="round"/>`;
       }
     }
   }
@@ -2016,15 +2027,15 @@ function ballGroup(ev, available) {
      hidden; the same cyan the key ball uses). Drawn after the wedges so it
      sits above its neighbours' black outlines; no hit of its own. */
   const ai = roster.findIndex(r => r.id === active);
-  if (ai >= 0) { const [a0, a1] = wedge(ai, n); segs += `<path class="mine" data-wi="${ai}" d="${sector(cx, cy, rO, rI, a0, a1)}" fill="none" stroke="#36c2ff" stroke-width="2.4" stroke-linejoin="round" pointer-events="none"/>`; }
+  if (ai >= 0) { const [a0, a1] = wedge(ai, n); segs += `<path class="mine" data-wi="${ai}" d="${sector(cx, cy, rO, rI, a0, a1)}" fill="none" stroke="${PAL.accent}" stroke-width="2.4" stroke-linejoin="round" pointer-events="none"/>`; }
   const dark = DARKC.has(ev.type) ? 'lbl' : 'lbl lbll';
   let hl = available ? `<circle cx="${cx}" cy="${cy}" r="${rO + 3}" fill="none" stroke="#ffd23f" stroke-width="2.6" class="avail"/>` : '';
   /* The search ring sits at rO+8. Its inner edge is 34.06, clear of the yellow
      available ring's outer edge even when svg.perf fattens that to 31.96, so
      the two can never touch or be read as one mark. */
   if (searchHit === ev.id) hl += `<circle cx="${cx}" cy="${cy}" r="${rO + 8}" fill="none" stroke="#00e5c8" stroke-width="2.4" class="found"/>`;
-  if (arrangeMode && connectSrc === ev.id) hl += `<circle cx="${cx}" cy="${cy}" r="${rO + 5}" fill="none" stroke="#36c2ff" stroke-width="3"/>`;
-  if (arrangeMode && selBalls.has(ev.id)) hl += `<circle cx="${cx}" cy="${cy}" r="${rO + 5}" fill="none" stroke="#36c2ff" stroke-width="1.6" stroke-dasharray="3 2"/>`;
+  if (arrangeMode && connectSrc === ev.id) hl += `<circle cx="${cx}" cy="${cy}" r="${rO + 5}" fill="none" stroke="${PAL.accent}" stroke-width="3"/>`;
+  if (arrangeMode && selBalls.has(ev.id)) hl += `<circle cx="${cx}" cy="${cy}" r="${rO + 5}" fill="none" stroke="${PAL.accent}" stroke-width="1.6" stroke-dasharray="3 2"/>`;
   const num = (ev.num != null && ev.num !== '') ? `<circle cx="${size - 5}" cy="5" r="8.5" class="numbg"/><text class="numbadge" x="${size - 5}" y="8" text-anchor="middle">${escapeId(ev.num)}</text>` : '';
   const label = escapeId(ev.label || ev.id);
   let cap = '';
@@ -2355,7 +2366,7 @@ function buildFreeLines(routes, vs) {
     const on = (selLine === L.id);
     const av = lineArrow(L);
     const mk = av === 0 ? ' marker-end="url(#arr)"' : av === 1 ? ' marker-start="url(#arr)"' : '';
-    o += '<path id="lp_' + escapeId(L.id) + '" d="' + d + '" fill="none" stroke="' + (on ? '#36c2ff' : '#657085') + '" stroke-width="' + (on ? 2.4 : 1.3) + '"' + mk + '/>';
+    o += '<path id="lp_' + escapeId(L.id) + '" d="' + d + '" fill="none" stroke="' + (on ? PAL.accent : '#657085') + '" stroke-width="' + (on ? 2.4 : 1.3) + '"' + mk + '/>';
     if (arrangeMode) {
       o += '<path class="linehit" id="lh_' + escapeId(L.id) + '" data-lid="' + escapeId(L.id) + '" d="' + d + '" fill="none" stroke="transparent" stroke-width="12"/>';
       if (!L.a) o += '<circle cx="' + P[0].x.toFixed(1) + '" cy="' + P[0].y.toFixed(1) + '" r="4" fill="#ffb84d" stroke="#7a4b00" stroke-width="1"/>';
@@ -2401,8 +2412,8 @@ function lineEditable() { return arrangeMode && (tool === 'line' || tool === 'ed
 function freeLineOverlay() {
   let o = '';
   if (tool === 'line') {
-    o += '<path id="drawPrev" d="' + drawPreviewD() + '" fill="none" stroke="#36c2ff" stroke-width="2" stroke-dasharray="6 4"/>';
-    o += '<circle id="drawStart" cx="0" cy="0" r="0" fill="#36c2ff"/>';
+    o += '<path id="drawPrev" d="' + drawPreviewD() + '" fill="none" stroke="' + PAL.accent + '" stroke-width="2" stroke-dasharray="6 4"/>';
+    o += '<circle id="drawStart" cx="0" cy="0" r="0" fill="' + PAL.accent + '"/>';
   }
   const L = lineById(selLine);
   if (L) {
@@ -2554,7 +2565,7 @@ function buildEdges() {
     if (o.line) return; const d = edgePath(o, vs); const m = edgeMeta[o.k] || {}; const ar = (m.arrow == null) ? 0 : m.arrow;
     const mk2 = ar === 0 ? ' marker-end="url(#arr)"' : ar === 1 ? ' marker-start="url(#arr)"' : '';
     const on = (selEdge === o.k);
-    const style = on ? ' stroke="#36c2ff" stroke-width="2.4"' : ' stroke="#657085" stroke-width="1.3"';
+    const style = on ? ` stroke="${PAL.accent}" stroke-width="2.4"` : ' stroke="#657085" stroke-width="1.3"';
     out += `<path d="${d}" fill="none"${style}${mk2}/>`;
     if (arrangeMode) out += `<path class="edgehit" data-p="${escapeId(o.p)}" data-c="${escapeId(o.c)}" data-k="${escapeId(o.k)}" d="${d}" fill="none" stroke="transparent" stroke-width="12"/>`;
   });
@@ -2565,7 +2576,7 @@ function ballPorts() {
   let o = '';
   SYL.forEach(e => {
     const p = nodePos(e.id);
-    ['N', 'E', 'S', 'W'].forEach(sd => { const a = anc(p, sd); o += `<circle class="port" data-id="${escapeId(e.id)}" data-side="${sd}" cx="${a.x.toFixed(1)}" cy="${a.y.toFixed(1)}" r="4.5" fill="#36c2ff" fill-opacity="0.85" stroke="#fff" stroke-width="1"/>`; });
+    ['N', 'E', 'S', 'W'].forEach(sd => { const a = anc(p, sd); o += `<circle class="port" data-id="${escapeId(e.id)}" data-side="${sd}" cx="${a.x.toFixed(1)}" cy="${a.y.toFixed(1)}" r="4.5" fill="${PAL.accent}" fill-opacity="0.85" stroke="#fff" stroke-width="1"/>`; });
   });
   return o;
 }
@@ -2603,7 +2614,7 @@ function highlightPort(pt) {
   const np = nearestPort(pt, 12);
   document.querySelectorAll('#flowSvg .port').forEach(c => {
     const on = np && c.dataset.id === np.id && c.dataset.side === np.side;
-    c.setAttribute('r', on ? '7' : '4.5'); c.setAttribute('fill', on ? '#0af' : '#36c2ff');
+    c.setAttribute('r', on ? '7' : '4.5'); c.setAttribute('fill', on ? '#0af' : PAL.accent);
   });
 }
 function applyEndSnap(end, pt) {
@@ -3386,7 +3397,7 @@ function startMarquee(e, svg) {
   if (e.pointerType !== 'mouse') fingerStop = stop;
   const mv = ev => {
     const p = svgPt(ev); const x = Math.min(marquee.x0, p.x), y = Math.min(marquee.y0, p.y), w = Math.abs(p.x - marquee.x0), h = Math.abs(p.y - marquee.y0); marquee.rect = { x, y, w, h };
-    const gl = document.getElementById('bandLayer'); if (gl) gl.innerHTML = `<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="rgba(54,194,255,0.12)" stroke="#36c2ff" stroke-width="0.8" stroke-dasharray="4 3"/>`;
+    const gl = document.getElementById('bandLayer'); if (gl) gl.innerHTML = `<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="rgba(59,198,232,.12)" stroke="${PAL.accent}" stroke-width="0.8" stroke-dasharray="4 3"/>`;
   };
   const up = () => {
     if (fingerStop === stop) fingerStop = null;
@@ -3447,7 +3458,7 @@ function onDrag(ev) {
 }
 function drawGuides() {
   const gl = document.getElementById('bandLayer'); if (!gl) return; const bd = bounds();
-  gl.innerHTML = alignGuides.map(g => g.v ? `<line x1="${g.p}" y1="0" x2="${g.p}" y2="${bd.H}" stroke="#36c2ff" stroke-width="0.7" stroke-dasharray="4 4"/>` : `<line x1="0" y1="${g.p}" x2="${bd.W}" y2="${g.p}" stroke="#36c2ff" stroke-width="0.7" stroke-dasharray="4 4"/>`).join('');
+  gl.innerHTML = alignGuides.map(g => g.v ? `<line x1="${g.p}" y1="0" x2="${g.p}" y2="${bd.H}" stroke="${PAL.accent}" stroke-width="0.7" stroke-dasharray="4 4"/>` : `<line x1="0" y1="${g.p}" x2="${bd.W}" y2="${g.p}" stroke="${PAL.accent}" stroke-width="0.7" stroke-dasharray="4 4"/>`).join('');
 }
 function endDrag(ev) {
   if (!drag) return; const g = drag.g; if (fingerStop === drag.stop) fingerStop = null;
@@ -3696,11 +3707,11 @@ export function renderKeyBall() {
   let segs = '', labels = '';
   for (let i = 0; i < n; i++) {
     const [a0, a1] = wedge(i, n); const r = roster[i]; const on = !!r && r.id === active;
-    segs += `<path d="${sector(cx, cy, rO, rI, a0, a1)}" fill="${on ? '#16384a' : '#fff'}" stroke="${on ? '#36c2ff' : '#111'}" stroke-width="${on ? 2 : 1}"/>`;
+    segs += `<path d="${sector(cx, cy, rO, rI, a0, a1)}" fill="${on ? PAL.on : '#fff'}" stroke="${on ? PAL.accent : '#111'}" stroke-width="${on ? 2 : 1}"/>`;
     const mid = (a0 + a1) / 2 * Math.PI / 180; const lr = rO + 10;
     const x = cx + lr * Math.cos(mid), y = cy + lr * Math.sin(mid);
     const anchor = Math.cos(mid) > 0.3 ? 'start' : Math.cos(mid) < -0.3 ? 'end' : 'middle';
-    labels += `<text x="${x.toFixed(0)}" y="${(y + 7).toFixed(0)}" text-anchor="${anchor}" font-size="${on ? 21 : 19}" font-weight="${on ? 800 : 700}" fill="${on ? '#5ec8ff' : '#e9ecf2'}">${escapeId(r ? r.name : '')}</text>`;
+    labels += `<text x="${x.toFixed(0)}" y="${(y + 7).toFixed(0)}" text-anchor="${anchor}" font-size="${on ? 21 : 19}" font-weight="${on ? 800 : 700}" fill="${on ? PAL.accent : PAL.ink}">${escapeId(r ? r.name : '')}</text>`;
   }
   /* Wide and short: the names run out to either side, so the box wants the shape
      of a name, not of a circle. The centre names the COURSE: `course` has been

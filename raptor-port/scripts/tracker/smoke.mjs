@@ -198,7 +198,7 @@ ok('app boots and renders the flow board', nBalls > 100, `${nBalls} events`);
       measured++;
       if (r < worst.r) Object.assign(worst, { r, id: g.dataset.id, on, ink });
     }
-    const edge = document.querySelector('#flowSvg path[stroke]:not([stroke="#36c2ff"])');
+    const edge = document.querySelector('#flowSvg path[stroke]:not([stroke="#3BC6E8"])'); /* not a selected one: Raptor's accent (D157) */
     const bg = getComputedStyle(document.querySelector('#page-tracker .tr-root')).backgroundColor;
     return { worst, measured,
       edge: edge ? ratio(edge.getAttribute('stroke'), bg) : null,
@@ -1104,7 +1104,7 @@ ok('the spacer falls after the search, with only the Save slot to its right',
   /* Both halves: "not the accent blue" alone is true of a ring that does not
      exist, which is exactly how a missing feature reads. */
   ok('the search ring is a colour of its own, not the blue that means "selected"',
-    !!found.stroke && found.stroke.toLowerCase() !== '#36c2ff', String(found.stroke));
+    !!found.stroke && found.stroke.toLowerCase() !== '#3bc6e8', String(found.stroke)); /* Raptor's accent (D157) */
 
   /* A search that finds nothing must not move the board or drop the mark. */
   const before = await pg.evaluate(() => Math.round(document.getElementById('board').scrollTop));
@@ -2961,17 +2961,27 @@ await pg.waitForSelector('#flowSvg .ball', { timeout: 15000 });
   await clickBall('ST-02'); await pg.waitForSelector('#pop');
   await pg.locator('#pop .fails button', { hasText: '+' }).click(); await pg.waitForTimeout(250);
   await pg.locator('#pop .fails button', { hasText: '+' }).click(); await pg.waitForTimeout(250);
+  /* The two checks below count ticks that must NOT be there, which an empty count
+     satisfies whatever it looked for. So first: two failures draw two ticks, in
+     Raptor's red (D157) — proof the count below can see a tick at all. */
+  const twoTicks = await pg.evaluate(() => {
+    const g = [...document.querySelectorAll('#flowSvg .ball')].find(x => x.dataset.id === 'ST-02');
+    const t = [...g.querySelectorAll('line.ftick')];
+    return { n: t.length, strokes: [...new Set(t.map(l => l.getAttribute('stroke')))].join(',') };
+  });
+  ok('two failures draw two red ticks on the ball', twoTicks.n === 2 && twoTicks.strokes === '#F0555F',
+    `${twoTicks.n} ticks, stroke ${twoTicks.strokes}`);
   await pg.locator('#pop .opts button', { hasText: 'N.A.' }).click(); await pg.waitForTimeout(600);
   const naTicks = await pg.evaluate(() => {
     const g = [...document.querySelectorAll('#flowSvg .ball')].find(x => x.dataset.id === 'ST-02');
-    return g.querySelectorAll('line[stroke="#ff2b2b"]').length;
+    return g.querySelectorAll('line.ftick').length;
   });
   ok('an event marked N.A. carries no failure ticks', naTicks === 0, `${naTicks} red ticks`);
   await clickBall('ST-02'); await pg.waitForSelector('#pop');
   await pg.locator('#pop .fails button', { hasText: '+' }).click(); await pg.waitForTimeout(400);
   const naAdded = await pg.evaluate(() => {
     const g = [...document.querySelectorAll('#flowSvg .ball')].find(x => x.dataset.id === 'ST-02');
-    return { ticks: g.querySelectorAll('line[stroke="#ff2b2b"]').length,
+    return { ticks: g.querySelectorAll('line.ftick').length,
       shown: (document.getElementById('failCount') || {}).textContent };
   });
   ok('a failure cannot be added to an event marked N.A.',

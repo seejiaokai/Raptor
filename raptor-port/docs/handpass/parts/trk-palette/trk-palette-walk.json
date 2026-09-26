@@ -1,0 +1,335 @@
+[
+  {
+    "step": "S1 page: background and text are Raptor's",
+    "pass": true,
+    "said": "{\"backgroundColor\":\"rgb(11, 13, 16)\",\"color\":\"rgb(241, 244, 247)\"}"
+  },
+  {
+    "step": "S1 bar: a dropdown is Raptor's panel, edge and ink",
+    "pass": true,
+    "said": "{\"backgroundColor\":\"rgb(26, 31, 38)\",\"borderTopColor\":\"rgb(42, 49, 58)\",\"color\":\"rgb(241, 244, 247)\"}"
+  },
+  {
+    "step": "S13 zoom control: Raptor's panel and edge, its % in muted",
+    "pass": true,
+    "said": "{\"zc\":{\"backgroundColor\":\"rgb(26, 31, 38)\",\"borderTopColor\":\"rgb(42, 49, 58)\"},\"zp\":{\"color\":\"rgb(138, 150, 163)\"}}"
+  },
+  {
+    "step": "S2 chart: every sim is Raptor's amber",
+    "pass": true,
+    "said": "[\"#e5a83b\"]"
+  },
+  {
+    "step": "S2 chart: every CFT/IAT/EPT is Raptor's purple",
+    "pass": true,
+    "said": "[\"#b24dea\"]"
+  },
+  {
+    "step": "S2 chart: every flight is Raptor's blue",
+    "pass": true,
+    "said": "[\"#3bc6e8\"]"
+  },
+  {
+    "step": "S2 chart: every acad / test is Raptor's green / red",
+    "pass": true,
+    "said": "[\"#57c97a\",\"#f0555f\"] (210 balls)"
+  },
+  {
+    "step": "S2 chart: the code on a ball is Raptor's darkest",
+    "pass": true,
+    "said": "{\"fill\":\"rgb(11, 13, 16)\"}"
+  },
+  {
+    "step": "S2 chart: no retired Tracker colour is drawn anywhere on it",
+    "pass": true,
+    "said": "#5a6172 #657085 #ffd23f #ffffff #111 #3bc6e8 #57c97a #0007 #b24dea #f0555f #e5a83b"
+  },
+  {
+    "step": "S3 colour key: every swatch matches what the chart draws",
+    "pass": true,
+    "said": "Centre = type:=, Flight=rgb(59, 198, 232), Acad/Spec=rgb(87, 201, 122), Test=rgb(240, 85, 95), Sim=rgb(229, 168, 59), CFT/IAT/EPT=rgb(178, 77, 234), Ring segment per student:=, DCO=rgb(0, 0, 0), DPCO=rgb(31, 109, 255), Marginal=rgb(87, 201, 122), NA=rgb(205, 187, 142), Not done=rgb(255, 255, 255)"
+  },
+  {
+    "step": "S2 marks: DCO wedge black, DPCO blue, Marginal Raptor's green, N.A. tan",
+    "pass": true,
+    "said": "[\"#000000\",\"#1f6dff\",\"#57C97A\",\"#cdbb8e\"]"
+  },
+  {
+    "step": "S2 marks: two failures draw two ticks in Raptor's red",
+    "pass": true,
+    "said": "{\"fill\":\"#1f6dff\",\"mine\":\"#3BC6E8\",\"ticks\":2,\"tick\":\"#F0555F\"}"
+  },
+  {
+    "step": "S2 marks: the picked student's wedge wears Raptor's accent edge on every ball",
+    "pass": true,
+    "said": "[\"#3BC6E8\",\"#3BC6E8\",\"#3BC6E8\",\"#3BC6E8\"]"
+  },
+  {
+    "step": "S2 chart: a hovered crew wedge edges in Raptor's accent",
+    "pass": true,
+    "said": "var(--accent)"
+  },
+  {
+    "step": "S5 pop-up: its grade dots match the chart and the key",
+    "pass": true,
+    "said": "[[\"Not done\",\"rgb(255, 255, 255)\"],[\"DCO\",\"rgb(0, 0, 0)\"],[\"DPCO\",\"rgb(31, 109, 255)\"],[\"Marginal\",\"rgb(87, 201, 122)\"],[\"N.A.\",\"rgb(205, 187, 142)\"]]"
+  },
+  {
+    "step": "S5 pop-up: Raptor's panel, edge and divider",
+    "pass": true,
+    "said": "{\"pop\":{\"backgroundColor\":\"rgb(26, 31, 38)\",\"borderTopColor\":\"rgb(42, 49, 58)\"},\"popRule\":{\"borderTopColor\":\"rgb(42, 49, 58)\"}}"
+  },
+  {
+    "step": "S4 side panel: cards are Raptor's panel and edge, headings its accent",
+    "pass": true,
+    "said": "{\"card\":{\"backgroundColor\":\"rgb(26, 31, 38)\",\"borderTopColor\":\"rgb(42, 49, 58)\"},\"h3\":{\"color\":\"rgb(59, 198, 232)\"}}"
+  },
+  {
+    "step": "S4 Overall: the progress bar runs Raptor's flight blue into its green, on its edge colour",
+    "pass": true,
+    "said": "{\"track\":\"rgb(42, 49, 58)\",\"fill\":\"linear-gradient(90deg, rgb(59, 198, 232), rgb(87, 201, 122))\"}"
+  },
+  {
+    "step": "S4 Students: the key ball's picked wedge is Raptor's \"on\" wash and accent edge, names in its ink / accent",
+    "pass": true,
+    "said": "{\"onFill\":\"rgba(59,198,232,.16)\",\"onStroke\":\"#3BC6E8\",\"names\":[\"#3BC6E8\",\"#F1F4F7\"]}"
+  },
+  {
+    "step": "S4 Failures: the count and each chip are Raptor's red tints, outlined not solid",
+    "pass": true,
+    "said": "{\"ft\":{\"backgroundColor\":\"rgba(240, 85, 95, 0.12)\",\"borderTopColor\":\"rgba(240, 85, 95, 0.55)\",\"color\":\"rgb(251, 180, 185)\"},\"fc\":{\"borderTopColor\":\"rgba(240, 85, 95, 0.55)\",\"color\":\"rgb(251, 180, 185)\"}}"
+  },
+  {
+    "step": "S4 Currency: its flex bars are drawn in Raptor's tones (or the Tracker's own grey)",
+    "pass": true,
+    "said": "[\"rgb(90, 97, 114)\",\"rgb(90, 97, 114)\"]"
+  },
+  {
+    "step": "S14 failure log: Raptor's panel and edge",
+    "pass": true,
+    "said": "{\"backgroundColor\":\"rgb(26, 31, 38)\",\"borderTopColor\":\"rgb(42, 49, 58)\"}"
+  },
+  {
+    "step": "S4 Currency & Flex: a syllabus flight 2 days ago draws its bar in Raptor's green",
+    "pass": true,
+    "said": "[[\"Landing Current — No IP Required\",\"rgb(87, 201, 122)\"],[\"Current — no flex required\",\"rgb(87, 201, 122)\"]]"
+  },
+  {
+    "step": "S4 Currency & Flex: a syllabus flight 10 days ago draws its bar in Raptor's amber",
+    "pass": true,
+    "said": "[[\"Landing Not Current — IP Required\",\"rgb(240, 85, 95)\"],[\"1 Optional Flex\",\"rgb(229, 168, 59)\"]]"
+  },
+  {
+    "step": "S4 Currency & Flex: a syllabus flight 16 days ago draws its bar in Raptor's red",
+    "pass": true,
+    "said": "[[\"Landing Not Current — IP Required\",\"rgb(240, 85, 95)\"],[\"1 Mando Flex (Convertible)\",\"rgb(240, 85, 95)\"]]"
+  },
+  {
+    "step": "S4 Currency & Flex: a currency flight 2 days ago draws the landing bar in Raptor's green",
+    "pass": true,
+    "said": "[[\"Landing Current — No IP Required\",\"rgb(87, 201, 122)\"],[\"1 Mando Flex (Convertible)\",\"rgb(240, 85, 95)\"]]"
+  },
+  {
+    "step": "S4 Currency & Flex: a currency flight 10 days ago draws the landing bar in Raptor's red",
+    "pass": true,
+    "said": "[[\"Landing Not Current — IP Required\",\"rgb(240, 85, 95)\"],[\"1 Mando Flex (Convertible)\",\"rgb(240, 85, 95)\"]]"
+  },
+  {
+    "step": "S17 lull calendar: today is ringed in Raptor's accent",
+    "pass": true,
+    "said": "{\"outlineColor\":\"rgb(59, 198, 232)\"}"
+  },
+  {
+    "step": "S17 lull calendar: the day picked as the start wears Raptor's \"on\" wash",
+    "pass": true,
+    "said": "rgba(59, 198, 232, 0.16)"
+  },
+  {
+    "step": "S17 lull calendar: a day inside a lull already set wears Raptor's red tint",
+    "pass": true,
+    "said": "rgba(240, 85, 95, 0.12)"
+  },
+  {
+    "step": "S18 Copy lull periods: its tick boxes wear Raptor's accent",
+    "pass": true,
+    "said": "rgb(59, 198, 232)"
+  },
+  {
+    "step": "S18 Export window: its tick boxes wear Raptor's accent",
+    "pass": true,
+    "said": "[\"rgb(59, 198, 232)\",\"rgb(59, 198, 232)\"]"
+  },
+  {
+    "step": "S7 find list: each prediction's dot is its type's Raptor colour",
+    "pass": true,
+    "said": "17 dots; wrong []"
+  },
+  {
+    "step": "S7 find list: the picked prediction wears Raptor's \"on\" wash",
+    "pass": true,
+    "said": "{\"backgroundColor\":\"rgba(59, 198, 232, 0.16)\"}"
+  },
+  {
+    "step": "S7 find: the searched ball keeps its own turquoise ring, not the accent",
+    "pass": true,
+    "said": "#00e5c8"
+  },
+  {
+    "step": "S8 bar: a switched-on button is Raptor's \"on\" wash with its accent edge",
+    "pass": true,
+    "said": "{\"backgroundColor\":\"rgba(59, 198, 232, 0.16)\",\"borderTopColor\":\"rgb(59, 198, 232)\"}"
+  },
+  {
+    "step": "S8 Details hint: the same washed bar, its Turn off button Raptor's accent with its dark ink",
+    "pass": true,
+    "said": "{\"bg\":\"rgb(20, 24, 29)\",\"img\":\"linear-gradient(rgba(59, 198, 232, 0.16), rgba(59, 198, 232, 0.16))\",\"ink\":\"rgb(241, 244, 247)\",\"off\":[\"rgb(59, 198, 232)\",\"rgb(5, 42, 52)\"]}"
+  },
+  {
+    "step": "S12 details bubble: Raptor's panel, accent edge and ink; the student's record under a dashed divider in Raptor's edge colour",
+    "pass": true,
+    "said": "{\"bg\":\"rgb(20, 24, 29)\",\"edge\":\"rgb(59, 198, 232)\",\"ink\":\"rgb(241, 244, 247)\",\"id\":\"rgb(59, 198, 232)\",\"rule\":[\"dashed\",\"rgb(42, 49, 58)\"]}"
+  },
+  {
+    "step": "S6 Show All: Raptor's panel, and every event's dot a Raptor type colour",
+    "pass": true,
+    "said": "{\"panel\":\"rgb(20, 24, 29)\",\"dots\":[\"rgb(87, 201, 122)\",\"rgb(178, 77, 234)\",\"rgb(240, 85, 95)\",\"rgb(229, 168, 59)\",\"rgb(59, 198, 232)\"]}"
+  },
+  {
+    "step": "S6 Show All: each graded badge wears its grade's fill, dark text in Raptor's darkest",
+    "pass": true,
+    "said": "[[\"DCO\",\"rgb(0, 0, 0)\",\"rgb(255, 255, 255)\"],[\"Marginal\",\"rgb(87, 201, 122)\",\"rgb(11, 13, 16)\"],[\"DPCO\",\"rgb(31, 109, 255)\",\"rgb(11, 13, 16)\"],[\"N.A.\",\"rgb(205, 187, 142)\",\"rgb(11, 13, 16)\"]]"
+  },
+  {
+    "step": "S6 Show All: the row being edited is a faint accent wash with an accent rule",
+    "pass": true,
+    "said": "{\"backgroundColor\":\"rgba(59, 198, 232, 0.05)\",\"borderBottomColor\":\"rgb(59, 198, 232)\"}"
+  },
+  {
+    "step": "S8 menus: the open menu's button is switched on; its panel is Raptor's",
+    "pass": true,
+    "said": "{\"mb\":{\"backgroundColor\":\"rgba(59, 198, 232, 0.16)\",\"borderTopColor\":\"rgb(59, 198, 232)\"},\"mp\":{\"backgroundColor\":\"rgb(26, 31, 38)\",\"borderTopColor\":\"rgb(42, 49, 58)\"}}"
+  },
+  {
+    "step": "S9 dialogs: the main button is Raptor's \"on\" wash with its accent edge, on Raptor's panel",
+    "pass": true,
+    "said": "{\"ok\":{\"backgroundColor\":\"rgba(59, 198, 232, 0.16)\",\"borderTopColor\":\"rgb(59, 198, 232)\"},\"dlgBox\":{\"backgroundColor\":\"rgb(26, 31, 38)\"}}"
+  },
+  {
+    "step": "S10 edit strip: each + event button carries its type's Raptor colour",
+    "pass": true,
+    "said": "[[\"+ Flight\",\"rgb(59, 198, 232)\"],[\"+ Acad\",\"rgb(87, 201, 122)\"],[\"+ Test\",\"rgb(240, 85, 95)\"],[\"+ Sim\",\"rgb(229, 168, 59)\"],[\"+ CFT/IAT/EPT\",\"rgb(178, 77, 234)\"]]"
+  },
+  {
+    "step": "S10 hint bar: Raptor's \"on\" wash laid on its panel (opaque over the key), ink text, accent rule",
+    "pass": true,
+    "said": "{\"bg\":\"rgb(20, 24, 29)\",\"img\":\"linear-gradient(rgba(59, 198, 232, 0.16), rgba(59, 198, 232, 0.16))\",\"ink\":\"rgb(241, 244, 247)\",\"edge\":\"rgb(59, 198, 232)\"}"
+  },
+  {
+    "step": "S10 the editing canvas: its dashed edge is Raptor's edge colour",
+    "pass": true,
+    "said": "{\"borderTopColor\":\"rgb(42, 49, 58)\"}"
+  },
+  {
+    "step": "S10 edit strip: the chosen tool is switched on in Raptor's wash",
+    "pass": true,
+    "said": "[\"primary\",\"rgba(59, 198, 232, 0.16)\"]"
+  },
+  {
+    "step": "S10 a drag-select band is Raptor's accent, washed",
+    "pass": true,
+    "said": "[\"rgba(59,198,232,.12)\",\"#3BC6E8\"]"
+  },
+  {
+    "step": "S10 a ball picked by the band wears Raptor's accent dashed ring",
+    "pass": true,
+    "said": "{\"said\":\"1 selected — drag any one of them to move the group.\",\"rings\":[\"#3BC6E8\"]}"
+  },
+  {
+    "step": "S10 an unsaved chart: Save changes is Raptor's amber, washed",
+    "pass": true,
+    "said": "{\"backgroundColor\":\"rgba(229, 168, 59, 0.16)\",\"borderTopColor\":\"rgb(229, 168, 59)\"}"
+  },
+  {
+    "step": "S10 connect: the prerequisite picked first wears Raptor's accent ring",
+    "pass": true,
+    "said": "#3BC6E8"
+  },
+  {
+    "step": "S10 connection ports while connecting",
+    "note": "(none drawn in this tool)"
+  },
+  {
+    "step": "S10 draw a line: the line being drawn and its start are Raptor's accent",
+    "pass": true,
+    "said": "[\"#3BC6E8\",\"#3BC6E8\"]"
+  },
+  {
+    "step": "S10 edit lines: every snap point is Raptor's accent",
+    "pass": true,
+    "said": "[\"#3BC6E8\"]"
+  },
+  {
+    "step": "S9 event editor: Delete ball in Raptor's red and light red, Save switched on, on Raptor's panel",
+    "pass": true,
+    "said": "{\"del\":[\"rgb(240, 85, 95)\",\"rgb(251, 180, 185)\"],\"save\":\"rgba(59, 198, 232, 0.16)\",\"box\":\"rgb(26, 31, 38)\"}"
+  },
+  {
+    "step": "S9 event editor: the Colour / type list names each type by the colour now drawn (a sim is amber)",
+    "pass": true,
+    "said": "[\"Flight (blue)\",\"Acad / Spec (green)\",\"Test (red)\",\"Sim (amber)\",\"CFT/IAT/EPT (purple)\"]"
+  },
+  {
+    "step": "S10 in Edit chart layout, no retired Tracker colour is drawn either",
+    "pass": true,
+    "said": "#5a6172 #657085 #ffb84d #7a4b00 #000000 #111 #ffffff #3bc6e8 #57c97a #0007 #1f6dff #f0555f #cdbb8e #ffd23f #b24dea #e5a83b"
+  },
+  {
+    "step": "S10 leaving Edit chart layout unsaved: the save slot's words are Raptor's amber",
+    "pass": true,
+    "said": "[\"savestat saving\",\"● unsaved flow edits — hit “Save changes”\",\"rgb(229, 168, 59)\"]"
+  },
+  {
+    "step": "S12 details bubble: \"No details yet\" is Raptor's muted grey, small — its rule reaches the bubble now",
+    "pass": true,
+    "said": "[\"No details yet — turn ⓘ off, then tap th\",\"rgb(138, 150, 163)\",\"11px\"]"
+  },
+  {
+    "step": "desktop: no console error, failed request or page error",
+    "pass": true,
+    "said": "none"
+  },
+  {
+    "step": "phone S1: background and text are Raptor's",
+    "pass": true,
+    "said": "{\"backgroundColor\":\"rgb(11, 13, 16)\",\"color\":\"rgb(241, 244, 247)\"}"
+  },
+  {
+    "step": "phone S11: the chosen view tab is switched on in Raptor's wash",
+    "pass": true,
+    "said": "[[\"🗺 Flow chart\",\"active\",\"rgba(59, 198, 232, 0.16)\"],[\"ⓘ Info\",\"\",\"rgb(26, 31, 38)\"],[\"☰ Show All\",\"\",\"rgb(26, 31, 38)\"]]"
+  },
+  {
+    "step": "phone S2: the chart's five types are Raptor's colours",
+    "pass": true,
+    "said": "{\"n\":210,\"sim\":[\"#e5a83b\"],\"device\":[\"#b24dea\"],\"flight\":[\"#3bc6e8\"],\"rect\":[\"#57c97a\",\"#f0555f\"]}"
+  },
+  {
+    "step": "phone S7: the find strip is Raptor's panel and edge",
+    "pass": true,
+    "said": "{\"backgroundColor\":\"rgb(20, 24, 29)\",\"borderTopColor\":\"rgb(42, 49, 58)\"}"
+  },
+  {
+    "step": "phone S4: the Info half's cards are Raptor's panel",
+    "pass": true,
+    "said": "{\"backgroundColor\":\"rgb(26, 31, 38)\"}"
+  },
+  {
+    "step": "phone: no console error, failed request or page error",
+    "pass": true,
+    "said": "none"
+  },
+  {
+    "step": "comparison pictures",
+    "note": "compare-desktop.png, compare-phone.png (before / C / built)"
+  }
+]

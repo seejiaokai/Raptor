@@ -155,7 +155,7 @@ function EditModalInner({ id }) {
           <option value="flight">Flight (blue)</option>
           <option value="acad">Acad / Spec (green)</option>
           <option value="test">Test (red)</option>
-          <option value="sim">Sim (yellow)</option>
+          <option value="sim">Sim (amber)</option>
           <option value="device">CFT/IAT/EPT (purple)</option>
         </select>
       </div>
@@ -165,7 +165,7 @@ function EditModalInner({ id }) {
       <div className="field"><label>Prerequisites (note)</label><input id="edPre" style={{ flex: 1 }} placeholder="free text shown in the details bubble" value={pre} onChange={e => setPre(e.target.value)} /></div>
       <small className="hint" style={{ display: 'block', marginTop: 2 }}>Prereq links drive the arrows on the chart and what counts as available. The note is the wording shown under Crew in the details bubble — leave it blank to fall back to the links.</small>
       <div style={{ display: 'flex', gap: 8, marginTop: 12, justifyContent: 'space-between' }}>
-        <button id="edDelete" style={{ borderColor: 'var(--red)', color: '#ffb3a0' }} onClick={core.deleteFromEditModal}>Delete ball</button>
+        <button id="edDelete" style={{ borderColor: 'var(--red)', color: 'var(--red-ink)' }} onClick={core.deleteFromEditModal}>Delete ball</button>
         <span><button id="edCancel" onClick={core.closeEdit}>Cancel</button> <button className="primary" id="edSave" onClick={save}>Save</button></span>
       </div>
       <div id="edErr" style={{ color: 'var(--red)', marginTop: 8, fontSize: 12 }}>{err}</div>

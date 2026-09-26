@@ -47,7 +47,7 @@ export default function Pop() {
           dates the event the day it was pressed; change it first and the
           grade lands on that day; change it after and the mark is re-dated on
           the spot. A flight's day is also its Last Flown, as before. */}
-      <div id="popDoneRow" style={{ marginTop: 8, borderTop: '1px dashed #262c38', paddingTop: 8 }}>
+      <div id="popDoneRow" style={{ marginTop: 8, borderTop: '1px dashed var(--line)', paddingTop: 8 }}>
         <div className="mini" style={{ marginBottom: 4 }}>
           {done ? 'Done on' : 'Done on (when marked)'}{isFlight ? ' — sets Last Flown' : ''}
         </div>
@@ -74,7 +74,7 @@ export default function Pop() {
           ))}
         </div>
       ) : null}
-      <div id="popInfo" style={{ marginTop: 8, borderTop: '1px dashed #262c38', paddingTop: 8, fontSize: 12 }} dangerouslySetInnerHTML={{ __html: core.infoHtml(p.id) }} />
+      <div id="popInfo" style={{ marginTop: 8, borderTop: '1px dashed var(--line)', paddingTop: 8, fontSize: 12 }} dangerouslySetInnerHTML={{ __html: core.infoHtml(p.id) }} />
       <button className="sm" id="popEditInfo" style={{ marginTop: 6, width: '100%' }} onClick={() => { const id = p.id; core.closePop(); core.openInfo(id); }}>✎ Edit details</button>
     </div>
   );
