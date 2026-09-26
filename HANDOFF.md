@@ -15,6 +15,25 @@ the later merge keeps both (D78).
 
 ## Now
 
+<!-- now:claude/absence-record-d147-af6a50 -->
+### `claude/absence-record-d147-af6a50` — `[HUMAN-RETEST]` the absence record, with `[S4-HUNT-REST]` (D147): walked, fixed, FULL-checked; waiting for his look and "merge live" — written 27 Sep 26 — verify before use
+- **What it is:** the absence record re-tested the way a person uses it — a host and five walkers at both widths (admin,
+  member, guest), a sixth for the roll-call rows nobody reached; every finding reproduced and fixed red first, filed, or
+  put to him. Plan `raptor-port/docs/superpowers/plans/2026-09-26-absence-retest-plan.md`; evidence sheet
+  `raptor-port/docs/handpass/2026-09-26-absence.md` (§3 every finding, §4 the roll-call, §6 the break tests, §8 the two
+  final code reads, §9 the gates, §11 the re-walks, §12 his look card); the register's §12 says how the absence record
+  now behaves.
+- **The check:** the break tests (two thin wires pinned); Fable's and Astra's blind final reads — six findings, all fixed
+  red first; a re-walk of every fix on the rebuilt app, and a second re-walk of what the first found (the phone hold,
+  a vanishing row, a chip swipe, the board's crew column); the gates on the final code all green (§9). No rulings this
+  chat (its range D260–D269 unused).
+- **Next:** his five-minute look (the sheet's §12, on the branch's Vercel link) → his "merge live". Three questions ride
+  with it: `[ABSENCE-ASK]`. Then, in his order (D147): change-recording, then the Leave War links.
+- **Filed from it:** `[LW-ISO-DATES]`, `[LW-MOVE-BENEATH]`, `[LW-OFFER-ONLY-TAKEABLE]`, `[PO-RESTORE-POSTING]`,
+  `[ABSENCE-SMALL-SEEN]`, a note in `[DRAFT-PENDING]` (the pending list's late-input line, R30), `[AMEND-SMALL-SEEN]`
+  items 4 and 6. `[S4-HUNT-REST]` and `[PUB-UNAVAIL]` archived.
+<!-- /now -->
+
 <!-- now:claude/accounts -->
 ### `claude/accounts` — `[ACCOUNTS]` (D165, D166, D200, D204, D210, D211): BUILT and FULL-checked; on its PR, waiting for his look and "merge live" — written 26 Sep 26 — verify before use
 - **What it is:** sign in as yourself (every account is one callsign; "View as" and the role toggle gone); request access /
@@ -90,8 +109,9 @@ the later merge keeps both (D78).
    answer his "how does a new user join" question first — answered, D204) with ITS OWN full check (D210) → the one changes
    window (`[DRAFT-PENDING]`) with its own full check →
    "merge live" (D173); beside it, he talks to the IT side (`[IT-QUESTIONS]`). Development as normal: `[HUMAN-RETEST]`'s
-   remaining three in his order (D147 — the absence record with `[S4-HUNT-REST]`, change-recording, the Leave War links
-   last), then `[PUB-UNAVAIL]` → `[LW-LOCKMARK]` → `[LW-WEEKDAY-WORK]`.
+   remaining three in his order (D147 — the absence record with `[S4-HUNT-REST]` — walked, on its branch, his look
+   next — then change-recording, the Leave War links last), then `[LW-LOCKMARK]` → `[LW-WEEKDAY-WORK]` (`[PUB-UNAVAIL]`
+   closed by the absence-record re-test).
 2. **About a month before the database:** `[DB-READINESS]` with the OIL award fix and the small OIL follow-ups as ONE
    batch (D147, D203) → `[DB-STEP]` when Manfred is ready. The whole list: `OUTSTANDING.md`'s priority list.
 3. Filed, none blocking: `[TRK-PINCH-ASK]` (his iPhone look), `[TRK-DLG-LEFTOVERS]`, `[TRK-RETEST-NOTES]`,
@@ -100,13 +120,12 @@ the later merge keeps both (D78).
 
 ## Gate baseline
 
-The latest counts watched — 26 Sep 26 morning, `claude/leave-late-published` (`09276503`, the final code of
-`[LEAVE-LATE-PUBLISHED]` with D187 and its reads' fixes), one run on a quiet PC
-(`raptor-port/docs/handpass/2026-09-26-late-pub.md` §6): unit **5988 / 5988** (368 files) · build clean · tfin **728 / 0** ·
-e2e **471 passed**, 48 skipped · smoke **442 / 0** · rulecheck OK · docsize OK. Two tests added after it (no source
-change): their file alone 45 / 45. Restate a count only
-from a run you watched, and REPLACE the previous counts — never stack a history. How to run them: `raptor-port/CLAUDE.md`
-§Build & verify; how they mislead, and the checks on his PC: `raptor-port/docs/gates-and-deploy.md`.
+The latest counts watched — 27 Sep 26, `claude/absence-record-d147-af6a50` (the final code of the absence-record
+re-test), one run under the PC lock on a quiet PC (`raptor-port/docs/handpass/2026-09-26-absence.md` §9): unit
+**6274 / 6274** (388 files) · build clean · tfin **728 / 0** · e2e **474 passed**, 48 skipped · smoke **443 / 0** ·
+rulecheck OK · docsize OK. Restate a count only from a run you watched, and REPLACE the previous counts — never stack a
+history. How to run them: `raptor-port/CLAUDE.md` §Build & verify; how they mislead, and the checks on his PC:
+`raptor-port/docs/gates-and-deploy.md`.
 
 ## Standing constraints
 
