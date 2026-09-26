@@ -86,7 +86,42 @@ the x it was clicked at), `ui/highlights.ts bringIntoView` (a warning tap, a cha
 
 ## 5. The walk
 
-*(Filled from the four walkers' parts files, each finding reproduced by the builder before it is entered.)*
+Fanned out to four Opus walkers under the PC-wide lock (D228, taken 12:42Z after the absence-record chat's walk, released
+after the re-walks), each on the production bundle at `http://localhost:4176` in its own browser contexts, desktop
+1440×900 (plus 1024×700 and 1920×1080 for the arrows) and phone 390×844 (touch through CDP). Their tables, with every
+check and picture, are `docs/handpass/parts/2026-09-26-five-flags-w1.md` … `-w4.md`; their scripts
+`scripts/handpass/ff-w1.mjs` … `ff-w4.mjs` assert the right behaviour, so re-running one is the re-walk. The browser
+error list stayed empty in every world of every walker.
+
+| Walker | Item | First walk | What failed | Disposition | Re-walk (`…/rewalk/`) |
+|---|---|---|---|---|---|
+| W1 | [PUCK-FLAG-GLOW] | 64 pass · 0 fail · 72 pictures | — | — | not needed (no code of its item changed after) |
+| W2 | [LW-RESET-ORDER] | 97 pass · 0 fail · 60 pictures | — (a note: both "Really reset?" could stand at once) | **fixed** — arming either takes the other back (`settingssheet.test.tsx`, red first) | F11: 20 pass · 0 fail |
+| W3 | [CROWD-SWAP-SAYS-BUSY] | 123 pass · 5 fail · 63 pictures | **F6-d, NEW:** Ranger from the crew list onto Reaper's puck in the crowd Ranger was in → Reaper replaced by a second Ranger, silently (the fix had removed the accidental busy words); F6-a, F6-b (same on main): a second copy via the crowd's "+ add"; F20-sc-3/4 (same on main): the SC shift caption named the shift he was leaving | **fixed:** one man, one place on a row (`avail.ts`, `slots.ts rowPlaces`/`lastFilled`, `drag.ts`, `view.ts placeArmed`, `palette-html.ts`); the SC shift scan reads the seat he leaves. F6-a/b still PLANT a second copy — now named on the caption, the toast and the crew list — per "everything plants, warning after" (13 Aug 26): **his question, the look card** | f6 4/2 (the two "never listed twice" — his question), f20 9/0, f4d 22/0, f2d 10/0, f2p 11/0, f5 6/0 |
+| W4 | [VIEW-ARROW-OVER-LIST] | 1838 pass · 2 fail · 284 pictures | **F-W4-1, NEW:** on Edit Schedule a warning tap on a man fully visible beside the crew palette swung the week sideways (the right-hand room applied where the › floats over the palette) | **fixed:** the right room counts only where the › sits over the week (`weekInset`, `weekinset.test.ts` red first); the room is declared on the LEFT only (a declared right room made scrollIntoView nudge 34px — the first re-walk's find) | warn+pend: 95 pass · 4 fail — the four are W4's stricter "every lit puck in view" (the man's second puck, in the Unavailable block far down and behind the palette): the app brings the warning's OWN puck into view, and `main` does the same; read against the new flow, not a regression |
+
+**Every finding was reproduced by the builder** before it was entered: F6-d by the engine test (the caption and the
+toast words) and W3's re-walk; F-W4-1 by W4's re-walk before and after the fix; F20-sc by `crowdself.test.ts` (red with
+the real `main` words "on SC AM 07:00–13:00 — inside this shift").
+
+**Observations the walkers made, not failures of this branch** (for the look card or the backlog):
+- W1: on the signed-in man's own puck the purple "this is you" ring REPLACES the amber advisory ring, the thin red ring
+  and the grey note ring (only the letter chip shows the flag) — pictures `w1/D1-*`, `w1/D2-*`; the dotted cause ring
+  sits over the purple ring and its purple glow (`w1/C2-…-mon-dotted-you`); in OIL mode the green OIL ring on his own
+  puck is hidden the same way (`w1/F9-…`); a dragged flagged puck (anyone's) loses the ghost's dark "lifted" shadow
+  under its red ring's `!important` (`w1/B2-…`). All the same on `main`.
+- W2: the Undo bubble reads "Undid: a change to the leave board" (the generic Leave War words — [AMEND-SMALL-SEEN]
+  item 2); an armed line survives a page switch without closing the sheet (as Reset counters does); under a SAVED hand
+  order a newcomer sinks to the foot of his seat (the branch now offers the cure: the line lights). "Sidewinder" is cut
+  on the phone (unrelated).
+- W3: a swap inside one crowd on a published day reads **1 pending** ("… order changed"), not 2 — the amendment batch
+  settled that the same members in a new order is one item; D109's "a swap is two moves" is about two different places.
+  An ALL AVAIL placed on an open-ended row (no end time) shows no count chip (W1, not investigated — likely D31).
+- W4: the day before the front one now shows a 42px strip at the left, around the ‹ arrow (8px on `main`) —
+  `w4/GUTTER-prevday-tail-view-*`; "day a–b of 7" counts a third day that shows 212px at 1440; straight after a window
+  resize a day can sit partly under the ‹ until the next press (a resize never re-lands the week); a free trackpad
+  position can leave a day under the ‹ (the desktop week does not snap, by design); the › arrow sits over the last
+  visible column on View-only and over the crew palette's right edge on Edit (unchanged).
 
 ### 5e. [BG-GUARD-FALSE] — walked live, in this session's own harness
 - A bare background `npm --version` from this chat (started at the worktree's root) was **refused**, and the refusal
@@ -97,7 +132,21 @@ the x it was clicked at), `ui/highlights.ts bringIntoView` (a warning tap, a cha
   the worktree's ROOT (not `raptor-port`, not the main checkout).
 
 ## 6. What was NOT walked, and why
-*(Filled at the end.)*
+- **A real iPhone / Safari** — every finger drag and swipe was Chromium's emulated touch (W1, W2, W3, W4). For the look
+  card: the phone week is untouched by the branch (measured: 12px padding, no arrows, the same glide), but only his
+  phone proves Safari's landing.
+- W1: the order sequence at phone width; the ALL AVAIL window and the 👁 look at phone width; blue selection as a
+  second way the purple yields (the chip covers the same path); Fable's rows 15–17 (no flagged "you" puck can exist).
+- W2: the drawer's figure-column drag (the same order function as the drag-select, walked); F11/F12/F18's war switch
+  and SANS at phone width (width-independent logic); keyboard reach; a second admin in another browser; folded groups;
+  posted-out or archived men.
+- W3: an AVALON seat ↔ desk swap ("+ Wave → AVALON" made no desk); a sim passenger line with a front seat (the demo
+  rows have none); `main` itself (not served — every "same on main" is a reading of `git show main:…`, and the
+  engine tests that went red on `main`'s code).
+- W4: dragging the foot bar's thumb (headless Chromium draws none — its ‹ › buttons and a trackpad pan were walked);
+  the ALL AVAIL window's dock (fixed top-right, above the arrows, unchanged); the no-pan check on View-only; 1920×1080
+  for the warning taps, the pending jump, the chips and the board close.
+- The re-walks covered only what the fixes touched (§5, last column).
 
 ## 7. The gates
 *(One full run on the final code, under the lock.)*
