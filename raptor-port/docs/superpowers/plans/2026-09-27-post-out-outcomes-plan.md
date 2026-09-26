@@ -687,3 +687,65 @@ defers it.
 7. **Overseas and the past:** archiving a man for an overseas posting makes his published days BEFORE the posting date read
    "1 pending" (his posting on the puck, and the crowd behind any ALL AVAIL puck he was in) — today's behaviour. Keep, or
    stop it as a delete now does? *Default: kept (unchanged).*
+
+## Round 2 — what changed (the last round; this section wins over Round 1 and the text above)
+
+**Astra — REVISE (narrowed to six items); Fable 5.1 — APPROVE WITH CHANGES (ten).** Both confirm every round-1 finding
+fixed or put to him, and the callsign split sound (Astra: "no further regression if implemented literally"; Fable: nothing
+that resolved an archived man by callsign breaks). **No third round** — the standing cap (about three design rounds, then
+the findings fold into the build and the code reads catch the rest); both providers read the finished code (FULL tier).
+
+1. **ONE clock (Astra 1, Fable 4 — reverses Round 1's "the app's today"):** `effectiveToday()` = the calendar date
+   (`localToday()`, the Leave War's and the posting pass's clock) is BOTH when a posting's outcome runs AND a delete's
+   cutoff (the later of its date and it). Round 1's app-today cutoff mixed two clocks: a hand delete on 27 Sep would have
+   wiped his Leave War records and inputs from 13 Jul — days the war already shows as past — and the OIL pass would then
+   refuse to credit them back; and a posting dated between the two clocks ran early. One clock has no order of events to
+   get wrong. *The cost, on the look card:* in the demo (July weeks) a delete leaves him on those days, which the app draws
+   around its own notional today (13 Jul); the walk builds its day to come in a week after 27 Sep. **Question 3 restated**
+   (below). With the calendar date, the materialisation belts of Round 1 for a NEVER-STASHED week (`applyWeekModel`'s seed
+   branch, `initStore`'s no-stash path — and Fable's `weekctx.ts bundle()` and `ui/peek.ts`) have nothing to strip: the
+   authored seed weeks with content are 13 and 20 Jul 26, before any calendar cutoff, and every later seed week is blank —
+   so they are NOT built (Astra 3's pristine-seed defect cannot arise either). The stash is swept by the delete itself.
+   **The belts that remain:** `rowsLeftOut` (a version loaded or a plan switched puts back what a published or parked day
+   holds) and the undo/redo refusal.
+2. **Undo is never walled (Astra 2, Fable 1):** a restore refused because it would put a deleted man back marks its entry
+   `dead` (undo) / `abandoned` (redo); `newestUndoable()`, `mostRecentlyUndone()` and `undoState()` skip it and offer the
+   next DISJOINT entry; the dead entry still blocks an older one sharing its records ("can't be undone yet"); with nothing
+   actionable the button says why ("Hex has been deleted — that change can't be undone"); the check is repeated
+   immediately before `applyRestore`. Tests: refused newest + safe older; refused newest + overlapping older; the Redo
+   pair. Part B (`undo/timeline.ts`, `state/undo-wire.ts` — #444's). Until Part B lands, Undo can put him back on a day to
+   come — so Part A's step 4 does NOT claim "undo blocked"; that test lives in Part B (Fable 6). Nothing merges before Part
+   B.
+3. **No toast storm (Fable 2):** the pass's "last admin" skip toasts ONCE per posting per session, records `poBlocked` on
+   the posting (the post-out sheet and the account row say "Can't delete Hex yet — he is the last admin who can sign in"),
+   and retries silently on later passes.
+4. **The take-back is not "he's back" (Fable 5):** #444's `postOut` take-back (a posting moved later, its outcome changed
+   or its archive turned off — inline, never through `restoreArchivedPerson`) re-enables an `offBy: 'po'` account and
+   clears an `sanBy: 'po'` tick, and arms NO back prompt. `setPostOut` itself clears `poDone` on any date or outcome change.
+5. **The crowd between a Delete's PO date and its cutoff (Fable 9):** the posting window (`inSquadron`) already takes him
+   out of the ALL / ALL AVAIL crowd from his PO date; for a Delete dated before today, the published days between the PO
+   date and the cutoff read pending through the crowd exactly as an Overseas posting's days do (question 7) — said, not
+   changed.
+6. **The pending marks (Fable 10):** the live week's sweep writes through the funnel, so its emptied seats carry
+   `SCHED.pending` marks; the stash sweep does not. The PUBLISHED day's count is canonical (the issued comparison), so
+   both agree there; an UNPUBLISHED day's draft count differs until `[DRAFT-PENDING]` rebuilds it (known, unchanged).
+7. **The index (Fable 7):** the placeholders (`archived: true` by construction) are kept by `special`, before the
+   archived test — as built (`engine/people.ts onRosterBody`); `testing/refwin.ts` is NOT a writer (it rebuilds the
+   REFERENCE window's index by the reference's own rule, for parity) — struck from §9.1's list.
+8. **The search (Fable 8):** a typed search never finds him on a day to come (he is not there); on a day he flew his kept
+   puck still matches — correct, the past keeps him.
+9. **SANS (Astra 4) and the Tracker (Astra 5):** unchanged from Round 1 — the whole row, as approved, is built and
+   question 6 says a per-month group is a bigger build; the Tracker item is NOT done and question 5 says so. Neither is
+   claimed complete.
+10. **Question 2 restated (Astra 6):** see below.
+
+### The questions for him, as restated after Round 2 (these replace Round 1's 2 and 3)
+2. **A man with no account whom the Leave War does not show** — archived by hand, or a SANS man with Show SANS off — has
+   no delete door: his only way today is Restore him, then post him out with Delete (or, for the SANS man, turn Show SANS
+   on first). Add **"Delete"** on each row of Quals' Archived list (archive him, then delete him there)? It changes the
+   approved mock-up. *Default: not built.*
+3. **Which "today" a delete counts from:** the calendar date — so deleting Vector on 27 Sep takes him off every day from
+   27 Sep on, keeps his Leave War records and OIL before it, and leaves him on the July demo days (the app draws those
+   around its own "today", 13 Jul) — or the app's own today (13 Jul in the demo), which takes him off the July demo days
+   too but also wipes his Leave War records and inputs from 13 Jul to 26 Sep, days the war already shows as past? *Default
+   built: the calendar date.* (At the database step the app's "today" becomes the calendar date anyway.)
