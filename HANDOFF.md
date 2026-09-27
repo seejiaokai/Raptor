@@ -15,32 +15,32 @@ the later merge keeps both (D78).
 
 ## Now
 
-<!-- now:claude/post-out-outcomes -->
-### `claude/post-out-outcomes` — `[POST-OUT-OUTCOMES]` BUILT, FULL-checked, his look card answered; `main` merged in — his "merge live" next (the last of the four) — written 27 Sep 26 ~13:30, verify before use
-- **Where it stands:** PR #446. #445, #444 and #443 are MERGED (his order: #445, #444, #443); `main` (`d77f1e56`) merged in
-  here — the app's code merged by itself, the shared records by keeping both sides (the rulings map rebuilt; this chat's
-  merged `claude/accounts-new-person` block removed and `[ACCOUNTS-NEW-PERSON]` archived; this branch's observations
-  297–298 renumbered 304–305, past main's 302). The gates re-run on the merge (§Gate baseline). **Evidence sheet — read it
-  first:** `raptor-port/docs/handpass/2026-09-27-post-out-outcomes.md` (the roll-call, the walk A–D and its re-walk, the two
-  code reads, every finding fixed red first, the break tests, the gates, §10 the look card with his answers).
-- **What it does:** the posting sheets' four chips (Overseas Sqn · Delete · SANS · Transfer, the last not yet) and what
-  each does on its date; Suspend / Enable / Delete account; a delete kept underneath as a hidden mark (days he flew keep
-  his puck, days to come lose him); an archived man's callsign free, Rename and Restore-as on Quals' Archived list, the
-  "he's back" prompt; the admin's member view (the badge; the phone drawer).
-- **His look card (27 Sep 26):** 1 keep the no-chip posting (D303); 3 a delete counts from the real calendar date (D304);
-  4 the man himself should be told to check his quals (D305 — 3a); 9 the last admin's posting waits (D306); 11 Enable on a
-  hand-suspended man shows the note (D307). Then his post-in date rule (D308) and his ONE-DOOR direction, approved as
-  proposed (D309, D310 — narrows D217 and D295): Admin → Users carries every person's sign-in and roster state and every
-  action; Quals loses its archive. **Not in this PR, by the agent's recommendation ("#446 as is" — his word pending):**
-  3a, 3b, the archived group and `[POST-IN-DATE]` all go into `[ONE-DOOR]`, its own branch after this merges (mock-up
-  first). Filed, not built: `[POST-OUT-TRACKER]` (question 5), and questions 2, 6, 7, 8, 10 as asked.
-- **Next, in order:** his "merge live" for #446 → `[ONE-DOOR]` (fresh chat, mock-up first, FULL check) → the D264–D266
-  build (`[LW-MOVE-STANDARD]`, the #444 chat's handoff) — after #446, because both change the Leave War's sheets.
-- **Coordination (D302):** the #444 and #445 chats were told of every shared file; both are merged and idle.
-- **Traps written down:** ports 4186/4187 on this PC are held by the old presentation server (`docs/gates-and-deploy.md`);
-  scripted edits must keep each file's own line endings (memory `python-edits-crlf-trap`); a branch built on another
-  chat's in-flight branch must re-take its FINAL head before its own final gates (observation 303).
-- **Rulings:** D301–D310 (range D301–D319 — D310 took the tenth).
+<!-- now:claude/one-door -->
+### `claude/one-door` — `[ONE-DOOR]` NOT STARTED: the branch is cut from `main` with this note; start with the mock-up — written 27 Sep 26 ~14:30 by the post-out chat, verify before use
+- **Where things stand:** `[POST-OUT-OUTCOMES]` is LIVE (PR #446, merged 27 Sep 26; `[ACCOUNTS-NEW-PERSON]` PR #443 before
+  it; the absence record PR #444 and the five flags PR #445 too). Its evidence sheet
+  `raptor-port/docs/handpass/2026-09-27-post-out-outcomes.md` says how posting out, Suspend / Enable / Delete, the hidden
+  delete mark, the Archived list, Restore and the "he's back" note work today.
+- **The job — his rulings, read them first** (`.claude/rules/decisions/how-we-work.md`): **D309 / D310** one door —
+  Admin → Users shows every PERSON (not only accounts) with a Sign-in dot and a Roster dot (green / red; grey = no
+  sign-in) and carries every action: Active → Suspend · Archive · Delete; Suspended → Enable · Archive · Delete; no
+  sign-in → Give sign-in · Archive · Delete; Archived (a folded "▸ Archived · N" group) → Restore · Delete; Waiting →
+  Give access · Refuse; a posting waiting for its date shown on the row. Archive also suspends; Restore brings both back.
+  **Quals loses its ✕ archive, its Archived list, Restore, Restore as and the rename** (narrows D217, D295) and keeps
+  quals, CAT, flight and initials. **D308** Restore and New person ask the post-in date (opening on today; the account
+  works at once, the Leave War and availability count him from the date). **D305 (3a)** the man himself, on his first
+  sign-in after Restore, is told "Welcome back — check your quals and CAT" with a button to his own Quals row. The
+  backlog: `OUTSTANDING.md` `[ONE-DOOR]`, `[POST-IN-DATE]`, `[POST-OUT-ASKS]` (put those five to him with the mock-up).
+- **Order:** a mock-up first (the house rule for a visual change — `raptor-port/docs/mock/`, desktop and phone, the
+  app's own stylesheet; the post-out mock-up `docs/mock/post-out.html` and its maker `scripts/handpass/am/mk-post-out.mjs`
+  are the pattern) → his approval → plan (Opus 5.5 high), red-team by Fable and Astra → build red first → walk at both
+  widths with pictures → FULL check (permissions, roster, accounts — bug-check order) → his look → "merge live".
+- **Beside it:** `[LW-MOVE-STANDARD]` (D264–D266) may run in its own chat at the same time — different screens; tell
+  each other before a shared file (D302). Rulings: agree a range with the other chat (this one's suggestion: D320–D329).
+- **Traps:** ports 4186/4187 are held by the old presentation server; this PC's lock `node raptor-port/scripts/gatelock.mjs`
+  for every full run; scripted edits keep each file's line endings (memory `python-edits-crlf-trap`). `OUTSTANDING.md`
+  is over its size tripwire (1433 lines against 1330): a docs-only tidy pass is due as its OWN job (D29, D141 — move what
+  no longer belongs there to its home; never inside the build).
 <!-- /now -->
 
 <!-- now:claude/absence-record-d147-af6a50 -->
@@ -113,7 +113,7 @@ the later merge keeps both (D78).
 ## Next, in order
 
 1. **HIS ORDER to the database step, about two months away (D203, 26 Sep 26):** `[ACCOUNTS]` and `[ACCOUNTS-NEW-PERSON]`
-   MERGED (PRs #442, #443) → **`[POST-OUT-OUTCOMES]`** (PR #446, his look card answered — his "merge live" next) →
+   MERGED (PRs #442, #443) → **`[POST-OUT-OUTCOMES]`** MERGED (PR #446) →
    **`[ONE-DOOR]`** (D309, D310, carrying `[POST-IN-DATE]`, D308 — mock-up first) → `[LW-MOVE-STANDARD]` (D264–D266) → the
    one changes window (`[DRAFT-PENDING]`) with its own full check → "merge live" (D173); beside it, he talks to the IT side
    (`[IT-QUESTIONS]`). Development as normal: `[HUMAN-RETEST]`'s remaining three in his order (D147 — the absence record

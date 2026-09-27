@@ -49,12 +49,13 @@ list (13–23 Sep 26), its finished entries and the "In plain terms" block are i
 whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaining).
 
 **His order — to the database step, about two months away (D203, 26 Sep 26; D173, D147 within it):**
-1. **Now — [POST-OUT-OUTCOMES]** (D229, D280, D283–D300, D303–D307) on `claude/post-out-outcomes`, PR #446 — BUILT,
-   FULL-checked, his look card answered, `main` merged in: his "merge live" next. `[ACCOUNTS-NEW-PERSON]` MERGED 27 Sep 26
-   (PR #443), `[ACCOUNTS]` 26 Sep 26 (PR #442). **Then [ONE-DOOR]** (D309, D310 — Admin → Users carries every person's
-   sign-in and roster state and every action; Quals loses its archive), carrying **[POST-IN-DATE]** (D308) and the look
-   card's 3a / 3b — mock-up first, its own FULL check; `[POST-OUT-TRACKER]` on his answer. **Then [LW-MOVE-STANDARD]**
-   (D264–D266 — after #446, both change the Leave War's sheets). Then **[DRAFT-PENDING]** — the one changes window, on
+1. **Now — [ONE-DOOR]** (D309, D310 — Admin → Users carries every person's sign-in and roster state and every action;
+   Quals loses its archive), carrying **[POST-IN-DATE]** (D308) and the post-out look card's 3a / 3b — on
+   `claude/one-door`, mock-up first, its own FULL check; `[POST-OUT-ASKS]` put to him with the mock-up;
+   `[POST-OUT-TRACKER]` on his answer. `[POST-OUT-OUTCOMES]` MERGED 27 Sep 26 (PR #446), `[ACCOUNTS-NEW-PERSON]` (PR #443)
+   and `[ACCOUNTS]` (PR #442) before it. **Beside it — [LW-MOVE-STANDARD]** (D264–D266, its own chat and branch; the
+   two touch different screens — Admin → Users and Quals against the Leave War's sheets — so they may run in parallel,
+   each telling the other before a shared file, D302). Then **[DRAFT-PENDING]** — the one changes window, on
    top of accounts, its own FULL check (D210).
 2. **Now, beside the building — [IT-QUESTIONS]:** talk to the IT side (his, not code); their approvals take weeks.
 3. **Development as normal — [HUMAN-RETEST]**'s remaining three, in HIS order (D147): the absence record TOGETHER with
@@ -1132,35 +1133,15 @@ None breaks an amendment rule; each is a line to fix or ask about, from the walk
    Fable #1's mirror; the digest keys ground rows by position). A false re-sign, never a false publish.
 **Place:** any time; items 6–8 with the Leave War links re-test (D147, last).
 
-### [POST-OUT-OUTCOMES] A posting out says WHICH of its outcomes it is; accounts suspended and deleted (D229, D280, D283–D285, filed 26 Sep 26)
-**His rulings:** a posting out is (1) overseas to another squadron → archived, account SUSPENDED, back AS HE WAS with a
-prompt to update his quals (D284); (2) leaving flying for good → account DELETED; (3) another workplace, still flying
-with us → SANS on the date: with Show SANS off the Leave War shows him posted out, untracked, with it on he joins the SANS
-group that day, tracked (D283); (4) a transfer — future, `[XFER]`. Buttons: "Suspend" / "Enable", "Delete account"
-(D285). **Today:** the post-out sheet's one choice is "Archive on PO date"; an archived man keeps a WORKING account;
-Admin → Users has "Switch off / on", no delete. **To build:** the sheet asks which outcome and the app does it on the
-date (each also by hand); touches the Leave War (the sheet, `runPoArchive`), Quals, Admin → Users, data-model §11 (`User`
-D), `perms.ts` — FULL tier. **Leaving flying for good — D287, his pick "B, truly delete him":** account AND person
-deleted; **D297: every day he already flew keeps his puck, published or not; days still to come lose him**;
-everything that is his goes too (inputs, Leave War leave and OIL — nothing left stored unseen); a day still to come
-takes him off (pending on a published day); asks twice, cannot be undone. **Underneath — D290 "hidden mark":** his
-row is kept, marked deleted and invisible everywhere (the data model's tombstone), never erased. **And names — D286:** an archived man's callsign may go to a new person (today it is refused); restoring him while it
-is in use needs one of the two renamed first (Restore says so, renames nobody). Update `roster-add.ts` (its PID-01
-header and test), `ID_BY_CS` (points at the roster's man). **Mock-up APPROVED 27 Sep 26 (D299) — the design of record:** `raptor-port/docs/mock/post-out.html` (+ its Artifact; §5 holds what stays after a delete; D300 — the date once, the button "Post out", FEWER WORDS: done 27 Sep 26, Artifact Version 6; the BUILD carries the same short words — the sheet's line, the delete's second tap, the suspended sign-in, the back-prompt, the Restore rename line — and the post-in button reads just "Post in"); his first look: D294 (short chips "Overseas Sqn" · "Delete" (D298) · "SANS" · "Transfer to Sqn"), D295 (rename an archived man directly), D296 (guest mark A). **With it — D292:** the admin's member view back (tap the badge: "SABER · ADMIN" ↔ "MEMBER"; perms read the role in
-force). **Place — D291:** straight after `[ACCOUNTS-NEW-PERSON]` merges, before `[DRAFT-PENDING]` — **amended by D301
-(27 Sep 26): started beside #443 before it merges, on `claude/post-out-outcomes` cut from it; its merge follows #443's.**
-**BUILT 27 Sep 26 on `claude/post-out-outcomes`** (Part A: the callsign index, Suspend / Enable / Delete account, the
-member view, the delete, Quals' Archived list; Part B, on PR #444's posting code: the four chips on every posting door,
-the outcomes on the date, take-back, Restore and Restore-as, the "he's back" prompt, SANS with Show SANS, a deleted man
-read by date, Undo passing over a step that would bring him back). Plan: `raptor-port/docs/superpowers/plans/2026-09-27-post-out-outcomes-plan.md`;
-register PO1–PO12 (`raptor-port/docs/superpowers/specs/2026-09-26-accounts-behaviour-register.md`). **FULL check DONE
-27 Sep 26** (the walk A–D on desktop and phone, Fable and Astra's code reads — every finding fixed red-first — and the
-gates): the evidence sheet `raptor-port/docs/handpass/2026-09-27-post-out-outcomes.md`. **Next: his look** (the look card,
-its §10 — 11 questions) **and his "merge live", merged LAST** (after #443, #445 and #444, `main` merged in first).
-**His answers so far (27 Sep 26):** 1 keep (D303), 3 the real calendar date (D304), 4 — the man himself should be able to
-update his own quals (D305; its form put to him), 9 the last admin's posting waits (D306), 11 Enable on a hand-suspended
-man shows the note (D307).
-**Not built, said so:** the Tracker half of D299 (`[POST-OUT-TRACKER]`).
+### [POST-OUT-ASKS] The post-out look card's questions he has not answered — each built to its default (filed 27 Sep 26)
+From `raptor-port/docs/handpass/2026-09-27-post-out-outcomes.md` §10 (PR #446, merged 27 Sep 26). He answered 1, 3, 4, 9,
+11 (D303–D307) and moved 3a / 3b into `[ONE-DOOR]` (D310); these stand as built until he says otherwise — put them to him
+once, in plain words, when the posting-out screens are next in front of him (the `[ONE-DOOR]` mock-up is the natural
+moment): **2** a Delete on an archived man with no account — covered by `[ONE-DOOR]` (an archived row gets Restore ·
+Delete), so likely answered by its approval; **6** SANS on the date moves his WHOLE Leave War row into the SANS group,
+earlier months included (the approved picture) — kept; **7** archiving a man makes his published days before the posting
+date read "1 pending" — kept; **8** a posting out is not a step of the Undo button — "Undo post out" takes it back —
+kept; **10** an admin may still add leave or OIL on a deleted man's past days — allowed.
 
 ### [ONE-DOOR] Admin → Users: one door for a person's whole state — sign-in and roster (D309, filed 27 Sep 26)
 **His direction (D309):** *"just do 1 door for everything and see the state of that account all just in admin. Like
