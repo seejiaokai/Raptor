@@ -225,19 +225,31 @@ await step('6 member', async () => {
   await tapCell(page, 'bane', '2026-01-06'); await drawOneDay('A'); await snap('6-member-A', '.mk-sel'); await closeSheets(page)
 })
 
-/* ---------- 7 · MOVE'S LOOK (his "Can move be the same design and colour and be abit different", 27 Sep 26) ----------
-   Three ways, each in the sheet's own chip family: 'grey' as first drawn (Move the quiet grey chip, like AM / Pick a range);
-   'blue' the same chip with the move mode's own blue on its words and edge, NO fill (a blue fill is the sheet's
-   "chosen" look — Just this day, Whole day — and Move would read as already picked); 'arrow' the grey
-   chip with an arrow before the word. Delete stays the dashed grey in all three. Pictured on the one-day sheet (order A)
-   and the day's list, the sheet alone. */
-const LOOK_CSS = '.bidsheet .dchip.move.mkblue, .bidsheet .dl-acts .dchip.move.mkblue { background: var(--panel-2) !important; border: 1px solid rgba(59, 198, 232, .55) !important; color: var(--accent) !important; }'
+/* ---------- 7 · MOVE'S LOOK — his D330 (27 Sep 26): "Can move be the same design and colour and be abit different" ·
+   "As in the move button" · "U can design something different". ONE look for Move on every sheet (the one-day sheet,
+   the block, the day's list), a little apart from the sheet's other buttons; the design is the agent's, drawn for his
+   pick. Four ways, each built from the sheet's own chip and the MOVE MODE's own teal (the banner's edge, its Confirm,
+   the landing outline are that teal — so the button borrows the colour of what it opens):
+     'arrow'     the grey chip with a grey ⇄ before the word (the first drawing's recommendation)
+     'tealarrow' the grey chip with the ⇄ in teal — grey so it never reads as a "chosen" chip (those are teal-FILLED)
+     'pill'      the same, with round ends — the only round-ended chip on the sheet
+     'own'       a colour of its own (a periwinkle tint), the arrow in it too
+   Delete stays the dashed grey in all four. Pictured on the one-day sheet (order A) and the day's list, sheet alone.
+   (The first drawing's plain 'grey' and 'blue' looks stay in img/ as the record of what he saw first.) */
+const LOOK_CSS = [
+  '.bidsheet .dchip.move .mk-arr { display: inline-block; margin-right: 5px; font-weight: 800; }',
+  '.bidsheet .dchip.move.mk-teal .mk-arr { color: var(--accent); }',
+  '.bidsheet .dchip.move.mk-pill, .bidsheet .dl-acts .dchip.move.mk-pill { border-radius: 999px !important; padding-left: 18px !important; padding-right: 18px !important; }',
+  '.bidsheet .dchip.move.mk-own, .bidsheet .dl-acts .dchip.move.mk-own { background: rgba(124, 156, 255, .14) !important; border: 1px solid rgba(124, 156, 255, .55) !important; color: #BAC7FF !important; }',
+].join('\n')
 async function drawLook(look) {
   await page.evaluate(look => {
     const s = [...document.querySelectorAll('.bidsheet[role="dialog"]')].pop()
     for (const b of s.querySelectorAll('button.dchip.move')) {
-      if (look === 'blue') b.classList.add('mkblue')
-      if (look === 'arrow') b.textContent = '⇄ Move'
+      b.innerHTML = '<span class="mk-arr">⇄</span>Move'
+      if (look === 'tealarrow' || look === 'pill') b.classList.add('mk-teal')
+      if (look === 'pill') b.classList.add('mk-pill')
+      if (look === 'own') b.classList.add('mk-own')
       b.classList.add('mk-look')
     }
   }, look)
@@ -248,7 +260,7 @@ async function snapSheet(name, premise) {
   await page.locator('.bidsheet[role="dialog"]:visible').last().screenshot({ path: `${OUT}/${WIDTH}-${name}.png` })
   done.push(name); console.log('ok', name)
 }
-for (const look of ['grey', 'blue', 'arrow']) {
+for (const look of ['arrow', 'tealarrow', 'pill', 'own']) {
   await step(`7 look ${look}`, async () => {
     await page.addStyleTag({ content: LOOK_CSS })
     await tapCell(page, 'xray', '2026-01-04'); await drawOneDay('A'); await drawLook(look); await snapSheet(`7-look-${look}-oneday`, '.mk-look'); await closeSheets(page)

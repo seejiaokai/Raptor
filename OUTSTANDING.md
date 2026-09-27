@@ -1394,8 +1394,8 @@ is saved); walk both widths; both reads. Folds in `[LW-MOVE-BENEATH]` (decided b
 function; rulings D330–D339). **The mock-up is up for his answers:** `raptor-port/docs/mock/lw-move-standard.html` (and its
 Artifact), made by `raptor-port/scripts/handpass/am/mk-lw-move-standard.mjs` — four questions: the order (A what's there
 first — recommended — or B new leave first), one word "Delete" for the one-day Clear and the block's Delete, a
-member's Move on his own bid's one-day sheet while bidding is open, and Move's look (his "same design and colour and be
-abit different": grey / blue / grey with an arrow — the arrow recommended; section 7). Nothing built before his answers.
+member's Move on his own bid's one-day sheet while bidding is open, and the Move button's look (D330 — one look on every
+sheet, a little apart; four designs in section 7, B the grey chip with a teal arrow recommended). Nothing built before his answers.
 Fable's scenario design (bug-check order §4 rank 1): `raptor-port/docs/superpowers/specs/2026-09-27-lw-move-standard-scenarios-fable.md`
 (the roll-call, 32 ranked scenarios, six contradictions and how each is taken — stated on the mock-up page).
 
