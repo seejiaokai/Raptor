@@ -2137,3 +2137,14 @@ earlier months included (the approved picture) — kept; **7** archiving a man m
 date read "1 pending" — kept; **8** a posting out is not a step of the Undo button — "Undo post out" takes it back —
 kept; **10** an admin may still add leave or OIL on a deleted man's past days — allowed.
 
+
+*Moved here 2026-09-27 by backlog-archive.mjs ([BACKLOG-TIDY]). Forward facts: `.claude/rules/decisions/how-we-work.md`, `raptor-port/scripts/docsize.mjs`.*
+
+### [BACKLOG-TIDY] This file crossed its size tripwire — read each item, archive what is finished (filed 26 Sep 26)
+`OUTSTANDING.md` reached 1,242 lines against the 1,150 tripwire (D141: the question is "is a finished item still sitting
+here?", never "cut to a number"); the tripwire was raised to 1,260 so the rulings change D200/D201 did not trim under
+pressure (D29). **Do:** read the long items first (`[ARCH-STACK]`, `[DRAFT-PENDING]`, `[REPO-PRIVATE]`, `[OIL-AUTO-REMOVE]`,
+`[HUMAN-RETEST]`, `[GLOBAL-UNDO]`, `[OIL-READ-LEFTOVERS]`); move what is finished with `backlog-archive.mjs`, its lasting
+facts first given a live home; then set the tripwire back near what the file holds. **Place:** docs only, any time. **His go, 27 Sep 26 (D324): now, on its
+own branch `claude/backlog-tidy` cut from `main`, merged BEFORE `[ONE-DOOR]` and `[LW-MOVE-STANDARD]` (his "merge live").**
+
