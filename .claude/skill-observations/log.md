@@ -1080,3 +1080,18 @@ resolved statuses always carry their resolution date
 **Suggested improvement:** When he sends a question mid-run, the very next message answers it in full, plainly, BEFORE another tool call — especially late at night or before an unattended run: what happens next, in order, what he will find in the morning, and that he can go. Status one-liners between tool calls do not count as the answer.
 
 **Principle:** A question from the person waiting on you outranks the work queue: answer first, then resume — a one-line "still working" is not an answer to "what are you going to do".
+
+### Observation 319: Building while the red team reads the same working tree
+
+**Status:** OPEN
+**Date:** 28 Sep 26
+**Session context:** [DRAFT-PENDING] overnight run — the plan went to Fable and Astra for a blind red team, and steps 1–2 of the build were written in the same checkout while they read.
+**Skill:** claudex-loop
+**Type:** open-source
+**Phase/Area:** the plan-review phase (host waits on the reviewers)
+
+**Issue:** The owner's order was plan → red team → build. While the two reviewers ran (15+ minutes), the host started building the parts it judged "unlikely to change". Both reviewers noticed the working tree changing under them (one read half-built files as the plan's current state), one flagged the deviation from the order, and one finding was answered only because it happened to match what was built. Nothing needed undoing, but the review was partly of a moving target and the order was broken without the owner's say.
+
+**Suggested improvement:** In the review phase, either (a) wait — use the time for read-only work (docs, the walk's fixture design, the roll-call), or (b) build in a separate worktree the reviewers are not pointed at, and say so in the brief. Never edit the checkout the reviewers are reading.
+
+**Principle:** A reviewer should read a fixed snapshot; the host's waiting time goes to work that does not change what is under review.
