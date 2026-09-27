@@ -975,3 +975,18 @@ resolved statuses always carry their resolution date
 **Suggested improvement:** (1) Before invoking any external CLI reviewer, open its memory note (it holds the exact working command). (2) On a PC shared by parallel chats, stop a background job only by ITS OWN id (the harness's task id or the PID captured at launch), never by an image name or command pattern — the same rule the project already applies to preview servers ("kill by PORT, never by a command-line pattern"), extended to every process.
 
 **Principle:** On shared infrastructure, a cleanup must name the one thing it started; anything broader destroys someone else's work silently.
+
+### Observation 313: A walk script that presses a leave chip directly trips the sheet's "below zero — tap again" ask, twice in one session
+
+**Status:** OPEN
+**Date:** 2026-09-27
+**Session context:** `[LW-MOVE-STANDARD]` walk scripts (`scripts/handpass/ms/`). Numbered in this chat's agreed range (310–319).
+**Skill:** New skill candidate: the Leave War walk helpers (`scripts/handpass/ab/ab-lib.mjs`, `mv/mv-lib.mjs`)
+**Type:** internal
+**Phase/Area:** building a Leave War fixture through the app's own controls
+
+**Issue:** `bidOn` answers the negative-balance confirm ("That takes X to -1 … Tap the same leave again"), but a step that picks a range or a portion first and then presses `bid-LL` with `sheetPress` does not — the sheet stays open asking, the fixture silently lacks its bid, and the step fails far from the cause (a THREW on a later click; a banner counting the wrong records). It cost two debugging probes, each time reading as a possible app defect first.
+
+**Suggested improvement:** Add `pressLeave(page, testid)` to the shared helpers — press, and if the sheet answers "Tap the same leave again", press once more — and use it for every leave chip in a fixture; `bidOn` becomes a caller of it. In the recipe: a fixture step asserts its premise (the record exists) before the step that relies on it.
+
+**Principle:** A fixture helper must answer every confirmation the real control can raise, or fixtures fail silently and the failure is blamed on the code under test.

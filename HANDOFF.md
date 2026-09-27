@@ -16,28 +16,30 @@ the later merge keeps both (D78).
 ## Now
 
 <!-- now:claude/rulings-d264-d266-leave-war-f0f4ab -->
-### `claude/rulings-d264-d266-leave-war-f0f4ab` — `[LW-MOVE-STANDARD]` (D264–D266, D330–D335): BUILT, walked 40/40 at both widths, break tests 19/19; the two code reads and the full gates in progress — written 27 Sep 26, verify before use
+### `claude/rulings-d264-d266-leave-war-f0f4ab` — `[LW-MOVE-STANDARD]` (D264–D266, D330–D335): BUILT and FULL-checked — waiting for his look and "merge live" — written 27 Sep 26, verify before use
 - **The job:** his D264–D266 plus his answers to the mock-up (D330–D335: order A, "Delete", a member's own Move, the Move
-  button B — grey chip with a teal arrow, How many kept). Backlog `OUTSTANDING.md` `[LW-MOVE-STANDARD]`. Branch cut from
-  `main` (`818dbb04`); pushed; NO pull request yet (a docs-only PR fails the Docs guard while `OUTSTANDING.md` is over its
-  ceiling on `main` — open it with the code, as now).
-- **Evidence sheet — read it first:** `raptor-port/docs/handpass/2026-09-27-lw-move-standard.md` (the tier, the readings,
-  the roll-call, the door check, the walk, the break tests; §8 the reads, §9 the gates, §10 his look — to fill). The
-  approved design: `raptor-port/docs/mock/lw-move-standard.html` (Artifact https://claude.ai/artifact/68SpLtpVYdimk6zZzfZohP).
+  button B — grey chip with a teal arrow, How many kept). Backlog `OUTSTANDING.md` `[LW-MOVE-STANDARD]` (folds in
+  `[LW-MOVE-BENEATH]`). Branch cut from `main` (`818dbb04`). PR: see the line below.
+- **Evidence sheet — read it first:** `raptor-port/docs/handpass/2026-09-27-lw-move-standard.md` (the tier FULL, the
+  readings he can correct §2, the roll-call, the door check, the walk and re-walk, 26 break tests, the two blind reads §8 —
+  six findings, all fixed red first — the gates §9, his look card §10). The approved design:
+  `raptor-port/docs/mock/lw-move-standard.html` (Artifact https://claude.ai/artifact/68SpLtpVYdimk6zZzfZohP).
 - **What the build is:** a move carries RECORDS (`store.ts movableRecords` / `moveRecords` / `moveRecordsProblem` /
-  `stayingIn` / `deletableIn`), both sheets in order A with one Move and one Delete (`ui/SheetActions.tsx`), the day's list's
-  Move into the move mode by record id (`moveSel.only`), a picked range widening Decide / Move / Delete. Tests
-  `leavewar/movestandard.test.ts`, `ui/movestandard.test.tsx`, `ui/movestandard-synced.test.tsx`; walk
-  `scripts/handpass/ms/ms-10-walk.mjs desktop|phone` (build on 4177); breaks `scripts/handpass/ms/ms-breaks.py`.
-- **In progress when written:** Fable's and Astra's blind final reads (brief
-  `docs/superpowers/briefs/2026-09-27-lw-move-standard-final-read-brief.md`; Astra's report lands at `…-final-astra.md` —
-  run `codex exec -m gpt-5.6-sol …`, the config's default model is refused); the full gates under the PC lock.
-- **Next:** answer every read finding red first → re-walk what the fixes touched (`MS_RUN=rewalk`) → the gates → the
-  sheet's §8–§10 → open the PR, send him the look card and the Vercel link → his look → "merge live".
-- **Parallel (D302):** `[ONE-DOOR]` on `claude/one-door` (main checkout, preview 4178, E2E 4196) — no shared function; it
-  takes `leavewar/sync.ts` archive/restore and `store.ts setPostIn`; it may later touch `people.ts inSquadron` and the
-  posting record (it will message first). It is asking him about ONE docs-only `OUTSTANDING.md` tidy on its own branch;
-  neither chat trims that file meanwhile. Observation numbers: this chat 310–319, it 306–309. Ports here: preview 4177, E2E 4195.
+  `stayingIn` / `deletableIn` / `decidableIn`), both sheets in order A with one Move and one Delete (`ui/SheetActions.tsx`),
+  the day's list's Move into the move mode by record id (`moveSel.only`), a picked range widening Decide / Move / Delete;
+  `sync.ts doorMoveApproved` gained `skip` (agreed with the `[ONE-DOOR]` chat).
+- **Next:** his look (the card, §10) → "merge live" (the later of this and `[ONE-DOOR]` takes `main` in first) → archive
+  `[LW-MOVE-STANDARD]` and `[LW-MOVE-BENEATH]`. Filed from it: `[LW-SPARE-MOVE-DOORS]` (low).
+- **Parallel (D302):** `[ONE-DOOR]` on `claude/one-door` (main checkout, preview 4178, E2E 4196) — exact shared lines
+  exchanged, no overlap: it takes `store.ts` setPostIn / postingProblem / windowRecord / windowFor / readPostOuts /
+  setPeople / forgetPersonFrom (+ a new openStint), `engine/people.ts`, `Matrix.tsx rowInWindow` and `PersonMonth`'s day
+  cell, `BidPicker.tsx PostInSheet`; this chat's `Matrix.tsx` lines are the move block, `stayWords` (after `moveReason`,
+  ~30 lines above `rowInWindow`), the banner, the DayList/BidPicker props. `OUTSTANDING.md` is over its tripwire on
+  `main`; the `[ONE-DOOR]` chat put ONE docs-only tidy to him — neither chat trims it meanwhile. Observation numbers: this
+  chat 310–319 (used 310–313), it 306–309. Ports here: preview 4177, E2E 4195.
+- **Traps met:** the Codex config's default model is refused — `codex exec -m gpt-5.6-sol` (memory
+  `astra-codex-cli-available`); stop a background run by its own id, never by process name (observation 312); a walk step
+  pressing a leave chip must answer the "below zero — tap again" ask (observation 313).
 - **Rulings:** D330–D335 (range D330–D339).
 <!-- /now -->
 
@@ -153,12 +155,11 @@ the later merge keeps both (D78).
 
 ## Gate baseline
 
-The latest counts watched — 27 Sep 26, `claude/post-out-outcomes` (`[POST-OUT-OUTCOMES]` with `main` merged in — #445,
-#444, #443 — `c5c1e921`), one run under the PC lock (`raptor-port/docs/handpass/2026-09-27-post-out-outcomes.md` §9):
-unit **6543 / 6543** (403 files) · build clean · tfin **728 / 0** · e2e **478 passed**, 48 skipped · smoke **443 / 0** ·
-rulecheck OK · docsize OK · GitHub on the same commit: every job green. Restate a count only from a run you watched, and REPLACE the previous counts — never stack a
-history. How to run them: `raptor-port/CLAUDE.md` §Build & verify; how they mislead, and the checks on his PC:
-`raptor-port/docs/gates-and-deploy.md`.
+The latest counts watched — 27 Sep 26, `claude/rulings-d264-d266-leave-war-f0f4ab` (`[LW-MOVE-STANDARD]`, `86d7fea1`), one run
+under the PC lock (`raptor-port/docs/handpass/2026-09-27-lw-move-standard.md` §9): unit **6591 / 6591** (406 files) · build
+clean · tfin **728 / 0** · e2e **478 passed**, 48 skipped · smoke **443 / 0** · rulecheck OK · docsize OK. Restate a count only
+from a run you watched, and REPLACE the previous counts — never stack a history. How to run them: `raptor-port/CLAUDE.md`
+§Build & verify; how they mislead, and the checks on his PC: `raptor-port/docs/gates-and-deploy.md`.
 
 ## Standing constraints
 

@@ -5362,7 +5362,14 @@ BidPicker's look and vocabulary, not instead of it.
     at open / closed — a published war's is finished paperwork); a member his own
     bid while bidding is open, now on the one-day sheet and the list too, not only
     by dragging. A refused bid moves too, landing undecided — unless a live bid
-    holds its half (history beside a live bid stays). The cell-shaped `moveCells`
+    or an absence holds its half (history there stays — the final reads, FR3). A
+    block cutting a multi-day approved leave moves only the DAYS of it in the
+    block, and a moving bid may not land on the leave's untouched day (FR1); a
+    leave may land on the day a moving bid leaves (FR2). The approved-leave
+    door's answer at the commit is honoured: a refusal only the commit meets
+    rolls the whole move back and is said (FR3). A record gone from under a move
+    says so on the banner, and the next tap ends the move landing nothing (FR6).
+    The cell-shaped `moveCells`
     / `moveProblem` / `movableCells` read the same records. A bid moved once
     bidding has closed says "moved from …" on its own list line (a day whose top
     record is an award shows no dotted mark for it — Fable's S4).
@@ -5374,7 +5381,8 @@ BidPicker's look and vocabulary, not instead of it.
     leave** → the admin's +OIL / PO / PI (one-day) or **PO** (a one-person block;
     it read "Post out (PO)…"). The one-day sheet keeps **How many** at its top
     (D335): a picked range widens what Decide, Move and Delete act on, as a drag
-    across those days does. A row with nothing to act on is not drawn — Move only
+    across those days does — Decide is drawn for a range whenever it would answer
+    something there, even picked from a day holding no bid (`decidableIn`, FR4). A row with nothing to act on is not drawn — Move only
     where a record can move, Delete only where a Delete would change something
     (`deletableIn`) — so an empty day opens on the leave. **Move and Delete are
     ONE pair of buttons** (`SheetActions.tsx`) on the two sheets and the day's

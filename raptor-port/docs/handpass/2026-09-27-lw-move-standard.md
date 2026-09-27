@@ -13,8 +13,10 @@ pictures `docs/img/handpass/2026-09-27-lw-move-standard/{desktop,phone}/`; break
 - **Built**, red first: `fcba6bc7` (the store's record-level move, both sheets, the day's list, the one Move / Delete).
 - **Walked** at desktop 1440 and a 390 touch phone (real touch over CDP): **40 / 40 each width**, no console errors.
 - **Break tests:** 19 wires, **each turns a named test red** (§6) — B18 needed a new test (added, `6de7d0b1`).
-- **The two code reads** (Fable, Astra, blind): §8 — pending.
-- **Gates:** §9 — pending. **His look:** §10.
+- **The two code reads** (Fable, Astra, blind): six findings (three found by both), all FIXED red first; one note filed (§8).
+- **Break tests of the fixes:** B20–B26, each red (§6). **Re-walk** on the fixed build: the fixes 4 / 4 and the whole
+  first walk 40 / 40, at both widths, no console errors (§5a).
+- **Gates:** run 1 and the final run all green (§9). **His look:** §10.
 
 ## 1. The eight questions → FULL
 
@@ -113,8 +115,14 @@ undecided · H1 Ranger (member): no Decide, Move + Delete, his move lands; anoth
 approved morning + afternoon bid — the leave's line Back to bid · Refuse · ⇄Move · Delete, no date box; the leave alone,
 then a block both ("2 entries") · K1 PUBLISHED: the approved leave's line has Note only; a block moves the bid ("· 1
 approved leave stays") · L1 DRAFT: no Decide, Move present.
-**One script fault, not a defect:** the first run's F1 set three days of LL that took Wisp below zero; the sheet asked
-"Tap the same leave again" (as designed) and the script did not answer — fixed in the script (picture
+**The re-walk on the fixed build** (`MS_RUN=rewalk`): the whole walk again **40 / 40 at each width**, and the fixes
+(`ms-20-fixes.mjs`) **4 / 4 at each width** — FR1 a block over a bid and the first day of a two-day approved leave (one
+Input, Feb 10→Feb 11), landed two days on: refused "already booked", nothing moved · FR2 approved morning + a morning bid
+moved one day: the leave onto the day the bid left · FR3 approved morning beside a refused morning: the refused line has no
+Move, a block moves the leave alone ("· 1 refused bid stays") · FR4 a range picked from an empty day draws Decide and Ack
+answers both bids. Pictures in `rewalk/`. No console errors.
+**Script faults, not defects:** the first run's F1 (and the fixes' first FR3) set leave that took Wisp below zero;
+the sheet asked "Tap the same leave again" (as designed) and the script did not answer — fixed in the scripts (picture
 `desktop/ms10-desktop-THREW-F1-range.png` kept as the record).
 
 ## 6. The break tests (`ms-breaks.py`, a scratch worktree, each wire broken once)
@@ -140,6 +148,13 @@ approved leave stays") · L1 DRAFT: no Decide, Move present.
 | B17 the banner never says what stays | 3 |
 | B18 the block offers Delete where it would do nothing | **none at first** → `movestandard-synced.test.tsx` added → red |
 | B19 the one-day Delete ignores the range (naming) | 2 (awardclear range) |
+| B20 FR1 the preview drops every day of a moving leave | FR1 |
+| B21 FR2 the door counts the moving bids at the preview | FR2 |
+| B22 FR3 a refused bid beneath leave on its half moves again | FR3 (2 tests) |
+| B23 FR3b the door's answer at the commit is thrown away | FR3b |
+| B24 FR4 Decide over a range drawn from the tapped day only | FR4 |
+| B25 FR5 a refused bid staying is not named | 3 (store + banner) |
+| B26 FR6 a record gone under a move goes unsaid | FR6 |
 
 ## 7. What was NOT walked, and why
 
@@ -151,12 +166,44 @@ approved leave stays") · L1 DRAFT: no Decide, Move present.
 
 ## 8. The two code reads (Fable 5.1 and Astra, blind to each other, with this sheet in hand)
 
-Pending.
+Brief `docs/superpowers/briefs/2026-09-27-lw-move-standard-final-read-brief.md`; the reports kept whole:
+`…-final-fable.md`, `…-final-astra.md` (Astra on `gpt-5.6-sol` — the Codex config's default model is refused on this
+account; its first run failed in seconds, see observation 312). Every finding answered in `580034d0`: the seven store tests
+red before their fixes; the four sheet tests proven by the break tests B24–B26 (they were written with the fix).
+
+| # | Finding | Who | On `818dbb04`? | Disposition |
+|---|---|---|---|---|
+| FR1 | A block cutting a multi-day approved leave let a bid land on the leave's untouched day (the preview dropped EVERY day of a moving leave) | Fable 1, Astra 1 (both, blind) | yes (made more reachable) | **FIXED** — only the moving DAY is dropped (id AND date, as the door's own `leaving` set); walked (FR1) |
+| FR2 | Approved leave could not land on the day a moving bid was leaving ("already booked") | Fable 3, Astra 1 (both, blind) | yes | **FIXED** — the door leaves the moving requests out at the preview (`sync.ts doorMoveApproved`, `skip`; agreed with the `[ONE-DOOR]` chat); walked (FR2) |
+| FR3 | A refused bid beneath approved leave on its half travelled with it and landed alive, while the door refused the leave at the commit — and its answer was thrown away: half a move, "moved" | Fable 2 | new | **FIXED** — a refused bid beneath an absence on its half is history (not movable); the door's answer at the commit is honoured — the move rolls back whole and says why (`MoveRefusedAtCommit`); walked (FR3) |
+| FR4 | With a range picked from a day holding no bid, no Decide was drawn (D335 widens Decide) | Fable 4, Astra 2 (both, blind) | new | **FIXED** — `decidableIn`, `setBidStates`'s own eligibility; walked (FR4) |
+| FR5 | The banner did not name a refused bid staying behind | Astra 3 | new | **FIXED** — "· 1 refused bid stays" |
+| FR6 | The move machine kept the records of the moment the move began; a record gone under a move left "0 entries" and a silent end | Astra 4, Fable's note | yes | **FIXED** — the callbacks read the live records (a ref); a record gone says "That record changed or is no longer there — nothing to move." |
+| N1 | `shiftBid` and `moveAbsenceById` have no production caller now — two spare doors that read differently | Fable's note | — | **FILED** `[LW-SPARE-MOVE-DOORS]` (low: retire them and their tests, or align) |
+
+**Explicit negatives both gave, in short:** one gesture per move at every door; no route for a member to another man's row
+or to a move once bidding is closed; no award ever moves; the list's pick is never swapped for the top record; the
+refused-bid rule is one body at every door; `deletableIn` agrees with `clearCells` on every kind of day; the mock-up's
+promises (order A, How many, the one Move / Delete, "PO", no date box) are all in the code.
 
 ## 9. The gates
 
-Pending.
+**Run 1** (the build before the reads, `26466fc8`, one run under the PC lock): unit **6580 / 6580** (406 files) · build clean ·
+tfin **728 / 0** · e2e **478 passed**, 48 skipped · smoke **443 / 0** · rulecheck OK · docsize OK (`OUTSTANDING.md` over its
+tripwire — deferred on a code change, D29). The Leave War tests after the fixes: **1996 / 1996**.
+
+**Run 2** (the final code, `86d7fea1`, one run under the PC lock): unit **6591 / 6591** (406 files) · build clean · tfin
+**728 / 0** · e2e **478 passed**, 48 skipped · smoke **443 / 0** · rulecheck OK · docsize OK (the tripwire deferred, D29).
 
 ## 10. His look (the card)
 
-Pending — written after the reads and the re-walk.
+Five minutes on the Vercel link, on your phone — in the Leave War, January or February:
+1. **Tap one of your chips, then drag across a few days:** both sheets now read the same way — Decide, then Selected
+   (**⇄ Move** · **Delete**), then How much, Which leave. The Move button is grey with a teal arrow; Delete has a dashed edge.
+2. **A day with an OIL award and a bid (like Vector's 3 Jan):** the day's list shows ⇄ Move on the bid. Press it, tap
+   another day — the bid moves, the award stays, and the bar at the bottom said "1 OIL award stays" before you tapped.
+3. **On the one-day sheet, Pick a range:** Move, Approve and Delete now act on every day in it.
+4. **Sign in as a member (us) while bidding is open:** your own bid's sheet has ⇄ Move.
+
+No questions for you from the check — every finding was fixed. The readings it rests on are §2 (the three from the
+mock-up's "What I read" list, and four more of the build's, (a)–(d)); tell me if any is wrong.
