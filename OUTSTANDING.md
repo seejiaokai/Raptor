@@ -59,8 +59,8 @@ whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaini
 3. **Development as normal — [HUMAN-RETEST]**'s remaining three, in HIS order (D147): the absence record TOGETHER with
    [S4-HUNT-REST] — **WALKED 26 Sep 26** on `claude/absence-record-d147-af6a50`; his answers to its questions (D260–D263)
    recorded, and D260–D262 BUILT and FULL-checked there 27 Sep 26 (D263 goes with [DRAFT-PENDING]); from his look, D264–D266
-   (one look for the sheets, a Move on every record that can move) — [LW-MOVE-STANDARD], NEXT (a mock-up first; recommended
-   on a new branch after this one merges — his call); his look and "merge live" first — then change-recording (with [UNDO-ROSTER-SETTINGS] and D148),
+   (one look for the sheets, a Move on every record that can move) — [LW-MOVE-STANDARD], NEXT on a new branch once this one
+   merges (D267; a mock-up first); his look and "merge live" first — then change-recording (with [UNDO-ROSTER-SETTINGS] and D148),
    then the Leave War links LAST (with the 7 Sep phone check). Then "after the hunt" (21 Sep 26): [LW-LOCKMARK] →
    [LW-WEEKDAY-WORK] (talk to him before building any of it) — its first, the published day's unavailable list, was
    closed by the same re-test (built by [LEAVE-LATE-PUBLISHED]; archived).
@@ -1362,10 +1362,8 @@ desktop and phone, his approval first (D264 is visual); (2) a move carries the R
 (`store.ts` `moveCells` / `movableCells` / `shiftBid`, `moveAbsenceById` by record id; `Matrix.tsx` `moveSel`); (3) the
 day's list's Move picks its record up into the move mode, its date box goes (`DayList.tsx`); (4) the sheets to the approved
 layout (`BidPicker.tsx`, `SelectSheet.tsx`). Red first each. **Tier:** FULL (a record's move — the absence record and what
-is saved); walk both widths; both reads. Folds in `[LW-MOVE-BENEATH]` (decided by D265). **Place:** NEXT — his
-call where: the agent RECOMMENDS merging PR #444 first (it is fully checked, the post-out branch merges behind it, and this
-needs a mock-up and his approval before any build) and building this on a new branch from `main` in a fresh chat; the
-other way is to build it on `claude/absence-record-d147-af6a50` before its "merge live".
+is saved); walk both widths; both reads. Folds in `[LW-MOVE-BENEATH]` (decided by D265). **Place (D267, his
+"1", 27 Sep 26):** NEXT after PR #444 merges — on a NEW branch from `main`, in a fresh chat; the mock-up first.
 
 ### [PO-RESTORE-POSTING] The Quals Restore clears a posting it did not make — low (Fable's final code read, N7, 26 Sep 26)
 Unchanged `main` code, found by Fable's read of the absence-record re-test: `sync.ts restoreArchivedPerson` (the Quals
