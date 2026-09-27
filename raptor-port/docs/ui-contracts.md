@@ -5245,7 +5245,10 @@ BidPicker's look and vocabulary, not instead of it.
     this same move mode (`Matrix.tsx` sets `moveSel` to the one cell; `BidPicker`
     `onMove`), so a single chip and a block move by one machine and one set of
     landing rules. The old `DecisionSheet` (unmounted since 21 Sep 26) went with
-    its date box. **While a move is on** (the chip's, the drag-selection's
+    its date box. **Changing by D264–D266 (27 Sep 26, `[LW-MOVE-STANDARD]`, not built yet):** a move will carry the
+    record it picked rather than the day's top one (a bid beside an OIL award moves alone), the day's list will move a
+    record by this same move mode (its date box goes), and the one-day and drag-selection sheets will share one layout.
+    **While a move is on** (the chip's, the drag-selection's
     "Move…" and the event move alike — one `wireMove`): **the grid scrolls at its
     edges** — the picked-up chip follows the mouse, so the mouse carried into the
     36px band at the days' own left edge (from where the days begin, past the

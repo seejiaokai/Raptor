@@ -1927,3 +1927,17 @@ app, a small build.
 `raptor-port/docs/handpass/2026-09-27-d260-d262.md`); item 2 (D263) is built with the one changes window — its
 requirement is written in `[DRAFT-PENDING]`.
 
+
+*Moved here 2026-09-27 by backlog-archive.mjs ([LW-MOVE-TAPLIST-ASK]). Forward facts: `.claude/rules/decisions/leave-war.md`.*
+
+### [LW-MOVE-TAPLIST-ASK] The tap list's per-record Move… still moves by a date box — a question for him (27 Sep 26)
+D262 ("one chip, one Move … The calendar can be removed") was read, and stated to him, as the two ONE-DAY sheets (the
+bid sheet's decision row, and the decide sheet it replaced). A day holding several records opens the TAP LIST instead,
+where a war-approved leave's own line has "Move…" with a date box and a Move button (`DayList.tsx`, `moveAbsenceById`) —
+it has to name WHICH record, which the grid's move mode cannot (it moves the day's top record). **The question:** should
+that line's Move… also pick the one record up and land it on a day of the grid (a move mode that carries the record's
+id), or keep its date box? **Place:** on the D260–D262 look card (`raptor-port/docs/handpass/2026-09-27-d260-d262.md`
+§10); a build only if he says so.
+**ANSWERED 27 Sep 26 BY D266** (`.claude/rules/decisions/leave-war.md`): the same move mode, no date box, each record
+that can move with its own Move — built by `[LW-MOVE-STANDARD]` (with D264, D265).
+

@@ -58,8 +58,9 @@ whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaini
 2. **Now, beside the building — [IT-QUESTIONS]:** talk to the IT side (his, not code); their approvals take weeks.
 3. **Development as normal — [HUMAN-RETEST]**'s remaining three, in HIS order (D147): the absence record TOGETHER with
    [S4-HUNT-REST] — **WALKED 26 Sep 26** on `claude/absence-record-d147-af6a50`; his answers to its questions (D260–D263)
-   recorded, and D260–D262 BUILT and FULL-checked there 27 Sep 26 (D263 goes with [DRAFT-PENDING]); his look and "merge
-   live" next — then change-recording (with [UNDO-ROSTER-SETTINGS] and D148),
+   recorded, and D260–D262 BUILT and FULL-checked there 27 Sep 26 (D263 goes with [DRAFT-PENDING]); from his look, D264–D266
+   (one look for the sheets, a Move on every record that can move) — [LW-MOVE-STANDARD], NEXT on that branch, a mock-up
+   first; then his look and "merge live" — then change-recording (with [UNDO-ROSTER-SETTINGS] and D148),
    then the Leave War links LAST (with the 7 Sep phone check). Then "after the hunt" (21 Sep 26): [LW-LOCKMARK] →
    [LW-WEEKDAY-WORK] (talk to him before building any of it) — its first, the published day's unavailable list, was
    closed by the same re-test (built by [LEAVE-LATE-PUBLISHED]; archived).
@@ -77,7 +78,7 @@ whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaini
 
 **Placed by their own lines — not his rulings:** the Leave War — [LW-FROZEN-BAR-GAP] (after [HUMAN-RETEST]; show him
 first), [LW-FIGSEL-SLOW] and [LW-SCRUBBER-FLAKY] (test-only), [LW-ISO-DATES] and [LW-MOVE-BENEATH] (both low, from the
-absence-record re-test), [PO-RESTORE-POSTING] (low, from its final code read), [LW-MOVE-TAPLIST-ASK] (a question for him, on the D260–D262 look card), [LW-OFFER-ONLY-TAKEABLE] (low, with [LW-LOCKMARK]), [ABSENCE-SMALL-SEEN] (any time), [LW-HARNESS-VIEWER-PIN] (test-only, low), [CI-FAIL-PICTURES] (his call, low); the Inputs calendar — [INPUTSCAL-TAP-FLAKY] (test-only). The Tracker — [TRK-RETEST-NOTES] and
+absence-record re-test), [PO-RESTORE-POSTING] (low, from its final code read), [LW-OFFER-ONLY-TAKEABLE] (low, with [LW-LOCKMARK]), [ABSENCE-SMALL-SEEN] (any time), [LW-HARNESS-VIEWER-PIN] (test-only, low), [CI-FAIL-PICTURES] (his call, low); the Inputs calendar — [INPUTSCAL-TAP-FLAKY] (test-only). The Tracker — [TRK-RETEST-NOTES] and
 [TRK-EDIT-SIDEWAYS] (their gates have passed), [TRK-PINCH-ASK] (his next Tracker session), [TRK-SESSION-PICK] (low, the next Tracker change), [TRK-DLG-LEFTOVERS] (low, with the next question-box change), [TRK-PALETTE-ASK] (his answer D157: Raptor's colours
 fully — being built on `claude/tracker-palette`), [TRK-FLEXBAR-INK] (a question for him, on that branch's look card),
 [TRK-BAKE-STALE] (low).
@@ -1346,16 +1347,24 @@ vs by record is the same root).
 by any door — the ladder puts the award above the bid, so the day's top record is not movable: the one-day sheet does not
 open (two records open the tap list, whose bid line has no Move), and a dragged block's Move… does not offer it. The same
 root — a move reads the day's TOP record — and the same decision (the bid travels alone, landing where its half is free).
-Pre-existing; not his ruling.
+Pre-existing; not his ruling. **DECIDED 27 Sep 26 BY D265** (`.claude/rules/decisions/leave-war.md`, his pictures of Vector's
+3 Jan): a record that can move always offers Move and travels ALONE — the award, and Inputs-filed leave, stay where they
+are; landing rules unchanged. Built by `[LW-MOVE-STANDARD]`.
 
-### [LW-MOVE-TAPLIST-ASK] The tap list's per-record Move… still moves by a date box — a question for him (27 Sep 26)
-D262 ("one chip, one Move … The calendar can be removed") was read, and stated to him, as the two ONE-DAY sheets (the
-bid sheet's decision row, and the decide sheet it replaced). A day holding several records opens the TAP LIST instead,
-where a war-approved leave's own line has "Move…" with a date box and a Move button (`DayList.tsx`, `moveAbsenceById`) —
-it has to name WHICH record, which the grid's move mode cannot (it moves the day's top record). **The question:** should
-that line's Move… also pick the one record up and land it on a day of the grid (a move mode that carries the record's
-id), or keep its date box? **Place:** on the D260–D262 look card (`raptor-port/docs/handpass/2026-09-27-d260-d262.md`
-§10); a build only if he says so.
+### [LW-MOVE-STANDARD] One look for the Leave War's sheets, and a Move on every record that can move — his D264–D266 (27 Sep 26)
+**His rulings** (`.claude/rules/decisions/leave-war.md` D264, D265, D266, 27 Sep 26, with four phone pictures from his look
+at PR #444): **D264** the one-day sheet and the drag-selection sheet share one format and look (the rows in one order; Move
+and Delete / Clear the same buttons, in the same place); **D265** a record that can move always offers Move — a bid beside
+an OIL award or beside Inputs-filed leave moves alone (today a move reads only the day's TOP record, so Vector's 3 Jan, an
+award above an LL bid, offers no Move in the day's list or in a dragged block); **D266** the day's list (several records)
+moves each record by the grid's move mode, no date box — he chooses which. **Build:** (1) a mock-up of the real sheets at
+desktop and phone, his approval first (D264 is visual); (2) a move carries the RECORDS it picked, not the day's top one
+(`store.ts` `moveCells` / `movableCells` / `shiftBid`, `moveAbsenceById` by record id; `Matrix.tsx` `moveSel`); (3) the
+day's list's Move picks its record up into the move mode, its date box goes (`DayList.tsx`); (4) the sheets to the approved
+layout (`BidPicker.tsx`, `SelectSheet.tsx`). Red first each. **Tier:** FULL (a record's move — the absence record and what
+is saved); walk both widths; both reads. Folds in `[LW-MOVE-BENEATH]` (decided by D265). **Place:** NEXT, on
+`claude/absence-record-d147-af6a50` before its "merge live" — the agent's reading, put to him (he asked while looking at that
+branch, and it changes the Move that PR brings); if he would rather merge first, it takes a new branch from `main`.
 
 ### [PO-RESTORE-POSTING] The Quals Restore clears a posting it did not make — low (Fable's final code read, N7, 26 Sep 26)
 Unchanged `main` code, found by Fable's read of the absence-record re-test: `sync.ts restoreArchivedPerson` (the Quals

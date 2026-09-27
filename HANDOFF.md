@@ -29,7 +29,12 @@ the later merge keeps both (D78).
 - **The check (FULL):** evidence `raptor-port/docs/handpass/2026-09-27-d260-d262.md` — Fable designed the scenarios first;
   walked at both widths (a real touch phone over CDP); 27 wires broken on purpose, each turns a named test red; Fable's and
   Astra's blind final reads — nine findings, eight fixed red first, one left with its reason (§8); a re-walk of every fix
-  (§10); the final gates all green (§9). His look card is §11, with one question: `[LW-MOVE-TAPLIST-ASK]`.
+  (§10); the final gates all green (§9). His look card is §11; its one question is answered (D266).
+- **From his look (27 Sep 26, four phone pictures): D264–D266** — one format and look for the one-day and drag-selection
+  sheets; a Move on every record that can move (a bid beside an OIL award moves alone — Vector's 3 Jan offered none);
+  the day's list moves a record by the move mode, no date box. Filed as `[LW-MOVE-STANDARD]`: a mock-up first (D264 is
+  visual), then the build, FULL-checked. `main` (PR #445) merged in here first — code merged by itself; the full gates
+  not yet re-run on the merged code.
 - **Carries the five-flags chat's `[LW-MOVE-CI-RED]` test fix** (its commit `11f26903`, cherry-picked here as `3bf23e18`,
   tests only): three older Leave War Move tests now wait for the fill before their second drag — the GitHub failure this
   PR met. The same change is on `claude/five-flags-batch-continue-2cfa70`; whichever merges second meets it as identical.
@@ -38,9 +43,10 @@ the later merge keeps both (D78).
   Clear's award ask, `AwardSheet`, `DecisionSheet` removed), `SelectSheet.tsx` (the Delete / Move row only), `store.ts`
   (`awardsIn`; `clearCells`), `select.ts` (`wireMove`), `Matrix.tsx` (the move wiring, `ownAwardOnly`, awards outside
   the posting dates drawn). No posting function or posting sheet was touched.
-- **Next:** his five-minute look (§11 of the D260–D262 sheet, then the re-test's own §12) → his "merge live". Then, in his
-  order (D147): change-recording, then the Leave War links.
-- **Filed from it:** `[LW-MOVE-TAPLIST-ASK]` (his question); notes in `[LW-MOVE-BENEATH]` (a bid beside an award moves by
+- **Next:** `[LW-MOVE-STANDARD]` on this branch (the agent's reading, put to him — or merge first and build it on a new
+  branch, his call): the mock-up → his approval → the build, red first → walk both widths → both reads → the gates → his
+  look → "merge live". Then, in his order (D147): change-recording, then the Leave War links.
+- **Filed from it:** `[LW-MOVE-STANDARD]` (his D264–D266); `[LW-MOVE-TAPLIST-ASK]` (answered, archived); notes in `[LW-MOVE-BENEATH]` (a bid beside an award moves by
   no door) and `[LW-ISO-DATES]` (the award sheet's date). `[ABSENCE-ASK]` and `[LW-MOVE-ONE-CHIP]` archived; earlier:
   `[LW-ISO-DATES]`, `[LW-MOVE-BENEATH]`, `[LW-OFFER-ONLY-TAKEABLE]`, `[PO-RESTORE-POSTING]`, `[ABSENCE-SMALL-SEEN]`.
 <!-- /now -->
