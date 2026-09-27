@@ -2315,7 +2315,7 @@ ARCHIVED man is free for a new person, and a typed callsign always finds the ros
 man on the roster). A DELETED man (the hidden mark, D290) is in no index. Restoring an archived man while a roster man
 holds his callsign is refused (D286 (1) — it never renames anyone by itself); Quals then asks for another callsign on the
 spot and restores him under it in one step (D295, `leavewar/sync.ts restoreArchivedAs`), and an archived man can be
-renamed right on the Archived list. Rename still refuses a blank, a no-op and a duplicate (`ID_BY_CS` can only
+renamed right on the Archived list (moving to Admin → Users with `[ONE-DOOR]`, D310). Rename still refuses a blank, a no-op and a duplicate (`ID_BY_CS` can only
 point one way), and it deliberately marks **nothing
 pending**: the person in the seat has not changed, only the spelling, and
 `rowCrew` diffs identically — an AL full of spelling would be noise. *(Corrected 26 Sep 26: this said "Published day

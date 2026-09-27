@@ -1223,7 +1223,8 @@ Archived (the folded group) → Restore · Delete; Waiting → Give access · Re
 the row. Archive also suspends; Restore brings both back, asks the post-in date (D308) and tells the man to check his
 quals (3a). Quals keeps quals, CAT, flight, initials (narrows D217). **Carries:** 3a, 3b, the archived group,
 `[POST-IN-DATE]`. **Place (the agent's recommendation, his call):** after PR #446 merges, its own branch — mock-up, his
-approval, then the build, FULL check (permissions, roster, accounts).
+approval, then the build, FULL check (permissions, roster, accounts). **APPROVED AS PROPOSED 27 Sep 26 (D310): "one door
+as proposed, Quals loses archive"** — narrows D217 and D295; the mock-up shows the look before the build.
 
 ### [POST-IN-DATE] A man posted in: the admin is asked his post-in date (D308, filed 27 Sep 26)
 **His ruling (D308):** *"When someone is posted In the app should also ask the admin when is the post in date so that the

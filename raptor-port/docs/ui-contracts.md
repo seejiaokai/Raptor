@@ -5118,6 +5118,9 @@ back." (said once).
 
 ## Quals' Archived list — Rename, Restore, "he's back" (`[POST-OUT-OUTCOMES]`, 27 Sep 26 — D284, D286, D295, D299)
 
+> **Moving (D310, 27 Sep 26 — his "one door as proposed, Quals loses archive"):** this list, its Restore, Restore as and
+> Rename, and Quals' ✕ archive move to Admin → Users with `[ONE-DOOR]`; until that is built, the app does what follows.
+
 A DELETED man is on no list, the Archived one included (D299). Each archived row carries, for an admin: **Restore**, and
 **Rename** (`#qRenameCs` / `#qRenameGo`, refused with the one callsign rule's reason in `#qRenameErr` — blank, over 14
 letters, or taken by a man on the roster; D295). **Restore meeting a callsign a roster man now holds** never renames
