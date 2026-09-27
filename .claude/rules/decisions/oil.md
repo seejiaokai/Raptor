@@ -33,6 +33,7 @@ paths:
 the ALL / ALL AVAIL pucks may land and where they are refused), **D36–D41, D51** (who counts as available,
 and the window that lists them), **D44, D45** (the crowd frozen at publication; the pending mark). In How we
 work, already loaded: **D54** (an issued weekend carrying a placeholder raises the mark — leave it) and **D56**.
+**Also know** — `[OIL-AUTO-REMOVE]` (the OIL Earn mode; merged 22 Sep 26, D34 — spent, in `DECISIONS-ARCHIVE.md`) went live with his five-minute look WAIVED: its evidence is the walk (`raptor-port/docs/handpass/2026-09-22-oil-walk.md` — the defects it found are fixed red-first; do not re-do them) and the gates, never an owner sighting, so never assume he eyeballed the walked Saturday. Its design of record, with the rulings not to relitigate (§8/§9): `raptor-port/docs/superpowers/specs/2026-09-21-oil-auto-remove-decisions.md`. The item itself: `OUTSTANDING-ARCHIVE.md` (moved 27 Sep 26, `[BACKLOG-TIDY]`).
 
 | # | Date | His ruling, in his words where short enough | What it means | Where it lives now |
 |---|---|---|---|---|
