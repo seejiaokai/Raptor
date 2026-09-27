@@ -79,6 +79,17 @@ export function callsignProblem(csIn: any, exceptId?: string): string | null {
   return null
 }
 
+/* the callsign Restore suggests when his own is taken (D295; the approved picture: "Ace 2") — the first free "<cs> N",
+   shortened to fit the 14 letters (D226 — Fable F11). Moved here from Quals with the Archived list ([ONE-DOOR], D310). */
+export function nextFreeCallsign(cs: string, id: string): string {
+  for (let n = 2; n < 100; n++) {
+    const tail = ` ${n}`
+    const cand = `${cs.slice(0, MAX_CS - tail.length).trimEnd()}${tail}`
+    if (!callsignProblem(cand, id)) return cand
+  }
+  return ''
+}
+
 /* every refusal, in the app's words, first one found. `roster: false` — the sign-up: a
    person not yet let in may not read the roster (data-model §11: Person has no Pending
    read), so whether a callsign is taken is the admin's to see when he approves. */

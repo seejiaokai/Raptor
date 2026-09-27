@@ -1474,6 +1474,17 @@ export function poHeldReason(id: string, outcome: PostOutcome, poDate: string = 
   if (outcome === 'delete') return deleteBlocked(id) || stashPreflight(id, deleteCutoff(poDate))
   return null
 }
+/* for Admin → Users' row ([ONE-DOOR], D310 — "a posting waiting for its date shown on the row"): a posting out set on
+   the Leave War whose date is still to come — "posting out 14 Oct · Overseas Sqn" — or null */
+export function postingPendingTag(id: string): string | null {
+  const w: any = getState().people.find(p => p.id === id) || getState().postOuts[id]
+  if (!w || !w.to || w.gone) return null
+  const poDate = addDays(w.to, 1)
+  if (poDate <= effectiveToday()) return null
+  const o = outcomeOf(w)
+  const word = o && o !== 'none' ? ` · ${OUTCOME_WORD[o] || o}` : ''
+  return `posting out ${dayMon(poDate)}${word}`
+}
 /* for Admin → Users' account row: his posting has come and is waiting — why, or null */
 export function postingHeldNote(id: string): string | null {
   const d = poDueNow(id, effectiveToday())

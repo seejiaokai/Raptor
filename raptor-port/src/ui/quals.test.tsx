@@ -366,7 +366,8 @@ describe('the callsign / initials columns', () => {
     await click($('#qAddToggle'))
     await act(async () => { await new Promise(r => setTimeout(r, 0)) })
     expect(document.querySelector('#page-admin.on, #page-admin')).toBeTruthy()
-    expect($('#accModeNew').getAttribute('aria-pressed')).toBe('true')
+    /* [ONE-DOOR] (D310, D322): the add form is New person only — its Callsign/Name box is there */
+    expect($('#accAddCs')).toBeTruthy()
     await act(async () => { setPage('quals'); notify() })
   })
 

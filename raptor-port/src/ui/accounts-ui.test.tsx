@@ -194,12 +194,14 @@ describe('AC13 — Admin → Users (D166 (1), D204)', () => {
     await click($('[data-acct="achex"] .acc-tap'))
     expect($('[data-editing="achex"]')).toBeTruthy()
   })
-  it('adds an account — sign-in name, callsign, role', async () => {
+  /* [ONE-DOOR] (D310, D322): a man already on the roster gets his sign-in on his OWN row — "Give sign-in" (the add
+     form's roster picker is gone; the foot's form makes a new person only) */
+  it('gives a man on the roster his sign-in, on his own row — sign-in name, role', async () => {
     await signInAs('ad', 'a')
     await act(async () => { setPage('admin'); notify() })
-    await type($('#accAddName') as HTMLInputElement, 'Ace@Mail')
-    await type($('#accAddPid') as HTMLSelectElement, 'dj')
-    await click($('#accAdd'))
+    await click($('[data-person="dj"] .acc-tap'))
+    await type($('#accGiveName') as HTMLInputElement, 'Ace@Mail')
+    await click($('#accGive'))
     expect(accountByName('ace@mail')).toMatchObject({ pid: 'dj', role: 'main', on: true })
     expect($('[data-acct]') && $$('[data-acct]').some(r => r.textContent!.includes('ace@mail'))).toBe(true)
   })
@@ -209,7 +211,9 @@ describe('AC13 — Admin → Users (D166 (1), D204)', () => {
    state "suspended" (today's "Switch off / on" in his words, D280); D300: the sign-in screen says
    each thing once. Register line PO3. */
 describe('PO3 — Suspend / Enable, "suspended", the sign-in (D285, D300)', () => {
-  it('the editor offers Suspend, then Enable; the row reads "suspended" while it is', async () => {
+  /* [ONE-DOOR] (D309, D322): the state reads on the row's Sign-in DOT — red, its words "Sign-in suspended" — where the
+     row once wore a "suspended" tag */
+  it('the editor offers Suspend, then Enable; the row Sign-in dot reads "suspended" while it is', async () => {
     await signInAs('ad', 'a')
     await act(async () => { setPage('admin'); notify() })
     await click($('[data-acct="achex"] .acc-tap'))
@@ -218,13 +222,14 @@ describe('PO3 — Suspend / Enable, "suspended", the sign-in (D285, D300)', () =
     expect(accountByName('hex')).toMatchObject({ on: false })
     expect(BACKPROMPT, 'a Suspend asks nothing').not.toContain('rocky')
     const row = () => $('[data-acct="achex"]')
-    expect(row().textContent).toContain('suspended')
+    const dot = () => $('[data-testid="dot-signin-rocky"]').getAttribute('aria-label')
+    expect(dot()).toBe('Sign-in suspended')
     expect(row().textContent).not.toContain('switched off')
     await click($('[data-acct="achex"] .acc-tap'))
     expect($('#accEdOnOff').textContent).toBe('Enable')
     await click($('#accEdOnOff'))
     expect(accountByName('hex')).toMatchObject({ on: true })
-    expect(row().textContent).not.toContain('suspended')
+    expect(dot()).toBe('Can sign in')
     /* D284: an Enable is one of the two "he's back" acts — the Quals page then asks to check his quals */
     expect(BACKPROMPT).toContain('rocky')
   })
@@ -238,11 +243,13 @@ describe('PO3 — Suspend / Enable, "suspended", the sign-in (D285, D300)', () =
     expect($('#accessOff').textContent).not.toContain('switched')
     await signInAs('ad', 'a'); updateAccount('achex', { on: true })
   })
-  it('PO4 — "Delete account" asks twice and says what goes; the second tap deletes him — account and person (D285, D287, D298)', async () => {
+  /* [ONE-DOOR] (D310 "Delete — D298", D322 the approved rows): the button reads "Delete" on every row, a man with no
+     sign-in included — where it read "Delete account" (D285) */
+  it('PO4 — "Delete" asks twice and says what goes; the second tap deletes him — account and person (D287, D298, D310)', async () => {
     await signInAs('ad', 'a')
     await act(async () => { setPage('admin'); notify() })
     await click($('[data-acct="achex"] .acc-tap'))
-    expect($('#accEdDel').textContent).toBe('Delete account')
+    expect($('#accEdDel').textContent).toBe('Delete')
     expect($('#accEdDelNote')).toBeFalsy()
     await click($('#accEdDel'))
     expect($('#accEdDel').textContent).toBe(`Tap again to delete ${PEOPLE.rocky.cs}`)
@@ -251,7 +258,7 @@ describe('PO3 — Suspend / Enable, "suspended", the sign-in (D285, D300)', () =
     /* Cancel puts the first tap back */
     await click($('#accEdCancel'))
     await click($('[data-acct="achex"] .acc-tap'))
-    expect($('#accEdDel').textContent).toBe('Delete account')
+    expect($('#accEdDel').textContent).toBe('Delete')
     await click($('#accEdDel')); await click($('#accEdDel'))
     expect(accountByName('hex')).toBeUndefined()
     expect((PEOPLE as any).rocky.deleted).toBe(true)
