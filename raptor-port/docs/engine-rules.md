@@ -3158,16 +3158,40 @@ empty rather than throwing.
 
 ## The edit log (`engine/editlog.ts`, owner, 11 Aug 26)
 
-**To grow (D263, 27 Sep 26):** every change to an absence — an input edited, cut, moved or deleted; the Leave War's approve, refuse, back-to-bid and move — becomes a line with who and when, built with the one changes window (`OUTSTANDING.md` `[DRAFT-PENDING]`). Today inputs leave a line only when added or removed.
+**THE CHANGE HISTORY (`[DRAFT-PENDING]`, 28 Sep 26 — D168, D170, D263, D336 (b)).** The log grew into the squadron's change
+history, which the one changes window reads (`ui-contracts.md` §The one changes window):
+- **Durable** — saved through the settings store (`elog`: `{v, next, rows}`) on the microtask after a burst of edits,
+  flushed at sign-out, loaded at boot (`initStore → elogLoad`); **no longer cleared at sign-in or sign-out** (D336 (b), built
+  on yes, on his look card). Still OUTSIDE undo: written raw, never a command-layer record, so the global undo never
+  rewinds it. Until the database, another device — or another tab of the same browser — keeps its own copy and the last
+  save wins, as for every record in the app (Fable F10 / Astra DP-01 — declined here, filed under `[DB-READINESS]`).
+- **Week-safe** — every line keeps its CALENDAR day (`date`, ISO), taken when it is written (`dayIso(CURWEEK, di)`); an
+  absence line keeps its span after (`date`–`end`) and before (`wdate`–`wend`) and shows on both, never between (Astra
+  DP-05). `elogFor` / `elogAllFor` answer only for the loaded week's day.
+- **`seq`** — a number that only rises, kept across a reload: the line's identity, what "new to you" points at
+  (`state/changes.ts`, the per-person seen record `changeseen`, one command `changes.seen`, own entry only).
+- **2,000 lines** (was 400), the oldest first to go.
+- **A refused command leaves no line** — a line written while a command runs is held (`setElogDefer(deferEffect)`) and kept
+  only if the command commits, numbered when kept. Narrow exception (Fable F8): the board's structural sentences are
+  written just before the board's catch-all command opens, so a refusal of that epilogue would keep its sentence.
+- **A person is kept as his ID** in `from`/`to` (Fable F4) and said by his live callsign (`elogVal`), so a rename or a
+  callsign given to someone new (D286) never misnames an old line.
+- **D263 — built:** every change to an absence, a Leave War decision (Ack, refuse, back to a bid, move, an admin's
+  delete, an OIL award given / changed / taken, on the grid and on the ledger), a Quals change (callsign, CAT, seat,
+  ground crew, SANS, SXO, a qualification tick, archived, deleted — dated the day it was made), a publish and a withdrawal
+  is ONE line, written by ONE subscriber on the command stream (`state/changelines.ts`), from `user`-origin envelopes only;
+  a door that knows why hands its reason in (`elogReason`). The inputs' own call-site sentences went (Astra DP-03); the
+  accept door writes its filing line in the same words (`logFiling` — its command carries no input record). Undo and
+  Redo write their line at the global undo's success, on every day the step touched (`logReversed`, Astra DP-04); a
+  sign-off signed or cleared writes its own, inside its command.
 
 Who changed which detail, when, and what it was before. Distinct from
 §History above: that is the undo stack (whole-state snapshots, no
 attribution); this is a per-key record with a name and a clock on it.
 
-`ELOG = {rows, cap:400}`, each row
-`{t, who, di, key, lbl, from, to}` — a ring buffer, oldest dropped. 400
-rather than HIST's 60 because a row is a handful of short strings where a
-history snapshot is a whole serialised schedule.
+`ELOG = {rows, cap, next}`, each row
+`{seq, t, who, pid, di, date, end?, wdate?, wend?, iid?, sect?, key, lbl, from, to}` — a ring buffer, oldest dropped (the
+cap: 2,000 since `[DRAFT-PENDING]`; it was 400 while the log lived only as long as the tab).
 
 **The rows' keys move with the key space** (audit, 12 Aug 26). A delete or
 reorder renumbers every index-addressed key; `keys.ts` already rewrote

@@ -872,7 +872,10 @@ overwrite each other; one record per leave / person / war row; (2) **honest refu
 out, not allowed, someone changed it first) says so and stops, instead of retrying for ever (the top bar's "Not saved —
 Retry" is for network failures); his look at the words first; (3) **a safe start-up** — a slow or half load says so, never a
 blank app, never re-seeds demo data; (4) **never seed demo data into a shared store**; (5) a stuck record never marks the whole
-app unsaved. With `[OIL-AWARD-IS-A-GRANT]` and the small OIL follow-ups as ONE batch. **Tier:** FULL (saved data).
+app unsaved; (6) **two tabs of one browser** — each tab keeps its own copy of the store and the last save wins, so two tabs
+open at once overwrite each other's work (every record; the change history's `elog` and `seq` too — `[DRAFT-PENDING]`'s red
+team, Fable F10 / Astra DP-01, 28 Sep 26: declined there as the whole app's limit, filed here). With `[OIL-AWARD-IS-A-GRANT]`
+and the small OIL follow-ups as ONE batch. **Tier:** FULL (saved data).
 
 ### [IT-QUESTIONS] Talk to the IT side now — their approvals take weeks (his, not code; D203, filed 26 Sep 26)
 The checklist is the primer's §7 (Artifact "Raptor Backend Primer"; its questions, kept here so they outlive it): code apps
@@ -1052,6 +1055,11 @@ text). **Put to him on the `[POST-OUT-OUTCOMES]` look card (question 5):** what 
 his name on his courses for now (then D299 is narrowed in his words). **Place:** after `[POST-OUT-OUTCOMES]` merges, on
 his answer. Touches `raptor-port/src/tracker/` (its own store) — its own small check.
 ### [DRAFT-PENDING] The one CHANGES WINDOW — D118, D167–D172 (25 Sep 26); step 3 of D173, after `[ACCOUNTS]` (its own FULL check — D210)
+**BUILT 28 Sep 26 on `claude/draft-pending`** (overnight, D336 (2)): the plan `raptor-port/docs/superpowers/plans/2026-09-28-draft-pending-plan.md`
+(§9 after the red team — `…/specs/2026-09-28-draft-pending-plan-review-log.md`); the contract `raptor-port/docs/ui-contracts.md`
+§The one changes window; the history `raptor-port/docs/engine-rules.md` §The edit log; D263 built with it; the open question
+below built on YES (D336 (b)) and put on his look card. FULL check: `raptor-port/docs/handpass/2026-09-28-draft-pending.md`.
+**Next:** the walk, the two final reads, his look, "merge live" (never without his word).
 **From `[ACCOUNTS]` (26 Sep 26), to settle here:** the edit log is cleared at every sign-in and sign-out (`resetSession`
 → `elogClear`, session-only as today); with personal accounts, should the change history outlive a sign-out? The
 window's "new to you" needs it to. A member's history shows a medical change in full (D211, which narrows D169's

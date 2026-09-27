@@ -476,15 +476,26 @@ day-level row; the rest becomes queryable.
 
 ### EditLog
 
-*To grow (D263, 27 Sep 26): it also carries every change to an absence — edited, cut, moved, deleted, and the Leave War's decisions — with who and when; built with the one changes window (`[DRAFT-PENDING]`).*
+*Built with the one changes window (`[DRAFT-PENDING]`, 28 Sep 26): it carries every change to an absence (D263 — edited,
+cut, moved, deleted, and the Leave War's decisions), Quals changes, a publish or a withdrawal, a sign-off, an Undo / Redo,
+with who (the person's id) and when; durable in the browser, kept across sign-outs (D336 (b)), 2,000 lines. Each person's
+"seen" is `EditLogSeen` below.*
 
-Owner: **Scheduler**. One recorded edit. Today session-only and capped at
-400 rows; in the database it is durable and shared.
+Owner: **Scheduler**. One recorded change. Per browser today (the settings key `elog`, 2,000 lines); in the database it
+is durable and shared.
+
+**`EditLogSeen`** (new, `[DRAFT-PENDING]`): one row per person — `personId`, `upTo` (every line numbered up to it is
+seen), `extra` (lines above it marked seen one by one). Written only by that person ("Mark all as seen", own row — §11).
+Today the settings key `changeseen`.
 
 | Field | Type | Req | Meaning |
 |---|---|---|---|
+| `seq` | bigint | yes | the line's number — only rises; what `EditLogSeen` points at |
 | `at` | datetime | yes | `t`, wall clock |
-| `byUserId` | ref User | no | (new) — today only a display name is kept |
+| `byUserId` | ref User | no | `pid` — the person behind it (kept since `[ACCOUNTS]`) |
+| `date`, `endDate` | date | no | the calendar day(s) it is on — the span after for an absence |
+| `wasDate`, `wasEndDate` | date | no | an absence's span before, when it moved |
+| `inputId` | ref Input | no | the input a line is about |
 | `byName` | string | yes | `who`, from `HOOKS.whoami()` |
 | `weekId` | ref ScheduleWeek | no | |
 | `dayIndex` | int | no | null for a structural edit |
@@ -788,7 +799,7 @@ worlds' keys.
 | `SCHED.dayOK` / `cur` / `orig` | `ScheduleWeek.dayState` + `originals` (stage 1) → `ScheduleDay.approved` / `shownAmendmentId` / `original` (stage 2) | Day-level state, never on a sign-off row |
 | `SCHED.pending` / `changes` / `added` / `drafts` / `curDraft` | inside the snapshot (stage 1) → row `pendingSince` / `changedFrom`, `DayDraft` (stage 2) | `changes[key] = n` is the AL that issued the key; it resolves to a `changedFrom` lookup |
 | `raptor:plan/all` — `PLANPUCKS`, `DAYRMK` | `ScheduleWeek.planningLayer` | One global record today; split by the ISO `date` of each puck / remark into its week's row. JSON at stage 1; own rows at stage 2 |
-| `ELOG.rows` (session-only) | `EditLog` | Nothing to migrate — the log starts empty and becomes durable. Decide retention first |
+| `ELOG.rows` (the settings key `elog`, per browser) | `EditLog` | Nothing to migrate — demo data, cleared (D56); the table starts empty. Decide retention first |
 | `raptor:settings/*` — `daytpl`, `wavetpl`, `wavehide`, `wavedefault`, `dutytpl`, `cxreasons`, `lookahead`, `secdefault`, `stores`, `rules` | `Setting` | One row per key, value verbatim. **Do not write a row for a key that is on the shipped standard** — absent still means default |
 | `raptor:settings/qualcols` | `Qualification` + `Setting` | The column list becomes rows — a GUID each, `k` kept as `key` — so `QualMark` can key off the id; display flags travel with each column |
 | IndexedDB `raptor-docs` + `docBackend` map | `Attachment` + shared file store | Bytes to the file store, metadata to the row. Ids are already globally unique (`doc-`+UUID). A pre-drawer browser holds `docId`s with no bytes — import them as "no document on file", never fabricate |
@@ -1041,9 +1052,10 @@ are kept for a period the squadron sets, then purged by a scheduled job;
    step, or automatically by email? **ANSWERED by the owner, 25 Sep 26 (D165): an
    admin mapping step** — the admin creates the `Person` and records their defence
    mail address; the first sign-in with it becomes that person; "View as" retires.
-4. **EditLog retention** — the app caps it at 400 rows in memory. Shared and
-   durable, how long is it kept, who may read it, and is it a compliance
-   record or an operational convenience?
+4. **EditLog retention** — the app keeps the newest 2,000 lines, per browser, durable across sign-outs since
+   `[DRAFT-PENDING]` (28 Sep 26 — it capped 400 in memory before). Shared and durable, how long is it kept, and is it a
+   compliance record or an operational convenience? (Who may read it is settled: admins and members, a medical change in
+   full — D169, D211; each person's own "seen" is `EditLogSeen`, §11.)
 5. **Is `Attempt` history required from day one?** Two routes: build the
    table at stage 1 and back-fill it from the existing `{ g, f, fd, d }`
    summary (one pass, dates present for most rows), or keep the summary

@@ -50,7 +50,8 @@ owner approved "everything persists on the built site".
 | Templates, house orders, rule overrides, cancel reasons, look-ahead, stores list | whiteboard → backend (settings collection; legacy `sqn142_*`) | Yes |
 | Every Leave War record | whiteboard → backend (Browser on the built site, Memory in dev/tests) | **Yes** on the built site (per browser); no in dev/tests by design |
 | Tracker charts and students | whiteboard → backend (`raptor:tracker/*` on the built site) + the syllabus file | Yes |
-| Undo history, edit log | scheduler session memory | **No** — session-only by design |
+| Undo history | scheduler session memory | **No** — session-only by design |
+| The change history (the edit log) and each person's seen record | settings collection (`elog`, `changeseen` — `[DRAFT-PENDING]`, 28 Sep 26) | **Yes** — and it outlives a sign-out (D336 (b)) |
 | Attachment bytes (medical documents) | in-memory cache → per-browser IndexedDB drawer (`raptor-docs`, `src/storage/docstore.ts`) on the built site; memory-only in dev/tests | **Yes** on the built site (per browser, since 8 Sep 26); no in dev/tests |
 | Accounts | hard-coded in `src/state/auth.ts` | n/a |
 
@@ -323,10 +324,15 @@ on file" (never fabricated) until the data is cleared.
 
 ### Edit log — `ELOG.rows`, `src/engine/editlog.ts`
 
-`{ t, who, pid, di, key, lbl, from, to }` — wall-clock, display name (from
-`HOOKS.whoami()` — the signed-in CALLSIGN since `[ACCOUNTS]`, 26 Sep 26), the person behind it (`HOOKS.whoamiId()`,
-so a rename moves nothing), day index or null, slot key, a frozen label of what it
-was, before and after. Capped at 400 rows, oldest falls off.
+`{ seq, t, who, pid, di, date, end?, wdate?, wend?, iid?, sect?, key, lbl, from, to }` — the line's number (only rises,
+kept across a reload), wall-clock, display name (from `HOOKS.whoami()` — the signed-in CALLSIGN since `[ACCOUNTS]`, 26 Sep
+26), the person behind it (`HOOKS.whoamiId()`, so a rename moves nothing), the day index of the week loaded when it was
+written, its CALENDAR day (ISO — the week it belongs to) and, for an absence, the span after (`date`–`end`) and before
+(`wdate`–`wend`), the input it is about, the part of the day a line with no key belongs to, the slot key, a frozen label
+of what it was, before and after (a person key keeps the person's ID — `elogVal` says his live callsign). **Durable since
+`[DRAFT-PENDING]` (28 Sep 26, D336 (b)):** saved as the settings key `elog` = `{ v: 1, next, rows }` (written raw — never a
+command record, so undo never rewinds it), loaded at boot, kept across sign-in and sign-out. Capped at 2,000 rows (was
+400), oldest falls off; a saved row missing its number or its time is dropped at load.
 
 ### Accounts and session — `src/state/accounts.ts`, `src/state/auth.ts` (`[ACCOUNTS]`, 26 Sep 26 — D166, D204)
 
@@ -357,8 +363,9 @@ a later change to the standard is picked up rather than frozen in a browser.
 | `secdefault` | `string[]` | section order, from `notes, prog, waves, duty, sims, ground, inputs, avail, sans, unav` |
 | `stores` | `[[key, label]]` | the stores list |
 | `qualcols` | `QualCol[]` | the LoX column list — `{ k, h, lav?, apt?, scq?, aar?, fcpOnly? }` in display order (saved since the 8 Sep 26 bug pass: the ticks under a column persist, so the column must too) |
-| `accounts` | `Account[]` | `{ id, name, role: 'admin' \| 'main', pid, on, offBy? }` — `name` the sign-in name (lower-case, unique; stands for the defence mail address), `pid` the person (one account each), `on` false = **suspended** (D285); `offBy: 'po'` only when an "Overseas Sqn" posting suspended it on its date (what "he's back" enables — any hand Suspend / Enable drops it). An account is removed only with its person, by a delete (D287, `[POST-OUT-OUTCOMES]`). **No password.** Null = the four seeded demo accounts (`[ACCOUNTS]`, D166) |
+| `accounts` | `Account[]` | `{ id, name, role: 'admin' \| 'main', pid, on, offBy?, seenFrom? }` — `seenFrom` (`[DRAFT-PENDING]`, Fable F6): the change history's next line number when the account was made, so someone given access later starts with nothing new; `name` the sign-in name (lower-case, unique; stands for the defence mail address), `pid` the person (one account each), `on` false = **suspended** (D285); `offBy: 'po'` only when an "Overseas Sqn" posting suspended it on its date (what "he's back" enables — any hand Suspend / Enable drops it). An account is removed only with its person, by a delete (D287, `[POST-OUT-OUTCOMES]`). **No password.** Null = the four seeded demo accounts (`[ACCOUNTS]`, D166) |
 | `accessreqs` | `AccessRequest[]` | `{ id, name, cs, ini, seat, cat, at, seenBy }` — who asked (the signed-in principal, from the session); what he typed, text only — the displayed callsign/name (≤ 14), initials (may be blank), `seat` `FCP`/`RCP`/`GND`, `cat` (`''` for personnel) — never a link to a puck; when; `seenBy` the account ids of the admins who have had it on screen (each admin's bell). (D204; `[ACCOUNTS-NEW-PERSON]` D214, D216, D227 — the typed name field gave way to the initials, D219) |
+| `changeseen` | `{ [personId]: { upto, extra } }` | each person's own "seen" for the change history (`[DRAFT-PENDING]`, D170): every line numbered up to `upto`, and those in `extra`, are seen; written only by `state/changes.ts` through `changes.seen`, which may change the signed-in person's OWN entry only (`perms.ts ownershipViolation`) — data-model §11 `EditLogSeen` |
 | `guestview` | `true` or null | the admin's switch letting people waiting for access read the published week as a guest — OFF (null) by default (D204) |
 | `rules` | `{ v: { rule: number }, s: { kind: boolean } }` | overrides only: `v` for thresholds off the standard (`briefLead, dur, step, dekit, minTurn, tightTurn, crewRest, debrief, reportLead, longDay, epBrief, simDebrief, amtDebrief, openEnd, maxRun, inputLead, scDayFrom, scDayTo, simLen, oilFullMin`), `s` for which kinds hard-clash a shift (`fly, sim, duty, shift, ground, prog`) |
 
