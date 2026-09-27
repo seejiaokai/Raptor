@@ -19,7 +19,8 @@ import { HLSET, SEARCH, HLOPEN, toggleHlOpen, HLGROUP, setSearch, CURPAGE, setDa
 import { HlChips } from './hlchips'
 import { initDrag } from './drag'
 import { initPan, updateWeekNav, panDays } from './pan'
-import { setSign, daySigned, dayApproved, dayHasChanges } from '../engine/publish'
+import { setSign, daySigned, dayApproved, dayHasChanges, SIGN_ROLES } from '../engine/publish'
+import { logAction } from '../engine/editlog'
 import { HOOKS } from '../engine/hooks'
 import { canEditSched } from '../state/auth'
 import { slotVal, setSlotVal } from '../engine/slots'
@@ -176,6 +177,10 @@ export function Shell() {
       schedWrite(SCHED_TYPES.sign, () => {
         setSign(di, sel.dataset.sign!, sel.value)   // AM-06: binds the signature to the content it signed
         HOOKS.histPush()
+        /* the change history's line for a sign-off, inside the command so a refused one leaves none ([DRAFT-PENDING] —
+           Fable F3 / Astra DP-07: signing is an official act on the day, and every member reads who did it, D169) */
+        const role = (SIGN_ROLES.find((r: any) => r[0] === sel.dataset.sign) || [])[1] || 'Sign-off'
+        logAction(di, sel.value ? `Signed · ${role} · ${(PEOPLE as any)[sel.value]?.cs || sel.value}` : `Sign-off cleared · ${role}`, { sect: 'day' })
       })
       /* R2 (owner, 15 Sep 26): completing the four sign-offs on an ALREADY-published
          day with nothing pending correctly shows NO publish button — which reads like

@@ -29,7 +29,7 @@ import type { CommitEnvelope, Change } from '../command/types'
 import { logAction } from '../engine/editlog'
 import { PEOPLE } from '../engine/people'
 import { dateOrd } from '../engine/inputs'
-import { parseVerId } from '../engine/verid'
+import { parseVerId, dayIso } from '../engine/verid'
 import { qualCols } from '../engine/qualcols'
 
 /* ---- the reason a door hands in (inside its command) ---- */
@@ -45,6 +45,8 @@ const cs = (pid: any) => ((PEOPLE as any)[pid] && (PEOPLE as any)[pid].cs) || St
 const MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 /* '2026-08-01' → '1 Aug' (the day-first voice the rest of the app speaks) */
 const dayWord = (iso: string) => { const [, m, d] = iso.split('-').map(Number); return `${d} ${MON[(m || 1) - 1]}` }
+/* a week id as the scheduler's records write it ('dd/mm/yyyy', its Monday) and a day index → the calendar day */
+const dayIsoOf = (wk: string, di: number) => (Number.isFinite(di) && di >= 0 && di <= 6 ? dayIso(wk, di) : '')
 const localToday = () => { const d = new Date(); return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}` }
 
 /* ---- an input ---- */
@@ -200,6 +202,30 @@ function boundaryLines(env: CommitEnvelope): void {
     if (bd.kind === 'publish') logAction(null, `Published — ${verWord(seq)}`, { date: iso, sect: 'day' })
     else if (bd.kind === 'unpublish') logAction(null, `${seq === 0 ? 'The Original' : 'AL' + seq} withdrawn`, { date: iso, sect: 'day' })
   }
+}
+
+/* ---- an undo or a redo (Astra DP-04) ----
+   Written at the global undo's success (undo/timeline.ts `reversed`), never on a refusal, and never by the restore's own
+   command (a restore is not a person's forward change — the subscriber skips it). The days are the step's own records:
+   a day of a week (`days/<wk>#<di>`), an input's span before and after, a Leave War day, an issued version's day. One
+   line per run of neighbouring days, in the undo's own words ("Undo — Warden put on RU 1 back seat"). */
+export function logReversed(entry: { label?: string; forward?: Change[] }, dir: 'undo' | 'redo'): void {
+  const days = new Set<string>()
+  const addSpan = (s: Span | null) => { if (!s) return; for (let d = s.date; d <= s.end; d = nextIso(d)) days.add(d) }
+  for (const c of entry.forward || []) {
+    const id = String(c.id)
+    if (c.collection === 'days') { const [wk, di] = id.split('#'); try { const iso = dayIsoOf(wk!, +di!); if (iso) days.add(iso) } catch (_) { /* a malformed id names no day */ } }
+    else if (c.collection === 'inputs' && id !== '__order') { addSpan(spanOf(c.before)); addSpan(spanOf(c.after)) }
+    else if (c.collection === 'lw.cell') days.add(cellParts(id).date)
+    else if (c.collection === 'sched.orig' || c.collection === 'sched.als') { const m = /\d{4}-\d{2}-\d{2}/.exec(id); if (m) days.add(m[0]) }
+  }
+  const sorted = [...days].filter(d => /^\d{4}-\d{2}-\d{2}$/.test(d)).sort()
+  const what = `${dir === 'undo' ? 'Undo' : 'Redo'}${entry.label ? ' — ' + entry.label : ''}`
+  if (!sorted.length) { logAction(null, what, { date: localToday(), sect: 'day' }); return }
+  let a = sorted[0]!, b = a
+  const flush = () => logAction(null, what, { date: a, end: b, sect: 'day' })
+  for (const d of sorted.slice(1)) { if (d === nextIso(b)) b = d; else { flush(); a = b = d } }
+  flush()
 }
 
 /* ---- the subscriber ---- */

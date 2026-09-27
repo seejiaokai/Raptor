@@ -42,6 +42,10 @@ export interface UndoHooks {
   snapView?(entry: UndoEntry, dir: 'undo' | 'redo'): void
   /* pop the undo/redo bubble (§8.2). */
   showBubble?(text: string): void
+  /* an undo or a redo just SUCCEEDED ([DRAFT-PENDING], 28 Sep 26 — Astra DP-04): the change history writes its line
+     here, on the days the step touched, outside the undo timeline so an undo can never undo its own record. Never
+     called on a refusal. */
+  reversed?(entry: UndoEntry, dir: 'undo' | 'redo'): void
   /* §3.4 — re-install HIST.lock + lw.hist for the restore's duration ONLY, to
      stop a legacy step being pushed; returns a restore(). Does NOT gate the
      reconcilers (they read the private SYNCING). */
@@ -615,6 +619,7 @@ export function globalUndo(): UndoResult {
   entry.undoneAt = ++stamp
   bumpUndo()
   if (hooks.showBubble) hooks.showBubble(bubbleText(entry, 'undo'))
+  if (hooks.reversed) hooks.reversed(entry, 'undo')
   return { ok: true, entry }
 }
 
@@ -637,6 +642,7 @@ export function globalRedo(): UndoResult {
   entry.undoneAt = undefined
   bumpUndo()
   if (hooks.showBubble) hooks.showBubble(bubbleText(entry, 'redo'))
+  if (hooks.reversed) hooks.reversed(entry, 'redo')
   return { ok: true, entry }
 }
 

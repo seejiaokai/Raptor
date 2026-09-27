@@ -1082,7 +1082,8 @@ export function routeClick(e: MouseEvent) {
     /* [ARCH-STACK] follow-up #1 (row D): route the sign-clear through a
        sched.signClear command (was HOOKS.histPush direct). histPush stays inside
        so the legacy persist runs; reflow outside. */
-    schedWrite(SCHED_TYPES.signClear, () => { signClear(+sc.dataset.signclear!); HOOKS.histPush() })
+    /* its history line inside the command ([DRAFT-PENDING] — Fable F3 / Astra DP-07) */
+    schedWrite(SCHED_TYPES.signClear, () => { signClear(+sc.dataset.signclear!); HOOKS.histPush(); logAction(+sc.dataset.signclear!, 'Sign-offs cleared', { sect: 'day' }) })
     HOOKS.reflow(); return
   }
 

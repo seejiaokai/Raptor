@@ -1,3 +1,4 @@
+// @vitest-environment jsdom
 /* EVERY CHANGE TO AN ABSENCE IS A LINE — ONE, FROM EVERY DOOR ([DRAFT-PENDING], 28 Sep 26 — the owner's D263, "2 yes":
    an input edited, cut by a medical, moved, deleted — each a line saying what changed, who and when; Astra DP-03: ONE
    writer, so no door writes a second; DP-05: a line keeps the span before AND after, and shows on both, never between).
@@ -14,6 +15,8 @@ import { inpId } from '../engine/inputs'
 import { initStore, resetSession, writeInputs, writeInputsBatch } from './store'
 import { signIn, sessionFor } from './accounts'
 import { elogReason, changeLinesFor } from './changelines'
+import { installGlobalUndo } from './undo-wire'
+import { globalUndo, globalRedo } from '../undo'
 
 const fake = new Map<string, string>()
 let ISNAP = ''
@@ -134,6 +137,33 @@ describe('Quals, and a publish or a withdrawal (Fable F3, F5; Astra DP-07)', () 
 
   it('a projection (a reconciler) writes no line, however much it changed', () => {
     changeLinesFor({ origin: 'projection', scope: { module: 'inputs' }, changes: [{ op: 'put', collection: 'inputs', id: 'x', after: { person: 'bane', date: 'Aug 1', type: 'LL' } }] } as any)
+    expect(ELOG.rows).toHaveLength(0)
+  })
+})
+
+describe('an Undo or a Redo (Astra DP-04)', () => {
+  it('a successful Undo is ONE line on the days it touched; the restore itself writes nothing', () => {
+    installGlobalUndo()
+    const r = add({ person: 'bane', date: 'Aug 1', endDate: 'Aug 2', yr: 2026, allday: true, type: 'LL', remarks: '' })
+    elogClear()
+    const u = globalUndo()
+    expect(u.ok).toBe(true)
+    expect(INPUTS.includes(r)).toBe(false)
+    expect(ELOG.rows).toHaveLength(1)
+    expect(ELOG.rows[0]!.lbl).toMatch(/^Undo/)
+    expect(rowTouches(ELOG.rows[0]!, '2026-08-01')).toBe(true)
+    expect(rowTouches(ELOG.rows[0]!, '2026-08-02')).toBe(true)
+    elogClear()
+    expect(globalRedo().ok).toBe(true)
+    expect(ELOG.rows.map(x => x.lbl)).toEqual([expect.stringMatching(/^Redo/)])
+  })
+
+  it('a refused Undo writes nothing', () => {
+    installGlobalUndo()
+    elogClear()
+    while (globalUndo().ok) { /* spend every step this session holds */ }
+    elogClear()
+    expect(globalUndo().ok).toBe(false)
     expect(ELOG.rows).toHaveLength(0)
   })
 })
