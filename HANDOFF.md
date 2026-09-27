@@ -19,7 +19,8 @@ the later merge keeps both (D78).
 ### `claude/rulings-d264-d266-leave-war-f0f4ab` — `[LW-MOVE-STANDARD]` (D264–D266, D330–D335): BUILT and FULL-checked — waiting for his look and "merge live" — written 27 Sep 26, verify before use
 - **The job:** his D264–D266 plus his answers to the mock-up (D330–D335: order A, "Delete", a member's own Move, the Move
   button B — grey chip with a teal arrow, How many kept). Backlog `OUTSTANDING.md` `[LW-MOVE-STANDARD]` (folds in
-  `[LW-MOVE-BENEATH]`). Branch cut from `main` (`818dbb04`). PR: see the line below.
+  `[LW-MOVE-BENEATH]`). Branch cut from `main` (`818dbb04`). PR [seejiaokai/Raptor#447](https://github.com/seejiaokai/Raptor/pull/447);
+  preview https://raptor-git-claude-rulings-d264-d266-leave-war-f0f4ab-kai-e2f5.vercel.app (behind his Vercel sign-in).
 - **Evidence sheet — read it first:** `raptor-port/docs/handpass/2026-09-27-lw-move-standard.md` (the tier FULL, the
   readings he can correct §2, the roll-call, the door check, the walk and re-walk, 26 break tests, the two blind reads §8 —
   six findings, all fixed red first — the gates §9, his look card §10). The approved design:
