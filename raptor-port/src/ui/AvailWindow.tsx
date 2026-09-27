@@ -23,7 +23,7 @@
    scheduler sees the overlap and judges it. The availability window stays
    narrow precisely because the app's job here is to SURFACE the clash, not to
    remove him from the list. Do not let this drift into filtering him out. */
-import { useFloatWin } from './floatwin'
+import { useFloatWin, frontWin, raiseWin } from './floatwin'
 import { notify } from '../state/store'
 import { PEOPLE } from '../engine/people'
 import { seatShown, byCrewShown } from '../engine/faceattrs'
@@ -65,6 +65,7 @@ export function openAvailWinFrom(osn: HTMLElement) {
   const keep = AVAILWIN ? AVAILWIN_BOX : null
   setAvailWin({ di, item, ver, ofw, name: lbl.name, when: lbl.when, tab: oilModeOn(di) && !ver ? 'oil' : 'who' })
   if (keep) setAvailWinBox(keep)
+  raiseWin('avail')
 }
 
 /* D38/D51 — the LEFT column is the pilots and the RIGHT column is the WSOs, so
@@ -319,8 +320,10 @@ export function AvailWindow() {
 
   return (
     <div
-      className="availwin"
+      className={'availwin' + (frontWin() === 'avail' ? ' front' : '')}
       ref={el}
+      /* the one pressed last is in front of the changes window (Astra DP-10 — ui/floatwin.ts) */
+      onPointerDownCapture={() => { if (raiseWin('avail')) notify() }}
       role="dialog"
       aria-label={`${m && m.lbl.found ? m.lbl.name : name} — who is available`}
     >

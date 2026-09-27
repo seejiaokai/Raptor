@@ -9,7 +9,7 @@ import { SBDAY, CURPAGE, DPREV, HISTMODE, esc, restArmed, HLSET, SEARCH, HLOPEN,
 import { toggleChanges } from './changesopen'
 import { weekDates } from '../engine/editlog'
 import { CURWEEK } from '../engine/waves'
-import { closeHistList, setWeekCal } from './pops'
+import { setWeekCal } from './pops'
 import { CalIcon, HistIcon, HlIcon } from './icons'
 import { HlChips } from './hlchips'
 import { oilShown, oilModeOn, toggleOilMode, oilUndoBoundary } from './oilmode'
@@ -130,7 +130,7 @@ export function SchedBoard() {
     /* the changes list and any bubble go with them: both are opened from the
        board's own bar, so a page change that closes the board must not leave
        either painting over whatever the user navigated to */
-    HOOKS.closeBoardDialogs = () => { setCxt(null); setSortAll(null); closeHistList(); hideHistBub() }
+    HOOKS.closeBoardDialogs = () => { setCxt(null); setSortAll(null); hideHistBub() }
     return () => { HOOKS.closeBoardDialogs = () => {} }
   }, [])
 

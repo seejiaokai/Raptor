@@ -3258,17 +3258,18 @@ test.describe('the History bubble', () => {
       w.setSlotVal(k, w.slotVal(k) === 'bane' ? 'stiff' : 'bane')
       return k
     })
+    /* the board's History button opens the ONE changes window ([DRAFT-PENDING], D168), History mode with it */
     await page.click('#sbHist')
     await page.waitForTimeout(250)
 
     /* PINNED, not hovered — a phone re-anchor only ever runs behind a pinned
        bubble, since there is no pointer to leave in the first place. Pinning
-       through the changes list (the same `jumpToChange` path a real user
+       through the changes window (the same `jumpToChange` path a real user
        takes) is simpler than forcing four edits and a chevron tap just to
-       reach the pinned state this test actually needs. */
-    await page.click('#sbWarn .histln')
-    await page.waitForSelector('#histBody')
-    await page.click(`#histBody .hl-row.hit[data-hkey="${key}"]`)
+       reach the pinned state this test actually needs. The one change here is
+       the window's one line; on a phone the panel then shrinks to its bar. */
+    await page.click('.chgwin .win-tab:has-text("All changes")')
+    await page.click('.chgwin button.cw-l')
     await page.waitForTimeout(400)     // the jump's own smooth scroll settles
     await expect(page.locator('.histbub')).toBeVisible()
 

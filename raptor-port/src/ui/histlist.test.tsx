@@ -21,7 +21,7 @@ import { elogClear, elogAllFor, elogGroups, logAction, elogVal } from '../engine
 import { HOOKS } from '../engine/hooks'
 import * as view from '../state/view'
 import { openScheduler, closeScheduler } from './board'
-import { setHistList, setHistGroup, HISTOPEN, HISTGROUP } from './pops'
+import { ridKey } from '../engine/rowids'
 import { hideHistBub, histBubExpanded, histBubPinned } from './histbubble'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
@@ -44,10 +44,15 @@ const goEditWeek = async () => act(async () => { closeScheduler(); notify() })
 const backToBoard = async () => act(async () => { openScheduler(0); notify() })
 
 let phone = false
+/* SINCE [DRAFT-PENDING] (28 Sep 26 — the owner's D168) the list is the ONE changes window, opened on the board by its
+   History button; these tests read every change of the week. Its lines carry the key they jump to (data-cwkey), the
+   stored (rid) form — so a test finds a line by translating the positional key in (ridKey). */
 const openList = async () => {
-  if (!view.HISTMODE) await act(async () => { view.setHistMode(true); notify() })
-  await act(async () => { setHistList('all'); notify() })
+  if (!document.querySelector('.chgwin:not([hidden])')) await click($('#sbHist'))
+  await click($$('.chgwin .win-tab').find(b => /All changes/.test(b.textContent || ''))!)
+  await click($$('.chgwin .cw-day').find(b => b.textContent === 'Week')!)
 }
+const lineFor = (key: string) => $$('.chgwin .cw-l').find(l => l.dataset.cwkey === String(ridKey(key, DAYS)))
 /* two changes to ONE seat and one to another, so there is something to group */
 async function seed() {
   const keys = $$('#sbBoard [data-slot]').map(e => e.dataset.slot!).filter(k => /\.[pw]$/.test(k))
@@ -105,71 +110,40 @@ afterAll(async () => {
 
 beforeEach(async () => {
   phone = false
-  elogClear(); hideHistBub(); HISTOPEN.clear()
-  await act(async () => { view.setHistMode(false); setHistList(false); setHistGroup(false); notify() })
+  elogClear(); hideHistBub()
+  await act(async () => { view.setChgWin(null); notify() })
 })
 
-describe('the two ways in', () => {
-  /* BOTH are rendered and CSS picks one per width — a media query answers a
-     resize instantly where a builder decision would be stuck until the next
-     repaint, and the panels are string-diffed so nothing repaints until an
-     edit lands. Which one is VISIBLE is e2e's question, not jsdom's. */
-  it('renders a top-of-board entry above the sign-off bar, and the phone one too', async () => {
-    expect($('.histln-top'), 'nothing while History is off').toBeFalsy()
-    await act(async () => { view.setHistMode(true); notify() })
-
-    /* the desktop entry heads the #sbSign element, above the sign-off bar
-       (both moved out of #sbBoard so the checks bar can sit under the sign-off
-       — owner, 14 Aug 26) */
-    const top = $('#sbSign .histln-top')
-    expect(top, 'the desktop entry heads the sign element').toBeTruthy()
-    const sign = $('#sbSignBar')
-    expect(sign, 'and the sign-off bar is still there').toBeTruthy()
-    /* ABOVE it, which was the whole ask */
-    expect(top.compareDocumentPosition(sign) & Node.DOCUMENT_POSITION_FOLLOWING,
-      'the entry comes before the sign-off bar').toBeTruthy()
-
-    expect($('#sbWarn .histln'), 'the phone entry is still on the checks panel').toBeTruthy()
-  })
-
-  /* THE THIRD WAY IN (owner, 23 Aug 26): the shell's own top bar carries an
-     Edit-history opener beside undo/redo on the edit page, so the log is
-     reachable without opening the board and without History mode. The modal
-     head says the same words as the button — one surface, one name. */
-  it('the topbar #histBtn opens the list, and the head says Edit history', async () => {
-    const btn = $('#histBtn')
-    expect(btn, 'the opener rides the edit page top bar').toBeTruthy()
-    await click(btn)
-    expect($('#histModal').hasAttribute('hidden'), 'the list opened').toBe(false)
-    expect($('#histModal .modal-head b').textContent).toContain('Edit history')
-  })
-
-  it('both carry the same count, and both open the list', async () => {
-    await act(async () => { view.setHistMode(true); notify() })
+describe('the ways in (the one changes window — D168, D171)', () => {
+  it('the History button of the board and the icon of the admin on Edit Schedule both open the same window', async () => {
     await seed()
-    expect($('#sbSign .histln-top').textContent).toContain('3 changes')
-    expect($('#sbWarn .histln').textContent).toContain('3 changes')
-    await click($('#sbSign .histln-top'))
-    expect($('#histModal').hasAttribute('hidden')).toBe(false)
+    await click($('#sbHist'))
+    expect($('.chgwin:not([hidden])'), 'the board opens it').toBeTruthy()
+    const onBoard = $('.chgwin .win-tab')!.textContent
+    await click($('.chgwin .win-x'))
+    await goEditWeek()
+    await click($('#histBtn'))
+    expect($('.chgwin:not([hidden])'), 'the icon opens it on Edit Schedule').toBeTruthy()
+    expect($('.chgwin .win-ttl')!.textContent, 'on the week').toMatch(/week of/)
+    expect($('.chgwin .win-tab')!.textContent).toBe(onBoard)
+    await click($('.chgwin .win-x'))
+    await backToBoard()
   })
 })
 
 describe('clicking a change jumps to it', () => {
-  it('closes the list, pins the bubble open and shows every change to that detail', async () => {
+  it('pins the bubble open and shows every change to that detail — and the window stays', async () => {
     const { a } = await seed()
     await openList()
-    const row = $$('#histBody .hl-row.hit').find(r => r.dataset.hkey === a)!
-    expect(row, 'the seat has a clickable row').toBeTruthy()
+    const row = lineFor(a)!
+    expect(row && row.tagName, 'the seat has a clickable line').toBe('BUTTON')
     await click(row)
     await settle()
-
-    expect($('#histModal').hasAttribute('hidden'), 'the list got out of the way').toBe(true)
+    expect($('.chgwin:not([hidden])'), 'the window stays open (D167)').toBeTruthy()
     const b = bub()
     expect(b, 'and the bubble came up').toBeTruthy()
     expect(histBubPinned(), 'pinned').toBe(true)
     expect(histBubExpanded(), 'and expanded').toBe(true)
-    /* BOTH changes to that seat, not just the newest — that is the difference
-       between this and a hover */
     expect(b!.querySelectorAll('.hb-all li').length).toBe(elogAllFor(a).length)
     expect(elogAllFor(a).length).toBe(2)
   })
@@ -177,58 +151,41 @@ describe('clicking a change jumps to it', () => {
   it('a pinned bubble ignores the pointer leaving, and goes on the next click away', async () => {
     const { a } = await seed()
     await openList()
-    await click($$('#histBody .hl-row.hit').find(r => r.dataset.hkey === a)!)
+    await click(lineFor(a)!)
     await settle()
     expect(bub()).toBeTruthy()
-
-    /* a hover bubble dies on mouseout; a pinned one is there because someone
-       asked for it */
     await act(async () => {
       $(`#sbBoard [data-slot="${a}"]`).dispatchEvent(new MouseEvent('mouseout', { bubbles: true }))
     })
     expect(bub(), 'still up').toBeTruthy()
-
     await click($('#sbBoard'))
     expect(bub(), 'and the next click away puts it down').toBe(null)
     expect(histBubPinned()).toBe(false)
   })
 
-  /* THE JUMP SCROLLS, AND ASKING IT TO IS GUARDED. jsdom does not implement
-     scrollIntoView — it has no scrolling to implement it with — and the call
-     sits in a deferred callback, so unguarded it threw where no assertion
-     could see it: every test still passed and the RUN failed on two unhandled
-     errors. This pins both halves, and the guard is why the suite can assert
-     the scroll at all here. */
+  /* THE JUMP SCROLLS, AND ASKING IT TO IS GUARDED (jsdom has no scrollIntoView; unguarded it threw in a deferred
+     callback where no assertion could see it) */
   it('scrolls the cell it jumped to into the middle', async () => {
     const { a } = await seed()
     const seen: any[] = []
-    /* on the PROTOTYPE, which is where a browser has it — and it has to be:
-       the jump re-finds its cell after the repaint, so a spy pinned to the
-       element that was on screen when the list opened is left on a node the
-       string diff has already thrown away */
     const proto = Element.prototype as any
     const had = Object.prototype.hasOwnProperty.call(proto, 'scrollIntoView')
     const real = proto.scrollIntoView
     proto.scrollIntoView = function (o: any) { seen.push({ el: this, o }) }
     try {
       await openList()
-      await click($$('#histBody .hl-row.hit').find(r => r.dataset.hkey === a)!)
+      await click(lineFor(a)!)
       await settle()
     } finally {
       if (had) proto.scrollIntoView = real; else delete proto.scrollIntoView
     }
-    expect(seen.length, 'it asked to be brought into view').toBe(1)
-    expect(seen[0].o.block, 'and to the middle, not just barely on screen').toBe('center')
-    expect((seen[0].el as HTMLElement).dataset.slot, 'the right cell').toBe(a)
+    const hits = seen.filter(s => (s.el as HTMLElement).dataset && (s.el as HTMLElement).dataset.slot === a)
+    expect(hits.length, 'it asked to bring the right cell into view').toBe(1)
+    expect(hits[0].o.block, 'and to the middle, not just barely on screen').toBe('center')
   })
 
-  /* THE FOUR FAMILIES THE BOARD NEVER DRAWS. The area/area-time strip and the
-     in-times render on the WEEK only, and traffic is typed into a modal with
-     no cell anywhere — so a row naming one could only ever answer with an
-     error, and the error was untrue as well ("no longer on this day" for a
-     detail sitting safely on the week). Found by the handoff's doc check,
-     after the two changes that combined to create it shipped separately:
-     one made these log a value at all, the next made rows clickable. */
+  /* THE FAMILIES THE BOARD NEVER DRAWS (the area strip, the in-times, the traffic): listed — the change really
+     happened — but not offered as a jump from the board */
   it('a detail the board cannot draw is listed, but is not a button', async () => {
     await goEditWeek()
     const ar = $('#eWeek .areacell[data-area]')
@@ -238,123 +195,40 @@ describe('clicking a change jumps to it', () => {
     await act(async () => { await new Promise(r => setTimeout(r, 10)) })
     await backToBoard()
     await openList()
-
-    const rows = $$('#histBody .hl-row')
-    const arRow = rows.find(r => (r.textContent || '').includes('area'))
-    expect(arRow, 'it is still LISTED — the change really happened').toBeTruthy()
-    expect(arRow!.tagName, 'but not offered as a jump').not.toBe('BUTTON')
-    expect($$('#histBody .hl-row.hit').length, 'nothing here is clickable').toBe(0)
+    const arRow = $$('.chgwin .cw-l').find(r => (r.textContent || '').includes('area'))
+    expect(arRow, 'it is still LISTED').toBeTruthy()
+    expect(arRow!.tagName, 'but not offered as a jump from the board').not.toBe('BUTTON')
   })
 
-  it('a structural entry is not a button, because it has no cell to jump to', async () => {
+  it('a structural line is not a button, because it has no cell to jump to', async () => {
     logAction(0, 'Line removed')
     await openList()
-    const rows = $$('#histBody .hl-row')
+    const rows = $$('.chgwin .cw-l')
     expect(rows.length).toBe(1)
     expect(rows[0]!.tagName, 'a plain row, not a button').not.toBe('BUTTON')
-    expect(rows[0]!.className).not.toContain('hit')
   })
 
   it('says so when the detail it named has since gone', async () => {
-    await act(async () => { txtSet('ff:0.0.0.cs', 'GONE'); notify() })
+    const f = DAYS[0].waves[0].formations
+    const keep = JSON.parse(JSON.stringify(f))
+    await act(async () => { txtSet('ff:0.0.1.cs', 'GONE'); notify() })
     await openList()
-    const row = $$('#histBody .hl-row.hit')[0]!
-    /* point it at an address the board does not render */
-    row.dataset.hkey = 'ff:0.9.9.cs'
+    const row = $$('.chgwin button.cw-l').find(r => (r.textContent || '').includes('GONE'))!
+    expect(row, 'the edit is listed as a jump').toBeTruthy()
+    /* the line the edit was on goes (straight out of the model — the delete itself is not what is under test) */
+    await act(async () => { f.splice(1, 1); notify() })
     const said: string[] = []
     const real = HOOKS.toast
     HOOKS.toast = ((m: any) => { said.push(String(m)) }) as any
     try { await click(row); await settle() } finally { HOOKS.toast = real }
     expect(said.join(' ')).toContain('no longer')
     expect(bub()).toBe(null)
+    await act(async () => { f.length = 0; keep.forEach((x: any) => f.push(x)); notify() })
   })
 })
 
-describe('grouped by detail', () => {
-  it('folds one row per detail, newest-touched first, and unfolds to every change', async () => {
-    const { a } = await seed()
-    await openList()
-    await click($('#histGrouped'))
-    expect(HISTGROUP).toBe(true)
-
-    const heads = $$('#histBody .hl-ghead')
-    expect(heads.length, 'the seat with two changes folds; the other is a plain row').toBe(1)
-    /* the fold handle is the group INDEX now (no rid in the DOM — RID-05), not
-       the row key; the seat's own key rides data-hkey on the jump rows instead.
-       Groups order newest-touched first and deterministically (13 Sep 26): seat B
-       was edited LAST, so its one-change plain row leads at index 0 and seat A's
-       two-change fold sits at index 1. (Was a ms-timestamp sort that tied when the
-       three edits shared a millisecond and flaked once per-edit work grew.) */
-    expect(heads[0]!.dataset.hgrp).toBe('1')
-    expect(heads[0]!.textContent).toContain('2 changes')
-    expect($$('#histBody .hl-sub').length, 'shut to begin with').toBe(0)
-
-    await click(heads[0]!)
-    const sub = $$('#histBody .hl-sub .hl-row')
-    expect(sub.length).toBe(2)
-    /* oldest first inside a group — the story, ending at what it says now */
-    const all = elogAllFor(a)
-    /* the log keeps a person's id; the list says his callsign (elogVal — Fable F4, 28 Sep 26) */
-    expect(sub[0]!.textContent).toContain(elogVal(all[0]!, 'to'))
-    expect(sub[1]!.textContent).toContain(elogVal(all[1]!, 'to'))
-    /* and a sub-row still jumps */
-    expect(sub[0]!.className).toContain('hit')
-  })
-
-  /* THE DOM STAYS DETERMINISTIC (RID-05). The log now stores rid-anchored keys,
-     but a rid is random per browser, so none may reach the rendered HTML — the
-     jump handle is the row's positional address, the fold handle is the group's
-     index. Assert every actual rid in the model is absent from the history. */
-  it('the rendered history leaks no rid — positional jump handles, index fold handles', async () => {
-    await seed()
-    await openList()
-    await click($('#histGrouped'))
-    const html = $('#histBody').innerHTML
-    const rids = DAYS.flatMap(rowsOf).map((r: any) => r.rid).filter(Boolean)
-    expect(rids.length, 'the model really carries rids to leak').toBeGreaterThan(0)
-    rids.forEach((rid: string) => expect(html.includes(rid), `rid ${rid} must not reach the DOM`).toBe(false))
-    $$('#histBody .hl-ghead').forEach(h => expect(h.dataset.hgrp, 'fold handle is an index').toMatch(/^\d+$/))
-    $$('#histBody .hl-row.hit').forEach(h => expect(h.dataset.hkey, 'jump handle is a positional key').toBeTruthy())
-  })
-
-  it('a detail changed once is a plain row, not a fold that reveals itself', async () => {
-    await act(async () => { txtSet('ff:0.0.0.cs', 'ONCE'); notify() })
-    await openList()
-    await click($('#histGrouped'))
-    expect($$('#histBody .hl-ghead').length).toBe(0)
-    expect($$('#histBody .hl-row.hit').length).toBe(1)
-  })
-
-  it('groups structural entries apart, since they share an empty address', async () => {
-    logAction(0, 'Line removed')
-    logAction(0, 'Line removed')
-    const g = elogGroups()
-    expect(g.length, 'two events that happen to read the same are still two').toBe(2)
-  })
-
-  it('closing the list forgets the grouping, as it forgets the day filter', async () => {
-    await seed()
-    await openList()
-    await click($('#histGrouped'))
-    await click($('#histClose'))
-    await openList()
-    expect($('#histByTime').className, 'back to the timeline').toContain('on')
-  })
-
-  it('jumping from a grouped row also forgets the grouped view', async () => {
-    await seed()
-    await openList()
-    await click($('#histGrouped'))
-    await click($('#histBody .hl-ghead'))          // the fold head (index handle now)
-    await click($('#histBody .hl-sub .hl-row.hit'))
-    await settle()
-    expect(HISTOPEN.size, 'the old fold is not kept behind the closed list').toBe(0)
-
-    await openList()
-    expect($('#histByTime').className, 'a jump is still a complete close').toContain('on')
-    expect($$('#histBody .hl-ghead').length, 'no expanded groups leak into the next opening').toBe(0)
-  })
-})
+/* "Grouped by detail" was the retired list's own view; the one changes window groups by WHO (person and sitting) and by
+   WHERE (the day's sections) instead — D168, the approved mock-up — pinned in ui/changesmodel.test.ts. */
 
 describe('the phone expands the bubble by hand', () => {
   /* the 3/4 boundary, pinned explicitly: collapsed already shows the last

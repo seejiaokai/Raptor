@@ -29,6 +29,8 @@ import { markSeen } from '../state/changes'
 import { isMember, isAdmin } from '../state/perms'
 import { pendListHTML, pendKeysFor } from './pendlist'
 import { jumpToChange } from './interactions'
+import { histJumpable, weekJumpable } from './histbubble'
+import { SBDAY } from '../state/view'
 
 const DOW = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
 const dm = (iso: string) => { const [, m, d] = iso.split('-').map(Number); return `${d}/${m}` }
@@ -54,7 +56,16 @@ function jumpOf(l: CLine, days: string[], pick: string | null): { keys: string[]
   return { keys: [String(pk == null ? l.key : pk)], di: days.indexOf(l.date!) }
 }
 
-function Line({ l, onGo }: { l: CLine; onGo: (l: CLine) => void }) {
+/* a line with nowhere to go on THIS page is listed but is not a button (the old list's rule, kept — a tap that does
+   nothing reads as a tap that did not register): no key and no input; a detail the board does not draw, while on the
+   board (the area strip, the in-times, the traffic, the wave's title); the traffic on the week */
+function canGo(l: CLine, j: { keys: string[] } | null): boolean {
+  if (!j) return false
+  if (l.iid) return true
+  return SBDAY != null ? histJumpable(l.key) : weekJumpable(l.key)
+}
+
+function Line({ l, onGo, go: may }: { l: CLine; onGo: (l: CLine) => void; go: boolean }) {
   const body = (
     <>
       <span className="cw-top">
@@ -66,7 +77,9 @@ function Line({ l, onGo }: { l: CLine; onGo: (l: CLine) => void }) {
       {l.from || l.to ? <span className="cw-txt">{l.from ? <s>{l.from}</s> : null}{l.from && l.to ? ' → ' : ''}{l.to ? <b>{l.to}</b> : null}</span> : null}
     </>
   )
-  return <button className={'cw-l' + (l.fresh ? ' fresh' : '')} onClick={() => onGo(l)} title="Go to this change">{body}</button>
+  return may
+    ? <button className={'cw-l' + (l.fresh ? ' fresh' : '')} data-cwkey={l.key || undefined} onClick={() => onGo(l)} title="Go to this change">{body}</button>
+    : <div className={'cw-l still' + (l.fresh ? ' fresh' : '')} data-cwkey={l.key || undefined} title="This change has no place on this page to go to">{body}</div>
 }
 
 export function ChangesWindow() {
@@ -203,7 +216,7 @@ export function ChangesWindow() {
                 {g.fresh ? <span className="cw-new">NEW</span> : null}
                 {when ? <span className="cw-ghwhen">{when}</span> : null}
               </button>
-              {open ? <div className="cw-gl">{g.lines.map((l: CLine) => <Line key={l.seqs.join('.')} l={l} onGo={go} />)}</div> : null}
+              {open ? <div className="cw-gl">{g.lines.map((l: CLine) => <Line key={l.seqs.join('.')} l={l} onGo={go} go={canGo(l, jumpOf(l, days, one ? w.day : null))} />)}</div> : null}
             </div>
           )
         })}

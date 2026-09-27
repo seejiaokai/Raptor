@@ -24,7 +24,7 @@ import { STORE_CFG, addStore, delStore, renameStore, moveStore, storesSave, stor
 import { logAction } from '../engine/editlog'
 import { logFiling } from '../state/changelines'
 import { esc } from '../state/view'
-import { setDayPop, setAirKey, setDrawer, setInpEdit, setHistList, closeHistList } from './pops'
+import { setDayPop, setAirKey, setDrawer, setInpEdit } from './pops'
 import { reassignInput, rosterOptions, firstPersonalType, firstUnavailType, firstSansType, unfmt } from './inputedit'
 import { openAvailWinFrom } from './AvailWindow'
 import { withDaySnap } from './html'
@@ -95,7 +95,6 @@ function scrollBoardWarnToSel() {
 export function jumpToChange(key: string | string[], di: any) {
   const cands = (Array.isArray(key) ? key : [key]).filter(Boolean).map(String)
   if (!cands.length) return
-  closeHistList()
   closePendList()
   hideHistBub()
   const onBoard = view.SBDAY != null

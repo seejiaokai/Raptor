@@ -19,9 +19,9 @@ describe('POPS_RESET covers every window flag', () => {
   })
   it('it rides the session reset (resetSession → resetViewState("session"))', () => {
     expect(VIEW_RESET.some(e => e.name === 'POPS' && e.scopes.includes('session'))).toBe(true)
-    pops.setInpEdit({ iid: 'x' }); pops.setDocView({ iid: 'y' }); pops.setHistList('all'); pops.setTplEdit(true); pops.setDrawer(true)
+    pops.setInpEdit({ iid: 'x' }); pops.setDocView({ iid: 'y' }); pops.setTplEdit(true); pops.setDrawer(true)
     resetViewState('session')
-    expect(pops.INPEDIT).toBe(null); expect(pops.DOCVIEW).toBe(null); expect(pops.HISTLIST).toBe(false)
+    expect(pops.INPEDIT).toBe(null); expect(pops.DOCVIEW).toBe(null)
     expect(pops.TPLEDIT).toBe(false); expect(pops.DRAWER).toBe(false)
   })
 })

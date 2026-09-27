@@ -19,7 +19,6 @@ import { elogClear, elogAllFor, elogVal } from '../engine/editlog'
 import { HOOKS } from '../engine/hooks'
 import * as view from '../state/view'
 import { openScheduler, closeScheduler } from './board'
-import { setHistList } from './pops'
 import { hideHistBub } from './histbubble'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
@@ -71,7 +70,7 @@ beforeEach(async () => {
   elogClear()
   hideHistBub()
   SCHED.pending = {}; SCHED.changes = {}; SCHED.dayOK = {}; SCHED.sign = {}
-  await act(async () => { view.setHistMode(false); setHistList(false); notify() })
+  await act(async () => { view.setChgWin(null); notify() })
 })
 afterEach(() => hideHistBub())
 
@@ -258,84 +257,86 @@ describe('the bubble', () => {
   })
 })
 
-describe('the way into the listed view', () => {
-  /* it is NOT a second top-bar button, and that is measured rather than a
-     preference: two new controls took the phone bar from 70px to 92px and the
-     geometry gate caught it. It rides on the day's checks panel instead. */
-  it('is absent from the bar, and absent from the checks panel until History is on', async () => {
+/* SINCE [DRAFT-PENDING] (28 Sep 26 — the owner's D116: one History mode for the board and the edit week; D168: its
+   list is the ONE changes window) the board's History button opens the changes window on the board's day, with the
+   bubbles, and closes both again; the checks panel's "☰ Edit history" line is gone. The window's lists replace the
+   modal's. */
+const winTab = (re: RegExp) => $$('.chgwin .win-tab').find(b => re.test(b.textContent || ''))!
+const winDay = (d: string) => $$('.chgwin .cw-day').find(b => b.textContent === d)!
+const openAll = async () => {
+  if (!$('.chgwin:not([hidden])')) await click($('#sbHist'))
+  await click(winTab(/All changes/))
+  await click(winDay('Week'))
+}
+describe('the way into the changes window', () => {
+  it("the board's History button opens it — no second bar button, no line in the checks panel — and closes it again", async () => {
     expect($('#sbHistList'), 'no second bar button').toBeFalsy()
-    expect($('#sbWarn [data-histopen]'), 'and nothing while History is off').toBeFalsy()
+    expect($('#sbWarn [data-histopen]'), 'no line in the checks panel').toBeFalsy()
     await click($('#sbHist'))
-    expect($('#sbWarn [data-histopen]'), 'it appears with the mode').toBeTruthy()
-  })
-
-  it('counts the session before you open it, and says so when there is nothing', async () => {
-    await act(async () => { view.setHistMode(true); notify() })
-    expect($('#sbWarn [data-histopen]').textContent).toContain('No changes yet')
-    await editedSeat()
-    expect($('#sbWarn [data-histopen]').textContent).toContain('1 change')
-    await editedSeat()
-    expect($('#sbWarn [data-histopen]').textContent, 'and pluralises').toContain('2 changes')
+    expect($('.chgwin:not([hidden])'), 'the window opens').toBeTruthy()
+    expect(view.HISTMODE, 'with the bubbles (one History mode)').toBe(true)
+    expect($('#sbWarn [data-histopen]'), 'still no line in the checks panel').toBeFalsy()
+    await click($('#sbHist'))
+    expect($('.chgwin:not([hidden])'), 'and closes').toBeFalsy()
+    expect(view.HISTMODE).toBe(false)
   })
 })
 
-describe('the listed view', () => {
+describe('the lists in the window', () => {
   it('opens on the whole week, newest first', async () => {
     await editedSeat()
     await act(async () => { txtSet('ff:0.0.0.cs', 'VIPER'); notify() })
     await act(async () => { txtSet('ff:0.0.0.cs', 'MONSOON'); notify() })
-    await openList()
-    const rows = $$('#histBody .hl-row')
+    await openAll()
+    const rows = $$('.chgwin .cw-l')
     expect(rows.length).toBe(3)
     expect(rows[0]!.textContent, 'the callsign was typed last').toContain('MONSOON')
     expect(rows[0]!.textContent, 'and it says what it was before').toContain('VIPER')
     expect(rows[2]!.textContent, 'the seat came first').toContain('FCP')
   })
 
-  it('narrows to the open day, and says so when that day is empty', async () => {
-    // a day the board is not on, and a name that seat is not already holding
+  it('narrows to a day, and says so when that day is empty', async () => {
     await act(async () => { setSlotVal('1.0.0.0.p', slotVal('1.0.0.0.p') === 'bane' ? 'stiff' : 'bane'); notify() })
-    await openList()
-    expect($$('#histBody .hl-row').length).toBe(1)
-    await click($('#histDay'))
-    expect($$('#histBody .hl-row').length, 'nothing on the open day').toBe(0)
-    expect($('#histBody').textContent).toContain('All days')
+    await openAll()
+    expect($$('.chgwin .cw-l').length).toBe(1)
+    await click(winDay('Mon'))
+    expect($$('.chgwin .cw-l').length, 'nothing on Monday').toBe(0)
+    expect($('.chgwin .cw-none')!.textContent).toContain('No changes on Monday yet')
   })
 
   it('has a real empty state before anything has been changed', async () => {
-    await openList()
-    expect($('#histBody').textContent).toContain('No changes yet')
+    await openAll()
+    expect($('.chgwin .cw-none')!.textContent).toContain('No changes this week yet')
   })
 
-  it('closes, and closing forgets the filter', async () => {
+  it('closes on ✕, and a window opened again starts from its door', async () => {
     await editedSeat()
-    await openList()
-    await click($('#histDay'))
-    await click($('#histClose'))
-    expect($('#histModal').hasAttribute('hidden')).toBe(true)
-    await openList()
-    expect($('#histAll').className, 'reopens on the whole week').toContain('on')
+    await openAll()
+    await click($('.chgwin .win-x'))
+    expect($('.chgwin:not([hidden])')).toBeFalsy()
+    await click($('#sbHist'))
+    expect($('.chgwin .win-tab.on')!.textContent, 'reopens on New to you').toMatch(/New to you/)
   })
 
-  /* a line removed reaches markEdit with no key, so it has no pair of values
-     and no cell to hover — the list is the only place it can show */
+  /* a line removed reaches markEdit with no key, so it has no pair of values and no cell to hover — the window is the
+     only place it can show */
   it('carries a structural change as the sentence the toast already said', async () => {
     const del = $$('#sbBoard [data-ldel]')[0]
     expect(del, 'the board rendered a delete-line control').toBeTruthy()
     await click(del)
-    await openList()
-    expect($('#histBody').textContent).toContain('Line removed')
+    await openAll()
+    expect($('.chgwin .cw-body')!.textContent).toContain('Line removed')
   })
 })
 
 describe('leaving', () => {
-  it('closing the board takes the list and any bubble with it', async () => {
+  it('closing the board leaves the window open — it serves Edit Schedule too — and puts any bubble down', async () => {
     await editedSeat()
-    await openList()
-    expect($('#histModal').hasAttribute('hidden')).toBe(false)
+    await openAll()
     await act(async () => { closeScheduler() })
-    expect($('#histModal').hasAttribute('hidden')).toBe(true)
+    expect($('.chgwin:not([hidden])'), 'the window stays').toBeTruthy()
     expect(bub()).toBe(null)
+    await click($('.chgwin .win-x'))
     await act(async () => { openScheduler(0) })
   })
 })

@@ -14,8 +14,6 @@ import { SCHED, signOf, setDayApproved } from '../engine/publish'
 import { elogClear } from '../engine/editlog'
 import { HOOKS } from '../engine/hooks'
 import * as view from '../state/view'
-import { setHistList } from './pops'
-import { closePendList } from './pendlist'
 import { openScheduler, closeScheduler } from './board'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
@@ -42,14 +40,13 @@ beforeAll(async () => {
   HOOKS.toast = (m: any) => { toasts.push(String(m)) }
 })
 afterAll(async () => {
-  closePendList()
   await act(async () => { root.unmount() })
   host.remove()
 })
 /* Monday published with the OPS-O desk empty; then Mamba moved from SDO to OPS-O through the app's own write —
    his D109 case, which is one change waiting to go out */
 beforeEach(async () => {
-  closePendList(); toasts.length = 0
+  toasts.length = 0
   await act(async () => {
     DAYS.length = 0; JSON.parse(pristine).forEach((d: any) => DAYS.push(d))
     SCHED.pending = {}; SCHED.changes = {}; SCHED.added = {}; SCHED.als = []
@@ -69,80 +66,84 @@ beforeEach(async () => {
 
 const monHead = () => $(`#eWeek .day[data-day="${MON}"] .day-head`)
 
-describe('"N pending ▾" opens what will go out, and a row takes the view there (D99, D100, D104; AM53, AM54)', () => {
-  it('the day head\'s count is a button on the edit week, and the list names the one change — who moved, from where to where', async () => {
+/* SINCE [DRAFT-PENDING] (28 Sep 26 — the owner's D168: ONE changes window replaces the pending list and Edit history)
+   the day's "N pending" opens the changes window on "To go out" — the same lines D100 approved, newest first (D119) —
+   and a tap on a line takes the view to its change while the WINDOW STAYS OPEN (D167). The pop-up's own rules (a tap
+   outside, Escape, a page scroll closed it) are gone with it: the window closes on ✕, a page, week or session change. */
+describe('"N pending" opens the changes window on what will go out (D99, D100, D168; AM53, AM54)', () => {
+  it("the day head's count is a button on the edit week; the window names the one change — who moved, from where to where", async () => {
     const btn = monHead()?.querySelector('[data-pendlist]') as HTMLElement
     expect(btn, 'the count is a button').toBeTruthy()
     expect(btn.textContent).toMatch(/^1\s*pending/)
     await click(btn)
-    const list = $('#pendList')
-    expect(list, 'the list is open').toBeTruthy()
-    expect(list!.querySelector('.pl-head')?.textContent).toMatch(/Waiting to go out as AL1 · 1 change$/)
-    const rows = list!.querySelectorAll('.pl-item')
+    const win = $('.chgwin:not([hidden])')
+    expect(win, 'the changes window is open').toBeTruthy()
+    expect(win!.querySelector('.win-tab.on')?.textContent).toMatch(/To go out · AL1/)
+    expect(win!.querySelector('.pl-head')?.textContent).toMatch(/Waiting to go out as AL1 · 1 change$/)
+    const rows = win!.querySelectorAll('.pl-item')
     expect(rows.length).toBe(1)
     const t = rows[0]!.textContent || ''
     expect(t).toContain(PEOPLE.mamba.cs)
     expect(t).toContain('SDO'); expect(t).toContain('OPS-O')
     expect(rows[0]!.querySelector('.pl-who')?.textContent, 'made in this sitting: who and when, not "earlier"').not.toMatch(/earlier/)
+    await click(win!.querySelector('.win-x'))
   })
 
-  it('a change the edit record does not hold (made before this page was opened) reads "earlier" (D100\'s mock-up)', async () => {
+  it('a change the edit record does not hold (made before this page was opened) reads "earlier" (the mock-up of D100)', async () => {
     elogClear()
     await click(monHead()!.querySelector('[data-pendlist]'))
-    expect($('#pendList .pl-who')?.textContent).toBe('earlier')
+    expect($('.chgwin .pl-who')?.textContent).toBe('earlier')
+    await click($('.chgwin .win-x'))
   })
 
-  it('a tap on the row closes the list and marks the change ON THE WEEK — it never opens the board (D107)', async () => {
+  it('a tap on the line marks the change ON THE WEEK — never the board (D107) — and the window STAYS OPEN (D167)', async () => {
     await click(monHead()!.querySelector('[data-pendlist]'))
-    await click($('#pendList button.pl-item'))
-    expect($('#pendList'), 'the list closes').toBeNull()
+    await click($('.chgwin button.pl-item'))
     await settle()
+    expect($('.chgwin:not([hidden])'), 'the window stays').toBeTruthy()
     expect(view.SBDAY, 'still on Edit Schedule').toBeNull()
     const seat = $(`#eWeek .day[data-day="${MON}"] [data-slot="d:${MON}.0.2"]`)
     expect(seat?.classList.contains('chgflash'), 'the OPS-O desk wears the brief mark').toBe(true)
+    await click($('.chgwin .win-x'))
   })
 
-  it('a tap anywhere outside closes it, and so does Escape (the standing popup rule)', async () => {
+  it('a window, not a pop-up: a tap outside and a page scroll leave it open; ✕ closes it', async () => {
     await click(monHead()!.querySelector('[data-pendlist]'))
     await act(async () => { document.body.dispatchEvent(new MouseEvent('pointerdown', { bubbles: true })) })
-    expect($('#pendList')).toBeNull()
-    await click(monHead()!.querySelector('[data-pendlist]'))
-    await act(async () => { document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true })) })
-    expect($('#pendList')).toBeNull()
-  })
-
-  it('the page scrolling under it closes it; its own list scrolling does not (walker B3)', async () => {
-    await click(monHead()!.querySelector('[data-pendlist]'))
-    await act(async () => { $('#pendList .pl-list')!.dispatchEvent(new Event('scroll', { bubbles: false })) })
-    expect($('#pendList'), 'its own list scrolling').toBeTruthy()
     await act(async () => { document.dispatchEvent(new Event('scroll')) })
-    expect($('#pendList'), 'the page scrolled under it').toBeNull()
+    expect($('.chgwin:not([hidden])')).toBeTruthy()
+    await click($('.chgwin .win-x'))
+    expect($('.chgwin:not([hidden])')).toBeNull()
   })
 
-  it('the count stays a plain chip where the list does not belong: View-only Sched, a preview, a draft day', async () => {
+  it('the count on the working copy of View-only Sched opens it too; under a preview it stays a plain count; a day not yet published counts no "pending" (D118)', async () => {
     await act(async () => { view.VWORK.add(MON); view.setPage('viewsched'); notify() })
     const vh = $(`#vWeek .day[data-day="${MON}"] .day-head`)
-    expect(vh?.querySelector('.dpend'), 'the viewer\'s working-draft peek shows the count').toBeTruthy()
-    expect(vh?.querySelector('[data-pendlist]'), '…but it is not the scheduler\'s button').toBeNull()
+    expect(vh?.querySelector('[data-pendlist]'), 'the working-draft peek: the count opens the window').toBeTruthy()
     await act(async () => { view.VWORK.clear(); view.setPage('editsched'); notify() })
     await act(async () => { view.setDayPreview(MON, SCHED.orig[MON].id); notify() })
     expect(monHead()?.querySelector('[data-pendlist]'), 'under a preview').toBeNull()
     await act(async () => { view.setDayPreview(MON, null); notify() })
-    await act(async () => { writeSlot('d:1.0.0', ''); notify() })       // Tuesday is a draft day
-    expect($(`#eWeek .day[data-day="1"] .day-head [data-pendlist]`), 'a draft day').toBeNull()
+    await act(async () => { writeSlot('d:1.0.0', ''); notify() })       // Tuesday is not yet published
+    const tue = $(`#eWeek .day[data-day="1"] .day-head`)
+    expect(tue?.querySelector('[data-pendlist]'), 'no "pending" on a day not yet published').toBeNull()
+    expect(tue?.querySelector('.dpend.dchg')?.textContent, '…its chip counts the changes').toMatch(/change/)
   })
 })
 
-describe('Edit history keeps him on the page he is on (D107, AM56)', () => {
-  it('from Edit Schedule a row goes to the change on the WEEK, marks it, and does not open the board', async () => {
-    await act(async () => { view.setHistMode(true); setHistList('all'); notify() })
-    const row = $$('#histBody [data-hkey]').find(b => b.dataset.hkey === `d:${MON}.0.2`)
-    expect(row, 'the OPS-O change is a button').toBeTruthy()
-    await click(row!)
+describe('the changes window keeps him on the page he is on (D107, AM56)', () => {
+  it('from Edit Schedule a line goes to the change on the WEEK, marks it, and does not open the board', async () => {
+    await click($('#histBtn'))
+    expect($('.chgwin:not([hidden])'), 'the icon opens the window').toBeTruthy()
+    await click($$('.chgwin .win-tab').find(b => /All changes/.test(b.textContent || ''))!)
+    await click($$('.chgwin .cw-day').find(b => b.textContent === 'Mon')!)
+    const line = $$('.chgwin .cw-l').find(b => /OPS-O/.test(b.textContent || ''))
+    expect(line, 'the OPS-O change is a line').toBeTruthy()
+    await click(line!)
     await settle()
     expect(view.SBDAY, 'the board did not open').toBeNull()
     expect($(`#eWeek .day[data-day="${MON}"] [data-slot="d:${MON}.0.2"]`)?.classList.contains('chgflash')).toBe(true)
-    await act(async () => { view.setHistMode(false); notify() })
+    await click($('.chgwin .win-x'))
   })
 })
 
