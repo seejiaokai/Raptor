@@ -149,13 +149,16 @@ describe('the bid sheet’s Clear names the award and asks once (D260)', () => {
     expect(screen.queryByTestId('bid-picker')).toBeNull()
   })
 
-  it('a MEMBER’s Clear on his own day asks nothing about an award and never takes it', () => {
+  /* A member's Delete never takes an award (D260) — and since D332 the one-day sheet draws Delete only where it would do
+     something (the house rule for a control that could not work), so on a day holding only the admin's award he is not
+     offered one at all: the award cannot be reached from his sheet. It was a Clear that did nothing. */
+  it('a MEMBER is offered no Delete on his own day holding only an award, and the award stays', () => {
     setManualCredit('ramp', '2026-01-06', 'FO', {})   // inside the bidding window: his tap opens the bid sheet
     act(() => { setRole('member'); setViewer('ramp') })
     render(<Matrix />)
     fireEvent.click(screen.getByTestId('cell-ramp-2026-01-06'))
-    fireEvent.click(screen.getByTestId('bid-clear'))
-    expect(screen.getByTestId('span-note').textContent).not.toContain('OIL award')
+    expect(screen.getByTestId('bid-picker')).toBeTruthy()
+    expect(screen.queryByTestId('bid-clear')).toBeNull()
     expect(awardOn('ramp', '2026-01-06')).toBeTruthy()
   })
 })

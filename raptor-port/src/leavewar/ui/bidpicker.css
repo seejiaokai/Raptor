@@ -283,6 +283,27 @@
   border: 1px solid var(--edge);
 }
 
+/* THE ONE MOVE LOOK — the grey chip above with a TEAL arrow before the word (owner, D330 / D334, 27 Sep 26: "Can move be
+   the same design and colour and be abit different"; option B of docs/mock/lw-move-standard.html §7). The same on every
+   sheet (SheetActions.tsx draws it); grey so it never reads as a chosen chip (those are teal-FILLED), the arrow in the
+   move mode's own teal — the colour of what it opens. `line-height: 1` keeps the glyph from making Move taller than
+   the Delete beside it. */
+.bidsheet .dchip.move .mvarr {
+  display: inline-block;
+  margin-right: 5px;
+  color: var(--accent);
+  font-weight: 800;
+  line-height: 1;
+}
+
+/* THE ONE DELETE LOOK — the word Delete in a dashed grey edge (owner, D332, 27 Sep 26), the one-day sheet's old Clear
+   look, never red: on the day's list it sits beside Refuse, and two red buttons side by side read as the same act. */
+.bidsheet .dchip.del {
+  background: var(--panel-2);
+  color: var(--ink-2);
+  border: 1px dashed var(--ink-3);
+}
+
 /* Post-out: a management action, not a bid — a muted grey chip set apart from
    the coloured bid/decision chips (owner, 18 Aug 26). The row gives it a top
    rule so it reads as a step below the bidding controls, not one of them. */
@@ -1202,6 +1223,11 @@
   background: rgba(178, 77, 234, .16);
   color: #D9A6F5;
   border-color: rgba(178, 77, 234, .5);
+}
+
+/* the list's Delete keeps the one dashed Delete look (D332) — the grey list chip above would otherwise draw it solid */
+.bidsheet .dl-acts .dchip.del {
+  border: 1px dashed var(--ink-3);
 }
 
 /* THE OIL READ-BACK — reason, given by, days (owner, 21 Sep 26). A hairline

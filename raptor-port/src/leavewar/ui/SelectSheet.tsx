@@ -7,9 +7,12 @@
 // Sections are CONTEXTUAL to role and stage, the same gates the single-cell
 // path uses: everyone fills while the war is open (admin any stage); medical
 // and PO are the admin's; Decide (Ack/Approve/Refuse) is the admin's once
-// bidding has closed. Delete and Move act on whatever editable bids the
-// selection holds; Delete takes the admin's OIL awards in it too, and names
-// them first (owner, D260, 27 Sep 26).
+// bidding has closed. Delete and Move act on whatever the selection holds that
+// this role may change — every RECORD, not each day's top one (D265): a bid
+// beside an OIL award moves alone; Delete takes the admin's OIL awards in it
+// too, and names them first (owner, D260, 27 Sep 26). Its rows follow the
+// one-day sheet's order and look (D264, D331): Decide, Selected (Move ·
+// Delete — SheetActions.tsx), How much, Which leave, PO.
 //
 // The negative-balance confirm the single sheet shows is deliberately NOT
 // carried here: it is per-person, and a block spanning ten people asking ten
@@ -20,7 +23,8 @@ import { useState } from 'react'
 import { formatCell, LEAVE_TYPES, type BidState, type Portion, type PostOutcome } from '../engine'
 import { OutcomeChips, outcomeLine } from './OutcomeChips'
 import '../../ui/postout.css'
-import { awardsIn, clearCells, movableCells, postingBlocked, setBidStates, setCells } from '../state/store'
+import { awardsIn, clearCells, deletableIn, movableCells, postingBlocked, setBidStates, setCells } from '../state/store'
+import { DeleteChip, MoveChip } from './SheetActions'
 import { awardsClause } from './awardwords'
 import { Sheet } from './Sheet'
 import { shortSpan } from './dates'
@@ -84,6 +88,9 @@ export function SelectSheet({
   // a purely-empty selection (Fill only) hides them, so Move never opens on
   // nothing to move (owner, 27 Aug 26).
   const hasBids = movableCells(sel.cells).length > 0
+  /* Delete only where it would change something (D332; the house rule for a control that could not work) — the same
+     gates the Delete itself runs (`deletableIn` mirrors `clearCells`) */
+  const canDelete = deletableIn(sel.cells) > 0
   /* THE AWARDS THE DELETE WILL TAKE (owner, D260, 27 Sep 26 — "B": it removes everything in the block, awards included,
      and the confirm names each award first). Read before anything goes, from the store's own question (`awardsIn` —
      the admin's awards; a member's Delete takes none). A block of awards alone now offers Delete too: it is not an
@@ -137,6 +144,32 @@ export function SelectSheet({
         <button className="x" data-testid="sel-cancel" onClick={onClose} aria-label="Cancel">✕</button>
       </div>
 
+      {/* ONE FORMAT AND LOOK FOR THE TWO SHEETS (owner, D264; his order, D331 "1 A"): the same rows in the same order as
+          the one-day sheet — what is already there first (Decide, then Selected: Move · Delete), then placing new leave
+          (How much, Which leave) — and the same two buttons for Move and Delete (SheetActions.tsx). The drag IS this
+          sheet's selection, so it has no How many (the one-day sheet's, D335). */}
+      {canDecide && (
+        <div className="bidsheet-row">
+          <span className="lab">Decide</span>
+          <button className="dchip ack" data-testid="sel-pending" onClick={() => decide('acknowledged')}>Ack</button>
+          <button className="dchip approve" data-testid="sel-approve" onClick={() => decide('approved')}>Approve</button>
+          <button className="dchip refuse" data-testid="sel-refuse" onClick={() => decide('refused')}>Refuse</button>
+        </div>
+      )}
+
+      {/* Move and Delete act on what the selection holds, so they show only where they would do something (a loose box
+          of empties is Fill-only). Move: every record in the box this role may move (D265 — a bid beside an OIL award
+          moves alone; the award, leave filed on the Inputs page, a medical stay, and the move banner says so); never an
+          award (D260). Delete: every day it would change (D332's one word) — confirms on a second tap, naming every award
+          it takes (D260). Move hands off to the matrix's ghost/tap-to-place mode. */}
+      {(hasBids || canDelete) && (
+        <div className="bidsheet-row">
+          <span className="lab">Selected</span>
+          {hasBids && <MoveChip testid="sel-move" onClick={() => { onClose(); onMove(sel) }} />}
+          {canDelete && <DeleteChip testid="sel-delete" armed={confirmDel} onClick={del} />}
+        </div>
+      )}
+
       {canFill && (
         <>
           <div className="bidsheet-row">
@@ -166,35 +199,12 @@ export function SelectSheet({
         </>
       )}
 
-      {canDecide && (
-        <div className="bidsheet-row">
-          <span className="lab">Decide</span>
-          <button className="dchip ack" data-testid="sel-pending" onClick={() => decide('acknowledged')}>Ack</button>
-          <button className="dchip approve" data-testid="sel-approve" onClick={() => decide('approved')}>Approve</button>
-          <button className="dchip refuse" data-testid="sel-refuse" onClick={() => decide('refused')}>Refuse</button>
-        </div>
-      )}
-
-      {/* Delete + Move act on the editable bids the selection holds, so they
-          show only when it holds one (a loose box of empties is Fill-only) —
-          Delete also when it holds an award (D260), Move never for one.
-          Delete confirms on a second tap, naming every award it takes; Move
-          hands off to the matrix's ghost/tap-to-place mode. */}
-      {(hasBids || awards.length > 0) && (
-        <div className="bidsheet-row">
-          <span className="lab">Selected</span>
-          <button className="dchip refuse" data-testid="sel-delete" onClick={del}>
-            {confirmDel ? 'Delete — sure?' : 'Delete'}
-          </button>
-          {hasBids && <button className="dchip" data-testid="sel-move" onClick={() => { onClose(); onMove(sel) }}>Move…</button>}
-        </div>
-      )}
-
       {/* PO only for a single person (posting several out from one drag is too
-          heavy an act for one tap; the PO flow picks its own date anyway) */}
+          heavy an act for one tap; the PO flow picks its own date anyway). "PO", as on the one-day sheet (the mock-up's
+          reading, uncorrected — D331). */}
       {onPostOut && nPeople === 1 && !poOpen && (
         <div className="bidsheet-row postout">
-          <button className="dchip po" data-testid="sel-postout" onClick={() => setPoOpen(true)}>Post out (PO)…</button>
+          <button className="dchip po" data-testid="sel-postout" title="Post out — their last day in the squadron" aria-label="Post out" onClick={() => setPoOpen(true)}>PO</button>
         </div>
       )}
       {onPostOut && nPeople === 1 && poOpen && (

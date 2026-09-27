@@ -3928,18 +3928,17 @@ function dayDiff(a: string, b: string): number {
   return Math.round((t(b) - t(a)) / 86400000)
 }
 
-/** Does this cell hold something THIS role may move? A request on a row this
- *  role owns, in an editable day — or, for an admin at the deciding stages, a
- *  war-approved leave (design §17 FB3-01). One body for the sheet, the anchor
- *  and the mover. */
-function isMovableSource(personId: string, date: string): boolean {
-  if (!canEditRow(state.role, state.viewer, personId)) return false
-  const m = mainAt(personId, date)
-  if (!m) return false
-  if (m.kind === 'request') return isBiddable(m.code) && canEditCell(state.period, state.role, date)
-  if (m.kind === 'absence') return canDecide(state.period.stage, state.role) && warEditable(personId, date)
-  return false
-}
+/* ---- A MOVE CARRIES THE RECORDS IT PICKED (owner, D265 / D266 / D333, 27 Sep 26 — [LW-MOVE-STANDARD]) ----------------
+
+   "For multiple records for those can be moved, u see my example 3rd and 4th picture, I couldn't see a move button for
+    vector."  Every grid move used to ask the day's TOP record (the ladder: leave, medical, OIL credit, course, bid…), so
+   a bid beneath an OIL award, beside leave filed on the Inputs page, or in the other half of a day holding approved leave
+   could be moved by no door — and a block over such a day moved the wrong thing or nothing. A move now carries RECORDS:
+   every record on the chosen days that this role may move (a block, a one-day sheet, a picked range), or exactly the one
+   the day's list picked by its id (D266). What cannot move — an award (D260), leave filed on the Inputs page, a medical,
+   a course, the schedule's own OIL, approved leave on a published war — stays where it is, and `stayingIn` names it
+   (the banner says what stays). The landing rules are the old ones (D265 (1)): refused whole, with where, when a moving
+   record cannot land. Scenarios: docs/superpowers/specs/2026-09-27-lw-move-standard-scenarios-fable.md. */
 
 /** Move ONE war-approved leave, by its Input id, to another date — the tap
  *  list's per-record Move (design §23.3; Codex AS4-006): on a day holding
@@ -3965,35 +3964,111 @@ export function moveAbsenceById(personId: string, date: string, iid: string, to:
   return done ? why(done) : null
 }
 
-/** The cells of a selection that actually hold something movable (owner,
- *  27 Aug 26 — the drag-move acts on the inputs PRESENT in the box). */
+/** One record a move carries: a request (the war's own) or a leave the war approved (an Input, by its iid). */
+export interface MoveRec { personId: string; date: string; id: string; kind: 'request' | 'absence' }
+
+/** The merged view of one address (what the grid draws from). */
+function viewAt(personId: string, date: string) {
+  const war = warHolding(getState().wars as MergedWar[], date) as MergedWar | undefined
+  return war?.views[personId]?.[date]
+}
+
+/* WHO MAY MOVE — ONE RULE, EVERY DOOR (D333: "a member gets Move on his own bid while bidding is open"). A request: on a
+   row this role may write, on a day it may write (a member: his own row, inside the bidding window, while bidding is
+   open — `canEditCell`; the admin: any row, any stage but draft's window rules as ever). A REFUSED request is a record
+   that can move too — it lands undecided, a move being a proposal (D262 (b); the mock-up's reading, uncorrected) — but
+   NOT while a live bid holds its half: it is history beside that bid, and moving the two together would land two live
+   bids on one half (Fable's S32). */
+function requestMovable(personId: string, date: string, r: RequestRec, list: readonly WarRec[]): boolean {
+  if (!canEditRow(state.role, state.viewer, personId)) return false
+  if (!isBiddable(r.code) || !canEditCell(state.period, state.role, date)) return false
+  if (r.state === 'refused' && liveRequestsOn(list, portionOfCode(r.code)).length) return false
+  return true
+}
+/* A leave the WAR approved: the admin at a deciding stage, never on a published war (finished paperwork — owner,
+   21 Sep 26); by its own iid, so a day holding it beside leave filed on the Inputs page still moves it (Fable's S10 —
+   the day's list always could, by id; the grid refused the whole day as "owned by Raptor"). The door checks the rest
+   (a locked week, the landing). */
+function absenceMovable(personId: string, date: string, iid: string): boolean {
+  if (!canEditRow(state.role, state.viewer, personId)) return false
+  if (!canDecide(state.period.stage, state.role) || getState().period.stage === 'published') return false
+  const a = viewAt(personId, date)?.all.find(c => c.kind === 'absence' && c.id === iid)
+  return !!a && !!a.lw && isLeaveCode(a.code)
+}
+
+/** Every record on these days this role may move — or, with `only`, just the ones named there (the day's list picks
+ *  one by its id, D266). In the cells' order; a day listed twice counts once. */
+export function movableRecords(
+  cells: readonly { personId: string; date: string }[],
+  only?: readonly { personId: string; date: string; id: string }[],
+): MoveRec[] {
+  const out: MoveRec[] = []
+  const seen = new Set<string>()
+  for (const { personId, date } of cells) {
+    const key = `${personId}|${date}`
+    if (seen.has(key)) continue
+    seen.add(key)
+    const list = listAt(personId, date)
+    for (const r of list) if (r.kind === 'request' && requestMovable(personId, date, r, list)) out.push({ personId, date, id: r.id, kind: 'request' })
+    for (const a of absencesAt(personId, date)) if (absenceMovable(personId, date, a.id)) out.push({ personId, date, id: a.id, kind: 'absence' })
+  }
+  if (!only) return out
+  return out.filter(m => only.some(o => o.personId === m.personId && o.date === m.date && o.id === m.id))
+}
+
+/** The cells of a selection that hold something this role may move (the loose-box rule, owner 27 Aug 26 — the empty
+ *  cells swept up around the inputs are dropped). Since D265 "something" is ANY record on the day, not its top one. */
 export function movableCells(cells: { personId: string; date: string }[]): { personId: string; date: string }[] {
-  return cells.filter(c => isMovableSource(c.personId, c.date))
+  const has = new Set(movableRecords(cells).map(m => `${m.personId}|${m.date}`))
+  return cells.filter(c => has.has(`${c.personId}|${c.date}`))
+}
+
+/** What a move leaves behind on its days, and says so (the mock-up's reading, uncorrected — D331: "in a block what can
+ *  move goes; what can't stays, and the banner says what stays"). Only the things a person put there and might expect to
+ *  travel: an OIL award, leave (filed on the Inputs page, or approved on a published war), a bid this role may not move.
+ *  A medical, a course, the schedule's own OIL and a notice are never a move's business and go unsaid. */
+export function stayingIn(
+  cells: readonly { personId: string; date: string }[], movers: readonly MoveRec[],
+): Array<{ personId: string; date: string; what: 'award' | 'filed' | 'approved' | 'bid' }> {
+  const moving = new Set(movers.map(m => `${m.personId}|${m.date}|${m.id}`))
+  const out: Array<{ personId: string; date: string; what: 'award' | 'filed' | 'approved' | 'bid' }> = []
+  const seen = new Set<string>()
+  for (const { personId, date } of cells) {
+    const key = `${personId}|${date}`
+    if (seen.has(key)) continue
+    seen.add(key)
+    for (const r of listAt(personId, date)) {
+      if (moving.has(`${key}|${r.id}`)) continue
+      if (r.kind === 'credit' && r.oil === 'manual') out.push({ personId, date, what: 'award' })
+      else if (r.kind === 'request' && r.state !== 'refused') out.push({ personId, date, what: 'bid' })
+    }
+    for (const a of absencesAt(personId, date)) {
+      if (moving.has(`${key}|${a.id}`) || !isLeaveCode(a.code)) continue
+      out.push({ personId, date, what: a.lw ? 'approved' : 'filed' })
+    }
+  }
+  return out
 }
 
 export type MoveResult = 'moved' | { reason: 'nothing' | 'raptor' | 'occupied' | 'window'; at?: string }
 
-/** The validation half of `moveCells`, held apart so the grid's landing
- *  preview asks the SAME rule the commit applies. Null when clear. */
-export function moveProblem(cells: { personId: string; date: string }[], dayDelta: number): Exclude<MoveResult, 'moved'> | null {
-  if (!dayDelta || cells.length === 0) return { reason: 'nothing' }
+/** The validation half of `moveRecords`, held apart so the grid's landing preview asks the SAME rule the commit
+ *  applies. Null when clear. Each record is asked again here (the store's own gate, not the caller's word). */
+export function moveRecordsProblem(recs: readonly MoveRec[], dayDelta: number): Exclude<MoveResult, 'moved'> | null {
+  if (!dayDelta || recs.length === 0) return { reason: 'nothing' }
   const dayset = new Set(state.period.days.map((d: any) => d.date))
   const reqs: Array<{ personId: string; date: string; rec: RequestRec }> = []
   const abs: Array<{ personId: string; date: string; iid: string }> = []
-  for (const c of cells) {
-    if (!canEditRow(state.role, state.viewer, c.personId)) return { reason: 'nothing', at: c.date }
-    const m = mainAt(c.personId, c.date)
-    if (!m) return { reason: 'nothing', at: c.date }
+  for (const m of recs) {
     if (m.kind === 'absence') {
-      if (!canDecide(state.period.stage, state.role) || !warEditable(c.personId, c.date)) return { reason: 'raptor', at: c.date }
-      abs.push({ ...c, iid: m.id })
+      if (!absenceMovable(m.personId, m.date, m.id)) return { reason: 'raptor', at: m.date }
+      abs.push({ personId: m.personId, date: m.date, iid: m.id })
       continue
     }
-    if (m.kind !== 'request' || !isBiddable(m.code)) return { reason: 'nothing', at: c.date }
-    if (!canEditCell(state.period, state.role, c.date)) return { reason: 'window', at: c.date }
-    const rec = listAt(c.personId, c.date).find((r): r is RequestRec => r.kind === 'request' && r.id === m.id)
-    if (!rec) return { reason: 'nothing', at: c.date }
-    reqs.push({ ...c, rec })
+    const list = listAt(m.personId, m.date)
+    const rec = list.find((r): r is RequestRec => r.kind === 'request' && r.id === m.id)
+    if (!rec || !requestMovable(m.personId, m.date, rec, list)) return { reason: 'nothing', at: m.date }
+    reqs.push({ personId: m.personId, date: m.date, rec })
   }
   const moving = new Set(reqs.map(r => r.rec))
   for (const r of reqs) {
@@ -4015,22 +4090,20 @@ export function moveProblem(cells: { personId: string; date: string }[], dayDelt
   return null
 }
 
-/** Move a whole SELECTION by a day-delta — the drag-select "Move" (owner,
- *  27 Aug 26). ATOMIC: validated first, then ONE gesture — requests re-placed
- *  pending (with the moved-from trail once bidding is closed), approved leave
- *  slid through the absence door — one envelope, one undo step. */
-export function moveCells(cells: { personId: string; date: string }[], dayDelta: number): MoveResult {
-  const problem = moveProblem(cells, dayDelta)
+/** Move these records by a day-delta — ATOMIC: validated first, then ONE gesture — requests re-placed undecided (with
+ *  the moved-from trail once bidding is closed), approved leave slid through the absence door — one envelope, one undo
+ *  step. Every door's move ends here: the drag-select's, the one-day sheet's, the day's list's. */
+export function moveRecords(recs: readonly MoveRec[], dayDelta: number): MoveResult {
+  const problem = moveRecordsProblem(recs, dayDelta)
   if (problem) return problem
   const tracked = biddingClosed(state.period.stage)
   gesture('lw.move', () => {
     const reqs: Array<{ personId: string; from: string; to: string; rec: RequestRec }> = []
     const abs: Array<{ personId: string; date: string; iid: string }> = []
-    for (const c of cells) {
-      const m = mainAt(c.personId, c.date)
-      if (m?.kind === 'absence') { abs.push({ ...c, iid: m.id }); continue }
-      const rec = listAt(c.personId, c.date).find((r): r is RequestRec => r.kind === 'request' && r.id === m?.id)
-      if (rec) reqs.push({ personId: c.personId, from: c.date, to: addDays(c.date, dayDelta), rec })
+    for (const m of recs) {
+      if (m.kind === 'absence') { abs.push({ personId: m.personId, date: m.date, iid: m.id }); continue }
+      const rec = listAt(m.personId, m.date).find((r): r is RequestRec => r.kind === 'request' && r.id === m.id)
+      if (rec) reqs.push({ personId: m.personId, from: m.date, to: addDays(m.date, dayDelta), rec })
     }
     const wasQuiet = quiet
     quiet = true
@@ -4051,6 +4124,51 @@ export function moveCells(cells: { personId: string; date: string }[], dayDelta:
     if (abs.length && DOOR) DOOR.moveApproved(abs, dayDelta, tracked, false)
   })
   return 'moved'
+}
+
+/* THE CELL-SHAPED DOORS, KEPT (every caller and test that moves "these days"): a day with nothing this role may move is
+   still refused with its reason — a leave the war does not own reads "owned by Raptor", anything else "nothing" — and
+   every other day contributes ALL its movable records (D265), where it used to contribute only its top one. */
+function cellsToRecords(cells: readonly { personId: string; date: string }[]): MoveRec[] | Exclude<MoveResult, 'moved'> {
+  const recs = movableRecords(cells)
+  for (const c of cells) {
+    if (recs.some(m => m.personId === c.personId && m.date === c.date)) continue
+    if (!canEditRow(state.role, state.viewer, c.personId)) return { reason: 'nothing', at: c.date }
+    const top = mainAt(c.personId, c.date)
+    return { reason: top?.kind === 'absence' ? 'raptor' : 'nothing', at: c.date }
+  }
+  return recs
+}
+
+/** The validation half of `moveCells` — the records on these days, asked as `moveRecordsProblem` asks them. */
+export function moveProblem(cells: { personId: string; date: string }[], dayDelta: number): Exclude<MoveResult, 'moved'> | null {
+  if (!dayDelta || cells.length === 0) return { reason: 'nothing' }
+  const recs = cellsToRecords(cells)
+  return Array.isArray(recs) ? moveRecordsProblem(recs, dayDelta) : recs
+}
+
+/** Move a whole SELECTION by a day-delta — the drag-select "Move" (owner, 27 Aug 26): every record on its days this role
+ *  may move (D265), atomic, one undo step. */
+export function moveCells(cells: { personId: string; date: string }[], dayDelta: number): MoveResult {
+  if (!dayDelta || cells.length === 0) return { reason: 'nothing' }
+  const recs = cellsToRecords(cells)
+  return Array.isArray(recs) ? moveRecords(recs, dayDelta) : recs
+}
+
+/** WHAT A DELETE OF THESE DAYS WOULD CHANGE — the number of days on which `clearCells` would take something, asked
+ *  without writing (D332 with the house rule "offer only what can be taken": the sheets draw Delete only where it would
+ *  do something). The same gates `clearCells` runs: a request or — for the admin — an award on a day this role may
+ *  write; a leave the war approved that the admin may remove (never on a published war). */
+export function deletableIn(cells: readonly { personId: string; date: string }[]): number {
+  let n = 0
+  for (const { personId, date } of cells) {
+    if (!warHolding(state.wars, date)) continue
+    const writable = canEditCell(state.period, state.role, date) && canEditRow(state.role, state.viewer, personId)
+    const own = writable && listAt(personId, date).some(r => r.kind === 'request' || isAward(r))
+    const approved = state.role === 'admin' && canDecide(state.period.stage, state.role) && warEditable(personId, date)
+    if (own || approved) n++
+  }
+  return n
 }
 
 /**

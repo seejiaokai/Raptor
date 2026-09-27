@@ -82,8 +82,10 @@ describe('a half filed on the Inputs page leaves the other half biddable', () =>
     // The morning is not on offer at all, so the sheet cannot be used to
     // overwrite it; and the store still refuses one if asked directly.
     expect(screen.queryByTestId('portion-am')).toBeNull()
+    /* nor is Delete (the old Clear, D332): it is drawn only where a Delete would change something, and leave filed on
+       the Inputs page is changed there; the store refuses it too (`clearCells` leaves it — inputgate.test.ts) */
     const before = JSON.stringify(getState().views[P]?.[D]?.all)
-    fireEvent.click(screen.getByTestId('bid-clear'))
+    expect(screen.queryByTestId('bid-clear')).toBeNull()
     expect(JSON.stringify(getState().views[P]?.[D]?.all)).toBe(before)
   })
 

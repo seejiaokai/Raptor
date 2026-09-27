@@ -945,3 +945,18 @@ resolved statuses always carry their resolution date
 **Suggested improvement:** When a merge leaves a tier-0 file over its ceiling "deferred", file the docs-only tidy as its own backlog item with an owner and a place in the order at once, and say in the handoff that every docs-only PR is blocked until it lands. In the mock-up recipe: push the mock-up branch without a PR while the gate is red for a file the mock-up did not grow; open the PR with the first code commit.
 
 **Principle:** A deferral that is legal on one change becomes a blocker for the next change of a different kind; whoever defers must file the debt where the next writer will meet it.
+
+### Observation 311: A scripted "replace everything between two anchors" edit silently deleted a function that lived between them
+
+**Status:** OPEN
+**Date:** 2026-09-27
+**Session context:** `[LW-MOVE-STANDARD]`, rewriting the Leave War store's move functions by a script that swapped the text from one comment to the next anchor (the file is CRLF, so the Edit tool was avoided). Numbered in this chat's agreed range (310–319).
+**Skill:** internal — memory `python-edits-crlf-trap` (the scripted-edit recipe)
+**Type:** internal
+**Phase/Area:** scripted edits of large source files
+
+**Issue:** The span chosen ran from the first move function's comment to a later, unrelated function — and a door that still had callers (`moveAbsenceById`) sat inside it. The new text did not carry it, the typecheck passed (its callers were only tests and a component being rewritten), and only the older test files that call it caught the loss. Separately, Bash heredocs holding TSX (backticks, `${…}`, unbalanced apostrophes) failed to parse through the tool twice; writing the script with the Write tool and running it worked every time.
+
+**Suggested improvement:** Before a span replacement, list every top-level declaration inside the old span (`grep -n "^export function\|^function\|^const\|^export type" <span>`) and check each is in the new text or deliberately retired, in the edit script itself (assert). Put multi-line code edits in a script file written with the Write tool, never in a heredoc.
+
+**Principle:** A span edit replaces everything in the span, including what you did not mean to touch; enumerate what the span held before you replace it.

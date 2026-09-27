@@ -295,10 +295,14 @@ describe('the counter follows the leave just entered — to the balance it comes
     expect(screen.queryByTestId('counter-off')).toBeNull()
   })
 
-  it('clearing a cell moves nothing', () => {
+  /* Delete (the old Clear, D332) is drawn only where there is something to delete, so the day holds a bid first — one
+     placed off the sheet, which snaps no column — and Deleting it leaves the column where it was. */
+  it('deleting a cell moves nothing', () => {
+    setCell('dusk', '2026-02-11', 'EL')
     render(<Matrix />)
     fireEvent.click(screen.getByTestId('cell-dusk-2026-02-11'))
     fireEvent.click(screen.getByTestId('bid-clear'))
+    expect(getState().grid.dusk?.['2026-02-11']).toBeFalsy()
     expect(screen.getByTestId('counter-name').textContent).toBe('+LVE')
   })
 
