@@ -1,0 +1,7 @@
+touch-action pan-y / cell auto
+SWIPE month after: August 2026
+SWIPE events: pointermove:mouse@586.ic-day | pointerdown:mouse@586.ic-day | pointermove:mouse@567.ic-day | pointerup:mouse@436.ic-day
+POP {"open":true,"label":"10 Jul details","rows":[]}
+TAP dialog now: {"open":true,"title":"Grit · Jul 13 → Jul 17","person":"sufa","type":"ATT C","hint":"The dates are changed on the Inputs page."}
+TAP events: pointermove:mouse@29.ic-chip | pointerdown:mouse@29.ic-chip | pointerup:mouse@29.ic-chip | DIALOG open | click:mouse@28.ic-chip
+errors []

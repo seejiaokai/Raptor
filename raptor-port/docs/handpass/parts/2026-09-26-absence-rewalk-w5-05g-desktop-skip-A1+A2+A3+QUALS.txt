@@ -1,0 +1,17 @@
+NOTE  [RW-W5-05g-desktop-skip-A1+A2+A3+QUALS] SKIPPED — A-postout-then-file
+NOTE  [RW-W5-05g-desktop-skip-A1+A2+A3+QUALS] SKIPPED — A-hatched-day-door
+NOTE  [RW-W5-05g-desktop-skip-A1+A2+A3+QUALS] SKIPPED — A-undos
+PASS  [RW-W5-05g-desktop-skip-A1+A2+A3+QUALS] B-same-final — expected: filed first, then posted out: the same final day as the other order — LL with the PO tag, still charged (−2) | observed: {"run":["09-10:LL PO{PO}","09-11:LL PO{PO}","09-14:PO"],"lve":[8,6,6]}
+NOTE  [RW-W5-05g-desktop-skip-A1+A2+A3+QUALS] B-manning — {"before":{"sets":"18","ip":"16","iwso":"7","instr":"23","opsp":"12","opsw":"11","flp":"19","wmp":"9","sxo":"12","scd":"7.7","scn":"4.5"},"afterLeave":{"sets":"18","ip":"16","iwso":"7","instr":"23","opsp":"11","opsw":"11","flp":"19","wmp":"8","sxo":"12","scd":"7.5","scn":"4.5"},"afterPO":{"sets":"18","ip":"16","iwso":"7","instr":"23","opsp":"11","opsw":"11","flp":"19","wmp":"8","sxo":"12","scd":"7.5","scn":"4.5"}}
+PASS  [RW-W5-05g-desktop-skip-A1+A2+A3+QUALS] B-manning-once — expected: manning: the leave took him off; the posting takes nothing more (never below zero, never twice) | observed: {"afterLeave":{"sets":"18","ip":"16","iwso":"7","instr":"23","opsp":"11","opsw":"11","flp":"19","wmp":"8","sxo":"12","scd":"7.5","scn":"4.5"},"afterPO":{"sets":"18","ip":"16","iwso":"7","instr":"23","opsp":"11","opsw":"11","flp":"19","wmp":"8","sxo":"12","scd":"7.5","scn":"4.5"}}
+PASS  [RW-W5-05g-desktop-skip-A1+A2+A3+QUALS] B-reload — expected: a reload keeps the leave, the PO tag and the charge | observed: {"rl":{"askedToSignIn":true},"B":["09-10:LL PO{PO}","09-11:LL PO{PO}","09-14:PO"],"A":["09-10:·","09-11:·","09-14:·"]}
+PASS  [RW-W5-05g-desktop-skip-A1+A2+A3+QUALS] A-after-reload — expected: after a reload Cobra (posting undone) is still on the war with his leave, and on the Quals roster (W5-F1 survives no reload) | observed: {"A":["09-10:·","09-11:·","09-14:·"],"quals":{"onRoster":true,"inArchive":false,"skipped":true}}
+NOTE  [RW-W5-05g-desktop-skip-A1+A2+A3+QUALS] P-diag-P1-start — {"id":"slipway","row":["07-13:·","07-14:·","07-15:·","07-17:·"],"archived":false}
+NOTE  [RW-W5-05g-desktop-skip-A1+A2+A3+QUALS] P-diag-P2-start — {"id":"dj","row":["07-13:·","07-14:·","07-15:·","07-17:·"],"archived":false}
+NOTE  [RW-W5-05g-desktop-skip-A1+A2+A3+QUALS] P-diag-P1-after-file — {"id":"slipway","row":["07-13:·","07-14:·","07-15:·","07-17:LL"],"archived":false}
+NOTE  [RW-W5-05g-desktop-skip-A1+A2+A3+QUALS] P-diag-P1-after-po — {"id":"slipway","row":["07-13:NO CELL","07-14:NO CELL","07-15:NO CELL","07-17:NO CELL"],"archived":true}
+NOTE  [RW-W5-05g-desktop-skip-A1+A2+A3+QUALS] P-diag-P2-after-po — {"id":"dj","row":["07-13:NO CELL","07-14:NO CELL","07-15:NO CELL","07-17:NO CELL"],"archived":true}
+NOTE  [RW-W5-05g-desktop-skip-A1+A2+A3+QUALS] P-diag-P2-after-file — {"id":"dj","row":["07-13:NO CELL","07-14:NO CELL","07-15:NO CELL","07-17:NO CELL"],"archived":true}
+NOTE  [RW-W5-05g-desktop-skip-A1+A2+A3+QUALS] P-counts — {"fileThenPO":[1,1],"poThenFile":[1,2],"P1":["07-17:NO CELL"],"P2":["07-17:NO CELL"],"face":["ATT C:sufa","OD:pike"],"work":["LL:dj","LL:slipway","ATT C:sufa","OD:pike"]}
+FAIL  [RW-W5-05g-desktop-skip-A1+A2+A3+QUALS] P-same-both-orders — expected: on published Friday the two orders end alike: both men's leave held with the PO tag, each late leave reads pending (2 in all), the posting itself adds nothing pending | observed: {"P1":["07-17:NO CELL"],"P2":["07-17:NO CELL"],"n":[1,1,1,2]}
+NOTE  [RW-W5-05g-desktop-skip-A1+A2+A3+QUALS] errors — []

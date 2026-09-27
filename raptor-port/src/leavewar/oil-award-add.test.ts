@@ -569,3 +569,18 @@ describe('a taken-over record whose snapshot is damaged', () => {
     expect(list.find(r => r.kind === 'credit' && r.oil === 'manual')).toBeDefined()
   })
 })
+
+/* AN AWARD'S CODE FOLLOWS ITS DAYS WHEREVER THE DAYS ARE CHANGED (the absence-record re-test, W3-F6, 26 Sep 26 — found
+   by the war walker). N19: the quantity is the fact, the code a label that follows it — under a day reads HO, a day
+   or more FO. The +OIL panel derived it; an edit of the days (the OIL tracker, the tap list's Edit…) did not, so a
+   2-day award still read HO on the grid and a half-day award FO. */
+describe('editing an award’s days re-derives its code (N19)', () => {
+  it('HO for half a day becomes FO at two days, and back to HO at half', () => {
+    expect(setManualCredit(P, TUE, 'HO', { days: 0.5 })).toBe(null)
+    const id = awardOn(P, TUE)!.id
+    expect(editManualCredit(P, TUE, id, { days: 2 })).toBe(null)
+    expect(awardOn(P, TUE)!.code).toBe('FO')
+    expect(editManualCredit(P, TUE, id, { days: 0.5 })).toBe(null)
+    expect(awardOn(P, TUE)!.code).toBe('HO')
+  })
+})

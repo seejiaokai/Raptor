@@ -1,0 +1,14 @@
+NOTE  [RW-W5-06d-desktop] setup — {"bidPM":true,"po":{"done":true,"archiveDefault":true,"said":""}}
+PASS  [RW-W5-06d-desktop] bid-sheet-tab-held — expected: bid-picker: Tab / Shift+Tab (40 each) stay in the sheet | observed: {"outside":[],"visited":["bid-cancel@sheet","span-one@sheet","span-range@sheet","portion-full@sheet","portion-am@sheet","portion-pm@sheet","bid-LL@sheet","bid-OL@sheet","bid-OIL@sheet","bid-CCL@sheet","bid-FCL@sheet","bid-PL@sheet"]}
+PASS  [RW-W5-06d-desktop] bid-sheet-switch-closes — expected: bid-picker: a war switch closes it | observed: {"war":"JAN - DEC 27","after":"nothing"}
+PASS  [RW-W5-06d-desktop] read-only-tab-held — expected: raptor-sheet: Tab / Shift+Tab (40 each) stay in the sheet | observed: {"outside":[],"visited":["bid-cancel@sheet"]}
+PASS  [RW-W5-06d-desktop] read-only-switch-closes — expected: raptor-sheet: a war switch closes it | observed: {"war":"JAN - DEC 27","after":"nothing"}
+PASS  [RW-W5-06d-desktop] tap-list-tab-held — expected: daylist-sheet: Tab / Shift+Tab (40 each) stay in the sheet | observed: {"outside":[],"visited":["daylist-close@sheet","dl-approve-rmuijhbtw13wz0@sheet","dl-ack-rmuijhbtw13wz0@sheet","dl-refuse-rmuijhbtw13wz0@sheet","dl-clear-rmuijhbtw13wz0@sheet"]}
+PASS  [RW-W5-06d-desktop] tap-list-switch-closes — expected: daylist-sheet: a war switch closes it | observed: {"war":"JAN - DEC 27","after":"nothing"}
+PASS  [RW-W5-06d-desktop] posting-tab-held — expected: postout-sheet: Tab / Shift+Tab (40 each) stay in the sheet | observed: {"outside":[],"visited":["postout-cancel@sheet","postout-date@sheet","postout-archive@sheet","postout-undo@sheet","postout-place@sheet"]}
+PASS  [RW-W5-06d-desktop] posting-switch-closes — expected: postout-sheet: a war switch closes it | observed: {"war":"JAN - DEC 27","after":"nothing"}
+PASS  [RW-W5-06d-desktop] event-tab-held — expected: event-sheet: Tab / Shift+Tab (40 each) stay in the sheet | observed: {"outside":[],"visited":["event-quick-0@sheet","event-quick-1@sheet","event-quick-2@sheet","event-quick-3@sheet","event-tag-off@sheet","event-tag-free@sheet","event-tag-nolv@sheet","event-tag-work@sheet","event-scope-day@sheet","event-scope-range@sheet","event-apply@sheet","event-edit-types@sheet"]}
+PASS  [RW-W5-06d-desktop] event-switch-closes — expected: event-sheet: a war switch closes it | observed: {"war":"JAN - DEC 27","after":"nothing"}
+PASS  [RW-W5-06d-desktop] selection-tab-held — expected: select-sheet: Tab / Shift+Tab (40 each) stay in the sheet | observed: {"outside":[],"visited":["sel-cancel@sheet","sel-portion-full@sheet","sel-portion-am@sheet","sel-portion-pm@sheet","sel-LL@sheet","sel-OL@sheet","sel-OIL@sheet","sel-CCL@sheet","sel-FCL@sheet","sel-PL@sheet","sel-EL@sheet","sel-CL@sheet"]}
+PASS  [RW-W5-06d-desktop] selection-switch-closes — expected: select-sheet: a war switch closes it | observed: {"war":"JAN - DEC 27","after":"nothing"}
+NOTE  [RW-W5-06d-desktop] errors — []

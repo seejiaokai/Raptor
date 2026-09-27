@@ -17,6 +17,9 @@ import { beforeEach, describe, expect, it } from 'vitest'
 import { getState, initStore, setRole, setViewer } from '../state/store'
 import { memoryBackend } from '../state/storage'
 import { fileAbsence } from '../testkit'
+import { INPUTS } from '../../engine/inputs'
+import { syncAbsences } from '../sync'
+import { cellProblem } from '../state/store'
 import { Matrix } from './Matrix'
 
 const P = 'slammed'
@@ -92,5 +95,48 @@ describe('a half filed on the Inputs page leaves the other half biddable', () =>
     fireEvent.click(screen.getByTestId(`cell-${P}-${D}`))
     expect(screen.getByTestId('portion-pm')).toBeTruthy()
     expect(screen.queryByTestId('portion-am')).toBeNull()
+  })
+})
+
+/* A MEDICAL'S REAL HOURS DECIDE WHAT IS FREE (the absence-record re-test, W5-F4, 26 Sep 26 — found by the orders
+   walker). An ATT C recorded 09:00–14:00 is DRAWN as a morning (the six-hour rule), so the sheet offered the afternoon
+   as the free half — and then refused the bid it offered, by the real hours (§7: real hours decide every clash), with
+   "That day is already ATT C". The free half is now read off the same real hours the refusal reads, so a half is
+   offered only when it can be taken; and the refusal, wherever it is still reached, gives the medical's hours. */
+describe('beside a medical recorded with hours', () => {
+  const plantMed = (s: number, e: number) => {
+    INPUTS.unshift({ iid: `m${s}`, person: P, type: 'ATT C', date: 'Feb 10', yr: 2026, allday: false, s, e, remarks: '', mod: '2026-01-01' })
+    syncAbsences()
+  }
+  it('09:00–14:00 runs into the afternoon: no half is offered — the tap reads the day, it does not bid', () => {
+    plantMed(540, 840)
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId(`cell-${P}-${D}`))
+    expect(screen.queryByTestId('bid-picker')).toBeNull()
+    expect(screen.getByTestId('raptor-sheet')).toBeTruthy()
+  })
+  it('08:00–11:00 leaves the afternoon free, and the afternoon bid lands', () => {
+    plantMed(480, 660)
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId(`cell-${P}-${D}`))
+    expect(screen.getByTestId('bid-picker')).toBeTruthy()
+    expect(screen.queryByTestId('portion-full')).toBeNull()
+  })
+  it('a bid refused by the medical names its hours', () => {
+    plantMed(540, 840)
+    expect(cellProblem(P, D, 'LL*')).toMatch(/ATT C runs 09:00–14:00 that day — leave can.t go over a medical/)
+  })
+})
+
+/* THE SHEET'S "NOW" SAYS WHAT THE BOX SAYS (the absence-record re-test, W5-F5, 26 Sep 26): the box and the chips read a
+   morning as "<LL"; the sheet's heading printed the stored notation, "now *LL". */
+describe('the bid sheet heading', () => {
+  it('reads the day the way its box does', () => {
+    fileMorning()
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId(`cell-${P}-${D}`))
+    const cur = screen.getByTestId('bid-picker').querySelector('.cur')!.textContent || ''
+    expect(cur).toContain('<LL')
+    expect(cur).not.toContain('*')
   })
 })

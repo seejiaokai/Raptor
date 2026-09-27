@@ -6,6 +6,7 @@ import { INPUTS } from '../../engine/inputs'
 import { advanceStage, ingestDutyCredit, initStore, lwEditLists, rawState, setCell, setManualCredit, setPostOut, setRole, setViewer } from '../state/store'
 import { memoryBackend } from '../state/storage'
 import { fileAbsence } from '../testkit'
+import { syncAbsences } from '../sync'
 import { Matrix } from './Matrix'
 
 beforeEach(() => { initStore(memoryBackend()) })
@@ -204,5 +205,38 @@ describe('the OIL detail blocks on a day holding both (N16, 21 Sep 26)', () => {
     setRole('member'); setViewer(P)
     open()
     expect(screen.queryByText('Edit…')).toBeNull()
+  })
+})
+
+/* A CLASH RAISED BY LAST NIGHT'S LEAVE IS LISTED WHERE IT AMBERS (the absence-record re-test, AB6, 26 Sep 26): an
+   overnight leave's tail met a published Saturday's early duty — the Saturday went amber and its list said "two of
+   these can't both stand" over the OIL credit alone. The tail is now its own read-only line. */
+describe('the tail of an overnight leave, on the morning it clashes', () => {
+  it('is named in the tap list, with when it runs till', () => {
+    INPUTS.unshift({ iid: 'ovn1', person: P, type: 'LL', date: 'Feb 13', yr: 2026, allday: false, s: 20 * 60, e: 6 * 60, remarks: '', mod: '2026-01-01' })
+    syncAbsences()
+    setRole('admin')
+    ingestDutyCredit(P, '2026-02-14', 'FO', 'Duty', [[300, 720]])
+    render(<Matrix />)
+    expect(screen.getByTestId(`mark-${P}-2026-02-14`).textContent).toBe('!')
+    fireEvent.click(screen.getByTestId(`cell-${P}-2026-02-14`))
+    expect(screen.getByTestId('daylist').textContent).toMatch(/LL — local leave, from the day before till 06:00/)
+  })
+})
+
+/* A NOON LEAVE IS PRINTED AS FILED (the absence-record re-test, W1-F4, 26 Sep 26 — found by the calendar walker). N1:
+   a window starting at exactly 12:00 is the AFTERNOON — the engine starts it at 12:01 so it cannot touch the morning.
+   That minute decides the HALF; it is not the time the man filed, and the list printed "12:01–14:00" where the Inputs
+   page says 12:00–14:00. */
+describe('a leave filed from 12:00', () => {
+  it('reads 12:00 in the tap list, as on the Inputs page — and is still the afternoon', () => {
+    INPUTS.unshift({ iid: 'noon1', person: P, type: 'LL', date: 'Feb 11', yr: 2026, allday: false, s: 720, e: 840, remarks: '', mod: '2026-01-01' })
+    INPUTS.unshift({ iid: 'am1', person: P, type: 'OL', date: 'Feb 11', yr: 2026, allday: false, s: 480, e: 600, remarks: '', mod: '2026-01-01' })
+    syncAbsences()
+    render(<Matrix />)
+    fireEvent.click(cell())
+    const text = screen.getByTestId('daylist').textContent || ''
+    expect(text).toContain('12:00–14:00')
+    expect(text).not.toContain('12:01')
   })
 })

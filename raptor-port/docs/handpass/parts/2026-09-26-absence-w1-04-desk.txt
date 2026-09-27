@@ -1,0 +1,28 @@
+NOTE  [W1-04-desk] cast — {"X":"Vandal","free":["split"],"filed":1,"iid":"imuiblz1jb7tz2s"}
+PASS  [W1-04-desk] setup-published — expected: Friday published and signed: 0 pending everywhere, the four signed | observed: {"pub":{"pressed":true,"label":"Publish day"},"bad":"","signs":["Ace","Anvil","Anvil","Anvil"]}
+PASS  [W1-04-desk] setup-face — expected: the published face lists Nomad (OD) and not X | observed: ["ATT C:sufa","OD:pike"]
+PASS  [W1-04-desk] ON-moved — expected: the leave lands on Fri 17 Jul | observed: {"days":["2026-07-17"],"t":["Moved to 17 Jul"]}
+PASS  [W1-04-desk] ON-pending — expected: "1 pending" on every count (week head, board, both ⓘ, the Amendments panel) (D177/D178) | observed: {"bad":"","c":{"week":"1 pending","board":"1 pending","infoWeek":"1 unpublished edit","infoBoard":"1 unpublished edit","panel":"Fri · 1 change · 1 input change"}}
+PASS  [W1-04-desk] ON-signs-fell — expected: the four sign-offs fall (D103) | observed: ["— name —","— name —","— name —","— name —"]
+PASS  [W1-04-desk] ON-face-frozen — expected: View-only Sched keeps the Unavailable list it went out with (X not on it) | observed: ["ATT C:sufa","OD:pike"]
+PASS  [W1-04-desk] ON-working-copy — expected: the working copy shows X as Unavailable | observed: ["LL:split","ATT C:sufa","OD:pike"]
+PASS  [W1-04-desk] ON-undo — expected: undo: the leave back on 20 Jul, Friday 0 pending | observed: {"u":{"label":"Undo — a batch of inputs","pressed":true},"days":["2026-07-20"],"c":{"week":0,"board":0,"infoWeek":0,"infoBoard":0,"panel":0}}
+PASS  [W1-04-desk] ON-undo-signs-back — expected: the four sign-offs come back (AM11: back to what was signed) | observed: ["Ace","Anvil","Anvil","Anvil"]
+PASS  [W1-04-desk] ON-redo — expected: redo: 1 pending again, the sign-offs down | observed: {"r":{"label":"Redo — a batch of inputs","pressed":true},"n":{"week":1,"board":1,"infoWeek":1,"infoBoard":1,"panel":1},"signs":["— name —","— name —","— name —","— name —"]}
+PASS  [W1-04-desk] ON-reload — expected: a reload keeps it: 1 pending, sign-offs down, the face still without X | observed: {"n":{"week":1,"board":1,"infoWeek":1,"infoBoard":1,"panel":1},"signs":["— name —","— name —","— name —","— name —"],"face":["ATT C:sufa","OD:pike"]}
+PASS  [W1-04-desk] BACK-zero — expected: dragged back to 20 Jul: Friday reads 0 on every count (D98) | observed: {"days":["2026-07-20"],"bad":"","n":{"week":0,"board":0,"infoWeek":0,"infoBoard":0,"panel":0}}
+PASS  [W1-04-desk] BACK-signs — expected: the four sign-offs return (AM11) | observed: ["Ace","Anvil","Anvil","Anvil"]
+PASS  [W1-04-desk] OFF-moved — expected: the OD grabbed on Fri 17 and dropped on Fri 24 slides a week (22-24 Jul) | observed: {"days":["2026-07-22","2026-07-23","2026-07-24"],"t":["Moved to 22 Jul"]}
+PASS  [W1-04-desk] OFF-pending — expected: Friday reads 1 pending, the sign-offs fall | observed: {"n":{"week":1,"board":1,"infoWeek":1,"infoBoard":1,"panel":1},"signs":["— name —","— name —","— name —","— name —"]}
+PASS  [W1-04-desk] OFF-face-keeps — expected: the face still lists Nomad (as issued); the working copy no longer does | observed: {"face":["ATT C:sufa","OD:pike"],"work":["ATT C:sufa"]}
+PASS  [W1-04-desk] OFF-reload — expected: after a reload still 1 pending | observed: {"week":1,"board":1,"infoWeek":1,"infoBoard":1,"panel":1}
+PASS  [W1-04-desk] OFF-back-zero — expected: dragged back: 15-17 Jul, Friday 0 pending, signed again | observed: {"back":["2026-07-15","2026-07-16","2026-07-17"],"g2":{"dragged":true,"inFlight":{"ghosts":1,"lit":["2026-07-17"],"dragging":true},"after":{"ghosts":0,"lit":[],"dragging":false}},"n":{"week":0,"board":0,"infoWeek":0,"infoBoard":0,"panel":0},"signs":["Ace","Anvil","Anvil","Anvil"]}
+NOTE  [W1-04-desk] N4W-setup — {"duty":["plasma"],"W":"Fable","pub":{"pressed":true,"label":"Publish day"},"before":{"box":"FO*","mark":"","title":"","cls":"c sc raptor"}}
+PASS  [W1-04-desk] N4W-credit-landed — expected: the published Saturday credits the duty man OIL (FO/HO on the war) | observed: {"box":"FO*","mark":"","title":"","cls":"c sc raptor"}
+PASS  [W1-04-desk] N4W-filed — expected: the leave lands on the worked Saturday — filed, not refused (N4) | observed: {"days":["2026-07-18"]}
+PASS  [W1-04-desk] N4W-told — expected: the filer is told in the same breath that he is recorded working that day (amber toast) | observed: ["Fable is recorded as working 08:00–18:00 on 18 Jul — this LL is filed anyway and flagged for someone to resolve","Moved to 18 Jul"]
+PASS  [W1-04-desk] N4W-amber — expected: the war marks the Saturday amber (!) — leave over recorded work | observed: {"cell":{"box":"LL","mark":"!","title":"","cls":"c appr raptor"},"lines":["LL — local leave · filed on the Inputs page Change it on the Inputs page.","FO — OIL earned (Duty), worked 08:00–18:00 · given by Weekend/PH From the published schedule."]}
+NOTE  [W1-04-desk] N4W-sat-counts — {"n":{"week":1,"board":1,"infoWeek":1,"infoBoard":1,"panel":1},"signs":["— name —","— name —","— name —","— name —"]}
+PASS  [W1-04-desk] N4W-undo — expected: one undo: the leave off the Saturday, the amber gone, the credit still there | observed: {"u":{"label":"Undo — a batch of inputs","pressed":true},"cell2":{"box":"FO*","mark":"","title":"","cls":"c sc raptor"}}
+NOTE  [W1-04-desk] toasts-left — ["Undid: a batch of inputs"]
+PASS  [W1-04-desk] console-errors — expected: no console / page errors / 4xx | observed: []

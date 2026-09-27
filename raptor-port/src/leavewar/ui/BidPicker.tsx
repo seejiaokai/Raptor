@@ -15,11 +15,12 @@
 
 import { useState } from 'react'
 import { addDays, displayCell, formatCell, LEAVE_TYPES, type BidState, type CounterName, type Portion } from '../engine'
-import { cellProblem, clearCells, MAX_GIVEN_BY, setBidState, setBidStates, setCell, setCellRange, shiftBid } from '../state/store'
+import { awardsIn, cellProblem, clearCells, MAX_GIVEN_BY, setBidStates, setCell, setCellRange } from '../state/store'
 import { MAX_REC_NOTE } from '../engine/warrecs'
 import { RangePicker, type Range } from './RangePicker'
 import { Sheet } from './Sheet'
 import { shortSpan } from './dates'
+import { awardDays, awardsClause } from './awardwords'
 import './bidpicker.css'
 import './oiltracker.css'
 import { creditWorthText } from '../engine/credit'
@@ -55,6 +56,7 @@ export function BidPicker({
   credit,
   creditShown,
   decide,
+  onMove,
   onCreditClear,
   onlyPortion,
   heldBy,
@@ -79,12 +81,12 @@ export function BidPicker({
    *  — any date, not just the tapped day, and the "Archive on PO date"
    *  switch). Present only for an admin; the matrix wires it to the store and
    *  closes the sheet. A member never sees the control. */
-  onPostOut?: (fromDate: string, archive: boolean) => void
+  onPostOut?: (fromDate: string, archive: boolean) => string | void
   /** Admin-only: post this person IN from a date (owner, 20 Sep 26 — "we need
    *  a post in button just like post out"). The mirror of `onPostOut`: it sets
    *  the first day they ARE here, where the post-out sets the first day they
    *  are gone. Present only for an admin, same as its twin. */
-  onPostIn?: (date: string) => void
+  onPostIn?: (date: string) => string | void
   /** Item D (CURRENT-STATE, 20 Sep 26): the only half of this day that is
    *  free, when the other is held by a record locked to the Inputs page. The
    *  "How much" row then offers that half alone — the whole day and the held
@@ -118,6 +120,9 @@ export function BidPicker({
    *  once bidding had closed, so the same input answered to different controls
    *  depending on which day of the cycle you clicked it. */
   decide?: { state?: BidState; movedFrom?: string } | null
+  /** Pick this day's input up into the grid's move mode (D262) — the matrix closes the sheet and carries it. Returns
+   *  why it could not, for the sheet to say. */
+  onMove?: () => string | void
   /** Take the granted OIL off this day. */
   onCreditClear?: () => void
   onlyPortion?: Portion | null
@@ -153,6 +158,8 @@ export function BidPicker({
   // something a person LEAVES the roster into.
   const [piOpen, setPiOpen] = useState(false)
   const [piDate, setPiDate] = useState(date)
+  /* a refused posting's reason (AB5): the callbacks return it; the sheet stays open and says it */
+  const [postErr, setPostErr] = useState('')
   // The OIL-earned controls, folded behind one button like the two posting
   // ones. Folding matters more here than there: this sheet's other rows all
   // place LEAVE, and a credit is the opposite fact — the man was at work.
@@ -187,9 +194,7 @@ export function BidPicker({
   const [oilDays, setOilDays] = useState(credit?.days != null ? String(credit.days) : '1')
   const oilN = Number(oilDays.trim())
   const oilCode: 'FO' | 'HO' = Number.isFinite(oilN) && oilN > 0 && oilN < 1 ? 'HO' : 'FO'
-  /* the move field, and the reason a refused move gives — a Move button that
-     simply did nothing would read as broken */
-  const [moveTo, setMoveTo] = useState('')
+  /* the reason a refused Move gives — a Move button that simply did nothing would read as broken */
   const [moveErr, setMoveErr] = useState('')
 
   /* A DECISION THAT DOES NOT LAND SAYS SO (Astra, 21 Sep 26). The first cut
@@ -214,6 +219,15 @@ export function BidPicker({
     onClose()
   }
 
+  /* the Clear's own confirm (D260) — apart from `confirming`, which is the negative-balance one, keyed by leave code */
+  const [clearAsked, setClearAsked] = useState(false)
+  /** The cells a range covers, for the store's questions about them. */
+  const spanCells = (r: Range) => {
+    const out: { personId: string; date: string }[] = []
+    for (let d = r.from; d <= r.to; d = addDays(d, 1)) out.push({ personId, date: d })
+    return out
+  }
+
   /** Days this write covers — one, or the span if a range is chosen. */
   const dayCount = () => {
     if (!range) return 1
@@ -223,6 +237,22 @@ export function BidPicker({
   }
 
   const write = (code: string) => {
+    /* CLEAR NAMES THE OIL AWARD IT TAKES, AND ASKS ONCE (owner, D260, 27 Sep 26 — "B"; the absence-record re-test, AB1).
+       A Clear removes the admin's award on the day with everything else (that stands — his ruling), but it used to do
+       it silently and the man's OIL dropped. On a day — or a picked range — holding an award, the first tap names each
+       one and takes nothing; the same Clear again goes ahead. `awardsIn` is the store's own question, so what is named
+       is what goes; a member's Clear takes no award, so it never asks. */
+    if (!code) {
+      const cells = range ? spanCells(range) : [{ personId, date }]
+      const awards = awardsIn(cells)
+      if (awards.length && !clearAsked) {
+        setClearAsked(true)
+        setConfirming(null)
+        return setNote(awards.length === 1
+          ? `Clear also takes ${callsign}’s OIL award (${awardDays(awards[0]!.days)}) — tap Clear again to go ahead.`
+          : `Clear also takes ${awardsClause(awards, () => callsign)} — tap Clear again to go ahead.`)
+      }
+    } else setClearAsked(false)
     // Ask before taking someone below zero. Never REFUSE: a balance is allowed
     // to run negative and the owner was explicit that it must stay possible.
     // What was wrong was doing it silently, so this is a confirmation, not a
@@ -268,7 +298,11 @@ export function BidPicker({
     // writes what it may and says what it did not. Refusing the whole range
     // would make a fortnight that happens to include one such day impossible
     // to ask for at all.
-    const { written, skipped } = setCellRange(personId, range.from, range.to, code)
+    /* A RANGE'S CLEAR GOES THROUGH THE SAME DOOR AS THE ONE-DAY CLEAR (Fable's final read, F5, 27 Sep 26): an empty
+       code written over each day strips only the war's own records, so a leave the WAR approved inside the span stayed,
+       unsaid, and the sheet closed as done. `clearCells` removes it through the absence door (or counts it where it may
+       not go — a published war's finished paperwork), exactly as the one-day Clear and a dragged block's Delete do. */
+    const { written, skipped } = code ? setCellRange(personId, range.from, range.to, code) : clearCells(spanCells(range))
     if (written > 0) onWrote?.(code)
     if (skipped === 0) return onClose()
     setNote(
@@ -283,7 +317,8 @@ export function BidPicker({
       <div className="bidsheet-hd">
         <span className="who">{callsign}</span>
         <span className="dt">{date}</span>
-        {current && <span className="cur">now {current}</span>}
+        {/* the box's own voice — "<LL", not the stored "*LL" (W5-F5, 26 Sep 26) */}
+        {current && <span className="cur">now {displayCell(current)}</span>}
         <button className="x" data-testid="bid-cancel" onClick={onClose} aria-label="Cancel">
           ✕
         </button>
@@ -343,31 +378,18 @@ export function BidPicker({
                 and they approve it on the new date — a proposal
                 with a trail, not a silent re-approval. Reaching it from ONE
                 click was the rest of his ask; it took a drag-select before,
-                which is a lot of gesture for one man's one day. */}
-            <input
-              type="date"
-              className="dateinput"
-              data-testid="shift-date"
-              value={moveTo}
-              min={dates[0]}
-              max={dates[dates.length - 1]}
-              onChange={e => { setMoveTo(e.target.value); setMoveErr('') }}
-            />
+                which is a lot of gesture for one man's one day.
+                ONE CHIP, ONE MOVE (owner, D262, 27 Sep 26 — "the move button should be enabled for me to click to
+                move the chip. The calendar can be removed"): Move is never greyed out and has no date box beside it —
+                it PICKS THE CHIP UP. The sheet closes and the grid's own move mode carries it (the drag-selection's
+                "Move…", Matrix `moveSel`): it lands on the day clicked — a phone stages it for Confirm — by the
+                landing rules as they were; the month buttons keep it; an empty spot outside the grid ends it. */}
             <button
-              className="dchip move" data-testid="decide-shift" disabled={!moveTo}
+              className="dchip move" data-testid="decide-shift"
+              title="Pick this up and put it on another day"
               onClick={() => {
-                if (!moveTo) return
-                const result = shiftBid(personId, date, moveTo)
-                if (result === 'shifted') return onClose()
-                setMoveErr(
-                  result === 'occupied'
-                    ? `${moveTo} already has something booked — clear it first.`
-                    : result === 'raptor'
-                      ? 'Raptor owns this cell; move it there instead.'
-                      : result === 'window'
-                        ? `${moveTo} is not a day this leave can land on — pick a day inside the war.`
-                        : 'There is no bid here to move.',
-                )
+                const why = onMove?.()
+                if (why) setMoveErr(why)
               }}
             >
               Move
@@ -390,7 +412,7 @@ export function BidPicker({
           data-testid="span-one"
           className={`pchip${range ? '' : ' on'}`}
           aria-pressed={!range}
-          onClick={() => { setRange(null); setShowCal(false); setNote('') }}
+          onClick={() => { setRange(null); setShowCal(false); setNote(''); setClearAsked(false) }}
         >
           Just this day
         </button>
@@ -402,7 +424,7 @@ export function BidPicker({
           // right month AND the very next tap completes the span. The bidder
           // chose their start by opening this cell; asking for it again would
           // be the extra work this control exists to remove.
-          onClick={() => { setShowCal(true); setRange(r => r ?? { from: date, to: date }); setNote('') }}
+          onClick={() => { setShowCal(true); setRange(r => r ?? { from: date, to: date }); setNote(''); setClearAsked(false) }}
         >
           {range ? shortSpan(range.from, range.to) : 'Pick a range'}
         </button>
@@ -418,7 +440,7 @@ export function BidPicker({
             min={dates[0]}
             max={dates[dates.length - 1]}
             value={range}
-            onChange={r => { setRange(r); setNote('') }}
+            onChange={r => { setRange(r); setNote(''); setClearAsked(false) }}
           />
         </div>
       )}
@@ -470,7 +492,7 @@ export function BidPicker({
           </button>
         ))}
         <button className="tchip clear" data-testid="bid-clear" onClick={() => write('')}>
-          Clear
+          {clearAsked ? 'Clear — sure?' : 'Clear'}
         </button>
         {note && <span className="note warn" data-testid="span-note">{note}</span>}
       </div>
@@ -610,7 +632,7 @@ export function BidPicker({
               data-testid="pi-date"
               aria-label={`Post ${callsign} in from`}
               value={piDate}
-              onChange={e => setPiDate(e.target.value)}
+              onChange={e => { setPostErr(''); setPiDate(e.target.value) }}
             />
           </div>
           <div className="bidsheet-row postout">
@@ -618,7 +640,7 @@ export function BidPicker({
               className="dchip po"
               data-testid="pi-confirm"
               disabled={!piDate}
-              onClick={() => onPostIn(piDate)}
+              onClick={() => { const why = onPostIn(piDate); setPostErr(why || '') }}
             >
               Post in from {piDate || '…'}
             </button>
@@ -627,6 +649,7 @@ export function BidPicker({
               leave can still be dated there.
             </span>
           </div>
+          {postErr && <div className="bidsheet-row postout"><span className="note warn" data-testid="post-err">{postErr}</span></div>}
         </>
       )}
       {onPostOut && poOpen && (
@@ -646,7 +669,7 @@ export function BidPicker({
               data-testid="po-date"
               aria-label={`Post ${callsign} out from`}
               value={poDate}
-              onChange={e => setPoDate(e.target.value)}
+              onChange={e => { setPostErr(''); setPoDate(e.target.value) }}
             />
             <button
               className={`pchip${poArchive ? ' on' : ''}`}
@@ -665,7 +688,7 @@ export function BidPicker({
               className="dchip po"
               data-testid="po-confirm"
               disabled={!poDate}
-              onClick={() => onPostOut(poDate, poArchive)}
+              onClick={() => { const why = onPostOut(poDate, poArchive); setPostErr(why || '') }}
             >
               Post out from {poDate || '…'}
             </button>
@@ -673,6 +696,7 @@ export function BidPicker({
               Off the manpower from that day on. Past schedules keep their pucks.
             </span>
           </div>
+          {postErr && <div className="bidsheet-row postout"><span className="note warn" data-testid="post-err">{postErr}</span></div>}
         </>
       )}
 
@@ -738,143 +762,6 @@ export function BidPicker({
 }
 
 /**
- * Approve or refuse a bid, once bidding has closed.
- *
- * The sheet renders only under `canDecide`, and since the 27 Aug overnight
- * pass the store's `setBidState` re-checks the same body — the role rides the
- * Raptor login now, so "there is no login" stopped being a reason to leave
- * the write path open the day the apps merged.
- *
- * Reuses the bid sheet's shell so a decision and a bid read as the same
- * object in the same place, rather than as two unrelated surfaces.
- */
-export function DecisionSheet({
-  callsign,
-  personId,
-  date,
-  code,
-  state,
-  movedFrom,
-  dates,
-  onClose,
-}: {
-  callsign: string
-  personId: string
-  date: string
-  code: string
-  state: BidState | undefined
-  /** Set when this bid has already been moved once; the date it came from. */
-  movedFrom?: string
-  /** Every date in the period, used only for the move field's bounds so a
-   *  bid cannot be moved outside the war it belongs to. */
-  dates: string[]
-  onClose: () => void
-}) {
-  const [to, setTo] = useState('')
-  // A refused move has to say WHY, or the button reads as broken. The store
-  // returns the reason; this turns it into the sentence management needs.
-  const [problem, setProblem] = useState('')
-
-  const decide = (bid: BidState) => {
-    setBidState(personId, date, bid)
-    onClose()
-  }
-
-  const move = () => {
-    if (!to) return
-    const result = shiftBid(personId, date, to)
-    if (result === 'shifted') return onClose()
-    setProblem(
-      result === 'occupied'
-        ? `${to} already has something booked — clear it first.`
-        : result === 'raptor'
-          ? 'Raptor owns this cell; move it there instead.'
-          : result === 'window'
-            ? `${to} is not a day this leave can land on — pick a day inside the war.`
-            : 'There is no bid here to move.',
-    )
-  }
-
-  return (
-    <Sheet testid="bid-picker" label="Decide a bid" onClose={onClose}>
-      <div className="bidsheet-hd">
-        <span className="who">{callsign}</span>
-        <span className="dt">{date}</span>
-        <span className="cur">
-          {code}{state ? ` · ${state}` : ''}{movedFrom ? ` · moved from ${movedFrom}` : ''}
-        </span>
-        <button className="x" data-testid="bid-cancel" onClick={onClose} aria-label="Cancel">
-          ✕
-        </button>
-      </div>
-      <div className="bidsheet-row">
-        <span className="lab">Decision</span>
-        {/* All three stay enabled on an already-decided bid. Management is
-            meant to try one and watch the count rows move, and a decision
-            that could not be changed back would make that a one-way door. */}
-        {/* Acknowledging is NOT a decision, and that is why it is here rather
-            than left implicit. It says "seen, not yet answered" — the state
-            between a bid arriving and a verdict — and it is what turns the
-            cell purple. Before it existed a bid was purple from the moment it
-            was typed, so the squadron could not tell an untouched input from
-            one already in hand. */}
-        {/* The visible word is "Ack" (owner, 21 Sep 26, renaming his own
-            27 Aug "Pending") — the same word the grid legend gives this purple
-            state, so the two agree. The STATE TOKEN stays 'acknowledged'
-            (persisted in BID_STATES), only the label changed; testid stays
-            decide-ack. */}
-        <button
-          className="dchip ack"
-          data-testid="decide-ack"
-          aria-pressed={state === 'acknowledged'}
-          title="Seen, not yet decided"
-          onClick={() => decide('acknowledged')}
-        >
-          Ack
-        </button>
-        <button
-          className="dchip approve"
-          data-testid="decide-approve"
-          aria-pressed={state === 'approved'}
-          onClick={() => decide('approved')}
-        >
-          Approve
-        </button>
-        <button
-          className="dchip refuse"
-          data-testid="decide-refuse"
-          aria-pressed={state === 'refused'}
-          onClick={() => decide('refused')}
-        >
-          Refuse
-        </button>
-      </div>
-
-      {/* Moving a bid is what management does instead of refusing when a week
-          goes red and refusing outright is too blunt. It lands PENDING and
-          they approve it afterwards on the new date — a move is a proposal
-          with a trail, not a silent re-approval. */}
-      <div className="bidsheet-row">
-        <span className="lab">Move to</span>
-        <input
-          type="date"
-          className="dateinput"
-          data-testid="shift-date"
-          value={to}
-          min={dates[0]}
-          max={dates[dates.length - 1]}
-          onChange={e => { setTo(e.target.value); setProblem('') }}
-        />
-        <button className="dchip move" data-testid="decide-shift" disabled={!to} onClick={move}>
-          Move
-        </button>
-        {problem && <span className="note warn" data-testid="shift-problem">{problem}</span>}
-      </div>
-    </Sheet>
-  )
-}
-
-/**
  * A cell Raptor owns: read-only, and it says why.
  *
  * The leave was entered in Raptor's input tab, which means the person sought
@@ -908,12 +795,18 @@ export function RaptorSheet({
      layer down, as the "filed on the Inputs page" line this sheet used to give
      an earned credit. */
   const fromInput = creditShown?.via === 'input'
+  /* ONLY LEAVE IS "APPROVED" (the absence-record re-test, AB9, 26 Sep 26). Leave filed on the Inputs page counts as
+     already approved (Q14), and this sheet said so for EVERY Inputs-filed absence — a man's ATT C read "ATTC ·
+     approved … so it is already approved". A medical, a course or overseas duty is nobody's to approve; it keeps the
+     pointer to the Inputs page and loses leave's word. */
+  const leave = !creditShown && LEAVE_TYPES.some(t => t.type === code.replace(/\*/g, ''))
   return (
     <Sheet testid="raptor-sheet" label={creditShown ? 'OIL the app credited' : 'Leave from Raptor'} onClose={onClose}>
       <div className="bidsheet-hd">
         <span className="who">{callsign}</span>
         <span className="dt">{date}</span>
-        <span className="cur">{code} · approved</span>
+        {/* the box's notation, as the bid sheet's "now" (W5's re-walk, NF2) */}
+        <span className="cur">{displayCell(code)}{creditShown || leave ? ' · approved' : ''}</span>
         <button className="x" data-testid="bid-cancel" onClick={onClose} aria-label="Close">
           ✕
         </button>
@@ -931,32 +824,82 @@ export function RaptorSheet({
             ? fromInput
               ? 'Earned off a duty input that was accepted — change that input, not the schedule.'
               : 'Earned off the published schedule — change the schedule and the OIL follows.'
-            : 'Filed on the Inputs page, so it is already approved — change it there, not here.'}
+            : leave
+              ? 'Filed on the Inputs page, so it is already approved — change it there, not here.'
+              : 'Filed on the Inputs page — change it there, not here.'}
         </span>
       </div>
       {/* The same three lines the day window gives for OIL, because the
           question is the same one however the day happens to open. */}
-      {creditShown && (
-        <div className="bidsheet-oil-detail" data-testid="oil-detail">
-          <div className="bidsheet-row">
-            <span className="lab">Reason</span>
-            <span className="note" data-testid="oil-detail-why">{creditShown.note?.trim() || 'Worked this day'}</span>
-          </div>
-          <div className="bidsheet-row">
-            <span className="lab">Given by</span>
-            <span className="note" data-testid="oil-detail-given">{creditShown.giver?.trim() || 'Not given'}</span>
-          </div>
-          <div className="bidsheet-row">
-            <span className="lab">Days</span>
-            <span className="note" data-testid="oil-detail-days">
-              {creditWorthText(creditShown)}
-              {creditShown.spans?.length
-                ? ` — worked ${creditShown.spans.map(([a, b]) => `${hhmm(a)}–${hhmm(b)}`).join(', ')}`
-                : ''}
-            </span>
-          </div>
-        </div>
-      )}
+      {creditShown && <OilDetailRows c={creditShown} auto />}
+    </Sheet>
+  )
+}
+
+/** THE THREE LINES AN OIL CREDIT READS BACK — reason, given by, days — for the two read-only sheets (the schedule's
+ *  own credit above; a member's own award below, D261). One body, so the two cannot word one fact two ways. `auto`: the
+ *  schedule earned it (its reason defaults to the work, and the hours it was measured over are shown); else an award,
+ *  whose reason is whatever the admin typed. */
+function OilDetailRows({ c, auto }: {
+  c: { code: 'FO' | 'HO'; days?: number; note?: string; giver?: string; spans?: Array<[number, number]> }
+  auto: boolean
+}) {
+  return (
+    <div className="bidsheet-oil-detail" data-testid="oil-detail">
+      <div className="bidsheet-row">
+        <span className="lab">Reason</span>
+        <span className="note" data-testid="oil-detail-why">{c.note?.trim() || (auto ? 'Worked this day' : 'Not given')}</span>
+      </div>
+      <div className="bidsheet-row">
+        <span className="lab">Given by</span>
+        <span className="note" data-testid="oil-detail-given">{c.giver?.trim() || 'Not given'}</span>
+      </div>
+      <div className="bidsheet-row">
+        <span className="lab">Days</span>
+        <span className="note" data-testid="oil-detail-days">
+          {creditWorthText({ ...c, auto })}
+          {auto && c.spans?.length
+            ? ` — worked ${c.spans.map(([a, b]) => `${hhmm(a)}–${hhmm(b)}`).join(', ')}`
+            : ''}
+        </span>
+      </div>
+    </div>
+  )
+}
+
+/**
+ * A MEMBER'S OWN OIL AWARD, READ ONLY (owner, D261, 27 Sep 26 — "3 yes": he opens it at every stage, not only while
+ * bidding is open). Inside the bidding window his tap opens the bid sheet, whose foot already reads the award back;
+ * everywhere else — a locked day, bidding closed, a published war — the tap used to open nothing (the absence-record
+ * re-test, W3-F10). This is that read-back on its own: the same three lines, and nothing to press but ✕ — an award is
+ * the admin's to give, change and remove (N11).
+ */
+export function AwardSheet({
+  callsign,
+  date,
+  award,
+  onClose,
+}: {
+  callsign: string
+  date: string
+  award: { code: 'FO' | 'HO'; days?: number; note?: string; giver?: string }
+  onClose: () => void
+}) {
+  return (
+    <Sheet testid="award-sheet" label="Your OIL award" onClose={onClose}>
+      <div className="bidsheet-hd">
+        <span className="who">{callsign}</span>
+        <span className="dt">{date}</span>
+        <span className="cur">{award.code} · OIL award</span>
+        <button className="x" data-testid="award-close" onClick={onClose} aria-label="Close">
+          ✕
+        </button>
+      </div>
+      <div className="bidsheet-row">
+        <span className="lab">Where it came from</span>
+        <span className="note" data-testid="award-note">Given by an admin — only an admin can change it.</span>
+      </div>
+      <OilDetailRows c={award} auto={false} />
     </Sheet>
   )
 }
@@ -987,13 +930,15 @@ export function PostOutSheet({
   archive: boolean
   /** Re-post with a new date and/or archive choice. Commits on change — the
    *  sheet stays up so the admin can see the grid move behind it. */
-  onChange: (fromDate: string, archive: boolean) => void
+  onChange: (fromDate: string, archive: boolean) => string | void
   onUndo: () => void
   /** Hand this day to the bid sheet instead (owner, 20 Sep 26 — "we should
    *  also allow putting inputs when we click on days that were posted out"). */
   onPlace?: () => void
   onClose: () => void
 }) {
+  /* a refused move of the date says why (AB5) — the box snaps back to the date that stands */
+  const [err, setErr] = useState('')
   return (
     <Sheet testid="postout-sheet" label="Posted out" onClose={onClose}>
       <div className="bidsheet-hd">
@@ -1020,7 +965,7 @@ export function PostOutSheet({
           data-testid="postout-date"
           aria-label={`Move ${callsign}'s post-out date`}
           value={poFrom}
-          onChange={e => { if (e.target.value) onChange(e.target.value, archive) }}
+          onChange={e => { if (e.target.value) setErr(onChange(e.target.value, archive) || '') }}
         />
         <button
           className={`pchip${archive ? ' on' : ''}`}
@@ -1029,11 +974,15 @@ export function PostOutSheet({
           title={archive
             ? 'On the PO date they move to the Quals archive. Their pucks on past schedules are untouched.'
             : 'They stay on the Quals roster after the PO date — for the custom cases.'}
-          onClick={() => onChange(poFrom, !archive)}
+          onClick={() => setErr(onChange(poFrom, !archive) || '')}
         >
           {archive ? '✓ ' : ''}Archive on PO date
         </button>
       </div>
+      {/* drawn only with something to say — an empty row left a blank band on the sheet (W3's re-walk, N4) */}
+      {err && <div className="bidsheet-row postout">
+        <span className="note warn" data-testid="postout-err">{err}</span>
+      </div>}
       <div className="bidsheet-row postout">
         <button className="dchip po" data-testid="postout-undo" onClick={onUndo}>
           Undo post out (PO)
@@ -1082,13 +1031,15 @@ export function PostInSheet({
   piFrom: string
   /** Re-post with a new date. Commits on change, like the post-out sheet, so
    *  the admin watches the grid move behind it. */
-  onChange: (date: string) => void
+  onChange: (date: string) => string | void
   onUndo: () => void
   /** Hand this day to the bid sheet instead — the mirror of the post-out
    *  sheet's, and for the same reason (owner, 20 Sep 26). */
   onPlace?: () => void
   onClose: () => void
 }) {
+  /* a refused move of the date says why (AB5) — the box snaps back to the date that stands */
+  const [err, setErr] = useState('')
   return (
     <Sheet testid="postin-sheet" label="Posted in" onClose={onClose}>
       <div className="bidsheet-hd">
@@ -1114,9 +1065,13 @@ export function PostInSheet({
           data-testid="postin-date"
           aria-label={`Move ${callsign}'s post-in date`}
           value={piFrom}
-          onChange={e => { if (e.target.value) onChange(e.target.value) }}
+          onChange={e => { if (e.target.value) setErr(onChange(e.target.value) || '') }}
         />
       </div>
+      {/* drawn only with something to say — an empty row left a blank band on the sheet (W3's re-walk, N4) */}
+      {err && <div className="bidsheet-row postout">
+        <span className="note warn" data-testid="postin-err">{err}</span>
+      </div>}
       <div className="bidsheet-row postout">
         <button className="dchip po" data-testid="postin-undo" onClick={onUndo}>
           Undo post in (PI)

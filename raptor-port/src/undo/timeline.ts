@@ -59,6 +59,12 @@ export interface UndoHooks {
   postRestore?(entry: UndoEntry, dir: 'undo' | 'redo', pulledBack: Array<{ weekId: string; di: number }>): void
   /* the CURRENT effective actor for mayReverse (§5); defaults to deriveActor(). */
   currentActor?(): Actor
+  /* A DOMAIN RULE THE RESTORE MUST OBEY (the absence-record re-test, W3-F8, 26 Sep 26): the timeline's own conflict
+     test knows only "touches the same thing", so a bid put back by Undo or Redo onto a day a medical had since been
+     filed on — a war record beside an Inputs record, no shared key — stood on the sick day. The module that owns a
+     rule answers here: the sentence that refuses the restore, or null. Asked BEFORE the view snaps, so a refusal moves
+     nothing. */
+  restoreRefusal?(changes: Change[], dir: 'undo' | 'redo'): string | null
 }
 let hooks: UndoHooks = {}
 export function setUndoHooks(h: UndoHooks): void { hooks = h }
@@ -559,6 +565,8 @@ export function globalUndo(): UndoResult {
   if (!mayReverse(entry, currentActor())) return { ok: false, reason: 'You can’t undo that — it was someone else’s change.' }
   const conflict = undoConflict(entry)
   if (conflict) return { ok: false, reason: conflict }
+  const ruleU = hooks.restoreRefusal ? hooks.restoreRefusal(entry.inverse, 'undo') : null   // W3-F8
+  if (ruleU) return { ok: false, reason: ruleU }
   // C7(b) — refuse an unrestorable closure BEFORE the view-snap moves anything.
   if (missingStores(entry.inverse).length) return { ok: false, reason: plainRestoreReason() }
   snap(entry, 'undo')
@@ -583,6 +591,8 @@ export function globalRedo(): UndoResult {
   if (!mayReverse(entry, currentActor())) return { ok: false, reason: 'You can’t redo that — it was someone else’s change.' }
   const conflict = redoConflict(entry)
   if (conflict) return { ok: false, reason: conflict }
+  const ruleR = hooks.restoreRefusal ? hooks.restoreRefusal(entry.forward, 'redo') : null   // W3-F8
+  if (ruleR) return { ok: false, reason: ruleR }
   if (missingStores(entry.forward).length) return { ok: false, reason: plainRestoreReason() }
   snap(entry, 'redo')
   // N11 — see globalUndo: re-check after the view-snap loaded the target week.

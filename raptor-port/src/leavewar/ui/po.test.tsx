@@ -156,3 +156,22 @@ describe('placing and managing PO from the grid', () => {
     expect(screen.queryByTestId('bid-postout')).toBeNull()
   })
 })
+
+/* THE POSTING SHEET STAYS WHILE ITS DATE IS MOVED (the absence-record re-test, W3-F5, 26 Sep 26 — found by the war
+   walker). The sheet commits on change and promises to "stay up so the admin can see the grid move behind it"; moving
+   the post-out date PAST the tapped day made that day an in-squadron day, and the grid re-chose the sheet from the
+   day's new state — a bid sheet appeared where the posting sheet was, one careless tap from placing leave. */
+describe('the Post out sheet, its date moved past the day that opened it', () => {
+  it('stays the Post out sheet', () => {
+    const id = getState().people[0]!.id
+    setRole('admin')
+    setPostOut(id, '2026-08-10')
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId(`cell-${id}-2026-08-12`))
+    expect(screen.getByTestId('postout-sheet')).toBeTruthy()
+    fireEvent.change(screen.getByTestId('postout-date'), { target: { value: '2026-08-14' } })
+    expect(getState().people.find(p => p.id === id)!.to).toBe('2026-08-13')
+    expect(screen.getByTestId('postout-sheet')).toBeTruthy()
+    expect(screen.queryByTestId('bid-picker')).toBeNull()
+  })
+})

@@ -135,3 +135,18 @@ describe('the selection sheet', () => {
     expect(screen.queryAllByTestId('sel-postout')).toHaveLength(1) // only the first mount's
   })
 })
+
+/* THE DRAG-SELECTION'S POST OUT SAYS WHY IT WAS REFUSED (AB5, 26 Sep 26): its confirm called onDone(true) whatever
+   the store answered, so a posting that would close before it opens vanished with the sheet. */
+describe('a refused post-out on the selection sheet', () => {
+  it('keeps the sheet open with the reason, and reports nothing done', () => {
+    const onDone = vi.fn()
+    const onPostOut = vi.fn(() => 'Posted in on 10 Jan 26 — the post-out has to be after that day.')
+    mount(rampTwo, { onDone, onPostOut })
+    fireEvent.click(screen.getByTestId('sel-postout'))
+    fireEvent.change(screen.getByTestId('sel-po-date'), { target: { value: '2026-01-05' } })
+    fireEvent.click(screen.getByTestId('sel-po-confirm'))
+    expect(onDone).not.toHaveBeenCalled()
+    expect(screen.getByTestId('sel-note').textContent).toMatch(/the post-out has to be after that day/)
+  })
+})

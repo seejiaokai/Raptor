@@ -1,0 +1,4 @@
+NOTE  [W3-05c] tab-stops — {"count":49,"first":["Shift+Tab:person-razer","Shift+Tab:person-slipway","Shift+Tab:person-nact","Shift+Tab:person-mamba","Shift+Tab:person-stiff","Shift+Tab:person-bane","Shift+Tab:person-pump","Shift+Tab:person-snap","Shift+Tab:person-shaft","Shift+Tab:person-dice","Shift+Tab:groupfold-SXO","Shift+Tab:counter-pick"],"last":["Shift+Tab:stage-advance","Shift+Tab:lw-undo","Shift+Tab:war-new","Shift+Tab:war-picker"]}
+PASS  [W3-05c] keyboard-reaches-picker — expected: the war picker can be reached by the keyboard while a sheet is open (so a war switch with a sheet up is a real door on a desktop) | observed: {"reached":true,"via":"Shift+Tab","presses":49,"sheetStillOpen":"bid-picker"}
+NOTE  [W3-05c] after-switch — {"war":"JAN - DEC 27","sheet":"bid-picker","text":"Ridge 2026-12-15 ✕ HOW MANY Just this day Pick a range HOW MUCH Whole day AM PM WHICH LEAVE LL OL OIL CCL FCL PL EL CL C"}
+NOTE  [W3-05c] errors — []

@@ -1,0 +1,4 @@
+NOTE  [RW-W3-12-desktop] bundle — http://localhost:4175/assets/index-KbvILaPW.js
+NOTE  [RW-W3-12-desktop] FR6 — {"opened":"event-sheet","label":"Edit event","war":"JAN - DEC 27","sheetAfterSwitch":"nothing","pressed":null,"sheetOnReturn":"nothing","eventRowsChanged":false}
+PASS  [RW-W3-12-desktop] FR6-event-sheet-closes — expected: the event sheet opened on a 26 day is gone after the war switch; nothing written; nothing re-opened on coming back (FR6, register §12) | observed: {"opened":"event-sheet","war":"JAN - DEC 27","after":"nothing","back":"nothing"}
+NOTE  [RW-W3-12-desktop] errors — []

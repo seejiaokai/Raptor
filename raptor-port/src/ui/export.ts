@@ -1,7 +1,7 @@
 /* CSV export — exportCSV and the schedule flattening (schedRows), verbatim. */
 import { DAYS } from '../engine/data'
 import { PEOPLE } from '../engine/people'
-import { minus, parseHM } from '../engine/time'
+import { hhmm, minus, parseHM } from '../engine/time'
 import { VCONF } from '../engine/rules'
 import { STORE_CFG } from '../engine'
 import { dayApproved, dayCurVer, daySnapOf, verLabel } from '../engine/publish'
@@ -35,6 +35,17 @@ const csvSafe = (v: any) => {
 }
 export function csvText(rows: any[][]) {
   return '\uFEFF' + rows.map(r => r.map(c => `"${csvSafe(c).replace(/"/g, '""')}"`).join(',')).join('\r\n')
+}
+/* THE INPUTS PAGE'S EXPORT — one row per input as it is STORED (the absence-record re-test, AB10, 26 Sep 26). Its
+   columns used to carry the start and end TIMES but only the FIRST date, so a leave 20–24 Jul reached the file as
+   "Jul 20" and its other four days were gone from the only copy that leaves the app. 'From' and 'To' carry the dates
+   (a one-day input reads the same in both); 'Start' and 'End' the times, as before. Built here, beside the other
+   exporters, so it is testable (the download itself is not — jsdom has no Blob URLs). */
+export function inputRows(list: any[]): any[][] {
+  const out: any[][] = [['Name', 'From', 'To', 'Start', 'End', 'Type', 'Remarks']]
+  list.forEach((r: any) => out.push([PEOPLE[r.person] ? PEOPLE[r.person].cs : r.person, r.date, r.endDate || r.date,
+    r.allday ? 'all day' : hhmm(r.s), r.allday ? 'all day' : hhmm(r.e), r.type, r.remarks]))
+  return out
 }
 export function exportCSV(name: string, rows: any[][]) {
   const blob = new Blob([csvText(rows)], { type: 'text/csv;charset=utf-8' })

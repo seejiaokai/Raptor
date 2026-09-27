@@ -1,0 +1,18 @@
+PASS  [W4-touch] G1a-drag-selects — expected: a hold-and-drag along his row opens the selection sheet for the three days | observed: {"sheet":"select-sheet","text":"Hunter 3 Aug 26 – 5 Aug 26 · 3 days ✕ HOW MUCH Whole day AM PM WHICH LEAVE LL OL OIL CCL FCL PL EL CL DECIDE Ack Approve","a":{"x":195,"y":422,"w":22,"h":21},"b":{"x":235,"y":422,"w":20,"h":21}}
+PASS  [W4-touch] G1a-fill — expected: the three days fill with LL bids, LVE falls by 3 at once, every reader agreeing | observed: {"pressed":true,"cells":["08-03:LL","08-04:LL","08-05:LL"],"lve":["22","19 3"],"disagree":[]}
+PASS  [W4-touch] G1b-move-mode — expected: Move… closes the sheet and the banner says "Tap a day to move 3 entries" | observed: {"sel":"select-sheet","move":true,"banner":"Tap a day to move 3 entries Cancel"}
+PASS  [W4-touch] G1b-refused-whole — expected: a landing with ONE clashing day is refused whole: the banner says why, no Confirm, nothing painted, nothing moved | observed: {"tap":{"ok":true},"banner":"That lands on 2026-08-12 which is already booked — pick another day. Cancel","confirm":0,"landing":[],"cells":["08-03:LL","08-04:LL","08-05:LL","08-10:·","08-11:·","08-12:LL"]}
+PASS  [W4-touch] G1b-staged-not-landed — expected: a clean landing is STAGED first: three days painted, "Move 3 entries here?" with Confirm — nothing has moved yet | observed: {"banner":"Move 3 entries here? Confirm Cancel","landing":["cell-prowler-2026-08-17","cell-prowler-2026-08-18","cell-prowler-2026-08-19"],"cells":["08-03:LL","08-04:LL","08-05:LL","08-17:·","08-18:·","08-19:·"]}
+PASS  [W4-touch] G1b-confirm-lands — expected: Confirm lands the block on 17–19 Aug and clears 3–5 Aug; the banner goes | observed: {"cells":["08-03:·","08-04:·","08-05:·","08-17:LL","08-18:LL","08-19:LL"],"banner":""}
+PASS  [W4-touch] G1b-figures — expected: weekday to weekday: LVE unchanged by the move, every reader agreeing | observed: {"before":"18 4","after":"18 4","disagree":[]}
+PASS  [W4-touch] G1b-no-moved-mark — expected: bidding still OPEN: no dotted "moved" mark (recorded only once bidding is closed) | observed: {"box":"LL","mark":"","amber":false,"po":false,"cls":"act","chipCls":"c"}
+PASS  [W4-touch] G1c-flick-scrolls — expected: a quick sideways flick scrolls the grid, arms nothing, opens nothing | observed: {"before":4833,"after":4978,"lit":0,"sheet":[]}
+PASS  [W4-touch] G1d-jitter-tolerated — expected: a small wobble during the hold is tolerated: the drag still arms and selects | observed: {"open":"select-sheet","text":"Hunter 25 Aug 26 – 26 Aug 26 · 2 days ✕ HOW MUCH Whole day AM PM WHICH LEAVE LL "}
+PASS  [W4-touch] G1d-early-slide-gives-up — expected: a 40px slide before the hold arms gives the gesture up to the scroll: nothing lights while held, nothing opens on lift | observed: {"heldState":{"selecting":false,"lit":0},"after":{"lit":0,"scroll":[4853,4878]},"open":"nothing"}
+NOTE  [W4-touch] admin-side-scroll — {"doc":390,"vw":390,"over":0}
+NOTE  [W4-touch] admin-toasts — []
+NOTE  [W4-touch] admin-errors — []
+PASS  [W4-touch] G1e-own-row — expected: the member drags his own row by finger and fills three LL bids; his LVE falls by 3, every reader agreeing | observed: {"open":"select-sheet","cells":["03-09:LL","03-10:LL","03-11:LL"],"lve":["0","-3 3"],"disagree":[]}
+PASS  [W4-touch] G1e-other-row-untouched — expected: a drag that runs onto stiff's row keeps the selection on his OWN row: his two days fill, the other man's row is untouched | observed: {"sheet":"Ranger 16 Mar 26 – 17 Mar 26 · 2 days ✕ HOW MUCH Whole day AM PM WHICH","mine":["03-16:LL","03-17:LL"],"theirs":["03-16:·","03-17:·"],"note":""}
+NOTE  [W4-touch] member-side-scroll — {"doc":390,"vw":390,"over":0}
+NOTE  [W4-touch] member-errors — []

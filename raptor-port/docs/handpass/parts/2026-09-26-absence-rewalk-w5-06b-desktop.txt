@@ -1,0 +1,7 @@
+NOTE  [RW-W5-06b-desktop] keyboard-reach — {"reached":false,"walkedOutside":[]}
+PASS  [RW-W5-06b-desktop] RW-tab-held — expected: Tab and Shift+Tab (45 presses each) never leave the open bid sheet — the Period picker, Stage advance and the zoom buttons behind it are not reached | observed: {"steps":90,"visitedInSheet":["bid-cancel@sheet","span-one@sheet","span-range@sheet","portion-full@sheet","portion-am@sheet","portion-pm@sheet","bid-LL@sheet","bid-OL@sheet","bid-OIL@sheet","bid-CCL@sheet","bid-FCL@sheet","bid-PL@sheet","bid-EL@sheet","bid-CL@sheet"],"outside":[]}
+PASS  [RW-W5-06b-desktop] RW-switch-closes-sheet — expected: a war switch (here made by the driver on the picker, since no person can reach it with the sheet open) closes the open bid sheet | observed: {"how":"not tried (then set by the driver)","sheet":"nothing","war":["JAN - DEC 27"]}
+NOTE  [RW-W5-06b-desktop] reach — {"sheet":"bid-picker","picker":"covered by DIV.sheetscrim[sheet-scrim]","how":"not tried (then set by the driver)","war":["JAN - DEC 27"]}
+PASS  [RW-W5-06b-desktop] RW-nothing-written — expected: nothing was written on 28 Dec 26 in either war | observed: {"war26":["12-28:·"],"war27":["12-28:NO CELL"]}
+PASS  [RW-W5-06b-desktop] stale-sheet-inert — expected: after the war switch the old sheet is closed or inert: two presses on its LL write nothing into 28 Dec 26 | observed: {"afterSwitch":"nothing","press1":null,"press2":null,"after":"nothing","war27":["12-28:NO CELL"],"war26":["12-28:·"],"toasts":[]}
+NOTE  [RW-W5-06b-desktop] errors — []

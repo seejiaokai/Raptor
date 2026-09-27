@@ -1,0 +1,5 @@
+NOTE  [W3-03b] sel-po — {"sel":"select-sheet","archiveOn":true,"after":"nothing","rowOnWar":1}
+PASS  [W3-03b] S37-row-kept — expected: a man posted out (archive on) from a date already past keeps his row on the war with his July bid (Fable S37) | observed: {"row":1,"july":["07-20:LL","08-31:PO","09-01:PO"]}
+PASS  [W3-03b] S37-row-kept-bidsheet — expected: the same through the bid sheet's PO: his row stays on the war | observed: {"row":1}
+NOTE  [W3-03b] quals-roster-shows — {"comet":false,"forge":false}
+NOTE  [W3-03b] errors — []

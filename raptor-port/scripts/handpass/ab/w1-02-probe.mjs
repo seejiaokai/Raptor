@@ -1,0 +1,22 @@
+/* W1 probe (26 Sep 26): why a bid on Hunter's 29 Jul did not place, and what the tap on a replaced-morning day opens.
+   Read-only diagnosis for the walker; not an assertion script. */
+process.env.AB_WHO = 'w1'
+const L = await import('./w1-lib.mjs')
+const { openHi } = await import('../am/w2-lib.mjs')
+const { browser, page, errors } = await openHi({ width: 1440, height: 900, who: 'a', dpr: 1 })
+await L.lwOpen(page, '2026-07-29')
+const t = await L.tapCell(page, 'prowler', '2026-07-29')
+console.log('tap prowler 29', JSON.stringify(t).slice(0, 900))
+await L.shot(page, 'w1-02-probe-prowler-29')
+await L.closeSheets(page)
+const b = await L.bidOn(page, 'prowler', '2026-07-29', 'LL')
+console.log('bid', JSON.stringify(b).slice(0, 600))
+const t2 = await L.tapCell(page, 'prowler', '2026-07-30')
+console.log('tap prowler 30', JSON.stringify(t2).slice(0, 900))
+const r = await L.sheetPress(page, 'span-range')
+console.log('range', JSON.stringify(r).slice(0, 900))
+const ids = await page.evaluate(() => [...document.querySelectorAll('.bidsheet[role="dialog"] [data-testid]')].map(e => e.getAttribute('data-testid')).filter(x => /day|range|cal/.test(x)).slice(0, 40))
+console.log('ids', ids.join(' '))
+await L.shot(page, 'w1-02-probe-range')
+console.log('errors', errors)
+await browser.close()

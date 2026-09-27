@@ -1,0 +1,3 @@
+PASS  [W6-arrow] viewsched-rows-clear-of-arrow — expected: with Friday at the front of View-only Sched, nothing of its Unavailable rows sits under the week's ‹ arrow | observed: {"covered":[],"arrow":[8,433,38,70],"dayLeft":20}
+FAIL  [W6-arrow] editsched-rows-clear-of-arrow — expected: with Friday at the front of Edit Schedule, nothing of its Unavailable rows sits under the week's ‹ arrow | observed: {"covered":["LL @30,440 under #weekPrev","LL @30,441 under #weekPrev","LL @30,467 under #weekPrev","LL @30,468 under #weekPrev","ATT C @30,494 under #weekPrev","ATT C @30,495 under #weekPrev"],"arrow":[8,433,38,70],"dayLeft":0}
+NOTE  [W6-arrow] errors — []

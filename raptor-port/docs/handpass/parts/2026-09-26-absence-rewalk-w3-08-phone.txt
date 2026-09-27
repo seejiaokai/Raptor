@@ -1,0 +1,10 @@
+NOTE  [RW-W3-08-phone] bundle — http://localhost:4175/assets/index-KbvILaPW.js
+NOTE  [RW-W3-08-phone] coarse-pointer — true
+NOTE  [RW-W3-08-phone] fixture — {"razer15":true,"war27":["DRAFT","OPEN FOR BIDDING","→ OPEN FOR BIDDING"],"war":"JAN - DEC 26"}
+NOTE  [RW-W3-08-phone] F1 — {"opened":"bid-picker","under":"SPAN[bi]","sheetAfter":"nothing","war":"JAN - DEC 26","bid27":"request:LL/pending","fixture":{"d":"2027-01-05","placed":true}}
+PASS  [RW-W3-08-phone] F1-finger-on-undo — expected: a finger on the war's Undo with a sheet up: the sheet closes — either the tap only closes it (nothing undone), or the Undo runs and no sheet is left open against the war it put on screen | observed: {"sheetAfter":"nothing","war":"JAN - DEC 26","bid27":"request:LL/pending"}
+PASS  [RW-W3-08-phone] F2-finger-on-new — expected: a finger on "+ New" with a sheet up only closes the sheet (no new war, no switch) | observed: {"opened":"bid-picker","under":"BUTTON[war-new]","sheetAfter":"nothing","war":"JAN - DEC 26"}
+PASS  [RW-W3-08-phone] F3-finger-on-menu — expected: a finger on the menu with a sheet up closes the sheet and leaves the page where it is | observed: {"opened":"bid-picker","under":"SPAN[]","sheetAfter":"nothing","page":"leavewar","drawerOpen":0}
+PASS  [RW-W3-08-phone] FV-move-banner-then-picker — expected: the phone's move banner does not survive a war switch; nothing moved | observed: {"banner":[[],[],[]],"sel":"nothing","pressed":false,"recs":{"2026-12-15":"request:LL/pending"}}
+NOTE  [RW-W3-08-phone] toasts — []
+NOTE  [RW-W3-08-phone] errors — []

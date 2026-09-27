@@ -105,6 +105,9 @@ export type Person = {
   special?: boolean
   /** Kept out of every roster and list — seed. */
   archived?: boolean
+  /** who archived him: 'po' = the Leave War's Post out pass (its date came, "Archive on PO date" on) — the archive the
+   *  posting sheet's Undo, a later date and the switch turned off take back; absent = archived by hand on Quals */
+  archivedBy?: 'po'
   /** SANS member — engine (SANS_IDS pass at module load). */
   san?: boolean
   /** Quarter progress, present only when `san` — engine. */

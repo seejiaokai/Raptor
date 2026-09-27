@@ -215,6 +215,10 @@ export interface DayView {
   amber: boolean
   /** the forbidden pairs found (the clash strip) */
   conflicts: Array<[Contrib, Contrib]>
+  /** the TAILS of records from the day before that take part in a conflict here. A record running past midnight
+   *  counts on the second date for clashes only (H6) — never the box, never charged — so the list has to name the
+   *  tail, or the day says two things clash and shows one (the absence-record re-test, AB6, 26 Sep 26). */
+  clashTails: Contrib[]
   /** what this day costs, per balance — a half is charged ONCE however many
    *  leave records share it (owner, 20 Sep 26), by the one covering more of it */
   charges: Charge[]
@@ -233,7 +237,7 @@ export interface DayView {
 
 const EMPTY: DayView = Object.freeze({
   main: null, all: [], code: null, state: null, mark: '', amber: false,
-  conflicts: [], charges: [], away: 0, duty: false, earnsOil: 0, annualFull: false,
+  conflicts: [], clashTails: [], charges: [], away: 0, duty: false, earnsOil: 0, annualFull: false,
 }) as DayView
 
 /* only leave and medical come in halves in the squadron's vocabulary
@@ -311,6 +315,7 @@ export function dayView(input: readonly Contrib[]): DayView {
     mark: amber ? '!' : more > 0 ? `+${more}` : '',
     amber,
     conflicts,
+    clashTails: [...new Set(conflicts.flat().filter(c => c.spill))],
     charges: [...byId.values()],
     away,
     /* ON DUTY means the SCHEDULE says he was at work — nothing else (owner,

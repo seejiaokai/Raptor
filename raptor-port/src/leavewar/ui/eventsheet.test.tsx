@@ -57,8 +57,10 @@ describe('moving an event', () => {
     // the sheet closed and the move banner is up
     expect(screen.queryByTestId('event-sheet')).toBeNull()
     expect(screen.getByTestId('event-move-banner')).toBeTruthy()
-    // tap the target day: desktop commits on the click, a phone stages then Confirm
-    fireEvent.click(screen.getByTestId('event-0-2026-01-10'))
+    // tap the target day: desktop commits on the click, a phone stages then Confirm. The day sits elsewhere on the
+    // screen than the Move… button — a click on the very spot Move was pressed, straight away, is a double-click's
+    // second click and lands nothing (D262, select.ts MOVE_SETTLE) — so the click says where it is.
+    fireEvent.click(screen.getByTestId('event-0-2026-01-10'), { clientX: 320, clientY: 180 })
     const confirm = screen.queryByTestId('event-move-confirm')
     if (confirm) fireEvent.click(confirm)
     expect(dayEvents('2026-01-05')[0]).toBe('')

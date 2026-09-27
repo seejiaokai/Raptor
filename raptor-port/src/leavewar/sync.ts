@@ -17,7 +17,7 @@
 // The derived passes are reconciliation, not queues: compute the desired state,
 // diff, write only the difference; a SYNCING flag guards re-entrancy.
 
-import { INPUTS, DATES, baseYear, dateOrd, inpId, inpWin, isAway, isLeave, isPersonal, canWork, oilAsks, withRemarksTail, inputCoversDate, nowStamp } from '../engine/inputs'
+import { INPUTS, DATES, baseYear, dateOrd, inpId, inpWin, isAway, isLeave, isPersonal, canWork, oilAsks, withRemarksTail, remarksTailWord, inputCoversDate, nowStamp } from '../engine/inputs'
 import { dayEngaged, personBusy } from '../engine/avail'
 import { inputProtected, protectedDates } from '../engine/quarantine'
 import { mayManageRoster, viewerId, me } from '../state/perms'
@@ -166,6 +166,21 @@ export function refreshAbsencesAndRepaint(): void {
      fresh index — skip a second one */
   const at = getVersion()
   if (!cmdDeferEffect(() => { if (getVersion() === at) absencesChanged() })) absencesChanged()
+}
+
+/** THE ABSENCES A RESTORE WILL LEAVE ON A DAY (Astra's final code read, finding 1, 26 Sep 26) — for the war's check
+ *  on what an Undo or Redo may put back (store.ts restoreBlocker). The Inputs as they will stand once this restore has
+ *  run: every input it writes, at its after-image; every one it deletes, gone; the rest as they are. An absence the
+ *  restore moves off the day, or takes away, is then no blocker, and one it keeps is judged at the hours it will
+ *  have. Without Inputs changes, the day as it stands now. */
+export function restoreAbsencesOf(changes: ReadonlyArray<{ collection: string; id: string; op: string; after?: unknown }>): (personId: string, date: string) => readonly Contrib[] {
+  const ins = changes.filter(ch => ch.collection === 'inputs')
+  if (!ins.length) return absencesAt
+  const touched = new Set(ins.map(ch => String(ch.id)))
+  const rows = INPUTS.filter((r: any) => r && !touched.has(String(r.iid)))
+  for (const ch of ins) if (ch.op !== 'delete' && ch.after && typeof ch.after === 'object') rows.push(ch.after)
+  const ix = buildAbsenceIndex(rows.filter((r: any) => r && r.person && warVisible(r.type)))
+  return (personId, date) => ix.get(personId)?.get(date) ?? []
 }
 
 /** Install the absence door (wireLeaveWarSync does; tests call it alone). */
@@ -381,6 +396,14 @@ export function sliceInput(row: any, from: string, to: string, keepIid: boolean)
     if (Object.keys(m).length) out.lwMoved = m
     else delete out.lwMoved
   }
+  /* ITS WORDS FOLLOW ITS DATES (the absence-record re-test, AB3, 26 Sep 26 — Fable F3, reproduced on screen). This
+     body copied the remark verbatim, so a piece cut by a medical (the gate's sick-cuts-leave), un-approved, deleted or
+     moved by the war kept "till 24 Jul" when it now ended on the 21st — on the Inputs page, the week and the board.
+     The medical trim and the war's approve-extend already rewrite the token (withRemarksTail); now every cut does.
+     Only a remark that CARRIES the token is touched, and the typist's other words stay where they are. D189: on a
+     published day the piece still covers, the changed words are a change like any other. */
+  const word = remarksTailWord(row.remarks)
+  if (word) out.remarks = withRemarksTail(row.remarks, from, to, word)
   if (!keepIid) { delete out.iid; inpId(out) }
   return out
 }
@@ -1362,7 +1385,10 @@ export function runPoArchive(): void {
   if (!due.length) return
   SYNCING = true
   try {
-    for (const p of due) (PEOPLE as any)[p.id].archived = true
+    /* `archivedBy: 'po'` — THIS archive is the Post out's own (Astra's final code read, findings 2 and 4, 26 Sep 26):
+       what the posting sheet's Undo, a date moved later and the switch turned off take back — never an archive the
+       admin made by hand on the Quals page. Cleared with the archive by the Quals Restore. */
+    for (const p of due) { (PEOPLE as any)[p.id].archived = true; (PEOPLE as any)[p.id].archivedBy = 'po' }
     // A body leaving the roster can change what the warnings say about the
     // lines it was on — the same reason the Quals ✕ re-validates.
     validate()
@@ -1401,10 +1427,49 @@ export function restoreArchivedPerson(id: string): boolean {
   commitPeopleEdit(() => {
     setPostOut(id, null)
     body.archived = false
+    delete body.archivedBy
     validate()
   })
   raptorNotify()
   return true
+}
+
+/**
+ * The posting sheet's "Undo post out (PO)" — he is back, AS HE WAS BEFORE THE POST OUT (the absence-record re-test,
+ * W5-F1, 26 Sep 26 — found by the orders walker). A Post out with "Archive on PO date" on (the sheet's default)
+ * archives his body the moment its date has come; the sheet's Undo used to clear the date and LEAVE the archive, and
+ * an archived man with no posting dates is dropped from the war's roster — so his row, his bids and his leave vanished
+ * from every month, a reload included, with nothing on screen to say where he went. When the archive is the Post
+ * out's own (the switch was on), the undo is the Quals page's Restore — the posting cleared and the body back, ONE
+ * command; otherwise it is the date alone, as before.
+ */
+export function undoPostOut(id: string): boolean {
+  const body = (PEOPLE as any)[id]
+  /* the Post out's OWN archive only (finding 4): a man archived by hand on the Quals page stays archived — the Undo
+     then clears the date alone */
+  if (body && body.archived && body.archivedBy === 'po') return restoreArchivedPerson(id)
+  return setPostOut(id, null)
+}
+
+/**
+ * Set or move a post-out — every posting door's route (Matrix postOutOr: the bid sheet's PO, the Post out sheet's date
+ * and switch, the drag-selection's Post out). When the Post out has ALREADY archived him and the new posting no longer
+ * archives him today — its date still to come, or "Archive on PO date" turned off — he comes back on the roster in the
+ * same command (Astra's final code read, finding 2, 26 Sep 26: he stayed archived, off the Quals roster, while the
+ * sheet said he stays or before his date). When the new date has also come, the archive stands. The pass
+ * (runPoArchive) archives him again on the date, as for any Post out.
+ */
+export function postOut(id: string, from: string, archive = true): boolean {
+  const body = (PEOPLE as any)[id]
+  const poMade = !!body && body.archived && body.archivedBy === 'po'
+  if (!poMade || !mayManageRoster() || (archive && localToday() > addDays(from, -1))) return setPostOut(id, from, archive)
+  let ok = false
+  commitPeopleEdit(() => {
+    ok = setPostOut(id, from, archive)
+    if (ok) { body.archived = false; delete body.archivedBy; validate() }
+  })
+  if (ok) raptorNotify()
+  return ok
 }
 
 /* ---- wiring -------------------------------------------------------------- */

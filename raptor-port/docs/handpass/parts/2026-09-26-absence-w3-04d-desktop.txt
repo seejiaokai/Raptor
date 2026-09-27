@@ -1,0 +1,3 @@
+FAIL  [W3-04d-desktop] N19-code-follows-tracker — expected: a half-day award made 2 days on the tracker reads FO on the grid (a day or more reads FO) | observed: {"before":"HO","after":"HO","rec":"credit:HO/manual/d2","sheet":"Sidewinder 2026-07-26 NOW HO ✕ HOW MANY Just this day Pick a range HOW MUCH Whole day AM PM WHICH LEAVE LL OL OIL CCL FCL PL EL CL Clear HO · 2 days PO PI REASO","oil":"2"}
+FAIL  [W3-04d-desktop] N19-code-follows-taplist — expected: a 1-day award made half a day on the tap list reads HO (under a day reads HO) | observed: {"lines":["FO — OIL award (W3 full day) Edit… Clear","LL — local leave · bid, not decided yet Approve Ack Refuse Clear"],"box":"FO","rec":"credit:FO/manual/d0.5,request:LL/pending"}
+NOTE  [W3-04d-desktop] errors — []

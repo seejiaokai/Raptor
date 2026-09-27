@@ -9,10 +9,10 @@ import { initStore as raptorInitStore, writeInputs } from '../state/store'
 import { setMe, setSession } from '../state/auth'
 import { projectPeople } from './state/raptorRoster'
 import {
-  ackReplacement, advanceStage, getState, setBidState, initStore as lwInitStore, lwEditLists, lwHistInit, rawState, setCell, setPeople, setRole, setViewer,
+  ackReplacement, advanceStage, awardsIn, cellProblem, getState, setBidState, initStore as lwInitStore, lwEditLists, lwHistInit, rawState, setCell, setCells, clearCells, setBidStates, setManualCredit, setPeople, setRole, setViewer,
 } from './state/store'
 import { memoryBackend } from './state/storage'
-import { wireLeaveWarSync } from './sync'
+import { wireLeaveWarSync, sliceInput, syncAbsences } from './sync'
 import { globalRedo, globalUndo } from '../undo'
 import { _resetTimeline } from '../undo/timeline'
 import { installGlobalUndo } from '../state/undo-wire'
@@ -190,6 +190,20 @@ describe('a clashing input replaces an undecided bid (owner rule, H1, answer B, 
     expect(list.some(r => r.kind === 'notice')).toBe(false)
   })
 
+  /* the war's restore check must not refuse this one: the medical the undo takes away is the thing that replaced the
+     bid (Astra's final code read, finding 1, step 8 — the day judged as the restore leaves it) */
+  it('undoing a MEDICAL filed over a bid brings the bid back in one step, and redo takes it again', () => {
+    bid('ammo', '2026-02-10')
+    expect(file('ammo', 'ATT C', 'Feb 10')).toBe(true)
+    expect(recsAt('ammo', '2026-02-10').some(r => r.kind === 'request')).toBe(false)
+    expect(globalUndo().ok).toBe(true)
+    expect(rowsOf('ammo', 'ATT C')).toHaveLength(0)
+    expect(recsAt('ammo', '2026-02-10').filter(r => r.kind === 'request')).toHaveLength(1)
+    expect(globalRedo().ok).toBe(true)
+    expect(rowsOf('ammo', 'ATT C')).toHaveLength(1)
+    expect(recsAt('ammo', '2026-02-10').some(r => r.kind === 'request')).toBe(false)
+  })
+
   it('the bid\'s own person filing over it gets a message and no notice', () => {
     bid('ammo', '2026-02-10')
     setSession({ user: 'us', role: 'main' }); setMe('ammo')
@@ -235,5 +249,190 @@ describe('undo and redo obey the same rules (B7)', () => {
     expect(r.ok).toBe(false)
     expect(said.some(m => m.includes('already has OL on 10 Feb'))).toBe(true)
     expect(rowsOf('ammo', 'LL')).toHaveLength(0)
+  })
+})
+
+/* A CUT LEAVE SAYS ITS OWN LAST DAY (the absence-record re-test, AB3, 26 Sep 26 — Fable F3, reproduced on screen). The
+   medical trim and the war's approve-extend rewrite a remark's "till <date>" (withRemarksTail); the one body every
+   OTHER cut uses — a medical cutting leave, the war's un-approve, delete and move (sliceInput) — copied the remark
+   verbatim, so the first piece of "LL 20–24 Jul, Bali till 24 Jul" cut on the 22nd still said "till 24 Jul" on the
+   Inputs page, the week and the board. And D189 counts that token: a published day the piece covers must read the
+   words that match it. */
+describe('a cut leave says its own last day (AB3)', () => {
+  it('a medical in the middle leaves each piece "till" its OWN last day, the typist’s words kept', () => {
+    expect(file('ammo', 'LL', 'Feb 9', { endDate: 'Feb 13', remarks: 'Bali till 13 Feb' })).toBe(true)
+    expect(file('ammo', 'ATT C', 'Feb 11')).toBe(true)
+    const pieces = rowsOf('ammo', 'LL').map((r: any) => `${r.date}${r.endDate ? '-' + r.endDate : ''}: ${r.remarks}`).sort()
+    expect(pieces).toEqual(['Feb 12-Feb 13: Bali till 13 Feb', 'Feb 9-Feb 10: Bali till 10 Feb'])
+  })
+  it('a remark with no date in it is left exactly as typed', () => {
+    expect(file('ammo', 'LL', 'Feb 9', { endDate: 'Feb 13', remarks: 'Bali' })).toBe(true)
+    expect(file('ammo', 'ATT C', 'Feb 11')).toBe(true)
+    expect(rowsOf('ammo', 'LL').map((r: any) => r.remarks)).toEqual(['Bali', 'Bali'])
+  })
+  it('the war’s own cut body rewrites it too — un-approve, delete and move all go through it', () => {
+    const row = { iid: 'x1', person: 'ammo', type: 'LL', date: 'Feb 9', endDate: 'Feb 13', yr: 2026, allday: true, remarks: 'till 13 Feb Bali' }
+    expect(sliceInput(row, '2026-02-09', '2026-02-10', true).remarks).toBe('till 10 Feb Bali')
+    expect(sliceInput(row, '2026-02-12', '2026-02-12', false).remarks).toBe('till 12 Feb Bali')
+    expect(sliceInput({ ...row, remarks: 'on 9 Feb' }, '2026-02-16', '2026-02-16', false).remarks).toBe('on 16 Feb')
+  })
+})
+
+/* A BID IS NOT PUT BACK OVER A MEDICAL BY UNDO OR REDO (the absence-record re-test, W3-F8, 26 Sep 26 — found by the war
+   walker, reproduced by the host). Bid on a day, Undo it, file a medical there, Redo: the bid came back and stood on
+   the sick day (amber), where filing the same medical while the bid existed replaces it with a notice. The medical is a
+   change to the Inputs and the bid a change to the war, so the timeline's own "touches the same thing" test never met
+   them; B7 says the rules hold at every door, undo and redo included. The restore now asks the war first. */
+describe('undo and redo do not put a bid back over a medical (B7, W3-F8)', () => {
+  it('Redo of a bid, after a medical was filed on its day, is refused by name — the bid stays gone', () => {
+    setRole('admin')
+    setCells([{ personId: 'ammo', date: '2026-02-10' }], 'LL')
+    expect(recsAt('ammo', '2026-02-10').some((r: any) => r.kind === 'request')).toBe(true)
+    expect(globalUndo().ok).toBe(true)
+    expect(recsAt('ammo', '2026-02-10').some((r: any) => r.kind === 'request')).toBe(false)
+    expect(file('ammo', 'ATT C', 'Feb 10')).toBe(true)
+    const r = globalRedo()
+    expect(r.ok).toBe(false)
+    expect(r.reason).toMatch(/ATT C now holds 10 Feb/)
+    expect(recsAt('ammo', '2026-02-10').some((x: any) => x.kind === 'request')).toBe(false)
+  })
+  it('Undo of a bid’s deletion, after a medical was filed on its day, is refused the same way', () => {
+    setRole('admin')
+    setCells([{ personId: 'ammo', date: '2026-02-11' }], 'LL')
+    setCells([{ personId: 'ammo', date: '2026-02-11' }], '')
+    expect(recsAt('ammo', '2026-02-11').some((r: any) => r.kind === 'request')).toBe(false)
+    INPUTS.unshift({ iid: 'medx', person: 'ammo', type: 'ATT C', date: 'Feb 11', yr: 2026, allday: true, remarks: '', mod: '2026-02-01' })
+    syncAbsences()
+    const r = globalUndo()
+    expect(r.ok).toBe(false)
+    expect(r.reason).toMatch(/ATT C now holds 11 Feb/)
+  })
+  /* and the Undo of a REFUSAL (Fable's final code read, F2): the refused bid would come back undecided on the sick day.
+     Reached when the medical is NOT the latest step on the admin's own list — filed by someone else once Undo reverses
+     only your own changes (D148, decided) — so it goes in here without a timeline entry, as the test above does. */
+  it('Undo of a bid’s refusal, after a medical was filed on its day, is refused by name — the bid stays refused', () => {
+    setRole('admin')
+    setCells([{ personId: 'ammo', date: '2026-02-13' }], 'LL')
+    advanceStage()
+    setBidStates([{ personId: 'ammo', date: '2026-02-13' }], 'refused')
+    const st = () => (recsAt('ammo', '2026-02-13').find((x: any) => x.kind === 'request') as any)?.state
+    expect(st()).toBe('refused')
+    INPUTS.unshift({ iid: 'medr', person: 'ammo', type: 'ATT C', date: 'Feb 13', yr: 2026, allday: true, remarks: '', mod: '2026-02-01' })
+    syncAbsences()
+    const r = globalUndo()
+    expect(r.ok).toBe(false)
+    expect(r.reason).toMatch(/ATT C now holds 13 Feb/)
+    expect(st()).toBe('refused')
+  })
+  /* THE SAME BID, A DIFFERENT STATE (Astra's final code read, finding 1, 26 Sep 26): a refused bid is history and a
+     medical filed beside it leaves it be — but a Redo that turns it back into an acknowledged bid made it live again on
+     the sick day. The first fix only asked about a bid that was not there at all. */
+  it('Redo that turns a refused bid back into a live one, after a medical was filed on its day, is refused by name', () => {
+    setRole('admin')
+    setCells([{ personId: 'ammo', date: '2026-02-12' }], 'LL')
+    advanceStage()
+    setBidState('ammo', '2026-02-12', 'refused')
+    setBidState('ammo', '2026-02-12', 'acknowledged')
+    const st = () => (recsAt('ammo', '2026-02-12').find((x: any) => x.kind === 'request') as any)?.state
+    expect(st()).toBe('acknowledged')
+    expect(globalUndo().ok).toBe(true)
+    expect(st()).toBe('refused')
+    expect(file('ammo', 'ATT C', 'Feb 12')).toBe(true)
+    expect(st()).toBe('refused')
+    const r = globalRedo()
+    expect(r.ok).toBe(false)
+    expect(r.reason).toMatch(/ATT C now holds 12 Feb/)
+    expect(st()).toBe('refused')
+  })
+})
+
+/* THE BULK GESTURES OVER A DAY WHOSE TOP RECORD IS FILED LEAVE (the absence-record re-test, 26 Sep 26 — the war walker
+   W3). Delete asked only the day's TOP record: a morning filed on the Inputs page sits above the afternoon bid (the
+   ladder), so the bid was "skipped — locked, owned by Raptor" and left where it was (W3-F3; old plan D3: delete removes
+   the editable requests). And Approve counted an already-approved leave as "decided" — "3 decided" for two changes
+   (AB7, Fable F7). */
+describe('bulk Delete and Approve over mixed days (W3-F3, AB7)', () => {
+  it('Delete takes the bid beneath Inputs-filed leave, and leaves the filed leave alone', () => {
+    setRole('admin')
+    expect(file('ammo', 'LL', 'Feb 10', { allday: false, half: 'am', s: 0, e: 720 })).toBe(true)
+    setCells([{ personId: 'ammo', date: '2026-02-10' }], 'LL*')
+    expect(recsAt('ammo', '2026-02-10').some((r: any) => r.kind === 'request')).toBe(true)
+    const r = clearCells([{ personId: 'ammo', date: '2026-02-10' }])
+    expect(r).toEqual({ written: 1, skipped: 0 })
+    expect(recsAt('ammo', '2026-02-10').some((x: any) => x.kind === 'request')).toBe(false)
+    expect(rowsOf('ammo', 'LL')).toHaveLength(1)
+  })
+  /* THE SAME GESTURE UNDER A WAR-APPROVED LEAVE (Fable's final code read, F3, 26 Sep 26): the bid beneath a leave the
+     war approved stayed behind a Delete, where under Inputs-filed leave it went — same gesture, two answers. */
+  it('Delete over a WAR-approved morning takes the afternoon bid beside it too', () => {
+    setRole('admin')
+    setCells([{ personId: 'ammo', date: '2026-02-18' }], '*LL')
+    advanceStage()
+    setBidStates([{ personId: 'ammo', date: '2026-02-18' }], 'approved')
+    expect(rowsOf('ammo', 'LL').some((r: any) => r.lw)).toBe(true)
+    setCells([{ personId: 'ammo', date: '2026-02-18' }], 'LL*')
+    expect(recsAt('ammo', '2026-02-18').some((r: any) => r.kind === 'request')).toBe(true)
+    clearCells([{ personId: 'ammo', date: '2026-02-18' }])
+    expect(recsAt('ammo', '2026-02-18').some((r: any) => r.kind === 'request')).toBe(false)
+    expect(rowsOf('ammo', 'LL').some((r: any) => r.lw)).toBe(false)
+  })
+  /* EVERYTHING IN THE BLOCK, AWARDS INCLUDED (owner, D260, 27 Sep 26): an award is its own record beside the day's
+     leave (N13 — it flags no leave day), so a day can hold both. Delete asked the TOP record, and under a leave the award
+     stayed while the leave went — under Inputs-filed leave too. His "B": the Delete takes every award in the block. */
+  it('Delete takes an OIL award beneath a WAR-approved leave, and beneath leave filed on the Inputs page', () => {
+    setRole('admin')
+    setCells([{ personId: 'ammo', date: '2026-02-18' }], 'LL')
+    advanceStage()
+    setBidStates([{ personId: 'ammo', date: '2026-02-18' }], 'approved')
+    expect(setManualCredit('ammo', '2026-02-18', 'FO', { days: 2 })).toBeNull()
+    expect(file('ammo', 'LL', 'Feb 19')).toBe(true)
+    expect(setManualCredit('ammo', '2026-02-19', 'HO', {})).toBeNull()
+    const awardAt = (d: string) => recsAt('ammo', d).some((r: any) => r.kind === 'credit' && r.oil === 'manual')
+    expect(awardsIn([{ personId: 'ammo', date: '2026-02-18' }, { personId: 'ammo', date: '2026-02-19' }])).toHaveLength(2)
+    clearCells([{ personId: 'ammo', date: '2026-02-18' }, { personId: 'ammo', date: '2026-02-19' }])
+    expect(awardAt('2026-02-18')).toBe(false)
+    expect(awardAt('2026-02-19')).toBe(false)
+    expect(rowsOf('ammo', 'LL').some((r: any) => r.lw)).toBe(false)     // the war's own leave went
+    expect(rowsOf('ammo', 'LL').some((r: any) => r.date === 'Feb 19')).toBe(true)   // the Inputs page's stayed
+  })
+  /* …AND ON A PUBLISHED WAR, WHERE THE APPROVED LEAVE IS FINISHED PAPERWORK (Fable's D260 scenarios, S18): the award
+     beside it goes, the leave stays — and the count must say the leave stayed, or the sheet closes as though the whole
+     day had been deleted. Leave filed on the Inputs page staying is by design and counted as nothing (W3-F3, above). */
+  it('on a published war Delete takes the award and COUNTS the approved leave it could not take', () => {
+    setRole('admin')
+    setCells([{ personId: 'ammo', date: '2026-02-18' }], 'LL')
+    advanceStage()
+    setBidStates([{ personId: 'ammo', date: '2026-02-18' }], 'approved')
+    expect(setManualCredit('ammo', '2026-02-18', 'FO', {})).toBeNull()
+    advanceStage()                                      // published
+    const r = clearCells([{ personId: 'ammo', date: '2026-02-18' }])
+    expect(recsAt('ammo', '2026-02-18').some((x: any) => x.kind === 'credit' && x.oil === 'manual')).toBe(false)
+    expect(rowsOf('ammo', 'LL').some((x: any) => x.lw)).toBe(true)       // the published leave stays
+    expect(r).toEqual({ written: 1, skipped: 1 })
+  })
+  it('Approve does not count a leave that was already approved as a decision', () => {
+    setRole('admin')
+    setCells([{ personId: 'ammo', date: '2026-02-16' }, { personId: 'ammo', date: '2026-02-17' }], 'LL')
+    advanceStage()
+    setBidStates([{ personId: 'ammo', date: '2026-02-16' }], 'approved')
+    const r = setBidStates([{ personId: 'ammo', date: '2026-02-16' }, { personId: 'ammo', date: '2026-02-17' }], 'approved')
+    expect(r.decided).toBe(1)
+    expect(r.already).toBe(1)
+  })
+})
+
+/* THE BID SHEET NAMES WHAT HOLDS THE TIME (the absence-record re-test's break tests, 26 Sep 26 — bug-check order §8.4):
+   switching off every clash refusal the bid sheet gives past its stage / row / medical-code checks turned only ONE test
+   red, the timed-medical one. The two sentences a bidder meets most — a leave filed on the Inputs page already there,
+   and a whole-day medical — are pinned here, through the store's own question (`cellProblem`, what the sheet asks
+   before it writes). */
+describe('the bid sheet refuses by name (the break test for its refusals)', () => {
+  it('a bid onto leave filed on the Inputs page, and onto a whole-day medical, is refused and names what holds it', () => {
+    setRole('admin')
+    expect(file('ammo', 'LL', 'Feb 10')).toBe(true)
+    expect(cellProblem('ammo', '2026-02-10', 'OL')).toBe('That time is already taken by LL — clear it first.')
+    expect(file('ammo', 'ATT C', 'Feb 12')).toBe(true)
+    expect(cellProblem('ammo', '2026-02-12', 'LL')).toBe("That day is already ATT C — leave can't go over a medical.")
+    expect(cellProblem('ammo', '2026-02-11', 'LL')).toBeNull()
   })
 })
