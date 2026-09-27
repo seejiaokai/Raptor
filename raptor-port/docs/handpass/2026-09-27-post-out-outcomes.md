@@ -164,6 +164,12 @@ build passed · the original's checks 728 / 0 · browser tests 478 passed, 48 sk
 443 / 0 · rulecheck passed · docsize passed.** GitHub runs no checks on the PR until `main` is merged in (#445 made it
 conflict — records only); that happens at this branch's turn, last.
 
+**The final run, after `main` was merged in** (27 Sep 26 ~13:40, commit `c5c1e921` — #445, #444 and #443 merged before
+it; the app's code merged by itself), under the lock, port 4191: **unit 6,543 passed (403 files) · build passed · the
+original's checks 728 / 0 · browser tests 478 passed, 48 skipped, 0 failed · the Tracker smoke 443 / 0 · rulecheck
+passed · docsize passed.** GitHub on the same commit: every job green, the three desktop Move tests and the event-move
+test among them.
+
 ## The Walk line
 `Walk: docs/handpass/2026-09-27-post-out-outcomes.md · 50 pictures (A 23, B 11, C 13, D 3; the re-walk 47 more in
 rewalk/) · 35 roll-call rows · 14 orders and doors · MISSING: 23 fixed (W1–W13, R1–R9, the account-row placement) / 0

@@ -127,10 +127,10 @@ the later merge keeps both (D78).
 
 ## Gate baseline
 
-The latest counts watched — 27 Sep 26, `claude/post-out-outcomes` (`[POST-OUT-OUTCOMES]` with #444's final code merged in,
-`1293a898`), one run under the PC lock (`raptor-port/docs/handpass/2026-09-27-post-out-outcomes.md` §9): unit **6481 / 6482**
-(400 files — the one is `[LW-FIGSEL-SLOW]`, the filed load-only timeout, green alone) · build clean · tfin **728 / 0** ·
-e2e **478 passed**, 48 skipped · smoke **443 / 0** · rulecheck OK · docsize OK. Restate a count only from a run you watched, and REPLACE the previous counts — never stack a
+The latest counts watched — 27 Sep 26, `claude/post-out-outcomes` (`[POST-OUT-OUTCOMES]` with `main` merged in — #445,
+#444, #443 — `c5c1e921`), one run under the PC lock (`raptor-port/docs/handpass/2026-09-27-post-out-outcomes.md` §9):
+unit **6543 / 6543** (403 files) · build clean · tfin **728 / 0** · e2e **478 passed**, 48 skipped · smoke **443 / 0** ·
+rulecheck OK · docsize OK · GitHub on the same commit: every job green. Restate a count only from a run you watched, and REPLACE the previous counts — never stack a
 history. How to run them: `raptor-port/CLAUDE.md` §Build & verify; how they mislead, and the checks on his PC:
 `raptor-port/docs/gates-and-deploy.md`.
 
