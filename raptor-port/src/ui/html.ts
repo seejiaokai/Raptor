@@ -19,7 +19,8 @@ import { keyDay } from '../engine/keys'
 import { VCONF } from '../engine/rules'
 import { esc, SBDAY, WFOCUS, PFOCUS, DWOPEN, DPREV, AVSHUT, PIOPEN, VWORK, CURPAGE, lateShown, restArmed, unpubArmed, notePub, stSavedOn, warnShown, WMOPEN, displayedBundle } from '../state/view'
 import { canEditSched } from '../state/auth'
-import { isGuest, mayReadMedicalOf } from '../state/perms'
+import { isGuest, mayReadMedicalOf, isMember } from '../state/perms'
+import { chgDayCounts } from './changesmodel'
 import { HOOKS } from '../engine/hooks'
 import { oilBarOf, oilItemOfKey, inputItemKey, oilSentinelSummary, oilFromWords } from './oilmode'
 import { oilReadPass } from '../engine/oilev'
@@ -1360,7 +1361,10 @@ export function dayStatHTML(di:any,ed:any){
        diffed against itself is 0 — but the input-filing half of that comparison reads the LIVE inputs,
        so a filing-only change read "Original — as issued · 1 pending", to the squadron too
        ([HUMAN-RETEST] walk W1-3, 24 Sep 26). */
-    const nd=PV?(PVQ?0:PVND):dayShownPendCount(di);
+    /* a day NOT yet published counts no "pending" any more ([DRAFT-PENDING], the owner's D118: it miscounted — a move
+       read 2, put back still 2, a new puck in a crowd 0 — and could not be tapped); its chip is the changes window's
+       "N new" / "N changes" below. A published day's count is unchanged. */
+    const nd=PV?(PVQ?0:PVND):(ok?dayShownPendCount(di):0);
     /* a DRAFT preview must never wear the published day's clothes (owner,
        15 Aug 26 — "when I toggle to draft 1, it shouldn't say published"):
        under a d: preview the ✓ Published stamp and the AL chip are replaced
@@ -1392,10 +1396,30 @@ export function dayStatHTML(di:any,ed:any){
        Never on the view page, never under a preview (its count is the live one captured before the swap, PVND,
        and the list would read the live day while the screen shows a frozen one), never on a draft day (nothing
        there goes out as an amendment). */
-    const pendBtn=nd&&ed&&ok&&!PV&&canEditSched();
-    const pendChip=!nd?'':pendBtn
-      ? `<button class="dpend dpendbtn" data-pendlist="${di}" aria-haspopup="dialog" title="See the ${nd} change${nd>1?'s':''} waiting to go out as AL${nextSeq(di)} on ${d.dow}, and go to each">${nd}&nbsp;pending</button>`
-      : `<span class="dpend" title="${nd} ${ok?'change':'unpublished edit'}${nd>1?'s':''} on this day${ok?' — ahead of the issued schedule until you publish an AL':' — publish the day before publishing an AL'}">${nd}&nbsp;pending</span>`;
+    /* THE DAY'S ONE CHIP — the per-day door into the ONE CHANGES WINDOW ([DRAFT-PENDING], 28 Sep 26 — the owner's D168,
+       D171 (3): "every day's heading count stays the per-day way in, for everyone"; D170: new to you until marked seen).
+       ONE chip, never two:
+       · a PUBLISHED day with changes waiting → "N pending" (the count as before), opening the window on "To go out";
+         a gold dot on it when something on the day is new to you;
+       · else something new to you on the day → "N new" (gold), opening on "New to you";
+       · else changes on the day → "N changes" (quiet), opening on "All changes";
+       · else nothing.
+       For an admin or a member — never a guest (D215: no buttons; Fable F9 — a guest was drawn a count), never under a
+       version preview (a preview reads a document, not the working copy). On View-only Sched a published day shows it
+       only on the working copy: its issued face (PVQ) never reads pending (AM24). */
+    const viewer=isMember();
+    const cc=(!PV&&viewer)?chgDayCounts(di):{fresh:0,all:0};
+    const pendBtn=nd&&!PV&&((ed&&ok&&canEditSched())||(ok&&viewer));
+    const dot=cc.fresh?'<span class="dnewdot" aria-label="something new to you"></span>':'';
+    const pendChip=nd
+      ? (pendBtn
+        ? `<button class="dpend dpendbtn" data-pendlist="${di}" aria-haspopup="dialog" title="See the ${nd} change${nd>1?'s':''} waiting to go out as AL${nextSeq(di)} on ${d.dow}, and go to each">${nd}&nbsp;pending${dot}</button>`
+        : `<span class="dpend" title="${nd} change${nd>1?'s':''} on this day — ahead of the issued schedule until you publish an AL">${nd}&nbsp;pending</span>`)
+      : cc.fresh
+        ? `<button class="dpend dpendbtn dnew" data-chgday="${di}" data-chgtab="new" aria-haspopup="dialog" title="${cc.fresh} change${cc.fresh>1?'s':''} on ${d.dow} new to you — see who made ${cc.fresh>1?'them':'it'}, and go to each">${cc.fresh}&nbsp;new</button>`
+        : cc.all
+          ? `<button class="dpend dpendbtn dchg" data-chgday="${di}" data-chgtab="all" aria-haspopup="dialog" title="Every change on ${d.dow} and who made it">${cc.all}&nbsp;change${cc.all>1?'s':''}</button>`
+          : '';
     const sgOK=daySigned(di);
     /* THE BEAK (§9, closes BUG-2): on a NEVER-published day it first-approves
        (Publish day). On a PUBLISHED day it renders NOTHING here — a published
@@ -1921,7 +1945,12 @@ function dayHTMLBody(di:any,ed:any,vsel?:any){
           : `<span class="itxt">${esc(inp.person)}</span>`;
         /* the input's own free text now reads in the RMKS column, so the NAME column
            carries the type and every block lines up on the same five columns */
-        s+=`<div class="pl-row${acc&&inp.acc&&inp.acc!=='r'?' accd':''}${acc?dormRowCls(inp):''}"${acc?dormRowTitle(inp):''}>`
+        /* THE ROW'S ADDRESS FOR THE CHANGES WINDOW'S JUMP ([DRAFT-PENDING] — Astra DP-08; the absence re-test's R30: a line
+           about an input under Unavailable could not be tapped): the input's own id, on every surface a person reads it
+           (the view page too) — never the drag attribute, so nothing here becomes draggable. Signed-in readers only, so a
+           headless render (the parity week) is untouched. */
+        const inprow=!acc&&isMember()?` data-inprow="${esc(inpId(inp))}"`:'';
+        s+=`<div class="pl-row${acc&&inp.acc&&inp.acc!=='r'?' accd':''}${acc?dormRowCls(inp):''}"${acc?dormRowTitle(inp):''}${inprow}>`
           /* a medical input's type and remarks are for the squadron's members (D211 —
              every member reads them, his 27 Aug 26 rule); a GUEST, not yet a member,
              reads it only as "Unavailable" and its times (perms.ts mayReadMedicalOf) */

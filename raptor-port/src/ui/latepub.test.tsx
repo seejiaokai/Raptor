@@ -40,6 +40,10 @@ import { VCONF } from '../engine/rules'
 import { blockFromTpl, dutyTplReset } from '../engine/dutytpl'
 import { sbDutyPanel } from './board-html'
 
+/* the day's WAITING-TO-GO-OUT chip — since [DRAFT-PENDING] (28 Sep 26) the same `.dpend` class also carries the
+   changes window's "N new" / "N changes" chip, which is not a pending count (D168) */
+const PEND_CHIP = '.dpend:not(.dnew):not(.dchg)'
+
 const MON = 0, WED = 2
 let pristine: any[], inputs0: string
 const FOUR: Array<[string, string]> = [['cur', 'ignite'], ['sked', 'bane'], ['plan', 'stiff'], ['appr', 'pump']]
@@ -54,8 +58,8 @@ const issuedFace = (di: number) => { setPage('viewsched'); try { return el(dayIs
 const num = (t: string | null | undefined) => { const m = String(t || '').match(/\d+/); return m ? +m[0] : 0 }
 const counts = (di: number) => ({
   engine: dayShownPendCount(di),
-  week: num(weekEdit(di).querySelector('.dpend')?.textContent),
-  board: num(boardStrip(di).querySelector('.dpend')?.textContent),
+  week: num(weekEdit(di).querySelector(PEND_CHIP)?.textContent),
+  board: num(boardStrip(di).querySelector(PEND_CHIP)?.textContent),
   info: num(el(dayInfoHTML(di)).querySelector('.dip-pend')?.textContent),
   list: el(pendListHTML(di)).querySelectorAll('.pl-item').length,
 })

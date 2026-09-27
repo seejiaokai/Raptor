@@ -21,6 +21,14 @@ import { useEffect, useLayoutEffect, useRef } from 'react'
 
 export type FloatBox = { x: number, y: number, w: number, h: number, phone?: boolean }
 
+/* WHICH FLOATING WINDOW IS IN FRONT (Astra DP-10): two windows may overlap (the ALL AVAIL window and the changes
+   window); the one pressed last comes forward. Two bounded layers — 411 in front, 410 behind — so neither ever climbs
+   over the bubble (430), a drawer (440), the input calendar (420) or a modal (470). */
+let FRONT = ''
+export const frontWin = () => FRONT
+/* true when this press changed which window is in front (the caller repaints) */
+export function raiseWin(id: string): boolean { if (FRONT === id) return false; FRONT = id; return true }
+
 export const phoneLayout = () => typeof window !== 'undefined' && !!window.matchMedia && window.matchMedia('(max-width:620px)').matches
 
 /* `open` — whether the window is up; `getBox`/`setBox` — the caller's module box; `deps` — what makes a NEW window

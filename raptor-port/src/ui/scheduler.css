@@ -1004,35 +1004,31 @@ body.ros-open .eroster .ros-tab{background:var(--accent);color:var(--accent-ink)
 .dpendbtn:hover{background:rgba(229,194,74,.22);border-color:rgba(229,194,74,.7)}
 /* the caret is drawn, not written, so the chip still reads "N pending" to everything that reads its words */
 .dpendbtn::after{content:'▾';font-size:8px;line-height:1}
-/* THE PENDING LIST — the approved mock-up's look (docs/mock/pending-list.html), in the app's tokens. Body-level,
-   above the board (the board sheet is 400) and the History bubble (430), below the modals (470). Its own list
-   scrolls once it runs past the screen (D100); pendlist.ts caps the height to the visible area. */
-.pendlist{position:fixed;z-index:440;width:min(380px,calc(100vw - 16px));display:flex;flex-direction:column;
-  background:var(--panel);border:1px solid var(--edge-2);border-radius:10px;box-shadow:0 14px 34px -12px rgba(0,0,0,.8);
-  padding:10px 10px 8px;font-size:12px;overflow:hidden}
-.pendlist .pl-head{display:flex;align-items:center;gap:8px;font-weight:700;color:var(--ink);margin:0 2px 8px;flex:0 0 auto}
-.pendlist .pl-head .verchip{font-family:'Barlow Condensed','Inter Tight',sans-serif;font-size:10px;font-weight:800;letter-spacing:.06em;padding:1px 6px;border-radius:5px}
-.pendlist .pl-list{overflow-y:auto;overscroll-behavior:contain;min-height:0;flex:1 1 auto}
-.pendlist .pl-item{display:grid;grid-template-columns:1fr auto;gap:1px 10px;width:100%;text-align:left;
+/* THE PENDING LIST'S LINES — the approved mock-up's look (docs/mock/pending-list.html, D100), now the changes window's
+   "To go out" tab ([DRAFT-PENDING], D168 — the pop-up under the chip is gone; its lines are the same). */
+.cw-out .pl-head{display:flex;align-items:center;gap:8px;font-weight:700;color:var(--ink);margin:0 2px 8px;flex:0 0 auto}
+.cw-out .pl-head .verchip{font-family:'Barlow Condensed','Inter Tight',sans-serif;font-size:10px;font-weight:800;letter-spacing:.06em;padding:1px 6px;border-radius:5px}
+.cw-out .pl-list{overflow-y:auto;overscroll-behavior:contain;min-height:0;flex:1 1 auto}
+.cw-out .pl-item{display:grid;grid-template-columns:1fr auto;gap:1px 10px;width:100%;text-align:left;
   padding:7px 8px;border-radius:7px;background:none;border:0;font:inherit;color:inherit}
-.pendlist button.pl-item{cursor:pointer}
-.pendlist button.pl-item:hover,.pendlist button.pl-item:focus-visible{background:rgba(229,194,74,.10);outline:none}
-.pendlist .pl-item+.pl-item{border-top:1px solid var(--edge)}
-.pendlist .pl-item.still{opacity:.82}
+.cw-out button.pl-item{cursor:pointer}
+.cw-out button.pl-item:hover,.cw-out button.pl-item:focus-visible{background:rgba(229,194,74,.10);outline:none}
+.cw-out .pl-item+.pl-item{border-top:1px solid var(--edge)}
+.cw-out .pl-item.still{opacity:.82}
 /* several placeholders' crowds in the one change: each row its own line, its own tap (Astra's code read, 25 Sep 26) */
-.pendlist .pl-item.pl-multi{opacity:1}
-.pendlist .pl-sub{grid-column:1/-1;display:grid;gap:1px;width:100%;text-align:left;background:none;border:0;border-left:2px solid var(--edge-2);
+.cw-out .pl-item.pl-multi{opacity:1}
+.cw-out .pl-sub{grid-column:1/-1;display:grid;gap:1px;width:100%;text-align:left;background:none;border:0;border-left:2px solid var(--edge-2);
   margin:4px 0 0;padding:3px 0 3px 8px;font:inherit;color:inherit;cursor:pointer;border-radius:0 5px 5px 0}
-.pendlist .pl-sub:hover,.pendlist .pl-sub:focus-visible{background:rgba(229,194,74,.10);outline:none}
-.pendlist .pl-sub:disabled{cursor:default}
-.pendlist .pl-where{font-weight:600;color:var(--ink)}
-.pendlist .pl-chg{grid-column:1/2;color:var(--ink-2)}
-.pendlist .pl-chg s{color:var(--ink-3)}
-.pendlist .pl-chg b{color:#F2D699;font-weight:600}
-.pendlist .pl-who{grid-column:2/3;grid-row:1/3;align-self:center;text-align:right;font-size:11px;color:var(--ink-3);white-space:nowrap}
-.pendlist .pl-none{color:var(--ink-3);padding:6px 8px}
-.pendlist .pl-foot{font-size:10.5px;color:var(--ink-3);margin:8px 4px 0;flex:0 0 auto}
-.pendlist .pl-foot:empty{display:none}
+.cw-out .pl-sub:hover,.cw-out .pl-sub:focus-visible{background:rgba(229,194,74,.10);outline:none}
+.cw-out .pl-sub:disabled{cursor:default}
+.cw-out .pl-where{font-weight:600;color:var(--ink)}
+.cw-out .pl-chg{grid-column:1/2;color:var(--ink-2)}
+.cw-out .pl-chg s{color:var(--ink-3)}
+.cw-out .pl-chg b{color:#F2D699;font-weight:600}
+.cw-out .pl-who{grid-column:2/3;grid-row:1/3;align-self:center;text-align:right;font-size:11px;color:var(--ink-3);white-space:nowrap}
+.cw-out .pl-none{color:var(--ink-3);padding:6px 8px}
+.cw-out .pl-foot{font-size:10.5px;color:var(--ink-3);margin:8px 4px 0;flex:0 0 auto}
+.cw-out .pl-foot:empty{display:none}
 /* THE BRIEF MARK a jump leaves on the change it lands on (D99, D107 — the one "take me to this change",
    interactions.ts): a ring in the colour of the AL the day's changes go out as, fading, then gone. */
 .chgflash{animation:chgflash 1.4s ease-out 1;border-radius:5px}
@@ -6383,3 +6379,109 @@ button.sbi-ty.inpedit:hover{text-decoration:none;filter:brightness(1.3)}
    looks tappable that is not his */
 .qtbl.editing tr.qro .qcell{cursor:default}
 .qtbl.editing tr.qro .qcell:hover{background:none}
+
+/* ============================================================================================================
+   THE ONE CHANGES WINDOW ([DRAFT-PENDING], 28 Sep 26 — the owner's D167, D168, D170; the design of record
+   docs/mock/changes-window.html, option A). The ALL AVAIL window's frame (the grip, the corner, the phone panel —
+   ui/floatwin.ts), wider: a line carries who and when on the right. Scoped under .chgwin.
+   ============================================================================================================ */
+.chgwin{position:fixed;z-index:410;right:16px;top:96px;width:380px;height:560px;
+  min-width:280px;min-height:240px;max-width:calc(100vw - 32px);max-height:calc(100vh - 120px);
+  background:var(--panel);border:1px solid var(--edge-2);border-radius:10px;
+  box-shadow:0 18px 44px rgba(0,0,0,.62);display:flex;flex-direction:column;overflow:hidden;resize:both}
+.chgwin[hidden]{display:none}
+/* WHICH WINDOW IS IN FRONT (Astra DP-10): the one pressed last — 411 in front, 410 behind; both stay under the bubble
+   (430), the input calendar (420), a drawer (440) and a modal (470) */
+.availwin.front,.chgwin.front{z-index:411}
+.chgwin .win-bar{display:flex;align-items:center;gap:7px;padding:8px;cursor:grab;
+  background:var(--raised);border-bottom:1px solid var(--edge);touch-action:none;flex:0 0 auto}
+.chgwin .win-bar:active{cursor:grabbing}
+.chgwin .win-grip{color:var(--ink-3);font-size:16px;line-height:1;flex:0 0 auto}
+.chgwin .win-ttl{flex:1;min-width:0;font-size:12.5px;font-weight:700;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chgwin .win-ttl small{display:block;font-size:10.5px;font-weight:500;color:var(--ink-3)}
+.chgwin .win-x{background:none;border:1px solid var(--edge-2);color:var(--ink-2);border-radius:5px;width:25px;height:25px;
+  font-size:12px;line-height:1;cursor:pointer;flex:0 0 auto;font-family:inherit}
+.chgwin .win-x:hover{border-color:#F0555F;color:var(--ink)}
+.chgwin .win-tabs{display:flex;background:var(--panel-2);border-bottom:1px solid var(--edge);flex:0 0 auto}
+.chgwin .win-tab{flex:1;min-width:0;padding:8px 5px;font-size:11px;font-weight:700;color:var(--ink-3);background:none;border:none;
+  border-bottom:2px solid transparent;cursor:pointer;font-family:inherit;line-height:1.25}
+.chgwin .win-tab:hover{color:var(--ink-2)}
+.chgwin .win-tab.on{color:var(--ink);border-bottom-color:var(--accent);background:var(--panel)}
+.chgwin .win-tab .c{color:var(--ink-3);font-weight:600}
+.chgwin .win-tab.on .c{color:var(--accent)}
+.chgwin .cw-days{display:flex;flex-wrap:wrap;gap:4px;padding:8px 8px 4px;flex:0 0 auto}
+.chgwin .cw-day{position:relative;font:inherit;font-size:11px;font-weight:700;color:var(--ink-2);background:var(--panel-2);
+  border:1px solid var(--edge-2);border-radius:7px;padding:3px 8px;cursor:pointer}
+.chgwin .cw-day.on{color:var(--ink);border-color:var(--accent);background:rgba(59,198,232,.10)}
+/* a day with something new to you wears the gold dot (the mock-up's day picker) */
+.chgwin .cw-day.nd::after{content:'';position:absolute;top:-3px;right:-3px;width:7px;height:7px;border-radius:50%;background:#E5C24A}
+.chgwin .cw-grp{display:flex;align-items:center;gap:4px;padding:4px 8px 8px;border-bottom:1px solid var(--edge);flex:0 0 auto}
+.chgwin .cw-grpl{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);margin-right:4px}
+.chgwin .cw-g-btn{font:inherit;font-size:11px;font-weight:700;color:var(--ink-2);background:var(--panel-2);border:1px solid var(--edge-2);
+  padding:3px 10px;cursor:pointer}
+.chgwin .cw-g-btn:first-of-type{border-radius:7px 0 0 7px}
+.chgwin .cw-g-btn:last-of-type{border-radius:0 7px 7px 0;border-left:0}
+.chgwin .cw-g-btn.on{color:#0B1419;background:var(--accent);border-color:var(--accent)}
+.chgwin .cw-body{flex:1;min-height:0;overflow:auto;padding:8px;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+.chgwin .cw-g{border:1px solid var(--edge);border-radius:8px;margin:0 0 8px;background:var(--panel-2);overflow:hidden}
+.chgwin .cw-gh{display:flex;align-items:center;gap:6px;width:100%;text-align:left;font:inherit;font-size:12px;font-weight:700;
+  color:var(--ink);background:none;border:0;padding:8px 9px;cursor:pointer}
+.chgwin .cw-caret{color:var(--ink-3);font-size:10px;width:10px}
+.chgwin .cw-ghname{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chgwin .cw-new{font-size:9.5px;font-weight:800;letter-spacing:.06em;color:#1A1405;background:#E5C24A;border-radius:4px;padding:1px 5px}
+.chgwin .cw-ghwhen{font-size:10.5px;font-weight:500;color:var(--ink-3);white-space:nowrap}
+.chgwin .cw-gl{border-top:1px solid var(--edge)}
+.chgwin .cw-l{display:block;width:100%;text-align:left;font:inherit;font-size:12px;color:var(--ink-2);background:var(--panel);
+  border:0;border-top:1px solid var(--edge);padding:7px 9px;cursor:pointer}
+.chgwin .cw-l:first-child{border-top:0}
+.chgwin .cw-l:hover,.chgwin .cw-l:focus-visible{background:rgba(229,194,74,.08);outline:none}
+.chgwin .cw-top{display:flex;align-items:baseline;gap:6px}
+.chgwin .cw-dot{flex:0 0 auto;width:7px;height:7px;border-radius:50%;background:#E5C24A;align-self:center}
+.chgwin .cw-what{flex:1;min-width:0;color:var(--ink);font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.chgwin .cw-who{flex:0 0 auto;font-size:10.5px;color:var(--ink-3);white-space:nowrap}
+.chgwin .cw-txt{display:block;margin-top:2px;color:var(--ink-2);overflow-wrap:anywhere}
+.chgwin .cw-txt s{color:var(--ink-3)}
+.chgwin .cw-txt b{color:#F2D699;font-weight:600}
+.chgwin .cw-none{color:var(--ink-3);font-size:12px;padding:10px 6px;font-style:italic}
+.chgwin .cw-out{font-size:12px}
+.chgwin .cw-out .pl-head{display:flex;align-items:center;gap:8px;font-weight:700;color:var(--ink);margin:0 2px 8px}
+.chgwin .cw-outday{display:block;width:100%;text-align:left;font:inherit;font-size:12px;color:var(--ink-2);background:var(--panel-2);
+  border:1px solid var(--edge);border-radius:7px;padding:8px 9px;margin:0 0 6px;cursor:pointer}
+.chgwin .cw-outday b{color:var(--ink)}
+.chgwin .win-foot{flex:0 0 auto;border-top:1px solid var(--edge);background:var(--panel-2);padding:8px;font-size:11px}
+.chgwin .win-foot .hint{color:var(--ink-3)}
+.chgwin .cw-seen{width:100%;font:inherit;font-size:12.5px;font-weight:700;color:var(--ink);background:var(--panel);
+  border:1px solid var(--edge-2);border-radius:8px;padding:8px;cursor:pointer}
+.chgwin .cw-seen:hover{border-color:var(--accent)}
+.chgwin .cw-seen:disabled{opacity:.45;cursor:default}
+/* THE PHONE: the ALL AVAIL window's bottom panel (D77 — moves, does not resize); after a tap took the schedule to a
+   change it shrinks to a slim bar (D167 (2)) so the change is in view; a tap on the bar brings the panel back */
+@media (max-width:620px){
+  .chgwin{left:12px;right:12px;width:auto;top:auto;bottom:12px;height:62vh;max-height:62vh;max-width:calc(100vw - 24px);resize:none}
+  .chgwin.bar{height:auto;min-height:0;flex-direction:row;align-items:center;gap:8px;padding:6px 8px}
+}
+.chgwin.bar .cw-barbtn{flex:1;text-align:left;font:inherit;font-size:13px;font-weight:700;color:var(--ink);background:none;border:0;padding:6px 4px;cursor:pointer}
+.chgwin.bar .win-x{background:none;border:1px solid var(--edge-2);color:var(--ink-2);border-radius:5px;width:28px;height:28px;font-size:12px;font-family:inherit}
+
+/* THE DAY'S CHIP ([DRAFT-PENDING] — D168, D171 (3)): "N new" gold, "N changes" quiet; a gold dot on "N pending" when
+   something on the day is new to you. The chip is the per-day door into the changes window, for admins and members. */
+.day-head .dpend.dnew,.sb-pub .dpend.dnew{color:#1A1405;background:#E5C24A;border-color:#E5C24A}
+.day-head .dpend.dchg,.sb-pub .dpend.dchg{color:var(--ink-2);background:var(--panel-2);border-color:var(--edge-2)}
+.dpendbtn.dchg:hover{background:var(--raised);border-color:var(--ink-3)}
+.dpend .dnewdot{width:6px;height:6px;border-radius:50%;background:#E5C24A;box-shadow:0 0 0 1px var(--panel);display:inline-block}
+
+/* THE ADMIN'S CHANGES DOOR ([DRAFT-PENDING] — D171): the clock icon alone, with a gold number for what is new to him
+   across the loaded week */
+.chgbtn{position:relative}
+.chgbtn .chgnum{margin-left:4px;min-width:16px;height:16px;padding:0 4px;border-radius:999px;background:#E5C24A;color:#1A1405;
+  font-size:10px;font-weight:800;line-height:16px;display:inline-block;text-align:center}
+.chgbtn.on{border-color:var(--accent)}
+
+/* THE OG TAG ([DRAFT-PENDING] — the owner's D172: "OG makes sense, maintain the header"): on a day NOT yet published,
+   a puck whose place holds a change NEW TO YOU wears a hollow, dotted "OG" in the plain white outline, in the corner a
+   waiting AL tag uses on a published day. Never gold or amber (a warning colour). Marking seen takes it away. Only
+   pucks; a day's headings unchanged. */
+.seat[data-og]{position:relative}   /* the tag sits on the puck's own corner, as .seat[data-alp] does */
+.seat[data-og]::after{content:'OG';position:absolute;top:-5px;right:-3px;z-index:4;
+  font-family:'Barlow Condensed','Inter Tight',sans-serif;font-size:7.5px;font-weight:800;letter-spacing:.02em;line-height:1;
+  padding:0 2px;border-radius:4px;background:var(--panel);color:#E6EAEE;border:1px dotted #E6EAEE;pointer-events:none}

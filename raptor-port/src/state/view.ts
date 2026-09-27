@@ -439,6 +439,27 @@ export function setAvailFoot(s: string) { AVAILWIN_FOOT = s }
 export type AvailBox = { x: number, y: number, w: number, h: number, phone?: boolean }
 export let AVAILWIN_BOX: AvailBox | null = null
 export function setAvailWinBox(b: AvailBox | null) { AVAILWIN_BOX = b }
+
+/* ---- THE ONE CHANGES WINDOW ([DRAFT-PENDING], 28 Sep 26 — the owner's D167, D168, D170) -------------------------
+   Where it is and what it shows, kept OUTSIDE React for the ALL AVAIL window's reason: he edits the schedule behind it,
+   so every keystroke re-renders, and component state would lose the window's place. `day` — the calendar day the
+   window shows, or 'week'; `tab` — New to you / All changes / To go out (a published day's next ALn); `group` — Who or
+   Where; `bar` — on a phone, the panel shrunk to a slim bar after a tap took the schedule to a change (D167 (2)).
+   HISTORY MODE IS THE WINDOW OPEN (D116, D168 — one History mode, its list this window): opening it turns the bubbles
+   on on the board AND the edit week; closing it turns them off. It closes on a page change, a week change and a
+   sign-in or sign-out (VIEW_RESET below) — never on a tap outside it (the ALL AVAIL window's rule, D38). */
+export type ChgWin = { day: string; tab: 'new' | 'all' | 'out'; group: 'who' | 'where'; bar?: boolean }
+export let CHGWIN: ChgWin | null = null
+export let CHGWIN_BOX: AvailBox | null = null
+/* the groups he folded or unfolded by hand (by the group's key) — a group with something new opens by itself, the rest
+   start folded (D167 (4)) */
+export const CHGFOLD = new Map<string, boolean>()
+export function setChgWin(v: ChgWin | null) {
+  if (!v) { CHGWIN_BOX = null; CHGFOLD.clear() }
+  CHGWIN = v
+  setHistMode(!!v)
+}
+export function setChgWinBox(b: AvailBox | null) { CHGWIN_BOX = b }
 export function secDefOfferSeq(){ return secDefSeq }
 /* the two pages that ARE a week, and the scroller each one owns */
 export const WEEK_EL:any={viewsched:'vWeek',editsched:'eWeek'}
@@ -476,6 +497,9 @@ export function setPage(p:any){
      on one would list the wrong crowd on the other (D44). The week and session
      halves are in VIEW_RESET below. */
   if(p!==CURPAGE)setAvailWin(null);
+  /* …and the changes window, for the same reason ([DRAFT-PENDING]) — Edit Schedule and View-only Sched show different
+     copies of a day, so a list opened on one would jump to the wrong copy on the other */
+  if(p!==CURPAGE&&CHGWIN)setChgWin(null);
   /* THE ONE-SHOT CONFIRMS CLEAR ON ANY NAVIGATION (their own doctrine, RESTARM / UNPUBARM
      below): a page change — and so the admin's View-as-member flip, which changes page —
      drops an armed "Discard N edits & load" and an armed "Withdraw — confirm", so coming
@@ -842,6 +866,10 @@ export const VIEW_RESET: { name: string; scopes: ResetScope[]; reset: () => void
      still does not apply to this window: a click on the schedule behind it
      must never close it (D38). */
   { name:'AVAILWIN', scopes:['session','week'], reset:()=>setAvailWin(null) },
+  /* the changes window: a new week is new days, a new person has his own "new to you" ([DRAFT-PENDING]) */
+  { name:'CHGWIN', scopes:['session','week'], reset:()=>setChgWin(null) },
+  /* its groups' folds go with it (setChgWin(null) clears them too — listed so the registry says so) */
+  { name:'CHGFOLD', scopes:['session','week'], reset:()=>CHGFOLD.clear() },
   /* week-only: the palette day and the "set default?" offer are keyed to the
      week being left; resetSession clears the offer through setPage instead */
   { name:'ROSDAY',     scopes:['session','week'], reset:()=>setRosDay(0) },   // [ACCOUNTS]: the next person starts on the first day (Astra code read)

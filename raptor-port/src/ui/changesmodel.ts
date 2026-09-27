@@ -16,7 +16,12 @@
      the admin's icon counts the week, a line once however many of its days it covers. */
 import { ELOG, elogWeekRows, rowTouches, weekDates, elogWho, elogVal, isPersonKey, type ELogRow } from '../engine/editlog'
 import { CURWEEK } from '../engine/waves'
-import { isNewToMe } from '../state/changes'
+import { isNewToMe, SEEN_VER } from '../state/changes'
+import { me } from '../state/perms'
+import { HOOKS } from '../engine/hooks'
+import { DAYS } from '../engine/data'
+import { posKey } from '../engine/rowids'
+import { dayApproved } from '../engine/publish'
 
 export type Sect = 'fly' | 'duty' | 'prog' | 'sim' | 'ground' | 'note' | 'abs' | 'quals' | 'day'
 export const SECT_ORDER: Sect[] = ['fly', 'duty', 'prog', 'sim', 'ground', 'note', 'abs', 'quals', 'day']
@@ -46,6 +51,7 @@ export type CLine = {
   rows: ELogRow[]; seqs: number[]; t: number; pid: string | null; who: string
   title: string; text: string; from: string; to: string
   sect: Sect; fresh: boolean; date: string | null
+  key: string; iid?: string      // where a tap takes the schedule: the cell (a move — the place he reached), or the input
 }
 
 /* one row in words */
@@ -78,14 +84,14 @@ export function linesFor(dates: string[], isNew: IsNew = r => isNewToMe(r)): CLi
         out.push({
           rows: [a, b], seqs: [a.seq, b.seq], t: Math.max(a.t, b.t), pid: a.pid ?? null, who: elogWho(a),
           title: elogVal(on, 'to'), text: `moved from ${off.lbl} to ${on.lbl}`, from: '', to: '',
-          sect: sectionOf(on), fresh: isNew(a) || isNew(b), date: on.date,
+          sect: sectionOf(on), fresh: isNew(a) || isNew(b), date: on.date, key: on.key,
         })
         i++
         continue
       }
     }
     const w = words(a)
-    out.push({ rows: [a], seqs: [a.seq], t: a.t, pid: a.pid ?? null, who: elogWho(a), ...w, sect: sectionOf(a), fresh: isNew(a), date: a.date })
+    out.push({ rows: [a], seqs: [a.seq], t: a.t, pid: a.pid ?? null, who: elogWho(a), ...w, sect: sectionOf(a), fresh: isNew(a), date: a.date, key: a.key, ...(a.iid ? { iid: a.iid } : {}) })
   }
   return out.reverse()
 }
@@ -129,9 +135,47 @@ export function dayCounts(isNew: IsNew = r => isNewToMe(r)): Record<string, { fr
   }
   return out
 }
+/* ONE DAY'S COUNTS for the day's chip (ui/html.ts dayStatHTML — drawn on every render of every day heading), memoised
+   on everything that can change them: the history (its next number and its length — a sweep shortens it), the seen
+   record, the loaded week and who is looking */
+let MEMO = { k: '', v: {} as Record<string, { fresh: number; all: number }> }
+export function chgDayCounts(di: number): { fresh: number; all: number } {
+  const k = `${ELOG.next}|${ELOG.rows.length}|${SEEN_VER}|${CURWEEK}|${me() || ''}`
+  if (MEMO.k !== k) MEMO = { k, v: dayCounts() }
+  const d = weekDates(CURWEEK)[+di]
+  return (d && MEMO.v[d]) || { fresh: 0, all: 0 }
+}
+
 /* the admin's icon: what is new to you across the loaded week, a line once */
 export function weekNew(isNew: IsNew = r => isNewToMe(r)): number {
   return linesFor(weekDates(CURWEEK), isNew).filter(l => l.fresh).length
 }
 /* the rows of the loaded week, for the window's "Mark all as seen" and the chip's memo */
 export const weekRows = () => elogWeekRows(CURWEEK)
+
+/* ---- THE OG TAG'S PLACES ([DRAFT-PENDING] — the owner's D172; Astra DP-11) ----
+   The positional keys of the pucks, on the loaded week's days NOT yet published, whose place holds a change new to the
+   person looking: a man put on a place (or moved onto it); a man taken off leaves no puck and no tag (the chip and the
+   window carry that). Built once per change of anything it reads, then a set lookup per puck — alAttr is the hot paint
+   path. */
+let OG = { ver: -1, next: -1, len: -1, wk: '', who: '', set: new Set<string>() }
+function ogSet(): Set<string> {
+  const who = me() || ''
+  if (OG.ver === SEEN_VER && OG.next === ELOG.next && OG.len === ELOG.rows.length && OG.wk === CURWEEK && OG.who === who) return OG.set
+  const set = new Set<string>()
+  if (who) {
+    const days = weekDates(CURWEEK)
+    for (const l of linesFor(days)) {
+      if (!l.fresh || !l.key || !isPersonKey(l.key) || l.date == null) continue
+      const di = days.indexOf(l.date)
+      if (di < 0 || dayApproved(di)) continue
+      const on = l.rows.find(r => r.key === l.key)
+      if (!on || !on.to || on.to === '—') continue
+      const pk = posKey(l.key, DAYS)
+      if (pk != null) set.add(String(pk))
+    }
+  }
+  OG = { ver: SEEN_VER, next: ELOG.next, len: ELOG.rows.length, wk: CURWEEK, who, set }
+  return set
+}
+HOOKS.newToMe = (key: any) => { const s = ogSet(); return s.size > 0 && s.has(String(key)) }

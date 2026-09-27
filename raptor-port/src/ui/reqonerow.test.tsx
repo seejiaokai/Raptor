@@ -23,6 +23,10 @@ import { PEOPLE } from '../engine/people'
 import { boardSignHTML, switchDraft } from './board'
 import { pendListHTML } from './pendlist'
 
+/* the day's WAITING-TO-GO-OUT chip — since [DRAFT-PENDING] (28 Sep 26) the same `.dpend` class also carries the
+   changes window's "N new" / "N changes" chip, which is not a pending count (D168) */
+const PEND_CHIP = '.dpend:not(.dnew):not(.dchg)'
+
 const MON = 0, TUE = 1
 let pristine: any[], inputs0: string
 const FOUR: Array<[string, string]> = [['cur', 'ignite'], ['sked', 'bane'], ['plan', 'stiff'], ['appr', 'pump']]
@@ -50,8 +54,8 @@ const rowsOf = (inp: any) => DAYS.flatMap((d: any, di: number) => ((d && d.groun
 /* the day's count as each surface reads it */
 const counts = (di: number) => ({
   engine: dayShownPendCount(di),
-  week: num(weekEdit(di).querySelector('.dpend')?.textContent),
-  board: num(boardStrip(di).querySelector('.dpend')?.textContent),
+  week: num(weekEdit(di).querySelector(PEND_CHIP)?.textContent),
+  board: num(boardStrip(di).querySelector(PEND_CHIP)?.textContent),
   info: num(el(dayInfoHTML(di)).querySelector('.dip-pend')?.textContent),
   list: el(pendListHTML(di)).querySelectorAll('.pl-item').length,
 })

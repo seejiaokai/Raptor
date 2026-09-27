@@ -88,6 +88,11 @@ export const HOOKS = {
      nothing, a reused callsign inherits nothing (the one-identity rule). Headless and
      for someone without access: null. */
   whoamiId: (): string | null => null,
+  /* THE OG TAG ([DRAFT-PENDING], the owner's D172): does the puck at this (positional) key, on a day NOT yet published,
+     hold a change NEW TO the person looking? Per PLACE, never per person (Astra DP-11). The answer is the viewer's
+     (the change history and his seen record live in state/ui), so it arrives as a hook — ui/changesmodel.ts installs
+     it. Headless, and for nobody signed in: false, so the emitted HTML stays byte-identical. */
+  newToMe: (_key: any): boolean => false,
   /* the board's own dialog state (the CX-with-a-reason box, Sort all's
      confirm) lives in ui/board.ts as module `let`s, not here — but
      state/view.ts's closeBoardState() needs to clear them the moment the

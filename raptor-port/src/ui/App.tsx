@@ -11,7 +11,7 @@ import { Shell } from './Shell'
 import { SchedBoard, CxDialog, SortAllDialog } from './SchedBoard'
 import { InputEditor } from './inputedit'
 import { DocViewer } from './DocViewer'
-import { HistoryModal } from './HistoryModal'
+import { ChangesWindow } from './ChangesWindow'
 import { MedMoveConfirm } from './MedMoveConfirm'
 import { DutyTplModal } from './DutyTplModal'
 import { WaveTplModal } from './WaveTplModal'
@@ -47,5 +47,5 @@ export function App() {
   const who = roleOf()
   if (who === 'pending' || who === 'off') return <AccessScreen />
   if (who === 'guest') return <GuestApp />
-  return <><Shell /><SchedBoard /><CxDialog /><SortAllDialog /><HistoryModal /><InputEditor /><MedMoveConfirm /><DocViewer /><DutyTplModal /><WaveTplModal /><DayTplModal /><DraftsModal /><SecDefaultSnackbar /><AvailWindow /></>
+  return <><Shell /><SchedBoard /><CxDialog /><SortAllDialog /><InputEditor /><MedMoveConfirm /><DocViewer /><DutyTplModal /><WaveTplModal /><DayTplModal /><DraftsModal /><SecDefaultSnackbar /><AvailWindow /><ChangesWindow /></>
 }

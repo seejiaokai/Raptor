@@ -31,6 +31,7 @@ import { PEOPLE } from '../engine/people'
 import { dateOrd } from '../engine/inputs'
 import { parseVerId, dayIso } from '../engine/verid'
 import { qualCols } from '../engine/qualcols'
+import { actorIsAdmin } from './perms'
 
 /* ---- the reason a door hands in (inside its command) ---- */
 const REASONS = new Map<string, string>()
@@ -129,7 +130,7 @@ function warLines(env: CommitEnvelope, approvedFor: Set<string>, backToBid: Set<
     for (const r of al) if (!bm.has(r.id)) came.set(r.id, { rec: r, pid, date })
     for (const r of al) { const o = bm.get(r.id); if (o && !same(o, r)) both.push({ was: { rec: o, pid, date }, now: { rec: r, pid, date } }) }
   }
-  const admin = env.actor && env.actor.role === 'admin'
+  const admin = actorIsAdmin(env.actor)
   const say = (x: R, what: string, extra: any = {}) =>
     logAction(null, `Leave War · ${cs(x.pid)} · ${x.rec.code || ''} ${dayWord(x.date)}${what ? ': ' + what : ''}`.replace('  ', ' '), { date: x.date, sect: 'abs', ...extra })
   /* a request that left one day and reached another is a MOVE (the record keeps its id) */

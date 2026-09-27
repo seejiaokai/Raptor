@@ -149,7 +149,8 @@ describe('clear the edit history', () => {
   /* rows stamped at LOCAL noon, because the sweep works in local calendar
      days — the dates the History list prints */
   const at = (y: number, m: number, d: number) => new Date(y, m - 1, d, 12).getTime()
-  const row = (t: number, lbl: string) => ({ t, who: 'BANE', di: null, key: '', lbl, from: '', to: '' })
+  let seq = 0
+  const row = (t: number, lbl: string) => ({ seq: ++seq, t, who: 'BANE', di: null, date: null, key: '', lbl, from: '', to: '' })
   beforeEach(() => {
     elogClear()
     ELOG.rows.push(row(at(2026, 1, 5), 'january'), row(at(2026, 3, 1), 'march'), row(at(2026, 7, 14), 'july'))

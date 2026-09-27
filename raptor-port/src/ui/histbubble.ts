@@ -111,7 +111,8 @@ export function hideHistBub() {
    the prefix is put back here. Nothing new is added to the builders for this
    — a data-histkey on every cell would be several hundred extra attributes on
    a surface with a measured DOM ceiling, to repeat an address already there. */
-const CELL_SEL = '[data-bfld],[data-slot],[data-store],[data-bombs],[data-area],[data-atime],[data-intimes],[data-txt]'
+/* `data-inprow` ([DRAFT-PENDING], Astra DP-08): a row under Unavailable — an input's own address, `iu:<iid>` */
+const CELL_SEL = '[data-bfld],[data-slot],[data-store],[data-bombs],[data-area],[data-atime],[data-intimes],[data-txt],[data-inprow]'
 function cellOf(t: EventTarget | null) {
   const el = (t as HTMLElement | null)
   if (!el || !el.closest) return null
@@ -181,6 +182,7 @@ function keyOf(el: HTMLElement) {
   if (d.area) return 'ar:' + d.area
   if (d.atime) return 'at:' + d.atime
   if (d.intimes) return 'it:' + d.intimes.replace('|', '.')
+  if (d.inprow) return 'iu:' + d.inprow
   return ''
 }
 

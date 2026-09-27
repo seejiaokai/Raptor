@@ -3,6 +3,7 @@
    the palette renders the verbatim paletteHTML and re-hangs on every store
    change (its scroll survives unchanged markup, as the reference's setHTML
    guarantee had it — the diff here is the innerHTML comparison). */
+import { wireHistBubble } from './histbubble'
 import { useEffect, useRef } from 'react'
 import { DAYS } from '../engine/data'
 import { HOOKS } from '../engine/hooks'
@@ -186,6 +187,12 @@ export function EditWeek() {
      the week only the section (.dsec) and wave (.go) grips exist — line reorder
      stays board-only — so the row branch of the machine simply never fires here. */
   useEffect(() => wireRowDrag(ref.current!), [])
+  /* HISTORY MODE ON THE EDIT WEEK (the owner's D116, 25 Sep 26 — "Can u make the edit schedule the same as the way
+     schedule board functions?"; [DRAFT-PENDING], Astra DP-09): the same bubble on a changed detail — hover on a desktop,
+     tap on a phone — wired once on the week's own root (the days under it are re-hung by their string diffs, so a
+     listener on a day would be thrown away). ONE History mode shared with the board (HISTMODE), on while the changes
+     window is open. Its tap never stops the edit: a tap still arms and still edits (histbubble.ts). */
+  useEffect(() => wireHistBubble(ref.current!), [])
 
   return <div className="week" id="eWeek" ref={ref} />
 }

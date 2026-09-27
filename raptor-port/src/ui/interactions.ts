@@ -9,7 +9,9 @@ import { DAYS } from '../engine/data'
 import { PEOPLE, isSpecial } from '../engine/people'
 import { dayApproved, signClear, markEdit, dayCurVer, dayDiscardCount, verLabel, protectedWeek, alColor, nextSeq, daySnapOf, rowsLeftOut } from '../engine/publish'
 import { posKey } from '../engine/rowids'
-import { openPendList, closePendList } from './pendlist'
+import { closePendList } from './pendlist'
+import { openChanges } from './changesopen'
+import { weekDates } from '../engine/editlog'
 import { draftSelect, draftVerLabel, loadVersionToWorkingCopy, LOADLEFT, LOADMOVED, ROWSLEFT, rowsLeftSaid, inputsLeftSaid } from '../engine/drafts'
 import { HOOKS } from '../engine/hooks'
 import { canEditSched } from '../state/auth'
@@ -525,15 +527,17 @@ export function routeClick(e: MouseEvent) {
     return
   }
 
-  /* "N PENDING ▾" — the list of what will go out as the day's next AL (owner, D99 + D100, 25 Sep 26;
-     ui/pendlist.ts). Drawn by the day head on the edit week and on the board's strip (html.ts dayStatHTML),
-     so it is routed here, at the document, like data-alpub. Scheduler-only, like the button itself; a tap on a
-     row goes through the ONE jump below. */
-  const pl = t.closest('[data-pendlist]') as HTMLElement | null
+  /* THE DAY'S CHIP OPENS THE ONE CHANGES WINDOW ([DRAFT-PENDING], 28 Sep 26 — the owner's D168, D171 (3)): "N pending"
+     on the tab that lists what will go out (D99, D100 — the list that used to pop up under it), "N new" on New to you,
+     "N changes" on All changes, for that day. Drawn by every day heading (html.ts dayStatHTML) — the edit week, the
+     board's strip, View-only Sched — so routed here, at the document. A tap on a line goes through the ONE jump below;
+     the window stays open (D167). */
+  const pl = t.closest('[data-pendlist],[data-chgday]') as HTMLElement | null
   if (pl) {
     e.stopPropagation()
-    if (!canEditSched()) return
-    openPendList(+pl.dataset.pendlist!, pl, (keys, di) => jumpToChange(keys, di))
+    const di = +(pl.dataset.pendlist ?? pl.dataset.chgday!)
+    const iso = weekDates(CURWEEK)[di]
+    if (iso) openChanges(iso, pl.dataset.pendlist != null ? 'out' : (pl.dataset.chgtab === 'new' ? 'new' : 'all'))
     return
   }
 
@@ -1140,7 +1144,7 @@ export function routeClick(e: MouseEvent) {
      reason for this line and is no longer what stops it — `.histbub` sits
      below `.modal` in the stack since the stacking fix (scheduler.css), which
      is what covers the other seven boxes this one call site never did. */
-  if (t.closest('[data-histopen]')) { hideHistBub(); setHistList('all'); notify(); e.stopPropagation(); return }
+  /* (the board's "☰ Edit history · N changes" line is gone — the changes window is the list, [DRAFT-PENDING] D168) */
 
   /* MUTE a specific check (owner, Aug 26 — "turn off that specific warning
      advisory … but if things change that warning will appear again"). Admin-only,

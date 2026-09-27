@@ -10,6 +10,9 @@ import { weekWindow } from './weeknav'
 import { CalIcon, XlsIcon, PdfIcon, HistIcon, HlIcon, SrchIcon } from './icons'
 import { rulesOffCount } from '../engine/rules'
 import { isAdmin, me, mayViewAsMember } from '../state/perms'
+import { toggleChanges } from './changesopen'
+import { weekNew } from './changesmodel'
+import { CHGWIN } from '../state/view'
 import { waitingCount, accessAlert } from '../state/accounts'
 import { WelcomeBack } from './WelcomeBack'
 import { openAdminUsers } from './adminopen'
@@ -36,7 +39,7 @@ import { routeClick } from './interactions'
 import { routeFocusOut, routeKeyDown } from './textedit'
 import { DayPop, InsightsModal, AirPop } from './Modals'
 import { WeekCal } from './WeekCal'
-import { setInsights, setDrawer, setWeekCal, setHistList, setInpEdit, setOilAsk } from './pops'
+import { setInsights, setDrawer, setWeekCal, setInpEdit, setOilAsk } from './pops'
 import { Drawer } from './Drawer'
 import { exportCSV, schedRows, publishedDays } from './export'
 import { printSchedPDF } from './printpdf'
@@ -352,8 +355,18 @@ export function Shell() {
               if (oilUndoBoundary()) { toast('Left OIL Earn — the next undo would change the day itself', 'ok'); notify(); return }
               const r = globalUndo(); if (!r.ok && r.reason) toast(r.reason, 'warn'); notify() }}><span className="bi">↶</span><span className="bl"> Undo</span></button>
             <button className="abtn hbtn" id="redoBtn" title={us.redoLabel ? `Redo — ${us.redoLabel}` : 'Redo'} disabled={!us.canRedo} onClick={() => { const r = globalRedo(); if (!r.ok && r.reason) toast(r.reason, 'warn'); notify() }}><span className="bi">↷</span><span className="bl"> Redo</span></button>
-            <button className="abtn" id="histBtn" title="Edit history — every change this session"
-              onClick={() => { setHistList('all'); notify() }}><span className="bi"><HistIcon /></span><span className="bl"> Edit history</span></button>
+            {/* THE CHANGES DOOR ([DRAFT-PENDING], 28 Sep 26 — the owner's D171: "For admin, instead of changes on a
+                desktop, just show the icon at the top … Ok week"): the clock ICON, no word, on desktop and phone, where
+                "Edit history" stood; its gold number is what is new to you across the WHOLE loaded week (not the day in
+                view, which would jump as the week scrolls). It opens the one changes window on the week, on New to
+                you; a second tap closes it. Admins only — a member opens the window from a day's own count (D171 (1)).
+                Edit Schedule is the admin's page, so the door is his by where it sits; isAdmin() says so outright. */}
+            {isAdmin() ? (() => { const wn = weekNew(); return (
+              <button className={'abtn chgbtn' + (CHGWIN ? ' on' : '')} id="histBtn" aria-pressed={!!CHGWIN}
+                title={wn ? `Changes — ${wn} new to you this week` : 'Changes — every change this week, and who made it'}
+                aria-label={wn ? `Changes, ${wn} new to you this week` : 'Changes'}
+                onClick={() => { toggleChanges('week', 'new') }}><span className="bi"><HistIcon /></span>{wn ? <span className="chgnum">{wn}</span> : null}</button>
+            ) })() : null}
           </div>}
           {/* THE "VIEW AS" PICKER IS GONE ([ACCOUNTS], D166 (3), 26 Sep 26): signing in
               makes you your own callsign — the badge at the far right names him */}

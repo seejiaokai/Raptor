@@ -104,6 +104,9 @@ export function roleOf(s: any = SESSION): Who {
 }
 const actorRole = (a: Actor): Who =>
   a.role === 'system' ? null : a.role === 'admin' || a.role === 'member' || a.role === 'guest' || a.role === 'pending' || a.role === 'off' ? a.role : null
+/* was a committed change made by an admin? — the change history's Leave War lines say a request DELETED only when an
+   admin took it away ([DRAFT-PENDING]; a member's own bid coming off is not a decision) */
+export const actorIsAdmin = (a: Actor | null | undefined): boolean => !!a && actorRole(a) === 'admin'
 
 /* whose own-row rule applies: a person's id for an admin or a member; a pending
    principal's sign-in name for his own access request; nobody for a guest or an
