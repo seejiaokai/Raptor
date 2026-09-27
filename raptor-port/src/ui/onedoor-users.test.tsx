@@ -35,6 +35,8 @@ const signInAs = async (name: string, pass = 'x') => act(async () => { resetSess
 const P = (id: string): any => (PEOPLE as any)[id]
 const users = async () => { await signInAs('ad', 'a'); await act(async () => { setPage('admin'); notify() }) }
 const dot = (kind: 'signin' | 'roster', pid: string) => $(`[data-testid="dot-${kind}-${pid}"]`)?.getAttribute('aria-label')
+/* the dot's COLOUR too, not only its words (the break tests, 27 Sep 26: a Roster dot drawn green on an archived man passed) */
+const dotColour = (kind: 'signin' | 'roster', pid: string) => $(`[data-testid="dot-${kind}-${pid}"] i`)?.className
 const buttons = () => $$('[data-editing] .acc-acts button, [data-restoring] .acc-acts button').map(b => b.textContent)
 
 const mem: Record<string, string> = {}
@@ -142,6 +144,9 @@ describe('D310 / D322 / D323 — Archive and Restore on the row', () => {
     await click($('#accArchToggle'))
     expect(dot('signin', 'rocky')).toBe('Sign-in suspended')
     expect(dot('roster', 'rocky')).toBe('Archived')
+    expect(dotColour('roster', 'rocky'), 'the Roster dot is red').toBe('r')
+    expect(dotColour('signin', 'rocky'), 'the Sign-in dot is red').toBe('r')
+    expect(dotColour('roster', 'casper'), 'a man on the roster: green').toBe('g')
   })
 
   it('Restore asks the post-in date (today) and brings both back; he\'ll be asked to check his quals', async () => {

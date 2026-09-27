@@ -4311,7 +4311,7 @@ export function Matrix() {
           role={role}
           canDecide={canDecide(period.stage, role)}
           /* never on a deleted man (his posting is final — [POST-OUT-OUTCOMES], Fable F3) */
-          onPostOut={role === 'admin' && !sel.people.some(id => people.find(p => p.id === id)?.gone) ? (pid, from, outcome) => postOutOr(pid, from, outcome) : undefined}
+          onPostOut={role === 'admin' && !sel.people.some(id => people.find(p => p.id === id)?.gone || postingLocked(id)) ? (pid, from, outcome) => postOutOr(pid, from, outcome) : undefined}
           hasAccount={hasAccount}
           onMove={s => { setEventMoveSel(null); setEventMovePreview(null); setMoveSel(s) }}
           /* a PARTIAL write keeps the sheet up (keepOpen) so its "N written,
@@ -4579,14 +4579,16 @@ export function Matrix() {
              the archive switch, 19 Aug 26). The store sets their posting-out
              date; the greyed boxes and the manpower exclusion follow from it,
              and sync.ts's auto-archive pass reads the switch. */
-          onPostOut={role === 'admin' && !openPerson?.gone
+          /* [ONE-DOOR]: not for a man archived on Admin → Users — his postings are read only there (the walk's pictures,
+             27 Sep 26: the button could only be refused, and then said so twice); leave and OIL still place */
+          onPostOut={role === 'admin' && !openPerson?.gone && !postingLocked(open.id)
             ? (from, outcome) => { const why = postOutOr(open.id, from, outcome); if (why) return why; close() }
             : undefined}
           hasAccount={hasAccount(open.id)}
           blockedFor={o => postingBlocked(open.id, o)}
           /* Admin-only, the mirror of the above (owner, 20 Sep 26): the first
              day they ARE in the squadron. */
-          onPostIn={role === 'admin' && !openPerson?.gone
+          onPostIn={role === 'admin' && !openPerson?.gone && !postingLocked(open.id)
             ? from => { const why = postInOr(open.id, from); if (why) return why; close() }
             : undefined}
           /* Admin-only: record that he WORKED this day and earned OIL (owner,

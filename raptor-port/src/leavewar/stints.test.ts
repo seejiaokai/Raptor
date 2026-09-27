@@ -14,7 +14,7 @@ import {
 } from './state/store'
 import { memoryBackend, type StorageBackend } from './state/storage'
 import { projectPeople } from './state/raptorRoster'
-import { inSquadron } from './engine/people'
+import { inSquadron, postingSheetFor } from './engine/people'
 
 function reboot(be: StorageBackend) {
   lwInitStore(be)
@@ -190,5 +190,22 @@ describe('D320 — the stored record: tolerant, never backwards', () => {
     expect(p.gone).toBe(true)
     expect(p.to).toBe('2026-06-14')
     expect(p.past ?? []).toEqual([])
+  })
+})
+
+/* THE BREAK TESTS' THREE GAPS (bug-check order §8.4, 27 Sep 26): two wires no test watched — which sheet a gap day opens,
+   and the grid's row for a man seen only through an earlier stint. */
+describe('D320 — which posting sheet a day opens (postingSheetFor)', () => {
+  it('a day in the gap between two stints opens the Post in sheet of the stint he came back for; after the last, Post out', () => {
+    reboot(memoryBackend())
+    const id = anAircrewId()
+    expect(setPostOut(id, '2026-06-15')).toBe(true)                        // his first stint closes 14 Jun
+    expect(openStint(id, '2026-09-01')).toBe(true)                          // back from 1 Sep
+    const p = him(id)
+    expect(postingSheetFor(p, '2026-07-10'), 'a gap day').toBe('pi')
+    expect(postingSheetFor(p, '2026-06-10'), 'inside the earlier stint').toBeUndefined()
+    expect(postingSheetFor(p, '2026-09-10'), 'inside the current stint').toBeUndefined()
+    expect(setPostOut(id, '2026-11-01')).toBe(true)
+    expect(postingSheetFor(him(id), '2026-11-10'), 'after the current stint').toBe('po')
   })
 })

@@ -7,7 +7,7 @@ import { fireEvent, render, screen } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { PostInSheet, PostOutSheet } from './BidPicker'
 import { Matrix } from './Matrix'
-import { getState, initStore, setPostIn, setPostingLockLookup, setPostOut, setRole } from '../state/store'
+import { getState, initStore, openStint, setPostIn, setPostingLockLookup, setPostOut, setRole } from '../state/store'
 import { memoryBackend } from '../state/storage'
 
 const noop = () => {}
@@ -77,5 +77,36 @@ describe('the grid, a man whose posting dates are locked', () => {
     expect(setPostOut(id, null)).toBe(false)
     expect(getState().people.find(p => p.id === id)!.from).toBe('2026-06-10')
     expect(getState().people.find(p => p.id === id)!.to).toBe('2026-08-09')
+  })
+})
+
+/* …and on a day INSIDE his stint the bid sheet offers him no Post out and no Post in (the walk's pictures, 27 Sep 26:
+   the button could only be refused, and then said the reason twice) — leave and OIL can still be placed there. */
+describe('the grid, a locked man\'s own day', () => {
+  beforeEach(() => { initStore(memoryBackend()); setRole('admin') })
+  afterEach(() => setPostingLockLookup(null))
+  it('the bid sheet has no Post out and no Post in; the leave codes are still there', () => {
+    const id = getState().people[0]!.id
+    expect(setPostIn(id, '2026-06-10')).toBe(true)
+    expect(setPostOut(id, '2026-08-10')).toBe(true)
+    setPostingLockLookup(x => (x === id ? 'Hex was archived on Admin → Users — restore him there' : null))
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId(`cell-${id}-2026-07-01`))
+    expect(screen.queryByTestId('bid-postout')).toBeNull()
+    expect(screen.queryByTestId('bid-postin')).toBeNull()
+    expect(screen.getByTestId('bid-picker')).toBeTruthy()
+  })
+})
+
+/* the grid's row for a man seen only through an EARLIER stint (D320): his current stint starts after the war ends, yet
+   the months he was here keep his row (the break tests, 27 Sep 26 — no test watched `rowInWindow`'s past stints) */
+describe('the grid, a man whose only stint in this war is an earlier one', () => {
+  beforeEach(() => { initStore(memoryBackend()); setRole('admin') })
+  it('keeps his row for the months he was here', () => {
+    const id = getState().people[0]!.id
+    expect(setPostOut(id, '2026-07-01')).toBe(true)
+    expect(openStint(id, '2027-02-01')).toBe(true)
+    render(<Matrix />)
+    expect(screen.getByTestId(`row-${id}`)).toBeTruthy()
   })
 })
