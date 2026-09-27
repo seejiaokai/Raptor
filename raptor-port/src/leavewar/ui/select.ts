@@ -19,7 +19,9 @@
    Feel constants are caldrag's verbatim, for one muscle memory across the app. */
 
 export type Cell = { personId: string; date: string }
-export type Selection = { people: string[]; from: string; to: string; cells: Cell[] }
+/** A selection of days. `only` names the records a move carries when one was PICKED (the day's list, D266); absent,
+ *  a move carries every record on `cells` this role may move (D265). */
+export type Selection = { people: string[]; from: string; to: string; cells: Cell[]; only?: Array<{ personId: string; date: string; id: string }> }
 // An EVENT selection (owner, 27 Aug 26) — a date span on ONE event line. Events
 // live one row each, so there is no people axis; a drag never crosses lines.
 export type EventCell = { line: number; date: string }

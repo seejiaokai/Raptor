@@ -5316,7 +5316,7 @@ BidPicker's look and vocabulary, not instead of it.
     "will land here" over whatever it covers). Painted straight onto the cells
     (`paintLanding`/`clearLanding`, no React state). **It paints only what the
     commit would accept** (27 Aug 26 overnight pass): `Matrix.previewAt` asks
-    `moveProblem` — the validation half of `moveCells` itself, one body — and a
+    `moveRecordsProblem` — the validation half of `moveRecords` itself, one body — and a
     refused hover/stage clears the paint and puts the reason in the banner
     (on the phone a refused tap stages NO Confirm; the reason stands where the
     button would be). The first cut painted the in-range half of an off-grid
@@ -5334,21 +5334,65 @@ BidPicker's look and vocabulary, not instead of it.
     the banner shows **Confirm / Cancel**; Confirm commits, a fresh tap
     re-stages, Cancel exits. A SWIPE scrolls and never stages (only a clean tap
     fires). `movePreview` holds the staged day; the banner counts `movers`, not
-    the raw rectangle.
-  - The move itself is `moveCells(movers, delta)`, atomic — an occupied / Raptor
+    the raw rectangle — RECORDS, not days (D265): a morning and an afternoon bid
+    on one day are "2 entries" — and says what stays behind (" · 1 OIL award
+    stays", `stayingIn`: an award, leave filed on the Inputs page, approved leave
+    that cannot move now, a bid this role may not move).
+  - The move itself is `moveRecords(movers, delta)`, atomic — an occupied / Raptor
     / out-of-window landing refuses the whole move and says why in the banner.
     Its OWN day says "It is already on that day — pick another day." and stages
     no Confirm (it read "Nothing to move." — Fable's D262 scenarios, S6).
   - **ONE CHIP, ONE MOVE** (owner, D262, 27 Sep 26 — "click on a single chip …
     the move button should be enabled … The calendar can be removed"): the
-    one-day bid sheet's **Move** (in its decision row, the admin's in every stage
-    but a draft) is never greyed and has no date box — it PICKS THE CHIP UP into
-    this same move mode (`Matrix.tsx` sets `moveSel` to the one cell; `BidPicker`
-    `onMove`), so a single chip and a block move by one machine and one set of
-    landing rules. The old `DecisionSheet` (unmounted since 21 Sep 26) went with
-    its date box. **Changing by D264–D266 (27 Sep 26, `[LW-MOVE-STANDARD]`, not built yet):** a move will carry the
-    record it picked rather than the day's top one (a bid beside an OIL award moves alone), the day's list will move a
-    record by this same move mode (its date box goes), and the one-day and drag-selection sheets will share one layout.
+    one-day bid sheet's **Move** is never greyed and has no date box — it PICKS
+    THE RECORDS UP into this same move mode (`Matrix.tsx` sets `moveSel` to the
+    day, or to every day of a picked range — D335; `BidPicker` `onMove`), so a
+    single chip and a block move by one machine and one set of landing rules.
+    The old `DecisionSheet` (unmounted since 21 Sep 26) went with its date box.
+  - **A MOVE CARRIES THE RECORDS IT PICKED, NOT THE DAY'S TOP ONE** (owner, D265 /
+    D266 / D333, 27 Sep 26 — `[LW-MOVE-STANDARD]`; `store.ts` `movableRecords`,
+    `moveRecords`, `moveRecordsProblem`, `stayingIn`): every record on the chosen
+    days this role may move — a bid beside an OIL award, beside leave filed on the
+    Inputs page, beside a medical, or in the other half of a day holding approved
+    leave — travels ALONE; the award, the filed leave, the medical stay. The
+    **day's list** moves ONE record by this same move mode: each line that can
+    move has the one **Move**; it closes the list and picks up exactly that
+    record (`moveSel.only`, by its id) — its old date box is gone. **Who may move
+    is the store's one rule at every door** (D333): the admin (approved leave only
+    at open / closed — a published war's is finished paperwork); a member his own
+    bid while bidding is open, now on the one-day sheet and the list too, not only
+    by dragging. A refused bid moves too, landing undecided — unless a live bid
+    or an absence holds its half (history there stays — the final reads, FR3). A
+    block cutting a multi-day approved leave moves only the DAYS of it in the
+    block, and a moving bid may not land on the leave's untouched day (FR1); a
+    leave may land on the day a moving bid leaves (FR2). The approved-leave
+    door's answer at the commit is honoured: a refusal only the commit meets
+    rolls the whole move back and is said (FR3). A record gone from under a move
+    says so on the banner, and the next tap ends the move landing nothing (FR6).
+    The cell-shaped `moveCells`
+    / `moveProblem` / `movableCells` read the same records. A bid moved once
+    bidding has closed says "moved from …" on its own list line (a day whose top
+    record is an award shows no dotted mark for it — Fable's S4).
+  - **ONE FORMAT AND LOOK FOR THE TWO SHEETS** (owner, D264; his answers to the
+    mock-up `docs/mock/lw-move-standard.html`, D331–D335, 27 Sep 26): the one-day
+    sheet (`BidPicker`) and the drag-selection sheet (`SelectSheet`) show the same
+    rows in the same order — **Decide** (Ack · Approve · Refuse — the admin's, a
+    bid there) → **Selected** (**Move** · **Delete**) → **How much** → **Which
+    leave** → the admin's +OIL / PO / PI (one-day) or **PO** (a one-person block;
+    it read "Post out (PO)…"). The one-day sheet keeps **How many** at its top
+    (D335): a picked range widens what Decide, Move and Delete act on, as a drag
+    across those days does — Decide is drawn for a range whenever it would answer
+    something there, even picked from a day holding no bid (`decidableIn`, FR4). A row with nothing to act on is not drawn — Move only
+    where a record can move, Delete only where a Delete would change something
+    (`deletableIn`) — so an empty day opens on the leave. **Move and Delete are
+    ONE pair of buttons** (`SheetActions.tsx`) on the two sheets and the day's
+    list: **Move** the grey chip with a teal arrow ("⇄ Move", D330 / D334 — grey so
+    it never reads as a chosen, teal-filled chip; the arrow in the move mode's
+    teal); **Delete** the one word (D332 — the one-day sheet's and the list's
+    "Clear" became Delete; its confirms read "Delete also takes … — tap Delete
+    again") in a dashed grey edge, never red (beside Refuse on the list). The
+    list's buttons follow the sheets' order: Ack · Approve · Refuse · Move ·
+    Delete.
     **While a move is on** (the chip's, the drag-selection's
     "Move…" and the event move alike — one `wireMove`): **the grid scrolls at its
     edges** — the picked-up chip follows the mouse, so the mouse carried into the

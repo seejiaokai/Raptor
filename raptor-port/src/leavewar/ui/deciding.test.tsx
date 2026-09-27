@@ -248,7 +248,10 @@ describe('the one input window', () => {
     render(<Matrix />)
     fireEvent.click(screen.getByTestId(PENDING))
     expect(screen.queryByTestId('decide-ack')).toBeNull()
-    expect(screen.queryByTestId('decide-shift')).toBeNull()
+    /* MOVE LEFT THE DECISION ROW (D331 — order A: Decide, then Selected: Move · Delete), and who may move is the store's
+       one rule at every door (the mock-up's reading, uncorrected): the admin may move a bid in a draft war, as the
+       drag-selection's Move always could — the two sheets no longer answer differently. The decisions stay absent. */
+    expect(screen.getByTestId('decide-shift')).toBeTruthy()
   })
 
   it('a MEMBER gets no decisions on anybody’s input, their own included', () => {
