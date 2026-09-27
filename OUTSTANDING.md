@@ -1396,6 +1396,8 @@ Artifact), made by `raptor-port/scripts/handpass/am/mk-lw-move-standard.mjs` —
 first — recommended — or B new leave first), one word "Delete" for the one-day Clear and the block's Delete, a
 member's Move on his own bid's one-day sheet while bidding is open, and Move's look (his "same design and colour and be
 abit different": grey / blue / grey with an arrow — the arrow recommended; section 7). Nothing built before his answers.
+Fable's scenario design (bug-check order §4 rank 1): `raptor-port/docs/superpowers/specs/2026-09-27-lw-move-standard-scenarios-fable.md`
+(the roll-call, 32 ranked scenarios, six contradictions and how each is taken — stated on the mock-up page).
 
 ### [PO-RESTORE-POSTING] The Quals Restore clears a posting it did not make — low (Fable's final code read, N7, 26 Sep 26)
 Unchanged `main` code, found by Fable's read of the absence-record re-test: `sync.ts restoreArchivedPerson` (the Quals
