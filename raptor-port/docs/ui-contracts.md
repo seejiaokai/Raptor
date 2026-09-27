@@ -729,9 +729,10 @@ history).
   and the detail, so a rename since never loses it; an item listing several things names the newest — Fable P6, Astra
   03), **and for an input changed since the day went out** (a leave filed, edited, deleted, a request's filing — by the
   input's id), and sorts it by that time, newest first (Astra 02).
-- **A tap on an input's line** lands on its row wherever it is drawn — the programme, Unavailable, or Personal Inputs
-  (whose folded panel it opens on that day); a line about an input whose days are all outside the loaded week is listed,
-  not a button; a miss says "That input is not shown on this day" (Fable's final read, F5).
+- **A tap on an input's line** lands on its row wherever it is drawn NOW — the programme, Unavailable, or Personal Inputs
+  (whose folded panel it opens on that day) — on the chosen day when it is drawn there, else the first day it is (a line
+  shown on Monday by the day a leave LEFT goes to Tuesday, where it is — Astra's read of the fixes, 03); drawn on no day
+  of the loaded week, the line is listed, not a button; a miss says "That input is not shown on this day" (Fable F5).
 - **A move pairs into one line only within one day** — a man moved to another day is one line on each day, in the
   week's view as on the two days' chips (D109; Fable F7).
 - **What it deliberately does not do:** show on a guest's view (D215); change the day headings (D172 — ORIG keeps its

@@ -3189,12 +3189,18 @@ history, which the one changes window reads (`ui-contracts.md` §The one changes
   the INPUT's command) is a line of its own, "Leave War · Ranger · LL 2 Feb: bid taken away — an input covers it"
   (P10) — and the same reader (`crossLines`) says a bid or an OIL award a person's DELETE (or archive) took away plainly,
   "bid removed" / "OIL award taken away", "an input covers it" only when an input in that command does (Astra's final
-  read, 01); an APPROVED leave changed on the war is one line of what happened — "moved on the Leave War · 2 Feb → 3 Feb"
-  (shown on both days), "approval taken back — refused / acknowledged / back to a bid", or "approved leave deleted on
-  the Leave War" (`warInputLines`, Fable's final read, F2); a posting set, changed or taken back is a line
-  ("posting out 14 Oct · Overseas Sqn", "posting out taken back", "posting in …" — `postoutLines`, F4; the day it runs
-  is the posting pass's, no line; a man archived, restored or deleted in the same command is said by his Quals line
-  alone); a Quals line keeps the person and the detail by id (`sub`, `fld`), so "To go out" finds who changed it after a
+  read, 01); an APPROVED leave changed on the war is one line of what happened, read by the DAYS each man's approvals of
+  a type covered before and after the command — days gone and new: "moved on the Leave War · 3 Feb → 9 Feb" (shown on
+  both days, never between); gone only: "approval taken back — refused / acknowledged / back to a bid" or "approved leave
+  deleted on the Leave War"; new only: "approved on the Leave War" — so one day cut out of several (the war SPLITS the
+  Input), a day approved next to an approved leave (it EXTENDS the Input) and a bridge each read as the one decision
+  they are (`warInputLines` — Fable F2, FF1, FF3; Astra's read of the fixes, 01); a posting set, changed or taken back
+  is ONE line ("posting out 14 Oct · Overseas Sqn", "posting out changed · 14 Oct → 21 Oct", "posting out taken back",
+  "posting in …" — `postoutLines`, F4), decided by WHOSE act the command is: the posting command (`lw.postout` — its
+  sheet, and its Undo, before or after it ran) says the posting and leaves out the archive or SANS tick the posting made
+  (Astra 02, Fable FF2); Admin → Users' Archive, Restore and Delete are said by the man's Quals line alone; a man added
+  with his post-in date by "added to the roster" alone; the day a posting runs is the posting pass's, no line; every
+  absence line keeps whose it is (`sub`), so "To go out" finds a leave re-filed under another id (Fable FF4); a Quals line keeps the person and the detail by id (`sub`, `fld`), so "To go out" finds who changed it after a
   rename (Astra 03); a ledger line names its counter as the app does — OIL, ANNUAL (P11); "Discard marks" is a line
   per day it cleared, "Draft marks cleared (N)" — it clears marks, not changes (`commitDiscardPending`, P9); a door's reason
   lives only for the task it was handed in, so a refused door's reason never rides a later command (P12).

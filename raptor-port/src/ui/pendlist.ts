@@ -145,6 +145,11 @@ function editRowOf(di: number, it: PendItem) {
       if (!any) any = r
     }
     if (any) return any
+    /* …and when the input was re-filed under another id since (a move on the war files the moved days as a new Input),
+       the newest absence line about the SAME MAN on this day (every absence line keeps whose it is — Fable's read of the
+       fixes, FF4) */
+    const who = String(((it as any).was && (it as any).was.person) || ((it as any).now && (it as any).now.person) || '')
+    if (who && iso) for (let i = ELOG.rows.length - 1; i >= 0; i--) { const r = ELOG.rows[i]!; if (r.sect === 'abs' && r.sub === who && rowTouches(r, iso)) return r }
   }
   return lastEdit(it.keys || [])
 }

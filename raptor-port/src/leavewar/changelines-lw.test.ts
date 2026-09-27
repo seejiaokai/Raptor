@@ -13,7 +13,8 @@ import { signIn, sessionFor } from '../state/accounts'
 import { inpId } from '../engine/inputs'
 import { deletePerson } from '../state/person-delete'
 import { memoryBackend } from './state/storage'
-import { wireLeaveWarSync, postOut, undoPostOut } from './sync'
+import { wireLeaveWarSync, postOut, undoPostOut, runPoOutcomes } from './sync'
+import { PEOPLE } from '../engine/people'
 
 const ISNAP = JSON.stringify(INPUTS)
 let pid = ''
@@ -174,5 +175,106 @@ describe('a posting out', () => {
     const back = ELOG.rows.filter(r => /posting out/.test(r.lbl))
     expect(back.map(r => r.lbl), 'one line for taking it back').toHaveLength(1)
     expect(back[0]!.lbl).toMatch(/taken back/)
+  })
+})
+
+/* Astra's read of the fixes (ASTRA-FIX-01): ONE day changed out of an approved leave of several — the war cuts the Input
+   and SPLITS it (the day after the cut is a new Input of the same man and type), which must not read as the other days
+   leaving, nor as a fresh approval */
+describe('one day of a three-day approved leave', () => {
+  const threeDays = () => {
+    setCell(pid, '2026-02-03', 'LL'); setCell(pid, '2026-02-04', 'LL')
+    const had = new Set(INPUTS.map((x: any) => x.iid))
+    for (const d of ['2026-02-02', '2026-02-03', '2026-02-04']) setBidState(pid, d, 'approved')
+    const mine = INPUTS.filter((x: any) => x.person === pid && !had.has(x.iid))
+    expect(mine, 'the three approvals are one Input').toHaveLength(1)
+    elogClear()
+    return String((mine[0] as any).iid)
+  }
+  it('refused in the middle: ONE line, on that day only', () => {
+    const iid = threeDays()
+    expect(changeAbsenceById(pid, '2026-02-03', iid, 'refused')).toBeNull()
+    const rows = war()
+    expect(rows.map(r => r.lbl), JSON.stringify(rows.map(r => r.lbl))).toHaveLength(1)
+    expect(rows[0]!.lbl).toMatch(/refused/)
+    expect(rowTouches(rows[0]!, '2026-02-03')).toBe(true)
+    expect(rowTouches(rows[0]!, '2026-02-04'), 'the 4th did not change').toBe(false)
+  })
+  it('deleted in the middle: ONE line, on that day only', () => {
+    const iid = threeDays()
+    expect(changeAbsenceById(pid, '2026-02-03', iid, 'removed')).toBeNull()
+    const rows = war()
+    expect(rows.map(r => r.lbl), JSON.stringify(rows.map(r => r.lbl))).toHaveLength(1)
+    expect(rows[0]!.lbl).toMatch(/deleted/)
+    expect(rowTouches(rows[0]!, '2026-02-04'), 'the 4th did not change').toBe(false)
+  })
+  it('the middle day moved: ONE line, "moved", from that day to its new day', () => {
+    const iid = threeDays()
+    expect(moveAbsenceById(pid, '2026-02-03', iid, '2026-02-09')).toBeNull()
+    const rows = war()
+    expect(rows.map(r => r.lbl), JSON.stringify(rows.map(r => r.lbl))).toHaveLength(1)
+    expect(rows[0]!.lbl).toMatch(/moved/)
+    expect(rowTouches(rows[0]!, '2026-02-03')).toBe(true)
+    expect(rowTouches(rows[0]!, '2026-02-09')).toBe(true)
+    expect(rowTouches(rows[0]!, '2026-02-04'), 'the 4th did not move').toBe(false)
+  })
+})
+
+/* ASTRA-FIX-02: a posting taken back AFTER it ran — the take-back is the posting's decision, and it is ONE line, whatever
+   the posting had made (an archive, a SANS tick) */
+describe('a posting taken back after it ran', () => {
+  for (const outcome of ['overseas', 'sans'] as const) {
+    it(`${outcome}: ONE line, "posting out taken back" — not the Quals field it had changed`, () => {
+      resetSession(sessionFor(signIn('ad', 'a') as any)); setRole('admin')
+      /* a man no earlier test in this file has deleted or posted (the file's world is re-seeded per test, the roster's
+         marks are not) */
+      const pid = getState().people.map(p => p.id).find(id => !['bane', 'stiff'].includes(id) && (PEOPLE as any)[id] && !(PEOPLE as any)[id].deleted && !(PEOPLE as any)[id].archived && !(PEOPLE as any)[id].san && !(PEOPLE as any)[id].special)!
+      vi.useFakeTimers({ toFake: ['Date'] }); vi.setSystemTime(new Date(2026, 9, 14, 9, 0, 0))
+      try {
+        expect(postOut(pid, '2026-10-14', outcome)).toBe(true)
+        runPoOutcomes()
+        const P: any = (PEOPLE as any)[pid]
+        expect(outcome === 'overseas' ? P.archived : P.san, 'the posting ran').toBeTruthy()
+        elogClear()
+        expect(undoPostOut(pid)).toBe(true)
+      } finally { vi.useRealTimers() }
+      const l = ELOG.rows.map(r => r.lbl)
+      expect(l.filter(x => /posting out taken back/.test(x)), JSON.stringify(l)).toHaveLength(1)
+      expect(l.filter(x => /archived|SANS/.test(x)), JSON.stringify(l)).toHaveLength(0)
+    })
+  }
+})
+
+/* Fable's read of the fixes: FF3 — approving the day NEXT TO an approved leave extends that leave's Input (one record, not
+   two); it must read as the approval it is, never a delete. FF2 (a) — a posting that has run, re-dated: ONE "changed"
+   line. FF4 — every absence line keeps whose it is (by id), for "To go out" to find it after a move. */
+describe('Fable FF2-FF4', () => {
+  it('FF3: approving the day next to an approved leave is ONE line, "approved", on that day only', () => {
+    setBidState(pid, '2026-02-02', 'approved')
+    setCell(pid, '2026-02-03', 'LL')
+    elogClear()
+    setBidState(pid, '2026-02-03', 'approved')
+    const rows = war()
+    expect(rows.map(r => r.lbl), JSON.stringify(rows.map(r => r.lbl))).toHaveLength(1)
+    expect(rows[0]!.lbl).toMatch(/approved on the Leave War/)
+    expect(rows[0]!.lbl).not.toMatch(/deleted/)
+    expect(rowTouches(rows[0]!, '2026-02-03')).toBe(true)
+    expect(rowTouches(rows[0]!, '2026-02-02'), 'the 2nd was already approved').toBe(false)
+    expect((rows[0] as any).sub, 'whose leave it is, by id (FF4)').toBe(pid)
+  })
+  it('FF2 (a): a posting that has run, re-dated: ONE line, "posting out changed"', () => {
+    resetSession(sessionFor(signIn('ad', 'a') as any)); setRole('admin')
+    const alt = getState().people.map(p => p.id).find(id => !['bane', 'stiff'].includes(id) && (PEOPLE as any)[id] && !(PEOPLE as any)[id].deleted && !(PEOPLE as any)[id].archived && !(PEOPLE as any)[id].san && !(PEOPLE as any)[id].special)!
+    vi.useFakeTimers({ toFake: ['Date'] }); vi.setSystemTime(new Date(2026, 9, 14, 9, 0, 0))
+    try {
+      expect(postOut(alt, '2026-10-14', 'overseas')).toBe(true)
+      runPoOutcomes()
+      expect((PEOPLE as any)[alt].archived, 'the posting ran').toBeTruthy()
+      elogClear()
+      expect(postOut(alt, '2026-10-21', 'overseas')).toBe(true)
+    } finally { vi.useRealTimers() }
+    const l = ELOG.rows.map(r => r.lbl)
+    expect(l.filter(x => /posting out changed/.test(x)), JSON.stringify(l)).toHaveLength(1)
+    expect(l.filter(x => /archived/.test(x)), JSON.stringify(l)).toHaveLength(0)
   })
 })

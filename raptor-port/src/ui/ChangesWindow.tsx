@@ -22,7 +22,7 @@ import { linesFor, byWho, byWhere, dayCounts, type CLine } from './changesmodel'
 import { weekDates, elogWhen } from '../engine/editlog'
 import { CURWEEK } from '../engine/waves'
 import { DAYS } from '../engine/data'
-import { INPUTS, inpId } from '../engine/inputs'
+import { INPUTS, inpId, inputCoversDate } from '../engine/inputs'
 import { posKey } from '../engine/rowids'
 import { dayApproved, dayPendingItems, nextSeq } from '../engine/publish'
 import { markSeen } from '../state/changes'
@@ -47,11 +47,19 @@ export function jumpOf(l: CLine, days: string[], pick: string | null): { keys: s
     const keys: string[] = []
     /* an accepted request: its row on the programme first (Astra DP-08), then its row under Unavailable */
     DAYS.forEach((d: any, di: number) => (d.ground || []).forEach((g: any, ri: number) => { if (g && g.src === l.iid) keys.push(`g:${di}.${ri}`) }))
-    /* an input whose days are all outside the loaded week (moved away — its line shows here by the days it LEFT) has no
-       row on this week to land on: the line is listed, not a button (Fable's final read, F5) */
-    if (di0 < 0 && !keys.length) return null
+    /* the day it goes to is a day its row is DRAWN on now — its programme row's day, or a day its dates cover (under
+       Unavailable or Personal Inputs) — the chosen day only when it is one of them: a line shown on a day by the days the
+       input LEFT goes to where it is now (Astra's read of the fixes, 03); drawn on no day of this week, the line is listed,
+       not a button (Fable's final read, F5) */
+    const on = new Set<number>()
+    DAYS.forEach((d: any, di: number) => {
+      if (di >= days.length) return
+      if ((d.ground || []).some((g: any) => g && g.src === l.iid) || (d.dt && inputCoversDate(inp, d.dt))) on.add(di)
+    })
+    if (!on.size) return null
     keys.push(`iu:${l.iid}`)
-    const di = di0 >= 0 ? di0 : 0
+    const pi = pick ? days.indexOf(pick) : -1
+    const di = on.has(pi) ? pi : on.has(di0) ? di0 : Math.min(...on)
     return { keys, di }
   }
   if (!l.key || !inWeek(l.date)) return null

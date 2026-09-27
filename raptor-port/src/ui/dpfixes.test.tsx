@@ -267,3 +267,18 @@ describe('F5 — an input line lands, or is not a button', () => {
     expect(jumpOf(l, days, null)).toBeNull()
   })
 })
+
+/* Astra's read of the fixes (ASTRA-FIX-03): a line shown on Monday by the day an input LEFT goes to where the input is now */
+describe('an input moved from Monday to Tuesday, its line opened on Monday', () => {
+  it('goes to Tuesday, where its row is drawn', () => {
+    as('ad', 'a')
+    const d1: any = (DAYS as any)[1]
+    const r: any = { person: 'bane', date: d1.dt, yr: 2026, allday: true, type: 'LL', remarks: '', acc: 'u' }
+    inpId(r); INPUTS.unshift(r)
+    const days = ['2026-07-13', '2026-07-14', '2026-07-15', '2026-07-16', '2026-07-17', '2026-07-18', '2026-07-19']
+    const l: any = { iid: r.iid, key: '', rows: [{ date: '2026-07-14', wdate: '2026-07-13', iid: r.iid }] }
+    const j = jumpOf(l, days, '2026-07-13')
+    expect(j, 'still a button').not.toBeNull()
+    expect(j!.di, 'on Tuesday').toBe(1)
+  })
+})
