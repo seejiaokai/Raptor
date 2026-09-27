@@ -67,7 +67,7 @@ the Leave War, Q2 archiving makes published days read pending, Q3 saved records 
   today (so the posting pass never runs it again), a pending posting out replaced. Refused: yourself ("You can't archive
   yourself — ask another admin"), a deleted man, a placeholder. **The agent's reading, put to him:** Archive is "posted
   out from today" on the Leave War — his months here keep their record (D284 (2), D320) — where Quals' old ✕ took his
-  row off the war altogether ("should never have been here").
+  row off the war altogether ("should never have been here"). **His go, 27 Sep 26 (D323): "Ok what u recommend".**
 - **Restore** — `person.restore` extended (`restoreArchivedPerson(id, postIn)`, `restoreArchivedAs(id, cs, postIn)`):
   the archive lifted, **his account enabled whatever suspended it** (D322), the posting's SANS tick taken back (as today),
   **a new stint opened on the war from the post-in date** (D320: the closed stint kept as it was), `back = true` on his
@@ -111,7 +111,7 @@ reader and writer of `from` / `to` listed with its verdict) found these to chang
 pass change only through `inSquadron`; Undo post out keeps its meaning (the current stint's `to` cleared); a SANS
 posting's window rule (D283) acts on the current stint only.
 
-**Archive's war half** (`person.archive`): the current stint closed the day before today (`to = yesterday`) with outcome
+**Archive's war half** (`person.archive`; D323): the current stint closed the day before today (`to = yesterday`) with outcome
 `overseas` and `poDone = today`; if it already closed earlier (a posting that has run), its date stays; if it has not
 started yet (a post-in still to come), it is closed empty (`to = from − 1` — he was never here in it). Restore then opens
 a new stint (`openStint`).

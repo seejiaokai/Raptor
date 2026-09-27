@@ -29,6 +29,8 @@ the later merge keeps both (D78).
   6, 7, 8, 10 stand as built (`[POST-OUT-ASKS]` archived); **D322** the mock-up approved, with the agent's own calls on it
   (Archive one tap; Restore turns the sign-in back on even when suspended by hand before; no Enable on archived rows;
   renaming a roster man stays on Quals; A–Z with a search box).
+  **D323** Archive on Admin → Users is "posted out from today" on the war, his past kept; **D324** the backlog tidy now,
+  docs only, on its own branch `claude/backlog-tidy` from `main`, merged BEFORE this branch and `[LW-MOVE-STANDARD]`.
 - **Next, in order:** plan (Opus 5.5 high; `docs/superpowers/plans/`) → Fable and Astra red-team →
   build red first → walk both widths with pictures → FULL check (bug-check order; the PC lock for every full run) → his
   look → "merge live".
@@ -36,7 +38,7 @@ the later merge keeps both (D78).
   `claude/rulings-d264-d266-leave-war-f0f4ab`, ports 4177 / E2E 4195, rulings D330–D339). Agreed (D302): it stays out of
   `leavewar/sync.ts` and `setPostIn`; this chat stays out of BidPicker, SelectSheet, DayList, Matrix, select.ts and the
   move functions in `store.ts`; told it the several-windows change would touch `inSquadron` and the posting record.
-  This chat's ports: preview 4178, E2E 4196; rulings D320–D329 (D320–D322 used).
+  This chat's ports: preview 4178, E2E 4196; rulings D320–D329 (D320–D324 used).
 - **Traps:** `npm run docsize` FAILS on `main` already — `OUTSTANDING.md` 1433 lines against its 1330 tripwire; the
   Docs guard will be red on every branch until a docs-only tidy lands (put to him: its own tiny branch, merged first).
   Ports 4186/4187 held by the old presentation server. Scripted edits keep each file's line endings. Reported by the

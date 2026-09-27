@@ -930,3 +930,18 @@ resolved statuses always carry their resolution date
 **Suggested improvement:** (1) When a branch has merged in another open branch, compare that branch's current head with the merged commit (`git log <merged>..origin/<branch> -- <src dirs>`) before the final gates and before reporting ready; re-merge if code moved. (2) When CI and a local full run disagree, run the failing file ALONE before blaming CI speed — a test with a time window can fail on a FAST run and pass under load, the reverse of the usual flaky.
 
 **Principle:** Code taken from a sibling branch is a snapshot of work still moving. Re-check the sibling's head before calling your own work checked. A green full run is not proof a timing-sensitive test passes: load can hide a failure that shows when the test runs quickly.
+
+### Observation 306: A data-shape ruling is planned from a verdict inventory, and the old fields keep meaning "the current one"
+
+**Status:** OPEN
+**Date:** 2026-09-27
+**Session context:** [ONE-DOOR] plan — the owner ruled (D320) that the Leave War keeps every stint a man has in the squadron, where the code modelled ONE in/out window read in ~30 places. Numbered 306–309 by agreement with the parallel [LW-MOVE-STANDARD] chat (310–319).
+**Skill:** writing-plans
+**Type:** open-source
+**Phase/Area:** planning a change to a widely-read record
+
+**Issue:** The ruling touched a field read by dozens of call sites across two apps. A read-only sweep that returned a TABLE — file:line, the expression read, what it decides, and a verdict (only asks the shared predicate = stays right; reads the field directly for a range = must change; unsure + why) — made the design choice obvious: keep the existing fields meaning the CURRENT instance and add the history beside them, so every reader that asks about "now" stays untouched and only the dozen verdict-NEEDS-CHANGE sites move. Without the verdict column the list would have been a grep dump.
+
+**Suggested improvement:** In writing-plans, add a step for any change to a record's shape or meaning: commission (or do) a read-only inventory of every reader AND writer with a per-site verdict column, and prefer the design in which existing fields keep their current meaning and new meaning is added beside them. Put the inventory's NEEDS-CHANGE list into the plan as a table, and pin the "unchanged" half with tests.
+
+**Principle:** When a ruling changes what a widely-read field means, classify every reader first; choose the shape that leaves the most readers correct by construction, and plan only the ones the inventory says must move.

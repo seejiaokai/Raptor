@@ -959,7 +959,8 @@ from inside the app, or must IT assign it?** (decides whether "make Hex an admin
 here?", never "cut to a number"); the tripwire was raised to 1,260 so the rulings change D200/D201 did not trim under
 pressure (D29). **Do:** read the long items first (`[ARCH-STACK]`, `[DRAFT-PENDING]`, `[REPO-PRIVATE]`, `[OIL-AUTO-REMOVE]`,
 `[HUMAN-RETEST]`, `[GLOBAL-UNDO]`, `[OIL-READ-LEFTOVERS]`); move what is finished with `backlog-archive.mjs`, its lasting
-facts first given a live home; then set the tripwire back near what the file holds. **Place:** docs only, any time.
+facts first given a live home; then set the tripwire back near what the file holds. **Place:** docs only, any time. **His go, 27 Sep 26 (D324): now, on its
+own branch `claude/backlog-tidy` cut from `main`, merged BEFORE `[ONE-DOOR]` and `[LW-MOVE-STANDARD]` (his "merge live").**
 
 ### [PEEK-ISSUED] The desktop next-week preview on View-only Sched shows next week's working copy, even for a published day — a question for him (filed 26 Sep 26)
 Noted by the sweep behind `[LEAVE-LATE-PUBLISHED]` (Astra, its plan read; carried in `[LATE-PUB-FACE-LIVE]`, archived
@@ -1151,7 +1152,7 @@ approval, then the build, FULL check (permissions, roster, accounts). **APPROVED
 as proposed, Quals loses archive"** — narrows D217 and D295; the mock-up shows the look before the build. **MOCK-UP
 APPROVED 27 Sep 26 (D322)** — `raptor-port/docs/mock/one-door.html` is the design of record, with the agent's own calls on
 it (Archive one tap; Restore turns the sign-in back on even when suspended by hand before; no Enable on archived rows;
-renaming a roster man stays on Quals). **And D320 ("A"): the Leave War keeps every stint** — a man back from overseas reads
+renaming a roster man stays on Quals). **D323: Archive is "posted out from today" on the war, his past kept.** **And D320 ("A"): the Leave War keeps every stint** — a man back from overseas reads
 "away" between his posting out and his post-in, his months before as they were (today one in/out window per man; the
 build changes `inSquadron`, the war's posting record in `store.ts`, `rowInWindow`, Restore). **Next:** plan (Opus 5.5
 high) → Fable and Astra red-team → build red first → walk both widths → FULL check → his look → "merge live".
