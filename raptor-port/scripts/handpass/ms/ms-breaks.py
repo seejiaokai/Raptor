@@ -19,7 +19,7 @@ def edit(path, old, new):
 
 
 S = ['src/leavewar/movestandard.test.ts']
-U = ['src/leavewar/ui/movestandard.test.tsx']
+U = ['src/leavewar/ui/movestandard.test.tsx', 'src/leavewar/ui/movestandard-synced.test.tsx']
 OLD = ['src/leavewar/ui/moveone.test.tsx', 'src/leavewar/ui/deciding.test.tsx', 'src/leavewar/ui/daylist.test.tsx',
        'src/leavewar/ui/selectsheet.test.tsx', 'src/leavewar/ui/awardclear.test.tsx', 'src/leavewar/ui/rangeclear.test.tsx']
 ST = 'src/leavewar/state/store.ts'
