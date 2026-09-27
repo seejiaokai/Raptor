@@ -17,7 +17,7 @@ import { initStore, setSession, notify } from '../state/store'
 import { setSlotVal, slotVal, txtSet } from '../engine/slots'
 import { DAYS } from '../engine/data'
 import { rowsOf } from '../engine/rowids'
-import { elogClear, elogAllFor, elogGroups, logAction } from '../engine/editlog'
+import { elogClear, elogAllFor, elogGroups, logAction, elogVal } from '../engine/editlog'
 import { HOOKS } from '../engine/hooks'
 import * as view from '../state/view'
 import { openScheduler, closeScheduler } from './board'
@@ -294,8 +294,9 @@ describe('grouped by detail', () => {
     expect(sub.length).toBe(2)
     /* oldest first inside a group — the story, ending at what it says now */
     const all = elogAllFor(a)
-    expect(sub[0]!.textContent).toContain(all[0]!.to)
-    expect(sub[1]!.textContent).toContain(all[1]!.to)
+    /* the log keeps a person's id; the list says his callsign (elogVal — Fable F4, 28 Sep 26) */
+    expect(sub[0]!.textContent).toContain(elogVal(all[0]!, 'to'))
+    expect(sub[1]!.textContent).toContain(elogVal(all[1]!, 'to'))
     /* and a sub-row still jumps */
     expect(sub[0]!.className).toContain('hit')
   })
