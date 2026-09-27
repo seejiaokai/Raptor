@@ -78,6 +78,9 @@ import {
   lwStore,
   markPostingDone,
   forgetPersonFrom,
+  openStint,
+  closeStintOnArchive,
+  postingProblem,
   windowFor,
   setAccountLookup,
   setPostingBlockLookup,
@@ -87,10 +90,10 @@ import {
   subscribe as lwSubscribe,
 } from './state/store'
 import { HOOKS } from '../engine/hooks'
-import { deferEffect as cmdDeferEffect, commitProjection as cmdCommitProjection, commit as cmdCommit } from '../command'
+import { deferEffect as cmdDeferEffect, commitProjection as cmdCommitProjection, commit as cmdCommit, CmdRefused } from '../command'
 /* [POST-OUT-OUTCOMES] (27 Sep 26): the posting's outcomes cross the seam HERE, the one place the war meets Raptor */
-import { suspendForPosting, enableAfterPosting, lastAdminIfGone, accountOfPid } from '../state/accounts'
-import { markBack } from '../state/view'
+import { suspendForPosting, enableAfterPosting, lastAdminIfGone, accountOfPid, suspendForArchive, enableForRestore } from '../state/accounts'
+import { markBack, clearBack } from '../state/view'
 import { applyDelete, deleteCutoff, effectiveToday, stashPreflight } from '../state/person-delete'
 import { peopleStore, settingsStore, finishPeopleWrite } from '../state/people-settings-commit'
 import { schedStore, schedApplyEnd, resyncSchedBaseline } from '../state/sched-commit'
@@ -1556,12 +1559,15 @@ export function runPoOutcomes(): void {
    ONE place a Raptor command reaches the war's store — here, at the seam. */
 export function deletePersonOnWar(txn: any, id: string, cutoff: string, frozen: any = null): void {
   txn.enlist(lwStore)
-  /* a hidden man's row is kept only when he has a past there: a war record before the cutoff, or an input (leave,
-     medical, course…) the delete left him (it starts before the cutoff) — the war derives his leave from those */
+  forgetPersonFrom(id, cutoff, frozen && pastOnWar(id, cutoff) ? frozen : null)
+}
+/* a hidden man's row is kept only when he has a past there: a war record before the cutoff, or an input (leave,
+   medical, course…) that starts before it — the war derives his leave from those. One body for the delete and
+   Archive ([ONE-DOOR], round 1 — Fable F3 / Astra 7) */
+function pastOnWar(id: string, cutoff: string): boolean {
   const cut = +cutoff.replace(/-/g, '')
-  const past = !!frozen && (getState().wars.some(w => Object.keys(((w as any).recs || {})[id] || {}).some(d => d < cutoff))
-    || INPUTS.some((r: any) => r && r.person === id && (dateOrd(r.date, r.yr) ?? Infinity) < cut))
-  forgetPersonFrom(id, cutoff, past ? frozen : null)
+  return getState().wars.some(w => Object.keys(((w as any).recs || {})[id] || {}).some(d => d < cutoff))
+    || INPUTS.some((r: any) => r && r.person === id && (dateOrd(r.date, r.yr) ?? Infinity) < cut)
 }
 /* the war's picture of a man it does NOT show right now (a SANS man with Show SANS off), taken before a delete's mark
    takes him off every projection — null when the war already has his row (the kept rule then carries him) */
@@ -1589,7 +1595,7 @@ function deleteBlocked(id: string): string | null {
  * them on the very next pass. Quals, ticks and CAT were never touched by
  * archiving, so they come back exactly as they left.
  */
-export function restoreArchivedPerson(id: string): boolean {
+export function restoreArchivedPerson(id: string, postIn?: string): boolean {
   /* Write-path role backstop (bug hunt, 31 Aug 26): roster membership —
      archive and restore alike — is the admin's (the Quals page renders
      Restore for an admin only, and now draws the archive ✕ the same way).
@@ -1603,33 +1609,63 @@ export function restoreArchivedPerson(id: string): boolean {
      THE ROSTER now holds is not restored under it (D286 reading (1): Restore refuses while the name is taken and never
      renames anyone by itself — the Quals page then offers another callsign on the spot, restoreArchivedAs below, D295) */
   if (body.deleted) return false
+  /* [ONE-DOOR] (D308, D320): Restore on Admin → Users brings a post-in date — the war opens a new stint from it; without
+     one this is the posting's own undo (the Leave War's Undo post out — the same stint continues) */
+  if (postIn !== undefined && restoreProblem(id, postIn)) return false
   if (callsignProblem(body.cs, id)) return false
-  return restoreBody(id, null)
+  return restoreBody(id, null, postIn)
+}
+/* why Restore on Admin → Users would be refused ([ONE-DOOR], D308): not an admin, not an archived man, no whole date,
+   or a post-in on or before the day his stint closed (the store's one sentence). null when it would go ahead. */
+export function restoreProblem(id: string, postIn: string): string | null {
+  if (!mayManageRoster()) return 'Only an admin can restore someone'
+  const body = (PEOPLE as any)[id]
+  if (!body || !body.archived || body.special || body.deleted) return 'That person cannot be restored'
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(String(postIn ?? ''))) return 'Pick the post-in date'
+  const st = getState()
+  const cur = st.people.find(p => p.id === id) || st.postOuts[id]
+  return cur ? postingProblem(id, 'restore', postIn, cur) : null
 }
 /* THE ONE BODY OF "HE'S BACK" — Restore on Quals, Undo post out, Restore under another callsign. ONE command over the
    people, settings and war stores ([CMDL-FINISH] C10 — a single click is a single envelope): the posting cleared, the
    archive lifted, the account the POSTING suspended enabled again (D280: "on his return … his account can be enabled";
    `offBy: 'po'` only — one suspended by hand stays so), the SANS tick the posting made taken back — and the Quals prompt
    armed (D284: he returns as he was, and the admin is asked to check his quals; it changes nothing). `rename` — the
-   callsign he comes back under, in the same step (D295). */
-function restoreBody(id: string, rename: string | null): boolean {
+   callsign he comes back under, in the same step (D295).
+   ITS TWO MODES ([ONE-DOOR], round 1 — Fable F7), named so neither absorbs the other:
+   - UNDO (`postIn` undefined — the Leave War's Undo post out on a POSTING's archive): the posting cleared, the SAME
+     stint continues, only the suspension the posting made enabled (`offBy: 'po'`), the admin prompted, no welcome note
+     (he never left);
+   - RESTORE (`postIn` — Admin → Users, D308): a NEW stint on the war from the post-in date (D320; the day after his
+     stint closed reopens it — Fable F5), his sign-in enabled WHATEVER suspended it (D322), the admin prompted (D284)
+     and `back` set on his Person so HE is told on his first sign-in (D305 — every Restore, with or without an account:
+     Fable F12 / Astra 5). */
+function restoreBody(id: string, rename: string | null, postIn?: string): boolean {
   const body = (PEOPLE as any)[id]
   let ok = true
-  cmdCommit({
+  const r = cmdCommit({
     type: 'person.restore', scope: { module: 'people' } as any, meta: null,
     apply: (txn: any) => {
       txn.enlist(peopleStore); txn.enlist(settingsStore); txn.enlist(lwStore)
       if (rename != null && !renameCallsign(id, rename)) { ok = false; return }
-      setPostOut(id, null)
+      if (postIn === undefined) setPostOut(id, null)
       body.archived = false
       delete body.archivedBy
       if (body.sanBy === 'po') { body.san = false; if (body.quals) body.quals.san = false; delete body.sanBy }
-      enableAfterPosting(id)
+      if (postIn === undefined) enableAfterPosting(id)
+      else {
+        /* the war's picture of him when it holds no row (archived with no stint closed — his post-in was still to come),
+           taken now that the archive is lifted */
+        const identity = getState().people.some(p => p.id === id) ? undefined : projectPeople(true).find(p => p.id === id)
+        if (!openStint(id, postIn, identity)) throw new CmdRefused(restoreProblem(id, postIn) || 'That did not save')
+        enableForRestore(id)
+        body.back = true
+      }
       validate()
       finishPeopleWrite()
     },
   })
-  if (!ok) return false
+  if (!ok || (r && (r as any).ok === false)) return false
   markBack(id)
   raptorNotify()
   return true
@@ -1637,14 +1673,75 @@ function restoreBody(id: string, rename: string | null): boolean {
 /* Restore meeting a callsign now held by a man on the roster: he comes back under ANOTHER callsign, in one step
    ([POST-OUT-OUTCOMES], owner D295, 27 Sep 26 — "Can we just change the archived name directly?"). Refused with the one
    callsign rule's reason (blank, 14 letters, taken). null = done. */
-export function restoreArchivedAs(id: string, cs: string): string | null {
+export function restoreArchivedAs(id: string, cs: string, postIn?: string): string | null {
   if (!mayManageRoster()) return 'Only an admin can restore someone'
   const body = (PEOPLE as any)[id]
   if (!body || !body.archived || body.special || body.deleted) return 'That person cannot be restored'
   const want = String(cs ?? '').trim()
-  const bad = callsignProblem(want, id)
+  const bad = callsignProblem(want, id) || (postIn !== undefined ? restoreProblem(id, postIn) : null)
   if (bad) return bad
-  return restoreBody(id, want === body.cs ? null : want) ? null : 'That did not save'
+  return restoreBody(id, want === body.cs ? null : want, postIn) ? null : 'That did not save'
+}
+
+/* ARCHIVE ([ONE-DOOR], owner D309, D310, D322, D323 — 27 Sep 26): one tap on Admin → Users. ONE command over the people,
+   settings and war stores: archived (`archivedBy: 'admin'`), his sign-in suspended (D310 "Archive also suspends"),
+   his welcome note cleared, a SANS tick a posting made taken back (Fable F13), and on the war "posted out from today"
+   — his stint closed yesterday as a posting that has run, a posting still to come replaced (store.ts
+   closeStintOnArchive; D323). A man the war does not show now (a SANS man with Show SANS off) keeps his row only when
+   he has a past there (Fable F3 / Astra 7 — the delete's own test). Restore on Admin → Users is the ONE way back
+   (Fable F1 / Astra 2: the war's posting doors refuse him — adminArchived below). Not an Undo step: it writes the war's
+   posting record (Fable F14 — undo/timeline.ts defers that collection). */
+const OUTCOME_WORD: Record<string, string> = { overseas: 'Overseas Sqn', delete: 'Delete', sans: 'SANS' }
+const MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+const dayMon = (iso: string) => `${Number(iso.slice(8, 10))} ${MON[Number(iso.slice(5, 7)) - 1]}`
+export function archiveProblem(id: string): string | null {
+  if (!mayManageRoster()) return 'Only an admin can archive someone'
+  const body = (PEOPLE as any)[id]
+  if (!body || body.special) return 'That person cannot be archived'
+  if (body.deleted) return 'That person has been deleted'
+  if (body.archived) return `${body.cs} is already archived`
+  if (me() != null && id === me()) return "You can't archive yourself — ask another admin"
+  const a = accountOfPid(id)
+  if (a && a.on && lastAdminIfGone(id)) return `${body.cs} is the last admin who can sign in — he can't be archived until another admin can`
+  return null
+}
+export function archivePerson(id: string): { bad: string | null; said: string } {
+  const bad = archiveProblem(id)
+  if (bad) return { bad, said: '' }
+  const body = (PEOPLE as any)[id]
+  const today = effectiveToday()
+  const st = getState()
+  const hidden = warIdentityIfHidden(id)
+  const keepHidden = hidden && pastOnWar(id, today) ? hidden : undefined
+  const w0: any = st.people.find(p => p.id === id) || st.postOuts[id] || null
+  const pendingDate = w0 && w0.to && w0.to >= today ? addDays(w0.to, 1) : null
+  let replaced: string | null = null
+  const r = cmdCommit({
+    type: 'person.archive', scope: { module: 'people' } as any, meta: null,
+    apply: (txn: any) => {
+      txn.enlist(peopleStore); txn.enlist(settingsStore); txn.enlist(lwStore)
+      if (suspendForArchive(id) === 'lock') throw new CmdRefused(`${body.cs} is the last admin who can sign in — he can't be archived until another admin can`)
+      body.archived = true
+      body.archivedBy = 'admin'
+      delete body.back
+      if (body.sanBy === 'po') { body.san = false; if (body.quals) body.quals.san = false; delete body.sanBy }
+      replaced = closeStintOnArchive(id, today, keepHidden).replaced
+      validate()
+      finishPeopleWrite()
+    },
+  })
+  if (r && (r as any).ok === false) return { bad: (r as any).message || 'You are not allowed to do that', said: '' }
+  clearBack(id)
+  raptorNotify()
+  const said = `${body.cs} archived — his sign-in is suspended`
+    + (replaced && pendingDate ? `; his posting out on ${dayMon(pendingDate)} (${OUTCOME_WORD[replaced] || replaced}) is replaced` : '')
+  return { bad: null, said }
+}
+/* a man archived on Admin → Users: the war's posting doors refuse him — Restore there is the one way back (Fable F1) */
+export function adminArchived(id: string): string | null {
+  const body = (PEOPLE as any)[id]
+  return body && body.archived && !body.deleted && body.archivedBy === 'admin'
+    ? `${body.cs} was archived on Admin → Users — restore him there` : null
 }
 
 /**
@@ -1662,14 +1759,18 @@ export function restoreArchivedAs(id: string, cs: string): string | null {
 export function undoPostOutProblem(id: string): string | null {
   const body = (PEOPLE as any)[id]
   if (!body || body.deleted) return null
+  const here = adminArchived(id)
+  if (here) return here
   if (body.archived && body.archivedBy === 'po' && callsignProblem(body.cs, id))
-    return `${body.cs} is taken on the roster — restore him from Quals' Archived list under another callsign`
+    return `${body.cs} is taken on the roster — restore him on Admin → Users under another callsign`
   return null
 }
 export function undoPostOut(id: string): boolean {
   const body = (PEOPLE as any)[id]
   /* a DELETED man's posting is final ([POST-OUT-OUTCOMES], D287 — Fable F3) */
   if (body && body.deleted) return false
+  /* [ONE-DOOR] (Fable F1 / Astra 2): an Admin archive comes back only by Restore on Admin → Users */
+  if (adminArchived(id)) return false
   /* the Post out's OWN archive only (finding 4): a man archived by hand on the Quals page stays archived — the Undo
      then clears the date alone */
   if (body && body.archived && body.archivedBy === 'po') return restoreArchivedPerson(id)
@@ -1715,6 +1816,8 @@ function takeBack(id: string, write: () => boolean, keep: { archive?: boolean; s
    Delete — Admin → Users' door refuses the same (accounts.ts deleteAccountProblem); without this the pass deleted the
    signed-in admin on the spot (Fable's scenario 5). The sentence, or null. */
 export function postOutProblem(id: string, outcome: PostOutcome): string | null {
+  const here = adminArchived(id)
+  if (here) return here
   return outcome === 'delete' && me() != null && id === me() ? "You can't delete yourself — ask another admin" : null
 }
 export function postOut(id: string, from: string, archive: boolean | PostOutcome = true): boolean {
@@ -1764,7 +1867,7 @@ export function wireLeaveWarSync(): void {
   /* [POST-OUT-OUTCOMES]: the posting's one line names his account only when he has one — the answer installed here, at
      the seam (the war never reads Raptor's accounts itself) */
   setAccountLookup(id => !!accountOfPid(id))
-  setPostingBlockLookup((id, outcome) => poHeldReason(id, outcome))
+  setPostingBlockLookup((id, outcome) => adminArchived(id) || poHeldReason(id, outcome))
   /* The VIEWING PERSON rides this same wire (owner, 17 Aug 26 — the matrix
      lights the viewer's row and the counter picker answers with their
      numbers). Since [ACCOUNTS] (D166 (4), 26 Sep 26) it is the SIGNED-IN person —

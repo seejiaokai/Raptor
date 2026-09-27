@@ -70,7 +70,9 @@ export const ACCOUNT_TYPES = ['access.request', 'access.decline', 'access.approv
   /* [POST-OUT-OUTCOMES]: a delete — his account and his person (D287, D290; state/person-delete.ts); he's back —
      Restore / Undo post out (leavewar/sync.ts restoreBody); a posting write that takes back what the posting made
      (sync.ts takeBack); the posting pass on its date (sync.ts runPoOutcomes — a reconciler) */
-  'person.delete', 'person.restore', 'lw.postout', 'lw.postoutRun'] as const
+  'person.delete', 'person.restore', 'lw.postout', 'lw.postoutRun',
+  /* [ONE-DOOR]: Archive on Admin → Users (leavewar/sync.ts archivePerson); the man's own "welcome back" seen (D305) */
+  'person.archive', 'person.backSeen'] as const
 
 /* ---- the seeds (demo data, D56 — wiped with everything else before the database) ----
    `us` stays Ranger (bane), as "View as" left every member test before; `ad` is Saber
@@ -248,7 +250,8 @@ function pidProblem(pid: string, selfId?: string): string | null {
   if (!p || p.special) return 'Pick the callsign or name this account belongs to'
   const other = accountOfPid(pid)
   if (other && other.id !== selfId) return `${p.cs} already has an account (${other.name})`
-  if (p.archived && !(selfId && accountById(selfId)?.pid === pid)) return `${p.cs} is archived — restore them on the Quals page first`
+  /* [ONE-DOOR] (D310): Restore lives on Admin → Users now (round 1, Fable F6 — the screen's own words follow the door) */
+  if (p.archived && !(selfId && accountById(selfId)?.pid === pid)) return `${p.cs} is archived — restore him on Admin → Users first`
   return null
 }
 const ADMIN_LOCK = 'At least one admin must keep access'
@@ -276,6 +279,12 @@ export function updateAccount(id: string, patch: { name?: any; role?: AccountRol
   if (patch.name !== undefined) { const n = normName(patch.name); const bad = nameProblem(n, a.id); if (bad) return bad; next.name = n }
   if (patch.pid !== undefined) { const bad = pidProblem(patch.pid, a.id); if (bad) return bad; next.pid = patch.pid }
   if (patch.role !== undefined) { if (!isAccountRole(patch.role)) return 'Pick member or admin'; next.role = patch.role }
+  /* [ONE-DOOR] (D322 — "no Enable on an archived row"): an archived man is never let sign in while archived — Restore
+     brings his sign-in back with him (the write path refuses what the screen no longer offers) */
+  if (patch.on === true && !a.on) {
+    const p = (PEOPLE as any)[a.pid]
+    if (p && p.archived && !p.deleted) return `${p.cs} is archived — restore him on Admin → Users`
+  }
   if (patch.on !== undefined) { next.on = !!patch.on; delete next.offBy }   // a hand Suspend / Enable is the admin's own
   const list = ACCOUNTS_LIST.map(x => x.id === a.id ? next : x)
   if (!list.some(canSignInAsAdmin)) return ADMIN_LOCK
@@ -364,6 +373,24 @@ export function suspendForPosting(pid: string): 'done' | 'none' | 'lock' {
 export function enableAfterPosting(pid: string): boolean {
   const a = accountOfPid(pid)
   if (!a || a.on || a.offBy !== 'po') return false
+  writeAccounts(ACCOUNTS_LIST.map(x => (x.id === a.id ? { id: x.id, name: x.name, role: x.role, pid: x.pid, on: true } : x)))
+  return true
+}
+/* [ONE-DOOR] (owner D310, D322, 27 Sep 26): ARCHIVE suspends his sign-in — as a hand suspension (no mark: Restore
+   enables whatever suspended it, D322 — round 1, Fable F10); 'lock' when it would leave no admin able to sign in (the
+   Archive is then refused whole, before anything is written — D306's rule). RESTORE enables it, whatever suspended it.
+   Mutations only — INSIDE the Archive / Restore command (it enlisted the settings store). */
+export function suspendForArchive(pid: string): 'done' | 'none' | 'lock' {
+  const a = accountOfPid(pid)
+  if (!a || !a.on) return 'none'
+  const list = ACCOUNTS_LIST.map(x => (x.id === a.id ? { id: x.id, name: x.name, role: x.role, pid: x.pid, on: false } : x))
+  if (!list.some(canSignInAsAdmin)) return 'lock'
+  writeAccounts(list)
+  return 'done'
+}
+export function enableForRestore(pid: string): boolean {
+  const a = accountOfPid(pid)
+  if (!a || a.on) return false
   writeAccounts(ACCOUNTS_LIST.map(x => (x.id === a.id ? { id: x.id, name: x.name, role: x.role, pid: x.pid, on: true } : x)))
   return true
 }

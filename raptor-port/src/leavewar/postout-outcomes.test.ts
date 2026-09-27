@@ -72,7 +72,9 @@ beforeEach(() => {
 afterEach(() => { resetSession(null); vi.restoreAllMocks() })
 
 describe('PO2 — overseas: archived on Quals and his account suspended, on the date, once', () => {
-  it('runs on the date; a hand Enable afterwards is never undone by a later pass', () => {
+  /* [ONE-DOOR] (D322, 27 Sep 26 — "no Enable on an archived row"): while he is archived his sign-in is NOT enabled by
+     hand any more — Restore brings it back with him; and a later pass never undoes that (the Round 1 rule, kept) */
+  it('runs on the date, once; while archived a hand Enable is refused (D322); after Restore a later pass never undoes it', () => {
     expect(postOut('bane', TODAY, 'overseas')).toBe(true)
     expect(P('bane').archived).toBe(true)
     expect(P('bane').archivedBy).toBe('po')
@@ -80,8 +82,11 @@ describe('PO2 — overseas: archived on Quals and his account suspended, on the 
     expect(a.on).toBe(false)
     expect(a.offBy).toBe('po')
     expect(war('bane')!.poDone).toBe(TODAY)
-    expect(updateAccount(a.id, { on: true })).toBe(null)
+    expect(updateAccount(a.id, { on: true })).toMatch(/archived — restore him on Admin → Users/)
+    expect(accountByName('us')!.on).toBe(false)
+    expect(restoreArchivedPerson('bane')).toBe(true)
     raptorNotify(); runPoOutcomes()
+    expect(P('bane').archived).toBe(false)
     expect(accountByName('us')!.on).toBe(true)
     expect(accountByName('us')!.offBy).toBeUndefined()
   })
@@ -209,7 +214,7 @@ describe('PO9 / PO2 — SANS with Show SANS on, a hand SANS tick, and a refused 
   it('Undo post out, his callsign now a roster man’s: refused with where to go (D286 (1)), nothing changed', () => {
     expect(postOut('bane', TODAY, 'overseas')).toBe(true)
     expect(renameCallsign('casper', 'Ranger')).toBe(true)
-    expect(undoPostOutProblem('bane')).toMatch(/Ranger is taken on the roster — restore him from Quals' Archived list/)
+    expect(undoPostOutProblem('bane')).toMatch(/Ranger is taken on the roster — restore him on Admin → Users under another callsign/)
     expect(P('bane').archived).toBe(true)
     expect(renameCallsign('casper', 'Outlaw')).toBe(true)
     expect(undoPostOutProblem('bane'), 'free again: nothing in the way').toBe(null)
