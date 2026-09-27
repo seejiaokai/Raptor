@@ -221,6 +221,27 @@ describe('arm and plant, model half (tfin U, through the store)', () => {
     writeSlot('0.0.0.0.p', '')
   })
 
+  /* [CROWD-SWAP-SAYS-BUSY] W3's walk (26 Sep 26): the question after an append is asked of the PLACE the fill landed
+     on (slots.ts lastFilled), so an ordinary add to a crowd toasts "planned" and a second copy of the same man is named */
+  /* D271 (27 Sep 26, "Q1 refused"): the same man again is REFUSED — nothing written, the seat stays armed — where it
+     used to plant a second copy and warn ("everything plants, warning after", 13 Aug 26, narrowed for this case) */
+  it('an armed crowd: an ordinary add is "planned", the same man again is refused with the reason and nothing written', () => {
+    const said: any[] = []
+    const t0 = HOOKS.toast
+    HOOKS.toast = (m: any, k?: any) => { said.push([String(m), k]) }
+    try {
+      armSlot('a:0.2.+')
+      expect(placeArmed('boosh')).toBe(true)
+      expect(said.at(-1)![0], 'a plain add').toMatch(/planned$/)
+      const row = JSON.stringify(DAYS[0].allhands[2])
+      armSlot('a:0.2.+')
+      expect(placeArmed('boosh'), 'refused').toBe(false)
+      expect(said.at(-1), 'and says why').toEqual(['Havoc — already on FLIGHT SAFETY STAND-DOWN 08:30–09:00 · not added twice', 'warn'])
+      expect(JSON.stringify(DAYS[0].allhands[2]), 'the crowd keeps its one Havoc').toBe(row)
+      expect(armedKey(), 'the "+ add" stays armed for the next man').toBe('a:0.2.+')
+    } finally { HOOKS.toast = t0; disarmSlot() }
+  })
+
   it("re-planting the seat's own occupant refuses instead of toasting planned", () => {
     writeSlot('0.0.0.0.p', 'casper')
     armSlot('0.0.0.0.p')

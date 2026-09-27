@@ -584,3 +584,108 @@ resolved statuses always carry their resolution date
 **Suggested improvement:** For every NEW card, form or panel a build adds, the walk asserts its geometry, not only its content: primary controls aligned with the fields above (left and right edges equal) and inside the container. Cheap in a scripted walk (bounding boxes), and the assertion catches what a glance normalises.
 
 **Principle:** Looking confirms the picture matches your expectation of the content; it rarely notices a few pixels of misalignment. Measure what "looks right" means for new surfaces.
+
+### Observation 285: A guard hook built on an unmeasured claim about the harness
+
+**Status:** OPEN
+**Date:** 2026-09-26
+**Session context:** five-flags batch, [BG-GUARD-FALSE] (numbered 285, past 279 on the parallel `claude/accounts-new-person` and a gap for the absence-record chat)
+**Skill:** New skill candidate: guard hooks in `.claude/hooks/` (how a PreToolUse guard is written and tested)
+**Type:** open-source
+**Phase/Area:** writing a hook that encodes an environment fact
+
+**Issue:** A background-command guard was built on the project note "a background shell starts at the REPO ROOT". Another chat, whose session had started inside the sub-folder, was refused and then misled by the guard's own advice. Measuring it (a foreground `cd`, then a background `pwd`) showed background shells start in the chat's STARTING folder, not the repo root and not the foreground's current folder.
+
+**Suggested improvement:** When a hook or rule encodes how the harness behaves (where shells start, what env vars exist, what a tool returns), measure it in the current harness first, write the measurement into the hook's header, and make the hook's tests take the environment as an explicit input (so they pass from any starting folder).
+
+**Principle:** An environment fact written as a rule is a claim until it is measured in the environment the rule runs in; a guard built on an unmeasured claim refuses the wrong things and gives wrong advice with authority.
+
+### Observation 295: A walk script's NOTE that states the state goes stale the moment a fix changes it
+
+**Status:** OPEN
+**Date:** 2026-09-27
+**Session context:** five-flags batch, the re-walk after the code reads (numbered 295, past 294 on the parallel `claude/absence-record-d147-af6a50`)
+**Skill:** New skill candidate: bug-check order (raptor-port/docs/bug-check-order.md) — §5 "the re-walk", the walk scripts in `raptor-port/scripts/handpass/`
+**Type:** open-source
+**Phase/Area:** walk scripts written as assertions, re-run as the re-walk
+
+**Issue:** The first walk wrote its "report, don't judge" findings as NOTE lines whose TEXT described what it saw ("the purple ring AND its purple glow stay under the dots"). A reviewer's later finding removed that glow. On the re-walk the script printed the same sentence beside data that now read "no blur layers" — the log said the opposite of the measurement, and every check still passed, because a note is never judged. Only reading the raw values caught it.
+
+**Suggested improvement:** In §5's re-walk paragraph (and the walk brief): a NOTE's words are built from what was measured (a ternary on the reading), never a fixed description; and once a reviewer's finding is fixed, the note that observed it becomes a CHECK asserting the fixed behaviour before the re-walk runs — so the re-walk proves the fix instead of printing the old story.
+
+**Principle:** Anything a script prints as a description of the screen must be computed from the screen; a hard-coded observation is a comment that vouches, and a re-run makes it lie.
+
+### Observation 296: A mock-up picture whose premise is hand-set state must check the premise at the moment it is taken
+
+**Status:** OPEN
+**Date:** 2026-09-27
+**Session context:** five-flags batch, the mock-up for his look (`raptor-port/scripts/handpass/am/mk-five-flags.mjs`)
+**Skill:** New skill candidate: the mock-up recipe (`raptor-port/docs/mock/`, `scripts/handpass/am/mk-*.mjs` — pictures of the real app with the proposal injected)
+**Type:** open-source
+**Phase/Area:** drawing a proposal onto the running app
+
+**Issue:** To picture "your own puck" for other men, the script put the app's "this is you" class on their pucks, then called the usual close-up helper — which scrolls the target into view. The scroll repainted the day and silently stripped the hand-set class, so two "today" pictures showed a plain puck beside "after" pictures that were right. The pictures looked plausible; only comparing each pair by eye caught it.
+
+**Suggested improvement:** In the mock-up recipe: do every scroll first, apply the injected state last, and have the capture step assert the state is still there (log a WARNING into the output, or refuse the picture) — the same way the walk scripts assert what they photograph.
+
+**Principle:** When a picture's meaning depends on state you injected, the premise is part of the picture: verify it at capture time, after anything that can repaint, or the picture silently shows something else.
+
+### Observation 297: A visual change filed as a defect by a walker was built and FULL-checked before he saw a picture — and he rejected it on sight
+
+**Status:** OPEN
+**Date:** 2026-09-27
+**Session context:** five-flags batch, item 4 ([VIEW-ARROW-OVER-LIST]): the desktop week's room beside the ‹ arrow
+**Skill:** New skill candidate: bug-check order (raptor-port/docs/bug-check-order.md) — where a mock-up sits for a change the owner did not ask for
+**Type:** open-source
+**Phase/Area:** before building a visual change
+
+**Issue:** A walker filed "the floating arrow covers the start of an opened warning list" as a defect. It was built in a batch, walked by four walkers, read by two models and taken through the full gates — five older browser tests had to be re-pointed at the new front. Shown the result full screen beside the old look, the owner chose the old one ("I still prefer these"); the whole change now comes out again. The house rule (a picture before product code for a visual direction) was read as applying to his own asks, not to a walker's finding that changes how a surface he uses every day looks.
+
+**Suggested improvement:** In the bug-check order (or the look card's rules): any item that changes the LOOK or LAYOUT of a surface he uses daily — whoever filed it, and even when it is framed as a defect — gets a full-screen before/after picture put to him before it is built. The look card then carries only questions about behaviour.
+
+**Principle:** Whether a visual change is an improvement is the user's call, not the finder's; show the whole screen before and after before paying for the build and the check.
+
+### Observation 298: A walk script's picture folder must default to its OWN checkout, never an absolute worktree path
+
+**Status:** OPEN
+**Date:** 2026-09-27
+**Session context:** re-walking the five-flags batch after building D270–D272 and reverting the arrow room, in a different worktree folder from the one that wrote the walk scripts
+**Skill:** bug-check order (raptor-port/docs/bug-check-order.md §7.2, the walk drivers in raptor-port/scripts/handpass/)
+**Type:** internal
+**Phase/Area:** the re-walk — "write walk scripts as assertions of the RIGHT behaviour so re-running them IS the re-walk"
+
+**Issue:** ff-w1.mjs and ff-w3.mjs defaulted their picture folder to an ABSOLUTE path inside the worktree that wrote them (`.claude/worktrees/five-flags-batch-build-ef7d85/...`). By the next day that folder had been reused by ANOTHER chat for a different branch, so a plain re-run from this chat's worktree would have written its re-walk pictures into the other chat's checkout (and its git status). Caught only because the header was read before running; fixed by defaulting to `new URL('../../docs/img/handpass/…', import.meta.url)` and passing FF_SHOTS explicitly. The shared libs (`am/w2-lib.mjs`, `am/w1-lib.mjs`) still hard-code the MAIN checkout for their fixture state files.
+
+**Suggested improvement:** in bug-check-order §7.2 (or `docs/handpass/README.md`'s traps), one line: a walk script resolves every path it WRITES relative to itself (`import.meta.url`), never an absolute worktree path; reads of shared fixtures name their source. And a quick grep in the docs gate for `.claude/worktrees/` inside `scripts/handpass/*.mjs` write paths.
+
+**Principle:** A script meant to be re-run later must not remember WHERE it was first run — worktree folders are reused by other sessions, so any absolute path into one is a write into someone else's work.
+
+### Observation 299: A walk step that proves a REFUSAL must also prove the gesture happened
+
+**Status:** OPEN
+**Date:** 2026-09-27
+**Session context:** walking D271 (a man put on a row he is already on is refused) — scripted drags whose expected outcome is "nothing written"
+**Skill:** bug-check order (raptor-port/docs/bug-check-order.md §7.8, §8)
+**Type:** open-source
+**Phase/Area:** the walk — gesture steps whose correct result is NO change
+
+**Issue:** Three walk parts (a move from another row, a finger drag on the phone, a drop on the edit week) came back "nothing written" — exactly what a refusal looks like — while the press had in fact landed off the screen (the source below the fold) or been let go over the tab bar: no ghost ever rode the pointer. Only the missing toast gave it away; had the check read just the data ("both rows as they were, 0 pending"), all three would have PASSED on a drag that never happened. Fixed by requiring a ghost (`!!h.ghost`) and the refusal's own caption before the data check counts.
+
+**Suggested improvement:** §7.8 ("a gesture step asserts what the person SEES") gains a line: when the correct outcome of a gesture is that NOTHING changes (a refusal, a no-op), the step must also assert positive evidence that the gesture was performed — the drag ghost, the caption under it, the refusal's own words — or a missed press passes as a correct refusal.
+
+**Principle:** An assertion that "nothing changed" cannot tell a correct refusal from an action that never happened; pair every negative outcome with positive proof the action was attempted.
+
+### Observation 300: Check the message the screen is LEFT showing, not the list of messages raised
+
+**Status:** OPEN
+**Date:** 2026-09-27
+**Session context:** D271's hand-over fix — a note raised inside a shared save path ("kept once, as its holder")
+**Skill:** bug-check order (§7.8) and test-driven-development (assertions on user-visible state)
+**Type:** open-source
+**Phase/Area:** the walk / the test spy
+
+**Issue:** The unit test and the first walk both captured every toast raised (a spy on the toast hook) and found the note among them — PASS. The screen, which has ONE toast slot, showed "Input updated" instead: the caller's own success line followed the save and replaced the note in the same tick. Only a walk step reading the toast element's final text caught it. Fixed by raising the note on the next tick and asserting on the element's text and opacity; the unit test now asserts the note is the LAST message.
+
+**Suggested improvement:** where the UI has a single-slot surface (a toast, a banner, a status line), tests and walk steps assert what the slot SHOWS after the whole action, not that a message was emitted; and a message raised deep in a shared path is checked against every caller's own follow-up message.
+
+**Principle:** Emitting a message is not showing it — assert on the final visible state of a single-slot surface, because a later message in the same action silently wins.
