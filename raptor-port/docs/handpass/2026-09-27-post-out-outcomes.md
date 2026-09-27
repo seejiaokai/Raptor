@@ -153,6 +153,17 @@ smoke 443 passed, 0 failed · rulecheck passed (171 rulings, PO1–PO12 all name
 (D29)`). The earlier green run (before the reads' fixes, 6,461 unit) is superseded by this one; a run lost to a port
 another server held (4186) is not counted (`docs/gates-and-deploy.md`).
 
+**Re-run after #444's final code was merged in** (27 Sep 26 ~11:30, commit `1293a898`). This branch had carried #444
+only as far as `7b6c4a21`; #444's later code-read fixes (a click on the spot of "Move…", straight away, is a double-click
+and lands nothing — D262) and its cherry-picked `[LW-MOVE-CI-RED]` test fix were missing, and GitHub went red on the
+event-move unit test and the three desktop Move browser tests. The unit test failed alone locally too; the run above
+passed it only because the loaded suite spread the two clicks apart. Bisected: this branch's Part A green, #444's final
+head green, #444 at `7b6c4a21` red by itself. After the merge, under the lock, browser tests on port 4191: **unit 6,481
+of 6,482 (400 files) — the one is `[LW-FIGSEL-SLOW]`, the filed load-only timeout, 12/12 when its file runs alone ·
+build passed · the original's checks 728 / 0 · browser tests 478 passed, 48 skipped, 0 failed · the Tracker smoke
+443 / 0 · rulecheck passed · docsize passed.** GitHub runs no checks on the PR until `main` is merged in (#445 made it
+conflict — records only); that happens at this branch's turn, last.
+
 ## The Walk line
 `Walk: docs/handpass/2026-09-27-post-out-outcomes.md · 50 pictures (A 23, B 11, C 13, D 3; the re-walk 47 more in
 rewalk/) · 35 roll-call rows · 14 orders and doors · MISSING: 23 fixed (W1–W13, R1–R9, the account-row placement) / 0

@@ -17,7 +17,11 @@ the later merge keeps both (D78).
 
 <!-- now:claude/post-out-outcomes -->
 ### `claude/post-out-outcomes` — `[POST-OUT-OUTCOMES]` BUILT and FULL-checked; waiting for his look and his "merge live" (merge LAST) — written 27 Sep 26 ~06:30, verify before use
-- **Where it stands:** built on `claude/accounts-new-person` (PR #443) with PR #444's posting code merged in (`4f3c40cc`).
+- **Where it stands:** built on `claude/accounts-new-person` (PR #443) with PR #444's posting code merged in (`4f3c40cc`),
+  and #444's FINAL code merged in again (`1293a898`, its head `1f25cccb`) — the half-way copy was red on GitHub (the
+  event-move test, the three desktop Move tests); re-gated green (§9). #444 has moved on since in records only (its own
+  rulings D264–D266); they come in through `main`. **The PR shows "conflicting" with `main` since #445 merged, so GitHub
+  runs no checks on it until `main` is merged in — at its turn, last.**
   Plan `raptor-port/docs/superpowers/plans/2026-09-27-post-out-outcomes-plan.md` (Round 2 wins). **Evidence sheet — read
   it first:** `raptor-port/docs/handpass/2026-09-27-post-out-outcomes.md` (the roll-call, the walk's 14 finds, the two
   code reads' 9, every one fixed red-first; the break tests; the gates; **§10 his look card — 11 questions**). Walks A–D
@@ -132,9 +136,10 @@ the later merge keeps both (D78).
 
 ## Gate baseline
 
-The latest counts watched — 27 Sep 26, `claude/post-out-outcomes` (the final code of `[POST-OUT-OUTCOMES]`), one run under
-the PC lock (`raptor-port/docs/handpass/2026-09-27-post-out-outcomes.md` §9): unit **6469 / 6469** (399 files) · build
-clean · tfin **728 / 0** · e2e **478 passed**, 48 skipped · smoke **443 / 0** · rulecheck OK · docsize OK. Restate a count only from a run you watched, and REPLACE the previous counts — never stack a
+The latest counts watched — 27 Sep 26, `claude/post-out-outcomes` (`[POST-OUT-OUTCOMES]` with #444's final code merged in,
+`1293a898`), one run under the PC lock (`raptor-port/docs/handpass/2026-09-27-post-out-outcomes.md` §9): unit **6481 / 6482**
+(400 files — the one is `[LW-FIGSEL-SLOW]`, the filed load-only timeout, green alone) · build clean · tfin **728 / 0** ·
+e2e **478 passed**, 48 skipped · smoke **443 / 0** · rulecheck OK · docsize OK. Restate a count only from a run you watched, and REPLACE the previous counts — never stack a
 history. How to run them: `raptor-port/CLAUDE.md` §Build & verify; how they mislead, and the checks on his PC:
 `raptor-port/docs/gates-and-deploy.md`.
 

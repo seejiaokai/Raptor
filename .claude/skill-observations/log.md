@@ -808,3 +808,18 @@ resolved statuses always carry their resolution date
 **Suggested improvement:** In the recipe: decide each file's ending from `main`'s stored bytes before writing (node: `execFileSync('git',['cat-file','-p','origin/main:<f>']).includes(13)`), keep that ending, and before every push compare `git show --stat` with `git show --stat --ignore-cr-at-eol` — a gap is ending churn.
 
 **Principle:** Measure line endings in raw bytes, never with a tool that may translate them; and check each commit's size with and without ending differences.
+
+### Observation 303: A branch built on another chat's in-flight branch must re-take that branch's FINAL head before its own final gates — and a timing-window test can be green under a loaded full run yet red alone
+
+**Status:** OPEN
+**Date:** 2026-09-27
+**Session context:** `[POST-OUT-OUTCOMES]` (claude/post-out-outcomes, PR #446), built on PR #444's posting code by merging #444's branch mid-way (its head then, 7b6c4a21). Numbered 303, past main's 300 and #444's 302 (the "parallel branches are parallel writers" rule).
+**Skill:** New skill candidate: parallel-branch stacking (and the bug-check order's §gates)
+**Type:** open-source
+**Phase/Area:** building on a sibling branch; the final gates
+
+**Issue:** #444 kept working after I merged it — its final code-read fixes changed a Leave War move rule (a click on the same spot straight after "Move…" is now a double-click and lands nothing) and reworded the unit test that pins it, and it cherry-picked a CI fix for three browser tests. My branch carried the half-way state. My own full local gate run was ALL GREEN on it, but GitHub went red on the unit test and the three browser tests, and a single-file run locally was red three times out of three. The unit test depends on a time window: under the load of the full suite the two clicks were far enough apart to pass; alone, on a fast run, they were not. Bisect: my code alone green, #444's final head green, #444's half-way head red on its own.
+
+**Suggested improvement:** (1) When a branch has merged in another open branch, compare that branch's current head with the merged commit (`git log <merged>..origin/<branch> -- <src dirs>`) before the final gates and before reporting ready; re-merge if code moved. (2) When CI and a local full run disagree, run the failing file ALONE before blaming CI speed — a test with a time window can fail on a FAST run and pass under load, the reverse of the usual flaky.
+
+**Principle:** Code taken from a sibling branch is a snapshot of work still moving. Re-check the sibling's head before calling your own work checked. A green full run is not proof a timing-sensitive test passes: load can hide a failure that shows when the test runs quickly.
