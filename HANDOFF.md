@@ -16,34 +16,32 @@ the later merge keeps both (D78).
 ## Now
 
 <!-- now:claude/one-door -->
-### `claude/one-door` — `[ONE-DOOR]` MOCK-UP APPROVED (D322), his answers in (D320, D321); planning next, nothing built — written 27 Sep 26 ~21:30 — verify before use
-- **The mock-up:** `raptor-port/docs/mock/one-door.html` (also an Artifact: https://claude.ai/artifact/PrdGyhPYgkVWuD2mbSsmS9),
-  made by `raptor-port/scripts/handpass/am/mk-one-door.mjs` on the preview at 4178 (`.claude/launch.json` "raptor-onedoor").
-  One row per person (Sign-in and Roster dots in two columns; role pill; a posting waiting as an amber tag), a search box,
-  "▸ Archived · N" folded at the foot, each state's buttons on the opened row (D310's list), Restore with a post-in date
-  and the callsign box (rename / "Restore as"), Give access / Refuse, Add a person = New person only with Post in, the
-  man's "Welcome back — check your quals and CAT" note, Quals without its ✕ and Archived list.
-- **His answers, 27 Sep 26 ("A, as recommended, approve"):** **D320** the Leave War keeps EVERY stint a man has in the
-  squadron (away between a posting out and a later post-in; the mock-up's §8) — changes `leavewar/engine/people.ts
-  inSquadron`, the war's posting record in `store.ts`, Matrix's `rowInWindow`, Restore; **D321** the post-out look card's
-  6, 7, 8, 10 stand as built (`[POST-OUT-ASKS]` archived); **D322** the mock-up approved, with the agent's own calls on it
-  (Archive one tap; Restore turns the sign-in back on even when suspended by hand before; no Enable on archived rows;
-  renaming a roster man stays on Quals; A–Z with a search box).
-  **D323** Archive on Admin → Users is "posted out from today" on the war, his past kept; **D324** the backlog tidy now,
-  docs only, on its own branch `claude/backlog-tidy` from `main`, merged BEFORE this branch and `[LW-MOVE-STANDARD]`.
-- **Next, in order:** plan (Opus 5.5 high; `docs/superpowers/plans/`) → Fable and Astra red-team →
-  build red first → walk both widths with pictures → FULL check (bug-check order; the PC lock for every full run) → his
-  look → "merge live".
-- **Beside it:** `[LW-MOVE-STANDARD]` in chat "Rulings D264–D266 leave-war build" (branch
-  `claude/rulings-d264-d266-leave-war-f0f4ab`, ports 4177 / E2E 4195, rulings D330–D339). Agreed (D302): it stays out of
-  `leavewar/sync.ts` and `setPostIn`; this chat stays out of BidPicker, SelectSheet, DayList, Matrix, select.ts and the
-  move functions in `store.ts`; told it the several-windows change would touch `inSquadron` and the posting record.
-  This chat's ports: preview 4178, E2E 4196; rulings D320–D329 (D320–D324 used).
-- **Traps:** `npm run docsize` FAILS on `main` already — `OUTSTANDING.md` 1433 lines against its 1330 tripwire; the
-  Docs guard will be red on every branch until a docs-only tidy lands (put to him: its own tiny branch, merged first).
-  Ports 4186/4187 held by the old presentation server. Scripted edits keep each file's line endings. Reported by the
-  other chat (27 Sep 26, not yet checked here): Codex's configured default model is refused on this account — pass
-  `-m gpt-5.6-sol`; and stop a Codex run by its own PID, never `taskkill /IM codex.exe` (it ends every chat's run).
+### `claude/one-door` — `[ONE-DOOR]` BUILT, walked, break-tested; the final gates and the two final code reads next, then his look — written 27 Sep 26 (late) — verify before use
+- **What it is:** Admin → Users as the one door for a person's whole state (D309, D310, D322 — the approved mock-up
+  `raptor-port/docs/mock/one-door.html`), Archive = "posted out from today" on the war with his past kept (D323), Restore
+  asks the post-in date and opens a new stint (D308, D320), his "Welcome back" note (D305), Quals without its archive.
+  Rulings D320–D324 (range D320–D329). Plan `raptor-port/docs/superpowers/plans/2026-09-27-one-door-plan.md` (red-teamed by
+  Fable and Astra, round 1 folded in).
+- **The FULL check so far — the evidence sheet `raptor-port/docs/handpass/2026-09-27-one-door.md`** (§0 says where it
+  stands): Fable's walk design (`…/specs/2026-09-27-one-door-scenarios-fable.md`) → 6 gaps fixed red first; the walk
+  (`scripts/handpass/od-walk.mjs`, 23 scenes, both widths; `walk3` 238/0) → W1 (an archived man's leave sheet offered a
+  posting door) and W2 (his welcome note scrolled away on a phone) fixed red first; the break tests
+  (`scripts/handpass/od-breaks.py`, 32 wires; three unwatched ones given tests — one watched only by the walk's `pastrow`
+  scene, proved with a broken build). `main` (PR #447) merged in; no code clash.
+- **Next, in order:** read `walk5`'s results (`docs/img/handpass/2026-09-27-one-door/walk5/results.md`) → the gates under
+  the PC lock (`E2E_PORT=4196 node raptor-port/scripts/gatelock.mjs run --from raptor-port`) → the two final code reads,
+  blind to each other, brief `raptor-port/docs/superpowers/briefs/2026-09-27-one-door-final-read.md` (Astra:
+  `codex exec -m gpt-5.6-sol -c model_reasoning_effort=high -s read-only …`) → fix red first → re-walk what the fixes
+  touched → gates → finish the sheet (§8, §9) → open the PR → his look card (sheet §10, five questions) → his "merge live".
+- **Beside it:** `[LW-MOVE-STANDARD]` merged (#447); its docs-only paperwork is PR #449
+  (`claude/lw-move-standard-paperwork`, waiting on his "merge live") touching OUTSTANDING's priority list item 1 / item 3 and HANDOFF (its own block
+  and #444's) — told it (D302) this branch touches only `[ONE-DOOR]`'s sentence there, will fix the stale
+  "[POST-OUT-OUTCOMES] … merge live next" words itself, and merges `main` in before its own gates.
+- **Ports:** preview 4178 (`.claude/launch.json` "raptor-onedoor"), E2E 4196. A scratch worktree for break tests at
+  `C:\Users\User\odbw` (node_modules is a junction to this checkout's — remove with `git worktree remove --force`).
+- **Traps:** the Bash tool mangles backslashes inside inline heredoc scripts — write an edit script to a file first.
+  Codex: pass `-m gpt-5.6-sol`; stop a Codex run by its own PID, never `taskkill /IM codex.exe`. Scripted edits keep
+  each file's line endings.
 <!-- /now -->
 
 <!-- now:claude/rulings-d264-d266-leave-war-f0f4ab -->
