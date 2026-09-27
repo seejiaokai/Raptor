@@ -5,18 +5,22 @@
    S1 (a double-click on Move lands nothing), S6 (its own day), S9 (leaving the tab ends it), S11 (a swipe never lands, a
    long press never cancels). Usage: node scripts/handpass/mv/mv-20-move.mjs [desktop|phone]   (build on 4175) */
 const M = await import('./mv-lib.mjs')
-const { WIDTH, PHONE, ROOT, openMv, lwOpen, tapCell, sheetNow, sheetPress, closeSheets, recsOf, grid, dragRect, selPress,
+const { WIDTH, PHONE, ROOT, RUN, openMv, lwOpen, tapCell, sheetNow, sheetPress, closeSheets, recsOf, grid, dragRect, selPress,
   lwHist, stageNow, stageGo, figures, shot, resultBook, centre, at, tapAt, press, fingerHoldDrag, fingerSwipe, banner, gridState,
   dayAt, gridBox, go } = M
 const ONLY = process.env.ONLY || ''                 // one step alone — its own result file, never the full record's
-const R = resultBook(`MV20-${WIDTH}`, `${ROOT}/docs/handpass/parts/2026-09-27-d260-d262-mv20-${WIDTH}${ONLY ? '-only-' + ONLY : ''}.txt`)
+const R = resultBook(`MV20-${WIDTH}${RUN ? '-' + RUN : ''}`, `${ROOT}/docs/handpass/parts/2026-09-27-d260-d262-mv20-${WIDTH}${RUN ? '-' + RUN : ''}${ONLY ? '-only-' + ONLY : ''}.txt`)
 const { browser, page, errors, cdp } = await openMv('a')
 const pic = n => shot(page, `mv20-${WIDTH}-${n}`)
 async function step(name, fn) {
   if (ONLY && !name.startsWith(ONLY)) return
   try { await fn() } catch (e) { R.ck(name, false, 'step ran', 'THREW ' + String(e && e.message || e).slice(0, 300)); await pic(`THREW-${name}`).catch(() => {}) }
-  if (await banner(page)) { await press(page, 'move-cancel') }                  // never carry a move into the next step
-  await closeSheets(page)
+  /* never carry a sheet or a move into the next step — the sheets first (one can cover the banner's Cancel) */
+  try {
+    await closeSheets(page)
+    if (await banner(page)) await press(page, 'move-cancel')
+    if (await page.locator('[data-testid="event-move-banner"]:visible').count()) await press(page, 'event-move-cancel')
+  } catch (e) { R.note(`cleanup-after-${name}`, String(e && e.message || e).slice(0, 160)) }
 }
 const P = 'bruise'                                  // Gambit — an undecided morning of LL on 23 Jan
 const where = async () => {                         // the day Gambit's LL sits on now (Jan–Mar)
@@ -37,6 +41,14 @@ async function bringIntoView(testid) {
     else { await page.mouse.move(700, row.y); await page.mouse.wheel(dx * 300, 0); await page.waitForTimeout(300) }
   }
   return at(page, testid)
+}
+/** An EMPTY spot outside the grid, as a person would tap it. On a desktop: the page beside the grid's card. On a phone
+    the grid fills the width, and a finger in its few-pixel margin is snapped by the phone onto the grid's edge (probe
+    mv-23) — so the phone's empty area is the bars above the grid: the words "Bidding on" (probe mv-24). */
+async function outsideSpot() {
+  if (!PHONE) return page.evaluate(() => { const c = document.querySelector('.stage > .card').getBoundingClientRect(); return { x: Math.max(2, Math.round(c.left / 2)), y: Math.round(innerHeight / 2) } })
+  await page.evaluate(() => window.scrollTo(0, 0)); await page.waitForTimeout(400)
+  return page.evaluate(() => { const e = [...document.querySelectorAll('section.page *')].find(x => x.children.length === 0 && /^bidding on$/i.test((x.textContent || '').trim())); const b = e.getBoundingClientRect(); return { x: Math.round(b.left + b.width / 2), y: Math.round(b.top + b.height / 2) } })
 }
 /** Land the picked-up chip on a day: a click on the desktop; a tap then Confirm on the phone. Returns what the banner said. */
 async function landOn(testid, { confirm = true } = {}) {
@@ -139,12 +151,11 @@ await step('C5-outside-empty-cancels', async () => {
   await tapCell(page, P, d)
   await press(page, 'decide-shift')
   await page.waitForTimeout(450)
-  const spot = await page.evaluate(() => {
-    const card = document.querySelector('.stage > .card').getBoundingClientRect()
-    const x = Math.max(2, Math.round(card.left / 2)), y = Math.round(innerHeight / 2)
+  const at0 = await outsideSpot()
+  const spot = await page.evaluate(([x, y]) => {
     const h = document.elementFromPoint(x, y)
     return { x, y, what: h ? `${h.tagName}.${String(h.className).split(' ')[0]}` : 'nothing', control: !!(h && h.closest('button, a, input, select, [role="button"]')) }
-  })
+  }, [at0.x, at0.y])
   await tapAt(page, spot.x, spot.y)
   await pic('C5-cancelled-by-outside-tap')
   const g = await grid(page, [P], [d])
@@ -188,7 +199,8 @@ if (!PHONE) await step('C6-hover-edge-scroll', async () => {
   await page.mouse.move(box.right - 12, row.y); await page.waitForTimeout(1300)
   const s1 = (await gridState(page)).scrollLeft
   await pic('C6-scrolled-right-by-the-edge')
-  await page.mouse.move(box.namesRight + 14, row.y); await page.waitForTimeout(700)
+  /* the left band starts where the DAYS start, past the balance column (the final reads, F1) */
+  await page.mouse.move(box.daysLeft + 12, row.y); await page.waitForTimeout(700)
   const s2 = (await gridState(page)).scrollLeft
   await page.mouse.move(800, row.y); await page.waitForTimeout(300)
   const s3 = (await gridState(page)).scrollLeft
@@ -198,7 +210,7 @@ if (!PHONE) await step('C6-hover-edge-scroll', async () => {
   await page.mouse.click(800, row.y); await page.waitForTimeout(600)
   const g = await grid(page, [P], [day])
   await pic('C6-landed-after-edge-scroll')
-  R.ck('C6-edge-scroll', s1 - s0 > 150 && s2 < s1 && s3 === s4 && /LL/.test(g[P]) && !(await banner(page)),
+  R.ck('C6-edge-scroll', s1 - s0 > 150 && s2 < s1 - 100 && s3 === s4 && /LL/.test(g[P]) && !(await banner(page)),
     'the mouse at the right edge scrolls the days on, at the left edge (past the names) back, in the middle it stops; a click then lands it on the day under the mouse', { s0, s1, s2, s3, s4, day, g, box })
   await lwHist(page, 'undo')
 })
@@ -230,8 +242,13 @@ await step('C7-drag-to-edge-and-release', async () => {
   const s1 = (await gridState(page)).scrollLeft
   const g = await grid(page, [P], [day])
   await pic('C7-landed-after-drag')
-  R.ck('C7-drag-lands', s1 - s0 > 100 && /LL/.test(g[P]) && !(await banner(page)) && (!PHONE || /Move 1 entry here\?/.test(staged)),
-    'held and dragged to the right edge the days scroll on; the release lands it on the day under the pointer (the phone stages it, Confirm lands it)', { s0, s1, day, staged, g })
+  const after = await banner(page)
+  /* the release picks the day under the pointer: it lands there, or — on a day already booked — is refused with its
+     reason and the move stays on (the landing rules, unchanged) */
+  const landed = /LL/.test(g[P]) && !after
+  const refused = /already booked/.test(after) || /already booked/.test(staged)
+  R.ck('C7-drag-lands', s1 - s0 > 100 && (landed || refused) && (!PHONE || /Move 1 entry here\?|already booked/.test(staged)),
+    'held and dragged to the right edge the days scroll on; the release picks the day under the pointer — it lands there (the phone stages it, Confirm lands it), or is refused with its reason on a booked day', { s0, s1, day, staged, after, g })
   await lwHist(page, 'undo')
   await lwOpen(page, '2026-01-20')
 })
@@ -300,7 +317,7 @@ await step('C11-block-move', async () => {
   else { const p = await centre(page, `cell-${P}-${d2}`); await fingerHoldDrag(page, cdp, p, [{ x: p.x + 2, y: p.y }]) }
   await selPress(page, 'sel-move')
   await page.waitForTimeout(450)
-  const spot = await page.evaluate(() => { const c = document.querySelector('.stage > .card').getBoundingClientRect(); return { x: Math.max(2, Math.round(c.left / 2)), y: Math.round(innerHeight / 2) } })
+  const spot = await outsideSpot()
   await tapAt(page, spot.x, spot.y)
   R.ck('C11-block-outside-cancels', !(await banner(page)), 'an empty tap outside the grid ends the drag-selection\'s move too', await banner(page))
 })
@@ -337,11 +354,110 @@ await step('C13-event-move', async () => {
   await press(page, 'event-move')
   const b0 = await page.locator('[data-testid="event-move-banner"]:visible').count()
   await page.waitForTimeout(450)
-  const spot = await page.evaluate(() => { const c = document.querySelector('.stage > .card').getBoundingClientRect(); return { x: Math.max(2, Math.round(c.left / 2)), y: Math.round(innerHeight / 2) } })
+  const spot = await outsideSpot()
   await tapAt(page, spot.x, spot.y)
   const b1 = await page.locator('[data-testid="event-move-banner"]:visible').count()
   await pic('C13-event-move-cancelled-outside')
   R.ck('C13-event-outside-cancels', !!ev && /PH/.test(ev.text) && b0 === 1 && b1 === 0, 'the PH event’s Move… picks it up (the event banner), and an empty tap outside the grid ends it', { ev, sheet: s.open, b0, b1 })
+})
+
+/* ==== added for the final reads (27 Sep 26) — each checks a fix in the running app ==== */
+
+/* ---- C6b (desktop): the mouse resting on the card's controls, a callsign, the JAN button never scrolls (Fable F1) ---- */
+if (!PHONE) await step('C6b-controls-never-scroll', async () => {
+  await lwOpen(page, '2026-01-20')
+  const d = await where()
+  await tapCell(page, P, d)
+  await press(page, 'decide-shift')
+  await page.waitForTimeout(450)
+  /* park the grid on March with the move on (the month button keeps it), the controls and a row all on screen */
+  await page.locator('[data-testid="month-MAR"]').first().scrollIntoViewIfNeeded()
+  await page.mouse.wheel(0, -200); await page.waitForTimeout(300)
+  const mar = await centre(page, 'month-MAR')
+  await tapAt(page, mar.x, mar.y); await page.waitForTimeout(900)
+  const s0 = (await gridState(page)).scrollLeft
+  const rowY = await page.evaluate(() => { const c = [...document.querySelectorAll('[data-testid^="cell-"]')].map(e => e.getBoundingClientRect()).find(b => b.top > 380 && b.bottom < innerHeight - 100); return c ? c.top + c.height / 2 : null })
+  const spots = []
+  for (const id of ['counts-toggle', 'month-JAN', 'person-']) {
+    const c = await page.evaluate(sel => { const e = [...document.querySelectorAll(sel === 'person-' ? '[data-testid^="person-"]' : `[data-testid="${sel}"]`)].find(x => { const b = x.getBoundingClientRect(); return b.width > 0 && b.top > 70 && b.bottom < innerHeight - 90 }); if (!e) return null; const b = e.getBoundingClientRect(); return { x: b.left + b.width / 2, y: b.top + b.height / 2 } }, id)
+    if (!c || rowY == null) { spots.push({ id, skipped: 'off screen' }); continue }
+    await page.mouse.move(800, rowY); await page.waitForTimeout(150)          // over the middle of the days first
+    await page.mouse.move(c.x, c.y); await page.waitForTimeout(1000)
+    spots.push({ id, scrollLeft: (await gridState(page)).scrollLeft })
+  }
+  await pic('C6b-resting-on-controls')
+  const measured = spots.filter(x => x.scrollLeft != null)
+  R.ck('C6b-controls-never-scroll', s0 > 300 && measured.length === 3 && measured.every(x => x.scrollLeft === s0) && /1 entry/.test(await banner(page)),
+    'with the grid parked on March and a chip picked up, resting the mouse on Manning, the JAN button or a callsign scrolls nothing', { s0, rowY, spots })
+})
+
+/* ---- C7b: a press-and-drag released OFF the days lands nothing (both reads) ---- */
+await step('C7b-release-off-the-days', async () => {
+  await lwOpen(page, '2026-01-20')
+  const d = await where()
+  await tapCell(page, P, d)
+  await press(page, 'decide-shift')
+  await page.waitForTimeout(450)
+  const p = await at(page, `cell-${P}-${d}`)
+  const g0 = await grid(page, [P], [d])
+  /* off the days: the page beside the grid on a desktop; the frozen name column on a phone (still the grid, not a day) */
+  const off = PHONE ? { x: 40, y: p.y } : await page.evaluate(() => { const c = document.querySelector('.stage > .card').getBoundingClientRect(); return { x: Math.max(3, Math.round(c.left / 2)), y: Math.round(innerHeight / 2) } })
+  if (!PHONE) {
+    await page.mouse.move(p.x, p.y); await page.mouse.down()
+    await page.mouse.move(p.x + 60, p.y, { steps: 6 })               // across the next days
+    await page.mouse.move(off.x, off.y, { steps: 10 })                // and off the grid
+    await page.mouse.up(); await page.waitForTimeout(600)
+  } else {
+    await fingerHoldDrag(page, cdp, p, [{ x: p.x + 60, y: p.y }, { x: off.x, y: off.y }])
+  }
+  const g1 = await grid(page, [P], [d])
+  const b = await banner(page)
+  const conf = await page.locator('[data-testid="move-confirm"]:visible').count()
+  await pic('C7b-released-off-the-days')
+  R.ck('C7b-release-off-lands-nothing', g0[P] === g1[P] && /LL/.test(g1[P]) && conf === 0 && /Tap a day to move 1 entry/.test(b),
+    'a drag carried off the grid and let go lands nothing (no Confirm on the phone) and the move is still on', { g0, g1, banner: b, confirm: conf })
+})
+
+/* ---- C14 (phone): a sheet opened mid-move, and the tap that closes it, neither stage nor cancel (Fable F2) ---- */
+if (PHONE) await step('C14-sheet-mid-move', async () => {
+  await lwOpen(page, '2026-01-20')
+  const d = await where()
+  await tapCell(page, P, d)
+  await press(page, 'decide-shift')
+  await page.waitForTimeout(450)
+  const who = await centre(page, `person-${P}`)
+  await tapAt(page, who.x, who.y)                                  // his callsign: every-figure sheet
+  const s = await sheetNow(page)
+  await pic('C14-sheet-over-a-move')
+  /* a tap above the sheet, where a person taps to close it — whatever is under the finger there: a day of the grid if one
+     shows above the sheet (the move reads a tap by its DATE, on any row), else the page above it */
+  const day = await page.evaluate(() => {
+    const top = Math.min(...[...document.querySelectorAll('.bidsheet')].map(e => e.getBoundingClientRect().top), innerHeight)
+    const cell = [...document.querySelectorAll('[data-testid^="cell-"]')].map(e => { const b = e.getBoundingClientRect(); return { x: b.left + b.width / 2, y: b.top + b.height / 2, empty: !(e.innerText || '').trim(), id: e.getAttribute('data-testid') } }).find(b => b.empty && b.y > 130 && b.y < top - 30 && b.x > 200 && b.x < 380)
+    return cell || { x: 300, y: Math.max(20, Math.round(top - 40)), id: 'above the sheet (no day shows there)', top }
+  })
+  if (day) await tapAt(page, day.x, day.y)                         // a tap on the grid beside the sheet
+  await page.waitForTimeout(500)
+  const b = await banner(page)
+  const conf = await page.locator('[data-testid="move-confirm"]:visible').count()
+  R.ck('C14-sheet-owns-the-tap', s.open !== 'nothing' && !!day && conf === 0 && /Tap a day to move 1 entry/.test(b),
+    'with a sheet opened mid-move, the tap that closes it stages nothing and ends nothing — the move still waits for a day', { sheet: s.open, tapped: day, banner: b, confirm: conf })
+})
+
+/* ---- C15: an event row tapped while a chip is picked up opens nothing (Astra 1) ---- */
+await step('C15-event-row-mid-move', async () => {
+  await lwOpen(page, '2026-01-20')
+  const d = await where()
+  await tapCell(page, P, d)
+  await press(page, 'decide-shift')
+  await page.waitForTimeout(450)
+  await page.locator('[data-testid="event-0-2026-01-26"]').first().scrollIntoViewIfNeeded()   // a person scrolls up to the event rows
+  await page.waitForTimeout(300)
+  const ev = await page.evaluate(() => { const e = [...document.querySelectorAll('[data-testid^="event-0-2026-01-2"]')].find(x => { const b = x.getBoundingClientRect(); return b.width > 0 && b.left > 220 && b.right < innerWidth - 10 && b.top > 60 && b.bottom < innerHeight - 90 }); if (!e) return null; const b = e.getBoundingClientRect(); return { id: e.getAttribute('data-testid'), x: b.left + b.width / 2, y: b.top + b.height / 2 } })
+  if (ev) await tapAt(page, ev.x, ev.y)
+  const s = await sheetNow(page)
+  const b = await banner(page)
+  R.ck('C15-event-row-inert', !!ev && s.open === 'nothing' && /1 entry/.test(b), 'a tap on an event row while a chip is picked up opens no event sheet — one move at a time', { ev, sheet: s.open, banner: b })
 })
 
 R.note('errors', errors.length ? errors : 'none')

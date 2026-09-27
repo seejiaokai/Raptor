@@ -3,9 +3,9 @@
    takes one. D261: a member opens his own award read only at every stage; another man's stays shut.
    Usage: node scripts/handpass/mv/mv-10-awards.mjs [desktop|phone]   (the build served on 4175) */
 const M = await import('./mv-lib.mjs')
-const { WIDTH, PHONE, ROOT, openMv, signInAs, lwOpen, tapCell, sheetNow, sheetPress, closeSheets, recsOf, grid, dragRect, selPress,
+const { WIDTH, PHONE, ROOT, RUN, openMv, signInAs, lwOpen, tapCell, sheetNow, sheetPress, closeSheets, recsOf, grid, dragRect, selPress,
   lwHist, stageNow, stageGo, figures, shot, resultBook, centre, fingerHoldDrag, press } = M
-const R = resultBook(`MV10-${WIDTH}`, `${ROOT}/docs/handpass/parts/2026-09-27-d260-d262-mv10-${WIDTH}.txt`)
+const R = resultBook(`MV10-${WIDTH}${RUN ? '-' + RUN : ''}`, `${ROOT}/docs/handpass/parts/2026-09-27-d260-d262-mv10-${WIDTH}${RUN ? '-' + RUN : ''}.txt`)
 const { browser, page, errors, cdp } = await openMv('a')
 const pic = n => shot(page, `mv10-${WIDTH}-${n}`)
 async function step(name, fn) { try { await fn() } catch (e) { R.ck(name, false, 'step ran', 'THREW ' + String(e && e.message || e).slice(0, 300)); await pic(`THREW-${name}`).catch(() => {}) } }
@@ -205,6 +205,41 @@ await step('A6-published-delete-says-leave-stays', async () => {
 await step('Z-stage-back', async () => {
   await stageGo(page, 'back'); await stageGo(page, 'back')
   R.note('Z-stage', await stageNow(page))
+})
+
+/* ==== added for the final reads (27 Sep 26) ==== */
+/* ---- B4: his own award AFTER his post-out shows with the hatch, and his tap opens it read only (Astra 3) ---- */
+await step('B4-award-after-post-out', async () => {
+  await lwOpen(page, '2026-04-21')
+  await tapCell(page, 'bane', '2026-04-21')
+  await sheetPress(page, 'bid-postout')
+  await page.locator('[data-testid="po-date"]:visible').fill('2026-04-25')
+  const arch = page.locator('[data-testid="po-archive"]:visible')
+  if ((await arch.getAttribute('aria-pressed')) === 'true') await arch.click()   // stay on the Quals roster (the custom case)
+  await sheetPress(page, 'po-confirm')
+  await closeSheets(page)
+  await lwOpen(page, '2026-04-27')
+  const t = await tapCell(page, 'bane', '2026-04-27')
+  const place = await sheetPress(page, 'postout-place')
+  await sheetPress(page, 'bid-oil')
+  await page.locator('[data-testid="oil-why"]:visible').fill('Late recall')
+  await sheetPress(page, 'oil-give')
+  await closeSheets(page)
+  const g = await grid(page, ['bane'], ['2026-04-27'])
+  await pic('B4-admin-award-after-post-out')
+  R.ck('B4-shows', t.open === 'postout-sheet' && place.pressed && /FO/.test(g.bane), 'an award given after his post-out (through "Place leave or OIL here instead…") shows FO on the hatched day, not a bare PO', { tap: t.open, g })
+  await asMember(async () => {
+    await lwOpen(page, '2026-04-27')
+    const s = await tapCell(page, 'bane', '2026-04-27')
+    await pic('B4-member-own-award-after-post-out')
+    R.ck('B4-member-opens-it', readOnly(s) && /Late recall/.test(s.text), 'his own tap on it opens "Your OIL award", read only', { open: s.open, text: s.text })
+    await closeSheets(page)
+  })
+  await lwOpen(page, '2026-04-27')
+  const t2 = await tapCell(page, 'bane', '2026-04-27')
+  R.ck('B4-admin-posting-first', t2.open === 'postout-sheet', 'an admin’s tap on that day still opens the posting sheet first', t2.open)
+  await sheetPress(page, 'postout-undo')                           // put his posting back as it was
+  await closeSheets(page)
 })
 
 R.note('errors', errors.length ? errors : 'none')

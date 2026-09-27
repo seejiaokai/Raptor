@@ -784,6 +784,8 @@ export function wireMove(
     // also reads an `event-<line>-<date>` cell, so a tap on the event LINE lands
     // it. Only the date is ever used, so one resolver serves both axes.
     dateAt?: (t: EventTarget | null) => string | null
+    /** A held drag has left the days: take the landing preview down (the final reads — Fable F3, Astra 2). */
+    onOff?: () => void
     /** Client-x where the DAYS begin — past the frozen name / counter columns or the open figures drawer (D262): the
      *  left edge band starts there, as the drag-select's does. Absent = the wrap's own left edge. */
     leftEdge?: () => number
@@ -830,6 +832,11 @@ export function wireMove(
   // grid that is exactly the per-frame work the perf notes forbid.
   let lastHover = ''
   const hover = (date: string | null) => { if (date && date !== lastHover) { lastHover = date; opts.onHover(date) } }
+  const off = () => { if (lastHover) { lastHover = ''; opts.onOff?.() } }
+  /* A SHEET OPENED MID-MOVE OWNS THE TAP (the final reads, 27 Sep 26 — Fable F2): on a coarse pointer a sheet's shade
+     lets a tap through to the grid beneath (Sheet.tsx), and this capture listener, older than the sheet's, read it
+     first — staging the chip on the day under the finger, or ending the move, as the tap closed the sheet. */
+  const sheetUp = (): boolean => !!document.querySelector('.bidsheet')
   const began = Date.now()
   const pressedAt = LAST_PRESS
   let dragPickedAt = -Infinity
@@ -842,22 +849,30 @@ export function wireMove(
      Only over the grid, so the mouse on its way to the banner or the page's own controls moves nothing; and a band the
      mouse was ALREADY in when the move began must be left first (Fable's S2 — the sheet closes under a still mouse),
      the drag-select's held-band rule. A button held is the drag machine's (below), never this loop's. */
+  /* THE BANDS ARE THE DAYS' OWN EDGES (the final reads, 27 Sep 26 — Fable F1, F4): measured from where the days begin
+     (past the frozen names and the month buttons) to the grid's right edge, and only within the days' box top to
+     bottom — the card's own controls (Manning, ⚙, OIL, zoom), the frozen names and the early month buttons are the
+     grid's too, and resting the mouse on one used to run the days off toward January. The band is GEOMETRY alone, so
+     "left the band" is judged the same whether a button is held or the mouse crosses the banner; whether the mouse is
+     over the days (`overGrid`) decides only whether this loop scrolls. At either end of the grid it stops asking for
+     frames. */
   let mx = 0, my = 0, overGrid = false, hoverRaf = 0
   let seen = false        // a mousemove has been read since the move began
   let bandsLive = false   // the mouse has been OUTSIDE every band since then
   const band = (): number => {
-    if (!overGrid) return 0
     const r = wrap.getBoundingClientRect()
+    if (my < r.top || my > r.bottom) return 0
     const left = opts.leftEdge ? opts.leftEdge() : r.left
-    return mx < left + EDGE ? -1 : mx > r.right - EDGE ? 1 : 0
+    return mx >= left && mx < left + EDGE ? -1 : mx > r.right - EDGE && mx <= r.right ? 1 : 0
   }
   const edgeStep = () => {
     hoverRaf = 0
-    const dir = bandsLive ? band() : 0
+    const dir = bandsLive && overGrid ? band() : 0
     if (!dir) return
     const before = wrap.scrollLeft
     wrap.scrollLeft = before + dir * EDGE_STEP
-    if (wrap.scrollLeft !== before) hover(dateAt(document.elementFromPoint(mx, my)))
+    if (wrap.scrollLeft === before) return          // the grid's end: nothing left to scroll
+    hover(dateAt(document.elementFromPoint(mx, my)))
     hoverRaf = requestAnimationFrame(edgeStep)
   }
   const onMouseMove = (e: MouseEvent) => {
@@ -868,10 +883,11 @@ export function wireMove(
     }
     if (!hasHover) return
     mx = e.clientX; my = e.clientY
-    overGrid = e.buttons === 0 && !!opts.isGrid && e.target instanceof Element && opts.isGrid(e.target)
+    overGrid = e.buttons === 0 && e.target instanceof Element
+      && (wrap.contains(e.target) || !!e.target.closest('[data-testid="sticky-head"], [data-testid="hscroll"]'))
     const inBand = band() !== 0
     if (!seen) { seen = true; bandsLive = !inBand } else if (!inBand) bandsLive = true
-    if (inBand && bandsLive && !hoverRaf) hoverRaf = requestAnimationFrame(edgeStep)
+    if (inBand && overGrid && bandsLive && !hoverRaf) hoverRaf = requestAnimationFrame(edgeStep)
     hover(dateAt(e.target))
   }
   const onLeaveDoc = () => { overGrid = false }
@@ -883,15 +899,18 @@ export function wireMove(
      is over — a desktop lands it, a phone stages it for Confirm, as a tap does. Nothing is painted by the machine
      itself: the matrix's landing preview is the paint. The click the release leaves behind is the drag's own, not a
      second pick (`dragPickedAt`). */
+  /* A RELEASE OFF THE DAYS LANDS NOTHING (both final reads, 27 Sep 26 — Fable F3, Astra 2): the payload is the day
+     under the pointer NOW, never the last one crossed — a drag carried off the grid and let go is a "never mind", as a
+     click there is; the landing preview is taken down the moment the pointer leaves the days. */
   let dragDay: string | null = null
   const dragOff = wireGesture<string, string>(wrap, {
     enabled: () => true,
-    hit: t => dateAt(t),
+    /* a sheet opened mid-move owns every press (Fable F2 — below) */
+    hit: t => (sheetUp() ? null : dateAt(t)),
     current: (_anchor, x, y) => {
       const d = dateAt(document.elementFromPoint(x, y))
-      if (d) dragDay = d
-      hover(dragDay)
-      return dragDay ? { ids: [], payload: dragDay } : null
+      if (d !== dragDay) { dragDay = d; if (d) hover(d); else off() }
+      return d ? { ids: [], payload: d } : null
     },
     onSelect: d => { dragPickedAt = Date.now(); opts.onPick(d) },
     reset: () => { dragDay = null },
@@ -904,6 +923,7 @@ export function wireMove(
   const onDown = (e: PointerEvent) => { lastPointer = e.pointerType || 'mouse' }
 
   const onClick = (e: MouseEvent) => {
+    if (sheetUp()) return
     const date = dateAt(e.target)
     /* the second click of a double-click on Move (the same spot, straight away), or the tail of a drag already landed —
        swallowed, never a pick */

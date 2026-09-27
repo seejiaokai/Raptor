@@ -12,7 +12,7 @@
 // scroll lives in the move machine itself (select.ts wireMove) and is pinned in movewire.test.ts.
 
 import { act, fireEvent, render, screen } from '@testing-library/react'
-import { beforeEach, describe, expect, it } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { advanceStage, getState, initStore, lwHistInit, lwUndo, setCell, setRole } from '../state/store'
 import { setLwOnScreen } from '../state/screen'
 import { memoryBackend } from '../state/storage'
@@ -97,11 +97,17 @@ describe('the one-day sheet’s Move (D262)', () => {
   it('a quick second click on the same spot (a double-click on Move) lands nothing', () => {
     /* Fable's scenario S1: the sheet closes on the first click, and a double-click's second click then fell on
        whatever day sat under the Move button — landing the chip where nobody chose. */
-    render(<Matrix />)
-    pickUp()
-    fireEvent.click(screen.getByTestId('cell-asics-2026-01-30'))
-    expect(getState().grid.asics['2026-01-23']).toBe('*LL')
-    expect(screen.getByTestId('move-banner')).toBeTruthy()
+    /* the clock held still: a double-click's second click comes well inside the guard in a browser, but a loaded test
+       machine can spend longer than the guard just finding the banner (seen in a full run beside another chat's) */
+    const t0 = Date.now()
+    const clock = vi.spyOn(Date, 'now').mockReturnValue(t0)
+    try {
+      render(<Matrix />)
+      pickUp()
+      fireEvent.click(screen.getByTestId('cell-asics-2026-01-30'))
+      expect(getState().grid.asics['2026-01-23']).toBe('*LL')
+      expect(screen.getByTestId('move-banner')).toBeTruthy()
+    } finally { clock.mockRestore() }
   })
 })
 
@@ -149,6 +155,36 @@ describe('while the chip is picked up (D262)', () => {
     act(() => advanceStage())
     expect(screen.queryByTestId('move-banner')).toBeNull()
   })
+
+  /* ONE MOVE AT A TIME (Astra's final read, 1): with a chip picked up, a tap on an event row opened the event's sheet,
+     whose Move started a SECOND move — and one click then moved both. */
+  it('a tap on an event row while a chip is picked up opens nothing', async () => {
+    render(<Matrix />)
+    pickUp()
+    await act(async () => { await new Promise(r => setTimeout(r, 420)) })
+    fireEvent.click(screen.getByTestId('event-0-2026-01-26'))
+    expect(screen.queryByTestId('event-sheet')).toBeNull()
+    expect(screen.getByTestId('move-banner')).toBeTruthy()
+  })
+
+  /* THE PHONE'S TWO-STEP FOLLOWS THE SCREEN AS IT IS NOW (Astra's final read, 4): the tap's meaning was fixed when the move
+     began, so a desktop-width move carried on after the window narrowed to a phone landed at once, with no Confirm. */
+  it('narrowed to a phone mid-move, a tap stages the landing for Confirm instead of landing at once', async () => {
+    const listeners = new Set<() => void>()
+    let narrow = false
+    const orig = window.matchMedia
+    window.matchMedia = ((q: string) => ({ get matches() { return q.includes('max-width: 700px') ? narrow : false }, media: q,
+      addEventListener: (_: string, f: () => void) => listeners.add(f), removeEventListener: (_: string, f: () => void) => listeners.delete(f),
+      addListener: (f: () => void) => listeners.add(f), removeListener: (f: () => void) => listeners.delete(f), onchange: null, dispatchEvent: () => true })) as any
+    try {
+      render(<Matrix />)
+      pickUp()
+      act(() => { narrow = true; listeners.forEach(f => f()) })
+      await land('cell-asics-2026-01-30')
+      expect(getState().grid.asics['2026-01-23']).toBe('*LL')          // not landed yet
+      expect(screen.getByTestId('move-confirm')).toBeTruthy()
+    } finally { window.matchMedia = orig }
+  }, 60_000)                                        // the grid redrawn at phone width is heavy on a loaded machine
 
   it('leaving the Leave War ends it — the chip is not carried onto another page', () => {
     render(<Matrix />)

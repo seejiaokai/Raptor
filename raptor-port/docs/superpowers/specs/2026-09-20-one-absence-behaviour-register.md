@@ -107,6 +107,9 @@ Source documents, in precedence order (newest wins):
   **after** their posting-out, filed or bid. It shows as the leave code, it is charged, and it is
   never counted for manning. After posting-out the box carries the PO mark; before posting-in the box
   is otherwise blank. `[no test names the Q9 form; owner answer C is named]`
+  **An OIL award dated there shows the same way (27 Sep 26, Astra's D260–D262 final read):** it drew a bare PO (or a
+  blank) that nobody could tap; it now shows its FO / HO with the posting hatch, counts nobody, and the man's own tap
+  opens it read only (D261); an admin's tap still opens the posting sheet first. `[ownaward.test.tsx]`
 - **Q10** — Per-year balances and carry-over are deliberately not built. One running balance per
   person. Parked as `[LEAVE-YEAR]`.
 
