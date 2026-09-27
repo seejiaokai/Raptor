@@ -5120,7 +5120,8 @@ the accounts — and carries every action on him** (D309, D310). Blocks, top to 
   name or "no sign-in", the role word on a phone, his seat and CAT ("Pilot · CAT C", "Personnel"); a **posting waiting
   for its date** as an amber tag (`[data-testid="po-tag-<id>"]` — "posting out 14 Oct · Overseas Sqn", from the Leave
   War — D310; or a post-in still to come, "posting in 19 Oct" — a Restore with a later date or a new person added ahead
-  of it: his sign-in works at once, D308, the war counts him from that day — the walk's design, Fable 4.1); the held note (`acc-held-…`) when his posting has come and waits; the two dots
+  of it: his sign-in works at once, D308, the war counts him from that day — the walk's design, Fable 4.1; or a posting
+  that has RUN and left him on the roster, "posted out 20 Sep" / "posted out 20 Sep · SANS" — D326); the held note (`acc-held-…`) when his posting has come and waits; the two dots
   (`[data-testid="dot-signin-<id>"]` green can sign in / red suspended / grey no sign-in; `dot-roster-<id>` green on the
   roster) — **each with its state in words** (title, aria-label), never colour alone; the role pill on a desktop. **Your
   own row cannot be opened** (another admin changes it). A tap opens his row (`[data-editing]`):
@@ -5137,7 +5138,9 @@ the accounts — and carries every action on him** (D309, D310). Blocks, top to 
     still to come. Days he flew keep his puck. Can't be undone." (D287, D298 — "Delete" on every row, D310); Cancel.
 - **▸ Archived · N** (`#accArchToggle`, folded; hidden when N is 0; opens while a search holds a match, and his tap still
   folds it — Fable R7) — archived, not
-  deleted, not a placeholder (`#accArchList`, `[data-archived]`); red Roster dot, red or grey Sign-in dot. Opened
+  deleted, not a placeholder (`#accArchList`, `[data-archived]`); red Roster dot, red or grey Sign-in dot; one line under
+  his name says how and when (`[data-testid="arch-line-<id>"]` — "Archived 27 Sep 26 by Saber" or "Archived 14 Oct 26 by
+  his posting (Overseas Sqn)", D329). Opened
   (`[data-restoring]`): **Callsign/Name** `#accArCs` (his callsign — or, when a man ON the roster holds it, the first free
   "<cs> 2" with "<cs> is taken on the roster — give him another callsign." `#accArTaken`, D286 (1)), **Post in**
   `#accArPostIn` (today — D308), the line "He can sign in at once; the Leave War counts him from the post-in date." (no

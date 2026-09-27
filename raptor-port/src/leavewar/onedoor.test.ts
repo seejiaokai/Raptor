@@ -24,7 +24,7 @@ import { updatePersonField } from '../state/quals-write'
 import { memoryBackend } from './state/storage'
 import { projectPeople } from './state/raptorRoster'
 import {
-  archivePerson, postOut, postOutProblem, postingPendingTag, restoreArchivedAs, restoreArchivedPerson, restoreProblem, undoPostOut,
+  archivePerson, archivedLine, availableFor, postOut, postOutProblem, postingPendingTag, restoreArchivedAs, restoreArchivedPerson, restoreProblem, undoPostOut,
   undoPostOutProblem, wireLeaveWarSync,
 } from './sync'
 
@@ -374,5 +374,42 @@ describe('the final code reads', () => {
     raptorNotify()
     expect(P('rocky').deleted, 'the Delete never runs on the archived man').toBeFalsy()
     expect(P('rocky').archived).toBe(true)
+  })
+})
+
+/* HIS LOOK, 28 Sep 26 — his answers to the look card (D326, D327, D329), each red before its build. */
+describe('his look — D326, D327, D329', () => {
+  it('D327: ALL AVAIL reads an archived man by his stints — in the crowd on a day before his archive, out after it', () => {
+    const win: [number, number] = [600, 660]
+    expect(availableFor('2026-07-14', win)).toContain('rocky')
+    expect(availableFor('2026-07-17', win)).toContain('rocky')
+    expect(archivePerson('rocky').bad).toBeNull()
+    raptorNotify()
+    expect(availableFor('2026-07-14', win), 'a day before his archive: the crowd as it went out').toContain('rocky')
+    expect(availableFor('2026-07-17', win), 'a day after it: out').not.toContain('rocky')
+  })
+
+  it('D326: a posting that has run and left him on the roster — "posted out 10 Jul" on his row; a SANS one says so', () => {
+    expect(postOut('rocky', '2026-07-10', 'none')).toBe(true)
+    raptorNotify()
+    expect(postingPendingTag('rocky')).toBe('posted out 10 Jul')
+    expect(postOut('bane', '2026-07-12', 'sans')).toBe(true)
+    raptorNotify()
+    expect(postingPendingTag('bane')).toBe('posted out 12 Jul · SANS')
+    expect(undoPostOut('rocky')).toBe(true)
+    raptorNotify()
+    expect(postingPendingTag('rocky'), 'undone: no tag').toBeNull()
+  })
+
+  it('D329: an archived man\'s row says how and when — by an admin (who), or by his posting; Restore clears it', () => {
+    expect(archivePerson('rocky').bad).toBeNull()
+    raptorNotify()
+    expect(archivedLine('rocky')).toBe('Archived 15 Jul 26 by Saber')
+    expect(restoreArchivedPerson('rocky', '2026-07-15')).toBe(true)
+    expect(archivedLine('rocky'), 'restored: no line').toBeNull()
+    expect(postOut('bane', '2026-07-12', 'overseas')).toBe(true)
+    raptorNotify()
+    expect(P('bane').archivedBy).toBe('po')
+    expect(archivedLine('bane')).toBe('Archived 12 Jul 26 by his posting (Overseas Sqn)')
   })
 })

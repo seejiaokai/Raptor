@@ -79,7 +79,7 @@ whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaini
 [OIL-PERSONAL-PLACEHOLDER] (FULL tier), [CROWD-SIM-BRIEF] (WALK tier), [OIL-RELINK-XWEEK].
 
 **Placed by their own lines — not his rulings:** the Leave War — [LW-FROZEN-BAR-GAP] (after [HUMAN-RETEST]; show him
-first), [LW-FIGSEL-SLOW] and [LW-SCRUBBER-FLAKY] (test-only), [LW-ISO-DATES] (low, from the
+first), [LW-SCRUBBER-FLAKY] (test-only), [LW-ISO-DATES] (low, from the
 absence-record re-test), [LW-SPARE-MOVE-DOORS] (low, with the next Leave War move change), [PO-RESTORE-POSTING] (low, from its final code read), [LW-OFFER-ONLY-TAKEABLE] (low, with [LW-LOCKMARK]), [ABSENCE-SMALL-SEEN] (any time), [LW-HARNESS-VIEWER-PIN] (test-only, low), [CI-FAIL-PICTURES] (his call, low); the Inputs calendar — [INPUTSCAL-TAP-FLAKY] (test-only). The Tracker — [TRK-RETEST-NOTES] and
 [TRK-EDIT-SIDEWAYS] (their gates have passed), [TRK-PINCH-ASK] (his next Tracker session), [TRK-SESSION-PICK] (low, the next Tracker change), [TRK-DLG-LEFTOVERS] (low, with the next question-box change), [TRK-FLEXBAR-INK] (a question for him, on the Tracker-palette
 look card — D157, merged PR #441), [TRK-BAKE-STALE] (low).
@@ -408,17 +408,6 @@ complete team; it should read five and a shortage.
 decision about which of the six types count (a two-hour Appointment is not a day off the programme),
 and the projection is a new seam into the war. Not a line. **Priority: his call — raised with him on
 21 Sep and filed at his word.**
-
-### [LW-FIGSEL-SLOW] One Leave War unit test times out under a full parallel run (23 Sep 26)
-
-`src/leavewar/ui/figselect.test.tsx` "an undo, a stage change and the drawer toggle all drop it" takes ~4–5s
-alone (3.9s on the final tree; the same on the code before the Leave War fixes) but ran past its 20s limit in
-2 of 3 full `npm test` runs on the owner's PC on 23 Sep 26 (another chat's worktree active). Pre-existing,
-load-only. Fix: split its three drop cases into three tests (each renders the whole year once), or give it its
-own longer limit — not a pause. Evidence: `raptor-port/docs/handpass/2026-09-23-lw-monthjump.md` §13/§15.
-**Seen again 27 Sep 26** (`claude/one-door`, its first full gate run, two code reads running beside it): this test (23.9s) and
-`src/leavewar/ui/figdrawer.test.tsx` "stands down to taps while an admin is rearranging" (24.8s) both past 20s; both pass alone —
-the fix above covers the second too (it renders the whole year the same way).
 
 ### [LW-FROZEN-BAR-GAP] For one frame no dates header shows while the page scrolls it away (23 Sep 26)
 
@@ -1086,8 +1075,9 @@ unit tests red first, e2e `onedoor.spec.ts` both widths). **The walk's design (F
 Post in sheet read-only too and both posting writers locked, a hidden man's own post-in date kept, a never-arrived delete
 stores no stint, the message and the rail's words, the Archived group folding during a search, "posting in 19 Oct" on
 the row). **FULL-CHECKED 27–28 Sep 26** — the evidence sheet `raptor-port/docs/handpass/2026-09-27-one-door.md` (the walk
-254/0 both widths, the break tests, both final reads and every finding's disposition, the gates green). **Next: his look
-(the sheet's §10, six questions) and his "merge live".**
+254/0 both widths, the break tests, both final reads and every finding's disposition, the gates green). **His look, 28 Sep
+26:** the Quals outline fixed (his find); answers D325–D329 recorded, D326, D327, D329 BUILT red first and walked;
+questions 2 and 5 answered with pictures, his word pending. **Next: his word on 2 and 5, then his "merge live".**
 
 ### [POST-IN-DATE] A man posted in: the admin is asked his post-in date (D308, filed 27 Sep 26)
 **His ruling (D308):** *"When someone is posted In the app should also ask the admin when is the post in date so that the

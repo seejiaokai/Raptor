@@ -89,6 +89,7 @@ below; the app's delete is `state/person-delete.ts`, reached from Admin → User
 | `isGroundPersonnel` | bool | no | `pers` — no flying quals derive |
 | `isSentinel` | bool | no | `special` — `ALL`, `ALL AVAIL`; occupies slots, is not a person |
 | `archived` | bool | no | kept out of every roster |
+| `archivedOn` / `archivedWho` | date / → Person | no | how and when he came to be archived (D329): the date, and the admin who did it (none for a posting's archive); cleared on Restore |
 | `archivedBy` | choice (`po`, `del`, `admin`) | no | who archived him: `po` the Post out's own archive, which the posting takes back; `del` a delete's (below); `admin` Archive on Admin → Users (`[ONE-DOOR]`, D310, D323 — only Restore there takes it back); empty = by hand before `[ONE-DOOR]` (26 Sep 26) |
 | `back` | yes/no | no | his own "Welcome back — check your quals and CAT" is waiting (`[ONE-DOOR]`, D305): set by every Restore, cleared by him (`person.backSeen` — his own row) or by an Archive |
 | `isDeleted` + `deletedFrom` | bool + date | no | **the delete's hidden mark** (D287, D290 — 27 Sep 26): `isDeleted` is the table's tombstone; `deletedFrom` is the first day he is gone — every day from it has lost him, every day before it keeps his puck (D297). Gone from every list and picker, the Archived one included; his callsign free; never restored (a delete is final) |

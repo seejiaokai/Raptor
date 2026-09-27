@@ -2361,7 +2361,10 @@ already flew keep his puck, and every day from his cutoff loses him.)*
 delete's cutoff is the later of its date and the calendar date (ONE clock — the posting pass's too). Every day BEFORE it
 keeps his puck, published or not, and never reads pending for the delete: a published face compares a deleted man's
 roster attributes as they stood when the day was issued (`publish.ts peopleAttrsNow`), and ALL AVAIL counts him on those
-days as before (`leavewar/sync.ts availableFor`, by date). Every day FROM the cutoff loses him in every kind of slot —
+days as before (`leavewar/sync.ts availableFor`, by date). **An ARCHIVED man is read the same way, by his stints**
+(D327, 28 Sep 26 — "shouldnt all avail crowd remain the same as per how that was published?"): in the ALL AVAIL crowd on a
+day he was here, out from his archive on — so a day already published keeps the crowd it went out with and reads nothing
+pending for it; a day he is NAMED on still reads pending (D321 (7)). Every day FROM the cutoff loses him in every kind of slot —
 the loaded week through the funnel, every stashed week, the sign-off boxes, the OIL switches, the parked plans, the
 planning calendar; a published day to come then reads pending (as any change does). His inputs from the cutoff go (one
 spanning it ends the day before, its "till" tail rewritten); he earns no OIL from it. A stored week that cannot be read

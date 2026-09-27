@@ -25,7 +25,14 @@
 
 /* Quals: "he's back" (D284; the approved picture 3 — lined up with the table, D294 (3)) and his row outlined */
 .back-prompt{box-sizing:border-box;margin:8px 0;padding:10px 12px;border:1px solid #3cc6e6;border-radius:10px;background:rgba(60,198,230,.08);color:#e8edf2;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
-.back-hl{outline:2px solid #3cc6e6;outline-offset:-2px}
+/* his row outlined (D284, D305) — drawn by the row's CELLS, not the row: the pinned callsign cell (td.qname, sticky with
+   its own background) painted over a row outline, so the box started at Initials (his look, 28 Sep 26) */
+tr.back-hl > td{box-shadow:inset 0 2px 0 #3cc6e6,inset 0 -2px 0 #3cc6e6}
+tr.back-hl > td:first-child{box-shadow:inset 2px 0 0 #3cc6e6,inset 0 2px 0 #3cc6e6,inset 0 -2px 0 #3cc6e6}
+tr.back-hl > td:last-child{box-shadow:inset -2px 0 0 #3cc6e6,inset 0 2px 0 #3cc6e6,inset 0 -2px 0 #3cc6e6}
+/* …and across the pinned column's fade strip (td.qname::after, shown while the table scrolls sideways — always on a
+   phone), which otherwise broke the top and bottom lines just right of his name */
+tr.back-hl > td.qname::after{box-shadow:inset 0 2px 0 #3cc6e6,inset 0 -2px 0 #3cc6e6}
 /* [ONE-DOOR] (D305): his own welcome note, under the top bar on every page (the back-prompt's look) */
 #shell > .welcome-back{margin:10px 16px 0}
 /* [ONE-DOOR] (D309, D310, D322 — the approved mock-up docs/mock/one-door.html): Admin → Users, one row per person —

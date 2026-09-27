@@ -146,6 +146,8 @@ await scene('archive', [DESK, PHONE], async s => {
   check('archive', s, '"▸ Archived · 1"', /Archived · 1/.test(await text(s, '#accArchToggle') || ''), await text(s, '#accArchToggle'))
   await s.page.click('#accArchToggle')
   check('archive', s, 'archived row: Sign-in suspended, Archived', (await attr(s, '[data-testid="dot-signin-rocky"]', 'aria-label')) === 'Sign-in suspended' && (await attr(s, '[data-testid="dot-roster-rocky"]', 'aria-label')) === 'Archived')
+  /* D329 (his look, 28 Sep 26): how and when — one line */
+  check('archive', s, 'his archived row says "Archived 27 Sep 26 by Saber"', (await words(s, '[data-testid="arch-line-rocky"]')) === 'Archived 27 Sep 26 by Saber', await words(s, '[data-testid="arch-line-rocky"]'))
   await shot(s, 'archive-01-group')
   await war(s, 'SEP')
   check('archive', s, 'war: here on 25 Sep (his past kept)', (await here(s, 'rocky', '2026-09-25')), await cellCls(s, 'rocky', '2026-09-25'))
@@ -360,6 +362,10 @@ await scene('welcome', [DESK, PHONE], async s => {
   await shot(s, 'welcome-01-note')
   await s.page.click('#welcomeCheck'); await s.page.waitForTimeout(500)
   check('welcome', s, 'Check my quals: Quals, his own row outlined', (await s.page.evaluate(() => window.CURPAGE)) === 'quals' && (await count(s, '#qtbl tr.back-hl td.qname[data-person="rocky"]')) === 1)
+  /* the outline is PAINTED on his name cell too — the pinned callsign cell paints its own background, and the walk only
+     checked the class was on (his look, 28 Sep 26: the box started at Initials) */
+  const edge = await s.page.evaluate(() => { const td = document.querySelector('#qtbl tr.back-hl td.qname'); return td ? getComputedStyle(td).boxShadow : null })
+  check('welcome', s, 'the outline is drawn on his name cell too (the pinned column), not only from Initials on', !!edge && /rgb\(60, 198, 230\)/.test(edge), edge)
   await shot(s, 'welcome-02-his-row')
   await signIn(s.page, 'hex')
   check('welcome', s, 'said once — gone on the next sign-in', (await count(s, '#welcomeBack')) === 0)
@@ -670,6 +676,28 @@ await scene('lapsedel', [DESK], async s => {
   await go(s.page, 'quals').catch(() => {}); await s.page.waitForTimeout(400); await go(s.page, 'leavewar').catch(() => {}); await s.page.waitForTimeout(700)
   check('lapsedel', s, 'after midnight his Delete ran and his account is gone: his session is off', await s.page.evaluate(() => !!window.PEOPLE.casper.deleted) && (await count(s, '#accessOff')) === 1, await text(s, '#accessOff .acc-h'))
   await shot(s, 'lapsedel-01-off')
+})
+
+/* ---- postedout: a posting with no outcome that has run — "posted out 20 Sep" on his row (D326); a posting's archive says
+   so on the archived row (D329) ---- */
+await scene('postedout', [DESK, PHONE], async s => {
+  await signIn(s.page, 'ad', 'a'); await war(s, 'SEP')
+  await s.page.locator('[data-testid="cell-divot-2026-09-22"]').click(); await s.page.waitForTimeout(400)
+  await s.page.click('[data-testid="bid-postout"]'); await s.page.waitForTimeout(300)
+  await s.page.fill('[data-testid="po-date"]', '2026-09-20')
+  await s.page.click('[data-testid="po-overseas"]'); await s.page.waitForTimeout(150)          // un-pick: no outcome (D303)
+  check('postedout', s, 'setup through the sheet: no chip chosen — "off the manpower, nothing else"', /nothing else/.test(await words(s, '[data-testid="po-line"]') || ''), await words(s, '[data-testid="po-line"]'))
+  await s.page.click('[data-testid="po-confirm"]'); await s.page.waitForTimeout(600)
+  await users(s)
+  check('postedout', s, 'his row: "posted out 20 Sep" (D326)', (await words(s, '[data-testid="po-tag-divot"]')) === 'posted out 20 Sep', await words(s, '[data-testid="po-tag-divot"]'))
+  await shot(s, 'postedout-01-row', '#accList [data-person="divot"]')
+  /* a posting's own archive (Overseas Sqn, its date come) on the archived row */
+  await go(s.page, 'leavewar')
+  await s.page.evaluate(() => window.lwSetPostOut('casper', '2026-09-21'))                  // setup: an Overseas posting that has run
+  await go(s.page, 'quals')
+  await openArchived(s, 'casper')
+  check('postedout', s, 'a posting\'s archive: "Archived 21 Sep 26 by his posting (Overseas Sqn)" (D329)', (await words(s, '[data-testid="arch-line-casper"]')) === 'Archived 21 Sep 26 by his posting (Overseas Sqn)', await words(s, '[data-testid="arch-line-casper"]'))
+  await shot(s, 'postedout-02-archived-by-posting', '#accArchList [data-person="casper"]')
 })
 
 /* ---- reload: what was done stays done ---- */

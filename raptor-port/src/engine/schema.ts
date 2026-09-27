@@ -107,8 +107,13 @@ export type Person = {
   archived?: boolean
   /** who archived him: 'po' = the Leave War's Post out pass (its date came, "Archive on PO date" on) — the archive the
    *  posting sheet's Undo, a later date and the switch turned off take back; 'admin' = Archive on Admin → Users
-   *  ([ONE-DOOR], D310, D323 — Restore there is the one way back); absent = archived by hand on Quals before D310 — screen. */
-  archivedBy?: 'po' | 'admin'
+   *  ([ONE-DOOR], D310, D323 — Restore there is the one way back); 'del' = a delete's (`state/person-delete.ts`, with
+   *  `deleted`); absent = archived by hand on Quals before D310 — screen. */
+  archivedBy?: 'po' | 'admin' | 'del'
+  /** When he was archived (D329 — his row says how and when): the day an admin archived him, or his posting's date — screen. */
+  archivedOn?: string
+  /** The admin who archived him, by his person id (D329; absent for a posting's archive) — screen. */
+  archivedWho?: string
   /** Deleted for leaving flying for good — the hidden mark, never erased (D287, D290, D297): on no list, every day he
    *  already flew still points at him — screen (`state/person-delete.ts`). */
   deleted?: boolean

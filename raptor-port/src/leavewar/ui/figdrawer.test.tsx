@@ -197,7 +197,7 @@ describe('the figures drawer (owner, 6 Sep 26)', () => {
     expect(drawer().style.pointerEvents).toBe('none')
     fireEvent.click(screen.getByTestId('roster-arrange'))
     expect(drawer().style.pointerEvents).toBe('')
-  })
+  }, 60_000)   // renders the whole year; past 20s only on a busy PC — [LW-FIGSEL-SLOW]'s own fix, not a pause
 
   it('leaves the real table alone — one cell per row, the same as closed', () => {
     render(<Matrix />)

@@ -814,8 +814,10 @@ export function availableFor(iso: string, win: [number, number], day?: any): str
     if (!p || p.special || p.pers) continue
     /* a DELETED man is read by DATE ([POST-OUT-OUTCOMES], D297 — Fable F1): on a day before his cutoff he is
        available exactly as he was, so the crowd a day he flew froze at publication compares equal and that day never
-       reads pending for the delete; on or after it he is out. An archived man keeps today's rule. */
-    if (p.deleted ? iso >= String(p.deletedFrom || '') : p.archived) continue
+       reads pending for the delete; on or after it he is out. An ARCHIVED man is read by his STINTS (D327, 28 Sep 26 —
+       "shouldnt all avail crowd remain the same as per how that was published?"): in the crowd on a day he was here,
+       out from his archive on — the `inSquadron` read just below; with no war row (never here) he is out. */
+    if (p.deleted ? iso >= String(p.deletedFrom || '') : (p.archived && !lwById.get(id))) continue
     /* SANS are another squadron's men until they are on our programme for the
        day. With no day blob to read (a caller that cannot supply one) they stay
        out, which is the pre-[ALL-AVAIL-REDEF] answer — fail closed. */
@@ -1493,14 +1495,22 @@ export function poHeldReason(id: string, outcome: PostOutcome, poDate: string = 
    his sign-in works at once, D308, while the war does not count him yet, and nothing on his row said so) —
    "posting in 19 Oct"; or null */
 export function postingPendingTag(id: string): string | null {
-  const w: any = getState().people.find(p => p.id === id) || getState().postOuts[id]
+  /* the RECORD's dates first — Show SANS lays no window on the displayed row of a man whose SANS posting has run */
+  const w: any = getState().postOuts[id] || getState().people.find(p => p.id === id)
   if (w && !w.gone && w.from && w.from > effectiveToday()) return `posting in ${dayMon(w.from)}`
   if (!w || !w.to || w.gone) return null
   const poDate = addDays(w.to, 1)
-  if (poDate <= effectiveToday()) return null
   const o = outcomeOf(w)
-  const word = o && o !== 'none' ? ` · ${OUTCOME_WORD[o] || o}` : ''
-  return `posting out ${dayMon(poDate)}${word}`
+  if (poDate > effectiveToday()) {
+    const word = o && o !== 'none' ? ` · ${OUTCOME_WORD[o] || o}` : ''
+    return `posting out ${dayMon(poDate)}${word}`
+  }
+  /* D326 (28 Sep 26 — "6 yes"): a posting that has RUN and left him on the roster — no outcome (D303), or SANS (D283) —
+     says so on his row, where he otherwise looked like everyone else while the Leave War shows him posted out */
+  if (!o || o === 'none') return `posted out ${dayMon(poDate)}`           // nothing to run: its date is the whole of it
+  if (w.poDone !== poDate) return null                                  // come but held, or not yet run — the held note speaks
+  if (o === 'sans') return `posted out ${dayMon(poDate)} · SANS`
+  return null
 }
 /* for Admin → Users' account row: his posting has come and is waiting — why, or null */
 export function postingHeldNote(id: string): string | null {
@@ -1545,7 +1555,7 @@ export function runPoOutcomes(): void {
             if (held) { told.push([d.key, held]); continue }
             const body: any = (PEOPLE as any)[d.id]
             if (d.outcome === 'overseas') {
-              if (!body.archived) { body.archived = true; body.archivedBy = 'po' }
+              if (!body.archived) { body.archived = true; body.archivedBy = 'po'; body.archivedOn = d.poDate }   // D329: when
               suspendForPosting(d.id)
             } else if (d.outcome === 'sans') {
               if (!body.san) {
@@ -1678,7 +1688,7 @@ function restoreBody(id: string, rename: string | null, postIn?: string): boolea
       if (rename != null && !renameCallsign(id, rename)) { ok = false; return }
       if (postIn === undefined) setPostOut(id, null)
       body.archived = false
-      delete body.archivedBy
+      delete body.archivedBy; delete body.archivedOn; delete body.archivedWho
       if (body.sanBy === 'po') { body.san = false; if (body.quals) body.quals.san = false; delete body.sanBy }
       if (postIn === undefined) enableAfterPosting(id)
       else {
@@ -1722,6 +1732,18 @@ export function restoreArchivedAs(id: string, cs: string, postIn?: string): stri
 const OUTCOME_WORD: Record<string, string> = { overseas: 'Overseas Sqn', delete: 'Delete', sans: 'SANS' }
 const MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 const dayMon = (iso: string) => `${Number(iso.slice(8, 10))} ${MON[Number(iso.slice(5, 7)) - 1]}`
+/* D329 (28 Sep 26 — "those on archived should also have a history on how they ended up there and when"; his pick, one
+   line): an archived man's row says how and when — "Archived 27 Sep 26 by Saber" (Admin → Users; the admin read by his
+   id, so a later rename follows) or "Archived 14 Oct 26 by his posting (Overseas Sqn)". null for a man on the roster,
+   a deleted man, or one archived before this was kept (demo data — D56). */
+export function archivedLine(id: string): string | null {
+  const b: any = (PEOPLE as any)[id]
+  if (!b || !b.archived || b.deleted || !b.archivedOn) return null
+  const when = `${dayMon(b.archivedOn)} ${String(b.archivedOn).slice(2, 4)}`
+  if (b.archivedBy === 'po') return `Archived ${when} by his posting (${OUTCOME_WORD.overseas})`
+  const who = b.archivedWho && (PEOPLE as any)[b.archivedWho] ? (PEOPLE as any)[b.archivedWho].cs : null
+  return `Archived ${when}${who ? ` by ${who}` : ''}`
+}
 export function archiveProblem(id: string): string | null {
   if (!mayManageRoster()) return 'Only an admin can archive someone'
   const body = (PEOPLE as any)[id]
@@ -1751,6 +1773,8 @@ export function archivePerson(id: string): { bad: string | null; said: string } 
       if (suspendForArchive(id) === 'lock') throw new CmdRefused(`${body.cs} is the last admin who can sign in — he can't be archived until another admin can`)
       body.archived = true
       body.archivedBy = 'admin'
+      body.archivedOn = today                                           // D329: how and when — who, by his person id
+      if (me() != null) body.archivedWho = me(); else delete body.archivedWho
       delete body.back
       if (body.sanBy === 'po') { body.san = false; if (body.quals) body.quals.san = false; delete body.sanBy }
       replaced = closeStintOnArchive(id, today, keepHidden).replaced
@@ -1832,7 +1856,7 @@ function takeBack(id: string, write: () => boolean, keep: { archive?: boolean; s
       txn.enlist(peopleStore); txn.enlist(settingsStore); txn.enlist(lwStore)
       ok = write()
       if (!ok || !body) return
-      if (!keep.archive && body.archived && body.archivedBy === 'po') { body.archived = false; delete body.archivedBy }
+      if (!keep.archive && body.archived && body.archivedBy === 'po') { body.archived = false; delete body.archivedBy; delete body.archivedOn }
       if (!keep.suspend) enableAfterPosting(id)
       if (!keep.sans && body.sanBy === 'po') { body.san = false; if (body.quals) body.quals.san = false; delete body.sanBy }
       validate()

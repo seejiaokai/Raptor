@@ -42,7 +42,7 @@ import { deletePerson, effectiveToday } from '../state/person-delete'
 import { updatePersonField } from '../state/quals-write'
 import { markBack } from '../state/view'
 import {
-  postingHeldNote, postingPendingTag, archivePerson, restoreArchivedPerson, restoreArchivedAs, restoreProblem,
+  postingHeldNote, postingPendingTag, archivedLine, archivePerson, restoreArchivedPerson, restoreArchivedAs, restoreProblem,
 } from '../leavewar/sync'
 import './postout.css'
 
@@ -369,6 +369,8 @@ function ArchivedRow(p: { pid: string; open: boolean; onToggle: () => void; onCl
       <button className="acc-main acc-tap" onClick={p.onToggle} title={`Restore or delete ${callsign}`}>
         <span className="acc-name">{callsign}</span>
         <span className="acc-sub">{a ? <b>{a.name}</b> : 'no sign-in'}{' · '}{seatText(person)}</span>
+        {/* D329: how and when he came to be archived — one line */}
+        {archivedLine(p.pid) && <span className="acc-sub od-archline" data-testid={`arch-line-${p.pid}`}>{archivedLine(p.pid)}</span>}
       </button>
       <Dots pid={p.pid} a={a} archived />
       <span className="od-rc">{a && <span className={'ub ' + a.role}>{isAdminAccount(a) ? 'Admin' : 'Member'}</span>}</span>

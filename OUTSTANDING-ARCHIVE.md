@@ -2199,3 +2199,17 @@ walked 40/40 at both widths, 26 wires broken on purpose (each turns a named test
 (six findings, all fixed red first; re-walked). **Next: his look (§10 of the sheet) and "merge live"**; then this item and
 `[LW-MOVE-BENEATH]` (built by it) go to the archive.
 
+
+*Moved here 2026-09-28 by backlog-archive.mjs ([LW-FIGSEL-SLOW]). Forward facts: `raptor-port/src/leavewar/ui/figselect.test.tsx`, `raptor-port/src/leavewar/ui/figdrawer.test.tsx`.*
+
+### [LW-FIGSEL-SLOW] One Leave War unit test times out under a full parallel run (23 Sep 26)
+
+`src/leavewar/ui/figselect.test.tsx` "an undo, a stage change and the drawer toggle all drop it" takes ~4–5s
+alone (3.9s on the final tree; the same on the code before the Leave War fixes) but ran past its 20s limit in
+2 of 3 full `npm test` runs on the owner's PC on 23 Sep 26 (another chat's worktree active). Pre-existing,
+load-only. Fix: split its three drop cases into three tests (each renders the whole year once), or give it its
+own longer limit — not a pause. Evidence: `raptor-port/docs/handpass/2026-09-23-lw-monthjump.md` §13/§15.
+**Seen again 27 Sep 26** (`claude/one-door`, its first full gate run, two code reads running beside it): this test (23.9s) and
+`src/leavewar/ui/figdrawer.test.tsx` "stands down to taps while an admin is rearranging" (24.8s) both past 20s; both pass alone —
+the fix above covers the second too (it renders the whole year the same way).
+

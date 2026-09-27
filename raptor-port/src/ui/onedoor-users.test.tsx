@@ -149,6 +149,14 @@ describe('D310 / D322 / D323 — Archive and Restore on the row', () => {
     expect(dotColour('roster', 'casper'), 'a man on the roster: green').toBe('g')
   })
 
+  it('D329: an archived row says how and when he was archived — "Archived <date> by <admin>"', async () => {
+    await users()
+    await click($('#accList [data-person="rocky"] .acc-tap'))
+    await click($('#accEdArchive'))
+    await click($('#accArchToggle'))
+    expect($('#accArchList [data-person="rocky"]').textContent).toMatch(/Archived \d{1,2} [A-Z][a-z]{2} \d{2} by Saber/)
+  })
+
   it('Restore asks the post-in date (today) and brings both back; he\'ll be asked to check his quals', async () => {
     await users()
     await click($('#accList [data-person="rocky"] .acc-tap')); await click($('#accEdArchive'))

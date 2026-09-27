@@ -225,7 +225,7 @@ describe('a drag down the figure column selects a run of people', () => {
     fireEvent.click(screen.getByTestId('figures-toggle'))
     expect(screen.getByTestId('figures-toggle').getAttribute('aria-expanded')).toBe('true')
     expect(marked()).toHaveLength(0)
-  })
+  }, 60_000)   // renders the whole year; past 20s only on a busy PC — [LW-FIGSEL-SLOW]'s own fix, not a pause
 
   /* …and so does HIDING the figure the run is on (review, 6 Sep 26). The clear
      above watches the stage, the war, the undo epoch, the drawer and the role,
