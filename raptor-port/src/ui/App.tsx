@@ -1,4 +1,7 @@
+import { useEffect } from 'react'
 import { SESSION } from '../state/auth'
+import { sessionLapsed, sessionFor } from '../state/accounts'
+import { notify, resetSession } from '../state/store'
 import { roleOf } from '../state/perms'
 import { useVersion } from './useStore'
 import { Login } from './Login'
@@ -19,6 +22,13 @@ import { AvailWindow } from './AvailWindow'
 
 export function App() {
   useVersion()
+  /* [ONE-DOOR] round 1 (Fable F8 / Astra 4): a session whose account went off, or whose person was archived or deleted,
+     since he signed in is turned off on the next repaint — the suspended screen, his writes refused from then on */
+  useEffect(() => {
+    if (!sessionLapsed()) return
+    resetSession(sessionFor({ kind: 'off', name: String(SESSION.name || '') }))
+    notify()
+  })
   /* WHO IS SIGNED IN DECIDES THE WHOLE TREE ([ACCOUNTS], D204, 26 Sep 26): nobody —
      the sign-in; signed in but on no list, or switched off — the access screens (ask
      for access, waiting, switched off); a guest (asked, the admin's guest switch on) —

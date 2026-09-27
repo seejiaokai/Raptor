@@ -11,7 +11,7 @@ import { catsFor, CALLSIGN_LABEL, callsignProblem } from '../state/roster-add'
 import './postout.css'
 import { openAdminUsers } from './adminopen'
 import { updatePersonField } from '../state/quals-write'
-import { esc, BACKPROMPT, clearBack } from '../state/view'
+import { esc, BACKPROMPT, clearBack, QUALSFOCUS, focusQualsRow } from '../state/view'
 import { notify } from '../state/store'
 /* [ARCH-STACK] phase 3: the command-routed persistPeople (a roster write now
    emits a people/<personId> change). Same behaviour + the change stream. */
@@ -328,6 +328,13 @@ export function QualsPage() {
     else setSeat(p.pers || p.seat === 'GND' ? 'GND' : p.seat === 'RCP' ? 'RCP' : 'FCP')
     setBackHl(id); notify()
   }
+  /* [ONE-DOOR] (D305): the man's own "Check my quals" — his row, opened and outlined, once */
+  useEffect(() => {
+    if (!QUALSFOCUS) return
+    const id = QUALSFOCUS
+    focusQualsRow(null)
+    if (PEOPLE[id]) checkBack(id)
+  })
   useEffect(() => {
     if (!backHl) return
     const el = (document.querySelector(`#qtbl td.qname[data-person="${backHl}"]`)?.closest('tr')
@@ -761,7 +768,8 @@ export function QualsPage() {
       </div>
       {/* D284 (26 Sep 26): he's back — restored, or his account enabled — and the admin is asked to check his quals and
           CAT, with a way straight to his row; lined up with the table (D294 (3)). It changes nothing. */}
-      {admin && BACKPROMPT.filter(id => PEOPLE[id] && !PEOPLE[id].deleted).map(id => (
+      {/* round 1, Fable F15: a man archived again before the tap is not prompted */}
+      {admin && BACKPROMPT.filter(id => PEOPLE[id] && !PEOPLE[id].deleted && !PEOPLE[id].archived).map(id => (
         <div className="back-prompt" key={id} data-testid={`back-${id}`}>
           <span><b>{PEOPLE[id].cs} is back</b> — quals and CAT as he left them.</span>
           <button className="abtn primary" data-back-check={id} onClick={() => checkBack(id)}>Check his quals</button>

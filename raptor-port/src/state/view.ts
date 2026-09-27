@@ -397,6 +397,10 @@ export type AvailWin = {
 export let BACKPROMPT: string[] = []
 export function markBack(pid: string) { if (pid && !BACKPROMPT.includes(pid)) BACKPROMPT = [pid, ...BACKPROMPT] }
 export function clearBack(pid: string) { BACKPROMPT = BACKPROMPT.filter(x => x !== pid) }
+/* [ONE-DOOR] (D305): the Quals row a page change should open on and outline — the man's own "Check my quals" (his
+   welcome note, ui/WelcomeBack.tsx). Quals reads it once and clears it. Session state. */
+export let QUALSFOCUS: string | null = null
+export function focusQualsRow(pid: string | null) { QUALSFOCUS = pid }
 export let ADMINOPEN: { seq: number; newPerson: boolean } | null = null
 let adminOpenSeq = 0
 export function requestAdminUsers(newPerson: boolean) { ADMINOPEN = { seq: ++adminOpenSeq, newPerson: !!newPerson } }
@@ -845,6 +849,7 @@ export const VIEW_RESET: { name: string; scopes: ResetScope[]; reset: () => void
   /* [ACCOUNTS-NEW-PERSON]: a pending "open Admin → Users" is the outgoing person's */
   { name:'ADMINOPEN', scopes:['session'], reset:()=>clearAdminOpen() },
   { name:'BACKPROMPT', scopes:['session'], reset:()=>{ BACKPROMPT = [] } },
+  { name:'QUALSFOCUS', scopes:['session'], reset:()=>{ QUALSFOCUS = null } },
 ]
 /* clear every field whose policy includes `scope`. Order within a scope does
    not matter — each entry clears an independent field — so resetSession and

@@ -26,3 +26,5 @@
 /* Quals: "he's back" (D284; the approved picture 3 — lined up with the table, D294 (3)) and his row outlined */
 .back-prompt{box-sizing:border-box;margin:8px 0;padding:10px 12px;border:1px solid #3cc6e6;border-radius:10px;background:rgba(60,198,230,.08);color:#e8edf2;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
 .back-hl{outline:2px solid #3cc6e6;outline-offset:-2px}
+/* [ONE-DOOR] (D305): his own welcome note, under the top bar on every page (the back-prompt's look) */
+#shell > .welcome-back{margin:10px 16px 0}

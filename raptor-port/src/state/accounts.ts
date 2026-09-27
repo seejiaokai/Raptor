@@ -47,7 +47,7 @@ import { store } from '../engine/hooks'
 import { PEOPLE } from '../engine/people'
 import { SESSION } from './auth'
 import { isAdmin, mayManageAccounts, mayManageRoster, mayRequestAccess, me, roleOf } from './perms'
-import { commitSettingsIntent, commitPeopleSettingsIntent } from './people-settings-commit'
+import { commitSettingsIntent, commitPeopleSettingsIntent, commitPeopleIntent } from './people-settings-commit'
 import {
   MAX_CS, MAX_INITIALS, SEATS, catsFor, seatLabel, tidyPerson, newPersonProblem, putNewPerson, addRosterPerson, saidOf,
   postInProblem, type NewPerson,
@@ -394,6 +394,28 @@ export function enableForRestore(pid: string): boolean {
   if (!a || a.on) return false
   writeAccounts(ACCOUNTS_LIST.map(x => (x.id === a.id ? { id: x.id, name: x.name, role: x.role, pid: x.pid, on: true } : x)))
   return true
+}
+/* HIS WELCOME NOTE SEEN ([ONE-DOOR], D305): the signed-in man clears his OWN `back` — the `person.backSeen` command,
+   own row required (perms.ts; ownershipViolation lets a member change only his own Person). Nothing when there is
+   nothing to clear. */
+export function markBackSeen(): string | null {
+  const id = me()
+  const p = id != null ? (PEOPLE as any)[id] : null
+  if (!p || !p.back) return null
+  return saidOf(commitPeopleIntent('person.backSeen', { owner: id }, () => { delete (PEOPLE as any)[id!].back }))
+}
+/* A SESSION THAT HAS LAPSED ([ONE-DOOR] round 1 — Fable F8 / Astra 4, the agent's call on the look card): the signed-in
+   account is suspended, or its person archived or deleted, since he signed in (a posting's date came, an admin acted in
+   another session at the database step). The App then turns the session off (the "Your access is suspended" screen)
+   on its next repaint, so no write of his goes through. A session with no account behind it (the localhost probe
+   bridge, a headless test) never lapses. */
+export function sessionLapsed(): boolean {
+  const r = SESSION && SESSION.role
+  if (r !== 'admin' && r !== 'main' && r !== 'member') return false
+  const a = accountById(SESSION.user)
+  if (!a) return false
+  const p = (PEOPLE as any)[a.pid]
+  return !a.on || !p || !!p.archived || !!p.deleted
 }
 export const accountSuspendedByPosting = (pid: string): boolean => { const a = accountOfPid(pid); return !!a && !a.on && a.offBy === 'po' }
 /* would removing or suspending this person's account leave no admin who can sign in? (the posting pass's own check —
