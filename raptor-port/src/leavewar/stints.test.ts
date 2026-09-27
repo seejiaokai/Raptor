@@ -209,3 +209,21 @@ describe('D320 — which posting sheet a day opens (postingSheetFor)', () => {
     expect(postingSheetFor(him(id), '2026-11-10'), 'after the current stint').toBe('po')
   })
 })
+
+/* THE FINAL CODE READ (Fable F3, 27 Sep 26): the war's Post in sheet moving a man's post-in to the day after his earlier
+   stint closed left two stints touching — every day counted, yet a "posted out" corner on the day he never left. The
+   same day Restore already joins (openStint, Fable F5); the sheet's writer now joins it too. */
+describe('Fable F3 — a post-in moved to the day after the earlier stint closed joins the two stints', () => {
+  it('one stint, no past, no corner', () => {
+    reboot(memoryBackend())
+    const id = anAircrewId()
+    expect(setPostOut(id, '2026-06-15')).toBe(true)                        // his first stint closes 14 Jun
+    expect(openStint(id, '2026-09-01')).toBe(true)                          // back from 1 Sep
+    expect(him(id).past?.length).toBe(1)
+    expect(setPostIn(id, '2026-06-15')).toBe(true)                          // moved back to the day after he left
+    expect(him(id).past ?? [], 'the two stints are one again').toEqual([])
+    expect(him(id).from, 'the earlier stint\'s start stands').toBeNull()
+    expect(him(id).to).toBeNull()
+    expect(inSquadron(him(id), '2026-07-10')).toBe(true)
+  })
+})

@@ -12,7 +12,8 @@ import { App } from './App'
 import { initStore, notify, resetSession, switchRoleView } from '../state/store'
 import { storeBackend } from '../engine/hooks'
 import { PEOPLE, indexCallsigns } from '../engine/people'
-import { accountsLoad, signIn, sessionFor, markBackSeen } from '../state/accounts'
+import { accountsLoad, signIn, sessionFor, markBackSeen, updateAccount } from '../state/accounts'
+import { deletePerson } from '../state/person-delete'
 import { SESSION } from '../state/auth'
 import { persistPeople } from '../state/people-settings-commit'
 import { CURPAGE } from '../state/view'
@@ -103,5 +104,28 @@ describe('round 1 (Fable F8 / Astra 4) — a session that lapses lands on the su
     await act(async () => { notify() })
     expect(SESSION?.role).toBe('off')
     expect($('#accessOff')?.textContent).toMatch(/suspended/i)
+  })
+
+  /* the final code read (Astra 1, 27 Sep 26): an ACCOUNT's session whose account is gone (deleted — by another admin or
+     by a Delete posting on its date) still said "fine", and one whose account was demoted kept its admin role. Another
+     admin's act is simulated in this one browser: his session is swapped in, then the stale one put back. */
+  const actAsOtherAdmin = async (fn: () => void) => {
+    const stale = SESSION
+    await act(async () => { resetSession(sessionFor(signIn('ad', 'a'))); fn(); resetSession(stale); notify() })
+    await act(async () => { notify() })
+  }
+  it('Astra 1: his account deleted while he is signed in — the next repaint turns his session off', async () => {
+    await signInAs('hex')
+    await actAsOtherAdmin(() => { expect(deletePerson('rocky')).toBeNull() })
+    expect(SESSION?.role).toBe('off')
+  })
+  it('Astra 1: an admin demoted by another admin while signed in — his session drops to member at the next repaint', async () => {
+    await signInAs('ad', 'a')
+    expect(updateAccount('acoutlaw', { role: 'admin' })).toBeNull()
+    await signInAs('outlaw')
+    expect(SESSION?.role).toBe('admin')
+    await actAsOtherAdmin(() => { expect(updateAccount('acoutlaw', { role: 'main' })).toBeNull() })
+    expect(SESSION?.role).toBe('main')
+    expect($('#shell'), 'still signed in, as a member').toBeTruthy()
   })
 })

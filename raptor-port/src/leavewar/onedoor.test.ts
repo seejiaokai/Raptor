@@ -18,8 +18,9 @@ import { BACKPROMPT } from '../state/view'
 import { onCommit } from '../command'
 import { INPUTS } from '../engine/inputs'
 import { DAYS } from '../engine/data'
-import { getState, initStore as lwInitStore, postingProblem, setCell, setPeople, setPostIn, setPostOut } from './state/store'
+import { getState, initStore as lwInitStore, postingProblem, setCell, setPeople, setPostIn, setPostOut, setShowSans } from './state/store'
 import { deletePerson } from '../state/person-delete'
+import { updatePersonField } from '../state/quals-write'
 import { memoryBackend } from './state/storage'
 import { projectPeople } from './state/raptorRoster'
 import {
@@ -302,3 +303,76 @@ describe('the walk design — what was missing', () => {
   })
 })
 
+
+/* THE FINAL CODE READS (Fable 5.1 and Astra, blind to each other, 27 Sep 26 — docs/handpass/2026-09-27-one-door-*-read.md),
+   each finding made red here before its fix. */
+describe('the final code reads', () => {
+  it('Fable F4 / Astra 2 (both): an archived man renamed with Save name — his Leave War row follows, and after the roster is re-installed', () => {
+    expect(archivePerson('rocky').bad).toBeNull()
+    raptorNotify()
+    expect(war('rocky')!.callsign).toBe('Hex')
+    expect(updatePersonField('rocky', { callsign: 'Hexx' })).toBeNull()
+    raptorNotify()
+    expect(war('rocky')!.callsign, 'at once').toBe('Hexx')
+    setPeople(projectPeople())                                             // what a reload's boot does
+    raptorNotify()
+    expect(war('rocky')!.callsign, 'after the roster is re-installed').toBe('Hexx')
+  })
+  /* Fable F1: the DISPLAYED row of a man whose SANS posting has run depends on Show SANS (on: tracked in the SANS group,
+     no window; off: posted out from the date) — Archive read it, so the same tap stored two different dates */
+  for (const shown of [true, false]) {
+    it(`Fable F1: a man whose SANS posting has RUN, archived with Show SANS ${shown ? 'on' : 'off'} — the posting's date is kept (D323 (1))`, () => {
+      expect(setShowSans(shown)).toBe(true)
+      expect(postOut('bane', '2026-07-10', 'sans')).toBe(true)
+      raptorNotify()
+      expect(P('bane').san, 'the posting ran').toBe(true)
+      expect(archivePerson('bane').bad).toBeNull()
+      raptorNotify()
+      const rec = getState().postOuts['bane']!
+      expect(rec.to, 'his stint closed by the posting, not by the archive').toBe('2026-07-09')
+      expect(rec.poOutcome).toBe('overseas')
+    })
+    it(`Fable F1 (the delete, the same root): a man whose SANS posting has RUN, deleted with Show SANS ${shown ? 'on' : 'off'} — the posting's date is kept`, () => {
+      expect(setShowSans(shown)).toBe(true)
+      expect(postOut('bane', '2026-07-10', 'sans')).toBe(true)
+      raptorNotify()
+      signInAs('ad', 'a')
+      expect(deletePerson('bane')).toBeNull()
+      raptorNotify()
+      expect(getState().postOuts['bane']!.to).toBe('2026-07-09')
+    })
+  }
+
+  it('Fable F2: a SANS man with a posting still to come and nothing here yet, Show SANS off — Archive closes his record and replaces the posting', () => {
+    const id = (() => { expect(addRosterPerson({ cs: 'Sansy', ini: '', seat: 'FCP', cat: 'C' }, '2026-07-01')).toBeNull(); raptorNotify(); return Object.keys(PEOPLE).find(k => P(k).cs === 'Sansy')! })()
+    P(id).san = true; P(id).quals = { ...(P(id).quals || {}), san: true }
+    expect(setShowSans(true)).toBe(true)
+    raptorNotify()
+    expect(postOut(id, '2026-08-01', 'overseas')).toBe(true)
+    expect(setShowSans(false)).toBe(true)
+    raptorNotify()
+    /* Fable's premise does not hold: a man with a posting on record stays on the war whatever Show SANS says (the keep
+       rule keeps any row whose record closes a stint) — so Archive sees him; pinned here so a change to that rule is caught */
+    expect(war(id), 'kept on the war by his posting record, Show SANS off').toBeDefined()
+    const r = archivePerson(id)
+    expect(r.bad).toBeNull()
+    expect(r.said).toMatch(/posting out on 1 Aug \(Overseas Sqn\) is replaced/)
+    raptorNotify()
+    const rec = getState().postOuts[id]!
+    expect(rec.to, 'closed yesterday, not 31 Jul').toBe('2026-07-14')
+    expect(rec.poDone).toBe('2026-07-15')
+    expect(rec.from, 'his post-in kept').toBe('2026-07-01')
+    expect(restoreProblem(id, '2026-07-20'), 'a post-in after today is not refused by the replaced posting').toBeNull()
+  })
+
+  it('Fable F5: a posting due TODAY that has not run yet (the app open across midnight) — Archive names it as replaced, and it never runs', () => {
+    expect(postOut('rocky', '2026-07-16', 'delete')).toBe(true)
+    vi.setSystemTime(new Date(2026, 6, 16, 0, 10, 0))                       // past midnight, nothing has repainted
+    const r = archivePerson('rocky')
+    expect(r.bad).toBeNull()
+    expect(r.said).toMatch(/posting out on 16 Jul \(Delete\) is replaced/)
+    raptorNotify()
+    expect(P('rocky').deleted, 'the Delete never runs on the archived man').toBeFalsy()
+    expect(P('rocky').archived).toBe(true)
+  })
+})

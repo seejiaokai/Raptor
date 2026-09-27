@@ -1603,7 +1603,14 @@ export function markPostingDone(id: string, poDate: string): void {
    new person has a post-in date since D308). */
 function withStored(identity: Person): Person {
   const w = state.postOuts[identity.id]
-  return w ? { ...identity, ...windowFor(w, state.showSans) } : identity
+  return w ? { ...identity, ...windowFor(w, false) } : identity
+}
+/* …and a man the war DOES show: his DATES are still his stored record's, never the displayed row's — Show SANS lays no
+   window on a man whose SANS posting has run (D283), a display choice that must not decide what an Archive or a delete
+   stores (the final code read, Fable F1, 27 Sep 26: the same Archive stored two dates as the switch stood) */
+function dated(p: Person): Person {
+  const w = state.postOuts[p.id]
+  return w ? { ...p, ...windowFor(w, false) } : p
 }
 
 /** A DELETED man's war half ([POST-OUT-OUTCOMES], D287, D297, D299): his records dated on or after `iso` go from every
@@ -1644,7 +1651,7 @@ export function forgetPersonFrom(id: string, iso: string, frozen: Person | null 
   }
   const back = hadPast ? cut(withStored(frozen as Person)) : null
   const people = had
-    ? state.people.flatMap(p => (p.id === id ? (cut(p) ?? []) : [p]))
+    ? state.people.flatMap(p => (p.id === id ? (cut(dated(p)) ?? []) : [p]))
     : back ? [...state.people, back] : state.people
   const kept = people.some(p => p.id === id)
   const { [id]: _dropped, ...rest } = state.postOuts
@@ -1690,7 +1697,13 @@ export function setPostIn(id: string, date: string | null): boolean {
      never cleared (that would lay "here from always" over the stint he left — past stints are read-only on the war) */
   const lastPast = person.past && person.past.length ? person.past[person.past.length - 1] : null
   if (lastPast && (date === null || date <= lastPast.to)) return false
-  const people = state.people.map(p => (p.id === id ? { ...p, from: date } : p))
+  /* the day after his earlier stint closed JOINS the two — one stint, no boundary, no "posted out" corner on a day he
+     never left (the final code read, Fable F3; the same join Restore makes, `openStint`, Fable F5) */
+  const joins = !!lastPast && date === addDays(lastPast.to, 1)
+  const rest = joins ? person.past!.slice(0, -1) : person.past
+  const people = state.people.map(p => (p.id === id
+    ? (joins ? { ...p, from: lastPast!.from, past: rest && rest.length ? rest : undefined } : { ...p, from: date })
+    : p))
   state = withCurrent({ ...state, people, postOuts: windowRecord(people, id) })
   persistNotify()
   return true
@@ -1761,10 +1774,13 @@ export function openStint(id: string, date: string, identity?: Person): boolean 
  *  (round 1, Fable F4 / Astra 3). `identity` as in `openStint`. Runs inside Archive's command (leavewar/sync.ts); the
  *  command's gate has decided who may, so no role check here (as `forgetPersonFrom`). */
 export function closeStintOnArchive(id: string, today: string, identity?: Person): { replaced: PostOutcome | null } {
-  const person = state.people.find(p => p.id === id) || (identity && withStored(identity))
+  const shown = state.people.find(p => p.id === id)
+  const person = shown ? dated(shown) : (identity && withStored(identity))
   if (!person || person.gone) return { replaced: null }
   const yesterday = addDays(today, -1)
-  const pending = person.to !== null && person.to > yesterday ? outcomeOf(person) ?? null : null
+  /* a posting that has not RUN yet (its date to come — or come, with nothing repainted since midnight, or held) is
+     replaced; one that has run keeps its date (the final code read, Fable F5: the date alone called a due-today posting run) */
+  const pending = person.to !== null && person.poDone !== addDays(person.to, 1) ? outcomeOf(person) ?? null : null
   let next: Person = person
   if (person.to === null || person.to > yesterday) {
     if (person.from !== null && person.from > yesterday) {

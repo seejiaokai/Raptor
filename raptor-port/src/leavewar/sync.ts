@@ -1376,7 +1376,12 @@ function reprojectRoster(): void {
     const kept: any = rec ? { ...p, ...windowFor(rec, false) } : p
     if (kept.to === null) continue
     if ((PEOPLE as any)[p.id] && (PEOPLE as any)[p.id].deleted) kept.gone = true
-    next.push(kept)
+    /* the final code reads (Fable F4, Astra 2 — both, 27 Sep 26): an ARCHIVED man renamed on Admin → Users (Save name)
+       carries his new callsign here too — the war knows him by id, and a rename is a label (as on every flown day). A
+       DELETED man keeps the name he flew under: his callsign is free for someone else (D297) */
+    const body = (PEOPLE as any)[p.id]
+    const renamed = !!body && !body.deleted && !!body.cs && String(body.cs) !== kept.callsign
+    next.push(renamed ? { ...kept, callsign: String(body.cs) } : kept)     // a copy: `kept` may be the store's own row
   }
   // Write only when a roster-visible field actually changed, so an ordinary
   // Raptor notify (a schedule edit touching no roster field) stays a cheap
@@ -1737,7 +1742,7 @@ export function archivePerson(id: string): { bad: string | null; said: string } 
   const hidden = warIdentityIfHidden(id)
   const keepHidden = hidden && pastOnWar(id, today) ? hidden : undefined
   const w0: any = st.people.find(p => p.id === id) || st.postOuts[id] || null
-  const pendingDate = w0 && w0.to && w0.to >= today ? addDays(w0.to, 1) : null
+  const pendingDate = w0 && w0.to && w0.poDone !== addDays(w0.to, 1) ? addDays(w0.to, 1) : null   // not yet RUN (Fable F5)
   let replaced: string | null = null
   const r = cmdCommit({
     type: 'person.archive', scope: { module: 'people' } as any, meta: null,

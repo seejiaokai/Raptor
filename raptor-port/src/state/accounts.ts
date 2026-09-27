@@ -412,13 +412,24 @@ export function markBackSeen(): string | null {
    another session at the database step). The App then turns the session off (the "Your access is suspended" screen)
    on its next repaint, so no write of his goes through. A session with no account behind it (the localhost probe
    bridge, a headless test) never lapses. */
-export function sessionLapsed(): boolean {
+export function sessionLapsed(): boolean { return sessionNow() !== undefined }
+/* WHAT THE SIGNED-IN SESSION SHOULD NOW BE — undefined when it stands. Turned OFF when his account is suspended, his
+   person archived or deleted — or, for a session made from an ACCOUNT (it carries `acct`), when that account is gone
+   (deleted by another admin, or by a Delete posting on its date — the final code read, Astra 1, 27 Sep 26: this said
+   "fine" for a missing account). Made AGAIN from the account as it now stands when another admin changed its role or
+   the person it belongs to (Astra 1: a demoted admin kept his admin session) — he stays signed in, with what his account
+   now gives. The admin's own member view (D292) is not a change: `acct` is still the account's role. A session with
+   no `acct` (the localhost probe bridge, a headless test) has no account to lose and never lapses on that count. */
+export function sessionNow(): any {
   const r = SESSION && SESSION.role
-  if (r !== 'admin' && r !== 'main' && r !== 'member') return false
+  if (r !== 'admin' && r !== 'main' && r !== 'member') return undefined
+  const off = () => sessionFor({ kind: 'off', name: String(SESSION.name || '') } as any)
   const a = accountById(SESSION.user)
-  if (!a) return false
+  if (!a) return SESSION.acct ? off() : undefined
   const p = (PEOPLE as any)[a.pid]
-  return !a.on || !p || !!p.archived || !!p.deleted
+  if (!a.on || !p || p.archived || p.deleted) return off()
+  if (SESSION.acct && (a.role !== SESSION.acct || a.pid !== SESSION.pid)) return sessionFor({ kind: 'ok', account: a } as any)
+  return undefined
 }
 export const accountSuspendedByPosting = (pid: string): boolean => { const a = accountOfPid(pid); return !!a && !a.on && a.offBy === 'po' }
 /* would removing or suspending this person's account leave no admin who can sign in? (the posting pass's own check —

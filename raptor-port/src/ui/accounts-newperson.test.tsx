@@ -192,7 +192,9 @@ describe('NP5 — approving: On the roster | New person, filled from what he gav
       const [a, b] = ACCESS_REQS
       await click($(`[data-approve="${a.id}"]`))
       expect($('#apvModeNew').getAttribute('aria-pressed')).toBe('true')
-      expect($('#apvNote').textContent).toBe("An archived man is already Hex — this makes a new person. If it is him, change his account's sign-in (hex) instead.")
+      /* the final code read (Fable, 27 Sep 26): after the one door an archived row edits no sign-in — the way it is HIM is
+         Restore first (D310, D322), with or without an account */
+      expect($('#apvNote').textContent).toBe('An archived man is already Hex — this makes a new person. If it is him, restore him first (▸ Archived), then give him his sign-in on his row.')
       await click($('#apvCancel'))
       /* his hidden id typed: never the archived man either — New person */
       await click($(`[data-approve="${b.id}"]`))
@@ -210,7 +212,7 @@ describe('NP5 — approving: On the roster | New person, filled from what he gav
       await act(async () => { setPage('admin'); notify() })
       await click($(`[data-approve="${ACCESS_REQS[0].id}"]`))
       expect($('#apvModeNew').getAttribute('aria-pressed')).toBe('true')
-      expect($('#apvNote').textContent).toBe(`An archived man is already ${fcs} — this makes a new person.`)
+      expect($('#apvNote').textContent).toBe(`An archived man is already ${fcs} — this makes a new person. If it is him, restore him first (▸ Archived), then give him his sign-in on his row.`)
     } finally { delete (PEOPLE as any)[free].archived; indexCallsigns() }
   })
   /* [ONE-DOOR] (D310, D322) REPLACED "the account editor of an ARCHIVED person still shows his callsign in its picker"

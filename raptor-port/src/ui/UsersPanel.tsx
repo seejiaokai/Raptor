@@ -30,7 +30,7 @@ import { elogWhen } from '../engine/editlog'
 import {
   ACCESS_REQS, GUESTVIEW, accountOfPid, linkablePeople, addAccount, updateAccount,
   approveRequest, approveRequestNew, addPersonAndAccount, declineRequest, setGuestView,
-  requestSummary, accessAlert, markRequestsSeen, MAX_SIGNIN, type Account, type AccountRole, type AccessRequest,
+  requestSummary, accessAlert, markRequestsSeen, MAX_SIGNIN, isAdminAccount, type Account, type AccountRole, type AccessRequest,
 } from '../state/accounts'
 import {
   SEATS, catsFor, MAX_CS, MAX_INITIALS, CALLSIGN_LABEL, CS_TOO_LONG, callsignProblem, nextFreeCallsign, type NewPerson,
@@ -150,13 +150,13 @@ function rosterMatch(r: AccessRequest): { pid: string; note: string } | null {
     : `He typed ${r.cs} — that is ${p.cs}. Pick them if this is them.` }
 }
 /* D286 reading (5), in D300's few words: a request whose callsign only an ARCHIVED man holds opens on New person,
-   saying so; when that archived man has an account, the way it is HIM on a new sign-in is named too */
+   saying so, and names the way it is HIM — since the one door (D310, D322) an archived row edits no sign-in, so it is
+   Restore first, then his sign-in on his row, with or without an account (the final code read, Fable, 27 Sep 26: it
+   said "change his account's sign-in instead", a door the archived row no longer has) */
 function archivedNote(r: AccessRequest): string | null {
   const held = r.cs ? archivedHolders(r.cs) : []
   if (!held.length) return null
-  const acct = held.map(id => accountOfPid(id)).find(Boolean)
-  return `An archived man is already ${r.cs.trim()} — this makes a new person.`
-    + (acct ? ` If it is him, change his account's sign-in (${acct.name}) instead.` : '')
+  return `An archived man is already ${r.cs.trim()} — this makes a new person. If it is him, restore him first (▸ Archived), then give him his sign-in on his row.`
 }
 
 /* one open Give access form's state — started afresh from the request (Cancel discards edits); switching On the
@@ -264,7 +264,7 @@ function PersonRow(p: { pid: string; open: boolean; onToggle: () => void; onClos
   const tag = postingPendingTag(p.pid)
   /* his posting out has come and is waiting — why (the last admin; a stored week), on his row, his own included */
   const held = postingHeldNote(p.pid)
-  const roleWord = a ? (a.role === 'admin' ? 'Admin' : 'Member') : ''
+  const roleWord = a ? (isAdminAccount(a) ? 'Admin' : 'Member') : ''
   const save = () => {
     if (!a) return
     const patch: any = {}
@@ -371,7 +371,7 @@ function ArchivedRow(p: { pid: string; open: boolean; onToggle: () => void; onCl
         <span className="acc-sub">{a ? <b>{a.name}</b> : 'no sign-in'}{' · '}{seatText(person)}</span>
       </button>
       <Dots pid={p.pid} a={a} archived />
-      <span className="od-rc">{a && <span className={'ub ' + a.role}>{a.role === 'admin' ? 'Admin' : 'Member'}</span>}</span>
+      <span className="od-rc">{a && <span className={'ub ' + a.role}>{isAdminAccount(a) ? 'Admin' : 'Member'}</span>}</span>
       {p.open && <div className="acc-edit" data-restoring={p.pid}>
         <div className="adm-2col">
           <div className="mfield"><label htmlFor="accArCs">{CALLSIGN_LABEL}</label>

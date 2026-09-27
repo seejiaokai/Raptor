@@ -2928,8 +2928,11 @@ the admin's Quals prompt (D284). **Restore on Admin → Users is the one way bac
 Undo post out and posting writes refuse him (round 1, Fable F1 / Astra 2); the posting's own undo (Undo post out on a
 POSTING's archive) keeps its meaning: the same stint continues, only the posting's suspension enabled, no welcome note.
 **No Enable on an archived man** (D322): `accounts.ts updateAccount` refuses it. **A session that lapses** — his account
-suspended, or his person archived or deleted, after he signed in — is turned off on the next repaint (the suspended
-screen; `ui/App.tsx`, `accounts.ts sessionLapsed`). **A new person's post-in date** (D308): Add a person and Give access →
+suspended or deleted, or his person archived or deleted, after he signed in — is turned off on the next repaint (the
+suspended screen); one whose account another admin gave a different role or person is made again from the account as it
+now stands (`ui/App.tsx`, `accounts.ts sessionNow`; the final code read, Astra 1). An Archive, and a delete, read a man's
+dates from his stored posting record, never from how Show SANS happens to draw him; a posting that has not RUN (its date
+come or not) is replaced by an Archive and named in its message (the final code read, Fable F1, F5). **A new person's post-in date** (D308): Add a person and Give access →
 New person write his first stint on the war inside the add's own command (`HOOKS.warPostIn`). Quals keeps quals, CAT,
 flight and initials; archive, restore and the archived man's rename left it (D310).
 

@@ -205,6 +205,12 @@ await scene('restore', [DESK, PHONE], async s => {
   await shot(s, 'restore-04-taken', '[data-restoring]')
   await s.page.fill('#accArCs', 'Hexx'); await s.page.click('#accArSave'); await s.page.waitForTimeout(250)
   check('restore', s, 'Save name renames him and keeps him archived', await s.page.evaluate(() => window.PEOPLE.rocky.cs === 'Hexx' && window.PEOPLE.rocky.archived))
+  /* the final code reads (Fable F4 / Astra 2): his kept Leave War row carries the new name too */
+  await war(s, 'SEP')
+  check('restore', s, 'the Leave War row of the archived man reads the new name', /Hexx/.test(await text(s, '[data-testid="row-rocky"]') || ''), await text(s, '[data-testid="row-rocky"]'))
+  await s.page.evaluate(() => document.querySelector('[data-testid="row-rocky"]')?.scrollIntoView({ block: 'center' }))
+  await shot(s, 'restore-05-renamed-war')
+  await openArchived(s, 'rocky')
   await s.page.click('#accArDel'); await s.page.waitForTimeout(150)
   check('restore', s, 'Delete asks twice', /Tap again to delete/.test(await text(s, '#accArDel') || ''))
   await s.page.click('#accArDel'); await s.page.waitForTimeout(350)
@@ -320,6 +326,13 @@ await scene('sheets', [DESK, PHONE], async s => {
   await s.page.fill('[data-testid="postin-date"]', '2026-09-26'); await s.page.waitForTimeout(300)
   check('sheets', s, 'moving his post-in onto the stint he left is refused, with the sentence', /was posted out on 27 Sep 26 and came back on 19 Oct 26/.test(await text(s, '[data-testid="postin-err"]') || ''), await text(s, '[data-testid="postin-err"]'))
   await shot(s, 'sheets-04-refused', '[data-testid="postin-sheet"]')
+  /* the final code read (Fable F3): moved to the day after he left, the two stints JOIN — counted throughout, no corner */
+  await s.page.fill('[data-testid="postin-date"]', '2026-09-27'); await s.page.waitForTimeout(400)
+  await s.page.keyboard.press('Escape').catch(() => {}); await s.page.waitForTimeout(250)
+  await war(s, 'OCT')
+  check('sheets', s, 'post-in moved to 27 Sep: 5 Oct counted (one stint again)', (await here(s, 'rocky', '2026-10-05')), await cellCls(s, 'rocky', '2026-10-05'))
+  await war(s, 'SEP')
+  check('sheets', s, 'and no "posted out" corner on 26 Sep, a day he never left', (await here(s, 'rocky', '2026-09-26')) && !/pofin/.test(await cellCls(s, 'rocky', '2026-09-26') || ''), await cellCls(s, 'rocky', '2026-09-26'))
 })
 
 /* ---- quals: no ✕, no drawer, the help line ---- */
@@ -599,7 +612,8 @@ await scene('reqarch', [DESK], async s => {
   await s.page.fill('#accCs', 'Hex'); await s.page.fill('#accIni', 'HX'); await s.page.selectOption('#accSeat', 'FCP'); await s.page.selectOption('#accCat', 'C'); await s.page.click('#accSend'); await s.page.waitForTimeout(300)
   await signIn(s.page, 'ad', 'a'); await users(s)
   await s.page.click('#admWaiting [data-approve]'); await s.page.waitForTimeout(250)
-  check('reqarch', s, 'Give access opens on New person, saying an archived man holds "Hex"', /archived/i.test(await text(s, '[data-approving]') || ''), await text(s, '[data-approving]'))
+  check('reqarch', s, 'Give access opens on New person, saying an archived man holds "Hex" — and the way it is him: restore first',
+    /An archived man is already Hex — this makes a new person\. If it is him, restore him first \(▸ Archived\), then give him his sign-in on his row\./.test(await words(s, '#apvNote') || ''), await words(s, '#apvNote'))
   await shot(s, 'reqarch-01-give-access', '[data-approving]')
   await s.page.fill('#apvPostIn', '2026-10-05'); await s.page.click('#apvGo'); await s.page.waitForTimeout(400)
   const id = await s.page.evaluate(() => Object.keys(window.PEOPLE).find(k => window.PEOPLE[k].cs === 'Hex' && !window.PEOPLE[k].archived))
@@ -621,6 +635,41 @@ await scene('pastrow', [DESK, PHONE], async s => {
   check('pastrow', s, 'June: his row drawn, counted', (await here(s, 'casper', '2026-06-16')), await cellCls(s, 'casper', '2026-06-16'))
   await s.page.evaluate(() => document.querySelector('[data-testid="row-casper"]')?.scrollIntoView({ block: 'center' }))
   await shot(s, 'pastrow-01-june')
+})
+
+/* ---- sansrun: a man whose SANS posting has RUN, archived with Show SANS on — the posting's date kept (Fable F1) ---- */
+await scene('sansrun', [DESK], async s => {
+  await signIn(s.page, 'ad', 'a')
+  await war(s, 'SEP')
+  await s.page.locator('[data-testid="cell-bane-2026-09-20"]').click(); await s.page.waitForTimeout(400)
+  await s.page.click('[data-testid="bid-postout"]'); await s.page.waitForTimeout(300)
+  await s.page.fill('[data-testid="po-date"]', '2026-09-20'); await s.page.click('[data-testid="po-sans"]'); await s.page.waitForTimeout(150)
+  await s.page.click('[data-testid="po-confirm"]'); await s.page.waitForTimeout(600)
+  await go(s.page, 'quals'); await go(s.page, 'leavewar')
+  check('sansrun', s, 'setup through the sheet: Ranger posted out as SANS from 20 Sep, and it ran', await s.page.evaluate(() => !!window.PEOPLE.bane.san))
+  await s.page.click('[data-testid="settings-open"]'); await s.page.waitForTimeout(300)
+  await s.page.click('[data-testid="sans-toggle"]'); await s.page.waitForTimeout(300)
+  await s.page.click('[data-testid="settings-close"]'); await s.page.waitForTimeout(300)
+  await archive(s, 'bane')
+  await war(s, 'SEP')
+  check('sansrun', s, 'archived with Show SANS on: away from 20 Sep (the posting\'s date), not from today', await gone(s, 'bane', '2026-09-22') && (await here(s, 'bane', '2026-09-18')), `${await cellCls(s, 'bane', '2026-09-18')} / ${await cellCls(s, 'bane', '2026-09-22')}`)
+  await s.page.evaluate(() => document.querySelector('[data-testid="row-bane"]')?.scrollIntoView({ block: 'center' }))
+  await shot(s, 'sansrun-01-archived')
+})
+
+/* ---- lapsedel: signed in when his own Delete posting's date comes — the next repaint turns his session off (Astra 1) ---- */
+await scene('lapsedel', [DESK], async s => {
+  await signIn(s.page, 'ad', 'a'); await war(s, 'SEP')
+  await s.page.locator('[data-testid="cell-casper-2026-09-30"]').click(); await s.page.waitForTimeout(400)
+  await s.page.click('[data-testid="bid-postout"]'); await s.page.waitForTimeout(300)
+  await s.page.fill('[data-testid="po-date"]', '2026-09-28'); await s.page.click('[data-testid="po-delete"]'); await s.page.waitForTimeout(150)
+  await s.page.click('[data-testid="po-confirm"]'); await s.page.waitForTimeout(200); await s.page.click('[data-testid="po-confirm"]'); await s.page.waitForTimeout(500)
+  await signIn(s.page, 'outlaw')
+  check('lapsedel', s, 'today Outlaw is in', (await count(s, '#accessOff')) === 0)
+  await s.page.context().clock.setFixedTime(new Date(2026, 8, 28, 0, 10, 0))
+  await go(s.page, 'quals').catch(() => {}); await s.page.waitForTimeout(400); await go(s.page, 'leavewar').catch(() => {}); await s.page.waitForTimeout(700)
+  check('lapsedel', s, 'after midnight his Delete ran and his account is gone: his session is off', await s.page.evaluate(() => !!window.PEOPLE.casper.deleted) && (await count(s, '#accessOff')) === 1, await text(s, '#accessOff .acc-h'))
+  await shot(s, 'lapsedel-01-off')
 })
 
 /* ---- reload: what was done stays done ---- */
