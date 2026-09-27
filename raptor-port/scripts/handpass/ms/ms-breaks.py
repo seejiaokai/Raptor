@@ -67,9 +67,8 @@ BREAKS = [
   ('B21 FR2 the door counts the moving bids at the preview', ST,
    'DOOR.moveApproved(abs, dayDelta, biddingClosed(state.period.stage), true, skip)', 'DOOR.moveApproved(abs, dayDelta, biddingClosed(state.period.stage), true)', S),
   ('B22 FR3 a refused bid beneath leave on its half moves again', ST,
-   '    if (absencesAt(personId, date).some(a => barsWrite(c, a))) return false
-', '', S),
-  ('B23 FR3b the door's answer at the commit is thrown away', ST,
+   '    if (absencesAt(personId, date).some(a => barsWrite(c, a))) return false\n', '', S),
+  ('B23 FR3b the door\'s answer at the commit is thrown away', ST,
    '      if (d) { refused = d; throw new MoveRefusedAtCommit(d.reason) }', '      void d', S),
   ('B24 FR4 Decide over a range is drawn from the tapped day only', BP,
    'const canDecideHere = !!decide || (!!range && decidableIn(selCells()) > 0)', 'const canDecideHere = !!decide', U),
