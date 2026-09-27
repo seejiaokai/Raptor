@@ -1952,7 +1952,9 @@ function dayHTMLBody(di:any,ed:any,vsel?:any){
            about an input under Unavailable could not be tapped): the input's own id, on every surface a person reads it
            (the view page too) — never the drag attribute, so nothing here becomes draggable. Signed-in readers only, so a
            headless render (the parity week) is untouched. */
-        const inprow=!acc&&isMember()?` data-inprow="${esc(inpId(inp))}"`:'';
+        /* …and under Personal Inputs too: a request waiting there is where its "added" line must land (Fable's final
+           read, F5 — it was a button that landed nowhere) */
+        const inprow=isMember()?` data-inprow="${esc(inpId(inp))}"`:'';
         s+=`<div class="pl-row${acc&&inp.acc&&inp.acc!=='r'?' accd':''}${acc?dormRowCls(inp):''}"${acc?dormRowTitle(inp):''}${inprow}>`
           /* a medical input's type and remarks are for the squadron's members (D211 —
              every member reads them, his 27 Aug 26 rule); a GUEST, not yet a member,

@@ -22,7 +22,6 @@ import { oilCreditBidAgainst, createOilPeriodFor } from '../leavewar/sync'
 import { scrollToWarnFocus, queueHold, warnWeekId, bringIntoView } from './highlights'
 import { STORE_CFG, addStore, delStore, renameStore, moveStore, storesSave, storesText } from '../engine'
 import { logAction } from '../engine/editlog'
-import { logFiling } from '../state/changelines'
 import { esc } from '../state/view'
 import { setDayPop, setAirKey, setDrawer, setInpEdit } from './pops'
 import { reassignInput, rosterOptions, firstPersonalType, firstUnavailType, firstSansType, unfmt } from './inputedit'
@@ -102,6 +101,13 @@ export function jumpToChange(key: string | string[], di: any) {
   /* a day being looked at as an older version draws no working cells to land on — the change lives on the live
      copy, so go back to it first (Fable F6: the jump said "no longer on this day" about a live detail) */
   if (!onBoard && di != null && view.DPREV.has(+di)) view.setDayPreview(+di, null)
+  /* a request still waiting under Personal Inputs sits in a panel that is folded by default: open it on that day, so
+     the row the line is about is drawn to land on (Fable's final read, F5) */
+  for (const k of cands) {
+    if (!k.startsWith('iu:') || di == null) continue
+    const inp: any = INPUTS.find((x: any) => inpId(x) === k.slice(3))
+    if (inp && inp.acc !== 'u' && inp.acc !== 'g') view.PIOPEN.add(+di)
+  }
   /* …and View-only Sched shows a PUBLISHED day's issued face by default, which draws nothing to land on (it is the
      document, frozen): the change lives on the working copy, so the day turns to its Working draft first and says so
      ([DRAFT-PENDING], Fable P3 — the tap told a member to "open the day on the board", which he has none of) */
@@ -121,6 +127,8 @@ export function jumpToChange(key: string | string[], di: any) {
       const gone = cands.every(k => posKey(k, DAYS) == null)
       HOOKS.toast(gone ? 'That detail is no longer on this day'
         : onBoard ? 'That detail is shown on the week, not on the board'
+        /* an input's own row: it is simply not drawn on this day (Fable F5) */
+        : cands.every(k => k.startsWith('iu:')) ? 'That input is not shown on this day'
         /* View-only Sched has no board to send anyone to (a member has none at all) */
         : view.CURPAGE === 'viewsched' ? 'That detail is not shown on this page'
         : 'That detail is shown on the scheduler board — open the day there to see it', 'warn')
@@ -581,7 +589,6 @@ export function routeClick(e: MouseEvent) {
     const di = +ab.dataset.accd!, k = ab.dataset.acck!, dest = ab.dataset.acc!
     const inp = INPUTS.find((x: any) => inpId(x) === k)
     if (!inp) { HOOKS.toast('That input is no longer there', 'warn'); return }
-    const wasAcc = inp.acc || ''
     const ok = dest === 'x' ? unacceptInput(di, inp) : acceptInput(di, inp, dest)
     if (ok) {
       /* SAID ONCE, to the scheduler and to the log, in the same words — the
@@ -597,9 +604,10 @@ export function routeClick(e: MouseEvent) {
       const said = dest === 'x' ? 'Accept undone'
         : dest === 'u' ? `${cs}'s ${inp.type} filed under Unavailable`
         : `${cs}'s ${inp.type} added to the ground programme`
-      /* the history line, in the change history's one writer's words (state/changelines.ts logFiling — this door's
-         command carries the day, not the input record, so the subscriber never sees it; [DRAFT-PENDING], 28 Sep 26) */
-      logFiling(inp, wasAcc)
+      /* the history line is the change history's one writer's (state/changelines.ts): the catch-all command below diffs
+         every input against the last committed state, so the filing that moved IS in its envelope and is said once. A
+         second writer here doubled it (Fable's final read, F1 — the test that pinned "one line" set its input up raw,
+         which hid the double) */
       HOOKS.toast(said, 'ok')
       view.afterSchedMutate()
     } else {

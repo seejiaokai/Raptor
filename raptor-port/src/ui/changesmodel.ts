@@ -21,7 +21,7 @@ import { me } from '../state/perms'
 import { HOOKS } from '../engine/hooks'
 import { DAYS } from '../engine/data'
 import { ridKey } from '../engine/rowids'
-import { dayApproved } from '../engine/publish'
+import { dayApproved, approvedDays } from '../engine/publish'
 import { inVersionLook } from './html'
 
 export type Sect = 'fly' | 'duty' | 'prog' | 'sim' | 'ground' | 'note' | 'abs' | 'quals' | 'day'
@@ -77,8 +77,9 @@ export function linesFor(dates: string[], isNew: IsNew = r => isNewToMe(r)): CLi
   for (let i = 0; i < rows.length; i++) {
     const a = rows[i]!, b = rows[i + 1]
     /* a move: neighbours in the WHOLE history (nobody's change between them), the same person, within a moment,
-       one off and one on for the same man */
-    if (b && b.seq === a.seq + 1 && (a.pid || a.who) === (b.pid || b.who) && Math.abs(b.t - a.t) <= PAIR_MS) {
+       one off and one on for the same man — on the SAME day: a man moved to another day is one change on each (D109),
+       so the week's view pairs nothing the two days' chips count apart (Fable's final read, F7) */
+    if (b && b.seq === a.seq + 1 && a.date === b.date && (a.pid || a.who) === (b.pid || b.who) && Math.abs(b.t - a.t) <= PAIR_MS) {
       const offA = offOf(a), onB = onOf(b), onA = onOf(a), offB = offOf(b)
       const [off, on] = offA && onB && offA === onB ? [a, b] : onA && offB && onA === offB ? [b, a] : [null, null]
       if (off && on) {
@@ -139,17 +140,24 @@ export function dayCounts(isNew: IsNew = r => isNewToMe(r)): Record<string, { fr
 /* ONE DAY'S COUNTS for the day's chip (ui/html.ts dayStatHTML — drawn on every render of every day heading), memoised
    on everything that can change them: the history (its next number and its length — a sweep shortens it), the seen
    record, the loaded week and who is looking */
-let MEMO = { k: '', v: {} as Record<string, { fresh: number; all: number }> }
+let MEMO = { k: '', v: {} as Record<string, { fresh: number; all: number }>, week: -1 }
+const memoKey = () => `${ELOG.next}|${ELOG.rows.length}|${SEEN_VER}|${CURWEEK}|${me() || ''}`
 export function chgDayCounts(di: number): { fresh: number; all: number } {
-  const k = `${ELOG.next}|${ELOG.rows.length}|${SEEN_VER}|${CURWEEK}|${me() || ''}`
-  if (MEMO.k !== k) MEMO = { k, v: dayCounts() }
+  const k = memoKey()
+  if (MEMO.k !== k) MEMO = { k, v: dayCounts(), week: -1 }
   const d = weekDates(CURWEEK)[+di]
   return (d && MEMO.v[d]) || { fresh: 0, all: 0 }
 }
 
-/* the admin's icon: what is new to you across the loaded week, a line once */
-export function weekNew(isNew: IsNew = r => isNewToMe(r)): number {
-  return linesFor(weekDates(CURWEEK), isNew).filter(l => l.fresh).length
+/* the admin's icon: what is new to you across the loaded week, a line once. Read on every render of the top bar, so the
+   everyday reading (who is looking now) is kept with the chips' counts (Fable's final read, F6); a test's own reading
+   is worked out fresh. */
+export function weekNew(isNew?: IsNew): number {
+  if (isNew) return linesFor(weekDates(CURWEEK), isNew).filter(l => l.fresh).length
+  const k = memoKey()
+  if (MEMO.k !== k) MEMO = { k, v: dayCounts(), week: -1 }
+  if (MEMO.week < 0) MEMO.week = linesFor(weekDates(CURWEEK)).filter(l => l.fresh).length
+  return MEMO.week
 }
 /* the rows of the loaded week, for the window's "Mark all as seen" and the chip's memo */
 export const weekRows = () => elogWeekRows(CURWEEK)
@@ -164,10 +172,13 @@ export const weekRows = () => elogWeekRows(CURWEEK)
    the places as they stood when the set was built, and a reorder writes no line to rebuild it: the tag stayed where the
    row had been, on whoever slid in (Fable's scenario design, P1). And a LOOK at a version or a saved plan wears none —
    a preview reads a document, not your news (P4). */
-let OG = { ver: -1, next: -1, len: -1, wk: '', who: '', set: new Set<string>() }
+let OG = { ver: -1, next: -1, len: -1, wk: '', who: '', ap: '', set: new Set<string>() }
 function ogSet(): Set<string> {
   const who = me() || ''
-  if (OG.ver === SEEN_VER && OG.next === ELOG.next && OG.len === ELOG.rows.length && OG.wk === CURWEEK && OG.who === who) return OG.set
+  /* …and on which days are published (a published day wears no tag), not only on the lines a publish happens to write
+     (Fable's final read, F8) */
+  const ap = approvedDays().join(',')
+  if (OG.ver === SEEN_VER && OG.next === ELOG.next && OG.len === ELOG.rows.length && OG.wk === CURWEEK && OG.who === who && OG.ap === ap) return OG.set
   const set = new Set<string>()
   if (who) {
     const days = weekDates(CURWEEK)
@@ -180,11 +191,11 @@ function ogSet(): Set<string> {
       set.add(String(l.key))
     }
   }
-  OG = { ver: SEEN_VER, next: ELOG.next, len: ELOG.rows.length, wk: CURWEEK, who, set }
+  OG = { ver: SEEN_VER, next: ELOG.next, len: ELOG.rows.length, wk: CURWEEK, who, ap, set }
   return set
 }
 HOOKS.newToMe = (key: any) => {
   const s = ogSet()
-  if (!s.size || inVersionLook()) return false
+  if (!s.size || inVersionLook() || !isPersonKey(String(key))) return false   // a text box never holds a man (F6)
   return s.has(String(ridKey(key, DAYS)))
 }

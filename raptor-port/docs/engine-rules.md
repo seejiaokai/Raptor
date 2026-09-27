@@ -3181,9 +3181,23 @@ history, which the one changes window reads (`ui-contracts.md` §The one changes
   ground crew, SANS, SXO, a qualification tick, archived, deleted — dated the day it was made), a publish and a withdrawal
   is ONE line, written by ONE subscriber on the command stream (`state/changelines.ts`), from `user`-origin envelopes only;
   a door that knows why hands its reason in (`elogReason`). The inputs' own call-site sentences went (Astra DP-03); the
-  accept door writes its filing line in the same words (`logFiling` — its command carries no input record). Undo and
+  accept door writes nothing of its own: the catch-all command it runs diffs every input, so the subscriber says the filing
+  once (a second writer, `logFiling`, doubled it and went — Fable's final read, F1). Undo and
   Redo write their line at the global undo's success, on every day the step touched (`logReversed`, Astra DP-04); a
-  sign-off signed or cleared writes its own, inside its command.
+  sign-off signed or cleared writes its own, inside its command. **Added by Fable's scenario design (28 Sep 26):** a bid an
+  input takes away (filed over it on the Inputs page, the board or an edit window — the Leave War's gate removes it inside
+  the INPUT's command) is a line of its own, "Leave War · Ranger · LL 2 Feb: bid taken away — an input covers it"
+  (P10) — and the same reader (`crossLines`) says a bid or an OIL award a person's DELETE (or archive) took away plainly,
+  "bid removed" / "OIL award taken away", "an input covers it" only when an input in that command does (Astra's final
+  read, 01); an APPROVED leave changed on the war is one line of what happened — "moved on the Leave War · 2 Feb → 3 Feb"
+  (shown on both days), "approval taken back — refused / acknowledged / back to a bid", or "approved leave deleted on
+  the Leave War" (`warInputLines`, Fable's final read, F2); a posting set, changed or taken back is a line
+  ("posting out 14 Oct · Overseas Sqn", "posting out taken back", "posting in …" — `postoutLines`, F4; the day it runs
+  is the posting pass's, no line; a man archived, restored or deleted in the same command is said by his Quals line
+  alone); a Quals line keeps the person and the detail by id (`sub`, `fld`), so "To go out" finds who changed it after a
+  rename (Astra 03); a ledger line names its counter as the app does — OIL, ANNUAL (P11); "Discard marks" is a line
+  per day it cleared, "Draft marks cleared (N)" — it clears marks, not changes (`commitDiscardPending`, P9); a door's reason
+  lives only for the task it was handed in, so a refused door's reason never rides a later command (P12).
 
 Who changed which detail, when, and what it was before. Distinct from
 §History above: that is the undo stack (whole-state snapshots, no
@@ -3234,10 +3248,9 @@ clipped to ~60 chars because `act()` hands the same sentence to the toast, and
 the toast stays one line. An addition says only "Line added": the row is
 still empty the moment it is logged, so there is nothing yet to describe.
 
-**A removed personal input logs its own line too** (`inputedit.tsx`'s
-`removeInput`), naming the man, the type and the date — the input surfaces
-are the one thing §Accepting/undoing above still leaves silent, and a deleted
-input is otherwise a row that vanishes with no trace in either list.
+**A removed personal input is a line too** — SINCE `[DRAFT-PENDING]` (28 Sep 26) written by the change history's one
+writer from the input's own change (`state/changelines.ts`, D263), not by `inputedit.tsx`'s `removeInput` (its own
+sentence went — Astra DP-03), naming the man, the type and the dates.
 
 **Three more ACTIONS carry a sentence for the same reason** (added 11 Aug 26,
 after a review found the list silently missing them). Each changes the
@@ -3246,15 +3259,13 @@ cannot diff, so each says its own toast to the log through `logAction`:
 
 | action | where | why it has no value pair |
 |---|---|---|
-| Accepting an input to the ground programme (and undoing it) | `interactions.ts`, the `[data-acc]` branch | the row did not exist a moment ago, so there is no "before" |
+| ~~Accepting an input to the ground programme (and undoing it)~~ — SINCE `[DRAFT-PENDING]` (28 Sep 26) the input's own filing line, from the change history's one writer (the catch-all command diffs every input); the door writes nothing of its own (a second writer doubled the line — Fable's final read, F1) | `interactions.ts`, the `[data-acc]` branch | — |
 | Cancelling with a reason, and restoring | `cxCommit`, `board.ts` | `cx`/`cxr` are not addressed by any slot key |
 | Loading a published version onto the working copy | `interactions.ts`, the `[data-restore]` branch | `engine/drafts.ts:loadVersionToWorkingCopy` swaps the whole day object — not one key passes through the funnel. Corrected 17 Sep 26: this is no longer a rollback and does NOT move `SCHED.cur`; the issued document viewers see is unchanged until the next AL is published |
 
 Accepting through `inputedit.tsx`'s relink (an accepted input edited onto
-another person or date) is deliberately NOT logged: it is one user action that
-internally unaccepts and re-accepts, and logging the engine call would put two
-contradictory lines against one edit. The gap is the input surfaces, which the
-changes list has never covered — it is a record of the SCHEDULE.
+another person or date) writes no line of its own — SINCE `[DRAFT-PENDING]` the input's edit is said once by the change
+history's one writer (whose, dates, filed — each a line, D263), from the input command the relink runs inside.
 
 **The fields that write their own model must pass their values by hand.**
 Stores chips, the bombs box, area, area time, in-times and traffic live

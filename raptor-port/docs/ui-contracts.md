@@ -693,7 +693,10 @@ history).
   is listed but is not a button: no key and no input (a structural sentence, a Leave War decision with no Input, a Quals
   change, a publish), a detail the board does not draw while on the board (the area strip, the in-times, the traffic,
   the wave's title), the traffic on the week. An input's line goes to its row on the programme when accepted, else its
-  row under Unavailable (`data-inprow` on every Unavailable row for a signed-in reader — Astra DP-08).
+  row under Unavailable (`data-inprow` on every Unavailable row for a signed-in reader, on the week AND the board — Astra
+  DP-08; the board's half, Fable P5). **On View-only Sched a published day shows its issued face**, which draws nothing to
+  land on: a tap on a line about that day turns the day to its Working draft first and says so ("Showing the working
+  draft — the change is on it", Fable P3); that page never tells anyone to open the board.
 - **A MOVE IS ONE LINE** (Fable F2): two neighbouring history rows by the same person, within a second and a half, one
   taking a man off a place and the other putting the same man on another, read "moved from A to B" and count one. A
   swap is two lines (D109). A move put back is two lines — the history is the working record (D263 (3)).
@@ -713,7 +716,24 @@ history).
 - **History mode is the window open** (D116, D168): the bubbles on a changed detail — hover on a desktop, tap on a phone
   — on the board AND the edit week while it is open; closed, they are off. The bubble's page-wide listener is wired once
   however many surfaces use it (`histbubble.ts` DOC_WIRED).
-- **The OG tag** (D172) — see §Amendment marks on screen.
+- **The OG tag** (D172) — see §Amendment marks on screen. It follows its ROW, not its place (a row dragged above another
+  takes its tag along — the history's row-anchored key, each puck's place translated as it is drawn; Fable P1), and a
+  look at a version or a saved plan wears none (a preview reads a document — P4).
+- **The ⓘ day panel** on a day not yet published speaks the chip's words — "5 new" (gold) or "3 changes" (quiet) —
+  never the old count of touched details (D118; Fable P7). A published day keeps its "N unpublished edits" (the same
+  number as "N pending").
+- **The phone's clock icon** carries its number as a small badge on the icon's top-right corner (the phone's buttons are
+  30px squares; Fable P2). **The phone bar** always sits at the bottom, however far the panel was dragged; the panel
+  comes back where it was (P8).
+- **"To go out" names who and when for a Quals change** ("Casper · CAT", from the change history — found by the man's id
+  and the detail, so a rename since never loses it; an item listing several things names the newest — Fable P6, Astra
+  03), **and for an input changed since the day went out** (a leave filed, edited, deleted, a request's filing — by the
+  input's id), and sorts it by that time, newest first (Astra 02).
+- **A tap on an input's line** lands on its row wherever it is drawn — the programme, Unavailable, or Personal Inputs
+  (whose folded panel it opens on that day); a line about an input whose days are all outside the loaded week is listed,
+  not a button; a miss says "That input is not shown on this day" (Fable's final read, F5).
+- **A move pairs into one line only within one day** — a man moved to another day is one line on each day, in the
+  week's view as on the two days' chips (D109; Fable F7).
 - **What it deliberately does not do:** show on a guest's view (D215); change the day headings (D172 — ORIG keeps its
   seal, the AL tags stay solid); reach another device before the database (one browser per store).
 

@@ -25,7 +25,8 @@ import { INPUTS, inpId, inpLabel, inputCoversDate } from '../engine/inputs'
 import { officialSliceNow } from '../engine/validate'
 import { dayPendingItems, daySnapOf, dayCurVer, nextSeq, MOVE_LABELS, requestRow, warnMsgKey, warnCallsigns, peopleAttrsNow, faceRuleVals, faceRuleValsCompared } from '../engine/publish'
 import type { PendItem } from '../engine/publish'
-import { ELOG, elogWhen, elogWho, keyLabel } from '../engine/editlog'
+import { ELOG, elogWhen, elogWho, keyLabel, rowTouches, weekDates } from '../engine/editlog'
+import { CURWEEK } from '../engine/waves'
 import { oilEvidence } from '../engine/oilev'
 import { esc } from '../state/view'
 
@@ -121,6 +122,33 @@ function lastEdit(keys: string[]) {
   for (let i = ELOG.rows.length - 1; i >= 0; i--) { const r = ELOG.rows[i]!; if (r.key && set.has(r.key)) return r }
   return null
 }
+/* THE ONE ANSWER TO "WHO MADE THIS PENDING CHANGE, AND WHEN" — for the words and for the order alike, so the two cannot
+   disagree. An INPUT's change (its details, its filing, a request's row with its filing) has no cells of its own: it is
+   found by the input's id, which the change history keeps on every absence line (state/changelines.ts), preferring a
+   line that touches this day; a cell change keeps its own cells' newest line (Astra's final read, ASTRA-DP-FINAL-02 —
+   a leave filed after publishing named nobody and sorted below older work). */
+function inputIdOf(it: PendItem): string | null {
+  for (const e of [it.val, it.inp, (it.kind === 'input' ? it.entry : null)] as any[]) {
+    const a = String((e && e.addr) || ''); if (!/^in[pv]:/.test(a)) continue
+    const id = decodeURIComponent(a.split('.').slice(1).join('.')); if (id) return id
+  }
+  return null
+}
+function editRowOf(di: number, it: PendItem) {
+  const id = inputIdOf(it)
+  if (id) {
+    const iso = weekDates(CURWEEK)[di]
+    let any: any = null
+    for (let i = ELOG.rows.length - 1; i >= 0; i--) {
+      const r = ELOG.rows[i]!; if (r.iid !== id) continue
+      if (!iso || rowTouches(r, iso)) return r
+      if (!any) any = r
+    }
+    if (any) return any
+  }
+  return lastEdit(it.keys || [])
+}
+const whoWhen = (r: any): { who: string; when: string } => r ? { who: elogWho(r), when: elogWhen(r.t) } : { who: '', when: '' }
 /* AN INPUT CHANGED SINCE THE DAY WAS ISSUED ([LEAVE-LATE-PUBLISHED], owner D178 — every member input change after
    publishing is pending for the admin): whose and what, then what moved — "Hunter · OL (leave) — filed under
    Unavailable", "… all day → 09:00–12:00", "… Bane → Hunter", "… deleted", "… moved off this day". The issued copy
@@ -136,7 +164,7 @@ function inputWords(di: number, it: PendItem): Words {
   const now = it.now || INPUTS.find((x: any) => inpId(x) === id) || null
   const here = !!now && !!DAYS[di] && inputCoversDate(now, (DAYS[di] as any).dt)
   /* a line whose input re-landed a row on this day takes the view to it (Fable F4); a leave with no row stays still */
-  const none = { who: '', when: '', jump: !!(it.jump && it.jump.length) }
+  const none = { ...whoWhen(editRowOf(di, it)), jump: !!(it.jump && it.jump.length) }
   const name = requestName(here ? now : (was || now))
   if (!was) {
     const f: any = it.inp || (it.entry && String((it.entry as any).addr || '').startsWith('inp:') ? it.entry : null)
@@ -163,14 +191,13 @@ function inputWords(di: number, it: PendItem): Words {
    so a rename (a label) never reads as a warning cleared and another new (#3); a cleared one is worded with today's
    callsign. */
 const CATW: any = { q: 'CAT', seat: 'seat', pers: 'ground crew', san: 'SANS', sxo: 'SXO', archived: 'posted out' }
-/* WHO changed a man's detail since the day went out, and WHEN: the newest Quals line naming him and it, from the change
-   history ([DRAFT-PENDING] — review log F5, "the To go out tab's line takes who/when from it"; Fable P6 found it unbuilt).
-   The line's words are state/changelines.ts personLines' own ("Casper · CAT"); a line written under a callsign he has
-   since lost is not found, and the item then names nobody, as before. */
-const QUALW: any = { q: 'CAT', seat: 'seat', pers: 'ground crew', san: 'SANS', sxo: 'SXO', archived: 'archived' }
+/* WHO changed a man's detail since the day went out, and WHEN: the newest Quals line about HIM (by his id) and THAT
+   detail, from the change history ([DRAFT-PENDING] — review log F5, "the To go out tab's line takes who/when from it";
+   Fable P6 found it unbuilt). Matched by the ids the line keeps (state/changelines.ts personLines — sub, fld), never by
+   its words: a rename since, or his old callsign given to someone else, must not lose or borrow the name (Astra's final
+   read, 03). */
 function qualsLine(id: any, f: string) {
-  const lbl = `${cs(id)} · ${QUALW[f]}`
-  for (let i = ELOG.rows.length - 1; i >= 0; i--) { const r = ELOG.rows[i]!; if (r.sect === 'quals' && r.lbl === lbl) return r }
+  for (let i = ELOG.rows.length - 1; i >= 0; i--) { const r = ELOG.rows[i]!; if (r.sect === 'quals' && r.sub === String(id) && r.fld === f) return r }
   return null
 }
 function faceWords(di: number): Words & { rows?: CrowdRow[] } {
@@ -251,7 +278,7 @@ export function pendItemWords(di: number, it: PendItem): Words {
   if ((it.kind === 'add' || it.kind === 'delete') && it.inp) {
     /* the row this request stood on: in the issued day for a removal, the live day for an addition */
     const row = it.kind === 'delete' ? requestRow(it, (issuedDays(di) || [])[di]) : requestRow(it, DAYS[di])
-    return { ...requestWords(it.inp, row), ...none, jump: it.kind === 'add' && jump }
+    return { ...requestWords(it.inp, row), ...whoWhen(editRowOf(di, it)), jump: it.kind === 'add' && jump }
   }
   /* A REQUEST'S ROW WITH NO FILING CHANGE BESIDE IT — the request moved to another day's programme (✕ here, Accept
      there), or a load left this day's copy out because it stands elsewhere (D175): name whose and what, and where it
@@ -281,7 +308,7 @@ export function pendItemWords(di: number, it: PendItem): Words {
        load put the version's row back) or as it was issued */
     const id = decodeURIComponent(String(e.addr || '').split('.').slice(1).join('.'))
     const bySrc = (d: any) => ((d && d.ground) || []).find((g: any) => g && g.src === id)
-    return { ...requestWords(e, bySrc(DAYS[di]) || bySrc((issuedDays(di) || [])[di])), ...none, jump: false }
+    return { ...requestWords(e, bySrc(DAYS[di]) || bySrc((issuedDays(di) || [])[di])), ...whoWhen(editRowOf(di, it)), jump: false }
   }
   /* WHAT THE DAY EARNS — say WHO and WHERE when it is the crowd behind a placeholder that moved (walker B1, 25 Sep 26:
      "What this day earns · changed" named nobody and could not be tapped, so the scheduler still had to go looking —
@@ -349,7 +376,7 @@ export function pendListHTML(di: number): string {
   /* NEWEST FIRST (the owner's D119, 25 Sep 26 — "Shouldn't the latest change for pending be at the top? Just like
      history list"): by when each change was last made (the edit record's time); a change the record has no time for
      ("earlier", what the day earns, a filing) goes below the timed ones, in the day's own order (the old RANK) */
-  const tOf = (it: PendItem) => { const r = lastEdit(it.keys || []); return r ? r.t : -1 }
+  const tOf = (it: PendItem) => { const r = editRowOf(di, it); return r ? r.t : -1 }
   items = dayPendingItems(di).map((x, i) => ({ x, i, t: tOf(x) }))
     .sort((a, b) => (b.t - a.t) || (RANK(a.x) - RANK(b.x)) || (a.i - b.i)).map(o => o.x)
   const n = items.length, seq = nextSeq(di)

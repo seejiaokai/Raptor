@@ -1065,7 +1065,10 @@ export function boardMbtn(e: MouseEvent) {
     const inp = row && row.src ? srcInput(row) : null
     if (inp && unacceptInput(di, inp)) {
       afterSchedMutate(); notify()
-      return act(di, 'Ground item removed — back under Personal Inputs' + desc(row.prog, timeSpan(row.str, row.end), whoText(row)))
+      /* said to him, not written as a line: the request's own filing line ("… filed: on the programme → taken off the
+         programme", the change history's one writer) is this act's one line (D114 — one act, one change; Fable's final
+         read, F1) */
+      return toast('Ground item removed — back under Personal Inputs' + desc(row.prog, timeSpan(row.str, row.end), whoText(row)))
     }
     const issued = deletionWasIssued(di, 'ground', ri, row && row.src)
     const said = 'Ground item removed' + desc(row && row.prog, row && timeSpan(row.str, row.end), row && whoText(row))

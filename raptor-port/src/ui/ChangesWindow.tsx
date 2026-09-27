@@ -18,7 +18,7 @@ import { useFloatWin, phoneLayout, frontWin, raiseWin } from './floatwin'
 import { useVersion } from './useStore'
 import { notify } from '../state/store'
 import { CHGWIN, CHGWIN_BOX, setChgWin, setChgWinBox, CHGFOLD, type ChgWin } from '../state/view'
-import { linesFor, byWho, byWhere, type CLine } from './changesmodel'
+import { linesFor, byWho, byWhere, dayCounts, type CLine } from './changesmodel'
 import { weekDates, elogWhen } from '../engine/editlog'
 import { CURWEEK } from '../engine/waves'
 import { DAYS } from '../engine/data'
@@ -38,7 +38,7 @@ const dm = (iso: string) => { const [, m, d] = iso.split('-').map(Number); retur
 export { openChanges } from './changesopen'
 
 /* where a tap on a line takes the schedule, and on which day of the loaded week — null when it has nowhere to go */
-function jumpOf(l: CLine, days: string[], pick: string | null): { keys: string[]; di: number } | null {
+export function jumpOf(l: CLine, days: string[], pick: string | null): { keys: string[]; di: number } | null {
   const inWeek = (d: string | null | undefined) => d != null && days.includes(d)
   const di0 = pick && days.includes(pick) ? days.indexOf(pick) : days.findIndex(d => l.rows.some(r => r.date === d || (r.date && r.end && r.date <= d && d <= r.end)))
   if (l.iid) {
@@ -47,6 +47,9 @@ function jumpOf(l: CLine, days: string[], pick: string | null): { keys: string[]
     const keys: string[] = []
     /* an accepted request: its row on the programme first (Astra DP-08), then its row under Unavailable */
     DAYS.forEach((d: any, di: number) => (d.ground || []).forEach((g: any, ri: number) => { if (g && g.src === l.iid) keys.push(`g:${di}.${ri}`) }))
+    /* an input whose days are all outside the loaded week (moved away — its line shows here by the days it LEFT) has no
+       row on this week to land on: the line is listed, not a button (Fable's final read, F5) */
+    if (di0 < 0 && !keys.length) return null
     keys.push(`iu:${l.iid}`)
     const di = di0 >= 0 ? di0 : 0
     return { keys, di }
@@ -100,6 +103,7 @@ export function ChangesWindow() {
   const pick = one ? [w.day] : days
   const lines = linesFor(pick)
   const fresh = lines.filter(l => l.fresh)
+  const dots = dayCounts()   // the picker's gold dots, one pass for the seven days (Fable F6)
   const published = one && dayApproved(di)
   const pend = published ? dayPendingItems(di).length : 0
   const outDays = days.map((d, i) => ({ d, i, n: dayApproved(i) ? dayPendingItems(i).length : 0 })).filter(x => dayApproved(x.i))
@@ -182,7 +186,7 @@ export function ChangesWindow() {
       <div className="cw-days" role="group" aria-label="Which day">
         <button className={'cw-day' + (!one ? ' on' : '')} onClick={() => set({ day: 'week' })}>Week</button>
         {days.map((d, i) => {
-          const n = linesFor([d]).some(l => l.fresh)
+          const n = (dots[d]?.fresh || 0) > 0
           return <button key={d} className={'cw-day' + (w.day === d ? ' on' : '') + (n ? ' nd' : '')} onClick={() => set({ day: d })} title={n ? 'Something new to you' : undefined}>{DOW[i]}</button>
         })}
       </div>

@@ -18,7 +18,7 @@ import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest'
 import { act } from 'react'
 import { createRoot, type Root } from 'react-dom/client'
 import { App } from './App'
-import { initStore, setSession, notify } from '../state/store'
+import { initStore, setSession, notify, writeInputsBatch } from '../state/store'
 import { DAYS } from '../engine/data'
 import { SCHED } from '../engine/publish'
 import { dayIso, verId } from '../engine/verid'
@@ -203,7 +203,11 @@ describe('the three actions that carried no key at all', () => {
        test still pins. */
     const inp = INPUTS.find((i: any) => i.acc === 'g' && !isUnavail(i.type))!
     expect(inp, 'the demo week has an accepted activity input').toBeTruthy()
-    await act(async () => { unacceptInput(DATES.indexOf(inp.date), inp); view.PIOPEN.add(DATES.indexOf(inp.date)); notify() })
+    /* …through a COMMITTED write, as a person would have left it (Fable's final read, F1): a raw setup mutation leaves the
+       scheduler's own baseline at the accepted state, so the press's catch-all command diffs nothing and the subscriber
+       goes quiet — the test then saw one line where a real press writes two */
+    await act(async () => { writeInputsBatch(() => unacceptInput(DATES.indexOf(inp.date), inp)); view.PIOPEN.add(DATES.indexOf(inp.date)); notify() })
+    elogClear()
 
     /* the real control, wherever it renders — the week and the board share it.
        The DAY comes off the button, not from the input: a multi-day input
@@ -223,6 +227,16 @@ describe('the three actions that carried no key at all', () => {
     const row = mine[0]!
     expect(row.to).toBe('on the programme')
     expect(rowTouches(row, dayIso(CURWEEK, di)), 'on the day it landed on').toBe(true)
+
+    /* …and taking it back off (its Undo): ONE line, from the same writer (Fable's final read, F1). "→ Unavail" is offered
+       only for an Other-type request and runs the same door and the same command. */
+    elogClear()
+    const off = $$('[data-acc]').find(b => b.dataset.acck === inpId(inp) && b.dataset.acc === 'x')
+    expect(off, 'its Undo renders').toBeTruthy()
+    {
+      await click(off!)
+      expect(ELOG.rows.filter(r => r.iid === inpId(inp) && r.lbl.includes('filed')).length, 'one line for the undo').toBe(1)
+    }
   })
 
   it('cancelling with a reason carries the reason', async () => {

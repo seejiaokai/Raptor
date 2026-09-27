@@ -17,7 +17,7 @@ import { storeBackend, HOOKS } from '../engine/hooks'
 import { DAYS } from '../engine/data'
 import { PEOPLE } from '../engine/people'
 import { INPUTS, inpId } from '../engine/inputs'
-import { ELOG, elogClear } from '../engine/editlog'
+import { ELOG, elogClear, elogFlush, elogLoad } from '../engine/editlog'
 import { SCHED, signOf, setDayApproved, dayApproved, alAttr } from '../engine/publish'
 import { setSlotVal, slotVal } from '../engine/slots'
 import { moveDutyRow } from '../engine/reorder'
@@ -33,6 +33,8 @@ import { dayInfoHTML, withDaySnap, dayHTML } from './html'
 import { sbUnavailPanel } from './board-html'
 import { pendListHTML } from './pendlist'
 import { jumpToChange } from './interactions'
+import { jumpOf } from './ChangesWindow'
+import { PIOPEN } from '../state/view'
 import './changesmodel'
 
 const fake = new Map<string, string>()
@@ -131,7 +133,7 @@ describe('P6 — a Quals change on "To go out" says who and when', () => {
       expect(updatePersonField(man, { cat: q0 === 'C' ? 'B' : 'C' })).toBeNull()
       const who = [...el(pendListHTML(0)).querySelectorAll('.pl-who')].map(e => e.textContent || '').join('|')
       expect(who, 'the To go out line names who changed it').toContain('Saber')
-    } finally { p.q = q0 }
+    } finally { updatePersonField(man, { cat: q0 }) }
   })
 
   it('…and when the item lists several things at once, it still names who', () => {
@@ -150,7 +152,7 @@ describe('P6 — a Quals change on "To go out" says who and when', () => {
       const multi = html.querySelector('.pl-multi')
       expect(multi, 'several things on one item').toBeTruthy()
       expect(multi!.querySelector('.pl-who')?.textContent || '').toContain('Saber')
-    } finally { two.forEach((id, i) => { (PEOPLE as any)[id].q = q0[i] }) }
+    } finally { two.forEach((id, i) => { updatePersonField(id, { cat: q0[i] }) }) }
   })
 })
 
@@ -198,3 +200,70 @@ describe('P12 — a door\'s reason never outlives its command', () => {
 })
 
 void HOOKS
+
+/* ---- Astra's final read ---- */
+const publishMon = () => { const g = signOf(0); g.cur = 'ignite'; g.sked = 'bane'; g.plan = 'stiff'; g.appr = 'pump'; setDayApproved(0, true) }
+
+describe('ASTRA-DP-FINAL-02 — an input changed after the day went out: To go out names who and when, newest first', () => {
+  it('a member files a leave on published Monday after an older admin edit: his line names him, and comes first', () => {
+    as('ad', 'a')
+    publishMon()
+    const key = `d:0.0.0`
+    setSlotVal(key, someoneNot(slotVal(key)))                          // an older edit of Saber's
+    ELOG.rows.forEach(r => { r.t -= 3600_000 })                        // …an hour ago
+    as('us', 'us')
+    const d: any = (DAYS as any)[0]
+    const r: any = { person: 'bane', date: d.dt, yr: 2026, allday: true, type: 'LL', remarks: '' }
+    writeInputs(() => { inpId(r); INPUTS.unshift(r) })
+    as('ad', 'a')
+    const items = [...el(pendListHTML(0)).querySelectorAll('.pl-item')]
+    const mine = items.findIndex(x => /Ranger · LL|LL \(leave\)|Ranger/.test(x.querySelector('.pl-where')?.textContent || '') && /filed/.test(x.textContent || ''))
+    expect(mine, 'the leave is on the list').toBeGreaterThanOrEqual(0)
+    expect(items[mine]!.querySelector('.pl-who')?.textContent || '', 'it names who filed it').toContain('Ranger')
+    expect(mine, 'and, being the newest, it comes first').toBe(0)
+  })
+})
+
+describe('ASTRA-DP-FINAL-03 — a Quals change on To go out keeps its who across a rename', () => {
+  it('CAT changed, then the man renamed: the line still names who changed the CAT; and the history keeps whose it was over a reload', () => {
+    as('ad', 'a')
+    publishMon()
+    /* someone flying Monday who is NOT the admin doing it (the who would then follow his own new name) */
+    const onMon: string[] = []
+    ;(DAYS as any)[0].waves.forEach((w: any) => (w.formations || []).forEach((f: any) => (f.aircraft || []).forEach((a: any) => { for (const id of [a.p, a.w]) if (id) onMon.push(id) })))
+    const man = onMon.find(id => id !== 'stiff' && id !== 'bane' && (PEOPLE as any)[id] && !(PEOPLE as any)[id].special)!
+    const p: any = (PEOPLE as any)[man], q0 = p.q, cs0 = p.cs
+    try {
+      expect(updatePersonField(man, { cat: q0 === 'C' ? 'B' : 'C' })).toBeNull()
+      expect(updatePersonField(man, { callsign: 'ZZRENAMED' })).toBeNull()
+      const who = [...el(pendListHTML(0)).querySelectorAll('.pl-item')].filter(x => /CAT/.test(x.textContent || '')).map(x => x.querySelector('.pl-who')?.textContent || '').join('|')
+      expect(who, 'the CAT line still names Saber after the rename').toContain('Saber')
+      elogFlush(); elogLoad()
+      const row: any = ELOG.rows.find(r => r.sect === 'quals' && /CAT/.test(r.lbl))
+      expect(row && row.sub, 'whose CAT it was, kept by his id').toBe(man)
+      expect(row && row.fld).toBe('q')
+    } finally { updatePersonField(man, { callsign: cs0 }); updatePersonField(man, { cat: q0 }) }
+  })
+})
+
+/* ---- Fable's final read, F5: an absence line that is a button must land somewhere ---- */
+describe('F5 — an input line lands, or is not a button', () => {
+  it('a request waiting under Personal Inputs carries the address of the input on the edit week, and a tap opens that panel', async () => {
+    as('ad', 'a')
+    const d: any = (DAYS as any)[0]
+    const r: any = { person: 'bane', date: d.dt, yr: 2026, allday: false, s: 600, e: 660, type: 'MEETING', remarks: '' }
+    inpId(r); INPUTS.unshift(r)
+    PIOPEN.delete(0)
+    jumpToChange([`iu:${r.iid}`], 0)
+    expect(PIOPEN.has(0), 'the tap opens Personal Inputs on that day').toBe(true)
+    expect(dayHTML(0, true, true)).toContain(`data-inprow="${r.iid}"`)
+    PIOPEN.delete(0)
+  })
+  it('a line about an input whose dates are all outside the loaded week (moved away) goes nowhere — it is not a button', () => {
+    const r: any = { person: 'bane', date: 'Aug 20', yr: 2026, allday: true, type: 'LL', remarks: '' }
+    inpId(r); INPUTS.unshift(r)
+    const days = ['2026-07-13', '2026-07-14', '2026-07-15', '2026-07-16', '2026-07-17', '2026-07-18', '2026-07-19']
+    const l: any = { iid: r.iid, key: '', rows: [{ date: '2026-08-20', wdate: '2026-07-14', iid: r.iid }] }
+    expect(jumpOf(l, days, null)).toBeNull()
+  })
+})

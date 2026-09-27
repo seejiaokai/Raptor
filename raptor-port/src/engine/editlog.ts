@@ -46,6 +46,8 @@ export type ELogRow = {
   wdate?: string      // the span BEFORE the change, when it moved (Astra DP-05): an absence moved from 1–2 Aug to 6–7 Aug
   wend?: string       //   shows on both spans, never on the days between
   iid?: string        // the input the line is about (an absence line)
+  sub?: string        // the PERSON a Quals line is about, by his id (a rename never loses it — Astra's final read, 03)
+  fld?: string        //   and which of his details (q, seat, pers, san, sxo, archived, deleted, cs, or a qualification's key)
   sect?: string       // the part of the day a line with no key belongs to (Group by Where — ui/changesmodel.ts sectionOf)
   key: string         // the slot key, '' for a structural note
   lbl: string         // WHAT it was, in words — frozen at log time, see below
@@ -132,6 +134,7 @@ export function elogLoad(): void {
     if (isoOk(x.wdate)) { r.wdate = x.wdate; if (isoOk(x.wend)) r.wend = x.wend }
     if (typeof x.iid === 'string' && x.iid) r.iid = x.iid
     if (typeof x.sect === 'string' && x.sect) r.sect = x.sect
+    if (typeof x.sub === 'string' && x.sub) { r.sub = x.sub; if (typeof x.fld === 'string' && x.fld) r.fld = x.fld }
     rows.push(r)
     if (r.seq > top) top = r.seq
   }
@@ -352,7 +355,7 @@ export function logEdit(key: any, from: any, to: any) {
    (an input, a Leave War record) is on ITS dates, which may lie in any week; `iid` names the input it is about. */
 export type LineAt = {
   date?: string | null; end?: string | null; wdate?: string | null; wend?: string | null
-  iid?: string | null; key?: string; sect?: string; from?: string; to?: string
+  iid?: string | null; key?: string; sect?: string; from?: string; to?: string; sub?: string; fld?: string
 }
 export function logAction(di: any, text: string, at?: LineAt) {
   const d = di == null ? null : +di
@@ -368,13 +371,17 @@ export function logAction(di: any, text: string, at?: LineAt) {
   }
   if (at && at.iid) row.iid = at.iid
   if (at && at.sect) row.sect = at.sect
+  if (at && at.sub) { row.sub = at.sub; if (at.fld) row.fld = at.fld }
   push(row)
 }
 
 /* newest first, optionally narrowed to one day — the listed view's whole
    data path. A copy, so a caller cannot sort the live log out of order. */
+/* one day = that CALENDAR day of the loaded week (a line keeps its date; its weekday index alone would match the same
+   weekday of every week — Fable's final read, F9) */
+const onDay = (r: ELogRow, di: number) => { const iso = dateOfDi(di); return iso ? rowTouches(r, iso) : r.di === di }
 export function elogRows(di?: any): ELogRow[] {
-  const rows = (di == null) ? ELOG.rows.slice() : ELOG.rows.filter(r => r.di === +di)
+  const rows = (di == null) ? ELOG.rows.slice() : ELOG.rows.filter(r => onDay(r, +di))
   return rows.reverse()
 }
 
@@ -413,7 +420,7 @@ export function elogAllFor(key: any): ELogRow[] {
    the log so two identical sentences never fold together. */
 export type ELogGroup = { key: string; lbl: string; di: number | null; rows: ELogRow[]; last: number; lastIx: number }
 export function elogGroups(di?: any): ELogGroup[] {
-  const src = (di == null) ? ELOG.rows : ELOG.rows.filter(r => r.di === +di)
+  const src = (di == null) ? ELOG.rows : ELOG.rows.filter(r => onDay(r, +di))
   const by = new Map<string, ELogGroup>()
   src.forEach((r, i) => {
     const id = r.key || ` act${i}`

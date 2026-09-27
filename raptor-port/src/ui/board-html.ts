@@ -663,7 +663,7 @@ function sbInpRow(di:any,inp:any,acc:any,pv:any,ro?:any,dt?:any){
   /* THE ROW'S ADDRESS FOR THE CHANGES WINDOW'S JUMP — the week's twin (html.ts, Astra DP-08): an absence line tapped while
      the board is open lands on the board's own Unavailable row ([DRAFT-PENDING], Fable P5 — it said "shown on the week,
      not on the board" about a row the board draws). Signed-in readers only, never the drag attribute. */
-  const inprow=!acc&&isMember()?` data-inprow="${esc(inpId(inp))}"`:'';
+  const inprow=isMember()?` data-inprow="${esc(inpId(inp))}"`:'';   // the Personal Inputs rows too (Fable F5)
   if(RO&&!oilItem){
     const t=inp.allday?'all day':`${hhmm(inp.s)} – ${hhmm(inp.e)}`;
     return `<div class="sbi-row${acc&&inp.acc&&inp.acc!=='r'?' accd':''}${acc?dormRowCls(inp):''}"${acc?dormRowTitle(inp):''}${inprow}><span class="sbi-t">${t}</span>${pk}`

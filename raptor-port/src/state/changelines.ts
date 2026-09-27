@@ -109,16 +109,9 @@ function inputLines(c: Change, env: CommitEnvelope, war: boolean): void {
   if (!same(b.oil, a.oil)) logAction(null, `${who} · ${what} ${spanWords(sa)} · OIL`, base({ from: oilWords(b.oil), to: oilWords(a.oil) }))
 }
 
-/* A FILING DONE UNDER THE DAY'S OWN COMMAND. Accepting a request onto the programme (or under Unavailable, or taking it
-   off) changes the day and the request's filing in place and runs under the board's catch-all command, whose envelope
-   carries the day but not the input record — so the subscriber never sees it. That one door writes its line here, in
-   the same words, and cannot double it: its command carries no input for the subscriber to read. */
-export function logFiling(inp: any, wasAcc: any): void {
-  if (!inp || String(wasAcc || '') === String(inp.acc || '')) return
-  const s = spanOf(inp)
-  logAction(null, `${cs(inp.person)} · ${inp.type} ${spanWords(s)} · filed`,
-    { iid: inp.iid, sect: 'abs', date: s && s.date, end: s && s.end, from: filWords(wasAcc), to: filWords(inp.acc) })
-}
+/* A FILING DONE UNDER THE DAY'S OWN COMMAND (accepting a request onto the programme, under Unavailable, taking it off):
+   the board's catch-all command diffs every input against the last committed state, so the filing that moved is in its
+   envelope and inputLines says it — once. A second writer for that door doubled every such line (Fable's final read, F1). */
 
 /* ---- the Leave War ---- */
 const cellParts = (id: string) => {
@@ -161,19 +154,120 @@ function warLines(env: CommitEnvelope, approvedFor: Set<string>, backToBid: Set<
     else if (now.rec.kind === 'credit' && now.rec.oil === 'manual') say(now, 'OIL award changed')
   }
 }
-/* A BID AN INPUT TOOK AWAY. Filing an input over a man's bid (the Inputs page, the board's + Add, an edit window) removes
-   the clashing bid in the SAME command (leavewar/inputgate.ts replaceBids) — an Inputs command, not the Leave War's, so
-   warLines never reads it and the bid left without a word ([DRAFT-PENDING], Fable P10; the plan §2.2 "taken away"). Each
-   bid that left is a line on its day, beside the input's own; a half it kept (the morning or the afternoon) is not a
-   decision and says nothing. */
-function replacedLines(env: CommitEnvelope): void {
+/* THE WAR'S RECORDS LEAVING IN A COMMAND THAT IS NOT THE WAR'S OWN. Two doors do it: an input filed over a man's bid (the
+   Inputs page, the board's + Add, an edit window — leavewar/inputgate.ts replaceBids takes the clashing bid inside the
+   INPUT's command; Fable P10), and a person deleted or archived (his records from that day on go inside the people
+   command — Astra's final read, ASTRA-DP-FINAL-01). warLines reads only the war's own commands, so without this each left
+   without a word. Each bid, and each OIL award given by hand, that left is ONE line on its day, and it says the cause
+   only when the cause is IN the envelope: "an input covers it" only when an input in the same command covers that man
+   on that day; otherwise plainly "bid removed" / "OIL award taken away". What arrives (the half of a bid an input kept,
+   a notice) is not a decision and says nothing; a credit the schedule earned (`oil: 'auto'`) is never a line. */
+function crossLines(env: CommitEnvelope): void {
+  const covered = new Set<string>()
+  for (const c of env.changes) {
+    if (c.collection !== 'inputs' || c.id === '__order' || !c.after) continue
+    const s = spanOf(c.after), p = (c.after as any).person
+    if (!s || !p) continue
+    for (let d = s.date; d <= s.end; d = nextIso(d)) covered.add(`${p}|${d}`)
+  }
   for (const c of env.changes) {
     if (c.collection !== 'lw.cell') continue
     const { date, pid } = cellParts(String(c.id))
     const bl: any[] = Array.isArray(c.before) ? c.before : [], al: any[] = Array.isArray(c.after) ? c.after : []
     const am = new Set(al.map(r => r.id))
-    for (const r of bl) if (r.kind === 'request' && !am.has(r.id))
-      logAction(null, `Leave War · ${cs(pid)} · ${r.code || ''} ${dayWord(date)}: bid taken away — an input covers it`.replace('  ', ' '), { date, sect: 'abs' })
+    for (const r of bl) {
+      if (am.has(r.id)) continue
+      const what = r.kind === 'request' ? (covered.has(`${pid}|${date}`) ? 'bid taken away — an input covers it' : 'bid removed')
+        : r.kind === 'credit' && r.oil === 'manual' ? 'OIL award taken away' : ''
+      if (what) logAction(null, `Leave War · ${cs(pid)} · ${r.code || ''} ${dayWord(date)}: ${what}`.replace('  ', ' '), { date, sect: 'abs' })
+    }
+  }
+}
+/* THE WAR'S OWN DOORS ON AN APPROVED LEAVE (Fable's final read, F2). The war files its approvals as Inputs and takes them
+   back inside its own command, so an Input's change alone cannot say which decision it was — a delete read "approval
+   taken back (back to a bid)" and a move read as an un-approval plus a fresh approval. Read together they can: an
+   approval taken back comes with its request coming back (its state says back to a bid, refused or acknowledged); a
+   move re-files the moved days as a NEW Input of the same man and type beside the old one cut; an approved leave
+   deleted comes with neither. Each decision is ONE line, on the days it concerns (a move on both, never between —
+   Astra DP-05). Returns the Input changes said here; the per-input writer leaves them alone. An Input ADDED alone is
+   an approval, and keeps its own line ("approved on the Leave War"). */
+function warInputLines(env: CommitEnvelope): Set<Change> {
+  const said = new Set<Change>()
+  const came = new Map<string, string>()
+  for (const c of env.changes) {
+    if (c.collection !== 'lw.cell') continue
+    const { date, pid } = cellParts(String(c.id))
+    const bl: any[] = Array.isArray(c.before) ? c.before : [], al: any[] = Array.isArray(c.after) ? c.after : []
+    const had = new Set(bl.map(r => r.id))
+    for (const r of al) if (r.kind === 'request' && !had.has(r.id)) came.set(`${pid}|${date}`, String(r.state))
+  }
+  const ins = env.changes.filter(c => c.collection === 'inputs' && c.id !== '__order')
+  const added = ins.filter(c => !c.before && c.after)
+  const used = new Set<Change>()
+  const spanOfDays = (days: string[]): Span => ({ date: days[0]!, end: days[days.length - 1]! })
+  for (const c of ins) {
+    if (!c.before) continue
+    const b: any = c.before, sb = spanOf(b)
+    if (!sb) continue
+    const sa = c.after ? spanOf(c.after) : null
+    /* the days this approval LEFT: all of it when removed, the cut ends when it shrank */
+    const days: string[] = []
+    for (let d = sb.date; d <= sb.end; d = nextIso(d)) if (!sa || d < sa.date || d > sa.end) days.push(d)
+    if (!days.length) continue
+    const was = spanOfDays(days), p = b.person, t = b.type
+    const to = added.find(x => !used.has(x) && (x.after as any).person === p && (x.after as any).type === t)
+    said.add(c)
+    if (to) {
+      used.add(to); said.add(to)
+      const now = spanOf(to.after)!
+      logAction(null, `${cs(p)} · ${t} moved on the Leave War · ${spanWords(was)} → ${spanWords(now)}`,
+        { iid: String(to.id), sect: 'abs', date: now.date, end: now.end, wdate: was.date, wend: was.end })
+      continue
+    }
+    const st = days.map(d => came.get(`${p}|${d}`)).find(x => x != null)
+    logAction(null, st != null
+      ? `${cs(p)} · ${t} approval taken back — ${STATE_WORD[st] || st} · ${spanWords(was)}`
+      : `${cs(p)} · ${t} approved leave deleted on the Leave War · ${spanWords(was)}`,
+      { iid: String(c.id), sect: 'abs', date: was.date, end: was.end })
+  }
+  return said
+}
+/* A POSTING, set, changed or taken back on the war (Fable's final read, F4 — an admin's decision, D229, whose maker D169
+   wants seen). The war keeps each man's window in the squadron (`from` his first day, `to` his last — the posting-out
+   date he typed is the day after it), so the lines are that window's changes: "posting out 14 Oct · Overseas Sqn",
+   "posting out changed · 14 Oct → 21 Oct", "posting out taken back", and the same for a posting in. On the day it
+   RUNS the posting pass does it — no person, so no line. A man archived, restored or deleted in the same command is
+   said by his Quals line ("archived", "deleted") and his window's change is part of that act, so it says nothing more
+   (one act, one line). */
+const OUTCOME_WORD: Record<string, string> = { overseas: 'Overseas Sqn', delete: 'Delete', sans: 'SANS', none: 'no outcome' }
+function postoutLines(c: Change, env: CommitEnvelope): void {
+  const bm: any = (c.before && typeof c.before === 'object') ? c.before : {}, am: any = (c.after && typeof c.after === 'object') ? c.after : {}
+  const quiet = new Set<string>()
+  for (const x of env.changes) {
+    if (x.collection !== 'people') continue
+    const pb: any = x.before || {}, pa: any = x.after || {}
+    if (!!pb.archived !== !!pa.archived || !!pb.deleted !== !!pa.deleted) quiet.add(String(x.id))
+  }
+  const at = (d: string, extra: any = {}) => ({ date: d, sect: 'quals', ...extra })
+  for (const pid of new Set([...Object.keys(bm), ...Object.keys(am)])) {
+    if (quiet.has(pid)) continue
+    const b: any = bm[pid] || {}, a: any = am[pid] || {}
+    const name = `Leave War · ${cs(pid)}`
+    const bOut = b.to ? nextIso(String(b.to)) : null, aOut = a.to ? nextIso(String(a.to)) : null
+    const aWord = OUTCOME_WORD[String(a.poOutcome || '')] || ''
+    if (bOut !== aOut) {
+      if (!bOut && aOut) logAction(null, `${name} · posting out ${dayWord(aOut)}${aWord ? ' · ' + aWord : ''}`, at(aOut))
+      else if (bOut && !aOut) logAction(null, `${name} · posting out taken back · ${dayWord(bOut)}`, at(bOut))
+      else if (bOut && aOut) logAction(null, `${name} · posting out changed · ${dayWord(bOut)} → ${dayWord(aOut)}${aWord ? ' · ' + aWord : ''}`, at(aOut, { wdate: bOut }))
+    } else if (aOut && String(b.poOutcome || '') !== String(a.poOutcome || '')) {
+      logAction(null, `${name} · posting out ${dayWord(aOut)} · outcome`, at(aOut, { from: OUTCOME_WORD[String(b.poOutcome || '')] || '—', to: aWord || '—' }))
+    }
+    const bIn = b.from ? String(b.from) : null, aIn = a.from ? String(a.from) : null
+    if (bIn !== aIn) {
+      if (!bIn && aIn) logAction(null, `${name} · posting in ${dayWord(aIn)}`, at(aIn))
+      else if (bIn && !aIn) logAction(null, `${name} · posting in taken back · ${dayWord(bIn)}`, at(bIn))
+      else if (bIn && aIn) logAction(null, `${name} · posting in changed · ${dayWord(bIn)} → ${dayWord(aIn)}`, at(aIn, { wdate: bIn }))
+    }
   }
 }
 function ledgerLines(c: Change): void {
@@ -200,20 +294,22 @@ function personLines(c: Change): void {
   /* absent, false and '' are the same "not set" — a tick added then cleared is no change */
   const norm = (v: any) => (v == null || v === false || v === '') ? null : v
   const qv = (v: any) => v === 'I' ? 'I (instructor)' : val(v)
-  const seen = new Map<string, { from: string; to: string }>()
+  const seen = new Map<string, { from: string; to: string; fld: string }>()
   for (const k of Object.keys(PERSON_FIELDS)) {
     if (same(norm(b[k]), norm(a[k]))) continue
-    seen.set(PERSON_FIELDS[k]!, { from: val(b[k]), to: val(a[k]) })
+    seen.set(PERSON_FIELDS[k]!, { from: val(b[k]), to: val(a[k]), fld: k })
   }
   /* a qualification tick lives in the person's `quals` (Quals' own columns, named by their heading); a tick that is
      also a flag on the person (SANS, SXO) is said once */
   for (const q of qualCols()) {
     const x = b.quals && b.quals[q.k], y = a.quals && a.quals[q.k]
     if (same(norm(x), norm(y)) || seen.has(q.h)) continue
-    seen.set(q.h, { from: qv(x), to: qv(y) })
+    seen.set(q.h, { from: qv(x), to: qv(y), fld: q.k })
   }
   const name = seen.has('callsign') ? val(b.cs) : (a.cs || pid)
-  for (const [field, v] of seen) logAction(null, `${name} · ${field}`, { ...at, from: v.from, to: v.to })
+  /* each line keeps WHOSE detail it was and WHICH, by id (sub, fld): the words carry the callsign of the day, and a later
+     rename must not lose who changed it (the To go out tab reads these — ui/pendlist.ts qualsLine; Astra's final read, 03) */
+  for (const [field, v] of seen) logAction(null, `${name} · ${field}`, { ...at, from: v.from, to: v.to, sub: pid, fld: v.fld })
 }
 
 /* ---- publish / withdraw ---- */
@@ -267,13 +363,15 @@ export function changeLinesFor(env: CommitEnvelope): void {
       if (!s || !p) continue
       for (let d = s.date; d <= s.end; d = nextIso(d)) (c.after && !c.before ? approvedFor : !c.after && c.before ? backToBid : new Set()).add(`${p}|${d}`)
     }
+    const warSaid = war ? warInputLines(env) : new Set<Change>()
     for (const c of env.changes) {
-      if (c.collection === 'inputs' && c.id !== '__order') inputLines(c, env, war)
+      if (c.collection === 'inputs' && c.id !== '__order') { if (!warSaid.has(c)) inputLines(c, env, war) }
       else if (c.collection === 'lw.ledger') ledgerLines(c)
+      else if (c.collection === 'lw.postouts') postoutLines(c, env)
       else if (c.collection === 'people') personLines(c)
     }
     if (war) warLines(env, approvedFor, backToBid)
-    else replacedLines(env)
+    else crossLines(env)
     boundaryLines(env)
   } finally {
     REASONS.clear()

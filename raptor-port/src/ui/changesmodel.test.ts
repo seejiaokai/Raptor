@@ -41,6 +41,18 @@ describe('what a line says', () => {
     expect(ls[0]!.seqs).toHaveLength(2)
   })
 
+  /* Fable's final read (F7): a man taken off MONDAY and put on TUESDAY is one change on EACH day (the owner's D109), so the
+     week must not pair them into one line — the admin's icon would then read 1 while the two days' chips read 1 + 1 */
+  it('a man moved to ANOTHER day is one line on each day — never paired into one for the week', () => {
+    put(
+      row({ di: 0, date: '2026-07-13', key: 'a:0.3.0', lbl: 'Programme · MET + NOTAM BRIEF', from: 'bane', to: '—' }),
+      row({ di: 1, date: '2026-07-14', key: 'a:1.5.0', lbl: 'Programme · SODB', from: '—', to: 'bane' }),
+    )
+    const week = ['2026-07-13', '2026-07-14', '2026-07-15', '2026-07-16', '2026-07-17', '2026-07-18', '2026-07-19']
+    expect(linesFor(week, newTo('stiff'))).toHaveLength(2)
+    expect(weekNew(newTo('stiff'))).toBe(2)
+  })
+
   it('two different people\'s edits are never paired into a move', () => {
     put(
       row({ key: 'a:1.3.0', lbl: 'Programme · MET', from: 'bane', to: '—' }),
