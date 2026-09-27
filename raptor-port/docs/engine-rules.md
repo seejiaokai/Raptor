@@ -2342,9 +2342,10 @@ closes the reuse back-door. **NARROWED — D286, 26 Sep 26, BUILT 27 Sep 26 (`[P
 ARCHIVED man is free for a new person, and a typed callsign always finds the roster man; `callsignTakenBy` /
 `state/roster-add.ts callsignProblem` is the one test (blank, over 14 letters — said, never cut, D226 — or taken by a
 man on the roster). A DELETED man (the hidden mark, D290) is in no index. Restoring an archived man while a roster man
-holds his callsign is refused (D286 (1) — it never renames anyone by itself); Quals then asks for another callsign on the
-spot and restores him under it in one step (D295, `leavewar/sync.ts restoreArchivedAs`), and an archived man can be
-renamed right on the Archived list (moving to Admin → Users with `[ONE-DOOR]`, D310). Rename still refuses a blank, a no-op and a duplicate (`ID_BY_CS` can only
+holds his callsign is refused (D286 (1) — it never renames anyone by itself); Admin → Users then asks for another callsign on
+the spot and restores him under it in one step (D295, `leavewar/sync.ts restoreArchivedAs`), and an archived man is
+renamed right on his archived row there — "Save name" (on Admin → Users since `[ONE-DOOR]`, D310; Quals' Archived list
+is gone). Rename still refuses a blank, a no-op and a duplicate (`ID_BY_CS` can only
 point one way), and it deliberately marks **nothing
 pending**: the person in the seat has not changed, only the spelling, and
 `rowCrew` diffs identically — an AL full of spelling would be noise. *(Corrected 26 Sep 26: this said "Published day
@@ -2913,6 +2914,24 @@ the week's `weeks/<wk>` record, so on a built site a reload brings back the park
 the Originals and every AL. (The earlier sentence here said the opposite.)
 
 ## Auth / roles
+
+**ONE DOOR FOR A PERSON'S STATE (`[ONE-DOOR]`, 27 Sep 26 — D305, D308, D309, D310, D320–D323).** Admin → Users shows every
+person and carries every action on him (the contract: `docs/ui-contracts.md` §Admin → Users — one door). **Archive**
+(`leavewar/sync.ts archivePerson` — admin only; never yourself, a placeholder, a deleted man, or the last admin who can
+sign in): `archived` with `archivedBy: 'admin'`, his account SUSPENDED in the same command, his welcome note cleared,
+and on the Leave War "posted out from today" — his current stint closed yesterday as a posting that has run, a posting
+still to come replaced (D323). **Restore** (`restoreArchivedPerson(id, postIn)` / `restoreArchivedAs(id, cs, postIn)`):
+the archive lifted, his account ENABLED WHATEVER SUSPENDED IT (D322), a new stint on the war from the post-in date (D308,
+D320 — refused on or before the day he left; the day after reopens his stint), `back` set so HE is told to check his
+quals and CAT on his next sign-in (D305 — `ui/WelcomeBack.tsx`; only he clears it, `person.backSeen`, his own row), and
+the admin's Quals prompt (D284). **Restore on Admin → Users is the one way back from an Admin archive** — the Leave War's
+Undo post out and posting writes refuse him (round 1, Fable F1 / Astra 2); the posting's own undo (Undo post out on a
+POSTING's archive) keeps its meaning: the same stint continues, only the posting's suspension enabled, no welcome note.
+**No Enable on an archived man** (D322): `accounts.ts updateAccount` refuses it. **A session that lapses** — his account
+suspended, or his person archived or deleted, after he signed in — is turned off on the next repaint (the suspended
+screen; `ui/App.tsx`, `accounts.ts sessionLapsed`). **A new person's post-in date** (D308): Add a person and Give access →
+New person write his first stint on the war inside the add's own command (`HOOKS.warPostIn`). Quals keeps quals, CAT,
+flight and initials; archive, restore and the archived man's rename left it (D310).
 
 **ACCOUNTS (`[ACCOUNTS]`, 26 Sep 26 — D165, D166, D204, D200).** Everyone signs in as HIMSELF: each account
 (`state/accounts.ts`, managed on Admin → Users) is a sign-in name — which stands for the defence mail address —,

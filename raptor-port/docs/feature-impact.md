@@ -372,8 +372,10 @@ week seeds nothing.
 
 ### Flow G — a new person (`[ACCOUNTS-NEW-PERSON]`, 26 Sep 26 — D214, D217)
 
-ONE door: Admin → Users (`ui/UsersPanel.tsx`) — "Add an account" → New person (with a sign-in: the person AND his
-account; blank: a roster-only person), or approving a sign-up with New person (filled from what he gave). Every route
+ONE door: Admin → Users (`ui/UsersPanel.tsx`) — "Add a person" (New person only since `[ONE-DOOR]`, D310: with a
+sign-in, the person AND his account; blank, a roster-only person) or Give access → New person (filled from what he gave);
+each asks the POST-IN date (D308), written on the Leave War inside the same command (`HOOKS.warPostIn`, installed by
+`leavewar/sync.ts` — the war's record named in the command's permission row). Every route
 calls the one add, `state/roster-add.ts` (`newPersonProblem` — the one callsign rule, PID-01; `putNewPerson` inside the
 command), through ONE command (`person.add`, `account.addNew` or `access.approveNew` — `state/people-settings-commit.ts`,
 enlisting the people store and, with an account, the settings store; one storage group). Quals' "+ Add person" is only a
@@ -381,10 +383,20 @@ button there (`ui/adminopen.ts`). After the command seals, `notify()` carries th
 of the roster: the Quals table (his seat view), the scheduler's crew lists (edit week palette, the board's Available
 crew), the Inputs person picker, the Highlight chips and search, the Leave War roster (`reprojectRoster` — aircrew by CAT,
 personnel in Personnel, out of manning), the Tracker's "+ Add" list (`peoplewire.ts` — AIRCREW only, by design), and Admin
-→ Users' "On the roster" picker (a roster-only person is linkable later). A half-made person never reaches any of them
+→ Users' own list (a roster-only person gets his sign-in later on his row — Give sign-in). A half-made person never reaches any of them
 (the command restores both stores on a refusal; `notify` is latched until the seal). Not undoable (people and settings
 are not cut over — `[UNDO-ROSTER-SETTINGS]`) and no Edit history row. **Adding a new projection of the roster? It is a
 row in the walk's roll-call** (`docs/handpass/2026-09-26-accounts-new-person.md`).
+
+### Flow J — one door for a person's state (`[ONE-DOOR]`, 27 Sep 26 — D305, D308, D309, D310, D320–D323)
+
+Admin → Users (`ui/UsersPanel.tsx`) carries every action on a person. **Archive** (`leavewar/sync.ts archivePerson`, ONE command `person.archive` over the people, settings and war stores): `archived` (`archivedBy: 'admin'`), his
+account suspended, his welcome note cleared, and the war's current stint closed yesterday as a posting that has run (`store.ts closeStintOnArchive` — D323). **Restore** with a post-in date (`restoreArchivedPerson(id, postIn)` /
+`restoreArchivedAs`): the archive lifted, the account enabled whatever suspended it (D322), a NEW stint opened on the war (`store.ts openStint` — D320), `back` set on his Person (D305). What reads the result, and must repaint: every
+roster surface (as Flow H); Admin → Users (the People list, the Archived group, the dots); the Leave War — the row filter `rowInWindow`, the day cell (a gap day PO; only before the first stint blank; each stint's last-day corner),
+the tap routing `postingSheetFor`, the posting sheets (an Admin archive's Post out sheet reads only; a man back's Post in sheet offers no Undo), the manning counts and ALL AVAIL through `inSquadron`; the Shell (his welcome
+note, `ui/WelcomeBack.tsx`); the App (a signed-in session whose account went off, or whose person was archived or deleted, lands on the suspended screen). **The drift seam:** a man's time in the squadron is `from`/`to` (the
+CURRENT stint) plus `past` (the closed earlier ones) — a new reader of it asks `inSquadron` or the helpers beside it in `leavewar/engine/people.ts`, never `from`/`to` alone for a range.
 
 ### Flow H — a posting out, and what it does on its date (`[POST-OUT-OUTCOMES]`, 27 Sep 26 — D229, D280, D283, D284)
 
@@ -396,8 +408,8 @@ ONE projection command (`lw.postoutRun`) over the people, settings and war store
 for a delete): Overseas Sqn → `PEOPLE[id].archived` (`archivedBy: 'po'`) + his account suspended (`offBy: 'po'`,
 `state/accounts.ts suspendForPosting`); SANS → `san` ticked (`sanBy: 'po'`); Delete → Flow I below; then `poDone`. The
 pass can be woken while another command is delivering — its command then QUEUES, and a queued pass is never re-queued
-(`PO_INFLIGHT`; the endless loop the tests found, 27 Sep 26). What reads the result, and must repaint: the Quals roster
-and its Archived list, every crew list and picker (an archived man is on none), Admin → Users (the "suspended" tag),
+(`PO_INFLIGHT`; the endless loop the tests found, 27 Sep 26). What reads the result, and must repaint: the Quals roster, every crew list and picker (an archived man is on none), Admin → Users (his row moves to the
+Archived group; his Sign-in dot turns red),
 the sign-in (a suspended account's screen), the Leave War roster (`reprojectRoster` — the kept rule; SANS through
 `windowFor` with "Show SANS"), the manning counts (`inSquadron`), ALL AVAIL (`availableFor`), the OIL pass. **Taking it
 back:** a later date or another outcome (`postOut` → `takeBack`, one command `lw.postout`) undoes only what the posting

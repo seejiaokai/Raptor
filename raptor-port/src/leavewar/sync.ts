@@ -1351,13 +1351,14 @@ function reprojectRoster(): void {
   // A POSTED-OUT person stays on the war after their Raptor body is archived
   // (owner, 19 Aug 26 — "their data will still be kept on the previous
   // schedules… nothing will be altered"): the auto-archive pass below (and
-  // the Quals ✕) takes them out of the projection, but their leave history is
+  // Archive on Admin → Users — [ONE-DOOR]) takes them out of the projection, but their leave history is
   // still what the past months show, and the month-window row filter is what
   // hides them from the months after they left. So an existing person with a
   // posting-out window who dropped out of `projected` is KEPT, identity
   // frozen as last projected. A body archived WITHOUT a posting-out window
-  // still leaves at once — that ✕ means "should never have been here", and
-  // the old exclusion behaviour stands for it.
+  // still leaves at once — once the Quals ✕'s "should never have been here"; since
+  // [ONE-DOOR] (D323) Archive always closes his stint, so only a man never here (his
+  // post-in still to come) leaves this way.
   /* [POST-OUT-OUTCOMES]: the window a kept man carries is the RECORD's (a SANS posting shown with Show SANS on has no
      window on the person, and must still be kept once the switch goes off); a man DELETED on the Raptor side (D287,
      D290) is kept the same way — the months he was here keep his record (D299) — and marked `gone`, so no posting door,

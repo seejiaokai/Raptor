@@ -107,7 +107,7 @@ the schedule, the inputs and the Leave War all use.
 | `pers` | boolean | ground personnel (no flying quals derive) |
 | `special` | boolean | a sentinel body (`ALL`, `ALL AVAIL`) — occupies slots, is not a person |
 | `archived` | boolean | kept out of every roster |
-| `archivedBy` | `'po'` \| `'del'` | `'po'` when the Leave War's posting pass archived him (an "Overseas Sqn" posting, its date come) — the archive the posting's Undo, a later date or another outcome takes back; `'del'` when a delete did (below); absent = archived by hand on Quals (the absence-record re-test's final read, 26 Sep 26) |
+| `archivedBy` | `'po'` \| `'del'` \| `'admin'` | `'admin'` when Archive on Admin → Users did (`[ONE-DOOR]`, D310, D323 — only Restore there takes it back); `'po'` when the Leave War's posting pass archived him (an "Overseas Sqn" posting, its date come) — the archive the posting's Undo, a later date or another outcome takes back; `'del'` when a delete did (below); absent = archived by hand on Quals (the absence-record re-test's final read, 26 Sep 26) |
 | `deleted`, `deletedFrom` | boolean, `'YYYY-MM-DD'` | **the delete's hidden mark** (`[POST-OUT-OUTCOMES]`, D287, D290, 27 Sep 26 — `state/person-delete.ts`): the record is KEPT (every day he flew still points at him, D297) but read as gone everywhere — no list, no picker, the Archived one included; his callsign free (the callsign index skips him); `deletedFrom` the first day he is gone, the later of the delete's date and the calendar date. Written with `archived: true, archivedBy: 'del'`. Never cleared — a delete is final |
 | `sanBy` | `'po'` | present only when a SANS posting ticked `san` on its date (D283) — what the posting takes back; absent = ticked by hand |
 | `san`, `sanQ` | boolean, `{flown, carry, missedQtrs}` | SANS member and their quarter progress |
@@ -381,7 +381,7 @@ Every key its `persist()` writes — about twenty (`src/leavewar/state/store.ts`
 The last two are the only per-person records Leave War keeps (8 Sep 26 bug
 pass — a posting-out date used to vanish on reload): `personedits` is
 `{ [personId]: { seat?, band?, sxo? } }`, an admin's identity overrides;
-`postouts` is `{ [personId]: Person }`, the person as last projected with
+`postouts` is `{ [personId]: Person }` — since `[ONE-DOOR]` (D320, 27 Sep 26) with `past: { from, to }[]` beside `from`/`to`, his CLOSED earlier stints (from `from <= to`, in order, never overlapping, the last ending before the current `from`; a malformed list is dropped whole on reading) — the person as last projected with
 the posting-out window (`to`, `poOutcome`, `poDone`, and the older
 `poArchive` kept in step — `true` = `'overseas'`) on them, and `gone: true`
 once he is deleted — an entry exists while either date is set.

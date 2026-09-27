@@ -42,7 +42,10 @@
    account; one sign-in name one account; adding an account for a name that has asked
    answers the request. A person ARCHIVED under an account keeps it (posting out archives
    automatically — leavewar/sync.ts runPoArchive — so refusing sign-in would lock out
-   whoever it catches); the Admin list marks it. */
+   whoever it catches); the Admin list marks it. [ONE-DOOR] (D310, D322, 27 Sep 26): an
+   archived man keeps his account but it is SUSPENDED — Archive suspends it, an overseas
+   posting suspends it, Enable is refused while he is archived, and Restore enables it
+   whatever suspended it; his row sits in Admin → Users' Archived group. */
 import { store } from '../engine/hooks'
 import { PEOPLE } from '../engine/people'
 import { SESSION } from './auth'

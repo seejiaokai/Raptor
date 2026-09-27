@@ -1156,6 +1156,9 @@ renaming a roster man stays on Quals). **D323: Archive is "posted out from today
 "away" between his posting out and his post-in, his months before as they were (today one in/out window per man; the
 build changes `inSquadron`, the war's posting record in `store.ts`, `rowInWindow`, Restore). **Next:** plan (Opus 5.5
 high) → Fable and Astra red-team → build red first → walk both widths → FULL check → his look → "merge live".
+**BUILT 27 Sep 26 on `claude/one-door`** (the plan's round 1 folded in — `docs/superpowers/specs/2026-09-27-one-door-plan-review-log.md`;
+unit tests red first, e2e `onedoor.spec.ts` both widths); **next: the walk with pictures, the FULL check (Fable and Astra's
+final reads), his look.**
 
 ### [POST-IN-DATE] A man posted in: the admin is asked his post-in date (D308, filed 27 Sep 26)
 **His ruling (D308):** *"When someone is posted In the app should also ask the admin when is the post in date so that the
@@ -1169,7 +1172,7 @@ approved mock-up marked, D201); the Leave War's own Post in stays. **Size:** ~1.
 and the Leave War, FULL tier. **Place: his call** — inside PR #446 before its merge, or its own branch right after #446
 merges (the agent's recommendation: after, so the fully checked #446 does not grow). **Built with `[ONE-DOOR]`** (D310,
 D322: Restore, New person and Give access's New person ask it) — **and D320 (27 Sep 26): Restore opens a NEW stint on the war**
-(away between the posting out and the post-in), never moving his old one's start.
+(away between the posting out and the post-in), never moving his old one's start. **BUILT 27 Sep 26 with `[ONE-DOOR]`.**
 
 ### [POST-OUT-TRACKER] A deleted man and the Tracker's courses "still running" (D299 — approved, NOT built; filed 27 Sep 26)
 D299 lists "his place on any course still running — goes". The Tracker has no notion of a course "still running", and the

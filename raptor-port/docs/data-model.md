@@ -89,7 +89,8 @@ below; the app's delete is `state/person-delete.ts`, reached from Admin → User
 | `isGroundPersonnel` | bool | no | `pers` — no flying quals derive |
 | `isSentinel` | bool | no | `special` — `ALL`, `ALL AVAIL`; occupies slots, is not a person |
 | `archived` | bool | no | kept out of every roster |
-| `archivedBy` | choice (`po`, `del`) | no | who archived him: `po` the Post out's own archive, which the posting takes back; `del` a delete's (below); empty = by hand (26 Sep 26) |
+| `archivedBy` | choice (`po`, `del`, `admin`) | no | who archived him: `po` the Post out's own archive, which the posting takes back; `del` a delete's (below); `admin` Archive on Admin → Users (`[ONE-DOOR]`, D310, D323 — only Restore there takes it back); empty = by hand before `[ONE-DOOR]` (26 Sep 26) |
+| `back` | yes/no | no | his own "Welcome back — check your quals and CAT" is waiting (`[ONE-DOOR]`, D305): set by every Restore, cleared by him (`person.backSeen` — his own row) or by an Archive |
 | `isDeleted` + `deletedFrom` | bool + date | no | **the delete's hidden mark** (D287, D290 — 27 Sep 26): `isDeleted` is the table's tombstone; `deletedFrom` is the first day he is gone — every day from it has lost him, every day before it keeps his puck (D297). Gone from every list and picker, the Archived one included; his callsign free; never restored (a delete is final) |
 | `sansBy` | choice (`po`) | no | the SANS tick a posting out put on (D283), which the posting takes back; empty = ticked by hand (27 Sep 26) |
 | `isExternal` | bool | no | (new) a visitor from another unit: enrolled on a course, never on the roster, the schedule or a leave war. Open question 7 of the first draft, decided |
@@ -797,7 +798,7 @@ worlds' keys.
 | `raptor:leavewar/oilpolicy`, `eventdefs`, `manningdefs`, `groupdefs`, `grouppriority`, `grouppriocustom`, `groupcolors`, `figorder`, `rosterorder`, `manningorder`, `manninghidden`, `fighidden`, `eventrows`, `showsans`, `current` | `Setting` (scope `leavewar`) | Preferences and definitions, value verbatim, absent = default |
 | `raptor:leavewar/perslabels` | `LeavePersonProfile.label` | One profile row per labelled person |
 | `raptor:leavewar/personedits` | `LeavePersonProfile.band`; `Person.sxo` | `band` to the profile; `sxo` folds onto the person row; the `seat` override is **dropped** (the person's seat is the seat). The override record disappears |
-| `raptor:leavewar/postouts` | `LeavePersonProfile.fromDate` / `toDate` / `poOutcome` / `poDone` | An entry exists while either date is set; a profile row is created for each. An old entry with only `poArchive` reads `true` → `overseas`, `false` → `none` (the app reads it so today) |
+| `raptor:leavewar/postouts` | `LeavePersonProfile.fromDate` / `toDate` / `poOutcome` / `poDone`, and his earlier stints (`past` — `[ONE-DOOR]`, D320: a child table of `{ fromDate, toDate }` rows, closed, in order, never overlapping) | An entry exists while either date is set or he has an earlier stint; a profile row is created for each. An old entry with only `poArchive` reads `true` → `overseas`, `false` → `none` (the app reads it so today) |
 | `raptor:tracker/v3:master:syls` | `Syllabus` + `TrainingEvent` (+ `EventPrerequisite`) | Chart per row, event per row; `prereqs` strings resolve to event ids within the same syllabus |
 | `raptor:tracker/v3:master:eventinfo` (per chart, D126; the old one-table `v3:eventinfo` is a converted backup) | `TrainingEvent.name` / `format` / `hours` | Merge each chart's entry into that chart's event row over the shipped wording; parse `hrs` to a number, refuse and report anything that will not parse |
 | `raptor:tracker/v3:lay` | `Layout` | One row per chart, geometry JSON verbatim (including each event's `_b`) |

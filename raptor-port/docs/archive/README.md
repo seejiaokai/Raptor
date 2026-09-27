@@ -15,3 +15,4 @@ where they are (`OUTSTANDING-ARCHIVE.md`, `DECISIONS-ARCHIVE.md`, `HANDOFF-ARCHI
 | `session-state.md` | The session-handoff skill's "last session's leftovers" file (a four-line stub by then) — retired; each chat's leftovers are its own block under `## Now` in `HANDOFF.md` (D140) | 24 Sep 26, from `raptor-port/docs/` |
 | `DESKTOP-HANDOFF.md` | The 10 Sep 26 desktop handoff (task #1 then "next up", merged 11 Sep) — superseded; its only live pointer left `HANDOFF.md` with the spring clean | 24 Sep 26, from `raptor-port/docs/superpowers/` |
 | `OVERNIGHT-BUGCHECK-REPORT.md` | The 11 Sep 26 overnight bug check (Astra + Fable); its one open decision is `[TRK-DISK]` in `OUTSTANDING.md` | 24 Sep 26, from `raptor-port/docs/superpowers/` |
+| `ui-contracts-2026-09-27.md` | Passages moved out of `raptor-port/docs/ui-contracts.md` by `[ONE-DOOR]` (D310): the `[ACCOUNTS]` Admin → Users bullet and Quals' Archived list — replaced by §Admin → Users — one door | written 27 Sep 26 |

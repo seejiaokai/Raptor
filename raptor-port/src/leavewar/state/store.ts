@@ -1796,7 +1796,12 @@ export function setPeople(people: Person[]): void {
   const ids = new Set(next.map(p => p.id))
   /* `.to`, not merely a record (22 Sep 26). The comment above says what this is
      for and says the other half out loud: a body archived WITHOUT a posting-out
-     window leaves at once, because that ✕ means "should never have been here".
+     window leaves at once, because that ✕ meant "should never have been here".
+     [ONE-DOOR] (D323, 27 Sep 26 — "Ok what u recommend"): the Quals ✕ is gone; Archive
+     on Admin → Users is "posted out from today" — it closes his stint (closeStintOnArchive),
+     so an archived man keeps his row and his months here keep their record. What
+     still leaves at once is a man archived with no stint closed (his post-in was still
+     to come — he was never here).
      The test was membership of `postOuts`, which `windowRecord` fills from
      EITHER end — so a man with only a JOINING date who was then archived came
      back anyway. It lasted a session before, because the boot reader discarded
