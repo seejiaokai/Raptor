@@ -2,9 +2,9 @@ import { DAYS } from '../engine/data'
 import { INPUTS, inpId } from '../engine/inputs'
 import { PEOPLE } from '../engine/people'
 import { keyDay } from '../engine/keys'
-import { slotVal, setSlotVal, fillSlot, armTargetExists, sentinelSeatOK } from '../engine/slots'
+import { slotVal, setSlotVal, fillSlot, lastFilled, armTargetExists, sentinelSeatOK } from '../engine/slots'
 import { popReorderedDay } from '../engine/reorder'
-import { slotBar, personCount } from '../engine/avail'
+import { slotBar, personCount, rowTwice } from '../engine/avail'
 import { validate, WARN, officialWarn, versionFaceWarn, workingWarn } from '../engine/validate'
 import { markEdit, daySnapOf, dayApproved } from '../engine/publish'
 import { curDraftId, reconcileIssuedMarks, isDraftVer } from '../engine/drafts'
@@ -1047,7 +1047,7 @@ export function placeArmed(id:any){
      slot arms (13 Aug 26) — tap the placeholder in the slot, then tap the
      same placeholder on the palette's row. */
   if(!/\.\+$/.test(key)&&slotVal(base)===id){toast(`${PEOPLE[id].cs} — already in that seat`);return false;}
-  /* THE SECOND REFUSAL, AND THE ONLY HARD ONE (D33, 22 Sep 26;
+  /* THE SECOND REFUSAL, AND THE FIRST HARD ONE (D33, 22 Sep 26;
      [OIL-SEATS-CAN-EARN] step 2). Asked BEFORE the write, not after it: a
      placeholder that plants and is then warned about has already drawn the jet
      as crewed with nobody on it, and `isSpecial` keeps it out of every
@@ -1056,15 +1056,23 @@ export function placeArmed(id:any){
      and making the scheduler re-arm the seat to try a real man would charge him
      for the app's own rule. */
   if(!sentinelSeatOK(base,id)){toast(`${PEOPLE[id].cs} — ${slotBar(id,base)}`,'warn');return false;}
+  /* THE THIRD: ONE MAN, ONCE PER ROW (owner, D271, 27 Sep 26 — engine/avail.ts rowTwice). Asked of the key AS ARMED
+     — a "+ add" is a new place, so any place he holds on that row refuses it; an armed place refuses him only if he
+     stands on the row somewhere else. Before the write, and the seat stays armed, for D33's reasons: a refusal is not a
+     placement, and the next tap on another man should still land. */
+  {const t=rowTwice(id,key); if(t){toast(`${PEOPLE[id].cs} — ${t}`,'warn');return false;}}
   /* A DARKENED NAME PLANTS TOO (owner, 13 Aug 26 — "everything plants,
-     warning after"). The tap used to refuse where a drag warned-and-allowed,
+     warning after" — narrowed by D271 above for a man already on the row). The tap used to refuse where a drag warned-and-allowed,
      so the two ways of planting the same man disagreed. The reason is on the
      list BEFORE the tap (the strike, and the printed reason line while
      armed); planting repeats it as the warn toast after the write — the same
      validate-then-ask shape as drag.ts's barDrop — and the validator rings
      the puck the same instant. */
   const warnBefore=WARN;   // the drop delta's baseline (state/dropflag.ts)
-  if(/\.\+$/.test(key))fillSlot(key,id); else setSlotVal(key,id);
+  /* the place he LANDED on — the question after the write is asked of it, not of the row's "+ add" (slots.ts
+     lastFilled; [CROWD-SWAP-SAYS-BUSY]): asked of the row, an ordinary add would read as a second copy of him */
+  let landed:any=base;
+  if(/\.\+$/.test(key)){fillSlot(key,id); landed=lastFilled()||key;} else setSlotVal(key,id);
   armDrop();
   /* a successful fill PARKS the drawer (owner, 8 Aug 26): the point of
      planting is seeing the puck land, and the open drawer covers it. */
@@ -1075,7 +1083,7 @@ export function placeArmed(id:any){
      words; slotBar's reason is the fallback, "planned" the all-clear. Same
      order as drag.ts's done(), so the two ways of planting a man agree. */
   if(flagDrop(warnBefore,keyDay(base)))return true;
-  const why=slotBar(id,base);
+  const why=slotBar(id,landed);
   if(why)toast(`${PEOPLE[id].cs} — ${why}`,'warn');
   else toast(`${PEOPLE[id].cs} planned`);
   return true;
