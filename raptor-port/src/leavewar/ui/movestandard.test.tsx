@@ -9,7 +9,7 @@
 // keeps How many, a picked range widening what it acts on.
 import { act, fireEvent, render, screen, within } from '@testing-library/react'
 import { beforeEach, describe, expect, it } from 'vitest'
-import { advanceStage, getState, initStore, lwHistInit, rawState, setCell, setCellRange, setManualCredit, setRole, setViewer } from '../state/store'
+import { advanceStage, clearCells, decideRequestById, getState, initStore, lwHistInit, rawState, setCell, setCellRange, setManualCredit, setRole, setViewer } from '../state/store'
 import { setLwOnScreen } from '../state/screen'
 import { memoryBackend } from '../state/storage'
 import { fileAbsence } from '../testkit'
@@ -293,5 +293,59 @@ describe('a member moves his own bid while bidding is open (D333)', () => {
     render(<Matrix />)
     fireEvent.click(screen.getByTestId(`cell-${P}-${date}`))
     expect(screen.queryByTestId('decide-shift')).toBeNull()
+  })
+})
+
+/* ---- THE TWO FINAL READS (Fable 5.1 and Astra, blind — docs/superpowers/briefs/2026-09-27-lw-move-standard-final-*.md) ---- */
+describe('FR4 — Decide over a picked range, from a day with no bid (Fable 4, Astra 2 — both, blind)', () => {
+  it('the range holds bids around an empty tapped day: Decide is drawn and answers every one', () => {
+    setCell(P, '2026-02-11', 'LL')
+    setCell(P, '2026-02-13', 'LL')
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId(`cell-${P}-2026-02-12`))
+    expect(screen.queryByTestId('decide-ack')).toBeNull()               // the one day: nothing to decide
+    fireEvent.click(screen.getByTestId('span-range'))
+    fireEvent.click(screen.getByTestId('span-day-2026-02-11'))
+    fireEvent.click(screen.getByTestId('span-day-2026-02-13'))
+    fireEvent.click(screen.getByTestId('decide-ack'))
+    expect([bidsAt(P, '2026-02-11')[0]?.state, bidsAt(P, '2026-02-13')[0]?.state]).toEqual(['acknowledged', 'acknowledged'])
+  })
+  it('a range holding nothing to decide (an award) draws no Decide', () => {
+    setManualCredit(P, '2026-02-21', 'FO', {})
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId(`cell-${P}-2026-02-20`))
+    fireEvent.click(screen.getByTestId('span-range'))
+    fireEvent.click(screen.getByTestId('span-day-2026-02-21'))
+    expect(screen.queryByTestId('decide-ack')).toBeNull()
+  })
+})
+
+describe('FR5 — the banner names a refused bid that stays (Astra 3)', () => {
+  it('a live morning beside a refused one: "1 entry · 1 refused bid stays"', () => {
+    setCell(P, '2026-02-11', '*LL')
+    const refused = bidsAt(P, '2026-02-11')[0]!.id
+    expect(decideRequestById(P, '2026-02-11', refused, 'refused')).toBe(true)
+    setCell(P, '2026-02-11', '*OL')
+    const live = bidsAt(P, '2026-02-11').find((r: any) => r.id !== refused)!
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId(`cell-${P}-2026-02-11`))
+    fireEvent.click(screen.getByTestId(`dl-move-${live.id}`))
+    const said = screen.getByTestId('move-banner').textContent!
+    expect(said).toContain('1 entry')
+    expect(said).toContain('1 refused bid stays')
+  })
+})
+
+describe('FR6 — what was picked up is gone (Astra 4)', () => {
+  it('the banner says so, and the next tap lands nothing and ends the move', async () => {
+    setCell(P, '2026-02-11', 'LL')
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId(`cell-${P}-2026-02-11`))
+    fireEvent.click(screen.getByTestId('decide-shift'))
+    act(() => { clearCells([{ personId: P, date: '2026-02-11' }]) })
+    expect(screen.getByTestId('move-banner').textContent).toContain('no longer there')
+    await land(`cell-${P}-2026-02-16`)
+    expect(bidsAt(P, '2026-02-16')).toHaveLength(0)
+    expect(screen.queryByTestId('move-banner')).toBeNull()
   })
 })

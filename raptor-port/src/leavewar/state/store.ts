@@ -2148,10 +2148,12 @@ export interface AbsenceDoor {
   /** delete approved leave days (`lw.removeApproved`) */
   removeApproved(items: Array<{ personId: string; date: string; iid: string }>): { done: number; skipped: number; why: string[] }
   /** slide approved leave days by `delta` (`lw.moveApproved`); null = clear, else the refusal */
-  moveApproved(items: Array<{ personId: string; date: string; iid: string }>, delta: number, tracked: boolean, check: boolean): { reason: 'occupied' | 'window' | 'nothing'; at?: string } | null
+  moveApproved(items: Array<{ personId: string; date: string; iid: string }>, delta: number, tracked: boolean, check: boolean, skip?: ReadonlySet<string>): { reason: 'occupied' | 'window' | 'nothing'; at?: string } | null
 }
 let DOOR: AbsenceDoor | null = null
 export function setAbsenceDoor(d: AbsenceDoor | null): void { DOOR = d }
+/** The door installed now — the tests wrap it (a refusal only the commit meets must roll the move back and be said). */
+export function absenceDoor(): AbsenceDoor | null { return DOOR }
 
 /** Run a war gesture as ONE command — every cell it touches, requests and
  *  approved leave alike, lands in one envelope and one undo step (design §5.2
@@ -3983,6 +3985,14 @@ function requestMovable(personId: string, date: string, r: RequestRec, list: rea
   if (!canEditRow(state.role, state.viewer, personId)) return false
   if (!isBiddable(r.code) || !canEditCell(state.period, state.role, date)) return false
   if (r.state === 'refused' && liveRequestsOn(list, portionOfCode(r.code)).length) return false
+  /* …AND BENEATH AN ABSENCE ON ITS HALF (Fable's final read, finding 2, 27 Sep 26): a refused morning stays as history
+     when a second morning bid is approved (the approval drops only its own record), so a day holds approved leave AND
+     the refused bid on the same half. Moved together, the bid landed alive where the leave landed and the door — at the
+     commit — refused the leave, silently: half a move. Asked as a LIVE bid would be (a refused one bars nothing). */
+  if (r.state === 'refused') {
+    const c: Contrib = { id: r.id, kind: 'request', code: parseCell(r.code)!.type, win: requestWin(r.code), state: 'pending' }
+    if (absencesAt(personId, date).some(a => barsWrite(c, a))) return false
+  }
   return true
 }
 /* A leave the WAR approved: the admin at a deciding stage, never on a published war (finished paperwork — owner,
@@ -4025,13 +4035,14 @@ export function movableCells(cells: { personId: string; date: string }[]): { per
 
 /** What a move leaves behind on its days, and says so (the mock-up's reading, uncorrected — D331: "in a block what can
  *  move goes; what can't stays, and the banner says what stays"). Only the things a person put there and might expect to
- *  travel: an OIL award, leave (filed on the Inputs page, or approved on a published war), a bid this role may not move.
+ *  travel: an OIL award, leave (filed on the Inputs page, or approved on a published war), a bid this role may not move,
+ *  a refused bid kept as history.
  *  A medical, a course, the schedule's own OIL and a notice are never a move's business and go unsaid. */
 export function stayingIn(
   cells: readonly { personId: string; date: string }[], movers: readonly MoveRec[],
-): Array<{ personId: string; date: string; what: 'award' | 'filed' | 'approved' | 'bid' }> {
+): Array<{ personId: string; date: string; what: 'award' | 'filed' | 'approved' | 'bid' | 'refused' }> {
   const moving = new Set(movers.map(m => `${m.personId}|${m.date}|${m.id}`))
-  const out: Array<{ personId: string; date: string; what: 'award' | 'filed' | 'approved' | 'bid' }> = []
+  const out: Array<{ personId: string; date: string; what: 'award' | 'filed' | 'approved' | 'bid' | 'refused' }> = []
   const seen = new Set<string>()
   for (const { personId, date } of cells) {
     const key = `${personId}|${date}`
@@ -4040,7 +4051,8 @@ export function stayingIn(
     for (const r of listAt(personId, date)) {
       if (moving.has(`${key}|${r.id}`)) continue
       if (r.kind === 'credit' && r.oil === 'manual') out.push({ personId, date, what: 'award' })
-      else if (r.kind === 'request' && r.state !== 'refused') out.push({ personId, date, what: 'bid' })
+      /* a refused bid staying behind is said too (Astra's final read, 3): history the move does not carry */
+      else if (r.kind === 'request') out.push({ personId, date, what: r.state === 'refused' ? 'refused' : 'bid' })
     }
     for (const a of absencesAt(personId, date)) {
       if (moving.has(`${key}|${a.id}`) || !isLeaveCode(a.code)) continue
@@ -4077,14 +4089,22 @@ export function moveRecordsProblem(recs: readonly MoveRec[], dayDelta: number): 
     if (!canEditCell(state.period, state.role, to)) return { reason: 'window', at: to }
     const landing = listAt(r.personId, to).filter(x => !moving.has(x as RequestRec))
     const c: Contrib = { id: r.rec.id, kind: 'request', code: parseCell(r.rec.code)!.type, win: requestWin(r.rec.code), state: 'pending' }
-    /* the selection's own approved leave sliding away frees its landing too */
-    const absHere = absencesAt(r.personId, to).filter(a => !abs.some(x => x.iid === a.id && x.personId === r.personId))
+    /* the selection's own approved leave sliding away frees its landing too — THAT DAY of it only (the final reads, Fable 1
+       and Astra 1, both blind, 27 Sep 26): a block moves the days of a multi-day leave that sit in it, not the whole
+       leave, and asking by id alone let a bid land on the leave's untouched day. Keyed by id AND date, as the door's
+       own `leaving` set is. */
+    const absHere = absencesAt(r.personId, to).filter(a => !abs.some(x => x.iid === a.id && x.personId === r.personId && x.date === to))
+    /* (a request landing where a moving approved leave lands can only come from the same day, in the other half — the
+       refused bid beneath leave on its own half is not movable, above; anything the preview cannot see, the door's answer
+       at the commit rolls back, `moveRecords`) */
     if ([...recContribs(landing), ...absHere].some(o => barsWrite(c, o))) return { reason: 'occupied', at: to }
     if (liveRequestsOn(landing, portionOfCode(r.rec.code)).length) return { reason: 'occupied', at: to }
   }
   if (abs.length) {
     for (const a of abs) if (!dayset.has(addDays(a.date, dayDelta))) return { reason: 'window', at: addDays(a.date, dayDelta) }
-    const p = DOOR ? DOOR.moveApproved(abs, dayDelta, biddingClosed(state.period.stage), true) : { reason: 'nothing' as const }
+    /* the moving requests still stand on their old days now — the door leaves them out (Fable 3, Astra 1) */
+    const skip = new Set(reqs.map(r => r.rec.id))
+    const p = DOOR ? DOOR.moveApproved(abs, dayDelta, biddingClosed(state.period.stage), true, skip) : { reason: 'nothing' as const }
     if (p) return p
   }
   return null
@@ -4097,7 +4117,13 @@ export function moveRecords(recs: readonly MoveRec[], dayDelta: number): MoveRes
   const problem = moveRecordsProblem(recs, dayDelta)
   if (problem) return problem
   const tracked = biddingClosed(state.period.stage)
-  gesture('lw.move', () => {
+  /* THE DOOR'S ANSWER AT THE COMMIT IS HONOURED (Fable's final read, finding 2 (b), 27 Sep 26): it used to be thrown
+     away, so a refusal only the commit met (the requests already landed) left half a move and the banner said nothing.
+     A refusal now throws inside the gesture — the command rolls the whole move back — and is returned, said like any
+     other. */
+  let refused: Exclude<MoveResult, 'moved'> | null = null
+  try {
+    gesture('lw.move', () => {
     const reqs: Array<{ personId: string; from: string; to: string; rec: RequestRec }> = []
     const abs: Array<{ personId: string; date: string; iid: string }> = []
     for (const m of recs) {
@@ -4121,9 +4147,19 @@ export function moveRecords(recs: readonly MoveRec[], dayDelta: number): MoveRes
       }
     } finally { quiet = wasQuiet }
     if (reqs.length && !quiet) persistNotify()
-    if (abs.length && DOOR) DOOR.moveApproved(abs, dayDelta, tracked, false)
-  })
-  return 'moved'
+    if (abs.length && DOOR) {
+      const d = DOOR.moveApproved(abs, dayDelta, tracked, false)
+      if (d) { refused = d; throw new MoveRefusedAtCommit(d.reason) }
+    }
+    })
+  } catch (e) { if (!(e instanceof MoveRefusedAtCommit)) throw e }
+  return refused ?? 'moved'
+}
+
+/** The throw that rolls a move back when the absence door refuses at the commit (inside a command the command catches it
+ *  and rolls back; outside one — before the war is ready — `moveRecords` catches it). */
+class MoveRefusedAtCommit extends Error {
+  constructor(reason: string) { super(`lw.move: the absence door refused at the commit — ${reason}`) }
 }
 
 /* THE CELL-SHAPED DOORS, KEPT (every caller and test that moves "these days"): a day with nothing this role may move is
@@ -4153,6 +4189,22 @@ export function moveCells(cells: { personId: string; date: string }[], dayDelta:
   if (!dayDelta || cells.length === 0) return { reason: 'nothing' }
   const recs = cellsToRecords(cells)
   return Array.isArray(recs) ? moveRecords(recs, dayDelta) : recs
+}
+
+/** WHAT A DECIDE OF THESE DAYS WOULD ANSWER — the number of days on which `setBidStates` would find something to
+ *  decide, asked without writing (the final reads, Fable 4 / Astra 2, both blind, 27 Sep 26: with a range picked from a
+ *  day holding no bid, the one-day sheet drew no Decide, though D335 widens Decide to the range). The same eligibility
+ *  `setBidStates` applies: the admin at a deciding stage; a bid (live, or the day's shown one), or a leave the war approved
+ *  that may be sent back. */
+export function decidableIn(cells: readonly { personId: string; date: string }[]): number {
+  if (!canDecide(state.period.stage, state.role)) return 0
+  let n = 0
+  for (const { personId, date } of cells) {
+    if (!warHolding(state.wars, date)) continue
+    const m = mainAt(personId, date)
+    if (liveRequestsOn(listAt(personId, date), 'full').length || m?.kind === 'request' || (m?.kind === 'absence' && warEditable(personId, date))) n++
+  }
+  return n
 }
 
 /** WHAT A DELETE OF THESE DAYS WOULD CHANGE — the number of days on which `clearCells` would take something, asked

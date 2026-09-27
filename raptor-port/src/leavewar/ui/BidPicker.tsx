@@ -17,7 +17,7 @@ import { useState } from 'react'
 import { addDays, displayCell, formatCell, LEAVE_TYPES, type BidState, type CounterName, type Portion, type PostOutcome } from '../engine'
 import { OutcomeChips, outcomeLine } from './OutcomeChips'
 import '../../ui/postout.css'
-import { awardsIn, cellProblem, clearCells, deletableIn, MAX_GIVEN_BY, movableRecords, setBidStates, setCell, setCellRange } from '../state/store'
+import { awardsIn, cellProblem, clearCells, decidableIn, deletableIn, MAX_GIVEN_BY, movableRecords, setBidStates, setCell, setCellRange } from '../state/store'
 import { DeleteChip, MoveChip } from './SheetActions'
 import { MAX_REC_NOTE } from '../engine/warrecs'
 import { RangePicker, type Range } from './RangePicker'
@@ -256,6 +256,11 @@ export function BidPicker({
      change (an award for the admin, a bid, a leave the war approved and may remove). */
   const canMoveHere = !!onMove && movableRecords(selCells()).length > 0
   const canDeleteHere = deletableIn(selCells()) > 0
+  /* DECIDE OVER A PICKED RANGE, EVEN FROM A DAY WITH NO BID (the final reads, Fable 4 / Astra 2, both blind): the row was
+     drawn from the tapped day alone, so a range holding bids around an empty tapped day offered Move and Delete but no
+     Decide — though D335 widens Decide to the range. With a range it is drawn wherever a Decide would answer something
+     (`decidableIn` — `setBidStates`'s own eligibility, the admin at a deciding stage). */
+  const canDecideHere = !!decide || (!!range && decidableIn(selCells()) > 0)
 
   /** Days this write covers — one, or the span if a range is chosen. */
   const dayCount = () => {
@@ -414,7 +419,7 @@ export function BidPicker({
           move, and changes it back — a decision that could not be undone would
           make that a one-way door. Over a picked range they answer every day of
           it (D335), as the drag-selection's Decide does. */}
-      {decide && (
+      {canDecideHere && (
         <div className="bidsheet-row">
           <span className="lab">Decide</span>
           {/* ACK, not "Pending" (owner, 21 Sep 26). It means SEEN, NOT YET
@@ -424,7 +429,7 @@ export function BidPicker({
           <button
             className="dchip ack"
             data-testid="decide-ack"
-            aria-pressed={!range && decide.state === 'acknowledged'}
+            aria-pressed={!range && decide?.state === 'acknowledged'}
             title="Acknowledged — seen, not yet decided"
             onClick={() => answer('acknowledged')}
           >
@@ -433,7 +438,7 @@ export function BidPicker({
           <button
             className="dchip approve"
             data-testid="decide-approve"
-            aria-pressed={!range && decide.state === 'approved'}
+            aria-pressed={!range && decide?.state === 'approved'}
             onClick={() => answer('approved')}
           >
             Approve
@@ -441,12 +446,12 @@ export function BidPicker({
           <button
             className="dchip refuse"
             data-testid="decide-refuse"
-            aria-pressed={!range && decide.state === 'refused'}
+            aria-pressed={!range && decide?.state === 'refused'}
             onClick={() => answer('refused')}
           >
             Refuse
           </button>
-          {decide.movedFrom && (
+          {decide?.movedFrom && (
             <span className="note" data-testid="decide-movedfrom">moved from {decide.movedFrom}</span>
           )}
         </div>

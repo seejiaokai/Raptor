@@ -21,7 +21,7 @@ import { projectPeople } from './state/raptorRoster'
 import {
   advanceStage, deletableIn, getState, initStore as lwInitStore, lwHistInit, movableCells, movableRecords, moveCells,
   moveProblem, moveRecords, moveRecordsProblem, rawState, setBidStates, setCell, setManualCredit, setPeople, setRole,
-  setViewer, stayingIn, decideRequestById,
+  setViewer, stayingIn, decideRequestById, absenceDoor, setAbsenceDoor, decidableIn,
 } from './state/store'
 import { memoryBackend } from './state/storage'
 import { wireLeaveWarSync } from './sync'
@@ -242,5 +242,108 @@ describe('what a Delete would take — so the sheets offer Delete only where it 
     setRole('member'); setViewer('ammo')
     expect(deletableIn(one('ammo', '2026-02-11'))).toBe(0)      // a member's Delete never takes an award
     expect(deletableIn(one('ammo', '2026-02-12'))).toBe(1)      // his own bid
+  })
+})
+
+/* ---- THE TWO FINAL READS (Fable 5.1 and Astra, blind — docs/superpowers/briefs/2026-09-27-lw-move-standard-final-*.md) ---- */
+const absId = (p: string, d: string) => (getState().wars[0]?.views[p]?.[d]?.all ?? []).filter((c: any) => c.kind === 'absence').map((c: any) => c.id)
+const warId = () => getState().currentId
+
+describe('FR1 — a block cutting a multi-day approved leave (Fable 1, Astra 1 — both, blind)', () => {
+  it('a bid may not land on the leave’s day that is NOT moving — refused whole, nothing written', () => {
+    expect(file('ammo', 'LL', 'Feb 11', { endDate: 'Feb 12', lw: warId() })).toBe(true)
+    const a11 = absId('ammo', '2026-02-11'), a12 = absId('ammo', '2026-02-12')
+    expect(a11).toHaveLength(1)
+    expect(a12).toEqual(a11)                                    // ONE Input, two days — the premise
+    expect(setCell('ammo', '2026-02-10', 'LL')).toBe(true)
+    const cells = [...one('ammo', '2026-02-10'), ...one('ammo', '2026-02-11')]
+    expect(moveProblem(cells, 2)).toEqual({ reason: 'occupied', at: '2026-02-12' })
+    expect(moveCells(cells, 2)).toEqual({ reason: 'occupied', at: '2026-02-12' })
+    expect(bidsAt('ammo', '2026-02-10')).toHaveLength(1)
+    expect(absId('ammo', '2026-02-11')).toEqual(a11)
+    expect(absId('ammo', '2026-02-12')).toEqual(a11)
+  })
+})
+
+describe('FR2 — approved leave landing where a moving bid is leaving (Fable 3, Astra 1 — both, blind)', () => {
+  it('fits: the leave slides onto the day the bid vacates, the bid on — ONE Undo takes both back', () => {
+    expect(file('ammo', 'LL', 'Feb 10', { allday: false, half: 'am', s: 0, e: 720, lw: warId() })).toBe(true)
+    expect(setCell('ammo', '2026-02-11', '*LL')).toBe(true)
+    const cells = [...one('ammo', '2026-02-10'), ...one('ammo', '2026-02-11')]
+    expect(movableRecords(cells).map(m => m.kind).sort()).toEqual(['absence', 'request'])
+    expect(moveProblem(cells, 1)).toBeNull()
+    expect(moveCells(cells, 1)).toBe('moved')
+    expect(absId('ammo', '2026-02-11')).toHaveLength(1)
+    expect(absId('ammo', '2026-02-10')).toHaveLength(0)
+    expect(bidsAt('ammo', '2026-02-12').map((r: any) => r.code)).toEqual(['*LL'])
+    expect(globalUndo().ok).toBe(true)
+    expect(absId('ammo', '2026-02-10')).toHaveLength(1)
+    expect(bidsAt('ammo', '2026-02-11').map((r: any) => r.code)).toEqual(['*LL'])
+  })
+})
+
+describe('FR3 — a refused bid beneath approved leave on its half (Fable 2)', () => {
+  const setup = () => {
+    expect(setCell('ammo', '2026-02-10', '*LL')).toBe(true)
+    const refused = bidsAt('ammo', '2026-02-10')[0]!.id
+    expect(decideRequestById('ammo', '2026-02-10', refused, 'refused')).toBe(true)
+    expect(setCell('ammo', '2026-02-10', '*LL')).toBe(true)
+    setBidStates(one('ammo', '2026-02-10'), 'approved')         // the live one — the refused stays as history
+    expect(lwRows('ammo')).toHaveLength(1)
+    expect(bidsAt('ammo', '2026-02-10').map((r: any) => r.id)).toEqual([refused])
+    return refused
+  }
+  it('is history and stays — only the leave moves; the landing day holds no bid', () => {
+    const refused = setup()
+    expect(movableRecords(one('ammo', '2026-02-10')).map(m => m.kind)).toEqual(['absence'])
+    expect(moveCells(one('ammo', '2026-02-10'), 2)).toBe('moved')
+    expect(lwRows('ammo').map((r: any) => r.date)).toEqual(['Feb 12'])
+    expect(bidsAt('ammo', '2026-02-12')).toHaveLength(0)
+    expect(bidsAt('ammo', '2026-02-10').map((r: any) => r.id)).toEqual([refused])
+  })
+  it('the banner names the refused bid that stays (Astra 3)', () => {
+    setup()
+    const cells = one('ammo', '2026-02-10')
+    expect(stayingIn(cells, movableRecords(cells)).map(s => s.what)).toEqual(['refused'])
+  })
+})
+
+describe('FR3b — the door’s answer at the commit is never thrown away (Fable 2 (b))', () => {
+  it('a refusal the preview did not foresee rolls the whole move back and is said', () => {
+    expect(file('ammo', 'LL', 'Feb 10', { lw: warId() })).toBe(true)
+    expect(setCell('ammo', '2026-02-13', 'LL')).toBe(true)
+    const real = absenceDoor()!
+    setAbsenceDoor({ ...real, moveApproved: (items, delta, tracked, check, skip) => (check ? real.moveApproved(items, delta, tracked, true, skip) : { reason: 'occupied', at: '2026-02-12' }) })
+    try {
+      const cells = [...one('ammo', '2026-02-10'), ...one('ammo', '2026-02-13')]
+      expect(moveCells(cells, 2)).toEqual({ reason: 'occupied', at: '2026-02-12' })
+      expect(bidsAt('ammo', '2026-02-13')).toHaveLength(1)      // the bid did NOT move — rolled back whole
+      expect(bidsAt('ammo', '2026-02-15')).toHaveLength(0)
+      expect(lwRows('ammo').map((r: any) => r.date)).toEqual(['Feb 10'])
+    } finally { setAbsenceDoor(real) }
+  })
+})
+
+describe('FR3 (S32) — the refused bid beside a live one is named as staying (Astra 3)', () => {
+  it('"1 refused bid stays"', () => {
+    setCell('ammo', '2026-02-10', '*LL')
+    advanceStage()
+    const refused = bidsAt('ammo', '2026-02-10')[0]!.id
+    decideRequestById('ammo', '2026-02-10', refused, 'refused')
+    setCell('ammo', '2026-02-10', '*OL')
+    const cells = one('ammo', '2026-02-10')
+    expect(stayingIn(cells, movableRecords(cells)).map(s => s.what)).toEqual(['refused'])
+  })
+})
+
+describe('FR4 — what a Decide over these days would answer (Fable 4, Astra 2 — both, blind)', () => {
+  it('counts the days holding something to decide', () => {
+    setCell('ammo', '2026-02-11', 'LL')
+    setManualCredit('ammo', '2026-02-12', 'FO', {})
+    expect(decidableIn(one('ammo', '2026-02-11'))).toBe(1)
+    expect(decidableIn(one('ammo', '2026-02-12'))).toBe(0)      // an award is nobody's to decide
+    expect(decidableIn(one('ammo', '2026-02-13'))).toBe(0)
+    setRole('member'); setViewer('ammo')
+    expect(decidableIn(one('ammo', '2026-02-11'))).toBe(0)      // a member never decides
   })
 })
