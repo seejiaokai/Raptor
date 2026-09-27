@@ -38,7 +38,7 @@ async function snap(page, name, target, opts = {}) {
   else await page.screenshot({ path: f, ...opts })
   done.push(name); console.log('ok', name)
 }
-async function step(name, fn) { try { await fn() } catch (e) { console.log('FAILED', name, String(e.message || e).slice(0, 300)) } }
+async function step(name, fn) { if (process.env.ONLY && !name.startsWith(process.env.ONLY)) return; try { await fn() } catch (e) { console.log('FAILED', name, String(e.message || e).slice(0, 300)) } }
 const hideToast = page => page.evaluate(() => { const t = document.getElementById('toastEl'); if (t) t.style.opacity = '0' })
 
 /* the new pieces' look — the app's own tokens (scheduler.css :root), nothing new in colour */
@@ -317,6 +317,70 @@ await step('6 quals', async () => {
   await page.addStyleTag({ content: '#qtbl [data-arch]{display:none !important} #qArchive{display:none !important}' })
   await page.waitForTimeout(200)
   await snap(page, 'desktop-6b-quals-after', '.qwrap')
+})
+
+/* ---------- 7 · His question: the months a man was away (asked 27 Sep 26 — "How would 1 look like?") ----------
+   Hex posted out 15 Jun (overseas), back 1 Sep. A: the war keeps each stint — before June as it was, Jun–Aug away,
+   from 1 Sep counted (drawn: the REAL posted-out row, its days from 1 Sep drawn back in). B: one window only — the REAL
+   post-in on 1 Sep, which makes every day before it read "not here", his April leave included. Three month strips each
+   (April, July, October), only his flight's rows shown. ONLY=7 runs just this. */
+async function awayWorld(page) {
+  await go(page, 'leavewar'); await page.waitForTimeout(1200)
+  /* his leave in April and in October — war records, through the war's own write (the localhost bridge) */
+  await page.evaluate(() => {
+    for (const d of ['2026-04-06', '2026-04-07', '2026-04-08', '2026-04-09', '2026-04-10', '2026-10-12', '2026-10-13', '2026-10-14', '2026-10-15', '2026-10-16'])
+      window.lwSetCell('rocky', d, 'LL')
+  })
+  await page.waitForTimeout(300)
+  /* the FIGURES drawer folded, so the names sit beside the days */
+  const f = page.locator('[data-testid="figures-toggle"]').first()
+  if (await f.count() && /▾/.test(await f.textContent())) { await f.click(); await page.waitForTimeout(400) }
+}
+const KEEP = ['row-sufa', 'row-rocky', 'row-xray']   // Grit, Hex, Ryder
+async function strip(page, mon, name, drawBack) {
+  await page.locator(`[data-testid="month-${mon}"]`).click(); await page.waitForTimeout(900)
+  await page.evaluate(({ KEEP, drawBack }) => {
+    /* only three rows of his flight, so his row reads at a glance (drawn: the others hidden) */
+    for (const tr of document.querySelectorAll('.mx tbody tr')) {
+      const id = tr.getAttribute('data-testid') || ''
+      if ((id.startsWith('row-') && !KEEP.includes(id)) || id.startsWith('count-')) tr.style.display = 'none'
+    }
+    const r = document.querySelector('[data-testid="row-rocky"]')
+    r.style.outline = '2px solid #3cc6e6'; r.style.outlineOffset = '-2px'
+    if (drawBack) for (const td of r.querySelectorAll('td[data-testid^="cell-rocky-"]')) {
+      const d = td.getAttribute('data-testid').slice('cell-rocky-'.length)
+      if (d < '2026-09-01' || !td.classList.contains('gone')) continue
+      td.classList.remove('gone', 'outlv')
+      const c = td.querySelector('.c'); if (c && c.textContent === 'PO') c.textContent = ''
+      for (const t of td.querySelectorAll('.potag')) t.remove()
+    }
+    window.scrollTo(0, 0)
+  }, { KEEP, drawBack })
+  await page.waitForTimeout(300)
+  const box = await page.evaluate(() => {
+    const o = document.querySelector('.mx-outer').getBoundingClientRect()
+    const hs = [...document.querySelectorAll('.mxhead')].map(e => e.getBoundingClientRect()).filter(r => r.height)
+    const top = Math.min(o.y, ...hs.map(r => r.y))
+    const last = document.querySelector('[data-testid="row-xray"]').getBoundingClientRect()
+    return { x: o.x, y: top, w: o.width, h: last.y + last.height - top + 6 }
+  })
+  await snap(page, name, null, { clip: { x: box.x, y: box.y, width: Math.min(760, box.w), height: box.h } })
+}
+await step('7a away several', async () => {
+  const page = await open(1600, 900); await signIn(page, 'ad', 'a'); await awayWorld(page)
+  /* the REAL posting out, 15 Jun */
+  await page.evaluate(() => window.lwSetPostOut('rocky', '2026-06-15')); await page.waitForTimeout(600)
+  for (const [m, n] of [['APR', 'a-apr'], ['JUL', 'a-jul'], ['OCT', 'a-oct']]) await strip(page, m, `desktop-7${n}`, true)
+})
+await step('7b away one window', async () => {
+  const page = await open(1600, 900); await signIn(page, 'ad', 'a'); await awayWorld(page)
+  /* the REAL post-in on 1 Sep, from his day's sheet */
+  await page.locator('[data-testid="month-SEP"]').click(); await page.waitForTimeout(900)
+  await page.locator('[data-testid="cell-rocky-2026-09-01"]').click(); await page.waitForTimeout(400)
+  await page.locator('[data-testid="bid-postin"]').click(); await page.waitForTimeout(300)
+  await page.fill('[data-testid="pi-date"]', '2026-09-01'); await page.locator('[data-testid="pi-confirm"]').click(); await page.waitForTimeout(600)
+  await page.keyboard.press('Escape').catch(() => {}); await page.waitForTimeout(300)
+  for (const [m, n] of [['APR', 'b-apr'], ['JUL', 'b-jul'], ['OCT', 'b-oct']]) await strip(page, m, `desktop-7${n}`, false)
 })
 
 console.log(`\n${done.length} pictures: ${done.join(', ')}`)
