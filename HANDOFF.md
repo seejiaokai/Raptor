@@ -29,7 +29,9 @@ the later merge keeps both (D78).
   `stayingIn` / `deletableIn` / `decidableIn`), both sheets in order A with one Move and one Delete (`ui/SheetActions.tsx`),
   the day's list's Move into the move mode by record id (`moveSel.only`), a picked range widening Decide / Move / Delete;
   `sync.ts doorMoveApproved` gained `skip` (agreed with the `[ONE-DOOR]` chat).
-- **Next:** his look (the card, §10) → "merge live" (the later of this and `[ONE-DOOR]` takes `main` in first) → archive
+- **Next:** his look (the card, §10) → **his D324: PR #448 (the `OUTSTANDING.md` tidy, docs only) merges BEFORE this one — so
+  once it has merged, merge `main` into this branch (no archive conflict expected: this branch archived nothing) and let the
+  checks go green** → "merge live" (the later of this and `[ONE-DOOR]` takes `main` in first) → archive
   `[LW-MOVE-STANDARD]` and `[LW-MOVE-BENEATH]`. Filed from it: `[LW-SPARE-MOVE-DOORS]` (low).
 - **Parallel (D302):** `[ONE-DOOR]` on `claude/one-door` (main checkout, preview 4178, E2E 4196) — exact shared lines
   exchanged, no overlap: it takes `store.ts` setPostIn / postingProblem / windowRecord / windowFor / readPostOuts /
