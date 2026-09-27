@@ -280,7 +280,7 @@ whole story, one picture per step.)
 12. **When you delete a man, each future bid and OIL award the delete takes off the Leave War is its own line** in the
     changes window ("Leave War · Ranger · LL 2 Feb: bid removed", "… OIL award taken away"), as each of his future inputs
     already is. The two reviewers differed: one wanted only his single "deleted" line. Keep the full list, or just the
-    one line?
+    one line? **— ANSWERED 28 Sep 26: "12 A" — keep the full list, as built (D337; the mock-up `q12/q12-mockup.png`).**
 
 **Said plainly — a lapse in the order you set (D336 (2)):** the first two pieces of the build (the history's storage and
 each person's "seen") were written while Fable and Astra were still reading the plan, instead of after. Neither review

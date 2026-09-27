@@ -3189,7 +3189,8 @@ history, which the one changes window reads (`ui-contracts.md` §The one changes
   the INPUT's command) is a line of its own, "Leave War · Ranger · LL 2 Feb: bid taken away — an input covers it"
   (P10) — and the same reader (`crossLines`) says a bid or an OIL award a person's DELETE (or archive) took away plainly,
   "bid removed" / "OIL award taken away", "an input covers it" only when an input in that command does (Astra's final
-  read, 01); an APPROVED leave changed on the war is one line of what happened, read by the DAYS each man's approvals of
+  read, 01) — a delete lists everything it took away, one line each, his "deleted" line with them (the owner's D337,
+  "12 A", 28 Sep 26); an APPROVED leave changed on the war is one line of what happened, read by the DAYS each man's approvals of
   a type covered before and after the command — days gone and new: "moved on the Leave War · 3 Feb → 9 Feb" (shown on
   both days, never between); gone only: "approval taken back — refused / acknowledged / back to a bid" or "approved leave
   deleted on the Leave War"; new only: "approved on the Leave War" — so one day cut out of several (the war SPLITS the

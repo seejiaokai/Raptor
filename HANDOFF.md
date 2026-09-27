@@ -19,7 +19,7 @@ the later merge keeps both (D78).
 ### `claude/draft-pending` — `[DRAFT-PENDING]`, the one changes window: BUILT and FULL-checked — READY FOR HIS LOOK and "merge live" (the PR from `claude/draft-pending`) — written 28 Sep 26 — verify before use
 - **Where it started:** `main` at PR #450's merge (`[ONE-DOOR]`, merged 28 Sep 26 on D336 (1), live on Vercel). Overnight by
   D336 (2): planned (Opus 5.5) → Fable and Astra red team, one round → built red first → walked → FULL check. Rulings range
-  for this chat: D337–D349 (none used — no new ruling from him). **Never merge without his word** (D336's permission was
+  for this chat: D337–D349 (D337 used — his look-card answer "12 A"). **Never merge without his word** (D336's permission was
   PR #450's alone).
 - **Built:** the change history durable and week-safe (`engine/editlog.ts` — D336 (b) on YES), each person's "new to you"
   (`state/changes.ts`), ONE writer for every absence / Leave War / Quals / posting / publish / undo / sign-off line
