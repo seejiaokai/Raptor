@@ -2163,7 +2163,10 @@ persisted and never in a history snapshot. The toggle builder is `notePubTog`
   slot stays armed. The same sentence is the drag caption and the crew list's struck line, so it is said
   BEFORE the drop too. One body, `avail.ts rowTwice`, preflighted at every door with `fillSlot` as the belt
   (D33's shape). Still allowed: a swap inside one crowd, a move to the end of his own crowd, and a man on two
-  DIFFERENT rows (warned, as before).
+  DIFFERENT rows (warned, as before). **His answers of 27 Sep 26 (the look card):** one man in both seats of ONE jet
+  stays a warning — a flying line is not one of these rows (D276, "Leave it no change"); a placeholder may stand on a
+  row twice (D278, "Leave"); a struck name looks the same whether a tap will be refused or only warned — the printed
+  reason says which (D279, "Leave").
   **AND, SINCE D33/D47 (22 Sep 26), A SECOND AND HARDER ONE: ALL / ALL AVAIL
   ARE REFUSED ON FLYING-LINE COCKPIT SEATS.** `sentinelSeatOK(key,id)`
   (`engine/slots.ts`) is the one body; `SENTINEL_JET_BAR` is the one sentence,
@@ -3247,7 +3250,8 @@ yes", "question 2 yes").** The signed-in man's puck keeps its purple FILL always
 only while it has nothing else to say (`.puck.me:not(.warn):not(.boxred):not(.boxdash):not(.boxdot):not(.oilglow)`).
 Flagged — amber, thin red, grey, a solid or dashed red box, the dotted "causes tomorrow's breach" ring (alone, nothing
 purple behind it) — or earning in OIL Earn mode (the green OIL ring, full or half), it wears exactly the ring another
-man's puck wears there, through the same rules. Until D270 the purple ring sat on every "you" puck with `!important`,
+man's puck wears there, through the same rules. Earning NOTHING in OIL Earn mode (`oildim`), it keeps the purple ring,
+faded with the puck — the fade says "nothing", the purple "you" (his "Keep", D277). Until D270 the purple ring sat on every "you" puck with `!important`,
 hid the severity rings and buried the OIL ring, and `.puck.me.boxred` / `.boxdash` / `.boxdot` / `.warn` existed only to
 fight it — they are gone. Two glows are NOT flags and stay: the purple "this is you" glow on his UNFLAGGED puck and the
 clicked-warning focus (`.puck.wfoc`, a transient answer to a tap). Pinned by `src/ui/flagglow-css.test.ts`, which walks

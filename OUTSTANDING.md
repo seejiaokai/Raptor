@@ -80,7 +80,7 @@ fully — being built on `claude/tracker-palette`), [TRK-FLEXBAR-INK] (a questio
 The amendment area — PR #434, #435, #437 and #438 MERGED (25–26 Sep 26); [LOOK-435]'s steps 2–4 are items 1 above; left: [REQ-ORPHAN-ROW] and [REQ-DOOR-WORDS] (both low). Left from the amendment batch (D91–D111, merged): [AVAILWIN-PREVIEW-BAR] (low), [AMEND-SMALL-SEEN] (any time). The docs and the checks — [DEPLOY-DOCS] (its operational half), [DOC-POINTERS-CODE] and
 [RULINGS-LF-PIN] (with the next code change), [DOC-SUBHEADS], [RULING-HOMES-AUDIT], [HANDOFF-SHAPE-GUARD] and [BACKLOG-TIDY] (any time, docs only), [PEEK-ISSUED] (a question for him, low),
 Roles — [QUALS-MEMBER-SCOPE] (folded into [ACCOUNTS], D200), and beside it [QUALS-PROTO-TOAST] (low, one line of words).
-The five-flags batch (built on `claude/five-flags-batch-build-ef7d85`, 26 Sep 26; FULL-checked and its PR from `claude/five-flags-batch-continue-2cfa70`, 27 Sep 26 — its five items archived) — his answers D270–D275 BUILT and FULL-checked on that branch, 27 Sep 26 (their three items archived); his look card's four new questions [D271-LOOK-ASKS] (his answer; low);
+The five-flags batch (built on `claude/five-flags-batch-build-ef7d85`, 26 Sep 26; FULL-checked and its PR from `claude/five-flags-batch-continue-2cfa70`, 27 Sep 26 — its five items archived) — his answers D270–D275 BUILT and FULL-checked on that branch, 27 Sep 26 (their three items archived); his look card's four questions answered 27 Sep 26 (D276–D279, nothing to build);
 [ARROW-GUTTER-STRIP] (its strip moot by D275; one small leftover, low); low: [GHOST-FLAG-SHADOW], [LW-SETTINGS-SMALL],
 [ALLAVAIL-OPEN-ROW] (investigate first).
 Insights — [INSIGHTS-WORKING-COPY] (a question for him, with the one changes window or any time).
@@ -1318,27 +1318,6 @@ created", and it removes the OTHER day's row (`html.ts accCtl`); a label such as
 Unavailable → deleted" — Fable's D176 read F2; the name must come from the edit log's own "Input removed — …" line
 (`removeInput` writes it) or a frozen name. D175's own sentence is in every door. **Place:** low, with the one changes
 window (`[DRAFT-PENDING]`) or any time.
-
-### [D271-LOOK-ASKS] Four small questions the D270–D275 build raised — for his look card (filed 27 Sep 26)
-From Fable's scenario read of the build (`raptor-port/docs/superpowers/specs/2026-09-27-five-flags-builds-scenarios-fable.md`
-§6 Q-A–Q-C and its look-card observation), put to him on the look card (`raptor-port/docs/handpass/2026-09-27-five-flags-answers.md`
-§9); nothing is built for any of them.
-1. **A jet line's two seats** — one man put in FCP AND RCP of the same jet is only WARNED (the red "two events at once"),
-   because a flying line is not one of the rows D271 names (crowds, extras, sim seats). Refuse it too? *Agent's
-   recommendation: yes — it can never be right, and a move between the two seats is still a move.* If yes: a flying
-   branch in `avail.ts rowTwice` (the other seat of the same aircraft), the doors already ask it.
-2. **His own puck NOT earning in OIL Earn mode** keeps the faded purple ring and glow, where another man's non-earning
-   puck is just faded (D272 spoke of the green ring). Keep, or show it faded only? *Recommendation: keep — the fade
-   already says "earns nothing", the purple still says "you".*
-3. **A placeholder twice on one row** (ALL / ALL AVAIL dropped twice) is allowed, silently (not a man — D33 keeps a
-   placeholder silent). *Recommendation: leave it.*
-4. **A struck name in the crew list looks the same** whether a tap on it will be REFUSED (already on this row) or only
-   warned after planting; only the printed reason differs ("· not added twice"). Want the refusing strike to look
-   different? *Recommendation: leave it — the words say it.* Also noted, no question: dragging a man over a row's NAME
-   cell shows no caption, though a drop there is refused with the reason (the caption speaks over the people cell).
-   And (Fable's read, F-6): with a man SELECTED, the green "where can he go" rings show none on his own crowd's "+ add"
-   (he is already there), though dragging his own puck there moves him to its end — the rings answer "add", the drop "move".
-**Place:** his answers, with his look at PR #445; low.
 
 ### [LW-HARNESS-VIEWER-PIN] In the Leave War browser tests, switching the role quietly undoes the pinned viewer (filed 27 Sep 26)
 Found by the `[LW-MOVE-CI-RED]` investigation, confirmed in the running bundle: the test bridge's `raptorRole()` →

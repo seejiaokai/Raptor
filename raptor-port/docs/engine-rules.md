@@ -1200,7 +1200,8 @@ drop on a place or a "+ add" cell, a move from another row, BOTH ends of a swap)
 place, an armed "+ add"; the slot stays armed) — with `fillSlot` returning `false` as the belt behind them (never
 `setSlotVal`: a swap inside one crowd is two writes). It NARROWS "everything plants, warning after" (13 Aug 26) for this one
 case. Left as they were (his readings): a man on two DIFFERENT rows is only warned; a swap of two men inside one crowd is
-no second copy; a placeholder (ALL, ALL AVAIL) is not a man and is not held to it. Pins: `engine/crowdself.test.ts`,
+no second copy; a placeholder (ALL, ALL AVAIL) is not a man and is not held to it (confirmed, D278); and one man in FCP
+and RCP of one jet stays the red "two events at once" warning — a flying line is not one of these rows (D276, 27 Sep 26). Pins: `engine/crowdself.test.ts`,
 `ui/rowtwice-refusal.test.tsx` (every door, a break test each). **And the SC shift-window scan reads the seat he is dragged from too** (W3): a MAIN man dragged to
 another MAIN seat of the same shift was captioned "inside this shift" about the shift he was leaving.
 

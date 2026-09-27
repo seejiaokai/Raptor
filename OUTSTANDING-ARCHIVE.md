@@ -1814,3 +1814,29 @@ passed FIRST time, 169 passed, none flaky — one clean run; before the fix a ru
 more clean run before archiving. Filed beside it: `[LW-HARNESS-VIEWER-PIN]`, `[CI-FAIL-PICTURES]`.
 **Second run** (36267529028, b69767fd): green again, the three first time, 169 passed — **DONE 27 Sep 26**, archived.
 
+
+*Moved here 2026-09-27 by backlog-archive.mjs ([D271-LOOK-ASKS]). Forward facts: `raptor-port/docs/ui-contracts.md`, `.claude/rules/decisions/scheduler.md`.*
+
+### [D271-LOOK-ASKS] Four small questions the D270–D275 build raised — for his look card (filed 27 Sep 26)
+From Fable's scenario read of the build (`raptor-port/docs/superpowers/specs/2026-09-27-five-flags-builds-scenarios-fable.md`
+§6 Q-A–Q-C and its look-card observation), put to him on the look card (`raptor-port/docs/handpass/2026-09-27-five-flags-answers.md`
+§9); nothing is built for any of them.
+1. **A jet line's two seats** — one man put in FCP AND RCP of the same jet is only WARNED (the red "two events at once"),
+   because a flying line is not one of the rows D271 names (crowds, extras, sim seats). Refuse it too? *Agent's
+   recommendation: yes — it can never be right, and a move between the two seats is still a move.* If yes: a flying
+   branch in `avail.ts rowTwice` (the other seat of the same aircraft), the doors already ask it.
+2. **His own puck NOT earning in OIL Earn mode** keeps the faded purple ring and glow, where another man's non-earning
+   puck is just faded (D272 spoke of the green ring). Keep, or show it faded only? *Recommendation: keep — the fade
+   already says "earns nothing", the purple still says "you".*
+3. **A placeholder twice on one row** (ALL / ALL AVAIL dropped twice) is allowed, silently (not a man — D33 keeps a
+   placeholder silent). *Recommendation: leave it.*
+4. **A struck name in the crew list looks the same** whether a tap on it will be REFUSED (already on this row) or only
+   warned after planting; only the printed reason differs ("· not added twice"). Want the refusing strike to look
+   different? *Recommendation: leave it — the words say it.* Also noted, no question: dragging a man over a row's NAME
+   cell shows no caption, though a drop there is refused with the reason (the caption speaks over the people cell).
+   And (Fable's read, F-6): with a man SELECTED, the green "where can he go" rings show none on his own crowd's "+ add"
+   (he is already there), though dragging his own puck there moves him to its end — the rings answer "add", the drop "move".
+**Place:** his answers, with his look at PR #445; low.
+**ANSWERED 27 Sep 26** — 1 "Leave it no change" (D276), 2 "Keep" (D277), 3 "Leave" (D278), 4 "Leave" (D279): nothing to
+build; each carried in `raptor-port/docs/ui-contracts.md` and the rulings (`.claude/rules/decisions/scheduler.md`).
+

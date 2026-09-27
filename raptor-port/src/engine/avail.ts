@@ -329,7 +329,9 @@ export function sansGate(id:any,dt:any,domain:any,s:any,e:any):any{
    two DIFFERENT rows is still only warned (the busy check); a swap of two men inside one crowd moves nobody onto a
    second place and still works (D274 item 3); a man from the crew list dropped onto ANOTHER man's place in a crowd he
    is already in — which would replace that man and leave him there twice — is refused the same way. A placeholder
-   (ALL, ALL AVAIL) is not a man and is left out (it is silent on every row it may stand on, D33). A crowd's or a sim
+   (ALL, ALL AVAIL) is not a man and is left out (it is silent on every row it may stand on, D33) — his "Leave", D278. A
+   flying line's two seats are not one of these rows (`rowPlaces` lists none for a flying key): one man in FCP and RCP of
+   one jet stays the red "two events at once" warning, his "Leave it no change", D276. A crowd's or a sim
    box's own bare key (`a:0.2`, `s:2.oft.0`) names the ROW, not a place, and no door asks with one; older callers and
    tests reading it as "this row" are left to the busy check, as before. */
 export function rowTwice(id:any,key:any,fromKey?:any):string{

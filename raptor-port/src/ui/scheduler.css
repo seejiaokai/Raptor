@@ -1377,8 +1377,9 @@ body:not(.tdrag) .page.editing .acrow .seat[data-slot]:hover .puck{outline:2px s
    with !important on every "you" puck: it hid the three severity rings (only the letter chip showed the flag), drew its
    glow round the dotted ring, and buried the OIL ring (the five-flags walk, 26 Sep 26, `w1/D1-*`, `w1/F9-*`); the
    `.puck.me.boxred` / `.boxdash` / `.boxdot` / `.warn` rules D164 needed to fight it went with it — a flagged puck
-   never glows (D164) because no flag ring here draws a glow. Pinned by flagglow-css.test.ts, which resolves the winning
-   ring for his puck and for another man's, flag by flag, and requires them equal. */
+   never glows (D164) because no flag ring here draws a glow. Earning NOTHING in OIL Earn mode (`.oildim`, not in the
+   list) his puck keeps this ring, faded with it — his "Keep", D277. Pinned by flagglow-css.test.ts, which resolves the
+   winning ring for his puck and for another man's, flag by flag, and requires them equal. */
 .puck.me:not(.warn):not(.boxred):not(.boxdash):not(.boxdot):not(.oilglow){box-shadow:0 0 0 2px #F0B6FF,0 0 12px 1px rgba(155,47,174,.7)!important}
 .puck.me .nm{color:#fff;font-weight:700}
 .puck.hl{box-shadow:0 0 0 2px var(--accent),0 0 10px -1px rgba(59,198,232,.7);border-color:var(--accent)}

@@ -201,7 +201,8 @@ save. Nothing else in the app changed after the first walk.
   hand-over instead would block a legitimate correction of whose request it is.
 - A placeholder (ALL / ALL AVAIL) is not held to "once per row" (see Q3).
 
-**Your questions — nothing is built for any of them** (`OUTSTANDING.md` `[D271-LOOK-ASKS]`):
+**Your questions — nothing is built for any of them** (`[D271-LOOK-ASKS]`). **ANSWERED 27 Sep 26: Q1 "Leave it no
+change" (D276 — against the recommendation), Q2 "Keep" (D277), Q3 "Leave" (D278), Q4 "Leave" (D279).**
 - **Q1 — A jet line's two seats.** One man in FCP AND RCP of the same jet is only warned (red, "two events at once").
   Refuse it too? (Recommended: yes — it can never be right.)
 - **Q2 — Your puck in OIL Earn mode when you earn nothing** keeps its faded purple ring; other men's are just faded.
