@@ -9,11 +9,12 @@ import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest'
 import { act } from 'react'
 import { createRoot, type Root } from 'react-dom/client'
 import { App } from './App'
-import { initStore, notify, resetSession } from '../state/store'
+import { initStore, notify, resetSession, switchRoleView } from '../state/store'
 import { storeBackend } from '../engine/hooks'
 import { PEOPLE, indexCallsigns } from '../engine/people'
 import { accountsLoad, signIn, sessionFor, markBackSeen } from '../state/accounts'
 import { SESSION } from '../state/auth'
+import { persistPeople } from '../state/people-settings-commit'
 import { CURPAGE } from '../state/view'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
@@ -76,6 +77,21 @@ describe('D305 — the man\'s own welcome back', () => {
     expect($('#welcomeBack')).toBeFalsy()
     markBackSeen()
     expect(P('rocky').back).toBe(true)
+  })
+
+  it('the walk design (Fable R44): an admin switched to the member view (D292) still sees his OWN note, and only his', async () => {
+    await signInAs('ad', 'a')
+    /* both notes set through the roster's own write path (an admin's edit) — a flag set behind its back reads, to the
+       next command, as a change of that command's own, and a member's command may change only his own row */
+    P('stiff').back = true; P('rocky').back = true
+    persistPeople()
+    await act(async () => { switchRoleView(); notify() })
+    expect(SESSION.role, 'in the member view').not.toBe('admin')
+    expect($('#welcomeBack').textContent).toContain('Welcome back, Saber')
+    await click($('#welcomeLater'))
+    expect(P('stiff').back).toBeFalsy()
+    expect(P('rocky').back, 'another man\'s note untouched').toBe(true)
+    await act(async () => { switchRoleView(); notify() })
   })
 })
 
