@@ -49,9 +49,9 @@ list (13–23 Sep 26), its finished entries and the "In plain terms" block are i
 whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaining).
 
 **His order — to the database step, about two months away (D203, 26 Sep 26; D173, D147 within it):**
-1. **Now — [DRAFT-PENDING]** — the one changes window, on top of accounts, its own FULL check (D210), started
-   28 Sep 26 on `claude/draft-pending` overnight by his standing go (D336 (2) — up to his look, never merged without
-   his word). Before it: **[ONE-DOOR]** (D309, D310, carrying [POST-IN-DATE], D308) MERGED 28 Sep 26 (PR #450;
+1. **Now — [DRAFT-PENDING]** — the one changes window, on top of accounts, its own FULL check (D210): BUILT and
+   FULL-checked 28 Sep 26 on `claude/draft-pending` overnight by his standing go (D336 (2)) — **waiting for his look (the
+   look card, the evidence sheet's §10) and his "merge live"**; never merged without his word. Before it: **[ONE-DOOR]** (D309, D310, carrying [POST-IN-DATE], D308) MERGED 28 Sep 26 (PR #450;
    archived); `[POST-OUT-OUTCOMES]` (PR #446), `[ACCOUNTS-NEW-PERSON]` (PR #443), `[ACCOUNTS]` (PR #442) and
    **[LW-MOVE-STANDARD]** (D264–D266, PR #447) MERGED 27 Sep 26. `[POST-OUT-TRACKER]` on his answer.
 2. **Now, beside the building — [IT-QUESTIONS]:** talk to the IT side (his, not code); their approvals take weeks.
@@ -1058,8 +1058,10 @@ his answer. Touches `raptor-port/src/tracker/` (its own store) — its own small
 **BUILT 28 Sep 26 on `claude/draft-pending`** (overnight, D336 (2)): the plan `raptor-port/docs/superpowers/plans/2026-09-28-draft-pending-plan.md`
 (§9 after the red team — `…/specs/2026-09-28-draft-pending-plan-review-log.md`); the contract `raptor-port/docs/ui-contracts.md`
 §The one changes window; the history `raptor-port/docs/engine-rules.md` §The edit log; D263 built with it; the open question
-below built on YES (D336 (b)) and put on his look card. FULL check: `raptor-port/docs/handpass/2026-09-28-draft-pending.md`.
-**Next:** the walk, the two final reads, his look, "merge live" (never without his word).
+below built on YES (D336 (b)) and put on his look card. FULL check: `raptor-port/docs/handpass/2026-09-28-draft-pending.md`
+— the walk (desktop and phone 33/33), Fable's scenarios (12 defects, all fixed), 12 break tests, two blind final reads and
+two narrow rounds on the fixes (every finding red first, then fixed), the gates green on the final code (`1270680e`).
+**Next:** his look (the sheet's §10 — 12 readings, each built one way) → "merge live" (never without his word).
 **From `[ACCOUNTS]` (26 Sep 26), to settle here:** the edit log is cleared at every sign-in and sign-out (`resetSession`
 → `elogClear`, session-only as today); with personal accounts, should the change history outlive a sign-out? The
 window's "new to you" needs it to. A member's history shows a medical change in full (D211, which narrows D169's

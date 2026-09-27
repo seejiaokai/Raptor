@@ -1095,3 +1095,63 @@ resolved statuses always carry their resolution date
 **Suggested improvement:** In the review phase, either (a) wait — use the time for read-only work (docs, the walk's fixture design, the roll-call), or (b) build in a separate worktree the reviewers are not pointed at, and say so in the brief. Never edit the checkout the reviewers are reading.
 
 **Principle:** A reviewer should read a fixed snapshot; the host's waiting time goes to work that does not change what is under review.
+
+### Observation 320: A break test must not break the checkout a reviewer is reading at the same time
+
+**Status:** OPEN
+**Date:** 2026-09-28
+**Session context:** [DRAFT-PENDING] FULL check, overnight — two independent final code reads running in the background while the break tests (bug-check order §5) were about to start
+**Skill:** New skill candidate: bug-check-order (raptor-port/docs/bug-check-order.md §5, the break tests)
+**Type:** open-source
+**Phase/Area:** break tests / running reviews in parallel
+
+**Issue:** The break tests deliberately break one wiring at a time, run the guarding tests, and restore. The two final reviewers were reading the SAME files at the same time, from the same folder — a reviewer that opened a file mid-break would have read broken code and reported it (or, worse, read the fix as missing). Caught before starting: the break tests ran in a separate detached worktree at a SHORT path (the first path, under the session's temp folder, failed on Windows' path-length limit for the repo's long picture names), with node_modules joined in by a directory junction. The same run found that two of the guard-suite file names were wrong (a .tsx that is a .ts, a file under state/ not engine/): the baseline run reported fewer files than listed — so the baseline is also a check on the list itself.
+
+**Suggested improvement:** In the bug-check order's break-test step: (1) when any reviewer or walker is reading the live checkout, break in a separate worktree (short path; node_modules via a junction/symlink), never in place; (2) run the guard suite once unbroken first and compare its file count with the list — a mismatch is a mistyped name, and a break "guarded" by a file that never ran is not guarded.
+
+**Principle:** Deliberate breakage is shared state: do it where no concurrent reader can see it, and prove the guard list runs before trusting its reds.
+
+### Observation 321: A re-walk's picture folder must start empty
+
+**Status:** OPEN
+**Date:** 2026-09-28
+**Session context:** [DRAFT-PENDING] re-walk after fixing Fable's predicted defects (new walk steps inserted mid-story)
+**Skill:** New skill candidate: bug-check-order (raptor-port/docs/bug-check-order.md §7, the evidence sheet's pictures)
+**Type:** open-source
+**Phase/Area:** walk scripts / evidence
+
+**Issue:** The walk script numbers its pictures in the order it takes them. After new steps were inserted, the re-run wrote "05-clock-icon.png" beside the first run's "05-mon-to-go-out.png", "06-window-tue-new.png" beside "06-week-all.png", and so on — the folder the evidence sheet links to held two runs' pictures under interleaved numbers, and a reader could not tell which picture belonged to the build being reported. Fixed by emptying the folder at the start of every run.
+
+**Suggested improvement:** Any script that writes an evidence folder empties it first (or writes into a per-run folder); the evidence sheet links only a folder written by one run of the build it reports.
+
+**Principle:** Evidence from two runs in one folder is no evidence: one run, one folder.
+
+### Observation 322: A review's fixes are new code — read the fix commit on its own, and cap the rounds
+
+**Status:** OPEN
+**Date:** 2026-09-28
+**Session context:** [DRAFT-PENDING] FULL check — two blind final reads (12 findings), then narrow reads of each fix commit
+**Skill:** New skill candidate: bug-check-order (raptor-port/docs/bug-check-order.md §4 / §5 — after the final reads)
+**Type:** open-source
+**Phase/Area:** the final code read and what follows it
+
+**Issue:** The final reads' fixes included a rewritten reader (how a Leave War decision on an approved leave becomes one history line). A narrow read of just that fix commit, by both reviewers independently, found two real defects IN the fixes (a split leave read as a move; a posting's own undo went silent) — and a third narrow round, on the fixes of the fixes, found four more (the wrong record id, a gap day marked, an overlapping slide misworded, stale comments). Every one was reproducible red through the real doors. Without the narrow rounds all of them would have shipped behind "all findings fixed, gates green". The rounds converged (Medium → Low severities, both reviewers finding the same things), and the third was declared the last (the ~3-round cap), with the final fixes carried by tests and the re-walk.
+
+**Suggested improvement:** In the bug-check order, after the final reads: when a fix rewrites logic (not a one-line guard), give the fix commit its own narrow read ("is each fix right and complete, and what did it break beside it") by both providers; repeat on each round's fixes up to the ~3-round cap; state in the evidence sheet which round was last and what carries the rest.
+
+**Principle:** A fix is new code with the same odds of being wrong as the code it fixes; "all findings fixed" is a claim about the findings, not about the fixes.
+
+### Observation 323: A scripted cut must anchor on text that is unique AFTER the insert too
+
+**Status:** OPEN
+**Date:** 2026-09-28
+**Session context:** [DRAFT-PENDING] handoff — one script replaced this chat's HANDOFF block, then cut the "## Gate baseline" section to rewrite it
+**Skill:** session-handoff (and any skill that edits shared docs by script)
+**Type:** open-source
+**Phase/Area:** editing a shared document programmatically
+
+**Issue:** The script inserted the new block first, then located the section to replace with `index('## Gate baseline')` — but the new block itself mentioned "`## Gate baseline`", so the index landed INSIDE the new block and the cut to "## Standing constraints" silently deleted the rest of the block, another chat's whole block, and "## Next, in order". Caught only because the structure (headings and block markers) was listed after the write. Recovered by restoring the file from the last commit and redoing the edit anchored on "\n## Gate baseline\n" (a heading at line start), with an assertion that the cut runs forward.
+
+**Suggested improvement:** For any scripted cut in a shared document: anchor on a line-start heading or a marker, assert exactly one match in the CURRENT text (after earlier edits in the same script), assert the cut's start precedes its end, and list the document's headings/markers after writing. Prefer doing the cut before any insert that could repeat the anchor.
+
+**Principle:** An anchor unique before an edit can stop being unique after it; check uniqueness against the text you are actually cutting, and verify the structure after every scripted rewrite of a shared file.

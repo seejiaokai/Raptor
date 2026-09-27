@@ -16,13 +16,27 @@ the later merge keeps both (D78).
 ## Now
 
 <!-- now:claude/draft-pending -->
-### `claude/draft-pending` — `[DRAFT-PENDING]`, the one changes window: started 28 Sep 26 overnight (D336 (2)) — written 28 Sep 26 — verify before use
-- **Where it started:** `main` at the merge of PR #450 (`[ONE-DOOR]`, merged 28 Sep 26 on his D336 (1) — the full gate set green
-  under the PC lock, GitHub's checks green, live on Vercel). The build: D118, D167–D172, D263, D169/D211, with D336 (b) —
-  the change history outlives a sign-out, built on YES and put on the look card.
-- **The order (D336 (2), D67, D210):** plan (Opus 5.5) → Fable and Astra red-team the plan → build red first → walk both
-  widths → FULL check → STOP at "ready for his look and merge live". Never merged without his word.
-- **Rulings range for this chat:** D337–D349.
+### `claude/draft-pending` — `[DRAFT-PENDING]`, the one changes window: BUILT and FULL-checked — READY FOR HIS LOOK and "merge live" (the PR from `claude/draft-pending`) — written 28 Sep 26 — verify before use
+- **Where it started:** `main` at PR #450's merge (`[ONE-DOOR]`, merged 28 Sep 26 on D336 (1), live on Vercel). Overnight by
+  D336 (2): planned (Opus 5.5) → Fable and Astra red team, one round → built red first → walked → FULL check. Rulings range
+  for this chat: D337–D349 (none used — no new ruling from him). **Never merge without his word** (D336's permission was
+  PR #450's alone).
+- **Built:** the change history durable and week-safe (`engine/editlog.ts` — D336 (b) on YES), each person's "new to you"
+  (`state/changes.ts`), ONE writer for every absence / Leave War / Quals / posting / publish / undo / sign-off line
+  (`state/changelines.ts` — D263), the window (`ui/ChangesWindow.tsx`, `changesmodel.ts`, `changesopen.ts`, chrome shared with
+  the ALL AVAIL window in `floatwin.ts`), the doors (the day's one chip, the admin's clock icon, the board's History button),
+  History mode = the window open with the bubble on the edit week too (D116), the OG tag (D172). Contract:
+  `raptor-port/docs/ui-contracts.md` §The one changes window; the history `raptor-port/docs/engine-rules.md` §The edit log.
+- **The FULL check** (evidence `raptor-port/docs/handpass/2026-09-28-draft-pending.md`): roll-call, the walk
+  (`scripts/handpass/dp-walk.mjs`, 33 checks, desktop and phone both 33/33, no console errors), Fable's 30 scenarios and
+  12 predicted defects (all real, all fixed red first), 12 break tests (3 unguarded wirings found and pinned), two blind
+  final reads (Astra 3, Fable 9 findings — all fixed red first), then two narrow rounds on the fix commits by both
+  (8 and then 7 findings, all fixed red first — the three-round cap reached; the tests and the walk carry the last).
+  Gates on the final code (`1270680e`): all green (the counts below, and the sheet's §9).
+- **Next:** (1) **his look** — the card is the sheet's §10 (12 readings, each built one way); (2) his "merge live" — then carry
+  it to live on Vercel and notify him (D143). Nothing else of this branch is pending.
+- **Walk it again:** `node raptor-port/scripts/handpass/dp-walk.mjs` (HP_W=390 HP_H=844 for the phone) against a preview on 4182
+  (`.claude/launch.json` "raptor-draftpending"); e2e on 4197/4198.
 <!-- /now -->
 
 <!-- now:claude/five-flags-batch-continue-2cfa70 -->
@@ -60,8 +74,8 @@ the later merge keeps both (D78).
 
 1. **HIS ORDER to the database step, about two months away (D203, 26 Sep 26):** `[ACCOUNTS]`, `[ACCOUNTS-NEW-PERSON]`,
    `[POST-OUT-OUTCOMES]`, `[LW-MOVE-STANDARD]` (D264–D266) and `[ONE-DOOR]` (D309, D310, with `[POST-IN-DATE]`) MERGED
-   (PRs #442, #443, #446, #447, #450) → **the one changes window (`[DRAFT-PENDING]`)**, building on `claude/draft-pending`,
-   with its own full check → his look → "merge live" (D173); beside it, he talks to the IT side
+   (PRs #442, #443, #446, #447, #450) → **the one changes window (`[DRAFT-PENDING]`)**, BUILT and FULL-checked on
+   `claude/draft-pending` (28 Sep 26) → his look → "merge live" (D173); beside it, he talks to the IT side
    (`[IT-QUESTIONS]`). Development as normal: `[HUMAN-RETEST]`'s remaining three in his order (D147 — the absence record
    with `[S4-HUNT-REST]` and D260–D262 MERGED, PR #444 — then change-recording, the Leave War links last), then `[LW-LOCKMARK]` → `[LW-WEEKDAY-WORK]` (`[PUB-UNAVAIL]`
    closed by the absence-record re-test).
@@ -73,11 +87,11 @@ the later merge keeps both (D78).
 
 ## Gate baseline
 
-The latest counts watched — 28 Sep 26, `claude/one-door`'s last code (`ced7d879`, the code PR #450 merged), one run under
-the PC lock: unit **6673 / 6673** (410 files) · build clean · tfin
-**728 / 0** · e2e **480 passed**, 48 skipped · smoke **443 / 0** · rulecheck OK · docsize OK. Restate a count only
-from a run you watched, and REPLACE the previous counts — never stack a history. How to run them: `raptor-port/CLAUDE.md`
-§Build & verify; how they mislead, and the checks on his PC: `raptor-port/docs/gates-and-deploy.md`.
+The latest counts watched — 28 Sep 26, `claude/draft-pending`'s final code (`1270680e`), one run under the PC lock: unit
+**6746 / 6746** (417 files) · build clean · tfin **728 / 0** · e2e **485 passed**, 48 skipped · smoke **443 / 0** ·
+rulecheck OK · docsize OK. Restate a count only from a run you watched, and REPLACE the previous counts — never stack a
+history. How to run them: `raptor-port/CLAUDE.md` §Build & verify; how they mislead, and the checks on his PC:
+`raptor-port/docs/gates-and-deploy.md`.
 
 ## Standing constraints
 
