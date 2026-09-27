@@ -55,7 +55,7 @@ whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaini
    live"; **[POST-OUT-OUTCOMES]** STARTED 27 Sep 26 beside it, before #443 merges (D301, amending D291), on
    `claude/post-out-outcomes` cut from `claude/accounts-new-person` (D291 — D229, D280, D283–D300: a posting out says
    which outcome; accounts suspended / deleted), its own FULL check, its merge after #443's — BUILT and FULL-checked, his
-   look next (with `[POST-OUT-TRACKER]` after it, on his answer, and **[POST-IN-DATE]** — D308, its place his call); then **[DRAFT-PENDING]** — the one changes window,
+   look next (with `[POST-OUT-TRACKER]` after it, on his answer, and **[POST-IN-DATE]** — D308, its place his call — likely folded into **[ONE-DOOR]**, D309, his direction for Admin → Users); then **[DRAFT-PENDING]** — the one changes window,
    on top of accounts, its own FULL check (D210). `[ACCOUNTS]` itself MERGED 26 Sep 26 (PR #442, his "merge live").
 2. **Now, beside the building — [IT-QUESTIONS]:** talk to the IT side (his, not code); their approvals take weeks.
 3. **Development as normal — [HUMAN-RETEST]**'s remaining three, in HIS order (D147): the absence record TOGETHER with
@@ -1209,6 +1209,21 @@ its §10 — 11 questions) **and his "merge live", merged LAST** (after #443, #4
 update his own quals (D305; its form put to him), 9 the last admin's posting waits (D306), 11 Enable on a hand-suspended
 man shows the note (D307).
 **Not built, said so:** the Tracker half of D299 (`[POST-OUT-TRACKER]`).
+
+### [ONE-DOOR] Admin → Users: one door for a person's whole state — sign-in and roster (D309, filed 27 Sep 26)
+**His direction (D309):** *"just do 1 door for everything and see the state of that account all just in admin. Like
+green or red dot for status, account and roster for status"* — and he asked how the buttons should read for every case
+discussed (the look card's 3a and 3b, the archived list, D308's post-in date). **Today:** Admin → Users lists accounts
+(an archived man tagged "archived callsign", a suspended one "suspended"), with Suspend / Enable and Delete account;
+Quals has the ✕ archive, the folded Archived list, Restore, Restore as and the rename (D295); Enable on an archived man
+lets him sign in while still archived (the half-state he questioned). **The agent's proposal (to his approval, by a
+mock-up first):** one row per person — a dot for Sign-in and one for Roster; Active → Suspend · Archive · Delete;
+Suspended → Enable · Archive · Delete; no sign-in (a man who does not use the app) → Give sign-in · Archive · Delete;
+Archived (the folded group) → Restore · Delete; Waiting → Give access · Refuse; a posting waiting for its date shown on
+the row. Archive also suspends; Restore brings both back, asks the post-in date (D308) and tells the man to check his
+quals (3a). Quals keeps quals, CAT, flight, initials (narrows D217). **Carries:** 3a, 3b, the archived group,
+`[POST-IN-DATE]`. **Place (the agent's recommendation, his call):** after PR #446 merges, its own branch — mock-up, his
+approval, then the build, FULL check (permissions, roster, accounts).
 
 ### [POST-IN-DATE] A man posted in: the admin is asked his post-in date (D308, filed 27 Sep 26)
 **His ruling (D308):** *"When someone is posted In the app should also ask the admin when is the post in date so that the
