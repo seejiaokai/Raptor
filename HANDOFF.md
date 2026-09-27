@@ -15,37 +15,6 @@ the later merge keeps both (D78).
 
 ## Now
 
-<!-- now:claude/rulings-d264-d266-leave-war-f0f4ab -->
-### `claude/rulings-d264-d266-leave-war-f0f4ab` — `[LW-MOVE-STANDARD]` (D264–D266, D330–D335): BUILT and FULL-checked — waiting for his look and "merge live" — written 27 Sep 26, verify before use
-- **The job:** his D264–D266 plus his answers to the mock-up (D330–D335: order A, "Delete", a member's own Move, the Move
-  button B — grey chip with a teal arrow, How many kept). Backlog `OUTSTANDING.md` `[LW-MOVE-STANDARD]` (folds in
-  `[LW-MOVE-BENEATH]`). Branch cut from `main` (`818dbb04`). PR [seejiaokai/Raptor#447](https://github.com/seejiaokai/Raptor/pull/447);
-  preview https://raptor-git-claude-rulings-d264-d266-leave-war-f0f4ab-kai-e2f5.vercel.app (behind his Vercel sign-in).
-- **Evidence sheet — read it first:** `raptor-port/docs/handpass/2026-09-27-lw-move-standard.md` (the tier FULL, the
-  readings he can correct §2, the roll-call, the door check, the walk and re-walk, 26 break tests, the two blind reads §8 —
-  six findings, all fixed red first — the gates §9, his look card §10). The approved design:
-  `raptor-port/docs/mock/lw-move-standard.html` (Artifact https://claude.ai/artifact/68SpLtpVYdimk6zZzfZohP).
-- **What the build is:** a move carries RECORDS (`store.ts movableRecords` / `moveRecords` / `moveRecordsProblem` /
-  `stayingIn` / `deletableIn` / `decidableIn`), both sheets in order A with one Move and one Delete (`ui/SheetActions.tsx`),
-  the day's list's Move into the move mode by record id (`moveSel.only`), a picked range widening Decide / Move / Delete;
-  `sync.ts doorMoveApproved` gained `skip` (agreed with the `[ONE-DOOR]` chat).
-- **Next:** his look (the card, §10) → **his D324: PR #448 (the `OUTSTANDING.md` tidy, docs only) merges BEFORE this one — so
-  once it has merged, merge `main` into this branch (no archive conflict expected: this branch archived nothing) and let the
-  checks go green** → "merge live" (the later of this and `[ONE-DOOR]` takes `main` in first) → archive
-  `[LW-MOVE-STANDARD]` and `[LW-MOVE-BENEATH]`. Filed from it: `[LW-SPARE-MOVE-DOORS]` (low).
-- **Parallel (D302):** `[ONE-DOOR]` on `claude/one-door` (main checkout, preview 4178, E2E 4196) — exact shared lines
-  exchanged, no overlap: it takes `store.ts` setPostIn / postingProblem / windowRecord / windowFor / readPostOuts /
-  setPeople / forgetPersonFrom (+ a new openStint), `engine/people.ts`, `Matrix.tsx rowInWindow` and `PersonMonth`'s day
-  cell, `BidPicker.tsx PostInSheet`; this chat's `Matrix.tsx` lines are the move block, `stayWords` (after `moveReason`,
-  ~30 lines above `rowInWindow`), the banner, the DayList/BidPicker props. `OUTSTANDING.md` is over its tripwire on
-  `main`; the `[ONE-DOOR]` chat put ONE docs-only tidy to him — neither chat trims it meanwhile. Observation numbers: this
-  chat 310–319 (used 310–313), it 306–309. Ports here: preview 4177, E2E 4195.
-- **Traps met:** the Codex config's default model is refused — `codex exec -m gpt-5.6-sol` (memory
-  `astra-codex-cli-available`); stop a background run by its own id, never by process name (observation 312); a walk step
-  pressing a leave chip must answer the "below zero — tap again" ask (observation 313).
-- **Rulings:** D330–D335 (range D330–D339).
-<!-- /now -->
-
 <!-- now:claude/post-out-outcomes -->
 ### `claude/post-out-outcomes` — `[POST-OUT-OUTCOMES]` BUILT, FULL-checked, his look card answered; `main` merged in — his "merge live" next (the last of the four) — written 27 Sep 26 ~13:30, verify before use
 - **Where it stands:** PR #446. #445, #444 and #443 are MERGED (his order: #445, #444, #443); `main` (`d77f1e56`) merged in
@@ -72,42 +41,6 @@ the later merge keeps both (D78).
   scripted edits must keep each file's own line endings (memory `python-edits-crlf-trap`); a branch built on another
   chat's in-flight branch must re-take its FINAL head before its own final gates (observation 303).
 - **Rulings:** D301–D310 (range D301–D319 — D310 took the tenth).
-<!-- /now -->
-
-<!-- now:claude/absence-record-d147-af6a50 -->
-### `claude/absence-record-d147-af6a50` — `[HUMAN-RETEST]` the absence record (D147) walked and FULL-checked; his answers D260–D262 BUILT and FULL-checked on it — his look and "merge live" next — written 27 Sep 26 — verify before use
-- **The re-test** (26 Sep 26): the absence record walked the way a person uses it, every finding fixed red first, filed or
-  put to him; evidence `raptor-port/docs/handpass/2026-09-26-absence.md` (its look card §12). PR
-  [seejiaokai/Raptor#444](https://github.com/seejiaokai/Raptor/pull/444).
-- **His answers, built 27 Sep 26** (worktree `five-flags-batch-build-ef7d85`, pushed to this branch): **D260** a clear that
-  takes an OIL award names it first — a dragged block's Delete, the bid sheet's Clear (one day or a range), one Undo back;
-  **D261** a member opens his own award read only at every stage (and outside his posting dates); **D262** one chip, one
-  Move — no date box; the chip rides the grid's move mode (edge scroll at the days' edges, months keep it, an empty tap
-  outside the grid ends it, a double-click lands nothing, leaving the war ends it, one move at a time). **D263** (the
-  change history records every change to an absence) goes with `[DRAFT-PENDING]`, not here.
-- **The check (FULL):** evidence `raptor-port/docs/handpass/2026-09-27-d260-d262.md` — Fable designed the scenarios first;
-  walked at both widths (a real touch phone over CDP); 27 wires broken on purpose, each turns a named test red; Fable's and
-  Astra's blind final reads — nine findings, eight fixed red first, one left with its reason (§8); a re-walk of every fix
-  (§10); the final gates all green (§9). His look card is §11; its one question is answered (D266).
-- **From his look (27 Sep 26, four phone pictures): D264–D266** — one format and look for the one-day and drag-selection
-  sheets; a Move on every record that can move (a bid beside an OIL award moves alone — Vector's 3 Jan offered none);
-  the day's list moves a record by the move mode, no date box. Filed as `[LW-MOVE-STANDARD]`: a mock-up first (D264 is
-  visual), then the build, FULL-checked. `main` (PR #445) merged in here first — code merged by itself; the full gates
-  not yet re-run on the merged code.
-- **Carries the five-flags chat's `[LW-MOVE-CI-RED]` test fix** (its commit `11f26903`, cherry-picked here as `3bf23e18`,
-  tests only): three older Leave War Move tests now wait for the fill before their second drag — the GitHub failure this
-  PR met. The same change is on `claude/five-flags-batch-continue-2cfa70`; whichever merges second meets it as identical.
-- **Files this build changed that the post-out chat (`claude/post-out-outcomes`) will meet at its merge** (it asked, per
-  the owner's D302 — parallel chats message each other before changing a shared file): `BidPicker.tsx` (Move → `onMove`,
-  Clear's award ask, `AwardSheet`, `DecisionSheet` removed), `SelectSheet.tsx` (the Delete / Move row only), `store.ts`
-  (`awardsIn`; `clearCells`), `select.ts` (`wireMove`), `Matrix.tsx` (the move wiring, `ownAwardOnly`, awards outside
-  the posting dates drawn). No posting function or posting sheet was touched.
-- **Next:** his look (§11) and "merge live" once GitHub's checks on the merged code are green; then `[LW-MOVE-STANDARD]`
-  on a NEW branch from `main` in a fresh chat (his "1", D267): the mock-up →
-  his approval → the build, red first → walk both widths → both reads → the gates → his look → "merge live". Then, in his order (D147): change-recording, then the Leave War links.
-- **Filed from it:** `[LW-MOVE-STANDARD]` (his D264–D266); `[LW-MOVE-TAPLIST-ASK]` (answered, archived); notes in `[LW-MOVE-BENEATH]` (a bid beside an award moves by
-  no door) and `[LW-ISO-DATES]` (the award sheet's date). `[ABSENCE-ASK]` and `[LW-MOVE-ONE-CHIP]` archived; earlier:
-  `[LW-ISO-DATES]`, `[LW-MOVE-BENEATH]`, `[LW-OFFER-ONLY-TAKEABLE]`, `[PO-RESTORE-POSTING]`, `[ABSENCE-SMALL-SEEN]`.
 <!-- /now -->
 
 <!-- now:claude/five-flags-batch-continue-2cfa70 -->
@@ -143,9 +76,9 @@ the later merge keeps both (D78).
 
 ## Next, in order
 
-1. **HIS ORDER to the database step, about two months away (D203, 26 Sep 26):** `[ACCOUNTS]` and `[ACCOUNTS-NEW-PERSON]`
-   MERGED (PRs #442, #443) → **`[POST-OUT-OUTCOMES]`** (PR #446, his look card answered — his "merge live" next) →
-   **`[ONE-DOOR]`** (D309, D310, carrying `[POST-IN-DATE]`, D308 — mock-up first) → `[LW-MOVE-STANDARD]` (D264–D266) → the
+1. **HIS ORDER to the database step, about two months away (D203, 26 Sep 26):** `[ACCOUNTS]`, `[ACCOUNTS-NEW-PERSON]`,
+   `[POST-OUT-OUTCOMES]` and `[LW-MOVE-STANDARD]` (D264–D266) MERGED (PRs #442, #443, #446, #447) →
+   **`[ONE-DOOR]`** (D309, D310, carrying `[POST-IN-DATE]`, D308 — mock-up first) → the
    one changes window (`[DRAFT-PENDING]`) with its own full check → "merge live" (D173); beside it, he talks to the IT side
    (`[IT-QUESTIONS]`). Development as normal: `[HUMAN-RETEST]`'s remaining three in his order (D147 — the absence record
    with `[S4-HUNT-REST]` and D260–D262 MERGED, PR #444 — then change-recording, the Leave War links last), then `[LW-LOCKMARK]` → `[LW-WEEKDAY-WORK]` (`[PUB-UNAVAIL]`

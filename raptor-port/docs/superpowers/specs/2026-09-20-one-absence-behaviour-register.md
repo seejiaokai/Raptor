@@ -545,8 +545,8 @@ questions it left for him are `OUTSTANDING.md` `[ABSENCE-ASK]`.
   can't go over it"). The day is judged as the restore will leave it, so undoing a filing that had replaced a bid still
   gives the bid back, in one step. (W3-F8, FR1.)
 - **A dragged block's Delete takes the war's own bids beneath filed or war-approved leave**; a leave filed on the
-  Inputs page stays (it is the Inputs page's), a war-approved one goes by the door. Its Move does not yet —
-  `OUTSTANDING.md` `[LW-MOVE-BENEATH]`. (W3-F3, FR5.)
+  Inputs page stays (it is the Inputs page's), a war-approved one goes by the door. Its Move did not then —
+  `OUTSTANDING-ARCHIVE.md` `[LW-MOVE-BENEATH]`, built by `[LW-MOVE-STANDARD]` (D265: the bid moves alone). (W3-F3, FR5.)
 
 **What the war's sheets say:**
 - **A posting that closes before it opens is refused AND said**, at every door — the bid sheet's PI / PO, the Post out
