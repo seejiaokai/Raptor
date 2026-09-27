@@ -1395,7 +1395,8 @@ function; rulings D330–D339). **The mock-up is up for his answers:** `raptor-p
 Artifact), made by `raptor-port/scripts/handpass/am/mk-lw-move-standard.mjs` — four questions: the order (A what's there
 first — recommended — or B new leave first), one word "Delete" for the one-day Clear and the block's Delete, a
 member's Move on his own bid's one-day sheet while bidding is open, and the Move button's look (D330 — one look on every
-sheet, a little apart; four designs in section 7, B the grey chip with a teal arrow recommended). Nothing built before his answers.
+sheet, a little apart; four designs in section 7, B the grey chip with a teal arrow recommended). **ANSWERED 27 Sep 26 —
+"1 A, 2 yes, 3 yes, 4 B, 5 keep" (D331–D335): the mock-up is the design of record; the build is next.**
 Fable's scenario design (bug-check order §4 rank 1): `raptor-port/docs/superpowers/specs/2026-09-27-lw-move-standard-scenarios-fable.md`
 (the roll-call, 32 ranked scenarios, six contradictions and how each is taken — stated on the mock-up page).
 
