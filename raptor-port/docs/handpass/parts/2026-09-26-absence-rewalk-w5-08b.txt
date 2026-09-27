@@ -1,0 +1,4 @@
+NOTE  [RW-W5-08b] taipan — {"from":"2026-08-01","po":true,"row":["07-30:·","07-31:PO","08-01:NO CELL","08-05:NO CELL","08-14:NO CELL","08-15:NO CELL","08-20:NO CELL","09-14:NO CELL"],"taps":{"2026-08-05":"NO CELL DRAWN ","2026-08-20":"NO CELL DRAWN "}}
+NOTE  [RW-W5-08b] bruise — {"from":"2026-08-01","po":true,"row":["07-30:·","07-31:PO","08-01:NO CELL","08-05:NO CELL","08-14:NO CELL","08-15:NO CELL","08-20:NO CELL","09-14:NO CELL"],"taps":{"2026-08-05":"NO CELL DRAWN ","2026-08-20":"NO CELL DRAWN "}}
+NOTE  [RW-W5-08b] shrek — {"from":"2026-08-15","po":true,"row":["07-30:·","07-31:·","08-01:·","08-05:·","08-14:PO","08-15:PO","08-20:PO","09-14:NO CELL"],"taps":{"2026-08-05":"bid-picker Wisp 2026-08-05 ✕ HOW MANY Just this day Pick a range HOW MUCH Whole day AM PM WHICH LEAVE","2026-08-20":"postout-sheet Wisp 2026-08-20 ✕ Posted out from 2026-08-15 — off the manpower from that day on. Moves to"}}
+NOTE  [RW-W5-08b] errors — []

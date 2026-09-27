@@ -379,16 +379,22 @@ Run from `raptor-port/`, not the repo root. All FIVE, after any change:
 > (`/home/user/Raptor`, `/opt/pw-browsers/chromium`, the agent proxy) are
 > LEGACY, kept only for their measured traps; do not follow them literally here.
 
-> **Background commands start at the REPO ROOT, not `raptor-port/`.** A
-> foreground command inherits the session's `raptor-port/` cwd, but a
-> `run_in_background` job launches a fresh shell at the repo root, where
-> there is no `package.json` — so a bare `npm run test:e2e` (or any `npm`
-> script) fails INSTANTLY with `ENOENT … package.json`, and the wrapper's own
-> exit code can read 0, masking it. ALWAYS `cd` into `raptor-port/` inside a
-> backgrounded gate. This bit twice (test:e2e, 30 Aug 26)
-> and each miss wastes a full ~10-minute re-run. **Enforced since 26 Sep 26** ([BG-CWD-GUARD],
-> D162): a hook, `../.claude/hooks/bg-cwd-guard.mjs`, refuses a backgrounded `npm`/`npx` that never
-> moves into `raptor-port/` (`cd raptor-port &&`, `Set-Location raptor-port;` or `npm --prefix raptor-port`).
+> **Background commands start in the folder the CHAT started in, not where the foreground shell is.**
+> A foreground command keeps whatever folder the session's shell has moved to, but a
+> `run_in_background` job launches a fresh shell in the chat's STARTING folder (`$CLAUDE_PROJECT_DIR` —
+> usually the repo root or a worktree's root), where there is no `package.json` — so a bare
+> `npm run test:e2e` (or any `npm` script) fails INSTANTLY with `ENOENT … package.json`, and the wrapper's
+> own exit code can read 0, masking it. ALWAYS move into `raptor-port/` inside a backgrounded gate, BY ITS
+> FULL PATH (`cd "<repo>/raptor-port" && …`), which works whatever folder the shell starts in. This bit
+> twice (test:e2e, 30 Aug 26) and each miss wastes a full ~10-minute re-run. **Enforced since 26 Sep 26**
+> ([BG-CWD-GUARD], D162): a hook, `../.claude/hooks/bg-cwd-guard.mjs`, refuses a backgrounded `npm`/`npx`
+> step that would run outside `raptor-port/` — it follows the line step by step (a `cd`/`Set-Location`/`Push-Location`
+> into a folder that IS `raptor-port` or lies inside it, or `npm --prefix …raptor-port` on the step itself) — and names
+> the full path in its refusal; a chat that STARTED inside
+> `raptor-port` may run a bare `npm` (its background shells are already there). *(Corrected 26 Sep 26,
+> [BG-GUARD-FALSE]: this note said background shells start "at the REPO ROOT"; measured, they start in the
+> chat's starting folder — the accounts chat, started inside `raptor-port`, then found `cd raptor-port && …`
+> failing.)*
 
 
 ```

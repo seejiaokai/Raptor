@@ -77,6 +77,17 @@ function arm() {
   render()
 }
 
+/* Whether one press counts toward the corner switch: inside the top-left 64 px, and on NO control (the absence-record
+   re-test's re-walk, W1's NEW-2, 26 Sep 26 — the Inputs calendar's "previous month" arrow sits in that corner, so paging
+   back five months switched the readout on over the month title and the top bar until a reload). The switch is for
+   the empty corner of a locked-down browser; a button, a link or a field there belongs to the app. */
+const CONTROL = 'button, a[href], input, select, textarea, label, [role="button"], [contenteditable="true"]'
+export function cornerTapCounts(e: { clientX: number; clientY: number; target: EventTarget | null }): boolean {
+  if (e.clientX > 64 || e.clientY > 64) return false
+  const t = e.target as { closest?: (s: string) => unknown } | null
+  return !(t && typeof t.closest === 'function' && t.closest(CONTROL))
+}
+
 /* the five-tap corner fallback — a light listener that stays even while OFF, so
    a locked-address-bar browser can still turn the readout on by hand */
 function wireCorner() {
@@ -86,7 +97,7 @@ function wireCorner() {
     /* real taps only — a synthetic pointerdown from a test (isTrusted false)
        must never arm the readout and leak module state into the next test */
     if (!e.isTrusted) return
-    if (e.clientX > 64 || e.clientY > 64) { taps = 0; return }
+    if (!cornerTapCounts(e)) { taps = 0; return }
     const now = (e as any).timeStamp || 0
     if (!taps || now - first > 2500) { taps = 1; first = now } else { taps++ }
     if (taps >= 5) arm()

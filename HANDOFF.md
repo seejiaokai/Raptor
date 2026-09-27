@@ -35,7 +35,10 @@ the later merge keeps both (D78).
 - **Done 27 Sep 26 (next chat):** the mock-up's word trim (D300) — each thing said once on the page and in every drawn
   piece (the approval once, in the header; the table rows use his chip names; D299's stays/goes list kept whole);
   republished to the same Artifact link as **Version 6**, with the D300 sheet pictures that Version 5 had missed.
-- **Unfinished:** PR #443 awaits his look and "merge live" (`main` still `e27e15fe`, already in the branch).
+- **Unfinished:** PR #443 awaits his look and "merge live". **`main` merged in 27 Sep 26** (`d039d7c6` — #445 and #444, which
+  he merged first): the app's code merged by itself; only the shared records conflicted (both sides kept, the rulings map
+  rebuilt, the three merged chats' blocks this branch had removed stay removed); the gates re-run on the merge (§Gate
+  baseline).
 - **Branch:** `claude/accounts-new-person`, PR #443. If it has MERGED, reset before new work:
   `git fetch origin main && git checkout -B <new-branch> origin/main`.
 - **Gates:** as above; `probes:adapted` · `perf` NOT RUN (the dense surfaces they measure are untouched).
@@ -46,9 +49,76 @@ the later merge keeps both (D78).
   in a scratch worktree (#281, `np-breaks.mjs`'s header); Bash heredocs mangle backslashes — use the Edit tool.
 - **Open questions for him:** none.
 - **Pick up here:** after his "merge live" of PR #443, archive `[ACCOUNTS-NEW-PERSON]`
-  (`node raptor-port/scripts/backlog-archive.mjs ACCOUNTS-NEW-PERSON --homes raptor-port/docs/handpass/2026-09-26-accounts-new-person.md`),
-  then plan `[POST-OUT-OUTCOMES]` from the approved mock-up and D229, D280–D299 (Opus 5.5 high; Fable + Astra red-team;
-  FULL check).
+  (`node raptor-port/scripts/backlog-archive.mjs ACCOUNTS-NEW-PERSON --homes raptor-port/docs/handpass/2026-09-26-accounts-new-person.md`).
+  `[POST-OUT-OUTCOMES]` is already built and checked on its own branch (`claude/post-out-outcomes`, PR #446 — its own
+  block); it merges `main` in after this one and goes last.
+<!-- /now -->
+
+<!-- now:claude/absence-record-d147-af6a50 -->
+### `claude/absence-record-d147-af6a50` — `[HUMAN-RETEST]` the absence record (D147) walked and FULL-checked; his answers D260–D262 BUILT and FULL-checked on it — his look and "merge live" next — written 27 Sep 26 — verify before use
+- **The re-test** (26 Sep 26): the absence record walked the way a person uses it, every finding fixed red first, filed or
+  put to him; evidence `raptor-port/docs/handpass/2026-09-26-absence.md` (its look card §12). PR
+  [seejiaokai/Raptor#444](https://github.com/seejiaokai/Raptor/pull/444).
+- **His answers, built 27 Sep 26** (worktree `five-flags-batch-build-ef7d85`, pushed to this branch): **D260** a clear that
+  takes an OIL award names it first — a dragged block's Delete, the bid sheet's Clear (one day or a range), one Undo back;
+  **D261** a member opens his own award read only at every stage (and outside his posting dates); **D262** one chip, one
+  Move — no date box; the chip rides the grid's move mode (edge scroll at the days' edges, months keep it, an empty tap
+  outside the grid ends it, a double-click lands nothing, leaving the war ends it, one move at a time). **D263** (the
+  change history records every change to an absence) goes with `[DRAFT-PENDING]`, not here.
+- **The check (FULL):** evidence `raptor-port/docs/handpass/2026-09-27-d260-d262.md` — Fable designed the scenarios first;
+  walked at both widths (a real touch phone over CDP); 27 wires broken on purpose, each turns a named test red; Fable's and
+  Astra's blind final reads — nine findings, eight fixed red first, one left with its reason (§8); a re-walk of every fix
+  (§10); the final gates all green (§9). His look card is §11; its one question is answered (D266).
+- **From his look (27 Sep 26, four phone pictures): D264–D266** — one format and look for the one-day and drag-selection
+  sheets; a Move on every record that can move (a bid beside an OIL award moves alone — Vector's 3 Jan offered none);
+  the day's list moves a record by the move mode, no date box. Filed as `[LW-MOVE-STANDARD]`: a mock-up first (D264 is
+  visual), then the build, FULL-checked. `main` (PR #445) merged in here first — code merged by itself; the full gates
+  not yet re-run on the merged code.
+- **Carries the five-flags chat's `[LW-MOVE-CI-RED]` test fix** (its commit `11f26903`, cherry-picked here as `3bf23e18`,
+  tests only): three older Leave War Move tests now wait for the fill before their second drag — the GitHub failure this
+  PR met. The same change is on `claude/five-flags-batch-continue-2cfa70`; whichever merges second meets it as identical.
+- **Files this build changed that the post-out chat (`claude/post-out-outcomes`) will meet at its merge** (it asked, per
+  the owner's D302 — parallel chats message each other before changing a shared file): `BidPicker.tsx` (Move → `onMove`,
+  Clear's award ask, `AwardSheet`, `DecisionSheet` removed), `SelectSheet.tsx` (the Delete / Move row only), `store.ts`
+  (`awardsIn`; `clearCells`), `select.ts` (`wireMove`), `Matrix.tsx` (the move wiring, `ownAwardOnly`, awards outside
+  the posting dates drawn). No posting function or posting sheet was touched.
+- **Next:** his look (§11) and "merge live" once GitHub's checks on the merged code are green; then `[LW-MOVE-STANDARD]`
+  on a NEW branch from `main` in a fresh chat (his "1", D267): the mock-up →
+  his approval → the build, red first → walk both widths → both reads → the gates → his look → "merge live". Then, in his order (D147): change-recording, then the Leave War links.
+- **Filed from it:** `[LW-MOVE-STANDARD]` (his D264–D266); `[LW-MOVE-TAPLIST-ASK]` (answered, archived); notes in `[LW-MOVE-BENEATH]` (a bid beside an award moves by
+  no door) and `[LW-ISO-DATES]` (the award sheet's date). `[ABSENCE-ASK]` and `[LW-MOVE-ONE-CHIP]` archived; earlier:
+  `[LW-ISO-DATES]`, `[LW-MOVE-BENEATH]`, `[LW-OFFER-ONLY-TAKEABLE]`, `[PO-RESTORE-POSTING]`, `[ABSENCE-SMALL-SEEN]`.
+<!-- /now -->
+
+<!-- now:claude/five-flags-batch-continue-2cfa70 -->
+### `claude/five-flags-batch-continue-2cfa70` — the five-flags batch AND his answers D270–D275: BUILT and FULL-checked (PR #445) — waiting for his look and "merge live"; the red Leave War tests' cause found and fixed (confirm on GitHub) — written 27 Sep 26 — verify before use
+- **The branch:** carries `claude/five-flags-batch-build-ef7d85` whole (that branch has no PR and nothing of its own —
+  delete it once this merges). PR #445 is from THIS branch. This chat worked in the folder
+  `.claude/worktrees/trk-smoke-add-race-bug-007eed` (the block's earlier folder, `five-flags-batch-continue-2cfa70`, is
+  another checkout at the same commit).
+- **Parallel** with `claude/accounts-new-person` (PR #443) / the post-out work on `claude/post-out-outcomes` (the main
+  checkout — its chat asked to coordinate: told the files this branch touches; it won't touch ours) and the absence-record
+  re-test (PR #444, folder `five-flags-batch-build-ef7d85`). Ports: preview 4176 (`.claude/launch.json` "raptor-walk-4"),
+  browser tests `E2E_PORT=4193`; rulings D276–D279 (all four used — his look-card answers). Full checks take turns through the PC-wide lock (D228,
+  `gatelock.mjs … run --from <this worktree>/raptor-port`). The later merge takes `main` in first. Nothing to `main`
+  without his "merge live".
+- **Done 27 Sep 26 (the evidence sheet `raptor-port/docs/handpass/2026-09-27-five-flags-answers.md`):** D275 — the room
+  beside the ‹ arrow taken out (`[ARROW-ROOM-OUT]`); D270 / D272 — his own puck wears any other ring (a flag's, the green
+  OIL one), the purple fill stays; D271 — one man, once per row, REFUSED at every door with the reason, plus Fable's F1 (a
+  request handed to a man already on its row keeps him once). FULL tier: Fable's scenarios, the roll-calls, the walk (W1
+  71/0, W3 f6–f10 all green, W6 18/0 — pictures `docs/img/handpass/2026-09-27-five-flags-answers/`), the gates (§7), Fable
+  and Astra's blind reads (no defect against the rulings; two test gaps fixed), the re-walk, the look card (§9). The three
+  items archived. **His answers to the card's four questions, 27 Sep 26:** Q1 a jet line's two seats stay a warning (D276,
+  against the recommendation), Q2 keep the faded purple ring (D277), Q3 and Q4 leave (D278, D279) — nothing to build.
+- **`[LW-MOVE-CI-RED]` — cause found, tests fixed:** a timing race in three Leave War tests (the second drag straight after
+  an admin's fill, which since `[ACCOUNTS]` re-renders longer on GitHub's machines); fixed with the 18 Sep stable drag
+  (`e2e/leavewar.spec.ts`). It never failed on the PC; GitHub's next two runs of this branch were green with the three passing first time — archived.
+  Side-findings filed: `[LW-HARNESS-VIEWER-PIN]`, `[CI-FAIL-PICTURES]` (his call — public pictures while the repo is public).
+- **Next, in order:** (1) **his look** — the card is the sheet's §9 (the four questions are answered); (2) "merge live", one at a time with #443 and #444. **The absence chat's D262 reworks `select.ts` wireMove** (PR #444) —
+  if it merges first, bring `main` in and re-run the three Move tests here; a conflict in those test lines keeps BOTH its
+  behaviour and the stable drag (told to that chat).
+- **His "2 chats" remark (27 Sep 26)** is still unanswered — put to him once; recommended: keep the one-at-a-time queue
+  for full check runs (two chats working side by side needs nothing).
 <!-- /now -->
 
 ## Next, in order
@@ -58,8 +128,9 @@ the later merge keeps both (D78).
    `[ACCOUNTS-NEW-PERSON]` (PR #443, waiting for his look) → **`[POST-OUT-OUTCOMES]`** (D291 — a posting out's outcomes;
    accounts suspended and deleted) with its own full check → the one changes window (`[DRAFT-PENDING]`) with its own full check →
    "merge live" (D173); beside it, he talks to the IT side (`[IT-QUESTIONS]`). Development as normal: `[HUMAN-RETEST]`'s
-   remaining three in his order (D147 — the absence record with `[S4-HUNT-REST]`, change-recording, the Leave War links
-   last), then `[PUB-UNAVAIL]` → `[LW-LOCKMARK]` → `[LW-WEEKDAY-WORK]`.
+   remaining three in his order (D147 — the absence record with `[S4-HUNT-REST]` — walked, his answers D260–D262 built
+   and checked on its branch, his look next — then change-recording, the Leave War links last), then `[LW-LOCKMARK]` → `[LW-WEEKDAY-WORK]` (`[PUB-UNAVAIL]`
+   closed by the absence-record re-test).
 2. **About a month before the database:** `[DB-READINESS]` with the OIL award fix and the small OIL follow-ups as ONE
    batch (D147, D203) → `[DB-STEP]` when Manfred is ready. The whole list: `OUTSTANDING.md`'s priority list.
 3. Filed, none blocking: `[TRK-PINCH-ASK]` (his iPhone look), `[TRK-DLG-LEFTOVERS]`, `[TRK-RETEST-NOTES]`,

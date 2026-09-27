@@ -20,7 +20,7 @@
    unchanged because the map preserves seat and band and the mapped
    people's own SXO flags match the seed's. */
 import { expect, test, type Locator, type Page } from '@playwright/test'
-import { go, gridAtRest, lwRole, lwView, openLeaveWar, raptorRole, scrollTo } from './app'
+import { go, gridAtRest, lwRole, lwView, moveOneTo, openLeaveWar, raptorRole, scrollTo } from './app'
 
 const CAL_MONTHS = [
   'JANUARY', 'FEBRUARY', 'MARCH', 'APRIL', 'MAY', 'JUNE',
@@ -813,8 +813,7 @@ test('the Raptor mark is painted, and an ordinary bid carries none', async ({ pa
   await lwRole(page, 'admin')
   await page.locator('[data-testid="stage-advance"]').click()
   await page.locator('[data-testid="cell-slash-2026-02-03"]').click()
-  await page.locator('[data-testid="shift-date"]').fill('2026-02-06')
-  await page.locator('[data-testid="decide-shift"]').click()
+  await moveOneTo(page, 'cell-slash-2026-02-06')           // D262: Move picks the chip up; a click lands it
   const moved = await edge('[data-testid="cell-slash-2026-02-06"] .c')
   expect(parseFloat(moved.width)).toBeGreaterThan(0)
   expect(moved.style).toBe('dotted')
@@ -852,8 +851,7 @@ test('an admin moves a bid to another date, and it lands pending there', async (
   await lwRole(page, 'admin')          // advancing the cycle is admin-only (27 Aug 26)
   await page.locator('[data-testid="stage-advance"]').click()
   await page.locator('[data-testid="cell-bruise-2026-01-23"]').click()
-  await page.locator('[data-testid="shift-date"]').fill('2026-01-30')
-  await page.locator('[data-testid="decide-shift"]').click()
+  await moveOneTo(page, 'cell-bruise-2026-01-30')          // D262: Move picks the chip up; a click lands it
 
   await expect(page.locator('[data-testid="cell-bruise-2026-01-23"] .c')).toHaveCount(0)
   const moved = page.locator('[data-testid="cell-bruise-2026-01-30"] .c')
@@ -963,7 +961,15 @@ test('a drag-selection offers Move, and the move banner appears on entering it',
   // actually holds a movable bid (owner, 27 Aug 26 — an empty box is Fill-only)
   await dragSelect(page, 'cell-slipway-2026-01-06', 'cell-slipway-2026-01-07')
   await page.locator('[data-testid="sel-LL"]').click()
-  await dragSelect(page, 'cell-slipway-2026-01-06', 'cell-slipway-2026-01-07')
+  /* [LW-MOVE-CI-RED] (27 Sep 26): the SECOND drag waits for the fill to land and the sheet to close, then retries until
+     its sheet opens (dragSelectStable). Since [ACCOUNTS] (26 Sep 26) an admin's fill is an admin edit on Raptor's side too,
+     and its re-derive and re-render outlast the click on GitHub's slower machines: a drag started inside that window is
+     silently lost and no sheet opens (9 of 16 GitHub runs failed here from 26 Sep 06:44Z; never on the PC). The same race
+     the undo tests met on 18 Sep ([GLOBAL-UNDO]); these three still dragged straight after the fill. Waiting on what the
+     test needs, never a fixed time (D87). */
+  await expect(page.locator('[data-testid="cell-slipway-2026-01-06"] .c')).toBeVisible()
+  await expect(page.locator('[data-testid="select-sheet"]')).toHaveCount(0)
+  await dragSelectStable(page, 'cell-slipway-2026-01-06', 'cell-slipway-2026-01-07')
   await expect(page.locator('[data-testid="select-sheet"]')).toBeVisible()
   await page.locator('[data-testid="sel-move"]').click()
   // the sheet gives way to the move banner; the landing itself (moveCells) is
@@ -989,8 +995,9 @@ test('a loose box moves the inputs present, first input landing on the clicked d
   await page.locator('[data-testid="sel-LL"]').click()
   await expect(page.locator('[data-testid="cell-slipway-2026-01-07"] .c')).toBeVisible()
   await expect(page.locator('[data-testid="select-sheet"]')).toHaveCount(0)
-  // over-select 06..08 (06 empty) and move — the empty must NOT refuse it
-  await dragSelect(page, 'cell-slipway-2026-01-06', 'cell-slipway-2026-01-08')
+  // over-select 06..08 (06 empty) and move — the empty must NOT refuse it. A stable drag: the fill's admin re-render can
+  // swallow a drag started too soon on a slow machine ([LW-MOVE-CI-RED], see "offers Move" above)
+  await dragSelectStable(page, 'cell-slipway-2026-01-06', 'cell-slipway-2026-01-08')
   await page.locator('[data-testid="sel-move"]').click()
   await expect(page.locator('[data-testid="move-banner"]')).toBeVisible()
   // click a landing day: the first input (07) lands here, 08 rides along
@@ -1007,7 +1014,10 @@ test('right-click cancels a move on desktop', async ({ page }) => {
   await lwRole(page, 'admin')
   await dragSelect(page, 'cell-slipway-2026-01-06', 'cell-slipway-2026-01-07')
   await page.locator('[data-testid="sel-LL"]').click()
-  await dragSelect(page, 'cell-slipway-2026-01-06', 'cell-slipway-2026-01-07')
+  // the fill lands and its sheet closes, then a stable drag ([LW-MOVE-CI-RED], see "offers Move" above)
+  await expect(page.locator('[data-testid="cell-slipway-2026-01-06"] .c')).toBeVisible()
+  await expect(page.locator('[data-testid="select-sheet"]')).toHaveCount(0)
+  await dragSelectStable(page, 'cell-slipway-2026-01-06', 'cell-slipway-2026-01-07')
   await page.locator('[data-testid="sel-move"]').click()
   await expect(page.locator('[data-testid="move-banner"]')).toBeVisible()
   await page.locator('[data-testid="cell-slipway-2026-01-10"]').click({ button: 'right' })
@@ -4648,4 +4658,25 @@ test('the bottom scrollbar shows the grid\'s place the moment it appears', async
   expect(t, 'the bar was seen as it appeared').not.toBeNull()
   expect(t.grid, 'the grid is parked well along the year').toBeGreaterThan(0.4)
   expect(Math.abs(t.bar - t.grid), 'the thumb starts where the grid is, not at January').toBeLessThan(0.02)
+})
+
+/* A POST-OUT KEEPS THE ROW OF THE MONTH ON SCREEN (the absence-record re-test, W5-F2 — found by the orders walker, its
+   real trigger found by the re-walk, 26 Sep 26). The grid notes which months are on screen only when the set of rows
+   would change (a whole-grid repaint is the cost it saves), so going SEP → JUL — the same people — left the note at
+   September. A man then posted out from a July date was asked "is he here in September?", and his July row, with
+   everything on it, disappeared until another month was pressed. Needs a real layout: jsdom has no visible months. */
+test('a post-out dated in July keeps his July row, after the war was first shown on a later month', async ({ page }) => {
+  await openLeaveWar(page, 'a')
+  await lwRole(page, 'admin')
+  await page.locator('[data-testid="month-SEP"]').click()
+  await gridAtRest(page, '2026-09-01')
+  await page.locator('[data-testid="month-JUL"]').click()
+  await gridAtRest(page, '2026-07-01')
+  await page.locator('[data-testid="cell-slipway-2026-07-14"]').click()
+  await page.locator('[data-testid="bid-postout"]').click()
+  await page.locator('[data-testid="po-date"]').fill('2026-07-15')
+  await page.locator('[data-testid="po-confirm"]').click()
+  await expect(page.locator('[data-testid="bid-picker"]')).toHaveCount(0)
+  await expect(page.locator('[data-testid="row-slipway"]'), 'his row is still drawn in July').toBeVisible()
+  await expect(page.locator('[data-testid="cell-slipway-2026-07-13"]'), 'his last days in are still there to read').toBeVisible()
 })

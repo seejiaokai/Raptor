@@ -160,6 +160,10 @@ looked at. So the day is also PICKABLE (owner, 15 Aug 26):
   week cannot scroll to is still reachable. Drawn only when NOT armed (an armed
   slot pins the panel to its own day). Absent on the board, which passes
   `{head:false}` — the header, and so the arrows, render on the edit week alone.
+  **The board's crew column answers for the BOARD'S day** (the absence-record re-test, W6 R19, 26 Sep 26 — on
+  main it asked `paletteDay()`, the edit week's answer, so Thursday's board listed the crew of the day the week
+  behind was scrolled to and showed a man on leave Thursday as free): the armed slot's day, else the board's own
+  (`SchedBoard.tsx`; pinned by `boardcrew.test.tsx`).
 - **An explicit pick WINS over the scroll-follow** (`pan.ts:pickRosDay`). Both
   the click and the arrows route through it: it cancels any queued follow and
   suppresses a new one for ~0.5s, so the scroll the pick settles into cannot
@@ -187,6 +191,12 @@ looked at. So the day is also PICKABLE (owner, 15 Aug 26):
   (which is why the edge hint above is retired). The "day a–b of n" read-out
   (`pan.ts:dayRangeText`) counts from the day step, never `scrollWidth ÷ n`,
   because the spacer is part of `scrollWidth`. Gated in `e2e/geometry.spec.ts`.
+- **No room beside the ‹ arrow — the day at the front sits flush at the week's left edge** (owner, D275, 27 Sep 26 —
+  "I still prefer these", of the full-screen before and after). The floating ‹ arrow (`.week-nav`, fixed 8px in, 38px
+  wide) sits over the first few pixels of that day, by his choice: it can cover the start of an opened "⚠ N issues"
+  list and of the front day's first line. A 54px room was built ([VIEW-ARROW-OVER-LIST], 26 Sep 26) and taken out before
+  it merged (`[ARROW-ROOM-OUT]`); do not put it back, nor the lighter idea first named with it (the arrow fading until
+  the pointer is near), without his ask. The build's roll-call of every landing is the five-flags evidence sheet §3d.
 - **The desktop arrow glide cannot be cancelled mid-day** (owner, 23-24 Aug 26 —
   the recurring "arrows don't go day by day … stuck halfway then zoom past", and
   its 25 Aug follow-up "make sure it's not just an easy fix"). `panDays` fires a
@@ -2149,6 +2159,18 @@ persisted and never in a history snapshot. The toggle builder is `notePubTog`
   A palette tap ALWAYS plants: a darkened name plants too, its reason toasted
   after, mirroring drag ("everything plants, warning after") — the one
   refusal left is the seat's own occupant ("Already in that seat").
+  **AND, SINCE D271 (owner, 27 Sep 26 — "Q1 refused"), A THIRD HARD REFUSAL: ONE MAN, ONCE PER ROW.** A man
+  put on a row he already stands on — a crowd, a desk's or a ground row's extras, a sim's seats — by a drop
+  (from the crew list, onto a place or the "+ add" cell; a puck moved in from another row; either end of a
+  swap) or an armed palette tap writes nothing: the row keeps its one copy, nothing reads pending, and the
+  toast says why ("Ranger — already on FLIGHT SAFETY STAND-DOWN 08:30–09:00 · not added twice"); a tapped
+  slot stays armed. The same sentence is the drag caption and the crew list's struck line, so it is said
+  BEFORE the drop too. One body, `avail.ts rowTwice`, preflighted at every door with `fillSlot` as the belt
+  (D33's shape). Still allowed: a swap inside one crowd, a move to the end of his own crowd, and a man on two
+  DIFFERENT rows (warned, as before). **His answers of 27 Sep 26 (the look card):** one man in both seats of ONE jet
+  stays a warning — a flying line is not one of these rows (D276, "Leave it no change"); a placeholder may stand on a
+  row twice (D278, "Leave"); a struck name looks the same whether a tap will be refused or only warned — the printed
+  reason says which (D279, "Leave").
   **AND, SINCE D33/D47 (22 Sep 26), A SECOND AND HARDER ONE: ALL / ALL AVAIL
   ARE REFUSED ON FLYING-LINE COCKPIT SEATS.** `sentinelSeatOK(key,id)`
   (`engine/slots.ts`) is the one body; `SENTINEL_JET_BAR` is the one sentence,
@@ -3224,6 +3246,21 @@ only prove which CLASS was emitted, never what it draws:
   spreads 2px and dots any closer are drawn inside the solid band and vanish.
   Its total reach is still 3px, the same as the dashed ring's, so it clears the
   3px gap between the two pucks of a crew pair.
+
+**No flag ring glows — the "this is you" puck included (owner, D164, 24 Sep 26: "can u not make it glow").** Every
+flag ring — solid, dashed or dotted red, the amber / thin red / grey severity rings — is drawn with no blurred layer.
+**And on his own puck any other ring wins over the purple "this is you" ring (owner, D270 and D272, 27 Sep 26 — "Q2
+yes", "question 2 yes").** The signed-in man's puck keeps its purple FILL always; its purple RING and glow are drawn
+only while it has nothing else to say (`.puck.me:not(.warn):not(.boxred):not(.boxdash):not(.boxdot):not(.oilglow)`).
+Flagged — amber, thin red, grey, a solid or dashed red box, the dotted "causes tomorrow's breach" ring (alone, nothing
+purple behind it) — or earning in OIL Earn mode (the green OIL ring, full or half), it wears exactly the ring another
+man's puck wears there, through the same rules. Earning NOTHING in OIL Earn mode (`oildim`), it keeps the purple ring,
+faded with the puck — the fade says "nothing", the purple "you" (his "Keep", D277). Until D270 the purple ring sat on every "you" puck with `!important`,
+hid the severity rings and buried the OIL ring, and `.puck.me.boxred` / `.boxdash` / `.boxdot` / `.warn` existed only to
+fight it — they are gone. Two glows are NOT flags and stay: the purple "this is you" glow on his UNFLAGGED puck and the
+clicked-warning focus (`.puck.wfoc`, a transient answer to a tap). Pinned by `src/ui/flagglow-css.test.ts`, which walks
+every ring rule for a blurred layer AND resolves the cascade for every set of ring classes a puck can wear (severity x
+red box x trace x OIL mode), requiring his puck's winning ring to equal another man's.
 
 ### The previous-day trace: a standing MARK, an on-demand STORY
 
@@ -5189,10 +5226,29 @@ BidPicker's look and vocabulary, not instead of it.
   role and stage: everyone Fills while the war is OPEN (portion + leave chips;
   admin adds the Medical row); Decide (Pending / Approve / Refuse) is the
   admin's once bidding is CLOSED **or PUBLISHED** (owner, 27 Aug 26 — the admin
-  still runs a published war); Delete (second-tap confirm — no undo here)
+  still runs a published war); Delete (second-tap confirm)
   and Move act on the editable bids the selection holds, and **show only when it
   holds one** (`movableCells(sel.cells).length`, owner 27 Aug 26 — a loose box
-  of empty cells is Fill-only, so Move never opens on nothing to move);
+  of empty cells is Fill-only, so Move never opens on nothing to move).
+  **Delete takes EVERYTHING in the block, the admin's OIL awards included, and
+  its confirm NAMES EACH AWARD before anything goes** (owner, D260, 27 Sep 26 —
+  "B"): "Delete 4 days for 10 people, including 3 OIL awards (Drifter 3 Jan 1 day,
+  Hunter 1 Jan 1 day, Hunter 4 Jan 1 day)? Tap Delete again." — the day is added
+  only when one man has two. What is named is `store.ts awardsIn` (the same gates
+  and records the clear itself uses — a member's Delete takes no award and names
+  none); the wording is `ui/awardwords.ts`, shared with the bid sheet's Clear; an
+  award beneath leave goes too, whatever the leave; one Undo brings every award
+  back. A block holding ONLY awards now offers Delete (it is not an empty box) and
+  never Move (an award is dated the day he earned it and never moves). On a
+  published war the approved leave in the block stays (finished paperwork) and the
+  note SAYS it was skipped even when the award beside it went. The bid sheet's
+  one-day **Clear**, and its range Clear, follow the same rule: on a day or span
+  holding an award the first tap names it ("Clear also takes Hunter's OIL award
+  (1 day) — tap Clear again to go ahead", the button reading "Clear — sure?"), the
+  second takes it; a changed span asks again. The range Clear goes through the
+  same door as the one-day Clear (`clearCells`), so a war-approved leave in the
+  span is removed or counted, never skipped unsaid (Fable's final read, F5).
+  Pins `awardclear.test.tsx`, `inputgate.test.ts`, `rangeclear.test.tsx`.
   Post-out shows only
   for a single-person selection. Partial writes report in the `sel-note` voice
   and keep the sheet up. The per-person negative-balance confirm the single
@@ -5234,6 +5290,50 @@ BidPicker's look and vocabulary, not instead of it.
     the raw rectangle.
   - The move itself is `moveCells(movers, delta)`, atomic — an occupied / Raptor
     / out-of-window landing refuses the whole move and says why in the banner.
+    Its OWN day says "It is already on that day — pick another day." and stages
+    no Confirm (it read "Nothing to move." — Fable's D262 scenarios, S6).
+  - **ONE CHIP, ONE MOVE** (owner, D262, 27 Sep 26 — "click on a single chip …
+    the move button should be enabled … The calendar can be removed"): the
+    one-day bid sheet's **Move** (in its decision row, the admin's in every stage
+    but a draft) is never greyed and has no date box — it PICKS THE CHIP UP into
+    this same move mode (`Matrix.tsx` sets `moveSel` to the one cell; `BidPicker`
+    `onMove`), so a single chip and a block move by one machine and one set of
+    landing rules. The old `DecisionSheet` (unmounted since 21 Sep 26) went with
+    its date box. **Changing by D264–D266 (27 Sep 26, `[LW-MOVE-STANDARD]`, not built yet):** a move will carry the
+    record it picked rather than the day's top one (a bid beside an OIL award moves alone), the day's list will move a
+    record by this same move mode (its date box goes), and the one-day and drag-selection sheets will share one layout.
+    **While a move is on** (the chip's, the drag-selection's
+    "Move…" and the event move alike — one `wireMove`): **the grid scrolls at its
+    edges** — the picked-up chip follows the mouse, so the mouse carried into the
+    36px band at the days' own left edge (from where the days begin, past the
+    frozen columns / drawer — the drag-select's `leftEdge`) or the grid's right
+    edge, within the days' box top to bottom, scrolls the days 18px/frame, only
+    while over the days (`.mx-wrap`, the floating date header, the desktop's foot
+    scrollbar — never the card's own controls, the frozen names or the month
+    buttons: resting there used to run the grid off toward January, Fable's final
+    read F1), only once the mouse has been out of every band since the move began
+    (judged by geometry alone — the sheet closes under a still mouse, S2, F4), and
+    it stops at the grid's end; a PRESS-AND-DRAG carries it too, on the
+    drag-select's own gesture machine (a mouse arms at 4px, a finger by holding
+    180ms — a quick swipe still scrolls the grid), whose bands scroll both ways,
+    and the RELEASE picks the day under the pointer NOW (desktop lands, phone
+    stages for Confirm) — released off the days it lands nothing and the preview
+    comes down (both final reads); **while a sheet is up the move reads no tap and
+    no press** (a phone's sheet shade lets a tap through to the grid — F2); **one
+    move at a time** — while one is on the event rows open nothing and each move's
+    entry ends the other kind (Astra's final read, 1); the phone's two-step follows
+    the screen's width AT THE TAP (Astra 4); **the month buttons keep
+    it on** (they are the grid's own); **a click on an EMPTY spot outside the grid
+    ends it** — never a control, the banner, a sheet, or a popup's shade (the
+    Legend's, the under-manned list's: `[data-testid$="scrim"]`); Escape and a
+    MOUSE right-click still end it, a finger's long press (Android's right-click)
+    never does; for its first 400ms a click on the SAME spot Move was pressed is
+    ignored (a double-click on Move landed the chip — S1; a place as well as a time,
+    so a quick deliberate click on another day still lands); and **leaving the Leave War ends it** (`subLwScreen` — the ghost
+    and its listeners had followed onto the next page, S9). A stage or war change
+    and Undo still end it (the existing guard). Pins `moveone.test.tsx`,
+    `movewire.test.ts`, `deciding.test.tsx`; e2e `moveOneTo` (`e2e/app.ts`);
+    walked at both widths (`docs/handpass/2026-09-27-d260-d262.md`).
   The `moved` dotted-orange edge marks the landed cells via
   the `shiftedFrom` state — but **only for a move made once bidding has CLOSED**
   (owner, 27 Aug 26): while a war is still OPEN people shuffle their own bids
@@ -5766,11 +5866,24 @@ entered and left by the same header button (`roster-arrange`, `aria-pressed`),
 lit accent (`.rtbtn.on`) while on; on a phone it is the ⇅ icon alone (the word
 rides `.rtlbl`, hidden ≤430px — "just show an arrow up and down icon"), on
 desktop "⇅ Rearrange" / "⇅ Rearranging". There is no Auto-sort button anywhere
-now — the store's `autoSortRoster` remains for the tests and a future home;
+now — the store's `autoSortRoster` remains for the tests;
 don't re-add the button or the strip without his ask. Pinned in
 `settingssheet.test.tsx` (toggle on/off, no bar, no Auto-sort, ⇅ + `.rtlbl`)
 and `e2e/leavewar.spec.ts` (both projects: drag from the toggle, nothing else
 appears, the phone's word is hidden).
+
+**His ask came 24 Sep 26 (D160, "9 yes"): a RESET ORDER line in ⚙ Settings** — its own small "Roster order" tray
+between the counters and the groups, admin-only like the whole sheet (`roster-reset-order`). It **asks once**
+("Really reset?", the Reset counters idiom; closing the sheet takes the question back, and arming either reset
+takes the other's question back — one "Really reset?" at a time) and is **greyed, with a line
+saying so, while the roster already follows the default** (`roster-order-hint`) — judged by the roster AS DRAWN
+(`rosterFollowsDefault`), so a man dragged away and back reads as the default, never a press that moves nothing; a hand-arranged roster's line says
+what the default is (each group as listed, pilots above WSOs, then CAT and callsign) and that Undo brings the
+arrangement back. The store's `resetRosterOrder` CLEARS the saved order (not `autoSortRoster`'s freeze of today's
+default), so the roster goes on following the default — a man who joins later, or whose CAT changes, lands in his
+ranked place rather than sinking to the end of his seat; one step for the one Undo; no write (and no Undo step) when
+there is nothing to reset. Still no button on the grid and no strip. Pinned in `settingssheet.test.tsx` (⚙ Settings —
+Reset order), `roster.test.ts` (resetRosterOrder …) and `undoaudit.test.ts` (Reset order is ONE step …).
 
 **The − / + ZOOM pair sits in the counter block's top row after OIL at BOTH
 widths, and a phone opens ONE step out (owner, 6 Sep 26 — "Can this be the

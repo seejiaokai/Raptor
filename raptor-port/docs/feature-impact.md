@@ -570,7 +570,7 @@ check the other):
   imposes no row rule. Pinned in `store.test.ts`
   §a member edits only their own row.
 - **The 27 Aug overnight pass added three more one-body seams to watch.**
-  `canDecide` is now read by the DecisionSheet/SelectSheet AND both store
+  `canDecide` is now read by the bid sheet's decision row (the DecisionSheet it replaced was removed 27 Sep 26, D262) and the SelectSheet AND both store
   decision writers (`setBidState`/`setBidStates`) — a decision gate grown in
   only one of those places is the seam. `moveProblem` is the validation half
   of `moveCells`, read by the commit AND the landing preview (`previewAt`) —
@@ -658,6 +658,17 @@ check the other):
   warning and `slotBar`'s "already on …" refusal both call it (spares are
   absent from EVD, so neither could have read the shared event stream). A
   future SC-seat rule goes through it, not beside it.
+- **"Which row is this" has ONE shape** ([CROWD-SWAP-SAYS-BUSY], 26 Sep 26). Every "not counting the place he is
+  planted into / dragged from" question compares a SEAT key (a person's place) with an EVENT's key (a row) — the
+  picker's busy walks (`avail.ts selfKey`) and the validator's leaving-seat tests (`crossDayIfPlaced`, `restIfPlaced`)
+  — and all of them go through `engine/keys.ts seatRow`. Two private trims had drifted: the programme one cut the
+  row's own number off an event's key (a man moved inside his own crowd was "already on" it), the validator's raw
+  compare never matched a crowd seat or an extra with its row. A new "exclude this place" question uses `seatRow`.
+- **The week's front edge is the week box's own left edge** (D275, 27 Sep 26). Every landing that puts a day "at the
+  front" — `pan.ts panDays`, `state/view.ts scrollWeekToDay` / `weekLeftDay`, `ui/highlights.ts bringIntoView` — measures
+  from it, and the ‹ arrow floats over the first few pixels by his choice. A room beside the arrows was built and taken out
+  before merging (`[ARROW-ROOM-OUT]`); if he ever asks for one, every landing must read ONE declared number, as that build
+  did — its roll-call of the landings is the five-flags evidence sheet §3d.
 - **Three editors over one list.** The Inputs page, the week cell and the board
   cell all edit `INPUTS`; they are kept from drifting only because all three
   funnel through `commitInputEdit`/`setInpField`. Add a fourth the same way.

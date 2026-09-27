@@ -1,0 +1,8 @@
+PASS  [W1-10-desk] TOPBAR-undo — expected: Edit Schedule's Undo takes the calendar move back (20 Jul) | observed: {"moved":["2026-07-21"],"u":{"label":"Undo — a batch of inputs","pressed":true},"back":["2026-07-20"]}
+NOTE  [W1-10-desk] TOPBAR-undo-label — {"label":"Undo — a batch of inputs","why":"what the button names — the change-recording re-test (D148) reads these"}
+PASS  [W1-10-desk] TOPBAR-redo — expected: and its Redo puts it on 21 Jul again | observed: {"r":{"label":"Redo — a batch of inputs","pressed":true},"again":["2026-07-21"]}
+NOTE  [W1-10-desk] TOPBAR-inputs-page — {"undoOnInputsPage":0,"why":"the Inputs page (and its calendar) carries no Undo of its own — Edit Schedule and the Leave War do"}
+NOTE  [W1-10-desk] NOON-bid — {"placed":true,"pressed":true,"why":""}
+PASS  [W1-10-desk] NOON-WORDS-1200 — expected: RE-WALK (register §12, W1-F4): the tap list prints the leave as 12:00–14:00 | observed: {"lines":["LL — local leave, 12:00–14:00 · filed on the Inputs page Change it on the Inputs page.","<LL — local leave, morning · bid, not decided yet Approve Ack Refuse Clear"]}
+PASS  [W1-10-desk] NOON-WORDS — expected: the war's words for a leave typed 12:00-14:00 read 12:00-14:00, as the Inputs page does (N1 decides the half, not the time shown) | observed: {"stored":{"s":720,"e":840},"sheet":"daylist-sheet","text":"Comet Mon 24 Aug ✕ LL — local leave, 12:00–14:00 · filed on the Inputs page Change it on the Inputs page. <LL — local leave, morning · bid, not decided yet Approve Ack Refuse Clear"}
+PASS  [W1-10-desk] console-errors — expected: no console / page errors / 4xx | observed: []

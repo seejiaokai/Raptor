@@ -1,0 +1,4 @@
+NOTE  [W5-06b-desktop] keyboard-reach — {"reached":true,"walkedOutside":["war-new","stage-advance","stage-back","bid-window","legend-open","counts-toggle","settings-open","roster-arrange","oil-tracker","lw-zoom-out","lw-zoom-in","manning-info-sets"]}
+NOTE  [W5-06b-desktop] reach — {"sheet":"bid-picker","picker":"covered by DIV.sheetscrim[sheet-scrim]","how":"keyboard: Tab to the picker behind the sheet, then ArrowDown","war":["JAN - DEC 27"]}
+FAIL  [W5-06b-desktop] stale-sheet-inert — expected: after the war switch the old sheet is closed or inert: two presses on its LL write nothing into 28 Dec 26 | observed: {"afterSwitch":"bid-picker","press1":" LEAVE LL OL OIL CCL FCL PL EL CL Clear That takes Ranger to -1 ANNUAL. Tap the same leave again to go ahead. +OIL PO PI","press2":"nothing","after":"nothing","war27":["12-28:NO CELL"],"war26":["12-28:LL"],"toasts":[]}
+NOTE  [W5-06b-desktop] errors — []

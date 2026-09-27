@@ -659,3 +659,214 @@ resolved statuses always carry their resolution date
 **Suggested improvement:** In the mock-up workflow: before any republish, list the page's published files and compare each with the local copy (size is enough to flag a difference); pass every file that differs, whoever changed it. After a redraw, `git status` on the picture folder is the other half: it names exactly which pictures the redraw changed, so nothing unchanged is re-uploaded and nothing changed is missed.
 
 **Principle:** When a published copy and a working copy can drift across sessions, a republish is a sync of the whole set against what is live, not an upload of what this session touched.
+
+### Observation 285: A guard hook built on an unmeasured claim about the harness
+
+**Status:** OPEN
+**Date:** 2026-09-26
+**Session context:** five-flags batch, [BG-GUARD-FALSE] (numbered 285, past 279 on the parallel `claude/accounts-new-person` and a gap for the absence-record chat)
+**Skill:** New skill candidate: guard hooks in `.claude/hooks/` (how a PreToolUse guard is written and tested)
+**Type:** open-source
+**Phase/Area:** writing a hook that encodes an environment fact
+
+**Issue:** A background-command guard was built on the project note "a background shell starts at the REPO ROOT". Another chat, whose session had started inside the sub-folder, was refused and then misled by the guard's own advice. Measuring it (a foreground `cd`, then a background `pwd`) showed background shells start in the chat's STARTING folder, not the repo root and not the foreground's current folder.
+
+**Suggested improvement:** When a hook or rule encodes how the harness behaves (where shells start, what env vars exist, what a tool returns), measure it in the current harness first, write the measurement into the hook's header, and make the hook's tests take the environment as an explicit input (so they pass from any starting folder).
+
+**Principle:** An environment fact written as a rule is a claim until it is measured in the environment the rule runs in; a guard built on an unmeasured claim refuses the wrong things and gives wrong advice with authority.
+
+### Observation 295: A walk script's NOTE that states the state goes stale the moment a fix changes it
+
+**Status:** OPEN
+**Date:** 2026-09-27
+**Session context:** five-flags batch, the re-walk after the code reads (numbered 295, past 294 on the parallel `claude/absence-record-d147-af6a50`)
+**Skill:** New skill candidate: bug-check order (raptor-port/docs/bug-check-order.md) — §5 "the re-walk", the walk scripts in `raptor-port/scripts/handpass/`
+**Type:** open-source
+**Phase/Area:** walk scripts written as assertions, re-run as the re-walk
+
+**Issue:** The first walk wrote its "report, don't judge" findings as NOTE lines whose TEXT described what it saw ("the purple ring AND its purple glow stay under the dots"). A reviewer's later finding removed that glow. On the re-walk the script printed the same sentence beside data that now read "no blur layers" — the log said the opposite of the measurement, and every check still passed, because a note is never judged. Only reading the raw values caught it.
+
+**Suggested improvement:** In §5's re-walk paragraph (and the walk brief): a NOTE's words are built from what was measured (a ternary on the reading), never a fixed description; and once a reviewer's finding is fixed, the note that observed it becomes a CHECK asserting the fixed behaviour before the re-walk runs — so the re-walk proves the fix instead of printing the old story.
+
+**Principle:** Anything a script prints as a description of the screen must be computed from the screen; a hard-coded observation is a comment that vouches, and a re-run makes it lie.
+
+### Observation 296: A mock-up picture whose premise is hand-set state must check the premise at the moment it is taken
+
+**Status:** OPEN
+**Date:** 2026-09-27
+**Session context:** five-flags batch, the mock-up for his look (`raptor-port/scripts/handpass/am/mk-five-flags.mjs`)
+**Skill:** New skill candidate: the mock-up recipe (`raptor-port/docs/mock/`, `scripts/handpass/am/mk-*.mjs` — pictures of the real app with the proposal injected)
+**Type:** open-source
+**Phase/Area:** drawing a proposal onto the running app
+
+**Issue:** To picture "your own puck" for other men, the script put the app's "this is you" class on their pucks, then called the usual close-up helper — which scrolls the target into view. The scroll repainted the day and silently stripped the hand-set class, so two "today" pictures showed a plain puck beside "after" pictures that were right. The pictures looked plausible; only comparing each pair by eye caught it.
+
+**Suggested improvement:** In the mock-up recipe: do every scroll first, apply the injected state last, and have the capture step assert the state is still there (log a WARNING into the output, or refuse the picture) — the same way the walk scripts assert what they photograph.
+
+**Principle:** When a picture's meaning depends on state you injected, the premise is part of the picture: verify it at capture time, after anything that can repaint, or the picture silently shows something else.
+
+### Observation 297: A visual change filed as a defect by a walker was built and FULL-checked before he saw a picture — and he rejected it on sight
+
+**Status:** OPEN
+**Date:** 2026-09-27
+**Session context:** five-flags batch, item 4 ([VIEW-ARROW-OVER-LIST]): the desktop week's room beside the ‹ arrow
+**Skill:** New skill candidate: bug-check order (raptor-port/docs/bug-check-order.md) — where a mock-up sits for a change the owner did not ask for
+**Type:** open-source
+**Phase/Area:** before building a visual change
+
+**Issue:** A walker filed "the floating arrow covers the start of an opened warning list" as a defect. It was built in a batch, walked by four walkers, read by two models and taken through the full gates — five older browser tests had to be re-pointed at the new front. Shown the result full screen beside the old look, the owner chose the old one ("I still prefer these"); the whole change now comes out again. The house rule (a picture before product code for a visual direction) was read as applying to his own asks, not to a walker's finding that changes how a surface he uses every day looks.
+
+**Suggested improvement:** In the bug-check order (or the look card's rules): any item that changes the LOOK or LAYOUT of a surface he uses daily — whoever filed it, and even when it is framed as a defect — gets a full-screen before/after picture put to him before it is built. The look card then carries only questions about behaviour.
+
+**Principle:** Whether a visual change is an improvement is the user's call, not the finder's; show the whole screen before and after before paying for the build and the check.
+
+### Observation 298: A walk script's picture folder must default to its OWN checkout, never an absolute worktree path
+
+**Status:** OPEN
+**Date:** 2026-09-27
+**Session context:** re-walking the five-flags batch after building D270–D272 and reverting the arrow room, in a different worktree folder from the one that wrote the walk scripts
+**Skill:** bug-check order (raptor-port/docs/bug-check-order.md §7.2, the walk drivers in raptor-port/scripts/handpass/)
+**Type:** internal
+**Phase/Area:** the re-walk — "write walk scripts as assertions of the RIGHT behaviour so re-running them IS the re-walk"
+
+**Issue:** ff-w1.mjs and ff-w3.mjs defaulted their picture folder to an ABSOLUTE path inside the worktree that wrote them (`.claude/worktrees/five-flags-batch-build-ef7d85/...`). By the next day that folder had been reused by ANOTHER chat for a different branch, so a plain re-run from this chat's worktree would have written its re-walk pictures into the other chat's checkout (and its git status). Caught only because the header was read before running; fixed by defaulting to `new URL('../../docs/img/handpass/…', import.meta.url)` and passing FF_SHOTS explicitly. The shared libs (`am/w2-lib.mjs`, `am/w1-lib.mjs`) still hard-code the MAIN checkout for their fixture state files.
+
+**Suggested improvement:** in bug-check-order §7.2 (or `docs/handpass/README.md`'s traps), one line: a walk script resolves every path it WRITES relative to itself (`import.meta.url`), never an absolute worktree path; reads of shared fixtures name their source. And a quick grep in the docs gate for `.claude/worktrees/` inside `scripts/handpass/*.mjs` write paths.
+
+**Principle:** A script meant to be re-run later must not remember WHERE it was first run — worktree folders are reused by other sessions, so any absolute path into one is a write into someone else's work.
+
+### Observation 299: A walk step that proves a REFUSAL must also prove the gesture happened
+
+**Status:** OPEN
+**Date:** 2026-09-27
+**Session context:** walking D271 (a man put on a row he is already on is refused) — scripted drags whose expected outcome is "nothing written"
+**Skill:** bug-check order (raptor-port/docs/bug-check-order.md §7.8, §8)
+**Type:** open-source
+**Phase/Area:** the walk — gesture steps whose correct result is NO change
+
+**Issue:** Three walk parts (a move from another row, a finger drag on the phone, a drop on the edit week) came back "nothing written" — exactly what a refusal looks like — while the press had in fact landed off the screen (the source below the fold) or been let go over the tab bar: no ghost ever rode the pointer. Only the missing toast gave it away; had the check read just the data ("both rows as they were, 0 pending"), all three would have PASSED on a drag that never happened. Fixed by requiring a ghost (`!!h.ghost`) and the refusal's own caption before the data check counts.
+
+**Suggested improvement:** §7.8 ("a gesture step asserts what the person SEES") gains a line: when the correct outcome of a gesture is that NOTHING changes (a refusal, a no-op), the step must also assert positive evidence that the gesture was performed — the drag ghost, the caption under it, the refusal's own words — or a missed press passes as a correct refusal.
+
+**Principle:** An assertion that "nothing changed" cannot tell a correct refusal from an action that never happened; pair every negative outcome with positive proof the action was attempted.
+
+### Observation 300: Check the message the screen is LEFT showing, not the list of messages raised
+
+**Status:** OPEN
+**Date:** 2026-09-27
+**Session context:** D271's hand-over fix — a note raised inside a shared save path ("kept once, as its holder")
+**Skill:** bug-check order (§7.8) and test-driven-development (assertions on user-visible state)
+**Type:** open-source
+**Phase/Area:** the walk / the test spy
+
+**Issue:** The unit test and the first walk both captured every toast raised (a spy on the toast hook) and found the note among them — PASS. The screen, which has ONE toast slot, showed "Input updated" instead: the caller's own success line followed the save and replaced the note in the same tick. Only a walk step reading the toast element's final text caught it. Fixed by raising the note on the next tick and asserting on the element's text and opacity; the unit test now asserts the note is the LAST message.
+
+**Suggested improvement:** where the UI has a single-slot surface (a toast, a banner, a status line), tests and walk steps assert what the slot SHOWS after the whole action, not that a message was emitted; and a message raised deep in a shared path is checked against every caller's own follow-up message.
+
+**Principle:** Emitting a message is not showing it — assert on the final visible state of a single-slot surface, because a later message in the same action silently wins.
+
+
+### Observation 290: One blind round can be both the plan's red team and the scenario design
+
+**Status:** OPEN
+**Date:** 2026-09-26
+**Session context:** [HUMAN-RETEST] the absence record — planning the re-test (numbered past the parallel branches: claude/five-flags-batch-build at 285)
+**Skill:** New skill candidate: bug-check order (raptor-port/docs/bug-check-order.md) — §4 rank 1 and rank 3, §4a
+**Type:** open-source
+**Phase/Area:** where to spend the other models before a walk
+
+**Issue:** For a re-test the "plan" IS a test plan (roll-call, doors, fixture, walker split). One brief asked both outside models, blind, to attack the plan for what it misses AND to design ranked failure scenarios. Both independently found the same top defect (a drag door that skips a confirmation sheet the dialog door asks) and the same plan error (a roll-call row naming the wrong component) — two findings that a code review and the builder's own plan had both missed.
+
+**Suggested improvement:** In the order's §4 / §4a, say that when the work is a re-test or a walk, the plan red team and the scenario design are one round with one brief (the finder wording + "what does this plan miss"), capped at one round, folded in before the walk.
+
+**Principle:** When the plan is itself a test plan, reviewing it and designing its scenarios are the same question — ask it once, blind, to two models.
+
+### Observation 291: An inherited walk helper found the "new" record by position — identity must come from the difference
+
+**Status:** OPEN
+**Date:** 2026-09-26
+**Session context:** [HUMAN-RETEST] the absence record — the host's first walk
+**Skill:** New skill candidate: bug-check order — §7.2 the scripted drivers (raptor-port/scripts/handpass/)
+**Type:** open-source
+**Phase/Area:** reusing a previous walk's helpers
+
+**Issue:** A helper from an earlier walk returned "the last record in the list" as the one it had just filed. This app puts a new record at the TOP of that list (another door puts it at the bottom), so the helper named an unrelated record; the walk then deleted the wrong one, and the app's (correct) count of 2 read like a defect for several minutes.
+
+**Suggested improvement:** Walk helpers name what they created by the DIFFERENCE between the ids before and after the action, never by position; and the first use of any inherited helper is on a case whose answer is known.
+
+**Principle:** Identify what an action created by the before/after difference, never by where it landed — position is an implementation detail that differs by door.
+
+### Observation 292: A reviewer's "confirmed defect" that a test pins as intended is a question, not a fix
+
+**Status:** OPEN
+**Date:** 2026-09-26
+**Session context:** [HUMAN-RETEST] the absence record — dispositioning the plan reviews' findings
+**Skill:** New skill candidate: bug-check order — §4 "what to do with what they hand back"
+**Type:** open-source
+**Phase/Area:** dispositioning a reviewer's finding
+
+**Issue:** A reviewer marked a behaviour CONFIRMED-defective (a sheet's Clear removes an award on the same day) with an exact fix. Reproduced on screen, it was real — and an existing test pinned it as the intended "admin's clear". Applying the fix would have silently reversed a design someone chose; leaving it would have left money disappearing with no word.
+
+**Suggested improvement:** Add a step to §4's list: before fixing a confirmed finding, search the tests for one that pins the opposite as intended; if one exists, the finding goes to the owner as a question (with the safe interim — e.g. make the action SAY what it removes), not into a fix.
+
+**Principle:** A reproduced behaviour that a test deliberately pins is a design disagreement; settle it with the owner, not with the reviewer's fix.
+
+### Observation 293: Scaffold the evidence sheet with every required section when the walk starts
+
+**Status:** OPEN
+**Date:** 2026-09-26
+**Session context:** [HUMAN-RETEST] the absence record, FULL tier, five walkers fanned out; numbered past the parallel branches' logs (highest seen elsewhere: 285).
+**Skill:** internal — the bug-check standing order (`raptor-port/docs/bug-check-order.md` §9) and the walker brief template
+**Type:** internal
+**Phase/Area:** the evidence sheet, written during the walk
+
+**Issue:** The sheet was opened with §0 (status), §1 (the eight answers), §2 (scope) and §3 (findings) and grew only where findings landed. The sections §9 requires — the consolidated roll-call with no blank cell, the orders walked, the break tests, errors seen, what was NOT walked, the gate counts — did not exist until the close, when they had to be assembled from six separate walk records. Each walker had kept its own roll-call rows, so nothing was lost, but the consolidated table (the owner's check 3 in §9) was a closing-time job, and a blank row could only be seen then.
+
+**Suggested improvement:** When the evidence sheet is created, lay down EVERY §9 section as an empty heading, and the roll-call table with one row per surface and its columns already drawn. Each walker's hand-back then fills rows of the ONE table (the host copies them in as each report lands), so a row nobody walked is visible as a blank during the walk, not at the report. Add the skeleton to the walker brief template.
+
+**Principle:** A required output format is scaffolded at the start, so a missing part shows as a visible gap while there is still time to fill it, instead of being discovered when the work is being closed.
+
+### Observation 294: A red-first test that reproduces the symptom in the wrong environment passes a fix the app still fails
+
+**Status:** OPEN
+**Date:** 2026-09-26
+**Session context:** [HUMAN-RETEST] the absence record; a phone finding (a held finger's trailing tap closing the sheet it opened) fixed red first, then re-walked on the rebuilt app. Numbered past the parallel branches' logs (highest seen elsewhere: 293).
+**Skill:** internal — the bug-check standing order (`raptor-port/docs/bug-check-order.md` §8.4, "red first") and the executor's fix loop
+**Type:** open-source
+**Phase/Area:** fixing a walk finding; the red-first test
+
+**Issue:** The fix's test went red before and green after, and the defect survived in the running app at every hold length. The test drove the gesture machine on a bare DOM: no sheet mounted, and the test environment has no `matchMedia`, so the touch-only listener that actually closed the sheet (a second document listener the open sheet installs on a coarse pointer) was never present. The test reproduced the symptom's first cause (a timing window) and missed the second (a sibling listener on the same node that `stopPropagation` does not stop). Only the re-walk on the rebuilt bundle caught it.
+
+**Suggested improvement:** When a finding's evidence came from a device-specific walk (phone, touch, a coarse pointer), the red-first test must mount the real surface the walk saw (the sheet, the popup) and stub the environment switch the code branches on (`matchMedia('(pointer: coarse)')`), or it is renamed to say what it proves. And the re-walk of such a fix is never skipped on the strength of the unit test.
+
+**Principle:** A test proves a fix only in the environment it reproduces; when the defect was found on a specific device, the test must stand up that device's branches, or the walk remains the only proof.
+
+### Observation 301: A test of an ABSENCE passes before the feature exists unless it first asserts the precondition was reached
+
+**Status:** OPEN
+**Date:** 2026-09-27
+**Session context:** Building D260–D262 on the absence-record branch (the Leave War's one-chip Move); red-first tests written before the code. Numbered past every open branch's log (highest seen: 294 here, 282 elsewhere; renumbered from 295 at the merge with main, which had its own 295).
+**Skill:** test-driven-development (the "watch it fail" step)
+**Type:** open-source
+**Phase/Area:** RED — verifying the new tests fail for the right reason
+
+**Issue:** Of 27 new tests for a new "move mode", 10 passed before any code was written. Several of them asserted that something was GONE after an action ("the move banner is gone after Undo / a stage change / leaving the page / a click outside the grid"). Before the feature existed, the step that should have ENTERED move mode silently did nothing (the button was still disabled), so the banner was never there, and "gone" was trivially true. The red run looked healthy (17 red) and hid 5 tests that could never have caught their own regression.
+
+**Suggested improvement:** In the RED step, read every test that passed and ask whether it passed for the right reason. For any assertion of absence, assert the precondition first in the same test (e.g. `expect(banner).toBeTruthy()` right after entering the mode, then the action, then `expect(banner).toBeNull()`). Then break the feature once (the break test) and confirm each such test goes red.
+
+**Principle:** An assertion that something is absent proves nothing unless the same test first shows it was present; a red run is judged by the tests that passed as much as by the ones that failed.
+
+### Observation 302: A guard against an accident must key on what makes it an accident, and the builder's own tests cannot see the harm of a guard they were written around
+
+**Status:** OPEN
+**Date:** 2026-09-27
+**Session context:** D262 (the Leave War's one-chip Move) — a guard against a double-click on "Move" landing the chip; numbered past every open branch's log (highest seen: 295 here, 282 elsewhere; renumbered from 296 at the merge with main, which had its own 296).
+**Skill:** test-driven-development (and the executor's red-first loop)
+**Type:** open-source
+**Phase/Area:** designing a guard; which tests can falsify it
+
+**Issue:** To stop a double-click's second click from landing the picked-up item, the first cut ignored EVERY click for 400 ms after the mode began. All the new unit tests passed — because every one of them, written by the same author, waited 420 ms before its deliberate click (encoding the guard's own assumption). The full browser suite then failed one OLDER test, written months before the guard, that clicks a landing day straight after "Move": a fast deliberate click was silently dropped. The accident (the second click of a double-click) differs from the deliberate act by PLACE (it lands where the first click did), not only by time; the fix keyed the guard on both.
+
+**Suggested improvement:** (1) When adding a guard that suppresses user input, write down what distinguishes the accident from the intended act (time, place, target, pointer type) and key the guard on the narrowest such property, with one test of the accident AND one test of a fast legitimate act that must still pass. (2) Run the pre-existing suites that exercise the same surface EARLY (right after the guard is added), not only at the final gate — they were written without knowledge of the guard, so they are the tests able to falsify it.
+
+**Principle:** Tests written alongside a guard inherit its assumptions and cannot expose its cost; the older tests of the same surface are the independent check, and a guard should discriminate on the property that actually defines the accident, not on a proxy like elapsed time.

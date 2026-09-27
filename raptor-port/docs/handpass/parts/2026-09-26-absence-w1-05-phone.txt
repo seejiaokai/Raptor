@@ -1,0 +1,21 @@
+NOTE  [W1-05-phone] setup — {"A":{"reaper":"imuibs5zzarjldd","piston":"imuibs7malu0sqc","bid":true},"chipSize":{"w":14,"h":6}}
+PASS  [W1-05-phone] HOLD-DRAG-moved — expected: held 260 ms then carried: the chip lands on 22 Jul | observed: {"days":["2026-07-22"],"g":{"dragged":true,"inFlight":{"ghosts":1,"lit":["2026-07-22"],"dragging":true},"after":{"ghosts":0,"lit":[],"dragging":false}}}
+PASS  [W1-05-phone] HOLD-DRAG-told — expected: the pending bid under it is replaced and the filer told | observed: ["This replaces Reaper's LL bid on 22 Jul on the Leave War","Moved to 22 Jul"]
+PASS  [W1-05-phone] HOLD-DRAG-no-ghost — expected: no ghost left after the lift | observed: {"ghosts":0,"lit":[],"dragging":false}
+PASS  [W1-05-phone] HOLD-DRAG-war — expected: the war: his LL on 22 Jul with the amber notice mark | observed: {"box":"LL","mark":"!","title":"","cls":"c appr raptor"}
+PASS  [W1-05-phone] REFUSED-stays — expected: refused whole: the LL stays on 20 Jul, the refusal names his OL | observed: {"days":["2026-07-20"],"t":["Piston already has OL on 21 Jul — LL can't overlap it"]}
+PASS  [W1-05-phone] REFUSED-no-ghost — expected: a refused finger drop leaves no ghost and no lit day | observed: {"inFlight":{"ghosts":1,"lit":["2026-07-21"],"dragging":true},"after":{"ghosts":0,"lit":[],"dragging":false}}
+PASS  [W1-05-phone] FLICK-CHIP-no-lift — expected: a quick flick from a chip does not lift it (no ghost, not moved) | observed: {"days":["2026-07-20"],"inFlight":{"ghosts":0,"lit":[],"dragging":false},"t":[]}
+NOTE  [W1-05-phone] FLICK-CHIP-month — {"m0":"July 2026","m1":"July 2026","why":"the swipe verdict belongs to EMPTY space; a flick that starts on a chip is neither a drag nor a page"}
+FAIL  [W1-05-phone] SWIPE-left — expected: a 150 px finger swipe left on empty space pages to August — nothing else opens | observed: {"m0":"July 2026","m1":"July 2026","pop":false,"dlg":false,"p":{"x":158.33359375,"y":364.07265625,"cell":{"x":111.703125,"y":235.390625,"w":54.859375,"h":151.390625}}}
+FAIL  [W1-05-phone] SWIPE-right — expected: a finger swipe right pages back to July | observed: August 2026
+FAIL  [W1-05-phone] SWIPE-slow — expected: a slower sweep (120 ms settle, then 150 px) still pages the month and does not add | observed: {"m3":"July 2026","dlg":false}
+PASS  [W1-05-phone] HOLD-ADD-dialog — expected: a 650 ms finger hold on empty space opens the add dialog for 18 Aug only — not the popover too | observed: {"dlg":{"open":true,"title":"New input · Aug 18","person":"stiff","type":"Training","hint":"Added on Aug 18. For a multi-day span, use the Inputs page."},"pop":{"open":false},"p":{"x":102.47421875,"y":571.03984375,"cell":{"x":55.84375,"y":463.953125,"w":54.859375,"h":125.984375}}}
+PASS  [W1-05-phone] HOLD-ADD-fits — expected: the add dialog fits the phone, Save on screen | observed: {"box":{"l":22,"r":368,"t":206.15625,"b":637.84375},"save":{"t":598.84375,"b":626.84375},"vw":390,"vh":844}
+PASS  [W1-05-phone] HOLD-ADD-exact — expected: exactly one input on 18 Aug (the signed-in admin's own) | observed: [{"date":"Aug 18","endDate":"","person":"stiff","type":"LL"}]
+PASS  [W1-05-phone] TAP-popover — expected: a quick finger tap opens the day popover (not the add dialog) | observed: {"pop":{"open":true,"label":"10 Jul details","rows":[]},"dlg":{"open":false}}
+PASS  [W1-05-phone] TAP-popover-fits — expected: the popover fits the phone width | observed: {"l":0,"r":390,"t":623,"b":844,"vw":390,"vh":844}
+FAIL  [W1-05-phone] TAP-chip-edit — expected: a quick tap on a chip opens that input's edit | observed: {"open":false}
+PASS  [W1-05-phone] HOLD-CHIP-in-place — expected: a chip held and released where it lay: nothing moves, no edit opens, no ghost | observed: {"d3":false,"after":{"ghosts":0,"lit":[],"dragging":false}}
+NOTE  [W1-05-phone] toasts-left — ["Input added"]
+PASS  [W1-05-phone] console-errors — expected: no console / page errors / 4xx | observed: []

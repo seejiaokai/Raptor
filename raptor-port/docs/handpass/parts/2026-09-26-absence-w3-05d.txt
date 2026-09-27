@@ -1,0 +1,3 @@
+NOTE  [W3-05d] figures — {"filed":1,"before":{"w26":{"lve":"4.5","oil":"3","ccl":"0","fcl":"0","cl":"0","pl":"0","lvetot":"4.5","medtot":"0"},"w27":{"lve":"4.5","oil":"3","ccl":"0","fcl":"0","cl":"0","pl":"0","lvetot":"4.5","medtot":"0"}},"after":{"w26":{"lve":"1.5","oil":"3","ccl":"0","fcl":"0","cl":"0","pl":"0","lvetot":"7.5","medtot":"0"},"w27":{"lve":"1.5","oil":"3","ccl":"0","fcl":"0","cl":"0","pl":"0","lvetot":"7.5","medtot":"0"}}}
+PASS  [W3-05d] newyear-charges-once — expected: the leave across 31 Dec charges its three working days ONCE (LVE TOT +3, not +6), and both wars show the one balance ([LEAVE-YEAR]) | observed: {"lvetot26":["4.5","7.5"],"lvetot27":["4.5","7.5"],"lve26":["4.5","1.5"],"lve27":["4.5","1.5"]}
+NOTE  [W3-05d] errors — []

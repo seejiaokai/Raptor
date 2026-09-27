@@ -1,0 +1,17 @@
+/* D262 re-walk, phone — an event move and a tap on the page beside the grid: what is under the finger, what the page
+   sees, and whether the move ends. Read only apart from the move itself. */
+const M = await import('./mv-lib.mjs')
+const { browser, page } = await M.openMv('a')
+await M.lwOpen(page, '2026-01-05')
+await page.locator('[data-testid="event-0-2026-01-01"], [data-testid^="event-band-0-2026-01-01"]').first().scrollIntoViewIfNeeded()
+const ev = await page.evaluate(() => { const e = document.querySelector('[data-testid="event-0-2026-01-01"]') || document.querySelector('[data-testid^="event-band-0-2026-01-01"]'); const b = e.getBoundingClientRect(); return { x: b.left + b.width / 2, y: b.top + b.height / 2 } })
+await M.tapAt(page, ev.x, ev.y)
+console.log('sheet:', (await M.sheetNow(page)).open)
+await M.press(page, 'event-move')
+await page.waitForTimeout(500)
+const spot = await page.evaluate(() => { const c = document.querySelector('.stage > .card').getBoundingClientRect(); const x = Math.max(2, Math.round(c.left / 2)), y = Math.round(innerHeight / 2); const h = document.elementFromPoint(x, y); const chain = []; for (let n = h; n && chain.length < 5; n = n.parentElement) chain.push(`${n.tagName}.${String(n.className).split(' ')[0]}[${n.getAttribute('data-testid') || ''}]`); return { x, y, card: [Math.round(c.left), Math.round(c.top)], chain: chain.join(' < ') } })
+console.log('spot:', JSON.stringify(spot))
+await page.evaluate(() => { window.__ev = []; for (const t of ['pointerdown', 'click']) document.addEventListener(t, e => window.__ev.push(`${t}->${e.target.getAttribute && (e.target.getAttribute('data-testid') || e.target.className)}`), true) })
+await M.tapAt(page, spot.x, spot.y)
+console.log('after tap:', await page.locator('[data-testid="event-move-banner"]:visible').count(), (await page.evaluate(() => window.__ev)).join(' '))
+await browser.close()

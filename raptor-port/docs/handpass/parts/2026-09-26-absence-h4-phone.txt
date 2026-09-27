@@ -1,0 +1,10 @@
+PASS  [H4-phone] setup — expected: a medical with remarks on Friday, Friday published, the guest view on | observed: {"M":"slipway","f":1,"pub":{"pressed":true,"label":"Publish day"},"guest":true}
+PASS  [H4-phone] admin-face — expected: the admin reads the medical's type and remarks on the published face | observed: HL all day Drifter A H4 knee — physio every morning
+PASS  [H4-phone] member-face — expected: a member reads the medical's type and remarks on the published face (D211) | observed: HL all day Drifter A H4 knee — physio every morning
+NOTE  [H4-phone] member-filter-options — {"first":[{"v":"all","t":"Everyone"},{"v":"dj","t":"Ace"},{"v":"shaft","t":"Anvil"}],"picked":{"v":"all","t":"Everyone"}}
+PASS  [H4-phone] member-inputs-row — expected: a member sees another man's medical on the Inputs page with its remarks, and cannot edit or delete it | observed: {"text":"Drifter 17 Jul HL H4 knee — physio every morning now","edit":false,"del":false}
+PASS  [H4-phone] member-war-other — expected: a member tapping another man's medical on the war gets the read-only sheet or nothing | observed: {"open":"raptor-sheet","text":"Drifter 2026-07-17 HL · APPROVED ✕ INPUTS PAGE Filed on the Inputs page, so it is already approved — change it there, not here.","buttons":["bid-cancel:✕"]}
+PASS  [H4-phone] guest-door — expected: the waiting screen offers "View the schedule" while the guest view is on (D221) | observed: {"request":true,"waiting":false}
+PASS  [H4-phone] guest-medical — expected: the guest sees the medical row as a member does, read only (D213, D215) | observed: {"row":"HL all day Drifter A H4 knee — physio every morning","nav":[],"info":0,"inputs":false,"war":false}
+PASS  [H4-phone] guest-no-doors — expected: the guest has no Inputs page, no Leave War and no ⓘ panel | observed: {"row":"HL all day Drifter A H4 knee — physio every morning","nav":[],"info":0,"inputs":false,"war":false}
+NOTE  [H4-phone] errors — []

@@ -5,6 +5,15 @@ import { memoryBackend } from '../state/storage'
 import { StageBar } from './Chrome'
 import { Matrix } from './Matrix'
 
+/* ONE CHIP, ONE MOVE (owner, D262, 27 Sep 26): the window's Move no longer reads a date box — it picks the chip up
+   into the grid's move mode, and a click on a day lands it. A person's click comes a beat after the Move (the move
+   ignores clicks for its first moments — a double-click on Move must land nothing). */
+async function moveTo(testid: string) {
+  fireEvent.click(screen.getByTestId('decide-shift'))
+  await act(async () => { await new Promise(r => setTimeout(r, 420)) })
+  fireEvent.click(screen.getByTestId(testid))
+}
+
 beforeEach(() => {
   initStore(memoryBackend())
   /* deciding is an admin activity, and advancing the cycle to 'closed' is
@@ -178,7 +187,7 @@ describe('deciding a bid', () => {
 describe('the one input window', () => {
   const PENDING = 'cell-asics-2026-01-23'
 
-  it('moves an input from ONE click — no drag-select needed', () => {
+  it('moves an input from ONE click — no drag-select needed', async () => {
     /* His words: "even a single click on an input, i should be able to click
        on a move button to move the input just like how i drag and select and
        click on move". */
@@ -186,21 +195,19 @@ describe('the one input window', () => {
     setRole('admin')
     render(<Matrix />)
     fireEvent.click(screen.getByTestId(PENDING))
-    fireEvent.change(screen.getByTestId('shift-date'), { target: { value: '2026-01-26' } })
-    fireEvent.click(screen.getByTestId('decide-shift'))
+    await moveTo('cell-asics-2026-01-26')
     expect(getState().grid.asics['2026-01-23']).toBeFalsy()
     expect(getState().grid.asics['2026-01-26']).toBeTruthy()
   })
 
-  it('says WHY when a move cannot land, rather than doing nothing', () => {
+  it('says WHY when a move cannot land, rather than doing nothing', async () => {
     advanceStage()
     setRole('admin')
     render(<Matrix />)
     fireEvent.click(screen.getByTestId(PENDING))
     // 24 Feb already holds ASICS's acknowledged OIL bid — the day is taken
-    fireEvent.change(screen.getByTestId('shift-date'), { target: { value: '2026-02-24' } })
-    fireEvent.click(screen.getByTestId('decide-shift'))
-    expect(screen.getByTestId('shift-problem').textContent).toContain('already has something booked')
+    await moveTo('cell-asics-2026-02-24')
+    expect(screen.getByTestId('move-banner').textContent).toContain('already booked')
   })
 
   it('an APPROVED input on a PUBLISHED war offers remarks and nothing else', () => {
@@ -383,11 +390,10 @@ describe('shifting a bid', () => {
     setRole('admin')
   })
 
-  it('moves the bid and leaves it pending on the new date', () => {
+  it('moves the bid and leaves it pending on the new date', async () => {
     render(<Matrix />)
     fireEvent.click(screen.getByTestId(PENDING))
-    fireEvent.change(screen.getByTestId('shift-date'), { target: { value: '2026-01-30' } })
-    fireEvent.click(screen.getByTestId('decide-shift'))
+    await moveTo('cell-asics-2026-01-30')
     expect(getState().grid.asics?.['2026-01-23']).toBeUndefined()
     expect(getState().grid.asics['2026-01-30']).toBe('*LL')
     expect(getState().states.asics['2026-01-30']).toEqual({
@@ -395,45 +401,38 @@ describe('shifting a bid', () => {
     })
   })
 
-  it('marks the moved cell so the trail is visible on the grid', () => {
+  it('marks the moved cell so the trail is visible on the grid', async () => {
     render(<Matrix />)
     fireEvent.click(screen.getByTestId(PENDING))
-    fireEvent.change(screen.getByTestId('shift-date'), { target: { value: '2026-01-30' } })
-    fireEvent.click(screen.getByTestId('decide-shift'))
+    await moveTo('cell-asics-2026-01-30')
     expect(screen.getByTestId('cell-asics-2026-01-30').querySelector('.c')!.className).toContain('moved')
   })
 
-  it('says why, rather than doing nothing, when the destination is taken', () => {
+  it('says why, rather than doing nothing, when the destination is taken', async () => {
     render(<Matrix />)
     fireEvent.click(screen.getByTestId(PENDING))
     // ASICS already has LL on 2026-01-08.
-    fireEvent.change(screen.getByTestId('shift-date'), { target: { value: '2026-01-08' } })
-    fireEvent.click(screen.getByTestId('decide-shift'))
-    expect(screen.getByTestId('shift-problem').textContent).toContain('already has something booked')
+    await moveTo('cell-asics-2026-01-08')
+    expect(screen.getByTestId('move-banner').textContent).toContain('already booked')
     expect(getState().grid.asics['2026-01-23']).toBe('*LL')
   })
 
-  it('cannot be moved until a date is chosen', () => {
+  /* REVERSED 27 Sep 26 by D262 ("the move button should be enabled ... The calendar can be removed"): Move used to be
+     greyed until a date was typed, and the date box bounded the move to the war. It is never greyed now, and the war's
+     bound is the grid itself — a move lands only on a day the grid draws, inside the war (moveCells' own rule). */
+  it('can be moved at once — Move is never greyed out, and there is no date to type', () => {
     render(<Matrix />)
     fireEvent.click(screen.getByTestId(PENDING))
-    expect(screen.getByTestId('decide-shift').hasAttribute('disabled')).toBe(true)
-  })
-
-  it('bounds the move to the period it belongs to', () => {
-    render(<Matrix />)
-    fireEvent.click(screen.getByTestId(PENDING))
-    const input = screen.getByTestId('shift-date')
-    expect(input.getAttribute('min')).toBe('2026-01-01')
-    expect(input.getAttribute('max')).toBe('2026-12-31')
+    expect(screen.getByTestId('decide-shift').hasAttribute('disabled')).toBe(false)
+    expect(screen.queryByTestId('shift-date')).toBeNull()
   })
 
   // The second half of the move. Management approves the date they moved it
   // to, and the trail has to survive that.
-  it('keeps the trail when the moved bid is then approved', () => {
+  it('keeps the trail when the moved bid is then approved', async () => {
     render(<Matrix />)
     fireEvent.click(screen.getByTestId(PENDING))
-    fireEvent.change(screen.getByTestId('shift-date'), { target: { value: '2026-01-30' } })
-    fireEvent.click(screen.getByTestId('decide-shift'))
+    await moveTo('cell-asics-2026-01-30')
     fireEvent.click(screen.getByTestId('cell-asics-2026-01-30'))
     fireEvent.click(screen.getByTestId('decide-approve'))
     expect(getState().states.asics['2026-01-30']).toEqual({
@@ -449,19 +448,18 @@ describe('the moved mark waits for bidding to close', () => {
   const MOVED = 'cell-asics-2026-01-30'
   // Close the war, move ASICS's pending bid to 2026-01-30 (a shift), and it
   // carries the dotted "moved" edge — the trail management can see.
-  const makeShift = () => {
+  const makeShift = async () => {
     advanceStage()                    // admin (file beforeEach) closes the war
     render(<Matrix />)
     fireEvent.click(screen.getByTestId(PENDING))
-    fireEvent.change(screen.getByTestId('shift-date'), { target: { value: '2026-01-30' } })
-    fireEvent.click(screen.getByTestId('decide-shift'))
+    await moveTo('cell-asics-2026-01-30')
   }
-  it('draws the moved edge once bidding has closed', () => {
-    makeShift()
+  it('draws the moved edge once bidding has closed', async () => {
+    await makeShift()
     expect(screen.getByTestId(MOVED).querySelector('.c')!.className).toContain('moved')
   })
-  it('hides it again if the war is reopened for bidding', () => {
-    makeShift()
+  it('hides it again if the war is reopened for bidding', async () => {
+    await makeShift()
     act(() => { reopenStage() })       // back to open — the bid (and its shift) survive
     expect(screen.getByTestId(MOVED).querySelector('.c')!.className).not.toContain('moved')
   })

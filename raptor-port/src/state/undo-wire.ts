@@ -27,7 +27,8 @@ import { boardTab } from '../ui/board'
 import { toast } from '../ui/toast'
 import { CURWEEK } from '../engine/waves'
 import { parseVerId, dayIso } from '../engine/verid'
-import { lwStore, LW_COLLS, selectWar, focusDay, bumpLwHistEpoch } from '../leavewar/state/store'
+import { lwStore, LW_COLLS, selectWar, focusDay, bumpLwHistEpoch, restoreBlocker } from '../leavewar/state/store'
+import { restoreAbsencesOf } from '../leavewar/sync'
 
 /* the 8 collections schedStore owns (the scheduler week + inputs + plan). NOT
    `weekstash` — that is the separate weekstashStore's one collection, registered
@@ -150,6 +151,8 @@ export function installGlobalUndo(): void {
     reinstallLocks,
     resolvePublishDay,
     postRestore,
+    /* the war's own rules on what a restore may put back — a bid over a medical filed since (W3-F8) */
+    restoreRefusal: (changes, dir) => restoreBlocker(changes as any, dir, restoreAbsencesOf(changes as any)),
     // currentActor OMITTED — the timeline defaults to deriveActor().
   })
 }

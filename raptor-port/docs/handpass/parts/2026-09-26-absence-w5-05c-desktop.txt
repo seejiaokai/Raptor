@@ -1,0 +1,6 @@
+NOTE  [W5-05c-desktop] cast — {"P1":"slipway","P2":"dj","published":true}
+NOTE  [W5-05c-desktop] P1 — {"filed":1,"beforePO":["07-13:·","07-14:·","07-15:·","07-17:LL"],"po":{"done":true,"archiveDefaultOn":true},"afterPO":["07-13:·","07-14:PO","07-15:PO","07-17:LL PO{PO}"],"archived":true}
+PASS  [W5-05c-desktop] P1-row-kept — expected: file then post out: his July row still draws, 17 Jul LL with the PO tag | observed: ["07-13:·","07-14:PO","07-15:PO","07-17:LL PO{PO}"]
+NOTE  [W5-05c-desktop] P2 — {"po":{"done":true,"archiveDefaultOn":true},"afterPO":["07-13:·","07-14:PO","07-15:PO","07-17:PO"],"filed":1,"afterFile":["07-13:·","07-14:PO","07-15:PO","07-17:LL PO{PO}"],"archived":true}
+PASS  [W5-05c-desktop] P2-row-kept — expected: post out then file: his July row still draws, 17 Jul LL with the PO tag | observed: ["07-13:·","07-14:PO","07-15:PO","07-17:LL PO{PO}"]
+NOTE  [W5-05c-desktop] errors — []

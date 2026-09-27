@@ -1,0 +1,15 @@
+NOTE  [RW-W3-06] bundle — http://localhost:4175/assets/index-KbvILaPW.js
+NOTE  [RW-W3-06] a-medical-approved — {"fill":"","approve":"","pieces":["Jul 27–Jul 31: \"till 31 Jul\""]}
+PASS  [RW-W3-06] a-medical-war-writes-till — expected: a five-day run approved on the war is one Input reading "till 31 Jul" | observed: {"fill":"","approve":"","pieces":["Jul 27–Jul 31: \"till 31 Jul\""]}
+PASS  [RW-W3-06] AB3-a-medical — expected: after medical, every surviving piece's "till" names its own last day (F3 / AB3 — the war's own remark) | observed: {"act":{"added":2,"asked":["certificate"],"toast":"Talisman's LL on 29 Jul is cut for the ATT C — that leave goes back to the balance","iid":["imuihdmkth7bxbs","imuihdmkti7ebcn"]},"pieces":["Jul 27–Jul 28: \"till 28 Jul\"","Jul 30–Jul 31: \"till 31 Jul\""]}
+NOTE  [RW-W3-06] b-refuse-approved — {"fill":"","approve":"","pieces":["Jul 27–Jul 31: \"till 31 Jul\""]}
+PASS  [RW-W3-06] b-refuse-war-writes-till — expected: a five-day run approved on the war is one Input reading "till 31 Jul" | observed: {"fill":"","approve":"","pieces":["Jul 27–Jul 31: \"till 31 Jul\""]}
+PASS  [RW-W3-06] AB3-b-refuse — expected: after refuse, every surviving piece's "till" names its own last day (F3 / AB3 — the war's own remark) | observed: {"act":"nothing","pieces":["Jul 27–Jul 28: \"till 28 Jul\"","Jul 30–Jul 31: \"till 31 Jul\""]}
+NOTE  [RW-W3-06] c-delete-approved — {"fill":"","approve":"","pieces":["Jul 27–Jul 31: \"till 31 Jul\""]}
+PASS  [RW-W3-06] c-delete-war-writes-till — expected: a five-day run approved on the war is one Input reading "till 31 Jul" | observed: {"fill":"","approve":"","pieces":["Jul 27–Jul 31: \"till 31 Jul\""]}
+PASS  [RW-W3-06] AB3-c-delete — expected: after delete, every surviving piece's "till" names its own last day (F3 / AB3 — the war's own remark) | observed: {"act":"","pieces":["Jul 27–Jul 28: \"till 28 Jul\"","Jul 30–Jul 31: \"till 31 Jul\""]}
+NOTE  [RW-W3-06] d-move-approved — {"fill":"","approve":"","pieces":["Jul 27–Jul 31: \"till 31 Jul\""]}
+PASS  [RW-W3-06] d-move-war-writes-till — expected: a five-day run approved on the war is one Input reading "till 31 Jul" | observed: {"fill":"","approve":"","pieces":["Jul 27–Jul 31: \"till 31 Jul\""]}
+PASS  [RW-W3-06] AB3-d-move — expected: after move, every surviving piece's "till" names its own last day (F3 / AB3 — the war's own remark) | observed: {"act":"moved","pieces":["Jul 27–Jul 29: \"till 29 Jul\"","Aug 3–Aug 4: \"till 4 Aug\""]}
+NOTE  [RW-W3-06] toasts — ["Talisman's LL on 29 Jul is cut for the ATT C — that leave goes back to the balance"]
+NOTE  [RW-W3-06] errors — []

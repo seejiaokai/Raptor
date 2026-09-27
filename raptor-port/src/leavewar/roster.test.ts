@@ -24,6 +24,8 @@ import {
 import {
   autoSortRoster,
   displayRoster,
+  resetRosterOrder,
+  rosterFollowsDefault,
   getState,
   initStore as lwInitStore,
   manningRowIds,
@@ -224,6 +226,52 @@ describe('roster order + labels are admin-gated writers', () => {
     setRosterOrder(['gnd_1', 'sxo_1'])
     autoSortRoster()
     expect(displayRoster().map(p => p.id)).toEqual(autoOrder(CREW))
+  })
+
+  /* THE "RESET ORDER" LINE IN ⚙ SETTINGS (owner, D160, 24 Sep 26 — "9 yes"): a hand-arranged roster goes back to the
+     default order. It CLEARS the saved order rather than saving today's default as a hand order (autoSortRoster's way):
+     the roster then FOLLOWS the default, so a man who joins later, or whose CAT changes, lands in his ranked place
+     instead of sinking to the end of his seat as a newcomer to a saved order does. */
+  it('resetRosterOrder puts a hand order back to the default — by clearing it, so the roster follows the default', () => {
+    moveRosterRow('ops_c', 'ops_a')
+    expect(displayRoster().map(p => p.id)).not.toEqual(autoOrder(CREW))
+    resetRosterOrder()
+    expect(getState().rosterOrder).toEqual([])
+    expect(displayRoster().map(p => p.id)).toEqual(autoOrder(CREW))
+  })
+
+  it('after a reset, a man who joins lands in his ranked place (a saved order would sink him to the end of his seat)', () => {
+    const joiner = person('ops_b', { seat: 'pilot', band: 'ops', q: 'B' })
+    moveRosterRow('ops_c', 'ops_a'); resetRosterOrder()
+    setPeople([...CREW, joiner])
+    const ids = displayRoster().map(p => p.id)
+    expect(ids.indexOf('ops_b'), 'B ranks between A and C').toBe(ids.indexOf('ops_a') + 1)
+    /* the contrast that decided it: the old freeze-the-default write */
+    setPeople(CREW); autoSortRoster(); setPeople([...CREW, joiner])
+    const frozen = displayRoster().map(p => p.id)
+    expect(frozen.indexOf('ops_b'), 'under a saved order he sinks below D').toBeGreaterThan(frozen.indexOf('ops_d'))
+  })
+
+  it('rosterFollowsDefault reads the roster AS DRAWN: a man dragged away and back is the default again (Fable F10)', () => {
+    expect(rosterFollowsDefault()).toBe(true)
+    moveRosterRow('ops_c', 'ops_a')
+    expect(rosterFollowsDefault(), 'a real change').toBe(false)
+    moveRosterRow('ops_a', 'ops_c')                                   // and back to exactly where the default has them
+    expect(getState().rosterOrder.length, 'a hand order is still saved').toBeGreaterThan(0)
+    expect(rosterFollowsDefault(), '…but it draws the default').toBe(true)
+  })
+
+  it('resetRosterOrder is admin-only, and writes nothing when the roster already follows the default', () => {
+    moveRosterRow('ops_c', 'ops_a')
+    const hand = getState().rosterOrder.slice()
+    setRole('member')
+    resetRosterOrder()
+    expect(getState().rosterOrder, 'a member cannot reset it').toEqual(hand)
+    setRole('admin')
+    resetRosterOrder()
+    const s0 = getState()
+    resetRosterOrder()
+    expect(getState(), 'a second reset is no write at all').toBe(s0)
   })
 
   it('a member cannot reorder or relabel', () => {

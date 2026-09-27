@@ -1815,7 +1815,7 @@ describe('the batch writers (drag-select)', () => {
   it('a member can fill in the window but never batch-decide', () => {
     setRole('member')
     expect(setCells(cells('ramp', '2026-01-06'), 'LL').written).toBe(1)
-    expect(setBidStates(cells('ramp', '2026-01-06'), 'approved')).toEqual({ decided: 0, skipped: 1 })
+    expect(setBidStates(cells('ramp', '2026-01-06'), 'approved')).toEqual({ decided: 0, skipped: 1, already: 0 })
     expect(getState().states.ramp['2026-01-06'].state).toBe('pending')
   })
 
@@ -1823,7 +1823,7 @@ describe('the batch writers (drag-select)', () => {
     setCells(cells('ramp', '2026-01-06', '2026-01-07'), 'LL')
     advanceStage()  // decisions live at closed/published — canDecide, same as the single writer
     const r = setBidStates([...cells('ramp', '2026-01-06', '2026-01-07'), ...cells('tata', '2026-01-09')], 'approved')
-    expect(r).toEqual({ decided: 2, skipped: 1 })
+    expect(r).toEqual({ decided: 2, skipped: 1, already: 0 })
     expect(getState().states.ramp['2026-01-06'].state).toBe('approved')
     expect(getState().states.ramp['2026-01-07'].state).toBe('approved')
   })
