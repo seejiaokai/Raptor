@@ -46,6 +46,7 @@
    archived man keeps his account but it is SUSPENDED — Archive suspends it, an overseas
    posting suspends it, Enable is refused while he is archived, and Restore enables it
    whatever suspended it; his row sits in Admin → Users' Archived group. */
+import { ELOG } from '../engine/editlog'
 import { store } from '../engine/hooks'
 import { PEOPLE } from '../engine/people'
 import { SESSION } from './auth'
@@ -61,7 +62,10 @@ export type AccountRole = 'admin' | 'main'
 /* `offBy: 'po'` — the account was SUSPENDED BY A POSTING OUT ([POST-OUT-OUTCOMES], D280 — the overseas outcome suspends
    it on the date), so "he's back" (Restore, Undo post out) enables exactly that suspension and never one an admin made
    by hand; any Enable or Suspend by hand drops it (the plan's Round 1, Astra A5 — a hand change is never undone) */
-export interface Account { id: string; name: string; role: AccountRole; pid: string; on: boolean; offBy?: 'po' }
+/* `seenFrom` ([DRAFT-PENDING], Fable F6, 28 Sep 26): the change history's next line number when the account was made —
+   someone given access later starts with nothing new; the lines before it are the squadron's past, not news to him
+   (state/changes.ts). Absent on the seeded accounts (the demo history starts empty). */
+export interface Account { id: string; name: string; role: AccountRole; pid: string; on: boolean; offBy?: 'po'; seenFrom?: number }
 /* `seat` 'FCP' | 'RCP' | 'GND' (never '' on a request made now — the card refuses it; an
    old stored one reads '' and the admin picks at approval); `cat` '' for personnel */
 export interface AccessRequest { id: string; name: string; cs: string; ini: string; seat: string; cat: string; at: number; seenBy: string[] }
@@ -119,7 +123,7 @@ export function accountsLoad(): void {
       const name = normName(x.name)
       if (!name || name.length > MAX_SIGNIN || seenId.has(x.id) || seenName.has(name) || seenPid.has(x.pid)) continue
       seenId.add(x.id); seenName.add(name); seenPid.add(x.pid)
-      out.push({ id: x.id, name, role: x.role, pid: x.pid, on: x.on !== false, ...(x.on === false && x.offBy === 'po' ? { offBy: 'po' as const } : {}) })
+      out.push({ id: x.id, name, role: x.role, pid: x.pid, on: x.on !== false, ...(x.on === false && x.offBy === 'po' ? { offBy: 'po' as const } : {}), ...(Number.isFinite(x.seenFrom) ? { seenFrom: +x.seenFrom } : {}) })
     }
     /* THE WAY BACK FROM A LOCK-OUT (Fable R2-6, Astra R3-4): a stored list with no admin
        who can sign in gets the seed admin ADDED, keeping every real account — and the
@@ -268,7 +272,7 @@ export function addAccount(nameIn: any, pid: string, role: AccountRole): string 
   const bad = nameProblem(name) || pidProblem(pid) || (isAccountRole(role) ? null : 'Pick member or admin')
   if (bad) return bad
   return commitIntent('account.add', null, () => {
-    writeAccounts([...ACCOUNTS_LIST, { id: newAccountId(), name, role, pid, on: true }])
+    writeAccounts([...ACCOUNTS_LIST, { id: newAccountId(), name, role, pid, on: true, seenFrom: ELOG.next }])
     if (requestByName(name)) writeReqs(ACCESS_REQS.filter(r => r.name !== name))
   })
 }
@@ -310,7 +314,7 @@ export function approveRequest(reqId: string, pid: string, role: AccountRole): s
   const bad = nameProblem(rq.name) || pidProblem(pid) || (isAccountRole(role) ? null : 'Pick member or admin')
   if (bad) return bad
   return commitIntent('access.approve', null, () => {
-    writeAccounts([...ACCOUNTS_LIST, { id: newAccountId(), name: rq.name, role, pid, on: true }])
+    writeAccounts([...ACCOUNTS_LIST, { id: newAccountId(), name: rq.name, role, pid, on: true, seenFrom: ELOG.next }])
     writeReqs(ACCESS_REQS.filter(r => r.id !== reqId))
   })
 }
@@ -377,7 +381,7 @@ export function suspendForPosting(pid: string): 'done' | 'none' | 'lock' {
 export function enableAfterPosting(pid: string): boolean {
   const a = accountOfPid(pid)
   if (!a || a.on || a.offBy !== 'po') return false
-  writeAccounts(ACCOUNTS_LIST.map(x => (x.id === a.id ? { id: x.id, name: x.name, role: x.role, pid: x.pid, on: true } : x)))
+  writeAccounts(ACCOUNTS_LIST.map(x => (x.id === a.id ? { id: x.id, name: x.name, role: x.role, pid: x.pid, on: true, ...(x.seenFrom ? { seenFrom: x.seenFrom } : {}) } : x)))
   return true
 }
 /* [ONE-DOOR] (owner D310, D322, 27 Sep 26): ARCHIVE suspends his sign-in — as a hand suspension (no mark: Restore
@@ -387,7 +391,7 @@ export function enableAfterPosting(pid: string): boolean {
 export function suspendForArchive(pid: string): 'done' | 'none' | 'lock' {
   const a = accountOfPid(pid)
   if (!a || !a.on) return 'none'
-  const list = ACCOUNTS_LIST.map(x => (x.id === a.id ? { id: x.id, name: x.name, role: x.role, pid: x.pid, on: false } : x))
+  const list = ACCOUNTS_LIST.map(x => (x.id === a.id ? { id: x.id, name: x.name, role: x.role, pid: x.pid, on: false, ...(x.seenFrom ? { seenFrom: x.seenFrom } : {}) } : x))
   if (!list.some(canSignInAsAdmin)) return 'lock'
   writeAccounts(list)
   return 'done'
@@ -395,7 +399,7 @@ export function suspendForArchive(pid: string): 'done' | 'none' | 'lock' {
 export function enableForRestore(pid: string): boolean {
   const a = accountOfPid(pid)
   if (!a || a.on) return false
-  writeAccounts(ACCOUNTS_LIST.map(x => (x.id === a.id ? { id: x.id, name: x.name, role: x.role, pid: x.pid, on: true } : x)))
+  writeAccounts(ACCOUNTS_LIST.map(x => (x.id === a.id ? { id: x.id, name: x.name, role: x.role, pid: x.pid, on: true, ...(x.seenFrom ? { seenFrom: x.seenFrom } : {}) } : x)))
   return true
 }
 /* HIS WELCOME NOTE SEEN ([ONE-DOOR], D305): the signed-in man clears his OWN `back` — the `person.backSeen` command,
@@ -461,7 +465,7 @@ export function addPersonAndAccount(nameIn: any, np: NewPerson, role: AccountRol
   return saidOf(commitPeopleSettingsIntent('account.addNew', null, txn => {
     const pid = putNewPerson(np)
     if (postIn !== undefined) HOOKS.warPostIn(txn, pid, postIn)
-    writeAccounts([...ACCOUNTS_LIST, { id: newAccountId(), name, role, pid, on: true }])
+    writeAccounts([...ACCOUNTS_LIST, { id: newAccountId(), name, role, pid, on: true, seenFrom: ELOG.next }])
     if (requestByName(name)) writeReqs(ACCESS_REQS.filter(r => r.name !== name))
   }))
 }
@@ -477,7 +481,7 @@ export function approveRequestNew(reqId: string, np: NewPerson, role: AccountRol
   return saidOf(commitPeopleSettingsIntent('access.approveNew', null, txn => {
     const pid = putNewPerson(np)
     if (postIn !== undefined) HOOKS.warPostIn(txn, pid, postIn)
-    writeAccounts([...ACCOUNTS_LIST, { id: newAccountId(), name: rq.name, role, pid, on: true }])
+    writeAccounts([...ACCOUNTS_LIST, { id: newAccountId(), name: rq.name, role, pid, on: true, seenFrom: ELOG.next }])
     writeReqs(ACCESS_REQS.filter(r => r.id !== reqId))
   }))
 }

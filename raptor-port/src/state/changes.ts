@@ -19,6 +19,12 @@ import { store } from '../engine/hooks'
 import { ELOG, type ELogRow } from '../engine/editlog'
 import { me } from './perms'
 import { commitSettingsIntent } from './people-settings-commit'
+import { ACCOUNTS_LIST } from './accounts'
+
+const seenFromOf = (pid: string): number | null => {
+  const a = ACCOUNTS_LIST.find(x => x.pid === pid)
+  return a && Number.isFinite(a.seenFrom) ? (a.seenFrom as number) : null
+}
 
 export const CHANGES_TYPES = ['changes.seen'] as const
 
@@ -48,7 +54,9 @@ export function changesLoad(): void {
 export function isNewToMe(r: ELogRow, pid: string | null = me()): boolean {
   if (!pid || !r.pid || r.pid === pid) return false
   const s = SEEN[pid]
-  if (!s) return true
+  /* no seen record yet: someone given access after the history began starts with nothing new (his account's
+     `seenFrom`, Fable F6); a seeded account has none and reads every other person's line as new */
+  if (!s) { const from = seenFromOf(pid); return from == null || r.seq >= from }
   return r.seq > s.upto && !s.extra.includes(r.seq)
 }
 
@@ -60,7 +68,8 @@ export function markSeen(rows: readonly ELogRow[]): boolean {
   if (!pid) return false
   const seqs = rows.filter(r => isNewToMe(r, pid)).map(r => r.seq)
   if (!seqs.length) return false
-  const cur = SEEN[pid] || { upto: 0, extra: [] }
+  const from = seenFromOf(pid)
+  const cur = SEEN[pid] || { upto: from != null ? Math.max(0, from - 1) : 0, extra: [] }
   const extra = new Set<number>([...cur.extra, ...seqs])
   let upto = cur.upto
   for (const r of ELOG.rows) {                        // the log is kept in number order

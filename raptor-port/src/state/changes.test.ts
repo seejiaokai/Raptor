@@ -7,9 +7,10 @@
    `EditLogSeen`, own row; data-model.md §11). */
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest'
 import { storeBackend, store } from '../engine/hooks'
+import { PEOPLE } from '../engine/people'
 import { ELOG, elogClear, logAction } from '../engine/editlog'
 import { initStore, resetSession } from './store'
-import { signIn, sessionFor } from './accounts'
+import { signIn, sessionFor, addAccount, ACCOUNTS_LIST } from './accounts'
 import { isNewToMe, markSeen, changesLoad } from './changes'
 import { commitSettingsIntent } from './people-settings-commit'
 
@@ -78,5 +79,20 @@ describe('the command gate', () => {
     const r = commitSettingsIntent('changes.seen', { owner: 'stiff' }, () => store.set('changeseen', { stiff: { upto: 99, extra: [] } }))
     expect((r as any).ok).toBe(false)
     expect(fake.get('sqn142_changeseen')).toBeUndefined()
+  })
+})
+
+describe('someone given access later (Fable F6)', () => {
+  it('an account made after the history began starts with nothing new; what others do after that is new to him', () => {
+    as('ad', 'a'); logAction(0, 'before he joined')
+    const pid = Object.keys(PEOPLE).find(id => !(PEOPLE as any)[id].special && !(PEOPLE as any)[id].archived && !(PEOPLE as any)[id].deleted && !ACCOUNTS_LIST.some(a => a.pid === id))!
+    expect(addAccount('newbie@x', pid, 'main')).toBeNull()
+    const acct = ACCOUNTS_LIST.find(a => a.name === 'newbie@x')!
+    expect(acct.seenFrom).toBeGreaterThan(0)
+    logAction(1, 'after he joined')
+    resetSession({ user: acct.id, role: 'member', pid: acct.pid } as any)
+    const [before, after] = ELOG.rows.slice(-2)
+    expect(isNewToMe(before!)).toBe(false)
+    expect(isNewToMe(after!)).toBe(true)
   })
 })
