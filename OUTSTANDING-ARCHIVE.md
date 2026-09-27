@@ -2148,3 +2148,54 @@ pressure (D29). **Do:** read the long items first (`[ARCH-STACK]`, `[DRAFT-PENDI
 facts first given a live home; then set the tripwire back near what the file holds. **Place:** docs only, any time. **His go, 27 Sep 26 (D324): now, on its
 own branch `claude/backlog-tidy` cut from `main`, merged BEFORE `[ONE-DOOR]` and `[LW-MOVE-STANDARD]` (his "merge live").**
 
+
+*Moved here 2026-09-27 by backlog-archive.mjs ([LW-MOVE-BENEATH]). Forward facts: `.claude/rules/decisions/leave-war.md`, `raptor-port/docs/handpass/2026-09-27-lw-move-standard.md`.*
+
+### [LW-MOVE-BENEATH] A bulk Move leaves behind a bid that shares its day with leave filed on the Inputs page — low (W3-F3, 26 Sep 26)
+Found by the absence-record re-test's war walker: Ghost has a morning of leave filed on the Inputs page and an afternoon
+bid beside it; a dragged block over that day, then Move…, says "move 2 entries" and leaves his afternoon bid where it
+was. Its Delete half is FIXED on the re-test's branch (the bid beneath goes, the filed leave stays — `store.ts
+clearRequestsAt`); Move is not the same fix, because the filed leave STAYS (it is the Inputs page's) while the bid would
+travel alone, and where it lands beside another day's records is a design question (the move lands all-or-nothing on
+the TOP record today). **Build:** decide whether the bid travels alone (landing only on a day whose same half is free)
+or the whole day is refused with a sentence naming the filed leave; then red first. Evidence
+`raptor-port/docs/handpass/parts/2026-09-26-absence-w3.md` §W3-F3. **Place:** low; with [LW-LOCKMARK] (the lock by day
+vs by record is the same root).
+**Its sibling (Fable's D260–D262 scenarios, S3, 27 Sep 26):** a bid that shares its day with an OIL AWARD cannot be moved
+by any door — the ladder puts the award above the bid, so the day's top record is not movable: the one-day sheet does not
+open (two records open the tap list, whose bid line has no Move), and a dragged block's Move… does not offer it. The same
+root — a move reads the day's TOP record — and the same decision (the bid travels alone, landing where its half is free).
+Pre-existing; not his ruling. **DECIDED 27 Sep 26 BY D265** (`.claude/rules/decisions/leave-war.md`, his pictures of Vector's
+3 Jan): a record that can move always offers Move and travels ALONE — the award, and Inputs-filed leave, stay where they
+are; landing rules unchanged. Built by `[LW-MOVE-STANDARD]`.
+
+
+*Moved here 2026-09-27 by backlog-archive.mjs ([LW-MOVE-STANDARD]). Forward facts: `.claude/rules/decisions/leave-war.md`, `raptor-port/docs/handpass/2026-09-27-lw-move-standard.md`, `raptor-port/docs/ui-contracts.md`.*
+
+### [LW-MOVE-STANDARD] One look for the Leave War's sheets, and a Move on every record that can move — his D264–D266 (27 Sep 26)
+**His rulings** (`.claude/rules/decisions/leave-war.md` D264, D265, D266, 27 Sep 26, with four phone pictures from his look
+at PR #444): **D264** the one-day sheet and the drag-selection sheet share one format and look (the rows in one order; Move
+and Delete / Clear the same buttons, in the same place); **D265** a record that can move always offers Move — a bid beside
+an OIL award or beside Inputs-filed leave moves alone (today a move reads only the day's TOP record, so Vector's 3 Jan, an
+award above an LL bid, offers no Move in the day's list or in a dragged block); **D266** the day's list (several records)
+moves each record by the grid's move mode, no date box — he chooses which. **Build:** (1) a mock-up of the real sheets at
+desktop and phone, his approval first (D264 is visual); (2) a move carries the RECORDS it picked, not the day's top one
+(`store.ts` `moveCells` / `movableCells` / `shiftBid`, `moveAbsenceById` by record id; `Matrix.tsx` `moveSel`); (3) the
+day's list's Move picks its record up into the move mode, its date box goes (`DayList.tsx`); (4) the sheets to the approved
+layout (`BidPicker.tsx`, `SelectSheet.tsx`). Red first each. **Tier:** FULL (a record's move — the absence record and what
+is saved); walk both widths; both reads. Folds in `[LW-MOVE-BENEATH]` (decided by D265). **Place (D267, his
+"1", 27 Sep 26):** NEXT after PR #444 merges — on a NEW branch from `main`, in a fresh chat; the mock-up first.
+**Started 27 Sep 26** on `claude/rulings-d264-d266-leave-war-f0f4ab` (beside `[ONE-DOOR]` on `claude/one-door` — no shared
+function; rulings D330–D339). **The mock-up is up for his answers:** `raptor-port/docs/mock/lw-move-standard.html` (and its
+Artifact), made by `raptor-port/scripts/handpass/am/mk-lw-move-standard.mjs` — four questions: the order (A what's there
+first — recommended — or B new leave first), one word "Delete" for the one-day Clear and the block's Delete, a
+member's Move on his own bid's one-day sheet while bidding is open, and the Move button's look (D330 — one look on every
+sheet, a little apart; four designs in section 7, B the grey chip with a teal arrow recommended). **ANSWERED 27 Sep 26 —
+"1 A, 2 yes, 3 yes, 4 B, 5 keep" (D331–D335): the mock-up is the design of record; the build is next.**
+Fable's scenario design (bug-check order §4 rank 1): `raptor-port/docs/superpowers/specs/2026-09-27-lw-move-standard-scenarios-fable.md`
+(the roll-call, 32 ranked scenarios, six contradictions and how each is taken — stated on the mock-up page).
+**BUILT and FULL-checked 27 Sep 26** on this branch — evidence `raptor-port/docs/handpass/2026-09-27-lw-move-standard.md`:
+walked 40/40 at both widths, 26 wires broken on purpose (each turns a named test red), Fable's and Astra's blind reads
+(six findings, all fixed red first; re-walked). **Next: his look (§10 of the sheet) and "merge live"**; then this item and
+`[LW-MOVE-BENEATH]` (built by it) go to the archive.
+

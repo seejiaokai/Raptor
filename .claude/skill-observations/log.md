@@ -1006,6 +1006,21 @@ resolved statuses always carry their resolution date
 
 **Principle:** A fixture helper must answer every confirmation the real control can raise, or fixtures fail silently and the failure is blamed on the code under test.
 
+### Observation 314: A branch name in backticks in a ruling row reads as a missing file to the document gate
+
+**Status:** OPEN
+**Date:** 2026-09-27
+**Session context:** [LW-MOVE-STANDARD] paperwork after PR #447 merged: marking D264–D267 and D330–D335 built and archiving the two backlog items (the ONE-DOOR chat, running in parallel, holds 306–309; this chat's range is 310–319)
+**Skill:** New skill candidate: backlog / rulings paperwork (the repo's archive script and document gate)
+**Type:** internal
+**Phase/Area:** filing a ruling row's "Where it lives now" cell
+
+**Issue:** The rows were marked "BUILT … on `claude/rulings-d264-d266-leave-war-f0f4ab`". The document gate's homes check reads every backticked text with a slash in a rulings row as a FILE home, so it failed ten rows with "no such file exists". Because the archive script runs the gate after each move and rolls back when it is not clean, both item moves were undone, safely. The older rows (D262, D260) write the branch plainly, "on the branch claude/…", which is why they pass.
+
+**Suggested improvement:** In `record-decisions.md` or at the head of `DECISIONS.md` (the filing steps), add one line: in a "Where it lives now" cell, backticks are for files only; write a branch, PR or commit in plain text. Or teach the homes check to skip a `claude/…` branch-shaped path.
+
+**Principle:** When a checker infers meaning from formatting (backticks = a file path), that formatting convention is part of the checker's contract and belongs where writers read, not only in the checker's code.
+
 ### Observation 315: A walk step that asserts "not X" passes silently when the element was never drawn
 
 **Status:** OPEN
