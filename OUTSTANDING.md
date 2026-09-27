@@ -1392,9 +1392,10 @@ is saved); walk both widths; both reads. Folds in `[LW-MOVE-BENEATH]` (decided b
 "1", 27 Sep 26):** NEXT after PR #444 merges — on a NEW branch from `main`, in a fresh chat; the mock-up first.
 **Started 27 Sep 26** on `claude/rulings-d264-d266-leave-war-f0f4ab` (beside `[ONE-DOOR]` on `claude/one-door` — no shared
 function; rulings D330–D339). **The mock-up is up for his answers:** `raptor-port/docs/mock/lw-move-standard.html` (and its
-Artifact), made by `raptor-port/scripts/handpass/am/mk-lw-move-standard.mjs` — three questions: the order (A what's there
-first — recommended — or B new leave first), one word "Delete" for the one-day Clear and the block's Delete, and a
-member's Move on his own bid's one-day sheet while bidding is open. Nothing built before his answers.
+Artifact), made by `raptor-port/scripts/handpass/am/mk-lw-move-standard.mjs` — four questions: the order (A what's there
+first — recommended — or B new leave first), one word "Delete" for the one-day Clear and the block's Delete, a
+member's Move on his own bid's one-day sheet while bidding is open, and Move's look (his "same design and colour and be
+abit different": grey / blue / grey with an arrow — the arrow recommended; section 7). Nothing built before his answers.
 
 ### [PO-RESTORE-POSTING] The Quals Restore clears a posting it did not make — low (Fable's final code read, N7, 26 Sep 26)
 Unchanged `main` code, found by Fable's read of the absence-record re-test: `sync.ts restoreArchivedPerson` (the Quals

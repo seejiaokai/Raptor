@@ -22,8 +22,9 @@ the later merge keeps both (D78).
   moving a record by the move mode. Backlog `OUTSTANDING.md` `[LW-MOVE-STANDARD]`. Branch cut from `main` (`818dbb04`).
 - **Where it stands:** the mock-up `raptor-port/docs/mock/lw-move-standard.html` (Artifact
   https://claude.ai/artifact/68SpLtpVYdimk6zZzfZohP), pictures of the real app, redrawn by
-  `raptor-port/scripts/handpass/am/mk-lw-move-standard.mjs desktop|phone` (the build on 4177). His three questions: the
-  order (A — recommended — or B), "Delete" as the one word, a member's Move on his own bid's one-day sheet.
+  `raptor-port/scripts/handpass/am/mk-lw-move-standard.mjs desktop|phone` (the build on 4177). His four questions: the
+  order (A — recommended — or B), "Delete" as the one word, a member's Move on his own bid's one-day sheet, Move's look
+  (grey / blue / grey with an arrow — his "same design and colour and be abit different"; the arrow recommended).
 - **Next:** his answers → rulings (D330–D339) → the build, red first (the move carries the RECORDS it picked, by id —
   `store.ts` `moveCells` / `movableCells` / `moveProblem` read the day's TOP record today) → the walk at both widths →
   Fable's scenarios, both reads → the gates under the PC lock → his look → "merge live". Tier FULL.

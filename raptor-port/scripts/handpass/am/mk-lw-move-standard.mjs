@@ -20,7 +20,12 @@ const OUT = 'docs/mock/img/lw-move-standard'
 mkdirSync(OUT, { recursive: true })
 const { browser, page, errors, cdp } = await openMv('a')
 const done = []
-async function step(name, fn) { try { await fn() } catch (e) { console.log('FAILED', name, String(e && e.message || e).slice(0, 300)) } }
+/* MK_PART=7 draws only section 7 (the fixture always runs) — a redraw of one section need not repaint the rest */
+const ONLY = process.env.MK_PART || ''
+async function step(name, fn) {
+  if (ONLY && name !== 'fixture' && !name.startsWith(ONLY)) return
+  try { await fn() } catch (e) { console.log('FAILED', name, String(e && e.message || e).slice(0, 300)) }
+}
 
 /** The picture: the phone's whole screen; on the desktop, the open sheet with a strip of the grid above it. `premise`
     is checked at the moment of the shot (Observation 296) — a picture whose drawn state was repainted away is refused. */
@@ -219,6 +224,37 @@ await step('6 member', async () => {
   await tapCell(page, 'bane', '2026-01-06'); await snap('6-member-today'); await closeSheets(page)
   await tapCell(page, 'bane', '2026-01-06'); await drawOneDay('A'); await snap('6-member-A', '.mk-sel'); await closeSheets(page)
 })
+
+/* ---------- 7 · MOVE'S LOOK (his "Can move be the same design and colour and be abit different", 27 Sep 26) ----------
+   Three ways, each in the sheet's own chip family: 'grey' as first drawn (Move the quiet grey chip, like AM / Pick a range);
+   'blue' the same chip with the move mode's own blue on its words and edge, NO fill (a blue fill is the sheet's
+   "chosen" look — Just this day, Whole day — and Move would read as already picked); 'arrow' the grey
+   chip with an arrow before the word. Delete stays the dashed grey in all three. Pictured on the one-day sheet (order A)
+   and the day's list, the sheet alone. */
+const LOOK_CSS = '.bidsheet .dchip.move.mkblue, .bidsheet .dl-acts .dchip.move.mkblue { background: var(--panel-2) !important; border: 1px solid rgba(59, 198, 232, .55) !important; color: var(--accent) !important; }'
+async function drawLook(look) {
+  await page.evaluate(look => {
+    const s = [...document.querySelectorAll('.bidsheet[role="dialog"]')].pop()
+    for (const b of s.querySelectorAll('button.dchip.move')) {
+      if (look === 'blue') b.classList.add('mkblue')
+      if (look === 'arrow') b.textContent = '⇄ Move'
+      b.classList.add('mk-look')
+    }
+  }, look)
+}
+async function snapSheet(name, premise) {
+  await page.waitForTimeout(300)
+  if (premise && !(await page.evaluate(p => !!document.querySelector(p), premise))) { console.log('REFUSED', name, '— premise gone:', premise); return }
+  await page.locator('.bidsheet[role="dialog"]:visible').last().screenshot({ path: `${OUT}/${WIDTH}-${name}.png` })
+  done.push(name); console.log('ok', name)
+}
+for (const look of ['grey', 'blue', 'arrow']) {
+  await step(`7 look ${look}`, async () => {
+    await page.addStyleTag({ content: LOOK_CSS })
+    await tapCell(page, 'xray', '2026-01-04'); await drawOneDay('A'); await drawLook(look); await snapSheet(`7-look-${look}-oneday`, '.mk-look'); await closeSheets(page)
+    await tapCell(page, 'divot', '2026-01-03'); await drawList(); await drawLook(look); await snapSheet(`7-look-${look}-list`, '.mk-look'); await closeSheets(page)
+  })
+}
 
 console.log('pictures', done.length, done.join(' '))
 console.log('errors', errors.length ? errors.slice(0, 8) : 'none')
