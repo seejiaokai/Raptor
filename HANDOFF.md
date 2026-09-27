@@ -39,7 +39,9 @@ the later merge keeps both (D78).
   This chat's ports: preview 4178, E2E 4196; rulings D320–D329.
 - **Traps:** `npm run docsize` FAILS on `main` already — `OUTSTANDING.md` 1433 lines against its 1330 tripwire; the
   Docs guard will be red on every branch until a docs-only tidy lands (put to him: its own tiny branch, merged first).
-  Ports 4186/4187 held by the old presentation server. Scripted edits keep each file's line endings.
+  Ports 4186/4187 held by the old presentation server. Scripted edits keep each file's line endings. Reported by the
+  other chat (27 Sep 26, not yet checked here): Codex's configured default model is refused on this account — pass
+  `-m gpt-5.6-sol`; and stop a Codex run by its own PID, never `taskkill /IM codex.exe` (it ends every chat's run).
 <!-- /now -->
 
 <!-- now:claude/absence-record-d147-af6a50 -->
