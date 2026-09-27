@@ -930,3 +930,18 @@ resolved statuses always carry their resolution date
 **Suggested improvement:** (1) When a branch has merged in another open branch, compare that branch's current head with the merged commit (`git log <merged>..origin/<branch> -- <src dirs>`) before the final gates and before reporting ready; re-merge if code moved. (2) When CI and a local full run disagree, run the failing file ALONE before blaming CI speed — a test with a time window can fail on a FAST run and pass under load, the reverse of the usual flaky.
 
 **Principle:** Code taken from a sibling branch is a snapshot of work still moving. Re-check the sibling's head before calling your own work checked. A green full run is not proof a timing-sensitive test passes: load can hide a failure that shows when the test runs quickly.
+
+### Observation 310: A docs-only branch cannot pass the document gate while a shared file on main is already over its tripwire
+
+**Status:** OPEN
+**Date:** 2026-09-27
+**Session context:** `[LW-MOVE-STANDARD]` — the mock-up committed before any code (the house rule: a picture first). Numbered 310, leaving 306–309 for the parallel `[ONE-DOOR]` chat (the "parallel branches are parallel writers" rule).
+**Skill:** New skill candidate: the mock-up recipe (`raptor-port/docs/mock/`, `scripts/handpass/am/mk-*.mjs`) — and the document gate's ceiling rule (`raptor-port/scripts/docsize.mjs`)
+**Type:** internal
+**Phase/Area:** committing a mock-up (docs and a script, no `raptor-port/src`) for his approval
+
+**Issue:** `OUTSTANDING.md` on `main` was already 122 lines over its 1330 ceiling (two earlier merges carried code, so the gate only DEFERRED it). The mock-up's commit adds a 5-line note to its backlog item and touches no `src`, so `docsize` fails it: "a docs-only change IS the trim pass". The same holds for every chat that opens a mock-up-only pull request — each would have to do the whole backlog tidy (a shared file two parallel chats both edit) or wait for code. Here the branch was pushed with no pull request (no GitHub check runs on a plain branch push), deferring the question to the first code commit.
+
+**Suggested improvement:** When a merge leaves a tier-0 file over its ceiling "deferred", file the docs-only tidy as its own backlog item with an owner and a place in the order at once, and say in the handoff that every docs-only PR is blocked until it lands. In the mock-up recipe: push the mock-up branch without a PR while the gate is red for a file the mock-up did not grow; open the PR with the first code commit.
+
+**Principle:** A deferral that is legal on one change becomes a blocker for the next change of a different kind; whoever defers must file the debt where the next writer will meet it.

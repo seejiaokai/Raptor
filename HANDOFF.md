@@ -15,6 +15,25 @@ the later merge keeps both (D78).
 
 ## Now
 
+<!-- now:claude/rulings-d264-d266-leave-war-f0f4ab -->
+### `claude/rulings-d264-d266-leave-war-f0f4ab` — `[LW-MOVE-STANDARD]` (D264–D266): the MOCK-UP is up, waiting for his three answers; nothing built — written 27 Sep 26, verify before use
+- **The job:** his D264–D266 (`.claude/rules/decisions/leave-war.md`) — one format and look for the one-day and the
+  drag-selection sheets, a Move on every record that can move (a bid beside an OIL award moves alone), the day's list
+  moving a record by the move mode. Backlog `OUTSTANDING.md` `[LW-MOVE-STANDARD]`. Branch cut from `main` (`818dbb04`).
+- **Where it stands:** the mock-up `raptor-port/docs/mock/lw-move-standard.html` (Artifact
+  https://claude.ai/artifact/68SpLtpVYdimk6zZzfZohP), pictures of the real app, redrawn by
+  `raptor-port/scripts/handpass/am/mk-lw-move-standard.mjs desktop|phone` (the build on 4177). His three questions: the
+  order (A — recommended — or B), "Delete" as the one word, a member's Move on his own bid's one-day sheet.
+- **Next:** his answers → rulings (D330–D339) → the build, red first (the move carries the RECORDS it picked, by id —
+  `store.ts` `moveCells` / `movableCells` / `moveProblem` read the day's TOP record today) → the walk at both widths →
+  Fable's scenarios, both reads → the gates under the PC lock → his look → "merge live". Tier FULL.
+- **Parallel (D302):** `[ONE-DOOR]` on `claude/one-door` (main checkout, preview 4178, E2E 4196) — told each other our
+  files: it takes `leavewar/sync.ts` archive/restore and `store.ts setPostIn` only; this chat takes the Leave War sheets
+  (`BidPicker.tsx` minus its posting parts, `SelectSheet.tsx`, `DayList.tsx`, `Matrix.tsx`, `select.ts`,
+  `bidpicker.css`) and `store.ts`'s move functions. It may later touch `people.ts inSquadron` and the posting record in
+  `store.ts` (more than one in/out window) — it will message first. Ports here: preview 4177, E2E 4195.
+<!-- /now -->
+
 <!-- now:claude/post-out-outcomes -->
 ### `claude/post-out-outcomes` — `[POST-OUT-OUTCOMES]` BUILT, FULL-checked, his look card answered; `main` merged in — his "merge live" next (the last of the four) — written 27 Sep 26 ~13:30, verify before use
 - **Where it stands:** PR #446. #445, #444 and #443 are MERGED (his order: #445, #444, #443); `main` (`d77f1e56`) merged in
