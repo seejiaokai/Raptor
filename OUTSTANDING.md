@@ -49,19 +49,19 @@ list (13–23 Sep 26), its finished entries and the "In plain terms" block are i
 whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaining).
 
 **His order — to the database step, about two months away (D203, 26 Sep 26; D173, D147 within it):**
-1. **Now — [ACCOUNTS-NEW-PERSON]** (D214, D216, D217, D219, D220, D222 — one door for a new person on Admin → Users, the
-   sign-up asking the same things, the admins' bell; the mock-up `raptor-port/docs/mock/new-person-account.html`, his
-   approval first), on `claude/accounts-new-person`, its own FULL check — DONE, the PR open for his look and "merge
-   live"; **[POST-OUT-OUTCOMES]** STARTED 27 Sep 26 beside it, before #443 merges (D301, amending D291), on
-   `claude/post-out-outcomes` cut from `claude/accounts-new-person` (D291 — D229, D280, D283–D300: a posting out says
-   which outcome; accounts suspended / deleted), its own FULL check, its merge after #443's — BUILT and FULL-checked, his
-   look next (with `[POST-OUT-TRACKER]` after it, on his answer, and **[POST-IN-DATE]** — D308, its place his call — likely folded into **[ONE-DOOR]**, D309, his direction for Admin → Users); then **[DRAFT-PENDING]** — the one changes window,
-   on top of accounts, its own FULL check (D210). `[ACCOUNTS]` itself MERGED 26 Sep 26 (PR #442, his "merge live").
+1. **Now — [POST-OUT-OUTCOMES]** (D229, D280, D283–D300, D303–D307) on `claude/post-out-outcomes`, PR #446 — BUILT,
+   FULL-checked, his look card answered, `main` merged in: his "merge live" next. `[ACCOUNTS-NEW-PERSON]` MERGED 27 Sep 26
+   (PR #443), `[ACCOUNTS]` 26 Sep 26 (PR #442). **Then [ONE-DOOR]** (D309, D310 — Admin → Users carries every person's
+   sign-in and roster state and every action; Quals loses its archive), carrying **[POST-IN-DATE]** (D308) and the look
+   card's 3a / 3b — mock-up first, its own FULL check; `[POST-OUT-TRACKER]` on his answer. **Then [LW-MOVE-STANDARD]**
+   (D264–D266 — after #446, both change the Leave War's sheets). Then **[DRAFT-PENDING]** — the one changes window, on
+   top of accounts, its own FULL check (D210).
 2. **Now, beside the building — [IT-QUESTIONS]:** talk to the IT side (his, not code); their approvals take weeks.
 3. **Development as normal — [HUMAN-RETEST]**'s remaining three, in HIS order (D147): the absence record TOGETHER with
    [S4-HUNT-REST] — **WALKED 26 Sep 26** on `claude/absence-record-d147-af6a50`; his answers to its questions (D260–D263)
-   recorded, and D260–D262 BUILT and FULL-checked there 27 Sep 26 (D263 goes with [DRAFT-PENDING]); his look and "merge
-   live" next — then change-recording (with [UNDO-ROSTER-SETTINGS] and D148),
+   recorded, and D260–D262 BUILT and FULL-checked there 27 Sep 26 (D263 goes with [DRAFT-PENDING]); from his look, D264–D266
+   (one look for the sheets, a Move on every record that can move) — [LW-MOVE-STANDARD], NEXT on a new branch once this one
+   merges (D267; a mock-up first); his look and "merge live" first — then change-recording (with [UNDO-ROSTER-SETTINGS] and D148),
    then the Leave War links LAST (with the 7 Sep phone check). Then "after the hunt" (21 Sep 26): [LW-LOCKMARK] →
    [LW-WEEKDAY-WORK] (talk to him before building any of it) — its first, the published day's unavailable list, was
    closed by the same re-test (built by [LEAVE-LATE-PUBLISHED]; archived).
@@ -79,13 +79,16 @@ whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaini
 
 **Placed by their own lines — not his rulings:** the Leave War — [LW-FROZEN-BAR-GAP] (after [HUMAN-RETEST]; show him
 first), [LW-FIGSEL-SLOW] and [LW-SCRUBBER-FLAKY] (test-only), [LW-ISO-DATES] and [LW-MOVE-BENEATH] (both low, from the
-absence-record re-test), [PO-RESTORE-POSTING] (low, from its final code read), [LW-MOVE-TAPLIST-ASK] (a question for him, on the D260–D262 look card), [LW-OFFER-ONLY-TAKEABLE] (low, with [LW-LOCKMARK]), [ABSENCE-SMALL-SEEN] (any time); the Inputs calendar — [INPUTSCAL-TAP-FLAKY] (test-only). The background-command guard — [BG-GUARD-FALSE] (small; tooling). The Tracker — [TRK-RETEST-NOTES] and
+absence-record re-test), [PO-RESTORE-POSTING] (low, from its final code read), [LW-OFFER-ONLY-TAKEABLE] (low, with [LW-LOCKMARK]), [ABSENCE-SMALL-SEEN] (any time), [LW-HARNESS-VIEWER-PIN] (test-only, low), [CI-FAIL-PICTURES] (his call, low); the Inputs calendar — [INPUTSCAL-TAP-FLAKY] (test-only). The Tracker — [TRK-RETEST-NOTES] and
 [TRK-EDIT-SIDEWAYS] (their gates have passed), [TRK-PINCH-ASK] (his next Tracker session), [TRK-SESSION-PICK] (low, the next Tracker change), [TRK-DLG-LEFTOVERS] (low, with the next question-box change), [TRK-PALETTE-ASK] (his answer D157: Raptor's colours
 fully — being built on `claude/tracker-palette`), [TRK-FLEXBAR-INK] (a question for him, on that branch's look card),
-[TRK-BAKE-STALE] (low). The Leave War — [LW-RESET-ORDER] (his yes, D160 — a small build).
-The amendment area — PR #434, #435, #437 and #438 MERGED (25–26 Sep 26); [LOOK-435]'s steps 2–4 are items 1 above; left: [REQ-ORPHAN-ROW] and [REQ-DOOR-WORDS] (both low). The board — [PUCK-FLAG-GLOW] (D164: a flagged puck does not glow — a small build), [CROWD-SWAP-SAYS-BUSY] (small; found by the batch's re-walk). Left from the amendment batch (D91–D111, merged): [AVAILWIN-PREVIEW-BAR] (low), [AMEND-SMALL-SEEN] (any time). The docs and the checks — [DEPLOY-DOCS] (its operational half), [DOC-POINTERS-CODE] and
+[TRK-BAKE-STALE] (low).
+The amendment area — PR #434, #435, #437 and #438 MERGED (25–26 Sep 26); [LOOK-435]'s steps 2–4 are items 1 above; left: [REQ-ORPHAN-ROW] and [REQ-DOOR-WORDS] (both low). Left from the amendment batch (D91–D111, merged): [AVAILWIN-PREVIEW-BAR] (low), [AMEND-SMALL-SEEN] (any time). The docs and the checks — [DEPLOY-DOCS] (its operational half), [DOC-POINTERS-CODE] and
 [RULINGS-LF-PIN] (with the next code change), [DOC-SUBHEADS], [RULING-HOMES-AUDIT], [HANDOFF-SHAPE-GUARD] and [BACKLOG-TIDY] (any time, docs only), [PEEK-ISSUED] (a question for him, low),
-Roles — [QUALS-MEMBER-SCOPE] (folded into [ACCOUNTS], D200), and beside it [QUALS-PROTO-TOAST] (low, one line of words). View-only Sched — [VIEW-ARROW-OVER-LIST] (low, LOOK tier).
+Roles — [QUALS-MEMBER-SCOPE] (folded into [ACCOUNTS], D200), and beside it [QUALS-PROTO-TOAST] (low, one line of words).
+The five-flags batch (built on `claude/five-flags-batch-build-ef7d85`, 26 Sep 26; FULL-checked and its PR from `claude/five-flags-batch-continue-2cfa70`, 27 Sep 26 — its five items archived) — his answers D270–D275 BUILT and FULL-checked on that branch, 27 Sep 26 (their three items archived); his look card's four questions answered 27 Sep 26 (D276–D279, nothing to build);
+[ARROW-GUTTER-STRIP] (its strip moot by D275; one small leftover, low); low: [GHOST-FLAG-SHADOW], [LW-SETTINGS-SMALL],
+[ALLAVAIL-OPEN-ROW] (investigate first).
 Insights — [INSIGHTS-WORKING-COPY] (a question for him, with the one changes window or any time).
 
 **Waiting on him — no order exists:**
@@ -912,15 +915,6 @@ does not exist — the data is `src/tracker/data/`), reads name-keyed charts (be
 the one-table `eventInfo` (before D126). The D120 route (export → wipe → import) does not need it; fix
 it only if baking a chart into the shipped data comes back. **Place:** low, after `[TRK-RETEST-NOTES]`.
 
-### [LW-RESET-ORDER] A "back to the default order" control for the Leave War roster — his call, build only if he asks (moved from HANDOFF.md, 24 Sep 26)
-**HE ASKED (D160, 24 Sep 26): build it** — a "Reset order" line in ⚙ Settings running the store's `autoSortRoster`;
-no button, no strip. WALK tier (a new control). **Place:** any time, none blocking.
-
-- **OWNER'S CALL — no "back to the default order" control since Auto-sort went
-  (6 Sep 26).** A hand-arranged Leave War roster stays arranged until dragged
-  back; the store's `autoSortRoster` still exists. Offered: a "Reset order" line
-  in ⚙ Settings. Build only if he asks.
-
 ### [ADMIN-DISPLAY] An Admin "Display" area of per-section fold defaults — awaiting his go-ahead, do NOT build without it (moved from HANDOFF.md, 24 Sep 26)
 **DEFERRED BY HIM (D161, 24 Sep 26): "next time we revisit this again"** — put it to him again when Admin or the
 section folds are next touched. (Its first half — the wave show/hide toggle leaving Admin — was done 30 Aug 26.)
@@ -972,15 +966,6 @@ working copy, so on View-only Sched a published next-week day shows edits not ye
 content there too, as the published face does (D178, D179). **The question:** should the peek show the published version
 of a published day? **Place:** low; its own small WALK-tier build if yes.
 
-### [BG-GUARD-FALSE] The background-command guard refuses two commands that do move into raptor-port (filed 26 Sep 26)
-Found by the accounts chat on its first background run after `[BG-CWD-GUARD]` merged (D162): the hook
-(`.claude/hooks/bg-cwd-guard.mjs`) refused `cd /c/Users/User/projects/Raptor/raptor-port && npm …` (a full path), and
-the form it asks for, `cd raptor-port && npm …`, then FAILED — this background shell started inside `raptor-port`
-already (the session's folder), not at the repo root the hook and `raptor-port/CLAUDE.md` assume. What worked:
-`cd /c/Users/User/projects/Raptor && cd raptor-port && npm …`. **Do:** accept a `cd` whose target ends in `raptor-port`
-(full or relative path), and correct the "starts at the REPO ROOT" note — a background shell starts in the session's
-current folder. **Place:** small, tooling, any time.
-
 ### [INPUTSCAL-TAP-FLAKY] The calendar's chip-tap test fails now and then inside the full unit run, never alone — test-only (filed 26 Sep 26)
 `raptor-port/src/ui/inputscal.test.tsx` "a real pointerdown+pointerup on an input chip sets INPEDIT to that EXACT record":
 seen twice in full runs on `claude/leave-late-published` — once by Fable's first code read (`document.elementFromPoint is
@@ -990,6 +975,9 @@ order- or load-dependent: some earlier file in the same worker leaves the docume
 listener behind. **Do:** find the file that runs before it in the same worker when it fails (vitest `--sequence.seed` /
 the shard order), and make the test install its own `elementFromPoint` stub and restore it, or reset what the other file
 leaves. **Place:** test-only, any time.
+**Seen again 27 Sep 26** on `claude/five-flags-batch-continue-2cfa70` (`869c7197`, the final gate run): the same test, the
+same "elementFromPoint is not a function"; that branch does not touch the calendar either; alone 3 / 3, and the whole
+unit suite green on its re-run (6256 / 6256). Three branches now — the order- or load-dependence is the lead.
 
 ### [INSIGHTS-WORKING-COPY] Week Insights shows the working copy's week to everyone, members included — a question for him (filed 26 Sep 26)
 Astra's second read of `[LEAVE-LATE-PUBLISHED]` (`raptor-port/docs/handpass/2026-09-26-late-pub-astra-read2.md` #2): the
@@ -1001,14 +989,6 @@ working copy "by design". **The question:** should Insights show the published s
 and the working copy on Edit Schedule? If yes, Astra's fix steps are in the read (a displayed-world model passed in; the
 issued days through `withChipWorld` / `faceWarn`). **Place:** a question for him; with the one changes window
 (`[DRAFT-PENDING]`, the next time the working-versus-published split is designed) or any time.
-
-### [VIEW-ARROW-OVER-LIST] The week's floating "‹" arrow covers the start of an opened warning list on a desktop (filed 26 Sep 26)
-Seen by the Leave War walker of `[LEAVE-LATE-PUBLISHED]`'s check (picture
-`raptor-port/docs/img/handpass/2026-09-26-late-pub/leavewar/desktop/desktop-LW1b-1-face-warnings.png`): on View-only
-Sched at 1440 px, a day's "⚠ N issues" list opened on the day at the left edge sits under the week's floating "‹"
-scroll arrow, which hides the first letters of the list's lines. Not new with that branch (the arrow and the list are
-unchanged there). **Do:** give the arrow room (an inset on the scroller, or the arrow above the list only while the
-pointer is near it), walk both widths with a list open on the first and last day. **Place:** low, any time.
 
 ### [QUALS-PROTO-TOAST] The Quals page's "Save changes" says "prototype — writes to Dataverse in the full build" (filed 26 Sep 26)
 Found by the Quals walker of `[LEAVE-LATE-PUBLISHED]`'s check (evidence `raptor-port/docs/handpass/2026-09-26-late-pub.md`
@@ -1103,17 +1083,6 @@ by CONTENT once; write any that is missing into its home; add the D-number besid
 audit is mechanical — then consider making the gate require a NEW row's document homes to cite its number.
 **Place:** any time, none blocking.
 
-### [PUCK-FLAG-GLOW] A red-flagged "View as" puck glows; no flagged puck should (his ask, D164, 24 Sep 26)
-*(Since `[ACCOUNTS]` (26 Sep 26) the purple "this is you" puck is the SIGNED-IN person's — "View as" is gone; the glow
-rule below is unchanged.)*
-He sent two pictures: a red-flagged puck with a red glow (Ranger, the person being viewed as) and one without (Saber).
-The glow comes from `raptor-port/src/ui/scheduler.css`: `.puck.me.boxred` and `.puck.me.boxdash` add
-`0 0 10px 1px rgba(240,85,95,.7)` on top of the red ring when the View-as puck is flagged. **Do:** drop that glow, so
-a flagged View-as puck shows the same plain red ring (solid or dashed) as every other flagged puck; keep the purple
-"this is you" fill and ring. Read the precedence notes near `.puck.me` first (every puck rule carrying `!important`)
-and walk both widths with a flagged View-as puck. LOOK tier on one shared puck rule — check every surface that draws
-a puck. **Place:** any time, none blocking; a good one to ride the next scheduler change.
-
 ### [UNDO-ROSTER-SETTINGS] The one Undo does not cover roster or settings edits, though his 16 Sep 26 rule says it should (found 24 Sep 26)
 Found by the amendment re-test's rule-to-test mapping (register AM39d,
 `raptor-port/docs/superpowers/specs/2026-09-24-amendment-behaviour-register.md`). His 16 Sep 26 rule, recorded in the
@@ -1162,23 +1131,6 @@ None breaks an amendment rule; each is a line to fix or ask about, from the walk
    array without changing what is shown — and blanks the four sign-offs though "no changes to publish" (the final read,
    Fable #1's mirror; the digest keys ground rows by position). A false re-sign, never a false publish.
 **Place:** any time; items 6–8 with the Leave War links re-test (D147, last).
-
-### [ACCOUNTS-NEW-PERSON] Admin → Users makes a brand-new person with his account, in one step (D214, filed 26 Sep 26)
-**His ruling (D214):** *"2 can u show me a mock up, also ill need his initials"* — after he found the callsign list offers
-only people already on Quals. **Build:** "Add an account" (and Approve, filled from the callsign and name the person typed)
-gets a **New person** choice — callsign, **initials**, pilot / WSO / personnel, CAT — which creates his Quals row and his
-account together through the SAME add the Quals page uses (one callsign rule), as one command. Flight and quals stay on
-Quals. **Mock-up first:** `raptor-port/docs/mock/new-person-account.html` — **APPROVED 26 Sep 26 (D224)**, the design of
-record; planned (Opus 5.5), red-teamed (Fable, Astra), built and walked on `claude/accounts-new-person` (26 Sep 26); its
-FULL check DONE the same day — three read rounds by Fable and Astra, every finding fixed red first, re-walked 58/58,
-break tests 32/32, the full checks green (evidence `raptor-port/docs/handpass/2026-09-26-accounts-new-person.md`); the PR
-is open, **waiting for his look (the sheet's §10 card) and his "merge live"**. **Tier:** FULL
-(roles and saved data). **With it — D216:** a new access request lights the admins' bell (a tap → Admin → Users; out once
-he has opened it). **And the sign-up form asks the same things** (his "signs up for an account", on D214's row).
-**And D217 — one door:** a new person is created ONLY on Admin → Users (or his approved sign-up); a blank sign-in makes a
-roster-only person (a SANS man); Quals' "+ Add person" becomes a button to Admin → Users (its form and tests retired, D201).
-**And D219:** the field reads "Callsign/Name" (some people have no callsign) — the sign-up, Admin → Users and the Quals head. **D220:** the seat choice reads "Pilot", "WSO", "Personnel (ground crew)". **D222:** on the sign-up card only, that field reads "Displayed callsign/name". **D225:** initials asked on both forms, required on neither. **D226:** the callsign/name stays at 14 letters and the form says so — never cut silently. **D227:** each admin's bell is his own (out once HE has had the waiting list on screen). The plan (red-teamed round 1): `raptor-port/docs/superpowers/plans/2026-09-26-accounts-new-person-plan.md`.
-**Place:** straight after `[ACCOUNTS]` merges, on its own branch, before `[DRAFT-PENDING]`.
 
 ### [POST-OUT-OUTCOMES] A posting out says WHICH of its outcomes it is; accounts suspended and deleted (D229, D280, D283–D285, filed 26 Sep 26)
 **His rulings:** a posting out is (1) overseas to another squadron → archived, account SUSPENDED, back AS HE WAS with a
@@ -1339,15 +1291,33 @@ the window's design. Pictures `raptor-port/docs/img/handpass/2026-09-26-absence/
 `-R30-02b-the-row-it-could-go-to`, `w6-phone-admin-R30-01-pending-list-week`; sheet
 `raptor-port/docs/handpass/parts/2026-09-26-absence-rewalk-w6.md`.
 
-### [CROWD-SWAP-SAYS-BUSY] Swapping two men inside one crowd warns "already on" that row — found 25 Sep 26
-Seen in the amendment batch's re-walk (`raptor-port/scripts/handpass/am/hr-03-batch-reads.mjs`, picture
-`docs/img/handpass/2026-09-25-amendment-batch/rewalk-reads/desktop/A-2-pending-list.png`): on the board, dragging
-Reaper onto Ranger on the SAME Common Programme row swaps them (correct), and a warning toast says "Reaper — already
-on FLIGHT SAFETY STAND-DOWN 08:30–09:00" — the row he is being moved within. **Not new** — the message comes from the
-availability check (`raptor-port/src/engine/avail.ts`, the "already on" lines), which the batch did not touch; the
-swap itself and the counts are right. **The agent's reading:** a move inside the row a man is already on should not
-call him busy there — exclude the row being dropped into from his own busy check. Small, WALK tier. **Place:** with
-the board's small items ([PUCK-FLAG-GLOW]); not his call unless the fix changes what a warning says elsewhere.
+### [ARROW-GUTTER-STRIP] The day before the front one shows a 42px strip beside the ‹ arrow — MOOT (D275, the room taken out 27 Sep 26); one small leftover (filed 26 Sep 26)
+The five-flags walk (W4, `raptor-port/docs/img/handpass/2026-09-26-five-flags/w4/GUTTER-prevday-tail-view-1440x900.png`):
+the desktop week's 54px room ([VIEW-ARROW-OVER-LIST]) leaves the previous day's last 42px visible around the arrow (8px
+on `main`). The look card's Q3: keep (it hints at a day to the left — recommended) or leave that strip empty — **mock-up shown
+27 Sep 26** (his ask): `raptor-port/docs/mock/five-flags.html` §Question 3, keep / empty / fade — **ANSWERED "Q3 keep" (D273), then MOOT by D275:
+the room comes out (`[ARROW-ROOM-OUT]`), so the strip goes back to 8px.** Still open, low — also from
+the same walk, small: straight after a window resize a day can sit partly under the ‹ until the next press (a resize
+never re-lands the week); "day a–b of 7" counts a third day that shows only ~212px at 1440. **Place:** his answer; low.
+
+### [GHOST-FLAG-SHADOW] A dragged flagged puck loses the ghost's dark "lifted" shadow (filed 26 Sep 26)
+The five-flags walk (W1, `…/w1/B2-desktop-mouse-ghost-of-saber.png`): the ghost clones the puck, and a flagged puck's red
+ring (`.puck.boxred`, `!important`) replaces the depth shadow `.dragimg.lift` adds, so the carried puck keeps its red ring
+and the cyan veil but not the shadow that makes it read as lifted. Anyone's flagged puck; the same on `main`. **Do:** carry
+the depth shadow where the ring cannot eat it (the veil is inside a clipped puck, so not there — a wrapper, or the
+ring on the veil and the shadow on the clone). LOOK tier. **Place:** low, any time.
+
+### [LW-SETTINGS-SMALL] Two small ⚙ Settings edges in the Leave War (filed 26 Sep 26)
+From the five-flags batch (Fable's read F4, W2's walk): (1) Reset order judges "the default" over the WHOLE roster while
+the grid draws only the men in the visible months, so a hand order that differs only for a posted-out man lights the
+line while the grid looks default (a press clears it, harmlessly, with an Undo step); (2) an armed "Really reset?" (either
+reset) survives a page switch while the sheet stays open. **Do, if wanted:** give `rosterFollowsDefault` the grid's window
+predicate; disarm both on leaving the page. **Place:** low, any time.
+
+### [ALLAVAIL-OPEN-ROW] An ALL AVAIL on an open-ended row shows no count chip — not yet looked at (filed 26 Sep 26)
+Seen in passing by the five-flags walk (W1): ALL AVAIL placed on DINNER WITH CMD (18:30, no end time) drew no count chip,
+so that row has no door into the ALL AVAIL window. Possibly D31's "nothing to measure" refusal, as designed — check
+against D31/D41 first. **Place:** low, investigate before building anything.
 
 ### [REQ-ORPHAN-ROW] A request's row outliving the request — low (25 Sep 26)
 Two older shapes, the same on `main`: (1) Fable's O2 — a request deleted on the Inputs page while its row stands on a
@@ -1403,16 +1373,23 @@ vs by record is the same root).
 by any door — the ladder puts the award above the bid, so the day's top record is not movable: the one-day sheet does not
 open (two records open the tap list, whose bid line has no Move), and a dragged block's Move… does not offer it. The same
 root — a move reads the day's TOP record — and the same decision (the bid travels alone, landing where its half is free).
-Pre-existing; not his ruling.
+Pre-existing; not his ruling. **DECIDED 27 Sep 26 BY D265** (`.claude/rules/decisions/leave-war.md`, his pictures of Vector's
+3 Jan): a record that can move always offers Move and travels ALONE — the award, and Inputs-filed leave, stay where they
+are; landing rules unchanged. Built by `[LW-MOVE-STANDARD]`.
 
-### [LW-MOVE-TAPLIST-ASK] The tap list's per-record Move… still moves by a date box — a question for him (27 Sep 26)
-D262 ("one chip, one Move … The calendar can be removed") was read, and stated to him, as the two ONE-DAY sheets (the
-bid sheet's decision row, and the decide sheet it replaced). A day holding several records opens the TAP LIST instead,
-where a war-approved leave's own line has "Move…" with a date box and a Move button (`DayList.tsx`, `moveAbsenceById`) —
-it has to name WHICH record, which the grid's move mode cannot (it moves the day's top record). **The question:** should
-that line's Move… also pick the one record up and land it on a day of the grid (a move mode that carries the record's
-id), or keep its date box? **Place:** on the D260–D262 look card (`raptor-port/docs/handpass/2026-09-27-d260-d262.md`
-§10); a build only if he says so.
+### [LW-MOVE-STANDARD] One look for the Leave War's sheets, and a Move on every record that can move — his D264–D266 (27 Sep 26)
+**His rulings** (`.claude/rules/decisions/leave-war.md` D264, D265, D266, 27 Sep 26, with four phone pictures from his look
+at PR #444): **D264** the one-day sheet and the drag-selection sheet share one format and look (the rows in one order; Move
+and Delete / Clear the same buttons, in the same place); **D265** a record that can move always offers Move — a bid beside
+an OIL award or beside Inputs-filed leave moves alone (today a move reads only the day's TOP record, so Vector's 3 Jan, an
+award above an LL bid, offers no Move in the day's list or in a dragged block); **D266** the day's list (several records)
+moves each record by the grid's move mode, no date box — he chooses which. **Build:** (1) a mock-up of the real sheets at
+desktop and phone, his approval first (D264 is visual); (2) a move carries the RECORDS it picked, not the day's top one
+(`store.ts` `moveCells` / `movableCells` / `shiftBid`, `moveAbsenceById` by record id; `Matrix.tsx` `moveSel`); (3) the
+day's list's Move picks its record up into the move mode, its date box goes (`DayList.tsx`); (4) the sheets to the approved
+layout (`BidPicker.tsx`, `SelectSheet.tsx`). Red first each. **Tier:** FULL (a record's move — the absence record and what
+is saved); walk both widths; both reads. Folds in `[LW-MOVE-BENEATH]` (decided by D265). **Place (D267, his
+"1", 27 Sep 26):** NEXT after PR #444 merges — on a NEW branch from `main`, in a fresh chat; the mock-up first.
 
 ### [PO-RESTORE-POSTING] The Quals Restore clears a posting it did not make — low (Fable's final code read, N7, 26 Sep 26)
 Unchanged `main` code, found by Fable's read of the absence-record re-test: `sync.ts restoreArchivedPerson` (the Quals
@@ -1454,3 +1431,22 @@ None breaks an absence rule; each is a line to fix or ask about, from the re-wal
    not reproduced by a dedicated probe (4 / 4) — watch for it (W4).
 **Place:** any time; items 1–2 with the Leave War links re-test (D147, last).
 
+
+### [LW-HARNESS-VIEWER-PIN] In the Leave War browser tests, switching the role quietly undoes the pinned viewer (filed 27 Sep 26)
+Found by the `[LW-MOVE-CI-RED]` investigation, confirmed in the running bundle: the test bridge's `raptorRole()` →
+`setEffectiveRole()` (`raptor-port/src/state/auth.ts`) REPLACES the session object, and the viewer pin `lwSetViewer` sets
+(`raptor-port/src/leavewar/sync.ts` ~1428–1430) is tied to that object — so after `lwRole('admin')` the next Raptor refresh
+re-lights the signed-in man's row (`row-bane`) instead of the pinned one. Not the cause of the red Move tests (the fill
+triggers no such refresh within 1.5 s), but a test that pins a viewer and then switches role is testing a different man
+than it thinks. **Do:** tie the pin to the sign-in rather than the session object, or re-pin inside the bridge's
+`raptorRole` (the bridge is the developer's PC only since `[ACCOUNTS]`); a test that pins, switches role and asserts the
+pinned row. **Place:** low, test-only — with the next Leave War test change.
+
+### [CI-FAIL-PICTURES] GitHub's browser-test jobs keep no pictures of a failure (filed 27 Sep 26)
+The `[LW-MOVE-CI-RED]` investigation found NO artifacts on any failed run: `.github/workflows/deploy.yml`'s geometry jobs
+upload no Playwright report, trace or error picture, so a red run on GitHub can only be read from its log. **Do, if he
+agrees:** upload `raptor-port/test-results/` from the geometry jobs `if: failure()` (traces stay off — too slow on the Leave
+War grid). **His call, because:** while the repo is PUBLIC (D106) anything uploaded is downloadable by anyone with a GitHub
+login — the pictures show only the invented demo world (no real names — D58, D62), but it is publishing. **Place:** low —
+ask him with the next change to the checks; the agent's recommendation: yes, once the repo is private again (D106's
+"afterwards").

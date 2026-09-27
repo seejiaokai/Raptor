@@ -613,3 +613,6 @@ questions it left for him are `OUTSTANDING.md` `[ABSENCE-ASK]`.
   grid's move mode (the drag-selection's own — the same landing rules); while moving the grid scrolls at its edges,
   the month buttons keep it on, an empty tap outside the grid ends it, and so does leaving the Leave War; a double-click
   on Move lands nothing; its own day says it is already there. `ui-contracts.md` §Selecting on the Leave War grid.
+- **Coming, not built (D264–D266, 27 Sep 26, `[LW-MOVE-STANDARD]`):** a record that can move always offers Move and travels
+  alone (a bid beside an award, or beside Inputs-filed leave); the day's list moves a record by the move mode, no date
+  box; the one-day and drag-selection sheets share one layout.
