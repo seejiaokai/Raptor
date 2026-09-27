@@ -50,7 +50,7 @@ import {
   type Figure,
   type FigureCtx,
 } from '../engine'
-import { clearRecordById, figureCtxOf, recordsAt, setBalance, setManualCredit, groupsInOrder, groupPriorityIds, lwHistEpoch, moveGroupTo, moveGroupPriorityTo, displayRoster, getState, moveCells, movableCells, moveManningRowTo, moveProblem, moveEvent, moveEventProblem, moveRosterRow, orderedManningIds, resetManningRules, setPostIn, postingProblem, visibleFigures, hasAccount, postingBlocked, type MoveResult, type EventMoveResult } from '../state/store'
+import { clearRecordById, figureCtxOf, recordsAt, setBalance, setManualCredit, groupsInOrder, groupPriorityIds, lwHistEpoch, moveGroupTo, moveGroupPriorityTo, displayRoster, getState, movableRecords, moveRecords, moveRecordsProblem, stayingIn, moveManningRowTo, moveEvent, moveEventProblem, moveRosterRow, orderedManningIds, resetManningRules, setPostIn, postingProblem, visibleFigures, hasAccount, postingBlocked, type MoveResult, type MoveRec, type EventMoveResult } from '../state/store'
 import { AwardSheet, BidPicker, PostInSheet, PostOutSheet, RaptorSheet } from './BidPicker'
 import { CounterSheet, FigureBreakdownSheet, PersonFiguresSheet } from './CounterSheet'
 import { FigureCell, show } from './FigureCell'
@@ -109,6 +109,24 @@ function moveReason(r: Exclude<MoveResult, 'moved'>): string {
     case 'window': return 'That lands outside what you can edit — pick another day.'
     default: return 'Nothing to move.'
   }
+}
+
+/** WHAT A MOVE LEAVES BEHIND, in the banner's words (the mock-up's reading, uncorrected — D331: "in a block what can
+ *  move goes; what can't stays, and the banner says what stays"). " · 1 OIL award stays", " · 2 OIL awards and 1 bid
+ *  stay". Only what a person put there and might expect to travel (`stayingIn`); nothing when everything moves. */
+function stayWords(stays: ReadonlyArray<{ what: 'award' | 'filed' | 'approved' | 'bid' | 'refused' }>): string {
+  if (!stays.length) return ''
+  const label: Record<string, [string, string]> = {
+    award: ['OIL award', 'OIL awards'],
+    approved: ['approved leave', 'approved leaves'],
+    filed: ['leave filed on the Inputs page', 'leaves filed on the Inputs page'],
+    bid: ['bid', 'bids'],
+    refused: ['refused bid', 'refused bids'],
+  }
+  const parts = (['award', 'approved', 'filed', 'bid', 'refused'] as const)
+    .map(k => { const n = stays.filter(x => x.what === k).length; return n ? `${n} ${label[k]![n === 1 ? 0 : 1]}` : '' })
+    .filter(Boolean)
+  return ` · ${parts.join(' and ')} ${stays.length === 1 ? 'stays' : 'stay'}`
 }
 
 const MONTHS = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC']
@@ -1230,21 +1248,44 @@ export function Matrix() {
   // the day tapped, the rest shifting with it (gaps between inputs kept). The
   // landing is previewed live on desktop (hover) and staged before a Confirm on
   // phone (no undo). `daysBetween(moveAnchor, target)` is the shared delta.
-  const movers = useMemo<Cell[]>(() => (moveSel ? movableCells(moveSel.cells) : []), [moveSel, version])
+  /* THE RECORDS, NOT THE DAYS (owner, D265 / D266, 27 Sep 26 — [LW-MOVE-STANDARD]): `movers` are the RECORDS the move
+     carries — every record on the picked days this role may move (a block, the one-day sheet, a picked range), or the
+     one the day's list picked by its id (`moveSel.only`). A bid beside an OIL award moves alone; the award stays, and
+     `moveStays` names what stays for the banner. The count on the banner and the ghost is records ("2 entries" for a
+     morning and an afternoon bid on one day). */
+  const movers = useMemo<MoveRec[]>(() => (moveSel ? movableRecords(moveSel.cells, moveSel.only) : []), [moveSel, version])
+  const moveStays = useMemo(() => (moveSel ? stayingIn(moveSel.cells, movers) : []), [moveSel, movers, version])
   const moveAnchor = useMemo(() => earliestDate(movers), [movers])
-  const landingFor = (targetDate: string): Cell[] =>
-    moveAnchor === null ? [] : movers.map(c => ({ personId: c.personId, date: addDays(c.date, daysBetween(moveAnchor, targetDate)) }))
+  /* THE LIVE RECORDS, NOT THE ONES OF THE MOMENT THE MOVE BEGAN (Astra's final read, 4; Fable's note, 27 Sep 26): the move
+     machine (`wireMove`, wired once per `moveSel`) keeps its callbacks for the whole move, and they used to hold the
+     records of the render that wired them — a record changed or gone under a move was still judged as it was. They
+     read the records through this ref, which every render keeps current. */
+  const moveLive = useRef({ movers, moveAnchor })
+  moveLive.current = { movers, moveAnchor }
+  const landingFor = (targetDate: string): Cell[] => {
+    const { movers, moveAnchor } = moveLive.current
+    if (moveAnchor === null) return []
+    const seen = new Set<string>()
+    const out: Cell[] = []
+    for (const c of movers) {
+      const cell = { personId: c.personId, date: addDays(c.date, daysBetween(moveAnchor, targetDate)) }
+      const k = `${cell.personId}|${cell.date}`
+      if (!seen.has(k)) { seen.add(k); out.push(cell) }
+    }
+    return out
+  }
   /* Paint the landing ONLY when the atomic commit would accept it —
-     `moveProblem` is the validation half of `moveCells` itself, so the
+     `moveRecordsProblem` is the validation half of `moveRecords` itself, so the
      preview cannot show half a landing (the off-grid cells simply not
      painting) that the commit then wholly refuses. A refused hover/stage
      clears the paint and says why in the banner instead. */
   const previewAt = (targetDate: string): boolean => {
+    const { movers, moveAnchor } = moveLive.current
     const w = wrapRef.current
     if (!w || moveAnchor === null) return false
     const delta = daysBetween(moveAnchor, targetDate)
     if (delta === 0) { setMoveErr(''); paintLanding(w, landingFor(targetDate)); return true }
-    const problem = moveProblem(movers, delta)
+    const problem = moveRecordsProblem(movers, delta)
     if (problem) { clearLanding(w); setMoveErr(moveReason(problem)); return false }
     setMoveErr('')
     paintLanding(w, landingFor(targetDate))
@@ -1252,13 +1293,14 @@ export function Matrix() {
   }
   /* A DAY IT IS ALREADY ON (D262 — Fable's S6): the move machine's delta 0 read "Nothing to move." as if the chip had
      gone, and a phone staged a Confirm that then failed. It says where it is, and the move stays on. */
-  const onItsOwnDay = (targetDate: string): boolean => moveAnchor !== null && daysBetween(moveAnchor, targetDate) === 0
-  const ownDayWords = () => `${movers.length === 1 ? 'It is' : 'They are'} already on that day — pick another day.`
+  const onItsOwnDay = (targetDate: string): boolean => { const { moveAnchor } = moveLive.current; return moveAnchor !== null && daysBetween(moveAnchor, targetDate) === 0 }
+  const ownDayWords = () => `${moveLive.current.movers.length === 1 ? 'It is' : 'They are'} already on that day — pick another day.`
   const commitMove = (targetDate: string) => {
+    const { movers, moveAnchor } = moveLive.current
     const w = wrapRef.current
     if (moveAnchor === null) { setMoveSel(null); setMovePreview(null); return }
     if (onItsOwnDay(targetDate)) { if (w) clearLanding(w); setMovePreview(null); setMoveErr(ownDayWords()); return }
-    const r = moveCells(movers, daysBetween(moveAnchor, targetDate))
+    const r = moveRecords(movers, daysBetween(moveAnchor, targetDate))
     if (w) clearLanding(w)
     if (r === 'moved') { setMoveSel(null); setMovePreview(null); setMoveErr('') }
     else { setMoveErr(moveReason(r)); setMovePreview(null) }   // keep the mode, say why
@@ -1287,6 +1329,16 @@ export function Matrix() {
     return () => { clearLanding(w); cleanup() }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [moveSel])
+  /* WHAT WAS PICKED UP IS GONE (Astra's final read, 4): a record changed or removed under a move (a sync pass — Undo, a
+     stage or war change and leaving the tab already end the move) left the banner reading "0 entries" and a tap ending
+     the move with no word. It says so; the next tap (or Cancel) ends the move, landing nothing. */
+  useEffect(() => {
+    if (!moveSel || movers.length > 0) return
+    const w = wrapRef.current
+    if (w) clearLanding(w)
+    setMovePreview(null)
+    setMoveErr('That record changed or is no longer there — nothing to move.')
+  }, [moveSel, movers.length])
 
   // ---- EVENT move mode (owner, 31 Aug 26 — "drag an existing event to move it,
   // like LL") — the event-line twin of the roster move above. `wireMove` is
@@ -4182,6 +4234,15 @@ export function Matrix() {
           viewer={viewer}
           period={period}
           onEditRemark={row => setListRemark({ at: `${open.id}|${open.date}`, row })}
+          /* ONE RECORD, PICKED BY ITS ID (owner, D266 — "the same move modality and I can choose what to move"): the list
+             closes and the grid's move mode carries exactly that record — no date box — by the same machine and landing
+             rules as a single chip and a block (D262) */
+          onMove={rec => {
+            setSel(null)
+            close()
+            setEventMoveSel(null); setEventMovePreview(null)
+            setMoveSel({ people: [rec.personId], from: rec.date, to: rec.date, cells: [{ personId: rec.personId, date: rec.date }], only: [rec] })
+          }}
           onClose={close}
         />
       )}
@@ -4282,7 +4343,7 @@ export function Matrix() {
               ? moveErr
               : movePreview
                 ? `Move ${movers.length} ${movers.length === 1 ? 'entry' : 'entries'} here?`
-                : `Tap a day to move ${movers.length} ${movers.length === 1 ? 'entry' : 'entries'}`}
+                : `Tap a day to move ${movers.length} ${movers.length === 1 ? 'entry' : 'entries'}${stayWords(moveStays)}`}
           </span>
           {movePreview && (
             <button className="dchip confirm" data-testid="move-confirm" onClick={() => commitMove(movePreview)}>Confirm</button>
@@ -4550,13 +4611,14 @@ export function Matrix() {
              mode — the drag-selection's, so a single chip and a block move by one machine and one set of landing
              rules (moveCells: refused whole with its reason, the dotted mark once bidding is closed, lands
              undecided). A day that holds nothing this screen may move says so on the sheet instead. */
-          onMove={() => {
-            const cells = [{ personId: open.id, date: open.date }]
-            if (!movableCells(cells).length) return 'There is nothing here that can be moved.'
+          onMove={cells => {
+            /* the day tapped, or every day of a picked range (D335) — the records on them this role may move (D265) */
+            if (!movableRecords(cells).length) return 'There is nothing here that can be moved.'
+            const dates = cells.map(c => c.date).sort()
             setSel(null)
             close()
             setEventMoveSel(null); setEventMovePreview(null)
-            setMoveSel({ people: [open.id], from: open.date, to: open.date, cells })
+            setMoveSel({ people: [open.id], from: dates[0]!, to: dates[dates.length - 1]!, cells })
           }}
           creditShown={openAnyCredit
             ? {

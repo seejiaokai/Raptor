@@ -1281,6 +1281,26 @@ day's list's Move picks its record up into the move mode, its date box goes (`Da
 layout (`BidPicker.tsx`, `SelectSheet.tsx`). Red first each. **Tier:** FULL (a record's move — the absence record and what
 is saved); walk both widths; both reads. Folds in `[LW-MOVE-BENEATH]` (decided by D265). **Place (D267, his
 "1", 27 Sep 26):** NEXT after PR #444 merges — on a NEW branch from `main`, in a fresh chat; the mock-up first.
+**Started 27 Sep 26** on `claude/rulings-d264-d266-leave-war-f0f4ab` (beside `[ONE-DOOR]` on `claude/one-door` — no shared
+function; rulings D330–D339). **The mock-up is up for his answers:** `raptor-port/docs/mock/lw-move-standard.html` (and its
+Artifact), made by `raptor-port/scripts/handpass/am/mk-lw-move-standard.mjs` — four questions: the order (A what's there
+first — recommended — or B new leave first), one word "Delete" for the one-day Clear and the block's Delete, a
+member's Move on his own bid's one-day sheet while bidding is open, and the Move button's look (D330 — one look on every
+sheet, a little apart; four designs in section 7, B the grey chip with a teal arrow recommended). **ANSWERED 27 Sep 26 —
+"1 A, 2 yes, 3 yes, 4 B, 5 keep" (D331–D335): the mock-up is the design of record; the build is next.**
+Fable's scenario design (bug-check order §4 rank 1): `raptor-port/docs/superpowers/specs/2026-09-27-lw-move-standard-scenarios-fable.md`
+(the roll-call, 32 ranked scenarios, six contradictions and how each is taken — stated on the mock-up page).
+**BUILT and FULL-checked 27 Sep 26** on this branch — evidence `raptor-port/docs/handpass/2026-09-27-lw-move-standard.md`:
+walked 40/40 at both widths, 26 wires broken on purpose (each turns a named test red), Fable's and Astra's blind reads
+(six findings, all fixed red first; re-walked). **Next: his look (§10 of the sheet) and "merge live"**; then this item and
+`[LW-MOVE-BENEATH]` (built by it) go to the archive.
+
+### [LW-SPARE-MOVE-DOORS] Two old move doors no screen uses any more — low (Fable's final read, 27 Sep 26)
+Since `[LW-MOVE-STANDARD]` every move goes through `store.ts moveRecords` (the records it picked). `shiftBid` (the old
+single-bid mover — it reads the day's TOP record) and `moveAbsenceById` (the day's list's old date-box move) now have no
+production caller, only their tests; two doors that read differently from the one in use will drift. **Do:** retire both
+and move what their tests pin (the dotted mark's original origin on a chain of moves, the locked-week refusal, a wrong id
+moving nothing) onto `moveRecords` tests. **Place:** low, with the next Leave War move change; not his ruling.
 
 ### [PO-RESTORE-POSTING] The Quals Restore clears a posting it did not make — low (Fable's final code read, N7, 26 Sep 26)
 Unchanged `main` code, found by Fable's read of the absence-record re-test: `sync.ts restoreArchivedPerson` (the Quals

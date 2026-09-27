@@ -524,7 +524,11 @@ function doorRemoveApproved(items: Array<{ personId: string; date: string; iid: 
  *  are cut from their Input and re-filed as a new Input over the landing
  *  dates, carrying lw / remarks / docs / mod and — once bidding is closed —
  *  the moved-from marks. */
-function doorMoveApproved(items: Array<{ personId: string; date: string; iid: string }>, delta: number, tracked: boolean, check: boolean): { reason: 'occupied' | 'window' | 'nothing'; at?: string } | null {
+/* `skip` (the final reads, Fable 3 / Astra 1, 27 Sep 26 — [LW-MOVE-STANDARD]): the ids of the war's own requests moving in
+   the SAME move. At the preview they still stand on their old days, so a leave landing on the day a moving bid is leaving
+   was refused though the result fits; leaving them out of the landing check makes the preview the move's own picture. The
+   commit passes none: by then the requests have already left and landed, so the door judges the day as it will be. */
+function doorMoveApproved(items: Array<{ personId: string; date: string; iid: string }>, delta: number, tracked: boolean, check: boolean, skip?: ReadonlySet<string>): { reason: 'occupied' | 'window' | 'nothing'; at?: string } | null {
   const leaving = new Set(items.map(i => `${i.iid}|${i.date}`))
   const prot = new Set(protectedDates().map((d: any) => labelToISO(d)).filter(Boolean) as string[])
   for (const it of items) {
@@ -538,9 +542,10 @@ function doorMoveApproved(items: Array<{ personId: string; date: string; iid: st
     if (!contrib) return { reason: 'nothing', at: it.date }
     const here = absencesAt(it.personId, to).filter(c => !leaving.has(`${c.id}|${to}`))
     const war = warHolding(rawState().wars, to)!
-    const reqs = recContribs(recsAt(war.recs, it.personId, to))
+    const landing = recsAt(war.recs, it.personId, to).filter(r => !skip || !skip.has(r.id))
+    const reqs = recContribs(landing)
     if ([...here, ...reqs].some(o => barsWrite({ ...contrib, id: 'moving' }, o))) return { reason: 'occupied', at: to }
-    if (liveRequestsOn(recsAt(war.recs, it.personId, to), portionOf(contrib.win)).length) return { reason: 'occupied', at: to }
+    if (liveRequestsOn(landing, portionOf(contrib.win)).length) return { reason: 'occupied', at: to }
   }
   if (check) return null
   /* group per Input: cut the moved dates, re-file them shifted */

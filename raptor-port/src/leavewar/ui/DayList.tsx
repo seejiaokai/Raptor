@@ -11,11 +11,12 @@
 // check — the buttons are only offered where it would succeed.
 import { useState, type ReactElement } from 'react'
 import { INPUTS } from '../../engine/inputs'
-import { canDecide, canEditCell, canEditRow, codeOf, displayCell, type Period, type Role } from '../engine'
+import { biddingClosed, canDecide, canEditCell, canEditRow, codeOf, displayCell, type Period, type Role } from '../engine'
 import { AM, FULL, PM, type Contrib, type DayView, type Win } from '../engine/dayview'
 import { creditWorthText } from '../engine/credit'
-import { creditGiver, type NoticeRec, type CreditRec } from '../engine/warrecs'
-import { ackReplacement, changeAbsenceById, clearRecordById, decideRequestById, editManualCredit, moveAbsenceById, recordsAt } from '../state/store'
+import { creditGiver, type NoticeRec, type CreditRec, type RequestRec } from '../engine/warrecs'
+import { ackReplacement, changeAbsenceById, clearRecordById, decideRequestById, editManualCredit, movableRecords, recordsAt } from '../state/store'
+import { DeleteChip, MoveChip } from './SheetActions'
 import { Sheet } from './Sheet'
 import './bidpicker.css'
 
@@ -60,7 +61,7 @@ const nameOf = (code: string) => {
 }
 
 export function DayListSheet({
-  personId, callsign, date, view, role, viewer, period, onEditRemark, onClose,
+  personId, callsign, date, view, role, viewer, period, onEditRemark, onMove, onClose,
 }: {
   personId: string
   callsign: string
@@ -71,21 +72,27 @@ export function DayListSheet({
   period: Period
   /** open the published remarks editor on this Input */
   onEditRemark: (row: any) => void
+  /** Pick ONE record up into the grid's move mode (owner, D266 — "instead of date box it should also be the same move
+   *  modality and I can choose what to move"): the matrix closes the list and carries exactly this record, by its id. */
+  onMove?: (rec: { personId: string; date: string; id: string }) => void
   onClose: () => void
 }) {
   const [msg, setMsg] = useState('')
-  /* the per-record Move: which Input is being moved, and to when */
-  const [moving, setMoving] = useState<string | null>(null)
   /* the award being edited in place, and its three boxes */
   const [editing, setEditing] = useState<string | null>(null)
   const [eWhy, setEWhy] = useState('')
   const [eWho, setEWho] = useState('')
   const [eDays, setEDays] = useState('')
-  const [moveTo, setMoveTo] = useState(date)
   const deciding = canDecide(period.stage, role)
   const editable = canEditCell(period, role, date) && canEditRow(role, viewer, personId)
   const own = viewer === personId
   const raw = recordsAt(personId, date)
+  /* WHICH RECORDS HERE CAN MOVE — the store's one rule (D265, D333): each such line offers the one Move (D334), the
+     same button as the one-day and drag-selection sheets; an award, leave filed on the Inputs page, a medical never. */
+  const movableIds = new Set(movableRecords([{ personId, date }]).map(m => m.id))
+  const moveBtn = (id: string) => (onMove && movableIds.has(id)
+    ? [<MoveChip key="mv" testid={`dl-move-${id}`} onClick={() => onMove({ personId, date, id })} />]
+    : [])
   /* The reader's OWN undecided bids on this day, in the words the box uses —
      what the clash line names so a member can see his leave is still there. A
      refused bid is not live and is nobody's news. */
@@ -129,18 +136,14 @@ export function DayListSheet({
          21 Sep 26. Note stays — a remark is the one thing he DID ask for here. */
       const finished = period.stage === 'published'
       if (warOwned && isLeave && role === 'admin' && deciding && !finished) {
+        /* the sheets' order (D264): the decisions, then Move, then Delete — Move picks this one leave up into the move
+           mode, no date box (D266) */
         actions.push(
           <button key="p" className="dchip" data-testid={`dl-unapprove-${c.id}`} onClick={() => act(() => changeAbsenceById(personId, date, c.id, 'pending'))}>Back to bid</button>,
           <button key="r" className="dchip refuse" data-testid={`dl-refuse-${c.id}`} onClick={() => act(() => changeAbsenceById(personId, date, c.id, 'refused'))}>Refuse</button>,
-          <button key="d" className="dchip" data-testid={`dl-remove-${c.id}`} onClick={() => act(() => changeAbsenceById(personId, date, c.id, 'removed'))}>Delete</button>,
-          <button key="m" className="dchip move" data-testid={`dl-move-${c.id}`} onClick={() => { setMoving(moving === c.id ? null : c.id); setMoveTo(date) }}>Move…</button>,
+          ...moveBtn(c.id),
+          <DeleteChip key="d" testid={`dl-remove-${c.id}`} onClick={() => act(() => changeAbsenceById(personId, date, c.id, 'removed'))} />,
         )
-        if (moving === c.id) {
-          actions.push(
-            <input key="mt" type="date" className="dateinput" aria-label="Move to" data-testid={`dl-moveto-${c.id}`} value={moveTo} min={period.start} max={period.end} onChange={e => setMoveTo(e.target.value)} />,
-            <button key="mg" className="dchip approve" data-testid={`dl-movego-${c.id}`} onClick={() => { const r = moveAbsenceById(personId, date, c.id, moveTo); if (r) setMsg(r); else { setMsg(''); setMoving(null) } }}>Move</button>,
-          )
-        }
       }
       if (row && isLeave && period.stage === 'published' && (role === 'admin' || own)) {
         actions.push(<button key="n" className="dchip" data-testid={`dl-note-${c.id}`} onClick={() => onEditRemark(row)}>Note</button>)
@@ -151,14 +154,23 @@ export function DayListSheet({
       /* "Ack" is the word everywhere since 21 Sep 26 — the button, the
          legend and this line had drifted into three ways of saying it. */
       const st = c.state === 'acknowledged' ? 'bid, acked' : c.state === 'refused' ? 'bid refused' : 'bid, not decided yet'
-      const text = `${shown(notation(c))} — ${nameOf(c.code) || shown(c.code)}${partTxt} · ${st}`
+      /* WHERE IT WAS MOVED FROM, on its own line (Fable's scenario S4): the grid's dotted "moved" mark and the one-day
+         sheet's "moved from" read the day's TOP record, so a bid moved once bidding had closed onto a day holding an
+         award (now possible from every door, D265) left no trace anywhere. The same rule as the mark: recorded, and
+         shown, only for a move made once bidding is closed. */
+      const src = raw.find(r => r.id === c.id) as RequestRec | undefined
+      const movedFrom = biddingClosed(period.stage) && src?.shiftedFrom ? ` · moved from ${dayLabel(src.shiftedFrom)}` : ''
+      const text = `${shown(notation(c))} — ${nameOf(c.code) || shown(c.code)}${partTxt} · ${st}${movedFrom}`
       const actions: ReactElement[] = []
+      /* THE SHEETS' ORDER AND WORDS (D264, D331, D332): Ack · Approve · Refuse, then Move, then Delete — where this list
+         used to say Approve · Ack · Refuse · Clear */
       if (deciding) {
-        actions.push(<button key="ap" className="dchip approve" data-testid={`dl-approve-${c.id}`} onClick={() => act(() => decideRequestById(personId, date, c.id, 'approved'), 'Couldn’t approve — something else is on that time')}>Approve</button>)
         if (c.state !== 'acknowledged') actions.push(<button key="ak" className="dchip ack" data-testid={`dl-ack-${c.id}`} onClick={() => act(() => decideRequestById(personId, date, c.id, 'acknowledged'))}>Ack</button>)
+        actions.push(<button key="ap" className="dchip approve" data-testid={`dl-approve-${c.id}`} onClick={() => act(() => decideRequestById(personId, date, c.id, 'approved'), 'Couldn’t approve — something else is on that time')}>Approve</button>)
         if (c.state !== 'refused') actions.push(<button key="rf" className="dchip refuse" data-testid={`dl-refuse-${c.id}`} onClick={() => act(() => decideRequestById(personId, date, c.id, 'refused'))}>Refuse</button>)
       }
-      if (editable) actions.push(<button key="cl" className="dchip" data-testid={`dl-clear-${c.id}`} onClick={() => act(() => clearRecordById(personId, date, c.id))}>Clear</button>)
+      actions.push(...moveBtn(c.id))
+      if (editable) actions.push(<DeleteChip key="cl" testid={`dl-clear-${c.id}`} onClick={() => act(() => clearRecordById(personId, date, c.id))} />)
       const cls = c.state === 'acknowledged' ? 'tbc' : c.state === 'refused' ? 'ref' : ''
       return { key: `r-${c.id}`, cls, text, sub: '', actions }
     }
@@ -185,7 +197,7 @@ export function DayListSheet({
            N16 creates. One door: `editManualCredit` writes all three fields
            as a single step, so one undo takes the whole change back. */
         actions.push(<button key="ed" className="dchip" data-testid={`dl-oil-edit-${c.id}`} onClick={() => { setEditing(editing === c.id ? null : c.id); setEWhy(rec.note ?? ''); setEWho(rec.givenBy ?? ''); setEDays(rec.days != null ? String(rec.days) : '') }}>Edit…</button>)
-        actions.push(<button key="cl" className="dchip" data-testid={`dl-clear-${c.id}`} onClick={() => act(() => clearRecordById(personId, date, c.id))}>Clear</button>)
+        actions.push(<DeleteChip key="cl" testid={`dl-clear-${c.id}`} onClick={() => act(() => clearRecordById(personId, date, c.id))} />)
       }
       const from = rec?.oil !== 'auto' ? ''
         : rec.via === 'input' ? 'From a duty input that was accepted.'
