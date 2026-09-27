@@ -588,6 +588,11 @@ Use these names in reviews and reports.
     migration, a back-compat path, or a sentence explaining a record an older build wrote. **Not**
     to be confused with "pre-existing", which is about the defect's age and says nothing about
     whether new data still gets hurt (see §2b).
+21. **The picture taken, not looked at** *(his find, 28 Sep 26 — `[ONE-DOOR]`)* — the walk saved the
+    picture that showed the defect, and its step asserted only that a class was switched on. A mark,
+    an outline or a highlight is asserted as PAINTED (a computed style on each element it must cover —
+    a pinned column paints its own background over a row's outline), and every picture a step saves
+    is opened before the step counts as looked at.
 
 ---
 

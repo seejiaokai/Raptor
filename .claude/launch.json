@@ -105,6 +105,21 @@
         "--strictPort"
       ],
       "port": 4192
+    },
+    {
+      "name": "raptor-onedoor",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "--prefix",
+        "raptor-port",
+        "vite",
+        "preview",
+        "raptor-port",
+        "--port",
+        "4178",
+        "--strictPort"
+      ],
+      "port": 4178
     }
   ]
 }

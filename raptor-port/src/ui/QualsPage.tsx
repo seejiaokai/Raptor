@@ -7,11 +7,11 @@ import { PEOPLE, QORDER, QCHIP, QCOLOR, LEVELNAME } from '../engine/people'
 import { validate } from '../engine/validate'
 import { HOOKS } from '../engine/hooks'
 import { isAdmin, mayEditQualsOf, mayManageRoster, mayRenameCallsign } from '../state/perms'
-import { catsFor, CALLSIGN_LABEL, callsignProblem } from '../state/roster-add'
+import { catsFor, CALLSIGN_LABEL } from '../state/roster-add'
 import './postout.css'
 import { openAdminUsers } from './adminopen'
 import { updatePersonField } from '../state/quals-write'
-import { esc, BACKPROMPT, clearBack } from '../state/view'
+import { esc, BACKPROMPT, clearBack, QUALSFOCUS, focusQualsRow } from '../state/view'
 import { notify } from '../state/store'
 /* [ARCH-STACK] phase 3: the command-routed persistPeople (a roster write now
    emits a people/<personId> change). Same behaviour + the change stream. */
@@ -30,7 +30,6 @@ import { exportCSV } from './export'
    archived body has to clear their Leave War posting-out too, or the very
    next auto-archive pass would put them straight back — so the whole restore
    lives in sync.ts and this page just calls it. */
-import { restoreArchivedPerson, restoreArchivedAs } from '../leavewar/sync'
 
 /* Column order is the owner's, left to right (5 Aug 26): SANS, SXO, SCHEDULER,
    SC DAY, SC NIGHT, DAAR, NAAR, NVG, IMC, TF — currency and appointments
@@ -121,16 +120,6 @@ const sortKeyFor = (key: string) => SORTKEY[key] || ((p: any) => (p.quals && p.q
 const cmp = (a: any, b: any) => (a < b ? -1 : a > b ? 1 : 0)
 
 /* which people the table is showing: the seat view, then the filter box */
-/* the callsign Restore suggests when his own is taken (D295; the approved picture: "Ace 2") — the first free "<cs> N",
-   shortened to fit the 14 letters (D226 — Fable F11) */
-function nextFreeCallsign(cs: string, id: string): string {
-  for (let n = 2; n < 100; n++) {
-    const tail = ` ${n}`
-    const cand = `${cs.slice(0, 14 - tail.length).trimEnd()}${tail}`
-    if (!callsignProblem(cand, id)) return cand
-  }
-  return ''
-}
 function qualsIds(qSeatView: string, qSort: any, qSearch: string) {
   let ids = Object.keys(PEOPLE).filter(id =>
     (qSeatView === 'ALL' || PEOPLE[id].seat === qSeatView) && !PEOPLE[id].archived)
@@ -189,7 +178,7 @@ function qualsHead(cols: any[], qSeatView: string, qSort: any, qualsEdit: boolea
         + `<span class="qdel" data-del="${c.k}" title="Remove ${esc(c.h)}">${armDel === c.k ? 'remove?' : '✕'}</span></th>`
       return sortTh(c.k, esc(c.h), cls, what + ' · click to bring the qualified to the top')
     }).join('') +
-    `<th>Remarks</th><th></th></tr></thead>`
+    `<th>Remarks</th></tr></thead>`
 }
 
 /* the group-header row ("Assigned pilots · N"), pulled out so it has one source.
@@ -198,22 +187,14 @@ function qualsHead(cols: any[], qSeatView: string, qSort: any, qualsEdit: boolea
    to freeze this bar"); only the column headers freeze. */
 function qualsGrpRow(qSeatView: string, n: number, colsLen: number) {
   const grp = qSeatView === 'FCP' ? 'Assigned pilots' : qSeatView === 'RCP' ? 'Assigned WSOs' : qSeatView === 'GND' ? 'Personnel (ground crew)' : 'Assigned aircrew'
-  return `<tr class="grp"><td colspan="${5 + colsLen + 1}">${grp} · ${n}</td></tr>`
+  return `<tr class="grp"><td colspan="${5 + colsLen}">${grp} · ${n}</td></tr>`
 }
 
-/* renderQuals' head + rows, verbatim strings.
-   `canArch` — whether the row's archive ✕ is drawn at all. Archiving is
-   roster MEMBERSHIP, the same class as adding a person (Admin → Users since
-   [ACCOUNTS-NEW-PERSON], D217) and Restore ("stays with
-   the admin", the owner's 5 Aug line), NOT table contents a member may edit.
-   The reference never had to say so — only a scheduler could enable editing
-   there — but opening Enable editing to members (5 Aug 26) silently opened
-   the ✕ with it: a member could archive anyone off every roster surface,
-   with Restore admin-only, so they could not even undo it (bug hunt,
-   31 Aug 26). The cell itself stays so the column count matches the head. */
-function qualsTable(cols: any[], qSeatView: string, qSort: any, qEditing: boolean, qSearch: string, qualsEdit: boolean, armDel: string, canArch: boolean) {
+/* renderQuals' head + rows, verbatim strings. The archive ✕ that ended every row went to Admin → Users with the
+   Archived list ([ONE-DOOR], owner D310, 27 Sep 26 — "Quals loses archive"): Quals keeps quals, CAT, flight and
+   initials. */
+function qualsTable(cols: any[], qSeatView: string, qSort: any, qEditing: boolean, qSearch: string, qualsEdit: boolean, armDel: string) {
   const ids = qualsIds(qSeatView, qSort, qSearch)
-  const archCell = (id: string) => `<td>${canArch ? `<span class="qarch" data-arch="${id}" title="Archive">✕</span>` : ''}</td>`
   const canRename = mayRenameCallsign()
   const rows = ids.map(id => {
     const p = PEOPLE[id]
@@ -243,7 +224,7 @@ function qualsTable(cols: any[], qSeatView: string, qSort: any, qEditing: boolea
         ? `<input class="qinit qrmk" data-prmk="${id}" value="${esc(p.remarks || '')}" maxlength="80" aria-label="Remarks for ${esc(p.cs)}" />`
         : esc(p.remarks || '')
       const blanks = cols.map(() => `<td class="qcell na"></td>`).join('')
-      return `<tr class="persrow${trRo}"><td class="qname" data-person="${id}" title="${esc(p.name || '')}">${cs}</td><td class="qinitc">${init}</td><td class="qfltc">${flt}</td><td class="qcell na"></td>${blanks}<td class="qprmk" style="text-align:left">${rmk}</td>${archCell(id)}</tr>`
+      return `<tr class="persrow${trRo}"><td class="qname" data-person="${id}" title="${esc(p.name || '')}">${cs}</td><td class="qinitc">${init}</td><td class="qfltc">${flt}</td><td class="qcell na"></td>${blanks}<td class="qprmk" style="text-align:left">${rmk}</td></tr>`
     }
     const lvl = rowEd
       ? `<select class="qlvlsel" data-lvl="${id}" aria-label="CAT for ${esc(p.cs)}">${catsFor(p.seat).map(k => `<option ${k === p.q ? 'selected' : ''}>${k}</option>`).join('')}</select>`
@@ -284,7 +265,7 @@ function qualsTable(cols: any[], qSeatView: string, qSort: any, qEditing: boolea
     const flt = rowEd
       ? `<input class="qinit qflt" data-flt="${id}" value="${esc(p.flight || '')}" maxlength="10" aria-label="Flight for ${esc(p.cs)}" />`
       : esc(p.flight || '')
-    return `<tr class="${trRo.trim()}"><td class="qname" data-person="${id}" title="${esc(p.name || '')}">${cs}</td><td class="qinitc">${init}</td><td class="qfltc">${flt}</td><td>${lvl}</td>${cells}<td style="text-align:left;color:var(--ink-3)">${LEVELNAME[p.q]}</td>${archCell(id)}</tr>`
+    return `<tr class="${trRo.trim()}"><td class="qname" data-person="${id}" title="${esc(p.name || '')}">${cs}</td><td class="qinitc">${init}</td><td class="qfltc">${flt}</td><td>${lvl}</td>${cells}<td style="text-align:left;color:var(--ink-3)">${LEVELNAME[p.q]}</td></tr>`
   }).join('')
   return qualsHead(cols, qSeatView, qSort, qualsEdit, armDel)
     + `<tbody>${qualsGrpRow(qSeatView, ids.length, cols.length)}${rows}</tbody>`
@@ -309,36 +290,31 @@ export function QualsPage() {
   /* ADD PERSON IS A BUTTON TO ADMIN → USERS now (D217, 26 Sep 26 — "one door"): a new
      person is made only there, with his account or with a blank sign-in, through the one
      add (state/roster-add.ts); the form that folded here (owner, 15 Aug 26) is retired.
-     Everything AFTER the add — quals, CAT, flight, archive, restore — stays on this page. */
-  /* the Archived section under the table (owner, 19 Aug 26): folded to a
-     count by default — it is a records drawer, not the roster */
-  const [showArch, setShowArch] = useState(false)
-  /* D295: the archived man being renamed on the Archived list, what is typed, and the reason a name was refused */
-  /* D295: Restore meeting a taken callsign — the man, the callsign he comes back under, the reason one was refused */
-  const [restoreAsFor, setRestoreAsFor] = useState<string | null>(null)
-  const [restoreAsTo, setRestoreAsTo] = useState('')
-  const [restoreAsErr, setRestoreAsErr] = useState('')
-  /* D284: "Check his quals" — his row, outlined (on the roster in his seat view, or on the Archived list while he is
-     still archived — an account enabled before he is restored) */
+     Everything AFTER the add — quals, CAT, flight, initials — stays on this page; archive, restore and the archived
+     man's rename went to Admin → Users ([ONE-DOOR], owner D310, 27 Sep 26 — one door for a person's whole state). */
+  /* D284: "Check his quals" — his row, outlined in his seat view (an archived man is never prompted: Enable is refused
+     on him, D322, and Restore lifts the archive first) */
   const [backHl, setBackHl] = useState<string | null>(null)
   const checkBack = (id: string) => {
     const p = PEOPLE[id]
     clearBack(id)
-    if (p.archived) setShowArch(true)
-    else setSeat(p.pers || p.seat === 'GND' ? 'GND' : p.seat === 'RCP' ? 'RCP' : 'FCP')
+    setSeat(p.pers || p.seat === 'GND' ? 'GND' : p.seat === 'RCP' ? 'RCP' : 'FCP')
     setBackHl(id); notify()
   }
+  /* [ONE-DOOR] (D305): the man's own "Check my quals" — his row, opened and outlined, once */
+  useEffect(() => {
+    if (!QUALSFOCUS) return
+    const id = QUALSFOCUS
+    focusQualsRow(null)
+    if (PEOPLE[id]) checkBack(id)
+  })
   useEffect(() => {
     if (!backHl) return
-    const el = (document.querySelector(`#qtbl td.qname[data-person="${backHl}"]`)?.closest('tr')
-      || document.querySelector(`[data-testid="qarchrow-${backHl}"]`)) as HTMLElement | null
+    const el = document.querySelector(`#qtbl td.qname[data-person="${backHl}"]`)?.closest('tr') as HTMLElement | null
     if (!el) return
     el.classList.add('back-hl')
     el.scrollIntoView?.({ block: 'center' })
   })
-  const [renaming, setRenaming] = useState<string | null>(null)
-  const [renameTo, setRenameTo] = useState('')
-  const [renameErr, setRenameErr] = useState('')
   const tblRef = useRef<HTMLTableElement>(null)
   /* the frozen-header mirror (see the effect below): the scroll wrap it pins
      over, the mirror's own horizontal scroller, and the activation state
@@ -453,17 +429,6 @@ export function QualsPage() {
            there unchanged) */
         const [id, k] = cell.dataset.q!.split('|') as [string, string]
         updatePersonField(id, { tick: k }); notify(); return
-      }
-      /* archiving takes a body off the roster, which can change what the
-         warnings say about the lines he was on. Write-path role backstop
-         (bug hunt, 31 Aug 26): roster membership is the admin's — the ✕ no
-         longer renders for a member, so a real gesture cannot reach this;
-         it refuses a stale element or a hand-made call, the commitInputEdit
-         idiom (a sessionless test/boot context is not a member). */
-      const arch = t.closest('[data-arch]') as HTMLElement | null
-      if (arch) {
-        if (!mayManageRoster()) return HOOKS.toast('Only an admin can archive someone', 'warn')
-        PEOPLE[arch.dataset.arch!].archived = true; validate(); persistPeople(); notify()
       }
     }
     const onChange = (e: Event) => {
@@ -738,7 +703,7 @@ export function QualsPage() {
       </div>}
       <div className="qhelp">
         Similar to a LoX and integrated with the board — a person's <b>CAT</b> drives their puck's qualification chip colour and the validator rules.
-        A check (✓) means the person holds that qualification. In edit mode, click a cell to toggle it, or the red ✕ to archive someone.
+        A check (✓) means the person holds that qualification. In edit mode, click a cell to toggle it. Archive, restore and delete are on Admin → Users.
         <a id="qAddQual" onClick={() => HOOKS.toast('Shortcut to the Admin page (Django-style backend in the full build).')}> Add qualifications</a> · <a id="qUses">Set which quals your squadron uses</a> · <a id="qAdminLink">Admin page</a>
       </div>
       {/* the seat view + Add person, right above the table (owner, 15 Aug 26).
@@ -761,7 +726,8 @@ export function QualsPage() {
       </div>
       {/* D284 (26 Sep 26): he's back — restored, or his account enabled — and the admin is asked to check his quals and
           CAT, with a way straight to his row; lined up with the table (D294 (3)). It changes nothing. */}
-      {admin && BACKPROMPT.filter(id => PEOPLE[id] && !PEOPLE[id].deleted).map(id => (
+      {/* round 1, Fable F15: a man archived again before the tap is not prompted */}
+      {admin && BACKPROMPT.filter(id => PEOPLE[id] && !PEOPLE[id].deleted && !PEOPLE[id].archived).map(id => (
         <div className="back-prompt" key={id} data-testid={`back-${id}`}>
           <span><b>{PEOPLE[id].cs} is back</b> — quals and CAT as he left them.</span>
           <button className="abtn primary" data-back-check={id} onClick={() => checkBack(id)}>Check his quals</button>
@@ -770,7 +736,7 @@ export function QualsPage() {
       ))}
       <div className="qwrap" ref={wrapRef}>
         <table className={'qtbl' + (qEditing ? ' editing' : '') + (canEditQuals() ? ' qediting' : '')} id="qtbl" ref={tblRef}
-          dangerouslySetInnerHTML={{ __html: qualsTable(cols, qSeatView, qSort, qEditing, qSearch, canEditQuals(), armDel, admin) }} />
+          dangerouslySetInnerHTML={{ __html: qualsTable(cols, qSeatView, qSort, qEditing, qSearch, canEditQuals(), armDel) }} />
         {/* THE LIFT FRAME (owner, 6 Sep 26): one box round a picked-up column,
             and the flash where it lands — src/ui/lift.ts. Inside the scroll
             wrap so it travels with the table sideways; a constant className, so
@@ -809,100 +775,8 @@ export function QualsPage() {
           </div>
         </div>
       )}
-      {/* ---- the Archived section (owner, 19 Aug 26) ------------------------
-          Where a body lands when it is archived — by the red ✕ above, or by
-          the Leave War post-out's "Archive on PO date" switch the day the PO
-          arrives. Their quals, CAT and every puck on a past schedule are
-          untouched (archiving is a flag, not a delete), so Restore puts them
-          back exactly as they left — "in the future they post back into this
-          sqn, they can be re-added easily". Restore is admin-only: it is the
-          other half of the post-out, which is management's, and it also
-          clears the Leave War posting-out through the sync seam. Sentinel
-          bodies (ALL AVAIL) are archived by construction and are not people,
-          so they never list here. */}
-      {(() => {
-        /* a DELETED man is on no list, this one included ([POST-OUT-OUTCOMES], D287, D290, D299 — kept underneath,
-           invisible) */
-        const archived = Object.keys(PEOPLE)
-          .filter(id => PEOPLE[id].archived && !PEOPLE[id].special && !PEOPLE[id].deleted)
-          .sort((a, b) => cmp(SORTKEY.cs(PEOPLE[a]), SORTKEY.cs(PEOPLE[b])))
-        if (!archived.length) return null
-        return (
-          <div className="qarchive" id="qArchive">
-            <button className="abtn" id="qArchToggle" aria-expanded={showArch}
-              onClick={() => setShowArch(v => !v)}>
-              {showArch ? '▾' : '▸'} Archived · {archived.length}
-            </button>
-            {showArch && (
-              <div className="qarchlist" data-testid="qarchlist">
-                {archived.map(id => {
-                  const p = PEOPLE[id]
-                  return (
-                    <div className="qarchrow" key={id} data-testid={`qarchrow-${id}`}>
-                      <span className="qarchcs">{p.cs}</span>
-                      <span className="qarchmeta">
-                        {p.pers ? 'Personnel' : `${p.seat === 'FCP' ? 'Pilot' : 'WSO'} · ${p.q}`}
-                      </span>
-                      {/* D295 (27 Sep 26): an archived man is renamed right here — the one callsign rule, its reason said */}
-                      {admin && (
-                        <button className="abtn qrename" data-rename={id}
-                          onClick={() => { setRenaming(id); setRenameTo(String(p.cs)); setRenameErr('') }}>
-                          Rename
-                        </button>
-                      )}
-                      {admin && (
-                        <button className="abtn qrestore" data-restore={id}
-                          onClick={() => {
-                            /* D286 (1) / D295: his callsign now held by a man on the roster — Restore never renames anyone
-                               by itself; it asks for another callsign right here, and "Restore as …" does both in one step */
-                            if (callsignProblem(p.cs, id)) { setRestoreAsFor(id); setRestoreAsTo(nextFreeCallsign(String(p.cs), id)); setRestoreAsErr(''); return }
-                            if (restoreArchivedPerson(id)) HOOKS.toast(`${p.cs} restored to the roster`, 'ok')
-                          }}>
-                          Restore
-                        </button>
-                      )}
-                      {admin && restoreAsFor === id && (
-                        <div className="qarch-rename" data-testid={`qrestoreas-${id}`}>
-                          <span className="qarch-rename-err">{p.cs} is taken — give him another callsign.</span>
-                          <input id="qRestoreCs" value={restoreAsTo} aria-label={`The callsign/name ${p.cs} comes back under`}
-                            onChange={e => { setRestoreAsTo(e.target.value); setRestoreAsErr('') }} />
-                          <button className="abtn primary" id="qRestoreGo" onClick={() => {
-                            const bad = restoreArchivedAs(id, restoreAsTo)
-                            if (bad) { setRestoreAsErr(bad); return }
-                            setRestoreAsFor(null); HOOKS.toast(`${restoreAsTo.trim()} restored to the roster`, 'ok'); notify()
-                          }}>Restore as {restoreAsTo.trim() || '…'}</button>
-                          <button className="abtn" id="qRestoreCancel" onClick={() => setRestoreAsFor(null)}>Cancel</button>
-                          {restoreAsErr && <span className="qarch-rename-err" id="qRestoreErr">{restoreAsErr}</span>}
-                        </div>
-                      )}
-                      {admin && renaming === id && (
-                        <div className="qarch-rename" data-testid={`qrename-${id}`}>
-                          <input id="qRenameCs" value={renameTo} aria-label={`New callsign/name for ${p.cs}`}
-                            onChange={e => { setRenameTo(e.target.value); setRenameErr('') }} />
-                          <button className="abtn primary" id="qRenameGo" onClick={() => {
-                            const want = renameTo.trim()
-                            const bad = callsignProblem(want, id)
-                            if (bad) { setRenameErr(bad); return }
-                            const r = updatePersonField(id, { callsign: want })
-                            if (r && r !== 'unchanged') { setRenameErr(r); return }
-                            setRenaming(null); notify()
-                          }}>Save</button>
-                          <button className="abtn" id="qRenameCancel" onClick={() => setRenaming(null)}>Cancel</button>
-                          {renameErr && <span className="qarch-rename-err" id="qRenameErr">{renameErr}</span>}
-                        </div>
-                      )}
-                    </div>
-                  )
-                })}
-                <div className="qarchhint">
-                  Archived people keep their quals and their pucks on past schedules.
-                  {admin ? ' Restore puts them straight back on the roster.' : ' An admin can restore them.'}
-                </div>
-              </div>
-            )}
-          </div>
-        )
-      })()}
+      {/* The Archived section, its Restore, "Restore as" and the archived man's rename moved to Admin → Users
+          ([ONE-DOOR], owner D310, 27 Sep 26 — one door for a person's whole state; ui/UsersPanel.tsx ArchivedRow). */}
     </>
   )
 }

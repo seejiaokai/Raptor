@@ -959,6 +959,7 @@ export function PostOutSheet({
   outcome,
   hasAccount,
   blockedFor,
+  lockedWhy,
   onChange,
   onUndo,
   onPlace,
@@ -968,6 +969,9 @@ export function PostOutSheet({
   date: string
   /** The person's CURRENT PO date — the first day they are gone. */
   poFrom: string
+  /** [ONE-DOOR] (round 1 — Fable F1 / Astra 2): he was archived on Admin → Users, and Restore there is the ONE way back —
+   *  the sentence that says so; the sheet then reads only (the date fixed, no chips, no Undo) */
+  lockedWhy?: string | null
   /** Which posting it is ([POST-OUT-OUTCOMES], D229 — the four chips). */
   outcome: PostOutcome
   /** whether he has an account (the line names it only then) */
@@ -988,6 +992,7 @@ export function PostOutSheet({
   const [err, setErr] = useState('')
   /* a Delete chip does not commit on its own tap: it arms "Tap again to delete Hex" (D287 (3) — it asks twice) */
   const [delArm, setDelArm] = useState(false)
+  const locked = !!lockedWhy
   return (
     <Sheet testid="postout-sheet" label="Posted out" onClose={onClose}>
       <div className="bidsheet-hd">
@@ -1008,12 +1013,14 @@ export function PostOutSheet({
           data-testid="postout-date"
           aria-label={`Move ${callsign}'s post-out date`}
           value={poFrom}
+          disabled={locked}
           onChange={e => { if (e.target.value) { setDelArm(false); setErr(onChange(e.target.value, outcome) || '') } }}
         />
       </div>
+      {locked && <div className="bidsheet-row postout"><span className="note warn" data-testid="postout-locked">{lockedWhy}</span></div>}
       {/* [POST-OUT-OUTCOMES] (D229, D294, D298, D300): the four chips, committed on the tap as the date is — a Delete
           arms its second tap instead; ONE line says what happens on the date (the old two notes said it twice) */}
-      <OutcomeChips value={delArm ? 'delete' : outcome} testid="postout"
+      {!locked && <><OutcomeChips value={delArm ? 'delete' : outcome} testid="postout"
         onChange={o => {
           setErr('')
           if (o === 'delete') { setDelArm(true); return }
@@ -1024,8 +1031,8 @@ export function PostOutSheet({
         }} />
       <div className="bidsheet-row postout">
         <span className="note" data-testid="postout-line">{outcomeLine(delArm ? 'delete' : outcome, poFrom, !!hasAccount)}</span>
-      </div>
-      {blockedFor && blockedFor(delArm ? 'delete' : outcome) && (
+      </div></>}
+      {!locked && blockedFor && blockedFor(delArm ? 'delete' : outcome) && (
         <div className="bidsheet-row postout"><span className="note warn" data-testid="postout-blocked">{blockedFor(delArm ? 'delete' : outcome)}</span></div>
       )}
       {delArm && (
@@ -1041,9 +1048,9 @@ export function PostOutSheet({
         <span className="note warn" data-testid="postout-err">{err}</span>
       </div>}
       <div className="bidsheet-row postout">
-        <button className="dchip po" data-testid="postout-undo" onClick={() => { const why = onUndo(); if (why) setErr(why) }}>
+        {!locked && <button className="dchip po" data-testid="postout-undo" onClick={() => { const why = onUndo(); if (why) setErr(why) }}>
           Undo post out (PO)
-        </button>
+        </button>}
         {/* THE WAY THROUGH TO PLACING LEAVE (owner, 20 Sep 26). An admin's tap
             on a day outside someone's time in the squadron lands here, which is
             right — managing the posting is what he means nine times out of ten
@@ -1077,6 +1084,8 @@ export function PostInSheet({
   callsign,
   date,
   piFrom,
+  backFrom,
+  lockedWhy,
   onChange,
   onUndo,
   onPlace,
@@ -1086,6 +1095,12 @@ export function PostInSheet({
   date: string
   /** The person's CURRENT PI date — the first day they are here. */
   piFrom: string
+  /** [ONE-DOOR] (D320): he is back from a posting — the date it took him (the day after his earlier stint closed); the
+   *  sheet then says so and offers no Undo (past stints are read-only — round 1, Fable F2 / Astra 1) */
+  backFrom?: string | null
+  /** [ONE-DOOR] (the walk's design, Fable 4.2): archived on Admin → Users — the sheet reads only, as the Post out sheet
+   *  does (round 1, Fable F1): the reason, the date fixed, no Undo; Restore there is the one way back */
+  lockedWhy?: string | null
   /** Re-post with a new date. Commits on change, like the post-out sheet, so
    *  the admin watches the grid move behind it. */
   onChange: (date: string) => string | void
@@ -1097,6 +1112,7 @@ export function PostInSheet({
 }) {
   /* a refused move of the date says why (AB5) — the box snaps back to the date that stands */
   const [err, setErr] = useState('')
+  const locked = !!lockedWhy
   return (
     <Sheet testid="postin-sheet" label="Posted in" onClose={onClose}>
       <div className="bidsheet-hd">
@@ -1107,9 +1123,12 @@ export function PostInSheet({
         </button>
       </div>
       <div className="bidsheet-row">
-        <span className="note">
-          Posted in on {piFrom} — on the manpower from that day. Days before it count nobody,
-          but leave can still be dated there.
+        <span className="note" data-testid="postin-note">
+          {backFrom
+            ? <>Back from a posting on {backFrom} — on the manpower from {piFrom}. The days between count nobody,
+                but leave can still be dated there.</>
+            : <>Posted in on {piFrom} — on the manpower from that day. Days before it count nobody,
+                but leave can still be dated there.</>}
         </span>
       </div>
       <div className="bidsheet-row postout">
@@ -1122,17 +1141,19 @@ export function PostInSheet({
           data-testid="postin-date"
           aria-label={`Move ${callsign}'s post-in date`}
           value={piFrom}
+          disabled={locked}
           onChange={e => { if (e.target.value) setErr(onChange(e.target.value) || '') }}
         />
       </div>
+      {locked && <div className="bidsheet-row postout"><span className="note warn" data-testid="postin-locked">{lockedWhy}</span></div>}
       {/* drawn only with something to say — an empty row left a blank band on the sheet (W3's re-walk, N4) */}
       {err && <div className="bidsheet-row postout">
         <span className="note warn" data-testid="postin-err">{err}</span>
       </div>}
       <div className="bidsheet-row postout">
-        <button className="dchip po" data-testid="postin-undo" onClick={onUndo}>
+        {!backFrom && !locked && <button className="dchip po" data-testid="postin-undo" onClick={onUndo}>
           Undo post in (PI)
-        </button>
+        </button>}
         {onPlace && (
           <button className="dchip" data-testid="postin-place" onClick={onPlace}>
             Place leave or OIL here instead…

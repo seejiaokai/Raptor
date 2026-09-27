@@ -5076,9 +5076,9 @@ test('Quals "+ Add person" leaves the cursor in the Callsign/Name box, every pre
     await go(page, 'quals')
     await page.click('#qAddToggle')
     await page.waitForFunction(() => (window as any).CURPAGE === 'admin')
-    await expect(page.locator('#accModeNew')).toHaveAttribute('aria-pressed', 'true')
+    /* [ONE-DOOR] (D310, D322): the add form is New person only — no mode to choose */
     await expect.poll(() => page.evaluate(() => document.activeElement && document.activeElement.id), { message: `press ${i}`, timeout: 3000 }).toBe('accAddCs')
-    await page.click('#accModeRoster')
+    await page.evaluate(() => (document.activeElement as HTMLElement | null)?.blur())
   }
 })
 
@@ -5104,8 +5104,12 @@ test('the New person fields fit the Users pane on a phone (add and approve)', as
     }).filter(Boolean)
     return { bad, scrollX: document.documentElement.scrollWidth > window.innerWidth }
   }, root)
-  await page.click('#accModeNew'); await page.fill('#accAddName', 'fits2@mail')
+  await page.fill('#accAddName', 'fits2@mail')
   expect(await fits('#accAddBlock'), 'the add form').toEqual({ bad: [], scrollX: false })
+  /* [ONE-DOOR] (D309, D322): the People list — its search, dots and role — and an opened row fit the pane too */
+  expect(await fits('#accList'), 'the people list').toEqual({ bad: [], scrollX: false })
+  await page.locator('#accList [data-person="rocky"] .acc-tap').click()
+  expect(await fits('[data-editing]'), 'an opened row').toEqual({ bad: [], scrollX: false })
   await page.click('#admWaiting [data-approve]'); await page.waitForSelector('[data-approving]')
   expect(await page.getAttribute('#apvModeNew', 'aria-pressed')).toBe('true')
   expect(await fits('[data-approving]'), 'the approve form').toEqual({ bad: [], scrollX: false })

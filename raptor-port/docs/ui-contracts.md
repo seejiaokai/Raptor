@@ -3916,7 +3916,8 @@ pucks are painted from `WARN` — so a tick that did not re-validate left the
 board showing a warning the roster no longer justified, until some unrelated
 schedule edit happened to run the validator. That is what made it look like
 "only editing the remarks triggers the engine". The tick, the archive ✕ and
-the CAT dropdown all validate now; the callsign path always did. Initials and
+the CAT dropdown all validate now (the ✕ went to Admin → Users with `[ONE-DOOR]`, D310 — Archive there validates inside
+its command); the callsign path always did. Initials and
 flight do not, and need not — no rule reads them. Pinned in
 `ui/quals.test.tsx`, both against a control with the calls removed.
 
@@ -4650,45 +4651,7 @@ without first selecting their category. A new settings category is one `CATS`
 entry plus its `.adm-panel` section; the owner is filling this in over time.
 The three category panels:
 
-- **`#admUsers` Users — the ACCOUNTS** (`[ACCOUNTS]`, 26 Sep 26 — D166 (1), D204; `ui/UsersPanel.tsx`). Replaces the
-  old Manage-users list (`#userList`, `state/users.ts` — it drove nothing and is gone). Four blocks, top to bottom:
-  **Waiting for access** (`#admWaiting`, one `[data-req]` row each: the sign-in name, "asked as <callsign> · <initials
-  · Pilot/WSO/Personnel · CAT> · <when>" — `requestSummary`, blank parts dropped; **Approve** `[data-approve]` opens
-  PERSON — "On the roster" `#apvModeRoster` | "New person" `#apvModeNew` (`[ACCOUNTS-NEW-PERSON]`, D214) — **New person**
-  the default when the typed callsign is nobody's: the four fields `#apvCs` / `#apvIni` / `#apvSeat` / `#apvCat` in two
-  columns, filled from what he gave, the note `#apvNote` "Filled from what he gave when he signed up — change anything
-  before you give access.", then "Add person and give access" `#apvGo` (one command: the person, his account, the request
-  answered); **On the roster** the default when it is someone's: the picker `#apvPid` (people with no account, not
-  archived, not ALL / ALL AVAIL) NEVER pre-picked (D204), the note naming the matched person by his callsign (one who
-  already has an account — archived or not, the account is checked FIRST: says so, names that account's sign-in, says he
-  can't be picked here and names both ways out: him on a new sign-in → change that account's sign-in under Accounts,
-  which answers the request (archived: "and restore them on the Quals page if they are back" — said, never done for
-  him, Restore wipes his posting-out window); the signed-in admin's OWN account → "another admin must change its
-  sign-in", his row being locked to him; someone else → New person with another callsign or name — Fable's code read
-  #1, both fix checks; an archived one with no account: restore on Quals first, or New person if it is someone else), then
-  "Give access"; the role `#apvRole` either way; Cancel `#apvCancel` discards edits —
-  the next Approve starts again from the request; within one open, each half keeps its entries; **Decline**
-  `[data-decline]`), or "Nobody is waiting for access." (`#admNoWaiting`); **Accounts** (`#accList`, one
-  `[data-acct]` row each: sign-in name over the live callsign, the role pill, tags "archived callsign" / "switched off" /
-  "you"; a tap (`.acc-tap`) opens its editor `[data-editing]` — sign-in name, callsign (its picker keeps the account's
-  own person even once he is archived — never a blank "Pick…" over a hidden value; Astra's fix check #2), role, Save / Switch off-on /
-  Cancel — except his OWN account, whose row is disabled; its picker reads "Callsign/Name", D219); **Add an account**
-  (`#accAddBlock`: the sign-in `#accAddName`, then PERSON `#accModeRoster` | `#accModeNew`, default On the roster — **the
-  ONE door for a new person**, D217: **On the roster** = the picker `#accAddPid`, the role, "Add account"; **New person** =
-  the four fields `#accAddCs` / `#accAddIni` / `#accAddSeat` / `#accAddCat` and the mock-up's note — with a sign-in, the
-  role and "Add person and account" (the person and his account in one command); with the sign-in BLANK, no role and "Add
-  person" (a roster-only person — someone who won't use the app, a SANS man); the form clears back to On the roster);
-  **Guest view** (`#admGuestView`, a checkbox, OFF by default). The words: "Callsign/Name" on every picker and field (D219),
-  "Pilot" / "WSO" / "Personnel (ground crew)" (D220); a callsign/name over 14 letters is said under its box (`…CsLong`) and
-  refused, never cut (D226); initials never required (D225). Every refusal toasts its reason (at least one admin keeps
-  access; never your own account; one person one account; one sign-in name one account; the one callsign rule). The
-  rail's Users entry and the Admin tab (`#admWaitBadge` top nav, `#drawerWaitBadge` drawer) carry the count waiting.
-  **Opening it from elsewhere** — the bell's access alert and Quals' "+ Add person" call `ui/adminopen.ts openAdminUsers`,
-  which sets `state/view.ts ADMINOPEN` (`{ seq, newPerson }`); the Admin page is its ONE consumer (keyed on `seq`, so it
-  works when the page is already up on another category): Users chosen, on a phone drilled in, and `newPerson` handed to
-  the Users panel, which chooses New person, scrolls the form into view and focuses the Callsign/Name box on a desktop.
-  A sign-in or sign-out clears a pending one (`VIEW_RESET`). The Users panel is told `shown` (Users chosen, and on a phone
-  drilled in) — the bell's "seen" (§The top bar carries the bell).
+- **`#admUsers` Users** (the rail's line under it: "Sign-in and roster" — was "Who can sign in", Fable R13) — one row per PERSON, every action on his row: §Admin → Users — one door (`[ONE-DOOR]`, D309, D310); the `[ACCOUNTS]` text it replaced is in `docs/archive/ui-contracts-2026-09-27.md`.
 - **`#admConfig` Squadron configuration** — `#admDutyTpl` / `#admDayTpl`
   open the duty-template and day-template editors by setting the SAME
   `pops.ts` flags the picker pencils set (`setTplEdit` / `setDayTplEdit`).
@@ -5126,44 +5089,101 @@ The approved mock-up `docs/mock/post-out.html` §1 is the design of record (D299
 PO (`po-*`), an existing posting's Post out sheet (`postout-*`), the drag selection's PO (`sel-po-*`) — the same row:
 the date once, in its own box ("PO from"); four short chips `leavewar/ui/OutcomeChips.tsx` — "Overseas Sqn" (the
 default — the old "Archive on PO date"), "Delete", "SANS", "Transfer to Sqn" (drawn, not pressable — "Comes with the
-shared database", D281); ONE line saying what the chosen one does on the date ("On 14 Oct: archived on Quals, account
-suspended." — the account named only when he has one); the button just "Post out" (D300; "Post in" likewise). Tapping
+shared database", D281); ONE line saying what the chosen one does on the date ("On 14 Oct: archived, account
+suspended." — the account named only when he has one; "archived on Quals" until Quals lost its archive, D310); the button just "Post out" (D300; "Post in" likewise). Tapping
 the chosen chip again un-chooses it — "off the manpower, nothing else" (the agent's call, on his look card). **A Delete
 asks twice** (D287 (3)): the bid sheet's button turns into "Tap again to delete <callsign>"; on the Post out sheet (which
 commits on each change) the Delete chip arms a second button, `postout-delete-go`, and tapping the armed chip again
 backs out without changing the posting. A deleted man (`gone` on the war) has no posting door — his posting is final.
-**On the date** (`leavewar/sync.ts runPoOutcomes`, the calendar date — the one clock): Overseas Sqn → archived on Quals
-and his account suspended; Delete → his person and account deleted (the hidden mark; days he flew keep his puck); SANS →
+**On the date** (`leavewar/sync.ts runPoOutcomes`, the calendar date — the one clock): Overseas Sqn → archived (Admin →
+Users' Archived group) and his account suspended; Delete → his person and account deleted (the hidden mark; days he flew keep his puck); SANS →
 ticked SANS (D283: with "Show SANS" OFF the war keeps his row in its old group, posted out, untracked; with it ON his
 whole row moves into the SANS group and his leave is tracked there — the approved picture); none → nothing more. Each
 runs ONCE for its date and never undoes a later hand change; the last admin who can sign in is never suspended or deleted
 by a posting — said once. Moving the date later or changing the outcome takes back what the posting made (the archive,
 the suspension, the SANS tick) — no "he's back" prompt; Undo post out after an Overseas Sqn is the Restore.
 
-## Admin → Users — Suspend / Enable, Delete account (`[POST-OUT-OUTCOMES]`, 27 Sep 26 — D285, D287, D300)
+## Admin → Users — Suspend / Enable, Delete account (`[POST-OUT-OUTCOMES]`, 27 Sep 26) — superseded by §Admin → Users — one door (D310: "Delete", the Sign-in dot, no Enable on an archived man); moved whole to `docs/archive/ui-contracts-2026-09-27.md`.
+## Admin → Users — one door (`[ONE-DOOR]`, 27 Sep 26 — D305, D308, D309, D310, D320–D323); Quals' old Archived list: `docs/archive/ui-contracts-2026-09-27.md`
 
-The account editor's buttons read **"Suspend" / "Enable"** (was "Switch off / on") and **"Delete account"**; a suspended
-row is tagged "suspended". "Delete account" asks twice — "Tap again to delete <callsign>" with a line naming what goes
-(his account and his person; days he flew keep his puck) — never on one's own account, never the last admin who can sign
-in; a man archived on Quals says so beside it. **Enable** is one of the two "he's back" acts (D284): it arms the Quals
-prompt below. The sign-in of a suspended account reads "Your access is suspended — Ask an admin to enable it when you're
-back." (said once).
+`ui/UsersPanel.tsx`; the approved design `docs/mock/one-door.html` (D322). **Admin → Users shows every PERSON — not only
+the accounts — and carries every action on him** (D309, D310). Blocks, top to bottom:
 
-## Quals' Archived list — Rename, Restore, "he's back" (`[POST-OUT-OUTCOMES]`, 27 Sep 26 — D284, D286, D295, D299)
+- **Waiting for access** (`#admWaiting`, a `[data-req]` row each, as `[ACCOUNTS-NEW-PERSON]` built it) — **Give access**
+  `[data-approve]` and **Refuse** `[data-decline]` (were Approve / Decline — D309). Give access opens PERSON "On the
+  roster" `#apvModeRoster` | "New person" `#apvModeNew`; **New person** asks the four fields and the **Post in** date
+  `#apvPostIn` (opening on today — D308) beside the role; On the roster asks no date (he is already here).
+- **People · N** (`#accList`, `.od-list`) — every person on the roster (not a placeholder, not archived, not deleted),
+  A to Z by callsign; nothing reorders itself. The search box `#accFind` ("Find a callsign or sign-in") filters by
+  callsign or sign-in name; "Nobody matches." (`#accNoMatch`). One heading row over two columns: **Sign-in** and
+  **Roster**. Each row (`[data-person]`, plus `[data-acct]` when he has an account): his callsign; under it his sign-in
+  name or "no sign-in", the role word on a phone, his seat and CAT ("Pilot · CAT C", "Personnel"); a **posting waiting
+  for its date** as an amber tag (`[data-testid="po-tag-<id>"]` — "posting out 14 Oct · Overseas Sqn", from the Leave
+  War — D310; or a post-in still to come, "posting in 19 Oct" — a Restore with a later date or a new person added ahead
+  of it: his sign-in works at once, D308, the war counts him from that day — the walk's design, Fable 4.1; or a posting
+  that has RUN and left him on the roster, "posted out 20 Sep" / "posted out 20 Sep · SANS" — D326); the held note (`acc-held-…`) when his posting has come and waits; the two dots
+  (`[data-testid="dot-signin-<id>"]` green can sign in / red suspended / grey no sign-in; `dot-roster-<id>` green on the
+  roster) — **each with its state in words** (title, aria-label), never colour alone; the role pill on a desktop. **Your
+  own row cannot be opened** (another admin changes it). A tap opens his row (`[data-editing]`):
+  - **with an account:** Sign-in (defence mail) `#accEdName`, Role `#accEdRole` → **Save** `#accEdSave`; **Suspend** /
+    **Enable** `#accEdOnOff` (D285 — an Enable is a "he's back" act: the admin's Quals prompt, D284, D307);
+  - **no account:** Sign-in `#accGiveName`, Role `#accGiveRole` → **Give sign-in** `#accGive` (the account linked to
+    him — the add form's roster picker is gone);
+  - then **Archive** `#accEdArchive` — ONE tap (D322): archived, his sign-in suspended, his welcome note cleared; on the
+    Leave War "posted out from today", his past kept (D323 — `leavewar/sync.ts archivePerson`); refused for yourself, a
+    placeholder, a deleted man, or the last admin who can sign in (D306's rule), with the reason; the message says "his
+    sign-in is suspended" only when he has one (Fable 4.7) and names a posting it replaced ("…his posting out on 14 Oct
+    (Delete) is replaced");
+  - **Delete** `#accEdDel` — two taps, "Tap again to delete <cs>", the line "Goes: his account, his Quals row, every day
+    still to come. Days he flew keep his puck. Can't be undone." (D287, D298 — "Delete" on every row, D310); Cancel.
+- **▸ Archived · N** (`#accArchToggle`, folded; hidden when N is 0; opens while a search holds a match, and his tap still
+  folds it — Fable R7) — archived, not
+  deleted, not a placeholder (`#accArchList`, `[data-archived]`); red Roster dot, red or grey Sign-in dot; one line under
+  his name says how and when (`[data-testid="arch-line-<id>"]` — "Archived 27 Sep 26 by Saber" or "Archived 14 Oct 26 by
+  his posting (Overseas Sqn)", D329). Opened
+  (`[data-restoring]`): **Callsign/Name** `#accArCs` (his callsign — or, when a man ON the roster holds it, the first free
+  "<cs> 2" with "<cs> is taken on the roster — give him another callsign." `#accArTaken`, D286 (1)), **Post in**
+  `#accArPostIn` (today — D308), the line "He can sign in at once; the Leave War counts him from the post-in date." (no
+  account: its second half), then **Restore** `#accArRestore` (or "Restore as <typed>" when the box differs), **Save
+  name** `#accArSave` (a rename alone, only when the box differs — D295), **Delete** `#accArDel` (two taps), Cancel. A
+  refusal reads in `#accArErr`. **Restore** lifts the archive, **turns his sign-in on whatever suspended it** (D322),
+  opens a new stint on the Leave War from the post-in date (D320; the day after he left reopens his stint instead), sets
+  his welcome note (D305) and the admin's Quals prompt (D284). **No Enable on an archived row** — and the write path
+  refuses one (D322).
+- **Add a person** (`#accAddBlock`) — **New person only** (a man on the roster gets his sign-in on his own row): the four
+  fields `#accAddCs` / `#accAddIni` / `#accAddSeat` / `#accAddCat`, Sign-in `#accAddName` ("blank if he won't use the
+  app"), **Post in** `#accAddPostIn` (today — D308), Role `#accAddRole` once a sign-in is typed; **Add person** / **Add
+  person and sign-in** `#accAdd`; the note "Makes his Quals row, and his sign-in if you give one. The Leave War counts him
+  from the post-in date." Quals' "+ Add person" opens it with the Callsign/Name box ready (`ADMINOPEN`, as before).
+- **Guest view** (`#admGuestView`) — as `[ACCOUNTS]` built it.
 
-> **Moving (D310, 27 Sep 26 — his "one door as proposed, Quals loses archive"):** this list, its Restore, Restore as and
-> Rename, and Quals' ✕ archive move to Admin → Users with `[ONE-DOOR]`; until that is built, the app does what follows.
+**The man's own welcome note** (`ui/WelcomeBack.tsx`, D305): under the top bar on every page while his Person's `back` is
+set (every Restore sets it) — "**Welcome back, <cs>** — check your quals and CAT." with **Check my quals** `#welcomeCheck`
+(clears it; Quals on his seat view, his row outlined `.back-hl` — `state/view.ts QUALSFOCUS`) and **Later**
+`#welcomeLater` (clears it); only he clears it (`person.backSeen`, his own row). **A session that lapses** (his account
+suspended, his account deleted, or his person archived or deleted, after he signed in) is turned off on the next repaint —
+the "Your access is suspended" screen; one whose account another admin gave a different role or person is made again
+from the account as it now stands, still signed in (`ui/App.tsx`, `accounts.ts sessionNow`; round 1 — Fable F8 / Astra 4;
+the final code read — Astra 1).
 
-A DELETED man is on no list, the Archived one included (D299). Each archived row carries, for an admin: **Restore**, and
-**Rename** (`#qRenameCs` / `#qRenameGo`, refused with the one callsign rule's reason in `#qRenameErr` — blank, over 14
-letters, or taken by a man on the roster; D295). **Restore meeting a callsign a roster man now holds** never renames
-anyone by itself (D286 (1)): the row opens "<callsign> is taken — give him another callsign." with a box
-(`#qRestoreCs`) filled with the first free "<callsign> 2", **"Restore as …"** (`#qRestoreGo`) and Cancel; a refusal
-reads in `#qRestoreErr`. **The "he's back" prompt (D284):** after a Restore, an Undo post out that restores, or an Enable
-on Admin → Users, a line above the table — "<callsign> is back — quals and CAT as he left them." — with **Check his
-quals** (his seat view, his row outlined `.back-hl`) and **Later**; lined up with the table's left edge (D294 (3)). It
-changes nothing; a session list (`state/view.ts BACKPROMPT`), cleared at every sign-in.
+**The Leave War after the one door** also carries an archived man's rename (Save name) onto his kept row — a deleted man
+keeps the name he flew under (D297) — and a post-in moved to the day after his earlier stint closed joins the two into one
+stint, as Restore does (the final code reads, Fable F3 / F4, Astra 2).
 
+**The Leave War's posting sheets after the one door** (round 1 — Fable F1 / Astra 2; D320): a man archived on Admin →
+Users has a read-only Post out sheet — "<cs> was archived on Admin → Users — restore him there" (`postout-locked`), the
+date fixed, no chips, no Undo — and a read-only Post in sheet the same way (`postin-locked`, no Undo — the walk's design,
+Fable 4.2); both posting writers refuse him (`leavewar/state/store.ts postingLocked`, installed by the sync), so no door
+goes round it; Restore on Admin → Users is the one way back. A man deleted before his post-in came has no stint to keep
+— his war row and record go (Fable 4.5). A
+man back from a posting has a Post in sheet that says "Back from a posting on <date> — on the manpower from <date>. The
+days between count nobody, …" (`postin-note`) and offers no Undo; his earlier stint's dates are read-only on the war.
+The grid draws every stint: a day in the gap between two stints reads **PO** with the hatch; only a day before his FIRST
+stint is blank ("not yet arrived"); each stint's last day wears the PO corner; a leave period he was away for the whole
+of shows no row for him (`leavewar/engine/people.ts` — `inSquadron`, `beforeFirstStint`, `lastDayIn`, `postingSheetFor`).
+
+**Quals** keeps quals, CAT, flight and initials (D310): no ✕ in edit mode, no Archived section; its help line says
+"Archive, restore and delete are on Admin → Users."; the admin's "he's back" prompt stays (it skips a man archived again).
 ## The access screens and the guest view (`[ACCOUNTS]`, D204, 26 Sep 26)
 
 **No "Sign up" button on the sign-in page (D293, 27 Sep 26):** whoever signs in and is on no list lands on Request access

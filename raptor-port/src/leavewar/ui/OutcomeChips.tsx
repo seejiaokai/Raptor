@@ -26,7 +26,8 @@ export function outcomeLine(outcome: PostOutcome, poDate: string, hasAccount: bo
   const day = dayMon(poDate)
   if (!day) return ''
   switch (outcome) {
-    case 'overseas': return `On ${day}: archived on Quals${hasAccount ? ', account suspended' : ''}.`
+    /* "archived", no longer "archived on Quals": Quals lost its archive to Admin → Users (D310, [ONE-DOOR]) */
+    case 'overseas': return `On ${day}: archived${hasAccount ? ', account suspended' : ''}.`
     case 'delete': return `On ${day}: deleted${hasAccount ? ' with his account' : ''}. Days he flew keep his puck.`
     case 'sans': return `On ${day}: becomes SANS.`
     default: return `On ${day}: off the manpower, nothing else.`

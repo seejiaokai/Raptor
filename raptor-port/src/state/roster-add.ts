@@ -29,6 +29,7 @@ import { PEOPLE, QCHIP, deriveQuals, indexCallsigns, callsignTakenBy } from '../
 import { newId } from '../engine/newid'
 import { CmdRefused, isCommitting } from '../command'
 import { mayManageRoster } from './perms'
+import { HOOKS } from '../engine/hooks'
 import { commitPeopleIntent } from './people-settings-commit'
 
 /* the ONE seat list every form reads (D220) — the stored value is the seat code */
@@ -66,7 +67,7 @@ export const tidyPerson = (np: NewPerson): NewPerson => ({
 })
 
 /* THE ONE CALLSIGN REFUSAL ([POST-OUT-OUTCOMES] — D226, D286, D295; Fable's plan read F11): every door that names a
-   person asks it — the one add, approving, the Archived list's Rename, Restore's "give him another callsign". Blank and
+   person asks it — the one add, approving, the Archived group's Save name (Admin → Users), Restore's "give him another callsign". Blank and
    over 14 letters first (never cut — D226), then taken: by a man on the roster, a placeholder, or any person's id
    (engine/people.ts callsignTakenBy — PID-01). A callsign only an ARCHIVED man holds is free (D286), so it is never
    refused here; the approve note says who holds it (UsersPanel). `exceptId` — the man being renamed or restored. */
@@ -76,6 +77,17 @@ export function callsignProblem(csIn: any, exceptId?: string): string | null {
   if (cs.length > MAX_CS) return CS_TOO_LONG                                           // D226
   if (callsignTakenBy(cs, exceptId)) return `${cs} is already taken — callsigns must be unique`
   return null
+}
+
+/* the callsign Restore suggests when his own is taken (D295; the approved picture: "Ace 2") — the first free "<cs> N",
+   shortened to fit the 14 letters (D226 — Fable F11). Moved here from Quals with the Archived list ([ONE-DOOR], D310). */
+export function nextFreeCallsign(cs: string, id: string): string {
+  for (let n = 2; n < 100; n++) {
+    const tail = ` ${n}`
+    const cand = `${cs.slice(0, MAX_CS - tail.length).trimEnd()}${tail}`
+    if (!callsignProblem(cand, id)) return cand
+  }
+  return ''
 }
 
 /* every refusal, in the app's words, first one found. `roster: false` — the sign-up: a
@@ -120,10 +132,18 @@ export function saidOf(r: any): string | null {
   return 'That did not save'
 }
 
-/* the admin's roster-only add — a blank sign-in on Admin → Users (D217) */
-export function addRosterPerson(np: NewPerson): string | null {
+/* D308 ([ONE-DOOR], 27 Sep 26): the post-in date every door that puts a man on the roster asks — a whole date (the form
+   opens on today); his sign-in works at once, the war counts him from it */
+export const postInProblem = (d: any): string | null =>
+  typeof d === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(d) ? null : 'Pick the post-in date'
+
+/* the admin's roster-only add — a blank sign-in on Admin → Users (D217), with his post-in date (D308) */
+export function addRosterPerson(np: NewPerson, postIn?: string): string | null {
   if (!mayManageRoster()) return 'Only an admin can add someone'
-  const bad = newPersonProblem(np)
+  const bad = newPersonProblem(np) || (postIn !== undefined ? postInProblem(postIn) : null)
   if (bad) return bad
-  return saidOf(commitPeopleIntent('person.add', null, () => { putNewPerson(np) }))
+  return saidOf(commitPeopleIntent('person.add', null, txn => {
+    const id = putNewPerson(np)
+    if (postIn !== undefined) HOOKS.warPostIn(txn, id, postIn)
+  }))
 }

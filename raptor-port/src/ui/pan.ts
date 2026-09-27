@@ -621,7 +621,16 @@ export function initPan() {
      week has unmounted — under the full test suite that stray call surfaced as
      an unhandled error. The guard makes it a no-op there; a real browser always
      has it. */
-  if (window.innerWidth <= 820) setTimeout(() => { const t = document.querySelector('#vWeek .day.today'); if (t && typeof t.scrollIntoView === 'function') t.scrollIntoView({ inline: 'start', block: 'nearest' }) }, 120)
+  /* [ONE-DOOR] (D305; the walk's pictures, 27 Sep 26): the jump is SIDEWAYS, but scrollIntoView also scrolls the page
+     down to the day card — which carried his "Welcome back" note, drawn above the week, off the top of the screen on the
+     sign-in it exists for. While that note is up, the page stays where it was; the sideways jump still lands on today. */
+  if (window.innerWidth <= 820) setTimeout(() => {
+    const t = document.querySelector('#vWeek .day.today')
+    if (!t || typeof t.scrollIntoView !== 'function') return
+    const y = window.scrollY
+    t.scrollIntoView({ inline: 'start', block: 'nearest' })
+    if (document.getElementById('welcomeBack') && window.scrollY !== y) window.scrollTo(window.scrollX, y)
+  }, 120)
   return () => {
     clearTimeout(ROSDAY_T)
     document.removeEventListener('wheel', onWheel)

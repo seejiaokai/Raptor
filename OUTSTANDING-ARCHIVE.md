@@ -2092,6 +2092,61 @@ From the 7 Sep 26 device pass (`HANDOFF.md` §Open, "OWNER'S DEVICE PASS", archi
 `raptor-port/docs/archive/handoff-2026-09-24.md`): one open question rode the retired bug-testing list's row
 #376 — whether the Tracker keeps its own dark palette or takes Raptor's. It was recorded nowhere else. Ask him
 once, in his next Tracker session; build nothing until he answers.
+*Moved here 2026-09-27 by backlog-archive.mjs ([POST-OUT-OUTCOMES]). Forward facts: `raptor-port/docs/handpass/2026-09-27-post-out-outcomes.md`.*
+
+### [POST-OUT-OUTCOMES] A posting out says WHICH of its outcomes it is; accounts suspended and deleted (D229, D280, D283–D285, filed 26 Sep 26)
+**His rulings:** a posting out is (1) overseas to another squadron → archived, account SUSPENDED, back AS HE WAS with a
+prompt to update his quals (D284); (2) leaving flying for good → account DELETED; (3) another workplace, still flying
+with us → SANS on the date: with Show SANS off the Leave War shows him posted out, untracked, with it on he joins the SANS
+group that day, tracked (D283); (4) a transfer — future, `[XFER]`. Buttons: "Suspend" / "Enable", "Delete account"
+(D285). **Today:** the post-out sheet's one choice is "Archive on PO date"; an archived man keeps a WORKING account;
+Admin → Users has "Switch off / on", no delete. **To build:** the sheet asks which outcome and the app does it on the
+date (each also by hand); touches the Leave War (the sheet, `runPoArchive`), Quals, Admin → Users, data-model §11 (`User`
+D), `perms.ts` — FULL tier. **Leaving flying for good — D287, his pick "B, truly delete him":** account AND person
+deleted; **D297: every day he already flew keeps his puck, published or not; days still to come lose him**;
+everything that is his goes too (inputs, Leave War leave and OIL — nothing left stored unseen); a day still to come
+takes him off (pending on a published day); asks twice, cannot be undone. **Underneath — D290 "hidden mark":** his
+row is kept, marked deleted and invisible everywhere (the data model's tombstone), never erased. **And names — D286:** an archived man's callsign may go to a new person (today it is refused); restoring him while it
+is in use needs one of the two renamed first (Restore says so, renames nobody). Update `roster-add.ts` (its PID-01
+header and test), `ID_BY_CS` (points at the roster's man). **Mock-up APPROVED 27 Sep 26 (D299) — the design of record:** `raptor-port/docs/mock/post-out.html` (+ its Artifact; §5 holds what stays after a delete; D300 — the date once, the button "Post out", FEWER WORDS: done 27 Sep 26, Artifact Version 6; the BUILD carries the same short words — the sheet's line, the delete's second tap, the suspended sign-in, the back-prompt, the Restore rename line — and the post-in button reads just "Post in"); his first look: D294 (short chips "Overseas Sqn" · "Delete" (D298) · "SANS" · "Transfer to Sqn"), D295 (rename an archived man directly), D296 (guest mark A). **With it — D292:** the admin's member view back (tap the badge: "SABER · ADMIN" ↔ "MEMBER"; perms read the role in
+force). **Place — D291:** straight after `[ACCOUNTS-NEW-PERSON]` merges, before `[DRAFT-PENDING]` — **amended by D301
+(27 Sep 26): started beside #443 before it merges, on `claude/post-out-outcomes` cut from it; its merge follows #443's.**
+**BUILT 27 Sep 26 on `claude/post-out-outcomes`** (Part A: the callsign index, Suspend / Enable / Delete account, the
+member view, the delete, Quals' Archived list; Part B, on PR #444's posting code: the four chips on every posting door,
+the outcomes on the date, take-back, Restore and Restore-as, the "he's back" prompt, SANS with Show SANS, a deleted man
+read by date, Undo passing over a step that would bring him back). Plan: `raptor-port/docs/superpowers/plans/2026-09-27-post-out-outcomes-plan.md`;
+register PO1–PO12 (`raptor-port/docs/superpowers/specs/2026-09-26-accounts-behaviour-register.md`). **FULL check DONE
+27 Sep 26** (the walk A–D on desktop and phone, Fable and Astra's code reads — every finding fixed red-first — and the
+gates): the evidence sheet `raptor-port/docs/handpass/2026-09-27-post-out-outcomes.md`. **Next: his look** (the look card,
+its §10 — 11 questions) **and his "merge live", merged LAST** (after #443, #445 and #444, `main` merged in first).
+**His answers so far (27 Sep 26):** 1 keep (D303), 3 the real calendar date (D304), 4 — the man himself should be able to
+update his own quals (D305; its form put to him), 9 the last admin's posting waits (D306), 11 Enable on a hand-suspended
+man shows the note (D307).
+**Not built, said so:** the Tracker half of D299 (`[POST-OUT-TRACKER]`).
+
+
+*Moved here 2026-09-27 by backlog-archive.mjs ([POST-OUT-ASKS]). Forward facts: `raptor-port/docs/handpass/2026-09-27-post-out-outcomes.md`, `.claude/rules/decisions/how-we-work.md`.*
+
+### [POST-OUT-ASKS] The post-out look card's questions he has not answered — each built to its default (filed 27 Sep 26)
+From `raptor-port/docs/handpass/2026-09-27-post-out-outcomes.md` §10 (PR #446, merged 27 Sep 26). He answered 1, 3, 4, 9,
+11 (D303–D307) and moved 3a / 3b into `[ONE-DOOR]` (D310); these stand as built until he says otherwise — put them to him
+once, in plain words, when the posting-out screens are next in front of him (the `[ONE-DOOR]` mock-up is the natural
+moment): **2** a Delete on an archived man with no account — covered by `[ONE-DOOR]` (an archived row gets Restore ·
+Delete), so likely answered by its approval; **6** SANS on the date moves his WHOLE Leave War row into the SANS group,
+earlier months included (the approved picture) — kept; **7** archiving a man makes his published days before the posting
+date read "1 pending" — kept; **8** a posting out is not a step of the Undo button — "Undo post out" takes it back —
+kept; **10** an admin may still add leave or OIL on a deleted man's past days — allowed.
+
+
+*Moved here 2026-09-27 by backlog-archive.mjs ([BACKLOG-TIDY]). Forward facts: `.claude/rules/decisions/how-we-work.md`, `raptor-port/scripts/docsize.mjs`.*
+
+### [BACKLOG-TIDY] This file crossed its size tripwire — read each item, archive what is finished (filed 26 Sep 26)
+`OUTSTANDING.md` reached 1,242 lines against the 1,150 tripwire (D141: the question is "is a finished item still sitting
+here?", never "cut to a number"); the tripwire was raised to 1,260 so the rulings change D200/D201 did not trim under
+pressure (D29). **Do:** read the long items first (`[ARCH-STACK]`, `[DRAFT-PENDING]`, `[REPO-PRIVATE]`, `[OIL-AUTO-REMOVE]`,
+`[HUMAN-RETEST]`, `[GLOBAL-UNDO]`, `[OIL-READ-LEFTOVERS]`); move what is finished with `backlog-archive.mjs`, its lasting
+facts first given a live home; then set the tripwire back near what the file holds. **Place:** docs only, any time. **His go, 27 Sep 26 (D324): now, on its
+own branch `claude/backlog-tidy` cut from `main`, merged BEFORE `[ONE-DOOR]` and `[LW-MOVE-STANDARD]` (his "merge live").**
 
 
 *Moved here 2026-09-27 by backlog-archive.mjs ([LW-MOVE-BENEATH]). Forward facts: `.claude/rules/decisions/leave-war.md`, `raptor-port/docs/handpass/2026-09-27-lw-move-standard.md`.*
@@ -2143,4 +2198,18 @@ Fable's scenario design (bug-check order §4 rank 1): `raptor-port/docs/superpow
 walked 40/40 at both widths, 26 wires broken on purpose (each turns a named test red), Fable's and Astra's blind reads
 (six findings, all fixed red first; re-walked). **Next: his look (§10 of the sheet) and "merge live"**; then this item and
 `[LW-MOVE-BENEATH]` (built by it) go to the archive.
+
+
+*Moved here 2026-09-28 by backlog-archive.mjs ([LW-FIGSEL-SLOW]). Forward facts: `raptor-port/src/leavewar/ui/figselect.test.tsx`, `raptor-port/src/leavewar/ui/figdrawer.test.tsx`.*
+
+### [LW-FIGSEL-SLOW] One Leave War unit test times out under a full parallel run (23 Sep 26)
+
+`src/leavewar/ui/figselect.test.tsx` "an undo, a stage change and the drawer toggle all drop it" takes ~4–5s
+alone (3.9s on the final tree; the same on the code before the Leave War fixes) but ran past its 20s limit in
+2 of 3 full `npm test` runs on the owner's PC on 23 Sep 26 (another chat's worktree active). Pre-existing,
+load-only. Fix: split its three drop cases into three tests (each renders the whole year once), or give it its
+own longer limit — not a pause. Evidence: `raptor-port/docs/handpass/2026-09-23-lw-monthjump.md` §13/§15.
+**Seen again 27 Sep 26** (`claude/one-door`, its first full gate run, two code reads running beside it): this test (23.9s) and
+`src/leavewar/ui/figdrawer.test.tsx` "stands down to taps while an admin is rearranging" (24.8s) both past 20s; both pass alone —
+the fix above covers the second too (it renders the whole year the same way).
 

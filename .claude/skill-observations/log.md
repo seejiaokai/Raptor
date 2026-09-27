@@ -931,6 +931,21 @@ resolved statuses always carry their resolution date
 
 **Principle:** Code taken from a sibling branch is a snapshot of work still moving. Re-check the sibling's head before calling your own work checked. A green full run is not proof a timing-sensitive test passes: load can hide a failure that shows when the test runs quickly.
 
+### Observation 306: A data-shape ruling is planned from a verdict inventory, and the old fields keep meaning "the current one"
+
+**Status:** OPEN
+**Date:** 2026-09-27
+**Session context:** [ONE-DOOR] plan — the owner ruled (D320) that the Leave War keeps every stint a man has in the squadron, where the code modelled ONE in/out window read in ~30 places. Numbered 306–309 by agreement with the parallel [LW-MOVE-STANDARD] chat (310–319).
+**Skill:** writing-plans
+**Type:** open-source
+**Phase/Area:** planning a change to a widely-read record
+
+**Issue:** The ruling touched a field read by dozens of call sites across two apps. A read-only sweep that returned a TABLE — file:line, the expression read, what it decides, and a verdict (only asks the shared predicate = stays right; reads the field directly for a range = must change; unsure + why) — made the design choice obvious: keep the existing fields meaning the CURRENT instance and add the history beside them, so every reader that asks about "now" stays untouched and only the dozen verdict-NEEDS-CHANGE sites move. Without the verdict column the list would have been a grep dump.
+
+**Suggested improvement:** In writing-plans, add a step for any change to a record's shape or meaning: commission (or do) a read-only inventory of every reader AND writer with a per-site verdict column, and prefer the design in which existing fields keep their current meaning and new meaning is added beside them. Put the inventory's NEEDS-CHANGE list into the plan as a table, and pin the "unchanged" half with tests.
+
+**Principle:** When a ruling changes what a widely-read field means, classify every reader first; choose the shape that leaves the most readers correct by construction, and plan only the ones the inventory says must move.
+
 ### Observation 310: A docs-only branch cannot pass the document gate while a shared file on main is already over its tripwire
 
 **Status:** OPEN
@@ -1005,3 +1020,48 @@ resolved statuses always carry their resolution date
 **Suggested improvement:** In `record-decisions.md` or at the head of `DECISIONS.md` (the filing steps), add one line: in a "Where it lives now" cell, backticks are for files only; write a branch, PR or commit in plain text. Or teach the homes check to skip a `claude/…` branch-shaped path.
 
 **Principle:** When a checker infers meaning from formatting (backticks = a file path), that formatting convention is part of the checker's contract and belongs where writers read, not only in the checker's code.
+
+### Observation 315: A walk step that asserts "not X" passes silently when the element was never drawn
+
+**Status:** OPEN
+**Date:** 2026-09-27
+**Session context:** `[ONE-DOOR]` FULL check (numbered past 314, which `claude/lw-move-standard-paperwork` holds)
+**Skill:** New skill candidate: bug-check walk scripts (raptor-port/docs/bug-check-order.md §5 "the re-walk", §8)
+**Type:** open-source
+**Phase/Area:** Writing walk assertions; break tests
+
+**Issue:** The walk checked "counted on this day" as `!/\bgone\b/.test(cellClass || '')`. When the grid hid the whole row, the cell's class was null, the test read `''`, and the step PASSED. It surfaced only because a break test (a build with the row filter broken) left the walk green; with a strict helper (`here()` — the cell must exist AND not be greyed) the broken build failed 6 steps.
+
+**Suggested improvement:** In the bug-check order's walk-script guidance: every negative assertion ("not away", "no corner", "no error line") first asserts the thing it inspects exists; and a surface that a unit test cannot see (layout, a window of drawn rows) gets its break test run against a real build, not only the unit suite.
+
+**Principle:** A negative check is only evidence when its subject is present; assert existence first, and prove a watcher by breaking the wire it watches.
+
+### Observation 316: A break test that turns nothing red can mean the wire is invisible to the test runner, not untested by chance
+
+**Status:** OPEN
+**Date:** 2026-09-27
+**Session context:** `[ONE-DOOR]` break tests (`od-breaks.py`, 32 wires)
+**Skill:** New skill candidate: bug-check break tests (raptor-port/docs/bug-check-order.md §8.4)
+**Type:** open-source
+**Phase/Area:** Break tests
+
+**Issue:** Three wires turned nothing red. Two got ordinary unit tests. The third — the grid's row filter — returns "draw it" whenever no window of months has been measured, which is always true under jsdom, so NO unit test could ever watch it. The first real-browser check written for it was also blind (the loaded months happened to cover the case). Only a scenario chosen to fall outside every loaded window (a man back next year), run against a build with the wire broken, proved a watcher.
+
+**Suggested improvement:** When a break test stays green, first ask whether the test environment can observe the wire at all (layout, scroll windows, timers, real events); if not, write the watcher in the real browser and prove it against a deliberately broken build before counting the surface as covered.
+
+**Principle:** "Nothing went red" has two causes — no test, or a test environment that cannot see the wire; the second needs a real-browser watcher proved against a broken build.
+
+### Observation 317: The walk had the picture of the defect and asserted only the class
+
+**Status:** OPEN
+**Date:** 2026-09-28
+**Session context:** `[ONE-DOOR]` — the owner's look found a row outline that skipped the pinned first column
+**Skill:** New skill candidate: bug-check walk scripts (raptor-port/docs/bug-check-order.md §7, §10 anti-pattern 21)
+**Type:** open-source
+**Phase/Area:** Walk assertions; looking at the pictures
+
+**Issue:** The walk step asserted a highlight class was on the row and saved a picture of it. The picture showed the outline starting at the second column — a sticky first cell paints its own background over a row outline — and it was never opened. The owner found it by eye.
+
+**Suggested improvement:** A highlight, outline or mark is asserted as PAINTED on each element it must cover (a computed style per cell, especially pinned/sticky ones), and every picture a step saves is opened before the step counts as looked at. Added to the bug-check order as anti-pattern 21.
+
+**Principle:** A class is intent, not paint; assert what renders on every element it must cover, and a saved picture counts only once someone has looked at it.

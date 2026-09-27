@@ -298,9 +298,11 @@ export const COMMAND_OPS: Record<string, CommandOp> = {
   /* a new person ([ACCOUNTS-NEW-PERSON], D214, D217) — made only on Admin → Users: alone (a
      blank sign-in), with his account, or by approving his sign-up; and the admins' bell's
      "seen" (D216, D227) */
-  'person.add': op(T.person, 'C'),
-  'account.addNew': op(T.user, 'C', 'never', [[T.person, 'C'], [T.accessreq, 'D']]),
-  'access.approveNew': op(T.accessreq, 'D', 'never', [[T.user, 'C'], [T.person, 'C']]),
+  /* [ONE-DOOR] (D308): each also writes his post-in date on the war — the LeavePersonProfile, named (round 1, Fable F11 /
+     Astra 6) */
+  'person.add': op(T.person, 'C', 'never', [[T.profile, 'U']]),
+  'account.addNew': op(T.user, 'C', 'never', [[T.person, 'C'], [T.accessreq, 'D'], [T.profile, 'U']]),
+  'access.approveNew': op(T.accessreq, 'D', 'never', [[T.user, 'C'], [T.person, 'C'], [T.profile, 'U']]),
   'access.seen': op(T.accessreq, 'U'),
   /* a delete ([POST-OUT-OUTCOMES], D287, D290, D297, D299): the person marked (the hidden mark — D is the soft delete),
      his account removed, and on every day from its cutoff he is taken off — the working copy, the stashed weeks, the
@@ -308,9 +310,13 @@ export const COMMAND_OPS: Record<string, CommandOp> = {
      and his inputs from that day deleted or ended the day before. Every table it writes is named (D200). The Leave War
      half (his records, his posting) joins in Part B with LeavePersonProfile. */
   'person.delete': op(T.person, 'D', 'never', [[T.user, 'D'], [T.accessreq, 'D'], [T.sched, 'U'], [T.amendment, 'C'], [T.input, 'D'], [T.input, 'U'], [T.profile, 'U'], [T.bid, 'D']]),
-  /* he's back — Restore on Quals, Undo post out, Restore under another callsign (D284, D286, D295): the person restored
+  /* he's back — Restore (Admin → Users, D310), Undo post out, Restore under another callsign (D284, D286, D295): the person restored
      (and renamed), the account the posting suspended enabled, the posting cleared; never a member's own-row write */
   'person.restore': op(T.person, 'U', 'never', [[T.user, 'U'], [T.profile, 'U']]),
+  /* [ONE-DOOR] (D309, D310, D323): Archive on Admin → Users — the person archived, his account suspended, his war stint
+     closed (leavewar/sync.ts archivePerson); the man's own "welcome back" seen — his OWN row only (D305) */
+  'person.archive': op(T.person, 'U', 'never', [[T.user, 'U'], [T.profile, 'U']]),
+  'person.backSeen': op(T.person, 'U', 'required'),
   /* a posting written with a take-back of what the posting made (its archive, its suspension, its SANS tick) */
   'lw.postout': op(T.profile, 'U', 'never', [[T.person, 'U'], [T.user, 'U']]),
   /* the posting pass on its date — a reconciler (the system actor); every table an outcome writes is named (D200) */

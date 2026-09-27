@@ -11,6 +11,7 @@ import { CalIcon, XlsIcon, PdfIcon, HistIcon, HlIcon, SrchIcon } from './icons'
 import { rulesOffCount } from '../engine/rules'
 import { isAdmin, me, mayViewAsMember } from '../state/perms'
 import { waitingCount, accessAlert } from '../state/accounts'
+import { WelcomeBack } from './WelcomeBack'
 import { openAdminUsers } from './adminopen'
 import { notify, setPage, switchRoleView } from '../state/store'
 import { logOut } from './logout'
@@ -602,6 +603,8 @@ export function Shell() {
   return (
     <div id="shell">
       {topbar}
+      {/* [ONE-DOOR] (D305): his own "Welcome back — check your quals and CAT", after a Restore */}
+      <WelcomeBack />
       {viewPage}
       {editPage}
       <section className={'page' + (page === 'inputs' ? ' on' : '')} id="page-inputs">

@@ -1,4 +1,7 @@
+import { useEffect } from 'react'
 import { SESSION } from '../state/auth'
+import { sessionNow } from '../state/accounts'
+import { notify, resetSession } from '../state/store'
 import { roleOf } from '../state/perms'
 import { useVersion } from './useStore'
 import { Login } from './Login'
@@ -19,6 +22,17 @@ import { AvailWindow } from './AvailWindow'
 
 export function App() {
   useVersion()
+  /* [ONE-DOOR] round 1 (Fable F8 / Astra 4): a session whose account went off, or whose person was archived or deleted,
+     since he signed in is turned off on the next repaint — the suspended screen, his writes refused from then on; and
+     (the final code read, Astra 1) one whose account was deleted is turned off too, one whose role or person another
+     admin changed is made again from the account as it now stands. React runs this before it handles the next tap or
+     key, so no command of the old session goes through in between; at the database step the server is the boundary. */
+  useEffect(() => {
+    const next = sessionNow()
+    if (next === undefined) return
+    resetSession(next)
+    notify()
+  })
   /* WHO IS SIGNED IN DECIDES THE WHOLE TREE ([ACCOUNTS], D204, 26 Sep 26): nobody —
      the sign-in; signed in but on no list, or switched off — the access screens (ask
      for access, waiting, switched off); a guest (asked, the admin's guest switch on) —

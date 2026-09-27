@@ -161,7 +161,8 @@ describe('NP5 — approving: On the roster | New person, filled from what he gav
     expect(optTexts('#apvPid'), 'one account per person: the picker cannot offer him').not.toContain('Ranger')
     /* both ways out are named — it may be HIM on a new sign-in (renaming his account's sign-in
        answers this request, accounts.ts updateAccount), or someone else (Fable's fix check #2) */
-    const ways = "so they can't be picked here. If it is them on a new sign-in, change that account's sign-in under Accounts — that answers this request. If it is someone else, choose New person and give them another callsign or name."
+    /* [ONE-DOOR] (D310): the list is People, one row each — his sign-in is changed on his own row */
+    const ways = "so they can't be picked here. If it is them on a new sign-in, change the sign-in on Ranger's row — that answers this request. If it is someone else, choose New person and give them another callsign or name."
     expect($('#apvNote').textContent).toBe(`He typed Ranger — Ranger already has an account (${bane.name}), ${ways}`)
     expect($('#apvNote').textContent).not.toMatch(/Pick them/)
     await click($('#apvCancel'))
@@ -174,7 +175,7 @@ describe('NP5 — approving: On the roster | New person, filled from what he gav
     await act(async () => { setPage('admin'); notify() })
     await click($(`[data-approve="${ACCESS_REQS[0].id}"]`))
     const note = $('#apvNote').textContent!
-    expect(note).toBe("He typed Saber — Saber already has an account (ad), so they can't be picked here. It is your own account: if it is you on a new sign-in, another admin must change its sign-in under Accounts — you can't change your own. If it is someone else, choose New person and give them another callsign or name.")
+    expect(note).toBe("He typed Saber — Saber already has an account (ad), so they can't be picked here. It is your own account: if it is you on a new sign-in, another admin must change its sign-in on your row — you can't change your own. If it is someone else, choose New person and give them another callsign or name.")
     expect(($('[data-acct="acad"] .acc-tap') as HTMLButtonElement).disabled, 'his own row cannot be opened — the note must not send him there').toBe(true)
   })
   /* D286 (26 Sep 26, [POST-OUT-OUTCOMES]) REPLACED the two "archived → restore to link" tests: an archived man's callsign
@@ -191,7 +192,9 @@ describe('NP5 — approving: On the roster | New person, filled from what he gav
       const [a, b] = ACCESS_REQS
       await click($(`[data-approve="${a.id}"]`))
       expect($('#apvModeNew').getAttribute('aria-pressed')).toBe('true')
-      expect($('#apvNote').textContent).toBe("An archived man is already Hex — this makes a new person. If it is him, change his account's sign-in (hex) instead.")
+      /* the final code read (Fable, 27 Sep 26): after the one door an archived row edits no sign-in — the way it is HIM is
+         Restore first (D310, D322), with or without an account */
+      expect($('#apvNote').textContent).toBe('An archived man is already Hex — this makes a new person. If it is him, restore him first (▸ Archived), then give him his sign-in on his row.')
       await click($('#apvCancel'))
       /* his hidden id typed: never the archived man either — New person */
       await click($(`[data-approve="${b.id}"]`))
@@ -209,25 +212,21 @@ describe('NP5 — approving: On the roster | New person, filled from what he gav
       await act(async () => { setPage('admin'); notify() })
       await click($(`[data-approve="${ACCESS_REQS[0].id}"]`))
       expect($('#apvModeNew').getAttribute('aria-pressed')).toBe('true')
-      expect($('#apvNote').textContent).toBe(`An archived man is already ${fcs} — this makes a new person.`)
+      expect($('#apvNote').textContent).toBe(`An archived man is already ${fcs} — this makes a new person. If it is him, restore him first (▸ Archived), then give him his sign-in on his row.`)
     } finally { delete (PEOPLE as any)[free].archived; indexCallsigns() }
   })
-  it("the account editor of an ARCHIVED person still shows his callsign in its picker (Astra's fix check #2)", async () => {
+  /* [ONE-DOOR] (D310, D322) REPLACED "the account editor of an ARCHIVED person still shows his callsign in its picker"
+     (Astra's fix check #2): an archived man is no longer in the People list with an account editor — he sits in the
+     folded Archived group, his sign-in named on his row, and comes back by Restore there (onedoor-users.test.tsx) */
+  it('an ARCHIVED man with an account sits in the Archived group, his sign-in named — not among the People (D310)', async () => {
     const was = (PEOPLE as any).rocky.archived
     ;(PEOPLE as any).rocky.archived = true
     try {
       await signInAs('ad', 'a')
       await act(async () => { setPage('admin'); notify() })
-      await click($('[data-acct="achex"] .acc-tap'))
-      expect(($('#accEdPid') as HTMLSelectElement).value, 'the picker shows the person the account belongs to').toBe('rocky')
-      expect(optTexts('#accEdPid')).toContain('Hex')
-      /* changing only the sign-in keeps him — visibly and in the saved account */
-      await type($('#accEdName') as HTMLInputElement, 'hex2@mail')
-      await click($('#accEdSave'))
-      expect(accountByName('hex2@mail')).toMatchObject({ pid: 'rocky' })
-      await click($('[data-acct="achex"] .acc-tap'))
-      expect(($('#accEdPid') as HTMLSelectElement).value).toBe('rocky')
-      await type($('#accEdName') as HTMLInputElement, 'hex'); await click($('#accEdSave'))
+      expect($('#accList [data-person="rocky"]'), 'not among the People').toBeFalsy()
+      await click($('#accArchToggle'))
+      expect($('#accArchList [data-person="rocky"]').textContent).toContain('hex')
     } finally { (PEOPLE as any).rocky.archived = was }
   })
   it('Cancel discards edits: the next Approve starts again from what he gave; switching halves keeps each', async () => {
@@ -251,12 +250,12 @@ describe('NP5 — approving: On the roster | New person, filled from what he gav
 })
 
 describe('NP1 — adding on Admin → Users: New person with an account, or alone (D214, D217)', () => {
+  /* [ONE-DOOR] (D310, D322): the foot's form makes a NEW person only — a man already on the roster gets his sign-in on
+     his own row (Give sign-in); no "On the roster | New person" pair here any more */
   it('a blank sign-in makes a roster-only person: no Role, "Add person"', async () => {
     await signInAs('ad', 'a')
     await act(async () => { setPage('admin'); notify() })
-    expect($('#accModeRoster').getAttribute('aria-pressed'), 'On the roster by default').toBe('true')
-    expect($('#accAdd').textContent).toBe('Add account')
-    await click($('#accModeNew'))
+    expect($('#accModeRoster'), 'no On the roster half on the add form').toBeFalsy()
     expect($('#accAddRole'), 'no account, no role').toBeFalsy()
     expect($('#accAdd').textContent).toBe('Add person')
     await type($('#accAddCs') as HTMLInputElement, 'Gecko')
@@ -264,14 +263,13 @@ describe('NP1 — adding on Admin → Users: New person with an account, or alon
     await click($('#accAdd'))
     expect(csOf('Gecko')).toBeTruthy()
     expect(toasts).toContain('Gecko added to the roster — set flight and quals on the Quals page')
-    expect($('#accModeRoster').getAttribute('aria-pressed'), 'the form clears back').toBe('true')
+    expect(($('#accAddCs') as HTMLInputElement).value, 'the form clears back').toBe('')
   })
-  it('with a sign-in: "Add person and account", Role shown; refused halves leave nothing', async () => {
+  it('with a sign-in: "Add person and sign-in", Role shown; refused halves leave nothing', async () => {
     await signInAs('ad', 'a')
     await act(async () => { setPage('admin'); notify() })
-    await click($('#accModeNew'))
     await type($('#accAddName') as HTMLInputElement, 'hex')
-    expect($('#accAdd').textContent).toBe('Add person and account')
+    expect($('#accAdd').textContent).toBe('Add person and sign-in')
     expect($('#accAddRole')).toBeTruthy()
     await type($('#accAddCs') as HTMLInputElement, 'Blaze')
     await type($('#accAddSeat') as HTMLSelectElement, 'RCP'); await type($('#accAddCat') as HTMLSelectElement, 'D')
@@ -283,38 +281,21 @@ describe('NP1 — adding on Admin → Users: New person with an account, or alon
     expect(accountByName('blaze@mail')).toMatchObject({ pid: csOf('Blaze') })
     expect(toasts).toContain('Blaze added — blaze@mail can sign in now')
   })
-  it('a New person add clears the WHOLE form — the roster pick made before it is gone too (Astra read #1)', async () => {
+  /* Astra read #1, kept in the one-half form ([ONE-DOOR]): an add clears the WHOLE form — sign-in, role, the person's
+     four fields and the post-in date back to today */
+  it('an add clears the WHOLE form — nothing half-typed comes back (Astra read #1)', async () => {
     await signInAs('ad', 'a')
     await act(async () => { setPage('admin'); notify() })
-    const pick = linkablePeople()[0]
-    await type($('#accAddPid') as HTMLSelectElement, pick)
-    await click($('#accModeNew'))
-    await type($('#accAddCs') as HTMLInputElement, 'Gecko')
-    await type($('#accAddSeat') as HTMLSelectElement, 'FCP'); await type($('#accAddCat') as HTMLSelectElement, 'OCU')
-    await click($('#accAdd'))
-    expect(csOf('Gecko')).toBeTruthy()
-    expect($('#accModeRoster').getAttribute('aria-pressed')).toBe('true')
-    expect(($('#accAddPid') as HTMLSelectElement).value, 'the earlier roster pick did not survive the add').toBe('')
-    expect(($('#accAddName') as HTMLInputElement).value).toBe('')
-    expect(($('#accAddRole') as HTMLSelectElement).value).toBe('main')
-  })
-  it('an On the roster add clears the WHOLE form — New person reopens blank (Astra read #1)', async () => {
-    await signInAs('ad', 'a')
-    await act(async () => { setPage('admin'); notify() })
-    await click($('#accModeNew'))
-    await type($('#accAddCs') as HTMLInputElement, 'Leftover')
-    await type($('#accAddIni') as HTMLInputElement, 'LO')
-    await type($('#accAddSeat') as HTMLSelectElement, 'RCP'); await type($('#accAddCat') as HTMLSelectElement, 'D')
-    await click($('#accModeRoster'))
     await type($('#accAddName') as HTMLInputElement, 'gecko@mail')
-    await type($('#accAddPid') as HTMLSelectElement, linkablePeople()[0])
     await type($('#accAddRole') as HTMLSelectElement, 'admin')
+    await type($('#accAddCs') as HTMLInputElement, 'Gecko')
+    await type($('#accAddIni') as HTMLInputElement, 'GK')
+    await type($('#accAddSeat') as HTMLSelectElement, 'FCP'); await type($('#accAddCat') as HTMLSelectElement, 'OCU')
     await click($('#accAdd'))
     expect(accountByName('gecko@mail'), 'the account was made').toBeTruthy()
     expect(($('#accAddName') as HTMLInputElement).value).toBe('')
-    expect(($('#accAddRole') as HTMLSelectElement).value).toBe('main')
-    await click($('#accModeNew'))
-    expect(($('#accAddCs') as HTMLInputElement).value, 'no half-typed person comes back').toBe('')
+    expect($('#accAddRole'), 'no sign-in typed, no role').toBeFalsy()
+    expect(($('#accAddCs') as HTMLInputElement).value).toBe('')
     expect(($('#accAddIni') as HTMLInputElement).value).toBe('')
     expect(($('#accAddSeat') as HTMLSelectElement).value).toBe('')
     expect(($('#accAddCat') as HTMLSelectElement).value).toBe('')
@@ -333,7 +314,6 @@ describe('NP4 — a CAT never rides through Personnel (26 Aug 26; Astra read #2)
   it('Admin → Users New person: Pilot + CAT C → Personnel → WSO shows CAT "Pick…"', async () => {
     await signInAs('ad', 'a')
     await act(async () => { setPage('admin'); notify() })
-    await click($('#accModeNew'))
     await type($('#accAddSeat') as HTMLSelectElement, 'FCP'); await type($('#accAddCat') as HTMLSelectElement, 'C')
     await type($('#accAddSeat') as HTMLSelectElement, 'GND')
     expect(($('#accAddCat') as HTMLSelectElement).disabled, 'personnel: "None — personnel"').toBe(true)
@@ -355,10 +335,16 @@ describe('NP7 — the words (D219, D220)', () => {
   it('every picker and label asks for a "callsign or name"; no (FCP) / (RCP) anywhere', async () => {
     await signInAs('ad', 'a')
     await act(async () => { setPage('admin'); notify() })
-    expect(optTexts('#accAddPid')[0]).toBe('Pick a callsign or name…')
-    expect($('#accAddPid').getAttribute('aria-label')).toBe('The callsign or name this account belongs to')
-    expect($('label[for="accAddPid"]').textContent).toBe('Callsign/Name')
-    await click($('#accModeNew'))
+    /* [ONE-DOOR]: the add form's roster picker is gone (D310, D322) — the picker that stays is Give access's */
+    await signInAs('viper-words@mail'); expect(ask('Viper')).toBe(null)
+    await signInAs('ad', 'a')
+    await act(async () => { setPage('admin'); notify() })
+    await click($(`[data-approve="${ACCESS_REQS[0].id}"]`))
+    await click($('#apvModeRoster'))
+    expect(optTexts('#apvPid')[0]).toBe('Pick a callsign or name…')
+    expect($('#apvPid').getAttribute('aria-label')).toBe('The callsign or name this account belongs to')
+    expect($('label[for="apvPid"]').textContent).toBe('Callsign/Name')
+    await click($('#apvCancel'))
     expect($('label[for="accAddCs"]').textContent).toBe('Callsign/Name')
     expect(optTexts('#accAddSeat')).toEqual(['Pick…', 'Pilot', 'WSO', 'Personnel (ground crew)'])
     expect(document.body.innerHTML).not.toMatch(/\((FCP|RCP)\)/)
@@ -434,11 +420,11 @@ describe("NP1 — Quals' \"+ Add person\" is a button to Admin → Users, New pe
       await click($('#qAddToggle')); await flush()
       expect(CURPAGE).toBe('admin')
       expect($('#admUsers').classList.contains('on')).toBe(true)
-      expect($('#accModeNew').getAttribute('aria-pressed'), `press ${i + 1}`).toBe('true')
+      /* [ONE-DOOR]: the add form is New person only — no mode to choose (D310, D322) */
       /* the walk (26 Sep 26): on a desktop the box is ready to type in — the plan's promise */
       await flush()
       expect(document.activeElement && document.activeElement.id, `press ${i + 1}: the Callsign/Name box has the cursor`).toBe('accAddCs')
-      await click($('#accModeRoster'))
+      await act(async () => { (document.activeElement as HTMLElement | null)?.blur(); notify() })
     }
     await signInAs('us', 'us')
     await act(async () => { setPage('quals'); notify() })
@@ -450,6 +436,7 @@ describe("NP1 — Quals' \"+ Add person\" is a button to Admin → Users, New pe
     await signInAs('ad', 'a')
     expect(ADMINOPEN).toBe(null)
     await act(async () => { setPage('admin'); notify() })
-    expect($('#accModeRoster').getAttribute('aria-pressed')).toBe('true')
+    await flush()
+    expect(document.activeElement && document.activeElement.id, 'no stale "open Users" puts the cursor in the add form').not.toBe('accAddCs')
   })
 })

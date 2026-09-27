@@ -2342,9 +2342,10 @@ closes the reuse back-door. **NARROWED — D286, 26 Sep 26, BUILT 27 Sep 26 (`[P
 ARCHIVED man is free for a new person, and a typed callsign always finds the roster man; `callsignTakenBy` /
 `state/roster-add.ts callsignProblem` is the one test (blank, over 14 letters — said, never cut, D226 — or taken by a
 man on the roster). A DELETED man (the hidden mark, D290) is in no index. Restoring an archived man while a roster man
-holds his callsign is refused (D286 (1) — it never renames anyone by itself); Quals then asks for another callsign on the
-spot and restores him under it in one step (D295, `leavewar/sync.ts restoreArchivedAs`), and an archived man can be
-renamed right on the Archived list (moving to Admin → Users with `[ONE-DOOR]`, D310). Rename still refuses a blank, a no-op and a duplicate (`ID_BY_CS` can only
+holds his callsign is refused (D286 (1) — it never renames anyone by itself); Admin → Users then asks for another callsign on
+the spot and restores him under it in one step (D295, `leavewar/sync.ts restoreArchivedAs`), and an archived man is
+renamed right on his archived row there — "Save name" (on Admin → Users since `[ONE-DOOR]`, D310; Quals' Archived list
+is gone). Rename still refuses a blank, a no-op and a duplicate (`ID_BY_CS` can only
 point one way), and it deliberately marks **nothing
 pending**: the person in the seat has not changed, only the spelling, and
 `rowCrew` diffs identically — an AL full of spelling would be noise. *(Corrected 26 Sep 26: this said "Published day
@@ -2360,7 +2361,10 @@ already flew keep his puck, and every day from his cutoff loses him.)*
 delete's cutoff is the later of its date and the calendar date (ONE clock — the posting pass's too). Every day BEFORE it
 keeps his puck, published or not, and never reads pending for the delete: a published face compares a deleted man's
 roster attributes as they stood when the day was issued (`publish.ts peopleAttrsNow`), and ALL AVAIL counts him on those
-days as before (`leavewar/sync.ts availableFor`, by date). Every day FROM the cutoff loses him in every kind of slot —
+days as before (`leavewar/sync.ts availableFor`, by date). **An ARCHIVED man is read the same way, by his stints**
+(D327, 28 Sep 26 — "shouldnt all avail crowd remain the same as per how that was published?"): in the ALL AVAIL crowd on a
+day he was here, out from his archive on — so a day already published keeps the crowd it went out with and reads nothing
+pending for it; a day he is NAMED on still reads pending (D321 (7)). Every day FROM the cutoff loses him in every kind of slot —
 the loaded week through the funnel, every stashed week, the sign-off boxes, the OIL switches, the parked plans, the
 planning calendar; a published day to come then reads pending (as any change does). His inputs from the cutoff go (one
 spanning it ends the day before, its "till" tail rewritten); he earns no OIL from it. A stored week that cannot be read
@@ -2913,6 +2917,27 @@ the week's `weeks/<wk>` record, so on a built site a reload brings back the park
 the Originals and every AL. (The earlier sentence here said the opposite.)
 
 ## Auth / roles
+
+**ONE DOOR FOR A PERSON'S STATE (`[ONE-DOOR]`, 27 Sep 26 — D305, D308, D309, D310, D320–D323).** Admin → Users shows every
+person and carries every action on him (the contract: `docs/ui-contracts.md` §Admin → Users — one door). **Archive**
+(`leavewar/sync.ts archivePerson` — admin only; never yourself, a placeholder, a deleted man, or the last admin who can
+sign in): `archived` with `archivedBy: 'admin'`, his account SUSPENDED in the same command, his welcome note cleared,
+and on the Leave War "posted out from today" — his current stint closed yesterday as a posting that has run, a posting
+still to come replaced (D323). **Restore** (`restoreArchivedPerson(id, postIn)` / `restoreArchivedAs(id, cs, postIn)`):
+the archive lifted, his account ENABLED WHATEVER SUSPENDED IT (D322), a new stint on the war from the post-in date (D308,
+D320 — refused on or before the day he left; the day after reopens his stint), `back` set so HE is told to check his
+quals and CAT on his next sign-in (D305 — `ui/WelcomeBack.tsx`; only he clears it, `person.backSeen`, his own row), and
+the admin's Quals prompt (D284). **Restore on Admin → Users is the one way back from an Admin archive** — the Leave War's
+Undo post out and posting writes refuse him (round 1, Fable F1 / Astra 2); the posting's own undo (Undo post out on a
+POSTING's archive) keeps its meaning: the same stint continues, only the posting's suspension enabled, no welcome note.
+**No Enable on an archived man** (D322): `accounts.ts updateAccount` refuses it. **A session that lapses** — his account
+suspended or deleted, or his person archived or deleted, after he signed in — is turned off on the next repaint (the
+suspended screen); one whose account another admin gave a different role or person is made again from the account as it
+now stands (`ui/App.tsx`, `accounts.ts sessionNow`; the final code read, Astra 1). An Archive, and a delete, read a man's
+dates from his stored posting record, never from how Show SANS happens to draw him; a posting that has not RUN (its date
+come or not) is replaced by an Archive and named in its message (the final code read, Fable F1, F5). **A new person's post-in date** (D308): Add a person and Give access →
+New person write his first stint on the war inside the add's own command (`HOOKS.warPostIn`). Quals keeps quals, CAT,
+flight and initials; archive, restore and the archived man's rename left it (D310).
 
 **ACCOUNTS (`[ACCOUNTS]`, 26 Sep 26 — D165, D166, D204, D200).** Everyone signs in as HIMSELF: each account
 (`state/accounts.ts`, managed on Admin → Users) is a sign-in name — which stands for the defence mail address —,

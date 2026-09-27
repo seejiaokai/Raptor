@@ -25,4 +25,47 @@
 
 /* Quals: "he's back" (D284; the approved picture 3 — lined up with the table, D294 (3)) and his row outlined */
 .back-prompt{box-sizing:border-box;margin:8px 0;padding:10px 12px;border:1px solid #3cc6e6;border-radius:10px;background:rgba(60,198,230,.08);color:#e8edf2;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
-.back-hl{outline:2px solid #3cc6e6;outline-offset:-2px}
+/* his row outlined (D284, D305) — drawn by the row's CELLS, not the row: the pinned callsign cell (td.qname, sticky with
+   its own background) painted over a row outline, so the box started at Initials (his look, 28 Sep 26) */
+tr.back-hl > td{box-shadow:inset 0 2px 0 #3cc6e6,inset 0 -2px 0 #3cc6e6}
+tr.back-hl > td:first-child{box-shadow:inset 2px 0 0 #3cc6e6,inset 0 2px 0 #3cc6e6,inset 0 -2px 0 #3cc6e6}
+tr.back-hl > td:last-child{box-shadow:inset -2px 0 0 #3cc6e6,inset 0 2px 0 #3cc6e6,inset 0 -2px 0 #3cc6e6}
+/* …and across the pinned column's fade strip (td.qname::after, shown while the table scrolls sideways — always on a
+   phone), which otherwise broke the top and bottom lines just right of his name */
+tr.back-hl > td.qname::after{box-shadow:inset 0 2px 0 #3cc6e6,inset 0 -2px 0 #3cc6e6}
+/* [ONE-DOOR] (D305): his own welcome note, under the top bar on every page (the back-prompt's look) */
+#shell > .welcome-back{margin:10px 16px 0}
+/* [ONE-DOOR] (D309, D310, D322 — the approved mock-up docs/mock/one-door.html): Admin → Users, one row per person —
+   the Sign-in and Roster dots in two fixed columns under one heading row, the role pill, the search box, the posting tag,
+   the folded Archived group. The app's own tokens (scheduler.css :root); nothing new in colour. */
+#page-admin .od-head{display:flex;align-items:center;gap:10px;margin:0 0 10px}
+#page-admin .od-head .adm-sub{margin:0}
+#page-admin .od-find{margin-left:auto;flex:0 1 220px;min-width:0;background:var(--bg);border:1px solid var(--edge);color:var(--ink);font:13px 'Inter Tight',sans-serif;padding:7px 10px;border-radius:9px}
+#page-admin .od-list{border-top:none}
+#page-admin .od-cols{display:flex;gap:6px 10px;align-items:center;padding:0 0 6px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);font-weight:600;border-bottom:1px solid var(--edge)}
+#page-admin .od-cols .od-grow{flex:1 1 0}
+#page-admin .od-row{flex-wrap:wrap}
+#page-admin .od-row>.acc-main{flex:1 1 0}
+#page-admin .od-c{flex:0 0 52px;display:inline-flex;justify-content:center;align-items:center}
+#page-admin .od-c i{width:9px;height:9px;border-radius:50%;display:inline-block;background:var(--ink-3);opacity:.45}
+#page-admin .od-c i.g{background:var(--ok);opacity:1;box-shadow:0 0 0 3px rgba(87,201,122,.16)}
+#page-admin .od-c i.r{background:var(--hard);opacity:1;box-shadow:0 0 0 3px rgba(240,85,95,.16)}
+#page-admin .od-rc{flex:0 0 62px;display:inline-flex;justify-content:flex-end}
+#page-admin .od-rw{display:none}
+#page-admin .od-po{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;padding:1px 7px;border-radius:999px;background:rgba(229,168,59,.14);color:var(--adv)}
+#page-admin .od-arch{margin-top:12px}
+#page-admin .od-arch>.abtn{font-size:12px}
+#page-admin .od-arch .od-list{margin-top:8px}
+/* `.acc-row.od-row-on`: scheduler.css's `.acc-row` padding (8px 0) loads later at the same weight — without the second
+   class the opened row widened by its margin while its boxes followed it past the pane's edge (the phone e2e, 27 Sep 26) */
+#page-admin .acc-row.od-row-on{background:var(--panel-2);margin:0 -10px;padding:8px 10px;border-radius:10px;border-bottom-color:transparent}
+#page-admin .od-err{color:#FBB4B9;font-size:11.5px;line-height:1.35;margin:-6px 0 10px}
+#page-admin .od-said{color:var(--ink-3);font-size:11.5px;margin:-4px 0 10px}
+#page-admin .adm-2col input[type=date]{width:100%;box-sizing:border-box}
+@media (max-width:820px){
+  #page-admin .od-find{flex:1 1 100%;margin-left:0}
+  #page-admin .od-head{flex-wrap:wrap}
+  #page-admin .od-rc{display:none}
+  #page-admin .od-rw{display:inline}
+  #page-admin .od-c{flex-basis:46px}
+}

@@ -68,6 +68,12 @@ export const HOOKS = {
      is ever missing, which is how a headless run behaved before this. */
   oilNoPeriod: (_di: number): string => '',
   oilSentinel: (_iso: string, _win: [number, number], _day: any): string[] => [],
+  /* A NEW PERSON'S POST-IN DATE ON THE LEAVE WAR ([ONE-DOOR], owner D308, 27 Sep 26 — "the app should also ask the admin
+     when is the post in date so that the leave war is reflected correctly"). The add runs in the roster's command; the
+     war's record is the war's, so the war installs this (leavewar/sync.ts) and it enlists the war's store in that same
+     command — one step, all or nothing (round 1, Fable F11 / Astra 6), with no import from state/ into the war. Unset
+     (a headless run with no war wired), nothing is written. */
+  warPostIn: (_txn: any, _id: string, _date: string): void => {},
   isPhone: (): boolean => false,
   editMode: (): boolean => false,
   /* who is making this edit, for the edit log (editlog.ts). It arrives as a

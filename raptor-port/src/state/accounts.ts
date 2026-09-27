@@ -42,16 +42,20 @@
    account; one sign-in name one account; adding an account for a name that has asked
    answers the request. A person ARCHIVED under an account keeps it (posting out archives
    automatically — leavewar/sync.ts runPoArchive — so refusing sign-in would lock out
-   whoever it catches); the Admin list marks it. */
+   whoever it catches); the Admin list marks it. [ONE-DOOR] (D310, D322, 27 Sep 26): an
+   archived man keeps his account but it is SUSPENDED — Archive suspends it, an overseas
+   posting suspends it, Enable is refused while he is archived, and Restore enables it
+   whatever suspended it; his row sits in Admin → Users' Archived group. */
 import { store } from '../engine/hooks'
 import { PEOPLE } from '../engine/people'
 import { SESSION } from './auth'
 import { isAdmin, mayManageAccounts, mayManageRoster, mayRequestAccess, me, roleOf } from './perms'
-import { commitSettingsIntent, commitPeopleSettingsIntent } from './people-settings-commit'
+import { commitSettingsIntent, commitPeopleSettingsIntent, commitPeopleIntent } from './people-settings-commit'
 import {
   MAX_CS, MAX_INITIALS, SEATS, catsFor, seatLabel, tidyPerson, newPersonProblem, putNewPerson, addRosterPerson, saidOf,
-  type NewPerson,
+  postInProblem, type NewPerson,
 } from './roster-add'
+import { HOOKS } from '../engine/hooks'
 
 export type AccountRole = 'admin' | 'main'
 /* `offBy: 'po'` — the account was SUSPENDED BY A POSTING OUT ([POST-OUT-OUTCOMES], D280 — the overseas outcome suspends
@@ -70,7 +74,9 @@ export const ACCOUNT_TYPES = ['access.request', 'access.decline', 'access.approv
   /* [POST-OUT-OUTCOMES]: a delete — his account and his person (D287, D290; state/person-delete.ts); he's back —
      Restore / Undo post out (leavewar/sync.ts restoreBody); a posting write that takes back what the posting made
      (sync.ts takeBack); the posting pass on its date (sync.ts runPoOutcomes — a reconciler) */
-  'person.delete', 'person.restore', 'lw.postout', 'lw.postoutRun'] as const
+  'person.delete', 'person.restore', 'lw.postout', 'lw.postoutRun',
+  /* [ONE-DOOR]: Archive on Admin → Users (leavewar/sync.ts archivePerson); the man's own "welcome back" seen (D305) */
+  'person.archive', 'person.backSeen'] as const
 
 /* ---- the seeds (demo data, D56 — wiped with everything else before the database) ----
    `us` stays Ranger (bane), as "View as" left every member test before; `ad` is Saber
@@ -248,7 +254,8 @@ function pidProblem(pid: string, selfId?: string): string | null {
   if (!p || p.special) return 'Pick the callsign or name this account belongs to'
   const other = accountOfPid(pid)
   if (other && other.id !== selfId) return `${p.cs} already has an account (${other.name})`
-  if (p.archived && !(selfId && accountById(selfId)?.pid === pid)) return `${p.cs} is archived — restore them on the Quals page first`
+  /* [ONE-DOOR] (D310): Restore lives on Admin → Users now (round 1, Fable F6 — the screen's own words follow the door) */
+  if (p.archived && !(selfId && accountById(selfId)?.pid === pid)) return `${p.cs} is archived — restore him on Admin → Users first`
   return null
 }
 const ADMIN_LOCK = 'At least one admin must keep access'
@@ -276,6 +283,12 @@ export function updateAccount(id: string, patch: { name?: any; role?: AccountRol
   if (patch.name !== undefined) { const n = normName(patch.name); const bad = nameProblem(n, a.id); if (bad) return bad; next.name = n }
   if (patch.pid !== undefined) { const bad = pidProblem(patch.pid, a.id); if (bad) return bad; next.pid = patch.pid }
   if (patch.role !== undefined) { if (!isAccountRole(patch.role)) return 'Pick member or admin'; next.role = patch.role }
+  /* [ONE-DOOR] (D322 — "no Enable on an archived row"): an archived man is never let sign in while archived — Restore
+     brings his sign-in back with him (the write path refuses what the screen no longer offers) */
+  if (patch.on === true && !a.on) {
+    const p = (PEOPLE as any)[a.pid]
+    if (p && p.archived && !p.deleted) return `${p.cs} is archived — restore him on Admin → Users`
+  }
   if (patch.on !== undefined) { next.on = !!patch.on; delete next.offBy }   // a hand Suspend / Enable is the admin's own
   const list = ACCOUNTS_LIST.map(x => x.id === a.id ? next : x)
   if (!list.some(canSignInAsAdmin)) return ADMIN_LOCK
@@ -367,6 +380,57 @@ export function enableAfterPosting(pid: string): boolean {
   writeAccounts(ACCOUNTS_LIST.map(x => (x.id === a.id ? { id: x.id, name: x.name, role: x.role, pid: x.pid, on: true } : x)))
   return true
 }
+/* [ONE-DOOR] (owner D310, D322, 27 Sep 26): ARCHIVE suspends his sign-in — as a hand suspension (no mark: Restore
+   enables whatever suspended it, D322 — round 1, Fable F10); 'lock' when it would leave no admin able to sign in (the
+   Archive is then refused whole, before anything is written — D306's rule). RESTORE enables it, whatever suspended it.
+   Mutations only — INSIDE the Archive / Restore command (it enlisted the settings store). */
+export function suspendForArchive(pid: string): 'done' | 'none' | 'lock' {
+  const a = accountOfPid(pid)
+  if (!a || !a.on) return 'none'
+  const list = ACCOUNTS_LIST.map(x => (x.id === a.id ? { id: x.id, name: x.name, role: x.role, pid: x.pid, on: false } : x))
+  if (!list.some(canSignInAsAdmin)) return 'lock'
+  writeAccounts(list)
+  return 'done'
+}
+export function enableForRestore(pid: string): boolean {
+  const a = accountOfPid(pid)
+  if (!a || a.on) return false
+  writeAccounts(ACCOUNTS_LIST.map(x => (x.id === a.id ? { id: x.id, name: x.name, role: x.role, pid: x.pid, on: true } : x)))
+  return true
+}
+/* HIS WELCOME NOTE SEEN ([ONE-DOOR], D305): the signed-in man clears his OWN `back` — the `person.backSeen` command,
+   own row required (perms.ts; ownershipViolation lets a member change only his own Person). Nothing when there is
+   nothing to clear. */
+export function markBackSeen(): string | null {
+  const id = me()
+  const p = id != null ? (PEOPLE as any)[id] : null
+  if (!p || !p.back) return null
+  return saidOf(commitPeopleIntent('person.backSeen', { owner: id }, () => { delete (PEOPLE as any)[id!].back }))
+}
+/* A SESSION THAT HAS LAPSED ([ONE-DOOR] round 1 — Fable F8 / Astra 4, the agent's call on the look card): the signed-in
+   account is suspended, or its person archived or deleted, since he signed in (a posting's date came, an admin acted in
+   another session at the database step). The App then turns the session off (the "Your access is suspended" screen)
+   on its next repaint, so no write of his goes through. A session with no account behind it (the localhost probe
+   bridge, a headless test) never lapses. */
+export function sessionLapsed(): boolean { return sessionNow() !== undefined }
+/* WHAT THE SIGNED-IN SESSION SHOULD NOW BE — undefined when it stands. Turned OFF when his account is suspended, his
+   person archived or deleted — or, for a session made from an ACCOUNT (it carries `acct`), when that account is gone
+   (deleted by another admin, or by a Delete posting on its date — the final code read, Astra 1, 27 Sep 26: this said
+   "fine" for a missing account). Made AGAIN from the account as it now stands when another admin changed its role or
+   the person it belongs to (Astra 1: a demoted admin kept his admin session) — he stays signed in, with what his account
+   now gives. The admin's own member view (D292) is not a change: `acct` is still the account's role. A session with
+   no `acct` (the localhost probe bridge, a headless test) has no account to lose and never lapses on that count. */
+export function sessionNow(): any {
+  const r = SESSION && SESSION.role
+  if (r !== 'admin' && r !== 'main' && r !== 'member') return undefined
+  const off = () => sessionFor({ kind: 'off', name: String(SESSION.name || '') } as any)
+  const a = accountById(SESSION.user)
+  if (!a) return SESSION.acct ? off() : undefined
+  const p = (PEOPLE as any)[a.pid]
+  if (!a.on || !p || p.archived || p.deleted) return off()
+  if (SESSION.acct && (a.role !== SESSION.acct || a.pid !== SESSION.pid)) return sessionFor({ kind: 'ok', account: a } as any)
+  return undefined
+}
 export const accountSuspendedByPosting = (pid: string): boolean => { const a = accountOfPid(pid); return !!a && !a.on && a.offBy === 'po' }
 /* would removing or suspending this person's account leave no admin who can sign in? (the posting pass's own check —
    it is not a person acting, so "yourself" never applies there) */
@@ -386,28 +450,33 @@ export function dropAccountOfPid(pid: string): void {
    ONE command over the people and settings stores — both made or neither (a refusal inside
    rolls both back and still says why). A blank sign-in makes a roster-only person (D217 —
    someone who will not use the app): the people command alone. */
-export function addPersonAndAccount(nameIn: any, np: NewPerson, role: AccountRole): string | null {
+/* `postIn` — his post-in date (D308, [ONE-DOOR]): written on the war in the same command (HOOKS.warPostIn) */
+export function addPersonAndAccount(nameIn: any, np: NewPerson, role: AccountRole, postIn?: string): string | null {
   const name = normName(nameIn)
-  if (!name) return addRosterPerson(np)
+  if (!name) return addRosterPerson(np, postIn)
   if (!mayManageAccounts() || !mayManageRoster()) return 'Only an admin can add a person'
   const bad = nameProblem(name) || newPersonProblem(np) || (isAccountRole(role) ? null : 'Pick member or admin')
+    || (postIn !== undefined ? postInProblem(postIn) : null)
   if (bad) return bad
-  return saidOf(commitPeopleSettingsIntent('account.addNew', null, () => {
+  return saidOf(commitPeopleSettingsIntent('account.addNew', null, txn => {
     const pid = putNewPerson(np)
+    if (postIn !== undefined) HOOKS.warPostIn(txn, pid, postIn)
     writeAccounts([...ACCOUNTS_LIST, { id: newAccountId(), name, role, pid, on: true }])
     if (requestByName(name)) writeReqs(ACCESS_REQS.filter(r => r.name !== name))
   }))
 }
 /* approving with New person: the person from what he gave, with the admin's corrections,
    his account, and the request answered — one command */
-export function approveRequestNew(reqId: string, np: NewPerson, role: AccountRole): string | null {
+export function approveRequestNew(reqId: string, np: NewPerson, role: AccountRole, postIn?: string): string | null {
   if (!mayManageAccounts() || !mayManageRoster()) return 'Only an admin can approve a request'
   const rq = ACCESS_REQS.find(r => r.id === reqId)
   if (!rq) return 'That request is gone'
   const bad = nameProblem(rq.name) || newPersonProblem(np) || (isAccountRole(role) ? null : 'Pick member or admin')
+    || (postIn !== undefined ? postInProblem(postIn) : null)
   if (bad) return bad
-  return saidOf(commitPeopleSettingsIntent('access.approveNew', null, () => {
+  return saidOf(commitPeopleSettingsIntent('access.approveNew', null, txn => {
     const pid = putNewPerson(np)
+    if (postIn !== undefined) HOOKS.warPostIn(txn, pid, postIn)
     writeAccounts([...ACCOUNTS_LIST, { id: newAccountId(), name: rq.name, role, pid, on: true }])
     writeReqs(ACCESS_REQS.filter(r => r.id !== reqId))
   }))

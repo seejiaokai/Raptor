@@ -323,16 +323,16 @@ describe('the Quals page (tfin)', () => {
     await act(async () => { setSession({ user: 'a', role: 'admin' }); notify() })
   })
 
-  it('an admin in editing mode gets the archive ✕, and it archives', async () => {
+  /* [ONE-DOOR] (owner D310, 27 Sep 26 — "one door as proposed, Quals loses archive") REPLACED "an admin in editing mode
+     gets the archive ✕, and it archives": archive, restore and the archived man's rename live on Admin → Users now
+     (ui/onedoor-users.test.tsx, leavewar/onedoor.test.ts); Quals keeps quals, CAT, flight and initials */
+  it('D310: no archive ✕ for an admin either — no column for it; the help says where archive went', async () => {
     await click($('#qEdit'))
-    const x = $('#qtbl [data-arch]')
-    expect(x, 'the ✕ renders for an admin').toBeTruthy()
-    const id = x.dataset.arch!
-    await click(x)
-    expect(PEOPLE[id].archived).toBe(true)
-    /* and the admin's Restore puts them back — the full round trip */
-    expect(restoreArchivedPerson(id)).toBe(true)
-    expect(PEOPLE[id].archived).toBe(false)
+    expect($('#qtbl [data-arch]'), 'no ✕ in edit mode').toBeFalsy()
+    const heads = $$('#qtbl thead th').length
+    const cells = $$('#qtbl tbody tr:not(.grp)')[0].querySelectorAll('td').length
+    expect(cells, 'the columns stay square without the ✕ column').toBe(heads)
+    expect($('.qhelp').textContent).toContain('Archive, restore and delete are on Admin → Users.')
     await click($('#qSave'))
   })
 })
@@ -366,7 +366,8 @@ describe('the callsign / initials columns', () => {
     await click($('#qAddToggle'))
     await act(async () => { await new Promise(r => setTimeout(r, 0)) })
     expect(document.querySelector('#page-admin.on, #page-admin')).toBeTruthy()
-    expect($('#accModeNew').getAttribute('aria-pressed')).toBe('true')
+    /* [ONE-DOOR] (D310, D322): the add form is New person only — its Callsign/Name box is there */
+    expect($('#accAddCs')).toBeTruthy()
     await act(async () => { setPage('quals'); notify() })
   })
 
@@ -1055,38 +1056,19 @@ describe('Edit quals', () => {
   })
 })
 
-describe('the Archived section (owner, 19 Aug 26)', () => {
-  /* the drawer under the table: where the ✕ (and the Leave War post-out's
-     auto-archive) put a body, and where an admin puts one back */
-  it('archiving with the ✕ lands the person in the drawer, and the schedules are untouched', async () => {
-    /* make sure editing is on — the previous describe's Save turned it off */
-    if ($('#qtbl')!.className.indexOf('editing') < 0) await click($('#qEdit'))
-    const archBtn = $$('#qtbl [data-arch]')[0]
-    const id = archBtn.dataset.arch!
-    const daysBefore = JSON.stringify(DAYS)
-    await click(archBtn)
-    expect(PEOPLE[id].archived).toBe(true)
-    /* off the roster table… */
-    expect($(`#qtbl [data-arch="${id}"]`)).toBeFalsy()
-    /* …into the drawer, folded to a count by default */
-    expect($('#qArchToggle')).toBeTruthy()
-    expect($('#qArchToggle')!.textContent).toContain('Archived')
-    expect($('[data-testid="qarchlist"]')).toBeFalsy()
-    await click($('#qArchToggle'))
-    expect($(`[data-testid="qarchrow-${id}"]`)).toBeTruthy()
-    /* archiving is a flag, never a schedule write — every puck stays */
-    expect(JSON.stringify(DAYS)).toBe(daysBefore)
-    /* the ALL AVAIL sentinel is archived by construction and is not a person */
-    expect($('[data-testid="qarchrow-allavail"]')).toBeFalsy()
-  })
-
-  it('Restore puts them straight back on the roster', async () => {
-    const row = $$('[data-testid^="qarchrow-"]')[0]
-    expect(row, 'the previous test left someone archived').toBeTruthy()
-    const id = row.dataset.testid!.slice('qarchrow-'.length)
-    await click(row.querySelector(`[data-restore="${id}"]`))
-    expect(PEOPLE[id].archived).toBe(false)
-    expect($(`[data-testid="qarchrow-${id}"]`)).toBeFalsy()
+/* [ONE-DOOR] (owner D310, 27 Sep 26): "the Archived section (owner, 19 Aug 26)" moved to Admin → Users — its drawer,
+   its Restore and "archiving is a flag, never a schedule write" are pinned there (ui/onedoor-users.test.tsx,
+   leavewar/onedoor.test.ts); here only its absence */
+describe('D310 — Quals has no Archived section', () => {
+  it('an archived man is off the Quals table and there is no drawer for him here', async () => {
+    const id = Object.keys(PEOPLE).find(k => !PEOPLE[k].special && !PEOPLE[k].archived && PEOPLE[k].seat === 'FCP')!
+    PEOPLE[id].archived = true
+    try {
+      await act(async () => { notify() })
+      expect($(`#qtbl td.qname[data-person="${id}"]`)).toBeFalsy()
+      expect($('#qArchive'), 'no Archived drawer on Quals').toBeFalsy()
+      expect($('#qArchToggle')).toBeFalsy()
+    } finally { PEOPLE[id].archived = false; await act(async () => { notify() }) }
   })
 })
 
