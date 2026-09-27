@@ -1065,3 +1065,18 @@ resolved statuses always carry their resolution date
 **Suggested improvement:** A highlight, outline or mark is asserted as PAINTED on each element it must cover (a computed style per cell, especially pinned/sticky ones), and every picture a step saves is opened before the step counts as looked at. Added to the bug-check order as anti-pattern 21.
 
 **Principle:** A class is intent, not paint; assert what renders on every element it must cover, and a saved picture counts only once someone has looked at it.
+
+### Observation 318: A question he sends mid-run is answered in the very next message, before any more tool calls
+
+**Status:** OPEN
+**Date:** 28 Sep 26
+**Session context:** the overnight D336 run — waiting on the PR's checks, then planning [DRAFT-PENDING]; he asked "After this is merged what's next" twice, then "So what do u plan to do when I'm sleeping", "Reply me now", "I want to sleep".
+**Skill:** New skill candidate: working-while-he-waits (or an addition to session-handoff's overnight section)
+**Type:** internal
+**Phase/Area:** the gap between his mid-run message and the agent's answer
+
+**Issue:** His first "what's next" arrived while background checks and read-only research ran. The agent answered it in a line and went back to long tool calls (reading rulings, mock-ups, the bug-check order) with only one-line status notes between them; when he asked again, and then what the night would bring, several more tool calls ran before a plain answer. He had to say "Reply me now" and "I want to sleep" — he was waiting on a reply to go to bed.
+
+**Suggested improvement:** When he sends a question mid-run, the very next message answers it in full, plainly, BEFORE another tool call — especially late at night or before an unattended run: what happens next, in order, what he will find in the morning, and that he can go. Status one-liners between tool calls do not count as the answer.
+
+**Principle:** A question from the person waiting on you outranks the work queue: answer first, then resume — a one-line "still working" is not an answer to "what are you going to do".

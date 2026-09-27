@@ -325,7 +325,9 @@ describe('the board closing and the session ending', () => {
   })
 
   /* LAST on purpose — resetSession drags the whole view back to page 1 */
-  it('logging out clears the log, the mode, and any bubble still up', async () => {
+  /* the log itself is KEPT since [DRAFT-PENDING] (28 Sep 26, D336 (b) — the history outlives a sign-out, built on yes);
+     what the session owned — History mode, a bubble still up — still goes */
+  it('logging out keeps the history, and clears the mode and any bubble still up', async () => {
     const key = $$('#sbBoard [data-slot]').map(e => e.dataset.slot!).filter(k => /\.p$/.test(k))[0]!
     const was = slotVal(key)
     await act(async () => { setSlotVal(key, was === 'bane' ? 'stiff' : 'bane'); view.afterSchedMutate(); notify() })
@@ -333,8 +335,9 @@ describe('the board closing and the session ending', () => {
     await hover($(`#sbBoard [data-slot="${key}"]`))
     expect(ELOG.rows.length).toBeGreaterThan(0)
 
+    const kept = ELOG.rows.length
     await act(async () => { resetSession(null); notify() })
-    expect(ELOG.rows.length, 'the incoming user sees nothing').toBe(0)
+    expect(ELOG.rows.length, 'the history is the squadron record — the next person sees it').toBe(kept)
     expect(view.HISTMODE, 'History is off for the next session').toBe(false)
     expect(bub(), 'and no bubble survived the logout').toBe(null)
     expect(document.querySelector('[data-hist-t]')).toBe(null)
