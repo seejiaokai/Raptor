@@ -53,15 +53,15 @@ whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaini
    FULL-checked, his look card answered, `main` merged in: his "merge live" next. `[ACCOUNTS-NEW-PERSON]` MERGED 27 Sep 26
    (PR #443), `[ACCOUNTS]` 26 Sep 26 (PR #442). **Then [ONE-DOOR]** (D309, D310 — Admin → Users carries every person's
    sign-in and roster state and every action; Quals loses its archive), carrying **[POST-IN-DATE]** (D308) and the look
-   card's 3a / 3b — mock-up first, its own FULL check; `[POST-OUT-TRACKER]` on his answer. **Then [LW-MOVE-STANDARD]**
-   (D264–D266 — after #446, both change the Leave War's sheets). Then **[DRAFT-PENDING]** — the one changes window, on
+   card's 3a / 3b — mock-up first, its own FULL check; `[POST-OUT-TRACKER]` on his answer. **[LW-MOVE-STANDARD]**
+   (D264–D266) BUILT and MERGED 27 Sep 26 (PR #447; archived). Then **[DRAFT-PENDING]** — the one changes window, on
    top of accounts, its own FULL check (D210).
 2. **Now, beside the building — [IT-QUESTIONS]:** talk to the IT side (his, not code); their approvals take weeks.
 3. **Development as normal — [HUMAN-RETEST]**'s remaining three, in HIS order (D147): the absence record TOGETHER with
    [S4-HUNT-REST] — **WALKED 26 Sep 26** on `claude/absence-record-d147-af6a50`; his answers to its questions (D260–D263)
    recorded, and D260–D262 BUILT and FULL-checked there 27 Sep 26 (D263 goes with [DRAFT-PENDING]); from his look, D264–D266
-   (one look for the sheets, a Move on every record that can move) — [LW-MOVE-STANDARD], NEXT on a new branch once this one
-   merges (D267; a mock-up first); his look and "merge live" first — then change-recording (with [UNDO-ROSTER-SETTINGS] and D148),
+   (one look for the sheets, a Move on every record that can move) — [LW-MOVE-STANDARD], BUILT and MERGED 27 Sep 26
+   (PR #447; archived) — then change-recording (with [UNDO-ROSTER-SETTINGS] and D148),
    then the Leave War links LAST (with the 7 Sep phone check). Then "after the hunt" (21 Sep 26): [LW-LOCKMARK] →
    [LW-WEEKDAY-WORK] (talk to him before building any of it) — its first, the published day's unavailable list, was
    closed by the same re-test (built by [LEAVE-LATE-PUBLISHED]; archived).
@@ -78,8 +78,8 @@ whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaini
 [OIL-PERSONAL-PLACEHOLDER] (FULL tier), [CROWD-SIM-BRIEF] (WALK tier), [OIL-RELINK-XWEEK].
 
 **Placed by their own lines — not his rulings:** the Leave War — [LW-FROZEN-BAR-GAP] (after [HUMAN-RETEST]; show him
-first), [LW-FIGSEL-SLOW] and [LW-SCRUBBER-FLAKY] (test-only), [LW-ISO-DATES] and [LW-MOVE-BENEATH] (both low, from the
-absence-record re-test), [PO-RESTORE-POSTING] (low, from its final code read), [LW-OFFER-ONLY-TAKEABLE] (low, with [LW-LOCKMARK]), [ABSENCE-SMALL-SEEN] (any time), [LW-HARNESS-VIEWER-PIN] (test-only, low), [CI-FAIL-PICTURES] (his call, low); the Inputs calendar — [INPUTSCAL-TAP-FLAKY] (test-only). The Tracker — [TRK-RETEST-NOTES] and
+first), [LW-FIGSEL-SLOW] and [LW-SCRUBBER-FLAKY] (test-only), [LW-ISO-DATES] (low, from the
+absence-record re-test), [LW-SPARE-MOVE-DOORS] (low, with the next Leave War move change), [PO-RESTORE-POSTING] (low, from its final code read), [LW-OFFER-ONLY-TAKEABLE] (low, with [LW-LOCKMARK]), [ABSENCE-SMALL-SEEN] (any time), [LW-HARNESS-VIEWER-PIN] (test-only, low), [CI-FAIL-PICTURES] (his call, low); the Inputs calendar — [INPUTSCAL-TAP-FLAKY] (test-only). The Tracker — [TRK-RETEST-NOTES] and
 [TRK-EDIT-SIDEWAYS] (their gates have passed), [TRK-PINCH-ASK] (his next Tracker session), [TRK-SESSION-PICK] (low, the next Tracker change), [TRK-DLG-LEFTOVERS] (low, with the next question-box change), [TRK-FLEXBAR-INK] (a question for him, on the Tracker-palette
 look card — D157, merged PR #441), [TRK-BAKE-STALE] (low).
 The amendment area — PR #434, #435, #437 and #438 MERGED (25–26 Sep 26); left: [REQ-ORPHAN-ROW] and [REQ-DOOR-WORDS] (both low). Left from the amendment batch (D91–D111, merged): [AVAILWIN-PREVIEW-BAR] (low), [AMEND-SMALL-SEEN] (any time). The docs and the checks — [DEPLOY-DOCS] (its operational half), [DOC-POINTERS-CODE] and
@@ -339,7 +339,7 @@ here, in his order (D147): the absence record with [S4-HUNT-REST], then change-r
 (all seven of its grounds) and the published day's unavailable list: a host walk and five walkers at both widths, every
 defect reproduced and fixed red first (evidence `raptor-port/docs/handpass/2026-09-26-absence.md`; plan
 `raptor-port/docs/superpowers/plans/2026-09-26-absence-retest-plan.md`). Its questions for him were [ABSENCE-ASK] (all answered — D260–D263; archived); what
-it filed is [LW-ISO-DATES], [LW-MOVE-BENEATH] and a line in [AMEND-SMALL-SEEN] item 6. It closes with the final code
+it filed is [LW-ISO-DATES], [LW-MOVE-BENEATH] (built by [LW-MOVE-STANDARD]; both archived) and a line in [AMEND-SMALL-SEEN] item 6. It closes with the final code
 reads, his look and his "merge live". **Next here: change-recording** (with [UNDO-ROSTER-SETTINGS] and D148), then the
 Leave War links.
 **Added 24 Sep 26 (the spring clean, from `HANDOFF.md` §Open as Fable classified it):** the amendment walk includes
@@ -1273,51 +1273,6 @@ read-only "Your OIL award" sheet (D261, `BidPicker.tsx AwardSheet`) prints its d
 purpose, so the batch changes them together. **Build:** one wording batch over every
 Leave War sheet together, with their tests (many tests pin these strings). Evidence
 `raptor-port/docs/handpass/parts/2026-09-26-absence-w4.md` §W4-2. **Place:** low, any time; not his ruling.
-
-### [LW-MOVE-BENEATH] A bulk Move leaves behind a bid that shares its day with leave filed on the Inputs page — low (W3-F3, 26 Sep 26)
-Found by the absence-record re-test's war walker: Ghost has a morning of leave filed on the Inputs page and an afternoon
-bid beside it; a dragged block over that day, then Move…, says "move 2 entries" and leaves his afternoon bid where it
-was. Its Delete half is FIXED on the re-test's branch (the bid beneath goes, the filed leave stays — `store.ts
-clearRequestsAt`); Move is not the same fix, because the filed leave STAYS (it is the Inputs page's) while the bid would
-travel alone, and where it lands beside another day's records is a design question (the move lands all-or-nothing on
-the TOP record today). **Build:** decide whether the bid travels alone (landing only on a day whose same half is free)
-or the whole day is refused with a sentence naming the filed leave; then red first. Evidence
-`raptor-port/docs/handpass/parts/2026-09-26-absence-w3.md` §W3-F3. **Place:** low; with [LW-LOCKMARK] (the lock by day
-vs by record is the same root).
-**Its sibling (Fable's D260–D262 scenarios, S3, 27 Sep 26):** a bid that shares its day with an OIL AWARD cannot be moved
-by any door — the ladder puts the award above the bid, so the day's top record is not movable: the one-day sheet does not
-open (two records open the tap list, whose bid line has no Move), and a dragged block's Move… does not offer it. The same
-root — a move reads the day's TOP record — and the same decision (the bid travels alone, landing where its half is free).
-Pre-existing; not his ruling. **DECIDED 27 Sep 26 BY D265** (`.claude/rules/decisions/leave-war.md`, his pictures of Vector's
-3 Jan): a record that can move always offers Move and travels ALONE — the award, and Inputs-filed leave, stay where they
-are; landing rules unchanged. Built by `[LW-MOVE-STANDARD]`.
-
-### [LW-MOVE-STANDARD] One look for the Leave War's sheets, and a Move on every record that can move — his D264–D266 (27 Sep 26)
-**His rulings** (`.claude/rules/decisions/leave-war.md` D264, D265, D266, 27 Sep 26, with four phone pictures from his look
-at PR #444): **D264** the one-day sheet and the drag-selection sheet share one format and look (the rows in one order; Move
-and Delete / Clear the same buttons, in the same place); **D265** a record that can move always offers Move — a bid beside
-an OIL award or beside Inputs-filed leave moves alone (today a move reads only the day's TOP record, so Vector's 3 Jan, an
-award above an LL bid, offers no Move in the day's list or in a dragged block); **D266** the day's list (several records)
-moves each record by the grid's move mode, no date box — he chooses which. **Build:** (1) a mock-up of the real sheets at
-desktop and phone, his approval first (D264 is visual); (2) a move carries the RECORDS it picked, not the day's top one
-(`store.ts` `moveCells` / `movableCells` / `shiftBid`, `moveAbsenceById` by record id; `Matrix.tsx` `moveSel`); (3) the
-day's list's Move picks its record up into the move mode, its date box goes (`DayList.tsx`); (4) the sheets to the approved
-layout (`BidPicker.tsx`, `SelectSheet.tsx`). Red first each. **Tier:** FULL (a record's move — the absence record and what
-is saved); walk both widths; both reads. Folds in `[LW-MOVE-BENEATH]` (decided by D265). **Place (D267, his
-"1", 27 Sep 26):** NEXT after PR #444 merges — on a NEW branch from `main`, in a fresh chat; the mock-up first.
-**Started 27 Sep 26** on `claude/rulings-d264-d266-leave-war-f0f4ab` (beside `[ONE-DOOR]` on `claude/one-door` — no shared
-function; rulings D330–D339). **The mock-up is up for his answers:** `raptor-port/docs/mock/lw-move-standard.html` (and its
-Artifact), made by `raptor-port/scripts/handpass/am/mk-lw-move-standard.mjs` — four questions: the order (A what's there
-first — recommended — or B new leave first), one word "Delete" for the one-day Clear and the block's Delete, a
-member's Move on his own bid's one-day sheet while bidding is open, and the Move button's look (D330 — one look on every
-sheet, a little apart; four designs in section 7, B the grey chip with a teal arrow recommended). **ANSWERED 27 Sep 26 —
-"1 A, 2 yes, 3 yes, 4 B, 5 keep" (D331–D335): the mock-up is the design of record; the build is next.**
-Fable's scenario design (bug-check order §4 rank 1): `raptor-port/docs/superpowers/specs/2026-09-27-lw-move-standard-scenarios-fable.md`
-(the roll-call, 32 ranked scenarios, six contradictions and how each is taken — stated on the mock-up page).
-**BUILT and FULL-checked 27 Sep 26** on this branch — evidence `raptor-port/docs/handpass/2026-09-27-lw-move-standard.md`:
-walked 40/40 at both widths, 26 wires broken on purpose (each turns a named test red), Fable's and Astra's blind reads
-(six findings, all fixed red first; re-walked). **Next: his look (§10 of the sheet) and "merge live"**; then this item and
-`[LW-MOVE-BENEATH]` (built by it) go to the archive.
 
 ### [LW-SPARE-MOVE-DOORS] Two old move doors no screen uses any more — low (Fable's final read, 27 Sep 26)
 Since `[LW-MOVE-STANDARD]` every move goes through `store.ts moveRecords` (the records it picked). `shiftBid` (the old

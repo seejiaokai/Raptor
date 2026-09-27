@@ -3,7 +3,7 @@
 Branch `claude/rulings-d264-d266-leave-war-f0f4ab` (worktree `five-flags-batch-continue-2cfa70`), cut from `main`
 `818dbb04`. The order this follows: `raptor-port/docs/bug-check-order.md`. The rulings: `.claude/rules/decisions/leave-war.md`
 D264, D265, D266 and his answers to the mock-up D330–D335. The approved design: `docs/mock/lw-move-standard.html` (and
-its Artifact). The backlog: `OUTSTANDING.md` `[LW-MOVE-STANDARD]` (folds in `[LW-MOVE-BENEATH]`). Fable's scenario design
+its Artifact). The backlog: `OUTSTANDING-ARCHIVE.md` `[LW-MOVE-STANDARD]` (folds in `[LW-MOVE-BENEATH]`; both archived 27 Sep 26 once PR #447 merged). Fable's scenario design
 (rank 1, before the build): `docs/superpowers/specs/2026-09-27-lw-move-standard-scenarios-fable.md`. Walk script
 `scripts/handpass/ms/ms-10-walk.mjs`; results `docs/handpass/parts/2026-09-27-lw-move-standard-ms10-{desktop,phone}.txt`;
 pictures `docs/img/handpass/2026-09-27-lw-move-standard/{desktop,phone}/`; break tests `scripts/handpass/ms/ms-breaks.py`.
