@@ -133,6 +133,60 @@ describe('Pick a range widens what the one-day sheet acts on (D335)', () => {
   })
 })
 
+describe('a morning and an afternoon bid — the list picks ONE (D266; Fable’s S6)', () => {
+  it('Move on the morning carries the morning only: "1 entry · 1 bid stays"', async () => {
+    setCell(P, '2026-02-11', '*LL')
+    setCell(P, '2026-02-11', 'LL*')
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId(`cell-${P}-2026-02-11`))
+    const am = bidsAt(P, '2026-02-11').find((r: any) => r.code === '*LL')!
+    expect(screen.getAllByTestId(/^dl-move-/)).toHaveLength(2)
+    fireEvent.click(screen.getByTestId(`dl-move-${am.id}`))
+    const said = screen.getByTestId('move-banner').textContent!
+    expect(said).toContain('1 entry')
+    expect(said).toContain('1 bid stays')
+    await land(`cell-${P}-2026-02-12`)
+    expect(bidsAt(P, '2026-02-12').map((r: any) => r.code)).toEqual(['*LL'])
+    expect(bidsAt(P, '2026-02-11').map((r: any) => r.code)).toEqual(['LL*'])
+  })
+})
+
+describe('a range that sweeps up an award day and an empty day (Fable’s S14)', () => {
+  it('moves only the bids — "2 entries", the award named as staying — and keeps the gap between them', async () => {
+    setManualCredit(P, '2026-02-10', 'FO', {})
+    setCell(P, '2026-02-11', 'LL')
+    setCell(P, '2026-02-13', 'LL')
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId(`cell-${P}-2026-02-10`))
+    fireEvent.click(screen.getByTestId('span-range'))
+    fireEvent.click(screen.getByTestId('span-day-2026-02-13'))
+    fireEvent.click(screen.getByTestId('decide-shift'))
+    const said = screen.getByTestId('move-banner').textContent!
+    expect(said).toContain('2 entries')
+    expect(said).toContain('1 OIL award stays')
+    await land(`cell-${P}-2026-02-17`)                 // the earliest bid (11 Feb) lands on the day tapped
+    expect(bidsAt(P, '2026-02-17')).toHaveLength(1)
+    expect(bidsAt(P, '2026-02-19')).toHaveLength(1)    // 13 Feb keeps its two-day gap
+    expect(awardAt(P, '2026-02-10')).toBe(true)
+  })
+})
+
+describe('a bid moved once bidding has closed says where it came from on its list line (Fable’s S4)', () => {
+  it('the award on top hides the grid’s dotted mark, so the line carries it', async () => {
+    setCell(P, '2026-02-11', 'LL')
+    setManualCredit(P, '2026-02-16', 'FO', {})
+    advanceStage()
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId(`cell-${P}-2026-02-11`))
+    fireEvent.click(screen.getByTestId('decide-shift'))
+    await land(`cell-${P}-2026-02-16`)
+    expect(bidsAt(P, '2026-02-16')).toHaveLength(1)
+    fireEvent.click(screen.getByTestId(`cell-${P}-2026-02-16`))
+    const bid = bidsAt(P, '2026-02-16')[0]!
+    expect(screen.getByTestId(`dl-r-${bid.id}`).textContent).toContain('moved from Wed 11 Feb')
+  })
+})
+
 describe('a bid beside an OIL award — the day’s list (D265, D266)', () => {
   beforeEach(() => {
     setManualCredit(P, '2026-02-11', 'FO', { note: 'Exercise recovery' })
