@@ -81,6 +81,8 @@ const openArchived = async (s, id) => {
 }
 const restore = async (s, id, date) => { await openArchived(s, id); if (date) await s.page.fill('#accArPostIn', date); await s.page.click('#accArRestore'); await s.page.waitForTimeout(400) }
 const gone = async (s, id, d) => /\bgone\b/.test(await cellCls(s, id, d) || '')
+/* the day is DRAWN and counted — never true for a cell that is not there (a row the grid hid would otherwise pass) */
+const here = async (s, id, d) => { const c = await cellCls(s, id, d); return c !== null && !/\bgone\b/.test(c) }
 async function scene(name, vps, fn, fresh = true) {
   if (ONLY.length && !ONLY.includes(name)) return
   for (const vp of vps) {
@@ -146,7 +148,7 @@ await scene('archive', [DESK, PHONE], async s => {
   check('archive', s, 'archived row: Sign-in suspended, Archived', (await attr(s, '[data-testid="dot-signin-rocky"]', 'aria-label')) === 'Sign-in suspended' && (await attr(s, '[data-testid="dot-roster-rocky"]', 'aria-label')) === 'Archived')
   await shot(s, 'archive-01-group')
   await war(s, 'SEP')
-  check('archive', s, 'war: here on 25 Sep (his past kept)', !/\bgone\b/.test(await cellCls(s, 'rocky', '2026-09-25') || ''), await cellCls(s, 'rocky', '2026-09-25'))
+  check('archive', s, 'war: here on 25 Sep (his past kept)', (await here(s, 'rocky', '2026-09-25')), await cellCls(s, 'rocky', '2026-09-25'))
   check('archive', s, 'war: away from 27 Sep (posted out from today)', /\bgone\b/.test(await cellCls(s, 'rocky', '2026-09-28') || ''), await cellCls(s, 'rocky', '2026-09-28'))
   check('archive', s, 'war: the PO corner on 26 Sep (his last day in)', /pofin/.test(await cellCls(s, 'rocky', '2026-09-26') || ''))
   await s.page.evaluate(() => document.querySelector('[data-testid="row-rocky"]')?.scrollIntoView({ block: 'center' }))
@@ -172,18 +174,22 @@ await scene('restore', [DESK, PHONE], async s => {
   check('restore', s, 'Restore: back on the list, can sign in', (await count(s, '#accList [data-person="rocky"]')) === 1 && (await attr(s, '[data-testid="dot-signin-rocky"]', 'aria-label')) === 'Can sign in')
   await war(s, 'OCT')
   check('restore', s, 'war: 5 Oct in the gap reads PO', (await text(s, '[data-testid="cell-rocky-2026-10-05"]')) === 'PO' && /\bgone\b/.test(await cellCls(s, 'rocky', '2026-10-05') || ''))
-  check('restore', s, 'war: counted again from 19 Oct', !/\bgone\b/.test(await cellCls(s, 'rocky', '2026-10-19') || ''))
+  check('restore', s, 'war: counted again from 19 Oct', (await here(s, 'rocky', '2026-10-19')))
   await s.page.evaluate(() => document.querySelector('[data-testid="row-rocky"]')?.scrollIntoView({ block: 'center' }))
   await shot(s, 'restore-03-war-gap')
   await war(s, 'SEP')
-  check('restore', s, 'war: his September before he left stands', !/\bgone\b/.test(await cellCls(s, 'rocky', '2026-09-24') || ''))
+  check('restore', s, 'war: his September before he left stands', (await here(s, 'rocky', '2026-09-24')))
+  /* a month that holds ONLY his earlier stint (his current one starts 19 Oct): his row is still drawn and counted there
+     (D320 — the grid's row for an earlier stint; the break tests found no unit test can watch it: jsdom has no window) */
+  await war(s, 'JUN')
+  check('restore', s, 'war: June (only his earlier stint) still draws his row, counted', (await here(s, 'rocky', '2026-06-16')), await cellCls(s, 'rocky', '2026-06-16'))
   /* the same day reopens (no boundary) — a second man */
   await users(s)
   await s.page.locator('#accList [data-person="casper"] .acc-tap').click(); await s.page.click('#accEdArchive'); await s.page.waitForTimeout(300)
   await s.page.click('#accArchToggle'); await s.page.locator('#accArchList [data-person="casper"] .acc-tap').click()
   await s.page.click('#accArRestore'); await s.page.waitForTimeout(350)
   await war(s, 'SEP')
-  check('restore', s, 'restored the same day: no PO corner, never away', !/pofin|\bgone\b/.test((await cellCls(s, 'casper', '2026-09-26') || '') + (await cellCls(s, 'casper', '2026-09-28') || '')))
+  check('restore', s, 'restored the same day: no PO corner, never away', (await here(s, 'casper', '2026-09-26')) && (await here(s, 'casper', '2026-09-28')) && !/pofin/.test(await cellCls(s, 'casper', '2026-09-26') || ''))
   /* Restore as: his callsign taken */
   await users(s)
   await s.page.locator('#accList [data-person="rocky"] .acc-tap').click(); await s.page.click('#accEdArchive'); await s.page.waitForTimeout(300)
@@ -276,7 +282,7 @@ await scene('sans', [DESK], async s => {
   await s.page.click('[data-testid="settings-close"]'); await s.page.waitForTimeout(300)
   await war(s, 'SEP')
   check('sans', s, 'Show SANS on: his row, his 10 Sep leave kept', (await count(s, '[data-testid="row-rocky"]')) === 1 && (await text(s, '[data-testid="cell-rocky-2026-09-10"]')) === 'LL', await text(s, '[data-testid="cell-rocky-2026-09-10"]'))
-  check('sans', s, 'Show SANS on: posted out from 27 Sep', await gone(s, 'rocky', '2026-09-28') && !(await gone(s, 'rocky', '2026-09-25')))
+  check('sans', s, 'Show SANS on: posted out from 27 Sep', await gone(s, 'rocky', '2026-09-28') && (await here(s, 'rocky', '2026-09-25')))
   await s.page.evaluate(() => document.querySelector('[data-testid="row-rocky"]')?.scrollIntoView({ block: 'center' }))
   await shot(s, 'sans-02-show-sans-on')
   check('sans', s, `Show SANS off after the archive: ${off ? 'his kept row shows (OBSERVE — Fable R32)' : 'no row'}`, true)
@@ -361,7 +367,7 @@ await scene('doors', [DESK, PHONE], async s => {
   const id = await s.page.evaluate(() => Object.keys(window.PEOPLE).find(k => window.PEOPLE[k].cs === 'Newface'))
   check('doors', s, 'Newface made, can sign in', !!id && (await attr(s, `[data-testid="dot-signin-${id}"]`, 'aria-label')) === 'Can sign in')
   await war(s, 'OCT')
-  check('doors', s, 'war: Newface not yet here on 4 Oct, here from 5 Oct', /\bgone\b/.test(await cellCls(s, id, '2026-10-04') || '') && !/\bgone\b/.test(await cellCls(s, id, '2026-10-05') || ''))
+  check('doors', s, 'war: Newface not yet here on 4 Oct, here from 5 Oct', /\bgone\b/.test(await cellCls(s, id, '2026-10-04') || '') && (await here(s, id, '2026-10-05')))
   await users(s)
   await s.page.fill('#accAddCs', 'Groundy'); await s.page.selectOption('#accAddSeat', 'GND'); await s.page.fill('#accAddPostIn', '2026-10-01')
   await shot(s, 'doors-02-add', '#accAddBlock')
@@ -383,7 +389,7 @@ await scene('replaced', [DESK, PHONE], async s => {
   await war(s, 'OCT')
   check('replaced', s, 'October: no row — away from today, the whole month', (await count(s, '[data-testid="row-divot"]')) === 0)
   await war(s, 'SEP')
-  check('replaced', s, 'war: posted out from 27 Sep, not 14 Oct', await gone(s, 'divot', '2026-09-28') && !(await gone(s, 'divot', '2026-09-25')))
+  check('replaced', s, 'war: posted out from 27 Sep, not 14 Oct', await gone(s, 'divot', '2026-09-28') && (await here(s, 'divot', '2026-09-25')))
   await restore(s, 'divot', '2026-11-01')
   check('replaced', s, 'restored with a later post-in: his row says "posting in 1 Nov"', /posting in 1 Nov/.test(await words(s, '[data-testid="po-tag-divot"]') || ''), await words(s, '[data-testid="po-tag-divot"]'))
   check('replaced', s, 'no held note on his row', (await count(s, '[data-testid^="acc-held-divot"]')) === 0)
@@ -391,7 +397,7 @@ await scene('replaced', [DESK, PHONE], async s => {
   await war(s, 'OCT')
   check('replaced', s, 'the replaced posting is not revived: 20 Oct reads PO (away)', await gone(s, 'divot', '2026-10-20') && (await text(s, '[data-testid="cell-divot-2026-10-20"]')) === 'PO')
   await war(s, 'NOV')
-  check('replaced', s, 'counted again from 1 Nov', !(await gone(s, 'divot', '2026-11-02')))
+  check('replaced', s, 'counted again from 1 Nov', (await here(s, 'divot', '2026-11-02')))
 })
 
 /* ---- future: a new person whose post-in is still to come; Archive; Restore today (Fable S4, 4.1) ---- */
@@ -408,7 +414,7 @@ await scene('future', [DESK], async s => {
      days: before he arrives they are blank and not counted */
   check('future', s, 'war: September not counted — blank before he arrives, no PO', await gone(s, id, '2026-09-20') && !(await text(s, `[data-testid="cell-${id}-2026-09-20"]`)), `${await cellCls(s, id, '2026-09-20')} "${await text(s, `[data-testid="cell-${id}-2026-09-20"]`)}"`)
   await war(s, 'OCT')
-  check('future', s, 'war: blank before 15 Oct (not yet arrived, no PO), counted from 15 Oct', (await text(s, `[data-testid="cell-${id}-2026-10-10"]`)) !== 'PO' && !(await gone(s, id, '2026-10-16')), `${await cellCls(s, id, '2026-10-10')} / ${await cellCls(s, id, '2026-10-16')}`)
+  check('future', s, 'war: blank before 15 Oct (not yet arrived, no PO), counted from 15 Oct', (await text(s, `[data-testid="cell-${id}-2026-10-10"]`)) !== 'PO' && (await here(s, id, '2026-10-16')), `${await cellCls(s, id, '2026-10-10')} / ${await cellCls(s, id, '2026-10-16')}`)
   await s.page.evaluate(i => document.querySelector(`[data-testid="row-${i}"]`)?.scrollIntoView({ block: 'center' }), id)
   await shot(s, 'future-02-war-oct')
   await go(s.page, 'editsched')
@@ -424,7 +430,7 @@ await scene('future', [DESK], async s => {
   await restore(s, id)
   check('future', s, 'Restore today: on the roster, no tag', (await count(s, `#accList [data-person="${id}"]`)) === 1 && (await count(s, `[data-testid="po-tag-${id}"]`)) === 0)
   await war(s, 'SEP')
-  check('future', s, 'counted from 27 Sep, no PO corner', !(await gone(s, id, '2026-09-28')) && !/pofin/.test(await cellCls(s, id, '2026-09-26') || ''))
+  check('future', s, 'counted from 27 Sep, no PO corner', (await here(s, id, '2026-09-28')) && !/pofin/.test(await cellCls(s, id, '2026-09-26') || ''))
 })
 
 /* ---- again: Archive → Restore later → Archive again today → Restore → Delete (Fable S6 C, D) ---- */
@@ -434,7 +440,7 @@ await scene('again', [DESK, PHONE], async s => {
   await archive(s, 'casper')
   check('again', s, 'archived again after a Restore', await s.page.evaluate(() => window.PEOPLE.casper.archived))
   await war(s, 'SEP')
-  check('again', s, 'the stint still to come is dropped: here to 26 Sep, away from 27 Sep', !(await gone(s, 'casper', '2026-09-25')) && await gone(s, 'casper', '2026-09-28') && /pofin/.test(await cellCls(s, 'casper', '2026-09-26') || ''))
+  check('again', s, 'the stint still to come is dropped: here to 26 Sep, away from 27 Sep', (await here(s, 'casper', '2026-09-25')) && await gone(s, 'casper', '2026-09-28') && /pofin/.test(await cellCls(s, 'casper', '2026-09-26') || ''))
   await war(s, 'OCT')
   check('again', s, 'October: no row (the 19 Oct stint went with the second archive)', (await count(s, '[data-testid="row-casper"]')) === 0)
   await restore(s, 'casper', '2026-10-19')
@@ -443,7 +449,7 @@ await scene('again', [DESK, PHONE], async s => {
   await s.page.click('#accEdDel'); await s.page.waitForTimeout(150); await s.page.click('#accEdDel'); await s.page.waitForTimeout(400)
   check('again', s, 'deleted: on no list', (await count(s, '#accList [data-person="casper"], #accArchList [data-person="casper"]')) === 0)
   await war(s, 'SEP')
-  check('again', s, 'the war keeps his September up to 26 Sep; nothing from 27 Sep', !(await gone(s, 'casper', '2026-09-24')) && await gone(s, 'casper', '2026-09-28'), (await cellCls(s, 'casper', '2026-09-24')) + ' / ' + (await cellCls(s, 'casper', '2026-09-28')))
+  check('again', s, 'the war keeps his September up to 26 Sep; nothing from 27 Sep', (await here(s, 'casper', '2026-09-24')) && await gone(s, 'casper', '2026-09-28'), (await cellCls(s, 'casper', '2026-09-24')) + ' / ' + (await cellCls(s, 'casper', '2026-09-28')))
   await s.page.evaluate(() => document.querySelector('[data-testid="row-casper"]')?.scrollIntoView({ block: 'center' }))
   await shot(s, 'again-01-deleted-war')
 })
@@ -459,7 +465,7 @@ await scene('twodoors', [DESK], async s => {
   check('twodoors', s, 'his Post out sheet is NOT locked: its Undo is there', (await count(s, '[data-testid="postout-locked"]')) === 0 && (await count(s, '[data-testid="postout-undo"]')) === 1)
   await shot(s, 'twodoors-01-posting-sheet', '[data-testid="postout-sheet"]')
   await s.page.click('[data-testid="postout-undo"]'); await s.page.waitForTimeout(500)
-  check('twodoors', s, 'Undo post out: back, the SAME stint (no PO corner on 19 Sep)', await s.page.evaluate(() => !window.PEOPLE.rocky.archived) && !(await gone(s, 'rocky', '2026-09-24')) && !/pofin/.test(await cellCls(s, 'rocky', '2026-09-19') || ''))
+  check('twodoors', s, 'Undo post out: back, the SAME stint (no PO corner on 19 Sep)', await s.page.evaluate(() => !window.PEOPLE.rocky.archived) && (await here(s, 'rocky', '2026-09-24')) && !/pofin/.test(await cellCls(s, 'rocky', '2026-09-19') || ''))
   /* the posting line's words after the one door: "archived", no longer "archived on Quals" (D310) */
   await s.page.locator('[data-testid="cell-rocky-2026-10-12"]').click(); await s.page.waitForTimeout(400)
   if (await count(s, '[data-testid="bid-postout"]')) {
@@ -476,7 +482,7 @@ await scene('twodoors', [DESK], async s => {
   await go(s.page, 'quals')
   await restore(s, 'rocky', '2026-10-01')
   await war(s, 'SEP')
-  check('twodoors', s, 'Restore on Admin → Users: a new stint — 24 Sep away, his days before 20 Sep stand', await gone(s, 'rocky', '2026-09-24') && !(await gone(s, 'rocky', '2026-09-15')))
+  check('twodoors', s, 'Restore on Admin → Users: a new stint — 24 Sep away, his days before 20 Sep stand', await gone(s, 'rocky', '2026-09-24') && (await here(s, 'rocky', '2026-09-15')))
   await signIn(s.page, 'hex')
   check('twodoors', s, 'Restore: he can sign in and is welcomed back', /Welcome back, Hex/.test(await text(s, '#welcomeBack') || ''))
 })
@@ -513,14 +519,11 @@ await scene('lockin', [DESK, PHONE], async s => {
   await shot(s, 'lockin-01-postin-locked', '[data-testid="postin-sheet"]')
   await s.page.click('[data-testid="postin-cancel"]'); await s.page.waitForTimeout(250)
   await s.page.locator(`[data-testid="cell-${g}-2026-09-16"]`).click(); await s.page.waitForTimeout(400)
-  if (await count(s, '[data-testid="bid-postout"]')) {
-    await s.page.click('[data-testid="bid-postout"]'); await s.page.waitForTimeout(300)
-    check('lockin', s, 'a day in his stint: the bid sheet\'s Post out says why it cannot', /archived on Admin → Users/.test(await text(s, '[data-testid="po-blocked"]') || ''), await text(s, '[data-testid="po-blocked"]'))
-    await s.page.fill('[data-testid="po-date"]', '2026-09-20').catch(() => {})
-    await s.page.click('[data-testid="po-confirm"]').catch(() => {}); await s.page.waitForTimeout(400)
-    check('lockin', s, 'and its Post out writes nothing: 22 Sep still counted', !(await gone(s, g, '2026-09-22')), await cellCls(s, g, '2026-09-22'))
-    await shot(s, 'lockin-02-bid-po')
-  } else check('lockin', s, 'a day in his stint opens a sheet without a Post out (OBSERVE)', true)
+  /* W1 (walk3's pictures): his leave sheet offers no posting door at all — it could only be refused, and said so twice */
+  check('lockin', s, 'a day in his stint: the leave sheet opens, with no Post out and no Post in',
+    (await count(s, '[data-testid="bid-picker"]')) === 1 && (await count(s, '[data-testid="bid-postout"], [data-testid="bid-postin"]')) === 0)
+  check('lockin', s, 'and his days stay as Archive left them: 22 Sep counted, 28 Sep away', (await here(s, g, '2026-09-22')) && await gone(s, g, '2026-09-28'))
+  await shot(s, 'lockin-02-bid-sheet')
 })
 
 /* ---- roles: a member; the admin's member view (Fable S13, 4.8) ---- */
@@ -605,6 +608,21 @@ await scene('reqarch', [DESK], async s => {
   check('reqarch', s, 'old Hex: "Restore as Hex 2"', (await text(s, '#accArRestore')) === 'Restore as Hex 2', await text(s, '#accArRestore'))
 })
 
+/* ---- pastrow: back NEXT year — this year's months still draw his row (D320; the grid's row for an earlier stint — the
+   break tests found no unit test can watch it, and a post-in inside the loaded months hides the wire) ---- */
+await scene('pastrow', [DESK, PHONE], async s => {
+  await signIn(s.page, 'ad', 'a')
+  await archive(s, 'casper'); await restore(s, 'casper', '2027-01-10')
+  check('pastrow', s, 'restored with a post-in next January: "posting in 10 Jan"', /posting in 10 Jan/.test(await words(s, '[data-testid="po-tag-casper"]') || ''), await words(s, '[data-testid="po-tag-casper"]'))
+  await war(s, 'SEP')
+  check('pastrow', s, 'September: his row drawn, counted up to 26 Sep', (await here(s, 'casper', '2026-09-24')), await cellCls(s, 'casper', '2026-09-24'))
+  check('pastrow', s, 'September: away from 27 Sep', await gone(s, 'casper', '2026-09-28'))
+  await war(s, 'JUN')
+  check('pastrow', s, 'June: his row drawn, counted', (await here(s, 'casper', '2026-06-16')), await cellCls(s, 'casper', '2026-06-16'))
+  await s.page.evaluate(() => document.querySelector('[data-testid="row-casper"]')?.scrollIntoView({ block: 'center' }))
+  await shot(s, 'pastrow-01-june')
+})
+
 /* ---- reload: what was done stays done ---- */
 await scene('reload', [DESK], async s => {
   await signIn(s.page, 'ad', 'a'); await users(s)
@@ -614,9 +632,9 @@ await scene('reload', [DESK], async s => {
   await s.page.goto(BASE + '/'); await s.page.waitForSelector('#luser')
   await signIn(s.page, 'ad', 'a')
   await war(s, 'OCT')
-  check('reload', s, 'after a reload: the gap still reads PO, 19 Oct still counted', (await text(s, '[data-testid="cell-rocky-2026-10-05"]')) === 'PO' && !/\bgone\b/.test(await cellCls(s, 'rocky', '2026-10-19') || ''))
+  check('reload', s, 'after a reload: the gap still reads PO, 19 Oct still counted', (await text(s, '[data-testid="cell-rocky-2026-10-05"]')) === 'PO' && (await here(s, 'rocky', '2026-10-19')))
   await war(s, 'SEP')
-  check('reload', s, 'after a reload: his September before he left stands', !/\bgone\b/.test(await cellCls(s, 'rocky', '2026-09-24') || ''))
+  check('reload', s, 'after a reload: his September before he left stands', (await here(s, 'rocky', '2026-09-24')))
   await users(s)
   check('reload', s, 'after a reload: on the list, can sign in', (await attr(s, '[data-testid="dot-signin-rocky"]', 'aria-label')) === 'Can sign in')
 }, false)

@@ -51,7 +51,7 @@ whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaini
 **His order — to the database step, about two months away (D203, 26 Sep 26; D173, D147 within it):**
 1. **Now — [ONE-DOOR]** (D309, D310 — Admin → Users carries every person's sign-in and roster state and every action;
    Quals loses its archive), carrying **[POST-IN-DATE]** (D308) and the post-out look card's 3a / 3b — on
-   `claude/one-door`, the mock-up APPROVED 27 Sep 26 (D322; D320 the war keeps every stint), its own FULL check next;
+   `claude/one-door`, the mock-up APPROVED 27 Sep 26 (D322; D320 the war keeps every stint); BUILT and walked (both widths), its FULL check under way — the two final code reads next;
    `[POST-OUT-ASKS]` answered (D321);
    `[POST-OUT-TRACKER]` on his answer. `[POST-OUT-OUTCOMES]` MERGED 27 Sep 26 (PR #446), `[ACCOUNTS-NEW-PERSON]` (PR #443)
    and `[ACCOUNTS]` (PR #442) before it. **Beside it — [LW-MOVE-STANDARD]** (D264–D266, its own chat and branch; the
@@ -85,7 +85,7 @@ absence-record re-test), [PO-RESTORE-POSTING] (low, from its final code read), [
 [TRK-EDIT-SIDEWAYS] (their gates have passed), [TRK-PINCH-ASK] (his next Tracker session), [TRK-SESSION-PICK] (low, the next Tracker change), [TRK-DLG-LEFTOVERS] (low, with the next question-box change), [TRK-FLEXBAR-INK] (a question for him, on the Tracker-palette
 look card — D157, merged PR #441), [TRK-BAKE-STALE] (low).
 The amendment area — PR #434, #435, #437 and #438 MERGED (25–26 Sep 26); left: [REQ-ORPHAN-ROW] and [REQ-DOOR-WORDS] (both low). Left from the amendment batch (D91–D111, merged): [AVAILWIN-PREVIEW-BAR] (low), [AMEND-SMALL-SEEN] (any time). The docs and the checks — [DEPLOY-DOCS] (its operational half), [DOC-POINTERS-CODE] and
-[RULINGS-LF-PIN] (with the next code change), [DOC-SUBHEADS], [RULING-HOMES-AUDIT], [HANDOFF-SHAPE-GUARD] and [BACKLOG-TIDY] (any time, docs only), [PEEK-ISSUED] (a question for him, low),
+[RULINGS-LF-PIN] (with the next code change), [DOC-SUBHEADS], [RULING-HOMES-AUDIT] and [HANDOFF-SHAPE-GUARD] (any time, docs only), [PEEK-ISSUED] (a question for him, low),
 Roles — [QUALS-MEMBER-SCOPE] (folded into [ACCOUNTS], D200), and beside it [QUALS-PROTO-TOAST] (low, one line of words).
 The five-flags batch (built on `claude/five-flags-batch-build-ef7d85`, 26 Sep 26; FULL-checked and its PR from `claude/five-flags-batch-continue-2cfa70`, 27 Sep 26 — its five items archived) — his answers D270–D275 BUILT and FULL-checked on that branch, 27 Sep 26 (their three items archived); his look card's four questions answered 27 Sep 26 (D276–D279, nothing to build);
 [ARROW-GUTTER-STRIP] (its strip moot by D275; one small leftover, low); low: [GHOST-FLAG-SHADOW], [LW-SETTINGS-SMALL],

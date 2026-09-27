@@ -75,7 +75,7 @@ BREAKS = [
   ('B30 D308 a new person\'s post-in never reaches the war', RA, "    if (postIn !== undefined) HOOKS.warPostIn(txn, id, postIn)", "    void 0", S),
   ('B31 D310 the posting line says "archived on Quals" again', OC, "return `On ${day}: archived${hasAccount", "return `On ${day}: archived on Quals${hasAccount", PO),
   # after the walk's pictures (27 Sep 26)
-  ('B32 W1 a locked man's bid sheet offers Post out again', MX,
+  ("B32 W1 a locked man's bid sheet offers Post out again", MX,
    "onPostOut={role === 'admin' && !openPerson?.gone && !postingLocked(open.id)", "onPostOut={role === 'admin' && !openPerson?.gone", SH),
 ]
 
