@@ -16,27 +16,27 @@ the later merge keeps both (D78).
 ## Now
 
 <!-- now:claude/one-door -->
-### `claude/one-door` — `[ONE-DOOR]` MOCK-UP DRAWN, waiting for his approval and his answers; nothing built — written 27 Sep 26 ~17:40 — verify before use
+### `claude/one-door` — `[ONE-DOOR]` MOCK-UP APPROVED (D322), his answers in (D320, D321); planning next, nothing built — written 27 Sep 26 ~21:30 — verify before use
 - **The mock-up:** `raptor-port/docs/mock/one-door.html` (also an Artifact: https://claude.ai/artifact/PrdGyhPYgkVWuD2mbSsmS9),
   made by `raptor-port/scripts/handpass/am/mk-one-door.mjs` on the preview at 4178 (`.claude/launch.json` "raptor-onedoor").
   One row per person (Sign-in and Roster dots in two columns; role pill; a posting waiting as an amber tag), a search box,
   "▸ Archived · N" folded at the foot, each state's buttons on the opened row (D310's list), Restore with a post-in date
   and the callsign box (rename / "Restore as"), Give access / Refuse, Add a person = New person only with Post in, the
   man's "Welcome back — check your quals and CAT" note, Quals without its ✕ and Archived list.
-- **Put to him with it (answers pending):** the five `[POST-OUT-ASKS]` (2 answered by the design; 6, 7, 8, 10 recommended
-  keep / allow) and ONE NEW: the months a man was away — the Leave War keeps one in/out window per man, so a man back from
-  overseas either needs several windows (recommended, ~half a day, touches `leavewar/engine/people.ts inSquadron` and the
-  war's posting record in `store.ts`) or his months before the posting read "not here" too. The agent's own calls, listed
-  on the page for him to correct: Archive one tap; Restore turns the sign-in back on even when suspended by hand before
-  (D310 "both back"); no Enable on archived rows; renaming a roster man stays on Quals; A–Z with a search box.
-- **Next, in order:** his approval (record it D320+) and answers → plan (Opus 5.5 high) → Fable and Astra red-team →
+- **His answers, 27 Sep 26 ("A, as recommended, approve"):** **D320** the Leave War keeps EVERY stint a man has in the
+  squadron (away between a posting out and a later post-in; the mock-up's §8) — changes `leavewar/engine/people.ts
+  inSquadron`, the war's posting record in `store.ts`, Matrix's `rowInWindow`, Restore; **D321** the post-out look card's
+  6, 7, 8, 10 stand as built (`[POST-OUT-ASKS]` archived); **D322** the mock-up approved, with the agent's own calls on it
+  (Archive one tap; Restore turns the sign-in back on even when suspended by hand before; no Enable on archived rows;
+  renaming a roster man stays on Quals; A–Z with a search box).
+- **Next, in order:** plan (Opus 5.5 high; `docs/superpowers/plans/`) → Fable and Astra red-team →
   build red first → walk both widths with pictures → FULL check (bug-check order; the PC lock for every full run) → his
   look → "merge live".
 - **Beside it:** `[LW-MOVE-STANDARD]` in chat "Rulings D264–D266 leave-war build" (branch
   `claude/rulings-d264-d266-leave-war-f0f4ab`, ports 4177 / E2E 4195, rulings D330–D339). Agreed (D302): it stays out of
   `leavewar/sync.ts` and `setPostIn`; this chat stays out of BidPicker, SelectSheet, DayList, Matrix, select.ts and the
   move functions in `store.ts`; told it the several-windows change would touch `inSquadron` and the posting record.
-  This chat's ports: preview 4178, E2E 4196; rulings D320–D329.
+  This chat's ports: preview 4178, E2E 4196; rulings D320–D329 (D320–D322 used).
 - **Traps:** `npm run docsize` FAILS on `main` already — `OUTSTANDING.md` 1433 lines against its 1330 tripwire; the
   Docs guard will be red on every branch until a docs-only tidy lands (put to him: its own tiny branch, merged first).
   Ports 4186/4187 held by the old presentation server. Scripted edits keep each file's line endings. Reported by the

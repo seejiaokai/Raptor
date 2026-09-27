@@ -2036,3 +2036,16 @@ update his own quals (D305; its form put to him), 9 the last admin's posting wai
 man shows the note (D307).
 **Not built, said so:** the Tracker half of D299 (`[POST-OUT-TRACKER]`).
 
+
+*Moved here 2026-09-27 by backlog-archive.mjs ([POST-OUT-ASKS]). Forward facts: `raptor-port/docs/handpass/2026-09-27-post-out-outcomes.md`, `.claude/rules/decisions/how-we-work.md`.*
+
+### [POST-OUT-ASKS] The post-out look card's questions he has not answered — each built to its default (filed 27 Sep 26)
+From `raptor-port/docs/handpass/2026-09-27-post-out-outcomes.md` §10 (PR #446, merged 27 Sep 26). He answered 1, 3, 4, 9,
+11 (D303–D307) and moved 3a / 3b into `[ONE-DOOR]` (D310); these stand as built until he says otherwise — put them to him
+once, in plain words, when the posting-out screens are next in front of him (the `[ONE-DOOR]` mock-up is the natural
+moment): **2** a Delete on an archived man with no account — covered by `[ONE-DOOR]` (an archived row gets Restore ·
+Delete), so likely answered by its approval; **6** SANS on the date moves his WHOLE Leave War row into the SANS group,
+earlier months included (the approved picture) — kept; **7** archiving a man makes his published days before the posting
+date read "1 pending" — kept; **8** a posting out is not a step of the Undo button — "Undo post out" takes it back —
+kept; **10** an admin may still add leave or OIL on a deleted man's past days — allowed.
+

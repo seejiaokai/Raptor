@@ -185,7 +185,8 @@ account → it asks again → second tap. Tap your name badge ("Saber · Admin")
 1. **A posting with no chip chosen** (tap the chosen one again) = "off the manpower, nothing else" — the only way to
    record a transfer until Transfer is built. *Built: yes.* **His answer (D303): "1 keep".**
 2. **A "Delete" button on Quals' Archived rows?** Today a man archived by hand with no account has no delete door
-   (Restore him, then post him out with Delete). Adding it changes the approved mock-up. *Built: no.*
+   (Restore him, then post him out with Delete). Adding it changes the approved mock-up. *Built: no.* **Answered by D322
+   (27 Sep 26): the approved one-door design gives every archived row Delete, on Admin → Users (`[ONE-DOOR]`).**
 3. **Which "today" a delete counts from:** the calendar date (built) — so deleting someone now leaves him on the July
    demo days, which the app draws around its own "today" (13 Jul). *At the database step the two are the same.*
    **His answer (D304): "it should delete on the real calendar date" — as built.**
@@ -196,14 +197,15 @@ account → it asks again → second tap. Tap your name badge ("Saber · Admin")
 5. **The Tracker:** D299 says "his place on a course still running — goes". The Tracker has no idea of "still running";
    what should it mean — or leave his name on his courses for now? *Not built.*
 6. **SANS on the date:** his whole Leave War row moves into the SANS group, earlier months included (the approved
-   picture). *Built so.*
+   picture). *Built so.* **His answer (D321, "as recommended"): keep.**
 7. **Overseas and the past:** archiving a man makes his published days before the posting date read "1 pending" (as
-   today). Keep? *Kept.*
+   today). Keep? *Kept.* **His answer (D321): keep.**
 8. **Undo and postings:** a posting out is not a step of the Undo button — its own "Undo post out" takes it back (the
-   Leave War's Undo stays grey after one). Keep? *Kept, as before.*
+   Leave War's Undo stays grey after one). Keep? *Kept, as before.* **His answer (D321): keep.**
 9. **The last admin:** a posting that would archive, suspend or delete the last admin who can sign in does nothing
    at all until another admin can — never half done. The posting sheet says so before you confirm, and his account row
    on Admin → Users says why. *Built so.* **His answer (D306): "4 ok".**
 10. **An admin may still add leave or OIL on a deleted man's past days** (the past keeps his record). Wanted? *Allowed.*
+    **His answer (D321): allow.**
 11. **Enable on a man who was only suspended by hand** (never archived) also shows "he's back". Keep, or only after an
     overseas posting? *Shows.* **His answer (D307): "5 ok".**

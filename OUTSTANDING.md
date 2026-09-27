@@ -51,7 +51,8 @@ whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaini
 **His order — to the database step, about two months away (D203, 26 Sep 26; D173, D147 within it):**
 1. **Now — [ONE-DOOR]** (D309, D310 — Admin → Users carries every person's sign-in and roster state and every action;
    Quals loses its archive), carrying **[POST-IN-DATE]** (D308) and the post-out look card's 3a / 3b — on
-   `claude/one-door`, mock-up first, its own FULL check; `[POST-OUT-ASKS]` put to him with the mock-up;
+   `claude/one-door`, the mock-up APPROVED 27 Sep 26 (D322; D320 the war keeps every stint), its own FULL check next;
+   `[POST-OUT-ASKS]` answered (D321);
    `[POST-OUT-TRACKER]` on his answer. `[POST-OUT-OUTCOMES]` MERGED 27 Sep 26 (PR #446), `[ACCOUNTS-NEW-PERSON]` (PR #443)
    and `[ACCOUNTS]` (PR #442) before it. **Beside it — [LW-MOVE-STANDARD]** (D264–D266, its own chat and branch; the
    two touch different screens — Admin → Users and Quals against the Leave War's sheets — so they may run in parallel,
@@ -1133,16 +1134,6 @@ None breaks an amendment rule; each is a line to fix or ask about, from the walk
    Fable #1's mirror; the digest keys ground rows by position). A false re-sign, never a false publish.
 **Place:** any time; items 6–8 with the Leave War links re-test (D147, last).
 
-### [POST-OUT-ASKS] The post-out look card's questions he has not answered — each built to its default (filed 27 Sep 26)
-From `raptor-port/docs/handpass/2026-09-27-post-out-outcomes.md` §10 (PR #446, merged 27 Sep 26). He answered 1, 3, 4, 9,
-11 (D303–D307) and moved 3a / 3b into `[ONE-DOOR]` (D310); these stand as built until he says otherwise — put them to him
-once, in plain words, when the posting-out screens are next in front of him (the `[ONE-DOOR]` mock-up is the natural
-moment): **2** a Delete on an archived man with no account — covered by `[ONE-DOOR]` (an archived row gets Restore ·
-Delete), so likely answered by its approval; **6** SANS on the date moves his WHOLE Leave War row into the SANS group,
-earlier months included (the approved picture) — kept; **7** archiving a man makes his published days before the posting
-date read "1 pending" — kept; **8** a posting out is not a step of the Undo button — "Undo post out" takes it back —
-kept; **10** an admin may still add leave or OIL on a deleted man's past days — allowed.
-
 ### [ONE-DOOR] Admin → Users: one door for a person's whole state — sign-in and roster (D309, filed 27 Sep 26)
 **His direction (D309):** *"just do 1 door for everything and see the state of that account all just in admin. Like
 green or red dot for status, account and roster for status"* — and he asked how the buttons should read for every case
@@ -1157,7 +1148,13 @@ the row. Archive also suspends; Restore brings both back, asks the post-in date 
 quals (3a). Quals keeps quals, CAT, flight, initials (narrows D217). **Carries:** 3a, 3b, the archived group,
 `[POST-IN-DATE]`. **Place (the agent's recommendation, his call):** after PR #446 merges, its own branch — mock-up, his
 approval, then the build, FULL check (permissions, roster, accounts). **APPROVED AS PROPOSED 27 Sep 26 (D310): "one door
-as proposed, Quals loses archive"** — narrows D217 and D295; the mock-up shows the look before the build.
+as proposed, Quals loses archive"** — narrows D217 and D295; the mock-up shows the look before the build. **MOCK-UP
+APPROVED 27 Sep 26 (D322)** — `raptor-port/docs/mock/one-door.html` is the design of record, with the agent's own calls on
+it (Archive one tap; Restore turns the sign-in back on even when suspended by hand before; no Enable on archived rows;
+renaming a roster man stays on Quals). **And D320 ("A"): the Leave War keeps every stint** — a man back from overseas reads
+"away" between his posting out and his post-in, his months before as they were (today one in/out window per man; the
+build changes `inSquadron`, the war's posting record in `store.ts`, `rowInWindow`, Restore). **Next:** plan (Opus 5.5
+high) → Fable and Astra red-team → build red first → walk both widths → FULL check → his look → "merge live".
 
 ### [POST-IN-DATE] A man posted in: the admin is asked his post-in date (D308, filed 27 Sep 26)
 **His ruling (D308):** *"When someone is posted In the app should also ask the admin when is the post in date so that the
@@ -1169,7 +1166,9 @@ Restore and Restore as — opening on today, written through `setPostIn` (the sa
 his account works from the day he is added or restored, whatever the date. The new-person form gains a field (D224's
 approved mock-up marked, D201); the Leave War's own Post in stays. **Size:** ~1.5–2 h with tests and a walk — permissions
 and the Leave War, FULL tier. **Place: his call** — inside PR #446 before its merge, or its own branch right after #446
-merges (the agent's recommendation: after, so the fully checked #446 does not grow).
+merges (the agent's recommendation: after, so the fully checked #446 does not grow). **Built with `[ONE-DOOR]`** (D310,
+D322: Restore, New person and Give access's New person ask it) — **and D320 (27 Sep 26): Restore opens a NEW stint on the war**
+(away between the posting out and the post-in), never moving his old one's start.
 
 ### [POST-OUT-TRACKER] A deleted man and the Tracker's courses "still running" (D299 — approved, NOT built; filed 27 Sep 26)
 D299 lists "his place on any course still running — goes". The Tracker has no notion of a course "still running", and the
