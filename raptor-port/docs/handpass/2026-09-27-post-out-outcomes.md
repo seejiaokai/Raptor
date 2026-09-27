@@ -177,13 +177,16 @@ account → it asks again → second tap. Tap your name badge ("Saber · Admin")
 
 **The questions (each built to the default shown until you say otherwise):**
 1. **A posting with no chip chosen** (tap the chosen one again) = "off the manpower, nothing else" — the only way to
-   record a transfer until Transfer is built. *Built: yes.*
+   record a transfer until Transfer is built. *Built: yes.* **His answer (D303): "1 keep".**
 2. **A "Delete" button on Quals' Archived rows?** Today a man archived by hand with no account has no delete door
    (Restore him, then post him out with Delete). Adding it changes the approved mock-up. *Built: no.*
 3. **Which "today" a delete counts from:** the calendar date (built) — so deleting someone now leaves him on the July
    demo days, which the app draws around its own "today" (13 Jul). *At the database step the two are the same.*
+   **His answer (D304): "it should delete on the real calendar date" — as built.**
 4. **Enable on its own** (Admin → Users) lets an archived man sign in and asks you to check his quals, but does not put
-   him back on the roster — Restore does that. *Built so.*
+   him back on the roster — Restore does that. *Built so.* **His answer (D305):** the admin gives access back (Restore
+   does both in one tap), and he wants the man himself able to update his own quals — which a restored member already can
+   (D149); the note telling HIM so is put to him (answer pending).
 5. **The Tracker:** D299 says "his place on a course still running — goes". The Tracker has no idea of "still running";
    what should it mean — or leave his name on his courses for now? *Not built.*
 6. **SANS on the date:** his whole Leave War row moves into the SANS group, earlier months included (the approved

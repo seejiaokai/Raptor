@@ -7,7 +7,8 @@
    PO, an existing posting's Post out sheet, the drag selection's PO.
 
    The agent's calls, on his look card: tapping the chosen chip again un-chooses it — "off the manpower, nothing else"
-   (the old switch turned off, and the one way to record a transfer until Transfer is built); "Transfer to Sqn" is drawn
+   (the old switch turned off, and the one way to record a transfer until Transfer is built — KEPT by his "1 keep", D303,
+   27 Sep 26); "Transfer to Sqn" is drawn
    and not pressable ("Comes with the shared database" — D281). */
 import type { PostOutcome } from '../engine'
 
