@@ -84,6 +84,7 @@ import {
   windowFor,
   setAccountLookup,
   setPostingBlockLookup,
+  setPostingLockLookup,
   setQualCatalog,
   setViewer,
   setViewerCallsign,
@@ -1481,9 +1482,13 @@ export function poHeldReason(id: string, outcome: PostOutcome, poDate: string = 
   return null
 }
 /* for Admin → Users' row ([ONE-DOOR], D310 — "a posting waiting for its date shown on the row"): a posting out set on
-   the Leave War whose date is still to come — "posting out 14 Oct · Overseas Sqn" — or null */
+   the Leave War whose date is still to come — "posting out 14 Oct · Overseas Sqn" — or a post-in still to come, the
+   posting that brings him (a Restore with a later date, a new person added ahead of it — the walk's design, Fable 4.1:
+   his sign-in works at once, D308, while the war does not count him yet, and nothing on his row said so) —
+   "posting in 19 Oct"; or null */
 export function postingPendingTag(id: string): string | null {
   const w: any = getState().people.find(p => p.id === id) || getState().postOuts[id]
+  if (w && !w.gone && w.from && w.from > effectiveToday()) return `posting in ${dayMon(w.from)}`
   if (!w || !w.to || w.gone) return null
   const poDate = addDays(w.to, 1)
   if (poDate <= effectiveToday()) return null
@@ -1604,8 +1609,8 @@ function deleteBlocked(id: string): string | null {
 }
 
 /**
- * Put an archived body back on the roster — the Quals Archived section's
- * Restore (owner, 19 Aug 26: "in the future they post back into this sqn,
+ * Put an archived body back on the roster — Restore (Admin → Users' Archived group since [ONE-DOOR], D310; Quals'
+ * Archived section before it — owner, 19 Aug 26: "in the future they post back into this sqn,
  * they can be re added easily"). Clears the Leave War posting-out FIRST:
  * restoring is "they are back", and a surviving window would hide their row
  * from every current month — and, with the archive switch on, re-archive
@@ -1750,7 +1755,8 @@ export function archivePerson(id: string): { bad: string | null; said: string } 
   if (r && (r as any).ok === false) return { bad: (r as any).message || 'You are not allowed to do that', said: '' }
   clearBack(id)
   raptorNotify()
-  const said = `${body.cs} archived — his sign-in is suspended`
+  /* his sign-in named only when he has one (the walk's design, Fable 4.7 — the posting sheets already word it so) */
+  const said = `${body.cs} archived` + (accountOfPid(id) ? ' — his sign-in is suspended' : '')
     + (replaced && pendingDate ? `; his posting out on ${dayMon(pendingDate)} (${OUTCOME_WORD[replaced] || replaced}) is replaced` : '')
   return { bad: null, said }
 }
@@ -1780,7 +1786,8 @@ export function adminArchived(id: string): string | null {
  * command; otherwise it is the date alone, as before.
  */
 /* why the posting sheet's Undo would be refused — the Post out's own archive, with his callsign now held by a man on the
-   roster (D286 (1): never renaming anyone by itself; Quals' Archived list restores him under another in one step, D295).
+   roster (D286 (1): never renaming anyone by itself; Admin → Users' Archived group restores him under another in one step,
+   D295, D310).
    null when the Undo can go ahead. */
 export function undoPostOutProblem(id: string): string | null {
   const body = (PEOPLE as any)[id]
@@ -1894,6 +1901,8 @@ export function wireLeaveWarSync(): void {
      the seam (the war never reads Raptor's accounts itself) */
   setAccountLookup(id => !!accountOfPid(id))
   setPostingBlockLookup((id, outcome) => adminArchived(id) || poHeldReason(id, outcome))
+  /* [ONE-DOOR]: an Admin-archived man's posting dates are read-only on the war — both writers ask (Fable 4.2 / 4.3) */
+  setPostingLockLookup(adminArchived)
   /* D308 ([ONE-DOOR]): a new person's post-in date, written inside the add's own command */
   HOOKS.warPostIn = (txn: any, id: string, date: string) => postInNewPerson(txn, id, date)
   /* The VIEWING PERSON rides this same wire (owner, 17 Aug 26 — the matrix

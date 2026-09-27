@@ -1079,8 +1079,11 @@ renaming a roster man stays on Quals). **D323: Archive is "posted out from today
 build changes `inSquadron`, the war's posting record in `store.ts`, `rowInWindow`, Restore). **Next:** plan (Opus 5.5
 high) → Fable and Astra red-team → build red first → walk both widths → FULL check → his look → "merge live".
 **BUILT 27 Sep 26 on `claude/one-door`** (the plan's round 1 folded in — `docs/superpowers/specs/2026-09-27-one-door-plan-review-log.md`;
-unit tests red first, e2e `onedoor.spec.ts` both widths); **next: the walk with pictures, the FULL check (Fable and Astra's
-final reads), his look.**
+unit tests red first, e2e `onedoor.spec.ts` both widths). **The walk's design (Fable 5.1, 27 Sep 26):**
+`raptor-port/docs/superpowers/specs/2026-09-27-one-door-scenarios-fable.md` — its §4 gaps fixed red first the same day (the
+Post in sheet read-only too and both posting writers locked, a hidden man's own post-in date kept, a never-arrived delete
+stores no stint, the message and the rail's words, the Archived group folding during a search, "posting in 19 Oct" on
+the row). **Next: the walk with pictures, the FULL check (Fable and Astra's final reads), his look.**
 
 ### [POST-IN-DATE] A man posted in: the admin is asked his post-in date (D308, filed 27 Sep 26)
 **His ruling (D308):** *"When someone is posted In the app should also ask the admin when is the post in date so that the

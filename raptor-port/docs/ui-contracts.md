@@ -4651,7 +4651,7 @@ without first selecting their category. A new settings category is one `CATS`
 entry plus its `.adm-panel` section; the owner is filling this in over time.
 The three category panels:
 
-- **`#admUsers` Users** — one row per PERSON, every action on his row: §Admin → Users — one door (`[ONE-DOOR]`, D309, D310); the `[ACCOUNTS]` text it replaced is in `docs/archive/ui-contracts-2026-09-27.md`.
+- **`#admUsers` Users** (the rail's line under it: "Sign-in and roster" — was "Who can sign in", Fable R13) — one row per PERSON, every action on his row: §Admin → Users — one door (`[ONE-DOOR]`, D309, D310); the `[ACCOUNTS]` text it replaced is in `docs/archive/ui-contracts-2026-09-27.md`.
 - **`#admConfig` Squadron configuration** — `#admDutyTpl` / `#admDayTpl`
   open the duty-template and day-template editors by setting the SAME
   `pops.ts` flags the picker pencils set (`setTplEdit` / `setDayTplEdit`).
@@ -5127,7 +5127,8 @@ the accounts — and carries every action on him** (D309, D310). Blocks, top to 
   **Roster**. Each row (`[data-person]`, plus `[data-acct]` when he has an account): his callsign; under it his sign-in
   name or "no sign-in", the role word on a phone, his seat and CAT ("Pilot · CAT C", "Personnel"); a **posting waiting
   for its date** as an amber tag (`[data-testid="po-tag-<id>"]` — "posting out 14 Oct · Overseas Sqn", from the Leave
-  War — D310); the held note (`acc-held-…`) when his posting has come and waits; the two dots
+  War — D310; or a post-in still to come, "posting in 19 Oct" — a Restore with a later date or a new person added ahead
+  of it: his sign-in works at once, D308, the war counts him from that day — the walk's design, Fable 4.1); the held note (`acc-held-…`) when his posting has come and waits; the two dots
   (`[data-testid="dot-signin-<id>"]` green can sign in / red suspended / grey no sign-in; `dot-roster-<id>` green on the
   roster) — **each with its state in words** (title, aria-label), never colour alone; the role pill on a desktop. **Your
   own row cannot be opened** (another admin changes it). A tap opens his row (`[data-editing]`):
@@ -5137,11 +5138,13 @@ the accounts — and carries every action on him** (D309, D310). Blocks, top to 
     him — the add form's roster picker is gone);
   - then **Archive** `#accEdArchive` — ONE tap (D322): archived, his sign-in suspended, his welcome note cleared; on the
     Leave War "posted out from today", his past kept (D323 — `leavewar/sync.ts archivePerson`); refused for yourself, a
-    placeholder, a deleted man, or the last admin who can sign in (D306's rule), with the reason; the message names a
-    posting it replaced ("…his posting out on 14 Oct (Delete) is replaced");
+    placeholder, a deleted man, or the last admin who can sign in (D306's rule), with the reason; the message says "his
+    sign-in is suspended" only when he has one (Fable 4.7) and names a posting it replaced ("…his posting out on 14 Oct
+    (Delete) is replaced");
   - **Delete** `#accEdDel` — two taps, "Tap again to delete <cs>", the line "Goes: his account, his Quals row, every day
     still to come. Days he flew keep his puck. Can't be undone." (D287, D298 — "Delete" on every row, D310); Cancel.
-- **▸ Archived · N** (`#accArchToggle`, folded; hidden when N is 0; opens while a search holds a match) — archived, not
+- **▸ Archived · N** (`#accArchToggle`, folded; hidden when N is 0; opens while a search holds a match, and his tap still
+  folds it — Fable R7) — archived, not
   deleted, not a placeholder (`#accArchList`, `[data-archived]`); red Roster dot, red or grey Sign-in dot. Opened
   (`[data-restoring]`): **Callsign/Name** `#accArCs` (his callsign — or, when a man ON the roster holds it, the first free
   "<cs> 2" with "<cs> is taken on the roster — give him another callsign." `#accArTaken`, D286 (1)), **Post in**
@@ -5168,7 +5171,10 @@ suspended" screen (`ui/App.tsx`; round 1 — Fable F8 / Astra 4).
 
 **The Leave War's posting sheets after the one door** (round 1 — Fable F1 / Astra 2; D320): a man archived on Admin →
 Users has a read-only Post out sheet — "<cs> was archived on Admin → Users — restore him there" (`postout-locked`), the
-date fixed, no chips, no Undo — and the war's posting writes refuse him; Restore on Admin → Users is the one way back. A
+date fixed, no chips, no Undo — and a read-only Post in sheet the same way (`postin-locked`, no Undo — the walk's design,
+Fable 4.2); both posting writers refuse him (`leavewar/state/store.ts postingLocked`, installed by the sync), so no door
+goes round it; Restore on Admin → Users is the one way back. A man deleted before his post-in came has no stint to keep
+— his war row and record go (Fable 4.5). A
 man back from a posting has a Post in sheet that says "Back from a posting on <date> — on the manpower from <date>. The
 days between count nobody, …" (`postin-note`) and offers no Undo; his earlier stint's dates are read-only on the war.
 The grid draws every stint: a day in the gap between two stints reads **PO** with the hatch; only a day before his FIRST

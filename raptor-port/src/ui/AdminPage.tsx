@@ -37,7 +37,7 @@ import { UsersIcon, SlidersIcon, DatabaseIcon } from './icons'
 /* The rail is data-driven so a new settings category is one row here plus its
    panel below — nothing else in the layout moves. */
 const CATS = [
-  { id: 'users', label: 'Users', sub: 'Who can sign in', icon: <UsersIcon /> },
+  { id: 'users', label: 'Users', sub: 'Sign-in and roster', icon: <UsersIcon /> },
   { id: 'config', label: 'Squadron config', sub: 'Duty, day & wave templates', icon: <SlidersIcon /> },
   { id: 'data', label: 'Data', sub: 'Storage & cleanup', icon: <DatabaseIcon /> },
 ]

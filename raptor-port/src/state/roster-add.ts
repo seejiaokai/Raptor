@@ -67,7 +67,7 @@ export const tidyPerson = (np: NewPerson): NewPerson => ({
 })
 
 /* THE ONE CALLSIGN REFUSAL ([POST-OUT-OUTCOMES] — D226, D286, D295; Fable's plan read F11): every door that names a
-   person asks it — the one add, approving, the Archived list's Rename, Restore's "give him another callsign". Blank and
+   person asks it — the one add, approving, the Archived group's Save name (Admin → Users), Restore's "give him another callsign". Blank and
    over 14 letters first (never cut — D226), then taken: by a man on the roster, a placeholder, or any person's id
    (engine/people.ts callsignTakenBy — PID-01). A callsign only an ARCHIVED man holds is free (D286), so it is never
    refused here; the approve note says who holds it (UsersPanel). `exceptId` — the man being renamed or restored. */

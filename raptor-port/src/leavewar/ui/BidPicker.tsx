@@ -1085,6 +1085,7 @@ export function PostInSheet({
   date,
   piFrom,
   backFrom,
+  lockedWhy,
   onChange,
   onUndo,
   onPlace,
@@ -1097,6 +1098,9 @@ export function PostInSheet({
   /** [ONE-DOOR] (D320): he is back from a posting — the date it took him (the day after his earlier stint closed); the
    *  sheet then says so and offers no Undo (past stints are read-only — round 1, Fable F2 / Astra 1) */
   backFrom?: string | null
+  /** [ONE-DOOR] (the walk's design, Fable 4.2): archived on Admin → Users — the sheet reads only, as the Post out sheet
+   *  does (round 1, Fable F1): the reason, the date fixed, no Undo; Restore there is the one way back */
+  lockedWhy?: string | null
   /** Re-post with a new date. Commits on change, like the post-out sheet, so
    *  the admin watches the grid move behind it. */
   onChange: (date: string) => string | void
@@ -1108,6 +1112,7 @@ export function PostInSheet({
 }) {
   /* a refused move of the date says why (AB5) — the box snaps back to the date that stands */
   const [err, setErr] = useState('')
+  const locked = !!lockedWhy
   return (
     <Sheet testid="postin-sheet" label="Posted in" onClose={onClose}>
       <div className="bidsheet-hd">
@@ -1136,15 +1141,17 @@ export function PostInSheet({
           data-testid="postin-date"
           aria-label={`Move ${callsign}'s post-in date`}
           value={piFrom}
+          disabled={locked}
           onChange={e => { if (e.target.value) setErr(onChange(e.target.value) || '') }}
         />
       </div>
+      {locked && <div className="bidsheet-row postout"><span className="note warn" data-testid="postin-locked">{lockedWhy}</span></div>}
       {/* drawn only with something to say — an empty row left a blank band on the sheet (W3's re-walk, N4) */}
       {err && <div className="bidsheet-row postout">
         <span className="note warn" data-testid="postin-err">{err}</span>
       </div>}
       <div className="bidsheet-row postout">
-        {!backFrom && <button className="dchip po" data-testid="postin-undo" onClick={onUndo}>
+        {!backFrom && !locked && <button className="dchip po" data-testid="postin-undo" onClick={onUndo}>
           Undo post in (PI)
         </button>}
         {onPlace && (

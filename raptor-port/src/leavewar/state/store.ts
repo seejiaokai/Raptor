@@ -1519,6 +1519,7 @@ export function setPostOut(id: string, fromDate: string | null, archive: boolean
   if (!person) return false
   /* a DELETED man's posting is final ([POST-OUT-OUTCOMES], D287 — Fable F3): no door changes it or takes it back */
   if (person.gone) return false
+  if (postingLocked(id)) return false               // archived on Admin → Users — Restore there ([ONE-DOOR])
   /* WHICH posting it is (D229, D294): the four chips' outcome; the old switch reads the old way — on = overseas
      (archived), off = none. `poArchive` is kept in step for the readers that still name it. */
   const outcome: PostOutcome = typeof archive === 'string' ? archive : (archive ? 'overseas' : 'none')
@@ -1555,6 +1556,13 @@ export const hasAccount = (id: string): boolean => !!(ACCOUNT_LOOKUP && ACCOUNT_
 let BLOCK_LOOKUP: ((id: string, outcome: PostOutcome) => string | null) | null = null
 export function setPostingBlockLookup(fn: ((id: string, outcome: PostOutcome) => string | null) | null): void { BLOCK_LOOKUP = fn }
 export const postingBlocked = (id: string, outcome: PostOutcome): string | null => (BLOCK_LOOKUP ? BLOCK_LOOKUP(id, outcome) : null)
+/* a man archived on Admin → Users: his posting dates are READ-ONLY on the war — Restore there is the one way back
+   ([ONE-DOOR], round 1 Fable F1; the walk's design, Fable 4.2 / 4.3, 27 Sep 26: the Post out sheet alone was locked, and
+   the Post in sheet could still move or clear his post-in under the stint Archive had closed). Both writers ask it, so
+   no door can go round it. The sentence, or null; installed by the sync, like the lookups above. */
+let LOCK_LOOKUP: ((id: string) => string | null) | null = null
+export function setPostingLockLookup(fn: ((id: string) => string | null) | null): void { LOCK_LOOKUP = fn }
+export const postingLocked = (id: string): string | null => (LOCK_LOOKUP ? LOCK_LOOKUP(id) : null)
 
 /** THE POSTING WINDOW A STORED RECORD LAYS ON ITS PERSON — the ONE body `setPeople` and the sync's re-projection both
  *  use ([POST-OUT-OUTCOMES]; Astra's plan read A4: two overlays laying it differently would defeat the SANS rule).
@@ -1588,6 +1596,16 @@ export function markPostingDone(id: string, poDate: string): void {
   persistNotify()
 }
 
+/* THE WAR'S PICTURE OF A MAN IT DOES NOT SHOW RIGHT NOW (a SANS man with Show SANS off; an archived man with no row) —
+   the projection's `identity` with HIS OWN stored posting record laid on, as `setPeople` lays it. The projection knows
+   nothing of his dates (`from: null`), so without this an archive, a restore or a delete rebuilt his record from it and
+   his post-in date was lost — his months before it then read as "here" (the walk's design, Fable 4.4, 27 Sep 26: every
+   new person has a post-in date since D308). */
+function withStored(identity: Person): Person {
+  const w = state.postOuts[identity.id]
+  return w ? { ...identity, ...windowFor(w, state.showSans) } : identity
+}
+
 /** A DELETED man's war half ([POST-OUT-OUTCOMES], D287, D297, D299): his records dated on or after `iso` go from every
  *  war (requests, credits, notices — "his future leave, bids" and "his Leave War row after he left"); his posting
  *  window closes the day before (kept if it already closes earlier); he is marked `gone` — kept as a posted-out man is,
@@ -1613,18 +1631,24 @@ export function forgetPersonFrom(id: string, iso: string, frozen: Person | null 
   /* D320: his earlier stints are cut at the cutoff too (one opening on or after it goes), and a current stint that would
      open after it is DROPPED — the last past stint becomes current again, never a stint closing before it opens
      (round 1, Fable F4 / Astra 3) */
-  const cut = (p: Person): Person => {
+  /* …and a man who never arrived (his only stint still to come, no earlier one) has no months to keep: his row and his
+     record go — never a stint closing before it opens (the walk's design, Fable 4.5, 27 Sep 26) */
+  const cut = (p: Person): Person | null => {
     const past = (p.past || []).filter(s => s.from === null || s.from < iso).map(s => ({ from: s.from, to: s.to < last ? s.to : last }))
-    if (p.from !== null && p.from > last && past.length) {
+    if (p.from !== null && p.from > last) {
+      if (!past.length) return null
       const prev = past.pop()!
       return { ...p, from: prev.from, to: prev.to, past: past.length ? past : undefined, gone: true }
     }
     return { ...p, to: p.to !== null && p.to < last ? p.to : last, past: past.length ? past : undefined, gone: true }
   }
+  const back = hadPast ? cut(withStored(frozen as Person)) : null
   const people = had
-    ? state.people.map(p => (p.id === id ? cut(p) : p))
-    : hadPast ? [...state.people, { ...(frozen as Person), to: last, gone: true }] : state.people
-  const postOuts = had || hadPast ? windowRecord(people, id) : state.postOuts
+    ? state.people.flatMap(p => (p.id === id ? (cut(p) ?? []) : [p]))
+    : back ? [...state.people, back] : state.people
+  const kept = people.some(p => p.id === id)
+  const { [id]: _dropped, ...rest } = state.postOuts
+  const postOuts = kept ? windowRecord(people, id) : had || hadPast ? rest : state.postOuts
   state = withCurrent({ ...state, wars, people, postOuts })
   persistNotify()
 }
@@ -1660,6 +1684,7 @@ export function setPostIn(id: string, date: string | null): boolean {
   const person = state.people.find(p => p.id === id)
   if (!person) return false
   if (person.gone) return false                   // a deleted man's posting is final (Fable F3)
+  if (postingLocked(id)) return false             // archived on Admin → Users — Restore there ([ONE-DOOR])
   if (date !== null && person.to !== null && date > person.to) return false
   /* D320: back from a posting — his post-in may move, but never onto or before the day his last stint closed, and it is
      never cleared (that would lay "here from always" over the stint he left — past stints are read-only on the war) */
@@ -1681,6 +1706,7 @@ export function postingProblem(id: string, kind: 'in' | 'out' | 'restore', date:
   const person = state.people.find(p => p.id === id) || identity
   if (!person) return null
   if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) return 'Pick a whole date first.'
+  if (kind !== 'restore') { const locked = postingLocked(id); if (locked) return locked }
   /* the day-first date voice ("15 Jun 26" — ui/dates.ts shortDate's wording), never the stored 2026-06-15 (the
      absence-record re-test's re-walk: this sentence first printed the machine date; `[LW-ISO-DATES]` is the rest) */
   const MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
@@ -1710,7 +1736,7 @@ export function postingProblem(id: string, kind: 'in' | 'out' | 'restore', date:
 export function openStint(id: string, date: string, identity?: Person): boolean {
   if (state.role !== 'admin') return false
   if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) return false
-  const person = state.people.find(p => p.id === id) || identity
+  const person = state.people.find(p => p.id === id) || (identity && withStored(identity))
   if (!person || person.gone) return false
   if (postingProblem(id, 'restore', date, person)) return false
   const clear = { poArchive: undefined, poOutcome: undefined, poDone: undefined }
@@ -1735,7 +1761,7 @@ export function openStint(id: string, date: string, identity?: Person): boolean 
  *  (round 1, Fable F4 / Astra 3). `identity` as in `openStint`. Runs inside Archive's command (leavewar/sync.ts); the
  *  command's gate has decided who may, so no role check here (as `forgetPersonFrom`). */
 export function closeStintOnArchive(id: string, today: string, identity?: Person): { replaced: PostOutcome | null } {
-  const person = state.people.find(p => p.id === id) || identity
+  const person = state.people.find(p => p.id === id) || (identity && withStored(identity))
   if (!person || person.gone) return { replaced: null }
   const yesterday = addDays(today, -1)
   const pending = person.to !== null && person.to > yesterday ? outcomeOf(person) ?? null : null

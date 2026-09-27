@@ -12,17 +12,18 @@ import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } 
 import { storeBackend } from '../engine/hooks'
 import { PEOPLE, indexCallsigns } from '../engine/people'
 import { initStore as raptorInitStore, notify as raptorNotify, resetSession } from '../state/store'
-import { accountsLoad, accountByName, signIn, sessionFor, updateAccount, addPersonAndAccount, approveRequestNew, requestAccess, ACCESS_REQS } from '../state/accounts'
+import { accountsLoad, accountByName, accountOfPid, signIn, sessionFor, updateAccount, addPersonAndAccount, approveRequestNew, requestAccess, ACCESS_REQS } from '../state/accounts'
 import { addRosterPerson } from '../state/roster-add'
 import { BACKPROMPT } from '../state/view'
 import { onCommit } from '../command'
 import { INPUTS } from '../engine/inputs'
 import { DAYS } from '../engine/data'
-import { getState, initStore as lwInitStore, setCell, setPeople } from './state/store'
+import { getState, initStore as lwInitStore, postingProblem, setCell, setPeople, setPostIn, setPostOut } from './state/store'
+import { deletePerson } from '../state/person-delete'
 import { memoryBackend } from './state/storage'
 import { projectPeople } from './state/raptorRoster'
 import {
-  archivePerson, postOut, postOutProblem, restoreArchivedAs, restoreArchivedPerson, restoreProblem, undoPostOut,
+  archivePerson, postOut, postOutProblem, postingPendingTag, restoreArchivedAs, restoreArchivedPerson, restoreProblem, undoPostOut,
   undoPostOutProblem, wireLeaveWarSync,
 } from './sync'
 
@@ -237,3 +238,67 @@ describe('D308 — a new person is asked his post-in date; the war counts him fr
     expect(Object.keys(PEOPLE).some(k => P(k).cs === 'Nodate')).toBe(false)
   })
 })
+
+/* THE WALK DESIGN'S GAPS (Fable 5.1, 27 Sep 26 — docs/superpowers/specs/2026-09-27-one-door-scenarios-fable.md §4):
+   each a missing line found by reading for what is NOT there, made red here before its fix. */
+describe('the walk design — what was missing', () => {
+  const addAt = (cs: string, date: string, seat = 'FCP') => {
+    expect(addRosterPerson({ cs, ini: '', seat, cat: seat === 'GND' ? '' : 'C' }, date)).toBeNull()
+    raptorNotify()
+    return Object.keys(PEOPLE).find(k => P(k).cs === cs)!
+  }
+
+  it('4.2 / 4.3: an Admin-archived man\'s posting dates are read-only on the war — the post-in too, at the store', () => {
+    const g = addAt('Groundy', '2026-07-10', 'GND')
+    expect(archivePerson(g).bad).toBeNull()
+    raptorNotify()
+    expect(war(g)!.from).toBe('2026-07-10')
+    expect(war(g)!.to).toBe('2026-07-14')
+    expect(setPostIn(g, null), 'Undo post in refused').toBe(false)
+    expect(setPostIn(g, '2026-07-05'), 'a new post-in date refused').toBe(false)
+    expect(postingProblem(g, 'in', '2026-07-05')).toMatch(/archived on Admin → Users — restore him there/)
+    expect(setPostOut(g, '2026-08-01', 'overseas'), 'the store refuses a post-out too, not only the sheet').toBe(false)
+    expect(war(g)!.from).toBe('2026-07-10')
+    expect(war(g)!.to).toBe('2026-07-14')
+  })
+
+  it('4.4: a SANS man hidden from the war (Show SANS off) keeps his own post-in date when archived', () => {
+    const id = addAt('Sansy', '2026-07-01')
+    expect(setCell(id, '2026-07-06', 'LL')).toBe(true)                    // a record from the months he was here
+    P(id).san = true; P(id).quals = { ...(P(id).quals || {}), san: true }
+    raptorNotify()
+    expect(war(id)).toBeUndefined()
+    expect(archivePerson(id).bad).toBeNull()
+    raptorNotify()
+    const w = war(id)!
+    expect(w.from, 'his post-in date is not lost').toBe('2026-07-01')
+    expect(w.to).toBe('2026-07-14')
+  })
+
+  it('4.5: deleting a man whose post-in is still to come stores no stint that ends before it begins', () => {
+    const id = addAt('Later', '2026-08-01')
+    expect(war(id)!.from).toBe('2026-08-01')
+    expect(deletePerson(id)).toBeNull()
+    raptorNotify()
+    const backwards = Object.values(getState().postOuts).filter((w: any) => w.from !== null && w.to !== null && w.from > w.to)
+    expect(backwards).toEqual([])
+    expect(war(id), 'never here — no row to keep').toBeUndefined()
+  })
+
+  it('4.7: the message says his sign-in is suspended only when he has one', () => {
+    expect(accountOfPid('divot'), 'Vector has no sign-in').toBeUndefined()
+    expect(archivePerson('divot').said).toBe(`${P('divot').cs} archived`)
+    expect(archivePerson('rocky').said).toBe('Hex archived — his sign-in is suspended')
+  })
+
+  it('4.1: a post-in still to come shows on his row ("posting in 1 Aug") — a new person or a Restore; none once it has come', () => {
+    const id = addAt('Later', '2026-08-01')
+    expect(postingPendingTag(id)).toBe('posting in 1 Aug')
+    archivePerson('rocky')
+    expect(restoreArchivedPerson('rocky', '2026-08-03')).toBe(true)
+    expect(postingPendingTag('rocky')).toBe('posting in 3 Aug')
+    const g = addAt('Groundy', '2026-07-10', 'GND')
+    expect(postingPendingTag(g)).toBeNull()
+  })
+})
+

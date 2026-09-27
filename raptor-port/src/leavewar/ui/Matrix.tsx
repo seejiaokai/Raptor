@@ -4415,6 +4415,8 @@ export function Matrix() {
           piFrom={openPerson!.from!}
           /* D320: back from a posting — the day after his last earlier stint closed */
           backFrom={openPerson!.past && openPerson!.past.length ? addDays(openPerson!.past[openPerson!.past.length - 1].to, 1) : null}
+          /* [ONE-DOOR] (the walk's design, Fable 4.2): archived on Admin → Users — read only, as the Post out sheet */
+          lockedWhy={adminArchived(open.id)}
           onChange={from => postInOr(open.id, from)}
           onUndo={() => { setPostIn(open.id, null); close() }}
           onPlace={() => setPlaceAt(openKey)}

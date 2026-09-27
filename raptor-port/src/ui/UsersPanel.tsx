@@ -409,7 +409,9 @@ const Cols = () => (
 export function UsersPanel(p: { shown?: boolean; openNew?: number } = {}) {
   const [editing, setEditing] = useState<string | null>(null)
   const [find, setFind] = useState('')
-  const [archOpen, setArchOpen] = useState(false)
+  /* the Archived group's fold: his own tap, or — while he has not tapped since the search changed — open exactly when
+     the search matches someone archived (the walk's design, Fable R7: the tap used to do nothing while a search matched) */
+  const [archOpen, setArchOpen] = useState<boolean | null>(false)
   const [name, setName] = useState('')
   const [np, setNp] = useState<NewPerson>(BLANK)
   const [role, setRole] = useState<AccountRole>('main')
@@ -455,7 +457,7 @@ export function UsersPanel(p: { shown?: boolean; openNew?: number } = {}) {
   const archived = everyone.filter(id => P(id).archived)
   const rosterShown = onRoster.filter(matches).sort(byCs)
   const archShown = archived.filter(matches).sort(byCs)
-  const archOpenNow = archOpen || (!!q && archShown.length > 0)
+  const archOpenNow = archOpen ?? (!!q && archShown.length > 0)
   const toggle = (pid: string) => setEditing(editing === pid ? null : pid)
   return (
     <>
@@ -465,7 +467,7 @@ export function UsersPanel(p: { shown?: boolean; openNew?: number } = {}) {
       <div className="od-head">
         <h4 className="adm-sub">People · {onRoster.length}</h4>
         <input className="od-find" id="accFind" type="search" value={find} placeholder="Find a callsign or sign-in"
-          aria-label="Find a callsign or sign-in" onChange={e => setFind(e.target.value)} />
+          aria-label="Find a callsign or sign-in" onChange={e => { setFind(e.target.value); setArchOpen(null) }} />
       </div>
       <div className="acc-list od-list" id="accList">
         <Cols />
@@ -475,7 +477,7 @@ export function UsersPanel(p: { shown?: boolean; openNew?: number } = {}) {
       </div>
       {archived.length > 0 && (
         <div className="od-arch" id="accArchived">
-          <button className="abtn" id="accArchToggle" aria-expanded={archOpenNow} onClick={() => setArchOpen(v => !v)}>
+          <button className="abtn" id="accArchToggle" aria-expanded={archOpenNow} onClick={() => setArchOpen(!archOpenNow)}>
             {archOpenNow ? '▾' : '▸'} Archived · {archived.length}
           </button>
           {archOpenNow && (

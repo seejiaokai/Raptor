@@ -27,6 +27,16 @@ describe('Fable F1 / Astra 2 — the Post out sheet of a man archived on Admin �
   })
 })
 
+describe('the walk design (Fable 4.2) — the Post IN sheet of a man archived on Admin → Users', () => {
+  it('reads only too: the reason, the date fixed, no Undo', () => {
+    render(<PostInSheet callsign="HEX" date="2026-07-01" piFrom="2026-07-10" onChange={noop} onUndo={noop} onClose={noop}
+      lockedWhy="Hex was archived on Admin → Users — restore him there" />)
+    expect(screen.getByTestId('postin-locked').textContent).toBe('Hex was archived on Admin → Users — restore him there')
+    expect((screen.getByTestId('postin-date') as HTMLInputElement).disabled).toBe(true)
+    expect(screen.queryByTestId('postin-undo')).toBeNull()
+  })
+})
+
 describe('D320 — the Post in sheet of a man back from a posting', () => {
   it('says he is back, and offers no Undo', () => {
     render(<PostInSheet callsign="HEX" date="2026-08-01" piFrom="2026-09-01" backFrom="2026-06-15" onChange={noop} onUndo={noop} onClose={noop} />)

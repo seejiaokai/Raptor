@@ -92,6 +92,23 @@ describe('D309 / D310 — every person, one row, two dots', () => {
     expect($('#accArchList [data-person="casper"]'), 'an archived match opens the group').toBeTruthy()
   })
 
+  it('the walk design (Fable R7): while a search matches, the Archived group still folds when its ▾ is tapped', async () => {
+    P('casper').archived = true; indexCallsigns()
+    await users()
+    await type($('#accFind') as HTMLInputElement, 'outlaw')
+    expect($('#accArchList [data-person="casper"]')).toBeTruthy()
+    await click($('#accArchToggle'))
+    expect($('#accArchList'), 'folded by his tap').toBeNull()
+    await click($('#accArchToggle'))
+    expect($('#accArchList [data-person="casper"]')).toBeTruthy()
+  })
+
+  it('the walk design (Fable R13): the Admin page names Users for what it now holds — sign-in and roster', async () => {
+    await users()
+    expect(document.body.textContent).toContain('Sign-in and roster')
+    expect(document.body.textContent).not.toContain('Who can sign in')
+  })
+
   it('your own row cannot be opened; a man\'s row opens with his state\'s buttons (active)', async () => {
     await users()
     expect(($('#accList [data-person="stiff"] .acc-tap') as HTMLButtonElement).disabled).toBe(true)
