@@ -10,7 +10,8 @@ import { weekWindow } from './weeknav'
 import { CalIcon, XlsIcon, PdfIcon, HistIcon, HlIcon, SrchIcon } from './icons'
 import { rulesOffCount } from '../engine/rules'
 import { isAdmin, me } from '../state/perms'
-import { waitingCount } from '../state/accounts'
+import { waitingCount, accessAlert } from '../state/accounts'
+import { openAdminUsers } from './adminopen'
 import { notify, setPage } from '../state/store'
 import { logOut } from './logout'
 import { HLSET, SEARCH, HLOPEN, toggleHlOpen, HLGROUP, setSearch, CURPAGE, setDayPreview, toggleViewWork, bellLit, clearBell } from '../state/view'
@@ -284,6 +285,8 @@ export function Shell() {
      it (bug pass, 28 Aug 26: two full INPUTS scans per render was waste);
      the tap handler re-derives its own fresh copy at click time. */
   const oilPend = mine ? oilPendingFor(mine).length : 0
+  /* D216, D227 — an access request this admin has not had on screen yet (his own bell) */
+  const accAlert = accessAlert()
   const topbar = useMemo(() => (
       /* The top bar wears a blue-tinted gradient while on Edit Schedule (owner,
          22 Aug 26) so it is unmistakable from the near-identical View-only mode
@@ -377,9 +380,20 @@ export function Shell() {
               (oilPendingFor, leavewar/sync.ts — derived like bugAlert, so
               answering the question puts the bell out by itself). The tap
               lands on the Inputs page with the editor open on the exact input
-              and the OIL sheet already up (OILASK, pops.ts). */}
-          <button className={'bellbtn' + (bellLit() || bugAlert() || oilPend ? ' on' : '')} id="notifyBell" aria-label="Notifications" title="Notifications"
+              and the OIL sheet already up (OILASK, pops.ts).
+              THE FOURTH, FIRST IN ORDER ([ACCOUNTS-NEW-PERSON], D216 — "a new request access
+              for account should also provide notification to admins"): an access request
+              this ADMIN has not yet had on screen (each admin's own — D227). The tap says how
+              many are waiting and opens Admin → Users, whose list on screen puts it out.
+              First because someone locked out of the app outranks a bug report or an OIL
+              question (the agent's call, on the look card). */}
+          <button className={'bellbtn' + (bellLit() || bugAlert() || oilPend || accAlert ? ' on' : '')} id="notifyBell" aria-label="Notifications" title="Notifications"
             onClick={() => {
+              if (accessAlert()) {
+                const n = waitingCount()
+                HOOKS.toast(`${n} waiting for access — opening Admin → Users`)
+                openAdminUsers(); return
+              }
               if (bugAlert()) {
                 const n = unseenReports()
                 HOOKS.toast(`${n} new bug report${n === 1 ? '' : 's'}`)
@@ -420,7 +434,7 @@ export function Shell() {
             title={mineCs ? `Signed in as ${mineCs}` : undefined}>{mineCs ? `${mineCs} · ` : ''}{admin ? 'Admin' : 'Member'}</span>
         </div>
       </div>
-  ), [page, admin, mine, mineCs, waiting, fast, uv, us.canUndo, us.canRedo, us.undoLabel, us.redoLabel, bellLit(), bugAlert(), oilPend])
+  ), [page, admin, mine, mineCs, waiting, fast, uv, us.canUndo, us.canRedo, us.undoLabel, us.redoLabel, bellLit(), bugAlert(), oilPend, accAlert])
 
   const viewPage = useMemo(() => (
       <section className={'page' + (page === 'viewsched' ? ' on' : '')} id="page-viewsched">

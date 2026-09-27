@@ -1,0 +1,24 @@
+[
+  {
+    "id": "B10",
+    "surface": "Approve → On the roster: a person who already has an account is said so (Fable read #1)",
+    "file": "src/ui/UsersPanel.tsx",
+    "exit": 1,
+    "red": [
+      "a callsign whose person ALREADY has an account: the note says so and never asks him to pick them (Fable read #1)",
+      "the typed callsign is the SIGNED-IN admin's own: the note says another admin must change it (Astra's second fix check)",
+      "ARCHIVED and holding an account: the account wins — never \"restore to link\", which could not work (both fix checks #1)"
+    ],
+    "summary": "Tests  3 failed | 23 passed (26)"
+  },
+  {
+    "id": "B28",
+    "surface": "Approve note: the account is checked before archived (both fix checks #1)",
+    "file": "src/ui/UsersPanel.tsx",
+    "exit": 1,
+    "red": [
+      "ARCHIVED and holding an account: the account wins — never \"restore to link\", which could not work (both fix checks #1)"
+    ],
+    "summary": "Tests  1 failed | 25 passed (26)"
+  }
+]

@@ -218,7 +218,7 @@ async function editAccount(page, id, fn) {
     (await text(page, '[data-acct="acoutlaw"]')).includes('Member') || (await text(page, '[data-acct="acoutlaw"]')).toLowerCase().includes('member') ? true : `outlaw row "${await text(page, '[data-acct="acoutlaw"]')}"`)
 
   /* ---- a sign-in renamed onto a waiting name answers the request (Fable S1) ---- */
-  await signIn(page, 'wren@mail'); await page.fill('#accCs', 'Wren'); await page.fill('#accFull', 'W'); await page.click('#accSend'); await page.waitForTimeout(300)
+  await signIn(page, 'wren@mail'); await page.fill('#accCs', 'Wren'); await page.fill('#accIni', 'W'); await page.selectOption('#accSeat', 'FCP'); await page.selectOption('#accCat', 'C'); await page.click('#accSend'); await page.waitForTimeout(300)
   await signIn(page, 'ad', 'a')
   await editAccount(page, 'achex', async () => { await page.fill('#accEdName', 'wren@mail'); await page.click('#accEdSave') })
   await users(page)
@@ -243,13 +243,16 @@ async function editAccount(page, id, fn) {
   })
 
   /* ---- the waiting count follows every answer (Fable S19) ---- */
-  for (const n of ['a1@mail', 'a2@mail']) { await signIn(page, n); await page.fill('#accCs', n.slice(0, 2)); await page.fill('#accFull', n); await page.click('#accSend'); await page.waitForTimeout(250) }
+  for (const n of ['a1@mail', 'a2@mail']) { await signIn(page, n); await page.fill('#accCs', n.slice(0, 2)); await page.fill('#accIni', n); await page.selectOption('#accSeat', 'FCP'); await page.selectOption('#accCat', 'C'); await page.click('#accSend'); await page.waitForTimeout(250) }
   await signIn(page, 'ad', 'a')
   const c2 = await text(page, '#admWaitBadge')
   await users(page)
   await page.locator('#admWaiting [data-decline]').first().click(); await page.waitForTimeout(300)
   const c1 = await text(page, '#admWaitBadge')
   await page.locator('#admWaiting [data-approve]').first().click(); await page.waitForTimeout(200)
+  /* a callsign nobody has opens "New person" since [ACCOUNTS-NEW-PERSON]; this step links a
+     puck, so "On the roster" first (Astra's code read #4) */
+  await page.click('#apvModeRoster'); await page.waitForSelector('#apvPid')
   await page.selectOption('#apvPid', { index: 1 }); await page.click('#apvGo'); await page.waitForTimeout(300)
   await step(page, 'd-badge-counts', 'two waiting → "2"; one declined → "1"; the other approved → the count goes, at once', async () =>
     c2 === '2' && c1 === '1' && (await page.locator('#admWaitBadge').count()) === 0 ? true : `${c2} → ${c1} → ${await page.locator('#admWaitBadge').count()}`)
@@ -265,8 +268,8 @@ async function editAccount(page, id, fn) {
 
 
   /* ---- reloads mid-way lose nothing and invent nothing (Fable S11) ---- */
-  await signIn(page, 'kite2@mail'); await page.fill('#accCs', 'K2'); await page.fill('#accFull', 'K2'); await page.click('#accSend'); await page.waitForTimeout(250)
-  await signIn(page, 'kite3@mail'); await page.fill('#accCs', 'K3'); await page.fill('#accFull', 'typed but never sent')
+  await signIn(page, 'kite2@mail'); await page.fill('#accCs', 'K2'); await page.fill('#accIni', 'K'); await page.selectOption('#accSeat', 'FCP'); await page.selectOption('#accCat', 'C'); await page.click('#accSend'); await page.waitForTimeout(250)
+  await signIn(page, 'kite3@mail'); await page.fill('#accCs', 'K3'); await page.fill('#accIni', 'TBNS')
   await page.reload(); await page.waitForTimeout(800)
   await signIn(page, 'ad', 'a'); await users(page)
   await page.locator('#admWaiting [data-approve]').first().click(); await page.waitForTimeout(200)
@@ -295,12 +298,12 @@ async function editAccount(page, id, fn) {
     (await page.locator('#shell').count()) === 1 ? { ok: true, note: await text(page, '#roleBadge') } : 'he cannot sign in')
 
   /* ---- the guest switch turned back OFF → the next sign-in is the waiting screen ---- */
-  await signIn(page, 'kite@mail'); await page.fill('#accCs', 'Kite'); await page.fill('#accFull', 'K'); await page.click('#accSend'); await page.waitForTimeout(300)
+  await signIn(page, 'kite@mail'); await page.fill('#accCs', 'Kite'); await page.fill('#accIni', 'K'); await page.selectOption('#accSeat', 'FCP'); await page.selectOption('#accCat', 'C'); await page.click('#accSend'); await page.waitForTimeout(300)
   await signIn(page, 'ad', 'a'); await users(page); await page.check('#admGuestView'); await page.waitForTimeout(200)
   await signIn(page, 'kite@mail')
   await step(page, 'd-guest-on', 'guest switch on: the waiting person sees the guest view', async () => (await page.locator('#guestApp').count()) === 1)
   /* D221 — someone asking while the switch is on: one tap from the waiting screen */
-  await signIn(page, 'kite9@mail'); await page.fill('#accCs', 'K9'); await page.fill('#accFull', 'K9'); await page.click('#accSend'); await page.waitForTimeout(300)
+  await signIn(page, 'kite9@mail'); await page.fill('#accCs', 'K9'); await page.fill('#accIni', 'K'); await page.selectOption('#accSeat', 'FCP'); await page.selectOption('#accCat', 'C'); await page.click('#accSend'); await page.waitForTimeout(300)
   const hasBtn = await page.locator('#accGuest').count()
   if (hasBtn) { await page.click('#accGuest'); await page.waitForTimeout(500) }
   await step(page, 'd-guest-button', 'asking while guest access is on: the waiting screen offers "View the schedule", one tap into the guest view (D221)', async () =>

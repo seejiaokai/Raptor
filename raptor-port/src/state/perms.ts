@@ -68,7 +68,7 @@ export const PERMS: Record<string, PermRow> = {
   [T.qualmark]: row(cell('C R U D'), cell('R', 'C U D')),
   [T.setting]: row(cell('C R U D'), cell('R')),
   [T.user]: row(cell('C R U'), cell('', 'R')),
-  [T.accessreq]: row(cell('R D'), NONE, NONE, cell('', 'C')),
+  [T.accessreq]: row(cell('R U D'), NONE, NONE, cell('', 'C')),
   [T.sched]: row(cell('C R U D'), cell('R'), cell('R')),
   [T.amendment]: row(cell('C R'), cell('R'), cell('R')),
   [T.editlog]: row(cell('R'), cell('R'), NONE, NONE, ['DRAFT-PENDING']),
@@ -204,8 +204,13 @@ export const mayAwardOil = (): boolean => may(T.award, 'C', null, false)
    below, which reads the people on every input the command actually changed — stronger than
    an owner a caller claims (pinned through the real input route: accounts.test.ts AC7) */
 type OwnRule = 'never' | 'optional' | 'required'
-export interface CommandOp { table: string; act: Act; own: OwnRule }
-const op = (table: string, act: Act, own: OwnRule = 'never'): CommandOp => ({ table, act, own })
+/* `more` — every OTHER table the command writes, each letter the actor must hold outright
+   too ([ACCOUNTS-NEW-PERSON], Astra's plan read 1): a command that makes a person, his
+   account and answers his request names all three, so the database's security at the
+   translation step reads one honest list (D200 — "a translation of an agreed list") */
+export interface CommandOp { table: string; act: Act; own: OwnRule; more?: [string, Act][] }
+const op = (table: string, act: Act, own: OwnRule = 'never', more?: [string, Act][]): CommandOp =>
+  (more ? { table, act, own, more } : { table, act, own })
 
 const SETTINGS_KEYS_ALL = ['rules', 'stores', 'cxreasons', 'daytpl', 'dutytpl', 'wavetpl', 'wavehide',
   'qualcols', 'lookahead', 'secdefault', 'wavedefault', 'accounts', 'accessreqs', 'guestview'] as const
@@ -258,13 +263,22 @@ export const COMMAND_OPS: Record<string, CommandOp> = {
   'trk.layout': op(T.tracker, 'U'), 'trk.syls': op(T.tracker, 'U'), 'trk.plan': op(T.tracker, 'U'),
   'trk.pace': op(T.tracker, 'U'), 'trk.lulls': op(T.tracker, 'U'), 'trk.eventinfo': op(T.tracker, 'U'),
   'trk.catalogue': op(T.tracker, 'U'), 'trk.courses': op(T.tracker, 'U'), 'trk.gesture': op(T.tracker, 'U'),
-  /* accounts (D166, D204): one intent per command, each writing every key it needs */
+  /* accounts (D166, D204): one intent per command, each writing every key it needs — and
+     naming every table it writes ([ACCOUNTS-NEW-PERSON]: an account added or renamed onto a
+     waiting sign-in name answers — deletes — its request; approving creates the User) */
   'access.request': op(T.accessreq, 'C', 'required'),
   'access.decline': op(T.accessreq, 'D'),
-  'access.approve': op(T.accessreq, 'D'),
-  'account.add': op(T.user, 'C'),
-  'account.update': op(T.user, 'U'),
+  'access.approve': op(T.accessreq, 'D', 'never', [[T.user, 'C']]),
+  'account.add': op(T.user, 'C', 'never', [[T.accessreq, 'D']]),
+  'account.update': op(T.user, 'U', 'never', [[T.accessreq, 'D']]),
   'guestview.set': op(T.setting, 'U'),
+  /* a new person ([ACCOUNTS-NEW-PERSON], D214, D217) — made only on Admin → Users: alone (a
+     blank sign-in), with his account, or by approving his sign-up; and the admins' bell's
+     "seen" (D216, D227) */
+  'person.add': op(T.person, 'C'),
+  'account.addNew': op(T.user, 'C', 'never', [[T.person, 'C'], [T.accessreq, 'D']]),
+  'access.approveNew': op(T.accessreq, 'D', 'never', [[T.user, 'C'], [T.person, 'C']]),
+  'access.seen': op(T.accessreq, 'U'),
 }
 for (const k of SETTINGS_KEYS_ALL) COMMAND_OPS[`settings.${k}`] = op(T.setting, 'U')
 
@@ -281,13 +295,19 @@ export function cmdAuthorize(type: string, actor: Actor, meta?: any): boolean {
   const who = actorRole(actor)
   if (who === null) return true                          // the system actor (authorize short-circuits it first anyway)
   if (who === 'off') return false
-  const c = PERMS[o.table][who]
-  if (c.all.includes(o.act)) return true
-  if (!c.own.includes(o.act) || o.own === 'never') return false
+  /* the base op with its own-row rule, then every `more` op held outright — ALL must allow
+     (no early success before the last is asked) */
+  if (!opAllows(who, o.table, o.act, o.own, actor, meta)) return false
+  return (o.more || []).every(([t, a]) => opAllows(who, t, a, 'never', actor, meta))
+}
+function opAllows(who: Role, table: string, act: Act, own: OwnRule, actor: Actor, meta: any): boolean {
+  const c = PERMS[table][who]
+  if (c.all.includes(act)) return true
+  if (!c.own.includes(act) || own === 'never') return false
   const identity = who === 'pending' ? (actor.principal ?? null) : (actor.personId ?? null)
   if (identity == null || identity === '') return false
   const named = owners(meta)
-  if (!named || !named.length) return o.own === 'optional'
+  if (!named || !named.length) return own === 'optional'
   return named.every(x => x === String(identity))
 }
 

@@ -5038,3 +5038,75 @@ test('the sign-in and Request access buttons sit square under their boxes, insid
   await page.click('#loginForm button[type=submit]'); await page.waitForSelector('#accessRequest')
   expect(await square(), 'the Request access card').toEqual({ dl: 0, dr: 0, inside: true })
 })
+
+/* [ACCOUNTS-NEW-PERSON] (D214, D224 — Fable's plan read F5): the sign-up card's two picks (pilot / WSO / personnel,
+   CAT) wear the boxes' own look, as the approved mock-up drew them — same left and right edges and the same height as
+   the first box, at a desktop and a phone width; and the button still sits square under them. A browser-default
+   select would be narrower, square-cornered and a different height, and the button test alone would not see it. */
+for (const [w, h, tag] of [[1440, 900, 'desktop'], [390, 844, 'phone']] as const) {
+  test(`the sign-up card's two selects are the boxes' size and edges (${tag})`, async ({ page }) => {
+    await page.setViewportSize({ width: w, height: h })
+    await page.goto('/'); await page.waitForSelector('#luser')
+    await page.fill('#luser', `selects-${tag}@mail`); await page.fill('#lpass', 'x')
+    await page.click('#loginForm button[type=submit]'); await page.waitForSelector('#accessRequest')
+    await page.selectOption('#accSeat', 'FCP')                              // the CAT box shows for aircrew
+    const m = await page.evaluate(() => {
+      const f = document.querySelector('.login-card')!, i = f.querySelector('input')!.getBoundingClientRect()
+      const g = f.querySelector('.go')!.getBoundingClientRect()
+      const sel = [...f.querySelectorAll('select')].map(x => {
+        const r = x.getBoundingClientRect(), cs = getComputedStyle(x)
+        return { dl: Math.round(r.left - i.left), dr: Math.round(r.right - i.right), dh: Math.round(r.height - i.height), radius: cs.borderTopLeftRadius }
+      })
+      return { sel, radius: getComputedStyle(f.querySelector('input')!).borderTopLeftRadius, go: { dl: Math.round(g.left - i.left), dr: Math.round(g.right - i.right) }, scrollX: document.documentElement.scrollWidth > window.innerWidth }
+    })
+    expect(m.sel).toHaveLength(2)
+    for (const s of m.sel) expect(s, 'a select shares the box\'s edges, height and corners').toEqual({ dl: 0, dr: 0, dh: 0, radius: m.radius })
+    expect(m.go, 'the button still square under them').toEqual({ dl: 0, dr: 0 })
+    expect(m.scrollX, 'no sideways scroll').toBe(false)
+  })
+}
+
+/* [ACCOUNTS-NEW-PERSON] (D217) — found by the walk (26 Sep 26), not by any unit test (jsdom commits a render at once):
+   Quals' "+ Add person" opens Admin → Users on New person with the Callsign/Name box READY TO TYPE IN on a desktop —
+   every press. The focus was asked for a tick before the New person fields were drawn, so it landed nowhere. */
+test('Quals "+ Add person" leaves the cursor in the Callsign/Name box, every press (desktop)', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 })
+  await login(page)
+  for (let i = 1; i <= 2; i++) {
+    await go(page, 'quals')
+    await page.click('#qAddToggle')
+    await page.waitForFunction(() => (window as any).CURPAGE === 'admin')
+    await expect(page.locator('#accModeNew')).toHaveAttribute('aria-pressed', 'true')
+    await expect.poll(() => page.evaluate(() => document.activeElement && document.activeElement.id), { message: `press ${i}`, timeout: 3000 }).toBe('accAddCs')
+    await page.click('#accModeRoster')
+  }
+})
+
+/* [ACCOUNTS-NEW-PERSON] (D214, D217): on a phone the New person fields (two columns, as the approved mock-up drew them
+   at 390px) fit the Users pane — nothing past its edge, no sideways scroll — on the add form and the approve form. */
+test('the New person fields fit the Users pane on a phone (add and approve)', async ({ page }) => {
+  await page.setViewportSize(PHONE)
+  await page.goto('/'); await page.waitForSelector('#luser')
+  /* a sign-up first, so there is a request to approve */
+  await page.fill('#luser', 'fits@mail'); await page.fill('#lpass', 'x')
+  await page.click('#loginForm button[type=submit]'); await page.waitForSelector('#accessRequest')
+  await page.fill('#accCs', 'Fitter'); await page.selectOption('#accSeat', 'RCP'); await page.selectOption('#accCat', 'C')
+  await page.click('#accSend'); await page.waitForSelector('#accessWaiting')
+  await page.click('#accOut'); await page.waitForSelector('#luser')
+  await login(page)
+  await page.evaluate(() => (window as any).go('admin')); await page.waitForFunction(() => (window as any).CURPAGE === 'admin')
+  await page.locator('.adm-cat', { hasText: 'Users' }).first().click(); await page.waitForTimeout(300)
+  const fits = (root: string) => page.evaluate((r) => {
+    const pane = document.querySelector('#admUsers')!.getBoundingClientRect()
+    const bad = [...document.querySelectorAll(`${r} input, ${r} select, ${r} button`)].map(e => {
+      const b = e.getBoundingClientRect()
+      return b.width > 0 && (b.left < pane.left - 1 || b.right > pane.right + 1) ? (e.id || e.tagName) : null
+    }).filter(Boolean)
+    return { bad, scrollX: document.documentElement.scrollWidth > window.innerWidth }
+  }, root)
+  await page.click('#accModeNew'); await page.fill('#accAddName', 'fits2@mail')
+  expect(await fits('#accAddBlock'), 'the add form').toEqual({ bad: [], scrollX: false })
+  await page.click('#admWaiting [data-approve]'); await page.waitForSelector('[data-approving]')
+  expect(await page.getAttribute('#apvModeNew', 'aria-pressed')).toBe('true')
+  expect(await fits('[data-approving]'), 'the approve form').toEqual({ bad: [], scrollX: false })
+})

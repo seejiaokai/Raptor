@@ -10,15 +10,19 @@
 
    Three screens, chosen from the session (state/auth.ts — every state after a
    successful sign-in is a session, never the system actor, Astra R1-4):
-   - role 'pending', no request yet  → REQUEST ACCESS: callsign + name, "Request access";
+   - role 'pending', no request yet  → REQUEST ACCESS: what the admin's New person form asks
+     ([ACCOUNTS-NEW-PERSON], D214) — "Displayed callsign/name" (D222; 14 letters, said when
+     over — D226), initials (asked, never required — D225), pilot / WSO / personnel (D220),
+     CAT — then "Request access";
    - role 'pending', request waiting → WAITING: what he asked, "an admin will answer it";
    - role 'off'                      → SWITCHED OFF: "Ask an admin".
    Every one has Sign out, through the ONE logout (ui/logout.ts). The words read as
    the database-era app will (25 Aug 26: production copy, no demo caveats). */
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { SESSION } from '../state/auth'
 import { roleOf } from '../state/perms'
-import { requestAccess, requestByName, guestEntry, sessionFor, MAX_CS, MAX_FULL } from '../state/accounts'
+import { requestAccess, requestByName, requestSummary, guestEntry, sessionFor } from '../state/accounts'
+import { SEATS, catsFor, MAX_CS, MAX_INITIALS, SIGNUP_CALLSIGN_LABEL, CS_TOO_LONG } from '../state/roster-add'
 import { notify, resetSession } from '../state/store'
 import { logOut } from './logout'
 import { useVersion } from './useStore'
@@ -35,8 +39,13 @@ function Mark() {
 export function AccessScreen() {
   useVersion()
   const [cs, setCs] = useState('')
-  const [full, setFull] = useState('')
+  const [ini, setIni] = useState('')
+  const [seat, setSeat] = useState('')
+  const [cat, setCat] = useState('')
   const [err, setErr] = useState('')
+  /* a refusal is about what was sent: once he changes a field, it goes (the walk, 26 Sep 26 — "Pick pilot, WSO or
+     personnel" stayed up after he had picked) */
+  useEffect(() => { setErr('') }, [cs, ini, seat, cat])
   const name = String((SESSION && SESSION.name) || '')
   const off = roleOf() === 'off'
   const req = requestByName(name)
@@ -62,7 +71,7 @@ export function AccessScreen() {
         <div className="login-card acc-card">
           <h2 className="acc-h">Your request is with the admins</h2>
           {who}
-          <p className="acc-p">You asked for access as <b>{req.cs}</b> ({req.full}). You'll be able to sign in as soon as an admin approves it.</p>
+          <p className="acc-p" id="accAsked">You asked for access as <b>{req.cs}</b>{requestSummary(req) ? ` (${requestSummary(req)})` : ''}. You'll be able to sign in as soon as an admin approves it.</p>
           {/* D221 — with the admin's guest switch on, straight into the guest view */}
           {guestEntry() && <>
             <p className="acc-p">Meanwhile you can look at the schedule, read only.</p>
@@ -76,7 +85,7 @@ export function AccessScreen() {
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault()
-    const bad = requestAccess(cs, full)
+    const bad = requestAccess({ cs, ini, seat, cat })
     if (bad) { setErr(bad); return }
     setErr('')
     notify()
@@ -88,12 +97,28 @@ export function AccessScreen() {
           <h2 className="acc-h">Request access</h2>
           {who}
           <p className="acc-p">You're not on the squadron's list yet. Tell the admins who you are and they'll give you access.</p>
-          <label htmlFor="accCs">Callsign</label>
-          <input id="accCs" autoComplete="off" placeholder="callsign" maxLength={MAX_CS} autoFocus
+          {/* no maxLength on this box (D226): a longer name is SAID, never quietly cut */}
+          <label htmlFor="accCs">{SIGNUP_CALLSIGN_LABEL}</label>
+          <input id="accCs" autoComplete="off" placeholder="callsign or name" autoFocus
             value={cs} onChange={e => setCs(e.target.value)} />
-          <label htmlFor="accFull">Name</label>
-          <input id="accFull" autoComplete="name" placeholder="name" maxLength={MAX_FULL}
-            value={full} onChange={e => setFull(e.target.value)} />
+          {cs.trim().length > MAX_CS && <div className="cs-long" id="accCsLong">{CS_TOO_LONG}</div>}
+          <label htmlFor="accIni">Initials</label>
+          <input id="accIni" autoComplete="off" placeholder="initials" maxLength={MAX_INITIALS}
+            value={ini} onChange={e => setIni(e.target.value)} />
+          <label htmlFor="accSeat">Pilot, WSO or personnel</label>
+          <select id="accSeat" value={seat}
+            onChange={e => { const v = e.target.value; setSeat(v); if (!catsFor(v).includes(cat)) setCat('') }}>
+            <option value="">Pick…</option>
+            {SEATS.map(o => <option key={o.v} value={o.v}>{o.l}</option>)}
+          </select>
+          {/* personnel hold no CAT (26 Aug 26); a seat change that the CAT cannot follow puts it back to Pick… */}
+          {seat !== 'GND' && <>
+            <label htmlFor="accCat">CAT</label>
+            <select id="accCat" value={cat} onChange={e => setCat(e.target.value)}>
+              <option value="">Pick…</option>
+              {(seat ? catsFor(seat) : []).map(k => <option key={k} value={k}>{k}</option>)}
+            </select>
+          </>}
           <div className="err" id="accErr">{err}</div>
           <button className="go" type="submit" id="accSend">Request access</button>
           {signOut}

@@ -67,6 +67,14 @@ half).
 - **They run on HIS PC** (D89): one job, a Windows service, the `pc` job in `.github/workflows/deploy.yml`; the
   way back to GitHub's own machines is the repo variable `CI_ON_GITHUB=true`. Never two full gate runs at once,
   and never a full local run while his PC's runner is mid-run (D86).
+- **Parallel chats take turns through ONE lock on his PC (D228, 26 Sep 26 — "why not both? and deconflict the full
+  checks").** Before the full unit suite, any browser-test run of more than one file, the Tracker smoke or a fanned-out
+  walk, TAKE the lock: `node raptor-port/scripts/gatelock.mjs take "<branch> — <what>"` (or by hand: make the folder
+  `C:\Users\User\.raptor-gates-lock` — it fails if it exists — and write `owner.txt`); if it is held, WAIT (check every
+  few minutes; never start alongside); RELEASE it the moment the run ends, pass or fail (`… gatelock.mjs release`, or
+  delete the folder). `… gatelock.mjs run` takes it, runs the whole gate set in order and always releases. A lock older
+  than 2 hours whose run is plainly over is stale — break it and say so. One test file, a typecheck or one walk script
+  needs no lock. The folder sits OUTSIDE every checkout, so every worktree on the PC shares it.
 - **Docs-only changes skip the gates** (`paths-ignore` in `deploy.yml`: `**.md`, `.claude/**`, the document-gate
   scripts `raptor-port/scripts/docsize*.mjs` and `backlog-archive.mjs`, and `docs-guard.yml`) — but the Docs guard
   (`docs-guard.yml`, about a billed minute) still runs on every PR and every push to `main`. **An exemption from

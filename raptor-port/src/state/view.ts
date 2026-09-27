@@ -384,6 +384,16 @@ export type AvailWin = {
      ONLY while OIL Earn is on (the mode rule, confirmed 22 Sep 26). */
   tab: 'who' | 'oil'
 }
+/* [ACCOUNTS-NEW-PERSON] — OPENING ADMIN → USERS FROM ELSEWHERE (the bell's tap, D216; Quals'
+   "+ Add person", D217). A one-shot intent with ONE consumer, the Admin page (Fable F2,
+   Astra 4): it selects Users (on a phone, opens it), hands `newPerson` on to the Users panel
+   as a prop, and clears this. The `seq` makes a second press a NEW intent, so it works when
+   the Admin page is already on screen (on Squadron config, say) and when Quals' button is
+   pressed twice. Cleared by a sign-in or sign-out (VIEW_RESET) — never inherited. */
+export let ADMINOPEN: { seq: number; newPerson: boolean } | null = null
+let adminOpenSeq = 0
+export function requestAdminUsers(newPerson: boolean) { ADMINOPEN = { seq: ++adminOpenSeq, newPerson: !!newPerson } }
+export function clearAdminOpen() { ADMINOPEN = null }
 export let AVAILWIN: AvailWin | null = null
 /* EVERY OPEN AND EVERY CLOSE GOES THROUGH HERE, so this is where a window
    starts clean: its footer sentence and its position are reset with it. Both
@@ -825,6 +835,8 @@ export const VIEW_RESET: { name: string; scopes: ResetScope[]; reset: () => void
      week being left; resetSession clears the offer through setPage instead */
   { name:'ROSDAY',     scopes:['session','week'], reset:()=>setRosDay(0) },   // [ACCOUNTS]: the next person starts on the first day (Astra code read)
   { name:'SECDEFOFFER',scopes:['week'], reset:()=>setSecDefOffer(null) },
+  /* [ACCOUNTS-NEW-PERSON]: a pending "open Admin → Users" is the outgoing person's */
+  { name:'ADMINOPEN', scopes:['session'], reset:()=>clearAdminOpen() },
 ]
 /* clear every field whose policy includes `scope`. Order within a scope does
    not matter — each entry clears an independent field — so resetSession and

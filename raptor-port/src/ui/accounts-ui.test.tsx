@@ -36,6 +36,9 @@ const type = async (el: HTMLInputElement | HTMLSelectElement, v: string) => {
   })
 }
 const signInAs = async (name: string, pass = 'x') => act(async () => { resetSession(sessionFor(signIn(name, pass))); notify() })
+/* a sign-up as the card sends it ([ACCOUNTS-NEW-PERSON] — D214: callsign/name, initials, seat, CAT) */
+const ask = (cs: string, o: { ini?: string; seat?: string; cat?: string } = {}) =>
+  requestAccess({ cs, ini: o.ini ?? 'JB', seat: o.seat ?? 'FCP', cat: o.cat ?? 'C' })
 
 const mem: Record<string, string> = {}
 let host: HTMLDivElement
@@ -82,7 +85,9 @@ describe('AC11 — the access screens (D204)', () => {
     expect($('#accessRequest')).toBeTruthy()
     expect($('#accName').textContent).toBe('viper@mail')
     await type($('#accCs') as HTMLInputElement, 'Viper')
-    await type($('#accFull') as HTMLInputElement, 'Jo Bloggs')
+    await type($('#accIni') as HTMLInputElement, 'JB')
+    await type($('#accSeat') as HTMLSelectElement, 'FCP')
+    await type($('#accCat') as HTMLSelectElement, 'C')
     await act(async () => { $('#accForm').dispatchEvent(new Event('submit', { bubbles: true, cancelable: true })) })
     expect($('#accessWaiting')).toBeTruthy()
     expect($('#accessWaiting').textContent).toContain('Viper')
@@ -104,7 +109,7 @@ describe('AC11 — the access screens (D204)', () => {
   it('waiting, with the guest switch on: "View the schedule" goes straight into the guest view (D221); off, no button', async () => {
     await signInAs('wait1@mail')
     await type($('#accCs') as HTMLInputElement, 'W1')
-    await type($('#accFull') as HTMLInputElement, 'Wait One')
+    await type($('#accSeat') as HTMLSelectElement, 'GND')
     await act(async () => { $('#accForm').dispatchEvent(new Event('submit', { bubbles: true, cancelable: true })) })
     expect($('#accessWaiting')).toBeTruthy()
     expect($('#accGuest'), 'the switch is off: no button').toBeFalsy()
@@ -135,7 +140,7 @@ describe('AC12 — the guest sees the published week only, walled off (D204; med
       setDayApproved(0, true); notify()
     })
     expect(dayApproved(0), 'the fixture day is published').toBe(true)
-    await signInAs('guesty@mail'); requestAccess('G', 'Guest Person')
+    await signInAs('guesty@mail'); ask('G')
     await signInAs('ad', 'a'); setGuestView(true)
     await signInAs('guesty@mail')
     expect($('#guestApp')).toBeTruthy()
@@ -162,13 +167,16 @@ describe('AC12 — the guest sees the published week only, walled off (D204; med
 
 describe('AC13 — Admin → Users (D166 (1), D204)', () => {
   it('the Admin tab counts the requests waiting; approve links a puck the admin picks', async () => {
-    await signInAs('newbie@mail'); requestAccess('Newbie', 'New Person')
+    await signInAs('newbie@mail'); ask('Newbie')
     await signInAs('ad', 'a')
     expect($('#admWaitBadge').textContent).toBe(String(ACCESS_REQS.length))
     await act(async () => { setPage('admin'); notify() })
     const rq = ACCESS_REQS.find(r => r.name === 'newbie@mail')!
     const waiting = ACCESS_REQS.length
     await click($(`[data-approve="${rq.id}"]`))
+    /* [ACCOUNTS-NEW-PERSON]: "Newbie" is on no roster, so Approve opens on New person — link
+       someone already on Quals by choosing On the roster */
+    await click($('#apvModeRoster'))
     await type($('#apvPid') as HTMLSelectElement, 'pike')
     await click($('#apvGo'))
     expect(accountByName('newbie@mail')).toMatchObject({ pid: 'pike', role: 'main' })

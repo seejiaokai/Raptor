@@ -1,0 +1,355 @@
+[
+  {
+    "id": "B1",
+    "surface": "Sign-up card: its four labelled fields",
+    "file": "src/ui/AccessScreen.tsx",
+    "exit": 1,
+    "red": [
+      "four labelled fields, the D222 label, no Name box; Pilot / WSO / Personnel; CAT hidden for personnel"
+    ],
+    "summary": "Tests  1 failed | 24 passed (25)"
+  },
+  {
+    "id": "B2",
+    "surface": "Sign-up card: personnel have no CAT box",
+    "file": "src/ui/AccessScreen.tsx",
+    "exit": 1,
+    "red": [
+      "four labelled fields, the D222 label, no Name box; Pilot / WSO / Personnel; CAT hidden for personnel",
+      "the sign-up: Pilot + CAT C → Personnel → WSO shows CAT \"Pick…\""
+    ],
+    "summary": "Tests  2 failed | 23 passed (25)"
+  },
+  {
+    "id": "B3",
+    "surface": "Waiting screen + the waiting list: \"what he gave\" in one line",
+    "file": "src/state/accounts.ts",
+    "exit": 1,
+    "red": [
+      "requestSummary — one line for the waiting screen and the admin: blank parts drop out",
+      "D225: initials may be blank; the waiting screen reads what he gave",
+      "a callsign on no roster opens New person, filled; the admin corrects; one tap makes person and account"
+    ],
+    "summary": "Tests  3 failed | 64 passed (67)"
+  },
+  {
+    "id": "B4",
+    "surface": "The bell: each admin's own seen (D227)",
+    "file": "src/state/accounts.ts",
+    "exit": 1,
+    "red": [
+      "lights for every admin until HE has seen the list; a later request lights it again",
+      "survives a reload; a request answered before it was seen puts the bell out",
+      "lights for a request; the tap says so and opens Admin → Users, which puts it out; a member never",
+      "first in order: before a bug report",
+      "desktop: the Admin TAB alone puts it out — the list is beside the rail (Fable F1)",
+      "phone: the category list does NOT count; tapping into Users does (Fable F1)",
+      "the bell opens Users even when the Admin page is already up on another category (Fable F2)"
+    ],
+    "summary": "Tests  7 failed | 60 passed (67)"
+  },
+  {
+    "id": "B5",
+    "surface": "The bell: the phone category list does not count (Admin page `shown`)",
+    "file": "src/ui/AdminPage.tsx",
+    "exit": 1,
+    "red": [
+      "phone: the category list does NOT count; tapping into Users does (Fable F1)"
+    ],
+    "summary": "Tests  1 failed | 24 passed (25)"
+  },
+  {
+    "id": "B6",
+    "surface": "The bell: the list on screen puts it out (Users panel effect)",
+    "file": "src/ui/UsersPanel.tsx",
+    "exit": 1,
+    "red": [
+      "lights for a request; the tap says so and opens Admin → Users, which puts it out; a member never",
+      "first in order: before a bug report",
+      "desktop: the Admin TAB alone puts it out — the list is beside the rail (Fable F1)",
+      "phone: the category list does NOT count; tapping into Users does (Fable F1)",
+      "the bell opens Users even when the Admin page is already up on another category (Fable F2)"
+    ],
+    "summary": "Tests  5 failed | 20 passed (25)"
+  },
+  {
+    "id": "B7",
+    "surface": "The bell's order: access before a bug report",
+    "file": "src/ui/Shell.tsx",
+    "exit": 1,
+    "red": [
+      "lights for a request; the tap says so and opens Admin → Users, which puts it out; a member never",
+      "first in order: before a bug report",
+      "the bell opens Users even when the Admin page is already up on another category (Fable F2)"
+    ],
+    "summary": "Tests  3 failed | 22 passed (25)"
+  },
+  {
+    "id": "B8",
+    "surface": "Approve → New person: the admin's corrections win",
+    "file": "src/state/accounts.ts",
+    "exit": 1,
+    "red": [
+      "a callsign on no roster opens New person, filled; the admin corrects; one tap makes person and account"
+    ],
+    "summary": "Tests  1 failed | 24 passed (25)"
+  },
+  {
+    "id": "B9",
+    "surface": "Approve → On the roster: never pre-picked (D204)",
+    "file": "src/ui/UsersPanel.tsx",
+    "exit": 1,
+    "red": [
+      "a callsign on the roster opens On the roster, NEVER pre-picked, with a note naming him (by callsign, never an id)"
+    ],
+    "summary": "Tests  1 failed | 24 passed (25)"
+  },
+  {
+    "id": "B10",
+    "surface": "Approve → On the roster: a person who already has an account is said so (Fable read #1)",
+    "file": "src/ui/UsersPanel.tsx",
+    "exit": 1,
+    "red": [
+      "a callsign whose person ALREADY has an account: the note says so and never asks him to pick them (Fable read #1)",
+      "ARCHIVED and holding an account: the account wins — never \"restore to link\", which could not work (both fix checks #1)"
+    ],
+    "summary": "Tests  2 failed | 23 passed (25)"
+  },
+  {
+    "id": "B11",
+    "surface": "Add → New person with a sign-in: person AND account",
+    "file": "src/state/accounts.ts",
+    "error": "find matched 2 times"
+  },
+  {
+    "id": "B12",
+    "surface": "Add → New person, blank sign-in: a roster-only person",
+    "file": "src/state/roster-add.ts",
+    "exit": 1,
+    "red": [
+      "an admin adds a pilot: the Quals add's record, one command, the callsign index, kept",
+      "personnel land with no CAT, a Remarks cell, flight \"-\" (26 Aug 26)",
+      "a blank sign-in makes a roster-only person: no Role, \"Add person\"",
+      "a New person add clears the WHOLE form — the roster pick made before it is gone too (Astra read #1)"
+    ],
+    "summary": "Tests  4 failed | 43 passed (47)"
+  },
+  {
+    "id": "B13",
+    "surface": "Add form: clears whole after an add (Astra read #1)",
+    "file": "src/ui/UsersPanel.tsx",
+    "exit": 1,
+    "red": [
+      "a New person add clears the WHOLE form — the roster pick made before it is gone too (Astra read #1)"
+    ],
+    "summary": "Tests  1 failed | 24 passed (25)"
+  },
+  {
+    "id": "B14",
+    "surface": "Seat → CAT: personnel hold none, a CAT never rides through (Astra read #2)",
+    "file": "src/state/roster-add.ts",
+    "exit": 1,
+    "red": [
+      "personnel, a blank seat and a made-up one hold NO CAT (26 Aug 26) — the list is empty, so a CAT picked for a pilot cannot ride through Personnel (Astra read #2)",
+      "the sign-up: Pilot + CAT C → Personnel → WSO shows CAT \"Pick…\"",
+      "Admin → Users New person: Pilot + CAT C → Personnel → WSO shows CAT \"Pick…\"",
+      "approving: the same, on the approve form"
+    ],
+    "summary": "Tests  4 failed | 43 passed (47)"
+  },
+  {
+    "id": "B15",
+    "surface": "The words: \"Callsign/Name\" on the New person fields (D219)",
+    "file": "src/ui/UsersPanel.tsx",
+    "exit": 1,
+    "red": [
+      "every picker and label asks for a \"callsign or name\"; no (FCP) / (RCP) anywhere"
+    ],
+    "summary": "Tests  1 failed | 24 passed (25)"
+  },
+  {
+    "id": "B16",
+    "surface": "Quals \"+ Add person\" → Admin → Users (D217)",
+    "file": "src/ui/QualsPage.tsx",
+    "exit": 1,
+    "red": [
+      "opens the add form on New person, every press — and a member has no button",
+      "NP1 — \"+ Add person\" is a button to Admin → Users with New person chosen; the old form is gone (D217)"
+    ],
+    "summary": "Tests  2 failed | 89 passed (91)"
+  },
+  {
+    "id": "B17",
+    "surface": "Quals column head \"Callsign/Name\" (D219)",
+    "file": "src/ui/QualsPage.tsx",
+    "exit": 1,
+    "red": [
+      "the table heads with Callsign/Name then Initials, and Name is gone (D219)",
+      "NP7 — every view heads Callsign/Name (D219), and so does the exported LoX",
+      "renames the person and every puck follows; duplicates are refused",
+      "the CAT dropdown is seat-filtered: no IW for a pilot, no IP/IR for a WSO",
+      "TF is a real column that starts held by nobody",
+      "and TF ticks and unticks like any other qualification"
+    ],
+    "summary": "Tests  6 failed | 60 passed (66)"
+  },
+  {
+    "id": "B18",
+    "surface": "Quals CSV first head \"Callsign/Name\"",
+    "file": "src/ui/QualsPage.tsx",
+    "exit": 1,
+    "red": [
+      "NP7 — every view heads Callsign/Name (D219), and so does the exported LoX"
+    ],
+    "summary": "Tests  1 failed | 65 passed (66)"
+  },
+  {
+    "id": "B19",
+    "surface": "The one add: PID-01, a callsign that is anyone's is refused",
+    "file": "src/state/roster-add.ts",
+    "exit": 1,
+    "red": [
+      "a live callsign is taken — any case",
+      "PID-01: a callsign that is someone's hidden id is taken (the add back-door, 14 Sep 26)",
+      "a placeholder (ALL, ALL AVAIL) is taken — never \"restore them\" (Fable F4)",
+      "a real archived person points at Restore on Quals",
+      "the add refuses what the check refuses — nothing is minted",
+      "putNewPerson refuses a taken callsign with CmdRefused: rolled back, no console error, the reason kept",
+      "a refusal on either half leaves NOTHING — no person, no account",
+      "a typed callsign that is someone's is refused as New person; the request stays"
+    ],
+    "summary": "Tests  8 failed | 56 passed (64)"
+  },
+  {
+    "id": "B20",
+    "surface": "The one add: personnel stored with no CAT",
+    "file": "src/state/roster-add.ts",
+    "exit": 1,
+    "red": [
+      "personnel land with no CAT, a Remarks cell, flight \"-\" (26 Aug 26)"
+    ],
+    "summary": "Tests  1 failed | 21 passed (22)"
+  },
+  {
+    "id": "B21",
+    "surface": "The one add: 14 letters, a longer name refused (D226)",
+    "file": "src/state/roster-add.ts",
+    "exit": 1,
+    "red": [
+      "D226: 15 letters is refused with its reason, never cut",
+      "D226: past 14 letters the card says so at once, and Request access refuses — nothing cut"
+    ],
+    "summary": "Tests  2 failed | 45 passed (47)"
+  },
+  {
+    "id": "B22",
+    "surface": "The one add: initials never required (D225)",
+    "file": "src/state/roster-add.ts",
+    "exit": 1,
+    "red": [
+      "D225: initials are asked but never required",
+      "personnel land with no CAT, a Remarks cell, flight \"-\" (26 Aug 26)",
+      "refuses a missing pick or an over-long name with its reason; initials may be blank",
+      "requestSummary — one line for the waiting screen and the admin: blank parts drop out",
+      "D217: a blank sign-in makes a roster-only person — no account, a person.add command",
+      "D225: initials may be blank; the waiting screen reads what he gave",
+      "a blank sign-in makes a roster-only person: no Role, \"Add person\"",
+      "with a sign-in: \"Add person and account\", Role shown; refused halves leave nothing",
+      "a New person add clears the WHOLE form — the roster pick made before it is gone too (Astra read #1)"
+    ],
+    "summary": "Tests  9 failed | 80 passed (89)"
+  },
+  {
+    "id": "B23",
+    "surface": "The sign-up never says whether a callsign is taken",
+    "file": "src/state/accounts.ts",
+    "exit": 1,
+    "red": [
+      "a typed callsign never claims a puck — the admin must pick one",
+      "never tells a person not yet let in whether a callsign is taken",
+      "requestSummary — one line for the waiting screen and the admin: blank parts drop out",
+      "a typed callsign that is someone's is refused as New person; the request stays"
+    ],
+    "summary": "Tests  4 failed | 38 passed (42)"
+  },
+  {
+    "id": "B24",
+    "surface": "A person is kept across a reload (the roster persisted inside the command)",
+    "file": "src/state/people-settings-commit.ts",
+    "exit": 0,
+    "red": [],
+    "summary": "Tests  64 passed (64)"
+  },
+  {
+    "id": "B25",
+    "surface": "Permissions: approving with New person writes a Person (§11 / the command gate)",
+    "file": "src/state/perms.ts",
+    "exit": 1,
+    "red": [
+      "NP8 — a command is authorised only if EVERY table it writes allows it (Astra's plan read 1)"
+    ],
+    "summary": "Tests  1 failed | 96 passed (97)"
+  },
+  {
+    "id": "B26",
+    "surface": "A pending \"open Users\" never outlives a sign-in",
+    "file": "src/state/view.ts",
+    "exit": 1,
+    "red": [
+      "a pending \"open Users\" never outlives a sign-in (VIEW_RESET)"
+    ],
+    "summary": "Tests  1 failed | 24 passed (25)"
+  },
+  {
+    "id": "B11b",
+    "surface": "Add → New person with a sign-in: person AND account (unique match)",
+    "file": "src/state/accounts.ts",
+    "exit": 1,
+    "red": [
+      "person and account together, one account.addNew command, and he signs in as himself",
+      "with a sign-in: \"Add person and account\", Role shown; refused halves leave nothing"
+    ],
+    "summary": "Tests  2 failed | 65 passed (67)"
+  },
+  {
+    "id": "B24b",
+    "surface": "A person is kept across a reload — the real storage wiring",
+    "file": "src/state/people-settings-commit.ts",
+    "exit": 1,
+    "red": [
+      "the person and the account are ONE group"
+    ],
+    "summary": "Tests  1 failed | 4 passed (5)"
+  },
+  {
+    "id": "B28",
+    "surface": "Approve note: the account is checked before archived (both fix checks #1)",
+    "file": "src/ui/UsersPanel.tsx",
+    "exit": 1,
+    "red": [
+      "ARCHIVED and holding an account: the account wins — never \"restore to link\", which could not work (both fix checks #1)"
+    ],
+    "summary": "Tests  1 failed | 24 passed (25)"
+  },
+  {
+    "id": "B29",
+    "surface": "The account editor keeps its archived person in the picker (Astra's fix check #2)",
+    "file": "src/state/accounts.ts",
+    "exit": 1,
+    "red": [
+      "the account editor of an ARCHIVED person still shows his callsign in its picker (Astra's fix check #2)"
+    ],
+    "summary": "Tests  1 failed | 66 passed (67)"
+  },
+  {
+    "id": "B27",
+    "surface": "Only an admin adds a person (the function gate)",
+    "file": "src/state/roster-add.ts",
+    "exit": 1,
+    "red": [
+      "a member and a pending person add nobody — refused with the reason",
+      "a member and a pending person are refused at the function, and nothing moves"
+    ],
+    "summary": "Tests  2 failed | 62 passed (64)"
+  }
+]

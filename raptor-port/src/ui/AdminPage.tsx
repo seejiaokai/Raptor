@@ -19,10 +19,11 @@
    the other. Every category panel stays mounted (only the active one shows), so
    the template openers and the user tools keep their stable ids wherever the
    rail happens to be pointing. */
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { canEditSched } from '../state/auth'
 import { isAdmin } from '../state/perms'
 import { waitingCount } from '../state/accounts'
+import { ADMINOPEN, clearAdminOpen } from '../state/view'
 import { UsersPanel } from './UsersPanel'
 import { notify } from '../state/store'
 import { HOOKS } from '../engine/hooks'
@@ -171,8 +172,23 @@ export function AdminPage() {
   /* which category the pane shows; `drilled` only matters on a phone, where the
      rail and pane share the screen — it flips from the list to the detail */
   const [cat, setCat] = useState('users')
-  const [drilled, setDrilled] = useState(false)
+  /* arriving by the bell or Quals' "+ Add person" opens Users straight away — on a phone
+     drilled in, never the category list first ([ACCOUNTS-NEW-PERSON]) */
+  const [drilled, setDrilled] = useState(() => !!ADMINOPEN)
+  const [openNew, setOpenNew] = useState(0)
   const admin = isAdmin()
+  /* THE ONE CONSUMER of "open Admin → Users" (state/view.ts ADMINOPEN — Fable F2, Astra 4):
+     keyed on its `seq`, so it works whether this page was just mounted or was already up
+     (on Squadron config, say), and a second press is a new intent. `drilled` is inert on a
+     desktop (the rail and the pane sit side by side there). */
+  const intentSeq = ADMINOPEN ? ADMINOPEN.seq : 0
+  useEffect(() => {
+    const it = ADMINOPEN
+    if (!it) return
+    setCat('users'); setDrilled(true)
+    setOpenNew(it.newPerson ? it.seq : 0)
+    clearAdminOpen()
+  }, [intentSeq])
   const waiting = admin ? waitingCount() : 0
   /* the forced-member render — this is what makes the page gate non-vacuous:
      the nav already hides the tab, so the only way here as a member is state
@@ -212,7 +228,9 @@ export function AdminPage() {
                 guest switch. Replaces the reference's Manage-users list, which drove
                 nothing. ---- */}
             <section className={'adm-panel' + (cat === 'users' ? ' on' : '')} id="admUsers">
-              <UsersPanel />
+              {/* `shown`: the waiting list is on his screen — Users chosen, and on a phone
+                  drilled in (the category list alone does not count — D216, D227) */}
+              <UsersPanel shown={cat === 'users' && (drilled || !HOOKS.isPhone())} openNew={openNew} />
             </section>
             {/* ---- Squadron configuration — front doors to the two template
                 editors. The modals are App-level siblings (App.tsx), so they

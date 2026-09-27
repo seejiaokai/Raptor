@@ -15,6 +15,11 @@ import { bootStorage } from '../storage/boot'
 import { settingsAdapter, leavewarAdapter } from '../storage/adapters'
 import { MemoryBackend } from '../storage/memory'
 import { commit, definePermission, anyone, CmdRefused } from '../command'
+import { resetSession } from './store'
+import { signIn, sessionFor, addPersonAndAccount, accountByName } from './accounts'
+import { PEOPLE, ID_BY_CS } from '../engine/people'
+import { commitPeopleSettingsIntent } from './people-settings-commit'
+import { putNewPerson } from './roster-add'
 
 const ISNAP = JSON.stringify(INPUTS)
 const ROW = { person: 'dj', date: 'Jul 14', allday: true, type: 'LL', remarks: 'txn test', mod: '2026-07-01' }
@@ -78,5 +83,44 @@ describe('the all-or-nothing save, real wiring', () => {
     await vi.advanceTimersByTimeAsync(300)
     expect(groupsSent(be)).toHaveLength(1)
     expect(be.journal.every(j => j.op === 'loadAll' || j.collection === 'leavewar')).toBe(true)
+  })
+})
+
+/* [ACCOUNTS-NEW-PERSON] (D214, NP3 — Astra's plan read 7): a person and his account reach
+   storage as ONE group, and a refused one reaches it not at all — on the real wiring */
+describe('a new person with his account, real wiring', () => {
+  const drop = (cs: string) => { const id = Object.keys(PEOPLE).find(k => (PEOPLE as any)[k].cs === cs); if (id) delete (PEOPLE as any)[id]; delete (ID_BY_CS as any)[cs.toLowerCase()] }
+  it('the person and the account are ONE group', async () => {
+    drop('Blaze')
+    const { be } = await boot()
+    resetSession(sessionFor(signIn('ad', 'a')))
+    await vi.advanceTimersByTimeAsync(300); be.journal.length = 0
+    expect(addPersonAndAccount('blaze@mail', { cs: 'Blaze', ini: 'RTK', seat: 'RCP', cat: 'D' }, 'main')).toBe(null)
+    await vi.advanceTimersByTimeAsync(300)
+    const g = groupsSent(be)
+    expect(g).toHaveLength(1)
+    const recs = be.journal.filter(j => j.group === g[0]).map(j => `${j.collection}/${j.id}`)
+    expect(recs).toContain('people/all')
+    expect(recs).toContain('settings/accounts')
+    expect(JSON.parse(be.peek('settings', 'accounts')!).some((a: any) => a.name === 'blaze@mail')).toBe(true)
+    expect(Object.values(JSON.parse(be.peek('people', 'all')!)).some((p: any) => p.cs === 'Blaze')).toBe(true)
+    resetSession(null); drop('Blaze')
+  })
+  it('a refusal inside, after both halves were written, stores nothing and sends no group', async () => {
+    drop('Blaze')
+    const { be, wb } = await boot()
+    resetSession(sessionFor(signIn('ad', 'a')))
+    await vi.advanceTimersByTimeAsync(300); be.journal.length = 0
+    const before = wb.snapshot()
+    const r: any = commitPeopleSettingsIntent('account.addNew', null, () => {
+      putNewPerson({ cs: 'Blaze', ini: '', seat: 'FCP', cat: 'C' })
+      throw new CmdRefused('refused after both')
+    })
+    expect(r).toMatchObject({ ok: false, reason: 'refused' })
+    expect(wb.snapshot()).toEqual(before)
+    await vi.advanceTimersByTimeAsync(600)
+    expect(groupsSent(be)).toEqual([])
+    expect(accountByName('blaze@mail')).toBeUndefined()
+    resetSession(null)
   })
 })

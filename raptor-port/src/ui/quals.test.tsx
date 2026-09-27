@@ -5,7 +5,7 @@ import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest'
 import { act } from 'react'
 import { createRoot, type Root } from 'react-dom/client'
 import { App } from './App'
-import { initStore, setSession, notify } from '../state/store'
+import { initStore, setSession, notify, setPage } from '../state/store'
 import { setMe } from '../state/auth'
 import { resyncPeopleBaseline } from '../state/people-settings-commit'
 import { DAYS } from '../engine/data'
@@ -338,93 +338,36 @@ describe('the Quals page (tfin)', () => {
 })
 
 /* CALLSIGN + INITIALS (owner, Aug 26). The callsign is the identity the whole
-   app plans by — it is what every puck prints — so it heads the table and is
-   the only field Add person requires; first/last name are gone. */
+   app plans by — it is what every puck prints — so it heads the table; first/last
+   name are gone. Adding a person moved to Admin → Users ([ACCOUNTS-NEW-PERSON], D217):
+   its rules are state/roster-add.test.ts (the PID-01 guard included), and here only the
+   button that takes the admin there. */
 describe('the callsign / initials columns', () => {
   const setV = async (el: HTMLElement, v: string) => act(async () => {
     const setter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value')!.set!
     setter.call(el, v); el.dispatchEvent(new Event('input', { bubbles: true }))
   })
 
-  it('the table heads with Callsign then Initials, and Name is gone', () => {
+  it('the table heads with Callsign/Name then Initials, and Name is gone (D219)', () => {
     /* the sorted heading carries an arrow inside it, so read the LABEL —
        this assertion is about which columns exist, not how they are sorted */
     const hs = heads()
-    expect(hs[0]).toBe('Callsign')
+    expect(hs[0]).toBe('Callsign/Name')
     expect(hs[1]).toBe('Initials')
     expect(hs).not.toContain('Name')
     // every row carries the new cell, so the columns stay square
     expect($$('#qtbl tbody tr:not(.grp) td.qinitc').length).toBe($$('#qtbl tbody tr:not(.grp)').length)
   })
 
-  it('the Add person form folds behind a button and toggles open (owner, 15 Aug 26)', async () => {
-    expect($('#qCS'), 'closed by default — no open form above the table').toBeFalsy()
-    expect($('#qAddToggle'), 'the admin sees the toggle').toBeTruthy()
+  it('NP1 — "+ Add person" is a button to Admin → Users with New person chosen; the old form is gone (D217)', async () => {
+    expect($('#qCS'), 'no add form on Quals any more').toBeFalsy()
+    expect($('#qAddToggle').textContent).toBe('+ Add person')
+    expect($('#qAddToggle').hasAttribute('aria-expanded'), 'a plain button, not a fold').toBe(false)
     await click($('#qAddToggle'))
-    expect($('#qCS'), 'opens on click').toBeTruthy()
-    await click($('#qAddToggle'))
-    expect($('#qCS'), 'and closes again').toBeFalsy()
-  })
-
-  it('a stale Add person button pressed by a member adds nobody and says why (Fable code read, 26 Sep 26)', async () => {
-    await click($('#qAddToggle'))
-    await setV($('#qCS') as HTMLElement, 'Stale')
-    const btn = $('#qAddPerson')
-    const toasts: string[] = []
-    const origToast = HOOKS.toast
-    HOOKS.toast = (m: any) => { toasts.push(String(m)) }
-    setSession({ user: 'acus', role: 'main', pid: 'bane', name: 'us' }); setMe('bane')   // no repaint: the button is still on screen
-    try { await click(btn) } finally { HOOKS.toast = origToast; setSession({ user: 'acad', role: 'admin', pid: 'stiff', name: 'ad' }); setMe('stiff'); await act(async () => { notify() }) }
-    expect(toasts).toContain('Only an admin can add someone')
-    expect(toasts.some(t => t.includes('added'))).toBe(false)
-    expect(Object.keys(PEOPLE).some(k => PEOPLE[k].cs === 'Stale')).toBe(false)
-    await click($('#qAddToggle'))
-  })
-
-  it('Add person takes callsign + initials + pilot/WSO + cat, with no name fields', async () => {
-    /* the form folds behind the "+ Add person" button now (owner, 15 Aug 26) */
-    expect($('#qCS'), 'the form is closed until the toggle is pressed').toBeFalsy()
-    await click($('#qAddToggle'))
-    expect($('#qLast')).toBeFalsy()
-    expect($('#qFirst')).toBeFalsy()
-    await setV($('#qCS') as HTMLElement, 'Tester')
-    await setV($('#qInitials') as HTMLElement, 'tkl')
-    /* owner audit, 15 Aug 26 — the two refusals (blank callsign, taken
-       callsign) already toasted; a successful add was the one silent branch */
-    const toasts: string[] = []
-    const origToast = HOOKS.toast
-    HOOKS.toast = (m: any) => { toasts.push(String(m)) }
-    try { await click($('#qAddPerson')) } finally { HOOKS.toast = origToast }
-    expect(toasts).toContain('Tester added')
-    const id = Object.keys(PEOPLE).find(k => PEOPLE[k].cs === 'Tester')!
-    expect(id, 'the person was added').toBeTruthy()
-    expect(PEOPLE[id].initials).toBe('TKL')          // stored upper-case
-    expect(PEOPLE[id].seat).toBe('FCP')
-    expect(PEOPLE[id].q).toBe('OCU')
-    // the callsign is what a puck would resolve — that identity still holds
-    expect(ID_BY_CS['tester']).toBe(id)
-    const row = $$('#qtbl tbody tr:not(.grp)').find(r => r.querySelector('.qname')!.textContent === 'Tester')!
-    expect(row.querySelector('.qinitc')!.textContent).toBe('TKL')
-    PEOPLE[id].archived = true; delete ID_BY_CS['tester']
-    await act(async () => notify())
-  })
-
-  it('Add person refuses a callsign that collides with an existing hidden id (1C add back-door)', async () => {
-    if (!$('#qCS')) await click($('#qAddToggle'))        // state is shared across tests — ensure the form is open
-    /* 'Bane' is nobody's callsign, but it IS the hidden id of the person whose
-       callsign is 'Ranger'. Pre-1C the add guard checked ID_BY_CS only, so this
-       slipped through and repointed the index — crossing every row that stored
-       the id 'bane'. The guard now refuses via the id-tolerant nameToId. */
-    await setV($('#qCS') as HTMLElement, 'Bane')
-    await setV($('#qInitials') as HTMLElement, 'bne')
-    const toasts: string[] = []
-    const origToast = HOOKS.toast
-    HOOKS.toast = (m: any) => { toasts.push(String(m)) }
-    try { await click($('#qAddPerson')) } finally { HOOKS.toast = origToast }
-    expect(toasts.some(t => /already taken/i.test(t)), 'refused, same words as a duplicate callsign').toBe(true)
-    expect(Object.keys(PEOPLE).some(k => PEOPLE[k].cs === 'Bane'), 'no newcomer minted').toBe(false)
-    expect(ID_BY_CS['bane'], 'the index was NOT repointed at a newcomer').toBeUndefined()
-    expect(PEOPLE['bane'].cs).toBe('Ranger')             // the id still belongs to the original person
+    await act(async () => { await new Promise(r => setTimeout(r, 0)) })
+    expect(document.querySelector('#page-admin.on, #page-admin')).toBeTruthy()
+    expect($('#accModeNew').getAttribute('aria-pressed')).toBe('true')
+    await act(async () => { setPage('quals'); notify() })
   })
 
   it('edit mode lets an existing person\'s initials be filled in', async () => {
@@ -459,15 +402,24 @@ describe('the callsign / initials columns', () => {
     await click($('#qViewP'))
   })
 
-  /* ground crew go by name as much as by callsign, and the cell is where
-     either is typed — so under Personnel the column says so (owner, 26 Aug
-     26); the aircrew views keep the plain word, a pilot's identity here IS
-     the callsign. */
-  it('the Personnel view heads Callsign/Name; the aircrew views keep Callsign', async () => {
-    await click($('#qViewG'))
-    expect(heads()[0]).toBe('Callsign/Name')
+  /* D219 (26 Sep 26 — "Lets change it to Callsign/Name. Some people have no call signs")
+     replaced the 26 Aug 26 split (Callsign/Name under Personnel only): every view heads
+     Callsign/Name, and the CSV the LoX prints heads the same (NP7) */
+  it('NP7 — every view heads Callsign/Name (D219), and so does the exported LoX', async () => {
+    for (const v of ['#qViewG', '#qViewP', '#qViewW', '#qViewA']) {
+      await click($(v))
+      expect(heads()[0], v).toBe('Callsign/Name')
+    }
     await click($('#qViewP'))
-    expect(heads()[0]).toBe('Callsign')
+    /* catch the file the export would download: its text, before the browser gets it */
+    let text = ''
+    const RealBlob = globalThis.Blob, realUrl = URL.createObjectURL, realClick = HTMLAnchorElement.prototype.click
+    ;(globalThis as any).Blob = class { constructor(parts: any[]) { text = String(parts[0]) } }
+    ;(URL as any).createObjectURL = () => 'blob:x'
+    HTMLAnchorElement.prototype.click = () => {}
+    try { await click($('#qExport')) } finally { (globalThis as any).Blob = RealBlob; (URL as any).createObjectURL = realUrl; HTMLAnchorElement.prototype.click = realClick }
+    const firstCell = text.split(/\r?\n/)[0].split(',')[0].replace(/"/g, '').replace(/^\uFEFF/, '')
+    expect(firstCell).toBe('Callsign/Name')
   })
 })
 
