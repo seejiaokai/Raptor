@@ -1077,7 +1077,8 @@ stores no stint, the message and the rail's words, the Archived group folding du
 the row). **FULL-CHECKED 27–28 Sep 26** — the evidence sheet `raptor-port/docs/handpass/2026-09-27-one-door.md` (the walk
 254/0 both widths, the break tests, both final reads and every finding's disposition, the gates green). **His look, 28 Sep
 26:** the Quals outline fixed (his find); answers D325–D329 recorded, D326, D327, D329 BUILT red first and walked;
-questions 2 and 5 answered with pictures, his word pending. **Next: his word on 2 and 5, then his "merge live".**
+questions 2 and 5 kept as built. **His "merge live" is GIVEN (D336) — the next chat merges on green, then starts
+`[DRAFT-PENDING]` overnight (up to his look, never merged without his word).**
 
 ### [POST-IN-DATE] A man posted in: the admin is asked his post-in date (D308, filed 27 Sep 26)
 **His ruling (D308):** *"When someone is posted In the app should also ask the admin when is the post in date so that the

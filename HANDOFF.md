@@ -16,29 +16,33 @@ the later merge keeps both (D78).
 ## Now
 
 <!-- now:claude/one-door -->
-### `claude/one-door` — `[ONE-DOOR]` BUILT and FULL-checked — his look (the sheet's §10, six questions) and "merge live" next — written 28 Sep 26 — verify before use
-- **What it is:** Admin → Users as the one door for a person's whole state (D309, D310, D322 — the approved mock-up
-  `raptor-port/docs/mock/one-door.html`), Archive = "posted out from today" on the war with his past kept (D323), Restore
-  asks the post-in date and opens a new stint (D308, D320), his "Welcome back" note (D305), Quals without its archive.
-  Rulings D320–D324 (range D320–D329). Plan `raptor-port/docs/superpowers/plans/2026-09-27-one-door-plan.md` (red-teamed by
-  Fable and Astra, round 1 folded in).
-- **The FULL check so far — the evidence sheet `raptor-port/docs/handpass/2026-09-27-one-door.md`** (§0 says where it
-  stands): Fable's walk design (`…/specs/2026-09-27-one-door-scenarios-fable.md`) → 6 gaps fixed red first; the walk
-  (`scripts/handpass/od-walk.mjs`, 23 scenes, both widths; `walk3` 238/0) → W1 (an archived man's leave sheet offered a
-  posting door) and W2 (his welcome note scrolled away on a phone) fixed red first; the break tests
-  (`scripts/handpass/od-breaks.py`, 32 wires; three unwatched ones given tests — one watched only by the walk's `pastrow`
-  scene, proved with a broken build). `main` (PR #447) merged in; no code clash.
-- **Done since:** the final walk `walk5` 254/0; the two final code reads (Fable and Astra, blind — reports beside the sheet)
-  → every finding fixed red first or dispositioned (sheet §8; Astra's stale-session finding the biggest); `walk6` 62/0 on
-  what the fixes touched; the gates green under the PC lock (sheet §9). The PR is open (see below).
-- **Next:** his look — the sheet's §10 (a "look here" line and six questions, each built as the agent's reading); his
-  answers recorded as rulings (range D320–D329, D325 next); any change they ask for red first + re-walk; then his
-  "merge live" (`main` merged in on 28 Sep 26, with #449; merge it in again first if it has moved since).
-- **Beside it:** `[LW-MOVE-STANDARD]` merged (#447) and its paperwork (#449); that chat has wrapped up. Nothing of its is open on the files this branch touches.
-- **Ports:** preview 4178 (`.claude/launch.json` "raptor-onedoor"), E2E 4196. The break-test scratch worktree is removed.
-- **Traps:** the Bash tool mangles backslashes inside inline heredoc scripts — write an edit script to a file first.
-  Codex: pass `-m gpt-5.6-sol`; stop a Codex run by its own PID, never `taskkill /IM codex.exe`. Scripted edits keep
-  each file's line endings.
+### `claude/one-door` — `[ONE-DOOR]` built, FULL-checked, his look done; D336: MERGE LIVE on green, then build `[DRAFT-PENDING]` overnight — written 28 Sep 26 — verify before use
+- **Where it started:** Admin → Users as the one door for a person's whole state (D309, D310, D322's approved mock-up),
+  Archive = "posted out from today" with his past kept (D323), Restore asks the post-in date (D308) and opens a new stint
+  (D320), his welcome note (D305). Rulings D320–D329 and D336 (how-we-work.md).
+- **Shipped:** PR #450 (`[ONE-DOOR]`) — open when written; its last GitHub run (on `6ce9ab20`) green. Since then, on
+  `ced7d879`: his look's fixes — the Quals outline (his find), D326 "posted out <date>" tag, D327 the crowd keeps an
+  archived man before his archive, D329 the archived row's "how and when" line, D325/D328 kept as built; the two slow
+  Leave War tests given their own limit (`[LW-FIGSEL-SLOW]` archived). Evidence sheet
+  `raptor-port/docs/handpass/2026-09-27-one-door.md` (§8 the two final reads, §9 the gates, §10 his answers, §11 his find).
+- **Unfinished:** (1) the full gate run on `ced7d879` was STARTED under the PC lock at ~16:50 UTC 27 Sep and was running
+  when this was written (logs, this PC only: `%TEMP%\claude\C--Users-User-projects-Raptor\080a1f14-76fb-4817-b65d-bb7a775c3381\scratchpad\gates4\`);
+  (2) the merge (D336 (1)). No open residue beyond that — `[ONE-DOOR]` leaves the backlog with the merge.
+- **Branch:** `claude/one-door`; PR #450. Once it has MERGED, the next work starts on a NEW branch from `main`.
+- **Gates:** last complete run (`705ac8a1` + docs): unit 6669/6669, build, tfin 728/0, e2e 480 passed (48 skipped), smoke
+  443/0, rulecheck, docsize — green. `ced7d879` (his look's fixes): the targeted tests green (onedoor, onedoor-users,
+  postout-outcomes, stints, figdrawer, figselect — 119/119) and walked (`walk7` 42/0, `hl-green` 14/0); the full set was
+  running (Unfinished 1). E2E on this chat's port 4196; the preview 4178.
+- **Open questions for him:** none for `[ONE-DOOR]` — D336 (a) keeps questions 2 and 5 as built.
+- **Pick up here (D336, his standing go, in order):** (1) `node raptor-port/scripts/gatelock.mjs status` — if the run is
+  still going, wait; if its process is gone (a stale lock), release it; then read `gates4`'s `gate-*.log` on this PC, or
+  RE-RUN the whole set (`E2E_PORT=4196 node raptor-port/scripts/gatelock.mjs run --from raptor-port`). (2) Push only when
+  PR #450 has no checks running (D151), wait for them green, merge `main` in first if it moved (D78). (3) MERGE PR #450
+  (his "merge live", D336 (1)) → `main`'s run green → Vercel production READY → ONE notification with the link (D143);
+  mark D336 (1) spent and archive it; `[ONE-DOOR]` and `[POST-IN-DATE]` to the archive by script. (4) Start
+  `[DRAFT-PENDING]` on a new branch from `main` — plan (Opus 5.5) → Fable and Astra red-team → build red first → walk both
+  widths → FULL check → STOP at "ready for his look and merge live" (never merged without his word); its open question
+  (the change history outliving a sign-out) built on YES and put on its look card (D336 (b)).
 <!-- /now -->
 
 <!-- now:claude/five-flags-batch-continue-2cfa70 -->

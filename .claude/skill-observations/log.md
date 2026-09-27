@@ -1050,3 +1050,18 @@ resolved statuses always carry their resolution date
 **Suggested improvement:** When a break test stays green, first ask whether the test environment can observe the wire at all (layout, scroll windows, timers, real events); if not, write the watcher in the real browser and prove it against a deliberately broken build before counting the surface as covered.
 
 **Principle:** "Nothing went red" has two causes — no test, or a test environment that cannot see the wire; the second needs a real-browser watcher proved against a broken build.
+
+### Observation 317: The walk had the picture of the defect and asserted only the class
+
+**Status:** OPEN
+**Date:** 2026-09-28
+**Session context:** `[ONE-DOOR]` — the owner's look found a row outline that skipped the pinned first column
+**Skill:** New skill candidate: bug-check walk scripts (raptor-port/docs/bug-check-order.md §7, §10 anti-pattern 21)
+**Type:** open-source
+**Phase/Area:** Walk assertions; looking at the pictures
+
+**Issue:** The walk step asserted a highlight class was on the row and saved a picture of it. The picture showed the outline starting at the second column — a sticky first cell paints its own background over a row outline — and it was never opened. The owner found it by eye.
+
+**Suggested improvement:** A highlight, outline or mark is asserted as PAINTED on each element it must cover (a computed style per cell, especially pinned/sticky ones), and every picture a step saves is opened before the step counts as looked at. Added to the bug-check order as anti-pattern 21.
+
+**Principle:** A class is intent, not paint; assert what renders on every element it must cover, and a saved picture counts only once someone has looked at it.
