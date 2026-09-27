@@ -49,7 +49,9 @@
 #page-admin .od-arch{margin-top:12px}
 #page-admin .od-arch>.abtn{font-size:12px}
 #page-admin .od-arch .od-list{margin-top:8px}
-#page-admin .od-row-on{background:var(--panel-2);margin:0 -10px;padding:8px 10px;border-radius:10px;border-bottom-color:transparent}
+/* `.acc-row.od-row-on`: scheduler.css's `.acc-row` padding (8px 0) loads later at the same weight — without the second
+   class the opened row widened by its margin while its boxes followed it past the pane's edge (the phone e2e, 27 Sep 26) */
+#page-admin .acc-row.od-row-on{background:var(--panel-2);margin:0 -10px;padding:8px 10px;border-radius:10px;border-bottom-color:transparent}
 #page-admin .od-err{color:#FBB4B9;font-size:11.5px;line-height:1.35;margin:-6px 0 10px}
 #page-admin .od-said{color:var(--ink-3);font-size:11.5px;margin:-4px 0 10px}
 #page-admin .adm-2col input[type=date]{width:100%;box-sizing:border-box}
