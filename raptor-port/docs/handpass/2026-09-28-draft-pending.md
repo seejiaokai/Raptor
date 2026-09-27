@@ -254,7 +254,7 @@ whole story, one picture per step.)
 4. "✓ Mark all as seen": the gold goes, the heading reads "N changes", the OG tags and the icon's number go. Sign out
    and back in: it stays seen.
 
-**Questions — my readings of your rulings, built this way; say if any is wrong:**
+**Questions — my readings of your rulings, built this way; say if any is wrong:** **— ANSWERED 28 Sep 26: 1–11 "keep the rest as recommended" (D338), 12 "A" (D337) — every reading stands as built.**
 1. **The history now outlives a sign-out and a reload** (your D336 (b) question, built on YES). The history is one record
    for the squadron; what is NEW is kept per person. Keep?
 2. **One count per day, never two:** "N pending" on a published day with changes waiting (with a gold dot when something

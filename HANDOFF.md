@@ -19,7 +19,7 @@ the later merge keeps both (D78).
 ### `claude/draft-pending` — `[DRAFT-PENDING]`, the one changes window: BUILT and FULL-checked — READY FOR HIS LOOK and "merge live" (the PR from `claude/draft-pending`) — written 28 Sep 26 — verify before use
 - **Where it started:** `main` at PR #450's merge (`[ONE-DOOR]`, merged 28 Sep 26 on D336 (1), live on Vercel). Overnight by
   D336 (2): planned (Opus 5.5) → Fable and Astra red team, one round → built red first → walked → FULL check. Rulings range
-  for this chat: D337–D349 (D337 used — his look-card answer "12 A"). **Never merge without his word** (D336's permission was
+  for this chat: D337–D349 (D337, D338 used — his look-card answers: "12 A", "keep the rest as recommended"). **Never merge without his word** (D336's permission was
   PR #450's alone).
 - **Built:** the change history durable and week-safe (`engine/editlog.ts` — D336 (b) on YES), each person's "new to you"
   (`state/changes.ts`), ONE writer for every absence / Leave War / Quals / posting / publish / undo / sign-off line
@@ -33,8 +33,8 @@ the later merge keeps both (D78).
   final reads (Astra 3, Fable 9 findings — all fixed red first), then two narrow rounds on the fix commits by both
   (8 and then 7 findings, all fixed red first — the three-round cap reached; the tests and the walk carry the last).
   Gates on the final code (`1270680e`): all green (the counts below, and the sheet's §9).
-- **Next:** (1) **his look** — the card is the sheet's §10 (12 readings, each built one way); (2) his "merge live" — then carry
-  it to live on Vercel and notify him (D143). Nothing else of this branch is pending.
+- **Next:** his look is DONE (28 Sep 26 — every reading kept as built, D337, D338); **his "merge live"** — then merge once the
+  PR's checks are green, carry it to live on Vercel and notify him (D143). Nothing else of this branch is pending.
 - **Walk it again:** `node raptor-port/scripts/handpass/dp-walk.mjs` (HP_W=390 HP_H=844 for the phone) against a preview on 4182
   (`.claude/launch.json` "raptor-draftpending"); e2e on 4197/4198.
 <!-- /now -->

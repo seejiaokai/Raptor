@@ -1061,10 +1061,10 @@ his answer. Touches `raptor-port/src/tracker/` (its own store) — its own small
 below built on YES (D336 (b)) and put on his look card. FULL check: `raptor-port/docs/handpass/2026-09-28-draft-pending.md`
 — the walk (desktop and phone 33/33), Fable's scenarios (12 defects, all fixed), 12 break tests, two blind final reads and
 two narrow rounds on the fixes (every finding red first, then fixed), the gates green on the final code (`1270680e`).
-**Next:** his look (the sheet's §10 — 12 readings, each built one way) → "merge live" (never without his word).
+**Next:** his look DONE 28 Sep 26 — every reading kept as built (D337, D338) → "merge live" (never without his word).
 **From `[ACCOUNTS]` (26 Sep 26), to settle here:** the edit log is cleared at every sign-in and sign-out (`resetSession`
 → `elogClear`, session-only as today); with personal accounts, should the change history outlive a sign-out? The
-window's "new to you" needs it to. A member's history shows a medical change in full (D211, which narrows D169's
+window's "new to you" needs it to. **— ANSWERED 28 Sep 26: yes, as built (D338 (1)); the whole look card answered (D337, D338).** A member's history shows a medical change in full (D211, which narrows D169's
 reading). The edit log's rows carry the person's id beside the callsign from `[ACCOUNTS]` on.
 **WHAT IS SETTLED (read the rulings, not the working notes below):** D168 one changes window (New to you / All changes,
 a day picker, Group by Who / Where) replacing the pending list, the hand-over idea and the Edit history list; D167 its
