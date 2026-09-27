@@ -1342,7 +1342,7 @@ function reprojectRoster(): void {
     const merged: any = { ...pp, ...(edits[pp.id] || {}) }
     const rec = st.postOuts[pp.id]
     if (rec) Object.assign(merged, windowFor(rec, st.showSans))
-    else if (ex) { merged.from = ex.from; merged.to = ex.to; merged.poArchive = ex.poArchive }
+    else if (ex) { merged.from = ex.from; merged.to = ex.to; merged.poArchive = ex.poArchive; if (ex.past) merged.past = ex.past }
     return merged
   })
   // A POSTED-OUT person stays on the war after their Raptor body is archived
@@ -1383,7 +1383,7 @@ function reprojectRoster(): void {
   if (JSON.stringify(catalog) !== JSON.stringify(st.qualCatalog)) setQualCatalog(catalog)
   // xq is sorted at projection, so an unchanged qual set compares equal here.
   const sig = (p: any) =>
-    `${p.callsign}|${p.seat}|${p.band}|${p.sxo ? 1 : 0}|${p.q || ''}|${p.scd ? 1 : 0}|${p.scn ? 1 : 0}|${p.pers ? 1 : 0}|${p.label || ''}|${p.from || ''}|${p.to || ''}|${p.poArchive === undefined ? '' : p.poArchive ? 1 : 0}|${p.poOutcome || ''}|${p.poDone || ''}|${p.gone ? 1 : 0}|${p.san ? 1 : 0}|${(p.xq || []).join(',')}`
+    `${p.callsign}|${p.seat}|${p.band}|${p.sxo ? 1 : 0}|${p.q || ''}|${p.scd ? 1 : 0}|${p.scn ? 1 : 0}|${p.pers ? 1 : 0}|${p.label || ''}|${p.from || ''}|${p.to || ''}|${p.poArchive === undefined ? '' : p.poArchive ? 1 : 0}|${p.poOutcome || ''}|${p.poDone || ''}|${(p.past || []).map((x: any) => `${x.from || ''}~${x.to}`).join(',')}|${p.gone ? 1 : 0}|${p.san ? 1 : 0}|${(p.xq || []).join(',')}`
   const before = new Map(st.people.map(p => [p.id, sig(p)]))
   const unchanged = before.size === next.length && next.every(p => before.get(p.id) === sig(p))
   if (unchanged) return

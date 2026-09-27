@@ -33,6 +33,13 @@ export interface Person {
   from: string | null
   /** Last day in the squadron, inclusive — the posting-out date. `null` means still here. */
   to: string | null
+  /** His CLOSED earlier stints, oldest first ([ONE-DOOR], owner D320, 27 Sep 26 — "the Leave War keeps every stint a man
+   *  has in the squadron"). `from`/`to` above stay the CURRENT (latest) stint, so every reader that asks about "now" —
+   *  the posting pass, the posting sheets' dates, the SANS tag — is unchanged; only `inSquadron` and the helpers below
+   *  read these. Each `{ from, to }` has `from == null || from <= to`, and each ends before the next begins (the store
+   *  refuses anything else, at the write and the load). A past stint carries no posting outcome: its posting has run.
+   *  Absent or empty for a man with one stint — then everything reads exactly as before. */
+  past?: Stint[]
   /** Archive the Raptor body once the posting-out date arrives (the PO
    *  sheet's "Archive on PO date" switch — owner, 19 Aug 26: on by default,
    *  off for the custom cases). Explicit true/false, written ONLY by
@@ -293,10 +300,51 @@ export function categoryLabel(p: Person): string {
   return p.sxo ? `${categoryOf(p)}(S)` : categoryOf(p)
 }
 
+/** One stint in the squadron: first and last day in, inclusive (`from` null = from always). */
+export interface Stint { from: string | null; to: string }
+
 // Plain string comparison is correct for `yyyy-mm-dd`: the format sorts
 // lexicographically in date order, so no parsing (and no timezone) is involved.
+const inWindow = (from: string | null, to: string | null, date: string): boolean =>
+  !(from && date < from) && !(to && date > to)
+/* D320: the current stint (`from`/`to`) OR any closed earlier one (`past`). A man with one stint reads as before. */
 export function inSquadron(p: Person, date: string): boolean {
-  if (p.from && date < p.from) return false
-  if (p.to && date > p.to) return false
-  return true
+  if (inWindow(p.from, p.to, date)) return true
+  return !!p.past && p.past.some(s => inWindow(s.from, s.to, date))
+}
+/* D320 — the helpers the grid reads (one body each, so the cell, its tap and the corner cannot disagree):
+   - `beforeFirstStint` — before his EARLIEST stint began: "not yet arrived" (a blank day). A day in a gap between two
+     stints is NOT this — he was here and left, so it reads as away (PO), with the hatch;
+   - `lastDayIn` — the last day of any stint (the "PO" corner);
+   - `stintAt` — the stint a day falls in: a past one by its index, 'current', or null (a gap, or before or after);
+   - `gapBeforeCurrent` — a day after his last closed stint and before the current one began (the Post in sheet of the
+     stint he came back for is its door; a gap between two PAST stints has none — past stints are read-only). */
+export function beforeFirstStint(p: Person, date: string): boolean {
+  const first = p.past && p.past.length ? p.past[0].from : p.from
+  return first !== null && date < first
+}
+export function lastDayIn(p: Person, date: string): boolean {
+  return (p.to !== null && date === p.to) || (!!p.past && p.past.some(s => s.to === date))
+}
+export function stintAt(p: Person, date: string): number | 'current' | null {
+  if (inWindow(p.from, p.to, date)) return 'current'
+  const i = p.past ? p.past.findIndex(s => inWindow(s.from, s.to, date)) : -1
+  return i >= 0 ? i : null
+}
+export function gapBeforeCurrent(p: Person, date: string): boolean {
+  const last = p.past && p.past.length ? p.past[p.past.length - 1] : null
+  return !!last && p.from !== null && date > last.to && date < p.from
+}
+/* WHICH POSTING SHEET A TAP ON HIS DAY OPENS (D320, [ONE-DOOR] round 1 — Fable F2 / Astra 1): one body for the grid's
+   routing and its pinned sheet. A day in ANY stint is an ordinary day (no posting sheet). With one stint, as before: a
+   day before his post-in opens the Post in sheet, a day after his post-out the Post out sheet. With earlier stints:
+   the gap right before the current stint opens the CURRENT Post in sheet; a day after the current stint closed opens
+   its Post out sheet; a day before his first stint, or a gap between two earlier stints, opens none — past stints are
+   read-only on the war. */
+export function postingSheetFor(p: Person, date: string): 'pi' | 'po' | undefined {
+  if (inSquadron(p, date)) return undefined
+  if (!p.past || !p.past.length) return p.from !== null && date < p.from ? 'pi' : 'po'
+  if (gapBeforeCurrent(p, date)) return 'pi'
+  if (p.to !== null && date > p.to) return 'po'
+  return undefined
 }

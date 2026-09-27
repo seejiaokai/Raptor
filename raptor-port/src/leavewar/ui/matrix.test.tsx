@@ -200,6 +200,27 @@ describe('Matrix', () => {
     expect(onArrival.className).not.toContain('gone')
   })
 
+  /* D320 ([ONE-DOOR], 27 Sep 26): a man back from a posting — his earlier stint reads as normal, the gap reads away
+     (PO, hatched), each stint's last day wears the PO corner, and only a day before his FIRST stint is "not yet
+     arrived" (blank) */
+  it('D320: an earlier stint reads normal, the gap reads PO, and only before the first stint is blank', () => {
+    const back: Person = {
+      id: 'backer', callsign: 'BACKER', seat: 'pilot', band: 'ops', sxo: false,
+      from: '2026-03-01', to: null, past: [{ from: '2026-01-05', to: '2026-01-20' }],
+    }
+    getState().people.push(back)
+    render(<Matrix />)
+    const cell = (d: string) => screen.getByTestId(`cell-backer-${d}`)
+    expect(cell('2026-01-02').textContent).toBe('')
+    expect(cell('2026-01-02').className).toContain('gone')
+    expect(cell('2026-01-10').className).not.toContain('gone')
+    expect(cell('2026-01-20').className).toContain('pofin')
+    expect(cell('2026-01-25').textContent).toBe('PO')
+    expect(cell('2026-01-25').className).toContain('gone')
+    expect(cell('2026-02-27').textContent).toBe('PO')
+    expect(cell('2026-03-01').className).not.toContain('gone')
+  })
+
   it('suppresses the duty class for a code left on a day outside the roster window', () => {
     // A stale FO on a posted-out member's row must not read as "at work" —
     // they are gone, full stop, regardless of what code sits under them.

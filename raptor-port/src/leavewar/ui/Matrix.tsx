@@ -20,6 +20,9 @@ import {
   OTHER_LABEL,
   SANS_GROUP_ID,
   inSquadron,
+  beforeFirstStint,
+  lastDayIn,
+  postingSheetFor,
   isBiddable,
   isDuty,
   opsCatOf,
@@ -146,8 +149,11 @@ function rowInWindow(p: Person, win: string, spans?: RecordSpans): boolean {
     : span && span.last > p.to.slice(0, 7) ? span.last : p.to.slice(0, 7)
   const startsAt = p.from === null ? null
     : span && span.first < p.from.slice(0, 7) ? span.first : p.from.slice(0, 7)
-  if (endsAt !== null && endsAt < first!) return false
-  if (startsAt !== null && startsAt > last!) return false
+  /* D320 ([ONE-DOOR], 27 Sep 26): an earlier stint shows his row too — a leave period that holds one of his stints
+     shows him, one he was away for the whole of (and holding no record of his) does not */
+  const inPast = !!p.past && p.past.some(s => s.to.slice(0, 7) >= first! && (s.from === null || s.from.slice(0, 7) <= last!))
+  if (endsAt !== null && endsAt < first!) return inPast
+  if (startsAt !== null && startsAt > last!) return inPast
   return true
 }
 
@@ -511,7 +517,9 @@ const PersonMonth = memo(function PersonMonth({ p, period, days, grid, states, v
         // the person has not arrived yet — that is not the same fact as
         // having been posted out, and must not read as one. Only the "after
         // `to`" direction is a genuine PO.
-        const notYetArrived = !here && p.from !== null && d.date < p.from
+        /* D320 ([ONE-DOOR], 27 Sep 26): only a day before his FIRST stint is "not yet arrived"; a day in the gap
+           between two stints he was here and left — it reads as away, PO with the hatch */
+        const notYetArrived = !here && beforeFirstStint(p, d.date)
         /* [ARCH-STACK] step 4 — owner answer C (20 Sep 26): leave may be dated
            before someone posts in and after they post out (clearing leave). It
            SHOWS as the leave code — blank-looking before posting-in, with the
@@ -616,7 +624,9 @@ const PersonMonth = memo(function PersonMonth({ p, period, days, grid, states, v
         // without this, a reader jumping month to month never sees the PO at
         // all. The tag rides the corner of the cell so a leave code on the
         // same day still prints.
-        const lastIn = p.to !== null && d.date === p.to
+        /* D320: every stint's last day wears the corner, an earlier one's too */
+        const lastIn = lastDayIn(p, d.date)
+        const lastCurrent = lastIn && d.date === p.to
         return (
           <td
             key={d.date}
@@ -655,8 +665,10 @@ const PersonMonth = memo(function PersonMonth({ p, period, days, grid, states, v
             {lastIn && (
               <span
                 className="polast"
-                data-testid={`polast-${p.id}`}
-                title={`${p.callsign} posts out ${addDays(p.to!, 1)} — this is their last day in the squadron`}
+                data-testid={lastCurrent ? `polast-${p.id}` : `polast-${p.id}-${d.date}`}
+                title={lastCurrent
+                  ? `${p.callsign} posts out ${addDays(p.to!, 1)} — this is their last day in the squadron`
+                  : `${p.callsign} was posted out ${addDays(d.date, 1)} — the last day of an earlier stint`}
               >
                 PO
               </span>
@@ -746,15 +758,14 @@ export function Matrix() {
   const openPerson = open ? people.find(p => p.id === open.id) : undefined
   const openPostedOut = open?.posting
     ? open.posting === 'po' && !!openPerson && openPerson.to !== null
-    : !!open && !!openPerson && !inSquadron(openPerson, open.date) &&
-      !(openPerson.from !== null && open.date < openPerson.from)
+    : !!open && !!openPerson && postingSheetFor(openPerson, open.date) === 'po'   // D320: by stint
   // …and its mirror at the other end: a day BEFORE the person posted in
   // (owner, 20 Sep 26). For an ADMIN this opens the post-in sheet, exactly as
   // a posted-out day opens the post-out one; for a member it falls through to
   // the bid picker, which is answer C's "filed or bid" on a pre-joining day.
   const openNotYetArrived = open?.posting
     ? open.posting === 'pi' && !!openPerson && openPerson.from !== null
-    : !!open && !!openPerson && openPerson.from !== null && open.date < openPerson.from
+    : !!open && !!openPerson && postingSheetFor(openPerson, open.date) === 'pi'   // D320: by stint
   /* "Place leave or OIL here instead" (owner, 20 Sep 26 — "we should also allow
      putting inputs when we click on days that were posted out"). An admin's tap
      on a day outside someone's time in the squadron opens the POSTING sheet,
@@ -1817,8 +1828,8 @@ export function Matrix() {
     /* the tap pins the posting sheet it opens (W3-F5) — read off the day as it stands at the tap */
     setOpen: v => {
       const p = people.find(x => x.id === v.id)
-      const pre = !!p && p.from !== null && v.date < p.from
-      const posting = !p ? undefined : pre ? 'pi' as const : !inSquadron(p, v.date) ? 'po' as const : undefined
+      /* D320: by stint — an earlier stint's day is ordinary; only the gap before the current stint opens its Post in */
+      const posting = !p ? undefined : postingSheetFor(p, v.date)
       setOpen(posting ? { ...v, posting } : v)
     },
     chipEnter: openQualsAt,
