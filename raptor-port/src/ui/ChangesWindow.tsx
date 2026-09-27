@@ -85,8 +85,12 @@ function Line({ l, onGo, go: may }: { l: CLine; onGo: (l: CLine) => void; go: bo
 export function ChangesWindow() {
   useVersion()
   const w = CHGWIN
+  /* the phone's slim bar sits where the stylesheet puts it — at the bottom — whatever height the panel was dragged to:
+     it is there so the change behind can be seen, so it hands the box back for the bar and takes it again when the
+     panel comes back ([DRAFT-PENDING], Fable P8 — the bar floated mid-screen at the dragged panel's top) */
   const { el, onBarDown, onBarMove, onBarUp } = useFloatWin({
-    open: !!w, getBox: () => CHGWIN_BOX, setBox: setChgWinBox, deps: [w ? 'open' : 'shut'],
+    open: !!w, getBox: () => (CHGWIN && CHGWIN.bar && phoneLayout() ? null : CHGWIN_BOX), setBox: setChgWinBox,
+    deps: [w ? 'open' : 'shut'],
   })
   if (!w || !isMember()) return <div className="chgwin" hidden />
 

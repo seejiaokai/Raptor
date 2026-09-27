@@ -3432,48 +3432,42 @@ test.describe('the board holds the page still underneath it', () => {
 })
 
 /* ===================================================================
-   THE CHANGES LIST'S TWO WAYS IN, AND THE DAY CAROUSEL (owner, 11 Aug 26).
-   Both are questions only a browser can answer. The entry points are chosen
-   by a MEDIA QUERY — both are rendered and CSS shows one — which jsdom
-   resolves as nothing at all; and the carousel is a transform driven by a
-   pointer, where jsdom has neither layout nor a compositor.
+   THE BOARD'S WAY INTO THE CHANGES, AT BOTH WIDTHS. Until [DRAFT-PENDING] the board carried two "☰ Edit history"
+   lines — one above the sign-off bar on a desktop, one in the warnings panel on a phone — chosen by a MEDIA QUERY,
+   and both opened the old Edit history list. The one changes window replaced that list (the owner's D168), and the
+   board's own History button is now its door (D116 — History mode is the window open), at every width. Only a browser
+   can say the button is really on screen and inside the bar on a phone, and that the old lines paint nothing.
    =================================================================== */
 test.describe('the way into the changes list follows the width', () => {
   for (const c of [
-    { label: 'desktop', vp: { width: 1440, height: 900 }, top: true },
-    { label: 'phone', vp: PHONE, top: false },
+    { label: 'desktop', vp: { width: 1440, height: 900 } },
+    { label: 'phone', vp: PHONE },
   ]) {
-    test(`${c.label}: exactly one entry is on screen, and it is the right one`, async ({ page }) => {
+    test(`${c.label}: the board's History button is on screen and opens the one changes window; the old lines are gone`, async ({ page }) => {
       await page.setViewportSize(c.vp)
       await login(page)
       await go(page, 'editsched')
       await page.evaluate(() => (window as any).openScheduler(0))
       await page.waitForSelector('#sbHist')
-      await page.click('#sbHist')                       // History on
-      await page.waitForTimeout(250)
 
       const m = await page.evaluate(() => {
-        const vis = (s: string) => {
-          const e = document.querySelector(s) as HTMLElement
-          if (!e) return 'absent'
-          const r = e.getBoundingClientRect()
-          return getComputedStyle(e).display === 'none' ? 'hidden'
-            : (r.width > 0 && r.height > 0 ? 'shown' : 'zero')
-        }
-        const t = document.querySelector('#sbSign .histln-top') as HTMLElement
-        const sign = document.querySelector('#sbSignBar') as HTMLElement
+        const b = document.querySelector('#sbHist') as HTMLElement
+        const r = b.getBoundingClientRect()
         return {
-          top: vis('#sbSign .histln-top'), panel: vis('#sbWarn .histln'),
-          /* the ask was ABOVE the sign-off section, so measure it */
-          topAboveSign: !!(t && sign) && Math.round(t.getBoundingClientRect().bottom)
-            <= Math.round(sign.getBoundingClientRect().top) + 1,
-          bothRendered: !!document.querySelector('.histln-top') && !!document.querySelector('.histln'),
+          old: document.querySelectorAll('.histln-top, .histln').length,
+          shown: getComputedStyle(b).display !== 'none' && r.width > 0 && r.height > 0,
+          onScreen: r.left >= 0 && r.right <= window.innerWidth + 0.5 && r.top >= 0,
         }
       })
-      expect(m.bothRendered, 'both are in the markup — CSS picks').toBe(true)
-      expect(m.top).toBe(c.top ? 'shown' : 'hidden')
-      expect(m.panel).toBe(c.top ? 'hidden' : 'shown')
-      if (c.top) expect(m.topAboveSign, 'and it sits above the sign-off bar').toBe(true)
+      expect(m.old, 'the old "Edit history" lines are not drawn at all').toBe(0)
+      expect(m.shown, 'the History button is drawn').toBe(true)
+      expect(m.onScreen, 'and it sits inside the screen').toBe(true)
+
+      await page.click('#sbHist')                       // History on = the window open
+      await expect(page.locator('.chgwin:not([hidden])')).toBeVisible()
+      expect(await page.locator('#sbHist').getAttribute('aria-pressed'), 'the button reads as on').toBe('true')
+      await page.click('#sbHist')                       // and off again
+      await expect(page.locator('.chgwin:not([hidden])')).toHaveCount(0)
     })
   }
 })

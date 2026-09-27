@@ -35,7 +35,15 @@ import { actorIsAdmin } from './perms'
 
 /* ---- the reason a door hands in (inside its command) ---- */
 const REASONS = new Map<string, string>()
-export function elogReason(iid: string | null | undefined, why: string) { if (iid && why) REASONS.set(String(iid), why) }
+/* A reason lives for the command it was handed in for, and no longer: the subscriber reads it synchronously inside that
+   command's commit and clears it; if the door is REFUSED no commit comes, so it is also dropped once this task ends —
+   else it would ride the next, unrelated command that names the same input ([DRAFT-PENDING], Fable P12) */
+let REASON_DROP = false
+export function elogReason(iid: string | null | undefined, why: string) {
+  if (!iid || !why) return
+  REASONS.set(String(iid), why)
+  if (!REASON_DROP) { REASON_DROP = true; queueMicrotask(() => { REASON_DROP = false; REASONS.clear() }) }
+}
 
 const pad = (n: number) => String(n).padStart(2, '0')
 const isoOfLabel = (lbl: any, yr?: any): string | null => {
@@ -153,10 +161,26 @@ function warLines(env: CommitEnvelope, approvedFor: Set<string>, backToBid: Set<
     else if (now.rec.kind === 'credit' && now.rec.oil === 'manual') say(now, 'OIL award changed')
   }
 }
+/* A BID AN INPUT TOOK AWAY. Filing an input over a man's bid (the Inputs page, the board's + Add, an edit window) removes
+   the clashing bid in the SAME command (leavewar/inputgate.ts replaceBids) — an Inputs command, not the Leave War's, so
+   warLines never reads it and the bid left without a word ([DRAFT-PENDING], Fable P10; the plan §2.2 "taken away"). Each
+   bid that left is a line on its day, beside the input's own; a half it kept (the morning or the afternoon) is not a
+   decision and says nothing. */
+function replacedLines(env: CommitEnvelope): void {
+  for (const c of env.changes) {
+    if (c.collection !== 'lw.cell') continue
+    const { date, pid } = cellParts(String(c.id))
+    const bl: any[] = Array.isArray(c.before) ? c.before : [], al: any[] = Array.isArray(c.after) ? c.after : []
+    const am = new Set(al.map(r => r.id))
+    for (const r of bl) if (r.kind === 'request' && !am.has(r.id))
+      logAction(null, `Leave War · ${cs(pid)} · ${r.code || ''} ${dayWord(date)}: bid taken away — an input covers it`.replace('  ', ' '), { date, sect: 'abs' })
+  }
+}
 function ledgerLines(c: Change): void {
   const bl: any[] = Array.isArray(c.before) ? c.before : [], al: any[] = Array.isArray(c.after) ? c.after : []
   const bm = new Map(bl.map(r => [r.id, r])), am = new Map(al.map(r => [r.id, r]))
-  const words = (e: any) => `${cs(e.personId)} · ${e.counter} ${+e.amount > 0 ? '+' : ''}${e.amount}${e.reason ? ' — ' + e.reason : ''}`
+  /* the counter as the app names it — OIL, ANNUAL, CCL … (the Leave War's labels are its keys in capitals; D25: OIL) */
+  const words = (e: any) => `${cs(e.personId)} · ${String(e.counter || '').toUpperCase()} ${+e.amount > 0 ? '+' : ''}${e.amount}${e.reason ? ' — ' + e.reason : ''}`
   const at = (e: any) => ({ date: /^\d{4}-\d{2}-\d{2}$/.test(e.date) ? e.date : localToday(), sect: 'abs' })
   for (const e of al) { const o = bm.get(e.id); if (!o) logAction(null, `Leave War · ${words(e)}: given`, at(e)); else if (!same(o, e)) logAction(null, `Leave War · ${words(e)}: changed`, { ...at(e), from: words(o), to: words(e) }) }
   for (const e of bl) if (!am.has(e.id)) logAction(null, `Leave War · ${words(e)}: taken away`, at(e))
@@ -249,6 +273,7 @@ export function changeLinesFor(env: CommitEnvelope): void {
       else if (c.collection === 'people') personLines(c)
     }
     if (war) warLines(env, approvedFor, backToBid)
+    else replacedLines(env)
     boundaryLines(env)
   } finally {
     REASONS.clear()

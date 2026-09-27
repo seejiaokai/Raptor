@@ -102,6 +102,13 @@ export function jumpToChange(key: string | string[], di: any) {
   /* a day being looked at as an older version draws no working cells to land on — the change lives on the live
      copy, so go back to it first (Fable F6: the jump said "no longer on this day" about a live detail) */
   if (!onBoard && di != null && view.DPREV.has(+di)) view.setDayPreview(+di, null)
+  /* …and View-only Sched shows a PUBLISHED day's issued face by default, which draws nothing to land on (it is the
+     document, frozen): the change lives on the working copy, so the day turns to its Working draft first and says so
+     ([DRAFT-PENDING], Fable P3 — the tap told a member to "open the day on the board", which he has none of) */
+  if (!onBoard && di != null && view.CURPAGE === 'viewsched' && dayApproved(+di) && !view.VWORK.has(+di)) {
+    view.toggleViewWork(+di, true)
+    HOOKS.toast('Showing the working draft — the change is on it', 'ok')
+  }
   notify()
   setTimeout(() => {
     const root: any = onBoard
@@ -114,6 +121,8 @@ export function jumpToChange(key: string | string[], di: any) {
       const gone = cands.every(k => posKey(k, DAYS) == null)
       HOOKS.toast(gone ? 'That detail is no longer on this day'
         : onBoard ? 'That detail is shown on the week, not on the board'
+        /* View-only Sched has no board to send anyone to (a member has none at all) */
+        : view.CURPAGE === 'viewsched' ? 'That detail is not shown on this page'
         : 'That detail is shown on the scheduler board — open the day there to see it', 'warn')
       return
     }

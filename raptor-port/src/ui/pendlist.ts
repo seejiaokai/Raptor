@@ -163,6 +163,16 @@ function inputWords(di: number, it: PendItem): Words {
    so a rename (a label) never reads as a warning cleared and another new (#3); a cleared one is worded with today's
    callsign. */
 const CATW: any = { q: 'CAT', seat: 'seat', pers: 'ground crew', san: 'SANS', sxo: 'SXO', archived: 'posted out' }
+/* WHO changed a man's detail since the day went out, and WHEN: the newest Quals line naming him and it, from the change
+   history ([DRAFT-PENDING] — review log F5, "the To go out tab's line takes who/when from it"; Fable P6 found it unbuilt).
+   The line's words are state/changelines.ts personLines' own ("Casper · CAT"); a line written under a callsign he has
+   since lost is not found, and the item then names nobody, as before. */
+const QUALW: any = { q: 'CAT', seat: 'seat', pers: 'ground crew', san: 'SANS', sxo: 'SXO', archived: 'archived' }
+function qualsLine(id: any, f: string) {
+  const lbl = `${cs(id)} · ${QUALW[f]}`
+  for (let i = ELOG.rows.length - 1; i >= 0; i--) { const r = ELOG.rows[i]!; if (r.sect === 'quals' && r.lbl === lbl) return r }
+  return null
+}
 function faceWords(di: number): Words & { rows?: CrowdRow[] } {
   const snap: any = daySnapOf(di, dayCurVer(di)), w: any = snap && snap.w
   const was: any[] = (w && w.byDay && w.byDay.warns) || []
@@ -172,6 +182,7 @@ function faceWords(di: number): Words & { rows?: CrowdRow[] } {
   const a = new Set(was.map((x: any) => k(x, namesWas))), b = new Set(now.map((x: any) => k(x, namesNow)))
   const reword = (m: any) => { let t = String(m || ''); Object.keys(namesWas || {}).forEach((id: any) => { const c = cs(id); if (c && namesWas[id] && c !== namesWas[id]) t = t.split(String(namesWas[id])).join(c) }); return t }
   const rows: CrowdRow[] = []
+  let by: any = null                                   // the newest Quals line behind a man's change (qualsLine)
   /* the same warning on the same men, re-worded — a rule change moved its time or its figure (the Logic walker, 26 Sep
      26: a brief-lead change read each "No time for the flight brief" twice, cleared and new) — is ONE line, "changed",
      in today's words */
@@ -195,6 +206,7 @@ function faceWords(di: number): Words & { rows?: CrowdRow[] } {
         if (JSON.stringify(x) === JSON.stringify(y)) return
         const v = (z: any) => typeof z === 'boolean' ? (z ? 'yes' : 'no') : (z == null || z === '' ? '—' : String(z))
         rows.push({ where: `${cs(id)} · ${CATW[f]}`, from: v(x), to: v(y), keys: [] })
+        const l = qualsLine(id, f); if (l && (!by || l.seq > by.seq)) by = l
       })
     })
   }
@@ -203,7 +215,7 @@ function faceWords(di: number): Words & { rows?: CrowdRow[] } {
     const nb = (faceRuleVals(snap.d) || {}).briefLead
     if (nb != null && +nb !== +snap.rv.briefLead) rows.push({ where: 'A blank brief — its suggested lead', from: `${snap.rv.briefLead} min`, to: `${nb} min`, keys: [] })
   }
-  const none = { who: '', when: '', jump: false }
+  const none = by ? { who: elogWho(by), when: elogWhen(by.t), jump: false } : { who: '', when: '', jump: false }
   if (!rows.length) return { where: 'What this day shows', from: '', to: 'changed', ...none }
   if (rows.length === 1) return { where: rows[0]!.where, from: rows[0]!.from, to: rows[0]!.to, ...none }
   return { where: 'What this day shows', from: '', to: '', ...none, rows }
@@ -352,7 +364,7 @@ export function pendListHTML(di: number): string {
     const rows: CrowdRow[] | undefined = (w as any).rows
     if (rows && rows.length) {
       rows.forEach((r, j) => { targets[`${i}.${j}`] = r.keys })
-      return `<div class="pl-item still pl-multi"><span class="pl-where">${esc(w.where)}</span><span class="pl-who"></span>`
+      return `<div class="pl-item still pl-multi"><span class="pl-where">${esc(w.where)}</span>${who}`
         + rows.map((r, j) => `<button class="pl-sub" data-pltarget="${i}.${j}"${r.keys.length ? '' : ' disabled'} title="Go to this row">`
           + `<span class="pl-where">${esc(r.where)}</span><span class="pl-chg">${r.from ? `<s>${esc(r.from)}</s>` : ''}${r.from && r.to ? ' → ' : ''}${r.to ? `<b>${esc(r.to)}</b>` : ''}</span></button>`).join('')
         + `</div>`

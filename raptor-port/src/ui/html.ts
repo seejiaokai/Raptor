@@ -45,6 +45,9 @@ const editMode=()=>HOOKS.editMode()
    labelling) and the section class reads `issued`, not `preview`, so the
    preview dimming and its CSS never apply to the page's default face. */
 let PV=false, PVV:any=null, PVQ=false
+/* is a VERSION being drawn right now (a look at an older version, a saved plan, or the view page's issued face)? The
+   changes window's OG tag asks, so a preview never wears "new to you" ([DRAFT-PENDING], Fable P4) */
+export const inVersionLook=()=>PV
 /* OFW — the OFFICIAL-FLAGS overlay (published-schedule flagging, §5.4/§8). A
    published day's frozen face renders under PV (content frozen, write surfaces
    stripped) but must now SHOW the flags of its issued version. OFW says "show the
@@ -2142,7 +2145,12 @@ export function dayInfoHTML(di:any){
      24 Sep 26). The viewer's own Working-draft peek IS the working copy, so it keeps the line. */
   const issuedFace=ok&&CURPAGE==='viewsched'&&!VWORK.has(+di);
   /* …and nor does a look at a version (PV) — it is the record, not the working copy (Fable's and Astra's reads of D187) */
-  const dp=(issuedFace||PV)?0:dayShownPendCount(di);
+  /* …and a day NOT yet published has nothing to go out: its line speaks the day chip's words — what is new to you, else
+     how many changes — never the raw count of touched details, which read "2" for a move and still "2" once it was put
+     back ([DRAFT-PENDING], D118 in a second place — Fable P7; the plan §2.5) */
+  const dp=(issuedFace||PV||!ok)?0:dayShownPendCount(di);
+  const cc=(!ok&&!PV&&isMember())?chgDayCounts(di):null;
+  const chg=cc&&cc.fresh?`${cc.fresh}&nbsp;new`:cc&&cc.all?`${cc.all}&nbsp;change${cc.all>1?'s':''}`:'';
   const dw=(WARN.byDay[di]&&WARN.byDay[di].warns)||[];
   const nS=(v:any)=>dw.filter((w:any)=>w.sev===v).length;
   let ac=0,forms=0,cxn=0;
@@ -2164,7 +2172,7 @@ export function dayInfoHTML(di:any){
   const cv=(PV&&PVV!=null&&!isDraftVer(PVV))?PVV:dayCurVer(di);   // a look names the version on screen
   const atVer=(ok&&cv!=null&&(verSeq(cv)!==0||alRecs.length))?` · at ${verLabel(cv)}`:'';
   let h=`<div class="dip-stat ${ok?'ok':'draft'}">${ok?'✓ Published — APPROVED'+atVer:'Draft — not yet published'}`
-    +`${dp?`<span class="dip-pend">${dp} unpublished edit${dp>1?'s':''}</span>`:''}</div>`;
+    +`${dp?`<span class="dip-pend">${dp} unpublished edit${dp>1?'s':''}</span>`:chg?`<span class="dip-chg${cc&&cc.fresh?' new':''}">${chg}</span>`:''}</div>`;
   h+=`<div class="dip-h">AL versions covering ${esc(d.dow)}</div><div class="dip-als">${alRows}</div>`;
   h+=`<div class="dip-h">What this day is tasking</div><div class="dip-grid">`
     +row('Waves',(d.waves||[]).length)+row('Formations',forms)

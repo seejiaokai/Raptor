@@ -10,6 +10,7 @@ import { alAttr } from '../engine/publish'
 import { groundOrder } from '../engine/order'
 import { esc, PIOPEN, notePub } from '../state/view'
 import { canEditSched } from '../state/auth'
+import { isMember } from '../state/perms'
 import { oilModeOn, oilSeatHTML, oilItemCellHTML, oilItemOfKey, oilRowPeople, oilClaimWin, inputItemKey } from './oilmode'
 import { rowItemKey, groundItemKey } from '../engine/oil'
 import { oilSeatDeco } from './html'
@@ -659,9 +660,13 @@ function sbInpRow(di:any,inp:any,acc:any,pv:any,ro?:any,dt?:any){
          here only when this claim is one of the things that earned it. */
       : `<span class="seat"${seatable?` data-inpseat="${esc(inpId(inp))}"`:''}>${puck(inp.person,puckMarks(di,inp.person).sev,true,puckMarks(di,inp.person).flag,false,null,oilSeatDeco(di,inp.person,'',inputItemKey(inpId(inp))).oil)}</span>`)
     : `<span class="itxt">${esc(inp.person)}</span>`;
+  /* THE ROW'S ADDRESS FOR THE CHANGES WINDOW'S JUMP — the week's twin (html.ts, Astra DP-08): an absence line tapped while
+     the board is open lands on the board's own Unavailable row ([DRAFT-PENDING], Fable P5 — it said "shown on the week,
+     not on the board" about a row the board draws). Signed-in readers only, never the drag attribute. */
+  const inprow=!acc&&isMember()?` data-inprow="${esc(inpId(inp))}"`:'';
   if(RO&&!oilItem){
     const t=inp.allday?'all day':`${hhmm(inp.s)} – ${hhmm(inp.e)}`;
-    return `<div class="sbi-row${acc&&inp.acc&&inp.acc!=='r'?' accd':''}${acc?dormRowCls(inp):''}"${acc?dormRowTitle(inp):''}><span class="sbi-t">${t}</span>${pk}`
+    return `<div class="sbi-row${acc&&inp.acc&&inp.acc!=='r'?' accd':''}${acc?dormRowCls(inp):''}"${acc?dormRowTitle(inp):''}${inprow}><span class="sbi-t">${t}</span>${pk}`
       +inpEditLabel(inp,false,inpLabel(inp),`sbi-ty ${inTypeCls(inp.type)}`)
       +sbiRmk(inp,dt)+`</div>`;
   }
@@ -697,7 +702,7 @@ function sbInpRow(di:any,inp:any,acc:any,pv:any,ro?:any,dt?:any){
   const itemCell=oilItem
     ? oilItemCellHTML(di,oilItem,inpLabel(inp),`sbi-ty inpty ${inTypeCls(inp.type)}`)
     : inpEditLabel(inp,true,inpLabel(inp),`sbi-ty inpty ${inTypeCls(inp.type)}`);
-  return `<div class="sb-arow c6r inprow${acc&&inp.acc&&inp.acc!=='r'?' accd':''}${lateRowCls(inp)}${acc?dormRowCls(inp):''}"${lateRowTitle(inp)||(acc?dormRowTitle(inp):'')}>`
+  return `<div class="sb-arow c6r inprow${acc&&inp.acc&&inp.acc!=='r'?' accd':''}${lateRowCls(inp)}${acc?dormRowCls(inp):''}"${lateRowTitle(inp)||(acc?dormRowTitle(inp):'')}${inprow}>`
     +sbGrip(true)
     +(lc?`<span class="itemcell">${itemCell}${lc}</span>`:itemCell)
     +fld('atm','str',inpTimeText(inp,'str'),'all day')+fld('atm','end',inpTimeText(inp,'end'),'')

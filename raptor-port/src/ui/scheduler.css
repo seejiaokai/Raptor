@@ -3245,6 +3245,11 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
 .dip-stat.draft{background:rgba(138,150,163,.10);border:1px solid var(--edge-2);color:var(--ink-2)}
 .dip-stat .dip-pend{margin-left:auto;font-size:10.5px;font-weight:700;color:#F2D699;
   background:rgba(229,194,74,.13);border:1px solid rgba(229,194,74,.4);padding:2px 7px;border-radius:6px}
+/* a day not yet published: the day chip's words — gold when something on it is new to you, quiet otherwise
+   ([DRAFT-PENDING], Fable P7) */
+.dip-stat .dip-chg{margin-left:auto;font-size:10.5px;font-weight:700;color:var(--ink-2);
+  border:1px solid var(--edge-2);padding:2px 7px;border-radius:6px}
+.dip-stat .dip-chg.new{color:#F2D699;background:rgba(229,194,74,.13);border-color:rgba(229,194,74,.4)}
 .dip-h{font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:.09em;text-transform:uppercase;
   color:var(--ink-3);margin:14px 0 6px}
 .dip-als{display:flex;flex-wrap:wrap;gap:6px}
@@ -6477,6 +6482,12 @@ button.sbi-ty.inpedit:hover{text-decoration:none;filter:brightness(1.3)}
 .chgbtn .chgnum{margin-left:4px;min-width:16px;height:16px;padding:0 4px;border-radius:999px;background:#E5C24A;color:#1A1405;
   font-size:10px;font-weight:800;line-height:16px;display:inline-block;text-align:center}
 .chgbtn.on{border-color:var(--accent)}
+/* on the phone bar the trio's buttons are 30px squares (.tb-hist .abtn): the number rides the icon's top-right corner
+   as a small badge instead of sitting beside it, where it spilled past the button ([DRAFT-PENDING], Fable P2) */
+@media (max-width:820px){
+  .tb-hist .chgbtn .chgnum{position:absolute;top:-5px;right:-6px;margin:0;min-width:15px;height:15px;padding:0 3px;
+    font-size:9.5px;line-height:15px;box-shadow:0 0 0 1.5px var(--panel);pointer-events:none}
+}
 
 /* THE OG TAG ([DRAFT-PENDING] — the owner's D172: "OG makes sense, maintain the header"): on a day NOT yet published,
    a puck whose place holds a change NEW TO YOU wears a hollow, dotted "OG" in the plain white outline, in the corner a

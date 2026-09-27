@@ -20,8 +20,9 @@ import { isNewToMe, SEEN_VER } from '../state/changes'
 import { me } from '../state/perms'
 import { HOOKS } from '../engine/hooks'
 import { DAYS } from '../engine/data'
-import { posKey } from '../engine/rowids'
+import { ridKey } from '../engine/rowids'
 import { dayApproved } from '../engine/publish'
+import { inVersionLook } from './html'
 
 export type Sect = 'fly' | 'duty' | 'prog' | 'sim' | 'ground' | 'note' | 'abs' | 'quals' | 'day'
 export const SECT_ORDER: Sect[] = ['fly', 'duty', 'prog', 'sim', 'ground', 'note', 'abs', 'quals', 'day']
@@ -157,7 +158,12 @@ export const weekRows = () => elogWeekRows(CURWEEK)
    The positional keys of the pucks, on the loaded week's days NOT yet published, whose place holds a change new to the
    person looking: a man put on a place (or moved onto it); a man taken off leaves no puck and no tag (the chip and the
    window carry that). Built once per change of anything it reads, then a set lookup per puck — alAttr is the hot paint
-   path. */
+   path.
+   The set holds the history's own ROW-ANCHORED keys (the rid form every line is stored in), and each puck's place is
+   translated to that form as it is drawn — so a row dragged above another carries its tag with it. It used to hold
+   the places as they stood when the set was built, and a reorder writes no line to rebuild it: the tag stayed where the
+   row had been, on whoever slid in (Fable's scenario design, P1). And a LOOK at a version or a saved plan wears none —
+   a preview reads a document, not your news (P4). */
 let OG = { ver: -1, next: -1, len: -1, wk: '', who: '', set: new Set<string>() }
 function ogSet(): Set<string> {
   const who = me() || ''
@@ -171,11 +177,14 @@ function ogSet(): Set<string> {
       if (di < 0 || dayApproved(di)) continue
       const on = l.rows.find(r => r.key === l.key)
       if (!on || !on.to || on.to === '—') continue
-      const pk = posKey(l.key, DAYS)
-      if (pk != null) set.add(String(pk))
+      set.add(String(l.key))
     }
   }
   OG = { ver: SEEN_VER, next: ELOG.next, len: ELOG.rows.length, wk: CURWEEK, who, set }
   return set
 }
-HOOKS.newToMe = (key: any) => { const s = ogSet(); return s.size > 0 && s.has(String(key)) }
+HOOKS.newToMe = (key: any) => {
+  const s = ogSet()
+  if (!s.size || inVersionLook()) return false
+  return s.has(String(ridKey(key, DAYS)))
+}
