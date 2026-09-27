@@ -29,6 +29,7 @@ import { docAdd } from './docs'
 import { storesLoad, cxReasonsLoad, dutyTplLoad, waveTplLoad, dayTplLoad, autoAcceptSeedInputs, reconcileLandedAcc, relandInputs, secOrder, moveSectionModel, reorderSectionTo, secDefaultLoad, waveDefaultLoad } from '../engine'
 import { qualColsLoad } from '../engine/qualcols'
 import { elogFlush, elogLoad, setElogDefer } from '../engine/editlog'
+import { changesLoad } from './changes'
 import { markDeletion, resetSched, SCHED, dayApproved, protectedWeek, amFormatOf } from '../engine/publish'
 import { inputProtected, protectedDates } from '../engine/quarantine'
 import { stashPut, stashGet, stashHas, setPreservedBlob, clearPreservedBlob, isPreservedWeek, preservedBlob } from '../engine/weekstash'
@@ -819,6 +820,7 @@ export function initStore() {
   accountsLoad()
   /* THE CHANGE HISTORY ([DRAFT-PENDING], 28 Sep 26 — D336 (b)): saved, so it is loaded here with every other setting */
   elogLoad()
+  changesLoad()
   /* THE SEED MERGES ARE SKIPPED WHEN STATE CAME BACK FROM STORAGE (the
      storage seam, 8 Sep 26). A hydrated INPUTS already carries every week's
      rows and the demo SANS/medical lifecycle that were saved last session;

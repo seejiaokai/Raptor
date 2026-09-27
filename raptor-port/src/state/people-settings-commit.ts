@@ -52,6 +52,7 @@ import {
 } from '../engine'
 import { persistPeople as rawPersistPeople } from './persist'
 import { accountsLoad, ACCOUNT_TYPES } from './accounts'
+import { changesLoad, CHANGES_TYPES } from './changes'
 
 /* ---- the SETTINGS EnlistableStore ---------------------------------------- */
 /* the 11 durable settings keys (design §3.1). `wavetpl` + `wavehide` are two
@@ -64,12 +65,15 @@ export const SETTINGS_KEYS = [
      guest switch — the Shell's `User` / `AccessRequest` and one `Setting` (data-model
      §3, §11). Written ONLY by state/accounts.ts, through its intent commands. */
   'accounts', 'accessreqs', 'guestview',
+  /* [DRAFT-PENDING] (D170, 28 Sep 26): each person's own "seen" for the change history — the `EditLogSeen` of
+     data-model §11. Written ONLY by state/changes.ts, through its one command `changes.seen` (own entry only). */
+  'changeseen',
 ] as const
 /* every xLoad(), run to rebuild the module CFGs from the (restored) store on a
    rollback — deduped (waveTplLoad rebuilds both wavetpl + wavehide). */
 const SETTINGS_LOADERS: Array<() => void> = [
   rulesLoad, storesLoad, cxReasonsLoad, dayTplLoad, dutyTplLoad, waveTplLoad,
-  qualColsLoad, lookaheadLoad, secDefaultLoad, waveDefaultLoad, accountsLoad,
+  qualColsLoad, lookaheadLoad, secDefaultLoad, waveDefaultLoad, accountsLoad, changesLoad,
 ]
 function settingsRecords(): Map<string, RecordEntry> {
   const m = new Map<string, RecordEntry>()
@@ -264,6 +268,7 @@ export function registerPeopleSettingsCommandLayer(): void {
   /* the account intents; `anyone` only DECLARES them — their authority is perms.ts
      COMMAND_OPS through the resolver store.ts wireStore installs */
   for (const t of ACCOUNT_TYPES) definePermission(t, anyone)
+  for (const t of CHANGES_TYPES) definePermission(t, anyone)
   registerGuardedStore(peopleStore)
   registerGuardedStore(settingsStore)
   // route every durable settings write (store.set) through a named command.

@@ -51,6 +51,7 @@ export const T = {
   sched: 'ScheduleWeek family, DayDraft, RowPerson',
   amendment: 'Amendment, Signoff',
   editlog: 'EditLog',
+  seen: 'EditLogSeen',
   input: 'Input',
   attachment: 'Attachment, InputAttachment',
   war: 'LeaveWar',
@@ -71,7 +72,8 @@ export const PERMS: Record<string, PermRow> = {
   [T.accessreq]: row(cell('R U D'), NONE, NONE, cell('', 'C')),
   [T.sched]: row(cell('C R U D'), cell('R'), cell('R')),
   [T.amendment]: row(cell('C R'), cell('R'), cell('R')),
-  [T.editlog]: row(cell('R'), cell('R'), NONE, NONE, ['DRAFT-PENDING']),
+  [T.editlog]: row(cell('R'), cell('R')),
+  [T.seen]: row(cell('', 'C R U'), cell('', 'C R U')),
   [T.input]: row(cell('C R U D'), cell('R', 'C R U D'), cell('R')),
   [T.attachment]: row(cell('R'), cell('R', 'C R')),
   [T.war]: row(cell('C R U D'), cell('R')),
@@ -236,7 +238,7 @@ const op = (table: string, act: Act, own: OwnRule = 'never', more?: [string, Act
   (more ? { table, act, own, more } : { table, act, own })
 
 const SETTINGS_KEYS_ALL = ['rules', 'stores', 'cxreasons', 'daytpl', 'dutytpl', 'wavetpl', 'wavehide',
-  'qualcols', 'lookahead', 'secdefault', 'wavedefault', 'accounts', 'accessreqs', 'guestview'] as const
+  'qualcols', 'lookahead', 'secdefault', 'wavedefault', 'accounts', 'accessreqs', 'guestview', 'changeseen'] as const
 
 export const COMMAND_OPS: Record<string, CommandOp> = {
   /* the scheduler — its writes are the scheduler's (admin); a joined child command is
@@ -304,6 +306,8 @@ export const COMMAND_OPS: Record<string, CommandOp> = {
   'account.addNew': op(T.user, 'C', 'never', [[T.person, 'C'], [T.accessreq, 'D'], [T.profile, 'U']]),
   'access.approveNew': op(T.accessreq, 'D', 'never', [[T.user, 'C'], [T.person, 'C'], [T.profile, 'U']]),
   'access.seen': op(T.accessreq, 'U'),
+  /* [DRAFT-PENDING] (D170): "Mark all as seen" in the changes window — the signed-in person's OWN entry only */
+  'changes.seen': op(T.seen, 'U', 'required'),
   /* a delete ([POST-OUT-OUTCOMES], D287, D290, D297, D299): the person marked (the hidden mark — D is the soft delete),
      his account removed, and on every day from its cutoff he is taken off — the working copy, the stashed weeks, the
      parked plans, the planning calendar (the schedule family), his sign-off boxes cleared (as the sign-clear command),
@@ -382,6 +386,13 @@ const personOfInput = (v: any): string | null => (v && v.person != null ? String
    the UI gates stand in front of; §11 — members read the schedule only). A refusal rolls
    the schedule back to its last committed state. */
 const SCHEDULE_RECORDS = new Set(['days', 'sched.book', 'sched.mutes', 'sched.orig', 'sched.als', 'sched.retired', 'weekstash'])
+/* the seen record's entries other than `pid` are the same before and after */
+function onlyOwnEntry(before: any, after: any, pid: string): boolean {
+  const b = (before && typeof before === 'object') ? before : {}, f = (after && typeof after === 'object') ? after : {}
+  const keys = new Set([...Object.keys(b), ...Object.keys(f)])
+  for (const k of keys) if (k !== pid && JSON.stringify(b[k]) !== JSON.stringify(f[k])) return false
+  return true
+}
 export function ownershipViolation(env: CommitEnvelope): string | null {
   const a = env.actor
   if (!a || a.role === 'system' || a.role === 'admin') return null
@@ -404,8 +415,16 @@ export function ownershipViolation(env: CommitEnvelope): string | null {
       case 'people': if (c.id !== pid) return `another person's row (${where})`; break
       case 'lw.cell': { const parts = c.id.split(':'); if (parts[parts.length - 2] !== pid) return `another person's war row (${where})`; break }
       case 'lw.current': break
+      /* [DRAFT-PENDING] (D170): "Mark all as seen" — a member writes the seen record's OWN entry and nothing else of it
+         (EditLogSeen, own row); every other person's entry must come through unchanged */
+      case 'settings':
+        if (c.id === 'changeseen' && env.type === 'changes.seen') {
+          if (!onlyOwnEntry(c.before, c.after, pid)) return `another person's seen record (${where})`
+          break
+        }
+        return `an admin's record (${where})`
       case 'lw.bid': case 'lw.war': case 'lw.ledger': case 'lw.balances': case 'lw.oilpolicy': case 'lw.postouts': case 'lw.config':
-      case 'settings': case 'plan':
+      case 'plan':
         return `an admin's record (${where})`
       default: break                       // the schedule, the week stash, the Tracker
     }
