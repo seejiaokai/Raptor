@@ -98,13 +98,16 @@ reader and writer of `from` / `to` listed with its verdict) found these to chang
 | `ui/Matrix.tsx rowInWindow` (l.141) | the current window stretched by the record span | today's test OR any past stint overlapping the months on screen — so a leave period he is away for the whole of shows no row (D320), and one holding a past stint shows it |
 | `ui/Matrix.tsx` the day cell (l.514 `notYetArrived`, 553 text, 636, 652) | before `from` = blank "not yet arrived" | `beforeFirstStint` = blank; a day in the gap between stints reads **PO** with the hatch (away) |
 | `ui/Matrix.tsx` l.619 / 624 / 655–662 (`pofin` / `polast`) | the corner on `to` only | on every stint's last day (`lastDayIn`) |
-| `ui/Matrix.tsx` l.746–757, 1818–1822, 4310–4341 (which sheet a tap opens) | unchanged | a gap day is before the current `from`, so it opens the **Post in** sheet of the stint he came back for (its date the door to move it) — no code change; a pinned test says so |
+| `ui/Matrix.tsx` l.746–757, 1818–1822, 4310–4341 (which sheet a tap opens) | keys on `date < current from` | **rewritten by stint (round 1, Fable F2 / Astra 1):** a day in ANY stint is an ordinary day (the bid sheet); a gap day right before the current stint opens the CURRENT Post in sheet; a gap between two past stints, or a day before the first, opens no posting sheet (a day outside the window) |
+| `state/store.ts setPostOut`, `postingProblem('out')` | refuses a post-out before the post-in | a post-out or post-in aimed at a PAST stint is refused: "<cs> was posted out on <date> and came back on <date> — an earlier stint's dates can't be moved here" (past stints read-only on the war — narrows the agent's D320 reading, put to him) |
 | `state/store.ts setPostIn`, `postingProblem` | refuses a post-in after the post-out | also refuses one on or before his last past stint's end ("Back from a posting on <date> — the post-in has to be after that day"); **clearing** the post-in (the sheet's Undo) is refused while past stints exist ("He came back from a posting — move the date instead") |
 | `state/store.ts` NEW `openStint(id, date)` | — | Restore's war half: the current stint (it must be closed — `to` set) pushed onto `past`, the new current `{ from: date, to: null }`, its posting fields cleared; refused when `date` is on or before that `to` |
 | `state/store.ts forgetPersonFrom` (delete) | closes `to` at the cutoff | the same, and past stints ending on or after the cutoff are cut to it; a current stint that would open after it collapses into the last past one |
 | `state/store.ts windowRecord`, `windowFor`, `readPostOuts`, `setPeople` capture | one window | carry and validate `past` (each `{ from: date or null, to: date }`, in order, non-overlapping — a malformed list is dropped whole, tolerant, D56); a record is kept while any stint end is set |
 | `sync.ts reprojectRoster` (l.1343–1386) | lays `from` / `to` / posting fields; change signature | lays `past` too; the signature includes it |
 | `ui/BidPicker.tsx` the **Post in sheet** only (a posting part — not `[LW-MOVE-STANDARD]`'s) | "Posted in on <date> — days before it count nobody" | with past stints: "Back from a posting — the days between count nobody"; its Undo refused with the reason above |
+
+**The invariant (round 1, Fable F4 / Astra 3):** every stint has `from == null || from <= to`, stints are in order and never overlap — enforced at every write and at the load; a stint that would close before it opens is DROPPED (the last past stint becomes current again), never stored. A post-in on the day after the stint closed REOPENS that stint (no boundary — Fable F5).
 
 **Unchanged and pinned (a test each, so the new half cannot absorb them):** a man with one stint reads exactly as today
 (every existing posting test stays green unedited); the manning counts, availability, the ALL AVAIL crowd and the OIL
@@ -179,3 +182,17 @@ merge takes `main` in first.
 Plan red team (Fable, Astra; ~3 rounds at most) → C (the stints) first, red first → B → A → E → D → docs → the gates →
 the walk, fix → both reads with the evidence sheet → fix → re-walk → gates → sheet → his look. About 8–10 hours of agent
 time with the FULL check.
+
+## 9. Round 1 of the red team — folded in (27 Sep 26)
+Fable 5.1 and Astra, blind to each other: every finding and its disposition is in
+`raptor-port/docs/superpowers/specs/2026-09-27-one-door-plan-review-log.md` — ALL adopted. The ones that change the
+build's shape: **Restore on Admin → Users is the one way back from an Admin archive** (the war's Post out sheet for him is
+read-only, its writes refused — F1 / A2); **the tap routing by stint, past stints read-only** (F2 / A1 — his answer
+sought); **Archive of a hidden SANS man takes the war identity as the delete does** (F3 / A7); **no empty stints**, and a
+same-day Restore reopens the stint (F4, F5 / A3); **a session whose account goes off or whose person is archived or
+deleted lands on the suspended screen** (F8 / A4); **`back` on every Restore** (F12 / A5); **the new-person commands
+enlist and name the war's record** (F11 / A6); **the two Restore modes written out** (F7); the published record asserted
+in full (A8); on-screen strings pointing at Quals fixed (F6); `poDone = to + 1` (F9); no `offBy: 'archive'` (F10); the
+replaced posting's take-back (F13); Archive / Restore not Undo steps (F14); the back-prompt skips an archived man (F15);
+the roll-call additions in §4.
+
