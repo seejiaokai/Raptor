@@ -61,6 +61,22 @@ BREAKS = [
   ('B18 D332 the block offers Delete where it would do nothing', SS, '{canDelete && <DeleteChip', '{true && <DeleteChip', U + OLD),
   ('B19 D335 the one-day Delete ignores the range', BP, "setNoteAt(code ? 'leave' : 'sel')\n    if (!code) {\n      const cells = range ? spanCells(range) : [{ personId, date }]",
    "setNoteAt(code ? 'leave' : 'sel')\n    if (!code) {\n      const cells = [{ personId, date }]", U + OLD),
+  # the final reads' fixes (27 Sep 26)
+  ('B20 FR1 the preview drops every day of a moving leave again', ST,
+   'x.iid === a.id && x.personId === r.personId && x.date === to', 'x.iid === a.id && x.personId === r.personId', S),
+  ('B21 FR2 the door counts the moving bids at the preview', ST,
+   'DOOR.moveApproved(abs, dayDelta, biddingClosed(state.period.stage), true, skip)', 'DOOR.moveApproved(abs, dayDelta, biddingClosed(state.period.stage), true)', S),
+  ('B22 FR3 a refused bid beneath leave on its half moves again', ST,
+   '    if (absencesAt(personId, date).some(a => barsWrite(c, a))) return false
+', '', S),
+  ('B23 FR3b the door's answer at the commit is thrown away', ST,
+   '      if (d) { refused = d; throw new MoveRefusedAtCommit(d.reason) }', '      void d', S),
+  ('B24 FR4 Decide over a range is drawn from the tapped day only', BP,
+   'const canDecideHere = !!decide || (!!range && decidableIn(selCells()) > 0)', 'const canDecideHere = !!decide', U),
+  ('B25 FR5 a refused bid staying is not named', ST,
+   "what: r.state === 'refused' ? 'refused' : 'bid' })", "what: 'bid' })", S + U),
+  ('B26 FR6 a record gone under a move goes unsaid', MX,
+   "    setMoveErr('That record changed or is no longer there — nothing to move.')", "    void 0", U),
 ]
 
 only = sys.argv[2:]
