@@ -47,7 +47,7 @@ import {
   type Figure,
   type FigureCtx,
 } from '../engine'
-import { clearRecordById, figureCtxOf, recordsAt, setBalance, setManualCredit, groupsInOrder, groupPriorityIds, lwHistEpoch, moveGroupTo, moveGroupPriorityTo, displayRoster, getState, moveCells, movableCells, moveManningRowTo, moveProblem, moveEvent, moveEventProblem, moveRosterRow, orderedManningIds, resetManningRules, setPostIn, postingProblem, visibleFigures, type MoveResult, type EventMoveResult } from '../state/store'
+import { clearRecordById, figureCtxOf, recordsAt, setBalance, setManualCredit, groupsInOrder, groupPriorityIds, lwHistEpoch, moveGroupTo, moveGroupPriorityTo, displayRoster, getState, moveCells, movableCells, moveManningRowTo, moveProblem, moveEvent, moveEventProblem, moveRosterRow, orderedManningIds, resetManningRules, setPostIn, postingProblem, visibleFigures, hasAccount, postingBlocked, type MoveResult, type EventMoveResult } from '../state/store'
 import { AwardSheet, BidPicker, PostInSheet, PostOutSheet, RaptorSheet } from './BidPicker'
 import { CounterSheet, FigureBreakdownSheet, PersonFiguresSheet } from './CounterSheet'
 import { FigureCell, show } from './FigureCell'
@@ -63,7 +63,8 @@ import { monthInView } from './monthview'
 import { popAt } from './popat'
 import { clampWin, rollingTarget, stepAllowedInMotion, stepToward, visibleSpan, windowAround, WINDOW_FROM_MONTHS, type ColWin } from './colwindow'
 import { touchesAM, touchesPM, winsOf, type DayView } from '../engine/dayview'
-import type { Portion } from '../engine'
+import type { Portion, PostOutcome } from '../engine'
+import { outcomeOf } from '../engine'
 import { isLwOnScreen, subLwScreen } from '../state/screen'
 import type { RecordSpans } from '../state/merge'
 import { creditGiver, type CreditRec } from '../engine/warrecs'
@@ -77,7 +78,7 @@ import { groupColorOf, inkFor } from './groupColor'
 import { SelectSheet } from './SelectSheet'
 import { BalanceBar } from './BalanceBar'
 import { RemarksSheet } from './RemarksSheet'
-import { leaveInputAt, postOut, undoPostOut } from '../sync'
+import { leaveInputAt, postOut, postOutProblem, undoPostOut, undoPostOutProblem } from '../sync'
 import { useVersion } from './useStore'
 import { DayListSheet } from './DayList'
 import type { Views } from '../engine/dayview'
@@ -86,7 +87,10 @@ import './matrix.css'
 /** A posting through the store, or the sentence saying why it was refused (the absence-record re-test, AB5, 26 Sep
  *  26): every posting door — the bid sheet's PI / PO, the two posting sheets, the drag-selection's PO — shows it and
  *  stays open, where each used to close (or snap back) with nothing said. */
-function postOutOr(id: string, from: string, archive?: boolean): string | undefined {
+function postOutOr(id: string, from: string, archive?: boolean | PostOutcome): string | undefined {
+  /* never Delete oneself (the posting door's own refusal — sync.ts postOutProblem) */
+  const self = postOutProblem(id, typeof archive === 'string' ? archive : (archive === false ? 'none' : 'overseas'))
+  if (self) return self
   /* through the bridge, so a Post out's own archive follows the new date and switch (Astra's final read, finding 2) */
   return postOut(id, from, archive) ? undefined : (postingProblem(id, 'out', from) || 'That posting date was not taken.')
 }
@@ -429,6 +433,8 @@ const PersonRow = memo(function PersonRow({ p, version, period, monthDays, grid,
             onClick={() => api.current.setWhoOpen(p.id)}
           >
             <span className={`cs seat-${p.seat}`}>{p.callsign}</span>
+            {/* D283 (the approved picture 4a): a SANS posting shown in his old place (Show SANS off) wears a SANS tag */}
+            {p.to !== null && outcomeOf(p) === 'sans' && <span className="po-sans-tag" data-testid={`sans-tag-${p.id}`}>SANS</span>}
             <span
               className={`catchip ${catClass(p)}${has ? ' has-quals' : ''}`}
               data-testid={`cat-${p.id}`}
@@ -1005,6 +1011,10 @@ export function Matrix() {
   // component unmounts or the role stops being admin (a logout mid-arrange).
   useEffect(() => () => { dragCleanup.current?.() }, [])
   useEffect(() => { if (role !== 'admin' && arranging) setArranging(false) }, [role, arranging])
+  /* the admin's editors close when the role in force stops being admin — the admin's switch to the member view (D292;
+     Astra's code read 5, 27 Sep 26: Edit aircrew and the counter form stayed open with live controls), so switching back
+     never reopens a stale draft either */
+  useEffect(() => { if (role !== 'admin') { setEditing(null); setCounterEdit(false) } }, [role])
   // Falls back to the first visible figure when `shownId` names one an admin
   // has since hidden (or a stale saved id) — `shownIx` is then DERIVED from
   // `shown`, not the other way round, so the dots and the cycle never point
@@ -4072,6 +4082,7 @@ export function Matrix() {
                         <div className="whorow">
                           <button className="whoedit" tabIndex={-1} onClick={() => setWhoOpen(p.id)}>
                             <span className={`cs seat-${p.seat}`}>{p.callsign}</span>
+                            {p.to !== null && outcomeOf(p) === 'sans' && <span className="po-sans-tag">SANS</span>}
                             {catChip(p)}
                           </button>
                         </div>
@@ -4227,7 +4238,9 @@ export function Matrix() {
           people={csOf}
           role={role}
           canDecide={canDecide(period.stage, role)}
-          onPostOut={role === 'admin' ? (pid, from, archive) => postOutOr(pid, from, archive) : undefined}
+          /* never on a deleted man (his posting is final — [POST-OUT-OUTCOMES], Fable F3) */
+          onPostOut={role === 'admin' && !sel.people.some(id => people.find(p => p.id === id)?.gone) ? (pid, from, outcome) => postOutOr(pid, from, outcome) : undefined}
+          hasAccount={hasAccount}
           onMove={s => { setEventMoveSel(null); setEventMovePreview(null); setMoveSel(s) }}
           /* a PARTIAL write keeps the sheet up (keepOpen) so its "N written,
              M skipped" note is actually read — closing here killed the note
@@ -4294,7 +4307,7 @@ export function Matrix() {
       {/* A posted-out cell an admin tapped: the ONE control it offers is Undo,
           and it short-circuits every bid/decision sheet below (owner, 18 Aug
           26). */}
-      {open && !listOpen && !canRemark && openPostedOut && role === 'admin' && !placing && (
+      {open && !listOpen && !canRemark && openPostedOut && role === 'admin' && !placing && !openPerson?.gone && (
         <PostOutSheet
           callsign={open.callsign}
           date={open.date}
@@ -4302,9 +4315,13 @@ export function Matrix() {
              AFTER it. The sheet talks in the PO date (first day gone), which
              is the day after the stored last-day-in. */
           poFrom={addDays(openPerson!.to!, 1)}
-          archive={openPerson!.poArchive === true}
-          onChange={(from, archive) => postOutOr(open.id, from, archive)}
-          onUndo={() => { undoPostOut(open.id); close() }}   // the archive the Post out made goes too (W5-F1)
+          outcome={outcomeOf(openPerson) ?? 'none'}
+          hasAccount={hasAccount(open.id)}
+          blockedFor={o => postingBlocked(open.id, o)}
+          onChange={(from, outcome) => postOutOr(open.id, from, outcome)}
+          /* the archive the Post out made goes too (W5-F1); refused, with where to go, when a man on the roster now holds
+             his callsign (D286 (1) — Fable's scenario 2: it closed and did nothing) */
+          onUndo={() => { const why = undoPostOutProblem(open.id); if (why) return why; undoPostOut(open.id); close() }}
           onPlace={() => setPlaceAt(openKey)}
           onClose={close}
         />
@@ -4314,7 +4331,7 @@ export function Matrix() {
           and it short-circuits the bid picker below exactly as that one does
           (owner, 20 Sep 26). A MEMBER tapping their own pre-joining day falls
           through to the picker instead, which is answer C's "filed or bid". */}
-      {open && !listOpen && !canRemark && openNotYetArrived && role === 'admin' && !placing && (
+      {open && !listOpen && !canRemark && openNotYetArrived && role === 'admin' && !placing && !openPerson?.gone && (
         <PostInSheet
           callsign={open.callsign}
           date={open.date}
@@ -4405,7 +4422,7 @@ export function Matrix() {
           onGranted={() => showFigure('oil')}
         />
       )}
-      {editingWho && people.some(p => p.id === editingWho) && (
+      {editingWho && role === 'admin' && people.some(p => p.id === editingWho) && (
         <PersonSheet
           person={people.find(p => p.id === editingWho)!}
           onClose={() => setEditing(null)}
@@ -4435,7 +4452,7 @@ export function Matrix() {
       )}
       {/* The counter form — new counter (null) or a rework of one row's rule.
           Keyed so switching counters resets every draft field. */}
-      {counterEdit !== false && (
+      {counterEdit !== false && role === 'admin' && (
         <CounterForm key={counterEdit ?? 'new'} ruleId={counterEdit} onClose={() => setCounterEdit(false)} />
       )}
       {/* The ⚙ SETTINGS sheet — all admin config (counters, event rows, Show
@@ -4483,12 +4500,14 @@ export function Matrix() {
              the archive switch, 19 Aug 26). The store sets their posting-out
              date; the greyed boxes and the manpower exclusion follow from it,
              and sync.ts's auto-archive pass reads the switch. */
-          onPostOut={role === 'admin'
-            ? (from, archive) => { const why = postOutOr(open.id, from, archive); if (why) return why; close() }
+          onPostOut={role === 'admin' && !openPerson?.gone
+            ? (from, outcome) => { const why = postOutOr(open.id, from, outcome); if (why) return why; close() }
             : undefined}
+          hasAccount={hasAccount(open.id)}
+          blockedFor={o => postingBlocked(open.id, o)}
           /* Admin-only, the mirror of the above (owner, 20 Sep 26): the first
              day they ARE in the squadron. */
-          onPostIn={role === 'admin'
+          onPostIn={role === 'admin' && !openPerson?.gone
             ? from => { const why = postInOr(open.id, from); if (why) return why; close() }
             : undefined}
           /* Admin-only: record that he WORKED this day and earned OIL (owner,

@@ -38,6 +38,12 @@ export const HOOKS = {
      Saturday and Sunday from the day's own name; the wire sharpens it to the
      squadron's real non-working days. */
   oilEarningDay: (_di: number): boolean => false,
+  /* A DELETED MAN NEVER COMES BACK ON A DAY FROM HIS CUTOFF ([POST-OUT-OUTCOMES], 27 Sep 26 — D297; the plan's Round 2
+     belt): a version loaded onto the working copy, or a saved plan switched in, is a whole-day replacement that could
+     carry him back. The engine does not import state/, so the delete's module installs the answer here
+     (state/person-delete.ts stripDeletedFromDay): it strips every deleted man from the incoming day model and names
+     them. Unset (no one ever deleted), nothing is stripped. */
+  stripDeleted: (_di: number, _nd: any): string[] => [],
   /* THE DAY'S WARNINGS AS ISSUED ([LEAVE-LATE-PUBLISHED], D179 — publish.ts): the validator lends publishing its
      judgement — at issue, the day's slice of the official warnings to keep (`issuedWarn`), and on every read today's
      slice to compare it with (`warnNow`). engine/validate.ts sets both at load (publish.ts cannot import it — the

@@ -1,0 +1,82 @@
+{
+  "results": [
+    {
+      "id": "b01-fixture",
+      "what": "the fixture: Hex on Tuesday 6 Oct and Wednesday 7 Oct (front seat)",
+      "ok": true,
+      "note": "",
+      "pic": "01-b01-fixture.png"
+    },
+    {
+      "id": "b02-published",
+      "what": "Tuesday published through the four sign-offs and Publish",
+      "ok": true,
+      "note": "version 2026-10-06#0",
+      "pic": "02-b02-published.png"
+    },
+    {
+      "id": "b03-delete-armed",
+      "what": "the first tap asks again and says what goes; nothing is deleted yet",
+      "ok": true,
+      "note": "Goes: his account, his Quals row, every day still to come. Days he flew keep his puck. Can’t be undone.",
+      "pic": "03-b03-delete-armed.png"
+    },
+    {
+      "id": "b04-deleted",
+      "what": "the second tap: Hex deleted — his account gone, the hidden mark from today",
+      "ok": true,
+      "note": "from 2026-09-27",
+      "pic": "04-b04-deleted.png"
+    },
+    {
+      "id": "b05-working-tue",
+      "what": "Tuesday (published): the working copy loses him and reads pending",
+      "ok": true,
+      "note": "pending 3; head \"\"",
+      "pic": "05-b05-working-tue.png"
+    },
+    {
+      "id": "b06-working-wed",
+      "what": "Wednesday (not published): he is gone from it",
+      "ok": true,
+      "note": "",
+      "pic": "06-b06-working-wed.png"
+    },
+    {
+      "id": "b07-issued-face",
+      "what": "the published Tuesday still holds him (a record — never rewritten)",
+      "ok": true,
+      "note": "",
+      "pic": "07-b07-issued-face.png"
+    },
+    {
+      "id": "b08-view-only",
+      "what": "View-only Sched on Tuesday still shows Hex (what was issued)",
+      "ok": true,
+      "note": "",
+      "pic": "08-b08-view-only.png"
+    },
+    {
+      "id": "b09-load-belt",
+      "what": "loading the published version back: Hex stays off, and the message says he was left out",
+      "ok": true,
+      "note": "Tuesday: Original loaded onto the working copy — viewers still see Original until you publish · 1 unpublished edit replaced · Hex left out — he has been deleted",
+      "pic": "09-b09-load-belt.png"
+    },
+    {
+      "id": "b10-undo",
+      "what": "pressing Undo repeatedly never puts Hex back on a day to come, nor undeletes him",
+      "ok": true,
+      "note": "undo hover \"Undo — publishing a day\"",
+      "pic": "10-b10-undo.png"
+    },
+    {
+      "id": "b11-reload",
+      "what": "after a reload: still deleted, still off Tuesday and Wednesday, no account",
+      "ok": true,
+      "note": "",
+      "pic": "11-b11-reload.png"
+    }
+  ],
+  "errors": []
+}

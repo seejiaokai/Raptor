@@ -55,7 +55,8 @@ export const rosterOptions = () => Object.keys(PEOPLE).filter(id => !PEOPLE[id].
    not posted in yet — so the Inputs page's own person pickers offer the
    archived bodies too, in their own group below the roster. Every OTHER roster
    surface (the board, the palette, reassign) keeps rosterOptions(). */
-export const archivedOptions = () => Object.keys(PEOPLE).filter(id => PEOPLE[id].archived && !PEOPLE[id].special)
+/* never a DELETED man — he is on no list ([POST-OUT-OUTCOMES], D287, D299) */
+export const archivedOptions = () => Object.keys(PEOPLE).filter(id => PEOPLE[id].archived && !PEOPLE[id].special && !PEOPLE[id].deleted)
   .sort((a, b) => PEOPLE[a].cs.localeCompare(PEOPLE[b].cs))
 
 const MON = ['', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']

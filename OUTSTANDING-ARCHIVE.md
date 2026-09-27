@@ -1983,3 +1983,23 @@ id), or keep its date box? **Place:** on the D260–D262 look card (`raptor-port
 **ANSWERED 27 Sep 26 BY D266** (`.claude/rules/decisions/leave-war.md`): the same move mode, no date box, each record
 that can move with its own Move — built by `[LW-MOVE-STANDARD]` (with D264, D265).
 
+
+*Moved here 2026-09-27 by backlog-archive.mjs ([ACCOUNTS-NEW-PERSON]). Forward facts: `raptor-port/docs/handpass/2026-09-26-accounts-new-person.md`.*
+
+### [ACCOUNTS-NEW-PERSON] Admin → Users makes a brand-new person with his account, in one step (D214, filed 26 Sep 26)
+**His ruling (D214):** *"2 can u show me a mock up, also ill need his initials"* — after he found the callsign list offers
+only people already on Quals. **Build:** "Add an account" (and Approve, filled from the callsign and name the person typed)
+gets a **New person** choice — callsign, **initials**, pilot / WSO / personnel, CAT — which creates his Quals row and his
+account together through the SAME add the Quals page uses (one callsign rule), as one command. Flight and quals stay on
+Quals. **Mock-up first:** `raptor-port/docs/mock/new-person-account.html` — **APPROVED 26 Sep 26 (D224)**, the design of
+record; planned (Opus 5.5), red-teamed (Fable, Astra), built and walked on `claude/accounts-new-person` (26 Sep 26); its
+FULL check DONE the same day — three read rounds by Fable and Astra, every finding fixed red first, re-walked 58/58,
+break tests 32/32, the full checks green (evidence `raptor-port/docs/handpass/2026-09-26-accounts-new-person.md`); the PR
+is open, **waiting for his look (the sheet's §10 card) and his "merge live"**. **Tier:** FULL
+(roles and saved data). **With it — D216:** a new access request lights the admins' bell (a tap → Admin → Users; out once
+he has opened it). **And the sign-up form asks the same things** (his "signs up for an account", on D214's row).
+**And D217 — one door:** a new person is created ONLY on Admin → Users (or his approved sign-up); a blank sign-in makes a
+roster-only person (a SANS man); Quals' "+ Add person" becomes a button to Admin → Users (its form and tests retired, D201).
+**And D219:** the field reads "Callsign/Name" (some people have no callsign) — the sign-up, Admin → Users and the Quals head. **D220:** the seat choice reads "Pilot", "WSO", "Personnel (ground crew)". **D222:** on the sign-up card only, that field reads "Displayed callsign/name". **D225:** initials asked on both forms, required on neither. **D226:** the callsign/name stays at 14 letters and the form says so — never cut silently. **D227:** each admin's bell is his own (out once HE has had the waiting list on screen). The plan (red-teamed round 1): `raptor-port/docs/superpowers/plans/2026-09-26-accounts-new-person-plan.md`.
+**Place:** straight after `[ACCOUNTS]` merges, on its own branch, before `[DRAFT-PENDING]`.
+

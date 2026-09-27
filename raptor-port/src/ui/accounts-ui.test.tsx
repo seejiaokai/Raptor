@@ -18,7 +18,7 @@ import { DAYS } from '../engine/data'
 import { accountsLoad, signIn, sessionFor, requestAccess, setGuestView, ACCESS_REQS, accountByName } from '../state/accounts'
 import { getState as lwState } from '../leavewar/state/store'
 import { viewerId, roleOf } from '../state/perms'
-import { setPage } from '../state/view'
+import { setPage, BACKPROMPT } from '../state/view'
 import { setDayApproved, setSign, dayApproved } from '../engine/publish'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
@@ -57,13 +57,15 @@ afterAll(async () => {
 })
 beforeEach(async () => { await act(async () => { resetSession(null); notify() }) })
 
-describe('AC10 — no "View as", no role toggle; the badge names the signed-in person (D166 (3))', () => {
-  it('an admin: no picker, an inert badge "Saber · Admin", no toggle in the drawer', async () => {
+/* D292 (27 Sep 26) REPLACED D166 (3)'s "no preview as a member": an admin's badge is the switch to the member view and
+   back again (its tests: ui/memberview.test.tsx, PO11); "View as" another PERSON stays gone */
+describe('AC10 — no "View as"; the badge names the signed-in person (D166 (3), D292)', () => {
+  it('an admin: no picker; the badge "Saber · Admin" is his member-view switch (D292), and the drawer carries it', async () => {
     await signInAs('ad', 'a')
     expect($('#viewAs')).toBeFalsy()
     expect($('#drawerViewAs')).toBeFalsy()
-    expect($('#drawerRole')).toBeFalsy()
-    expect($('#roleBadge').tagName).toBe('SPAN')
+    expect($('#drawerRole').textContent).toBe('Switch to the member view')
+    expect($('#roleBadge').tagName).toBe('BUTTON')
     expect($('#roleBadge').textContent).toBe(`${PEOPLE.stiff.cs} · Admin`)
     expect($('#drawerAcct').textContent).toContain(PEOPLE.stiff.cs)
     expect(lwState().role).toBe('admin')
@@ -200,5 +202,59 @@ describe('AC13 — Admin → Users (D166 (1), D204)', () => {
     await click($('#accAdd'))
     expect(accountByName('ace@mail')).toMatchObject({ pid: 'dj', role: 'main', on: true })
     expect($('[data-acct]') && $$('[data-acct]').some(r => r.textContent!.includes('ace@mail'))).toBe(true)
+  })
+})
+
+/* [POST-OUT-OUTCOMES] (27 Sep 26) — D285: the account buttons read "Suspend" / "Enable" and the
+   state "suspended" (today's "Switch off / on" in his words, D280); D300: the sign-in screen says
+   each thing once. Register line PO3. */
+describe('PO3 — Suspend / Enable, "suspended", the sign-in (D285, D300)', () => {
+  it('the editor offers Suspend, then Enable; the row reads "suspended" while it is', async () => {
+    await signInAs('ad', 'a')
+    await act(async () => { setPage('admin'); notify() })
+    await click($('[data-acct="achex"] .acc-tap'))
+    expect($('#accEdOnOff').textContent).toBe('Suspend')
+    await click($('#accEdOnOff'))
+    expect(accountByName('hex')).toMatchObject({ on: false })
+    expect(BACKPROMPT, 'a Suspend asks nothing').not.toContain('rocky')
+    const row = () => $('[data-acct="achex"]')
+    expect(row().textContent).toContain('suspended')
+    expect(row().textContent).not.toContain('switched off')
+    await click($('[data-acct="achex"] .acc-tap'))
+    expect($('#accEdOnOff').textContent).toBe('Enable')
+    await click($('#accEdOnOff'))
+    expect(accountByName('hex')).toMatchObject({ on: true })
+    expect(row().textContent).not.toContain('suspended')
+    /* D284: an Enable is one of the two "he's back" acts — the Quals page then asks to check his quals */
+    expect(BACKPROMPT).toContain('rocky')
+  })
+  it('a suspended account signs in to "Your access is suspended", said once', async () => {
+    const { updateAccount } = await import('../state/accounts')
+    await signInAs('ad', 'a')
+    expect(updateAccount('achex', { on: false })).toBe(null)
+    await signInAs('hex')
+    expect($('#accessOff .acc-h').textContent).toBe('Your access is suspended')
+    expect($('#accessOff .acc-p').textContent).toBe('Ask an admin to enable it when you’re back.')
+    expect($('#accessOff').textContent).not.toContain('switched')
+    await signInAs('ad', 'a'); updateAccount('achex', { on: true })
+  })
+  it('PO4 — "Delete account" asks twice and says what goes; the second tap deletes him — account and person (D285, D287, D298)', async () => {
+    await signInAs('ad', 'a')
+    await act(async () => { setPage('admin'); notify() })
+    await click($('[data-acct="achex"] .acc-tap'))
+    expect($('#accEdDel').textContent).toBe('Delete account')
+    expect($('#accEdDelNote')).toBeFalsy()
+    await click($('#accEdDel'))
+    expect($('#accEdDel').textContent).toBe(`Tap again to delete ${PEOPLE.rocky.cs}`)
+    expect($('#accEdDelNote').textContent).toBe('Goes: his account, his Quals row, every day still to come. Days he flew keep his puck. Can’t be undone.')
+    expect(accountByName('hex'), 'one tap deletes nothing').toBeTruthy()
+    /* Cancel puts the first tap back */
+    await click($('#accEdCancel'))
+    await click($('[data-acct="achex"] .acc-tap'))
+    expect($('#accEdDel').textContent).toBe('Delete account')
+    await click($('#accEdDel')); await click($('#accEdDel'))
+    expect(accountByName('hex')).toBeUndefined()
+    expect((PEOPLE as any).rocky.deleted).toBe(true)
+    expect($('[data-acct="achex"]'), 'his row leaves the list').toBeFalsy()
   })
 })

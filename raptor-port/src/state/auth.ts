@@ -10,16 +10,19 @@
    without access, 'pending' (on no list), 'guest' (asked, and the admin's guest switch
    is on) or 'off' (his account is switched off). `pid` is his person (null for the last
    three). `name` is the sign-in name (the defence mail address it stands for).
-   The admin's role toggle ("View as member" / "Back to admin", 27 Aug 26) and the
-   "View as" person picker are GONE — "There isint a need for preview as a member"
-   (D166 (3)). WHO MAY DO WHAT is decided in ONE place, state/perms.ts. */
+   The "View as" person picker is GONE (D166 (3)). The admin's switch to the member view
+   is BACK in a new form (D292, 27 Sep 26 — replacing D166 (3)'s "no preview as a member"):
+   the session also keeps `acct`, the account's own role, which the switch never changes
+   (state/perms.ts mayViewAsMember). WHO MAY DO WHAT is decided in ONE place, state/perms.ts. */
 import { mayEditSched } from './perms'
 
 export let SESSION: any = null
 export let LGEDIT: any = false                 // Logic-tab edit mode; reset on login/logout
 export function setSession(s: any) { SESSION = s; LGEDIT = false }
-/* the localhost probe bridge's role switch (e2e + the hand-pass walk, bug-check order
-   §7.7): it changes the role in place, never the world. No production caller. */
+/* the role in place, never the world. Two callers: the localhost probe bridge (e2e + the
+   hand-pass walk, bug-check order §7.7 — unguarded, the developer's PC only) and the admin's
+   member view (D292, 27 Sep 26), which reaches it ONLY through perms.ts switchRoleInForce —
+   guarded there: a real admin account, admin <-> member only (Fable F13, Astra A6). */
 export function setEffectiveRole(role: any) { if (SESSION) SESSION = { ...SESSION, role } }
 
 /* THE SIGNED-IN PERSON. Set ONLY by resetSession, from the account (and by the

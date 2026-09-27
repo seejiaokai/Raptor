@@ -9,10 +9,10 @@ import { CURWEEK } from '../engine/waves'
 import { weekWindow } from './weeknav'
 import { CalIcon, XlsIcon, PdfIcon, HistIcon, HlIcon, SrchIcon } from './icons'
 import { rulesOffCount } from '../engine/rules'
-import { isAdmin, me } from '../state/perms'
+import { isAdmin, me, mayViewAsMember } from '../state/perms'
 import { waitingCount, accessAlert } from '../state/accounts'
 import { openAdminUsers } from './adminopen'
-import { notify, setPage } from '../state/store'
+import { notify, setPage, switchRoleView } from '../state/store'
 import { logOut } from './logout'
 import { HLSET, SEARCH, HLOPEN, toggleHlOpen, HLGROUP, setSearch, CURPAGE, setDayPreview, toggleViewWork, bellLit, clearBell } from '../state/view'
 import { HlChips } from './hlchips'
@@ -256,6 +256,8 @@ export function Shell() {
   /* the signed-in person ([ACCOUNTS], D166 (3)) — the badge names him; "View as" is gone */
   const mine = me()
   const mineCs = mine && PEOPLE[mine] ? PEOPLE[mine].cs : ''
+  /* D292: a real admin's badge is the switch to the member view and back */
+  const canSwitch = mayViewAsMember()
   /* access requests waiting (D204 "a badge on the Admin tab") — admins only */
   const waiting = admin ? waitingCount() : 0
   const nav = (p: string) => { setPage(p); notify() }
@@ -334,7 +336,7 @@ export function Shell() {
               list) from the shell itself, so the log is reachable without
               opening the board first. */}
           {page === 'editsched' && <div className="tb-hist">
-            <button className="abtn hbtn" id="undoBtn" title={us.undoLabel ? `Undo — ${us.undoLabel}` : 'Undo'} disabled={!us.canUndo} onClick={() => {
+            <button className="abtn hbtn" id="undoBtn" title={us.undoLabel ? `Undo — ${us.undoLabel}` : (us.undoWhy || 'Undo')} disabled={!us.canUndo} onClick={() => {
               /* UNDO STOPS AT THE DOOR OF THE MODE (fix 5, 22 Sep 26). Inside OIL
                  Earn, Undo walks back OIL decisions freely — taking back a mis-tap
                  is what it is for — but the press that would reach PAST the point
@@ -427,14 +429,19 @@ export function Shell() {
           {/* The role indicator, at the FAR RIGHT of the bar, after every other
               control (owner, 22 Aug 26), styled as one of the .abtn buttons; hidden on a
               phone (the drawer's Account row names him there). Since [ACCOUNTS]
-              (D166 (3), 26 Sep 26) it names the signed-in person and his role, and it is
-              an inert label for everyone: the admin's "View as member" toggle (27 Aug 26)
-              is gone — "There isint a need for preview as a member". */}
-          <span className={'abtn rolechip' + (admin ? ' admin' : '')} id="roleBadge"
-            title={mineCs ? `Signed in as ${mineCs}` : undefined}>{mineCs ? `${mineCs} · ` : ''}{admin ? 'Admin' : 'Member'}</span>
+              (D166 (3), 26 Sep 26) it names the signed-in person and his role. For a real
+              admin it is a BUTTON again (D292, 27 Sep 26 — "SABER · ADMIN" ↔ "SABER ·
+              MEMBER": a tap switches him to the member view and back, state/store.ts
+              switchRoleView); for everyone else an inert label, as before. */}
+          {canSwitch
+            ? <button type="button" className={'abtn rolechip tgl' + (admin ? ' admin' : '')} id="roleBadge"
+                title={admin ? 'Switch to the member view' : 'Back to the admin view'}
+                onClick={() => switchRoleView()}>{mineCs ? `${mineCs} · ` : ''}{admin ? 'Admin' : 'Member'}</button>
+            : <span className={'abtn rolechip' + (admin ? ' admin' : '')} id="roleBadge"
+                title={mineCs ? `Signed in as ${mineCs}` : undefined}>{mineCs ? `${mineCs} · ` : ''}{admin ? 'Admin' : 'Member'}</span>}
         </div>
       </div>
-  ), [page, admin, mine, mineCs, waiting, fast, uv, us.canUndo, us.canRedo, us.undoLabel, us.redoLabel, bellLit(), bugAlert(), oilPend, accAlert])
+  ), [page, admin, mine, mineCs, canSwitch, waiting, fast, uv, us.canUndo, us.canRedo, us.undoLabel, us.redoLabel, us.undoWhy, bellLit(), bugAlert(), oilPend, accAlert])
 
   const viewPage = useMemo(() => (
       <section className={'page' + (page === 'viewsched' ? ' on' : '')} id="page-viewsched">

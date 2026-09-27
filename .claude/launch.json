@@ -90,6 +90,21 @@
         "--strictPort"
       ],
       "port": 4177
+    },
+    {
+      "name": "raptor-postout-walk",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "--prefix",
+        "raptor-port",
+        "vite",
+        "preview",
+        "raptor-port",
+        "--port",
+        "4192",
+        "--strictPort"
+      ],
+      "port": 4192
     }
   ]
 }

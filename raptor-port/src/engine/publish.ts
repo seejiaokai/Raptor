@@ -576,8 +576,13 @@ export function dayPeopleAttrs(d:any,inp?:any):any{const out:any={};
 /* the men a version recorded, as the roster draws them TODAY — the comparison reads the version's own list of men (its
    content is frozen, so who they are cannot move) and never re-derives it; a man deleted from the roster outright reads
    null, which differs (his puck would vanish from the face) */
+/* [POST-OUT-OUTCOMES] (D297, D299 — Fable F8, Astra A7): a DELETED man reads as the version froze him, on every day —
+   never compared. Before his cutoff the day is the past, which a delete does not change (D297: "every day he already
+   flew keeps his puck"); on or after it he is taken off the working copy, and THAT seat is the one change (D109, D113 —
+   one pending change, not a second "posted out" line). The ONE function the pending count (warnDelta) and the pending
+   list (ui/pendlist.ts) both read, so the two always agree. */
 export function peopleAttrsNow(pa:any):any{const out:any={};
-  Object.keys(pa||{}).forEach((id:any)=>{ out[id]=attrsOf((PEOPLE as any)[id]); }); return out;}
+  Object.keys(pa||{}).forEach((id:any)=>{ const p=(PEOPLE as any)[id]; out[id]=(p&&p.deleted)?(pa[id]??null):attrsOf(p); }); return out;}
 /* the rule values an issued face PRINTS rather than judges — the blank brief's time (html.ts, board.ts, export.ts) —
    only on a day that prints one (a line with no B) */
 const blankB=(w:any)=>((w&&w.formations)||[]).some((f:any)=>f&&!String(f.br||'').trim());

@@ -150,6 +150,28 @@ export function stashEditDays(v:any,edit:(days:any[])=>boolean):boolean{
     return true;
   }catch(_e){ return false; }
 }
+/* EDIT A STASHED WEEK'S WHOLE BLOB — its days `d`, its sign boxes `sg` and their bindings `sb`, its parked plans `dr`
+   ([POST-OUT-OUTCOMES], 27 Sep 26 — Fable F9, Astra A1: a delete must reach every copy of a day to come, and
+   stashEditDays hands over the days alone). The same rules as stashEditDays: raw, exactly as stored; written back ONLY
+   if `edit` changed something; a PRESERVED week never. Readability is asked FIRST by the caller (stashWeekState), so a
+   week that cannot be read or is preserved refuses the whole change rather than being skipped. */
+export function stashEditWeek(v:any,edit:(blob:any)=>boolean):boolean{
+  if(isPreservedWeek(v))return false;
+  const s=stashGet(v); if(!s)return false;
+  try{
+    const p=JSON.parse(s);
+    if(!p||typeof p!=='object'||!Array.isArray(p.d))return false;
+    if(!edit(p))return false;
+    stashPut(v,JSON.stringify(p));
+    return true;
+  }catch(_e){ return false; }
+}
+/* can this stashed week be edited — 'ok'; 'preserved' (byte-frozen, P2-IMPL-02); 'unreadable' (no days, or not JSON) */
+export function stashWeekState(v:any):'ok'|'preserved'|'unreadable'{
+  if(isPreservedWeek(v))return 'preserved';
+  const s=stashGet(v); if(!s)return 'unreadable';
+  try{ const p=JSON.parse(s); return p&&typeof p==='object'&&Array.isArray(p.d)?'ok':'unreadable'; }catch(_e){ return 'unreadable'; }
+}
 export function stashDays(v:any){
   const s=stashGet(v); if(!s)return null;
   /* a blob that fails to parse (truncated write, foreign data) degrades to

@@ -56,9 +56,10 @@ export function AccessScreen() {
     <div className="login" id="accessOff">
       <div className="login-wrap"><Mark />
         <div className="login-card acc-card">
-          <h2 className="acc-h">Your access is switched off</h2>
+          {/* D285 "suspended"; D300 each thing said once — the heading says what, the line what to do */}
+          <h2 className="acc-h">Your access is suspended</h2>
           {who}
-          <p className="acc-p">An admin has switched this account off. Ask an admin if you need it back.</p>
+          <p className="acc-p">Ask an admin to enable it when you’re back.</p>
           {signOut}
         </div>
       </div>

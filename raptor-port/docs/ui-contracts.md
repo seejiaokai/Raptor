@@ -5107,15 +5107,62 @@ the in-table row editor, the board/modal editor — exactly when
 documented row wears a paperclip (`.rclip`, `ClipIcon`) in the Inputs
 table's action cell, ungated, opening the viewer.
 
-## The role badge names the signed-in person — the view toggle is GONE (`[ACCOUNTS]`, 26 Sep 26)
+## The role badge names the signed-in person — and is the admin's member-view switch (`[ACCOUNTS]`, 26 Sep 26; D292, 27 Sep 26)
 
-The far-right chip (`#roleBadge`, `.rolechip`) is an inert `<span>` for everyone, reading the signed-in callsign and
-role — "Saber · Admin", "Ranger · Member". The admin's "View as member" toggle it used to be (27 Aug 26) is REMOVED —
-"There isint a need for preview as a member" (D166 (3); *to come back — D292, 27 Sep 26: a tap switches an admin to
-the member view and back, `[POST-OUT-OUTCOMES]`*) — and so are the topbar's "View as" picker (`#viewAs`) and the
-drawer's View-as chips (`#drawerViewAs`) and toggle (`#drawerRole`). The chip is hidden on the phone bar (as ever); the
-DRAWER's Account row reads "Signed in as <callsign> · <role>" (`#drawerAcct`) above Logout. Pinned in
-`ui/accounts-ui.test.tsx` (which replaced `roletoggle.test.tsx`).
+The far-right chip (`#roleBadge`, `.rolechip`) reads the signed-in callsign and the role in force — "Saber · Admin",
+"Ranger · Member". **For a real admin account it is a BUTTON (D292, `[POST-OUT-OUTCOMES]`):** a tap switches him to the
+member view ("Saber · Member" — the app then behaves exactly as for a member: his own Quals row and inputs only, no Admin
+tab, no Edit Schedule) and a second tap back; every sign-in starts as admin; he stays himself throughout. For a member it
+stays an inert `<span>`. On a phone the chip is hidden (as ever) and the switch is the DRAWER's `#drawerRole` under
+"Signed in as <callsign> · <role>" (`#drawerAcct`), above Logout. Switching leaves Edit Schedule and Admin for View-only
+Sched, puts the armed slot down and closes the Logic editor (`state/store.ts switchRoleView`). The topbar's "View as"
+picker (`#viewAs`) and the drawer's View-as chips (`#drawerViewAs`) stay GONE (D166 (3)). *(Superseded 27 Sep 26: this
+section said the chip "is an inert `<span>` for everyone" — D166 (3)'s "no preview as a member", replaced by D292.)*
+Pinned in `ui/accounts-ui.test.tsx` (AC10) and `ui/memberview.test.tsx`.
+
+## A posting out — four chips, one line, "Post out" (`[POST-OUT-OUTCOMES]`, 27 Sep 26 — D229, D294, D298, D300)
+
+The approved mock-up `docs/mock/post-out.html` §1 is the design of record (D299). On EVERY posting door — the bid sheet's
+PO (`po-*`), an existing posting's Post out sheet (`postout-*`), the drag selection's PO (`sel-po-*`) — the same row:
+the date once, in its own box ("PO from"); four short chips `leavewar/ui/OutcomeChips.tsx` — "Overseas Sqn" (the
+default — the old "Archive on PO date"), "Delete", "SANS", "Transfer to Sqn" (drawn, not pressable — "Comes with the
+shared database", D281); ONE line saying what the chosen one does on the date ("On 14 Oct: archived on Quals, account
+suspended." — the account named only when he has one); the button just "Post out" (D300; "Post in" likewise). Tapping
+the chosen chip again un-chooses it — "off the manpower, nothing else" (the agent's call, on his look card). **A Delete
+asks twice** (D287 (3)): the bid sheet's button turns into "Tap again to delete <callsign>"; on the Post out sheet (which
+commits on each change) the Delete chip arms a second button, `postout-delete-go`, and tapping the armed chip again
+backs out without changing the posting. A deleted man (`gone` on the war) has no posting door — his posting is final.
+**On the date** (`leavewar/sync.ts runPoOutcomes`, the calendar date — the one clock): Overseas Sqn → archived on Quals
+and his account suspended; Delete → his person and account deleted (the hidden mark; days he flew keep his puck); SANS →
+ticked SANS (D283: with "Show SANS" OFF the war keeps his row in its old group, posted out, untracked; with it ON his
+whole row moves into the SANS group and his leave is tracked there — the approved picture); none → nothing more. Each
+runs ONCE for its date and never undoes a later hand change; the last admin who can sign in is never suspended or deleted
+by a posting — said once. Moving the date later or changing the outcome takes back what the posting made (the archive,
+the suspension, the SANS tick) — no "he's back" prompt; Undo post out after an Overseas Sqn is the Restore.
+
+## Admin → Users — Suspend / Enable, Delete account (`[POST-OUT-OUTCOMES]`, 27 Sep 26 — D285, D287, D300)
+
+The account editor's buttons read **"Suspend" / "Enable"** (was "Switch off / on") and **"Delete account"**; a suspended
+row is tagged "suspended". "Delete account" asks twice — "Tap again to delete <callsign>" with a line naming what goes
+(his account and his person; days he flew keep his puck) — never on one's own account, never the last admin who can sign
+in; a man archived on Quals says so beside it. **Enable** is one of the two "he's back" acts (D284): it arms the Quals
+prompt below. The sign-in of a suspended account reads "Your access is suspended — Ask an admin to enable it when you're
+back." (said once).
+
+## Quals' Archived list — Rename, Restore, "he's back" (`[POST-OUT-OUTCOMES]`, 27 Sep 26 — D284, D286, D295, D299)
+
+> **Moving (D310, 27 Sep 26 — his "one door as proposed, Quals loses archive"):** this list, its Restore, Restore as and
+> Rename, and Quals' ✕ archive move to Admin → Users with `[ONE-DOOR]`; until that is built, the app does what follows.
+
+A DELETED man is on no list, the Archived one included (D299). Each archived row carries, for an admin: **Restore**, and
+**Rename** (`#qRenameCs` / `#qRenameGo`, refused with the one callsign rule's reason in `#qRenameErr` — blank, over 14
+letters, or taken by a man on the roster; D295). **Restore meeting a callsign a roster man now holds** never renames
+anyone by itself (D286 (1)): the row opens "<callsign> is taken — give him another callsign." with a box
+(`#qRestoreCs`) filled with the first free "<callsign> 2", **"Restore as …"** (`#qRestoreGo`) and Cancel; a refusal
+reads in `#qRestoreErr`. **The "he's back" prompt (D284):** after a Restore, an Undo post out that restores, or an Enable
+on Admin → Users, a line above the table — "<callsign> is back — quals and CAT as he left them." — with **Check his
+quals** (his seat view, his row outlined `.back-hl`) and **Later**; lined up with the table's left edge (D294 (3)). It
+changes nothing; a session list (`state/view.ts BACKPROMPT`), cleared at every sign-in.
 
 ## The access screens and the guest view (`[ACCOUNTS]`, D204, 26 Sep 26)
 

@@ -49,12 +49,13 @@ list (13–23 Sep 26), its finished entries and the "In plain terms" block are i
 whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaining).
 
 **His order — to the database step, about two months away (D203, 26 Sep 26; D173, D147 within it):**
-1. **Now — [ACCOUNTS-NEW-PERSON]** (D214, D216, D217, D219, D220, D222 — one door for a new person on Admin → Users, the
-   sign-up asking the same things, the admins' bell; the mock-up `raptor-port/docs/mock/new-person-account.html`, his
-   approval first), on `claude/accounts-new-person`, its own FULL check — DONE, the PR open for his look and "merge
-   live"; then **[POST-OUT-OUTCOMES]** (D291 — D229, D280, D283–D287, D290: a posting out says which outcome;
-   accounts suspended / deleted), its own FULL check; then **[DRAFT-PENDING]** — the one changes window,
-   on top of accounts, its own FULL check (D210). `[ACCOUNTS]` itself MERGED 26 Sep 26 (PR #442, his "merge live").
+1. **Now — [POST-OUT-OUTCOMES]** (D229, D280, D283–D300, D303–D307) on `claude/post-out-outcomes`, PR #446 — BUILT,
+   FULL-checked, his look card answered, `main` merged in: his "merge live" next. `[ACCOUNTS-NEW-PERSON]` MERGED 27 Sep 26
+   (PR #443), `[ACCOUNTS]` 26 Sep 26 (PR #442). **Then [ONE-DOOR]** (D309, D310 — Admin → Users carries every person's
+   sign-in and roster state and every action; Quals loses its archive), carrying **[POST-IN-DATE]** (D308) and the look
+   card's 3a / 3b — mock-up first, its own FULL check; `[POST-OUT-TRACKER]` on his answer. **Then [LW-MOVE-STANDARD]**
+   (D264–D266 — after #446, both change the Leave War's sheets). Then **[DRAFT-PENDING]** — the one changes window, on
+   top of accounts, its own FULL check (D210).
 2. **Now, beside the building — [IT-QUESTIONS]:** talk to the IT side (his, not code); their approvals take weeks.
 3. **Development as normal — [HUMAN-RETEST]**'s remaining three, in HIS order (D147): the absence record TOGETHER with
    [S4-HUNT-REST] — **WALKED 26 Sep 26** on `claude/absence-record-d147-af6a50`; his answers to its questions (D260–D263)
@@ -1131,23 +1132,6 @@ None breaks an amendment rule; each is a line to fix or ask about, from the walk
    Fable #1's mirror; the digest keys ground rows by position). A false re-sign, never a false publish.
 **Place:** any time; items 6–8 with the Leave War links re-test (D147, last).
 
-### [ACCOUNTS-NEW-PERSON] Admin → Users makes a brand-new person with his account, in one step (D214, filed 26 Sep 26)
-**His ruling (D214):** *"2 can u show me a mock up, also ill need his initials"* — after he found the callsign list offers
-only people already on Quals. **Build:** "Add an account" (and Approve, filled from the callsign and name the person typed)
-gets a **New person** choice — callsign, **initials**, pilot / WSO / personnel, CAT — which creates his Quals row and his
-account together through the SAME add the Quals page uses (one callsign rule), as one command. Flight and quals stay on
-Quals. **Mock-up first:** `raptor-port/docs/mock/new-person-account.html` — **APPROVED 26 Sep 26 (D224)**, the design of
-record; planned (Opus 5.5), red-teamed (Fable, Astra), built and walked on `claude/accounts-new-person` (26 Sep 26); its
-FULL check DONE the same day — three read rounds by Fable and Astra, every finding fixed red first, re-walked 58/58,
-break tests 32/32, the full checks green (evidence `raptor-port/docs/handpass/2026-09-26-accounts-new-person.md`); the PR
-is open, **waiting for his look (the sheet's §10 card) and his "merge live"**. **Tier:** FULL
-(roles and saved data). **With it — D216:** a new access request lights the admins' bell (a tap → Admin → Users; out once
-he has opened it). **And the sign-up form asks the same things** (his "signs up for an account", on D214's row).
-**And D217 — one door:** a new person is created ONLY on Admin → Users (or his approved sign-up); a blank sign-in makes a
-roster-only person (a SANS man); Quals' "+ Add person" becomes a button to Admin → Users (its form and tests retired, D201).
-**And D219:** the field reads "Callsign/Name" (some people have no callsign) — the sign-up, Admin → Users and the Quals head. **D220:** the seat choice reads "Pilot", "WSO", "Personnel (ground crew)". **D222:** on the sign-up card only, that field reads "Displayed callsign/name". **D225:** initials asked on both forms, required on neither. **D226:** the callsign/name stays at 14 letters and the form says so — never cut silently. **D227:** each admin's bell is his own (out once HE has had the waiting list on screen). The plan (red-teamed round 1): `raptor-port/docs/superpowers/plans/2026-09-26-accounts-new-person-plan.md`.
-**Place:** straight after `[ACCOUNTS]` merges, on its own branch, before `[DRAFT-PENDING]`.
-
 ### [POST-OUT-OUTCOMES] A posting out says WHICH of its outcomes it is; accounts suspended and deleted (D229, D280, D283–D285, filed 26 Sep 26)
 **His rulings:** a posting out is (1) overseas to another squadron → archived, account SUSPENDED, back AS HE WAS with a
 prompt to update his quals (D284); (2) leaving flying for good → account DELETED; (3) another workplace, still flying
@@ -1163,7 +1147,55 @@ takes him off (pending on a published day); asks twice, cannot be undone. **Unde
 row is kept, marked deleted and invisible everywhere (the data model's tombstone), never erased. **And names — D286:** an archived man's callsign may go to a new person (today it is refused); restoring him while it
 is in use needs one of the two renamed first (Restore says so, renames nobody). Update `roster-add.ts` (its PID-01
 header and test), `ID_BY_CS` (points at the roster's man). **Mock-up APPROVED 27 Sep 26 (D299) — the design of record:** `raptor-port/docs/mock/post-out.html` (+ its Artifact; §5 holds what stays after a delete; D300 — the date once, the button "Post out", FEWER WORDS: done 27 Sep 26, Artifact Version 6; the BUILD carries the same short words — the sheet's line, the delete's second tap, the suspended sign-in, the back-prompt, the Restore rename line — and the post-in button reads just "Post in"); his first look: D294 (short chips "Overseas Sqn" · "Delete" (D298) · "SANS" · "Transfer to Sqn"), D295 (rename an archived man directly), D296 (guest mark A). **With it — D292:** the admin's member view back (tap the badge: "SABER · ADMIN" ↔ "MEMBER"; perms read the role in
-force). **Place — D291:** straight after `[ACCOUNTS-NEW-PERSON]` merges, before `[DRAFT-PENDING]`.
+force). **Place — D291:** straight after `[ACCOUNTS-NEW-PERSON]` merges, before `[DRAFT-PENDING]` — **amended by D301
+(27 Sep 26): started beside #443 before it merges, on `claude/post-out-outcomes` cut from it; its merge follows #443's.**
+**BUILT 27 Sep 26 on `claude/post-out-outcomes`** (Part A: the callsign index, Suspend / Enable / Delete account, the
+member view, the delete, Quals' Archived list; Part B, on PR #444's posting code: the four chips on every posting door,
+the outcomes on the date, take-back, Restore and Restore-as, the "he's back" prompt, SANS with Show SANS, a deleted man
+read by date, Undo passing over a step that would bring him back). Plan: `raptor-port/docs/superpowers/plans/2026-09-27-post-out-outcomes-plan.md`;
+register PO1–PO12 (`raptor-port/docs/superpowers/specs/2026-09-26-accounts-behaviour-register.md`). **FULL check DONE
+27 Sep 26** (the walk A–D on desktop and phone, Fable and Astra's code reads — every finding fixed red-first — and the
+gates): the evidence sheet `raptor-port/docs/handpass/2026-09-27-post-out-outcomes.md`. **Next: his look** (the look card,
+its §10 — 11 questions) **and his "merge live", merged LAST** (after #443, #445 and #444, `main` merged in first).
+**His answers so far (27 Sep 26):** 1 keep (D303), 3 the real calendar date (D304), 4 — the man himself should be able to
+update his own quals (D305; its form put to him), 9 the last admin's posting waits (D306), 11 Enable on a hand-suspended
+man shows the note (D307).
+**Not built, said so:** the Tracker half of D299 (`[POST-OUT-TRACKER]`).
+
+### [ONE-DOOR] Admin → Users: one door for a person's whole state — sign-in and roster (D309, filed 27 Sep 26)
+**His direction (D309):** *"just do 1 door for everything and see the state of that account all just in admin. Like
+green or red dot for status, account and roster for status"* — and he asked how the buttons should read for every case
+discussed (the look card's 3a and 3b, the archived list, D308's post-in date). **Today:** Admin → Users lists accounts
+(an archived man tagged "archived callsign", a suspended one "suspended"), with Suspend / Enable and Delete account;
+Quals has the ✕ archive, the folded Archived list, Restore, Restore as and the rename (D295); Enable on an archived man
+lets him sign in while still archived (the half-state he questioned). **The agent's proposal (to his approval, by a
+mock-up first):** one row per person — a dot for Sign-in and one for Roster; Active → Suspend · Archive · Delete;
+Suspended → Enable · Archive · Delete; no sign-in (a man who does not use the app) → Give sign-in · Archive · Delete;
+Archived (the folded group) → Restore · Delete; Waiting → Give access · Refuse; a posting waiting for its date shown on
+the row. Archive also suspends; Restore brings both back, asks the post-in date (D308) and tells the man to check his
+quals (3a). Quals keeps quals, CAT, flight, initials (narrows D217). **Carries:** 3a, 3b, the archived group,
+`[POST-IN-DATE]`. **Place (the agent's recommendation, his call):** after PR #446 merges, its own branch — mock-up, his
+approval, then the build, FULL check (permissions, roster, accounts). **APPROVED AS PROPOSED 27 Sep 26 (D310): "one door
+as proposed, Quals loses archive"** — narrows D217 and D295; the mock-up shows the look before the build.
+
+### [POST-IN-DATE] A man posted in: the admin is asked his post-in date (D308, filed 27 Sep 26)
+**His ruling (D308):** *"When someone is posted In the app should also ask the admin when is the post in date so that the
+leave war is reflected correctly. Usually a user can get access to the app a few days prior to their actual post in
+date."* **Today:** a new person (Admin → Users) and a man restored from the Archived list (Quals) get no post-in date — the
+Leave War counts them from always; the date exists only as the Leave War's own "Post in" button (20 Sep 26), set by hand.
+**To build:** a post-in date box on every door that puts a man on the roster — New person (added, or approving a request),
+Restore and Restore as — opening on today, written through `setPostIn` (the same record the Leave War's Post in writes);
+his account works from the day he is added or restored, whatever the date. The new-person form gains a field (D224's
+approved mock-up marked, D201); the Leave War's own Post in stays. **Size:** ~1.5–2 h with tests and a walk — permissions
+and the Leave War, FULL tier. **Place: his call** — inside PR #446 before its merge, or its own branch right after #446
+merges (the agent's recommendation: after, so the fully checked #446 does not grow).
+
+### [POST-OUT-TRACKER] A deleted man and the Tracker's courses "still running" (D299 — approved, NOT built; filed 27 Sep 26)
+D299 lists "his place on any course still running — goes". The Tracker has no notion of a course "still running", and the
+build cannot decide what it means without him, so a deleted man is left on his Tracker courses, unlinked (his name as
+text). **Put to him on the `[POST-OUT-OUTCOMES]` look card (question 5):** what makes a course still running — or leave
+his name on his courses for now (then D299 is narrowed in his words). **Place:** after `[POST-OUT-OUTCOMES]` merges, on
+his answer. Touches `raptor-port/src/tracker/` (its own store) — its own small check.
 ### [LOOK-435] His inputs from the look at PR #435 — the order is D173 (25 Sep 26)
 **Step 1 DONE 25 Sep 26:** D114's FULL check — evidence `raptor-port/docs/handpass/2026-09-25-amendment-batch.md` §9; two
 gaps fixed, three older findings filed (`[REQ-TWO-ROWS]`, `[REQ-DECLINED-PENDING]`, `[REQ-ORPHAN-ROW]`); waiting for his look.

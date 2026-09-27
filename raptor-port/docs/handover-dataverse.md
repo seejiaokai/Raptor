@@ -91,6 +91,15 @@ For the person designing RAPTOR's Dataverse tables. Written 10 Sep 26.
   old rights at once — in every open tab and on every device — so the server checks the CURRENT account and its
   role on every write, never a copy the app took when he signed in. Today's app cannot: its accounts live in one
   browser and its open tabs share nothing, so a change reaches only the next sign-in on that same browser.
+- **A person is never erased — a delete is a hidden mark** (added 27 Sep 26, `[POST-OUT-OUTCOMES]` — owner D287, D290,
+  D297). A man who leaves flying for good is deleted: his `User` goes and his `Person` row is KEPT with the tombstone set
+  (and the first day he is gone, `deletedFrom`) — invisible everywhere, his callsign free for someone new, never restored.
+  Every day he already flew keeps pointing at him (the published record stays true); days from `deletedFrom` lose him.
+  So the security roles need no hard delete on `Person`; the delete is an update, and the same row must still be
+  readable wherever a past day is drawn. An account can also be **suspended** (`enabled` false — D280, D285) and enabled
+  again when he is back; one suspended by a posting out is marked so (the app enables only that one by itself).
+  Callsigns are unique among the people ON the roster, not across archived or deleted rows (D286), and — with more
+  than one community on the app — within a community, not across the app (D288).
 
 ## What happens next, on our side
 

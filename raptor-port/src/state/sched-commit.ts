@@ -360,6 +360,8 @@ function applyEnd(): void {
   mintInpIds()
   SCHED_BASELINE = histSnap()
 }
+/* the same apply-end for a command that enlists the scheduler store beside others (state/person-delete.ts) */
+export const schedApplyEnd = () => applyEnd()
 
 /* ---- command types + the commit helper ----------------------------------- */
 export const SCHED_TYPES = {

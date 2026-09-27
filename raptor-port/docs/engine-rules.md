@@ -2337,17 +2337,36 @@ DAYS-walk that rewrote row strings is GONE — and it was not merely redundant, 
 wrong: it missed snapshots, parked drafts and every other week. The one add
 (`state/roster-add.ts newPersonProblem` — Admin → Users since `[ACCOUNTS-NEW-PERSON]`, 26 Sep 26, D217; the Quals
 page's own `addPerson` is retired) refuses a callsign that resolves to any existing person by id OR callsign, which
-closes the reuse back-door. *(To change — D286, 26 Sep 26: a callsign held only by an ARCHIVED man becomes free for a
-new person; restoring him while it is in use needs one of the two renamed first. Built with `[POST-OUT-OUTCOMES]`.)* Rename still refuses a blank, a no-op and a duplicate (`ID_BY_CS` can only
+closes the reuse back-door. **NARROWED — D286, 26 Sep 26, BUILT 27 Sep 26 (`[POST-OUT-OUTCOMES]`):** the callsign index
+(`ID_BY_CS`, `engine/people.ts indexCallsigns`) holds the ROSTER and the placeholders only, so a callsign held only by an
+ARCHIVED man is free for a new person, and a typed callsign always finds the roster man; `callsignTakenBy` /
+`state/roster-add.ts callsignProblem` is the one test (blank, over 14 letters — said, never cut, D226 — or taken by a
+man on the roster). A DELETED man (the hidden mark, D290) is in no index. Restoring an archived man while a roster man
+holds his callsign is refused (D286 (1) — it never renames anyone by itself); Quals then asks for another callsign on the
+spot and restores him under it in one step (D295, `leavewar/sync.ts restoreArchivedAs`), and an archived man can be
+renamed right on the Archived list (moving to Admin → Users with `[ONE-DOOR]`, D310). Rename still refuses a blank, a no-op and a duplicate (`ID_BY_CS` can only
 point one way), and it deliberately marks **nothing
 pending**: the person in the seat has not changed, only the spelling, and
 `rowCrew` diffs identically — an AL full of spelling would be noise. *(Corrected 26 Sep 26: this said "Published day
 snapshots keep the spelling they were issued with" — not so, and against D186: a published day reads the callsign
 LIVE, a rename updating it at once (`engine/faceattrs.ts` — the issued face keeps CAT, seat, ground crew, SANS and SXO,
-"the callsign stays live"). The same live read is why a person deleted outright today vanishes from every day he was on,
-published ones included; `[POST-OUT-OUTCOMES]` builds the delete so days he already flew keep his puck — D297.)*
+"the callsign stays live"). The same live read is why a person deleted outright would vanish from every day he was on, published ones included;
+so a delete is the hidden mark instead (`[POST-OUT-OUTCOMES]`, 27 Sep 26 — D290, D297): his record is kept, days he
+already flew keep his puck, and every day from his cutoff loses him.)*
 
 ## Publishing / amendments
+
+**A DELETED MAN ON A PUBLISHED DAY (`[POST-OUT-OUTCOMES]`, 27 Sep 26 — D297, D299; `state/person-delete.ts`).** The
+delete's cutoff is the later of its date and the calendar date (ONE clock — the posting pass's too). Every day BEFORE it
+keeps his puck, published or not, and never reads pending for the delete: a published face compares a deleted man's
+roster attributes as they stood when the day was issued (`publish.ts peopleAttrsNow`), and ALL AVAIL counts him on those
+days as before (`leavewar/sync.ts availableFor`, by date). Every day FROM the cutoff loses him in every kind of slot —
+the loaded week through the funnel, every stashed week, the sign-off boxes, the OIL switches, the parked plans, the
+planning calendar; a published day to come then reads pending (as any change does). His inputs from the cutoff go (one
+spanning it ends the day before, its "till" tail rewritten); he earns no OIL from it. A stored week that cannot be read
+(or a preserved one) holding him refuses the whole delete, nothing changed. Nothing brings him back: loading a version
+or switching a plan leaves his rows out (`rowsLeftOut`), and an Undo step that would put him back is passed over and
+said (`undo/timeline.ts deadRefusal`).
 
 **THE AMENDMENT BATCH (25 Sep 26, built overnight under D112) — five rules of this section changed; each is a register
 line (`docs/superpowers/specs/2026-09-24-amendment-behaviour-register.md`).**
@@ -2898,8 +2917,13 @@ the Originals and every AL. (The earlier sentence here said the opposite.)
 **ACCOUNTS (`[ACCOUNTS]`, 26 Sep 26 — D165, D166, D204, D200).** Everyone signs in as HIMSELF: each account
 (`state/accounts.ts`, managed on Admin → Users) is a sign-in name — which stands for the defence mail address —,
 admin or member, and the CALLSIGN (person) it belongs to; one person, one account. Signing in makes you that callsign
-(`ME` = the account's person, set only by `resetSession`); the "View as" picker and the admin's role toggle are GONE
-(D166 (3)). The sign-in card stands for the defence-mail sign-in: the app never keeps a password (Microsoft checks it at
+(`ME` = the account's person, set only by `resetSession`); the "View as" picker is GONE (D166 (3)). **The admin's
+MEMBER VIEW came back (D292, 27 Sep 26 — replacing D166 (3)'s "no preview as a member"):** an admin taps his name badge
+("Saber · Admin" ↔ "Saber · Member"; on a phone the switch under his name in the menu) and the app treats him exactly as a
+member until he taps back — he stays himself (never another person); every sign-in starts as admin; the session keeps
+its account's role (`SESSION.acct`) beside the role in force, and `perms.ts switchRoleInForce` refuses anyone who is not
+an admin account (`[POST-OUT-OUTCOMES]`, `state/store.ts switchRoleView`). An Undo of his own admin step, refused while
+he is a member, says "Switch back to the admin view to undo that." (never "someone else's change"). The sign-in card stands for the defence-mail sign-in: the app never keeps a password (Microsoft checks it at
 the database step); an added account takes any password, the two seeded sign-ins keep theirs — `ad/a` = admin (Saber),
 `us/us` = member (Ranger), the owner's 24 Aug 26 names, not printed on the card. The password box STAYS until the database step, when Microsoft's sign-in replaces the whole page (D223, 26 Sep 26) — the app never stores a password. A person signed in but on no list asks
 for access and waits, giving what the admin's New person form asks (`[ACCOUNTS-NEW-PERSON]`, 26 Sep 26 — D214): the
@@ -2907,7 +2931,12 @@ displayed callsign/name (D222; at most 14 letters, said when over, never cut —
 D225), pilot / WSO / personnel (D220), CAT (none for personnel); an admin approves — linking a puck he picks, or
 **New person**: his Quals row made from what he gave, with the admin's corrections, together with his account in one
 step — or declines; an admin switch, OFF by default, lets people waiting read the schedule as a GUEST — what a member
-reads on View-only Sched, read only (D215); an account switched off sees only "switched off" (D204). **A new person is
+reads on View-only Sched, read only (D215); a **suspended** account sees only "Your access is suspended — Ask an admin
+to enable it when you're back." (D204; the words D285, D300). **Admin → Users' account editor: "Suspend" / "Enable" and
+"Delete account" (D285).** A delete — for a man who leaves flying for good — takes his account AND his person (D287), asks
+twice and names what goes, never oneself, never the last admin who can sign in; it cannot be undone
+(`state/person-delete.ts`, `[POST-OUT-OUTCOMES]`, 27 Sep 26: the hidden mark, D290; days he flew keep his puck, D297;
+see §Publishing for what a published day does). **A new person is
 made in ONE place, Admin → Users (D217):** alone with a blank sign-in (someone who won't use the app — a SANS man), or
 with his account, in one step (the one add, `state/roster-add.ts`; the one callsign rule); Quals' "+ Add person" is a
 button there. **A new request lights each admin's bell** until HE has had the waiting list on screen (Admin → Users; on a
@@ -2932,7 +2961,9 @@ the squadron's programme*, not read vs write:
 | Admin → Users — accounts, requests, the guest switch | no | yes (never his own account; at least one admin always keeps access) |
 | Quals — `Edit quals` (which columns the LoX carries) | no | yes |
 | Admin → Users — add a person (alone, or with his account), or approve a request with New person (D217, 26 Sep 26 — was Quals' `Add person`, now a button there) | no | yes |
-| Quals — archive a person (the row's ✕) / Restore from the Archived drawer | no | yes |
+| Quals — archive a person (the row's ✕) / Restore from the Archived drawer / Rename an archived man there (D295) | no | yes |
+| Delete a person — Admin → Users' "Delete account", or a posting out's "Delete" (D287) | no | yes (never himself, never the last admin) |
+| Post a person out — which posting it is, and its date (D229) | no | yes |
 | Accepting an input into the issued programme | no | yes |
 | The Edit Schedule page at all (`canEditSched()`) | no | yes |
 | Duty / day / flying-wave templates & per-day drafts (the four editor sheets) | no | yes |
@@ -3052,10 +3083,14 @@ another person), which stays. Pinned in `audit-guards-inputs.test.ts`
 scheduler allowed any).
 
 **The admin's "View as member" toggle (27 Aug 26) is REMOVED — `[ACCOUNTS]`, 26 Sep 26, D166 (3): "There isint a need
-for preview as a member".** *(To come back — D292, 27 Sep 26: tapping the badge switches an admin to the member view
-and back, himself throughout; built with `[POST-OUT-OUTCOMES]`.)* Every account is one person with one role, so the peek had nothing left to preview; the
-badge is an inert label naming the signed-in person and role ("Saber · Admin"), and `resetSession` is the ONE production
-writer of the Leave War's role. Its absence is pinned in `ui/accounts-ui.test.tsx` (which replaced `roletoggle.test.tsx`);
+for preview as a member".** **— REPLACED 27 Sep 26 BY D292, BUILT (`[POST-OUT-OUTCOMES]`): tapping the badge switches an admin to the member
+view and back, himself throughout (§Auth / roles, the head).** The badge is a button for a real admin account ("Saber ·
+Admin" ↔ "Saber · Member"; on a phone the switch under his name in the menu), an inert label for a member; the Leave
+War's role has TWO production writers — `resetSession` (every sign-in starts as admin) and the switch
+(`state/store.ts switchRoleView`, which leaves Edit Schedule and Admin for View-only Sched, puts the armed slot down and
+closes the Logic editor). *(The 26 Sep 26 text, for the record: "Every account is one person with one role, so the peek
+had nothing left to preview; the badge is an inert label …, and `resetSession` is the ONE production writer of the Leave
+War's role.")* Its absence is pinned in `ui/accounts-ui.test.tsx` (which replaced `roletoggle.test.tsx`);
 the localhost probe bridge keeps a role switch for the e2e suite and the walk. **Undo is per sign-in:** `resetSession`
 empties the one undo list on every sign-in and sign-out (`undo/timeline.ts endUndoSession` — the 13 Sep 26 rule, D148).
 

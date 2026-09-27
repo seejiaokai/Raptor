@@ -1,0 +1,96 @@
+{
+  "results": [
+    {
+      "id": "c01-badge-admin",
+      "what": "the badge reads \"Saber · Admin\" and is a button (D292)",
+      "ok": true,
+      "note": "",
+      "pic": "01-c01-badge-admin.png"
+    },
+    {
+      "id": "c02-member-view",
+      "what": "one tap: \"Saber · Member\" — no Admin tab, no Edit Schedule, the view page",
+      "ok": true,
+      "note": "",
+      "pic": "02-c02-member-view.png"
+    },
+    {
+      "id": "c03-member-undo",
+      "what": "Undo of his own admin step, in the member view: \"Switch back to the admin view to undo that.\"",
+      "ok": true,
+      "note": "",
+      "pic": "03-c03-member-undo.png"
+    },
+    {
+      "id": "c04-member-no-po",
+      "what": "in the member view the Leave War offers no posting door on another man",
+      "ok": true,
+      "note": "",
+      "pic": "04-c04-member-no-po.png"
+    },
+    {
+      "id": "c05-back-to-admin",
+      "what": "a second tap: back to \"Saber · Admin\", the Admin tab again",
+      "ok": true,
+      "note": "",
+      "pic": "05-c05-back-to-admin.png"
+    },
+    {
+      "id": "c06-sans-to-come-shown",
+      "what": "Show SANS on, a SANS posting to come: his row hatched from its date (the posting shows)",
+      "ok": true,
+      "note": "",
+      "pic": "06-c06-sans-to-come-shown.png"
+    },
+    {
+      "id": "c07-sans-to-come-door",
+      "what": "tapping it opens the Post out sheet with SANS chosen — the door to change or undo it",
+      "ok": true,
+      "note": "",
+      "pic": "07-c07-sans-to-come-door.png"
+    },
+    {
+      "id": "c08-phone-drawer",
+      "what": "the phone drawer: \"Signed in as Saber · Admin\" and the member-view switch under it",
+      "ok": true,
+      "note": "",
+      "pic": "08-c08-phone-drawer.png"
+    },
+    {
+      "id": "c09-phone-member",
+      "what": "the switch: the drawer reads \"· Member\"",
+      "ok": true,
+      "note": "",
+      "pic": "09-c09-phone-member.png"
+    },
+    {
+      "id": "c10-phone-chips",
+      "what": "phone: the four chips, the line and \"Post out\" all on screen",
+      "ok": true,
+      "note": "",
+      "pic": "10-c10-phone-chips.png"
+    },
+    {
+      "id": "c11-phone-restore-as",
+      "what": "phone: Restore asks for another callsign on the spot, \"Hex 2\" offered, the box on screen",
+      "ok": true,
+      "note": "",
+      "pic": "11-c11-phone-restore-as.png"
+    },
+    {
+      "id": "c12-phone-back-prompt",
+      "what": "restored as \"Hex 2\": the prompt \"Hex 2 is back\", Check his quals and Later on screen",
+      "ok": true,
+      "note": "check button in",
+      "pic": "12-c12-phone-back-prompt.png"
+    },
+    {
+      "id": "c13-phone-delete-arms",
+      "what": "phone: \"Delete account\" asks again, says what goes, and deletes nothing yet",
+      "ok": true,
+      "note": "",
+      "pic": "13-c13-phone-delete-arms.png"
+    }
+  ],
+  "errors": []
+}

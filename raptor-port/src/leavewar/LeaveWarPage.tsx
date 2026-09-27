@@ -42,7 +42,7 @@ import { defaultFocusDate } from './engine'
    stops the parent's render at this line; the three children each subscribe
    to the Leave War store themselves (useVersion), and every fact this tab
    renders arrives THROUGH that store — the sync seam mirrors Raptor's
-   roster/role/viewer into it with its own notify (sync.ts, toggleRole) — so
+   roster/role/viewer into it with its own notify (sync.ts; the role by resetSession and the admin's member-view switch, switchRoleView — the old toggleRole's successor, D292) — so
    nothing here can go stale behind the firewall. The one Raptor import in
    this UI (RemarksSheet's save) is a write path, not rendered state.
    Re-measured with the memo AND scheduler.css's `.page.doze`

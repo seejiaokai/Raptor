@@ -25,7 +25,7 @@
    rolled-back refusal whose reason reaches the screen, never a thrown Error the command
    layer logs as a bug (Fable's plan read F3). The id is minted inside the command, so a
    rolled-back add leaves no id anywhere. */
-import { PEOPLE, QCHIP, ID_BY_CS, deriveQuals, nameToId } from '../engine/people'
+import { PEOPLE, QCHIP, deriveQuals, indexCallsigns, callsignTakenBy } from '../engine/people'
 import { newId } from '../engine/newid'
 import { CmdRefused, isCommitting } from '../command'
 import { mayManageRoster } from './perms'
@@ -65,6 +65,19 @@ export const tidyPerson = (np: NewPerson): NewPerson => ({
   cat: np.seat === 'GND' ? '' : String(np.cat ?? ''),
 })
 
+/* THE ONE CALLSIGN REFUSAL ([POST-OUT-OUTCOMES] — D226, D286, D295; Fable's plan read F11): every door that names a
+   person asks it — the one add, approving, the Archived list's Rename, Restore's "give him another callsign". Blank and
+   over 14 letters first (never cut — D226), then taken: by a man on the roster, a placeholder, or any person's id
+   (engine/people.ts callsignTakenBy — PID-01). A callsign only an ARCHIVED man holds is free (D286), so it is never
+   refused here; the approve note says who holds it (UsersPanel). `exceptId` — the man being renamed or restored. */
+export function callsignProblem(csIn: any, exceptId?: string): string | null {
+  const cs = String(csIn ?? '').trim()
+  if (!cs) return 'Type the callsign or name'
+  if (cs.length > MAX_CS) return CS_TOO_LONG                                           // D226
+  if (callsignTakenBy(cs, exceptId)) return `${cs} is already taken — callsigns must be unique`
+  return null
+}
+
 /* every refusal, in the app's words, first one found. `roster: false` — the sign-up: a
    person not yet let in may not read the roster (data-model §11: Person has no Pending
    read), so whether a callsign is taken is the admin's to see when he approves. */
@@ -73,14 +86,10 @@ export function newPersonProblem(npIn: NewPerson, opts: { roster?: boolean } = {
   if (!np.cs) return 'Type the callsign or name'
   if (np.cs.length > MAX_CS) return CS_TOO_LONG                                        // D226
   if (opts.roster !== false) {
-    const hit = nameToId(np.cs)
-    if (hit) {
-      const p = (PEOPLE as any)[hit]
-      /* only a REAL archived person can be restored (the placeholders are archived by
-         construction and never listed there — Fable's plan read F4) */
-      if (p && p.archived && !p.special) return `${np.cs} is archived — restore them on the Quals page instead`
-      return `${np.cs} is already taken — callsigns must be unique`
-    }
+    /* D286 (26 Sep 26): an archived man's callsign may go to a new person — the old
+       "is archived — restore them on the Quals page instead" refusal gave way */
+    const bad = callsignProblem(np.cs)
+    if (bad) return bad
   }
   if (np.ini.length > MAX_INITIALS) return `Initials are at most ${MAX_INITIALS} letters`   // D225: blank is fine
   if (!SEATS.some(s => s.v === np.seat)) return 'Pick pilot, WSO or personnel'
@@ -99,7 +108,7 @@ export function putNewPerson(npIn: NewPerson): string {
     ? { cs: np.cs, initials: np.ini, seat: 'GND', pers: true, q: '', flight: '-', remarks: '' }
     : { cs: np.cs, initials: np.ini, seat: np.seat, q: np.cat, flight: '-' }
   deriveQuals((PEOPLE as any)[id])
-  ;(ID_BY_CS as any)[np.cs.toLowerCase()] = id
+  indexCallsigns()
   return id
 }
 

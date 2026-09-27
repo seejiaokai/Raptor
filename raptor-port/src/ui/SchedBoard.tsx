@@ -424,7 +424,7 @@ export function SchedBoard() {
               schedule cannot be changed — silently, with the mode still open.
               Kept identical to Shell.tsx's copy on purpose: two buttons, one
               rule. oilundo-button.test.tsx presses BOTH through the DOM. */}
-          <button className="abtn hbtn" id="sbUndo" title={us.undoLabel ? `Undo — ${us.undoLabel}` : 'Undo'} disabled={!us.canUndo}
+          <button className="abtn hbtn" id="sbUndo" title={us.undoLabel ? `Undo — ${us.undoLabel}` : (us.undoWhy || 'Undo')} disabled={!us.canUndo}
             onClick={() => {
               if (oilUndoBoundary()) { HOOKS.toast('Left OIL Earn — the next undo would change the day itself', 'ok'); notify(); return }
               const r = globalUndo(); if (!r.ok && r.reason) HOOKS.toast(r.reason, 'warn'); notify() }}><span className="bi">↶</span><span className="bl"> Undo</span></button>

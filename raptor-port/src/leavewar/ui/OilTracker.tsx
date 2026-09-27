@@ -235,7 +235,9 @@ export function OilTracker({ person, onClose, onGranted }: {
     const d = groupDefs.find(x => x.id === id)
     return d ? groupLabel(d, qualCatalog) : id
   }
-  const roster = displayRoster()
+  /* a DELETED man has no OIL balance any more ([POST-OUT-OUTCOMES], D299 — "his OIL balance" goes; Fable F6): the
+     months he was here keep his record on the grid, the tracker does not list him */
+  const roster = displayRoster().filter(p => !p.gone)
   const orderIds = roster.map(p => p.id)
   const ledgers = new Map<string, OilLedger>(roster.map(p => [p.id, oilLedgerOf(ctx, p.id)]))
 

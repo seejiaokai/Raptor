@@ -47,6 +47,12 @@ so the handoff every chat reads holds only the current baseline. The CURRENT cou
 
 ## How the gates lie — moved whole from `HANDOFF.md` §Gate status (24 Sep 26)
 
+**A browser-test port someone else is already serving (27 Sep 26 — a whole e2e run lost).** Before passing `E2E_PORT` (or
+a walk's `HP_URL`), check the port is free: `netstat -ano | grep ":<port> "`. On this PC the presentation deck's server
+(`hyperframes present … --port 4186`, started 23 Sep 26) has kept 4186 — and a second one 4187 — listening for days; a run
+pointed at 4186 passed its first hundred tests and then failed 192 in a row, every one "waiting for #luser", because the
+page it loaded was the deck ("RAPTOR — Presenter"), not the app. Never stop a server that is not yours; pick another port.
+
 *The baselines in the first paragraphs are history; the current one is `HANDOFF.md` §Gate baseline.*
 
 **Current main baseline — PR #420 ([SYNC-INTEG] medical guardrail batch: medical

@@ -386,6 +386,41 @@ personnel in Personnel, out of manning), the Tracker's "+ Add" list (`peoplewire
 are not cut over — `[UNDO-ROSTER-SETTINGS]`) and no Edit history row. **Adding a new projection of the roster? It is a
 row in the walk's roll-call** (`docs/handpass/2026-09-26-accounts-new-person.md`).
 
+### Flow H — a posting out, and what it does on its date (`[POST-OUT-OUTCOMES]`, 27 Sep 26 — D229, D280, D283, D284)
+
+The admin posts a man out on the Leave War (the bid sheet's PO, an existing posting's Post out sheet, or the drag
+selection — `leavewar/ui/OutcomeChips.tsx`): a date and WHICH posting it is. The one writer is `leavewar/sync.ts postOut`
+→ the war's `setPostOut` (the record: `to`, `poOutcome`, `poDone` cleared on a change). **On the date** the posting pass
+(`sync.ts runPoOutcomes` — boot, every Raptor notify, every Leave War notify; the CALENDAR date) runs the outcome ONCE in
+ONE projection command (`lw.postoutRun`) over the people, settings and war stores (and the schedule and the week stash
+for a delete): Overseas Sqn → `PEOPLE[id].archived` (`archivedBy: 'po'`) + his account suspended (`offBy: 'po'`,
+`state/accounts.ts suspendForPosting`); SANS → `san` ticked (`sanBy: 'po'`); Delete → Flow I below; then `poDone`. The
+pass can be woken while another command is delivering — its command then QUEUES, and a queued pass is never re-queued
+(`PO_INFLIGHT`; the endless loop the tests found, 27 Sep 26). What reads the result, and must repaint: the Quals roster
+and its Archived list, every crew list and picker (an archived man is on none), Admin → Users (the "suspended" tag),
+the sign-in (a suspended account's screen), the Leave War roster (`reprojectRoster` — the kept rule; SANS through
+`windowFor` with "Show SANS"), the manning counts (`inSquadron`), ALL AVAIL (`availableFor`), the OIL pass. **Taking it
+back:** a later date or another outcome (`postOut` → `takeBack`, one command `lw.postout`) undoes only what the posting
+made; Undo post out after an Overseas Sqn and Quals' Restore are "he's back" (`restoreBody`, `person.restore`) — the
+posting cleared, the archive lifted, the posting's suspension enabled, and the Quals prompt armed (`state/view.ts
+BACKPROMPT`). **The seam:** the war never reads Raptor's accounts itself — `setAccountLookup` (installed by
+`wireLeaveWarSync`) answers "has he an account?" for the chips' line.
+
+### Flow I — a delete (`[POST-OUT-OUTCOMES]`, 27 Sep 26 — D287, D290, D297, D299)
+
+Two doors, one mutation: Admin → Users' "Delete account" (`state/person-delete.ts deletePerson`, command `person.delete`)
+and a posting's Delete on its date (Flow H → `applyDelete`). The cutoff is the later of its date and the calendar date.
+In one command over the people, settings, schedule and week-stash stores (and the war's, through the seam
+`sync.ts deletePersonOnWar`): the hidden mark (`deleted`, `deletedFrom`, `archived`, `archivedBy: 'del'`), the callsign
+index rebuilt (his callsign free), his account removed, every day from the cutoff emptied of him (the loaded week through
+the funnel; every stashed week; sign boxes; OIL switches; parked plans; the planning calendar), his inputs from the cutoff
+deleted or ended the day before, his war records from the cutoff gone and his row marked `gone`. **What must keep him:**
+every day BEFORE the cutoff, and every published version (a record — never rewritten), so a past published day never
+reads pending for the delete (`publish.ts peopleAttrsNow` — his issued attributes) and ALL AVAIL counts him there by date.
+**What must never bring him back:** a version loaded or a plan switched onto a day from the cutoff, and an Undo step
+(`undo/timeline.ts deadRefusal` — passed over, and said). A new surface that lists people must skip `deleted` (the
+roster filters already do, since `archived` rides the mark).
+
 **Every flow ends by repainting through `notify()` (or the board lane).** State
 that lives outside the funnel + `HOOKS.storeBackend` is invisible to undo, AL
 and re-validation — do not add any.

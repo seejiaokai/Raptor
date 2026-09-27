@@ -109,7 +109,7 @@ export function Topbar() {
           <button
             className="lw-hbtn"
             data-testid="lw-undo"
-            title={us.undoLabel ? `Undo — ${us.undoLabel}` : 'Undo the last change'}
+            title={us.undoLabel ? `Undo — ${us.undoLabel}` : (us.undoWhy || 'Undo the last change')}
             disabled={!us.canUndo}
             onClick={() => { const r = globalUndo(); if (!r.ok && r.reason) toast(r.reason, 'warn') }}
           >

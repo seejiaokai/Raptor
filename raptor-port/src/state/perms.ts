@@ -24,7 +24,7 @@
    "No session" (SESSION null) is the headless engine — a unit test, the boot, the
    parity harness — never a user: every question below answers it the way the gate it
    replaced did (stated per question), so no headless test changes meaning. */
-import { SESSION, ME } from './auth'
+import { SESSION, ME, setEffectiveRole } from './auth'
 import type { Actor, CommitEnvelope } from '../command/types'
 
 export type Act = 'C' | 'R' | 'U' | 'D'
@@ -67,7 +67,7 @@ export const PERMS: Record<string, PermRow> = {
   [T.qualification]: row(cell('C R U D'), cell('R')),
   [T.qualmark]: row(cell('C R U D'), cell('R', 'C U D')),
   [T.setting]: row(cell('C R U D'), cell('R')),
-  [T.user]: row(cell('C R U'), cell('', 'R')),
+  [T.user]: row(cell('C R U D'), cell('', 'R')),
   [T.accessreq]: row(cell('R U D'), NONE, NONE, cell('', 'C')),
   [T.sched]: row(cell('C R U D'), cell('R'), cell('R')),
   [T.amendment]: row(cell('C R'), cell('R'), cell('R')),
@@ -130,6 +130,25 @@ function may(table: string, act: Act, owner: string | null | undefined, headless
   return allows(who, table, act, owner, identityOf(who))
 }
 
+/* THE ADMIN'S MEMBER VIEW (owner D292, 27 Sep 26 — "6. yes"; it replaces D166 (3)'s "no preview as a member"). An
+   admin taps his name badge and the app behaves exactly as for a member; a tap switches back; every sign-in starts as
+   admin (the session's role is the account's, set by resetSession). THE ROLE IN FORCE IS THE SESSION'S ROLE — roleOf,
+   every question below, the command actor (command/actor.ts) and the ownership check read it, so the switch reaches all
+   of them with no second switch. Who may switch is the session's ACCOUNT role (`acct`, set at sign-in by
+   accounts.ts sessionFor and never changed by the switch — Astra's plan read A6): only a real admin, only between admin
+   and member, never another person. A pending person, a guest, an account suspended, a member — no switch, and a
+   hand-made call changes nothing. */
+export function mayViewAsMember(): boolean {
+  const w = roleOf()
+  return !!SESSION && SESSION.acct === 'admin' && (w === 'admin' || w === 'member')
+}
+export function switchRoleInForce(next: any): boolean {
+  if (next !== 'admin' && next !== 'main') return false
+  if (!mayViewAsMember()) return false
+  setEffectiveRole(next)
+  return true
+}
+
 /* 2. THE NAMED QUESTIONS ------------------------------------------------------ */
 export const isAdmin = (): boolean => roleOf() === 'admin'
 /* a signed-in admin or member — someone with access to the app's pages */
@@ -181,6 +200,10 @@ export const mayEditQualColumns = (): boolean => may(T.qualification, 'U', null,
 
 /* accounts (D166, D204). No session → false: nothing headless manages accounts. */
 export const mayManageAccounts = (): boolean => may(T.user, 'U', null, false)
+/* a delete — a man who leaves flying for good: his account and his person ([POST-OUT-OUTCOMES], D280, D287, D290 — the
+   person kept underneath as a hidden mark). No session → false: nothing headless deletes anyone (the posting pass runs
+   the mutation as a reconciler, never through this door — Fable F4). */
+export const mayDeletePerson = (): boolean => may(T.person, 'D', null, false) && may(T.user, 'D', null, false)
 export function mayRequestAccess(): boolean {
   const who = roleOf()
   return who === 'pending' && allows(who, T.accessreq, 'C', SESSION && SESSION.name, identityOf(who))
@@ -279,6 +302,19 @@ export const COMMAND_OPS: Record<string, CommandOp> = {
   'account.addNew': op(T.user, 'C', 'never', [[T.person, 'C'], [T.accessreq, 'D']]),
   'access.approveNew': op(T.accessreq, 'D', 'never', [[T.user, 'C'], [T.person, 'C']]),
   'access.seen': op(T.accessreq, 'U'),
+  /* a delete ([POST-OUT-OUTCOMES], D287, D290, D297, D299): the person marked (the hidden mark — D is the soft delete),
+     his account removed, and on every day from its cutoff he is taken off — the working copy, the stashed weeks, the
+     parked plans, the planning calendar (the schedule family), his sign-off boxes cleared (as the sign-clear command),
+     and his inputs from that day deleted or ended the day before. Every table it writes is named (D200). The Leave War
+     half (his records, his posting) joins in Part B with LeavePersonProfile. */
+  'person.delete': op(T.person, 'D', 'never', [[T.user, 'D'], [T.accessreq, 'D'], [T.sched, 'U'], [T.amendment, 'C'], [T.input, 'D'], [T.input, 'U'], [T.profile, 'U'], [T.bid, 'D']]),
+  /* he's back — Restore on Quals, Undo post out, Restore under another callsign (D284, D286, D295): the person restored
+     (and renamed), the account the posting suspended enabled, the posting cleared; never a member's own-row write */
+  'person.restore': op(T.person, 'U', 'never', [[T.user, 'U'], [T.profile, 'U']]),
+  /* a posting written with a take-back of what the posting made (its archive, its suspension, its SANS tick) */
+  'lw.postout': op(T.profile, 'U', 'never', [[T.person, 'U'], [T.user, 'U']]),
+  /* the posting pass on its date — a reconciler (the system actor); every table an outcome writes is named (D200) */
+  'lw.postoutRun': op(T.profile, 'U', 'never', [[T.person, 'U'], [T.person, 'D'], [T.user, 'U'], [T.user, 'D'], [T.sched, 'U'], [T.amendment, 'C'], [T.input, 'D'], [T.input, 'U'], [T.bid, 'D']]),
 }
 for (const k of SETTINGS_KEYS_ALL) COMMAND_OPS[`settings.${k}`] = op(T.setting, 'U')
 

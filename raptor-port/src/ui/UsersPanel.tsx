@@ -28,7 +28,7 @@
    and IT ties the real address at the database step (D165) — live in state/accounts.ts,
    not on screen. */
 import { useEffect, useRef, useState } from 'react'
-import { PEOPLE, nameToId } from '../engine/people'
+import { PEOPLE, nameToId, archivedHolders } from '../engine/people'
 import { HOOKS } from '../engine/hooks'
 import { elogWhen } from '../engine/editlog'
 import {
@@ -40,6 +40,10 @@ import { SEATS, catsFor, MAX_CS, MAX_INITIALS, CALLSIGN_LABEL, CS_TOO_LONG, type
 import { SESSION } from '../state/auth'
 import { me } from '../state/perms'
 import { notify } from '../state/store'
+import { deletePerson } from '../state/person-delete'
+import { markBack } from '../state/view'
+import { postingHeldNote } from '../leavewar/sync'
+import './postout.css'
 
 const cs = (pid: string) => ((PEOPLE as any)[pid] ? String((PEOPLE as any)[pid].cs) : '')
 function PuckSelect(p: { id: string; value: string; keep?: string; onChange: (v: string) => void }) {
@@ -124,24 +128,34 @@ const SOMEONE_ELSE = 'If it is someone else, choose New person and give them ano
 /* the signed-in admin's OWN account — its row cannot be opened (another admin changes it) */
 const isOwnAccount = (a: Account) => !!(SESSION && SESSION.user === a.id) || (me() != null && a.pid === me())
 function rosterMatch(r: AccessRequest): { pid: string; note: string } | null {
+  /* a typed callsign finds the man ON THE ROSTER only ([POST-OUT-OUTCOMES], D286 (2)) — an
+     archived man's callsign is free, so a request under it opens on New person (archivedNote) */
   const hit = r.cs ? nameToId(r.cs) : undefined
   const p = hit && (PEOPLE as any)[hit]
-  if (!hit || !p || p.special) return null
+  /* an archived man is reached only by a typed bare id (nameToId's id tolerance) — never picked here either */
+  if (!hit || !p || p.special || p.archived) return null
   const same = String(p.cs).toLowerCase() === r.cs.trim().toLowerCase()
-  const who = `${p.cs}${p.archived ? ' (archived)' : ''}`
   const acct = accountOfPid(hit)
   if (acct) {
     /* the "it is him" door, said so it can be used: his OWN account's row is locked to him
-       (Astra's second fix check), and an archived man who is back still needs restoring —
-       said, never done for him: Restore wipes his posting-out window (Fable's second) */
+       (Astra's second fix check) */
     const him = isOwnAccount(acct)
       ? "It is your own account: if it is you on a new sign-in, another admin must change its sign-in under Accounts — you can't change your own."
-      : `If it is them on a new sign-in, change that account's sign-in under Accounts — that answers this request${p.archived ? ', and restore them on the Quals page if they are back' : ''}.`
-    return { pid: hit, note: `He typed ${r.cs} — ${same ? `${who} already has` : `that is ${who}, who already has`} an account (${acct.name}), so they can't be picked here. ${him} ${SOMEONE_ELSE}` }
+      : `If it is them on a new sign-in, change that account's sign-in under Accounts — that answers this request.`
+    return { pid: hit, note: `He typed ${r.cs} — ${same ? `${p.cs} already has` : `that is ${p.cs}, who already has`} an account (${acct.name}), so they can't be picked here. ${him} ${SOMEONE_ELSE}` }
   }
-  if (p.archived) return { pid: hit, note: `He typed ${r.cs} — ${p.cs} is archived; restore them on the Quals page to link them. ${SOMEONE_ELSE}` }
   return { pid: hit, note: same ? `He typed ${r.cs} — ${p.cs} is on the roster. Pick them if this is them.`
     : `He typed ${r.cs} — that is ${p.cs}. Pick them if this is them.` }
+}
+/* D286 reading (5) (26 Sep 26), in D300's few words: a request whose callsign only an ARCHIVED man holds opens on New
+   person, saying so — "An archived man is already Ace — this makes a new person." When that archived man has an account
+   (an overseas man, suspended), the way it is HIM on a new sign-in is named too, so he is not made twice. */
+function archivedNote(r: AccessRequest): string | null {
+  const held = r.cs ? archivedHolders(r.cs) : []
+  if (!held.length) return null
+  const acct = held.map(id => accountOfPid(id)).find(Boolean)
+  return `An archived man is already ${r.cs.trim()} — this makes a new person.`
+    + (acct ? ` If it is him, change his account's sign-in (${acct.name}) instead.` : '')
 }
 
 /* one open approve form's state — started afresh from the request at every Approve (Cancel
@@ -179,7 +193,7 @@ function Waiting() {
                   {a.mode === 'new'
                     ? <>
                         <PersonFields idp="apv" np={a.np} onChange={np => setOpen({ ...a, np })} />
-                        <p className="adm-note acc-note" id="apvNote">Filled from what he gave when he signed up — change anything before you give access.</p>
+                        <p className="adm-note acc-note" id="apvNote">{archivedNote(r) ?? 'Filled from what he gave when he signed up — change anything before you give access.'}</p>
                       </>
                     : <>
                         <div className="mfield"><label htmlFor="apvPid">{CALLSIGN_LABEL}</label>
@@ -204,6 +218,8 @@ function Waiting() {
   )
 }
 
+/* D287 / D298 / D300: the delete's second tap names what goes — once, in few words (the approved picture 2b) */
+const DELETE_GOES = 'Goes: his account, his Quals row, every day still to come. Days he flew keep his puck. Can’t be undone.'
 function AccountRow(p: { a: Account; editing: boolean; onEdit: () => void; onClose: () => void }) {
   const { a } = p
   const person = (PEOPLE as any)[a.pid]
@@ -211,6 +227,9 @@ function AccountRow(p: { a: Account; editing: boolean; onEdit: () => void; onClo
   const [name, setName] = useState(a.name)
   const [pid, setPid] = useState(a.pid)
   const [role, setRole] = useState<AccountRole>(a.role)
+  /* the delete's first tap arms it; Cancel, closing the editor or another row disarms it (the editor unmounts) */
+  const [armDel, setArmDel] = useState(false)
+  const cs = accountCallsign(a) || a.name
   const save = () => {
     const patch: any = {}
     if (name !== a.name) patch.name = name
@@ -219,6 +238,7 @@ function AccountRow(p: { a: Account; editing: boolean; onEdit: () => void; onClo
     if (!Object.keys(patch).length) return p.onClose()
     if (done(updateAccount(a.id, patch), 'Account saved')) p.onClose()
   }
+  const heldNote = postingHeldNote(a.pid)
   return (
     <div className={'acc-row' + (a.on ? '' : ' off')} data-acct={a.id}>
       <button className="acc-main acc-tap" disabled={own} onClick={p.onEdit}
@@ -226,12 +246,16 @@ function AccountRow(p: { a: Account; editing: boolean; onEdit: () => void; onClo
         <span className="acc-name">{a.name}</span>
         <span className="acc-sub">
           <b>{accountCallsign(a) || 'no callsign'}</b>
-          {person && person.archived && <span className="acc-tag" title="This callsign has been archived — switch the account off if they have left">archived callsign</span>}
-          {!a.on && <span className="acc-tag">switched off</span>}
+          {person && person.archived && <span className="acc-tag" title="This callsign has been archived — suspend the account while he is away, delete it when he leaves flying">archived callsign</span>}
+          {/* D285 (26 Sep 26): "suspended" — the act D280 named, today's "switched off" in his words */}
+          {!a.on && <span className="acc-tag">suspended</span>}
           {own && <span className="acc-tag you">you</span>}
         </span>
       </button>
       <span className={'ub ' + a.role}>{isAdminAccount(a) ? 'Admin' : 'Member'}</span>
+      {/* his posting out has come and is waiting — why (the last admin; a stored week), on his row (under it, after the role tag), his own included
+          ([POST-OUT-OUTCOMES] — the plan's Round 2 item 3, Astra's code read 2) */}
+      {heldNote && <span className="acc-held" data-testid={`acc-held-${a.id}`}>{heldNote}</span>}
       {p.editing && !own && <div className="acc-edit" data-editing={a.id}>
         <div className="mfield"><label htmlFor="accEdName">Sign-in (defence mail)</label>
           <input id="accEdName" value={name} maxLength={MAX_SIGNIN} onChange={e => setName(e.target.value)} /></div>
@@ -241,9 +265,24 @@ function AccountRow(p: { a: Account; editing: boolean; onEdit: () => void; onClo
           <RoleSelect id="accEdRole" value={role} onChange={setRole} /></div>
         <div className="acc-acts">
           <button className="abtn primary" id="accEdSave" onClick={save}>Save</button>
-          <button className="abtn" id="accEdOnOff" onClick={() => { if (done(updateAccount(a.id, { on: !a.on }), a.on ? `${a.name} switched off` : `${a.name} switched on`)) p.onClose() }}>{a.on ? 'Switch off' : 'Switch on'}</button>
+          {/* D285: "Suspend" / "Enable" (was "Switch off / on") — a man away is suspended, and enabled when he is back */}
+          <button className="abtn" id="accEdOnOff" onClick={() => {
+            const enabling = !a.on
+            if (done(updateAccount(a.id, { on: !a.on }), a.on ? `${cs} suspended` : `${cs} can sign in again`)) {
+              /* D284: enabling his account is one of the two "he's back" acts — the Quals prompt to check his quals */
+              if (enabling) { markBack(a.pid); notify() }
+              p.onClose()
+            }
+          }}>{a.on ? 'Suspend' : 'Enable'}</button>
+          {/* D285 "Delete account"; D287 — for a man who leaves flying for good: his account AND his person (kept
+              underneath as a hidden mark, D290; state/person-delete.ts); it asks twice and says what goes (D287 (3)) */}
+          <button className={'abtn danger' + (armDel ? ' del-armed' : '')} id="accEdDel" onClick={() => {
+            if (!armDel) { setArmDel(true); return }
+            if (done(deletePerson(a.pid), `${cs} deleted`)) p.onClose()
+          }}>{armDel ? `Tap again to delete ${cs}` : 'Delete account'}</button>
           <button className="abtn" id="accEdCancel" onClick={p.onClose}>Cancel</button>
         </div>
+        {armDel && <p className="adm-note acc-note acc-del-note" id="accEdDelNote">{DELETE_GOES}</p>}
       </div>}
     </div>
   )

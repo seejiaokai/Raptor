@@ -75,6 +75,12 @@ half).
   delete the folder). `… gatelock.mjs run` takes it, runs the whole gate set in order and always releases. A lock older
   than 2 hours whose run is plainly over is stale — break it and say so. One test file, a typecheck or one walk script
   needs no lock. The folder sits OUTSIDE every checkout, so every worktree on the PC shares it.
+- **Parallel chats talk to each other so they do not clash (D302, 27 Sep 26 — "Can all 3 chats communicate so that there
+  will not be clashing … U guys handle it").** Before changing a file or function another open chat's branch also
+  changes (compare the branches: `git diff --name-only $(git merge-base origin/main <branch>) <branch>`), message that
+  chat (`ListAgents`, then `SendMessage`): what you will change there and what you will leave; answer the same when asked;
+  settle an overlap between you at once. Repeat what you promised in your own `HANDOFF.md` block. The merge order and
+  "merge live" stay HIS — a chat never merges for another (D60, D78).
 - **Docs-only changes skip the gates** (`paths-ignore` in `deploy.yml`: `**.md`, `.claude/**`, the document-gate
   scripts `raptor-port/scripts/docsize*.mjs` and `backlog-archive.mjs`, and `docs-guard.yml`) — but the Docs guard
   (`docs-guard.yml`, about a billed minute) still runs on every PR and every push to `main`. **An exemption from

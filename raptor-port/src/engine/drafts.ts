@@ -7,6 +7,7 @@ import { dayKeys } from './restore'
 import { reconcileDayFiling } from './slots'
 import { keyDay } from './keys'
 import { groundOrder } from './order'
+import { HOOKS } from './hooks'
 import { ridKey, posKey, rowsOf, ensureRowIds } from './rowids'
 
 /* PER-DAY ALTERNATE DRAFTS (owner ask, 15 Aug 26 — "allow me to duplicate the
@@ -78,7 +79,7 @@ const restampRev = (bind: any, from: any, to: any) => {
    the working copy, or a plan switch — LEFT OUT because that request already stands on another loaded day
    (publish.ts rowsLeftOut), with whose it is, what, and those days' names. Read by both doors' messages right after the
    replacement, through rowsLeftSaid — the one sentence, so the load and the switch cannot word it two ways. */
-export let ROWSLEFT: Array<{ id: string, who: string, what: string, days: string[] }> = []
+export let ROWSLEFT: Array<{ id: string, who: string, what: string, days: string[], dead?: boolean }> = []
 const leaveOut = (di: number, nd: any) => {
   const out = rowsLeftOut(di, nd)
   leaveRowsOut(nd, out.map(x => x.id))
@@ -91,10 +92,15 @@ const leaveOut = (di: number, nd: any) => {
     const what = inp ? inpLabel(inp) : (inpLabel({ type: r.srcType, remarks: r.rmks } as any) || r.prog || 'A request')
     return { id: x.id, who, what, days: x.days.map(dj => String((DAYS[dj] || {}).dow || '')) }
   })
+  /* …and a DELETED man is never put back on a day from his cutoff ([POST-OUT-OUTCOMES], D297): stripped from the
+     incoming day, and the same message says so */
+  for (const cs of HOOKS.stripDeleted(di, nd)) ROWSLEFT.push({ id: 'dead:' + cs, who: cs, what: '', days: [], dead: true })
 }
 /* " · Bane · Meeting left out — it is on Tuesday's programme", one clause per request; '' when nothing was left out */
-export function rowsLeftSaid(list: Array<{ who: string, what: string, days: string[] }>): string {
-  return (list || []).map(x => ` · ${x.who ? x.who + ' · ' : ''}${x.what} left out — it is on ${x.days.join(' and ')}'s programme`).join('')
+export function rowsLeftSaid(list: Array<{ who: string, what: string, days: string[], dead?: boolean }>): string {
+  return (list || []).map(x => x.dead
+    ? ` · ${x.who} left out — he has been deleted`
+    : ` · ${x.who ? x.who + ' · ' : ''}${x.what} left out — it is on ${x.days.join(' and ')}'s programme`).join('')
 }
 /* …and the member inputs changed since the day was issued, which a load never puts back — a member's record is his, and
    it may cover other days (AM1; the plan's layer 1, built after Fable's code read F5, 26 Sep 26): after the load the day

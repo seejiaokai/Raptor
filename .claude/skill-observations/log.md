@@ -660,6 +660,21 @@ resolved statuses always carry their resolution date
 
 **Principle:** When a published copy and a working copy can drift across sessions, a republish is a sync of the whole set against what is live, not an upload of what this session touched.
 
+### Observation 284: Diff the other open branches before planning — an overlap decides the build order
+
+**Status:** OPEN
+**Date:** 2026-09-27
+**Session context:** Planning [POST-OUT-OUTCOMES] while two other chats had open PRs on the same repo.
+**Skill:** writing-plans (and the claudex-loop planning step)
+**Type:** open-source
+**Phase/Area:** before the plan is written — scoping the files a feature will touch
+
+**Issue:** The feature had to extend the posting-out code. A quick `git diff --name-only $(git merge-base origin/main <branch>) <branch>` over the other two open branches showed one of them had already reworked exactly that code (a single route for every posting door, a new "made by the post out" mark, undo taking back only its own archive). Planning against main's version would have produced a large merge conflict and, worse, two changes that each work but disagree. Knowing it at plan time let the plan split the build (the parts in no other branch's files first; the overlapping part on the other branch's code) and let the chats agree who touches what before any code was written.
+
+**Suggested improvement:** In writing-plans: a step before the design — list the other open branches (open PRs, worktrees), diff their changed files against the files the plan will touch, and for each overlap write in the plan which version the build sits on and in what order; tell the other chat (or its owner) what you will and will not change there.
+
+**Principle:** Parallel work fails at the merge, but the collision is visible at the plan: compare the files every open branch changes before deciding what to build first, and settle overlaps between the workers before either writes code.
+
 ### Observation 285: A guard hook built on an unmeasured claim about the harness
 
 **Status:** OPEN
@@ -870,3 +885,48 @@ resolved statuses always carry their resolution date
 **Suggested improvement:** (1) When adding a guard that suppresses user input, write down what distinguishes the accident from the intended act (time, place, target, pointer type) and key the guard on the narrowest such property, with one test of the accident AND one test of a fast legitimate act that must still pass. (2) Run the pre-existing suites that exercise the same surface EARLY (right after the guard is added), not only at the final gate — they were written without knowledge of the guard, so they are the tests able to falsify it.
 
 **Principle:** Tests written alongside a guard inherit its assumptions and cannot expose its cost; the older tests of the same surface are the independent check, and a guard should discriminate on the property that actually defines the accident, not on a proxy like elapsed time.
+
+### Observation 304: A new write path's unit tests read the live model — none read the saved copy — and the delete was never saved
+
+**Status:** OPEN
+**Date:** 2026-09-27
+**Session context:** `[POST-OUT-OUTCOMES]` FULL check, the walk of a delete from Admin → Users (numbered past 296, the highest on this branch and on PR #444's pushed head)
+**Skill:** internal — the Raptor bug-check order (`raptor-port/docs/bug-check-order.md` §8)
+**Type:** internal
+**Phase/Area:** §8 "making the checks find" — tests of a new writer
+
+**Issue:** Seventeen unit tests of a new multi-store delete all passed; every one read the live in-memory model. The walk planted a man on two future days, deleted him, reloaded — and he was back: the command never took the schedule's save step (the deferred `HOOKS.histPush`), so the week on screen was never written to storage. No test looked at what was saved, so nothing could go red.
+
+**Suggested improvement:** Add to §8: every NEW writer (a command, a pass, a door) gets at least one test that reads the SAVED copy (wire a Whiteboard with `wirePersist`, act, read `wb.get(...)`) — not only the live model. And the walk's reload step stays mandatory for any change that writes.
+
+**Principle:** A test of a write that never reads back what was persisted proves the memory, not the save; for every new writer, assert on the stored copy at least once.
+
+### Observation 305: Line endings measured with Git Bash `grep -c $'\r$'` misreport — and a normalise-to-CRLF edit rewrote three LF files
+
+**Status:** OPEN
+**Date:** 2026-09-27
+**Session context:** `[POST-OUT-OUTCOMES]`, scripted edits to Leave War files; a parallel chat then raised the same false alarm
+**Skill:** internal — memory `python-edits-crlf-trap` (the scripted-edit recipe)
+**Type:** internal
+**Phase/Area:** scripted file edits on the Windows desktop; checking a commit before push
+
+**Issue:** A script that normalised a file to LF, edited it, and wrote it back with CRLF was applied to three files that are LF on `main`, committing a 15,000-line endings-only diff. The check used (`grep -c $'\r$'` in Git Bash) reported every line of those LF files as CRLF, so it could neither prevent nor catch it; a parallel chat used the same count and warned the fix was wrong. Raw byte counting (node over `git cat-file -p`) settled it.
+
+**Suggested improvement:** In the recipe: decide each file's ending from `main`'s stored bytes before writing (node: `execFileSync('git',['cat-file','-p','origin/main:<f>']).includes(13)`), keep that ending, and before every push compare `git show --stat` with `git show --stat --ignore-cr-at-eol` — a gap is ending churn.
+
+**Principle:** Measure line endings in raw bytes, never with a tool that may translate them; and check each commit's size with and without ending differences.
+
+### Observation 303: A branch built on another chat's in-flight branch must re-take that branch's FINAL head before its own final gates — and a timing-window test can be green under a loaded full run yet red alone
+
+**Status:** OPEN
+**Date:** 2026-09-27
+**Session context:** `[POST-OUT-OUTCOMES]` (claude/post-out-outcomes, PR #446), built on PR #444's posting code by merging #444's branch mid-way (its head then, 7b6c4a21). Numbered 303, past main's 300 and #444's 302 (the "parallel branches are parallel writers" rule).
+**Skill:** New skill candidate: parallel-branch stacking (and the bug-check order's §gates)
+**Type:** open-source
+**Phase/Area:** building on a sibling branch; the final gates
+
+**Issue:** #444 kept working after I merged it — its final code-read fixes changed a Leave War move rule (a click on the same spot straight after "Move…" is now a double-click and lands nothing) and reworded the unit test that pins it, and it cherry-picked a CI fix for three browser tests. My branch carried the half-way state. My own full local gate run was ALL GREEN on it, but GitHub went red on the unit test and the three browser tests, and a single-file run locally was red three times out of three. The unit test depends on a time window: under the load of the full suite the two clicks were far enough apart to pass; alone, on a fast run, they were not. Bisect: my code alone green, #444's final head green, #444's half-way head red on its own.
+
+**Suggested improvement:** (1) When a branch has merged in another open branch, compare that branch's current head with the merged commit (`git log <merged>..origin/<branch> -- <src dirs>`) before the final gates and before reporting ready; re-merge if code moved. (2) When CI and a local full run disagree, run the failing file ALONE before blaming CI speed — a test with a time window can fail on a FAST run and pass under load, the reverse of the usual flaky.
+
+**Principle:** Code taken from a sibling branch is a snapshot of work still moving. Re-check the sibling's head before calling your own work checked. A green full run is not proof a timing-sensitive test passes: load can hide a failure that shows when the test runs quickly.

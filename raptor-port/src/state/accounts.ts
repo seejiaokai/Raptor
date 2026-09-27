@@ -13,9 +13,11 @@
    THE RECORDS (the Shell's `User` and `AccessRequest`, and one `Setting` — data-model
    §3, §11), three durable settings keys written ONLY here, through intent commands
    (commitSettingsIntent — one command per intent, every key it needs inside it):
-   - `accounts`   Account[] — { id, name, role, pid, on }. `name` is the sign-in name,
+   - `accounts`   Account[] — { id, name, role, pid, on, offBy? }. `name` is the sign-in name,
                   which stands for the defence mail address; `pid` the person it belongs
-                  to (one person, one account); `on` false = switched off (never deleted).
+                  to (one person, one account); `on` false = suspended (D285; `offBy: 'po'`
+                  when a posting out suspended it). Removed only with its person, by a delete
+                  ([POST-OUT-OUTCOMES], D287 — state/person-delete.ts).
    - `accessreqs` AccessRequest[] — { id, name, cs, ini, seat, cat, at, seenBy }: the
                   signed-in principal who asked (from the session, never a typed field);
                   what he typed — the displayed callsign/name, initials, pilot / WSO /
@@ -52,7 +54,10 @@ import {
 } from './roster-add'
 
 export type AccountRole = 'admin' | 'main'
-export interface Account { id: string; name: string; role: AccountRole; pid: string; on: boolean }
+/* `offBy: 'po'` — the account was SUSPENDED BY A POSTING OUT ([POST-OUT-OUTCOMES], D280 — the overseas outcome suspends
+   it on the date), so "he's back" (Restore, Undo post out) enables exactly that suspension and never one an admin made
+   by hand; any Enable or Suspend by hand drops it (the plan's Round 1, Astra A5 — a hand change is never undone) */
+export interface Account { id: string; name: string; role: AccountRole; pid: string; on: boolean; offBy?: 'po' }
 /* `seat` 'FCP' | 'RCP' | 'GND' (never '' on a request made now — the card refuses it; an
    old stored one reads '' and the admin picks at approval); `cat` '' for personnel */
 export interface AccessRequest { id: string; name: string; cs: string; ini: string; seat: string; cat: string; at: number; seenBy: string[] }
@@ -61,7 +66,11 @@ export interface AccessRequest { id: string; name: string; cs: string; ini: stri
 export const ACCOUNT_TYPES = ['access.request', 'access.decline', 'access.approve', 'account.add', 'account.update', 'guestview.set',
   /* [ACCOUNTS-NEW-PERSON]: a person alone, a person and his account, approving with a new
      person, and the admins' bell's "seen" */
-  'person.add', 'account.addNew', 'access.approveNew', 'access.seen'] as const
+  'person.add', 'account.addNew', 'access.approveNew', 'access.seen',
+  /* [POST-OUT-OUTCOMES]: a delete — his account and his person (D287, D290; state/person-delete.ts); he's back —
+     Restore / Undo post out (leavewar/sync.ts restoreBody); a posting write that takes back what the posting made
+     (sync.ts takeBack); the posting pass on its date (sync.ts runPoOutcomes — a reconciler) */
+  'person.delete', 'person.restore', 'lw.postout', 'lw.postoutRun'] as const
 
 /* ---- the seeds (demo data, D56 — wiped with everything else before the database) ----
    `us` stays Ranger (bane), as "View as" left every member test before; `ad` is Saber
@@ -84,7 +93,9 @@ export const MAX_SIGNIN = 80
 export { MAX_CS, MAX_INITIALS }
 export const normName = (s: any): string => String(s ?? '').trim().toLowerCase()
 const isAccountRole = (r: any): r is AccountRole => r === 'admin' || r === 'main'
-const personOk = (pid: string) => !!(PEOPLE as any)[pid] && !(PEOPLE as any)[pid].special
+/* a person an account can belong to — never a placeholder, never a man DELETED ([POST-OUT-OUTCOMES], D287, D290 —
+   kept underneath, invisible; Fable F13: the lock-out guard and the delete's own "last admin" check read this one body) */
+const personOk = (pid: string) => !!(PEOPLE as any)[pid] && !(PEOPLE as any)[pid].special && !(PEOPLE as any)[pid].deleted
 
 /* ---- load (a settings loader: runs at boot and inside every settings rollback, so it
    NEVER writes — a null key means the in-memory default) ---- */
@@ -96,10 +107,13 @@ export function accountsLoad(): void {
     const out: Account[] = []
     for (const x of Array.isArray(raw) ? raw : []) {
       if (!x || typeof x.id !== 'string' || !x.id || typeof x.pid !== 'string' || !x.pid || !isAccountRole(x.role)) continue
+      /* an account whose person is DELETED is never loaded — the delete removes it in the same command
+         ([POST-OUT-OUTCOMES], Fable F13: the invariant, stated where it is read) */
+      if ((PEOPLE as any)[x.pid] && (PEOPLE as any)[x.pid].deleted) continue
       const name = normName(x.name)
       if (!name || name.length > MAX_SIGNIN || seenId.has(x.id) || seenName.has(name) || seenPid.has(x.pid)) continue
       seenId.add(x.id); seenName.add(name); seenPid.add(x.pid)
-      out.push({ id: x.id, name, role: x.role, pid: x.pid, on: x.on !== false })
+      out.push({ id: x.id, name, role: x.role, pid: x.pid, on: x.on !== false, ...(x.on === false && x.offBy === 'po' ? { offBy: 'po' as const } : {}) })
     }
     /* THE WAY BACK FROM A LOCK-OUT (Fable R2-6, Astra R3-4): a stored list with no admin
        who can sign in gets the seed admin ADDED, keeping every real account — and the
@@ -200,7 +214,10 @@ export function guestEntry(): SignIn | null {
 /* the session a sign-in result starts (state/store.ts resetSession is the one writer) */
 export function sessionFor(r: SignIn): any {
   switch (r.kind) {
-    case 'ok': return { user: r.account.id, role: r.account.role, pid: r.account.pid, name: r.account.name }
+    /* `acct` — the ACCOUNT's role, kept apart from `role` (the role in force): an admin may switch himself to the
+       member view and back (D292, 27 Sep 26), and `acct` is what says the way back exists — never changed by the
+       switch, so a member can never climb (state/perms.ts mayViewAsMember) */
+    case 'ok': return { user: r.account.id, role: r.account.role, pid: r.account.pid, name: r.account.name, acct: r.account.role }
     case 'off': return { user: `principal:${r.name}`, role: 'off', pid: null, name: r.name }
     case 'guest': return { user: `principal:${r.name}`, role: 'guest', pid: null, name: r.name }
     case 'new': case 'waiting': return { user: `principal:${r.name}`, role: 'pending', pid: null, name: r.name }
@@ -259,7 +276,7 @@ export function updateAccount(id: string, patch: { name?: any; role?: AccountRol
   if (patch.name !== undefined) { const n = normName(patch.name); const bad = nameProblem(n, a.id); if (bad) return bad; next.name = n }
   if (patch.pid !== undefined) { const bad = pidProblem(patch.pid, a.id); if (bad) return bad; next.pid = patch.pid }
   if (patch.role !== undefined) { if (!isAccountRole(patch.role)) return 'Pick member or admin'; next.role = patch.role }
-  if (patch.on !== undefined) next.on = !!patch.on
+  if (patch.on !== undefined) { next.on = !!patch.on; delete next.offBy }   // a hand Suspend / Enable is the admin's own
   const list = ACCOUNTS_LIST.map(x => x.id === a.id ? next : x)
   if (!list.some(canSignInAsAdmin)) return ADMIN_LOCK
   /* a sign-in name taken by a rename answers a request waiting under it, as adding an
@@ -314,6 +331,54 @@ export function requestAccess(npIn: NewPerson): string | null {
       id: 'rq' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6), name,
       cs: np.cs, ini: np.ini, seat: np.seat, cat: np.cat, at: Date.now(), seenBy: [],
     }]))
+}
+
+/* ---- A DELETE TAKES HIS ACCOUNT ([POST-OUT-OUTCOMES], D280, D285, D287) ----
+   "Delete account" — for a man who leaves flying for good, his account AND his person go (D287; the person is kept
+   underneath as a hidden mark, D290 — state/person-delete.ts). These two are the account half, read and written by that
+   one command. `deleteAccountProblem` — the refusals, in the app's words: not his own account (an admin never changes
+   his own — the D166 guard), and never the last admin who can sign in (ADMIN_LOCK — the same body the lock-out guard
+   reads). `dropAccountOfPid` — the mutation alone, INSIDE the delete's command (it enlists the settings store): his
+   account removed, and a request waiting under his sign-in name answered with it. */
+export function deleteAccountProblem(pid: string): string | null {
+  const a = accountOfPid(pid)
+  if (a && ownAccount(a)) return "You can't delete your own account — ask another admin"
+  if (me() != null && pid === me()) return "You can't delete yourself — ask another admin"
+  const left = ACCOUNTS_LIST.filter(x => x.pid !== pid)
+  if (!left.some(canSignInAsAdmin)) return ADMIN_LOCK
+  return null
+}
+/* THE POSTING'S SUSPENSION ([POST-OUT-OUTCOMES], D280): the overseas outcome suspends his account on the date — never
+   the last admin who can sign in ('lock': the pass skips it and says so); 'none' when there is no account or it is
+   already suspended. Mutations only — INSIDE the posting pass's command (it enlisted the settings store). */
+export function suspendForPosting(pid: string): 'done' | 'none' | 'lock' {
+  const a = accountOfPid(pid)
+  if (!a || !a.on) return 'none'
+  const list = ACCOUNTS_LIST.map(x => (x.id === a.id ? { ...x, on: false, offBy: 'po' as const } : x))
+  if (!list.some(canSignInAsAdmin)) return 'lock'
+  writeAccounts(list)
+  return 'done'
+}
+/* he is back (Restore, Undo post out) or the posting no longer suspends him today: enable the account the POSTING
+   suspended — never one suspended by hand. True when it was enabled. */
+export function enableAfterPosting(pid: string): boolean {
+  const a = accountOfPid(pid)
+  if (!a || a.on || a.offBy !== 'po') return false
+  writeAccounts(ACCOUNTS_LIST.map(x => (x.id === a.id ? { id: x.id, name: x.name, role: x.role, pid: x.pid, on: true } : x)))
+  return true
+}
+export const accountSuspendedByPosting = (pid: string): boolean => { const a = accountOfPid(pid); return !!a && !a.on && a.offBy === 'po' }
+/* would removing or suspending this person's account leave no admin who can sign in? (the posting pass's own check —
+   it is not a person acting, so "yourself" never applies there) */
+export function lastAdminIfGone(pid: string): string | null {
+  const left = ACCOUNTS_LIST.filter(x => x.pid !== pid)
+  return left.some(canSignInAsAdmin) ? null : ADMIN_LOCK
+}
+export function dropAccountOfPid(pid: string): void {
+  const a = accountOfPid(pid)
+  if (!a) return
+  writeAccounts(ACCOUNTS_LIST.filter(x => x.id !== a.id))
+  if (requestByName(a.name)) writeReqs(ACCESS_REQS.filter(r => r.name !== a.name))
 }
 
 /* ---- A NEW PERSON WITH HIS ACCOUNT, IN ONE STEP ([ACCOUNTS-NEW-PERSON], D214, D217) ----

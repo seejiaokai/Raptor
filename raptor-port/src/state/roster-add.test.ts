@@ -7,7 +7,7 @@
    accounts-behaviour-register.md). */
 import { afterAll, beforeEach, describe, expect, it, vi } from 'vitest'
 import { storeBackend, HOOKS } from '../engine/hooks'
-import { PEOPLE, ID_BY_CS } from '../engine/people'
+import { PEOPLE, ID_BY_CS, indexCallsigns } from '../engine/people'
 import { initStore, resetSession, notify } from './store'
 import { signIn, sessionFor } from './accounts'
 import { commandStream, commit } from '../command'
@@ -77,11 +77,13 @@ describe('NP2 — the one add keeps the one callsign rule (D214, PID-01)', () =>
     expect(newPersonProblem(np({ cs: 'ALL' }))).toBe('ALL is already taken — callsigns must be unique')
     expect(newPersonProblem(np({ cs: 'all avail' }))).toMatch(/already taken/)
   })
-  it('a real archived person points at Restore on Quals', () => {
+  /* D286 (26 Sep 26, [POST-OUT-OUTCOMES]) REPLACED "a real archived person points at Restore on Quals": an archived
+     man's callsign may go to a new person — the one add allows it (the approve note says who holds it) */
+  it('D286: a callsign only an archived man holds is FREE — a new person may take it', () => {
     const id = 'casper'; const was = PEOPLE[id].archived
-    PEOPLE[id].archived = true
-    try { expect(newPersonProblem(np({ cs: PEOPLE[id].cs }))).toBe(`${PEOPLE[id].cs} is archived — restore them on the Quals page instead`) }
-    finally { PEOPLE[id].archived = was }
+    PEOPLE[id].archived = true; indexCallsigns()
+    try { expect(newPersonProblem(np({ cs: PEOPLE[id].cs }))).toBe(null) }
+    finally { PEOPLE[id].archived = was; indexCallsigns() }
   })
   it('the sign-up never asks the roster (a person not yet let in may not read it)', () => {
     expect(newPersonProblem(np({ cs: 'Ranger' }), { roster: false })).toBe(null)

@@ -74,7 +74,9 @@ point at this row; no second identity is minted anywhere. **Never
 hard-deleted** — `archived` and the tombstone are the only ways out. **— NARROWED 26 Sep 26 BY D287 (owner: "truly
 delete him"): a man who leaves flying for good is DELETED — gone from every list; D297 (27 Sep 26): every day he
 already flew keeps his puck, days still to come lose him. HOW the database does it — **answered 27 Sep 26, D290 ("hidden mark"): the tombstone below** — the row kept, marked
-deleted, invisible everywhere; never erased (`OUTSTANDING.md` `[POST-OUT-OUTCOMES]`).**
+deleted, invisible everywhere; never erased. **BUILT 27 Sep 26 (`[POST-OUT-OUTCOMES]`): the mark is `deleted` + `deletedFrom`
+below; the app's delete is `state/person-delete.ts`, reached from Admin → Users' "Delete account" and a posting out's
+"Delete" on its date.**
 
 | Field | Type | Req | Meaning |
 |---|---|---|---|
@@ -87,7 +89,9 @@ deleted, invisible everywhere; never erased (`OUTSTANDING.md` `[POST-OUT-OUTCOME
 | `isGroundPersonnel` | bool | no | `pers` — no flying quals derive |
 | `isSentinel` | bool | no | `special` — `ALL`, `ALL AVAIL`; occupies slots, is not a person |
 | `archived` | bool | no | kept out of every roster |
-| `archivedBy` | choice (`po`) | no | who archived him: the Post out's own archive, which the posting takes back; empty = by hand (26 Sep 26) |
+| `archivedBy` | choice (`po`, `del`) | no | who archived him: `po` the Post out's own archive, which the posting takes back; `del` a delete's (below); empty = by hand (26 Sep 26) |
+| `isDeleted` + `deletedFrom` | bool + date | no | **the delete's hidden mark** (D287, D290 — 27 Sep 26): `isDeleted` is the table's tombstone; `deletedFrom` is the first day he is gone — every day from it has lost him, every day before it keeps his puck (D297). Gone from every list and picker, the Archived one included; his callsign free; never restored (a delete is final) |
+| `sansBy` | choice (`po`) | no | the SANS tick a posting out put on (D283), which the posting takes back; empty = ticked by hand (27 Sep 26) |
 | `isExternal` | bool | no | (new) a visitor from another unit: enrolled on a course, never on the roster, the schedule or a leave war. Open question 7 of the first draft, decided |
 | `isSans` | bool | no | `san` |
 | `sansFlown`, `sansCarry`, `sansMissedQtrs` | int | no | `sanQ`, present only when `isSans` |
@@ -598,7 +602,8 @@ moved here so the Leave War writes its own table and never the shell's.
 | `personId` | ref Person | yes | Unique — at most one profile per person |
 | `band` | choice `instructor\|ops` | no | `personedits.band` |
 | `fromDate`, `toDate` | date | no | in-squadron window; `toDate` null = open (`Person.from`/`to`) |
-| `poArchive` | bool | no | posting-out archive flag (`postouts`) — **to become the posting-out OUTCOME** (overseas: archive + account suspended / leaving flying: account deleted / SANS / transfer — D229, D280, D281; `OUTSTANDING.md` `[POST-OUT-OUTCOMES]`) |
+| `poOutcome` | choice `overseas\|delete\|sans\|none` | no | **which posting out it is** (D229, D294 — built 27 Sep 26): `overseas` — archived on Quals and his account suspended on the date (D280); `delete` — his person and account deleted on the date (D287); `sans` — SANS on the date (D283); `none` — off the manpower, nothing else. (`transfer`, D281, comes with the multi-squadron database.) Replaces the old `poArchive` (true = `overseas`), which the app still keeps in step for older readers |
+| `poDone` | date | no | the posting date its outcome has RUN for — so it runs once and never undoes a later hand change (an account enabled by hand, a SANS tick taken off); cleared when the date or the outcome changes |
 | `label` | string | no | the `perslabels` entry for this person |
 
 Relationships: 1–1 `Person` (optional on the Person side).
@@ -648,7 +653,8 @@ to it — every account IS one callsign (owner, D166, 25 Sep 26).
 | `signInName` | string | yes | the provider's principal name — the person's defence mail address (D165). Unique |
 | `role` | choice `admin\|main` | yes | today's two roles |
 | `personId` | ref Person | **yes** | the callsign the account belongs to (D166); one account per person (unique) |
-| `enabled` | bool | yes | false = switched off — the exit; an account is never deleted (§10) — **NARROWED 26 Sep 26: D280 an account can be DELETED (its button "Delete account", D285), and "switched off" is renamed "suspended" (D285); D287 deletes the person with it when he leaves flying for good** |
+| `enabled` | bool | yes | false = **suspended** (D280, D285 — the button "Suspend" / "Enable"; a man away). The account itself can be DELETED ("Delete account", D285) — always with his person (D287, built 27 Sep 26) |
+| `suspendedBy` | choice (`po`) | no | the suspension a posting out made (overseas, D280), which "he's back" (Restore) enables — never one an admin made by hand; any hand Suspend / Enable clears it (27 Sep 26) |
 | `lastSignInAt` | datetime | no | (new) |
 
 The displayed name is the person's callsign, read live — a rename moves nothing (the one-identity rule).
@@ -791,7 +797,7 @@ worlds' keys.
 | `raptor:leavewar/oilpolicy`, `eventdefs`, `manningdefs`, `groupdefs`, `grouppriority`, `grouppriocustom`, `groupcolors`, `figorder`, `rosterorder`, `manningorder`, `manninghidden`, `fighidden`, `eventrows`, `showsans`, `current` | `Setting` (scope `leavewar`) | Preferences and definitions, value verbatim, absent = default |
 | `raptor:leavewar/perslabels` | `LeavePersonProfile.label` | One profile row per labelled person |
 | `raptor:leavewar/personedits` | `LeavePersonProfile.band`; `Person.sxo` | `band` to the profile; `sxo` folds onto the person row; the `seat` override is **dropped** (the person's seat is the seat). The override record disappears |
-| `raptor:leavewar/postouts` | `LeavePersonProfile.fromDate` / `toDate` / `poArchive` | An entry exists today only while `to` is set; a profile row is created for each |
+| `raptor:leavewar/postouts` | `LeavePersonProfile.fromDate` / `toDate` / `poOutcome` / `poDone` | An entry exists while either date is set; a profile row is created for each. An old entry with only `poArchive` reads `true` → `overseas`, `false` → `none` (the app reads it so today) |
 | `raptor:tracker/v3:master:syls` | `Syllabus` + `TrainingEvent` (+ `EventPrerequisite`) | Chart per row, event per row; `prereqs` strings resolve to event ids within the same syllabus |
 | `raptor:tracker/v3:master:eventinfo` (per chart, D126; the old one-table `v3:eventinfo` is a converted backup) | `TrainingEvent.name` / `format` / `hours` | Merge each chart's entry into that chart's event row over the shipped wording; parse `hrs` to a number, refuse and report anything that will not parse |
 | `raptor:tracker/v3:lay` | `Layout` | One row per chart, geometry JSON verbatim (including each event's `_b`) |
@@ -992,11 +998,11 @@ update, delete (delete is the soft delete throughout).
 
 | Table | Admin | Member | Guest | Pending | Own-row rule and notes |
 |---|---|---|---|---|---|
-| `Person` | C R U D | R, U **own** | R (callsigns) | — | `personId` = my person: every column of his own row — CAT, initials, flight, SXO, SCHEDULER, SANS — except the callsign (D218: an admin's to change), `archived`, `special` and `id` (D149); adding, archiving and restoring a person stay the admin's — a person is created only on Admin → Users, alone or with his `User` in one step (D217) |
+| `Person` | C R U D | R, U **own** | R (callsigns) | — | `personId` = my person: every column of his own row — CAT, initials, flight, SXO, SCHEDULER, SANS — except the callsign (D218: an admin's to change), `archived`, `special` and `id` (D149); adding, archiving, restoring and deleting a person stay the admin's — a person is created only on Admin → Users, alone or with his `User` in one step (D217); a delete is the hidden mark (the tombstone, D290): gone from every list, his callsign free, the rows of the days he flew still pointing at him (D297), with his `User` in the same step (D287) |
 | `Qualification` | C R U D | R | — | — | the list of qualification columns (Quals → Edit quals) |
 | `QualMark` | C R U D | R, C U D **own** | — | — | `personId` = my person — a member ticks his own quals, every one (D149) |
 | `Setting`, `SchemaVersion` | C R U D | R (`Setting` only) | — | — | the guest switch is a `Setting` (D204) |
-| `User` | C R U | R **own** | — | — | one account per person, tied to it (D166); created with a new `Person` in one step, or linked to one already on the roster (D214, D217); the sign-in name (the defence mail address) unique; switched off, never deleted (`enabled`); **no password is ever stored** — the organisation's sign-in checks it; at least one enabled admin always remains; an admin never changes his own account |
+| `User` | C R U D | R **own** | — | — | one account per person, tied to it (D166); created with a new `Person` in one step, or linked to one already on the roster (D214, D217); the sign-in name (the defence mail address) unique; **suspended** (`enabled` false — D280, D285) while he is away, and **deleted with his `Person` when he leaves flying for good** (D287 — at the database step the tombstone, D290); **no password is ever stored** — the organisation's sign-in checks it; at least one enabled admin always remains; an admin never changes or deletes his own account |
 | `AccessRequest` | R U D | — | — | C **own** | a person signed in but on no list asks once, giving what the admin's New person form asks — callsign/name, initials, seat, CAT — as typed text (D204, D214); an admin approves — creating the `User`, linked to a person he picks (a typed callsign never claims one) or to a new `Person` made from the request with his corrections — or declines, each one step; a `User` added or renamed onto a waiting sign-in name deletes its request; U — which admins have had it on screen, each admin's bell (D216, D227) |
 | ScheduleWeek family, `DayDraft`, `RowPerson` | C R U D | R | R | — | a member reads the programme; only a scheduler writes it; a guest reads what a member reads on View-only Sched — a published day as issued, another as it stands (D204, D215) |
 | `Amendment`, `Signoff` | C R | R | R (published) | — | append-only for everyone |
