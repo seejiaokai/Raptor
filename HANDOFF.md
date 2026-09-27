@@ -37,6 +37,12 @@ the later merge keeps both (D78).
   `postOut` / `undoPostOut` / the posting sheets alone — confirmed at its head `1f25cccb`; #445 left `renameCallsign`,
   `setPeople`, the badge and the Archived list alone). Settled with #444: `Matrix.tsx`, `sync.ts`, `BidPicker.tsx` are LF
   on `main` and on both branches (the store is CRLF) — counted in raw bytes; Git Bash's `grep -c` misreports it.
+- **#445 MERGED 27 Sep 26 (`2715d49d`).** A dry-run merge of that `main` into this branch: NO code conflicts (every
+  `src` / `e2e` file merges by itself); conflicts only in the shared records — `.claude/rules/decisions/{leave-war,scheduler}.md`,
+  `DECISIONS.md` (rebuild the map with `backlog-archive.mjs --rulings`), `DECISIONS-ARCHIVE.md`, `HANDOFF.md`,
+  `OUTSTANDING.md` / `-ARCHIVE.md`, `docs/file-map.md`, the observation log — keep both sides. **The log:** this branch's
+  entries 297–298 clash with #445's 298–300 → renumber THIS branch's past main's highest at the merge (D78; its skill's
+  "parallel branches" rule), fixing any cross-reference.
 - **Traps written down:** ports 4186/4187 on this PC are held by the old presentation server (`docs/gates-and-deploy.md`);
   scripted edits must keep each file's own line endings (memory `python-edits-crlf-trap`).
 - **Rulings:** D301 (start now), D302 (chats coordinate). Range D301–D309.
