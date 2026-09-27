@@ -1206,7 +1206,8 @@ register PO1–PO12 (`raptor-port/docs/superpowers/specs/2026-09-26-accounts-beh
 gates): the evidence sheet `raptor-port/docs/handpass/2026-09-27-post-out-outcomes.md`. **Next: his look** (the look card,
 its §10 — 11 questions) **and his "merge live", merged LAST** (after #443, #445 and #444, `main` merged in first).
 **His answers so far (27 Sep 26):** 1 keep (D303), 3 the real calendar date (D304), 4 — the man himself should be able to
-update his own quals (D305; its form put to him).
+update his own quals (D305; its form put to him), 9 the last admin's posting waits (D306), 11 Enable on a hand-suspended
+man shows the note (D307).
 **Not built, said so:** the Tracker half of D299 (`[POST-OUT-TRACKER]`).
 
 ### [POST-OUT-TRACKER] A deleted man and the Tracker's courses "still running" (D299 — approved, NOT built; filed 27 Sep 26)

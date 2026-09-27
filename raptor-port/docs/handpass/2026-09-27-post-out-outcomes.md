@@ -197,7 +197,7 @@ account → it asks again → second tap. Tap your name badge ("Saber · Admin")
    Leave War's Undo stays grey after one). Keep? *Kept, as before.*
 9. **The last admin:** a posting that would archive, suspend or delete the last admin who can sign in does nothing
    at all until another admin can — never half done. The posting sheet says so before you confirm, and his account row
-   on Admin → Users says why. *Built so.*
+   on Admin → Users says why. *Built so.* **His answer (D306): "4 ok".**
 10. **An admin may still add leave or OIL on a deleted man's past days** (the past keeps his record). Wanted? *Allowed.*
 11. **Enable on a man who was only suspended by hand** (never archived) also shows "he's back". Keep, or only after an
-    overseas posting? *Shows.*
+    overseas posting? *Shows.* **His answer (D307): "5 ok".**
