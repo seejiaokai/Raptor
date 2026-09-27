@@ -213,7 +213,7 @@ function warInputLines(env: CommitEnvelope): WarInputs {
     const had = new Set(bl.map(r => r.id))
     for (const r of al) if (r.kind === 'request' && !had.has(r.id)) came.set(`${pid}|${date}`, String(r.state))
   }
-  type G = { p: string; t: string; was: Set<string>; now: Set<string>; changes: Change[]; iidNew: string; iidOld: string }
+  type G = { p: string; t: string; was: Set<string>; now: Set<string>; changes: Array<{ c: Change; b: string[]; a: string[] }> }
   const groups = new Map<string, G>()
   const daysOf = (inp: any): string[] => { const s = spanOf(inp), out: string[] = []; if (s) for (let d = s.date; d <= s.end; d = nextIso(d)) out.push(d); return out }
   for (const c of env.changes) {
@@ -222,32 +222,46 @@ function warInputLines(env: CommitEnvelope): WarInputs {
     if (!ref || !ref.person) continue
     const k = `${ref.person}|${ref.type}`
     let g = groups.get(k)
-    if (!g) { g = { p: String(ref.person), t: String(ref.type), was: new Set(), now: new Set(), changes: [], iidNew: '', iidOld: '' }; groups.set(k, g) }
-    g.changes.push(c)
-    if (c.before) { daysOf(c.before).forEach(d => g!.was.add(d)); if (!g.iidOld) g.iidOld = String(c.id) }
-    if (c.after) { daysOf(c.after).forEach(d => g!.now.add(d)); if (!c.before && !g.iidNew) g.iidNew = String(c.id) }
+    if (!g) { g = { p: String(ref.person), t: String(ref.type), was: new Set(), now: new Set(), changes: [] }; groups.set(k, g) }
+    const bd = c.before ? daysOf(c.before) : [], ad = c.after ? daysOf(c.after) : []
+    g.changes.push({ c, b: bd, a: ad })
+    bd.forEach(d => g!.was.add(d)); ad.forEach(d => g!.now.add(d))
   }
+  const oneRun = (ds: string[]) => ds.every((d, i) => i === 0 || d === nextIso(ds[i - 1]!))
   for (const g of groups.values()) {
     const gone = [...g.was].filter(d => !g.now.has(d)).sort(), fresh = [...g.now].filter(d => !g.was.has(d)).sort()
     gone.forEach(d => res.backToBid.add(`${g.p}|${d}`))
     fresh.forEach(d => res.approvedFor.add(`${g.p}|${d}`))
     if (!gone.length && !fresh.length) continue
-    g.changes.forEach(c => res.said.add(c))
+    g.changes.forEach(x => res.said.add(x.c))
+    /* the record the line points at is the one holding the days it is ABOUT — the new days for an approval or a move (a
+       split's untouched remainder is never it — Astra's round-3 read, R3-01), the days that left otherwise; and it keeps
+       every record of the decision (R3-02) */
+    const holds = (side: 'a' | 'b', ds: string[]) => { const x = g.changes.find(y => y[side].some(d => ds.includes(d))); return x ? String(x.c.id) : '' }
+    const iid = fresh.length ? holds('a', fresh) : holds('b', gone)
+    const iids = [iid, ...g.changes.map(x => String(x.c.id)).filter(x => x !== iid)]
+    const exact = (ds: string[]) => oneRun(ds) ? undefined : ds
     const who = `${cs(g.p)} · ${g.t}`
     const at = (ds: string[]) => ({ date: ds[0]!, end: ds[ds.length - 1]! })
+    const base = { iid, iids, sect: 'abs', sub: g.p }
     if (gone.length && fresh.length) {
-      const was = at(gone), now = at(fresh)
-      logAction(null, `${who} moved on the Leave War · ${runsWords(gone)} → ${runsWords(fresh)}`,
-        { iid: g.iidNew || g.iidOld, sect: 'abs', sub: g.p, date: now.date, end: now.end, wdate: was.date, wend: was.end })
+      /* what MOVED is the whole of each piece that landed on new days, and what it left is where those days were — so a
+         two-day leave slid one day reads "2 Feb–3 Feb → 3 Feb–4 Feb", not "2 Feb → 4 Feb" (Fable's round-3 read, G1) */
+      const landed = g.changes.filter(x => !x.c.before && x.a.some(d => fresh.includes(d)))
+      const toDays = [...new Set([...fresh, ...landed.flatMap(x => x.a)])].sort()
+      const fromDays = [...new Set([...gone, ...toDays.filter(d => g.was.has(d))])].sort()
+      const was = at(fromDays), now = at(toDays)
+      logAction(null, `${who} moved on the Leave War · ${runsWords(fromDays)} → ${runsWords(toDays)}`,
+        { ...base, date: now.date, end: now.end, wdate: was.date, wend: was.end, days: exact(toDays), wdays: exact(fromDays) })
     } else if (gone.length) {
       const st = gone.map(d => came.get(`${g.p}|${d}`)).find(x => x != null), was = at(gone)
       logAction(null, st != null
         ? `${who} approval taken back — ${STATE_WORD[st] || st} · ${runsWords(gone)}`
         : `${who} approved leave deleted on the Leave War · ${runsWords(gone)}`,
-        { iid: g.iidOld, sect: 'abs', sub: g.p, date: was.date, end: was.end })
+        { ...base, date: was.date, end: was.end, days: exact(gone) })
     } else {
       const now = at(fresh)
-      logAction(null, `${who} approved on the Leave War · ${runsWords(fresh)}`, { iid: g.iidNew || g.iidOld, sect: 'abs', sub: g.p, date: now.date, end: now.end })
+      logAction(null, `${who} approved on the Leave War · ${runsWords(fresh)}`, { ...base, date: now.date, end: now.end, days: exact(fresh) })
     }
   }
   return res

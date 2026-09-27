@@ -76,8 +76,9 @@ export const ACCOUNT_TYPES = ['access.request', 'access.decline', 'access.approv
      person, and the admins' bell's "seen" */
   'person.add', 'account.addNew', 'access.approveNew', 'access.seen',
   /* [POST-OUT-OUTCOMES]: a delete — his account and his person (D287, D290; state/person-delete.ts); he's back —
-     Restore / Undo post out (leavewar/sync.ts restoreBody); a posting write that takes back what the posting made
-     (sync.ts takeBack); the posting pass on its date (sync.ts runPoOutcomes — a reconciler) */
+     Restore (leavewar/sync.ts restoreBody); a posting write, or its Undo, that takes back what the posting made (sync.ts
+     takeBack, and restoreBody's undo mode — the posting command since [DRAFT-PENDING]); the posting pass on its date
+     (sync.ts runPoOutcomes — a reconciler) */
   'person.delete', 'person.restore', 'lw.postout', 'lw.postoutRun',
   /* [ONE-DOOR]: Archive on Admin → Users (leavewar/sync.ts archivePerson); the man's own "welcome back" seen (D305) */
   'person.archive', 'person.backSeen'] as const

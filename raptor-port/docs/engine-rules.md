@@ -3194,7 +3194,11 @@ history, which the one changes window reads (`ui-contracts.md` §The one changes
   both days, never between); gone only: "approval taken back — refused / acknowledged / back to a bid" or "approved leave
   deleted on the Leave War"; new only: "approved on the Leave War" — so one day cut out of several (the war SPLITS the
   Input), a day approved next to an approved leave (it EXTENDS the Input) and a bridge each read as the one decision
-  they are (`warInputLines` — Fable F2, FF1, FF3; Astra's read of the fixes, 01); a posting set, changed or taken back
+  they are (`warInputLines` — Fable F2, FF1, FF3; Astra's read of the fixes, 01); a move names each landed piece whole and
+  the days it came from ("2 Feb–3 Feb → 3 Feb–4 Feb" for a two-day leave slid one day — Fable G1); the line points at the
+  record holding the days it is about (never a split's untouched remainder) and keeps every record of the decision
+  (`iids`), and keeps its exact days when they are not one run (`days`, `wdays`), so a gap day between is untouched
+  (Astra R3-01–03, Fable G2–G3); a posting set, changed or taken back
   is ONE line ("posting out 14 Oct · Overseas Sqn", "posting out changed · 14 Oct → 21 Oct", "posting out taken back",
   "posting in …" — `postoutLines`, F4), decided by WHOSE act the command is: the posting command (`lw.postout` — its
   sheet, and its Undo, before or after it ran) says the posting and leaves out the archive or SANS tick the posting made

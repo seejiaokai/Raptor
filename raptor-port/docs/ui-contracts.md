@@ -5198,7 +5198,8 @@ ticked SANS (D283: with "Show SANS" OFF the war keeps his row in its old group, 
 whole row moves into the SANS group and his leave is tracked there — the approved picture); none → nothing more. Each
 runs ONCE for its date and never undoes a later hand change; the last admin who can sign in is never suspended or deleted
 by a posting — said once. Moving the date later or changing the outcome takes back what the posting made (the archive,
-the suspension, the SANS tick) — no "he's back" prompt; Undo post out after an Overseas Sqn is the Restore.
+the suspension, the SANS tick) — no "he's back" prompt; Undo post out after an Overseas Sqn runs the Restore's body as the posting command (`lw.postout` — the change history
+says "posting out taken back", `[DRAFT-PENDING]`).
 
 ## Admin → Users — Suspend / Enable, Delete account (`[POST-OUT-OUTCOMES]`, 27 Sep 26) — superseded by §Admin → Users — one door (D310: "Delete", the Sign-in dot, no Enable on an archived man); moved whole to `docs/archive/ui-contracts-2026-09-27.md`.
 ## Admin → Users — one door (`[ONE-DOOR]`, 27 Sep 26 — D305, D308, D309, D310, D320–D323); Quals' old Archived list: `docs/archive/ui-contracts-2026-09-27.md`

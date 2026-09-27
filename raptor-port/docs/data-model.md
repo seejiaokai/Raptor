@@ -496,7 +496,9 @@ Today the settings key `changeseen`.
 | `date`, `endDate` | date | no | the calendar day(s) it is on — the span after for an absence |
 | `wasDate`, `wasEndDate` | date | no | an absence's span before, when it moved |
 | `inputId` | ref Input | no | the input a line is about |
-| `subjectPersonId`, `subjectField` | ref Person, string | no | a Quals line's person and which of his details (`sub`, `fld` — kept by id, so a rename or a reused callsign never mixes two men) |
+| `subjectPersonId`, `subjectField` | ref Person, string | no | a Quals line's person and which of his details (`sub`, `fld` — kept by id, so a rename or a reused callsign never mixes two men); an absence line's person (`sub`) |
+| `inputIds` | ref Input, many | no | every input a war decision is about (`iids` — a move re-files the moved day as a new record) |
+| `days`, `wasDays` | date, many | no | the exact days after / before when they are not one run (`days`, `wdays` — a gap day is not touched) |
 | `byName` | string | yes | `who`, from `HOOKS.whoami()` |
 | `weekId` | ref ScheduleWeek | no | |
 | `dayIndex` | int | no | null for a structural edit |

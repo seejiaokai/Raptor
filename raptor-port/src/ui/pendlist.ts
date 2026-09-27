@@ -140,16 +140,13 @@ function editRowOf(di: number, it: PendItem) {
     const iso = weekDates(CURWEEK)[di]
     let any: any = null
     for (let i = ELOG.rows.length - 1; i >= 0; i--) {
-      const r = ELOG.rows[i]!; if (r.iid !== id) continue
+      const r = ELOG.rows[i]!; if (r.iid !== id && !(r.iids && r.iids.includes(id))) continue
       if (!iso || rowTouches(r, iso)) return r
       if (!any) any = r
     }
     if (any) return any
-    /* …and when the input was re-filed under another id since (a move on the war files the moved days as a new Input),
-       the newest absence line about the SAME MAN on this day (every absence line keeps whose it is — Fable's read of the
-       fixes, FF4) */
-    const who = String(((it as any).was && (it as any).was.person) || ((it as any).now && (it as any).now.person) || '')
-    if (who && iso) for (let i = ELOG.rows.length - 1; i >= 0; i--) { const r = ELOG.rows[i]!; if (r.sect === 'abs' && r.sub === who && rowTouches(r, iso)) return r }
+    /* (a war move re-files the moved days as a new record; its line keeps the record it left too — `iids` — so it is
+       found above by id: Fable FF4, Astra R3-02 — never by guessing from the man, which would borrow an unrelated edit) */
   }
   return lastEdit(it.keys || [])
 }

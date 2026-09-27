@@ -46,6 +46,10 @@ export type ELogRow = {
   wdate?: string      // the span BEFORE the change, when it moved (Astra DP-05): an absence moved from 1–2 Aug to 6–7 Aug
   wend?: string       //   shows on both spans, never on the days between
   iid?: string        // the input the line is about (an absence line)
+  iids?: string[]     // EVERY input the line is about, when more than one (a war move files the moved day as a new record —
+                      //   the line keeps the one it left too, so "To go out" finds it by id: Astra's round-3 read, R3-02)
+  days?: string[]     // the EXACT days after, when they are not one run (a gap day between is untouched — R3-03)
+  wdays?: string[]    //   and before
   sub?: string        // the PERSON a Quals line is about, by his id (a rename never loses it — Astra's final read, 03)
   fld?: string        //   and which of his details (q, seat, pers, san, sxo, archived, deleted, cs, or a qualification's key)
   sect?: string       // the part of the day a line with no key belongs to (Group by Where — ui/changesmodel.ts sectionOf)
@@ -78,11 +82,12 @@ export function todayIso(): string {
 }
 
 /* does a line cover this calendar day? (an absence line covers every day from `date` to `end`, and — when it moved —
-   every day of the span it came from, `wdate` to `wend`; never the days between the two) */
+   every day of the span it came from, `wdate` to `wend`; never the days between the two. When its days are not one run
+   it keeps them exactly — `days`, `wdays` — and only those count: a gap day between is untouched, Astra's round-3 read) */
 const inSpan = (a: string | null | undefined, b: string | null | undefined, iso: string) =>
   !!a && a <= iso && iso <= (b && b > a ? b : a)
-export function rowTouches(r: { date: string | null; end?: string; wdate?: string; wend?: string }, iso: string): boolean {
-  return inSpan(r.date, r.end, iso) || inSpan(r.wdate, r.wend, iso)
+export function rowTouches(r: { date: string | null; end?: string; wdate?: string; wend?: string; days?: string[]; wdays?: string[] }, iso: string): boolean {
+  return (r.days ? r.days.includes(iso) : inSpan(r.date, r.end, iso)) || (r.wdays ? r.wdays.includes(iso) : inSpan(r.wdate, r.wend, iso))
 }
 const spanMeets = (a: string | null | undefined, b: string | null | undefined, lo: string, hi: string) =>
   !!a && a <= hi && (b && b > a ? b : a) >= lo
@@ -135,6 +140,11 @@ export function elogLoad(): void {
     if (typeof x.iid === 'string' && x.iid) r.iid = x.iid
     if (typeof x.sect === 'string' && x.sect) r.sect = x.sect
     if (typeof x.sub === 'string' && x.sub) { r.sub = x.sub; if (typeof x.fld === 'string' && x.fld) r.fld = x.fld }
+    const strs = (v: any, ok: (s: string) => boolean) => Array.isArray(v) ? v.filter((s: any) => typeof s === 'string' && ok(s)) : []
+    const ids = strs(x.iids, s => !!s), ds = strs(x.days, isoOk), ws = strs(x.wdays, isoOk)
+    if (ids.length > 1) r.iids = ids
+    if (ds.length) r.days = ds
+    if (ws.length) r.wdays = ws
     rows.push(r)
     if (r.seq > top) top = r.seq
   }
@@ -356,6 +366,7 @@ export function logEdit(key: any, from: any, to: any) {
 export type LineAt = {
   date?: string | null; end?: string | null; wdate?: string | null; wend?: string | null
   iid?: string | null; key?: string; sect?: string; from?: string; to?: string; sub?: string; fld?: string
+  iids?: string[]; days?: string[]; wdays?: string[]
 }
 export function logAction(di: any, text: string, at?: LineAt) {
   const d = di == null ? null : +di
@@ -372,6 +383,9 @@ export function logAction(di: any, text: string, at?: LineAt) {
   if (at && at.iid) row.iid = at.iid
   if (at && at.sect) row.sect = at.sect
   if (at && at.sub) { row.sub = at.sub; if (at.fld) row.fld = at.fld }
+  if (at && at.iids && at.iids.length > 1) row.iids = at.iids.slice()
+  if (at && at.days && at.days.length) row.days = at.days.slice()
+  if (at && at.wdays && at.wdays.length) row.wdays = at.wdays.slice()
   push(row)
 }
 

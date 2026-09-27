@@ -7,7 +7,7 @@ import { INPUTS } from '../engine/inputs'
 import { ELOG, elogClear, rowTouches } from '../engine/editlog'
 import { initStore as raptorInitStore } from '../state/store'
 import { projectPeople } from './state/raptorRoster'
-import { getState, initStore as lwInitStore, setCell, setBidState, setPeople, setRole, advanceStage, shiftBid, setManualCredit, clearCells, grantOil, changeAbsenceById, moveAbsenceById } from './state/store'
+import { getState, initStore as lwInitStore, setCell, setBidState, setPeople, setRole, advanceStage, shiftBid, setManualCredit, clearCells, grantOil, changeAbsenceById, moveAbsenceById, moveCells } from './state/store'
 import { resetSession, writeInputs } from '../state/store'
 import { signIn, sessionFor } from '../state/accounts'
 import { inpId } from '../engine/inputs'
@@ -276,5 +276,56 @@ describe('Fable FF2-FF4', () => {
     const l = ELOG.rows.map(r => r.lbl)
     expect(l.filter(x => /posting out changed/.test(x)), JSON.stringify(l)).toHaveLength(1)
     expect(l.filter(x => /archived/.test(x)), JSON.stringify(l)).toHaveLength(0)
+  })
+})
+
+/* Astra's round-3 read: a line about approved leave keeps EVERY record it is about (the moved day's new record first, so a
+   tap goes where the leave is now; the old one too, so "To go out" on the day it left finds it by id — never by guessing
+   from the man), and the EXACT days when they are not one run (a gap day is untouched) */
+describe('Astra R3', () => {
+  const threeDays = () => {
+    setCell(pid, '2026-02-03', 'LL'); setCell(pid, '2026-02-04', 'LL')
+    const had = new Set(INPUTS.map((x: any) => x.iid))
+    for (const d of ['2026-02-02', '2026-02-03', '2026-02-04']) setBidState(pid, d, 'approved')
+    const mine = INPUTS.filter((x: any) => x.person === pid && !had.has(x.iid))
+    elogClear()
+    return String((mine[0] as any).iid)
+  }
+  it('R3-01/02: the middle day moved — the line points at the record on its new day, and keeps the old one too', () => {
+    const iid = threeDays()
+    expect(moveAbsenceById(pid, '2026-02-03', iid, '2026-02-09')).toBeNull()
+    const row: any = war()[0]
+    const now: any = INPUTS.find((x: any) => String(x.iid) === row.iid)
+    expect(now, 'the line names a record that exists').toBeTruthy()
+    expect(String(now.date), 'the record on the new day').toMatch(/Feb 9\b/)
+    expect(row.iids, 'and the record it left').toContain(iid)
+  })
+  it('R3-03: two approved leaves with a gap between, removed together — the gap day is untouched', () => {
+    setCell(pid, '2026-02-04', 'LL')
+    setBidState(pid, '2026-02-02', 'approved'); setBidState(pid, '2026-02-04', 'approved')
+    elogClear()
+    clearCells([{ personId: pid, date: '2026-02-02' }, { personId: pid, date: '2026-02-04' }])
+    const rows = war().filter(r => /deleted/.test(r.lbl))
+    expect(rows.map(r => r.lbl), JSON.stringify(war().map(r => r.lbl))).toHaveLength(1)
+    expect(rowTouches(rows[0]!, '2026-02-02')).toBe(true)
+    expect(rowTouches(rows[0]!, '2026-02-04')).toBe(true)
+    expect(rowTouches(rows[0]!, '2026-02-03'), 'the gap').toBe(false)
+  })
+})
+
+/* Fable's round-3 read (G1, G2): a two-day approved leave slid one day by a block move (2–3 Feb → 3–4 Feb) is what the
+   line says — not "2 Feb → 4 Feb" — and its record is the one on the new days */
+describe('Fable G1-G2', () => {
+  it('a two-day leave slid one day: "2 Feb–3 Feb → 3 Feb–4 Feb", pointing at the leave where it is now', () => {
+    setCell(pid, '2026-02-03', 'LL')
+    setBidState(pid, '2026-02-02', 'approved'); setBidState(pid, '2026-02-03', 'approved')
+    elogClear()
+    const r = moveCells([{ personId: pid, date: '2026-02-02' }, { personId: pid, date: '2026-02-03' }], 1)
+    expect(r, JSON.stringify(r)).toBe('moved')
+    const rows: any[] = war()
+    expect(rows.map(x => x.lbl), JSON.stringify(rows.map(x => x.lbl))).toHaveLength(1)
+    expect(rows[0].lbl).toContain('2 Feb–3 Feb → 3 Feb–4 Feb')
+    const now: any = INPUTS.find((x: any) => String(x.iid) === rows[0].iid)
+    expect(now && String(now.date), 'the leave where it is now').toMatch(/Feb 3\b/)
   })
 })
