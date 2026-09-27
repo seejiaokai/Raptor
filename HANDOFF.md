@@ -36,11 +36,10 @@ the later merge keeps both (D78).
   items archived; four questions for him filed as `[D271-LOOK-ASKS]`.
 - **`[LW-MOVE-CI-RED]` — cause found, tests fixed:** a timing race in three Leave War tests (the second drag straight after
   an admin's fill, which since `[ACCOUNTS]` re-renders longer on GitHub's machines); fixed with the 18 Sep stable drag
-  (`e2e/leavewar.spec.ts`). It never failed on the PC — **the proof is this branch's next GitHub runs**: green → archive it.
+  (`e2e/leavewar.spec.ts`). It never failed on the PC; GitHub's next two runs of this branch were green with the three passing first time — archived.
   Side-findings filed: `[LW-HARNESS-VIEWER-PIN]`, `[CI-FAIL-PICTURES]` (his call — public pictures while the repo is public).
 - **Next, in order:** (1) **his look** — the card is the sheet's §9 (four things to see, four questions); his answers are
-  rulings from D276; (2) the next GitHub run of this branch: `geometry (lw-desktop)` green → archive `[LW-MOVE-CI-RED]`;
-  (3) "merge live", one at a time with #443 and #444. **The absence chat's D262 reworks `select.ts` wireMove** (PR #444) —
+  rulings from D276; (2) "merge live", one at a time with #443 and #444. **The absence chat's D262 reworks `select.ts` wireMove** (PR #444) —
   if it merges first, bring `main` in and re-run the three Move tests here; a conflict in those test lines keeps BOTH its
   behaviour and the stable drag (told to that chat).
 - **His "2 chats" remark (27 Sep 26)** is still unanswered — put to him once; recommended: keep the one-at-a-time queue

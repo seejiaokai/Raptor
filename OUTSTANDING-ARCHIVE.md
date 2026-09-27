@@ -1777,3 +1777,40 @@ list; the rest of the batch stays. **Check:** the week's browser tests (the whol
 **Place:** on `claude/five-flags-batch-continue-2cfa70` with D270–D272, before its "merge live".
 **DONE 27 Sep 26** on that branch, FULL-checked: `raptor-port/docs/handpass/2026-09-27-five-flags-answers.md` (W6; `geometry.spec.ts` main's again).
 
+
+*Moved here 2026-09-27 by backlog-archive.mjs ([LW-MOVE-CI-RED]). Forward facts: `raptor-port/docs/handpass/2026-09-27-five-flags-answers.md`, `raptor-port/e2e/leavewar.spec.ts`.*
+
+### [LW-MOVE-CI-RED] The Leave War desktop "Move" browser tests fail on GitHub's machines, on more than one branch — found 27 Sep 26
+**What:** on 26 Sep 26 (UTC) the `geometry (lw-desktop)` job failed on `claude/five-flags-batch-continue-2cfa70` twice
+(runs 36256124235 at 16:37Z — passed on its one D84 re-run — and 36257950418 at 17:08Z) and on
+`claude/absence-record-d147-af6a50` (run 36257132635 at 16:54Z), which carries none of the five-flags code. The same tests
+each time, in `e2e/leavewar.spec.ts`: "a drag-selection offers Move, and the move banner appears on entering it" (959 —
+the Move button never appears within 5 s, both tries), "right-click cancels a move on desktop" (1005 — its click on Move
+times out at 30 s), and on the absence-record run also "a loose box moves the inputs present…" (984) and "-1.5 subtracts…"
+(2180, flaky). All four pass on his PC: the full run (474/0) and the two alone 8/8 with the page slowed 4×
+(`E2E_CPU_THROTTLE=4`). `main` (16:09Z and earlier) and `claude/accounts-new-person` (16:40Z) passed. **Not the five-flags
+batch** (a branch without it fails the same way; its Leave War change is the ⚙ sheet's Reset order line, drawn only when
+the sheet is open, and `displayRoster()` is called bare everywhere). **D84 was used and the group failed again — stop and
+report, which this is.** **To do:** the systematic-debugging skill, not another re-run: what those tests share (fill a
+block with `sel-LL`, drag-select it again, the sheet must offer Move — `movableCells`); read the job's own failure
+pictures (the trace / error-context artifacts); what changed on GitHub's side (the runner image, the browser build);
+whether a person at ordinary pace can reach "no Move offered" (then it is the app's bug, D87's reasoning). **Place:** NEXT
+among the checks, before the next "merge live" that needs a green GitHub run (the five-flags PR #445's own checks are red
+on it).
+**INVESTIGATED 27 Sep 26 (the five-flags chat; an Opus investigator's report, its logs under that chat's scratch — the
+findings are here whole):** a TIMING RACE IN THE TESTS, not the app. Tallied over 25 GitHub runs of the job: 9 before
+26 Sep 06:44Z all passed first time; 16 after, 9 failed first — the onset is `[ACCOUNTS]` (562d96a6), whose `lwRole()` now
+also calls `raptorRole()`, so the admin's fill is an admin edit on Raptor's side too and its re-derive and re-render last
+longer. The failure is always the SECOND drag, straight after the fill: on a slow runner a drag started inside that
+re-render is silently lost and no sheet opens. The same race the undo tests met on 18 Sep ([GLOBAL-UNDO], 519de0b8,
+`dragSelectStable` — re-fire the drag until the sheet opens); these three never got it. No runner-image or browser change;
+no failure pictures exist (the workflow uploads none); not reproduced on the PC (15/15, 24/24 at 2×, 24/24 at 3×). A
+person at ordinary pace would not hit it (the window is well under a second; a lost drag writes nothing and is simply
+redone). **FIXED (tests only, D87):** `e2e/leavewar.spec.ts` "offers Move" and "right-click cancels" wait for the fill to
+land and its sheet to close, then drag with `dragSelectStable`; "a loose box" drags with `dragSelectStable`. **Left:**
+confirm on the next GitHub runs of this branch (the test fix cannot be proven on the PC, where it never failed), then
+archive this. **First run after the fix** (36265413334, 869c7197, 27 Sep 26): `geometry (lw-desktop)` green, the three
+passed FIRST time, 169 passed, none flaky — one clean run; before the fix a run failed first about half the time, so one
+more clean run before archiving. Filed beside it: `[LW-HARNESS-VIEWER-PIN]`, `[CI-FAIL-PICTURES]`.
+**Second run** (36267529028, b69767fd): green again, the three first time, 169 passed — **DONE 27 Sep 26**, archived.
+

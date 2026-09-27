@@ -221,5 +221,6 @@ GitHub's slower machines its re-render swallows a drag started too soon (9 of 16
 9 of 9 passed before). The same race the undo tests met on 18 Sep; these three never got its fix. A person would not
 meet it at ordinary pace (a lost drag writes nothing). **Fixed, tests only (D87):** wait for the fill to land and its
 sheet to close, then a drag that retries until its sheet opens (`e2e/leavewar.spec.ts`). It never failed on the PC, so
-the proof is the next GitHub runs of this branch. Its report in full: `OUTSTANDING.md` `[LW-MOVE-CI-RED]`; side-findings
+the proof is GitHub: the next two runs of this branch (36265413334, 36267529028) were green, the three passing first
+time. Its report in full: `OUTSTANDING-ARCHIVE.md` `[LW-MOVE-CI-RED]` (closed 27 Sep 26); side-findings
 filed: `[LW-HARNESS-VIEWER-PIN]`, `[CI-FAIL-PICTURES]`.
