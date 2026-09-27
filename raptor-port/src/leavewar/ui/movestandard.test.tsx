@@ -12,6 +12,7 @@ import { beforeEach, describe, expect, it } from 'vitest'
 import { advanceStage, getState, initStore, lwHistInit, rawState, setCell, setCellRange, setManualCredit, setRole, setViewer } from '../state/store'
 import { setLwOnScreen } from '../state/screen'
 import { memoryBackend } from '../state/storage'
+import { fileAbsence } from '../testkit'
 import { canEditCell } from '../engine'
 import { Matrix } from './Matrix'
 import { SelectSheet } from './SelectSheet'
@@ -253,6 +254,16 @@ describe('the drag-selection sheet, in order A (D331)', () => {
     isMoveChip(screen.getByTestId('sel-move'))
     isDeleteChip(screen.getByTestId('sel-delete'))
     expect(screen.getByTestId('sel-postout').textContent).toBe('PO')
+  })
+})
+
+describe('the block offers Move and Delete only where they would do something (D332; the break test B18 found no test)', () => {
+  it('a block holding only leave filed on the Inputs page offers neither — it is changed there', () => {
+    fileAbsence(P, 'LL', '2026-02-11')
+    const sel: Selection = { people: [P], from: '2026-02-11', to: '2026-02-11', cells: [{ personId: P, date: '2026-02-11' }] }
+    render(<SelectSheet sel={sel} people={id => id} role="admin" canDecide={true} onDone={() => {}} onMove={() => {}} onClose={() => {}} />)
+    expect(screen.queryByTestId('sel-move')).toBeNull()
+    expect(screen.queryByTestId('sel-delete')).toBeNull()
   })
 })
 
