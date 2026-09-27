@@ -1005,3 +1005,33 @@ resolved statuses always carry their resolution date
 **Suggested improvement:** Add `pressLeave(page, testid)` to the shared helpers — press, and if the sheet answers "Tap the same leave again", press once more — and use it for every leave chip in a fixture; `bidOn` becomes a caller of it. In the recipe: a fixture step asserts its premise (the record exists) before the step that relies on it.
 
 **Principle:** A fixture helper must answer every confirmation the real control can raise, or fixtures fail silently and the failure is blamed on the code under test.
+
+### Observation 315: A walk step that asserts "not X" passes silently when the element was never drawn
+
+**Status:** OPEN
+**Date:** 2026-09-27
+**Session context:** `[ONE-DOOR]` FULL check (numbered past 314, which `claude/lw-move-standard-paperwork` holds)
+**Skill:** New skill candidate: bug-check walk scripts (raptor-port/docs/bug-check-order.md §5 "the re-walk", §8)
+**Type:** open-source
+**Phase/Area:** Writing walk assertions; break tests
+
+**Issue:** The walk checked "counted on this day" as `!/\bgone\b/.test(cellClass || '')`. When the grid hid the whole row, the cell's class was null, the test read `''`, and the step PASSED. It surfaced only because a break test (a build with the row filter broken) left the walk green; with a strict helper (`here()` — the cell must exist AND not be greyed) the broken build failed 6 steps.
+
+**Suggested improvement:** In the bug-check order's walk-script guidance: every negative assertion ("not away", "no corner", "no error line") first asserts the thing it inspects exists; and a surface that a unit test cannot see (layout, a window of drawn rows) gets its break test run against a real build, not only the unit suite.
+
+**Principle:** A negative check is only evidence when its subject is present; assert existence first, and prove a watcher by breaking the wire it watches.
+
+### Observation 316: A break test that turns nothing red can mean the wire is invisible to the test runner, not untested by chance
+
+**Status:** OPEN
+**Date:** 2026-09-27
+**Session context:** `[ONE-DOOR]` break tests (`od-breaks.py`, 32 wires)
+**Skill:** New skill candidate: bug-check break tests (raptor-port/docs/bug-check-order.md §8.4)
+**Type:** open-source
+**Phase/Area:** Break tests
+
+**Issue:** Three wires turned nothing red. Two got ordinary unit tests. The third — the grid's row filter — returns "draw it" whenever no window of months has been measured, which is always true under jsdom, so NO unit test could ever watch it. The first real-browser check written for it was also blind (the loaded months happened to cover the case). Only a scenario chosen to fall outside every loaded window (a man back next year), run against a build with the wire broken, proved a watcher.
+
+**Suggested improvement:** When a break test stays green, first ask whether the test environment can observe the wire at all (layout, scroll windows, timers, real events); if not, write the watcher in the real browser and prove it against a deliberately broken build before counting the surface as covered.
+
+**Principle:** "Nothing went red" has two causes — no test, or a test environment that cannot see the wire; the second needs a real-browser watcher proved against a broken build.

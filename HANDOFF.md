@@ -16,7 +16,7 @@ the later merge keeps both (D78).
 ## Now
 
 <!-- now:claude/one-door -->
-### `claude/one-door` — `[ONE-DOOR]` BUILT, walked, break-tested; the final gates and the two final code reads next, then his look — written 27 Sep 26 (late) — verify before use
+### `claude/one-door` — `[ONE-DOOR]` BUILT and FULL-checked — his look (the sheet's §10, six questions) and "merge live" next — written 28 Sep 26 — verify before use
 - **What it is:** Admin → Users as the one door for a person's whole state (D309, D310, D322 — the approved mock-up
   `raptor-port/docs/mock/one-door.html`), Archive = "posted out from today" on the war with his past kept (D323), Restore
   asks the post-in date and opens a new stint (D308, D320), his "Welcome back" note (D305), Quals without its archive.
@@ -28,17 +28,17 @@ the later merge keeps both (D78).
   posting door) and W2 (his welcome note scrolled away on a phone) fixed red first; the break tests
   (`scripts/handpass/od-breaks.py`, 32 wires; three unwatched ones given tests — one watched only by the walk's `pastrow`
   scene, proved with a broken build). `main` (PR #447) merged in; no code clash.
-- **Next, in order:** read `walk5`'s results (`docs/img/handpass/2026-09-27-one-door/walk5/results.md`) → the gates under
-  the PC lock (`E2E_PORT=4196 node raptor-port/scripts/gatelock.mjs run --from raptor-port`) → the two final code reads,
-  blind to each other, brief `raptor-port/docs/superpowers/briefs/2026-09-27-one-door-final-read.md` (Astra:
-  `codex exec -m gpt-5.6-sol -c model_reasoning_effort=high -s read-only …`) → fix red first → re-walk what the fixes
-  touched → gates → finish the sheet (§8, §9) → open the PR → his look card (sheet §10, five questions) → his "merge live".
+- **Done since:** the final walk `walk5` 254/0; the two final code reads (Fable and Astra, blind — reports beside the sheet)
+  → every finding fixed red first or dispositioned (sheet §8; Astra's stale-session finding the biggest); `walk6` 62/0 on
+  what the fixes touched; the gates green under the PC lock (sheet §9). The PR is open (see below).
+- **Next:** his look — the sheet's §10 (a "look here" line and six questions, each built as the agent's reading); his
+  answers recorded as rulings (range D320–D329, D325 next); any change they ask for red first + re-walk; then his
+  "merge live" (merge `main` in first if it moved — `[LW-MOVE-STANDARD]`'s paperwork PR #449 may land before).
 - **Beside it:** `[LW-MOVE-STANDARD]` merged (#447); its docs-only paperwork is PR #449
   (`claude/lw-move-standard-paperwork`, waiting on his "merge live") touching OUTSTANDING's priority list item 1 / item 3 and HANDOFF (its own block
   and #444's) — told it (D302) this branch touches only `[ONE-DOOR]`'s sentence there, will fix the stale
   "[POST-OUT-OUTCOMES] … merge live next" words itself, and merges `main` in before its own gates.
-- **Ports:** preview 4178 (`.claude/launch.json` "raptor-onedoor"), E2E 4196. A scratch worktree for break tests at
-  `C:\Users\User\odbw` (node_modules is a junction to this checkout's — remove with `git worktree remove --force`).
+- **Ports:** preview 4178 (`.claude/launch.json` "raptor-onedoor"), E2E 4196. The break-test scratch worktree is removed.
 - **Traps:** the Bash tool mangles backslashes inside inline heredoc scripts — write an edit script to a file first.
   Codex: pass `-m gpt-5.6-sol`; stop a Codex run by its own PID, never `taskkill /IM codex.exe`. Scripted edits keep
   each file's line endings.
@@ -159,9 +159,9 @@ the later merge keeps both (D78).
 
 ## Gate baseline
 
-The latest counts watched — 27 Sep 26, `claude/rulings-d264-d266-leave-war-f0f4ab` (`[LW-MOVE-STANDARD]`, `86d7fea1`), one run
-under the PC lock (`raptor-port/docs/handpass/2026-09-27-lw-move-standard.md` §9): unit **6591 / 6591** (406 files) · build
-clean · tfin **728 / 0** · e2e **478 passed**, 48 skipped · smoke **443 / 0** · rulecheck OK · docsize OK. Restate a count only
+The latest counts watched — 27 Sep 26, `claude/one-door` (`[ONE-DOOR]`, `705ac8a1` with `main` merged in), one run under the
+PC lock (`raptor-port/docs/handpass/2026-09-27-one-door.md` §9): unit **6669 / 6669** (410 files) · build clean · tfin
+**728 / 0** · e2e **480 passed**, 48 skipped · smoke **443 / 0** · rulecheck OK · docsize OK. Restate a count only
 from a run you watched, and REPLACE the previous counts — never stack a history. How to run them: `raptor-port/CLAUDE.md`
 §Build & verify; how they mislead, and the checks on his PC: `raptor-port/docs/gates-and-deploy.md`.
 

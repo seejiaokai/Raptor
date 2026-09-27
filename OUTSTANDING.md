@@ -51,7 +51,7 @@ whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaini
 **His order — to the database step, about two months away (D203, 26 Sep 26; D173, D147 within it):**
 1. **Now — [ONE-DOOR]** (D309, D310 — Admin → Users carries every person's sign-in and roster state and every action;
    Quals loses its archive), carrying **[POST-IN-DATE]** (D308) and the post-out look card's 3a / 3b — on
-   `claude/one-door`, the mock-up APPROVED 27 Sep 26 (D322; D320 the war keeps every stint); BUILT and walked (both widths), its FULL check under way — the two final code reads next;
+   `claude/one-door`, the mock-up APPROVED 27 Sep 26 (D322; D320 the war keeps every stint); BUILT and FULL-checked 27–28 Sep 26 — his look (six questions) and "merge live" next;
    `[POST-OUT-ASKS]` answered (D321);
    `[POST-OUT-TRACKER]` on his answer. `[POST-OUT-OUTCOMES]` MERGED 27 Sep 26 (PR #446), `[ACCOUNTS-NEW-PERSON]` (PR #443)
    and `[ACCOUNTS]` (PR #442) before it. **Beside it — [LW-MOVE-STANDARD]** (D264–D266, its own chat and branch; the
@@ -417,6 +417,9 @@ alone (3.9s on the final tree; the same on the code before the Leave War fixes) 
 2 of 3 full `npm test` runs on the owner's PC on 23 Sep 26 (another chat's worktree active). Pre-existing,
 load-only. Fix: split its three drop cases into three tests (each renders the whole year once), or give it its
 own longer limit — not a pause. Evidence: `raptor-port/docs/handpass/2026-09-23-lw-monthjump.md` §13/§15.
+**Seen again 27 Sep 26** (`claude/one-door`, its first full gate run, two code reads running beside it): this test (23.9s) and
+`src/leavewar/ui/figdrawer.test.tsx` "stands down to taps while an admin is rearranging" (24.8s) both past 20s; both pass alone —
+the fix above covers the second too (it renders the whole year the same way).
 
 ### [LW-FROZEN-BAR-GAP] For one frame no dates header shows while the page scrolls it away (23 Sep 26)
 
@@ -1083,7 +1086,9 @@ unit tests red first, e2e `onedoor.spec.ts` both widths). **The walk's design (F
 `raptor-port/docs/superpowers/specs/2026-09-27-one-door-scenarios-fable.md` — its §4 gaps fixed red first the same day (the
 Post in sheet read-only too and both posting writers locked, a hidden man's own post-in date kept, a never-arrived delete
 stores no stint, the message and the rail's words, the Archived group folding during a search, "posting in 19 Oct" on
-the row). **Next: the walk with pictures, the FULL check (Fable and Astra's final reads), his look.**
+the row). **FULL-CHECKED 27–28 Sep 26** — the evidence sheet `raptor-port/docs/handpass/2026-09-27-one-door.md` (the walk
+254/0 both widths, the break tests, both final reads and every finding's disposition, the gates green). **Next: his look
+(the sheet's §10, six questions) and his "merge live".**
 
 ### [POST-IN-DATE] A man posted in: the admin is asked his post-in date (D308, filed 27 Sep 26)
 **His ruling (D308):** *"When someone is posted In the app should also ask the admin when is the post in date so that the
