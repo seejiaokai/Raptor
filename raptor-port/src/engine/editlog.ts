@@ -43,7 +43,10 @@ export type ELogRow = {
   di: number | null   // which day of the week LOADED at the time it landed on (null for a note with no day)
   date: string | null // the calendar day (ISO) it is on — the week it belongs to; null for a line with no day
   end?: string        // the last calendar day, for a line that spans days (an absence)
+  wdate?: string      // the span BEFORE the change, when it moved (Astra DP-05): an absence moved from 1–2 Aug to 6–7 Aug
+  wend?: string       //   shows on both spans, never on the days between
   iid?: string        // the input the line is about (an absence line)
+  sect?: string       // the part of the day a line with no key belongs to (Group by Where — ui/changesmodel.ts sectionOf)
   key: string         // the slot key, '' for a structural note
   lbl: string         // WHAT it was, in words — frozen at log time, see below
   from: string
@@ -65,11 +68,22 @@ export function dateOfDi(di: number | null | undefined): string | null {
   try { return dayIso(CURWEEK, +di) } catch (_) { return null }
 }
 
-/* does a line cover this calendar day? (an absence line covers every day from `date` to `end`) */
-export function rowTouches(r: { date: string | null; end?: string }, iso: string): boolean {
-  if (!r.date) return false
-  return r.date <= iso && iso <= (r.end && r.end > r.date ? r.end : r.date)
+/* today's calendar day, in the browser's own time — the day a line with no schedule day of its own is on (a roster
+   change, the history cleared) */
+export function todayIso(): string {
+  const d = new Date(), p = (n: number) => String(n).padStart(2, '0')
+  return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}`
 }
+
+/* does a line cover this calendar day? (an absence line covers every day from `date` to `end`, and — when it moved —
+   every day of the span it came from, `wdate` to `wend`; never the days between the two) */
+const inSpan = (a: string | null | undefined, b: string | null | undefined, iso: string) =>
+  !!a && a <= iso && iso <= (b && b > a ? b : a)
+export function rowTouches(r: { date: string | null; end?: string; wdate?: string; wend?: string }, iso: string): boolean {
+  return inSpan(r.date, r.end, iso) || inSpan(r.wdate, r.wend, iso)
+}
+const spanMeets = (a: string | null | undefined, b: string | null | undefined, lo: string, hi: string) =>
+  !!a && a <= hi && (b && b > a ? b : a) >= lo
 
 /* the seven calendar days of a week key ('dd/mm/yyyy', its Monday) */
 export function weekDates(weekKey: string = CURWEEK): string[] {
@@ -83,7 +97,7 @@ export function elogWeekRows(weekKey: string = CURWEEK): ELogRow[] {
   const days = weekDates(weekKey)
   if (!days.length) return []
   const lo = days[0]!, hi = days[6]!
-  return ELOG.rows.filter(r => r.date && r.date <= hi && (r.end && r.end > r.date ? r.end : r.date) >= lo).reverse()
+  return ELOG.rows.filter(r => spanMeets(r.date, r.end, lo, hi) || spanMeets(r.wdate, r.wend, lo, hi)).reverse()
 }
 
 /* ---- saving and loading (D336 (b)) ----
@@ -115,7 +129,9 @@ export function elogLoad(): void {
       key: str(x.key), lbl: str(x.lbl), from: str(x.from), to: str(x.to),
     }
     if (isoOk(x.end)) r.end = x.end
+    if (isoOk(x.wdate)) { r.wdate = x.wdate; if (isoOk(x.wend)) r.wend = x.wend }
     if (typeof x.iid === 'string' && x.iid) r.iid = x.iid
+    if (typeof x.sect === 'string' && x.sect) r.sect = x.sect
     rows.push(r)
     if (r.seq > top) top = r.seq
   }
@@ -334,12 +350,24 @@ export function logEdit(key: any, from: any, to: any) {
    same words its toast already uses. */
 /* `at` (28 Sep 26, [DRAFT-PENDING]): a line with no day of the loaded week names its own calendar days — an absence
    (an input, a Leave War record) is on ITS dates, which may lie in any week; `iid` names the input it is about. */
-export function logAction(di: any, text: string, at?: { date?: string | null; end?: string | null; iid?: string | null; key?: string }) {
+export type LineAt = {
+  date?: string | null; end?: string | null; wdate?: string | null; wend?: string | null
+  iid?: string | null; key?: string; sect?: string; from?: string; to?: string
+}
+export function logAction(di: any, text: string, at?: LineAt) {
   const d = di == null ? null : +di
   const date = at && at.date ? at.date : dateOfDi(d)
-  const row: Omit<ELogRow, 'seq'> = { t: Date.now(), who: HOOKS.whoami(), pid: HOOKS.whoamiId(), di: d, date, key: (at && at.key) || '', lbl: text, from: '', to: '' }
+  const row: Omit<ELogRow, 'seq'> = {
+    t: Date.now(), who: HOOKS.whoami(), pid: HOOKS.whoamiId(), di: d, date, key: (at && at.key) || '', lbl: text,
+    from: (at && at.from) || '', to: (at && at.to) || '',
+  }
   if (at && at.end && date && at.end > date) row.end = at.end
+  if (at && at.wdate && (at.wdate !== date || (at.wend || at.wdate) !== (row.end || date))) {
+    row.wdate = at.wdate
+    if (at.wend && at.wend > at.wdate) row.wend = at.wend
+  }
   if (at && at.iid) row.iid = at.iid
+  if (at && at.sect) row.sect = at.sect
   push(row)
 }
 

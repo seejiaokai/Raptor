@@ -26,7 +26,7 @@ import { CURWEEK } from '../engine/waves'
 import { INPUTS, isUnavail, inpId } from '../engine/inputs'
 import { setSlotVal, unacceptInput } from '../engine/slots'
 import { DATES } from '../engine/inputs'
-import { ELOG, elogRows, elogFor, elogClear, keyLabel } from '../engine/editlog'
+import { ELOG, elogRows, elogFor, elogClear, keyLabel, rowTouches } from '../engine/editlog'
 import { HOOKS } from '../engine/hooks'
 import { setAirKey } from './pops'
 import { askCx, cxCommit, openScheduler } from './board'
@@ -216,13 +216,13 @@ describe('the three actions that carried no key at all', () => {
     await click(btn!)
 
     expect(DAYS[di].ground.length, 'a real ground row appeared').toBe(before + 1)
-    const row = newest()
-    expect(row, 'and so did a line in the changes list').toBeTruthy()
-    expect(row!.lbl).toContain('ground programme')
-    expect(row!.di, 'filed against the day it landed on').toBe(di)
-    /* a sentence, not a value pair — there is no "before" for a row that did
-       not exist a moment ago, which is exactly why this path needed one */
-    expect(row!.key).toBe('')
+    /* ONE line, from the change history's one writer (state/changelines.ts — [DRAFT-PENDING], Astra DP-03, 28 Sep
+       26): the input's filing changed, said as where it stood and where it stands, on the days it covers */
+    const mine = ELOG.rows.filter(r => r.iid === inpId(inp) && r.lbl.includes('filed'))
+    expect(mine.length, 'exactly one line for the accept').toBe(1)
+    const row = mine[0]!
+    expect(row.to).toBe('on the programme')
+    expect(rowTouches(row, dayIso(CURWEEK, di)), 'on the day it landed on').toBe(true)
   })
 
   it('cancelling with a reason carries the reason', async () => {

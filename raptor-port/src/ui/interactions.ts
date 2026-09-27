@@ -20,6 +20,7 @@ import { oilCreditBidAgainst, createOilPeriodFor } from '../leavewar/sync'
 import { scrollToWarnFocus, queueHold, warnWeekId, bringIntoView } from './highlights'
 import { STORE_CFG, addStore, delStore, renameStore, moveStore, storesSave, storesText } from '../engine'
 import { logAction } from '../engine/editlog'
+import { logFiling } from '../state/changelines'
 import { esc } from '../state/view'
 import { setDayPop, setAirKey, setDrawer, setInpEdit, setHistList, closeHistList } from './pops'
 import { reassignInput, rosterOptions, firstPersonalType, firstUnavailType, firstSansType, unfmt } from './inputedit'
@@ -568,6 +569,7 @@ export function routeClick(e: MouseEvent) {
     const di = +ab.dataset.accd!, k = ab.dataset.acck!, dest = ab.dataset.acc!
     const inp = INPUTS.find((x: any) => inpId(x) === k)
     if (!inp) { HOOKS.toast('That input is no longer there', 'warn'); return }
+    const wasAcc = inp.acc || ''
     const ok = dest === 'x' ? unacceptInput(di, inp) : acceptInput(di, inp, dest)
     if (ok) {
       /* SAID ONCE, to the scheduler and to the log, in the same words — the
@@ -583,7 +585,9 @@ export function routeClick(e: MouseEvent) {
       const said = dest === 'x' ? 'Accept undone'
         : dest === 'u' ? `${cs}'s ${inp.type} filed under Unavailable`
         : `${cs}'s ${inp.type} added to the ground programme`
-      logAction(di, said)
+      /* the history line, in the change history's one writer's words (state/changelines.ts logFiling — this door's
+         command carries the day, not the input record, so the subscriber never sees it; [DRAFT-PENDING], 28 Sep 26) */
+      logFiling(inp, wasAcc)
       HOOKS.toast(said, 'ok')
       view.afterSchedMutate()
     } else {
