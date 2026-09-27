@@ -109,8 +109,12 @@ const FILES = [
      "what is finished here?" needs a reading of each item, so it is its own docs pass, filed as [BACKLOG-TIDY] —
      not a trim squeezed into a rulings change (D29). 1260 -> 1290 the same day: D203 filed [DB-READINESS] and
      [IT-QUESTIONS]; the tidy stays [BACKLOG-TIDY]'s. 1290 -> 1330 the same day: [ACCOUNTS]' plan read filed two
-     questions for him ([MED-VISIBILITY], [SIGNOFF-SELF]) and notes on three items; still [BACKLOG-TIDY]'s pass. */
-  ['OUTSTANDING.md',                     1, 1330],
+     questions for him ([MED-VISIBILITY], [SIGNOFF-SELF]) and notes on three items; still [BACKLOG-TIDY]'s pass.
+     1330 -> 1430, 27 Sep 26 ([BACKLOG-TIDY], D324): every item was read; the three finished ones left for the archive
+     (1,452 -> 1,367 lines) and the other 75 are live work — open, deferred, or a question for him — so what crossed the
+     line belongs here (D141: the ceiling rises with its reason, never "cut to a number"). Set about 60 lines above what
+     the file holds, the room two parallel chats ([ONE-DOOR], [LW-MOVE-STANDARD]) need to merge in beside it. */
+  ['OUTSTANDING.md',                     1, 1430],
   /* THE RULINGS (owner, D136 + D137, 24 Sep 26). They are MEANT to grow, so each ceiling is its target,
      and a rulings file is NEVER trimmed to fit: at a ceiling, archive what is replaced or spent
      (DECISIONS.md, step 2) and then RAISE the ceiling here, with the reason. DECISIONS.md is now only

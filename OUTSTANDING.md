@@ -82,10 +82,9 @@ whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaini
 **Placed by their own lines — not his rulings:** the Leave War — [LW-FROZEN-BAR-GAP] (after [HUMAN-RETEST]; show him
 first), [LW-FIGSEL-SLOW] and [LW-SCRUBBER-FLAKY] (test-only), [LW-ISO-DATES] and [LW-MOVE-BENEATH] (both low, from the
 absence-record re-test), [PO-RESTORE-POSTING] (low, from its final code read), [LW-OFFER-ONLY-TAKEABLE] (low, with [LW-LOCKMARK]), [ABSENCE-SMALL-SEEN] (any time), [LW-HARNESS-VIEWER-PIN] (test-only, low), [CI-FAIL-PICTURES] (his call, low); the Inputs calendar — [INPUTSCAL-TAP-FLAKY] (test-only). The Tracker — [TRK-RETEST-NOTES] and
-[TRK-EDIT-SIDEWAYS] (their gates have passed), [TRK-PINCH-ASK] (his next Tracker session), [TRK-SESSION-PICK] (low, the next Tracker change), [TRK-DLG-LEFTOVERS] (low, with the next question-box change), [TRK-PALETTE-ASK] (his answer D157: Raptor's colours
-fully — being built on `claude/tracker-palette`), [TRK-FLEXBAR-INK] (a question for him, on that branch's look card),
-[TRK-BAKE-STALE] (low).
-The amendment area — PR #434, #435, #437 and #438 MERGED (25–26 Sep 26); [LOOK-435]'s steps 2–4 are items 1 above; left: [REQ-ORPHAN-ROW] and [REQ-DOOR-WORDS] (both low). Left from the amendment batch (D91–D111, merged): [AVAILWIN-PREVIEW-BAR] (low), [AMEND-SMALL-SEEN] (any time). The docs and the checks — [DEPLOY-DOCS] (its operational half), [DOC-POINTERS-CODE] and
+[TRK-EDIT-SIDEWAYS] (their gates have passed), [TRK-PINCH-ASK] (his next Tracker session), [TRK-SESSION-PICK] (low, the next Tracker change), [TRK-DLG-LEFTOVERS] (low, with the next question-box change), [TRK-FLEXBAR-INK] (a question for him, on the Tracker-palette
+look card — D157, merged PR #441), [TRK-BAKE-STALE] (low).
+The amendment area — PR #434, #435, #437 and #438 MERGED (25–26 Sep 26); left: [REQ-ORPHAN-ROW] and [REQ-DOOR-WORDS] (both low). Left from the amendment batch (D91–D111, merged): [AVAILWIN-PREVIEW-BAR] (low), [AMEND-SMALL-SEEN] (any time). The docs and the checks — [DEPLOY-DOCS] (its operational half), [DOC-POINTERS-CODE] and
 [RULINGS-LF-PIN] (with the next code change), [DOC-SUBHEADS], [RULING-HOMES-AUDIT], [HANDOFF-SHAPE-GUARD] and [BACKLOG-TIDY] (any time, docs only), [PEEK-ISSUED] (a question for him, low),
 Roles — [QUALS-MEMBER-SCOPE] (folded into [ACCOUNTS], D200), and beside it [QUALS-PROTO-TOAST] (low, one line of words).
 The five-flags batch (built on `claude/five-flags-batch-build-ef7d85`, 26 Sep 26; FULL-checked and its PR from `claude/five-flags-batch-continue-2cfa70`, 27 Sep 26 — its five items archived) — his answers D270–D275 BUILT and FULL-checked on that branch, 27 Sep 26 (their three items archived); his look card's four questions answered 27 Sep 26 (D276–D279, nothing to build);
@@ -102,9 +101,6 @@ D161), with [USER-GUIDE] (wanted, not urgent) and [PERF-RESIDUALS] (two of them 
 or feel — his call).
 
 **Future milestones:** [DB-STEP] (item 5 above, with [TRK-DISK] inside it), [XFER], [RECALL], [TRK-ATTEMPTS] (low urgency).
-
-**Kept live as a warning, nothing to build:** [OIL-AUTO-REMOVE] — it warns a later session off re-doing the four
-walk defects and off assuming he looked at the walked Saturday (his look was waived).
 
 ---
 
@@ -382,62 +378,6 @@ that after this task is truely completed and free of bugs"). Start from
 `raptor-port/docs/superpowers/specs/2026-09-21-oil-bugcheck-fixplan.md` §"the two the owner found",
 which records why the static pass missed them, and from the scenario lists Fable and Codex wrote for
 the OIL pass — the same scenario-design-then-execute shape is what this needs.
-
-### [OIL-AUTO-REMOVE] Taking OIL off — **MERGED 22 Sep 26 (D34). CLOSED.**
-
-**Live on `main` as of 22 Sep 26**, every check green, on his "merge live". **His five-minute look
-was WAIVED** — the evidence is the walk and the gates, not an owner sighting; do not assume the
-walked Saturday was eyeballed. The walk's own evidence sheet is
-`raptor-port/docs/handpass/2026-09-22-oil-walk.md`. **Stays live in this file, not archived**, because
-it warns a later session off re-doing the four walk defects and off assuming the owner looked.
-
-> **BUG-CHECKED AND FIXED 21 Sep 26. The remaining job is the hands-on scenario pass.**
-> Cross-provider check by Fable 5.1 and Astra/Codex, both read-only, neither the model that
-> built it. **Ten defects fixed from their reports, plus FOUR the owner found by opening the
-> app, plus his O-1 ruling — all built, tested and pushed (commit `b3d8ee8`).**
->
-> - **Triage and what was fixed:** `docs/superpowers/specs/2026-09-21-oil-bugcheck-fixplan.md`;
->   both reviews verbatim beside it. Four of their eight were ONE root cause — the freeze
->   boundary had more doors than `creditFrom`.
-> - **Owner rulings from it:** R-1 (only the issued schedule pays, BOTH directions) and R-2
->   (the two pre-existing money bugs share that root cause, so they are fixed here). O-1: the
->   green bar shows only on the events that COUNTED — BUILT, superseding OIL21. All in
->   `DECISIONS.md` D1–D3, D15.
-> - **What the reviews could NOT find, and the owner did:** the app draws a puck in six places
->   and only some were wired to this feature — the board's cockpit seats and Common Programme,
->   the WEEK's cockpit seats, the mode's own gesture on all three, and a chip painting over the
->   strip. Every call site is now enumerated and decided. **This is what produced the new
->   bug-check standing order** (`docs/bug-check-order.md`).
->
-> **NEXT: execute the two scenario lists in the running app** — Fable's 44 and Codex's 24,
-> `…/specs/2026-09-21-oil-scenarios-{fable,codex}.md`. **Start from
-> `…/specs/2026-09-21-oil-handpass-handoff.md`**, which says what is already walked by hand so
-> it is not redone, names the highest-value scenarios left, and carries the one open question
-> for the owner (a pending OIL change looks identical to one in force).
->
-> **Gates at that commit:** 5350 unit · build · parity 728/0 · rulecheck OK · tracker 425/0 ·
-> **e2e 446 pass / 1 fail** — a Leave War grid scrollbar test that passes in isolation and
-> fails under full parallel load. Unresolved on purpose: the handoff names the check that
-> settles whether it is ours or pre-existing, and forbids waving it through.
-
-**The three shapes were put to him and he rejected the framing** — rightly. Instead of fighting the
-derived credit, ask about the EVENT at the source. He then designed the interface himself: an
-**"OIL Earn" mode** on the scheduler board that glows every puck earning OIL that day, where the
-admin taps a puck to take a man off one event, or taps an item to stop the whole item earning.
-
-- **The design of record is `…/specs/2026-09-21-oil-auto-remove-decisions.md`** — every owner
-  ruling of that session verbatim, plus the ground truth behind them. Nothing lives only in chat.
-- **Design rulings that must NOT be relitigated** (21 Sep 26, §8/§9 of the decisions doc, which
-  carries each in full): the published schedule is the truth — a full freeze, corrected by
-  unpublish-and-republish under the same label, never an approved-absence carve-out; the
-  development reset ships at its real scope; a sentinel puck goes green when everyone behind
-  it earns the same, the count chip carries the mixed case; ALL and ALL AVAIL stay identical
-  on purpose; NO Leave War removal door; the exception shows as ONE line on the day and a
-  per-person exclusion never appears on the issued schedule.
-- **The design red team was capped at two rounds**, so §9's four answers were never
-  independently reviewed — which is why the post-build check weighted them highest. Done; see
-  the bug-check fix plan.
-- **The owner's mockup** (his own artifact canvas) is a revision behind; redraw before use.
 
 ### [LW-COMMIT-MANNING] Duty & commitments must reduce the Leave War manning — the OTHER half of N17 (owner, 21 Sep 26)
 **Owner's words, and he then said to file it: "The manning should only reduce if they are like
@@ -1002,16 +942,6 @@ on `main`; out of that branch's scope. **Do:** reword the toast; keep the protot
 grep the app for other "prototype" / "full build" / "Dataverse" words on screen. LOOK tier. **Place:** low, with
 `[QUALS-MEMBER-SCOPE]` or any time.
 
-### [TRK-PALETTE-ASK] The Tracker's own dark palette, or Raptor's? — ask him once (filed 24 Sep 26)
-**ANSWERED (D157, 24 Sep 26): Raptor's, FULLY** — backgrounds, text and the event colours (`tracker.css` variables and
-`app/core.js` `TYPE_COLOR` / `GRADE_FILL`). Shown to him first as three versions of the real chart. LOOK tier plus a
-phone look that the chart still reads at a glance. **Place:** NOW — being built on `claude/tracker-palette`, in
-parallel with `[ACCOUNTS]` (his instruction of 26 Sep 26: port 4180, rulings D230–D239).
-From the 7 Sep 26 device pass (`HANDOFF.md` §Open, "OWNER'S DEVICE PASS", archived 24 Sep 26 in
-`raptor-port/docs/archive/handoff-2026-09-24.md`): one open question rode the retired bug-testing list's row
-#376 — whether the Tracker keeps its own dark palette or takes Raptor's. It was recorded nowhere else. Ask him
-once, in his next Tracker session; build nothing until he answers.
-
 ### [TRK-FLEXBAR-INK] The Tracker's Currency & Flex bars print white words on green and amber — hard to read (filed 26 Sep 26)
 Found by the `[TRK-PALETTE-ASK]` walk (evidence `raptor-port/docs/handpass/2026-09-26-trk-palette.md` §7 F4). The bars
 under Currency & Flex ("Current — no flex required", "1 Optional Flex", "Landing Current — No IP Required") are a
@@ -1180,21 +1110,6 @@ build cannot decide what it means without him, so a deleted man is left on his T
 text). **Put to him on the `[POST-OUT-OUTCOMES]` look card (question 5):** what makes a course still running — or leave
 his name on his courses for now (then D299 is narrowed in his words). **Place:** after `[POST-OUT-OUTCOMES]` merges, on
 his answer. Touches `raptor-port/src/tracker/` (its own store) — its own small check.
-### [LOOK-435] His inputs from the look at PR #435 — the order is D173 (25 Sep 26)
-**Step 1 DONE 25 Sep 26:** D114's FULL check — evidence `raptor-port/docs/handpass/2026-09-25-amendment-batch.md` §9; two
-gaps fixed, three older findings filed (`[REQ-TWO-ROWS]`, `[REQ-DECLINED-PENDING]`, `[REQ-ORPHAN-ROW]`); waiting for his look.
-**D173 REPLACES the plan below (D115's one check at the end):** (1) D114's FULL check on PR #435, then his look and
-"merge live"; (2) `[ACCOUNTS]` on a NEW branch; (3) `[DRAFT-PENDING]` — the one changes window, which absorbs D116's
-list, D117 and D119 (not built separately); (4) one FULL check of 2 and 3 — **AMENDED 26 Sep 26 BY D210: accounts gets its
-own FULL check first, the window its own later.** The text below is the plan as it stood.
-Built on `claude/amendment-batch` before the full check (D115): **D114** (a request taken off / put on a published day
-is one change — built, red first, NOT yet walked or read), **D116** (Edit Schedule's History button a toggle like the
-board's), **D117** (the Edit history list: the whole week, a day picker), **D118** (`[DRAFT-PENDING]` — waits on his
-answer), **D119** (the pending list newest first). Then ONE FULL-tier check over all of them (the bug-check order: Fable
-and Astra's reads — the D114 brief is `raptor-port/docs/superpowers/briefs/2026-09-25-d114-read-brief.md`, widen it to
-the rest — the walk on desktop and phone, the full gates, the evidence sheet). Nothing is "ready for merge live" before
-that check. **Place:** now, on this branch.
-
 ### [DRAFT-PENDING] The one CHANGES WINDOW — D118, D167–D172 (25 Sep 26); step 3 of D173, after `[ACCOUNTS]` (its own FULL check — D210)
 **From `[ACCOUNTS]` (26 Sep 26), to settle here:** the edit log is cleared at every sign-in and sign-out (`resetSession`
 → `elogClear`, session-only as today); with personal accounts, should the change history outlive a sign-out? The
