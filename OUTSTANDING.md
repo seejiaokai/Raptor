@@ -55,7 +55,7 @@ whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaini
    live"; **[POST-OUT-OUTCOMES]** STARTED 27 Sep 26 beside it, before #443 merges (D301, amending D291), on
    `claude/post-out-outcomes` cut from `claude/accounts-new-person` (D291 — D229, D280, D283–D300: a posting out says
    which outcome; accounts suspended / deleted), its own FULL check, its merge after #443's — BUILT and FULL-checked, his
-   look next (with `[POST-OUT-TRACKER]` after it, on his answer); then **[DRAFT-PENDING]** — the one changes window,
+   look next (with `[POST-OUT-TRACKER]` after it, on his answer, and **[POST-IN-DATE]** — D308, its place his call); then **[DRAFT-PENDING]** — the one changes window,
    on top of accounts, its own FULL check (D210). `[ACCOUNTS]` itself MERGED 26 Sep 26 (PR #442, his "merge live").
 2. **Now, beside the building — [IT-QUESTIONS]:** talk to the IT side (his, not code); their approvals take weeks.
 3. **Development as normal — [HUMAN-RETEST]**'s remaining three, in HIS order (D147): the absence record TOGETHER with
@@ -1209,6 +1209,18 @@ its §10 — 11 questions) **and his "merge live", merged LAST** (after #443, #4
 update his own quals (D305; its form put to him), 9 the last admin's posting waits (D306), 11 Enable on a hand-suspended
 man shows the note (D307).
 **Not built, said so:** the Tracker half of D299 (`[POST-OUT-TRACKER]`).
+
+### [POST-IN-DATE] A man posted in: the admin is asked his post-in date (D308, filed 27 Sep 26)
+**His ruling (D308):** *"When someone is posted In the app should also ask the admin when is the post in date so that the
+leave war is reflected correctly. Usually a user can get access to the app a few days prior to their actual post in
+date."* **Today:** a new person (Admin → Users) and a man restored from the Archived list (Quals) get no post-in date — the
+Leave War counts them from always; the date exists only as the Leave War's own "Post in" button (20 Sep 26), set by hand.
+**To build:** a post-in date box on every door that puts a man on the roster — New person (added, or approving a request),
+Restore and Restore as — opening on today, written through `setPostIn` (the same record the Leave War's Post in writes);
+his account works from the day he is added or restored, whatever the date. The new-person form gains a field (D224's
+approved mock-up marked, D201); the Leave War's own Post in stays. **Size:** ~1.5–2 h with tests and a walk — permissions
+and the Leave War, FULL tier. **Place: his call** — inside PR #446 before its merge, or its own branch right after #446
+merges (the agent's recommendation: after, so the fully checked #446 does not grow).
 
 ### [POST-OUT-TRACKER] A deleted man and the Tracker's courses "still running" (D299 — approved, NOT built; filed 27 Sep 26)
 D299 lists "his place on any course still running — goes". The Tracker has no notion of a course "still running", and the
