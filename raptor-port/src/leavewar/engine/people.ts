@@ -48,7 +48,7 @@ export interface Person {
    *  sync.ts leaves those alone. Meaningless without `to`. */
   poArchive?: boolean
   /** WHICH posting out it is ([POST-OUT-OUTCOMES], owner D229, D294, D298 — the sheet's four chips): 'overseas'
-   *  (archived on Quals, his account suspended — the old "Archive on PO date"), 'delete' (leaving flying for good —
+   *  (archived — Admin → Users' Archived group since D310 — his account suspended; the old "Archive on PO date"), 'delete' (leaving flying for good —
    *  his account and person, D287), 'sans' (another workplace, still flies with us — SANS on the date, D283), or
    *  'none' (off the manpower, nothing else — the old switch turned off). Written with `to` by `setPostOut`; an older
    *  record's `poArchive` reads as 'overseas' / 'none' (tolerant — D56). */

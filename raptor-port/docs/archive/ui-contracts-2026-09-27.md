@@ -57,3 +57,13 @@ changes nothing; a session list (`state/view.ts BACKPROMPT`), cleared at every s
   the Users panel, which chooses New person, scrolls the form into view and focuses the Callsign/Name box on a desktop.
   A sign-in or sign-out clears a pending one (`VIEW_RESET`). The Users panel is told `shown` (Users chosen, and on a phone
   drilled in) — the bell's "seen" (§The top bar carries the bell).
+
+## Admin → Users — Suspend / Enable, Delete account (`[POST-OUT-OUTCOMES]`, 27 Sep 26 — D285, D287, D300)
+
+The account editor's buttons read **"Suspend" / "Enable"** (was "Switch off / on") and **"Delete account"**; a suspended
+row is tagged "suspended". "Delete account" asks twice — "Tap again to delete <callsign>" with a line naming what goes
+(his account and his person; days he flew keep his puck) — never on one's own account, never the last admin who can sign
+in; a man archived on Quals says so beside it. **Enable** is one of the two "he's back" acts (D284): it arms the Quals
+prompt below. The sign-in of a suspended account reads "Your access is suspended — Ask an admin to enable it when you're
+back." (said once).
+

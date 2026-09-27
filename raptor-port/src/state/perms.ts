@@ -310,7 +310,7 @@ export const COMMAND_OPS: Record<string, CommandOp> = {
      and his inputs from that day deleted or ended the day before. Every table it writes is named (D200). The Leave War
      half (his records, his posting) joins in Part B with LeavePersonProfile. */
   'person.delete': op(T.person, 'D', 'never', [[T.user, 'D'], [T.accessreq, 'D'], [T.sched, 'U'], [T.amendment, 'C'], [T.input, 'D'], [T.input, 'U'], [T.profile, 'U'], [T.bid, 'D']]),
-  /* he's back — Restore on Quals, Undo post out, Restore under another callsign (D284, D286, D295): the person restored
+  /* he's back — Restore (Admin → Users, D310), Undo post out, Restore under another callsign (D284, D286, D295): the person restored
      (and renamed), the account the posting suspended enabled, the posting cleared; never a member's own-row write */
   'person.restore': op(T.person, 'U', 'never', [[T.user, 'U'], [T.profile, 'U']]),
   /* [ONE-DOOR] (D309, D310, D323): Archive on Admin → Users — the person archived, his account suspended, his war stint

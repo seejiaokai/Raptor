@@ -3,9 +3,12 @@
 // the war is read-only: it says where to go, its date is fixed, and it offers no chips and no Undo.
 // D320 (and round 1 — Fable F2 / Astra 1, past stints read-only): the Post in sheet of a man back from a posting says so,
 // and its Undo is not offered (clearing his post-in would lay "here from always" over the stint he left).
-import { render, screen } from '@testing-library/react'
-import { describe, expect, it } from 'vitest'
+import { fireEvent, render, screen } from '@testing-library/react'
+import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { PostInSheet, PostOutSheet } from './BidPicker'
+import { Matrix } from './Matrix'
+import { getState, initStore, setPostIn, setPostingLockLookup, setPostOut, setRole } from '../state/store'
+import { memoryBackend } from '../state/storage'
 
 const noop = () => {}
 
@@ -47,5 +50,32 @@ describe('D320 — the Post in sheet of a man back from a posting', () => {
     render(<PostInSheet callsign="HEX" date="2026-01-15" piFrom="2026-02-01" onChange={noop} onUndo={noop} onClose={noop} />)
     expect(screen.getByTestId('postin-note').textContent).toMatch(/Posted in on 2026-02-01 — on the manpower from that day/)
     expect(screen.getByTestId('postin-undo')).toBeTruthy()
+  })
+})
+
+/* …and the GRID mounts them locked: the store's posting lock (installed by the sync as "archived on Admin → Users" —
+   here by hand, the grid alone) makes the Post out AND the Post in sheet read only, and both writers refuse
+   (the walk's design, Fable 4.2 / 4.3, 27 Sep 26). */
+describe('the grid, a man whose posting dates are locked', () => {
+  const WHY = 'Hex was archived on Admin → Users — restore him there'
+  beforeEach(() => { initStore(memoryBackend()); setRole('admin') })
+  afterEach(() => setPostingLockLookup(null))
+  it('his Post out sheet and his Post in sheet both read only; the writers refuse', () => {
+    const id = getState().people[0]!.id
+    expect(setPostIn(id, '2026-06-10')).toBe(true)
+    expect(setPostOut(id, '2026-08-10')).toBe(true)
+    setPostingLockLookup(x => (x === id ? WHY : null))
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId(`cell-${id}-2026-08-12`))
+    expect(screen.getByTestId('postout-locked').textContent).toBe(WHY)
+    expect(screen.queryByTestId('postout-undo')).toBeNull()
+    fireEvent.click(screen.getByTestId('postout-cancel'))
+    fireEvent.click(screen.getByTestId(`cell-${id}-2026-06-05`))
+    expect(screen.getByTestId('postin-locked').textContent).toBe(WHY)
+    expect(screen.queryByTestId('postin-undo')).toBeNull()
+    expect(setPostIn(id, null)).toBe(false)
+    expect(setPostOut(id, null)).toBe(false)
+    expect(getState().people.find(p => p.id === id)!.from).toBe('2026-06-10')
+    expect(getState().people.find(p => p.id === id)!.to).toBe('2026-08-09')
   })
 })

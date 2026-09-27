@@ -194,7 +194,7 @@ describe('the four posting chips', () => {
     setRole('admin')
     render(<Matrix />)
     open(id, '2026-06-15')
-    expect(screen.getByTestId('po-line').textContent).toBe('On 15 Jun: archived on Quals.')
+    expect(screen.getByTestId('po-line').textContent).toBe('On 15 Jun: archived.')
     expect((screen.getByTestId('po-transfer') as HTMLButtonElement).disabled).toBe(true)
     fireEvent.click(screen.getByTestId('po-sans'))
     expect(screen.getByTestId('po-sans').getAttribute('aria-pressed')).toBe('true')
@@ -226,7 +226,7 @@ describe('the four posting chips', () => {
     render(<Matrix />)
     fireEvent.click(screen.getByTestId(`cell-${id}-2026-06-15`))
     const p = () => getState().people.find(x => x.id === id)!
-    expect(screen.getByTestId('postout-line').textContent).toBe('On 15 Jun: archived on Quals.')
+    expect(screen.getByTestId('postout-line').textContent).toBe('On 15 Jun: archived.')
     fireEvent.click(screen.getByTestId('postout-delete'))            // the chip — arms, writes nothing
     expect(p().poOutcome).toBe('overseas')
     expect(screen.getByTestId('postout-line').textContent).toBe('On 15 Jun: deleted. Days he flew keep his puck.')
@@ -260,7 +260,7 @@ describe('the four posting chips', () => {
       render(<Matrix />)
       fireEvent.click(screen.getByTestId(`cell-${id}-2026-06-15`))
       fireEvent.click(screen.getByTestId('bid-postout'))
-      expect(screen.getByTestId('po-line').textContent).toBe('On 15 Jun: archived on Quals, account suspended.')
+      expect(screen.getByTestId('po-line').textContent).toBe('On 15 Jun: archived, account suspended.')
       fireEvent.click(screen.getByTestId('po-delete'))
       expect(screen.getByTestId('po-line').textContent).toBe('On 15 Jun: deleted with his account. Days he flew keep his puck.')
     } finally { setAccountLookup(null) }

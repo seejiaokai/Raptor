@@ -5089,29 +5089,21 @@ The approved mock-up `docs/mock/post-out.html` §1 is the design of record (D299
 PO (`po-*`), an existing posting's Post out sheet (`postout-*`), the drag selection's PO (`sel-po-*`) — the same row:
 the date once, in its own box ("PO from"); four short chips `leavewar/ui/OutcomeChips.tsx` — "Overseas Sqn" (the
 default — the old "Archive on PO date"), "Delete", "SANS", "Transfer to Sqn" (drawn, not pressable — "Comes with the
-shared database", D281); ONE line saying what the chosen one does on the date ("On 14 Oct: archived on Quals, account
-suspended." — the account named only when he has one); the button just "Post out" (D300; "Post in" likewise). Tapping
+shared database", D281); ONE line saying what the chosen one does on the date ("On 14 Oct: archived, account
+suspended." — the account named only when he has one; "archived on Quals" until Quals lost its archive, D310); the button just "Post out" (D300; "Post in" likewise). Tapping
 the chosen chip again un-chooses it — "off the manpower, nothing else" (the agent's call, on his look card). **A Delete
 asks twice** (D287 (3)): the bid sheet's button turns into "Tap again to delete <callsign>"; on the Post out sheet (which
 commits on each change) the Delete chip arms a second button, `postout-delete-go`, and tapping the armed chip again
 backs out without changing the posting. A deleted man (`gone` on the war) has no posting door — his posting is final.
-**On the date** (`leavewar/sync.ts runPoOutcomes`, the calendar date — the one clock): Overseas Sqn → archived on Quals
-and his account suspended; Delete → his person and account deleted (the hidden mark; days he flew keep his puck); SANS →
+**On the date** (`leavewar/sync.ts runPoOutcomes`, the calendar date — the one clock): Overseas Sqn → archived (Admin →
+Users' Archived group) and his account suspended; Delete → his person and account deleted (the hidden mark; days he flew keep his puck); SANS →
 ticked SANS (D283: with "Show SANS" OFF the war keeps his row in its old group, posted out, untracked; with it ON his
 whole row moves into the SANS group and his leave is tracked there — the approved picture); none → nothing more. Each
 runs ONCE for its date and never undoes a later hand change; the last admin who can sign in is never suspended or deleted
 by a posting — said once. Moving the date later or changing the outcome takes back what the posting made (the archive,
 the suspension, the SANS tick) — no "he's back" prompt; Undo post out after an Overseas Sqn is the Restore.
 
-## Admin → Users — Suspend / Enable, Delete account (`[POST-OUT-OUTCOMES]`, 27 Sep 26 — D285, D287, D300)
-
-The account editor's buttons read **"Suspend" / "Enable"** (was "Switch off / on") and **"Delete account"**; a suspended
-row is tagged "suspended". "Delete account" asks twice — "Tap again to delete <callsign>" with a line naming what goes
-(his account and his person; days he flew keep his puck) — never on one's own account, never the last admin who can sign
-in; a man archived on Quals says so beside it. **Enable** is one of the two "he's back" acts (D284): it arms the Quals
-prompt below. The sign-in of a suspended account reads "Your access is suspended — Ask an admin to enable it when you're
-back." (said once).
-
+## Admin → Users — Suspend / Enable, Delete account (`[POST-OUT-OUTCOMES]`, 27 Sep 26) — superseded by §Admin → Users — one door (D310: "Delete", the Sign-in dot, no Enable on an archived man); moved whole to `docs/archive/ui-contracts-2026-09-27.md`.
 ## Admin → Users — one door (`[ONE-DOOR]`, 27 Sep 26 — D305, D308, D309, D310, D320–D323); Quals' old Archived list: `docs/archive/ui-contracts-2026-09-27.md`
 
 `ui/UsersPanel.tsx`; the approved design `docs/mock/one-door.html` (D322). **Admin → Users shows every PERSON — not only

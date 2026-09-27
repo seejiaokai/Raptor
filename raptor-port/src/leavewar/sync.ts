@@ -1419,14 +1419,15 @@ function reprojectRoster(): void {
  *
  * Archiving ONLY sets the flag: pucks on published and past schedules render
  * from the slot values and PEOPLE[id] is still there, so nothing a scheduler
- * issued changes — the body just leaves every roster surface, and the Quals
- * page's Archived section is where it lands. The person STAYS on the leave
+ * issued changes — the body just leaves every roster surface, and Admin →
+ * Users' Archived group is where it lands (Quals' Archived section before
+ * [ONE-DOOR], D310). The person STAYS on the leave
  * war (reprojectRoster's keep rule) so the months before they left still
  * show their history.
  */
 /* ---- THE POSTING'S OUTCOMES ON ITS DATE ([POST-OUT-OUTCOMES], 27 Sep 26) -----------------------------------------
    Owner D229 (26 Sep 26): a posting out says WHICH it is, and the app does it on the date as the archive does today:
-   'overseas' → archived on Quals AND his account suspended (D280); 'delete' → his account and his person deleted (D287,
+   'overseas' → archived (Admin → Users' Archived group since D310) AND his account suspended (D280); 'delete' → his account and his person deleted (D287,
    the hidden mark — state/person-delete.ts); 'sans' → SANS on the date (D283); 'none' → off the manpower, nothing else.
    It EXTENDS the auto-archive above (the same triggers — boot, every Raptor notify, every Leave War notify, so a date
    already come runs at once — and the same clock, the calendar date: `effectiveToday()`, the ONE clock a delete's cutoff
@@ -1648,7 +1649,7 @@ export function restoreProblem(id: string, postIn: string): string | null {
   const cur = st.people.find(p => p.id === id) || st.postOuts[id]
   return cur ? postingProblem(id, 'restore', postIn, cur) : null
 }
-/* THE ONE BODY OF "HE'S BACK" — Restore on Quals, Undo post out, Restore under another callsign. ONE command over the
+/* THE ONE BODY OF "HE'S BACK" — Restore (Admin → Users since D310), Undo post out, Restore under another callsign. ONE command over the
    people, settings and war stores ([CMDL-FINISH] C10 — a single click is a single envelope): the posting cleared, the
    archive lifted, the account the POSTING suspended enabled again (D280: "on his return … his account can be enabled";
    `offBy: 'po'` only — one suspended by hand stays so), the SANS tick the posting made taken back — and the Quals prompt
