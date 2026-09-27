@@ -12,7 +12,8 @@ import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } 
 import { storeBackend } from '../engine/hooks'
 import { PEOPLE, indexCallsigns } from '../engine/people'
 import { initStore as raptorInitStore, notify as raptorNotify, resetSession } from '../state/store'
-import { accountsLoad, accountByName, signIn, sessionFor, updateAccount } from '../state/accounts'
+import { accountsLoad, accountByName, signIn, sessionFor, updateAccount, addPersonAndAccount, approveRequestNew, requestAccess, ACCESS_REQS } from '../state/accounts'
+import { addRosterPerson } from '../state/roster-add'
 import { BACKPROMPT } from '../state/view'
 import { onCommit } from '../command'
 import { INPUTS } from '../engine/inputs'
@@ -192,5 +193,40 @@ describe('Fable F7 — the Undo post out mode is unchanged (a POSTING\'s archive
     expect(war('bane')!.past ?? []).toEqual([])
     expect(P('bane').back).toBeFalsy()
     expect(accountByName('us')!.on).toBe(true)
+  })
+})
+
+describe('D308 — a new person is asked his post-in date; the war counts him from it, his sign-in works at once', () => {
+  it('Add a person with a post-in date: his war row starts on it (Fable F11 / Astra 6 — one command, the war named)', () => {
+    const seen: string[] = []
+    const off = onCommit(env => { if (env.type === 'account.addNew') seen.push(...env.changes.map(c => c.collection)) })
+    expect(addPersonAndAccount('newbie@mail', { cs: 'Newbie', ini: 'NB', seat: 'FCP', cat: 'C' }, 'main', '2026-07-20')).toBeNull()
+    off()
+    const id = Object.keys(PEOPLE).find(k => P(k).cs === 'Newbie')!
+    expect(seen).toContain('lw.postouts')
+    raptorNotify()
+    const w = war(id)!
+    expect(w.from).toBe('2026-07-20')
+    expect(accountByName('newbie@mail')!.on).toBe(true)
+  })
+
+  it('roster-only (no sign-in) and approving a request with New person carry the date too', () => {
+    expect(addRosterPerson({ cs: 'Groundy', ini: '', seat: 'GND', cat: '' }, '2026-07-16')).toBeNull()
+    const g = Object.keys(PEOPLE).find(k => P(k).cs === 'Groundy')!
+    raptorNotify()
+    expect(war(g)!.from).toBe('2026-07-16')
+    signInAs('ace2@mail')
+    expect(requestAccess({ cs: 'Ace2', ini: 'AJ', seat: 'FCP', cat: 'C' })).toBeNull()
+    signInAs('ad', 'a')
+    const rq = ACCESS_REQS.find(r => r.name === 'ace2@mail')!
+    expect(approveRequestNew(rq.id, { cs: 'Ace2', ini: 'AJ', seat: 'FCP', cat: 'C' }, 'main', '2026-07-15')).toBeNull()
+    const a = Object.keys(PEOPLE).find(k => P(k).cs === 'Ace2')!
+    raptorNotify()
+    expect(war(a)!.from).toBe('2026-07-15')
+  })
+
+  it('a date that is not a whole date is refused before anything is made', () => {
+    expect(addRosterPerson({ cs: 'Nodate', ini: '', seat: 'GND', cat: '' }, '2026-7-1')).toMatch(/post-in date/)
+    expect(Object.keys(PEOPLE).some(k => P(k).cs === 'Nodate')).toBe(false)
   })
 })

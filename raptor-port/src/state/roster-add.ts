@@ -29,6 +29,7 @@ import { PEOPLE, QCHIP, deriveQuals, indexCallsigns, callsignTakenBy } from '../
 import { newId } from '../engine/newid'
 import { CmdRefused, isCommitting } from '../command'
 import { mayManageRoster } from './perms'
+import { HOOKS } from '../engine/hooks'
 import { commitPeopleIntent } from './people-settings-commit'
 
 /* the ONE seat list every form reads (D220) — the stored value is the seat code */
@@ -120,10 +121,18 @@ export function saidOf(r: any): string | null {
   return 'That did not save'
 }
 
-/* the admin's roster-only add — a blank sign-in on Admin → Users (D217) */
-export function addRosterPerson(np: NewPerson): string | null {
+/* D308 ([ONE-DOOR], 27 Sep 26): the post-in date every door that puts a man on the roster asks — a whole date (the form
+   opens on today); his sign-in works at once, the war counts him from it */
+export const postInProblem = (d: any): string | null =>
+  typeof d === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(d) ? null : 'Pick the post-in date'
+
+/* the admin's roster-only add — a blank sign-in on Admin → Users (D217), with his post-in date (D308) */
+export function addRosterPerson(np: NewPerson, postIn?: string): string | null {
   if (!mayManageRoster()) return 'Only an admin can add someone'
-  const bad = newPersonProblem(np)
+  const bad = newPersonProblem(np) || (postIn !== undefined ? postInProblem(postIn) : null)
   if (bad) return bad
-  return saidOf(commitPeopleIntent('person.add', null, () => { putNewPerson(np) }))
+  return saidOf(commitPeopleIntent('person.add', null, txn => {
+    const id = putNewPerson(np)
+    if (postIn !== undefined) HOOKS.warPostIn(txn, id, postIn)
+  }))
 }

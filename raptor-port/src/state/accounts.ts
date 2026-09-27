@@ -50,8 +50,9 @@ import { isAdmin, mayManageAccounts, mayManageRoster, mayRequestAccess, me, role
 import { commitSettingsIntent, commitPeopleSettingsIntent } from './people-settings-commit'
 import {
   MAX_CS, MAX_INITIALS, SEATS, catsFor, seatLabel, tidyPerson, newPersonProblem, putNewPerson, addRosterPerson, saidOf,
-  type NewPerson,
+  postInProblem, type NewPerson,
 } from './roster-add'
+import { HOOKS } from '../engine/hooks'
 
 export type AccountRole = 'admin' | 'main'
 /* `offBy: 'po'` — the account was SUSPENDED BY A POSTING OUT ([POST-OUT-OUTCOMES], D280 — the overseas outcome suspends
@@ -413,28 +414,33 @@ export function dropAccountOfPid(pid: string): void {
    ONE command over the people and settings stores — both made or neither (a refusal inside
    rolls both back and still says why). A blank sign-in makes a roster-only person (D217 —
    someone who will not use the app): the people command alone. */
-export function addPersonAndAccount(nameIn: any, np: NewPerson, role: AccountRole): string | null {
+/* `postIn` — his post-in date (D308, [ONE-DOOR]): written on the war in the same command (HOOKS.warPostIn) */
+export function addPersonAndAccount(nameIn: any, np: NewPerson, role: AccountRole, postIn?: string): string | null {
   const name = normName(nameIn)
-  if (!name) return addRosterPerson(np)
+  if (!name) return addRosterPerson(np, postIn)
   if (!mayManageAccounts() || !mayManageRoster()) return 'Only an admin can add a person'
   const bad = nameProblem(name) || newPersonProblem(np) || (isAccountRole(role) ? null : 'Pick member or admin')
+    || (postIn !== undefined ? postInProblem(postIn) : null)
   if (bad) return bad
-  return saidOf(commitPeopleSettingsIntent('account.addNew', null, () => {
+  return saidOf(commitPeopleSettingsIntent('account.addNew', null, txn => {
     const pid = putNewPerson(np)
+    if (postIn !== undefined) HOOKS.warPostIn(txn, pid, postIn)
     writeAccounts([...ACCOUNTS_LIST, { id: newAccountId(), name, role, pid, on: true }])
     if (requestByName(name)) writeReqs(ACCESS_REQS.filter(r => r.name !== name))
   }))
 }
 /* approving with New person: the person from what he gave, with the admin's corrections,
    his account, and the request answered — one command */
-export function approveRequestNew(reqId: string, np: NewPerson, role: AccountRole): string | null {
+export function approveRequestNew(reqId: string, np: NewPerson, role: AccountRole, postIn?: string): string | null {
   if (!mayManageAccounts() || !mayManageRoster()) return 'Only an admin can approve a request'
   const rq = ACCESS_REQS.find(r => r.id === reqId)
   if (!rq) return 'That request is gone'
   const bad = nameProblem(rq.name) || newPersonProblem(np) || (isAccountRole(role) ? null : 'Pick member or admin')
+    || (postIn !== undefined ? postInProblem(postIn) : null)
   if (bad) return bad
-  return saidOf(commitPeopleSettingsIntent('access.approveNew', null, () => {
+  return saidOf(commitPeopleSettingsIntent('access.approveNew', null, txn => {
     const pid = putNewPerson(np)
+    if (postIn !== undefined) HOOKS.warPostIn(txn, pid, postIn)
     writeAccounts([...ACCOUNTS_LIST, { id: newAccountId(), name: rq.name, role, pid, on: true }])
     writeReqs(ACCESS_REQS.filter(r => r.id !== reqId))
   }))

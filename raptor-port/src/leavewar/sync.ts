@@ -1737,6 +1737,15 @@ export function archivePerson(id: string): { bad: string | null; said: string } 
     + (replaced && pendingDate ? `; his posting out on ${dayMon(pendingDate)} (${OUTCOME_WORD[replaced] || replaced}) is replaced` : '')
   return { bad: null, said }
 }
+/* A NEW PERSON'S POST-IN DATE (D308, [ONE-DOOR]) — the war half of the one add, inside its command: the war's store
+   enlisted, his war identity taken from the projection (the war has not re-projected him yet), his first stint opened on
+   the date. Refused whole (the add rolls back) if the war cannot take it. */
+function postInNewPerson(txn: any, id: string, date: string): void {
+  txn.enlist(lwStore)
+  const identity = projectPeople(true).find(p => p.id === id)
+  if (!identity) return
+  if (!openStint(id, date, identity)) throw new CmdRefused('Pick the post-in date')
+}
 /* a man archived on Admin → Users: the war's posting doors refuse him — Restore there is the one way back (Fable F1) */
 export function adminArchived(id: string): string | null {
   const body = (PEOPLE as any)[id]
@@ -1868,6 +1877,8 @@ export function wireLeaveWarSync(): void {
      the seam (the war never reads Raptor's accounts itself) */
   setAccountLookup(id => !!accountOfPid(id))
   setPostingBlockLookup((id, outcome) => adminArchived(id) || poHeldReason(id, outcome))
+  /* D308 ([ONE-DOOR]): a new person's post-in date, written inside the add's own command */
+  HOOKS.warPostIn = (txn: any, id: string, date: string) => postInNewPerson(txn, id, date)
   /* The VIEWING PERSON rides this same wire (owner, 17 Aug 26 — the matrix
      lights the viewer's row and the counter picker answers with their
      numbers). Since [ACCOUNTS] (D166 (4), 26 Sep 26) it is the SIGNED-IN person —

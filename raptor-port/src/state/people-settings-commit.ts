@@ -188,8 +188,10 @@ function commitSettings(type: string, fn: () => void): CommitResult {
   const cmd: Command = { type, scope: settingsScope(), apply: (txn) => { txn.enlist(settingsStore); fn() } }
   return commit(cmd)
 }
-function commitPeople(type: string, fn: () => void, meta?: any): CommitResult {
-  const cmd: Command = { type, scope: peopleScope(), meta, apply: (txn) => { txn.enlist(peopleStore); fn() } }
+/* `fn` receives the transaction ([ONE-DOOR], D308): a new person's post-in date is written on the war INSIDE the same
+   command (HOOKS.warPostIn enlists the war's store), so the person and his war record commit or roll back together */
+function commitPeople(type: string, fn: (txn: any) => void, meta?: any): CommitResult {
+  const cmd: Command = { type, scope: peopleScope(), meta, apply: (txn) => { txn.enlist(peopleStore); fn(txn) } }
   return commit(cmd)
 }
 /* [ACCOUNTS] — ONE intent command over the settings store (Astra R2-3, Fable R2-3): an
@@ -208,13 +210,13 @@ export function commitSettingsIntent(type: string, meta: any, fn: () => void): C
    so a refusal or a throw anywhere inside restores both — the person, the callsign index,
    the people baseline and every settings key (command/commit.ts phase 6). Both finish the
    people half with the same body every roster command uses (advancePeople). */
-export function commitPeopleIntent(type: string, meta: any, fn: () => void): CommitResult {
-  return commitPeople(type, () => { fn(); advancePeople() }, meta)
+export function commitPeopleIntent(type: string, meta: any, fn: (txn: any) => void): CommitResult {
+  return commitPeople(type, txn => { fn(txn); advancePeople() }, meta)
 }
-export function commitPeopleSettingsIntent(type: string, meta: any, fn: () => void): CommitResult {
+export function commitPeopleSettingsIntent(type: string, meta: any, fn: (txn: any) => void): CommitResult {
   const cmd: Command = {
     type, scope: peopleScope(), meta,
-    apply: (txn) => { txn.enlist(peopleStore); txn.enlist(settingsStore); fn(); advancePeople() },
+    apply: (txn) => { txn.enlist(peopleStore); txn.enlist(settingsStore); fn(txn); advancePeople() },
   }
   return commit(cmd)
 }
