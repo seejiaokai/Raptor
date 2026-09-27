@@ -81,7 +81,7 @@ import { groupColorOf, inkFor } from './groupColor'
 import { SelectSheet } from './SelectSheet'
 import { BalanceBar } from './BalanceBar'
 import { RemarksSheet } from './RemarksSheet'
-import { leaveInputAt, postOut, postOutProblem, undoPostOut, undoPostOutProblem } from '../sync'
+import { leaveInputAt, postOut, postOutProblem, undoPostOut, undoPostOutProblem, adminArchived } from '../sync'
 import { useVersion } from './useStore'
 import { DayListSheet } from './DayList'
 import type { Views } from '../engine/dayview'
@@ -4329,6 +4329,8 @@ export function Matrix() {
           outcome={outcomeOf(openPerson) ?? 'none'}
           hasAccount={hasAccount(open.id)}
           blockedFor={o => postingBlocked(open.id, o)}
+          /* [ONE-DOOR] (Fable F1 / Astra 2): archived on Admin → Users — Restore there is the one way back */
+          lockedWhy={adminArchived(open.id)}
           onChange={(from, outcome) => postOutOr(open.id, from, outcome)}
           /* the archive the Post out made goes too (W5-F1); refused, with where to go, when a man on the roster now holds
              his callsign (D286 (1) — Fable's scenario 2: it closed and did nothing) */
@@ -4350,6 +4352,8 @@ export function Matrix() {
              the PI date itself — the first day they ARE here — where the
              post-out sheet has to add a day to the stored last-day-in. */
           piFrom={openPerson!.from!}
+          /* D320: back from a posting — the day after his last earlier stint closed */
+          backFrom={openPerson!.past && openPerson!.past.length ? addDays(openPerson!.past[openPerson!.past.length - 1].to, 1) : null}
           onChange={from => postInOr(open.id, from)}
           onUndo={() => { setPostIn(open.id, null); close() }}
           onPlace={() => setPlaceAt(openKey)}
