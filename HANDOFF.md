@@ -16,31 +16,30 @@ the later merge keeps both (D78).
 ## Now
 
 <!-- now:claude/one-door -->
-### `claude/one-door` — `[ONE-DOOR]` NOT STARTED: the branch is cut from `main` with this note; start with the mock-up — written 27 Sep 26 ~14:30 by the post-out chat, verify before use
-- **Where things stand:** `[POST-OUT-OUTCOMES]` is LIVE (PR #446, merged 27 Sep 26; `[ACCOUNTS-NEW-PERSON]` PR #443 before
-  it; the absence record PR #444 and the five flags PR #445 too). Its evidence sheet
-  `raptor-port/docs/handpass/2026-09-27-post-out-outcomes.md` says how posting out, Suspend / Enable / Delete, the hidden
-  delete mark, the Archived list, Restore and the "he's back" note work today.
-- **The job — his rulings, read them first** (`.claude/rules/decisions/how-we-work.md`): **D309 / D310** one door —
-  Admin → Users shows every PERSON (not only accounts) with a Sign-in dot and a Roster dot (green / red; grey = no
-  sign-in) and carries every action: Active → Suspend · Archive · Delete; Suspended → Enable · Archive · Delete; no
-  sign-in → Give sign-in · Archive · Delete; Archived (a folded "▸ Archived · N" group) → Restore · Delete; Waiting →
-  Give access · Refuse; a posting waiting for its date shown on the row. Archive also suspends; Restore brings both back.
-  **Quals loses its ✕ archive, its Archived list, Restore, Restore as and the rename** (narrows D217, D295) and keeps
-  quals, CAT, flight and initials. **D308** Restore and New person ask the post-in date (opening on today; the account
-  works at once, the Leave War and availability count him from the date). **D305 (3a)** the man himself, on his first
-  sign-in after Restore, is told "Welcome back — check your quals and CAT" with a button to his own Quals row. The
-  backlog: `OUTSTANDING.md` `[ONE-DOOR]`, `[POST-IN-DATE]`, `[POST-OUT-ASKS]` (put those five to him with the mock-up).
-- **Order:** a mock-up first (the house rule for a visual change — `raptor-port/docs/mock/`, desktop and phone, the
-  app's own stylesheet; the post-out mock-up `docs/mock/post-out.html` and its maker `scripts/handpass/am/mk-post-out.mjs`
-  are the pattern) → his approval → plan (Opus 5.5 high), red-team by Fable and Astra → build red first → walk at both
-  widths with pictures → FULL check (permissions, roster, accounts — bug-check order) → his look → "merge live".
-- **Beside it:** `[LW-MOVE-STANDARD]` (D264–D266) may run in its own chat at the same time — different screens; tell
-  each other before a shared file (D302). Rulings: agree a range with the other chat (this one's suggestion: D320–D329).
-- **Traps:** ports 4186/4187 are held by the old presentation server; this PC's lock `node raptor-port/scripts/gatelock.mjs`
-  for every full run; scripted edits keep each file's line endings (memory `python-edits-crlf-trap`). `OUTSTANDING.md`
-  is over its size tripwire (1433 lines against 1330): a docs-only tidy pass is due as its OWN job (D29, D141 — move what
-  no longer belongs there to its home; never inside the build).
+### `claude/one-door` — `[ONE-DOOR]` MOCK-UP DRAWN, waiting for his approval and his answers; nothing built — written 27 Sep 26 ~17:40 — verify before use
+- **The mock-up:** `raptor-port/docs/mock/one-door.html` (also an Artifact: https://claude.ai/artifact/PrdGyhPYgkVWuD2mbSsmS9),
+  made by `raptor-port/scripts/handpass/am/mk-one-door.mjs` on the preview at 4178 (`.claude/launch.json` "raptor-onedoor").
+  One row per person (Sign-in and Roster dots in two columns; role pill; a posting waiting as an amber tag), a search box,
+  "▸ Archived · N" folded at the foot, each state's buttons on the opened row (D310's list), Restore with a post-in date
+  and the callsign box (rename / "Restore as"), Give access / Refuse, Add a person = New person only with Post in, the
+  man's "Welcome back — check your quals and CAT" note, Quals without its ✕ and Archived list.
+- **Put to him with it (answers pending):** the five `[POST-OUT-ASKS]` (2 answered by the design; 6, 7, 8, 10 recommended
+  keep / allow) and ONE NEW: the months a man was away — the Leave War keeps one in/out window per man, so a man back from
+  overseas either needs several windows (recommended, ~half a day, touches `leavewar/engine/people.ts inSquadron` and the
+  war's posting record in `store.ts`) or his months before the posting read "not here" too. The agent's own calls, listed
+  on the page for him to correct: Archive one tap; Restore turns the sign-in back on even when suspended by hand before
+  (D310 "both back"); no Enable on archived rows; renaming a roster man stays on Quals; A–Z with a search box.
+- **Next, in order:** his approval (record it D320+) and answers → plan (Opus 5.5 high) → Fable and Astra red-team →
+  build red first → walk both widths with pictures → FULL check (bug-check order; the PC lock for every full run) → his
+  look → "merge live".
+- **Beside it:** `[LW-MOVE-STANDARD]` in chat "Rulings D264–D266 leave-war build" (branch
+  `claude/rulings-d264-d266-leave-war-f0f4ab`, ports 4177 / E2E 4195, rulings D330–D339). Agreed (D302): it stays out of
+  `leavewar/sync.ts` and `setPostIn`; this chat stays out of BidPicker, SelectSheet, DayList, Matrix, select.ts and the
+  move functions in `store.ts`; told it the several-windows change would touch `inSquadron` and the posting record.
+  This chat's ports: preview 4178, E2E 4196; rulings D320–D329.
+- **Traps:** `npm run docsize` FAILS on `main` already — `OUTSTANDING.md` 1433 lines against its 1330 tripwire; the
+  Docs guard will be red on every branch until a docs-only tidy lands (put to him: its own tiny branch, merged first).
+  Ports 4186/4187 held by the old presentation server. Scripted edits keep each file's line endings.
 <!-- /now -->
 
 <!-- now:claude/absence-record-d147-af6a50 -->
