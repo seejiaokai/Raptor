@@ -340,3 +340,22 @@ describe('leaving', () => {
     await act(async () => { openScheduler(0) })
   })
 })
+
+/* THE EDIT WEEK HAS THE BUBBLE TOO ([DRAFT-PENDING], the owner's D116: one History mode for the board and the edit week).
+   Found unguarded by the break tests (§5 B7): the edit week's wiring could be taken out and every unit test stayed green
+   — only the walk (A14) saw it. */
+describe('the edit week', () => {
+  it('answers a hover on a changed seat while History is on, as the board does (D116)', async () => {
+    const el = await editedSeat()
+    const key = el.dataset.slot!
+    await act(async () => { closeScheduler() })
+    await act(async () => { view.setHistMode(true); notify() })
+    const cell = $(`#eWeek [data-slot="${key}"]`)
+    expect(cell, 'the seat is on the edit week').toBeTruthy()
+    await hover(cell)
+    expect(bub(), 'a bubble on the edit week').toBeTruthy()
+    expect(bub()!.textContent).toMatch(/Ranger|Saber/)
+    await act(async () => { view.setHistMode(false); notify() })
+    await act(async () => { openScheduler(0) })
+  })
+})

@@ -29,7 +29,7 @@ import { changesLoad } from '../state/changes'
 import { updatePersonField } from '../state/quals-write'
 import { elogReason } from '../state/changelines'
 import { setPage, VWORK } from '../state/view'
-import { dayInfoHTML, withDaySnap } from './html'
+import { dayInfoHTML, withDaySnap, dayHTML } from './html'
 import { sbUnavailPanel } from './board-html'
 import { pendListHTML } from './pendlist'
 import { jumpToChange } from './interactions'
@@ -107,6 +107,15 @@ describe('P5 — the board\'s Unavailable rows carry the input\'s address', () =
     const r: any = { person: 'bane', date: d.dt, yr: 2026, allday: true, type: 'LL', remarks: '', acc: 'u' }
     inpId(r); INPUTS.unshift(r)
     expect(sbUnavailPanel(d, 0)).toContain(`data-inprow="${r.iid}"`)
+  })
+
+  /* …and the WEEK's twin (Astra DP-08), which the break tests found no unit test watching (§5 B9 — only the walk's A8) */
+  it('the same leave on the edit week: its row carries the address too', () => {
+    as('ad', 'a')
+    const d: any = (DAYS as any)[0]
+    const r: any = { person: 'bane', date: d.dt, yr: 2026, allday: true, type: 'LL', remarks: '', acc: 'u' }
+    inpId(r); INPUTS.unshift(r)
+    expect(dayHTML(0, true, true)).toContain(`data-inprow="${r.iid}"`)
   })
 })
 

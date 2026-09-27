@@ -7,12 +7,14 @@
    and changes Monday's SDO desk after publication; Ranger (a member) files his own leave on Tuesday; then Saber and
    Ranger each look. */
 import { chromium } from '@playwright/test'
-import { existsSync, mkdirSync, writeFileSync } from 'node:fs'
+import { existsSync, mkdirSync, rmSync, writeFileSync } from 'node:fs'
 
 const BASE = process.env.HP_URL || 'http://localhost:4182'
 const W = +(process.env.HP_W || 1440), H = +(process.env.HP_H || 900)
 const TAG = W < 700 ? 'phone' : 'desktop'
 const OUT = (process.env.HP_SHOTS || 'C:/Users/User/projects/Raptor/raptor-port/docs/img/handpass/2026-09-28-draft-pending') + '/walk-' + TAG
+/* a re-walk starts from an empty folder: a run that numbers its pictures differently must not leave the last run's beside them */
+rmSync(OUT, { recursive: true, force: true })
 mkdirSync(OUT, { recursive: true })
 const CHROMIUM = '/opt/pw-browsers/chromium'
 const browser = await chromium.launch({ headless: true, ...(existsSync(CHROMIUM) ? { executablePath: CHROMIUM } : {}) })

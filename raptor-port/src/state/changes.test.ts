@@ -80,6 +80,19 @@ describe('the command gate', () => {
     expect((r as any).ok).toBe(false)
     expect(fake.get('sqn142_changeseen')).toBeUndefined()
   })
+
+  /* the SECOND lock (perms.ts ownershipViolation, onlyOwnEntry): a command that names HIS OWN entry but writes another
+     person's too is refused by what it wrote, not by what it claimed — found by the break tests (§5 B6): the test above
+     is stopped by the first lock (the owner it declares), so it stayed red with this one removed */
+  it('a command that claims his own entry but writes another person\'s is refused by what it wrote', () => {
+    as('us', 'us')
+    const r = commitSettingsIntent('changes.seen', { owner: 'bane' }, () => store.set('changeseen', { bane: { upto: 1, extra: [] }, stiff: { upto: 99, extra: [] } }))
+    expect((r as any).ok).toBe(false)
+    expect(String((r as any).message)).toContain("another person's seen record")
+    /* the refusal rolls the write back (the store may hold an empty record again — never Saber's entry) */
+    const v = fake.get('sqn142_changeseen')
+    expect(v == null || !(JSON.parse(v) || {}).stiff).toBe(true)
+  })
 })
 
 describe('someone given access later (Fable F6)', () => {
