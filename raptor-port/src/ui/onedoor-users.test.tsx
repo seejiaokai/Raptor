@@ -199,6 +199,31 @@ describe('D310 / D322 / D323 — Archive and Restore on the row', () => {
   })
 })
 
+describe('moved from the Quals Archived list (D310) — PO5, PO10', () => {
+  it('D287 / D299: a DELETED man is on no list — not the People, not the Archived group', async () => {
+    P('casper').archived = true; P('bane').archived = true; P('bane').deleted = true; indexCallsigns()
+    await users()
+    await click($('#accArchToggle'))
+    expect($('#accArchList [data-person="casper"]'), 'archived: listed').toBeTruthy()
+    expect($('[data-person="bane"].od-row'), 'deleted: on no list').toBeFalsy()
+    expect($('#accArchToggle').textContent).toMatch(/Archived · 1/)
+  })
+
+  it('D284 / D307: after Restore the admin Quals prompt asks to check his quals; Later puts it away and changes nothing', async () => {
+    await users()
+    await click($('#accList [data-person="rocky"] .acc-tap')); await click($('#accEdArchive'))
+    await click($('#accArchToggle'))
+    await click($('#accArchList [data-person="rocky"] .acc-tap'))
+    await click($('#accArRestore'))
+    await act(async () => { setPage('quals'); notify() })
+    expect($('[data-testid="back-rocky"]').textContent).toMatch(/Hex is back — quals and CAT as he left them/)
+    const before = JSON.stringify(P('rocky'))
+    await click($('[data-back-later="rocky"]'))
+    expect($('[data-testid="back-rocky"]')).toBeFalsy()
+    expect(JSON.stringify(P('rocky'))).toBe(before)
+  })
+})
+
 describe('D309 / D308 — Give access · Refuse; the post-in date on every door that makes a person', () => {
   it('the waiting list reads Give access / Refuse; New person there asks the post-in date', async () => {
     await signInAs('newface@mail'); expect(requestAccess({ cs: 'Newface', ini: 'NF', seat: 'FCP', cat: 'C' })).toBeNull()

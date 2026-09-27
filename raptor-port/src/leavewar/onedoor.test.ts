@@ -17,6 +17,7 @@ import { addRosterPerson } from '../state/roster-add'
 import { BACKPROMPT } from '../state/view'
 import { onCommit } from '../command'
 import { INPUTS } from '../engine/inputs'
+import { DAYS } from '../engine/data'
 import { getState, initStore as lwInitStore, setCell, setPeople } from './state/store'
 import { memoryBackend } from './state/storage'
 import { projectPeople } from './state/raptorRoster'
@@ -72,6 +73,12 @@ describe('D309 / D310 / D323 — Archive on Admin → Users', () => {
     expect(archivePerson('allavail').bad).toBeTruthy()
     archivePerson('rocky')
     expect(archivePerson('rocky').bad).toMatch(/already archived/)
+  })
+
+  it('moved from Quals (19 Aug 26): archiving is a flag, never a schedule write — every puck stays', () => {
+    const before = JSON.stringify(DAYS)
+    expect(archivePerson('rocky').bad).toBeNull()
+    expect(JSON.stringify(DAYS)).toBe(before)
   })
 
   it('D310: a member cannot archive anyone', () => {
