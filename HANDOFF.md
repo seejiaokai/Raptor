@@ -16,24 +16,29 @@ the later merge keeps both (D78).
 ## Now
 
 <!-- now:claude/rulings-d264-d266-leave-war-f0f4ab -->
-### `claude/rulings-d264-d266-leave-war-f0f4ab` — `[LW-MOVE-STANDARD]` (D264–D266): the MOCK-UP is up, waiting for his three answers; nothing built — written 27 Sep 26, verify before use
-- **The job:** his D264–D266 (`.claude/rules/decisions/leave-war.md`) — one format and look for the one-day and the
-  drag-selection sheets, a Move on every record that can move (a bid beside an OIL award moves alone), the day's list
-  moving a record by the move mode. Backlog `OUTSTANDING.md` `[LW-MOVE-STANDARD]`. Branch cut from `main` (`818dbb04`).
-- **Where it stands:** the mock-up `raptor-port/docs/mock/lw-move-standard.html` (Artifact
-  https://claude.ai/artifact/68SpLtpVYdimk6zZzfZohP), pictures of the real app, redrawn by
-  `raptor-port/scripts/handpass/am/mk-lw-move-standard.mjs desktop|phone` (the build on 4177). His four questions: the
-  order (A — recommended — or B), "Delete" as the one word, a member's Move on his own bid's one-day sheet, the Move
-  button's look (D330: one look everywhere, a little apart — four designs, B the grey chip with a teal arrow recommended).
-  Rulings so far: D330.
-- **Next:** his answers → rulings (D330–D339) → the build, red first (the move carries the RECORDS it picked, by id —
-  `store.ts` `moveCells` / `movableCells` / `moveProblem` read the day's TOP record today) → the walk at both widths →
-  Fable's scenarios, both reads → the gates under the PC lock → his look → "merge live". Tier FULL.
-- **Parallel (D302):** `[ONE-DOOR]` on `claude/one-door` (main checkout, preview 4178, E2E 4196) — told each other our
-  files: it takes `leavewar/sync.ts` archive/restore and `store.ts setPostIn` only; this chat takes the Leave War sheets
-  (`BidPicker.tsx` minus its posting parts, `SelectSheet.tsx`, `DayList.tsx`, `Matrix.tsx`, `select.ts`,
-  `bidpicker.css`) and `store.ts`'s move functions. It may later touch `people.ts inSquadron` and the posting record in
-  `store.ts` (more than one in/out window) — it will message first. Ports here: preview 4177, E2E 4195.
+### `claude/rulings-d264-d266-leave-war-f0f4ab` — `[LW-MOVE-STANDARD]` (D264–D266, D330–D335): BUILT, walked 40/40 at both widths, break tests 19/19; the two code reads and the full gates in progress — written 27 Sep 26, verify before use
+- **The job:** his D264–D266 plus his answers to the mock-up (D330–D335: order A, "Delete", a member's own Move, the Move
+  button B — grey chip with a teal arrow, How many kept). Backlog `OUTSTANDING.md` `[LW-MOVE-STANDARD]`. Branch cut from
+  `main` (`818dbb04`); pushed; NO pull request yet (a docs-only PR fails the Docs guard while `OUTSTANDING.md` is over its
+  ceiling on `main` — open it with the code, as now).
+- **Evidence sheet — read it first:** `raptor-port/docs/handpass/2026-09-27-lw-move-standard.md` (the tier, the readings,
+  the roll-call, the door check, the walk, the break tests; §8 the reads, §9 the gates, §10 his look — to fill). The
+  approved design: `raptor-port/docs/mock/lw-move-standard.html` (Artifact https://claude.ai/artifact/68SpLtpVYdimk6zZzfZohP).
+- **What the build is:** a move carries RECORDS (`store.ts movableRecords` / `moveRecords` / `moveRecordsProblem` /
+  `stayingIn` / `deletableIn`), both sheets in order A with one Move and one Delete (`ui/SheetActions.tsx`), the day's list's
+  Move into the move mode by record id (`moveSel.only`), a picked range widening Decide / Move / Delete. Tests
+  `leavewar/movestandard.test.ts`, `ui/movestandard.test.tsx`, `ui/movestandard-synced.test.tsx`; walk
+  `scripts/handpass/ms/ms-10-walk.mjs desktop|phone` (build on 4177); breaks `scripts/handpass/ms/ms-breaks.py`.
+- **In progress when written:** Fable's and Astra's blind final reads (brief
+  `docs/superpowers/briefs/2026-09-27-lw-move-standard-final-read-brief.md`; Astra's report lands at `…-final-astra.md` —
+  run `codex exec -m gpt-5.6-sol …`, the config's default model is refused); the full gates under the PC lock.
+- **Next:** answer every read finding red first → re-walk what the fixes touched (`MS_RUN=rewalk`) → the gates → the
+  sheet's §8–§10 → open the PR, send him the look card and the Vercel link → his look → "merge live".
+- **Parallel (D302):** `[ONE-DOOR]` on `claude/one-door` (main checkout, preview 4178, E2E 4196) — no shared function; it
+  takes `leavewar/sync.ts` archive/restore and `store.ts setPostIn`; it may later touch `people.ts inSquadron` and the
+  posting record (it will message first). It is asking him about ONE docs-only `OUTSTANDING.md` tidy on its own branch;
+  neither chat trims that file meanwhile. Observation numbers: this chat 310–319, it 306–309. Ports here: preview 4177, E2E 4195.
+- **Rulings:** D330–D335 (range D330–D339).
 <!-- /now -->
 
 <!-- now:claude/post-out-outcomes -->

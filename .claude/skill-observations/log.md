@@ -960,3 +960,18 @@ resolved statuses always carry their resolution date
 **Suggested improvement:** Before a span replacement, list every top-level declaration inside the old span (`grep -n "^export function\|^function\|^const\|^export type" <span>`) and check each is in the new text or deliberately retired, in the edit script itself (assert). Put multi-line code edits in a script file written with the Write tool, never in a heredoc.
 
 **Principle:** A span edit replaces everything in the span, including what you did not mean to touch; enumerate what the span held before you replace it.
+
+### Observation 312: Stopping "my" background run by process NAME killed a parallel chat's run too — and the fact that would have avoided the restart was already in memory
+
+**Status:** OPEN
+**Date:** 2026-09-27
+**Session context:** `[LW-MOVE-STANDARD]`, the final code reads; a parallel chat (`[ONE-DOOR]`) works on the same PC. Numbered in this chat's agreed range (310–319).
+**Skill:** internal — memory `astra-codex-cli-available`; the parallel-chats rule (D302, `.claude/rules/shipping.md`)
+**Type:** internal
+**Phase/Area:** running the cross-provider read; process hygiene on a shared machine
+
+**Issue:** Astra's first run failed in seconds (the Codex config's default model is refused on this account). The working model was already written in the memory note, but the note was not opened before experimenting, so a run was started on a weaker model and then stopped to restart on the right one — with `taskkill /IM codex.exe`, which ended every Codex process on the PC, including one that may have been the parallel chat's. The other chat was told at once.
+
+**Suggested improvement:** (1) Before invoking any external CLI reviewer, open its memory note (it holds the exact working command). (2) On a PC shared by parallel chats, stop a background job only by ITS OWN id (the harness's task id or the PID captured at launch), never by an image name or command pattern — the same rule the project already applies to preview servers ("kill by PORT, never by a command-line pattern"), extended to every process.
+
+**Principle:** On shared infrastructure, a cleanup must name the one thing it started; anything broader destroys someone else's work silently.
