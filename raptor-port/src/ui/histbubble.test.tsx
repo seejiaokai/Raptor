@@ -15,7 +15,7 @@ import { App } from './App'
 import { initStore, setSession, notify } from '../state/store'
 import { SCHED, signOf, setDayApproved } from '../engine/publish'
 import { setSlotVal, slotVal, txtSet } from '../engine/slots'
-import { elogClear, elogAllFor } from '../engine/editlog'
+import { elogClear, elogAllFor, elogVal } from '../engine/editlog'
 import { HOOKS } from '../engine/hooks'
 import * as view from '../state/view'
 import { openScheduler, closeScheduler } from './board'
@@ -239,8 +239,9 @@ describe('the bubble', () => {
     expect(b, 'the bubble came up').toBeTruthy()
     const lis = b!.querySelectorAll('.hb-all li')
     expect(lis.length, 'the last three, not all five').toBe(3)
-    expect(lis[0]!.textContent, 'the oldest of the three shown is edit #3').toContain(all[2]!.to)
-    expect(lis[2]!.textContent, 'the newest is edit #5 — what it says now').toContain(all[4]!.to)
+    /* the log keeps a person's id; the bubble says his callsign (elogVal — Fable F4, 28 Sep 26) */
+    expect(lis[0]!.textContent, 'the oldest of the three shown is edit #3').toContain(elogVal(all[2]!, 'to'))
+    expect(lis[2]!.textContent, 'the newest is edit #5 — what it says now').toContain(elogVal(all[4]!, 'to'))
     const more = b!.querySelector('[data-histmore]')
     expect(more, 'more than three — offer the chevron').toBeTruthy()
     expect(more!.textContent, 'and it names the true count').toContain('5')

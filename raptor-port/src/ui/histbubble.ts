@@ -1,5 +1,5 @@
 import { HOOKS } from '../engine/hooks'
-import { elogFor, elogAllFor, elogWhen, elogWho } from '../engine/editlog'
+import { elogFor, elogAllFor, elogWhen, elogWho, elogVal } from '../engine/editlog'
 import type { ELogRow } from '../engine/editlog'
 import { HISTMODE, esc } from '../state/view'
 
@@ -187,9 +187,11 @@ function keyOf(el: HTMLElement) {
 /* "from → to" with the arrow only when there is a before worth naming; a
    detail typed into an empty box reads "set to X", not "— → X" */
 function chgHTML(r: ELogRow) {
-  return r.from === '—'
-    ? `set to <b>${esc(r.to)}</b>`
-    : `<b>${esc(r.from)}</b> <i class="hbar">→</i> <b>${esc(r.to)}</b>`
+  /* a person is said by his live callsign (the log keeps his id — Fable F4, 28 Sep 26) */
+  const from = elogVal(r, 'from'), to = elogVal(r, 'to')
+  return from === '—'
+    ? `set to <b>${esc(to)}</b>`
+    : `<b>${esc(from)}</b> <i class="hbar">→</i> <b>${esc(to)}</b>`
 }
 
 function show(el: HTMLElement) {

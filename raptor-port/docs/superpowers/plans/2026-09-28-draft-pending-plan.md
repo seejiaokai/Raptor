@@ -244,3 +244,24 @@ the state layer; one lookup per puck against the day's precomputed set.
 3. History mode (the bubbles) is on while the window is open, on the board and Edit Schedule alike.
 4. A Leave War change with no place on the schedule (a refused bid) is a line you cannot tap.
 5. An Undo shows as its own line on the days it changed.
+
+## 9. After round 1 (28 Sep 26) — the plan as it now stands
+
+Fable and Astra's round-1 findings and what each changed are in `docs/superpowers/specs/2026-09-28-draft-pending-plan-review-log.md`.
+Where this section and §2 differ, THIS section wins:
+- **Input lines have ONE writer** — the command-stream subscriber (add, edit, delete, split, trim, reassign, filing); a
+  door's reason rides in with `elogReason`; the doors' own input sentences go (Astra DP-03).
+- **A line keeps the span after (`date`–`end`) AND before (`wdate`–`wend`)** and shows on both (Astra DP-05).
+- **More writers:** publish / withdraw / sign / clear a sign-off / discard (inside their commands); Quals changes
+  (`people/<pid>`, section "Quals", dated the day made); hand-given OIL on the ledger (`lw.ledger`); Undo and Redo at the
+  global undo's success, on every day the step touched (Fable F3, F5; Astra DP-04, DP-06, DP-07).
+- **A move reads as one line** — two neighbouring lines of one person, one taking a man off, the other putting him on,
+  within a second, pair into "moved from A to B" (Fable F2).
+- **The seen record:** a new account keeps `seenFrom`; with no seen record, lines before it are not new (Fable F6).
+- **Sections:** a closed list and one `sectionOf` (Astra DP-12). **OG:** per place, in `alAttr` (Astra DP-11).
+- **Jumps:** `data-inprow` on every Unavailable row; accepted input → its ground row, then its Unavailable row (Astra
+  DP-08). **History mode on the edit week:** `wireHistBubble` on `EditWeek` (Astra DP-09). **Windows:** in front 411,
+  behind 410, raised on any press (Astra DP-10). **Window state** in the view-reset registries, closed on a page change;
+  the jump no longer closes it (Fable F7). **Guest:** no chip (Fable F9).
+- **Two tabs:** declined here and filed with the database readiness batch — the whole app shares the limit (Fable F10,
+  Astra DP-01).

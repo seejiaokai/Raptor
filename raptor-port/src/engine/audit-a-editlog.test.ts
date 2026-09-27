@@ -20,7 +20,7 @@ import { setSlotVal, slotVal } from './slots'
 import { shiftKeys } from './keys'
 import { moveDutyRow } from './reorder'
 import { HOOKS } from './hooks'
-import { ELOG, elogClear, elogFor, elogAllFor, elogGroups, elogRows, logEdit, logAction } from './editlog'
+import { ELOG, elogClear, elogFor, elogAllFor, elogGroups, elogRows, logEdit, logAction, elogVal } from './editlog'
 import { ridKey } from './rowids'
 
 /* addressing-by-rid: the book stores keys rid-anchored, and keys.ts's
@@ -52,7 +52,7 @@ describe('renumbering and the log (delete)', () => {
     )
     try {
       setSlotVal(`d:0.0.${B + 1}`, 'bane')          // logged: — → Bane at address B+1
-      expect(elogFor(`d:0.0.${B + 1}`)!.to).toBe('Ranger')
+      expect(elogVal(elogFor(`d:0.0.${B + 1}`)!, 'to')).toBe('Ranger')   // the log keeps his id; readers say his callsign
 
       /* exactly what board.ts's [data-drdel] branch does */
       rows.splice(B, 1)
@@ -68,7 +68,7 @@ describe('renumbering and the log (delete)', () => {
          holds the edit owns its history, the untouched neighbour has none */
       const moved = elogFor(`d:0.0.${B}`)
       expect(moved, 'the edited row owns its history').toBeTruthy()
-      expect(moved!.to).toBe('Ranger')
+      expect(elogVal(moved!, 'to')).toBe('Ranger')
       expect(elogFor(`d:0.0.${B + 1}`), 'the untouched neighbour wears nothing').toBeNull()
       expect(slotVal(`d:0.0.${B + 1}`)).toBe('')
     } finally {
@@ -95,7 +95,7 @@ describe('renumbering and the log (reorder)', () => {
       /* … and so did the log (elogRemap rides the same permutation) */
       const moved = elogFor(`d:0.0.${B + 1}`)
       expect(moved, 'his history moved with him').toBeTruthy()
-      expect(moved!.to).toBe('Ranger')
+      expect(elogVal(moved!, 'to')).toBe('Ranger')
       expect(elogFor(`d:0.0.${B}`), 'nothing left at the old address').toBeNull()
       expect(slotVal(`d:0.0.${B}`)).toBe('')
     } finally {

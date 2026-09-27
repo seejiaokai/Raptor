@@ -191,14 +191,23 @@ function isPersonKey(key: string) {
   return c < 0 ? true : PERSON_PFX.includes(key.slice(0, c))
 }
 
-/* a stored value as a reader would say it. '—' rather than an empty string,
-   because "changed to nothing" has to be visible in a bubble. */
+/* a stored value as the log KEEPS it. '—' rather than an empty string, because "changed to nothing" has to be visible
+   in a bubble. A person key keeps the PERSON'S ID, never his callsign of the day ([DRAFT-PENDING], Fable F4, 28 Sep 26):
+   the history is durable now, and a callsign can be renamed or — once its man is archived — given to someone new (D286),
+   so a frozen callsign would read months of old lines as the wrong man. Readers say it through `elogVal`. */
 function say(key: string, v: any) {
   const s = String(v == null ? '' : v)
   if (!s) return '—'
-  if (isPersonKey(key)) return PEOPLE[s] ? PEOPLE[s].cs : s
   return s
 }
+/* a line's before or after, as a reader should see it NOW: a person key's value is a person, named by his live callsign
+   (the elogWho pattern); anything else as typed. A value the roster does not hold reads as stored. */
+export function elogVal(r: { key: string; from: string; to: string }, side: 'from' | 'to'): string {
+  const v = r[side]
+  if (!v || v === '—' || !r.key || !isPersonKey(r.key)) return v
+  return (PEOPLE as any)[v] ? String((PEOPLE as any)[v].cs) : v
+}
+export { isPersonKey }
 
 /* WHAT the changed detail is called, in plain words — "MONSOON 1 · FCP",
    "Duty · SOF", "Ground · MASS BRIEF · start".
@@ -312,6 +321,8 @@ export function logEdit(key: any, from: any, to: any) {
   const store = String(ridKey(key, DAYS))
   const a = say(store, from), b = say(store, to)
   if (a === b) return
+  /* a person key compares by person: the same man stored once as his id and once as a legacy callsign is no change */
+  if (isPersonKey(store) && elogVal({ key: store, from: a, to: b }, 'from') === elogVal({ key: store, from: a, to: b }, 'to')) return
   const di = dayOf(store)
   push({ t: Date.now(), who: HOOKS.whoami(), pid: HOOKS.whoamiId(), di, date: dateOfDi(di), key: store, lbl: keyLabel(key), from: a, to: b })
 }

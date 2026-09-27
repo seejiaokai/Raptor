@@ -1,5 +1,5 @@
 import { DAYS } from '../engine/data'
-import { elogRows, elogGroups, elogWhen, elogWho, ELOG } from '../engine/editlog'
+import { elogRows, elogGroups, elogWhen, elogWho, elogVal, ELOG } from '../engine/editlog'
 import type { ELogRow } from '../engine/editlog'
 import { esc, SBDAY } from '../state/view'
 import { notify } from '../state/store'
@@ -36,9 +36,10 @@ import { posKey } from '../engine/rowids'
    plain rows rather than as buttons that would do nothing. */
 
 function chg(r: ELogRow) {
-  return r.from === '—'
-    ? `set to <b>${esc(r.to)}</b>`
-    : `<b>${esc(r.from)}</b> <i class="hbar">→</i> <b>${esc(r.to)}</b>`
+  const from = elogVal(r, 'from'), to = elogVal(r, 'to')      // a person by his live callsign (Fable F4)
+  return from === '—'
+    ? `set to <b>${esc(to)}</b>`
+    : `<b>${esc(from)}</b> <i class="hbar">→</i> <b>${esc(to)}</b>`
 }
 const dow = (di: any) => di == null ? '' : `<span class="hl-day">${esc((DAYS[di] || {}).dow || '')}</span>`
 const meta = (r: ELogRow) => `<span class="hl-meta">${esc(elogWho(r))} · ${esc(elogWhen(r.t))}</span>`

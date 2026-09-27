@@ -12,7 +12,7 @@ import { DAYS } from './data'
 import { SCHED, markEdit } from './publish'
 import { setSlotVal, txtSet, txtGet } from './slots'
 import { HOOKS } from './hooks'
-import { ELOG, elogClear, elogRows, elogFor, elogWhen, keyLabel, logEdit, logAction } from './editlog'
+import { ELOG, elogClear, elogRows, elogFor, elogWhen, keyLabel, logEdit, logAction, elogVal } from './editlog'
 import { ridKey } from './rowids'
 
 /* the log stores keys rid-anchored (addressing-by-rid); wrap a raw stored-key
@@ -41,10 +41,13 @@ describe('what gets recorded', () => {
     const rows = elogRows()
     expect(rows.length).toBe(2)
     /* newest first, and people read as callsigns — never as the ids the
-       model actually holds */
-    expect(rows[0]!.from).toBe('Ranger')
-    expect(rows[0]!.to).toBe('Saber')
-    expect(rows[1]!.to).toBe('Ranger')
+       model actually holds. Since [DRAFT-PENDING] (Fable F4, 28 Sep 26) the log KEEPS the
+       id and every reader says it through elogVal, so a rename or a reused callsign never
+       misnames an old line */
+    expect(elogVal(rows[0]!, 'from')).toBe('Ranger')
+    expect(elogVal(rows[0]!, 'to')).toBe('Saber')
+    expect(elogVal(rows[1]!, 'to')).toBe('Ranger')
+    expect(rows[0]!.to, 'the id is what is kept').toBe('stiff')
   })
 
   it('an emptied seat reads as an em dash, not as a blank', () => {
@@ -114,7 +117,7 @@ describe('what gets recorded', () => {
   it('elogFor answers with the NEWEST entry for one detail, and null for a clean one', () => {
     setSlotVal(SEAT, 'bane')
     setSlotVal(SEAT, 'stiff')
-    expect(elogFor(SEAT)!.to).toBe('Saber')
+    expect(elogVal(elogFor(SEAT)!, 'to')).toBe('Saber')
     expect(elogFor('0.0.0.0.w')).toBe(null)
   })
 
