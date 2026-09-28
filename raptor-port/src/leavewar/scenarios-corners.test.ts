@@ -22,7 +22,7 @@ import {
 import { memoryBackend } from './state/storage'
 import { runOilPass, wireLeaveWarSync } from './sync'
 import { globalUndo } from '../undo'
-import { _resetTimeline } from '../undo/timeline'
+import { _resetTimeline, _timelineEntries } from '../undo/timeline'
 import { installGlobalUndo } from '../state/undo-wire'
 
 const ISNAP = JSON.stringify(INPUTS)
@@ -159,16 +159,20 @@ describe('publishing an amendment (the AL path)', () => {
 })
 
 describe('"OK, seen"', () => {
-  it('an admin may clear someone else\'s notice, a member may not clear another\'s, and undo restores it', () => {
+  /* The change-recording re-test (28 Sep 26, plan §10 — the builder's call, on his look card): "OK, seen" records that a
+     person has READ the notice, like the other seen marks, so it is never an Undo step — a member's Undo meant for his bid
+     must not bring the note back (Fable's undoable-list report). It used to be one ("undo restores it"). */
+  it('an admin may clear someone else\'s notice, a member may not clear another\'s, and "OK, seen" is no Undo step', () => {
     setRole('admin'); setCell('ammo', '2026-02-10', 'LL')
     file('ammo', 'ATT C', 'Feb 10')
     const notice = recsIn('ammo', '2026-02-10').find(r => r.kind === 'notice') as any
     setRole('member'); setViewer('rocky')
     expect(ackReplacement('ammo', notice.id)).toBe(0)
     setRole('admin')
+    const steps = _timelineEntries().length
     expect(ackReplacement('ammo', notice.id)).toBe(1)
-    expect(globalUndo().ok).toBe(true)
-    expect(recsIn('ammo', '2026-02-10').some(r => r.kind === 'notice')).toBe(true)
+    expect(_timelineEntries().length).toBe(steps)
+    expect(recsIn('ammo', '2026-02-10').some(r => r.kind === 'notice')).toBe(false)
   })
 })
 

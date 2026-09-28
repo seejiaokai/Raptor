@@ -28,6 +28,7 @@ import { armDrop, prunePreviews, SBDAY } from './view'
 import { boardTab } from '../ui/board'
 import { toast } from '../ui/toast'
 import { CURWEEK } from '../engine/waves'
+import { PEOPLE } from '../engine/people'
 import { parseVerId, dayIso } from '../engine/verid'
 import { lwStore, LW_COLLS, selectWar, focusDay, bumpLwHistEpoch, restoreBlocker } from '../leavewar/state/store'
 import { restoreAbsencesOf } from '../leavewar/sync'
@@ -159,6 +160,8 @@ export function installGlobalUndo(): void {
     restoreRefusal: (changes, dir) => restoreBlocker(changes as any, dir, restoreAbsencesOf(changes as any)),
     /* [POST-OUT-OUTCOMES]: a step that would put a deleted man back is passed over, never taken (person-delete.ts) */
     deadRefusal: (changes) => deletedRestoreProblem(changes as any),
+    /* D148 — the refusal says who: the callsign he goes by (a rename moves nothing, so it is read live) */
+    nameOf: (a) => (a.personId != null && (PEOPLE as any)[a.personId] ? String((PEOPLE as any)[a.personId].cs) : null),
     // currentActor OMITTED — the timeline defaults to deriveActor().
   })
 }

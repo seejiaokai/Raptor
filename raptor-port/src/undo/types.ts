@@ -44,6 +44,9 @@ export interface UndoEntry {
   eligible: boolean         // false until the entry's module(s) are cut over (§7)
   undone: boolean
   undoneAt?: number         // monotonic stamp for the redo LIFO pick (R3-06)
+  /* the seq of the restore that undid it — Redo's out-of-band barrier counts from here (D148; the change-recording plan
+     B6.4: a change someone else made while the step stood undone refuses its redo, naming who) */
+  undoneSeq?: number
   /* an undone entry a later NEW change forked away from (§4.3: "any newer entry committed after
      E's undo shares a key" — permanently, not only while that newer entry stands). It is never
      redone and never blocks a redo (walk W3 F-w3-2, 24 Sep 26). Still `undone` for every other reader. */

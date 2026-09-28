@@ -74,6 +74,10 @@ export interface UndoHooks {
      passes over it when it chooses the next step (it stays in the list, still guarding older steps that share its
      records), and the button never stalls behind it. The sentence, or null. */
   deadRefusal?(changes: Change[], dir: 'undo' | 'redo'): string | null
+  /* D148 (24 Sep 26) — "if someone else has since changed the very same thing, Undo refuses and SAYS WHO". The name a
+     person goes by on screen (his callsign), or null — through a hook so the timeline stays free of the roster
+     (the change-recording plan B6.3). */
+  nameOf?(actor: Actor): string | null
 }
 let hooks: UndoHooks = {}
 export function setUndoHooks(h: UndoHooks): void { hooks = h }
@@ -96,7 +100,11 @@ const bySeq = new Map<number, UndoEntry>()
 const rootOfSeq = new Map<number, number>()
 const expected = new Map<string, number>()   // §4.1 expectation map
 const barrier = new Map<string, number>()    // §4.1 sticky out-of-band barriers
-let stamp = 0                                 // monotonic undoneAt source (R3-06)
+/* WHO set each barrier (D148 — the refusal says who): another person's remote change, the app's own pass (the system
+   actor), or — for a change found only by its revision — the writer of that revision on the stream. Kept with `barrier`
+   across a sign-in (endUndoSession), cleared only by _resetTimeline. */
+const BARRIER_BY = new Map<string, Actor>()
+let stamp = 0                                // monotonic undoneAt source (R3-06)
 let installed = false
 let unsub: (() => void) | null = null
 
@@ -132,21 +140,30 @@ function ingest(env: CommitEnvelope): void {
   switch (env.origin) {
     case 'user': {
       if (isNavOnly(env)) { /* navigation is not an entry (§3.1 R2-10) */ trackExpectation(env); return }
+      /* B1 — a person's own "seen" mark is never an Undo step: taking it back would bring a note back, not the
+         squadron's record, and a member's could never be taken at all (Fable S2) */
+      if (NOT_STEPS.has(env.type)) { trackExpectation(env); return }
       recordEntry(env)
       break
     }
     case 'projection': {
+      /* §11.1 (Fable's red team 1–2) — THE POSTING PASS IS THE APP'S OWN CHANGE, never part of a person's step. It runs
+         from the repaint of whatever command came first on the posting's date, so its envelope chains to that command —
+         and folded in, a Quals tick would carry an archive, a suspension and a war record, and vanish from Undo (D350)
+         or, undone, bring a posted man back. It sets a barrier that names the app instead. */
+      if (env.type === 'lw.postoutRun') { outOfBand(env); break }
       const root = resolveRoot(env)
       if (root != null) foldProjection(root, env)   // a tracked causal child
       else if (causedByRestoreOrSeed(env)) advanceExpectedNoBarrier(env)
+      else outOfBand(env)
+      // ^ an orphan (chained to nothing) is out-of-band the moment it lands: its barrier and its actor are set NOW
+      // (§11.1), so a refusal can name it and the pre-check catches it before any snap.
       // ^ §3.4/C8 (Codex GU-P2-007): a projection a RESTORE (our own undo/redo) woke —
       // e.g. undoing a Leave War edit wakes the OIL/sync reconciler. It is out-of-band
       // for FOLDING (E1 stops resolveRoot at the restore, so it never splices into the
       // reversed entry), but its revision bump is REAL and legitimate, so `expected`
       // must advance to it WITHOUT a barrier. Without this, an immediate redo whose
       // closure shares that key pins a stale expected revision and is wrongly refused.
-      // A TRUE orphan (chained to nothing) still updates nothing — the barrier catches
-      // it at the next tracked update (§4.1).
       break
     }
     case 'restore':
@@ -154,8 +171,28 @@ function ingest(env: CommitEnvelope): void {
       trackExpectation(env)   // our own undo/redo, a nav, or the seed baseline
       break
     case 'remote':
-      // out-of-band (Step 5): the barrier guards against it; no expectation update
+      /* D148 — another person's change (Step 5; modelled today). Never an entry of HIS; a barrier on every record it
+         wrote, with its actor, so an older step of his on the same thing refuses naming who, and one on anything else
+         is untouched (Astra 11–12, Fable S8) */
+      outOfBand(env)
       break
+  }
+}
+
+/* B1 — the commands that are never an Undo step: each person's own "seen" (the changes window's "Mark all as seen", the
+   admins' bell, the welcome-back note, "OK, seen" on a Leave War notice — §10) and a waiting person's own request for
+   access (he has no Undo door). Their revisions are still tracked, so nothing reads as out-of-band. */
+const NOT_STEPS = new Set<string>(['changes.seen', 'access.seen', 'person.backSeen', 'access.request', 'lw.ack'])
+
+/* an envelope out of every entry's causal line (another person's, the app's own pass, an orphan projection): a sticky
+   barrier on each record it wrote, the actor kept, and `expected` advanced to what it left. */
+function outOfBand(env: CommitEnvelope): void {
+  const revs = env.revs
+  if (!revs) return
+  for (const key of Object.keys(revs)) {
+    barrier.set(key, env.seq)
+    BARRIER_BY.set(key, env.actor)
+    expected.set(key, revs[key])
   }
 }
 
@@ -306,9 +343,23 @@ function trackExpectation(env: CommitEnvelope): void {
     const before = revs[key] - 1
     if (expected.has(key) && expected.get(key) !== before) {
       barrier.set(key, env.seq)   // an unaccounted change slipped in — sticky
+      const w = writerOf(key, before)
+      if (w) BARRIER_BY.set(key, w.actor); else BARRIER_BY.delete(key)
     }
     expected.set(key, revs[key])
   }
+}
+
+/* the envelope that left `key` at revision `rev` (newest first), or undefined — the belt for naming who, when a change
+   was found only by its revision (D148; Fable's red team 2) */
+function writerOf(key: string, rev: number): CommitEnvelope | undefined {
+  const s = commandStream()
+  for (let i = s.length - 1; i >= 0; i--) if (s[i].revs && s[i].revs![key] === rev) return s[i]
+  return undefined
+}
+function liveRevision(key: string): number {
+  const slash = key.indexOf('/')
+  return revisionOf(key.slice(0, slash), key.slice(slash + 1))
 }
 
 /* ---- eligibility + key helpers ------------------------------------------- */
@@ -368,8 +419,16 @@ function reverseRefusal(entry: UndoEntry, dir: 'undo' | 'redo'): string {
     return `Switch back to the admin view to ${dir} that.`
   return dir === 'undo' ? 'You can’t undo that — it was someone else’s change.' : 'You can’t redo that — it was someone else’s change.'
 }
+/* D148 (24 Sep 26) — "Undo reverses only your OWN changes": the same PERSON, whatever the role he made it in. Chosen on
+   the person alone, so his own admin step, in the member view (D292), is still his next step — and then refused with
+   "switch back" by mayReverse, every press (Astra's red team 6), never skipped to an older member step. No person on
+   either side (a session with no account — the localhost bridge, a headless test) is one and the same. */
+function isOwn(entry: UndoEntry, cur: Actor): boolean {
+  return (entry.actor.personId ?? null) === (cur.personId ?? null)
+}
 export function mayReverse(entry: UndoEntry, cur: Actor): boolean {
-  if (cur.role === 'admin') return true
+  /* an admin may reverse only his own (D148 — the change-recording plan B6.1: "admin may reverse anything" is gone) */
+  if (cur.role === 'admin') return isOwn(entry, cur)
   return (
     entry.actor.role !== 'admin' &&
     cur.personId != null &&
@@ -442,48 +501,85 @@ function dayKeysOf(entry: UndoEntry): string[] {
 }
 
 /* ---- conflict pre-checks (§4) -------------------------------------------- */
-function undoConflict(entry: UndoEntry): string | null {
-  const keys = keySet(entry)
-  for (const key of keys) {
-    const b = barrier.get(key)
-    if (b != null && b > entry.seq) return 'Something else changed this after your action — it can’t be undone now.'
+/* D148 — the refusal for a change made OUTSIDE his line of steps on the same thing, naming who made it: another person
+   (his callsign), the app's own posting pass, or — when nothing names it — today's words. */
+const OUT_OF_BAND = 'Something else changed this after your action — it can’t be undone now.'
+function outOfBandWords(key: string): string {
+  let a = BARRIER_BY.get(key)
+  if (!a) { const w = writerOf(key, liveRevision(key)); if (w && w.origin !== 'user' && w.origin !== 'restore') a = w.actor }
+  if (!a) return OUT_OF_BAND
+  if (a.role === 'system') {
+    const w = writerOf(key, liveRevision(key))
+    return w && w.type === 'lw.postoutRun'
+      ? 'The app changed this after your action (a posting out ran) — it can’t be undone now.'
+      : 'The app changed this after your action — it can’t be undone now.'
   }
+  const cur = currentActor()
+  if (a.personId != null && a.personId === cur.personId) return 'You changed this somewhere else after this action — it can’t be undone now.'
+  const nm = hooks.nameOf ? hooks.nameOf(a) : null
+  return nm ? `${nm} changed this after your action — it can’t be undone now.` : OUT_OF_BAND
+}
+/* a refusal, and whether it can NEVER pass (a sticky barrier — someone else's, or the app's, change on the same thing):
+   only those are passed over on the next press (§11.5 (a)); every other conflict refuses every press */
+interface Conflict { text: string; sticky: boolean }
+/* the sticky part of the check, shared by undo and redo: the barrier after `since`, and the stateless revision check
+   (§8.1, B6.5 — a record whose revision is not the one this timeline expects has been changed by someone outside it:
+   refused in words BEFORE the view moves, never reaching the restore's "stale revision") */
+function outOfBandConflict(entry: UndoEntry, since: number): Conflict | null {
+  for (const key of keySet(entry)) {
+    const b = barrier.get(key)
+    if (b != null && b > since) return { text: outOfBandWords(key), sticky: true }
+    if (expected.has(key) && liveRevision(key) !== expected.get(key)) return { text: outOfBandWords(key), sticky: true }
+  }
+  return null
+}
+function undoConflictOf(entry: UndoEntry): Conflict | null {
+  const keys = keySet(entry)
+  const oob = outOfBandConflict(entry, entry.seq)
+  if (oob) return oob
   // publication barrier (§6.3): an edit behind a later publish of the same day
   const pubBar = computePubBar()
   for (const dk of dayKeysOf(entry)) {
     const pb = pubBar.get(dk)
     /* name the door the scheduler has — the day's Unpublish button (register AM39c; it said "take the
        published day back", which no control is called — [HUMAN-RETEST] amendment re-test, 24 Sep 26) */
-    if (pb != null && pb > entry.seq) return 'A day on this week was published after that change — tap Unpublish on that day first, or edit its working copy.'
+    if (pb != null && pb > entry.seq) return { text: 'A day on this week was published after that change — tap Unpublish on that day first, or edit its working copy.', sticky: false }
   }
   // non-linear: a newer not-undone entry shares a key (§4.3). An INELIGIBLE newer
   // entry (a deferred-collection closure) is still a hard barrier — refuse whole,
   // never skip it (skipping would let this older before-image overwrite the newer
   // value, the SEQ-003 stale-inverse hazard) — but the refusal must not tell the
-  // owner to "undo that first" when they can't (C1).
+  // owner to "undo that first" when they can't (C1). Nor when the newer step is one
+  // the dispatcher passes over for good (a deleted man's — deadFor): walker A1-F1,
+  // 28 Sep 26 — "undo that first" pointed at a publish no press could ever reach.
   for (const o of entries) {
     if (o === entry || o.undone || o.seq <= entry.seq) continue
-    if (sharesKeys(keySet(o), keys))
-      return isEligible(o)
-        ? 'A later change touches the same thing — undo that first.'
-        : 'A later change touches the same thing and can’t be undone yet.'
+    if (sharesKeys(keySet(o), keys)) {
+      if (isEligible(o) && !deadFor(o, 'undo')) return { text: 'A later change touches the same thing — undo that first.', sticky: false }
+      return { text: isEligible(o) ? 'A later change touches the same thing and can’t be undone.' : 'A later change touches the same thing and can’t be undone yet.', sticky: false }
+    }
   }
   return null
 }
-function redoConflict(entry: UndoEntry): string | null {
+function undoConflict(entry: UndoEntry): string | null { const c = undoConflictOf(entry); return c ? c.text : null }
+function redoConflictOf(entry: UndoEntry): Conflict | null {
   const keys = keySet(entry)
+  /* B6.4 — Redo has a barrier too: a change made by someone else while the step stood undone (Fable 3c-3) */
+  const oob = outOfBandConflict(entry, entry.undoneSeq ?? entry.seq)
+  if (oob) return oob
   for (const o of entries) {
     if (o === entry) continue
     // an ABANDONED entry is never redone, so it can never be "redone first" (F-w3-2)
     if (o.undone && !o.abandoned && o.seq < entry.seq && sharesKeys(keySet(o), keys)) {
-      return 'An earlier undone change touches the same thing — redo that first.'
+      return { text: 'An earlier undone change touches the same thing — redo that first.', sticky: false }
     }
     if (!o.undone && o.seq > entry.seq && sharesKeys(keySet(o), keys)) {
-      return 'A later change touches the same thing — it can’t be redone over.'
+      return { text: 'A later change touches the same thing — it can’t be redone over.', sticky: false }
     }
   }
   return null
 }
+function redoConflict(entry: UndoEntry): string | null { const c = redoConflictOf(entry); return c ? c.text : null }
 
 /* ---- apply an inverse/forward as one restore commit (§3.2) --------------- */
 function toRecordEntry(ch: Change): RecordEntry {
@@ -491,7 +587,7 @@ function toRecordEntry(ch: Change): RecordEntry {
     ? { collection: ch.collection, id: ch.id, op: 'delete' }
     : { collection: ch.collection, id: ch.id, value: ch.after, op: 'put' }
 }
-function applyRestore(entry: UndoEntry, changes: Change[], dir: 'undo' | 'redo'): { ok: boolean; reason?: string } {
+function applyRestore(entry: UndoEntry, changes: Change[], dir: 'undo' | 'redo'): { ok: boolean; reason?: string; seq?: number } {
   // group the write entries by their owning store
   const byStore = new Map<EnlistableStore, RecordEntry[]>()
   const missing: string[] = []
@@ -529,8 +625,9 @@ function applyRestore(entry: UndoEntry, changes: Change[], dir: 'undo' | 'redo')
     },
     { actor: cur, origin: 'restore', causedBy: entry.seq },
   )
-  if ((r as any).ok === false) return { ok: false, reason: (r as any).message || 'conflict' }
-  return { ok: true }
+  /* a DELIBERATE refusal raised inside (CmdRefused — a restore rule's second check, B5 §11.3) keeps its own sentence */
+  if ((r as any).ok === false) return { ok: false, reason: (r as any).reason === 'refused' && (r as any).message ? `REFUSE: ${(r as any).message}` : ((r as any).message || 'conflict') }
+  return { ok: true, seq: (r as any).seq }
 }
 
 /* ---- snap-to-context (§8.1) ---------------------------------------------- */
@@ -542,13 +639,19 @@ function snap(entry: UndoEntry, dir: 'undo' | 'redo'): void {
 /* §4/N11 — the restore reducer's own refusals (a stale-revision conflict, a
    missing store) are technical strings; the owner never reads them. Any
    applyRestore ok:false maps to plain words here. */
-function plainRestoreReason(reason?: string): string {
+function plainRestoreReason(reason?: string, entry?: UndoEntry): string {
   // Fable#2 — an off-week change captured on the week's SAVED COPY (weekstash) can't
   // be undone while that week is the one loaded (its live copy is authoritative, so
   // the stash write is refused). Say what to do, not "something changed".
   if (reason && /weekstash write to the loaded week/.test(reason))
     return 'That change is on the saved copy of this week. Open a different week first, then undo it.'
-  return 'That couldn’t be completed just now — something else changed on this week. Try again.'
+  /* a refusal a restore rule raised inside the reducer (B5's second check) keeps its own words */
+  if (reason && /^REFUSE: /.test(reason)) return reason.slice(8)
+  /* B6.6 — a stale revision can never succeed on a retry: say what happened, never "Try again" (Fable 3c-5) */
+  if (reason && /stale revision/.test(reason)) return OUT_OF_BAND
+  /* "this week" only for a week's records (Fable 3c-5 — it read "this week" for a war or roster record) */
+  const onWeek = !entry || entry.forward.some(c => weekOf(c.collection, c.id) != null)
+  return onWeek ? 'That couldn’t be completed just now — something else changed on this week.' : 'That couldn’t be completed just now.'
 }
 
 /* §8.1/C7(b) — the applicability pre-check, run BEFORE snap: every collection in
@@ -571,37 +674,78 @@ function deadFor(e: UndoEntry, dir: 'undo' | 'redo'): string | null {
 }
 /* the sentence of the newest step passed over, when nothing else was left — said instead of "Nothing to undo" */
 let LAST_DEAD: string | null = null
+/* B3 (D350, 28 Sep 26) — the steps the one Undo does not take in this build: adding a person, Archive, Restore, Delete and
+   a posting. Each writes the war's record of when a man is in the squadron (his stints), which Undo cannot yet put back
+   (CMDLF-002, `[UNDO-POSTING-RECORD]`). The greyed button says so instead of going quiet (the plan's §11.4 wording —
+   "a delete is final", D287: no door undoes one). */
+export const NOT_UNDONE_HERE = 'Adding, archiving or restoring a person, and a posting, aren’t undone here — use Restore, Delete or the posting sheet’s own Undo. A delete is final.'
+let LAST_INELIG: UndoEntry | null = null
+/* the newer own step of that kind an Undo went past, named in its bubble (walker A2-F3: "a person who has just posted a
+   man out and presses Undo sees his bid vanish and the PO remain") */
+function notUndoneWhat(e: UndoEntry): string {
+  if (e.type === 'lw.postout' || e.forward.every(c => c.collection === 'lw.postouts')) return 'posting'
+  if (e.type === 'person.delete') return 'delete'
+  if (e.type === 'person.archive') return 'archive'
+  if (e.type === 'person.restore') return 'restore'
+  return 'change to a person'
+}
+/* §11.5 — a step passed over after its refusal was said once (a sticky barrier: someone else's, or the app's, change on
+   the same thing — it can NEVER be taken). It stays `undone:false`, so it still guards every older step that shares its
+   records (undoConflict's non-linear rule, SEQ-003); only the choice of the NEXT step moves past it. */
+const BLOCKED_U = '__blockedU', BLOCKED_R = '__blockedR'
+let LAST_BLOCKED: string | null = null
 function newestUndoable(): UndoEntry | null {
-  LAST_DEAD = null
+  LAST_DEAD = null; LAST_INELIG = null; LAST_BLOCKED = null
+  const cur = currentActor()
   for (let i = entries.length - 1; i >= 0; i--) {
     const e = entries[i]
-    if (!e.undone && isEligible(e)) {
-      const dead = deadFor(e, 'undo')
-      if (dead) { if (!LAST_DEAD) LAST_DEAD = dead; continue }
-      return e
-    }
+    if (e.undone) continue
+    /* D148 — only his own; another person's step is passed over silently, never refused on */
+    if (!isOwn(e, cur)) continue
+    if (!isEligible(e)) { if (!LAST_INELIG && touchesDeferred(e) && allCutOver(e)) LAST_INELIG = e; continue }
+    const dead = deadFor(e, 'undo')
+    if (dead) { if (!LAST_DEAD) LAST_DEAD = dead; continue }
+    if ((e as any)[BLOCKED_U]) { if (!LAST_BLOCKED) LAST_BLOCKED = (e as any)[BLOCKED_U]; continue }
+    return e
   }
   return null
 }
+function allCutOver(e: UndoEntry): boolean { for (const m of modulesOf(e)) if (!cutover.has(m)) return false; return true }
+/* what the greyed Undo (or a press with nothing to take) says: a step said blocked, a deleted man's, one not undone here */
+function nothingToUndoWhy(): string | null {
+  return LAST_BLOCKED || LAST_DEAD || (LAST_INELIG ? NOT_UNDONE_HERE : null)
+}
 function mostRecentlyUndone(): UndoEntry | null {
   let best: UndoEntry | null = null
-  LAST_DEAD = null
+  LAST_DEAD = null; LAST_BLOCKED = null
+  const cur = currentActor()
   for (const e of entries) {
-    if (e.undone && !e.abandoned && isEligible(e) && (best == null || (e.undoneAt ?? 0) > (best.undoneAt ?? 0))) {
+    if (e.undone && !e.abandoned && isEligible(e) && isOwn(e, cur) && (best == null || (e.undoneAt ?? 0) > (best.undoneAt ?? 0))) {
       const dead = deadFor(e, 'redo')
       if (dead) { if (!LAST_DEAD) LAST_DEAD = dead; continue }
+      if ((e as any)[BLOCKED_R]) { if (!LAST_BLOCKED) LAST_BLOCKED = (e as any)[BLOCKED_R]; continue }
       best = e
     }
   }
   return best
 }
+/* §11.5 (c) — the first refusal of a sticky step, naming who; it names the step the NEXT press will take, so one button
+   never does two different things with nothing said between */
+function sayBlocked(entry: UndoEntry, dir: 'undo' | 'redo', text: string): string {
+  ;(entry as any)[dir === 'undo' ? BLOCKED_U : BLOCKED_R] = text
+  const next = dir === 'undo' ? newestUndoable() : mostRecentlyUndone()
+  bumpUndo()
+  return next ? `${text} Press ${dir === 'undo' ? 'Undo' : 'Redo'} again for: ${next.label}.` : text
+}
 
 export function globalUndo(): UndoResult {
   const entry = newestUndoable()
-  if (!entry) return { ok: false, reason: LAST_DEAD || 'Nothing to undo.' }
+  if (!entry) return { ok: false, reason: nothingToUndoWhy() || 'Nothing to undo.' }
+  /* the newest own step of the kind not undone here, if Undo is about to go past it (A2-F3) — read before the apply */
+  const passedInelig = LAST_INELIG && LAST_INELIG.seq > entry.seq ? LAST_INELIG : null
   if (!mayReverse(entry, currentActor())) return { ok: false, reason: reverseRefusal(entry, 'undo') }
-  const conflict = undoConflict(entry)
-  if (conflict) return { ok: false, reason: conflict }
+  const conflict = undoConflictOf(entry)
+  if (conflict) return { ok: false, reason: conflict.sticky ? sayBlocked(entry, 'undo', conflict.text) : conflict.text }
   const ruleU = hooks.restoreRefusal ? hooks.restoreRefusal(entry.inverse, 'undo') : null   // W3-F8
   if (ruleU) return { ok: false, reason: ruleU }
   // C7(b) — refuse an unrestorable closure BEFORE the view-snap moves anything.
@@ -611,33 +755,34 @@ export function globalUndo(): UndoResult {
   // AFTER the pre-check, so re-run the conflict check now that the target week is
   // on screen; a fresh barrier here refuses cleanly instead of applyRestore failing
   // phase-5 with a technical "stale revision" string.
-  const postConflict = undoConflict(entry)
-  if (postConflict) return { ok: false, reason: postConflict }
+  const postConflict = undoConflictOf(entry)
+  if (postConflict) return { ok: false, reason: postConflict.sticky ? sayBlocked(entry, 'undo', postConflict.text) : postConflict.text }
   const r = applyRestore(entry, entry.inverse, 'undo')
-  if (!r.ok) return { ok: false, reason: plainRestoreReason(r.reason) }
+  if (!r.ok) return { ok: false, reason: plainRestoreReason(r.reason, entry) }
   entry.undone = true
   entry.undoneAt = ++stamp
+  entry.undoneSeq = r.seq
   bumpUndo()
-  if (hooks.showBubble) hooks.showBubble(bubbleText(entry, 'undo'))
+  if (hooks.showBubble) hooks.showBubble(bubbleText(entry, 'undo') + (passedInelig ? ` — the later ${notUndoneWhat(passedInelig)} stays; it isn’t undone here.` : ''))
   if (hooks.reversed) hooks.reversed(entry, 'undo')
   return { ok: true, entry }
 }
 
 export function globalRedo(): UndoResult {
   const entry = mostRecentlyUndone()
-  if (!entry) return { ok: false, reason: LAST_DEAD || 'Nothing to redo.' }
+  if (!entry) return { ok: false, reason: LAST_BLOCKED || LAST_DEAD || 'Nothing to redo.' }
   if (!mayReverse(entry, currentActor())) return { ok: false, reason: reverseRefusal(entry, 'redo') }
-  const conflict = redoConflict(entry)
-  if (conflict) return { ok: false, reason: conflict }
+  const conflict = redoConflictOf(entry)
+  if (conflict) return { ok: false, reason: conflict.sticky ? sayBlocked(entry, 'redo', conflict.text) : conflict.text }
   const ruleR = hooks.restoreRefusal ? hooks.restoreRefusal(entry.forward, 'redo') : null   // W3-F8
   if (ruleR) return { ok: false, reason: ruleR }
   if (missingStores(entry.forward).length) return { ok: false, reason: plainRestoreReason() }
   snap(entry, 'redo')
   // N11 — see globalUndo: re-check after the view-snap loaded the target week.
-  const postConflict = redoConflict(entry)
-  if (postConflict) return { ok: false, reason: postConflict }
+  const postConflict = redoConflictOf(entry)
+  if (postConflict) return { ok: false, reason: postConflict.sticky ? sayBlocked(entry, 'redo', postConflict.text) : postConflict.text }
   const r = applyRestore(entry, entry.forward, 'redo')
-  if (!r.ok) return { ok: false, reason: plainRestoreReason(r.reason) }
+  if (!r.ok) return { ok: false, reason: plainRestoreReason(r.reason, entry) }
   entry.undone = false
   entry.undoneAt = undefined
   bumpUndo()
@@ -649,10 +794,11 @@ export function globalRedo(): UndoResult {
 /* ---- UI state (for the buttons the cutover wires, phase 2) --------------- */
 export function undoState(): { canUndo: boolean; canRedo: boolean; undoLabel: string | null; redoLabel: string | null; undoWhy: string | null; redoWhy: string | null } {
   const u = newestUndoable()
-  /* [POST-OUT-OUTCOMES]: nothing left but steps that can never be taken — the greyed button says why (its hover) */
-  const undoWhy = u ? null : LAST_DEAD
+  /* [POST-OUT-OUTCOMES]: nothing left but steps that can never be taken — the greyed button says why (its hover);
+     B3 (D350): and a step not undone here says so too */
+  const undoWhy = u ? null : nothingToUndoWhy()
   const r = mostRecentlyUndone()
-  const redoWhy = r ? null : LAST_DEAD
+  const redoWhy = r ? null : (LAST_BLOCKED || LAST_DEAD)
   return {
     canUndo: !!u,
     canRedo: !!r,
