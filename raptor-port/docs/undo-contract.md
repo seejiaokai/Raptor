@@ -280,6 +280,11 @@ change after a second admin has made one. If someone else has since changed the 
 says who — it never overwrites their newer work. Settles `[GU-MAYREV]` in `[GLOBAL-UNDO]`; extends the 13 Sep 26
 direction (undo per login session, never affecting another user).
 
+**What the one undo does NOT take back yet (owner, D350, 28 Sep 26 — "4 ok"):** adding a person, Archive, Restore /
+Restore as, Delete (never — D287) and a posting — each writes the Leave War's posting record (`lw.postouts`), deferred
+since CMDL-FINISH (CMDLF-002); `OUTSTANDING.md` `[UNDO-POSTING-RECORD]`. Every other roster and settings change is
+undoable once `[UNDO-ROSTER-SETTINGS]` lands.
+
 ## 5. The checklist — plugging a NEW module or a NEW undo feature in
 
 Any new app/tab/module, and any new undo capability, MUST satisfy this. Raise it in the design step,

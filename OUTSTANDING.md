@@ -1010,7 +1010,10 @@ and settings edits ARE undoable — ordinary user changes, never amendments. The
 (`raptor-port/src/state/undo-wire.ts`, `setCutoverModules(['sched', 'lw', 'inputs', 'plan'])`), so adding a person,
 renaming a callsign or changing a Logic setting cannot be undone. **Place:** the change-recording re-test (D147,
 second after the absence record) — it is the one undo's own subject; build it there with D148 (undo only your own
-changes). Walk it first: confirm on screen that Undo stays greyed or skips a roster / settings edit.
+changes). Walk it first: confirm on screen that Undo stays greyed or skips a roster / settings edit. **WALKED 28 Sep 26 (it skips them —
+`scripts/handpass/cr-base.mjs`); STARTED on `claude/change-recording-retest`. Scope narrowed by D350: adding, archiving,
+restoring, deleting a person and postings stay out (`[UNDO-POSTING-RECORD]`); everything else on Quals, Admin, the Logic
+page and the templates becomes undoable.**
 **Accounts (26 Sep 26, `[ACCOUNTS]`):** the accounts, the access requests and the guest switch are three more settings
 records, so they join this item: when settings are cut over to the one undo, an account restore must re-check the
 guards `[ACCOUNTS]` enforces at the write (at least one admin keeps access; an admin never changes his own account),
@@ -1029,6 +1032,17 @@ the mock-up `raptor-port/docs/mock/undo-topbar.html` (version 4) is the design o
 the board's bar gets Undo · Redo · History · Sync · the bell and ONE exit, ✓ Done (Close goes); on a phone Sort all and
 the layout switch sit behind one ⋯ in its second row. **Place:** built with the change-recording re-test, on `claude/change-recording-retest` (its plan:
 `raptor-port/docs/superpowers/plans/2026-09-28-change-recording-plan.md`).
+
+### [UNDO-POSTING-RECORD] Undo for adding, archiving, restoring a person and for postings — the war's posting record (D350, 28 Sep 26)
+Left out of the change-recording build by his "4 ok" (D350). All five write the Leave War's posting record
+(`lw.postouts/all` — his stints, D308, D320), which the one undo cannot restore safely: `src/undo/timeline.ts`
+`deferredCollections` holds it out (CMDLF-002, `[GLOBAL-UNDO]`), because restoring the record alone leaves the war's roster
+windows as they were (`reprojectRoster` carries a person's window forward when he has no record, and `setPeople` re-records
+it). **To do:** the global-undo design's §10.1 re-lay (`raptor-port/docs/superpowers/specs/2026-09-17-arch-stack-3-global-undo-design.md`),
+brought up to date for stints — a restored record laid over the clean projection inside `lwStore.write`; then lift the
+deferral; then the restore checks a person's add / archive / restore needs (the one-callsign rule, a man added and since
+used). A Delete stays dead (D287). FULL tier. **Place:** after the change-recording re-test; beside `[DB-READINESS]` if not
+sooner — his call.
 
 ### [HIST-PER-PAGE] A changes button on the Leave War and Quals, showing that page's changes — an idea, filed (D349, 28 Sep 26)
 His question during the D347 mock-up: *"should i have a edit history button too for each page thats applicable"* — answered
