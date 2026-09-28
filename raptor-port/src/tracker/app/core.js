@@ -1929,8 +1929,8 @@ let _dlgRes = null;
 let _dlgQueue = [];   /* waiting questions, oldest first: { shape, res } */
 const _dlgCancelled = shape => (shape && shape.input ? null : false);
 function _dlgOpen(shape, res) { _dlgRes = res; dlg = shape; dlgSerial++; notify(); }
-function _dlgShow(msg, { input = false, def = '', cancel = true, cancelLabel = 'Cancel', ok = 'OK', alt = null, list = null, filter = false, placeholder = '', listTitle = '' } = {}) {
-  const shape = { msg, input, def, cancel, cancelLabel, ok, alt, list, filter, placeholder, listTitle };
+function _dlgShow(msg, { input = false, def = '', cancel = true, cancelLabel = 'Cancel', ok = 'OK', alt = null, list = null, listFn = null, filter = false, placeholder = '', listTitle = '' } = {}) {
+  const shape = { msg, input, def, cancel, cancelLabel, ok, alt, list, listFn, filter, placeholder, listTitle };
   return new Promise(res => {
     if (dlg || _dlgQueue.length) { _dlgQueue.push({ shape, res }); return; }
     _dlgOpen(shape, res);
@@ -1956,7 +1956,11 @@ export async function uiAlert(msg) { await _dlgShow(msg, { cancel: false }); }
 /* Pick from a list, or type: resolves { pick: key } for a click on an entry,
    the typed string for OK, null for Cancel. */
 export async function uiPick(msg, list, { input = false, placeholder = '', listTitle = '' } = {}) {
-  const v = await _dlgShow(msg, { input, list: list || [], filter: true, placeholder, listTitle });
+  /* a list given as a function is read LIVE by the box (listFn) — the + Add roster,
+     so a person added or taken off while it is open shows at once ([TRK-RETEST-NOTES]
+     C11); `list` keeps the list it opened with, for anything that reads it */
+  const fn = typeof list === 'function' ? list : null;
+  const v = await _dlgShow(msg, { input, list: (fn ? fn() : list) || [], listFn: fn, filter: true, placeholder, listTitle });
   if (v && typeof v === 'object' && 'pick' in v) return v;
   return v === null ? null : (v + '');
 }
@@ -2100,7 +2104,9 @@ function ballGroup(ev, available) {
       for (let t = 0; t < shown; t++) {
         const ang = first + t * gap, rad = ang * Math.PI / 180;
         const x1 = cx + rO * 0.80 * Math.cos(rad), y1 = cy + rO * 0.80 * Math.sin(rad), x2 = cx + (rO + 3) * Math.cos(rad), y2 = cy + (rO + 3) * Math.sin(rad);
-        segs += `<line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}" class="ftick" stroke="${PAL.fail}" stroke-width="2.2" stroke-linecap="round"/>`;
+        /* data-wi: whose slice the tick lies across, so a press on it picks that
+           student as a press on the slice does ([TRK-RETEST-NOTES] C6) */
+        segs += `<line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}" class="ftick" data-wi="${i}" stroke="${PAL.fail}" stroke-width="2.2" stroke-linecap="round"/>`;
       }
     }
   }
@@ -3799,6 +3805,9 @@ export function openLullPicker(s, index) {
   const cur = (index != null) ? (lulls[s] || [])[index] : null;
   lullPick = { student: s, index: (index == null ? -1 : index), start: null };
   if (cur && cur.start) { const d = parseD(cur.start); if (d) calView = new Date(d.getFullYear(), d.getMonth(), 1); }
+  /* a NEW period opens on this month — the squadron's (isoToday), read without a time
+     zone — not on whichever month was looked at last ([TRK-RETEST-NOTES] C7) */
+  else { const [y, m] = isoToday().split('-').map(Number); calView = new Date(y, m - 1, 1); }
   notify();
 }
 export function closeLullPicker() { lullPick = null; notify(); }
@@ -3898,7 +3907,11 @@ export function closePop() { pop = null; popMsg = null; notify(); }
 export function ballTap(id, ev) {
   /* the chart on screen may still be the last person's while this one's loads */
   if (resuming) return;
-  const w = ev && ev.target && ev.target.closest ? ev.target.closest('.wedge') : null;
+  /* a red failure tick lies across its student's slice and is drawn over it: a
+     press on it is a press on that slice ([TRK-RETEST-NOTES] C6 — it graded the
+     picked student instead). The cyan edge also carries data-wi but takes no
+     presses (pointer-events none). */
+  const w = ev && ev.target && ev.target.closest ? ev.target.closest('.wedge, .ftick') : null;
   if (w) {
     const r = roster[+w.dataset.wi];
     if (r && r.id !== active) { setActive(r.id, { land: false }); return; }
@@ -4313,8 +4326,10 @@ export async function addStudent() {
      raises its dialog before the first await (the browser spends the click),
      and one extra microtask in front of the picker breaks that. */
   if (rosterHeld) { await uiAlert(HELD_MSG); return; }
-  const people = getPeople().map(p => ({ key: p.id, label: p.cs, sub: seatWord(p.seat) + (p.q ? ' · ' + p.q : '') }));
-  const r = people.length
+  /* the list is read LIVE while the box is open: a person added or taken off the roster
+     meanwhile shows at once ([TRK-RETEST-NOTES] C11 — it kept the list it opened with) */
+  const people = () => getPeople().map(p => ({ key: p.id, label: p.cs, sub: seatWord(p.seat) + (p.q ? ' · ' + p.q : '') }));
+  const r = people().length
     ? await uiPick('Add a crew member', people, { input: true, placeholder: 'Or type a callsign', listTitle: 'From the squadron roster' })
     : await uiPrompt('Student callsign:');
   let v, link = null;
@@ -5353,6 +5368,15 @@ export let saveStat = { text: '', cls: '' };
    user their work was both safe and at risk in the same six pixels.
    Now only a caller that passes no message gets the bare word; anything that
    names what it did says so. Three callers rely on the empty form. */
+/* WHAT THE BAR SAYS beside ✓ Save changes ([TRK-RETEST-NOTES] C14, 28 Sep 26): while
+   chart edits wait for the button the words are "● unsaved" — short enough for the
+   slot, where the old sentence read "● un…" — whatever a background save reports
+   meanwhile (a mark saving on its own used to put "● saved" beside the orange button:
+   Astra F-09); the whole story is the tooltip. An error still shows, in red. */
+export function saveWords() {
+  if (sylDirty && saveStat.cls !== 'err') return { text: '● unsaved', title: 'Chart edits not saved yet — ✓ Save changes keeps them', cls: 'saving' };
+  return { text: saveStat.text, title: saveStat.text, cls: saveStat.cls };
+}
 function setSaveStatus(msg, cls) {
   saveStat = {
     text: (cls === 'saving' ? (msg ? '● ' + msg : '● saving…')

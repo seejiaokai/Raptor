@@ -398,10 +398,10 @@ describe('D370 — the Failures card leaves out an N.A. event’s failures, as t
 })
 
 /* ---------- D372: a pace, end-date or lull change is an undo step ---------- */
+let added = 0
 async function threeStudents() {
-  for (const nm of ['LO SEC', 'LO THIRD']) {
-    if (C.roster.length >= 3) break
-    const p = C.addStudent(); await until(() => C.dlg); C.dlgClose(nm); await p; await C.whenLoaded()
+  for (let k = 0; k < 3 && C.roster.length < 3; k++) {
+    const p = C.addStudent(); await until(() => C.dlg); C.dlgClose('LO STU ' + (++added)); await p; await C.whenLoaded()
   }
   expect(C.roster.length, 'the premise: three students').toBeGreaterThanOrEqual(3)
   return C.roster.map((r: any) => r.id)
@@ -551,5 +551,80 @@ describe('[TRK-SESSION-PICK] D376 — each person reopens the Tracker on their o
       await C.switchCourse(C.COURSES[0].id); await C.whenLoaded()
       expect(localStorage.getItem('ocuLocal:lastCourse')).toBe(C.COURSES[0].id)
     } finally { bridge.setWhoamiId(wire.whoamiIdForTracker) }
+  })
+})
+
+/* ---------- C6, C7, C11, C14 ---------- */
+describe('[TRK-RETEST-NOTES] C6 — a press on another student’s red failure tick picks THAT student', () => {
+  it('B’s tick picks B and opens nothing; the picked student’s own tick opens grading', async () => {
+    const [a, b] = await threeStudents()
+    const ev = C.SYL.filter((e: any) => !C.gradeOf(b, e.id) && !C.failOf(b, e.id) && !C.gradeOf(a, e.id) && !C.failOf(a, e.id))[0].id
+    C.setActive(b, { land: false }); await fail(b, ev, C.isoToday())
+    C.setActive(a, { land: false }); await fail(a, ev, C.isoToday())
+    C.renderBoard()
+    const ball = [...document.querySelectorAll('#board .ball')].find(g => (g as HTMLElement).dataset.id === ev)!
+    const bi = C.roster.findIndex((r: any) => r.id === b), ai = C.roster.findIndex((r: any) => r.id === a)
+    const tickOf = (i: number) => ball.querySelector('.ftick[data-wi="' + i + '"]')
+    expect(tickOf(bi), 'the premise: B’s tick is drawn, and says whose it is').toBeTruthy()
+    C.ballTap(ev, { clientX: 5, clientY: 5, target: tickOf(bi) })
+    expect(C.active, 'B is picked').toBe(b)
+    expect(C.pop, 'no grading opened for anyone').toBeNull()
+    C.setActive(a, { land: false }); C.renderBoard()
+    const ball2 = [...document.querySelectorAll('#board .ball')].find(g => (g as HTMLElement).dataset.id === ev)!
+    C.ballTap(ev, { clientX: 5, clientY: 5, target: ball2.querySelector('.ftick[data-wi="' + ai + '"]') })
+    expect(C.pop && C.pop.id, 'A’s own tick opens A’s grading').toBe(ev)
+    C.closePop()
+  })
+})
+
+describe('[TRK-RETEST-NOTES] C7 — + Set lull period opens on THIS month', () => {
+  it('after changing a period in another month, a new period opens on today’s month (the squadron’s day)', async () => {
+    const s = await pickStudent()
+    C.openLullPicker(s); await C.lullDayClick('2027-03-02'); await C.lullDayClick('2027-03-04')
+    const at = C.lulls[s].findIndex((l: any) => l.start === '2027-03-02')
+    C.openLullPicker(s, at)
+    expect(C.calView.getMonth(), 'changing a period opens on its own month').toBe(2)
+    C.calNext(); C.calNext(); C.closeLullPicker()
+    C.openLullPicker(s)
+    const [y, m] = C.isoToday().split('-').map(Number)
+    expect([C.calView.getFullYear(), C.calView.getMonth() + 1], 'a new period opens on this month').toEqual([y, m])
+    C.closeLullPicker()
+  })
+})
+
+describe('[TRK-RETEST-NOTES] C11 — the + Add list follows the roster while it is open', () => {
+  it('a person added while the box is open appears in it; one taken off leaves it', async () => {
+    const bridge: any = await import('./people.js')
+    bridge.setPeople([{ id: 'p1', cs: 'ALPHA', seat: 'FCP', q: 'OCU', sxo: false }])
+    const { host, root } = await render(<Live draw={() => <div className="tr-root"><DlgModal /></div>} />)
+    try {
+      const p = C.addStudent()
+      await act(async () => { await until(() => C.dlg) })
+      const rows = () => [...host.querySelectorAll('#dlgList .dlg-item .dlg-lbl')].map(x => x.textContent)
+      expect(rows()).toEqual(['ALPHA'])
+      await act(async () => { bridge.setPeople([{ id: 'p1', cs: 'ALPHA', seat: 'FCP', q: 'OCU', sxo: false }, { id: 'p2', cs: 'ZULU9', seat: 'FCP', q: 'OCU', sxo: false }]) })
+      expect(rows(), 'the new person is there without closing the box').toEqual(['ALPHA', 'ZULU9'])
+      await act(async () => { bridge.setPeople([{ id: 'p2', cs: 'ZULU9', seat: 'FCP', q: 'OCU', sxo: false }]) })
+      expect(rows(), 'and one taken off the roster is gone').toEqual(['ZULU9'])
+      C.dlgClose(null); await p
+    } finally { bridge.setPeople([]); await clearQuestions(); await act(async () => { root.unmount() }); host.remove() }
+  })
+})
+
+describe('[TRK-RETEST-NOTES] C14 — beside ✓ Save changes the words read “● unsaved”, whatever a background save says', () => {
+  it('a structure edit shows “● unsaved”; a mark saved meanwhile does not turn it to “saved”; after Save it goes', async () => {
+    const s = await pickStudent()
+    const { host, root } = await render(<Live draw={() => <Header />} />)
+    try {
+      ;(window as any).__markDirtyForTests()
+      await act(async () => { await tick() })
+      const stat = () => (host.querySelector('#saveStat')?.textContent || '').trim()
+      expect(stat()).toBe('● unsaved')
+      await C.setUpchit(s, dayAfter(C.isoToday(), -40)); await act(async () => { await tick(); await tick() })
+      expect(stat(), 'a background save does not claim the chart is saved').toBe('● unsaved')
+      expect(host.querySelector('#saveStat')!.getAttribute('title') || '', 'the tooltip says the rest').toMatch(/Save changes/)
+      await C.saveChangesClick(); await act(async () => { await tick() })
+      expect(stat()).not.toBe('● unsaved')
+    } finally { if (C.sylDirty) await C.saveChangesClick(); await act(async () => { root.unmount() }); host.remove() }
   })
 })

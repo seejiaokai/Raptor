@@ -14,7 +14,10 @@ export function DlgModal() {
      sit ABOVE the text box, so the roster is the first thing offered and the
      free-text box the fallback. An empty list draws nothing — the dialog is
      then the old prompt to the byte. */
-  const list = (d && Array.isArray(d.list) && d.list.length) ? d.list : null;
+  /* a list may be given as a function, read on every render — the + Add roster, so a
+     person added or taken off while the box is open shows at once ([TRK-RETEST-NOTES] C11) */
+  const src = d && (d.listFn ? d.listFn() : d.list);
+  const list = (Array.isArray(src) && src.length) ? src : null;
   /* Clear the fields to the new dialog's defaults DURING render, not in a
      post-paint effect. The effect version ran a beat AFTER the box was already
      on screen and fillable, so a value put into the field in that gap — a fast

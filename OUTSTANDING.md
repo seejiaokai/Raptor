@@ -77,7 +77,7 @@ whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaini
 
 **Placed by their own lines — not his rulings:** the Leave War — [LW-FROZEN-BAR-GAP] (after [HUMAN-RETEST]; show him
 first), [LW-SCRUBBER-FLAKY] (test-only), [LW-ISO-DATES] (low, from the
-absence-record re-test), [LW-SPARE-MOVE-DOORS] (low, with the next Leave War move change), [PO-RESTORE-POSTING] (low, from its final code read), [LW-OFFER-ONLY-TAKEABLE] (low, with [LW-LOCKMARK]), [ABSENCE-SMALL-SEEN] (any time), [LW-HARNESS-VIEWER-PIN] (test-only, low), [CI-FAIL-PICTURES] (his call, low); the Inputs calendar — [INPUTSCAL-TAP-FLAKY] (test-only). The Tracker — [TRK-RETEST-NOTES] and
+absence-record re-test), [LW-SPARE-MOVE-DOORS] (low, with the next Leave War move change), [PO-RESTORE-POSTING] (low, from its final code read), [LW-OFFER-ONLY-TAKEABLE] (low, with [LW-LOCKMARK]), [ABSENCE-SMALL-SEEN] (any time), [LW-HARNESS-VIEWER-PIN] (test-only, low), [CI-FAIL-PICTURES] (his call, low), [LW-DOZE-GUARDS] (low, check first); the shell — [SHELL-SIDEWAYS-BAR] (low, with the next top-bar change); the Inputs calendar — [INPUTSCAL-TAP-FLAKY] (test-only). The Tracker — [TRK-RETEST-NOTES] and
 [TRK-EDIT-SIDEWAYS] (their gates have passed), [TRK-PINCH-ASK] (his next Tracker session), [TRK-SESSION-PICK] (low, the next Tracker change), [TRK-DLG-LEFTOVERS] (low, with the next question-box change), [TRK-FLEXBAR-INK] (a question for him, on the Tracker-palette
 look card — D157, merged PR #441), [TRK-BAKE-STALE] (low).
 The amendment area — PR #434, #435, #437 and #438 MERGED (25–26 Sep 26); left: [REQ-ORPHAN-ROW] and [REQ-DOOR-WORDS] (both low). Left from the amendment batch (D91–D111, merged): [AVAILWIN-PREVIEW-BAR] (low), [AMEND-SMALL-SEEN] (any time). The docs and the checks — [DEPLOY-DOCS] (its operational half), [DOC-POINTERS-CODE] and
@@ -840,6 +840,21 @@ fix: `_dlgShow` answers an open question as cancelled before showing the next; t
 `uiPrompt('b')`, the first resolves null. (2) Enter pressed while a phone keyboard is still composing a word
 submits the half-typed text — fix: skip Enter when `e.nativeEvent.isComposing` (the text box and the search); test
 with `isComposing: true`. Detail: `raptor-port/docs/handpass/2026-09-25-trk-add-race.md` §8.
+
+### [LW-DOZE-GUARDS] Do the Leave War's measurement guards ever run while its page dozes? (filed 28 Sep 26)
+**Place:** low — check before building anything. Found by Fable's read of the Tracker leftovers plan (F12): the
+`.page.doze` comment in `raptor-port/src/ui/scheduler.css` said a dozing page's insides "read 0×0 … which is what every
+Matrix measurement guard already checks for"; measured 28 Sep 26 (the leftovers' baseline walk, O), they do NOT — a dozing
+section is 0 tall but its insides keep their last boxes, unpainted. The comment is corrected (on
+`claude/tracker-leftovers-f79d36`). **Do:** check whether `raptor-port/src/leavewar/ui/Matrix.tsx`'s guards on
+`width === 0` (~2285, ~3133, ~3135) can run while the Leave War page dozes; if one can, it would measure stale boxes —
+switch it to the section's `.on` / `.doze`. Nothing on screen is known to be wrong.
+
+### [SHELL-SIDEWAYS-BAR] Raptor's own top bar is 149px tall on a sideways phone (filed 28 Sep 26)
+**Place:** low — with the next change to Raptor's top bar (the parallel chat's D347 move of the Tracker's ↶ ↷ into it
+measured it at 149px before and after). At 844×390 the desktop menu wraps into two rows and takes 149 of 390px — the
+biggest single piece of a sideways phone's screen (the Tracker walk's w3 O4, moved here from `[TRK-RETEST-NOTES]` when the
+Tracker's own fold, D373, was built). A shell layout question, and a visual one: a picture first.
 
 ### [TRK-BAKE-STALE] The chart-baking script no longer runs (found 23 Sep 26)
 `raptor-port/scripts/tracker/bake-user-charts.mjs` resolves `src/data/…` from `scripts/` (the folder

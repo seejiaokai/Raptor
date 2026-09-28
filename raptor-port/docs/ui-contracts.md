@@ -7674,7 +7674,14 @@ screen:
     day (D371). An event marked N.A. leaves the Failures card, its total and the
     full list, as its ticks leave the ball; the grading pop-up and the details
     bubble still show its failures, and they return, days and all, if it is
-    graded again (D370). Deleting a ball says its marks go at ✓ Save changes, and they
+    graded again (D370). A press on a student’s red failure tick is a press on
+    their slice — it picks them, or opens grading if they are the one picked
+    ([TRK-RETEST-NOTES] C6). + Set lull period opens on this month; changing a
+    period opens on its own (C7). The + Add list follows the roster while it is
+    open (C11). Beside ✓ Save changes the words read “● unsaved”, whatever a
+    background save reports, the sentence in the tooltip; the slot is 186px (C14).
+    On a phone the Crew box takes up to 124px, the Course box 76px, so a callsign
+    reads whole (C10). Deleting a ball says its marks go at ✓ Save changes, and they
     do, in every course (D124), with the details typed on it (D130) and any
     student's "last worked" pointer to it; a deleted-but-unsaved code cannot be
     re-added until the save (+ Add and 📋 Edit events alike). An IMPORT never
