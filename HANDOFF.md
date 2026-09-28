@@ -19,7 +19,7 @@ the later merge keeps both (D78).
 ### `claude/draft-pending` — `[DRAFT-PENDING]`, the one changes window: BUILT and FULL-checked — READY FOR HIS LOOK and "merge live" (the PR from `claude/draft-pending`) — written 28 Sep 26 — verify before use
 - **Where it started:** `main` at PR #450's merge (`[ONE-DOOR]`, merged 28 Sep 26 on D336 (1), live on Vercel). Overnight by
   D336 (2): planned (Opus 5.5) → Fable and Astra red team, one round → built red first → walked → FULL check. Rulings range
-  for this chat: D337–D349 (D337–D343 used — his look-card answers "12 A" and "keep the rest as recommended"; History on a phone; the window sorted by item; the GitHub web address on, then off the same hour; merging over the flaky test). **Never merge without his word** (D336's permission was
+  for this chat: D337–D349 (D337–D345 used — his look-card answers "12 A" and "keep the rest as recommended"; History on a phone; the window sorted by item; the GitHub web address on, then off the same hour; merging over the flaky test). **Never merge without his word** (D336's permission was
   PR #450's alone).
 - **Built:** the change history durable and week-safe (`engine/editlog.ts` — D336 (b) on YES), each person's "new to you"
   (`state/changes.ts`), ONE writer for every absence / Leave War / Quals / posting / publish / undo / sign-off line
@@ -44,7 +44,7 @@ the later merge keeps both (D78).
   wording, "History on: Tap a gold dot on the schedule" (D344); History on a phone: the window
   hides to the bottom ("Hide ▾" / "Show ▴" — spelled out at his question), a gold dot on every detail with a history (the mock-up
   `raptor-port/docs/img/handpass/2026-09-28-draft-pending/histphone/histphone-mockup.png`); and the window sorted by item, every
-  line item-first (the mock-up `…/byitem/byitem-mockup.png`) — each mock-up's yes first, then build, walk, check
+  line item-first (the mock-up `…/byitem/byitem-mockup.png`) — both mock-ups APPROVED (D345); build, walk, check
   (`OUTSTANDING.md` `[HIST-PHONE-HIDE]`, `[CHG-BY-ITEM]`).
 - **PR #451's one red check (GitHub, 28 Sep 26 night):** a Leave War desktop browser test (`e2e/leavewar.spec.ts` — "-1.5
   subtracts; 0, abc and 1.25 are refused and the run stays") selected 5 cells where it expects 3, on both tries; it passes on
