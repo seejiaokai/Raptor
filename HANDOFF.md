@@ -15,6 +15,27 @@ the later merge keeps both (D78).
 
 ## Now
 
+<!-- now:claude/docs-rulings-slim-down-e83c74 -->
+### `claude/docs-rulings-slim-down-e83c74` — [RULINGS-SLIM] (D390): every ruling loads as one short line — BUILT, in its final reads — written 28 Sep 26 — verify before use
+- **The branch:** cut from `main` at PR #457; folder `.claude/worktrees/docs-rulings-slim-down-e83c74`. Docs and the
+  document gate's scripts only — no `raptor-port/src`, so only the Docs guard runs. Rulings range D390–D399 (D390 used).
+  No PR opened yet.
+- **Done:** his "Approve" recorded (D390, narrowing D136, D140, D141); the plan red-teamed by Fable AND Astra and
+  revised (`raptor-port/docs/superpowers/plans/2026-09-28-rulings-slim-down-plan.md`, review log §6); five malformed
+  rows repaired (dividers only); the converter (`backlog-archive.mjs --rulings`, with `--short-text`, `--move-rows`,
+  `--merge`), the gate (`docsize.mjs`, shared reader `docsize-rulings.mjs`, `--marks`) and a 140-case self-test incl.
+  real merges both ways; all 265 rows converted; People & accounts made (62 rows); 101 short lines hand-written; every
+  document updated (D201). How we work: 151k → 11.6k bytes (~41k → ~3k tokens).
+- **In flight:** Fable's meaning read of every short line (two halves) and the code read by BOTH Fable and Astra
+  (briefs `raptor-port/docs/superpowers/briefs/2026-09-28-rulings-slim-{meaning,code}-brief.md`); fold their findings.
+- **Parallel chats (D302):** change-recording (D347–D359), small fixes (D360–D369), Tracker leftovers (D370–D379) were
+  told, and agreed: keep adding full rows at the top; whichever merges later runs `git merge origin/main` then
+  `node raptor-port/scripts/backlog-archive.mjs --rulings --merge`, re-applies the printed prose by hand, has one
+  reviewer read the printed UNREAD lines. D350 (change-recording) may belong in People & accounts — classify at merge.
+- **Next:** fold the reads; the guide step (plan §2.6) waits for `claude/small-fixes-batch-d223f6` to merge (it edits
+  the guide's Leave War row); measure again; open the PR; his look; "merge live" one at a time (D78).
+<!-- /now -->
+
 <!-- now:claude/docs-tidy-subheads-audit-ec8f87 -->
 ### `claude/docs-tidy-subheads-audit-ec8f87` — docs-only tidy DONE: [HANDOFF-SHAPE-GUARD], [DOC-SUBHEADS], [RULING-HOMES-AUDIT] — waiting for his "merge live" — written 28 Sep 26 — verify before use
 - **The branch:** cut from `main` at PR #456; folder `.claude/worktrees/bg-cwd-guard-4cc654`. Documents and the
