@@ -26,7 +26,9 @@ import { weekOf } from '../undo/derive'
 import { schedStore, schedPostRestore } from './sched-commit'
 import { weekstashStore, loadWeek } from './store'
 import { HIST } from './history'
-import { armDrop, prunePreviews, SBDAY } from './view'
+import { armDrop, prunePreviews, SBDAY, CURPAGE, setPage, setBoardDay, focusQualsRow, requestAdminUsers, setSecDefOffer } from './view'
+import { canEditSched } from './auth'
+import { bringDayIntoView } from '../ui/highlights'
 import { boardTab } from '../ui/board'
 import { toast } from '../ui/toast'
 import { CURWEEK } from '../engine/waves'
@@ -80,26 +82,65 @@ function lwDateOf(entry: UndoEntry): string | null {
 }
 
 /* ---- the hooks (UndoHooks) ------------------------------------------------- */
+/* the board's day, when a week load for an undo closed it (loadWeek shuts the board) — reopened on the changed day by
+   snapView (walker A1-F2, 28 Sep 26: the board's Undo that crossed to another week closed the board, landing on the
+   week on the wrong day, its Redo gone with it) */
+let BOARD_WAS: number | null = null
 function loadContext(ctx: RecordCtx, entry: UndoEntry): void {
   if (ctx.kind === 'week') {
     if (weekIsStashOnly(entry, ctx.weekId)) return   // off-week apply via the stash — do NOT load (C7)
-    if (ctx.weekId !== CURWEEK) loadWeek(ctx.weekId)
+    if (ctx.weekId !== CURWEEK) { if (SBDAY != null) BOARD_WAS = SBDAY; loadWeek(ctx.weekId) }
   } else if (ctx.kind === 'war') {
     selectWar(ctx.warId)
   }
-  // 'course' / 'page' — not cut over in phase 2; nothing to load.
+  // 'course' — the Tracker has its own undo; 'page' — nothing to load (the page itself is chosen in snapView).
+}
+
+/* WHICH PAGE THE CHANGE LIVES ON — the change-recording re-test B7 (§11.6; walker A2-F4). The register's AM39b: an undo
+   "takes you to where the change was". A closure touching a WEEK goes to the week (the change the eye looks for — the
+   plan's B7), for someone who has Edit Schedule; a war's to the Leave War; an input, the planning calendar and the
+   inputs' look-ahead to Inputs; a roster record to Quals, on his row; the accounts, the requests and the guest switch
+   to Admin → Users; a rule to Logic; the LoX columns to Quals; the templates and the default arrangement to Admin.
+   The stores and the cancel reasons are edited on the board and the week, so they stay. null = stay where you are. */
+type Landing = { pages: string[]; then?: () => void }
+function landingOf(entry: UndoEntry): Landing | null {
+  const fwd = entry.forward
+  const pages: string[] = []
+  let then: (() => void) | undefined
+  /* the act's own page first — a Leave War step belongs on the war even when its approved leave lands on a week */
+  if (entry.scope.module === 'lw' || fwd.some(c => c.collection.startsWith('lw.'))) pages.push('leavewar')
+  if (fwd.some(c => weekOf(c.collection, c.id) != null && c.collection !== 'weekstash') && canEditSched()) pages.push('editsched')
+  if (fwd.some(c => c.collection === 'inputs' || c.collection === 'plan' || c.collection === 'weekstash' || (c.collection === 'settings' && c.id === 'lookahead')))
+    pages.push('inputs')
+  const person = fwd.find(c => c.collection === 'people')
+  if (person) { pages.push('quals'); then = () => focusQualsRow(person.id) }
+  const ids = fwd.filter(c => c.collection === 'settings').map(c => c.id)
+  if (ids.some(k => k === 'accounts' || k === 'accessreqs' || k === 'guestview')) { pages.push('admin'); then = then || (() => requestAdminUsers(false)) }
+  if (ids.includes('rules')) pages.push('logic')
+  if (ids.includes('qualcols')) pages.push('quals')
+  if (ids.some(k => k === 'dutytpl' || k === 'wavetpl' || k === 'wavehide' || k === 'daytpl' || k === 'secdefault' || k === 'wavedefault')) pages.push('admin')
+  return pages.length ? { pages, then } : null
 }
 
 function snapView(entry: UndoEntry, _dir: 'undo' | 'redo'): void {
-  if (entry.scope.module === 'lw') {
+  const boardWas = BOARD_WAS; BOARD_WAS = null
+  const land = landingOf(entry)
+  /* not when the change already shows on the page you are on (an input filed on Inputs, undone there) */
+  if (land && !land.pages.includes(CURPAGE)) setPage(land.pages[0])
+  if (land && land.then) land.then()
+  if (entry.scope.module === 'lw' || entry.forward.some(c => c.collection.startsWith('lw.'))) {
     const date = lwDateOf(entry)
     if (date) focusDay(date)
     return
   }
-  // scheduler / inputs / plan: if the board is open, bring the changed day onto it
-  // (view-only, best-effort — the shell's week view already shows the loaded week).
   const di = schedDayOf(entry)
-  if (di != null && SBDAY != null && SBDAY !== di) boardTab(di)
+  if (di == null || CURPAGE !== 'editsched') return
+  /* the board: bring the changed day onto it — and reopen it there when a week load closed it (A1-F2) */
+  if (SBDAY != null) { if (SBDAY !== di) boardTab(di); return }
+  if (boardWas != null) { setBoardDay(di); return }
+  /* the week (walker A1-F3): the changed day brought on screen — stepped to on a phone, to the front on a desktop — once
+     the undo has repainted it */
+  setTimeout(() => bringDayIntoView(di), 0)
 }
 
 /* §3.4 / Fable N9 — hold the scheduler HIST.lock for the restore's duration, so
@@ -133,6 +174,10 @@ function resolvePublishDay(id: string): { weekId: string; di: number } | null {
    order histApply uses (armDrop/prunePreviews before reflow). */
 function postRestore(entry: UndoEntry, dir: 'undo' | 'redo', pulledBack: Array<{ weekId: string; di: number }>): void {
   schedPostRestore(entry, dir, pulledBack)
+  /* the "use this section order as the default?" offer asks about the drag just made — once any step is undone or
+     redone it asks about an order no longer on screen (walker A1 O5: "Set as default" would have promoted the order
+     just undone, and on a phone the bubble sat over its buttons) */
+  setSecDefOffer(null)
   armDrop()
   prunePreviews()
   bumpLwHistEpoch()

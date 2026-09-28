@@ -9,6 +9,7 @@ import { SCHED } from '../engine/publish'
 import { stashClear } from '../engine/weekstash'
 import { initStore as raptorInitStore } from '../state/store'
 import { setSession } from '../state/auth'
+import { setPage, CURPAGE } from '../state/view'
 import { cmdAuthorize } from '../state/perms'
 import { projectPeople } from './state/raptorRoster'
 import { advanceStage, reopenStage, getState, initStore as lwInitStore, lwHistInit, setPeople, setRole } from './state/store'
@@ -47,6 +48,12 @@ describe('D352 — a stage move is its own Undo step, lw.stage', () => {
     expect(stage()).toBe(was)
     expect(globalRedo().ok).toBe(true)
     expect(stage()).toBe(now)
+  })
+  it('undone from Edit Schedule, it takes you to the Leave War (B7 — AM39b; walker A2-F4)', () => {
+    advanceStage()
+    setPage('editsched')
+    expect(globalUndo().ok).toBe(true)
+    expect(CURPAGE).toBe('leavewar')
   })
   it('the ← step back is lw.stage too', () => {
     advanceStage()
