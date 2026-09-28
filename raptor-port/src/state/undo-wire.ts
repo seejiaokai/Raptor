@@ -15,6 +15,7 @@
 
    Ordinary TS/React-layer style (new file). */
 import { logReversed } from './changelines'
+import { peopleStore, settingsStore } from './people-settings-commit'
 import { deletedRestoreProblem } from './person-delete'
 import {
   installUndo, registerUndoStore, setCutoverModules, setUndoHooks,
@@ -146,7 +147,13 @@ export function installGlobalUndo(): void {
   registerUndoStore(schedStore, SCHED_COLLS)
   registerUndoStore(lwStore, LW_COLLS as unknown as string[])
   registerUndoStore(weekstashStore, ['weekstash'])
-  setCutoverModules(['sched', 'lw', 'inputs', 'plan'])
+  /* B2 of the change-recording re-test (28 Sep 26, [UNDO-ROSTER-SETTINGS]): the roster and the settings join — the
+     16 Sep 26 rule "roster and settings edits ARE undoable" (register AM39d), narrowed by D350: adding, archiving,
+     restoring, deleting a person and a posting still write the war's stints (lw.postouts), which stay deferred
+     (undo/timeline.ts), so those five stay out and say why (B3). A delete is kept dead by person-delete.ts (B4). */
+  registerUndoStore(peopleStore, ['people'])
+  registerUndoStore(settingsStore, ['settings'])
+  setCutoverModules(['sched', 'lw', 'inputs', 'plan', 'people', 'settings'])
   setUndoHooks({
     loadContext,
     snapView,

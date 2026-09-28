@@ -18,7 +18,13 @@ import { setSession } from './auth'
 import * as view from './view'
 import { _resetDisclosure } from './disclosure'
 import { globalUndo, globalRedo, undoState } from '../undo'
-import { _resetTimeline } from '../undo/timeline'
+import { _resetTimeline, _timelineEntries } from '../undo/timeline'
+import { PEOPLE } from '../engine/people'
+import { updatePersonField } from './quals-write'
+import { VCONF, RULE_SPEC, rulesSave, rulesResetMem } from '../engine/rules'
+import { storeBackend } from '../engine/hooks'
+import { waveTplLoad } from '../engine'
+import { addWaveTpl, delWaveTpl, setWaveHidden, waveTplSave, WAVETPL_CFG, WAVEHIDE } from '../engine/wavetpl'
 import { installGlobalUndo } from './undo-wire'
 import { HIST } from './history'
 
@@ -178,5 +184,47 @@ describe('Undo and the sign-offs a publish spent (walk W3 — F-w3-1, F-w3-2)', 
     expect(signOf(5).cur).toBe('ignite')                // Saturday's comes back
     expect(signOf(4).cur, 'the step the new change replaced stays gone').toBe('')
     expect(undoState().canRedo).toBe(false)             // nothing left to redo
+  })
+})
+
+/* B2 of the change-recording re-test (28 Sep 26, [UNDO-ROSTER-SETTINGS]) — the roster and the settings are cut over:
+   the 16 Sep 26 rule "roster and settings edits ARE undoable" (register AM39d), narrowed by D350 (adding / archiving /
+   restoring / deleting a person and postings stay out). Each through the app's own writer, red first. */
+describe('B2 — a Quals change, a Logic rule and a template are Undo steps now', () => {
+  /* the settings store's record IS the saved value (people-settings-commit.ts), so these need a saved copy to change */
+  const mem: Record<string, string> = {}
+  beforeEach(() => { Object.keys(mem).forEach(k => delete mem[k]); storeBackend.impl = { getItem: (k: string) => (k in mem ? mem[k]! : null), setItem: (k: string, v: string) => { mem[k] = v } } })
+  afterEach(() => { storeBackend.impl = null; rulesResetMem(); waveTplLoad() })
+  it('a Quals tick is undone and redone, the roster record with it', () => {
+    const pid = 'rocky'
+    const was = !!(PEOPLE as any)[pid].quals.nvg
+    expect(updatePersonField(pid, { tick: 'nvg' })).toBe(null)
+    expect(!!(PEOPLE as any)[pid].quals.nvg).toBe(!was)
+    expect(undoState().canUndo).toBe(true)
+    expect(globalUndo().ok).toBe(true)
+    expect(!!(PEOPLE as any)[pid].quals.nvg).toBe(was)
+    expect(globalRedo().ok).toBe(true)
+    expect(!!(PEOPLE as any)[pid].quals.nvg).toBe(!was)
+  })
+  it('a Logic rule change is undone — the rule itself back', () => {
+    const k = Object.keys(RULE_SPEC)[0]
+    const was = VCONF[k], spec = RULE_SPEC[k]
+    VCONF[k] = was === spec.hi ? spec.lo : spec.hi
+    rulesSave()
+    expect(globalUndo().ok).toBe(true)
+    expect(VCONF[k]).toBe(was)
+  })
+  it('deleting a HIDDEN wave template is ONE step — Undo brings it back still hidden (§11.8, Fable 7)', () => {
+    const t = addWaveTpl('ALPHA', 'fly')!
+    setWaveHidden(t.id, true); waveTplSave()
+    expect(globalUndo().ok).toBe(true)                    // the add-and-hide as one save (itself one step)
+    const t2 = addWaveTpl('BRAVO', 'fly')!
+    setWaveHidden(t2.id, true); waveTplSave()
+    const n = _timelineEntries().length
+    delWaveTpl(t2.id); waveTplSave()
+    expect(_timelineEntries().length).toBe(n + 1)
+    expect(globalUndo().ok).toBe(true)
+    expect(WAVETPL_CFG.some(x => x.id === t2.id)).toBe(true)
+    expect(WAVEHIDE.has(t2.id)).toBe(true)
   })
 })

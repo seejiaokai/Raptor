@@ -166,7 +166,15 @@ let SCHED_EPILOGUE_HOOK: SchedEpilogueHook | null = null
 export function setSchedEpilogueHook(fn: SchedEpilogueHook | null) { SCHED_EPILOGUE_HOOK = fn }
 export function runSchedEpilogue(raw: () => void) { if (SCHED_EPILOGUE_HOOK) SCHED_EPILOGUE_HOOK(raw); else raw() }
 
+/* ONE command for a save that writes several settings keys (the change-recording re-test, §11.8 — Fable's red team 7):
+   a wave-template save writes the library AND its hide-set, and each bare store.set opened its own command, so one
+   save was two Undo steps and one Undo brought a deleted template back still hidden… or not. The state layer installs
+   the hook (people-settings-commit.ts), the engine stays free of the command layer; with no hook the body just runs. */
+type SettingsGroupHook = (name: string, fn: () => void) => void
+let SETTINGS_GROUP_HOOK: SettingsGroupHook | null = null
+export function setSettingsGroupHook(fn: SettingsGroupHook | null) { SETTINGS_GROUP_HOOK = fn }
 export const store = {
+  group(name: string, fn: () => void) { if (SETTINGS_GROUP_HOOK) SETTINGS_GROUP_HOOK(name, fn); else fn() },
   get(k: any, d: any) {
     try {
       const v = storeBackend.impl ? storeBackend.impl.getItem('sqn142_' + k) : null
