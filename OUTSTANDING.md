@@ -1168,9 +1168,9 @@ the accounts and posting rulings (about 60 rows) move from How we work to a new 
 gets the same treatment, last. Measured before: ~50k tokens in every chat, ~110k in a scheduler build chat; the draft after:
 ~12k and ~31k. **Context:** the plan, with the design, the parallel-chat story and the review log —
 `raptor-port/docs/superpowers/plans/2026-09-28-rulings-slim-down-plan.md`. **Checks:** Fable and Astra red-team the plan;
-Fable reads every short line for meaning (D138); both read the two script changes. **Place:** now, docs and the document
+Fable reads every short line for meaning (D138); both read the two script changes. **Status (28 Sep 26):** BUILT and read — conversion, People & accounts, the scripts, 178 self-test cases, Fable's meaning read and both code reads folded (the plan's §6). **Left:** the guide step (plan §2.6), his look, "merge live". **Place:** now, docs and the document
 gate's scripts only, on `claude/docs-rulings-slim-down-e83c74`; the guide step waits for `claude/small-fixes-batch-d223f6`
-to merge. His "merge live" as always.
+to merge unless he says go now. His "merge live" as always.
 
 ### [RULING-HOME-HOOK] Name the rulings whose home a file is, at the moment it is edited — OPEN (Fable's red team of [RULINGS-SLIM], 28 Sep 26)
 **What:** once every ruling loads as one short line (D390), the guard that a chat opens the full row before acting on its

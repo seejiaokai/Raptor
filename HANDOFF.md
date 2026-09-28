@@ -16,24 +16,26 @@ the later merge keeps both (D78).
 ## Now
 
 <!-- now:claude/docs-rulings-slim-down-e83c74 -->
-### `claude/docs-rulings-slim-down-e83c74` — [RULINGS-SLIM] (D390): every ruling loads as one short line — BUILT, in its final reads — written 28 Sep 26 — verify before use
+### `claude/docs-rulings-slim-down-e83c74` — [RULINGS-SLIM] (D390): every ruling loads as one short line — BUILT and read; the guide step and his look left — written 28 Sep 26 — verify before use
 - **The branch:** cut from `main` at PR #457; folder `.claude/worktrees/docs-rulings-slim-down-e83c74`. Docs and the
   document gate's scripts only — no `raptor-port/src`, so only the Docs guard runs. Rulings range D390–D399 (D390 used).
   No PR opened yet.
-- **Done:** his "Approve" recorded (D390, narrowing D136, D140, D141); the plan red-teamed by Fable AND Astra and
-  revised (`raptor-port/docs/superpowers/plans/2026-09-28-rulings-slim-down-plan.md`, review log §6); five malformed
-  rows repaired (dividers only); the converter (`backlog-archive.mjs --rulings`, with `--short-text`, `--move-rows`,
-  `--merge`), the gate (`docsize.mjs`, shared reader `docsize-rulings.mjs`, `--marks`) and a 140-case self-test incl.
-  real merges both ways; all 265 rows converted; People & accounts made (62 rows); 101 short lines hand-written; every
-  document updated (D201). How we work: 151k → 11.6k bytes (~41k → ~3k tokens).
-- **In flight:** Fable's meaning read of every short line (two halves) and the code read by BOTH Fable and Astra
-  (briefs `raptor-port/docs/superpowers/briefs/2026-09-28-rulings-slim-{meaning,code}-brief.md`); fold their findings.
-- **Parallel chats (D302):** change-recording (D347–D359), small fixes (D360–D369), Tracker leftovers (D370–D379) were
-  told, and agreed: keep adding full rows at the top; whichever merges later runs `git merge origin/main` then
-  `node raptor-port/scripts/backlog-archive.mjs --rulings --merge`, re-applies the printed prose by hand, has one
-  reviewer read the printed UNREAD lines. D350 (change-recording) may belong in People & accounts — classify at merge.
-- **Next:** fold the reads; the guide step (plan §2.6) waits for `claude/small-fixes-batch-d223f6` to merge (it edits
-  the guide's Leave War row); measure again; open the PR; his look; "merge live" one at a time (D78).
+- **Done:** D390 recorded; the plan red-teamed by Fable AND Astra (`raptor-port/docs/superpowers/plans/2026-09-28-rulings-slim-down-plan.md`,
+  review log §6 — every finding and what became of it); the converter (`backlog-archive.mjs --rulings`, `--short-text`,
+  `--move-rows`, `--merge`), the gate (`docsize.mjs`, shared reader `docsize-rulings.mjs`, `--marks`), 178 self-test
+  cases; all 265 rows converted; People & accounts (62 rows); 114 short lines hand-written; Fable's meaning read (252/265,
+  the 13 others rewritten; 23 older rulings marked); both code reads and both verifications folded; a trial merge of
+  each open parallel branch ends green. **Measured:** every chat ~50k → ~13k tokens; a scheduler build chat ~110k → ~44k.
+- **Parallel chats (D302):** change-recording (D347–D359), small fixes (D360–D369), Tracker leftovers (D370–D379) hold
+  the merge steps in their HANDOFF blocks: `git merge --no-commit --no-ff origin/main`, resolve HANDOFF / OUTSTANDING,
+  `node raptor-port/scripts/backlog-archive.mjs --rulings --merge`, re-apply the printed lines, one reviewer reads the
+  UNREAD lines. The change-recording merge will say WRITTEN and ask for its hand work (D347 in the leave-war and tracker
+  "Also read" lines; a mark in D347's full row for D348); D350 may belong in People & accounts.
+- **Next:** (1) his answer on the guide step (plan §2.6 — `raptor-port/CLAUDE.md` ~16k → ~6k; approved "after the
+  small-fixes branch merges"; it can go now without touching the one row that branch edits) — a fresh chat, Opus 5.5
+  high, then Fable's meaning read; (2) open the PR, his look, "merge live" — ideally before the three parallel chats merge,
+  since they are set up to merge across it; (3) his optional question 4 (the older "settled before" notes, ~9k in the
+  scheduler file) stays unanswered.
 <!-- /now -->
 
 <!-- now:claude/docs-tidy-subheads-audit-ec8f87 -->
