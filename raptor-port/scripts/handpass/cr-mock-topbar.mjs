@@ -134,6 +134,7 @@ async function run(tag, W, H) {
       const more = document.getElementById('sbMoreMock'); if (!more) return
       const r = more.getBoundingClientRect()
       const m = document.createElement('div')
+      m.id = 'sbMoreMenuMock'
       m.style.cssText = `position:fixed;left:${r.left}px;top:${r.bottom + 6}px;z-index:9999;background:var(--panel-2,#1b2230);border:1px solid var(--edge,#2a3446);border-radius:10px;padding:6px;display:flex;flex-direction:column;gap:4px;box-shadow:0 8px 24px rgba(0,0,0,.5);min-width:190px;font:600 13px system-ui,sans-serif`
       const row = (ico, t) => `<div style="display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:7px;color:var(--ink,#e6ecf3);background:var(--panel,#141a24)"><span style="width:18px;text-align:center">${ico}</span>${t}</div>`
       m.innerHTML = row('⇅', 'Sort all') + row('🖥', 'Desktop layout')
@@ -141,6 +142,15 @@ async function run(tag, W, H) {
     })
     await page.waitForTimeout(200)
     await page.screenshot({ path: `${OUT}/${tag}-board-menu.png`, clip: { x: 0, y: 0, width: W, height: Math.min(H, Math.ceil(bh2) + 160) } })
+    /* the highlighter opened (his question: is there still room?) — its own row under the bar; then one group opened */
+    await page.evaluate(() => { document.getElementById('sbMoreMenuMock')?.remove() })
+    await page.click('#sbHl'); await page.waitForTimeout(500)
+    const bh3 = await page.evaluate(() => { const t = document.querySelector('#schedBoard .sb-top'); return t ? t.getBoundingClientRect().bottom : 160 })
+    await page.screenshot({ path: `${OUT}/${tag}-board-hl.png`, clip: { x: 0, y: 0, width: W, height: Math.min(H, Math.ceil(bh3) + 160) } })
+    const tab = page.locator('#sbHlStrip .hl-gtab').first()
+    if (await tab.count()) { await tab.click(); await page.waitForTimeout(500) }
+    const bh4 = await page.evaluate(() => { const t = document.querySelector('#schedBoard .sb-top'); return t ? t.getBoundingClientRect().bottom : 160 })
+    await page.screenshot({ path: `${OUT}/${tag}-board-hl-cat.png`, clip: { x: 0, y: 0, width: W, height: Math.min(H, Math.ceil(bh4) + 160) } })
   }
   await ctx.close()
 }
