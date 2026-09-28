@@ -520,6 +520,11 @@ describe('the bubble reaches every detail with a history (Astra 01–03)', () =>
     await hover(row!)
     expect(bub(), 'a bubble on the input').toBeTruthy()
     expect(bub()!.textContent).toMatch(/LL added/)
+    /* its lines are SENTENCES, not a before → after (Fable's final read, F1): each reads in its own words, headed by the
+       input's name, never a bare arrow */
+    expect(bub()!.querySelector('.hb-what')!.textContent, 'headed by the input').toBe('Ranger · LL')
+    const lines = [...bub()!.querySelectorAll('.hb-chg')].map(e => e.textContent || '')
+    expect(lines, 'the line reads in words').toEqual([expect.stringMatching(/^LL added · /)])
     await act(async () => { writeInputs(() => { const i = INPUTS.indexOf(inp); if (i >= 0) INPUTS.splice(i, 1) }); notify() })
   })
 

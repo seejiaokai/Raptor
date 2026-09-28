@@ -1155,3 +1155,18 @@ resolved statuses always carry their resolution date
 **Suggested improvement:** For any scripted cut in a shared document: anchor on a line-start heading or a marker, assert exactly one match in the CURRENT text (after earlier edits in the same script), assert the cut's start precedes its end, and list the document's headings/markers after writing. Prefer doing the cut before any insert that could repeat the anchor.
 
 **Principle:** An anchor unique before an edit can stop being unique after it; check uniqueness against the text you are actually cutting, and verify the structure after every scripted rewrite of a shared file.
+
+### Observation 325: A break-test harness must assert that the named test RAN — a name with regex characters matched nothing and read as "green"
+
+**Status:** OPEN
+**Date:** 2026-09-28
+**Session context:** [HIST-PHONE-HIDE] + [CHG-BY-ITEM] break tests — each wire broken once, the named test expected red. (Numbered past #324, which sits on the sibling branch `claude/lw-figsel-flake`.)
+**Skill:** test-driven-development
+**Type:** open-source
+**Phase/Area:** verifying a test actually guards a line ("watch it fail")
+
+**Issue:** The harness ran `vitest run <file> -t "<test name>"` per broken wire and called it red when the run exited non-zero with "failed" in the output. Two wires came back GREEN ("no test catches this wire"). Both were the harness: `-t` takes a PATTERN, and one test name held parentheses ("a look (a saved plan, an issued version) …"), the other a double quote that broke the shell command — so ZERO tests ran, the run exited 0, and "no test caught it" was a false alarm that could as easily have been a false all-clear in the other direction.
+
+**Suggested improvement:** In the skill's "Verify RED" step, add: when a test is selected by name (`-t`, `-g`, `--grep`), check the run's summary says it actually ran (e.g. "1 passed" or "1 failed", not "0 tests" / "N skipped") before reading the exit code, and select by a plain fragment with no regex or shell metacharacters.
+
+**Principle:** A check that can pass by running nothing must prove it ran something; "no failure" and "no test" look identical in an exit code.

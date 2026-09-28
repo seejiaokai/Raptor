@@ -2,6 +2,8 @@ import { HOOKS } from '../engine/hooks'
 import { elogAllFor, elogWhen, elogWho, elogVal, elogKeySet, ELOG, rowTouches, dateOfDi } from '../engine/editlog'
 import { ridKey } from '../engine/rowids'
 import { DAYS } from '../engine/data'
+import { PEOPLE } from '../engine/people'
+import { inpById } from '../engine/inputs'
 import type { ELogRow } from '../engine/editlog'
 import { HISTMODE, SBDAY, esc } from '../state/view'
 
@@ -220,7 +222,17 @@ export function storyOf(el: HTMLElement): ELogRow[] {
 
 /* "from → to" with the arrow only when there is a before worth naming; a
    detail typed into an empty box reads "set to X", not "— → X" */
+/* a line that is a SENTENCE (an input added, deleted, approved on the Leave War — no before and after of its own), in its
+   own words, its man's name taken off the front when the bubble is already about him ([HIST-PHONE-HIDE], Fable's final
+   read F1 — until an input's row answered, the bubble only ever drew lines with both values, and these read " → ") */
+const csOf = (pid: any) => ((PEOPLE as any)[pid] && (PEOPLE as any)[pid].cs) || String(pid || '')
+function sentenceOf(r: ELogRow): string {
+  const lbl = r.lbl || ''
+  if (r.sub) for (const lead of [`Leave War · ${csOf(r.sub)} · `, `${csOf(r.sub)} · `]) if (lbl.startsWith(lead)) return lbl.slice(lead.length)
+  return lbl
+}
 function chgHTML(r: ELogRow) {
+  if (!r.from && !r.to) return esc(sentenceOf(r))
   /* a person is said by his live callsign (the log keeps his id — Fable F4, 28 Sep 26) */
   const from = elogVal(r, 'from'), to = elogVal(r, 'to')
   return from === '—'
@@ -253,7 +265,10 @@ function paint(all: ELogRow[]) {
      reader's thumb. */
   const rows = showAll ? all : all.slice(-3)
   b.className = 'histbub' + (rows.length > 1 ? ' open' : '')
-  b.innerHTML = `<div class="hb-what">${esc(row.lbl)}</div>`
+  /* an input's own row is headed by the input — "Ranger · LL" — its lines the story under it (Fable F1) */
+  const iid = anchor && keyOf(anchor).startsWith('iu:') ? keyOf(anchor).slice(3) : ''
+  const inp: any = iid ? inpById(iid) : null
+  b.innerHTML = `<div class="hb-what">${esc(inp ? `${csOf(inp.person)} · ${inp.type}` : row.lbl)}</div>`
     + `<ol class="hb-all">` + rows.map(r =>
       `<li><span class="hb-chg">${chgHTML(r)}</span>`
       + `<span class="hb-who">${esc(elogWho(r))} · ${esc(elogWhen(r.t))}</span></li>`).join('') + `</ol>`
