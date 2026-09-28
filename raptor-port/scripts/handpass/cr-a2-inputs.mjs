@@ -198,8 +198,8 @@ if (ONLY.includes('I4')) {
   const o = await openA2('a'); page = o.page
   await step('I4', async () => {
     const P = 'freak', BID = '2026-10-07', PO = '2026-10-14'
-    /* a day after a posting out is drawn as "not here" (the cell's gone state) — read on the day and the day after */
-    const out = async () => { await lwOpen(page, PO); return page.evaluate(([p, ds]) => ds.map(d => { const c = document.querySelector(`[data-testid="cell-${p}-${d}"]`); return c ? /gone/.test(c.className) : null }), [P, [PO, '2026-10-15']]) }
+    /* a day on and after a posting out reads "PO" in the man's box (the war's own mark) — read on the day and the day after */
+    const out = async () => { await lwOpen(page, PO); return page.evaluate(([p, ds]) => ds.map(d => { const c = document.querySelector(`[data-testid="cell-${p}-${d}"]`); return c ? /^PO$/.test((c.innerText || '').trim()) : null }), [P, [PO, '2026-10-15']]) }
     const isOut = a => Array.isArray(a) && a.every(x => x === true)
     await tapCell(page, P, BID); await sheetPress(page, 'bid-LL')
     let s = await sheetNow(page); if (s.open === 'bid-picker' && /Tap the same leave again/i.test(s.text || '')) await sheetPress(page, 'bid-LL')
@@ -217,7 +217,7 @@ if (ONLY.includes('I4')) {
     { const c = page.locator(`[data-testid="cell-${P}-${PO}"]`).first(); await c.evaluate(e => e.scrollIntoView({ block: 'center', inline: 'center' })); await page.waitForTimeout(250) }
     const ds = await doorState(page, 'lw')
     const p1 = await B.shot(page, 'I4-posted-out')
-    B.ck('I4-post', 'Echo posted out from 14 Oct (Overseas Sqn) through the war\'s PO sheet; from that day his row reads "not here"', isOut(po), { date: dt, line, notHere: po, doors: ds }, `${p0}, ${p1}`)
+    B.ck('I4-post', 'Echo posted out from 14 Oct (Overseas Sqn) through the war\'s PO sheet; from that day his boxes read PO', isOut(po), { date: dt, line, notHere: po, doors: ds }, `${p0}, ${p1}`)
     const u = await door(page, 'lw', 'undo')
     const b1 = (await recsOf(page, P, [BID]))[BID]
     const po1 = await out()

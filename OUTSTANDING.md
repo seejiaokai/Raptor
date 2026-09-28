@@ -82,7 +82,8 @@ absence-record re-test), [LW-SPARE-MOVE-DOORS] (low, with the next Leave War mov
 [TRK-EDIT-SIDEWAYS] (their gates have passed), [TRK-PINCH-ASK] (his next Tracker session), [TRK-SESSION-PICK] (low, the next Tracker change), [TRK-DLG-LEFTOVERS] (low, with the next question-box change), [TRK-FLEXBAR-INK] (a question for him, on the Tracker-palette
 look card — D157, merged PR #441), [TRK-BAKE-STALE] (low).
 The amendment area — PR #434, #435, #437 and #438 MERGED (25–26 Sep 26); left: [REQ-ORPHAN-ROW] and [REQ-DOOR-WORDS] (both low). Left from the amendment batch (D91–D111, merged): [AVAILWIN-PREVIEW-BAR] (low), [AMEND-SMALL-SEEN] (any time). The docs and the checks — [DEPLOY-DOCS] (its operational half), [DOC-POINTERS-CODE] and
-[RULINGS-LF-PIN] (with the next code change), [DOC-SUBHEADS], [RULING-HOMES-AUDIT] and [HANDOFF-SHAPE-GUARD] (any time, docs only), [PEEK-ISSUED] (a question for him, low),
+[RULINGS-LF-PIN] (with the next code change), [PEEK-ISSUED] (a question for him, low) — [DOC-SUBHEADS], [RULING-HOMES-AUDIT]
+and [HANDOFF-SHAPE-GUARD] done on `claude/docs-tidy-subheads-audit-ec8f87` (28 Sep 26; archived),
 Roles — [QUALS-MEMBER-SCOPE] (folded into [ACCOUNTS], D200), and beside it [QUALS-PROTO-TOAST] (low, one line of words).
 The five-flags batch (built on `claude/five-flags-batch-build-ef7d85`, 26 Sep 26; FULL-checked and its PR from `claude/five-flags-batch-continue-2cfa70`, 27 Sep 26 — its five items archived) — his answers D270–D275 BUILT and FULL-checked on that branch, 27 Sep 26 (their three items archived); his look card's four questions answered 27 Sep 26 (D276–D279, nothing to build);
 [ARROW-GUTTER-STRIP] (its strip moot by D275; one small leftover, low); low: [GHOST-FLAG-SHADOW], [LW-SETTINGS-SMALL],
@@ -973,35 +974,6 @@ line of them at once — a whole-file diff is where a destroyed record hides. Th
 today (checked 24 Sep 26 with `git ls-files --eol`). Add them — a pattern for the folder covers a new area file too.
 **Place:** ride the next change that starts the full checks on his PC anyway: `.gitattributes` is not on the deploy
 workflow's docs-only skip list, so a change to it alone starts a full run (D89, D151), which a docs pass must not do.
-
-### [DOC-SUBHEADS] The long reference docs need sub-headings, so a chat can read one section (filed 24 Sep 26)
-A leftover of `[DOC-TRIM]` (archived 24 Sep 26), which named it on 21 Sep 26 — `ui-contracts.md` "needs sub-heads so a
-session can read one section" — and the spring clean did not do it. The rule it breaks is tier 2's in
-`raptor-port/docs/doc-budget.md` §1: "no section over ~150 lines without sub-heads". Counted 24 Sep 26 (runs of over
-150 lines with no heading line), all in `raptor-port/docs/`: `ui-contracts.md` 13 (the longest 469 lines),
-`engine-rules.md` 5 (its §Validation runs 927 lines), `feature-impact.md` 1 (550), `performance.md` 1 (313). Adding
-headings rewords nothing; anything more is a move (D138, `backlog-archive.mjs --move`). Docs only — no full check
-run. **Place:** any time, none blocking; sooner if a chat has to read one of those sections whole.
-
-### [HANDOFF-SHAPE-GUARD] The document gate does not notice HANDOFF.md losing a section or a block's end marker (found 25 Sep 26)
-One span replace in `119dff45` (D176's check, on `claude/request-one-row`) ate everything from a `## Now` block's Gates
-line to the gate counts — the block's last lines, its `<!-- /now -->`, the whole `## Next, in order` and the
-`## Gate baseline` heading — and `npm run docsize` passed it, three commits running, into `main` (PR #437). Found and
-restored from `d13162dc` by the overnight chat (`claude/leave-late-published`, 25 Sep 26). **The fix:** `docsize.mjs`
-checks HANDOFF.md's shape — every `<!-- now:… -->` has its `<!-- /now -->` before the next block or heading, and the
-headings `## Now`, `## Next, in order`, `## Gate baseline` are each present once, in that order. Docs/scripts only; its
-own small change (a script under the gate, so a docs-only PR).
-
-### [RULING-HOMES-AUDIT] Check once that each ruling's named home really carries it (filed 24 Sep 26)
-Found in the 24 Sep 26 skills review (D146): D16 and D17 named `raptor-port/docs/bug-check-order.md` as their home,
-and no commit had ever written them there (the review wrote them in). The document gate checks only that a named
-home EXISTS — and, for a new row, that the change touched it — never that it carries the ruling. A read-only audit
-the same day found 24 more rows whose named homes never mention their number: D5–D13, D53, D58, D63 (How we work);
-D1–D3, D15, D28, D31, D32, D43, D52 (OIL); D39, D51 (Scheduler); D64 (Tracker). Most predate the numbering and carry
-the content unnumbered (the 21 Sep bug-check rulings are the order's own text). **The job, docs only:** check each
-by CONTENT once; write any that is missing into its home; add the D-number beside content that is there, so a later
-audit is mechanical — then consider making the gate require a NEW row's document homes to cite its number.
-**Place:** any time, none blocking.
 
 ### [UNDO-ROSTER-SETTINGS] The one Undo does not cover roster or settings edits, though his 16 Sep 26 rule says it should (found 24 Sep 26)
 Found by the amendment re-test's rule-to-test mapping (register AM39d,

@@ -2436,3 +2436,51 @@ the window's design. Pictures `raptor-port/docs/img/handpass/2026-09-26-absence/
 `-R30-02b-the-row-it-could-go-to`, `w6-phone-admin-R30-01-pending-list-week`; sheet
 `raptor-port/docs/handpass/parts/2026-09-26-absence-rewalk-w6.md`.
 
+
+*Moved here 2026-09-28 by backlog-archive.mjs ([HANDOFF-SHAPE-GUARD]). Forward facts: `raptor-port/docs/doc-budget.md`.*
+
+### [HANDOFF-SHAPE-GUARD] The document gate does not notice HANDOFF.md losing a section or a block's end marker (found 25 Sep 26)
+One span replace in `119dff45` (D176's check, on `claude/request-one-row`) ate everything from a `## Now` block's Gates
+line to the gate counts — the block's last lines, its `<!-- /now -->`, the whole `## Next, in order` and the
+`## Gate baseline` heading — and `npm run docsize` passed it, three commits running, into `main` (PR #437). Found and
+restored from `d13162dc` by the overnight chat (`claude/leave-late-published`, 25 Sep 26). **The fix:** `docsize.mjs`
+checks HANDOFF.md's shape — every `<!-- now:… -->` has its `<!-- /now -->` before the next block or heading, and the
+headings `## Now`, `## Next, in order`, `## Gate baseline` are each present once, in that order. Docs/scripts only; its
+own small change (a script under the gate, so a docs-only PR).
+**DONE 28 Sep 26** on `claude/docs-tidy-subheads-audit-ec8f87`, as described, plus: a block outside `## Now` and a stray
+end marker fail too; a break the base already had is only reported. Self-test replays the 25 Sep span replace. Where
+it is described: `raptor-port/docs/doc-budget.md` §4, `.claude/rules/doc-structure.md` §The check that keeps it.
+
+
+*Moved here 2026-09-28 by backlog-archive.mjs ([DOC-SUBHEADS]). Forward facts: `raptor-port/docs/doc-budget.md`.*
+
+### [DOC-SUBHEADS] The long reference docs need sub-headings, so a chat can read one section (filed 24 Sep 26)
+A leftover of `[DOC-TRIM]` (archived 24 Sep 26), which named it on 21 Sep 26 — `ui-contracts.md` "needs sub-heads so a
+session can read one section" — and the spring clean did not do it. The rule it breaks is tier 2's in
+`raptor-port/docs/doc-budget.md` §1: "no section over ~150 lines without sub-heads". Counted 24 Sep 26 (runs of over
+150 lines with no heading line), all in `raptor-port/docs/`: `ui-contracts.md` 13 (the longest 469 lines),
+`engine-rules.md` 5 (its §Validation runs 927 lines), `feature-impact.md` 1 (550), `performance.md` 1 (313). Adding
+headings rewords nothing; anything more is a move (D138, `backlog-archive.mjs --move`). Docs only — no full check
+run. **Place:** any time, none blocking; sooner if a chat has to read one of those sections whole.
+**DONE 28 Sep 26** on `claude/docs-tidy-subheads-audit-ec8f87`: 81 heading lines, nothing else (counted that day:
+ui-contracts 14 runs, engine-rules 7, feature-impact 1, performance 1 — now none over 150); read for meaning by Fable.
+The standing instruction: `raptor-port/docs/doc-budget.md` §1 (tier 2).
+
+
+*Moved here 2026-09-28 by backlog-archive.mjs ([RULING-HOMES-AUDIT]). Forward facts: `raptor-port/docs/superpowers/specs/2026-09-28-ruling-homes-audit.md`.*
+
+### [RULING-HOMES-AUDIT] Check once that each ruling's named home really carries it (filed 24 Sep 26)
+Found in the 24 Sep 26 skills review (D146): D16 and D17 named `raptor-port/docs/bug-check-order.md` as their home,
+and no commit had ever written them there (the review wrote them in). The document gate checks only that a named
+home EXISTS — and, for a new row, that the change touched it — never that it carries the ruling. A read-only audit
+the same day found 24 more rows whose named homes never mention their number: D5–D13, D53, D58, D63 (How we work);
+D1–D3, D15, D28, D31, D32, D43, D52 (OIL); D39, D51 (Scheduler); D64 (Tracker). Most predate the numbering and carry
+the content unnumbered (the 21 Sep bug-check rulings are the order's own text). **The job, docs only:** check each
+by CONTENT once; write any that is missing into its home; add the D-number beside content that is there, so a later
+audit is mechanical — then consider making the gate require a NEW row's document homes to cite its number.
+**Place:** any time, none blocking.
+**DONE 28 Sep 26** on `claude/docs-tidy-subheads-audit-ec8f87`: the 24 rows and ten newer ones checked by content;
+numbers added, four missing rulings written in (D21's "corrected" sentence never had been), eleven home cells corrected;
+and the gate now fails a NEW row whose Markdown home never mentions its number. The record, row by row:
+`raptor-port/docs/superpowers/specs/2026-09-28-ruling-homes-audit.md`.
+
