@@ -82,7 +82,7 @@ absence-record re-test), [LW-SPARE-MOVE-DOORS] (low, with the next Leave War mov
 [TRK-EDIT-SIDEWAYS] (their gates have passed), [TRK-PINCH-ASK] (his next Tracker session), [TRK-SESSION-PICK] (low, the next Tracker change), [TRK-DLG-LEFTOVERS] (low, with the next question-box change), [TRK-FLEXBAR-INK] (a question for him, on the Tracker-palette
 look card — D157, merged PR #441), [TRK-BAKE-STALE] (low).
 The amendment area — PR #434, #435, #437 and #438 MERGED (25–26 Sep 26); left: [REQ-ORPHAN-ROW] and [REQ-DOOR-WORDS] (both low). Left from the amendment batch (D91–D111, merged): [AVAILWIN-PREVIEW-BAR] (low), [AMEND-SMALL-SEEN] (any time). The docs and the checks — [DEPLOY-DOCS] (its operational half), [DOC-POINTERS-CODE] and
-[RULINGS-LF-PIN] (with the next code change), [PEEK-ISSUED] (a question for him, low) — [DOC-SUBHEADS], [RULING-HOMES-AUDIT]
+[RULINGS-LF-PIN] (with the next code change), [PEEK-ISSUED] (a question for him, low), [RULINGS-SLIM] (NOW, his "Approve", D390 — on `claude/docs-rulings-slim-down-e83c74`), [RULING-HOME-HOOK] (low, after it) — [DOC-SUBHEADS], [RULING-HOMES-AUDIT]
 and [HANDOFF-SHAPE-GUARD] done on `claude/docs-tidy-subheads-audit-ec8f87` (28 Sep 26; archived),
 Roles — [QUALS-MEMBER-SCOPE] (folded into [ACCOUNTS], D200), and beside it [QUALS-PROTO-TOAST] (low, one line of words).
 The five-flags batch (built on `claude/five-flags-batch-build-ef7d85`, 26 Sep 26; FULL-checked and its PR from `claude/five-flags-batch-continue-2cfa70`, 27 Sep 26 — its five items archived) — his answers D270–D275 BUILT and FULL-checked on that branch, 27 Sep 26 (their three items archived); his look card's four questions answered 27 Sep 26 (D276–D279, nothing to build);
@@ -971,7 +971,7 @@ or a board change comes near one of them; put the two that change wording or fee
 A leftover of `[DOC-TRIM]` (archived 24 Sep 26). `.gitattributes` pins `OUTSTANDING.md`, `OUTSTANDING-ARCHIVE.md`,
 `DECISIONS.md` and `HANDOFF.md` to LF ([DOCS-GUARD] F4, 23 Sep 26), so no script or editor setting can rewrite every
 line of them at once — a whole-file diff is where a destroyed record hides. The rulings split (D137) added
-`DECISIONS-ARCHIVE.md` and the area files under `.claude/rules/decisions/`, which are NOT pinned; all of them are LF
+`DECISIONS-ARCHIVE.md` and the area files under `.claude/rules/decisions/` — and, since D390, the full rows under `.claude/decisions-full/` — which are NOT pinned; all of them are LF
 today (checked 24 Sep 26 with `git ls-files --eol`). Add them — a pattern for the folder covers a new area file too.
 **Place:** ride the next change that starts the full checks on his PC anyway: `.gitattributes` is not on the deploy
 workflow's docs-only skip list, so a change to it alone starts a full run (D89, D151), which a docs pass must not do.
@@ -1209,3 +1209,23 @@ War grid). **His call, because:** while the repo is PUBLIC (D106) anything uploa
 login — the pictures show only the invented demo world (no real names — D58, D62), but it is publishing. **Place:** low —
 ask him with the next change to the checks; the agent's recommendation: yes, once the repo is private again (D106's
 "afterwards").
+
+### [RULINGS-SLIM] Every ruling loads as one short line; its full row sits beside it — NOW (owner, D390, 28 Sep 26)
+**What:** his "Approve" (D390) to the slim-down proposal: each ruling row in the loaded area files becomes a one-to-two-line
+short form (number, date, the rule), its full row moved whole to `.claude/decisions-full/<area>.md` (searched, never loaded);
+the accounts and posting rulings (about 60 rows) move from How we work to a new People & accounts area; `raptor-port/CLAUDE.md`
+gets the same treatment, last. Measured before: ~50k tokens in every chat, ~110k in a scheduler build chat; the draft after:
+~12k and ~31k. **Context:** the plan, with the design, the parallel-chat story and the review log —
+`raptor-port/docs/superpowers/plans/2026-09-28-rulings-slim-down-plan.md`. **Checks:** Fable and Astra red-team the plan;
+Fable reads every short line for meaning (D138); both read the two script changes. **Status (28 Sep 26):** BUILT and read — conversion, People & accounts, the scripts, 178 self-test cases, Fable's meaning read and both code reads folded (the plan's §6). **Left:** the guide step (plan §2.6), his look, "merge live". **Place:** now, docs and the document
+gate's scripts only, on `claude/docs-rulings-slim-down-e83c74`; the guide step goes NOW on its own branch, in a fresh chat (D391),
+leaving the Leave War row that `claude/small-fixes-batch-d223f6` edits untouched. His "merge live" as always.
+
+### [RULING-HOME-HOOK] Name the rulings whose home a file is, at the moment it is edited — OPEN (Fable's red team of [RULINGS-SLIM], 28 Sep 26)
+**What:** once every ruling loads as one short line (D390), the guard that a chat opens the full row before acting on its
+detail is a rule. Fable's stronger, structural form: a hook on Edit / Write that searches the full rows'
+"Where it lives now" cells (`.claude/decisions-full/`) for the path being edited and tells the chat "this file is the home
+of D320, D323, D328 — open their full rows first". **Open before building:** which hook event can put words in front of
+the model without blocking the edit, and how to keep it quiet (once per file per session). **Context:**
+`raptor-port/docs/superpowers/plans/2026-09-28-rulings-slim-down-plan.md` §2.8 and §5. **Place:** low — after
+[RULINGS-SLIM] merges, if a chat is seen acting on a short line alone; put to him first.

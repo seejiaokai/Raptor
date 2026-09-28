@@ -57,21 +57,35 @@ the later merge keeps both (D78).
   `backlog-archive.mjs --rulings` after merging `main`.
 - **Ports:** preview 4173 (`raptor-walk`, running), browser tests `E2E_PORT=4190`. **Rulings:** D347–D353 used, D354–D359
   free. Nothing to `main` without his "merge live".
-- **The rulings slim-down (`claude/docs-rulings-slim-down-e83c74`, D390–D399; APPROVED, D390) — if it merges first:**
-  `git merge --no-commit --no-ff origin/main` (so it stops before committing even when the rulings merge cleanly); resolve
-  any OTHER conflicted file first (HANDOFF.md, OUTSTANDING.md — the command refuses while one is open); then
-  `node raptor-port/scripts/backlog-archive.mjs --rulings --merge` (NOT `--take-both`). It
-  replays this branch's ruling changes per D-number, three-way (the new rows, D67's narrowing, D182 spent); a row both
-  sides edited stops and shows both. It PRINTS every non-row line this branch changed in a rulings file — the two "Also
-  read" edits (leave-war.md, tracker.md) and the ranges sentence in DECISIONS.md — to re-apply by hand (keep every
-  range), and the short lines it generated from our headings as UNREAD: one reviewer (Astra first, D353) reads them. It
-  may list D350 for the new People & accounts area (CLASSIFY — it governs people and accounts; move it there). By hand
-  after `--merge` (the slim-down chat's trial merge, 28 Sep 26): re-add "**D347** (…)" to the "Also read" lines of
-  leave-war.md (beside its new People & accounts pointer) and tracker.md, then `--rulings` until clean. After it lands,
-  a mark on an OLD row lives in its full row under
-  `.claude/decisions-full/`. **New rows stay full form at the top of the table; the FIRST bold sentence of "What it
-  means" is the one line every chat sees — the rule on its own, at most 350 characters, no "|"** (D347–D353 checked,
-  28 Sep 26). Its plan: `raptor-port/docs/superpowers/plans/2026-09-28-rulings-slim-down-plan.md` on its branch.
+- **The rulings slim-down (D390, PR #458) is MERGED INTO THIS BRANCH (28 Sep 26):** D347–D353 are short lines in the
+  area files, their full rows in `.claude/decisions-full/`; the Also-read lines and the ranges sentence re-applied by hand.
+  **Left:** one reviewer (Astra first, D353) reads the seven short lines D347–D353 against their full rows (D138) — the
+  merge printed them as UNREAD. New rulings: add the FULL row at the top of the area table, first bold sentence = the
+  rule on its own (≤350 characters, no "|"), then `backlog-archive.mjs --rulings`.
+<!-- /now -->
+
+<!-- now:claude/docs-rulings-slim-down-e83c74 -->
+### `claude/docs-rulings-slim-down-e83c74` — [RULINGS-SLIM] (D390): every ruling loads as one short line — BUILT and read; the guide step and his look left — written 28 Sep 26 — verify before use
+- **The branch:** cut from `main` at PR #457; folder `.claude/worktrees/docs-rulings-slim-down-e83c74`. Docs and the
+  document gate's scripts only — no `raptor-port/src`, so only the Docs guard runs. Rulings range D390–D399 (D390 used).
+  No PR opened yet.
+- **Done:** D390 recorded; the plan red-teamed by Fable AND Astra (`raptor-port/docs/superpowers/plans/2026-09-28-rulings-slim-down-plan.md`,
+  review log §6 — every finding and what became of it); the converter (`backlog-archive.mjs --rulings`, `--short-text`,
+  `--move-rows`, `--merge`), the gate (`docsize.mjs`, shared reader `docsize-rulings.mjs`, `--marks`), 178 self-test
+  cases; all 265 rows converted; People & accounts (62 rows); 114 short lines hand-written; Fable's meaning read (252/265,
+  the 13 others rewritten; 23 older rulings marked); both code reads and both verifications folded; a trial merge of
+  each open parallel branch ends green. **Measured:** every chat ~50k → ~13k tokens; a scheduler build chat ~110k → ~44k.
+- **Parallel chats (D302):** change-recording (D347–D359), small fixes (D360–D369), Tracker leftovers (D370–D379) hold
+  the merge steps in their HANDOFF blocks: `git merge --no-commit --no-ff origin/main`, resolve HANDOFF / OUTSTANDING,
+  `node raptor-port/scripts/backlog-archive.mjs --rulings --merge`, re-apply the printed lines, one reviewer reads the
+  UNREAD lines. The change-recording merge will say WRITTEN and ask for its hand work (D347 in the leave-war and tracker
+  "Also read" lines; a mark in D347's full row for D348); D350 may belong in People & accounts.
+- **Next:** (1) the guide step NOW (D391, 28 Sep 26 — his "Confirm do 1 now?"): plan §2.6, `raptor-port/CLAUDE.md`
+  ~16k → ~6k, on its own branch cut from this one, in a fresh chat, Opus 5.5 high, then Fable's meaning read — the Leave
+  War row of §Where things live left untouched (`claude/small-fixes-batch-d223f6` edits it); D390's short line was rewritten
+  for D391 by hand — add it to that meaning read; (2) open the PR, his look, "merge live" — ideally before the three parallel chats merge,
+  since they are set up to merge across it; (3) his optional question 4 (the older "settled before" notes, ~9k in the
+  scheduler file) stays unanswered.
 <!-- /now -->
 
 <!-- now:claude/docs-tidy-subheads-audit-ec8f87 -->

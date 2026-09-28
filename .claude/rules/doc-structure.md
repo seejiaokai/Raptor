@@ -12,19 +12,24 @@ The full policy and the tiers: `raptor-port/docs/doc-budget.md`. This file is it
   `raptor-port/CLAUDE.md` — the project guide and its map, §Where things live — loads once any file under
   `raptor-port/` is opened.
 - **At the start of a chat:** `HANDOFF.md` — where things stand (`## Now`, a block per chat) and what is next.
-- **By itself, per area:** `.claude/rules/decisions/scheduler.md`, `leave-war.md`, `oil.md`, `tracker.md` — each
-  area's rulings, settled decisions and architecture — load when a matching file is opened **with the Read tool**.
-  A shell read (`cat`, `grep`) does not load them, and neither does planning before any file is open: **before
-  planning or editing in an area, open its file yourself.** A brief for ASTRA names the area files the change
-  touches — Codex loads none of this by itself (D140).
-- **When the job needs it:** the reference doc the map names. **Never whole:** an archive — search it.
+- **By itself, per area:** `.claude/rules/decisions/scheduler.md`, `leave-war.md`, `oil.md`, `tracker.md`,
+  `people-accounts.md` — each area's rulings, settled decisions and architecture — load when a matching file is opened
+  **with the Read tool**. A shell read (`cat`, `grep`) does not load them, and neither does planning before any file is
+  open: **before planning or editing in an area, open its file yourself** — People & accounts for any work on
+  accounts, sign-in, Admin → Users, Quals, one-door, posting in or out, archive, restore or delete (D390). A brief for
+  ASTRA names the area files the change touches and their full-text files — Codex loads none of this by itself (D140).
+- **A ruling loads as one line; its full row does not (D390).** Before acting on a ruling's detail or asking him about
+  it, open its full row in `.claude/decisions-full/` — `grep -h '^| D149 |' .claude/decisions-full/*.md` (the shell;
+  the Grep tool hides a long row).
+- **When the job needs it:** the reference doc the map names. **Never whole:** an archive or a full-text rulings file —
+  search it.
 - **Before telling him anything is undecided or missing:** search every rulings file, `DECISIONS-ARCHIVE.md` and
   `OUTSTANDING.md` (`record-decisions.md`).
 
 ## Where a new fact goes — one home each
 | It is… | Its home |
 |---|---|
-| a ruling — a decision, preference, correction, "leave it", "no" | its area's rulings file, the moment he says it (`record-decisions.md`) |
+| a ruling — a decision, preference, correction, "leave it", "no" | one full row at the top of its area's rulings table, the moment he says it; `backlog-archive.mjs --rulings` moves the row to `.claude/decisions-full/` and leaves its short line (`record-decisions.md`, D390) |
 | an open job, a found-not-fixed, a deferral, a question to put to him later | an `OUTSTANDING.md` item — the ONE backlog — and a line in its priority list |
 | how a rule or a surface behaves (a contract) | `engine-rules.md`, `ui-contracts.md`, `feature-impact.md`, `performance.md`, `data-schema.md` (in `raptor-port/docs/`) |
 | a rule EVERY task needs, whatever the area | an unscoped file under `.claude/rules/` (a general ruling: `decisions/how-we-work.md`) — `raptor-port/CLAUDE.md` loads only once a `raptor-port/` file is opened, so it carries the project-side copy or pointer, never the only one |
@@ -41,7 +46,8 @@ The full policy and the tiers: `raptor-port/docs/doc-budget.md`. This file is it
 ## When it leaves — moved whole, never deleted, never reworded
 - A **finished backlog item** → `OUTSTANDING-ARCHIVE.md`, by `node raptor-port/scripts/backlog-archive.mjs <ID> --homes <file>`
   after its lasting facts have a pointer in a live doc (D29).
-- A **replaced ruling or a spent one-off permission** → `DECISIONS-ARCHIVE.md`, by `… backlog-archive.mjs --rulings` (D136).
+- A **replaced ruling or a spent one-off permission** → `DECISIONS-ARCHIVE.md`, by `… backlog-archive.mjs --rulings` (D136) —
+  its mark written in its full row in `.claude/decisions-full/`; the command drops its short line (D390).
 - A `## Now` **block whose work has merged** → removed at the next handoff, once its open residue is filed.
 - A **passage a newer ruling supersedes**, in a file every chat reads → moved whole to `raptor-port/docs/archive/` IN
   THE SAME CHANGE, leaving the new rule and a one-line pointer (newest-instruction-wins says fix the stale text; this

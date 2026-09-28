@@ -15,7 +15,7 @@ So this file adds the forcing function, not a new opinion.
 |---|---|---|
 | **0 — always loaded**, every session, no choice | `raptor-port/CLAUDE.md` (strictly: once any file under `raptor-port/` is opened — in practice every build session; a root-only chat has only the rule files, so `.claude/rules/shipping.md` and `doc-structure.md` carry what every chat needs), `.claude/rules/*.md` without `paths:` — incl. the general rulings `.claude/rules/decisions/how-we-work.md` | **No line target (D141, 24 Sep 26) — a ceiling per file is a TRIPWIRE (§4).** Index and live rules ONLY, and only what EVERY task needs: an area’s rules and architecture live in its area file (tier 2, D140). (The general rulings are read every session on purpose — D137.) |
 | **1 — read at session start** | `HANDOFF.md`, `OUTSTANDING.md`, `DECISIONS.md` (the rulings map) | **No line target (D141) — a ceiling per file is a TRIPWIRE (§4).** OUTSTANDING is a backlog: priority list + one short block per LIVE item; anything done moves out. |
-| **2 — read when working in that area** | `engine-rules.md`, `ui-contracts.md`, `feature-impact.md`, `bug-check-order.md`, `data-*.md`; and each area's rulings `.claude/rules/decisions/<area>.md`, which LOAD BY THEMSELVES when a file matching their `paths:` is read (D137) — and, since D140, carry that area’s settled decisions and architecture too; `docs/file-map.md`; `docs/gates-and-deploy.md` | No line budget (the rulings files: a ceiling each that RISES, never a trim — D136). Must be navigable: headed sections, no section over ~150 lines without sub-heads (the four long ones — `ui-contracts.md`, `engine-rules.md`, `feature-impact.md`, `performance.md` — were brought under it on 28 Sep 26, `[DOC-SUBHEADS]`, heading lines only; a change that grows a section past it adds a sub-head in the same change). |
+| **2 — read when working in that area** | `engine-rules.md`, `ui-contracts.md`, `feature-impact.md`, `bug-check-order.md`, `data-*.md`; and each area's rulings `.claude/rules/decisions/<area>.md`, which LOAD BY THEMSELVES when a file matching their `paths:` is read (D137) — and, since D140, carry that area’s settled decisions and architecture too — **one short line per ruling since D390 (28 Sep 26); each ruling's full row sits whole in `.claude/decisions-full/<area>.md`, never loaded, searched like an archive (never read whole) and opened before acting on a ruling's detail**; `docs/file-map.md`; `docs/gates-and-deploy.md` | No line budget (the rulings files: a ceiling each that RISES, never a trim — D136). Must be navigable: headed sections, no section over ~150 lines without sub-heads (the four long ones — `ui-contracts.md`, `engine-rules.md`, `feature-impact.md`, `performance.md` — were brought under it on 28 Sep 26, `[DOC-SUBHEADS]`, heading lines only; a change that grows a section past it adds a sub-head in the same change). |
 | **3 — read only for that one task** | `docs/superpowers/specs/*`, `briefs/*`, review and scenario files | None. Never read unless the task names it. **Never linked from tier 0.** |
 | **4 — archive** | `HANDOFF-ARCHIVE.md`, `OUTSTANDING-ARCHIVE.md`, `DECISIONS-ARCHIVE.md`, `raptor-port/docs/archive/` (finished documents and passages), superseded specs | None. Searched, never read. |
 
@@ -70,14 +70,19 @@ Stale is worse than absent — the next session trusts it.
   truncated, or when a body line is newly doubled. It runs in CI (`docs-guard.yml`, which exists
   because docs-only changes otherwise run no checks at all) and as a Stop hook at the end of every
   turn. A deliberate exception is declared in the commit: `Docs-guard-allow: [ID]`.
-- **The ceilings — TRIPWIRES, not targets** (D141, 24 Sep 26). Each always-read file has a line ceiling. Crossing it means "look at what in this file does not belong here and move it to its home" (`.claude/rules/doc-structure.md`) — never "cut to a number"; when what crossed it genuinely belongs, the ceiling RISES with its reason. **Over a ceiling inside a code change
+- **The ceilings — TRIPWIRES, not targets** (D141, 24 Sep 26). Each always-read file has a line ceiling; **each loaded
+  rulings file a tripwire in UTF-8 bytes of the whole file** (D390, 28 Sep 26 — each ruling is one line, so a line count
+  cannot see it grow; every area file must have one, and crossing it means split the area or raise it with its reason). Crossing it means "look at what in this file does not belong here and move it to its home" (`.claude/rules/doc-structure.md`) — never "cut to a number"; when what crossed it genuinely belongs, the ceiling RISES with its reason. **Over a ceiling inside a code change
   is reported and deferred, never failed** — a code change is never where docs get trimmed (D29
   rule 3). Over a ceiling on a docs-only change fails, because that change is the trim pass.
 - **The rulings.** No D-number may be lost or newly doubled across the rulings files (`DECISIONS.md`,
   `.claude/rules/decisions/`, `DECISIONS-ARCHIVE.md`; numbers may skip — parallel branches hold ranges,
   D78), every file a ruling names as its home must exist — and a NEW ruling's Markdown homes must mention its
   number (`[RULING-HOMES-AUDIT]`, 28 Sep 26; the frozen archives excepted) — and every ruling id in
-  `scripts/rulecheck.mjs`'s map must still head an entry in a behaviour register. **The structure keeps
+  `scripts/rulecheck.mjs`'s map must still head an entry in a behaviour register. **A ruling's identity is its full
+  row, wherever it sits; since D390 every live full row has exactly one short line** — the same area and date, at most
+  350 characters, its " — changed by" tail naming exactly the rulings its full row's marks name — and a new row that
+  changes an older one fails until the older one's full row is marked. **The structure keeps
   itself (D137):** it fails if the map in `DECISIONS.md` disagrees with the files, if a row marked
   replaced or spent is still in an area file, if an archived row lacks its mark, or if a row is written
   in `DECISIONS.md` itself instead of its area's file.

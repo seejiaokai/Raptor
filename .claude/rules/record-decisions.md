@@ -97,8 +97,10 @@ u didn't save this to outstanding?"* — the answer was no. Saving was never the
 **Before you tell him something is undecided, before you put ANY choice to him, and before you call
 anything missing or unbuilt: search the rulings and the backlog** — `.claude/rules/decisions/` (every
 area, not only the ones loaded: an area loads only when one of its files is READ, so a notes-only or
-design session has none of them), `DECISIONS-ARCHIVE.md` and `OUTSTANDING.md`. Not the code. Not the
-specs folder. Those, by keyword, every time. It costs one search.
+design session has none of them), **the full rows in `.claude/decisions-full/`** (a short line is the rule; his
+words, its conditions and its readings are only there — D390), `DECISIONS-ARCHIVE.md` and `OUTSTANDING.md`. Not
+the code. Not the specs folder. Those, by keyword, every time — with the SHELL's grep: the Grep tool prints
+"[Omitted long matching line]" for a full row, and a search that returned no text is not a read. It costs one search.
 
 Three failures made it, and each one is worth recognising on sight:
 
@@ -127,7 +129,8 @@ never deleted, still searched before asking him anything.
 **And the same day (D137):** *"general rules should be read each session or rules that are applicable should be
 read, once we venture into things concerning other areas then that should be automatically read too … I don't want
 to bloat the ai to context that doesn't matter."* So the rulings are **split by area**, one file each under
-`.claude/rules/decisions/` — Tracker, Leave War, Scheduler & amendments, OIL, How we work — every row keeping its date:
+`.claude/rules/decisions/` — Tracker, Leave War, Scheduler & amendments, OIL, How we work (and, since 28 Sep 26, People &
+accounts — D390) — every row keeping its date:
 - **How we work loads in every session** (no `paths:`); **each other area loads by itself** when a session READS a
   file matching its `paths:` — so work that strays into a second area picks that area up too. Choose paths
   generously: a ruling missed costs more than one loaded (D68).
@@ -135,4 +138,15 @@ to bloat the ai to context that doesn't matter."* So the rulings are **split by 
 - **Filing is mechanical** (`DECISIONS.md`, steps 1–3): a row at the top of its area's table, the replaced or spent
   row marked, then `node raptor-port/scripts/backlog-archive.mjs --rulings` moves marked rows and rewrites the map.
   `docsize` — in CI and at the end of every turn — fails on a lost or doubled D-number, a map out of step, a marked
-  row still live, or a row written in `DECISIONS.md` itself. A NEW area gets its own file, `paths:` and map row.
+  row still live, or a row written in `DECISIONS.md` itself. A NEW area gets its own file, `paths:`, map row and byte
+  tripwire (`RULING_BYTES` in `docsize.mjs`); the converter makes its full-text file.
+
+**And as ONE LINE each (D390, 28 Sep 26 — his "Approve" to the slim-down).** An area file holds one short line per
+ruling — its number, its date, the rule as it stands, and a " — changed by D…" tail naming the later rulings that
+changed it; **the full row lives whole in `.claude/decisions-full/<same name>`, never loaded by itself. Open a ruling's
+full row before acting on its detail or putting a question to him about it** (`grep -h '^| D149 |'
+.claude/decisions-full/*.md`, or Read that line). A mark on an older ruling (DECISIONS.md step 2) goes in its FULL row,
+and its short line is rewritten to state the rule as it now stands. In a full row's home cell, "this file" or "this
+row" means its area's rulings. A tripwire in bytes guards each area file: crossing it means split the area (`--move-rows`)
+or raise it with its reason — never trim a ruling. The design, its red teams and the merge story:
+`raptor-port/docs/superpowers/plans/2026-09-28-rulings-slim-down-plan.md`.
