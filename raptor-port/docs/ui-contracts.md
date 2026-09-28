@@ -3877,7 +3877,9 @@ Three things stay decided:
 > the edit page": it shows in this same place and look on every page where a change the one Undo takes back is made, the
 > Leave War's pair leaves its Period row for it, the Tracker's own pair moves here too, and the board keeps its pair in its
 > own top bar laid out the same way. Built with the change-recording re-test (`OUTSTANDING.md` `[UNDO-TOPBAR]`); this
-> section is rewritten when it lands.
+> section is rewritten when it lands. **And D348 (the same day):** on a phone the bar's buttons run in the desktop's order —
+> Undo · Redo (· the changes clock on Edit Schedule) · the sync dot · the bell, the bell at the far right — not the trio
+> pinned after the bell as below; the changes clock stays Edit Schedule's only.
 
 Two additions to the sticky top bar (`ui/Shell.tsx`), both desktop-and-phone
 except where noted:

@@ -1022,7 +1022,8 @@ on Edit Schedule only (`src/ui/Shell.tsx` `.tb-hist`), in the board's own bar (`
 War's Period row (`src/leavewar/ui/Chrome.tsx`) and in the Tracker's header (`src/tracker/components/Header.jsx`, its
 own undo); Inputs, Quals, Admin and the Logic page carry none (walked 28 Sep 26 — `scripts/handpass/cr-base.mjs` B5).
 **To do:** the readings in D347's row — a mock-up of the real app first (desktop and phone), then the build and a walk at
-both widths. **Place:** built with the change-recording re-test, on `claude/change-recording-retest` (its plan:
+both widths. **D348 (the same day):** on a phone the order is the desktop's — Undo · Redo (· the clock on Edit Schedule) ·
+the sync dot · the bell at the far right; the changes clock stays on Edit Schedule only. **Place:** built with the change-recording re-test, on `claude/change-recording-retest` (its plan:
 `raptor-port/docs/superpowers/plans/2026-09-28-change-recording-plan.md`).
 
 ### [AVAILWIN-PREVIEW-BAR] On the desktop board the ALL AVAIL window, opened from a preview, covers the preview bar (found 24 Sep 26)

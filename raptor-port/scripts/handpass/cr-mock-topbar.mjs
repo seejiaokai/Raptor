@@ -42,6 +42,13 @@ async function run(tag, W, H) {
     return c.outerHTML
   })
   await shot('00-editsched')
+  /* D348 — on a phone the pair runs in the desktop's order: Undo · Redo (· the clock) · the sync dot · the bell at the far
+     right. Today the trio is pinned last (`.tb-hist{order:9}`); the build puts it before the dot. */
+  if (phone) {
+    await page.evaluate(() => { const h = document.querySelector('.tb-hist'); if (h) h.style.order = '0' })
+    await page.waitForTimeout(200)
+    await shot('00-editsched-after')
+  }
 
   const addPair = async () => page.evaluate((html) => {
     const sp = document.querySelector('.topbar .spring')
@@ -50,6 +57,7 @@ async function run(tag, W, H) {
     /* as on Edit Schedule's phone bar (scheduler.css `.topbar.editing .fastsync #syncLbl`): the sync chip shrinks to its
        dot, so the bar's right end reads the same on every page — dot · bell · Undo · Redo */
     if (window.innerWidth <= 820) {
+      const h = sp.querySelector('.tb-hist'); if (h) h.style.order = '0'
       const l = document.getElementById('syncLbl'); if (l) l.style.display = 'none'
       const f = document.getElementById('fastSync'); if (f) f.style.padding = '6px 8px'
     }
@@ -83,6 +91,34 @@ async function run(tag, W, H) {
   await page.evaluate(() => window.openScheduler(0)); await page.waitForSelector('#schedBoard'); await page.waitForTimeout(900)
   const bh = await page.evaluate(() => { const t = document.querySelector('#schedBoard .sb-top'); return t ? t.getBoundingClientRect().bottom : 140 })
   await page.screenshot({ path: `${OUT}/${tag}-board-before.png`, clip: { x: 0, y: 0, width: W, height: Math.min(H, Math.ceil(bh) + 160) } })
+  await page.evaluate((ph) => {
+    const act = document.querySelector('#schedBoard .sb-actions'), hist = document.getElementById('sbHist')
+    const sync = document.getElementById('fastSync'), bell = document.getElementById('notifyBell')
+    if (!act || !hist || !sync || !bell) return
+    const s2 = sync.cloneNode(true), b2 = bell.cloneNode(true)
+    s2.id = 'fastSyncMock'; b2.id = 'notifyBellMock'
+    s2.classList.add('abtn')
+    /* the bell keeps its own look, at the height of the board's buttons */
+    b2.style.height = hist.offsetHeight + 'px'; b2.style.width = Math.max(34, hist.offsetHeight) + 'px'
+    if (ph) { const l = s2.querySelector('#syncLbl'); if (l) l.remove(); s2.style.padding = '0'; s2.style.width = '30px'; s2.style.justifyContent = 'center' }
+    hist.after(s2); s2.after(b2)
+    /* the bell's icon is sized by a top-bar rule the board does not carry: size it as the top bar does */
+    b2.querySelectorAll('.bellglyph').forEach(v => { v.style.width = '17px'; v.style.height = '17px' })
+    if (ph) {
+      /* the second row takes the layout switch and Sort, before the search box */
+      const nav = document.querySelector('#schedBoard .sb-nav'), find = nav && nav.querySelector('.sb-days, .searchbox, input')
+      const wide = document.getElementById('sbWide'), sort = document.getElementById('sbSortAll')
+      const hl = document.getElementById('sbHl')
+      if (nav && hl) { if (wide) hl.after(wide); if (sort) (wide || hl).after(sort) }
+    } else {
+      /* desktop: Sort all moves before Undo, so the row reads Templates · Sort all · Undo · Redo · History · Sync · bell · Done · Close */
+      const sort = document.getElementById('sbSortAll'), undo = document.getElementById('sbUndo')
+      if (sort && undo) undo.before(sort)
+    }
+  }, phone)
+  await page.waitForTimeout(300)
+  const bh2 = await page.evaluate(() => { const t = document.querySelector('#schedBoard .sb-top'); return t ? t.getBoundingClientRect().bottom : 140 })
+  await page.screenshot({ path: `${OUT}/${tag}-board-after.png`, clip: { x: 0, y: 0, width: W, height: Math.min(H, Math.ceil(bh2) + 160) } })
   await ctx.close()
 }
 
