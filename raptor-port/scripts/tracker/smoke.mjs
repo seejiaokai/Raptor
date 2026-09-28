@@ -109,9 +109,9 @@ for (const sig of ['unhandledRejection', 'uncaughtException']) {
 /* The one adaptation (see the header): Raptor's login, then the Tracker tab.
    The app remembers nothing of a session across a reload, so every reload the
    standalone suite did is this whole walk again. */
-async function openTracker(page) {
+async function openTracker(page, user = 'ad', pass = 'a') {
   await page.goto(URL, { waitUntil: 'networkidle' });   // OPEN_TRACKER
-  await page.fill('#luser', 'ad'); await page.fill('#lpass', 'a');
+  await page.fill('#luser', user); await page.fill('#lpass', pass);
   await page.click('#loginForm button[type=submit]');
   await page.waitForSelector('#vWeek .day', { state: 'attached' });
   await page.evaluate(() => window.go('tracker'));
@@ -2624,16 +2624,19 @@ await pg.waitForSelector('#flowSvg .ball', { timeout: 15000 });
      lastCourse is the course ID now (course ids, 1B-i), not the name — compare
      it to the current course's id (the dropdown value). */
   const curCourseId = await pg.inputValue('#courseSel');
+  /* and it is this PERSON's (owner, 28 Sep 26 — D376 "own place"): filed under the
+     signed-in person's id, so the next person on the browser opens on their own */
   const where = await pg.evaluate(() => ({
-    mine: localStorage.getItem('ocuLocal:lastCourse'),
+    key: 'ocuLocal:' + window.__coreForTests.pickKey('lastCourse'),
+    mine: localStorage.getItem('ocuLocal:' + window.__coreForTests.pickKey('lastCourse')),
     shared: Object.keys(localStorage).filter(k => k.startsWith('raptor:tracker/') && /lastCourse/i.test(k)),
   }));
-  ok('that memory is this browser\'s alone, not in the shared file',
-    where.mine === curCourseId && where.shared.length === 0,
-    `mine=${where.mine}, curId=${curCourseId}, shared=[${where.shared.join(',')}]`);
+  ok('that memory is this browser\'s and this person\'s alone, not in the shared file',
+    where.key === 'ocuLocal:who:stiff:lastCourse' && where.mine === curCourseId && where.shared.length === 0,
+    `key=${where.key}, mine=${where.mine}, curId=${curCourseId}, shared=[${where.shared.join(',')}]`);
 
   /* Remembering a course that has since gone must not strand the app. */
-  await pg.evaluate(() => localStorage.setItem('ocuLocal:lastCourse', 'NO SUCH COURSE'));
+  await pg.evaluate(() => localStorage.setItem('ocuLocal:' + window.__coreForTests.pickKey('lastCourse'), 'NO SUCH COURSE'));
   const errsBefore = errs.length;
   await openTracker(pg);
   await pg.waitForSelector('#flowSvg .ball', { timeout: 15000 });
@@ -2667,6 +2670,18 @@ await pg.waitForSelector('#flowSvg .ball', { timeout: 15000 });
     ok('the crew-memory check has someone other than the opening pick to choose',
       false, `roster ${crewNow.join(',')}, opened on ${opening}`);
   }
+
+  /* ...and the next PERSON never opens on it (D376). The admin goes to the second
+     course; the member signing in on this browser opens on the first — nobody's
+     pick of his — and the admin, back, is on his own again. */
+  await pg.selectOption('#courseSel', { label: 'SMOKE FIRST' }); await pg.waitForTimeout(800);
+  await openTracker(pg, 'us', 'us');
+  const memberOpens = await pg.textContent('#courseTitle');
+  ok('the next person on the browser opens on their own place, not the last person\'s course',
+    memberOpens === '26ABSG PROGRESS TRACKER', memberOpens);
+  await openTracker(pg);
+  const adminBack = await pg.textContent('#courseTitle');
+  ok('and the admin, back, is on his own course again', adminBack === 'SMOKE FIRST PROGRESS TRACKER', adminBack);
 }
 
 /* ---- the eleven faults found by the 9 Aug system test ----

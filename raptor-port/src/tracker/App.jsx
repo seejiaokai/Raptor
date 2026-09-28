@@ -75,7 +75,10 @@ export default function App({ active = true }) {
      ready renders the board div), and it also covers the LOGOUT→LOGIN remount
      where the engine's state is intact and ready is already true on mount (the
      7 Sep 26 "no chart after re-login" case). */
-  useEffect(() => { if (core.ready && !core.bootError) { core.renderBoard(); core.notify(); } }, [core.ready]);
+  useEffect(() => { if (core.ready && !core.bootError && !core.resumeForPerson()) { core.renderBoard(); core.notify(); } }, [core.ready]);
+  /* ...and every time the tab is shown again: the person signed in may have changed
+     while it sat hidden (D376 — each person reopens on their own course and student) */
+  useEffect(() => { if (active && core.ready && !core.bootError) core.resumeForPerson(); }, [active]);
 
   /* Which tab is showing is React state, but the search has to reach it: on the
      Info tab the board is display:none, so scrolling to a found event would be
@@ -137,7 +140,10 @@ export default function App({ active = true }) {
       <div className="tr-root" style={{ padding: 24, textAlign: 'center', opacity: 0.7 }}>Loading…</div>
     );
   return (
-    <div className={'tr-root tab-' + tab}>
+    <div className={'tr-root tab-' + tab + (core.resuming ? ' resuming' : '')}>
+      {/* While it reloads the next person's course and student, the last person's
+          chart and panel are hidden, never shown to him (D376) */}
+      {core.resuming ? <div className="resumenote" role="status">Loading…</div> : null}
       {/* The bar hides on demand to hand the chart the whole column (owner
           phone ask, 9 Sep 26). When it is hidden the Header is not rendered at
           all — a display:none header would still cost nothing but keep its

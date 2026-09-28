@@ -16,7 +16,7 @@ import * as FMT from './fileFormat.js';
 import * as FS from './fileStore.js';
 import { findEvents } from './eventOrder.js';
 import { onTrackerSessionEnd, onBeforeTrackerLogout } from '../role.js';
-import { getPeople, onPeople, whoami } from '../people.js';
+import { getPeople, onPeople, whoami, whoamiId } from '../people.js';
 import { mintId, isEntry, upgradeCourseBlock, reconcileIds } from './ids.js';
 import { mintCourseId, isCourseEntry, isCourseId, isReservedCourseName, upgradeCourses, reconcileCourseIds } from './courseIds.js';
 import {
@@ -615,6 +615,14 @@ function trkGesture(fn) {
 const PP = 'ocuLocal:';
 function prefGet(k) { try { return localStorage.getItem(PP + k); } catch (e) { return null; } }
 function prefSet(k, v) { try { localStorage.setItem(PP + k, v); } catch (e) {} }
+/* THE COURSE AND STUDENT A PERSON REOPENS ON ARE HIS OWN (owner, 28 Sep 26 — D376,
+   "own place"; [TRK-SESSION-PICK]). They were remembered per BROWSER, so the next
+   person to sign in opened on the last one's course and student. Every read and
+   write of the two pick keys (`lastCourse`, `lastCrew:<course>`) goes through here:
+   under the signed-in person's id when there is one, else the browser's own key
+   (the standalone Tracker, nobody signed in — as before). The boot converters that
+   rewrite OLD unprefixed keys are left as they are (D120). */
+export function pickKey(k) { const w = whoamiId(); return w ? 'who:' + w + ':' + k : k; }
 
 /* The toolbar hides on demand so the chart gets the whole column (owner phone
    ask, 9 Sep 26 — "have the option to hide this bar so that the space can be
@@ -673,6 +681,41 @@ let loading = true;
 let loadChain = Promise.resolve();
 function onChain(fn) { const p = loadChain.then(fn); loadChain = p.catch(() => {}); return p; }   /* a failed step must not jam the chain */
 export function whenLoaded() { return loadChain; }
+/* WHOSE PICK IS ON SCREEN (D376). The engine boots once per page load and is kept
+   in memory across a logout and the next login, so the next person used to see the
+   last one's course and student. `pickOwner` is the person the loaded pick belongs
+   to; `resumeForPerson` — run whenever the Tracker tab is SHOWN (App.jsx), so a
+   person changed while the tab sat hidden is caught too (Astra F-02) — reloads the
+   signed-in person's own course and student when it is someone else. It decides at
+   once: while it reloads, `resuming` hides the page (App.jsx) and a press on a ball
+   does nothing, so the last person's chart is never graded by the next (Fable F4).
+   The person is read when the queued load RUNS, so a second change queues a load
+   that corrects the first. An unsaved chart edit is never replaced under anyone:
+   the reload waits (the logout already asks about it — D129). */
+let pickOwner = null;
+export let resuming = false;
+export function resumeForPerson() {
+  if (!ready || bootError) return false;
+  if (resuming) return true;
+  if (whoamiId() === pickOwner) return false;
+  if (sylDirty) return false;
+  resuming = true; pop = null; hideDetailBubble();
+  notify();
+  onChain(async () => {
+    const w = whoamiId();
+    const want = prefGet(pickKey('lastCourse'));
+    const c = (want && COURSES.some(x => isCourseEntry(x) && x.id === want)) ? want : (COURSES[0] && COURSES[0].id);
+    if (c) await loadCourseNow(c, true);
+    pickOwner = w;
+  }).finally(() => {
+    resuming = false;
+    refreshCourses(); refreshSyl(); refreshActive(); renderBoard(); renderSide();
+    notify();
+    const land = () => { if (!showLastEdit(active)) scrollToEvent(firstEventId()); };
+    if (typeof requestAnimationFrame !== 'undefined') requestAnimationFrame(land); else land();
+  });
+  return true;
+}
 export let arrangeMode = false, layout = {}, drag = null, AUTO = {}, BORROW = null;
 /* ---- per-edge routing metadata layered on top of the prereq graph ---- */
 let edgeMeta = {}, merges = new Set(), unmerges = new Set(), selEdge = null, mergeFirst = null, selBalls = new Set(), redoStack = [], alignGuides = [];
@@ -1723,7 +1766,7 @@ async function loadCourseNow(c, restoreLastSyllabus) {
   course = c;
   /* One site covers init, switchCourse, addCourse, renCourse and delCourse.
      Raw and synchronous, so unlike sSet it never flickers the save status. */
-  prefSet('lastCourse', c);
+  prefSet(pickKey('lastCourse'), c);
   /* A ring left over from another syllabus would re-light the moment the user
      came back to it. Cleared without redrawing: every caller renders anyway. */
   searchHit = null; searchQ = ''; searchCount = 0; searchAt = 0; searchHits = [];
@@ -1802,7 +1845,7 @@ async function loadCourseNow(c, restoreLastSyllabus) {
      (kLastStudent), then whoever is at the top. The roster is per syllabus, so
      the membership guard quietly handles remembering someone who is not on the
      syllabus being opened. */
-  const __myS = prefGet('lastCrew:' + c);
+  const __myS = prefGet(pickKey('lastCrew:' + c));
   const onRoster = id => !!id && roster.some(r => r.id === id);
   active = onRoster(__myS) ? __myS : (onRoster(__lastS2) ? __lastS2 : (roster[0] ? roster[0].id : null));
   await loadLayout();
@@ -2755,7 +2798,7 @@ async function applyMarkHist(u) {
   /* The pop-up's buttons describe a grade that just changed under it — or,
      when the picker is about to move, somebody else's. */
   if (pop) closePop();
-  if (active !== s) { active = s; prefSet('lastCrew:' + course, s); refreshActive(); }
+  if (active !== s) { active = s; prefSet(pickKey('lastCrew:' + course), s); refreshActive(); }
   await restoreSnap(u);
   /* keep the view: the person is looking at the ball they are taking back, as
      grading keeps it (R62) — a plain redraw threw the chart back to its top
@@ -3853,6 +3896,8 @@ export function closePop() { pop = null; popMsg = null; notify(); }
    view where it is — the user is looking at the ball they tapped; only the
    Crew dropdown lands on the student's latest work. */
 export function ballTap(id, ev) {
+  /* the chart on screen may still be the last person's while this one's loads */
+  if (resuming) return;
   const w = ev && ev.target && ev.target.closest ? ev.target.closest('.wedge') : null;
   if (w) {
     const r = roster[+w.dataset.wi];
@@ -4309,6 +4354,9 @@ export async function addStudent() {
       } else if (link && !r.pid) { r.pid = link; saveRoster(); }
       active = r.id; refreshActive(); renderBoard(); renderSide();
     });
+    /* the student just added is the one on screen, so it is this person's pick too —
+       it never was, and the next visit reopened on the one before (Fable A13) */
+    if (active) prefSet(pickKey('lastCrew:' + course), active);
   });
 }
 export async function removeStudent(v) {
@@ -4351,7 +4399,7 @@ async function removeStudentNow(v) {
        pacing they still need on another. */
     if (!elsewhere) { delKey(kPace(c, v)); delKey(kLulls(c, v)); delete pace[v]; delete lulls[v]; }
     if (wasLastStudent) delKey(kLastStudent(c));
-    if (prefGet('lastCrew:' + c) === v) prefSet('lastCrew:' + c, '');
+    if (prefGet(pickKey('lastCrew:' + c)) === v) prefSet(pickKey('lastCrew:' + c), '');
     if (active === v) active = roster[0] ? roster[0].id : null;
     refreshActive(); renderBoard(); renderSide();
   });
@@ -4443,7 +4491,7 @@ export function setActive(v, opts) {
   else go();
   /* Merely looking at someone counts. Before this, only grading was remembered,
      so picking a crew member and coming back tomorrow forgot them. */
-  prefSet('lastCrew:' + course, v);
+  prefSet(pickKey('lastCrew:' + course), v);
 }
 
 /* ---- syllabus display order (ids since 1B-ii) ---- */
@@ -6133,8 +6181,10 @@ export async function init() {
      entries — a course that was deleted, renamed, or only ever existed in
      someone else's browser simply fails the membership test and falls back to
      the top of the list. lastCourse is a course id. */
-  const __want = prefGet('lastCourse');
+  const __who = whoamiId();
+  const __want = prefGet(pickKey('lastCourse'));
   await loadCourse((__want && COURSES.some(c => isCourseEntry(c) && c.id === __want)) ? __want : (COURSES[0] && COURSES[0].id), true);
+  pickOwner = __who;
   await loadEventInfo();
   ready = true;
   /* [ARCH-STACK] phase 5: enable command routing now that every boot migration
@@ -6176,7 +6226,7 @@ export async function init() {
     window.__coreForTests = { layoutSnapshotFor, collectCharts, collectStudents, applyCharts,
       applyStudents, whenLoaded, migrateAllCourses, migrateCourseIds, migrateSylIds, SYLLABI, DEFAULT_LAYOUTS,
       rosterNow: () => roster, nameOf, byName, courseIdOf, courseName, curCourseName,
-      curSylId, curSylName, sylName, sylIdOf, sylsNow: () => SYLS.slice(),
+      curSylId, curSylName, sylName, sylIdOf, sylsNow: () => SYLS.slice(), pickKey,
       coursesNow: () => COURSES.slice() };
     window.__fileFormatForTests = FMT;
     window.__fileStoreForTests = FS;

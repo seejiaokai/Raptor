@@ -7685,7 +7685,12 @@ screen:
     under "Deleted courses" with ↺ Restore — back under its own id, students and
     marks intact (D128). Logout — the top bar's or the phone drawer's, ONE
     function (`src/ui/logout.ts`) — asks Save them / Discard them / Stay when
-    chart edits are unsaved, over the Tracker tab, before the session ends (D129).
+    chart edits are unsaved, over the Tracker tab, before the session ends (D129). Each
+    PERSON reopens the Tracker on their own last course and student — kept per
+    person on the browser, never the last person’s (D376, 28 Sep 26); someone new
+    there starts on the first course. Whose place is on screen is re-checked every
+    time the tab is shown; while the next person’s is loading the page reads
+    “Loading…” and a press on a ball does nothing.
   - **Surfaces.** ✓ Save changes is the far-right item of its row, desktop and
     phone; on a desktop the save corner is one fixed width (the status words
     shorten, whole on hover), so the first edit never wraps the bar. The details

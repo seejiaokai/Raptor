@@ -225,6 +225,10 @@ button:disabled:hover{border-color:var(--line)}
    so the one line of refusal (a day after today, D374) can sit right under it; the wrapper
    takes the box's place in every row, grid and card, so the box keeps its width. */
 .datebox{display:flex;flex-direction:column;gap:2px;min-width:0}
+/* While the Tracker reloads the next person's own course and student (D376) the last
+   person's page is hidden — never shown, never pressed — and one line says why. */
+.tr-root.resuming>*:not(.resumenote){visibility:hidden}
+.resumenote{padding:24px;text-align:center;color:var(--muted)}
 .datewarn{font-size:11px;line-height:1.3;color:var(--red-ink)}
 .pop .fdates b{font-weight:600}
 /* Status badge: dark ink on the grade's own fill, matching the ring colours on

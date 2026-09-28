@@ -471,3 +471,85 @@ describe('D372 — ↶ and Ctrl+Z take back a pace, an end date and a lull perio
     expect(JSON.stringify(C.lulls[c])).toBe(JSON.stringify(C.lulls[a]))
   })
 })
+
+/* ---------- [TRK-SESSION-PICK] + D376: each person reopens on their own course and student ---------- */
+describe('[TRK-SESSION-PICK] D376 — each person reopens the Tracker on their own place', () => {
+  const ADMIN = { user: 'ad', role: 'admin', pid: 'stiff' }, MEMBER = { user: 'us', role: 'main', pid: 'bane' }
+  let wire: any, bridge: any
+  beforeAll(async () => {
+    wire = await import('./peoplewire')
+    bridge = await import('./people.js')
+    bridge.setWhoamiId(wire.whoamiIdForTracker)
+  })
+  const signIn = async (who: any) => {
+    resetSession(null); resetSession(who)
+    C.resumeForPerson(); await C.whenLoaded(); await tick(); await tick()
+  }
+
+  it('with nobody signed in the Tracker’s person is NOBODY — never the headless default (a real member’s id)', () => {
+    resetSession(null)
+    expect(wire.whoamiIdForTracker(), 'no session → nobody').toBe('')
+    resetSession(ADMIN)
+    expect(wire.whoamiIdForTracker()).toBe('stiff')
+  })
+
+  it('the admin’s pick is his; the member signing in next opens on HER own place; the admin comes back to his', async () => {
+    await signIn(ADMIN)
+    if (C.COURSES.length < 2) { const p = C.addCourse(); await until(() => C.dlg); C.dlgClose('LO SECOND'); await p; await C.whenLoaded() }
+    expect(C.COURSES.length, 'the premise: two courses').toBeGreaterThanOrEqual(2)
+    const second = C.COURSES[1].id
+    await C.switchCourse(second); await C.whenLoaded()
+    if (C.roster.length < 2) { const p = C.addStudent(); await until(() => C.dlg); C.dlgClose('LO PICK B'); await p; await C.whenLoaded() }
+    const b = C.roster[C.roster.length - 1].id
+    C.setActive(b, { land: false })
+    expect(localStorage.getItem('ocuLocal:who:stiff:lastCourse'), 'remembered under HIS name').toBe(second)
+
+    await signIn(MEMBER)
+    expect(C.course, 'the member does not land on the admin’s course').toBe(C.COURSES[0].id)
+    expect(C.course).not.toBe(second)
+    const mine = C.roster[0] && C.roster[0].id
+    if (mine) C.setActive(mine, { land: false })
+
+    await signIn(ADMIN)
+    expect(C.course, 'the admin is back on his course').toBe(second)
+    expect(C.active, 'and his student').toBe(b)
+    expect(C.resumeForPerson(), 'the same person again: nothing reloads').toBe(false)
+  })
+
+  it('while the Tracker reloads for the next person, a press on a ball grades nobody', async () => {
+    resetSession(null); resetSession(MEMBER)
+    expect(C.resumeForPerson(), 'a different person: it reloads').toBe(true)
+    expect(C.resuming).toBe(true)
+    C.ballTap(C.SYL[0].id, { clientX: 5, clientY: 5, target: document.body })
+    expect(C.pop, 'no pop-up on the last person’s chart').toBeNull()
+    await C.whenLoaded(); await tick(); await tick()
+    expect(C.resuming).toBe(false)
+    await signIn(ADMIN)
+  })
+
+  it('+ Add remembers the student it picks, for this person', async () => {
+    await signIn(ADMIN)
+    const p = C.addStudent(); await until(() => C.dlg); C.dlgClose('LO ADDED'); await p; await C.whenLoaded()
+    expect(localStorage.getItem('ocuLocal:who:stiff:lastCrew:' + C.course), 'the added student is the remembered pick').toBe(C.active)
+  })
+
+  it('an unsaved chart edit is never replaced: the reload waits until it is saved', async () => {
+    await signIn(ADMIN)
+    const course = C.course
+    ;(window as any).__markDirtyForTests()
+    try {
+      resetSession(null); resetSession(MEMBER)
+      expect(C.resumeForPerson(), 'no reload over an unsaved edit').toBe(false)
+      expect(C.course).toBe(course)
+      expect(C.sylDirty).toBe(true)
+    } finally { if (C.sylDirty) await C.saveChangesClick(); await signIn(ADMIN) }
+  })
+
+  it('the standalone Tracker (nobody wired) keeps the browser’s one place, as before', async () => {
+    bridge.setWhoamiId(null)
+    try {
+      await C.switchCourse(C.COURSES[0].id); await C.whenLoaded()
+      expect(localStorage.getItem('ocuLocal:lastCourse')).toBe(C.COURSES[0].id)
+    } finally { bridge.setWhoamiId(wire.whoamiIdForTracker) }
+  })
+})
