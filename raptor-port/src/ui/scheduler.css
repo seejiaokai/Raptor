@@ -1906,6 +1906,9 @@ body.dnd .schedboard .ppl[data-fill].dragover .addz{border-color:var(--accent);c
 .accb:hover{border-color:rgba(87,201,122,.8);background:rgba(87,201,122,.2)}
 .accb.undo{color:var(--ink-3);border-color:var(--edge-2);background:transparent}
 .accb.undo:hover{color:var(--ink);border-color:var(--edge)}
+/* [REQ-ORPHAN-ROW] (28 Sep 26): a request whose one row stands on ANOTHER week says where, in place of Accept — a note,
+   not a control (its title says to load that week) */
+.accs .acc-away{font-size:9.5px;color:var(--ink-3);white-space:nowrap;letter-spacing:.02em}
 /* the framed blocks (Programme / Available crew) get the same left bar */
 .allhands.sec,.availpuck.sec{border-left:3px solid var(--sec);background:var(--secbg)}
 .allhands.sec .ah-h{color:var(--sec)}

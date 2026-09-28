@@ -9,6 +9,7 @@ import { keyDay } from './keys'
 import { groundOrder } from './order'
 import { HOOKS } from './hooks'
 import { ridKey, posKey, rowsOf, ensureRowIds } from './rowids'
+import { isoDayWords } from './weekstash'
 
 /* PER-DAY ALTERNATE DRAFTS (owner ask, 15 Aug 26 — "allow me to duplicate the
    current day's schedule and edit over it… if one variable change, they can
@@ -90,7 +91,8 @@ const leaveOut = (di: number, nd: any) => {
     const pid = inp ? inp.person : r.who
     const who = pid && (PEOPLE as any)[pid] ? (PEOPLE as any)[pid].cs : String(pid || '')
     const what = inp ? inpLabel(inp) : (inpLabel({ type: r.srcType, remarks: r.rmks } as any) || r.prog || 'A request')
-    return { id: x.id, who, what, days: x.days.map(dj => String((DAYS[dj] || {}).dow || '')) }
+    /* a row whose request stands on ANOTHER week names that day ([REQ-ORPHAN-ROW], 28 Sep 26 — "on Sun 19 Jul's programme") */
+    return { id: x.id, who, what, days: x.away ? [isoDayWords(x.away)] : x.days.map(dj => String((DAYS[dj] || {}).dow || '')) }
   })
   /* …and a DELETED man is never put back on a day from his cutoff ([POST-OUT-OUTCOMES], D297): stripped from the
      incoming day, and the same message says so */

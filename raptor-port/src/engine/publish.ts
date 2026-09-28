@@ -12,7 +12,7 @@ import { INPUTS, inpId, inputCoversDate, inpDetailKey, frozenInputMatch, stableJ
 import { CURWEEK, isStandalone } from './waves'
 import { groundOrder } from './order'
 import { dayIso, verId, parseVerId, verSeq, verSeqLabel, isValidVerId } from './verid'
-import { isPreservedWeek } from './weekstash'
+import { isPreservedWeek, rowElsewhere } from './weekstash'
 import { inputProtected } from './quarantine'   // functions only both ways, so the import loop is safe
 import { rosterIds } from './faceattrs'
 import { oilEvidence, oilEvidenceKey, oilSignKey, oilKeyNoMem, oilDecisionsKey, oilKeyBeforeStand, oilUpgradeMovedMoney, oilMovedInputsOnly } from './oilev'
@@ -747,10 +747,15 @@ export function filingRestorePlan(di:any,fil:any,dayAfter?:any):{put:Array<{inp:
    set as filed (LOADLEFT), and never by moving the other day (AM1). Returns, per request, the other loaded days its row
    stands on (by index); empty when nothing would stand twice. Pure: the load and the switch apply it (drafts.ts), and
    the load's discard count above counts against it, so the confirm and the load agree. */
-export function rowsLeftOut(di:any,dayIn:any):Array<{id:string,days:number[],row:any}>{di=+di;const out:any[]=[];
+/* …AND ON ANOTHER WEEK ([REQ-ORPHAN-ROW], 28 Sep 26 — Fable's G3, F15): a request covering Sun 19 – Mon 20 Jul has one row,
+   and it may stand in the OTHER week (weekstash.ts rowElsewhere, read-only). A load or a switch that would bring back a
+   copy of it here leaves it out the same way and names that day ("it is on Sun 19 Jul's programme") — `away`. A saved
+   week that cannot be read keeps the row, as before: a load never drops a row on an unknown. */
+export function rowsLeftOut(di:any,dayIn:any):Array<{id:string,days:number[],row:any,away?:string}>{di=+di;const out:any[]=[];
   ((dayIn&&dayIn.ground)||[]).forEach((r:any)=>{const id=r&&r.src; if(!id||out.some((x:any)=>x.id===String(id)))return;
     const days=DAYS.map((d:any,dj:number)=>(dj!==di&&d&&((d.ground||[]).some((g:any)=>g&&g.src===id)))?dj:-1).filter((dj:number)=>dj>=0);
-    if(days.length)out.push({id:String(id),days,row:r});});
+    if(days.length){out.push({id:String(id),days,row:r});return;}
+    const w=rowElsewhere(id); if(w&&w!=='unreadable')out.push({id:String(id),days:[],row:r,away:w.iso});});
   return out;}
 /* take those rows out of a day object (a clone the caller owns — never an issued snapshot or a parked plan's record) */
 export function leaveRowsOut(d:any,ids:string[]){

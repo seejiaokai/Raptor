@@ -36,7 +36,7 @@ import { leaveKey } from '../leavewar/absences'
 import { inputOilAmt, inputItemKey } from '../engine/oil'
 import { clearOilPersonDecisions } from './oilmode'
 import { PLANPUCKS, DAYRMK } from '../state/plan'
-import { stashKeys, stashGet } from '../engine/weekstash'
+import { rowElsewhere, isoDayWords } from '../engine/weekstash'
 import { CURWEEK } from '../engine/waves'
 import { keyToIso, mondayOf } from './weeknav'
 import { canEditSched } from '../state/auth'
@@ -902,15 +902,13 @@ export function commitNewInput(draft: any, toGround?: boolean, keepTail?: any, e
    week is the trap. */
 function landedOnUnloadedWeek(r: any): string {
   if (!r || acceptedDay(r) >= 0) return ''
-  const id = inpId(r)
-  for (const k of stashKeys()) {
-    const json = stashGet(k); if (!json) continue
-    let parsed: any; try { parsed = JSON.parse(json) } catch { continue }
-    const days = parsed && parsed.d
-    if (Array.isArray(days) && days.some((d: any) => ((d && d.ground) || []).some((g: any) => g && g.src === id)))
-      return String(r.date || 'that week')
-  }
-  return ''
+  /* ONE BODY for "is its row on another week" ([REQ-ORPHAN-ROW], 28 Sep 26 — weekstash.ts rowElsewhere, which the accept
+     guard, the card and a load's leave-out read too). It SKIPS the loaded week's own saved copy, which is the stale one
+     written on the way out: scanning it refused the delete of a request taken off since with "Load the week of <this
+     very week>" (Fable/Astra 1b). An unreadable week is let through here, as before — a delete never blocks on it. The
+     refusal names the day the row is on. */
+  const away = rowElsewhere(inpId(r))
+  return away && away !== 'unreadable' ? isoDayWords(away.iso) : ''
 }
 
 export function commitInputEdit(r: any, draft: any, keepTail?: any, entryEnd?: any) {
@@ -1461,6 +1459,11 @@ function dropInputRow(r: any) {
   /* [ARCH-STACK] step 4: deleting the row IS deleting the absence — the war
      reads it, so there is nothing to withdraw (deliberate delete propagates
      and sticks, owner decision 2, 13 Sep 26). */
+  /* A DELETE NEVER LEAVES A DEAD ROW ([REQ-ORPHAN-ROW] 3, 28 Sep 26 — Fable's D176 read F3): a request reading "taken
+     off" (dormant 'r') can still have its own row on a loaded day — a plan parked with it and switched in since. Its
+     filing says there is no row, so the removal below skipped it and the row stayed on the programme with nothing behind
+     it. When its row stands, the delete takes it, through the one removal a landed request has (unacceptInput). */
+  if (r.acc !== 'g' && DAYS.some((d: any) => ((d && d.ground) || []).some((g: any) => g && g.src === inpId(r)))) r.acc = 'g'
   if (r.acc) unacceptInput(acceptedDay(r), r)
   const ix = INPUTS.indexOf(r); if (ix >= 0) INPUTS.splice(ix, 1)
 }

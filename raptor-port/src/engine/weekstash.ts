@@ -22,6 +22,9 @@
    recur because inputs, people, the plan layer and every week now persist
    together or not at all. */
 import { weekBundle } from './weeks-data'
+import { CURWEEK } from './waves'
+import { dayIso } from './verid'
+import { inputCoversDate } from './inputs'
 
 const WEEKSTASH:Record<string,string>={};
 
@@ -194,4 +197,59 @@ export function stashDays(v:any){
     (days||[]).forEach((d:any,i:number)=>{ if(d&&dates[i]!=null)d.dt=dates[i]; });
     return {days,dates};
   }catch(_e){ return null; }
+}
+
+/* ONE REQUEST, ONE ROW — ACROSS WEEKS ([REQ-ORPHAN-ROW], 28 Sep 26; D175's rule, which acceptInput has always kept for
+   the LOADED week only). A request can cover days in two weeks (Sun 19 – Mon 20 Jul); landed on Sunday, its row sits in
+   week 1, and once week 2 was loaded its card offered Accept on Monday and made a SECOND row (Fable's G3, D175's
+   scenario round). The readers of "is this request's row somewhere else?" — acceptInput's guard, the delete/edit refusal
+   (inputedit.tsx landedOnUnloadedWeek), the card (html.ts accCtl), a load's leave-out (publish.ts rowsLeftOut) — ask it
+   HERE, one body. READ-ONLY: it never writes a stash, and it never changes a request's filing (`acc` stays week-local —
+   Astra 02: a filing read from another week would move a published day's pending count by navigation alone).
+   The LOADED week's own entry is skipped: it is the stale copy written on the way out, never read back over DAYS (the
+   same rule oilev.ts stashStanding keeps). A week never visited has no entry, so it holds no row. A stash that cannot
+   be read FAILS CLOSED for a caller that would otherwise make a second row: 'unreadable' (Fable F7). */
+type SrcRows=Map<string,{row:any,di:number}>
+const SRC_MEMO=new Map<string,SrcRows|null>()
+/* every ground row carrying a request (`src`) in stashed week v, by that request's id — the FIRST row per id, as it
+   stands in the week's saved days. null = the week is stashed but cannot be read; an empty map = nothing there (or no
+   entry). Memoised on the stored blob itself, so a rewritten week is a new key and can never serve a stale answer. */
+export function stashGroundBySrc(v:any):SrcRows|null{
+  const blob=stashGet(v);
+  if(blob==null)return new Map();
+  const key=String(blob);
+  if(SRC_MEMO.has(key))return SRC_MEMO.get(key)!;
+  const parsed:any=stashDays(v);
+  let rows:SrcRows|null=null;
+  if(parsed&&Array.isArray(parsed.days)){
+    rows=new Map();
+    parsed.days.forEach((d:any,di:number)=>{ for(const r of ((d||{}).ground||[])){ const s=r&&String(r.src||''); if(s&&!rows!.has(s))rows!.set(s,{row:r,di}); } });
+  }
+  if(SRC_MEMO.size>32)SRC_MEMO.clear();
+  SRC_MEMO.set(key,rows);
+  return rows;
+}
+/* the request's row on a week OTHER than the loaded one: where it stands, or 'unreadable' when a stashed week it COVERS
+   could not be read and none was found readable, or null when it stands nowhere else. `inp` (the request) narrows the
+   unknown to the weeks it could have a row in — a row stands only on a day its request covers (its card is drawn there)
+   — so one unreadable saved week never blocks every other request in the app. Without it, any unreadable week counts. */
+export function rowElsewhere(id:any,inp?:any):{week:string,di:number,iso:string,row:any}|'unreadable'|null{
+  const want=String(id||''); if(!want)return null;
+  let unread=false;
+  for(const k of stashKeys()){
+    if(k===CURWEEK)continue;
+    const m=stashGroundBySrc(k);
+    if(m===null){ if(!inp||(weekBundle(k).dates||[]).some((dt:any)=>inputCoversDate(inp,dt)))unread=true; continue; }
+    const hit=m.get(want);
+    if(hit)return {week:k,di:hit.di,iso:dayIso(k,hit.di),row:hit.row};
+  }
+  return unread?'unreadable':null;
+}
+/* "Sun 19 Jul" — a day named the way the day's list and the cards name it (UTC arithmetic, like dayIso) */
+const WD=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'], MO=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+export function isoDayWords(iso:string):string{
+  const [y,m,d]=String(iso||'').split('-').map(n=>parseInt(n,10));
+  if(!y||!m||!d)return String(iso||'');
+  const dt=new Date(Date.UTC(y,m-1,d));
+  return `${WD[dt.getUTCDay()]} ${d} ${MO[m-1]}`;
 }

@@ -6,7 +6,8 @@ import { INPUTS, inputsOn, inputOnAny, withFrozenInputs, inputCoversDate, inpLab
 import { isStandalone, scSpare, dayCount, mColor, saExempt, SAWAVE } from '../engine/waves'
 import { intimeFold } from '../engine/events'
 import { parseHM, hhmm, hm24, minus } from '../engine/time'
-import { slotVal, txtGet, TIME_TXT, whoArr, rowCrew, rowRef } from '../engine/slots'
+import { slotVal, txtGet, TIME_TXT, whoArr, rowCrew, rowRef, acceptedDay } from '../engine/slots'
+import { rowElsewhere, isoDayWords } from '../engine/weekstash'
 /* RANK left with the focus-scoped trace: ranking the CR chip against the day's
    own worst is traceLeads' job now, in the engine, so both the chip and the
    click that follows it read one test */
@@ -2078,7 +2079,23 @@ export function accCtl(di:any,inp:any){
   /* 'r' (removed — dormant, see engine/inputs.ts inputDormant) is NOT
      "accepted": the row was undone, so this offers Accept again, which is the
      one way back to a flagging state. Only 'g'/'u' show Undo. */
+  /* WHICH DAY'S ROW AN UNDO TAKES OFF ([REQ-DOOR-WORDS] 2, 28 Sep 26 — Fable's F5 on D175's branch). A request covering
+     several days is drawn on each of them, but its one row stands on ONE day; the Undo on another day's card removed that
+     row with nothing saying where it was. Said on the button and its title when the row is on another day. */
+  if(inp.acc==='g'){
+    const dj=acceptedDay(inp), other=dj>=0&&dj!==+di&&DAYS[dj]?String(DAYS[dj].dow||''):'';
+    if(other)return `<span class="accs"><button class="accb undo" data-acc="x" data-accd="${di}" data-acck="${k}" title="Undo — takes its row off ${esc(other)}'s ground programme">Undo · ${esc(other.slice(0,3))}</button></span>`;
+  }
   if(inp.acc&&inp.acc!=='r')return `<span class="accs"><button class="accb undo" data-acc="x" data-accd="${di}" data-acck="${k}" title="${inp.acc==='u'?'Undo — takes it back out of Unavailable, into Personal Inputs':'Undo — removes the ground-programme row this created'}">Undo</button></span>`;
+  /* ITS ROW IS ON ANOTHER WEEK ([REQ-ORPHAN-ROW], 28 Sep 26): a request covering Sun 19 – Mon 20 Jul landed on Sunday keeps
+     its one row in week 1 (D175 — one request, one row). On week 2 its card offered Accept, which made a second row; it now
+     says where the row is instead. (Its filing stays this week's own, so a published Monday's count never moves by a week
+     change — Astra 02.) An unreadable saved week keeps the Accept, whose press refuses and says why. */
+  if(isPersonal(inp.type)){
+    const away=rowElsewhere(inpId(inp),inp);
+    if(away&&away!=='unreadable'){ const w=isoDayWords(away.iso);
+      return `<span class="accs"><span class="acc-away" title="Its row is on the ground programme of ${esc(w)} — load that week to change it">On ${esc(w)}</span></span>`; }
+  }
   const b=(dest:any,lbl:any,ttl:any)=>`<button class="accb" data-acc="${dest}" data-accd="${di}" data-acck="${k}" title="${ttl}">${lbl}</button>`;
   return `<span class="accs">`
     +(/^Other$/i.test(String(inp.type))

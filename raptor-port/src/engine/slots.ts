@@ -9,6 +9,7 @@ import { VCONF } from './rules'
 import { HOOKS } from './hooks'
 import { logEdit } from './editlog'
 import { ridWriteKey } from './rowids'
+import { rowElsewhere } from './weekstash'
 export function whoArr(r:any){return Array.isArray(r.who)?r.who.slice():(r.who?[r.who]:[]);}
 /* Blanks are HELD, not filtered out: a cleared slot has to keep its index or
    every person after it shifts up one and the amendment marks — and the keys
@@ -461,7 +462,21 @@ export function acceptInput(di:any,inp:any,dest:any){
      means "this EXACT input already has a landing" — a correct idempotency check
      (re-accepting the same input never duplicates), not a twin refusal. */
   const key=inpId(inp);
-  if(DAYS.some((dd:any)=>((dd&&dd.ground)||[]).some((r:any)=>r.src===key)))return false;
+  const onDay=DAYS.findIndex((dd:any)=>((dd&&dd.ground)||[]).some((r:any)=>r.src===key));
+  if(onDay>=0){
+    /* A "TAKEN OFF" REQUEST WHOSE OWN ROW STANDS AGAIN ([REQ-ORPHAN-ROW] 3, 28 Sep 26 — Fable's D176 read F3). A plan
+       parked WITH the row, the request ✕'d since (dormant 'r'), then the plan switched in: the row is back beside a request
+       reading "taken off", and Accept did nothing. Accept now ADOPTS that row — the request is on the programme again,
+       no second row. (A general re-file on the switch itself was refused: switching back would then wake a deliberate
+       removal as a fresh, flagging request — Fable's plan read F1.) Any other filing: the row is already there. */
+    if(inp.acc==='r'){ inp.acc='g'; markInputDays(inp,onDay); markEdit(); return true; }
+    return false;
+  }
+  /* …AND NOT A SECOND ROW ON ANOTHER WEEK ([REQ-ORPHAN-ROW], 28 Sep 26; D175 across weeks — Fable's G3). A request covering
+     Sun 19 – Mon 20 Jul landed on Sunday keeps its row in week 1; with week 2 loaded this guard used to see no row and let
+     Monday take a second one. It asks the saved weeks too (weekstash.ts rowElsewhere — read-only; the filing stays
+     week-local), and refuses when it cannot read one (never a second row on an unknown). */
+  if(rowElsewhere(key,inp))return false;
   d.ground=d.ground||[];
   /* PUTTING AN ISSUED LANDING BACK IS A ROUND TRIP, NOT A NEW ROW ([HUMAN-RETEST] the amendment
      system, walk W4-F2, 24 Sep 26; register AM20). On a published day whose CURRENT issued
@@ -601,7 +616,9 @@ export function relandInputs(unaccepted?:Set<string>){
   const savedPending={...SCHED.pending}, savedChanges={...SCHED.changes}, savedAdded={...SCHED.added};
   INPUTS.forEach((r:any)=>{
     if(inputProtected(r))return;
-    if(un.has(inpId(r))){ if(isPersonal(r.type))r.acc='r'; }
+    /* a request taken off on THIS week is parked dormant again — unless its row now stands on ANOTHER week ([REQ-ORPHAN-ROW],
+       28 Sep 26 — Astra 02): landed there since, "taken off" would silence a request that is on a programme */
+    if(un.has(inpId(r))){ const away=rowElsewhere(inpId(r),r); if(isPersonal(r.type)&&!(away&&away!=='unreadable'))r.acc='r'; }
     else autoAcceptInput(r);
   });
   SCHED.pending=savedPending; SCHED.changes=savedChanges; SCHED.added=savedAdded;

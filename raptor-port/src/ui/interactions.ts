@@ -3,7 +3,8 @@
    blank-space clear), with the state halves in src/state/view.ts and the
    repaint replaced by the store's notify() (the week re-renders and the
    highlight pass re-runs from ViewWeek's effect). */
-import { slotVal, acceptInput, unacceptInput, txtSet } from '../engine/slots'
+import { slotVal, acceptInput, unacceptInput, txtSet, acceptedDay } from '../engine/slots'
+import { rowElsewhere, isoDayWords } from '../engine/weekstash'
 import { INPUTS, DATES, withRemarksTail, inpId, defaultAllday } from '../engine/inputs'
 import { DAYS } from '../engine/data'
 import { PEOPLE, isSpecial } from '../engine/people'
@@ -590,6 +591,11 @@ export function routeClick(e: MouseEvent) {
     const di = +ab.dataset.accd!, k = ab.dataset.acck!, dest = ab.dataset.acc!
     const inp = INPUTS.find((x: any) => inpId(x) === k)
     if (!inp) { HOOKS.toast('That input is no longer there', 'warn'); return }
+    /* read BEFORE the write: which day's row an Undo takes off ([REQ-DOOR-WORDS] 2 — the card is drawn on every day the
+       request covers, its one row stands on one of them), and whether an Accept adopts a row already standing
+       ([REQ-ORPHAN-ROW] 3 — a "taken off" request whose own row came back with a plan) */
+    const rowDay = dest === 'x' ? acceptedDay(inp) : -1
+    const adopts = dest !== 'x' && inp.acc === 'r' && DAYS.some((d: any) => ((d && d.ground) || []).some((g: any) => g && g.src === k))
     const ok = dest === 'x' ? unacceptInput(di, inp) : acceptInput(di, inp, dest)
     if (ok) {
       /* SAID ONCE, to the scheduler and to the log, in the same words — the
@@ -602,8 +608,10 @@ export function routeClick(e: MouseEvent) {
          "Bane's LL" says who it happened to, which is the thing the changes
          list is actually for */
       const cs = PEOPLE[inp.person] ? PEOPLE[inp.person].cs : inp.person
-      const said = dest === 'x' ? 'Accept undone'
+      const said = dest === 'x'
+          ? (rowDay >= 0 && rowDay !== di && DAYS[rowDay] ? `Accept undone — its row came off ${DAYS[rowDay].dow}'s programme` : 'Accept undone')
         : dest === 'u' ? `${cs}'s ${inp.type} filed under Unavailable`
+        : adopts ? `${cs}'s ${inp.type} is on the ground programme again — its row was already there`
         : `${cs}'s ${inp.type} added to the ground programme`
       /* the history line is the change history's one writer's (state/changelines.ts): the catch-all command below diffs
          every input against the last committed state, so the filing that moved IS in its envelope and is said once. A
@@ -617,7 +625,13 @@ export function routeClick(e: MouseEvent) {
          all — a control that looks dead. Say why. */
       const cs = PEOPLE[inp.person] ? PEOPLE[inp.person].cs : inp.person
       const onProg = dest !== 'x' && DAYS.some((d: any) => ((d && d.ground) || []).some((g: any) => g && g.src === k))
-      HOOKS.toast(onProg ? `${cs}'s ${inp.type} is already on the programme` : `${cs}'s ${inp.type} can't be changed here right now`, 'warn')
+      /* …and its row on ANOTHER week ([REQ-ORPHAN-ROW], 28 Sep 26): named, with the week to load; a saved week that could
+         not be read refuses too, and says so rather than guess (never a second row on an unknown) */
+      const away = dest !== 'x' && !onProg ? rowElsewhere(k, inp) : null
+      HOOKS.toast(onProg ? `${cs}'s ${inp.type} is already on the programme`
+        : away === 'unreadable' ? `Can't tell whether ${cs}'s ${inp.type} already has a row on another week — load that week first`
+        : away ? `${cs}'s ${inp.type} is already on the programme — on ${isoDayWords(away.iso)}; load that week to change it`
+        : `${cs}'s ${inp.type} can't be changed here right now`, 'warn')
     }
     return
   }

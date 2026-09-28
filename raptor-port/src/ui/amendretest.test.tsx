@@ -354,7 +354,10 @@ describe('an input brought back by a load (W4-F3)', () => {
     expect(inp.acc, 'on the programme again, as the version filed it').toBe('g')
     expect(dayDelta(MON), 'nothing pending: the day is the version').toEqual([])
   })
-  it('"→ Ground" on an input already on the programme says so instead of doing nothing', () => {
+  /* [REQ-ORPHAN-ROW] 3 (28 Sep 26 — Fable's D176 read F3): this stuck state — a request reading "taken off" while its own
+     row stands (a load used to leave it; a plan switched in still can) — no longer answers "already on the programme":
+     the press ADOPTS the row, so the request and its row agree again, with no second row. Still never silent. */
+  it('"→ Ground" on a "taken off" input whose own row stands ADOPTS that row — and says so', () => {
     const inp = meeting()
     acceptInput(MON, inp, 'g')
     inp.acc = 'r'                                           // the stuck state a load used to leave
@@ -362,7 +365,9 @@ describe('an input brought back by a load (W4-F3)', () => {
     b.dataset.acc = 'g'; b.dataset.accd = String(MON); b.dataset.acck = inpId(inp)
     document.body.appendChild(b)
     const said = withToasts(() => { try { routeClick({ target: b, stopPropagation() {}, preventDefault() {} } as any) } finally { b.remove() } })
-    expect(said.join(' '), 'a refused press is never silent').toMatch(/already on the programme/i)
+    expect(said.join(' '), 'never silent: it says the row was already there').toMatch(/on the ground programme again — its row was already there/i)
+    expect(inp.acc, 'on the programme again').toBe('g')
+    expect(DAYS.flatMap((d: any) => (d.ground || []).filter((g: any) => g.src === inpId(inp))).length, 'still ONE row').toBe(1)
   })
 })
 

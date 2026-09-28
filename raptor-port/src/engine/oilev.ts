@@ -44,7 +44,7 @@ import { DAYS } from './data'
 import { INPUTS, inpId, inpWin, oilAsks, dateOrd, dateIx } from './inputs'
 import { weekKeyOfOrd } from './weeks-data'
 import { CURWEEK } from './waves'
-import { stashHas, stashGet, stashDays } from './weekstash'
+import { stashHas, stashGroundBySrc } from './weekstash'
 import { PEOPLE, whoId, isSpecial } from './people'
 import { HOOKS } from './hooks'
 import { dayOilWork, oilItemDefaults, envMin, uniformOil, inputItemKey, rowItemKey, groundItemKey, type OilWork } from './oil'
@@ -371,32 +371,19 @@ function landedStanding(row: any): OilInputEv['stand'] {
    a counter that can restart (stashClear) serves a stale answer under a key
    that looks fresh, which is a hard defect to see. A rewritten week is a new
    string, so it misses correctly. */
-const XW_MEMO = new Map<string, Map<string, OilInputEv['stand']> | null>()
 function stashStanding(first: number | null, key: string): OilInputEv['stand'] {
   if (first == null) return 'unlanded'
   const wk = weekKeyOfOrd(first)
   /* the loaded week is DAYS, which was just scanned; its stash blob is the
      stale one written on the way IN and must never be read back over it */
   if (!wk || wk === CURWEEK || !stashHas(wk)) return 'unlanded'
-  const blob = String(stashGet(wk) || '')
-  let rows = XW_MEMO.get(blob)
-  if (rows === undefined) {
-    const parsed: any = stashDays(wk)
-    if (!parsed || !Array.isArray(parsed.days)) rows = null
-    else {
-      rows = new Map<string, OilInputEv['stand']>()
-      for (const d of parsed.days) {
-        for (const r of ((d || {}).ground || [])) {
-          const src = r && String(r.src || '')
-          if (src && !rows.has(src)) rows.set(src, r.cx ? 'cx' : r.info ? 'info' : 'active')
-        }
-      }
-    }
-    if (XW_MEMO.size > 32) XW_MEMO.clear()
-    XW_MEMO.set(blob, rows)
-  }
+  /* ONE BODY for "the rows by request in a stashed week" ([REQ-ORPHAN-ROW], 28 Sep 26 — Fable F7): the parse and its
+     memo (keyed on the stored blob, for the reason above) moved to weekstash.ts stashGroundBySrc, which the request door's
+     rowElsewhere reads too, so the two can never read a stashed week two ways. The answers here are unchanged. */
+  const rows = stashGroundBySrc(wk)
   if (!rows) return 'elsewhere'                           // stashed and unreadable
-  return rows.get(key) || 'unlanded'
+  const hit = rows.get(key)
+  return hit ? (hit.row.cx ? 'cx' : hit.row.info ? 'info' : 'active') : 'unlanded'
 }
 
 export function projectOilInputs(iso: string): OilInputEv[] {
