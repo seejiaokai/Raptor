@@ -39,7 +39,9 @@ the later merge keeps both (D78).
   (D341) was withdrawn the same hour (D343):** Pages is deleted on the repo again, and `claude/pages-off` puts the publish job
   back off — until it merges, `main`'s publish job fails for want of a Pages site (nothing published). His public link to
   show the app: his own `https://raptor-kohl.vercel.app/`. Nothing else of this branch is pending. **Then, in a
-  FRESH chat (his word, D339): `[HIST-PHONE-HIDE]` with `[CHG-BY-ITEM]` (D340), one branch** — History on a phone: the window
+  FRESH chat (his word, D339): FIRST `[LW-FIGSEL-FLAKE]`** (the Leave War desktop test, now red on about half
+  of every branch's GitHub runs), **then `[HIST-PHONE-HIDE]` with `[CHG-BY-ITEM]` (D340), one branch** — the hint in his
+  wording, "History on: Tap a gold dot on the schedule" (D344); History on a phone: the window
   hides to the bottom ("Hide ▾" / "Show ▴" — spelled out at his question), a gold dot on every detail with a history (the mock-up
   `raptor-port/docs/img/handpass/2026-09-28-draft-pending/histphone/histphone-mockup.png`); and the window sorted by item, every
   line item-first (the mock-up `…/byitem/byitem-mockup.png`) — each mock-up's yes first, then build, walk, check
