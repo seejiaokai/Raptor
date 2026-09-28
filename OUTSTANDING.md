@@ -1083,8 +1083,8 @@ the arrow alone (his question: "how does one know that the action is to minimise
 word — **"History on: Tap a gold dot on the schedule"** (his own wording, D344); (2) Hide sends the window to the slim bar at the bottom,
 "History on · N changes" with a "Show ▴" button — Show brings the list back, ✕ turns History off; (3) while History is on, every detail
 with a history wears a small gold dot just outside the puck's bottom-right corner (never a ring — D92; clear of the OG tag at the
-top right) — on desktop too; the ▾ on the phone only; (4) a tap on a dotted detail opens its bubble. **Open:** his yes to the
-shorter-hint mock-up with the labelled Hide / Show (and to the two calls — dots on desktop too, Hide on the phone only). **Place:** a fresh chat on its own branch
+top right) — on desktop too; the ▾ on the phone only; (4) a tap on a dotted detail opens its bubble. **APPROVED 28 Sep 26 (D345)** — the mock-up
+with the labelled Hide / Show and his hint wording (D344), and the two calls — dots on desktop too, Hide on the phone only. **Place:** a fresh chat on its own branch
 from `main` once PR #451 merges (the agent's reading of "another chat"), with `[CHG-BY-ITEM]` on the same branch (both change the
 window). **Where it lands:** `src/ui/ChangesWindow.tsx` (Hide, the
 bar's words), `src/ui/histbubble.ts` (marking the details with a history while History is on — the same keys the bubble answers),
@@ -1103,7 +1103,7 @@ whose latest change is newest on top; (3) an item with ONE change is one line (n
 (4) in the week view the day leads the header ("Mon · Programme · SODB") — the same event on two days is two items; (5) a man
 moved between items shows under both ("Echo moved in from MET + NOTAM BRIEF" / "Echo moved out to SODB"), still ONE change in the
 tab's count; (6) Who keeps its sittings, its lines item-first too (a move once, under the item he reached); (7) every group open by
-default (a caret folds it). **Open:** his yes to the mock-up. **Narrows D168** ("Where = by the day's own sections"). **Place:** with
+default (a caret folds it). **APPROVED 28 Sep 26 (D345)**, the calls with it. **Narrows D168** ("Where = by the day's own sections"). **Place:** with
 `[HIST-PHONE-HIDE]`, the same fresh chat and branch (both change the changes window). **Where it lands:** `src/ui/changesmodel.ts`
 (the item of a line — the history row's place without its seat or field, from its row-anchored key, not its label; `byWhere` →
 by item; the line's words item-first), `src/ui/ChangesWindow.tsx` (the groups and sub-lines), `src/ui/scheduler.css`,
