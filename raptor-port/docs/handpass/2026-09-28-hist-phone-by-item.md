@@ -189,7 +189,8 @@ person to be "new", so make some first:
 4. Tap **Show**: the list comes back. ✕ turns History off and the dots go.
 5. On a computer: the same dots and bubbles (hover), no Hide.
 
-**Questions (my recommendation first — say "as recommended" or change any):**
+**Questions (my recommendation first — say "as recommended" or change any):** — **ANSWERED 28 Sep 26: "1. Ok · 2. Ok ·
+3. Ok" — all three kept as built (D346).**
 - **Q1.** Changes that belong to no single item — a publish, a sign-off, a cancelled line's reason, a line removed, an
   OIL on/off switch — sit together under one group, **"The day"**. *Recommended: keep.*
 - **Q2.** On a computer, a remark's gold dot sits at the far right of the remark's column, not right after its words
