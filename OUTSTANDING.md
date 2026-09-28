@@ -72,7 +72,8 @@ whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaini
    ([ARCH-STACK]) resumes there, with its step 6 still to come; the [AMEND] work is queued behind it. Architecture first,
    then the individual bugs (D144).
 6. **Before ANY collaborator is added** — an event, not a slot: take the checks runner off this repo (SEC-101, in
-   [REPO-PRIVATE]); and make the repo private again once the public period (D106) ends — his.
+   [REPO-PRIVATE]); and make the repo private again once the public period (D106) ends — his; **the same change turns the
+   GitHub Pages publish job off again** (D341: `false &&` back on `deploy.yml`'s `deploy` job — a private repo on the free plan has no Pages).
 
 **The small OIL follow-ups — ONE batch, with the OIL award fix, about a month before the database (D147, D203):** [OIL-READ-LEFTOVERS] (its items 1, 2, 4),
 [STORE-READER-SWEEP], [OIL-REQ-NAMEBOX] (a walk question for him), [OIL-WORDS],
@@ -532,7 +533,8 @@ on GitHub still carry the D58 unit designation IN THEIR FILES, and `main`'s hist
 **DONE, BY HIM, 23 Sep 26 (D59): THE REPO IS PRIVATE**, reversing his own *"nvm disregard this
 first"* the same day after a check found the unit named in the app. Pages is GONE (API 404), so the
 publish job in `.github/workflows/deploy.yml` is OFF — it would fail every push and still bill —
-with the gates left running. `README.md` corrected. **The app is viewed on VERCEL now.**
+with the gates left running. `README.md` corrected. **The app is viewed on VERCEL now.** **28 Sep 26 (D341): while the repo is
+public (D106) the Pages address is back** — `https://seejiaokai.github.io/Raptor/`, the publish job on; going private again turns it off.
 
 **STILL OPEN — the sharing half** (*"i would like to make my repo private, and share with developers
 on my app"*). Route: Settings → Collaborators, by username, Write; they run it locally and do not
