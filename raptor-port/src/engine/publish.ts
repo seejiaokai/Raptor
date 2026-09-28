@@ -1239,10 +1239,17 @@ function currentBindNow(di:any){ const d=DAYS[di];
      order on screen — and a first drag freezes the shown order into the array before it moves, so a drag
      could leave the array exactly as it was: "1 reorder" pending, the four still green, and "Publish AL"
      issuing the reorder on signatures given for the old order (AM10, AM11). */
-  /* recorded as the shown order of the array's positions: the digest already binds each position's
-     content, so the pair fixes what is shown — and it does not move when row ids are minted before a publish */
-  const gord=d?groundOrder(d.ground,d.gman).map((x:any)=>x.ri).join(','):'';
-  return {dg:d?digest(d,di):'', iso:dayIso(CURWEEK,di), base:dayCurVer(di)||'', rev:(SCHED.curDraft||{})[di]||'', fil:filingKey(di), oil:oilSignKey(oilEvidence(di),d), gord, pd:pendingKey(di)};}
+  /* …NOW BOUND AS SHOWN, NOT AS STORED ([AMEND-SMALL-SEEN] 9, 28 Sep 26 — the amendment re-test's final read, Fable #1's
+     mirror). The pair above was (the digest of the rows by their raw array position) + (the shown order of those
+     positions), so "Sort" on a ground programme whose rows were STORED out of time order — it is always SHOWN in time
+     order — changed both halves and took the four sign-offs down, while the day read "no changes to publish": a false
+     re-sign for nothing he could see (D103 — only a change that shows takes them down). So the digest reads a COPY of the
+     day whose ground rows stand in their SHOWN order (`groundOrder`, the hand order honoured): position i is the i-th row
+     on screen, so the one digest binds content AND shown order together — a row moving on screen moves its content to
+     another key and clears the four; a re-order only the array sees changes nothing. `gord` is retired (always ''): it
+     only restated the order, and a binding stored while it existed re-signs once (demo data — D56). */
+  const shown=d&&Array.isArray(d.ground)&&d.ground.length?{...d,ground:groundOrder(d.ground,d.gman).map((x:any)=>x.row)}:d;
+  return {dg:d?digest(shown,di):'', iso:dayIso(CURWEEK,di), base:dayCurVer(di)||'', rev:(SCHED.curDraft||{})[di]||'', fil:filingKey(di), oil:oilSignKey(oilEvidence(di),d), gord:'', pd:pendingKey(di)};}
 /* ANY PENDING CHANGE WIPES THE SIGN-OFFS (owner, D103, 25 Sep 26 — his own idea: "why dont we just wipe the
    sign offs for any changes to the schedule?"). ONE rule: something waiting means sign again. So a signature on
    a PUBLISHED day also binds to the whole pending comparison itself — every entry of dayDelta, the same body
@@ -1274,8 +1281,8 @@ function signBoundOk(di:any,role:any,cur?:any){const b=(SCHED.signBind||{})[+di]
      carries no oil field, and on a day that earns nothing there is nothing it
      could have failed to promise. A day that DOES carry evidence still
      invalidates, because '' and a real block differ. */
-  /* the ground order axis, like the filing axis: a binding written before it existed (no gord) cannot prove
-     the order was approved, so it re-signs — on a day with ground rows; with none there is no order to prove */
+  /* the ground order axis: RETIRED 28 Sep 26 ([AMEND-SMALL-SEEN] 9) — the digest now binds the rows as SHOWN, so the order
+     rides `dg`. Every new binding carries gord ''; one stored while it existed re-signs once (demo data — D56) */
   /* …and the pending comparison (D103): a binding written before it existed reads '' — which is exactly what a
      day with nothing waiting has, so it stands there and falls the moment anything is pending */
   return x.dg===c.dg&&x.iso===c.iso&&x.base===c.base&&x.rev===c.rev&&x.fil===c.fil&&(x.gord||'')===(c.gord||'')&&(x.pd||'')===(c.pd||'')&&oilBoundOk(di,x.oil,c.oil);}
