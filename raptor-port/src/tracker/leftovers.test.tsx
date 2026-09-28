@@ -14,6 +14,7 @@ import { DlgModal } from './components/Modals.jsx'
 import Header from './components/Header.jsx'
 import ShowAllPanel from './components/ShowAllPanel.jsx'
 import Pop from './components/Pop.jsx'
+import SidePanel from './components/SidePanel.jsx'
 import { initStore, resetSession } from '../state/store'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
@@ -328,6 +329,70 @@ describe('[TRK-RETEST-NOTES] C5 + D374 — the grading pop-up’s boxes on scree
       expect(host.querySelector('#popDoneWarn'), 'the line goes with the next change').toBeNull()
       await key(box, 'Escape')
       expect(C.marks[s][f].d, 'Escape keeps the day typed').toBe(dayAfter(C.isoToday(), -2))
+    } finally { C.closePop(); await act(async () => { root.unmount() }); host.remove() }
+  })
+})
+
+/* ---------- D371 and D370: a student's failures ---------- */
+async function freshEvent(s: string, k: number) {
+  /* an event with no grade and no failures for this student, for a clean start */
+  const ev = C.SYL.filter((e: any) => !C.gradeOf(s, e.id) && !C.failOf(s, e.id))[k].id
+  return ev
+}
+async function fail(s: string, ev: string, day: string) { C.openPop(ev, { clientX: 5, clientY: 5 }); C.popFailDateChanged(day); await C.popFail(1); C.closePop() }
+
+describe('D371 — failures take their X by DAY; − takes back the latest day', () => {
+  it('a failure recorded today, then one back-dated: the earlier DAY is the plain code', async () => {
+    const s = await pickStudent(); const ev = await freshEvent(s, 0)
+    const today = C.isoToday(), before = dayAfter(today, -10)
+    await fail(s, ev, today); await fail(s, ev, before)
+    expect(C.failDates(s, ev), 'oldest day first').toEqual([before, today])
+    const list = C.failList(s).filter((x: any) => x.id === ev)
+    expect(list.map((x: any) => x.label + '@' + x.date), 'the full list reads the same').toEqual([ev + '@' + before, ev + 'X@' + today])
+    expect(C.markHtml(s, ev), 'the details bubble too: the plain code is the earlier day').toContain(ev + ' ' + C.fmt(C.parseD(before)) + ' · ' + ev + 'X ' + C.fmt(C.parseD(today)))
+    C.openPop(ev, { clientX: 5, clientY: 5 }); await C.popFail(-1); C.closePop()
+    expect(C.failDates(s, ev), '− takes back the one with the latest day').toEqual([before])
+    await C.doUndo()
+    expect(C.failDates(s, ev), '↶ brings it back in its place').toEqual([before, today])
+  })
+
+  it('re-dating a failure re-orders them; an undated failure sorts after the dated; − never takes the undated first', async () => {
+    const s = await pickStudent(); const ev = await freshEvent(s, 1)
+    const today = C.isoToday(), a = dayAfter(today, -20), b = dayAfter(today, -5)
+    await fail(s, ev, a); await fail(s, ev, b)
+    await C.setFailDate(s, ev, 0, dayAfter(today, -1))
+    expect(C.failDates(s, ev), 'the re-dated one moves after the other').toEqual([b, dayAfter(today, -1)])
+    await C.setFailDate(s, ev, 0, '')
+    expect(C.failDates(s, ev), 'emptied: undated, last').toEqual([dayAfter(today, -1), null])
+    C.openPop(ev, { clientX: 5, clientY: 5 }); await C.popFail(-1); C.closePop()
+    expect(C.failDates(s, ev), '− took the latest DATED one').toEqual([null])
+    C.openPop(ev, { clientX: 5, clientY: 5 }); await C.popFail(-1); C.closePop()
+    expect(C.failDates(s, ev), 'all undated: the last recorded').toEqual([])
+  })
+})
+
+describe('D370 — the Failures card leaves out an N.A. event’s failures, as the ball does', () => {
+  it('two failures, then N.A.: gone from the card, its total and the full list; back with their days when graded again; the pop-up and the bubble keep them', async () => {
+    const s = await pickStudent(); const ev = await freshEvent(s, 2)
+    const today = C.isoToday(), d1 = dayAfter(today, -3)
+    await fail(s, ev, d1); await fail(s, ev, today)
+    const { host, root } = await render(<Live draw={() => <SidePanel zoom={1} />} />)
+    try {
+      const chips = () => [...host.querySelectorAll('#failChips .failchip')].filter(c => (c as HTMLElement).dataset.ev === ev).length
+      const total = () => Number((host.querySelector('#failTotal')?.textContent || '0').match(/\d+/)?.[0] || 0)
+      expect(chips(), 'the premise: two chips').toBe(2)
+      const t0 = total()
+      C.openPop(ev, { clientX: 5, clientY: 5 }); await C.popGrade('na')
+      await act(async () => { await tick() })
+      expect(chips(), 'no chips while N.A.').toBe(0)
+      expect(total(), 'not in the total').toBe(t0 - 2)
+      expect(C.failList(s).filter((x: any) => x.id === ev), 'not in the full list').toEqual([])
+      expect(C.failOf(s, ev), 'kept: the count the pop-up shows').toBe(2)
+      expect(C.markHtml(s, ev), 'kept: the details bubble').toMatch(/Failed/)
+      C.openPop(ev, { clientX: 5, clientY: 5 }); await C.popGrade('marg')
+      await act(async () => { await tick() })
+      expect(chips(), 'back when graded again').toBe(2)
+      expect(C.failDates(s, ev), 'with their days').toEqual([d1, today])
     } finally { C.closePop(); await act(async () => { root.unmount() }); host.remove() }
   })
 })

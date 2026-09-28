@@ -7664,7 +7664,13 @@ screen:
     Upchit, End date A / B) save when LEFT, and a half-typed day is put back
     ([TRK-RETEST-NOTES] C5). A day after today is refused in Done on, Failed on
     and both Last Flown boxes, with one line under the box saying why; Upchit
-    and the end dates take any day (D374, 28 Sep 26). Deleting a ball says its marks go at ✓ Save changes, and they
+    and the end dates take any day (D374, 28 Sep 26). A student’s failures on an
+    event go in the order of their DAYS — the earliest is the plain code, each
+    later day adds an X, an undated one comes last — and − takes back the latest
+    day (D371). An event marked N.A. leaves the Failures card, its total and the
+    full list, as its ticks leave the ball; the grading pop-up and the details
+    bubble still show its failures, and they return, days and all, if it is
+    graded again (D370). Deleting a ball says its marks go at ✓ Save changes, and they
     do, in every course (D124), with the details typed on it (D130) and any
     student's "last worked" pointer to it; a deleted-but-unsaved code cannot be
     re-added until the save (+ Add and 📋 Edit events alike). An IMPORT never

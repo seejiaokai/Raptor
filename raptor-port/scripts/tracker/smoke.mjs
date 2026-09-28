@@ -1511,8 +1511,9 @@ await pg.waitForTimeout(800);
   await pg.fill('#failLog .frow[data-ev="ST-01"][data-fi="1"] input[type=date]', '2026-08-01');
   await pg.press('#failLog .frow[data-ev="ST-01"][data-fi="1"] input[type=date]', 'Tab'); await pg.waitForTimeout(300);
   const redated = await pg.evaluate(() => [...document.querySelectorAll('#failChips .failchip')].map(c => c.dataset.date));
-  ok('changing a day in the list re-dates that one failure and its chip',
-    redated[1] === '2026-08-01' && redated[0] === redated[2] && redated[0] !== '2026-08-01', `chip dates: ${redated.join(', ')}`);
+  /* the failures follow their DAYS (owner, 28 Sep 26 — D371): the one re-dated to 1 Aug is now the plain code */
+  ok('changing a day in the list re-dates that one failure, and the labels follow the days',
+    redated[0] === '2026-08-01' && redated[1] === redated[2] && redated[1] !== '2026-08-01', `chip dates: ${redated.join(', ')}`);
   await pg.keyboard.press('Escape'); await pg.waitForTimeout(250);
   ok('Escape closes the failures list', !(await pg.locator('#failLog').count()));
 
@@ -1526,13 +1527,13 @@ await pg.waitForTimeout(800);
     labels: [...document.querySelectorAll('#popFailDates .fdate b')].map(e => e.textContent),
   }));
   ok('the pop-up lists this student’s failures on the event with their days',
-    popList.box === today && popList.labels.join(',') === 'ST-01,ST-01X,ST-01XX' && popList.days[1] === '2026-08-01',
+    popList.box === today && popList.labels.join(',') === 'ST-01,ST-01X,ST-01XX' && popList.days[0] === '2026-08-01',
     `box ${popList.box} · ${popList.labels.join(', ')} · ${popList.days.join(', ')}`);
   await pg.fill('#popFailDate', '2026-08-15'); await pg.waitForTimeout(150);
   await pg.click('#popFailPlus'); await pg.waitForTimeout(400);
   const dated = await pg.evaluate(() => [...document.querySelectorAll('#failChips .failchip')].map(c => c.textContent.trim() + '@' + c.dataset.date));
   ok('a + records the failure on the day in the "Failed on" box',
-    dated.includes('ST-01XXX@2026-08-15'), dated.join(', '));
+    dated.includes('ST-01X@2026-08-15'), dated.join(', '));   /* in its place by day (D371) */
   await pg.click('#popFailMinus'); await pg.waitForTimeout(300);
   ok('a − takes the latest failure back',
     (await pg.evaluate(() => document.querySelectorAll('#failChips .failchip').length)) === 4);

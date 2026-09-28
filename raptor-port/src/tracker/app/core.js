@@ -1932,23 +1932,40 @@ export const isDone = (s, id) => DONE.has(gradeOf(s, id));
    ISO date per failure, oldest first, so fd.length === f. A count recorded
    before dates existed — or read from a file of that time — is that many
    UNDATED failures: nulls here, never an invented day. `f` stays the count the
-   ball's red ticks and the file check read. */
+   ball's red ticks and the file check read.
+   IN THE ORDER OF THEIR DAYS (owner, 28 Sep 26 — D371): the earliest day first, so
+   the plain code is the earliest failure and each later DAY adds an X; a failure
+   with no day recorded comes after every dated one; two on one day keep the order
+   they were recorded. They were kept in the order TYPED — a failure back-dated after
+   today's became ST-02X though it happened first. This one read is the order for
+   every surface (the ball, the card, the full list, the details bubble, the pop-up,
+   the export), and every writer works on its copy and stores it back in this order. */
+export function sortFails(list) {
+  return list.map((d, i) => ({ d: d || null, i }))
+    .sort((a, b) => (a.d && b.d) ? (a.d < b.d ? -1 : a.d > b.d ? 1 : a.i - b.i) : a.d ? -1 : b.d ? 1 : a.i - b.i)
+    .map(x => x.d);
+}
 export function failDates(s, id) {
   const m = marks[s] && marks[s][id]; const n = (m && m.f) || 0;
   const fd = (m && Array.isArray(m.fd)) ? m.fd : [];
   const out = []; for (let i = 0; i < n; i++) out.push(fd[i] || null);
-  return out;
+  return sortFails(out);
 }
 /* The owner's notation (16 Aug; each failure its own entry, 9 Sep 26): the
    first failure is the plain code and every later one adds an X — ST-01,
    ST-01X, ST-01XX. `i` is the failure's index, oldest first. */
 export function failLabel(id, i) { return id + 'X'.repeat(Math.max(0, i | 0)); }
-/* Every failure one student has on this chart, in chart order then as recorded
-   — the full lowdown behind the Failures title. */
+/* Every failure one student has on this chart, in chart order then by day (D371)
+   — the full lowdown behind the Failures title. An event marked N.A. is left out,
+   as the Failures card leaves it out and the ball hides its ticks (owner, 28 Sep
+   26 — D370): its failures are kept, and come back with their days if it is
+   graded again; the grading pop-up and the details bubble still show them. */
 export function failList(s) {
   const out = [];
-  for (const e of [...SYL].sort((a, b) => a.seq - b.seq))
+  for (const e of [...SYL].sort((a, b) => a.seq - b.seq)) {
+    if (gradeOf(s, e.id) === 'na') continue;
     failDates(s, e.id).forEach((d, i) => out.push({ id: e.id, i, label: failLabel(e.id, i), date: d }));
+  }
   return out;
 }
 /* The day an event was accomplished (owner, 9 Sep 26: "the details portion …
@@ -3937,12 +3954,17 @@ export async function popFail(delta) {
   if (delta > 0 && afterToday(popFailDate)) { popMsg = { where: 'fail', text: NOT_YET }; notify(); return; }
   trkGesture(() => {   // [CMDL-FINISH] §4 (Class A) — the count + day list as ONE envelope
     pushMarkUndo(s, 'the failure count on ' + popId);
-    /* + records a failure on the pop-up's failure day; − takes the LATEST one
-       back. The count and the list of days are kept in step. */
-    const fd = failDates(s, popId);
+    /* + records a failure on the pop-up's failure day; − takes back the one with the
+       LATEST DAY (D371 — an undated one only when none has a day). The count and the
+       list of days are kept in step, and stored in the order of their days. */
+    let fd = failDates(s, popId);
     /* a day still being typed (0202…) is not a day: today, as a grade does */
     for (let k = 0; k < delta; k++) fd.push(isWholeDay(popFailDate) ? popFailDate : isoToday());
-    for (let k = 0; k < -delta && fd.length; k++) fd.pop();
+    for (let k = 0; k < -delta && fd.length; k++) {
+      let at = fd.length - 1; while (at >= 0 && !fd[at]) at--;
+      fd.splice(at >= 0 ? at : fd.length - 1, 1);
+    }
+    fd = sortFails(fd);
     m.f = fd.length; m.fd = fd;
     stamp(m);
     saveMarks(s);
@@ -4014,7 +4036,7 @@ export async function setFailDate(s, id, i, iso) {
   if ((fd[i] || null) === (iso || null)) return;
   trkGesture(() => {   // [CMDL-FINISH] §4 (Class A)
     pushMarkUndo(s, 'the date of ' + failLabel(id, i), 'failDate:' + id + ':' + i);
-    fd[i] = iso || null; marks[s][id].fd = fd;
+    fd[i] = iso || null; marks[s][id].fd = sortFails(fd);   /* re-dated: back in the order of the days (D371) */
     stamp(marks[s][id]);
     saveMarks(s); renderSide();
   });

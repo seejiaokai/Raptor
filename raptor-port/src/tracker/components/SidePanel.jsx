@@ -390,11 +390,14 @@ export default function SidePanel({ zoom }) {
           own chip (owner: "when someone fails twice, it should show ST-01,
           ST-01X"), each carrying the day it happened — hover or tap for it;
           the title opens the full list with a date box per failure. Worst
-          event first, its failures oldest first. The total counts failures. */}
+          event first, its failures oldest DAY first (D371). The total counts failures.
+          An event marked N.A. is left out — its ball hides its ticks, and the card
+          and its total follow (owner, 28 Sep 26 — D370); the failures are kept and
+          come back if it is graded again. */}
       {(() => {
         const fails = core.SYL
           .map(e => ({ id: e.id, n: core.failOf(s, e.id) }))
-          .filter(x => x.n > 0)
+          .filter(x => x.n > 0 && core.gradeOf(s, x.id) !== 'na')
           .sort((a, b) => b.n - a.n || a.id.localeCompare(b.id));
         const total = fails.reduce((t, x) => t + x.n, 0);
         return (
