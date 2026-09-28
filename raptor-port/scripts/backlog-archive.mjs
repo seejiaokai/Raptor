@@ -20,11 +20,12 @@
  *     back exactly as they were;
  *   - it prints every remaining mention of the id, because pointers to a moved item need a hand
  *     look — a script cannot know which of them should now say "archived". */
-import { readFileSync, writeFileSync, existsSync, realpathSync, renameSync, rmSync } from 'node:fs'
+import { readFileSync, writeFileSync, existsSync, realpathSync, renameSync, rmSync, mkdirSync } from 'node:fs'
 import { join, dirname, relative, isAbsolute } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { execFileSync, spawnSync } from 'node:child_process'
 import { createHash } from 'node:crypto'
+import * as RL from './docsize-rulings.mjs'
 
 const REPO = join(dirname(fileURLToPath(import.meta.url)), '..', '..')
 const LIVE = 'OUTSTANDING.md', ARCHIVE = 'OUTSTANDING-ARCHIVE.md'
@@ -35,77 +36,415 @@ const git = (...a) => { try { return execFileSync('git', a, { cwd: REPO, encodin
 
 const args = process.argv.slice(2)
 
-/* --rulings — THE ONE WAY A RULING LEAVES THE LIVE LIST (owner, D136 + D137, 24 Sep 26), and the way the
-   map in DECISIONS.md is kept true. A ruling that a later one wholly REPLACES, or a one-off permission once
-   SPENT, is marked at the head of its ruling cell (DECISIONS.md, step 2); this moves every marked row out
-   of its area file under .claude/rules/decisions/ to the foot of DECISIONS-ARCHIVE.md, under the heading
-   of the day it moved, byte for byte — then rewrites the map's last column from what each file now holds
-   (a NEW ruling therefore reaches the map the same way). Like the item mover it runs the gate's inventory
-   afterwards and puts EVERY file back if that is not clean. */
+/* --rulings — THE ONE WAY A RULING IS FILED, MOVED OR RETIRED (owner, D136 + D137, 24 Sep 26; D390, 28 Sep 26), and the
+   way the map in DECISIONS.md is kept true. Since D390 every ruling is ONE full row, kept whole in
+   `.claude/decisions-full/<area>.md` (searched, never loaded), and ONE short line in its area file under
+   `.claude/rules/decisions/` (what a chat loads) — their shape: docsize-rulings.mjs. A run:
+     1. converts every full row found in an area file (a new ruling, written there by DECISIONS.md step 1): the row moves,
+        byte for byte, to the top of its full-text table, and its short line — the meaning cell's first bold sentence, or a
+        line given with --short-text — goes to the top of the short table. A heading that cannot serve is REFUSED, naming
+        the row and the edit (Fable's red team: a refusal that says nothing loops the Stop hook blind);
+     2. retires every row whose ruling cell opens with a REPLACED / SPENT mark (step 2): the full row to the foot of
+        DECISIONS-ARCHIVE.md under the day it moved, its short line deleted;
+     3. refreshes each short line's change tail from its full row's marks (never its text);
+     4. rewrites the map's last column from what each area file holds.
+   Everything is built in memory, then written, then the gate's inventory runs, and EVERY file is put back if it is not
+   clean. Options:
+     --short-text <file>   lines "D<n><TAB><text>": the short line for a row whose heading cannot serve
+     --move-rows D1,D2 --to <area>   the one way a ruling changes area: short line and full row move, bytes unchanged,
+                                     each landing in date order (newest first)
+     --merge               during a conflicted `git merge` (plan §2.4): starts from the side that has the full-text folder,
+                           replays the OTHER side's ruling changes since the merge base, three-way per D-number, stops on
+                           a row both sides changed, and prints — never writes — the other side's non-row lines
+     --dry-run             say what would happen, write nothing */
 if (args.includes('--rulings')) {
-  const DIR = '.claude/rules/decisions', DEC = 'DECISIONS.md', ARCHR = 'DECISIONS-ARCHIVE.md'
-  const MARKED = /^\*\*(?:(?:REPLACED|REVERSED|SUPERSEDED|ENDED) BY D\d+|SPENT\b)/
-  const rowId = l => (/^\|\s*(D\d+)\s*\|/.exec(l) || [])[1] // loose, like the gate's ROW_ID
-  /* this block runs before the item mover's own helpers are defined below, so it carries its own */
-  const lineEnds = t => t.match(/[^\n]*\n|[^\n]+$/g) || []
-  const dryRun = args.includes('--dry-run')
-  const areas = [...new Set([...git('ls-files', '--', DIR).split('\n'), ...git('ls-files', '--others', '--exclude-standard', '--', DIR).split('\n')])]
-    .filter(f => f.endsWith('.md') && existsSync(join(REPO, f))).sort()
-  const files = [...areas, ARCHR, DEC].filter(f => existsSync(join(REPO, f)))
-  const before = new Map(files.map(f => [f, readFileSync(join(REPO, f), 'utf8')]))
-  const after = new Map(before)
-  const moved = []
-  for (const f of areas) {
-    const keep = []
-    let fence = null
-    for (const l of lineEnds(after.get(f))) {
-      const s = l.replace(/\r?\n$/, '')
-      /* a row inside a code block is an example, never a ruling to move (Astra, 24 Sep 26) */
-      const was = fence
-      fence = fenceStep(fence, s)
-      if (!was && !fence && rowId(s) && MARKED.test(s.split('|').map(x => x.trim())[3] || '')) moved.push({ d: rowId(s), from: f, line: l.endsWith('\n') ? l : l + '\n' })
-      else keep.push(l)
+  const { DECISIONS: DEC, RULINGS_DIR: DIR, FULL_DIR, RULINGS_ARCHIVE: ARCHR } = RL
+  const MARKED = RL.MARKED
+  const dryRun = args.includes('--dry-run'), merging = args.includes('--merge')
+  const opt = k => { const i = args.indexOf(k); return i >= 0 ? args[i + 1] : undefined }
+  const listed = dir => [...new Set([...git('ls-files', '--', dir).split('\n'), ...git('ls-files', '--others', '--exclude-standard', '--', dir).split('\n')])].filter(f => f.endsWith('.md') && existsSync(join(REPO, f)))
+  const disk = f => (existsSync(join(REPO, f)) ? readFileSync(join(REPO, f), 'utf8') : null)
+  const cut = s => (s.length > 140 ? s.slice(0, 137) + '...' : s)
+
+  /* the working set: path -> { eol, ls (lines without their ending), trail (ended in a newline) }. A file that mixes
+     CRLF and LF is refused: split on one ending, the other half's rows would be invisible here while the gate still
+     sees them (Fable's code read). */
+  const files = new Map()
+  const setText = (f, t) => {
+    if (t == null) return
+    if (t.includes('\r\n') && /(^|[^\r])\n/.test(t)) die(`${f} mixes CRLF and LF line endings — fix the endings first (git's LF pin covers the rulings files once [RULINGS-LF-PIN] lands), then run this again.`)
+    const eol = t.includes('\r\n') ? '\r\n' : '\n'; const ls = t.split(eol); const trail = ls.length > 1 && ls[ls.length - 1] === ''; if (trail) ls.pop(); files.set(f, { eol, ls, trail })
+  }
+  const textOf = f => { const x = files.get(f); return x ? x.ls.join(x.eol) + (x.trail ? x.eol : '') : null }
+  const before = new Map()
+  const toArchive = [], moved = [], converted = []
+  const rewriteList = [], unread = [], reapply = [], classify = []
+  const given = new Map(), carried = new Set()
+  /* a temporary copy left by a run that was killed between its renames is the only copy of what it was writing: never
+     overwrite it (Astra's verification) — the chat looks at it, keeps what it needs, deletes it, and runs again */
+  const stale = [...git('ls-files', '--others', '--', DIR, FULL_DIR).split('\n'), ...[DEC, ARCHR].map(f => existsSync(join(REPO, f) + '.docmove-tmp') ? f + '.docmove-tmp' : '')].filter(f => f && f.endsWith('.docmove-tmp'))
+  if (stale.length) die(`a temporary copy from an interrupted run is still here (${stale.join(', ')}) — compare it with its file (the file is what git and the last complete run left), keep what you need, delete it, then run this again.`)
+
+  /* ---- --merge: the starting texts come from git, never from the conflicted files on disk (plan §2.4) ---- */
+  let mergeIds = null
+  const merge = { addNew: [], replaceFull: [], shortTake: [], retire: [], moveArea: [] }
+  if (merging) {
+    const sh = (...a) => git(...a).trim()
+    const mh = sh('rev-parse', '-q', '--verify', 'MERGE_HEAD'), head = sh('rev-parse', 'HEAD')
+    if (!mh) die('--merge runs during a `git merge` that stopped before committing (there is no MERGE_HEAD). Start it with: git merge --no-commit --no-ff origin/main')
+    const base = sh('merge-base', head, mh)
+    const rulingPath = f => f === DEC || f === ARCHR || f.startsWith(DIR + '/') || f.startsWith(FULL_DIR + '/')
+    const other = git('diff', '--name-only', '--diff-filter=U').split('\n').filter(f => f && !rulingPath(f))
+    if (other.length) die(`resolve the other conflicted files first (the gate reads them too), then run this again: ${other.join(', ')}`)
+    if (!base) die('no merge base between HEAD and MERGE_HEAD.')
+    const tree = (ref, dir) => git('ls-tree', '-r', '--name-only', ref, '--', dir).split('\n').filter(f => f.endsWith('.md'))
+    const show = (ref, f) => { try { return execFileSync('git', ['show', `${ref}:${f}`], { cwd: REPO, encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] }) } catch { return null } }
+    const newRef = tree(head, FULL_DIR).length ? head : tree(mh, FULL_DIR).length ? mh : null
+    if (!newRef) die(`neither side of this merge has ${FULL_DIR}/ — it is not a merge across the slim-down; resolve the rulings files by hand as before.`)
+    const otherRef = newRef === head ? mh : head
+    const otherName = otherRef === head ? 'your branch' : 'the branch being merged in'
+    const paths = ref => [DEC, ARCHR, ...tree(ref, DIR), ...tree(ref, FULL_DIR)]
+    for (const f of paths(newRef)) setText(f, show(newRef, f))
+    /* a rulings file only the other side has (a new area it created) starts from its own text — whole, so its rows and
+       its prose are already here, never inserted or reported a second time (Astra and Fable's code reads) */
+    const takenWhole = new Set()
+    const state = ref => {
+      const full = new Map(), short = new Map(), arch = new Map(), prose = new Map()
+      for (const f of paths(ref)) {
+        const t = show(ref, f); if (t == null) continue
+        const ls = t.split('\n').map(l => l.replace(/\r$/, '')), inF = RL.fencedFlags(ls), mine = []
+        ls.forEach((l, i) => {
+          if (!inF[i] && RL.isRow(l)) {
+            const d = RL.idOf(l)
+            if (f === ARCHR) arch.set(d, l)
+            else if (RL.kindOf(l) === 'short') short.set(d, { f, l })
+            else if (f !== DEC) full.set(d, { f, l })
+          } else if (f === DEC && /^\| [^|]+ \| `[^`]+` \|/.test(l)) mine.push(l.replace(/\|[^|]*\|\s*$/, '| (its D-numbers are rewritten from the files) |'))
+          /* a map row's list of numbers is rewritten from the files; its area, file and "loads by itself" cells are prose —
+             an edit to them is printed like any other line (Astra's verification) */
+          else if (l.trim() && !/^\|\s*#\s*\|/.test(l) && !/^\|[-|: ]+\|\s*$/.test(l) && !/^## Moved /.test(l)) mine.push(l)
+        })
+        prose.set(f, { f, mine })
+      }
+      return { full, short, arch, prose }
     }
-    after.set(f, keep.join(''))
+    const B = state(base), O = state(otherRef), N = state(newRef)
+    /* ...less any row this side already holds: a ruling the other side MOVED into its new file is placed by the replay
+       below, never imported a second time (found by the self-test, 28 Sep 26) */
+    const heldHere = new Set([...N.full.keys(), ...N.short.keys(), ...N.arch.keys()])
+    for (const f of paths(otherRef)) if (!files.has(f) && show(base, f) == null) {
+      setText(f, show(otherRef, f)); takenWhole.add(f)
+      const x = files.get(f), inF = RL.fencedFlags(x.ls)
+      x.ls = x.ls.filter((l, i) => inF[i] || !RL.isRow(l) || !heldHere.has(RL.idOf(l)))
+    }
+    /* each ruling's whole state on a side: retired / live / absent, its full row, its area. Three-way per D-number: the
+       other side's change is taken only where ours did not change it (or made the same change); a change on BOTH sides
+       to different states stops the command (Astra's code read: an archive, a move, a clash were chosen silently). */
+    const areaOf = (S, d) => RL.stem((S.short.get(d) || S.full.get(d) || {}).f || '')
+    const tuple = (S, d) => ({ where: S.arch.has(d) ? 'retired' : S.full.has(d) ? 'live' : 'absent', line: S.arch.get(d) ?? S.full.get(d)?.l ?? null, area: S.arch.has(d) || !S.full.has(d) ? '' : areaOf(S, d) })
+    const same = (x, y) => x.where === y.where && x.line === y.line && x.area === y.area
+    const desc = x => x.where === 'absent' ? 'absent' : `${x.where}${x.area ? ` in ${x.area}` : ''}: ${cut(x.line)}`
+    const conflicts = []
+    mergeIds = new Set([...B.full.keys(), ...B.arch.keys(), ...O.full.keys(), ...O.arch.keys(), ...N.full.keys(), ...N.arch.keys()])
+    for (const d of mergeIds) {
+      const b = tuple(B, d), o = tuple(O, d), n = tuple(N, d)
+      if (same(o, b) || same(n, o)) continue                     // the other side did not touch it, or both did the same
+      const clash = why => conflicts.push(`${d} ${why} — resolve it by hand:\n      base:  ${desc(b)}\n      here:  ${desc(n)}\n      there: ${desc(o)}`)
+      if (b.where === 'absent') {                                // new on the other side
+        if (n.where !== 'absent') {
+          /* the same ruling on both sides (a cherry-pick or a criss-cross history), retired on one of them: it stays retired */
+          if (RL.sameRuling(n.line, o.line) || RL.sameRuling(o.line, n.line)) { if (o.where === 'retired' && n.where === 'live') merge.retire.push({ d, line: o.line }); continue }
+          clash('was filed on both sides with different text — a number clash: the later branch renumbers its own row (D78)'); continue
+        }
+        const f = `${DIR}/${o.area}`
+        if (o.where === 'live' && !(takenWhole.has(f) && (files.get(f)?.ls || []).some(l => RL.idOf(l) === d))) merge.addNew.push({ d, line: o.line, area: o.area })
+        if (o.where === 'retired') merge.retire.push({ d, line: o.line })
+        if (O.short.has(d)) { given.set(d, RL.parseShort(O.short.get(d).l).text); carried.add(d) }
+        if (o.area === 'how-we-work.md') classify.push(d)
+        continue
+      }
+      if (o.where === 'absent') { conflicts.push(`${d} is gone on ${otherName} and not in its archive — restore it there first`); continue }
+      if (b.where === 'retired') { clash('was retired at the base and changed since'); continue }
+      if (n.where === 'absent') { clash('is gone here and not in the archive'); continue }
+      if (o.where === 'retired') {                               // retired on the other side (D182's shape)
+        if (n.where === 'live' && n.line === b.line) merge.retire.push({ d, line: o.line })
+        else clash(n.where === 'retired' ? 'was retired on both sides with different rows' : 'was retired there but its row changed here')
+        continue
+      }
+      if (n.where === 'retired') { if (o.line !== b.line) clash('was retired here but its row changed there'); continue }
+      /* live on all three sides: its text and its area are each taken from the side that changed them (this branch
+         moving a row to People & accounts and a parallel branch marking it are two different changes, not a clash) */
+      if (o.line !== b.line) { if (n.line === b.line) merge.replaceFull.push({ d, line: o.line, was: n.line }); else if (n.line !== o.line) { clash('had its row changed on both sides'); continue } }
+      if (o.area !== b.area) { if (n.area === b.area) merge.moveArea.push({ d, to: o.area }); else if (n.area !== o.area) clash('was moved to different areas on the two sides') }
+    }
+    /* a short line changed on the other side (both sides in the new layout): three-way too */
+    for (const [d, os] of O.short) {
+      const b = B.short.get(d)?.l, n = N.short.get(d)?.l
+      /* both sides filed the same ruling with different short lines: ours stays, theirs is shown (Fable's verification) */
+      if (b === undefined && n !== undefined && n !== os.l && !B.full.has(d)) rewriteList.push(`${d} — filed on both sides; this side's short line is kept, the other side's read: ${os.l}`)
+      /* a ruling no longer live here (retired on this side) has no short line to take — the full-row loop judged it */
+      if (b === undefined || os.l === b || n === os.l || !N.full.has(d)) continue
+      if (n === b) merge.shortTake.push({ d, line: os.l }); else conflicts.push(`${d}'s short line was changed on both sides — resolve it by hand`)
+    }
+    if (conflicts.length) die(`--merge stopped, nothing written:\n  - ${conflicts.join('\n  - ')}`)
+    /* an area file the other side created carries its map row with it */
+    const decO = (show(otherRef, DEC) || '').split('\n').map(l => l.replace(/\r$/, ''))
+    for (const f of takenWhole) {
+      const row = decO.find(l => l.includes('`' + f + '`')), dec = files.get(DEC)
+      if (!row || !dec || dec.ls.some(l => l.includes('`' + f + '`'))) continue
+      const at = dec.ls.findIndex(l => l.includes('`' + ARCHR + '`'))
+      dec.ls.splice(at < 0 ? dec.ls.length : at, 0, row)
+    }
+    /* the other side's non-row lines: printed WHOLE, never written (a raw "keep both" left two table headers and stale
+       prose behind — both red teams) */
+    for (const [f, o] of O.prose) {
+      if (takenWhole.has(f)) continue
+      const count = ls => ls.reduce((m, l) => m.set(l, (m.get(l) || 0) + 1), new Map())
+      const cb = count(B.prose.get(f)?.mine || []), co = count(o.mine)
+      const added = [...co].filter(([l, k]) => k > (cb.get(l) || 0)).map(([l]) => l), removed = [...cb].filter(([l, k]) => k > (co.get(l) || 0)).map(([l]) => l)
+      if (added.length || removed.length) reapply.push(`${f} (its whole text on that side: git show ${otherRef.slice(0, 12)}:${f}):${removed.map(l => `\n      − ${l}`).join('')}${added.map(l => `\n      + ${l}`).join('')}`)
+    }
   }
-  if (moved.length) {
-    if (!after.has(ARCHR)) die(`${ARCHR} does not exist — it must, before a ruling can move there.`)
-    let a = after.get(ARCHR)
-    const eolA = a.includes('\r\n') ? '\r\n' : '\n'
+
+  /* ---- the working set on an ordinary run: every rulings file on disk ---- */
+  if (!files.size) for (const f of [DEC, ARCHR, ...listed(DIR), ...listed(FULL_DIR)]) setText(f, disk(f))
+  for (const [f] of files) before.set(f, disk(f))
+  /* rows move between these files byte for byte only if they share one line ending (Astra's code read) */
+  const eols = new Set([...files.values()].filter(x => x.ls.length > 1).map(x => x.eol))
+  if (eols.size > 1) die(`the rulings files do not share one line ending (${[...files].filter(([, x]) => x.ls.length > 1).map(([f, x]) => `${f}: ${x.eol === '\r\n' ? 'CRLF' : 'LF'}`).join(', ')}) — make them all LF first, so a row moves byte for byte.`)
+  const EOL = [...eols][0] || '\n'
+
+  function tableOf(f) {
+    const x = files.get(f); if (!x) return null
+    const inF = RL.fencedFlags(x.ls)
+    for (let i = 0; i + 1 < x.ls.length; i++) if (!inF[i] && /^\|\s*#\s*\|\s*Date\s*\|/.test(x.ls[i]) && /^\|[-|: ]+\|\s*$/.test(x.ls[i + 1])) return { x, head: i, sep: i + 1 }
+    return null
+  }
+  function rowsIn(f) { const x = files.get(f); if (!x) return []; const inF = RL.fencedFlags(x.ls); return x.ls.flatMap((l, i) => (!inF[i] && RL.isRow(l) ? [{ f, i, d: RL.idOf(l), kind: RL.kindOf(l), line: l }] : [])) }
+  function allFiles() { return [...files.keys()].filter(f => f.startsWith(DIR + '/') || f.startsWith(FULL_DIR + '/')) }
+  function findRow(d, kind) { for (const f of allFiles()) for (const r of rowsIn(f)) if (r.d === d && (kind === 'short' ? r.kind === 'short' : r.kind !== 'short') && (kind !== 'full' || f.startsWith(FULL_DIR + '/'))) return r; return null }
+  function replaceRow(d, kind, line) { const r = findRow(d, kind); if (!r) die(`internal: no ${kind} row for ${d}`); files.get(r.f).ls[r.i] = line }
+  function dropRow(d, kind) { const r = findRow(d, kind); if (r) files.get(r.f).ls.splice(r.i, 1) }
+  function ensureFull(area) {
+    const f = `${FULL_DIR}/${area}`
+    if (files.has(f)) return f
+    const title = ((files.get(`${DIR}/${area}`)?.ls || []).find(l => /^# /.test(l)) || `# Rulings — ${area.replace(/\.md$/, '')}`).replace(/\s*\(.*\)\s*$/, '').replace(/^# /, '')
+    setText(f, [`# ${title}: the full rows`, '',
+      `**Never loaded by itself — searched** (D390). Each row's one-line short form is in \`${DIR}/${area}\`, which is what a`,
+      `chat loads. Open a ruling's full row before acting on its detail or asking him about it:`,
+      `\`grep -h '^| D149 |' ${FULL_DIR}/*.md\` (the shell — the Grep tool hides a long row). A mark on an older ruling`,
+      `(DECISIONS.md step 2) is written HERE, in its full row; \`backlog-archive.mjs --rulings\` then refreshes its short line's`,
+      `change tail. Newest first; each row keeps the date it was recorded.`, '', RL.FULL_HEADER, RL.FULL_SEP, ''].join(EOL))
+    return f
+  }
+  function topInsert(f, line) { const t = tableOf(f); if (!t) die(`${f} has no rulings table ("| # | Date | …" and its divider line) to put ${RL.idOf(line)} in.`); t.x.ls.splice(t.sep + 1, 0, line) }
+  function dateInsert(f, line) {
+    const t = tableOf(f); if (!t) die(`${f} has no rulings table to put ${RL.idOf(line)} in.`)
+    const k = RL.dateKey(RL.cellsOf(line)[1]); let i = t.sep + 1
+    while (i < t.x.ls.length && RL.isRow(t.x.ls[i]) && RL.dateKey(RL.cellsOf(t.x.ls[i])[1]) >= k) i++
+    t.x.ls.splice(i, 0, line)
+  }
+  function moveRows(ds, to) {
+    const area = to.endsWith('.md') ? to : to + '.md', target = `${DIR}/${area}`
+    if (!files.has(target)) die(`--to ${to}: ${target} does not exist — create it first (its paths: header, its title and a short table "${RL.SHORT_HEADER}"), and add its row to the map in ${DEC}.`)
+    const fullT = ensureFull(area)
+    /* in their SOURCE order, top of each file first, so rows of one date keep the order they had (newest first) */
+    const at = d => { const s = findRow(d, 'short'); return s ? [allFiles().indexOf(s.f), s.i] : [1e9, 0] }
+    ds = [...ds].sort((a, b) => { const x = at(a), y = at(b); return x[0] - y[0] || x[1] - y[1] })
+    for (const d of ds) {
+      const s = findRow(d, 'short'), fl = findRow(d, 'full')
+      if (!s || !fl) die(`--move-rows ${d}: it needs its short line and its full row in the full-text folder (run --rulings first); found ${s ? 'the short line' : 'no short line'} and ${fl ? 'the full row' : 'no full row'}.`)
+      if (s.f === target && fl.f === fullT) continue
+      dropRow(d, 'short'); dropRow(d, 'full')
+      dateInsert(target, s.line); dateInsert(fullT, fl.line)
+      moved.push(`${d}: ${RL.stem(s.f)} → ${area}`)
+    }
+  }
+  const archivedLine = d => rowsIn(ARCHR).find(r => r.d === d)?.line ?? null
+
+  /* --merge, applied: the other side's new rows at the top of their area's table (converted below, in their own order,
+     with the other side's own short line where it had one); its one-sided edits, retirements and moves */
+  for (const a of merge.addNew.slice().reverse()) {
+    const f = `${DIR}/${a.area}`
+    if (!files.has(f)) die(`${a.d} was filed on the other side in ${f}, which this side does not have — create the area file first, then run again.`)
+    topInsert(f, a.line)
+  }
+  for (const r of merge.replaceFull) {
+    replaceRow(r.d, 'full', r.line)
+    const sh0 = findRow(r.d, 'short')
+    const hb = RL.headingOf(RL.cellsOf(r.was)), ho = RL.headingOf(RL.cellsOf(r.line))
+    if (sh0 && RL.parseShort(sh0.line).text === hb && ho !== hb && !RL.headingProblem(r.d, ho)) { const p = RL.parseShort(sh0.line); replaceRow(r.d, 'short', RL.shortLine(r.d, p.date, ho, p.tail)); unread.push(r.d) }
+    else rewriteList.push(`${r.d} — its full row changed on the other side; read its short line against it and rewrite the line if it no longer states the rule in force`)
+  }
+  for (const m of merge.moveArea) moveRows([m.d], m.to.replace(/\.md$/, ''))
+  for (const s of merge.shortTake) replaceRow(s.d, 'short', s.line)
+  for (const r of merge.retire) { dropRow(r.d, 'full'); dropRow(r.d, 'short'); toArchive.push({ d: r.d, line: r.line, from: 'the other side' }) }
+
+  /* --short-text: the short line for a row whose heading cannot serve */
+  if (opt('--short-text') !== undefined) {
+    const src = opt('--short-text'); if (!src || !existsSync(src)) die(`--short-text ${src}: no such file.`)
+    for (const l of readFileSync(src, 'utf8').split(/\r?\n/)) {
+      if (!l.trim()) continue
+      const m = /^(D\d+)\t(.*)$/.exec(l); if (!m) die(`--short-text: "${cut(l)}" is not "D<n><TAB><text>".`)
+      const why = RL.shortTextProblem(m[1], m[2]); if (why) die(`--short-text: ${why}.`)
+      given.set(m[1], m[2].trim()); carried.delete(m[1])
+    }
+  }
+
+  /* 1. every full row in an area file: convert it (or drop an identical copy, or refuse) */
+  const refusals = [], used = new Set()
+  const fullAt = d => { for (const f of allFiles()) if (f.startsWith(FULL_DIR + '/')) for (const r of rowsIn(f)) if (r.d === d && r.kind !== 'short') return r; return null }
+  const reused = (d, line) => `${d} is retired in ${ARCHR} and a live row with DIFFERENT text carries the same number — a number is never reused (D78): renumber the new row (${cut(line)})`
+  for (const f of allFiles().filter(f => f.startsWith(DIR + '/'))) {
+    const news = []
+    for (const r of rowsIn(f).reverse()) {
+      if (r.kind === 'short') continue
+      if (r.kind === 'bad') { refusals.push(`${f}: ${r.d}'s row has ${RL.pipes(r.line)} column dividers — a full row has 6 ("| D<n> | date | his words | meaning | home |"), a short line 4`); continue }
+      const cells = RL.cellsOf(r.line)
+      if (MARKED.test(cells[2])) continue                        // retired below, whole
+      const gone = archivedLine(r.d)
+      if (gone != null) {
+        if (RL.sameRuling(r.line, gone)) { files.get(f).ls.splice(r.i, 1); converted.push(`${r.d}: already retired in ${ARCHR} — the live copy in ${RL.stem(f)} dropped`) }
+        else refusals.push(reused(r.d, r.line))
+        continue
+      }
+      const there = fullAt(r.d)
+      if (there) {
+        if (there.line === r.line) { files.get(f).ls.splice(r.i, 1); continue }
+        refusals.push(`${r.d}'s full row is in ${f} AND, with different text, in ${there.f} — edit the full row in ${there.f} only${merging ? '' : ' (during a merge: --merge)'}`); continue
+      }
+      const text = given.get(r.d) ?? RL.headingOf(cells)
+      const why = given.has(r.d) ? RL.shortTextProblem(r.d, text) : RL.headingProblem(r.d, text)
+      if (why) { refusals.push(`${why} (${f}; ${merging ? 'during --merge the row is read from git, not from the file on disk: give its short line with --short-text' : 'or give its short line with --short-text'})`); continue }
+      if (given.has(r.d)) used.add(r.d)
+      news.unshift({ r, line: RL.shortLine(r.d, cells[1], text, RL.marksOf(cells)) })
+      files.get(f).ls.splice(r.i, 1)
+    }
+    if (!news.length) continue
+    const area = RL.stem(f), fullT = ensureFull(area)
+    for (const n of news.slice().reverse()) { topInsert(fullT, n.r.line); topInsert(f, n.line); converted.push(`${n.r.d}: converted — full row to ${fullT}, short line to the top of ${f}${carried.has(n.r.d) ? ' (the other side\'s own short line)' : ''}`); if (!carried.has(n.r.d)) unread.push(n.r.d) }
+  }
+  if (refusals.length) die(`nothing written — ${refusals.length} row(s) refused:\n  - ${refusals.join('\n  - ')}`)
+  const unused = [...given.keys()].filter(d => !used.has(d) && !carried.has(d))
+  if (unused.length) console.log(`note: --short-text gave a line for ${unused.join(', ')}, but no row of that number was converted — check the number.`)
+
+  if (args.includes('--move-rows')) {
+    const ds = (opt('--move-rows') || '').split(',').map(s => s.trim()).filter(Boolean), to = opt('--to')
+    if (!ds.length || !ds.every(d => /^D\d+$/.test(d)) || !to) die('usage: --rulings --move-rows D1,D2 --to <area>')
+    moveRows(ds, to)
+  }
+
+  /* 2. marked rows, wherever they sit, retire whole to the archive; their short lines go. A marked row whose number the
+     archive already holds is the same ruling (dropped) or a reused number (refused) — never archived twice. */
+  for (const f of allFiles()) for (const r of rowsIn(f).reverse()) {
+    if (r.kind === 'short' || !MARKED.test(RL.cellsOf(r.line)[2] || '')) continue
+    const gone = archivedLine(r.d)
+    if (gone != null) { if (RL.sameRuling(r.line, gone)) { files.get(f).ls.splice(r.i, 1); converted.push(`${r.d}: already retired in ${ARCHR} — its live copy dropped`) } else refusals.push(reused(r.d, r.line)); continue }
+    files.get(f).ls.splice(r.i, 1); toArchive.push({ d: r.d, line: r.line, from: f })
+  }
+  for (const a of toArchive) dropRow(a.d, 'short')
+  /* a number already retired in the archive and still live elsewhere: the same ruling goes; other text is refused */
+  for (const d of new Set(rowsIn(ARCHR).map(r => r.d))) {
+    const fl = findRow(d, 'full')
+    if (fl && !RL.sameRuling(fl.line, archivedLine(d))) { refusals.push(reused(d, fl.line)); continue }
+    if (fl || findRow(d, 'short')) { dropRow(d, 'full'); dropRow(d, 'short'); converted.push(`${d}: retired in ${ARCHR} — its live copies dropped`) }
+  }
+  if (refusals.length) die(`nothing written — ${refusals.length} row(s) refused:\n  - ${refusals.join('\n  - ')}`)
+  /* an area table still headed the old way, all its full rows gone: give it the short table's header — after the
+     retirements, so a marked row in an old-layout file does not leave the header for a second run (Fable's code read) */
+  for (const f of allFiles().filter(f => f.startsWith(DIR + '/'))) {
+    const t = tableOf(f); if (!t) continue
+    if (RL.pipes(t.x.ls[t.head]) === 6 && !rowsIn(f).some(r => r.kind !== 'short')) { t.x.ls[t.head] = RL.SHORT_HEADER; t.x.ls[t.sep] = RL.SHORT_SEP }
+  }
+
+  /* 3. change tails refreshed from the marks; a full row that follows its short line's area */
+  const tails = []
+  for (const f of allFiles().filter(f => f.startsWith(DIR + '/'))) for (const r of rowsIn(f)) {
+    if (r.kind !== 'short') continue
+    const fl = fullAt(r.d); if (!fl) continue
+    if (RL.stem(fl.f) !== RL.stem(f)) { files.get(fl.f).ls.splice(fl.i, 1); dateInsert(ensureFull(RL.stem(f)), fl.line); moved.push(`${r.d}: its full row follows its short line to ${RL.stem(f)}`) }
+    const p = RL.parseShort(r.line), marks = RL.marksOf(RL.cellsOf(fl.line))
+    if ([...marks].sort().join() !== [...p.tail].sort().join()) { files.get(f).ls[r.i] = RL.shortLine(r.d, p.date, p.text, marks); tails.push(r.d) }
+  }
+
+  /* the archive: the retired rows land at its foot, under the day they moved, byte for byte */
+  if (toArchive.length) {
+    if (!files.has(ARCHR)) die(`${ARCHR} does not exist — it must, before a ruling can move there.`)
+    const a = files.get(ARCHR)
     const now = new Date(), day = `${now.getDate()} ${['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][now.getMonth()]} ${String(now.getFullYear()).slice(2)}`
-    const heads = [...a.matchAll(/^## Moved (.+?)\r?$/gm)]
-    if (!a.endsWith('\n')) a += eolA
-    if (!heads.length || heads[heads.length - 1][1] !== day) a += `${eolA}## Moved ${day}${eolA}${eolA}| # | Date | His ruling, in his words where short enough | What it means | Where it lives now |${eolA}|---|---|---|---|---|${eolA}`
-    after.set(ARCHR, a + moved.map(m => m.line).join(''))
+    const heads = a.ls.filter(l => /^## Moved /.test(l))
+    if (!heads.length || heads[heads.length - 1] !== `## Moved ${day}`) a.ls.push('', `## Moved ${day}`, '', RL.FULL_HEADER, RL.FULL_SEP)
+    a.ls.push(...toArchive.map(t => t.line)); a.trail = true
   }
-  /* the map: each row's last column = the D-numbers its file now holds, in the file's own order */
-  const outsideFences = ls => { let fence = null; return ls.map(l => { const was = fence; fence = fenceStep(fence, l.replace(/\r?\n$/, '')); return !was && !fence }) }
-  const idsOf = f => { const ls = lineEnds(after.get(f) || ''), out = outsideFences(ls); return ls.map((l, i) => out[i] && rowId(l)).filter(Boolean) }
-  const MAP_ROW = /^(\| [^|]+? \| `([^`]+)` \| [^|]*? \| )([^|]*?)( \|\s*)$/
+
+  /* 4. the map: each row's last column = the D-numbers its file now holds, in the file's own order */
   let mapChanged = 0
-  const decLines = lineEnds(after.get(DEC)), decOut = outsideFences(decLines)
-  after.set(DEC, decLines.map((l, i) => {
-    const eolL = l.match(/\r?\n$/)?.[0] || ''
-    const m = decOut[i] && MAP_ROW.exec(l.replace(/\r?\n$/, ''))
-    if (!m ||!(m[2] === ARCHR || m[2].startsWith(DIR + '/')) || !after.has(m[2])) return l
-    const list = idsOf(m[2]).join(', ') || '—'
-    if (list === m[3]) return l
-    mapChanged++
-    return m[1] + list + m[4] + eolL
-  }).join(''))
-  const unmapped = [...areas, ARCHR].filter(f => after.has(f) && !lineEnds(after.get(DEC)).some(l => l.includes('`' + f + '`')))
-  console.log(moved.length ? moved.map(m => `${m.d}: ${m.from} → ${ARCHR}`).join('\n') : 'No marked ruling to move.')
+  const dec = files.get(DEC), MAP_ROW = /^(\| [^|]+? \| `([^`]+)` \| [^|]*? \| )([^|]*?)( \|\s*)$/
+  if (dec) {
+    const inF = RL.fencedFlags(dec.ls)
+    dec.ls = dec.ls.map((l, i) => {
+      const m = !inF[i] && MAP_ROW.exec(l)
+      if (!m || !(m[2] === ARCHR || m[2].startsWith(DIR + '/')) || !files.has(m[2])) return l
+      const list = [...new Set(rowsIn(m[2]).map(r => r.d))].join(', ') || '—'
+      if (list === m[3]) return l
+      mapChanged++
+      return m[1] + list + m[4]
+    })
+  }
+  const unmapped = allFiles().filter(f => f.startsWith(DIR + '/')).concat(ARCHR).filter(f => files.has(f) && dec && !dec.ls.some(l => l.includes('`' + f + '`')))
+
+  /* every area file needs a byte tripwire in the gate (D390) — said here, before writing, not as an inventory failure */
+  const gateSrc = readFileSync(GATE, 'utf8')
+  const untripped = allFiles().filter(f => f.startsWith(DIR + '/') && !gateSrc.includes(`'${f}'`))
+  if (untripped.length) die(`${untripped.join(', ')} has no byte tripwire in raptor-port/scripts/docsize.mjs's RULING_BYTES — add its row (file, tier, bytes), with its reason, in a docs-only commit; then run this again. Nothing written.`)
+
+  /* a merge's own safety net (Fable's code read): every number either side or the base held is still here — live or
+     retired — before anything is written; the gate's inventory measures from the fork point, which may not see them */
+  if (mergeIds) {
+    const now = new Set(allFiles().concat(ARCHR).flatMap(f => rowsIn(f).filter(r => r.kind !== 'short').map(r => r.d)))
+    const lost = [...mergeIds].filter(d => !now.has(d))
+    if (lost.length) die(`internal: the merge would lose ${lost.join(', ')} — nothing written. Resolve these by hand and report this.`)
+  }
+
+  console.log([...converted, ...moved, ...toArchive.map(t => `${t.d}: ${t.from} → ${ARCHR}`)].join('\n') || 'Nothing to convert, move or retire.')
+  if (tails.length) console.log(`Change tails refreshed: ${tails.join(', ')}`)
   console.log(mapChanged ? `The map in ${DEC}: ${mapChanged} row(s) rewritten from the files.` : `The map in ${DEC} already matches the files.`)
   if (unmapped.length) console.log(`NOT in the map — add a row for each by hand (area, file, when it loads), then run this again: ${unmapped.join(', ')}`)
+  if (unread.length) console.log(`\nUNREAD — short lines made from a heading here; have one reviewer read each against its full row (D138):\n${unread.map(d => '  ' + (findRow(d, 'short')?.line || d)).join('\n')}`)
+  if (rewriteList.length) console.log(`\nREWRITE — short lines to read against a changed full row:\n  - ${rewriteList.join('\n  - ')}`)
+  if (classify.length) console.log(`\nCLASSIFY — new in How we work from the other side; does any belong in another area (then --move-rows)? ${classify.join(', ')}`)
+  if (reapply.length) console.log(`\nRE-APPLY BY HAND — lines the other side changed that are not ruling rows (never written by this command; keep every number range):\n  - ${reapply.join('\n  - ')}`)
   if (dryRun) { console.log('--dry-run: nothing written.'); process.exit(0) }
-  for (const [f, t] of after) if (t !== before.get(f)) writeFileSync(join(REPO, f), t)
+
+  /* written as one step (Astra's code read): every result to a temporary copy, read back, then renamed into place; any
+     failure — a write, a rename, or the inventory afterwards — puts EVERY file back, removing any this run created */
+  const changed = [...files.keys()].filter(f => textOf(f) !== before.get(f))
+  const tmp = f => join(REPO, f) + '.docmove-tmp'
+  const putBack = why => {
+    const stuck = []
+    for (const f of changed) {
+      try { const b = before.get(f); if (b == null) rmSync(join(REPO, f), { force: true }); else if (!existsSync(join(REPO, f)) || readFileSync(join(REPO, f), 'utf8') !== b) writeFileSync(join(REPO, f), b) } catch { stuck.push(f) }
+      try { rmSync(tmp(f), { force: true }) } catch { /* a leftover temporary copy is harmless */ }
+    }
+    die(stuck.length ? `${why} — AND ${stuck.join(', ')} could not be put back: restore from git (git checkout -- <file>) before anything else.` : `${why} — EVERY file was put back exactly as it was.`)
+  }
+  try {
+    for (const f of changed) { mkdirSync(dirname(join(REPO, f)), { recursive: true }); writeFileSync(tmp(f), textOf(f)); if (readFileSync(tmp(f), 'utf8') !== textOf(f)) throw new Error(`the temporary copy of ${f} did not read back as written`) }
+    for (const f of changed) renameSync(tmp(f), join(REPO, f))
+  } catch (err) { putBack(`writing failed (${err.code || err.message})`) }
   const r = spawnSync(process.execPath, [GATE, '--inventory'], { cwd: REPO, encoding: 'utf8' })
   if (r.status !== 0) {
-    for (const [f, t] of before) writeFileSync(join(REPO, f), t)
-    console.error(r.stdout + r.stderr)
-    die('the inventory was not clean afterwards, so EVERY file was put back exactly as it was.')
+    /* During --merge the result STAYS written (found on the first real trial merge, 28 Sep 26): what is left is the
+       merging chat's own hand work — the printed lines re-applied (a new ruling's "Also read" home), a mark its new rows
+       imply — and it cannot do that work if every file goes back. Nothing was lost: every number either side held was
+       checked present before writing. A plain run still puts everything back. */
+    if (merging) {
+      console.error((r.stdout + r.stderr).split('\n').filter(l => /^\s+- /.test(l)).join('\n'))
+      die(`WRITTEN — the merge's rulings are in place (${changed.join(', ')}), and the gate still fails for the lines above, which are this merge's hand work: re-apply the RE-APPLY BY HAND lines printed above, write any mark the gate names in that ruling's FULL row (under ${FULL_DIR}/), then run \`node raptor-port/scripts/backlog-archive.mjs --rulings\` (no --merge) until it says the inventory is clean; then \`git add\` the files.`)
+    }
+    console.error(r.stdout + r.stderr); putBack('the inventory was not clean afterwards')
   }
-  console.log('done; the inventory is clean.')
+  console.log(`done; the inventory is clean.${merging ? ` Review, then \`git add\` these files: ${changed.join(', ')}` : ''}`)
   process.exit(0)
 }
 

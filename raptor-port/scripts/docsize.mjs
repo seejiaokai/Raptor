@@ -37,13 +37,18 @@
  * of its three headings — [HANDOFF-SHAPE-GUARD]), a new reference doc no map names. Where each fact
  * belongs is `.claude/rules/doc-structure.md`. It runs with the inventory, so the Stop hook enforces it.
  *
+ * THE RULINGS SINCE D390 (28 Sep 26): each ruling is a short line in its area file and a full row, kept whole, in
+ * .claude/decisions-full/ — the shape both this gate and the converter read is docsize-rulings.mjs.
+ *
  * Flags: --inventory runs job 1 only (the Stop hook .claude/hooks/backlog-guard.sh uses it); --moves lists
- * every line that left a Markdown file on this branch and arrived nowhere (the reading list of a D138 check).
+ * every line that left a Markdown file on this branch and arrived nowhere (the reading list of a D138 check);
+ * --marks lists the rulings' back-marks, their drift since the base, and which short lines are extracts (D390).
  * The closing report copies the `Docs:` and `docsize:` lines this prints (bug-check-order §9). */
 import { readFileSync, existsSync } from 'node:fs'
 import { join, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { execFileSync } from 'node:child_process'
+import * as RL from './docsize-rulings.mjs'
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..')
 const REPO = join(ROOT, '..')
@@ -58,6 +63,11 @@ const DECISIONS = 'DECISIONS.md'
    them together, so a row moved between files is a move, never a loss. */
 const RULINGS_DIR = '.claude/rules/decisions'
 const RULINGS_ARCHIVE = 'DECISIONS-ARCHIVE.md'
+/* SINCE D390 (28 Sep 26) each ruling is a SHORT LINE in its area file (what a chat loads) and a FULL ROW, kept whole, in
+   the same-named file here — searched, never loaded. A ruling's identity is its full row; the short lines are an index
+   checked against it. The shape of both: docsize-rulings.mjs, which the converter (backlog-archive.mjs --rulings)
+   reads too, so the two cannot disagree. */
+const FULL_DIR = RL.FULL_DIR
 const INVENTORY_ONLY = process.argv.includes('--inventory')
 
 /* file, tier, CEILING. Keep one row per line in exactly this shape: the ceiling-change check below reads the
@@ -83,8 +93,10 @@ const FILES = [
      never paid for by trimming a live rule. 100 -> 125, 24 Sep 26 (owner, D136 + D137): the rule for
      keeping the rulings whole and split by area, and how a new or replaced ruling is filed, are live
      rules every session must carry — the same argument. 125 -> 145, 26 Sep 26 (owner, D201): what to fix when a
-     ruling overwrites another is a live rule every session must carry, the moment a ruling is heard. */
-  ['.claude/rules/record-decisions.md',  0,  145],
+     ruling overwrites another is a live rule every session must carry, the moment a ruling is heard. 145 -> 160,
+     28 Sep 26 (owner, D390): how a ruling is read and filed now that each loads as one line — open its full row
+     before acting on its detail; search the full-text folder with the shell — is a live rule every session carries. */
+  ['.claude/rules/record-decisions.md',  0,  160],
   ['.claude/rules/plain-language.md',    0,   60],
   /* NEW 24 Sep 26 (owner, D140 + D143): the two rule files every chat carries so the structure and the way a
      change ships are in force before any project file is read. Ceilings set at what they hold plus room. */
@@ -123,16 +135,27 @@ const FILES = [
      it is tier 0; each other area loads only when a file in that area is read, so it is tier 2. Set
      24 Sep 26 at roughly two to three times each file's size on the day it was split — "increase the
      budget to be safe". DECISIONS-ARCHIVE.md has no ceiling: searched, never loaded. */
-  ['DECISIONS.md',                       1,   80],
-  ['.claude/rules/decisions/how-we-work.md', 0, 150],
-  ['.claude/rules/decisions/oil.md',     2,  120],
-  /* 100 -> 560, 240, 360 — 24 Sep 26 (the spring clean, D140): each area file now also carries that area's
-     settled decisions from before the rulings list and (Leave War, Tracker) its architecture, moved WHOLE from
-     raptor-port/CLAUDE.md so they load only with the area's files. Set at what they hold plus room for the
-     rulings to keep growing (D136: a rulings file is never trimmed to fit). */
-  ['.claude/rules/decisions/scheduler.md', 2, 560],
-  ['.claude/rules/decisions/tracker.md', 2,  240],
-  ['.claude/rules/decisions/leave-war.md', 2, 360],
+  /* 80 -> 90, 28 Sep 26 (owner, D390): the recording steps now say where a full row and its short line go, and how a
+     merge across the slim-down runs — live rules every chat that records a ruling follows (D141: the ceiling rises
+     with its reason). */
+  ['DECISIONS.md',                       1,   90],
+]
+/* THE AREA RULINGS FILES — a tripwire in UTF-8 BYTES of the whole file, frontmatter and every section included (owner,
+   D390 narrowing D141, 28 Sep 26): since each ruling became ONE short line, a line count cannot see a file growing
+   (Astra's red team). EVERY file under .claude/rules/decisions/ must have a row here — the gate fails one that has
+   none, path-scoped or not. Crossing a tripwire means SPLIT THE AREA (a new area file, paths, map row and full-text
+   file, with `backlog-archive.mjs --rulings --move-rows`) or raise it here with its reason — never trim a ruling (D136).
+   The full-text files under .claude/decisions-full/ have none: searched, never loaded. Same row shape as FILES, so the
+   ceiling-moved-with-code check reads these too. Set 28 Sep 26 at what each held after the conversion (How we work
+   11.6k bytes, People & accounts 13.7k, scheduler 47.0k — most of it the settled notes and architecture, not rows —
+   OIL 7.0k, Leave War 24.2k, Tracker 13.1k) plus room for about thirty more rulings each. */
+const RULING_BYTES = [
+  ['.claude/rules/decisions/how-we-work.md', 0, 18000],
+  ['.claude/rules/decisions/people-accounts.md', 2, 22000],
+  ['.claude/rules/decisions/scheduler.md', 2, 62000],
+  ['.claude/rules/decisions/oil.md',     2, 12000],
+  ['.claude/rules/decisions/leave-war.md', 2, 32000],
+  ['.claude/rules/decisions/tracker.md', 2, 18000],
 ]
 const RULING_CEILING = f => f === DECISIONS || f.startsWith(RULINGS_DIR + '/')
 
@@ -147,15 +170,16 @@ const isCommit = ref => ref && tryGit('rev-parse', '--verify', '--quiet', `${ref
 function findBase() {
   const env = process.env.DOCSGUARD_BASE
   if (env && !/^0+$/.test(env) && isCommit(env)) return env.trim()
-  if (env) {
-    const prev = tryGit('rev-parse', 'HEAD~1')
-    if (prev) return prev.trim()
-  }
+  /* An unusable DOCSGUARD_BASE (all zeroes on a first push, or not a commit) falls through to the fork point from main,
+     as a local run does — HEAD~1 alone missed a ruling dropped two commits back (Astra's code read, 28 Sep 26). Only
+     when that fork point IS HEAD (a push to main itself) does it fall back to the commit before. */
+  const head = tryGit('rev-parse', 'HEAD')?.trim()
   for (const ref of ['origin/main', 'main']) {
-    const mb = tryGit('merge-base', 'HEAD', ref)
-    if (mb) return mb.trim()
+    const mb = tryGit('merge-base', 'HEAD', ref)?.trim()
+    if (mb && !(env && mb === head)) return mb
   }
-  return tryGit('rev-parse', 'HEAD')?.trim() || null
+  if (env) { const prev = tryGit('rev-parse', 'HEAD~1'); if (prev) return prev.trim() }
+  return head || null
 }
 const BASE = findBase()
 
@@ -168,17 +192,23 @@ const splitLines = t => t.split('\n').map(l => l.replace(/\r$/, ''))
 const areaFilesNow = () => [...new Set([...(tryGit('ls-files', '--', RULINGS_DIR) || '').split('\n'), ...(tryGit('ls-files', '--others', '--exclude-standard', '--', RULINGS_DIR) || '').split('\n')])]
   .filter(f => f.endsWith('.md') && existsSync(join(REPO, f))).sort()
 const areaFilesBase = () => BASE ? (tryGit('ls-tree', '-r', '--name-only', BASE, '--', RULINGS_DIR) || '').split('\n').filter(f => f.endsWith('.md')) : []
-const rulingFiles = when => [DECISIONS, ...(when === 'base' ? areaFilesBase() : areaFilesNow()), RULINGS_ARCHIVE]
+const fullFilesNow = () => [...new Set([...(tryGit('ls-files', '--', FULL_DIR) || '').split('\n'), ...(tryGit('ls-files', '--others', '--exclude-standard', '--', FULL_DIR) || '').split('\n')])]
+  .filter(f => f.endsWith('.md') && existsSync(join(REPO, f))).sort()
+const fullFilesBase = () => BASE ? (tryGit('ls-tree', '-r', '--name-only', BASE, '--', FULL_DIR) || '').split('\n').filter(f => f.endsWith('.md')) : []
+const rulingFiles = when => [DECISIONS, ...(when === 'base' ? [...areaFilesBase(), ...fullFilesBase()] : [...areaFilesNow(), ...fullFilesNow()]), RULINGS_ARCHIVE]
 /* Lines outside code blocks: an example row inside a ``` block is not a ruling, and must neither stand in
    for a lost one nor be moved as one (Astra, 24 Sep 26). fenceStep is job 1's rule, hoisted. */
 const unfenced = ls => { let fence = null; return ls.filter(l => { const was = fence; fence = fenceStep(fence, l); return !was && !fence }) }
 /* { d: 'D12', file, line } for every `| D<n> |` row — read loosely (`|D12|`, `| D12  |`), so a row typed
    with odd spacing is still counted and protected, and then failed for its shape (Fable, 24 Sep 26) */
 const ROW_ID = /^\|\s*(D\d+)\s*\|/
-const rulingRowsIn = (f, text) => unfenced(splitLines(text)).filter(l => ROW_ID.test(l)).map(line => ({ d: ROW_ID.exec(line)[1], file: f, line }))
+/* kind: 'short' (four `|` — an index line), 'full' (six — the ruling itself) or 'bad' (any other count, failed for it) */
+const rulingRowsIn = (f, text) => unfenced(splitLines(text)).filter(l => ROW_ID.test(l)).map(line => ({ d: ROW_ID.exec(line)[1], file: f, line, kind: RL.kindOf(line) }))
 const rulingRows = when => rulingFiles(when).flatMap(f => rulingRowsIn(f, when === 'base' ? readBase(f) : readNow(f)))
+/* a ruling's IDENTITY is its full row (a malformed one still counts, so it is failed for its shape, never as lost) */
+const identityRows = when => rulingRows(when).filter(r => r.kind !== 'short')
 /* A row whose ruling cell OPENS with a replaced or spent mark belongs in the archive (DECISIONS.md, step 2). */
-const MARKED = /^\*\*(?:(?:REPLACED|REVERSED|SUPERSEDED|ENDED) BY D\d+|SPENT\b)/
+const MARKED = RL.MARKED /* one definition, shared with the converter (Fable's code read, D390) */
 const rulingCell = line => (line.split('|').map(s => s.trim())[3] || '')
 /* The map: DECISIONS.md's rows whose second cell is a backticked ruling file; the last cell lists its D-numbers. */
 const MAP_ROW = /^\| ([^|]+?) \| `([^`]+)` \| ([^|]*?) \| ([^|]*?) \|\s*$/
@@ -311,8 +341,8 @@ function inventory(allow) {
   const baseLiveIds = new Set(base.live.map(b => b.id))
   const added = [...liveNowIds].filter(id => !baseLiveIds.has(id)).length
   const allInArchive = left.every(b => now.arch.some(a => a.id === b.id))
-  const dNow = rulingRows('now').map(r => +r.d.slice(1))
-  const dBase = new Set(rulingRows('base').map(r => +r.d.slice(1)))
+  const dNow = identityRows('now').map(r => +r.d.slice(1))
+  const dBase = new Set(identityRows('base').map(r => +r.d.slice(1)))
   const dNew = dNow.filter(n => !dBase.has(n)).sort((a, b) => a - b)
   const dRange = dNow.length ? `D${Math.min(...dNow)}–D${Math.max(...dNow)}` : 'none'
   const docsLine = `Docs: OUTSTANDING ${liveNowIds.size} items (+${added} −${left.length}${left.length ? (allInArchive ? `, −${left.length} all in ARCHIVE` : ', NOT all in ARCHIVE') : ''})` +
@@ -344,8 +374,9 @@ function homes(paths, allow) {
       if (existsSync(join(REPO, pre + tail))) return [pre + tail]
     return bySuffix()
   }
-  const baseRows = new Set(rulingRows('base').map(r => r.d))
-  for (const { line } of rulingRows('now')) {
+  const baseRows = new Set(identityRows('base').map(r => r.d))
+  /* a short line's last cell is its rule, not a home — only the full rows name homes (D390) */
+  for (const { line } of identityRows('now')) {
     const m = ROW_ID.exec(line)
     const cells = line.split(' | '), home = cells[cells.length - 1]
     const isNew = !baseRows.has(m[1]), future = home.search(/on build:/i)
@@ -389,35 +420,72 @@ const RULECHECK = 'raptor-port/scripts/rulecheck.mjs'
 const REGISTERS = 'raptor-port/docs/superpowers/specs'
 function rulings(allow) {
   const fails = []
-  const rowsNow = rulingRows('now')
+  const allNow = rulingRows('now')
+  const rowsNow = allNow.filter(r => r.kind !== 'short')
   const dNow = rowsNow.map(r => r.d)
-  const dBase = rulingRows('base').map(r => r.d)
+  const dBase = identityRows('base').map(r => r.d)
   const cNow = multiset(dNow), cBase = multiset(dBase)
   /* Every number the rulings held at the base OR in any commit since — a ruling filed on a branch and
      dropped by a later commit (a bad merge of a branch still in the one-file shape) is a loss too, the
      same way the backlog check reads every commit (Fable, 24 Sep 26). A D78 renumbering declares
-     `Docs-guard-allow: D<old>`. */
+     `Docs-guard-allow: D<old>`. Since D390 a ruling's number lives in its FULL row, wherever it sits — the
+     full-text folder joins every read, so a row moved into it is a move, never a loss. */
   const ever = new Set(dBase)
-  const since = BASE ? (tryGit('log', '--format=%H', `${BASE}..HEAD`, '--', DECISIONS, RULINGS_ARCHIVE, RULINGS_DIR) || '').split('\n').filter(Boolean) : []
+  const since = BASE ? (tryGit('log', '--format=%H', `${BASE}..HEAD`, '--', DECISIONS, RULINGS_ARCHIVE, RULINGS_DIR, FULL_DIR) || '').split('\n').filter(Boolean) : []
   for (const c of since)
-    for (const f of [DECISIONS, RULINGS_ARCHIVE, ...(tryGit('ls-tree', '-r', '--name-only', c, '--', RULINGS_DIR) || '').split('\n').filter(f => f.endsWith('.md'))])
-      for (const r of rulingRowsIn(f, tryGit('show', `${c}:${f}`) || '')) ever.add(r.d)
-  for (const d of ever) if (!cNow.has(d) && !allow.has(d)) fails.push(`${d} is GONE from the rulings (${DECISIONS}, ${RULINGS_DIR}/, ${RULINGS_ARCHIVE}) — a ruling number is never lost${cBase.has(d) ? '' : ' (it was added in a commit since the base)'}`)
+    for (const f of [DECISIONS, RULINGS_ARCHIVE, ...(tryGit('ls-tree', '-r', '--name-only', c, '--', RULINGS_DIR, FULL_DIR) || '').split('\n').filter(f => f.endsWith('.md'))])
+      for (const r of rulingRowsIn(f, tryGit('show', `${c}:${f}`) || '')) if (r.kind !== 'short') ever.add(r.d)
+  for (const d of ever) if (!cNow.has(d) && !allow.has(d)) fails.push(`${d} is GONE from the rulings (${DECISIONS}, ${RULINGS_DIR}/, ${FULL_DIR}/, ${RULINGS_ARCHIVE}) — a ruling number is never lost${cBase.has(d) ? '' : ' (it was added in a commit since the base)'}`)
   for (const [d, n] of cNow) if (n > 1 && n > (cBase.get(d) || 0) && !allow.has(d)) fails.push(`${d} now appears ${n} times across the rulings files — a row is MOVED, never copied; and a clash with a parallel branch renumbers that branch's own row (D78)`)
 
-  /* THE STRUCTURE KEEPS ITSELF (D137). A ruling lives in its AREA's file, never in the map file; a row
-     marked replaced or spent does not stay live; the archive holds only marked rows; and the map agrees
-     with the files — so "DECISIONS.md D38" always lands, and an old habit fails loudly, not silently. */
-  const areas = new Set(areaFilesNow())
-  for (const r of rowsNow) {
-    /* the shape every tool here reads: `| D<n> | <d> Mon yy | ruling | meaning | home |` */
-    if (!/^\| D\d+ \| \d{1,2} [A-Z][a-z]{2} \d{2} \| /.test(r.line)) fails.push(`${r.d}'s row in ${r.file} is not in the shape "| ${r.d} | <date, e.g. 24 Sep 26> | ruling | meaning | home |" — fix its spacing and date cell`)
-    const by = /^\*\*(?:REPLACED|REVERSED|SUPERSEDED|ENDED) BY (D\d+)/.exec(rulingCell(r.line))
+  /* THE STRUCTURE KEEPS ITSELF (D137, D390). A ruling lives in its AREA, never in the map file; a row marked replaced
+     or spent does not stay live; the archive holds only marked rows; the map agrees with the files; and every live
+     full row has exactly one short line in the area file of the same name, and every short line one full row. */
+  const areas = new Set(areaFilesNow()), fulls = new Set(fullFilesNow())
+  for (const r of allNow) {
+    /* the shape every tool here reads: `| D<n> | <d> Mon yy | …` — six `|` for a full row, four for a short line */
+    if (!/^\| D\d+ \| \d{1,2} [A-Z][a-z]{2} \d{2} \| /.test(r.line)) fails.push(`${r.d}'s row in ${r.file} is not in the shape "| ${r.d} | <date, e.g. 24 Sep 26> | …" — fix its spacing and date cell`)
+    if (r.kind === 'bad') { fails.push(`${r.d}'s row in ${r.file} has ${RL.pipes(r.line)} column dividers — a full row has 6 ("| D<n> | date | his words | meaning | home |"), a short line 4 ("| D<n> | date | the rule |"); a "|" inside a cell is written "\\|"`); continue }
+    if (r.kind === 'short') {
+      if (!areas.has(r.file)) fails.push(`${r.d}'s short line is in ${r.file} — a short line lives only in an area file under ${RULINGS_DIR}/`)
+      continue
+    }
+    const by = RL.REPLACED_BY.exec(rulingCell(r.line))
     if (by && !dNow.includes(by[1])) fails.push(`${r.d} is marked replaced by ${by[1]}, and no such ruling exists`)
     if (r.file === DECISIONS) fails.push(`${r.d} is written in ${DECISIONS} — a ruling lives in its area's file under ${RULINGS_DIR}/ (the map in ${DECISIONS} names them); move the row there, then run: ${MOVER_CMD}`)
-    else if (areas.has(r.file) && MARKED.test(rulingCell(r.line))) fails.push(`${r.d} is marked replaced/spent but is still in ${r.file} — move it to the archive: ${MOVER_CMD}`)
+    else if ((areas.has(r.file) || fulls.has(r.file)) && MARKED.test(rulingCell(r.line))) fails.push(`${r.d} is marked replaced/spent but is still in ${r.file} — move it to the archive: ${MOVER_CMD}`)
     else if (r.file === RULINGS_ARCHIVE && !MARKED.test(rulingCell(r.line))) fails.push(`${r.d} is in ${RULINGS_ARCHIVE} without its mark — an archived row opens its ruling cell with **REPLACED BY D<n>** or **SPENT <date>** (${DECISIONS}, step 2)`)
+    else if (areas.has(r.file)) {
+      /* a full row still in an area file: a new ruling not yet converted — say what the converter will do with it */
+      const why = RL.headingProblem(r.d, RL.headingOf(RL.cellsOf(r.line)))
+      fails.push(`${r.d}'s full row is still in ${r.file} — ${why ? `the converter will refuse it: ${why}` : `move it to ${FULL_DIR}/ and leave its short line: ${MOVER_CMD}`}`)
+    }
   }
+  /* the index: a short line per live full row, the same area, the same date, within the cap, and a change tail naming
+     exactly the rulings its full row's marks name (Fable and Astra's red team: both directions) */
+  const fullLive = new Map(rowsNow.filter(r => fulls.has(r.file)).map(r => [r.d, r]))
+  const shorts = allNow.filter(r => r.kind === 'short' && areas.has(r.file))
+  const shortCount = multiset(shorts.map(r => r.d))
+  for (const [d, n] of shortCount) if (n > 1) fails.push(`${d} has ${n} short lines — one ruling, one line`)
+  for (const s of shorts) {
+    const f = fullLive.get(s.d), p = RL.parseShort(s.line)
+    if (!f) { if (!rowsNow.some(r => r.d === s.d && areas.has(r.file))) fails.push(`${s.d}'s short line (${s.file}) has no full row in ${FULL_DIR}/ — a ruling's full row is never lost; restore it, or retire the ruling (${DECISIONS}, step 2)`); continue }
+    if (RL.stem(f.file) !== RL.stem(s.file)) fails.push(`${s.d}'s short line is in ${s.file} but its full row in ${f.file} — the full row follows its short line: ${MOVER_CMD}`)
+    const cells = RL.cellsOf(f.line)
+    if (p.date !== cells[1]) fails.push(`${s.d}'s short line says ${p.date}, its full row ${cells[1]} — the date is the full row's`)
+    const bad = RL.shortTextProblem(s.d, p.text)
+    if (bad) fails.push(`${bad} (${s.file})`)
+    const marks = RL.marksOf(cells), missing = [...marks].filter(x => !p.tail.has(x)), extra = [...p.tail].filter(x => !marks.has(x))
+    if (missing.length || extra.length) fails.push(`${s.d}'s short line ${missing.length ? `does not name ${missing.join(', ')}, which ${missing.length > 1 ? 'change' : 'changes'} it` : ''}${missing.length && extra.length ? ', and ' : ''}${extra.length ? `names ${extra.join(', ')}, which its full row carries no mark for` : ''} — write the mark in the full row (${DECISIONS} step 2), then: ${MOVER_CMD}`)
+  }
+  for (const [d, f] of fullLive) if (!shortCount.has(d)) fails.push(`${d}'s full row (${f.file}) has no short line — every live ruling loads as one line: ${MOVER_CMD}`)
+  /* every area file carries a byte tripwire (Astra's red team: an unregistered file could grow unseen) */
+  const tripwired = new Set(RULING_BYTES.map(r => r[0]))
+  for (const f of areas) if (!tripwired.has(f)) fails.push(`${f} has no byte tripwire in ${SELF}'s RULING_BYTES — add its row, with the reason, in a docs-only commit`)
+  /* the back-mark check (Fable's red team): a NEW row that names an older one beside a change verb ("narrows D293") while
+     the older row's marks do not name it — the older row must say so in its own words (DECISIONS.md step 2) */
+  const liveCells = new Map(rowsNow.filter(r => fulls.has(r.file) || areas.has(r.file)).map(r => [r.d, RL.cellsOf(r.line)]))
+  for (const bm of RL.backMarks(liveCells)) if (!cBase.has(bm.later) && !allow.has(bm.later)) fails.push(`${bm.later} is new and changes ${bm.older}, but ${bm.older}'s full row carries no mark naming ${bm.later} — write one in it ("**— NARROWED <date> BY ${bm.later}: …**"), then: ${MOVER_CMD}`)
   if (areas.size || readMap(readNow(DECISIONS)).length) {
     const map = readMap(readNow(DECISIONS))
     const byFile = new Map()
@@ -430,8 +498,8 @@ function rulings(allow) {
     }
     for (const f of [...areas, RULINGS_ARCHIVE]) if (!byFile.has(f) && existsSync(join(REPO, f))) fails.push(`\`${f}\` holds rulings but is not in the map in ${DECISIONS} — add its row, then run: ${MOVER_CMD}`)
     const stale = []
-    for (const r of rowsNow) if (r.file !== DECISIONS && byFile.has(r.file) && !byFile.get(r.file).has(r.d)) stale.push(`${r.d} (in ${r.file.split('/').pop()})`)
-    for (const [f, ids] of byFile) for (const d of ids) if (!rowsNow.some(r => r.d === d && r.file === f)) stale.push(`${d} (listed under ${f.split('/').pop()}, not in it)`)
+    for (const r of allNow) if (r.file !== DECISIONS && byFile.has(r.file) && !byFile.get(r.file).has(r.d)) stale.push(`${r.d} (in ${r.file.split('/').pop()})`)
+    for (const [f, ids] of byFile) for (const d of ids) if (!allNow.some(r => r.d === d && r.file === f)) stale.push(`${d} (listed under ${f.split('/').pop()}, not in it)`)
     if (stale.length) fails.push(`the map in ${DECISIONS} does not match the files — ${stale.slice(0, 6).join(', ')}${stale.length > 6 ? ` and ${stale.length - 6} more` : ''}; run: ${MOVER_CMD}`)
   }
 
@@ -581,6 +649,21 @@ function ceilings(codeChange) {
     console.log(`  ${pad(f, 38)} ${pad(tier, 5)} ${pad(n, 7)} ${ceiling}${note}`)
   }
   console.log(`\n  tier 0, always loaded: ${tier0} lines (no target — D141)`)
+  /* the area rulings files, in UTF-8 bytes of the whole file (D390) — the same tripwire rules as the lines above */
+  console.log(`\n  ${pad('rulings file (loaded)', 44)} ${pad('tier', 5)} ${pad('bytes', 8)} ${pad('~tokens', 8)} tripwire`)
+  let rTier0 = 0
+  for (const [f, tier, ceiling] of RULING_BYTES) {
+    if (!existsSync(join(REPO, f))) { console.log(`  ${pad(f, 44)} MISSING`); continue }
+    const n = Buffer.byteLength(readNow(f), 'utf8')
+    if (tier === 0) rTier0 += n
+    let note = ''
+    if (n > ceiling) {
+      if (codeChange) { deferred.push(n - ceiling); note = `   OVER by ${n - ceiling} bytes — code change: deferred (D29)` }
+      else { fails.push(`${f} is ${n - ceiling} bytes over its tripwire of ${ceiling} — a rulings file is NEVER trimmed (D136): split the area (a new area file, paths, map row and full-text file: backlog-archive.mjs --rulings --move-rows), archive what is replaced or spent, or raise the tripwire with its reason (D390)`); note = `   *** OVER by ${n - ceiling} bytes ***` }
+    }
+    console.log(`  ${pad(f, 44)} ${pad(tier, 5)} ${pad(n, 8)} ${pad('~' + Math.round(n / 3.7), 8)} ${ceiling}${note}`)
+  }
+  console.log(`\n  always-loaded rulings: ${rTier0} bytes (~${Math.round(rTier0 / 3.7)} tokens); the full text, searched: ${fullFilesNow().reduce((a, f) => a + Buffer.byteLength(readNow(f), 'utf8'), 0)} bytes`)
   return { fails, deferred }
 }
 
@@ -620,6 +703,34 @@ if (process.argv.includes('--moves')) {
   console.log(`\n--moves: ${fresh.reduce((a, [l, n]) => a + n - (removed.get(l) || 0), 0)} non-blank line(s) are NEW — written, not moved (the rewrites and pointers a meaning check reads):`)
   if (process.argv.includes('--verbose')) for (const [l, n] of fresh) console.log(`    ${l.length > 150 ? l.slice(0, 147) + '...' : l}`)
   else console.log('    (add --verbose to list them)')
+  process.exit(0)
+}
+
+/* ---------- --marks: what the meaning read works from (D138, D390) — reports, never failures ----------
+   The back-mark report: a row naming an older one beside a change verb where the older row's marks do not name it
+   (only a row NEW since the base fails, in the rulings check). The drift report: a short line changed since the base
+   while its full row did not, and a full row whose heading changed while its short line did not. The extract list:
+   which short lines are their row's heading word for word, and which were written by hand. */
+if (process.argv.includes('--marks')) {
+  const rows = identityRows('now').filter(r => r.file.startsWith(FULL_DIR + '/'))
+  const cells = new Map(rows.map(r => [r.d, RL.cellsOf(r.line)]))
+  const bms = RL.backMarks(cells)
+  console.log(`back-marks — a later row changes an older one that carries no mark naming it: ${bms.length}`)
+  for (const b of bms) console.log(`  ${b.older} ← ${b.later}`)
+  const shortNow = new Map(rulingRows('now').filter(r => r.kind === 'short').map(r => [r.d, r.line]))
+  const shortBase = new Map(rulingRows('base').filter(r => r.kind === 'short').map(r => [r.d, r.line]))
+  const fullBase = new Map(identityRows('base').map(r => [r.d, r.line]))
+  const drift = []
+  for (const [d, line] of shortNow) {
+    const fb = fullBase.get(d), fn = rows.find(r => r.d === d)?.line
+    if (shortBase.has(d) && shortBase.get(d) !== line && fb === fn) drift.push(`${d}: its short line changed, its full row did not`)
+    if (fb && fn && fb !== fn && RL.headingOf(RL.cellsOf(fb)) !== RL.headingOf(RL.cellsOf(fn)) && shortBase.get(d) === line) drift.push(`${d}: its full row's heading changed, its short line did not`)
+  }
+  console.log(`\ndrift since the base: ${drift.length}`); for (const x of drift) console.log('  ' + x)
+  const extract = [], written = []
+  for (const [d, line] of shortNow) { const c = cells.get(d); if (!c) continue; (RL.parseShort(line).text === RL.headingOf(c) ? extract : written).push(d) }
+  console.log(`\nshort lines that are their row's heading word for word: ${extract.length} — ${extract.join(', ')}`)
+  console.log(`\nshort lines written by hand: ${written.length} — ${written.join(', ')}`)
   process.exit(0)
 }
 
