@@ -28,6 +28,13 @@ the later merge keeps both (D78).
   posting record) and `src/leavewar/sync.ts` (`reprojectRoster`), the Undo / Redo pairs — `src/ui/Shell.tsx`,
   `src/ui/SchedBoard.tsx`, `src/leavewar/ui/Chrome.tsx`, `src/tracker/components/Header.jsx` — and `scheduler.css`'s top
   bar. Backlog items: `[UNDO-ROSTER-SETTINGS]`, `[UNDO-TOPBAR]`, `[GLOBAL-UNDO]`, `[AMEND-SMALL-SEEN]` item 2.
+- **Agreed with the parallel chats (D302, 28 Sep 26):** the Tracker leftovers chat (`claude/tracker-leftovers-f79d36`)
+  owns core.js's session / dialogs / date boxes / key handler (it takes the Ctrl+Z guard) and Header.jsx's Crew and find
+  boxes; this branch takes only the ↶ ↷ pair out of Header.jsx, adds a no-import `src/tracker/undo-bridge.js`, and one
+  registration region at the end of core.js `init()`. Top bar at 844×390 measured 149px with the pair added (unchanged) —
+  re-measure after the build and tell that chat. The docs-tidy chat (`claude/docs-tidy-subheads-audit-ec8f87`) inserts
+  heading lines in ui-contracts / engine-rules / feature-impact / performance — on a conflict keep both. Small-fixes
+  chat: rulings D360–D369.
 - **Ports:** preview 4173 (`raptor-walk`), browser tests `E2E_PORT=4190`. **Rulings:** D347–D359. Full checks through the
   PC lock (D228). Nothing to `main` without his "merge live".
 <!-- /now -->
