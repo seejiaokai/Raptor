@@ -679,17 +679,39 @@ history).
 - **Inside** — the head ("Changes · Tuesday 14/7", or "Changes · week of 13/7"; under it "Not yet published" /
   "Published · N changes waiting to go out as AL1"); tabs **New to you N** · **All changes N** · **To go out · ALn N**
   (only when the chosen days include a published day; with the week chosen it lists the published days, each opening its
-  own list); the day picker **Week · Mon … Sun** (a gold dot on a day with something new to you); **Group by Who**
-  (by person, then SITTING — one person's changes with no gap over 30 minutes; "Hex · 3 changes · NEW · 25/9 15:20–15:38")
-  or **Where** (the day's own sections: Flying waves, Duties, Common Programme, Sims, Ground, Notes, Absences, Quals, The
-  day). A group with something new opens by itself; the rest fold (D167 (4)); a group folded or opened by hand stays so
-  while the window is open. Every line: what (the man or the place, bold), what happened ("put on VL BFM · #1 RCP",
-  "taken off …", "moved from A to B", "06:00 → 06:15"), who (his live callsign) and when ("28/9 02:12"); a gold dot on a
-  line new to you. Newest first (D119). Empty states: "Nothing new to you on Tuesday." · "No changes on Tuesday yet." ·
+  own list); the day picker **Week · Mon … Sun** (a gold dot on a day with something new to you); **Group by Item** (first
+  and the default — `[CHG-BY-ITEM]`, D340, D345; it replaced Where, the day's sections, narrowing D168) or **Who** (by
+  person, then SITTING — one person's changes with no gap over 30 minutes; "Hex · 3 changes · NEW · 25/9 15:20–15:38").
+  **Item:** one group per item — a formation (its seats and fields its details), a wave, a duty desk or block, a sim row,
+  a programme row, a ground row, a note, an input, a man's Quals, a man on the Leave War, the day itself ("The day" — what
+  belongs to no single item: a publish, a sign-off, a cancelled line's reason, a line removed, an OIL on/off switch; D346 (1))
+  — identified by
+  its ROW-ANCHORED key and its day, never its words (`changesmodel.ts itemOf`): two lines both called "VL BFM" are two
+  items, a row renamed between two changes is one, the same event on two days is two; titled by its live name ("Programme
+  · SODB"). The item whose latest change is newest is on top. Changed once, it is ONE line (the item bold, the change
+  under it); more, a header ("Programme · SODB · 3", its latest time) and a line per change, newest first, who · when on
+  each; a detail is a tag before its change ("#1 FCP", "Start"). In the week view the day leads ("Mon · Programme ·
+  SODB") — so an input covering two days is an item under EACH day (D346 (3)). A man moved between two items shows under BOTH ("Echo moved in from MET + NOTAM BRIEF" / "Echo moved out to
+  SODB") — still ONE change in the counts; moved within one item, ONE entry ("Echo moved · #1 FCP → #1 RCP"). **Who**
+  keeps its sittings, each line item-first (a move once, under the item he reached). **Every group opens by default** and a
+  caret folds it (D345 — for Item and Who; narrows D167 (4)'s "new opens, the rest fold"); a fold holds while the window is
+  open. Every line says who (his live callsign) and when ("28/9 02:12"); a gold dot on a line new to you. Newest first
+  (D119). Empty states: "Nothing new to you on Tuesday." · "No changes on Tuesday yet." ·
   "Nothing is waiting to go out." The foot: "✓ Mark all as seen" on New to you (greyed when nothing is new); a member's
   All changes reads "Read only — every change and who made it, for everyone to see."
 - **A tap on a line** → `interactions.ts jumpToChange`, on the page you are on (D107), and the window STAYS OPEN (D167);
-  on a phone the panel shrinks to a slim bar ("Changes · N new ▴") until tapped. A line with nowhere to go on this page
+  on a phone the panel shrinks to the slim bar until tapped.
+- **History on a phone** (`[HIST-PHONE-HIDE]`, D339, D344, D345): the header carries **"Hide ▾"** beside ✕ (the phone's
+  panel form, ≤620px — never on a desktop, whose window moves and resizes); where History draws its dots (Edit Schedule,
+  the LIVE board — not the board while it shows an issued version, a look wearing no dots), where a TAP raises the bubble
+  (`HOOKS.isPhone()`, ≤820px) and where the week holds a change with a place on the schedule (a seat, a box, an input's
+  row — a week of publishes and day lines alone has no dot to tap), a line under the header says, in his words,
+  **"History on: Tap a gold dot on the schedule"**. Hide — or a tap on a line — sends the panel to the slim bar at the
+  bottom: **"History on · N changes"** (every change on the chosen day or week, a move once; "Changes · N changes" on
+  View-only Sched and on a board showing a look, where History draws nothing) and **"Show ▴"**, the whole of it one button that brings the panel back
+  where it was; ✕ closes the window and History with it. Turning a phone sideways (or narrowing a window) across either
+  width redraws the window at once — it listens to the screen, not only to the schedule (Astra's final read). Hidden, the bar sits one layer above the two floating windows
+  (412), so the ALL AVAIL window can never cover it (Astra); a week or page change closes it as it closes the panel. A line with nowhere to go on this page
   is listed but is not a button: no key and no input (a structural sentence, a Leave War decision with no Input, a Quals
   change, a publish), a detail the board does not draw while on the board (the area strip, the in-times, the traffic,
   the wave's title), the traffic on the week. An input's line goes to its row on the programme when accepted, else its
@@ -714,7 +736,8 @@ history).
   loaded week; it opens (and closes) the window on the week, on New to you. Members get no top-bar door. (3) **The
   board's History button** opens and closes it on the board's day.
 - **History mode is the window open** (D116, D168): the bubbles on a changed detail — hover on a desktop, tap on a phone
-  — on the board AND the edit week while it is open; closed, they are off. The bubble's page-wide listener is wired once
+  — on the board AND the edit week while it is open, and a gold dot on every such detail so a person sees where to tap
+  (D345, desktop too — §History on the board); closed, they are off. The bubble's page-wide listener is wired once
   however many surfaces use it (`histbubble.ts` DOC_WIRED).
 - **The OG tag** (D172) — see §Amendment marks on screen. It follows its ROW, not its place (a row dragged above another
   takes its tag along — the history's row-anchored key, each puck's place translated as it is drawn; Fable P1), and a
@@ -4132,6 +4155,18 @@ it: reload and the LoX is the default set again. `rules` is still the only
 thing this app writes to storage.
 
 ## History on the board (owner, 11 Aug 26)
+
+**28 Sep 26, later (`[HIST-PHONE-HIDE]` — D339, D344, D345): THE GOLD DOTS.** While History is on, every detail with a
+history wears a small gold dot (`data-histdot`, `histbubble.ts refreshHistDots`, after each repaint of the edit week and
+the board, beside the highlights) — on exactly the cells the bubble answers (`storyOf`, one answer for both): a seat, and
+a text detail holding words, just OUTSIDE its bottom-right corner (`::before` — inside, it covered the last character; the
+board's empty seat too, by its own rule, never twice); an empty text cell, a typed box and a row INSIDE its corner (a
+background image — a text cell's `::after` is its AL tag on a published day). On a desktop a remark's box is its column's
+width, so its dot sits at the column's far right, not after the words — always in the same place (D346 (2)); one per detail per day
+(a jet's store chips share one line); never on a saved-plan or version look (`.preview` / `.pv-frozen` — no bubble or jump
+there either). The bubble now also answers the board's wave-title box (`data-wsel` → `wl:`, a jump lands on it) and an
+input's own row (`iu:<iid>` — the input's lines touching that row's day). This supersedes "no new per-cell markup" below:
+the dot is an attribute and a paint, no node, set only while History is on.
 
 **28 Sep 26 (`[DRAFT-PENDING]` — D116, D168):** History mode IS the one changes window open — the board's `#sbHist`
 opens and closes the window on the board's day, the bubbles with it; the admin's top-bar icon and a day's chip open it

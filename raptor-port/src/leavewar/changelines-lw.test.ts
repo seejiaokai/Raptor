@@ -176,6 +176,18 @@ describe('a posting out', () => {
     expect(back.map(r => r.lbl), 'one line for taking it back').toHaveLength(1)
     expect(back[0]!.lbl).toMatch(/taken back/)
   })
+
+  /* [CHG-BY-ITEM] (Fable F3 / Astra 05): a posting line says WHOSE it is and WHAT it is, by id, so the changes window files
+     it under "Leave War · <him>" — never by its words */
+  it('each posting line keeps whose it is (sub) and that it is a posting — a Leave War line', () => {
+    resetSession(sessionFor(signIn('ad', 'a') as any))
+    setRole('admin')
+    elogClear()
+    expect(postOut(pid, '2026-10-14', 'overseas')).toBe(true)
+    const r = ELOG.rows.find(x => /posting out/.test(x.lbl))!
+    expect([r.sect, r.sub, r.fld]).toEqual(['abs', pid, 'posting'])
+    undoPostOut(pid)
+  })
 })
 
 /* Astra's read of the fixes (ASTRA-FIX-01): ONE day changed out of an approved leave of several — the war cuts the Input

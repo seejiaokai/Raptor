@@ -13,12 +13,19 @@
    The ALL AVAIL window's pattern (ui/floatwin.ts — where it sits, the grip, the corner, the phone's bottom panel): a
    third kind of surface, neither a Sheet nor a popup — it never closes on a tap outside it; it closes on ✕, a page
    change, a week change and a sign-in or sign-out (state/view.ts CHGWIN). While it is open, History mode is on (the
-   bubbles on the board and the edit week). */
+   bubbles on the board and the edit week).
+
+   [CHG-BY-ITEM] / [HIST-PHONE-HIDE] (28 Sep 26 — D339, D340, D344, D345; the approved mock-ups
+   docs/img/handpass/2026-09-28-draft-pending/byitem/ and …/histphone/): "Group by: Item / Who", Item first and the default
+   — one group per item, the latest-changed on top, every line item-first; every group open until folded. On a phone
+   "Hide ▾" beside ✕ sends the panel to the slim bar ("History on · N changes" · "Show ▴"), and where History draws its
+   dots the panel says so in his words: "History on: Tap a gold dot on the schedule". */
 import { useFloatWin, phoneLayout, frontWin, raiseWin } from './floatwin'
 import { useVersion } from './useStore'
+import { HOOKS } from '../engine/hooks'
 import { notify } from '../state/store'
 import { CHGWIN, CHGWIN_BOX, setChgWin, setChgWinBox, CHGFOLD, type ChgWin } from '../state/view'
-import { linesFor, byWho, byWhere, dayCounts, type CLine } from './changesmodel'
+import { linesFor, byWho, byItem, whoEntry, dayCounts, weekRows, type CLine, type Entry } from './changesmodel'
 import { weekDates, elogWhen } from '../engine/editlog'
 import { CURWEEK } from '../engine/waves'
 import { DAYS } from '../engine/data'
@@ -30,7 +37,8 @@ import { isMember, isAdmin } from '../state/perms'
 import { pendListHTML, pendKeysFor } from './pendlist'
 import { jumpToChange } from './interactions'
 import { histJumpable, weekJumpable } from './histbubble'
-import { SBDAY } from '../state/view'
+import { SBDAY, CURPAGE, DPREV } from '../state/view'
+import { useEffect, useState } from 'react'
 
 const DOW = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
 const dm = (iso: string) => { const [, m, d] = iso.split('-').map(Number); return `${d}/${m}` }
@@ -76,32 +84,57 @@ function canGo(l: CLine, j: { keys: string[] } | null): boolean {
   return SBDAY != null ? histJumpable(l.key) : weekJumpable(l.key)
 }
 
-function Line({ l, onGo, go: may }: { l: CLine; onGo: (l: CLine) => void; go: boolean }) {
-  const body = (
+/* an entry's line under its item — a jump goes to ITS place (a move's "moved out" entry to where he left) */
+const lineOf = (e: Entry): CLine => ({ ...e.line, key: e.key, date: e.date, ...(e.iid ? { iid: e.iid } : {}) })
+
+/* ONE ENTRY, item-first (D340): with `title` — a whole line, the item in bold over its change; without — a sub-line under
+   its item's header, the change beside who and when. A detail (a seat, a field) is a tag before the change. */
+function EntryLine({ e, title, onGo, go: may }: { e: Entry; title?: string; onGo: (e: Entry) => void; go: boolean }) {
+  const who = <span className="cw-who">{e.line.who} · {elogWhen(e.t)}</span>
+  const change = (
     <>
-      <span className="cw-top">
-        {l.fresh ? <span className="cw-dot" aria-label="new to you" /> : null}
-        <b className="cw-what">{l.title}</b>
-        <span className="cw-who">{l.who} · {elogWhen(l.t)}</span>
-      </span>
-      {l.text ? <span className="cw-txt">{l.text}</span> : null}
-      {l.from || l.to ? <span className="cw-txt">{l.from ? <s>{l.from}</s> : null}{l.from && l.to ? ' → ' : ''}{l.to ? <b>{l.to}</b> : null}</span> : null}
+      {e.detail ? <span className="cw-det">{e.detail}</span> : null}
+      {e.text}
+      {e.from || e.to ? <>{e.from ? <s>{e.from}</s> : null}{e.from && e.to ? ' → ' : ''}{e.to ? <b>{e.to}</b> : null}</> : null}
     </>
   )
+  const dot = e.fresh ? <span className="cw-dot" aria-label="new to you" /> : null
+  const body = title != null
+    ? <><span className="cw-top">{dot}<b className="cw-what">{title}</b>{who}</span><span className="cw-txt">{change}</span></>
+    : <span className="cw-top cw-sub">{dot}<span className="cw-txt">{change}</span>{who}</span>
+  const cls = 'cw-l' + (e.fresh ? ' fresh' : '')
   return may
-    ? <button className={'cw-l' + (l.fresh ? ' fresh' : '')} data-cwkey={l.key || undefined} onClick={() => onGo(l)} title="Go to this change">{body}</button>
-    : <div className={'cw-l still' + (l.fresh ? ' fresh' : '')} data-cwkey={l.key || undefined} title="This change has no place on this page to go to">{body}</div>
+    ? <button className={cls} data-cwkey={e.key || undefined} onClick={() => onGo(e)} title="Go to this change">{body}</button>
+    : <div className={cls + ' still'} data-cwkey={e.key || undefined} title="This change has no place on this page to go to">{body}</div>
+}
+
+/* THE LAYOUT FOLLOWS THE SCREEN, NOT ONLY THE DATA. Hide, the phone bar and the hint are read from the screen's width,
+   and nothing in the app's data moves when a phone is turned sideways or a window is narrowed — so the window listens
+   for the two widths it reads (the phone layout, and a tap raising a bubble) and redraws the moment either is crossed
+   (Astra's final read, FR-02: Hide stayed missing, or the bar stayed, until some other change redrew). Re-armed when the
+   window opens, so it listens to the screen as it is then. */
+function useLayoutWatch(open: boolean) {
+  const [, bump] = useState(0)
+  useEffect(() => {
+    if (!open || typeof window === 'undefined' || !window.matchMedia) return
+    const qs = ['(max-width:620px)', '(max-width:820px)'].map(q => window.matchMedia(q))
+    const on = () => bump(n => n + 1)
+    qs.forEach(m => m.addEventListener ? m.addEventListener('change', on) : (m as any).addListener(on))
+    return () => qs.forEach(m => m.removeEventListener ? m.removeEventListener('change', on) : (m as any).removeListener(on))
+  }, [open])
 }
 
 export function ChangesWindow() {
   useVersion()
   const w = CHGWIN
+  useLayoutWatch(!!w)
   /* the phone's slim bar sits where the stylesheet puts it — at the bottom — whatever height the panel was dragged to:
      it is there so the change behind can be seen, so it hands the box back for the bar and takes it again when the
      panel comes back ([DRAFT-PENDING], Fable P8 — the bar floated mid-screen at the dragged panel's top) */
   const { el, onBarDown, onBarMove, onBarUp } = useFloatWin({
     open: !!w, getBox: () => (CHGWIN && CHGWIN.bar && phoneLayout() ? null : CHGWIN_BOX), setBox: setChgWinBox,
     deps: [w ? 'open' : 'shut'],
+    closeSel: '.win-x, .win-hide',            // a press on Hide never starts a drag of the panel
   })
   if (!w || !isMember()) return <div className="chgwin" hidden />
 
@@ -119,10 +152,18 @@ export function ChangesWindow() {
   const tab = w.tab === 'out' && !hasOut ? 'all' : w.tab
   const phone = phoneLayout()
   const member = !isAdmin()
+  /* where History draws its dots and answers a tap — the edit week and the live board (D116, D338 (3)). View-only draws
+     none, and neither does the board while it shows an issued version (a look wears no dots — Astra's final read FR-05,
+     Fable's F3): there the hidden bar reads "Changes", not "History on" */
+  const histHere = CURPAGE === 'editsched' && (SBDAY == null || !DPREV.has(SBDAY))
+  /* the hint promises gold dots, so only where there can be some: a change on this week that has a place on the schedule
+     (a seat, a box, an input's row) — a week of publishes and day lines alone has none (Fable's final read, F3) */
+  const anyDots = histHere && weekRows().some((r: any) => r.key || r.iid)
 
   const set = (patch: Partial<ChgWin>) => { setChgWin({ ...w, ...patch }); notify() }
   const close = () => { setChgWin(null); notify() }
-  const go = (l: CLine) => {
+  const go = (e: Entry) => {
+    const l = lineOf(e)
     const j = jumpOf(l, days, one ? w.day : null)
     if (!j) return
     /* the window STAYS OPEN (D167); on a phone it shrinks to a slim bar so the change can be seen (D167 (2)) */
@@ -139,14 +180,20 @@ export function ChangesWindow() {
     jumpToChange(keys, di)
   }
 
-  /* THE PHONE BAR — after a tap took the schedule to a change (D167 (2)); a tap brings the panel back */
+  /* THE PHONE BAR — after Hide ([HIST-PHONE-HIDE], D339, D345) or a tap that took the schedule to a change (D167 (2)): at
+     the bottom, "History on · N changes" where History draws its dots ("Changes · N changes" where it draws none — View-only
+     Sched), and "Show ▴" — the whole of it one button that brings the panel back; ✕ closes the window, History with it.
+     A press on it raises it over the ALL AVAIL window (Astra 07). */
   if (w.bar && phone) {
+    const n = lines.length
     return (
-      <div className={'chgwin bar' + (frontWin() === 'chg' ? ' front' : '')} ref={el} role="dialog" aria-label="Changes">
-        <button className="cw-barbtn" onClick={() => set({ bar: false })}>
-          Changes{fresh.length ? ` · ${fresh.length} new` : ''} <span aria-hidden="true">▴</span>
+      <div className={'chgwin bar' + (frontWin() === 'chg' ? ' front' : '')} ref={el} role="dialog" aria-label="Changes"
+        onPointerDownCapture={() => { if (raiseWin('chg')) notify() }}>
+        <button className="cw-barbtn" onClick={() => set({ bar: false })} aria-label={`Show the changes — ${n} change${n === 1 ? '' : 's'}`}>
+          <span className="cw-barl">{histHere ? 'History on' : 'Changes'}</span><span className="cw-barn">{' · '}{n} change{n === 1 ? '' : 's'}</span>
+          <span className="cw-show">Show ▴</span>
         </button>
-        <button className="win-x" onClick={close} title="Close" aria-label="Close">&#10005;</button>
+        <button className="win-x" onClick={close} title="Close — History off" aria-label="Close">&#10005;</button>
       </div>
     )
   }
@@ -157,10 +204,15 @@ export function ChangesWindow() {
     : `${lines.length} change${lines.length === 1 ? '' : 's'} this week`
 
   const shown = tab === 'new' ? fresh : lines
-  const groups = w.group === 'where' ? byWhere(shown) : byWho(shown)
-  const anyFresh = groups.some(g => g.fresh)
-  const isOpen = (key: string, gFresh: boolean, i: number) => CHGFOLD.has(key) ? !!CHGFOLD.get(key) : (gFresh || (!anyFresh && i === 0) || tab === 'new')
+  const byItems = w.group !== 'who'
+  const items = byItems ? byItem(shown, !one, pick) : []
+  const whos = byItems ? [] : byWho(shown)
+  /* EVERY GROUP OPEN until he folds it (D345 — "every group open by default"; the later word over D167 (4)'s "new opens,
+     the rest fold", for Item and Who alike — Astra's plan read 06); a fold holds while the window is open */
+  const isOpen = (key: string) => CHGFOLD.has(key) ? !!CHGFOLD.get(key) : true
   const fold = (key: string, open: boolean) => { CHGFOLD.set(key, !open); notify() }
+  const may = (e: Entry) => canGo(lineOf(e), jumpOf(lineOf(e), days, one ? w.day : null))
+  const hm = (t: number) => elogWhen(t).split(' ')[1]
 
   return (
     <div
@@ -174,8 +226,13 @@ export function ChangesWindow() {
         {/* D40 — the app's own six-dot grip, "drag me" */}
         <span className="win-grip" aria-hidden="true">&#10303;</span>
         <span className="win-ttl">{title}<small>{sub}</small></span>
+        {/* HIDE — the phone only (D345): the panel goes to the slim bar at the bottom, History stays on, the schedule shows */}
+        {phone ? <button className="win-hide" onClick={() => set({ bar: true })} title="Hide the list — see the schedule" aria-label="Hide the list">Hide ▾</button> : null}
         <button className="win-x" onClick={close} title="Close" aria-label="Close">&#10005;</button>
       </div>
+      {/* the hint, in his words (D344), where a TAP raises a bubble on a dotted detail (the bubble's own gesture test —
+          Fable F5) and there are dots to tap */}
+      {HOOKS.isPhone() && anyDots ? <div className="cw-hint">History on: Tap a gold dot on the schedule</div> : null}
 
       <div className="win-tabs" role="tablist">
         <button className={'win-tab' + (tab === 'new' ? ' on' : '')} role="tab" aria-selected={tab === 'new'} onClick={() => set({ tab: 'new' })}>
@@ -202,8 +259,8 @@ export function ChangesWindow() {
       {tab !== 'out' ? (
         <div className="cw-grp">
           <span className="cw-grpl">Group by</span>
-          <button className={'cw-g-btn' + (w.group === 'who' ? ' on' : '')} onClick={() => set({ group: 'who' })}>Who</button>
-          <button className={'cw-g-btn' + (w.group === 'where' ? ' on' : '')} onClick={() => set({ group: 'where' })}>Where</button>
+          <button className={'cw-g-btn' + (byItems ? ' on' : '')} onClick={() => set({ group: 'item' })}>Item</button>
+          <button className={'cw-g-btn' + (!byItems ? ' on' : '')} onClick={() => set({ group: 'who' })}>Who</button>
         </div>
       ) : null}
 
@@ -214,25 +271,38 @@ export function ChangesWindow() {
             : <div className="cw-out" onClick={onOut}>
                 {outDays.map(x => <button key={x.d} className="cw-outday" data-cwday={x.d}><b>{(DAYS as any)[x.i]?.dow}</b> {x.n ? `${x.n} waiting to go out as AL${nextSeq(x.i)}` : 'nothing waiting'}</button>)}
               </div>
-        ) : !groups.length ? (
+        ) : !(byItems ? items.length : whos.length) ? (
           <div className="cw-none">{tab === 'new'
             ? (one ? `Nothing new to you on ${(DAYS as any)[di]?.dow || 'this day'}.` : 'Nothing new to you this week.')
             : (one ? `No changes on ${(DAYS as any)[di]?.dow || 'this day'} yet.` : 'No changes this week yet.')}</div>
-        ) : groups.map((g: any, i: number) => {
-          const open = isOpen(g.key, g.fresh, i)
-          const head = w.group === 'where'
-            ? <>{g.label} · {g.lines.length} change{g.lines.length === 1 ? '' : 's'}</>
-            : <>{g.who} · {g.lines.length} change{g.lines.length === 1 ? '' : 's'}</>
-          const when = w.group === 'who' ? (g.from === g.to ? elogWhen(g.to) : `${elogWhen(g.from)}–${elogWhen(g.to).split(' ')[1]}`) : ''
+        ) : byItems ? items.map(g => {
+          /* an item changed once is ONE line; more, a header and a line per change, newest first (D345) */
+          if (g.one) return <div className="cw-g cw-one" key={g.key}><EntryLine e={g.entries[0]!} title={g.title} onGo={go} go={may(g.entries[0]!)} /></div>
+          const open = isOpen(g.key)
           return (
             <div className="cw-g" key={g.key}>
               <button className="cw-gh" aria-expanded={open} onClick={() => fold(g.key, open)}>
                 <span className="cw-caret" aria-hidden="true">{open ? '▾' : '▸'}</span>
-                <span className="cw-ghname">{head}</span>
+                <span className="cw-ghname">{g.title} <span className="cw-ghn">· {g.entries.length}</span></span>
                 {g.fresh ? <span className="cw-new">NEW</span> : null}
-                {when ? <span className="cw-ghwhen">{when}</span> : null}
+                <span className="cw-ghwhen">{hm(g.t)}</span>
               </button>
-              {open ? <div className="cw-gl">{g.lines.map((l: CLine) => <Line key={l.seqs.join('.')} l={l} onGo={go} go={canGo(l, jumpOf(l, days, one ? w.day : null))} />)}</div> : null}
+              {open ? <div className="cw-gl">{g.entries.map(e => <EntryLine key={`${e.seq}.${e.move || ''}`} e={e} onGo={go} go={may(e)} />)}</div> : null}
+            </div>
+          )
+        }) : whos.map(g => {
+          const open = isOpen(g.key)
+          const when = g.from === g.to ? elogWhen(g.to) : `${elogWhen(g.from)}–${hm(g.to)}`
+          return (
+            <div className="cw-g" key={g.key}>
+              <button className="cw-gh" aria-expanded={open} onClick={() => fold(g.key, open)}>
+                <span className="cw-caret" aria-hidden="true">{open ? '▾' : '▸'}</span>
+                <span className="cw-ghname">{g.who} · {g.lines.length} change{g.lines.length === 1 ? '' : 's'}</span>
+                {g.fresh ? <span className="cw-new">NEW</span> : null}
+                <span className="cw-ghwhen">{when}</span>
+              </button>
+              {/* Who keeps its sittings, its lines item-first — a move once, under the item he reached (D345) */}
+              {open ? <div className="cw-gl">{g.lines.map((l: CLine) => { const e = whoEntry(l, !one, pick); return <EntryLine key={l.seqs.join('.')} e={e} title={e.title} onGo={go} go={may(e)} /> })}</div> : null}
             </div>
           )
         })}

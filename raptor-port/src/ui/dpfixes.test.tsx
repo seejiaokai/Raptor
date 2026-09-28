@@ -17,7 +17,7 @@ import { storeBackend, HOOKS } from '../engine/hooks'
 import { DAYS } from '../engine/data'
 import { PEOPLE } from '../engine/people'
 import { INPUTS, inpId } from '../engine/inputs'
-import { ELOG, elogClear, elogFlush, elogLoad } from '../engine/editlog'
+import { ELOG, elogClear, elogFlush, elogLoad, logAction } from '../engine/editlog'
 import { SCHED, signOf, setDayApproved, dayApproved, alAttr } from '../engine/publish'
 import { setSlotVal, slotVal } from '../engine/slots'
 import { moveDutyRow } from '../engine/reorder'
@@ -153,6 +153,26 @@ describe('P6 — a Quals change on "To go out" says who and when', () => {
       expect(multi, 'several things on one item').toBeTruthy()
       expect(multi!.querySelector('.pl-who')?.textContent || '').toContain('Saber')
     } finally { two.forEach((id, i) => { updatePersonField(id, { cat: q0[i] }) }) }
+  })
+
+  /* [HIST-PHONE-HIDE] + [CHG-BY-ITEM], Astra's final read (FR-01): a man posted out (archived) or made SANS BY A POSTING —
+     its own Quals lines are left unsaid inside the posting's command (one act, one line), so To go out found no line for
+     "posted out" / "SANS" and named nobody. The posting line now keeps whose it is and that it is a posting (sub, fld),
+     so it is the provenance of the two details a posting makes. (The posting pass that runs it on its date makes no line
+     — it is not a person's act — so the change here stands in for it.) */
+  it('a man posted out by a posting: To go out names who set the posting', () => {
+    as('ad', 'a')
+    const g = signOf(0); g.cur = 'ignite'; g.sked = 'bane'; g.plan = 'stiff'; g.appr = 'pump'
+    setDayApproved(0, true)
+    const man = (DAYS as any)[0].waves[0].formations[0].aircraft[0].p
+    const p: any = (PEOPLE as any)[man]
+    const was = p.archived
+    try {
+      logAction(null, `Leave War · ${p.cs} · posting out 13 Jul · Overseas Sqn`, { date: '2026-07-13', sect: 'abs', sub: man, fld: 'posting' })
+      p.archived = true
+      const who = [...el(pendListHTML(0)).querySelectorAll('.pl-who')].map(e => e.textContent || '').join('|')
+      expect(who, 'the To go out line names who set the posting').toContain('Saber')
+    } finally { p.archived = was }
   })
 })
 

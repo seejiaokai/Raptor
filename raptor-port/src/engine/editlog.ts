@@ -46,13 +46,16 @@ export type ELogRow = {
   wdate?: string      // the span BEFORE the change, when it moved (Astra DP-05): an absence moved from 1–2 Aug to 6–7 Aug
   wend?: string       //   shows on both spans, never on the days between
   iid?: string        // the input the line is about (an absence line)
+  itype?: string      //   and its TYPE, so a gone input's item keeps its name ("Input · Ranger · LL" — [CHG-BY-ITEM], Astra FR-04)
   iids?: string[]     // EVERY input the line is about, when more than one (a war move files the moved day as a new record —
                       //   the line keeps the one it left too, so "To go out" finds it by id: Astra's round-3 read, R3-02)
   days?: string[]     // the EXACT days after, when they are not one run (a gap day between is untouched — R3-03)
   wdays?: string[]    //   and before
-  sub?: string        // the PERSON a Quals line is about, by his id (a rename never loses it — Astra's final read, 03)
-  fld?: string        //   and which of his details (q, seat, pers, san, sxo, archived, deleted, cs, or a qualification's key)
-  sect?: string       // the part of the day a line with no key belongs to (Group by Where — ui/changesmodel.ts sectionOf)
+  sub?: string        // the PERSON a Quals, Leave War or absence line is about, by his id (a rename never loses it — Astra 03)
+  fld?: string        //   and which of his details (q, seat, pers, san, sxo, archived, deleted, cs, a qualification's key;
+                      //   'roster' — added to the roster; 'posting' — a posting out or in, [CHG-BY-ITEM])
+  sect?: string       // what a line with no key is about — 'abs' (an absence, the Leave War), 'quals', 'day' — which the
+                      //   changes window reads to file it under its item (ui/changesmodel.ts itemOf; Group by Where went, D345)
   key: string         // the slot key, '' for a structural note
   lbl: string         // WHAT it was, in words — frozen at log time, see below
   from: string
@@ -138,6 +141,7 @@ export function elogLoad(): void {
     if (isoOk(x.end)) r.end = x.end
     if (isoOk(x.wdate)) { r.wdate = x.wdate; if (isoOk(x.wend)) r.wend = x.wend }
     if (typeof x.iid === 'string' && x.iid) r.iid = x.iid
+    if (typeof x.itype === 'string' && x.itype) r.itype = x.itype
     if (typeof x.sect === 'string' && x.sect) r.sect = x.sect
     if (typeof x.sub === 'string' && x.sub) { r.sub = x.sub; if (typeof x.fld === 'string' && x.fld) r.fld = x.fld }
     const strs = (v: any, ok: (s: string) => boolean) => Array.isArray(v) ? v.filter((s: any) => typeof s === 'string' && ok(s)) : []
@@ -252,12 +256,12 @@ export { isPersonKey }
    styles, it covers only the seat and crew keys, and it lives in state/,
    which the engine cannot import. If a third caller ever wants this, merge
    THAT one into this — not the other way round. */
-const TXT_FLD: any = {
+export const TXT_FLD: any = {
   cs: 'callsign', msn: 'mission', to: 'take-off', ld: 'land', br: 'brief',
   str: 'start', end: 'end', prog: 'item', sub: 'detail', role: 'role',
   label: 'label', rmks: 'remarks',
 }
-const NOTE_LBL: any = {
+export const NOTE_LBL: any = {
   dn: 'Day note', sn: 'Sim notes', pn: 'Programme notes',
   dtn: 'Duty notes', gn: 'Ground notes',
 }
@@ -271,7 +275,7 @@ const NOTE_LBL: any = {
    Empty where there is nothing to tell apart, so a single-ship reads as it
    always did, and empty on a formation that has gone (the caller is inside the
    try, and a missing line falls through to 'Schedule' as before). */
-function jetOf(f: any, ai: any) {
+export function jetOf(f: any, ai: any) {
   return (f && (f.aircraft || []).length > 1) ? `#${+ai + 1} ` : ''
 }
 
@@ -365,7 +369,7 @@ export function logEdit(key: any, from: any, to: any) {
    (an input, a Leave War record) is on ITS dates, which may lie in any week; `iid` names the input it is about. */
 export type LineAt = {
   date?: string | null; end?: string | null; wdate?: string | null; wend?: string | null
-  iid?: string | null; key?: string; sect?: string; from?: string; to?: string; sub?: string; fld?: string
+  iid?: string | null; itype?: string; key?: string; sect?: string; from?: string; to?: string; sub?: string; fld?: string
   iids?: string[]; days?: string[]; wdays?: string[]
 }
 export function logAction(di: any, text: string, at?: LineAt) {
@@ -381,6 +385,7 @@ export function logAction(di: any, text: string, at?: LineAt) {
     if (at.wend && at.wend > at.wdate) row.wend = at.wend
   }
   if (at && at.iid) row.iid = at.iid
+  if (at && at.itype) row.itype = at.itype
   if (at && at.sect) row.sect = at.sect
   if (at && at.sub) { row.sub = at.sub; if (at.fld) row.fld = at.fld }
   if (at && at.iids && at.iids.length > 1) row.iids = at.iids.slice()
@@ -406,6 +411,16 @@ function onLoadedDay(r: ELogRow, k: string): boolean {
   if (r.date == null) return true
   const di = dayOf(k)
   return di == null || r.date === dateOfDi(di)
+}
+/* EVERY KEY THE BUBBLE ANSWERS for on the loaded week ([HIST-PHONE-HIDE], D345 — the gold dots): the row-anchored key
+   of each line that `elogFor` would find, by `onLoadedDay`'s own test — ONE body, so a dot never promises a bubble that
+   is not there. Built fresh for each pass (≤2,000 lines — well under a millisecond, and only while History is on): a
+   remembered set went stale when a delete renumbered a note's key in place, which moves neither the count nor the next
+   number (Fable's plan read, F4 — elogRemap). */
+export function elogKeySet(): Set<string> {
+  const set = new Set<string>()
+  for (const r of ELOG.rows) if (r.key && onLoadedDay(r, r.key)) set.add(r.key)
+  return set
 }
 export function elogFor(key: any): ELogRow | null {
   const k = String(ridKey(key, DAYS))            // translate the DOM key in — the log stores rid keys

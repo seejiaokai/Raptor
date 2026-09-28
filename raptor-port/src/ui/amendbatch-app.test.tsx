@@ -137,7 +137,10 @@ describe('the changes window keeps him on the page he is on (D107, AM56)', () =>
     expect($('.chgwin:not([hidden])'), 'the icon opens the window').toBeTruthy()
     await click($$('.chgwin .win-tab').find(b => /All changes/.test(b.textContent || ''))!)
     await click($$('.chgwin .cw-day').find(b => b.textContent === 'Mon')!)
-    const line = $$('.chgwin .cw-l').find(b => /OPS-O/.test(b.textContent || ''))
+    /* grouped by item ([CHG-BY-ITEM], D345) the move is under BOTH desks — "moved in from SDO" under OPS-O, "moved out to
+       OPS-O" under SDO; the OPS-O desk's own line is the one titled by it */
+    const desk = $$('.chgwin .cw-g').find(g => /OPS-O/.test(g.querySelector('.cw-gh, .cw-what')?.textContent || ''))
+    const line = desk && [...desk.querySelectorAll('.cw-l')].find(b => /moved in/.test(b.textContent || '')) as HTMLElement | undefined
     expect(line, 'the OPS-O change is a line').toBeTruthy()
     await click(line!)
     await settle()

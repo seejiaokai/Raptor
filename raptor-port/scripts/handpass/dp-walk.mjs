@@ -176,17 +176,20 @@ await step('F4', 'the clock icon\'s number fits its button (P2): on a phone a sm
   const fits = phone ? (m.pos === 'absolute' && m.num[0] < m.btn[2] && m.num[2] > m.btn[2] - 4 && m.num[3] > m.btn[1]) : (m.num[2] <= m.btn[2] + 1 && m.num[0] >= m.btn[0])
   return { ok: onScreen && fits, note: JSON.stringify(m), pic }
 })
-await step('A6', 'Tuesday\'s chip opens the window on Tuesday, New to you, grouped by Who', async () => {
+/* [CHG-BY-ITEM] (28 Sep 26 — D340, D345; Fable's plan read F6): the window opens grouped by ITEM, every line item-first;
+   Who keeps its sittings. A6, A7 and A10 were written for Who / Where and are rewritten to the design of record. */
+await step('A6', 'Tuesday\'s chip opens the window on Tuesday, New to you, grouped by Item (the default) — every group an item', async () => {
   await page.click('#eWeek .day[data-day="1"] .day-head .dpend.dpendbtn')
   await page.waitForTimeout(400)
-  const s = await page.$eval('.chgwin', e => ({ ttl: e.querySelector('.win-ttl')?.textContent, tab: e.querySelector('.win-tab.on')?.textContent, grp: [...e.querySelectorAll('.cw-gh')].map(g => g.textContent) })).catch(() => null)
-  return { ok: !!s && /Tuesday/.test(s.ttl || '') && /New to you/.test(s.tab || '') && s.grp.some(g => /Hex/.test(g)) && s.grp.some(g => /Ranger/.test(g)), note: JSON.stringify(s), pic: await shot('window-tue-new') }
+  const s = await page.$eval('.chgwin', e => ({ ttl: e.querySelector('.win-ttl')?.textContent, tab: e.querySelector('.win-tab.on')?.textContent, on: e.querySelector('.cw-g-btn.on')?.textContent,
+    items: [...e.querySelectorAll('.cw-g')].map(g => (g.querySelector('.cw-gh .cw-ghname, .cw-what')?.textContent || '')) })).catch(() => null)
+  return { ok: !!s && /Tuesday/.test(s.ttl || '') && /New to you/.test(s.tab || '') && s.on === 'Item' && s.items.length > 0 && s.items.every(t => /^(Flying|Wave|Duty|Sim|Programme|Ground|Input|Quals|Leave War|The day|Day note|.* notes)/.test(t)), note: JSON.stringify(s), pic: await shot('window-tue-new') }
 })
-await step('A7', 'the move between two of the duty desks on Tuesday is ONE line, "moved from … to …"', async () => {
+await step('A7', 'the move between two of the duty desks on Tuesday is under BOTH desks — "moved in from" and "moved out to" — and ONE change in the tab', async () => {
   if (!hexIds.moved) return { ok: false, note: 'no duty desk to move from: ' + JSON.stringify(hexIds) }
   const l = await page.$$eval('.chgwin .cw-l', els => els.map(e => e.textContent || ''))
-  const moves = l.filter(x => /moved from/.test(x))
-  return { ok: moves.length === 1, note: JSON.stringify(moves) }
+  const ins = l.filter(x => /moved in from/.test(x)), outs = l.filter(x => /moved out to/.test(x))
+  return { ok: ins.length === 1 && outs.length === 1, note: JSON.stringify({ ins, outs }) }
 })
 await step('A8', 'Ranger\'s leave is ONE line under his name, and a tap lands on his row under Unavailable (the R30 finding)', async () => {
   const ls = page.locator('.chgwin .cw-l', { hasText: 'LL added' })
@@ -198,12 +201,15 @@ await step('A8', 'Ranger\'s leave is ONE line under his name, and a tap lands on
   return { ok: k === 1 && tag === 'BUTTON' && flash.length > 0, note: JSON.stringify({ k, tag, flash }), pic: await shot('leave-line-jump') }
 })
 await step('A9', 'the window STAYED OPEN after the tap (D167)', async () => ({ ok: await count('.chgwin:not([hidden])') === 1 }))
-await step('A10', 'Group by Where lists Flying waves, Duties and Absences', async () => {
+await step('A10', 'Group by Who keeps its sittings — Hex and Ranger — each line item-first', async () => {
   /* on a phone the tap in A8 shrank the panel to its bar (D167 (2)); a tap on the bar brings it back */
   if (await count('.chgwin.bar')) { await page.click('.chgwin.bar .cw-barbtn'); await page.waitForTimeout(300) }
-  await page.click('.chgwin .cw-g-btn:has-text("Where")'); await page.waitForTimeout(300)
+  await page.click('.chgwin .cw-g-btn:has-text("Who")'); await page.waitForTimeout(300)
   const g = await page.$$eval('.chgwin .cw-gh', els => els.map(e => e.textContent || ''))
-  return { ok: g.some(x => /Flying waves/.test(x)) && g.some(x => /Duties/.test(x)) && g.some(x => /Absences/.test(x)), note: JSON.stringify(g), pic: await shot('group-where') }
+  const firsts = await page.$$eval('.chgwin .cw-l .cw-what', els => els.map(e => e.textContent || ''))
+  const ok = g.some(x => /Hex/.test(x)) && g.some(x => /Ranger/.test(x)) && firsts.length > 0 && firsts.every(t => /·/.test(t))
+  await page.click('.chgwin .cw-g-btn:has-text("Item")'); await page.waitForTimeout(200)
+  return { ok, note: JSON.stringify({ g, firsts }), pic: await shot('group-who') }
 })
 await step('A11', 'Monday\'s "1 pending" opens To go out · AL1, naming the SDO desk change with who', async () => {
   await page.click('#eWeek .day[data-day="0"] .day-head [data-pendlist]'); await page.waitForTimeout(400)

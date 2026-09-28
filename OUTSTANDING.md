@@ -49,11 +49,11 @@ list (13–23 Sep 26), its finished entries and the "In plain terms" block are i
 whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaining).
 
 **His order — to the database step, about two months away (D203, 26 Sep 26; D173, D147 within it):**
-0. **Next, in a fresh chat — [HIST-PHONE-HIDE]** (D339) **with [CHG-BY-ITEM]** (D340), one branch (both change the changes window):
+0. **BUILT and FULL-checked 28 Sep 26 on `claude/hist-phone-by-item` — waiting for his look and "merge live" — [HIST-PHONE-HIDE]** (D339) **with [CHG-BY-ITEM]** (D340), one branch (both change the changes window):
    History on a phone — the window hides to the bottom ("Hide ▾" / "Show ▴"), a gold dot on every detail with a history; and the
-   window sorted by item, every line item-first. Both mock-ups APPROVED (D345); being built on `claude/hist-phone-by-item`
-   (28 Sep 26). **Before them, [LW-FIGSEL-FLAKE]** (D342) — FIXED on `claude/lw-figsel-flake` (its own PR, waiting for his
-   look and "merge live"; archived): the "Saving…" note moved the page; it now floats under the top bar.
+   window sorted by item, every line item-first. Both mock-ups APPROVED (D345); built on `claude/hist-phone-by-item`
+   (28 Sep 26), `main` taken in, PR #455; his look card's three questions answered — kept as built (D346). **Before them, [LW-FIGSEL-FLAKE]**
+   (D342) — MERGED (PR #454, 28 Sep 26; archived): the "Saving…" note moved the page; it now floats under the top bar.
 1. **Now — [DRAFT-PENDING]** — the one changes window, on top of accounts, its own FULL check (D210): BUILT and
    FULL-checked 28 Sep 26 on `claude/draft-pending` overnight by his standing go (D336 (2)) — his look DONE 28 Sep 26 (every
    reading kept, D337, D338) — **waiting for his "merge live"**; never merged without his word. Before it: **[ONE-DOOR]** (D309, D310, carrying [POST-IN-DATE], D308) MERGED 28 Sep 26 (PR #450;
@@ -1074,6 +1074,15 @@ from `main` once PR #451 merges (the agent's reading of "another chat"), with `[
 window). **Where it lands:** `src/ui/ChangesWindow.tsx` (Hide, the
 bar's words), `src/ui/histbubble.ts` (marking the details with a history while History is on — the same keys the bubble answers),
 `src/ui/scheduler.css`, `docs/ui-contracts.md` §The one changes window; WALK tier at least (a shared drawer — every puck surface).
+**BUILT 28 Sep 26 on `claude/hist-phone-by-item`** with `[CHG-BY-ITEM]` — planned (Opus 5.5), red-teamed by Fable and Astra
+(`raptor-port/docs/superpowers/plans/2026-09-28-hist-phone-by-item-plan.md` §9), built red first, FULL-checked
+(`raptor-port/docs/handpass/2026-09-28-hist-phone-by-item.md`). Beyond the mock-up, from the red team: the dot on every
+detail the bubble answers (the board's wave title and an input's row now answer too), never on a look; a text detail's
+dot outside its corner; the hint where a tap raises a bubble (≤820px); the hidden bar above the ALL AVAIL window. From the
+final reads: the window follows a phone turned sideways; no hint and no "History on" over a board look or a week with
+nothing to dot. From the walk: a tap in and out of an input's time cell no longer writes a false "times" line.
+His look card's three questions ANSWERED 28 Sep 26 — all kept as built (D346). PR #455.
+**Next:** his "merge live" (`main`, with PR #454, already taken in).
 
 ### [CHG-BY-ITEM] The changes window sorted by item, every line item-first (D340, 28 Sep 26)
 **His ask (D340):** "the main category to sort as per item, and the latest changes of that group will be the highest … in that
@@ -1094,6 +1103,11 @@ default (a caret folds it). **APPROVED 28 Sep 26 (D345)**, the calls with it. **
 by item; the line's words item-first), `src/ui/ChangesWindow.tsx` (the groups and sub-lines), `src/ui/scheduler.css`,
 `docs/ui-contracts.md` §The one changes window; its tests (`changesmodel.test.ts`); the walk's changes-window steps. WALK tier at
 least — the window is every user's, members included.
+**BUILT 28 Sep 26 on `claude/hist-phone-by-item`** with `[HIST-PHONE-HIDE]` (the same plan, sheet and look). Beyond the mock-up,
+from the red team: a move within one item is ONE entry ("moved", its two places); a posting and "added to the roster" now
+carry their man (two writers, `state/changelines.ts`) so they file under "Leave War · <him>" / "Quals · <him>"; every group
+(Item and Who) opens by default (D345 over D167 (4)); "The day", a remark's dot and a two-day input answered as built
+(D346). PR #455. **Next:** his "merge live".
 
 ### [DRAFT-PENDING] The one CHANGES WINDOW — D118, D167–D172 (25 Sep 26); step 3 of D173, after `[ACCOUNTS]` (its own FULL check — D210)
 **BUILT 28 Sep 26 on `claude/draft-pending`** (overnight, D336 (2)): the plan `raptor-port/docs/superpowers/plans/2026-09-28-draft-pending-plan.md`

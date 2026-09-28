@@ -15,22 +15,22 @@ the later merge keeps both (D78).
 
 ## Now
 
-<!-- now:claude/lw-figsel-flake -->
-### `claude/lw-figsel-flake` — `[LW-FIGSEL-FLAKE]` FIXED (the app, not the test) — READY FOR HIS LOOK and "merge live" — written 28 Sep 26 — verify before use
-- **Where it started:** `main` at PR #453's merge. This chat (28 Sep 26) did two jobs on two branches from `main`, one after
-  the other (his order): this one first, then `[HIST-PHONE-HIDE]` with `[CHG-BY-ITEM]` on `claude/hist-phone-by-item`
-  (its own block there). No rulings this chat so far. **Never merge without his word.**
-- **What it was:** the Leave War figure-drag test's GitHub-only failures were the APP moving under the mouse — the top
-  bar's "Saving…" note came and went in the bar's row after every change, and a bar near full wrapped onto a second line
-  and back (the page dropped ~46px): on GitHub's wider fonts the Leave War at 1440; on this PC at 1366 on five pages; on a
-  phone it pushed Undo / Redo / the clock right. **Fixed:** the note floats just under the bar's right end
-  (`src/ui/SaveStatus.tsx`, `scheduler.css` `.topbar > .savestat`). The test is unchanged. Contract:
-  `raptor-port/docs/ui-contracts.md` §The top bar carries the bell…; evidence `raptor-port/docs/handpass/2026-09-28-lw-figsel-flake.md`.
-- **Checked (WALK tier):** red first (`e2e/geometry.spec.ts` "the Saving… note never moves the top bar" failed on the old
-  code at 1366 and on the phone), a break test, the walk `scripts/handpass/sn-walk.mjs` (every page at 1366 / 1440 /
-  phone and "Not saved — Retry": 92/92), GitHub's machines 5 × 170 Leave War desktop tests with no retries, the gates.
-- **Next:** his look (the note under the bar, on any page, after a change) → his "merge live". This branch merges first;
-  `claude/hist-phone-by-item` then takes `main` in (both edit `HANDOFF.md` and `OUTSTANDING.md`).
+<!-- now:claude/hist-phone-by-item -->
+### `claude/hist-phone-by-item` — `[HIST-PHONE-HIDE]` + `[CHG-BY-ITEM]` BUILT and FULL-checked — READY FOR HIS LOOK and "merge live" — written 28 Sep 26 — verify before use
+- **Where it started:** `main` at PR #453's merge; `main` (with PR #454, `[LW-FIGSEL-FLAKE]`, merged the same day — this
+  chat's first job) taken in. Rulings this chat: D346 (his look card's answers). **Never merge without his word.**
+- **What it is (D339, D340, D344, D345 — both mock-ups approved):** History on a phone — "Hide ▾" sends the changes window
+  to a slim bar at the bottom ("History on · N changes", "Show ▴"), the hint "History on: Tap a gold dot on the schedule",
+  a gold dot on every detail with a history (desktop too), a tap / hover on one opens its bubble; and the window grouped
+  by ITEM (Item / Who, Item first), every line item-first, a move within one item one entry, a move between two under
+  both. Plan `raptor-port/docs/superpowers/plans/2026-09-28-hist-phone-by-item-plan.md`; evidence (roll-call, walk, breaks,
+  both final reads, his look card §11) `raptor-port/docs/handpass/2026-09-28-hist-phone-by-item.md`.
+- **Checked (FULL):** plan red-teamed by Fable and Astra; built red first; walk `scripts/handpass/hp-walk.mjs` 24/24
+  desktop, 26/26 phone; 19 break tests all red (`hp-breaks.py`); both final reads — Astra 6, Fable 7 findings, 10 fixed,
+  3 to his look card; the walk then found a tap in and out of an input's time cell writing a false "times" line — fixed
+  (older than this build, now reached by its gesture). The gates on the final code: §Gate baseline.
+- **His look card answered 28 Sep 26** — "1. Ok · 2. Ok · 3. Ok": all three kept as built (D346). PR #455.
+- **Next:** his "merge live".
 <!-- /now -->
 
 <!-- now:claude/five-flags-batch-continue-2cfa70 -->
@@ -69,7 +69,7 @@ the later merge keeps both (D78).
 1. **HIS ORDER to the database step, about two months away (D203, 26 Sep 26):** `[ACCOUNTS]`, `[ACCOUNTS-NEW-PERSON]`,
    `[POST-OUT-OUTCOMES]`, `[LW-MOVE-STANDARD]` (D264–D266) and `[ONE-DOOR]` (D309, D310, with `[POST-IN-DATE]`) MERGED
    (PRs #442, #443, #446, #447, #450) → **the one changes window (`[DRAFT-PENDING]`)** MERGED (PR #451, 28 Sep 26); its
-   two follow-ups `[HIST-PHONE-HIDE]` and `[CHG-BY-ITEM]` (D345) being built; beside it, he talks to the IT side
+   two follow-ups `[HIST-PHONE-HIDE]` and `[CHG-BY-ITEM]` (D345) BUILT, waiting for his look (`claude/hist-phone-by-item`); beside it, he talks to the IT side
    (`[IT-QUESTIONS]`). Development as normal: `[HUMAN-RETEST]`'s remaining three in his order (D147 — the absence record
    with `[S4-HUNT-REST]` and D260–D262 MERGED, PR #444 — then change-recording, the Leave War links last), then `[LW-LOCKMARK]` → `[LW-WEEKDAY-WORK]` (`[PUB-UNAVAIL]`
    closed by the absence-record re-test).
@@ -81,9 +81,9 @@ the later merge keeps both (D78).
 
 ## Gate baseline
 
-The latest counts watched — 28 Sep 26, `claude/lw-figsel-flake`'s final code (`3a02167c`), one run under the PC lock: unit
-**6746 / 6746** (417 files) · build clean · tfin **728 / 0** · e2e **487 passed**, 48 skipped · smoke **443 / 0** ·
-rulecheck OK · docsize OK. Restate a count only from a run you watched, and REPLACE the previous counts — never stack a
+The latest counts watched — 28 Sep 26, `claude/hist-phone-by-item`'s final code (`14b14360`, `main` taken in), one run
+under the PC lock: unit **6775 / 6775** (417 files) · build clean · tfin **728 / 0** · e2e **495 passed**, 48 skipped ·
+smoke **443 / 0** · rulecheck OK · docsize OK. Restate a count only from a run you watched, and REPLACE the previous counts — never stack a
 history. How to run them: `raptor-port/CLAUDE.md` §Build & verify; how they mislead, and the checks on his PC:
 `raptor-port/docs/gates-and-deploy.md`.
 

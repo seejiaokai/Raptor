@@ -195,7 +195,7 @@ describe('clicking a change jumps to it', () => {
     await act(async () => { await new Promise(r => setTimeout(r, 10)) })
     await backToBoard()
     await openList()
-    const arRow = $$('.chgwin .cw-l').find(r => (r.textContent || '').includes('area'))
+    const arRow = $$('.chgwin .cw-l').find(r => /area/i.test(r.textContent || ''))   // its detail reads "Area" ([CHG-BY-ITEM])
     expect(arRow, 'it is still LISTED').toBeTruthy()
     expect(arRow!.tagName, 'but not offered as a jump from the board').not.toBe('BUTTON')
   })

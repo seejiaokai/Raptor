@@ -12,14 +12,16 @@ import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it } from
 import { act } from 'react'
 import { createRoot, type Root } from 'react-dom/client'
 import { App } from './App'
-import { initStore, setSession, notify } from '../state/store'
-import { SCHED, signOf, setDayApproved } from '../engine/publish'
+import { initStore, setSession, notify, writeInputs } from '../state/store'
+import { DAYS } from '../engine/data'
+import { INPUTS, inpId } from '../engine/inputs'
+import { SCHED, signOf, setDayApproved, dayVersions } from '../engine/publish'
 import { setSlotVal, slotVal, txtSet } from '../engine/slots'
-import { elogClear, elogAllFor, elogVal } from '../engine/editlog'
+import { elogClear, elogAllFor, elogVal, elogFor, logAction } from '../engine/editlog'
 import { HOOKS } from '../engine/hooks'
 import * as view from '../state/view'
 import { openScheduler, closeScheduler } from './board'
-import { hideHistBub } from './histbubble'
+import { hideHistBub, histKeyOf, HIST_CELLS, refreshHistDots, findHistCell } from './histbubble'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
@@ -357,5 +359,234 @@ describe('the edit week', () => {
     expect(bub()!.textContent).toMatch(/Ranger|Saber/)
     await act(async () => { view.setHistMode(false); notify() })
     await act(async () => { openScheduler(0) })
+  })
+})
+
+/* THE GOLD DOTS ([HIST-PHONE-HIDE], D339, D345 — "a small gold dot on every detail with a history while History is on",
+   desktop too): exactly the details the bubble answers for — the SAME question (`histKeyOf` over the bubble's cells, then
+   the history on the loaded day) — so a dot never promises a bubble that is not there. What jsdom can prove: which cells
+   wear `data-histdot`; that they are painted gold, where, is e2e/changeswin.spec.ts's. */
+describe('the gold dots — History on marks every detail with a history (D345)', () => {
+  const marked = (root: string) => $$(`${root} [data-histdot]`)
+  it('none while the window is shut; on the edited seat, and only on cells the bubble answers, while it is open — board and edit week', async () => {
+    const el = await editedSeat()
+    const key = el.dataset.slot!
+    expect(marked('#sbBoard').length, 'History off: no dots').toBe(0)
+    await openAll()
+    expect($(`#sbBoard [data-slot="${key}"]`)!.hasAttribute('data-histdot'), 'the edited seat wears one').toBe(true)
+    /* the dots are the bubble's own answer, on both surfaces: a dotted cell is one the bubble answers, and every detail the
+       bubble answers wears exactly one dot in its day (a jet's store chips share one line — the first wears it, F8) */
+    for (const root of ['#sbBoard', '#eWeek']) {
+      const per = new Map<string, number>()
+      for (const c of $$(`${root} ${HIST_CELLS}`)) {
+        const k = histKeyOf(c)
+        const sec = `${(c.closest('.day[data-day]') as HTMLElement | null)?.dataset.day ?? ''}|${k}`
+        if (c.hasAttribute('data-histdot')) expect(!!k && !!elogFor(k), `${root} ${k} is dotted, so the bubble answers it`).toBe(true)
+        if (k && elogFor(k)) per.set(sec, (per.get(sec) || 0) + (c.hasAttribute('data-histdot') ? 1 : 0))
+      }
+      for (const [sec, n] of per) expect(n, `${root} ${sec}: one dot`).toBe(1)
+    }
+    expect($(`#eWeek [data-slot="${key}"]`)!.hasAttribute('data-histdot'), 'and on the edit week behind').toBe(true)
+    await click($('.chgwin .win-x'))
+    expect(marked('#sbBoard').length + marked('#eWeek').length, 'closed: every dot goes').toBe(0)
+  })
+
+  it('a change made while the window is open is dotted at once; View-only Sched never wears one', async () => {
+    await openAll()
+    const el = await editedSeat()
+    expect(el.hasAttribute('data-histdot')).toBe(true)
+    expect(marked('#vWeek').length, 'View-only draws no bubbles, so no dots').toBe(0)
+  })
+
+  it('a version look wears none (a document, not your history)', () => {
+    const root = document.createElement('div')
+    root.innerHTML = '<div class="pv-frozen"><span data-slot="1.0.0.0.p"></span></div><div class="preview"><span data-slot="1.0.0.0.p"></span></div><span data-slot="1.0.0.0.p"></span>'
+    document.body.appendChild(root)
+    setSlotVal('1.0.0.0.p', slotVal('1.0.0.0.p') === 'bane' ? 'stiff' : 'bane')
+    view.setHistMode(true)
+    refreshHistDots(root)
+    expect([...root.querySelectorAll('[data-histdot]')].map(e => e.parentElement === root)).toEqual([true])
+    view.setHistMode(false)
+    refreshHistDots(root)
+    expect(root.querySelectorAll('[data-histdot]').length).toBe(0)
+    root.remove()
+  })
+})
+
+/* HISTORY ON A PHONE ([HIST-PHONE-HIDE], D339, D344, D345): "Hide ▾" beside ✕ on a phone only; the hint in his words;
+   the slim bar "History on · N changes" with "Show ▴"; ✕ turns History off. The phone layout is the stylesheet's own
+   breakpoint (floatwin.ts phoneLayout — matchMedia), stood in for here. */
+describe('History on a phone — Hide, Show and the hint (D339, D344, D345)', () => {
+  /* jsdom has no matchMedia at all: remember that it was absent, and put it back that way */
+  let real: any, stubbed = false
+  const asPhone = (on: boolean) => {
+    if (on) { real = window.matchMedia; stubbed = true; (window as any).matchMedia = (q: string) => ({ matches: /max-width:\s*620px|hover:\s*none/.test(q), media: q, addEventListener() {}, removeEventListener() {}, addListener() {}, removeListener() {} }) }
+    else { (window as any).matchMedia = real; stubbed = false }
+  }
+  /* put the page back whatever a test did — a failure mid-test must not leave the next one on View-only with the board shut */
+  afterEach(async () => {
+    if (stubbed) asPhone(false)
+    phone = false
+    view.DPREV.clear()
+    await act(async () => { view.setChgWin(null); notify() })
+    if (view.CURPAGE !== 'editsched') await click($$('.nav a[data-page]').find(a => a.dataset.page === 'editsched')!)
+    if (view.SBDAY == null) await act(async () => { openScheduler(0) })
+  })
+
+  it('on a phone: "Hide ▾" and the hint in his words; Hide → the bar "History on · N changes" with "Show ▴"; Show → the panel; ✕ → History off', async () => {
+    await editedSeat()
+    phone = true; asPhone(true)
+    await openAll()
+    const hide = $('.chgwin .win-hide')
+    expect(hide, 'Hide on the phone').toBeTruthy()
+    expect(hide!.textContent).toBe('Hide ▾')
+    expect($('.chgwin .cw-hint')!.textContent).toBe('History on: Tap a gold dot on the schedule')
+    await click(hide)
+    expect($('.chgwin.bar'), 'hidden to the bar').toBeTruthy()
+    expect($('.chgwin.bar .cw-barbtn')!.textContent).toMatch(/^History on · 1 change\s*Show ▴$/)
+    expect(view.HISTMODE, 'History stays on while hidden').toBe(true)
+    await click($('.chgwin.bar .cw-barbtn'))
+    expect($('.chgwin:not(.bar) .win-tabs'), 'Show brings the panel back').toBeTruthy()
+    await click($('.chgwin .win-hide'))
+    await click($('.chgwin.bar .win-x'))
+    expect($('.chgwin:not([hidden])'), '✕ closes it').toBeFalsy()
+    expect(view.HISTMODE, 'and History is off').toBe(false)
+  })
+
+  it('pressing Hide never starts a drag of the panel (it is not the grip)', async () => {
+    await editedSeat()
+    phone = true; asPhone(true)
+    await openAll()
+    const win = $('.chgwin')!
+    await act(async () => { $('.chgwin .win-hide')!.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, clientX: 5, clientY: 5 })) })
+    expect(win.style.width, 'a press on Hide wrote no drag box onto the panel').toBe('')
+  })
+
+  /* Astra's final read (FR-02): a phone turned sideways, or a window narrowed, crosses the breakpoint with no change to the
+     app's data — so nothing redrew the window, and Hide stayed absent (or the bar's markup stayed) until something else did */
+  it('turning the screen across the phone breakpoint switches the controls at once — no other change needed', async () => {
+    await editedSeat()
+    const listeners = new Set<() => void>()
+    let narrow = false
+    real = window.matchMedia; stubbed = true
+    ;(window as any).matchMedia = (q: string) => ({ get matches() { return narrow && /max-width:\s*(620|820)px|hover:\s*none/.test(q) }, media: q,
+      addEventListener: (_: any, f: any) => listeners.add(f), removeEventListener: (_: any, f: any) => listeners.delete(f), addListener: (f: any) => listeners.add(f), removeListener: (f: any) => listeners.delete(f) })
+    await openAll()
+    expect($('.chgwin .win-hide'), 'a desktop window: no Hide').toBeFalsy()
+    narrow = true; phone = true
+    await act(async () => { listeners.forEach(f => f()) })
+    expect($('.chgwin .win-hide'), 'turned to a phone: Hide, at once').toBeTruthy()
+    expect($('.chgwin .cw-hint'), 'and the hint').toBeTruthy()
+    narrow = false; phone = false
+    await act(async () => { listeners.forEach(f => f()) })
+    expect($('.chgwin .win-hide'), 'back to a desktop: no Hide').toBeFalsy()
+  })
+
+  /* Astra's final read (FR-05), Fable's final read (F3): the hint promises dots — so not while the board shows an issued
+     version (a look wears none) and not on a week with nothing a dot could mark; and the hidden bar says "History on" only
+     where History draws */
+  it('no hint and no "History on" while the board shows a look, nor on a week with nothing to dot', async () => {
+    await editedSeat()
+    phone = true; asPhone(true)
+    await openAll()
+    expect($('.chgwin .cw-hint'), 'the live board: the hint').toBeTruthy()
+    /* a real look: the day published, and its Original chosen on the board (the version picker's own write) */
+    const di = view.SBDAY
+    await act(async () => {
+      const g = signOf(di); g.cur = 'ignite'; g.sked = 'bane'; g.plan = 'stiff'; g.appr = 'pump'
+      if (!SCHED.orig[di]) setDayApproved(di, true)
+      view.setDayPreview(di, dayVersions(di)[1]); notify()
+    })
+    expect(view.DPREV.has(di), 'the board shows the Original').toBe(true)
+    expect($('.chgwin .cw-hint'), 'a look on the board: no hint').toBeFalsy()
+    await click($('.chgwin .win-hide'))
+    expect($('.chgwin.bar .cw-barl')!.textContent, 'the bar: "Changes"').toBe('Changes')
+    await act(async () => { view.setDayPreview(di, 'live'); notify() })
+    expect($('.chgwin.bar .cw-barl')!.textContent, 'back live: "History on"').toBe('History on')
+    await click($('.chgwin.bar .cw-barbtn'))
+    /* a week whose only lines are the day's own (a publish, a structural line) has nothing to dot */
+    await act(async () => { elogClear(); logAction(1, 'Programme item added'); notify() })
+    expect($('.chgwin .cw-hint'), 'nothing to dot: no hint').toBeFalsy()
+  })
+
+  it('on a desktop: no Hide and no hint', async () => {
+    await openAll()
+    expect($('.chgwin .win-hide')).toBeFalsy()
+    expect($('.chgwin .cw-hint')).toBeFalsy()
+  })
+
+  it('where History draws nothing (View-only Sched) the phone shows no hint, and the bar says "Changes"', async () => {
+    await act(async () => { setSlotVal('1.0.0.0.p', slotVal('1.0.0.0.p') === 'bane' ? 'stiff' : 'bane'); notify() })
+    await act(async () => { closeScheduler() })
+    phone = true; asPhone(true)
+    await click($$('.nav a[data-page]').find(a => a.dataset.page === 'viewsched')!)
+    await act(async () => { view.setChgWin({ day: 'week', tab: 'all', group: 'item' }); notify() })
+    expect($('.chgwin .cw-hint'), 'no hint where there are no dots').toBeFalsy()
+    await click($('.chgwin .win-hide'))
+    expect($('.chgwin.bar .cw-barbtn')!.textContent).toMatch(/^Changes · 1 change\s*Show ▴$/)
+  })
+})
+
+describe('Group by: Item / Who — Item first and the default (D340, D345)', () => {
+  it('the buttons read Item, then Who; the window opens on Item; an item changed twice is a header and two lines', async () => {
+    await act(async () => { txtSet('ff:0.0.0.cs', 'VIPER'); notify() })
+    await act(async () => { txtSet('ff:0.0.0.cs', 'MONSOON'); notify() })
+    await openAll()
+    expect($$('.chgwin .cw-g-btn').map(b => b.textContent)).toEqual(['Item', 'Who'])
+    expect($('.chgwin .cw-g-btn.on')!.textContent).toBe('Item')
+    const g = $('.chgwin .cw-g')!
+    expect(g.querySelector('.cw-gh')!.textContent).toMatch(/Flying · .*· 2/)
+    expect(g.querySelectorAll('.cw-l').length).toBe(2)
+    expect(g.querySelector('.cw-l')!.textContent, 'newest first, its field named').toMatch(/Callsign.*VIPER.*MONSOON/)
+  })
+})
+
+/* THE BUBBLE'S REACH, WIDENED WITH THE DOTS ([HIST-PHONE-HIDE] — Astra's plan read 02, 03, 01): every detail with a history
+   answers — the board's wave-title box (a `wl:` line) and an input's own row (its lines have no key: they are found by the
+   input and the row's own day) — and a saved-plan or version LOOK never tells the live story. */
+describe('the bubble reaches every detail with a history (Astra 01–03)', () => {
+  it("the board's wave title: a new title is dotted and its bubble says the change", async () => {
+    const sel = $('#sbBoard [data-wsel]') as HTMLSelectElement
+    expect(sel, 'the board draws a wave title').toBeTruthy()
+    const other = [...sel.options].map(o => o.value).find(v => v !== sel.value)!
+    await act(async () => { sel.value = other; sel.dispatchEvent(new Event('change', { bubbles: true })) })
+    await openAll()
+    const now = $('#sbBoard [data-wsel]')!
+    expect(now.hasAttribute('data-histdot'), 'dotted').toBe(true)
+    await hover(now)
+    expect(bub(), 'a bubble on the wave title').toBeTruthy()
+    expect(bub()!.textContent).toContain(other)
+  })
+
+  it("an input's own row answers with the input's lines on that day — dotted, and a bubble", async () => {
+    const inp: any = { person: 'bane', type: 'LL', date: DAYS[0].dt, allday: true, remarks: '' }
+    await act(async () => { writeInputs(() => { inpId(inp); INPUTS.unshift(inp) }); notify() })
+    await openAll()
+    const row = $(`#sbBoard [data-inprow="${inpId(inp)}"]`)
+    expect(row, 'the board draws the input under Unavailable').toBeTruthy()
+    expect(row!.hasAttribute('data-histdot'), 'dotted').toBe(true)
+    await hover(row!)
+    expect(bub(), 'a bubble on the input').toBeTruthy()
+    expect(bub()!.textContent).toMatch(/LL added/)
+    /* its lines are SENTENCES, not a before → after (Fable's final read, F1): each reads in its own words, headed by the
+       input's name, never a bare arrow */
+    expect(bub()!.querySelector('.hb-what')!.textContent, 'headed by the input').toBe('Ranger · LL')
+    const lines = [...bub()!.querySelectorAll('.hb-chg')].map(e => e.textContent || '')
+    expect(lines, 'the line reads in words').toEqual([expect.stringMatching(/^LL added · /)])
+    await act(async () => { writeInputs(() => { const i = INPUTS.indexOf(inp); if (i >= 0) INPUTS.splice(i, 1) }); notify() })
+  })
+
+  it('a look (a saved plan, an issued version) never tells the live story — no bubble, no jump into it', async () => {
+    const el = await editedSeat()
+    const key = el.dataset.slot!
+    await openAll()
+    const look = document.createElement('div')
+    look.className = 'preview'
+    look.innerHTML = `<span class="seat" data-slot="${key}"></span>`
+    $('#eWeek').appendChild(look)
+    await hover(look.firstElementChild!)
+    expect(bub(), 'no bubble on a look').toBe(null)
+    expect(findHistCell(look.parentElement!, key), 'a jump lands on the live cell, never the look').not.toBe(look.firstElementChild)
+    look.remove()
   })
 })

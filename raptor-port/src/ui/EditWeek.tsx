@@ -3,7 +3,7 @@
    the palette renders the verbatim paletteHTML and re-hangs on every store
    change (its scroll survives unchanged markup, as the reference's setHTML
    guarantee had it — the diff here is the innerHTML comparison). */
-import { wireHistBubble } from './histbubble'
+import { wireHistBubble, refreshHistDots } from './histbubble'
 import { useEffect, useRef } from 'react'
 import { DAYS } from '../engine/data'
 import { HOOKS } from '../engine/hooks'
@@ -178,6 +178,9 @@ export function EditWeek() {
     }
     prev.current = { ed, html, chunks }
     refreshHighlights()
+    /* the gold dots on every detail with a history, while History is on ([HIST-PHONE-HIDE], D345) — after the swap, as the
+       highlights are: a rewritten block is fresh nodes */
+    refreshHistDots(root)
     /* now the new week is written and landed on its near edge — slide it in */
     if (runGlide) runGlide()
   }, [version])

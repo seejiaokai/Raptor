@@ -86,7 +86,7 @@ function inputLines(c: Change, env: CommitEnvelope, war: boolean): void {
   const sa = spanOf(a), sb = spanOf(b)
   /* every absence line keeps WHOSE it is, by id (`sub` — Fable's read of the fixes, FF4): "To go out" finds its line by it
      when the input it was about has since been re-filed under another id (a move on the war) */
-  const at = (extra: any = {}) => ({ iid, sect: 'abs', sub: String((a || b || {}).person || ''), ...extra })
+  const at = (extra: any = {}) => ({ iid, sect: 'abs', sub: String((a || b || {}).person || ''), itype: String((a || b || {}).type || ''), ...extra })
   if (!b && a) {
     const s = sa
     logAction(null, `${cs(a.person)} · ${a.type} ${war ? 'approved on the Leave War' : 'added'} · ${spanWords(s)}${a.acc === 'g' ? ' (on the programme)' : ''}${tail}`,
@@ -105,7 +105,9 @@ function inputLines(c: Change, env: CommitEnvelope, war: boolean): void {
   if (!same(a.person, b.person)) logAction(null, `${b.type} ${spanWords(sb)} · whose`, base({ from: cs(b.person), to: cs(a.person) }))
   if (!same(a.type, b.type)) logAction(null, `${who} · ${spanWords(sa)} · type`, base({ from: String(b.type), to: String(a.type) }))
   if (!same(sa, sb)) logAction(null, `${who} · ${what}${tail} · dates`, base({ from: spanWords(sb), to: spanWords(sa) }))
-  if (!same([b.allday, b.s, b.e, b.half], [a.allday, a.s, a.e, a.half])) logAction(null, `${who} · ${what} ${spanWords(sa)} · times`, base({ from: timeWords(b), to: timeWords(a) }))
+  /* the times as a reader sees them — stored times rewritten under an all-day record are no change to it ([HIST-PHONE-HIDE]
+     walk: a Save that changed nothing wrote "times: all day → all day") */
+  if (timeWords(b) !== timeWords(a)) logAction(null, `${who} · ${what} ${spanWords(sa)} · times`, base({ from: timeWords(b), to: timeWords(a) }))
   if (!same(b.remarks || '', a.remarks || '')) logAction(null, `${who} · ${what} ${spanWords(sa)} · remarks`, base({ from: String(b.remarks || '—'), to: String(a.remarks || '—') }))
   if (!same(b.acc || '', a.acc || '')) logAction(null, `${who} · ${what} ${spanWords(sa)} · filed`, base({ from: filWords(b.acc), to: filWords(a.acc) }))
   if (!same(b.oil, a.oil)) logAction(null, `${who} · ${what} ${spanWords(sa)} · OIL`, base({ from: oilWords(b.oil), to: oilWords(a.oil) }))
@@ -243,7 +245,7 @@ function warInputLines(env: CommitEnvelope): WarInputs {
     const exact = (ds: string[]) => oneRun(ds) ? undefined : ds
     const who = `${cs(g.p)} · ${g.t}`
     const at = (ds: string[]) => ({ date: ds[0]!, end: ds[ds.length - 1]! })
-    const base = { iid, iids, sect: 'abs', sub: g.p }
+    const base = { iid, iids, sect: 'abs', sub: g.p, itype: g.t }
     if (gone.length && fresh.length) {
       /* what MOVED is the whole of each piece that landed on new days, and what it left is where those days were — so a
          two-day leave slid one day reads "2 Feb–3 Feb → 3 Feb–4 Feb", not "2 Feb → 4 Feb" (Fable's round-3 read, G1) */
@@ -284,9 +286,11 @@ function postoutLines(c: Change, env: CommitEnvelope): void {
   /* a man MADE in the same command (Add a person with his post-in date) is said by "added to the roster" */
   const quiet = new Set<string>()
   for (const x of env.changes) if (x.collection === 'people' && !x.before) quiet.add(String(x.id))
-  const at = (d: string, extra: any = {}) => ({ date: d, sect: 'quals', ...extra })
   for (const pid of new Set([...Object.keys(bm), ...Object.keys(am)])) {
     if (quiet.has(pid)) continue
+    /* a Leave War line, keeping WHOSE it is and WHAT it is by id — the changes window files it under "Leave War · <him>"
+       by these, never by its words ([CHG-BY-ITEM]; Fable F3, Astra 05) */
+    const at = (d: string, extra: any = {}) => ({ date: d, sect: 'abs', sub: pid, fld: 'posting', ...extra })
     const b: any = bm[pid] || {}, a: any = am[pid] || {}
     const name = `Leave War · ${cs(pid)}`
     const bOut = b.to ? nextIso(String(b.to)) : null, aOut = a.to ? nextIso(String(a.to)) : null
@@ -329,7 +333,8 @@ function personLines(c: Change, env?: CommitEnvelope): void {
   const byPosting = (k: string) => posting && (k === 'archived' || k === 'san')
   if (a && a.special) return
   const at = { date: localToday(), sect: 'quals' }
-  if (!b && a) { logAction(null, `${a.cs || pid} · added to the roster`, at); return }
+  /* whose it is, by id, and what it is — "Quals · <him>" in the changes window ([CHG-BY-ITEM]; Fable F3, Astra 05) */
+  if (!b && a) { logAction(null, `${a.cs || pid} · added to the roster`, { ...at, sub: pid, fld: 'roster' }); return }
   if (!a || !b) return
   /* absent, false and '' are the same "not set" — a tick added then cleared is no change */
   const norm = (v: any) => (v == null || v === false || v === '') ? null : v

@@ -17,6 +17,7 @@ import { DAYTPL_CFG, DAYTPL_STD, tplFromDay, addDayTpl, delDayTpl, renameDayTpl,
 import { dayOilCredits, dayOilSpans, envMin, uniformOil, inputOilAmt } from './engine/oil'
 import { oilDayFigures, oilFigureFor, oilItemOfKey } from './ui/oilmode'
 import { oilEvidenceOf, oilEarnedWork } from './engine/oilev'
+import { refreshHistDots, HIST_CELLS } from './ui/histbubble'
 import { SCHED, SIGN_ROLES, markEdit, publishALDay, setDayApproved, signOf, dayApproved, alColor, alCount, alDays, signMissing, nextSeq, pendDays, pendCount, approvedDays, daysLabel, daySnapOf, dayVersions, verLabel, dayCurVer } from './engine/publish'
 import { dayKeys } from './engine/restore'
 import { dayDrafts, curDraftId, draftDup, draftSelect, draftRename, draftDelete, draftVerLabel, isDraftVer, rebaseDayPending, loadVersionToWorkingCopy, reconcileIssuedMarks } from './engine/drafts'
@@ -268,6 +269,8 @@ export function installProbeBridge() {
   w.draftVerLabel = draftVerLabel; w.isDraftVer = isDraftVer; w.rebaseDayPending = rebaseDayPending
   w.loadVersionToWorkingCopy = loadVersionToWorkingCopy; w.reconcileIssuedMarks = reconcileIssuedMarks
   w.setDayPreview = (di: any, v: any) => { view.setDayPreview(di, v); notify() }
+  /* History's gold dots — the pass that runs after every repaint, timed by the walk ([HIST-PHONE-HIDE], Fable's final read F6) */
+  w.refreshHistDots = refreshHistDots; w.HIST_CELLS = HIST_CELLS
   w.renderInputs = () => notify()
   w.renderStatus = () => notify()
   w.ruleFmt = ruleFmt; w.ruleOff = ruleOff; w.kindOff = kindOff; w.KIND_LABEL = KIND_LABEL

@@ -7,7 +7,7 @@
    for inputs (writeInputs / writeInputsBatch — every door's funnel), signed in as the admin. */
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest'
 import { storeBackend } from '../engine/hooks'
-import { ELOG, elogClear, rowTouches, todayIso } from '../engine/editlog'
+import { ELOG, elogClear, rowTouches, todayIso, elogFlush, elogLoad } from '../engine/editlog'
 import { PEOPLE } from '../engine/people'
 import { updatePersonField } from './quals-write'
 import { INPUTS } from '../engine/inputs'
@@ -49,6 +49,11 @@ describe('an input', () => {
     expect(rowTouches(l, '2026-08-02')).toBe(true)
     expect(rowTouches(l, '2026-08-03')).toBe(false)
     expect(l.pid).toBe('stiff')                       // Saber made it
+    /* its TYPE, by field, so a deleted input's item keeps its name — "Input · Ranger · LL" (Astra's final read, FR-04) —
+       and a reload keeps it */
+    expect(l.itype).toBe('LL')
+    elogFlush(); elogLoad()
+    expect(lines()[0]!.itype, 'kept across a reload').toBe('LL')
   })
 
   it('moved to other dates: ONE line, shown on the old days and the new, never on the days between', () => {
@@ -76,6 +81,17 @@ describe('an input', () => {
     elogClear()
     writeInputs(() => { r.type = 'OL'; r.remarks = 'family' })
     expect(lines().map(l => l.lbl.split(' · ').pop())).toEqual(['type', 'remarks'])
+  })
+
+  /* the line says what a reader sees: stored times rewritten under an all-day record ("all day" before and after) are no
+     change to it — a Save that changed nothing wrote "times: all day → all day" ([HIST-PHONE-HIDE] walk, 28 Sep 26) */
+  it('times that read the same before and after are no line; a real change of times is one', () => {
+    const r = add({ person: 'bane', date: 'Aug 1', yr: 2026, allday: true, type: 'LL', remarks: '' })
+    elogClear()
+    writeInputs(() => { r.s = 0; r.e = 1439 })
+    expect(lines(), 'still all day').toHaveLength(0)
+    writeInputs(() => { r.allday = false; r.s = 540; r.e = 660 })
+    expect(lines().map(l => [l.from, l.to])).toEqual([['all day', '09:00–11:00']])
   })
 
   it('deleted: ONE line, on the days it covered', () => {
@@ -133,6 +149,14 @@ describe('Quals, and a publish or a withdrawal (Fable F3, F5; Astra DP-07)', () 
     changeLinesFor({ ...env, boundary: { kind: 'unpublish', ids: ['2026-07-14#2'] } })
     expect(ELOG.rows.map(r => r.lbl)).toEqual(['Published — the Original', 'Published — AL2', 'AL2 withdrawn'])
     expect(ELOG.rows.every(r => r.date === '2026-07-14' && r.sect === 'day')).toBe(true)
+  })
+
+  /* [CHG-BY-ITEM] (Fable F3 / Astra 05): "added to the roster" keeps whose it is, by id, so the changes window files it
+     under "Quals · <him>" — never by its words */
+  it('a man added to the roster: ONE line keeping whose it is (sub) and what it is (fld "roster")', () => {
+    changeLinesFor({ origin: 'user', scope: { module: 'people' }, actor: { role: 'admin' },
+      changes: [{ op: 'put', collection: 'people', id: 'newbie', before: undefined, after: { cs: 'Newbie', q: 'C' } }] } as any)
+    expect(ELOG.rows.map(r => [r.lbl, r.sect, r.sub, r.fld])).toEqual([['Newbie · added to the roster', 'quals', 'newbie', 'roster']])
   })
 
   it('a projection (a reconciler) writes no line, however much it changed', () => {

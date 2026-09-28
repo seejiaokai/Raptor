@@ -198,8 +198,17 @@ const CATW: any = { q: 'CAT', seat: 'seat', pers: 'ground crew', san: 'SANS', sx
    Fable P6 found it unbuilt). Matched by the ids the line keeps (state/changelines.ts personLines — sub, fld), never by
    its words: a rename since, or his old callsign given to someone else, must not lose or borrow the name (Astra's final
    read, 03). */
+/* …and "posted out" or "SANS" made BY A POSTING: inside the posting's command those Quals lines are left unsaid (one act,
+   one line — state/changelines.ts personLines), so the posting's own line is who and when — found by the man and that it
+   is a posting (`sub`, `fld 'posting'`, [CHG-BY-ITEM]; Astra's final read FR-01) */
+const BY_POSTING = new Set(['archived', 'san'])
 function qualsLine(id: any, f: string) {
-  for (let i = ELOG.rows.length - 1; i >= 0; i--) { const r = ELOG.rows[i]!; if (r.sect === 'quals' && r.sub === String(id) && r.fld === f) return r }
+  for (let i = ELOG.rows.length - 1; i >= 0; i--) {
+    const r = ELOG.rows[i]!
+    if (r.sub !== String(id)) continue
+    if (r.sect === 'quals' && r.fld === f) return r
+    if (r.fld === 'posting' && BY_POSTING.has(f)) return r
+  }
   return null
 }
 function faceWords(di: number): Words & { rows?: CrowdRow[] } {

@@ -1170,3 +1170,33 @@ resolved statuses always carry their resolution date
 **Suggested improvement:** In systematic-debugging's Phase 1, add: "When a UI/browser test fails only in CI and the numbers it gets are off by a consistent AMOUNT (N rows, N px) in BOTH directions, suspect a layout shift from a transient element whose size depends on the environment (fonts, DPI, scrollbar width). Don't reach for waits or retries: record per-frame geometry and DOM mutations ON the CI machine (text log, no screenshots needed), and re-measure the same surface locally at other viewport widths — the CI environment is often just another width." Also: a flake whose cause is found should be fixed in the app when the app is what moves; the test then passes without being changed.
 
 **Principle:** An environment-only failure is a clue to WHICH input differs (fonts, widths, speed); vary that input deliberately and measure the geometry on the machine where it fails, rather than assuming the difference is speed.
+
+### Observation 325: A break-test harness must assert that the named test RAN — a name with regex characters matched nothing and read as "green"
+
+**Status:** OPEN
+**Date:** 2026-09-28
+**Session context:** [HIST-PHONE-HIDE] + [CHG-BY-ITEM] break tests — each wire broken once, the named test expected red. (Numbered past #324, which sits on the sibling branch `claude/lw-figsel-flake`.)
+**Skill:** test-driven-development
+**Type:** open-source
+**Phase/Area:** verifying a test actually guards a line ("watch it fail")
+
+**Issue:** The harness ran `vitest run <file> -t "<test name>"` per broken wire and called it red when the run exited non-zero with "failed" in the output. Two wires came back GREEN ("no test catches this wire"). Both were the harness: `-t` takes a PATTERN, and one test name held parentheses ("a look (a saved plan, an issued version) …"), the other a double quote that broke the shell command — so ZERO tests ran, the run exited 0, and "no test caught it" was a false alarm that could as easily have been a false all-clear in the other direction.
+
+**Suggested improvement:** In the skill's "Verify RED" step, add: when a test is selected by name (`-t`, `-g`, `--grep`), check the run's summary says it actually ran (e.g. "1 passed" or "1 failed", not "0 tests" / "N skipped") before reading the exit code, and select by a plain fragment with no regex or shell metacharacters.
+
+**Principle:** A check that can pass by running nothing must prove it ran something; "no failure" and "no test" look identical in an exit code.
+
+### Observation 326: A "look, don't touch" gesture on an editable cell must be walked for writes — the tap that reads can be the tap that saves
+
+**Status:** OPEN
+**Date:** 2026-09-28
+**Session context:** [HIST-PHONE-HIDE] walk — a phone's History invites a tap on a dotted detail to read its story; the walk step added after the final reads asserted the bubble AND that the tap wrote nothing.
+**Skill:** New skill candidate: bug-check walk (raptor-port/docs/bug-check-order.md §7)
+**Type:** open-source
+**Phase/Area:** the walk — asserting a read-only gesture has no side effect
+
+**Issue:** Two independent code reads passed the feature. The tap landed on an editable cell inside the dotted row (an empty "all day" time box); focus left it unchanged, and its blur handler saved anyway — rewriting stored fields and writing a false history line ("times: all day → all day"). The defect was older than the feature, but the feature's own gesture led straight to it. Only an assertion on the side effect ("the history gained no line") caught it; the bubble assertion alone passed.
+
+**Suggested improvement:** In the walk guidance, when a feature adds a READ gesture (tap / hover to inspect) on surfaces that are also editable, add to the step a count of writes before and after (history lines, stored record) and require zero. Separately: a blur-to-save handler should compare the text left against what the cell showed and save nothing when equal; and a change log should compare what a reader sees, not raw stored fields.
+
+**Principle:** A gesture meant only to look must be proven to write nothing — measure the side effect, not just the thing it shows.

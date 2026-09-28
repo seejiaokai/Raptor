@@ -9,49 +9,27 @@
      off here, on there. Two rows NEXT TO EACH OTHER in the history, by the same person, within a second and a half,
      one taking a man off a place and the other putting the SAME man on another, pair into one line. Door-independent on
      purpose: no wrapper at each door that a new door could forget. A swap is two lines (D109 — two moves).
-   · GROUP BY WHERE — a closed list of the day's own sections (Astra DP-12), by the key's prefix; a line with no key names
-     its section when it is written (engine/editlog.ts `sect`), else it is "The day".
-   · GROUP BY WHO — by person, then by SITTING: one person's changes with no gap over 30 minutes.
+   · GROUP BY ITEM ([CHG-BY-ITEM] — D340, D345; it replaced Group by Where, the day's sections): one group per item, the
+     latest-changed on top, every line item-first — `itemOf`, `byItem` below.
+   · GROUP BY WHO — by person, then by SITTING: one person's changes with no gap over 30 minutes; its lines item-first.
    · THE COUNTS — per calendar day of the loaded week, what is new to you and what changed, in LINES (a move counts one);
      the admin's icon counts the week, a line once however many of its days it covers. */
-import { ELOG, elogWeekRows, rowTouches, weekDates, elogWho, elogVal, isPersonKey, type ELogRow } from '../engine/editlog'
+import { ELOG, elogWeekRows, rowTouches, weekDates, elogWho, elogVal, isPersonKey, TXT_FLD, NOTE_LBL, jetOf, type ELogRow } from '../engine/editlog'
 import { CURWEEK } from '../engine/waves'
 import { isNewToMe, SEEN_VER } from '../state/changes'
 import { me } from '../state/perms'
 import { HOOKS } from '../engine/hooks'
 import { DAYS } from '../engine/data'
-import { ridKey } from '../engine/rowids'
+import { ridKey, posKey } from '../engine/rowids'
+import { PEOPLE } from '../engine/people'
+import { inpById } from '../engine/inputs'
 import { dayApproved, approvedDays } from '../engine/publish'
 import { inVersionLook } from './html'
-
-export type Sect = 'fly' | 'duty' | 'prog' | 'sim' | 'ground' | 'note' | 'abs' | 'quals' | 'day'
-export const SECT_ORDER: Sect[] = ['fly', 'duty', 'prog', 'sim', 'ground', 'note', 'abs', 'quals', 'day']
-export const SECT_LABEL: Record<Sect, string> = {
-  fly: 'Flying waves', duty: 'Duties', prog: 'Common Programme', sim: 'Sims', ground: 'Ground', note: 'Notes',
-  abs: 'Absences', quals: 'Quals', day: 'The day',
-}
-const PFX: Record<string, Sect> = {
-  ff: 'fly', fr: 'fly', wl: 'fly', it: 'fly', tr: 'fly', st: 'fly', ar: 'fly', at: 'fly', fa: 'fly', ft: 'fly', aa: 'fly', au: 'fly',
-  d: 'duty', dr: 'duty', dl: 'duty', dtn: 'duty',
-  a: 'prog', ap: 'prog', pn: 'prog',
-  s: 'sim', sr: 'sim', sn: 'sim',
-  g: 'ground', gr: 'ground', gn: 'ground',
-  dn: 'note',
-  iu: 'abs',
-}
-export function sectionOf(r: { key: string; sect?: string }): Sect {
-  if (r.key) {
-    const c = r.key.indexOf(':')
-    if (c < 0) return 'fly'                                  // a flying seat carries no prefix
-    return PFX[r.key.slice(0, c)] || 'day'
-  }
-  return (r.sect && (SECT_LABEL as any)[r.sect]) ? r.sect as Sect : 'day'
-}
 
 export type CLine = {
   rows: ELogRow[]; seqs: number[]; t: number; pid: string | null; who: string
   title: string; text: string; from: string; to: string
-  sect: Sect; fresh: boolean; date: string | null
+  fresh: boolean; date: string | null
   key: string; iid?: string      // where a tap takes the schedule: the cell (a move — the place he reached), or the input
 }
 
@@ -86,14 +64,14 @@ export function linesFor(dates: string[], isNew: IsNew = r => isNewToMe(r)): CLi
         out.push({
           rows: [a, b], seqs: [a.seq, b.seq], t: Math.max(a.t, b.t), pid: a.pid ?? null, who: elogWho(a),
           title: elogVal(on, 'to'), text: `moved from ${off.lbl} to ${on.lbl}`, from: '', to: '',
-          sect: sectionOf(on), fresh: isNew(a) || isNew(b), date: on.date, key: on.key,
+          fresh: isNew(a) || isNew(b), date: on.date, key: on.key,
         })
         i++
         continue
       }
     }
     const w = words(a)
-    out.push({ rows: [a], seqs: [a.seq], t: a.t, pid: a.pid ?? null, who: elogWho(a), ...w, sect: sectionOf(a), fresh: isNew(a), date: a.date, key: a.key, ...(a.iid ? { iid: a.iid } : {}) })
+    out.push({ rows: [a], seqs: [a.seq], t: a.t, pid: a.pid ?? null, who: elogWho(a), ...w, fresh: isNew(a), date: a.date, key: a.key, ...(a.iid ? { iid: a.iid } : {}) })
   }
   return out.reverse()
 }
@@ -120,12 +98,193 @@ export function byWho(lines: CLine[]): WhoGroup[] {
   return out.sort((x, y) => y.to - x.to)
 }
 
-export type WhereGroup = { key: string; sect: Sect; label: string; lines: CLine[]; fresh: boolean }
-export function byWhere(lines: CLine[]): WhereGroup[] {
-  return SECT_ORDER.map(s => {
-    const ls = lines.filter(l => l.sect === s)
-    return { key: `sect:${s}`, sect: s, label: SECT_LABEL[s], lines: ls, fresh: ls.some(l => l.fresh) }
-  }).filter(g => g.lines.length)
+/* ---- THE ITEM OF A LINE — Group by Item ([CHG-BY-ITEM], 28 Sep 26 — the owner's D340: "the main category to sort as
+   per item, and the latest changes of that group will be the highest … in that item can show sub categories of that
+   item, if that item has multiple change"; the approved mock-up, D345). ----
+   An item is a PLACE in a day — a formation (its seats and fields its details), a wave, a duty desk or block, a sim row,
+   a programme row, a ground row, a note — or an input, a man's Quals, a man on the Leave War, the day itself. Its
+   IDENTITY is the history row's ROW-ANCHORED key (its rows' stable ids — engine/rowids.ts) with the seat or field taken
+   off, and ALWAYS its calendar day: never its words, so two lines both called "VL BFM" are two items and a row renamed
+   between two changes stays one; the same event on two days is two items. Its TITLE is the live name ("Programme ·
+   SODB" — as a man is named by his live callsign), or the frozen label's head when the row has gone. */
+export type Item = { id: string; title: string; detail: string }
+const DOW = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+const cap = (s: any) => { const t = String(s || ''); return t ? t[0]!.toUpperCase() + t.slice(1) : '' }
+const csOf = (pid: any) => ((PEOPLE as any)[pid] && (PEOPLE as any)[pid].cs) || String(pid || '')
+const fieldWord = (f: any) => cap(TXT_FLD[f] || f)
+/* the frozen label without its last part (its seat or field) — the name a gone row had */
+const head = (lbl: string) => { const i = lbl.lastIndexOf(' · '); return i < 0 ? lbl : lbl.slice(0, i) }
+const tail = (lbl: string) => { const i = lbl.lastIndexOf(' · '); return i < 0 ? '' : lbl.slice(i + 3) }
+const FLY = new Set(['', 'ff', 'fr', 'st', 'ar', 'at', 'fa', 'ft', 'fx', 'aa', 'au'])
+const WAVE: Record<string, string> = { wl: 'Label', it: 'In-times', tr: 'Traffic', wx: '' }
+const SEAT: Record<string, string> = { p: 'FCP', w: 'RCP', pax: 'Pax' }
+const AIR: Record<string, string> = { ar: 'Area', at: 'Area time', fa: 'Area', ft: 'Area time', fx: '' }
+
+function inputItem(date: string, iid: string, r: ELogRow): Item {
+  const inp: any = inpById(iid)
+  const who = inp ? inp.person : (r.sub || ((r.to && (PEOPLE as any)[r.to]) ? r.to : ''))
+  /* gone, it keeps the type its line recorded (`itype` — Astra's final read, FR-04) */
+  const type = inp ? inp.type : (r.itype || '')
+  const title = inp ? `Input · ${csOf(inp.person)} · ${inp.type}` : who ? `Input · ${csOf(who)}${type ? ' · ' + type : ''}` : 'Input'
+  return { id: `${date}|I|${iid}`, title, detail: '' }
+}
+
+export function itemOf(r: ELogRow, day?: string | null): Item {
+  const date = day || r.date || ''
+  const k = String(r.key || '')
+  if (k) {
+    const c = k.indexOf(':'), pfx = c < 0 ? '' : k.slice(0, c), parts = (c < 0 ? k : k.slice(c + 1)).split('.')
+    if (pfx === 'iu') return inputItem(date, k.slice(3), r)
+    if (NOTE_LBL[pfx]) return { id: `${date}|N|${k}`, title: NOTE_LBL[pfx], detail: '' }
+    /* the row's live place — its positional address now (null when the row has gone) */
+    const pk = posKey(k, DAYS)
+    const pp = pk == null ? null : (pk.indexOf(':') < 0 ? pk : pk.slice(pk.indexOf(':') + 1)).split('.')
+    const day: any = pp ? (DAYS as any)[+pp[0]!] : null
+    const live = (fn: () => any): any => { if (!pp || !day) return null; try { return fn() } catch (_) { return null } }
+    if (FLY.has(pfx)) {
+      const f = live(() => day.waves[+pp![1]!].formations[+pp![2]!])
+      const jet = f && parts[3] != null ? jetOf(f, pp![3]) : ''
+      const title = f ? `Flying · ${`${f.cs || 'Line'} ${f.msn || ''}`.trim()}` : `Flying · ${head(r.lbl)}`
+      const detail = pfx === '' ? (f ? `${jet}${SEAT[parts[4]!] || String(parts[4] || '').toUpperCase()}` : tail(r.lbl))
+        : pfx === 'ff' ? fieldWord(parts[3])
+        : pfx === 'fr' ? `${jet}remarks` : pfx === 'st' ? `${jet}stores`
+        : pfx === 'aa' ? `${jet}area` : pfx === 'au' ? `${jet}area time`
+        : AIR[pfx] ?? ''
+      return { id: `${date}|F|${parts[1]}.${parts[2]}`, title, detail }
+    }
+    if (pfx in WAVE) {
+      const w = live(() => day.waves[+pp![1]!])
+      const title = w ? `Wave · ${w.label || 'Wave'}` : (r.lbl.startsWith('Wave · ') ? r.lbl : `Wave · ${head(r.lbl)}`)
+      return { id: `${date}|W|${parts[1]}`, title, detail: WAVE[pfx]! }
+    }
+    if (pfx === 'd' || pfx === 'dr') {
+      const row = live(() => day.dutywaves[+pp![1]!].rows[+pp![2]!])
+      const title = row ? `Duty · ${row.role || 'row'}` : (pfx === 'dr' ? head(r.lbl) : r.lbl)
+      return { id: `${date}|D|${parts[1]}.${parts[2]}`, title, detail: pfx === 'dr' ? fieldWord(parts[3]) : '' }
+    }
+    if (pfx === 'dl' || pfx === 'bx') {
+      const b = live(() => day.dutywaves[+pp![1]!])
+      return { id: `${date}|DB|${parts[1]}`, title: b ? `Duty block · ${b.label || 'label'}` : r.lbl, detail: pfx === 'dl' ? 'Label' : '' }
+    }
+    if (pfx === 's' || pfx === 'sr') {
+      const row = live(() => day.sims[parts[1]!][+pp![2]!])
+      const title = row ? `Sim · ${String(parts[1]).toUpperCase()} ${row.label || ''}`.trim() : (pfx === 'sr' ? head(r.lbl) : r.lbl)
+      /* a passenger by his number — "Pax 2" (Astra's final read, FR-03) */
+      const seat = parts[3] === 'pax' && /^\d+$/.test(parts[4] || '') ? `Pax ${+parts[4]! + 1}` : (SEAT[parts[3]!] || cap(parts[3]))
+      return { id: `${date}|S|${parts[1]}.${parts[2]}`, title, detail: pfx === 'sr' ? fieldWord(parts[3]) : seat }
+    }
+    if (pfx === 'a' || pfx === 'ap') {
+      const row = live(() => day.allhands[+pp![1]!])
+      const title = row ? `Programme · ${row.prog || 'row'}` : (pfx === 'ap' ? head(r.lbl) : r.lbl)
+      return { id: `${date}|A|${parts[1]}`, title, detail: pfx === 'ap' ? fieldWord(parts[2]) : '' }
+    }
+    if (pfx === 'g' || pfx === 'gr' || pfx === 'gx') {
+      const row = live(() => day.ground[+pp![1]!])
+      const title = row ? `Ground · ${row.prog || 'row'}` : (pfx === 'gr' ? head(r.lbl) : r.lbl)
+      return { id: `${date}|G|${parts[1]}`, title, detail: pfx === 'gr' ? fieldWord(parts[2]) : '' }
+    }
+    /* a key this list does not know is its own item, by its whole key — never merged with another by a guess */
+    return { id: `${date}|K|${k}`, title: r.lbl || k, detail: '' }
+  }
+  /* no key — in this order, the first that fits (Fable F3): the input; the man (his Quals, or his Leave War — a decision,
+     an award, a posting, by the line's own `sect`, never its words); the day; else the line itself */
+  if (r.iid) return inputItem(date, r.iid, r)
+  if (r.sub) return r.sect === 'quals'
+    ? { id: `${date}|Q|${r.sub}`, title: `Quals · ${csOf(r.sub)}`, detail: r.fld && r.fld !== 'roster' ? tail(r.lbl) : '' }
+    : { id: `${date}|LW|${r.sub}`, title: `Leave War · ${csOf(r.sub)}`, detail: '' }
+  if (date) return { id: `${date}|DAY`, title: 'The day', detail: '' }
+  return { id: `|L|${r.seq}`, title: r.lbl, detail: '' }
+}
+
+/* ONE ENTRY per line under its item — two for a move (under the item he reached, and the one he left) */
+export type Entry = {
+  line: CLine; row: ELogRow; item: Item; title: string; detail: string; text: string; from: string; to: string
+  key: string; iid?: string; t: number; seq: number; date: string | null; fresh: boolean; move?: 'in' | 'out'
+}
+/* the other item's title, its kind word dropped when both are the same kind ("moved in from MET + NOTAM BRIEF") */
+const shortTitle = (other: string, mine: string) => {
+  const a = other.indexOf(' · '), b = mine.indexOf(' · ')
+  return a > 0 && b > 0 && other.slice(0, a) === mine.slice(0, b) ? other.slice(a + 3) : other
+}
+/* a keyless line's words without its item's name in front ("Ranger · LL added" under "Input · Ranger · LL") */
+function ownWords(r: ELogRow, item: Item): string {
+  const lbl = r.lbl || ''
+  const who = r.sub || (r.iid ? (inpById(r.iid) as any)?.person : '')
+  for (const lead of [`Leave War · ${csOf(who)} · `, `${csOf(who)} · `]) if (who && lbl.startsWith(lead)) return lbl.slice(lead.length)
+  return item.title === lbl ? '' : lbl
+}
+function entryOf(l: CLine, r: ELogRow, day?: string | null): Entry {
+  const item = itemOf(r, day)
+  const base = { line: l, row: r, item, title: item.title, detail: item.detail, key: r.key, t: r.t, seq: r.seq, date: r.date, fresh: l.fresh, ...(r.iid ? { iid: r.iid } : {}) }
+  const from = elogVal(r, 'from'), to = elogVal(r, 'to')
+  if (r.key && isPersonKey(r.key)) {
+    if ((r.from === '—' || !r.from) && r.to && r.to !== '—') return { ...base, text: `${to} put on`, from: '', to: '' }
+    if ((r.to === '—' || !r.to) && r.from && r.from !== '—') return { ...base, text: `${from} taken off`, from: '', to: '' }
+    return { ...base, text: '', from, to }
+  }
+  if (r.key) return { ...base, text: '', from, to }
+  /* a Quals detail says its field and from → to; any other keyless line (a roster add too) its own words */
+  if (r.sect === 'quals' && r.sub && r.fld && r.fld !== 'roster') return { ...base, text: '', from, to }
+  return { ...base, text: ownWords(r, item), from: from === '—' ? '' : from, to }
+}
+/* the day an entry is filed under: the first of the window's days its line touches (a line spanning days — a leave begun
+   the week before — leads with its first day in this week; Fable F9), else its own day */
+const anchorOf = (r: ELogRow, days?: string[]) => (days && days.find(d => rowTouches(r, d))) || r.date
+/* where in its item a man stood, by what his key says (Astra's final read, FR-03) — a seat ("#1 FCP", "Pax 2"); a crowd's
+   place ("place 3", its crew index); a desk's or a ground row's main place ("place 1") and its extras (`.x0` → "place 2");
+   never the row's own number */
+const placeOf = (r: ELogRow, item: Item) => {
+  const k = String(r.key), c = k.indexOf(':'), pfx = c < 0 ? '' : k.slice(0, c), parts = (c < 0 ? k : k.slice(c + 1)).split('.')
+  const last = parts[parts.length - 1] || ''
+  if (/^x\d+$/.test(last)) return `place ${+last.slice(1) + 2}`
+  if (pfx === 'a') return /^\d+$/.test(parts[2] || '') ? `place ${+parts[2]! + 1}` : ''
+  if (pfx === 'd' || pfx === 'g') return 'place 1'
+  return item.detail
+}
+export function entriesOf(l: CLine, days?: string[]): Entry[] {
+  if (l.rows.length === 2) {
+    /* a paired move: the row that put him on, and the row that took him off */
+    const on = l.rows.find(r => r.key === l.key) || l.rows[1]!, off = l.rows.find(r => r !== on)!
+    const iOn = itemOf(on, anchorOf(on, days)), iOff = itemOf(off, anchorOf(off, days)), man = elogVal(on, 'to')
+    const at = (r: ELogRow, item: Item) => ({ line: l, row: r, item, title: item.title, detail: item.detail, from: '', to: '', key: r.key, t: l.t, seq: r.seq, date: anchorOf(r, days), fresh: l.fresh })
+    /* moved WITHIN one item (a seat to another seat of the same jet, a place to another in one crowd) is ONE entry —
+       "Echo moved", its two places as from → to (Fable F2) */
+    if (iOn.id === iOff.id) return [{ ...at(on, iOn), detail: '', text: `${man} moved`, from: placeOf(off, iOff), to: placeOf(on, iOn) }]
+    return [
+      { ...at(on, iOn), text: `${man} moved in from ${shortTitle(iOff.title, iOn.title)}`, move: 'in' },
+      { ...at(off, iOff), text: `${man} moved out to ${shortTitle(iOn.title, iOff.title)}`, move: 'out' },
+    ]
+  }
+  const r = l.rows[0]!
+  return [{ ...entryOf(l, r, anchorOf(r, days)), date: anchorOf(r, days) }]
+}
+/* in the week view the day leads every item ("Mon · Programme · SODB") */
+const dowOf = (iso: string | null) => { if (!iso) return ''; const d = new Date(iso + 'T00:00:00Z').getUTCDay(); return Number.isFinite(d) ? DOW[(d + 6) % 7]! : '' }
+const withDay = (title: string, date: string | null, week: boolean) => (week && dowOf(date) ? `${dowOf(date)} · ${title}` : title)
+
+export type ItemGroup = { key: string; title: string; entries: Entry[]; t: number; seq: number; fresh: boolean; one: boolean }
+/* one group per item, the item whose latest change is newest on top; its entries newest first; `one` — changed once */
+export function byItem(lines: CLine[], week: boolean, days?: string[]): ItemGroup[] {
+  const m = new Map<string, ItemGroup>()
+  for (const l of lines) for (const e of entriesOf(l, days)) {
+    let g = m.get(e.item.id)
+    if (!g) { g = { key: `item:${e.item.id}`, title: '', entries: [], t: 0, seq: 0, fresh: false, one: false }; m.set(e.item.id, g) }
+    g.entries.push(e)
+  }
+  for (const g of m.values()) {
+    g.entries.sort((a, b) => b.t - a.t || b.seq - a.seq)
+    const top = g.entries[0]!
+    g.title = withDay(top.title, top.date, week)
+    g.t = top.t; g.seq = top.seq
+    g.fresh = g.entries.some(e => e.fresh)
+    g.one = g.entries.length === 1
+  }
+  return [...m.values()].sort((a, b) => b.t - a.t || b.seq - a.seq)
+}
+/* Group by Who draws each line item-first too — a move ONCE, under the item he reached (D345 (6)) */
+export function whoEntry(l: CLine, week: boolean, days?: string[]): Entry {
+  const e = entriesOf(l, days)[0]!
+  return { ...e, title: withDay(e.title, e.date, week) }
 }
 
 /* per calendar day of the loaded week: { fresh: new to you, all: every line } — in LINES */
