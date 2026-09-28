@@ -140,7 +140,7 @@ export default function App({ active = true }) {
       <div className="tr-root" style={{ padding: 24, textAlign: 'center', opacity: 0.7 }}>Loading…</div>
     );
   return (
-    <div className={'tr-root tab-' + tab + (core.resuming ? ' resuming' : '')}>
+    <div className={'tr-root tab-' + tab + (core.resuming ? ' resuming' : '') + (core.arrangeMode ? ' arranging' : '')}>
       {/* While it reloads the next person's course and student, the last person's
           chart and panel are hidden, never shown to him (D376) */}
       {core.resuming ? <div className="resumenote" role="status">Loading…</div> : null}

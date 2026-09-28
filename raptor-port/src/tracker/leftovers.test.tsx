@@ -611,20 +611,64 @@ describe('[TRK-RETEST-NOTES] C11 — the + Add list follows the roster while it 
   })
 })
 
-describe('[TRK-RETEST-NOTES] C14 — beside ✓ Save changes the words read “● unsaved”, whatever a background save says', () => {
-  it('a structure edit shows “● unsaved”; a mark saved meanwhile does not turn it to “saved”; after Save it goes', async () => {
+describe('[TRK-RETEST-NOTES] C14 — while ✓ Save changes shows, the words beside it step aside, whatever a background save says', () => {
+  it('a structure edit: no words beside the button; a mark saved meanwhile does not put “saved” there; after Save the words come back', async () => {
     const s = await pickStudent()
     const { host, root } = await render(<Live draw={() => <Header />} />)
     try {
       ;(window as any).__markDirtyForTests()
       await act(async () => { await tick() })
       const stat = () => (host.querySelector('#saveStat')?.textContent || '').trim()
-      expect(stat()).toBe('● unsaved')
+      expect(stat(), 'the button says it; no cut-off words beside it').toBe('')
+      expect(host.querySelector('#saveChanges'), 'the button is there').toBeTruthy()
       await C.setUpchit(s, dayAfter(C.isoToday(), -40)); await act(async () => { await tick(); await tick() })
-      expect(stat(), 'a background save does not claim the chart is saved').toBe('● unsaved')
-      expect(host.querySelector('#saveStat')!.getAttribute('title') || '', 'the tooltip says the rest').toMatch(/Save changes/)
+      expect(stat(), 'a background save does not claim the chart is saved').toBe('')
       await C.saveChangesClick(); await act(async () => { await tick() })
-      expect(stat()).not.toBe('● unsaved')
+      expect(stat(), 'saved: the words are back').not.toBe('')
     } finally { if (C.sylDirty) await C.saveChangesClick(); await act(async () => { root.unmount() }); host.remove() }
+  })
+})
+
+/* ---------- [TRK-EDIT-SIDEWAYS] + D373: on a short screen the edit tools fold ---------- */
+describe('[TRK-EDIT-SIDEWAYS] D373 — the folded tool row and its Tools ▾', () => {
+  it('the folded row names the tool in use with its hint, Fit and Tools ▾; Tools ▾ opens the whole set; each way out closes it', async () => {
+    const { default: ArrangeTools } = await import('./components/ArrangeTools.jsx')
+    if (C.sylDirty) await C.saveChangesClick()
+    C.toggleArrange()
+    const { host, root } = await render(<Live draw={() => <div className="tr-root"><ArrangeTools /></div>} />)
+    try {
+      const fold = host.querySelector('.arrfold')!
+      expect(fold, 'the folded row is drawn').toBeTruthy()
+      expect(fold.querySelector('#foldTool')!.textContent, 'the tool in use').toMatch(/Move/)
+      expect(fold.querySelector('#foldHint')!.textContent, 'its one-line hint').toMatch(/drag/i)
+      expect(fold.querySelector('#foldFit'), 'Fit').toBeTruthy()
+      const open = fold.querySelector('#foldTools') as HTMLElement
+      await act(async () => { open.click() })
+      expect(host.querySelector('#arrTools')!.classList.contains('open'), 'Tools ▾ opens the whole set').toBe(true)
+      expect(open.getAttribute('aria-expanded')).toBe('true')
+      /* choosing a tool closes it, and the row then names that tool */
+      const connect = [...host.querySelectorAll('#arrTools button')].find(b => /Connect/.test(b.textContent || '')) as HTMLElement
+      await act(async () => { connect.click() })
+      expect(host.querySelector('#arrTools')!.classList.contains('open')).toBe(false)
+      expect(fold.querySelector('#foldTool')!.textContent).toMatch(/Connect/)
+      /* Escape closes it before anything else */
+      await act(async () => { open.click() })
+      C.handleEscapeKey({ key: 'Escape', preventDefault() {} })
+      await act(async () => { await tick() })
+      expect(host.querySelector('#arrTools')!.classList.contains('open'), 'Escape').toBe(false)
+      expect(C.arrangeMode, 'and nothing else').toBe(true)
+      /* a press outside closes it */
+      await act(async () => { open.click() })
+      await act(async () => { document.body.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true })) })
+      expect(host.querySelector('#arrTools')!.classList.contains('open'), 'a press outside').toBe(false)
+      /* a flash message shows in the folded row, where the hint line is hidden */
+      C.flashHint('That link already exists.')
+      await act(async () => { await tick() })
+      expect(fold.querySelector('#foldHint')!.textContent).toBe('That link already exists.')
+      /* leaving Edit chart layout closes it */
+      await act(async () => { open.click() })
+      await act(async () => { C.toggleArrange() })
+      expect(C.toolsOpen, 'leaving edit mode').toBe(false)
+    } finally { if (C.arrangeMode) C.toggleArrange(); if (C.sylDirty) await C.saveChangesClick(); await act(async () => { root.unmount() }); host.remove() }
   })
 })

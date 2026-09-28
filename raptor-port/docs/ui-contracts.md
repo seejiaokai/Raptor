@@ -7678,10 +7678,15 @@ screen:
     their slice — it picks them, or opens grading if they are the one picked
     ([TRK-RETEST-NOTES] C6). + Set lull period opens on this month; changing a
     period opens on its own (C7). The + Add list follows the roster while it is
-    open (C11). Beside ✓ Save changes the words read “● unsaved”, whatever a
-    background save reports, the sentence in the tooltip; the slot is 186px (C14).
-    On a phone the Crew box takes up to 124px, the Course box 76px, so a callsign
-    reads whole (C10). Deleting a ball says its marks go at ✓ Save changes, and they
+    open (C11). While ✓ Save changes ● shows, the save words beside it step
+    aside — the button says it — whatever a background save reports; an error
+    still shows, in red; the corner stays 172px (C14 — widening it to fit words
+    wrapped the bar, measured). On a phone the Crew box takes up to 124px, so a
+    callsign reads whole (C10). On a short screen (under ~500px tall) Edit chart
+    layout folds its strip behind one row — the tool in use, its hint, ⤢ Fit,
+    Tools ▾ — and the note, the hint line and the Flow / Info / Show All tabs
+    step aside; Tools ▾ opens the whole set over the chart, closing on a choice,
+    a press outside, Escape or Done (D373, 28 Sep 26). Deleting a ball says its marks go at ✓ Save changes, and they
     do, in every course (D124), with the details typed on it (D130) and any
     student's "last worked" pointer to it; a deleted-but-unsaved code cannot be
     re-added until the save (+ Add and 📋 Edit events alike). An IMPORT never

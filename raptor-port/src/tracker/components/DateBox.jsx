@@ -17,6 +17,7 @@ import { isComposing } from './keys.js';
    `onCommit` may answer with words — the reason a day was refused (a day after
    today, D374) — and they show on one line under the box until the next change.
    Key it by student AND field, so a Crew switch never carries a draft across. */
+/** @param {{ value?: string, onCommit: (v: string) => any, id?: string, title?: string, style?: object }} props */
 export function DateBox({ value, onCommit, id, title, style }) {
   const saved = value || '';
   const [draft, setDraft] = useState(null);

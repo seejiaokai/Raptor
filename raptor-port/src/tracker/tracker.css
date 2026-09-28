@@ -330,10 +330,7 @@ svg.perf .edgehit{pointer-events:none}
    button plus the words needed ~291px, so at ~1200-1250px the first edit wrapped
    the bar and slid the chart 36px down under the pointer ([HUMAN-RETEST] w3-F5).
    The words take what the button leaves and shorten (…); Save never moves. */
-/* 186px, not 172: beside ✓ Save changes (107px) the 59px left cut even "● saved" to
-   "● sa…"; "● unsaved" needs ~66 ([TRK-RETEST-NOTES] C14 — Fable F7). Measured to keep
-   the bar one row at 1060/1150/1200. */
-.saveslot{display:inline-flex;align-items:center;gap:6px;justify-content:flex-end;flex:0 0 186px;width:186px;min-width:186px}
+.saveslot{display:inline-flex;align-items:center;gap:6px;justify-content:flex-end;flex:0 0 172px;width:172px;min-width:172px}
 .saveslot #saveChanges{flex:0 0 auto}
 .savestat{font-size:11px;color:var(--muted);white-space:nowrap;max-width:170px;overflow:hidden;text-overflow:ellipsis;flex:0 1 auto;min-width:0}
 .savestat.ok{color:var(--acad)}.savestat.saving{color:var(--orange)}.savestat.err{color:var(--red)}
@@ -434,6 +431,26 @@ small.hint{color:var(--muted);font-size:11px}
 .port{cursor:crosshair}.endhandle{cursor:move}
 .arrtools input.fontnum{width:52px}
 .arrtools .arrnote{flex-basis:100%;text-align:center;color:var(--muted);font-size:11.5px;margin-top:3px}
+/* ON A SHORT SCREEN THE STRIP FOLDS (owner, 28 Sep 26 — D373, "fold"; [TRK-EDIT-SIDEWAYS]).
+   A phone on its side (844×390) gave the strip's three rows, its note, the hint line and
+   the Flow / Info / Show All tabs everything under Raptor's bar: the chart got 0px. Under
+   500px of height, while editing, ONE row stands in — the tool in use, its hint, ⤢ Fit,
+   Tools ▾ — the note, the hint line and the tabs step aside, and Tools ▾ opens the whole
+   set OVER the chart (z 45: over the chart and the view tabs, under the menus and every
+   window). Taller screens are untouched: the fold row is never shown there. */
+.arrwrap{position:relative}
+.arrfold{display:none}
+@media(max-height:500px){
+ & .tr-root.arranging .arrfold{display:flex;gap:6px;align-items:center;padding:4px 8px;background:var(--panel2);border-bottom:1px solid var(--line)}
+ .arrfold button{padding:4px 9px;font-size:12px;flex:0 0 auto}
+ .arrfold .foldhint{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11.5px;color:var(--muted)}
+ .arrfold .foldtools{border-color:var(--accent);color:var(--accent)}
+ .arrtools.on{display:none}
+ .arrtools.on.open{display:flex;position:absolute;left:8px;right:8px;top:100%;z-index:45;border:1px solid var(--line);border-radius:10px;box-shadow:0 12px 30px rgba(0,0,0,.6);max-height:70vh;overflow:auto}
+ .arrtools .arrnote{display:none}
+ & .tr-root.arranging .arrhintwrap{display:none}
+ & .tr-root.arranging .viewtabs{display:none}
+}
 #flowSvg.arrange{background:#0c0e12;border:1px dashed var(--line);border-radius:10px;touch-action:none}
 #saveChanges.dirty{background:rgba(229,168,59,.16);border-color:var(--orange)}
 #delSyl:hover,#delCourse:hover{border-color:var(--red)}
@@ -593,9 +610,9 @@ small.hint{color:var(--muted);font-size:11px}
  .controls select{max-width:88px;padding:4px 6px;font-size:12px}
  /* The Crew box names the student — on the Flow half nothing else does — and at 88px
     every student read "STUDEN…" ([TRK-RETEST-NOTES] C10): it gets the room a callsign
-    needs, and the Course box (course names are short) gives some back. */
+    needs (measured: the bar stays two rows at 390px). The Course box keeps its 88px —
+    at 76 a six-letter course read "26ABS…". */
  .controls #activeSel{max-width:124px}
- .controls #courseSel{max-width:76px}
  .controls button.sm{padding:3px 6px}
  /* A 132px box in a 390px row leaves nothing for anything else, so the phone
     gets a 🔍 button and a full-width strip under the bar. position:fixed, not

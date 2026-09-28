@@ -93,7 +93,7 @@ function endSession() {
   pop = null; popDoneDate = ''; popFailDate = ''; popMsg = null;
   failLog = null; lullPick = null; lullCopy = null;
   infoId = null; editId = null; ordMode = null; sylModalOpen = false; showAllOpen = false; copyOpen = false;
-  showDetails = false; hideDetailBubble();
+  showDetails = false; hideDetailBubble(); toolsOpen = false;
   if (arrangeMode) {
     /* `view` is the editing canvas's pan and zoom: it stays in Edit chart layout */
     arrangeMode = false; connectSrc = null; drawing = null; selBalls = new Set(); tool = 'move'; view = { x: 0, y: 0, k: 1 };
@@ -756,7 +756,7 @@ export function rowOf(id) { return Math.round((nodePos(id).y || 0) / 92); }
 export let hintBase = 'Select: drag a box on empty space to pick several balls, then drag any of them to move the group.';
 export let hintFlash = null; let hintT = null;
 let hintUntil = 0;
-function flashHint(msg, ms = 1800) {
+export function flashHint(msg, ms = 1800) {
   hintFlash = msg; hintUntil = Date.now() + ms; notify();
   clearTimeout(hintT); hintT = setTimeout(() => { hintFlash = null; notify(); }, ms);
 }
@@ -5192,6 +5192,7 @@ export function toggleArrange() {
   const mid = () => ({ x: board.clientLeft + board.clientWidth / 2, y: board.clientTop + board.clientHeight / 2 });   /* from the board's outer edge */
   const midOnScreen = () => { const r = board.getBoundingClientRect(), m = mid(); return { x: r.left + m.x, y: r.top + m.y }; };
   const settle = fn => { if (typeof requestAnimationFrame !== 'undefined') requestAnimationFrame(fn); };
+  toolsOpen = false;   /* entering or leaving: the folded tools start shut (D373) */
   if (!arrangeMode) {
     const c = board && flowZoom > 0 ? chartPointAt(board, mid().x, mid().y) : null;
     arrangeMode = true;
@@ -5221,6 +5222,8 @@ export function handleEscapeKey(e) {
      one closes here — the thing that asked the question stays open underneath,
      so one press can never fall through and shut two layers at once. */
   if (dlg) { e.preventDefault(); dlgClose(dlg.input ? null : false); return; }
+  /* the folded tools' open set (D373) sits over the chart: it goes first */
+  if (toolsOpen) { e.preventDefault(); toolsOpen = false; notify(); return; }
   /* Escape abandons a half-picked lull period rather than saving one end of it. */
   if (lullCopy) { e.preventDefault(); closeLullCopy(); return; }
   if (lullPick) { e.preventDefault(); closeLullPicker(); return; }
@@ -5260,7 +5263,18 @@ export async function handleDeleteKey(e) {
   await deleteEvents([...selBalls]);
 }
 /* Toolbar: tool select with delete-selection shortcut behaviour */
+/* ON A SHORT SCREEN THE EDIT TOOLS FOLD (owner, 28 Sep 26 — D373, "fold";
+   [TRK-EDIT-SIDEWAYS]). On a phone on its side the strip took the whole screen and
+   left the chart 0px. Under ~500px of height (tracker.css) the strip hides behind
+   ONE row — the tool in use, its hint, ⤢ Fit, "Tools ▾" — and Tools ▾ opens the whole
+   set OVER the chart. `toolsOpen` is that set being open; it closes on a choice, a
+   press outside (ArrangeTools.jsx), Escape (before anything else under it), leaving
+   Edit chart layout and the end of a session. Upright phones and computers keep
+   the strip as it was; this flag then does nothing they can see. */
+export let toolsOpen = false;
+export function setToolsOpen(v) { toolsOpen = !!v; notify(); }
 export async function toolButtonClick(t) {
+  toolsOpen = false;
   if (t === 'delball' && selBalls.size) { await deleteEvents([...selBalls]); return; }
   if (t === 'delball' && selLine) { deleteLine(selLine); return; }
   setTool(t);
@@ -5368,13 +5382,16 @@ export let saveStat = { text: '', cls: '' };
    user their work was both safe and at risk in the same six pixels.
    Now only a caller that passes no message gets the bare word; anything that
    names what it did says so. Three callers rely on the empty form. */
-/* WHAT THE BAR SAYS beside ✓ Save changes ([TRK-RETEST-NOTES] C14, 28 Sep 26): while
-   chart edits wait for the button the words are "● unsaved" — short enough for the
-   slot, where the old sentence read "● un…" — whatever a background save reports
-   meanwhile (a mark saving on its own used to put "● saved" beside the orange button:
-   Astra F-09); the whole story is the tooltip. An error still shows, in red. */
+/* WHAT THE BAR SAYS beside ✓ Save changes ([TRK-RETEST-NOTES] C14, 28 Sep 26). While
+   chart edits wait for the button, the words step ASIDE: the button's own "●" says
+   there is unsaved work (the walk's note: "the button says what matters"). Beside it
+   the words were cut ("● un…", even "● sa…" — the fixed corner leaves them 59px), and
+   a mark saving on its own meanwhile put "● saved" beside the orange button (Astra
+   F-09). Measured 28 Sep 26: widening the corner to fit "● unsaved" wrapped the bar at
+   1060–1200px, and on a phone pushed the corner onto a third row. An error still
+   shows, in red. */
 export function saveWords() {
-  if (sylDirty && saveStat.cls !== 'err') return { text: '● unsaved', title: 'Chart edits not saved yet — ✓ Save changes keeps them', cls: 'saving' };
+  if (sylDirty && saveStat.cls !== 'err') return { text: '', title: '', cls: '' };
   return { text: saveStat.text, title: saveStat.text, cls: saveStat.cls };
 }
 function setSaveStatus(msg, cls) {
