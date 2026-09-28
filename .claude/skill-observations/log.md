@@ -1305,3 +1305,33 @@ resolved statuses always carry their resolution date
 **Suggested improvement:** Make the helper refuse it: `trk-lib.mjs` (and `lib.mjs`) could refuse to write a step log or picture over a file that is tracked or modified in git unless `HP_REWALK=1` points at a folder named `rewalk`; or the walk scripts could take `rewalk` as an argument that switches both folders. Until then, the re-walk command in each evidence sheet should be written out in full with its `rewalk/` folders, beside the first walk's.
 
 **Principle:** A rule that protects evidence ("write the re-run somewhere else") must be enforced where the write happens; a re-run is almost always launched by reusing the first run's command, so the default path IS the overwrite.
+
+### Observation 343: A test or walk script that "leaves" a date box with one Tab never leaves it in Chrome
+
+**Status:** OPEN
+**Date:** 2026-09-28
+**Session context:** Tracker leftovers — the Tracker smoke failed a re-date after the date boxes were changed to save when LEFT (numbered past #342: #333–#335 and #341–#342 are the small-fixes branch's, #336–#337 the change-recording branch's)
+**Skill:** New skill candidate: bug-check walk scripts (raptor-port/docs/bug-check-order.md §7)
+**Type:** internal
+**Phase/Area:** browser test and walk scripts that type into `<input type="date">`
+
+**Issue:** The suite did `fill(dateBox)` then `press(dateBox, 'Tab')` and read the result 300ms later — nothing had saved. In Chrome a Tab inside a date box steps to its next part (day → month → year) before it leaves the box, so after `fill()` one Tab never blurred it; the save landed only when the list closed. It read as an app defect until a probe recorded where the focus was after the Tab.
+
+**Suggested improvement:** In the walk/test helpers, leave a date box with Enter (when the app commits on Enter) or a click elsewhere, never a single Tab; when a "left the box" step fails, record `document.activeElement` before blaming the app.
+
+**Principle:** A composite native control (date, time, datetime) keeps keyboard focus across its parts; a script's "leave" gesture must be one that leaves the whole control.
+
+### Observation 344: A reviewer's file:line evidence can name files that do not exist — check the path before trusting the lines
+
+**Status:** OPEN
+**Date:** 2026-09-28
+**Session context:** Tracker leftovers — Astra's final code read
+**Skill:** New skill candidate: acting on cross-provider review findings
+**Type:** open-source
+**Phase/Area:** triaging a reviewer's findings before fixing
+
+**Issue:** The reviewer's report cited `public/legacy/core.js` and `src/App.jsx`; neither exists (the real files are `src/tracker/app/core.js` and `src/tracker/App.jsx`), so every line number it gave was unreliable. Two of its three "high" findings did not hold on the real code (one misread how the export file relates to earlier bakes; one described a race that the synchronous storage makes impossible), and its suggested fix for one would have destroyed data.
+
+**Suggested improvement:** Before acting on a finding, confirm every cited path exists and re-trace the claim on the real code; classify each as fixed / not a defect (with the reason) / cannot happen here (with the evidence, and filed for when it can).
+
+**Principle:** A finding is a claim to verify, not a task to execute; wrong paths are the cheapest early signal that the evidence needs re-deriving.
