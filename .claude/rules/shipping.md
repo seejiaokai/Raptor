@@ -83,7 +83,7 @@ half).
   "merge live" stay HIS — a chat never merges for another (D60, D78).
 - **Docs-only changes skip the gates** (`paths-ignore` in `deploy.yml`: `**.md`, `.claude/**`, the document-gate
   scripts `raptor-port/scripts/docsize*.mjs` and `backlog-archive.mjs`, and `docs-guard.yml`) — but the Docs guard
-  (`docs-guard.yml`, about a billed minute) still runs on every PR and every push to `main`. **An exemption from
+  (`docs-guard.yml`, two to three billed minutes) still runs on every PR and every push to `main`. **An exemption from
   the GATES, never from his approval**: a docs-only change merges ONLY on his explicit "merge live" (corrected
   17 Sep 26). A PR that mixes code and docs runs everything — and GitHub judges the WHOLE PR, so once it carries
   code even a notes-only push re-runs every gate (D151).
