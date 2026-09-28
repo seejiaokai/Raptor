@@ -299,6 +299,37 @@ export function dayOilWork(day:any,opts?:{expandAll?:(win:[number,number],item:s
   });
   return out;
 }
+/* A ROW WITH A START AND NO END ([ALLAVAIL-OPEN-ROW], D360 — owner, 28 Sep 26: "ok, need to say something like no oil
+   worked out due end time to the admin"). The walk above skips it, and must: money is minted only from WRITTEN times
+   (D31 — "display may guess; money may not"). But the ALL / ALL AVAIL count is a SCHEDULING fact (D27, D37 — "on every
+   seat the puck can land on"), and every other scheduling reader gives such a row the Logic tab's assumed length (the
+   crew picker, the validator: `time.ts win`). Recorded ONLY by the membership, so the count inherited the money's
+   refusal: no chip, no reason — a silent absence D31 itself forbids.
+   So this lists those rows, with the window the rest of the schedule assumes for them — a sim its own `simLen`, any
+   other row `openEnd` — for the evidence block to record the crowd behind a placeholder over it (oilev.ts). DISPLAY
+   ONLY: nothing here is reached by the money, no `reach` (no switch), no span. The same skips as the walk above, so a
+   row the walk would not stand on (cancelled, ⓘ, a request's own row — its crowd has its own window) is never
+   listed. A flying line is never listed: a placeholder is refused in a cockpit (D33). */
+export interface OpenEndRow{item:string;st:number;len:number;puck:boolean}
+export function openEndRows(day:any):OpenEndRow[]{
+  const out:OpenEndRow[]=[];
+  const sentOn=(vals:any[])=>vals.some((v:any)=>{const id=whoId(v);return !!id&&isSpecial(id);});
+  const add=(item:string,str:any,end:any,len:number,vals:any[])=>{
+    if(!item)return;
+    const st=parseHM(str);
+    if(st==null||parseHM(end)!=null)return;
+    out.push({item,st,len,puck:sentOn(vals)});
+  };
+  ['amt','oft'].forEach((k:any)=>((day.sims||{})[k]||[]).forEach((r:any)=>{
+    if(r&&!r.cx)add(rowItemKey(r.rid),r.str,r.end,VCONF.simLen,[r.p,r.w,...(r.pax||[]),...(r.more||[])]);}));
+  (day.dutywaves||[]).forEach((dw:any)=>((dw&&dw.rows)||[]).forEach((r:any)=>{
+    if(r&&!r.cx)add(rowItemKey(r.rid),r.str,r.end,VCONF.openEnd,[r.id,...(r.more||[])]);}));
+  (day.ground||[]).forEach((g:any)=>{
+    if(g&&!g.cx&&!g.src&&!g.info)add(groundItemKey(g),g.str,g.end,VCONF.openEnd,[g.who,...(g.more||[])]);});
+  (day.allhands||[]).forEach((x:any)=>{
+    if(x&&!x.cx&&!x.info)add(rowItemKey(x.rid),x.str,x.end,VCONF.openEnd,[...whoArr(x),...(x.more||[])]);});
+  return out;
+}
 /* THE DESKS THAT MEASURE NOTHING (owner, 20 Sep 26 — "Yes i want a warning").
  *
  *  The rule above mints strictly from WRITTEN times, so a duty desk with a man

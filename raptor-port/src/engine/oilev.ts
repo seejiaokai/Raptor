@@ -47,7 +47,7 @@ import { CURWEEK } from './waves'
 import { stashHas, stashGroundBySrc } from './weekstash'
 import { PEOPLE, whoId, isSpecial } from './people'
 import { HOOKS } from './hooks'
-import { dayOilWork, oilItemDefaults, envMin, uniformOil, inputItemKey, rowItemKey, groundItemKey, type OilWork } from './oil'
+import { dayOilWork, oilItemDefaults, envMin, uniformOil, inputItemKey, rowItemKey, groundItemKey, openEndRows, type OilWork } from './oil'
 
 /* the item-address grammar lives in engine/oil.ts, beside the walk that tags
    every span with it — re-exported here so callers of the evidence block have
@@ -505,6 +505,15 @@ export function oilEvidence(di: any, day?: any): OilEvidence {
       return people
     },
   })
+  /* A ROW WITH A START AND NO END COUNTS ITS CROWD TOO ([ALLAVAIL-OPEN-ROW], D360, 28 Sep 26), over the window the
+     rest of the schedule assumes for it (oil.ts `openEndRows`). The walk above never reaches it — its money is refused,
+     and stays refused: this writes the MEMBERSHIP only, which the money reads solely for rows the walk measures. So the
+     count shows, the window lists the men, the crowd is frozen at publication like any other (D44), and nobody is
+     credited a thing from a guessed hour (D31). */
+  for (const r of openEndRows(d)) {
+    if (!r.puck || Object.prototype.hasOwnProperty.call(sent, r.item)) continue
+    sent[r.item] = HOOKS.oilSentinel(iso as string, [r.st, r.st + r.len], d)
+  }
   const ins = projectOilInputs(iso as string)
   /* AND THE REQUEST HALF'S OWN MEMBERSHIP ([OIL-SEATS-CAN-EARN] step 6). An
      accepted request's row is the one row the walk above skips whole — its money

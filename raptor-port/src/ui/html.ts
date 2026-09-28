@@ -639,14 +639,16 @@ export function oilSeatDeco(di:any,id:any,key:any,itemOf?:string):{oil:any;chip:
     const mixedAmt=sum.earns&&sum.bar==null&&sum.n>0&&sum.earn===sum.n;   // all earn, at different amounts
     const partial=sum.earns&&sum.bar==null&&sum.earn>0&&sum.earn<sum.n;   // some earn, some do not
     const some=mixedAmt||partial;
-    const txt=sum.unrecorded?'?':mixedAmt?`All ${sum.n} earn`:partial?`${sum.earn} of ${sum.n} earn`:String(sum.n);
+    /* `nostart` — a placeholder on a row with no start (or no length): counted for nobody, and said so rather than
+       left chipless ([ALLAVAIL-OPEN-ROW], D360; D31). Its own "?" and its own words, never the older issued day's. */
+    const txt=sum.unrecorded||sum.nostart?'?':mixedAmt?`All ${sum.n} earn`:partial?`${sum.earn} of ${sum.n} earn`:String(sum.n);
     /* WHICH ANSWER IS THIS ([OIL-SEATS-CAN-EARN] step 10, D37)? Since step 9 the
        same puck can show two different numbers — the list the day went out with,
        and the list as things stand today. A number that does not say which is
        worse than no number, because the scheduler cannot tell whether he is
        reading a record or a live count. One phrase, used here and on the tap. */
     const from=` (${oilFromWords(ver)})`;
-    const ttl=sum.unrecorded
+    const ttl=sum.nostart?sum.nostart:sum.unrecorded
       ?'This schedule was issued before the app kept a record of who was behind this puck'
       :(!sum.earns
         ?`${sum.n} with nothing else on at that time — tap to see them`
@@ -661,7 +663,7 @@ export function oilSeatDeco(di:any,id:any,key:any,itemOf?:string):{oil:any;chip:
          working world's flags). The window replays exactly that world
          (withChipWorld below). A version preview (PV without OFW) never
          carries it: a past version is read, not checked. */
-      chip:`<span class="oilcount${some?' some':''}" data-oilsent="${esc(item)}" data-oilday="${+di}" data-oilver="${esc(ver)}"${(ver?OFW:WARN===officialWarn())?' data-oilofw="1"':''} title="${esc(ttl)}">${txt}</span>`};
+      chip:`<span class="oilcount${some?' some':''}${sum.nostart?' nostart':''}" data-oilsent="${esc(item)}" data-oilday="${+di}" data-oilver="${esc(ver)}"${(ver?OFW:WARN===officialWarn())?' data-oilofw="1"':''} title="${esc(ttl)}">${txt}</span>`};
   }
   return {oil:oilBarOf(di,id,item),chip:''};
 }

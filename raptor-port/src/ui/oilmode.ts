@@ -49,11 +49,12 @@ import { INPUTS, inpId, inpWin, inpMeta, inpLabel } from '../engine/inputs'
 import { PEOPLE, whoId, isSpecial } from '../engine/people'
 import { HOOKS } from '../engine/hooks'
 import { schedWrite, SCHED_TYPES } from '../state/sched-commit'
-import { envMin, uniformOil, dayOilWork, oilCapableItems, rowItemKey, groundItemKey, inputItemKey, type OilWork } from '../engine/oil'
+import { envMin, uniformOil, dayOilWork, oilCapableItems, openEndRows, rowItemKey, groundItemKey, inputItemKey, type OilWork } from '../engine/oil'
 import { landedExtras, oilEvidence, oilEvidenceOf, oilEarnedWork, oilInputEligible, oilSentOf, personDecision, itemMasked, itemMark, itemState, spanDefault, type OilEvidence, type OilDecisions } from '../engine/oilev'
 import { OILDAY, setOilDay, afterSchedMutate, esc } from '../state/view'
 import { CURWEEK } from '../engine/waves'
 import { parseHM, win, hm24 } from '../engine/time'
+import { VCONF } from '../engine/rules'
 import { stashKeys, stashEditDays } from '../engine/weekstash'
 import { whoArr } from '../engine/slots'
 import { isDraftVer } from '../engine/drafts'
@@ -573,6 +574,10 @@ export function oilItemCellHTML(di: any, item: string, name: any, cls: string): 
     if (claim && (claim.stand === 'active' || claim.stand === 'unlanded')) {
       return `<span class="${cls} oilitem none" title="A request is answered for each person on it — tap a puck on this row, not the row itself">${esc(txt) || '&nbsp;'}</span>`
     }
+    /* A START AND NO END ([ALLAVAIL-OPEN-ROW], D360): not "nothing can earn" — it could, once it has an end. Its crowd is
+       counted over an assumed hour; here, where OIL is decided, the admin is told none is worked out, and why. */
+    if (openEndRows(DAYS[+di] || {}).some(r => r.item === item))
+      return `<span class="${cls} oilitem none" title="${esc(OIL_OPEN_END)}">${esc(txt) || '&nbsp;'}</span>`
     return `<span class="${cls} oilitem none" title="Nothing on this row can earn OIL, so there is nothing to switch off">${esc(txt) || '&nbsp;'}</span>`
   }
   /* FIVE STATES, FIVE SENTENCES, SHIPPED WITH THE DEFAULTS RATHER THAN AT THE
@@ -818,6 +823,19 @@ export const OIL_FROM_LIVE = 'who is free as things stand now'
    answer. Reading every version as "issued" put a false sentence on the chip's
    title and in the window whenever the board's plan selector showed a plan. */
 export const oilFromWords = (ver: any) => (ver && !isDraftVer(ver) ? OIL_FROM_ISSUED : OIL_FROM_LIVE)
+/** THE ASSUMED LENGTH, AS SAID ([ALLAVAIL-OPEN-ROW], D360): the Logic tab's "Assumed length, no end time" in words —
+ *  "an hour" at its default, "2 hours", "90 minutes". */
+export const openLenWords = (min: number) =>
+  min === 60 ? 'an hour' : min % 60 === 0 ? `${min / 60} hours` : `${min} minutes`
+/** WHAT THE ADMIN IS TOLD WHERE OIL IS DECIDED, about a row with a start and no end ([ALLAVAIL-OPEN-ROW], D360 — owner,
+ *  28 Sep 26: "need to say something like no oil worked out due end time to the admin"). One wording for the window's
+ *  "Who earns OIL" half and the row's switch in OIL Earn mode: its crowd is counted over an assumed hour, but nobody is
+ *  credited from a guessed time (D31). */
+export const OIL_OPEN_END = 'No OIL worked out — this row has no end time'
+/** A placeholder on a row the day could not count for — the "?" chip's title (D31: never a silent absence). Distinct
+ *  from the older issued day's "?" (`unrecorded`). No start at all, or a start and end that measure nothing. */
+export const OIL_NO_START = 'No start time — give it a time to count who can attend'
+export const OIL_NO_LENGTH = 'It starts and ends at the same time — give it an end to count who can attend'
 /** THE EVENT'S OWN WORDS, for the title bar of [ALL-AVAIL-WINDOW] (D38).
  *
  *  READ FROM THE MODEL, NEVER FROM THE PAGE. board.ts's `oilItemName` reads the
@@ -834,7 +852,7 @@ export const oilFromWords = (ver: any) => (ver && !isDraftVer(ver) ? OIL_FROM_IS
  *  rather than assumed impossible). A claim is named by WHAT IT IS, never by
  *  what is drawn in its cell — hand-pass finding 14, which produced history
  *  lines like "Sidewinder earns nothing from SidewinderFO". */
-export function oilItemLabel(di: any, item: string): { name: string, when: string, s: number | null, e: number | null, found: boolean, puck: boolean, cx: boolean, info: boolean } {
+export function oilItemLabel(di: any, item: string): { name: string, when: string, s: number | null, e: number | null, found: boolean, puck: boolean, cx: boolean, info: boolean, assumed: boolean } {
   const d: any = DAYS[+di] || {}
   const hhmm = (v: any) => { const t = String(v || '').replace(':', '').trim()
     return t.length === 4 ? `${t.slice(0, 2)}:${t.slice(2)}` : t }
@@ -851,15 +869,22 @@ export function oilItemLabel(di: any, item: string): { name: string, when: strin
      the row (`puck`), a cancelled row (`cx`), an information-only row (`info`).
      The OIL walk skips all three, and the window used to call every one of them
      "no puck on this row any more" while the puck sat there behind it. */
+  /* A START AND NO END ([ALLAVAIL-OPEN-ROW], D360, 28 Sep 26): the row's crowd is counted over the length the rest of
+     the schedule assumes for it (oil.ts `openEndRows` — `open`, a sim its own), so the window is titled with THAT
+     window and says it is assumed ("18:30–19:30 · no end time, an hour assumed"), and its flags measure the same one.
+     It no longer reads "no usable start and end times" beside a count. A row with no start is still left open. */
   const out = (name: any, a?: any, b?: any, sm?: number | null, em?: number | null, found = true,
-               f: { puck?: boolean, cx?: boolean, info?: boolean } = {}) => {
-    const w = span(a, b)
-    const s0 = sm != null ? sm : parseHM(a), e0 = em != null ? em : parseHM(b)
+               f: { puck?: boolean, cx?: boolean, info?: boolean } = {}, open?: number) => {
+    let w = span(a, b)
+    const s0 = sm != null ? sm : parseHM(a)
+    let e0 = em != null ? em : parseHM(b)
+    const assumed = open != null && s0 != null && e0 == null
+    if (assumed) { e0 = s0! + open!; w = `${span(a, hm24(e0))} · no end time, ${openLenWords(open!)} assumed` }
     const ww = s0 != null && e0 != null ? win(s0, e0) : null
     return { name: String(name || 'This event').trim() || 'This event',
              when: [dayLbl, w].filter(Boolean).join(' · '),
              s: ww ? ww[0] : null, e: ww ? ww[1] : null, found,
-             puck: !!f.puck, cx: !!f.cx, info: !!f.info }
+             puck: !!f.puck, cx: !!f.cx, info: !!f.info, assumed }
   }
   /* the OIL walk's own test for a placeholder: an id that resolves special */
   const sentOn = (vals: any[]) => vals.some(v => { const id = whoId(v); return !!id && isSpecial(id) })
@@ -891,14 +916,14 @@ export function oilItemLabel(di: any, item: string): { name: string, when: strin
       true, flags(g, [g.who, ...(g.more || [])]))
   }
   for (const r of (d.ground || [])) if (r && groundItemKey(r) === item)
-    return out(r.prog, r.str, r.end, null, null, true, flags(r, [r.who, ...(r.more || [])]))
+    return out(r.prog, r.str, r.end, null, null, true, flags(r, [r.who, ...(r.more || [])]), VCONF.openEnd)
   for (const r of (d.allhands || [])) if (r && rowItemKey(r.rid) === item)
-    return out(r.prog, r.str, r.end, null, null, true, flags(r, [...whoArr(r), ...(r.more || [])]))
+    return out(r.prog, r.str, r.end, null, null, true, flags(r, [...whoArr(r), ...(r.more || [])]), VCONF.openEnd)
   for (const b of (d.dutywaves || [])) for (const r of ((b && b.rows) || []))
-    if (r && rowItemKey(r.rid) === item) return out(r.role, r.str, r.end, null, null, true, flags(r, [r.id, ...(r.more || [])]))
+    if (r && rowItemKey(r.rid) === item) return out(r.role, r.str, r.end, null, null, true, flags(r, [r.id, ...(r.more || [])]), VCONF.openEnd)
   for (const k of Object.keys(d.sims || {})) for (const r of ((d.sims[k]) || []))
     if (r && rowItemKey(r.rid) === item) return out(`${String(k).toUpperCase()} · ${r.label || ''}`.trim(), r.str, r.end,
-      null, null, true, flags(r, [r.p, r.w, ...(r.pax || []), ...(r.more || [])]))
+      null, null, true, flags(r, [r.p, r.w, ...(r.pax || []), ...(r.more || [])]), VCONF.simLen)
   for (const w of (d.waves || [])) for (const f of ((w && w.formations) || []))
     if (f && rowItemKey(f.rid) === item) return out([f.cs, f.msn].filter(Boolean).join(' · '), f.to, f.ld)
   return lost('This event')
@@ -958,7 +983,7 @@ export const oilPersonSays = (cs: string, name: string, on: boolean) =>
  *  Returns null where the puck is not a resolved sentinel at all (a sentinel in a
  *  flying seat earns nobody anything, and the day's own rules never expand it). */
 export function oilSentinelSummary(di: any, item: string):
-  { bar: 'FO' | 'HO' | null; n: number; earn: number; earns: boolean; unrecorded?: true } | null {
+  { bar: 'FO' | 'HO' | null; n: number; earn: number; earns: boolean; unrecorded?: true; nostart?: string } | null {
   const ev = evOf(di)
   if (!item) return null
   /* ON EVERY DAY NOW ([OIL-SEATS-CAN-EARN] step 9, D27). The count is a
@@ -969,7 +994,18 @@ export function oilSentinelSummary(di: any, item: string):
   /* an ISSUED document written before membership was kept (OSE-T-02): it does
      not know, and nothing may be invented for it */
   if (got.state === 'unrecorded') return { bar: null, n: 0, earn: 0, earns: !!ev.earns, unrecorded: true }
-  if (got.state === 'none') return null                  // no puck on this seat: no chip, as before
+  if (got.state === 'none') {
+    /* A PLACEHOLDER ON A ROW NOBODY CAN BE COUNTED FOR ([ALLAVAIL-OPEN-ROW], D360; D31 — never a silent absence). A
+       row with a start and no end is now counted (over its assumed length), so what is left here is a row with NO
+       start, or one that starts and ends at the same minute: a "?" chip, its own state and its own words — never the
+       older issued day's "?" — that opens the window on the row's reason. Asked of the row the chip is drawn on
+       (DAYS[di] is the issued snapshot while an issued face is built, so the record's own row answers). A seat with
+       no placeholder, a cancelled row and an ⓘ row stay chipless, as before. */
+    const l = oilItemLabel(di, item)
+    if (l.found && l.puck && !l.cx && !l.info && (l.s == null || l.e == null || l.e <= l.s))
+      return { bar: null, n: 0, earn: 0, earns: !!ev.earns, nostart: l.s == null ? OIL_NO_START : OIL_NO_LENGTH }
+    return null                                          // no puck on this seat: no chip, as before
+  }
   const people = got.people
   /* a day that earns nobody anything has no figures to add up — the count is
      the whole of what it can honestly say */

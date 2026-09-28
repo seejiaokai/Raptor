@@ -32,7 +32,7 @@ import { useVersion } from './useStore'
 import { canEditSched } from '../state/auth'
 import { esc, selectPerson } from '../state/view'
 import { personPuckHTML, personWarnMsgs, withChipWorld } from './html'
-import { oilModeOn, oilSeatHTML, toggleOilPerson, oilFigureFor, oilBlanketOn, oilItemMasked, oilFromWords, oilItemLabel, oilItemHistName, oilPersonSays, evOf } from './oilmode'
+import { oilModeOn, oilSeatHTML, toggleOilPerson, oilFigureFor, oilBlanketOn, oilItemMasked, oilFromWords, oilItemLabel, oilItemHistName, oilPersonSays, evOf, OIL_OPEN_END } from './oilmode'
 import { draftVerLabel } from '../engine/drafts'
 import { oilSentOf, oilReadPass } from '../engine/oilev'
 import { logAction } from '../engine/editlog'
@@ -309,8 +309,12 @@ export function AvailWindow() {
      whole day switched off, "tap a puck to stop a man earning" invited a tap
      that can only be refused. It says what IS true and where the way out is. */
   const masked = oil && !ver && oilItemMasked(di, item)
+  /* A ROW WITH A START AND NO END ([ALLAVAIL-OPEN-ROW], D360 — "need to say something like no oil worked out due end
+     time to the admin"): its crowd is counted over the assumed hour the title names, but the OIL half — where OIL is
+     decided — says nobody is credited from it, and why, on the working copy and on an issued record alike. */
   const hint = !m ? '' : AVAILWIN_FOOT || (m.lost ? '' : oil
-    ? (ver ? 'Who earned OIL on the day as it was issued.'
+    ? (m.lbl.assumed ? `${OIL_OPEN_END}.`
+      : ver ? 'Who earned OIL on the day as it was issued.'
       : masked ? (oilBlanketOn(di)
         ? 'Nothing on this day earns. Turn that off to switch men one by one.'
         : 'This event earns nobody. Turn it back on to switch men one by one.')
