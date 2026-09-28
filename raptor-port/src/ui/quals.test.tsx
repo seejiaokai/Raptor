@@ -14,6 +14,7 @@ import { PEOPLE, isScheduler, isInstr, isInstrPilot, deriveQuals, ID_BY_CS, QCHI
 import { sansGate } from '../engine/avail'
 import { restoreArchivedPerson } from '../leavewar/sync'
 import { HOOKS } from '../engine/hooks'
+import { qualCols as engineQualCols, setQualCols as setEngineQualCols } from '../engine/qualcols'
 /* the landing flash's own beat, named once in lift.ts and read here rather
    than re-typed — the drag tests at the foot of this file advance past it */
 import { LIFT_LAND_MS } from './lift'
@@ -903,6 +904,25 @@ describe('Edit quals', () => {
       const x = a.toLowerCase(), y = b.toLowerCase(); return x < y ? -1 : x > y ? 1 : 0
     }))
     await on()
+  })
+
+  /* B9 of the change-recording re-test (28 Sep 26, Fable S19): an Undo puts the LoX's column list back UNDER the page
+     (settings are Undo steps now — [UNDO-ROSTER-SETTINGS]). The page kept its own copy, seeded once, and wrote it back
+     from an effect: the undone column never came back on Quals, and the next column edit wrote the stale list over the
+     undo. The page reads the one list on every repaint and writes it only from its own edit handlers. */
+  it('the columns follow the shared list when it changes underneath — an Undo (Fable S19)', async () => {
+    await on()
+    const shared = engineQualCols().map((c: any) => ({ ...c }))
+    await click($('#qtbl thead th[data-col="imc"] .qdel'))
+    if (qualCols().includes('imc')) await click($('#qtbl thead th[data-col="imc"] .qdel'))
+    expect(qualCols()).not.toContain('imc')
+    await act(async () => { setEngineQualCols(shared); notify() })      // what the Undo's restore does underneath
+    expect(qualCols(), 'the undone column is back on the page').toContain('imc')
+    await click($('#qtbl thead th[data-col="tf"] .qdel'))
+    if (qualCols().includes('tf')) await click($('#qtbl thead th[data-col="tf"] .qdel'))
+    expect(qualCols(), 'and the next edit does not write the stale list back').toContain('imc')
+    expect(engineQualCols().map((c: any) => c.k)).toContain('imc')
+    await act(async () => { setEngineQualCols(shared); notify() })
   })
 
   it('drags a heading to move its column', async () => {

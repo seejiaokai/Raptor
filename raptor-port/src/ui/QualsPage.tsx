@@ -281,8 +281,12 @@ export function QualsPage() {
      from the shared registry (so a list edited before this page last unmounted
      comes back as it was), and written back to it on every change. `notify`
      fires only when the list really changed, so the mount pass is silent. */
-  const [cols, setCols] = useState<any[]>(() => [...qualCols()])
-  useEffect(() => { if (setQualCols(cols)) notify() }, [cols])
+  /* THE ONE LIST, READ ON EVERY REPAINT (the change-recording re-test B9, 28 Sep 26 — Fable S19): the page used to keep
+     its own copy, seeded once and written back from an effect, so an Undo that put the list back underneath it never
+     showed here, and the next column edit wrote the stale copy over the undo. Now the registry IS the page's list; the
+     page writes it only from its own edit handlers below (setQualCols — one settings command, one Undo step). */
+  const cols: any[] = qualCols() as any[]
+  const setCols = (fn: (cs: any[]) => any[]) => { if (setQualCols(fn([...qualCols()]))) notify() }
   const [qualsEdit, setQualsEdit] = useState(false)
   const [newQual, setNewQual] = useState('')
   /* the column whose ✕ has been pressed once — see WIRED above */

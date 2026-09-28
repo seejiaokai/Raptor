@@ -1304,3 +1304,18 @@ resolved statuses always carry their resolution date
 **Suggested improvement:** In the red-first step, add: "before trusting a red, confirm it is red for the RIGHT reason — assert the precondition the feature depends on (the change was actually recorded / the entry exists) as its own expectation, so a missing fixture fails loudly and differently from a missing feature."
 
 **Principle:** A red test proves nothing until you know WHY it is red; pin the precondition separately from the behaviour so a broken fixture cannot impersonate a missing feature.
+
+### Observation 341: A commit chained after a FILTERED test run commits red — the filter's exit code, not the tests', gates it
+
+**Status:** OPEN
+**Date:** 2026-09-28
+**Session context:** change-recording build (Raptor), B8 — "npx vitest run … | grep -E '×|Tests' ; … && git commit" went in with two failing tests, because the pipe's last command (grep) succeeded.
+**Skill:** verification-before-completion
+**Type:** open-source
+**Phase/Area:** committing after a test run
+
+**Issue:** The test output was read through a filter to save space, and the commit was chained in the same command. The chain's success condition was the filter's exit status, so a red run still committed; it was caught only by reading the printed lines afterwards, and needed a follow-up fix commit.
+
+**Suggested improvement:** Add a rule: never chain a commit (or any irreversible step) onto a command whose test output passes through a pipe; run the tests with their exit code captured (to a file, `echo exit $?`) and commit in a separate step only after reading a green result.
+
+**Principle:** The gate on an irreversible step must be the check's own exit code — a pipe or filter in between silently replaces it with the filter's.
