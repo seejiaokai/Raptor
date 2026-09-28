@@ -73,7 +73,8 @@ opens on the last person's pick. `endSession` clears undo, windows and modes but
 happens** — the admin picked the second course and STUDENT B, logged out; the member opened on that course and STUDENT B
 (`lo-M-*`).
 
-**The choice made (the agent's, stated in the report):** keep the "reopen where YOU left it" behaviour the smoke suite
+**HIS PICK — D376, 28 Sep 26: "own place"** (put to him after Astra's F-08 found this was his call, not the
+agent's). **The choice the agent had made, now his:** keep the "reopen where YOU left it" behaviour the smoke suite
 pins (it is a design of its own — "the app reopens where YOU left it, and tells nobody else") and make it per PERSON,
 rather than the item's other option (every sign-in starts on the default course and no student), which would take
 that behaviour away from everyone. It changes the least that was built on purpose.
@@ -241,3 +242,103 @@ these.
 - The Tracker's ↶ ↷ buttons and their move to Raptor's top bar (the parallel chat, D347).
 - Raptor's top bar at 844×390 (C12 — filed as its own item).
 - Anything that lives only in data already stored (D56, D120): the old unprefixed pick keys, older file formats.
+
+## 6. Round 1 — Fable and Astra, and what is done with each finding (28 Sep 26)
+
+Both reports, blind to each other: `docs/handpass/2026-09-28-trk-leftovers-fable-plan.md` (F1–F17, scenarios A1–E) and
+`docs/handpass/2026-09-28-trk-leftovers-astra-plan.md` (F-01–F-10, 20 scenarios). Both read the plan after D370–D375
+landed, so part of what they found is the plan catching up with his answers (Astra F-01, F-04). **This section wins
+over §2 where they differ.** The scenario lists are the walk's order list (§4.3).
+
+**A — the per-person pick (D376).** *Astra F-08 found the choice was his* → put to him: "own place" (D376).
+- The session's person, for the Tracker, is ONE function beside `whoamiForTracker` in `peoplewire.ts`: the signed-in
+  person's id, or `''` when `HOOKS.whoami()` is 'Unknown' (no session — after a logout Raptor's id is the headless
+  default `bane`, a real member's id; Fable F6). It crosses the no-import bridge `people.js` (`setWhoamiId`).
+- **The resume fires whenever the Tracker is SHOWN** (App.jsx: an effect on `active` and `ready`), not only on a
+  remount — so an account whose person was changed by another admin while the Tracker sat mounted (`sessionNow` remakes
+  the session in place; Astra F-02) is caught the next time the tab comes up. `resetSession` always sends the page to
+  View-only Sched, so the Tracker is never on screen across a person change.
+- `resumeForPerson()` decides SYNCHRONOUSLY: same person → nothing (the board draws as today); another person →
+  `loading = true`, `active` and `pop` cleared, the board NOT drawn (App shows "Loading…"; `ballTap` does nothing while
+  loading) until the chained load lands and renders (Fable F4). The chained task reads the person when it RUNS, so a
+  later change queues a second task that corrects the first (Astra F-02's generation). `pickOwner` is set when the load
+  lands. **With an unsaved chart edit the resume waits** (the edit is never replaced under anyone; production's logout
+  already asks, D129 — Fable F15).
+- Every pick goes through one writer that also remembers it for the current person: the Crew box, a wedge or tick
+  press, + Add (which never remembered its pick — Fable A13, Astra F-08), the undo that moves the picker. The fallback
+  for someone with no pick stays the course's shared "last person anyone graded" (Fable F14 — on the look card).
+- **Tests** sign in with real people (`pid`: the admin `stiff`, the member `bane`, a third `outlaw`/`hex`), wire the
+  bridge and call the resume (Fable F5); the smoke's "reopens where you left it" block reads the per-person key and gains
+  a second person.
+
+**B1 — the question box.** *Both found "cancel the first" re-entrant and able to invent an answer* (Fable F2: an import
+would silently SKIP a chart; Astra F-03).
+- **A FIFO queue, never a cancel:** a question asked while one is up waits for it and then shows; order kept, nobody's
+  answer invented. Ending the session answers the one on screen and every waiting one as cancelled (they belong to the
+  outgoing person). The logout refusal while a question is up stays.
+- **The door (Fable F3):** while a question is up, everything else in the Tracker's page is `inert` (no focus, no
+  press), Tab / Shift+Tab wrap inside the box, and the box is `role="dialog" aria-modal="true"`. Raptor's own top bar
+  stays usable (its Logout is guarded); a Tab from it can no longer reach the Tracker's controls behind the shade.
+
+**B2 (Astra F-07).** One `isComposing(e)` helper (`nativeEvent.isComposing`, `isComposing`, key code 229) in the three
+Enter handlers AND Show All's Ctrl/⌘+Enter.
+
+**C5 + D374 — the date boxes (Fable F1, Astra F-05).** A date box COMMITS when you leave it (blur), on Enter, or when it
+goes away (unmount) — never per keystroke, because Chrome passes through whole but WRONG days while the day or month is
+typed (the 1st on the way to the 17th). At commit: a real calendar day (strict y-m-d round trip, year ≥ 1900) that
+differs from the saved one is saved — for Done on, Failed on and both Last Flown boxes only if it is not after
+`isoToday()` (Singapore, D374); an emptied box with nothing half-typed (`validity.badInput` false) saves the empty;
+anything else is put back to the saved day, and a refused future day says why in one line. Eight boxes: Done on (its
+draft still feeds a grade press), Failed on (+ with a half-typed or future day refuses and says so rather than using
+today), each failures-list row (keyed by event + stored index, so a re-sort never moves a draft), Last Flown ×2,
+Upchit, End A, End B. One commit = one undo step; the same day retyped = no step (the setters return on no change).
+**The feel change goes on his look card:** a date saves when you leave the box, not as you type. The smoke's four
+`fill`s on date boxes gain a Tab.
+
+**C3 + D371 (Fable F9, Astra F-01).** The order lives in ONE place: `failDates` returns the failures sorted — dated by
+day ascending, undated after, ties in recorded order — and every writer (`popFail`, `setFailDate`) works on that sorted
+copy and stores it back sorted, so the ball, the card, the full list, the bubble, the pop-up and the export all agree.
+− removes the one with the latest day (all undated: the last recorded).
+
+**C2 + D370 (Fable F10).** Hidden from the card's chips and total and from the full failures list; **the grading
+pop-up and the details bubble keep showing them** (the pop-up is where + is refused and a re-grade brings them back;
+the bubble is that event's own record) — on the look card. The export keeps them.
+
+**C4 + D372 (Fable F8, Astra F-01).** A mark step snapshots marks, dates, pace AND lull periods; restoring saves all
+four. Pace and each end date coalesce per field for two seconds; a lull set, changed or removed is one step (removal
+still asks first); Copy to… is ONE group step over every ticked student (a removed student drops out of it; an empty
+group is skipped). The exports the parallel chat binds keep their names; the tooltip gains words ("the lull periods for
+3 students") — told to that chat. On the look card: a syllabus switch still clears the history (R110) though the pace
+is per course.
+
+**C6 (Fable F17).** The tick carries `data-wi`; the `.mine` edge also does but takes no presses. The picked student's
+own tick opens grading as before; Details mode and Edit chart layout are unchanged.
+
+**C7 (Fable F13, Astra F-10).** A new period opens on `isoToday()`'s month (Singapore), parsed without a time zone.
+
+**C10 (Fable F16).** The Crew box gets its own phone cap, sized for a 14-letter callsign (D226); the Course box gives
+width back; the bar is measured to stay two rows at 390 (and still two once the parallel chat's ↶ ↷ leave it).
+
+**C13 (Fable F12).** The comment says what is measured: the dozing SECTION reads 0 tall; its insides keep their boxes,
+unpainted. Filed, not fixed here: whether the Leave War's measurement guards (`Matrix.tsx`, `width === 0`) ever run
+while its page dozes.
+
+**C14 (Fable F7, Astra F-09).** The words are cut by the SLOT (172px, 59px beside Save), not their length: the slot
+widens to fit "● unsaved" beside Save, measured to keep the bar one row at 1060/1150/1200; while there are unsaved
+chart edits the visible words stay "● unsaved" whatever a later background save reports (an error still shows, in red);
+the long sentence is the tooltip.
+
+**D + D373 (Astra F-04; Fable's D list).** The folded row on a short screen (under ~500px tall — a short desktop window
+too): the tool in use, its one-line hint, ⤢ Fit, Tools ▾. The full set opens OVER the chart, closes on a tap outside,
+on Escape (before anything else) and on leaving edit mode; choosing a tool closes it. Asserted: the chart's height is
+positive at 844×390. R93/R101 and the contract gain D373's short-screen line.
+
+**E — baking (Fable F11, Astra F-06).** The pure function takes and returns `DEFAULT_SYL_ORDER` too (baked built-ins in
+the file's order, the rest after in their order); reads the file through `FMT.readFile` (v3 and `contains.charts`
+required; an older file → "export a fresh file"); merges each chart's `eventInfoBySyl` DIFFS into
+`EVENT_INFO_BY_SYL[<shipped name>]` over the shipped wording, never into `EVENT_INFO` (D126); leaves a deleted or absent
+built-in untouched and reports it; carries layout specials whole; refuses when any roster entry's `.name` appears in the
+written data; reports that the smoke's data assertions may need re-checking after a real bake.
+
+**Not adopted, with the reason:** Astra F-02's "owner question for a person reassigned mid-session with unsaved edits"
+— the resume waits while an edit is unsaved (above), so no edit is lost and nothing needs asking.

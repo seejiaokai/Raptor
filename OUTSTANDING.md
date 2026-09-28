@@ -822,7 +822,7 @@ Astra's read of `[ACCOUNTS]` (finding 3): `tracker/app/core.js endSession` clear
 the selected course and student, and the "last course / last crew" it remembers is per browser, not per person — so the
 next person on the same browser opens on the last one's pick. Not a leak (the Tracker is everyone's, D121), a wrong
 starting point. **Do:** start each sign-in on the default course and no student, or keep the "last pick" per person
-(`tracker/role.js` would carry who signed in); extend `retest.test.tsx` F10 across a sign-out. **Place:** low — the next
+(`tracker/role.js` would carry who signed in); extend `retest.test.tsx` F10 across a sign-out. **His pick, 28 Sep 26 — D376: "own place"** — each person reopens on their own last course and student; being built on `claude/tracker-leftovers-f79d36`. **Place:** low — the next
 Tracker change; its smoke suite pins the "last pick" behaviour, so it is not a one-liner.
 
 ### [TRK-PINCH-ASK] His iPhone look at the pinch fix (24 Sep 26)
