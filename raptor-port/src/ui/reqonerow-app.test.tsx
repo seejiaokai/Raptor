@@ -87,7 +87,10 @@ describe('the doors say which request\'s row they left out, and where it stands 
     const go = $$('button[data-draftgo]').find(b => b.dataset.draftgo === String(MON) && b.dataset.draftid === planA.id)
     await click(go)
     expect(rowsOf(inp)).toEqual([TUE])
-    expect(toasts.join(' | ')).toMatch(/switched to plan[\s\S]*Meeting left out — it is on Tuesday's programme/)
+    /* ONE ACT, ONE SENTENCE ([REQ-DOOR-WORDS] 1, 28 Sep 26): the banner now says exactly what the plans menu and the
+       plan editor say (board.ts switchDraft) — it used to word the same switch its own way ("Monday switched to plan …") */
+    expect(toasts.join(' | ')).toMatch(/Switched to "Plan A" — this is now the live Mon[\s\S]*Meeting left out — it is on Tuesday's programme/)
+    expect(toasts.join(' | '), 'never the banner\'s old sentence').not.toMatch(/switched to plan/)
   })
   /* the plan editor's "Select" — its own door (Astra's roll-call row, 25 Sep 26): the day's plans selector → ✎ → Select */
   it('the plan editor\'s "Select": the same leave-out, the same sentence', async () => {

@@ -13,7 +13,7 @@ import { posKey } from '../engine/rowids'
 import { closePendList } from './pendlist'
 import { openChanges } from './changesopen'
 import { weekDates } from '../engine/editlog'
-import { draftSelect, draftVerLabel, loadVersionToWorkingCopy, LOADLEFT, LOADMOVED, ROWSLEFT, rowsLeftSaid, inputsLeftSaid } from '../engine/drafts'
+import { dayDrafts, loadVersionToWorkingCopy, LOADLEFT, LOADMOVED, ROWSLEFT, rowsLeftSaid, inputsLeftSaid } from '../engine/drafts'
 import { HOOKS } from '../engine/hooks'
 import { canEditSched } from '../state/auth'
 import * as view from '../state/view'
@@ -28,7 +28,7 @@ import { setDayPop, setAirKey, setDrawer, setInpEdit } from './pops'
 import { reassignInput, rosterOptions, firstPersonalType, firstUnavailType, firstSansType, unfmt } from './inputedit'
 import { openAvailWinFrom } from './AvailWindow'
 import { withDaySnap } from './html'
-import { openScheduler, toggleSbwarn, boardTab, dayTplMenu, planMenu } from './board'
+import { openScheduler, toggleSbwarn, boardTab, dayTplMenu, planMenu, switchDraft } from './board'
 import { hideHistBub, pinHistBubAt, findHistCell } from './histbubble'
 import { pickRosDay } from './pan'
 import { isStandalone, CURWEEK } from '../engine/waves'
@@ -978,15 +978,14 @@ export function routeClick(e: MouseEvent) {
        available" toast off a button that is merely frozen. */
     if (protectedWeek()) return
     const di = +dgo.dataset.draftgo!, id = dgo.dataset.draftid!
-    const nm = draftVerLabel(di, 'd:' + id)
-    if (view.ARM && view.ARM.di === di) view.disarmSlot()
-    if (!draftSelect(di, id)) { HOOKS.toast('That plan is no longer available', 'warn'); notify(); return }
-    view.setDayPreview(di, null)
-    view.afterSchedMutate()
-    /* a row the plan held for a request now on another day stayed out — named (D175) */
-    const said = `${DAYS[di].dow} switched to plan ${nm} — this is now the live schedule` + rowsLeftSaid(ROWSLEFT)
-    logAction(di, said)
-    HOOKS.toast(said)
+    /* ONE ACT, ONE SENTENCE ([REQ-DOOR-WORDS] 1, 28 Sep 26 — Fable's F4 on D175's branch). The banner used to run its own
+       draftSelect and word the switch its own way ("Monday switched to plan B — this is now the live schedule"), without
+       the plans menu's pending tail ("· 2 differences from ORIG pending") — the same act said two ways. It now runs the
+       menu's one body, board.ts switchDraft — its sentence, its log line, its already-live refusal. The gates above stay
+       here, so a frozen button is inert rather than saying the plan has gone (Fable F13); a plan that really is gone is
+       told so here and only then (switchDraft's false has several reasons — Astra 10). */
+    if (!dayDrafts(di).some((x: any) => x.id === id)) { HOOKS.toast('That plan is no longer available', 'warn'); notify(); return }
+    switchDraft(di, id)
     notify(); return
   }
   /* "Load onto working copy" — a ROLLBACK: that issued version becomes the
