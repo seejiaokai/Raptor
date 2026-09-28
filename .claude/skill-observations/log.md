@@ -1215,3 +1215,33 @@ resolved statuses always carry their resolution date
 **Suggested improvement:** In the handoff (and any post-merge tidy), add a mechanical sweep: for every `## Now` block and every priority-list line that says "waiting for … merge", read the named PR's state from the host; list each one that has merged with its residue check, and retire or rewrite it in the same change — or name it to the owner if its residue is unclear.
 
 **Principle:** A status written by a chat that has ended goes stale at an event it never sees; the next writer must re-derive such statuses from the system of record, not trust the prose — and a tidy scoped to what the user named should still sweep for the same staleness next to it.
+
+### Observation 330: A question put to the owner needs a worked example with real names, not an abstract rule
+
+**Status:** OPEN
+**Date:** 2026-09-28
+**Session context:** Tracker leftovers (branch claude/tracker-leftovers-f79d36) — six product choices put to the owner on one Artifact page, each with pictures of the real app and a recommendation. (Numbered past #329, held on the parallel branch claude/docs-tidy-subheads-audit-ec8f87.)
+**Skill:** New skill candidate: owner-choices page (the "put the open product questions to him" step of the bug-check order §11 and the plain-language rule)
+**Type:** internal
+**Phase/Area:** Writing the questions
+
+**Issue:** He answered four at once and sent two back ("4 explain clearly", "5 what do u mean goes after your own courses"). Both had been worded as rules ("refuse a future day in these four boxes", "a course new to the app goes after the app's own courses"). The four he answered first had a picture or a concrete before/after. The re-put versions that he answered at once each opened with a worked example in the app's own words: "Today is 28 Sep. You grade a flight done and type 29 Sep by mistake…", "Your app has 26ABSG, 27ABSG; you import a file carrying 25ABSG…".
+
+**Suggested improvement:** Every owner question opens with a concrete worked example — a date, a name, a course, what he would press, what he would see — before the rule and the options; a question with no picture must have the example. Check before sending: could he answer it without imagining a scenario himself?
+
+**Principle:** A non-technical decision-maker judges consequences, not rules; a question that makes the reader build the scenario in their head comes back unanswered.
+
+### Observation 331: A backlog item that offers "do A, or B" is a choice for the owner — the plan must not pick one silently
+
+**Status:** OPEN
+**Date:** 2026-09-28
+**Session context:** Tracker leftovers — [TRK-SESSION-PICK] said "start each sign-in on the default course and no student, OR keep the last pick per person". The plan picked "per person" and called it the agent's call; Astra's plan red team (F-08) flagged that no ruling chose between them; put to him, he chose the same ("7 own place", D376).
+**Skill:** claudex-loop (plan review) / the bug-check order's rules sweep
+**Type:** open-source
+**Phase/Area:** Planning — separating implementation choices from product choices
+
+**Issue:** The agent classified a user-visible behaviour choice as an implementation detail because it had a good reason for one option (it changed least of an existing feature). The reviewer caught it only because the brief asked "is anything the plan decided itself actually his?".
+
+**Suggested improvement:** When a plan is written from a backlog item, scan the item for alternatives it names ("or", "either", "one of") and list each as an owner question unless a recorded ruling already picks one; keep the brief's "is anything the plan decided itself actually the user's?" question in every plan red team.
+
+**Principle:** Alternatives written into a task by a previous session are an unanswered question, not an invitation to choose; having a good reason for one option does not make it yours to pick.

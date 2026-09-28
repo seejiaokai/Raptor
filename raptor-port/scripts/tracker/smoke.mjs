@@ -1507,7 +1507,9 @@ await pg.waitForTimeout(800);
   ok('the Failures title opens the full list, one row per failure with its date',
     log.open && log.rows.join(',') === 'ST-01,ST-01X,ST-01XX,ST-02' && log.dates.every(d => d === today) && /4 fails/.test(log.total),
     `rows: ${log.rows.join(', ')} · dates: ${log.dates.join(', ')} · ${log.total}`);
-  await pg.fill('#failLog .frow[data-ev="ST-01"][data-fi="1"] input[type=date]', '2026-08-01'); await pg.waitForTimeout(300);
+  /* a date box saves when it is LEFT, not as typed ([TRK-RETEST-NOTES] C5, 28 Sep 26) */
+  await pg.fill('#failLog .frow[data-ev="ST-01"][data-fi="1"] input[type=date]', '2026-08-01');
+  await pg.press('#failLog .frow[data-ev="ST-01"][data-fi="1"] input[type=date]', 'Tab'); await pg.waitForTimeout(300);
   const redated = await pg.evaluate(() => [...document.querySelectorAll('#failChips .failchip')].map(c => c.dataset.date));
   ok('changing a day in the list re-dates that one failure and its chip',
     redated[1] === '2026-08-01' && redated[0] === redated[2] && redated[0] !== '2026-08-01', `chip dates: ${redated.join(', ')}`);
@@ -2216,7 +2218,7 @@ await pg.keyboard.press('Escape'); await pg.waitForTimeout(250);
   ok('the pace box can be cleared to type a new number',
     (await pg.inputValue('#epwIn')) === '', `shows "${await pg.inputValue('#epwIn')}"`);
   await pg.fill('#epwIn', '3.5'); await pg.waitForTimeout(300);
-  await pg.fill('#targetIn', '2027-03-01'); await pg.waitForTimeout(300);
+  await pg.fill('#targetIn', '2027-03-01'); await pg.press('#targetIn', 'Tab'); await pg.waitForTimeout(300);
   const aPace = await pg.inputValue('#epwIn'), aTgt = await pg.inputValue('#targetIn');
   ok('a pace typed in stays put', aPace === '3.5', `shows "${aPace}"`);
 

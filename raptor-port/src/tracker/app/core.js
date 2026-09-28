@@ -90,7 +90,7 @@ onBeforeTrackerLogout(async show => {
 function endSession() {
   undoStack = []; redoStack = [];
   dlgCancelAll();                     /* a half-answered question, and any waiting: cancelled */
-  pop = null; popDoneDate = ''; popFailDate = '';
+  pop = null; popDoneDate = ''; popFailDate = ''; popMsg = null;
   failLog = null; lullPick = null; lullCopy = null;
   infoId = null; editId = null; ordMode = null; sylModalOpen = false; showAllOpen = false; copyOpen = false;
   showDetails = false; hideDetailBubble();
@@ -3636,25 +3636,39 @@ function stamp(rec) {
 /* ---------- side panel actions (inputs live in <SidePanel/>) ---------- */
 /* A day typed by hand stands until a later flight moves it (D123) — the hand
    marks say so; an emptied box stands for nothing. */
+/* A DAY AFTER TODAY IS REFUSED where it says when something was flown, done or
+   failed (owner, 28 Sep 26 — D374): Done on, Failed on and both Last Flown boxes. A
+   planned day — Upchit, the two end dates — takes any day. Today is the squadron's
+   calendar day (`isoToday`, Singapore), the one the pop-up fills in by default. The
+   refusal changes nothing and answers with these words, which the box shows. */
+export const NOT_YET = 'That day hasn’t come yet — pick today or earlier.';
+export function afterToday(v) { return typeof v === 'string' && v !== '' && v > isoToday(); }
+/* Each setter below also returns at once when the box holds the day already saved:
+   a date retyped to what it was made an undo step that took back nothing (the
+   leftovers' baseline walk, E). */
 export async function setLastSyll(s, v) {
+  if (afterToday(v)) return NOT_YET;
+  if (((dates[s] && dates[s].lastSyll) || '') === (v || '')) return;
   pushMarkUndo(s, 'Last Flown (Syllabus)', 'lastSyll');
   const d = dates[s]; d.lastSyll = v; d.lastCurr = v;
   if (v) { d.handSyll = true; d.handCurr = true; } else { delete d.handSyll; delete d.handCurr; }
   stamp(d); await saveDates(s); renderSide();
 }
 export async function setLastCurr(s, v) {
+  if (afterToday(v)) return NOT_YET;
+  if (((dates[s] && dates[s].lastCurr) || '') === (v || '')) return;
   pushMarkUndo(s, 'Last Flown (Currency)', 'lastCurr');
   const d = dates[s]; d.lastCurr = v;
   if (v) d.handCurr = true; else delete d.handCurr;
   stamp(d); await saveDates(s); renderSide();
 }
-export async function setDownDays(s, v) { pushMarkUndo(s, 'the down days', 'downDays'); dates[s].downDays = v; stamp(dates[s]); await saveDates(s); renderSide(); }
-export async function setUpchit(s, v) { pushMarkUndo(s, 'the upchit date', 'upchit'); dates[s].upchit = v; stamp(dates[s]); await saveDates(s); renderSide(); }
+export async function setDownDays(s, v) { if (((dates[s] && dates[s].downDays) || '') === (v || '')) return; pushMarkUndo(s, 'the down days', 'downDays'); dates[s].downDays = v; stamp(dates[s]); await saveDates(s); renderSide(); }
+export async function setUpchit(s, v) { if (((dates[s] && dates[s].upchit) || '') === (v || '')) return; pushMarkUndo(s, 'the upchit date', 'upchit'); dates[s].upchit = v; stamp(dates[s]); await saveDates(s); renderSide(); }
 /* v is kept verbatim — an empty or half-typed box must stay as typed. epwOf()
    does the coercion for the arithmetic. */
 export async function setEpw(s, v) { pace[s] = { ...paceOf(s), epw: v }; await savePace(s); renderSide(); }
-export async function setTarget(s, v) { pace[s] = { ...paceOf(s), target: v }; await savePace(s); renderSide(); }
-export async function setTarget2(s, v) { pace[s] = { ...paceOf(s), target2: v }; await savePace(s); renderSide(); }
+export async function setTarget(s, v) { if ((paceOf(s).target || '') === (v || '')) return; pace[s] = { ...paceOf(s), target: v }; await savePace(s); renderSide(); }
+export async function setTarget2(s, v) { if ((paceOf(s).target2 || '') === (v || '')) return; pace[s] = { ...paceOf(s), target2: v }; await savePace(s); renderSide(); }
 /* Asks first: adding a period takes two deliberate clicks, and removing one
    took one stray tap on its ×, with no undo — lull periods are not in the
    history ([HUMAN-RETEST] W2-F4). */
@@ -3760,9 +3774,10 @@ export function openPop(id, evt) {
   pop = { id, x: evt.clientX, y: evt.clientY };
   popDoneDate = doneDate(active, id) || isoToday();
   popFailDate = isoToday();
+  popMsg = null;
   notify();
 }
-export function closePop() { pop = null; notify(); }
+export function closePop() { pop = null; popMsg = null; notify(); }
 /* A tap on a ball, outside arrange mode (owner, 9 Sep 26 — "click exactly at
    the portion of the pokeball that person exist in"): the ring is the crew
    picker, one wedge per student — tapping somebody else's wedge PICKS them
@@ -3885,6 +3900,9 @@ export async function popGrade(v) {
      on marks[null][id]. Clicking an event on an empty course should do nothing,
      not break the page. */
   if (!s) { closePop(); return; }
+  /* a grade that says "done" on a day that has not come is refused, the pop-up left
+     up to be answered (D374) */
+  if (DONE.has(v) && afterToday(popDoneDate)) { popMsg = { where: 'done', text: NOT_YET }; notify(); return; }
   /* [CMDL-FINISH] §4 (Class A) — the whole grade (last-edit note, the mark, and a
      flight's Last-Flown) is ONE gesture = ONE envelope. No reads to hoist; every
      write's mem mutation is synchronous inside the reducer, storage deferred. */
@@ -3916,12 +3934,14 @@ export async function popFail(delta) {
      N/A colour. Existing counts are kept, not wiped — mark it back to a real
      grade and the history is still there. */
   if (delta > 0 && gradeOf(s, popId) === 'na') { flashHint('“' + popId + '” is marked N.A., so it cannot be failed.'); return; }
+  if (delta > 0 && afterToday(popFailDate)) { popMsg = { where: 'fail', text: NOT_YET }; notify(); return; }
   trkGesture(() => {   // [CMDL-FINISH] §4 (Class A) — the count + day list as ONE envelope
     pushMarkUndo(s, 'the failure count on ' + popId);
     /* + records a failure on the pop-up's failure day; − takes the LATEST one
        back. The count and the list of days are kept in step. */
     const fd = failDates(s, popId);
-    for (let k = 0; k < delta; k++) fd.push(popFailDate || isoToday());
+    /* a day still being typed (0202…) is not a day: today, as a grade does */
+    for (let k = 0; k < delta; k++) fd.push(isWholeDay(popFailDate) ? popFailDate : isoToday());
     for (let k = 0; k < -delta && fd.length; k++) fd.pop();
     m.f = fd.length; m.fd = fd;
     stamp(m);
@@ -3931,27 +3951,52 @@ export async function popFail(delta) {
 }
 /* The pop-up's "Failed on" box: only where the NEXT + lands. Nothing is saved
    until a failure is recorded on that day. */
-export function popFailDateChanged(v) { popFailDate = v; notify(); }
+export function popFailDateChanged(v) { popFailDate = v; if (popMsg) popMsg = null; notify(); }
+/* ...and on leaving the box: a day still being typed goes back to today; a day after
+   today goes back to today and says why (D374). */
+export function popFailCommit() {
+  if (!isWholeDay(popFailDate)) { popFailDate = isoToday(); notify(); return ''; }
+  if (afterToday(popFailDate)) { popFailDate = isoToday(); popMsg = { where: 'fail', text: NOT_YET }; notify(); return NOT_YET; }
+  return '';
+}
 /* The pop-up's "Done on" box. Before a grade it only sets the day the grade
    will carry; on an event already accomplished it re-dates the mark at once
    (owner: "the user can also manually change the date after"). A flight's day
    is also its Last Flown, as before. */
-export async function popDoneChanged(v) {
-  const s = active; const popId = pop && pop.id;
-  popDoneDate = v; notify();
-  /* While a day is retyped, the date box passes through EMPTY (after the "0"
-     of "09" it holds no full date) and through half-typed years (0002, 0020,
-     0202…). An empty box used to re-date the flight to TODAY for that instant,
-     and Last Flown followed ([HUMAN-RETEST] W2-F2). Only a whole, real day
-     re-dates a mark; a grade pressed on an empty box still takes today. */
-  if (!isWholeDay(v)) return;
-  if (!popId || !s || !DONE.has(gradeOf(s, popId))) return;
-  await setDoneDate(s, popId, v);
+export function popDoneChanged(v) { popDoneDate = v; if (popMsg) popMsg = null; notify(); }
+/* The box re-dates an accomplished mark when it is LEFT, not as it is typed
+   ([TRK-RETEST-NOTES] C5, 28 Sep 26). While a day is retyped the box passes through
+   EMPTY, through half-typed years (0002, 0020, 0202 — [HUMAN-RETEST] W2-F2) and, while
+   the DAY is typed, through whole but WRONG days (the 1st on the way to the 17th — the
+   plan's red team, Fable F1): re-dating on each of those moved Last Flown with it and
+   left an undo step per digit. So typing only changes the box; leaving it (blur, or
+   Enter) re-dates the mark once, to a whole, real day that is not after today (D374 —
+   refused with its words), and anything else puts the box back to the day the mark
+   has (today, for an event not yet done — a grade pressed then takes today). */
+export async function popDoneCommit() {
+  const s = active; const popId = pop && pop.id; if (!popId || !s) return '';
+  const graded = DONE.has(gradeOf(s, popId));
+  const back = () => { popDoneDate = (graded && doneDate(s, popId)) || isoToday(); notify(); };
+  if (!isWholeDay(popDoneDate)) { back(); return ''; }
+  if (afterToday(popDoneDate)) { back(); popMsg = { where: 'done', text: NOT_YET }; notify(); return NOT_YET; }
+  if (graded && popDoneDate !== doneDate(s, popId)) await setDoneDate(s, popId, popDoneDate);
+  return '';
 }
-/* a yyyy-mm-dd a person could mean — not blank, not a year still being typed */
-function isWholeDay(v) { return typeof v === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(v) && v >= '1900-01-01'; }
+/* the pop-up's one line of refusal — { where: 'done' | 'fail', text } — cleared by the
+   next change and when the pop-up opens or closes */
+export let popMsg = null;
+/* A yyyy-mm-dd a person could mean: a four-digit year from 1900 (not a year still
+   being typed), and a day the calendar has (a strict round trip, no time zone). */
+export function isWholeDay(v) {
+  if (typeof v !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(v) || v < '1900-01-01') return false;
+  const y = +v.slice(0, 4), m = +v.slice(5, 7), d = +v.slice(8, 10);
+  const t = new Date(Date.UTC(y, m - 1, d));
+  return t.getUTCFullYear() === y && t.getUTCMonth() === m - 1 && t.getUTCDate() === d;
+}
 export async function setDoneDate(s, id, iso) {
   if (!s || !marks[s] || !marks[s][id] || !DONE.has(gradeOf(s, id))) return;
+  if (afterToday(iso)) return NOT_YET;
+  if ((marks[s][id].d || '') === (iso || '')) return;
   trkGesture(() => {   // [CMDL-FINISH] §4 (Class A) — re-date + a flight's Last-Flown as ONE envelope
     pushMarkUndo(s, 'the date on ' + id, 'doneDate:' + id);
     marks[s][id].d = iso || isoToday();
@@ -3964,7 +4009,9 @@ export async function setDoneDate(s, id, iso) {
    lowdown. An emptied box leaves the failure undated, not deleted. */
 export async function setFailDate(s, id, i, iso) {
   if (!s || !marks[s] || !marks[s][id]) return;
+  if (afterToday(iso)) return NOT_YET;
   const fd = failDates(s, id); if (i < 0 || i >= fd.length) return;
+  if ((fd[i] || null) === (iso || null)) return;
   trkGesture(() => {   // [CMDL-FINISH] §4 (Class A)
     pushMarkUndo(s, 'the date of ' + failLabel(id, i), 'failDate:' + id + ':' + i);
     fd[i] = iso || null; marks[s][id].fd = fd;

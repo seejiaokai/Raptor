@@ -1,5 +1,6 @@
 import React, { useLayoutEffect, useRef, useState } from 'react';
 import * as core from '../app/core.js';
+import { isComposing } from './keys.js';
 
 export default function Pop() {
   const p = core.pop;
@@ -45,13 +46,18 @@ export default function Pop() {
       </div>
       {/* Done on: the day the grade carries. Today by default, so pressing DCO
           dates the event the day it was pressed; change it first and the
-          grade lands on that day; change it after and the mark is re-dated on
-          the spot. A flight's day is also its Last Flown, as before. */}
+          grade lands on that day; change it after and the mark is re-dated
+          when the box is LEFT (blur, Enter, or Escape as it closes the pop-up —
+          never per keystroke,
+          [TRK-RETEST-NOTES] C5). A day after today is refused, with one line
+          saying why (D374). A flight's day is also its Last Flown, as before. */}
       <div id="popDoneRow" style={{ marginTop: 8, borderTop: '1px dashed var(--line)', paddingTop: 8 }}>
         <div className="mini" style={{ marginBottom: 4 }}>
           {done ? 'Done on' : 'Done on (when marked)'}{isFlight ? ' — sets Last Flown' : ''}
         </div>
-        <input type="date" id="popDoneDate" style={{ width: '100%' }} value={core.popDoneDate} onChange={e => core.popDoneChanged(e.target.value)} />
+        <input type="date" id="popDoneDate" style={{ width: '100%' }} value={core.popDoneDate} onChange={e => core.popDoneChanged(e.target.value)}
+          onBlur={() => { core.popDoneCommit(); }} onKeyDown={e => { if ((e.key === 'Enter' || e.key === 'Escape') && !isComposing(e)) core.popDoneCommit(); }} />
+        {core.popMsg && core.popMsg.where === 'done' ? <div className="datewarn" id="popDoneWarn" role="status">{core.popMsg.text}</div> : null}
       </div>
       {/* Failures: each + records one failure ON the day in the box (today
           unless changed), − takes the latest one back. The list under the
@@ -64,7 +70,9 @@ export default function Pop() {
         <button className="sm" id="popFailPlus" title="Record another failure on the day below" onClick={() => core.popFail(1)}>+</button>
       </div>
       <div className="mini" style={{ marginTop: 5, marginBottom: 3 }}>Failed on</div>
-      <input type="date" id="popFailDate" style={{ width: '100%' }} value={core.popFailDate} onChange={e => core.popFailDateChanged(e.target.value)} />
+      <input type="date" id="popFailDate" style={{ width: '100%' }} value={core.popFailDate} onChange={e => core.popFailDateChanged(e.target.value)}
+        onBlur={() => { core.popFailCommit(); }} onKeyDown={e => { if ((e.key === 'Enter' || e.key === 'Escape') && !isComposing(e)) core.popFailCommit(); }} />
+      {core.popMsg && core.popMsg.where === 'fail' ? <div className="datewarn" id="popFailWarn" role="status">{core.popMsg.text}</div> : null}
       {fd.length ? (
         <div className="fdates" id="popFailDates">
           {fd.map((d, i) => (

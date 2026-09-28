@@ -7571,8 +7571,10 @@ screen:
   upchit), marks AND dates snapshotted together because a flight graded done
   moves Last Flown forward. Restoring a mark step saves itself, closes the
   grading pop-up, and **moves the Crew picker to that student** when it has
-  moved on (an undo you cannot see is a mystery). Keystrokes into ONE date
-  box within two seconds are one step. The buttons are greyed
+  moved on (an undo you cannot see is a mystery). A date box saves when it
+  is LEFT (blur, Enter; the pop-up's also on Escape), never per keystroke, so one
+  day typed is one step, and the same day retyped is none ([TRK-RETEST-NOTES] C5,
+  28 Sep 26); a number box's keystrokes within two seconds are one step. The buttons are greyed
   (`disabled`) with nothing to take back and their tooltip names the next
   step ("Undo the mark on ST-05 for STUDENT A (Ctrl+Z)"); Ctrl/⌘+Z undoes,
   Ctrl+Y and Ctrl/⌘+Shift+Z redo, bound only while the tab is up and never
@@ -7657,8 +7659,12 @@ screen:
     plus the students.
   - **Marking.** Last Flown is the latest day actually flown, worked out from
     the done flights; a correction or un-mark pulls it back; a day typed by
-    hand stands until a later flight (D123). A "Done on" box half-typed is
-    never a day. Deleting a ball says its marks go at ✓ Save changes, and they
+    hand stands until a later flight (D123). No date box saves a half-typed
+    day: the eight (Done on, Failed on, each failures-list row, Last Flown ×2,
+    Upchit, End date A / B) save when LEFT, and a half-typed day is put back
+    ([TRK-RETEST-NOTES] C5). A day after today is refused in Done on, Failed on
+    and both Last Flown boxes, with one line under the box saying why; Upchit
+    and the end dates take any day (D374, 28 Sep 26). Deleting a ball says its marks go at ✓ Save changes, and they
     do, in every course (D124), with the details typed on it (D130) and any
     student's "last worked" pointer to it; a deleted-but-unsaved code cannot be
     re-added until the save (+ Add and 📋 Edit events alike). An IMPORT never

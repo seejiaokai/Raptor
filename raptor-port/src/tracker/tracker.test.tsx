@@ -312,7 +312,9 @@ describe('dated failures and the day an event was done (core.js)', () => {
     await core.popGrade('dco')
     expect(core.doneDate(Z, 'ST-01')).toBe(today)
     core.openPop('ST-01', at)
-    await core.popDoneChanged('2026-08-10')
+    core.popDoneChanged('2026-08-10')
+    expect(core.doneDate(Z, 'ST-01'), 'typing alone re-dates nothing ([TRK-RETEST-NOTES] C5)').toBe(today)
+    await core.popDoneCommit()                     /* the box is left */
     expect(core.doneDate(Z, 'ST-01')).toBe('2026-08-10')
     expect(core.undoWhat()).toBe('the date on ST-01 for STUDENT Z')
     core.closePop()

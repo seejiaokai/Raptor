@@ -221,6 +221,11 @@ button:disabled:hover{border-color:var(--line)}
 .faillog .lullhd .failtot{margin-left:0}
 /* The pop-up's list of this student's failures on the event, each with its day. */
 .pop .fdates{margin-top:5px;display:flex;flex-wrap:wrap;gap:3px 8px;font-size:10.5px;color:var(--red-ink);line-height:1.4}
+/* A date box that saves when it is LEFT (DateBox.jsx, [TRK-RETEST-NOTES] C5) wraps its box
+   so the one line of refusal (a day after today, D374) can sit right under it; the wrapper
+   takes the box's place in every row, grid and card, so the box keeps its width. */
+.datebox{display:flex;flex-direction:column;gap:2px;min-width:0}
+.datewarn{font-size:11px;line-height:1.3;color:var(--red-ink)}
 .pop .fdates b{font-weight:600}
 /* Status badge: dark ink on the grade's own fill, matching the ring colours on
    the board so one vocabulary covers both surfaces. */
