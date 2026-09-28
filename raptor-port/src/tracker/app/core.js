@@ -2706,10 +2706,25 @@ export let tool = 'move'; let connectSrc = null, undoStack = [], pan = null;
    renaming students, courses and syllabi, event details, Import — each asks
    first or has its own editor, and a syllabus delete cannot be re-materialised
    from a snapshot of the marks. The disabled state on the bar's buttons reads
-   canUndo/canRedo, so every push notifies. */
+   canUndo/canRedo, so every push notifies.
+   A STUDENT'S PACE, END DATES AND LULL PERIODS ARE STEPS TOO (owner, 28 Sep 26 —
+   D372, "3 a"). They were outside the history, so Ctrl+Z right after changing the
+   pace quietly took back an OLDER mark (the walk's W2 N3). A mark step now
+   snapshots that student's pace and lull periods beside the marks and dates, and
+   restoring one saves all four. "Copy to…", which replaces the lull periods of
+   every student ticked, is ONE step — a GROUP entry { group: [steps], what } —
+   that takes them all back together and leaves the picker where it is. */
 function trimUndo() { if (undoStack.length > 60) undoStack.shift(); }
 function pushUndo() { undoStack.push({ syl: JSON.stringify(SYL), lay: JSON.stringify(layout) }); trimUndo(); redoStack = []; notify(); }
-function markSnap(s, what) { return { who: s, m: JSON.stringify(marks[s] || {}), d: dates[s] ? JSON.stringify(dates[s]) : null, what: what || null, t: Date.now() }; }
+function markSnap(s, what) {
+  return { who: s, m: JSON.stringify(marks[s] || {}), d: dates[s] ? JSON.stringify(dates[s]) : null,
+    p: pace[s] ? JSON.stringify(pace[s]) : null, l: lulls[s] ? JSON.stringify(lulls[s]) : null, what: what || null, t: Date.now() };
+}
+/* one step over several students ("Copy to…"): each one's snapshot, one name */
+function pushGroupUndo(ss, what) {
+  const g = ss.filter(Boolean); if (!g.length) return;
+  undoStack.push({ group: g.map(x => markSnap(x)), what, t: Date.now() }); trimUndo(); redoStack = []; notify();
+}
 /* `field` coalesces: the date and down-days boxes fire on every keystroke, and
    nine undo steps for one typed date would be absurd. Keystrokes into the SAME
    box within two seconds of the first are one step (the first snapshot is the
@@ -2723,15 +2738,25 @@ function pushMarkUndo(s, what, field) {
   undoStack.push(e); trimUndo(); redoStack = []; notify();
 }
 function applyHist(u) { SYL = JSON.parse(u.syl); byid = {}; SYL.forEach(e => byid[e.id] = e); layout = JSON.parse(u.lay); loadEdgeMeta(); selEdge = null; markDirty(); trkRestoring(() => saveLayout()); renderBoard(); renderSide(); }
-async function applyMarkHist(u) {
+/* put one student's snapshot back — marks, dates, pace and lull periods — and save
+   what it holds (a snapshot taken before D372 carries no pace or lulls: those stay) */
+async function restoreSnap(u) {
   const s = u.who;
   marks[s] = JSON.parse(u.m);
   if (u.d == null) delete dates[s]; else dates[s] = JSON.parse(u.d);
+  if ('p' in u) { if (u.p == null) delete pace[s]; else pace[s] = JSON.parse(u.p); }
+  if ('l' in u) { if (u.l == null) delete lulls[s]; else lulls[s] = JSON.parse(u.l); }
+  await trkRestoring(() => saveMarks(s)); if (dates[s]) await trkRestoring(() => saveDates(s));
+  if ('p' in u) await trkRestoring(() => savePace(s));
+  if ('l' in u) await trkRestoring(() => saveLulls(s));
+}
+async function applyMarkHist(u) {
+  const s = u.who;
   /* The pop-up's buttons describe a grade that just changed under it — or,
      when the picker is about to move, somebody else's. */
   if (pop) closePop();
   if (active !== s) { active = s; prefSet('lastCrew:' + course, s); refreshActive(); }
-  await trkRestoring(() => saveMarks(s)); if (dates[s]) await trkRestoring(() => saveDates(s));
+  await restoreSnap(u);
   /* keep the view: the person is looking at the ball they are taking back, as
      grading keeps it (R62) — a plain redraw threw the chart back to its top
      ([HUMAN-RETEST] W2-F6) */
@@ -2739,21 +2764,42 @@ async function applyMarkHist(u) {
 }
 /* The snapshot that a step's reverse pushes onto the other stack: the SAME
    kind as the entry it undoes, taken from the live state before it is applied. */
-function reverseOf(u) { return u.who != null ? markSnap(u.who, u.what) : { syl: JSON.stringify(SYL), lay: JSON.stringify(layout) }; }
+function reverseOf(u) {
+  if (u.group) return { group: u.group.map(g => markSnap(g.who, g.what)), what: u.what, t: Date.now() };
+  return u.who != null ? markSnap(u.who, u.what) : { syl: JSON.stringify(SYL), lay: JSON.stringify(layout) };
+}
+/* a group step, taken back or put again: every member still on the roster; the
+   picker stays on whoever is picked (the step belongs to several students) */
+async function applyGroupHist(u) {
+  if (pop) closePop();
+  for (const g of u.group) if (marks[g.who]) await restoreSnap(g);
+  renderSide();
+}
 /* A mark entry for a student who is gone (removed on another syllabus, or the
    roster reloaded from a file) is skipped, not applied — removeStudent drops
    them, this is the belt to its braces. */
-function liveEntry(stack) { while (stack.length && stack[stack.length - 1].who != null && !marks[stack[stack.length - 1].who]) stack.pop(); return stack[stack.length - 1] || null; }
+function liveEntry(stack) {
+  for (;;) {
+    const u = stack[stack.length - 1]; if (!u) return null;
+    if (u.group) { u.group = u.group.filter(g => marks[g.who]); if (u.group.length) return u; stack.pop(); continue; }
+    if (u.who != null && !marks[u.who]) { stack.pop(); continue; }
+    return u;
+  }
+}
 export function canUndo() { return !!liveEntry(undoStack); }
 export function canRedo() { return !!liveEntry(redoStack); }
 /* What the next press takes back, for the buttons' tooltips. */
-function whatOf(u) { return !u ? '' : u.who != null ? (u.what || 'a mark') + ' for ' + nameOf(u.who) : 'a chart edit'; }
+function whatOf(u) {
+  if (!u) return '';
+  if (u.group) return u.group.length === 1 ? (u.what || 'the lull periods') + ' for ' + nameOf(u.group[0].who) : (u.what || 'the lull periods') + ' for ' + u.group.length + ' students';
+  return u.who != null ? (u.what || 'a mark') + ' for ' + nameOf(u.who) : 'a chart edit';
+}
 export function undoWhat() { return whatOf(liveEntry(undoStack)); }
 export function redoWhat() { return whatOf(liveEntry(redoStack)); }
 async function step(from, to) {
   const u = liveEntry(from); if (!u) return false;
   from.pop(); to.push(reverseOf(u));
-  if (u.who != null) await applyMarkHist(u); else applyHist(u);
+  if (u.group) await applyGroupHist(u); else if (u.who != null) await applyMarkHist(u); else applyHist(u);
   notify(); return true;
 }
 export async function doUndo() { return step(undoStack, redoStack); }
@@ -3683,16 +3729,17 @@ export async function setDownDays(s, v) { if (((dates[s] && dates[s].downDays) |
 export async function setUpchit(s, v) { if (((dates[s] && dates[s].upchit) || '') === (v || '')) return; pushMarkUndo(s, 'the upchit date', 'upchit'); dates[s].upchit = v; stamp(dates[s]); await saveDates(s); renderSide(); }
 /* v is kept verbatim — an empty or half-typed box must stay as typed. epwOf()
    does the coercion for the arithmetic. */
-export async function setEpw(s, v) { pace[s] = { ...paceOf(s), epw: v }; await savePace(s); renderSide(); }
-export async function setTarget(s, v) { if ((paceOf(s).target || '') === (v || '')) return; pace[s] = { ...paceOf(s), target: v }; await savePace(s); renderSide(); }
-export async function setTarget2(s, v) { if ((paceOf(s).target2 || '') === (v || '')) return; pace[s] = { ...paceOf(s), target2: v }; await savePace(s); renderSide(); }
+export async function setEpw(s, v) { if (String(paceOf(s).epw ?? '') === String(v ?? '')) return; pushMarkUndo(s, 'the pace', 'epw'); pace[s] = { ...paceOf(s), epw: v }; await savePace(s); renderSide(); }
+export async function setTarget(s, v) { if ((paceOf(s).target || '') === (v || '')) return; pushMarkUndo(s, 'End date A', 'target'); pace[s] = { ...paceOf(s), target: v }; await savePace(s); renderSide(); }
+export async function setTarget2(s, v) { if ((paceOf(s).target2 || '') === (v || '')) return; pushMarkUndo(s, 'End date B', 'target2'); pace[s] = { ...paceOf(s), target2: v }; await savePace(s); renderSide(); }
 /* Asks first: adding a period takes two deliberate clicks, and removing one
-   took one stray tap on its ×, with no undo — lull periods are not in the
-   history ([HUMAN-RETEST] W2-F4). */
+   took one stray tap on its ×, with no undo ([HUMAN-RETEST] W2-F4). Since D372
+   (28 Sep 26) it IS a step ↶ takes back; the question stays. */
 export async function removeLull(s, i) {
   const l = (lulls[s] || [])[i]; if (!l) return;
   if (!await uiConfirm('Remove ' + nameOf(s) + '’s lull period ' + fmt(parseD(l.start)) + ' → ' + fmt(parseD(l.end)) + '?')) return;
   const now = lulls[s] || []; const at = now.indexOf(l); if (at < 0) return;
+  pushMarkUndo(s, 'the lull periods');
   now.splice(at, 1); await saveLulls(s); renderSide();
 }
 export function calPrev() { calView = new Date(calView.getFullYear(), calView.getMonth() - 1, 1); notify(); }
@@ -3718,6 +3765,7 @@ export async function lullDayClick(iso) {
   let a = lullPick.start, b = iso;
   if (parseD(b) < parseD(a)) { const t = a; a = b; b = t; }   /* clicked backwards */
   const s = lullPick.student;
+  pushMarkUndo(s, 'the lull periods');   /* a period set or changed is one step (D372) */
   lulls[s] = lulls[s] || [];
   if (lullPick.index >= 0) lulls[s][lullPick.index] = { start: a, end: b };
   else lulls[s].push({ start: a, end: b });
@@ -3745,6 +3793,7 @@ export async function applyLullCopy() {
   if (!lullCopy) return;
   const src = (lulls[lullCopy.from] || []).map(l => ({ start: l.start, end: l.end }));
   const picked = lullCopy.picked;
+  pushGroupUndo(picked, 'the lull periods');   /* ONE step for every student ticked (D372) */
   // [CMDL-FINISH] §4 (Class B, R3-002) — copying the lull periods to every picked
   // student is ONE gesture = ONE envelope, not one save per student.
   trkGesture(() => { for (const s of picked) { lulls[s] = src.map(l => ({ ...l })); saveLulls(s); } });
@@ -4285,6 +4334,9 @@ async function removeStudentNow(v) {
     /* Their undo steps go with them: an Undo that brought a removed student's
        mark back would put a mark on nobody's chart. */
     undoStack = undoStack.filter(e => e.who !== v); redoStack = redoStack.filter(e => e.who !== v);
+    /* ...and they leave any "Copy to…" step they were part of (liveEntry drops a step
+       left with nobody) */
+    for (const e of [...undoStack, ...redoStack]) if (e.group) e.group = e.group.filter(g => g.who !== v);
     saveRoster();
     /* Deleting the roster entry alone left their name and every mark sitting in
        storage — and on a shared tracker, in the file the whole team reads. Worse,

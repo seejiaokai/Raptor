@@ -7569,7 +7569,11 @@ screen:
   and writes the positions, as the edit did) and a **mark step** — one
   student's grade, failure count or a date box (Last Flown ×2, down days,
   upchit), marks AND dates snapshotted together because a flight graded done
-  moves Last Flown forward. Restoring a mark step saves itself, closes the
+  moves Last Flown forward. Since D372 (28 Sep 26) the pace, End date A / B and
+  the lull periods (set, changed, removed) are mark steps too — the snapshot holds
+  them beside the marks and dates — and “Copy to…” is ONE step over every
+  student ticked (“the lull periods for 3 students”), taken back together
+  without moving the picker. Restoring a mark step saves itself, closes the
   grading pop-up, and **moves the Crew picker to that student** when it has
   moved on (an undo you cannot see is a mystery). A date box saves when it
   is LEFT (blur, Enter; the pop-up's also on Escape), never per keystroke, so one

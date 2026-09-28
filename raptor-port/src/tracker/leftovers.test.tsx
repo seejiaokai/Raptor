@@ -396,3 +396,78 @@ describe('D370 — the Failures card leaves out an N.A. event’s failures, as t
     } finally { C.closePop(); await act(async () => { root.unmount() }); host.remove() }
   })
 })
+
+/* ---------- D372: a pace, end-date or lull change is an undo step ---------- */
+async function threeStudents() {
+  for (const nm of ['LO SEC', 'LO THIRD']) {
+    if (C.roster.length >= 3) break
+    const p = C.addStudent(); await until(() => C.dlg); C.dlgClose(nm); await p; await C.whenLoaded()
+  }
+  expect(C.roster.length, 'the premise: three students').toBeGreaterThanOrEqual(3)
+  return C.roster.map((r: any) => r.id)
+}
+const ctrlZ = () => C.handleUndoKey({ ctrlKey: true, metaKey: false, altKey: false, shiftKey: false, key: 'z', target: document.body, preventDefault() {} })
+
+describe('D372 — ↶ and Ctrl+Z take back a pace, an end date and a lull period', () => {
+  it('Ctrl+Z right after a pace change takes back the pace, not an older mark; keystrokes within two seconds are one step', async () => {
+    const s = await pickStudent()
+    const ev = await freshEvent(s, 3)
+    C.openPop(ev, { clientX: 5, clientY: 5 }); await C.popGrade('dco')
+    const was = C.paceOf(s).epw
+    await C.setEpw(s, '3'); await C.setEpw(s, '3.5')
+    expect(C.undoWhat(), 'the ↶ tooltip names the pace').toBe('the pace for ' + C.nameOf(s))
+    ctrlZ(); await tick(); await tick()
+    expect(C.paceOf(s).epw, 'the pace goes back, both keystrokes as one').toBe(was)
+    expect(C.gradeOf(s, ev), 'the older mark is untouched').toBe('dco')
+    await C.doRedo()
+    expect(C.paceOf(s).epw, '↷ puts it again').toBe('3.5')
+  })
+
+  it('End date A and End date B are each a step', async () => {
+    const s = await pickStudent()
+    const a0 = C.paceOf(s).target, b0 = C.paceOf(s).target2
+    await C.setTarget(s, '2027-01-15')
+    await C.setTarget2(s, '2027-02-20')
+    expect(C.undoWhat()).toBe('End date B for ' + C.nameOf(s))
+    await C.doUndo()
+    expect(C.paceOf(s).target2 || null).toBe(b0 || null)
+    expect(C.paceOf(s).target).toBe('2027-01-15')
+    await C.doUndo()
+    expect(C.paceOf(s).target || null).toBe(a0 || null)
+  })
+
+  it('a lull period set, changed and removed: each a step, each taken back', async () => {
+    const s = await pickStudent()
+    const n0 = (C.lulls[s] || []).length
+    C.openLullPicker(s); await C.lullDayClick('2026-10-05'); await C.lullDayClick('2026-10-09')
+    expect((C.lulls[s] || []).length, 'set').toBe(n0 + 1)
+    expect(C.undoWhat()).toBe('the lull periods for ' + C.nameOf(s))
+    await C.doUndo()
+    expect((C.lulls[s] || []).length, 'set, taken back').toBe(n0)
+    await C.doRedo()
+    const at = C.lulls[s].findIndex((l: any) => l.start === '2026-10-05')
+    C.openLullPicker(s, at); await C.lullDayClick('2026-10-06'); await C.lullDayClick('2026-10-12')
+    await C.doUndo()
+    expect(C.lulls[s].some((l: any) => l.start === '2026-10-05' && l.end === '2026-10-09'), 'changed, taken back').toBe(true)
+    const rm = C.removeLull(s, at); await until(() => C.dlg); C.dlgClose(true); await rm
+    expect(C.lulls[s].some((l: any) => l.start === '2026-10-05'), 'removed (it asked first)').toBe(false)
+    await C.doUndo()
+    expect(C.lulls[s].some((l: any) => l.start === '2026-10-05'), 'removed, taken back').toBe(true)
+  })
+
+  it('Copy to… is ONE step for every student ticked: ↶ takes all of them back, ↷ puts all of them again', async () => {
+    const [a, b, c] = await threeStudents()
+    C.setActive(a)
+    C.openLullPicker(a); await C.lullDayClick('2026-11-02'); await C.lullDayClick('2026-11-06')
+    const bWas = JSON.stringify(C.lulls[b] || []), cWas = JSON.stringify(C.lulls[c] || [])
+    C.openLullCopy(a); C.toggleLullCopy(b, true); C.toggleLullCopy(c, true); await C.applyLullCopy()
+    expect(JSON.stringify(C.lulls[b])).toBe(JSON.stringify(C.lulls[a]))
+    expect(C.undoWhat(), 'one step, named for both').toBe('the lull periods for 2 students')
+    await C.doUndo()
+    expect(JSON.stringify(C.lulls[b] || []), 'b back').toBe(bWas)
+    expect(JSON.stringify(C.lulls[c] || []), 'c back').toBe(cWas)
+    expect(C.active, 'the picker stays on the student copying').toBe(a)
+    await C.doRedo()
+    expect(JSON.stringify(C.lulls[c])).toBe(JSON.stringify(C.lulls[a]))
+  })
+})
