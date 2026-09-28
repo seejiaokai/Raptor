@@ -6524,13 +6524,19 @@ button.sbi-ty.inpedit:hover{text-decoration:none;filter:brightness(1.3)}
    · a SEAT (and the board's empty seat, `.sb-slot`): 8px with a 2px ring of the page colour, just OUTSIDE its bottom-right
      corner, clear of the OG / AL tags at the top right. `::before` — a seat's `::after` is those tags; a drag CLONE keeps
      its `::before` for the lift veil (.tdghost / .dragimg), so never there.
-   · EVERY OTHER DETAIL — a time, a label, a remark, a store, the area, the in-times, an Unavailable row, a typed box:
-     drawn INSIDE its bottom-right corner as a background image, over the cell's own colour. Not a pseudo-element: on a
-     published day a text cell's `::after` IS its AL badge (Fable's plan read, F1 — `.areacell[data-alc]::after` …), a
-     typed box has none, and a week cell is a contenteditable host; a background image touches none of that and adds no
-     positioning. */
+   · A TEXT DETAIL WITH TEXT IN IT (a time, a label, a remark, a store chip, the area — a span): just OUTSIDE its
+     bottom-right corner too, by its `::before`. Drawn inside the corner, as first built, it sat on the text's last
+     character ("05:5●", "1300-14●0" — the walk's pictures, both widths). Its `::after` is never used: on a published
+     day that IS its AL badge (Fable's plan read, F1); its `::before` is free while it has text — every placeholder there
+     is `:empty`-only ("—", "Config…"). Such a cell already becomes a positioned box when it wears an AL badge.
+   · EVERYTHING ELSE — a typed box (input, textarea, the wave-title select: no pseudo-element possible, and padding
+     round the text), a whole row (an Unavailable row), an EMPTY detail (no text to cover): INSIDE its bottom-right
+     corner as a background image, over the cell's own colour. */
 .seat[data-histdot]:not(.tdghost):not(.dragimg),.sb-slot[data-histdot]{position:relative}
 .seat[data-histdot]:not(.tdghost):not(.dragimg)::before,.sb-slot[data-histdot]::before{content:'';position:absolute;right:-4px;bottom:-4px;
   width:8px;height:8px;border-radius:50%;background:#E5C24A;box-shadow:0 0 0 2px var(--bg);z-index:5;pointer-events:none}
 [data-histdot]:not(.seat):not(.sb-slot){background-image:radial-gradient(circle,#E5C24A 0 3.5px,transparent 4px);
   background-repeat:no-repeat;background-position:right 2px bottom 2px;background-size:10px 10px}
+:is(span,b,i)[data-histdot]:not(.seat):not(:empty){position:relative;background-image:none}
+:is(span,b,i)[data-histdot]:not(.seat):not(:empty)::before{content:'';position:absolute;right:-6px;bottom:-3px;width:7px;height:7px;
+  border-radius:50%;background:#E5C24A;box-shadow:0 0 0 2px var(--bg);z-index:5;pointer-events:none}

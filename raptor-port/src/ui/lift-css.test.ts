@@ -443,8 +443,12 @@ describe('the ghosts wear the same recipe — inset accent, neutral depth', () =
     for (const cls of ['.tdghost', '.dragimg', '.ic-ghost'])
       expect(rulesFor(`${cls}.lift::after`).length, `${cls} leaves ::after to the badge that already owns it`).toBe(0)
     /* …and nothing else claims the ::before the veil took */
-    const claimed = RULES.flatMap(r => r.sels).filter(s => s.endsWith('::before') && /\.(puck|seat)\b/.test(s))
-    expect(claimed, 'nothing else gives a seat or a puck a ::before').toEqual([])
+    /* a selector that names a seat only to EXCLUDE it (`:not(.seat)`) claims nothing of a seat's */
+    const claimed = RULES.flatMap(r => r.sels).filter(s => s.endsWith('::before') && /\.(puck|seat)\b/.test(s.replace(/:not\([^)]*\)/g, '')))
+    /* the one other claim, since [HIST-PHONE-HIDE] (D345): the gold history dot on a SEAT — never on a ghost, so the veil
+       still owns a ghost's ::before outright (a puck, what the ghosts clone today, has none) */
+    expect(claimed.every(s => /^\.seat\[data-histdot\]:not\(\.tdghost\):not\(\.dragimg\)::before$/.test(s)),
+      `nothing else gives a seat or a puck a ::before — only the history dot, kept off the ghosts: ${JSON.stringify(claimed)}`).toBe(true)
     /* the chip ghost needs neither: no opaque child, and its own state rules are
        ordinary pairs `.ic-ghost.lift` already out-ranks from later in the file */
     expect(rulesFor('.ic-ghost.lift::before').length, 'the chip ghost paints its ring on itself').toBe(0)

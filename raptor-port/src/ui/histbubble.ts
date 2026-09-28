@@ -344,10 +344,12 @@ function place(b: HTMLDivElement, el: HTMLElement) {
 let DOTS_UP = false
 export function refreshHistDots(root: ParentNode | null | undefined) {
   if (!root) return
+  /* History off takes EVERY dot down at once, on every surface — the board, shut, does not repaint, and its cells kept
+     theirs until it opened again (the walk, H18) */
   if (!HISTMODE) {
     if (!DOTS_UP) return
-    root.querySelectorAll('[data-histdot]').forEach(el => el.removeAttribute('data-histdot'))
-    DOTS_UP = !!document.querySelector('[data-histdot]')
+    document.querySelectorAll('[data-histdot]').forEach(el => el.removeAttribute('data-histdot'))
+    DOTS_UP = false
     return
   }
   const set = elogKeySet()

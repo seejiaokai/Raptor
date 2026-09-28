@@ -452,6 +452,15 @@ describe('History on a phone — Hide, Show and the hint (D339, D344, D345)', ()
     expect(view.HISTMODE, 'and History is off').toBe(false)
   })
 
+  it('pressing Hide never starts a drag of the panel (it is not the grip)', async () => {
+    await editedSeat()
+    phone = true; asPhone(true)
+    await openAll()
+    const win = $('.chgwin')!
+    await act(async () => { $('.chgwin .win-hide')!.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, clientX: 5, clientY: 5 })) })
+    expect(win.style.width, 'a press on Hide wrote no drag box onto the panel').toBe('')
+  })
+
   it('on a desktop: no Hide and no hint', async () => {
     await openAll()
     expect($('.chgwin .win-hide')).toBeFalsy()

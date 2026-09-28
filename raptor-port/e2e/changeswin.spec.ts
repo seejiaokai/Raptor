@@ -171,10 +171,11 @@ for (const [label, size] of [['desktop', DESK], ['phone', PHONE]] as const) {
       expect([d.content, d.bg, d.pos, d.w, d.right, d.bottom], 'a gold 8px dot just outside its bottom-right corner').toEqual(['""', GOLD, 'absolute', '8px', '-4px', '-4px'])
       /* its OG tag still paints at the top right (D172) — the two never share a corner */
       expect(await page.$eval('#eWeek [data-slot="1.0.0.0.p"]', e => getComputedStyle(e, '::after').content)).toBe('"OG"')
-      /* a typed detail: the dot inside its corner, as a background image */
+      /* a text detail with text: the dot just OUTSIDE its bottom-right corner too — inside it sat on the last character */
       const t = page.locator('#eWeek [data-txt="ap:1.0.str"]')
       await expect(t).toHaveAttribute('data-histdot', '')
-      expect(await t.evaluate(e => getComputedStyle(e).backgroundImage)).toContain('radial-gradient')
+      expect(await t.evaluate(e => { const b = getComputedStyle(e, '::before'); return [b.backgroundColor, b.position, getComputedStyle(e).backgroundImage] }))
+        .toEqual([GOLD, 'absolute', 'none'])
       /* an untouched seat wears none */
       expect(await page.locator('#eWeek [data-slot="1.0.1.0.p"][data-histdot]').count()).toBe(0)
       await page.click('.chgwin .win-x')
@@ -197,10 +198,10 @@ for (const [label, size] of [['desktop', DESK], ['phone', PHONE]] as const) {
       await expect(page.locator('.chgwin:not([hidden])')).toBeVisible()
       const cell = page.locator('#eWeek .day[data-day="0"] [data-txt="fr:0.0.0.0"]').first()
       await expect(cell).toHaveAttribute('data-histdot', '')
-      const both = await cell.evaluate(e => ({ al: getComputedStyle(e, '::after').content, img: getComputedStyle(e).backgroundImage, alc: e.getAttribute('data-alc') }))
+      const both = await cell.evaluate(e => ({ al: getComputedStyle(e, '::after').content, dot: getComputedStyle(e, '::before').backgroundColor, alc: e.getAttribute('data-alc') }))
       expect(both.alc, 'the change went out as AL1').toBe('1')
       expect(both.al, 'its AL tag still paints').toContain('AL')
-      expect(both.img, 'and the dot paints beside it').toContain('radial-gradient')
+      expect(both.dot, 'and the dot paints beside it').toBe(GOLD)
     })
   })
 }
