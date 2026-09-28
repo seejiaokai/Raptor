@@ -4031,58 +4031,13 @@ export function clearRaptorCell(personId: string, date: string): boolean {
   })
 }
 
-/** What a shift did, or why it did nothing. `window` covers every "not an
- *  editable day" refusal: outside the stage/window this role may write, off
- *  the war's own calendar, or not a day leave may be dated for this person. */
-export type ShiftResult = 'shifted' | 'occupied' | 'raptor' | 'nothing' | 'window'
-
-/**
- * Move a bid to a different date — lands PENDING (a move is a proposal), and
- * keeps the date it came from once bidding is closed (the dotted mark, owner
- * 27 Aug 26). Acts on the request the day SHOWS; an approved leave shown there
- * moves through the absence door instead. Never overwrites: a landing that
- * cannot share the day refuses.
+/* [LW-SPARE-MOVE-DOORS] (28 Sep 26): `shiftBid` (the old single-bid mover — it read the day's TOP record) and
+   `moveAbsenceById` (the day's list's old date-box move) are RETIRED. Since [LW-MOVE-STANDARD] every move goes through
+   ONE door, `moveRecords` below (the records it picked); two more doors that read differently would drift. What their
+   tests pinned (the dotted mark's original origin on a chain of moves, the locked-week refusal, a wrong id moving
+   nothing, a retyped medical not moved, no notify on a refusal, the trail across a reload, one change line) now runs
+   through `moveRecords`.
  */
-export function shiftBid(personId: string, from: string, to: string): ShiftResult {
-  const m = mainAt(personId, from)
-  if (!m) return 'nothing'
-  if (m.kind === 'absence') {
-    if (!warEditable(personId, from)) return 'raptor'
-    const r = moveCells([{ personId, date: from }], dayDiff(from, to))
-    return r === 'moved' ? 'shifted' : r.reason === 'occupied' ? 'occupied' : r.reason === 'raptor' ? 'raptor' : r.reason === 'window' ? 'window' : 'nothing'
-  }
-  if (m.kind !== 'request' || !isBiddable(m.code)) return 'nothing'
-  if (!canEditRow(state.role, state.viewer, personId)) return 'nothing'
-  if (!canEditCell(state.period, state.role, from)) return 'window'
-  if (!canEditCell(state.period, state.role, to)) return 'window'
-  if (!state.period.days.some((d: any) => d.date === to)) return 'window'
-  if (from === to) return 'occupied'
-  const src = listAt(personId, from).find((r): r is RequestRec => r.kind === 'request' && r.id === m.id)
-  if (!src) return 'nothing'
-  const c: Contrib = { id: src.id, kind: 'request', code: m.code, win: requestWin(src.code), state: 'pending' }
-  if (occupiedFor(c, personId, to) || liveRequestsOn(listAt(personId, to), portionOfCode(src.code)).length) return 'occupied'
-  const tracked = biddingClosed(state.period.stage)
-  const landed: RequestRec = {
-    id: src.id, kind: 'request', code: src.code, state: 'pending',
-    ...(tracked ? { shiftedFrom: src.shiftedFrom ?? from } : {}),
-    ...(src.carried ? { carried: src.carried } : {}),
-  }
-  gesture('lw.edit', () => {
-    const wasQuiet = quiet
-    quiet = true
-    try {
-      putList(personId, from, listAt(personId, from).filter(r => r !== src))
-      putList(personId, to, [...listAt(personId, to), landed])
-    } finally { quiet = wasQuiet }
-    if (!quiet) persistNotify()
-  })
-  return 'shifted'
-}
-
-function dayDiff(a: string, b: string): number {
-  const t = (s: string) => Date.UTC(+s.slice(0, 4), +s.slice(5, 7) - 1, +s.slice(8, 10))
-  return Math.round((t(b) - t(a)) / 86400000)
-}
 
 /* ---- A MOVE CARRIES THE RECORDS IT PICKED (owner, D265 / D266 / D333, 27 Sep 26 — [LW-MOVE-STANDARD]) ----------------
 
@@ -4096,29 +4051,6 @@ function dayDiff(a: string, b: string): number {
    (the banner says what stays). The landing rules are the old ones (D265 (1)): refused whole, with where, when a moving
    record cannot land. Scenarios: docs/superpowers/specs/2026-09-27-lw-move-standard-scenarios-fable.md. */
 
-/** Move ONE war-approved leave, by its Input id, to another date — the tap
- *  list's per-record Move (design §23.3; Codex AS4-006): on a day holding
- *  several records the grid's drag cannot tell which one to take, so the list
- *  moves exactly the one tapped. Same law as a drag: an admin at a deciding
- *  stage, both days in the war, the landing free (the door's own check), the
- *  dotted mark once bidding is closed. Null when moved, else why not. */
-export function moveAbsenceById(personId: string, date: string, iid: string, to: string): string | null {
-  if (state.role !== 'admin' || !canDecide(state.period.stage, state.role)) return 'Only an admin can move approved leave now'
-  if (!DOOR) return 'Not available'
-  const delta = Math.round((Date.parse(`${to}T00:00:00Z`) - Date.parse(`${date}T00:00:00Z`)) / 86_400_000)
-  if (!delta) return 'Pick a different day'
-  const dayset = new Set(state.period.days.map((d: any) => d.date))
-  if (!dayset.has(to)) return 'That day is not in this war'
-  const item = [{ personId, date, iid }]
-  const tracked = biddingClosed(state.period.stage)
-  const why = (p: { reason: string; at?: string }) => p.reason === 'occupied' ? `${p.at ?? to} already has something on that time` : p.reason === 'window' ? 'That day is outside the war or on a locked week' : 'That leave was filed on the Inputs page — change it there'
-  const p = DOOR.moveApproved(item, delta, tracked, true)
-  if (p) return why(p)
-  /* report what the COMMAND did, not what the preflight hoped (AS4-R2-001) */
-  const done = gesture('lw.edit', () => DOOR!.moveApproved(item, delta, tracked, false))
-  if (done === undefined) return 'Couldn’t move that — the week is locked, or something else refused it'
-  return done ? why(done) : null
-}
 
 /** One record a move carries: a request (the war's own) or a leave the war approved (an Input, by its iid). */
 export interface MoveRec { personId: string; date: string; id: string; kind: 'request' | 'absence' }

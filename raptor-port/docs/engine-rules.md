@@ -3040,7 +3040,7 @@ merge and had left it wholly ungated: a member could self-approve through
 the store). A medical code is refused from a member in `setCell` itself (the
 sheets only ever offered it to an admin; the store now agrees), and the batch
 predicates carry the same term so the refusal lands in the COUNT.
-`moveCells` is `shiftBid` for a whole selection: role-gated by `canEditCell`,
+`moveCells` is `shiftBid` *(retired 28 Sep 26 — every move goes through `moveRecords`, [LW-SPARE-MOVE-DOORS])* for a whole selection: role-gated by `canEditCell`,
 ATOMIC (every source and every landing day validated before any write — a
 half-moved block is worse than a refused one, and there is no undo), landing
 `{state:'pending', source:'bid', shiftedFrom}` per cell; a landing that is

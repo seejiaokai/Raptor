@@ -587,7 +587,7 @@ check the other):
 
 - **The Leave War batch writers vs their single-cell parents** (27 Aug 26,
   drag-select). `setCells`/`clearCells`/`setBidStates`/`moveCells` MUST call
-  through the exact per-cell guards `setCell`/`setBidState`/`shiftBid` use
+  through the exact per-cell guards `setCell`/`setBidState`/`shiftBid` *(retired 28 Sep 26 — every move goes through `moveRecords`, [LW-SPARE-MOVE-DOORS])* use
   (`raptorOwns`, `canEditCell`, `isBiddable`, `inSquadron`) — a batch API that
   grew its OWN copy of "may this cell be written" is the seam that would let a
   drag write where a click could not. They also all batch to one save-notify

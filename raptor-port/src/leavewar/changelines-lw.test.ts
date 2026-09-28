@@ -7,7 +7,7 @@ import { INPUTS } from '../engine/inputs'
 import { ELOG, elogClear, rowTouches } from '../engine/editlog'
 import { initStore as raptorInitStore } from '../state/store'
 import { projectPeople } from './state/raptorRoster'
-import { getState, initStore as lwInitStore, setCell, setBidState, setPeople, setRole, advanceStage, shiftBid, setManualCredit, clearCells, grantOil, changeAbsenceById, moveAbsenceById, moveCells } from './state/store'
+import { getState, initStore as lwInitStore, setCell, setBidState, setPeople, setRole, advanceStage, setManualCredit, clearCells, grantOil, changeAbsenceById, moveCells, moveRecords } from './state/store'
 import { resetSession, writeInputs } from '../state/store'
 import { signIn, sessionFor } from '../state/accounts'
 import { inpId } from '../engine/inputs'
@@ -15,6 +15,18 @@ import { deletePerson } from '../state/person-delete'
 import { memoryBackend } from './state/storage'
 import { wireLeaveWarSync, postOut, undoPostOut, runPoOutcomes } from './sync'
 import { PEOPLE } from '../engine/people'
+/* [LW-SPARE-MOVE-DOORS] (28 Sep 26): the old one-bid mover `shiftBid` is RETIRED — every move goes through the one door,
+   `moveRecords`, which the grid, the one-day sheet and the day's list all use. These tests keep what they pinned by asking
+   that door the way a drag of the day does (`moveCells`, the store's kept cell adapter over it) and answering in the old
+   words ('shifted' / the refusal's reason). */
+const bidGap = (a: string, b: string) => Math.round((Date.UTC(+b.slice(0, 4), +b.slice(5, 7) - 1, +b.slice(8, 10)) - Date.UTC(+a.slice(0, 4), +a.slice(5, 7) - 1, +a.slice(8, 10))) / 86400000)
+const moveBidVia = (pid: string, from: string, to: string) => { const r = moveCells([{ personId: pid, date: from }], bidGap(from, to)); return r === 'moved' ? 'shifted' : r.reason }
+/* [LW-SPARE-MOVE-DOORS] (28 Sep 26): `moveAbsenceById` (the day's list's old date-box move) is RETIRED — the day's list
+   moves one record through the one door, `moveRecords` (D266). These tests keep what they pinned by moving that one leave,
+   by its id, through that door: null when it moved, else the refusal's reason. */
+const leaveGap = (a: string, b: string) => Math.round((Date.UTC(+b.slice(0, 4), +b.slice(5, 7) - 1, +b.slice(8, 10)) - Date.UTC(+a.slice(0, 4), +a.slice(5, 7) - 1, +a.slice(8, 10))) / 86400000)
+const moveLeaveVia = (pid: string, date: string, iid: string, to: string): string | null => { const r = moveRecords([{ personId: pid, date, id: iid, kind: 'absence' }], leaveGap(date, to)); return r === 'moved' ? null : r.reason }
+
 
 const ISNAP = JSON.stringify(INPUTS)
 let pid = ''
@@ -58,7 +70,7 @@ describe('a decision on the Leave War', () => {
   })
 
   it('a bid moved to another day: ONE line, on the day it left and the day it reached', () => {
-    const r = shiftBid(pid, '2026-02-02', '2026-02-09')
+    const r = moveBidVia(pid, '2026-02-02', '2026-02-09')
     expect(r).toBe('shifted')
     expect(war()).toHaveLength(1)
     expect(war()[0]!.lbl).toContain('moved from')
@@ -148,7 +160,7 @@ describe('an approved leave changed on the Leave War', () => {
   })
   it('moved to another day: ONE line, "moved", on the day it left and the day it reached', () => {
     const iid = approvedIid()
-    expect(moveAbsenceById(pid, '2026-02-02', iid, '2026-02-03')).toBeNull()
+    expect(moveLeaveVia(pid, '2026-02-02', iid, '2026-02-03')).toBeNull()
     const rows = war()
     expect(rows.map(r => r.lbl), JSON.stringify(rows.map(r => r.lbl))).toHaveLength(1)
     expect(rows[0]!.lbl).toMatch(/moved/)
@@ -222,7 +234,7 @@ describe('one day of a three-day approved leave', () => {
   })
   it('the middle day moved: ONE line, "moved", from that day to its new day', () => {
     const iid = threeDays()
-    expect(moveAbsenceById(pid, '2026-02-03', iid, '2026-02-09')).toBeNull()
+    expect(moveLeaveVia(pid, '2026-02-03', iid, '2026-02-09')).toBeNull()
     const rows = war()
     expect(rows.map(r => r.lbl), JSON.stringify(rows.map(r => r.lbl))).toHaveLength(1)
     expect(rows[0]!.lbl).toMatch(/moved/)
@@ -305,7 +317,7 @@ describe('Astra R3', () => {
   }
   it('R3-01/02: the middle day moved — the line points at the record on its new day, and keeps the old one too', () => {
     const iid = threeDays()
-    expect(moveAbsenceById(pid, '2026-02-03', iid, '2026-02-09')).toBeNull()
+    expect(moveLeaveVia(pid, '2026-02-03', iid, '2026-02-09')).toBeNull()
     const row: any = war()[0]
     const now: any = INPUTS.find((x: any) => String(x.iid) === row.iid)
     expect(now, 'the line names a record that exists').toBeTruthy()

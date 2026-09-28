@@ -17,11 +17,18 @@ import { commandStream } from '../command'
 import { balanceOf, figureParts, FIGURES } from './engine'
 import { projectPeople } from './state/raptorRoster'
 import {
-  advanceStage, clearCells, getState, initStore as lwInitStore, rawState, setBidState, setCell, setPeople, setRole, shiftBid,
+  advanceStage, clearCells, getState, initStore as lwInitStore, rawState, setBidState, setCell, setPeople, setRole, moveCells,
 } from './state/store'
 import { memoryBackend } from './state/storage'
 import { getClashes, leaveInputAt, syncAbsences } from './sync'
 import { commitInputEdit, draftOf, removeInput } from '../ui/inputedit'
+/* [LW-SPARE-MOVE-DOORS] (28 Sep 26): the old one-bid mover `shiftBid` is RETIRED — every move goes through the one door,
+   `moveRecords`, which the grid, the one-day sheet and the day's list all use. These tests keep what they pinned by asking
+   that door the way a drag of the day does (`moveCells`, the store's kept cell adapter over it) and answering in the old
+   words ('shifted' / the refusal's reason). */
+const bidGap = (a: string, b: string) => Math.round((Date.UTC(+b.slice(0, 4), +b.slice(5, 7) - 1, +b.slice(8, 10)) - Date.UTC(+a.slice(0, 4), +a.slice(5, 7) - 1, +a.slice(8, 10))) / 86400000)
+const moveBidVia = (pid: string, from: string, to: string) => { const r = moveCells([{ personId: pid, date: from }], bidGap(from, to)); return r === 'moved' ? 'shifted' : r.reason }
+
 
 const ISNAP = JSON.stringify(INPUTS)
 
@@ -134,7 +141,7 @@ describe('changing approved leave on the war (the absence door)', () => {
   it('moving approved leave after bidding closes keeps it approved and marks where it came from', () => {
     approve('ammo', ['2026-02-02'])
     setRole('admin')
-    expect(shiftBid('ammo', '2026-02-02', '2026-02-09')).toBe('shifted')
+    expect(moveBidVia('ammo', '2026-02-02', '2026-02-09')).toBe('shifted')
     expect(getState().grid.ammo?.['2026-02-02']).toBeUndefined()
     expect(getState().states.ammo['2026-02-09']).toEqual({ state: 'approved', source: 'bid', shiftedFrom: '2026-02-02' })
   })

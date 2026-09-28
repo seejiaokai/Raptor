@@ -5595,7 +5595,7 @@ BidPicker's look and vocabulary, not instead of it.
   freely, so such a move is ordinary tidying, not a management shift. This is
   gated in TWO places behind one `biddingClosed(stage)` body (engine/stages.ts,
   `stage === 'closed' || 'published'`): the store RECORDS `shiftedFrom` only on a
-  closed/published move (`moveCells`/`shiftBid`) — an open-bidding move stores a
+  closed/published move (`moveCells`/`shiftBid` *(retired 28 Sep 26 — every move goes through `moveRecords`, [LW-SPARE-MOVE-DOORS])*) — an open-bidding move stores a
   clean `{state:'pending', source:'bid'}` and clears any stale trail — and
   `Matrix.tsx`'s `movedShown` gates the DISPLAY. The earlier build gated only the
   display, so a bid shuffled while open sprouted the stripe the moment the war

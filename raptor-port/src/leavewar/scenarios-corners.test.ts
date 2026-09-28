@@ -15,15 +15,19 @@ import { commitSetDayApproved, commitPublishALDay } from '../state/sched-commit'
 import { setSession, setMe } from '../state/auth'
 import { projectPeople } from './state/raptorRoster'
 import {
-  ackReplacement, advanceStage, changeAbsenceById, getState, initStore as lwInitStore, lwHistInit,
-  moveAbsenceById, moveCells, rawState, setBidState, setBidStates, setCell, setCellRange, setPeople,
-  setRole, setViewer,
+  ackReplacement, advanceStage, changeAbsenceById, getState, initStore as lwInitStore, lwHistInit, moveCells, rawState, setBidState, setBidStates, setCell, setCellRange, setPeople, setRole, setViewer, moveRecords,
 } from './state/store'
 import { memoryBackend } from './state/storage'
 import { runOilPass, wireLeaveWarSync } from './sync'
 import { globalUndo } from '../undo'
 import { _resetTimeline } from '../undo/timeline'
 import { installGlobalUndo } from '../state/undo-wire'
+/* [LW-SPARE-MOVE-DOORS] (28 Sep 26): `moveAbsenceById` (the day's list's old date-box move) is RETIRED — the day's list
+   moves one record through the one door, `moveRecords` (D266). These tests keep what they pinned by moving that one leave,
+   by its id, through that door: null when it moved, else the refusal's reason. */
+const leaveGap = (a: string, b: string) => Math.round((Date.UTC(+b.slice(0, 4), +b.slice(5, 7) - 1, +b.slice(8, 10)) - Date.UTC(+a.slice(0, 4), +a.slice(5, 7) - 1, +a.slice(8, 10))) / 86400000)
+const moveLeaveVia = (pid: string, date: string, iid: string, to: string): string | null => { const r = moveRecords([{ personId: pid, date, id: iid, kind: 'absence' }], leaveGap(date, to)); return r === 'moved' ? null : r.reason }
+
 
 const ISNAP = JSON.stringify(INPUTS)
 const DSNAP = JSON.stringify(DAYS)
@@ -92,7 +96,7 @@ describe('two wars', () => {
     setCell('ammo', '2026-12-30', 'LL'); advanceStage()
     setBidState('ammo', '2026-12-30', 'approved')
     const iid = String(lwRows('ammo')[0].iid)
-    const r = moveAbsenceById('ammo', '2026-12-30', iid, '2027-01-05')
+    const r = moveLeaveVia('ammo', '2026-12-30', iid, '2027-01-05')
     expect(typeof r).toBe('string')
     expect(lwRows('ammo')[0].date).toBe('Dec 30')
   })
