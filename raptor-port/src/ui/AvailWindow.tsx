@@ -23,7 +23,7 @@
    scheduler sees the overlap and judges it. The availability window stays
    narrow precisely because the app's job here is to SURFACE the clash, not to
    remove him from the list. Do not let this drift into filtering him out. */
-import { useFloatWin, frontWin, raiseWin } from './floatwin'
+import { useFloatWin, frontWin, raiseWin, BOARD_BAR } from './floatwin'
 import { notify } from '../state/store'
 import { PEOPLE } from '../engine/people'
 import { seatShown, byCrewShown } from '../engine/faceattrs'
@@ -85,6 +85,7 @@ export function AvailWindow() {
   const open = AVAILWIN
   const { el, onBarDown, onBarMove, onBarUp } = useFloatWin({
     open: !!open, getBox: () => AVAILWIN_BOX, setBox: setAvailWinBox, deps: [open && open.di, open && open.item],
+    ...BOARD_BAR,                           // never over the board's preview bar ([AVAILWIN-PREVIEW-BAR])
   })
 
   if (!open) return <div className="availwin" hidden />

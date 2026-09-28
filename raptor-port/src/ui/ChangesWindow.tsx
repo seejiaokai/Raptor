@@ -20,7 +20,7 @@
    — one group per item, the latest-changed on top, every line item-first; every group open until folded. On a phone
    "Hide ▾" beside ✕ sends the panel to the slim bar ("History on · N changes" · "Show ▴"), and where History draws its
    dots the panel says so in his words: "History on: Tap a gold dot on the schedule". */
-import { useFloatWin, phoneLayout, frontWin, raiseWin } from './floatwin'
+import { useFloatWin, phoneLayout, frontWin, raiseWin, BOARD_BAR } from './floatwin'
 import { useVersion } from './useStore'
 import { HOOKS } from '../engine/hooks'
 import { notify } from '../state/store'
@@ -135,6 +135,7 @@ export function ChangesWindow() {
     open: !!w, getBox: () => (CHGWIN && CHGWIN.bar && phoneLayout() ? null : CHGWIN_BOX), setBox: setChgWinBox,
     deps: [w ? 'open' : 'shut'],
     closeSel: '.win-x, .win-hide',            // a press on Hide never starts a drag of the panel
+    ...BOARD_BAR,                             // never over the board's preview bar ([AVAILWIN-PREVIEW-BAR])
   })
   if (!w || !isMember()) return <div className="chgwin" hidden />
 
