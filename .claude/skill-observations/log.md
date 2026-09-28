@@ -1246,7 +1246,7 @@ resolved statuses always carry their resolution date
 
 **Principle:** A restructuring that must not change meaning is safest as pure insertion, proved mechanically; judgement goes into WHERE, and the proof covers everything else.
 
-### Observation 338: A break test on an uncommitted file must be undone from a backup, never by "git checkout -- <file>"
+### Observation 341: A break test on an uncommitted file must be undone from a backup, never by "git checkout -- <file>"
 
 **Status:** OPEN
 **Date:** 2026-09-28
@@ -1305,3 +1305,18 @@ resolved statuses always carry their resolution date
 **Suggested improvement:** When any call in a batch is refused or errors, treat the whole batch as unknown: re-read the file (or grep for each edit's marker) before the next step, and re-send only what is missing. Prefer one edit per call while the checker is unstable.
 
 **Principle:** A partially applied batch is worse than a failed one — it looks like progress. After any refusal inside a batch, verify each intended change by reading, not by the absence of an error on the others.
+
+### Observation 342: A queued waiter on a shared lock nearly broke a LIVE run as "stale" — the lock's recorded process was the one that took it, not the run
+
+**Status:** OPEN
+**Date:** 2026-09-28
+**Session context:** [SMALL-FIXES] batch — the full gates queued with `gatelock.mjs run` behind a parallel chat that had taken the PC check lock by hand ~2 h earlier.
+**Skill:** repo tooling (`raptor-port/scripts/gatelock.mjs`), not a skill
+**Type:** open-source
+**Phase/Area:** shared-resource locking between parallel sessions
+
+**Issue:** The lock script's waiter breaks any lock older than 2 hours. The holder had taken the lock by hand (`take`) and run several suites under it; the pid in its owner file was the short-lived `take` process, already gone, so "the process is dead" looked like proof the lock was stale. Asking the holder showed its last suite had started a minute earlier — the automatic break would have fired inside it three minutes later. The queued run was stopped in time.
+
+**Suggested improvement:** A waiter must never break a lock on age alone: the holder refreshes a heartbeat (touch the owner file) during its run, and "stale" means no heartbeat for N minutes; a hand-taken lock records the session, not the take command's pid. Until then, before a queued run reaches the stale mark, ask the holder.
+
+**Principle:** Staleness for a shared lock must be judged by a heartbeat from the work it protects, not by age or by the pid of the command that acquired it.
