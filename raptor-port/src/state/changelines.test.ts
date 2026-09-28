@@ -7,7 +7,7 @@
    for inputs (writeInputs / writeInputsBatch — every door's funnel), signed in as the admin. */
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest'
 import { storeBackend } from '../engine/hooks'
-import { ELOG, elogClear, rowTouches, todayIso } from '../engine/editlog'
+import { ELOG, elogClear, rowTouches, todayIso, elogFlush, elogLoad } from '../engine/editlog'
 import { PEOPLE } from '../engine/people'
 import { updatePersonField } from './quals-write'
 import { INPUTS } from '../engine/inputs'
@@ -49,6 +49,11 @@ describe('an input', () => {
     expect(rowTouches(l, '2026-08-02')).toBe(true)
     expect(rowTouches(l, '2026-08-03')).toBe(false)
     expect(l.pid).toBe('stiff')                       // Saber made it
+    /* its TYPE, by field, so a deleted input's item keeps its name — "Input · Ranger · LL" (Astra's final read, FR-04) —
+       and a reload keeps it */
+    expect(l.itype).toBe('LL')
+    elogFlush(); elogLoad()
+    expect(lines()[0]!.itype, 'kept across a reload').toBe('LL')
   })
 
   it('moved to other dates: ONE line, shown on the old days and the new, never on the days between', () => {

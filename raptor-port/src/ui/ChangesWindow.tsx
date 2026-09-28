@@ -25,7 +25,7 @@ import { useVersion } from './useStore'
 import { HOOKS } from '../engine/hooks'
 import { notify } from '../state/store'
 import { CHGWIN, CHGWIN_BOX, setChgWin, setChgWinBox, CHGFOLD, type ChgWin } from '../state/view'
-import { linesFor, byWho, byItem, whoEntry, dayCounts, type CLine, type Entry } from './changesmodel'
+import { linesFor, byWho, byItem, whoEntry, dayCounts, weekRows, type CLine, type Entry } from './changesmodel'
 import { weekDates, elogWhen } from '../engine/editlog'
 import { CURWEEK } from '../engine/waves'
 import { DAYS } from '../engine/data'
@@ -37,7 +37,8 @@ import { isMember, isAdmin } from '../state/perms'
 import { pendListHTML, pendKeysFor } from './pendlist'
 import { jumpToChange } from './interactions'
 import { histJumpable, weekJumpable } from './histbubble'
-import { SBDAY, CURPAGE } from '../state/view'
+import { SBDAY, CURPAGE, DPREV } from '../state/view'
+import { useEffect, useState } from 'react'
 
 const DOW = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
 const dm = (iso: string) => { const [, m, d] = iso.split('-').map(Number); return `${d}/${m}` }
@@ -107,9 +108,26 @@ function EntryLine({ e, title, onGo, go: may }: { e: Entry; title?: string; onGo
     : <div className={cls + ' still'} data-cwkey={e.key || undefined} title="This change has no place on this page to go to">{body}</div>
 }
 
+/* THE LAYOUT FOLLOWS THE SCREEN, NOT ONLY THE DATA. Hide, the phone bar and the hint are read from the screen's width,
+   and nothing in the app's data moves when a phone is turned sideways or a window is narrowed — so the window listens
+   for the two widths it reads (the phone layout, and a tap raising a bubble) and redraws the moment either is crossed
+   (Astra's final read, FR-02: Hide stayed missing, or the bar stayed, until some other change redrew). Re-armed when the
+   window opens, so it listens to the screen as it is then. */
+function useLayoutWatch(open: boolean) {
+  const [, bump] = useState(0)
+  useEffect(() => {
+    if (!open || typeof window === 'undefined' || !window.matchMedia) return
+    const qs = ['(max-width:620px)', '(max-width:820px)'].map(q => window.matchMedia(q))
+    const on = () => bump(n => n + 1)
+    qs.forEach(m => m.addEventListener ? m.addEventListener('change', on) : (m as any).addListener(on))
+    return () => qs.forEach(m => m.removeEventListener ? m.removeEventListener('change', on) : (m as any).removeListener(on))
+  }, [open])
+}
+
 export function ChangesWindow() {
   useVersion()
   const w = CHGWIN
+  useLayoutWatch(!!w)
   /* the phone's slim bar sits where the stylesheet puts it — at the bottom — whatever height the panel was dragged to:
      it is there so the change behind can be seen, so it hands the box back for the bar and takes it again when the
      panel comes back ([DRAFT-PENDING], Fable P8 — the bar floated mid-screen at the dragged panel's top) */
@@ -134,8 +152,13 @@ export function ChangesWindow() {
   const tab = w.tab === 'out' && !hasOut ? 'all' : w.tab
   const phone = phoneLayout()
   const member = !isAdmin()
-  /* where History draws its dots and answers a tap — the edit week and the board (D116, D338 (3)); View-only draws none */
-  const histHere = CURPAGE === 'editsched' || SBDAY != null
+  /* where History draws its dots and answers a tap — the edit week and the live board (D116, D338 (3)). View-only draws
+     none, and neither does the board while it shows an issued version (a look wears no dots — Astra's final read FR-05,
+     Fable's F3): there the hidden bar reads "Changes", not "History on" */
+  const histHere = CURPAGE === 'editsched' && (SBDAY == null || !DPREV.has(SBDAY))
+  /* the hint promises gold dots, so only where there can be some: a change on this week that has a place on the schedule
+     (a seat, a box, an input's row) — a week of publishes and day lines alone has none (Fable's final read, F3) */
+  const anyDots = histHere && weekRows().some((r: any) => r.key || r.iid)
 
   const set = (patch: Partial<ChgWin>) => { setChgWin({ ...w, ...patch }); notify() }
   const close = () => { setChgWin(null); notify() }
@@ -209,7 +232,7 @@ export function ChangesWindow() {
       </div>
       {/* the hint, in his words (D344), where a TAP raises a bubble on a dotted detail (the bubble's own gesture test —
           Fable F5) and there are dots to tap */}
-      {HOOKS.isPhone() && histHere ? <div className="cw-hint">History on: Tap a gold dot on the schedule</div> : null}
+      {HOOKS.isPhone() && anyDots ? <div className="cw-hint">History on: Tap a gold dot on the schedule</div> : null}
 
       <div className="win-tabs" role="tablist">
         <button className={'win-tab' + (tab === 'new' ? ' on' : '')} role="tab" aria-selected={tab === 'new'} onClick={() => set({ tab: 'new' })}>

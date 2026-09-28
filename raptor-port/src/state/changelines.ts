@@ -86,7 +86,7 @@ function inputLines(c: Change, env: CommitEnvelope, war: boolean): void {
   const sa = spanOf(a), sb = spanOf(b)
   /* every absence line keeps WHOSE it is, by id (`sub` — Fable's read of the fixes, FF4): "To go out" finds its line by it
      when the input it was about has since been re-filed under another id (a move on the war) */
-  const at = (extra: any = {}) => ({ iid, sect: 'abs', sub: String((a || b || {}).person || ''), ...extra })
+  const at = (extra: any = {}) => ({ iid, sect: 'abs', sub: String((a || b || {}).person || ''), itype: String((a || b || {}).type || ''), ...extra })
   if (!b && a) {
     const s = sa
     logAction(null, `${cs(a.person)} · ${a.type} ${war ? 'approved on the Leave War' : 'added'} · ${spanWords(s)}${a.acc === 'g' ? ' (on the programme)' : ''}${tail}`,
@@ -243,7 +243,7 @@ function warInputLines(env: CommitEnvelope): WarInputs {
     const exact = (ds: string[]) => oneRun(ds) ? undefined : ds
     const who = `${cs(g.p)} · ${g.t}`
     const at = (ds: string[]) => ({ date: ds[0]!, end: ds[ds.length - 1]! })
-    const base = { iid, iids, sect: 'abs', sub: g.p }
+    const base = { iid, iids, sect: 'abs', sub: g.p, itype: g.t }
     if (gone.length && fresh.length) {
       /* what MOVED is the whole of each piece that landed on new days, and what it left is where those days were — so a
          two-day leave slid one day reads "2 Feb–3 Feb → 3 Feb–4 Feb", not "2 Feb → 4 Feb" (Fable's round-3 read, G1) */

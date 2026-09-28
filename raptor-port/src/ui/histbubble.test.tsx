@@ -15,9 +15,9 @@ import { App } from './App'
 import { initStore, setSession, notify, writeInputs } from '../state/store'
 import { DAYS } from '../engine/data'
 import { INPUTS, inpId } from '../engine/inputs'
-import { SCHED, signOf, setDayApproved } from '../engine/publish'
+import { SCHED, signOf, setDayApproved, dayVersions } from '../engine/publish'
 import { setSlotVal, slotVal, txtSet } from '../engine/slots'
-import { elogClear, elogAllFor, elogVal, elogFor } from '../engine/editlog'
+import { elogClear, elogAllFor, elogVal, elogFor, logAction } from '../engine/editlog'
 import { HOOKS } from '../engine/hooks'
 import * as view from '../state/view'
 import { openScheduler, closeScheduler } from './board'
@@ -427,6 +427,7 @@ describe('History on a phone — Hide, Show and the hint (D339, D344, D345)', ()
   afterEach(async () => {
     if (stubbed) asPhone(false)
     phone = false
+    view.DPREV.clear()
     await act(async () => { view.setChgWin(null); notify() })
     if (view.CURPAGE !== 'editsched') await click($$('.nav a[data-page]').find(a => a.dataset.page === 'editsched')!)
     if (view.SBDAY == null) await act(async () => { openScheduler(0) })
@@ -459,6 +460,53 @@ describe('History on a phone — Hide, Show and the hint (D339, D344, D345)', ()
     const win = $('.chgwin')!
     await act(async () => { $('.chgwin .win-hide')!.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, clientX: 5, clientY: 5 })) })
     expect(win.style.width, 'a press on Hide wrote no drag box onto the panel').toBe('')
+  })
+
+  /* Astra's final read (FR-02): a phone turned sideways, or a window narrowed, crosses the breakpoint with no change to the
+     app's data — so nothing redrew the window, and Hide stayed absent (or the bar's markup stayed) until something else did */
+  it('turning the screen across the phone breakpoint switches the controls at once — no other change needed', async () => {
+    await editedSeat()
+    const listeners = new Set<() => void>()
+    let narrow = false
+    real = window.matchMedia; stubbed = true
+    ;(window as any).matchMedia = (q: string) => ({ get matches() { return narrow && /max-width:\s*(620|820)px|hover:\s*none/.test(q) }, media: q,
+      addEventListener: (_: any, f: any) => listeners.add(f), removeEventListener: (_: any, f: any) => listeners.delete(f), addListener: (f: any) => listeners.add(f), removeListener: (f: any) => listeners.delete(f) })
+    await openAll()
+    expect($('.chgwin .win-hide'), 'a desktop window: no Hide').toBeFalsy()
+    narrow = true; phone = true
+    await act(async () => { listeners.forEach(f => f()) })
+    expect($('.chgwin .win-hide'), 'turned to a phone: Hide, at once').toBeTruthy()
+    expect($('.chgwin .cw-hint'), 'and the hint').toBeTruthy()
+    narrow = false; phone = false
+    await act(async () => { listeners.forEach(f => f()) })
+    expect($('.chgwin .win-hide'), 'back to a desktop: no Hide').toBeFalsy()
+  })
+
+  /* Astra's final read (FR-05), Fable's final read (F3): the hint promises dots — so not while the board shows an issued
+     version (a look wears none) and not on a week with nothing a dot could mark; and the hidden bar says "History on" only
+     where History draws */
+  it('no hint and no "History on" while the board shows a look, nor on a week with nothing to dot', async () => {
+    await editedSeat()
+    phone = true; asPhone(true)
+    await openAll()
+    expect($('.chgwin .cw-hint'), 'the live board: the hint').toBeTruthy()
+    /* a real look: the day published, and its Original chosen on the board (the version picker's own write) */
+    const di = view.SBDAY
+    await act(async () => {
+      const g = signOf(di); g.cur = 'ignite'; g.sked = 'bane'; g.plan = 'stiff'; g.appr = 'pump'
+      if (!SCHED.orig[di]) setDayApproved(di, true)
+      view.setDayPreview(di, dayVersions(di)[1]); notify()
+    })
+    expect(view.DPREV.has(di), 'the board shows the Original').toBe(true)
+    expect($('.chgwin .cw-hint'), 'a look on the board: no hint').toBeFalsy()
+    await click($('.chgwin .win-hide'))
+    expect($('.chgwin.bar .cw-barl')!.textContent, 'the bar: "Changes"').toBe('Changes')
+    await act(async () => { view.setDayPreview(di, 'live'); notify() })
+    expect($('.chgwin.bar .cw-barl')!.textContent, 'back live: "History on"').toBe('History on')
+    await click($('.chgwin.bar .cw-barbtn'))
+    /* a week whose only lines are the day's own (a publish, a structural line) has nothing to dot */
+    await act(async () => { elogClear(); logAction(1, 'Programme item added'); notify() })
+    expect($('.chgwin .cw-hint'), 'nothing to dot: no hint').toBeFalsy()
   })
 
   it('on a desktop: no Hide and no hint', async () => {

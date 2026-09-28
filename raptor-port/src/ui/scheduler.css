@@ -6537,6 +6537,6 @@ button.sbi-ty.inpedit:hover{text-decoration:none;filter:brightness(1.3)}
   width:8px;height:8px;border-radius:50%;background:#E5C24A;box-shadow:0 0 0 2px var(--bg);z-index:5;pointer-events:none}
 [data-histdot]:not(.seat):not(.sb-slot){background-image:radial-gradient(circle,#E5C24A 0 3.5px,transparent 4px);
   background-repeat:no-repeat;background-position:right 2px bottom 2px;background-size:10px 10px}
-:is(span,b,i)[data-histdot]:not(.seat):not(:empty){position:relative;background-image:none}
-:is(span,b,i)[data-histdot]:not(.seat):not(:empty)::before{content:'';position:absolute;right:-6px;bottom:-3px;width:7px;height:7px;
+:is(span,b,i)[data-histdot]:not(.seat):not(.sb-slot):not(:empty){position:relative;background-image:none}
+:is(span,b,i)[data-histdot]:not(.seat):not(.sb-slot):not(:empty)::before{content:'';position:absolute;right:-6px;bottom:-3px;width:7px;height:7px;
   border-radius:50%;background:#E5C24A;box-shadow:0 0 0 2px var(--bg);z-index:5;pointer-events:none}

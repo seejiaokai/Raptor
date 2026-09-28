@@ -444,15 +444,18 @@ export function setAvailWinBox(b: AvailBox | null) { AVAILWIN_BOX = b }
    Where it is and what it shows, kept OUTSIDE React for the ALL AVAIL window's reason: he edits the schedule behind it,
    so every keystroke re-renders, and component state would lose the window's place. `day` — the calendar day the
    window shows, or 'week'; `tab` — New to you / All changes / To go out (a published day's next ALn); `group` — Item or
-   Who (Item first and the default — [CHG-BY-ITEM], D340, D345; it replaced Where); `bar` — on a phone, the panel shrunk to a slim bar after a tap took the schedule to a change (D167 (2)).
+   Who (Item first and the default — [CHG-BY-ITEM], D340, D345; it replaced Where); `bar` — on a phone, the panel shrunk
+   to the slim bar at the bottom, by Hide ([HIST-PHONE-HIDE], D339, D345) or after a tap took the schedule to a change
+   (D167 (2)).
    HISTORY MODE IS THE WINDOW OPEN (D116, D168 — one History mode, its list this window): opening it turns the bubbles
    on on the board AND the edit week; closing it turns them off. It closes on a page change, a week change and a
    sign-in or sign-out (VIEW_RESET below) — never on a tap outside it (the ALL AVAIL window's rule, D38). */
 export type ChgWin = { day: string; tab: 'new' | 'all' | 'out'; group: 'item' | 'who'; bar?: boolean }   // Item / Who — [CHG-BY-ITEM], D345
 export let CHGWIN: ChgWin | null = null
 export let CHGWIN_BOX: AvailBox | null = null
-/* the groups he folded or unfolded by hand (by the group's key) — a group with something new opens by itself, the rest
-   start folded (D167 (4)) */
+/* the groups he folded or unfolded by hand (by the group's key). Every Item and Who group starts OPEN (D345 — "every
+   group open by default", the later word over D167 (4)'s "a group with something new opens, the rest start folded");
+   this holds only his own folds, until the window closes */
 export const CHGFOLD = new Map<string, boolean>()
 export function setChgWin(v: ChgWin | null) {
   if (!v) { CHGWIN_BOX = null; CHGFOLD.clear() }

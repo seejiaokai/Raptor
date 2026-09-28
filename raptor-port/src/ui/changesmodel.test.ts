@@ -100,6 +100,7 @@ describe('THE ITEM of a line — from its row-anchored key, never its words (D34
       [{ key: 'dr:1.0.0.str', lbl: 'Duty · SDO · start' }, `${T}|D|0.0`, 'Duty · SDO', 'Start'],
       [{ key: 'dl:1.1', lbl: 'Duty block · 2nd wave' }, `${T}|DB|1`, 'Duty block · 2nd wave', 'Label'],
       [{ key: 's:1.amt.1.p', lbl: 'Sim · AMT BOX' }, `${T}|S|amt.1`, 'Sim · AMT BOX', 'FCP'],
+      [{ key: 's:1.amt.1.pax.1', lbl: 'Sim · AMT BOX' }, `${T}|S|amt.1`, 'Sim · AMT BOX', 'Pax 2'],
       [{ key: 'sr:1.oft.0.label', lbl: 'Sim · OFT EP-5 · label' }, `${T}|S|oft.0`, 'Sim · OFT EP-5', 'Label'],
       [{ key: 'a:1.0.0', lbl: 'Programme · SODB' }, `${T}|A|0`, 'Programme · SODB', ''],
       [{ key: 'ap:1.0.str', lbl: 'Programme · SODB · start' }, `${T}|A|0`, 'Programme · SODB', 'Start'],
@@ -107,7 +108,8 @@ describe('THE ITEM of a line — from its row-anchored key, never its words (D34
       [{ key: 'gr:1.2.end', lbl: 'Ground · MEDICAL APPT · end' }, `${T}|G|2`, 'Ground · MEDICAL APPT', 'End'],
       [{ key: 'dn:1.0', lbl: 'Day note' }, `${T}|N|dn:1.0`, 'Day note', ''],
       [{ key: 'pn:1.0', lbl: 'Programme notes' }, `${T}|N|pn:1.0`, 'Programme notes', ''],
-      [{ key: '', iid: 'in7', sub: 'bane', sect: 'abs', lbl: 'Ranger · LL added · 14 Jul' }, `${T}|I|in7`, 'Input · Ranger', ''],
+      [{ key: '', iid: 'in7', sub: 'bane', sect: 'abs', itype: 'LL', lbl: 'Ranger · LL added · 14 Jul' }, `${T}|I|in7`, 'Input · Ranger · LL', ''],   // gone: its line keeps the type (Astra FR-04)
+      [{ key: '', iid: 'in8', sub: 'bane', sect: 'abs', lbl: 'Ranger · LL added · 14 Jul' }, `${T}|I|in8`, 'Input · Ranger', ''],
       [{ key: 'iu:in7', lbl: 'Ranger · LL', from: 'rocky', to: 'bane' }, `${T}|I|in7`, 'Input · Ranger', ''],   // a reassign: named by who holds it now
       [{ key: '', sub: 'rocky', fld: 'q', sect: 'quals', lbl: 'Hex · CAT', from: 'B', to: 'A' }, `${T}|Q|rocky`, 'Quals · Hex', 'CAT'],
       [{ key: '', sub: 'bane', sect: 'abs', lbl: 'Leave War · Ranger · LL 14 Jul: refused' }, `${T}|LW|bane`, 'Leave War · Ranger', ''],
@@ -217,6 +219,23 @@ describe('GROUP BY ITEM — the latest-changed item on top, a line per change, i
     )
     const g2 = byItem(linesFor(['2026-07-14'], newTo('stiff')), false)
     expect(g2.find(x => x.title === 'Programme · SODB')!.entries[0]!.text).toBe('Ranger moved in from Duty · SDO')
+  })
+
+  /* the places inside one item, by what the key says (Astra's final read, FR-03): a sim's passengers by number, a desk's or a
+     ground row's main place and its extras, a crowd's places — never the row's own number */
+  it("a move within one item names its two real places — a sim's passengers, a desk's main and extra, a crowd", () => {
+    const cases: Array<[string, string, string, string]> = [
+      ['s:1.amt.1.pax.0', 's:1.amt.1.pax.1', 'Pax 1', 'Pax 2'],
+      ['d:1.0.2', 'd:1.0.2.x0', 'place 1', 'place 2'],
+      ['g:1.2.x0', 'g:1.2', 'place 2', 'place 1'],
+      ['a:1.0.0', 'a:1.0.2', 'place 1', 'place 3'],
+    ]
+    for (const [from, to, a, b] of cases) {
+      elogClear(); n = 0
+      put(row({ key: from, lbl: 'x', from: 'bane', to: '—' }), row({ key: to, lbl: 'x', from: '—', to: 'bane' }))
+      const e = byItem(linesFor(['2026-07-14'], newTo('stiff')), false)[0]!.entries[0]!
+      expect([e.text, e.from, e.to], `${from} → ${to}`).toEqual(['Ranger moved', a, b])
+    }
   })
 
   it('a move WITHIN one item is ONE entry — "moved", its two places from → to (Fable F2)', () => {

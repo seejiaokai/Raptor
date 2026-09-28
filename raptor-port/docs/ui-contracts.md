@@ -701,11 +701,14 @@ history).
   on a phone the panel shrinks to the slim bar until tapped.
 - **History on a phone** (`[HIST-PHONE-HIDE]`, D339, D344, D345): the header carries **"Hide ▾"** beside ✕ (the phone's
   panel form, ≤620px — never on a desktop, whose window moves and resizes); where History draws its dots (Edit Schedule,
-  the board) and a TAP raises the bubble (`HOOKS.isPhone()`, ≤820px), a line under the header says, in his words,
+  the LIVE board — not the board while it shows an issued version, a look wearing no dots), where a TAP raises the bubble
+  (`HOOKS.isPhone()`, ≤820px) and where the week holds a change with a place on the schedule (a seat, a box, an input's
+  row — a week of publishes and day lines alone has no dot to tap), a line under the header says, in his words,
   **"History on: Tap a gold dot on the schedule"**. Hide — or a tap on a line — sends the panel to the slim bar at the
   bottom: **"History on · N changes"** (every change on the chosen day or week, a move once; "Changes · N changes" on
-  View-only Sched, where History draws nothing) and **"Show ▴"**, the whole of it one button that brings the panel back
-  where it was; ✕ closes the window and History with it. Hidden, the bar sits one layer above the two floating windows
+  View-only Sched and on a board showing a look, where History draws nothing) and **"Show ▴"**, the whole of it one button that brings the panel back
+  where it was; ✕ closes the window and History with it. Turning a phone sideways (or narrowing a window) across either
+  width redraws the window at once — it listens to the screen, not only to the schedule (Astra's final read). Hidden, the bar sits one layer above the two floating windows
   (412), so the ALL AVAIL window can never cover it (Astra); a week or page change closes it as it closes the panel. A line with nowhere to go on this page
   is listed but is not a button: no key and no input (a structural sentence, a Leave War decision with no Input, a Quals
   change, a publish), a detail the board does not draw while on the board (the area strip, the in-times, the traffic,

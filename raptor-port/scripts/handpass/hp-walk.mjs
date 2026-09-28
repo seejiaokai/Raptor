@@ -106,6 +106,8 @@ const hexIds = await page.evaluate(() => {
   if (from >= 0 && to >= 0) { w.fillSlot(`d:1.0.${to}`, ''); moved = dr[from].id; w.fillSlot(`d:1.0.${from}`, ''); w.fillSlot(`d:1.0.${to}`, moved) }
   w.txtSet('ap:1.0.str', '05:50')
   w.txtSet('fr:1.0.1.0', 'WALK RMK')
+  /* a day note — a typed detail drawn as a block, whose dot sits inside its corner (Fable's final read F6) */
+  w.txtSet('dn:1.0', 'ORDERS: WALK NOTE')
   /* published Monday: a jet's remarks — issued below as AL1 */
   w.txtSet('fr:0.0.0.0', 'AL CHECK')
   w.afterSchedMutate()
@@ -160,11 +162,12 @@ await step('H4', 'the edit week: every changed detail is dotted, painted where t
   const r = {
     seat: await dotOf('#eWeek [data-slot="1.0.0.0.p"]'), seat2: await dotOf('#eWeek [data-slot="1.0.0.1.w"]'),
     time: await dotOf('#eWeek [data-txt="ap:1.0.str"]'), rmk: await dotOf('#eWeek [data-txt="fr:1.0.1.0"]'), atime: await dotOf('#eWeek [data-atime="1.0.0"]'),
+    note: await dotOf('#eWeek [data-txt="dn:1.0"]'),
     leave: await page.$eval('#eWeek .day[data-day="1"] [data-inprow]', e => ({ on: e.hasAttribute('data-histdot'), painted: /radial-gradient/.test(getComputedStyle(e).backgroundImage) })).catch(() => null),
     untouched: await page.$eval('#eWeek [data-slot="1.1.0.0.p"]', e => e.hasAttribute('data-histdot')).catch(() => 'n/a'),
   }
   const good = x => x && x.on && x.painted
-  return { ok: good(r.seat) && good(r.seat2) && good(r.time) && good(r.rmk) && good(r.atime) && good(r.leave) && r.untouched === false, note: JSON.stringify(r), pic: await shot('editweek-dots') }
+  return { ok: good(r.seat) && good(r.seat2) && good(r.time) && good(r.rmk) && good(r.atime) && good(r.note) && r.note.how === 'inside' && good(r.leave) && r.untouched === false, note: JSON.stringify(r), pic: await shot('editweek-dots') }
 })
 await step('H5', 'a seat\'s dot and its OG tag share it, in opposite corners; nothing covers the dotted seat', async () => {
   const og = await page.$eval('#eWeek [data-slot="1.0.0.0.p"]', e => getComputedStyle(e, '::after').content).catch(() => null)
@@ -178,6 +181,18 @@ await step('H6', 'a tap (phone) or a hover (desktop) on a dotted detail raises i
   const pic = await shot('bubble')
   if (PHONE) { await page.evaluate(() => window.disarmSlot && window.disarmSlot()); await page.waitForTimeout(200) }
   return { ok: !!b && /Outlaw|Casper/.test(b), note: String(b).slice(0, 120), pic }
+})
+await step('H24', 'an input row (Ranger's leave, under Unavailable) answers with its OWN bubble — "Ranger · LL", its filing on that day', async () => {
+  const row = page.locator('#eWeek .day[data-day="1"] [data-inprow][data-histdot]').first()
+  if (!(await row.count())) return { ok: false, note: 'no dotted input row on Tuesday' }
+  await row.scrollIntoViewIfNeeded(); await page.waitForTimeout(200)
+  if (PHONE) await row.tap(); else await row.hover()
+  await page.waitForTimeout(400)
+  const b = await page.$eval('.histbub', e => ({ what: e.querySelector('.hb-what')?.textContent || '', txt: e.textContent || '' })).catch(() => null)
+  const pic = await shot('input-bubble')
+  if (PHONE) { await page.evaluate(() => window.disarmSlot && window.disarmSlot()); await page.keyboard.press('Escape').catch(() => {}); await page.waitForTimeout(200) }
+  else await page.mouse.move(2, 2)
+  return { ok: !!b && /Ranger · LL/.test(b.what) && !/Casper|Outlaw/.test(b.txt), note: JSON.stringify(b).slice(0, 160), pic }
 })
 await step('H7', 'the phone bar: at the bottom, "History on · N changes" and "Show ▴"; Show brings the panel back', async () => {
   const bar = await page.$eval('.chgwin.bar', e => { const r = e.getBoundingClientRect(); return { txt: e.querySelector('.cw-barbtn')?.textContent, bottom: Math.round(innerHeight - r.bottom) } }).catch(() => null)
@@ -256,14 +271,18 @@ await step('H16', 'a look at the published Original on the board wears no dot, a
   const issued = vers.find(v => v !== 'live')
   if (issued) await page.evaluate(v => { window.setDayPreview(0, v); window.renderScheduler && window.renderScheduler() }, issued)
   await page.waitForTimeout(500)
-  const s = { look: await count('#schedBoard .pv-frozen'), dots: await count('#schedBoard .pv-frozen [data-histdot]') }
+  const s = { look: await count('#schedBoard .pv-frozen'), dots: await count('#schedBoard .pv-frozen [data-histdot]'), hint: await count('.chgwin .cw-hint'), bar: null }
   const cell = page.locator('#schedBoard .pv-frozen [data-bfld]').first()
   let bub = null
   if (await cell.count()) { if (PHONE) await cell.tap().catch(() => {}); else await cell.hover(); await page.waitForTimeout(300); bub = await page.$eval('.histbub', e => e.textContent).catch(() => null) }
   const pic = await shot('board-look')
+  /* the hidden bar reads "Changes" while the board shows a look — History draws nothing there (Astra FR-05, Fable F3) */
+  if (PHONE && await count('.chgwin .win-hide')) { await page.click('.chgwin .win-hide'); await page.waitForTimeout(300); s.bar = await page.$eval('.chgwin.bar .cw-barl', e => e.textContent).catch(() => null) }
   await page.evaluate(() => { window.setDayPreview(0, null); window.renderScheduler && window.renderScheduler() }); await page.waitForTimeout(300)
+  const liveBar = PHONE ? await page.$eval('.chgwin.bar .cw-barl', e => e.textContent).catch(() => null) : null
+  if (PHONE) await showPanel()
   await closeBoard()
-  return { ok: s.look > 0 && s.dots === 0 && bub === null, note: JSON.stringify({ ...s, vers, bub }), pic }
+  return { ok: s.look > 0 && s.dots === 0 && bub === null && s.hint === 0 && (!PHONE || (s.bar === 'Changes' && liveBar === 'History on')), note: JSON.stringify({ ...s, liveBar, vers, bub }), pic }
 })
 await step('H17', 'Mark all as seen: the OG tags and the gold "new" marks go; the history dots stay', async () => {
   await page.click('.chgwin .win-tab:has-text("New to you")'); await page.click('.chgwin .cw-day:has-text("Week")'); await page.waitForTimeout(200)
@@ -282,6 +301,19 @@ await step('H19', 'a reload: the history is still there — the window reopened,
   if (PHONE) { await page.click('.chgwin .win-hide'); await page.waitForTimeout(200) }
   const d = await dotOf('#eWeek [data-slot="1.0.0.0.p"]')
   return { ok: !!d && d.on && d.painted, note: JSON.stringify(d), pic: await shot('after-reload') }
+})
+await step('H25', 'the cost of the dots: the pass that paints them after each repaint, timed on the edit week with the CPU slowed 4×', async () => {
+  const cdp = await ctx.newCDPSession(page)
+  await cdp.send('Emulation.setCPUThrottlingRate', { rate: 4 })
+  const t = await page.evaluate(() => {
+    const root = document.querySelector('#eWeek'); const ms = []
+    for (let i = 0; i < 21; i++) { const a = performance.now(); window.refreshHistDots(root); ms.push(performance.now() - a) }
+    ms.sort((a, b) => a - b)
+    return { median: +ms[10].toFixed(2), worst: +ms[20].toFixed(2), cells: root.querySelectorAll(window.HIST_CELLS).length, dots: root.querySelectorAll('[data-histdot]').length }
+  })
+  await cdp.send('Emulation.setCPUThrottlingRate', { rate: 1 })
+  /* within one frame (16ms) even on a slowed CPU — it runs beside the highlight pass after every repaint */
+  return { ok: t.dots > 0 && t.median < 16, note: JSON.stringify(t) }
 })
 await step('H20', 'the hidden bar stays reachable when the ALL AVAIL window opens over it (Astra 07)', async () => {
   await page.evaluate(() => { const w = window; w.DAYS[1].allhands.push({ prog: 'WALK BRIEF', str: '10:00', end: '11:00', who: 'allavail' }); w.afterSchedMutate() })

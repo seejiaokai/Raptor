@@ -35,7 +35,7 @@ UNIT = [
 E2E = [
     ('B13 the seat dot is painted', 'src/ui/scheduler.css', ".seat[data-histdot]:not(.tdghost):not(.dragimg)::before,", ".seat[data-nothing]::before,",
      'e2e/changeswin.spec.ts', 'every changed detail wears a gold dot'),
-    ('B14 a text detail\'s dot is painted outside', 'src/ui/scheduler.css', ":is(span,b,i)[data-histdot]:not(.seat):not(:empty)::before{", ":is(span,b,i)[data-nothing]::before{",
+    ('B14 a text detail\'s dot is painted outside', 'src/ui/scheduler.css', ":is(span,b,i)[data-histdot]:not(.seat):not(.sb-slot):not(:empty)::before{", ":is(span,b,i)[data-nothing]::before{",
      'e2e/changeswin.spec.ts', 'every changed detail wears a gold dot'),
     ('B15 the hidden bar sits over the ALL AVAIL window', 'src/ui/scheduler.css', "  .chgwin.bar,.chgwin.bar.front{z-index:412}", "  .chgwin.bar,.chgwin.bar.front{}",
      'e2e/changeswin.spec.ts', 'the hidden bar stays reachable'),

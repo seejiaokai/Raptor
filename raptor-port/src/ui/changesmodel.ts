@@ -123,7 +123,9 @@ const AIR: Record<string, string> = { ar: 'Area', at: 'Area time', fa: 'Area', f
 function inputItem(date: string, iid: string, r: ELogRow): Item {
   const inp: any = inpById(iid)
   const who = inp ? inp.person : (r.sub || ((r.to && (PEOPLE as any)[r.to]) ? r.to : ''))
-  const title = inp ? `Input · ${csOf(inp.person)} · ${inp.type}` : who ? `Input · ${csOf(who)}` : 'Input'
+  /* gone, it keeps the type its line recorded (`itype` — Astra's final read, FR-04) */
+  const type = inp ? inp.type : (r.itype || '')
+  const title = inp ? `Input · ${csOf(inp.person)} · ${inp.type}` : who ? `Input · ${csOf(who)}${type ? ' · ' + type : ''}` : 'Input'
   return { id: `${date}|I|${iid}`, title, detail: '' }
 }
 
@@ -167,7 +169,9 @@ export function itemOf(r: ELogRow, day?: string | null): Item {
     if (pfx === 's' || pfx === 'sr') {
       const row = live(() => day.sims[parts[1]!][+pp![2]!])
       const title = row ? `Sim · ${String(parts[1]).toUpperCase()} ${row.label || ''}`.trim() : (pfx === 'sr' ? head(r.lbl) : r.lbl)
-      return { id: `${date}|S|${parts[1]}.${parts[2]}`, title, detail: pfx === 'sr' ? fieldWord(parts[3]) : (SEAT[parts[3]!] || cap(parts[3])) }
+      /* a passenger by his number — "Pax 2" (Astra's final read, FR-03) */
+      const seat = parts[3] === 'pax' && /^\d+$/.test(parts[4] || '') ? `Pax ${+parts[4]! + 1}` : (SEAT[parts[3]!] || cap(parts[3]))
+      return { id: `${date}|S|${parts[1]}.${parts[2]}`, title, detail: pfx === 'sr' ? fieldWord(parts[3]) : seat }
     }
     if (pfx === 'a' || pfx === 'ap') {
       const row = live(() => day.allhands[+pp![1]!])
@@ -226,11 +230,16 @@ function entryOf(l: CLine, r: ELogRow, day?: string | null): Entry {
 /* the day an entry is filed under: the first of the window's days its line touches (a line spanning days — a leave begun
    the week before — leads with its first day in this week; Fable F9), else its own day */
 const anchorOf = (r: ELogRow, days?: string[]) => (days && days.find(d => rowTouches(r, d))) || r.date
-/* where in its item a man stood — the seat ("#1 FCP"), else his place in a crowd ("place 2") */
+/* where in its item a man stood, by what his key says (Astra's final read, FR-03) — a seat ("#1 FCP", "Pax 2"); a crowd's
+   place ("place 3", its crew index); a desk's or a ground row's main place ("place 1") and its extras (`.x0` → "place 2");
+   never the row's own number */
 const placeOf = (r: ELogRow, item: Item) => {
-  if (item.detail) return item.detail
-  const last = Number(String(r.key).split('.').pop())
-  return Number.isFinite(last) ? `place ${last + 1}` : ''
+  const k = String(r.key), c = k.indexOf(':'), pfx = c < 0 ? '' : k.slice(0, c), parts = (c < 0 ? k : k.slice(c + 1)).split('.')
+  const last = parts[parts.length - 1] || ''
+  if (/^x\d+$/.test(last)) return `place ${+last.slice(1) + 2}`
+  if (pfx === 'a') return /^\d+$/.test(parts[2] || '') ? `place ${+parts[2]! + 1}` : ''
+  if (pfx === 'd' || pfx === 'g') return 'place 1'
+  return item.detail
 }
 export function entriesOf(l: CLine, days?: string[]): Entry[] {
   if (l.rows.length === 2) {
