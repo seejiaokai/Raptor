@@ -162,7 +162,7 @@ bytes unchanged, each landing in its date order (newest first). It is how the 62
 
 ### 2.6 The project guide (`raptor-port/CLAUDE.md`) — last
 
-After the small-fixes branch (`claude/small-fixes-batch-d223f6`) merges (it edits the guide's Leave War row).
+**Now, on its own branch, in a fresh chat (D391, 28 Sep 26 — narrowing D390's "after the small-fixes branch merges")**, leaving untouched the guide's Leave War row of §Where things live, which `claude/small-fixes-batch-d223f6` edits.
 `raptor-port/docs/guide-full.md` is created first with a heading per section and the map table's header; then each block
 moves with `backlog-archive.mjs --move … --under "<its heading>" --pointer "<one-line short form> · full text:
 docs/guide-full.md §<heading>"` — byte-exact, one line left in its place (Fable 12). What every task needs to work safely
@@ -224,7 +224,7 @@ printed UNREAD short lines, and commits. If this branch is the later one, the sa
 7. **Fable's meaning read** of every short line (§2.1's six questions); fixes.
 8. **Code read of the two scripts by BOTH Fable and Astra** (they guard every record of his rulings), with the merge
    fixtures' results.
-9. The project guide (§2.6), once the small-fixes branch has merged — or in a later branch if that waits.
+9. The project guide (§2.6) — now, on its own branch cut from this one, in a fresh chat (D391); the Leave War row left alone.
 10. Measure again (the method of §1); his look; his "merge live".
 
 Tier: the bug-check order's tier is NONE for the app — nothing under `raptor-port/src` changes; the checks here are the

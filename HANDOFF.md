@@ -31,9 +31,10 @@ the later merge keeps both (D78).
   `node raptor-port/scripts/backlog-archive.mjs --rulings --merge`, re-apply the printed lines, one reviewer reads the
   UNREAD lines. The change-recording merge will say WRITTEN and ask for its hand work (D347 in the leave-war and tracker
   "Also read" lines; a mark in D347's full row for D348); D350 may belong in People & accounts.
-- **Next:** (1) his answer on the guide step (plan §2.6 — `raptor-port/CLAUDE.md` ~16k → ~6k; approved "after the
-  small-fixes branch merges"; it can go now without touching the one row that branch edits) — a fresh chat, Opus 5.5
-  high, then Fable's meaning read; (2) open the PR, his look, "merge live" — ideally before the three parallel chats merge,
+- **Next:** (1) the guide step NOW (D391, 28 Sep 26 — his "Confirm do 1 now?"): plan §2.6, `raptor-port/CLAUDE.md`
+  ~16k → ~6k, on its own branch cut from this one, in a fresh chat, Opus 5.5 high, then Fable's meaning read — the Leave
+  War row of §Where things live left untouched (`claude/small-fixes-batch-d223f6` edits it); D390's short line was rewritten
+  for D391 by hand — add it to that meaning read; (2) open the PR, his look, "merge live" — ideally before the three parallel chats merge,
   since they are set up to merge across it; (3) his optional question 4 (the older "settled before" notes, ~9k in the
   scheduler file) stays unanswered.
 <!-- /now -->
