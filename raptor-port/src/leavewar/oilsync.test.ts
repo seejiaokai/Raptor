@@ -238,7 +238,7 @@ describe('the ownership partition against wires 1+2', () => {
     expect(v.all.some(c => c.kind === 'credit')).toBe(true)      // and the credit is banked
     expect(v.amber).toBe(true)                                   // the day needs a human
     expect(getClashes()).toContainEqual(
-      { person: 'plasma', date: SAT, inputCode: 'FO', bidCode: 'LL', kind: 'duty' })
+      { person: 'plasma', date: SAT, inputCode: 'FO', bidCode: 'LL', kind: 'duty', wayOut: 'war' })   // war-approved leave: sent back or deleted on the sheet
   })
 
   it('leave WINS an owned cell and the passes stay stable — no flip-flop', () => {

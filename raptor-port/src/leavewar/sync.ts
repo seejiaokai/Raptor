@@ -623,7 +623,9 @@ function publishLeaveClashes(): void {
              (state/merge.ts puts the war's own records before the absences).
              Order the pair here rather than letting the wording flip. */
           const [a, b] = pair[1].kind === 'credit' && pair[0].kind !== 'credit' ? [pair[1], pair[0]] : pair
-          out.push({ person, date, inputCode: notationOf(a.code, a.win), bidCode: notationOf(b.code, b.win), ...(a.kind === 'credit' || b.kind === 'credit' ? { kind: 'duty' as const } : {}) })
+          const duty = a.kind === 'credit' || b.kind === 'credit'
+          out.push({ person, date, inputCode: notationOf(a.code, a.win), bidCode: notationOf(b.code, b.win), ...(duty ? { kind: 'duty' as const } : {}),
+            wayOut: clashWayOut(duty ? [b] : [a, b], war.period?.stage === 'published') })
         }
       }
     }
@@ -632,7 +634,23 @@ function publishLeaveClashes(): void {
   publishClashes()
 }
 
+/* WHERE A CLASH CAN BE UNDONE ([ABSENCE-SMALL-SEEN] 1, 28 Sep 26 — the re-test's W6 N2: every line said "resolve on
+   the sheet", but for leave filed on the Inputs page the day's sheet has no control; it says "Change it on the Inputs
+   page"). The way out follows the record that is IN THE WAY — for a worked weekend, what the day already holds (the
+   credit is the schedule's and nobody deletes it); for two leaves, the one a person can act on, a bid first: a bid is
+   decided on the sheet at every stage the war decides; leave the war approved is sent back or deleted on the sheet —
+   except once its war is published, when the sheet offers neither (21 Sep 26: published leave is finished paperwork)
+   and the war must step back first; leave filed on the Inputs page is changed there. */
+function clashWayOut(holders: readonly Contrib[], published: boolean): ClashWayOut {
+  if (holders.some(c => c.kind === 'request')) return 'bid'
+  if (holders.some(c => c.kind === 'absence' && c.lw)) return published ? 'war-published' : 'war'
+  return 'inputs'
+}
+
 /* ---- the clash list's shape and its subscribers --------------------------- */
+
+/** Where the admin undoes a clash — the words the strip prints after each line. */
+export type ClashWayOut = 'bid' | 'war' | 'war-published' | 'inputs'
 
 /** A leave input asking for a date the squadron already bid differently on.
  *  The system never overwrites a bid — it raises the clash and a human
@@ -647,6 +665,8 @@ export interface SyncClash {
   /** Absent for a leave clash; 'duty' when a published weekend/PH duty's OIL
    *  credit (wire 4) found the date already holding something else. */
   kind?: 'duty'
+  /** Where it is undone (`clashWayOut`) — so the strip never sends him to a sheet with no control on it. */
+  wayOut: ClashWayOut
 }
 
 /* Re-derived on every pass, never persisted — a clash list is a view of two
