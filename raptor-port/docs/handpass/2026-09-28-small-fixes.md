@@ -70,7 +70,7 @@ the build.
 |---|---|---|
 | `sf-a-windows` all | 19 pass | the defect: windows over the bar |
 | `sf-b-ghost` | 19 pass | rings or shadow lost |
-| `sf-c-openrow` | 15 pass | — (red-first unit tests) |
+| `sf-c-openrow` | 16 pass | — (red-first unit tests) |
 | `sf-d1-toast` | 4 pass | the publish line swallowed; Unpublish silent |
 | `sf-d3-callsigns` | 46 pass | "…" and "VIP/R" |
 | `sf-d4-altag` | 25 pass | "AL" cut, over the people column |
@@ -117,9 +117,23 @@ fix. G read-only window: the e2e red without its rule. G dates: `isodates.test.t
 - **G clash strip for a bid, war-approved leave and war leave once published** — unit-tested per holder.
 - **A real phone** — every phone check ran in a headless browser at 390 / 360 (see `ui-contracts.md` §Device caveats).
 
-## 8. The two final code reads
+## 8. The two final code reads — blind, after the walk, with this sheet in hand
 
-*(to be filled when Fable's and Astra's reads are in)*
+Brief: `docs/superpowers/briefs/2026-09-28-small-fixes-final-read.md`. Reports kept whole:
+`docs/superpowers/specs/2026-09-28-small-fixes-final-read-{astra,fable}.md`. Neither found anything touching money, the
+published record or saved data beyond Astra #1 below.
+
+| Finding | Disposition |
+|---|---|
+| **Astra #1** — a saved week that cannot be read "fails open" at the load's leave-out, the edit, the delete and the week switch's re-filing (the plan promised fail-closed) | **Fixed** (`e0593211`). Measured first: every unreadable saved week is also LOCKED (`quarantine.ts`), so the edit, the delete and the re-filing were already refused or skipped for a request covering it — only the load / plan switch was open (its test red on the old code). All four doors now fail closed on their own too. |
+| **Astra #2** — a WIDE six-letter callsign (MAGNUM, HAMMER) still ends in "…" on a phone | **Put to him** — look card question 6 (fitting it costs another 7px of the phone's remarks column). |
+| **Fable F1** — in the window's OIL half a man on the no-end-time row said "nothing measurable to earn", and a tap replaced D360's sentence with it | **Fixed** (`6b619eea`), red-first; re-walked (`sf-c-openrow` C2d). |
+| **Fable F2** — the window might stay pushed down after the board closes | **Measured: does not happen** — the window re-places on every redraw and goes straight back to its corner (top 96, no height cap). Pinned by `e2e/availwin.spec.ts`. |
+| **Fable F3** — "moved from" read two ways one tap apart (the day's list "Wed 11 Feb", the bid sheet "11 Feb 26") | **Fixed** (`6b619eea`); the list's test, which pinned the old words, red on the old line. |
+| Fable's observation — `signbind.test.ts` compared against the stored-order digest | **Confirmed red, the test corrected** (the code is D9's intended change): its expectation now reads the shown order. |
+| Fable's observation — `[PLAN-BANNER-DOOR]` confirmed unreachable from the code | As filed. |
+
+Re-walked after the fixes: `sf-c-openrow` 16/16, `sf-e-requests` 8/8, `sf-g-leavewar` 10/10, `sf-d9-sort` 8/8.
 
 ## 9. The gates
 

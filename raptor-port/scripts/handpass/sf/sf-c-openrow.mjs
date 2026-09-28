@@ -89,6 +89,12 @@ await screen(page, 'c2-desktop-oil-half')
 note('C2 the window in OIL Earn', JSON.stringify(w2))
 check('C2b the window opens on "Who earns OIL" and says the same sentence', !!w2 && /Who earns OIL/.test(w2.tab) && w2.hint === 'No OIL worked out — this row has no end time.', JSON.stringify(w2))
 check('C2c and nobody is counted as earning', !!w2 && /\b0 of \d+/.test(w2.tab), JSON.stringify(w2 && w2.tab))
+/* C2d — a tap on one of the men keeps the reason (Fable's final read F1: it used to say "nothing measurable") */
+const man = page.locator('.availwin:not([hidden]) [data-awp]').first()
+if (await man.count()) { await man.click(); await page.waitForTimeout(400) }
+const w2b = await winRead(page)
+await screen(page, 'c2d-desktop-oil-half-after-a-tap')
+check('C2d a tap on a man keeps the row\'s reason in the footer', !!w2b && /no end time/.test(w2b.hint) && !/nothing measurable/.test(w2b.hint), JSON.stringify(w2b && w2b.hint))
 await closeWin(page)
 await oilMode(page, false)
 await closeBoard(page)

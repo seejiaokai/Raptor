@@ -5901,7 +5901,7 @@ needed to type the NAME, never to pick dates. Three parts, together:
 **No sheet prints the stored `2026-07-17` (`[LW-ISO-DATES]`, 28 Sep 26 — the absence-record re-test, W4-2).** The bid
 sheet's header and its "moved from", the award, the Raptor sheet, the posting sheets and their notes, the one-day
 selection header, the move banner's refusal, the PO tag's hover and the absence door's refusals printed the machine date
-while the day's list beside them read "Sat 18 Jul". Two voices now, each the one its neighbours already speak
+while the day's list beside them read "Sat 18 Jul" (and the day's list's own "moved from" read "Wed 11 Feb" — Fable's final read F3). Two voices now, each the one its neighbours already speak
 (`leavewar/ui/dates.ts`): a sheet HEADED by one day reads like the day's list (`dayLabel` → "Fri 17 Jul"); a date inside a
 sentence or a span reads day-first with its year (`shortDate` → "17 Jul 26"); an Inputs date inside the war
 (`inputDayLabel`) reads "13 Jul", another year keeping its year. Machine attributes (test ids, input values) stay ISO.
@@ -8198,7 +8198,7 @@ no written end (D31) — so the chip, and with it the window, went silent. Now t
 out over the length the rest of the schedule assumes for such a row (the Logic tab's "Assumed length, no end time"; a
 sim row its own "Assumed sim length") and the chip shows. The window's title names it: "Sat · 18:30–19:30 · no end time,
 an hour assumed", and its flags measure that hour. **Where OIL is decided, the admin is told:** the "Who earns OIL" half
-reads "No OIL worked out — this row has no end time." and so does the row's switch in OIL Earn mode (its title) —
+reads "No OIL worked out — this row has no end time.", so does the row's switch in OIL Earn mode (its title), and so does each man's puck in that half — a tap on him keeps the reason in the footer (Fable's final read F1) —
 nobody is credited from a guessed hour; "who's available", open to everyone, carries the assumed hour only. The crowd is
 frozen at publication like any other (D44), so a later change — the Logic tab's length included — reads pending (D45).
 **A row with NO start** (or one that starts and ends at the same minute) still counts nobody, but its placeholder wears
