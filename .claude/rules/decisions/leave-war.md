@@ -61,12 +61,12 @@ rules — `raptor-port/docs/superpowers/specs/2026-09-20-one-absence-behaviour-r
 | D333 | 27 Sep 26 | A MEMBER GETS MOVE ON HIS OWN BID WHILE BIDDING IS OPEN — ON THE ONE-DAY SHEET AND THE DAY'S LIST, AS THE DRAG ALREADY LETS HIM. |
 | D332 | 27 Sep 26 | "DELETE" IS THE ONE WORD FOR TAKING A RECORD AWAY, ON EVERY LEAVE WAR SHEET — THE ONE-DAY SHEET'S "CLEAR" AND THE DAY'S LIST'S "CLEAR" BECOME "DELETE" — IN A DASHED GREY EDGE, NOT RED |
 | D331 | 27 Sep 26 | BOTH SHEETS FOLLOW ORDER A: DECIDE (Ack · Approve · Refuse) → SELECTED (Move · Delete) → HOW MUCH → WHICH LEAVE |
-| D330 | 27 Sep 26 | THE MOVE BUTTON HAS ONE LOOK OF ITS OWN — THE SAME DESIGN AND COLOUR ON EVERY SHEET THAT OFFERS IT (the one-day sheet, the drag-selection sheet, the day's list), AND A LITTLE DIFFERENT FROM THE SHEET'S OTHER BUTTONS. |
+| D330 | 27 Sep 26 | The Move button has one look of its own on every sheet that offers it, set apart from the sheet's other buttons: the grey chip with a teal arrow before the word ("⇄ Move") (D334). — changed by D334 |
 | D267 | 27 Sep 26 | PR #444 merges first; D264–D266 ([LW-MOVE-STANDARD]) are built afterwards on a new branch from main — mock-up first, its own FULL check, his look and "merge live". |
 | D266 | 27 Sep 26 | A day's list (a day holding several records) moves a record the same way as a single chip — its own Move per record, no date box, picking that record up into the grid's move mode; a member may move his own bid while bidding is open (D333). — changed by D333 |
 | D265 | 27 Sep 26 | A RECORD THAT CAN MOVE ALWAYS OFFERS MOVE, WHATEVER SHARES ITS DAY. |
 | D264 | 27 Sep 26 | THE ONE-DAY SHEET AND THE DRAG-SELECTION SHEET SHARE ONE FORMAT AND ONE LOOK |
-| D262 | 27 Sep 26 | ONE CHIP, ONE MOVE: THE ONE-DAY SHEET'S MOVE IS ALWAYS PRESSABLE AND PICKS THE CHIP UP — NO DATE BOX. |
+| D262 | 27 Sep 26 | One chip, one move: the one-day sheet's Move is always pressable and picks the chip up into the grid's move mode — no date box; while moving, the grid scrolls at its edges, the months keep it on, an empty tap outside cancels; a day's list moves a record the same way (D266). — changed by D266 |
 | D160 | 24 Sep 26 | BUILD A "RESET ORDER" LINE IN THE LEAVE WAR ⚙ SETTINGS |
 | D159 | 24 Sep 26 | Leave it: the desktop Leave War grid opens at normal size (zoom 1); only the phone opens one step out. |
 

@@ -64,6 +64,27 @@ export function headingProblem(d, h) {
   if (h.includes('|')) return `${d}'s heading holds a "|" — write it without one`
   if ([...h].length > SHORT_MAX) return `${d}'s heading is ${[...h].length} characters — shorten its first bold sentence to at most ${SHORT_MAX}, stating the rule on its own`
   if (/:\s*$/.test(h)) return `${d}'s heading ends in ":" and so does not state the rule on its own — rewrite its first bold sentence`
+  return shortTextProblem(d, h)
+}
+
+/* THE RETIRE MARK (DECISIONS.md step 2) at the head of a full row's RULING cell: the row leaves for the archive. One
+   definition for both scripts (Fable's code read); the dated and dashed forms the change marks teach are accepted too
+   ("**— REPLACED 27 Sep 26 BY D300: …**"). */
+export const MARKED = /^\*\*(?:—\s*)?(?:(?:REPLACED|REVERSED|SUPERSEDED|ENDED)(?:\s+\d{1,2}\s+[A-Z][a-z]{2}\s+\d{2})?\s+BY\s+D\d+|SPENT\b)/
+export const isRetired = cells => MARKED.test(cells[2] || '')
+/* Is this live row the same ruling as that archived one — equal but for the retire mark at the head of the ruling cell?
+   A live row under an archived number with OTHER text is a reused number, never a copy to drop (Fable's code read). */
+const unmark = c => (c || '').replace(/^\*\*[^*]*\*\*\s*/, '')
+export const sameRuling = (a, b) => { const x = cellsOf(a), y = cellsOf(b); return x.length === y.length && x.every((c, i) => (i === 2 ? unmark(c) === unmark(y[i]) : c === y[i])) }
+
+/* why a short line's rule text cannot stand — null when it can: empty, over the cap, any "|" at all (an escaped one
+   too), or the reserved tail syntax inside the text (Astra's code read: "— changed by D999 — changed by D20" passed) */
+export function shortTextProblem(d, text) {
+  const t = (text || '').trim()
+  if (!t) return `${d}'s short line is empty — state the rule`
+  if (t.includes('|')) return `${d}'s short line holds a "|" — write it without one (not even "\\|")`
+  if (/—\s*changed by\s+D\d/i.test(t)) return `${d}'s short line holds "— changed by D…" inside its text — that is the tail's syntax, written by the converter from the full row's marks`
+  if ([...t].length > SHORT_MAX) return `${d}'s short line is ${[...t].length} characters (its change tail not counted) — at most ${SHORT_MAX}: state the rule, the detail stays in its full row`
   return null
 }
 

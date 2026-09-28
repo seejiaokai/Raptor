@@ -59,7 +59,7 @@ work, already loaded: **D54** (an issued weekend carrying a placeholder raises t
 | D35 | 22 Sep 26 | Re-confirms D24 and makes its template half explicit: the four exempt kinds offer the OIL switch (off by default), and so does a duty block minted from an AVALON template — the same seat, one answer. |
 | D32 | 22 Sep 26 | One list, not two: wherever a placeholder puck is allowed to land, it also offers the OIL switch — landing and earning are one decision; on by default there, like named people (D43). — changed by D43 |
 | D31 | 22 Sep 26 | A SEAT WITH NOTHING TO MEASURE OFFERS NO OIL SWITCH — IT SAYS WHY INSTEAD. |
-| D28 | 22 Sep 26 | One principle instead of an allow-list: every seat can earn, its default decides whether it does, and the admin can always override; the placeholder pucks default on wherever they land (D43). — changed by D43 |
+| D28 | 22 Sep 26 | One principle instead of an allow-list: every seat can earn, its default decides whether it does, and the admin can always override; the placeholder pucks default on wherever they land (D43); a seat with nothing to measure offers no switch and says why (D31). — changed by D43, D31 |
 | D26 | 22 Sep 26 | Leave the OIL mode's phone tap targets as they are — he settles OIL on his phone easily; do not re-open it or re-file it as a defect; nothing to build. |
 | D25 | 22 Sep 26 | OIL IS EARNED LEAVE, NOT PAY — say it that way. |
 | D24 | 22 Sep 26 | The exempt kinds — SC SPARE, AVALON flying lines and duty desks, BB flying lines — become creditable: they offer the OIL switch in the mode, defaulting off, so an activated one can be credited (on a published day through an ordinary amendment). Supersedes D15 and D20 in part. |

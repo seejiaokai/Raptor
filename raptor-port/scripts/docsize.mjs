@@ -170,15 +170,16 @@ const isCommit = ref => ref && tryGit('rev-parse', '--verify', '--quiet', `${ref
 function findBase() {
   const env = process.env.DOCSGUARD_BASE
   if (env && !/^0+$/.test(env) && isCommit(env)) return env.trim()
-  if (env) {
-    const prev = tryGit('rev-parse', 'HEAD~1')
-    if (prev) return prev.trim()
-  }
+  /* An unusable DOCSGUARD_BASE (all zeroes on a first push, or not a commit) falls through to the fork point from main,
+     as a local run does — HEAD~1 alone missed a ruling dropped two commits back (Astra's code read, 28 Sep 26). Only
+     when that fork point IS HEAD (a push to main itself) does it fall back to the commit before. */
+  const head = tryGit('rev-parse', 'HEAD')?.trim()
   for (const ref of ['origin/main', 'main']) {
-    const mb = tryGit('merge-base', 'HEAD', ref)
-    if (mb) return mb.trim()
+    const mb = tryGit('merge-base', 'HEAD', ref)?.trim()
+    if (mb && !(env && mb === head)) return mb
   }
-  return tryGit('rev-parse', 'HEAD')?.trim() || null
+  if (env) { const prev = tryGit('rev-parse', 'HEAD~1'); if (prev) return prev.trim() }
+  return head || null
 }
 const BASE = findBase()
 
@@ -207,7 +208,7 @@ const rulingRows = when => rulingFiles(when).flatMap(f => rulingRowsIn(f, when =
 /* a ruling's IDENTITY is its full row (a malformed one still counts, so it is failed for its shape, never as lost) */
 const identityRows = when => rulingRows(when).filter(r => r.kind !== 'short')
 /* A row whose ruling cell OPENS with a replaced or spent mark belongs in the archive (DECISIONS.md, step 2). */
-const MARKED = /^\*\*(?:(?:REPLACED|REVERSED|SUPERSEDED|ENDED) BY D\d+|SPENT\b)/
+const MARKED = RL.MARKED /* one definition, shared with the converter (Fable's code read, D390) */
 const rulingCell = line => (line.split('|').map(s => s.trim())[3] || '')
 /* The map: DECISIONS.md's rows whose second cell is a backticked ruling file; the last cell lists its D-numbers. */
 const MAP_ROW = /^\| ([^|]+?) \| `([^`]+)` \| ([^|]*?) \| ([^|]*?) \|\s*$/
@@ -449,7 +450,7 @@ function rulings(allow) {
       if (!areas.has(r.file)) fails.push(`${r.d}'s short line is in ${r.file} — a short line lives only in an area file under ${RULINGS_DIR}/`)
       continue
     }
-    const by = /^\*\*(?:REPLACED|REVERSED|SUPERSEDED|ENDED) BY (D\d+)/.exec(rulingCell(r.line))
+    const by = /^\*\*(?:—\s*)?(?:REPLACED|REVERSED|SUPERSEDED|ENDED)(?:\s+\d{1,2}\s+[A-Z][a-z]{2}\s+\d{2})?\s+BY\s+(D\d+)/.exec(rulingCell(r.line))
     if (by && !dNow.includes(by[1])) fails.push(`${r.d} is marked replaced by ${by[1]}, and no such ruling exists`)
     if (r.file === DECISIONS) fails.push(`${r.d} is written in ${DECISIONS} — a ruling lives in its area's file under ${RULINGS_DIR}/ (the map in ${DECISIONS} names them); move the row there, then run: ${MOVER_CMD}`)
     else if ((areas.has(r.file) || fulls.has(r.file)) && MARKED.test(rulingCell(r.line))) fails.push(`${r.d} is marked replaced/spent but is still in ${r.file} — move it to the archive: ${MOVER_CMD}`)
@@ -472,7 +473,8 @@ function rulings(allow) {
     if (RL.stem(f.file) !== RL.stem(s.file)) fails.push(`${s.d}'s short line is in ${s.file} but its full row in ${f.file} — the full row follows its short line: ${MOVER_CMD}`)
     const cells = RL.cellsOf(f.line)
     if (p.date !== cells[1]) fails.push(`${s.d}'s short line says ${p.date}, its full row ${cells[1]} — the date is the full row's`)
-    if ([...p.text].length > RL.SHORT_MAX) fails.push(`${s.d}'s short line is ${[...p.text].length} characters (its change tail not counted) — at most ${RL.SHORT_MAX}: state the rule, the detail stays in its full row`)
+    const bad = RL.shortTextProblem(s.d, p.text)
+    if (bad) fails.push(`${bad} (${s.file})`)
     const marks = RL.marksOf(cells), missing = [...marks].filter(x => !p.tail.has(x)), extra = [...p.tail].filter(x => !marks.has(x))
     if (missing.length || extra.length) fails.push(`${s.d}'s short line ${missing.length ? `does not name ${missing.join(', ')}, which ${missing.length > 1 ? 'change' : 'changes'} it` : ''}${missing.length && extra.length ? ', and ' : ''}${extra.length ? `names ${extra.join(', ')}, which its full row carries no mark for` : ''} — write the mark in the full row (${DECISIONS} step 2), then: ${MOVER_CMD}`)
   }

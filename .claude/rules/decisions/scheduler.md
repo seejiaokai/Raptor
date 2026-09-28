@@ -49,7 +49,7 @@ speed — `raptor-port/docs/performance.md`; what is stored — `raptor-port/doc
 | D346 | 28 Sep 26 | Three readings of the changes window stand as built: changes that belong to no single item sit under one group, "The day"; on a desktop a remark's gold dot sits at the far right of its column; in the week view an input covering two days shows as an item under each day. |
 | D345 | 28 Sep 26 | Both mock-ups are the designs of record: [CHG-BY-ITEM] — the changes window grouped by item (the default, "Group by: Item / Who"), the latest-changed on top, every group open; [HIST-PHONE-HIDE] — the phone's "Hide ▾" to a slim bar and a gold dot on every detail with a history. |
 | D344 | 28 Sep 26 | THE HISTORY HINT READS, IN HIS WORDS: "History on: Tap a gold dot on the schedule". |
-| D340 | 28 Sep 26 | — SETTLED 28 Sep 26 BY D345: the mock-up approved, its calls with it. — changed by D345 |
+| D340 | 28 Sep 26 | The changes window sorts by item and every line is labelled by its item first — the item in bold, the change under it, never the man first; one group per item, the group whose latest change is newest at the top, a sub-line per change inside an item changed more than once; settled by D345's approved mock-up, its calls with it. — changed by D345 |
 | D339 | 28 Sep 26 | History on a phone says it is on and lets the schedule be seen: the hint "History on: Tap a gold dot on the schedule" (D344); "Hide ▾" sends the changes window to a slim bar at the bottom ("Show ▴" brings it back, ✕ turns History off); a gold dot on every detail with a history — as approved with D345's mock-up. — changed by D345, D344 |
 | D338 | 28 Sep 26 | The one changes window's eleven readings stand as built — among them: the change history outlives a sign-out and a reload, what is new kept per person; one count per day; History mode is on while the window is open; the clock icon is on Edit Schedule only; members see the To go out tab, read only. |
 | D337 | 28 Sep 26 | DELETING A MAN LISTS EVERYTHING THE DELETE TOOK AWAY, ONE LINE EACH, AS BUILT |
@@ -61,7 +61,7 @@ speed — `raptor-port/docs/performance.md`; what is stored — `raptor-port/doc
 | D274 | 27 Sep 26 | Three of the five-flags batch's four visible changes are approved as built — his own flagged puck without the glow, Leave War ⚙ Reset order, a swap inside one crowd without "already on"; the room beside the ‹ arrow was not approved. — changed by D275 |
 | D272 | 27 Sep 26 | IN OIL EARN MODE HIS OWN PUCK SHOWS THE GREEN OIL RING, NOT THE PURPLE ONE — the purple fill stays. |
 | D271 | 27 Sep 26 | A MAN PUT ON A ROW HE IS ALREADY ON IS REFUSED — ONE MAN, ONCE PER ROW. |
-| D270 | 27 Sep 26 | ON YOUR OWN PUCK, A FLAG'S RING WINS OVER THE PURPLE "THIS IS YOU" RING. |
+| D270 | 27 Sep 26 | On your own puck a flag's ring wins over the purple "this is you" ring — amber, thin red, grey, dotted, as on anyone's puck, with no glow; the purple fill stays; in OIL Earn mode the green OIL ring shows too (D272). — changed by D272 |
 | D263 | 27 Sep 26 | THE CHANGE HISTORY RECORDS EVERY CHANGE TO AN ABSENCE, NOT ONLY ITS FILING AND REMOVAL |
 | D212 | 26 Sep 26 | THE FOUR SIGN-OFFS STAY AS THEY ARE: AN ADMIN PICKS ALL FOUR NAMES |
 | D189 | 26 Sep 26 | Keep it: when a leave or downchit is stretched or trimmed, every published day it still covers reads "1 pending" and its sign-offs fall, because the "till <date>" note it printed is now out of date; View-only Sched keeps the old words until the next AL. |
@@ -71,20 +71,20 @@ speed — `raptor-port/docs/performance.md`; what is stored — `raptor-port/doc
 | D185 | 26 Sep 26 | A CREW-REST OR 7-DAY BREAK ON A PUBLISHED DAY, AND A LAPSED QUALIFICATION, STAY LIVE ON ITS FACE; A MEDICAL DOWNCHIT STAYS FROZEN (D179 unchanged for it). |
 | D184 | 26 Sep 26 | THE 7-DAY RUN WARNING STAYS LIVE ON A PUBLISHED DAY'S FACE TOO |
 | D183 | 26 Sep 26 | THE DOTTED "BREAKS TOMORROW'S CREW REST" MARK (and its RUN twin) STAYS LIVE ON A PUBLISHED DAY'S FACE — an exception to D179's "freeze everything for now". |
-| D179 | 25 Sep 26 | NOTHING STAYS LIVE ON A PUBLISHED DAY FOR NOW: EVERY CHANGE THAT WOULD MOVE WHAT IT SHOWS FREEZES, AND SHOWS AS PENDING FOR THE ADMIN |
-| D178 | 25 Sep 26 | Every member input change after a day is published — filed, edited, deleted or moved — is a pending change for the admin, and the published face keeps what it was issued with; what may stay live was answered by D179: nothing, for now. — changed by D179 |
+| D179 | 25 Sep 26 | Everything on a published day freezes for now, and a change shows as pending for the admin — a medical downchit included; the exceptions ruled since stay live on the face: the dotted crew-rest mark and its RUN twin, a crew-rest or 7-day breach on the day, and the Qualification-flag warnings (D183, D184, D185). — changed by D185, D184, D183 |
+| D178 | 25 Sep 26 | Every member input change after a day is published — filed, edited, deleted or moved — is a pending change for the admin, and the published face keeps what it was issued with; what still stays live on the face is D179's rule with its exceptions (D183, D184, D185). — changed by D179 |
 | D177 | 25 Sep 26 | A leave filed after a day is published is a pending change: the day reads "1 pending", the four sign-offs fall, the published face keeps what it was issued with until the next AL — widened to every input change (D178); a medical downchit freezes and reads pending too (D179, D185). — changed by D185, D179, D178 |
 | D176 | 25 Sep 26 | A REQUEST THAT WAS "TAKEN OFF" WHEN THE DAY WAS PUBLISHED, AND IS SINCE DELETED (OR RE-DATED OFF THE DAY), IS NO PENDING CHANGE — THE DAY READS 0 AND THE FOUR SIGN-OFFS HOLD. |
 | D175 | 25 Sep 26 | A LOAD OR A PLAN SWITCH NEVER PUTS A REQUEST ON A SECOND DAY: IT LEAVES THAT ROW OUT AND SAYS SO — built on ITS OWN small branch right after PR #435 merges, BEFORE `[ACCOUNTS]`. |
 | D174 | 25 Sep 26 | A REQUEST THAT WAS NOT THERE WHEN THE DAY WAS PUBLISHED, FILED SINCE AND THEN TAKEN OFF, IS NO PENDING CHANGE — THE DAY READS 0. |
-| D172 | 25 Sep 26 | THE CORNER TAG ON AN UNPUBLISHED DAY'S CHANGED PUCK SHOULD BE SHORTER THAN "ORIG". |
-| D171 | 25 Sep 26 | The ways into the changes window: members open it from a day's own count (no top-bar button); admins get a top-bar clock icon only, desktop too, whose number counts what is new to you across the whole loaded week; every day heading's count stays the per-day way in. |
+| D172 | 25 Sep 26 | The corner tag on a changed puck of a day not yet published reads "OG", in the plain white dotted outline — shorter than "ORIG", never gold or amber; the day headings stay as they are: ORIG keeps its ticked seal (D111), the AL tags stay solid with no tick. |
+| D171 | 25 Sep 26 | The ways into the changes window: members open it from a day's own count (no top-bar button); admins get a top-bar clock icon only — on Edit Schedule, desktop too — whose number counts what is new to you across the whole loaded week; every day heading's count stays the per-day way in. — changed by D338 |
 | D170 | 25 Sep 26 | NO HAND OVER BUTTON. CHANGES ARE "NEW TO YOU" UNTIL YOU MARK THEM SEEN — LIKE UNREAD EMAIL. |
 | D169 | 25 Sep 26 | Members see the full change history too — who changed what, on every day — from View-only Sched via the live working copy, read only; a medical change in full too (D211). — changed by D211 |
 | D168 | 25 Sep 26 | One changes window for the whole app — the published day's pending list, an unpublished day's hand-over list and the Edit history list merged: movable, resizable, a day picker, "Group by", a tap goes there; grouped by item, every line led by its item (D340). — changed by D340 |
 | D167 | 25 Sep 26 | The changes list is a movable, resizable window that does not block the schedule (on a phone a bottom panel that shrinks to a bar); a tap takes the schedule to the change and the window stays; it lists people and sittings, not hand overs (D170); every group opens by default (D345). — changed by D345, D170 |
 | D119 | 25 Sep 26 | THE PENDING LIST SHOWS THE NEWEST CHANGE FIRST, AS EDIT HISTORY DOES. |
-| D118 | 25 Sep 26 | An unpublished day's count must not miscount or be untappable: it is a hand-over between schedulers, the next one seeing what changed — settled by D170: no hand-over button; changes are "new to you" until you mark them seen. — changed by D170 |
+| D118 | 25 Sep 26 | An unpublished day's count must not miscount or be untappable: it is a hand-over between schedulers, the next one seeing what changed — settled by D170: changes are "new to you" until you mark them seen; the hollow corner tag reads "OG" (D172). — changed by D172, D170 |
 | D117 | 25 Sep 26 | THE EDIT HISTORY LIST SHOWS THE WHOLE WEEK, WITH A DAY PICKER TO NARROW IT TO ONE DAY. |
 | D116 | 25 Sep 26 | EDIT SCHEDULE'S HISTORY BUTTON WORKS LIKE THE BOARD'S: A TOGGLE. |
 | D114 | 25 Sep 26 | TAKING AN ACCEPTED REQUEST OFF A PUBLISHED DAY IS ONE PENDING CHANGE, NOT TWO. |
@@ -92,13 +92,13 @@ speed — `raptor-port/docs/performance.md`; what is stored — `raptor-port/doc
 | D111 | 25 Sep 26 | THE ORIG TAG IS "A1, SEAL": a faint white wash, a thin light outline, and a drawn tick in a white disc before "ORIG" |
 | D110 | 25 Sep 26 | THE ORIG TAG TAKES OPTION A'S DIRECTION — NO COLOUR, A TICK — AND GETS A NICER DESIGN WITHIN IT. |
 | D109 | 25 Sep 26 | A MAN MOVED FROM ONE PLACE TO ANOTHER ON THE SAME DAY IS ONE PENDING CHANGE, NOT TWO. |
-| D108 | 25 Sep 26 | THE ORIG TAG STANDS OUT, SO A READER SEES AT A GLANCE THAT THE DAY IS PUBLISHED. |
+| D108 | 25 Sep 26 | The ORIG tag stands out so a reader sees at a glance that the day is published — its form "A1, SEAL": a faint white wash, a thin light outline and a drawn tick before "ORIG" (D110, D111); never an AL colour or a warning colour. — changed by D111, D110 |
 | D107 | 25 Sep 26 | A TAP ON A CHANGE IN EDIT HISTORY KEEPS HIM ON THE PAGE HE IS ON. |
 | D105 | 25 Sep 26 | THE CHANGE BUBBLE STAYS — HOVER ON A DESKTOP, TAP ON A PHONE — AND A LONG ONE SCROLLS INSIDE ITSELF. |
 | D103 | 25 Sep 26 | ANY CHANGE THAT SHOWS AS PENDING ON A PUBLISHED DAY WIPES THE SIGN-OFFS — ONE RULE: SOMETHING WAITING MEANS SIGN AGAIN. |
 | D102 | 25 Sep 26 | THE SLIM "SIGNED ALn" LINE UNDER THE DAY HEAD — ON VIEW-ONLY SCHED, THE SCHEDULER BOARD AND THE EDIT WEEK. |
 | D101 | 25 Sep 26 | No "Reissue AL1" button: after an Unpublish the withdrawn amendment's changes stay on the working copy as pending, and "Publish AL1" brings the day back. |
-| D100 | 25 Sep 26 | The pending-list mock-up is the design of record for D99: "N pending ▾" opens the short list of what will go out (where, before → after, who, when), a tap takes the view to it, and a long list scrolls inside the window. |
+| D100 | 25 Sep 26 | The pending-list mock-up was approved, look and function, as D99's design of record: "N pending ▾" opens the short list of what will go out (where, before → after, who, when), a tap takes the view to it, a long list scrolls inside the window — since D168 that list lives in the one changes window. — changed by D168 |
 | D99 | 25 Sep 26 | "N PENDING" BECOMES A BUTTON THAT LISTS WHAT IS WAITING TO GO OUT ON THAT DAY, AND TAPPING AN ITEM TAKES THE VIEW TO IT. |
 | D98 | 25 Sep 26 | A DAY THAT IS BACK TO WHAT WAS PUBLISHED SHOWS NOTHING PENDING AND IS NO AMENDMENT — AND "LOAD ONTO WORKING COPY" MUST GET IT THERE. |
 | D97 | 25 Sep 26 | The working-copy marker on a published day with changes waiting has two states: "Not yet signed" while any of the four sign-offs is missing or no longer valid; "Not yet published" once all four are valid — never on the issued face. |
@@ -113,15 +113,15 @@ speed — `raptor-port/docs/performance.md`; what is stored — `raptor-port/doc
 | D77 | 23 Sep 26 | No phone resize corner for the ALL AVAIL window: on a phone it keeps the full-width bottom panel (62% tall), movable, not resizable; desktop resizing unchanged — do not build it or ask again unless he raises it. |
 | D66 | 23 Sep 26 | The ALL AVAIL window closes when he changes page — and on a switch between Edit Schedule and View-only Sched, a week change and logout; a click on the schedule behind it never closes it. |
 | D65 | 23 Sep 26 | A tap on a man in the ALL AVAIL window depends on the mode: with OIL Earn off it highlights him everywhere (the ordinary selection) and the window shows his reason; with OIL Earn on it only switches his earning and selects nothing. |
-| D51 | 22 Sep 26 | INSIDE THE EARN MODE, A CROWD OPENS TWO ACROSS ON A PHONE, AND THE TWO COLUMNS CARRY SEAT IDENTITY — PILOTS LEFT, WSOs RIGHT. |
+| D51 | 22 Sep 26 | Pilots left, WSOs right when a crowd opens on a phone in the earn mode — but this adds nothing new and is not built on its own: it is D38–D41's ALL AVAIL window ([ALL-AVAIL-WINDOW]), which shows the crowd as real pucks in two columns; do not patch two-across into the in-row crowd. |
 | D50 | 22 Sep 26 | A SIM ROW ALWAYS SHOWS ONE SPARE SEAT, EVEN WHEN IT IS FULL. |
 | D47 | 22 Sep 26 | D33 stands whole: ALL / ALL AVAIL are refused on flying-line cockpit seats at every door, but a placeholder still arms its seat everywhere else it is legal, and tapping an empty cockpit seat still narrows the crew list — only the cockpit instance of the 13 Aug shortcut is gone. |
-| D45 | 22 Sep 26 | Who was available on a published day is frozen at publication: a later change in availability shows as pending (cleared by an amendment or the EOD version), every day the same — and any pending change on a published day now wipes the sign-offs (D103). — changed by D103 |
+| D45 | 22 Sep 26 | Nothing on a published schedule may change without the scheduler acknowledging it — the standing test for any change that touches an issued day: who was available is frozen at publication, a later change shows as pending (cleared by an amendment or the EOD version), every day the same; any pending change now wipes the sign-offs (D103). — changed by D103 |
 | D44 | 22 Sep 26 | WHO WAS BEHIND A PLACEHOLDER PUCK IS FROZEN AT PUBLICATION ON EVERY DAY, EARNING OR NOT. |
 | D41 | 22 Sep 26 | The ALL AVAIL window mock-up is the design of record for [ALL-AVAIL-WINDOW]: movable by the six-dot grip, resizable, non-blocking; one puck per row, pilots left, WSOs right; 212px default, 186px floor; reasons under pucks; a counter with no "free"; the OIL tab only while OIL Earn is on. |
 | D40 | 22 Sep 26 | THE WINDOW OPENS SKINNY, AND ITS DRAG HANDLE IS THE APP’S OWN SIX-DOT GRIP. |
-| D39 | 22 Sep 26 | TWO FIXES TO THE WINDOW’S DEFAULT, BOTH FROM HIS OWN PICTURE. |
-| D38 | 22 Sep 26 | THE NAME BUBBLE IS REPLACED BY A MOVABLE, RESIZABLE, NON-BLOCKING WINDOW OF REAL PUCKS — ONE WINDOW, TWO JOBS. |
+| D39 | 22 Sep 26 | Two fixes to the ALL AVAIL window's default, both from his own picture: one puck per row — each column a list running down, pilots left, WSOs right, at every width; and the counter chip drops the word "free" (it reads "ALL AVAIL · 27"). |
+| D38 | 22 Sep 26 | The name bubble is replaced by a movable, non-blocking window of real pucks — pilots left, WSOs right, flagged, clickable — serving both counters (who is available, who is credited OIL); resizable on desktop, not on a phone (D77). — changed by D77 |
 | D37 | 22 Sep 26 | THE COUNT STAYS, ON EVERY SEAT THE PUCK CAN LAND ON — BUT IT MUST READ AS WHAT IT IS, NOT AS A PROMISE. |
 | D36 | 22 Sep 26 | THE AVAILABILITY WINDOW STAYS NARROW — STEP BEFORE TAKE-OFF TO DEKIT AFTER LANDING. DO NOT WIDEN IT TO THE REPORT OR THE DEBRIEF. |
 | D33 | 22 Sep 26 | The two placeholder pucks (ALL / ALL AVAIL) are refused on flying lines only — both cockpit seats of every flying line, with the reason on screen; everywhere else they land (sim seats, duty desks, passengers, extras, ground and programme rows), and there they earn by default (D43). — changed by D43 |

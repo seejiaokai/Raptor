@@ -85,7 +85,7 @@ when a man is deleted or archived: `scheduler.md` (D44, D45).
 | D303 | 27 Sep 26 | A POSTING WITH NO CHIP CHOSEN STAYS: "OFF THE MANPOWER, NOTHING ELSE". |
 | D301 | 27 Sep 26 | [POST-OUT-OUTCOMES] started before PR #443 merged, on a new branch cut from claude/accounts-new-person, with its own FULL check; its "merge live" comes only after #443's. |
 | D300 | 27 Sep 26 | THE POST-OUT SHEET SAYS EACH THING ONCE: THE DATE IN ITS BOX, ONE LINE FOR WHAT HAPPENS ON IT ("On 14 Oct: archived on Quals, account suspended."), AND A BUTTON THAT READS JUST "POST OUT". |
-| D299 | 27 Sep 26 | A delete takes him out of today and the future while the past keeps its record of him — his pucks on days flown, his past leave and OIL, his inputs and signatures, the history; the post-out mock-up is the design of record for [POST-OUT-OUTCOMES]. |
+| D299 | 27 Sep 26 | A delete takes him out of today and the future while the past keeps its record of him — his pucks on days flown, his past leave and OIL, his inputs and signatures, the history; the post-out mock-up, trimmed to say each thing once (D300), is the design of record for [POST-OUT-OUTCOMES]. — changed by D300 |
 | D298 | 27 Sep 26 | THE POST-OUT CHIP READS "DELETE", NOT "FULLY DELETE". |
 | D297 | 27 Sep 26 | A MAN DELETED FOR LEAVING FLYING FOR GOOD KEEPS HIS PUCK ON EVERY DAY HE ALREADY FLEW — PUBLISHED OR NOT — AND IS TAKEN OFF EVERY DAY STILL TO COME |
 | D296 | 27 Sep 26 | A GUEST FROM ANOTHER COMMUNITY IS MARKED BY AN ORANGE CORNER ON HIS PUCK (option A). |
@@ -97,7 +97,7 @@ when a man is deleted or archived: `scheduler.md` (D44, D45).
 | D290 | 27 Sep 26 | A MAN DELETED FOR LEAVING FLYING FOR GOOD (D287) IS KEPT UNDERNEATH AS A HIDDEN "DELETED" MARK — never erased. |
 | D289 | 27 Sep 26 | A COMMUNITY IS THE SQUADRONS FLYING ONE AIRCRAFT TYPE (F-15, F-16), AND A GUEST FROM ANOTHER COMMUNITY IS ALWAYS MARKED AS ONE. |
 | D288 | 27 Sep 26 | CALLSIGNS ARE UNIQUE WITHIN A COMMUNITY, NOT ACROSS THE APP. |
-| D287 | 26 Sep 26 | A man who leaves flying for good is deleted — his account and his person, from every list and every day still to come — while every day he already flew keeps his puck (D297); he is kept underneath as a hidden mark (D290); the delete asks twice and cannot be undone. — changed by D297 |
+| D287 | 26 Sep 26 | A man who leaves flying for good is deleted — his account and his person, from every list and every day still to come — while every day he already flew keeps his puck (D297) and the past keeps his record (D299); he is kept underneath as a hidden mark (D290); the delete asks twice. — changed by D299, D297, D290 |
 | D286 | 26 Sep 26 | AN ARCHIVED MAN'S CALLSIGN MAY BE GIVEN TO A NEW PERSON. IF THE ARCHIVED MAN IS LATER RESTORED WHILE HIS CALLSIGN IS IN USE, ONE OF THE TWO MUST BE RENAMED FIRST. |
 | D285 | 26 Sep 26 | THE ACCOUNT BUTTONS READ "SUSPEND" / "ENABLE" AND "DELETE ACCOUNT". |
 | D284 | 26 Sep 26 | A MAN BACK FROM OVERSEAS RETURNS AS HE WAS — HIS QUALS KEPT — AND THE APP PROMPTS THE ADMIN TO UPDATE THEM. |
@@ -105,7 +105,7 @@ when a man is deleted or archived: `scheduler.md` (D44, D45).
 | D282 | 26 Sep 26 | NEIGHBOURING SQUADRONS PLAN EACH OTHER'S PEOPLE AS A MATTER OF COURSE — not only while a man is being posted. |
 | D281 | 26 Sep 26 | A posting to another squadron will be a transfer — future, with the multi-squadron database; neighbouring squadrons may plan each other's people as a matter of course (D282), while his leave, quals and account stay his own squadron's. — changed by D282 |
 | D280 | 26 Sep 26 | An account can be suspended and enabled again (a man away, then back) and deleted (a man who leaves flying for good) — a delete now takes the person too (D287). — changed by D287 |
-| D229 | 26 Sep 26 | A posting out has four outcomes; the admin picks one and the app does it on the posting-out date: overseas to another squadron → archived, account suspended (D280); leaving flying for good → account deleted; posted to another workplace but still flies → becomes SANS; transferred to another squadron → future (D281). — changed by D283 |
+| D229 | 26 Sep 26 | A posting out has four outcomes; the admin picks one and the app does it on the posting-out date: overseas to another squadron → archived, account suspended (D280); leaving flying for good → deleted, person and account (D287); another workplace but still flies → SANS (D283); transferred to another squadron → future (D281). — changed by D287, D283 |
 | D227 | 26 Sep 26 | EACH ADMIN'S BELL IS HIS OWN (D216's "he" read per admin). |
 | D226 | 26 Sep 26 | THE CALLSIGN/NAME STAYS AT 14 LETTERS, AND THE BOX SAYS SO — IT NEVER QUIETLY CUTS A NAME. |
 | D225 | 26 Sep 26 | INITIALS ARE ASKED BUT NEVER REQUIRED — on the sign-up and on Admin → Users' New person alike. |
@@ -114,7 +114,7 @@ when a man is deleted or archived: `scheduler.md` (D44, D45).
 | D222 | 26 Sep 26 | ON THE SIGN-UP CARD ONLY, THE FIRST FIELD READS "DISPLAYED CALLSIGN/NAME" |
 | D221 | 26 Sep 26 | WITH GUEST ACCESS ON, THE WAITING SCREEN OFFERS A BUTTON INTO THE GUEST VIEW |
 | D220 | 26 Sep 26 | THE SEAT CHOICE READS "PILOT" AND "WSO" |
-| D219 | 26 Sep 26 | THE FIELD THAT NAMES A PERSON READS "CALLSIGN/NAME" |
+| D219 | 26 Sep 26 | The field that names a person reads "Callsign/Name" — one field, the label on his puck — wherever it is asked or headed; on the sign-up card it reads "Displayed callsign/name" (D222). — changed by D222 |
 | D217 | 26 Sep 26 | One door for a new person: Admin → Users (the sign-in may be blank for someone who will not use the app); Quals keeps quals, CAT, flight and initials — archive and restore moved to Admin → Users too (D310). — changed by D310 |
 | D216 | 26 Sep 26 | A NEW ACCESS REQUEST NOTIFIES THE ADMINS |
 | D215 | 26 Sep 26 | A GUEST SEES WHAT A MEMBER SEES ON VIEW-ONLY SCHED, READ ONLY |

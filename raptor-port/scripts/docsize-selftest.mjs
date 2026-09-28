@@ -321,7 +321,7 @@ const resolvedWell = (c, r) =>
   : !/UNREAD[\s\S]*D9/.test(r.stdout) ? 'the made short line was not listed UNREAD' : ''
 mergeRulings('the old-layout branch merges the slim-down in (new rows, a one-sided edit, prose)', true, { oldSide: parallel, newSide: slimMarksD1, mergeInto: 'old', check: resolvedWell })
 mergeRulings('the slim-down merges the old-layout branch in — the same result', true, { oldSide: parallel, newSide: slimMarksD1, mergeInto: 'slim', check: resolvedWell })
-mergeRulings('a row both sides changed stops the command, naming it', false, { oldSide: c => c.edit(AREA, t => t.replace(fullRow('D2', 'b'), D2edit)), newSide: c => c.edit(FULL, t => t.replace('**Rule b.** b |', '**Rule b.** b, edited on the slim side |')), mergeInto: 'old', check: (c, r) => /D2 was changed on both sides/.test(r.stderr) ? '' : 'it did not name D2' })
+mergeRulings('a row both sides changed stops the command, naming it', false, { oldSide: c => c.edit(AREA, t => t.replace(fullRow('D2', 'b'), D2edit)), newSide: c => c.edit(FULL, t => t.replace('**Rule b.** b |', '**Rule b.** b, edited on the slim side |')), mergeInto: 'old', check: (c, r) => /D2 had its row changed on both sides/.test(r.stderr) ? '' : 'it did not name D2' })
 mergeRulings('a ruling retired on the old branch stays retired', true, { oldSide: c => { c.edit(AREA, t => dropD(t, 'D1')); c.edit('DECISIONS-ARCHIVE.md', t => t + '\n' + fullRow('D1', 'a').replace('| a |', '| **SPENT 22 Sep 26 — used.** a |') + '\n'); setMap(c, AREA, 'D2'); setMap(c, 'DECISIONS-ARCHIVE.md', 'D0, D1') }, mergeInto: 'old', check: c =>
   has(c, AREA, '| D1 |') || has(c, FULL, '| D1 |') ? 'D1 is live again' : !has(c, 'DECISIONS-ARCHIVE.md', '**SPENT 22 Sep 26 — used.**') ? 'D1 is not in the archive' : '' })
 
@@ -416,6 +416,94 @@ mover('--move: a CRLF source into an LF destination is refused', false, { prep: 
 const FAIL_SECOND_RENAME = "import fs from 'node:fs'; import { syncBuiltinESMExports } from 'node:module'; const real = fs.renameSync; let n = 0; fs.renameSync = (...a) => { if (++n === 2) { const e = new Error('the second rename, failed on purpose by the self-test'); e.code = 'EACCES'; throw e } return real(...a) }; syncBuiltinESMExports()\n"
 mover('--move: the SECOND write failing puts the first file back', false, { prep: c => { docs(c); c.write('fail-second-rename.mjs', FAIL_SECOND_RENAME) }, node: c => ['--import', pathToFileURL(join(c.dir, 'fail-second-rename.mjs')).href], args: moveTwo('--no-pointer'), check: (c, r) =>
   c.read(SRC) !== SRC0 ? 'the source was not put back' : c.read(DST) !== DST0 ? 'the destination changed' : !/put back/.test(r.stderr) ? 'did not say so' : existsSync(join(c.dir, SRC) + '.docmove-tmp') || existsSync(join(c.dir, DST) + '.docmove-tmp') ? 'left a temporary copy' : '' })
+
+/* ---- The final code reads of the slim-down (Fable and Astra, 28 Sep 26): one case per finding ---- */
+scenario('a short line holding an escaped "\\|" fails', true, c => c.edit(AREA, t => t.replace(shortRow('D1', 'a'), '| D1 | 21 Sep 26 | Rule a \\| b. |')), { mustSay: 'holds a "|"' })
+scenario('a short line hiding a second change tail inside its text fails', true, c => { narrowD1(c); c.edit(AREA, t => t.replace(shortRow('D1', 'a'), '| D1 | 21 Sep 26 | Rule a — changed by D999 — changed by D2 |')) }, { mustSay: 'inside its text' })
+scenario('a dated, dashed retire mark left live is caught', true, c => c.edit(FULL, t => t.replace('| D1 | 21 Sep 26 | a |', '| D1 | 21 Sep 26 | **— REPLACED 22 Sep 26 BY D2: b instead.** a |')), { mustSay: 'marked replaced/spent' })
+mover('--rulings retires a row with the dated, dashed retire mark', true, { prep: markD1('**— REPLACED 22 Sep 26 BY D2: b instead.**'), args: ['--rulings'], check: c => has(c, FULL, '| D1 |') || !has(c, 'DECISIONS-ARCHIVE.md', '**— REPLACED 22 Sep 26 BY D2: b instead.** a') ? 'D1 was not retired whole' : '' })
+mover('--short-text refuses an empty line', false, { prep: c => { c.edit(AREA, t => topOf(t, newFull('D9', '**Three things:** x.'))); c.write('short.tsv', 'D9\t   \n') }, args: ['--rulings', '--short-text', 'short.tsv'], check: (c, r) => /is empty/.test(r.stderr) ? '' : 'wrong reason' })
+const archD0text = '| D0 | 20 Sep 26 | z | z | `OUTSTANDING.md` |'
+mover('a NEW row under a number the archive holds is refused, never dropped (Fable F1)', false, { prep: c => c.edit(AREA, t => topOf(t, newFull('D0', '**A new rule reusing zero.**'))), args: ['--rulings'], check: (c, r) =>
+  !/never reused/.test(r.stderr) ? 'the refusal does not say why' : !has(c, AREA, '**A new rule reusing zero.**') ? 'the new row was dropped' : '' })
+mover('a live copy of a retired ruling (the same text) is dropped, not archived twice (Fable F7)', true, { prep: c => { c.edit(FULL, t => topOf(t, archD0text.replace('**REPLACED BY D1 (21 Sep 26).** ', ''))); c.edit(AREA, t => topOf(t, '| D0 | 20 Sep 26 | Rule z. |')) }, args: ['--rulings'], check: c =>
+  has(c, FULL, '| D0 |') || has(c, AREA, '| D0 |') ? 'the live copy stayed' : c.read('DECISIONS-ARCHIVE.md').split('| D0 |').length !== 2 ? 'D0 is in the archive other than once' : '' })
+mover('an old-layout file holding a marked row converts in ONE run — a second changes nothing (Fable F11)', true, { prep: c => { c.write(AREA, AREA_OLD.replace('| D1 | 21 Sep 26 | a |', '| D1 | 21 Sep 26 | **SPENT 22 Sep 26 — used.** a |')); rmSync(join(c.dir, FULL)); setMap(c, 'DECISIONS-ARCHIVE.md', 'D0'); c.commit('old layout, one row spent') }, args: ['--rulings'], check: c => {
+  if (!c.read(AREA).includes('| # | Date | The rule |')) return 'the header was not rewritten in the first run'
+  const snap = [c.read(AREA), c.read(FULL)].join('\0'); const r = spawnSync(process.execPath, ['raptor-port/scripts/backlog-archive.mjs', '--rulings'], { cwd: c.dir, encoding: 'utf8' })
+  return r.status !== 0 ? 'the second run failed' : [c.read(AREA), c.read(FULL)].join('\0') !== snap ? 'the second run changed a file' : '' } })
+mover('--rulings: the SECOND write failing puts every file back and removes what it created (Astra 5)', false, { prep: c => { c.write(AREA, AREA_OLD); rmSync(join(c.dir, FULL)); c.commit('old layout'); c.snap = [c.read(AREA), c.read('DECISIONS.md')]; c.write('fail-second-rename.mjs', FAIL_SECOND_RENAME) }, node: c => ['--import', pathToFileURL(join(c.dir, 'fail-second-rename.mjs')).href], args: ['--rulings'], check: (c, r) =>
+  [c.read(AREA), c.read('DECISIONS.md')].join('\0') !== c.snap.join('\0') ? 'a file was not put back' : existsSync(join(c.dir, FULL)) ? 'the full-text file it created is still there' : existsSync(join(c.dir, AREA) + '.docmove-tmp') ? 'a temporary copy was left' : !/put back/.test(r.stderr) ? 'did not say so' : '' })
+mover('--rulings refuses a rulings file that mixes line endings (Fable F6)', false, { prep: c => c.edit(AREA, t => t.replace(shortRow('D1', 'a') + '\n', shortRow('D1', 'a') + '\r\n')), args: ['--rulings'], check: (c, r) => /mixes CRLF and LF/.test(r.stderr) ? '' : 'wrong reason' })
+mover('--rulings refuses an area file with no byte tripwire, before writing', false, { prep: c => { c.write('.claude/rules/decisions/third.md', OTHER_HEAD.replace('other', 'third') + newFull('D9', '**Nine.**') + '\n'); c.edit('DECISIONS.md', t => t.replace('| Archive |', mapRow('Third', '.claude/rules/decisions/third.md', 'D9') + '\n| Archive |')) }, args: ['--rulings'], check: (c, r) =>
+  !/no byte tripwire/.test(r.stderr) ? 'wrong reason' : existsSync(join(c.dir, '.claude/decisions-full/third.md')) ? 'it wrote anyway' : '' })
+mover('--move-rows of several rows sharing a date keeps their order', true, { prep: c => { c.write(OTHER, OTHER_HEAD); addOther(c, '—'); c.commit('other area') }, args: ['--rulings', '--move-rows', 'D1,D2', '--to', 'other'], check: c =>
+  !c.read(OTHER).includes(shortRow('D2', 'b') + '\n' + shortRow('D1', 'a')) ? 'the short lines are out of order' : !c.read(OTHER_FULL).includes(fullRow('D2', 'b') + '\n' + fullRow('D1', 'a')) ? 'the full rows are out of order' : '' })
+/* Astra 4: an unusable DOCSGUARD_BASE fell back to HEAD~1 and missed a ruling dropped two commits back */
+{
+  const ctx = makeRepo(), g = (...a) => execFileSync('git', a, { cwd: ctx.dir, encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] })
+  try {
+    g('checkout', '-q', '-b', 'feature'); addBoth(ctx, 'D9', 'z'); ctx.commit('file D9')
+    ctx.edit(FULL, t => dropD(t, 'D9')); ctx.edit(AREA, t => dropD(t, 'D9')); setMap(ctx, AREA, 'D2, D1'); ctx.commit('drop D9')
+    ctx.edit('docs/home.md', t => t + 'unrelated\n'); ctx.commit('unrelated')
+    const r = spawnSync(process.execPath, ['raptor-port/scripts/docsize.mjs'], { cwd: ctx.dir, encoding: 'utf8', env: { ...process.env, DOCSGUARD_BASE: 'not-a-commit', DOCSGUARD_ALLOW: '' } })
+    const ok = r.status !== 0 && (r.stdout + r.stderr).includes('D9 is GONE')
+    if (!ok) failed++
+    console.log(`${ok ? 'PASS' : 'MISS'}  an unusable DOCSGUARD_BASE still catches a ruling dropped two commits back (Astra 4)`)
+  } finally { rmSync(ctx.dir, { recursive: true, force: true }) }
+}
+
+/* --merge, the code reads' cases: a general git scenario (the base in the new layout unless it says otherwise) */
+function gitRulings(name, expectOk, build, check) {
+  const ctx = makeRepo()
+  const g = (...a) => execFileSync('git', a, { cwd: ctx.dir, encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] })
+  const run = (...a) => spawnSync(process.execPath, ['raptor-port/scripts/backlog-archive.mjs', ...a], { cwd: ctx.dir, encoding: 'utf8' })
+  try {
+    const r = build(ctx, g, run)
+    const why = check(ctx, r)
+    const ok = (r.status === 0) === expectOk && !why
+    if (!ok) failed++
+    console.log(`${ok ? 'PASS' : 'MISS'}  merge: ${name} — expected ${expectOk ? 'resolved' : 'stopped'}, got ${r.status === 0 ? 'resolved' : 'stopped'}${why ? ` (${why})` : ''}`)
+    if (!ok) console.log((r.stdout + r.stderr).split('\n').map(l => '      ' + l).join('\n'))
+  } finally { rmSync(ctx.dir, { recursive: true, force: true }) }
+}
+const mergeIn = (g, into, from) => { g('checkout', '-q', into); try { g('merge', '-q', '--no-commit', '--no-ff', from) } catch { /* stops on conflicts */ } }
+gitRulings('no merge in progress is refused', false, (c, g, run) => run('--rulings', '--merge'), (c, r) => /no MERGE_HEAD/.test(r.stderr) ? '' : 'wrong reason')
+gitRulings('another conflicted file must be resolved first', false, (c, g, run) => {
+  g('checkout', '-q', '-b', 'a'); c.edit('OUTSTANDING.md', t => t.replace('Line 1 of ALPHA', 'Line 1 of ALPHA, a')); c.commit('a')
+  g('checkout', '-q', 'main'); c.edit('OUTSTANDING.md', t => t.replace('Line 1 of ALPHA', 'Line 1 of ALPHA, main')); c.commit('main')
+  mergeIn(g, 'a', 'main'); return run('--rulings', '--merge') }, (c, r) => /resolve the other conflicted files first/.test(r.stderr) ? '' : 'wrong reason')
+gitRulings('a D-number filed on both sides with different text stops', false, (c, g, run) => {
+  g('checkout', '-q', '-b', 'a'); c.edit(AREA, t => topOf(t, newFull('D9', '**Nine, from a.**'))); run('--rulings'); c.commit('a')
+  g('checkout', '-q', 'main'); c.edit(AREA, t => topOf(t, newFull('D9', '**Nine, from main.**'))); run('--rulings'); c.commit('main')
+  mergeIn(g, 'a', 'main'); return run('--rulings', '--merge') }, (c, r) => /D9 was filed on both sides/.test(r.stderr) ? '' : 'it did not name the clash')
+gitRulings('a ruling moved to different areas on the two sides stops', false, (c, g, run) => {
+  c.write(OTHER, OTHER_HEAD); c.write('.claude/rules/decisions/third.md', OTHER_HEAD.replace('other', 'third')); addOther(c, '—')
+  c.edit('DECISIONS.md', t => t.replace('| Archive |', mapRow('Third', '.claude/rules/decisions/third.md', '—') + '\n| Archive |'))
+  c.edit('raptor-port/scripts/docsize.mjs', t => t.replace('const RULING_BYTES = [\n', "const RULING_BYTES = [\n  ['.claude/rules/decisions/third.md', 2, 6000],\n")); c.commit('two more areas')
+  g('checkout', '-q', '-b', 'a'); run('--rulings', '--move-rows', 'D1', '--to', 'other'); c.commit('a moves D1')
+  g('checkout', '-q', 'main'); run('--rulings', '--move-rows', 'D1', '--to', 'third'); c.commit('main moves D1')
+  mergeIn(g, 'a', 'main'); return run('--rulings', '--merge') }, (c, r) => /moved to different areas/.test(r.stderr) ? '' : 'it did not name the divergent move')
+gitRulings('both sides in the new layout: the other side\'s new row keeps its own hand-written short line (Fable F3)', true, (c, g, run) => {
+  g('checkout', '-q', '-b', 'a'); c.edit(AREA, t => topOf(t, newFull('D9', '**Three things:** one, two, three.'))); c.write('short.tsv', 'D9\tNine means one, two and three.\n')
+  const r0 = run('--rulings', '--short-text', 'short.tsv'); if (r0.status !== 0) throw new Error(r0.stderr); rmSync(join(c.dir, 'short.tsv')); c.commit('a files D9')
+  g('checkout', '-q', 'main'); c.edit(FULL, t => t.replace('**Rule b.** b |', '**Rule b.** b, on main |')); c.commit('main edits D2')
+  mergeIn(g, 'main', 'a'); return run('--rulings', '--merge') }, (c, r) =>
+  !has(c, AREA, '| D9 | 22 Sep 26 | Nine means one, two and three. |') ? 'the other side\'s short line was not kept' : /UNREAD[\s\S]*\| D9 \|/.test(r.stdout) ? 'it was listed UNREAD although it was read on its own side' : !has(c, FULL, 'b, on main') ? 'our edit was lost' : '')
+gitRulings('an old-layout branch that CREATED an area file merges, its map row carried (Astra 2, Fable F2)', true, (c, g, run) => {
+  c.write(AREA, AREA_OLD); rmSync(join(c.dir, FULL)); c.commit('the old layout — the merge base')
+  g('checkout', '-q', '-b', 'old'); c.write(OTHER, OTHER_HEAD.replace('| # | Date | The rule |\n|---|---|---|\n', '| # | Date | ruling | meaning | home |\n|---|---|---|---|---|\n') + newFull('D9', '**Nine lives in other.**') + '\n'); addOther(c, 'D9'); c.commit('old creates other.md')
+  g('checkout', '-q', 'main'); g('checkout', '-q', '-b', 'slim'); const r0 = run('--rulings'); if (r0.status !== 0) throw new Error(r0.stderr); c.commit('slim')
+  mergeIn(g, 'slim', 'old'); return run('--rulings', '--merge') }, (c, r) =>
+  !has(c, OTHER, '| D9 | 22 Sep 26 | Nine lives in other. |') || c.read(OTHER).split('| D9 |').length !== 2 ? 'D9 is not in other.md exactly once, as a short line'
+  : !existsSync(join(c.dir, OTHER_FULL)) || c.read(OTHER_FULL).split('| D9 |').length !== 2 ? 'D9\'s full row is not in other\'s full-text file exactly once'
+  : !c.read('DECISIONS.md').includes('other.md` | always | D9 |') ? 'the map row was not carried' : '')
+gitRulings('an old row this side moved and the other side marked keeps BOTH changes', true, (c, g, run) => {
+  c.write(OTHER, OTHER_HEAD); addOther(c, '—'); c.write(AREA, AREA_OLD); rmSync(join(c.dir, FULL)); c.commit('the old layout, an empty area beside it')
+  g('checkout', '-q', '-b', 'old'); c.edit(AREA, t => t.replace(fullRow('D2', 'b'), fullRow('D2', 'b').replace('**Rule b.** b', '**— NARROWED 23 Sep 26 BY D1: less.** **Rule b.** b'))); c.commit('old marks D2')
+  g('checkout', '-q', 'main'); g('checkout', '-q', '-b', 'slim'); run('--rulings'); run('--rulings', '--move-rows', 'D2', '--to', 'other'); c.commit('slim converts and moves D2')
+  mergeIn(g, 'slim', 'old'); return run('--rulings', '--merge') }, (c, r) =>
+  !has(c, OTHER_FULL, '**— NARROWED 23 Sep 26 BY D1: less.**') ? 'the other side\'s mark was lost, or D2 left other' : has(c, AREA, '| D2 |') ? 'D2 is back in general' : !has(c, OTHER, ' — changed by D1 |') ? 'the tail was not refreshed' : '')
 
 /* THE STOP HOOK (A8) — needs bash; skipped, and said so, where there is none. */
 const HOOK = join(HERE, '..', '..', '.claude', 'hooks', 'backlog-guard.sh')

@@ -205,8 +205,8 @@ Told before anything changed (28 Sep 26); told again with this revision: change-
 edits, a line in `DECISIONS.md`'s ranges paragraph), small fixes (`claude/small-fixes-batch-d223f6`, D360–D369 — edits
 the guide's Leave War row), Tracker leftovers (`claude/tracker-leftovers-f79d36`, D370–D379 — new rows only). Each keeps
 adding full rows at the top as today, **with a first bold sentence in the meaning cell that states the rule alone**.
-Whichever merges later runs `git merge origin/main`, then `node raptor-port/scripts/backlog-archive.mjs --rulings
---merge`, re-applies the printed prose lines by hand (keeping every range), has one reviewer (Astra first) read the
+Whichever merges later runs `git merge --no-commit --no-ff origin/main` (so the merge stops before committing even
+where git merges the rulings files cleanly), then `node raptor-port/scripts/backlog-archive.mjs --rulings --merge`, re-applies the printed prose lines by hand (keeping every range), has one reviewer (Astra first) read the
 printed UNREAD short lines, and commits. If this branch is the later one, the same command runs here.
 
 ## 4. Order of work and checks
@@ -264,3 +264,37 @@ kept in the session's scratchpad; every finding and what became of it:
 Both found sound: the loading premise; identity by full row once the folder joins the base and history reads; the
 60-row selection (Fable counted 60); D302, D228 and D324 staying general; the Stop hook's loop guard; counting
 characters for one-line rulings.
+
+**The final reads, 28 Sep 26** — Fable's meaning read of every short line (two halves; briefs
+`raptor-port/docs/superpowers/briefs/2026-09-28-rulings-slim-meaning-brief.md`) and the code read of both scripts by
+Fable AND Astra (`…/2026-09-28-rulings-slim-code-brief.md`), all read-only, in parallel.
+
+*Meaning read:* 252 of 265 lines faithful. The 13 others were rewritten from its replacements (D179 had kept "nothing
+stays live" after D183–D185 made three warnings live; D340's line had taken the settlement note for the rule; D51's read
+as a build instruction for what its own correction says is not built; D45 dropped its standing test; D39 said "two
+fixes" without naming them; D54 dropped "and is prevented going forward"; D229 said "account deleted" after D287; D203
+lacked D291's step; D100, D171, D172, D178 were stale). **23 older rulings gained the change mark their later ruling
+implied** (DECISIONS.md step 2 — "says so in its own words"; each mark ends "mark added 28 Sep 26, D390's meaning
+read"), among them D179 ← D183/D184/D185, D89 and D59 ← D106, D229 ← D287, D287 ← D290/D299; each of their short lines
+now states the rule in force. D141's full row and D390's said the tripwire counts "characters"; the gate counts bytes
+(Astra's red team asked for one exact measure) — both rows now say bytes. 12 back-marks stay reported only, judged by
+Fable as extensions or settlements the older row asked for.
+
+*Code read:* every finding fixed, each with a self-test case (160 in all):
+
+| Finding | What changed |
+|---|---|
+| Astra 1 — `--merge` chose one side when both sides retired, moved or filed the same ruling | each ruling's text, area and whether it is retired are taken three-way, attribute by attribute; a change on both sides to different states stops. **Not taken:** Astra asked that a number new on both sides with IDENTICAL text also stop — identical rows arrive when a branch merged the other earlier, so they pass (the same ruling, not a clash) |
+| Astra 2, Fable F2 — a new area file created on an old-layout branch was inserted twice | a file taken whole from the other side is neither re-inserted nor reported as prose; its map row is carried |
+| Astra 3, Fable F10 — `\|`, an empty line or a second "— changed by" inside a short line passed | one validator (`shortTextProblem`) in the gate and the converter; `--short-text` refuses an empty line and names an unused one |
+| Astra 4 — an unusable `DOCSGUARD_BASE` fell back to HEAD~1 and missed a ruling dropped two commits back | it falls through to the fork point from main; HEAD~1 only when that fork point is HEAD itself |
+| Astra 5 — a failed write could leave a half-converted tree | every file written to a temporary copy, read back, then renamed; any failure puts every file back and removes what the run created |
+| Astra 6, Fable F6 — mixed line endings | a file mixing CRLF and LF is refused, and so are rulings files that do not share one ending; a new full-text file takes that ending |
+| Fable F1, F7 — a new row under an archived number was silently dropped; a retired row could be archived twice | a live row is dropped only when it is the same ruling as the archived one; other text under an archived number is refused (a number is never reused, D78) |
+| Fable F3 — the other side's hand-written short line for a new row was replaced by an unread extract | it is carried, and not listed UNREAD |
+| Fable F4 — the merge's put-back could not see the other side's numbers | before writing, every number either side or the base held must still be live or retired, or nothing is written |
+| Fable F5 — the retire mark was defined twice and refused its dated, dashed form | one `MARKED` in `docsize-rulings.mjs`, accepting `**— REPLACED 27 Sep 26 BY D300: …**` |
+| Fable F8, F9, F12 — re-apply lines cut at 140 characters; `git merge` could auto-commit; a refusal mid-merge pointed at the wrong file | lines printed whole with `git show <ref>:<file>`; the command is `git merge --no-commit --no-ff origin/main`; the refusal names `--short-text` |
+| Fable F11 — an old-layout file holding a marked row needed two runs | the header rewrite runs after the retirements |
+| both — self-test gaps | 20 new cases: both-new-layout merges, a new area on the other side, a clash, divergent moves, another conflicted file, no MERGE_HEAD, a row moved here and marked there, the injected second-write failure, mixed endings, the tripwire refusal, the dated retire mark, a reused archived number, multi-row moves |
+| the area-file tripwire | the converter refuses, before writing, an area file with no `RULING_BYTES` row |

@@ -32,7 +32,8 @@ it: `.claude/rules/record-decisions.md`; closing reports carry a `Rulings:` line
    and leaves its short line, retires every marked row to the archive, names each change on a short line's " — changed
    by" tail, and rewrites the map. The gate (`npm run docsize`, and the check at the end of every turn) fails until it
    has run — and if a row is written in THIS file instead of its area's. A branch merging `main` across the slim-down
-   runs it with `--merge` (D390; `raptor-port/docs/superpowers/plans/2026-09-28-rulings-slim-down-plan.md` §2.4).
+   runs `git merge --no-commit --no-ff origin/main`, then this with `--merge` (D390; the plan
+   `raptor-port/docs/superpowers/plans/2026-09-28-rulings-slim-down-plan.md` §2.4).
 
 **Parallel branches (owner, D78):** when several chats run at once, each reaches `main` only on his
 "merge live", ONE AT A TIME; whichever merges later merges `main` in first, and if a D-number
