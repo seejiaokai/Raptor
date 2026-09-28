@@ -288,4 +288,5 @@ except where named here.
   the way back is Enable / Restore.
 - **Put to him (both his):** the Leave War STAGE (Fable: keep, with its own words — `lw.stage`, "Undid: closing
   bidding"; Astra: never, the stage buttons only); and **Admin → Data → "Clear edit history…"**, the one control that
-  ERASES the squadron's change history (Fable M2) — against the transparency of D169 / D338 (1).
+  ERASES the squadron's change history (Fable M2) — against the transparency of D169 / D338 (1). **ANSWERED — D351: it
+  stays as it is until the database step (IT's retention rule); never undoable. Nothing to build.**

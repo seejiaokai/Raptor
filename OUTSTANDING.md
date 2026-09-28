@@ -885,7 +885,9 @@ switched on in our environment? a separate development environment? Dataverse av
 developer ("maker") seat in dev? how people get in (a security group, security roles)? which connectors are allowed?
 how work moves from dev to production, and who presses it? auditing and backups on, and how to restore? where settings and
 secrets live? can server-side rules be plug-ins, and who may deploy them? **and: can our squadron admin set a person's role
-from inside the app, or must IT assign it?** (decides whether "make Hex an admin" is one tap or an IT request).
+from inside the app, or must IT assign it?** (decides whether "make Hex an admin" is one tap or an IT request). **And (D351,
+28 Sep 26): how long is the change history kept (the retention rule)?** — it decides whether Admin → Data's "Clear edit
+history…" follows that rule or goes; until then it stays as it is.
 
 ### [PEEK-ISSUED] The desktop next-week preview on View-only Sched shows next week's working copy, even for a published day — a question for him (filed 26 Sep 26)
 Noted by the sweep behind `[LEAVE-LATE-PUBLISHED]` (Astra, its plan read; carried in `[LATE-PUB-FACE-LIVE]`, archived

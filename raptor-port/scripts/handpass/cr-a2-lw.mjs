@@ -157,6 +157,7 @@ await step('G5', async () => {
   const rd = await door(page, 'top', 'redo')
   const afterR = await rec(SAT)
   await lwOpen(page, SAT)
+  { const c = page.locator(`[data-testid="cell-${P}-${SAT}"]`).first(); if (await c.count()) { await c.evaluate(e => e.scrollIntoView({ block: 'center', inline: 'center' })); await page.waitForTimeout(250) } }
   const picR = await B.shot(page, 'G5-redone-from-topbar-seen-on-war')
   B.ck('G5-top-redo', 'the top-bar Redo puts the award back — seen on the war', rd.pressed && has(afterR) && (rd.toasts || []).some(t => /^Redid/.test(t)), { toasts: rd.toasts, rec: afterR }, picR)
 })
