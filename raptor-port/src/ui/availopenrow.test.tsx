@@ -114,6 +114,15 @@ describe('where OIL is decided, the admin is told none is worked out (D360)', ()
     expect($('.availwin .win-foot .hint')?.textContent).toBe(`${OIL_OPEN_END}.`)
   })
 
+  it('each man in that half says the same — and a tap on him keeps the reason in the footer (Fable F1)', async () => {
+    openRow(); setOilDay(SAT); await open(); await click(chip())
+    const seat = $$('.availwin .seat.oilpk')[0]
+    expect(seat, 'a man\'s puck in the OIL half').toBeTruthy()
+    expect(seat.getAttribute('title') || '').toContain('no OIL worked out — this row has no end time')
+    await click($('.availwin [data-awp]'))
+    expect($('.availwin .win-foot .hint')?.textContent || '').toContain('no end time')
+  })
+
   it('the row\'s switch in OIL Earn mode says the same, not "nothing on this row can earn"', async () => {
     const item = openRow(); setOilDay(SAT); await open()
     const cell = $$('#sbBoard .oilitem').find(e => e.closest('.sb-panel.grnd') && (e.textContent || '').includes('DINNER WITH CMD'))

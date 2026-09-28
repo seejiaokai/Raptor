@@ -18,7 +18,7 @@ import { creditGiver, type NoticeRec, type CreditRec, type RequestRec } from '..
 import { ackReplacement, changeAbsenceById, clearRecordById, decideRequestById, editManualCredit, movableRecords, recordsAt } from '../state/store'
 import { DeleteChip, MoveChip } from './SheetActions'
 import { Sheet } from './Sheet'
-import { dayLabel } from './dates'   // one body for the day's list and the one-day sheets ([LW-ISO-DATES])
+import { dayLabel, shortDate } from './dates'   // one body for the day's list and the one-day sheets ([LW-ISO-DATES])
 import './bidpicker.css'
 
 const hhmm = (n: number) => `${String(Math.floor(n / 60)).padStart(2, '0')}:${String(n % 60).padStart(2, '0')}`
@@ -152,7 +152,9 @@ export function DayListSheet({
          award (now possible from every door, D265) left no trace anywhere. The same rule as the mark: recorded, and
          shown, only for a move made once bidding is closed. */
       const src = raw.find(r => r.id === c.id) as RequestRec | undefined
-      const movedFrom = biddingClosed(period.stage) && src?.shiftedFrom ? ` · moved from ${dayLabel(src.shiftedFrom)}` : ''
+      /* a date INSIDE a sentence reads day-first with its year, as the bid sheet's own "moved from" does — the list's
+         header keeps the one-day voice (Fable's final read F3: the same phrase read two ways, one tap apart) */
+      const movedFrom = biddingClosed(period.stage) && src?.shiftedFrom ? ` · moved from ${shortDate(src.shiftedFrom)}` : ''
       const text = `${shown(notation(c))} — ${nameOf(c.code) || shown(c.code)}${partTxt} · ${st}${movedFrom}`
       const actions: ReactElement[] = []
       /* THE SHEETS' ORDER AND WORDS (D264, D331, D332): Ack · Approve · Refuse, then Move, then Delete — where this list

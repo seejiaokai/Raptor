@@ -335,6 +335,14 @@ for (const [label, size] of [['1440×900', PREVIEW_DESK], ['1440×700', { width:
       b = await barHits(page); w = await rectOf(page, sel)
       for (const h of b.hits) expect(h, 'a preview started under the window: the bar stays reachable').toMatch(/reachable$/)
       expect(w.top).toBeGreaterThanOrEqual(Math.round(b.bar![3]))
+      /* the BOARD closed with the bar still showing (Fable's final read F2 — measured not to happen: the window re-places on
+         every redraw): the ALL AVAIL window stays open over the week and goes back to its corner, its height cap gone */
+      if (sel === '.availwin') {
+        await page.click('#sbClose')
+        await page.waitForTimeout(250)
+        expect((await rectOf(page, sel)).top, 'the board closed: back in its corner').toBe(96)
+        expect(await page.evaluate(s => (document.querySelector(s) as HTMLElement).style.maxHeight, sel), 'and no height cap left').toBe('')
+      }
     })
   }
 }

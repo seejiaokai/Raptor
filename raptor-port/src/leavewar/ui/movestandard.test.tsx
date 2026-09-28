@@ -184,7 +184,10 @@ describe('a bid moved once bidding has closed says where it came from on its lis
     expect(bidsAt(P, '2026-02-16')).toHaveLength(1)
     fireEvent.click(screen.getByTestId(`cell-${P}-2026-02-16`))
     const bid = bidsAt(P, '2026-02-16')[0]!
-    expect(screen.getByTestId(`dl-r-${bid.id}`).textContent).toContain('moved from Wed 11 Feb')
+    /* a date inside a sentence reads day-first with its year, the bid sheet's own "moved from" voice ([LW-ISO-DATES];
+       Fable's final read F3 — the list read "moved from Wed 11 Feb", the sheet one tap away "moved from 11 Feb 26") */
+    expect(screen.getByTestId(`dl-r-${bid.id}`).textContent).toContain('moved from 11 Feb 26')
+    expect(screen.getByTestId(`dl-r-${bid.id}`).textContent).not.toContain('moved from Wed 11 Feb')
   })
 })
 

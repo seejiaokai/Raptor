@@ -626,6 +626,10 @@ export function oilItemCellHTML(di: any, item: string, name: any, cls: string): 
  *  inventing one would be worse than saying little. */
 function inertWhy(di: any, item: string): string {
   const plain = 'nothing measurable to earn from here'
+  /* a row with a start and no end ([ALLAVAIL-OPEN-ROW], D360 — Fable's final read F1): the men behind its placeholder say
+     the row's own reason, as the window's footer and the row's switch do — a tap on one of them copies this into the
+     footer, and it used to replace D360's sentence with the generic one above */
+  if (item && openEndRows(DAYS[+di] || {}).some(r => r.item === item)) return OIL_OPEN_END.charAt(0).toLowerCase() + OIL_OPEN_END.slice(1)
   if (!item || !item.startsWith('i:')) return plain
   const iid = item.slice(2)
   const inp = (evOf(di).inputs || []).find((i: any) => String(i.iid) === iid)
