@@ -127,4 +127,35 @@ fix. G read-only window: the e2e red without its rule. G dates: `isodates.test.t
 
 ## 10. His look card
 
-*(to be written with the reads' dispositions)*
+**What to look at (the branch's Vercel preview, signed in as admin):**
+1. The scheduler board on a published day → the plans menu → an issued version, then tap an ALL AVAIL count: the window
+   opens BELOW the preview bar, its "Back to live copy" still pressable. The same with History open.
+2. Drag a puck wearing a red or amber ring: the lifted copy keeps its ring and its shadow.
+3. Saturday's Common Programme, FAMILY DAY (ALL AVAIL): clear its END time. The count stays; tap it — the window reads
+   "10:00–11:00 · no end time, an hour assumed". Turn OIL Earn on: "No OIL worked out — this row has no end time." Clear
+   its START too: the count becomes a "?".
+4. Publish a change on the Saturday: the message says what was published AND the OIL line. Unpublish: it says what it did.
+5. A flying line called W6LINE or RANGER: whole on the week, View-only Sched and the board (desktop and phone).
+6. A changed take-off issued as AL1 on a phone: "AL1" sits under the time, whole.
+7. "Sort" on a published day's ground programme with rows added in the wrong order: the four sign-offs stay.
+8. The Leave War on a phone: "VIEWING AS" on its own line, whole. A member opening another man's input: its boxes now
+   read as a record (pictures `g4-readonly-main` → `g4-readonly-final`).
+
+**Questions that are his (each with a recommendation):**
+1. **AL8 and later reuse AL7's orange** (`[AMEND-SMALL-SEEN]` 5); the tag always carries its number. Leave it?
+   *Recommended: leave.*
+2. **Loading an older issued version after one of its requests was deleted puts that request's row back** (the version
+   had it); the pending list says so ("… on the programme → deleted"). That is what "load this version" means — leave it?
+   *Recommended: leave.* (`[REQ-ORPHAN-ROW]` (2))
+3. **The read-only input window's new look** — the pictures above. Keep it? *Recommended: keep.*
+4. **The Logic tab's "Assumed length, no end time"** now also sets the hour an open-ended row's ALL AVAIL is counted over;
+   changing it on a published day reads as a pending change (the crowd is frozen at publication, D44/D45). Keep?
+   *Recommended: keep.*
+5. **On a phone the Leave War's "VIEWING AS" chip takes a line of its own** (it cannot fit beside the picker at 390px).
+   Keep it, or drop the words on a phone and show just the eye and the name? *Recommended: keep — "make it obvious"
+   (28 Aug 26).*
+6. **The callsign column is wider** so six letters fit — the remarks column gives the room: 24px on a desktop, 12px on a
+   phone (pictures `d3-callsigns-main` → `-final`). OK? *Recommended: keep.*
+
+**Filed, not asked:** `[PLAN-BANNER-DOOR]` — the plan banner's "Switch to this plan" has no screen route; recommended to
+retire it with the next plans-menu change.
