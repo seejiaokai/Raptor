@@ -254,6 +254,10 @@ he reports it again, ask which button he pressed and what the status line said.
 - **Only `applyCharts` may touch charts and only `applyStudents` may touch
   people.** `applyBundle` no longer deletes stored syllabi — restoring that
   would wipe his charts.
+- **A students import adds a course the app does not have at the BOTTOM of the
+  course list; the courses already here keep their places** (`applyStudents`,
+  "Merge, never replace") — ruled keep, **D375** (28 Sep 26): not the course-order
+  twin of F6 to fix; students do not travel his database route (D120).
 - **Anything remembered per browser goes under `ocuLocal:`, never through
   `sSet`** (every `ocu:` key is what the shared file/database will carry, so a
   view preference stored there would decide what opens for everyone).

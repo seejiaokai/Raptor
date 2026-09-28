@@ -197,7 +197,9 @@ baked, a student name refused.
 **His answers, 28 Sep 26** (`https://claude.ai/artifact/YZKv7p9FeZK51FwwNxycMb`): **Q1 yes — D370**; **Q2 yes — D371**;
 **Q3 a — D372**; **Q6 fold — D373** (rows in `.claude/rules/decisions/tracker.md`, readings stated there). **Q4 and Q5**:
 he asked for them again in plainer words ("4 explain clearly · 5 what do u mean goes after your own courses") — re-put
-the same hour, answer pending.
+the same hour: **Q4 yes — D374** (a future day refused in Done on, Failed on and both Last Flown boxes; Upchit and the end
+dates keep taking any day); **Q5 keep — D375** (a new course from a students import joins at the bottom; §C9 closed as
+ruled).
 
 Searched first (`record-decisions.md`): no ruling in any area file, `DECISIONS-ARCHIVE.md` or `OUTSTANDING.md` answers
 these.
