@@ -49,16 +49,11 @@ list (13–23 Sep 26), its finished entries and the "In plain terms" block are i
 whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaining).
 
 **His order — to the database step, about two months away (D203, 26 Sep 26; D173, D147 within it):**
-0. **BUILT and FULL-checked 28 Sep 26 on `claude/hist-phone-by-item` — waiting for his look and "merge live" — [HIST-PHONE-HIDE]** (D339) **with [CHG-BY-ITEM]** (D340), one branch (both change the changes window):
-   History on a phone — the window hides to the bottom ("Hide ▾" / "Show ▴"), a gold dot on every detail with a history; and the
-   window sorted by item, every line item-first. Both mock-ups APPROVED (D345); built on `claude/hist-phone-by-item`
-   (28 Sep 26), `main` taken in, PR #455; his look card's three questions answered — kept as built (D346). **Before them, [LW-FIGSEL-FLAKE]**
-   (D342) — MERGED (PR #454, 28 Sep 26; archived): the "Saving…" note moved the page; it now floats under the top bar.
-1. **Now — [DRAFT-PENDING]** — the one changes window, on top of accounts, its own FULL check (D210): BUILT and
-   FULL-checked 28 Sep 26 on `claude/draft-pending` overnight by his standing go (D336 (2)) — his look DONE 28 Sep 26 (every
-   reading kept, D337, D338) — **waiting for his "merge live"**; never merged without his word. Before it: **[ONE-DOOR]** (D309, D310, carrying [POST-IN-DATE], D308) MERGED 28 Sep 26 (PR #450;
+1. **Done — [DRAFT-PENDING]**, the one changes window (D210), MERGED 28 Sep 26 (PR #451); its two follow-ups
+   [HIST-PHONE-HIDE] and [CHG-BY-ITEM] (D339, D340, D345, D346) MERGED 28 Sep 26 (PR #455), and [LW-FIGSEL-FLAKE] (D342,
+   PR #454) — all archived. Before it: **[ONE-DOOR]** (D309, D310, carrying [POST-IN-DATE], D308) MERGED 28 Sep 26 (PR #450;
    archived); `[POST-OUT-OUTCOMES]` (PR #446), `[ACCOUNTS-NEW-PERSON]` (PR #443), `[ACCOUNTS]` (PR #442) and
-   **[LW-MOVE-STANDARD]** (D264–D266, PR #447) MERGED 27 Sep 26. `[POST-OUT-TRACKER]` on his answer.
+   **[LW-MOVE-STANDARD]** (D264–D266, PR #447) MERGED 27 Sep 26. Left from them: `[POST-OUT-TRACKER]`, on his answer.
 2. **Now, beside the building — [IT-QUESTIONS]:** talk to the IT side (his, not code); their approvals take weeks.
 3. **Development as normal — [HUMAN-RETEST]**'s remaining three, in HIS order (D147): the absence record TOGETHER with
    [S4-HUNT-REST] — **WALKED 26 Sep 26** on `claude/absence-record-d147-af6a50`; his answers to its questions (D260–D263)
@@ -91,7 +86,7 @@ Roles — [QUALS-MEMBER-SCOPE] (folded into [ACCOUNTS], D200), and beside it [QU
 The five-flags batch (built on `claude/five-flags-batch-build-ef7d85`, 26 Sep 26; FULL-checked and its PR from `claude/five-flags-batch-continue-2cfa70`, 27 Sep 26 — its five items archived) — his answers D270–D275 BUILT and FULL-checked on that branch, 27 Sep 26 (their three items archived); his look card's four questions answered 27 Sep 26 (D276–D279, nothing to build);
 [ARROW-GUTTER-STRIP] (its strip moot by D275; one small leftover, low); low: [GHOST-FLAG-SHADOW], [LW-SETTINGS-SMALL],
 [ALLAVAIL-OPEN-ROW] (investigate first).
-Insights — [INSIGHTS-WORKING-COPY] (a question for him, with the one changes window or any time).
+Insights — [INSIGHTS-WORKING-COPY] (a question for him, any time — the changes window it could have gone with merged 28 Sep 26).
 
 **Waiting on him — no order exists:**
 [OIL-EARNED-VS-GRANTED] (his figure — ask first, when the award fix reaches it;
@@ -1059,143 +1054,6 @@ build cannot decide what it means without him, so a deleted man is left on his T
 text). **Put to him on the `[POST-OUT-OUTCOMES]` look card (question 5):** what makes a course still running — or leave
 his name on his courses for now (then D299 is narrowed in his words). **Place:** after `[POST-OUT-OUTCOMES]` merges, on
 his answer. Touches `raptor-port/src/tracker/` (its own store) — its own small check.
-### [HIST-PHONE-HIDE] History on a phone — say it is on, and let the schedule be seen (D339, 28 Sep 26)
-**His ask (D339):** on a phone the changes window covers the schedule and nothing says the bubbles are on; "maybe when it hides
-on a phone it goes to the bottom of the screen"; built in ANOTHER chat. **The design put to him** (the mock-up, real app, phone
-width — `raptor-port/docs/img/handpass/2026-09-28-draft-pending/histphone/histphone-mockup.png`, re-taken by
-`raptor-port/scripts/handpass/dp-histphone.mjs`): (1) the panel's header gains a hide button beside ✕, labelled "Hide ▾" — a word, not
-the arrow alone (his question: "how does one know that the action is to minimise?") — and a one-line hint, in fewer words at his
-word — **"History on: Tap a gold dot on the schedule"** (his own wording, D344); (2) Hide sends the window to the slim bar at the bottom,
-"History on · N changes" with a "Show ▴" button — Show brings the list back, ✕ turns History off; (3) while History is on, every detail
-with a history wears a small gold dot just outside the puck's bottom-right corner (never a ring — D92; clear of the OG tag at the
-top right) — on desktop too; the ▾ on the phone only; (4) a tap on a dotted detail opens its bubble. **APPROVED 28 Sep 26 (D345)** — the mock-up
-with the labelled Hide / Show and his hint wording (D344), and the two calls — dots on desktop too, Hide on the phone only. **Place:** a fresh chat on its own branch
-from `main` once PR #451 merges (the agent's reading of "another chat"), with `[CHG-BY-ITEM]` on the same branch (both change the
-window). **Where it lands:** `src/ui/ChangesWindow.tsx` (Hide, the
-bar's words), `src/ui/histbubble.ts` (marking the details with a history while History is on — the same keys the bubble answers),
-`src/ui/scheduler.css`, `docs/ui-contracts.md` §The one changes window; WALK tier at least (a shared drawer — every puck surface).
-**BUILT 28 Sep 26 on `claude/hist-phone-by-item`** with `[CHG-BY-ITEM]` — planned (Opus 5.5), red-teamed by Fable and Astra
-(`raptor-port/docs/superpowers/plans/2026-09-28-hist-phone-by-item-plan.md` §9), built red first, FULL-checked
-(`raptor-port/docs/handpass/2026-09-28-hist-phone-by-item.md`). Beyond the mock-up, from the red team: the dot on every
-detail the bubble answers (the board's wave title and an input's row now answer too), never on a look; a text detail's
-dot outside its corner; the hint where a tap raises a bubble (≤820px); the hidden bar above the ALL AVAIL window. From the
-final reads: the window follows a phone turned sideways; no hint and no "History on" over a board look or a week with
-nothing to dot. From the walk: a tap in and out of an input's time cell no longer writes a false "times" line.
-His look card's three questions ANSWERED 28 Sep 26 — all kept as built (D346). PR #455.
-**Next:** his "merge live" (`main`, with PR #454, already taken in).
-
-### [CHG-BY-ITEM] The changes window sorted by item, every line item-first (D340, 28 Sep 26)
-**His ask (D340):** "the main category to sort as per item, and the latest changes of that group will be the highest … in that
-item can show sub categories of that item, if that item has multiple change"; the line format he prefers is the item first
-("Programme · WPNS & TACTICS SYNC", then "Trident → Piston"), never the man first ("Diesel put on Programme · …"). **The design put
-to him** (the mock-up, real app, phone width with real changes — `raptor-port/docs/img/handpass/2026-09-28-draft-pending/byitem/byitem-mockup.png`,
-re-taken by `raptor-port/scripts/handpass/dp-byitem.mjs`): (1) "Group by: Item / Who" — Item first and the default; the old section
-groups (Flying waves, Duties, Common Programme) go, the item's header carrying its section word; (2) one group per item — a
-Common Programme event, a duty desk, a formation (its seats as details: "#1 RCP"), a sim, a ground event, an input — the item
-whose latest change is newest on top; (3) an item with ONE change is one line (no fold); with more, a header ("Programme · SODB ·
-3", its latest time) and a sub-line per change, newest first, each with who · when; a text change names its field ("Start");
-(4) in the week view the day leads the header ("Mon · Programme · SODB") — the same event on two days is two items; (5) a man
-moved between items shows under both ("Echo moved in from MET + NOTAM BRIEF" / "Echo moved out to SODB"), still ONE change in the
-tab's count; (6) Who keeps its sittings, its lines item-first too (a move once, under the item he reached); (7) every group open by
-default (a caret folds it). **APPROVED 28 Sep 26 (D345)**, the calls with it. **Narrows D168** ("Where = by the day's own sections"). **Place:** with
-`[HIST-PHONE-HIDE]`, the same fresh chat and branch (both change the changes window). **Where it lands:** `src/ui/changesmodel.ts`
-(the item of a line — the history row's place without its seat or field, from its row-anchored key, not its label; `byWhere` →
-by item; the line's words item-first), `src/ui/ChangesWindow.tsx` (the groups and sub-lines), `src/ui/scheduler.css`,
-`docs/ui-contracts.md` §The one changes window; its tests (`changesmodel.test.ts`); the walk's changes-window steps. WALK tier at
-least — the window is every user's, members included.
-**BUILT 28 Sep 26 on `claude/hist-phone-by-item`** with `[HIST-PHONE-HIDE]` (the same plan, sheet and look). Beyond the mock-up,
-from the red team: a move within one item is ONE entry ("moved", its two places); a posting and "added to the roster" now
-carry their man (two writers, `state/changelines.ts`) so they file under "Leave War · <him>" / "Quals · <him>"; every group
-(Item and Who) opens by default (D345 over D167 (4)); "The day", a remark's dot and a two-day input answered as built
-(D346). PR #455. **Next:** his "merge live".
-
-### [DRAFT-PENDING] The one CHANGES WINDOW — D118, D167–D172 (25 Sep 26); step 3 of D173, after `[ACCOUNTS]` (its own FULL check — D210)
-**BUILT 28 Sep 26 on `claude/draft-pending`** (overnight, D336 (2)): the plan `raptor-port/docs/superpowers/plans/2026-09-28-draft-pending-plan.md`
-(§9 after the red team — `…/specs/2026-09-28-draft-pending-plan-review-log.md`); the contract `raptor-port/docs/ui-contracts.md`
-§The one changes window; the history `raptor-port/docs/engine-rules.md` §The edit log; D263 built with it; the open question
-below built on YES (D336 (b)) and put on his look card. FULL check: `raptor-port/docs/handpass/2026-09-28-draft-pending.md`
-— the walk (desktop and phone 33/33), Fable's scenarios (12 defects, all fixed), 12 break tests, two blind final reads and
-two narrow rounds on the fixes (every finding red first, then fixed), the gates green on the final code (`1270680e`).
-**Next:** his look DONE 28 Sep 26 — every reading kept as built (D337, D338) → "merge live" (never without his word).
-**From `[ACCOUNTS]` (26 Sep 26), to settle here:** the edit log is cleared at every sign-in and sign-out (`resetSession`
-→ `elogClear`, session-only as today); with personal accounts, should the change history outlive a sign-out? The
-window's "new to you" needs it to. **— ANSWERED 28 Sep 26: yes, as built (D338 (1)); the whole look card answered (D337, D338).** A member's history shows a medical change in full (D211, which narrows D169's
-reading). The edit log's rows carry the person's id beside the callsign from `[ACCOUNTS]` on.
-**WHAT IS SETTLED (read the rulings, not the working notes below):** D168 one changes window (New to you / All changes,
-a day picker, Group by Who / Where) replacing the pending list, the hand-over idea and the Edit history list; D167 its
-shape (movable, resizable, a tap takes the schedule to the change and the window stays; the phone's panel shrinks to a
-bar); D169 members read it too (medical details hidden); D170 NO Hand over button — new to you until "Mark all as
-seen", grouped by person and sitting; D171 the ways in — the day's count for everyone, an icon-only top-bar door with
-the WEEK's count for admins only; D172 the unpublished-day corner tag reads "OG", the headings unchanged. The
-mock-ups: `raptor-port/docs/mock/changes-window.html` (the design of record, option A), `changes-doors.html`,
-`tags-ticks.html`; the earlier ones (`checkpoint.html`, `handover.html`, `since.html`, `handoff-accounts.html`,
-`handoff-window.html`) show ideas later replaced. The working notes below are the path there.
-**His intent:** when another scheduler logs in, they see what changed since the last draft. Today a never-published
-day's "N pending" counts every cell touched (a move 2, put back still 2, a new puck in a crowd 0) and is not a button.
-**The agent's proposal, put to him — NOT called "Save draft" (his correction: the app already saves live, so that word
-misleads); a CHECKPOINT that records who set it last and when:** a button on a never-published day's head (beside
-Publish; its word still to be picked — "Set checkpoint" recommended). It stores the day as the checkpoint — not issued: no version, no signatures, no amendment number, nothing for members.
-"N pending" then counts the net difference from that point exactly as after a publish (the one counting body: a move 1,
-put back 0, a new puck 1), and is the same button opening the same list (newest first, D119). The next scheduler reads
-it, then sets a new checkpoint to start from there. A line under the day head names who set the checkpoint and
-when (stored with it, so it survives a reload). Before the first checkpoint the day shows no pending; publishing
-replaces the checkpoint with the Original. **Limits to tell him:** until the shared database, another scheduler sees
-it only on the same device and browser (the app keeps its data per browser); who made each change reads the shared
-account (D104), and after a reload older changes read "earlier" (the edit record lasts only while the page is open).
-With the database it carries across devices with no change, and "since YOU last looked" per person becomes possible.
-**His word: "Hand over"** (after the mock-up `raptor-port/docs/mock/checkpoint.html`). **His catch:** every scheduler
-will press Hand over after their OWN changes, so one reset point would wipe the highlights before the next person
-sees them. **The agent's proposal for that, put to him:** each hand over is KEPT (who, when, the day as it stood); the
-marks and "N pending" show what changed since the hand over BEFORE the latest one — i.e. the last person's work, plus
-anything done since — and the list splits it: "Handed over by Admin 16:00 · 3 changes" / "Since then · 1 change". So
-A builds and hands over; B changes 3 things and hands over; A opens the day and sees B's 3 highlighted; A changes 1 and
-hands over; B sees A's 1. **A guard:** Hand over is refused when nothing changed since the last one ("Nothing new to
-hand over"), so a second press can never wipe the last person's highlights. **The cost, stated:** the last person's
-highlights stay until someone else changes something and hands over — there is no "I've seen it, clear it" until
-personal logins (the database) let each person see "what changed since YOU last looked".
-**His next catch (after the storyboard `raptor-port/docs/mock/handover.html`):** with three or more schedulers, one who
-has not looked since two hand overs ago would see only the latest person's work. **The highlights are shared** (every
-scheduler sees the same ones — the app cannot tell people apart while the login is shared). **The agent's proposal:** a
-**"Since" choice** at the top of the pending list — "Since the last hand over (16:30 · Admin) ▾" by default, and every
-earlier hand over of the day in the menu ("16:00", "14:05" …), each with who and when. Pick an earlier one and the
-count, the tags and the list widen to everything since then, grouped by hand over — so whoever has been away catches
-up in one tap. It resets to the default when the list is closed (a look, not a setting). With personal logins (the
-database) the default becomes "since YOU last looked". **Other options put to him:** a callsign picker on Hand over (as
-the sign-off boxes have) so each person gets "since MY last hand over"; or leave it to Edit history.
-**WITH ACCOUNTS (D166) — the mock-up `raptor-port/docs/mock/handoff-accounts.html`, put to him:** each scheduler is
-signed in as their callsign, so each sees what changed since THEIR OWN last hand over ("4 new"), grouped by who did
-it, with who and when on every line; their own not-yet-handed-over changes sit on top ("Yours · not handed over
-yet"); Hand over marks their point and greys when there is nothing new; one who never handed over this day sees what
-changed since the last hand over by anyone. This replaces the "Since" menu and the callsign picker, which were
-stand-ins for not knowing who is signed in.
-**His question: what if a scheduler never presses Hand over? — the agent's answer, put to him:** nothing waits on
-it. The schedule is live (everyone sees the change itself at once — across devices from the database step); in the
-changes window a scheduler's changes not yet handed over show under "Saber · still working · 2 changes" (the time
-of the last one, no hand-over date), and they are NEW to everyone who has not handed over since. Hand over only does
-two things: it closes YOUR group with a date, and moves YOUR "new to you" point — it never hides anything from anyone
-else. So the greyed "nothing new to hand over" guard is no longer needed: a hand over with no changes of your own just
-says you have looked ("Hex · looked, no changes · 25/9 16:50").
-**The marks — he asked how they would look now a mark is a corner tag (D92, D93):** on a published day a waiting change
-wears a hollow dotted tag at the puck's top right naming the AL it will go out as ("AL1"). An unpublished day has no
-AL, so the tag needs another label. **The agent's recommendation:** a hollow dotted **ORIG** tag in the seal's plain
-white, with no tick — "this change goes out with the Original" (hollow = not out yet, as for an AL; the ticked seal
-means published). Other options: a hollow dotted tag with no word (a small neutral pill), or no mark at all (the
-25 Aug 26 rule: an unpublished day shows none — the list does the finding). Whatever it is must not take an AL colour
-or a warning colour. **A mock-up first** (the house rule for a visual change): the three side by side on the edit week
-and the board, desktop and phone, beside a published day's AL1 tag. **Place:** his answer, then with `[LOOK-435]`.
-
-**HIS D263 (27 Sep 26, "2 yes") — FOR THE WINDOW TO CARRY:** every change to an absence is a line in it — an input edited, cut by a medical, moved, deleted; the Leave War's approve, refuse, back-to-bid, move — with who (callsign) and when; today only a filing and a removal leave a line (`.claude/rules/decisions/scheduler.md` D263).
-**FROM THE ABSENCE-RECORD RE-TEST (W6's first walk of roll-call row R30, 26 Sep 26 — for the window to carry):** a
-late input on a published day is named in today's pending list ("Drifter · LL filed") but its line cannot be tapped —
-its hover says "This change has no place of its own on the schedule to go to", though the input's row stands in the
-day's Unavailable block. D99 says a tap "brings the view to that pending area"; the list's own rule ("a leave with no
-row stays a still line", `raptor-port/docs/engine-rules.md`) was the builder's call, not his. **The window's jump must
-reach an input's Unavailable row.** Beside it: a member's "1 pending" on the working draft is a plain label whose hover
-says "until you publish an AL" (his list is this window), and the late row carries LATE but no pending mark — both for
-the window's design. Pictures `raptor-port/docs/img/handpass/2026-09-26-absence/rewalk/w6/w6-desktop-admin-R30-01-pending-list-week`,
-`-R30-02b-the-row-it-could-go-to`, `w6-phone-admin-R30-01-pending-list-week`; sheet
-`raptor-port/docs/handpass/parts/2026-09-26-absence-rewalk-w6.md`.
-
 ### [ARROW-GUTTER-STRIP] The day before the front one shows a 42px strip beside the ‹ arrow — MOOT (D275, the room taken out 27 Sep 26); one small leftover (filed 26 Sep 26)
 The five-flags walk (W4, `raptor-port/docs/img/handpass/2026-09-26-five-flags/w4/GUTTER-prevday-tail-view-1440x900.png`):
 the desktop week's 54px room ([VIEW-ARROW-OVER-LIST]) leaves the previous day's last 42px visible around the arrow (8px

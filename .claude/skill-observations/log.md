@@ -1200,3 +1200,18 @@ resolved statuses always carry their resolution date
 **Suggested improvement:** In the walk guidance, when a feature adds a READ gesture (tap / hover to inspect) on surfaces that are also editable, add to the step a count of writes before and after (history lines, stored record) and require zero. Separately: a blur-to-save handler should compare the text left against what the cell showed and save nothing when equal; and a change log should compare what a reader sees, not raw stored fields.
 
 **Principle:** A gesture meant only to look must be proven to write nothing — measure the side effect, not just the thing it shows.
+
+### Observation 327: A post-merge tidy found two more merged pieces still described as waiting — the handoff only checks the block it is named for
+
+**Status:** OPEN
+**Date:** 2026-09-28
+**Session context:** A documents-only tidy after PR #455 merged: the owner named one HANDOFF block and two backlog items to retire. Checking every open PR's real state (`gh pr view`) showed two more stale records he had not named: the backlog's priority list still called the changes-window item "waiting for his merge live" (its PR had merged that morning), and a `## Now` block from 27 Sep sat on for a PR merged a day earlier.
+**Skill:** session-handoff
+**Type:** open-source
+**Phase/Area:** the step that removes merged blocks and files open work
+
+**Issue:** Each chat's handoff rewrites its OWN block and the items it built; nothing re-checks the other blocks' and items' "waiting for merge" claims against the PR host. A merge happens between chats (on the owner's word), so the chat that built the thing is gone when its status goes stale, and the next chat only retires what the owner names. Stale "waiting" lines then mislead the "what is next" answer.
+
+**Suggested improvement:** In the handoff (and any post-merge tidy), add a mechanical sweep: for every `## Now` block and every priority-list line that says "waiting for … merge", read the named PR's state from the host; list each one that has merged with its residue check, and retire or rewrite it in the same change — or name it to the owner if its residue is unclear.
+
+**Principle:** A status written by a chat that has ended goes stale at an event it never sees; the next writer must re-derive such statuses from the system of record, not trust the prose — and a tidy scoped to what the user named should still sweep for the same staleness next to it.

@@ -15,24 +15,6 @@ the later merge keeps both (D78).
 
 ## Now
 
-<!-- now:claude/hist-phone-by-item -->
-### `claude/hist-phone-by-item` — `[HIST-PHONE-HIDE]` + `[CHG-BY-ITEM]` BUILT and FULL-checked — READY FOR HIS LOOK and "merge live" — written 28 Sep 26 — verify before use
-- **Where it started:** `main` at PR #453's merge; `main` (with PR #454, `[LW-FIGSEL-FLAKE]`, merged the same day — this
-  chat's first job) taken in. Rulings this chat: D346 (his look card's answers). **Never merge without his word.**
-- **What it is (D339, D340, D344, D345 — both mock-ups approved):** History on a phone — "Hide ▾" sends the changes window
-  to a slim bar at the bottom ("History on · N changes", "Show ▴"), the hint "History on: Tap a gold dot on the schedule",
-  a gold dot on every detail with a history (desktop too), a tap / hover on one opens its bubble; and the window grouped
-  by ITEM (Item / Who, Item first), every line item-first, a move within one item one entry, a move between two under
-  both. Plan `raptor-port/docs/superpowers/plans/2026-09-28-hist-phone-by-item-plan.md`; evidence (roll-call, walk, breaks,
-  both final reads, his look card §11) `raptor-port/docs/handpass/2026-09-28-hist-phone-by-item.md`.
-- **Checked (FULL):** plan red-teamed by Fable and Astra; built red first; walk `scripts/handpass/hp-walk.mjs` 24/24
-  desktop, 26/26 phone; 19 break tests all red (`hp-breaks.py`); both final reads — Astra 6, Fable 7 findings, 10 fixed,
-  3 to his look card; the walk then found a tap in and out of an input's time cell writing a false "times" line — fixed
-  (older than this build, now reached by its gesture). The gates on the final code: §Gate baseline.
-- **His look card answered 28 Sep 26** — "1. Ok · 2. Ok · 3. Ok": all three kept as built (D346). PR #455.
-- **Next:** his "merge live".
-<!-- /now -->
-
 <!-- now:claude/five-flags-batch-continue-2cfa70 -->
 ### `claude/five-flags-batch-continue-2cfa70` — the five-flags batch AND his answers D270–D275: BUILT and FULL-checked (PR #445) — waiting for his look and "merge live"; the red Leave War tests' cause found and fixed (confirm on GitHub) — written 27 Sep 26 — verify before use
 - **The branch:** carries `claude/five-flags-batch-build-ef7d85` whole (that branch has no PR and nothing of its own —
@@ -69,7 +51,7 @@ the later merge keeps both (D78).
 1. **HIS ORDER to the database step, about two months away (D203, 26 Sep 26):** `[ACCOUNTS]`, `[ACCOUNTS-NEW-PERSON]`,
    `[POST-OUT-OUTCOMES]`, `[LW-MOVE-STANDARD]` (D264–D266) and `[ONE-DOOR]` (D309, D310, with `[POST-IN-DATE]`) MERGED
    (PRs #442, #443, #446, #447, #450) → **the one changes window (`[DRAFT-PENDING]`)** MERGED (PR #451, 28 Sep 26); its
-   two follow-ups `[HIST-PHONE-HIDE]` and `[CHG-BY-ITEM]` (D345) BUILT, waiting for his look (`claude/hist-phone-by-item`); beside it, he talks to the IT side
+   two follow-ups `[HIST-PHONE-HIDE]` and `[CHG-BY-ITEM]` (D345, D346) MERGED (PR #455, 28 Sep 26); beside it, he talks to the IT side
    (`[IT-QUESTIONS]`). Development as normal: `[HUMAN-RETEST]`'s remaining three in his order (D147 — the absence record
    with `[S4-HUNT-REST]` and D260–D262 MERGED, PR #444 — then change-recording, the Leave War links last), then `[LW-LOCKMARK]` → `[LW-WEEKDAY-WORK]` (`[PUB-UNAVAIL]`
    closed by the absence-record re-test).
