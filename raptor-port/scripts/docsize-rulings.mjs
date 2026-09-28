@@ -70,11 +70,15 @@ export function headingProblem(d, h) {
 /* THE RETIRE MARK (DECISIONS.md step 2) at the head of a full row's RULING cell: the row leaves for the archive. One
    definition for both scripts (Fable's code read); the dated and dashed forms the change marks teach are accepted too
    ("**— REPLACED 27 Sep 26 BY D300: …**"). */
-export const MARKED = /^\*\*(?:—\s*)?(?:(?:REPLACED|REVERSED|SUPERSEDED|ENDED)(?:\s+\d{1,2}\s+[A-Z][a-z]{2}\s+\d{2})?\s+BY\s+D\d+|SPENT\b)/
+/* "replaced by D<n>" at the head of the ruling cell, the number it names in group 1 — the gate's "no such ruling" check
+   reads this same pattern, so the grammar is written once (Fable's verification) */
+export const REPLACED_BY = /^\*\*(?:—\s*)?(?:REPLACED|REVERSED|SUPERSEDED|ENDED)(?:\s+\d{1,2}\s+[A-Z][a-z]{2}\s+\d{2})?\s+BY\s+(D\d+)/
+export const MARKED = new RegExp(`(?:${REPLACED_BY.source})|^\\*\\*(?:—\\s*)?SPENT\\b`)
 export const isRetired = cells => MARKED.test(cells[2] || '')
 /* Is this live row the same ruling as that archived one — equal but for the retire mark at the head of the ruling cell?
-   A live row under an archived number with OTHER text is a reused number, never a copy to drop (Fable's code read). */
-const unmark = c => (c || '').replace(/^\*\*[^*]*\*\*\s*/, '')
+   A live row under an archived number with OTHER text is a reused number, never a copy to drop (Fable's code read). Only
+   a leading span that IS a retire mark is set aside — never his own bold words (both verifications). */
+const unmark = c => (MARKED.test(c || '') ? c.replace(/^\*\*[^*]*\*\*\s*/, '') : (c || ''))
 export const sameRuling = (a, b) => { const x = cellsOf(a), y = cellsOf(b); return x.length === y.length && x.every((c, i) => (i === 2 ? unmark(c) === unmark(y[i]) : c === y[i])) }
 
 /* why a short line's rule text cannot stand — null when it can: empty, over the cap, any "|" at all (an escaped one

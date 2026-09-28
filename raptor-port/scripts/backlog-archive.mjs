@@ -80,6 +80,10 @@ if (args.includes('--rulings')) {
   const toArchive = [], moved = [], converted = []
   const rewriteList = [], unread = [], reapply = [], classify = []
   const given = new Map(), carried = new Set()
+  /* a temporary copy left by a run that was killed between its renames is the only copy of what it was writing: never
+     overwrite it (Astra's verification) — the chat looks at it, keeps what it needs, deletes it, and runs again */
+  const stale = [...git('ls-files', '--others', '--', DIR, FULL_DIR).split('\n'), ...[DEC, ARCHR].map(f => existsSync(join(REPO, f) + '.docmove-tmp') ? f + '.docmove-tmp' : '')].filter(f => f && f.endsWith('.docmove-tmp'))
+  if (stale.length) die(`a temporary copy from an interrupted run is still here (${stale.join(', ')}) — compare it with its file (the file is what git and the last complete run left), keep what you need, delete it, then run this again.`)
 
   /* ---- --merge: the starting texts come from git, never from the conflicted files on disk (plan §2.4) ---- */
   let mergeIds = null
@@ -104,7 +108,6 @@ if (args.includes('--rulings')) {
     /* a rulings file only the other side has (a new area it created) starts from its own text — whole, so its rows and
        its prose are already here, never inserted or reported a second time (Astra and Fable's code reads) */
     const takenWhole = new Set()
-    for (const f of paths(otherRef)) if (!files.has(f) && show(base, f) == null) { setText(f, show(otherRef, f)); takenWhole.add(f) }
     const state = ref => {
       const full = new Map(), short = new Map(), arch = new Map(), prose = new Map()
       for (const f of paths(ref)) {
@@ -116,13 +119,24 @@ if (args.includes('--rulings')) {
             if (f === ARCHR) arch.set(d, l)
             else if (RL.kindOf(l) === 'short') short.set(d, { f, l })
             else if (f !== DEC) full.set(d, { f, l })
-          } else if (l.trim() && !/^\|\s*#\s*\|/.test(l) && !/^\|[-|: ]+\|\s*$/.test(l) && !/^## Moved /.test(l) && !(f === DEC && /^\| [^|]+ \| `[^`]+` \|/.test(l))) mine.push(l)
+          } else if (f === DEC && /^\| [^|]+ \| `[^`]+` \|/.test(l)) mine.push(l.replace(/\|[^|]*\|\s*$/, '| (its D-numbers are rewritten from the files) |'))
+          /* a map row's list of numbers is rewritten from the files; its area, file and "loads by itself" cells are prose —
+             an edit to them is printed like any other line (Astra's verification) */
+          else if (l.trim() && !/^\|\s*#\s*\|/.test(l) && !/^\|[-|: ]+\|\s*$/.test(l) && !/^## Moved /.test(l)) mine.push(l)
         })
         prose.set(f, { f, mine })
       }
       return { full, short, arch, prose }
     }
     const B = state(base), O = state(otherRef), N = state(newRef)
+    /* ...less any row this side already holds: a ruling the other side MOVED into its new file is placed by the replay
+       below, never imported a second time (found by the self-test, 28 Sep 26) */
+    const heldHere = new Set([...N.full.keys(), ...N.short.keys(), ...N.arch.keys()])
+    for (const f of paths(otherRef)) if (!files.has(f) && show(base, f) == null) {
+      setText(f, show(otherRef, f)); takenWhole.add(f)
+      const x = files.get(f), inF = RL.fencedFlags(x.ls)
+      x.ls = x.ls.filter((l, i) => inF[i] || !RL.isRow(l) || !heldHere.has(RL.idOf(l)))
+    }
     /* each ruling's whole state on a side: retired / live / absent, its full row, its area. Three-way per D-number: the
        other side's change is taken only where ours did not change it (or made the same change); a change on BOTH sides
        to different states stops the command (Astra's code read: an archive, a move, a clash were chosen silently). */
@@ -137,7 +151,11 @@ if (args.includes('--rulings')) {
       if (same(o, b) || same(n, o)) continue                     // the other side did not touch it, or both did the same
       const clash = why => conflicts.push(`${d} ${why} — resolve it by hand:\n      base:  ${desc(b)}\n      here:  ${desc(n)}\n      there: ${desc(o)}`)
       if (b.where === 'absent') {                                // new on the other side
-        if (n.where !== 'absent') { clash('was filed on both sides with different text — a number clash: the later branch renumbers its own row (D78)'); continue }
+        if (n.where !== 'absent') {
+          /* the same ruling on both sides (a cherry-pick or a criss-cross history), retired on one of them: it stays retired */
+          if (RL.sameRuling(n.line, o.line) || RL.sameRuling(o.line, n.line)) { if (o.where === 'retired' && n.where === 'live') merge.retire.push({ d, line: o.line }); continue }
+          clash('was filed on both sides with different text — a number clash: the later branch renumbers its own row (D78)'); continue
+        }
         const f = `${DIR}/${o.area}`
         if (o.where === 'live' && !(takenWhole.has(f) && (files.get(f)?.ls || []).some(l => RL.idOf(l) === d))) merge.addNew.push({ d, line: o.line, area: o.area })
         if (o.where === 'retired') merge.retire.push({ d, line: o.line })
@@ -162,7 +180,10 @@ if (args.includes('--rulings')) {
     /* a short line changed on the other side (both sides in the new layout): three-way too */
     for (const [d, os] of O.short) {
       const b = B.short.get(d)?.l, n = N.short.get(d)?.l
-      if (b === undefined || os.l === b || n === os.l) continue
+      /* both sides filed the same ruling with different short lines: ours stays, theirs is shown (Fable's verification) */
+      if (b === undefined && n !== undefined && n !== os.l && !B.full.has(d)) rewriteList.push(`${d} — filed on both sides; this side's short line is kept, the other side's read: ${os.l}`)
+      /* a ruling no longer live here (retired on this side) has no short line to take — the full-row loop judged it */
+      if (b === undefined || os.l === b || n === os.l || !N.full.has(d)) continue
       if (n === b) merge.shortTake.push({ d, line: os.l }); else conflicts.push(`${d}'s short line was changed on both sides — resolve it by hand`)
     }
     if (conflicts.length) die(`--merge stopped, nothing written:\n  - ${conflicts.join('\n  - ')}`)
@@ -412,7 +433,17 @@ if (args.includes('--rulings')) {
     for (const f of changed) renameSync(tmp(f), join(REPO, f))
   } catch (err) { putBack(`writing failed (${err.code || err.message})`) }
   const r = spawnSync(process.execPath, [GATE, '--inventory'], { cwd: REPO, encoding: 'utf8' })
-  if (r.status !== 0) { console.error(r.stdout + r.stderr); putBack('the inventory was not clean afterwards') }
+  if (r.status !== 0) {
+    /* During --merge the result STAYS written (found on the first real trial merge, 28 Sep 26): what is left is the
+       merging chat's own hand work — the printed lines re-applied (a new ruling's "Also read" home), a mark its new rows
+       imply — and it cannot do that work if every file goes back. Nothing was lost: every number either side held was
+       checked present before writing. A plain run still puts everything back. */
+    if (merging) {
+      console.error((r.stdout + r.stderr).split('\n').filter(l => /^\s+- /.test(l)).join('\n'))
+      die(`WRITTEN — the merge's rulings are in place (${changed.join(', ')}), and the gate still fails for the lines above, which are this merge's hand work: re-apply the RE-APPLY BY HAND lines printed above, write any mark the gate names in that ruling's FULL row (under ${FULL_DIR}/), then run \`node raptor-port/scripts/backlog-archive.mjs --rulings\` (no --merge) until it says the inventory is clean; then \`git add\` the files.`)
+    }
+    console.error(r.stdout + r.stderr); putBack('the inventory was not clean afterwards')
+  }
   console.log(`done; the inventory is clean.${merging ? ` Review, then \`git add\` these files: ${changed.join(', ')}` : ''}`)
   process.exit(0)
 }

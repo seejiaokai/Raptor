@@ -284,7 +284,7 @@ Fable as extensions or settlements the older row asked for.
 
 | Finding | What changed |
 |---|---|
-| Astra 1 — `--merge` chose one side when both sides retired, moved or filed the same ruling | each ruling's text, area and whether it is retired are taken three-way, attribute by attribute; a change on both sides to different states stops. **Not taken:** Astra asked that a number new on both sides with IDENTICAL text also stop — identical rows arrive when a branch merged the other earlier, so they pass (the same ruling, not a clash) |
+| Astra 1 — `--merge` chose one side when both sides retired, moved or filed the same ruling | each ruling's text, area and whether it is retired are taken three-way, attribute by attribute; a change on both sides to different states stops. **Not taken:** Astra asked that a number new on both sides with IDENTICAL text also stop — identical rows come from a cherry-pick or a criss-cross history — one ruling recorded twice — so they pass (the reason first given here, "a branch merged the other earlier", was wrong, as both verifications said: such a merge moves the base past the row) |
 | Astra 2, Fable F2 — a new area file created on an old-layout branch was inserted twice | a file taken whole from the other side is neither re-inserted nor reported as prose; its map row is carried |
 | Astra 3, Fable F10 — `\|`, an empty line or a second "— changed by" inside a short line passed | one validator (`shortTextProblem`) in the gate and the converter; `--short-text` refuses an empty line and names an unused one |
 | Astra 4 — an unusable `DOCSGUARD_BASE` fell back to HEAD~1 and missed a ruling dropped two commits back | it falls through to the fork point from main; HEAD~1 only when that fork point is HEAD itself |
@@ -298,3 +298,19 @@ Fable as extensions or settlements the older row asked for.
 | Fable F11 — an old-layout file holding a marked row needed two runs | the header rewrite runs after the retirements |
 | both — self-test gaps | 20 new cases: both-new-layout merges, a new area on the other side, a clash, divergent moves, another conflicted file, no MERGE_HEAD, a row moved here and marked there, the injected second-write failure, mixed endings, the tripwire refusal, the dated retire mark, a reused archived number, multi-row moves |
 | the area-file tripwire | the converter refuses, before writing, an area file with no `RULING_BYTES` row |
+
+**The verification of the fixes, 28 Sep 26** — both reviewers read commit 253c9aa7 against their own and each other's
+findings. Fable found no path that loses a ruling. Every point they raised is settled, each with a self-test case (178 in all):
+
+| Point | What became of it |
+|---|---|
+| Astra — a number new on both sides with identical text should still stop | **Kept passing, on Fable's argument** (the reviewers disagreed): byte-identical rows come only from a cherry-pick or a criss-cross history, so they are one ruling; stopping would force a pointless renumber. The reason recorded above is corrected. Both sides filing it with different short lines: ours is kept and theirs is printed under REWRITE |
+| Astra, Fable — the same-ruling test set aside ANY leading bold span, so a new ruling could pass as an old one's copy | only a span that is itself a retire mark is set aside; a lookalike is refused as a reused number, a stale copy opening with his own bold words is dropped |
+| Astra — an edit to a map row's "loads by itself" cell was dropped | a map row's area, file and loading cells are compared like prose and printed; only its list of numbers is rewritten |
+| Astra — a run killed between its renames could leave a temporary copy the next run overwrites | the next run refuses while any `.docmove-tmp` sits beside a rulings file. **Not taken:** a journal with durable backups — the window is milliseconds and every file is under git, which restores the state before the run |
+| Fable — a false stop when this side retired a ruling whose short line the other side rewrote | a ruling no longer live here takes no short line from the other side |
+| Fable — "renumber" advice for the same ruling filed on both sides and retired on one | it stays retired, no stop |
+| Fable — the retire grammar still written twice | one `REPLACED_BY` pattern; `MARKED` is built from it |
+| both — fixture gaps | the mark grammar read directly (AMENDED AGAIN, IN PART, two numbers, a mark in the ruling cell, SETTLED); a whole CRLF set; a full row holding `\|`; the other side alone moving a ruling; retired there and changed here; a refused heading mid-merge; the map row edit; the stale temporary copy |
+| **Found by a real trial merge** of the three open parallel branches (in a throwaway worktree): Tracker leftovers (D370–D376) and small fixes (D360) merged clean; change-recording's merge converted D347–D353 and carried D182's retirement, then the gate rightly asked for its hand work (a new ruling's "Also read" home, D347's mark for D348) — and put every file back, so the chat could never do that work | during `--merge` a failing gate now leaves the result WRITTEN and names the hand work (every number was checked present first); a plain run still puts everything back. With the hand work done, that trial ends green |
+| **Found by the new self-test case** for the other side moving a ruling into an area file it created | such a file is taken without the rows this side already holds, which the replay then places — before, the moved row was imported twice |

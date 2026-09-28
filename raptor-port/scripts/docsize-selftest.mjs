@@ -505,6 +505,64 @@ gitRulings('an old row this side moved and the other side marked keeps BOTH chan
   mergeIn(g, 'slim', 'old'); return run('--rulings', '--merge') }, (c, r) =>
   !has(c, OTHER_FULL, '**— NARROWED 23 Sep 26 BY D1: less.**') ? 'the other side\'s mark was lost, or D2 left other' : has(c, AREA, '| D2 |') ? 'D2 is back in general' : !has(c, OTHER, ' — changed by D1 |') ? 'the tail was not refreshed' : '')
 
+/* ---- The verifications of the fixes (Fable and Astra, 28 Sep 26): one case per point ---- */
+{ /* the change-mark grammar, read directly */
+  const RLx = await import(pathToFileURL(join(HERE, 'docsize-rulings.mjs')).href)
+  const marks = (words, meaning) => [...RLx.marksOf(['D99', '1 Oct 26', words, meaning, 'x'])].sort().join(',')
+  const cases = [
+    ['AMENDED AGAIN, dated', marks('w', '**— AMENDED AGAIN 25 Sep 26 BY D180: x.** **Rule.**'), 'D180'],
+    ['SUPERSEDED IN PART, dated, lower-case by', marks('w', '**SUPERSEDED IN PART 22 Sep 26 by D24** — y. **Rule.**'), 'D24'],
+    ['two numbers before the colon', marks('w', '**— ANSWERED 27 Sep 26 BY D310 (a) and D322 (b); BUILT with x**'), 'D310,D322'],
+    ['a mark in the ruling cell', marks('**EXTENDED BY D86 (same evening): z.** his words', '**Rule.**'), 'D86'],
+    ['"Narrows D217" names no mark', marks('w', '**Narrows D217** (26 Sep 26). **Rule.**'), ''],
+    ['SETTLED BY', marks('w', '**— SETTLED 28 Sep 26 BY D345: approved.** **Rule.**'), 'D345'],
+  ]
+  for (const [name, got, want] of cases) { const ok = got === want; if (!ok) failed++; console.log(`${ok ? 'PASS' : 'MISS'}  marks: ${name} — expected [${want}], got [${got}]`) }
+}
+mover('a lookalike under an archived number (its own bold words, then the same tail) is refused, not dropped', false, { prep: c => c.edit(AREA, t => topOf(t, '| D0 | 20 Sep 26 | **A brand-new instruction.** z | z | `OUTSTANDING.md` |')), args: ['--rulings'], check: (c, r) => /never reused/.test(r.stderr) ? '' : 'it was not refused as a reused number' })
+mover('a stale live copy whose ruling cell opens with HIS bold words is dropped as the same ruling', true, { prep: c => {
+  c.edit('DECISIONS-ARCHIVE.md', t => t.replace('**REPLACED BY D1 (21 Sep 26).** z', '**REPLACED BY D1 (21 Sep 26).** **Never** z')); c.commit('an archived row with his own bold words')
+  c.edit(FULL, t => topOf(t, '| D0 | 20 Sep 26 | **Never** z | z | `OUTSTANDING.md` |')); c.edit(AREA, t => topOf(t, '| D0 | 20 Sep 26 | Rule z. |')) }, args: ['--rulings'], check: c => has(c, FULL, '| D0 |') || has(c, AREA, '| D0 |') ? 'the stale copy stayed' : '' })
+mover('a full row holding an escaped "\\|" converts', true, { prep: c => c.edit(AREA, t => topOf(t, newFull('D9', '**Nine is the rule.** a \\| b'))), args: ['--rulings'], check: c => !has(c, FULL, 'a \\| b') || !has(c, AREA, '| D9 | 22 Sep 26 | Nine is the rule. |') ? 'it did not convert whole' : '' })
+mover('a whole CRLF rulings set converts, every line keeping CRLF', true, { prep: c => { for (const f of ['DECISIONS.md', 'DECISIONS-ARCHIVE.md']) c.edit(f, t => t.replace(/\n/g, '\r\n')); c.write(AREA, AREA_OLD.replace(/\n/g, '\r\n')); rmSync(join(c.dir, FULL)); c.commit('CRLF, old layout') }, args: ['--rulings'], check: c =>
+  !c.read(FULL).includes(fullRow('D2', 'b') + '\r\n' + fullRow('D1', 'a') + '\r\n') ? 'the full rows did not arrive with CRLF' : /(^|[^\r])\n/.test(c.read(AREA)) || /(^|[^\r])\n/.test(c.read(FULL)) ? 'a bare LF crept in' : '' })
+mover('a temporary copy from an interrupted run stops the next run', false, { prep: c => c.write(FULL + '.docmove-tmp', 'half-written\n'), args: ['--rulings'], check: (c, r) => /interrupted run/.test(r.stderr) && c.read(FULL + '.docmove-tmp') === 'half-written\n' ? '' : 'it did not refuse, or it touched the copy' })
+gitRulings('the other side alone moves a ruling between areas: it moves here too', true, (c, g, run) => {
+  c.write(OTHER, OTHER_HEAD); addOther(c, '—'); c.commit('an empty other area')
+  g('checkout', '-q', '-b', 'a'); run('--rulings', '--move-rows', 'D1', '--to', 'other'); c.commit('a moves D1')
+  g('checkout', '-q', 'main'); c.edit(FULL, t => t.replace('**Rule b.** b |', '**Rule b.** b, on main |')); c.commit('main edits D2')
+  mergeIn(g, 'main', 'a'); return run('--rulings', '--merge') }, c => has(c, AREA, '| D1 |') || !has(c, OTHER, shortRow('D1', 'a')) || !has(c, OTHER_FULL, fullRow('D1', 'a')) ? 'D1 did not follow the other side\'s move' : !has(c, FULL, 'b, on main') ? 'our edit was lost' : '')
+gitRulings('retired there, its row changed here: stops', false, (c, g, run) => {
+  g('checkout', '-q', '-b', 'a'); c.edit(FULL, t => t.replace('| D1 | 21 Sep 26 | a |', '| D1 | 21 Sep 26 | **SPENT 22 Sep 26 — used.** a |')); run('--rulings'); c.commit('a retires D1')
+  g('checkout', '-q', 'main'); c.edit(FULL, t => t.replace('**Rule a.** a |', '**Rule a.** a, on main |')); c.commit('main edits D1')
+  mergeIn(g, 'main', 'a'); return run('--rulings', '--merge') }, (c, r) => /retired there but its row changed here/.test(r.stderr) ? '' : 'wrong reason')
+gitRulings('retired here, its short line rewritten there: the retirement stands, no false stop', true, (c, g, run) => {
+  g('checkout', '-q', '-b', 'a'); c.edit(AREA, t => t.replace(shortRow('D1', 'a'), '| D1 | 21 Sep 26 | Rule a, rewritten. |')); c.commit('a rewrites D1\'s line')
+  g('checkout', '-q', 'main'); c.edit(FULL, t => t.replace('| D1 | 21 Sep 26 | a |', '| D1 | 21 Sep 26 | **SPENT 22 Sep 26 — used.** a |')); run('--rulings'); c.commit('main retires D1')
+  mergeIn(g, 'main', 'a'); return run('--rulings', '--merge') }, c => has(c, AREA, '| D1 |') || has(c, FULL, '| D1 |') ? 'D1 is live again' : '')
+gitRulings('the same ruling filed on both sides (a cherry-pick) stays one ruling', true, (c, g, run) => {
+  g('checkout', '-q', '-b', 'a'); c.edit(AREA, t => topOf(t, newFull('D9', '**Nine is the rule.**'))); run('--rulings'); c.commit('a files D9')
+  g('checkout', '-q', 'main'); c.edit(AREA, t => topOf(t, newFull('D9', '**Nine is the rule.**'))); run('--rulings'); c.edit(FULL, t => t.replace('**Rule b.** b |', '**Rule b.** b, on main |')); c.commit('main files the same D9')
+  mergeIn(g, 'main', 'a'); return run('--rulings', '--merge') }, c => c.read(FULL).split('| D9 |').length !== 2 || c.read(AREA).split('| D9 |').length !== 2 ? 'D9 is not there exactly once' : '')
+gitRulings('an edit to a map row\'s "loads by itself" cell on the other side is printed, never lost silently', true, (c, g, run) => {
+  g('checkout', '-q', '-b', 'a'); c.edit('DECISIONS.md', t => t.replace(mapRow('General', AREA, 'D2, D1'), mapRow('General', AREA, 'D2, D1').replace('| always |', '| when a general file is read |'))); c.commit('a edits the map row')
+  g('checkout', '-q', 'main'); c.edit(FULL, t => t.replace('**Rule b.** b |', '**Rule b.** b, on main |')); c.commit('main edits D2')
+  mergeIn(g, 'main', 'a'); return run('--rulings', '--merge') }, (c, r) => /RE-APPLY BY HAND[\s\S]*when a general file is read/.test(r.stdout) ? '' : 'the map row edit was not printed')
+gitRulings('a refused heading mid-merge names --short-text, and writes nothing', false, (c, g, run) => {
+  c.write(AREA, AREA_OLD); rmSync(join(c.dir, FULL)); c.commit('the old layout — the merge base')
+  g('checkout', '-q', '-b', 'old'); c.edit(AREA, t => topOf(t, newFull('D9', '**Three things:** one, two, three.'))); setMap(c, AREA, 'D9, D2, D1'); c.commit('old files D9')
+  g('checkout', '-q', 'main'); g('checkout', '-q', '-b', 'slim'); run('--rulings'); c.commit('slim')
+  mergeIn(g, 'old', 'slim'); c.snap = c.read(AREA); return run('--rulings', '--merge') }, (c, r) =>
+  !/--short-text/.test(r.stderr) || !/read from git/.test(r.stderr) ? 'the refusal does not point at --short-text' : c.read(AREA) !== c.snap ? 'it wrote anyway' : '')
+
+gitRulings('a merge whose result still owes hand work keeps it WRITTEN and names the work (the first real trial, 28 Sep 26)', false, (c, g, run) => {
+  c.write(AREA, AREA_OLD); rmSync(join(c.dir, FULL)); c.commit('the old layout — the merge base')
+  g('checkout', '-q', '-b', 'old'); c.edit(AREA, t => topOf(t, newFull('D9', '**Nine is the rule.** Narrows D2 for one case.'))); setMap(c, AREA, 'D9, D2, D1'); c.commit('old files D9, which narrows D2, unmarked')
+  g('checkout', '-q', 'main'); g('checkout', '-q', '-b', 'slim'); run('--rulings'); c.commit('slim')
+  mergeIn(g, 'old', 'slim'); return run('--rulings', '--merge') }, (c, r) =>
+  !/WRITTEN/.test(r.stderr) || !/carries no mark naming D9/.test(r.stderr) ? 'it did not say WRITTEN and name the missing mark'
+  : !existsSync(join(c.dir, FULL)) || !has(c, FULL, '**Nine is the rule.**') || !has(c, AREA, '| D9 | 22 Sep 26 | Nine is the rule. |') ? 'the result was not left written' : '')
+
 /* THE STOP HOOK (A8) — needs bash; skipped, and said so, where there is none. */
 const HOOK = join(HERE, '..', '..', '.claude', 'hooks', 'backlog-guard.sh')
 const bash = spawnSync('bash', ['--version'], { encoding: 'utf8' }).status === 0

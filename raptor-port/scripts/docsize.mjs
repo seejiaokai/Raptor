@@ -450,7 +450,7 @@ function rulings(allow) {
       if (!areas.has(r.file)) fails.push(`${r.d}'s short line is in ${r.file} — a short line lives only in an area file under ${RULINGS_DIR}/`)
       continue
     }
-    const by = /^\*\*(?:—\s*)?(?:REPLACED|REVERSED|SUPERSEDED|ENDED)(?:\s+\d{1,2}\s+[A-Z][a-z]{2}\s+\d{2})?\s+BY\s+(D\d+)/.exec(rulingCell(r.line))
+    const by = RL.REPLACED_BY.exec(rulingCell(r.line))
     if (by && !dNow.includes(by[1])) fails.push(`${r.d} is marked replaced by ${by[1]}, and no such ruling exists`)
     if (r.file === DECISIONS) fails.push(`${r.d} is written in ${DECISIONS} — a ruling lives in its area's file under ${RULINGS_DIR}/ (the map in ${DECISIONS} names them); move the row there, then run: ${MOVER_CMD}`)
     else if ((areas.has(r.file) || fulls.has(r.file)) && MARKED.test(rulingCell(r.line))) fails.push(`${r.d} is marked replaced/spent but is still in ${r.file} — move it to the archive: ${MOVER_CMD}`)
