@@ -30,7 +30,7 @@ concurrency:
 jobs:
   docs-guard:
     runs-on: ubuntu-latest
-    # 5 -> 10, 28 Sep 26 (owner, with D391): the self-test grew to ~180 cases with real `git merge` fixtures in
+    # 5 -> 10, 28 Sep 26 (owner, in the same request as D391's guide step): the self-test grew to ~180 cases with real `git merge` fixtures in
     # the rulings slim-down (D390) and now takes two to three minutes here, so five left no room for a slow runner.
     timeout-minutes: 10
     steps:

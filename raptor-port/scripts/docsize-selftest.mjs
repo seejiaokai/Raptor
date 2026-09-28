@@ -199,7 +199,11 @@ scenario('a short form pointing to a heading that is not there', true, c => with
 scenario('one heading named by two short forms', true, c => withGuide(c, guideOf(gPtr('Alpha'), '', gPtr('Alpha', 'Another rule.')), fullOf('Alpha')), { mustSay: 'named by 2 short forms' })
 scenario('a section of the full text the guide does not have', true, c => withGuide(c, guideOf(gPtr('Alpha')), fullOf('Alpha').replace('## How to work here', '## Somewhere else')), { mustSay: 'not a section of' })
 scenario('a short form over the cap', true, c => withGuide(c, guideOf(gPtr('Alpha', 'x'.repeat(351))), fullOf('Alpha')), { mustSay: 'at most 350' })
-scenario('a pointer typed with its § not at the end of the line', true, c => withGuide(c, guideOf(gPtr('Alpha'), '', 'See docs/guide-full.md §Alpha for more.'), fullOf('Alpha')), { mustSay: 'not at its end' })
+scenario('a pointer typed with its § not at the end of the line', true, c => withGuide(c, guideOf(gPtr('Alpha'), '', 'See docs/guide-full.md §Alpha for more.'), fullOf('Alpha')), { mustSay: 'not typed as a short form' })
+scenario('a heading written twice in the full text', true, c => withGuide(c, guideOf(gPtr('Alpha')), fullOf('Alpha', 'Alpha')), { mustSay: 'more than once' })
+const bravoUnderMap = fullOf('Alpha') + '## Where things live\n\n### Bravo\n\nThe whole text of Bravo.\n'
+scenario('a full text filed under a section other than its short form\'s', true, c => withGuide(c, guideOf(gPtr('Alpha'), '', gPtr('Bravo')), bravoUnderMap), { mustSay: 'file the full text under the section' })
+scenario('a full text under its short form\'s own section passes', false, c => withGuide(c, guideOf(gPtr('Alpha')) + '\n' + gPtr('Bravo') + '\n', bravoUnderMap))
 scenario('the full text deleted while the guide still points into it', true, c => { withGuide(c, guideOf(gPtr('Alpha')), fullOf('Alpha')); c.commit('guide'); rmSync(join(c.dir, GFULL)) }, { mustSay: 'which is GONE' })
 
 

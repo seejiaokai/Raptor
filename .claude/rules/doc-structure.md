@@ -33,7 +33,7 @@ The full policy and the tiers: `raptor-port/docs/doc-budget.md`. This file is it
 | an open job, a found-not-fixed, a deferral, a question to put to him later | an `OUTSTANDING.md` item — the ONE backlog — and a line in its priority list |
 | how a rule or a surface behaves (a contract) | `engine-rules.md`, `ui-contracts.md`, `feature-impact.md`, `performance.md`, `data-schema.md` (in `raptor-port/docs/`) |
 | a rule EVERY task needs, whatever the area | an unscoped file under `.claude/rules/` (a general ruling: `decisions/how-we-work.md`) — `raptor-port/CLAUDE.md` loads only once a `raptor-port/` file is opened, so it carries the project-side copy or pointer, never the only one |
-| a project rule every task under `raptor-port/` needs (how to build, verify, code) | ONE line in `raptor-port/CLAUDE.md`, at most 350 characters, ending with the pointer to its full text — and that full text under its own `###` heading in `raptor-port/docs/guide-full.md`, one heading per short form (D391; the gate pairs them) |
+| a project rule every task under `raptor-port/` needs (how to build, verify, code) | ONE line in `raptor-port/CLAUDE.md` — at most 350 characters when it names a full text; if it outgrows the line, its detail goes under its own `###` heading in `raptor-port/docs/guide-full.md`, named by the line's ending pointer, one heading per short form (D391; the gate pairs them) |
 | a rule or piece of architecture ONE area needs | that area's file under `.claude/rules/decisions/` |
 | where things stand, what this chat left, what is next | this chat's own block under `## Now` in `HANDOFF.md`, rewritten at each handoff |
 | a gate count | `HANDOFF.md` §Gate baseline — only a count from a run you watched |

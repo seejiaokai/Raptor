@@ -582,10 +582,12 @@ const GUIDE_POINTER = / · full text: docs\/guide-full\.md §(.+)$/
 function guidePairing() {
   const fails = [], g = readNow(GUIDE), full = readNow(GUIDE_FULL)
   const gl = unfenced(splitLines(g)), pointers = []
+  let gSec = null
   for (const l of gl) {
+    if (/^## /.test(l)) gSec = l.trim()
     const m = GUIDE_POINTER.exec(l.trimEnd())
-    if (m) pointers.push({ name: m[1].trim(), short: l.slice(0, m.index) })
-    else if (l.includes('guide-full.md §')) fails.push(`${GUIDE} has a line naming ${GUIDE_FULL} with a § that is not at its end — a short form ENDS " · full text: docs/guide-full.md §<heading>": ${l.slice(0, 80)}…`)
+    if (m) pointers.push({ name: m[1].trim(), short: l.slice(0, m.index), sec: gSec })
+    else if (l.includes('guide-full.md §')) fails.push(`${GUIDE} has a line naming ${GUIDE_FULL} with a § that is not typed as a short form's ending — it must END exactly " · full text: docs/guide-full.md §<heading>" (a space, a middle dot, a space): ${l.slice(0, 80)}…`)
   }
   if (!full) {
     if (pointers.length) fails.push(`${GUIDE} has ${pointers.length} short form(s) pointing into ${GUIDE_FULL}, which is GONE — restore it from the base; it holds the guide's full text`)
@@ -593,6 +595,10 @@ function guidePairing() {
   }
   const fl = unfenced(splitLines(full))
   const h3 = fl.filter(l => /^### /.test(l)).map(l => l.slice(4).trim())
+  /* the ## a full text sits under must be the section its short form sits in (Fable, 28 Sep 26): "above" and "below"
+     inside a moved block are read by that section */
+  const secOf = new Map()
+  { let s = null; for (const l of fl) { if (/^## /.test(l)) s = l.trim(); else if (/^### /.test(l) && !secOf.has(l.slice(4).trim())) secOf.set(l.slice(4).trim(), s) } }
   const guideH2 = new Set(gl.filter(l => /^## /.test(l)).map(l => l.trim()))
   for (const h of fl.filter(l => /^## /.test(l)).map(l => l.trim())) if (!guideH2.has(h)) fails.push(`${GUIDE_FULL} has the section "${h}", which is not a section of ${GUIDE} — its ## headings mirror the guide's, so a moved block is found under the section it came from`)
   const named = new Map()
@@ -604,6 +610,7 @@ function guidePairing() {
   }
   for (const p of pointers) {
     if (!h3.includes(p.name)) fails.push(`${GUIDE} has a short form pointing to "${GUIDE_FULL} §${p.name}", and there is no such ### heading there — a pointer to nothing`)
+    else if (secOf.get(p.name) !== p.sec) fails.push(`${GUIDE_FULL} §${p.name} sits under "${secOf.get(p.name) || 'no ## section'}", but its short form sits in the guide's "${p.sec || 'no ## section'}" — file the full text under the section its short form is in`)
     const n = [...p.short.replace(/^(- |> )/, '')].length
     if (n > GUIDE_SHORT_MAX) fails.push(`${GUIDE}: the short form for §${p.name} is ${n} characters — at most ${GUIDE_SHORT_MAX}: move its detail into the full text, keep the rule (D141 — never cut the rule's meaning to fit)`)
   }

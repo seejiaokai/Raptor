@@ -26,7 +26,7 @@ mean two different things, or a choice would materially change the result,
 ask follow-up questions until it wouldn't. Small, unambiguous asks clear
 that bar on their own — don't manufacture questions for them.
 
-**STANDING ORDER — weigh the whole ecosystem, and surface what you find** (owner, 28 Aug 26): on every feature change, before building and again before done, reason out how it lands across the whole app (`docs/feature-impact.md`); tell him the ripples, risks and assumptions, and ask where a question is genuinely his — the technical how stays yours · full text: docs/guide-full.md §Weigh the whole ecosystem
+**STANDING ORDER — weigh the whole ecosystem** (owner, 28 Aug 26): on every feature change, before building and before done, reason how it lands across the app (`docs/feature-impact.md`); tell him the ripples, risks and assumptions, ask where a question is genuinely his — the technical how stays yours; in doubt, a one-line heads-up with your call · full text: docs/guide-full.md §Weigh the whole ecosystem
 
 **STANDING ORDER — sweep the rules, then hand-test against them** (owner, 20 Sep 26; now inside the bug-check order): on every build, find EVERY ruling that applies, list them for him, hand-test the running build against each, pass or fail, and flag at once a new ruling that contradicts or narrows an existing one — name both, say which is newer · full text: docs/guide-full.md §Sweep the rules, then hand-test against them
 
@@ -36,11 +36,11 @@ that bar on their own — don't manufacture questions for them.
 
 **`/brainstorming` overrides this section, and usually should not:** it mandates a committed spec and a task-by-task plan — for a list of concrete asks, ask the questions, then build; reach for it only when the shape is genuinely unsettled · full text: docs/guide-full.md §Brainstorming is the heavy path
 
-**Match the process to the risk — MEDIUM is the default** (owner, 7 Aug 26): build, one reviewer checks, report, no spec or plan; LIGHT (build, gates) for cosmetics; HEAVY (spec → plan → reviewed tasks) only where a defect would be SILENT (persisted data, roles, the validation engine, parity, perf), saying so; state the time; prefer batches · full text: docs/guide-full.md §Match the process to the risk
+**Match the process to the risk: MEDIUM is the default** (owner, 7 Aug 26): build, one reviewer, report, no spec or plan; LIGHT (build, gates) for cosmetics; HEAVY (spec → plan → reviewed tasks) only where a defect would be SILENT (persisted data, roles, engine, parity, perf), said so; a wide visual change is MEDIUM; state the time; prefer batches · full text: docs/guide-full.md §Match the process to the risk
 
 - **The owner is non-technical** (6–10 Aug 26): what he reads is plain, complete and short — no raw output, what it means for him first, the app's own names; vocabulary, not depth — never hide a limitation; technical decisions are yours to make and explain, product direction stays his (`../.claude/rules/plain-language.md`, every session) · full text: docs/guide-full.md §The owner is non-technical
 - **Shipping — tell him when you are DONE, ship ONCE per session, NO AUTO-MERGE** (10 Aug – 2 Sep 26) — the live rules, with "done" now meaning live on Vercel (D143), are `../.claude/rules/shipping.md` (loaded in every chat); this Pages-era wording moved 24 Sep 26, whole, to `docs/archive/raptor-claude-md-2026-09-24.md`.
-- **MODELS — D67 (23 Sep 26): Opus 5.5 PLANS and BUILDS; Fable 5.1 and Astra REVIEW the plan and the code, never the model that wrote it (both on money / published records / permissions / persistence); when ASTRA builds, Opus 5.5 reviews; a bug Opus 5.5 cannot crack escalates to Fable 5.1.** The 7 Sep and 17 Sep 26 text under it is history · full text: docs/guide-full.md §Models
+- **MODELS — D67 (23 Sep 26): Opus 5.5 PLANS and BUILDS; Fable 5.1 and Astra REVIEW plan and code, never the model that wrote it (both on money, published records, permissions, persistence); when ASTRA builds, Opus 5.5 reviews; a bug Opus 5.5 cannot crack goes to Fable 5.1.** The 7 Sep text below is history; the 17 Sep 26 no-cheaper-model rule stands · full text: docs/guide-full.md §Models
 - **Always hand him the Vercel preview link** (24 Aug 26) — now in `../.claude/rules/shipping.md`; this wording, with its superseded auto-merge clause, moved 24 Sep 26, whole, to `docs/archive/raptor-claude-md-2026-09-24.md`.
 - **Delegate frugally, by judgment:** the main session plans, reviews diffs and runs the gates; no haiku or sonnet (17 Sep 26) — a subagent inherits Opus, takes read-only sweeps, and the implementation never leaves the main session; a delegate gets a precise spec and returns diffs and conclusions, never file dumps · full text: docs/guide-full.md §Delegate frugally
 - **Token discipline:** send a long run to a file, keep its exit code, read the file; never read `reference/` or any file over ~300 lines whole — grep it or read a slice; while iterating run only the affected test file, the full gate set ONCE before the PR; prefer a fresh session per task · full text: docs/guide-full.md §Token discipline
@@ -149,7 +149,7 @@ reassign across modules. `WARN`/`REST`/`EVD` are reassigned by every
   `dl:/dr:` duty · `sr:` sim · `gr:` ground · `st:` stores ·
   `ar:/at:` area/area-time · `tr:` traffic.
 
-**Person identity is a stable hidden id** (14 Sep 26): every crew reference stores the PEOPLE key, never the callsign (`whoId(v)`, `engine/people.ts`), so a rename moves nothing; the one add (Admin → Users, D217) refuses a callsign on the roster; an archived man's is free (D286, D295); a deleted man's flown days still point at him (D290, D297) · full text: docs/guide-full.md §Person identity is a stable hidden id
+**Person identity is a stable hidden id** (14 Sep 26): every crew reference stores the PEOPLE key, never the callsign (`whoId`) — a rename moves nothing; sim `who` alone stays free text; the one add (Admin → Users, D217) refuses a callsign on the roster; an archived man's is free (D286, D295); a deleted man's flown days point at him (D290, D297) · full text: docs/guide-full.md §Person identity is a stable hidden id
 
 **The mutation funnel — bypassing it is always a bug.** All schedule
 writes go through `slotVal`/`setSlotVal`/`fillSlot`/`txtGet`/`txtSet` →
@@ -239,11 +239,11 @@ decision + a pointer. Owner + date establish authority; keep them.
 ### Standing UI / design rules
 - **A click-open popup closes on a click outside it** (owner, 4 Sep 26): any panel, menu or palette a tap opens dismisses on an outside pointer-down, a press on it or its toggle counting as inside (worked example: the ⚙ colour palette, `SettingsSheet.tsx`) · full text: docs/guide-full.md §A click-open popup closes on a click outside it
 - **A control the user TAPS REPEATEDLY must not move under them** (owner, 2 Sep 26): its screen position stays fixed whatever the content it changes does (`RangePicker` pads every month to six rows; pin: `rangepicker.test.tsx`) · full text: docs/guide-full.md §A control tapped repeatedly must not move
-- **The highlight MENUS read apart from their CHIPS** (owner, 25 Aug 26): `.hl-gtab` is a solid raised control, `.fchip` stays flatter and fills blue only when picked; don't flatten the tabs back to the chip recipe · full text: docs/guide-full.md §The highlight menus read apart from their chips
+- **The highlight MENUS read apart from their CHIPS** (owner, 25 Aug 26): `.hl-gtab` is a solid raised control, `.fchip` stays flatter and fills blue only when picked; don't flatten the tabs back to the chip recipe, and don't restyle the bare `.hl-grp` — History reuses it (`scheduler.css`, `ui/hlchips.tsx`) · full text: docs/guide-full.md §The highlight menus read apart from their chips
 
 ### Moved to the area files (24 Sep 26, D140)
 Each group below now loads BY ITSELF, with its area's files (`../.claude/rules/decisions/`); its old sub-heading name is
-kept here so a pointer written before the move (a code comment, a spec) still lands. Planning in an area before
+kept, in full, in `docs/guide-full.md`, so a pointer written before the move (a code comment, a spec) still lands. Planning in an area before
 opening its code? Open its area file first — `../.claude/rules/doc-structure.md`.
 - Nine groups, each under its old name, moved 24 Sep 26, whole, to §Settled before this list of `../.claude/rules/decisions/scheduler.md` (late-input mark, Board behaviour, Waves & duties, Drag-reordering, Time format, Week navigation, Inputs & Admin, render/drag performance) or `leave-war.md` (roster & display, grid performance) · full text: docs/guide-full.md §The groups moved to the area files
 
