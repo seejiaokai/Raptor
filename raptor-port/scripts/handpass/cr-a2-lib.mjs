@@ -55,7 +55,7 @@ export async function toasts(page) {
 
 /** Sign out through the app's own Logout (the top bar's on a desktop, the ☰ drawer's on a phone). */
 export async function signOut(page) {
-  if (await page.locator('#schedBoard:visible').count()) { const x = page.locator('#sbClose:visible').first(); if (await x.count()) { await x.click(); await page.waitForTimeout(500) } }
+  if (await page.locator('#schedBoard:visible').count()) { const x = page.locator('#sbDone:visible').first(); if (await x.count()) { await x.click(); await page.waitForTimeout(500) } }
   const lo = page.locator('#logout:visible').first()
   if (await lo.count()) await lo.click()
   else {
@@ -76,7 +76,7 @@ export async function signIn(page, who) {
 /** The admin's member view (D292): the name badge on a desktop, the ☰ drawer's switch on a phone. Returns the badge /
     drawer words after the tap. */
 export async function switchView(page) {
-  if (await page.locator('#schedBoard:visible').count()) { const x = page.locator('#sbClose:visible').first(); if (await x.count()) { await x.click(); await page.waitForTimeout(500) } }
+  if (await page.locator('#schedBoard:visible').count()) { const x = page.locator('#sbDone:visible').first(); if (await x.count()) { await x.click(); await page.waitForTimeout(500) } }
   const badge = page.locator('#roleBadge:visible').first()
   if (!PHONE && await badge.count()) { await badge.click(); await page.waitForTimeout(700); return (await page.locator('#roleBadge').first().innerText()).trim() }
   await page.locator('#burger:visible').first().click(); await page.waitForTimeout(400)
@@ -148,7 +148,7 @@ export async function closeChanges(page) {
   if (await page.locator('.chgwin:not([hidden]) .win-x').count()) { await page.locator('.chgwin .win-x').first().click().catch(() => {}); await page.waitForTimeout(250) }
 }
 export async function closeBoardIfOpen(page) {
-  if (await page.locator('#schedBoard:visible').count()) { const x = page.locator('#sbClose:visible').first(); if (await x.count()) { await x.click(); await page.waitForTimeout(500) } else { await page.keyboard.press('Escape'); await page.waitForTimeout(400) } }
+  if (await page.locator('#schedBoard:visible').count()) { const x = page.locator('#sbDone:visible').first(); if (await x.count()) { await x.click(); await page.waitForTimeout(500) } else { await page.keyboard.press('Escape'); await page.waitForTimeout(400) } }
 }
 /** Load the week holding `ddmmyyyy` (the bridge — getting to a place, not a gesture under test). */
 export async function toWeek(page, ddmmyyyy) {

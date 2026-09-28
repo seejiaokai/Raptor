@@ -3384,7 +3384,10 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
      while editing). Icon-only (.bl off) and ordered LAST so it sits at the
      thumb-friendly right edge. No longer sticky: the decluttered row fits, so
      the trio just sits in flow with the same clean look as the desktop bar. */
-  .tb-hist{display:inline-flex;order:9;align-items:center;gap:6px}
+  /* [SUPERSEDED 28 Sep 26 — D348: "the mobile icons [should] be right to left, notification, notification then the
+     redo and undo button. Kinda similar to the desktop." The trio is no longer ordered last: it runs in the desktop's
+     order — Undo · Redo · (the clock) · the sync dot · the bell at the far right. `order:9` removed.] */
+  .tb-hist{display:inline-flex;align-items:center;gap:6px}
   .tb-hist .abtn{width:30px;min-width:0;height:30px;padding:0;display:inline-flex;
     align-items:center;justify-content:center}
   .tb-hist .bl{display:none}
@@ -3399,9 +3402,12 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
      reads off the dot's colour. The view page keeps the full "Sync · slow"
      pill (it has the room). This is what lets the edit bar fit one clean row
      instead of scrolling the history button off the right edge. */
-  .topbar.editing .fastsync #syncLbl{display:none}
-  .topbar.editing .fastsync{padding:6px 8px}
-  .topbar.editing .fastsync .dot{margin:0}
+  /* [UNDO-TOPBAR] (D349 (1), 28 Sep 26): the pair shows on every page where a change is made now, so the label drops to
+     its dot wherever the pair shows — `.has-undo`, never `.editing`, which is Edit Schedule's blue tint and stays
+     Edit Schedule's (the plan's §11.10, Fable's red team 5; pinned by topbar-css.test.ts) */
+  .topbar.has-undo .fastsync .synclbl{display:none}
+  .topbar.has-undo .fastsync{padding:6px 8px}
+  .topbar.has-undo .fastsync .dot{margin:0}
   /* ---- flying grid on a phone: THE WHOLE LINE FITS, no sideways swipe ----
      Never scaled: iOS/WebKit shrinks boxes under CSS zoom but leaves the text at its
      specified px, which clipped B/TO, LD and the puck callsigns. Instead the phone
@@ -5281,6 +5287,11 @@ button.sanscard:hover{border-color:var(--accent)}
   .sb-actions .abtn{width:30px;min-width:0;height:30px;padding:0;display:inline-flex;
     align-items:center;justify-content:center;flex:0 0 auto;font-size:14px;line-height:1}
   .sb-actions .dver{max-width:92px;flex:0 1 auto}
+  /* [UNDO-TOPBAR] (D349 (3)): the board's Sync and bell, the same 30px squares as its buttons — the sync chip as its dot */
+  .sb-actions .fastsync{width:30px;height:30px;padding:0;justify-content:center;flex:0 0 auto}
+  .sb-actions .fastsync .synclbl{display:none}
+  .sb-actions .fastsync .dot{margin:0}
+  .sb-actions .bellbtn{width:30px;height:30px;flex:0 0 auto}
   /* the top-left calendar icon matches the 30px action buttons and never grows
      the bar: it is fixed-width so the title (flex:1 1 0) absorbs the space it
      takes, keeping line 1 to one row — the geometry gate's ROW assertion */
@@ -6246,6 +6257,24 @@ button.sbi-ty.inpedit:hover{text-decoration:none;filter:brightness(1.3)}
    children to prove they share one line, and a hidden one reads as a second row). */
 .sb-dayctl{display:contents}
 @media (max-width:820px){ .sb-dayctl{display:none} }
+/* THE ⋯ MENU ([UNDO-TOPBAR] — owner D349 (3), 28 Sep 26): on a phone, Sort all and the Phone / Desktop layout switch sit
+   behind one ⋯ in the day row, beside the highlighter (SchedBoard.tsx). Not drawn on a desktop, whose bar keeps Sort all
+   as a button. It takes the row's slack (the highlighter's old margin-right:auto), so the search keeps the right. */
+.sb-morewrap{display:none;position:relative}
+@media (max-width:820px){
+  .sb-morewrap{display:inline-flex;flex:0 0 auto;margin-right:auto}
+  .sb-nav .sb-hltog{margin-right:0}
+  .sb-nav .sb-more{width:30px;min-width:0;height:26px;padding:0;display:inline-flex;align-items:center;justify-content:center;
+    font-size:17px;line-height:1;letter-spacing:.02em}
+  .sb-more.on{color:var(--accent);border-color:rgba(59,198,232,.6);background:rgba(59,198,232,.16)}
+}
+.sb-moremenu{position:absolute;top:calc(100% + 6px);left:0;z-index:30;display:flex;flex-direction:column;min-width:176px;
+  padding:4px;background:var(--panel);border:1px solid var(--edge-2);border-radius:10px;box-shadow:0 10px 28px rgba(0,0,0,.5)}
+.sb-moreitem{display:flex;align-items:center;gap:9px;min-height:38px;padding:8px 11px;background:none;border:0;border-radius:7px;
+  color:var(--ink);font:inherit;font-size:13px;font-weight:500;text-align:left;cursor:pointer;white-space:nowrap}
+.sb-moreitem .bi{font-style:normal;width:18px;text-align:center}
+.sb-moreitem:hover,.sb-moreitem:focus-visible{background:var(--raised)}
+.sb-moreitem:disabled{opacity:.45;cursor:default}
 @media (min-width:821px){ .sb-panel.daybar:not(.oilon){display:none} }
 
 /* the item's own switch: its name reads as a control while the mode is on */

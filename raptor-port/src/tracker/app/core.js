@@ -17,6 +17,7 @@ import * as FS from './fileStore.js';
 import { findEvents } from './eventOrder.js';
 import { onTrackerSessionEnd, onBeforeTrackerLogout } from '../role.js';
 import { getPeople, onPeople, whoami } from '../people.js';
+import { setTrackerUndo, pingTrackerUndo } from '../undo-bridge.js';
 import { mintId, isEntry, upgradeCourseBlock, reconcileIds } from './ids.js';
 import { mintCourseId, isCourseEntry, isCourseId, isReservedCourseName, upgradeCourses, reconcileCourseIds } from './courseIds.js';
 import {
@@ -6043,4 +6044,7 @@ export async function init() {
     /* Live reads for the undo checks: a mark's grade, and the stacks' depth. */
     window.__undoForTests = () => ({ undo: undoStack.length, redo: redoStack.length, grade: (id, s) => ((marks[s || active] || {})[id] || {}).g || 0, active });
   }
+  /* [UNDO-TOPBAR] (D349 (2)): the Tracker's ↶ ↷ are drawn in Raptor's top bar — its own history, reached through the
+     no-import bridge (undo-bridge.js), repainted on every change here */
+  setTrackerUndo({ canUndo, canRedo, undoWhat, redoWhat, doUndo, doRedo }); subscribe(pingTrackerUndo);
 }

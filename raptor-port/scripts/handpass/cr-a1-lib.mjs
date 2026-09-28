@@ -81,7 +81,7 @@ export async function boardOn(page, di) {
 }
 export async function boardOff(page) {
   if (!(await page.locator('#schedBoard:visible').count())) return false
-  const x = page.locator('#sbClose:visible').first()
+  const x = page.locator('#sbDone:visible').first()
   if (await x.count()) { if (PHONE) await x.tap().catch(() => x.click()); else await x.click(); await page.waitForTimeout(600) }
   return true
 }

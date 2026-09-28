@@ -526,7 +526,7 @@ test('desktop: the scheduler-board chrome is tight — compact buttons on one ac
     return b ? Math.round(b.getBoundingClientRect().height) : 28
   })
   await page.evaluate(() => (window as any).openScheduler(0))
-  await page.waitForSelector('#sbClose')
+  await page.waitForSelector('#sbDone')   // ✕ Close is gone (D349) — ✓ Done is the one exit
   const m = await page.evaluate(() => {
     const shown = (el: Element | null) => !!el && getComputedStyle(el).display !== 'none'
     const top = (el: Element | null) => el ? Math.round(el.getBoundingClientRect().top) : null
@@ -1557,9 +1557,10 @@ test('board at 390px: taps near the right edge land where they aim', async ({ pa
     /* the Sunday dot used to be probed here; the phone dots left the bar on
        23 Aug 26, so the right-edge control on the day row is the next-day
        arrow now — same question (does the drawer's sliver steal the tap?) */
-    return { close: at('#sbClose'), next: at('#sbNextDay'), rmk: at('#sbBoard .sb-line .nts') }
+    /* ✕ Close left the bar (owner D349, 28 Sep 26): ✓ Done is the right-edge control of the first row now */
+    return { close: at('#sbDone'), next: at('#sbNextDay'), rmk: at('#sbBoard .sb-line .nts') }
   })
-  expect(hits.close, 'the Close button owns its own pixels').toBe('sbClose')
+  expect(hits.close, 'the Done button owns its own pixels').toBe('sbDone')
   expect(hits.next, 'the next-day arrow owns its pixels').toContain('sbNextDay')
   expect(hits.rmk, 'a remarks input owns its right end').toContain('nts')
   const band = await page.locator('#schedBoard .sb-ros').boundingBox()
@@ -1949,7 +1950,10 @@ test('the board\'s flying line is single-row in .sb-wide at phone width, and sta
     await page.click('.sb-open')
     await page.waitForSelector('#schedBoard .sb-line')
     if (c.wide) {
-      await clickHere(page, '#sbWide')
+      /* the layout switch moved into the ⋯ menu ([UNDO-TOPBAR], owner D349, 28 Sep 26): open it, then choose */
+      await clickHere(page, '#sbMore')
+      await page.waitForSelector('#sbMoreWide', { state: 'attached' })
+      await clickHere(page, '#sbMoreWide')
       await page.waitForSelector('#schedBoard.sb-wide')
     }
     const m = await page.evaluate(() => {
@@ -3419,7 +3423,7 @@ test.describe('the board holds the page still underneath it', () => {
       expect(during.y, 'so the week behind has not moved a pixel').toBe(parked)
 
       /* and closing hands the page back exactly where it was */
-      await page.click('#sbClose')
+      await page.click('#sbDone')   // the one exit since D349
       await page.waitForTimeout(400)
       const after = await page.evaluate(() => ({
         y: Math.round(document.scrollingElement!.scrollTop),

@@ -15,10 +15,9 @@ import { weekNew } from './changesmodel'
 import { CHGWIN } from '../state/view'
 import { waitingCount, accessAlert } from '../state/accounts'
 import { WelcomeBack } from './WelcomeBack'
-import { openAdminUsers } from './adminopen'
 import { notify, setPage, switchRoleView } from '../state/store'
 import { logOut } from './logout'
-import { HLSET, SEARCH, HLOPEN, toggleHlOpen, HLGROUP, setSearch, CURPAGE, setDayPreview, toggleViewWork, bellLit, clearBell } from '../state/view'
+import { HLSET, SEARCH, HLOPEN, toggleHlOpen, HLGROUP, setSearch, CURPAGE, setDayPreview, toggleViewWork, bellLit } from '../state/view'
 import { HlChips } from './hlchips'
 import { initDrag } from './drag'
 import { initPan, updateWeekNav, panDays } from './pan'
@@ -28,7 +27,6 @@ import { HOOKS } from '../engine/hooks'
 import { canEditSched } from '../state/auth'
 import { slotVal, setSlotVal } from '../engine/slots'
 import { afterSchedMutate } from '../state/view'
-import { globalUndo, globalRedo, undoState } from '../undo'
 import { toast } from './toast'
 import { schedWrite, SCHED_TYPES } from '../state/sched-commit'
 import { HIST } from '../state/history'
@@ -39,7 +37,7 @@ import { routeClick } from './interactions'
 import { routeFocusOut, routeKeyDown } from './textedit'
 import { DayPop, InsightsModal, AirPop } from './Modals'
 import { WeekCal } from './WeekCal'
-import { setInsights, setDrawer, setWeekCal, setInpEdit, setOilAsk } from './pops'
+import { setInsights, setDrawer, setWeekCal } from './pops'
 import { Drawer } from './Drawer'
 import { exportCSV, schedRows, publishedDays } from './export'
 import { printSchedPDF } from './printpdf'
@@ -65,12 +63,11 @@ const LeaveWarPage = lazy(() => import('../leavewar/LeaveWarPage').then(m => ({ 
 const TrackerPage = lazy(() => import('../tracker/TrackerPage').then(m => ({ default: m.TrackerPage })))
 import { installIdleTracking, msSinceInput } from '../state/idle'
 import { oilPendingFor } from '../leavewar/sync'
-import { inpById } from '../engine/inputs'
 import { AdminPage } from './AdminPage'
 import { HelpPage } from './HelpPage'
 import { SaveStatus } from './SaveStatus'
-import { bugAlert, unseenReports } from '../state/reports'
-import { oilUndoBoundary } from './oilmode'
+import { bugAlert } from '../state/reports'
+import { UndoPair, SyncChip, BellButton, globalUndoEngine, trackerUndoEngine, useTrackerUndoVersion, fastSync } from './topbits'
 
 /* THE WEEK BANNER IS GONE (owner, 15 Sep 26 — item 2). First the week-STATUS
    text went (each day wears its own green issued-version tag / dashed DRAFT tag);
@@ -89,7 +86,8 @@ export function Shell() {
      (undoState) and re-renders on its own version, so a Leave War undo greys the
      scheduler pair correctly and vice-versa. */
   const uv = useUndoVersion()
-  const us = undoState()
+  /* the Tracker's own history repaints the pair on its page (ui/topbits.tsx) */
+  const tuv = useTrackerUndoVersion()
   /* the current page IS view.CURPAGE — the reference's global, one source of
      truth. A nav click writes it and notifies; this component re-reads it on
      every store tick, so no parallel React state is needed. */
@@ -139,9 +137,8 @@ export function Shell() {
     }, 2000)
     return () => { done = true; clearTimeout(timer); teardown() }
   }, [])
-  /* fast sync (demo) — the toggle only demonstrates itself, as the reference
-     notes: no server in the prototype */
-  const [fast, setFast] = useState(false)
+  /* fast sync (demo) — the toggle only demonstrates itself, as the reference notes: no server in the prototype. Its state
+     is module state in ui/topbits.tsx now, shared with the board's chip ([UNDO-TOPBAR], D349 (3)). */
   /* one delegated click listener, exactly as the reference wires it — plus
      the sign-off change listener and right-click-to-clear */
   useEffect(() => {
@@ -262,6 +259,10 @@ export function Shell() {
      mutation path has already validated, and a second engine pass per paint is
      what blew the phone budget */
   const admin = isAdmin()
+  /* [UNDO-TOPBAR] (D347–D349): where the pair shows, and which history it drives */
+  const pairOn = page === 'editsched' || page === 'leavewar' || page === 'inputs' || page === 'quals' || page === 'tracker'
+    || ((page === 'admin' || page === 'logic') && admin)
+  const eng = page === 'tracker' ? trackerUndoEngine() : globalUndoEngine()
   /* the signed-in person ([ACCOUNTS], D166 (3)) — the badge names him; "View as" is gone */
   const mine = me()
   const mineCs = mine && PEOPLE[mine] ? PEOPLE[mine].cs : ''
@@ -302,7 +303,7 @@ export function Shell() {
       /* The top bar wears a blue-tinted gradient while on Edit Schedule (owner,
          22 Aug 26) so it is unmistakable from the near-identical View-only mode
          at a glance — both widths; View-only keeps the neutral dark. */
-      <div className={'topbar' + (page === 'editsched' ? ' editing' : '')}>
+      <div className={'topbar' + (page === 'editsched' ? ' editing' : '') + (pairOn ? ' has-undo' : '')}>
         <button className="burger" id="burger" aria-label="Menu" onClick={() => { setDrawer(true); notify() }}><span></span><span></span><span></span></button>
         <div className="mark">
           <svg className="rglyph" viewBox="0 -2 60 64" aria-hidden="true"><path d="M3 8 Q4.9 38.3 24 62 Q11.5 35.8 3 8 Z M16 0 Q17.4 35.0 42 60 Q26.6 31.0 16 0 Z M31 -2 Q36.4 23.5 58 38 Q42.9 19.1 31 -2 Z" /></svg>
@@ -334,7 +335,8 @@ export function Shell() {
         <div className="spring">
           {/* Undo / redo live at the TOP now (owner, Aug 26 — "so I'll always
               see it when I'm editing to undo if needed"), in the sticky bar
-              rather than the filters row that scrolls away. Only while editing;
+              rather than the filters row that scrolls away. [SUPERSEDED 28 Sep 26 by D347–D349 — "Only while editing" and
+              "pinned at the scrolling bar's right edge" below no longer hold: see the next comment.] Only while editing;
               the board carries its own pair in its own top bar. Since the
               [GLOBAL-UNDO] cutover these drive the ONE timeline (globalUndo/
               globalRedo), disabled + labelled from undoState(). BOTH widths since 23 Aug 26
@@ -344,24 +346,23 @@ export function Shell() {
               The third button opens the EDIT HISTORY list (the renamed changes
               list) from the shell itself, so the log is reachable without
               opening the board first. */}
-          {page === 'editsched' && <div className="tb-hist">
-            <button className="abtn hbtn" id="undoBtn" title={us.undoLabel ? `Undo — ${us.undoLabel}` : (us.undoWhy || 'Undo')} disabled={!us.canUndo} onClick={() => {
-              /* UNDO STOPS AT THE DOOR OF THE MODE (fix 5, 22 Sep 26). Inside OIL
-                 Earn, Undo walks back OIL decisions freely — taking back a mis-tap
-                 is what it is for — but the press that would reach PAST the point
-                 the mode was opened at closes the mode instead of changing the
-                 schedule underneath a screen that says the schedule cannot be
-                 changed. The next press then behaves normally, outside. */
-              if (oilUndoBoundary()) { toast('Left OIL Earn — the next undo would change the day itself', 'ok'); notify(); return }
-              const r = globalUndo(); if (!r.ok && r.reason) toast(r.reason, 'warn'); notify() }}><span className="bi">↶</span><span className="bl"> Undo</span></button>
-            <button className="abtn hbtn" id="redoBtn" title={us.redoLabel ? `Redo — ${us.redoLabel}` : 'Redo'} disabled={!us.canRedo} onClick={() => { const r = globalRedo(); if (!r.ok && r.reason) toast(r.reason, 'warn'); notify() }}><span className="bi">↷</span><span className="bl"> Redo</span></button>
+          {/* THE UNDO / REDO PAIR ON EVERY PAGE WHERE A CHANGE IS MADE ([UNDO-TOPBAR] — owner D347, 28 Sep 26: "all undo
+              and redo buttons should be at the top bar … standardised … like how the edit schedule is"). Edit Schedule's
+              place and look, desktop and phone, on the pages where the signed-in person can change something: Edit
+              Schedule, the Leave War, Inputs and Quals for anyone who has them; Admin and Logic for an admin (a member's
+              Logic is read-only, so no pair — the plan's §11.6); the Tracker, whose pair takes back the Tracker's OWN
+              history (D349 (2) — ui/topbits.tsx). View-only Sched and Help change nothing and carry none. On a phone the
+              group runs in the desktop's order — Undo · Redo · (the clock) · the sync dot · the bell at the far right
+              (D348). The changes clock stays Edit Schedule's (D348: "the changes clock stays Edit Schedule's"). */}
+          {pairOn && <div className="tb-hist">
+            <UndoPair eng={eng} ids={page === 'tracker' ? ['trUndoBtn', 'trRedoBtn'] : ['undoBtn', 'redoBtn']} />
             {/* THE CHANGES DOOR ([DRAFT-PENDING], 28 Sep 26 — the owner's D171: "For admin, instead of changes on a
                 desktop, just show the icon at the top … Ok week"): the clock ICON, no word, on desktop and phone, where
                 "Edit history" stood; its gold number is what is new to you across the WHOLE loaded week (not the day in
                 view, which would jump as the week scrolls). It opens the one changes window on the week, on New to
                 you; a second tap closes it. Admins only — a member opens the window from a day's own count (D171 (1)).
                 Edit Schedule is the admin's page, so the door is his by where it sits; isAdmin() says so outright. */}
-            {isAdmin() ? (() => { const wn = weekNew(); return (
+            {page === 'editsched' && isAdmin() ? (() => { const wn = weekNew(); return (
               <button className={'abtn chgbtn' + (CHGWIN ? ' on' : '')} id="histBtn" aria-pressed={!!CHGWIN}
                 title={wn ? `Changes — ${wn} new to you this week` : 'Changes — every change this week, and who made it'}
                 aria-label={wn ? `Changes, ${wn} new to you this week` : 'Changes'}
@@ -370,8 +371,7 @@ export function Shell() {
           </div>}
           {/* THE "VIEW AS" PICKER IS GONE ([ACCOUNTS], D166 (3), 26 Sep 26): signing in
               makes you your own callsign — the badge at the far right names him */}
-          <button className={'fastsync' + (fast ? ' on' : '')} id="fastSync" title="Toggle 1-second sync (for publishing / meetings)"
-            onClick={() => setFast(f => !f)}><span className="dot"></span><span id="syncLbl">{fast ? 'Sync · 1 s' : 'Sync · slow'}</span></button>
+          <SyncChip id="fastSync" lblId="syncLbl" />
           {/* THE THREE WEEK-WIDE COUNT PILLS ARE GONE (owner, 20 Aug 26 — "what's
               the point of having warning, advisory and note at the top. Just
               remove it"). They counted the whole week and expanded every day
@@ -408,33 +408,8 @@ export function Shell() {
               many are waiting and opens Admin → Users, whose list on screen puts it out.
               First because someone locked out of the app outranks a bug report or an OIL
               question (the agent's call, on the look card). */}
-          <button className={'bellbtn' + (bellLit() || bugAlert() || oilPend || accAlert ? ' on' : '')} id="notifyBell" aria-label="Notifications" title="Notifications"
-            onClick={() => {
-              if (accessAlert()) {
-                const n = waitingCount()
-                HOOKS.toast(`${n} waiting for access — opening Admin → Users`)
-                openAdminUsers(); return
-              }
-              if (bugAlert()) {
-                const n = unseenReports()
-                HOOKS.toast(`${n} new bug report${n === 1 ? '' : 's'}`)
-                nav('help'); return
-              }
-              const oilHit = mine ? oilPendingFor(mine)[0] : null
-              if (oilHit) {
-                const row = inpById(oilHit.iid)
-                if (row) {
-                  HOOKS.toast('Weekend/PH work — confirm your OIL')
-                  setOilAsk(oilHit.iid)
-                  setInpEdit(row)
-                  nav('inputs'); return
-                }
-              }
-              const was = bellLit(); clearBell(); HOOKS.toast(was ? 'Notifications cleared' : 'No new notifications for this view'); notify()
-            }}>
-            <svg className="bellglyph" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a6 6 0 0 0-6 6c0 3.5-1.2 5.4-2.2 6.5-.5.6-.1 1.5.7 1.5h15c.8 0 1.2-.9.7-1.5C19.2 13.4 18 11.5 18 8a6 6 0 0 0-6-6Zm0 20a2.6 2.6 0 0 0 2.5-2h-5a2.6 2.6 0 0 0 2.5 2Z" fill="currentColor" /></svg>
-            <span className="belldot" aria-hidden="true"></span>
-          </button>
+          {/* ONE bell, the board's too (ui/topbits.tsx bellTap): its four triggers and their order are unchanged */}
+          <BellButton id="notifyBell" />
           <button className="abtn" id="insightBtn" title="Week insights" onClick={() => { setInsights(true); notify() }}>Insights</button>
           {/* resetSession (state/store.ts) is the one session-change path: it clears
               SBDAY itself, plus CURPAGE and the leftover selection/highlight/preview
@@ -460,7 +435,7 @@ export function Shell() {
                 title={mineCs ? `Signed in as ${mineCs}` : undefined}>{mineCs ? `${mineCs} · ` : ''}{admin ? 'Admin' : 'Member'}</span>}
         </div>
       </div>
-  ), [page, admin, mine, mineCs, canSwitch, waiting, fast, uv, us.canUndo, us.canRedo, us.undoLabel, us.redoLabel, us.undoWhy, bellLit(), bugAlert(), oilPend, accAlert])
+  ), [page, admin, mine, mineCs, canSwitch, waiting, fastSync(), uv, tuv, pairOn, eng.canUndo, eng.canRedo, eng.undoTitle, eng.redoTitle, bellLit(), bugAlert(), oilPend, accAlert])
 
   const viewPage = useMemo(() => (
       <section className={'page' + (page === 'viewsched' ? ' on' : '')} id="page-viewsched">
