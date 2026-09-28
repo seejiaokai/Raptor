@@ -1,7 +1,9 @@
 import { HOOKS } from '../engine/hooks'
-import { elogFor, elogAllFor, elogWhen, elogWho, elogVal } from '../engine/editlog'
+import { elogAllFor, elogWhen, elogWho, elogVal, elogKeySet, ELOG, rowTouches, dateOfDi } from '../engine/editlog'
+import { ridKey } from '../engine/rowids'
+import { DAYS } from '../engine/data'
 import type { ELogRow } from '../engine/editlog'
-import { HISTMODE, esc } from '../state/view'
+import { HISTMODE, SBDAY, esc } from '../state/view'
 
 /* THE HISTORY BUBBLE (owner, 11 Aug 26) — with History on, one detail tells
    you what it was, who changed it and when.
@@ -112,11 +114,19 @@ export function hideHistBub() {
    — a data-histkey on every cell would be several hundred extra attributes on
    a surface with a measured DOM ceiling, to repeat an address already there. */
 /* `data-inprow` ([DRAFT-PENDING], Astra DP-08): a row under Unavailable — an input's own address, `iu:<iid>` */
-const CELL_SEL = '[data-bfld],[data-slot],[data-store],[data-bombs],[data-area],[data-atime],[data-intimes],[data-txt],[data-inprow]'
+/* `data-wsel` ([HIST-PHONE-HIDE], Astra's plan read 02): the board's wave-title box — its `wl:` line was listed in the window
+   but the box itself answered nothing */
+const CELL_SEL = '[data-bfld],[data-slot],[data-store],[data-bombs],[data-area],[data-atime],[data-intimes],[data-txt],[data-inprow],[data-wsel]'
+/* a LOOK — a saved plan or an issued version, on the week (`.preview`) or the board (`.pv-frozen`) — is a document, not
+   your history: no bubble, no dot, no jump into it (Astra's plan read 01) */
+const LOOK = '.preview,.pv-frozen'
+/* the gold dots (below) and their tests ask the same question of the same cells */
+export const HIST_CELLS = CELL_SEL
 function cellOf(t: EventTarget | null) {
   const el = (t as HTMLElement | null)
   if (!el || !el.closest) return null
-  return el.closest(CELL_SEL) as HTMLElement | null
+  const c = el.closest(CELL_SEL) as HTMLElement | null
+  return c && !c.closest(LOOK) ? c : null
 }
 /* THE REVERSE OF keyOf — which cell on screen stands for this key. Used by the
    changes list to jump to the detail a row names (interactions.ts's
@@ -128,7 +138,7 @@ function cellOf(t: EventTarget | null) {
 export function findHistCell(root: ParentNode, key: string): HTMLElement | null {
   const k = String(key)
   const cells = [...root.querySelectorAll(CELL_SEL)] as HTMLElement[]
-  return cells.find(e => keyOf(e) === k) || null
+  return cells.find(e => keyOf(e) === k && !e.closest(LOOK)) || null
 }
 
 /* CAN THE BOARD SHOW THIS DETAIL AT ALL? Four key families are edited
@@ -152,7 +162,8 @@ export function findHistCell(root: ParentNode, key: string): HTMLElement | null 
    label IS on the board — but as the title of a [data-wsel] <select>, which
    is none of the cell attributes findHistCell can answer for, so a wl: jump
    could only ever toast an untruth about a wave sitting in plain sight. */
-const NO_BOARD_CELL = ['ar', 'at', 'it', 'tr', 'wl']
+/* `wl` left this list with [HIST-PHONE-HIDE] (Astra 02): the wave title's box is a cell now (`data-wsel`) */
+const NO_BOARD_CELL = ['ar', 'at', 'it', 'tr']
 export function histJumpable(key: any) {
   const k = String(key || '')
   if (!k) return false
@@ -169,6 +180,7 @@ export function weekJumpable(key: any) {
   const c = k.indexOf(':')
   return c < 0 ? true : k.slice(0, c) !== 'tr'
 }
+export function histKeyOf(el: HTMLElement) { return keyOf(el) }
 function keyOf(el: HTMLElement) {
   const d = el.dataset
   if (d.bfld) return d.bfld
@@ -183,7 +195,27 @@ function keyOf(el: HTMLElement) {
   if (d.atime) return 'at:' + d.atime
   if (d.intimes) return 'it:' + d.intimes.replace('|', '.')
   if (d.inprow) return 'iu:' + d.inprow
+  if (d.wsel) return 'wl:' + d.wsel
   return ''
+}
+
+/* THE STORY OF A CELL, oldest first — the ONE answer the bubble, the dots and their tests share ([HIST-PHONE-HIDE]). A
+   schedule detail: its key's lines on the loaded day (`elogAllFor`). An input's own row (`iu:<iid>` — Astra's plan read
+   03): its lines have no key; they are the input's (`iid`, or among `iids` when a move re-filed it) that touch the row's
+   OWN day — the day section it sits in on the week, the board's day on the board. */
+function dayOfCell(el: HTMLElement): string | null {
+  const d = el.closest('.day[data-day]') as HTMLElement | null
+  const di = d ? +d.dataset.day! : SBDAY
+  return di == null || !Number.isFinite(+di) ? null : dateOfDi(+di)
+}
+export function storyOf(el: HTMLElement): ELogRow[] {
+  const key = keyOf(el)
+  if (!key) return []
+  if (key.startsWith('iu:')) {
+    const iid = key.slice(3), day = dayOfCell(el)
+    return ELOG.rows.filter(r => (r.iid === iid || (r.iids || []).includes(iid)) && (!day || rowTouches(r, day)))
+  }
+  return elogAllFor(key)
 }
 
 /* "from → to" with the arrow only when there is a before worth naming; a
@@ -198,22 +230,20 @@ function chgHTML(r: ELogRow) {
 
 function show(el: HTMLElement) {
   stopGrace()                    // a grace left running by the last cell's mouseout (below) must not take this one down
-  const key = keyOf(el)
-  if (!key) return hideHistBub()
-  const row = elogFor(key)
-  if (!row) return hideHistBub()          // never edited here — nothing to say
+  const all = storyOf(el)
+  if (!all.length) return hideHistBub()          // never edited here — nothing to say
   if (anchor && anchor !== el) restoreTitle(anchor)
   anchor = el
   parkTitle(el)
-  paint(key, row)
+  paint(all)
 }
 
 /* The body, either state. Split out of show() because three callers repaint
    the SAME anchor without re-deciding it: expanding, collapsing, and the
    re-anchor on scroll. */
-function paint(key: string, row: ELogRow) {
+function paint(all: ELogRow[]) {
   const b = box()
-  const all = elogAllFor(key)
+  const row = all[all.length - 1]!
   const phone = HOOKS.isPhone()
   const showAll = expanded || !phone      // a desktop pointer is already resting on the cell — give it the whole story
   /* oldest first, always — even truncated. The collapsed slice is the TAIL of
@@ -254,11 +284,10 @@ function paint(key: string, row: ELogRow) {
    than not offering it. */
 export function toggleHistBubExpand() {
   if (!anchor || !bub) return false
-  const key = keyOf(anchor); if (!key) return false
-  const row = elogFor(key); if (!row) return false
+  const all = storyOf(anchor); if (!all.length) return false
   expanded = !expanded
   if (expanded) { pinned = true; clearTimeout(hideT) }
-  paint(key, row)
+  paint(all)
   return true
 }
 
@@ -268,14 +297,13 @@ export function toggleHistBubExpand() {
    cell is not on this board (a key whose row has since been deleted), so the
    caller can say so instead of silently doing nothing. */
 export function pinHistBubAt(el: HTMLElement) {
-  const key = keyOf(el); if (!key) return false
-  const row = elogFor(key); if (!row) return false
+  const all = storyOf(el); if (!all.length) return false
   clearTimeout(hideT)
   if (anchor && anchor !== el) restoreTitle(anchor)
   anchor = el
   parkTitle(el)
   expanded = true; pinned = true
-  paint(key, row)
+  paint(all)
   return true
 }
 
@@ -301,6 +329,47 @@ function place(b: HTMLDivElement, el: HTMLElement) {
   const want = above >= vy + 6 ? above : r.bottom + 8
   b.style.left = Math.round(Math.max(vx + 6, Math.min(vx + vw - w - 6, r.left))) + 'px'
   b.style.top = Math.round(Math.max(vy + 6, Math.min(vy + vh - h - 6, want))) + 'px'
+}
+
+/* THE GOLD DOTS ([HIST-PHONE-HIDE], 28 Sep 26 — D339, D345: "a small gold dot on every detail with a history while
+   History is on", desktop too, so a person can SEE where to tap). A pass after each repaint of a surface the bubble is
+   wired on (the edit week, the board — EditWeek.tsx, SchedBoard.tsx, beside refreshHighlights, the same precedent): it
+   marks `data-histdot` on exactly the cells this bubble would answer — `keyOf` over `CELL_SEL`, then the history on the
+   loaded day (`elogKeySet`, `elogFor`'s own test) — so a dot and a bubble can never disagree. An attribute set after the
+   string is written, never in the string: the dense surfaces are string-diffed and parity-gated, and a per-cell marker
+   in the builders would be one more place a new builder could forget (the roll-call's lesson). Only where it differs
+   (no style churn); History off takes every dot down. A version or saved-plan LOOK wears none (`.pv-frozen` on the
+   board, `.preview` on the week — a document, not your history; the OG tag's P4 rule). The paint is scheduler.css
+   `[data-histdot]`. */
+let DOTS_UP = false
+export function refreshHistDots(root: ParentNode | null | undefined) {
+  if (!root) return
+  if (!HISTMODE) {
+    if (!DOTS_UP) return
+    root.querySelectorAll('[data-histdot]').forEach(el => el.removeAttribute('data-histdot'))
+    DOTS_UP = !!document.querySelector('[data-histdot]')
+    return
+  }
+  const set = elogKeySet()
+  /* an input's lines, by the input (a row's `iu:` key finds them — storyOf's rule, as a lookup) */
+  const byInp = new Map<string, ELogRow[]>()
+  for (const r of ELOG.rows) for (const id of r.iids || (r.iid ? [r.iid] : [])) byInp.set(id, [...(byInp.get(id) || []), r])
+  /* ONE dot per detail in a day: a jet's store chips and its bombs box all answer for its one `st:` line (Fable F8) —
+     the first of them wears it */
+  const seen = new Set<string>()
+  for (const el of root.querySelectorAll(CELL_SEL) as NodeListOf<HTMLElement>) {
+    const k = el.closest(LOOK) ? '' : keyOf(el)
+    const inp = k.startsWith('iu:')
+    const rk = !k ? '' : inp ? k : String(ridKey(k, DAYS))
+    const sec = rk ? (el.closest('.day[data-day]') as HTMLElement | null)?.dataset.day ?? '' : ''
+    const has = !rk ? false : inp
+      ? (() => { const day = dayOfCell(el); return (byInp.get(k.slice(3)) || []).some(r => !day || rowTouches(r, day)) })()
+      : set.has(rk)
+    const want = has && !seen.has(`${sec}|${rk}`)
+    if (want) seen.add(`${sec}|${rk}`)
+    if (want !== el.hasAttribute('data-histdot')) { if (want) el.setAttribute('data-histdot', ''); else el.removeAttribute('data-histdot') }
+  }
+  DOTS_UP = true
 }
 
 /* Wired on the board WRAP, not on #sbBoard: the personal-inputs panel is its

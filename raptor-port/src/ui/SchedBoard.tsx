@@ -13,7 +13,7 @@ import { setWeekCal } from './pops'
 import { CalIcon, HistIcon, HlIcon } from './icons'
 import { HlChips } from './hlchips'
 import { oilShown, oilModeOn, toggleOilMode, oilUndoBoundary } from './oilmode'
-import { wireHistBubble, hideHistBub, histBubRecheck } from './histbubble'
+import { wireHistBubble, hideHistBub, histBubRecheck, refreshHistDots } from './histbubble'
 import { daySnapOf, alColor, dayDiscardCount } from '../engine/publish'
 import { verSeq } from '../engine/verid'
 import { versionFaceWarn } from '../engine/validate'
@@ -273,6 +273,8 @@ export function SchedBoard() {
        Thursday's board listed Monday's crew: a man on leave Thursday showed free. An armed slot still wins. */
     set(rosterRef.current!, 'roster', paletteHTML(ARM && ARM.di >= 0 ? ARM.di : di, { head: false }))
     refreshHighlights()
+    /* the gold dots, as on the edit week ([HIST-PHONE-HIDE], D345) — over the board wrap, where the bubble is wired */
+    refreshHistDots(wrapRef.current)
     /* a repaint replaces a panel's markup wholesale, so a bubble that is up
        may have just lost the cell it hangs on — re-anchor it, or take it down
        if the row has gone (audit, 12 Aug 26). Before this it only noticed on

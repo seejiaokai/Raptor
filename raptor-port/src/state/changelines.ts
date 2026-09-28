@@ -284,9 +284,11 @@ function postoutLines(c: Change, env: CommitEnvelope): void {
   /* a man MADE in the same command (Add a person with his post-in date) is said by "added to the roster" */
   const quiet = new Set<string>()
   for (const x of env.changes) if (x.collection === 'people' && !x.before) quiet.add(String(x.id))
-  const at = (d: string, extra: any = {}) => ({ date: d, sect: 'quals', ...extra })
   for (const pid of new Set([...Object.keys(bm), ...Object.keys(am)])) {
     if (quiet.has(pid)) continue
+    /* a Leave War line, keeping WHOSE it is and WHAT it is by id — the changes window files it under "Leave War · <him>"
+       by these, never by its words ([CHG-BY-ITEM]; Fable F3, Astra 05) */
+    const at = (d: string, extra: any = {}) => ({ date: d, sect: 'abs', sub: pid, fld: 'posting', ...extra })
     const b: any = bm[pid] || {}, a: any = am[pid] || {}
     const name = `Leave War · ${cs(pid)}`
     const bOut = b.to ? nextIso(String(b.to)) : null, aOut = a.to ? nextIso(String(a.to)) : null
@@ -329,7 +331,8 @@ function personLines(c: Change, env?: CommitEnvelope): void {
   const byPosting = (k: string) => posting && (k === 'archived' || k === 'san')
   if (a && a.special) return
   const at = { date: localToday(), sect: 'quals' }
-  if (!b && a) { logAction(null, `${a.cs || pid} · added to the roster`, at); return }
+  /* whose it is, by id, and what it is — "Quals · <him>" in the changes window ([CHG-BY-ITEM]; Fable F3, Astra 05) */
+  if (!b && a) { logAction(null, `${a.cs || pid} · added to the roster`, { ...at, sub: pid, fld: 'roster' }); return }
   if (!a || !b) return
   /* absent, false and '' are the same "not set" — a tick added then cleared is no change */
   const norm = (v: any) => (v == null || v === false || v === '') ? null : v

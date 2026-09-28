@@ -10,7 +10,7 @@ import { raiseWin } from './floatwin'
 export function openChanges(day: string, tab: ChgWin['tab']) {
   if (!isMember()) return
   const was = CHGWIN
-  setChgWin({ day, tab, group: was ? was.group : 'who' })
+  setChgWin({ day, tab, group: was ? was.group : 'item' })   // Item first and the default (D345)
   raiseWin('chg')
   notify()
 }

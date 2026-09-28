@@ -135,6 +135,14 @@ describe('Quals, and a publish or a withdrawal (Fable F3, F5; Astra DP-07)', () 
     expect(ELOG.rows.every(r => r.date === '2026-07-14' && r.sect === 'day')).toBe(true)
   })
 
+  /* [CHG-BY-ITEM] (Fable F3 / Astra 05): "added to the roster" keeps whose it is, by id, so the changes window files it
+     under "Quals · <him>" — never by its words */
+  it('a man added to the roster: ONE line keeping whose it is (sub) and what it is (fld "roster")', () => {
+    changeLinesFor({ origin: 'user', scope: { module: 'people' }, actor: { role: 'admin' },
+      changes: [{ op: 'put', collection: 'people', id: 'newbie', before: undefined, after: { cs: 'Newbie', q: 'C' } }] } as any)
+    expect(ELOG.rows.map(r => [r.lbl, r.sect, r.sub, r.fld])).toEqual([['Newbie · added to the roster', 'quals', 'newbie', 'roster']])
+  })
+
   it('a projection (a reconciler) writes no line, however much it changed', () => {
     changeLinesFor({ origin: 'projection', scope: { module: 'inputs' }, changes: [{ op: 'put', collection: 'inputs', id: 'x', after: { person: 'bane', date: 'Aug 1', type: 'LL' } }] } as any)
     expect(ELOG.rows).toHaveLength(0)

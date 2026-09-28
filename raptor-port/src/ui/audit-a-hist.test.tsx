@@ -27,7 +27,7 @@ const rk = (k: string) => ridKey(k, DAYS)
 import { HOOKS } from '../engine/hooks'
 import * as view from '../state/view'
 import { openScheduler, closeScheduler } from './board'
-import { hideHistBub, histBubPinned } from './histbubble'
+import { hideHistBub, histBubPinned, findHistCell } from './histbubble'
 import { undo, redo } from '../state/history'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
@@ -159,14 +159,11 @@ describe('the log moves with a renumbering delete (fixed 12 Aug 26)', () => {
 })
 
 describe('the wave label (wl:) and the jump', () => {
-  /* the board edits a wave's title through the [data-wsel] <select>, which is
-     none of the addressable cell attributes — so findHistCell can never
-     answer for a wl: key. Fixed 12 Aug 26 by the audit: wl joined
-     NO_BOARD_CELL, so the row LISTS (the edit is real) but is not a button —
-     the same answer ar:/at:/it:/tr: already give
-     (docs/ui-contracts.md: "a new key family the board does not render wants
-     a line in NO_BOARD_CELL"). */
-  it('a wl: line lists but is not a button on the board — the board has no cell to jump to', async () => {
+  /* the board edits a wave's title through the [data-wsel] <select>. Until [HIST-PHONE-HIDE] (28 Sep 26) that was none of
+     the addressable cell attributes, so wl sat in NO_BOARD_CELL and the row listed but was not a button (the 12 Aug 26
+     audit). Astra's plan read (02) found the box a real, visible detail with a history and no bubble, dot or jump — it is
+     a cell now (`data-wsel` → `wl:`), so the line is a button and lands on it. */
+  it('a wl: line is a button on the board, and lands on the wave-title box', async () => {
     const was = txtGet('wl:0.0')
     await act(async () => { txtSet('wl:0.0', 'AUDIT WAVE'); notify() })
     try {
@@ -174,7 +171,8 @@ describe('the wave label (wl:) and the jump', () => {
       await openList()
       const listed = $$('.chgwin .cw-l').find(r => (r.textContent || '').includes('AUDIT WAVE'))
       expect(listed, 'the edit is in the list').toBeTruthy()
-      expect(listed!.tagName, 'not offered as a jump — the board has no wl: cell').not.toBe('BUTTON')
+      expect(listed!.tagName, 'offered as a jump — the wave-title box is a cell').toBe('BUTTON')
+      expect(findHistCell(document, 'wl:0.0'), 'and there is a cell to land on').toBeTruthy()
     } finally {
       await act(async () => { txtSet('wl:0.0', was); notify() })
     }
