@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import * as core from '../app/core.js';
+import { isComposing } from './keys.js';
 
 /* ---------- generic in-page dialog (uiConfirm / uiPrompt / uiAlert / uiChoice) ---------- */
 export function DlgModal() {
@@ -50,6 +51,37 @@ export function DlgModal() {
      anywhere else — the button that opened it, or nowhere — it moves it as
      before. */
   const modalRef = useRef(null);
+  /* THE DOOR BEHIND THE SHADE IS SHUT ([TRK-DLG-LEFTOVERS], 28 Sep 26 — the plan's red
+     team, Fable F3). The shade stops a pointer, not the keyboard: Tab walked out of the
+     box into the Tracker's bar, and Enter on "+ Add" there opened a second question over
+     the first. While a question is up, every other part of the Tracker's page is `inert`
+     (no focus, no press) — the bar, the tool strip, the chart, the side panel and any
+     window open under the question. Raptor's own top bar is outside the page and stays
+     usable: its Logout asks about this question first (D129). Only what THIS effect
+     marked is unmarked, so a part something else made inert is left as it was. */
+  const open = !!d;
+  useEffect(() => {
+    if (!open) return;
+    const box = modalRef.current, page = box && box.closest('.tr-root');
+    if (!page) return;
+    const marked = [];
+    for (const el of page.children) {
+      if (el === box || el.id === 'dlgOverlay' || el.hasAttribute('inert')) continue;
+      el.setAttribute('inert', ''); marked.push(el);
+    }
+    return () => marked.forEach(el => el.removeAttribute('inert'));
+  }, [open]);
+  /* ...and Tab / Shift+Tab go round inside the box: from its last control to its first,
+     and back. */
+  const trapTab = e => {
+    if (e.key !== 'Tab' || !modalRef.current) return;
+    const f = [...modalRef.current.querySelectorAll('input, button, textarea, select, [tabindex]:not([tabindex="-1"])')].filter(x => !x.disabled);
+    if (!f.length) return;
+    const first = f[0], last = f[f.length - 1], at = document.activeElement;
+    if (e.shiftKey ? (at === first || !modalRef.current.contains(at)) : (at === last || !modalRef.current.contains(at))) {
+      e.preventDefault(); (e.shiftKey ? last : first).focus();
+    }
+  };
   useEffect(() => {
     if (!d) return;
     const t = setTimeout(() => {
@@ -84,7 +116,7 @@ export function DlgModal() {
           was drawn behind the window that asked it ([HUMAN-RETEST] Fable #6,
           23 Sep 26). Raptor's own overlays (400+) stay above the whole tab. */}
       <div className="overlay" id="dlgOverlay" style={{ zIndex: 100, display: 'block' }} onClick={cancel}></div>
-      <div className="modal" id="dlgModal" ref={modalRef} style={{ zIndex: 101, width: 'min(420px, 92vw)', display: 'block' }}>
+      <div className="modal" id="dlgModal" ref={modalRef} role="dialog" aria-modal="true" onKeyDown={trapTab} style={{ zIndex: 101, width: 'min(420px, 92vw)', display: 'block' }}>
         <div id="dlgMsg" style={{ fontSize: 13.5, whiteSpace: 'pre-wrap', marginBottom: 12 }}>{d.msg}</div>
         {list && (
           <>
@@ -96,7 +128,7 @@ export function DlgModal() {
                    route through a long roster — and, with nobody left, does what
                    OK does: adds the name typed (D191) */
                 onKeyDown={e => {
-                  if (e.key !== 'Enter') return;
+                  if (e.key !== 'Enter' || isComposing(e)) return;
                   if (shown.length === 1) { e.preventDefault(); pick(shown[0].key); }
                   else if (searchAsNew) { e.preventDefault(); ok(); }
                 }} />
@@ -119,7 +151,7 @@ export function DlgModal() {
             /* Escape is left to the app's own handler (core.handleEscapeKey), which
                closes this dialog and stops. Cancelling here as well let the same
                press carry on to the document and shut the editor underneath. */
-            onKeyDown={e => { if (e.key === 'Enter') ok(); }} />
+            onKeyDown={e => { if (e.key === 'Enter' && !isComposing(e)) ok(); }} />
         )}
         <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
           {d.cancel && <button id="dlgCancel" onClick={cancel}>{d.cancelLabel || 'Cancel'}</button>}

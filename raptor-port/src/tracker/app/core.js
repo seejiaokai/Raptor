@@ -89,7 +89,7 @@ onBeforeTrackerLogout(async show => {
 });
 function endSession() {
   undoStack = []; redoStack = [];
-  if (dlg) dlgClose(null);            /* a half-answered question: cancelled */
+  dlgCancelAll();                     /* a half-answered question, and any waiting: cancelled */
   pop = null; popDoneDate = ''; popFailDate = '';
   failLog = null; lullPick = null; lullCopy = null;
   infoId = null; editId = null; ordMode = null; sylModalOpen = false; showAllOpen = false; copyOpen = false;
@@ -1873,17 +1873,39 @@ let _dlgRes = null;
    still resolves the typed text. Without a list the dialog is the old prompt
    to the byte — the extra fields are null/false/'' and DlgModal draws nothing
    for them. */
+/* ONE QUESTION AT A TIME, IN ORDER ([TRK-DLG-LEFTOVERS], 28 Sep 26). A question asked
+   while another is up used to REPLACE it — the first one's job then waited forever for
+   an answer that could never come (reachable by Tab to a control behind the shade). The
+   fix is a queue, not "answer the first as cancelled": the import asks chart by chart,
+   and cancelling its question would silently SKIP a chart, then its next question would
+   cancel the person's own (the plan's red team, Fable F2 / Astra F-03). So a question
+   asked while one is up WAITS and shows when the one before it is answered; the next is
+   opened BEFORE the answered one's job resumes, so whatever that job asks next queues
+   behind what was already waiting. The door that let a second question in at all is shut
+   in DlgModal (the page behind the shade is inert). */
+let _dlgQueue = [];   /* waiting questions, oldest first: { shape, res } */
+const _dlgCancelled = shape => (shape && shape.input ? null : false);
+function _dlgOpen(shape, res) { _dlgRes = res; dlg = shape; dlgSerial++; notify(); }
 function _dlgShow(msg, { input = false, def = '', cancel = true, cancelLabel = 'Cancel', ok = 'OK', alt = null, list = null, filter = false, placeholder = '', listTitle = '' } = {}) {
+  const shape = { msg, input, def, cancel, cancelLabel, ok, alt, list, filter, placeholder, listTitle };
   return new Promise(res => {
-    _dlgRes = res;
-    dlg = { msg, input, def, cancel, cancelLabel, ok, alt, list, filter, placeholder, listTitle };
-    dlgSerial++;
-    notify();
+    if (dlg || _dlgQueue.length) { _dlgQueue.push({ shape, res }); return; }
+    _dlgOpen(shape, res);
   });
 }
 export function dlgClose(val) {
   dlg = null;
-  const r = _dlgRes; _dlgRes = null; notify(); if (r) r(val);
+  const r = _dlgRes; _dlgRes = null;
+  const next = _dlgQueue.shift();
+  if (next) _dlgOpen(next.shape, next.res); else notify();
+  if (r) r(val);
+}
+/* The end of a session: every question waiting and the one on screen are answered
+   "cancelled" — they belong to the person leaving, and none may greet the next one. */
+function dlgCancelAll() {
+  const waiting = _dlgQueue; _dlgQueue = [];
+  for (const q of waiting) q.res(_dlgCancelled(q.shape));
+  if (dlg) dlgClose(_dlgCancelled(dlg));
 }
 export async function uiConfirm(msg) { return await _dlgShow(msg); }
 export async function uiPrompt(msg, def) { const v = await _dlgShow(msg, { input: true, def }); return v === null ? null : (v + ''); }
