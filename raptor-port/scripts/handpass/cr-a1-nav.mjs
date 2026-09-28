@@ -159,12 +159,20 @@ for (const where of ['top', 'board']) {
   const sb = await page.evaluate(() => window.SBDAY)
   const pa = await bk.shot(page, `a22-${where}-second-undo`)
   bk.ck(`A22.${where}.undo`, `${where === 'top' ? 'top-bar' : 'board'} Undo → week B's note back (on week B); Undo again → the view on week A, its note back`, k1 === wB && v1 === b0 && k2 === wA && v2 === a0 && /^Undid:/.test(x1.toasts.join(' ')) && /^Undid:/.test(x2.toasts.join(' ')), { x1: x1.toasts, k1, v1, x2: x2.toasts, k2, v2, boardDay: sb }, pa)
-  const y1 = await door(page, where, 'redo')
+  /* the board's Undo that crossed into week A: is the board (and its pair) still there? (AM39b; snapView's own intent —
+     "if the board is open, bring the changed day onto it") */
+  let rdoor = where
+  if (where === 'board') {
+    const open = await page.evaluate(() => { const b = document.querySelector('#schedBoard'); return !!(b && b.offsetWidth) })
+    bk.ck('A22.board.stays', 'board Undo that crosses into week A → the board stays open, on the day that changed (Monday)', open && sb === 0, { boardOpen: open, boardDay: sb }, pa)
+    if (!open) rdoor = 'top'   /* the board closed: the Redo a person can still reach is the top bar's */
+  }
+  const y1 = await door(page, rdoor, 'redo')
   const j1 = await wk(), q1 = await txt(page, 'dn:0.0')
-  const y2 = await door(page, where, 'redo')
+  const y2 = await door(page, rdoor, 'redo')
   const j2 = await wk(), q2 = await txt(page, 'dn:1.0')
   const pb = await bk.shot(page, `a22-${where}-second-redo`)
-  bk.ck(`A22.${where}.redo`, `${where === 'top' ? 'top-bar' : 'board'} Redo → week A's note again (on week A); Redo → the view on week B, its note again`, j1 === wA && q1 === 'A22 WEEK A ' + where && j2 === wB && q2 === 'A22 WEEK B ' + where, { y1: y1.toasts, j1, q1, y2: y2.toasts, j2, q2 }, pb)
+  bk.ck(`A22.${where}.redo`, `${rdoor === 'top' ? 'top-bar' : 'board'} Redo → week A's note again (on week A); Redo → the view on week B, its note again`, j1 === wA && q1 === 'A22 WEEK A ' + where && j2 === wB && q2 === 'A22 WEEK B ' + where, { door: rdoor, y1: y1.toasts, j1, q1, y2: y2.toasts, j2, q2 }, pb)
 }
 
 bk.save(errors)

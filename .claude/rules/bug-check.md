@@ -41,7 +41,7 @@ order is in force:
 
 ## When to call in Fable and Codex
 
-§4 of the order decides it, not habit. Short form: **scenario design first** (ask them what is
+§4 of the order decides it, not habit (D353: scenarios and side questions ONE, Astra first; a plan's red team BOTH). Short form: **scenario design first** (ask them what is
 MISSING, not whether the code is wrong), **both of them reading the code** only on money, published
 records, permissions or persistence — and **never another static review when what is missing is
 someone running the app.** That last one has a name now: review pile-on.

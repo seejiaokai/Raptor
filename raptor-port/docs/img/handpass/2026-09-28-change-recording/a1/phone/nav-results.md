@@ -3,7 +3,7 @@
 | # | Check | Result | Observed | Picture(s) |
 |---|---|---|---|---|
 | S24.1 | a man put on Saturday's SDO desk, then board Undo → he is off again | PASS | {"who":"dj","m1":["dj"],"m2":[],"u1":["Undid: a change to the schedule"]} |  |
-| S24.2 | after a reload: still undone; Undo and Redo both greyed (history is per sign-in); the changes window keeps the "Undo — …" line | **FAIL** | {"m3":[],"ts":{"undo":"off \"Undo\"","redo":"off \"Redo\""},"undoLines":[],"lines":["The daySaber · 28/9 19:09Undo — a change to the schedule","Duty · SDOSaber · 28/9 19:09Ace put on"]} | phone/nav-01-reload-after-undo.png |
+| S24.2 | after a reload: still undone; Undo and Redo both greyed (history is per sign-in); the changes window keeps the "Undo — …" line | PASS | {"m3":[],"ts":{"undo":"off \"Undo\"","redo":"off \"Redo\""},"undoLines":["The daySaber · 28/9 19:19Undo — a change to the schedule"],"lines":["The daySaber · 28/9 19:19Undo — a change to the schedule","Duty · SDOSaber · 28/9 19:19Ace put on"]} | phone/nav-01-reload-after-undo.png |
 | S25.1 | on the board, SDO start 08:00 → 07:00; the top bar's pair is covered while the board is open | PASS | {"t0":"0800","t1":"07:00","covered":"covered by sbSortAll"} | phone/nav-02-board-time-changed.png |
 | S25.2 | board closed, top-bar Undo → the week shows 08:00 again | PASS | {"tu":["Undid: a change to the schedule"],"wkTime":"SDO\n08:00\n18:00"} | phone/nav-03-week-top-undo.png |
 | S25.3 | board reopened, board Redo → 07:00 on the board | PASS | {"br":["Redid: a change to the schedule"],"t2":"07:00","boardVal":"07:00"} | phone/nav-04-board-redo.png |
@@ -14,8 +14,9 @@
 | S32.1b | NOTE | note | {"what":"which day the week lands on after the jump (Fable: \"the glide lands on Tuesday? Record.\")","dayInView":1,"changedDay":1} |  |
 | S32.2 | Redo stays on week B and re-applies the note | PASS | {"w5":"20/07/2026","tueB2":"WEEK B NOTE (S32)","sr":["Redid: a change to the schedule"]} |  |
 | A22.top.undo | top-bar Undo → week B's note back (on week B); Undo again → the view on week A, its note back | PASS | {"x1":["Undid: a change to the schedule"],"k1":"20/07/2026","v1":"WEEK B NOTE (S32)","x2":["Undid: a change to the schedule"],"k2":"13/07/2026","v2":"EP: ENGINE FIRE ON TAKE OFF","boardDay":null} | phone/nav-08-a22-top-second-undo.png |
-| A22.top.redo | top-bar Redo → week A's note again (on week A); Redo → the view on week B, its note again | PASS | {"y1":["Redid: a change to the schedule"],"j1":"13/07/2026","q1":"A22 WEEK A top","y2":["Redid: a change to the schedule"],"j2":"20/07/2026","q2":"A22 WEEK B top"} | phone/nav-09-a22-top-second-redo.png |
+| A22.top.redo | top-bar Redo → week A's note again (on week A); Redo → the view on week B, its note again | PASS | {"door":"top","y1":["Redid: a change to the schedule"],"j1":"13/07/2026","q1":"A22 WEEK A top","y2":["Redid: a change to the schedule"],"j2":"20/07/2026","q2":"A22 WEEK B top"} | phone/nav-09-a22-top-second-redo.png |
 | A22.board.undo | board Undo → week B's note back (on week B); Undo again → the view on week A, its note back | PASS | {"x1":["Undid: a change to the schedule"],"k1":"20/07/2026","v1":"A22 WEEK B top","x2":["Undid: a change to the schedule"],"k2":"13/07/2026","v2":"A22 WEEK A top","boardDay":null} | phone/nav-10-a22-board-second-undo.png |
-| A22.board.redo | board Redo → week A's note again (on week A); Redo → the view on week B, its note again | **FAIL** | {"y1":[],"j1":"13/07/2026","q1":"A22 WEEK A top","y2":[],"j2":"13/07/2026","q2":"ORDERS: FLYING ORDERS SECTION 3"} | phone/nav-11-a22-board-second-redo.png |
+| A22.board.stays | board Undo that crosses into week A → the board stays open, on the day that changed (Monday) | **FAIL** | {"boardOpen":false,"boardDay":null} | phone/nav-10-a22-board-second-undo.png |
+| A22.board.redo | top-bar Redo → week A's note again (on week A); Redo → the view on week B, its note again | PASS | {"door":"top","y1":["Redid: a change to the schedule"],"j1":"13/07/2026","q1":"A22 WEEK A board","y2":["Redid: a change to the schedule"],"j2":"20/07/2026","q2":"A22 WEEK B board"} | phone/nav-11-a22-board-second-redo.png |
 
 Console / page errors: none
