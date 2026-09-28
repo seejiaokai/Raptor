@@ -33,7 +33,8 @@ the later merge keeps both (D78).
   final reads (Astra 3, Fable 9 findings — all fixed red first), then two narrow rounds on the fix commits by both
   (8 and then 7 findings, all fixed red first — the three-round cap reached; the tests and the walk carry the last).
   Gates on the final code (`1270680e`): all green (the counts below, and the sheet's §9).
-- **Next:** his look is DONE (28 Sep 26 — every reading kept as built, D337, D338); **his "merge live"** — then merge once the
+- **MERGED 28 Sep 26 on his "merge live"** — over the one Leave War desktop test that failed on GitHub a second time, at his
+  word (D342, spent; the test unchanged, filed `[LW-FIGSEL-FLAKE]`). **Was next:** his look is DONE (28 Sep 26 — every reading kept as built, D337, D338); **his "merge live"** — then merge once the
   PR's checks are green, carry it to live on Vercel and notify him (D143). **The merge also switches the public GitHub web
   address back on (D341 — Pages enabled on the repo 28 Sep 26; the publish job runs from this PR):** confirm
   `https://seejiaokai.github.io/Raptor/` serves after `main`'s run and give him that link too. Nothing else of this branch is pending. **Then, in a
