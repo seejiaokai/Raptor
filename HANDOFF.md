@@ -21,10 +21,10 @@ the later merge keeps both (D78).
   residue: this step, and the optional question 4 kept in the plan §2.1). Docs, the document gate and `docs-guard.yml` only —
   no `raptor-port/src`, so only the Docs guard runs. No ruling this session.
 - **Done:** 35 blocks of `raptor-port/CLAUDE.md` moved whole to `raptor-port/docs/guide-full.md` by `backlog-archive.mjs --move`,
-  each leaving a short form of at most 350 characters; the gate pairs them (`docsize.mjs guidePairing`, 8 new self-test
+  each leaving a short form of at most 350 characters; the gate pairs them (`docsize.mjs guidePairing`, 11 new self-test
   cases); the guide ~16.2k → ~9.5k tokens (why not ~6k: plan §2.6); its line tripwire 760 → 340; the Docs guard's time
   limit 5 → 10 minutes. The Leave War row of §Where things live untouched (small fixes edits it); trial merges with small
-  fixes, change-recording and Tracker leftovers are clean, and all three chats were told (D302). Fable's meaning read:
+  fixes, change-recording and Tracker leftovers are clean, and all three chats were told (D302). Fable's meaning read (30 of 35 faithful, five rewritten from its replacements, its gate points folded — plan §2.6):
   brief `raptor-port/docs/superpowers/briefs/2026-09-28-guide-short-forms-meaning-brief.md`.
 - **Next:** his "merge live" was given 28 Sep 26 — merge when the PR's checks are green, then `main`'s run, then live.
   Filed, low: `[GUIDE-MAP-ROWS]` (the map's long rows, a question for him).
