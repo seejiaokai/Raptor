@@ -5897,6 +5897,17 @@ button.sbi-ty.inpedit:hover{text-decoration:none;filter:brightness(1.3)}
 .inped-hint{font-size:10.5px;color:var(--ink-3);line-height:1.4}
 /* the read-only edit window's one line — who can change this input (W1-F3, 26 Sep 26) */
 .inped-ro{font-size:11px;color:var(--ink-2);line-height:1.4}
+/* THE READ-ONLY WINDOW READS AS READ-ONLY ([ABSENCE-SMALL-SEEN] 4, 28 Sep 26 — the re-test's W1). A member opening
+   another man's input gets the body `inert` (nothing in it answers a tap), but its fields were drawn exactly as live
+   ones — the dropdown box and arrow, the remarks box, the text cursor, the OIL "Change…" button — so only the line at
+   the foot said none of it could be changed. Locked, a field reads as its VALUE: no box, no arrow, no cursor but the
+   plain one, in the quieter ink; a tick box and a button are dimmed rather than removed, so the record still shows
+   what was chosen (the half of the day, the OIL answer). A look question for him on the look card. Keyed on the
+   `inert` the window already sets — one fact, so the look can never say "editable" while the body refuses a tap. */
+.inped-body[inert] :is(select,input:not([type=checkbox]):not([type=radio]),textarea){
+  background:transparent;border-color:transparent;color:var(--ink-2);cursor:default;
+  appearance:none;-webkit-appearance:none;padding-left:0;padding-right:0}
+.inped-body[inert] :is(input[type=checkbox],input[type=radio],button){opacity:.5;cursor:default}
 /* the Unavailable + Add's range calendar (owner, 19 Aug 26) — the same
    .rangecal the Inputs page draws, stacked over its read-out line */
 .inped-dates{display:flex;flex-direction:column;gap:5px}

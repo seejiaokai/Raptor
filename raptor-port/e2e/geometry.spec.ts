@@ -582,6 +582,57 @@ test.describe('a changed time\'s AL tag sits under the time', () => {
   }
 })
 
+/* THE READ-ONLY INPUT WINDOW READS AS READ-ONLY ([ABSENCE-SMALL-SEEN] 4, 28 Sep 26 — the re-test's W1). A member
+   opening another man's input gets its body inert, but its fields were drawn as live boxes (the dropdown and its arrow,
+   the remarks box, a text cursor). Locked, a field reads as its value: no box, no arrow, the plain cursor; his OWN
+   input — the control — keeps its live boxes. (The walk sf-g4-readonly.mjs pictures both.) */
+test('the read-only input window draws its locked fields as values, not boxes', async ({ page }) => {
+  await page.setViewportSize(DESK)
+  await login(page, 'user')                                     // us = Ranger (bane), a member
+  await go(page, 'inputs')
+  await page.selectOption('#inFPerson', 'all')
+  await page.locator('#inCalBtn').click()
+  await page.waitForSelector('#inpCal')
+  const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+  for (let i = 0; i < 24; i++) {
+    const cur = ((await page.locator('#inpCal .ic-mon').textContent()) || '').trim()
+    if (cur === 'July 2026') break
+    const [m, y] = cur.split(' ')
+    await page.locator(`${y}-${String(months.indexOf(m) + 1).padStart(2, '0')}` < '2026-07' ? '#icNext' : '#icPrev').click()
+    await page.waitForTimeout(250)
+  }
+  const look = async (mine: boolean) => {
+    const iid = await page.evaluate(mine => {
+      const w = window as any
+      const c = [...document.querySelectorAll('#inpCal [data-iid]')].find(e => { const r = w.INPUTS.find((x: any) => x.iid === e.getAttribute('data-iid')); return r && (mine ? r.person === 'bane' : r.person !== 'bane') && (e as HTMLElement).offsetWidth })
+      return c ? c.getAttribute('data-iid') : null
+    }, mine)
+    expect(iid, mine ? 'his own input in July' : 'another man\'s input in July').toBeTruthy()
+    await page.locator(`#inpCal [data-iid="${iid}"]:visible`).first().click()
+    await page.waitForSelector('#inpEditPop:not([hidden]) .inped-body')
+    const got = await page.evaluate(() => {
+      const body = document.querySelector('#inpEditPop .inped-body')!
+      return { inert: body.hasAttribute('inert'), fields: [...body.querySelectorAll('select, input:not([type=checkbox]):not([type=radio]):not([type=file]), textarea')]
+        .filter(e => (e as HTMLElement).offsetWidth).map(e => { const s = getComputedStyle(e); return { tag: e.tagName, bg: s.backgroundColor, bw: parseFloat(s.borderTopWidth), bc: s.borderTopColor, app: s.appearance, cursor: s.cursor } }) }
+    })
+    await page.locator('#inpEditPop #inpEditCancel').click()
+    await page.waitForSelector('#inpEditPop', { state: 'hidden' })
+    return got
+  }
+  const clear = (c: string) => /rgba\(0, 0, 0, 0\)|transparent/.test(c)
+  const other = await look(false)
+  expect(other.inert, 'another man\'s input opens read only').toBe(true)
+  expect(other.fields.length).toBeGreaterThan(0)
+  for (const f of other.fields) {
+    expect(clear(f.bg) && (f.bw === 0 || clear(f.bc)), `a locked ${f.tag} draws no box`).toBe(true)
+    if (f.tag === 'SELECT') expect(f.app, 'and no dropdown arrow').toBe('none')
+    expect(f.cursor, `and no text cursor over a locked ${f.tag}`).toBe('default')
+  }
+  const own = await look(true)
+  expect(own.inert, 'his own input opens to edit').toBe(false)
+  expect(own.fields.every(f => !clear(f.bg)), 'THE CONTROL: his own fields keep their live boxes').toBe(true)
+})
+
 /* THE DESKTOP SCHEDULER-BOARD CHROME IS TIGHT (owner, 26 Aug 26 — a batch of
    "give me more working space" asks). Four things at once, all jsdom-invisible
    because they are height/row/border geometry: the action buttons match the
