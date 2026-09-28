@@ -1,0 +1,78 @@
+{
+  "rows": [
+    {
+      "step": "I 390 wide: the Crew box",
+      "note": "{\"A\":{\"w\":88,\"picked\":\"STUDENT A\",\"textNeeds\":68,\"padL\":\"6px\",\"padR\":\"6px\",\"maxW\":\"88px\",\"bar\":390},\"B\":{\"w\":88,\"picked\":\"STUDENT B\",\"textNeeds\":68}}"
+    },
+    {
+      "step": "I 390 wide: the Crew box is wide enough for the picked name (box 88px, \"STUDENT A\" needs ~68px + padding)",
+      "pass": false,
+      "said": "box 88px; text 68px; bar 390px"
+    },
+    {
+      "step": "I 1000 wide: the Crew box",
+      "note": "{\"A\":{\"w\":88,\"picked\":\"STUDENT A\",\"textNeeds\":68,\"padL\":\"6px\",\"padR\":\"6px\",\"maxW\":\"88px\",\"bar\":1000},\"B\":{\"w\":88,\"picked\":\"STUDENT B\",\"textNeeds\":68}}"
+    },
+    {
+      "step": "I 1000 wide: the Crew box is wide enough for the picked name (box 88px, \"STUDENT A\" needs ~68px + padding)",
+      "pass": false,
+      "said": "box 88px; text 68px; bar 1000px"
+    },
+    {
+      "step": "I 1440 wide: the Crew box",
+      "note": "{\"A\":{\"w\":111,\"picked\":\"STUDENT A\",\"textNeeds\":71,\"padL\":\"9px\",\"padR\":\"9px\",\"maxW\":\"none\",\"bar\":1440},\"B\":{\"w\":111,\"picked\":\"STUDENT B\",\"textNeeds\":71}}"
+    },
+    {
+      "step": "I 1440 wide: the Crew box is wide enough for the picked name (box 111px, \"STUDENT A\" needs ~71px + padding)",
+      "pass": true,
+      "said": "box 111px; text 71px; bar 1440px"
+    },
+    {
+      "step": "K 1200: not editing / editing / after the first edit / after Done",
+      "note": "{\"s0\":{\"text\":\"● saved\",\"cut\":false,\"statBox\":{\"x\":1127,\"y\":114,\"w\":57,\"h\":28,\"r\":1184},\"statScrollW\":57,\"save\":null,\"slot\":{\"x\":1012,\"y\":114,\"w\":172,\"h\":28,\"r\":1184},\"barH\":51,\"barRight\":1200,\"boardTop\":179},\"s1\":{\"text\":\"● saved\",\"cut\":false,\"statBox\":{\"x\":1127,\"y\":114,\"w\":57,\"h\":28,\"r\":1184},\"statScrollW\":57,\"save\":null,\"slot\":{\"x\":1012,\"y\":114,\"w\":172,\"h\":28,\"r\":1184},\"barH\":51,\"barRight\":1200,\"boardTop\":313},\"s2\":{\"text\":\"● saved\",\"cut\":true,\"statBox\":{\"x\":1020,\"y\":114,\"w\":51,\"h\":28,\"r\":1071},\"statScrollW\":57,\"save\":{\"x\":1077,\"y\":117,\"w\":107,\"h\":23,\"r\":1184},\"slot\":{\"x\":1012,\"y\":114,\"w\":1"
+    },
+    {
+      "step": "K 1200: the bar does not wrap when ✓ Save changes appears (bar 51 → 51 → 51px)",
+      "pass": true,
+      "said": "bar 51/51/51/51; chart top 313 → 313; 179 → 179"
+    },
+    {
+      "step": "K 1200: the status words beside ✓ Save changes are whole",
+      "pass": false,
+      "said": "editing: \"● saved\" cut=true (51px shown of 57); after Done: \"● unsaved flow edits — hit “Save changes”\" cut=true (51px of 223)"
+    },
+    {
+      "step": "K 1440: not editing / editing / after the first edit / after Done",
+      "note": "{\"s0\":{\"text\":\"● saved\",\"cut\":false,\"statBox\":{\"x\":1367,\"y\":68,\"w\":57,\"h\":28,\"r\":1424},\"statScrollW\":57,\"save\":null,\"slot\":{\"x\":1252,\"y\":68,\"w\":172,\"h\":28,\"r\":1424},\"barH\":51,\"barRight\":1440,\"boardTop\":133},\"s1\":{\"text\":\"● saved\",\"cut\":false,\"statBox\":{\"x\":1367,\"y\":68,\"w\":57,\"h\":28,\"r\":1424},\"statScrollW\":57,\"save\":null,\"slot\":{\"x\":1252,\"y\":68,\"w\":172,\"h\":28,\"r\":1424},\"barH\":51,\"barRight\":1440,\"boardTop\":267},\"s2\":{\"text\":\"● saved\",\"cut\":true,\"statBox\":{\"x\":1260,\"y\":68,\"w\":51,\"h\":28,\"r\":1311},\"statScrollW\":57,\"save\":{\"x\":1317,\"y\":71,\"w\":107,\"h\":23,\"r\":1424},\"slot\":{\"x\":1252,\"y\":68,\"w\":172,\"h\":"
+    },
+    {
+      "step": "K 1440: the bar does not wrap when ✓ Save changes appears (bar 51 → 51 → 51px)",
+      "pass": true,
+      "said": "bar 51/51/51/51; chart top 267 → 267; 133 → 133"
+    },
+    {
+      "step": "K 1440: the status words beside ✓ Save changes are whole",
+      "pass": false,
+      "said": "editing: \"● saved\" cut=true (51px shown of 57); after Done: \"● unsaved flow edits — hit “Save changes”\" cut=true (51px of 223)"
+    },
+    {
+      "step": "L sideways-844x390: before / editing",
+      "note": "{\"before\":{\"viewport\":\"844x390\",\"raptorBar\":{\"top\":0,\"h\":149,\"bottom\":149,\"shown\":true},\"raptorBarIs\":\"div.topbar\",\"trackerBar\":{\"top\":149,\"h\":38,\"bottom\":187,\"shown\":true},\"editStrip\":{\"top\":0,\"h\":0,\"bottom\":0,\"shown\":false},\"board\":{\"top\":226,\"h\":132,\"bottom\":357,\"shown\":true},\"boardOnScreen\":132,\"pageScrollH\":390},\"editing\":{\"viewport\":\"844x390\",\"raptorBar\":{\"top\":0,\"h\":149,\"bottom\":149,\"shown\":true},\"raptorBarIs\":\"div.topbar\",\"trackerBar\":{\"top\":149,\"h\":38,\"bottom\":187,\"shown\":true},\"editStrip\":{\"top\":187,\"h\":144,\"bottom\":330,\"shown\":true},\"board\":{\"top\":390,\"h\":24,\"bottom\":414,\"shown\":tru"
+    },
+    {
+      "step": "L sideways-844x390: the chart area keeps room while editing (#board 24px tall, 0px on screen)",
+      "pass": false,
+      "said": "Raptor bar 149px (div.topbar) · Tracker bar 38px · edit strip 144px · chart 24px (on screen 0px)"
+    },
+    {
+      "step": "L upright-390x844: before / editing",
+      "note": "{\"before\":{\"viewport\":\"390x844\",\"raptorBar\":{\"top\":0,\"h\":49,\"bottom\":49,\"shown\":true},\"raptorBarIs\":\"div.topbar\",\"trackerBar\":{\"top\":49,\"h\":70,\"bottom\":119,\"shown\":true},\"editStrip\":{\"top\":0,\"h\":0,\"bottom\":0,\"shown\":false},\"board\":{\"top\":158,\"h\":654,\"bottom\":811,\"shown\":true},\"boardOnScreen\":654,\"pageScrollH\":844},\"editing\":{\"viewport\":\"390x844\",\"raptorBar\":{\"top\":0,\"h\":49,\"bottom\":49,\"shown\":true},\"raptorBarIs\":\"div.topbar\",\"trackerBar\":{\"top\":49,\"h\":70,\"bottom\":119,\"shown\":true},\"editStrip\":{\"top\":119,\"h\":214,\"bottom\":332,\"shown\":true},\"board\":{\"top\":398,\"h\":446,\"bottom\":844,\"shown\":true},\"b"
+    },
+    {
+      "step": "L upright-390x844: the chart area keeps room while editing (#board 446px tall, 446px on screen)",
+      "pass": true,
+      "said": "Raptor bar 49px (div.topbar) · Tracker bar 70px · edit strip 214px · chart 446px (on screen 446px)"
+    }
+  ],
+  "errors": []
+}

@@ -1,0 +1,94 @@
+{
+  "rows": [
+    {
+      "step": "P dup-copyonly.0 the unsaved edit: ACG-05 dragged (✓ Save changes after the drag alone: false), + Test \"LO-P\", ✓ Done editing chart",
+      "note": "{\"syllabus\":\"2026\",\"saveChanges\":true,\"LO-P ball\":true,\"status\":\"● unsaved flow edits — hit “Save changes”\"}"
+    },
+    {
+      "step": "P dup-copyonly.1 ⧉ Duplicate syllabus pressed: the first question",
+      "note": "\"You have unsaved flow edits on “2026”. The copy is made from the chart as it is on screen.\\n\\nKeep the edits on “2026” too?\" · buttons dlgCancel=\"Cancel\" dlgAlt=\"No — only in the copy\" dlgOk=\"Yes — save them on both\""
+    },
+    {
+      "step": "P dup-copyonly.2 Duplicate asks about the unsaved edit before the name",
+      "pass": true,
+      "said": "\"You have unsaved flow edits on “2026”. The copy is made from the chart as it is on screen.\\n\\nKeep the edits on “2026” too?\""
+    },
+    {
+      "step": "P dup-copyonly.3 answered \"No — only in the copy\": next question",
+      "note": "\"Name for the duplicated syllabus:\""
+    },
+    {
+      "step": "P dup-copyonly.4 after the name \"LO DUP-COPYONLY\" and OK: on screen",
+      "note": "{\"syllabus\":\"LO DUP-COPYONLY ✎\",\"saveChanges\":false,\"LO-P ball\":true,\"status\":\"● duplicated as “LO DUP-COPYONLY”\"}"
+    },
+    {
+      "step": "P dup-copyonly.6 back on the original \"2026\"",
+      "note": "{\"syllabus\":\"2026\",\"saveChanges\":false,\"LO-P ball\":false,\"status\":\"● switched to 2026\"}"
+    },
+    {
+      "step": "P dup-copyonly.7 the original \"2026\" does not keep the edit, as the answer said",
+      "pass": true,
+      "said": "{\"syllabus\":\"2026\",\"saveChanges\":false,\"LO-P ball\":false,\"status\":\"● switched to 2026\"}"
+    },
+    {
+      "step": "P dup-both.0 the unsaved edit: ACG-05 dragged (✓ Save changes after the drag alone: false), + Test \"LO-P\", ✓ Done editing chart",
+      "note": "{\"syllabus\":\"2026\",\"saveChanges\":true,\"LO-P ball\":true,\"status\":\"● unsaved flow edits — hit “Save changes”\"}"
+    },
+    {
+      "step": "P dup-both.1 ⧉ Duplicate syllabus pressed: the first question",
+      "note": "\"You have unsaved flow edits on “2026”. The copy is made from the chart as it is on screen.\\n\\nKeep the edits on “2026” too?\" · buttons dlgCancel=\"Cancel\" dlgAlt=\"No — only in the copy\" dlgOk=\"Yes — save them on both\""
+    },
+    {
+      "step": "P dup-both.2 Duplicate asks about the unsaved edit before the name",
+      "pass": true,
+      "said": "\"You have unsaved flow edits on “2026”. The copy is made from the chart as it is on screen.\\n\\nKeep the edits on “2026” too?\""
+    },
+    {
+      "step": "P dup-both.3 answered \"Yes — save them on both\": next question",
+      "note": "\"Name for the duplicated syllabus:\""
+    },
+    {
+      "step": "P dup-both.4 after the name \"LO DUP-BOTH\" and OK: on screen",
+      "note": "{\"syllabus\":\"LO DUP-BOTH ✎\",\"saveChanges\":false,\"LO-P ball\":true,\"status\":\"● duplicated as “LO DUP-BOTH”\"}"
+    },
+    {
+      "step": "P dup-both.6 back on the original \"2026\"",
+      "note": "{\"syllabus\":\"2026 ✎\",\"saveChanges\":false,\"LO-P ball\":true,\"status\":\"● switched to 2026\"}"
+    },
+    {
+      "step": "P dup-both.7 the original \"2026\" KEEPS the edit, as the answer said",
+      "pass": true,
+      "said": "{\"syllabus\":\"2026 ✎\",\"saveChanges\":false,\"LO-P ball\":true,\"status\":\"● switched to 2026\"}"
+    },
+    {
+      "step": "P addsyl.0 the unsaved edit: ACG-05 dragged (✓ Save changes after the drag alone: false), + Test \"LO-P\", ✓ Done editing chart",
+      "note": "{\"syllabus\":\"2026\",\"saveChanges\":true,\"LO-P ball\":true,\"status\":\"● unsaved flow edits — hit “Save changes”\"}"
+    },
+    {
+      "step": "P addsyl.1 + Add syllabus pressed: the first question",
+      "note": "\"You have unsaved flow edits on “2026”.\\nDiscard them and add a new syllabus?\" · buttons dlgCancel=\"Cancel\" dlgOk=\"OK\""
+    },
+    {
+      "step": "P addsyl.2 + Add syllabus asks about the unsaved edit before the name",
+      "pass": true,
+      "said": "\"You have unsaved flow edits on “2026”.\\nDiscard them and add a new syllabus?\""
+    },
+    {
+      "step": "P addsyl.3 Cancel: the chart and the edit stay",
+      "note": "{\"syllabus\":\"2026\",\"saveChanges\":true,\"LO-P ball\":true,\"status\":\"● unsaved flow edits — hit “Save changes”\"}"
+    },
+    {
+      "step": "P addsyl.4 asked again, OK (discard): next question",
+      "note": "\"Name for the new (empty) syllabus:\""
+    },
+    {
+      "step": "P addsyl.5 after the name \"LO NEW\" and OK: on screen",
+      "note": "{\"syllabus\":\"LO NEW ✎\",\"saveChanges\":false,\"LO-P ball\":false,\"status\":\"● added empty syllabus “LO NEW”\"}"
+    },
+    {
+      "step": "P addsyl.7 back on the original \"2026\"",
+      "note": "{\"syllabus\":\"2026\",\"saveChanges\":false,\"LO-P ball\":false,\"status\":\"● switched to 2026\"}"
+    }
+  ],
+  "errors": []
+}

@@ -785,6 +785,7 @@ the body is `raptor-port/src/engine/oilev.ts` `landedExtras`, and its own commen
 **Place:** after the Tracker `[HUMAN-RETEST]` merges; none blocks it. Found by the three walkers
 (`raptor-port/docs/handpass/parts/tracker/w1.md`, `w2.md`, `w3.md`), each with its picture there.
 Marked **his call** where the answer is product direction, not a defect.
+**Being built 28 Sep 26** on `claude/tracker-leftovers-f79d36` (plan `raptor-port/docs/superpowers/plans/2026-09-28-tracker-leftovers-plan.md`; re-walked on that day's build first — the first note and O6 were already fixed). **His answers, 28 Sep 26:** the N.A. failures leave the Failures card too (**D370**); failures take their X by DAY, − takes back the latest day (**D371**); a pace, end-date or lull change is an undo step (**D372**). The future "Done on" and the course order after a students import are put to him again in plainer words.
 - **Entering ✎ Edit chart layout moves a scrolled chart** 190–240px (ACG-04 500 → 262; back to 449, not
   500) — the code means to keep the view (`toggleArrange`); the arrange canvas drops the centring slack
   (`padBoard`) without moving the scroll by it. A real defect, small. (w2 off-list)
@@ -814,6 +815,7 @@ Marked **his call** where the answer is product direction, not a defect.
 **Place:** after `[TRK-PINCH-DRAGS-BALL]`. At 844×390 the tool strip fills the screen and the chart area is
 0px — nothing to see, drag or pinch (picture `docs/img/handpass/2026-09-23-tracker-pinch/after-phone-sideways-edit-no-room.png`).
 Upright it keeps 446px. Older than the pinch fix (F-C in its sheet). A layout job: fold or scroll the strip sideways.
+**His pick, 28 Sep 26 — D373: FOLD** (the tool in use, ⤢ Fit and "Tools ▾" opening the whole set over the chart; the note, the hint line and the Flow / Info / Show All tabs step aside while editing on a short screen) — from the mock-up `raptor-port/docs/img/handpass/2026-09-28-trk-leftovers/mock/`; being built on `claude/tracker-leftovers-f79d36`.
 
 ### [TRK-SESSION-PICK] The Tracker reopens on the previous person's course and student after a sign-in (filed 26 Sep 26)
 Astra's read of `[ACCOUNTS]` (finding 3): `tracker/app/core.js endSession` clears undo, dialogs, modes and search, but not

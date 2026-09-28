@@ -1,0 +1,23 @@
+{
+  "rows": [
+    {
+      "step": "A ACG-04: pressed \"✎ Edit chart layout\" then \"✓ Done editing chart\"",
+      "note": "{\"before\":{\"top\":471,\"left\":443,\"cy\":500,\"cx\":471},\"on\":{\"top\":554,\"left\":442,\"cy\":582,\"cx\":470},\"off\":{\"top\":471,\"left\":443,\"cy\":500,\"cx\":471},\"scroll\":[{\"top\":349,\"left\":0},{\"top\":0,\"left\":0},{\"top\":349,\"left\":0}],\"board\":[{\"top\":133,\"h\":735},{\"top\":267,\"h\":633},{\"top\":133,\"h\":735}]}"
+    },
+    {
+      "step": "A ACG-04: the ball stays put entering edit mode (top 471 → 554) and after Done (→ 471)",
+      "pass": false,
+      "said": "top 471 → 554 → 471; centre y 500 → 582 → 500"
+    },
+    {
+      "step": "A BFM-3: pressed \"✎ Edit chart layout\" then \"✓ Done editing chart\"",
+      "note": "{\"before\":{\"top\":471,\"left\":268,\"cy\":500,\"cx\":296},\"on\":{\"top\":554,\"left\":268,\"cy\":582,\"cx\":296},\"off\":{\"top\":471,\"left\":268,\"cy\":500,\"cx\":296},\"scroll\":[{\"top\":4673,\"left\":0},{\"top\":0,\"left\":0},{\"top\":4673,\"left\":0}],\"board\":[{\"top\":133,\"h\":735},{\"top\":267,\"h\":633},{\"top\":133,\"h\":735}]}"
+    },
+    {
+      "step": "A BFM-3: the ball stays put entering edit mode (top 471 → 554) and after Done (→ 471)",
+      "pass": false,
+      "said": "top 471 → 554 → 471; centre y 500 → 582 → 500"
+    }
+  ],
+  "errors": []
+}

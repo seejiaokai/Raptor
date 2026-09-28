@@ -1,0 +1,142 @@
+<title>Tracker Leftovers Choices</title>
+<style>
+  :root{
+    color-scheme: dark;
+    --bg:#0f1217; --panel:#171b22; --panel2:#1d222b; --line:#2b313c;
+    --ink:#eef1f5; --ink2:#b7bfcb; --muted:#8a93a3; --accent:#3BC6E8; --rec:#57C97A; --warn:#E5A83B;
+    --font: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    --mono: "IBM Plex Mono", ui-monospace, Consolas, monospace;
+  }
+  html,body{background:var(--bg);color:var(--ink)}
+  body{font-family:var(--font);font-size:15px;line-height:1.5;padding-inline:16px;padding-block:20px 48px}
+  .wrap{max-width:860px;margin:0 auto;display:flex;flex-direction:column;gap:22px}
+  header h1{font-size:24px;margin:0 0 6px;text-wrap:balance;letter-spacing:.2px}
+  header p{margin:0;color:var(--ink2);max-width:68ch}
+  .reply{margin-top:12px;background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:10px 12px;color:var(--ink2);font-size:14px}
+  .reply code{font-family:var(--mono);color:var(--accent);font-size:13px}
+  section.q{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:10px}
+  .qhead{display:flex;gap:10px;align-items:baseline}
+  .qn{font-family:var(--mono);color:var(--accent);font-weight:600;font-size:14px;flex:0 0 auto}
+  .qhead h2{font-size:17px;margin:0;text-wrap:balance}
+  .q p{margin:0;color:var(--ink2);max-width:68ch}
+  .now{font-size:14px}
+  .now b{color:var(--ink)}
+  .opts{display:flex;flex-direction:column;gap:6px;margin:2px 0 0;padding:0;list-style:none}
+  .opts li{border:1px solid var(--line);border-radius:8px;padding:8px 10px;background:var(--panel2);font-size:14px;color:var(--ink2)}
+  .opts li b{color:var(--ink)}
+  .opts li.rec{border-color:color-mix(in srgb, var(--rec) 55%, var(--line))}
+  .tag{display:inline-block;font-size:11px;letter-spacing:.6px;text-transform:uppercase;color:var(--rec);border:1px solid color-mix(in srgb, var(--rec) 50%, transparent);border-radius:999px;padding:0 7px;margin-left:6px;vertical-align:1px}
+  .pics{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+  .pics.wide{grid-template-columns:1fr}
+  figure{margin:0;display:flex;flex-direction:column;gap:5px}
+  figure img{width:100%;max-width:100%;border:1px solid var(--line);border-radius:8px;cursor:zoom-in;background:#000;display:block}
+  figcaption{font-size:12.5px;color:var(--muted)}
+  figcaption b{color:var(--ink2)}
+  .pair{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  @media (max-width:640px){ .pair{grid-template-columns:1fr} }
+  .num{font-variant-numeric:tabular-nums;color:var(--warn);font-weight:600}
+  #zoom{position:fixed;inset:0;background:rgba(0,0,0,.92);display:flex;align-items:center;justify-content:center;padding:12px;z-index:10;overflow:auto}
+  #zoom img{max-width:none;width:auto;max-height:none;cursor:zoom-out}
+  footer{color:var(--muted);font-size:12.5px}
+  @media (prefers-reduced-motion:no-preference){ figure img{transition:border-color .15s} figure img:hover{border-color:var(--accent)} }
+  :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+</style>
+
+<div class="wrap">
+  <header>
+    <h1>Six choices for the Tracker leftovers</h1>
+    <p>Everything else in this batch is a plain fix and I'm building it now. These six change how the Tracker behaves, so they're yours. Each shows what happens today and what I recommend. Tap a picture to see it full size.</p>
+    <div class="reply">Reply with the number and your pick, for example: <code>1 yes · 2 yes · 3 a · 4 yes · 5 keep · 6 fold</code></div>
+  </header>
+
+  <section class="q" id="q1">
+    <div class="qhead"><span class="qn">1</span><h2>Failures on an event marked N.A.</h2></div>
+    <p class="now">Marking an event <b>N.A.</b> hides its red failure ticks on the ball. But the <b>Failures</b> card still lists those failures and counts them in the total.</p>
+    <div class="pics">
+      <figure><img src="img/q1-card.png" alt="The Failures card still listing ACG-01 and ACG-01X after ACG-01 was marked N.A., total 3 FAILS"><figcaption>ACG-01 is marked N.A. The card still shows <b>ACG-01, ACG-01X</b> and says <b>3 FAILS</b>.</figcaption></figure>
+    </div>
+    <ul class="opts">
+      <li class="rec"><b>Yes</b>: the card leaves them out too, like the ball does. They're kept, and they come back if the event is graded again. <span class="tag">Recommended</span></li>
+      <li><b>No</b>: keep counting them on the card.</li>
+    </ul>
+  </section>
+
+  <section class="q" id="q2">
+    <div class="qhead"><span class="qn">2</span><h2>Which failure is ST-02 and which is ST-02X</h2></div>
+    <p class="now">A failure recorded today, then a second one back-dated to an earlier day. Today the card labels them in the order they were <b>typed in</b>: the later day becomes the plain code. Pressing <b>−</b> takes back the one typed in last, which here is the earlier day.</p>
+    <div class="pics">
+      <figure><img src="img/q2-card.png" alt="Failures card showing ST-02 then ST-02X"><figcaption><b>ST-02</b> is today's failure; <b>ST-02X</b> is the earlier one.</figcaption></figure>
+    </div>
+    <ul class="opts">
+      <li class="rec"><b>Yes</b>: the labels follow the <b>days</b>. The earliest failure is the plain code, the next adds an X. <b>−</b> takes back the one with the latest day. Your 9 Sep rule said "oldest first". <span class="tag">Recommended</span></li>
+      <li><b>No</b>: keep the order they were typed in.</li>
+    </ul>
+  </section>
+
+  <section class="q" id="q3">
+    <div class="qhead"><span class="qn">3</span><h2>Undo after changing a pace, end date or lull period</h2></div>
+    <p class="now">↶ and Ctrl+Z take back marks and the Last Flown and Upchit boxes. They <b>don't</b> take back a change to the <b>pace</b>, the two <b>end dates</b> or a <b>lull period</b>. So Ctrl+Z pressed right after changing the pace quietly takes back an <b>older mark</b> instead. The ↶ button's hover text names it, but the key says nothing.</p>
+    <ul class="opts">
+      <li class="rec"><b>a</b>: make those changes undoable too, like Last Flown and Upchit. ↶ and Ctrl+Z then take back the pace change you just made. <span class="tag">Recommended</span></li>
+      <li><b>b</b>: keep them out of undo, but Ctrl+Z shows a line saying what it took back.</li>
+    </ul>
+  </section>
+
+  <section class="q" id="q4">
+    <div class="qhead"><span class="qn">4</span><h2>A "Done on" day in the future</h2></div>
+    <p class="now">Tomorrow's date is accepted as the day a flight was done. Last Flown moves to tomorrow and the Currency card reads <span class="num">−1d</span>.</p>
+    <div class="pics">
+      <figure><img src="img/q4-currency.png" alt="Currency card reading -1d after a Done on date of tomorrow"><figcaption>After grading a flight with tomorrow's date: <b>Days since syllabus −1d</b>.</figcaption></figure>
+    </div>
+    <ul class="opts">
+      <li class="rec"><b>Yes</b>: refuse a future day in <b>Done on</b>, <b>Failed on</b> and the two <b>Last Flown</b> boxes. The box goes back to what it had, with one line saying why. <b>Upchit</b> and the <b>end dates</b> are often in the future and stay as they are. <span class="tag">Recommended</span></li>
+      <li><b>No</b>: accept any day, as today.</li>
+    </ul>
+  </section>
+
+  <section class="q" id="q5">
+    <div class="qhead"><span class="qn">5</span><h2>Course order after importing a file with students</h2></div>
+    <p class="now">Importing a file <b>with students</b> puts any course the app didn't already have <b>after</b> the app's own courses, so your own courses stay first.</p>
+    <ul class="opts">
+      <li class="rec"><b>Keep</b>: it's right for a handover. Your database route (export, wipe, import) carries the charts, not the demo students, so course order never comes up on it. <span class="tag">Recommended</span></li>
+      <li><b>Change</b>: a file's courses come back in the file's own order.</li>
+    </ul>
+  </section>
+
+  <section class="q" id="q6">
+    <div class="qhead"><span class="qn">6</span><h2>Edit chart layout on a sideways phone</h2></div>
+    <p class="now">On a phone turned sideways, the editing tools take up the whole screen. The chart gets <span class="num">24px</span> of height, so there's nothing to drag or pinch. In both options, the double-click note, the hint line and the Flow / Info / Show All tabs step aside while you edit. Upright phones and computers stay as they are.</p>
+    <div class="pics wide">
+      <figure><img src="img/q6-0-today.png" alt="Today at 844 by 390: the edit tools fill the screen"><figcaption><b>Today</b>: three rows of tools and a note. Chart: <span class="num">24px</span>.</figcaption></figure>
+    </div>
+    <div class="pair">
+      <figure><img src="img/q6-1-one-row.png" alt="Option: the tools in one row that scrolls sideways"><figcaption><b>Scroll</b>: one row that scrolls sideways; a <b>›</b> on its right edge shows there's more. Chart: <span class="num">147px</span>.</figcaption></figure>
+      <figure><img src="img/q6-2-folded.png" alt="Option: the tools folded to one row with a Tools button"><figcaption><b>Fold</b>: the tool you're using, Fit and a <b>Tools ▾</b> button. Chart: <span class="num">167px</span>.</figcaption></figure>
+    </div>
+    <div class="pics wide">
+      <figure><img src="img/q6-3-folded-open.png" alt="The folded option with Tools opened over the chart"><figcaption><b>Fold, with Tools pressed</b>: the whole set opens over the chart. A tap outside closes it.</figcaption></figure>
+    </div>
+    <ul class="opts">
+      <li class="rec"><b>Fold</b>: every tool is one tap away and none is hidden off the edge. On 15 Aug you turned down a phone bar that scrolled sideways and hid controls. <span class="tag">Recommended</span></li>
+      <li><b>Scroll</b>: one row, swipe it sideways for the rest.</li>
+    </ul>
+    <p style="font-size:13px;color:var(--muted)">Raptor's own top bar is the biggest piece at that size (the top 150px of each picture). It belongs to the whole app, so I've filed it separately.</p>
+  </section>
+
+  <footer>Pictures are the real app on today's build (28 Sep 26). The two options in 6 are drawn over the real app and aren't built yet.</footer>
+</div>
+
+<div id="zoom" hidden></div>
+<script>
+  (function(){
+    var z = document.getElementById('zoom'), zi = document.createElement('img'); z.appendChild(zi);
+    document.querySelectorAll('figure img').forEach(function(img){
+      img.tabIndex = 0;
+      function openIt(){ zi.src = img.src; zi.alt = img.alt; z.hidden = false; }
+      img.addEventListener('click', openIt);
+      img.addEventListener('keydown', function(e){ if (e.key === 'Enter') openIt(); });
+    });
+    z.addEventListener('click', function(){ z.hidden = true; });
+    document.addEventListener('keydown', function(e){ if (e.key === 'Escape') z.hidden = true; });
+  })();
+</script>
