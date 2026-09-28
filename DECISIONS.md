@@ -16,7 +16,8 @@ and SEARCHED before telling him anything is undecided.
 **Recording a ruling — the moment he says it, BEFORE the work it implies** (full rule and the misses that made
 it: `.claude/rules/record-decisions.md`; closing reports carry a `Rulings:` line):
 1. **Add ONE row at the top of its area's table** — the date, his words where short enough, what it means, and
-   the file that now carries it (then make that file carry it: this list is an index, never the only home). A
+   the file that now carries it (then make that file carry it: this list is an index, never the only home — and
+   write the D-number beside the ruling there; the gate fails a new row whose Markdown home never mentions it). A
    ruling that spans areas goes in the one it mostly governs; the other area's "Also read" line names it.
 2. **If it wholly REPLACES an earlier ruling**, start that earlier row's ruling cell with
    `**REPLACED BY D<n> (<date>).**`; **a one-off permission, once used**, with `**SPENT <date> — <what used it>.**`

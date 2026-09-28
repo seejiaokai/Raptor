@@ -1842,7 +1842,10 @@ were `FS`/`HS` until the 28 Aug 26 rename.
   - anything he is **NAMED** for on the day's own schedule that overlaps the
     window drops him (`avail.ts:personBusy` — the same occupancy the validator
     and the crew picker read, which is what closes the app's old disagreement
-    between two notions of "available").
+    between two notions of "available"). A flying man is busy from step to
+    dekit only — never widened to his report or his debrief, because an ops
+    brief is sometimes slotted between a flight's brief and its step, or before
+    its debrief (owner, D36, 22 Sep 26).
   A SENTINEL NEVER BLOCKS ANOTHER SENTINEL (ruled by the build, not the owner):
   only NAMED people count as "planned for something", so two overlapping ALL AVAIL
   rows cannot each empty the other. Without a resolver the sentinel simply drops,
@@ -1959,7 +1962,7 @@ were `FS`/`HS` until the 28 Aug 26 rename.
   is what happened: a later amendment or EOD that takes a man off a past day takes that day’s OIL away
   (confirmed by him), and an issued EOD is the final word on the day. It superseded the 11 Sep "lock earned
   OIL on an already-worked day" lean (backlog item `[OIL]`, archived 24 Sep 26); there is no lock to build.
-- **ONLY THE ISSUED SCHEDULE PAYS, BOTH DIRECTIONS** (owner, 21 Sep 26 — R-1,
+- **ONLY THE ISSUED SCHEDULE PAYS, BOTH DIRECTIONS** (owner, 21 Sep 26 — R-1, D2,
   from the cross-provider bug check; triage in
   `docs/superpowers/specs/2026-09-21-oil-bugcheck-fixplan.md`). The credit pass
   used to gate each date on the war's calendar LIVE, before the issued block was
@@ -1971,7 +1974,7 @@ were `FS`/`HS` until the 28 Aug 26 rename.
   both ways: a day that starts earning after it went out waits to be published
   again, and `validateCore` says so on the day (`OIL_STALE_DAY`). The block's own
   ISO must also match the date it is read under, or the date is protected.
-- **THE LIVE ROSTER IS NOT A SECOND MONEY AUTHORITY** (owner, 21 Sep 26 — R-2).
+- **THE LIVE ROSTER IS NOT A SECOND MONEY AUTHORITY** (owner, 21 Sep 26 — R-2, D3).
   `creditable` consulted the current Leave War roster, so archiving a man on the
   Monday deleted the day in lieu an issued Saturday had already promised him. Who
   earned was decided at publication and frozen; nothing the roster does
@@ -1979,7 +1982,7 @@ were `FS`/`HS` until the 28 Aug 26 rename.
   all. An archived man, a hidden SANS and a NAMED ground-crew body all keep what
   they earned; the credit lives on the person and the date, so it lands and waits
   for the row.
-- **A CANCELLED OR ⓘ LANDED ROW EARNS NOTHING** (owner, 21 Sep 26 — R-2). The
+- **A CANCELLED OR ⓘ LANDED ROW EARNS NOTHING** (owner, 21 Sep 26 — R-2, D3). The
   schedule half skips every `src` row so the accepted claim owns it, and the
   input half then never looked at the row it had landed on — so cancelling that
   row, or turning it ⓘ info-only, left the claim paying for work the schedule
@@ -2417,7 +2420,8 @@ already flew keep his puck, and every day from his cutoff loses him.)*
 ## Publishing / amendments
 
 **A DELETED MAN ON A PUBLISHED DAY (`[POST-OUT-OUTCOMES]`, 27 Sep 26 — D297, D299; `state/person-delete.ts`).** The
-delete's cutoff is the later of its date and the calendar date (ONE clock — the posting pass's too). Every day BEFORE it
+delete's cutoff is the later of its date and the calendar date (ONE clock — the posting pass's too; the real calendar date,
+never the demo's own "today" — D304). Every day BEFORE it
 keeps his puck, published or not, and never reads pending for the delete: a published face compares a deleted man's
 roster attributes as they stood when the day was issued (`publish.ts peopleAttrsNow`), and ALL AVAIL counts him on those
 days as before (`leavewar/sync.ts availableFor`, by date). **An ARCHIVED man is read the same way, by his stints**
@@ -3399,11 +3403,15 @@ two edits would otherwise head its own group with a name it has stopped
 having.
 
 **`who` arrives through `HOOKS.whoami()`**, wired in `wireStore()` from
-`SESSION`/`ACCOUNTS`. Accounts are hard-coded, so today it only ever reads
+`SESSION`/`ACCOUNTS`. **CORRECTED 28 Sep 26 — since `[ACCOUNTS]` (26 Sep 26, D166 (5)) it reads the
+signed-in CALLSIGN ("Guest" for a guest), the person's id kept beside it (`HOOKS.whoamiId`); the next
+sentence is history:** Accounts are hard-coded, so today it only ever reads
 `Admin` or `Squadron member`. That hook is the one seam a real server has to
 fill; nothing else changes when it does.
 
-**Session-scoped, and cleared by `resetSession`.** Not persisted — the
+**CORRECTED 28 Sep 26 — the log is DURABLE since `[DRAFT-PENDING]` (D336 (b), D338 (1)): saved, loaded at
+boot, never cleared at sign-in or sign-out (this section's head). The next two sentences are history; the one
+after them, about undo, still holds:** **Session-scoped, and cleared by `resetSession`.** Not persisted — the
 schedule it describes is not either. Deliberately NOT in `histSnap()`: an
 undo restores the schedule and leaves the record standing, because a log you
 can rewrite by pressing undo is not a log.

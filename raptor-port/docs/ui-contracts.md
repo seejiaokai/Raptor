@@ -664,7 +664,7 @@ guest, never in print or CSV. "Mark all as seen" takes it away. The day headings
 
 ## The one changes window (`[DRAFT-PENDING]`, 28 Sep 26 — D116–D119, D167–D172, D169 with D211, D263, D336 (b))
 
-**One window replaces three lists** (D168): the published day's pending list (below — its lines are now the window's "To
+**One window replaces three lists** (D168; its readings below stand as built, D338): the published day's pending list (below — its lines are now the window's "To
 go out" tab), the Edit history modal (retired), and the unpublished day's miscounting "N pending" (D118 — gone). The
 design of record: `docs/mock/changes-window.html`, option A (D170), `changes-doors.html` as narrowed by D171,
 `tags-ticks.html` (OG, D172). Code: `ui/ChangesWindow.tsx` (the window), `ui/changesmodel.ts` (its lines, groupings and
@@ -5363,7 +5363,9 @@ the final code read — Astra 1).
 
 **The Leave War after the one door** also carries an archived man's rename (Save name) onto his kept row — a deleted man
 keeps the name he flew under (D297) — and a post-in moved to the day after his earlier stint closed joins the two into one
-stint, as Restore does (the final code reads, Fable F3 / F4, Astra 2).
+stint, as Restore does (the final code reads, Fable F3 / F4, Astra 2). A SANS man hidden by "Show SANS" off, once archived,
+shows on the war with his months here whatever Show SANS says, as a deleted man does — his leave and OIL in those months
+stay seen (D325, D299).
 
 **The Leave War's posting sheets after the one door** (round 1 — Fable F1 / Astra 2; D320): a man archived on Admin →
 Users has a read-only Post out sheet — "<cs> was archived on Admin → Users — restore him there" (`postout-locked`), the
@@ -5372,7 +5374,7 @@ Fable 4.2); both posting writers refuse him (`leavewar/state/store.ts postingLoc
 goes round it; Restore on Admin → Users is the one way back. A man deleted before his post-in came has no stint to keep
 — his war row and record go (Fable 4.5). A
 man back from a posting has a Post in sheet that says "Back from a posting on <date> — on the manpower from <date>. The
-days between count nobody, …" (`postin-note`) and offers no Undo; his earlier stint's dates are read-only on the war.
+days between count nobody, …" (`postin-note`) and offers no Undo; his earlier stint's dates are read-only on the war (D328).
 The grid draws every stint: a day in the gap between two stints reads **PO** with the hatch; only a day before his FIRST
 stint is blank ("not yet arrived"); each stint's last day wears the PO corner; a leave period he was away for the whole
 of shows no row for him (`leavewar/engine/people.ts` — `inSquadron`, `beforeFirstStint`, `lastDayIn`, `postingSheetFor`).
@@ -7774,7 +7776,8 @@ argument, `oilSeatDeco`, `oilCls`/`oilChipHTML`), `ui/board.ts` + `ui/board-html
 
 ### Where it is drawn, and where it is not
 
-**Weekend, public-holiday and off-day-tagged days only.** Five days a week nothing is
+**Weekends and days tagged PH only** — a day tagged "Off day" is not one: time given to a man earns
+nothing, so nothing is drawn on it (owner, D21, 22 Sep 26; register OIL43). Five days a week nothing is
 emitted at all — no class, no node, no attribute — so the printed schedule on an
 ordinary Tuesday is byte-identical to before and the reference parity gate is
 untouched (728/0, checked). The day's own name covers Saturday and Sunday; the
@@ -7798,7 +7801,7 @@ finding 13). A claim row is not switchable as a whole for a different reason, an
   colour-blindness; the tint is the one that survives being read alone with nothing
   to compare against.
 - **It is the MAN'S DAY — but it is SHOWN ONLY on the events that COUNTED towards it**
-  (owner, 21 Sep 26 — O-1, revising §2.10 / OIL21). There is no such thing as a
+  (owner, 21 Sep 26 — O-1, D1, revising §2.10 / OIL21). There is no such thing as a
   per-event OIL figure and one must never be invented: the measure runs first-start to
   last-end across the whole day including the gaps, so a man on four rows that all
   counted still shows one full day, four times. What changed is WHERE it is drawn. It
@@ -8009,7 +8012,7 @@ window breaking it, and "fixes" it.
 
 **What it is.** Tapping either counter chip — on the board **or on the week**,
 both draw it — opens one window of real pucks. Pilots in the left column, WSOs in
-the right (the same pairing the sim seat grid uses) — on a published day's issued face, by the seat each man went out
+the right (D51; the same pairing the sim seat grid uses) — on a published day's issued face, by the seat each man went out
 with, as his puck draws him (`engine/faceattrs.ts seatShown`, [LEAVE-LATE-PUBLISHED] 26 Sep 26). One puck per row at every
 width, because a full row per man is what gives his flag and his figure room;
 that is the whole reason it replaced the bubble of names.

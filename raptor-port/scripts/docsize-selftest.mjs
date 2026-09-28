@@ -143,6 +143,11 @@ scenario('a new ruling whose home does not exist (F6)', true, c => addRow(c, '`d
 scenario('a new ruling naming a home this change never wrote (D29\'s own defect)', true, c => addRow(c, '`OUTSTANDING.md`'), { mustSay: 'does not touch that file' })
 scenario('a new ruling whose home was written in the same change', false, c => { addRow(c, '`OUTSTANDING.md`'); c.edit('OUTSTANDING.md', t => t + '\nThe ruling D3, carried here.\n') })
 scenario('a new ruling with only a future home ("on build:")', false, c => addRow(c, 'this file; on build: `OUTSTANDING.md`'))
+/* [RULING-HOMES-AUDIT] (28 Sep 26): a document home must also SAY the new ruling's number — touching it is not carrying it */
+scenario('a new ruling whose home was touched but never names its number', true, c => { addRow(c, '`OUTSTANDING.md`'); c.edit('OUTSTANDING.md', t => t + '\nThe ruling, carried here without its number.\n') }, { mustSay: 'never mentions D3' })
+scenario('a new ruling whose home names it only inside a longer number (D30)', true, c => { addRow(c, '`OUTSTANDING.md`'); c.edit('OUTSTANDING.md', t => t + '\nThe ruling D30, a different one.\n') }, { mustSay: 'never mentions D3' })
+scenario('a new ruling whose home names it inside a range (D1–D3)', false, c => { addRow(c, '`OUTSTANDING.md`'); c.edit('OUTSTANDING.md', t => t + '\nThe rulings D1–D3, carried here.\n') })
+scenario('a new ruling homed in the append-only archive needs no number there', false, c => { addRow(c, '`OUTSTANDING-ARCHIVE.md`'); c.edit('OUTSTANDING-ARCHIVE.md', t => t + '\nA note appended.\n') })
 
 /* THE MOVER (F5): it must move exactly, refuse what it cannot do exactly, and undo itself. */
 function mover(name, expectOk, { live, prep, node, args, check }) {

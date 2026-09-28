@@ -1,11 +1,11 @@
 # HOW THIS PROJECT BUG-CHECKS — the standing order
 
 Adopted 21 Sep 26, after the OIL build. Merged from two independent proposals written by models
-that did not build the code: Fable 5.1 and Astra/Codex. Both are kept verbatim beside this file
+that did not build the code: Fable 5.1 and Astra/Codex (D8). Both are kept verbatim beside this file
 (`superpowers/briefs/2026-09-21-bugcheck-method-fable.md`, `…-codex.md`) so the reasoning behind
 each rule survives; where they differed, this file is what was adopted.
 
-**It absorbs and replaces three earlier standing orders** — the 16 Sep scenario rule, the 20 Sep
+**It absorbs and replaces three earlier standing orders** (D10) — the 16 Sep scenario rule, the 20 Sep
 rules sweep, and the 21 Sep "test like a human" rule. All three are inside it; nothing is lost.
 
 ---
@@ -14,7 +14,7 @@ rules sweep, and the 21 Sep "test like a human" rule. All three are inside it; n
 
 **A build is not checked until someone has driven the real app across every place the feature
 shows, in every order it can be used, on a day that has everything on it — and left the pictures
-and the table that prove it.**
+and the table that prove it.** (D5)
 
 The rule that overrides all others: **a walk that left no picture did not happen.**
 
@@ -22,7 +22,7 @@ The rule that overrides all others: **a walk that left no picture did not happen
 
 ## 0a. It fires itself — the owner never picks the checks
 
-**Owner, 21 Sep 26:** *"the bug check order auto automatically kick in based on the right scenario
+**Owner, 21 Sep 26 (D9):** *"the bug check order auto automatically kick in based on the right scenario
 and will recommend what checks to do. And this will be a standing order henceforth. So that i dont
 need to figure out what kind of bug checks to execute and u will read this bug check file to know
 what to do before u execute."*
@@ -53,7 +53,7 @@ is the agent's job, answered out of §5.
 **If you are about to skip a step, say so and say why.** A skipped check he agreed to is a
 decision. A skipped check he never heard about is how three defects reached him on 21 Sep 26.
 
-**This replaces every earlier bug-check instruction** — owner, same day: *"The previous methods I
+**This replaces every earlier bug-check instruction** — owner, same day (D10): *"The previous methods I
 told I to bug check. I think this is the most comprehensive one. So just follow this instead."* The
 16 Sep scenario rule, the 20 Sep rules sweep and the 21 Sep test-like-a-human rule are all inside
 this file. Follow this one; do not run four overlapping methods. The older notes are kept only for
@@ -110,7 +110,7 @@ whole reason this order exists.
 
 ## 2a. This is NOT about OIL — how it adapts to any kind of work
 
-The OIL build is only the evidence. Nothing in this order is specific to it. It is keyed to the
+The OIL build is only the evidence. Nothing in this order is specific to it (D12). It is keyed to the
 SHAPE of a change, not its subject, and the eight questions in §5 do the adapting for you.
 
 Read this table as "what kind of work am I doing" → "what this order will make me check":
@@ -195,7 +195,7 @@ deliberately. Ranked by value for the cost:
 
 | Rank | Job | How many | Why it beats the builder alone |
 |---|---|---|---|
-| 1 | **Designing the test scenarios** — hunting for what is MISSING, not reviewing what is there | One model | It works from what was PROMISED, not from what the builder happened to build. On the OIL build, Fable's two top-ranked predictions were both real defects. |
+| 1 | **Designing the test scenarios** (D6) — hunting for what is MISSING, not reviewing what is there | One model | It works from what was PROMISED, not from what the builder happened to build. On the OIL build, Fable's two top-ranked predictions were both real defects. |
 | 2 | **Reading the code, on high-consequence work** — money, earned entitlement, deletion, permissions, published or frozen records, persistence, live-versus-issued reads | **Both, independently, blind to each other** | Fresh reasoning catches silently wrong existing code. It found five money defects here that driving the app would probably never have surfaced. |
 | 3 | **Red-teaming the RULES before building** | One; both if conflicting rulings touch money or authority | Catches a rule that is obsolete, incomplete or self-contradictory before code hardens around it. |
 | 4 | **Attacking the method itself, after a defect escapes** | One drafts, the other attacks | Outsiders change the checking system; the builder defends the process that missed it. After escapes, not routinely. |
@@ -277,7 +277,7 @@ walkers' reports.
 
 ## 4a. How this fits the Claudex loop
 
-They do not compete. **Claudex covers the plan and the code; this order covers the running app.**
+They do not compete. **Claudex covers the plan and the code; this order covers the running app** (D11).
 Claudex's own rules stand unchanged — in particular *the provider that built never inspects*, and
 *never disable or bypass the workflow's independent reviewer* (`.claude/rules/raptor-executor.md`).
 This order adds checks; it never removes one of Claudex's.
@@ -315,7 +315,7 @@ line.
 
 ## 5. Which checks for which change
 
-All of it on everything would be abandoned in a week. The tier is decided by facts read off the
+All of it on everything would be abandoned in a week (D7). The tier is decided by facts read off the
 change, not by a feeling about risk. **Eight questions — if the agent cannot answer NO with a
 reason it could write down, the answer is YES:**
 

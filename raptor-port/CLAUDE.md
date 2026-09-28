@@ -645,7 +645,11 @@ decision + a pointer. Owner + date establish authority; keep them.
   single-line · pucks never wrap · login page stays simple · the talon logo stays
   · a clicked warning lights its crew in the warning colours, never selection blue
   (blue is the puck-click selection only) · **no My Programme page** (built +
-  removed the same day; don't re-propose — `git revert` restores it if he asks).
+  removed the same day; don't re-propose — `git revert` restores it if he asks) · **no unit designation
+  anywhere** (owner, 23 Sep 26): the bare squadron number is fine, but never paired with the squadron
+  abbreviation, and the service abbreviation never at all — not in a title, a print header, an export, a comment
+  or a doc (D58); the squadron is "a fighter squadron" and the aircraft the bare "F-15" (D63); the Tracker's
+  syllabus data is left out of these sweeps (D62), its event box's hint reading the bare type (D64).
 - **No Edit-mode toggle** (owner, 9 Aug 26 — removed after months). Being on Edit
   Schedule IS edit mode; View-only Sched is read-only. `HOOKS.editMode()` =
   `canEditSched() && CURPAGE==='editsched'` — don't add a third term.

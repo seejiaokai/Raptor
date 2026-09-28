@@ -324,7 +324,8 @@ function inventory(allow) {
 /* D29's row claimed two homes that did not carry it — the "comment that vouches", committed by the
    entry written to stop exactly that. So every `| D<n> |` row's last cell is read: each backticked
    thing that looks like a file must exist, and a row ADDED in this change must have every file it
-   names touched by this change too (a home you did not write is not a home). Paths after "on
+   names touched by this change too (a home you did not write is not a home) — and every Markdown
+   home it names must mention its number ([RULING-HOMES-AUDIT], 28 Sep 26). Paths after "on
    build:" name a future home and are only checked for existence. Memory entries have no path and
    are not checked. `Docs-guard-allow: homes` for a deliberate exception. */
 const PATHLIKE = /\/|\.(md|mjs|cjs|js|ts|tsx|sh|json|ya?ml|html|css)$/
@@ -355,9 +356,25 @@ function homes(paths, allow) {
       if (!hit.length) { fails.push(`${m[1]} names \`${tok}\` as a home, and no such file exists`); continue }
       if (isNew && (future < 0 || tm.index < future) && !hit.some(h => changed.has(h)))
         fails.push(`${m[1]} is new and names \`${tok}\` as a home, but this change does not touch that file — write the ruling there too`)
+      /* ...and a document home must SAY its number ([RULING-HOMES-AUDIT], 28 Sep 26): touching a file is not carrying the
+         ruling. The audit found rows whose homes had been written without the number — one whose home had never been
+         written at all (D21's "corrected" sentence, still stale four days on) — and could check them only by reading. A
+         home that names the D-number makes the next audit a search. Markdown homes only (a code comment may cite it, but
+         is not required to); the frozen archives are exempt, being append-only; "on build:" homes are future. */
+      else if (isNew && (future < 0 || tm.index < future) && tok.endsWith('.md') && !hit.every(isFrozen) && !hit.some(h => citesRuling(readNow(h), m[1])))
+        fails.push(`${m[1]} is new and names \`${tok}\` as a home, but that file never mentions ${m[1]} — write the number beside the ruling there, so a later check can find it`)
     }
   }
   return { fails, ok: !fails.length }
+}
+/* the archives are append-only or frozen (D29, HANDOFF-ARCHIVE, docs/archive/): a ruling is never written into them */
+const isFrozen = f => [ARCHIVE, RULINGS_ARCHIVE, 'HANDOFF-ARCHIVE.md'].includes(f) || f.startsWith('raptor-port/docs/archive/')
+/* does this text mention ruling D<n> — alone ("D21", never inside "D210") or inside a range ("D5–D13", "D338-D340")? */
+function citesRuling(text, d) {
+  const n = +d.slice(1)
+  if (new RegExp('(^|[^A-Za-z0-9])D' + n + '(?![0-9])').test(text)) return true
+  for (const r of text.matchAll(/(?:^|[^A-Za-z0-9])D(\d+)\s*[–-]\s*D?(\d+)(?![0-9])/g)) if (+r[1] <= n && n <= +r[2]) return true
+  return false
 }
 
 /* ---------- job 1c: the rulings themselves and the rule registers (F7) ---------- */

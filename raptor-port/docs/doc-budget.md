@@ -75,7 +75,8 @@ Stale is worse than absent — the next session trusts it.
   rule 3). Over a ceiling on a docs-only change fails, because that change is the trim pass.
 - **The rulings.** No D-number may be lost or newly doubled across the rulings files (`DECISIONS.md`,
   `.claude/rules/decisions/`, `DECISIONS-ARCHIVE.md`; numbers may skip — parallel branches hold ranges,
-  D78), every file a ruling names as its home must exist, and every ruling id in
+  D78), every file a ruling names as its home must exist — and a NEW ruling's Markdown homes must mention its
+  number (`[RULING-HOMES-AUDIT]`, 28 Sep 26; the frozen archives excepted) — and every ruling id in
   `scripts/rulecheck.mjs`'s map must still head an entry in a behaviour register. **The structure keeps
   itself (D137):** it fails if the map in `DECISIONS.md` disagrees with the files, if a row marked
   replaced or spent is still in an area file, if an archived row lacks its mark, or if a row is written
