@@ -17,7 +17,12 @@ the later merge keeps both (D78).
 
 <!-- now:claude/change-recording-retest -->
 ### `claude/change-recording-retest` — the change-recording re-test (`[HUMAN-RETEST]`, D147) with `[UNDO-ROSTER-SETTINGS]`, D148 and `[UNDO-TOPBAR]` — PLANNED, red-teamed (round 1), Phase A WALKED; NO app code yet; the BUILD is next, in a fresh chat — written 28 Sep 26 — verify before use
-- **Where it stands:** the main checkout (`C:/Users/User/projects/Raptor`), cut from `main` at `60a6792c`; nothing under
+- **BUILD IN PROGRESS (28 Sep 26, late — paused for a PC restart; pushed):** B1–B9 built red-first and committed (the
+  engine rules, B4 → B2 cutover + `lw.stage`, B5 roster-restore, B7 landing, B8 words, B9 Quals columns). B10 is a WIP
+  commit (`[UNDO-TOPBAR] WIP`): its known red — `leavewar/ui/chrome.test.tsx` pair tests (move to a Shell test), the Leave
+  War e2e `lw-undo` ids → `#undoBtn`, the Tracker smoke's undo-button lines (plan §11.10), `histlist.test.tsx` timing out
+  only under a full run. Then B11 docs, the gates under the lock, the walk, the two reads, the look card.
+- **Where it stood before the build:** the main checkout (`C:/Users/User/projects/Raptor`), cut from `main` at `60a6792c`; nothing under
   `raptor-port/src` changed. The plan: `raptor-port/docs/superpowers/plans/2026-09-28-change-recording-plan.md` (Phases
   A–D, steps B1–B11). His rulings today: **D347** (every Undo/Redo pair in the top bar, as Edit Schedule's), **D348**
   (the phone's order is the desktop's; the changes clock stays Edit Schedule's), **D349** (the mock-up
