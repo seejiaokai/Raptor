@@ -101,8 +101,9 @@ the later merge keeps both (D78).
 
 ## Gate baseline
 
-The latest counts watched — 28 Sep 26, `claude/hist-phone-by-item`'s final code (`14b14360`, `main` taken in), one run
-under the PC lock: unit **6775 / 6775** (417 files) · build clean · tfin **728 / 0** · e2e **495 passed**, 48 skipped ·
+The latest counts watched — 28 Sep 26, `claude/small-fixes-batch-d223f6`'s final code (`05bdf6a6`, `main` taken in), one run
+under the PC lock: unit **6848 / 6850** (424 files — the 2 were 20-second timeouts under the run's load: both pass alone,
+and time the same on `main` and the branch) · build clean · tfin **728 / 0** · e2e **508 passed**, 48 skipped ·
 smoke **443 / 0** · rulecheck OK · docsize OK. Restate a count only from a run you watched, and REPLACE the previous counts — never stack a
 history. How to run them: `raptor-port/CLAUDE.md` §Build & verify; how they mislead, and the checks on his PC:
 `raptor-port/docs/gates-and-deploy.md`.

@@ -135,9 +135,20 @@ published record or saved data beyond Astra #1 below.
 
 Re-walked after the fixes: `sf-c-openrow` 16/16, `sf-e-requests` 8/8, `sf-g-leavewar` 10/10, `sf-d9-sort` 8/8.
 
-## 9. The gates
+## 9. The gates — on the final code (`05bdf6a6`), one run under the PC lock
 
-*(to be filled from the run under the PC lock)*
+| Gate | Result |
+|---|---|
+| unit | **6848 / 6850** (424 files). The 2: `leavewar/ui/counters.test.tsx` "switches to LVE…" and `ui/histlist.test.tsx` "offers a control…" — both **20-second timeouts under the full run's load**, not wrong answers. Each passes alone; timed back to back on `main` and this branch (a temporary copy of `main`, twice): histlist 7.8 / 7.8 s on `main` against 8.3 / 8.0 s here, counters 2.1 / 2.2 s against 2.1 / 2.1 s — the same, so the batch did not slow them. Neither file is changed by the batch. |
+| build | clean |
+| tfin (the reference app) | **728 / 0** |
+| e2e | **508 passed**, 48 skipped |
+| Tracker smoke | **443 / 0** |
+| rulecheck | OK |
+| docsize | OK |
+
+The e2e run carries the batch's new browser tests (the preview bar, the geometry of callsigns and tags, the read-only
+window, the VIEWING AS chip, the board closing under a window).
 
 ## 10. His look card
 
