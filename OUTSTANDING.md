@@ -49,6 +49,8 @@ list (13–23 Sep 26), its finished entries and the "In plain terms" block are i
 whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaining).
 
 **His order — to the database step, about two months away (D203, 26 Sep 26; D173, D147 within it):**
+0. **Next, in a fresh chat — [HIST-PHONE-HIDE]** (D339): History on a phone — the changes window hides to the bottom, a gold
+   dot on every detail with a history. The mock-up first to his final yes (the shorter hint), then built, walked, checked.
 1. **Now — [DRAFT-PENDING]** — the one changes window, on top of accounts, its own FULL check (D210): BUILT and
    FULL-checked 28 Sep 26 on `claude/draft-pending` overnight by his standing go (D336 (2)) — **waiting for his look (the
    look card, the evidence sheet's §10) and his "merge live"**; never merged without his word. Before it: **[ONE-DOOR]** (D309, D310, carrying [POST-IN-DATE], D308) MERGED 28 Sep 26 (PR #450;
@@ -1054,6 +1056,20 @@ build cannot decide what it means without him, so a deleted man is left on his T
 text). **Put to him on the `[POST-OUT-OUTCOMES]` look card (question 5):** what makes a course still running — or leave
 his name on his courses for now (then D299 is narrowed in his words). **Place:** after `[POST-OUT-OUTCOMES]` merges, on
 his answer. Touches `raptor-port/src/tracker/` (its own store) — its own small check.
+### [HIST-PHONE-HIDE] History on a phone — say it is on, and let the schedule be seen (D339, 28 Sep 26)
+**His ask (D339):** on a phone the changes window covers the schedule and nothing says the bubbles are on; "maybe when it hides
+on a phone it goes to the bottom of the screen"; built in ANOTHER chat. **The design put to him** (the mock-up, real app, phone
+width — `raptor-port/docs/img/handpass/2026-09-28-draft-pending/histphone/histphone-mockup.png`, re-taken by
+`raptor-port/scripts/handpass/dp-histphone.mjs`): (1) the panel's header gains a ▾ hide beside ✕ and a one-line hint, in fewer
+words at his word — "History on — tap a gold dot to see who changed it."; (2) ▾ sends the window to the slim bar at the bottom,
+"History on · tap a gold dot · N changes ▴" — ▴ brings the list back, ✕ turns History off; (3) while History is on, every detail
+with a history wears a small gold dot just outside the puck's bottom-right corner (never a ring — D92; clear of the OG tag at the
+top right) — on desktop too; the ▾ on the phone only; (4) a tap on a dotted detail opens its bubble. **Open:** his yes to the
+shorter-hint mock-up (and to the two calls — dots on desktop too, ▾ on the phone only). **Place:** a fresh chat on its own branch
+from `main` once PR #451 merges (the agent's reading of "another chat"). **Where it lands:** `src/ui/ChangesWindow.tsx` (the ▾, the
+bar's words), `src/ui/histbubble.ts` (marking the details with a history while History is on — the same keys the bubble answers),
+`src/ui/scheduler.css`, `docs/ui-contracts.md` §The one changes window; WALK tier at least (a shared drawer — every puck surface).
+
 ### [DRAFT-PENDING] The one CHANGES WINDOW — D118, D167–D172 (25 Sep 26); step 3 of D173, after `[ACCOUNTS]` (its own FULL check — D210)
 **BUILT 28 Sep 26 on `claude/draft-pending`** (overnight, D336 (2)): the plan `raptor-port/docs/superpowers/plans/2026-09-28-draft-pending-plan.md`
 (§9 after the red team — `…/specs/2026-09-28-draft-pending-plan-review-log.md`); the contract `raptor-port/docs/ui-contracts.md`
