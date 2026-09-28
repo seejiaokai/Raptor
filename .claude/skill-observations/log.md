@@ -1246,6 +1246,21 @@ resolved statuses always carry their resolution date
 
 **Principle:** A restructuring that must not change meaning is safest as pure insertion, proved mechanically; judgement goes into WHERE, and the proof covers everything else.
 
+### Observation 339: Condensing a large decision log into a loaded index + a searched full text — the method that held up
+
+**Status:** OPEN
+**Date:** 2026-09-28
+**Session context:** Raptor rulings slim-down (D390): 265 owner rulings, ~110k tokens loaded per chat, cut to one short line each with the full row moved whole beside it. Numbered 339 past the parallel branches' own entries (change-recording 337, small fixes 338, Tracker leftovers 332).
+**Skill:** New skill candidate: decision-log-condensation
+**Type:** open-source
+**Phase/Area:** planning, conversion tooling, review
+
+**Issue:** The first plan used each entry's own bold heading as its short form ("an extract, not a rewrite") and a raw "keep both sides" for merge conflicts. Both red teams (two providers, independently) broke both: ~25% of headings are containers ("the three readings stand as built:") or state a rule a later entry changed ("Fully delete", renamed later), and raw conflict unions leave two table headers, stale prose and silently lose one side's edits. What held: classify every entry (heading stands alone and unchanged → extract; else hand-write the rule AS IT STANDS), a change tail whose set must equal the full entry's change marks (checked both ways), identity = the full entry (the short line is a gated index), a converter that REFUSES and names the fix, and a merge that never reads conflict blocks — it starts from the side in the new layout and replays the other side's per-ID changes three-way, stopping on two-sided edits and printing (never writing) prose changes. Real `git merge` fixtures in both orders in the self-test caught an ordering bug before real data did.
+
+**Suggested improvement:** A skill for condensing any append-only decision/ruling log that must stay loaded: measure first (bytes→tokens calibrated to the user's own readings), design pairs + gate + converter + merge replay, red-team with scenario-first briefs, then an independent meaning read with explicit omission questions ("would a reader acting on this line alone skip a required step?"), not only "does it say more".
+
+**Principle:** When an index replaces loaded full text, make the full text the identity and gate the index against it; never let a merge tool union raw conflict text in a structured record — replay per-record changes three-way from a known-good side.
+
 ### Observation 341: A break test on an uncommitted file must be undone from a backup, never by "git checkout -- <file>"
 
 **Status:** OPEN
