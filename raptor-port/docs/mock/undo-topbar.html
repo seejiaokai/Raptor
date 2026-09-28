@@ -47,7 +47,7 @@ a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 
 <div class="wrap">
   <header class="lede">
-    <div class="eyebrow">Mock-up · D347, D348 · 28 Sep 26 · version 2</div>
+    <div class="eyebrow">Mock-up · D347, D348 · 28 Sep 26 · version 3</div>
     <h1>Every Undo and Redo in the top bar</h1>
     <p class="quote">"All undo and redo buttons should be at the top bar. And it should be standardised as much as possible in terms of the location and layout. Like how the edit schedule is." · "Review both desktop and mobile too."</p>
     <p>These are pictures of the real app. The "after" pictures move the app's own buttons in the page, so they look exactly as the build will. Tap any picture to open it full size.</p>
@@ -61,7 +61,7 @@ a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
       <li><b>The Leave War's pair leaves its Period row</b> and moves up into the top bar.</li>
       <li><b>On a phone, the Sync chip shrinks to its dot</b> wherever the pair shows, as it already does on Edit Schedule, so the right end of the bar reads the same on every page: dot · bell · Undo · Redo.</li>
       <li><b>The changes clock stays on Edit Schedule only.</b> You asked whether every page should have it. I'd say no: the window is laid out by the schedule's days, and tapping a line takes you to that spot on the schedule. Changes made on Inputs, the Leave War or Quals already show there as lines on their day.</li>
-      <li><b>The scheduler board covers the top bar, so it gets the same group in its own bar:</b> Undo · Redo · History · Sync · the bell, then its own Done and Close. On a phone, to make room, the layout switch and Sort move down to the second row beside the search box. On a desktop, Sort all moves to before Undo.</li>
+      <li><b>The scheduler board covers the top bar, so it gets the same group in its own bar:</b> Undo · Redo · History · Sync · the bell, then Done. <b>Done and Close do the same thing today:</b> both close the board, and everything is already saved as you go. So only ✓ Done stays. On a phone, Sort and the Phone / Desktop layout switch go behind one <b>⋯</b> button in the second row, beside the highlighter (your idea). On a desktop there is room, so Sort all stays a button, moved to before Undo.</li>
       <li><b>The Tracker's own Undo and Redo move to the top bar too.</b> They still take back the Tracker's own marks and chart edits, because the Tracker keeps its own history. Only their place changes.</li>
     </ol>
   </div>
@@ -155,14 +155,17 @@ a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 
   <section class="page">
     <h2>The scheduler board <span class="tag">its own bar</span></h2>
-    <p class="note">The board covers the whole screen, top bar included, so Sync and the bell are out of reach today. After, its bar carries the same group as the top bar (Undo · Redo · History · Sync · bell), then Done and Close. On a phone the layout switch and Sort move to the second row to make room.</p>
+    <p class="note">The board covers the whole screen, top bar included, so Sync and the bell are out of reach today. After, its bar carries the same group as the top bar (Undo · Redo · History · Sync · bell), then ✓ Done: Close goes, because it does exactly what Done does. On a phone, Sort and the layout switch sit behind one ⋯ button in the second row. The highlighter still opens its own row underneath (CAT · TYPE · QUALS), so it isn't squeezed.</p>
     <div class="pair">
       <figure><figcaption>Desktop · today</figcaption><a href="../img/handpass/2026-09-28-change-recording/mock/desktop-board-before.png" target="_blank" rel="noopener"><img src="../img/handpass/2026-09-28-change-recording/mock/desktop-board-before.png" alt="The board on a desktop today: Templates, Undo, Redo, History, Sort all, Done, Close"></a></figure>
       <figure><figcaption class="after">Desktop · after</figcaption><a href="../img/handpass/2026-09-28-change-recording/mock/desktop-board-after.png" target="_blank" rel="noopener"><img src="../img/handpass/2026-09-28-change-recording/mock/desktop-board-after.png" alt="The board on a desktop after: Templates, Sort all, Undo, Redo, History, Sync, the bell, Done, Close"></a></figure>
     </div>
     <div class="pair phone">
       <figure><figcaption>Phone · today</figcaption><a href="../img/handpass/2026-09-28-change-recording/mock/phone-board-before.png" target="_blank" rel="noopener"><img src="../img/handpass/2026-09-28-change-recording/mock/phone-board-before.png" alt="The board on a phone today: layout switch, Undo, Redo, History, Sort, Done, Close; second row back, highlight, search, forward"></a></figure>
-      <figure><figcaption class="after">Phone · after</figcaption><a href="../img/handpass/2026-09-28-change-recording/mock/phone-board-after.png" target="_blank" rel="noopener"><img src="../img/handpass/2026-09-28-change-recording/mock/phone-board-after.png" alt="The board on a phone after: Undo, Redo, History, the sync dot, the bell, Done, Close; second row back, highlight, layout switch, Sort, search, forward"></a></figure>
+      <figure><figcaption class="after">Phone · after</figcaption><a href="../img/handpass/2026-09-28-change-recording/mock/phone-board-after.png" target="_blank" rel="noopener"><img src="../img/handpass/2026-09-28-change-recording/mock/phone-board-after.png" alt="The board on a phone after: Undo, Redo, History, the sync dot, the bell and Done; second row back, highlighter, more, search, forward"></a></figure>
+    </div>
+    <div class="pair phone">
+      <figure><figcaption class="after">Phone · after · ⋯ tapped</figcaption><a href="../img/handpass/2026-09-28-change-recording/mock/phone-board-menu.png" target="_blank" rel="noopener"><img src="../img/handpass/2026-09-28-change-recording/mock/phone-board-menu.png" alt="The more menu open under its button: Sort all, Desktop layout"></a></figure>
     </div>
   </section>
 
@@ -171,7 +174,7 @@ a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
     <ol>
       <li><b>Approve as drawn</b>, or name what to change.</li>
       <li><b>The Tracker (reading 7):</b> move its pair to the top bar too? I recommend yes. It is what "all" means, and the Tracker's buttons then sit where every other page's do.</li>
-      <li><b>The board (reading 6):</b> Sync and the bell join its bar as drawn, with the layout switch and Sort moved to the phone's second row? I recommend yes. The other way would be leaving Sync off the board, since it only matters when you publish in a meeting, but then the board's bar would no longer match the top bar.</li>
+      <li><b>The board (reading 6):</b> as drawn? Sync and the bell join its bar, ✓ Done is the one way out (Close goes), and on a phone Sort and the layout switch sit behind ⋯. I recommend yes.</li>
     </ol>
   </div>
 </div>

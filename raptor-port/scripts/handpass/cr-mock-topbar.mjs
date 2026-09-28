@@ -104,14 +104,24 @@ async function run(tag, W, H) {
     hist.after(s2); s2.after(b2)
     /* the bell's icon is sized by a top-bar rule the board does not carry: size it as the top bar does */
     b2.querySelectorAll('.bellglyph').forEach(v => { v.style.width = '17px'; v.style.height = '17px' })
+    /* ✓ Done and ✕ Close do the same thing (both close the board; everything is already saved) — ONE button: ✓ Done */
+    const close = document.getElementById('sbClose'); if (close) close.style.display = 'none'
     if (ph) {
-      /* the second row takes the layout switch and Sort, before the search box */
-      const nav = document.querySelector('#schedBoard .sb-nav'), find = nav && nav.querySelector('.sb-days, .searchbox, input')
-      const wide = document.getElementById('sbWide'), sort = document.getElementById('sbSortAll')
-      const hl = document.getElementById('sbHl')
-      if (nav && hl) { if (wide) hl.after(wide); if (sort) (wide || hl).after(sort) }
+      /* the owner's idea (28 Sep 26): Sort and the Phone / Desktop layout switch go behind ONE "⋯" button in the second
+         row, beside the highlighter — Sort is an action, the layout a view, so "⋯ more" rather than a gear */
+      const hl = document.getElementById('sbHl'), wide = document.getElementById('sbWide'), sort = document.getElementById('sbSortAll')
+      if (wide) wide.style.display = 'none'
+      if (sort) sort.style.display = 'none'
+      if (hl) {
+        const more = hl.cloneNode(false)
+        more.id = 'sbMoreMock'; more.classList.remove('on'); more.textContent = '⋯'
+        more.style.fontSize = '18px'; more.style.lineHeight = '1'; more.style.marginRight = '0'
+        hl.style.marginRight = '0'
+        hl.after(more)
+        const find = document.querySelector('#schedBoard .sb-nav .sb-search'); if (find) find.style.marginLeft = 'auto'
+      }
     } else {
-      /* desktop: Sort all moves before Undo, so the row reads Templates · Sort all · Undo · Redo · History · Sync · bell · Done · Close */
+      /* desktop: Sort all moves before Undo, so the row reads Templates · Sort all · Undo · Redo · History · Sync · bell · Done */
       const sort = document.getElementById('sbSortAll'), undo = document.getElementById('sbUndo')
       if (sort && undo) undo.before(sort)
     }
@@ -119,6 +129,19 @@ async function run(tag, W, H) {
   await page.waitForTimeout(300)
   const bh2 = await page.evaluate(() => { const t = document.querySelector('#schedBoard .sb-top'); return t ? t.getBoundingClientRect().bottom : 140 })
   await page.screenshot({ path: `${OUT}/${tag}-board-after.png`, clip: { x: 0, y: 0, width: W, height: Math.min(H, Math.ceil(bh2) + 160) } })
+  if (phone) {
+    await page.evaluate(() => {
+      const more = document.getElementById('sbMoreMock'); if (!more) return
+      const r = more.getBoundingClientRect()
+      const m = document.createElement('div')
+      m.style.cssText = `position:fixed;left:${r.left}px;top:${r.bottom + 6}px;z-index:9999;background:var(--panel-2,#1b2230);border:1px solid var(--edge,#2a3446);border-radius:10px;padding:6px;display:flex;flex-direction:column;gap:4px;box-shadow:0 8px 24px rgba(0,0,0,.5);min-width:190px;font:600 13px system-ui,sans-serif`
+      const row = (ico, t) => `<div style="display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:7px;color:var(--ink,#e6ecf3);background:var(--panel,#141a24)"><span style="width:18px;text-align:center">${ico}</span>${t}</div>`
+      m.innerHTML = row('⇅', 'Sort all') + row('🖥', 'Desktop layout')
+      document.body.appendChild(m)
+    })
+    await page.waitForTimeout(200)
+    await page.screenshot({ path: `${OUT}/${tag}-board-menu.png`, clip: { x: 0, y: 0, width: W, height: Math.min(H, Math.ceil(bh2) + 160) } })
+  }
   await ctx.close()
 }
 
