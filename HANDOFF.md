@@ -57,6 +57,10 @@ the later merge keeps both (D78).
   `backlog-archive.mjs --rulings` after merging `main`.
 - **Ports:** preview 4173 (`raptor-walk`, running), browser tests `E2E_PORT=4190`. **Rulings:** D347–D353 used, D354–D359
   free. Nothing to `main` without his "merge live".
+- **The rulings slim-down (`claude/docs-rulings-slim-down-e83c74`, D390–D399), if it merges first:** merge `main` in,
+  keep BOTH sides of any conflict in a rulings file, then run `node raptor-port/scripts/backlog-archive.mjs --rulings` (it
+  converts full rows to the short form and drops duplicates; the chat ships a one-command resolver). New rows are still
+  added in full form at the top of the area table. Old rows this branch edited: D67 (narrowed by D353), D182 (spent).
 <!-- /now -->
 
 <!-- now:claude/docs-tidy-subheads-audit-ec8f87 -->
