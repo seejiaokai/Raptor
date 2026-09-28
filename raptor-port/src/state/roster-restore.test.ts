@@ -71,3 +71,14 @@ describe('B5.2 — the accounts guards, over the candidate', () => {
     expect(rosterRestoreProblem([{ op: 'put', collection: 'people', id: 'rocky', after }], 'undo')).toBe(null)
   })
 })
+
+describe('B8 — an account change says what it was', () => {
+  it('suspending, enabling, a role', () => {
+    expect(updateAccount('acoutlaw', { on: false })).toBe(null)
+    expect(undoState().undoLabel).toBe('suspending Outlaw’s sign-in')
+    expect(updateAccount('acoutlaw', { on: true })).toBe(null)
+    expect(undoState().undoLabel).toBe('enabling Outlaw’s sign-in')
+    expect(updateAccount('acoutlaw', { role: 'admin' })).toBe(null)
+    expect(undoState().undoLabel).toBe('Outlaw’s role')
+  })
+})

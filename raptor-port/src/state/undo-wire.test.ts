@@ -12,7 +12,7 @@ import { SCHED, dayApproved, signOf, daySigned, setSign } from '../engine/publis
 import { draftDup, draftSelect, dayDrafts } from '../engine/drafts'
 import { HOOKS } from '../engine/hooks'
 import { txtGet } from '../engine/slots'
-import { initStore, writeText, loadWeek, writeInputs } from './store'
+import { initStore, writeText, loadWeek, writeInputs, writeInputsBatch } from './store'
 import { CURWEEK } from '../engine/waves'
 import { commitSetDayApproved, schedBaselineClean, schedWrite, SCHED_TYPES } from './sched-commit'
 import { setSession } from './auth'
@@ -280,5 +280,36 @@ describe('B7 — Undo goes to the change’s page, and keeps the board open acro
     expect(globalUndo().ok).toBe(true)
     expect(CURWEEK).toBe('13/07/2026')
     expect(view.SBDAY).toBe(0)
+  })
+})
+
+/* B8 of the change-recording re-test (28 Sep 26) — the words: one vocabulary for the hover, the bubble and the history
+   line. Walker A2-F6 / [AMEND-SMALL-SEEN] item 2 (a take-off time read "a note on the schedule"), A2-F2 (one input read
+   "a batch of inputs"), and the roster and settings steps now undoable (Fable 3e, S23). */
+describe('B8 — Undo says what came back', () => {
+  const mem: Record<string, string> = {}
+  beforeEach(() => { Object.keys(mem).forEach(k => delete mem[k]); storeBackend.impl = { getItem: (k: string) => (k in mem ? mem[k]! : null), setItem: (k: string, v: string) => { mem[k] = v } } })
+  afterEach(() => { storeBackend.impl = null; rulesResetMem() })
+  it('a take-off time, a landing time, a day note — the box it wrote, not "a note on the schedule"', () => {
+    writeText('ff:0.0.0.to', '10:45')
+    expect(undoState().undoLabel).toBe('a take-off time')
+    writeText('ff:0.0.0.ld', '11:55')
+    expect(undoState().undoLabel).toBe('a landing time')
+    writeText('dn:0.0', 'A DAY NOTE')
+    expect(undoState().undoLabel).toBe('a day note')
+    const r = globalUndo()
+    expect(r.ok).toBe(true)
+    expect(r.entry!.label).toBe('a day note')
+  })
+  it('one input filed through the Inputs page’s batch door is "a personal input"', () => {
+    writeInputsBatch(() => { INPUTS.push({ person: 'bane', type: 'LL', date: 'Jul 16', yr: 2026, rmk: '', iid: 'iwire2' } as any) })
+    expect(undoState().undoLabel).toBe('a personal input')
+  })
+  it('a Quals tick names the man and what changed; a rule names the Logic page', () => {
+    expect(updatePersonField('rocky', { tick: 'nvg' })).toBe(null)
+    expect(undoState().undoLabel).toBe('Hex’s quals')
+    const k = Object.keys(RULE_SPEC)[0], spec = RULE_SPEC[k]
+    VCONF[k] = VCONF[k] === spec.hi ? spec.lo : spec.hi; rulesSave()
+    expect(undoState().undoLabel).toBe('a rule on the Logic page')
   })
 })

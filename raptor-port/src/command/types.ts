@@ -117,6 +117,9 @@ export interface CommitEnvelope {
   /* remote changes apply silently — the fold/persistence subscriber does not
      echo them (design §3.3). Annotated now; consumed at Step 5. */
   emit?: boolean
+  /* WHICH box a text command wrote — the command's `meta.key`, copied as a fact (the change-recording plan B8, §11.7):
+     Undo's words read it ("a take-off time"), never a label string stored at write time (design §8.2) */
+  detail?: string
 }
 
 /* A store that can be enlisted in a transaction (design §3.2). In-place

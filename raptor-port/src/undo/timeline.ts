@@ -276,6 +276,7 @@ function recordEntry(env: CommitEnvelope): void {
     forward,
     revs: { ...(env.revs || {}) },
     boundary: env.boundary,
+    ...(env.detail ? { detail: env.detail } : {}),
     eligible: false,      // recomputed lazily (modules may cut over after record)
     undone: false,
   }

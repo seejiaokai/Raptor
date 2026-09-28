@@ -19,7 +19,7 @@ import { peopleStore, settingsStore } from './people-settings-commit'
 import { rosterRestoreProblem } from './roster-restore'
 import { deletedRestoreProblem } from './person-delete'
 import {
-  installUndo, registerUndoStore, setCutoverModules, setUndoHooks,
+  installUndo, registerUndoStore, setCutoverModules, setUndoHooks, setDescribeNames,
 } from '../undo'
 import type { RecordCtx, UndoEntry } from '../undo/types'
 import { weekOf } from '../undo/derive'
@@ -190,6 +190,8 @@ function postRestore(entry: UndoEntry, dir: 'undo' | 'redo', pulledBack: Array<{
    wiring harmlessly rather than being skipped by a stale one-shot flag. */
 export function installGlobalUndo(): void {
   installUndo()
+  /* the words name a man by his callsign (describe.ts — the Leave War's records carry his id) */
+  setDescribeNames((pid) => ((PEOPLE as any)[pid] ? String((PEOPLE as any)[pid].cs) : null))
   registerUndoStore(schedStore, SCHED_COLLS)
   registerUndoStore(lwStore, LW_COLLS as unknown as string[])
   registerUndoStore(weekstashStore, ['weekstash'])

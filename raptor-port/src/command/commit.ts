@@ -219,6 +219,7 @@ function runPipeline(cmd: Command, actor: Actor, origin: Origin, causedBy?: numb
   const env: CommitEnvelope = {
     seq: -1, at: '', actor, origin, scope: cmd.scope, type: cmd.type,
     changes: [], causedBy, emit: origin !== 'remote',
+    ...(cmd.meta && typeof cmd.meta.key === 'string' ? { detail: cmd.meta.key } : {}),
   }
   const txn: TxnState = { cmd, actor, origin, enlisted: new Map(), deferred: [], env, api: null as any }
   txn.api = makeTxnApi(txn)

@@ -404,14 +404,17 @@ const inputsScope = (): Scope => ({ module: 'inputs' })
    (snapshot), run the existing in-place write (its HOOKS effects latch and
    release in phase 8), derive the record-level changes, emit. `fn` may return a
    value (writeInputs returns a boolean) which is captured and returned. */
-function commitSched<T>(type: string, scope: Scope, fn: () => T): { result: CommitResult; value: T } {
+/* `meta` — a fact the command carries to the change stream, never to the gate's decision: `{ key }` names the text box a
+   `sched.text` wrote ([AMEND-SMALL-SEEN] item 2 — the change-recording plan B8, §11.7), so Undo's bubble, hover and
+   history line can say "a take-off time", never "a note on the schedule". A fact, never a label string (design §8.2). */
+function commitSched<T>(type: string, scope: Scope, fn: () => T, meta?: any): { result: CommitResult; value: T } {
   let value!: T
-  const cmd: Command = { type, scope, apply: (txn) => { txn.enlist(schedStore); value = fn(); applyEnd() } }
+  const cmd: Command = { type, scope, meta, apply: (txn) => { txn.enlist(schedStore); value = fn(); applyEnd() } }
   const result = commit(cmd)
   return { result, value }
 }
-export function commitSchedVoid(type: string, fn: () => void): CommitResult {
-  return commitSched(type, schedScope(), fn).result
+export function commitSchedVoid(type: string, fn: () => void, meta?: any): CommitResult {
+  return commitSched(type, schedScope(), fn, meta).result
 }
 export function commitInputs<T>(type: string, fn: () => T): T {
   return commitSched(type, inputsScope(), fn).value
@@ -447,8 +450,8 @@ export function commitInputsWith(stores: EnlistableStore[], type: string, fn: ()
   }
   return commit(cmd)
 }
-export function commitSchedValue<T>(type: string, fn: () => T): T {
-  return commitSched(type, schedScope(), fn).value
+export function commitSchedValue<T>(type: string, fn: () => T, meta?: any): T {
+  return commitSched(type, schedScope(), fn, meta).value
 }
 
 /* the seam for the previously-unrouted paths. schedWrite is JUST commitSchedVoid
@@ -467,7 +470,7 @@ function toastFail(r: CommitResult): boolean {
   if ((r as any).ok === false) { HOOKS.toast("Couldn’t save that — try again", 'warn'); return true }
   return false
 }
-export function schedWrite(type: string, fn: () => void): void { toastFail(commitSchedVoid(type, fn)) }
+export function schedWrite(type: string, fn: () => void, meta?: any): void { toastFail(commitSchedVoid(type, fn, meta)) }
 export function schedWriteValue<T>(type: string, fn: () => T): T {
   const { result, value } = commitSched(type, schedScope(), fn)
   // on a rollback the captured value is stale — return a falsy default so a

@@ -1289,3 +1289,18 @@ resolved statuses always carry their resolution date
 **Suggested improvement:** A skill for condensing any append-only decision/ruling log that must stay loaded: measure first (bytes→tokens calibrated to the user's own readings), design pairs + gate + converter + merge replay, red-team with scenario-first briefs, then an independent meaning read with explicit omission questions ("would a reader acting on this line alone skip a required step?"), not only "does it say more".
 
 **Principle:** When an index replaces loaded full text, make the full text the identity and gate the index against it; never let a merge tool union raw conflict text in a structured record — replay per-record changes three-way from a known-good side.
+
+### Observation 340: A unit test of "this change is recorded" can pass vacuously when the store's record source is absent in the test world
+
+**Status:** OPEN
+**Date:** 2026-09-28
+**Session context:** change-recording build (Raptor), B2 — cutting the settings store over to the one undo; its records are read from persisted storage, which the undo-wire test file never installed.
+**Skill:** test-driven-development
+**Type:** open-source
+**Phase/Area:** red-first — writing the failing test
+
+**Issue:** The first red run of "a Logic rule change is undone" failed for the wrong reason: with no storage backend in the test world, the settings store's before/after images were both null, so no change was recorded at all. Had the implementation already been in place, the test would have failed the same way and been "fixed" by chasing the wrong cause; conversely a looser assertion (e.g. only "undo returned ok:false") would have passed vacuously.
+
+**Suggested improvement:** In the red-first step, add: "before trusting a red, confirm it is red for the RIGHT reason — assert the precondition the feature depends on (the change was actually recorded / the entry exists) as its own expectation, so a missing fixture fails loudly and differently from a missing feature."
+
+**Principle:** A red test proves nothing until you know WHY it is red; pin the precondition separately from the behaviour so a broken fixture cannot impersonate a missing feature.

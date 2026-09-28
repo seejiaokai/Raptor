@@ -12,10 +12,10 @@ import { setSession } from '../state/auth'
 import { setPage, CURPAGE } from '../state/view'
 import { cmdAuthorize } from '../state/perms'
 import { projectPeople } from './state/raptorRoster'
-import { advanceStage, reopenStage, getState, initStore as lwInitStore, lwHistInit, setPeople, setRole } from './state/store'
+import { advanceStage, reopenStage, getState, initStore as lwInitStore, lwHistInit, setPeople, setRole, setCell } from './state/store'
 import { memoryBackend } from './state/storage'
 import { wireLeaveWarSync } from './sync'
-import { globalUndo, globalRedo } from '../undo'
+import { globalUndo, globalRedo, undoState, bubbleText } from '../undo'
 import { _resetTimeline, _timelineEntries } from '../undo/timeline'
 import { installGlobalUndo } from '../state/undo-wire'
 
@@ -66,5 +66,25 @@ describe('D352 — a stage move is its own Undo step, lw.stage', () => {
     const actor = (role: any, personId: string) => ({ id: personId, role, personId, session: {} }) as any
     expect(cmdAuthorize('lw.stage', actor('admin', 'stiff'))).toBe(true)
     expect(cmdAuthorize('lw.stage', actor('member', 'bane'))).toBe(false)
+  })
+})
+
+/* B8 — the Leave War's own words (walker A2-F1: seven acts all read "a change to the leave board") and the stage's
+   (D352: "Undid: closing bidding — bidding is open again for everyone") */
+describe('B8 — the Leave War says what came back', () => {
+  it('the stage: its own words, and what the war is now', () => {
+    while (stage() !== 'open' && stage() !== 'closed') advanceStage()
+    if (stage() === 'closed') reopenStage()
+    advanceStage()                                          // open → closed
+    const r = globalUndo()
+    expect(r.ok).toBe(true)
+    expect(r.entry!.label).toBe('closing bidding')
+    expect(bubbleText(r.entry!, 'undo')).toBe('Undid: closing bidding — bidding is open again for everyone')
+  })
+  it('a bid names the man; a setting is "a Leave War setting"; never "leave board"', () => {
+    setRole('admin')
+    setCell('xray', '2026-07-15', 'LL')
+    expect(undoState().undoLabel).toBe('Ryder’s bid')
+    expect(undoState().undoLabel).not.toMatch(/leave board/)
   })
 })
