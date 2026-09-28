@@ -265,6 +265,8 @@ looked at. So the day is also PICKABLE (owner, 15 Aug 26):
   roster is a separate `.sb-side` panel. Pinned in `editweek.test.tsx` (the class
   toggle) and `e2e/geometry.spec.ts` (the real slide + width reclaim).
 
+## The day carries across a page switch — the four things that make it work
+
 Four things make it work, and each is load-bearing:
 
 - **The reading is taken in `setPage`, before `CURPAGE` moves.** One line later
@@ -662,7 +664,7 @@ guest, never in print or CSV. "Mark all as seen" takes it away. The day headings
 
 ## The one changes window (`[DRAFT-PENDING]`, 28 Sep 26 — D116–D119, D167–D172, D169 with D211, D263, D336 (b))
 
-**One window replaces three lists** (D168): the published day's pending list (below — its lines are now the window's "To
+**One window replaces three lists** (D168; its readings below stand as built, D338): the published day's pending list (below — its lines are now the window's "To
 go out" tab), the Edit history modal (retired), and the unpublished day's miscounting "N pending" (D118 — gone). The
 design of record: `docs/mock/changes-window.html`, option A (D170), `changes-doors.html` as narrowed by D171,
 `tags-ticks.html` (OG, D172). Code: `ui/ChangesWindow.tsx` (the window), `ui/changesmodel.ts` (its lines, groupings and
@@ -1071,6 +1073,8 @@ read-only (aircrew-submitted inputs have no funnel keys; they are edited on
 the Inputs page) — only the accept buttons act. Every control is pv-gated in
 markup AND guarded at runtime (DPREV check) like the rest of the board.
 
+### Sim rows: pax holes, the OFT's extra seats and the AMT's + Block
+
 **A deleted sim pax leaves a droppable hole (owner, 8 Aug 26).** The engine
 always held the index (`slots.ts`'s pax branch never splices), but `sbSeat`
 rendered an empty id as nothing, so deleting one WSO from the AMT BOX
@@ -1113,6 +1117,8 @@ droppable pair at once. Times come up BLANK — the new-line rule, a
 plausible wrong time reads as filled in. Three structural adds, so the AL
 and the edit log treat it exactly like three `+ Row` taps; the OFT header
 is unchanged. Pinned in `board.test.tsx`.
+
+### Closing the board, the read-only board, and the Live checks list
 
 **Leaving Edit Schedule CLOSES the board — it does not hide it.**
 `state/view.ts`'s `setPage` calls `closeBoardState()` the moment the page
@@ -1189,6 +1195,9 @@ edit week now:
   bar depending on warning or advisory"). `boardWarnHTML` reads
   "⚠ N issues · N warning · tap to review" and the `.wh` bar wears `hard`/`adv`/
   `note`/`ok`, the same palette as the week's `.daywarn`.
+
+### The phone board's one-row top bar
+
 - **The top bar is ONE row, and the day is reached by SWIPING** (owner,
   11 Aug 26 — comp approved before build). It used to be four stacked rows
   and 166px of a 780px screen: the title, the seven Mon–Sun chips, then six
@@ -1275,6 +1284,9 @@ edit week now:
   - Measured by `e2e/geometry.spec.ts`, which counts ROWS as well as
     overflow: both regressions above fitted the width perfectly and simply
     used a second line.
+
+### Every remarks box rides the pucks' row
+
 - **EVERY REMARKS BOX RIDES THE PUCKS' ROW, AT ALL TIMES** (owner, 16 Aug 26 —
   "beside the pucks on the right, same row, aligned with the B"). This SUPERSEDES
   the 12 Aug "empty box is not drawn, the row's own + asks for it back" contract:
@@ -1314,6 +1326,9 @@ edit week now:
     already share the 5-column layout). Export is flying-only and untouched.
     Pinned in `board.test.tsx`, `boardrmk.test.tsx`, `restore.test.ts` and
     `e2e/geometry.spec.ts`.
+
+### Stepping the day by two arrows, and no swipe
+
 - **The day is stepped by TWO ARROWS on the bar, and there is no swipe**
   (owner, 12 Aug 26 — "remove the swipe for the mobile scheduler board too. Just
   put arrows at the edges of the bar at the top to navigate left and right
@@ -1441,6 +1456,9 @@ edit week now:
   still uses the global lane, validates normally and repaints both the mounted
   week and the board. Pinned by `src/ui/boardbackground.test.tsx` (the board lane
   fires once, the global lane not at all) and by `boardnav.test.tsx`.
+
+### The aircrew drawer and the Live checks fold on a phone
+
 - **The roster is a right-edge AIRCREW drawer** (`.sb-ros`, carrying
   `.eroster` so the week's tab styling, its `ros-open` accent flip and
   interactions.ts's delegated `.ros-tab` toggle apply verbatim). Arming any
@@ -1537,6 +1555,9 @@ edit week now:
 - **Desktop (>820px) and `.sb-wide` are unchanged** — the side column
   restates `display:flex` and melts the drawer wrapper back to
   `display:contents`, tab hidden.
+
+### The phone flying line's three strips, and the drawer body's scroll
+
 - **A phone flying line is three strips: `CS | MSN | B | TO | LD`, then
   `[FCP RCP] [remarks]`, then the controls** (seats-strip fix 8 Aug 26; brief
   folded onto row 1 and the remarks lifted beside the pucks, owner 16 Aug 26 —
@@ -2073,6 +2094,8 @@ persisted and never in a history snapshot. The toggle builder is `notePubTog`
 
 `applyDrop()` is the ONE drop path for mouse and touch.
 
+### The drag machine — the mouse rides the pointer machine
+
 - The `body.dnd` decoration is added one tick AFTER dragstart (guarded on
   the drag still being alive), never synchronously: Chromium aborts a
   native drag whose dragstart handler reflows the page before the drag
@@ -2200,6 +2223,9 @@ persisted and never in a history snapshot. The toggle builder is `notePubTog`
 - Touch drag: 8px slop restarts the 180ms hold, >26px cancels; ghost
   follows finger; click-eater dies on next pointerdown.
 - Toast is `pointer-events:none`.
+
+### What a drop says, and where a dropped puck lands
+
 - **A DROP SAYS WHAT IT JUST BROKE, IN THE VALIDATOR'S OWN WORDS — the drop
   delta** (owner, 5 Sep 26: "it also needs to show flagging realtime";
   `state/dropflag.ts`). `applyDrop` keeps `WARN` as it stood before the write,
@@ -2267,6 +2293,9 @@ persisted and never in a history snapshot. The toggle builder is `notePubTog`
   the reference only unassigned on the roster panel.)
 - A drop outside the window never deletes. Self-drop says "Already in that
   seat".
+
+### Arm-and-plant
+
 - Arm-and-plant (rewritten 13 Aug 26, owner): an empty OR PLACEHOLDER-FILLED
   slot arms — a placeholder means "someone still needed here", so its puck
   goes straight to finding them, while a real person's puck still selects.
@@ -2512,6 +2541,8 @@ browser measurement pass. Don't move a grip's placement without re-measuring it 
 controls). The `boardMbtn` `mv:up/dn` handler is kept as an inert guard for a stale
 element; nothing emits its address now.
 
+### The landing mark, targeting the rendered row, and the three guards
+
 **The landing mark is a border on the row being dropped onto, not an
 inserted element** — `.rowdrop{box-shadow:inset 0 2px 0 0 var(--accent)}`.
 Every board panel is an innerHTML string; inserting a node under a moving
@@ -2543,6 +2574,8 @@ board mbtn already checks, so a version preview a scheduler is still
 looking at cannot be dragged or nudged. Engine: every mover in
 `engine/reorder.ts` no-ops on an out-of-range index or `from === to`, so a
 stale or forged address reaching `applyMove` cannot corrupt the model.
+
+### Auto sort and Sort all
 
 **`⇅ Auto sort` sits in the section's own header, beside the button that
 adds a row to it — never in a shared toolbar.** `sbSortBtn(addr, ro)`
@@ -2743,6 +2776,8 @@ per-day reading `armSlot` uses. A previewing day emits no grips at all
 (`dayPreviewHTML` renders with `ed=false`), so the guard only catches a stale
 element from the pre-preview render. Pinned three ways in `rowdrag.test.tsx`.
 
+### The inline dotted grip, and which panels are draggable
+
 **Every handle is the same dotted `⠿`, inline in the section's own header (owner,
 31 Aug 26).** This REVERSED the 30 Aug drawn-rail: the owner asked that "the drag
 markers should all follow the old design in which it's dotted" and be reachable on a
@@ -2796,6 +2831,8 @@ Personal Inputs' foldable header centres the grip; and a grip-tap on the two fol
 headers (`data-pitog`, `data-avtog`) is guarded in `interactions.ts` so it starts a drag,
 not a fold. Don't fold the crew panels back into a fixed tail, and don't let their order
 reach the VIEW week (the edit week now shares the board's, gated on `ed`).
+
+### What a section drag and a wave drag each change
 
 **A section move is display order only.** The order lives on the day as `d.secOrder`
 (absent ⇒ the default order), resolved by `engine/order.ts secOrder(d)`. It never
@@ -3134,6 +3171,8 @@ selects the person (owner, Aug 26; the chip joined the ring 7 Aug 26). The
 warning a chip stands for is in the selection's own box, alongside the rest
 of that person's.
 
+### The anchor, and which puck a warning jump lands on
+
 **The anchor: a warning knows the line that caused it.** `add()` in
 `validate.ts` takes an optional 5th argument — the slot-key (or key prefix) of
 the **first item the warning's message names**, which is the item that caused
@@ -3202,6 +3241,8 @@ stays on the breach while the view stays on the day that caused it. Off-board
 only, and everything downstream — the snap placement, the lateral hold, the
 target-picking rule — works off that root unchanged. Full reasoning in §The
 previous-day trace.
+
+### Scrolling to the puck, holding the view, and clearing a stale focus
 
 **The scroll is two moves, and the order matters.** `.week` is
 `scroll-snap-type:x mandatory` with `.day{scroll-snap-align:start}`, so
@@ -4666,6 +4707,8 @@ every screen size and one jsdom can pin — the rest fold into `+N more`.
 Under 820px chips drop their text and become compact colour bars, side by
 side; the title stays visible one size down.
 
+### Gestures on the month grid — tap, hold, drag and swipe
+
 **Gestures.** Decided at pointerdown by target:
 - *Tap a chip* → the shared input-edit dialog (`setInpEdit`, the global
   modal). *Hold a chip (180ms) and drag* → move it to another day.
@@ -4706,6 +4749,8 @@ side; the title stays visible one size down.
   `prefers-reduced-motion` and where `animate` is absent (jsdom). `.inpcal` is
   `overflow:hidden` so the ±28px entry never shows a scrollbar; the day popover
   is its own `position:fixed` layer and escapes that clip.
+
+### The day popover, the Escape ladder and what the calendar stores
 
 **The day popover** (`.ic-pop`, bottom sheet ≤820px / centred card above).
 Restructured 22 Aug 26 to the owner's layout, top to bottom:
@@ -5027,6 +5072,8 @@ never had one inherits neither, and the fault is invisible to every gate
 but the browser. Either add the two properties with the button, or fold
 the five into one selector list the next time this area is touched.
 
+### The document viewer — overlapping documents and several files per entry
+
 **A card tap opens the DOCUMENT VIEWER** (`ui/DocViewer.tsx`,
 `#docViewPop`, airpop chassis, `DOCVIEW` in `ui/pops.ts` holding the input
 OBJECT + an `up` flag): image inline, PDF in a frame, "No document on file
@@ -5086,6 +5133,8 @@ certificate are tellable apart. Pinned in `docs.test.ts` (the shape pair),
 `medwrite.test.ts` (first-on-docId, fold-back to single, last-file
 refusal), `medclash.test.tsx` (the chips through the real editor) and
 `docviewer.test.tsx`/`medicalview.test.tsx` (file-counted pager + badge).
+
+### The upchit, medical-clash and OIL sheets, revising OIL, and the bell
 
 **The upchit save-time summary sheet** (`ui/UpchitConfirm.tsx`, owner,
 27 Aug 26). Saving an upchit from ANY form — the Inputs add form, the
@@ -5205,6 +5254,8 @@ pending picture changes — this closed a confirmed missing-repaint gap,
 since nothing on the Raptor side repaints on a Leave War write otherwise.
 No acknowledgment = no credit, structurally.
 
+### The upload control and the paperclip
+
 **The upload control** (`DocField` in `ui/inputedit.tsx`: `UploadIcon`
 button + hidden file input + filename chip, `.docbtn.has` turning the ok
 green once attached) renders in all three editors — the Inputs add form,
@@ -5312,7 +5363,9 @@ the final code read — Astra 1).
 
 **The Leave War after the one door** also carries an archived man's rename (Save name) onto his kept row — a deleted man
 keeps the name he flew under (D297) — and a post-in moved to the day after his earlier stint closed joins the two into one
-stint, as Restore does (the final code reads, Fable F3 / F4, Astra 2).
+stint, as Restore does (the final code reads, Fable F3 / F4, Astra 2). A SANS man hidden by "Show SANS" off, once archived,
+shows on the war with his months here whatever Show SANS says, as a deleted man does — his leave and OIL in those months
+stay seen (D325, D299).
 
 **The Leave War's posting sheets after the one door** (round 1 — Fable F1 / Astra 2; D320): a man archived on Admin →
 Users has a read-only Post out sheet — "<cs> was archived on Admin → Users — restore him there" (`postout-locked`), the
@@ -5321,7 +5374,7 @@ Fable 4.2); both posting writers refuse him (`leavewar/state/store.ts postingLoc
 goes round it; Restore on Admin → Users is the one way back. A man deleted before his post-in came has no stint to keep
 — his war row and record go (Fable 4.5). A
 man back from a posting has a Post in sheet that says "Back from a posting on <date> — on the manpower from <date>. The
-days between count nobody, …" (`postin-note`) and offers no Undo; his earlier stint's dates are read-only on the war.
+days between count nobody, …" (`postin-note`) and offers no Undo; his earlier stint's dates are read-only on the war (D328).
 The grid draws every stint: a day in the gap between two stints reads **PO** with the hatch; only a day before his FIRST
 stint is blank ("not yet arrived"); each stint's last day wears the PO corner; a leave period he was away for the whole
 of shows no row for him (`leavewar/engine/people.ts` — `inSquadron`, `beforeFirstStint`, `lastDayIn`, `postingSheetFor`).
@@ -5465,6 +5518,9 @@ BidPicker's look and vocabulary, not instead of it.
   and keep the sheet up. The per-person negative-balance confirm the single
   sheet shows is deliberately NOT carried here (it would ask a block-spanning
   question per person).
+
+### Move mode — the landing preview, one chip one move, and the moved mark
+
 - **Move mode** (`wireMove`) moves the inputs PRESENT in the box and ignores
   the empty cells swept up around them (owner, 27 Aug 26 — "move items … that
   are present … if I select more area than required it registers as nothing"):
@@ -5603,6 +5659,9 @@ BidPicker's look and vocabulary, not instead of it.
   source. Pinned in `store.test.ts` (open move → no trail, closed move → trail)
   and `deciding.test.tsx` (a seeded trail: hidden at open, shown at closed,
   hidden again on reopen).
+
+### Dragging an event row
+
 - **Dragging an EVENT row** (owner, 27 Aug 26 — "drag and select grids in the
   events column to input events. Just like what we recently implemented"). The
   same `wireSelect` gesture also claims the `event-<line>-<date>` day cells (not
@@ -5831,6 +5890,9 @@ Four asks from the same sitting, all on the Leave War grid:
   before-itself guard, same splice-then-reinsert). The step-wise
   `moveManningRow(id, ±1)` stays as a tested store primitive with no UI caller.
   The hide (eye) control is unchanged.
+
+### What a drag LOOKS like — one recipe, every surface
+
 - **What a drag LOOKS like — one recipe, every surface (6–7 Sep 26).** Two
   earlier faults are kept here as history, because they are why two of the rules
   read as they do. FIRST, the picked-up row used to fade to `opacity:.5` — but a
@@ -5949,12 +6011,16 @@ Four asks from the same sitting, all on the Leave War grid:
     own suites and the e2e "one frame the width of the visible grid", "a section
     dropped on the board flashes", "a dragged quals heading wears one frame".
 
+### How the Rearrange asks at the head of this section were verified
+
 Verified live at 1440px: picker rows 30px, the viewer chip reads "Viewing as
 Ranger", a ground-crew row shows "Cotter" with no edit box, and a count-row drag
 moved a row from first to third with the arrows absent — zero console errors.
 Pinned in `counters.test.tsx`, `chrome.test.tsx`, `counts.test.tsx`,
 `roster.test.ts`, and e2e ("a personnel row shows its callsign, with no edit box,
 in Rearrange").
+
+### The landing flash
 
 **The landing flash (owner, 6 Sep 26 — "once I drop the item, it should flash to
 show where the new item ended up").** Every drop that lands somewhere lights the
@@ -6035,6 +6101,8 @@ is scoped `:not(.lift-frame)`.
   pointermove; no React state for the frame or the flash; `will-change` only on the
   veil; one declared `void el.offsetWidth` reflow when a flash is restarted on an
   element already flashing (once, at a drop, in a frame that is laying out anyway).
+
+### The counter block's header row, the Rearrange toggle and Reset order
 
 **The counter block's controls sit on ONE row (owner, 5 Sep 26 — "all in 1 row
 to minimise row height space").** The `.card-hd` above the counter grid carries,
@@ -6140,6 +6208,8 @@ ranked place rather than sinking to the end of his seat; one step for the one Un
 there is nothing to reset. Still no button on the grid and no strip. Pinned in `settingssheet.test.tsx` (⚙ Settings —
 Reset order), `roster.test.ts` (resetRosterOrder …) and `undoaudit.test.ts` (Reset order is ONE step …).
 
+### The zoom buttons, OIL credit boxes that wrap, and the one-line month strip
+
 **The − / + ZOOM pair sits in the counter block's top row after OIL at BOTH
 widths, and a phone opens ONE step out (owner, 6 Sep 26 — "Can this be the
 default zoom? Like zoom 1 click out. Put the zoom + - button after oil/oil
@@ -6198,6 +6268,8 @@ zoom-in either. Desktop is otherwise untouched (it always held one line at
 640px). Never let it scroll or wrap. Pinned in `e2e/leavewar.spec.ts` (twelve
 buttons, one line, inside the viewport, none cut, row under 52px — both
 projects).
+
+### In Rearrange: the wider name column, the manning-row grip, the Archive bar
 
 **In Rearrange the frozen name column widens by the grip, so callsigns keep
 their at-rest width (owner, 6 Sep 26 — "the CS/name will not be causing the
@@ -6463,6 +6535,8 @@ missing, and header↔body column alignment stays pixel-exact (`dx = 0`, verifie
 at 402px and 1300px). The alternative — a real inner scroll box that CSS sticky
 pins for free — was declined by the owner (it reintroduces the nested-scroller
 feel he rejected on 10 Aug 26). The fix-by-fix history follows.
+
+### The frozen bar's fix-by-fix history; the Legend, the Pending word, the batch writers
 
 - **The date header FREEZES on desktop too** (owner, 27 Aug 26 — "freeze top
   panel for leave war on desktop … when I scroll down the top bar that has the
@@ -7005,6 +7079,8 @@ what keeps it costing the bracket row no height. In flow it was its own 15px lin
 in a 22px cell, so a third of the only way in and out of the drawer did nothing
 when pressed.
 
+### The drawer as an overlay — placement, widths, the frozen edge, the stuck header
+
 **The drawer is an overlay, never extra cells.** A second `table.mx` in a
 `div.mxdrawer` positioned absolutely inside `.mx-outer` — the `.mxband` phone
 overlay's mirror image, and built on its three rules: drawn once, outside the
@@ -7080,6 +7156,8 @@ unmounted: the figures are worth reading while the roster is ordered, and a
 roster drag hit-tests with `elementFromPoint`, so an overlay that took the
 pointer would hide the row being dragged over.
 
+### The title pop-up, the figure flash and the WebKit-unproven parts
+
 **A title says what its column counts.** Tapping one opens `div.figpop` — the
 figure's own `desc` from the catalogue, the same words the picker's caption and
 the Legend's Figures section use. It is screen-fixed (the frozen columns cannot
@@ -7127,6 +7205,8 @@ Margins to watch: in Chromium the longest title, "+CCL −CCL", clears its 62px
 box by only ~2px, so a wider WebKit font clips that one first; and a `-100` in
 the narrowest phone box measures 18.8px of text in 19.8px of room at the `.wide`
 size (measured), so a wider font there clips the value rather than spilling it.
+
+### The picker's figures by role, and the column after a write on the grid
 
 **Who sees which figures in the PICKER depends on the role.** An admin sees all
 eight, a hidden one dimmed with its eye lit — hiding is his control and the
@@ -7542,6 +7622,9 @@ screen:
   `tracker.test.tsx` (the menu shape, Save watches flow edits only) and the
   smoke suite (Save never opens a save-file dialog; event details save
   themselves).
+
+### Picking crew on a ball, undo and redo, Find, + Add and the question box
+
 - **The ring on every ball is a SECOND crew picker (owner, 9 Sep 26 — "click
   exactly at the portion of the pokeball that person exist in").** Each
   wedge (`path.wedge[data-wi]`, one per student, student 0 at the top) is
@@ -7638,6 +7721,9 @@ screen:
   for all ten places the box opens with a text field (the roll-call is in
   `docs/handpass/2026-09-25-trk-add-race.md`). Pins: `tracker.test.tsx` (the two
   TRK-SMOKE-ADD-RACE tests); the walk `scripts/handpass/trk-add-race-walk.mjs`.
+
+### What the `[HUMAN-RETEST]` walk settled (D122–D129)
+
 - **What the [HUMAN-RETEST] walk settled (23 Sep 26 — rulings D122–D129;
   evidence `docs/handpass/2026-09-23-tracker.md`; pins `src/tracker/retest.test.tsx`).**
   - **Event details belong to their chart (D126).** A detail typed on Tx stays on
@@ -7690,7 +7776,8 @@ argument, `oilSeatDeco`, `oilCls`/`oilChipHTML`), `ui/board.ts` + `ui/board-html
 
 ### Where it is drawn, and where it is not
 
-**Weekend, public-holiday and off-day-tagged days only.** Five days a week nothing is
+**Weekends and days tagged PH only** — a day tagged "Off day" is not one: time given to a man earns
+nothing, so nothing is drawn on it (owner, D21, 22 Sep 26; register OIL43). Five days a week nothing is
 emitted at all — no class, no node, no attribute — so the printed schedule on an
 ordinary Tuesday is byte-identical to before and the reference parity gate is
 untouched (728/0, checked). The day's own name covers Saturday and Sunday; the
@@ -7714,7 +7801,7 @@ finding 13). A claim row is not switchable as a whole for a different reason, an
   colour-blindness; the tint is the one that survives being read alone with nothing
   to compare against.
 - **It is the MAN'S DAY — but it is SHOWN ONLY on the events that COUNTED towards it**
-  (owner, 21 Sep 26 — O-1, revising §2.10 / OIL21). There is no such thing as a
+  (owner, 21 Sep 26 — O-1, D1, revising §2.10 / OIL21). There is no such thing as a
   per-event OIL figure and one must never be invented: the measure runs first-start to
   last-end across the whole day including the gaps, so a man on four rows that all
   counted still shows one full day, four times. What changed is WHERE it is drawn. It
@@ -7925,7 +8012,7 @@ window breaking it, and "fixes" it.
 
 **What it is.** Tapping either counter chip — on the board **or on the week**,
 both draw it — opens one window of real pucks. Pilots in the left column, WSOs in
-the right (the same pairing the sim seat grid uses) — on a published day's issued face, by the seat each man went out
+the right (D51; the same pairing the sim seat grid uses) — on a published day's issued face, by the seat each man went out
 with, as his puck draws him (`engine/faceattrs.ts seatShown`, [LEAVE-LATE-PUBLISHED] 26 Sep 26). One puck per row at every
 width, because a full row per man is what gives his flag and his figure room;
 that is the whole reason it replaced the bubble of names.

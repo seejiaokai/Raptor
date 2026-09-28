@@ -498,6 +498,8 @@ Run this before building and again before calling it done. Most answers are
 
 ## 4. Robustness — the single funnels and the drift-seams
 
+### The single funnels — where the wiring is robust
+
 **Where the wiring is robust** (one path, so it cannot fall out of step — build
 ON these, don't route around them):
 
@@ -581,9 +583,13 @@ ON these, don't route around them):
   drag LOOKS like in `docs/ui-contracts.md`; pins: `lift-css.test.ts`,
   `lift.test.ts`, `rowglow.test.ts`.
 
+### The drift-seams — where two copies of one truth can split
+
 **Where the wiring is a drift-seam** (two copies of one truth that a change can
 split — these are where this app's recurring bugs come from; touch one side and
 check the other):
+
+#### Who may write — the Leave War's guards, the role and the signed-in account
 
 - **The Leave War batch writers vs their single-cell parents** (27 Aug 26,
   drag-select). `setCells`/`clearCells`/`setBidStates`/`moveCells` MUST call
@@ -637,6 +643,9 @@ check the other):
   `ME` directly, or reads `SESSION.role`, fails `perms-scan.test.ts`. A person signed in WITHOUT access (pending, guest,
   switched off) is nobody's person (`me()` null): every write refuses him at the command gate, and the guest's view is a
   separate tree (`GuestApp.tsx`) that mounts none of the app's windows.
+
+#### One rule read in several places — the working day, the drop zone, LATE, availability
+
 - **The working day: the LONGDAY note vs the Insights work-hours total**
   (20 Aug 26). Both answer "how long is this person at work", and until the
   work-hours section was built the answer existed only inside `validate()`'s
@@ -716,6 +725,9 @@ check the other):
   from it, and the ‹ arrow floats over the first few pixels by his choice. A room beside the arrows was built and taken out
   before merging (`[ARROW-ROOM-OUT]`); if he ever asks for one, every landing must read ONE declared number, as that build
   did — its roll-call of the landings is the five-flags evidence sheet §3d.
+
+#### Editors, snapshots, the reference copy, labels, SANS and a person's category
+
 - **Three editors over one list.** The Inputs page, the week cell and the board
   cell all edit `INPUTS`; they are kept from drifting only because all three
   funnel through `commitInputEdit`/`setInpField`. Add a fourth the same way.
@@ -790,6 +802,8 @@ check the other):
   that iterates aircrew and ask whether a `pers` body belongs in it. They are
   seeded but kept OUT of the seed schedule, which is what keeps parity clean.
 
+#### Deliberate second copies — week keys, the preview, the week stash, drafts
+
 - **`shiftWeekKey` (`engine/weeks-data.ts`) vs `shiftWeek` (`ui/weeknav.ts`)
   — a DELIBERATE second copy (23 Aug 26).** Both step a `dd/mm/yyyy` Monday
   key by whole weeks; the engine needs one to walk `weekctx.ts`'s seed reads
@@ -836,8 +850,12 @@ check the other):
   next switch reads one back in. Any new whole-day writer has to decide
   whether it stows first or accepts that staleness.
 
+#### A new drift-seam is named in this list
+
 When you add a feature that creates a NEW drift-seam — two places that must now
 agree — name it here so the next session knows to check both.
+
+#### The medical tracker
 
 - **The medical tracker's drift-seams (27 Aug 26).** Three named pairs, each
   ONE body on purpose — check both ends when touching either:
@@ -905,6 +923,8 @@ agree — name it here so the next session knows to check both.
   `INPUTS` + an as-of ordinal, default the notional `weeknav.TODAY`), so it
   cannot drift from the table; anything stored would be the seam.
 
+#### Section order, wave order and the default arrangement
+
 - **Section display order (29 Aug 26; dragged in place 30 Aug 26; crew panels folded in
   31 Aug 26) — one order, two builders.** A day's `d.secOrder` is read by BOTH
   `ui/board.ts boardHTML` and `ui/html.ts dayHTML` through the one `engine/order.ts
@@ -968,6 +988,8 @@ agree — name it here so the next session knows to check both.
     published one ("new schedules only", owner). **Drift-seam:** any NEW wave-add
     path must call `placeAddedWave` too, or template/built-in adds would place
     inconsistently. Guards: `engine/arrdefaults.test.ts`, `ui/wavedefault-add.test.tsx`.
+
+#### The Leave War's figures and bulk balance entry
 
 - **Leave War FIGURES — nine surfaces, one catalogue (6 Sep 26).** The counter
   column now speaks EIGHT figures (`+LVE +OIL +CCL +FCL +CL +PL −LVE TOT
