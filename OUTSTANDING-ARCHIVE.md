@@ -2265,3 +2265,28 @@ merges (the agent's recommendation: after, so the fully checked #446 does not gr
 D322: Restore, New person and Give access's New person ask it) — **and D320 (27 Sep 26): Restore opens a NEW stint on the war**
 (away between the posting out and the post-in), never moving his old one's start. **BUILT 27 Sep 26 with `[ONE-DOOR]`.**
 
+
+*Moved here 2026-09-28 by backlog-archive.mjs ([LW-FIGSEL-FLAKE]). Forward facts: `raptor-port/docs/ui-contracts.md`.*
+
+### [LW-FIGSEL-FLAKE] A Leave War desktop browser test fails on GitHub on the changes-window branch (D342, 28 Sep 26)
+`e2e/leavewar.spec.ts:2190` "-1.5 subtracts; 0, abc and 1.25 are refused and the run stays" — after a refused amount, the
+figures drawer holds the WRONG number of selected cells (`td[data-figsel]`: expected 3; got 5 on 27 Sep 26 21:11, got 1 on
+28 Sep 26 01:31, both tries each time), on GitHub's machines only, on `claude/draft-pending` (2 of 5 runs failed; 3 passed). **Since #451 merged it is in
+`main`'s code, so it hits EVERY branch:** it failed again on `claude/pages-off` (PR #452, cut from `main`, 28 Sep 26 — 5, then 1),
+while `main`'s own run after the merge passed it — about half of GitHub's runs now. It passes on the PC every time (5/5, and
+4/4 with the browser slowed six-fold). **PR #451 merged over it on his
+word (D342)** — the test unchanged. **To dig in (its own small branch):** reproduce on GitHub's machines (a workflow run of
+that one test, repeated) with a trace; the unconfirmed lead — a redraw mid-selection on a slow machine, e.g. the change
+history's save repainting the Sync chip and the drawer with it (`[DRAFT-PENDING]` added a history write to every Leave War
+command, `state/changelines.ts`); compare against `main`. If it fails on `main` too, it is D84's slow-runner family.
+**Place: FIRST in the next chat, before `[HIST-PHONE-HIDE]` / `[CHG-BY-ITEM]`** — a check that goes red on every other run
+hides a real failure behind it, and the next build's checks would carry it. Small: make the test wait on what it needs (D87)
+or fix the redraw that loses the selection.
+**FIXED 28 Sep 26 on `claude/lw-figsel-flake` — the cause was the APP, not the test (the test is unchanged):** the top
+bar's "Saving…" note came and went in the bar's row after every change; on GitHub's wider fonts the Leave War bar at 1440
+had ~18px to spare against its ~90, so it wrapped and the page dropped two rows under the mouse mid-drag (5 or 1). The same
+jump on this PC at 1366 (five pages) and, on a phone, Undo / Redo / the clock pushed ~46px right. The note now floats
+under the bar (`src/ui/SaveStatus.tsx`, `scheduler.css` `.topbar > .savestat`); the contract `raptor-port/docs/ui-contracts.md`
+§The top bar carries the bell…; pinned by `e2e/geometry.spec.ts` "the Saving… note never moves the top bar"; evidence
+`raptor-port/docs/handpass/2026-09-28-lw-figsel-flake.md` (GitHub: 5 × 170 Leave War desktop tests, no retries, all green).
+

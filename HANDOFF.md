@@ -15,43 +15,22 @@ the later merge keeps both (D78).
 
 ## Now
 
-<!-- now:claude/draft-pending -->
-### `claude/draft-pending` — `[DRAFT-PENDING]`, the one changes window: BUILT and FULL-checked — READY FOR HIS LOOK and "merge live" (the PR from `claude/draft-pending`) — written 28 Sep 26 — verify before use
-- **Where it started:** `main` at PR #450's merge (`[ONE-DOOR]`, merged 28 Sep 26 on D336 (1), live on Vercel). Overnight by
-  D336 (2): planned (Opus 5.5) → Fable and Astra red team, one round → built red first → walked → FULL check. Rulings range
-  for this chat: D337–D349 (D337–D345 used — his look-card answers "12 A" and "keep the rest as recommended"; History on a phone; the window sorted by item; the GitHub web address on, then off the same hour; merging over the flaky test). **Never merge without his word** (D336's permission was
-  PR #450's alone).
-- **Built:** the change history durable and week-safe (`engine/editlog.ts` — D336 (b) on YES), each person's "new to you"
-  (`state/changes.ts`), ONE writer for every absence / Leave War / Quals / posting / publish / undo / sign-off line
-  (`state/changelines.ts` — D263), the window (`ui/ChangesWindow.tsx`, `changesmodel.ts`, `changesopen.ts`, chrome shared with
-  the ALL AVAIL window in `floatwin.ts`), the doors (the day's one chip, the admin's clock icon, the board's History button),
-  History mode = the window open with the bubble on the edit week too (D116), the OG tag (D172). Contract:
-  `raptor-port/docs/ui-contracts.md` §The one changes window; the history `raptor-port/docs/engine-rules.md` §The edit log.
-- **The FULL check** (evidence `raptor-port/docs/handpass/2026-09-28-draft-pending.md`): roll-call, the walk
-  (`scripts/handpass/dp-walk.mjs`, 33 checks, desktop and phone both 33/33, no console errors), Fable's 30 scenarios and
-  12 predicted defects (all real, all fixed red first), 12 break tests (3 unguarded wirings found and pinned), two blind
-  final reads (Astra 3, Fable 9 findings — all fixed red first), then two narrow rounds on the fix commits by both
-  (8 and then 7 findings, all fixed red first — the three-round cap reached; the tests and the walk carry the last).
-  Gates on the final code (`1270680e`): all green (the counts below, and the sheet's §9).
-- **MERGED 28 Sep 26 on his "merge live"** — over the one Leave War desktop test that failed on GitHub a second time, at his
-  word (D342, spent; the test unchanged, filed `[LW-FIGSEL-FLAKE]`). **Was next:** his look is DONE (28 Sep 26 — every reading kept as built, D337, D338); **his "merge live"** — then merge once the
-  PR's checks are green, carry it to live on Vercel and notify him (D143). **The GitHub web address
-  (D341) was withdrawn the same hour (D343):** Pages is deleted on the repo again, and `claude/pages-off` puts the publish job
-  back off — until it merges, `main`'s publish job fails for want of a Pages site (nothing published). His public link to
-  show the app: his own `https://raptor-kohl.vercel.app/`. Nothing else of this branch is pending. **Then, in a
-  FRESH chat (his word, D339): FIRST `[LW-FIGSEL-FLAKE]`** (the Leave War desktop test, now red on about half
-  of every branch's GitHub runs), **then `[HIST-PHONE-HIDE]` with `[CHG-BY-ITEM]` (D340), one branch** — the hint in his
-  wording, "History on: Tap a gold dot on the schedule" (D344); History on a phone: the window
-  hides to the bottom ("Hide ▾" / "Show ▴" — spelled out at his question), a gold dot on every detail with a history (the mock-up
-  `raptor-port/docs/img/handpass/2026-09-28-draft-pending/histphone/histphone-mockup.png`); and the window sorted by item, every
-  line item-first (the mock-up `…/byitem/byitem-mockup.png`) — both mock-ups APPROVED (D345); build, walk, check
-  (`OUTSTANDING.md` `[HIST-PHONE-HIDE]`, `[CHG-BY-ITEM]`).
-- **PR #451's one red check (GitHub, 28 Sep 26 night):** a Leave War desktop browser test (`e2e/leavewar.spec.ts` — "-1.5
-  subtracts; 0, abc and 1.25 are refused and the run stays") selected 5 cells where it expects 3, on both tries; it passes on
-  the PC every time, even with the browser slowed six-fold, and on `main`. **Its one re-run (D84) PASSED** — every check green
-  on `dd16553e`. A later push re-runs them all; if that same test fails again it is new evidence — dig in before any merge.
-- **Walk it again:** `node raptor-port/scripts/handpass/dp-walk.mjs` (HP_W=390 HP_H=844 for the phone) against a preview on 4182
-  (`.claude/launch.json` "raptor-draftpending"); e2e on 4197/4198.
+<!-- now:claude/lw-figsel-flake -->
+### `claude/lw-figsel-flake` — `[LW-FIGSEL-FLAKE]` FIXED (the app, not the test) — READY FOR HIS LOOK and "merge live" — written 28 Sep 26 — verify before use
+- **Where it started:** `main` at PR #453's merge. This chat (28 Sep 26) did two jobs on two branches from `main`, one after
+  the other (his order): this one first, then `[HIST-PHONE-HIDE]` with `[CHG-BY-ITEM]` on `claude/hist-phone-by-item`
+  (its own block there). No rulings this chat so far. **Never merge without his word.**
+- **What it was:** the Leave War figure-drag test's GitHub-only failures were the APP moving under the mouse — the top
+  bar's "Saving…" note came and went in the bar's row after every change, and a bar near full wrapped onto a second line
+  and back (the page dropped ~46px): on GitHub's wider fonts the Leave War at 1440; on this PC at 1366 on five pages; on a
+  phone it pushed Undo / Redo / the clock right. **Fixed:** the note floats just under the bar's right end
+  (`src/ui/SaveStatus.tsx`, `scheduler.css` `.topbar > .savestat`). The test is unchanged. Contract:
+  `raptor-port/docs/ui-contracts.md` §The top bar carries the bell…; evidence `raptor-port/docs/handpass/2026-09-28-lw-figsel-flake.md`.
+- **Checked (WALK tier):** red first (`e2e/geometry.spec.ts` "the Saving… note never moves the top bar" failed on the old
+  code at 1366 and on the phone), a break test, the walk `scripts/handpass/sn-walk.mjs` (every page at 1366 / 1440 /
+  phone and "Not saved — Retry": 92/92), GitHub's machines 5 × 170 Leave War desktop tests with no retries, the gates.
+- **Next:** his look (the note under the bar, on any page, after a change) → his "merge live". This branch merges first;
+  `claude/hist-phone-by-item` then takes `main` in (both edit `HANDOFF.md` and `OUTSTANDING.md`).
 <!-- /now -->
 
 <!-- now:claude/five-flags-batch-continue-2cfa70 -->
@@ -89,8 +68,8 @@ the later merge keeps both (D78).
 
 1. **HIS ORDER to the database step, about two months away (D203, 26 Sep 26):** `[ACCOUNTS]`, `[ACCOUNTS-NEW-PERSON]`,
    `[POST-OUT-OUTCOMES]`, `[LW-MOVE-STANDARD]` (D264–D266) and `[ONE-DOOR]` (D309, D310, with `[POST-IN-DATE]`) MERGED
-   (PRs #442, #443, #446, #447, #450) → **the one changes window (`[DRAFT-PENDING]`)**, BUILT and FULL-checked on
-   `claude/draft-pending` (28 Sep 26) → his look → "merge live" (D173); beside it, he talks to the IT side
+   (PRs #442, #443, #446, #447, #450) → **the one changes window (`[DRAFT-PENDING]`)** MERGED (PR #451, 28 Sep 26); its
+   two follow-ups `[HIST-PHONE-HIDE]` and `[CHG-BY-ITEM]` (D345) being built; beside it, he talks to the IT side
    (`[IT-QUESTIONS]`). Development as normal: `[HUMAN-RETEST]`'s remaining three in his order (D147 — the absence record
    with `[S4-HUNT-REST]` and D260–D262 MERGED, PR #444 — then change-recording, the Leave War links last), then `[LW-LOCKMARK]` → `[LW-WEEKDAY-WORK]` (`[PUB-UNAVAIL]`
    closed by the absence-record re-test).
@@ -102,8 +81,8 @@ the later merge keeps both (D78).
 
 ## Gate baseline
 
-The latest counts watched — 28 Sep 26, `claude/draft-pending`'s final code (`1270680e`), one run under the PC lock: unit
-**6746 / 6746** (417 files) · build clean · tfin **728 / 0** · e2e **485 passed**, 48 skipped · smoke **443 / 0** ·
+The latest counts watched — 28 Sep 26, `claude/lw-figsel-flake`'s final code (`3a02167c`), one run under the PC lock: unit
+**6746 / 6746** (417 files) · build clean · tfin **728 / 0** · e2e **487 passed**, 48 skipped · smoke **443 / 0** ·
 rulecheck OK · docsize OK. Restate a count only from a run you watched, and REPLACE the previous counts — never stack a
 history. How to run them: `raptor-port/CLAUDE.md` §Build & verify; how they mislead, and the checks on his PC:
 `raptor-port/docs/gates-and-deploy.md`.
