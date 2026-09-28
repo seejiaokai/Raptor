@@ -33,7 +33,8 @@
  *
  * JOB 1d, MISFILING (owner, D140, 24 Sep 26) — a document put where the structure has no place for it: a new
  * root .md outside ROOT_ALLOW, a document outside the one docs tree, an always-loaded rules file nobody
- * registered, two HANDOFF.md ## Now blocks for one branch, a new reference doc no map names. Where each fact
+ * registered, two HANDOFF.md ## Now blocks for one branch, HANDOFF.md losing its shape (a block's end marker or one
+ * of its three headings — [HANDOFF-SHAPE-GUARD]), a new reference doc no map names. Where each fact
  * belongs is `.claude/rules/doc-structure.md`. It runs with the inventory, so the Stop hook enforces it.
  *
  * Flags: --inventory runs job 1 only (the Stop hook .claude/hooks/backlog-guard.sh uses it); --moves lists
@@ -447,7 +448,37 @@ function rulings(allow) {
    its reason, in a docs-only commit. HANDOFF-NEXT.md is the three-line signpost his opening line still reads. */
 const ROOT_ALLOW = ['README.md', 'HANDOFF.md', 'HANDOFF-NEXT.md', 'HANDOFF-ARCHIVE.md', 'OUTSTANDING.md', 'OUTSTANDING-ARCHIVE.md',
   'DECISIONS.md', 'DECISIONS-ARCHIVE.md', 'CLAUDE.md', 'AGENTS.md']
-const HANDOFF = 'HANDOFF.md', NOW_MARK = /^<!-- now:(\S+) -->\s*$/
+const HANDOFF = 'HANDOFF.md', NOW_MARK = /^<!-- now:(\S+) -->\s*$/, NOW_END = /^<!-- \/now -->\s*$/
+/* HANDOFF.md's SHAPE ([HANDOFF-SHAPE-GUARD], found 25 Sep 26). One span replace ate everything from a ## Now block's
+   last lines to the gate counts — the block's <!-- /now -->, the whole ## Next, in order and the ## Gate baseline
+   heading — and this gate passed it, three commits running, into main (PR #437): nothing here read HANDOFF.md's
+   shape. So: its three headings each once, in order; every block opened by <!-- now:… --> closed by <!-- /now -->
+   before the next block or ## heading (a block's own ### title is inside it); every block inside ## Now; no end
+   marker with nothing open. Returns the problems as sentences, so the caller can tell a new one from one the base
+   already had. */
+const HANDOFF_HEADS = ['## Now', '## Next, in order', '## Gate baseline']
+function handoffShape(text) {
+  if (!text) return []
+  const probs = [], ls = unfenced(splitLines(text))
+  const at = HANDOFF_HEADS.map(h => ls.flatMap((l, i) => l.trimEnd() === h ? [i] : []))
+  HANDOFF_HEADS.forEach((h, k) => { if (at[k].length !== 1) probs.push(`the heading "${h}" appears ${at[k].length} times — it must appear exactly once`) })
+  const once = at.every(a => a.length === 1)
+  if (once && !(at[0][0] < at[1][0] && at[1][0] < at[2][0])) probs.push(`its headings are out of order — "${HANDOFF_HEADS.join('", then "')}"`)
+  let open = null
+  ls.forEach((l, i) => {
+    const m = NOW_MARK.exec(l)
+    if (m || /^## /.test(l)) {
+      if (open) probs.push(`the ## Now block for ${open} has no <!-- /now --> before the next ${m ? `block (${m[1]})` : `heading "${l.trim()}"`}`)
+      open = m ? m[1] : null
+      if (m && at[0].length === 1 && at[1].length === 1 && !(i > at[0][0] && i < at[1][0])) probs.push(`the block for ${m[1]} sits outside ## Now`)
+    } else if (NOW_END.test(l)) {
+      if (!open) probs.push('a <!-- /now --> closes no block — a block\'s opening <!-- now:<branch> --> line is missing')
+      open = null
+    }
+  })
+  if (open) probs.push(`the ## Now block for ${open} has no <!-- /now --> before the end of the file`)
+  return probs
+}
 function structure() {
   const fails = [], warns = []
   const listed = [...new Set([...(tryGit('ls-files') || '').split('\n'), ...(tryGit('ls-files', '--others', '--exclude-standard') || '').split('\n')])].filter(f => f && existsSync(join(REPO, f)))
@@ -475,6 +506,14 @@ function structure() {
     if (n > 1) fails.push(`${HANDOFF} has ${n} ## Now blocks for ${b} — one block per branch; a chat rewrites only its own (.claude/skills/session-handoff/SKILL.md)`)
     if (isCommit(`origin/${b}`) && isCommit('origin/main') && tryGit('merge-base', '--is-ancestor', `origin/${b}`, 'origin/main') !== null && tryGit('rev-parse', `origin/${b}`)?.trim() !== tryGit('rev-parse', 'origin/main')?.trim())
       warns.push(`${HANDOFF} ## Now still has a block for ${b}, which is merged into main — the next handoff removes it once its open residue is filed`)
+  }
+  /* its shape: a problem the base did not have fails; one the base already had is only reported, so a branch that
+     never touched HANDOFF.md is not failed for someone else's damage (the rest of this job judges only what is new) */
+  const hNow = readNow(HANDOFF), hBase = readBase(HANDOFF), shapeBase = new Set(handoffShape(hBase))
+  if (hBase && !hNow) fails.push(`${HANDOFF} is GONE — it was at the base; it is the one handoff every chat reads first`)
+  for (const p of handoffShape(hNow)) {
+    if (shapeBase.has(p)) warns.push(`${HANDOFF}: ${p} (already so at the base)`)
+    else fails.push(`${HANDOFF} has lost its shape: ${p} — an edit that spanned too much may have eaten the lines between; restore them from the base (git show <base>:${HANDOFF}), never "fix" the check`)
   }
   return { fails, warns }
 }

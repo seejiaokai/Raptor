@@ -32,6 +32,12 @@ const AREA0 = ['# Rulings — general', '', '| # | Date | ruling | meaning | hom
 const DARCH0 = ['# Archive', '', '## Moved 21 Sep 26', '', '| # | Date | ruling | meaning | home |', '|---|---|---|---|---|', '| D0 | 20 Sep 26 | **REPLACED BY D1 (21 Sep 26).** z | z | `OUTSTANDING.md` |', ''].join('\n')
 const mapRow = (area, file, ids) => '| ' + area + ' | ' + '`' + file + '`' + ' | always | ' + ids + ' |'
 const DEC0 = ['# DECISIONS', '', '| Area | File | Loads by itself | Rulings |', '|---|---|---|---|', mapRow('General', AREA, 'D2, D1'), mapRow('Archive', 'DECISIONS-ARCHIVE.md', 'D0'), ''].join('\n')
+/* HANDOFF.md in its shape ([HANDOFF-SHAPE-GUARD]): three headings in order, a block per chat under ## Now, each
+   closed by its end marker; the second block carries the Gates line the 25 Sep 26 span replace started from. */
+const HANDOFF0 = ['# HANDOFF', '', 'Read this first.', '', '## Now', '',
+  '<!-- now:claude/a -->', '### `claude/a` — where it stands', '- a line', '<!-- /now -->', '',
+  '<!-- now:claude/b -->', '### `claude/b` — where it stands', '- b line', '- **Gates:** green', '<!-- /now -->', '',
+  '## Next, in order', '', '1. the order', '', '## Gate baseline', '', 'The counts.', '', '## Standing constraints', '', '- none', ''].join('\n')
 /* point one map row at a new list of D-numbers */
 const setMap = (c, file, ids) => c.edit('DECISIONS.md', t => t.split('\n').map(l => l.includes('`' + file + '`') ? l.replace(/\| [^|]*\|$/, '| ' + ids + ' |') : l).join('\n'))
 
@@ -48,6 +54,7 @@ function makeRepo(live = LIVE0) {
   w('raptor-port/scripts/rulecheck.mjs', RULES0)
   w('raptor-port/docs/superpowers/specs/x-behaviour-register.md', REG0)
   w('OUTSTANDING.md', live); w('OUTSTANDING-ARCHIVE.md', ARCH0); w('DECISIONS.md', DEC0); w(AREA, AREA0); w('DECISIONS-ARCHIVE.md', DARCH0)
+  w('HANDOFF.md', HANDOFF0)
   w('raptor-port/src/app.ts', 'export const a = 1\n')
   w('docs/home.md', 'Where the facts of CHARLIE now live.\n')
   g('add', '-A'); g('commit', '-q', '-m', 'base')
@@ -250,9 +257,24 @@ scenario('a new root file on the allowlist (AGENTS.md, for Codex)', false, c => 
 scenario('a new document outside the one docs tree', true, c => c.write('docs/notes/x.md', '# x\n'), { mustSay: 'outside the one docs tree' })
 scenario('a new always-loaded rules file nobody registered', true, c => c.write('.claude/rules/new-rule.md', '# a rule for every chat\n'), { mustSay: 'loads in EVERY chat' })
 scenario('a new rules file scoped by paths: (loads only with its area)', false, c => c.write('.claude/rules/area-x.md', '---\npaths:\n  - raptor-port/src/x/**\n---\n\n# x\n'))
-const NOW = (...bs) => ['# HANDOFF', '', '## Now', '', ...bs.flatMap(b => [`<!-- now:${b} -->`, `### ${b}`, 'where it stands', '<!-- /now -->', '']), '## Next, in order', ''].join('\n')
+const NOW = (...bs) => ['# HANDOFF', '', '## Now', '', ...bs.flatMap(b => [`<!-- now:${b} -->`, `### ${b}`, 'where it stands', '<!-- /now -->', '']), '## Next, in order', '', '## Gate baseline', ''].join('\n')
 scenario('two ## Now blocks for one branch', true, c => c.write('HANDOFF.md', NOW('claude/x', 'claude/x')), { mustSay: '## Now blocks for claude/x' })
 scenario('one ## Now block per branch', false, c => c.write('HANDOFF.md', NOW('claude/x', 'claude/y')))
+/* HANDOFF.md's SHAPE ([HANDOFF-SHAPE-GUARD]): the 25 Sep 26 span replace (119dff45, on claude/request-one-row) ate a
+   block's last lines, its end marker, the whole ## Next, in order and the ## Gate baseline heading, and the gate passed
+   it into main. Replayed here; each cousin fails by name; a block rewritten, added or removed whole passes; damage the
+   base already had is reported, not failed. */
+scenario('HANDOFF.md: the 25 Sep 26 span replace, from a Gates line to the gate counts', true, c => c.edit('HANDOFF.md', t => t.replace(/- \*\*Gates:\*\* green[\s\S]*The counts\./, '- **Gates:** green · the counts')), { mustSay: 'HANDOFF.md has lost its shape: the ## Now block for claude/b has no <!-- /now -->' })
+scenario('HANDOFF.md: a block\'s end marker lost before the next block', true, c => c.edit('HANDOFF.md', t => t.replace('- a line\n<!-- /now -->\n', '- a line\n')), { mustSay: 'no <!-- /now --> before the next block (claude/b)' })
+scenario('HANDOFF.md: a heading lost', true, c => c.edit('HANDOFF.md', t => t.replace('## Gate baseline\n', '')), { mustSay: '"## Gate baseline" appears 0 times' })
+scenario('HANDOFF.md: a heading doubled', true, c => c.edit('HANDOFF.md', t => t + '\n## Next, in order\n'), { mustSay: '"## Next, in order" appears 2 times' })
+scenario('HANDOFF.md: headings out of order', true, c => c.edit('HANDOFF.md', t => t.replace('## Next, in order\n\n1. the order\n\n## Gate baseline\n\nThe counts.\n', '## Gate baseline\n\nThe counts.\n\n## Next, in order\n\n1. the order\n')), { mustSay: 'out of order' })
+scenario('HANDOFF.md: a block written below ## Next, in order', true, c => c.edit('HANDOFF.md', t => t.replace('1. the order\n', '1. the order\n\n<!-- now:claude/c -->\n### c\n<!-- /now -->\n')), { mustSay: 'the block for claude/c sits outside ## Now' })
+scenario('HANDOFF.md: an opening marker lost, its end marker left', true, c => c.edit('HANDOFF.md', t => t.replace('<!-- now:claude/a -->\n', '')), { mustSay: 'closes no block' })
+scenario('HANDOFF.md: deleted', true, c => rmSync(join(c.dir, 'HANDOFF.md')), { mustSay: 'HANDOFF.md is GONE' })
+scenario('HANDOFF.md: a block rewritten, one added, one removed whole', false, c => c.edit('HANDOFF.md', t => t.replace('- b line\n', '- b line, rewritten\n- and a second line\n').replace(/<!-- now:claude\/a -->[\s\S]*?<!-- \/now -->\n\n/, '').replace('## Next, in order', '<!-- now:claude/d -->\n### `claude/d` — new\n- d line\n<!-- /now -->\n\n## Next, in order')))
+scenario('HANDOFF.md: an example marker inside a code block is not a block', false, c => c.edit('HANDOFF.md', t => t.replace('- b line\n', '- b line\n~~~md\n<!-- now:claude/example -->\n## Next, in order\n~~~\n')))
+scenario('HANDOFF.md: damage already at the base is reported, not failed', false, c => { c.edit('HANDOFF.md', t => t.replace('- a line\n<!-- /now -->\n', '- a line\n')); c.commit('an older break, already on main') }, { base: 'HEAD', mustSay: '(already so at the base)' })
 scenario('a new top-level reference doc that no map names', true, c => c.write('raptor-port/docs/newref.md', '# new\n'), { mustSay: 'no map names' })
 scenario('a new top-level reference doc on the map', false, c => { c.write('raptor-port/docs/newref.md', '# new\n'); c.write('raptor-port/CLAUDE.md', '| the new reference | `docs/newref.md` |\n') })
 scenario('a design for one task, under superpowers/ (tier 3, no map needed)', false, c => c.write('raptor-port/docs/superpowers/specs/2026-09-24-x.md', '# x\n'))

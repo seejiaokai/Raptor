@@ -80,6 +80,12 @@ Stale is worse than absent — the next session trusts it.
   itself (D137):** it fails if the map in `DECISIONS.md` disagrees with the files, if a row marked
   replaced or spent is still in an area file, if an archived row lacks its mark, or if a row is written
   in `DECISIONS.md` itself instead of its area's file.
+- **Misfiling and the handoff's shape** (D140; `[HANDOFF-SHAPE-GUARD]`, 28 Sep 26). A document put where the structure
+  has no place for it fails (`.claude/rules/doc-structure.md` §The check that keeps it lists them). So does `HANDOFF.md`
+  losing its shape: a `## Now` block without its `<!-- /now -->`, a block outside `## Now`, or one of `## Now`,
+  `## Next, in order`, `## Gate baseline` missing, doubled or out of order — the 25 Sep 26 span replace that ate a
+  block's end, the whole order and the gate-counts heading passed this gate into `main` three commits running. A
+  break the base already had is reported, not failed, so a branch is never failed for another's damage.
 
 **Moving a finished item** is `node scripts/backlog-archive.mjs <ID> --homes <file>` (from the repo
 root: `raptor-port/scripts/…`) — never a hand edit or a one-off script. It refuses a duplicate id,

@@ -15,6 +15,20 @@ the later merge keeps both (D78).
 
 ## Now
 
+<!-- now:claude/docs-tidy-subheads-audit-ec8f87 -->
+### `claude/docs-tidy-subheads-audit-ec8f87` — docs-only tidy: [HANDOFF-SHAPE-GUARD], [DOC-SUBHEADS], [RULING-HOMES-AUDIT] — IN PROGRESS — written 28 Sep 26 — verify before use
+- **The branch:** cut from `main` at PR #456; folder `.claude/worktrees/bg-cwd-guard-4cc654`. Documents and the
+  document gate's scripts only — no `raptor-port/src`, so no full check run. Rulings range D380–D389 (none used yet).
+- **Files it touches (D302 — told the three busy chats, 28 Sep 26: change-recording, small fixes, Tracker leftovers):**
+  `raptor-port/scripts/docsize.mjs` and `docsize-selftest.mjs`; heading lines ONLY in `ui-contracts.md`,
+  `engine-rules.md`, `feature-impact.md`, `performance.md` (a conflict on one keeps both sides); D-number tags beside
+  old rulings' content in their homes, and only the OLD rows (D1–D64) of the rulings files; in `OUTSTANDING.md` only
+  its three items and their priority line.
+- **Done so far:** [HANDOFF-SHAPE-GUARD] — the gate now fails `HANDOFF.md` losing a block's `<!-- /now -->` or one of
+  its three headings (self-test replays the 25 Sep span replace; red on the old gate, green on the new).
+- **Next:** [DOC-SUBHEADS], [RULING-HOMES-AUDIT]; Fable reads the result for meaning (D138); then his "merge live".
+<!-- /now -->
+
 <!-- now:claude/five-flags-batch-continue-2cfa70 -->
 ### `claude/five-flags-batch-continue-2cfa70` — the five-flags batch AND his answers D270–D275: BUILT and FULL-checked (PR #445) — waiting for his look and "merge live"; the red Leave War tests' cause found and fixed (confirm on GitHub) — written 27 Sep 26 — verify before use
 - **The branch:** carries `claude/five-flags-batch-build-ef7d85` whole (that branch has no PR and nothing of its own —
