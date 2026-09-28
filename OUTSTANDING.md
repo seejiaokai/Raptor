@@ -1081,6 +1081,9 @@ predicate; disarm both on leaving the page. **Place:** low, any time.
 Seen in passing by the five-flags walk (W1): ALL AVAIL placed on DINNER WITH CMD (18:30, no end time) drew no count chip,
 so that row has no door into the ALL AVAIL window. Possibly D31's "nothing to measure" refusal, as designed — check
 against D31/D41 first. **Place:** low, investigate before building anything.
+**Investigated 28 Sep 26 (the small-fixes batch): a gap, not D31 — the count rides the OIL walk, which skips a row
+without both times. His answer, D360 ("ok, need to say something like no oil worked out due end time to the admin"):
+build the count over the one-hour default, credit nobody, and say so to the admin.** Building on `claude/small-fixes-batch-d223f6`.
 
 ### [REQ-ORPHAN-ROW] A request's row outliving the request — low (25 Sep 26)
 Two older shapes, the same on `main`: (1) Fable's O2 — a request deleted on the Inputs page while its row stands on a

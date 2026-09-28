@@ -129,14 +129,15 @@ and every other scheduling reader gives an open-ended row the Logic tab's one-ho
 win`, the crew picker, the validator). So this is **a gap, not D31 as designed**: the count inherits money's refusal, and
 D31's own rule is broken — no chip, no reason, a silent absence. The window's sentence for the case ("This row has no
 usable start and end times…") is unreachable, because the chip is its only door.
-**Proposed change — PUT TO HIM before it is built (it adds an assumed hour to a count, and it changes what a published
-day freezes):** the walk records the crowd for an open-ended row over `start → start + openEnd` (the scheduling window)
+**ANSWERED 28 Sep 26 — D360, his "ok, need to say something like no oil worked out due end time to the admin": build
+it, and the admin is told no OIL is worked out because the row has no end time. The change as put to him:** the walk records the crowd for an open-ended row over `start → start + openEnd` (the scheduling window)
 while crediting nobody for it (money unchanged — D31's refusal, with its reason on the OIL half); the chip shows; the
 window names the assumed hour ("18:30–19:30 · no end time, an hour assumed"); its OIL tab says why nobody earns. A row with
 no start at all still gets no count — but its placeholder shows a "?" chip that opens the window on the existing sentence,
 so it is never a silent absence. Consequence for him: on a day published before this, the crowd behind such a row was
 never frozen, so after it the working copy reads one more pending line (demo data — D56, not built around).
-**If he says leave it:** nothing built; the item closes as ruled with his date.
+**Where the admin is told (D360's reading):** the window's "Who earns OIL" half and the row's seat in OIL Earn mode
+read "No OIL worked out — this row has no end time"; the "who's available" half carries only the assumed-hour line.
 
 ### D. `[AMEND-SMALL-SEEN]` items 1, 3, 4, 5, 9
 
@@ -291,8 +292,7 @@ the next Leave War move change), not retired here.
 
 ## 3. What is put to him (none blocks the rest of the build)
 
-1. `[ALLAVAIL-OPEN-ROW]` — build the count for an open-ended row with an assumed hour (and the "?" door), or leave it?
-   (Recommended: build.) Asked now, in chat; built only on his yes.
+1. `[ALLAVAIL-OPEN-ROW]` — **answered, D360: build it, and tell the admin no OIL is worked out (no end time).**
 2. `[AMEND-SMALL-SEEN]` 5 — AL8 and later reuse AL7's orange; the tag carries the number. Leave? (Recommended: leave.)
 3. `[REQ-ORPHAN-ROW]` (2) — loading an issued version brings back a deleted request's row, named truthfully. Leave?
    (Recommended: leave.)
@@ -302,7 +302,7 @@ the next Leave War move change), not retired here.
 
 Each item on its own commit, red test first, its own suite run between items (bug-check order §5, "between fix rounds"):
 A (floatwin) → B (ghost) → D1 (toast) → D9 (signature) → F1 (banner) → E (requests, the largest) → F2, F3 → D3/D4
-(the callsign and tag geometry, with `[ABSENCE-SMALL-SEEN]` 3) → G (the Leave War) → C only on his yes. Then the full gate
+(the callsign and tag geometry, with `[ABSENCE-SMALL-SEEN]` 3) → G (the Leave War) → C (D360). Then the full gate
 set under the PC lock, the walk, the two reads, the fixes, the re-walk, the evidence sheet, the look card.
 
 ## 5. The walk
