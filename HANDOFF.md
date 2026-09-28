@@ -65,7 +65,10 @@ the later merge keeps both (D78).
   sides edited stops and shows both. It PRINTS every non-row line this branch changed in a rulings file — the two "Also
   read" edits (leave-war.md, tracker.md) and the ranges sentence in DECISIONS.md — to re-apply by hand (keep every
   range), and the short lines it generated from our headings as UNREAD: one reviewer (Astra first, D353) reads them. It
-  may list D350 for the new People & accounts area. After it lands, a mark on an OLD row lives in its full row under
+  may list D350 for the new People & accounts area (CLASSIFY — it governs people and accounts; move it there). By hand
+  after `--merge` (the slim-down chat's trial merge, 28 Sep 26): re-add "**D347** (…)" to the "Also read" lines of
+  leave-war.md (beside its new People & accounts pointer) and tracker.md, then `--rulings` until clean. After it lands,
+  a mark on an OLD row lives in its full row under
   `.claude/decisions-full/`. **New rows stay full form at the top of the table; the FIRST bold sentence of "What it
   means" is the one line every chat sees — the rule on its own, at most 350 characters, no "|"** (D347–D353 checked,
   28 Sep 26). Its plan: `raptor-port/docs/superpowers/plans/2026-09-28-rulings-slim-down-plan.md` on its branch.
