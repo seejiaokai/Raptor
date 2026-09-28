@@ -7777,12 +7777,17 @@ screen:
     open (C11). While ✓ Save changes ● shows, the save words beside it step
     aside — the button says it — whatever a background save reports; an error
     still shows, in red; the corner stays 172px (C14 — widening it to fit words
-    wrapped the bar, measured). On a phone the Crew box takes up to 124px, so a
-    callsign reads whole (C10). On a short screen (under ~500px tall) Edit chart
+    wrapped the bar, measured). On an upright phone the Crew box takes up to 124px
+    (the most the bar's first row holds — at least 9 letters of a 14-letter
+    callsign); from 600px wide, 176px, so a 14-letter callsign reads whole (C10, the
+    walk's c-F4). On a short screen (under ~500px tall) Edit chart
     layout folds its strip behind one row — the tool in use, its hint, ⤢ Fit,
     Tools ▾ — and the note, the hint line and the Flow / Info / Show All tabs
     step aside; Tools ▾ opens the whole set over the chart, closing on a choice,
-    a press outside, Escape or Done (D373, 28 Sep 26). Deleting a ball says its marks go at ✓ Save changes, and they
+    a press outside, Escape or Done (D373, 28 Sep 26). While editing, the canvas
+    is never taller than its chart box (one rule, `canvasSize`, for the redraw and the
+    re-fit), and turning the phone re-fits it with the middle of the chart kept in the
+    middle and shuts the Tools set (the walk's c-F1/F5 and the re-walk's R2). Deleting a ball says its marks go at ✓ Save changes, and they
     do, in every course (D124), with the details typed on it (D130) and any
     student's "last worked" pointer to it; a deleted-but-unsaved code cannot be
     re-added until the save (+ Add and 📋 Edit events alike). An IMPORT never
@@ -7794,11 +7799,16 @@ screen:
     marks intact (D128). Logout — the top bar's or the phone drawer's, ONE
     function (`src/ui/logout.ts`) — asks Save them / Discard them / Stay when
     chart edits are unsaved, over the Tracker tab, before the session ends (D129). Each
-    PERSON reopens the Tracker on their own last course and student — kept per
-    person on the browser, never the last person’s (D376, 28 Sep 26); someone new
-    there starts on the first course. Whose place is on screen is re-checked every
-    time the tab is shown; while the next person’s is loading the page reads
-    “Loading…” and a press on a ball does nothing.
+    PERSON reopens the Tracker on their own last course, the chart they had open on
+    it, and their student — kept per person on the browser, never the last
+    person’s (D376, 28 Sep 26; the chart, reading 5, from Fable's final read); the
+    chart on screen is also the course's saved chart, so a later reload of the course
+    keeps it; someone new there starts on the first course. Whose place is on screen
+    is re-checked every time the tab is shown, and again when an unsaved chart edit
+    that held the last person's place is saved or discarded; while the next person’s
+    is loading the page reads “Loading…” and a press on a ball does nothing. An undo
+    closes the lull calendar and the Copy to… list (the record under them changed); a
+    session ending stops an import between its questions.
   - **Surfaces.** ✓ Save changes is the far-right item of its row, desktop and
     phone; on a desktop the save corner is one fixed width (the status words
     shorten, whole on hover), so the first edit never wraps the bar. The details

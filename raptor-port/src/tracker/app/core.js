@@ -87,7 +87,12 @@ onBeforeTrackerLogout(async show => {
   else { clearDirty(); if (arrangeMode) toggleArrange(); await loadCourse(course); refreshSyl(); renderBoard(); renderSide(); }
   return true;
 });
+/* bumped at every session end: a job that asks more than one question (an import) stops
+   between them once its session has ended, so the next person never gets the next one
+   (Fable's final read F6) */
+let sessionSerial = 0;
 function endSession() {
+  sessionSerial++;
   undoStack = []; redoStack = [];
   dlgCancelAll();                     /* a half-answered question, and any waiting: cancelled */
   pop = null; popDoneDate = ''; popFailDate = ''; popMsg = null;
@@ -1785,6 +1790,7 @@ async function loadCourseNow(c, restoreLastSyllabus) {
   undoStack = []; redoStack = [];
   const pr = await sGet(kPlan(c)); plan = sParse(pr, null, 'object') || { lulls: [], mode: 'pace', epw: 2, target: null, sylId: firstSylId() };
   if (!plan.sylId) plan.sylId = firstSylId();
+  const __storedSyl = plan.sylId;
   /* the id-keyed definition store is GLOBAL (v3:master:syls) — customs and
      edited-built-in overrides, both keyed by syllabus id. Reloaded here so an
      import elsewhere in the session is reflected. The legacy per-course/
@@ -1796,7 +1802,13 @@ async function loadCourseNow(c, restoreLastSyllabus) {
      layout load so it costs no second pass. Only at app start; every other
      caller has already decided the syllabus. */
   const __lastS = await sGet(kLastStudent(c));
-  if (__lastS && restoreLastSyllabus) {
+  /* each person's OWN chart on this course comes first (D376, reading 5 — Fable's final read
+     F2): the roster is per chart, so the shared chart below opened the next person on the
+     last person's chart and, their own student not on it, on the last person's student.
+     Signed-in people only; the standalone Tracker keeps the shared answer, as before. */
+  const __mySyl = (restoreLastSyllabus && whoamiId()) ? prefGet(pickKey('lastSyl:' + c)) : null;
+  if (__mySyl && sylSource(__mySyl)) plan.sylId = __mySyl;
+  else if (__lastS && restoreLastSyllabus) {
     try {
       const rec = JSON.parse(await sGet(kLast(c, __lastS)) || 'null');
       if (rec && rec.syl && sylSource(rec.syl)) plan.sylId = rec.syl;
@@ -1807,6 +1819,11 @@ async function loadCourseNow(c, restoreLastSyllabus) {
     plan.sylId = firstSylId();
     await savePlan(); __src = sylSource(plan.sylId) || DEFAULT_SYLLABUS;
   }
+  if (whoamiId()) prefSet(pickKey('lastSyl:' + c), plan.sylId);   /* this person's chart here (F2) */
+  /* the chart on screen is the course's saved chart too: a later reload of this course (an
+     import, discarded chart edits) reads the saved one, and left different it switched the
+     person to the last person's chart (found building F2) */
+  if (plan.sylId !== __storedSyl) await savePlan();
   /* With no charts shipped in the code and none opened yet, DEFAULT_SYLLABUS is
      undefined and JSON.parse(JSON.stringify(undefined)) throws, which aborted
      loadCourse half-way and left the app looking broken. An empty board is the
@@ -2800,7 +2817,9 @@ async function restoreSnap(u) {
   if ('p' in u) { if (u.p == null) delete pace[s]; else pace[s] = JSON.parse(u.p); }
   if ('l' in u) { if (u.l == null) delete lulls[s]; else lulls[s] = JSON.parse(u.l); }
   await trkRestoring(() => saveMarks(s)); if (dates[s]) await trkRestoring(() => saveDates(s));
-  if ('p' in u) await trkRestoring(() => savePace(s));
+  /* a pace that was never set before the change is REMOVED again, not stored as {} — an empty
+     pace read back as a blank pace box after a reload (Fable's final read F4) */
+  if ('p' in u) await trkRestoring(() => (pace[s] ? savePace(s) : delKey(kPace(course, s))));
   if ('l' in u) await trkRestoring(() => saveLulls(s));
 }
 async function applyMarkHist(u) {
@@ -2808,6 +2827,8 @@ async function applyMarkHist(u) {
   /* The pop-up's buttons describe a grade that just changed under it — or,
      when the picker is about to move, somebody else's. */
   if (pop) closePop();
+  /* the lull calendar and the Copy to… list belong to a record about to change (F1) */
+  lullPick = null; lullCopy = null;
   if (active !== s) { active = s; prefSet(pickKey('lastCrew:' + course), s); refreshActive(); }
   await restoreSnap(u);
   /* keep the view: the person is looking at the ball they are taking back, as
@@ -2825,6 +2846,7 @@ function reverseOf(u) {
    picker stays on whoever is picked (the step belongs to several students) */
 async function applyGroupHist(u) {
   if (pop) closePop();
+  lullPick = null; lullCopy = null;   /* as applyMarkHist (F1) */
   for (const g of u.group) if (marks[g.who]) await restoreSnap(g);
   renderSide();
 }
@@ -3848,7 +3870,10 @@ export async function lullDayClick(iso) {
   const s = lullPick.student;
   pushMarkUndo(s, 'the lull periods');   /* a period set or changed is one step (D372) */
   lulls[s] = lulls[s] || [];
-  if (lullPick.index >= 0) lulls[s][lullPick.index] = { start: a, end: b };
+  /* a period that is no longer there (an undo shortened the list under the calendar) is a
+     new one — writing past the end left a hole, stored as null, and a null blanked the
+     whole app on the next open (Fable's final read F1, 28 Sep 26) */
+  if (lullPick.index >= 0 && lullPick.index < lulls[s].length) lulls[s][lullPick.index] = { start: a, end: b };
   else lulls[s].push({ start: a, end: b });
   lulls[s].sort((x, y) => (x.start < y.start ? -1 : 1));
   lullPick = null;
@@ -4128,8 +4153,9 @@ function popDayProblem(v, partial) {
 }
 export function popFailCommit(partial) {
   /* a box cleared and then only part-typed sends no change at all (its value stays empty),
-     so the box's own part-typed flag is read again as it is left */
-  if (partial) popFailPartial = true;
+     so the box's own part-typed flag is read again as it is left — BOTH ways: one part-typed
+     then cleared is "clear the box for today" again (Fable's final read F3) */
+  popFailPartial = !!partial;
   const p = popDayProblem(popFailDate, popFailPartial);
   if (p) { popMsg = { where: 'fail', text: p }; notify(); }
   return p;
@@ -4149,7 +4175,7 @@ export function popDoneChanged(v, partial) { popDoneDate = v; popDonePartial = !
    refused with its words), and anything else puts the box back to the day the mark
    has (today, for an event not yet done — a grade pressed then takes today). */
 export async function popDoneCommit(partial) {
-  if (partial) popDonePartial = true;   /* as popFailCommit */
+  popDonePartial = !!partial;   /* the live reading, as popFailCommit */
   const s = active; const popId = pop && pop.id; if (!popId || !s) return '';
   const graded = DONE.has(gradeOf(s, popId));
   const p = popDayProblem(popDoneDate, popDonePartial);
@@ -4890,7 +4916,13 @@ function markDirty() { sylDirty = true; notify(); }
 /* Both stacks. Leaving redoStack behind let a Redo pressed after a syllabus
    change write the PREVIOUS chart's positions over the new one and save them
    on the spot — four moved boxes on 2026 landed on Tx 2026 under test. */
-function clearDirty() { sylDirty = false; undoStack = []; redoStack = []; notify(); }
+function clearDirty() {
+  sylDirty = false; undoStack = []; redoStack = []; notify();
+  /* an unsaved chart edit held the Tracker on the last person's place (the resume waits for
+     it); once it is saved or discarded, the person now signed in gets their own (Astra's
+     final read, F3 — the only door is an admin changing his own account's person) */
+  if (ready && !bootError && whoamiId() !== pickOwner) resumeForPerson();
+}
 
 export async function persistSyl() {
   const id = curSylId();
@@ -6099,6 +6131,7 @@ export async function importClick() {
   const pick = (typeof window !== 'undefined' && window.__pickOpenForTests) || FS.pickOpen;
   const picked = await pick();                 /* no await before this — gesture */
   if (!picked) return;
+  const serial = sessionSerial, ended = () => serial !== sessionSerial;
   /* An import reloads the chart on screen from the store, so its unsaved flow
      edits were lost — and the orange Save changes stayed lit over a chart with
      nothing left to save ([HUMAN-RETEST] Fable #3). Asked AFTER the pick: the
@@ -6116,6 +6149,7 @@ export async function importClick() {
   const wanted = Object.create(null);     /* store id → the name the file gives it */
   if (hasCharts) {
     for (const id of charts.order) {
+      if (ended()) return;   /* the session ended under a question: nothing more is asked (F6) */
       if (!(charts.syllabi || {})[id]) continue;
       const label = catById.get(id) ? catById.get(id).name : (sylName(id) || id);
       if (!sylEntry(id)) {   /* new here — bring it straight in (colon allowed, §8) */
@@ -6135,6 +6169,7 @@ export async function importClick() {
         continue;
       }
       const to = ((await uiPrompt('Name for the incoming syllabus:', label + ' (new)')) || '').trim();
+      if (ended()) return;
       if (!to || SYLS.some(e => e.name === to)) { await uiAlert('That name is blank or already taken.'); continue; }
       const newId = mintSylId();
       await applyCharts(charts, { ids: [id], mode: 'add', rename: { from: id, to: newId, label: to } });
@@ -6195,9 +6230,11 @@ export async function importClick() {
       await saveSylOrder(); refreshSyl();
     }
   }
+  if (ended()) return;
   let people = false;
   if (parsed.contains.students && parsed.students) {
     people = await uiConfirm('This file also contains students and marks.\n\nBring them in too? A student already here who is ALSO in the file will have their marks replaced by the file’s. Anyone the file does not name keeps theirs, untouched.');
+    if (ended()) return;
     /* the student guardrail (§19) lives in applyStudents: a pre-v3 / unresolved
        student block is refused with a plain message; charts (above) still import.
        normalizeImport already reconciled a v3 block through the ONE import map;
@@ -6223,6 +6260,7 @@ export async function importClick() {
       catch (e) { await uiAlert((e && e.message) || 'The students could not be brought in.'); people = false; }
     }
   }
+  if (ended()) return;   /* the closing report is the ended session's, not the next person's */
   const what = [done.length ? 'brought in ' + done.join(', ') : null, people ? 'students & marks restored' : null].filter(Boolean).join(' · ');
   if (what) setSaveStatus(what, 'ok');
   const skip = (skipped.length ? '\n\nSkipped, left as they are here: ' + skipped.join(', ') + '.' : '')
@@ -6319,9 +6357,16 @@ export async function init() {
   if (typeof window !== 'undefined') {
     let t = null;
     /* while editing: the canvas follows the new shape, the middle kept (F1); the Tools set shuts (F5) */
-    let ta = null;
+    let ta = null, lastW = window.innerWidth;
     window.addEventListener('resize', () => {
       if (!arrangeMode) return;
+      /* a phone's keyboard opening for a box inside the Tools set makes the window shorter,
+         not narrower: that is not a turn, and shutting the set would drop the box and its
+         keyboard (Fable's final read F5 — Android; an iPhone fires no resize for it) */
+      const w = window.innerWidth, a = document.activeElement;
+      const typing = a && a.matches && a.matches('input, textarea') && a.closest && a.closest('#arrTools, #arrFold');
+      if (w === lastW && typing) return;
+      lastW = w;
       if (toolsOpen) { toolsOpen = false; notify(); }
       clearTimeout(ta);
       ta = setTimeout(refitArrange, 150);

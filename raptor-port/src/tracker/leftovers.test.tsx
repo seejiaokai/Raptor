@@ -544,7 +544,42 @@ describe('[TRK-SESSION-PICK] D376 — each person reopens the Tracker on their o
       expect(C.resumeForPerson(), 'no reload over an unsaved edit').toBe(false)
       expect(C.course).toBe(course)
       expect(C.sylDirty).toBe(true)
+      /* once the edit is saved (or discarded) the new person's own place loads by itself —
+         it waited for a leave-and-reopen of the tab (Astra's final read, F3, 28 Sep 26) */
+      await C.saveChangesClick()
+      await until(() => !C.resuming); await C.whenLoaded()
+      expect(C.resumeForPerson(), 'the member’s place is already the one loaded').toBe(false)
     } finally { if (C.sylDirty) await C.saveChangesClick(); await signIn(ADMIN) }
+  })
+
+  it('Fable F2 — each person reopens on their own CHART of the course too, and their student on it', async () => {
+    /* the roster is per chart: without the chart, the next person opened on the last person's
+       chart and, their own student not on it, on the last person's student (Fable's final read) */
+    await signIn(ADMIN)
+    await C.switchCourse(C.COURSES[0].id); await C.whenLoaded()
+    const charts = C.SYLS.map((e: any) => e.id).filter((id: string) => !(C.SYL_HIDDEN || []).includes(id))
+    expect(charts.length, 'the premise: two charts to choose from').toBeGreaterThanOrEqual(2)
+    const [A, B] = charts
+    await C.switchSyllabus(A); await C.whenLoaded()
+    { const p = C.addStudent(); await until(() => C.dlg); C.dlgClose('LO ADM ON A'); await p; await C.whenLoaded() }
+    const adminStu = C.active
+    await signIn(MEMBER)
+    await C.switchCourse(C.COURSES[0].id); await C.whenLoaded()
+    await C.switchSyllabus(B); await C.whenLoaded()
+    { const p = C.addStudent(); await until(() => C.dlg); C.dlgClose('LO MEM ON B'); await p; await C.whenLoaded() }
+    const memberStu = C.active
+    await signIn(ADMIN)
+    expect(C.curSylId(), 'the admin’s own chart').toBe(A)
+    expect(C.active, 'and his student on it').toBe(adminStu)
+    await signIn(MEMBER)
+    expect(C.curSylId(), 'the member’s own chart').toBe(B)
+    expect(C.active, 'and hers').toBe(memberStu)
+    /* a later reload of the course (an import, discarded chart edits) keeps her chart */
+    await C.loadCourse(C.course); await C.whenLoaded()
+    expect(C.curSylId(), 'a reload of the course keeps the chart on screen').toBe(B)
+    await signIn(ADMIN)
+    await C.loadCourse(C.course); await C.whenLoaded()
+    expect(C.curSylId(), 'and his').toBe(A)
   })
 
   it('the standalone Tracker (nobody wired) keeps the browser’s one place, as before', async () => {
@@ -762,6 +797,26 @@ describe('[TRK-BAKE-STALE] baking an exported chart file into the shipped charts
     const students = { courses: [{ id: 'cabc', name: 'ABC' }], sylcat: charts.sylcat, byCourse: { cabc: { plan: {}, lulls: {}, pace: {}, bySyllabus: { [tx]: { roster: [{ id: 'e1', name: firstTx }], marks: {}, dates: {} } } } } }
     expect(() => bakeCharts(FMT.buildFile({ savedAt: '2026-09-28T00:00:00Z', charts, students }), data)).toThrow(/student name/i)
   })
+
+  it('a later bake: an earlier bake’s details for a ball still on the chart stay; details for a ball no longer on it go (Astra’s final read)', async () => {
+    const FMT: any = await import('./app/fileFormat.js')
+    const DATA: any = { ...(await import('./data/syllabi.js')), ...(await import('./data/layouts.js')), ...(await import('./data/eventInfo.js')) }
+    // @ts-ignore — a plain .mjs next to the command
+    const { bakeCharts } = await import('../../scripts/tracker/bake-lib.mjs')
+    const tx = C.sylIdOf('Tx 2026')
+    const charts = await C.collectCharts([tx], {})
+    const onChart = charts.syllabi[tx][1].id
+    /* the shipped data as an earlier bake left it: a detail on a ball still drawn, and one on a
+       ball since deleted from the chart */
+    const byName = JSON.parse(JSON.stringify(DATA.EVENT_INFO_BY_SYL))
+    byName['Tx 2026'] = { ...(byName['Tx 2026'] || {}), [onChart]: { hrs: '7.7 Hrs' }, 'ZZ-GONE': { hrs: '1.1 Hrs' } }
+    const data = { SYLLABI: DATA.SYLLABI, DEFAULT_LAYOUTS: DATA.DEFAULT_LAYOUTS, EVENT_INFO: DATA.EVENT_INFO, EVENT_INFO_BY_SYL: byName, DEFAULT_SYL_ORDER: DATA.DEFAULT_SYL_ORDER }
+    /* the file carries only differences from the shipped wording — so the kept detail is not in it */
+    delete (charts.eventInfoBySyl || {})[tx]
+    const { out } = bakeCharts(FMT.buildFile({ savedAt: '2026-09-28T00:00:00Z', charts }), data)
+    expect(out.EVENT_INFO_BY_SYL['Tx 2026'][onChart], 'a ball still on the chart keeps what the earlier bake gave it').toEqual({ hrs: '7.7 Hrs' })
+    expect(out.EVENT_INFO_BY_SYL['Tx 2026']['ZZ-GONE'], 'a ball no longer on the chart leaves nothing behind (D130)').toBeUndefined()
+  })
 })
 
 /* ---------- the roll-call, looped: every date box the side panel draws, as it is wired ---------- */
@@ -936,5 +991,90 @@ describe('the walk’s findings (walker b, 28 Sep 26) — a refused day is never
     C.openPop(ev, { clientX: 5, clientY: 5 }); await C.popFail(1)
     expect(C.popMsg && C.popMsg.text).toMatch(/marked N\.A\., so it cannot be failed/)
     C.closePop()
+  })
+})
+
+/* ---------- the two final code reads (Fable and Astra, 28 Sep 26) ---------- */
+describe('the final code reads (28 Sep 26)', () => {
+  it('Fable F1 — an undo while the lull calendar is open closes it, and never writes a hole into the lull periods', async () => {
+    const s = await pickStudent()
+    C.openLullPicker(s); await C.lullDayClick('2026-12-01'); await C.lullDayClick('2026-12-03')
+    C.openLullPicker(s); await C.lullDayClick('2026-12-10'); await C.lullDayClick('2026-12-12')
+    const at = C.lulls[s].findIndex((l: any) => l.start === '2026-12-10')
+    C.openLullPicker(s, at)
+    await C.doUndo(); await C.doUndo()
+    expect(C.lullPick, 'the calendar belongs to a list that just changed: it closes').toBeNull()
+    /* and were a day pressed on a calendar left open over a shorter list, no hole */
+    C.openLullPicker(s, at + 5)
+    await C.lullDayClick('2026-12-15'); await C.lullDayClick('2026-12-16')
+    expect(JSON.stringify(C.lulls[s]), 'no hole — a null would blank the app on the next open').not.toContain('null')
+    expect(C.lulls[s].some((l: any) => l && l.start === '2026-12-15'), 'the period is added').toBe(true)
+  })
+
+  it('Fable F3 — a box part-typed, then CLEARED, means today again: DCO and + work', async () => {
+    const s = await pickStudent()
+    const e1 = await freshEvent(s, 12)
+    C.openPop(e1, { clientX: 5, clientY: 5 })
+    C.popDoneChanged('', true)                     /* the year part started */
+    expect(await C.popDoneCommit(false), 'then cleared and left: nothing to refuse').toBe('')
+    expect(C.popMsg).toBeNull()
+    await C.popGrade('dco')
+    expect(C.doneDate(s, e1), 'graded today').toBe(C.isoToday())
+    C.closePop()
+    const e2 = await freshEvent(s, 13)
+    C.openPop(e2, { clientX: 5, clientY: 5 })
+    C.popFailDateChanged('', true)
+    expect(C.popFailCommit(false)).toBe('')
+    await C.popFail(1)
+    expect(C.failDates(s, e2), 'a failure today').toEqual([C.isoToday()])
+    C.closePop()
+  })
+
+  it('Fable F4 — undoing a new student’s first pace change leaves the default pace, after a reload too', async () => {
+    const p = C.addStudent(); await until(() => C.dlg); C.dlgClose('LO PACE NEW'); await p; await C.whenLoaded()
+    const s = C.active
+    const def = String(C.paceOf(s).epw)
+    await C.setEpw(s, '3')
+    await C.doUndo()
+    await C.loadCourse(C.course); await C.whenLoaded()
+    expect(String(C.pace[s] && C.pace[s].epw), 'the pace box reads the default, not blank').toBe(def)
+  })
+
+  it('Fable F5 — a phone keyboard opening (the window shorter, as wide) while a box in the Tools set is typed in does not shut the set', async () => {
+    if (C.sylDirty) await C.saveChangesClick()
+    const { default: ArrangeTools } = await import('./components/ArrangeTools.jsx')
+    C.toggleArrange()
+    const { host, root } = await render(<Live draw={() => <div className="tr-root"><ArrangeTools /></div>} />)
+    try {
+      C.setToolsOpen(true); await act(async () => { await tick() })
+      const box = host.querySelector('#arrTools input') as HTMLInputElement
+      expect(box, 'the premise: a box in the set').toBeTruthy()
+      box.focus()
+      window.dispatchEvent(new Event('resize'))
+      expect(C.toolsOpen, 'the keyboard is not a turn').toBe(true)
+      box.blur()
+      window.dispatchEvent(new Event('resize'))
+      expect(C.toolsOpen, 'with nothing typed in, a resize still shuts it').toBe(false)
+    } finally { if (C.arrangeMode) C.toggleArrange(); if (C.sylDirty) await C.saveChangesClick(); await act(async () => { root.unmount() }); host.remove() }
+  })
+
+  it('Fable F6 — a session ending while an import asks about a chart stops the import: the next chart’s question never reaches the next person', async () => {
+    const FMT: any = await import('./app/fileFormat.js')
+    const { endTrackerSession } = await import('./role.js')
+    const two = C.SYLS.slice(0, 2).map((e: any) => e.id)
+    const charts = await C.collectCharts(two, {})
+    ;(window as any).__pickOpenForTests = async () => ({ name: 'b.json', text: JSON.stringify(FMT.buildFile({ savedAt: '2026-09-28T00:00:00Z', charts })) })
+    let p: any
+    try {
+      p = C.importClick()
+      await until(() => C.dlg && /already exists/.test(C.dlg.msg))
+      endTrackerSession()
+      for (let i = 0; i < 40; i++) await tick()
+      expect(C.dlg, 'no question left for the next person').toBeNull()
+    } finally {
+      delete (window as any).__pickOpenForTests
+      for (let i = 0; i < 10 && C.dlg; i++) { C.dlgClose(null); await tick() }
+      await p
+    }
   })
 })

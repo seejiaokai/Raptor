@@ -291,6 +291,24 @@ for (const mode of (process.env.LO_ONLY ? [process.env.LO_ONLY] : ['desk', 'phon
     m10.course === '26ABSG' && m10.student === 'STUDENT AA' && moved.every(k => k.startsWith('ocuLocal:who:bane:')) && !Object.keys(kAfter).some(k => /^ocuLocal:(lastCourse|lastCrew)/.test(k)),
     `${brief(m10)} · import said ${JSON.stringify(asked.map(a => a.msg.slice(0, 50)))} · keys that changed ${JSON.stringify(moved)}`)
 
+  /* ---- S12 (Fable's final read, F2): the CHART on the course is part of a person's place —
+     the roster is per chart, so two people on different charts of one course each come back
+     to their own chart AND their own student on it ---- */
+  await choose(page, '#sylSel', 'Tx 2026')
+  await addStudent('LO TX MEM')
+  const m12 = await picked(page)
+  L.note(`${M} S12 the member moves to the chart Tx 2026 and adds her student there`, brief(m12) + ' · ' + m12.syllabus)
+  await logout(page); await as(page, 'admin'); await tab()
+  const a12 = await picked(page)
+  L.ok(`${M} S12 the admin reopens on HIS chart of the course, not the member's (Tx 2026), and his student`, !!a12.syllabus && !/Tx 2026/.test(a12.syllabus) && a12.student !== 'LO TX MEM',
+    brief(a12) + ' · ' + a12.syllabus)
+  await shot(page, S('15', 'admin-own-chart'))
+  await logout(page); await as(page, 'member'); await tab()
+  const m13 = await picked(page)
+  L.ok(`${M} S12 the member reopens on her own chart (Tx 2026) and her student on it`, /Tx 2026/.test(m13.syllabus || '') && m13.student === 'LO TX MEM',
+    brief(m13) + ' · ' + m13.syllabus)
+  await shot(page, S('16', 'member-own-chart'))
+
   L.note(`${M} console / page errors`, errors.join(' | ') || 'none')
   allErrors.push(...errors.map(e => M + ': ' + e))
   await browser.close()

@@ -63,6 +63,17 @@ export function bakeCharts(raw, data) {
       if (Object.keys(prof).length) block[eid] = prof; else delete block[eid]
       report.details.push(name + ' · ' + eid)
     }
+    /* A ball no longer on the chart leaves nothing behind (D130). The rest of the chart's
+       shipped details are KEPT: the file carries only what differs from the wording the app
+       ships — an earlier bake included — so a detail the file leaves out is exactly what the
+       app shows (Astra's final read, 28 Sep 26; rebuilding the block from the file alone
+       would have wiped every earlier bake). */
+    const onChart = new Set(events.map(e => e && e.id))
+    const kept = out.EVENT_INFO_BY_SYL[name]
+    if (kept) {
+      for (const eid of Object.keys(kept)) if (!onChart.has(eid)) delete kept[eid]
+      if (!Object.keys(kept).length) delete out.EVENT_INFO_BY_SYL[name]
+    }
     report.baked.push(name)
   }
   for (const b of BUILTIN_SYL) if (!inFile.has(b.id)) (tomb.has(b.id) ? report.deleted : report.untouched).push(b.name)

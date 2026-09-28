@@ -15,6 +15,23 @@ the later merge keeps both (D78).
 
 ## Now
 
+<!-- now:claude/tracker-leftovers-f79d36 -->
+### `claude/tracker-leftovers-f79d36` — the Tracker leftovers BUILT, walked and re-walked; Fable and Astra's final reads running — written 28 Sep 26 — verify before use
+- **The branch:** from `main`, folder `.claude/worktrees/tracker-palette-prompt-a0c90f`. Items `[TRK-RETEST-NOTES]`,
+  `[TRK-EDIT-SIDEWAYS]`, `[TRK-SESSION-PICK]`, `[TRK-DLG-LEFTOVERS]`, `[TRK-BAKE-STALE]`; his rulings D370–D376
+  (`.claude/rules/decisions/tracker.md`). Preview 4175, `E2E_PORT=4192`. `main` brought in at PR #457.
+- **Done:** the build; the FULL bug check so far — roll-calls, three walkers (first walk `…/walk/`), every finding fixed
+  or filed, the re-walk (`…/rewalk/`, all green), 43 break tests all red, the evidence sheet
+  `raptor-port/docs/handpass/2026-09-28-trk-leftovers.md` with its look card (§11). Filed: `[SAVE-NOTE-COVERS]`,
+  `[TRK-SAVE-FAIL-SAYS-SAVED]`, `[SHELL-SIDEWAYS-BAR]`, `[LW-DOZE-GUARDS]`.
+- **Next:** the two final reads (brief `raptor-port/docs/superpowers/briefs/2026-09-28-trk-leftovers-final-read.md`) →
+  fix → re-walk what the fixes touch → the gates (unit, e2e, smoke) → archive the five items → PR → his look → "merge live".
+- **Parallel chats (D302):** the change-recording chat owns the Tracker's ↶ ↷ in `Header.jsx` (D347) — this branch left
+  those lines alone. **When the rulings slim-down (`claude/docs-rulings-slim-down-e83c74`) is on `main`, bring it in with
+  `git merge --no-commit --no-ff origin/main`**, resolve `HANDOFF.md` / `OUTSTANDING.md` first, then
+  `node raptor-port/scripts/backlog-archive.mjs --rulings --merge` (that chat's instruction, 28 Sep 26).
+<!-- /now -->
+
 <!-- now:claude/docs-tidy-subheads-audit-ec8f87 -->
 ### `claude/docs-tidy-subheads-audit-ec8f87` — docs-only tidy DONE: [HANDOFF-SHAPE-GUARD], [DOC-SUBHEADS], [RULING-HOMES-AUDIT] — waiting for his "merge live" — written 28 Sep 26 — verify before use
 - **The branch:** cut from `main` at PR #456; folder `.claude/worktrees/bg-cwd-guard-4cc654`. Documents and the

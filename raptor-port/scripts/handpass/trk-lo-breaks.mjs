@@ -60,6 +60,18 @@ const BREAKS = [
   ['D373 Escape closes the set first', 'src/tracker/app/core.js', '  if (toolsOpen) { e.preventDefault(); toolsOpen = false; notify(); return; }\n', '', 'folded tool row'],
   ['E the bake keeps details off the base table', 'scripts/tracker/bake-lib.mjs', "for (const k of Object.keys(merged)) if ((merged[k] || '') !== (base[k] || '')) prof[k] = merged[k]", 'for (const k of Object.keys(merged)) prof[k] = merged[k]; Object.assign(out.EVENT_INFO, { [eid]: merged })', 'baking an exported chart'],
   ['E the bake refuses a student name', 'scripts/tracker/bake-lib.mjs', "if (leaked.length) throw new Error(", "if (false) throw new Error(", 'baking an exported chart'],
+  /* the two final code reads (Fable and Astra, 28 Sep 26) */
+  ['Fable F1 an undo closes the lull calendar', 'src/tracker/app/core.js', '  lullPick = null; lullCopy = null;\n  if (active !== s)', '  if (active !== s)', 'Fable F1'],
+  ['Fable F1 no write past the end of the list', 'src/tracker/app/core.js', 'if (lullPick.index >= 0 && lullPick.index < lulls[s].length) lulls[s][lullPick.index]', 'if (lullPick.index >= 0) lulls[s][lullPick.index]', 'Fable F1'],
+  ['Fable F2 each person’s own chart', 'src/tracker/app/core.js', '  if (__mySyl && sylSource(__mySyl)) plan.sylId = __mySyl;\n  else if (__lastS && restoreLastSyllabus) {', '  if (__lastS && restoreLastSyllabus) {', 'Fable F2'],
+  ['Fable F2 the chart on screen is the saved chart', 'src/tracker/app/core.js', '  if (plan.sylId !== __storedSyl) await savePlan();\n', '', 'Fable F2'],
+  ['Fable F3 Done on reads the box live', 'src/tracker/app/core.js', 'popDonePartial = !!partial;   /* the live reading, as popFailCommit */', 'if (partial) popDonePartial = true;', 'Fable F3'],
+  ['Fable F3 Failed on reads the box live', 'src/tracker/app/core.js', '  popFailPartial = !!partial;\n', '  if (partial) popFailPartial = true;\n', 'Fable F3'],
+  ['Fable F4 a pace never set is removed, not stored empty', 'src/tracker/app/core.js', '(pace[s] ? savePace(s) : delKey(kPace(course, s)))', 'savePace(s)', 'Fable F4'],
+  ['Fable F5 the keyboard is not a turn', 'src/tracker/app/core.js', '      if (w === lastW && typing) return;\n', '', 'Fable F5'],
+  ['Fable F6 an import stops when its session ends', 'src/tracker/app/core.js', '      if (ended()) return;   /* the session ended under a question: nothing more is asked (F6) */\n', '', 'Fable F6'],
+  ['Astra F3 a draft resolved moves the person to their own place', 'src/tracker/app/core.js', '  if (ready && !bootError && whoamiId() !== pickOwner) resumeForPerson();\n', '', 'unsaved chart edit is never replaced'],
+  ['Astra F1 the bake prunes a deleted ball’s details', 'scripts/tracker/bake-lib.mjs', "      for (const eid of Object.keys(kept)) if (!onChart.has(eid)) delete kept[eid]\n", '', 'a later bake'],
 ]
 /* -t takes a REGULAR EXPRESSION: a plus sign or a bracket in a filter silently matches nothing, or crashes */
 /* ONLY="name, name" runs just those (a re-check after a fix) */

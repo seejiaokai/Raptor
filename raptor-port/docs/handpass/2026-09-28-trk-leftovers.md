@@ -64,7 +64,7 @@ the fixes); "test" names a test in `src/tracker/leftovers.test.tsx` unless said 
 | The Course box / a course switch | YES — each person's last course | walk S3, S4, S9 |
 | Rename course | NO — because a course is known by its hidden id; a rename moves nothing | walk S10b (a student renamed, same idea); architecture (1B-i) |
 | Delete course (or the remembered course gone) | YES — falls back to the first course, never blank | walk S9 |
-| A syllabus switch | NO — because the pick is per course, not per chart; a switch keeps it | test "D376 …" |
+| A syllabus (chart) switch | YES — since the final reads (Fable F2, D376 reading 5): each person's chart on each course; the chart on screen is also the course's saved chart | test "Fable F2 …"; walk `lo-2a-pick` S12 |
 | Import | YES — a person stays on their own place; nobody else's pick moves | walk S11 |
 | The first open (boot) | YES — reads the signed-in person's place | walk S0, S4 (after a reload) |
 | Sign-out → another person signs in (the Tracker already open) | YES — the page reads "Loading…" and nothing can be pressed until their place is on screen | walk S2, S3, S5; test; break test "D376 no press while reloading" |
@@ -219,3 +219,58 @@ dialogs" and passed it.
 | R2 | Re-walk: the editing canvas kept a 300px floor in a 169px box on a sideways phone — 130px of hidden canvas the box could scroll into (Fit still kept every ball in sight). The rule had TWO copies, the re-fit and the chart's redraw | FIXED (red test and red browser check first) — one shared rule, never taller than its box; `lo-10-fold` "no taller than the chart box" (820×145 in 844×170), picture `rewalk/fold-2b-sideways-after-fit.png` |
 | C12 | Raptor's own bar is two rows on a sideways phone | FILED — `[SHELL-SIDEWAYS-BAR]` |
 | C13 | The dozing-page comment was wrong | FIXED (the comment); FILED `[LW-DOZE-GUARDS]` |
+
+### 9b. The two final code reads (Fable and Astra, 28 Sep 26 — brief `docs/superpowers/briefs/2026-09-28-trk-leftovers-final-read.md`)
+
+Every claim was re-checked against the code before acting — Astra cited two files that do not exist in this repo
+(`public/legacy/core.js`, `src/App.jsx`), so its line numbers could not be trusted; its logic was traced on the real ones.
+
+| # | Found | Disposition |
+|---|---|---|
+| Fable F1 (high) | An undo pressed while the lull calendar is open could write past the end of the shortened list — a hole, stored as `null` — and a `null` blanked the whole app each time that course opened | FIXED (red test, two break tests) — an undo closes the calendar and Copy to…; a period no longer there is added as new. No read-side filter: nothing writes a `null` now, and one already stored is demo data (D56) |
+| Fable F2 (medium) | Each person's own place did not include the CHART: the roster is per chart, so the next person opened on the last person's chart and, their student not on it, on the last person's student | FIXED — D376 reading (5), stated on the look card; built with a side effect found while building it: the chart on screen is now also the course's saved chart, or a later reload of the course (an import, discarded chart edits) switched the person back. Walk `lo-2a-pick` S12 |
+| Fable F3 (medium) | The pop-up's "part-typed" reading stuck: a day part-typed, then CLEARED, still refused with "clear the box for today" | FIXED — the box's live reading both ways (a slip in walker b's fix) |
+| Fable F4 (low) | Undoing a new student's first pace change stored an empty pace, which read back as a blank pace box after a reload | FIXED — a pace never set is removed again |
+| Fable F5 (low) | On Android, the keyboard opening for the font box in the folded Tools set counted as a turn of the phone and shut the set | FIXED — a resize that keeps the width while a box in the set is typed in is the keyboard. Not walkable (an iPhone fires no resize for it; §8) |
+| Fable F6 (low) | A session ending while an import asks about a chart let the import's NEXT chart question reach the next person | FIXED — an import stops between its questions once its session ends |
+| Astra 1 (rated high) | "A later bake keeps details the owner removed" | NOT A DEFECT as stated: the file carries only what differs from the wording the app ships, earlier bakes included, so a detail left out is what the app shows — and the suggested rebuild from the file alone would have wiped every earlier bake (now pinned by a test). Its one true edge — details of a ball deleted from the chart surviving — FIXED (pruned) |
+| Astra 2 (rated high) | A person's place loading, or an add/remove/undo, reads the live person after a wait | CANNOT HAPPEN in this build: the Tracker's storage answers at once without handing control back, so nothing can land between a job's steps (walked: no press reached the page mid-load under a 20× slowed processor). FILED `[TRK-ASYNC-STALE]` with `[DB-READINESS]` |
+| Astra 3 (rated high) | An unsaved chart edit held the last person's place after the person changed, and saving it did not move them to their own | FIXED — saving or discarding the edit loads the person's own place (the only door: an admin changing his own account's person) |
+| Astra 4 (medium) | A "Delete course X?" answer acts on the live course | CANNOT HAPPEN in this build (as Astra 2); FILED `[TRK-ASYNC-STALE]` |
+| Astra 5 (medium) | Two failures on the same day keep the wrong tie order after a re-date | NOT A DEFECT: a failure is only a day, so two on the same day are the same record — their order changes nothing on screen or in what − leaves |
+
+**The gates' own findings:** the Tracker smoke's three failures were the suite, not the app — two checks still wanted
+the save words beside ✓ Save changes (C14 moved them aside; the checks now follow the contract), and one step left a
+date box with Tab, which in Chrome only steps between the box's day, month and year (now Enter; proved with a probe
+before changing it). The unit suite's one failure, a changes-window test (not this branch's) timing out under load,
+passes alone (9/9) and is filed `[HISTLIST-SLOW-TEST]`.
+
+## 10. The gates
+
+*(filled in from the runs watched — see §11 for the final line)*
+
+## 11. His look — five minutes, on his phone
+
+Open the Tracker on the Vercel link. Pictures first: `rewalk/lo-2b-ph-9-grade-with-future-doneon.png`,
+`rewalk/lo-2b-ph-f11-card-after-na.png`, `rewalk/lo-2a-P03-member-own-place.png`, `rewalk/fold-1-sideways-folded.png`,
+`rewalk/fold-2b-sideways-after-fit.png`.
+
+1. **A day after today is refused.** Tap a ball, put tomorrow in "Done on", tap DCO: nothing is graded, your day stays
+   in the box with a red line saying why. Put today (or clear the box) and DCO works. The same for "Failed on" and +.
+2. **A date saves when you leave the box**, never while you type: type a Last Flown day slowly, tap elsewhere — one ↶
+   takes the whole day back.
+3. **Each person comes back to their own place.** Pick a course and a student, sign out, sign in as the member
+   (`us` / `us`): the Tracker opens on the member's own place (the first course, its first student, if they have
+   never used it). Sign back in as yourself: you are back where you were.
+4. **Phone on its side → ✎ → Edit chart layout:** one row — the tool, ⤢ Fit, Tools ▾. Turn it upright and back: the
+   chart re-fits, nothing is left open over it.
+5. **Your chart too:** on one course, you on "2026" and the member on "Tx 2026" — each of you comes back to your own
+   chart and your student on it. *My reading of D376, added from Fable's read — correct me if "your place" should not
+   include the chart.*
+6. **An N.A. event's failures leave the Failures card** and its total, and come back with their days if you grade the
+   event again (the pop-up and the ⓘ bubble still list them).
+
+**What changed that you might notice:** a year still being typed in "Done on" / "Failed on" (say 0020) used to be
+recorded as today; now it is refused with "That day isn’t finished — type the whole day, or clear the box for today."
+An empty box still means today. **Only a real phone can prove** (§8): Enter while your phone's keyboard is still
+composing a word does nothing in the Tracker's boxes; turning the phone for real re-fits the editing canvas.

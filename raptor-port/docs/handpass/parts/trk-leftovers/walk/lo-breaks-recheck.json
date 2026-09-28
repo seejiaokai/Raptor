@@ -1,12 +1,57 @@
 [
   {
-    "name": "D373 the canvas never taller than its box",
+    "name": "Fable F1 an undo closes the lull calendar",
     "pass": true,
-    "said": "RED: 1 failed | 45 skipped (46)"
+    "said": "RED: 1 failed | 52 skipped (53)"
   },
   {
-    "name": "D373 a turn re-fits the canvas",
+    "name": "Fable F1 no write past the end of the list",
     "pass": true,
-    "said": "RED: 1 failed | 45 skipped (46)"
+    "said": "RED: 1 failed | 52 skipped (53)"
+  },
+  {
+    "name": "Fable F2 each person’s own chart",
+    "pass": true,
+    "said": "RED: 1 failed | 52 skipped (53)"
+  },
+  {
+    "name": "Fable F2 the chart on screen is the saved chart",
+    "pass": true,
+    "said": "RED: 1 failed | 52 skipped (53)"
+  },
+  {
+    "name": "Fable F3 Done on reads the box live",
+    "pass": true,
+    "said": "RED: 1 failed | 52 skipped (53)"
+  },
+  {
+    "name": "Fable F3 Failed on reads the box live",
+    "pass": true,
+    "said": "RED: 1 failed | 52 skipped (53)"
+  },
+  {
+    "name": "Fable F4 a pace never set is removed, not stored empty",
+    "pass": true,
+    "said": "RED: 1 failed | 52 skipped (53)"
+  },
+  {
+    "name": "Fable F5 the keyboard is not a turn",
+    "pass": true,
+    "said": "RED: 1 failed | 52 skipped (53)"
+  },
+  {
+    "name": "Fable F6 an import stops when its session ends",
+    "pass": true,
+    "said": "RED: 1 failed | 52 skipped (53)"
+  },
+  {
+    "name": "Astra F3 a draft resolved moves the person to their own place",
+    "pass": true,
+    "said": "RED: 1 failed | 52 skipped (53)"
+  },
+  {
+    "name": "Astra F1 the bake prunes a deleted ball’s details",
+    "pass": true,
+    "said": "RED: 1 failed | 52 skipped (53)"
   }
 ]
