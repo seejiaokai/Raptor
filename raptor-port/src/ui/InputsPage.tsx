@@ -39,7 +39,6 @@ import { DocConfirm } from './DocConfirm'
 import { docFields, docHas, rowDocIds } from '../state/docs'
 import { useVersion } from './useStore'
 import { exportCSV, inputRows } from './export'
-import { logAction } from '../engine/editlog'
 import { RangeCal } from './RangeCal'
 
 /* The remarks tail (owner, Aug 26; single-day "till" added 18 Aug 26). Picking
@@ -456,12 +455,9 @@ export function InputsPage() {
        with its input; the next one needs its own. */
     const finishAdd = () => {
       const row = INPUTS[0]
-      /* THE HISTORY LINE THE EDIT WINDOW'S ADD ALWAYS WROTE (AB8a, 26 Sep 26): Edit history names an input added
-         and an input removed (engine-rules §The edit log) — commitNewInput wrote "Input added — …", this page's own
-         Add, the door people use most, wrote nothing. The same sentence, once, after the write has landed (every
-         path that files reaches here only when writeInputsBatch succeeded). */
-      const cs = PEOPLE[row.person] ? PEOPLE[row.person].cs : row.person
-      logAction(null, `Input added — ${cs}, ${row.type}, ${row.date}${row.endDate ? '–' + row.endDate : ''}${row.acc === 'g' ? ' (on the Ground Programme)' : ''}`)
+      /* ITS HISTORY LINE (AB8a, 26 Sep 26 — this page's Add, the door people use most, once wrote nothing) is written
+         by the change history's ONE writer now, from the command itself (state/changelines.ts — [DRAFT-PENDING],
+         Astra DP-03, 28 Sep 26), so no door writes it twice and none can forget it */
       setPinned(p => [row, ...p])
       setFlash(f => [row, ...f])
       setJustAddedIid(row.iid)

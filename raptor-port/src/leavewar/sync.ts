@@ -1682,7 +1682,9 @@ function restoreBody(id: string, rename: string | null, postIn?: string): boolea
   const body = (PEOPLE as any)[id]
   let ok = true
   const r = cmdCommit({
-    type: 'person.restore', scope: { module: 'people' } as any, meta: null,
+    /* UNDO is the posting's own decision taken back (the posting command, as `takeBack` is); RESTORE is Admin → Users'.
+       The change history says each as what it is (Astra's read of the [DRAFT-PENDING] fixes, 02) */
+    type: postIn === undefined ? 'lw.postout' : 'person.restore', scope: { module: 'people' } as any, meta: null,
     apply: (txn: any) => {
       txn.enlist(peopleStore); txn.enlist(settingsStore); txn.enlist(lwStore)
       if (rename != null && !renameCallsign(id, rename)) { ok = false; return }

@@ -1,5 +1,5 @@
 import { HOOKS } from '../engine/hooks'
-import { elogFor, elogAllFor, elogWhen, elogWho } from '../engine/editlog'
+import { elogFor, elogAllFor, elogWhen, elogWho, elogVal } from '../engine/editlog'
 import type { ELogRow } from '../engine/editlog'
 import { HISTMODE, esc } from '../state/view'
 
@@ -111,7 +111,8 @@ export function hideHistBub() {
    the prefix is put back here. Nothing new is added to the builders for this
    — a data-histkey on every cell would be several hundred extra attributes on
    a surface with a measured DOM ceiling, to repeat an address already there. */
-const CELL_SEL = '[data-bfld],[data-slot],[data-store],[data-bombs],[data-area],[data-atime],[data-intimes],[data-txt]'
+/* `data-inprow` ([DRAFT-PENDING], Astra DP-08): a row under Unavailable — an input's own address, `iu:<iid>` */
+const CELL_SEL = '[data-bfld],[data-slot],[data-store],[data-bombs],[data-area],[data-atime],[data-intimes],[data-txt],[data-inprow]'
 function cellOf(t: EventTarget | null) {
   const el = (t as HTMLElement | null)
   if (!el || !el.closest) return null
@@ -181,15 +182,18 @@ function keyOf(el: HTMLElement) {
   if (d.area) return 'ar:' + d.area
   if (d.atime) return 'at:' + d.atime
   if (d.intimes) return 'it:' + d.intimes.replace('|', '.')
+  if (d.inprow) return 'iu:' + d.inprow
   return ''
 }
 
 /* "from → to" with the arrow only when there is a before worth naming; a
    detail typed into an empty box reads "set to X", not "— → X" */
 function chgHTML(r: ELogRow) {
-  return r.from === '—'
-    ? `set to <b>${esc(r.to)}</b>`
-    : `<b>${esc(r.from)}</b> <i class="hbar">→</i> <b>${esc(r.to)}</b>`
+  /* a person is said by his live callsign (the log keeps his id — Fable F4, 28 Sep 26) */
+  const from = elogVal(r, 'from'), to = elogVal(r, 'to')
+  return from === '—'
+    ? `set to <b>${esc(to)}</b>`
+    : `<b>${esc(from)}</b> <i class="hbar">→</i> <b>${esc(to)}</b>`
 }
 
 function show(el: HTMLElement) {
@@ -303,6 +307,30 @@ function place(b: HTMLDivElement, el: HTMLElement) {
    sibling, and both are re-hung by their own string diffs — a listener on
    either child would be thrown away with it. Same reason rowdrag.ts
    delegates here. */
+let DOC_WIRED = 0
+/* ON THE DOCUMENT, not the wrap — the bubble is a body-level element and is not inside a wired surface, so a surface's
+   own listeners can never see a tap on it. Capture, so it runs BEFORE a surface's `tap`: putting a pinned bubble down
+   and raising the next one are then one gesture in the right order. */
+function docClickOnce(e: any) {
+  if (!bub || !bub.isConnected) return
+  const t = e.target as HTMLElement | null
+  if (!t || !t.closest) return
+  if (t.closest('[data-histmore]')) {
+    /* the tap belongs to the control, and only to it — the board underneath
+       must not also act on it, which is the one place this feature takes an
+       event at all */
+    e.stopPropagation()
+    toggleHistBubExpand()
+    return
+  }
+  /* a pinned bubble is put down by the next click anywhere that is not it */
+  if (pinned && !t.closest('.histbub')) hideHistBub()
+}
+/* THE PAGE-WIDE HALF IS WIRED ONCE, however many surfaces call this ([DRAFT-PENDING], 28 Sep 26 — the edit week is
+   wired too now, D116): two document listeners would each toggle the phone's "every change" control, so one tap
+   expanded it and the other folded it straight back (the test that pins that control caught it). The element's own
+   listeners stay per surface. */
+
 export function wireHistBubble(el: HTMLElement) {
   /* PINNED beats every one of these. A bubble raised from the changes list, or
      expanded by hand, is there because someone asked for it and stays until
@@ -355,22 +383,7 @@ export function wireHistBubble(el: HTMLElement) {
      not inside `el`, so the wrap's own listeners can never see a tap on it.
      Capture, so it runs BEFORE the wrap's `tap` below: putting a pinned bubble
      down and raising the next one are then one gesture in the right order. */
-  const docClick = (e: any) => {
-    if (!bub || !bub.isConnected) return
-    const t = e.target as HTMLElement | null
-    if (!t || !t.closest) return
-    if (t.closest('[data-histmore]')) {
-      /* the tap belongs to the control, and only to it — the board underneath
-         must not also act on it, which is the one place this feature takes an
-         event at all */
-      e.stopPropagation()
-      toggleHistBubExpand()
-      return
-    }
-    /* a pinned bubble is put down by the next click anywhere that is not it */
-    if (pinned && !t.closest('.histbub')) hideHistBub()
-  }
-  document.addEventListener('click', docClick, true)
+  if (DOC_WIRED++ === 0) document.addEventListener('click', docClickOnce, true)
   el.addEventListener('mouseover', over, true)
   el.addEventListener('mouseout', out, true)
   el.addEventListener('click', tap, true)
@@ -392,20 +405,25 @@ export function wireHistBubble(el: HTMLElement) {
      and a jump from the changes list would have left the bubble behind. The
      per-event cost is a boolean on a variable that is null almost always, not
      the DOM walk HANDOFF flags on `onDotsScroll`. */
-  document.addEventListener('scroll', bail, true)
-  window.addEventListener('resize', bail)
+  if (DOC_WIRED === 1) {
+    document.addEventListener('scroll', bail, true)
+    window.addEventListener('resize', bail)
+  }
   /* the visual viewport does NOT dispatch a document scroll event when a
      phone keyboard pans or resizes it — layout scroll and visual-viewport
      scroll are two separate signals, and a bubble re-anchored only on the
      first of them would sit wherever the keyboard last left it. Guarded:
      jsdom has no visualViewport at all. */
-  window.visualViewport?.addEventListener('resize', bail)
-  window.visualViewport?.addEventListener('scroll', bail)
+  if (DOC_WIRED === 1) {
+    window.visualViewport?.addEventListener('resize', bail)
+    window.visualViewport?.addEventListener('scroll', bail)
+  }
   return () => {
-    document.removeEventListener('click', docClick, true)
     el.removeEventListener('mouseover', over, true)
     el.removeEventListener('mouseout', out, true)
     el.removeEventListener('click', tap, true)
+    if (--DOC_WIRED > 0) return
+    document.removeEventListener('click', docClickOnce, true)
     document.removeEventListener('scroll', bail, true)
     window.removeEventListener('resize', bail)
     window.visualViewport?.removeEventListener('resize', bail)

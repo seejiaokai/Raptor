@@ -649,6 +649,95 @@ outline the re-test had put there is gone). A puck's edge carries only its warni
 the dashed late show, the dotted crew-rest cause. Times, areas, remarks and every other string keep the marks above,
 unchanged. The approved mock-up: `docs/mock/amend-seat-marks.html` (its `C_CSS`).
 
+**THE OG TAG — a day NOT yet published, for the person looking** (owner, D172, 25 Sep 26 — "OG makes sense, maintain the
+header"; built with `[DRAFT-PENDING]`, 28 Sep 26). A puck whose PLACE holds a change NEW TO the person looking (someone
+else made it, he has not marked it seen — D170) wears a hollow, dotted "OG" in the plain white outline, in the corner a
+waiting ALn tag uses (`.seat[data-og]::after`, its seat positioned — `.seat[data-og]{position:relative}`: without it the
+tag is drawn off its puck, which the first look found). Only pucks; a man taken off leaves no puck and no tag (the day's
+chip and the changes window carry that). Per place, never per person (a man on two places, one changed, wears one tag —
+Astra DP-11). Decided in the one function that marks a slot (`publish.ts alAttr`) through one engine hook,
+`HOOKS.newToMe` (`ui/changesmodel.ts` installs it; headless, false — byte-identical HTML). On the edit week, the board
+and View-only Sched's live draft of a day not yet published; never on a published day (its ALn tags say it), never for a
+guest, never in print or CSV. "Mark all as seen" takes it away. The day headings are unchanged (D172).
+
+## The one changes window (`[DRAFT-PENDING]`, 28 Sep 26 — D116–D119, D167–D172, D169 with D211, D263, D336 (b))
+
+**One window replaces three lists** (D168): the published day's pending list (below — its lines are now the window's "To
+go out" tab), the Edit history modal (retired), and the unpublished day's miscounting "N pending" (D118 — gone). The
+design of record: `docs/mock/changes-window.html`, option A (D170), `changes-doors.html` as narrowed by D171,
+`tags-ticks.html` (OG, D172). Code: `ui/ChangesWindow.tsx` (the window), `ui/changesmodel.ts` (its lines, groupings and
+counts), `ui/changesopen.ts` (the opener), `ui/floatwin.ts` (the chrome it shares with the ALL AVAIL window),
+`state/changes.ts` (new to you), `state/changelines.ts` (the lines the cell funnels never see), `engine/editlog.ts` (the
+history).
+
+- **The window** — the ALL AVAIL window's pattern (D167, D38–D41): moved by its six-dot grip, resized by its corner on a
+  desktop (380 × 560 to start, top right), the full-width bottom panel on a phone (12px margins, 62% tall — moves, does
+  not resize, D77); the schedule behind stays usable. It closes on ✕, a page change, a week change and a sign-in or
+  sign-out (`state/view.ts` CHGWIN, VIEW_RESET) — never on a tap outside it, a scroll or Escape (it is a window, not a
+  pop-up). The one pressed last of it and the ALL AVAIL window is in front (411 over 410); both stay under the bubble
+  (430), a drawer (440) and a modal (470).
+- **Inside** — the head ("Changes · Tuesday 14/7", or "Changes · week of 13/7"; under it "Not yet published" /
+  "Published · N changes waiting to go out as AL1"); tabs **New to you N** · **All changes N** · **To go out · ALn N**
+  (only when the chosen days include a published day; with the week chosen it lists the published days, each opening its
+  own list); the day picker **Week · Mon … Sun** (a gold dot on a day with something new to you); **Group by Who**
+  (by person, then SITTING — one person's changes with no gap over 30 minutes; "Hex · 3 changes · NEW · 25/9 15:20–15:38")
+  or **Where** (the day's own sections: Flying waves, Duties, Common Programme, Sims, Ground, Notes, Absences, Quals, The
+  day). A group with something new opens by itself; the rest fold (D167 (4)); a group folded or opened by hand stays so
+  while the window is open. Every line: what (the man or the place, bold), what happened ("put on VL BFM · #1 RCP",
+  "taken off …", "moved from A to B", "06:00 → 06:15"), who (his live callsign) and when ("28/9 02:12"); a gold dot on a
+  line new to you. Newest first (D119). Empty states: "Nothing new to you on Tuesday." · "No changes on Tuesday yet." ·
+  "Nothing is waiting to go out." The foot: "✓ Mark all as seen" on New to you (greyed when nothing is new); a member's
+  All changes reads "Read only — every change and who made it, for everyone to see."
+- **A tap on a line** → `interactions.ts jumpToChange`, on the page you are on (D107), and the window STAYS OPEN (D167);
+  on a phone the panel shrinks to a slim bar ("Changes · N new ▴") until tapped. A line with nowhere to go on this page
+  is listed but is not a button: no key and no input (a structural sentence, a Leave War decision with no Input, a Quals
+  change, a publish), a detail the board does not draw while on the board (the area strip, the in-times, the traffic,
+  the wave's title), the traffic on the week. An input's line goes to its row on the programme when accepted, else its
+  row under Unavailable (`data-inprow` on every Unavailable row for a signed-in reader, on the week AND the board — Astra
+  DP-08; the board's half, Fable P5). **On View-only Sched a published day shows its issued face**, which draws nothing to
+  land on: a tap on a line about that day turns the day to its Working draft first and says so ("Showing the working
+  draft — the change is on it", Fable P3); that page never tells anyone to open the board.
+- **A MOVE IS ONE LINE** (Fable F2): two neighbouring history rows by the same person, within a second and a half, one
+  taking a man off a place and the other putting the same man on another, read "moved from A to B" and count one. A
+  swap is two lines (D109). A move put back is two lines — the history is the working record (D263 (3)).
+- **New to you** (D170): a line someone ELSE made, not yet marked seen by the person looking; his own lines never; a
+  line with no person behind it never; nothing for someone signed in without a person. "Mark all as seen" marks exactly
+  what the New to you tab lists (the chosen day, or the week), for him alone (`changes.seen` — own entry only). Someone
+  given access after the history began starts with nothing new (his account's `seenFrom`, Fable F6).
+- **The doors** (D171): (1) **the day's ONE chip**, on every day heading — the edit week, the board's strip, View-only
+  Sched (a published day on its working copy only — its issued face never reads pending, AM24), desktop and phone — for
+  an admin or a member, never a guest: a published day with changes waiting → "N pending" (a gold dot on it when
+  something on the day is new to you), opening To go out; else something new to you → "N new" (gold), opening New to
+  you; else changes on the day → "N changes" (quiet), opening All changes; else none. Under a version preview it stays
+  the plain count it was. (2) **The admin's top-bar icon** — the clock alone, no word, desktop and phone, on Edit
+  Schedule beside Undo / Redo (where "Edit history" stood), with a gold number for what is new to him across the WHOLE
+  loaded week; it opens (and closes) the window on the week, on New to you. Members get no top-bar door. (3) **The
+  board's History button** opens and closes it on the board's day.
+- **History mode is the window open** (D116, D168): the bubbles on a changed detail — hover on a desktop, tap on a phone
+  — on the board AND the edit week while it is open; closed, they are off. The bubble's page-wide listener is wired once
+  however many surfaces use it (`histbubble.ts` DOC_WIRED).
+- **The OG tag** (D172) — see §Amendment marks on screen. It follows its ROW, not its place (a row dragged above another
+  takes its tag along — the history's row-anchored key, each puck's place translated as it is drawn; Fable P1), and a
+  look at a version or a saved plan wears none (a preview reads a document — P4).
+- **The ⓘ day panel** on a day not yet published speaks the chip's words — "5 new" (gold) or "3 changes" (quiet) —
+  never the old count of touched details (D118; Fable P7). A published day keeps its "N unpublished edits" (the same
+  number as "N pending").
+- **The phone's clock icon** carries its number as a small badge on the icon's top-right corner (the phone's buttons are
+  30px squares; Fable P2). **The phone bar** always sits at the bottom, however far the panel was dragged; the panel
+  comes back where it was (P8).
+- **"To go out" names who and when for a Quals change** ("Casper · CAT", from the change history — found by the man's id
+  and the detail, so a rename since never loses it; an item listing several things names the newest — Fable P6, Astra
+  03), **and for an input changed since the day went out** (a leave filed, edited, deleted, a request's filing — by the
+  input's id), and sorts it by that time, newest first (Astra 02).
+- **A tap on an input's line** lands on its row wherever it is drawn NOW — the programme, Unavailable, or Personal Inputs
+  (whose folded panel it opens on that day) — on the chosen day when it is drawn there, else the first day it is (a line
+  shown on Monday by the day a leave LEFT goes to Tuesday, where it is — Astra's read of the fixes, 03); drawn on no day
+  of the loaded week, the line is listed, not a button; a miss says "That input is not shown on this day" (Fable F5).
+- **A move pairs into one line only within one day** — a man moved to another day is one line on each day, in the
+  week's view as on the two days' chips (D109; Fable F7).
+- **What it deliberately does not do:** show on a guest's view (D215); change the day headings (D172 — ORIG keeps its
+  seal, the AL tags stay solid); reach another device before the database (one browser per store).
+
 ## The pending list, the one jump, and what the day head says (owner, 25 Sep 26 — the amendment batch)
 
 **An input's line, and the "what this day shows" line ([LEAVE-LATE-PUBLISHED], D177–D179, 26 Sep 26).** An input changed
@@ -665,7 +754,9 @@ warnings that stay LIVE on a published face (a crew-rest breach, the 7-day run, 
 warnings — D184, D185; `engine-rules.md` §Publishing) are never on it: the face shows them at once. The Amendments
 panel counts "N input changes" and names "what the published day shows changed" (F6).
 
-**"N pending ▾" opens the list of what will go out (D99, D100).** On a PUBLISHED day's working copy, on the edit
+**"N pending ▾" opens the list of what will go out (D99, D100).** **— SINCE [DRAFT-PENDING] (28 Sep 26, D168): the list
+is the one changes window's "To go out" tab, newest first (D119), opened by the chip for an admin or a member; the
+pop-up described in the rest of this paragraph is gone (§The one changes window, above).** On a PUBLISHED day's working copy, on the edit
 week's day head and the board's publish strip (`html.ts dayStatHTML`), for the scheduler, the count is a button
 (`data-pendlist`) — never on View-only Sched, never under a preview, never on a draft day (nothing there goes out as an
 amendment). It opens `ui/pendlist.ts`: a body-level popover (z 440, over the board's 400, under the modals' 470),
@@ -692,8 +783,8 @@ on the programme → on Tuesday's programme"; the other day's added row is named
 it read "Ground · MEETING · item → removed"). One naming body, `pendlist.ts requestName`, for every line that names a
 request.
 
-**Who and when (D104).** The newest edit-log row for the change's own cells: the shared account the app records
-until the database brings personal accounts, and its clock (`elogWhen`). A change the page's record does not hold
+**Who and when (D104).** The newest edit-log row for the change's own cells: the signed-in person's live callsign
+(personal accounts since `[ACCOUNTS]`, D166 (5)), and its clock (`elogWhen`). A change the page's record does not hold
 reads "earlier"; one with no single cell names nobody rather than guess.
 
 **One "take me to this change", on the page you are on (D107).** `interactions.ts jumpToChange` serves Edit
@@ -4031,6 +4122,12 @@ thing this app writes to storage.
 
 ## History on the board (owner, 11 Aug 26)
 
+**28 Sep 26 (`[DRAFT-PENDING]` — D116, D168):** History mode IS the one changes window open — the board's `#sbHist`
+opens and closes the window on the board's day, the bubbles with it; the admin's top-bar icon and a day's chip open it
+too. The bubbles now work on the EDIT WEEK as well (`EditWeek.tsx` wires `wireHistBubble` on `#eWeek`; one History mode,
+D116). The checks panel's "☰ Edit history · N changes" line and the Edit history modal are gone — the window is the
+list (§The one changes window). The log is durable and week-safe now (`engine-rules.md` §The edit log).
+
 **25 Sep 26 (D105, D107):** the bubble stays — hover on a desktop, tap on a phone — and a long one SCROLLS inside
 itself (its list takes the pointer only once it overflows — the bubble itself stays pointer-events:none, the
 contract the geometry gate pins; with a mouse a long story waits a moment after the pointer leaves its cell, so the
@@ -5101,7 +5198,8 @@ ticked SANS (D283: with "Show SANS" OFF the war keeps his row in its old group, 
 whole row moves into the SANS group and his leave is tracked there — the approved picture); none → nothing more. Each
 runs ONCE for its date and never undoes a later hand change; the last admin who can sign in is never suspended or deleted
 by a posting — said once. Moving the date later or changing the outcome takes back what the posting made (the archive,
-the suspension, the SANS tick) — no "he's back" prompt; Undo post out after an Overseas Sqn is the Restore.
+the suspension, the SANS tick) — no "he's back" prompt; Undo post out after an Overseas Sqn runs the Restore's body as the posting command (`lw.postout` — the change history
+says "posting out taken back", `[DRAFT-PENDING]`).
 
 ## Admin → Users — Suspend / Enable, Delete account (`[POST-OUT-OUTCOMES]`, 27 Sep 26) — superseded by §Admin → Users — one door (D310: "Delete", the Sign-in dot, no Enable on an archived man); moved whole to `docs/archive/ui-contracts-2026-09-27.md`.
 ## Admin → Users — one door (`[ONE-DOOR]`, 27 Sep 26 — D305, D308, D309, D310, D320–D323); Quals' old Archived list: `docs/archive/ui-contracts-2026-09-27.md`

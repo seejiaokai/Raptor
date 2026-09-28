@@ -96,34 +96,8 @@ export function setDrawer(on: boolean) { DRAWER = on }
    itself is store-free chrome; this is just which surface asked for it. */
 export let WEEKCAL: false | 'view' | 'board' = false
 export function setWeekCal(v: false | 'view' | 'board') { WEEKCAL = v }
-/* The listed view of the edit log (owner, 11 Aug 26). `false` closed; open it
-   with `'all'` for the whole week or a day index to narrow it to one day —
-   the filter IS the open state, so there is no second flag to keep in step
-   with it, and closing forgets the filter (a list you reopen should show
-   everything, not a narrowing you set ten minutes ago). */
-export let HISTLIST: false | 'all' | number = false
-export function setHistList(v: false | 'all' | number) { HISTLIST = v }
-/* GROUPED BY DETAIL, or the flat timeline (owner, 11 Aug 26). Off by default —
-   "whats the latest changes based on time by default" — and it is a view of the
-   same rows, not a filter, so it sits beside the day filter rather than in it.
-   Kept here with HISTLIST because it is list state, not schedule state, and
-   because closing the list resets both: a view you set ten minutes ago should
-   not be waiting for you when you reopen. */
-export let HISTGROUP = false
-export function setHistGroup(on: boolean) { HISTGROUP = !!on }
-/* which groups are unfolded, by the key they group on. A Set mutated in place,
-   like DWOPEN and HLSET — the store notifies, the builder re-reads. */
-export const HISTOPEN = new Set<string>()
-export function toggleHistOpen(k: string) { HISTOPEN.has(k) ? HISTOPEN.delete(k) : HISTOPEN.add(k) }
-/* Every route out of the list forgets all of its view state. Keeping this in
-   one helper matters because a row jump is also a close: resetting only the
-   modal flag there made Grouped silently come back the next time the list was
-   opened, even though the close button correctly returned to By time. */
-export function closeHistList() {
-  HISTLIST = false
-  HISTGROUP = false
-  HISTOPEN.clear()
-}
+/* (the Edit history list's state — HISTLIST, HISTGROUP, HISTOPEN — went with the list: the one changes window
+   replaced it, [DRAFT-PENDING] D168, 28 Sep 26; the window's own state is state/view.ts CHGWIN) */
 
 /* ---- [ALL-AVAIL-WINDOW] — the counter's window (owner, D38–D41) -----------
    DEFINED IN state/view.ts and re-exported here, on the SECDEFOFFER precedent
@@ -142,7 +116,7 @@ export type { AvailWin, AvailBox } from '../state/view'
    list of every flag above, each with how it closes; it is registered into state/view.ts
    VIEW_RESET under 'session', so resetSession (the ONE session-change path) closes
    them all with no import from state into ui. pops.test.ts fails when an `export let`
-   here has no entry (Fable R2-8). HISTOPEN is a Set cleared by closeHistList. */
+   here has no entry (Fable R2-8). */
 export const POPS_RESET: { name: string; reset: () => void }[] = [
   { name: 'DAYPOP', reset: () => setDayPop(null) },
   { name: 'INSIGHTS', reset: () => setInsights(false) },
@@ -157,8 +131,6 @@ export const POPS_RESET: { name: string; reset: () => void }[] = [
   { name: 'DOCVIEW', reset: () => setDocView(null) },
   { name: 'DRAWER', reset: () => setDrawer(false) },
   { name: 'WEEKCAL', reset: () => setWeekCal(false) },
-  { name: 'HISTLIST', reset: () => closeHistList() },
-  { name: 'HISTGROUP', reset: () => setHistGroup(false) },
 ]
 export function resetPopsForSession(): void { for (const p of POPS_RESET) p.reset() }
 VIEW_RESET.push({ name: 'POPS', scopes: ['session'], reset: resetPopsForSession })

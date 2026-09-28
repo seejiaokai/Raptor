@@ -27,7 +27,6 @@ const rk = (k: string) => ridKey(k, DAYS)
 import { HOOKS } from '../engine/hooks'
 import * as view from '../state/view'
 import { openScheduler, closeScheduler } from './board'
-import { setHistList, setHistGroup, HISTOPEN } from './pops'
 import { hideHistBub, histBubPinned } from './histbubble'
 import { undo, redo } from '../state/history'
 
@@ -47,9 +46,12 @@ const mutate = async () => act(async () => { view.afterSchedMutate(); notify() }
 const newest = () => elogRows()[0]
 
 let phone = false
+/* SINCE [DRAFT-PENDING] (28 Sep 26 — D168) the list is the ONE changes window: the board's History button opens it on
+   the board's day; these tests read every change of the week */
 const openList = async () => {
-  if (!view.HISTMODE) await act(async () => { view.setHistMode(true); notify() })
-  await act(async () => { setHistList('all'); notify() })
+  if (!document.querySelector('.chgwin:not([hidden])')) await click($('#sbHist'))
+  await click($$('.chgwin .win-tab').find(b => /All changes/.test(b.textContent || ''))!)
+  await click($$('.chgwin .cw-day').find(b => b.textContent === 'Week')!)
 }
 /* capture what the toast said while fn runs — the jump's "no longer on this
    day" is the one thing several tests here have to see or NOT see */
@@ -89,8 +91,8 @@ afterAll(async () => {
 
 beforeEach(async () => {
   phone = false
-  elogClear(); hideHistBub(); HISTOPEN.clear()
-  await act(async () => { view.setHistMode(false); setHistList(false); setHistGroup(false); notify() })
+  elogClear(); hideHistBub()
+  await act(async () => { view.setChgWin(null); notify() })
 })
 
 describe('the log moves with a renumbering delete (fixed 12 Aug 26)', () => {
@@ -124,13 +126,12 @@ describe('the log moves with a renumbering delete (fixed 12 Aug 26)', () => {
     expect(slotVal(`d:0.0.${B + 1}`)).toBe('wolf')
 
     await openList()
-    /* both edits slid down one with their rows: Ranger's B+1 → B, and the
-       bottom row's own Wolf edit B+2 → B+1 — so the address B+1 now
-       answers for WOLF's history, not Ranger's */
-    const wolfRow = $$('#histBody .hl-row.hit').find(r => r.dataset.hkey === `d:0.0.${B + 1}`)
-    expect(wolfRow && wolfRow.textContent, 'the old address now carries the edit that truly lives there').toContain('Static')
-    const row = $$('#histBody .hl-row.hit').find(r => r.dataset.hkey === `d:0.0.${B}` && (r.textContent || '').includes('Ranger'))
-    expect(row, 'and Ranger’s log row moved down with his row').toBeTruthy()
+    /* both edits slid down one with their rows: Ranger's B+1 → B, and the bottom row's own Wolf edit B+2 → B+1 — the
+       window lists both, each naming its own man */
+    const lines = $$('.chgwin .cw-l')
+    expect(lines.some(l => (l.textContent || '').includes('Static')), 'the bottom row’s own edit is listed').toBe(true)
+    const row = lines.find(l => (l.textContent || '').includes('Ranger'))
+    expect(row, 'and Ranger’s line is listed').toBeTruthy()
 
     const said = await saidWhile(async () => { await click(row!); await settle() })
 
@@ -165,16 +166,15 @@ describe('the wave label (wl:) and the jump', () => {
      the same answer ar:/at:/it:/tr: already give
      (docs/ui-contracts.md: "a new key family the board does not render wants
      a line in NO_BOARD_CELL"). */
-  it('a wl: row lists but is not a button — the board has no cell to jump to', async () => {
+  it('a wl: line lists but is not a button on the board — the board has no cell to jump to', async () => {
     const was = txtGet('wl:0.0')
     await act(async () => { txtSet('wl:0.0', 'AUDIT WAVE'); notify() })
     try {
       expect(elogFor('wl:0.0'), 'the week edit really logged').toBeTruthy()
       await openList()
-      const hit = $$('#histBody .hl-row.hit').find(r => r.dataset.hkey === 'wl:0.0')
-      expect(hit, 'not offered as a jump — the board has no wl: cell').toBeFalsy()
-      const listed = $$('#histBody .hl-row').find(r => (r.textContent || '').includes('AUDIT WAVE'))
-      expect(listed, 'but the edit is in the list').toBeTruthy()
+      const listed = $$('.chgwin .cw-l').find(r => (r.textContent || '').includes('AUDIT WAVE'))
+      expect(listed, 'the edit is in the list').toBeTruthy()
+      expect(listed!.tagName, 'not offered as a jump — the board has no wl: cell').not.toBe('BUTTON')
     } finally {
       await act(async () => { txtSet('wl:0.0', was); notify() })
     }
@@ -216,9 +216,9 @@ describe('user-typed values in the History HTML', () => {
     expect(newest()!.lbl, 'the sentence really carries the payload').toContain('<img')
 
     await openList()
-    expect($('#histBody').querySelector('img'), 'no element was created').toBe(null)
-    expect($('#histBody').querySelector('script')).toBe(null)
-    expect($('#histBody').textContent).toContain('<img src=x')
+    expect($('.chgwin .cw-body').querySelector('img'), 'no element was created').toBe(null)
+    expect($('.chgwin .cw-body').querySelector('script')).toBe(null)
+    expect($('.chgwin .cw-body').textContent).toContain('<img src=x')
   })
 
   it('a day-note value carrying markup reaches the bubble as text', async () => {
@@ -325,7 +325,9 @@ describe('the board closing and the session ending', () => {
   })
 
   /* LAST on purpose — resetSession drags the whole view back to page 1 */
-  it('logging out clears the log, the mode, and any bubble still up', async () => {
+  /* the log itself is KEPT since [DRAFT-PENDING] (28 Sep 26, D336 (b) — the history outlives a sign-out, built on yes);
+     what the session owned — History mode, a bubble still up — still goes */
+  it('logging out keeps the history, and clears the mode and any bubble still up', async () => {
     const key = $$('#sbBoard [data-slot]').map(e => e.dataset.slot!).filter(k => /\.p$/.test(k))[0]!
     const was = slotVal(key)
     await act(async () => { setSlotVal(key, was === 'bane' ? 'stiff' : 'bane'); view.afterSchedMutate(); notify() })
@@ -333,8 +335,9 @@ describe('the board closing and the session ending', () => {
     await hover($(`#sbBoard [data-slot="${key}"]`))
     expect(ELOG.rows.length).toBeGreaterThan(0)
 
+    const kept = ELOG.rows.length
     await act(async () => { resetSession(null); notify() })
-    expect(ELOG.rows.length, 'the incoming user sees nothing').toBe(0)
+    expect(ELOG.rows.length, 'the history is the squadron record — the next person sees it').toBe(kept)
     expect(view.HISTMODE, 'History is off for the next session').toBe(false)
     expect(bub(), 'and no bubble survived the logout').toBe(null)
     expect(document.querySelector('[data-hist-t]')).toBe(null)

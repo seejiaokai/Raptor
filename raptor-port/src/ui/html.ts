@@ -19,7 +19,8 @@ import { keyDay } from '../engine/keys'
 import { VCONF } from '../engine/rules'
 import { esc, SBDAY, WFOCUS, PFOCUS, DWOPEN, DPREV, AVSHUT, PIOPEN, VWORK, CURPAGE, lateShown, restArmed, unpubArmed, notePub, stSavedOn, warnShown, WMOPEN, displayedBundle } from '../state/view'
 import { canEditSched } from '../state/auth'
-import { isGuest, mayReadMedicalOf } from '../state/perms'
+import { isGuest, mayReadMedicalOf, isMember } from '../state/perms'
+import { chgDayCounts } from './changesmodel'
 import { HOOKS } from '../engine/hooks'
 import { oilBarOf, oilItemOfKey, inputItemKey, oilSentinelSummary, oilFromWords } from './oilmode'
 import { oilReadPass } from '../engine/oilev'
@@ -44,6 +45,9 @@ const editMode=()=>HOOKS.editMode()
    labelling) and the section class reads `issued`, not `preview`, so the
    preview dimming and its CSS never apply to the page's default face. */
 let PV=false, PVV:any=null, PVQ=false
+/* is a VERSION being drawn right now (a look at an older version, a saved plan, or the view page's issued face)? The
+   changes window's OG tag asks, so a preview never wears "new to you" ([DRAFT-PENDING], Fable P4) */
+export const inVersionLook=()=>PV
 /* OFW — the OFFICIAL-FLAGS overlay (published-schedule flagging, §5.4/§8). A
    published day's frozen face renders under PV (content frozen, write surfaces
    stripped) but must now SHOW the flags of its issued version. OFW says "show the
@@ -1360,7 +1364,10 @@ export function dayStatHTML(di:any,ed:any){
        diffed against itself is 0 — but the input-filing half of that comparison reads the LIVE inputs,
        so a filing-only change read "Original — as issued · 1 pending", to the squadron too
        ([HUMAN-RETEST] walk W1-3, 24 Sep 26). */
-    const nd=PV?(PVQ?0:PVND):dayShownPendCount(di);
+    /* a day NOT yet published counts no "pending" any more ([DRAFT-PENDING], the owner's D118: it miscounted — a move
+       read 2, put back still 2, a new puck in a crowd 0 — and could not be tapped); its chip is the changes window's
+       "N new" / "N changes" below. A published day's count is unchanged. */
+    const nd=PV?(PVQ?0:PVND):(ok?dayShownPendCount(di):0);
     /* a DRAFT preview must never wear the published day's clothes (owner,
        15 Aug 26 — "when I toggle to draft 1, it shouldn't say published"):
        under a d: preview the ✓ Published stamp and the AL chip are replaced
@@ -1392,10 +1399,30 @@ export function dayStatHTML(di:any,ed:any){
        Never on the view page, never under a preview (its count is the live one captured before the swap, PVND,
        and the list would read the live day while the screen shows a frozen one), never on a draft day (nothing
        there goes out as an amendment). */
-    const pendBtn=nd&&ed&&ok&&!PV&&canEditSched();
-    const pendChip=!nd?'':pendBtn
-      ? `<button class="dpend dpendbtn" data-pendlist="${di}" aria-haspopup="dialog" title="See the ${nd} change${nd>1?'s':''} waiting to go out as AL${nextSeq(di)} on ${d.dow}, and go to each">${nd}&nbsp;pending</button>`
-      : `<span class="dpend" title="${nd} ${ok?'change':'unpublished edit'}${nd>1?'s':''} on this day${ok?' — ahead of the issued schedule until you publish an AL':' — publish the day before publishing an AL'}">${nd}&nbsp;pending</span>`;
+    /* THE DAY'S ONE CHIP — the per-day door into the ONE CHANGES WINDOW ([DRAFT-PENDING], 28 Sep 26 — the owner's D168,
+       D171 (3): "every day's heading count stays the per-day way in, for everyone"; D170: new to you until marked seen).
+       ONE chip, never two:
+       · a PUBLISHED day with changes waiting → "N pending" (the count as before), opening the window on "To go out";
+         a gold dot on it when something on the day is new to you;
+       · else something new to you on the day → "N new" (gold), opening on "New to you";
+       · else changes on the day → "N changes" (quiet), opening on "All changes";
+       · else nothing.
+       For an admin or a member — never a guest (D215: no buttons; Fable F9 — a guest was drawn a count), never under a
+       version preview (a preview reads a document, not the working copy). On View-only Sched a published day shows it
+       only on the working copy: its issued face (PVQ) never reads pending (AM24). */
+    const viewer=isMember();
+    const cc=(!PV&&viewer)?chgDayCounts(di):{fresh:0,all:0};
+    const pendBtn=nd&&!PV&&((ed&&ok&&canEditSched())||(ok&&viewer));
+    const dot=cc.fresh?'<span class="dnewdot" aria-label="something new to you"></span>':'';
+    const pendChip=nd
+      ? (pendBtn
+        ? `<button class="dpend dpendbtn" data-pendlist="${di}" aria-haspopup="dialog" title="See the ${nd} change${nd>1?'s':''} waiting to go out as AL${nextSeq(di)} on ${d.dow}, and go to each">${nd}&nbsp;pending${dot}</button>`
+        : `<span class="dpend" title="${nd} change${nd>1?'s':''} on this day — ahead of the issued schedule until you publish an AL">${nd}&nbsp;pending</span>`)
+      : cc.fresh
+        ? `<button class="dpend dpendbtn dnew" data-chgday="${di}" data-chgtab="new" aria-haspopup="dialog" title="${cc.fresh} change${cc.fresh>1?'s':''} on ${d.dow} new to you — see who made ${cc.fresh>1?'them':'it'}, and go to each">${cc.fresh}&nbsp;new</button>`
+        : cc.all
+          ? `<button class="dpend dpendbtn dchg" data-chgday="${di}" data-chgtab="all" aria-haspopup="dialog" title="Every change on ${d.dow} and who made it">${cc.all}&nbsp;change${cc.all>1?'s':''}</button>`
+          : '';
     const sgOK=daySigned(di);
     /* THE BEAK (§9, closes BUG-2): on a NEVER-published day it first-approves
        (Publish day). On a PUBLISHED day it renders NOTHING here — a published
@@ -1921,7 +1948,14 @@ function dayHTMLBody(di:any,ed:any,vsel?:any){
           : `<span class="itxt">${esc(inp.person)}</span>`;
         /* the input's own free text now reads in the RMKS column, so the NAME column
            carries the type and every block lines up on the same five columns */
-        s+=`<div class="pl-row${acc&&inp.acc&&inp.acc!=='r'?' accd':''}${acc?dormRowCls(inp):''}"${acc?dormRowTitle(inp):''}>`
+        /* THE ROW'S ADDRESS FOR THE CHANGES WINDOW'S JUMP ([DRAFT-PENDING] — Astra DP-08; the absence re-test's R30: a line
+           about an input under Unavailable could not be tapped): the input's own id, on every surface a person reads it
+           (the view page too) — never the drag attribute, so nothing here becomes draggable. Signed-in readers only, so a
+           headless render (the parity week) is untouched. */
+        /* …and under Personal Inputs too: a request waiting there is where its "added" line must land (Fable's final
+           read, F5 — it was a button that landed nowhere) */
+        const inprow=isMember()?` data-inprow="${esc(inpId(inp))}"`:'';
+        s+=`<div class="pl-row${acc&&inp.acc&&inp.acc!=='r'?' accd':''}${acc?dormRowCls(inp):''}"${acc?dormRowTitle(inp):''}${inprow}>`
           /* a medical input's type and remarks are for the squadron's members (D211 —
              every member reads them, his 27 Aug 26 rule); a GUEST, not yet a member,
              reads it only as "Unavailable" and its times (perms.ts mayReadMedicalOf) */
@@ -2113,7 +2147,12 @@ export function dayInfoHTML(di:any){
      24 Sep 26). The viewer's own Working-draft peek IS the working copy, so it keeps the line. */
   const issuedFace=ok&&CURPAGE==='viewsched'&&!VWORK.has(+di);
   /* …and nor does a look at a version (PV) — it is the record, not the working copy (Fable's and Astra's reads of D187) */
-  const dp=(issuedFace||PV)?0:dayShownPendCount(di);
+  /* …and a day NOT yet published has nothing to go out: its line speaks the day chip's words — what is new to you, else
+     how many changes — never the raw count of touched details, which read "2" for a move and still "2" once it was put
+     back ([DRAFT-PENDING], D118 in a second place — Fable P7; the plan §2.5) */
+  const dp=(issuedFace||PV||!ok)?0:dayShownPendCount(di);
+  const cc=(!ok&&!PV&&isMember())?chgDayCounts(di):null;
+  const chg=cc&&cc.fresh?`${cc.fresh}&nbsp;new`:cc&&cc.all?`${cc.all}&nbsp;change${cc.all>1?'s':''}`:'';
   const dw=(WARN.byDay[di]&&WARN.byDay[di].warns)||[];
   const nS=(v:any)=>dw.filter((w:any)=>w.sev===v).length;
   let ac=0,forms=0,cxn=0;
@@ -2135,7 +2174,7 @@ export function dayInfoHTML(di:any){
   const cv=(PV&&PVV!=null&&!isDraftVer(PVV))?PVV:dayCurVer(di);   // a look names the version on screen
   const atVer=(ok&&cv!=null&&(verSeq(cv)!==0||alRecs.length))?` · at ${verLabel(cv)}`:'';
   let h=`<div class="dip-stat ${ok?'ok':'draft'}">${ok?'✓ Published — APPROVED'+atVer:'Draft — not yet published'}`
-    +`${dp?`<span class="dip-pend">${dp} unpublished edit${dp>1?'s':''}</span>`:''}</div>`;
+    +`${dp?`<span class="dip-pend">${dp} unpublished edit${dp>1?'s':''}</span>`:chg?`<span class="dip-chg${cc&&cc.fresh?' new':''}">${chg}</span>`:''}</div>`;
   h+=`<div class="dip-h">AL versions covering ${esc(d.dow)}</div><div class="dip-als">${alRows}</div>`;
   h+=`<div class="dip-h">What this day is tasking</div><div class="dip-grid">`
     +row('Waves',(d.waves||[]).length)+row('Formations',forms)

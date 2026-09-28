@@ -25,17 +25,14 @@ import { INPUTS, inpId, inpLabel, inputCoversDate } from '../engine/inputs'
 import { officialSliceNow } from '../engine/validate'
 import { dayPendingItems, daySnapOf, dayCurVer, nextSeq, MOVE_LABELS, requestRow, warnMsgKey, warnCallsigns, peopleAttrsNow, faceRuleVals, faceRuleValsCompared } from '../engine/publish'
 import type { PendItem } from '../engine/publish'
-import { ELOG, elogWhen, elogWho, keyLabel } from '../engine/editlog'
+import { ELOG, elogWhen, elogWho, keyLabel, rowTouches, weekDates } from '../engine/editlog'
+import { CURWEEK } from '../engine/waves'
 import { oilEvidence } from '../engine/oilev'
 import { esc } from '../state/view'
 
-let box: HTMLDivElement | null = null
-let openDi: number | null = null
 let items: PendItem[] = []
 /* the per-row places of a multi-row line (several placeholders' crowds), by "item.row" — read by the click */
 let targets: Record<string, string[]> = {}
-let off: (() => void) | null = null
-export function pendListOpen() { return openDi }
 
 const U = '␟'
 const cs = (v: any) => { const s = String(v == null ? '' : v); return !s ? '' : (PEOPLE[s] ? PEOPLE[s].cs : s) }
@@ -125,6 +122,35 @@ function lastEdit(keys: string[]) {
   for (let i = ELOG.rows.length - 1; i >= 0; i--) { const r = ELOG.rows[i]!; if (r.key && set.has(r.key)) return r }
   return null
 }
+/* THE ONE ANSWER TO "WHO MADE THIS PENDING CHANGE, AND WHEN" — for the words and for the order alike, so the two cannot
+   disagree. An INPUT's change (its details, its filing, a request's row with its filing) has no cells of its own: it is
+   found by the input's id, which the change history keeps on every absence line (state/changelines.ts), preferring a
+   line that touches this day; a cell change keeps its own cells' newest line (Astra's final read, ASTRA-DP-FINAL-02 —
+   a leave filed after publishing named nobody and sorted below older work). */
+function inputIdOf(it: PendItem): string | null {
+  for (const e of [it.val, it.inp, (it.kind === 'input' ? it.entry : null)] as any[]) {
+    const a = String((e && e.addr) || ''); if (!/^in[pv]:/.test(a)) continue
+    const id = decodeURIComponent(a.split('.').slice(1).join('.')); if (id) return id
+  }
+  return null
+}
+function editRowOf(di: number, it: PendItem) {
+  const id = inputIdOf(it)
+  if (id) {
+    const iso = weekDates(CURWEEK)[di]
+    let any: any = null
+    for (let i = ELOG.rows.length - 1; i >= 0; i--) {
+      const r = ELOG.rows[i]!; if (r.iid !== id && !(r.iids && r.iids.includes(id))) continue
+      if (!iso || rowTouches(r, iso)) return r
+      if (!any) any = r
+    }
+    if (any) return any
+    /* (a war move re-files the moved days as a new record; its line keeps the record it left too — `iids` — so it is
+       found above by id: Fable FF4, Astra R3-02 — never by guessing from the man, which would borrow an unrelated edit) */
+  }
+  return lastEdit(it.keys || [])
+}
+const whoWhen = (r: any): { who: string; when: string } => r ? { who: elogWho(r), when: elogWhen(r.t) } : { who: '', when: '' }
 /* AN INPUT CHANGED SINCE THE DAY WAS ISSUED ([LEAVE-LATE-PUBLISHED], owner D178 — every member input change after
    publishing is pending for the admin): whose and what, then what moved — "Hunter · OL (leave) — filed under
    Unavailable", "… all day → 09:00–12:00", "… Bane → Hunter", "… deleted", "… moved off this day". The issued copy
@@ -140,7 +166,7 @@ function inputWords(di: number, it: PendItem): Words {
   const now = it.now || INPUTS.find((x: any) => inpId(x) === id) || null
   const here = !!now && !!DAYS[di] && inputCoversDate(now, (DAYS[di] as any).dt)
   /* a line whose input re-landed a row on this day takes the view to it (Fable F4); a leave with no row stays still */
-  const none = { who: '', when: '', jump: !!(it.jump && it.jump.length) }
+  const none = { ...whoWhen(editRowOf(di, it)), jump: !!(it.jump && it.jump.length) }
   const name = requestName(here ? now : (was || now))
   if (!was) {
     const f: any = it.inp || (it.entry && String((it.entry as any).addr || '').startsWith('inp:') ? it.entry : null)
@@ -167,6 +193,15 @@ function inputWords(di: number, it: PendItem): Words {
    so a rename (a label) never reads as a warning cleared and another new (#3); a cleared one is worded with today's
    callsign. */
 const CATW: any = { q: 'CAT', seat: 'seat', pers: 'ground crew', san: 'SANS', sxo: 'SXO', archived: 'posted out' }
+/* WHO changed a man's detail since the day went out, and WHEN: the newest Quals line about HIM (by his id) and THAT
+   detail, from the change history ([DRAFT-PENDING] — review log F5, "the To go out tab's line takes who/when from it";
+   Fable P6 found it unbuilt). Matched by the ids the line keeps (state/changelines.ts personLines — sub, fld), never by
+   its words: a rename since, or his old callsign given to someone else, must not lose or borrow the name (Astra's final
+   read, 03). */
+function qualsLine(id: any, f: string) {
+  for (let i = ELOG.rows.length - 1; i >= 0; i--) { const r = ELOG.rows[i]!; if (r.sect === 'quals' && r.sub === String(id) && r.fld === f) return r }
+  return null
+}
 function faceWords(di: number): Words & { rows?: CrowdRow[] } {
   const snap: any = daySnapOf(di, dayCurVer(di)), w: any = snap && snap.w
   const was: any[] = (w && w.byDay && w.byDay.warns) || []
@@ -176,6 +211,7 @@ function faceWords(di: number): Words & { rows?: CrowdRow[] } {
   const a = new Set(was.map((x: any) => k(x, namesWas))), b = new Set(now.map((x: any) => k(x, namesNow)))
   const reword = (m: any) => { let t = String(m || ''); Object.keys(namesWas || {}).forEach((id: any) => { const c = cs(id); if (c && namesWas[id] && c !== namesWas[id]) t = t.split(String(namesWas[id])).join(c) }); return t }
   const rows: CrowdRow[] = []
+  let by: any = null                                   // the newest Quals line behind a man's change (qualsLine)
   /* the same warning on the same men, re-worded — a rule change moved its time or its figure (the Logic walker, 26 Sep
      26: a brief-lead change read each "No time for the flight brief" twice, cleared and new) — is ONE line, "changed",
      in today's words */
@@ -199,6 +235,7 @@ function faceWords(di: number): Words & { rows?: CrowdRow[] } {
         if (JSON.stringify(x) === JSON.stringify(y)) return
         const v = (z: any) => typeof z === 'boolean' ? (z ? 'yes' : 'no') : (z == null || z === '' ? '—' : String(z))
         rows.push({ where: `${cs(id)} · ${CATW[f]}`, from: v(x), to: v(y), keys: [] })
+        const l = qualsLine(id, f); if (l && (!by || l.seq > by.seq)) by = l
       })
     })
   }
@@ -207,7 +244,7 @@ function faceWords(di: number): Words & { rows?: CrowdRow[] } {
     const nb = (faceRuleVals(snap.d) || {}).briefLead
     if (nb != null && +nb !== +snap.rv.briefLead) rows.push({ where: 'A blank brief — its suggested lead', from: `${snap.rv.briefLead} min`, to: `${nb} min`, keys: [] })
   }
-  const none = { who: '', when: '', jump: false }
+  const none = by ? { who: elogWho(by), when: elogWhen(by.t), jump: false } : { who: '', when: '', jump: false }
   if (!rows.length) return { where: 'What this day shows', from: '', to: 'changed', ...none }
   if (rows.length === 1) return { where: rows[0]!.where, from: rows[0]!.from, to: rows[0]!.to, ...none }
   return { where: 'What this day shows', from: '', to: '', ...none, rows }
@@ -243,7 +280,7 @@ export function pendItemWords(di: number, it: PendItem): Words {
   if ((it.kind === 'add' || it.kind === 'delete') && it.inp) {
     /* the row this request stood on: in the issued day for a removal, the live day for an addition */
     const row = it.kind === 'delete' ? requestRow(it, (issuedDays(di) || [])[di]) : requestRow(it, DAYS[di])
-    return { ...requestWords(it.inp, row), ...none, jump: it.kind === 'add' && jump }
+    return { ...requestWords(it.inp, row), ...whoWhen(editRowOf(di, it)), jump: it.kind === 'add' && jump }
   }
   /* A REQUEST'S ROW WITH NO FILING CHANGE BESIDE IT — the request moved to another day's programme (✕ here, Accept
      there), or a load left this day's copy out because it stands elsewhere (D175): name whose and what, and where it
@@ -273,7 +310,7 @@ export function pendItemWords(di: number, it: PendItem): Words {
        load put the version's row back) or as it was issued */
     const id = decodeURIComponent(String(e.addr || '').split('.').slice(1).join('.'))
     const bySrc = (d: any) => ((d && d.ground) || []).find((g: any) => g && g.src === id)
-    return { ...requestWords(e, bySrc(DAYS[di]) || bySrc((issuedDays(di) || [])[di])), ...none, jump: false }
+    return { ...requestWords(e, bySrc(DAYS[di]) || bySrc((issuedDays(di) || [])[di])), ...whoWhen(editRowOf(di, it)), jump: false }
   }
   /* WHAT THE DAY EARNS — say WHO and WHERE when it is the crowd behind a placeholder that moved (walker B1, 25 Sep 26:
      "What this day earns · changed" named nobody and could not be tapped, so the scheduler still had to go looking —
@@ -338,7 +375,12 @@ const RANK = (it: PendItem) => {
   return 6
 }
 export function pendListHTML(di: number): string {
-  items = dayPendingItems(di).map((x, i) => ({ x, i })).sort((a, b) => (RANK(a.x) - RANK(b.x)) || (a.i - b.i)).map(o => o.x)
+  /* NEWEST FIRST (the owner's D119, 25 Sep 26 — "Shouldn't the latest change for pending be at the top? Just like
+     history list"): by when each change was last made (the edit record's time); a change the record has no time for
+     ("earlier", what the day earns, a filing) goes below the timed ones, in the day's own order (the old RANK) */
+  const tOf = (it: PendItem) => { const r = editRowOf(di, it); return r ? r.t : -1 }
+  items = dayPendingItems(di).map((x, i) => ({ x, i, t: tOf(x) }))
+    .sort((a, b) => (b.t - a.t) || (RANK(a.x) - RANK(b.x)) || (a.i - b.i)).map(o => o.x)
   const n = items.length, seq = nextSeq(di)
   const rows = items.map((it, i) => {
     const w = pendItemWords(di, it)
@@ -351,7 +393,7 @@ export function pendListHTML(di: number): string {
     const rows: CrowdRow[] | undefined = (w as any).rows
     if (rows && rows.length) {
       rows.forEach((r, j) => { targets[`${i}.${j}`] = r.keys })
-      return `<div class="pl-item still pl-multi"><span class="pl-where">${esc(w.where)}</span><span class="pl-who"></span>`
+      return `<div class="pl-item still pl-multi"><span class="pl-where">${esc(w.where)}</span>${who}`
         + rows.map((r, j) => `<button class="pl-sub" data-pltarget="${i}.${j}"${r.keys.length ? '' : ' disabled'} title="Go to this row">`
           + `<span class="pl-where">${esc(r.where)}</span><span class="pl-chg">${r.from ? `<s>${esc(r.from)}</s>` : ''}${r.from && r.to ? ' → ' : ''}${r.to ? `<b>${esc(r.to)}</b>` : ''}</span></button>`).join('')
         + `</div>`
@@ -365,59 +407,17 @@ export function pendListHTML(di: number): string {
     + `<div class="pl-foot">${items.some(x => x.jump && x.jump.length) ? 'Tap a change to go to it.' : ''}</div>`
 }
 
-export function closePendList() {
-  if (off) { off(); off = null }
-  if (box && box.isConnected) box.remove()
-  box = null; openDi = null; items = []; targets = {}
-}
-/* anchored under the chip, clamped into the VISIBLE viewport (a phone keyboard or pinch-zoom moves it — the
-   History bubble's rule) */
-function place(b: HTMLElement, anchor: HTMLElement) {
-  const r = anchor.getBoundingClientRect(), vv = (window as any).visualViewport
-  const vx = vv ? vv.offsetLeft : 0, vy = vv ? vv.offsetTop : 0, vw = vv ? vv.width : window.innerWidth, vh = vv ? vv.height : window.innerHeight
-  const w = b.offsetWidth
-  b.style.left = Math.round(Math.max(vx + 8, Math.min(vx + vw - w - 8, r.left))) + 'px'
-  const below = r.bottom + 6
-  b.style.top = Math.round(Math.max(vy + 8, Math.min(below, vy + vh - 120))) + 'px'
-  /* the list scrolls inside the window once it runs past the screen (D100) */
-  b.style.maxHeight = Math.max(160, Math.round(vy + vh - parseFloat(b.style.top) - 10)) + 'px'
-}
-/* `go` is the ONE jump (interactions.ts jumpToChange), passed in so this leaf never imports the click router */
-export function openPendList(di: number, anchor: HTMLElement, go: (keys: string[], di: number) => void) {
-  if (openDi === di) { closePendList(); return }            // the chip toggles it
-  closePendList()
-  const b = document.createElement('div')
-  b.className = 'pendlist'; b.id = 'pendList'
-  b.setAttribute('role', 'dialog'); b.setAttribute('aria-label', `What will go out on ${(DAYS[di] || {}).dow || 'this day'}`)
-  b.innerHTML = pendListHTML(di)
-  document.body.appendChild(b)
-  box = b; openDi = di
-  place(b, anchor)
-  b.addEventListener('click', (e: any) => {
-    const sub = (e.target as HTMLElement).closest('[data-pltarget]') as HTMLElement | null
-    if (sub) { const k = targets[sub.dataset.pltarget!]; closePendList(); if (k && k.length) go(k, di); return }
-    const hit = (e.target as HTMLElement).closest('[data-plix]') as HTMLElement | null
-    if (!hit) return
-    const it = items[+hit.dataset.plix!]
-    closePendList()
-    if (it) go(it.jump, di)
-  })
-  /* a click-open popup closes on a click outside it (CLAUDE.md §Standing UI rules) and on Escape; the chip that
-     opened it is "inside" (it toggles). Capture, so a tap on the schedule behind closes it before it acts. */
-  const down = (e: any) => {
-    const t = e.target as HTMLElement
-    if (!t || !t.closest) return
-    if (t.closest('#pendList') || t.closest(`[data-pendlist="${di}"]`)) return
-    closePendList()
-  }
-  const key = (e: any) => { if (e.key === 'Escape') closePendList() }
-  /* the page scrolling under it leaves the list pointing at nothing (walker B3, 25 Sep 26) — it goes, as a menu does;
-     its own list scrolling is not the page */
-  const scroll = (e: any) => { const t = e.target as any; if (t && t.closest && t.closest('#pendList')) return; closePendList() }
-  document.addEventListener('pointerdown', down, true)
-  document.addEventListener('keydown', key, true)
-  document.addEventListener('scroll', scroll, true)
-  window.addEventListener('resize', closePendList)
-  off = () => { document.removeEventListener('pointerdown', down, true); document.removeEventListener('keydown', key, true)
-    document.removeEventListener('scroll', scroll, true); window.removeEventListener('resize', closePendList) }
+/* THE POP-UP UNDER THE CHIP IS GONE ([DRAFT-PENDING], 28 Sep 26 — the owner's D168: one changes window replaces the
+   pending list). The list above is the window's "To go out" tab (ui/ChangesWindow.tsx); a tap on one of its lines is
+   resolved here to the places it takes the schedule to. closePendList stays as the jump's no-op for anything that still
+   calls it. */
+export function closePendList() { /* nothing floats any more */ }
+/* the keys a tap on a To go out line (or one of its sub-lines) takes the schedule to — null when it has none */
+export function pendKeysFor(el: HTMLElement): string[] | null {
+  const sub = el.closest('[data-pltarget]') as HTMLElement | null
+  if (sub) { const k = targets[sub.dataset.pltarget!]; return k && k.length ? k : null }
+  const hit = el.closest('[data-plix]') as HTMLElement | null
+  if (!hit) return null
+  const it = items[+hit.dataset.plix!]
+  return it && it.jump && it.jump.length ? it.jump : null
 }

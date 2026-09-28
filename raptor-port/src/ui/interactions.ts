@@ -9,7 +9,9 @@ import { DAYS } from '../engine/data'
 import { PEOPLE, isSpecial } from '../engine/people'
 import { dayApproved, signClear, markEdit, dayCurVer, dayDiscardCount, verLabel, protectedWeek, alColor, nextSeq, daySnapOf, rowsLeftOut } from '../engine/publish'
 import { posKey } from '../engine/rowids'
-import { openPendList, closePendList } from './pendlist'
+import { closePendList } from './pendlist'
+import { openChanges } from './changesopen'
+import { weekDates } from '../engine/editlog'
 import { draftSelect, draftVerLabel, loadVersionToWorkingCopy, LOADLEFT, LOADMOVED, ROWSLEFT, rowsLeftSaid, inputsLeftSaid } from '../engine/drafts'
 import { HOOKS } from '../engine/hooks'
 import { canEditSched } from '../state/auth'
@@ -21,7 +23,7 @@ import { scrollToWarnFocus, queueHold, warnWeekId, bringIntoView } from './highl
 import { STORE_CFG, addStore, delStore, renameStore, moveStore, storesSave, storesText } from '../engine'
 import { logAction } from '../engine/editlog'
 import { esc } from '../state/view'
-import { setDayPop, setAirKey, setDrawer, setInpEdit, setHistList, closeHistList } from './pops'
+import { setDayPop, setAirKey, setDrawer, setInpEdit } from './pops'
 import { reassignInput, rosterOptions, firstPersonalType, firstUnavailType, firstSansType, unfmt } from './inputedit'
 import { openAvailWinFrom } from './AvailWindow'
 import { withDaySnap } from './html'
@@ -92,7 +94,6 @@ function scrollBoardWarnToSel() {
 export function jumpToChange(key: string | string[], di: any) {
   const cands = (Array.isArray(key) ? key : [key]).filter(Boolean).map(String)
   if (!cands.length) return
-  closeHistList()
   closePendList()
   hideHistBub()
   const onBoard = view.SBDAY != null
@@ -100,6 +101,20 @@ export function jumpToChange(key: string | string[], di: any) {
   /* a day being looked at as an older version draws no working cells to land on — the change lives on the live
      copy, so go back to it first (Fable F6: the jump said "no longer on this day" about a live detail) */
   if (!onBoard && di != null && view.DPREV.has(+di)) view.setDayPreview(+di, null)
+  /* a request still waiting under Personal Inputs sits in a panel that is folded by default: open it on that day, so
+     the row the line is about is drawn to land on (Fable's final read, F5) */
+  for (const k of cands) {
+    if (!k.startsWith('iu:') || di == null) continue
+    const inp: any = INPUTS.find((x: any) => inpId(x) === k.slice(3))
+    if (inp && inp.acc !== 'u' && inp.acc !== 'g') view.PIOPEN.add(+di)
+  }
+  /* …and View-only Sched shows a PUBLISHED day's issued face by default, which draws nothing to land on (it is the
+     document, frozen): the change lives on the working copy, so the day turns to its Working draft first and says so
+     ([DRAFT-PENDING], Fable P3 — the tap told a member to "open the day on the board", which he has none of) */
+  if (!onBoard && di != null && view.CURPAGE === 'viewsched' && dayApproved(+di) && !view.VWORK.has(+di)) {
+    view.toggleViewWork(+di, true)
+    HOOKS.toast('Showing the working draft — the change is on it', 'ok')
+  }
   notify()
   setTimeout(() => {
     const root: any = onBoard
@@ -112,6 +127,10 @@ export function jumpToChange(key: string | string[], di: any) {
       const gone = cands.every(k => posKey(k, DAYS) == null)
       HOOKS.toast(gone ? 'That detail is no longer on this day'
         : onBoard ? 'That detail is shown on the week, not on the board'
+        /* an input's own row: it is simply not drawn on this day (Fable F5) */
+        : cands.every(k => k.startsWith('iu:')) ? 'That input is not shown on this day'
+        /* View-only Sched has no board to send anyone to (a member has none at all) */
+        : view.CURPAGE === 'viewsched' ? 'That detail is not shown on this page'
         : 'That detail is shown on the scheduler board — open the day there to see it', 'warn')
       return
     }
@@ -524,15 +543,17 @@ export function routeClick(e: MouseEvent) {
     return
   }
 
-  /* "N PENDING ▾" — the list of what will go out as the day's next AL (owner, D99 + D100, 25 Sep 26;
-     ui/pendlist.ts). Drawn by the day head on the edit week and on the board's strip (html.ts dayStatHTML),
-     so it is routed here, at the document, like data-alpub. Scheduler-only, like the button itself; a tap on a
-     row goes through the ONE jump below. */
-  const pl = t.closest('[data-pendlist]') as HTMLElement | null
+  /* THE DAY'S CHIP OPENS THE ONE CHANGES WINDOW ([DRAFT-PENDING], 28 Sep 26 — the owner's D168, D171 (3)): "N pending"
+     on the tab that lists what will go out (D99, D100 — the list that used to pop up under it), "N new" on New to you,
+     "N changes" on All changes, for that day. Drawn by every day heading (html.ts dayStatHTML) — the edit week, the
+     board's strip, View-only Sched — so routed here, at the document. A tap on a line goes through the ONE jump below;
+     the window stays open (D167). */
+  const pl = t.closest('[data-pendlist],[data-chgday]') as HTMLElement | null
   if (pl) {
     e.stopPropagation()
-    if (!canEditSched()) return
-    openPendList(+pl.dataset.pendlist!, pl, (keys, di) => jumpToChange(keys, di))
+    const di = +(pl.dataset.pendlist ?? pl.dataset.chgday!)
+    const iso = weekDates(CURWEEK)[di]
+    if (iso) openChanges(iso, pl.dataset.pendlist != null ? 'out' : (pl.dataset.chgtab === 'new' ? 'new' : 'all'))
     return
   }
 
@@ -583,7 +604,10 @@ export function routeClick(e: MouseEvent) {
       const said = dest === 'x' ? 'Accept undone'
         : dest === 'u' ? `${cs}'s ${inp.type} filed under Unavailable`
         : `${cs}'s ${inp.type} added to the ground programme`
-      logAction(di, said)
+      /* the history line is the change history's one writer's (state/changelines.ts): the catch-all command below diffs
+         every input against the last committed state, so the filing that moved IS in its envelope and is said once. A
+         second writer here doubled it (Fable's final read, F1 — the test that pinned "one line" set its input up raw,
+         which hid the double) */
       HOOKS.toast(said, 'ok')
       view.afterSchedMutate()
     } else {
@@ -1078,7 +1102,8 @@ export function routeClick(e: MouseEvent) {
     /* [ARCH-STACK] follow-up #1 (row D): route the sign-clear through a
        sched.signClear command (was HOOKS.histPush direct). histPush stays inside
        so the legacy persist runs; reflow outside. */
-    schedWrite(SCHED_TYPES.signClear, () => { signClear(+sc.dataset.signclear!); HOOKS.histPush() })
+    /* its history line inside the command ([DRAFT-PENDING] — Fable F3 / Astra DP-07) */
+    schedWrite(SCHED_TYPES.signClear, () => { signClear(+sc.dataset.signclear!); HOOKS.histPush(); logAction(+sc.dataset.signclear!, 'Sign-offs cleared', { sect: 'day' }) })
     HOOKS.reflow(); return
   }
 
@@ -1135,7 +1160,7 @@ export function routeClick(e: MouseEvent) {
      reason for this line and is no longer what stops it — `.histbub` sits
      below `.modal` in the stack since the stacking fix (scheduler.css), which
      is what covers the other seven boxes this one call site never did. */
-  if (t.closest('[data-histopen]')) { hideHistBub(); setHistList('all'); notify(); e.stopPropagation(); return }
+  /* (the board's "☰ Edit history · N changes" line is gone — the changes window is the list, [DRAFT-PENDING] D168) */
 
   /* MUTE a specific check (owner, Aug 26 — "turn off that specific warning
      advisory … but if things change that warning will appear again"). Admin-only,

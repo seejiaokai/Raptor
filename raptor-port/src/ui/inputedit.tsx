@@ -25,7 +25,8 @@ import { DAYS } from '../engine/data'
 import { PEOPLE, isSpecial, whoId } from '../engine/people'
 import { hhmm, parseHM, hmOK } from '../engine/time'
 import { HOOKS } from '../engine/hooks'
-import { logAction, elogSweep } from '../engine/editlog'
+import { logAction, elogSweep, todayIso } from '../engine/editlog'
+import { elogReason } from '../state/changelines'
 import { writeInputsBatch, writeInputsBatchWith, weekstashStore, notify, protectedDates, inputProtected } from '../state/store'
 /* The Leave War seam (sync.ts is the one crossing point, CLAUDE.md §The Leave
    War tab): retracting a synced row's war cells when it is edited or deleted
@@ -347,7 +348,7 @@ export function applyMedPlan(plan: any[]) {
       t.remarks = withRemarksTail(r.remarks, ordISO(p.tail.startOrd), ordISO(p.tail.endOrd), 'till')
       inpId(t)
       INPUTS.push(t)
-      logAction(null, `Input added — ${cs(r)}, ${t.type}, ${t.date}${t.endDate ? '–' + t.endDate : ''} (the tail of a split medical entry)`)
+      elogReason(t.iid, 'the tail of a split medical entry')
     }
     /* Every cut leaves a line in the day log — the trim cascade is the one
        writer of medical paperwork that is not a person's own hand, and a row
@@ -356,7 +357,8 @@ export function applyMedPlan(plan: any[]) {
     if (p.action === 'delete') {
       /* `why` lets the caller log the honest reason — an upchit's removals say
          so, instead of every delete claiming "overwritten by a newer entry" */
-      logAction(null, `Input removed — ${cs(r)}, ${r.type}, ${r.date}${r.endDate ? '–' + r.endDate : ''} (${p.why || 'overwritten by a newer medical entry'})`)
+      /* the line is the change history's one writer's (state/changelines.ts — Astra DP-03); the reason rides in */
+      elogReason(r.iid, p.why || 'overwritten by a newer medical entry')
       dropInputRow(r)
       continue
     }
@@ -368,7 +370,7 @@ export function applyMedPlan(plan: any[]) {
     else r.endDate = ordLabel(p.newEndOrd, r.yr)
     r.remarks = withRemarksTail(r.remarks, a != null ? ordISO(a) : '', ordISO(p.newEndOrd), 'till')
     r.mod = nowStamp()
-    logAction(null, `Input trimmed — ${cs(r)}, ${r.type}, now ends ${ordLabel(p.newEndOrd, r.yr)}`)
+    elogReason(r.iid, 'cut by a medical')
   }
 }
 
@@ -408,7 +410,7 @@ export function mintMedSegments(base: any, segs: any[], keepTail?: any, entryEnd
     t.remarks = withRemarksTail(base.remarks, ordISO(g.startOrd), ordISO(g.endOrd), 'till')
     inpId(t)
     INPUTS.push(t)
-    logAction(null, `Input added — ${cs}, ${t.type}, ${t.date}${t.endDate ? '–' + t.endDate : ''} (a kept piece of a split medical entry)`)
+    elogReason(t.iid, 'a kept piece of a split medical entry')
     applyMedPlan(newMedTrimPlan(t.person, t.type, g.startOrd, g.endOrd, t, keepTail, entryEnd))
   }
 }
@@ -878,8 +880,7 @@ export function commitNewInput(draft: any, toGround?: boolean, keepTail?: any, e
   /* the funnel backstop rolled the batch back (a protected date slipped the
      preflights above) — report failure, don't log a phantom "Input added" (P2-QREV-04) */
   if (!ok) return false
-  const cs = PEOPLE[row.person] ? PEOPLE[row.person].cs : row.person
-  logAction(null, `Input added — ${cs}, ${row.type}, ${date}${endDate ? '–' + endDate : ''}${row.acc === 'g' ? ' (on the Ground Programme)' : ''}`)
+  /* its history line is the change history's one writer's (state/changelines.ts — Astra DP-03, 28 Sep 26) */
   return true
 }
 
@@ -1444,11 +1445,8 @@ export function removeInput(r: any) {
      this same input machinery: the day it is actually live on when it has
      one (accepted into that day's ground programme), else null — an input
      that was never accepted has no day to pin the removal to. */
-  const di = r.acc ? acceptedDay(r) : -1
-  const cs = PEOPLE[r.person] ? PEOPLE[r.person].cs : r.person
-  const when = r.date + (r.endDate ? '–' + r.endDate : '')
+  /* its history line is the change history's one writer's (state/changelines.ts — Astra DP-03, 28 Sep 26) */
   writeInputsBatch(() => { dropInputRow(r) })
-  logAction(di >= 0 ? di : null, `Input removed — ${cs}, ${r.type}, ${when}`)
   return true
 }
 
@@ -1575,7 +1573,7 @@ export function clearHistoryData(mode: ClearMode, a: string, b?: string, dry?: b
     oldPucks.forEach((s: any) => { const ix = PLANPUCKS.indexOf(s); if (ix >= 0) PLANPUCKS.splice(ix, 1) })
     oldRmk.forEach(k => { delete DAYRMK[k] })
   })
-  logAction(null, `Cleared ${n} item${n === 1 ? '' : 's'} of old clutter ${w.said}`)
+  logAction(null, `Cleared ${n} item${n === 1 ? '' : 's'} of old clutter ${w.said}`, { date: todayIso(), sect: 'day' })
   return n
 }
 
@@ -1597,7 +1595,9 @@ export function clearEditHistory(mode: ClearMode, a: string, b?: string, dry?: b
     return new Date(+p[0], +p[1] - 1, +p[2]).getTime()
   }
   const n = elogSweep(ms(w.lo), ms(w.hi), dry)
-  if (!dry && n) logAction(null, `Edit history cleared — ${n} entr${n === 1 ? 'y' : 'ies'} ${w.said}`)
+  /* dated today (Fable F3) — a line with no day is in no week's window, and the record that history was cleared,
+     and by whom, must be seen */
+  if (!dry && n) logAction(null, `Edit history cleared — ${n} entr${n === 1 ? 'y' : 'ies'} ${w.said}`, { date: todayIso(), sect: 'day' })
   return n
 }
 

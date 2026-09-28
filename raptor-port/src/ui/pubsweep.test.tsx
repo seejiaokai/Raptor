@@ -50,6 +50,9 @@ import { dayHTML, dayStatHTML, viewDayHTML } from './html'
 import { boardSignHTML, boardMbtn, addWave } from './board'
 import { dayDrafts, draftDup, draftSelect, loadVersionToWorkingCopy } from '../engine/drafts'
 import { HOOKS } from '../engine/hooks'
+/* the day's WAITING-TO-GO-OUT chip — since [DRAFT-PENDING] (28 Sep 26) the same `.dpend` class also carries the
+   changes window's "N new" / "N changes" chip, which is not a pending count (D168) */
+const PEND_CHIP = '.dpend:not(.dnew):not(.dchg)'
 
 /* One day carries the whole sweep. Monday is the seed week's densest day —
    two flying waves, two duty blocks, sims, ground rows — so every key family
@@ -119,7 +122,7 @@ const pubState = (html: string) => {
   return {
     plan: r.querySelector('.planselbtn .psl')?.textContent ?? null,
     ver: r.querySelector('.verchip')?.textContent ?? null,
-    pend: r.querySelector('.dpend')?.textContent ?? null,
+    pend: r.querySelector(PEND_CHIP)?.textContent ?? null,
     beak: nonAlBeak ? nonAlBeak.textContent : null,
     alpub: btn ? btn.textContent : null,
   }
@@ -206,7 +209,7 @@ describe('1 · lifecycle: unpublished day → sign → publish the Original', ()
     expect(pubState(weekEdit(DI)).pend).toBeNull()
     expect(pubState(weekEdit(DI)).alpub).toBeNull()
     expect(pubState(boardStrip(DI)).pend).toBeNull()
-    expect(el(weekView(DI)).querySelector('.dpend')).toBeNull()
+    expect(el(weekView(DI)).querySelector(PEND_CHIP)).toBeNull()
   })
 })
 
@@ -610,7 +613,7 @@ describe('9 · cross-surface agreement: the week and the board read one state', 
     /* the view page names the same issued version — through its own resolver,
        and with none of the pending count (that is scheduler state) */
     expect(verOf(weekView(DI))).toBe('AL1')
-    expect(el(weekView(DI)).querySelector('.dpend')).toBeNull()
+    expect(el(weekView(DI)).querySelector(PEND_CHIP)).toBeNull()
     expect((el(weekView(DI)).querySelector('select[data-vwork="0"]') as HTMLSelectElement)
       .options[0]!.text).toBe('AL1 — as issued')
   })

@@ -1388,15 +1388,18 @@ describe('a request with an OIL day nobody has answered says so on its row', () 
    (commitNewInput) always wrote "Input added — …", while the page's OWN Add, the door people use most, wrote
    nothing: filed here, then deleted, the history held the deletion of a leave it had never seen filed. */
 describe('Edit history hears an add made on this page', () => {
-  it('Add input writes "Input added — <callsign>, <type>, <date>"', async () => {
+  /* since [DRAFT-PENDING] (28 Sep 26) the line comes from the change history's ONE writer (state/changelines.ts —
+     Astra DP-03): "<callsign> · <type> added · <days>", exactly once */
+  it('Add input writes ONE "<callsign> · <type> added" line', async () => {
     await click($('#inCal [data-cal]'))
     await click($('#inCal [data-cal]'))
     const before = ELOG.rows.length
     await click($('#inAdd'))
     const r = INPUTS[0]
     const cs = PEOPLE[r.person] ? PEOPLE[r.person].cs : r.person
-    const said = ELOG.rows.slice(before).map((x: any) => x.lbl || x.to || '').join(' | ')
-    expect(said).toContain(`Input added — ${cs}, ${r.type}, ${r.date}`)
+    const mine = ELOG.rows.slice(before).filter((x: any) => x.iid === r.iid)
+    expect(mine.length, 'exactly one line').toBe(1)
+    expect(mine[0]!.lbl).toContain(`${cs} · ${r.type} added`)
     await click(rowFor(0).querySelector('.rmx'))
   })
 })

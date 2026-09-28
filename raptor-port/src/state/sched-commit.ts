@@ -40,6 +40,8 @@ import { reconcileDayFiling } from '../engine/slots'
 import { ensureRowIds } from '../engine/rowids'
 import { SCHED, setDayApproved, publishALDay, discardPending, unpublishDay, dayCurVer, signClear, signClearPlans } from '../engine/publish'
 import { reconcileIssuedMarks } from '../engine/drafts'
+import { keyDay } from '../engine/keys'
+import { logAction } from '../engine/editlog'
 import { CURWEEK } from '../engine/waves'
 import { HIST, histSnap, histRestore, setSchedResync } from './history'
 import { setSchedEpilogueHook, HOOKS } from '../engine/hooks'
@@ -47,7 +49,7 @@ import { issuedDisclosed, discloseIssued } from './disclosure'
 import { PLANPUCKS, DAYRMK } from './plan'
 import { WARNOFF, DPREV, prunePreviews } from './view'
 import { canEditSched } from './auth'
-import { deriveActor } from '../command'
+import { deriveActor, isOk } from '../command'
 
 /* ---- the scheduler EnlistableStore (a LAGGING BASELINE, decomposed) --------
    [ARCH-STACK] follow-up #1: copy the People pattern. The unrouted board/text/
@@ -553,7 +555,13 @@ export function commitPublishALDay(di: number): CommitResult {
    declares no boundary) — routed through commit only so the pending-book change
    reaches the stream. */
 export function commitDiscardPending(): CommitResult {
-  return commitSchedVoid(SCHED_TYPES.discard, () => discardPending())
+  /* …and it is a line in the change history, on each day whose marks it cleared ([DRAFT-PENDING] — review log F3; Fable
+     P9 found it wrote none). It clears marks, not changes: the edits stay, and so do their own lines. */
+  const orig: any = SCHED.orig || {}, per = new Map<number, number>()
+  Object.keys(SCHED.pending).forEach(k => { const di = keyDay(k); if (!orig[di] && di != null && isFinite(+di)) per.set(+di, (per.get(+di) || 0) + 1) })
+  const r = commitSchedVoid(SCHED_TYPES.discard, () => discardPending())
+  if (isOk(r)) per.forEach((n, di) => logAction(di, `Draft marks cleared (${n})`, { sect: 'day' }))
+  return r
 }
 
 /* [GLOBAL-UNDO] §6.5 — retract the latest issued version of a published day back

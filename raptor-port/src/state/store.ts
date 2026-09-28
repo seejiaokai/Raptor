@@ -28,7 +28,9 @@ import { seedDemoSans, seedDemoMedical } from './demoseed'
 import { docAdd } from './docs'
 import { storesLoad, cxReasonsLoad, dutyTplLoad, waveTplLoad, dayTplLoad, autoAcceptSeedInputs, reconcileLandedAcc, relandInputs, secOrder, moveSectionModel, reorderSectionTo, secDefaultLoad, waveDefaultLoad } from '../engine'
 import { qualColsLoad } from '../engine/qualcols'
-import { elogClear } from '../engine/editlog'
+import { elogFlush, elogLoad, setElogDefer } from '../engine/editlog'
+import { changesLoad } from './changes'
+import { registerChangeLines } from './changelines'
 import { markDeletion, resetSched, SCHED, dayApproved, protectedWeek, amFormatOf } from '../engine/publish'
 import { inputProtected, protectedDates } from '../engine/quarantine'
 import { stashPut, stashGet, stashHas, setPreservedBlob, clearPreservedBlob, isPreservedWeek, preservedBlob } from '../engine/weekstash'
@@ -347,13 +349,13 @@ export function resetSession(s: any) {
      toggleRole's successor) does NOT end it: the same person looking through the other
      role's eyes. */
   endTrackerSession()
-  /* and the log itself goes. It is stamped with WHO made each change, so
-     carrying it across a logout would show the incoming user a list of
-     someone else's work under their own board — and the schedule those
-     entries describe is still there, which makes it read as fact rather
-     than as leftovers. Clearing is the honest half-measure while the app
-     has no server to keep a real per-person record. */
-  elogClear()
+  /* THE CHANGE HISTORY IS KEPT ([DRAFT-PENDING], 28 Sep 26 — D336 (b), built on yes and put on his look card). It
+     used to be cleared here — "a half-measure while the app has no server to keep a real per-person record". The one
+     changes window IS that record now: every line names who made it (by person, D166 (5)), members read it too
+     (D169), and what is NEW is per person (state/changes.ts), so the next person signing in sees the squadron's
+     history as it is, with only other people's changes marked new to them. Saved at once here, so a sign-out never
+     leaves a queued save behind. */
+  elogFlush()
 }
 
 /* ---- THE ADMIN'S MEMBER VIEW (owner D292, 27 Sep 26 — "6. yes") -------------------
@@ -772,6 +774,9 @@ export function wireStore() {
      "who", so a callsign rename moves nothing and a reused callsign inherits nothing
      (the one-identity rule; Astra R1-9) */
   HOOKS.whoamiId = () => me()
+  /* a line written while a command runs is kept only if the command commits ([DRAFT-PENDING] — the history is
+     durable now, so a refused command's lines would otherwise stand for good) */
+  setElogDefer(deferEffect)
   HOOKS.isPhone = () => {
     if (typeof window === 'undefined') return false
     try { if (window.matchMedia) return window.matchMedia('(max-width:820px)').matches } catch (_) {}
@@ -814,6 +819,11 @@ export function initStore() {
      added at the next reload — found by the walk, not by any test (every test ran in
      one page life). After hydrate(): the lock-out check reads the stored roster. */
   accountsLoad()
+  /* THE CHANGE HISTORY ([DRAFT-PENDING], 28 Sep 26 — D336 (b)): saved, so it is loaded here with every other setting */
+  elogLoad()
+  changesLoad()
+  /* the lines the cell funnels never see — absences, the Leave War, Quals, a publish — from the command stream */
+  registerChangeLines()
   /* THE SEED MERGES ARE SKIPPED WHEN STATE CAME BACK FROM STORAGE (the
      storage seam, 8 Sep 26). A hydrated INPUTS already carries every week's
      rows and the demo SANS/medical lifecycle that were saved last session;

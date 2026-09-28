@@ -51,6 +51,7 @@ export const T = {
   sched: 'ScheduleWeek family, DayDraft, RowPerson',
   amendment: 'Amendment, Signoff',
   editlog: 'EditLog',
+  seen: 'EditLogSeen',
   input: 'Input',
   attachment: 'Attachment, InputAttachment',
   war: 'LeaveWar',
@@ -71,7 +72,8 @@ export const PERMS: Record<string, PermRow> = {
   [T.accessreq]: row(cell('R U D'), NONE, NONE, cell('', 'C')),
   [T.sched]: row(cell('C R U D'), cell('R'), cell('R')),
   [T.amendment]: row(cell('C R'), cell('R'), cell('R')),
-  [T.editlog]: row(cell('R'), cell('R'), NONE, NONE, ['DRAFT-PENDING']),
+  [T.editlog]: row(cell('R'), cell('R')),
+  [T.seen]: row(cell('', 'C R U'), cell('', 'C R U')),
   [T.input]: row(cell('C R U D'), cell('R', 'C R U D'), cell('R')),
   [T.attachment]: row(cell('R'), cell('R', 'C R')),
   [T.war]: row(cell('C R U D'), cell('R')),
@@ -102,6 +104,9 @@ export function roleOf(s: any = SESSION): Who {
 }
 const actorRole = (a: Actor): Who =>
   a.role === 'system' ? null : a.role === 'admin' || a.role === 'member' || a.role === 'guest' || a.role === 'pending' || a.role === 'off' ? a.role : null
+/* was a committed change made by an admin? — the change history's Leave War lines say a request DELETED only when an
+   admin took it away ([DRAFT-PENDING]; a member's own bid coming off is not a decision) */
+export const actorIsAdmin = (a: Actor | null | undefined): boolean => !!a && actorRole(a) === 'admin'
 
 /* whose own-row rule applies: a person's id for an admin or a member; a pending
    principal's sign-in name for his own access request; nobody for a guest or an
@@ -236,7 +241,7 @@ const op = (table: string, act: Act, own: OwnRule = 'never', more?: [string, Act
   (more ? { table, act, own, more } : { table, act, own })
 
 const SETTINGS_KEYS_ALL = ['rules', 'stores', 'cxreasons', 'daytpl', 'dutytpl', 'wavetpl', 'wavehide',
-  'qualcols', 'lookahead', 'secdefault', 'wavedefault', 'accounts', 'accessreqs', 'guestview'] as const
+  'qualcols', 'lookahead', 'secdefault', 'wavedefault', 'accounts', 'accessreqs', 'guestview', 'changeseen'] as const
 
 export const COMMAND_OPS: Record<string, CommandOp> = {
   /* the scheduler — its writes are the scheduler's (admin); a joined child command is
@@ -304,20 +309,24 @@ export const COMMAND_OPS: Record<string, CommandOp> = {
   'account.addNew': op(T.user, 'C', 'never', [[T.person, 'C'], [T.accessreq, 'D'], [T.profile, 'U']]),
   'access.approveNew': op(T.accessreq, 'D', 'never', [[T.user, 'C'], [T.person, 'C'], [T.profile, 'U']]),
   'access.seen': op(T.accessreq, 'U'),
+  /* [DRAFT-PENDING] (D170): "Mark all as seen" in the changes window — the signed-in person's OWN entry only */
+  'changes.seen': op(T.seen, 'U', 'required'),
   /* a delete ([POST-OUT-OUTCOMES], D287, D290, D297, D299): the person marked (the hidden mark — D is the soft delete),
      his account removed, and on every day from its cutoff he is taken off — the working copy, the stashed weeks, the
      parked plans, the planning calendar (the schedule family), his sign-off boxes cleared (as the sign-clear command),
      and his inputs from that day deleted or ended the day before. Every table it writes is named (D200). The Leave War
      half (his records, his posting) joins in Part B with LeavePersonProfile. */
   'person.delete': op(T.person, 'D', 'never', [[T.user, 'D'], [T.accessreq, 'D'], [T.sched, 'U'], [T.amendment, 'C'], [T.input, 'D'], [T.input, 'U'], [T.profile, 'U'], [T.bid, 'D']]),
-  /* he's back — Restore (Admin → Users, D310), Undo post out, Restore under another callsign (D284, D286, D295): the person restored
-     (and renamed), the account the posting suspended enabled, the posting cleared; never a member's own-row write */
+  /* he's back — Restore (Admin → Users, D310), Restore under another callsign (D284, D286, D295): the person restored (and
+     renamed), his sign-in enabled, a new stint opened; never a member's own-row write. (Undo post out on the posting's own
+     archive runs the same body as the POSTING command, `lw.postout` below — [DRAFT-PENDING], Astra's read of the fixes, 02) */
   'person.restore': op(T.person, 'U', 'never', [[T.user, 'U'], [T.profile, 'U']]),
   /* [ONE-DOOR] (D309, D310, D323): Archive on Admin → Users — the person archived, his account suspended, his war stint
      closed (leavewar/sync.ts archivePerson); the man's own "welcome back" seen — his OWN row only (D305) */
   'person.archive': op(T.person, 'U', 'never', [[T.user, 'U'], [T.profile, 'U']]),
   'person.backSeen': op(T.person, 'U', 'required'),
-  /* a posting written with a take-back of what the posting made (its archive, its suspension, its SANS tick) */
+  /* a posting written with a take-back of what the posting made (its archive, its suspension, its SANS tick) — and its
+     Undo, before or after it ran (leavewar/sync.ts takeBack, and restoreBody's undo mode on the posting's own archive) */
   'lw.postout': op(T.profile, 'U', 'never', [[T.person, 'U'], [T.user, 'U']]),
   /* the posting pass on its date — a reconciler (the system actor); every table an outcome writes is named (D200) */
   'lw.postoutRun': op(T.profile, 'U', 'never', [[T.person, 'U'], [T.person, 'D'], [T.user, 'U'], [T.user, 'D'], [T.sched, 'U'], [T.amendment, 'C'], [T.input, 'D'], [T.input, 'U'], [T.bid, 'D']]),
@@ -382,6 +391,13 @@ const personOfInput = (v: any): string | null => (v && v.person != null ? String
    the UI gates stand in front of; §11 — members read the schedule only). A refusal rolls
    the schedule back to its last committed state. */
 const SCHEDULE_RECORDS = new Set(['days', 'sched.book', 'sched.mutes', 'sched.orig', 'sched.als', 'sched.retired', 'weekstash'])
+/* the seen record's entries other than `pid` are the same before and after */
+function onlyOwnEntry(before: any, after: any, pid: string): boolean {
+  const b = (before && typeof before === 'object') ? before : {}, f = (after && typeof after === 'object') ? after : {}
+  const keys = new Set([...Object.keys(b), ...Object.keys(f)])
+  for (const k of keys) if (k !== pid && JSON.stringify(b[k]) !== JSON.stringify(f[k])) return false
+  return true
+}
 export function ownershipViolation(env: CommitEnvelope): string | null {
   const a = env.actor
   if (!a || a.role === 'system' || a.role === 'admin') return null
@@ -404,8 +420,16 @@ export function ownershipViolation(env: CommitEnvelope): string | null {
       case 'people': if (c.id !== pid) return `another person's row (${where})`; break
       case 'lw.cell': { const parts = c.id.split(':'); if (parts[parts.length - 2] !== pid) return `another person's war row (${where})`; break }
       case 'lw.current': break
+      /* [DRAFT-PENDING] (D170): "Mark all as seen" — a member writes the seen record's OWN entry and nothing else of it
+         (EditLogSeen, own row); every other person's entry must come through unchanged */
+      case 'settings':
+        if (c.id === 'changeseen' && env.type === 'changes.seen') {
+          if (!onlyOwnEntry(c.before, c.after, pid)) return `another person's seen record (${where})`
+          break
+        }
+        return `an admin's record (${where})`
       case 'lw.bid': case 'lw.war': case 'lw.ledger': case 'lw.balances': case 'lw.oilpolicy': case 'lw.postouts': case 'lw.config':
-      case 'settings': case 'plan':
+      case 'plan':
         return `an admin's record (${where})`
       default: break                       // the schedule, the week stash, the Tracker
     }

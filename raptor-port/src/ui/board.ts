@@ -13,7 +13,7 @@ import { hhmm, fmtHM, minus, parseHM } from '../engine/time'
 import { VCONF } from '../engine/rules'
 import { slotVal, txtGet, txtSet, acRef, rollCx, whoArr, unacceptInput, TIME_TXT } from '../engine/slots'
 import { markEdit, markDeletion, deletionWasIssued, markStructuralAdd, alAttr, dayApproved, dayCurVer, dayShownPendCount, dayHasChanges, verLabel, nextSeq, dropRowMarks, protectedWeek, dayVersions, publishReadPass } from '../engine/publish'
-import { logAction, ELOG } from '../engine/editlog'
+import { logAction } from '../engine/editlog'
 import { hideHistBub } from './histbubble'
 import { touchDragBusy } from './drag'
 import { shiftAircraft, shiftFormation, shiftWave, shiftKeys, keyDay } from '../engine/keys'
@@ -419,8 +419,8 @@ function boardSignBody(di: number, pv?: boolean) {
      strip's data-alpub / data-beak already do. The "Not yet signed" marker rides
      beside the tag from the SAME body the week head uses (nysMarkHTML) — the board is
      the working copy too ([HUMAN-RETEST] walk S5, 24 Sep 26). */
-  return histLineHTML('histln-top')
-    + `<div class="signoff board-sign" id="sbSignBar">${signed}${signoffHTML(di, true)}`
+  /* (the board's "☰ Edit history" line that led this strip is gone — the changes window is the list, [DRAFT-PENDING] D168) */
+  return `<div class="signoff board-sign" id="sbSignBar">${signed}${signoffHTML(di, true)}`
     + `<div class="sb-pub">${planSelectorHTML(di)}${verTagHTML(di)}${nysMarkHTML(di)}${dayStatHTML(di, ed)}</div></div>`
 }
 
@@ -504,27 +504,9 @@ export function boardWarnHTML(di: number, look = false) {
       })
     }
   } else wh += `<div class="wln ok">No conflicts flagged for this day ✓</div>`
-  /* THE WAY INTO THE CHANGES LIST (owner, 11 Aug 26), and it lives here
-     rather than on the top bar for a measured reason: a second control up
-     there took the phone bar from 70px to 92px, wrapping the day name onto a
-     line of its own, which is the failure HANDOFF's "do not add a control
-     back to this bar without taking one off" describes. This panel is where
-     the board already puts what is true of the day as a whole, it is the
-     first thing on the phone board (order:-1) and the side column on a
-     desktop, and it costs the bar nothing.
-     It shows only while History is on — the owner's own phrasing was "when I
-     enable history, there is ALSO an option to view the history of all
-     edits", so it is a second thing the mode brings, not a permanent control
-     competing with the day's checks for attention.
-     Counted here rather than in the modal so the number is visible before you
-     open it: an empty log says so up front instead of after a tap. */
+  /* (the way into the changes list that sat here, while History was on, is gone: the one changes window is the list,
+     opened by the day's own chip and the board's History button — [DRAFT-PENDING], D168, 28 Sep 26) */
   wh += `</div>`
-  /* OUTSIDE .sbwrap, not inside it — on a phone that wrapper folds shut by
-     default and hides every .wln, so an entry in there would be invisible
-     until you had opened a panel about something else. It is also not one
-     of the day's checks: those are about this day's flying, this is about
-     the session. CSS shows this copy only under 820px — see histLineHTML. */
-  wh += histLineHTML('histln')
   return wh
 }
 
@@ -571,23 +553,6 @@ export function wireWarnSplit(side: HTMLElement) {
   }
   side.addEventListener('pointerdown', down)
   return () => side.removeEventListener('pointerdown', down)
-}
-
-/* ONE definition of the way in, rendered twice at different widths. Counted
-   here rather than in the modal so the number is visible before you open it:
-   an empty log says so up front instead of after a tap. It shows only while
-   History is on — the owner's phrasing was "when I enable history, there is
-   ALSO an option to view the history of all edits", so it is a second thing
-   the mode brings, not a permanent control competing with the day's checks. */
-function histLineHTML(cls: string) {
-  if (!view.HISTMODE) return ''
-  const n = ELOG.rows.length
-  /* "Edit history", the surface's one name everywhere (owner, 23 Aug 26) —
-     the modal head and the topbar opener say the same words, so the way in
-     and the thing it opens can never read as two features. The count keeps
-     the exact 'N change(s)' / 'No changes yet' wording the tests pin. */
-  return `<button class="${cls}" data-histopen title="Every change made this session, newest first">`
-    + `☰ Edit history · ${n ? `${n} change${n > 1 ? 's' : ''}` : 'No changes yet'}</button>`
 }
 
 export function dayTabsHTML(di: number) {
@@ -1100,7 +1065,10 @@ export function boardMbtn(e: MouseEvent) {
     const inp = row && row.src ? srcInput(row) : null
     if (inp && unacceptInput(di, inp)) {
       afterSchedMutate(); notify()
-      return act(di, 'Ground item removed — back under Personal Inputs' + desc(row.prog, timeSpan(row.str, row.end), whoText(row)))
+      /* said to him, not written as a line: the request's own filing line ("… filed: on the programme → taken off the
+         programme", the change history's one writer) is this act's one line (D114 — one act, one change; Fable's final
+         read, F1) */
+      return toast('Ground item removed — back under Personal Inputs' + desc(row.prog, timeSpan(row.str, row.end), whoText(row)))
     }
     const issued = deletionWasIssued(di, 'ground', ri, row && row.src)
     const said = 'Ground item removed' + desc(row && row.prog, row && timeSpan(row.str, row.end), row && whoText(row))

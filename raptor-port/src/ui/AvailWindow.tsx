@@ -23,7 +23,7 @@
    scheduler sees the overlap and judges it. The availability window stays
    narrow precisely because the app's job here is to SURFACE the clash, not to
    remove him from the list. Do not let this drift into filtering him out. */
-import { useEffect, useLayoutEffect, useRef } from 'react'
+import { useFloatWin, frontWin, raiseWin } from './floatwin'
 import { notify } from '../state/store'
 import { PEOPLE } from '../engine/people'
 import { seatShown, byCrewShown } from '../engine/faceattrs'
@@ -65,6 +65,7 @@ export function openAvailWinFrom(osn: HTMLElement) {
   const keep = AVAILWIN ? AVAILWIN_BOX : null
   setAvailWin({ di, item, ver, ofw, name: lbl.name, when: lbl.when, tab: oilModeOn(di) && !ver ? 'oil' : 'who' })
   if (keep) setAvailWinBox(keep)
+  raiseWin('avail')
 }
 
 /* D38/D51 — the LEFT column is the pilots and the RIGHT column is the WSOs, so
@@ -77,102 +78,14 @@ export function openAvailWinFrom(osn: HTMLElement) {
    so his column always matches the puck he wears (Fable's second read #2; engine/faceattrs.ts) */
 const isWso = (id: string) => seatShown(id) === 'RCP'
 
-/* THE PHONE LAYOUT — the stylesheet's own breakpoint for the window (the
-   ≤620px rule in scheduler.css), asked of the browser, so the two can never
-   disagree about which layout a box belongs to (Astra 3). */
-const phoneLayout = () => typeof window !== 'undefined' && !!window.matchMedia && window.matchMedia('(max-width:620px)').matches
-
-
+/* THE PHONE LAYOUT, WHERE THE WINDOW SITS, THE DRAG AND THE RESIZE — moved whole to ui/floatwin.ts (28 Sep 26,
+   [DRAFT-PENDING]) so the one changes window shares them; every rule and the finding behind it is there. */
 export function AvailWindow() {
   useVersion()
   const open = AVAILWIN
-  const el = useRef<HTMLDivElement | null>(null)
-  const drag = useRef<{ dx: number, dy: number, w: number, h: number, x0: number, y0: number, moved: boolean } | null>(null)
-
-  /* WHERE THE WINDOW SITS — ONE BODY for every render and every browser resize
-     (Fable S8, S11, S15). He edits the schedule behind it, so every keystroke
-     re-renders this; the box lives in the module, never in component state, or
-     the window would jump back to the corner mid-drag-and-type.
-     · NO BOX: the STYLESHEET places and sizes it — the top-right corner at 212
-       wide on a desktop, the full-width bottom panel on a phone (the approved
-       design, D41). So every inline position and size is CLEARED: the element is
-       reused between windows, and a drag's left/top left on it used to open the
-       next window where the last one had been dragged (S11), while the inline
-       212x540 React used to pin beat the phone rule outright (S8).
-     · A BOX (he dragged or resized it): put it back where he left it, then CLAMP
-       it into the screen, so a browser narrowed or a tablet turned after the
-       drag never strands the bar — and with it the ✕, the only way to close a
-       window that has no scrim and no Escape (S15). The clamp is for display
-       only: the box keeps where he put it, so a browser widened again gives it
-       back. Never while a drag is in flight, which writes the element itself. */
-  const place = () => {
-    const n = el.current
-    if (!n || !AVAILWIN || drag.current) return
-    const b = AVAILWIN_BOX
-    const phone = phoneLayout()
-    /* a box made in the OTHER layout is kept, not applied (Astra 3): a desktop
-       size must never beat the phone rule, and a trip through the phone width
-       gives the desktop box back */
-    if (!b || !!b.phone !== phone) {
-      n.style.left = n.style.top = n.style.right = n.style.bottom = n.style.width = n.style.height = ''
-      return
-    }
-    if (phone) {
-      /* THE PHONE PANEL IS THE STYLESHEET'S — full width at 12px margins, 62%
-         tall (D41). Only how far he dragged it up or down is his, so only its
-         top is written, clamped so the bar stays on screen. */
-      n.style.left = n.style.right = n.style.width = n.style.height = ''
-      n.style.bottom = 'auto'
-      n.style.top = Math.min(Math.max(0, b.y), Math.max(0, window.innerHeight - 42)) + 'px'
-      return
-    }
-    n.style.right = 'auto'; n.style.bottom = 'auto'
-    n.style.width = b.w + 'px'; n.style.height = b.h + 'px'
-    /* measured AFTER the size is written, so the stylesheet's max-width and
-       max-height have had their say on a screen smaller than the box */
-    const r = n.getBoundingClientRect()
-    const x = Math.min(Math.max(0, b.x), Math.max(0, window.innerWidth - r.width))
-    const y = Math.min(Math.max(0, b.y), Math.max(0, window.innerHeight - 42))
-    n.style.left = x + 'px'; n.style.top = y + 'px'
-  }
-  useLayoutEffect(place)
-  /* a browser resize moves nothing in React, so it re-places the window itself */
-  useEffect(() => {
-    if (!open) return
-    window.addEventListener('resize', place)
-    return () => window.removeEventListener('resize', place)
-  }, [open && open.di, open && open.item])
-
-  /* A RESIZE IS COMMITTED WITHOUT A RE-RENDER, for the same reason a drag is.
-     CSS `resize` fires no pointer events of its own, so the observer is the
-     only honest way to learn the new size; it writes straight to the module
-     box, which the layout effect above then honours on the next real render. */
-  useEffect(() => {
-    const n = el.current
-    if (!n || !open || typeof ResizeObserver === 'undefined') return
-    const ro = new ResizeObserver(() => {
-      /* ONLY A SIZE HE CHOSE IS REMEMBERED. The observer also fires for the
-         window's first layout and for every size the STYLESHEET decides — the
-         phone's full-width panel, a browser resized — and committing those froze
-         the window at pixel values on its very first frame, so it could never
-         follow the phone rule again. A size he chose is one the resize handle
-         wrote onto the element, or, once he has a box, one that differs from it. */
-      if (drag.current) return
-      const b = AVAILWIN_BOX
-      /* ...and a size the STYLESHEET decided is never his: on a phone the
-         panel's size is the phone rule's, and so is the size the window takes
-         on a desktop while it holds a phone box. Committing those overwrote a
-         desktop place on the way through a phone width (caught by the e2e,
-         23 Sep 26), so the desktop position never came back. */
-      if (phoneLayout() || (b && b.phone)) return
-      if (!b && !n.style.width && !n.style.height) return
-      const r = n.getBoundingClientRect()
-      if (b && Math.abs(r.width - b.w) < 1 && Math.abs(r.height - b.h) < 1) return
-      setAvailWinBox({ x: r.left, y: r.top, w: r.width, h: r.height, phone: false })
-    })
-    ro.observe(n)
-    return () => ro.disconnect()
-  }, [open && open.di, open && open.item])
+  const { el, onBarDown, onBarMove, onBarUp } = useFloatWin({
+    open: !!open, getBox: () => AVAILWIN_BOX, setBox: setAvailWinBox, deps: [open && open.di, open && open.item],
+  })
 
   if (!open) return <div className="availwin" hidden />
 
@@ -405,51 +318,12 @@ export function AvailWindow() {
       ? `Tap a puck for why. ${m.flagged === 1 ? 'One man is' : `${m.flagged} men are`} flagged.`
       : 'Tap a puck for why.')
 
-  const onBarDown = (e: React.PointerEvent) => {
-    const n = el.current
-    if (!n) return
-    if ((e.target as HTMLElement).closest('.win-x')) return
-    const r = n.getBoundingClientRect()
-    drag.current = { dx: e.clientX - r.left, dy: e.clientY - r.top, w: r.width, h: r.height, x0: e.clientX, y0: e.clientY, moved: false }
-    n.style.left = r.left + 'px'; n.style.top = r.top + 'px'
-    n.style.right = 'auto'; n.style.bottom = 'auto'
-    n.style.width = r.width + 'px'; n.style.height = r.height + 'px'
-    try { (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId) } catch { /* jsdom */ }
-    e.preventDefault()
-  }
-  /* A DRAG WRITES THE ELEMENT'S STYLE DIRECTLY AND NOTIFIES NOBODY. Re-rendering
-     the app on every pointer frame would repaint the whole board behind the
-     window sixty times a second — and the board is the thing he is supposed to
-     still be able to read while he drags. The move is committed to the module
-     box on release, which is what survives the next real render. */
-  const onBarMove = (e: React.PointerEvent) => {
-    const d = drag.current, n = el.current
-    if (!d || !n) return
-    if (Math.abs(e.clientX - d.x0) > 3 || Math.abs(e.clientY - d.y0) > 3) d.moved = true
-    const x = Math.min(Math.max(0, e.clientX - d.dx), Math.max(0, window.innerWidth - d.w))
-    /* never let the bar itself go off the bottom: a window dragged past the
-       edge could not be grabbed again, and it has no scrim to dismiss it */
-    const y = Math.min(Math.max(0, e.clientY - d.dy), Math.max(0, window.innerHeight - 42))
-    n.style.left = x + 'px'; n.style.top = y + 'px'
-  }
-  /* ONLY A REAL MOVE IS REMEMBERED (Fable, final read): a plain tap on the bar
-     used to turn the stylesheet's placement into a pinned box, so the window
-     stopped following its corner when the browser was widened. A tap puts the
-     stylesheet back in charge. */
-  const onBarUp = () => {
-    const d = drag.current, n = el.current
-    if (d && d.moved && n) {
-      const r = n.getBoundingClientRect()
-      setAvailWinBox({ x: r.left, y: r.top, w: r.width, h: r.height, phone: phoneLayout() })
-    }
-    drag.current = null
-    if (d && !d.moved) place()
-  }
-
   return (
     <div
-      className="availwin"
+      className={'availwin' + (frontWin() === 'avail' ? ' front' : '')}
       ref={el}
+      /* the one pressed last is in front of the changes window (Astra DP-10 — ui/floatwin.ts) */
+      onPointerDownCapture={() => { if (raiseWin('avail')) notify() }}
       role="dialog"
       aria-label={`${m && m.lbl.found ? m.lbl.name : name} — who is available`}
     >

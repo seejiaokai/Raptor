@@ -66,7 +66,10 @@ describe('AC1 — the sign-in stands for the defence-mail sign-in (D166 (2))', (
     const stored = mem['sqn142_accounts']
     expect(stored).toBeTruthy()
     expect(stored).not.toMatch(/pass/i)
-    expect(JSON.parse(stored).every((a: any) => Object.keys(a).sort().join() === 'id,name,on,pid,role')).toBe(true)
+    /* every field a stored account may carry, and nothing else — `seenFrom` since [DRAFT-PENDING] (Fable F6: the change
+       history's line number when the account was made), never a password */
+    const OK = ['id', 'name', 'on', 'pid', 'role', 'offBy', 'seenFrom']
+    expect(JSON.parse(stored).every((a: any) => Object.keys(a).every(k => OK.includes(k)))).toBe(true)
   })
 })
 

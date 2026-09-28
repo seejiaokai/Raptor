@@ -49,14 +49,15 @@ list (13–23 Sep 26), its finished entries and the "In plain terms" block are i
 whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaining).
 
 **His order — to the database step, about two months away (D203, 26 Sep 26; D173, D147 within it):**
-1. **Now — [ONE-DOOR]** (D309, D310 — Admin → Users carries every person's sign-in and roster state and every action;
-   Quals loses its archive), carrying **[POST-IN-DATE]** (D308) and the post-out look card's 3a / 3b — on
-   `claude/one-door`, the mock-up APPROVED 27 Sep 26 (D322; D320 the war keeps every stint); BUILT and FULL-checked 27–28 Sep 26 — his look (six questions) and "merge live" next;
-   `[POST-OUT-ASKS]` answered (D321);
-   `[POST-OUT-TRACKER]` on his answer. `[POST-OUT-OUTCOMES]` MERGED 27 Sep 26 (PR #446), `[ACCOUNTS-NEW-PERSON]` (PR #443)
-   and `[ACCOUNTS]` (PR #442) before it. **[LW-MOVE-STANDARD]** (D264–D266) BUILT and MERGED 27 Sep 26
-   (PR #447; archived). Then **[DRAFT-PENDING]** — the one changes window, on
-   top of accounts, its own FULL check (D210).
+0. **Next, in a fresh chat — [HIST-PHONE-HIDE]** (D339) **with [CHG-BY-ITEM]** (D340), one branch (both change the changes window):
+   History on a phone — the window hides to the bottom ("Hide ▾" / "Show ▴"), a gold dot on every detail with a history; and the
+   window sorted by item, every line item-first. Each mock-up first to his yes, then built, walked, checked. Then
+   **[LW-FIGSEL-FLAKE]** (D342) — the Leave War desktop test PR #451 merged over.
+1. **Now — [DRAFT-PENDING]** — the one changes window, on top of accounts, its own FULL check (D210): BUILT and
+   FULL-checked 28 Sep 26 on `claude/draft-pending` overnight by his standing go (D336 (2)) — his look DONE 28 Sep 26 (every
+   reading kept, D337, D338) — **waiting for his "merge live"**; never merged without his word. Before it: **[ONE-DOOR]** (D309, D310, carrying [POST-IN-DATE], D308) MERGED 28 Sep 26 (PR #450;
+   archived); `[POST-OUT-OUTCOMES]` (PR #446), `[ACCOUNTS-NEW-PERSON]` (PR #443), `[ACCOUNTS]` (PR #442) and
+   **[LW-MOVE-STANDARD]** (D264–D266, PR #447) MERGED 27 Sep 26. `[POST-OUT-TRACKER]` on his answer.
 2. **Now, beside the building — [IT-QUESTIONS]:** talk to the IT side (his, not code); their approvals take weeks.
 3. **Development as normal — [HUMAN-RETEST]**'s remaining three, in HIS order (D147): the absence record TOGETHER with
    [S4-HUNT-REST] — **WALKED 26 Sep 26** on `claude/absence-record-d147-af6a50`; his answers to its questions (D260–D263)
@@ -72,7 +73,8 @@ whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaini
    ([ARCH-STACK]) resumes there, with its step 6 still to come; the [AMEND] work is queued behind it. Architecture first,
    then the individual bugs (D144).
 6. **Before ANY collaborator is added** — an event, not a slot: take the checks runner off this repo (SEC-101, in
-   [REPO-PRIVATE]); and make the repo private again once the public period (D106) ends — his.
+   [REPO-PRIVATE]); and make the repo private again once the public period (D106) ends — his; **the same change turns the
+   GitHub Pages publish job off again** (D341: `false &&` back on `deploy.yml`'s `deploy` job — a private repo on the free plan has no Pages).
 
 **The small OIL follow-ups — ONE batch, with the OIL award fix, about a month before the database (D147, D203):** [OIL-READ-LEFTOVERS] (its items 1, 2, 4),
 [STORE-READER-SWEEP], [OIL-REQ-NAMEBOX] (a walk question for him), [OIL-WORDS],
@@ -532,7 +534,8 @@ on GitHub still carry the D58 unit designation IN THEIR FILES, and `main`'s hist
 **DONE, BY HIM, 23 Sep 26 (D59): THE REPO IS PRIVATE**, reversing his own *"nvm disregard this
 first"* the same day after a check found the unit named in the app. Pages is GONE (API 404), so the
 publish job in `.github/workflows/deploy.yml` is OFF — it would fail every push and still bill —
-with the gates left running. `README.md` corrected. **The app is viewed on VERCEL now.**
+with the gates left running. `README.md` corrected. **The app is viewed on VERCEL now.** **28 Sep 26 (D341): while the repo is
+public (D106) the Pages address is back** — `https://seejiaokai.github.io/Raptor/`, the publish job on; going private again turns it off.
 
 **STILL OPEN — the sharing half** (*"i would like to make my repo private, and share with developers
 on my app"*). Route: Settings → Collaborators, by username, Write; they run it locally and do not
@@ -875,7 +878,10 @@ overwrite each other; one record per leave / person / war row; (2) **honest refu
 out, not allowed, someone changed it first) says so and stops, instead of retrying for ever (the top bar's "Not saved —
 Retry" is for network failures); his look at the words first; (3) **a safe start-up** — a slow or half load says so, never a
 blank app, never re-seeds demo data; (4) **never seed demo data into a shared store**; (5) a stuck record never marks the whole
-app unsaved. With `[OIL-AWARD-IS-A-GRANT]` and the small OIL follow-ups as ONE batch. **Tier:** FULL (saved data).
+app unsaved; (6) **two tabs of one browser** — each tab keeps its own copy of the store and the last save wins, so two tabs
+open at once overwrite each other's work (every record; the change history's `elog` and `seq` too — `[DRAFT-PENDING]`'s red
+team, Fable F10 / Astra DP-01, 28 Sep 26: declined there as the whole app's limit, filed here). With `[OIL-AWARD-IS-A-GRANT]`
+and the small OIL follow-ups as ONE batch. **Tier:** FULL (saved data).
 
 ### [IT-QUESTIONS] Talk to the IT side now — their approvals take weeks (his, not code; D203, filed 26 Sep 26)
 The checklist is the primer's §7 (Artifact "Raptor Backend Primer"; its questions, kept here so they outlive it): code apps
@@ -1048,62 +1054,70 @@ None breaks an amendment rule; each is a line to fix or ask about, from the walk
    Fable #1's mirror; the digest keys ground rows by position). A false re-sign, never a false publish.
 **Place:** any time; items 6–8 with the Leave War links re-test (D147, last).
 
-### [ONE-DOOR] Admin → Users: one door for a person's whole state — sign-in and roster (D309, filed 27 Sep 26)
-**His direction (D309):** *"just do 1 door for everything and see the state of that account all just in admin. Like
-green or red dot for status, account and roster for status"* — and he asked how the buttons should read for every case
-discussed (the look card's 3a and 3b, the archived list, D308's post-in date). **Today:** Admin → Users lists accounts
-(an archived man tagged "archived callsign", a suspended one "suspended"), with Suspend / Enable and Delete account;
-Quals has the ✕ archive, the folded Archived list, Restore, Restore as and the rename (D295); Enable on an archived man
-lets him sign in while still archived (the half-state he questioned). **The agent's proposal (to his approval, by a
-mock-up first):** one row per person — a dot for Sign-in and one for Roster; Active → Suspend · Archive · Delete;
-Suspended → Enable · Archive · Delete; no sign-in (a man who does not use the app) → Give sign-in · Archive · Delete;
-Archived (the folded group) → Restore · Delete; Waiting → Give access · Refuse; a posting waiting for its date shown on
-the row. Archive also suspends; Restore brings both back, asks the post-in date (D308) and tells the man to check his
-quals (3a). Quals keeps quals, CAT, flight, initials (narrows D217). **Carries:** 3a, 3b, the archived group,
-`[POST-IN-DATE]`. **Place (the agent's recommendation, his call):** after PR #446 merges, its own branch — mock-up, his
-approval, then the build, FULL check (permissions, roster, accounts). **APPROVED AS PROPOSED 27 Sep 26 (D310): "one door
-as proposed, Quals loses archive"** — narrows D217 and D295; the mock-up shows the look before the build. **MOCK-UP
-APPROVED 27 Sep 26 (D322)** — `raptor-port/docs/mock/one-door.html` is the design of record, with the agent's own calls on
-it (Archive one tap; Restore turns the sign-in back on even when suspended by hand before; no Enable on archived rows;
-renaming a roster man stays on Quals). **D323: Archive is "posted out from today" on the war, his past kept.** **And D320 ("A"): the Leave War keeps every stint** — a man back from overseas reads
-"away" between his posting out and his post-in, his months before as they were (today one in/out window per man; the
-build changes `inSquadron`, the war's posting record in `store.ts`, `rowInWindow`, Restore). **Next:** plan (Opus 5.5
-high) → Fable and Astra red-team → build red first → walk both widths → FULL check → his look → "merge live".
-**BUILT 27 Sep 26 on `claude/one-door`** (the plan's round 1 folded in — `docs/superpowers/specs/2026-09-27-one-door-plan-review-log.md`;
-unit tests red first, e2e `onedoor.spec.ts` both widths). **The walk's design (Fable 5.1, 27 Sep 26):**
-`raptor-port/docs/superpowers/specs/2026-09-27-one-door-scenarios-fable.md` — its §4 gaps fixed red first the same day (the
-Post in sheet read-only too and both posting writers locked, a hidden man's own post-in date kept, a never-arrived delete
-stores no stint, the message and the rail's words, the Archived group folding during a search, "posting in 19 Oct" on
-the row). **FULL-CHECKED 27–28 Sep 26** — the evidence sheet `raptor-port/docs/handpass/2026-09-27-one-door.md` (the walk
-254/0 both widths, the break tests, both final reads and every finding's disposition, the gates green). **His look, 28 Sep
-26:** the Quals outline fixed (his find); answers D325–D329 recorded, D326, D327, D329 BUILT red first and walked;
-questions 2 and 5 kept as built. **His "merge live" is GIVEN (D336) — the next chat merges on green, then starts
-`[DRAFT-PENDING]` overnight (up to his look, never merged without his word).**
-
-### [POST-IN-DATE] A man posted in: the admin is asked his post-in date (D308, filed 27 Sep 26)
-**His ruling (D308):** *"When someone is posted In the app should also ask the admin when is the post in date so that the
-leave war is reflected correctly. Usually a user can get access to the app a few days prior to their actual post in
-date."* **Today:** a new person (Admin → Users) and a man restored from the Archived list (Quals) get no post-in date — the
-Leave War counts them from always; the date exists only as the Leave War's own "Post in" button (20 Sep 26), set by hand.
-**To build:** a post-in date box on every door that puts a man on the roster — New person (added, or approving a request),
-Restore and Restore as — opening on today, written through `setPostIn` (the same record the Leave War's Post in writes);
-his account works from the day he is added or restored, whatever the date. The new-person form gains a field (D224's
-approved mock-up marked, D201); the Leave War's own Post in stays. **Size:** ~1.5–2 h with tests and a walk — permissions
-and the Leave War, FULL tier. **Place: his call** — inside PR #446 before its merge, or its own branch right after #446
-merges (the agent's recommendation: after, so the fully checked #446 does not grow). **Built with `[ONE-DOOR]`** (D310,
-D322: Restore, New person and Give access's New person ask it) — **and D320 (27 Sep 26): Restore opens a NEW stint on the war**
-(away between the posting out and the post-in), never moving his old one's start. **BUILT 27 Sep 26 with `[ONE-DOOR]`.**
-
 ### [POST-OUT-TRACKER] A deleted man and the Tracker's courses "still running" (D299 — approved, NOT built; filed 27 Sep 26)
 D299 lists "his place on any course still running — goes". The Tracker has no notion of a course "still running", and the
 build cannot decide what it means without him, so a deleted man is left on his Tracker courses, unlinked (his name as
 text). **Put to him on the `[POST-OUT-OUTCOMES]` look card (question 5):** what makes a course still running — or leave
 his name on his courses for now (then D299 is narrowed in his words). **Place:** after `[POST-OUT-OUTCOMES]` merges, on
 his answer. Touches `raptor-port/src/tracker/` (its own store) — its own small check.
+### [LW-FIGSEL-FLAKE] A Leave War desktop browser test fails on GitHub on the changes-window branch (D342, 28 Sep 26)
+`e2e/leavewar.spec.ts:2190` "-1.5 subtracts; 0, abc and 1.25 are refused and the run stays" — after a refused amount, the
+figures drawer holds the WRONG number of selected cells (`td[data-figsel]`: expected 3; got 5 on 27 Sep 26 21:11, got 1 on
+28 Sep 26 01:31, both tries each time), on GitHub's machines only, on `claude/draft-pending` (2 of 5 runs failed; 3 passed).
+It passes on the PC every time (5/5, and 4/4 with the browser slowed six-fold) and on `main`. **PR #451 merged over it on his
+word (D342)** — the test unchanged. **To dig in (its own small branch):** reproduce on GitHub's machines (a workflow run of
+that one test, repeated) with a trace; the unconfirmed lead — a redraw mid-selection on a slow machine, e.g. the change
+history's save repainting the Sync chip and the drawer with it (`[DRAFT-PENDING]` added a history write to every Leave War
+command, `state/changelines.ts`); compare against `main`. If it fails on `main` too, it is D84's slow-runner family.
+**Place:** after `[HIST-PHONE-HIDE]` / `[CHG-BY-ITEM]`, or sooner if `main`'s runs start failing on it.
+
+### [HIST-PHONE-HIDE] History on a phone — say it is on, and let the schedule be seen (D339, 28 Sep 26)
+**His ask (D339):** on a phone the changes window covers the schedule and nothing says the bubbles are on; "maybe when it hides
+on a phone it goes to the bottom of the screen"; built in ANOTHER chat. **The design put to him** (the mock-up, real app, phone
+width — `raptor-port/docs/img/handpass/2026-09-28-draft-pending/histphone/histphone-mockup.png`, re-taken by
+`raptor-port/scripts/handpass/dp-histphone.mjs`): (1) the panel's header gains a hide button beside ✕, labelled "Hide ▾" — a word, not
+the arrow alone (his question: "how does one know that the action is to minimise?") — and a one-line hint, in fewer words at his
+word — "History on — tap a gold dot to see who changed it."; (2) Hide sends the window to the slim bar at the bottom,
+"History on · N changes" with a "Show ▴" button — Show brings the list back, ✕ turns History off; (3) while History is on, every detail
+with a history wears a small gold dot just outside the puck's bottom-right corner (never a ring — D92; clear of the OG tag at the
+top right) — on desktop too; the ▾ on the phone only; (4) a tap on a dotted detail opens its bubble. **Open:** his yes to the
+shorter-hint mock-up with the labelled Hide / Show (and to the two calls — dots on desktop too, Hide on the phone only). **Place:** a fresh chat on its own branch
+from `main` once PR #451 merges (the agent's reading of "another chat"), with `[CHG-BY-ITEM]` on the same branch (both change the
+window). **Where it lands:** `src/ui/ChangesWindow.tsx` (Hide, the
+bar's words), `src/ui/histbubble.ts` (marking the details with a history while History is on — the same keys the bubble answers),
+`src/ui/scheduler.css`, `docs/ui-contracts.md` §The one changes window; WALK tier at least (a shared drawer — every puck surface).
+
+### [CHG-BY-ITEM] The changes window sorted by item, every line item-first (D340, 28 Sep 26)
+**His ask (D340):** "the main category to sort as per item, and the latest changes of that group will be the highest … in that
+item can show sub categories of that item, if that item has multiple change"; the line format he prefers is the item first
+("Programme · WPNS & TACTICS SYNC", then "Trident → Piston"), never the man first ("Diesel put on Programme · …"). **The design put
+to him** (the mock-up, real app, phone width with real changes — `raptor-port/docs/img/handpass/2026-09-28-draft-pending/byitem/byitem-mockup.png`,
+re-taken by `raptor-port/scripts/handpass/dp-byitem.mjs`): (1) "Group by: Item / Who" — Item first and the default; the old section
+groups (Flying waves, Duties, Common Programme) go, the item's header carrying its section word; (2) one group per item — a
+Common Programme event, a duty desk, a formation (its seats as details: "#1 RCP"), a sim, a ground event, an input — the item
+whose latest change is newest on top; (3) an item with ONE change is one line (no fold); with more, a header ("Programme · SODB ·
+3", its latest time) and a sub-line per change, newest first, each with who · when; a text change names its field ("Start");
+(4) in the week view the day leads the header ("Mon · Programme · SODB") — the same event on two days is two items; (5) a man
+moved between items shows under both ("Echo moved in from MET + NOTAM BRIEF" / "Echo moved out to SODB"), still ONE change in the
+tab's count; (6) Who keeps its sittings, its lines item-first too (a move once, under the item he reached); (7) every group open by
+default (a caret folds it). **Open:** his yes to the mock-up. **Narrows D168** ("Where = by the day's own sections"). **Place:** with
+`[HIST-PHONE-HIDE]`, the same fresh chat and branch (both change the changes window). **Where it lands:** `src/ui/changesmodel.ts`
+(the item of a line — the history row's place without its seat or field, from its row-anchored key, not its label; `byWhere` →
+by item; the line's words item-first), `src/ui/ChangesWindow.tsx` (the groups and sub-lines), `src/ui/scheduler.css`,
+`docs/ui-contracts.md` §The one changes window; its tests (`changesmodel.test.ts`); the walk's changes-window steps. WALK tier at
+least — the window is every user's, members included.
+
 ### [DRAFT-PENDING] The one CHANGES WINDOW — D118, D167–D172 (25 Sep 26); step 3 of D173, after `[ACCOUNTS]` (its own FULL check — D210)
+**BUILT 28 Sep 26 on `claude/draft-pending`** (overnight, D336 (2)): the plan `raptor-port/docs/superpowers/plans/2026-09-28-draft-pending-plan.md`
+(§9 after the red team — `…/specs/2026-09-28-draft-pending-plan-review-log.md`); the contract `raptor-port/docs/ui-contracts.md`
+§The one changes window; the history `raptor-port/docs/engine-rules.md` §The edit log; D263 built with it; the open question
+below built on YES (D336 (b)) and put on his look card. FULL check: `raptor-port/docs/handpass/2026-09-28-draft-pending.md`
+— the walk (desktop and phone 33/33), Fable's scenarios (12 defects, all fixed), 12 break tests, two blind final reads and
+two narrow rounds on the fixes (every finding red first, then fixed), the gates green on the final code (`1270680e`).
+**Next:** his look DONE 28 Sep 26 — every reading kept as built (D337, D338) → "merge live" (never without his word).
 **From `[ACCOUNTS]` (26 Sep 26), to settle here:** the edit log is cleared at every sign-in and sign-out (`resetSession`
 → `elogClear`, session-only as today); with personal accounts, should the change history outlive a sign-out? The
-window's "new to you" needs it to. A member's history shows a medical change in full (D211, which narrows D169's
+window's "new to you" needs it to. **— ANSWERED 28 Sep 26: yes, as built (D338 (1)); the whole look card answered (D337, D338).** A member's history shows a medical change in full (D211, which narrows D169's
 reading). The edit log's rows carry the person's id beside the callsign from `[ACCOUNTS]` on.
 **WHAT IS SETTLED (read the rulings, not the working notes below):** D168 one changes window (New to you / All changes,
 a day picker, Group by Who / Where) replacing the pending list, the hand-over idea and the Edit history list; D167 its

@@ -997,6 +997,9 @@ export function markEdit(key?:any,was?:any,now?:any){
    (owner request, Aug 26; the view page ignores the attribute). */
 export function alAttr(key:any){
   if(!key)return '';
+  /* THE OG TAG ([DRAFT-PENDING] — D172): a change new to the viewer, on a day not yet published (the hook answers
+     false for a published day, whose ALn tags below say it) */
+  if(HOOKS.newToMe(key))return ` data-og="1" title="A change new to you — see the changes"`;
   /* HOT PAINT PATH. The stored book is rid-anchored, so the positional DOM key
      is translated (ridKey, O(depth)) before the lookup. Skip that walk entirely
      when nothing is marked anywhere — a GLOBAL empty check, not a per-day scan

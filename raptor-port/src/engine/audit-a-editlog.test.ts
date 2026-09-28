@@ -20,7 +20,7 @@ import { setSlotVal, slotVal } from './slots'
 import { shiftKeys } from './keys'
 import { moveDutyRow } from './reorder'
 import { HOOKS } from './hooks'
-import { ELOG, elogClear, elogFor, elogAllFor, elogGroups, elogRows, logEdit, logAction } from './editlog'
+import { ELOG, elogClear, elogFor, elogAllFor, elogGroups, elogRows, logEdit, logAction, elogVal } from './editlog'
 import { ridKey } from './rowids'
 
 /* addressing-by-rid: the book stores keys rid-anchored, and keys.ts's
@@ -52,7 +52,7 @@ describe('renumbering and the log (delete)', () => {
     )
     try {
       setSlotVal(`d:0.0.${B + 1}`, 'bane')          // logged: — → Bane at address B+1
-      expect(elogFor(`d:0.0.${B + 1}`)!.to).toBe('Ranger')
+      expect(elogVal(elogFor(`d:0.0.${B + 1}`)!, 'to')).toBe('Ranger')   // the log keeps his id; readers say his callsign
 
       /* exactly what board.ts's [data-drdel] branch does */
       rows.splice(B, 1)
@@ -68,7 +68,7 @@ describe('renumbering and the log (delete)', () => {
          holds the edit owns its history, the untouched neighbour has none */
       const moved = elogFor(`d:0.0.${B}`)
       expect(moved, 'the edited row owns its history').toBeTruthy()
-      expect(moved!.to).toBe('Ranger')
+      expect(elogVal(moved!, 'to')).toBe('Ranger')
       expect(elogFor(`d:0.0.${B + 1}`), 'the untouched neighbour wears nothing').toBeNull()
       expect(slotVal(`d:0.0.${B + 1}`)).toBe('')
     } finally {
@@ -95,7 +95,7 @@ describe('renumbering and the log (reorder)', () => {
       /* … and so did the log (elogRemap rides the same permutation) */
       const moved = elogFor(`d:0.0.${B + 1}`)
       expect(moved, 'his history moved with him').toBeTruthy()
-      expect(moved!.to).toBe('Ranger')
+      expect(elogVal(moved!, 'to')).toBe('Ranger')
       expect(elogFor(`d:0.0.${B}`), 'nothing left at the old address').toBeNull()
       expect(slotVal(`d:0.0.${B}`)).toBe('')
     } finally {
@@ -105,31 +105,35 @@ describe('renumbering and the log (reorder)', () => {
 })
 
 describe('the ring past its cap', () => {
+  /* the cap is read, not written as a number: it rose from 400 to 2,000 when the log became the durable change
+     history ([DRAFT-PENDING], 28 Sep 26) — the ring's behaviour at its edge is what these pin */
   it('drops the oldest and keeps every query coherent', () => {
-    for (let i = 0; i < 410; i++) logEdit('ff:0.0.0.cs', 'v' + i, 'v' + (i + 1))
-    expect(ELOG.rows.length).toBe(400)
+    const cap = ELOG.cap
+    for (let i = 0; i < cap + 10; i++) logEdit('ff:0.0.0.cs', 'v' + i, 'v' + (i + 1))
+    expect(ELOG.rows.length).toBe(cap)
     /* the ten oldest fell off the front, in order */
     expect(ELOG.rows[0]!.from).toBe('v10')
-    expect(ELOG.rows[399]!.to).toBe('v410')
+    expect(ELOG.rows[cap - 1]!.to).toBe('v' + (cap + 10))
 
     /* the three queries agree with each other after the overflow */
-    expect(elogRows().length).toBe(400)
-    expect(elogRows()[0]!.to, 'newest first').toBe('v410')
+    expect(elogRows().length).toBe(cap)
+    expect(elogRows()[0]!.to, 'newest first').toBe('v' + (cap + 10))
     const all = elogAllFor('ff:0.0.0.cs')
-    expect(all.length).toBe(400)
+    expect(all.length).toBe(cap)
     expect(all[0]!.from, 'oldest first').toBe('v10')
     const g = elogGroups()
     expect(g.length).toBe(1)
-    expect(g[0]!.rows.length).toBe(400)
-    expect(elogFor('ff:0.0.0.cs')!.to).toBe('v410')
+    expect(g[0]!.rows.length).toBe(cap)
+    expect(elogFor('ff:0.0.0.cs')!.to).toBe('v' + (cap + 10))
   })
 
   it('a structural row crossing the boundary stays its own group of one', () => {
+    const cap = ELOG.cap
     logAction(0, 'Line removed')
     logAction(0, 'Line removed')
-    for (let i = 0; i < 399; i++) logEdit('ff:0.0.0.cs', 'w' + i, 'w' + (i + 1))
-    /* 401 pushes — the FIRST structural row fell off, the second survives */
-    expect(ELOG.rows.length).toBe(400)
+    for (let i = 0; i < cap - 1; i++) logEdit('ff:0.0.0.cs', 'w' + i, 'w' + (i + 1))
+    /* cap + 1 pushes — the FIRST structural row fell off, the second survives */
+    expect(ELOG.rows.length).toBe(cap)
     const structs = ELOG.rows.filter(r => !r.key)
     expect(structs.length).toBe(1)
     const g = elogGroups(0)

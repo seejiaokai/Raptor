@@ -5,8 +5,11 @@
 import { useEffect, useRef, useState } from 'react'
 import { DAYS } from '../engine/data'
 import { HOOKS } from '../engine/hooks'
-import { SBDAY, CURPAGE, DPREV, HISTMODE, toggleHistMode, esc, restArmed, HLSET, SEARCH, HLOPEN, toggleHlOpen, setSearch, ARM } from '../state/view'
-import { closeHistList, setWeekCal } from './pops'
+import { SBDAY, CURPAGE, DPREV, HISTMODE, esc, restArmed, HLSET, SEARCH, HLOPEN, toggleHlOpen, setSearch, ARM } from '../state/view'
+import { toggleChanges } from './changesopen'
+import { weekDates } from '../engine/editlog'
+import { CURWEEK } from '../engine/waves'
+import { setWeekCal } from './pops'
 import { CalIcon, HistIcon, HlIcon } from './icons'
 import { HlChips } from './hlchips'
 import { oilShown, oilModeOn, toggleOilMode, oilUndoBoundary } from './oilmode'
@@ -127,7 +130,7 @@ export function SchedBoard() {
     /* the changes list and any bubble go with them: both are opened from the
        board's own bar, so a page change that closes the board must not leave
        either painting over whatever the user navigated to */
-    HOOKS.closeBoardDialogs = () => { setCxt(null); setSortAll(null); closeHistList(); hideHistBub() }
+    HOOKS.closeBoardDialogs = () => { setCxt(null); setSortAll(null); hideHistBub() }
     return () => { HOOKS.closeBoardDialogs = () => {} }
   }, [])
 
@@ -453,10 +456,13 @@ export function SchedBoard() {
               only while History is on — which is also the owner's own phrasing
               for it ("when I enable history, there is also an option to view
               the history of all edits"). See boardWarnHTML in board.ts. */}
+          {/* HISTORY IS THE CHANGES WINDOW OPEN ([DRAFT-PENDING], 28 Sep 26 — the owner's D116: one History mode for the
+              board and the edit week; D168: its list is the one changes window). This button opens the window on the
+              board's day (the bubbles come on with it) and closes it again. */}
           <button className={'abtn' + (HISTMODE ? ' on' : '')} id="sbHist"
             aria-pressed={HISTMODE}
-            title={HISTMODE ? 'Stop showing who changed each detail' : 'Show who changed each detail, and when — hover it, or tap it on a phone'}
-            onClick={() => { toggleHistMode(); hideHistBub(); notify() }}>
+            title={HISTMODE ? 'Close the changes — and stop showing who changed each detail' : 'Show the changes, and who changed each detail — hover it, or tap it on a phone'}
+            onClick={() => { hideHistBub(); toggleChanges(weekDates(CURWEEK)[SBDAY ?? 0] || 'week', 'new') }}>
             <span className="bi"><HistIcon /></span><span className="bl"> History</span></button>
           {/* THE VERSION PICKER LEFT THIS BAR (owner, 26 Aug 26). It moved down
               into the board's sign-off strip, and since the 15 Sep 26 redesign

@@ -1,7 +1,9 @@
 import { DAYS } from './data'
 import { PEOPLE } from './people'
-import { HOOKS } from './hooks'
+import { HOOKS, store } from './hooks'
 import { ridKey, posKey } from './rowids'
+import { CURWEEK } from './waves'
+import { dayIso } from './verid'
 
 /* THE EDIT LOG (owner, 11 Aug 26) — who changed which detail, when, and what
    it was before. The board's History toggle reads it two ways: a bubble on
@@ -22,25 +24,142 @@ import { ridKey, posKey } from './rowids'
    itself something a person did to the schedule, not to the record of it.
    A log you can rewrite by pressing undo is not a log. */
 
+/* THE CHANGE HISTORY ([DRAFT-PENDING], 28 Sep 26 — D168, D170, D336 (b)). The session log above grew into the
+   squadron's change history, which the one changes window reads:
+   - DURABLE: saved through the settings store (`elog`) and loaded at boot, and NO LONGER cleared at sign-in or
+     sign-out (D336 (b), built on yes and put on his look card) — the history is the squadron's record, shared by
+     everyone on the browser; what is NEW is per person (state/changes.ts). Still OUTSIDE undo, as it always was:
+     written raw, never a command-layer record, so the global undo never rewinds it. Until the database another
+     device never sees these lines (one browser per store) — said here, never on screen.
+   - WEEK-SAFE: every line keeps its CALENDAR day (`date`, ISO), taken when it is written. `di` alone named a day of
+     whichever week was loaded, so a Monday line made on the week of 13 Jul showed under 20 Jul's Monday too.
+   - `seq` — a number that only rises, kept across a reload: the line's identity, what "new to you" points at.
+   - `end` — the last day of an absence line that spans days; `iid` — the input a line is about. */
 export type ELogRow = {
+  seq: number         // the line's identity: only rises, kept across a reload
   t: number           // wall clock at the moment of the edit
   who: string         // display name, from HOOKS.whoami() -- the signed-in callsign since [ACCOUNTS]
   pid?: string | null  // the person behind it (HOOKS.whoamiId), so the changes window can draw a renamed callsign live
-  di: number | null   // which schedule day it landed on (null for a structural note)
+  di: number | null   // which day of the week LOADED at the time it landed on (null for a note with no day)
+  date: string | null // the calendar day (ISO) it is on — the week it belongs to; null for a line with no day
+  end?: string        // the last calendar day, for a line that spans days (an absence)
+  wdate?: string      // the span BEFORE the change, when it moved (Astra DP-05): an absence moved from 1–2 Aug to 6–7 Aug
+  wend?: string       //   shows on both spans, never on the days between
+  iid?: string        // the input the line is about (an absence line)
+  iids?: string[]     // EVERY input the line is about, when more than one (a war move files the moved day as a new record —
+                      //   the line keeps the one it left too, so "To go out" finds it by id: Astra's round-3 read, R3-02)
+  days?: string[]     // the EXACT days after, when they are not one run (a gap day between is untouched — R3-03)
+  wdays?: string[]    //   and before
+  sub?: string        // the PERSON a Quals line is about, by his id (a rename never loses it — Astra's final read, 03)
+  fld?: string        //   and which of his details (q, seat, pers, san, sxo, archived, deleted, cs, or a qualification's key)
+  sect?: string       // the part of the day a line with no key belongs to (Group by Where — ui/changesmodel.ts sectionOf)
   key: string         // the slot key, '' for a structural note
   lbl: string         // WHAT it was, in words — frozen at log time, see below
   from: string
   to: string
 }
 
-/* 400 rows. HIST caps at 60 because each of its entries is a whole serialised
-   schedule; one of these is a handful of short strings, so the same memory
-   buys far more of them. 400 covers a heavy day of planning (a full day built
-   from nothing runs to a couple of hundred edits) and still cannot grow
-   without bound in a tab left open for a week. Oldest falls off the end. */
-export const ELOG: { rows: ELogRow[]; cap: number } = { rows: [], cap: 400 }
+/* 2,000 rows (was 400 while the log lived only as long as the tab). One row is a handful of short strings; 2,000 of
+   them is a few hundred KB in the browser's store beside the weeks — a busy fortnight of several schedulers. The
+   oldest leave first; the database keeps the history properly, with its own retention. */
+export const ELOG: { rows: ELogRow[]; cap: number; next: number } = { rows: [], cap: 2000, next: 1 }
 
-export function elogClear() { ELOG.rows.length = 0 }
+/* test and admin-sweep helper: the in-memory list emptied (the saved record follows on the next save). A sign-out
+   no longer calls it (D336 (b)). */
+export function elogClear() { ELOG.rows.length = 0; ELOG.next = 1 }
+
+/* the calendar day of a day index of the week loaded NOW — taken at write time, so a week switch never moves it */
+export function dateOfDi(di: number | null | undefined): string | null {
+  if (di == null || !Number.isFinite(+di) || +di < 0 || +di > 6) return null
+  try { return dayIso(CURWEEK, +di) } catch (_) { return null }
+}
+
+/* today's calendar day, in the browser's own time — the day a line with no schedule day of its own is on (a roster
+   change, the history cleared) */
+export function todayIso(): string {
+  const d = new Date(), p = (n: number) => String(n).padStart(2, '0')
+  return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}`
+}
+
+/* does a line cover this calendar day? (an absence line covers every day from `date` to `end`, and — when it moved —
+   every day of the span it came from, `wdate` to `wend`; never the days between the two. When its days are not one run
+   it keeps them exactly — `days`, `wdays` — and only those count: a gap day between is untouched, Astra's round-3 read) */
+const inSpan = (a: string | null | undefined, b: string | null | undefined, iso: string) =>
+  !!a && a <= iso && iso <= (b && b > a ? b : a)
+export function rowTouches(r: { date: string | null; end?: string; wdate?: string; wend?: string; days?: string[]; wdays?: string[] }, iso: string): boolean {
+  return (r.days ? r.days.includes(iso) : inSpan(r.date, r.end, iso)) || (r.wdays ? r.wdays.includes(iso) : inSpan(r.wdate, r.wend, iso))
+}
+const spanMeets = (a: string | null | undefined, b: string | null | undefined, lo: string, hi: string) =>
+  !!a && a <= hi && (b && b > a ? b : a) >= lo
+
+/* the seven calendar days of a week key ('dd/mm/yyyy', its Monday) */
+export function weekDates(weekKey: string = CURWEEK): string[] {
+  const out: string[] = []
+  for (let i = 0; i < 7; i++) { try { out.push(dayIso(weekKey, i)) } catch (_) { /* a malformed key reads no days */ } }
+  return out
+}
+
+/* every line on any day of a week, NEWEST FIRST — the changes window's whole data path for a week */
+export function elogWeekRows(weekKey: string = CURWEEK): ELogRow[] {
+  const days = weekDates(weekKey)
+  if (!days.length) return []
+  const lo = days[0]!, hi = days[6]!
+  return ELOG.rows.filter(r => spanMeets(r.date, r.end, lo, hi) || spanMeets(r.wdate, r.wend, lo, hi)).reverse()
+}
+
+/* ---- saving and loading (D336 (b)) ----
+   One write per burst of edits, never per keystroke: a save is queued on the microtask queue and every line pushed in
+   the same run of the page rides it. `elogFlush` writes at once (a sign-out, a page hide, the tests). */
+let SAVE_QUEUED = false
+export function elogFlush(): void {
+  SAVE_QUEUED = false
+  store.set('elog', { v: 1, next: ELOG.next, rows: ELOG.rows })
+}
+function queueSave() {
+  if (SAVE_QUEUED) return
+  SAVE_QUEUED = true
+  Promise.resolve().then(() => { if (SAVE_QUEUED) elogFlush() })
+}
+const str = (v: any) => (typeof v === 'string' ? v : '')
+const isoOk = (v: any) => typeof v === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(v)
+/* read the saved history back (boot). Read defensively and never written back here: a line missing its identity or
+   its time is dropped, the rest keep their order by number. */
+export function elogLoad(): void {
+  const raw = store.get('elog', null)
+  const rows: ELogRow[] = []
+  let top = 0
+  for (const x of (raw && Array.isArray(raw.rows)) ? raw.rows : []) {
+    if (!x || !Number.isFinite(x.seq) || !Number.isFinite(x.t)) continue
+    const r: ELogRow = {
+      seq: +x.seq, t: +x.t, who: str(x.who), pid: typeof x.pid === 'string' ? x.pid : null,
+      di: Number.isFinite(x.di) ? +x.di : null, date: isoOk(x.date) ? x.date : null,
+      key: str(x.key), lbl: str(x.lbl), from: str(x.from), to: str(x.to),
+    }
+    if (isoOk(x.end)) r.end = x.end
+    if (isoOk(x.wdate)) { r.wdate = x.wdate; if (isoOk(x.wend)) r.wend = x.wend }
+    if (typeof x.iid === 'string' && x.iid) r.iid = x.iid
+    if (typeof x.sect === 'string' && x.sect) r.sect = x.sect
+    if (typeof x.sub === 'string' && x.sub) { r.sub = x.sub; if (typeof x.fld === 'string' && x.fld) r.fld = x.fld }
+    const strs = (v: any, ok: (s: string) => boolean) => Array.isArray(v) ? v.filter((s: any) => typeof s === 'string' && ok(s)) : []
+    const ids = strs(x.iids, s => !!s), ds = strs(x.days, isoOk), ws = strs(x.wdays, isoOk)
+    if (ids.length > 1) r.iids = ids
+    if (ds.length) r.days = ds
+    if (ws.length) r.wdays = ws
+    rows.push(r)
+    if (r.seq > top) top = r.seq
+  }
+  rows.sort((a, b) => a.seq - b.seq)
+  ELOG.rows.length = 0
+  rows.slice(-ELOG.cap).forEach(r => ELOG.rows.push(r))
+  ELOG.next = Math.max(top + 1, Number.isFinite(raw && raw.next) ? +raw.next : 1)
+}
+
+/* A COMMAND THAT IS REFUSED LEAVES NO LINE. A line written while a command runs is held and kept only if the command
+   commits (the command layer's latch — command/latch.ts names logEdit/logAction among the effects it holds). The
+   engine cannot import the command layer, so the state layer installs the deferral here (state/store.ts wireStore);
+   headless, every line is written at once, as before. */
+let DEFER: ((fn: () => void) => boolean) | null = null
+export function setElogDefer(fn: ((fn: () => void) => boolean) | null) { DEFER = fn }
 
 /* THE ADMIN SWEEP (owner, 25 Aug 26 — "clear the history of edits. On specific
    dates or a range or from this day till history onwards"). Bounds are wall
@@ -58,6 +177,7 @@ export function elogSweep(lo: number | null, hi: number | null, dry?: boolean): 
   if (dry || !n) return n
   ELOG.rows.length = 0
   keep.forEach(r => ELOG.rows.push(r))
+  queueSave()
   return n
 }
 
@@ -75,7 +195,9 @@ export function elogSweep(lo: number | null, hi: number | null, dry?: boolean): 
    structural sentence. The deletion's own "what it held" line sits beside
    it in the list. */
 export function elogRemap(move: (k: any) => any) {
-  ELOG.rows.forEach(r => { if (r.key) { const m = move(r.key); r.key = m == null ? '' : m } })
+  let any = false
+  ELOG.rows.forEach(r => { if (r.key) { const m = move(r.key); const k = m == null ? '' : m; if (k !== r.key) { r.key = k; any = true } } })
+  if (any) queueSave()
 }
 
 /* Which keys address a PERSON rather than text — a flying seat carries no
@@ -98,14 +220,23 @@ function isPersonKey(key: string) {
   return c < 0 ? true : PERSON_PFX.includes(key.slice(0, c))
 }
 
-/* a stored value as a reader would say it. '—' rather than an empty string,
-   because "changed to nothing" has to be visible in a bubble. */
+/* a stored value as the log KEEPS it. '—' rather than an empty string, because "changed to nothing" has to be visible
+   in a bubble. A person key keeps the PERSON'S ID, never his callsign of the day ([DRAFT-PENDING], Fable F4, 28 Sep 26):
+   the history is durable now, and a callsign can be renamed or — once its man is archived — given to someone new (D286),
+   so a frozen callsign would read months of old lines as the wrong man. Readers say it through `elogVal`. */
 function say(key: string, v: any) {
   const s = String(v == null ? '' : v)
   if (!s) return '—'
-  if (isPersonKey(key)) return PEOPLE[s] ? PEOPLE[s].cs : s
   return s
 }
+/* a line's before or after, as a reader should see it NOW: a person key's value is a person, named by his live callsign
+   (the elogWho pattern); anything else as typed. A value the roster does not hold reads as stored. */
+export function elogVal(r: { key: string; from: string; to: string }, side: 'from' | 'to'): string {
+  const v = r[side]
+  if (!v || v === '—' || !r.key || !isPersonKey(r.key)) return v
+  return (PEOPLE as any)[v] ? String((PEOPLE as any)[v].cs) : v
+}
+export { isPersonKey }
 
 /* WHAT the changed detail is called, in plain words — "MONSOON 1 · FCP",
    "Duty · SOF", "Ground · MASS BRIEF · start".
@@ -190,9 +321,16 @@ export function keyLabel(key: any, days: any[] = DAYS): string {
   return 'Schedule'
 }
 
-function push(row: ELogRow) {
-  ELOG.rows.push(row)
-  if (ELOG.rows.length > ELOG.cap) ELOG.rows.splice(0, ELOG.rows.length - ELOG.cap)
+/* the one writer: numbers the line, keeps the newest `cap`, and queues the save. Held while a command runs (DEFER) —
+   the number is given when the line is KEPT, so a refused command burns none and the order is the order kept. */
+function push(row: Omit<ELogRow, 'seq'>) {
+  const keep = () => {
+    ELOG.rows.push({ ...row, seq: ELOG.next++ } as ELogRow)
+    if (ELOG.rows.length > ELOG.cap) ELOG.rows.splice(0, ELOG.rows.length - ELOG.cap)
+    queueSave()
+  }
+  if (DEFER && DEFER(keep)) return
+  keep()
 }
 
 /* Record one value change. Called from the two choke points every schedule
@@ -212,7 +350,10 @@ export function logEdit(key: any, from: any, to: any) {
   const store = String(ridKey(key, DAYS))
   const a = say(store, from), b = say(store, to)
   if (a === b) return
-  push({ t: Date.now(), who: HOOKS.whoami(), pid: HOOKS.whoamiId(), di: dayOf(store), key: store, lbl: keyLabel(key), from: a, to: b })
+  /* a person key compares by person: the same man stored once as his id and once as a legacy callsign is no change */
+  if (isPersonKey(store) && elogVal({ key: store, from: a, to: b }, 'from') === elogVal({ key: store, from: a, to: b }, 'to')) return
+  const di = dayOf(store)
+  push({ t: Date.now(), who: HOOKS.whoami(), pid: HOOKS.whoamiId(), di, date: dateOfDi(di), key: store, lbl: keyLabel(key), from: a, to: b })
 }
 
 /* Record something that is not a value change — a line, wave, row or note
@@ -220,21 +361,55 @@ export function logEdit(key: any, from: any, to: any) {
    delete must not re-mark the address it just removed), so there is nothing
    for logEdit to compare; the calling site names the action instead, in the
    same words its toast already uses. */
-export function logAction(di: any, text: string) {
-  push({ t: Date.now(), who: HOOKS.whoami(), pid: HOOKS.whoamiId(), di: di == null ? null : +di, key: '', lbl: text, from: '', to: '' })
+/* `at` (28 Sep 26, [DRAFT-PENDING]): a line with no day of the loaded week names its own calendar days — an absence
+   (an input, a Leave War record) is on ITS dates, which may lie in any week; `iid` names the input it is about. */
+export type LineAt = {
+  date?: string | null; end?: string | null; wdate?: string | null; wend?: string | null
+  iid?: string | null; key?: string; sect?: string; from?: string; to?: string; sub?: string; fld?: string
+  iids?: string[]; days?: string[]; wdays?: string[]
+}
+export function logAction(di: any, text: string, at?: LineAt) {
+  const d = di == null ? null : +di
+  const date = at && at.date ? at.date : dateOfDi(d)
+  const row: Omit<ELogRow, 'seq'> = {
+    t: Date.now(), who: HOOKS.whoami(), pid: HOOKS.whoamiId(), di: d, date, key: (at && at.key) || '', lbl: text,
+    from: (at && at.from) || '', to: (at && at.to) || '',
+  }
+  if (at && at.end && date && at.end > date) row.end = at.end
+  if (at && at.wdate && (at.wdate !== date || (at.wend || at.wdate) !== (row.end || date))) {
+    row.wdate = at.wdate
+    if (at.wend && at.wend > at.wdate) row.wend = at.wend
+  }
+  if (at && at.iid) row.iid = at.iid
+  if (at && at.sect) row.sect = at.sect
+  if (at && at.sub) { row.sub = at.sub; if (at.fld) row.fld = at.fld }
+  if (at && at.iids && at.iids.length > 1) row.iids = at.iids.slice()
+  if (at && at.days && at.days.length) row.days = at.days.slice()
+  if (at && at.wdays && at.wdays.length) row.wdays = at.wdays.slice()
+  push(row)
 }
 
 /* newest first, optionally narrowed to one day — the listed view's whole
    data path. A copy, so a caller cannot sort the live log out of order. */
+/* one day = that CALENDAR day of the loaded week (a line keeps its date; its weekday index alone would match the same
+   weekday of every week — Fable's final read, F9) */
+const onDay = (r: ELogRow, di: number) => { const iso = dateOfDi(di); return iso ? rowTouches(r, iso) : r.di === di }
 export function elogRows(di?: any): ELogRow[] {
-  const rows = (di == null) ? ELOG.rows.slice() : ELOG.rows.filter(r => r.di === +di)
+  const rows = (di == null) ? ELOG.rows.slice() : ELOG.rows.filter(r => onDay(r, +di))
   return rows.reverse()
 }
 
 /* the newest entry for one detail — what the bubble shows collapsed */
+/* a line is about the loaded week's copy of a detail only when its calendar day is that day of the loaded week — a
+   positional or note key ('dn:0.0') would otherwise match the same weekday of every week */
+function onLoadedDay(r: ELogRow, k: string): boolean {
+  if (r.date == null) return true
+  const di = dayOf(k)
+  return di == null || r.date === dateOfDi(di)
+}
 export function elogFor(key: any): ELogRow | null {
   const k = String(ridKey(key, DAYS))            // translate the DOM key in — the log stores rid keys
-  for (let i = ELOG.rows.length - 1; i >= 0; i--) if (ELOG.rows[i]!.key === k) return ELOG.rows[i]!
+  for (let i = ELOG.rows.length - 1; i >= 0; i--) { const r = ELOG.rows[i]!; if (r.key === k && onLoadedDay(r, k)) return r }
   return null
 }
 
@@ -247,7 +422,7 @@ export function elogFor(key: any): ELogRow | null {
    this end up like this". */
 export function elogAllFor(key: any): ELogRow[] {
   const k = String(ridKey(key, DAYS))            // translate the DOM key in — the log stores rid keys
-  return ELOG.rows.filter(r => r.key === k)
+  return ELOG.rows.filter(r => r.key === k && onLoadedDay(r, k))
 }
 
 /* ONE ROW PER DETAIL for the grouped view (owner, 11 Aug 26), newest-touched
@@ -259,7 +434,7 @@ export function elogAllFor(key: any): ELogRow[] {
    the log so two identical sentences never fold together. */
 export type ELogGroup = { key: string; lbl: string; di: number | null; rows: ELogRow[]; last: number; lastIx: number }
 export function elogGroups(di?: any): ELogGroup[] {
-  const src = (di == null) ? ELOG.rows : ELOG.rows.filter(r => r.di === +di)
+  const src = (di == null) ? ELOG.rows : ELOG.rows.filter(r => onDay(r, +di))
   const by = new Map<string, ELogGroup>()
   src.forEach((r, i) => {
     const id = r.key || ` act${i}`

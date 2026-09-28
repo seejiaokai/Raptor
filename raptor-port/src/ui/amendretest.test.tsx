@@ -53,6 +53,9 @@ import { routeClick } from './interactions'
 import { DraftsModal } from './DraftsModal'
 import { setDraftsEdit, setDayPop } from './pops'
 import { DayPop } from './Modals'
+/* the day's WAITING-TO-GO-OUT chip — since [DRAFT-PENDING] (28 Sep 26) the same `.dpend` class also carries the
+   changes window's "N new" / "N changes" chip, which is not a pending count (D168) */
+const PEND_CHIP = '.dpend:not(.dnew):not(.dchg)'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
@@ -71,7 +74,7 @@ const infoCount = (di: number) => {
 }
 /* the day head's own "N pending" chip */
 const headCount = (di: number) => {
-  const t = weekEdit(di).querySelector('.dpend')?.textContent || ''
+  const t = weekEdit(di).querySelector(PEND_CHIP)?.textContent || ''
   return t ? parseInt(t, 10) : 0
 }
 const withToasts = (fn: () => void) => {
@@ -428,7 +431,7 @@ describe('the issued face never wears the working copy\'s pending count (W1-3, A
     publishDay(MON)
     expect(unacceptInput(MON, inp)).toBe(true)              // a change to the working copy's filing only
     expect(headCount(MON), 'the working copy counts it').toBeGreaterThan(0)
-    expect(weekView(MON).querySelector('.dpend'), 'the issued face stays as issued').toBeNull()
+    expect(weekView(MON).querySelector(PEND_CHIP), 'the issued face stays as issued').toBeNull()
     setPage('viewsched')
     try {
       expect(el(dayInfoHTML(MON)).querySelector('.dip-pend'), 'nor the ⓘ read beside it').toBeNull()

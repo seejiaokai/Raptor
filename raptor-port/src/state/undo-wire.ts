@@ -14,6 +14,7 @@
    the button retarget (§9) imports the same helpers.
 
    Ordinary TS/React-layer style (new file). */
+import { logReversed } from './changelines'
 import { deletedRestoreProblem } from './person-delete'
 import {
   installUndo, registerUndoStore, setCutoverModules, setUndoHooks,
@@ -149,6 +150,8 @@ export function installGlobalUndo(): void {
     loadContext,
     snapView,
     showBubble: (text: string) => toast(text, ''),
+    /* the change history's line for an undo or a redo, on every day it touched ([DRAFT-PENDING], Astra DP-04) */
+    reversed: (entry, dir) => logReversed(entry as any, dir),
     reinstallLocks,
     resolvePublishDay,
     postRestore,

@@ -120,6 +120,21 @@
         "--strictPort"
       ],
       "port": 4178
+    },
+    {
+      "name": "raptor-draftpending",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "--prefix",
+        "raptor-port",
+        "vite",
+        "preview",
+        "raptor-port",
+        "--port",
+        "4182",
+        "--strictPort"
+      ],
+      "port": 4182
     }
   ]
 }
