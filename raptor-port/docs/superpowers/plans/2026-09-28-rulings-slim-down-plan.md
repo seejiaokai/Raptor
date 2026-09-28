@@ -172,6 +172,17 @@ and every pointer names an existing heading (a lighter form of Astra 8's manifes
 every task needs → its short form in the guide, its full text in `guide-full.md`. Fable reads every short form (D138).
 Estimate ~16k → ~6k.
 
+**Built 28 Sep 26** on `claude/rulings-slim-d391-078ad2` (cut from `main` after PR #458 merged — the same tree as this
+branch). 35 blocks moved, each under its own `###` in `guide-full.md` (its `##` sections mirror the guide's), each
+leaving a short form of at most **350 characters** — the ruling short line's cap, enforced by the gate so the guide
+cannot grow back one long line at a time. The pairing gate (`docsize.mjs guidePairing`, 8 self-test cases): every short
+form names an existing `###`; every `###` is named by exactly one short form (the `##` sections are checked to mirror
+the guide's instead of being named); a `§` pointer not at a line's end fails. Every ruling number the guide carried is
+still in it. **Measured:** 60.1k → ~35k bytes (~16.2k → ~9.5k tokens), not ~6k: what stayed in full (the gate
+commands, the slot-key list, the two funnels, the store, the product invariants) is ~11k bytes and the map table ~9k,
+the Leave War row alone 2.2k — left untouched here (D391). The guide's line tripwire went 760 → 340. Fable's meaning
+read: brief `raptor-port/docs/superpowers/briefs/2026-09-28-guide-short-forms-meaning-brief.md`.
+
 ### 2.7 The documents the old rules left behind (D201)
 
 `DECISIONS.md` (how the rulings are kept; steps 1–3 as §2.3; the People & accounts map row; the D390–D399 range);

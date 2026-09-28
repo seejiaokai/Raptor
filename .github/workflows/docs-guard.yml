@@ -4,7 +4,7 @@
 # built app), which meant a docs-only pull request ran ZERO checks: one that deleted half the
 # backlog would have merged unexamined. This job is that missing check, and it is deliberately
 # small — no install, no build, just Node and git — because the repo is PRIVATE since 23 Sep 26
-# (D59) and every run bills Actions minutes (about one per run).
+# (D59) and every run bills Actions minutes (about three per run since 28 Sep 26).
 #
 # It runs the gate's own self-test first (proof it still catches a destroyed record), then the gate
 # against the change's base: the PR's base commit, or the previous tip of main on a push.
@@ -13,7 +13,7 @@ name: Docs guard
 on:
   # NO path filter (Astra, 23 Sep 26): the gate reads more than docs — rulecheck.mjs's rule map, and
   # any file a ruling names as its home, which can be a source file a code-only PR deletes. So it
-  # runs on every PR and every push to main. It is one billed minute against the full gates' ~37.
+  # runs on every PR and every push to main. It is two to three billed minutes against the full gates' ~37.
   pull_request:
     branches: [main]
   push:
@@ -30,7 +30,9 @@ concurrency:
 jobs:
   docs-guard:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    # 5 -> 10, 28 Sep 26 (owner, with D391): the self-test grew to ~180 cases with real `git merge` fixtures in
+    # the rulings slim-down (D390) and now takes two to three minutes here, so five left no room for a slow runner.
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
         with:

@@ -186,6 +186,22 @@ scenario('a new ruling whose home names it inside a range (D1–D3)', false, c =
 scenario('a new ruling homed in the append-only archive needs no number there', false, c => { addRow(c, '`OUTSTANDING-ARCHIVE.md`'); c.edit('OUTSTANDING-ARCHIVE.md', t => t + '\nA note appended.\n') })
 scenario('a short line naming a path is not read as a home', false, c => c.edit(AREA, t => t.replace(shortRow('D1', 'a'), '| D1 | 21 Sep 26 | Rule a, built in `docs/nowhere.md`. |')))
 
+/* THE GUIDE AND ITS FULL TEXT (D391): every short form names one ### heading of guide-full.md, every heading is named
+   exactly once, its ## sections mirror the guide's, a short form stays within the cap. */
+const GUIDE = 'raptor-port/CLAUDE.md', GFULL = 'raptor-port/docs/guide-full.md'
+const gPtr = (h, s = `**Rule ${h}.** Do it.`) => `${s} · full text: docs/guide-full.md §${h}`
+const guideOf = (...ls) => ['# Guide', '', '## How to work here', '', ...ls, '', '## Where things live', '', '| Need | Go to |', '|---|---|', '| the full text | `docs/guide-full.md` |', ''].join('\n')
+const fullOf = (...hs) => ['# Guide — full text', '', '## How to work here', '', ...hs.flatMap(h => [`### ${h}`, '', `The whole text of ${h}.`, '']), ''].join('\n')
+const withGuide = (c, g, f) => { c.write(GUIDE, g); if (f !== undefined) c.write(GFULL, f) }
+scenario('the guide and its full text, paired', false, c => withGuide(c, guideOf(gPtr('Alpha'), '', '- ' + gPtr('Bravo')), fullOf('Alpha', 'Bravo')))
+scenario('a full text no short form names', true, c => withGuide(c, guideOf(gPtr('Alpha')), fullOf('Alpha', 'Bravo')), { mustSay: '§Bravo is named by 0 short forms' })
+scenario('a short form pointing to a heading that is not there', true, c => withGuide(c, guideOf(gPtr('Alpha'), '', gPtr('Charlie')), fullOf('Alpha')), { mustSay: 'no such ### heading there' })
+scenario('one heading named by two short forms', true, c => withGuide(c, guideOf(gPtr('Alpha'), '', gPtr('Alpha', 'Another rule.')), fullOf('Alpha')), { mustSay: 'named by 2 short forms' })
+scenario('a section of the full text the guide does not have', true, c => withGuide(c, guideOf(gPtr('Alpha')), fullOf('Alpha').replace('## How to work here', '## Somewhere else')), { mustSay: 'not a section of' })
+scenario('a short form over the cap', true, c => withGuide(c, guideOf(gPtr('Alpha', 'x'.repeat(351))), fullOf('Alpha')), { mustSay: 'at most 350' })
+scenario('a pointer typed with its § not at the end of the line', true, c => withGuide(c, guideOf(gPtr('Alpha'), '', 'See docs/guide-full.md §Alpha for more.'), fullOf('Alpha')), { mustSay: 'not at its end' })
+scenario('the full text deleted while the guide still points into it', true, c => { withGuide(c, guideOf(gPtr('Alpha')), fullOf('Alpha')); c.commit('guide'); rmSync(join(c.dir, GFULL)) }, { mustSay: 'which is GONE' })
+
 
 /* THE MOVER (F5): it must move exactly, refuse what it cannot do exactly, and undo itself. */
 function mover(name, expectOk, { live, prep, node, args, check }) {

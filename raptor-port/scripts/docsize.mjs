@@ -81,8 +81,12 @@ const FILES = [
      agent must check before acting, so it belongs in the always-loaded tier.
      1543 -> 760, 24 Sep 26 (the spring clean, D140 + D141): each area's settled decisions and
      architecture moved WHOLE to its area file, the shipping rules to .claude/rules/shipping.md, the
-     Pages-era text to raptor-port/docs/archive/ — 702 lines left, the rest is room. A tripwire, not a target. */
-  ['raptor-port/CLAUDE.md',              0,  760],
+     Pages-era text to raptor-port/docs/archive/ — 702 lines left, the rest is room. A tripwire, not a target.
+     760 -> 340, 28 Sep 26 (D391, the slim-down's guide step): most rules became one-line short forms, their full text
+     moved whole to raptor-port/docs/guide-full.md (284 lines left). Lowered so a crossing is SEEN — a crossing asks
+     "what here is detail that belongs in the full text?", never "cut to a number" (D141); each short form also has a
+     character cap (GUIDE_SHORT_MAX, below). */
+  ['raptor-port/CLAUDE.md',              0,  340],
   ['.claude/rules/raptor-executor.md',   0,  108],
   /* 63 -> 76, 23 Sep 26 (owner, D56): data-only problems are not findings, in the always-loaded
      copy so it is in force before the order is opened. */
@@ -564,8 +568,49 @@ function handoffShape(text) {
   if (open) probs.push(`the ## Now block for ${open} has no <!-- /now --> before the end of the file`)
   return probs
 }
+/* THE PROJECT GUIDE AND ITS FULL TEXT (D391, 28 Sep 26 — the slim-down's guide step, plan §2.6). Most rules in
+   raptor-port/CLAUDE.md are ONE line, a short form ending ` · full text: docs/guide-full.md §<heading>`; the text under
+   that ### heading in guide-full.md is what stood in the guide, moved whole by `backlog-archive.mjs --move`. A pointer
+   to a heading that is not there sends a chat to nothing, and a heading no pointer names is a rule no chat will find
+   (Astra's manifest idea, in its lighter form). So: every short form names an existing ### heading; every ### heading is
+   named by exactly one short form; every ## there is a section of the guide; a short form states its rule in at most
+   GUIDE_SHORT_MAX characters, the cap of a ruling's short line — so the guide cannot grow back one long line at a time
+   (crossing it means: move the detail to the full text, never trim the rule's meaning). A line naming the file with a §
+   anywhere but at its end is a pointer typed wrong, and fails. Neither file there: nothing to check. */
+const GUIDE = 'raptor-port/CLAUDE.md', GUIDE_FULL = 'raptor-port/docs/guide-full.md', GUIDE_SHORT_MAX = 350
+const GUIDE_POINTER = / · full text: docs\/guide-full\.md §(.+)$/
+function guidePairing() {
+  const fails = [], g = readNow(GUIDE), full = readNow(GUIDE_FULL)
+  const gl = unfenced(splitLines(g)), pointers = []
+  for (const l of gl) {
+    const m = GUIDE_POINTER.exec(l.trimEnd())
+    if (m) pointers.push({ name: m[1].trim(), short: l.slice(0, m.index) })
+    else if (l.includes('guide-full.md §')) fails.push(`${GUIDE} has a line naming ${GUIDE_FULL} with a § that is not at its end — a short form ENDS " · full text: docs/guide-full.md §<heading>": ${l.slice(0, 80)}…`)
+  }
+  if (!full) {
+    if (pointers.length) fails.push(`${GUIDE} has ${pointers.length} short form(s) pointing into ${GUIDE_FULL}, which is GONE — restore it from the base; it holds the guide's full text`)
+    return fails
+  }
+  const fl = unfenced(splitLines(full))
+  const h3 = fl.filter(l => /^### /.test(l)).map(l => l.slice(4).trim())
+  const guideH2 = new Set(gl.filter(l => /^## /.test(l)).map(l => l.trim()))
+  for (const h of fl.filter(l => /^## /.test(l)).map(l => l.trim())) if (!guideH2.has(h)) fails.push(`${GUIDE_FULL} has the section "${h}", which is not a section of ${GUIDE} — its ## headings mirror the guide's, so a moved block is found under the section it came from`)
+  const named = new Map()
+  for (const p of pointers) named.set(p.name, (named.get(p.name) || 0) + 1)
+  for (const h of new Set(h3)) {
+    if (h3.filter(x => x === h).length > 1) fails.push(`${GUIDE_FULL} has the heading "### ${h}" more than once — each full text has its own heading`)
+    const n = named.get(h) || 0
+    if (n !== 1) fails.push(`${GUIDE_FULL} §${h} is named by ${n} short forms in ${GUIDE} — it must be named by exactly one${n ? '' : ' (a full text no short form points to is a rule no chat will find: restore its short form, or move the text back)'}`)
+  }
+  for (const p of pointers) {
+    if (!h3.includes(p.name)) fails.push(`${GUIDE} has a short form pointing to "${GUIDE_FULL} §${p.name}", and there is no such ### heading there — a pointer to nothing`)
+    const n = [...p.short.replace(/^(- |> )/, '')].length
+    if (n > GUIDE_SHORT_MAX) fails.push(`${GUIDE}: the short form for §${p.name} is ${n} characters — at most ${GUIDE_SHORT_MAX}: move its detail into the full text, keep the rule (D141 — never cut the rule's meaning to fit)`)
+  }
+  return fails
+}
 function structure() {
-  const fails = [], warns = []
+  const fails = [...guidePairing()], warns = []
   const listed = [...new Set([...(tryGit('ls-files') || '').split('\n'), ...(tryGit('ls-files', '--others', '--exclude-standard') || '').split('\n')])].filter(f => f && existsSync(join(REPO, f)))
   const atBase = new Set(BASE ? (tryGit('ls-tree', '-r', '--name-only', BASE) || '').split('\n').filter(Boolean) : [])
   const isNew = f => BASE && !atBase.has(f)

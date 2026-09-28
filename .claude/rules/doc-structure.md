@@ -10,7 +10,7 @@ The full policy and the tiers: `raptor-port/docs/doc-budget.md`. This file is it
 - **Already loaded:** the rule files under `.claude/rules/` without `paths:` (this one, `shipping.md`,
   `plain-language.md`, `bug-check.md`, `record-decisions.md`) and the general rulings `decisions/how-we-work.md`.
   `raptor-port/CLAUDE.md` — the project guide and its map, §Where things live — loads once any file under
-  `raptor-port/` is opened.
+  `raptor-port/` is opened; most of its rules are ONE line, each naming its full text in `raptor-port/docs/guide-full.md` (D391).
 - **At the start of a chat:** `HANDOFF.md` — where things stand (`## Now`, a block per chat) and what is next.
 - **By itself, per area:** `.claude/rules/decisions/scheduler.md`, `leave-war.md`, `oil.md`, `tracker.md`,
   `people-accounts.md` — each area's rulings, settled decisions and architecture — load when a matching file is opened
@@ -21,7 +21,7 @@ The full policy and the tiers: `raptor-port/docs/doc-budget.md`. This file is it
 - **A ruling loads as one line; its full row does not (D390).** Before acting on a ruling's detail or asking him about
   it, open its full row in `.claude/decisions-full/` — `grep -h '^| D149 |' .claude/decisions-full/*.md` (the shell;
   the Grep tool hides a long row).
-- **When the job needs it:** the reference doc the map names. **Never whole:** an archive or a full-text rulings file —
+- **When the job needs it:** the reference doc the map names. **Never whole:** an archive, a full-text rulings file or the guide's full text —
   search it.
 - **Before telling him anything is undecided or missing:** search every rulings file, `DECISIONS-ARCHIVE.md` and
   `OUTSTANDING.md` (`record-decisions.md`).
@@ -33,6 +33,7 @@ The full policy and the tiers: `raptor-port/docs/doc-budget.md`. This file is it
 | an open job, a found-not-fixed, a deferral, a question to put to him later | an `OUTSTANDING.md` item — the ONE backlog — and a line in its priority list |
 | how a rule or a surface behaves (a contract) | `engine-rules.md`, `ui-contracts.md`, `feature-impact.md`, `performance.md`, `data-schema.md` (in `raptor-port/docs/`) |
 | a rule EVERY task needs, whatever the area | an unscoped file under `.claude/rules/` (a general ruling: `decisions/how-we-work.md`) — `raptor-port/CLAUDE.md` loads only once a `raptor-port/` file is opened, so it carries the project-side copy or pointer, never the only one |
+| a project rule every task under `raptor-port/` needs (how to build, verify, code) | ONE line in `raptor-port/CLAUDE.md`, at most 350 characters, ending with the pointer to its full text — and that full text under its own `###` heading in `raptor-port/docs/guide-full.md`, one heading per short form (D391; the gate pairs them) |
 | a rule or piece of architecture ONE area needs | that area's file under `.claude/rules/decisions/` |
 | where things stand, what this chat left, what is next | this chat's own block under `## Now` in `HANDOFF.md`, rewritten at each handoff |
 | a gate count | `HANDOFF.md` §Gate baseline — only a count from a run you watched |
