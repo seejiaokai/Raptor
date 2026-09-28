@@ -795,3 +795,28 @@ describe('[TRK-EDIT-SIDEWAYS] the walk’s F5 — a turn of the phone shuts the 
     } finally { if (C.arrangeMode) C.toggleArrange(); if (C.sylDirty) await C.saveChangesClick() }
   })
 })
+
+describe('the walk’s findings (walker a, 28 Sep 26)', () => {
+  it('F1 — the next person never sees the last one’s save words (“● switched to …”)', async () => {
+    await C.switchCourse(C.COURSES[0].id); await C.whenLoaded()
+    expect(C.saveWords().text, 'the premise: a message about a course').toMatch(/switched to/)
+    resetSession(null); resetSession({ user: 'us', role: 'main', pid: 'bane' })
+    expect(C.saveWords().text, 'the session ended: the corner starts blank').toBe('')
+    resetSession(null); resetSession({ user: 'ad', role: 'admin', pid: 'stiff' }); C.resumeForPerson(); await C.whenLoaded()
+  })
+
+  it('F2 — Delete / Backspace do nothing to the chart while a question is up', async () => {
+    if (C.sylDirty) await C.saveChangesClick()
+    C.toggleArrange()
+    try {
+      C.selectAllClick()
+      const q = C.uiConfirm('Something else?')
+      await tick()
+      await C.handleDeleteKey({ key: 'Delete', target: document.body, preventDefault() {} })
+      await C.handleDeleteKey({ key: 'Backspace', target: document.body, preventDefault() {} })
+      C.dlgClose(false); await q; await tick()
+      expect(C.dlg, 'no delete question was raised behind the first').toBeNull()
+      expect(C.sylDirty, 'nothing deleted').toBe(false)
+    } finally { await clearQuestions(); if (C.arrangeMode) C.toggleArrange(); if (C.sylDirty) await C.saveChangesClick() }
+  })
+})

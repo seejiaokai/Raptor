@@ -24,25 +24,70 @@
       "said": "58 → 59"
     },
     {
-      "step": "D 3 Admin → Users: ZULU9 (pmul82lsv9iqegv) archived",
+      "step": "D 3 Admin → Users: ZULU9 (pmul8bwuagtp2b7) archived",
       "note": "toast: ZULU9 archived · archived group: ▸ Archived · 1"
     },
     {
-      "step": "D 3 back on the Tracker: the open list no longer offers ZULU9, and says nobody matches \"ZUL\"",
-      "pass": false,
+      "step": "D 3 back on the Tracker: the open list no longer offers ZULU9 (Zulu, already on the roster, still matches \"ZUL\")",
+      "pass": true,
       "said": "list [\"Zulu\"] · \"Add a crew member From the squadron roster Zulu WSO · OCU Cancel OK\""
     },
     {
       "step": "D 4 Admin → Users: Add a person ZULU8",
-      "note": "toast: ZULU8 added to the roster — set flight and quals on the Quals page · person pmul82razteuuu9"
+      "note": "toast: ZULU8 added to the roster — set flight and quals on the Quals page · person pmul8c1nxpx5atm"
     },
     {
       "step": "D 4 the open list gained ZULU8; Enter on him (the one left) adds him, linked to that person",
       "pass": true,
-      "said": "list [\"ZULU8\"] · student {\"name\":\"ZULU8\",\"pid\":\"pmul82razteuuu9\"} (person pmul82razteuuu9)"
+      "said": "list [\"ZULU8\"] · student {\"name\":\"ZULU8\",\"pid\":\"pmul8c1nxpx5atm\"} (person pmul8c1nxpx5atm)"
     },
     {
       "step": "D console / page errors",
+      "note": "none"
+    },
+    {
+      "step": "P 1 + Add open: the roster list",
+      "note": "58 people · searching \"ZUL\": [\"Zulu\"] · \"Add a crew member From the squadron roster Zulu WSO · OCU Cancel OK\""
+    },
+    {
+      "step": "P 1 Tab / Shift+Tab from the open + Add stay inside it (the door behind the shade is shut)",
+      "pass": true,
+      "said": "button \"Zulu WSO · OCU\" → input#dlgFilter \"ZUL\" → button \"Zulu WSO · OCU\" → input#dlgFilter \"ZUL\" → button \"Zulu WSO · OCU\" → input#dlgFilter \"ZUL\" → button \"Zulu WSO · OCU\" → input#dlgFilter \"ZUL\""
+    },
+    {
+      "step": "P 2 Admin → Users: Add a person ZULU9 (Pilot, OCU)",
+      "note": "toast: ZULU9 added to the roster — set flight and quals on the Quals page"
+    },
+    {
+      "step": "P 2 back on the Tracker: the + Add box is still open, the search \"ZUL\" kept, and it lists ZULU9 now",
+      "pass": true,
+      "said": "box up: true · search \"ZUL\" · list [\"ZULU9\",\"Zulu\"]"
+    },
+    {
+      "step": "P 2 …with the search cleared the list has one more person than when it opened",
+      "pass": true,
+      "said": "58 → 59"
+    },
+    {
+      "step": "P 3 Admin → Users: ZULU9 (pmul8c7vifhgtxj) archived",
+      "note": "toast: ZULU9 archived · archived group: ▸ Archived · 1"
+    },
+    {
+      "step": "P 3 back on the Tracker: the open list no longer offers ZULU9 (Zulu, already on the roster, still matches \"ZUL\")",
+      "pass": true,
+      "said": "list [\"Zulu\"] · \"Add a crew member From the squadron roster Zulu WSO · OCU Cancel OK\""
+    },
+    {
+      "step": "P 4 Admin → Users: Add a person ZULU8",
+      "note": "toast: ZULU8 added to the roster — set flight and quals on the Quals page · person pmul8cenh7hj1qv"
+    },
+    {
+      "step": "P 4 the open list gained ZULU8; Enter on him (the one left) adds him, linked to that person",
+      "pass": true,
+      "said": "list [\"ZULU8\"] · student {\"name\":\"ZULU8\",\"pid\":\"pmul8cenh7hj1qv\"} (person pmul8cenh7hj1qv)"
+    },
+    {
+      "step": "P console / page errors",
       "note": "none"
     }
   ],

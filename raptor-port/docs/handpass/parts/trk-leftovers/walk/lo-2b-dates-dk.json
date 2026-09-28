@@ -254,7 +254,7 @@
     },
     {
       "step": "2 TR-2 graded DCO (today)",
-      "note": "{\"g\":\"dco\",\"f\":0,\"d\":\"2026-09-28\",\"at\":\"2026-09-28T12:29:00.906Z\",\"by\":\"Saber\"} · Last Flown \"2026-09-28\""
+      "note": "{\"g\":\"dco\",\"f\":0,\"d\":\"2026-09-28\",\"at\":\"2026-09-28T12:35:47.673Z\",\"by\":\"Saber\"} · Last Flown \"2026-09-28\""
     },
     {
       "step": "2 Done on: while typing slowly, the mark's day, Last Flown and ↶ do not move",
@@ -302,12 +302,12 @@
     },
     {
       "step": "2 ST-01 (not done): Done on typed 29/09/26 (box \"2026-09-29\"), then DCO pressed straight away",
-      "note": "pop-up still up false · mark {\"g\":\"dco\",\"f\":0,\"d\":\"2026-09-28\",\"at\":\"2026-09-28T12:29:35.963Z\",\"by\":\"Saber\"} (before null) · steps 16→17 · line \"\" (lo-2b-dk-9-grade-with-future-doneon)"
+      "note": "pop-up still up false · mark {\"g\":\"dco\",\"f\":0,\"d\":\"2026-09-28\",\"at\":\"2026-09-28T12:36:22.579Z\",\"by\":\"Saber\"} (before null) · steps 16→17 · line \"\" (lo-2b-dk-9-grade-with-future-doneon)"
     },
     {
       "step": "2 a grade pressed while Done on holds tomorrow is refused — no mark, the pop-up stays with the line",
       "pass": false,
-      "said": "pop-up up false · mark {\"g\":\"dco\",\"f\":0,\"d\":\"2026-09-28\",\"at\":\"2026-09-28T12:29:35.963Z\",\"by\":\"Saber\"} · steps 16→17 · line \"\""
+      "said": "pop-up up false · mark {\"g\":\"dco\",\"f\":0,\"d\":\"2026-09-28\",\"at\":\"2026-09-28T12:36:22.579Z\",\"by\":\"Saber\"} · steps 16→17 · line \"\""
     },
     {
       "step": "3 Failed on: typing slowly saves nothing and makes no step (the box only says where the next + lands)",
@@ -353,22 +353,31 @@
       "said": "failures {\"f\":2,\"fd\":[\"2026-09-18\",\"2026-09-28\"]} (before {\"f\":1,\"fd\":[\"2026-09-18\"]}) · steps 18→19 · line \"That day hasn’t come yet — pick today or earlier.\""
     },
     {
+      "step": "3 Failed on half typed (box \"0020-09-28\"), + pressed straight away",
+      "note": "failures {\"f\":3,\"fd\":[\"2026-09-18\",\"2026-09-28\",\"2026-09-28\"]} (before {\"f\":2,\"fd\":[\"2026-09-18\",\"2026-09-28\"]}) · steps 19→20 · box \"2026-09-28\" · line \"\" (lo-2b-dk-12-plus-with-halftyped-failedon)"
+    },
+    {
+      "step": "3 + with a half-typed Failed on refuses and says so (plan §6), recording nothing",
+      "pass": false,
+      "said": "failures {\"f\":3,\"fd\":[\"2026-09-18\",\"2026-09-28\",\"2026-09-28\"]} (before {\"f\":2,\"fd\":[\"2026-09-18\",\"2026-09-28\"]}) · steps 19→20 · line \"\""
+    },
+    {
       "step": "3 ST-02 failures now",
-      "note": "{\"f\":2,\"fd\":[\"2026-09-18\",\"2026-09-28\"]}"
+      "note": "{\"f\":3,\"fd\":[\"2026-09-18\",\"2026-09-28\",\"2026-09-28\"]}"
     },
     {
       "step": "4 the full list opened",
-      "note": "[\"ST-02 2026-09-18\",\"ST-02X 2026-09-28\"] · stored {\"f\":2,\"fd\":[\"2026-09-18\",\"2026-09-28\"]}"
+      "note": "[\"ST-02 2026-09-18\",\"ST-02X 2026-09-28\",\"ST-02XX 2026-09-28\"] · stored {\"f\":3,\"fd\":[\"2026-09-18\",\"2026-09-28\",\"2026-09-28\"]}"
     },
     {
       "step": "4 a list row: while typing slowly, nothing is saved and the rows do not re-sort",
       "pass": true,
-      "said": "day 2: box 2026-09-02 · saved {\"f\":2,\"fd\":[\"2026-09-18\",\"2026-09-28\"]} · steps 19 | day 23: box 2026-09-23 · saved {\"f\":2,\"fd\":[\"2026-09-18\",\"2026-09-28\"]} · steps 19 | month 09: box 2026-09-23 · saved {\"f\":2,\"fd\":[\"2026-09-18\",\"2026-09-28\"]} · steps 19 | year digit 2: box 0002-09-23 · saved {\"f\":2,\"fd\":[\"2026-09-18\",\"2026-09-28\"]} · steps 19 | year digit 0: box 0020-09-23 · saved {\"f\":2,\"fd\":[\"20"
+      "said": "day 2: box 2026-09-02 · saved {\"f\":3,\"fd\":[\"2026-09-18\",\"2026-09-28\",\"2026-09-28\"]} · steps 20 | day 23: box 2026-09-23 · saved {\"f\":3,\"fd\":[\"2026-09-18\",\"2026-09-28\",\"2026-09-28\"]} · steps 20 | month 09: box 2026-09-23 · saved {\"f\":3,\"fd\":[\"2026-09-18\",\"2026-09-28\",\"2026-09-28\"]} · steps 20 | year digit 2: box 0002-09-23 · saved {\"f\":3,\"fd\":[\"2026-09-18\",\"2026-09-28\",\"2026-09-28\"]} · steps 20 | y"
     },
     {
       "step": "4 a list row: left → ST-02X re-dated 28/09/26→23/09/26, one step",
       "pass": true,
-      "said": "{\"f\":2,\"fd\":[\"2026-09-18\",\"2026-09-23\"]} · steps 19→20 · ↶ \"Undo the date of ST-02X for STUDENT A (Ctrl+Z)\""
+      "said": "{\"f\":3,\"fd\":[\"2026-09-18\",\"2026-09-23\",\"2026-09-28\"]} · steps 20→21 · ↶ \"Undo the date of ST-02X for STUDENT A (Ctrl+Z)\""
     },
     {
       "step": "4 a list row: a half-typed year (box \"0020-09-23\") left → put back, nothing saved",
@@ -378,7 +387,7 @@
     {
       "step": "4 a list row: the same day retyped makes no step",
       "pass": true,
-      "said": "steps 20→20"
+      "said": "steps 21→21"
     },
     {
       "step": "4 a list row: tomorrow refused — put back, nothing saved, no step, one line",
@@ -386,14 +395,19 @@
       "said": "box \"2026-09-23\" · line \"That day hasn’t come yet — pick today or earlier.\""
     },
     {
-      "step": "4 a list row: the refusal line is on screen, whole, not clipped (lo-2b-dk-12-failrow-refused)",
+      "step": "4 a list row: the refusal line is on screen, whole, not clipped (lo-2b-dk-13-failrow-refused)",
       "pass": true,
-      "said": "{\"found\":true,\"text\":\"That day hasn’t come yet — pick today or earlier.\",\"box\":[749,467,128,29],\"inWin\":true,\"clippedBy\":null,\"cut\":false,\"onTop\":true,\"hits\":[true,true,true]}"
+      "said": "{\"found\":true,\"text\":\"That day hasn’t come yet — pick today or earlier.\",\"box\":[749,446,128,29],\"inWin\":true,\"clippedBy\":null,\"cut\":false,\"onTop\":true,\"hits\":[true,true,true]}"
     },
     {
-      "step": "4 a list row: ST-02 (18/09/26) emptied on purpose → saved undated, sorts after the dated one, one step (lo-2b-dk-13-failrow-emptied)",
-      "pass": true,
-      "said": "{\"f\":2,\"fd\":[\"2026-09-23\",null]} · rows [\"ST-02 2026-09-23\",\"ST-02X \"] · steps 20→21"
+      "step": "4 after the empty (nothing refused) no refusal line is left under any row — an old one would now sit under another failure (lo-2b-dk-14-failrow-emptied)",
+      "pass": false,
+      "said": "[\"ST-02X (2026-09-28): That day hasn’t come yet — pick today or earlier.\"]"
+    },
+    {
+      "step": "4 a list row: ST-02 (18/09/26) emptied on purpose → saved undated, sorts after the dated one, one step (lo-2b-dk-14-failrow-emptied)",
+      "pass": false,
+      "said": "{\"f\":3,\"fd\":[\"2026-09-23\",\"2026-09-28\",null]} · rows [\"ST-02 2026-09-23\",\"ST-02X 2026-09-28\",\"ST-02XX \"] · steps 21→22"
     },
     {
       "step": "errors",

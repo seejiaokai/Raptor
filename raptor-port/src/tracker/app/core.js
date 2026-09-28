@@ -94,6 +94,10 @@ function endSession() {
   failLog = null; lullPick = null; lullCopy = null;
   infoId = null; editId = null; ordMode = null; sylModalOpen = false; showAllOpen = false; copyOpen = false;
   showDetails = false; hideDetailBubble(); toolsOpen = false;
+  /* the save words belong to the person leaving: the next one's place (D376) is not the
+     course they named (the leftovers' walk, walker a F1 — "● switched to 26ABSG" over
+     someone else's course) */
+  saveStat = { text: '', cls: '' };
   if (arrangeMode) {
     /* `view` is the editing canvas's pan and zoom: it stays in Edit chart layout */
     arrangeMode = false; connectSrc = null; drawing = null; selBalls = new Set(); tool = 'move'; view = { x: 0, y: 0, k: 1 };
@@ -5273,6 +5277,10 @@ export function handleEscapeKey(e) {
 /* Delete / Backspace removes the current selection while arranging */
 export async function handleDeleteKey(e) {
   if (e.key !== 'Delete' && e.key !== 'Backspace') return;
+  /* never behind a question: the key reached the chart through the shade — a second
+     "Delete …?" queued behind the first, and Backspace in the question's own text box
+     deleted a selected line (the leftovers' walk, walker a F2). Ctrl+Z already waits. */
+  if (dlg) return;
   if (!arrangeMode) return;
   if (selLine && !selBalls.size) {
     const t0 = e.target, g0 = (t0 && t0.tagName || '').toLowerCase();

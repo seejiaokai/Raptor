@@ -99,7 +99,7 @@
     {
       "step": "C2.5 the failures are KEPT (stored)",
       "pass": true,
-      "said": "{\"g\":\"na\",\"f\":2,\"fd\":[\"2026-09-25\",\"2026-09-27\"],\"at\":\"2026-09-28T12:26:30.525Z\",\"by\":\"Saber\"}"
+      "said": "{\"g\":\"na\",\"f\":2,\"fd\":[\"2026-09-25\",\"2026-09-27\"],\"at\":\"2026-09-28T12:31:34.443Z\",\"by\":\"Saber\"}"
     },
     {
       "step": "C2.6 the grading pop-up still shows them: Fails 2, [\"ACG-01 25/09/26\",\"ACG-01X 27/09/26\"] (lo-2b-dk-f13-pop-na-still-lists)",
@@ -108,8 +108,8 @@
     },
     {
       "step": "C2.7b … and its words can be READ — nothing drawn over them (lo-2b-dk-f14-plus-on-na-refused)",
-      "pass": false,
-      "said": "{\"found\":true,\"text\":\"“ACG-01” is marked N.A., so it cannot be failed.\",\"checked\":3,\"covered\":[{\"x\":599,\"y\":120,\"by\":\"i\"},{\"x\":720,\"y\":120,\"by\":\"span\"},{\"x\":841,\"y\":120,\"by\":\"span\"}]}"
+      "pass": true,
+      "said": "{\"found\":true,\"text\":\"“ACG-01” is marked N.A., so it cannot be failed.\",\"checked\":3,\"covered\":[]}"
     },
     {
       "step": "C2.7 + on the N.A. event is refused with its words, on screen (lo-2b-dk-f14-plus-on-na-refused)",

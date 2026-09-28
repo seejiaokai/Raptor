@@ -96,6 +96,95 @@
     {
       "step": "D console / page errors",
       "note": "none"
+    },
+    {
+      "step": "P 1 Tab ×10 from the Rename question stays inside the box",
+      "pass": true,
+      "said": "start input#dlgInput \"26ABSG\" · button#dlgCancel \"Cancel\" [box] → button#dlgOk \"OK\" [box] → input#dlgInput \"26ABSG\" [box] → button#dlgCancel \"Cancel\" [box] → button#dlgOk \"OK\" [box] → input#dlgInput \"26ABSG\" [box] → button#dlgCancel \"Cancel\" [box] → button#dlgOk \"OK\" [box] → input#dlgInput \"26ABSG\" [box] → button#dlgCancel \"Cancel\" [box]"
+    },
+    {
+      "step": "P 1 Shift+Tab ×10 stays inside the box",
+      "pass": true,
+      "said": "input#dlgInput \"26ABSG\" [box] → button#dlgOk \"OK\" [box] → button#dlgCancel \"Cancel\" [box] → input#dlgInput \"26ABSG\" [box] → button#dlgOk \"OK\" [box] → button#dlgCancel \"Cancel\" [box] → input#dlgInput \"26ABSG\" [box] → button#dlgOk \"OK\" [box] → button#dlgCancel \"Cancel\" [box] → input#dlgInput \"26ABSG\" [box]"
+    },
+    {
+      "step": "P 1 while it is up, every other part of the Tracker's page is shut (inert); the box and its shade are not",
+      "pass": true,
+      "said": ":inert | arrwrap:inert | arrhintwrap:inert | legend:inert | viewtabs:inert | layout:inert | dlgOverlay:live | dlgModal:live"
+    },
+    {
+      "step": "P 2 an empty spot of Raptor's top bar, and what a press there lands on while the question is up",
+      "note": "{\"pt\":{\"x\":176,\"y\":25,\"el\":\"div.topbar\"},\"hitNow\":\"div#dlgOverlay\"}"
+    },
+    {
+      "step": "P 2 after the press: is the Rename question still up?",
+      "note": "NO — the press landed on the grey shade, which answers Cancel (as a press anywhere outside the box always has); the course is still \"26ABSG\""
+    },
+    {
+      "step": "P 3 Delete-course question up; Tab ×45 from where the keyboard was: never the Tracker's controls behind the shade (#activeSel, + Add, ⇅ Reorder…)",
+      "pass": true,
+      "said": "question \"Delete course LO B1? Its students and marks are kept: ↺ Rest\" · start body · button#dlgCancel \"Cancel\" [box] → button#dlgOk \"OK\" [box] → button#dlgCancel \"Cancel\" [box] → button#dlgOk \"OK\" [box] → button#dlgCancel \"Cancel\" [box] → button#dlgOk \"OK\" [box] → button#dlgCancel \"Cancel\" [box] → button#dlgOk \"OK\" [box] → button#dlgCancel \"Cancel\" [box] → button#dlgOk \"OK\" [box] → button#dlgCan"
+    },
+    {
+      "step": "P 3 the stops that were Raptor's own top bar (Tab)",
+      "note": "none"
+    },
+    {
+      "step": "P 3 …and Shift+Tab ×45 from there: never the Tracker's controls behind the shade either",
+      "pass": true,
+      "said": "button#notifyBell \"Notifications\" → button#fastSync \"Sync · slow\" → button#burger \"Menu\" → body → button#dlgOk \"OK\" [box] → button#dlgCancel \"Cancel\" [box] → button#dlgOk \"OK\" [box] → button#dlgCancel \"Cancel\" [box] → button#dlgOk \"OK\" [box] → button#dlgCancel \"Cancel\" [box] → button#dlgOk \"OK\" [box] → button#dlgCancel \"Cancel\" [box] → button#dlgOk \"OK\" [box] → button#dlgCancel \"Cancel\" [box] → bu"
+    },
+    {
+      "step": "P 3 the stops that were Raptor's own top bar (Shift+Tab)",
+      "note": "button#notifyBell \"Notifications\" · button#fastSync \"Sync · slow\" · button#burger \"Menu\" · body"
+    },
+    {
+      "step": "P 4 COULD NOT REACH Raptor's Logout by keyboard from the question",
+      "note": "Shift+Tab never stops on it"
+    },
+    {
+      "step": "P 4 phone + keyboard: Shift+Tab to ☰, Enter while the Delete-course question is up",
+      "note": "drawer opened: true · the drawer covers the question box: true · Tab from ☰ then goes: button#fastSync \"Sync · slow\" → button#notifyBell \"Notifications\" → button#dlgCancel \"Cancel\" → button#dlgOk \"OK\""
+    },
+    {
+      "step": "P 4 …a finger on the drawer's Logout: refused; the Tracker and its question stay",
+      "pass": true,
+      "said": "sign-in page: false · page tracker · question up: true · drawer open: false"
+    },
+    {
+      "step": "P 4 COULD NOT REACH the Quals tab by keyboard",
+      "note": "the phone bar has no nav tabs (they are in the ☰ drawer)"
+    },
+    {
+      "step": "P 5 Escape answers the question on screen: it goes, and the course is not deleted",
+      "pass": true,
+      "said": "question null · courses [\"LO B1\",\"26ABSG\"]"
+    },
+    {
+      "step": "P 7 File → Export, two charts ticked",
+      "note": "offered 2024 / 2026 / Tx 2026 / A/G - A/A 2026 · file charts [\"sb2026\",\"sbtx2026\"] · \"Exported as “OCU-syllabus-2026-09-28.json”. It contains 2 of 4 charts — no student names or marks. OK\""
+    },
+    {
+      "step": "P 7 the import's questions, in order, and the answers given",
+      "note": "\"“2026” already exists. Replace it, or add the incoming one under a new\" → alt | \"Name for the incoming syllabus:\" → ok | \"“Tx 2026” already exists. Replace it, or add the incoming one under a \" → ok | \"Brought in 2026 (new), Tx 2026. Everyone’s marks are untouched. It is \" → ok"
+    },
+    {
+      "step": "P 7 two chart questions, one after the other, each answered as chosen; the closing message skips nothing",
+      "pass": true,
+      "said": "charts asked: “2026” already exist · “Tx 2026” already ex · final \"Brought in 2026 (new), Tx 2026. Everyone’s marks are untouched. It is saved.\""
+    },
+    {
+      "step": "P 7 the chart added as new is in the Syllabus list; the replaced one is still there once",
+      "pass": true,
+      "said": "before [\"2024\",\"2026\",\"Tx 2026\",\"A/G - A/A 2026\"] → after [\"2026 (new) ✎\",\"Tx 2026\",\"2024\",\"2026\",\"A/G - A/A 2026\"]"
+    },
+    {
+      "step": "P 8 a finger on the ☰ while the Rename question is up",
+      "note": "lands on div#dlgOverlay · drawer opened: false · question still up: false"
+    },
+    {
+      "step": "P console / page errors",
+      "note": "none"
     }
   ],
   "errors": []
