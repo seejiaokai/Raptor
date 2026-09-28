@@ -1,0 +1,102 @@
+{
+  "rows": [
+    {
+      "step": "D 1 Tab ×10 from the Rename question stays inside the box",
+      "pass": true,
+      "said": "start input#dlgInput \"26ABSG\" · button#dlgCancel \"Cancel\" [box] → button#dlgOk \"OK\" [box] → input#dlgInput \"26ABSG\" [box] → button#dlgCancel \"Cancel\" [box] → button#dlgOk \"OK\" [box] → input#dlgInput \"26ABSG\" [box] → button#dlgCancel \"Cancel\" [box] → button#dlgOk \"OK\" [box] → input#dlgInput \"26ABSG\" [box] → button#dlgCancel \"Cancel\" [box]"
+    },
+    {
+      "step": "D 1 Shift+Tab ×10 stays inside the box",
+      "pass": true,
+      "said": "input#dlgInput \"26ABSG\" [box] → button#dlgOk \"OK\" [box] → button#dlgCancel \"Cancel\" [box] → input#dlgInput \"26ABSG\" [box] → button#dlgOk \"OK\" [box] → button#dlgCancel \"Cancel\" [box] → input#dlgInput \"26ABSG\" [box] → button#dlgOk \"OK\" [box] → button#dlgCancel \"Cancel\" [box] → input#dlgInput \"26ABSG\" [box]"
+    },
+    {
+      "step": "D 1 while it is up, every other part of the Tracker's page is shut (inert); the box and its shade are not",
+      "pass": true,
+      "said": ":inert | arrwrap:inert | arrhintwrap:inert | legend:inert | viewtabs:inert | layout:inert | dlgOverlay:live | dlgModal:live"
+    },
+    {
+      "step": "D 2 an empty spot of Raptor's top bar, and what a press there lands on while the question is up",
+      "note": "{\"pt\":{\"x\":792,\"y\":29,\"el\":\"nav.nav\"},\"hitNow\":\"div#dlgOverlay\"}"
+    },
+    {
+      "step": "D 2 after the press: is the Rename question still up?",
+      "note": "NO — the press landed on the grey shade, which answers Cancel (as a press anywhere outside the box always has); the course is still \"26ABSG\""
+    },
+    {
+      "step": "D 3 Delete-course question up; Tab ×45 from where the keyboard was: never the Tracker's controls behind the shade (#activeSel, + Add, ⇅ Reorder…)",
+      "pass": true,
+      "said": "question \"Delete course LO B1? Its students and marks are kept: ↺ Rest\" · start body · button#dlgCancel \"Cancel\" [box] → button#dlgOk \"OK\" [box] → button#dlgCancel \"Cancel\" [box] → button#dlgOk \"OK\" [box] → button#dlgCancel \"Cancel\" [box] → button#dlgOk \"OK\" [box] → button#dlgCancel \"Cancel\" [box] → button#dlgOk \"OK\" [box] → button#dlgCancel \"Cancel\" [box] → button#dlgOk \"OK\" [box] → button#dlgCan"
+    },
+    {
+      "step": "D 3 the stops that were Raptor's own top bar (Tab)",
+      "note": "none"
+    },
+    {
+      "step": "D 3 …and Shift+Tab ×45 from there: never the Tracker's controls behind the shade either",
+      "pass": true,
+      "said": "button#roleBadge \"SABER · ADMIN\" → button#logout \"Logout\" → button#insightBtn \"Insights\" → button#notifyBell \"Notifications\" → button#fastSync \"Sync · slow\" → a \"Admin\" → a \"Help\" → a \"Tracker\" → a \"Leave War\" → a \"Logic\" → a \"Quals\" → a \"Inputs\" → a \"View-only Sched\" → a \"Edit Schedule\" → body → button#dlgOk \"OK\" [box] → button#dlgCancel \"Cancel\" [box] → button#dlgOk \"OK\" [box] → button#dlgCancel"
+    },
+    {
+      "step": "D 3 the stops that were Raptor's own top bar (Shift+Tab)",
+      "note": "button#roleBadge \"SABER · ADMIN\" · button#logout \"Logout\" · button#insightBtn \"Insights\" · button#notifyBell \"Notifications\" · button#fastSync \"Sync · slow\" · a \"Admin\" · a \"Help\" · a \"Tracker\" · a \"Leave War\" · a \"Logic\" · a \"Quals\" · a \"Inputs\" · a \"View-only Sched\" · a \"Edit Schedule\" · body"
+    },
+    {
+      "step": "D 4 Shift+Tab to Raptor's Logout, Enter, while the question is up: refused; the Tracker stays and the question is still up",
+      "pass": true,
+      "said": "sign-in page: false · page tracker · question \"Delete course LO B1? Its students and ma\""
+    },
+    {
+      "step": "D 4 Enter on Raptor's Quals tab (keyboard) while the question is up",
+      "note": "page now quals"
+    },
+    {
+      "step": "D 4 from Quals, Logout by keyboard: refused, the Tracker comes forward with its question still up",
+      "pass": true,
+      "said": "Logout reached: true · sign-in page: false · page tracker · question \"Delete course LO B1? Its students and marks are ke\""
+    },
+    {
+      "step": "D 5 Escape answers the question on screen: it goes, and the course is not deleted",
+      "pass": true,
+      "said": "question null · courses [\"LO B1\",\"26ABSG\"]"
+    },
+    {
+      "step": "D 6 Edit chart layout, ACG-01 selected, Delete → the delete question; Delete AGAIN while it is up, then Escape: no second copy of the question waits behind it",
+      "pass": false,
+      "said": "selected 1 · first \"Delete ACG-01 from this syllabus? Every student’s \" · after Escape: \"Delete ACG-01 from this syllabus? Every student’s \" — the second Delete press queued the same question again"
+    },
+    {
+      "step": "D 6 …and ACG-01 is still on the chart",
+      "pass": true,
+      "said": ""
+    },
+    {
+      "step": "D 6b a line just drawn (selected), \"discard your edits?\" up from a course switch, Backspace pressed: the line behind the shade is untouched",
+      "pass": false,
+      "said": "question \"You have unsaved flow edits on “2026”. Discard them and swit\" · lines on the chart 83 → 82 — the Backspace deleted the selected line behind the question · question still up: true"
+    },
+    {
+      "step": "D 7 File → Export, two charts ticked",
+      "note": "offered 2024 / 2026 / Tx 2026 / A/G - A/A 2026 · file charts [\"sb2026\",\"sbtx2026\"] · \"Exported as “OCU-syllabus-2026-09-28.json”. It contains 2 of 4 charts — no student names or marks. OK\""
+    },
+    {
+      "step": "D 7 the import's questions, in order, and the answers given",
+      "note": "\"“2026” already exists. Replace it, or add the incoming one under a new\" → alt | \"Name for the incoming syllabus:\" → ok | \"“Tx 2026” already exists. Replace it, or add the incoming one under a \" → ok | \"Brought in 2026 (new), Tx 2026. Everyone’s marks are untouched. It is \" → ok"
+    },
+    {
+      "step": "D 7 two chart questions, one after the other, each answered as chosen; the closing message skips nothing",
+      "pass": true,
+      "said": "charts asked: “2026” already exist · “Tx 2026” already ex · final \"Brought in 2026 (new), Tx 2026. Everyone’s marks are untouched. It is saved.\""
+    },
+    {
+      "step": "D 7 the chart added as new is in the Syllabus list; the replaced one is still there once",
+      "pass": true,
+      "said": "before [\"2024\",\"2026\",\"Tx 2026\",\"A/G - A/A 2026\"] → after [\"2026 (new) ✎\",\"Tx 2026\",\"2024\",\"2026\",\"A/G - A/A 2026\"]"
+    },
+    {
+      "step": "D console / page errors",
+      "note": "none"
+    }
+  ],
+  "errors": []
+}

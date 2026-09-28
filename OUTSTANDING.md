@@ -77,7 +77,7 @@ whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaini
 
 **Placed by their own lines — not his rulings:** the Leave War — [LW-FROZEN-BAR-GAP] (after [HUMAN-RETEST]; show him
 first), [LW-SCRUBBER-FLAKY] (test-only), [LW-ISO-DATES] (low, from the
-absence-record re-test), [LW-SPARE-MOVE-DOORS] (low, with the next Leave War move change), [PO-RESTORE-POSTING] (low, from its final code read), [LW-OFFER-ONLY-TAKEABLE] (low, with [LW-LOCKMARK]), [ABSENCE-SMALL-SEEN] (any time), [LW-HARNESS-VIEWER-PIN] (test-only, low), [CI-FAIL-PICTURES] (his call, low), [LW-DOZE-GUARDS] (low, check first); the shell — [SHELL-SIDEWAYS-BAR] (low, with the next top-bar change); the Inputs calendar — [INPUTSCAL-TAP-FLAKY] (test-only). The Tracker — [TRK-RETEST-NOTES] and
+absence-record re-test), [LW-SPARE-MOVE-DOORS] (low, with the next Leave War move change), [PO-RESTORE-POSTING] (low, from its final code read), [LW-OFFER-ONLY-TAKEABLE] (low, with [LW-LOCKMARK]), [ABSENCE-SMALL-SEEN] (any time), [LW-HARNESS-VIEWER-PIN] (test-only, low), [CI-FAIL-PICTURES] (his call, low), [LW-DOZE-GUARDS] (low, check first); the shell — [SHELL-SIDEWAYS-BAR] (low, with the next top-bar change), [SAVE-NOTE-COVERS] (medium, next), [TRK-SAVE-FAIL-SAYS-SAVED] (low, with [DB-READINESS]); the Inputs calendar — [INPUTSCAL-TAP-FLAKY] (test-only). The Tracker — [TRK-RETEST-NOTES] and
 [TRK-EDIT-SIDEWAYS] (their gates have passed), [TRK-PINCH-ASK] (his next Tracker session), [TRK-SESSION-PICK] (low, the next Tracker change), [TRK-DLG-LEFTOVERS] (low, with the next question-box change), [TRK-FLEXBAR-INK] (a question for him, on the Tracker-palette
 look card — D157, merged PR #441), [TRK-BAKE-STALE] (low).
 The amendment area — PR #434, #435, #437 and #438 MERGED (25–26 Sep 26); left: [REQ-ORPHAN-ROW] and [REQ-DOOR-WORDS] (both low). Left from the amendment batch (D91–D111, merged): [AVAILWIN-PREVIEW-BAR] (low), [AMEND-SMALL-SEEN] (any time). The docs and the checks — [DEPLOY-DOCS] (its operational half), [DOC-POINTERS-CODE] and
@@ -855,6 +855,26 @@ switch it to the section's `.on` / `.doze`. Nothing on screen is known to be wro
 measured it at 149px before and after). At 844×390 the desktop menu wraps into two rows and takes 149 of 390px — the
 biggest single piece of a sideways phone's screen (the Tracker walk's w3 O4, moved here from `[TRK-RETEST-NOTES]` when the
 Tracker's own fold, D373, was built). A shell layout question, and a visual one: a picture first.
+
+### [SAVE-NOTE-COVERS] Raptor's "Not saved — Retry" note floats over the page's own controls (filed 28 Sep 26)
+**Place:** medium — next, on its own small branch (a shell matter; the change-recording chat is changing the top bar —
+tell it first, D302). Found by the Tracker leftovers' walk (walker c, F2; pictures
+`raptor-port/docs/img/handpass/2026-09-28-trk-leftovers/walk/lo-2c-b06-1200.png`, `…-b06-390.png`): when a save fails,
+the note that floats under the top bar's right end (since `[LW-FIGSEL-FLAKE]`, merged 28 Sep 26) lands exactly over the
+Tracker's ✓ Save changes at 1200px — a press on Save's middle hits Retry, a press on the note's words passes through to
+Save beneath — and at 390px its Retry sits on the ✎ Syllabus menu button. It reads amber, not red. **Do:** a
+roll-call of every page's controls under the note's spot (Edit Schedule, the board, the Leave War, the Tracker, Quals,
+Admin) at phone and desktop; give the note a place that covers nothing (or pushes nothing), with a browser test that
+the element at each covered control's centre is still that control.
+
+### [TRK-SAVE-FAIL-SAYS-SAVED] Inside Raptor the Tracker says "saved" when the save failed (filed 28 Sep 26)
+**Place:** low — with `[DB-READINESS]` (honest refusals and saves in small pieces are that batch's job). Found by the
+Tracker leftovers' walk (walker c, F3; pictures `…/walk/lo-2c-b07-1200.png`, `…-b07-390.png`): with storage refusing
+writes, ✓ Save changes turned the Tracker's corner green — "● syllabus “2026” saved …" — beside Raptor's "Not saved —
+Retry". Raptor's in-memory store accepts the write and only its background saver fails, so the Tracker never hears of
+it; its red error words can only fire for a failed Export. Nothing is lost if Retry is pressed (walked). **Do:** let the
+Tracker's save status follow the storage seam's real outcome (the whiteboard's pending / failed state), so a failed save
+never reads "saved" anywhere.
 
 ### [TRK-BAKE-STALE] The chart-baking script no longer runs (found 23 Sep 26)
 `raptor-port/scripts/tracker/bake-user-charts.mjs` resolves `src/data/…` from `scripts/` (the folder

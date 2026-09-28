@@ -782,3 +782,16 @@ describe('[TRK-RETEST-NOTES] C5 — the roll-call: each side-panel date box save
     expect(localStorage.getItem('ocuLocal:' + C.pickKey('lastCrew:' + C.course)), 'and B is this person’s remembered pick').toBe(b)
   })
 })
+
+describe('[TRK-EDIT-SIDEWAYS] the walk’s F5 — a turn of the phone shuts the open Tools set', () => {
+  it('the window changing shape while editing closes the set (it came back open over the chart)', async () => {
+    if (C.sylDirty) await C.saveChangesClick()
+    C.toggleArrange()
+    try {
+      C.setToolsOpen(true)
+      window.dispatchEvent(new Event('resize'))
+      expect(C.toolsOpen).toBe(false)
+      expect(C.arrangeMode, 'still editing').toBe(true)
+    } finally { if (C.arrangeMode) C.toggleArrange(); if (C.sylDirty) await C.saveChangesClick() }
+  })
+})

@@ -1,0 +1,196 @@
+{
+  "rows": [
+    {
+      "step": "D S0 admin opens the Tracker on a fresh browser: his pick is filed under his person (stiff)",
+      "pass": true,
+      "said": "{\"ocuLocal:who:stiff:lastCourse\":\"cmul84i6gw45t2t\"}"
+    },
+    {
+      "step": "D S1 + Add course \"LO SECOND\"",
+      "note": "courses now LO SECOND, 26ABSG"
+    },
+    {
+      "step": "D S1 + Add remembers the student just added as the admin's pick on that course (Fable A13)",
+      "pass": true,
+      "said": "stiff lastCrew:LO SECOND = smul84lmt9tacts (LO TWO is smul84lmt9tacts)"
+    },
+    {
+      "step": "D S1 the admin picked 26ABSG / STUDENT B — filed under stiff",
+      "pass": true,
+      "said": "26ABSG / STUDENT B · {\"ocuLocal:who:stiff:lastCrew:cmul84i6gw45t2t\":\"smul84i6k3l30q1\",\"ocuLocal:who:stiff:lastCrew:cmul84j8p1k1e0x\":\"smul84lmt9tacts\",\"ocuLocal:who:stiff:lastCourse\":\"cmul84i6gw45t2t\"}"
+    },
+    {
+      "step": "D S2 while her place loads the page reads \"Loading…\", the admin's chart and panel hidden",
+      "pass": true,
+      "said": "[{\"on\":true,\"t\":741,\"text\":\"Loading…\",\"shown\":[],\"visibleBalls\":0,\"paintedWhileOn\":false},{\"on\":false,\"t\":1876,\"text\":\"\"}] — the switch ended before the browser drew a single frame of it"
+    },
+    {
+      "step": "D S2 COULD NOT REACH a press inside the load — the page took no input until the switch was over (CPU 20x slower); the press queued during it landed after, on her own chart",
+      "note": "presses [{\"t\":15,\"resuming\":false,\"target\":\"a\"},{\"t\":2514,\"resuming\":false,\"target\":\"svg#flowSvg\"}] · pop-up after: false"
+    },
+    {
+      "step": "D S2 …that press never opened the admin's student's pop-up",
+      "pass": true,
+      "said": "no pop-up"
+    },
+    {
+      "step": "D S2 …no mark written anywhere by the switch or the press",
+      "pass": true,
+      "said": "stored keys that changed: none"
+    },
+    {
+      "step": "D S2 (A1) the member opens on HER own place: the FIRST course (she has none), its first student — never the admin's",
+      "pass": true,
+      "said": "LO SECOND / LO ONE (admin had 26ABSG / STUDENT B; the admin's own pick on LO SECOND is LO TWO)"
+    },
+    {
+      "step": "D S2 her place is filed under her person (bane); the admin's keys untouched",
+      "pass": true,
+      "said": "{\"ocuLocal:who:stiff:lastCrew:cmul84i6gw45t2t\":\"smul84i6k3l30q1\",\"ocuLocal:who:stiff:lastCrew:cmul84j8p1k1e0x\":\"smul84lmt9tacts\",\"ocuLocal:who:stiff:lastCourse\":\"cmul84i6gw45t2t\",\"ocuLocal:who:bane:lastCourse\":\"cmul84j8p1k1e0x\"}"
+    },
+    {
+      "step": "D S2 the bar's status corner does not tell her about another person's course",
+      "pass": false,
+      "said": "status \"● switched to 26ABSG\" while she is on LO SECOND"
+    },
+    {
+      "step": "D S3 the member switches to 26ABSG: the student it shows (her first visit there — the last one anyone graded, else the first)",
+      "note": "26ABSG / STUDENT A"
+    },
+    {
+      "step": "D S3 the member's Crew pick is filed under bane, not stiff",
+      "pass": true,
+      "said": "{\"ocuLocal:who:stiff:lastCrew:cmul84i6gw45t2t\":\"smul84i6k3l30q1\",\"ocuLocal:who:bane:lastCrew:cmul84i6gw45t2t\":\"smul84i6k4r3zb0\",\"ocuLocal:who:stiff:lastCrew:cmul84j8p1k1e0x\":\"smul84lmt9tacts\",\"ocuLocal:who:stiff:lastCourse\":\"cmul84i6gw45t2t\",\"ocuLocal:who:bane:lastCourse\":\"cmul84i6gw45t2t\"}"
+    },
+    {
+      "step": "D S3 the admin signs in again (no reload): back on 26ABSG / STUDENT B, not the member's STUDENT A",
+      "pass": true,
+      "said": "26ABSG / STUDENT B · resume [{\"on\":true,\"t\":48,\"text\":\"Loading…\",\"shown\":[],\"visibleBalls\":0,\"paintedWhileOn\":false},{\"on\":false,\"t\":82,\"text\":\"\"}]"
+    },
+    {
+      "step": "D S4 after a reload the member opens on 26ABSG / STUDENT A (hers, from storage)",
+      "pass": true,
+      "said": "26ABSG / STUDENT A"
+    },
+    {
+      "step": "D S4 after a reload the admin opens on 26ABSG / STUDENT B (his)",
+      "pass": true,
+      "said": "26ABSG / STUDENT B"
+    },
+    {
+      "step": "D S5 member signed in and out without opening the Tracker; then Hex opens it: HIS own place (the first course, its first student)",
+      "pass": true,
+      "said": "LO SECOND / LO ONE · rocky lastCourse cmul84j8p1k1e0x"
+    },
+    {
+      "step": "D S5 the bar's status corner does not tell Hex about another person's course",
+      "pass": true,
+      "said": "status \"● saved\" while he is on LO SECOND"
+    },
+    {
+      "step": "D S5 two sign-ins without the Tracker (admin), then the member opens it: hers, 26ABSG / STUDENT A",
+      "pass": true,
+      "said": "26ABSG / STUDENT A"
+    },
+    {
+      "step": "D S6 (A9) the same person out and in: same place, no \"Loading…\" at all",
+      "pass": true,
+      "said": "26ABSG / STUDENT A · resume log []"
+    },
+    {
+      "step": "D S6 the chart's scroll before / after",
+      "note": "{\"scroll0\":{\"t\":73,\"l\":0},\"scroll1\":{\"t\":396,\"l\":0}}"
+    },
+    {
+      "step": "D S7a the Crew box: STUDENT B → her pick",
+      "pass": true,
+      "said": "smul84i6k3l30q1"
+    },
+    {
+      "step": "D S7b a press on STUDENT A's slice of ST-01 picks her (no pop-up) and files it as the member's pick",
+      "pass": true,
+      "said": "point {\"x\":508,\"y\":474} → STUDENT A; key smul84i6k4r3zb0"
+    },
+    {
+      "step": "D S7c + Add \"LO THREE\": the Crew box shows him and he is her pick",
+      "pass": true,
+      "said": "LO THREE; key smul851qcdmvwhk"
+    },
+    {
+      "step": "D S7d ↶ taking back STUDENT A's grade moves the picker to her, and that is filed as the member's pick",
+      "pass": true,
+      "said": "graded \"ST-02 · STUDENT A\"; after B the key was smul84i6k3l30q1; after ↶: STUDENT A, key smul84i6k4r3zb0"
+    },
+    {
+      "step": "D S7e none of her picks moved the admin: he signs in on 26ABSG / STUDENT B",
+      "pass": true,
+      "said": "26ABSG / STUDENT B"
+    },
+    {
+      "step": "D S8 the admin taps his name badge (member view): same place, no \"Loading…\", no pick key changed",
+      "pass": true,
+      "said": "badge \"Saber · Member\" · 26ABSG / STUDENT B · resume [] · page tracker"
+    },
+    {
+      "step": "D S8 a pick made in the member view is still the ADMIN's (stiff), never the member's (bane)",
+      "pass": true,
+      "said": "stiff smul851qcdmvwhk · bane smul84i6k4r3zb0"
+    },
+    {
+      "step": "D S8 back to the admin view: still LO THREE, no \"Loading…\"",
+      "pass": true,
+      "said": "26ABSG / LO THREE · badge \"Saber · Admin\""
+    },
+    {
+      "step": "D S9 the member's course is now LO SECOND",
+      "pass": true,
+      "said": "cmul84j8p1k1e0x"
+    },
+    {
+      "step": "D S9 the admin deletes LO SECOND",
+      "note": "asked \"Delete course LO SECOND? Its students and marks are kept: ↺ Restore in ⇅ Reorder courses brings it back in this browser.\" · courses now 26ABSG"
+    },
+    {
+      "step": "D S9 the member's remembered course is gone: she falls back to the first course, a student in the Crew box, no error",
+      "pass": true,
+      "said": "26ABSG / STUDENT A · errors 0"
+    },
+    {
+      "step": "D S9 the admin restores LO SECOND (⇅ Reorder courses → ↺ Restore)",
+      "note": "restore offered: true · courses now 26ABSG, LO SECOND"
+    },
+    {
+      "step": "D S9 (Fable A10's second half) after the restore the member opens on",
+      "note": "26ABSG / STUDENT A · bane lastCourse = cmul84i6gw45t2t (the fallback rewrote her remembered course, so the restore does not bring her back)"
+    },
+    {
+      "step": "D S10 the member picks LO THREE",
+      "pass": true,
+      "said": "smul851qcdmvwhk"
+    },
+    {
+      "step": "D S10 the admin removes LO THREE (the chip's ×)",
+      "note": "asked [\"Remove LO THREE from 2026? Their marks, dates, pace and lull periods on this syl\"] · students now STUDENT A, STUDENT B"
+    },
+    {
+      "step": "D S10 the member signs in: her removed pick falls back to a student on the course, the Crew box not blank, no error",
+      "pass": true,
+      "said": "26ABSG / STUDENT A · errors 0"
+    },
+    {
+      "step": "D S10b her student renamed \"STUDENT AA\"; after Hex has used the Tracker she signs in on him still",
+      "pass": true,
+      "said": "26ABSG / STUDENT AA"
+    },
+    {
+      "step": "D S11 the member imports a chart (Replace it): she stays on her place; no pick key of anyone else moves, no browser-wide pick key is written",
+      "pass": true,
+      "said": "26ABSG / STUDENT AA · import said [\"“2026” already exists. Replace it, or add the inco\",\"Brought in 2026. Everyone’s marks are untouched. I\"] · keys that changed []"
+    },
+    {
+      "step": "D console / page errors",
+      "note": "none"
+    }
+  ],
+  "errors": []
+}

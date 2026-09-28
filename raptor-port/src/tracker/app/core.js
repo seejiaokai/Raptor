@@ -3267,6 +3267,30 @@ function canvasOrigin() {
 /* Edit chart layout's twin of chartPointAt / placeChartPoint: its canvas pans
    and zooms by `view` instead of by scrolling. Points in client pixels; `o` is
    canvasOrigin(), passed in when the caller already holds it. */
+/* A PHONE TURNED WHILE EDITING (the leftovers' walk, F1, 28 Sep 26): the canvas kept the
+   size it was cut for and the middle of the chart left the screen — 820×300 in a 390×446
+   box, the middle ball off the right edge — until Done and Edit again. Newly reachable:
+   D373's fold made editing on a phone on its side usable. So the board's middle and the
+   canvas's origin are noted whenever the canvas is laid out (`arrBox`), and when the window
+   changes shape while editing the canvas is re-cut to the new box and the chart point that
+   was in the middle is put back in the middle, as going in and out already does. The
+   folded Tools set closes on a turn too (F5) — it came back open over the chart. */
+let arrBox = null;
+function noteArrBox() {
+  const b = document.getElementById('board');
+  if (!arrangeMode || !b) { arrBox = null; return; }
+  const r = b.getBoundingClientRect();
+  arrBox = { mx: r.left + b.clientLeft + b.clientWidth / 2, my: r.top + b.clientTop + b.clientHeight / 2, o: canvasOrigin() };
+}
+function refitArrange() {
+  if (!arrangeMode) return;
+  const c = arrBox ? canvasPointAt(arrBox.mx, arrBox.my, arrBox.o) : null;
+  fitCanvas();
+  const b = document.getElementById('board'); if (!b) return;
+  const r = b.getBoundingClientRect();
+  if (c) placeCanvasPoint(c, r.left + b.clientLeft + b.clientWidth / 2, r.top + b.clientTop + b.clientHeight / 2);
+  applyView(); noteArrBox();
+}
 function canvasPointAt(cx, cy, o = canvasOrigin()) { return { x: (cx - o.x - view.x) / view.k, y: (cy - o.y - view.y) / view.k }; }
 function placeCanvasPoint(c, cx, cy, o = canvasOrigin()) { view.x = cx - o.x - c.x * view.k; view.y = cy - o.y - c.y * view.k; }
 
@@ -5198,7 +5222,7 @@ export function toggleArrange() {
     arrangeMode = true;
     view = { x: 0, y: 0, k: flowZoom };
     setTool('move'); renderBoard();
-    const place = () => { if (!arrangeMode) return; fitCanvas(); if (!c) return; const m = midOnScreen(); placeCanvasPoint(c, m.x, m.y); applyView(); };
+    const place = () => { if (!arrangeMode) return; fitCanvas(); if (c) { const m = midOnScreen(); placeCanvasPoint(c, m.x, m.y); applyView(); } noteArrBox(); };
     place(); settle(place);
   } else {
     let c = null; if (board && document.getElementById('flowSvg')) { const m = midOnScreen(); c = canvasPointAt(m.x, m.y); }
@@ -6251,6 +6275,14 @@ export async function init() {
      user has set the zoom themselves. */
   if (typeof window !== 'undefined') {
     let t = null;
+    /* while editing: the canvas follows the new shape, the middle kept (F1); the Tools set shuts (F5) */
+    let ta = null;
+    window.addEventListener('resize', () => {
+      if (!arrangeMode) return;
+      if (toolsOpen) { toolsOpen = false; notify(); }
+      clearTimeout(ta);
+      ta = setTimeout(refitArrange, 150);
+    });
     window.addEventListener('resize', () => {
       if (zoomIsMine || arrangeMode) return;
       clearTimeout(t);

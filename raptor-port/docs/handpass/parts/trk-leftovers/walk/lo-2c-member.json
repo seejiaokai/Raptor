@@ -1,0 +1,190 @@
+{
+  "rows": [
+    {
+      "step": "admin (SABER · ADMIN)",
+      "note": "{\"me\":\"SABER · ADMIN\",\"menus\":{\"course\":[\"+ Add course\",\"✎ Rename course\",\"⇅ Reorder courses\",\"🗑 Delete course\"],\"syl\":[\"✎ Edit chart layout\",\"⧉ Duplicate syllabus\",\"+ Add syllabus\",\"✎ Rename syllabus\",\"⇅ Reorder syllabi\",\"🗑 Delete syllabus\"],\"file\":[\"⇪ Import…\",\"⤓ Export…\"]},\"add\":{\"msg\":\"Add a crew member\",\"rows\":58,\"first\":[\"Recon\",\"Talisman\",\"Wildcard\"],\"filter\":true,\"input\":true},\"refuse\":{\"value\":\"\",\"warn\":[\"That day hasn’t come yet — pick today or earlier.\"],\"typed\":\"2026-09-29\",\"before\":\"\",\"tomorrow\":\"2026-09-29\"},\"popTitle\":\"ACG-01 · STUDENT A\",\"grade\":{\"done\":[0,1],\"stored\":\"dco\",\""
+    },
+    {
+      "step": "admin: the + Add list offers the roster above \"Or type a callsign\"",
+      "pass": true,
+      "said": "{\"msg\":\"Add a crew member\",\"rows\":58,\"first\":[\"Recon\",\"Talisman\",\"Wildcard\"],\"filter\":true,\"input\":true}"
+    },
+    {
+      "step": "admin: a day after today in Last Flown (Syllabus) is refused — the box goes back and one line says why",
+      "pass": true,
+      "said": "{\"value\":\"\",\"warn\":[\"That day hasn’t come yet — pick today or earlier.\"],\"typed\":\"2026-09-29\",\"before\":\"\",\"tomorrow\":\"2026-09-29\"}"
+    },
+    {
+      "step": "admin: a press on ACG-01 opens its grading pop-up; DCO grades it (DONE 0 → 1) and ↶ can take it back",
+      "pass": true,
+      "said": "{\"pop\":\"ACG-01 · STUDENT A\",\"done\":[0,1],\"stored\":\"dco\",\"undo\":{\"off\":false,\"t\":\"Undo the mark on ACG-01 for STUDENT A (Ctrl+Z)\"}}"
+    },
+    {
+      "step": "admin: no console or page error",
+      "pass": true,
+      "said": ""
+    },
+    {
+      "step": "member (RANGER · MEMBER)",
+      "note": "{\"me\":\"RANGER · MEMBER\",\"menus\":{\"course\":[\"+ Add course\",\"✎ Rename course\",\"⇅ Reorder courses\",\"🗑 Delete course\"],\"syl\":[\"✎ Edit chart layout\",\"⧉ Duplicate syllabus\",\"+ Add syllabus\",\"✎ Rename syllabus\",\"⇅ Reorder syllabi\",\"🗑 Delete syllabus\"],\"file\":[\"⇪ Import…\",\"⤓ Export…\"]},\"add\":{\"msg\":\"Add a crew member\",\"rows\":58,\"first\":[\"Recon\",\"Talisman\",\"Wildcard\"],\"filter\":true,\"input\":true},\"refuse\":{\"value\":\"\",\"warn\":[\"That day hasn’t come yet — pick today or earlier.\"],\"typed\":\"2026-09-29\",\"before\":\"\",\"tomorrow\":\"2026-09-29\"},\"popTitle\":\"ACG-01 · STUDENT A\",\"grade\":{\"done\":[0,1],\"stored\":\"dco\""
+    },
+    {
+      "step": "member: the + Add list offers the roster above \"Or type a callsign\"",
+      "pass": true,
+      "said": "{\"msg\":\"Add a crew member\",\"rows\":58,\"first\":[\"Recon\",\"Talisman\",\"Wildcard\"],\"filter\":true,\"input\":true}"
+    },
+    {
+      "step": "member: a day after today in Last Flown (Syllabus) is refused — the box goes back and one line says why",
+      "pass": true,
+      "said": "{\"value\":\"\",\"warn\":[\"That day hasn’t come yet — pick today or earlier.\"],\"typed\":\"2026-09-29\",\"before\":\"\",\"tomorrow\":\"2026-09-29\"}"
+    },
+    {
+      "step": "member: a press on ACG-01 opens its grading pop-up; DCO grades it (DONE 0 → 1) and ↶ can take it back",
+      "pass": true,
+      "said": "{\"pop\":\"ACG-01 · STUDENT A\",\"done\":[0,1],\"stored\":\"dco\",\"undo\":{\"off\":false,\"t\":\"Undo the mark on ACG-01 for STUDENT A (Ctrl+Z)\"}}"
+    },
+    {
+      "step": "member: no console or page error",
+      "pass": true,
+      "said": ""
+    },
+    {
+      "step": "D121 the member is signed in as a member (the badge says so)",
+      "pass": true,
+      "said": "SABER · ADMIN / RANGER · MEMBER"
+    },
+    {
+      "step": "D121 the ✎ Course, ✎ Syllabus and File menus hold the same items for the member as for the admin (File: Import and Export too)",
+      "pass": true,
+      "said": "{\"admin\":{\"course\":[\"+ Add course\",\"✎ Rename course\",\"⇅ Reorder courses\",\"🗑 Delete course\"],\"syl\":[\"✎ Edit chart layout\",\"⧉ Duplicate syllabus\",\"+ Add syllabus\",\"✎ Rename syllabus\",\"⇅ Reorder syllabi\",\"🗑 Delete syllabus\"],\"file\":[\"⇪ Import…\",\"⤓ Export…\"]},\"member\":{\"course\":[\"+ Add course\",\"✎ Rename course\",\"⇅ Reorder courses\",\"🗑 Delete course\"],\"syl\":[\"✎ Edit chart layout\",\"⧉ Duplicate syllabu"
+    },
+    {
+      "step": "D121 the + Add list is the same length for both",
+      "pass": true,
+      "said": "58 / 58"
+    },
+    {
+      "step": "D121 the refusal reads the same for both",
+      "pass": true,
+      "said": "[[\"That day hasn’t come yet — pick today or earlier.\"],[\"That day hasn’t come yet — pick today or earlier.\"]]"
+    },
+    {
+      "step": "D121 a grade does the same for both",
+      "pass": true,
+      "said": "[{\"done\":[0,1],\"stored\":\"dco\",\"undo\":{\"off\":false,\"t\":\"Undo the mark on ACG-01 for STUDENT A (Ctrl+Z)\"}},{\"done\":[0,1],\"stored\":\"dco\",\"undo\":{\"off\":false,\"t\":\"Undo the mark on ACG-01 for STUDENT A (Ctrl+Z)\"}}]"
+    }
+  ],
+  "out": {
+    "admin": {
+      "me": "SABER · ADMIN",
+      "menus": {
+        "course": [
+          "+ Add course",
+          "✎ Rename course",
+          "⇅ Reorder courses",
+          "🗑 Delete course"
+        ],
+        "syl": [
+          "✎ Edit chart layout",
+          "⧉ Duplicate syllabus",
+          "+ Add syllabus",
+          "✎ Rename syllabus",
+          "⇅ Reorder syllabi",
+          "🗑 Delete syllabus"
+        ],
+        "file": [
+          "⇪ Import…",
+          "⤓ Export…"
+        ]
+      },
+      "add": {
+        "msg": "Add a crew member",
+        "rows": 58,
+        "first": [
+          "Recon",
+          "Talisman",
+          "Wildcard"
+        ],
+        "filter": true,
+        "input": true
+      },
+      "refuse": {
+        "value": "",
+        "warn": [
+          "That day hasn’t come yet — pick today or earlier."
+        ],
+        "typed": "2026-09-29",
+        "before": "",
+        "tomorrow": "2026-09-29"
+      },
+      "popTitle": "ACG-01 · STUDENT A",
+      "grade": {
+        "done": [
+          0,
+          1
+        ],
+        "stored": "dco",
+        "undo": {
+          "off": false,
+          "t": "Undo the mark on ACG-01 for STUDENT A (Ctrl+Z)"
+        }
+      }
+    },
+    "member": {
+      "me": "RANGER · MEMBER",
+      "menus": {
+        "course": [
+          "+ Add course",
+          "✎ Rename course",
+          "⇅ Reorder courses",
+          "🗑 Delete course"
+        ],
+        "syl": [
+          "✎ Edit chart layout",
+          "⧉ Duplicate syllabus",
+          "+ Add syllabus",
+          "✎ Rename syllabus",
+          "⇅ Reorder syllabi",
+          "🗑 Delete syllabus"
+        ],
+        "file": [
+          "⇪ Import…",
+          "⤓ Export…"
+        ]
+      },
+      "add": {
+        "msg": "Add a crew member",
+        "rows": 58,
+        "first": [
+          "Recon",
+          "Talisman",
+          "Wildcard"
+        ],
+        "filter": true,
+        "input": true
+      },
+      "refuse": {
+        "value": "",
+        "warn": [
+          "That day hasn’t come yet — pick today or earlier."
+        ],
+        "typed": "2026-09-29",
+        "before": "",
+        "tomorrow": "2026-09-29"
+      },
+      "popTitle": "ACG-01 · STUDENT A",
+      "grade": {
+        "done": [
+          0,
+          1
+        ],
+        "stored": "dco",
+        "undo": {
+          "off": false,
+          "t": "Undo the mark on ACG-01 for STUDENT A (Ctrl+Z)"
+        }
+      }
+    }
+  },
+  "errors": []
+}

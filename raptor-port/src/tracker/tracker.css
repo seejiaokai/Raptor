@@ -613,6 +613,9 @@ small.hint{color:var(--muted);font-size:11px}
     needs (measured: the bar stays two rows at 390px). The Course box keeps its 88px —
     at 76 a six-letter course read "26ABS…". */
  .controls #activeSel{max-width:124px}
+ /* ...and where the bar has the room (a phone on its side, a tablet), a 14-letter callsign
+    (D226) reads whole — at 124px it read 12 of 14 (the leftovers' walk, F4) */
+ @media(min-width:600px){ .controls #activeSel{max-width:176px} }
  .controls button.sm{padding:3px 6px}
  /* A 132px box in a 390px row leaves nothing for anything else, so the phone
     gets a 🔍 button and a full-width strip under the bar. position:fixed, not

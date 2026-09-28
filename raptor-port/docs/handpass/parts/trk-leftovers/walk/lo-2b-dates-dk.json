@@ -1,0 +1,409 @@
+{
+  "rows": [
+    {
+      "step": "0 today (the squadron's day) / tomorrow",
+      "note": "2026-09-28 / 2026-09-29 · size desktop 1440×900"
+    },
+    {
+      "step": "0 crew picked",
+      "note": "STUDENT A"
+    },
+    {
+      "step": "1 Last Flown (Syllabus): typed 17/09/26 slowly (saved before \"\", ↶ \"Nothing to undo\")",
+      "note": "[[\"day 1\",\"\",\"\\\"\\\"\",0],[\"day 17\",\"\",\"\\\"\\\"\",0],[\"month 09\",\"\",\"\\\"\\\"\",0],[\"year digit 2\",\"0002-09-17\",\"\\\"\\\"\",0],[\"year digit 0\",\"0020-09-17\",\"\\\"\\\"\",0],[\"year digit 2\",\"0202-09-17\",\"\\\"\\\"\",0],[\"year digit 6\",\"2026-09-17\",\"\\\"\\\"\",0]]"
+    },
+    {
+      "step": "1 Last Flown (Syllabus): while typing, nothing is saved and ↶ does not move",
+      "pass": true,
+      "said": "day 1: box (empty) · saved \"\" · steps 0 | day 17: box (empty) · saved \"\" · steps 0 | month 09: box (empty) · saved \"\" · steps 0 | year digit 2: box 0002-09-17 · saved \"\" · steps 0 | year digit 0: box 0020-09-17 · saved \"\" · steps 0 | year digit 2: box 0202-09-17 · saved \"\" · steps 0 | year digit 6: box 2026-09-17 · saved \"\" · steps 0"
+    },
+    {
+      "step": "1 Last Flown (Syllabus): left by tab → the day is saved once, one undo step named for the box",
+      "pass": true,
+      "said": "box 2026-09-17 · saved \"2026-09-17\" · steps 0→1 · ↶ \"Undo Last Flown (Syllabus) for STUDENT A (Ctrl+Z)\""
+    },
+    {
+      "step": "1 Last Flown (Syllabus): one ↶ goes back to the day before the typing; ↷ puts it again",
+      "pass": true,
+      "said": "after ↶ box \"\" saved \"\" (before \"\") · after ↷ box \"2026-09-17\" saved \"2026-09-17\""
+    },
+    {
+      "step": "1 Last Flown (Syllabus): a half-typed year (box \"0020-09-17\") left → put back to the saved day, nothing saved",
+      "pass": true,
+      "said": "box after leaving \"2026-09-17\" · saved \"2026-09-17\" · steps 1→1"
+    },
+    {
+      "step": "1 Last Flown (Syllabus): one part of the day cleared (box \"\") and left → put back, nothing saved",
+      "pass": true,
+      "said": "box after leaving \"2026-09-17\" · saved \"2026-09-17\" · steps 1→1"
+    },
+    {
+      "step": "1 Last Flown (Syllabus): tomorrow (29/09/26) is refused — box put back, nothing saved, no step, ONE line under the box",
+      "pass": true,
+      "said": "box \"2026-09-17\" · saved \"2026-09-17\" · steps 1→1 · line \"That day hasn’t come yet — pick today or earlier.\""
+    },
+    {
+      "step": "1 Last Flown (Syllabus): exactly one refusal line on the card",
+      "pass": true,
+      "said": "[\"That day hasn’t come yet — pick today or earlier.\"]"
+    },
+    {
+      "step": "1 Last Flown (Syllabus): the refusal line is on screen, whole, not clipped (lo-2b-dk-2-lastsyll-refused)",
+      "pass": true,
+      "said": "{\"found\":true,\"text\":\"That day hasn’t come yet — pick today or earlier.\",\"box\":[1242,517,174,29],\"inWin\":true,\"clippedBy\":null,\"cut\":false,\"onTop\":true,\"hits\":[true,true,true]}"
+    },
+    {
+      "step": "1 Last Flown (Syllabus): the line goes at the next change; the same day retyped makes no undo step",
+      "pass": true,
+      "said": "line while retyping \"\" · steps 1→1"
+    },
+    {
+      "step": "1 Last Flown (Syllabus): emptied on purpose (box \"\") and left → the empty is saved, one step",
+      "pass": true,
+      "said": "box \"\" · saved \"\" · steps 1→2 · ↶ \"Undo Last Flown (Syllabus) for STUDENT A (Ctrl+Z)\""
+    },
+    {
+      "step": "1 Last Flown (Currency): typed 22/09/26 slowly (saved before \"\", ↶ \"Undo Last Flown (Syllabus) for STUDENT A (Ctrl+Z)\")",
+      "note": "[[\"day 2\",\"\",\"\\\"\\\"\",2],[\"day 22\",\"\",\"\\\"\\\"\",2],[\"month 09\",\"\",\"\\\"\\\"\",2],[\"year digit 2\",\"0002-09-22\",\"\\\"\\\"\",2],[\"year digit 0\",\"0020-09-22\",\"\\\"\\\"\",2],[\"year digit 2\",\"0202-09-22\",\"\\\"\\\"\",2],[\"year digit 6\",\"2026-09-22\",\"\\\"\\\"\",2]]"
+    },
+    {
+      "step": "1 Last Flown (Currency): while typing, nothing is saved and ↶ does not move",
+      "pass": true,
+      "said": "day 2: box (empty) · saved \"\" · steps 2 | day 22: box (empty) · saved \"\" · steps 2 | month 09: box (empty) · saved \"\" · steps 2 | year digit 2: box 0002-09-22 · saved \"\" · steps 2 | year digit 0: box 0020-09-22 · saved \"\" · steps 2 | year digit 2: box 0202-09-22 · saved \"\" · steps 2 | year digit 6: box 2026-09-22 · saved \"\" · steps 2"
+    },
+    {
+      "step": "1 Last Flown (Currency): left by click → the day is saved once, one undo step named for the box",
+      "pass": true,
+      "said": "box 2026-09-22 · saved \"2026-09-22\" · steps 2→3 · ↶ \"Undo Last Flown (Currency) for STUDENT A (Ctrl+Z)\""
+    },
+    {
+      "step": "1 Last Flown (Currency): one ↶ goes back to the day before the typing; ↷ puts it again",
+      "pass": true,
+      "said": "after ↶ box \"\" saved \"\" (before \"\") · after ↷ box \"2026-09-22\" saved \"2026-09-22\""
+    },
+    {
+      "step": "1 Last Flown (Currency): a half-typed year (box \"0020-09-22\") left → put back to the saved day, nothing saved",
+      "pass": true,
+      "said": "box after leaving \"2026-09-22\" · saved \"2026-09-22\" · steps 3→3"
+    },
+    {
+      "step": "1 Last Flown (Currency): one part of the day cleared (box \"\") and left → put back, nothing saved",
+      "pass": true,
+      "said": "box after leaving \"2026-09-22\" · saved \"2026-09-22\" · steps 3→3"
+    },
+    {
+      "step": "1 Last Flown (Currency): tomorrow (29/09/26) is refused — box put back, nothing saved, no step, ONE line under the box",
+      "pass": true,
+      "said": "box \"2026-09-22\" · saved \"2026-09-22\" · steps 3→3 · line \"That day hasn’t come yet — pick today or earlier.\""
+    },
+    {
+      "step": "1 Last Flown (Currency): exactly one refusal line on the card",
+      "pass": true,
+      "said": "[\"That day hasn’t come yet — pick today or earlier.\"]"
+    },
+    {
+      "step": "1 Last Flown (Currency): the refusal line is on screen, whole, not clipped (lo-2b-dk-3-lastcurr-refused)",
+      "pass": true,
+      "said": "{\"found\":true,\"text\":\"That day hasn’t come yet — pick today or earlier.\",\"box\":[1242,553,174,29],\"inWin\":true,\"clippedBy\":null,\"cut\":false,\"onTop\":true,\"hits\":[true,true,true]}"
+    },
+    {
+      "step": "1 Last Flown (Currency): the line goes at the next change; the same day retyped makes no undo step",
+      "pass": true,
+      "said": "line while retyping \"\" · steps 3→3"
+    },
+    {
+      "step": "1 Last Flown (Currency): emptied on purpose (box \"\") and left → the empty is saved, one step",
+      "pass": true,
+      "said": "box \"\" · saved \"\" · steps 3→4 · ↶ \"Undo Last Flown (Currency) for STUDENT A (Ctrl+Z)\""
+    },
+    {
+      "step": "1 Upchit: typed 08/09/26 slowly (saved before \"\", ↶ \"Undo Last Flown (Currency) for STUDENT A (Ctrl+Z)\")",
+      "note": "[[\"day 0\",\"\",\"\\\"\\\"\",4],[\"day 08\",\"\",\"\\\"\\\"\",4],[\"month 09\",\"\",\"\\\"\\\"\",4],[\"year digit 2\",\"0002-09-08\",\"\\\"\\\"\",4],[\"year digit 0\",\"0020-09-08\",\"\\\"\\\"\",4],[\"year digit 2\",\"0202-09-08\",\"\\\"\\\"\",4],[\"year digit 6\",\"2026-09-08\",\"\\\"\\\"\",4]]"
+    },
+    {
+      "step": "1 Upchit: while typing, nothing is saved and ↶ does not move",
+      "pass": true,
+      "said": "day 0: box (empty) · saved \"\" · steps 4 | day 08: box (empty) · saved \"\" · steps 4 | month 09: box (empty) · saved \"\" · steps 4 | year digit 2: box 0002-09-08 · saved \"\" · steps 4 | year digit 0: box 0020-09-08 · saved \"\" · steps 4 | year digit 2: box 0202-09-08 · saved \"\" · steps 4 | year digit 6: box 2026-09-08 · saved \"\" · steps 4"
+    },
+    {
+      "step": "1 Upchit: left by enter → the day is saved once, one undo step named for the box",
+      "pass": true,
+      "said": "box 2026-09-08 · saved \"2026-09-08\" · steps 4→5 · ↶ \"Undo the upchit date for STUDENT A (Ctrl+Z)\""
+    },
+    {
+      "step": "1 Upchit: one ↶ goes back to the day before the typing; ↷ puts it again",
+      "pass": true,
+      "said": "after ↶ box \"\" saved \"\" (before \"\") · after ↷ box \"2026-09-08\" saved \"2026-09-08\""
+    },
+    {
+      "step": "1 Upchit: a half-typed year (box \"0020-09-08\") left → put back to the saved day, nothing saved",
+      "pass": true,
+      "said": "box after leaving \"2026-09-08\" · saved \"2026-09-08\" · steps 5→5"
+    },
+    {
+      "step": "1 Upchit: one part of the day cleared (box \"\") and left → put back, nothing saved",
+      "pass": true,
+      "said": "box after leaving \"2026-09-08\" · saved \"2026-09-08\" · steps 5→5"
+    },
+    {
+      "step": "1 Upchit: tomorrow (29/09/26) is taken — saved, one step, no refusal line",
+      "pass": true,
+      "said": "box \"2026-09-29\" · saved \"2026-09-29\" · steps 5→6 · line \"\""
+    },
+    {
+      "step": "1 Upchit: the same day retyped makes no undo step",
+      "pass": true,
+      "said": "steps 6→6"
+    },
+    {
+      "step": "1 Upchit: emptied on purpose (box \"\") and left → the empty is saved, one step",
+      "pass": true,
+      "said": "box \"\" · saved \"\" · steps 6→7 · ↶ \"Undo the upchit date for STUDENT A (Ctrl+Z)\""
+    },
+    {
+      "step": "1 End date A: typed 17/12/26 slowly (saved before \"\", ↶ \"Undo the upchit date for STUDENT A (Ctrl+Z)\")",
+      "note": "[[\"day 1\",\"\",\"\\\"\\\"\",7],[\"day 17\",\"\",\"\\\"\\\"\",7],[\"month 12\",\"\",\"\\\"\\\"\",7],[\"year digit 2\",\"0002-12-17\",\"\\\"\\\"\",7],[\"year digit 0\",\"0020-12-17\",\"\\\"\\\"\",7],[\"year digit 2\",\"0202-12-17\",\"\\\"\\\"\",7],[\"year digit 6\",\"2026-12-17\",\"\\\"\\\"\",7]]"
+    },
+    {
+      "step": "1 End date A: while typing, nothing is saved and ↶ does not move",
+      "pass": true,
+      "said": "day 1: box (empty) · saved \"\" · steps 7 | day 17: box (empty) · saved \"\" · steps 7 | month 12: box (empty) · saved \"\" · steps 7 | year digit 2: box 0002-12-17 · saved \"\" · steps 7 | year digit 0: box 0020-12-17 · saved \"\" · steps 7 | year digit 2: box 0202-12-17 · saved \"\" · steps 7 | year digit 6: box 2026-12-17 · saved \"\" · steps 7"
+    },
+    {
+      "step": "1 End date A: left by tab → the day is saved once, one undo step named for the box",
+      "pass": true,
+      "said": "box 2026-12-17 · saved \"2026-12-17\" · steps 7→8 · ↶ \"Undo End date A for STUDENT A (Ctrl+Z)\""
+    },
+    {
+      "step": "1 End date A: one ↶ goes back to the day before the typing; ↷ puts it again",
+      "pass": true,
+      "said": "after ↶ box \"\" saved \"\" (before \"\") · after ↷ box \"2026-12-17\" saved \"2026-12-17\""
+    },
+    {
+      "step": "1 End date A: a half-typed year (box \"0020-12-17\") left → put back to the saved day, nothing saved",
+      "pass": true,
+      "said": "box after leaving \"2026-12-17\" · saved \"2026-12-17\" · steps 8→8"
+    },
+    {
+      "step": "1 End date A: one part of the day cleared (box \"\") and left → put back, nothing saved",
+      "pass": true,
+      "said": "box after leaving \"2026-12-17\" · saved \"2026-12-17\" · steps 8→8"
+    },
+    {
+      "step": "1 End date A: tomorrow (29/09/26) is taken — saved, one step, no refusal line",
+      "pass": true,
+      "said": "box \"2026-09-29\" · saved \"2026-09-29\" · steps 8→9 · line \"\""
+    },
+    {
+      "step": "1 End date A: the same day retyped makes no undo step",
+      "pass": true,
+      "said": "steps 9→9"
+    },
+    {
+      "step": "1 End date A: emptied on purpose (box \"\") and left → the empty is saved, one step",
+      "pass": true,
+      "said": "box \"\" · saved \"\" · steps 9→10 · ↶ \"Undo End date A for STUDENT A (Ctrl+Z)\""
+    },
+    {
+      "step": "1 End date B: typed 16/01/27 slowly (saved before \"\", ↶ \"Undo End date A for STUDENT A (Ctrl+Z)\")",
+      "note": "[[\"day 1\",\"\",\"\\\"\\\"\",10],[\"day 16\",\"\",\"\\\"\\\"\",10],[\"month 01\",\"\",\"\\\"\\\"\",10],[\"year digit 2\",\"0002-01-16\",\"\\\"\\\"\",10],[\"year digit 0\",\"0020-01-16\",\"\\\"\\\"\",10],[\"year digit 2\",\"0202-01-16\",\"\\\"\\\"\",10],[\"year digit 7\",\"2027-01-16\",\"\\\"\\\"\",10]]"
+    },
+    {
+      "step": "1 End date B: while typing, nothing is saved and ↶ does not move",
+      "pass": true,
+      "said": "day 1: box (empty) · saved \"\" · steps 10 | day 16: box (empty) · saved \"\" · steps 10 | month 01: box (empty) · saved \"\" · steps 10 | year digit 2: box 0002-01-16 · saved \"\" · steps 10 | year digit 0: box 0020-01-16 · saved \"\" · steps 10 | year digit 2: box 0202-01-16 · saved \"\" · steps 10 | year digit 7: box 2027-01-16 · saved \"\" · steps 10"
+    },
+    {
+      "step": "1 End date B: left by click → the day is saved once, one undo step named for the box",
+      "pass": true,
+      "said": "box 2027-01-16 · saved \"2027-01-16\" · steps 10→11 · ↶ \"Undo End date B for STUDENT A (Ctrl+Z)\""
+    },
+    {
+      "step": "1 End date B: one ↶ goes back to the day before the typing; ↷ puts it again",
+      "pass": true,
+      "said": "after ↶ box \"\" saved \"\" (before \"\") · after ↷ box \"2027-01-16\" saved \"2027-01-16\""
+    },
+    {
+      "step": "1 End date B: a half-typed year (box \"0020-01-16\") left → put back to the saved day, nothing saved",
+      "pass": true,
+      "said": "box after leaving \"2027-01-16\" · saved \"2027-01-16\" · steps 11→11"
+    },
+    {
+      "step": "1 End date B: one part of the day cleared (box \"\") and left → put back, nothing saved",
+      "pass": true,
+      "said": "box after leaving \"2027-01-16\" · saved \"2027-01-16\" · steps 11→11"
+    },
+    {
+      "step": "1 End date B: tomorrow (29/09/26) is taken — saved, one step, no refusal line",
+      "pass": true,
+      "said": "box \"2026-09-29\" · saved \"2026-09-29\" · steps 11→12 · line \"\""
+    },
+    {
+      "step": "1 End date B: the same day retyped makes no undo step",
+      "pass": true,
+      "said": "steps 12→12"
+    },
+    {
+      "step": "1 End date B: emptied on purpose (box \"\") and left → the empty is saved, one step",
+      "pass": true,
+      "said": "box \"\" · saved \"\" · steps 12→13 · ↶ \"Undo End date B for STUDENT A (Ctrl+Z)\""
+    },
+    {
+      "step": "2 TR-2 pop-up",
+      "note": "TR-2 · STUDENT A"
+    },
+    {
+      "step": "2 TR-2 graded DCO (today)",
+      "note": "{\"g\":\"dco\",\"f\":0,\"d\":\"2026-09-28\",\"at\":\"2026-09-28T12:29:00.906Z\",\"by\":\"Saber\"} · Last Flown \"2026-09-28\""
+    },
+    {
+      "step": "2 Done on: while typing slowly, the mark's day, Last Flown and ↶ do not move",
+      "pass": true,
+      "said": "day 1: box 2026-09-01 · saved [\"2026-09-28\",\"2026-09-28\"] · steps 14 | day 17: box 2026-09-17 · saved [\"2026-09-28\",\"2026-09-28\"] · steps 14 | month 09: box 2026-09-17 · saved [\"2026-09-28\",\"2026-09-28\"] · steps 14 | year digit 2: box 0002-09-17 · saved [\"2026-09-28\",\"2026-09-28\"] · steps 14 | year digit 0: box 0020-09-17 · saved [\"2026-09-28\",\"2026-09-28\"] · steps 14 | year digit 2: box 0202-09-1"
+    },
+    {
+      "step": "2 Done on: left → the flight is re-dated once, Last Flown follows, one step \"the date on TR-2\"",
+      "pass": true,
+      "said": "mark day 2026-09-17 · Last Flown 2026-09-17 · steps 14→15 · ↶ \"Undo the date on TR-2 for STUDENT A (Ctrl+Z)\""
+    },
+    {
+      "step": "2 Done on: a half-typed year (box \"0020-09-17\") left → back to the mark's day, nothing saved",
+      "pass": true,
+      "said": "box \"2026-09-17\" · mark day 2026-09-17 · steps 15→15"
+    },
+    {
+      "step": "2 Done on: the same day retyped makes no undo step",
+      "pass": true,
+      "said": "steps 15→15"
+    },
+    {
+      "step": "2 Done on: tomorrow is refused — box back to the mark's day, nothing saved, no step, one line",
+      "pass": true,
+      "said": "box \"2026-09-17\" · mark day 2026-09-17 · steps 15→15 · line \"That day hasn’t come yet — pick today or earlier.\""
+    },
+    {
+      "step": "2 Done on: the refusal line is on screen, whole, not clipped (lo-2b-dk-6-doneon-refused)",
+      "pass": true,
+      "said": "{\"found\":true,\"text\":\"That day hasn’t come yet — pick today or earlier.\",\"box\":[306,245,190,29],\"inWin\":true,\"clippedBy\":null,\"cut\":false,\"onTop\":true,\"hits\":[true,true,true]}"
+    },
+    {
+      "step": "2 Done on: emptied on purpose and left (a done event keeps its day, by the code's comment)",
+      "note": "typed box \"\" → box \"2026-09-17\" · mark day 2026-09-17 · steps 15→15"
+    },
+    {
+      "step": "2 Done on: an emptied box never leaves the done flight without a day or makes a step",
+      "pass": true,
+      "said": "box \"2026-09-17\" · mark day 2026-09-17"
+    },
+    {
+      "step": "2 Done on: 25/09/26 typed then Escape → the pop-up closes AND the day is kept (one step) (lo-2b-dk-8-doneon-after-escape)",
+      "pass": true,
+      "said": "pop-up closed true · mark day 2026-09-25 · reopened box \"2026-09-25\" · steps 15→16 · ↶ \"Undo the date on TR-2 for STUDENT A (Ctrl+Z)\""
+    },
+    {
+      "step": "2 ST-01 (not done): Done on typed 29/09/26 (box \"2026-09-29\"), then DCO pressed straight away",
+      "note": "pop-up still up false · mark {\"g\":\"dco\",\"f\":0,\"d\":\"2026-09-28\",\"at\":\"2026-09-28T12:29:35.963Z\",\"by\":\"Saber\"} (before null) · steps 16→17 · line \"\" (lo-2b-dk-9-grade-with-future-doneon)"
+    },
+    {
+      "step": "2 a grade pressed while Done on holds tomorrow is refused — no mark, the pop-up stays with the line",
+      "pass": false,
+      "said": "pop-up up false · mark {\"g\":\"dco\",\"f\":0,\"d\":\"2026-09-28\",\"at\":\"2026-09-28T12:29:35.963Z\",\"by\":\"Saber\"} · steps 16→17 · line \"\""
+    },
+    {
+      "step": "3 Failed on: typing slowly saves nothing and makes no step (the box only says where the next + lands)",
+      "pass": true,
+      "said": "day 1: box 2026-09-01 · saved null · steps 17 | day 18: box 2026-09-18 · saved null · steps 17 | month 09: box 2026-09-18 · saved null · steps 17 | year digit 2: box 0002-09-18 · saved null · steps 17 | year digit 0: box 0020-09-18 · saved null · steps 17 | year digit 2: box 0202-09-18 · saved null · steps 17 | year digit 6: box 2026-09-18 · saved null · steps 17"
+    },
+    {
+      "step": "3 Failed on: a whole past day, left, stays in the box (nothing saved yet)",
+      "pass": true,
+      "said": "box \"2026-09-18\""
+    },
+    {
+      "step": "3 Failed on 18/09/26, then + → one failure on that day, one step",
+      "pass": true,
+      "said": "{\"f\":1,\"fd\":[\"2026-09-18\"]} · steps 17→18 · ↶ \"Undo the failure count on ST-02 for STUDENT A (Ctrl+Z)\""
+    },
+    {
+      "step": "3 Failed on: a half-typed year (box \"0020-09-18\") left",
+      "note": "box now \"2026-09-28\" (today 2026-09-28)"
+    },
+    {
+      "step": "3 Failed on: a half-typed year left goes back to a whole day (today), never stays half typed",
+      "pass": true,
+      "said": "box \"2026-09-28\""
+    },
+    {
+      "step": "3 Failed on: tomorrow, Enter → refused, box back to today, one line, nothing recorded",
+      "pass": true,
+      "said": "box \"2026-09-28\" · line \"That day hasn’t come yet — pick today or earlier.\""
+    },
+    {
+      "step": "3 Failed on: the refusal line is on screen, whole, not clipped (lo-2b-dk-10-failedon-refused)",
+      "pass": true,
+      "said": "{\"found\":true,\"text\":\"That day hasn’t come yet — pick today or earlier.\",\"box\":[646,520,190,29],\"inWin\":true,\"clippedBy\":null,\"cut\":false,\"onTop\":true,\"hits\":[true,true,true]}"
+    },
+    {
+      "step": "3 Failed on typed 29/09/26 (box \"2026-09-29\"), + pressed straight away",
+      "note": "failures {\"f\":2,\"fd\":[\"2026-09-18\",\"2026-09-28\"]} (before {\"f\":1,\"fd\":[\"2026-09-18\"]}) · steps 18→19 · box \"2026-09-28\" · line \"That day hasn’t come yet — pick today or earlier.\" (lo-2b-dk-11-plus-with-future-failedon)"
+    },
+    {
+      "step": "3 + with a future Failed on is refused — no failure recorded, the line shown",
+      "pass": false,
+      "said": "failures {\"f\":2,\"fd\":[\"2026-09-18\",\"2026-09-28\"]} (before {\"f\":1,\"fd\":[\"2026-09-18\"]}) · steps 18→19 · line \"That day hasn’t come yet — pick today or earlier.\""
+    },
+    {
+      "step": "3 ST-02 failures now",
+      "note": "{\"f\":2,\"fd\":[\"2026-09-18\",\"2026-09-28\"]}"
+    },
+    {
+      "step": "4 the full list opened",
+      "note": "[\"ST-02 2026-09-18\",\"ST-02X 2026-09-28\"] · stored {\"f\":2,\"fd\":[\"2026-09-18\",\"2026-09-28\"]}"
+    },
+    {
+      "step": "4 a list row: while typing slowly, nothing is saved and the rows do not re-sort",
+      "pass": true,
+      "said": "day 2: box 2026-09-02 · saved {\"f\":2,\"fd\":[\"2026-09-18\",\"2026-09-28\"]} · steps 19 | day 23: box 2026-09-23 · saved {\"f\":2,\"fd\":[\"2026-09-18\",\"2026-09-28\"]} · steps 19 | month 09: box 2026-09-23 · saved {\"f\":2,\"fd\":[\"2026-09-18\",\"2026-09-28\"]} · steps 19 | year digit 2: box 0002-09-23 · saved {\"f\":2,\"fd\":[\"2026-09-18\",\"2026-09-28\"]} · steps 19 | year digit 0: box 0020-09-23 · saved {\"f\":2,\"fd\":[\"20"
+    },
+    {
+      "step": "4 a list row: left → ST-02X re-dated 28/09/26→23/09/26, one step",
+      "pass": true,
+      "said": "{\"f\":2,\"fd\":[\"2026-09-18\",\"2026-09-23\"]} · steps 19→20 · ↶ \"Undo the date of ST-02X for STUDENT A (Ctrl+Z)\""
+    },
+    {
+      "step": "4 a list row: a half-typed year (box \"0020-09-23\") left → put back, nothing saved",
+      "pass": true,
+      "said": "box \"2026-09-23\""
+    },
+    {
+      "step": "4 a list row: the same day retyped makes no step",
+      "pass": true,
+      "said": "steps 20→20"
+    },
+    {
+      "step": "4 a list row: tomorrow refused — put back, nothing saved, no step, one line",
+      "pass": true,
+      "said": "box \"2026-09-23\" · line \"That day hasn’t come yet — pick today or earlier.\""
+    },
+    {
+      "step": "4 a list row: the refusal line is on screen, whole, not clipped (lo-2b-dk-12-failrow-refused)",
+      "pass": true,
+      "said": "{\"found\":true,\"text\":\"That day hasn’t come yet — pick today or earlier.\",\"box\":[749,467,128,29],\"inWin\":true,\"clippedBy\":null,\"cut\":false,\"onTop\":true,\"hits\":[true,true,true]}"
+    },
+    {
+      "step": "4 a list row: ST-02 (18/09/26) emptied on purpose → saved undated, sorts after the dated one, one step (lo-2b-dk-13-failrow-emptied)",
+      "pass": true,
+      "said": "{\"f\":2,\"fd\":[\"2026-09-23\",null]} · rows [\"ST-02 2026-09-23\",\"ST-02X \"] · steps 20→21"
+    },
+    {
+      "step": "errors",
+      "note": "[]"
+    },
+    {
+      "step": "no console errors, page errors, failed requests or native dialogs",
+      "pass": true,
+      "said": "[]"
+    }
+  ],
+  "errors": []
+}

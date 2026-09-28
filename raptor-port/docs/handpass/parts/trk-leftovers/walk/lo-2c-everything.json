@@ -1,0 +1,105 @@
+{
+  "rows": [
+    {
+      "step": "E1 🗑 Delete syllabus on \"2024\" asks",
+      "note": "Delete syllabus “2024”?\n\nThis removes its flow, its layout and every student’s marks on it, in every course.\n\nIt is a built-in — you can bring it back later from ⇅ Reorder."
+    },
+    {
+      "step": "E1 the built-in \"2024\" is gone from the Syllabus list (hidden, not lost)",
+      "pass": true,
+      "said": "[\"2026\",\"Tx 2026\",\"A/G - A/A 2026\"]"
+    },
+    {
+      "step": "E2 two courses: 27ABSG added beside 26ABSG, and it is the course on screen",
+      "pass": true,
+      "said": "[\"27ABSG\",\"26ABSG\"]"
+    },
+    {
+      "step": "E3 three students on 27ABSG: Recon (from the roster — the Tracker writes him RECON, as it writes every name), VIPER9, ABCDEFGHIJKLMN",
+      "pass": true,
+      "said": "[\"RECON\",\"VIPER9\",\"ABCDEFGHIJKLMN\"]"
+    },
+    {
+      "step": "E3 VIPER9 removed (after its question): two left",
+      "pass": true,
+      "said": "{\"asked\":\"Remove VIPER9 from 2026?\\n\\nTheir marks, dates, pace and lull periods on this syll\",\"left\":[\"RECON\",\"ABCDEFGHIJKLMN\"]}"
+    },
+    {
+      "step": "E4 ACG-02: two failures recorded, then N.A. — the Failures card leaves them out and the ball draws no red ticks (D370)",
+      "pass": true,
+      "said": "{\"failCountBeforeNA\":\"2\",\"card\":{\"chips\":[],\"total\":\"\"},\"ticks\":0}"
+    },
+    {
+      "step": "E5 ACG-03: a failure today and one back-dated to 10/09 — the earliest day wears the plain code (ACG-03 10/09, ACG-03X today)",
+      "pass": true,
+      "said": "{\"popList\":[\"ACG-03 10/09/26\",\"ACG-03X 28/09/26\"],\"card\":{\"chips\":[\"ACG-03\",\"ACG-03X\"],\"total\":\"2 fails\"}}"
+    },
+    {
+      "step": "E6 a lull period 14–18 Sep set from + Set lull period",
+      "pass": true,
+      "said": "{\"opensOn\":\"Set lull period — RECON ✕ Pick the first day of the period.\",\"lull\":[\"14/09/26→18/09/26\"]}"
+    },
+    {
+      "step": "E7 the pace set to 3 a week",
+      "pass": true,
+      "said": "{\"epw\":\"3\",\"card\":\"PACE & EXPECTED END — RECON SET PACE /wk 22/01/28 projected end END DATE A — req. pace END DATE B — req. pace Baseline 2 events/wk. Both end-date paces exclude \"}"
+    },
+    {
+      "step": "E8 ⤓ Export (charts only, Tx 2026) — the file",
+      "note": "OCU-syllabus-2026-09-28.json; says: Exported as “OCU-syllabus-2026-09-28.json”. It contains 1 of 3 charts — no student names or marks. OK"
+    },
+    {
+      "step": "E8 ⇪ Import — what it asked, and the answers",
+      "note": "[{\"msg\":\"“Tx 2026” already exists. Replace it, or add the incoming one under a new name?\",\"btns\":[\"Skip this one\",\"Add as new\",\"Replace it\"],\"ans\":\"alt\"},{\"msg\":\"Name for the incoming syllabus:\",\"btns\":[\"Cancel\",\"OK\"],\"ans\":\"ok\"},{\"msg\":\"Brought in Tx 2026 (new). Everyone’s marks are untouched. It is saved.\",\"btns\":[\"OK\"],\"ans\":\"ok\"}]"
+    },
+    {
+      "step": "E8 the imported chart \"Tx 2026 (new)\" is in the Syllabus list",
+      "pass": true,
+      "said": "[\"2026\",\"Tx 2026\",\"A/G - A/A 2026\",\"Tx 2026 (new) ✎\"]"
+    },
+    {
+      "step": "E9 an unsaved chart edit: \"EVERY-1\" on the chart, ✓ Save changes showing",
+      "pass": true,
+      "said": ""
+    },
+    {
+      "step": "E1b ⇅ Reorder syllabi lists \"2024\" under the hidden charts, with ↺ Restore",
+      "pass": true,
+      "said": "\"2024\\ndeleted\\n↺ Restore\""
+    },
+    {
+      "step": "E10 the world as the store has it",
+      "note": "{\"courses\":[\"27ABSG\",\"26ABSG\"],\"syls\":[\"2026\",\"Tx 2026\",\"A/G - A/A 2026\",\"Tx 2026 (new)\"],\"course\":\"27ABSG\",\"syl\":\"2026\",\"roster\":[\"RECON (roster prism)\",\"ABCDEFGHIJKLMN\"]}"
+    },
+    {
+      "step": "E10 no console or page error while building",
+      "pass": true,
+      "said": ""
+    },
+    {
+      "step": "E11 at 390 on the saved store, the admin reopens on HIS place: 27ABSG, 2026, RECON (D376)",
+      "pass": true,
+      "said": "{\"course\":\"27ABSG\",\"syl\":\"2026\",\"crew\":\"RECON\",\"save\":0}"
+    },
+    {
+      "step": "E11 the unsaved chart edit did not outlive the session (by design; a reload asks first) — made again here",
+      "note": "{\"saveChangesShowing\":0}"
+    },
+    {
+      "step": "E12 390: the unsaved chart edit made again — ✓ Save changes showing",
+      "pass": true,
+      "said": ""
+    },
+    {
+      "step": "E13 390 Info: the Failures card shows ACG-03 (10/09) and ACG-03X, and nothing from the N.A. ACG-02",
+      "pass": true,
+      "said": "{\"chips\":[\"ACG-03\",\"ACG-03X\"],\"total\":\"2 fails\"}"
+    },
+    {
+      "step": "E14 390: no console or page error",
+      "pass": true,
+      "said": ""
+    }
+  ],
+  "errors": []
+}

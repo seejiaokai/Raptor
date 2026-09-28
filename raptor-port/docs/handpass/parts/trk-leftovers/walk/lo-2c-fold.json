@@ -1,0 +1,373 @@
+{
+  "rows": [
+    {
+      "step": "1.1 844×390 editing: the folded row shows, the set is shut, the chart has room",
+      "pass": true,
+      "said": "{\"fold\":true,\"setOpen\":false,\"chart\":169}"
+    },
+    {
+      "step": "1.2 Tools ▾ opens the set over the chart",
+      "pass": true,
+      "said": "{\"setOpen\":true,\"onTop\":true,\"pos\":\"absolute\"}"
+    },
+    {
+      "step": "1.3 + Flight from the set: the set is shut BEFORE the name question shows",
+      "pass": true,
+      "said": "{\"setOpen\":false,\"setShown\":false}"
+    },
+    {
+      "step": "1.4 + Flight: the name question is up, on top, and asks for the name",
+      "pass": true,
+      "said": "{\"dlg\":\"Name for the new flight event:\",\"onTop\":true}"
+    },
+    {
+      "step": "1.5 + Flight answered: the ball \"LO2C-F\" is on the chart, ✓ Save changes shows, the row is still folded",
+      "pass": true,
+      "said": "{\"save\":true,\"fold\":true,\"dlg\":null}"
+    },
+    {
+      "step": "1.6 + Test from the set: set shut, question on top",
+      "pass": true,
+      "said": "{\"setOpen\":false,\"dlg\":\"Name for the new test event:\",\"onTop\":true}"
+    },
+    {
+      "step": "1.7 + Test answered: \"LO2C-T\" is on the chart",
+      "pass": true,
+      "said": ""
+    },
+    {
+      "step": "1.8 📋 Edit events from the set: the set is shut and the event list is on top",
+      "pass": true,
+      "said": "{\"setOpen\":false,\"syl\":{\"shown\":true,\"onTop\":true,\"top\":27,\"h\":335,\"vh\":390}}"
+    },
+    {
+      "step": "1.9 📋 Edit events: its window fits the sideways screen (top ≥ 0, bottom ≤ screen)",
+      "pass": true,
+      "said": "{\"shown\":true,\"onTop\":true,\"top\":27,\"h\":335,\"vh\":390}"
+    },
+    {
+      "step": "1.10 📋 Edit events: Cancel closes it; still editing, still folded",
+      "pass": true,
+      "said": ""
+    },
+    {
+      "step": "1.11 ↺ Reset layout from the set: set shut, its question on top",
+      "pass": true,
+      "said": "{\"setOpen\":false,\"dlg\":\"Reset this syllabus back to the course-map layout?\\n\\nThis puts every box back where the map has it AND deletes all 82 lines drawn on this chart.\",\"onTop\":true}"
+    },
+    {
+      "step": "1.12 ↺ Reset layout: Cancel leaves the chart as it was (both new balls there)",
+      "pass": true,
+      "said": ""
+    },
+    {
+      "step": "1.13 ✎ Text chosen: the set shuts, the row shows \"✎ Text\" and its hint",
+      "pass": true,
+      "said": "{\"tool\":\"✎ Text\",\"hint\":\"tap a ball to edit it\"}"
+    },
+    {
+      "step": "1.14 ✎ Text: a finger on a ball opens THAT ball's editor, on top",
+      "pass": true,
+      "said": "{\"underFinger\":\"LO2C-T\",\"ed\":{\"onTop\":true,\"text\":\"LO2C-T\",\"num\":\"\"}}"
+    },
+    {
+      "step": "1.15 ╱ Line chosen: the set shuts, the row shows \"╱ Line\"",
+      "pass": true,
+      "said": "{\"tool\":\"╱ Line\",\"hint\":\"tap where it starts, then where it ends\"}"
+    },
+    {
+      "step": "1.16 ╱ Line: the first tap lands on the CHART (not the fold row) and starts a line — the row says where to tap next",
+      "pass": true,
+      "said": "{\"tgt\":\"chart\",\"at\":{\"x\":40,\"y\":256},\"foldBottom\":223,\"hint\":\"Now click where it ends — on a ball port, on another line, o\"}"
+    },
+    {
+      "step": "1.17 ╱ Line: the second tap ends it — one more line on the chart, ✓ Save changes shows",
+      "pass": true,
+      "said": "lines 82 → 83"
+    },
+    {
+      "step": "1.18 a pinch on the freed chart zooms it and keeps the chart point under the fingers (≤6px)",
+      "pass": true,
+      "said": "view translate(-1.0,16.5) scale(0.920) → translate(-446.5,-47.3) scale(2.300); drift 0.7px"
+    },
+    {
+      "step": "1.19 one finger on empty chart pans it: the point under the finger follows it (≤6px); the page itself does not scroll",
+      "pass": true,
+      "said": "view translate(-446.5,-47.3) scale(2.300) → translate(-516.5,-77.3) scale(2.300); point 0.5px from the finger; page scroll 0→0; board scroll 0→0"
+    },
+    {
+      "step": "1.20 turned upright mid-edit: the full strip shows (in the page, not floating), no folded row, the chart keeps its room",
+      "pass": true,
+      "said": "{\"fold\":false,\"setShown\":true,\"pos\":\"static\",\"chart\":450}"
+    },
+    {
+      "step": "1.21 back on its side: folded again, the set shut, the chart has room",
+      "pass": true,
+      "said": "{\"fold\":true,\"setOpen\":false,\"chart\":169}"
+    },
+    {
+      "step": "1.22a the set is open before the phone is turned",
+      "pass": true,
+      "said": "{\"setOpen\":true}"
+    },
+    {
+      "step": "1.22 turned upright with the set open: the strip shows in its own place, not floating over the chart",
+      "pass": true,
+      "said": "{\"setOpen\":true,\"pos\":\"static\",\"chart\":450}"
+    },
+    {
+      "step": "1.23 back on its side after turning with the set open",
+      "note": "{\"setOpen\":true,\"setShown\":true,\"chart\":169}"
+    },
+    {
+      "step": "1.23 back on its side: nothing is stuck open — the set is shut, or one press outside shuts it",
+      "pass": true,
+      "said": "{\"setOpenOnReturn\":true}"
+    },
+    {
+      "step": "1.24 ✓ Done editing chart: the tabs come back, the folded row goes, the chart grows back",
+      "pass": true,
+      "said": "{\"tabs\":true,\"fold\":false,\"chart\":132}"
+    },
+    {
+      "step": "1.25 844×390 finger: no console or page error",
+      "pass": true,
+      "said": ""
+    },
+    {
+      "step": "2.1 1280×480 desktop window: Edit chart layout FOLDS too; the chart has room",
+      "pass": true,
+      "said": "{\"fold\":true,\"setShown\":false,\"chart\":266,\"before\":269}"
+    },
+    {
+      "step": "2.2 1280×480: + Test from the set — set shut, question on top",
+      "pass": true,
+      "said": "{\"setOpen\":false,\"dlg\":\"Name for the new test event:\"}"
+    },
+    {
+      "step": "2.3 1280×480: Enter answers it — \"LO2C-D\" is on the chart",
+      "pass": true,
+      "said": ""
+    },
+    {
+      "step": "2.4 a question raised while the set is open shows ON TOP of the set",
+      "pass": true,
+      "said": "{\"setOpen\":true,\"dlg\":\"Delete these 211 events from this syllabus?\\n\\nST-01, ST-02, ACG-01, ACG-02, ACG-03, ACG-04, ACG-05, ACG-06, ACG-07, ACG-08, ACG-09, ST-06 … (+199 more)\\n\\nEvery student’s marks on them are removed when you press ✓ Save changes.\",\"onTop\":true}"
+    },
+    {
+      "step": "2.5 the FIRST Escape answers the question (no) — every ball stays, the set is still open",
+      "pass": true,
+      "said": "{\"dlg\":null,\"setOpen\":true,\"balls\":[211,211]}"
+    },
+    {
+      "step": "2.6 the SECOND Escape shuts the set — and nothing else: still editing",
+      "pass": true,
+      "said": "{\"setOpen\":false,\"editing\":true}"
+    },
+    {
+      "step": "2.7 1280×480: Done editing — the folded row and the strip go, the chart grows back (no Flow/Info tabs at this width, as before)",
+      "pass": true,
+      "said": "{\"fold\":false,\"setShown\":false,\"chart\":269,\"before\":269}"
+    },
+    {
+      "step": "2.8 1280×480: no console or page error",
+      "pass": true,
+      "said": ""
+    },
+    {
+      "step": "3.1 the member at 844×390: the same folded row, the chart has room",
+      "pass": true,
+      "said": "{\"fold\":true,\"chart\":215,\"tool\":\"✋ Move\"}"
+    },
+    {
+      "step": "3.2 the member: Tools ▾ opens the same set over the chart",
+      "pass": true,
+      "said": "{\"setOpen\":true,\"onTop\":true}"
+    },
+    {
+      "step": "3.3 the member: + Acad from the set — set shut, question on top",
+      "pass": true,
+      "said": "{\"dlg\":\"Name for the new acad event:\"}"
+    },
+    {
+      "step": "3.4 the member: Done editing — tabs back",
+      "pass": true,
+      "said": ""
+    },
+    {
+      "step": "3.5 the member: no console or page error",
+      "pass": true,
+      "said": ""
+    },
+    {
+      "step": "5 sideways→upright: before the turn",
+      "note": "{\"ballInMiddle\":\"ST-01\",\"canvas\":{\"board\":[844,169],\"canvas\":[820,300],\"canvasRight\":836,\"screenW\":844,\"boardBottom\":390,\"canvasBottom\":534}}"
+    },
+    {
+      "step": "5 sideways→upright: after the turn the editing canvas fits the chart box (no wider than the screen, no taller than the box)",
+      "pass": false,
+      "said": "{\"board\":[390,446],\"canvas\":[820,300],\"canvasRight\":836,\"screenW\":390,\"boardBottom\":844,\"canvasBottom\":710}"
+    },
+    {
+      "step": "5 sideways→upright: the ball that was in the middle of the chart (ST-01) is still in sight",
+      "pass": false,
+      "said": "{\"x\":475,\"y\":482,\"inside\":false}"
+    },
+    {
+      "step": "5 sideways→upright: after ⤢ Fit",
+      "note": "{\"ballsInSight\":210,\"canvas\":{\"board\":[390,446],\"canvas\":[820,300],\"canvasRight\":836,\"screenW\":390,\"boardBottom\":844,\"canvasBottom\":710}}"
+    },
+    {
+      "step": "5 sideways→upright: no console or page error",
+      "pass": true,
+      "said": ""
+    },
+    {
+      "step": "5 upright→sideways: before the turn",
+      "note": "{\"ballInMiddle\":\"ST-01\",\"canvas\":{\"board\":[390,446],\"canvas\":[366,422],\"canvasRight\":382,\"screenW\":390,\"boardBottom\":844,\"canvasBottom\":832}}"
+    },
+    {
+      "step": "5 upright→sideways: after the turn the editing canvas fits the chart box (no wider than the screen, no taller than the box)",
+      "pass": false,
+      "said": "{\"board\":[844,169],\"canvas\":[366,422],\"canvasRight\":382,\"screenW\":844,\"boardBottom\":390,\"canvasBottom\":656}"
+    },
+    {
+      "step": "5 upright→sideways: the ball that was in the middle of the chart (ST-01) is still in sight",
+      "pass": false,
+      "said": "{\"x\":215,\"y\":444,\"inside\":false}"
+    },
+    {
+      "step": "5 upright→sideways: after ⤢ Fit",
+      "note": "{\"ballsInSight\":210,\"canvas\":{\"board\":[844,169],\"canvas\":[366,422],\"canvasRight\":382,\"screenW\":844,\"boardBottom\":390,\"canvasBottom\":656}}"
+    },
+    {
+      "step": "5 upright→sideways: no console or page error",
+      "pass": true,
+      "said": ""
+    },
+    {
+      "step": "4.1 the chart's visible room is never 0px in any state walked",
+      "pass": true,
+      "said": "min 132px over 29 states; editing, folded=169 · set open=169 · + Flight question up=169 · after + Flight=169 · + Test question up=169 · 📋 Edit events window=169 · ↺ Reset layout question=169 · tool Text=169 · tool Line=167 · after line=167 · after pinch=169 · after pan=169 · turned upright, editing=450 · turned back sideways=169 · turned upright with the set open=450 · back sideways after the set"
+    }
+  ],
+  "chart": [
+    [
+      "editing, folded",
+      169
+    ],
+    [
+      "set open",
+      169
+    ],
+    [
+      "+ Flight question up",
+      169
+    ],
+    [
+      "after + Flight",
+      169
+    ],
+    [
+      "+ Test question up",
+      169
+    ],
+    [
+      "📋 Edit events window",
+      169
+    ],
+    [
+      "↺ Reset layout question",
+      169
+    ],
+    [
+      "tool Text",
+      169
+    ],
+    [
+      "tool Line",
+      167
+    ],
+    [
+      "after line",
+      167
+    ],
+    [
+      "after pinch",
+      169
+    ],
+    [
+      "after pan",
+      169
+    ],
+    [
+      "turned upright, editing",
+      450
+    ],
+    [
+      "turned back sideways",
+      169
+    ],
+    [
+      "turned upright with the set open",
+      450
+    ],
+    [
+      "back sideways after the set was open",
+      169
+    ],
+    [
+      "after closing",
+      169
+    ],
+    [
+      "done editing",
+      132
+    ],
+    [
+      "1280×480 before editing",
+      269
+    ],
+    [
+      "1280×480 editing",
+      266
+    ],
+    [
+      "1280×480 + Test question",
+      266
+    ],
+    [
+      "question over the open set",
+      266
+    ],
+    [
+      "after one Escape",
+      266
+    ],
+    [
+      "after two Escapes",
+      266
+    ],
+    [
+      "1280×480 done",
+      269
+    ],
+    [
+      "member editing",
+      215
+    ],
+    [
+      "member set open",
+      215
+    ],
+    [
+      "member + Acad question",
+      215
+    ],
+    [
+      "member done",
+      178
+    ]
+  ],
+  "errors": []
+}
