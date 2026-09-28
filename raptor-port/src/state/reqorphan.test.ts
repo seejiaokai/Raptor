@@ -14,6 +14,7 @@ import { acceptInput, unacceptInput, acceptedDay, relandInputs } from '../engine
 import { inpId } from '../engine/inputs'
 import { stashClear, stashPut, rowElsewhere } from '../engine/weekstash'
 import { rowsLeftOut } from '../engine/publish'
+import { rowsLeftSaid } from '../engine/drafts'
 import { removeInput } from '../ui/inputedit'
 import { accCtl } from '../ui/html'
 
@@ -80,6 +81,46 @@ describe('one request, one row — across a week boundary', () => {
     const left = rowsLeftOut(0, incoming)
     expect(left.map(x => x.id)).toEqual([inpId(inp)])
     expect(left[0]!.away, 'named by its day').toBe('2026-07-19')
+  })
+})
+
+/* A SAVED WEEK THE REQUEST COVERS THAT CANNOT BE READ FAILS CLOSED AT EVERY DOOR (Astra's final read #1, 28 Sep 26 — the
+   plan's §9: the resolver fails closed). The load's leave-out read the unknown and kept the incoming row — the one door
+   that was open (red on the old code). The edit, the delete and the week switch's re-filing were already refused by the
+   older lock on an unreadable week (quarantine.ts: every unreadable saved week is PROTECTED, and inputProtected refuses
+   or skips an input covering it) — pinned here as they stand, the door's own fail-closed check now a second guard behind
+   it. The control (a request covering no day of that week is not held up) is the test above. */
+describe('a saved week that cannot be read — every door fails closed', () => {
+  const unreadableW1 = () => { const inp = boundary(); loadWeek(W2); stashPut(W1, 'not a saved week'); return inp }
+  it('a load or plan switch leaves the incoming row OUT, and says the week could not be read', () => {
+    const inp = unreadableW1()
+    const incoming = JSON.parse(JSON.stringify(DAYS[0])); incoming.ground = [...(incoming.ground || []), { prog: 'MEETING', src: inpId(inp), who: 'divot' }]
+    const left = rowsLeftOut(0, incoming)
+    expect(left.map(x => x.id), 'left out on the unknown').toEqual([inpId(inp)])
+    expect(left[0]!.away).toBe('unreadable')
+    expect(rowsLeftSaid([{ who: 'Ranger', what: 'Meeting', days: [], unknown: true }]), 'the load names the unknown, never an empty day')
+      .toBe(' · Ranger · Meeting left out — it may be on another week that could not be read; load that week, then accept it here if it is not')
+  })
+  it('the delete refuses, and says why', async () => {
+    const inp = unreadableW1()
+    const { HOOKS } = await import('../engine/hooks')
+    const said: string[] = [], keep = HOOKS.toast
+    HOOKS.toast = (m: any) => { said.push(String(m)) }
+    try { expect(removeInput(inp), 'refused').toBe(false) } finally { HOOKS.toast = keep }
+    expect(INPUTS.includes(inp), 'the request stays').toBe(true)
+    expect(said.join(' | '), 'refused with a reason — the lock on the unreadable week, or the door\'s own').toMatch(/This week is locked|Can't tell whether this input has a row on another week/)
+  })
+  it('the edit refuses too', async () => {
+    const inp = unreadableW1()
+    const { commitInputEdit } = await import('../ui/inputedit')
+    const before = JSON.stringify(inp)
+    expect(commitInputEdit(inp, { ...inp, remarks: 'changed' }), 'refused').toBe(false)
+    expect(JSON.stringify(inp), 'unchanged').toBe(before)
+  })
+  it('the week switch does not re-park it as "taken off" on the unknown', () => {
+    const inp = unreadableW1()
+    relandInputs(new Set([inpId(inp)]))
+    expect(inp.acc, 'not silenced — its row may be on the week that could not be read').not.toBe('r')
   })
 })
 

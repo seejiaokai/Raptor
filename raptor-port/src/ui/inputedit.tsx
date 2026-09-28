@@ -900,16 +900,24 @@ export function commitNewInput(draft: any, toGround?: boolean, keepTail?: any, e
    input has no landing at all — the ordinary paths handle those). Its landing on
    a LOADED day is found by acceptedDay; only a landing on a STASHED (unloaded)
    week is the trap. */
+const UNREADABLE = 'unreadable'
 function landedOnUnloadedWeek(r: any): string {
   if (!r || acceptedDay(r) >= 0) return ''
   /* ONE BODY for "is its row on another week" ([REQ-ORPHAN-ROW], 28 Sep 26 — weekstash.ts rowElsewhere, which the accept
      guard, the card and a load's leave-out read too). It SKIPS the loaded week's own saved copy, which is the stale one
      written on the way out: scanning it refused the delete of a request taken off since with "Load the week of <this
-     very week>" (Fable/Astra 1b). An unreadable week is let through here, as before — a delete never blocks on it. The
-     refusal names the day the row is on. */
-  const away = rowElsewhere(inpId(r))
-  return away && away !== 'unreadable' ? isoDayWords(away.iso) : ''
+     very week>" (Fable/Astra 1b). The refusal names the day the row is on.
+     A SAVED WEEK THE REQUEST COVERS THAT CANNOT BE READ FAILS CLOSED (Astra's final read #1, 28 Sep 26 — the plan's §9: the
+     resolver fails closed): its row may be in it, and an edit or delete from here would strand it. `UNREADABLE` — the
+     caller refuses and says to load that week; loading it is the way out (the loaded week is never scanned, and leaving
+     it writes a readable copy). Narrowed to the weeks the request covers (`r`), so one damaged week blocks only its own. */
+  const away = rowElsewhere(inpId(r), r)
+  return away === 'unreadable' ? UNREADABLE : away ? isoDayWords(away.iso) : ''
 }
+/* the refusal a door says for a request whose row is on a week not loaded, or may be (an unreadable saved week) */
+const stuckSays = (stuck: string, act: 'edit' | 'delete') => stuck === UNREADABLE
+  ? `Can't tell whether this input has a row on another week — load the weeks it covers first, then ${act} it`
+  : `Load the week of ${stuck} to ${act} this accepted input`
 
 export function commitInputEdit(r: any, draft: any, keepTail?: any, entryEnd?: any) {
   if (!r || !draft) return false
@@ -920,7 +928,7 @@ export function commitInputEdit(r: any, draft: any, keepTail?: any, entryEnd?: a
   /* its ground row is on a week that is not loaded — editing here would strand
      it with stale content (finding 1). Point the scheduler at the week first. */
   const stuck = landedOnUnloadedWeek(r)
-  if (stuck) { HOOKS.toast(`Load the week of ${stuck} to edit this accepted input`, 'warn'); return false }
+  if (stuck) { HOOKS.toast(stuckSays(stuck, 'edit'), 'warn'); return false }
   /* the SOURCE date is checked here (r is a model row with real date/endDate);
      the normalized DESTINATION is checked after normalizeInputDraft below, so a
      move INTO a protected week is refused too (P2-REREVIEW-01/02). */
@@ -1426,7 +1434,7 @@ export function removeInput(r: any) {
   /* its ground row is on a week that is not loaded — deleting here would leave
      that row behind with a dead source link (finding 1). Load the week first. */
   const stuck = landedOnUnloadedWeek(r)
-  if (stuck) { HOOKS.toast(`Load the week of ${stuck} to delete this accepted input`, 'warn'); return false }
+  if (stuck) { HOOKS.toast(stuckSays(stuck, 'delete'), 'warn'); return false }
   /* write-path role backstop (owner, 27 Aug 26): a LOGGED-IN MEMBER deletes
      only their OWN inputs — the row's ✕ is hidden on everyone else's, this
      refuses a hand-made call. Same predicate as commitInputEdit's gate above

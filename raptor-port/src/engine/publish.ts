@@ -749,13 +749,19 @@ export function filingRestorePlan(di:any,fil:any,dayAfter?:any):{put:Array<{inp:
    the load's discard count above counts against it, so the confirm and the load agree. */
 /* …AND ON ANOTHER WEEK ([REQ-ORPHAN-ROW], 28 Sep 26 — Fable's G3, F15): a request covering Sun 19 – Mon 20 Jul has one row,
    and it may stand in the OTHER week (weekstash.ts rowElsewhere, read-only). A load or a switch that would bring back a
-   copy of it here leaves it out the same way and names that day ("it is on Sun 19 Jul's programme") — `away`. A saved
-   week that cannot be read keeps the row, as before: a load never drops a row on an unknown. */
+   copy of it here leaves it out the same way and names that day ("it is on Sun 19 Jul's programme") — `away`.
+   A SAVED WEEK THE REQUEST COVERS THAT CANNOT BE READ FAILS CLOSED (Astra's final read #1, 28 Sep 26 — the plan's §9): its
+   row may be there, so the incoming copy is left out too and the sentence says the week could not be read (`away`
+   'unreadable') — a second row on an unknown is the harm; a row left out is put back by Accept once the week is loaded.
+   Narrowed to the weeks the request covers (its request is found by id), so one damaged week blocks only its own. */
 export function rowsLeftOut(di:any,dayIn:any):Array<{id:string,days:number[],row:any,away?:string}>{di=+di;const out:any[]=[];
   ((dayIn&&dayIn.ground)||[]).forEach((r:any)=>{const id=r&&r.src; if(!id||out.some((x:any)=>x.id===String(id)))return;
     const days=DAYS.map((d:any,dj:number)=>(dj!==di&&d&&((d.ground||[]).some((g:any)=>g&&g.src===id)))?dj:-1).filter((dj:number)=>dj>=0);
     if(days.length){out.push({id:String(id),days,row:r});return;}
-    const w=rowElsewhere(id); if(w&&w!=='unreadable')out.push({id:String(id),days:[],row:r,away:w.iso});});
+    const inp=(INPUTS as any[]).find((x:any)=>x&&String(inpId(x))===String(id));
+    const w=rowElsewhere(id,inp);
+    if(w==='unreadable')out.push({id:String(id),days:[],row:r,away:'unreadable'});
+    else if(w)out.push({id:String(id),days:[],row:r,away:w.iso});});
   return out;}
 /* take those rows out of a day object (a clone the caller owns — never an issued snapshot or a parked plan's record) */
 export function leaveRowsOut(d:any,ids:string[]){

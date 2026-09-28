@@ -617,8 +617,10 @@ export function relandInputs(unaccepted?:Set<string>){
   INPUTS.forEach((r:any)=>{
     if(inputProtected(r))return;
     /* a request taken off on THIS week is parked dormant again — unless its row now stands on ANOTHER week ([REQ-ORPHAN-ROW],
-       28 Sep 26 — Astra 02): landed there since, "taken off" would silence a request that is on a programme */
-    if(un.has(inpId(r))){ const away=rowElsewhere(inpId(r),r); if(isPersonal(r.type)&&!(away&&away!=='unreadable'))r.acc='r'; }
+       28 Sep 26 — Astra 02): landed there since, "taken off" would silence a request that is on a programme. A saved week it
+       covers that cannot be read is treated the same (Astra's final read #1 — the resolver fails closed): its row may be
+       there, so it is not silenced on an unknown; it is left as it stands. */
+    if(un.has(inpId(r))){ const away=rowElsewhere(inpId(r),r); if(isPersonal(r.type)&&away===null)r.acc='r'; }
     else autoAcceptInput(r);
   });
   SCHED.pending=savedPending; SCHED.changes=savedChanges; SCHED.added=savedAdded;
