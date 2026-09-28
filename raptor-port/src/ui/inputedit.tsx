@@ -1817,7 +1817,9 @@ export function InputEditor() {
      edit's stay on the row, whose dates this dialog never changes */
   const when = !r ? '' : (isNew && draft && draft.start)
     ? fmt(draft.start) + (draft.end && draft.end !== draft.start ? ' → ' + fmt(draft.end) : '')
-    : r.date + (r.endDate ? ' → ' + r.endDate : '')
+    /* the stored month-first labels said day-first, as the rest of the Inputs page speaks ([LW-ISO-DATES], 28 Sep 26 —
+       the window's title read "Tally · Jul 24") */
+    : fmtDay(unfmt(r.date, r.yr)) + (r.endDate ? ' → ' + fmtDay(unfmt(r.endDate, r.yr)) : '')
   const span = draft ? spanOf(draft.allday, draft.half) : 'all'
   /* the roster a context-bound add offers — SANS Availability is refused for
      anyone else at commit (sansRefusal), so the list should not offer them */

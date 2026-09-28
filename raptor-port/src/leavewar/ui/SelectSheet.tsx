@@ -27,7 +27,7 @@ import { awardsIn, clearCells, deletableIn, movableCells, postingBlocked, setBid
 import { DeleteChip, MoveChip } from './SheetActions'
 import { awardsClause } from './awardwords'
 import { Sheet } from './Sheet'
-import { shortSpan } from './dates'
+import { shortDate, shortSpan } from './dates'
 import type { Selection } from './select'
 import './bidpicker.css'
 
@@ -83,7 +83,7 @@ export function SelectSheet({
     : nPeople <= 3
       ? sel.people.map(people).join(', ')
       : `${nPeople} people`
-  const span = sel.from === sel.to ? sel.from : shortSpan(sel.from, sel.to)
+  const span = sel.from === sel.to ? shortDate(sel.from) : shortSpan(sel.from, sel.to)   // one day in its range's own voice ([LW-ISO-DATES])
   // Delete and Move only make sense when the box actually holds a movable bid —
   // a purely-empty selection (Fill only) hides them, so Move never opens on
   // nothing to move (owner, 27 Aug 26).

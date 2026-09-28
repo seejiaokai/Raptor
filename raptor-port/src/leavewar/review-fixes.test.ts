@@ -134,7 +134,7 @@ describe('Codex AS4-002 — un-approving never overwrites a stored request', () 
     lwEditLists([{ personId: 'ammo', date: '2026-02-10', drop: [], add: [{ id: 'old-ref', kind: 'request', code: 'OIL', state: 'refused' } as any] }])
     for (const to of ['pending', 'refused'] as const) {
       const r = changeAbsenceById('ammo', '2026-02-10', iid, to)
-      expect(r).toMatch(/OIL request on 2026-02-10/)
+      expect(r).toMatch(/OIL request on 10 Feb 26/)   // day-first ([LW-ISO-DATES])
       expect(recsAt('ammo', '2026-02-10').find(x => x.id === 'old-ref')).toBeTruthy()
       expect(lwRows('ammo')).toHaveLength(1)
     }

@@ -18,16 +18,9 @@ import { creditGiver, type NoticeRec, type CreditRec, type RequestRec } from '..
 import { ackReplacement, changeAbsenceById, clearRecordById, decideRequestById, editManualCredit, movableRecords, recordsAt } from '../state/store'
 import { DeleteChip, MoveChip } from './SheetActions'
 import { Sheet } from './Sheet'
+import { dayLabel } from './dates'   // one body for the day's list and the one-day sheets ([LW-ISO-DATES])
 import './bidpicker.css'
 
-const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
-function dayLabel(iso: string): string {
-  const [y, m, d] = iso.split('-').map(Number)
-  // UTC maths, so the weekday never shifts with the browser's timezone
-  const wd = new Date(Date.UTC(y!, m! - 1, d!)).getUTCDay()
-  return `${DAYS[wd]} ${d} ${MONTHS[m! - 1]}`
-}
 const hhmm = (n: number) => `${String(Math.floor(n / 60)).padStart(2, '0')}:${String(n % 60).padStart(2, '0')}`
 const same = (a: Win, b: Win) => a[0] === b[0] && a[1] === b[1]
 function partOf(w: Win): string {

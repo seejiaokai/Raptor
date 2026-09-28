@@ -22,7 +22,7 @@ import { DeleteChip, MoveChip } from './SheetActions'
 import { MAX_REC_NOTE } from '../engine/warrecs'
 import { RangePicker, type Range } from './RangePicker'
 import { Sheet } from './Sheet'
-import { shortSpan } from './dates'
+import { dayLabel, shortDate, shortSpan } from './dates'
 import { awardDays, awardsClause } from './awardwords'
 import './bidpicker.css'
 import './oiltracker.css'
@@ -355,7 +355,7 @@ export function BidPicker({
     <Sheet testid="bid-picker" label="Place a bid" onClose={onClose}>
       <div className="bidsheet-hd">
         <span className="who">{callsign}</span>
-        <span className="dt">{date}</span>
+        <span className="dt">{dayLabel(date)}</span>
         {/* the box's own voice — "<LL", not the stored "*LL" (W5-F5, 26 Sep 26) */}
         {current && <span className="cur">now {displayCell(current)}</span>}
         <button className="x" data-testid="bid-cancel" onClick={onClose} aria-label="Cancel">
@@ -452,7 +452,7 @@ export function BidPicker({
             Refuse
           </button>
           {decide?.movedFrom && (
-            <span className="note" data-testid="decide-movedfrom">moved from {decide.movedFrom}</span>
+            <span className="note" data-testid="decide-movedfrom">moved from {decide.movedFrom ? shortDate(decide.movedFrom) : ''}</span>
           )}
         </div>
       )}
@@ -844,7 +844,7 @@ export function RaptorSheet({
     <Sheet testid="raptor-sheet" label={creditShown ? 'OIL the app credited' : 'Leave from Raptor'} onClose={onClose}>
       <div className="bidsheet-hd">
         <span className="who">{callsign}</span>
-        <span className="dt">{date}</span>
+        <span className="dt">{dayLabel(date)}</span>
         {/* the box's notation, as the bid sheet's "now" (W5's re-walk, NF2) */}
         <span className="cur">{displayCell(code)}{creditShown || leave ? ' · approved' : ''}</span>
         <button className="x" data-testid="bid-cancel" onClick={onClose} aria-label="Close">
@@ -929,7 +929,7 @@ export function AwardSheet({
     <Sheet testid="award-sheet" label="Your OIL award" onClose={onClose}>
       <div className="bidsheet-hd">
         <span className="who">{callsign}</span>
-        <span className="dt">{date}</span>
+        <span className="dt">{dayLabel(date)}</span>
         <span className="cur">{award.code} · OIL award</span>
         <button className="x" data-testid="award-close" onClick={onClose} aria-label="Close">
           ✕
@@ -997,7 +997,7 @@ export function PostOutSheet({
     <Sheet testid="postout-sheet" label="Posted out" onClose={onClose}>
       <div className="bidsheet-hd">
         <span className="who">{callsign}</span>
-        <span className="dt">{date}</span>
+        <span className="dt">{dayLabel(date)}</span>
         <button className="x" data-testid="postout-cancel" onClick={onClose} aria-label="Close">
           ✕
         </button>
@@ -1117,7 +1117,7 @@ export function PostInSheet({
     <Sheet testid="postin-sheet" label="Posted in" onClose={onClose}>
       <div className="bidsheet-hd">
         <span className="who">{callsign}</span>
-        <span className="dt">{date}</span>
+        <span className="dt">{dayLabel(date)}</span>
         <button className="x" data-testid="postin-cancel" onClick={onClose} aria-label="Close">
           ✕
         </button>
@@ -1125,9 +1125,9 @@ export function PostInSheet({
       <div className="bidsheet-row">
         <span className="note" data-testid="postin-note">
           {backFrom
-            ? <>Back from a posting on {backFrom} — on the manpower from {piFrom}. The days between count nobody,
+            ? <>Back from a posting on {shortDate(backFrom)} — on the manpower from {shortDate(piFrom)}. The days between count nobody,
                 but leave can still be dated there.</>
-            : <>Posted in on {piFrom} — on the manpower from that day. Days before it count nobody,
+            : <>Posted in on {shortDate(piFrom)} — on the manpower from that day. Days before it count nobody,
                 but leave can still be dated there.</>}
         </span>
       </div>

@@ -20,6 +20,7 @@
 import { INPUTS, DATES, baseYear, dateOrd, inpId, inpWin, isAway, isLeave, isPersonal, canWork, oilAsks, withRemarksTail, remarksTailWord, inputCoversDate, nowStamp } from '../engine/inputs'
 import { dayEngaged, personBusy } from '../engine/avail'
 import { inputProtected, protectedDates } from '../engine/quarantine'
+import { shortDate } from './ui/dates'
 import { mayManageRoster, viewerId, me } from '../state/perms'
 import { SESSION } from '../state/auth'
 /* [ARCH-STACK] phase 3: the command-routed persistPeople (the cross-seam roster
@@ -326,12 +327,12 @@ function doorApprove(items: Array<{ personId: string; date: string; recId: strin
     const war = warHolding(rawState().wars, it.date)
     const rec = war ? recsAt(war.recs, it.personId, it.date).find((r): r is RequestRec => r.kind === 'request' && r.id === it.recId) : undefined
     if (!war || !rec) { skipped++; continue }
-    if (prot.has(it.date)) { skipped++; why.push(`${it.date} is on a locked week — not approved`); continue }
+    if (prot.has(it.date)) { skipped++; why.push(`${shortDate(it.date)} is on a locked week — not approved`); continue }
     /* preflight: the would-be absence against every absence already there
        (a different leave on the same time, a medical) — skipped and reported,
        nothing consumed */
     const c: Contrib = { id: 'new', kind: 'absence', code: parseCell(rec.code)!.type, win: requestWin(rec.code) }
-    if (absencesAt(it.personId, it.date).some(o => barsWrite(c, o))) { skipped++; why.push(`${it.date} already holds leave or a medical at that time — not approved`); continue }
+    if (absencesAt(it.personId, it.date).some(o => barsWrite(c, o))) { skipped++; why.push(`${shortDate(it.date)} already holds leave or a medical at that time — not approved`); continue }
     /* a bid left standing when work was later credited. Owner Q5 and §26.3
        used to SKIP that day at approval; reversed 20 Sep 26 — the leave is
        granted and the day is flagged instead. */
@@ -468,7 +469,7 @@ function doorDecideApproved(items: Array<{ personId: string; date: string; iid: 
   for (const it of items) {
     const row = warLeaveRow(it)
     if (!row) { skipped++; continue }
-    if (prot.has(it.date) || inputProtected(row)) { skipped++; why.push(`${it.date} is on a locked week — not changed`); continue }
+    if (prot.has(it.date) || inputProtected(row)) { skipped++; why.push(`${shortDate(it.date)} is on a locked week — not changed`); continue }
     const contrib = absencesAt(it.personId, it.date).find(c => c.id === it.iid)
     if (!contrib) { skipped++; continue }
     const code = notationOf(contrib.code, contrib.win)
@@ -479,7 +480,7 @@ function doorDecideApproved(items: Array<{ personId: string; date: string; iid: 
        beside a request already stored on that time — pending, acknowledged OR a
        refused one kept as history — for every destination state */
     const blocking = list.filter((r): r is RequestRec => r.kind === 'request' && overlaps(requestWin(r.code), contrib.win))
-    if (blocking.length) { skipped++; why.push(`${blocking[0]!.code} request on ${it.date} — decide or clear it before changing the ${contrib.code}`); continue }
+    if (blocking.length) { skipped++; why.push(`${blocking[0]!.code} request on ${shortDate(it.date)} — decide or clear it before changing the ${contrib.code}`); continue }
     const rec: RequestRec = {
       id: newRecId(), kind: 'request', code, state: to,
       ...(row.lwMoved?.[it.date] ? { shiftedFrom: row.lwMoved[it.date] } : {}),
@@ -508,7 +509,7 @@ function doorRemoveApproved(items: Array<{ personId: string; date: string; iid: 
   for (const it of items) {
     const row = warLeaveRow(it)
     if (!row) { skipped++; continue }
-    if (prot.has(it.date) || inputProtected(row)) { skipped++; why.push(`${it.date} is on a locked week — not deleted`); continue }
+    if (prot.has(it.date) || inputProtected(row)) { skipped++; why.push(`${shortDate(it.date)} is on a locked week — not deleted`); continue }
     const set = cuts.get(it.iid) ?? new Set<string>()
     set.add(it.date)
     cuts.set(it.iid, set)

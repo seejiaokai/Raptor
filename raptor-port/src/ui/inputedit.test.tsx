@@ -252,7 +252,8 @@ describe('the dialog writes the row it was opened on', () => {
     expect(INPEDIT).toBe(inp)
     expect(($('#inpEditPop') as any).hidden).toBe(false)
     expect(($('#inpEditType') as HTMLSelectElement).value).toBe(inp.type)
-    expect($('#inpEditTitle').textContent).toContain(MON)
+    /* its day, day-first as the rest of the Inputs page speaks ([LW-ISO-DATES], 28 Sep 26 — it read the stored "Jul 13") */
+    expect($('#inpEditTitle').textContent).toContain('13 Jul')
   })
 
   it('a new window saves onto that row, revalidates, and undoes in one step', async () => {

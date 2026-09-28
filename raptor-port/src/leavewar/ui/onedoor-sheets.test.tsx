@@ -43,12 +43,12 @@ describe('the walk design (Fable 4.2) — the Post IN sheet of a man archived on
 describe('D320 — the Post in sheet of a man back from a posting', () => {
   it('says he is back, and offers no Undo', () => {
     render(<PostInSheet callsign="HEX" date="2026-08-01" piFrom="2026-09-01" backFrom="2026-06-15" onChange={noop} onUndo={noop} onClose={noop} />)
-    expect(screen.getByTestId('postin-note').textContent).toMatch(/Back from a posting on 2026-06-15 — on the manpower from 2026-09-01\. The days between count nobody/)
+    expect(screen.getByTestId('postin-note').textContent).toMatch(/Back from a posting on 15 Jun 26 — on the manpower from 1 Sep 26\. The days between count nobody/)   // day-first ([LW-ISO-DATES])
     expect(screen.queryByTestId('postin-undo')).toBeNull()
   })
   it('pinned unchanged: one stint — its note and its Undo as before', () => {
     render(<PostInSheet callsign="HEX" date="2026-01-15" piFrom="2026-02-01" onChange={noop} onUndo={noop} onClose={noop} />)
-    expect(screen.getByTestId('postin-note').textContent).toMatch(/Posted in on 2026-02-01 — on the manpower from that day/)
+    expect(screen.getByTestId('postin-note').textContent).toMatch(/Posted in on 1 Feb 26 — on the manpower from that day/)
     expect(screen.getByTestId('postin-undo')).toBeTruthy()
   })
 })

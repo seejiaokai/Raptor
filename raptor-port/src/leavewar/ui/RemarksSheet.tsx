@@ -15,6 +15,7 @@
 import { displayCell } from '../engine'
 import { useState } from 'react'
 import { Sheet } from './Sheet'
+import { inputDayLabel } from './dates'
 import { setLeaveRemarks } from '../../ui/inputedit'
 
 export function RemarksSheet({
@@ -33,7 +34,7 @@ export function RemarksSheet({
   const [remarks, setRemarks] = useState<string>(row?.remarks ?? '')
   // The leave's own span, read off the row — a click on any day of a 13–15 Jul
   // run edits the one note for the whole run (owner's example).
-  const span = row?.endDate ? `${row.date} → ${row.endDate}` : row?.date
+  const span = row?.endDate ? `${inputDayLabel(row.date)} → ${inputDayLabel(row.endDate)}` : inputDayLabel(row?.date)   // day-first ([LW-ISO-DATES])
   const save = () => { if (setLeaveRemarks(row, remarks)) onClose() }
   return (
     <Sheet testid="remarks-sheet" label="Edit the note on this leave" onClose={onClose}>
