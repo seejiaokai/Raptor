@@ -3912,6 +3912,17 @@ except where noted:
   History mode. Same `undo()/redo()/HIST` wiring, no new stack; the topbar
   memo's deps carry `HIST.ix`/`HIST.stack.length` so the disabled state stays
   live.
+- **The save note floats UNDER the bar, never in its row** (`[LW-FIGSEL-FLAKE]`, 28 Sep 26 — `ui/SaveStatus.tsx`,
+  `scheduler.css` `.topbar > .savestat`). "Saving…" (the third of a second each save takes, after every change) and
+  "Not saved — Retry" sit just under the bar's right end, 6px below its measured bottom (the bar is one line or two by
+  page and width), both widths. In the row they took ~90px and came and went: a desktop bar with less to spare wrapped
+  onto a second line and back — the page dropped ~46px under the pointer after every change (1366 wide: View-only
+  Sched, Inputs, Quals, the Leave War, Admin; the Leave War's figure-drag test on GitHub's wider fonts at 1440) — and the
+  phone bar pushed Undo, Redo and the changes clock ~46px right as a change landed (2 Sep 26: a control tapped again and
+  again must not move under the finger). A press on the note reaches what it floats over (the week's search box sits
+  there) — all but Retry. It stays in the bar's own layer: a window, a drawer or the board covers it as they covered the
+  bar. The Tracker's own save note (its header) shares the class and is untouched. Pinned by `e2e/geometry.spec.ts` "the
+  Saving… note never moves the top bar"; walked by `scripts/handpass/sn-walk.mjs` (every page, 1366 / 1440 / phone).
 
 ## Muting a check, and resizing the checks panel (owner, Aug 26)
 

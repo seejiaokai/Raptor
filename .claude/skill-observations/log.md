@@ -1156,6 +1156,21 @@ resolved statuses always carry their resolution date
 
 **Principle:** An anchor unique before an edit can stop being unique after it; check uniqueness against the text you are actually cutting, and verify the structure after every scripted rewrite of a shared file.
 
+### Observation 324: A test that flakes only on CI may be the app's layout moving under it — measure the geometry ON the CI machine, per frame, before touching the test
+
+**Status:** OPEN
+**Date:** 2026-09-28
+**Session context:** [LW-FIGSEL-FLAKE] — a browser drag test selected 5 or 1 cells instead of 3 on about half of GitHub's runs, never on the dev PC, even with the CPU throttled six-fold.
+**Skill:** systematic-debugging
+**Type:** open-source
+**Phase/Area:** Phase 1 (root-cause investigation) — reproducing environment-only failures
+
+**Issue:** The backlog's own lead was a timing race (a redraw mid-selection), and the natural fixes on offer were "make the test wait" or "retry". The real cause was environmental LAYOUT, not timing: a transient status pill ("Saving…") appeared/disappeared in a wrapping flex top bar after every change; on the CI runner's wider Linux fonts the bar had ~18px to spare against the pill's ~90px, so it wrapped to two lines and the whole page shifted ~46px under the mouse mid-drag (±2 rows → 5 or 1 selected). Throttling the CPU locally could never reproduce it because the missing ingredient was font metrics, not speed. What found it: a text-only probe committed on a throwaway branch with a push-triggered workflow, recording per animation frame the scroll position, the target row's top and the top bar's height, plus a mutation log of nodes added/removed outside the grid, and the pointer's hit-test per move — then measuring the same bar locally at narrower widths, where it also jumped (a real user-facing defect at 1366px).
+
+**Suggested improvement:** In systematic-debugging's Phase 1, add: "When a UI/browser test fails only in CI and the numbers it gets are off by a consistent AMOUNT (N rows, N px) in BOTH directions, suspect a layout shift from a transient element whose size depends on the environment (fonts, DPI, scrollbar width). Don't reach for waits or retries: record per-frame geometry and DOM mutations ON the CI machine (text log, no screenshots needed), and re-measure the same surface locally at other viewport widths — the CI environment is often just another width." Also: a flake whose cause is found should be fixed in the app when the app is what moves; the test then passes without being changed.
+
+**Principle:** An environment-only failure is a clue to WHICH input differs (fonts, widths, speed); vary that input deliberately and measure the geometry on the machine where it fails, rather than assuming the difference is speed.
+
 ### Observation 325: A break-test harness must assert that the named test RAN — a name with regex characters matched nothing and read as "green"
 
 **Status:** OPEN

@@ -51,9 +51,9 @@ whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaini
 **His order — to the database step, about two months away (D203, 26 Sep 26; D173, D147 within it):**
 0. **BUILT and FULL-checked 28 Sep 26 on `claude/hist-phone-by-item` — waiting for his look and "merge live" — [HIST-PHONE-HIDE]** (D339) **with [CHG-BY-ITEM]** (D340), one branch (both change the changes window):
    History on a phone — the window hides to the bottom ("Hide ▾" / "Show ▴"), a gold dot on every detail with a history; and the
-   window sorted by item, every line item-first. Each mock-up first to his yes, then built, walked, checked. **Before
-   them, [LW-FIGSEL-FLAKE]** (D342) — the Leave War desktop test PR #451 merged over, now red on about half of every
-   branch's GitHub runs.
+   window sorted by item, every line item-first. Both mock-ups APPROVED (D345); being built on `claude/hist-phone-by-item`
+   (28 Sep 26). **Before them, [LW-FIGSEL-FLAKE]** (D342) — FIXED on `claude/lw-figsel-flake` (its own PR, waiting for his
+   look and "merge live"; archived): the "Saving…" note moved the page; it now floats under the top bar.
 1. **Now — [DRAFT-PENDING]** — the one changes window, on top of accounts, its own FULL check (D210): BUILT and
    FULL-checked 28 Sep 26 on `claude/draft-pending` overnight by his standing go (D336 (2)) — his look DONE 28 Sep 26 (every
    reading kept, D337, D338) — **waiting for his "merge live"**; never merged without his word. Before it: **[ONE-DOOR]** (D309, D310, carrying [POST-IN-DATE], D308) MERGED 28 Sep 26 (PR #450;
@@ -1059,21 +1059,6 @@ build cannot decide what it means without him, so a deleted man is left on his T
 text). **Put to him on the `[POST-OUT-OUTCOMES]` look card (question 5):** what makes a course still running — or leave
 his name on his courses for now (then D299 is narrowed in his words). **Place:** after `[POST-OUT-OUTCOMES]` merges, on
 his answer. Touches `raptor-port/src/tracker/` (its own store) — its own small check.
-### [LW-FIGSEL-FLAKE] A Leave War desktop browser test fails on GitHub on the changes-window branch (D342, 28 Sep 26)
-`e2e/leavewar.spec.ts:2190` "-1.5 subtracts; 0, abc and 1.25 are refused and the run stays" — after a refused amount, the
-figures drawer holds the WRONG number of selected cells (`td[data-figsel]`: expected 3; got 5 on 27 Sep 26 21:11, got 1 on
-28 Sep 26 01:31, both tries each time), on GitHub's machines only, on `claude/draft-pending` (2 of 5 runs failed; 3 passed). **Since #451 merged it is in
-`main`'s code, so it hits EVERY branch:** it failed again on `claude/pages-off` (PR #452, cut from `main`, 28 Sep 26 — 5, then 1),
-while `main`'s own run after the merge passed it — about half of GitHub's runs now. It passes on the PC every time (5/5, and
-4/4 with the browser slowed six-fold). **PR #451 merged over it on his
-word (D342)** — the test unchanged. **To dig in (its own small branch):** reproduce on GitHub's machines (a workflow run of
-that one test, repeated) with a trace; the unconfirmed lead — a redraw mid-selection on a slow machine, e.g. the change
-history's save repainting the Sync chip and the drawer with it (`[DRAFT-PENDING]` added a history write to every Leave War
-command, `state/changelines.ts`); compare against `main`. If it fails on `main` too, it is D84's slow-runner family.
-**Place: FIRST in the next chat, before `[HIST-PHONE-HIDE]` / `[CHG-BY-ITEM]`** — a check that goes red on every other run
-hides a real failure behind it, and the next build's checks would carry it. Small: make the test wait on what it needs (D87)
-or fix the redraw that loses the selection.
-
 ### [HIST-PHONE-HIDE] History on a phone — say it is on, and let the schedule be seen (D339, 28 Sep 26)
 **His ask (D339):** on a phone the changes window covers the schedule and nothing says the bubbles are on; "maybe when it hides
 on a phone it goes to the bottom of the screen"; built in ANOTHER chat. **The design put to him** (the mock-up, real app, phone
