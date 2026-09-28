@@ -19,7 +19,7 @@ the later merge keeps both (D78).
 ### `claude/draft-pending` — `[DRAFT-PENDING]`, the one changes window: BUILT and FULL-checked — READY FOR HIS LOOK and "merge live" (the PR from `claude/draft-pending`) — written 28 Sep 26 — verify before use
 - **Where it started:** `main` at PR #450's merge (`[ONE-DOOR]`, merged 28 Sep 26 on D336 (1), live on Vercel). Overnight by
   D336 (2): planned (Opus 5.5) → Fable and Astra red team, one round → built red first → walked → FULL check. Rulings range
-  for this chat: D337–D349 (D337–D339 used — his look-card answers "12 A" and "keep the rest as recommended"; History on a phone). **Never merge without his word** (D336's permission was
+  for this chat: D337–D349 (D337–D340 used — his look-card answers "12 A" and "keep the rest as recommended"; History on a phone; the window sorted by item). **Never merge without his word** (D336's permission was
   PR #450's alone).
 - **Built:** the change history durable and week-safe (`engine/editlog.ts` — D336 (b) on YES), each person's "new to you"
   (`state/changes.ts`), ONE writer for every absence / Leave War / Quals / posting / publish / undo / sign-off line
@@ -35,13 +35,15 @@ the later merge keeps both (D78).
   Gates on the final code (`1270680e`): all green (the counts below, and the sheet's §9).
 - **Next:** his look is DONE (28 Sep 26 — every reading kept as built, D337, D338); **his "merge live"** — then merge once the
   PR's checks are green, carry it to live on Vercel and notify him (D143). Nothing else of this branch is pending. **Then, in a
-  FRESH chat (his word, D339): `[HIST-PHONE-HIDE]`** — History on a phone: the window hides to the bottom, a gold dot on every
-  detail with a history; the mock-up `raptor-port/docs/img/handpass/2026-09-28-draft-pending/histphone/histphone-mockup.png`
-  (the hint shortened at his word) — its yes first, then build, walk, check (`OUTSTANDING.md` `[HIST-PHONE-HIDE]`).
+  FRESH chat (his word, D339): `[HIST-PHONE-HIDE]` with `[CHG-BY-ITEM]` (D340), one branch** — History on a phone: the window
+  hides to the bottom ("Hide ▾" / "Show ▴" — spelled out at his question), a gold dot on every detail with a history (the mock-up
+  `raptor-port/docs/img/handpass/2026-09-28-draft-pending/histphone/histphone-mockup.png`); and the window sorted by item, every
+  line item-first (the mock-up `…/byitem/byitem-mockup.png`) — each mock-up's yes first, then build, walk, check
+  (`OUTSTANDING.md` `[HIST-PHONE-HIDE]`, `[CHG-BY-ITEM]`).
 - **PR #451's one red check (GitHub, 28 Sep 26 night):** a Leave War desktop browser test (`e2e/leavewar.spec.ts` — "-1.5
   subtracts; 0, abc and 1.25 are refused and the run stays") selected 5 cells where it expects 3, on both tries; it passes on
-  the PC every time, even with the browser slowed six-fold, and on `main`. The next push re-runs it (D84's one re-run); if it
-  fails again it is new evidence — dig in before any merge.
+  the PC every time, even with the browser slowed six-fold, and on `main`. **Its one re-run (D84) PASSED** — every check green
+  on `dd16553e`. A later push re-runs them all; if that same test fails again it is new evidence — dig in before any merge.
 - **Walk it again:** `node raptor-port/scripts/handpass/dp-walk.mjs` (HP_W=390 HP_H=844 for the phone) against a preview on 4182
   (`.claude/launch.json` "raptor-draftpending"); e2e on 4197/4198.
 <!-- /now -->

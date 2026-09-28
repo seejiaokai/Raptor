@@ -42,7 +42,8 @@ await shot('1-today')
 await page.evaluate(() => {
   const w = document.querySelector('.chgwin'); if (!w) return
   const x = w.querySelector('.win-x')
-  const b = document.createElement('button'); b.textContent = '▾'; b.className = x.className; b.style.marginRight = '6px'; b.title = 'Hide the list'
+  /* a WORD on the button, not ▾ alone — his question (28 Sep 26): "how does one know that the action is to minimise?" */
+  const b = document.createElement('button'); b.textContent = 'Hide ▾'; b.className = x.className; b.style.cssText = 'margin-right:6px;width:auto;padding:0 10px;font-weight:700;font-size:13px'; b.title = 'Hide the list — see the schedule'
   x.parentElement.insertBefore(b, x)
   const hint = document.createElement('div'); hint.id = 'mock-hint'
   hint.textContent = 'History on — tap a gold dot to see who changed it.'   // fewer words — his D339 correction
@@ -67,7 +68,7 @@ const applyMock = () => page.evaluate(() => {
   const h = document.getElementById('mock-hint'); if (h) h.remove()
   document.querySelectorAll('.chgwin.bar .win-x').forEach((x, i) => { if (i > 0) x.remove() })
   const b = document.querySelector('.chgwin.bar .cw-barbtn')
-  if (b) b.innerHTML = 'History on · tap a gold dot <span style="color:#9aa7b4;font-weight:600">· 5 changes</span> ▴'
+  if (b) b.innerHTML = 'History on <span style="color:#9aa7b4;font-weight:600">· 5 changes</span> <span style="margin-left:8px;padding:3px 10px;border:1px solid #3a4b5c;border-radius:7px;white-space:nowrap">Show ▴</span>'; b.style.whiteSpace = 'nowrap'
 })
 await page.click('.chgwin .win-tab:has-text("All changes")'); await wait(300)
 await page.locator('.chgwin button.cw-l').first().click(); await wait(500)

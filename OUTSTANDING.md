@@ -49,11 +49,12 @@ list (13–23 Sep 26), its finished entries and the "In plain terms" block are i
 whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaining).
 
 **His order — to the database step, about two months away (D203, 26 Sep 26; D173, D147 within it):**
-0. **Next, in a fresh chat — [HIST-PHONE-HIDE]** (D339): History on a phone — the changes window hides to the bottom, a gold
-   dot on every detail with a history. The mock-up first to his final yes (the shorter hint), then built, walked, checked.
+0. **Next, in a fresh chat — [HIST-PHONE-HIDE]** (D339) **with [CHG-BY-ITEM]** (D340), one branch (both change the changes window):
+   History on a phone — the window hides to the bottom ("Hide ▾" / "Show ▴"), a gold dot on every detail with a history; and the
+   window sorted by item, every line item-first. Each mock-up first to his yes, then built, walked, checked.
 1. **Now — [DRAFT-PENDING]** — the one changes window, on top of accounts, its own FULL check (D210): BUILT and
-   FULL-checked 28 Sep 26 on `claude/draft-pending` overnight by his standing go (D336 (2)) — **waiting for his look (the
-   look card, the evidence sheet's §10) and his "merge live"**; never merged without his word. Before it: **[ONE-DOOR]** (D309, D310, carrying [POST-IN-DATE], D308) MERGED 28 Sep 26 (PR #450;
+   FULL-checked 28 Sep 26 on `claude/draft-pending` overnight by his standing go (D336 (2)) — his look DONE 28 Sep 26 (every
+   reading kept, D337, D338) — **waiting for his "merge live"**; never merged without his word. Before it: **[ONE-DOOR]** (D309, D310, carrying [POST-IN-DATE], D308) MERGED 28 Sep 26 (PR #450;
    archived); `[POST-OUT-OUTCOMES]` (PR #446), `[ACCOUNTS-NEW-PERSON]` (PR #443), `[ACCOUNTS]` (PR #442) and
    **[LW-MOVE-STANDARD]** (D264–D266, PR #447) MERGED 27 Sep 26. `[POST-OUT-TRACKER]` on his answer.
 2. **Now, beside the building — [IT-QUESTIONS]:** talk to the IT side (his, not code); their approvals take weeks.
@@ -1060,15 +1061,37 @@ his answer. Touches `raptor-port/src/tracker/` (its own store) — its own small
 **His ask (D339):** on a phone the changes window covers the schedule and nothing says the bubbles are on; "maybe when it hides
 on a phone it goes to the bottom of the screen"; built in ANOTHER chat. **The design put to him** (the mock-up, real app, phone
 width — `raptor-port/docs/img/handpass/2026-09-28-draft-pending/histphone/histphone-mockup.png`, re-taken by
-`raptor-port/scripts/handpass/dp-histphone.mjs`): (1) the panel's header gains a ▾ hide beside ✕ and a one-line hint, in fewer
-words at his word — "History on — tap a gold dot to see who changed it."; (2) ▾ sends the window to the slim bar at the bottom,
-"History on · tap a gold dot · N changes ▴" — ▴ brings the list back, ✕ turns History off; (3) while History is on, every detail
+`raptor-port/scripts/handpass/dp-histphone.mjs`): (1) the panel's header gains a hide button beside ✕, labelled "Hide ▾" — a word, not
+the arrow alone (his question: "how does one know that the action is to minimise?") — and a one-line hint, in fewer words at his
+word — "History on — tap a gold dot to see who changed it."; (2) Hide sends the window to the slim bar at the bottom,
+"History on · N changes" with a "Show ▴" button — Show brings the list back, ✕ turns History off; (3) while History is on, every detail
 with a history wears a small gold dot just outside the puck's bottom-right corner (never a ring — D92; clear of the OG tag at the
 top right) — on desktop too; the ▾ on the phone only; (4) a tap on a dotted detail opens its bubble. **Open:** his yes to the
-shorter-hint mock-up (and to the two calls — dots on desktop too, ▾ on the phone only). **Place:** a fresh chat on its own branch
-from `main` once PR #451 merges (the agent's reading of "another chat"). **Where it lands:** `src/ui/ChangesWindow.tsx` (the ▾, the
+shorter-hint mock-up with the labelled Hide / Show (and to the two calls — dots on desktop too, Hide on the phone only). **Place:** a fresh chat on its own branch
+from `main` once PR #451 merges (the agent's reading of "another chat"), with `[CHG-BY-ITEM]` on the same branch (both change the
+window). **Where it lands:** `src/ui/ChangesWindow.tsx` (Hide, the
 bar's words), `src/ui/histbubble.ts` (marking the details with a history while History is on — the same keys the bubble answers),
 `src/ui/scheduler.css`, `docs/ui-contracts.md` §The one changes window; WALK tier at least (a shared drawer — every puck surface).
+
+### [CHG-BY-ITEM] The changes window sorted by item, every line item-first (D340, 28 Sep 26)
+**His ask (D340):** "the main category to sort as per item, and the latest changes of that group will be the highest … in that
+item can show sub categories of that item, if that item has multiple change"; the line format he prefers is the item first
+("Programme · WPNS & TACTICS SYNC", then "Trident → Piston"), never the man first ("Diesel put on Programme · …"). **The design put
+to him** (the mock-up, real app, phone width with real changes — `raptor-port/docs/img/handpass/2026-09-28-draft-pending/byitem/byitem-mockup.png`,
+re-taken by `raptor-port/scripts/handpass/dp-byitem.mjs`): (1) "Group by: Item / Who" — Item first and the default; the old section
+groups (Flying waves, Duties, Common Programme) go, the item's header carrying its section word; (2) one group per item — a
+Common Programme event, a duty desk, a formation (its seats as details: "#1 RCP"), a sim, a ground event, an input — the item
+whose latest change is newest on top; (3) an item with ONE change is one line (no fold); with more, a header ("Programme · SODB ·
+3", its latest time) and a sub-line per change, newest first, each with who · when; a text change names its field ("Start");
+(4) in the week view the day leads the header ("Mon · Programme · SODB") — the same event on two days is two items; (5) a man
+moved between items shows under both ("Echo moved in from MET + NOTAM BRIEF" / "Echo moved out to SODB"), still ONE change in the
+tab's count; (6) Who keeps its sittings, its lines item-first too (a move once, under the item he reached); (7) every group open by
+default (a caret folds it). **Open:** his yes to the mock-up. **Narrows D168** ("Where = by the day's own sections"). **Place:** with
+`[HIST-PHONE-HIDE]`, the same fresh chat and branch (both change the changes window). **Where it lands:** `src/ui/changesmodel.ts`
+(the item of a line — the history row's place without its seat or field, from its row-anchored key, not its label; `byWhere` →
+by item; the line's words item-first), `src/ui/ChangesWindow.tsx` (the groups and sub-lines), `src/ui/scheduler.css`,
+`docs/ui-contracts.md` §The one changes window; its tests (`changesmodel.test.ts`); the walk's changes-window steps. WALK tier at
+least — the window is every user's, members included.
 
 ### [DRAFT-PENDING] The one CHANGES WINDOW — D118, D167–D172 (25 Sep 26); step 3 of D173, after `[ACCOUNTS]` (its own FULL check — D210)
 **BUILT 28 Sep 26 on `claude/draft-pending`** (overnight, D336 (2)): the plan `raptor-port/docs/superpowers/plans/2026-09-28-draft-pending-plan.md`
