@@ -335,7 +335,8 @@ the plan's shape is unchanged, so a round 2 is optional (the build chat may run 
     bridge) · (the Leave War pair out).
 11. **The stage's own type** (Astra 4; Fable's list report §3): whether kept undoable (Fable) or not (Astra), the stage gets
     `lw.stage` for its words — which needs its command registration beside the Leave War's others and its row in
-    `perms.ts` COMMAND_OPS, or every stage change is refused. **Still his answer.**
+    `perms.ts` COMMAND_OPS, or every stage change is refused. **ANSWERED — D352 "Stage keep": Undo takes the stage back, as
+    today, with `lw.stage`'s own words ("Undid: closing bidding — bidding is open again for everyone").**
 12. **The FULL order** (Astra 10): build → gates → roll-call and door check → walk, fix → gates → the two reads with the
     evidence sheet → fix → re-walk what the fixes touched → gates → the sheet → his look (bug-check order §5). §5 and §6
     are read in that order.

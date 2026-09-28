@@ -19,18 +19,18 @@ async function step(id, fn) {
   try { await fn() } catch (e) { B.ck(id, 'step ran', false, 'THREW ' + String(e && e.message || e).split('\n')[0].slice(0, 300), await B.shot(page, `THREW-${id}`)) }
   try { await closeSheets(page) } catch { }
 }
-const noteSel = '#eWeek [data-txt="dn:0"]'
-async function noteNow() { await go(page, 'editsched'); return page.locator(noteSel).first().evaluate(e => (e.value ?? e.textContent) || '').catch(() => '?') }
+/* the day note of the first day on screen (Monday) — its key is read off the box, never assumed */
+let NOTEKEY = null
+async function noteNow() { await go(page, 'editsched'); return page.locator(`#eWeek [data-txt="${NOTEKEY}"]`).first().evaluate(e => (e.value ?? e.textContent) || '').catch(() => '?') }
 async function typeNote(v) {
   await go(page, 'editsched')
-  const n = page.locator(`${noteSel}:visible`).first()
-  if (!(await n.count())) {
-    const any = page.locator('#eWeek [data-txt^="dn:"]:visible').first(); await any.click(); await any.fill(v); await any.blur(); await page.waitForTimeout(400); return await any.getAttribute('data-txt')
-  }
+  const n = page.locator('#eWeek [data-txt^="dn:0"]:visible').first()
+  NOTEKEY = await n.getAttribute('data-txt')
   await n.click(); await n.fill(v); await n.blur(); await page.waitForTimeout(400)
-  return 'dn:0'
+  return NOTEKEY
 }
 const bidOnDay = async (pid, iso) => {
+  await lwOpen(page, iso)
   await tapCell(page, pid, iso); await sheetPress(page, 'bid-LL')
   const s = await sheetNow(page); if (s.open === 'bid-picker' && /Tap the same leave again/i.test(s.text || '')) await sheetPress(page, 'bid-LL')
   await closeSheets(page)

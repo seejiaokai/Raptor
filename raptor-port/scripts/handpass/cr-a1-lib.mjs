@@ -160,7 +160,8 @@ export async function oilPucks(page) {
 }
 /** Is the OIL Earn mode on (the button pressed)? */
 export async function oilOn(page) {
-  return page.evaluate(() => { const b = document.querySelector('#sbOil'); return b ? b.getAttribute('aria-pressed') === 'true' : null })
+  /* the mode draws its switches (data-oilitem) only while it is on — the one signal both widths share */
+  return page.evaluate(() => { const b = document.querySelector('#schedBoard'); return !!b && [...b.querySelectorAll('[data-oilitem]')].some(e => e.offsetParent !== null) })
 }
 /** Tap a puck in OIL mode (by person and item), the way a person taps it. */
 export async function oilTap(page, who, item) {
@@ -174,9 +175,10 @@ export async function oilTap(page, who, item) {
 export async function oilButton(page) {
   const b = page.locator('#sbOil:visible').first()
   if (!(await b.count())) {
-    /* a phone keeps the day's own buttons in the day bar — try its OIL button */
-    const alt = page.locator('#schedBoard button:visible', { hasText: /OIL Earn|OIL/ }).first()
+    /* a phone hides the top bar's day buttons (.sb-dayctl) — the day bar carries its own OIL Earn (data-oilmode) */
+    const alt = page.locator('#schedBoard [data-oilmode]:visible').first()
     if (!(await alt.count())) return 'NO OIL BUTTON'
+    await alt.evaluate(e => e.scrollIntoView({ block: 'center' }))
     if (PHONE) await alt.tap().catch(() => alt.click()); else await alt.click()
     await page.waitForTimeout(700); return 'pressed (day bar)'
   }
