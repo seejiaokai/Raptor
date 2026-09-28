@@ -196,6 +196,9 @@ h = await dayHead(page, SUN)
 bk.ck('S27a.3', 'board Redo → discarded again, nothing pending', r4.pressed && !/pending/.test(h.pending) && (await txt(page, k1)) === o1, { r4, h })
 
 /* ---------- S27b — "Discard marks" (an unpublished day), then Undo ---------- */
+/* the Amendments panel that carries "Discard marks" is hidden below 820px by design (scheduler.css .alpanel) — on a
+   phone the button has no door, so the step is recorded, not walked */
+if (PHONE) { bk.note('S27b', 'not walked on a phone: the Amendments panel (with "Discard marks") is hidden below 820px by design'); bk.save(errors); await browser.close(); process.exit(0) }
 await boardOff(page)
 await go(page, 'editsched')
 await boardOn(page, FRI)

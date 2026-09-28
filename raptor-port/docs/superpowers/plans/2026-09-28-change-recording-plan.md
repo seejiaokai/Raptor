@@ -290,3 +290,54 @@ except where named here.
   bidding"; Astra: never, the stage buttons only); and **Admin → Data → "Clear edit history…"**, the one control that
   ERASES the squadron's change history (Fable M2) — against the transparency of D169 / D338 (1). **ANSWERED — D351: it
   stays as it is until the database step (IT's retention rule); never undoable. Nothing to build.**
+
+## 11. Round 1 red team — dispositions (Fable + Astra, 28 Sep 26) — THESE WIN over §3–§6 where they differ
+
+Reports: `docs/superpowers/briefs/2026-09-28-change-recording-plan-redteam-{fable,astra}.md`. Every finding is ACCEPTED;
+the plan's shape is unchanged, so a round 2 is optional (the build chat may run one on §11 alone — cap ~3 rounds).
+1. **The posting pass folds into the user step that woke it** (Fable 1–2): in `ingest` case `'projection'`, a
+   `lw.postoutRun` envelope is NEVER folded — it sets a barrier with its actor (system) on every key it wrote and advances
+   `expected`; orphan projections likewise set their barrier AT ingest with the actor; the pre-check's belt scans
+   `commandStream()` for the newest envelope on the key after the entry. Test: a Quals tick whose notify runs the pass keeps
+   its closure and stays undoable.
+2. **B4 BEFORE B2** (Fable 10) — a delete can have no `lw.postouts` change (a hidden SANS man), so after the cutover only
+   B4 keeps it dead.
+3. **B5's checks run twice** (Astra 2): pre-snap through `restoreRefusal`, and again INSIDE the restore reducer before any
+   write (a `CmdRefused` with the sentence), over the one combined candidate (people + settings images together).
+   `accountsRestoreProblem` also refuses an `accessreqs` image naming someone who now has an account (Fable 11).
+4. **B3's words** (Fable 12): *"Adding, archiving or restoring a person, and a posting, aren't undone here — use Restore,
+   Delete or the posting sheet's own Undo. A delete is final."*
+5. **B6.7 — decided, with three conditions** (Fable 9; Astra 1, 6): (a) pass over only an entry blocked by a STICKY barrier
+   of someone else (a remote change, the posting pass) — never on `!mayReverse` (the D292 member-view refusal keeps refusing
+   every press) and never on a temporary conflict (a newer own step, the publication barrier, a restore rule — those refuse
+   every press); (b) the blocked entry stays `undone:false` so it still guards older steps; (c) the refusal names the next
+   step: *"<Callsign> changed this after your action — it can't be undone now. Press Undo again for: <label>."*, and the
+   hover says the same. Not reachable in one browser today (unit-modelled); on the look card.
+6. **B7's snap** (Fable 8; Astra 7): `lookahead`, `inputs` and `plan` closures → the Inputs page (calendar view for
+   `plan`) unless a week context is present; Logic shows the pair for admins only (Astra 9 — §2's table corrected: no pair
+   for a member on Logic).
+7. **B8's text key end to end** (Fable 6; Astra 5): optional `meta` on `commitSchedValue` / `schedWrite`; `{ key }` passed
+   at `store.ts` `writeText` and every `textedit.ts` commit; `commit.ts` copies `cmd.meta?.key` onto the envelope; the
+   timeline copies it onto the UndoEntry; `describe.ts` maps the prefix. Red test: `sched.text` on `dn:` → "a day note".
+8. **One wave-template save = one step** (Fable 7): `waveTplSave` inside one `commitSettingsIntent('settings.wavetpl', …)`.
+9. **No history line for a settings-only undo** until `[HIST-PER-PAGE]` places Admin / Logic (Fable 14) — the forward
+   change writes none either.
+10. **B10, split and corrected** (Fable 3, 4, 5, 13; Astra 3, 8): `UndoPair` takes its ENGINE as a prop (the one undo, or the
+    Tracker bridge — never both); keep `#trUndoBtn / #trRedoBtn` as the Tracker page's pair's ids and re-point
+    `scripts/tracker/smoke.mjs` (:989, :1199-1201, :1250; clicks :903, :1210, :1213, :2751, :2772) deliberately; the bridge
+    carries a `hosted` flag so the STANDALONE Tracker still draws its own pair; retarget the Leave War tests
+    (`e2e/leavewar.spec.ts` :139, :1896, :2184, :4242, :4278, :4294, :4310; `e2e/step4-leavewar.spec.ts` :127-132;
+    `leavewar/ui/chrome.test.tsx` :210-235) to `#undoBtn`; `.topbar.editing` KEEPS the Edit Schedule tint and a new
+    `has-undo` class carries only the phone Sync-dot rule (pinned by a CSS test); the Sync chip's `fast` state lifted to
+    module state so the board's chip and the bar's agree; any wrapper in `.sb-actions` is `display:contents` (the
+    geometry gate counts its direct children); the ⋯ menu's Sort all keeps its `open && editMode && !DPREV` gate. Commits:
+    (✕ goes + Sort all moves + the gate) · (Sync + bell shared) · (the ⋯ menu) · (the pair on every page) · (the Tracker
+    bridge) · (the Leave War pair out).
+11. **The stage's own type** (Astra 4; Fable's list report §3): whether kept undoable (Fable) or not (Astra), the stage gets
+    `lw.stage` for its words — which needs its command registration beside the Leave War's others and its row in
+    `perms.ts` COMMAND_OPS, or every stage change is refused. **Still his answer.**
+12. **The FULL order** (Astra 10): build → gates → roll-call and door check → walk, fix → gates → the two reads with the
+    evidence sheet → fix → re-walk what the fixes touched → gates → the sheet → his look (bug-check order §5). §5 and §6
+    are read in that order.
+13. **B6 split** (Fable 15): 6.1 (own changes) · 6.2–6.5 (named barriers, redo's barrier, the pre-check, the words) ·
+    6.6–6.7 (plainRestoreReason, the pass-over).
