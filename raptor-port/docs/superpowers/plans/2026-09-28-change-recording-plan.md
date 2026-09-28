@@ -363,3 +363,30 @@ clear at sign-in / sign-out hold; no console error. To REPRODUCE in the build ch
 - **A2-F6** the take-off time undo reads "a note on the schedule" → B8 (the text key), `[AMEND-SMALL-SEEN]` item 2.
 - **Not walked, and why:** the redo re-check of leave over a medical (the app withdraws the Redo first — a unit test);
   two users at once (unit only); the short screens (Phase C walks 844×390); the member's changes window.
+
+## 13. Phase A findings — walker A1 (the schedule and the board; 178 PASS / 12 FAIL = 3 findings × 2 widths)
+
+Full report: `docs/handpass/parts/2026-09-28-cr-a1.md`; pictures `docs/img/handpass/2026-09-28-change-recording/a1/`.
+Everything else passed at both widths (S11, S12 with AM39c's redo half, S14, S16, S24, S25, S27a, S28, S32, Astra 16 / 17 /
+22, a wave / row / section / wave drag each undone and redone on the board and the week; the Leave War credit follows
+publish, undo, redo once, a reload included). **Three REAL defects, new, on `main` too — reproduce, then fix red-first
+in the build:**
+- **A1-F1 — a loop with an instruction nobody can follow.** Hex signs Sat 3 Oct as PLANNED BY, the day is published, Hex
+  is deleted: Undo says "A later change touches the same thing — undo that first", but that later change is the publish,
+  which Undo passes over for good (it would bring the deleted man's signature back); Unpublish, then Undo, only takes back
+  the Unpublish. **Cause:** `undoConflict` chooses its words with `isEligible(o)`, and a `deadFor` entry still counts as
+  eligible. **Fix:** a newer blocker that is DEAD (or ineligible) reads *"A later change touches the same thing and can't
+  be undone"* (never "undo that first"), and the publication-barrier sentence is checked BEFORE the non-linear rule so the
+  promised "tap Unpublish on that day first" (AM39c) shows where it applies. Test: the S13 route in a unit test.
+- **A1-F2 — the board's Undo that crosses to another week closes the board** (`loadWeek` closes it before `snapView`
+  would bring the day onto it): you land on the edit week, on the wrong day, and the board's Redo goes with it. **Fix
+  (B7):** `loadContext` remembers the open board's day and reopens the board on the changed day after the load.
+- **A1-F3 — the top bar's Undo never brings the changed day on screen** (AM39b): within a week the view stays put; across
+  weeks it lands on the day you were on; on a phone the change is never shown. **Fix (B7):** `snapView` scrolls the edit
+  week to the changed day (desktop) / steps to it (phone), the same landing the changes window's "take me to this change"
+  uses (D107).
+- **Observations → the build or the look card:** O3 words ("a batch of inputs" for one leave; "Discard & load" as "a
+  change to the schedule") → B8; O5 the "Use this section order as the default?" offer stays after its drag is undone,
+  and on a phone the bubble covers its buttons → close the offer when the drag it asks about is undone (B10 area); O4 a
+  phone has no door to "Discard marks" (the Amendments panel is hidden under 820px) → FILE as a small item, not this
+  build; O1, O2 as built (on the look card).
