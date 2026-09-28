@@ -3,7 +3,7 @@
     {
       "step": "D S0 admin opens the Tracker on a fresh browser: his pick is filed under his person (stiff)",
       "pass": true,
-      "said": "{\"ocuLocal:who:stiff:lastCourse\":\"cmula9fzwbope94\"}"
+      "said": "{\"ocuLocal:who:stiff:lastSyl:cmulbx2o0mq78cz\":\"sb2026\",\"ocuLocal:who:stiff:lastCourse\":\"cmulbx2o0mq78cz\"}"
     },
     {
       "step": "D S1 + Add course \"LO SECOND\"",
@@ -12,21 +12,21 @@
     {
       "step": "D S1 + Add remembers the student just added as the admin's pick on that course (Fable A13)",
       "pass": true,
-      "said": "stiff lastCrew:LO SECOND = smula9jgtcukajd (LO TWO is smula9jgtcukajd)"
+      "said": "stiff lastCrew:LO SECOND = smulbx6360eon1n (LO TWO is smulbx6360eon1n)"
     },
     {
       "step": "D S1 the admin picked 26ABSG / STUDENT B — filed under stiff",
       "pass": true,
-      "said": "26ABSG / STUDENT B · {\"ocuLocal:who:stiff:lastCrew:cmula9fzwbope94\":\"smula9g00aw9x86\",\"ocuLocal:who:stiff:lastCrew:cmula9h36svoegp\":\"smula9jgtcukajd\",\"ocuLocal:who:stiff:lastCourse\":\"cmula9fzwbope94\"}"
+      "said": "26ABSG / STUDENT B · {\"ocuLocal:who:stiff:lastSyl:cmulbx2o0mq78cz\":\"sb2026\",\"ocuLocal:who:stiff:lastSyl:cmulbx3q1teon6z\":\"sb2026\",\"ocuLocal:who:stiff:lastCrew:cmulbx2o0mq78cz\":\"smulbx2o3vi17rf\",\"ocuLocal:who:stiff:lastCrew:cmulbx3q1teon6z\":\"smulbx6360eon1n\",\"ocuLocal:who:stiff:lastCourse\":\"cmulbx2o0mq78cz\"}"
     },
     {
       "step": "D S2 while her place loads the page reads \"Loading…\", the admin's chart and panel hidden",
       "pass": true,
-      "said": "[{\"on\":true,\"t\":896,\"text\":\"Loading…\",\"shown\":[],\"visibleBalls\":0,\"paintedWhileOn\":false},{\"on\":false,\"t\":2800,\"text\":\"\"}] — the switch ended before the browser drew a single frame of it"
+      "said": "[{\"on\":true,\"t\":1015,\"text\":\"Loading…\",\"shown\":[],\"visibleBalls\":0,\"paintedWhileOn\":false},{\"on\":false,\"t\":2877,\"text\":\"\"}] — the switch ended before the browser drew a single frame of it"
     },
     {
       "step": "D S2 COULD NOT REACH a press inside the load — the page took no input until the switch was over (CPU 20x slower); the press queued during it landed after, on her own chart",
-      "note": "presses [{\"t\":17,\"resuming\":false,\"target\":\"a\"},{\"t\":213,\"click\":true,\"ball\":null,\"slice\":null,\"crewBefore\":null,\"target\":\"a\",\"crewAfter\":\"LO ONE\"},{\"t\":3396,\"resuming\":false,\"target\":\"svg#flowSvg\"},{\"t\":3476,\"click\":true,\"ball\":null,\"slice\":null,\"crewBefore\":\"LO ONE\",\"target\":\"svg#flowSvg\",\"crewAfter\":\"LO ONE\"}] · pop-up after: false"
+      "note": "presses [{\"t\":16,\"resuming\":false,\"target\":\"a\"},{\"t\":238,\"click\":true,\"ball\":null,\"slice\":null,\"crewBefore\":null,\"target\":\"a\",\"crewAfter\":\"LO ONE\"},{\"t\":3217,\"resuming\":false,\"target\":\"svg#flowSvg\"},{\"t\":3222,\"click\":true,\"ball\":null,\"slice\":null,\"crewBefore\":\"LO ONE\",\"target\":\"svg#flowSvg\",\"crewAfter\":\"LO ONE\"}] · pop-up after: false"
     },
     {
       "step": "D S2 …that press never opened the admin's student's pop-up",
@@ -46,7 +46,7 @@
     {
       "step": "D S2 her place is filed under her person (bane); the admin's keys untouched",
       "pass": true,
-      "said": "{\"ocuLocal:who:stiff:lastCrew:cmula9fzwbope94\":\"smula9g00aw9x86\",\"ocuLocal:who:stiff:lastCrew:cmula9h36svoegp\":\"smula9jgtcukajd\",\"ocuLocal:who:stiff:lastCourse\":\"cmula9fzwbope94\",\"ocuLocal:who:bane:lastCourse\":\"cmula9h36svoegp\"}"
+      "said": "{\"ocuLocal:who:stiff:lastSyl:cmulbx2o0mq78cz\":\"sb2026\",\"ocuLocal:who:stiff:lastSyl:cmulbx3q1teon6z\":\"sb2026\",\"ocuLocal:who:stiff:lastCrew:cmulbx2o0mq78cz\":\"smulbx2o3vi17rf\",\"ocuLocal:who:bane:lastSyl:cmulbx3q1teon6z\":\"sb2026\",\"ocuLocal:who:stiff:lastCrew:cmulbx3q1teon6z\":\"smulbx6360eon1n\",\"ocuLocal:who:stiff:lastCourse\":\"cmulbx2o0mq78cz\",\"ocuLocal:who:bane:lastCourse\":\"cmulbx3q1teon6z\"}"
     },
     {
       "step": "D S2 the bar's status corner does not tell her about another person's course",
@@ -60,12 +60,12 @@
     {
       "step": "D S3 the member's Crew pick is filed under bane, not stiff",
       "pass": true,
-      "said": "{\"ocuLocal:who:bane:lastCrew:cmula9fzwbope94\":\"smula9g005240x3\",\"ocuLocal:who:stiff:lastCrew:cmula9fzwbope94\":\"smula9g00aw9x86\",\"ocuLocal:who:stiff:lastCrew:cmula9h36svoegp\":\"smula9jgtcukajd\",\"ocuLocal:who:stiff:lastCourse\":\"cmula9fzwbope94\",\"ocuLocal:who:bane:lastCourse\":\"cmula9fzwbope94\"}"
+      "said": "{\"ocuLocal:who:bane:lastSyl:cmulbx2o0mq78cz\":\"sb2026\",\"ocuLocal:who:stiff:lastSyl:cmulbx2o0mq78cz\":\"sb2026\",\"ocuLocal:who:stiff:lastSyl:cmulbx3q1teon6z\":\"sb2026\",\"ocuLocal:who:stiff:lastCrew:cmulbx2o0mq78cz\":\"smulbx2o3vi17rf\",\"ocuLocal:who:bane:lastSyl:cmulbx3q1teon6z\":\"sb2026\",\"ocuLocal:who:bane:lastCrew:cmulbx2o0mq78cz\":\"smulbx2o3n11ayj\",\"ocuLocal:who:stiff:lastCrew:cmulbx3q1teon6z\":\"smulbx6360e"
     },
     {
       "step": "D S3 the admin signs in again (no reload): back on 26ABSG / STUDENT B, not the member's STUDENT A",
       "pass": true,
-      "said": "26ABSG / STUDENT B · resume [{\"on\":true,\"t\":47,\"text\":\"Loading…\",\"shown\":[],\"visibleBalls\":0,\"paintedWhileOn\":false},{\"on\":false,\"t\":89,\"text\":\"\"}]"
+      "said": "26ABSG / STUDENT B · resume [{\"on\":true,\"t\":46,\"text\":\"Loading…\",\"shown\":[],\"visibleBalls\":0,\"paintedWhileOn\":false},{\"on\":false,\"t\":81,\"text\":\"\"}]"
     },
     {
       "step": "D S4 after a reload the member opens on 26ABSG / STUDENT A (hers, from storage)",
@@ -80,7 +80,7 @@
     {
       "step": "D S5 member signed in and out without opening the Tracker; then Hex opens it: HIS own place (the first course, its first student)",
       "pass": true,
-      "said": "LO SECOND / LO ONE · rocky lastCourse cmula9h36svoegp"
+      "said": "LO SECOND / LO ONE · rocky lastCourse cmulbx3q1teon6z"
     },
     {
       "step": "D S5 the bar's status corner does not tell Hex about another person's course",
@@ -104,22 +104,22 @@
     {
       "step": "D S7a the Crew box: STUDENT B → her pick",
       "pass": true,
-      "said": "smula9g00aw9x86"
+      "said": "smulbx2o3vi17rf"
     },
     {
       "step": "D S7b a press on STUDENT A's slice of ST-01 picks her (no pop-up) and files it as the member's pick",
       "pass": true,
-      "said": "point {\"x\":508,\"y\":474} → STUDENT A; key smula9g005240x3"
+      "said": "point {\"x\":508,\"y\":474} → STUDENT A; key smulbx2o3n11ayj"
     },
     {
       "step": "D S7c + Add \"LO THREE\": the Crew box shows him and he is her pick",
       "pass": true,
-      "said": "LO THREE; key smulaa01zhjwv9z"
+      "said": "LO THREE; key smulbxmhhcu4ebj"
     },
     {
       "step": "D S7d ↶ taking back STUDENT A's grade moves the picker to her, and that is filed as the member's pick",
       "pass": true,
-      "said": "graded \"ST-02 · STUDENT A\"; after B the key was smula9g00aw9x86; after ↶: STUDENT A, key smula9g005240x3"
+      "said": "graded \"ST-02 · STUDENT A\"; after B the key was smulbx2o3vi17rf; after ↶: STUDENT A, key smulbx2o3n11ayj"
     },
     {
       "step": "D S7e none of her picks moved the admin: he signs in on 26ABSG / STUDENT B",
@@ -134,7 +134,7 @@
     {
       "step": "D S8 a pick made in the member view is still the ADMIN's (stiff), never the member's (bane)",
       "pass": true,
-      "said": "stiff smulaa01zhjwv9z · bane smula9g005240x3"
+      "said": "stiff smulbxmhhcu4ebj · bane smulbx2o3n11ayj"
     },
     {
       "step": "D S8 back to the admin view: still LO THREE, no \"Loading…\"",
@@ -144,7 +144,7 @@
     {
       "step": "D S9 the member's course is now LO SECOND",
       "pass": true,
-      "said": "cmula9h36svoegp"
+      "said": "cmulbx3q1teon6z"
     },
     {
       "step": "D S9 the admin deletes LO SECOND",
@@ -161,12 +161,12 @@
     },
     {
       "step": "D S9 (Fable A10's second half) after the restore the member opens on",
-      "note": "26ABSG / STUDENT A · bane lastCourse = cmula9fzwbope94 (the fallback rewrote her remembered course, so the restore does not bring her back)"
+      "note": "26ABSG / STUDENT A · bane lastCourse = cmulbx2o0mq78cz (the fallback rewrote her remembered course, so the restore does not bring her back)"
     },
     {
       "step": "D S10 the member picks LO THREE",
       "pass": true,
-      "said": "smulaa01zhjwv9z"
+      "said": "smulbxmhhcu4ebj"
     },
     {
       "step": "D S10 the admin removes LO THREE (the chip's ×)",
@@ -188,13 +188,27 @@
       "said": "26ABSG / STUDENT AA · import said [\"“2026” already exists. Replace it, or add the inco\",\"Brought in 2026. Everyone’s marks are untouched. I\"] · keys that changed []"
     },
     {
+      "step": "D S12 the member moves to the chart Tx 2026 and adds her student there",
+      "note": "26ABSG / LO TX MEM · Tx 2026"
+    },
+    {
+      "step": "D S12 the admin reopens on HIS chart of the course, not the member's (Tx 2026), and his student",
+      "pass": true,
+      "said": "26ABSG / STUDENT B · 2026"
+    },
+    {
+      "step": "D S12 the member reopens on her own chart (Tx 2026) and her student on it",
+      "pass": true,
+      "said": "26ABSG / LO TX MEM · Tx 2026"
+    },
+    {
       "step": "D console / page errors",
       "note": "none"
     },
     {
       "step": "P S0 admin opens the Tracker on a fresh browser: his pick is filed under his person (stiff)",
       "pass": true,
-      "said": "{\"ocuLocal:who:stiff:lastCourse\":\"cmulaarfvsvd9cs\"}"
+      "said": "{\"ocuLocal:who:stiff:lastSyl:cmulbyhx162sa4e\":\"sb2026\",\"ocuLocal:who:stiff:lastCourse\":\"cmulbyhx162sa4e\"}"
     },
     {
       "step": "P S1 + Add course \"LO SECOND\"",
@@ -203,21 +217,21 @@
     {
       "step": "P S1 + Add remembers the student just added as the admin's pick on that course (Fable A13)",
       "pass": true,
-      "said": "stiff lastCrew:LO SECOND = smulaavvb53orkt (LO TWO is smulaavvb53orkt)"
+      "said": "stiff lastCrew:LO SECOND = smulbymdzjvc93w (LO TWO is smulbymdzjvc93w)"
     },
     {
       "step": "P S1 the admin picked 26ABSG / STUDENT B — filed under stiff",
       "pass": true,
-      "said": "26ABSG / STUDENT B · {\"ocuLocal:who:stiff:lastCrew:cmulaarfvsvd9cs\":\"smulaarfy949sd2\",\"ocuLocal:who:stiff:lastCrew:cmulaasjfz5aa3b\":\"smulaavvb53orkt\",\"ocuLocal:who:stiff:lastCourse\":\"cmulaarfvsvd9cs\"}"
+      "said": "26ABSG / STUDENT B · {\"ocuLocal:who:stiff:lastSyl:cmulbyj0nr83wd1\":\"sb2026\",\"ocuLocal:who:stiff:lastSyl:cmulbyhx162sa4e\":\"sb2026\",\"ocuLocal:who:stiff:lastCrew:cmulbyhx162sa4e\":\"smulbyhx4rjiiwd\",\"ocuLocal:who:stiff:lastCrew:cmulbyj0nr83wd1\":\"smulbymdzjvc93w\",\"ocuLocal:who:stiff:lastCourse\":\"cmulbyhx162sa4e\"}"
     },
     {
       "step": "P S2 while her place loads the page reads \"Loading…\", the admin's chart and panel hidden",
       "pass": true,
-      "said": "[{\"on\":true,\"t\":1410,\"text\":\"Loading…\",\"shown\":[],\"visibleBalls\":0,\"paintedWhileOn\":false},{\"on\":false,\"t\":3660,\"text\":\"\"}] — the switch ended before the browser drew a single frame of it"
+      "said": "[{\"on\":true,\"t\":1457,\"text\":\"Loading…\",\"shown\":[],\"visibleBalls\":0,\"paintedWhileOn\":false},{\"on\":false,\"t\":4073,\"text\":\"\"}] — the switch ended before the browser drew a single frame of it"
     },
     {
       "step": "P S2 COULD NOT REACH a press inside the load — the page took no input until the switch was over (CPU 20x slower); the press queued during it landed after, on her own chart",
-      "note": "presses [{\"t\":27,\"resuming\":false,\"target\":\"span\"},{\"t\":35,\"click\":true,\"ball\":null,\"slice\":null,\"crewBefore\":null,\"target\":\"span\",\"crewAfter\":null},{\"t\":717,\"resuming\":false,\"target\":\"a\"},{\"t\":722,\"resuming\":false,\"target\":\"div.drawer-panel\"},{\"t\":930,\"click\":true,\"ball\":null,\"slice\":null,\"crewBefore\":null,\"target\":\"a\",\"crewAfter\":\"LO TWO\"},{\"t\":4338,\"click\":true,\"ball\":\"T-01\",\"slice\":\"1\",\"crewBefore\":\"LO ONE\",\"target\":\"path.wedge\",\"crewAfter\":\"LO TWO\"}] · pop-up after: false"
+      "note": "presses [{\"t\":28,\"resuming\":false,\"target\":\"span\"},{\"t\":37,\"click\":true,\"ball\":null,\"slice\":null,\"crewBefore\":null,\"target\":\"span\",\"crewAfter\":null},{\"t\":737,\"resuming\":false,\"target\":\"a\"},{\"t\":754,\"resuming\":false,\"target\":\"div.drawer-panel\"},{\"t\":991,\"click\":true,\"ball\":null,\"slice\":null,\"crewBefore\":null,\"target\":\"a\",\"crewAfter\":\"LO TWO\"},{\"t\":5126,\"click\":true,\"ball\":\"T-01\",\"slice\":\"1\",\"crewBefore\":\"LO ONE\",\"target\":\"path.wedge\",\"crewAfter\":\"LO TWO\"}] · pop-up after: false"
     },
     {
       "step": "P S2 …that press never opened the admin's student's pop-up",
@@ -231,7 +245,7 @@
     },
     {
       "step": "P S2 the probe tap reached her chart after it loaded and picked LO TWO (its slice 1 on T-01) — her own pick",
-      "note": "{\"t\":4338,\"click\":true,\"ball\":\"T-01\",\"slice\":\"1\",\"crewBefore\":\"LO ONE\",\"target\":\"path.wedge\",\"crewAfter\":\"LO TWO\"}"
+      "note": "{\"t\":5126,\"click\":true,\"ball\":\"T-01\",\"slice\":\"1\",\"crewBefore\":\"LO ONE\",\"target\":\"path.wedge\",\"crewAfter\":\"LO TWO\"}"
     },
     {
       "step": "P S2 (A1) the member opens on HER own place: the FIRST course (she has none), its first student — never the admin's",
@@ -241,7 +255,7 @@
     {
       "step": "P S2 her place is filed under her person (bane); the admin's keys untouched",
       "pass": true,
-      "said": "{\"ocuLocal:who:stiff:lastCrew:cmulaarfvsvd9cs\":\"smulaarfy949sd2\",\"ocuLocal:who:stiff:lastCrew:cmulaasjfz5aa3b\":\"smulaavvb53orkt\",\"ocuLocal:who:bane:lastCrew:cmulaasjfz5aa3b\":\"smulaavvb53orkt\",\"ocuLocal:who:stiff:lastCourse\":\"cmulaarfvsvd9cs\",\"ocuLocal:who:bane:lastCourse\":\"cmulaasjfz5aa3b\"}"
+      "said": "{\"ocuLocal:who:stiff:lastSyl:cmulbyj0nr83wd1\":\"sb2026\",\"ocuLocal:who:stiff:lastSyl:cmulbyhx162sa4e\":\"sb2026\",\"ocuLocal:who:stiff:lastCrew:cmulbyhx162sa4e\":\"smulbyhx4rjiiwd\",\"ocuLocal:who:bane:lastSyl:cmulbyj0nr83wd1\":\"sb2026\",\"ocuLocal:who:bane:lastCrew:cmulbyj0nr83wd1\":\"smulbymdzjvc93w\",\"ocuLocal:who:stiff:lastCrew:cmulbyj0nr83wd1\":\"smulbymdzjvc93w\",\"ocuLocal:who:stiff:lastCourse\":\"cmulbyhx162sa4"
     },
     {
       "step": "P S2 the bar's status corner does not tell her about another person's course",
@@ -255,12 +269,12 @@
     {
       "step": "P S3 the member's Crew pick is filed under bane, not stiff",
       "pass": true,
-      "said": "{\"ocuLocal:who:stiff:lastCrew:cmulaarfvsvd9cs\":\"smulaarfy949sd2\",\"ocuLocal:who:bane:lastCrew:cmulaarfvsvd9cs\":\"smulaarfyplbf4t\",\"ocuLocal:who:stiff:lastCrew:cmulaasjfz5aa3b\":\"smulaavvb53orkt\",\"ocuLocal:who:bane:lastCrew:cmulaasjfz5aa3b\":\"smulaavvb53orkt\",\"ocuLocal:who:stiff:lastCourse\":\"cmulaarfvsvd9cs\",\"ocuLocal:who:bane:lastCourse\":\"cmulaarfvsvd9cs\"}"
+      "said": "{\"ocuLocal:who:stiff:lastSyl:cmulbyhx162sa4e\":\"sb2026\",\"ocuLocal:who:bane:lastSyl:cmulbyhx162sa4e\":\"sb2026\",\"ocuLocal:who:stiff:lastCourse\":\"cmulbyhx162sa4e\",\"ocuLocal:who:bane:lastCourse\":\"cmulbyhx162sa4e\",\"ocuLocal:who:stiff:lastSyl:cmulbyj0nr83wd1\":\"sb2026\",\"ocuLocal:who:stiff:lastCrew:cmulbyhx162sa4e\":\"smulbyhx4rjiiwd\",\"ocuLocal:who:bane:lastSyl:cmulbyj0nr83wd1\":\"sb2026\",\"ocuLocal:who:bane:las"
     },
     {
       "step": "P S3 the admin signs in again (no reload): back on 26ABSG / STUDENT B, not the member's STUDENT A",
       "pass": true,
-      "said": "26ABSG / STUDENT B · resume [{\"on\":true,\"t\":340,\"text\":\"Loading…\",\"shown\":[],\"visibleBalls\":0,\"paintedWhileOn\":false},{\"on\":false,\"t\":379,\"text\":\"\"}]"
+      "said": "26ABSG / STUDENT B · resume [{\"on\":true,\"t\":335,\"text\":\"Loading…\",\"shown\":[],\"visibleBalls\":0,\"paintedWhileOn\":false},{\"on\":false,\"t\":383,\"text\":\"\"}]"
     },
     {
       "step": "P S4 after a reload the member opens on 26ABSG / STUDENT A (hers, from storage)",
@@ -275,7 +289,7 @@
     {
       "step": "P S5 member signed in and out without opening the Tracker; then Hex opens it: HIS own place (the first course, its first student)",
       "pass": true,
-      "said": "LO SECOND / LO ONE · rocky lastCourse cmulaasjfz5aa3b"
+      "said": "LO SECOND / LO ONE · rocky lastCourse cmulbyj0nr83wd1"
     },
     {
       "step": "P S5 the bar's status corner does not tell Hex about another person's course",
@@ -299,22 +313,22 @@
     {
       "step": "P S7a the Crew box: STUDENT B → her pick",
       "pass": true,
-      "said": "smulaarfy949sd2"
+      "said": "smulbyhx4rjiiwd"
     },
     {
       "step": "P S7b a press on STUDENT A's slice of ST-01 picks her (no pop-up) and files it as the member's pick",
       "pass": true,
-      "said": "point {\"x\":213,\"y\":473} → STUDENT A; key smulaarfyplbf4t"
+      "said": "point {\"x\":213,\"y\":473} → STUDENT A; key smulbyhx4h29ie7"
     },
     {
       "step": "P S7c + Add \"LO THREE\": the Crew box shows him and he is her pick",
       "pass": true,
-      "said": "LO THREE; key smulabk9yin6ciw"
+      "said": "LO THREE; key smulbzcbpbcxc14"
     },
     {
       "step": "P S7d ↶ taking back STUDENT A's grade moves the picker to her, and that is filed as the member's pick",
       "pass": true,
-      "said": "graded \"ST-02 · STUDENT A\"; after B the key was smulaarfy949sd2; after ↶: STUDENT A, key smulaarfyplbf4t"
+      "said": "graded \"ST-02 · STUDENT A\"; after B the key was smulbyhx4rjiiwd; after ↶: STUDENT A, key smulbyhx4h29ie7"
     },
     {
       "step": "P S7e none of her picks moved the admin: he signs in on 26ABSG / STUDENT B",
@@ -329,7 +343,7 @@
     {
       "step": "P S8 a pick made in the member view is still the ADMIN's (stiff), never the member's (bane)",
       "pass": true,
-      "said": "stiff smulabk9yin6ciw · bane smulaarfyplbf4t"
+      "said": "stiff smulbzcbpbcxc14 · bane smulbyhx4h29ie7"
     },
     {
       "step": "P S8 back to the admin view: still LO THREE, no \"Loading…\"",
@@ -339,7 +353,7 @@
     {
       "step": "P S9 the member's course is now LO SECOND",
       "pass": true,
-      "said": "cmulaasjfz5aa3b"
+      "said": "cmulbyj0nr83wd1"
     },
     {
       "step": "P S9 the admin deletes LO SECOND",
@@ -356,12 +370,12 @@
     },
     {
       "step": "P S9 (Fable A10's second half) after the restore the member opens on",
-      "note": "26ABSG / STUDENT A · bane lastCourse = cmulaarfvsvd9cs (the fallback rewrote her remembered course, so the restore does not bring her back)"
+      "note": "26ABSG / STUDENT A · bane lastCourse = cmulbyhx162sa4e (the fallback rewrote her remembered course, so the restore does not bring her back)"
     },
     {
       "step": "P S10 the member picks LO THREE",
       "pass": true,
-      "said": "smulabk9yin6ciw"
+      "said": "smulbzcbpbcxc14"
     },
     {
       "step": "P S10 the admin removes LO THREE (the chip's ×)",
@@ -381,6 +395,20 @@
       "step": "P S11 the member imports a chart (Replace it): she stays on her place; no pick key of anyone else moves, no browser-wide pick key is written",
       "pass": true,
       "said": "26ABSG / STUDENT AA · import said [\"“2026” already exists. Replace it, or add the inco\",\"Brought in 2026. Everyone’s marks are untouched. I\"] · keys that changed []"
+    },
+    {
+      "step": "P S12 the member moves to the chart Tx 2026 and adds her student there",
+      "note": "26ABSG / LO TX MEM · Tx 2026"
+    },
+    {
+      "step": "P S12 the admin reopens on HIS chart of the course, not the member's (Tx 2026), and his student",
+      "pass": true,
+      "said": "26ABSG / STUDENT B · 2026"
+    },
+    {
+      "step": "P S12 the member reopens on her own chart (Tx 2026) and her student on it",
+      "pass": true,
+      "said": "26ABSG / LO TX MEM · Tx 2026"
     },
     {
       "step": "P console / page errors",
