@@ -77,9 +77,8 @@ whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaini
 
 **Placed by their own lines — not his rulings:** the Leave War — [LW-FROZEN-BAR-GAP] (after [HUMAN-RETEST]; show him
 first), [LW-SCRUBBER-FLAKY] (test-only), [LW-ISO-DATES] (low, from the
-absence-record re-test), [LW-SPARE-MOVE-DOORS] (low, with the next Leave War move change), [PO-RESTORE-POSTING] (low, from its final code read), [LW-OFFER-ONLY-TAKEABLE] (low, with [LW-LOCKMARK]), [ABSENCE-SMALL-SEEN] (any time), [LW-HARNESS-VIEWER-PIN] (test-only, low), [CI-FAIL-PICTURES] (his call, low), [LW-DOZE-GUARDS] (low, check first); the shell — [SHELL-SIDEWAYS-BAR] (low, with the next top-bar change), [SAVE-NOTE-COVERS] (medium, next), [TRK-SAVE-FAIL-SAYS-SAVED] (low, with [DB-READINESS]), [TRK-ASYNC-STALE] (with [DB-READINESS]); the Tracker — [TRK-REMOUNT-LANDING] (low, with the next Tracker change); the Inputs calendar — [INPUTSCAL-TAP-FLAKY] (test-only); the changes window — [HISTLIST-SLOW-TEST] (test-only, low). The Tracker — [TRK-RETEST-NOTES] and
-[TRK-EDIT-SIDEWAYS] (their gates have passed), [TRK-PINCH-ASK] (his next Tracker session), [TRK-SESSION-PICK] (low, the next Tracker change), [TRK-DLG-LEFTOVERS] (low, with the next question-box change), [TRK-FLEXBAR-INK] (a question for him, on the Tracker-palette
-look card — D157, merged PR #441), [TRK-BAKE-STALE] (low).
+absence-record re-test), [LW-SPARE-MOVE-DOORS] (low, with the next Leave War move change), [PO-RESTORE-POSTING] (low, from its final code read), [LW-OFFER-ONLY-TAKEABLE] (low, with [LW-LOCKMARK]), [ABSENCE-SMALL-SEEN] (any time), [LW-HARNESS-VIEWER-PIN] (test-only, low), [CI-FAIL-PICTURES] (his call, low), [LW-DOZE-GUARDS] (low, check first); the shell — [SHELL-SIDEWAYS-BAR] (low, with the next top-bar change), [SAVE-NOTE-COVERS] (medium, next), [TRK-SAVE-FAIL-SAYS-SAVED] (low, with [DB-READINESS]), [TRK-ASYNC-STALE] (with [DB-READINESS]); the Tracker — [TRK-REMOUNT-LANDING] (low, with the next Tracker change); the Inputs calendar — [INPUTSCAL-TAP-FLAKY] (test-only); the changes window — [HISTLIST-SLOW-TEST] (test-only, low). The Tracker — [TRK-PINCH-ASK] (his next Tracker session), [TRK-FLEXBAR-INK] (a question for him, on the Tracker-palette
+look card — D157, merged PR #441).
 The amendment area — PR #434, #435, #437 and #438 MERGED (25–26 Sep 26); left: [REQ-ORPHAN-ROW] and [REQ-DOOR-WORDS] (both low). Left from the amendment batch (D91–D111, merged): [AVAILWIN-PREVIEW-BAR] (low), [AMEND-SMALL-SEEN] (any time). The docs and the checks — [DEPLOY-DOCS] (its operational half), [DOC-POINTERS-CODE] and
 [RULINGS-LF-PIN] (with the next code change), [PEEK-ISSUED] (a question for him, low), [RULINGS-SLIM] (NOW, his "Approve", D390 — on `claude/docs-rulings-slim-down-e83c74`), [RULING-HOME-HOOK] (low, after it) — [DOC-SUBHEADS], [RULING-HOMES-AUDIT]
 and [HANDOFF-SHAPE-GUARD] done on `claude/docs-tidy-subheads-audit-ec8f87` (28 Sep 26; archived),
@@ -782,65 +781,12 @@ the body is `raptor-port/src/engine/oilev.ts` `landedExtras`, and its own commen
 
 ---
 
-### [TRK-RETEST-NOTES] The Tracker walk's smaller notes — filed, not fixed (23 Sep 26)
-**Place:** after the Tracker `[HUMAN-RETEST]` merges; none blocks it. Found by the three walkers
-(`raptor-port/docs/handpass/parts/tracker/w1.md`, `w2.md`, `w3.md`), each with its picture there.
-Marked **his call** where the answer is product direction, not a defect.
-**Being built 28 Sep 26** on `claude/tracker-leftovers-f79d36` (plan `raptor-port/docs/superpowers/plans/2026-09-28-tracker-leftovers-plan.md`; re-walked on that day's build first — the first note and O6 were already fixed). **His answers, 28 Sep 26:** the N.A. failures leave the Failures card too (**D370**); failures take their X by DAY, − takes back the latest day (**D371**); a pace, end-date or lull change is an undo step (**D372**). The same day, re-put in plainer words: a future day is refused in Done on, Failed on and both Last Flown boxes (**D374**); a course a students import adds joins at the bottom of the list — keep, not a defect (**D375**).
-- **Entering ✎ Edit chart layout moves a scrolled chart** 190–240px (ACG-04 500 → 262; back to 449, not
-  500) — the code means to keep the view (`toggleArrange`); the arrange canvas drops the centring slack
-  (`padBoard`) without moving the scroll by it. A real defect, small. (w2 off-list)
-- **The Failures card still counts failures on an N.A. event** while the ball hides its ticks — his call. (w2 N1)
-- **The X labels follow the order failures were RECORDED, not their days**; − takes back the last
-  recorded — his call. (w2 N2)
-- **Ctrl+Z right after a pace / end-date / lull change takes back an OLDER mark** (those are not in the
-  history; the ↶ tooltip is honest, the key is not). (w2 N3)
-- **A slowly typed date undoes through half-typed years** (Upchit read 02/11/0202) — the Done-on box
-  now ignores half-typed years (W2-F2); the Last Flown, down-days and upchit boxes do not. (w2 N4)
-- **A press on another student's red failure tick grades the picked student** instead of picking the
-  owner of that slice (a thin target). (w2 N5)
-- **+ Set lull period opens on the last month looked at**, not this month. (w2 N6)
-- **A future "Done on" day is accepted** (Currency then reads "−1d") — his call; D123 lets it come back
-  down. (w2 N7)
-- **After a students import a course new to the app is added after the app's own courses** (the
-  course-order twin of F6); students are demo data under D120, so low. (w1 O3)
-- **On a phone the Crew box reads "STUDEN…" for every student** (88px at every width under 1050). (w3 O1)
-- **A + Add dialog left open while the roster changes keeps its old list** (keyboard-only). (w3 O3)
-- **At 844×390 Raptor's own top bar is 149px** (the desktop menu in two rows) — a shell matter; the
-  Tracker's column now fits under it (w3-F3). (w3 O4)
-- **A `scheduler.css` comment says a dozing page's insides read 0×0** — they report full boxes. (w3 O5)
-- **At 1200px the status beside ✓ Save changes shortens to "● un…"** (whole on hover) — the price of the
-  fixed save corner (w3-F5); the button says what matters.
-
-### [TRK-EDIT-SIDEWAYS] Edit chart layout on a sideways phone leaves the chart no room (23 Sep 26)
-**Place:** after `[TRK-PINCH-DRAGS-BALL]`. At 844×390 the tool strip fills the screen and the chart area is
-0px — nothing to see, drag or pinch (picture `docs/img/handpass/2026-09-23-tracker-pinch/after-phone-sideways-edit-no-room.png`).
-Upright it keeps 446px. Older than the pinch fix (F-C in its sheet). A layout job: fold or scroll the strip sideways.
-**His pick, 28 Sep 26 — D373: FOLD** (the tool in use, ⤢ Fit and "Tools ▾" opening the whole set over the chart; the note, the hint line and the Flow / Info / Show All tabs step aside while editing on a short screen) — from the mock-up `raptor-port/docs/img/handpass/2026-09-28-trk-leftovers/mock/`; being built on `claude/tracker-leftovers-f79d36`.
-
-### [TRK-SESSION-PICK] The Tracker reopens on the previous person's course and student after a sign-in (filed 26 Sep 26)
-Astra's read of `[ACCOUNTS]` (finding 3): `tracker/app/core.js endSession` clears undo, dialogs, modes and search, but not
-the selected course and student, and the "last course / last crew" it remembers is per browser, not per person — so the
-next person on the same browser opens on the last one's pick. Not a leak (the Tracker is everyone's, D121), a wrong
-starting point. **Do:** start each sign-in on the default course and no student, or keep the "last pick" per person
-(`tracker/role.js` would carry who signed in); extend `retest.test.tsx` F10 across a sign-out. **His pick, 28 Sep 26 — D376: "own place"** — each person reopens on their own last course and student; being built on `claude/tracker-leftovers-f79d36`. **Place:** low — the next
-Tracker change; its smoke suite pins the "last pick" behaviour, so it is not a one-liner.
-
 ### [TRK-PINCH-ASK] His iPhone look at the pinch fix (24 Sep 26)
 **Place:** his next Tracker session — nothing is broken; `[TRK-PINCH-DRAGS-BALL]` merged on D133 without his look.
 The two feel questions are ANSWERED — **D134: keep both as built** (a deliberate drag joined by a second finger goes
 back; the finger left down after a pinch does nothing). Left: his look card, on his iPhone on the live app:
 `raptor-port/docs/handpass/2026-09-23-tracker-pinch-ball.md` §12 — Safari is the one browser no walk here drives, and
 one line of the fix (the board holding both fingers) is proven only there.
-
-### [TRK-DLG-LEFTOVERS] Two small gaps in the Tracker's question box (25 Sep 26)
-**Place:** low — with the next Tracker change that touches `Modals.jsx` or `core.js` `_dlgShow`. Found by Fable's read
-of `[TRK-SMOKE-ADD-RACE]` (F2, F3), both older, read from the code: (1) a second question opened while one is open
-(reachable by Tab to a control behind the shade, then Enter) replaces it, and the first one's job waits forever --
-fix: `_dlgShow` answers an open question as cancelled before showing the next; test: `uiPrompt('a')` then
-`uiPrompt('b')`, the first resolves null. (2) Enter pressed while a phone keyboard is still composing a word
-submits the half-typed text — fix: skip Enter when `e.nativeEvent.isComposing` (the text box and the search); test
-with `isComposing: true`. Detail: `raptor-port/docs/handpass/2026-09-25-trk-add-race.md` §8.
 
 ### [LW-DOZE-GUARDS] Do the Leave War's measurement guards ever run while its page dozes? (filed 28 Sep 26)
 **Place:** low — check before building anything. Found by Fable's read of the Tracker leftovers plan (F12): the
@@ -884,12 +830,6 @@ the same person out and in, the chart jumps from the centred first ball to the t
 ~240px of empty chart above ST-01, `…/walk/lo-2c-e09…`). The existing remount drawing (App.jsx's ready effect redraws
 without landing), not the per-person pick (D376). **Do:** land a remounted chart the way a pick lands it (the last
 mark, else the first event), and check the phone's landing leaves no empty band above the first ball.
-
-### [TRK-BAKE-STALE] The chart-baking script no longer runs (found 23 Sep 26)
-`raptor-port/scripts/tracker/bake-user-charts.mjs` resolves `src/data/…` from `scripts/` (the folder
-does not exist — the data is `src/tracker/data/`), reads name-keyed charts (before the 13 Sep ids) and
-the one-table `eventInfo` (before D126). The D120 route (export → wipe → import) does not need it; fix
-it only if baking a chart into the shipped data comes back. **Place:** low, after `[TRK-RETEST-NOTES]`.
 
 ### [ADMIN-DISPLAY] An Admin "Display" area of per-section fold defaults — awaiting his go-ahead, do NOT build without it (moved from HANDOFF.md, 24 Sep 26)
 **DEFERRED BY HIM (D161, 24 Sep 26): "next time we revisit this again"** — put it to him again when Admin or the

@@ -245,9 +245,30 @@ date box with Tab, which in Chrome only steps between the box's day, month and y
 before changing it). The unit suite's one failure, a changes-window test (not this branch's) timing out under load,
 passes alone (9/9) and is filed `[HISTLIST-SLOW-TEST]`.
 
-## 10. The gates
+## 10. The gates (runs watched, 28 Sep 26, one at a time under the PC lock)
 
-*(filled in from the runs watched — see §11 for the final line)*
+| Gate | Result | On |
+|---|---|---|
+| Unit (vitest, all) | **6827 / 6828** — the one failure a changes-window test (`src/ui/histlist.test.tsx`, not this branch's) timing out at 20s under a full run; alone it passes 9/9 → filed `[HISTLIST-SLOW-TEST]` | after the final-read fixes (`86a91b26`) |
+| Tracker unit (`src/tracker`) | **333 / 333** | after the final-read fixes |
+| Build (typecheck + bundle) | clean | after the final-read fixes |
+| Reference (`tfin.js`) | **728 / 0** | `e4a732bc` (the fixes after it touch only the Tracker) |
+| Browser tests (e2e, `E2E_PORT=4192`) | **495 passed**, 48 skipped, 0 failed | `e4a732bc` (as above) |
+| Tracker smoke | **445 / 0** | after the final-read fixes (first run 442/3 — the suite's own steps, §9b) |
+| rulecheck | OK | `e4a732bc` |
+| docsize | OK | the merge of `main` (the rulings slim-down) and the archive |
+| Break tests (`trk-lo-breaks.mjs`) | **54 / 54 red**, every file restored byte for byte | after the final-read fixes |
+
+The walk's own counts: the first walk (three walkers, `walk/`, 256 pictures) found the §9 findings; the re-walk after all
+fixes (`rewalk/`, 194 pictures) ran **535 checks, none failed**, desktop and phone, including S12 (two people on two
+charts of one course). Seen again on the re-walk and already filed: at 390px a reopened Tracker can show a band of empty
+chart above the first ball (`[TRK-REMOUNT-LANDING]`, `rewalk/lo-2a-P16-member-own-chart.png`).
+
+**The rulings slim-down (PR #458) was merged in** by its own steps; D370–D376's short lines were hand-written, and Astra
+read them against their full rows for meaning (D138): D370 and D375 sound, five rewritten to carry a condition each had
+left out (the full failures list in D374, the chosen student for someone new in D376, …).
+
+`Walk: docs/handpass/2026-09-28-trk-leftovers.md · 256 + 194 pictures (80 baseline, 4 mock) · 7 surfaces · 16 orders (§4) · MISSING: none open — every finding fixed, ruled or filed (§9, §9b)`
 
 ## 11. His look — five minutes, on his phone
 

@@ -16,20 +16,21 @@ the later merge keeps both (D78).
 ## Now
 
 <!-- now:claude/tracker-leftovers-f79d36 -->
-### `claude/tracker-leftovers-f79d36` — the Tracker leftovers BUILT, walked and re-walked; Fable and Astra's final reads running — written 28 Sep 26 — verify before use
-- **The branch:** from `main`, folder `.claude/worktrees/tracker-palette-prompt-a0c90f`. Items `[TRK-RETEST-NOTES]`,
-  `[TRK-EDIT-SIDEWAYS]`, `[TRK-SESSION-PICK]`, `[TRK-DLG-LEFTOVERS]`, `[TRK-BAKE-STALE]`; his rulings D370–D376
-  (`.claude/rules/decisions/tracker.md`). Preview 4175, `E2E_PORT=4192`. `main` brought in at PR #457.
-- **Done:** the build; the FULL bug check so far — roll-calls, three walkers (first walk `…/walk/`), every finding fixed
-  or filed, the re-walk (`…/rewalk/`, all green), 43 break tests all red, the evidence sheet
-  `raptor-port/docs/handpass/2026-09-28-trk-leftovers.md` with its look card (§11). Filed: `[SAVE-NOTE-COVERS]`,
-  `[TRK-SAVE-FAIL-SAYS-SAVED]`, `[SHELL-SIDEWAYS-BAR]`, `[LW-DOZE-GUARDS]`.
-- **Next:** the two final reads (brief `raptor-port/docs/superpowers/briefs/2026-09-28-trk-leftovers-final-read.md`) →
-  fix → re-walk what the fixes touch → the gates (unit, e2e, smoke) → archive the five items → PR → his look → "merge live".
-- **Parallel chats (D302):** the change-recording chat owns the Tracker's ↶ ↷ in `Header.jsx` (D347) — this branch left
-  those lines alone. **When the rulings slim-down (`claude/docs-rulings-slim-down-e83c74`) is on `main`, bring it in with
-  `git merge --no-commit --no-ff origin/main`**, resolve `HANDOFF.md` / `OUTSTANDING.md` first, then
-  `node raptor-port/scripts/backlog-archive.mjs --rulings --merge` (that chat's instruction, 28 Sep 26).
+### `claude/tracker-leftovers-f79d36` — the Tracker leftovers BUILT and FULL-checked — waiting for his look and "merge live" — written 28 Sep 26 — verify before use
+- **The branch:** from `main`, folder `.claude/worktrees/tracker-palette-prompt-a0c90f`; `main` brought in at PR #458 (the
+  rulings slim-down, by its own steps). Preview 4175, `E2E_PORT=4192`, rulings D370–D379 (D370–D376 used). The five items
+  (`[TRK-RETEST-NOTES]`, `[TRK-EDIT-SIDEWAYS]`, `[TRK-SESSION-PICK]`, `[TRK-DLG-LEFTOVERS]`, `[TRK-BAKE-STALE]`) are archived.
+- **Done:** the build and the FULL bug check — the evidence sheet `raptor-port/docs/handpass/2026-09-28-trk-leftovers.md`
+  (roll-calls §3, three walkers §9, the two final reads §9b, the gates §10, his look card §11). Fable and Astra's final
+  reads: nine fixed red-first, two not defects, two filed for the database (`[TRK-ASYNC-STALE]`). Re-walk 535 checks, 0
+  failed; smoke 445/0; 54 break tests all red. Filed: `[SAVE-NOTE-COVERS]` (medium, next), `[TRK-SAVE-FAIL-SAYS-SAVED]`,
+  `[SHELL-SIDEWAYS-BAR]`, `[LW-DOZE-GUARDS]`, `[TRK-REMOUNT-LANDING]`, `[HISTLIST-SLOW-TEST]` (test-only).
+- **His readings to confirm on the look card:** D376 reading (5) — the chart he last had open on a course is part of his
+  place (added from Fable's read); a half-typed day in the grading pop-up is now refused, not recorded as today.
+- **Next:** (1) his look (the card, §11) on the Vercel preview; (2) "merge live" — one at a time with the parallel chats
+  (change-recording owns the Tracker's ↶ ↷ in `Header.jsx`, D347 — this branch left those lines alone). If `main` moves
+  first, bring it in with `git merge --no-commit --no-ff origin/main`, resolve `HANDOFF.md` / `OUTSTANDING.md`, then
+  `node raptor-port/scripts/backlog-archive.mjs --rulings --merge`.
 <!-- /now -->
 
 <!-- now:claude/docs-rulings-slim-down-e83c74 -->
@@ -116,15 +117,15 @@ the later merge keeps both (D78).
    closed by the absence-record re-test).
 2. **About a month before the database:** `[DB-READINESS]` with the OIL award fix and the small OIL follow-ups as ONE
    batch (D147, D203) → `[DB-STEP]` when Manfred is ready. The whole list: `OUTSTANDING.md`'s priority list.
-3. Filed, none blocking: `[TRK-PINCH-ASK]` (his iPhone look), `[TRK-DLG-LEFTOVERS]`, `[TRK-RETEST-NOTES]`,
-   `[LW-FROZEN-BAR-GAP]`. Everything else: `OUTSTANDING.md`'s priority list.
+3. Filed, none blocking: `[TRK-PINCH-ASK]` (his iPhone look), `[LW-FROZEN-BAR-GAP]`; the Tracker leftovers'
+   own residue — `[SAVE-NOTE-COVERS]` (medium, next), `[TRK-REMOUNT-LANDING]`, `[TRK-ASYNC-STALE]` (with `[DB-READINESS]`). Everything else: `OUTSTANDING.md`'s priority list.
 4. **Before ANY collaborator:** take the checks runner off this repo (Astra SEC-101, `[REPO-PRIVATE]`).
 
 ## Gate baseline
 
-The latest counts watched — 28 Sep 26, `claude/hist-phone-by-item`'s final code (`14b14360`, `main` taken in), one run
-under the PC lock: unit **6775 / 6775** (417 files) · build clean · tfin **728 / 0** · e2e **495 passed**, 48 skipped ·
-smoke **443 / 0** · rulecheck OK · docsize OK. Restate a count only from a run you watched, and REPLACE the previous counts — never stack a
+The latest counts watched — 28 Sep 26, `claude/tracker-leftovers-f79d36`, each run under the PC lock: unit **6827 / 6828**
+(418 files — the one a changes-window test timing out under a full run, alone 9/9: `[HISTLIST-SLOW-TEST]`) · build clean ·
+tfin **728 / 0** · e2e **495 passed**, 48 skipped · smoke **445 / 0** · rulecheck OK · docsize OK. Restate a count only from a run you watched, and REPLACE the previous counts — never stack a
 history. How to run them: `raptor-port/CLAUDE.md` §Build & verify; how they mislead, and the checks on his PC:
 `raptor-port/docs/gates-and-deploy.md`.
 

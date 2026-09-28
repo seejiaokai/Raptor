@@ -2484,3 +2484,82 @@ numbers added, four missing rulings written in (D21's "corrected" sentence never
 and the gate now fails a NEW row whose Markdown home never mentions its number. The record, row by row:
 `raptor-port/docs/superpowers/specs/2026-09-28-ruling-homes-audit.md`.
 
+
+*Moved here 2026-09-28 by backlog-archive.mjs ([TRK-RETEST-NOTES]). Forward facts: `raptor-port/docs/handpass/2026-09-28-trk-leftovers.md`, `raptor-port/docs/ui-contracts.md`, `.claude/decisions-full/tracker.md`.*
+
+### [TRK-RETEST-NOTES] The Tracker walk's smaller notes — filed, not fixed (23 Sep 26)
+**Place:** after the Tracker `[HUMAN-RETEST]` merges; none blocks it. Found by the three walkers
+(`raptor-port/docs/handpass/parts/tracker/w1.md`, `w2.md`, `w3.md`), each with its picture there.
+Marked **his call** where the answer is product direction, not a defect.
+**Being built 28 Sep 26** on `claude/tracker-leftovers-f79d36` (plan `raptor-port/docs/superpowers/plans/2026-09-28-tracker-leftovers-plan.md`; re-walked on that day's build first — the first note and O6 were already fixed). **His answers, 28 Sep 26:** the N.A. failures leave the Failures card too (**D370**); failures take their X by DAY, − takes back the latest day (**D371**); a pace, end-date or lull change is an undo step (**D372**). The same day, re-put in plainer words: a future day is refused in Done on, Failed on and both Last Flown boxes (**D374**); a course a students import adds joins at the bottom of the list — keep, not a defect (**D375**).
+- **Entering ✎ Edit chart layout moves a scrolled chart** 190–240px (ACG-04 500 → 262; back to 449, not
+  500) — the code means to keep the view (`toggleArrange`); the arrange canvas drops the centring slack
+  (`padBoard`) without moving the scroll by it. A real defect, small. (w2 off-list)
+- **The Failures card still counts failures on an N.A. event** while the ball hides its ticks — his call. (w2 N1)
+- **The X labels follow the order failures were RECORDED, not their days**; − takes back the last
+  recorded — his call. (w2 N2)
+- **Ctrl+Z right after a pace / end-date / lull change takes back an OLDER mark** (those are not in the
+  history; the ↶ tooltip is honest, the key is not). (w2 N3)
+- **A slowly typed date undoes through half-typed years** (Upchit read 02/11/0202) — the Done-on box
+  now ignores half-typed years (W2-F2); the Last Flown, down-days and upchit boxes do not. (w2 N4)
+- **A press on another student's red failure tick grades the picked student** instead of picking the
+  owner of that slice (a thin target). (w2 N5)
+- **+ Set lull period opens on the last month looked at**, not this month. (w2 N6)
+- **A future "Done on" day is accepted** (Currency then reads "−1d") — his call; D123 lets it come back
+  down. (w2 N7)
+- **After a students import a course new to the app is added after the app's own courses** (the
+  course-order twin of F6); students are demo data under D120, so low. (w1 O3)
+- **On a phone the Crew box reads "STUDEN…" for every student** (88px at every width under 1050). (w3 O1)
+- **A + Add dialog left open while the roster changes keeps its old list** (keyboard-only). (w3 O3)
+- **At 844×390 Raptor's own top bar is 149px** (the desktop menu in two rows) — a shell matter; the
+  Tracker's column now fits under it (w3-F3). (w3 O4)
+- **A `scheduler.css` comment says a dozing page's insides read 0×0** — they report full boxes. (w3 O5)
+- **At 1200px the status beside ✓ Save changes shortens to "● un…"** (whole on hover) — the price of the
+  fixed save corner (w3-F5); the button says what matters.
+**DONE 28 Sep 26** on `claude/tracker-leftovers-f79d36`: every note above built (C1, C5–C7, C10, C11, C13, C14), ruled by him (C2–C4, C8, C9 — D370–D372, D374, D375) or filed on its own (C12 → `[SHELL-SIDEWAYS-BAR]`, C13's check → `[LW-DOZE-GUARDS]`); walked, re-walked, read by Fable and Astra — evidence `raptor-port/docs/handpass/2026-09-28-trk-leftovers.md` §9.
+
+
+*Moved here 2026-09-28 by backlog-archive.mjs ([TRK-EDIT-SIDEWAYS]). Forward facts: `raptor-port/docs/handpass/2026-09-28-trk-leftovers.md`, `raptor-port/docs/ui-contracts.md`, `.claude/decisions-full/tracker.md`.*
+
+### [TRK-EDIT-SIDEWAYS] Edit chart layout on a sideways phone leaves the chart no room (23 Sep 26)
+**Place:** after `[TRK-PINCH-DRAGS-BALL]`. At 844×390 the tool strip fills the screen and the chart area is
+0px — nothing to see, drag or pinch (picture `docs/img/handpass/2026-09-23-tracker-pinch/after-phone-sideways-edit-no-room.png`).
+Upright it keeps 446px. Older than the pinch fix (F-C in its sheet). A layout job: fold or scroll the strip sideways.
+**His pick, 28 Sep 26 — D373: FOLD** (the tool in use, ⤢ Fit and "Tools ▾" opening the whole set over the chart; the note, the hint line and the Flow / Info / Show All tabs step aside while editing on a short screen) — from the mock-up `raptor-port/docs/img/handpass/2026-09-28-trk-leftovers/mock/`; being built on `claude/tracker-leftovers-f79d36`.
+**DONE 28 Sep 26** on `claude/tracker-leftovers-f79d36`: the fold (D373) built, with the canvas re-fitted on a turn and never taller than its box; evidence `raptor-port/docs/handpass/2026-09-28-trk-leftovers.md` §3.5.
+
+
+*Moved here 2026-09-28 by backlog-archive.mjs ([TRK-SESSION-PICK]). Forward facts: `raptor-port/docs/handpass/2026-09-28-trk-leftovers.md`, `raptor-port/docs/ui-contracts.md`, `.claude/decisions-full/tracker.md`.*
+
+### [TRK-SESSION-PICK] The Tracker reopens on the previous person's course and student after a sign-in (filed 26 Sep 26)
+Astra's read of `[ACCOUNTS]` (finding 3): `tracker/app/core.js endSession` clears undo, dialogs, modes and search, but not
+the selected course and student, and the "last course / last crew" it remembers is per browser, not per person — so the
+next person on the same browser opens on the last one's pick. Not a leak (the Tracker is everyone's, D121), a wrong
+starting point. **Do:** start each sign-in on the default course and no student, or keep the "last pick" per person
+(`tracker/role.js` would carry who signed in); extend `retest.test.tsx` F10 across a sign-out. **His pick, 28 Sep 26 — D376: "own place"** — each person reopens on their own last course and student; being built on `claude/tracker-leftovers-f79d36`. **Place:** low — the next
+Tracker change; its smoke suite pins the "last pick" behaviour, so it is not a one-liner.
+**DONE 28 Sep 26** on `claude/tracker-leftovers-f79d36`: each person's own course, chart and student (D376, reading 5 added from Fable's final read); evidence `raptor-port/docs/handpass/2026-09-28-trk-leftovers.md` §3.1.
+
+
+*Moved here 2026-09-28 by backlog-archive.mjs ([TRK-DLG-LEFTOVERS]). Forward facts: `raptor-port/docs/handpass/2026-09-28-trk-leftovers.md`, `raptor-port/docs/ui-contracts.md`, `.claude/decisions-full/tracker.md`.*
+
+### [TRK-DLG-LEFTOVERS] Two small gaps in the Tracker's question box (25 Sep 26)
+**Place:** low — with the next Tracker change that touches `Modals.jsx` or `core.js` `_dlgShow`. Found by Fable's read
+of `[TRK-SMOKE-ADD-RACE]` (F2, F3), both older, read from the code: (1) a second question opened while one is open
+(reachable by Tab to a control behind the shade, then Enter) replaces it, and the first one's job waits forever --
+fix: `_dlgShow` answers an open question as cancelled before showing the next; test: `uiPrompt('a')` then
+`uiPrompt('b')`, the first resolves null. (2) Enter pressed while a phone keyboard is still composing a word
+submits the half-typed text — fix: skip Enter when `e.nativeEvent.isComposing` (the text box and the search); test
+with `isComposing: true`. Detail: `raptor-port/docs/handpass/2026-09-25-trk-add-race.md` §8.
+**DONE 28 Sep 26** on `claude/tracker-leftovers-f79d36`: a second question waits (FIFO) instead of stranding the first, the door behind a question is shut, and a composing Enter is not an answer; evidence `raptor-port/docs/handpass/2026-09-28-trk-leftovers.md` §3.2.
+
+
+*Moved here 2026-09-28 by backlog-archive.mjs ([TRK-BAKE-STALE]). Forward facts: `raptor-port/docs/handpass/2026-09-28-trk-leftovers.md`, `raptor-port/docs/ui-contracts.md`, `.claude/decisions-full/tracker.md`.*
+
+### [TRK-BAKE-STALE] The chart-baking script no longer runs (found 23 Sep 26)
+`raptor-port/scripts/tracker/bake-user-charts.mjs` resolves `src/data/…` from `scripts/` (the folder
+does not exist — the data is `src/tracker/data/`), reads name-keyed charts (before the 13 Sep ids) and
+the one-table `eventInfo` (before D126). The D120 route (export → wipe → import) does not need it; fix
+it only if baking a chart into the shipped data comes back. **Place:** low, after `[TRK-RETEST-NOTES]`.
+**DONE 28 Sep 26** on `claude/tracker-leftovers-f79d36`: the bake runs again from a current export (`scripts/tracker/bake-lib.mjs`, pinned by a test on a real export); evidence `raptor-port/docs/handpass/2026-09-28-trk-leftovers.md` §9.
+
