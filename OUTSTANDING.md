@@ -51,8 +51,9 @@ whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaini
 **His order — to the database step, about two months away (D203, 26 Sep 26; D173, D147 within it):**
 0. **Next, in a fresh chat — [HIST-PHONE-HIDE]** (D339) **with [CHG-BY-ITEM]** (D340), one branch (both change the changes window):
    History on a phone — the window hides to the bottom ("Hide ▾" / "Show ▴"), a gold dot on every detail with a history; and the
-   window sorted by item, every line item-first. Each mock-up first to his yes, then built, walked, checked. Then
-   **[LW-FIGSEL-FLAKE]** (D342) — the Leave War desktop test PR #451 merged over.
+   window sorted by item, every line item-first. Each mock-up first to his yes, then built, walked, checked. **Before
+   them, [LW-FIGSEL-FLAKE]** (D342) — the Leave War desktop test PR #451 merged over, now red on about half of every
+   branch's GitHub runs.
 1. **Now — [DRAFT-PENDING]** — the one changes window, on top of accounts, its own FULL check (D210): BUILT and
    FULL-checked 28 Sep 26 on `claude/draft-pending` overnight by his standing go (D336 (2)) — his look DONE 28 Sep 26 (every
    reading kept, D337, D338) — **waiting for his "merge live"**; never merged without his word. Before it: **[ONE-DOOR]** (D309, D310, carrying [POST-IN-DATE], D308) MERGED 28 Sep 26 (PR #450;
@@ -73,8 +74,7 @@ whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaini
    ([ARCH-STACK]) resumes there, with its step 6 still to come; the [AMEND] work is queued behind it. Architecture first,
    then the individual bugs (D144).
 6. **Before ANY collaborator is added** — an event, not a slot: take the checks runner off this repo (SEC-101, in
-   [REPO-PRIVATE]); and make the repo private again once the public period (D106) ends — his; **the same change turns the
-   GitHub Pages publish job off again** (D341: `false &&` back on `deploy.yml`'s `deploy` job — a private repo on the free plan has no Pages).
+   [REPO-PRIVATE]); and make the repo private again once the public period (D106) ends — his.
 
 **The small OIL follow-ups — ONE batch, with the OIL award fix, about a month before the database (D147, D203):** [OIL-READ-LEFTOVERS] (its items 1, 2, 4),
 [STORE-READER-SWEEP], [OIL-REQ-NAMEBOX] (a walk question for him), [OIL-WORDS],
@@ -534,8 +534,7 @@ on GitHub still carry the D58 unit designation IN THEIR FILES, and `main`'s hist
 **DONE, BY HIM, 23 Sep 26 (D59): THE REPO IS PRIVATE**, reversing his own *"nvm disregard this
 first"* the same day after a check found the unit named in the app. Pages is GONE (API 404), so the
 publish job in `.github/workflows/deploy.yml` is OFF — it would fail every push and still bill —
-with the gates left running. `README.md` corrected. **The app is viewed on VERCEL now.** **28 Sep 26 (D341): while the repo is
-public (D106) the Pages address is back** — `https://seejiaokai.github.io/Raptor/`, the publish job on; going private again turns it off.
+with the gates left running. `README.md` corrected. **The app is viewed on VERCEL now.**
 
 **STILL OPEN — the sharing half** (*"i would like to make my repo private, and share with developers
 on my app"*). Route: Settings → Collaborators, by username, Write; they run it locally and do not
@@ -1063,13 +1062,17 @@ his answer. Touches `raptor-port/src/tracker/` (its own store) — its own small
 ### [LW-FIGSEL-FLAKE] A Leave War desktop browser test fails on GitHub on the changes-window branch (D342, 28 Sep 26)
 `e2e/leavewar.spec.ts:2190` "-1.5 subtracts; 0, abc and 1.25 are refused and the run stays" — after a refused amount, the
 figures drawer holds the WRONG number of selected cells (`td[data-figsel]`: expected 3; got 5 on 27 Sep 26 21:11, got 1 on
-28 Sep 26 01:31, both tries each time), on GitHub's machines only, on `claude/draft-pending` (2 of 5 runs failed; 3 passed).
-It passes on the PC every time (5/5, and 4/4 with the browser slowed six-fold) and on `main`. **PR #451 merged over it on his
+28 Sep 26 01:31, both tries each time), on GitHub's machines only, on `claude/draft-pending` (2 of 5 runs failed; 3 passed). **Since #451 merged it is in
+`main`'s code, so it hits EVERY branch:** it failed again on `claude/pages-off` (PR #452, cut from `main`, 28 Sep 26 — 5, then 1),
+while `main`'s own run after the merge passed it — about half of GitHub's runs now. It passes on the PC every time (5/5, and
+4/4 with the browser slowed six-fold). **PR #451 merged over it on his
 word (D342)** — the test unchanged. **To dig in (its own small branch):** reproduce on GitHub's machines (a workflow run of
 that one test, repeated) with a trace; the unconfirmed lead — a redraw mid-selection on a slow machine, e.g. the change
 history's save repainting the Sync chip and the drawer with it (`[DRAFT-PENDING]` added a history write to every Leave War
 command, `state/changelines.ts`); compare against `main`. If it fails on `main` too, it is D84's slow-runner family.
-**Place:** after `[HIST-PHONE-HIDE]` / `[CHG-BY-ITEM]`, or sooner if `main`'s runs start failing on it.
+**Place: FIRST in the next chat, before `[HIST-PHONE-HIDE]` / `[CHG-BY-ITEM]`** — a check that goes red on every other run
+hides a real failure behind it, and the next build's checks would carry it. Small: make the test wait on what it needs (D87)
+or fix the redraw that loses the selection.
 
 ### [HIST-PHONE-HIDE] History on a phone — say it is on, and let the schedule be seen (D339, 28 Sep 26)
 **His ask (D339):** on a phone the changes window covers the schedule and nothing says the bubbles are on; "maybe when it hides
@@ -1077,7 +1080,7 @@ on a phone it goes to the bottom of the screen"; built in ANOTHER chat. **The de
 width — `raptor-port/docs/img/handpass/2026-09-28-draft-pending/histphone/histphone-mockup.png`, re-taken by
 `raptor-port/scripts/handpass/dp-histphone.mjs`): (1) the panel's header gains a hide button beside ✕, labelled "Hide ▾" — a word, not
 the arrow alone (his question: "how does one know that the action is to minimise?") — and a one-line hint, in fewer words at his
-word — "History on — tap a gold dot to see who changed it."; (2) Hide sends the window to the slim bar at the bottom,
+word — **"History on: Tap a gold dot on the schedule"** (his own wording, D344); (2) Hide sends the window to the slim bar at the bottom,
 "History on · N changes" with a "Show ▴" button — Show brings the list back, ✕ turns History off; (3) while History is on, every detail
 with a history wears a small gold dot just outside the puck's bottom-right corner (never a ring — D92; clear of the OG tag at the
 top right) — on desktop too; the ▾ on the phone only; (4) a tap on a dotted detail opens its bubble. **Open:** his yes to the

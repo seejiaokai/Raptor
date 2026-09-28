@@ -36,10 +36,8 @@ so the handoff every chat reads holds only the current baseline. The CURRENT cou
   build and none on the base's, in that isolated probe, is a regression: stop there. Re-running first is hoping;
   refusing to merge forever blocks on a race the change never touched. (A known family, already measured and
   filed, keeps its own rule — D84.)
-- **GitHub Pages is back ON while the repo is public** (D341, 28 Sep 26 — it was off from D59, 23 Sep 26): the publish job
-  publishes `main` to `https://seejiaokai.github.io/Raptor/` (public — anyone with the link) after every gate is green; the
-  Pages traps below apply again. **Going private turns it off again** (put `false &&` back on the `deploy` job — a free plan
-  serves no private Pages). The "done" chain stays Vercel's. The app is seen on VERCEL: a preview per branch (his surface — the agent's is the local `vite preview`) and the
+- **There is no GitHub Pages site** (D59, 23 Sep 26; D343, 28 Sep 26 — D341 switched it back on for under an hour and was
+  withdrawn before anything published): the publish job is off, and every Pages trap below is history. The app is seen on VERCEL: a preview per branch (his surface — the agent's is the local `vite preview`) and the
   live app from `main`. **"Done" after "merge live" means live on Vercel** (D143): merge → `main`'s run green on
   his PC → the Production deployment for that commit READY (`gh api repos/<owner>/<repo>/deployments?environment=Production`,
   then its statuses) → one notification with the link. The whole loop: `.claude/rules/shipping.md`.

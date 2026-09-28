@@ -351,14 +351,13 @@ jobs:
   # Publishes only when every gate above is green: a failed or cancelled
   # `needs` job skips this one, so nothing deploys red.
   #
-  # BACK ON 28 Sep 26 (D341, his "Yes, switch it on"): the repo is PUBLIC for a
-  # short period (D106), so Pages serves again — https://seejiaokai.github.io/Raptor/,
-  # public to anyone with the link; the gates run on GitHub's machines while public
-  # (the guard on `pc`), so the artifact this job needs is uploaded. WHEN THE REPO
-  # GOES PRIVATE AGAIN, PUT `false &&` BACK on the `if:` below, for the reason the
-  # 23 Sep 26 note gives:
+  # OFF — no public GitHub web address (D343, 28 Sep 26: his "Disregard the public
+  # website for GitHub"). It was switched back on for under an hour the same day
+  # (D341) and withdrawn before anything published; the Pages site is deleted on
+  # the repo again. His public link is his own Vercel address. The first reason it
+  # went off, 23 Sep 26:
   #
-  # OFF 23 Sep – 28 Sep 26, when the repo went PRIVATE (D59). GitHub Pages cannot
+  # OFF SINCE 23 Sep 26, when the repo went PRIVATE (D59). GitHub Pages cannot
   # serve from a private repo on the free plan — the Pages site is gone (the
   # API returns 404), so this job would fail on every push AND still bill its
   # Actions minutes, which are metered now that the repo is private (~37 billed
@@ -372,7 +371,7 @@ jobs:
   # `pc`); a private one needs CI_ON_GITHUB=true.
   deploy:
     needs: [build, unit, geometry, tracker]
-    if: github.event_name != 'pull_request'
+    if: false && github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     permissions:
       contents: read

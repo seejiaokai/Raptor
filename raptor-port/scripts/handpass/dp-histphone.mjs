@@ -46,7 +46,7 @@ await page.evaluate(() => {
   const b = document.createElement('button'); b.textContent = 'Hide ▾'; b.className = x.className; b.style.cssText = 'margin-right:6px;width:auto;padding:0 10px;font-weight:700;font-size:13px'; b.title = 'Hide the list — see the schedule'
   x.parentElement.insertBefore(b, x)
   const hint = document.createElement('div'); hint.id = 'mock-hint'
-  hint.textContent = 'History on — tap a gold dot to see who changed it.'   // fewer words — his D339 correction
+  hint.textContent = 'History on: Tap a gold dot on the schedule'   // his own wording (D344), after D339's "fewer words"
   hint.style.cssText = 'margin:6px 12px 0;padding:6px 10px;border-radius:8px;background:rgba(229,194,74,.12);border:1px solid rgba(229,194,74,.4);color:#F2D699;font-size:12.5px'
   const bar = w.querySelector('.win-bar'); bar && bar.after(hint)
 })
