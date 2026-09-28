@@ -16,23 +16,23 @@ the later merge keeps both (D78).
 ## Now
 
 <!-- now:claude/small-fixes-batch-d223f6 -->
-### `claude/small-fixes-batch-d223f6` — the small-fixes batch BUILT and walked; the two final code reads and the full checks running — written 28 Sep 26 — verify before use
+### `claude/small-fixes-batch-d223f6` — the small-fixes batch BUILT, walked and read by both reviewers (fixed); the full checks queued behind the PC lock — written 28 Sep 26 — verify before use
 - **The branch:** cut from `main` at `60a6792c`, `main` merged in (PR #457); folder `.claude/worktrees/trk-smoke-add-race-bug-007eed`.
   Ports: preview 4174, `E2E_PORT=4191`. Rulings range D360–D369 — D360 used (his `[ALLAVAIL-OPEN-ROW]` answer).
 - **Built (one commit each, red-first):** `[AVAILWIN-PREVIEW-BAR]`, `[GHOST-FLAG-SHADOW]`, `[ALLAVAIL-OPEN-ROW]` (D360),
   `[AMEND-SMALL-SEEN]` 1, 3, 4, 9 (5 is a look-card question), `[REQ-ORPHAN-ROW]`, `[REQ-DOOR-WORDS]` 1–3, `[LW-ISO-DATES]`,
   `[LW-SPARE-MOVE-DOORS]`, `[ABSENCE-SMALL-SEEN]` 1–4 (5 watched). Docs carry each (`ui-contracts.md`, `engine-rules.md`,
   `feature-impact.md`, `file-map.md`).
-- **Walked:** 13 scripts under `raptor-port/scripts/handpass/sf/`, 203 checks pass on the final build; the walk found four
-  things (fixed ×2, docs corrected, `[PLAN-BANNER-DOOR]` filed). Evidence: `raptor-port/docs/handpass/2026-09-28-small-fixes.md`.
-- **Running when written:** Fable's and Astra's final code reads (brief
-  `raptor-port/docs/superpowers/briefs/2026-09-28-small-fixes-final-read.md`, reports to
-  `raptor-port/docs/superpowers/specs/2026-09-28-small-fixes-final-read-{fable,astra}.md`); the full gates queued behind the
-  PC lock (`gatelock.mjs run`).
+- **Walked:** 13 scripts under `raptor-port/scripts/handpass/sf/`, all passing on the final build; the walk found four
+  things (fixed ×2, docs corrected, `[PLAN-BANNER-DOOR]` filed). **Read:** Astra (2) and Fable (3) — every finding fixed,
+  measured-and-pinned or put to him (evidence §8). Evidence: `raptor-port/docs/handpass/2026-09-28-small-fixes.md`.
+- **Left:** the full gates (`gatelock.mjs run`, queued; the Tracker chat held the lock ~2 h — asked it), then the sheet's
+  §9, push, the PR and its Vercel link, his look card (§10, six questions) and his "merge live".
 - **Parallel chats (D302):** change-recording (`.lw-hist` markup/CSS theirs; `dropInputRow` → `unacceptInput` told),
-  rulings slim-down (D360 checked for its new one-line form), Tracker (observation numbers: mine #333–#335, #338).
-- **Next:** fix what the reads find, re-walk what the fixes touch, the gates green, the evidence sheet's §8–§9, push, the
-  PR and its Vercel link, then his look card (§10) and his "merge live".
+  Tracker (observation numbers: mine #333–#335, #338). **Rulings slim-down** (`claude/docs-rulings-slim-down-e83c74`, D390):
+  if it merges first, merge `main` in with `git merge --no-commit --no-ff origin/main`, resolve HANDOFF/OUTSTANDING first,
+  then `node raptor-port/scripts/backlog-archive.mjs --rulings --merge`, re-apply the printed oil.md "Also read" line, and
+  have Astra read the short lines it lists as UNREAD.
 <!-- /now -->
 
 <!-- now:claude/docs-tidy-subheads-audit-ec8f87 -->
