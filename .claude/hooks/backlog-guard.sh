@@ -24,6 +24,6 @@ out=$(node "$script" --inventory 2>&1) && exit 0
   echo "BACKLOG GUARD: a filed record in OUTSTANDING.md / OUTSTANDING-ARCHIVE.md / the rulings looks lost, damaged or misfiled — or a document sits where the structure has no place for it (.claude/rules/doc-structure.md)."
   echo "$out" | grep -E '^\s+- |^FAIL'
   echo "Restore it from the base before stopping. If it is deliberate, declare it in the commit (a Docs-guard-allow: trailer)."
-  echo "A rulings map out of step, or a replaced/spent ruling still live: node raptor-port/scripts/backlog-archive.mjs --rulings"
+  echo "A rulings map out of step, a new full row not yet converted to its short line, or a replaced/spent ruling still live: node raptor-port/scripts/backlog-archive.mjs --rulings (it names any row it refuses, and the fix)"
 } >&2
 exit 2
