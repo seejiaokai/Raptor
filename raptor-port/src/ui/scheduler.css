@@ -4246,7 +4246,15 @@ body:not(.tdrag) .sb-slot.empty:hover{border-color:var(--accent);color:var(--acc
    `.lift{box-shadow:var(--lift-box)}` sits later in this file — at equal
    specificity it would replace the depth shadow outright and the ghost would
    read as part of the page. */
-.tdghost.lift,.dragimg.lift{box-shadow:var(--lift-box),0 8px 20px rgba(0,0,0,.6)}
+/* [GHOST-FLAG-SHADOW] (28 Sep 26): THE DEPTH SHADOW MOVED TO THE VEIL BELOW, and this compound now sets NO box-shadow.
+   It carried the depth here, in the same property the flag rings use — so the thin red, dashed, grey-note, "this is you"
+   and clicked-warning rings (!important, or more specific) ATE the depth shadow, and a plain amber advisory ring (same
+   specificity, earlier) was eaten BY it: a dragged amber puck lost its ring. On the veil the depth is its own property,
+   so every ghost keeps its own ring AND reads as lifted. The veil is a child, so the puck's own overflow clip would cut
+   its OUTER shadow: the lifted ghost lifts the clip, as `.haswhy` above already does while the hover reason shows (a
+   long name stays cut — `.puck .nm` clips itself). A filter was the other way; it shadowed the hover reason too
+   (Astra 05). Pinned by lift-css.test.ts and e2e/geometry.spec.ts; walk sf/sf-b-ghost.mjs. */
+.tdghost.lift,.dragimg.lift{overflow:visible}
 /* …and BOTH puck ghosts draw the accent on a VEIL pseudo-element. Two different
    faults, one cure:
    - THE FINGER's ghost (7 Sep 26, found in the live drive and measured edge by
@@ -4289,7 +4297,7 @@ body:not(.tdrag) .sb-slot.empty:hover{border-color:var(--accent);color:var(--acc
    pairs that `.ic-ghost.lift` already out-ranks from later in this file. The
    depth shadow above is an OUTER shadow on the element and was never obscured. */
 .tdghost.lift::before,.dragimg.lift::before{content:'';position:absolute;inset:0;border-radius:inherit;
-  pointer-events:none;z-index:5;box-shadow:var(--lift-box)}
+  pointer-events:none;z-index:5;box-shadow:var(--lift-box),0 8px 20px rgba(0,0,0,.6)}
 /* body.tdrag / body.mdrag are JS STATE MARKERS ONLY — no rule may give them a
    declaration of their own (the slow-computer cut, 3 Sep 26). Measured by
    toggling each class alone on the built app: `body.tdrag{touch-action:none;

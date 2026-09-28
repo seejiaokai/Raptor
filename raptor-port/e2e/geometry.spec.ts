@@ -4809,12 +4809,16 @@ test.describe('a mouse drag of a puck runs on the pointer machine, not the nativ
            shadow still under it — and no outline of its own any more */
         lift: !!g && g.classList.contains('lift'),
         shadow: cs ? cs.boxShadow : '', outline: cs ? cs.outlineStyle : '',
+        /* [GHOST-FLAG-SHADOW] (28 Sep 26): the depth rides the VEIL, so no ring on the puck can eat it — and the
+           ghost lifts the puck's clip so the veil's outer shadow is drawn */
+        veil: g ? getComputedStyle(g, '::before').boxShadow : '', overflow: cs ? cs.overflow : '',
       }
     })
     expect(mid.ghost, 'the page-drawn puck ghost is up').toBe(true)
     expect(mid.lift, 'and wears the shared lift').toBe(true)
-    expect(mid.shadow, 'the accent box is drawn inside the ghost\'s edge').toMatch(/inset/)
-    expect(mid.shadow, 'and its depth shadow is still under it').toMatch(/rgba\(0, 0, 0, 0\.6\)/)
+    expect(mid.veil, 'the accent box is drawn inside the ghost\'s edge').toMatch(/inset/)
+    expect(mid.veil, 'and its depth shadow is still under it').toMatch(/rgba\(0, 0, 0, 0\.6\)/)
+    expect(mid.overflow, 'the ghost lets the veil\'s outer shadow show').toBe('visible')
     /* the STYLE, not the width: a newer Chromium computes `outline-width` as its
        initial `medium` (3px) even under `outline-style: none` — the width no
        longer collapses to 0 when nothing is drawn — so the CI runner's browser
