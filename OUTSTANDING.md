@@ -51,9 +51,9 @@ whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaini
 **His order — to the database step, about two months away (D203, 26 Sep 26; D173, D147 within it):**
 0. **BUILT and FULL-checked 28 Sep 26 on `claude/hist-phone-by-item` — waiting for his look and "merge live" — [HIST-PHONE-HIDE]** (D339) **with [CHG-BY-ITEM]** (D340), one branch (both change the changes window):
    History on a phone — the window hides to the bottom ("Hide ▾" / "Show ▴"), a gold dot on every detail with a history; and the
-   window sorted by item, every line item-first. Both mock-ups APPROVED (D345); being built on `claude/hist-phone-by-item`
-   (28 Sep 26). **Before them, [LW-FIGSEL-FLAKE]** (D342) — FIXED on `claude/lw-figsel-flake` (its own PR, waiting for his
-   look and "merge live"; archived): the "Saving…" note moved the page; it now floats under the top bar.
+   window sorted by item, every line item-first. Both mock-ups APPROVED (D345); built on `claude/hist-phone-by-item`
+   (28 Sep 26), `main` taken in; his look card has three questions (the evidence sheet §11). **Before them, [LW-FIGSEL-FLAKE]**
+   (D342) — MERGED (PR #454, 28 Sep 26; archived): the "Saving…" note moved the page; it now floats under the top bar.
 1. **Now — [DRAFT-PENDING]** — the one changes window, on top of accounts, its own FULL check (D210): BUILT and
    FULL-checked 28 Sep 26 on `claude/draft-pending` overnight by his standing go (D336 (2)) — his look DONE 28 Sep 26 (every
    reading kept, D337, D338) — **waiting for his "merge live"**; never merged without his word. Before it: **[ONE-DOOR]** (D309, D310, carrying [POST-IN-DATE], D308) MERGED 28 Sep 26 (PR #450;
@@ -1078,8 +1078,10 @@ bar's words), `src/ui/histbubble.ts` (marking the details with a history while H
 (`raptor-port/docs/superpowers/plans/2026-09-28-hist-phone-by-item-plan.md` §9), built red first, FULL-checked
 (`raptor-port/docs/handpass/2026-09-28-hist-phone-by-item.md`). Beyond the mock-up, from the red team: the dot on every
 detail the bubble answers (the board's wave title and an input's row now answer too), never on a look; a text detail's
-dot outside its corner; the hint where a tap raises a bubble (≤820px); the hidden bar above the ALL AVAIL window.
-**Next:** his look → "merge live" (after `claude/lw-figsel-flake`, taking `main` in first).
+dot outside its corner; the hint where a tap raises a bubble (≤820px); the hidden bar above the ALL AVAIL window. From the
+final reads: the window follows a phone turned sideways; no hint and no "History on" over a board look or a week with
+nothing to dot. From the walk: a tap in and out of an input's time cell no longer writes a false "times" line.
+**Next:** his look (the sheet's §11, Q1–Q3) → "merge live" (`main`, with PR #454, already taken in).
 
 ### [CHG-BY-ITEM] The changes window sorted by item, every line item-first (D340, 28 Sep 26)
 **His ask (D340):** "the main category to sort as per item, and the latest changes of that group will be the highest … in that
