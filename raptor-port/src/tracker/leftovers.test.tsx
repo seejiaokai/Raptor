@@ -672,3 +672,47 @@ describe('[TRK-EDIT-SIDEWAYS] D373 — the folded tool row and its Tools ▾', (
     } finally { if (C.arrangeMode) C.toggleArrange(); if (C.sylDirty) await C.saveChangesClick(); await act(async () => { root.unmount() }); host.remove() }
   })
 })
+
+/* ---------- [TRK-BAKE-STALE] the chart-baking script (R26 — his chart loop) ---------- */
+describe('[TRK-BAKE-STALE] baking an exported chart file into the shipped charts', () => {
+  it('a real export: a moved ball and a detail typed on Tx land on Tx; a custom chart is reported, not baked; a deleted built-in is left; a student name refuses', async () => {
+    const FMT: any = await import('./app/fileFormat.js')
+    const DATA: any = { ...(await import('./data/syllabi.js')), ...(await import('./data/layouts.js')), ...(await import('./data/eventInfo.js')) }
+    // @ts-ignore — a plain .mjs next to the command
+    const { bakeCharts } = await import('../../scripts/tracker/bake-lib.mjs')
+    const data = { SYLLABI: DATA.SYLLABI, DEFAULT_LAYOUTS: DATA.DEFAULT_LAYOUTS, EVENT_INFO: DATA.EVENT_INFO, EVENT_INFO_BY_SYL: DATA.EVENT_INFO_BY_SYL, DEFAULT_SYL_ORDER: DATA.DEFAULT_SYL_ORDER }
+    const tx = C.sylIdOf('Tx 2026'), y26 = C.sylIdOf('2026')
+    const charts = await C.collectCharts([tx, y26], {})
+    /* a ball moved on Tx and a detail typed on it — what his hand-drawn chart carries */
+    const firstTx = charts.syllabi[tx][0].id
+    charts.layouts[tx][firstTx] = { ...charts.layouts[tx][firstTx], x: 1234, y: 567 }
+    charts.eventInfoBySyl[tx] = { ...(charts.eventInfoBySyl[tx] || {}), [firstTx]: { hrs: '9.9 Hrs' } }
+    /* the file order puts Tx first */
+    const raw = FMT.buildFile({ savedAt: '2026-09-28T00:00:00Z', charts })
+    const { out, report } = bakeCharts(raw, data)
+    expect(out.DEFAULT_LAYOUTS['Tx 2026'][firstTx]).toMatchObject({ x: 1234, y: 567 })
+    expect(out.EVENT_INFO_BY_SYL['Tx 2026'][firstTx].hrs, 'the detail lands on Tx, under its shipped name').toBe('9.9 Hrs')
+    expect(out.EVENT_INFO[firstTx] || {}, 'never into the base table (D126)').toEqual(DATA.EVENT_INFO[firstTx] || {})
+    expect(report.baked).toEqual(['Tx 2026', '2026'])
+    expect(out.DEFAULT_SYL_ORDER, 'the two baked keep the file’s order, in the slots they had').toEqual(['2024', 'Tx 2026', '2026', 'A/G - A/A 2026'])
+    expect(report.untouched, 'the charts the file does not carry are left').toEqual(['2024', 'A/G - A/A 2026'])
+    expect(data.DEFAULT_LAYOUTS['Tx 2026'][firstTx].x, 'the data handed in is not changed').not.toBe(1234)
+
+    /* a chart made in the app is reported, not baked */
+    const custom = { ...charts, order: [...charts.order, 'sczz9'], syllabi: { ...charts.syllabi, sczz9: charts.syllabi[tx] }, layouts: { ...charts.layouts, sczz9: charts.layouts[tx] }, sylcat: [...charts.sylcat, { id: 'sczz9', name: 'MY DRAFT' }] }
+    const r2 = bakeCharts(FMT.buildFile({ savedAt: '2026-09-28T00:00:00Z', charts: custom }), data)
+    expect(r2.report.custom).toEqual(['MY DRAFT'])
+    expect(r2.out.SYLLABI['MY DRAFT'], 'not baked').toBeUndefined()
+
+    /* an event with no position refuses the whole bake */
+    const broken = JSON.parse(JSON.stringify(charts)); delete broken.layouts[tx][firstTx]
+    expect(() => bakeCharts(FMT.buildFile({ savedAt: '2026-09-28T00:00:00Z', charts: broken }), data)).toThrow(/no position/)
+
+    /* a file older than the current format is refused with what to do */
+    expect(() => bakeCharts({ ...raw, version: 2 }, data)).toThrow(/export a fresh/i)
+
+    /* no student name may reach the shipped data: a roster name found in it refuses */
+    const students = { courses: [{ id: 'cabc', name: 'ABC' }], sylcat: charts.sylcat, byCourse: { cabc: { plan: {}, lulls: {}, pace: {}, bySyllabus: { [tx]: { roster: [{ id: 'e1', name: firstTx }], marks: {}, dates: {} } } } } }
+    expect(() => bakeCharts(FMT.buildFile({ savedAt: '2026-09-28T00:00:00Z', charts, students }), data)).toThrow(/student name/i)
+  })
+})
