@@ -1263,8 +1263,20 @@ function currentBindNow(di:any){ const d=DAYS[di];
    edited request's times, a Quals or posting change. Nothing "clears" it: validity is recomputed on every read,
    so putting the change back restores the four (AM11). On a day not yet published nothing is pending (no issued
    version to differ from) and the key is '' — its content axes above are the whole binding, as before. */
+/* …AND A CURRENT GROUND ROW IS NAMED BY ITS ID, NOT ITS PLACE ([AMEND-SMALL-SEEN] 9, 28 Sep 26 — found by the walk,
+   sf-d9-sort.mjs, after the digest was made to read the rows as shown). The comparison addresses a ground row by its
+   STORED position ("gr:1.3.prog" — the jump needs the real cell), so on a published day with a row added and waiting,
+   "Sort" renamed the added rows' addresses and the four fell although nothing on screen moved and the count held. Here —
+   and only here, the signature's copy — an address naming a row of the CURRENT day (an add, a change) is rewritten to
+   that row's id; one naming the issued day (a delete, a hole — `was`) keeps its issued position, which never moves. A
+   real re-order still clears the four (the ORDER entry, and the digest bound as shown); a legacy row with no id keeps
+   its position. A binding stored before this re-signs once (demo data — D56). */
 function pendingKey(di:any):string{
-  return dayDelta(di).map((e:any)=>`${e.addr}${'␟'}${e.kind}${'␟'}${e.from??''}${'␟'}${e.to??''}`).sort().join('\n');}
+  const g=(DAYS[di]&&DAYS[di].ground)||[];
+  const addr=(e:any)=>{ const a=String(e.addr); if(e.kind==='delete'||e.was)return a;
+    const m=/^(gr?):(\d+)\.(\d+)(.*)$/.exec(a); if(!m||+m[2]!==+di)return a;
+    const r=g[+m[3]]; return r&&r.rid?`${m[1]}:${di}.@${r.rid}${m[4]}`:a; };
+  return dayDelta(di).map((e:any)=>`${addr(e)}${'␟'}${e.kind}${'␟'}${e.from??''}${'␟'}${e.to??''}`).sort().join('\n');}
 /* set a role's signer through the ONE sanctioned write path (ui/Shell.tsx). A
    truthy signer binds that role to the current content; clearing a role drops its
    binding. Tests / a legacy demo book that write signOf(di)[role] directly leave

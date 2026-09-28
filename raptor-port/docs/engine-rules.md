@@ -2474,9 +2474,15 @@ line (`docs/superpowers/specs/2026-09-24-amendment-behaviour-register.md`).**
   the signature's digest keyed them by STORED position, so "Sort" on a published day (it re-orders the array only) took
   all four signatures down while "no changes to publish" stood beside them. `publish.ts currentBindNow` now digests a
   copy of the day whose ground rows are in SHOWN order, binding content and shown order together; the separate `gord`
-  (the shown order's positions) is retired and always ''. A real re-order by hand (`gman`) still takes the four down,
-  putting it back restores them; the Common Programme's and duties' Sort still do (their shown order IS their stored
-  order). A binding stored before this re-signs once (demo data, D56). Pinned by `engine/signsort.test.ts`.
+  (the shown order's positions) is retired and always ''. **And on a published day with changes waiting** (found by the
+  walk, `scripts/handpass/sf/sf-d9-sort.mjs`): the pending comparison the signature also binds (`pd`) names an added
+  ground row by its stored position ("gr:1.3.prog" — the jump needs the real cell), so Sort renamed the waiting rows and
+  the four fell with "2 pending" unchanged. `publish.ts pendingKey` now names a CURRENT ground row by its id; an address
+  naming the ISSUED day (a delete, or a hole — a sub-cell gone from a surviving row, marked `was` by
+  `canonical.ts canonicalDiff`) keeps its issued position, which never moves. A real re-order by hand (`gman`) still
+  takes the four down, putting it back restores them; the Common Programme's and duties' Sort still do (their shown order
+  IS their stored order). A binding stored before this re-signs once (demo data, D56). Pinned by `engine/signsort.test.ts`
+  (a never-published day, and a published one with rows waiting and an extra taken off).
 - **The Original keeps its signers (D95, D102).** `setDayApproved` stores `sign:{[di]:names}` on `SCHED.orig[di]`
   before it clears the four, as `alIssue` always did on an AL; `verSigners(di, ver)` reads any version's.
 - **A load puts back what the version filed (D98, AM6).** `loadVersionToWorkingCopy` sets every request covering the

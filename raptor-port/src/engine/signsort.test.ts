@@ -8,7 +8,7 @@
    are shown in stored order, so their Sort IS a change on screen). */
 import { beforeEach, describe, expect, it } from 'vitest'
 import { DAYS } from './data'
-import { SCHED, setSign, signShown, SIGN_ROLES } from './publish'
+import { SCHED, setSign, signShown, SIGN_ROLES, signOf, setDayApproved, dayDelta } from './publish'
 import { sortGround, sortProg } from './reorder'
 import { ensureRowIds } from './rowids'
 
@@ -76,5 +76,48 @@ describe('what still takes them down — a change he can see', () => {
     expect(allSigned()).toBe(true)
     expect(sortProg(D)).toBeTruthy()
     expect(allSigned(), 'the programme re-ordered on screen — sign again').toBe(false)
+  })
+})
+
+/* ON A PUBLISHED DAY WITH CHANGES WAITING (found by the walk, scripts/handpass/sf/sf-d9-sort.mjs, 28 Sep 26). There the
+   signature also binds the pending comparison (D103, `pd`), which names an added ground row by its STORED position — so
+   "Sort" renamed the waiting rows and the four fell although nothing on screen moved and "2 pending" held. The pending
+   key now names a current ground row by its id; the issued day's own positions (a delete, a removed extra) never move. */
+describe('Sort on a PUBLISHED day with ground rows waiting to go out', () => {
+  const P = 1                                   // Tuesday
+  const signP = () => SIGN_ROLES.forEach((r: any) => setSign(P, r[0], WHO[r[0]]))
+  const shownP = () => SIGN_ROLES.map((r: any) => signShown(P)[r[0]])
+  const heldP = () => shownP().every((w: string, i: number) => w === WHO[SIGN_ROLES[i][0]])
+  const publishP = () => { ensureRowIds(DAYS); const g = signOf(P); Object.assign(g, WHO); setDayApproved(P, true) }
+  it('two rows added in the wrong order: Sort keeps the four (nothing shown moved, the count holds)', () => {
+    publishP()
+    DAYS[P].ground.push({ prog: 'SF LATE ROW', str: '10:00', end: '', who: '', rmks: '' })
+    DAYS[P].ground.push({ prog: 'SF EARLY ROW', str: '08:00', end: '', who: '', rmks: '' })
+    DAYS[P].gman = false; ensureRowIds(DAYS)
+    const pending = dayDelta(P).length
+    signP()
+    expect(heldP(), 'signed over the two waiting rows').toBe(true)
+    expect(sortGround(P), 'Sort re-ordered the stored rows').toBeTruthy()
+    expect(dayDelta(P).length, 'the count holds').toBe(pending)
+    expect(heldP(), 'and so do the four').toBe(true)
+  })
+  it('an extra taken off a ground row (a line naming the ISSUED row): Sort keeps the four', () => {
+    const i = DAYS[P].ground.findIndex((r: any) => r && r.str)
+    DAYS[P].ground[i].more = ['bane']
+    publishP()
+    DAYS[P].ground[i].more = []                  // the extra comes off — a line in the comparison
+    DAYS[P].ground.push({ prog: 'SF EARLY ROW', str: '00:30', end: '', who: '', rmks: '' })   // a row stored last, shown first
+    DAYS[P].gman = false; ensureRowIds(DAYS)
+    signP()
+    expect(heldP()).toBe(true)
+    sortGround(P)
+    expect(heldP(), 'the removed extra is named by its issued place, which Sort cannot move').toBe(true)
+  })
+  it('THE CONTROL — a change made after signing still clears them', () => {
+    publishP()
+    DAYS[P].ground.push({ prog: 'SF ROW', str: '10:00', end: '', who: '', rmks: '' }); ensureRowIds(DAYS)
+    signP()
+    DAYS[P].ground[DAYS[P].ground.length - 1].prog = 'SF ROW RENAMED'
+    expect(heldP()).toBe(false)
   })
 })
