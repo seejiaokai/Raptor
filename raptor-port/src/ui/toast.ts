@@ -2,9 +2,34 @@
 import { VIEW_RESET } from '../state/view'
 const $=(id:any)=>document.getElementById(id)
 export let toastT:any=null;
+/* ONE PRESS, ONE MESSAGE ([AMEND-SMALL-SEEN] 1, 28 Sep 26 — the amendment re-test's walker W1: Saturday's "Published AL1 ·
+   14 items" was replaced in the same instant by the OIL check's warning, so the person only ever saw the warning). While
+   a batch is open every toast is COLLECTED instead of shown; when it closes they are said as one line — in order, a
+   repeat said once, in the strongest colour any of them asked for (hard > warn > plain). A throw inside drops them (the
+   command rolled back; nothing it said is true). Only the publish command opens one (state/sched-commit.ts
+   commitPublish, through HOOKS.toastBatch) — scoped, never a global "same breath" join: other code says a failure after
+   a success on purpose (Astra 03). A batch opened inside a batch is the outer one's. */
+let BATCH:Array<{msg:string,kind:any}>|null=null;
+const RANK=(k:any)=>k==='hard'?3:k==='warn'?2:1;
+export function toastBatch<T>(fn:()=>T):T{
+  if(BATCH)return fn();
+  BATCH=[];
+  let out:T, ok=false;
+  try{ out=fn(); ok=true; }
+  finally{
+    const got=BATCH; BATCH=null;
+    if(ok&&got.length){
+      const said:string[]=[]; let kind:any=undefined;
+      for(const m of got){ if(m.msg&&!said.includes(m.msg))said.push(m.msg); if(RANK(m.kind)>RANK(kind))kind=m.kind; }
+      if(said.length)toast(said.join(' · '),kind);
+    }
+  }
+  return out!;
+}
 /* kind==='warn' tints the toast amber — used when something was allowed but is
    not right, e.g. dropping crew who are not current for the shift. */
 export function toast(msg:any,kind:any){
+  if(BATCH){ BATCH.push({msg:String(msg==null?'':msg).trim(),kind}); return; }
   let t=$('toastEl'); if(!t){t=document.createElement('div');t.id='toastEl';
     /* above the scheduler board (400) and the drag ghost (520) — a toast raised
    from inside the board used to render behind it */

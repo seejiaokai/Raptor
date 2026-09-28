@@ -3,8 +3,8 @@ import { createRoot } from 'react-dom/client'
 import './ui/scheduler.css'
 import { initStore, setToast, histInit, weekStashSnap, weekDirty } from './state/store'
 import { resyncSchedBaseline } from './state/sched-commit'
-import { storeBackend } from './engine/hooks'
-import { toast } from './ui/toast'
+import { storeBackend, HOOKS } from './engine/hooks'
+import { toast, toastBatch } from './ui/toast'
 import { App } from './ui/App'
 import { initStore as lwInitStore, lwHistInit } from './leavewar/state/store'
 import { installDemoWorld } from './leavewar/state/demoworld'
@@ -46,6 +46,7 @@ async function boot(): Promise<void> {
   storeBackend.impl = settingsAdapter(wb)
   useStorageImpl(trackerTarget(wb))
   setToast(toast)
+  HOOKS.toastBatch = toastBatch   // one press, one message — only the publish command opens one ([AMEND-SMALL-SEEN] 1)
 
   /* inputs / roster / plan layer / stashed weeks: whiteboard → singletons,
      BEFORE initStore so its seeds know to stand down (state/persist.ts) */

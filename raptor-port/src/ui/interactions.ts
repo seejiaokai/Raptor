@@ -8,6 +8,7 @@ import { INPUTS, DATES, withRemarksTail, inpId, defaultAllday } from '../engine/
 import { DAYS } from '../engine/data'
 import { PEOPLE, isSpecial } from '../engine/people'
 import { dayApproved, signClear, markEdit, dayCurVer, dayDiscardCount, verLabel, protectedWeek, alColor, nextSeq, daySnapOf, rowsLeftOut } from '../engine/publish'
+import { verSeq } from '../engine/verid'
 import { posKey } from '../engine/rowids'
 import { closePendList } from './pendlist'
 import { openChanges } from './changesopen'
@@ -925,12 +926,25 @@ export function routeClick(e: MouseEvent) {
       HOOKS.toast(`Heads up — ${DAYS[di]?.dow || 'this day'}’s OIL credits are bid against on the Leave War. Unpublishing withdraws them until you republish. Tap again to confirm.`, 'warn')
       notify(); return
     }
+    const armedWithdraw = oilCreditBidAgainst(di)       // the two-tap path: its OIL credits leave the war too
     view.setUnpubArm(null)
+    const was = dayCurVer(di)                              // the version this press withdraws
     // Fable#4 — commitUnpublish refuses (silent CmdRefused) if the day has no
     // retractable latest version (e.g. an orphaned approved day whose snapshot won't
     // resolve). The gate can't see that, so surface the refusal rather than no-op.
     const r = commitUnpublish(di)
     if ((r as any).ok === false) HOOKS.toast('That day can’t be unpublished right now.', 'warn')
+    else if (was != null) {
+      /* UNPUBLISH SAYS WHAT IT DID ([AMEND-SMALL-SEEN] 1, 28 Sep 26 — AM15b: an action says what it did; it said nothing,
+         only the tag changed). Worded from what came off (Fable F6): an ALn is withdrawn and its changes wait on the
+         working copy again, with the version before it the issued schedule; the Original makes the day a draft again. */
+      const dow = DAYS[di]?.dow || 'The day', wl = verLabel(was)
+      const now = dayApproved(di) ? dayCurVer(di) : null
+      HOOKS.toast((verSeq(was) === 0 || now == null
+        ? `${dow} unpublished — it is a draft again; publishing reissues the ${wl}`
+        : `${dow}: ${wl} withdrawn — its changes are back on the working copy as pending; ${verLabel(now)} is the issued schedule; publishing again reissues ${wl}`)
+        + (armedWithdraw ? ' · its OIL credits leave the Leave War until it is published again' : ''))
+    }
     notify(); return
   }
   /* Back to live copy — the home button on the version cluster (owner, 16 Aug
