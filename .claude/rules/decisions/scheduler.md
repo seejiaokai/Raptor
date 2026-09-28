@@ -46,7 +46,7 @@ speed — `raptor-port/docs/performance.md`; what is stored — `raptor-port/doc
 
 | # | Date | The rule |
 |---|---|---|
-| D360 | 28 Sep 26 | AN ALL AVAIL / ALL ON A ROW WITH A START AND NO END SHOWS ITS COUNT, WORKED OUT OVER THE SCHEDULE'S OWN ONE-HOUR DEFAULT (the Logic tab's open-end setting), AND IT EARNS NOBODY OIL — AND THE APP TELLS THE ADMIN SO: "no OIL worked out — this row has no end time" (his words, in substance). |
+| D360 | 28 Sep 26 | ALL AVAIL / ALL on a row with a start but no end: count availability over the schedule’s one-hour Logic default and show the assumed time. Credit no OIL. Admin OIL views say “No OIL worked out — this row has no end time”; the public view shows only the assumption. Frozen at publication; changes are pending. No start: a ? opens the existing reason. |
 | D346 | 28 Sep 26 | Three readings of the changes window stand as built: changes that belong to no single item sit under one group, "The day"; on a desktop a remark's gold dot sits at the far right of its column; in the week view an input covering two days shows as an item under each day. |
 | D345 | 28 Sep 26 | Both mock-ups are the designs of record: [CHG-BY-ITEM] — the changes window grouped by item (the default, "Group by: Item / Who"), the latest-changed on top, every group open; [HIST-PHONE-HIDE] — the phone's "Hide ▾" to a slim bar and a gold dot on every detail with a history. |
 | D344 | 28 Sep 26 | THE HISTORY HINT READS, IN HIS WORDS: "History on: Tap a gold dot on the schedule". |
