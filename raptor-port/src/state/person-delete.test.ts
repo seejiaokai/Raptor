@@ -18,10 +18,10 @@ import { initStore, resetSession, notify, weekStashSnap, weekDirty } from './sto
 import { Whiteboard } from '../storage/whiteboard'
 import { wirePersist } from './persist'
 import { HOOKS } from '../engine/hooks'
-import { accountsLoad, accountByName, signIn, sessionFor } from './accounts'
+import { accountsLoad, accountByName, signIn, sessionFor, ACCOUNTS_LIST } from './accounts'
 import { PLANPUCKS } from './plan'
 import { newPersonProblem } from './roster-add'
-import { deletePerson, deleteCutoff, personKeysOnDay, effectiveToday } from './person-delete'
+import { deletePerson, deleteCutoff, personKeysOnDay, effectiveToday, deletedRestoreProblem } from './person-delete'
 import { loadVersionToWorkingCopy, ROWSLEFT, rowsLeftSaid } from '../engine/drafts'
 
 const mem: Record<string, string> = {}
@@ -232,6 +232,22 @@ describe('PO5 — kept underneath, gone from every list; his callsign free; his 
     expect(newPersonProblem({ cs, ini: '', seat: 'FCP', cat: 'C' }), 'a new person may take it').toBe(null)
     expect(accountByName('hex'), 'his account is gone').toBeUndefined()
     expect(signIn('hex', 'x').kind, 'signing in again asks for access afresh (D280 (3), D287 (4))').toBe('new')
+  })
+})
+
+/* B4 of the change-recording re-test (28 Sep 26) — a DELETE IS FINAL for the man and his account too (D287). Once the one
+   Undo takes roster and settings steps ([UNDO-ROSTER-SETTINGS]), an older step whose image holds him un-deleted, or an
+   accounts list holding his account, would put him back; a delete of a man the war does not hold writes no posting record,
+   so nothing else would keep it dead (Fable's red team 10 — built BEFORE the cutover). */
+describe('B4 — undo and redo never put a deleted man, or his account, back', () => {
+  it('a roster image of him un-deleted, and an accounts list holding his account, are refused; his deleted image is not', () => {
+    const before = clone((PEOPLE as any)[HIM])
+    const accts = clone(ACCOUNTS_LIST)
+    expect(deletePerson(HIM)).toBe(null)
+    expect(deletedRestoreProblem([{ op: 'put', collection: 'people', id: HIM, after: before }])).toMatch(/Hex has been deleted/)
+    expect(deletedRestoreProblem([{ op: 'put', collection: 'settings', id: 'accounts', after: accts }])).toMatch(/Hex has been deleted/)
+    expect(deletedRestoreProblem([{ op: 'put', collection: 'people', id: HIM, after: clone((PEOPLE as any)[HIM]) }])).toBe(null)
+    expect(deletedRestoreProblem([{ op: 'put', collection: 'settings', id: 'accounts', after: clone(ACCOUNTS_LIST) }])).toBe(null)
   })
 })
 
