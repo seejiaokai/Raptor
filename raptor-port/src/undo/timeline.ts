@@ -19,7 +19,7 @@
 import {
   onCommit, commandStream, revisionOf, definePermission, anyone, deriveActor,
 } from '../command'
-import { commitAs } from '../command/commit'
+import { commitAs, CmdRefused } from '../command/commit'
 import type {
   Actor, Change, CommitEnvelope, EnlistableStore, Module, RecordEntry, Scope,
 } from '../command'
@@ -395,8 +395,13 @@ function moduleOfColl(collection: string): Module {
    roster change re-captures the window the admin had just undone. The undo would
    read as reversed on screen and stand in the record. */
 const deferredCollections = new Set<string>(['lw.postouts'])
+/* D350 (28 Sep 26) by the ACT, not only by the record it writes: adding a person (alone, with his sign-in, or a request
+   given access as a new person), Archive, Restore / Restore as, Delete and a posting are not undone in this build — each
+   has its own way back. Every production door writes the war's stints (lw.postouts) and is caught above too; this is
+   the belt for a door that ever skips the post-in date. Lift with `[UNDO-POSTING-RECORD]`. */
+const NOT_UNDONE_TYPES = new Set<string>(['person.add', 'account.addNew', 'access.approveNew', 'person.archive', 'person.restore', 'person.delete', 'lw.postout'])
 function touchesDeferred(entry: UndoEntry): boolean {
-  return entry.forward.some(ch => deferredCollections.has(ch.collection))
+  return NOT_UNDONE_TYPES.has(entry.type) || entry.forward.some(ch => deferredCollections.has(ch.collection))
 }
 function isEligible(entry: UndoEntry): boolean {
   for (const m of modulesOf(entry)) if (!cutover.has(m)) return false
@@ -613,6 +618,11 @@ function applyRestore(entry: UndoEntry, changes: Change[], dir: 'undo' | 'redo')
       scope: entry.scope,
       expectedRevs,
       apply: (txn) => {
+        /* THE RULES AGAIN, INSIDE, before any write (the change-recording plan §11.3 — Astra's red team 2): the view-snap
+           ran between the first ask and here (a week loaded, projections ran), so the world the first ask saw may have
+           moved. A refusal now rolls back nothing, because nothing was written — and keeps its own words. */
+        const again = (hooks.deadRefusal && hooks.deadRefusal(changes, dir)) || (hooks.restoreRefusal && hooks.restoreRefusal(changes, dir))
+        if (again) throw new CmdRefused(again)
         const relock = hooks.reinstallLocks ? hooks.reinstallLocks() : undefined
         try {
           // C5 — enlist EVERY store in the closure FIRST, so a later store's refusal

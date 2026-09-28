@@ -211,3 +211,19 @@ describe('A1-F1 — a later change that can never be undone is never "undo that 
     expect(r.reason).toMatch(/can’t be undone/)
   })
 })
+
+describe('§11.3 (Astra’s red team 2) — the restore rules are asked again INSIDE the restore, before any write', () => {
+  it('a rule that passes before the snap and fails after it refuses whole, in its own words', () => {
+    const s = makeStore('S', 'settings'); s.set('x', { v: 1 })
+    registerUndoStore(s.store, ['settings']); setCutoverModules(['settings'])
+    edit(s.store, { module: 'settings' }, () => s.set('x', { v: 2 }))
+    let asked = 0
+    setUndoHooks({ currentActor: () => BOSS, restoreRefusal: () => (++asked >= 2 ? 'Hex is taken on the roster now — rename one of them first.' : null) })
+    const r = globalUndo()
+    expect(asked).toBe(2)
+    expect(r.ok).toBe(false)
+    expect(r.reason).toBe('Hex is taken on the roster now — rename one of them first.')
+    expect(s.get('x')).toEqual({ v: 2 })
+    expect(_timelineEntries()[0].undone).toBe(false)
+  })
+})

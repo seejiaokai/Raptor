@@ -16,6 +16,7 @@
    Ordinary TS/React-layer style (new file). */
 import { logReversed } from './changelines'
 import { peopleStore, settingsStore } from './people-settings-commit'
+import { rosterRestoreProblem } from './roster-restore'
 import { deletedRestoreProblem } from './person-delete'
 import {
   installUndo, registerUndoStore, setCutoverModules, setUndoHooks,
@@ -164,7 +165,9 @@ export function installGlobalUndo(): void {
     resolvePublishDay,
     postRestore,
     /* the war's own rules on what a restore may put back — a bid over a medical filed since (W3-F8) */
-    restoreRefusal: (changes, dir) => restoreBlocker(changes as any, dir, restoreAbsencesOf(changes as any)),
+    /* …and B5 (the change-recording re-test): what a roster or settings restore must re-check — one callsign on the
+       roster, the accounts' guards, a man still named somewhere (state/roster-restore.ts) */
+    restoreRefusal: (changes, dir) => restoreBlocker(changes as any, dir, restoreAbsencesOf(changes as any)) || rosterRestoreProblem(changes as any, dir),
     /* [POST-OUT-OUTCOMES]: a step that would put a deleted man back is passed over, never taken (person-delete.ts) */
     deadRefusal: (changes) => deletedRestoreProblem(changes as any),
     /* D148 — the refusal says who: the callsign he goes by (a rename moves nothing, so it is read live) */
