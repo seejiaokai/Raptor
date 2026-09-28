@@ -1245,3 +1245,18 @@ resolved statuses always carry their resolution date
 **Suggested improvement:** When a plan is written from a backlog item, scan the item for alternatives it names ("or", "either", "one of") and list each as an owner question unless a recorded ruling already picks one; keep the brief's "is anything the plan decided itself actually the user's?" question in every plan red team.
 
 **Principle:** Alternatives written into a task by a previous session are an unanswered question, not an invitation to choose; having a good reason for one option does not make it yours to pick.
+
+### Observation 332: "Compare against main" for a measured number — swap the touched files from main, rebuild, measure, restore
+
+**Status:** OPEN
+**Date:** 2026-09-28
+**Session context:** Tracker leftovers — the walk measured the Tracker's bar at 87px (two rows) at 1060–1150px wide and it looked like a regression from the save-corner change. Swapping the two touched files (the stylesheet and the header component) back to origin/main's versions, rebuilding in place, running the same walk script, then copying the branch's files back showed main is 87px there too — pre-existing, not this work — in five minutes, with no second checkout or install.
+**Skill:** bug-check order (raptor-port/docs/bug-check-order.md §4 "what to do with what they hand back", step 3 "compare against main")
+**Type:** internal
+**Phase/Area:** Walk — dispositioning a measured difference
+
+**Issue:** The order says to compare against main before calling anything newly introduced, but gives no cheap way to do it for a runtime measurement (a height, a row count) that only a built bundle shows; a second worktree with its own install is slow, so the comparison tends to be skipped or guessed.
+
+**Suggested improvement:** Add a line to §4 step 3 (or §7): for a measured number, copy the files the change touched aside, `git show origin/main:<path> > <path>` for each, rebuild, run the SAME walk script into a scratch folder, then copy the branch's files back and `git diff --stat` them to prove they are restored. Never while walkers are served that build.
+
+**Principle:** A baseline you can measure in minutes gets measured; one that costs a fresh checkout gets assumed — make the honest comparison the cheap one.
