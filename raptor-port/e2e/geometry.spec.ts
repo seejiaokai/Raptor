@@ -5109,3 +5109,62 @@ test('the New person fields fit the Users pane on a phone (add and approve)', as
   expect(await page.getAttribute('#apvModeNew', 'aria-pressed')).toBe('true')
   expect(await fits('[data-approving]'), 'the approve form').toEqual({ bad: [], scrollX: false })
 })
+
+/* THE "SAVING…" NOTE NEVER MOVES THE TOP BAR ([LW-FIGSEL-FLAKE], 28 Sep 26). The note came and went IN the bar's row, after
+   the tabs, for the third of a second each save takes (the postman's coalesce, storage/postman.ts) — after EVERY change. A
+   bar with less room to spare than the note needs wrapped onto a second line and back: on a 1366-wide desktop (View-only
+   Sched, Inputs, Quals, the Leave War, Admin — measured 57px → 103px) the whole page dropped ~46px under the pointer and
+   jumped back; on GitHub's machines (wider fonts) the Leave War did it at 1440, under the figure-drag test's mouse — the
+   flaky test that found it. On a phone the bar scrolls sideways instead, so the note pushed Undo, Redo and the changes
+   clock ~46px to the right as a change landed (the owner's 2 Sep 26 rule: a control tapped again and again must not move
+   under the finger). What is sampled is every frame from the change until the save lands: the bar's height and every
+   button's place, and the note itself — seen, and on screen where a person can read it. */
+async function saveWatch(page: Page) {
+  return page.evaluate(() => new Promise<{ seen: boolean; moved: string[]; noteOk: boolean }>(done => {
+    const bar = document.querySelector('.topbar') as HTMLElement
+    const snap = () => `h${Math.round(bar.getBoundingClientRect().height)} ` + [...bar.querySelectorAll('button, .nav a')]
+      .filter(b => (b as HTMLElement).offsetParent).map(b => { const r = b.getBoundingClientRect(); return `${Math.round(r.left)},${Math.round(r.top)}` }).join(' ')
+    const first = snap(), moved: string[] = []
+    let seen = false, noteOk = false, frames = 0
+    const tick = () => {
+      const note = document.querySelector('.topbar > .savestat') as HTMLElement | null
+      if (note) {
+        seen = true
+        /* "on top": a press there would reach it — asked with the note taking the press for the moment of the question
+           ("Saving…" lets presses through, so the browser's hit test skips it otherwise) */
+        const pe = note.style.pointerEvents; note.style.pointerEvents = 'auto'
+        const r = note.getBoundingClientRect(), hit = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2)
+        note.style.pointerEvents = pe
+        /* …and UNDER the bar, never over its second line (the bar is one line or two by page and width — its bottom is
+           measured, ui/SaveStatus.tsx) */
+        const under = r.top >= bar.getBoundingClientRect().bottom
+        if (r.width > 0 && under && r.bottom <= innerHeight && r.left >= 0 && r.right <= innerWidth && !!hit && note.contains(hit)) noteOk = true
+      }
+      const now = snap()
+      if (now !== first && !moved.includes(now)) moved.push(now)
+      if (++frames > 180 || (seen && !note)) done({ seen, moved: moved.length ? [first, ...moved] : [], noteOk })
+      else requestAnimationFrame(tick)
+    }
+    requestAnimationFrame(tick)
+    /* a change through the one write path — the week is saved, so the note comes up */
+    const w = window as any
+    w.fillSlot('1.0.0.0.p', w.DAYS[1].waves[0].formations[0].aircraft[0].p === 'casper' ? 'bane' : 'casper'); w.afterSchedMutate()
+  }))
+}
+for (const [label, size, pages] of [
+  ['1366 desktop', { width: 1366, height: 800 }, ['viewsched', 'leavewar', 'quals', 'editsched']],
+  ['phone', PHONE, ['editsched', 'viewsched']],
+] as const) {
+  test(`${label}: the Saving… note never moves the top bar or its buttons, and it can be read`, async ({ page }) => {
+    await page.setViewportSize(size)
+    await login(page)
+    for (const pg of pages) {
+      await go(page, pg as any)
+      await page.waitForFunction(() => !document.querySelector('.topbar > .savestat'))
+      const r = await saveWatch(page)
+      expect(r.seen, `${pg}: the note came up`).toBe(true)
+      expect(r.moved, `${pg}: nothing in the bar moved while it was up`).toEqual([])
+      expect(r.noteOk, `${pg}: the note sat on screen under the bar, readable, on top`).toBe(true)
+    }
+  })
+}
