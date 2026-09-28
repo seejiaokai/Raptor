@@ -835,10 +835,10 @@ the same helper. A request filed after publication and then deleted still reads 
 row" (D175) was kept inside the loaded week only, so a request accepted onto a day of one week could be accepted again
 onto a day of another, and deleting it left the other week's row behind with nothing to answer to. A row standing on a
 week that is stored but not loaded is now read (`engine/weekstash.ts rowElsewhere`): Accept refuses and says where it
-stands ("Bane's LL is already on the programme — on Sun 19 Jul; load that week to change it"; a stored week that cannot
+stands ("Bane's Meeting is already on the programme — on Sun 19 Jul; load that week to change it"; a stored week that cannot
 be read: "Can't tell whether … already has a row on another week — load that week first"), the day's accept control on
 such a request says where it is instead ("On Sun 19 Jul"), a load or plan switch leaves such a row out and names the
-day, and deleting the request sweeps its row from every stored week. A request taken off ('r') whose row still stands on
+day; and a request whose row stands on a week that is not loaded cannot be deleted (or edited) from here — it says where to go ("Load the week of Sun 19 Jul to delete this accepted input"), and deleted from that week its row goes with it, so nothing is ever left with no request behind it. A request taken off ('r') whose row still stands on
 a loaded day is adopted back rather than duplicated ("… is on the ground programme again — its row was already there").
 The Undo on an accepted request names its day when the row is on another loaded day ("Undo · Tue"; undone: "Accept
 undone — its row came off Tuesday's programme"). Pinned by `state/reqorphan.test.ts`; the engine rule: `engine-rules.md` (a request's row and its

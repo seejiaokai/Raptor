@@ -2610,8 +2610,9 @@ before accounts; evidence `docs/handpass/2026-09-25-req-one-row.md`).**
   `oilev.ts` reads too): `acceptInput` refuses a second row (and the Accept says where the first stands); a request
   taken off ('r') whose row still stands on a loaded day is ADOPTED (acc 'g') rather than given a second row;
   `relandInputs` does not re-park such a request; a load or plan switch leaves out a row standing on another stored week
-  and names its day; and deleting a request sweeps its row from every week (`inputedit.tsx dropInputRow`, through
-  `unacceptInput`). The filing letter itself (`acc`) stays week-local — only the row is one across weeks. Pinned by
+  and names its day; a request whose row stands on a stored, unloaded week cannot be edited or deleted from here
+  (`inputedit.tsx landedOnUnloadedWeek` — "Load the week of Sun 19 Jul to delete this accepted input"); deleted where
+  its row is loaded, the row goes with it — an 'r' request's row included (`dropInputRow`, through `unacceptInput`). The filing letter itself (`acc`) stays week-local — only the row is one across weeks. Pinned by
   `state/reqorphan.test.ts`; the screen words: `ui-contracts.md` §The pending list. The load's "Discard N edits" (`dayDiscardCount`) counts against the day as the load will leave it,
   and the load no longer takes its "already at <version>" short cut when a row would be left out. Every door names each
   request left out in its sentence (toast and Edit history) through ONE body, `drafts.ts rowsLeftSaid` — "Bane · Meeting
