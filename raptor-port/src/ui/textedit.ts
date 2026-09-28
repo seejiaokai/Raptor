@@ -90,6 +90,11 @@ export function routeFocusOut(e: FocusEvent) {
     const [id, field] = ip.dataset.inp!.split('.')
     const inp = inpById(id)
     if (!inp) return                       // deleted or undone from under the caret
+    /* LEFT AS IT WAS, NOTHING IS SAVED ([HIST-PHONE-HIDE] walk, 28 Sep 26): a tap in and out of an empty "all day" cell —
+       which a phone's History invites, a tap on a dotted input row to read its story — wrote times onto the record (0
+       and 23:59, still all day) and a history line "times: all day → all day", a change nobody made */
+    const shown = field === 'rmks' ? (inp.remarks || '') : inpTimeText(inp, field)
+    if (String(ip.textContent || '').trim() === String(shown).trim()) return
     const ok = setInpField(inp, field as any, ip.textContent)
     if (ok) txtCommit()
     else heal(ip, field === 'rmks' ? (inp.remarks || '') : inpTimeText(inp, field))

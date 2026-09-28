@@ -83,6 +83,17 @@ describe('an input', () => {
     expect(lines().map(l => l.lbl.split(' · ').pop())).toEqual(['type', 'remarks'])
   })
 
+  /* the line says what a reader sees: stored times rewritten under an all-day record ("all day" before and after) are no
+     change to it — a Save that changed nothing wrote "times: all day → all day" ([HIST-PHONE-HIDE] walk, 28 Sep 26) */
+  it('times that read the same before and after are no line; a real change of times is one', () => {
+    const r = add({ person: 'bane', date: 'Aug 1', yr: 2026, allday: true, type: 'LL', remarks: '' })
+    elogClear()
+    writeInputs(() => { r.s = 0; r.e = 1439 })
+    expect(lines(), 'still all day').toHaveLength(0)
+    writeInputs(() => { r.allday = false; r.s = 540; r.e = 660 })
+    expect(lines().map(l => [l.from, l.to])).toEqual([['all day', '09:00–11:00']])
+  })
+
   it('deleted: ONE line, on the days it covered', () => {
     const r = add({ person: 'bane', date: 'Aug 1', yr: 2026, allday: true, type: 'LL', remarks: '' })
     elogClear()

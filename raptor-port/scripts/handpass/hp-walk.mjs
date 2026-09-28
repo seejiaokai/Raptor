@@ -182,17 +182,21 @@ await step('H6', 'a tap (phone) or a hover (desktop) on a dotted detail raises i
   if (PHONE) { await page.evaluate(() => window.disarmSlot && window.disarmSlot()); await page.waitForTimeout(200) }
   return { ok: !!b && /Outlaw|Casper/.test(b), note: String(b).slice(0, 120), pic }
 })
-await step('H24', 'an input row (Ranger's leave, under Unavailable) answers with its OWN bubble — "Ranger · LL", its filing on that day', async () => {
+await step('H24', 'an input row (Ranger\'s leave, under Unavailable) answers with its OWN bubble — "Ranger · LL", its filing on that day; the tap writes nothing', async () => {
   const row = page.locator('#eWeek .day[data-day="1"] [data-inprow][data-histdot]').first()
   if (!(await row.count())) return { ok: false, note: 'no dotted input row on Tuesday' }
   await row.scrollIntoViewIfNeeded(); await page.waitForTimeout(200)
+  const n0 = await page.evaluate(() => window.ELOG.rows.length)
   if (PHONE) await row.tap(); else await row.hover()
   await page.waitForTimeout(400)
   const b = await page.$eval('.histbub', e => ({ what: e.querySelector('.hb-what')?.textContent || '', txt: e.textContent || '' })).catch(() => null)
   const pic = await shot('input-bubble')
   if (PHONE) { await page.evaluate(() => window.disarmSlot && window.disarmSlot()); await page.keyboard.press('Escape').catch(() => {}); await page.waitForTimeout(200) }
   else await page.mouse.move(2, 2)
-  return { ok: !!b && /Ranger · LL/.test(b.what) && !/Casper|Outlaw/.test(b.txt), note: JSON.stringify(b).slice(0, 160), pic }
+  await page.mouse.click(2, Math.round(H / 2)); await page.waitForTimeout(300)
+  /* the tap may land in the row's time cell: leaving it as it was saves nothing and writes no line (found by this walk) */
+  const added = await page.evaluate(n => window.ELOG.rows.slice(n).map(r => r.lbl), n0)
+  return { ok: !!b && /Ranger · LL/.test(b.what) && !/Casper|Outlaw/.test(b.txt) && added.length === 0, note: JSON.stringify({ ...b, added }).slice(0, 200), pic }
 })
 await step('H7', 'the phone bar: at the bottom, "History on · N changes" and "Show ▴"; Show brings the panel back', async () => {
   const bar = await page.$eval('.chgwin.bar', e => { const r = e.getBoundingClientRect(); return { txt: e.querySelector('.cw-barbtn')?.textContent, bottom: Math.round(innerHeight - r.bottom) } }).catch(() => null)

@@ -4,6 +4,7 @@ purpose, the named test must go red, and the file is put back byte for byte. Run
   python scripts/handpass/hp-breaks.py e2e        (the painted ones — a real browser; E2E_PORT from the environment)
 A break whose test stays GREEN is a surface with no test, by proof: the script says so and exits 1."""
 import subprocess, sys, os
+NL = chr(10)
 
 UNIT = [
     ('B1 the edit week runs the dot pass', 'src/ui/EditWeek.tsx', '    refreshHistDots(root)\n', '',
@@ -20,7 +21,7 @@ UNIT = [
      'src/ui/histbubble.test.tsx', 'a version look wears none'),
     ('B7 Hide is not the grip', 'src/ui/ChangesWindow.tsx', "    closeSel: '.win-x, .win-hide',", "    closeSel: '.win-x',",
      'src/ui/histbubble.test.tsx', 'pressing Hide never starts a drag'),
-    ('B8 the hint shows where a tap raises a bubble', 'src/ui/ChangesWindow.tsx', '{HOOKS.isPhone() && histHere ?', '{false && histHere ?',
+    ('B8 the hint shows where a tap raises a bubble', 'src/ui/ChangesWindow.tsx', '{HOOKS.isPhone() && anyDots ?', '{false && anyDots ?',
      'src/ui/histbubble.test.tsx', 'and the hint in his words'),
     ('B9 every group open by default', 'src/ui/ChangesWindow.tsx', "  const isOpen = (key: string) => CHGFOLD.has(key) ? !!CHGFOLD.get(key) : true",
      "  const isOpen = (key: string) => CHGFOLD.has(key) ? !!CHGFOLD.get(key) : false",
@@ -31,6 +32,17 @@ UNIT = [
      'src/state/changelines.test.ts', 'a man added to the roster'),
     ('B12 a move within one item is one entry', 'src/ui/changesmodel.ts', "    if (iOn.id === iOff.id) return", "    if (false) return",
      'src/ui/changesmodel.test.ts', 'a move WITHIN one item is ONE entry'),
+    # the final reads' fixes (Astra FR-02, FR-05; Fable F3) and the walk's own find (a cell left as it was)
+    ('B16 no hint or "History on" over a board look', 'src/ui/ChangesWindow.tsx', "  const histHere = CURPAGE === 'editsched' && (SBDAY == null || !DPREV.has(SBDAY))",
+     "  const histHere = CURPAGE === 'editsched' || SBDAY != null",
+     'src/ui/histbubble.test.tsx', 'while the board shows a look'),
+    ('B17 the window follows the screen', 'src/ui/ChangesWindow.tsx', '  useLayoutWatch(!!w)' + NL, '  useLayoutWatch(false)' + NL,
+     'src/ui/histbubble.test.tsx', 'turning the screen across the phone breakpoint'),
+    ('B18 a cell left as it was saves nothing', 'src/ui/textedit.ts', "    if (String(ip.textContent || '').trim() === String(shown).trim()) return" + NL, '',
+     'src/ui/inputedit.test.tsx', 'leaving a cell as it was'),
+    ('B19 the times line reads what a reader sees', 'src/state/changelines.ts', '  if (timeWords(b) !== timeWords(a)) logAction(',
+     '  if (!same([b.allday, b.s, b.e, b.half], [a.allday, a.s, a.e, a.half])) logAction(',
+     'src/state/changelines.test.ts', 'times that read the same'),
 ]
 E2E = [
     ('B13 the seat dot is painted', 'src/ui/scheduler.css', ".seat[data-histdot]:not(.tdghost):not(.dragimg)::before,", ".seat[data-nothing]::before,",

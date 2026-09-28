@@ -18,6 +18,7 @@ import { INPEDIT, setInpEdit } from './pops'
 import { PIOPEN } from '../state/view'
 import { HALF_AM, commitInputEdit, unfmt, sansOverlapRefusal } from './inputedit'
 import { HOOKS } from '../engine/hooks'
+import { ELOG } from '../engine/editlog'
 import { DATES } from '../engine/inputs'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
@@ -129,6 +130,28 @@ describe('an input edited in place', () => {
     await act(async () => { (el as HTMLElement).textContent = text })
     await act(async () => { el.dispatchEvent(new FocusEvent('focusout', { bubbles: true })) })
   }
+
+  /* A CELL LEFT AS IT WAS SAVES NOTHING ([HIST-PHONE-HIDE] walk, 28 Sep 26). A tap in and out of the empty "all day"
+     cell — which the phone's History invites, a tap on a dotted input row to read its story — wrote times onto the
+     record (0 and 23:59, still all day) and a history line "times: all day → all day": a change nobody made */
+  it('leaving a cell as it was changes nothing and writes no history line', async () => {
+    const inp: any = { person: 'pike', date: MON, allday: true, type: 'LL', remarks: 'keep', mod: 'now' }
+    await plant(inp)
+    const was = JSON.stringify(inp), n = ELOG.rows.length
+    for (const f of ['str', 'end', 'rmks']) {
+      await act(async () => { cell(inp, f).dispatchEvent(new FocusEvent('focusout', { bubbles: true })) })
+    }
+    expect(JSON.stringify(inp), 'an all-day record keeps its fields').toBe(was)
+    expect(ELOG.rows.slice(n).map(r => r.lbl), 'no history line').toEqual([])
+    const timed: any = { person: 'pike', date: MON, allday: false, s: 540, e: 660, type: 'LL', remarks: '', mod: 'now' }
+    await plant(timed)
+    const was2 = JSON.stringify(timed), n2 = ELOG.rows.length
+    for (const f of ['str', 'end']) {
+      await act(async () => { cell(timed, f).dispatchEvent(new FocusEvent('focusout', { bubbles: true })) })
+    }
+    expect(JSON.stringify(timed), 'a timed record keeps its fields').toBe(was2)
+    expect(ELOG.rows.slice(n2).map(r => r.lbl), 'no history line').toEqual([])
+  })
 
   it('a start time on an all-day row makes it timed, to the end of the day', async () => {
     const inp: any = { person: 'pike', date: MON, allday: true, s: 0, e: 1439, type: 'LL', remarks: '', mod: 'now' }

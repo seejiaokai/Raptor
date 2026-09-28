@@ -105,7 +105,9 @@ function inputLines(c: Change, env: CommitEnvelope, war: boolean): void {
   if (!same(a.person, b.person)) logAction(null, `${b.type} ${spanWords(sb)} · whose`, base({ from: cs(b.person), to: cs(a.person) }))
   if (!same(a.type, b.type)) logAction(null, `${who} · ${spanWords(sa)} · type`, base({ from: String(b.type), to: String(a.type) }))
   if (!same(sa, sb)) logAction(null, `${who} · ${what}${tail} · dates`, base({ from: spanWords(sb), to: spanWords(sa) }))
-  if (!same([b.allday, b.s, b.e, b.half], [a.allday, a.s, a.e, a.half])) logAction(null, `${who} · ${what} ${spanWords(sa)} · times`, base({ from: timeWords(b), to: timeWords(a) }))
+  /* the times as a reader sees them — stored times rewritten under an all-day record are no change to it ([HIST-PHONE-HIDE]
+     walk: a Save that changed nothing wrote "times: all day → all day") */
+  if (timeWords(b) !== timeWords(a)) logAction(null, `${who} · ${what} ${spanWords(sa)} · times`, base({ from: timeWords(b), to: timeWords(a) }))
   if (!same(b.remarks || '', a.remarks || '')) logAction(null, `${who} · ${what} ${spanWords(sa)} · remarks`, base({ from: String(b.remarks || '—'), to: String(a.remarks || '—') }))
   if (!same(b.acc || '', a.acc || '')) logAction(null, `${who} · ${what} ${spanWords(sa)} · filed`, base({ from: filWords(b.acc), to: filWords(a.acc) }))
   if (!same(b.oil, a.oil)) logAction(null, `${who} · ${what} ${spanWords(sa)} · OIL`, base({ from: oilWords(b.oil), to: oilWords(a.oil) }))
