@@ -57,10 +57,16 @@ the later merge keeps both (D78).
   `backlog-archive.mjs --rulings` after merging `main`.
 - **Ports:** preview 4173 (`raptor-walk`, running), browser tests `E2E_PORT=4190`. **Rulings:** D347–D353 used, D354–D359
   free. Nothing to `main` without his "merge live".
-- **The rulings slim-down (`claude/docs-rulings-slim-down-e83c74`, D390–D399), if it merges first:** merge `main` in,
-  keep BOTH sides of any conflict in a rulings file, then run `node raptor-port/scripts/backlog-archive.mjs --rulings` (it
-  converts full rows to the short form and drops duplicates; the chat ships a one-command resolver). New rows are still
-  added in full form at the top of the area table. Old rows this branch edited: D67 (narrowed by D353), D182 (spent).
+- **The rulings slim-down (`claude/docs-rulings-slim-down-e83c74`, D390–D399; APPROVED, D390) — if it merges first:**
+  `git merge origin/main`, then `node raptor-port/scripts/backlog-archive.mjs --rulings --merge` (NOT `--take-both`). It
+  replays this branch's ruling changes per D-number, three-way (the new rows, D67's narrowing, D182 spent); a row both
+  sides edited stops and shows both. It PRINTS every non-row line this branch changed in a rulings file — the two "Also
+  read" edits (leave-war.md, tracker.md) and the ranges sentence in DECISIONS.md — to re-apply by hand (keep every
+  range), and the short lines it generated from our headings as UNREAD: one reviewer (Astra first, D353) reads them. It
+  may list D350 for the new People & accounts area. After it lands, a mark on an OLD row lives in its full row under
+  `.claude/decisions-full/`. **New rows stay full form at the top of the table; the FIRST bold sentence of "What it
+  means" is the one line every chat sees — the rule on its own, at most 350 characters, no "|"** (D347–D353 checked,
+  28 Sep 26). Its plan: `raptor-port/docs/superpowers/plans/2026-09-28-rulings-slim-down-plan.md` on its branch.
 <!-- /now -->
 
 <!-- now:claude/docs-tidy-subheads-audit-ec8f87 -->
