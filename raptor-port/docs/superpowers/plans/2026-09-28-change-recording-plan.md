@@ -342,3 +342,24 @@ the plan's shape is unchanged, so a round 2 is optional (the build chat may run 
     are read in that order.
 13. **B6 split** (Fable 15): 6.1 (own changes) · 6.2–6.5 (named barriers, redo's barrier, the pre-check, the words) ·
     6.6–6.7 (plainRestoreReason, the pass-over).
+
+## 12. Phase A findings — walker A2 (inputs, the Leave War, roles; 158 PASS / 8 FAIL, all words or a hover)
+
+Full report: `docs/handpass/parts/2026-09-28-cr-a2.md`; pictures `docs/img/handpass/2026-09-28-change-recording/a2/`. Every
+Leave War act undoes and redoes; every undo writes its history line on the right day; the member-view refusal and the
+clear at sign-in / sign-out hold; no console error. To REPRODUCE in the build chat before acting (bug-check order §4):
+- **A2-F1** the seven Leave War acts all read "a change to the leave board" → B8 (the Leave War's own words per type) and
+  D352 (`lw.stage`).
+- **A2-F2** one input filed on the Inputs page reads "a batch of inputs" (bubble, hover, history) → B8: `inputs.batch`
+  with one input reads "a personal input".
+- **A2-F3** with only a posting left the greyed hover says nothing (→ B3); with an older step, Undo takes that step while
+  the posting stays → B3 also makes the bubble say so: *"Undid: <label> — the later posting can't be undone here."*
+- **A2-F4** an undo pressed on another page leaves you where you are (a Leave War award undone from Edit Schedule; a
+  schedule note or a calendar title undone from the war) → B7 widened: go to the change's PAGE (Edit Schedule for a week
+  context, the Leave War for a war context, Inputs for inputs / plan) when it is not the page you are on.
+- **A2-F5** an undo / redo of a Leave War ⚙ setting or stage move writes a history line dated today, with no line for the
+  change itself → §11 item 9 widened: no undo / redo line where the forward change wrote none (a settings-only, `lw.config`
+  or stage closure) — the "Undo —" line appears only where its change's own line does.
+- **A2-F6** the take-off time undo reads "a note on the schedule" → B8 (the text key), `[AMEND-SMALL-SEEN]` item 2.
+- **Not walked, and why:** the redo re-check of leave over a medical (the app withdraws the Redo first — a unit test);
+  two users at once (unit only); the short screens (Phase C walks 844×390); the member's changes window.
