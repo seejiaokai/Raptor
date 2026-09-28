@@ -548,6 +548,40 @@ test.describe('a flying line\'s callsign shows six letters whole', () => {
   }
 })
 
+/* A CHANGED TIME'S "ALn" TAG SITS UNDER THE TIME ([AMEND-SMALL-SEEN] 4, 28 Sep 26). Trailing the digits it was cut to
+   "AL" in a flying line's narrow B/TO and LD boxes (a phone, and LD on a desktop too) and ran over the people column
+   beside a duty's start. The tag is a ::after, so it is read through its computed style: on its own line under the
+   time, in every narrow time box, on both weeks, at a phone and a desktop. (The walk sf-d4-altag.mjs issues a real AL1
+   and measures each tag's box against its cell.) */
+test.describe('a changed time\'s AL tag sits under the time', () => {
+  for (const [name, viewport] of [['phone', PHONE], ['desktop', DESK]] as const) {
+    test(`on ${name}, in the flying line and the list rows, on both weeks`, async ({ page }) => {
+      await page.setViewportSize(viewport)
+      await login(page)
+      for (const [page_, sel] of [['editsched', '#eWeek'], ['viewsched', '#vWeek']] as const) {
+        await go(page, page_)
+        const got = await page.evaluate(sel => {
+          /* one time of each kind, marked as issued in AL1 the way the renderer marks it (the attribute alone) */
+          const pick = (q: string) => [...document.querySelectorAll(`${sel} ${q}`)].find(e => /^\d{1,2}:\d{2}$/.test((e.textContent || '').trim())) as HTMLElement | undefined
+          const kinds: Record<string, HTMLElement | undefined> = {
+            'take-off': pick('.form .fcell.bto span:not(.bsug)'), landing: pick('.form .fcell.ld span, .form .fcell.ld'),
+            'list start': pick('.ah-row .t, .pl-row .t'),
+          }
+          const out: Record<string, string> = {}
+          for (const [k, el] of Object.entries(kinds)) {
+            if (!el) { out[k] = 'missing'; continue }
+            el.setAttribute('data-alc', '1')
+            out[k] = getComputedStyle(el, '::after').display
+            el.removeAttribute('data-alc')
+          }
+          return out
+        }, sel)
+        for (const [k, disp] of Object.entries(got)) expect(disp, `${page_}: the ${k} time's tag sits on its own line`).toBe('block')
+      }
+    })
+  }
+})
+
 /* THE DESKTOP SCHEDULER-BOARD CHROME IS TIGHT (owner, 26 Aug 26 — a batch of
    "give me more working space" asks). Four things at once, all jsdom-invisible
    because they are height/row/border geometry: the action buttons match the

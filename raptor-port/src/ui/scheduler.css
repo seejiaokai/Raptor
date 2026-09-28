@@ -1837,6 +1837,17 @@ body.dnd .schedboard .ppl[data-fill].dragover .addz{border-color:var(--accent);c
 :is(span,b,i,div)[data-alc]:not(.seat):not(.areacell):not(.timecell):not(.rmkcell):not(.intimes):not(.sb-rcell):not(.verchip)::after{
   content:'AL' attr(data-alc);font-family:'Barlow Condensed','Inter Tight',sans-serif;font-size:7px;font-weight:800;
   letter-spacing:.02em;color:var(--alc);margin-left:3px;vertical-align:top;pointer-events:none}
+/* A CHANGED TIME'S TAG SITS UNDER THE TIME, NOT AFTER IT ([AMEND-SMALL-SEEN] 4, 28 Sep 26 — the re-test's W1: at 390px
+   "AL1" beside a time was cut to "AL"). A time lives in a narrow box: a flying line's B/TO and LD (38 / 32px on a phone,
+   48 on a desktop, `overflow:hidden`) and a list row's start / end (`.t`). Trailing the digits, the tag needs 13–15px
+   more than the box has — measured (scripts/handpass/sf/sf-d4-altag.mjs): cut by the flying line's box at 390 AND on a
+   desktop (LD: 10:45 + AL1 ends 4px past it), and on a duty's start run over the people column beside it. On its own
+   line under the time it is whole in every box at every width, and it never covers a digit; the time keeps its
+   underline in the AL's colour. Only where a time was changed and issued does the row gain the tag's line. The chain
+   of :not()s is the generic rule's own, so this one outweighs it. */
+.form :is(.bto,.ld) :is(span,b,i,div)[data-alc]:not(.seat):not(.areacell):not(.timecell):not(.rmkcell):not(.intimes):not(.sb-rcell):not(.verchip)::after,
+:is(.ah-row,.pl-row) .t[data-alc]:not(.seat):not(.areacell):not(.timecell):not(.rmkcell):not(.intimes):not(.sb-rcell):not(.verchip)::after{
+  display:block;margin-left:0;line-height:1;margin-top:1px}
 /* amendment-level panel (edit page) */
 .alpanel{margin:0 20px 8px;border:1px solid var(--edge);border-radius:10px;background:var(--panel);padding:7px 11px}
 .alpanel .al-h{font-family:'Barlow Condensed','Inter Tight',sans-serif;text-transform:uppercase;letter-spacing:.1em;font-size:9.5px;font-weight:700;color:var(--ink-3);margin-bottom:5px}
