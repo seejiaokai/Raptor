@@ -1112,7 +1112,7 @@ body.ros-open .eroster .ros-tab{background:var(--accent);color:var(--accent-ink)
    AREA + TIME used to be columns 6 and 7, which squeezed RMKS down to ~60px. They now
    sit in a full-width horizontal strip under each formation (.form-area), so the five
    columns above get all the room back. */
-.form{display:grid;grid-template-columns:52px 48px 48px calc(var(--puck-w)*2 + 16px) minmax(0,1fr);align-items:stretch;border-bottom:1px solid rgba(42,49,58,.55)}
+.form{display:grid;grid-template-columns:76px 48px 48px calc(var(--puck-w)*2 + 16px) minmax(0,1fr);align-items:stretch;border-bottom:1px solid rgba(42,49,58,.55)}
 .form:last-child{border-bottom:none}
 .form:hover{background:rgba(255,255,255,.018)}
 .form.cx{opacity:.5}
@@ -1125,6 +1125,18 @@ body.ros-open .eroster .ros-tab{background:var(--accent);color:var(--accent-ink)
 .form .csmsn{overflow:hidden}
 .form .bto,.form .ld{white-space:nowrap;overflow:hidden}
 .form .csmsn b{display:block;font-size:10px;font-weight:700;color:var(--ink);white-space:nowrap;line-height:1.15;overflow:hidden;text-overflow:ellipsis}
+/* A FLYING LINE'S CALLSIGN: SIX LETTERS WHOLE, A LONGER ONE CUT TO "…" AFTER ITS FIRST LETTERS ([AMEND-SMALL-SEEN] 3 +
+   [ABSENCE-SMALL-SEEN] 3, 28 Sep 26 — VIPER and COBRA drawn "…" on the edit week, W6LINE "…" on View-only Sched).
+   Two faults, both fixed here. (1) The name sat in the editable INLINE-BLOCK `.ntx` (min-width 30px): an inline-block
+   is one unbreakable piece, so one pixel over and the WHOLE name went to "…" — the dot alone was left. As an ordinary
+   inline run the ellipsis cuts letters instead ("MAGN…"); an empty box still keeps a tappable width while editing.
+   (2) The column was sized for a five-letter name at best. Measured (the walk scripts/handpass/sf/sf-d3-callsigns.mjs,
+   bold Inter at the week's own sizes, plus the mission dot's 7px): desktop 12.5px — W6LINE 47, RANGER 51, WARDEN 55,
+   HAMMER 57, MAGNUM 60 → 76px (content 68: every one whole); phone 9.5px — W6LINE 35, RANGER 38 → 50px (content 46:
+   a wide six like HAMMER ends in "…"); ≤374px 9px → 48px. The room comes from REMARKS (the 1fr track): desktop
+   214 → 190, 390 phone 73 → 61; B/TO and LD are left exactly as measured for a time (below). */
+.form .csmsn b .ntx,.page.editing .form .csmsn b .ntx{display:inline;min-width:0}
+.page.editing .form .csmsn b .ntx:empty{display:inline-block;min-width:14px}
 .form .csmsn i{display:block;font-style:normal;font-size:8.5px;color:var(--ink-3);font-weight:600}
 .form .csmsn .mdot{display:inline-block;width:5px;height:5px;border-radius:50%;margin-right:2px;vertical-align:middle}
 .form .bto{font-family:'JetBrains Mono',monospace;text-align:center;line-height:1.25}
@@ -1182,7 +1194,7 @@ body.ros-open .eroster .ros-tab{background:var(--accent);color:var(--accent-ink)
 body:not(.tdrag) .acrow .seat.empty-slot:hover{border-color:var(--accent);color:var(--accent)}
 .page.editing .acrow .seat[data-slot]{cursor:pointer}
 body:not(.tdrag) .page.editing .acrow .seat[data-slot]:hover .puck{outline:2px solid var(--accent);outline-offset:1px}
-.cols.formcols{display:grid;grid-template-columns:52px 48px 48px calc(var(--puck-w)*2 + 16px) minmax(0,1fr);background:var(--panel-2);border-bottom:1px solid var(--edge);
+.cols.formcols{display:grid;grid-template-columns:76px 48px 48px calc(var(--puck-w)*2 + 16px) minmax(0,1fr);background:var(--panel-2);border-bottom:1px solid var(--edge);
   font-family:'Barlow Condensed','Inter Tight',sans-serif;text-transform:uppercase;letter-spacing:.03em;font-size:8.5px;font-weight:700;color:var(--ink-2)}
 .cols.formcols span{text-align:left;white-space:nowrap;overflow:hidden;padding:3px 5px;border-right:1px solid rgba(42,49,58,.4)}
 .cols.formcols .c-c{text-align:center}
@@ -3423,10 +3435,12 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
      purely as a safety net. The widths are set by what has to render without clipping,
      measured not guessed: a 'hh:mm' in 9px JetBrains Mono is 27px, so B/TO and LD need
      34 and 28 of content respectively, i.e. 38 and 32 of track once .fcell's 2px side
-     padding is counted. */
+     padding is counted.
+     28 Sep 26: CS/MSN 38 → 50 so a six-letter callsign shows whole ([AMEND-SMALL-SEEN] 3 — the reasoning and the
+     measurements at `.form .csmsn b .ntx`); RMKS gives the 12px, 73 → 61 at 390. B/TO and LD are unchanged. */
   .week .go{overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain}
   /* FCP/RCP is derived from the puck: 2 x 74 + 3px gap + 8px .acrow padding = 159 */
-  .form,.cols.formcols{grid-template-columns:38px 38px 32px calc(var(--puck-w)*2 + 11px) minmax(0,1fr)}
+  .form,.cols.formcols{grid-template-columns:50px 38px 32px calc(var(--puck-w)*2 + 11px) minmax(0,1fr)}
   .rmkcell{font-size:8.5px;padding:3px 4px;gap:1px;overflow:hidden}
   /* .ntx carries a 30px min-width globally so an empty editable field stays tappable.
      Inside a phone flight line that min-width is wider than the columns that hold it —
@@ -3542,7 +3556,7 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
    re-proportioned to fix a phone. A tablet's even split was never the
    complaint, so it keeps it. */
 @media (max-width:374px){
-  .form,.cols.formcols{grid-template-columns:34px 36px 30px calc(var(--puck-w)*2 + 6px) minmax(0,1fr)}
+  .form,.cols.formcols{grid-template-columns:48px 36px 30px calc(var(--puck-w)*2 + 6px) minmax(0,1fr)}
   .form .bto b,.form .bto span,.form .ld{font-size:8.5px}
   .form .csmsn b{font-size:9px}
   .fcell{padding:3px 2px 4px}
@@ -3583,7 +3597,7 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
   /* flying table: larger fonts, tighter columns (ScheduleTrain-style density).
      With AREA + TIME moved out to the strip below each formation, RMKS grows from
      ~61px to ~198px, so remarks and stores chips finally sit on one or two lines. */
-  .form,.cols.formcols{grid-template-columns:52px 48px 48px calc(var(--puck-w)*2 + 16px) minmax(0,1fr)}
+  .form,.cols.formcols{grid-template-columns:76px 48px 48px calc(var(--puck-w)*2 + 16px) minmax(0,1fr)}
   .cols.formcols span{font-size:9.5px;padding:3px 5px}
   .fcell{padding:4px 4px}
   .fcell.csmsn b{font-size:12.5px}
@@ -5397,7 +5411,11 @@ button.sanscard:hover{border-color:var(--accent)}
      column needs); the three time tracks are fixed and equal so B/TO/LD line up
      as a block. The B HEADER is no longer hidden (it was in the nth-child list
      below), so the row still matches its own headings. */
-  .sb-lcols,.sb-line{grid-template-columns:20px 36px minmax(0,1fr) 46px 46px 46px;font-size:10px}
+  /* CS 36 → 56 ([AMEND-SMALL-SEEN] 3, 28 Sep 26 — "VIP/R"): the callsign box is 11px JetBrains Mono, 6.6px a letter,
+     so six letters are 40px + 12px padding + 2px border = 54; 36 wrapped a FIVE-letter name onto two lines. The room
+     comes from MSN, the one flexible track (a mission is ~5 letters). A longer callsign still wraps and grows — the
+     owner's 20 Aug 26 rule for every board text box (below, "every free-text box on the board WRAPS AND GROWS"). */
+  .sb-lcols,.sb-line{grid-template-columns:20px 56px minmax(0,1fr) 46px 46px 46px;font-size:10px}
   /* the flying line's first row is tall — the B cell stacks the blue brief time above
      its box, and the input boxes bottom-align to it — so the marker bottom-aligns too,
      at the boxes' own height, giving a measured grip-centre = box-centre (owner, 31 Aug

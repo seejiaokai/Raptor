@@ -507,6 +507,47 @@ test('a callsign too long for its puck fades instead of being clipped clean', as
   expect(m.puck, 'and the puck is still the measured box').toEqual({ w: 74, h: 15 })
 })
 
+/* A FLYING LINE'S CALLSIGN: SIX LETTERS WHOLE ([AMEND-SMALL-SEEN] 3 + [ABSENCE-SMALL-SEEN] 3, 28 Sep 26). VIPER and
+   COBRA were drawn "…" on the edit week, W6LINE "…" on View-only Sched: the name sat in an editable inline-BLOCK, so one
+   pixel over and the whole name went (the dot alone was left), in a column sized for five letters at best. Now: five and
+   six letters whole on one line on both weeks at a desktop and a phone, a longer name cut after its first letters (an
+   inline run, never the one unbreakable piece), and never onto a second line. The phone board's box is `sf-d3`'s walk. */
+test.describe('a flying line\'s callsign shows six letters whole', () => {
+  const NAMES = ['VIPER', 'W6LINE', 'RANGER', 'THUNDERBOLTS']   // the seed Monday holds four flying lines
+  for (const [name, viewport] of [['phone', PHONE], ['desktop', DESK]] as const) {
+    test(`on ${name}, on both weeks`, async ({ page }) => {
+      await page.setViewportSize(viewport)
+      await login(page)
+      /* the first day's flying lines take the names; a day not yet published, so both weeks draw them */
+      const placed = await page.evaluate((names) => {
+        const w = window as any, d = w.DAYS[0]; let i = 0
+        for (const wv of d.waves || []) for (const f of wv.formations || []) if (i < names.length) f.cs = names[i++]
+        w.renderSchedule(); return i
+      }, NAMES)
+      expect(placed, 'the first day holds a flying line for every name').toBe(NAMES.length)
+      for (const [page_, sel] of [['editsched', '#eWeek'], ['viewsched', '#vWeek']] as const) {
+        await go(page, page_)
+        const rows = await page.evaluate(({ sel, names }) => [...document.querySelectorAll(`${sel} .day`)].slice(0, 1)
+          .flatMap(day => [...day.querySelectorAll('.fcell.csmsn b')] as HTMLElement[])
+          .filter(b => names.includes((b.textContent || '').trim()))
+          .map(b => {
+            const tx = (b.querySelector('.ntx') || b) as HTMLElement
+            const range = document.createRange(); range.selectNodeContents(tx)
+            return { text: (b.textContent || '').trim(), cut: b.scrollWidth > b.clientWidth + 1,
+              lines: new Set([...range.getClientRects()].map(q => Math.round(q.top))).size, disp: getComputedStyle(tx).display }
+          }), { sel, names: NAMES })
+        for (const n of NAMES) {
+          const r = rows.find(x => x.text === n)
+          expect(r, `${page_}: ${n} is drawn`).toBeTruthy()
+          expect(r!.lines, `${page_}: ${n} stays on one line`).toBe(1)
+          if (n === 'THUNDERBOLTS') expect(r!.disp, `${page_}: a long name is cut after its first letters, not swallowed whole`).not.toBe('inline-block')
+          else expect(r!.cut, `${page_}: ${n} shows whole`).toBe(false)
+        }
+      }
+    })
+  }
+})
+
 /* THE DESKTOP SCHEDULER-BOARD CHROME IS TIGHT (owner, 26 Aug 26 — a batch of
    "give me more working space" asks). Four things at once, all jsdom-invisible
    because they are height/row/border geometry: the action buttons match the
