@@ -6370,6 +6370,11 @@ button.sbi-ty.inpedit:hover{text-decoration:none;filter:brightness(1.3)}
 .availwin .win-ttl{flex:1;min-width:0;font-size:12px;font-weight:700;color:var(--ink);
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .availwin .win-ttl small{display:block;font-size:10.5px;font-weight:500;color:var(--ink-3)}
+/* THE WHEN-LINE WRAPS, the name does not ([ALLAVAIL-OPEN-ROW], D360, 28 Sep 26 — found by the walk, sf-c-openrow.mjs): a
+   row with no end time is titled "Jul 18 · 10:00–11:00 · no end time, an hour assumed", and at the window's 212px
+   default the one-line title cut it to "… no end tim" — the very words D360 asks the window to say. The day and time
+   of an ordinary row still fit one line. */
+.availwin .win-ttl small{white-space:normal}
 .availwin .win-x{background:none;border:1px solid var(--edge-2);color:var(--ink-2);
   border-radius:5px;width:25px;height:25px;font-size:12px;line-height:1;cursor:pointer;
   flex:0 0 auto;font-family:inherit}
