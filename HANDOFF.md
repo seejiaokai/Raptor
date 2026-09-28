@@ -16,7 +16,7 @@ the later merge keeps both (D78).
 ## Now
 
 <!-- now:claude/change-recording-retest -->
-### `claude/change-recording-retest` — the change-recording re-test (`[HUMAN-RETEST]`, D147) with `[UNDO-ROSTER-SETTINGS]`, D148 and `[UNDO-TOPBAR]` — PLANNED, being red-teamed; NO app code yet — written 28 Sep 26 — verify before use
+### `claude/change-recording-retest` — the change-recording re-test (`[HUMAN-RETEST]`, D147) with `[UNDO-ROSTER-SETTINGS]`, D148 and `[UNDO-TOPBAR]` — PLANNED, red-teamed (round 1), Phase A WALKED; NO app code yet; the BUILD is next, in a fresh chat — written 28 Sep 26 — verify before use
 - **Where it stands:** the main checkout (`C:/Users/User/projects/Raptor`), cut from `main` at `60a6792c`; nothing under
   `raptor-port/src` changed. The plan: `raptor-port/docs/superpowers/plans/2026-09-28-change-recording-plan.md` (Phases
   A–D, steps B1–B11). His rulings today: **D347** (every Undo/Redo pair in the top bar, as Edit Schedule's), **D348**
@@ -25,18 +25,19 @@ the later merge keeps both (D78).
   exit, ✓ Done; on a phone Sort all + the layout switch behind ⋯), **D350** (adding / archiving / restoring / deleting a
   person and postings stay OUT of Undo — `[UNDO-POSTING-RECORD]`). Filed: `[HIST-PER-PAGE]`. Baseline walk:
   `scripts/handpass/cr-base.mjs`.
-- **In flight when written (their reports land in files):** the scenario reports (DONE — `…/briefs/2026-09-28-change-recording-scenarios-{fable,astra}.md`);
-  the "which changes get Undo" review (his ask) → `…/briefs/2026-09-28-change-recording-undoable-list-{astra,fable}.md`
-  (Fable's comes back as a chat message — save it there); the plan red team round 1 → `…-plan-redteam-{astra,fable}.md`;
-  Phase A walkers A1 / A2 → `raptor-port/docs/handpass/parts/2026-09-28-cr-a{1,2}.md`, pictures
-  `docs/img/handpass/2026-09-28-change-recording/a{1,2}/`, scripts `scripts/handpass/cr-a{1,2}-*.mjs`. **Open question
-  to him:** is the Leave War's stage (Open for bidding / Bidding closed / Published) taken back by Undo? (recommended:
-  keep, as today) — the list review answers it first.
-- **Next, in order:** (1) fold the reviews into the plan (a round-2 red team only if round 1 changes its shape — cap ~3);
-  (2) reproduce every walker finding, disposition each; (3) build B1–B11 red-first; (4) the gates under the PC lock
-  (`gatelock.mjs`); (5) walk the build at 1440×900, 390×844 and 844×390 (send the Tracker chat the 844×390 top-bar height);
-  (6) Fable + Astra read the finished code with the evidence sheet `docs/handpass/2026-09-28-change-recording.md`; (7) fix,
-  re-walk, the look card, his "merge live".
+- **Done this chat (all committed and pushed):** the scenarios (Fable, Astra), the "which changes get Undo" review
+  (both), the plan's round-1 red team (both) — every finding ACCEPTED and folded into the plan's §10–§11; Phase A walked
+  by two walkers (A1 the schedule and board: 178 pass / 12 fail = 3 real defects; A2 inputs, the Leave War, roles: 158 /
+  8, all words) — folded as §12–§13, reports `raptor-port/docs/handpass/parts/2026-09-28-cr-a{1,2}.md`. His rulings of the
+  day: D347–D353 (D351 Clear edit history kept until the database; D352 the stage stays undoable with its own words;
+  D353 how many reviewers — scenarios / side questions ONE, Astra first; a plan's red team and risky code reads BOTH).
+  Filed: `[UNDO-POSTING-RECORD]`, `[HIST-PER-PAGE]`, `[PHONE-DISCARD-MARKS]`.
+- **Next, in order (the build chat):** (1) read the plan WHOLE — §11–§13 win over §3–§6 where they differ; (2) a round-2
+  red team only if the build finds the plan's shape wrong (D353: both reviewers for a plan red team); (3) reproduce A1-F1–F3
+  and A2-F1–F6 red-first; (4) build in §4's order as §11 amends it (B4 before B2; B6 and B10 split); (5) gates under the PC
+  lock; (6) walk the build at 1440×900, 390×844, 844×390 and re-run the Phase A scripts into a new folder (send the Tracker
+  chat the 844×390 top-bar height); (7) Fable + Astra read the finished code with the evidence sheet
+  `docs/handpass/2026-09-28-change-recording.md`; (8) fix, re-walk, the look card, his "merge live".
 - **Files this branch changes — a parallel chat leaves them alone and says so first (D302):** the undo engine
   (`src/undo/*`), `src/state/undo-wire.ts`, `src/state/people-settings-commit.ts`, `src/state/person-delete.ts`
   (`deletedRestoreProblem`), `src/state/accounts.ts` (a restore check), `src/state/roster-restore.ts` (new), the Undo /
@@ -54,7 +55,7 @@ the later merge keeps both (D78).
   homes must name its D-number). **Certain one-line clash:** the `docs/mock/` row of `raptor-port/docs/file-map.md` (both
   this branch and the Tracker chat add a sentence) — keep both. Keep both sides on every other doc conflict; re-run
   `backlog-archive.mjs --rulings` after merging `main`.
-- **Ports:** preview 4173 (`raptor-walk`, running), browser tests `E2E_PORT=4190`. **Rulings:** D347–D350 used, D351–D359
+- **Ports:** preview 4173 (`raptor-walk`, running), browser tests `E2E_PORT=4190`. **Rulings:** D347–D353 used, D354–D359
   free. Nothing to `main` without his "merge live".
 <!-- /now -->
 

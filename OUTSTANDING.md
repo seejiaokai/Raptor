@@ -89,7 +89,8 @@ The five-flags batch (built on `claude/five-flags-batch-build-ef7d85`, 26 Sep 26
 [ARROW-GUTTER-STRIP] (its strip moot by D275; one small leftover, low); low: [GHOST-FLAG-SHADOW], [LW-SETTINGS-SMALL],
 [ALLAVAIL-OPEN-ROW] (investigate first).
 Insights — [INSIGHTS-WORKING-COPY] (a question for him, any time — the changes window it could have gone with merged 28 Sep 26).
-The changes window — [HIST-PER-PAGE] (an idea, filed D349; a mock-up first, after the change-recording re-test).
+The changes window — [HIST-PER-PAGE] (an idea, filed D349; a mock-up first, after the change-recording re-test). The
+phone — [PHONE-DISCARD-MARKS] (low, from the change-recording walk).
 
 **Waiting on him — no order exists:**
 [OIL-EARNED-VS-GRANTED] (his figure — ask first, when the award fix reaches it;
@@ -1017,6 +1018,12 @@ brought up to date for stints — a restored record laid over the clean projecti
 deferral; then the restore checks a person's add / archive / restore needs (the one-callsign rule, a man added and since
 used). A Delete stays dead (D287). FULL tier. **Place:** after the change-recording re-test; beside `[DB-READINESS]` if not
 sooner — his call.
+
+### [PHONE-DISCARD-MARKS] A phone has no door to "Discard marks" (found 28 Sep 26)
+Found by the change-recording re-test's walker A1 (O4, `raptor-port/docs/handpass/parts/2026-09-28-cr-a1.md`): the
+Amendments panel that carries "Discard marks" is hidden under 820px, so on a phone a published day's pending changes can
+be discarded by no control (desktop only). **To do:** give the phone a way in (the day's pending list, or the ⓘ day
+panel) — a mock-up first if it adds a control. LOOK / WALK tier. **Place:** low; any time, none blocking.
 
 ### [HIST-PER-PAGE] A changes button on the Leave War and Quals, showing that page's changes — an idea, filed (D349, 28 Sep 26)
 His question during the D347 mock-up: *"should i have a edit history button too for each page thats applicable"* — answered

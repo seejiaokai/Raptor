@@ -1245,3 +1245,33 @@ resolved statuses always carry their resolution date
 **Suggested improvement:** For any heading-only pass: anchors by text, never by line number; a byte-identity proof; brief the placers on list splits and ordered-list renumbering; ask them to report existing "§name" pointers with no heading and prefer those names.
 
 **Principle:** A restructuring that must not change meaning is safest as pure insertion, proved mechanically; judgement goes into WHERE, and the proof covers everything else.
+
+### Observation 330: A delegated reviewer's report must land in a file from the start, not only in its hand-back message
+
+**Status:** OPEN
+**Date:** 2026-09-28
+**Session context:** the change-recording re-test (Raptor): Fable subagents designed scenarios, reviewed a list and red-teamed a plan; Codex (Astra) ran the same jobs.
+**Skill:** dispatching-parallel-agents
+**Type:** open-source
+**Phase/Area:** briefing a subagent — where its output goes
+
+**Issue:** The Codex runs wrote their reports straight to a file (`-o <path>`), but the read-only Claude subagents returned theirs only as the final hand-back message; the task's output file was empty. Saving each report for the record meant retyping it into a file, so every long report sat in the host's context twice. Late in the session the host had to message the running agents mid-flight to shorten their answers and write files instead.
+
+**Suggested improvement:** In the brief section of the skill: when a subagent's report must be kept, say at dispatch where it goes — an agent that may write files writes the full report to a named path and returns a short summary (count, one line per finding, the path); a read-only agent is told a length cap up front and the host saves its message once, verbatim, by a script, never by retyping.
+
+**Principle:** Decide where a delegated report lives before dispatching it; a report that arrives only as a chat message costs the host its full length twice when it has to be kept.
+
+### Observation 331: A scripted-walk subagent needs a scope bound, or it spends the budget of a whole session
+
+**Status:** OPEN
+**Date:** 2026-09-28
+**Session context:** the same re-test; two Opus walkers each drove the running app through ~12 scenarios at two widths.
+**Skill:** dispatching-parallel-agents
+**Type:** open-source
+**Phase/Area:** briefing a walker — scope and cost
+
+**Issue:** Each walker ran 370–500 tool calls and 800–880k tokens (48–56 minutes), more than all the reviewers together. The brief listed scenarios but set no bound on retries, picture count or depth, and asked for pictures of everything at both widths.
+
+**Suggested improvement:** Brief walkers with a bound: a scenario count per walker, one picture per assertion that matters, a stop-and-report rule after N failed attempts at one gesture, and a summary-plus-file return. Split by cost, not only by area.
+
+**Principle:** A walker's cost is set by its brief; name the stopping rule and the evidence you actually need, or it will gather everything.
