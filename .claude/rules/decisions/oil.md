@@ -39,30 +39,30 @@ work, already loaded: **D54** (an issued weekend carrying a placeholder raises t
 |---|---|---|
 | D261 | 27 Sep 26 | A MEMBER OPENS HIS OWN OIL AWARD, READ ONLY, AT EVERY STAGE |
 | D260 | 27 Sep 26 | A DRAGGED BLOCK'S DELETE REMOVES EVERYTHING IN IT, OIL AWARDS INCLUDED — AND ITS CONFIRM NAMES EACH AWARD FIRST |
-| D163 | 24 Sep 26 | LEAVE BOTH — DEMO DATA ONLY, WIPED BEFORE THE DATABASE (D54, D56). |
+| D163 | 24 Sep 26 | Leave both — demo data only, wiped before the database (D54, D56): [DEMO-AWARD-DATES-ASK] and [POSTOUT-LOST] are closed. |
 | D142 | 24 Sep 26 | A DAY’S OIL COMES FROM ITS LATEST PUBLISHED VERSION — THE LATEST AMENDMENT, OR THE EOD IF THAT IS THE LATEST — HOWEVER LONG AGO THE DAY WAS. NO LOCK, NO CLOCK. |
 | D82 | 23 Sep 26 | AN OIL AWARD AND A WORKED DAY ADD UP. |
 | D81 | 23 Sep 26 | A WORKED WEEKEND THAT EARNS NOBODY ANY OIL SAYS SO |
 | D80 | 23 Sep 26 | AN OIL AWARD DOES NOT FLAG A LEAVE DAY |
 | D79 | 23 Sep 26 | OIL MAY BE CREDITED BY HAND ON ANY DAY. |
-| D52 | 22 Sep 26 | ALL THREE BEHAVIOURS ARE CORRECT AS BUILT, AND THEY ARE NOT IN CONFLICT. LEAVE THEM. |
+| D52 | 22 Sep 26 | Three OIL behaviours are correct as built and not in conflict: a ground crewman NAMED on a weekend duty earns; a placeholder on it earns for the men it stands for unless switched off; ALL / ALL AVAIL do not include ground crew — nothing to build. |
 | D49 | 22 Sep 26 | A FLYING LINE WHOSE WRITTEN TAKE-OFF AND LANDING ARE THE SAME STILL EARNS. |
 | D48 | 22 Sep 26 | AN ISSUED DAY KEEPS THE MONEY IT WENT OUT WITH WHEN A RULE CHANGES UNDER IT. |
 | D46 | 22 Sep 26 | THE PLACEHOLDER IS ALLOWED ON AN ACCEPTED REQUEST ROW AND CREDITS BY DEFAULT. NO EXCEPTION TO D43 ANYWHERE. |
 | D43 | 22 Sep 26 | THE PLACEHOLDER PUCKS BEHAVE EXACTLY LIKE NAMED PEOPLE: ON BY DEFAULT, EVERYWHERE THEY CAN LAND. |
 | D42 | 22 Sep 26 | AN OVERNIGHT LINE EARNS ON THE DAY IT SITS ON, AND THE HOURS SPILLING PAST MIDNIGHT EARN THE NEXT DAY NOTHING. |
-| D35 | 22 Sep 26 | RE-CONFIRMS D24 AND MAKES ITS TEMPLATE HALF EXPLICIT. |
-| D32 | 22 Sep 26 | ONE LIST, NOT TWO: wherever a placeholder puck is ALLOWED TO LAND, it must also OFFER the OIL switch. — changed by D43 |
+| D35 | 22 Sep 26 | Re-confirms D24 and makes its template half explicit: the four exempt kinds offer the OIL switch (off by default), and so does a duty block minted from an AVALON template — the same seat, one answer. |
+| D32 | 22 Sep 26 | One list, not two: wherever a placeholder puck is allowed to land, it also offers the OIL switch — landing and earning are one decision; on by default there, like named people (D43). — changed by D43 |
 | D31 | 22 Sep 26 | A SEAT WITH NOTHING TO MEASURE OFFERS NO OIL SWITCH — IT SAYS WHY INSTEAD. |
-| D28 | 22 Sep 26 | ONE PRINCIPLE INSTEAD OF AN ALLOW-LIST: every seat can earn, the DEFAULT decides whether it does, and the admin can always override. — changed by D43 |
-| D26 | 22 Sep 26 | LEAVE THE TAP TARGETS AS THEY ARE. Settled; do not re-open, and do not re-file it as a defect. |
+| D28 | 22 Sep 26 | One principle instead of an allow-list: every seat can earn, its default decides whether it does, and the admin can always override; the placeholder pucks default on wherever they land (D43). — changed by D43 |
+| D26 | 22 Sep 26 | Leave the OIL mode's phone tap targets as they are — he settles OIL on his phone easily; do not re-open it or re-file it as a defect; nothing to build. |
 | D25 | 22 Sep 26 | OIL IS EARNED LEAVE, NOT PAY — say it that way. |
-| D24 | 22 Sep 26 | SUPERSEDES D15 AND D20 IN PART — the three exempt kinds become CREDITABLE, but still earn nothing by default. |
+| D24 | 22 Sep 26 | The exempt kinds — SC SPARE, AVALON flying lines and duty desks, BB flying lines — become creditable: they offer the OIL switch in the mode, defaulting off, so an activated one can be credited (on a published day through an ordinary amendment). Supersedes D15 and D20 in part. |
 | D21 | 22 Sep 26 | AN "OFF DAY" DOES NOT EARN OIL. Settled; do not reopen. |
-| D20 | 22 Sep 26 | RE-CONFIRMS D15 and EXTENDS it to the creation path. — changed by D24 |
+| D20 | 22 Sep 26 | AVALON flying lines, AVALON duty desks and BB flying lines — and a duty block made from an AVALON template — earn no OIL by default; they offer the switch, so an activated one can be credited (D24). — changed by D24 |
 | D19 | 22 Sep 26 | A weekend or holiday that no Leave War period covers must NAME the reason and offer the way out, not just refuse. |
 | D18 | 21 Sep 26 | All five hand-pass findings accepted as real, and finding 2 settled his way: a second man the scheduler puts on a member's landed request row EARNS from it, the same as the man who filed it. |
-| D15 | 21 Sep 26 | The acceptance criteria for the whole feature, in his words — changed by D24 |
+| D15 | 21 Sep 26 | The feature's acceptance criteria, in his words: flying lines, SC MAIN, Common Programme, Standard and SC-shift duty desks and ground rows earn; SC SPARE, AVALON/BB lines and desks and ⓘ rows do not by default — SC SPARE, AVALON and BB offer the switch (D24). — changed by D24 |
 | D3 | 21 Sep 26 | The two OIL bugs found beside R-1 (D2) are fixed on that branch, not filed — they share its root cause. |
 | D2 | 21 Sep 26 | Only the issued (published) schedule earns OIL, both directions: a holiday declared after publication waits for a republication and the day says so; revoking one no longer removes OIL silently. |
 | D1 | 21 Sep 26 | The green OIL bar shows only on the events that COUNTED towards a man's day, not on every puck he wears (supersedes §2.10 / OIL21); the ALL AVAIL count chip agrees with it. |

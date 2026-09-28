@@ -44,7 +44,7 @@ export const stem = f => f.split('/').pop()
    then BY and a ruling number. It names every D-number from BY to the first colon or the span's end (D305: "BY D310
    (…) and D322 (…)"). Read from the ruling cell AND the meaning cell (D85's mark sits in the ruling cell). */
 export const boldSpans = s => [...(s || '').matchAll(/\*\*(.+?)\*\*/g)].map(m => m[1])
-const CHANGE = '\\b(?:NARROWED|AMENDED(?:\\s+AGAIN)?|REPLACED|SUPERSEDED|EXTENDED|WIDENED|REFINED|SET\\s+ASIDE|ANSWERED|CORRECTED|REVERSED)\\b(?:\\s+IN\\s+PART)?(?:\\s+(?:the\\s+same\\s+(?:day|hour|evening)|again|\\d{1,2}\\s+[A-Z][a-z]{2}\\s+\\d{2}))?\\s+BY\\s+(?=D\\d)'
+const CHANGE = '\\b(?:NARROWED|AMENDED(?:\\s+AGAIN)?|REPLACED|SUPERSEDED|EXTENDED|WIDENED|REFINED|SET\\s+ASIDE|ANSWERED|CORRECTED|REVERSED|SETTLED)\\b(?:\\s+IN\\s+PART)?(?:\\s+(?:the\\s+same\\s+(?:day|hour|evening)|again|\\d{1,2}\\s+[A-Z][a-z]{2}\\s+\\d{2}))?\\s+BY\\s+(?=D\\d)'
 export const isMarkSpan = span => new RegExp(CHANGE, 'i').test(span)
 export function marksOf(cells) {
   const out = new Set()

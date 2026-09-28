@@ -40,9 +40,9 @@ carried-over traps — `raptor-port/docs/tracker/known-gaps.md`; what it stores 
 
 | # | Date | The rule |
 |---|---|---|
-| D191 | 25 Sep 26 | OK ADDS IT. |
-| D190 | 25 Sep 26 | `[TRK-SMOKE-ADD-RACE]` GOES NOW, AHEAD OF ITS PLACE LINE |
-| D158 | 24 Sep 26 | NOT A REAL-DEVICE PROBLEM: `[TRK-TAP-AFTER-DRAG]` IS CLOSED |
+| D191 | 25 Sep 26 | In the Tracker's add box, when the search matches nobody on the roster and the callsign box is empty, OK (or Enter) adds what was typed in the search as a new, unlinked crew member — and the "Nobody on the roster matches" line says so first. |
+| D190 | 25 Sep 26 | [TRK-SMOKE-ADD-RACE] goes ahead of its place, on its own branch in parallel with the D175 chat — the job is the app, not the test: find out whether the Tracker can lose a typed name and fix the cause, never a longer wait that hides it. |
+| D158 | 24 Sep 26 | Not a real-device problem: [TRK-TAP-AFTER-DRAG] is closed as a quirk of the test browser's touch emulation — reopen only if he sees it on a real phone. |
 | D157 | 24 Sep 26 | THE TRACKER TAKES RAPTOR'S COLOURS FULLY — backgrounds, text AND the event colours |
 | D134 | 24 Sep 26 | THE PINCH TAKE-BACK STAYS AS BUILT. |
 | D132 | 23 Sep 26 | AN IMPORT NEVER DELETES ANYONE'S MARKS. |
@@ -57,7 +57,7 @@ carried-over traps — `raptor-port/docs/tracker/known-gaps.md`; what it stores 
 | D122 | 23 Sep 26 | AN IMPORT MAY RESET STUDENT MARKS; IT MUST NEVER WIPE AN EVENT'S TYPED DETAILS. |
 | D121 | 23 Sep 26 | IN THE TRACKER A MEMBER CAN DO EVERYTHING AN ADMIN CAN — THE FILE MENU TOO. |
 | D120 | 23 Sep 26 | THE TRACKER'S CHARTS REACH THE DATABASE BY EXPORT → WIPE → IMPORT, SO A BUG THAT ROUTE ALREADY REMOVES IS NOT A FINDING. |
-| D64 | 23 Sep 26 | NARROWS D62 AND D63 — the Tracker is no longer left ENTIRELY. |
+| D64 | 23 Sep 26 | The Tracker's event-box hint reads the bare type ("e.g. Lecture, OFT/AMT, 2 x F-15"); its syllabus data and the smoke-test lines asserting it stay out of every sweep (D62) — narrows D62 and D63. |
 
 ## Architecture — moved from `raptor-port/CLAUDE.md` §Architecture rules (24 Sep 26)
 

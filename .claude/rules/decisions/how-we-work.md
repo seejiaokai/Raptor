@@ -14,49 +14,49 @@ never pay or money).
 | D324 | 27 Sep 26 | THE BACKLOG TIDY (`[BACKLOG-TIDY]`) IS DONE NOW, DOCS ONLY, ON ITS OWN BRANCH (`claude/backlog-tidy`, cut from `main`), AND MERGED BEFORE `[ONE-DOOR]` AND `[LW-MOVE-STANDARD]` |
 | D302 | 27 Sep 26 | PARALLEL CHATS COORDINATE DIRECTLY, SO THEY DO NOT CLASH. |
 | D228 | 26 Sep 26 | BOTH PARALLEL CHATS RUN, AND THE FULL CHECKS TAKE TURNS THROUGH ONE LOCK ON HIS PC. |
-| D203 | 26 Sep 26 | THE ORDER TO THE DATABASE, TIMED TO HIS ESTIMATE (the database step about two months away — late Nov 26). |
+| D203 | 26 Sep 26 | The order to the database (about two months away, late Nov 26): now [ACCOUNTS], then the one changes window ([DRAFT-PENDING]), and talk to the IT side now; about a month before, the database-readiness batch with the OIL award fix; then [DB-STEP] when Manfred is ready. Narrows D147 in part. |
 | D201 | 26 Sep 26 | WHEN A NEW RULING OVERWRITES OR NARROWS AN OLDER ONE, FIX EVERYTHING THE OLD ONE LEFT BEHIND — IN THE SAME CHANGE THAT RECORDS IT. |
 | D182 | 26 Sep 26 | UNTIL THE USAGE RESET ON MONDAY 28 SEP 26: DO NOT ECONOMISE ON MODELS OR REVIEWERS. |
-| D180 | 25 Sep 26 | `[LEAVE-LATE-PUBLISHED]` (D177–D179) IS BUILT NEXT, ON ITS OWN BRANCH, BEFORE `[ACCOUNTS]`. |
-| D173 | 25 Sep 26 | THE ORDER OF WORK AFTER HIS LOOK AT PR #435 — FOUR STEPS, TWO CHECKS. — changed by D210, D180, D175 |
-| D106 | 25 Sep 26 | THE REPO GOES PUBLIC FOR A SHORT PERIOD, FOR GITHUB'S FASTER FREE MACHINES (public repos get 4 cores, private 2). |
-| D90 | 24 Sep 26 | RE-CONFIRMS HIS 17 SEP 26 RULE: WHERE TWO OF HIS RULINGS CONFLICT, THE LATER ONE WINS. |
-| D162 | 24 Sep 26 | ADD THE GUARD. |
-| D148 | 24 Sep 26 | UNDO REVERSES ONLY YOUR OWN CHANGES. |
-| D147 | 24 Sep 26 | THE ORDER AFTER THE AMENDMENT RE-TEST IS SET. |
+| D180 | 25 Sep 26 | [LEAVE-LATE-PUBLISHED] (D177–D179) is built next, on its own branch, BEFORE [ACCOUNTS], with its own full check, his look and "merge live" — amending D173's order in part. |
+| D173 | 25 Sep 26 | The order after his look at PR #435: (1) D114's full check, his look, "merge live"; (2) accounts on a new branch; (3) the one changes window on top of accounts; (4) a full check of (2) and (3) — accounts later got its own (D210), and two steps were inserted (D175, D180). Replaces D115. — changed by D210, D180, D175 |
+| D106 | 25 Sep 26 | The repo goes public for a short period, for GitHub's faster free machines: while it is public his PC's check runner stays stopped (never a self-hosted runner on a public repo); afterwards it goes private again and the runner restarts. Sets D89 aside for that period. |
+| D90 | 24 Sep 26 | Where two of his rulings conflict, the later one wins (his 17 Sep 26 rule, re-confirmed): name the ruling followed and the one set aside; an undated rule loses to a dated one; fix the stale text in the same change; where the newer one does not clearly cover the case, ask him. |
+| D162 | 24 Sep 26 | Add the background-command guard ([BG-CWD-GUARD]): a hook refuses a backgrounded npm command that does not move into raptor-port — his go for this standing configuration. |
+| D148 | 24 Sep 26 | Undo reverses only the signed-in person's own changes (the list clears at sign-out); it never undoes another person's change, and if someone has since changed the same thing it refuses and says who. |
+| D147 | 24 Sep 26 | The order after the amendment re-test: (1) the absence record together with [S4-HUNT-REST]; (2) change-recording; (3) the Leave War links last, with the 7 Sep phone check; (4) [OIL-AWARD-IS-A-GRANT] (with [OIL-EARNED-VS-GRANTED]) before [DB-STEP], then the small OIL follow-ups as one batch. |
 | D145 | 24 Sep 26 | THE SESSION-HANDOFF SKILL CHANGE IS APPROVED. |
 | D144 | 24 Sep 26 | FIX THE ARCHITECTURE FIRST, THEN THE INDIVIDUAL BUGS. |
 | D143 | 24 Sep 26 | "DONE" AFTER "MERGE LIVE" MEANS LIVE ON VERCEL. |
-| D141 | 24 Sep 26 | NO LINE TARGETS. THE TEST IS WHETHER EACH PIECE OF INFORMATION IS NEEDED WHERE IT SITS — AND WHETHER IT IS ORGANISED AND WRITTEN CLEARLY. — changed by D390 |
-| D140 | 24 Sep 26 | THE WHOLE REPO READS BY RELEVANCE AND KEEPS ITSELF TIDY — NOT ONLY THE RULINGS. — changed by D390 |
+| D141 | 24 Sep 26 | No line targets: the test is whether each piece of information is needed where it sits, organised and written clearly; a size ceiling is a tripwire — move what does not belong, or raise it with its reason — never a number to cut to; for a loaded rulings file it counts bytes, not lines. — changed by D390 |
+| D140 | 24 Sep 26 | The whole repo reads by relevance and keeps itself tidy: a small general layer every chat reads; each area's context loads by itself; every new fact has one home by rule; what is finished leaves for an archive; the document gate enforces it, woven into his handoff workflow — the rulings' full text a searched tier beside them. — changed by D390 |
 | D138 | 24 Sep 26 | A SUMMARY MUST NEVER CHANGE WHAT THE ORIGINAL MEANT. |
 | D137 | 24 Sep 26 | THE RULINGS ARE READ BY RELEVANCE, NOT ALL AT ONCE — AND THE STRUCTURE KEEPS ITSELF. |
-| D136 | 24 Sep 26 | THE RULINGS LIST IS NEVER SHRUNK BY MOVING LIVE RULINGS OUT. — changed by D390 |
+| D136 | 24 Sep 26 | The rulings list is never shrunk by moving a live ruling out: every live ruling stays in the list every chat reads — as one short line, its full row beside it in .claude/decisions-full/; only rulings replaced by a later one and one-off permissions once spent leave, for DECISIONS-ARCHIVE.md. — changed by D390 |
 | D135 | 24 Sep 26 | THE PRESENTATION / DEMO-VIDEO WORK (D154) IS FINISHED — THE PC IS NO LONGER SHARED WITH IT. |
 | D151 | 23 Sep 26 | NEVER PUSH TO A BRANCH WHILE ITS PULL REQUEST'S CHECKS ARE RUNNING. |
 | D89 | 23 Sep 26 | THE REPO STAYS PRIVATE, AND GITHUB'S CHECKS MOVE TO HIS OWN PC (a self-hosted runner). REVERSES D88 the same day, before it was acted on. |
 | D87 | 23 Sep 26 | A BROWSER TEST THAT FAILS ON A SLOW MACHINE IS FIXED BY MAKING IT WAIT ON WHAT IT NEEDS, NOT ON A FIXED TIME. |
-| D86 | 23 Sep 26 | `[HUMAN-RETEST]` RUNS TWO CHATS AT ONCE: THE TRACKER AND THE AMENDMENT SYSTEM, IN PARALLEL. |
-| D85 | 23 Sep 26 | `[HUMAN-RETEST]` STARTS WITH THE TRACKER. — changed by D86 |
+| D86 | 23 Sep 26 | [HUMAN-RETEST] runs two chats in parallel — the Tracker and the amendment system — on three conditions: separate ports (4173 / 4180), never two full gate runs at the same moment, separate ruling-number ranges. |
+| D85 | 23 Sep 26 | [HUMAN-RETEST] started with the Tracker (his call over the agent's amendment-first recommendation); the amendment system then ran beside it, in parallel (D86). — changed by D86 |
 | D84 | 23 Sep 26 | A LEAVE WAR DESKTOP E2E TIMEOUT ON GITHUB GETS ONE RE-RUN OF THE FAILED GROUP, NOT AN INVESTIGATION. |
 | D78 | 23 Sep 26 | PARALLEL CHATS MERGE ONE AT A TIME, AND THE LATER ONE ADAPTS. |
-| D73 | 23 Sep 26 | NOT NOW — WRITE IT ONLY IF A THIRD APP IS BROUGHT IN AS A TAB. |
+| D73 | 23 Sep 26 | No guide yet for bringing a whole separate app in as a new tab — write it only if a third app is brought in; notes #120 and #122 stay open for that job. |
 | D72 | 23 Sep 26 | THE BUG-TESTING LIST IS RETIRED. |
 | D70 | 23 Sep 26 | CHANGES TO THE WORKING GUIDES (the skills) ARE READ BY BOTH FABLE AND ASTRA BEFORE HE APPROVES THEM — ONE ROUND EACH, NEVER BY THE MODEL THAT WROTE THEM. |
-| D69 | 23 Sep 26 | THE OTHER HALF OF D68: WRITE AS YOU GO, THEN CONDENSE AT THE END. |
+| D69 | 23 Sep 26 | Write the state into the repo as you go (D68); when the work closes, condense what it wrote in its own docs-only commit, never inside a fix — a saved context is a summary (decisions, state, next step), never the conversation. |
 | D68 | 23 Sep 26 | CORRECTNESS BEATS CONTEXT ECONOMY: NEVER SKIP OR SHRINK A READ TO SAVE CONTEXT. |
 | D67 | 23 Sep 26 | ADOPTED: OPUS 5.5 PLANS AND BUILDS; FABLE 5.1 AND ASTRA REVIEW. |
-| D63 | 23 Sep 26 | THE COUNTRY-SPECIFIC AIRCRAFT TYPE GOES; TWO REPLACEMENTS, BY WHAT THE SENTENCE IS ABOUT. — changed by D64 |
+| D63 | 23 Sep 26 | The country-specific aircraft type goes: where a sentence describes the squadron or him it reads "fighter squadron"; where it names the aircraft or its documents, the bare "F-15" — the Tracker's event-box hint too (D64); its syllabus data is left (D62). — changed by D64 |
 | D62 | 23 Sep 26 | THE TRACKER'S SYLLABUS DATA IS OUT OF SCOPE FOR EVERY PRIVACY OR "WHAT CAN A STRANGER READ" SWEEP. LEAVE IT; DO NOT FLAG IT AGAIN. |
 | D60 | 23 Sep 26 | PUSHING A BRANCH NEEDS NO PERMISSION; `main` ALWAYS DOES. |
 | D59 | 23 Sep 26 | THE REPO IS PRIVATE AS OF 23 Sep 26 — DONE, BY HIM. `[REPO-PRIVATE]` IS NO LONGER PARKED; IT IS TAKEN. |
 | D58 | 23 Sep 26 | THE BARE NUMBER STAYS; THE SQUADRON ABBREVIATION AND THE SERVICE ABBREVIATION GO, EVERYWHERE. |
-| D57 | 23 Sep 26 | THE DECK IS HIS AND STAYS. NOT A CONCERN, NOT TO BE WIPED. |
-| D56 | 23 Sep 26 | A PROBLEM THAT LIVES ONLY IN DATA ALREADY STORED IS NOT A FINDING. DO NOT SPEND A REVIEWER, A WALK STEP OR A FIX ON IT. |
-| D54 | 23 Sep 26 | THE DAY RAISES THE MARK. LEAVE IT. |
-| D53 | 22 Sep 26 | NO — THE RECORD WAS FINE; THE AGENT NEVER READ IT. — changed by D137 |
-| D30 | 22 Sep 26 | FABLE'S ORDER IS THE PLAN OF RECORD FOR `[DOCS-GUARD]`. Do not re-decide the scope or the sequence. |
-| D29 | 22 Sep 26 | THREE STANDING CHANGES TO HOW THE BACKLOG IS KEPT. — changed by D137 |
+| D57 | 23 Sep 26 | The commander briefing deck (RAPTOR-Command-Brief.pptx, in the history) is his and stays — not a concern; never propose wiping it. |
+| D56 | 23 Sep 26 | A problem that lives only in data already stored is not a finding — no reviewer, walk step or fix — but only when the code is already correct going forward (both must be true); say so in every reviewer's brief. |
+| D54 | 23 Sep 26 | An issued weekend carrying a placeholder on a duty desk, sim seat or extras line raises the pending mark once [OIL-SEATS-CAN-EARN] ships — leave it (he republishes it once); the demo data is wiped before the database, so harm living only in stored demo data is not worth building around. |
+| D53 | 22 Sep 26 | Before telling him anything is undecided, putting a choice to him, or calling something missing: search every rulings file (short lines and full text), DECISIONS-ARCHIVE.md and OUTSTANDING.md first — a code comment is never evidence that something is unruled. — changed by D137 |
+| D30 | 22 Sep 26 | Fable's order is the plan of record for [DOCS-GUARD]: (1) F1 + F3, (2) F2 + F6, (3) F4 items 1/3/4 and F5 items 1–2, (4) F5's archive mover and F7 when due — do not re-decide the scope or the sequence. |
+| D29 | 22 Sep 26 | Three standing rules for the backlog: finished work leaves OUTSTANDING.md for its archive, only by the script; a ruling never lives only in the backlog — it gets a D-number in its area's rulings file and a real home; never trim documents in the same change as a fix. — changed by D137 |
 | D23 | 22 Sep 26 | A REVIEWER'S OPEN FINDINGS OUTRANK THE PLANNED JOB LIST. |
 | D22 | 22 Sep 26 | Clearing the demo data is APPROVED whenever it is the simpler path |
 | D17 | 21 Sep 26 | For a long hand pass, drive the app with a SCRIPTED real browser from the start |

@@ -137,14 +137,16 @@ const FILES = [
    none, path-scoped or not. Crossing a tripwire means SPLIT THE AREA (a new area file, paths, map row and full-text
    file, with `backlog-archive.mjs --rulings --move-rows`) or raise it here with its reason — never trim a ruling (D136).
    The full-text files under .claude/decisions-full/ have none: searched, never loaded. Same row shape as FILES, so the
-   ceiling-moved-with-code check reads these too. Set 28 Sep 26 at what each held after the conversion plus room. */
+   ceiling-moved-with-code check reads these too. Set 28 Sep 26 at what each held after the conversion (How we work
+   11.6k bytes, People & accounts 13.7k, scheduler 47.0k — most of it the settled notes and architecture, not rows —
+   OIL 7.0k, Leave War 24.2k, Tracker 13.1k) plus room for about thirty more rulings each. */
 const RULING_BYTES = [
-  ['.claude/rules/decisions/how-we-work.md', 0, 30000],
-  ['.claude/rules/decisions/people-accounts.md', 2, 30000],
-  ['.claude/rules/decisions/scheduler.md', 2, 75000],
-  ['.claude/rules/decisions/oil.md',     2, 20000],
-  ['.claude/rules/decisions/leave-war.md', 2, 45000],
-  ['.claude/rules/decisions/tracker.md', 2, 25000],
+  ['.claude/rules/decisions/how-we-work.md', 0, 18000],
+  ['.claude/rules/decisions/people-accounts.md', 2, 22000],
+  ['.claude/rules/decisions/scheduler.md', 2, 62000],
+  ['.claude/rules/decisions/oil.md',     2, 12000],
+  ['.claude/rules/decisions/leave-war.md', 2, 32000],
+  ['.claude/rules/decisions/tracker.md', 2, 18000],
 ]
 const RULING_CEILING = f => f === DECISIONS || f.startsWith(RULINGS_DIR + '/')
 

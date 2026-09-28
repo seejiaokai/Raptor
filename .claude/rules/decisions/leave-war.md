@@ -58,13 +58,13 @@ rules — `raptor-port/docs/superpowers/specs/2026-09-20-one-absence-behaviour-r
 | D332 | 27 Sep 26 | "DELETE" IS THE ONE WORD FOR TAKING A RECORD AWAY, ON EVERY LEAVE WAR SHEET — THE ONE-DAY SHEET'S "CLEAR" AND THE DAY'S LIST'S "CLEAR" BECOME "DELETE" — IN A DASHED GREY EDGE, NOT RED |
 | D331 | 27 Sep 26 | BOTH SHEETS FOLLOW ORDER A: DECIDE (Ack · Approve · Refuse) → SELECTED (Move · Delete) → HOW MUCH → WHICH LEAVE |
 | D330 | 27 Sep 26 | THE MOVE BUTTON HAS ONE LOOK OF ITS OWN — THE SAME DESIGN AND COLOUR ON EVERY SHEET THAT OFFERS IT (the one-day sheet, the drag-selection sheet, the day's list), AND A LITTLE DIFFERENT FROM THE SHEET'S OTHER BUTTONS. |
-| D267 | 27 Sep 26 | PR #444 MERGES FIRST; D264–D266 (`[LW-MOVE-STANDARD]`) ARE BUILT AFTERWARDS ON A NEW BRANCH FROM `main` |
-| D266 | 27 Sep 26 | A DAY'S LIST (a day holding several records) MOVES A RECORD THE SAME WAY AS A SINGLE CHIP — NO DATE BOX. — changed by D333 |
+| D267 | 27 Sep 26 | PR #444 merges first; D264–D266 ([LW-MOVE-STANDARD]) are built afterwards on a new branch from main — mock-up first, its own FULL check, his look and "merge live". |
+| D266 | 27 Sep 26 | A day's list (a day holding several records) moves a record the same way as a single chip — its own Move per record, no date box, picking that record up into the grid's move mode; a member may move his own bid while bidding is open (D333). — changed by D333 |
 | D265 | 27 Sep 26 | A RECORD THAT CAN MOVE ALWAYS OFFERS MOVE, WHATEVER SHARES ITS DAY. |
 | D264 | 27 Sep 26 | THE ONE-DAY SHEET AND THE DRAG-SELECTION SHEET SHARE ONE FORMAT AND ONE LOOK |
 | D262 | 27 Sep 26 | ONE CHIP, ONE MOVE: THE ONE-DAY SHEET'S MOVE IS ALWAYS PRESSABLE AND PICKS THE CHIP UP — NO DATE BOX. |
 | D160 | 24 Sep 26 | BUILD A "RESET ORDER" LINE IN THE LEAVE WAR ⚙ SETTINGS |
-| D159 | 24 Sep 26 | LEAVE IT: THE DESKTOP GRID OPENS AT NORMAL SIZE |
+| D159 | 24 Sep 26 | Leave it: the desktop Leave War grid opens at normal size (zoom 1); only the phone opens one step out. |
 
 ## Settled before this list — moved from `raptor-port/CLAUDE.md` §Stable decisions (24 Sep 26)
 
