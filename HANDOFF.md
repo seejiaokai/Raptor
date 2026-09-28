@@ -58,7 +58,9 @@ the later merge keeps both (D78).
 - **Ports:** preview 4173 (`raptor-walk`, running), browser tests `E2E_PORT=4190`. **Rulings:** D347–D353 used, D354–D359
   free. Nothing to `main` without his "merge live".
 - **The rulings slim-down (`claude/docs-rulings-slim-down-e83c74`, D390–D399; APPROVED, D390) — if it merges first:**
-  `git merge origin/main`, then `node raptor-port/scripts/backlog-archive.mjs --rulings --merge` (NOT `--take-both`). It
+  `git merge --no-commit --no-ff origin/main` (so it stops before committing even when the rulings merge cleanly); resolve
+  any OTHER conflicted file first (HANDOFF.md, OUTSTANDING.md — the command refuses while one is open); then
+  `node raptor-port/scripts/backlog-archive.mjs --rulings --merge` (NOT `--take-both`). It
   replays this branch's ruling changes per D-number, three-way (the new rows, D67's narrowing, D182 spent); a row both
   sides edited stops and shows both. It PRINTS every non-row line this branch changed in a rulings file — the two "Also
   read" edits (leave-war.md, tracker.md) and the ranges sentence in DECISIONS.md — to re-apply by hand (keep every
