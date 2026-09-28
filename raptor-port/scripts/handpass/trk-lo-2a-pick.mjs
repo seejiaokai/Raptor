@@ -100,9 +100,18 @@ for (const mode of (process.env.LO_ONLY ? [process.env.LO_ONLY] : ['desk', 'phon
   const changed = Object.keys({ ...before, ...after }).filter(k => before[k] !== after[k])
   L.ok(`${M} S2 …no mark written anywhere by the switch or the press`, !changed.some(k => /:m:|marks/i.test(k)), 'stored keys that changed: ' + (changed.join(', ') || 'none'))
   const mem1 = await picked(page)
+  /* The probe tap above is aimed where ST-01 was; on a touch screen its click is aimed
+     after the finger lifts, so it can reach HER chart after it has loaded and land on a
+     slice — which picks that student, a pick of hers (D376 reading 2). The re-walk found
+     exactly that on the phone (LO TWO picked by the probe, 28 Sep 26). So the place she
+     OPENED on is the Crew box at the moment the first click reached the chart, when there
+     was one; the student after it is reported, and must be filed under her, not the admin. */
+  const firstOnChart = w2.presses.find(p => p.click && p.ball)
+  const opened = firstOnChart ? firstOnChart.crewBefore : mem1.student
+  if (firstOnChart && firstOnChart.crewAfter !== opened) L.note(`${M} S2 the probe tap reached her chart after it loaded and picked ${firstOnChart.crewAfter} (its slice ${firstOnChart.slice} on ${firstOnChart.ball}) — her own pick`, j(firstOnChart))
   L.ok(`${M} S2 (A1) the member opens on HER own place: the FIRST course (she has none), its first student — never the admin's`,
-    mem1.courseIndex === 0 && mem1.course === 'LO SECOND' && mem1.student === 'LO ONE' && !(mem1.course === adminPick.course && mem1.student === adminPick.student),
-    brief(mem1) + ` (admin had ${brief(adminPick)}; the admin's own pick on LO SECOND is LO TWO)`)
+    mem1.courseIndex === 0 && mem1.course === 'LO SECOND' && opened === 'LO ONE' && !(mem1.course === adminPick.course && opened === adminPick.student),
+    `opened on ${mem1.course} / ${opened}` + (opened !== mem1.student ? ` (then ${mem1.student}, by the probe's tap)` : '') + ` (admin had ${brief(adminPick)}; the admin's own pick on LO SECOND is LO TWO)`)
   const k3 = await pickKeys(page)
   L.ok(`${M} S2 her place is filed under her person (bane); the admin's keys untouched`, k3[K('bane', 'lastCourse')] === cLO && k3[K('stiff', 'lastCourse')] === c26 && k3[K('stiff', 'lastCrew:' + c26)] === st['STUDENT B'], j(k3))
   const st2 = await statusOk(page, mem1)

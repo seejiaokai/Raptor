@@ -7668,7 +7668,17 @@ screen:
     Upchit, End date A / B) save when LEFT, and a half-typed day is put back
     ([TRK-RETEST-NOTES] C5). A day after today is refused in Done on, Failed on
     and both Last Flown boxes, with one line under the box saying why; Upchit
-    and the end dates take any day (D374, 28 Sep 26). A student’s failures on an
+    and the end dates take any day (D374, 28 Sep 26). **The grading pop-up never
+    turns a refused day into today** (the leftovers' walk, walker b, 28 Sep 26):
+    a day after today, or a day not finished (a year still being typed, a part
+    cleared), STAYS in Done on / Failed on with its line — "That day hasn’t come
+    yet…" or "That day isn’t finished — type the whole day, or clear the box for
+    today." — and a grade or a + pressed on it is refused, the pop-up staying
+    open, until the day is put right; an EMPTY box still means today. (Done on of
+    an event already done shows the day its mark keeps instead — re-dating is
+    refused.) A side-panel date box's line goes when the day it refused changes
+    under it. A + on an event marked N.A. says why inside the pop-up too, where a
+    phone can read it. A student’s failures on an
     event go in the order of their DAYS — the earliest is the plain code, each
     later day adds an X, an undated one comes last — and − takes back the latest
     day (D371). An event marked N.A. leaves the Failures card, its total and the

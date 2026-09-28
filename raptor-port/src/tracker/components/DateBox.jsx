@@ -39,6 +39,9 @@ export function DateBox({ value, onCommit, id, title, style }) {
     if (!gone.current) setWarn(typeof said === 'string' ? said : '');
   };
   useEffect(() => () => { gone.current = true; commit(null); }, []);
+  /* the line belongs to the day it refused: when the saved day changes under the box (a
+     re-sort of the failures list moved another failure into this row), it goes (walker b F-b4) */
+  useEffect(() => { setWarn(''); }, [saved]);
   return (
     <span className="datebox">
       <input type="date" id={id} title={title} style={style} value={draft ?? saved}

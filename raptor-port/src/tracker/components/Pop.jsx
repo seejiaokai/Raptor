@@ -2,6 +2,9 @@ import React, { useLayoutEffect, useRef, useState } from 'react';
 import * as core from '../app/core.js';
 import { isComposing } from './keys.js';
 
+/* the browser flags a date box as part-typed (its value then reads empty) */
+const partOf = e => !!(e.target.validity && e.target.validity.badInput);
+
 export default function Pop() {
   const p = core.pop;
   const ref = useRef(null);
@@ -55,8 +58,8 @@ export default function Pop() {
         <div className="mini" style={{ marginBottom: 4 }}>
           {done ? 'Done on' : 'Done on (when marked)'}{isFlight ? ' — sets Last Flown' : ''}
         </div>
-        <input type="date" id="popDoneDate" style={{ width: '100%' }} value={core.popDoneDate} onChange={e => core.popDoneChanged(e.target.value)}
-          onBlur={() => { core.popDoneCommit(); }} onKeyDown={e => { if ((e.key === 'Enter' || e.key === 'Escape') && !isComposing(e)) core.popDoneCommit(); }} />
+        <input type="date" id="popDoneDate" style={{ width: '100%' }} value={core.popDoneDate} onChange={e => core.popDoneChanged(e.target.value, partOf(e))}
+          onBlur={e => { core.popDoneCommit(partOf(e)); }} onKeyDown={e => { if ((e.key === 'Enter' || e.key === 'Escape') && !isComposing(e)) core.popDoneCommit(partOf(e)); }} />
         {core.popMsg && core.popMsg.where === 'done' ? <div className="datewarn" id="popDoneWarn" role="status">{core.popMsg.text}</div> : null}
       </div>
       {/* Failures: each + records one failure ON the day in the box (today
@@ -70,8 +73,8 @@ export default function Pop() {
         <button className="sm" id="popFailPlus" title="Record another failure on the day below" onClick={() => core.popFail(1)}>+</button>
       </div>
       <div className="mini" style={{ marginTop: 5, marginBottom: 3 }}>Failed on</div>
-      <input type="date" id="popFailDate" style={{ width: '100%' }} value={core.popFailDate} onChange={e => core.popFailDateChanged(e.target.value)}
-        onBlur={() => { core.popFailCommit(); }} onKeyDown={e => { if ((e.key === 'Enter' || e.key === 'Escape') && !isComposing(e)) core.popFailCommit(); }} />
+      <input type="date" id="popFailDate" style={{ width: '100%' }} value={core.popFailDate} onChange={e => core.popFailDateChanged(e.target.value, partOf(e))}
+        onBlur={e => { core.popFailCommit(partOf(e)); }} onKeyDown={e => { if ((e.key === 'Enter' || e.key === 'Escape') && !isComposing(e)) core.popFailCommit(partOf(e)); }} />
       {core.popMsg && core.popMsg.where === 'fail' ? <div className="datewarn" id="popFailWarn" role="status">{core.popMsg.text}</div> : null}
       {fd.length ? (
         <div className="fdates" id="popFailDates">

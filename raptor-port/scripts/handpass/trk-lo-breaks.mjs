@@ -26,7 +26,14 @@ const BREAKS = [
   ['C5 no step for the same day', 'src/tracker/app/core.js', "export async function setUpchit(s, v) { if (((dates[s] && dates[s].upchit) || '') === (v || '')) return;", 'export async function setUpchit(s, v) {', 'once per day typed'],
   ['C5 the pop-up re-dates on leaving', 'src/tracker/app/core.js', "  if (graded && popDoneDate !== doneDate(s, popId)) await setDoneDate(s, popId, popDoneDate);\n  return '';", "  return '';", 'slowly typed day re-dates'],
   ['D374 Last Flown refuses', 'src/tracker/app/core.js', "export async function setLastCurr(s, v) {\n  if (afterToday(v)) return NOT_YET;", 'export async function setLastCurr(s, v) {', 'both Last Flown boxes refuse'],
-  ['D374 a grade on a future day', 'src/tracker/app/core.js', "if (DONE.has(v) && afterToday(popDoneDate)) { popMsg = { where: 'done', text: NOT_YET }; notify(); return; }", '', 'a grade pressed on a future'],
+  ['D374 a grade on a future day', 'src/tracker/app/core.js', "  if (DONE.has(v)) { const p = popDayProblem(popDoneDate, popDonePartial); if (p) { popMsg = { where: 'done', text: p }; notify(); return; } }\n", '', 'a grade pressed on a future'],
+  /* the walk's findings, walker b (28 Sep 26): a refused day is never recorded as today */
+  ['F-b1 a refused Done on stays in its box', 'src/tracker/app/core.js', "    if (graded) { popDoneDate = doneDate(s, popId) || isoToday(); popDonePartial = false; }", "    popDoneDate = (graded && doneDate(s, popId)) || isoToday(); popDonePartial = false;", 'F-b1'],
+  ['F-b2 a + on a refused Failed on', 'src/tracker/app/core.js', "  if (delta > 0) { const p = popDayProblem(popFailDate, popFailPartial); if (p) { popMsg = { where: 'fail', text: p }; notify(); return; } }\n", '', 'F-b2'],
+  ['F-b3 a day not finished', 'src/tracker/app/core.js', "  if (partial || (v && !isWholeDay(v))) return NOT_WHOLE;\n", '', 'F-b3 — a half-typed'],
+  ['F-b3 the part-typed flag read on leaving', 'src/tracker/app/core.js', "  if (partial) popDonePartial = true;   /* as popFailCommit */\n", '', 'caught as it is LEFT'],
+  ['F-b4 the line goes with its day', 'src/tracker/components/DateBox.jsx', "  useEffect(() => { setWarn(''); }, [saved]);\n", '', 'F-b4'],
+  ['F-b5 the N.A. words in the pop-up', 'src/tracker/app/core.js', "flashHint(t); popMsg = { where: 'fail', text: t }; notify(); return;", 'flashHint(t); return;', 'F-b5'],
   ['D374 a failure re-dated to the future', 'src/tracker/app/core.js', "if (!s || !marks[s] || !marks[s][id]) return;\n  if (afterToday(iso)) return NOT_YET;", 'if (!s || !marks[s] || !marks[s][id]) return;', 'failure re-dated to a day'],
   /* the order has ONE place, sortFails: read and every write go through it, so breaking one caller alone is
      masked by the others; break the place */
@@ -46,6 +53,10 @@ const BREAKS = [
   ['C11 the list is live', 'src/tracker/components/Modals.jsx', 'const src = d && (d.listFn ? d.listFn() : d.list);', 'const src = d && d.list;', 'follows the roster'],
   ['C14 no words beside Save', 'src/tracker/app/core.js', "if (sylDirty && saveStat.cls !== 'err') return { text: '', title: '', cls: '' };", '', 'step aside'],
   ['D373 the fold row', 'src/tracker/components/ArrangeTools.jsx', "const then = f => () => { core.setToolsOpen(false); f(); };", 'const then = f => () => { f(); };', 'folded tool row'],
+  /* the re-walk (28 Sep 26): the editing canvas follows its box — the turn re-fits it (walker c F1) and it is never taller than the box */
+  ['D373 the canvas never taller than its box', 'src/tracker/app/core.js', 'h: Math.max(100, board.clientHeight - 24)', 'h: Math.max(300, board.clientHeight - 24)', 'never taller than its chart box'],
+  ['D373 a redraw while editing sizes the canvas by the same rule', 'src/tracker/app/core.js', '  if (arrangeMode) { const cv = canvasSize(board); svgW = cv.w; svgH = cv.h; }', '  if (arrangeMode) { svgW = Math.max(300, board.clientWidth - 24); svgH = Math.max(300, board.clientHeight - 24); }', 'never taller than its chart box'],
+  ['D373 a turn re-fits the canvas', 'src/tracker/app/core.js', '      ta = setTimeout(refitArrange, 150);', '', 'never taller than its chart box'],
   ['D373 Escape closes the set first', 'src/tracker/app/core.js', '  if (toolsOpen) { e.preventDefault(); toolsOpen = false; notify(); return; }\n', '', 'folded tool row'],
   ['E the bake keeps details off the base table', 'scripts/tracker/bake-lib.mjs', "for (const k of Object.keys(merged)) if ((merged[k] || '') !== (base[k] || '')) prof[k] = merged[k]", 'for (const k of Object.keys(merged)) prof[k] = merged[k]; Object.assign(out.EVENT_INFO, { [eid]: merged })', 'baking an exported chart'],
   ['E the bake refuses a student name', 'scripts/tracker/bake-lib.mjs', "if (leaked.length) throw new Error(", "if (false) throw new Error(", 'baking an exported chart'],

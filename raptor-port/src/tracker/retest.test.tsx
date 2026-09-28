@@ -620,8 +620,12 @@ describe('[HUMAN-RETEST] the Tracker — the two code reads (Fable + Astra, 23 S
 
   it('Fable F-E — a year still being typed when DCO is pressed is not the flight\'s day', async () => {
     const s = await on26()
+    /* since the leftovers' walk (28 Sep 26, walker b F-b3) a day not finished is REFUSED
+       with its words, never rolled into today (it was today until then) */
     C.openPop('TR-2', at); C.popDoneChanged('0002-09-23'); await C.popGrade('dco')
-    expect(dayOf(s, 'TR-2')).toBe(C.isoToday())
+    expect(dayOf(s, 'TR-2'), 'not graded on a year still being typed').toBeFalsy()
+    expect(C.popMsg && C.popMsg.text).toBe(C.NOT_WHOLE)
+    C.closePop()
     await grade('TR-2', null, '0')
   })
 

@@ -81,6 +81,18 @@ export const watch = page => page.evaluate(() => {
       window.__lo && window.__lo.presses.push({ t: Math.round(performance.now() - window.__lo.t0), resuming: !!document.querySelector('#page-tracker .tr-root.resuming'),
         target: t.tagName.toLowerCase() + (t.id ? '#' + t.id : '') + (t.getAttribute && t.getAttribute('class') ? '.' + t.getAttribute('class').split(/\s+/).join('.') : '') })
     }, true)
+    /* and where each CLICK lands: on a touch screen the tap's click is aimed after the
+       finger lifts, so a tap made while the switch runs can reach the chart drawn after
+       it — record the slice (student) it lands on, and the Crew box just after */
+    document.addEventListener('click', e => {
+      const t = e.target, w = t.closest && t.closest('.wedge, .ftick'), b = t.closest && t.closest('.ball')
+      const sel0 = document.getElementById('activeSel')
+      const row = { t: Math.round(performance.now() - window.__lo.t0), click: true, ball: b ? b.dataset.id : null, slice: w ? w.getAttribute('data-wi') : null,
+        crewBefore: sel0 ? sel0.options[sel0.selectedIndex]?.text : null,
+        target: t.tagName.toLowerCase() + (t.id ? '#' + t.id : '') + (t.getAttribute && t.getAttribute('class') ? '.' + t.getAttribute('class').split(/\s+/).join('.') : '') }
+      window.__lo && window.__lo.presses.push(row)
+      setTimeout(() => { const sel = document.getElementById('activeSel'); row.crewAfter = sel ? sel.options[sel.selectedIndex]?.text : null }, 0)
+    }, true)
   }
 })
 export const watched = page => page.evaluate(() => window.__lo || null)

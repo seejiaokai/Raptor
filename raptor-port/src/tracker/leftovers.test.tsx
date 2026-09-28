@@ -291,7 +291,7 @@ describe('[TRK-RETEST-NOTES] C8 + D374 — a day after today is refused in Done 
     C.closePop()
   })
 
-  it('a grade pressed on a future Done on, and a failure + on a future Failed on, are refused; a half-typed Failed on records today', async () => {
+  it('a grade pressed on a future Done on, and a failure + on a future Failed on, are refused; a half-typed Failed on is refused too', async () => {
     const s = await pickStudent()
     const ev = C.SYL.filter((e: any) => e.type === 'flight')[1].id
     const today = C.isoToday()
@@ -306,8 +306,7 @@ describe('[TRK-RETEST-NOTES] C8 + D374 — a day after today is refused in Done 
     expect(C.failOf(s, ev), 'no failure on a day that has not come').toBe(n)
     C.popFailDateChanged('0202-09-17')
     await C.popFail(1)
-    expect(C.failDates(s, ev).slice(-1)[0], 'a half-typed year is never a day: today').toBe(today)
-    await C.popFail(-1)
+    expect(C.failOf(s, ev), 'a half-typed year is refused, never recorded as today (walker b F-b3)').toBe(n)
     C.closePop()
   })
 })
@@ -681,6 +680,44 @@ describe('[TRK-EDIT-SIDEWAYS] D373 — the folded tool row and its Tools ▾', (
       expect(C.toolsOpen, 'leaving edit mode').toBe(false)
     } finally { if (C.arrangeMode) C.toggleArrange(); if (C.sylDirty) await C.saveChangesClick(); await act(async () => { root.unmount() }); host.remove() }
   })
+
+  it('the editing canvas is never taller than its chart box — a sideways phone’s is 169px (the re-walk, 28 Sep 26)', async () => {
+    /* The canvas had a floor of 300px: on a sideways phone the folded row leaves the
+       chart box 169px, so a third of the canvas hung below what can be seen, and ⤢ Fit
+       fitted the chart into it — its lower part out of sight. jsdom lays nothing out, so
+       the box's size is given to it. */
+    if (C.sylDirty) await C.saveChangesClick()
+    const board = document.createElement('div'); board.id = 'board'
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg'); svg.id = 'flowSvg'
+    /* the app finds the chart box by its id: any other left on the page by an earlier test would be found first */
+    const others = [...document.querySelectorAll('#board, #flowSvg')]
+    others.forEach(el => { el.id = el.id + '-aside' })
+    board.appendChild(svg); document.body.appendChild(board)
+    expect(document.getElementById('board'), 'the test’s own chart box').toBe(board)
+    let bw = 844, bh = 169
+    Object.defineProperty(board, 'clientWidth', { get: () => bw, configurable: true })
+    Object.defineProperty(board, 'clientHeight', { get: () => bh, configurable: true })
+    try {
+      C.toggleArrange()
+      await new Promise(r => setTimeout(r, 60))
+      expect(Number(document.getElementById('flowSvg')!.getAttribute('height')), 'entering on a sideways phone').toBeLessThanOrEqual(bh)
+      expect(Number(document.getElementById('flowSvg')!.getAttribute('width'))).toBeLessThanOrEqual(bw)
+      /* any redraw while editing (a ball added, Fit, an undo) sizes it by the same rule —
+         the redraw carried its own copy of the 300px floor, which the re-walk found */
+      C.renderBoard()
+      expect(Number(document.getElementById('flowSvg')!.getAttribute('height')), 'after a redraw while editing').toBeLessThanOrEqual(bh)
+      /* turned upright: the canvas follows the new box */
+      bw = 390; bh = 446
+      window.dispatchEvent(new Event('resize'))
+      await new Promise(r => setTimeout(r, 250))
+      expect(Number(document.getElementById('flowSvg')!.getAttribute('height')), 'upright').toBe(446 - 24)
+      /* and back on its side */
+      bw = 844; bh = 169
+      window.dispatchEvent(new Event('resize'))
+      await new Promise(r => setTimeout(r, 250))
+      expect(Number(document.getElementById('flowSvg')!.getAttribute('height')), 'turned back on its side').toBeLessThanOrEqual(bh)
+    } finally { if (C.arrangeMode) C.toggleArrange(); if (C.sylDirty) await C.saveChangesClick(); board.remove(); others.forEach(el => { el.id = el.id.replace(/-aside$/, '') }) }
+  })
 })
 
 /* ---------- [TRK-BAKE-STALE] the chart-baking script (R26 — his chart loop) ---------- */
@@ -758,7 +795,7 @@ describe('[TRK-RETEST-NOTES] C5 — the roll-call: each side-panel date box save
     } finally { C.closeFailLog(); await act(async () => { root.unmount() }); host.remove() }
   })
 
-  it('a failure re-dated to a day that has not come is refused; the pop-up’s Failed on puts a future day back to today and says why', async () => {
+  it('a failure re-dated to a day that has not come is refused; the pop-up’s Failed on keeps a future day in the box and says why', async () => {
     const s = await pickStudent(); const ev = await freshEvent(s, 5)
     await fail(s, ev, dayAfter(C.isoToday(), -3))
     expect(await C.setFailDate(s, ev, 0, dayAfter(C.isoToday(), 2))).toBe(C.NOT_YET)
@@ -766,7 +803,7 @@ describe('[TRK-RETEST-NOTES] C5 — the roll-call: each side-panel date box save
     C.openPop(ev, { clientX: 5, clientY: 5 })
     C.popFailDateChanged(dayAfter(C.isoToday(), 1))
     expect(C.popFailCommit()).toBe(C.NOT_YET)
-    expect(C.popFailDate, 'back to today').toBe(C.isoToday())
+    expect(C.popFailDate, 'the refused day stays in the box, with its line (walker b F-b2)').toBe(dayAfter(C.isoToday(), 1))
     expect(C.popMsg && C.popMsg.where).toBe('fail')
     C.closePop()
   })
@@ -818,5 +855,86 @@ describe('the walk’s findings (walker a, 28 Sep 26)', () => {
       expect(C.dlg, 'no delete question was raised behind the first').toBeNull()
       expect(C.sylDirty, 'nothing deleted').toBe(false)
     } finally { await clearQuestions(); if (C.arrangeMode) C.toggleArrange(); if (C.sylDirty) await C.saveChangesClick() }
+  })
+})
+
+describe('the walk’s findings (walker b, 28 Sep 26) — a refused day is never recorded as today', () => {
+  it('F-b1 — tomorrow in Done on, the box LEFT (the press moves the focus), then DCO: refused, the pop-up stays, the line stays', async () => {
+    const s = await pickStudent(); const ev = await freshEvent(s, 7)
+    C.openPop(ev, { clientX: 5, clientY: 5 })
+    C.popDoneChanged(dayAfter(C.isoToday(), 1))
+    expect(await C.popDoneCommit(), 'leaving the box says why').toBe(C.NOT_YET)
+    expect(C.popDoneDate, 'an event not yet done keeps the refused day in its box, with the line').toBe(dayAfter(C.isoToday(), 1))
+    await C.popGrade('dco')
+    expect(C.gradeOf(s, ev), 'no grade').toBe(0)
+    expect(C.pop, 'the pop-up stays').toBeTruthy()
+    expect(C.popMsg && C.popMsg.text).toBe(C.NOT_YET)
+    C.popDoneChanged(C.isoToday()); await C.popGrade('dco')
+    expect(C.gradeOf(s, ev), 'today, once corrected').toBe('dco')
+  })
+
+  it('F-b2 — tomorrow in Failed on, the box left, then +: refused, nothing recorded, the line stays', async () => {
+    const s = await pickStudent(); const ev = await freshEvent(s, 8)
+    C.openPop(ev, { clientX: 5, clientY: 5 })
+    C.popFailDateChanged(dayAfter(C.isoToday(), 1))
+    expect(C.popFailCommit()).toBe(C.NOT_YET)
+    await C.popFail(1)
+    expect(C.failOf(s, ev), 'no failure').toBe(0)
+    expect(C.popMsg && C.popMsg.text).toBe(C.NOT_YET)
+    C.closePop()
+  })
+
+  it('F-b3 — a half-typed day in Failed on or Done on is refused with its words, not recorded as today; an EMPTY box still means today', async () => {
+    const s = await pickStudent(); const ev = await freshEvent(s, 9)
+    C.openPop(ev, { clientX: 5, clientY: 5 })
+    C.popFailDateChanged('0020-09-17'); await C.popFail(1)
+    expect(C.failOf(s, ev), 'a year still being typed').toBe(0)
+    expect(C.popMsg && C.popMsg.text).toBe(C.NOT_WHOLE)
+    C.popFailDateChanged('', true); await C.popFail(1)
+    expect(C.failOf(s, ev), 'a box the browser flags as part-typed').toBe(0)
+    C.popFailDateChanged(''); await C.popFail(1)
+    expect(C.failDates(s, ev), 'an empty box: today').toEqual([C.isoToday()])
+    C.popDoneChanged('0002-09-17'); await C.popGrade('dco')
+    expect(C.gradeOf(s, ev), 'a grade on a half-typed Done on').toBe(0)
+    expect(C.popMsg && C.popMsg.text).toBe(C.NOT_WHOLE)
+    C.popDoneChanged(''); await C.popGrade('dco')
+    expect(C.doneDate(s, ev), 'an empty Done on: today').toBe(C.isoToday())
+  })
+
+  it('F-b3 — a box emptied, then only part-typed (no change reaches the app), is caught as it is LEFT', async () => {
+    const s = await pickStudent(); const ev = await freshEvent(s, 11)
+    C.openPop(ev, { clientX: 5, clientY: 5 })
+    C.popDoneChanged('')
+    expect(await C.popDoneCommit(true), 'left part-typed').toBe(C.NOT_WHOLE)
+    await C.popGrade('dco')
+    expect(C.gradeOf(s, ev), 'no grade on a day part-typed').toBe(0)
+    C.popFailDateChanged('')
+    expect(C.popFailCommit(true)).toBe(C.NOT_WHOLE)
+    await C.popFail(1)
+    expect(C.failOf(s, ev), 'no failure on a day part-typed').toBe(0)
+    C.closePop()
+  })
+
+  it('F-b4 — a date box’s refusal line goes when its saved day changes (a re-sort moved it to another failure)', async () => {
+    const { DateBox } = await import('./components/DateBox.jsx')
+    let setOuter: any
+    function Owner() { const [v, setV] = useState('2026-09-10'); setOuter = setV; return <DateBox id="dbw" value={v} onCommit={() => 'refused'} /> }
+    const { host, root } = await render(<Owner />)
+    try {
+      const box = host.querySelector('#dbw') as HTMLInputElement
+      await act(async () => { Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value')!.set!.call(box, '2026-09-11'); box.dispatchEvent(new Event('input', { bubbles: true })) })
+      await act(async () => { box.dispatchEvent(new FocusEvent('focusout', { bubbles: true })); await tick() })
+      expect(host.querySelector('.datewarn')?.textContent).toBe('refused')
+      await act(async () => { setOuter('') })
+      expect(host.querySelector('.datewarn'), 'the saved day changed under it: the line goes').toBeNull()
+    } finally { await act(async () => { root.unmount() }); host.remove() }
+  })
+
+  it('F-b5 — the N.A. refusal is said inside the grading pop-up, where a phone can read it', async () => {
+    const s = await pickStudent(); const ev = await freshEvent(s, 10)
+    C.openPop(ev, { clientX: 5, clientY: 5 }); await C.popGrade('na')
+    C.openPop(ev, { clientX: 5, clientY: 5 }); await C.popFail(1)
+    expect(C.popMsg && C.popMsg.text).toMatch(/marked N\.A\., so it cannot be failed/)
+    C.closePop()
   })
 })

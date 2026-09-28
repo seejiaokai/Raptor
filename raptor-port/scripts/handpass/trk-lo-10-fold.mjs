@@ -44,8 +44,18 @@ async function editing(size, touch) {
   await tap(page, '#foldTools')
   const b = await box(page, '#board'); await page.mouse.click(420, b.bottom - 10); await sleep(250)
   L.ok('844×390: a press outside closes the set', !(await page.evaluate(() => document.getElementById('arrTools').classList.contains('open'))))
-  await tap(page, '#foldFit')
+  await tap(page, '#foldFit'); await sleep(300)
   L.ok('844×390: ⤢ Fit in the row works (no error)', errors.length === 0, errors.join(' | '))
+  /* the re-walk (28 Sep 26): the editing canvas had a 300px floor in a 169px box, so Fit
+     fitted the chart into a canvas a third of which hung below the screen */
+  const fit = await page.evaluate(() => {
+    const bd = document.getElementById('board').getBoundingClientRect(), sv = document.getElementById('flowSvg').getBoundingClientRect()
+    const balls = [...document.querySelectorAll('#flowSvg .ball')].map(b => b.getBoundingClientRect())
+    const out = balls.filter(r => r.top < bd.top - 1 || r.bottom > bd.bottom + 1 || r.left < bd.left - 1 || r.right > bd.right + 1).length
+    return { board: [Math.round(bd.width), Math.round(bd.height)], canvas: [Math.round(sv.width), Math.round(sv.height)], balls: balls.length, outside: out }
+  })
+  L.ok('844×390: the editing canvas is no taller than the chart box, and after ⤢ Fit every ball is inside it', fit.canvas[1] <= fit.board[1] && fit.balls > 0 && fit.outside === 0, JSON.stringify(fit))
+  await shot(page, 'fold-2b-sideways-after-fit')
   await tap(page, '#sylMenuBtn'); await tap(page, '#arrangeBtn'); await sleep(400)
   const done = { tabs: await box(page, '#viewtabs'), fold: await box(page, '#arrFold') }
   L.ok('844×390: Done editing — the tabs come back, the row goes', done.tabs && done.tabs.shown && (!done.fold || !done.fold.shown), JSON.stringify(done))

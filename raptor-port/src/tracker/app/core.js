@@ -2933,7 +2933,7 @@ export function renderBoard() {
   const s = active;
   let nodes = ''; SYL.forEach(e => { nodes += ballGroup(e, isAvail(s, e)); });
   let svgW = W, svgH = H;
-  if (arrangeMode) { svgW = Math.max(300, board.clientWidth - 24); svgH = Math.max(300, board.clientHeight - 24); }
+  if (arrangeMode) { const cv = canvasSize(board); svgW = cv.w; svgH = cv.h; }
   else { view = { x: 0, y: 0, k: 1 }; }
   board.innerHTML = `<div class="flowwrap"><svg id="flowSvg" width="${svgW}" height="${svgH}" viewBox="0 0 ${svgW} ${svgH}" class="${arrangeMode ? 'arrange' : ''}">
    <defs><marker id="arr" markerWidth="8" markerHeight="8" refX="5.5" refY="3" orient="auto-start-reverse"><path d="M0,0 L6,3 L0,6 Z" fill="#5a6172"/></marker></defs>
@@ -3782,6 +3782,7 @@ function stamp(rec) {
    calendar day (`isoToday`, Singapore), the one the pop-up fills in by default. The
    refusal changes nothing and answers with these words, which the box shows. */
 export const NOT_YET = 'That day hasn’t come yet — pick today or earlier.';
+export const NOT_WHOLE = 'That day isn’t finished — type the whole day, or clear the box for today.';
 export function afterToday(v) { return typeof v === 'string' && v !== '' && v > isoToday(); }
 /* Each setter below also returns at once when the box holds the day already saved:
    a date retyped to what it was made an undo step that took back nothing (the
@@ -3920,7 +3921,7 @@ export function openPop(id, evt) {
   pop = { id, x: evt.clientX, y: evt.clientY };
   popDoneDate = doneDate(active, id) || isoToday();
   popFailDate = isoToday();
-  popMsg = null;
+  popMsg = null; popDonePartial = false; popFailPartial = false;
   notify();
 }
 export function closePop() { pop = null; popMsg = null; notify(); }
@@ -4054,7 +4055,7 @@ export async function popGrade(v) {
   if (!s) { closePop(); return; }
   /* a grade that says "done" on a day that has not come is refused, the pop-up left
      up to be answered (D374) */
-  if (DONE.has(v) && afterToday(popDoneDate)) { popMsg = { where: 'done', text: NOT_YET }; notify(); return; }
+  if (DONE.has(v)) { const p = popDayProblem(popDoneDate, popDonePartial); if (p) { popMsg = { where: 'done', text: p }; notify(); return; } }
   /* [CMDL-FINISH] §4 (Class A) — the whole grade (last-edit note, the mark, and a
      flight's Last-Flown) is ONE gesture = ONE envelope. No reads to hoist; every
      write's mem mutation is synchronous inside the reducer, storage deferred. */
@@ -4066,8 +4067,8 @@ export async function popGrade(v) {
     /* A grade that means "accomplished" is dated the day it is pressed (the box
        in the pop-up, today unless changed first); Not done and N.A. carry no
        day, so the date goes with the grade. */
-    /* a year still being typed (0002…) is not a day: today, as for an empty box
-       (the two code reads, Fable F-E) */
+    /* a whole day, or today for an empty box — a day not finished was refused above
+       (the leftovers' walk F-b3; Fable F-E once rolled a year still being typed into today) */
     if (DONE.has(v)) m.d = isWholeDay(popDoneDate) ? popDoneDate : isoToday(); else delete m.d;
     stamp(m);
     saveMarks(s);
@@ -4085,15 +4086,16 @@ export async function popFail(delta) {
      Counting up was allowed and the ball then wore red failure ticks over the
      N/A colour. Existing counts are kept, not wiped — mark it back to a real
      grade and the history is still there. */
-  if (delta > 0 && gradeOf(s, popId) === 'na') { flashHint('“' + popId + '” is marked N.A., so it cannot be failed.'); return; }
-  if (delta > 0 && afterToday(popFailDate)) { popMsg = { where: 'fail', text: NOT_YET }; notify(); return; }
+  /* said in the pop-up too: on a phone the hint line is under it (the walk, walker b F-b5) */
+  if (delta > 0 && gradeOf(s, popId) === 'na') { const t = '“' + popId + '” is marked N.A., so it cannot be failed.'; flashHint(t); popMsg = { where: 'fail', text: t }; notify(); return; }
+  if (delta > 0) { const p = popDayProblem(popFailDate, popFailPartial); if (p) { popMsg = { where: 'fail', text: p }; notify(); return; } }
   trkGesture(() => {   // [CMDL-FINISH] §4 (Class A) — the count + day list as ONE envelope
     pushMarkUndo(s, 'the failure count on ' + popId);
     /* + records a failure on the pop-up's failure day; − takes back the one with the
        LATEST DAY (D371 — an undated one only when none has a day). The count and the
        list of days are kept in step, and stored in the order of their days. */
     let fd = failDates(s, popId);
-    /* a day still being typed (0202…) is not a day: today, as a grade does */
+    /* a whole day, or today for an empty box (anything else was refused above) */
     for (let k = 0; k < delta; k++) fd.push(isWholeDay(popFailDate) ? popFailDate : isoToday());
     for (let k = 0; k < -delta && fd.length; k++) {
       let at = fd.length - 1; while (at >= 0 && !fd[at]) at--;
@@ -4108,19 +4110,35 @@ export async function popFail(delta) {
 }
 /* The pop-up's "Failed on" box: only where the NEXT + lands. Nothing is saved
    until a failure is recorded on that day. */
-export function popFailDateChanged(v) { popFailDate = v; if (popMsg) popMsg = null; notify(); }
-/* ...and on leaving the box: a day still being typed goes back to today; a day after
-   today goes back to today and says why (D374). */
-export function popFailCommit() {
-  if (!isWholeDay(popFailDate)) { popFailDate = isoToday(); notify(); return ''; }
-  if (afterToday(popFailDate)) { popFailDate = isoToday(); popMsg = { where: 'fail', text: NOT_YET }; notify(); return NOT_YET; }
+/* `partial`: the browser flags the box as part-typed (its value then reads empty) */
+export function popFailDateChanged(v, partial) { popFailDate = v; popFailPartial = !!partial; if (popMsg) popMsg = null; notify(); }
+/* THE POP-UP'S TWO BOXES NEVER TURN A REFUSED DAY INTO TODAY (the leftovers' walk,
+   walker b F-b1..F-b3, 28 Sep 26). Leaving a box runs before the press that left it
+   lands: the refused day used to be put back to today, and the grade or the + then
+   landed on today — while the line said "refused". Now a day after today (D374), or a
+   day not finished (a year still being typed, or a box the browser flags as part-typed),
+   STAYS in the box with its line, and a grade or a + on it is refused until the day is
+   put right; an EMPTY box still means today. The robustness doctrine: an impossible day
+   is skipped, never rolled into a different one. (Done on of an event already done is
+   the one exception: re-dating is refused and the box shows the day the mark keeps.) */
+function popDayProblem(v, partial) {
+  if (afterToday(v)) return NOT_YET;
+  if (partial || (v && !isWholeDay(v))) return NOT_WHOLE;
   return '';
+}
+export function popFailCommit(partial) {
+  /* a box cleared and then only part-typed sends no change at all (its value stays empty),
+     so the box's own part-typed flag is read again as it is left */
+  if (partial) popFailPartial = true;
+  const p = popDayProblem(popFailDate, popFailPartial);
+  if (p) { popMsg = { where: 'fail', text: p }; notify(); }
+  return p;
 }
 /* The pop-up's "Done on" box. Before a grade it only sets the day the grade
    will carry; on an event already accomplished it re-dates the mark at once
    (owner: "the user can also manually change the date after"). A flight's day
    is also its Last Flown, as before. */
-export function popDoneChanged(v) { popDoneDate = v; if (popMsg) popMsg = null; notify(); }
+export function popDoneChanged(v, partial) { popDoneDate = v; popDonePartial = !!partial; if (popMsg) popMsg = null; notify(); }
 /* The box re-dates an accomplished mark when it is LEFT, not as it is typed
    ([TRK-RETEST-NOTES] C5, 28 Sep 26). While a day is retyped the box passes through
    EMPTY, through half-typed years (0002, 0020, 0202 — [HUMAN-RETEST] W2-F2) and, while
@@ -4130,18 +4148,28 @@ export function popDoneChanged(v) { popDoneDate = v; if (popMsg) popMsg = null; 
    Enter) re-dates the mark once, to a whole, real day that is not after today (D374 —
    refused with its words), and anything else puts the box back to the day the mark
    has (today, for an event not yet done — a grade pressed then takes today). */
-export async function popDoneCommit() {
+export async function popDoneCommit(partial) {
+  if (partial) popDonePartial = true;   /* as popFailCommit */
   const s = active; const popId = pop && pop.id; if (!popId || !s) return '';
   const graded = DONE.has(gradeOf(s, popId));
-  const back = () => { popDoneDate = (graded && doneDate(s, popId)) || isoToday(); notify(); };
-  if (!isWholeDay(popDoneDate)) { back(); return ''; }
-  if (afterToday(popDoneDate)) { back(); popMsg = { where: 'done', text: NOT_YET }; notify(); return NOT_YET; }
+  const p = popDayProblem(popDoneDate, popDonePartial);
+  if (!p && !popDoneDate) {   /* emptied: an event done keeps its day; one not done will take today */
+    if (graded) { popDoneDate = doneDate(s, popId) || isoToday(); notify(); }
+    return '';
+  }
+  if (p) {
+    /* a mark already done keeps its day and the box shows it; for one not done the
+       refused day stays in the box, with its line, until it is put right */
+    if (graded) { popDoneDate = doneDate(s, popId) || isoToday(); popDonePartial = false; }
+    popMsg = { where: 'done', text: p }; notify(); return p;
+  }
   if (graded && popDoneDate !== doneDate(s, popId)) await setDoneDate(s, popId, popDoneDate);
   return '';
 }
 /* the pop-up's one line of refusal — { where: 'done' | 'fail', text } — cleared by the
    next change and when the pop-up opens or closes */
 export let popMsg = null;
+let popDonePartial = false, popFailPartial = false;
 /* A yyyy-mm-dd a person could mean: a four-digit year from 1900 (not a year still
    being typed), and a day the calendar has (a strict round trip, no time zone). */
 export function isWholeDay(v) {
@@ -5190,10 +5218,17 @@ export async function delSyl() {
    the first take-back of a pinch did exactly that, under the fingers
    ([TRK-PINCH-DRAGS-BALL], found by the lost-lift check). Cut to size once the
    strip has landed, and the board's scroll put to zero. */
+/* The editing canvas's size, from its chart box — ONE rule for the redraw and the re-fit
+   (they were two copies). Never taller than its box: the old 300px floor left 130px of
+   canvas below a sideways phone's 169px chart box, a hidden area the box could scroll
+   into (the leftovers' re-walk, 28 Sep 26 — D373 made editing there usable). */
+function canvasSize(board) {
+  return { w: Math.max(300, board.clientWidth - 24), h: Math.max(100, board.clientHeight - 24) };
+}
 function fitCanvas() {
   const board = document.getElementById('board'), svg = document.getElementById('flowSvg');
   if (!arrangeMode || !board || !svg) return;
-  const w = Math.max(300, board.clientWidth - 24), h = Math.max(300, board.clientHeight - 24);
+  const { w, h } = canvasSize(board);
   svg.setAttribute('width', w); svg.setAttribute('height', h); svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
   board.scrollLeft = 0; board.scrollTop = 0;
 }

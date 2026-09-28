@@ -1260,3 +1260,18 @@ resolved statuses always carry their resolution date
 **Suggested improvement:** Add a line to §4 step 3 (or §7): for a measured number, copy the files the change touched aside, `git show origin/main:<path> > <path>` for each, rebuild, run the SAME walk script into a scratch folder, then copy the branch's files back and `git diff --stat` them to prove they are restored. Never while walkers are served that build.
 
 **Principle:** A baseline you can measure in minutes gets measured; one that costs a fresh checkout gets assumed — make the honest comparison the cheap one.
+
+### Observation 338: A re-walk run with the first walk's output folders silently overwrites the defect evidence
+
+**Status:** OPEN
+**Date:** 2026-09-28
+**Session context:** Tracker leftovers — re-walking walker b's four scripts after fixing its findings (numbered past #333–#337 on `claude/change-recording-retest`)
+**Skill:** New skill candidate: bug-check re-walk (raptor-port/docs/bug-check-order.md §5 "The re-walk")
+**Type:** internal
+**Phase/Area:** the re-walk step, after the fixes
+
+**Issue:** The order says a re-walk goes to a separate output folder because the first walk's pictures are the defect's evidence. The re-walk was launched by copying the walk's own command line — the same `HP_OUT` / `HP_SHOTS` — and it overwrote walker b's uncommitted final run (step logs and pictures). The committed first run survived only because an earlier commit happened to carry it. Nothing warned: the scripts write wherever the environment points.
+
+**Suggested improvement:** Make the helper refuse it: `trk-lib.mjs` (and `lib.mjs`) could refuse to write a step log or picture over a file that is tracked or modified in git unless `HP_REWALK=1` points at a folder named `rewalk`; or the walk scripts could take `rewalk` as an argument that switches both folders. Until then, the re-walk command in each evidence sheet should be written out in full with its `rewalk/` folders, beside the first walk's.
+
+**Principle:** A rule that protects evidence ("write the re-run somewhere else") must be enforced where the write happens; a re-run is almost always launched by reusing the first run's command, so the default path IS the overwrite.

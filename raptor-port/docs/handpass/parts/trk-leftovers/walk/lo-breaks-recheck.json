@@ -1,27 +1,12 @@
 [
   {
-    "name": "B2 the + Add search",
+    "name": "D373 the canvas never taller than its box",
     "pass": true,
-    "said": "RED: 1 failed | 35 skipped (36)"
+    "said": "RED: 1 failed | 45 skipped (46)"
   },
   {
-    "name": "C5 no step for the same day",
+    "name": "D373 a turn re-fits the canvas",
     "pass": true,
-    "said": "RED: 1 failed | 35 skipped (36)"
-  },
-  {
-    "name": "D371 the order of the days",
-    "pass": true,
-    "said": "RED: 1 failed | 35 skipped (36)"
-  },
-  {
-    "name": "D376 + Add remembers",
-    "pass": true,
-    "said": "RED: 1 failed | 35 skipped (36)"
-  },
-  {
-    "name": "D373 the fold row",
-    "pass": true,
-    "said": "RED: 1 failed | 35 skipped (36)"
+    "said": "RED: 1 failed | 45 skipped (46)"
   }
 ]
