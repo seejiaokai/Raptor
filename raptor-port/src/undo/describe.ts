@@ -21,9 +21,12 @@ import type { UndoEntry } from './types'
 import type { Change } from '../command'
 
 /* a person's callsign by id, for the Leave War's records (its ids carry the person, not his name) — installed by the
-   app (state/undo-wire.ts), read LIVE when the entry is recorded; null when none is installed (tests) */
+   app (state/undo-wire.ts), read LIVE when the entry is recorded; null when none is installed (tests). `defaultOf` —
+   what a settings record stored as null stands for (the seeded accounts list, accounts.ts), so the first change to a
+   never-saved list still says what changed */
 let nameOf: (pid: string) => string | null = () => null
-export function setDescribeNames(fn: (pid: string) => string | null): void { nameOf = fn }
+let defaultOf: (settingId: string) => any = () => null
+export function setDescribeNames(fn: (pid: string) => string | null, dflt?: (settingId: string) => any): void { nameOf = fn; if (dflt) defaultOf = dflt }
 const poss = (cs: string | null | undefined) => (cs ? `${cs}’s ` : '')
 
 /* known command types → a specific plain phrase. Optional: any type absent here
@@ -94,7 +97,7 @@ const SETTING_PHRASE: Record<string, string> = {
 
 /* a safe generic label from the entry's module, used when the type is unknown. */
 function genericLabel(entry: UndoEntry): string {
-  switch (entry.scope.module) {
+  switch (entry.scope && entry.scope.module) {
     case 'sched': return 'a change to the schedule'
     case 'inputs': return 'a change to the inputs'
     case 'plan': return 'a change to the plan'
@@ -212,7 +215,7 @@ function peopleLabel(entry: UndoEntry): string | null {
 function accountLabel(entry: UndoEntry): string | null {
   const ch = entry.forward.find(c => c.collection === 'settings' && c.id === 'accounts')
   if (!ch || entry.type !== 'account.update') return null
-  const b = listOf(ch.before), a = listOf(ch.after)
+  const b = listOf(ch.before == null ? defaultOf('accounts') : ch.before), a = listOf(ch.after)
   for (const x of a) {
     const y = b.find((z: any) => z && z.id === x.id)
     if (!y || JSON.stringify(y) === JSON.stringify(x)) continue
@@ -231,10 +234,12 @@ function inputsCount(entry: UndoEntry): number {
 }
 
 export function describeEntry(entry: UndoEntry): string {
+  /* read only what the entry holds — a partial one (no closure yet, a test's) is still described */
+  if (!Array.isArray(entry.forward)) entry = { ...entry, forward: [] }
   if (entry.type === 'sched.text') return textLabel(entry.detail) || TYPE_PHRASE['sched.text']
   /* one input filed through the Inputs page's batch door is one input (walker A2-F2) */
   if (entry.type === 'inputs.batch') { const n = inputsCount(entry); return n === 1 ? 'a personal input' : n > 1 ? `${n} inputs` : TYPE_PHRASE['inputs.batch'] }
-  if (entry.scope.module === 'lw' || entry.type.startsWith('lw.')) return lwLabel(entry)
+  if ((entry.scope && entry.scope.module) === 'lw' || entry.type.startsWith('lw.')) return lwLabel(entry)
   const acct = accountLabel(entry); if (acct) return acct
   if (TYPE_PHRASE[entry.type]) return TYPE_PHRASE[entry.type]
   if (entry.type === 'people.edit') return peopleLabel(entry) || genericLabel(entry)

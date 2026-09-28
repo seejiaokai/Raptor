@@ -17,6 +17,7 @@
 import { logReversed } from './changelines'
 import { peopleStore, settingsStore } from './people-settings-commit'
 import { rosterRestoreProblem } from './roster-restore'
+import { seedAccounts } from './accounts'
 import { deletedRestoreProblem } from './person-delete'
 import {
   installUndo, registerUndoStore, setCutoverModules, setUndoHooks, setDescribeNames,
@@ -191,7 +192,7 @@ function postRestore(entry: UndoEntry, dir: 'undo' | 'redo', pulledBack: Array<{
 export function installGlobalUndo(): void {
   installUndo()
   /* the words name a man by his callsign (describe.ts — the Leave War's records carry his id) */
-  setDescribeNames((pid) => ((PEOPLE as any)[pid] ? String((PEOPLE as any)[pid].cs) : null))
+  setDescribeNames((pid) => ((PEOPLE as any)[pid] ? String((PEOPLE as any)[pid].cs) : null), (k) => (k === 'accounts' ? seedAccounts() : null))
   registerUndoStore(schedStore, SCHED_COLLS)
   registerUndoStore(lwStore, LW_COLLS as unknown as string[])
   registerUndoStore(weekstashStore, ['weekstash'])
