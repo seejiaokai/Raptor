@@ -171,7 +171,7 @@ before they start, so the finding is never produced.**
 
 ---
 
-## 3. The kinds of check — what each is FOR and what each is BLIND to
+## 3. The kinds of check — what each is FOR and what each is BLIND to (D7)
 
 | The check | What it is, plainly | What it is FOR | What it CANNOT see |
 |---|---|---|---|

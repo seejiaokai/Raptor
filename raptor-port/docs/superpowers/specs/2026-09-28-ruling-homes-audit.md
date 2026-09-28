@@ -19,14 +19,14 @@ added ten newer rows (D21, D36, D59, D135, D145, D169, D304, D325, D328, D338). 
 | D3 | `engine-rules.md`, the two R-2 bullets | yes | number added to both |
 | D5 | `bug-check-order.md` §0 | yes | number added |
 | D6 | `bug-check-order.md` §4 rank 1 | yes | number added |
-| D7 | `bug-check-order.md` §3 and §5 | yes | number added at §5's opening |
+| D7 | `bug-check-order.md` §3 and §5 | yes | number added to §3's heading and §5's opening |
 | D8 | `bug-check-order.md`, its head | yes | number added |
 | D9 | `bug-check-order.md` §0a; `.claude/rules/bug-check.md` | yes, both | number added to both |
 | D10 | `bug-check-order.md`, its head and §0a | yes | number added to both places |
 | D11 | `bug-check-order.md` §4a; `.claude/rules/bug-check.md` | yes, both | number added to both |
 | D12 | `bug-check-order.md` §2a | yes | number added |
 | D13 | `.claude/rules/record-decisions.md` §The lapse | yes | number added |
-| D15 | the OIL register, OIL31 | yes | number added |
+| D15 | the OIL register — the row named OIL19 / OIL21a, which do not carry it; OIL31 does | yes, in OIL31 (its SC spare, AVALON/BB and ⓘ items — the rest of that row is the build's own rules) | number added beside those items only; the row's home cell now names OIL31 (Fable's read) |
 | D28, D31, D32, D43 | the OIL-seats register | yes — it has a row for each; the rulings rows named only the archived backlog item | each row's home cell now names the register |
 | D39 | `ui-contracts.md` §[ALL-AVAIL-WINDOW] (D38–D41 at its head) | yes | the row's home cell names it (it was only an "on build:" path) |
 | D51 | the same section, pilots left / WSOs right | yes | number added; home cell names it |
@@ -61,4 +61,11 @@ rule's home), D135, D145, D169.
 names before "on build:" never mentions its number (alone, or inside a range such as D5–D13); the append-only
 archives are exempt; code homes are not checked. Its self-test replays the miss (red on the old gate, green on the
 new). The three parallel chats of 28 Sep 26 were told before it was committed; one row (D349) it caught on their
-branch was fixed there the same hour.
+branch was fixed there the same hour. A row renumbered under D78 counts as new (DECISIONS.md, step 1).
+
+## Checked
+
+Fable read the whole branch for meaning (D138), 28 Sep 26: no heading misattributes its text; every rewrite above
+matched its ruling and the code. Five findings, all fixed: the D15 tag had claimed the build's own rules as the
+owner's (now beside his items only), the CLAUDE.md clause dropped D63's "describing him" half, the renumbered-row
+case was unwritten, the shape guard's CI base was over-promised in `doc-budget.md` §4, and three small nits.

@@ -361,7 +361,7 @@ function homes(paths, allow) {
          written at all (D21's "corrected" sentence, still stale four days on) — and could check them only by reading. A
          home that names the D-number makes the next audit a search. Markdown homes only (a code comment may cite it, but
          is not required to); the frozen archives are exempt, being append-only; "on build:" homes are future. */
-      else if (isNew && (future < 0 || tm.index < future) && tok.endsWith('.md') && !hit.every(isFrozen) && !hit.some(h => citesRuling(readNow(h), m[1])))
+      else if (isNew && (future < 0 || tm.index < future) && tok.endsWith('.md') && !hit.every(isFrozen) && !hit.filter(h => !isFrozen(h)).some(h => citesRuling(readNow(h), m[1])))
         fails.push(`${m[1]} is new and names \`${tok}\` as a home, but that file never mentions ${m[1]} — write the number beside the ruling there, so a later check can find it`)
     }
   }
@@ -525,7 +525,9 @@ function structure() {
       warns.push(`${HANDOFF} ## Now still has a block for ${b}, which is merged into main — the next handoff removes it once its open residue is filed`)
   }
   /* its shape: a problem the base did not have fails; one the base already had is only reported, so a branch that
-     never touched HANDOFF.md is not failed for someone else's damage (the rest of this job judges only what is new) */
+     never touched HANDOFF.md is not failed for someone else's damage (the rest of this job judges only what is new).
+     In CI the base is main's tip, not the fork point (Fable, 28 Sep 26): a branch forked before a fix on main merges
+     main in first (D78), as it must anyway. */
   const hNow = readNow(HANDOFF), hBase = readBase(HANDOFF), shapeBase = new Set(handoffShape(hBase))
   if (hBase && !hNow) fails.push(`${HANDOFF} is GONE — it was at the base; it is the one handoff every chat reads first`)
   for (const p of handoffShape(hNow)) {
