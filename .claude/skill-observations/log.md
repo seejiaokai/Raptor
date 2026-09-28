@@ -1246,7 +1246,7 @@ resolved statuses always carry their resolution date
 
 **Principle:** A restructuring that must not change meaning is safest as pure insertion, proved mechanically; judgement goes into WHERE, and the proof covers everything else.
 
-### Observation 330: A delegated reviewer's report must land in a file from the start, not only in its hand-back message
+### Observation 336: A delegated reviewer's report must land in a file from the start, not only in its hand-back message
 
 **Status:** OPEN
 **Date:** 2026-09-28
@@ -1261,7 +1261,7 @@ resolved statuses always carry their resolution date
 
 **Principle:** Decide where a delegated report lives before dispatching it; a report that arrives only as a chat message costs the host its full length twice when it has to be kept.
 
-### Observation 331: A scripted-walk subagent needs a scope bound, or it spends the budget of a whole session
+### Observation 337: A scripted-walk subagent needs a scope bound, or it spends the budget of a whole session
 
 **Status:** OPEN
 **Date:** 2026-09-28
