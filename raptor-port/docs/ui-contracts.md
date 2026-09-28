@@ -1241,6 +1241,10 @@ edit week now:
     Withheld on `mvRO` (a frozen preview or a read-only board), which is what
     the old top-bar button's `disabled={DPREV.has(SBDAY)}` did. `addWave` itself
     stays as `window.addWave` for the probe bridge.
+  - **NARROWED 28 Sep 26 BY D347–D349** (`.claude/rules/decisions/how-we-work.md`; `OUTSTANDING.md` `[UNDO-TOPBAR]`): the
+    board's bar carries the top bar's group — Undo · Redo · History · Sync · the bell — then ONE exit, ✓ Done (✕ Close
+    goes: it did what Done does); on a phone Sort all and the layout switch sit behind one ⋯ in the second row. This
+    section is rewritten when it lands.
   - **Undo and redo joined it.** The board is a full-screen modal over the
     shell, so the shell's own pair is unreachable while it is open; every
     board edit had to be undone after closing it. Same two calls and the

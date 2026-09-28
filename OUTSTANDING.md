@@ -88,6 +88,7 @@ The five-flags batch (built on `claude/five-flags-batch-build-ef7d85`, 26 Sep 26
 [ARROW-GUTTER-STRIP] (its strip moot by D275; one small leftover, low); low: [GHOST-FLAG-SHADOW], [LW-SETTINGS-SMALL],
 [ALLAVAIL-OPEN-ROW] (investigate first).
 Insights — [INSIGHTS-WORKING-COPY] (a question for him, any time — the changes window it could have gone with merged 28 Sep 26).
+The changes window — [HIST-PER-PAGE] (an idea, filed D349; a mock-up first, after the change-recording re-test).
 
 **Waiting on him — no order exists:**
 [OIL-EARNED-VS-GRANTED] (his figure — ask first, when the award fix reaches it;
@@ -1023,8 +1024,21 @@ War's Period row (`src/leavewar/ui/Chrome.tsx`) and in the Tracker's header (`sr
 own undo); Inputs, Quals, Admin and the Logic page carry none (walked 28 Sep 26 — `scripts/handpass/cr-base.mjs` B5).
 **To do:** the readings in D347's row — a mock-up of the real app first (desktop and phone), then the build and a walk at
 both widths. **D348 (the same day):** on a phone the order is the desktop's — Undo · Redo (· the clock on Edit Schedule) ·
-the sync dot · the bell at the far right; the changes clock stays on Edit Schedule only. **Place:** built with the change-recording re-test, on `claude/change-recording-retest` (its plan:
+the sync dot · the bell at the far right; the changes clock stays on Edit Schedule only. **APPROVED 28 Sep 26 (D349)** —
+the mock-up `raptor-port/docs/mock/undo-topbar.html` (version 4) is the design of record: the Tracker's own pair moves too;
+the board's bar gets Undo · Redo · History · Sync · the bell and ONE exit, ✓ Done (Close goes); on a phone Sort all and
+the layout switch sit behind one ⋯ in its second row. **Place:** built with the change-recording re-test, on `claude/change-recording-retest` (its plan:
 `raptor-port/docs/superpowers/plans/2026-09-28-change-recording-plan.md`).
+
+### [HIST-PER-PAGE] A changes button on the Leave War and Quals, showing that page's changes — an idea, filed (D349, 28 Sep 26)
+His question during the D347 mock-up: *"should i have a edit history button too for each page thats applicable"* — answered
+not in the change-recording build, and filed on his "ok" (D349). Today the one changes window (Edit Schedule's clock, the
+day counts) already lists inputs, Leave War decisions, OIL awards and Quals changes as lines on their day (D263, D338 (7)),
+so nothing made elsewhere is lost; what a per-page button would add is a view FILTERED to that page's changes, where members
+look (who approved or refused my leave, who changed my quals — D169's transparency). It would also need changes the window
+does not record today (an account change on Admin, a rule on the Logic page) if those pages were included. **To do:** a
+mock-up first (the Leave War and Quals first; Admin and Logic only if he wants them), then his word. **Place:** after the
+change-recording re-test; none blocking.
 
 ### [AVAILWIN-PREVIEW-BAR] On the desktop board the ALL AVAIL window, opened from a preview, covers the preview bar (found 24 Sep 26)
 Found by the amendment re-test's walker W2 (W2-F7). Saturday's board → plans selector → Original → tap the ALL AVAIL
