@@ -107,6 +107,15 @@ several are measured and suite-enforced, not preferences.
   needs the JS guard. Do not add scattered hovers/entrances beyond these
   three without an owner ask. Pinned in `e2e/geometry.spec.ts` ("the motion
   set") — including that reduced motion really computes `none`.
+- **A publish never loses a message spoken in the same breath (`[AMEND-SMALL-SEEN]` 1, 28 Sep 26).** The toast is ONE
+  element whose text is replaced, so on a weekend publish the OIL check's line (spoken second, in the same command)
+  replaced "Published AL1 · 14 items on Sat only" before anyone saw it. Inside a publish (`sched-commit.ts commitPublish`,
+  through `HOOKS.toastBatch`) every toast is gathered and shown as ONE line, joined by " · " in the order spoken,
+  identical lines once, the strongest colour kept; a publish that throws shows nothing; a nested batch joins its outer
+  one (`ui/toast.ts toastBatch`). Only a publish batches — every other toast still replaces the last. **Unpublish says
+  what it did** (`interactions.ts`): "Sat: AL2 withdrawn — its changes are back on the working copy as pending; AL1 is the
+  issued schedule; publishing again reissues AL2", or for the Original "Sat unpublished — it is a draft again; publishing
+  reissues the Original", with the OIL credits line when there is one. Pinned by `ui/toastbatch.test.ts`; walked `scripts/handpass/sf/sf-d1-toast.mjs`.
 - **The phone day-head is TWO FIXED ROWS on every day** (owner, 25 Aug 26 —
   "Because of the word today, the layout is not the same … keep it
   similar"): row one is the title + date (+"· Today") with the turn-pattern
@@ -621,6 +630,12 @@ History are unchanged — History finds a cell by its own key + the edit log, no
 by this attribute), it just carries no visual mark until the day is published.
 Pucks and the area/time/rmk/in-times cells get outlines and an ALn tag; every
 other inline-edited string gets an AL-coloured underline + tag once published.
+**A changed TIME's tag sits UNDER the time, not after it (`[AMEND-SMALL-SEEN]` 4, 28 Sep 26).** In a flying line's B/TO
+and LD boxes and a list row's start / end (`.t`) the trailing "AL1" was cut to "AL" on a phone, cut on a desktop's
+landing time too, and ran over the people column beside a duty's start (measured, `scripts/handpass/sf/sf-d4-altag.mjs`).
+In those narrow time boxes the tag is its own line under the digits (`scheduler.css`, the rule after the generic
+`[data-alc]::after`), whole at every width; the time keeps its underline. The board's times are inputs and wear the
+AL-coloured outline instead, unchanged. Pinned by `e2e/geometry.spec.ts` ("a changed time's AL tag sits under the time").
 Pending marks split by surface (owner request, Aug 26): on `#eWeek` and
 `#schedBoard`, `data-aln` items are painted DOTTED in the upcoming AL's colour
 (solid means issued, dotted means coming); the view-only page keeps the neutral
@@ -674,7 +689,9 @@ history).
 
 - **The window** — the ALL AVAIL window's pattern (D167, D38–D41): moved by its six-dot grip, resized by its corner on a
   desktop (380 × 560 to start, top right), the full-width bottom panel on a phone (12px margins, 62% tall — moves, does
-  not resize, D77); the schedule behind stays usable. It closes on ✕, a page change, a week change and a sign-in or
+  not resize, D77); the schedule behind stays usable. Like the ALL AVAIL window it never opens over the board's preview
+  bar — an unmoved desktop window whose corner would meet the shown bar sits below it (`[AVAILWIN-PREVIEW-BAR]`, 28 Sep 26;
+  §[ALL-AVAIL-WINDOW], "Never over the board's preview bar"). It closes on ✕, a page change, a week change and a sign-in or
   sign-out (`state/view.ts` CHGWIN, VIEW_RESET) — never on a tap outside it, a scroll or Escape (it is a window, not a
   pop-up). The one pressed last of it and the ALL AVAIL window is in front (411 over 410); both stay under the bubble
   (430), a drawer (440) and a modal (470).
@@ -807,6 +824,25 @@ plan switch that left this day's copy out — D175) is named the same way and sa
 on the programme → on Tuesday's programme"; the other day's added row is named too (Fable's code read F3, 25 Sep 26 —
 it read "Ground · MEETING · item → removed"). One naming body, `pendlist.ts requestName`, for every line that names a
 request.
+**A deleted request that had NO row on the day is named too (`[REQ-DOOR-WORDS]` 3, 28 Sep 26).** A request filed under
+Unavailable, or one whose row stood elsewhere, left the pending list and the changes window reading a bare "item" once
+it was deleted — the naming read only the row. `pendlist.ts requestWords` now names it from the pending item's own
+record of what was there (`was`), then the issued day's copy of the request (`snap.inp`), then the row — never from
+change-history wording — so it reads "Bane · Meeting: … → deleted" wherever it stood; `drafts.ts`'s load message reads
+the same helper. A request filed after publication and then deleted still reads 0 pending (D174 / D176). Pinned by
+`ui/amendbatch.test.tsx`.
+**One request, one row — across WEEKS too (`[REQ-ORPHAN-ROW]` + `[REQ-DOOR-WORDS]` 2, 28 Sep 26).** "One request, one
+row" (D175) was kept inside the loaded week only, so a request accepted onto a day of one week could be accepted again
+onto a day of another, and deleting it left the other week's row behind with nothing to answer to. A row standing on a
+week that is stored but not loaded is now read (`engine/weekstash.ts rowElsewhere`): Accept refuses and says where it
+stands ("Bane's LL is already on the programme — on Sun 19 Jul; load that week to change it"; a stored week that cannot
+be read: "Can't tell whether … already has a row on another week — load that week first"), the day's accept control on
+such a request says where it is instead ("On Sun 19 Jul"), a load or plan switch leaves such a row out and names the
+day, and deleting the request sweeps its row from every stored week. A request taken off ('r') whose row still stands on
+a loaded day is adopted back rather than duplicated ("… is on the ground programme again — its row was already there").
+The Undo on an accepted request names its day when the row is on another loaded day ("Undo · Tue"; undone: "Accept
+undone — its row came off Tuesday's programme"). Pinned by `state/reqorphan.test.ts`; the engine rule: `engine-rules.md` (a request's row and its
+filing).
 
 **Who and when (D104).** The newest edit-log row for the change's own cells: the signed-in person's live callsign
 (personal accounts since `[ACCOUNTS]`, D166 (5)), and its clock (`elogWhen`). A change the page's record does not hold
@@ -900,6 +936,10 @@ gate) now lives in the read-only preview bar on BOTH surfaces (`.dprev-back`, A2
 The reworded banner: an **issued** preview offers **"Load onto working copy"**
 (`data-restore`); a **draft** preview (view page only now) offers **"Switch to
 this plan"** (`data-draftgo` → `draftSelect`, gated on `vsel`).
+**One act, one sentence (`[REQ-DOOR-WORDS]` 1, 28 Sep 26):** the banner's switch now runs the plans menu's own body
+(`board.ts switchDraft`) — the same toast with its pending tail ("· 2 differences from ORIG pending"), the same history
+line, the same already-live refusal — where it used to run its own `draftSelect` and word the switch its own way. Its
+gates stay on the banner, so a frozen button is inert; a plan really gone reads "That plan is no longer available".
 The `data-restore` button routes through `routeClick` →
 `loadVersionToWorkingCopy` (`engine/drafts.ts`) — **NOT a rollback** (owner, 16
 Aug 26 — "the view only schedule should still see AL1, it shouldn't go to
@@ -1558,6 +1598,20 @@ edit week now:
 
 ### The phone flying line's three strips, and the drawer body's scroll
 
+**A flying line's callsign shows six letters whole (`[AMEND-SMALL-SEEN]` 3 + `[ABSENCE-SMALL-SEEN]` 3, 28 Sep 26).**
+VIPER and COBRA were drawn "…" on the edit week, W6LINE "…" on View-only Sched, and this board line wrapped a
+five-letter name onto two lines ("VIP/R"). Measured (`scripts/handpass/sf/sf-d3-callsigns.mjs`), not guessed. **The
+week and View-only** (`.form`, `scheduler.css`): the name was an editable inline-BLOCK, so one pixel over and the whole
+name went to "…" (only the mission dot was left) — it is an ordinary inline run now, cut after its first letters
+("MAGN…"), an empty box keeping a tappable width while editing; and the CS/MSN column is 76px on a desktop (12.5px bold:
+every common six, MAGNUM included), 50px on a phone (9.5px: a common six — W6LINE, RANGER — whole; a wide six ends in
+"…"), 48px at ≤374px — the room taken from REMARKS (desktop 214 → 190, 390 phone 73 → 61); B/TO and LD are unchanged.
+**This board line**: the CS track is 56px (was 36 — six letters of 11px JetBrains Mono are 40px + 12 padding + 2
+border), taken from MSN, the one flexible track; a longer callsign still wraps and grows — the owner's 20 Aug 26 rule for
+every board text box. Pinned by `e2e/geometry.spec.ts` ("a flying line's callsign shows six letters whole"). *(The
+bullet below gives row 1 as `48px minmax(0,1fr) 46px 46px 46px`; the stylesheet's row is `20px 56px minmax(0,1fr) 46px
+46px 46px` — a grip lane, then CS.)*
+
 - **A phone flying line is three strips: `CS | MSN | B | TO | LD`, then
   `[FCP RCP] [remarks]`, then the controls** (seats-strip fix 8 Aug 26; brief
   folded onto row 1 and the remarks lifted beside the pucks, owner 16 Aug 26 —
@@ -2175,7 +2229,13 @@ persisted and never in a history snapshot. The toggle builder is `notePubTog`
   for itself (an outline paints outside the border box, which is the uneven look the
   whole change is about) and keeps its neutral depth shadow, written on the
   `.lift` compound so one `box-shadow` carries both; the ring follows the cloned
-  puck's own 3px corner. The class is added through `liftOn`, not a bare
+  puck's own 3px corner. **A flagged puck's ghost keeps its OWN ring (`[GHOST-FLAG-SHADOW]`, 28 Sep 26).** The lift's
+  `box-shadow` on the ghost out-ranked every flag ring (they are box-shadows too), so a dragged red, amber, grey or dashed
+  puck lost its ring or its depth, whichever lost the cascade. The lift now sets NO `box-shadow` on the ghost: its depth
+  (`0 8px 20px`) rides the veil (`.lift::before`, beside `--lift-box`), and the lifted ghost lifts its clip
+  (`overflow:visible`, as `.haswhy` already does) so the veil's outer shadow shows. Every ring stays the puck's own.
+  Pinned by `ui/lift-css.test.ts` (the cascade over twelve ring states) and `e2e/geometry.spec.ts`; walked
+  `scripts/handpass/sf/sf-b-ghost.mjs`. The class is added through `liftOn`, not a bare
   `classList.add`, because a ghost is a COPY: a seat re-grabbed inside its own
   landing flash would otherwise hand `.lift-land` to a clone that has no timer to
   take it off. Edge auto-scroll comes free with
@@ -5838,6 +5898,15 @@ needed to type the NAME, never to pick dates. Three parts, together:
   `sheet-keyboard.test.tsx` (a `visualViewport` stub, since a headless browser
   can't raise an iOS keyboard) and the autofocus split in the same file.
 
+**No sheet prints the stored `2026-07-17` (`[LW-ISO-DATES]`, 28 Sep 26 — the absence-record re-test, W4-2).** The bid
+sheet's header and its "moved from", the award, the Raptor sheet, the posting sheets and their notes, the one-day
+selection header, the move banner's refusal, the PO tag's hover and the absence door's refusals printed the machine date
+while the day's list beside them read "Sat 18 Jul". Two voices now, each the one its neighbours already speak
+(`leavewar/ui/dates.ts`): a sheet HEADED by one day reads like the day's list (`dayLabel` → "Fri 17 Jul"); a date inside a
+sentence or a span reads day-first with its year (`shortDate` → "17 Jul 26"); an Inputs date inside the war
+(`inputDayLabel`) reads "13 Jul", another year keeping its year. Machine attributes (test ids, input values) stay ISO.
+Pinned by `leavewar/ui/isodates.test.tsx` — one roll-call over every sheet, reading the page a sheet draws into.
+
 ## Leave War Rearrange + the counter picker (owner, 28 Aug 26)
 
 Four asks from the same sitting, all on the Leave War grid:
@@ -5860,6 +5929,13 @@ Four asks from the same sitting, all on the Leave War grid:
   (`lw-viewing`, `ui/Chrome.tsx`) and the picker header leads with **VIEWING AS
   &lt;callsign&gt;**. Both are ABSENT when nobody in the roster is being viewed —
   there is no "you" to name, mirroring the picker's existing dash rule.
+  **On a phone the chip drops to its own line (`[ABSENCE-SMALL-SEEN]` 2, 28 Sep 26 — the re-test's W6 N6).** The shell's
+  phone bar rule `.topbar>*{flex:0 0 auto}` (scheduler.css, ≤820px) leaked onto this row, so it never wrapped: at 390 the
+  chip hung past the right edge (to 481px) inside a row that scrolled sideways. The row's spacer (`.spring`) may now
+  shrink (`chrome.css`), so the chip wraps under the picker, right-aligned; "VIEWING AS" and the eye never shrink and a
+  long callsign ends in "…". Measured: at 390 it cannot share the line even with its name cut. Tablet and desktop keep
+  the one line. Pinned by `e2e/leavewar.spec.ts` ("the VIEWING AS chip stays inside the screen"); walked
+  `scripts/handpass/sf/sf-g2-viewing.mjs`.
   The LIT ROW itself was turned up on 6 Sep 26 (owner, from his iPhone — "make
   the glow of the view as user row a bit more obvious in the grids"): the frozen
   pair takes a lighter panel (`#173C4A`), the accent lines bracketing the row go
@@ -6652,7 +6728,7 @@ feel he rejected on 10 Aug 26). The fix-by-fix history follows.
   M skipped" note is actually read (`onDone`'s `keepOpen`; closing on the
   same tap killed the note it had just set). The single-cell writers carry
   the batch writers' whole law now as well: `setBidState` checks `canDecide`
-  exactly as `setBidStates` does, `shiftBid` checks the stage/window/war-day/
+  exactly as `setBidStates` does, `shiftBid` *(retired 28 Sep 26 — every move goes through `moveRecords`, [LW-SPARE-MOVE-DOORS])* checks the stage/window/war-day/
   in-squadron law exactly as `moveCells` does (a typed off-war date used to
   make a bid vanish from every screen while still draining the balance), a
   medical code is refused from a member at `setCell` itself, and a chain of
@@ -6704,6 +6780,16 @@ on every row — anyone may VIEW any attachment, gated nowhere. The write-path
 backstop behind the hidden controls lives in `commitInputEdit` / `removeInput`
 and is in `docs/engine-rules.md` §Auth / roles. Pinned in
 `audit-guards-inputs.test.ts`.
+
+**Another man's input opens READ ONLY, and looks it (W1-F3, 26 Sep 26; the look `[ABSENCE-SMALL-SEEN]` 4, 28 Sep 26).**
+From the calendar's chip or the day popover a member opening someone else's input gets the edit window with its body
+`inert`, no Delete and no Save, and "Only Tally or an admin can change this." at the foot (`ui/inputedit.tsx`,
+`perms.ts mayEditInputOf`). Its locked fields used to be drawn exactly as live ones — the dropdown box and arrow, the
+remarks box, a text cursor, the OIL "Change…" button. Keyed on that same `inert` (`scheduler.css`, `.inped-body[inert]`),
+a locked field now reads as its VALUE — no box, no arrow, the plain cursor, the quieter ink — and a tick box or a button
+is dimmed rather than removed, so the record still shows what was chosen. His own input keeps its live boxes. Before and
+after pictures are on the small-fixes look card (his call on the look). Pinned by `e2e/geometry.spec.ts` ("the read-only
+input window draws its locked fields as values"); walked `scripts/handpass/sf/sf-g4-readonly.mjs`.
 
 ## The ⓘ info-only switch on programme items (owner, 1 Sep 26)
 
@@ -8076,6 +8162,15 @@ never be stranded. Every fresh open starts clean (footer and position); a new
 subject tapped while it is open keeps its place. **Stacking: z-index 410** —
 above the board (400), below every dialog (420–480); the toast (540) shows over it.
 
+**Never over the board's preview bar (`[AVAILWIN-PREVIEW-BAR]`, 28 Sep 26).** When the board shows a version or a plan,
+its bar under the day head ("Back to live", "Load onto working copy", "Switch to this plan") is the way home — and the
+window's top-right corner sat on its buttons. So on a desktop, with no box of his, a window whose corner would meet the
+shown bar opens BELOW it (8px under), its height capped to the screen; the bar coming or going moves an unmoved window
+to match (`ui/floatwin.ts` `BOARD_BAR` — the `clear` element and a watcher on `#sbWarn`). A window he has dragged or
+resized is his and never moves; a phone keeps its bottom panel. The changes window shares the rule (§The one changes
+window). Pinned: `e2e/availwin.spec.ts` (both windows at 1440×900 and 1440×700, a dragged window left alone, the
+phone panel); walked `scripts/handpass/sf/sf-a-windows.mjs`.
+
 **It reads the world its chip was drawn in — ALL of it.** The chip says which:
 the working copy, a version preview (a published version wears its own warnings — D187; a parked plan none), the view
 page's issued face (its OFFICIAL flags), or a
@@ -8095,6 +8190,24 @@ is no longer on the schedule; it is cancelled; it is information only; there is
 no ALL / ALL AVAIL puck on it any more; it has no usable start and end — never a
 confident "0 available". A version that vanished reads "This version is no
 longer available". Undo brings a deleted row, and its list, back.
+
+**A row with a start and NO end is counted over the assumed hour, and earns nobody OIL (D360 — owner, 28 Sep 26: "need
+to say something like no oil worked out due end time to the admin"; `[ALLAVAIL-OPEN-ROW]`).** DINNER WITH CMD at 18:30
+with no end used to show no count at all — the crowd was recorded only by the OIL walk, which rightly refuses a row with
+no written end (D31) — so the chip, and with it the window, went silent. Now the crowd behind the placeholder is worked
+out over the length the rest of the schedule assumes for such a row (the Logic tab's "Assumed length, no end time"; a
+sim row its own "Assumed sim length") and the chip shows. The window's title names it: "Sat · 18:30–19:30 · no end time,
+an hour assumed", and its flags measure that hour. **Where OIL is decided, the admin is told:** the "Who earns OIL" half
+reads "No OIL worked out — this row has no end time." and so does the row's switch in OIL Earn mode (its title) —
+nobody is credited from a guessed hour; "who's available", open to everyone, carries the assumed hour only. The crowd is
+frozen at publication like any other (D44), so a later change — the Logic tab's length included — reads pending (D45).
+**A row with NO start** (or one that starts and ends at the same minute) still counts nobody, but its placeholder wears
+a "?" chip of its own (class `nostart`, title "No start time — give it a time to count who can attend" / "It starts and
+ends at the same time — …"), never the older issued day's "?" (a record kept before membership was); its tap opens the
+window on the reason above. Built in `engine/oil.ts` (`openEndRows`, display only — the money walk is untouched),
+`engine/oilev.ts` (the membership), `ui/oilmode.ts` (`oilItemLabel`'s assumed window, `oilSentinelSummary`'s `nostart`,
+`OIL_OPEN_END`), `ui/html.ts` (the chip), `ui/AvailWindow.tsx`; pinned by `engine/oilopenrow.test.ts` (per row kind: the
+crowd AND no credit) and `ui/availopenrow.test.tsx`.
 
 **A man the roster no longer holds is COUNTED AND SAID OUT LOUD**, under the
 columns, never dropped. An issued day's membership is a frozen list of ids
