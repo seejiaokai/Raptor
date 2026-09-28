@@ -155,7 +155,11 @@ fix. G read-only window: the e2e red without its rule. G dates: `isodates.test.t
    Keep it, or drop the words on a phone and show just the eye and the name? *Recommended: keep — "make it obvious"
    (28 Aug 26).*
 6. **The callsign column is wider** so six letters fit — the remarks column gives the room: 24px on a desktop, 12px on a
-   phone (pictures `d3-callsigns-main` → `-final`). OK? *Recommended: keep.*
+   phone (pictures `d3-callsigns-main` → `-final`). On a desktop every six-letter callsign fits, MAGNUM included. **On a
+   phone a common six (W6LINE, RANGER) fits, but a WIDE six — two M's or W's, like MAGNUM or HAMMER — still ends in "…"**
+   (Astra's final read #2). Fitting those too would take another 7px from the phone's remarks column (73 → 54px in all,
+   about a quarter of it). Keep the phone as built, or give the wide six the room? *Recommended: keep — flying-line
+   callsigns are mostly short, and the phone's remarks are read on every line.*
 
 **Filed, not asked:** `[PLAN-BANNER-DOOR]` — the plan banner's "Switch to this plan" has no screen route; recommended to
 retire it with the next plans-menu change.

@@ -2612,7 +2612,11 @@ before accounts; evidence `docs/handpass/2026-09-25-req-one-row.md`).**
   `relandInputs` does not re-park such a request; a load or plan switch leaves out a row standing on another stored week
   and names its day; a request whose row stands on a stored, unloaded week cannot be edited or deleted from here
   (`inputedit.tsx landedOnUnloadedWeek` — "Load the week of Sun 19 Jul to delete this accepted input"); deleted where
-  its row is loaded, the row goes with it — an 'r' request's row included (`dropInputRow`, through `unacceptInput`). The filing letter itself (`acc`) stays week-local — only the row is one across weeks. Pinned by
+  its row is loaded, the row goes with it — an 'r' request's row included (`dropInputRow`, through `unacceptInput`).
+  **A saved week the request covers that cannot be read FAILS CLOSED** (Astra's final read #1): a load or plan switch
+  leaves the incoming row out and says the week could not be read (`rowsLeftOut` → `away` 'unreadable', `drafts.ts
+  rowsLeftSaid`); the edit, the delete and the week switch's re-filing are refused or skipped by the older lock on an
+  unreadable week (`quarantine.ts` — every such week is protected), each door's own check a second guard behind it. The filing letter itself (`acc`) stays week-local — only the row is one across weeks. Pinned by
   `state/reqorphan.test.ts`; the screen words: `ui-contracts.md` §The pending list. The load's "Discard N edits" (`dayDiscardCount`) counts against the day as the load will leave it,
   and the load no longer takes its "already at <version>" short cut when a row would be left out. Every door names each
   request left out in its sentence (toast and Edit history) through ONE body, `drafts.ts rowsLeftSaid` — "Bane · Meeting
