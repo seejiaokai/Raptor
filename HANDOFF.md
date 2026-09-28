@@ -15,6 +15,23 @@ the later merge keeps both (D78).
 
 ## Now
 
+<!-- now:claude/change-recording-retest -->
+### `claude/change-recording-retest` — the change-recording re-test (`[HUMAN-RETEST]`, D147) with `[UNDO-ROSTER-SETTINGS]`, D148 and `[UNDO-TOPBAR]` (D347) — STARTED 28 Sep 26 — verify before use
+- **Where it stands:** the main checkout (`C:/Users/User/projects/Raptor`), cut from `main` at `60a6792c`. Fable and Astra
+  are designing the scenarios (brief `raptor-port/docs/superpowers/briefs/2026-09-28-change-recording-scenarios-brief.md`);
+  the baseline walk is done (`raptor-port/scripts/handpass/cr-base.mjs` — today a Quals, Logic or Admin change is skipped by
+  Undo). Next: the plan (`raptor-port/docs/superpowers/plans/2026-09-28-change-recording-plan.md`), both red-team it, the
+  D347 mock-up to him, the walk, the build, the FULL check.
+- **Files this branch changes — a parallel chat leaves them alone and says so first (D302):** the undo engine
+  (`src/undo/*`), `src/state/undo-wire.ts`, `src/state/people-settings-commit.ts`, `src/state/person-delete.ts`
+  (`deletedRestoreProblem`), `src/state/accounts.ts` (a restore check), `src/leavewar/state/store.ts` (`lwStore.write`, the
+  posting record) and `src/leavewar/sync.ts` (`reprojectRoster`), the Undo / Redo pairs — `src/ui/Shell.tsx`,
+  `src/ui/SchedBoard.tsx`, `src/leavewar/ui/Chrome.tsx`, `src/tracker/components/Header.jsx` — and `scheduler.css`'s top
+  bar. Backlog items: `[UNDO-ROSTER-SETTINGS]`, `[UNDO-TOPBAR]`, `[GLOBAL-UNDO]`, `[AMEND-SMALL-SEEN]` item 2.
+- **Ports:** preview 4173 (`raptor-walk`), browser tests `E2E_PORT=4190`. **Rulings:** D347–D359. Full checks through the
+  PC lock (D228). Nothing to `main` without his "merge live".
+<!-- /now -->
+
 <!-- now:claude/five-flags-batch-continue-2cfa70 -->
 ### `claude/five-flags-batch-continue-2cfa70` — the five-flags batch AND his answers D270–D275: BUILT and FULL-checked (PR #445) — waiting for his look and "merge live"; the red Leave War tests' cause found and fixed (confirm on GitHub) — written 27 Sep 26 — verify before use
 - **The branch:** carries `claude/five-flags-batch-build-ef7d85` whole (that branch has no PR and nothing of its own —

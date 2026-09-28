@@ -3872,6 +3872,13 @@ Three things stay decided:
 
 ## The top bar carries the bell and, while editing, undo/redo (owner, Aug 26)
 
+> **NARROWED 28 Sep 26 BY D347** (`.claude/rules/decisions/how-we-work.md`): *"all undo and redo buttons should be at the
+> top bar … standardised … Like how the edit schedule is"* — desktop and phone. The pair below is no longer "shown only on
+> the edit page": it shows in this same place and look on every page where a change the one Undo takes back is made, the
+> Leave War's pair leaves its Period row for it, the Tracker's own pair moves here too, and the board keeps its pair in its
+> own top bar laid out the same way. Built with the change-recording re-test (`OUTSTANDING.md` `[UNDO-TOPBAR]`); this
+> section is rewritten when it lands.
+
 Two additions to the sticky top bar (`ui/Shell.tsx`), both desktop-and-phone
 except where noted:
 - **A notification bell** (`#notifyBell`) sits by Insights on every page and both

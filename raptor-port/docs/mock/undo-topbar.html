@@ -1,0 +1,170 @@
+<title>Undo in the Top Bar</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+:root{
+  --bg:#f3f5f8; --panel:#ffffff; --ink:#18202b; --ink-2:#4a5566; --ink-3:#7a8597; --edge:#d8dee7;
+  --accent:#1a8fb3; --accent-soft:#e1f2f8; --ask:#b36b12; --ask-soft:#fbefdd;
+  --shot:#0d1117;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0e141c; --panel:#151d28; --ink:#e7edf5; --ink-2:#aab6c6; --ink-3:#7f8ba0; --edge:#26324a;
+    --accent:#4cc3e6; --accent-soft:#12303c; --ask:#f0b25a; --ask-soft:#3a2a12; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0e141c; --panel:#151d28; --ink:#e7edf5; --ink-2:#aab6c6; --ink-3:#7f8ba0; --edge:#26324a;
+  --accent:#4cc3e6; --accent-soft:#12303c; --ask:#f0b25a; --ask-soft:#3a2a12; color-scheme:dark;
+}
+body{background:var(--bg);color:var(--ink);font:15px/1.55 "IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif}
+.wrap{max-width:1180px;margin:0 auto;padding-inline:16px;padding-block:28px 64px;display:flex;flex-direction:column;gap:28px}
+h1{font-size:28px;line-height:1.2;margin:0;text-wrap:balance}
+h2{font-size:19px;margin:0;text-wrap:balance}
+p{margin:0;max-width:68ch;color:var(--ink-2)}
+.lede{display:flex;flex-direction:column;gap:10px}
+.eyebrow{font:500 12px "IBM Plex Mono",ui-monospace,monospace;letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+.quote{border-left:3px solid var(--accent);padding:6px 0 6px 12px;color:var(--ink);font-style:italic;max-width:68ch}
+.reads{background:var(--panel);border:1px solid var(--edge);border-radius:10px;padding:16px 18px;display:flex;flex-direction:column;gap:8px}
+.reads ol{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px;color:var(--ink-2);max-width:80ch}
+.reads b{color:var(--ink)}
+section.page{display:flex;flex-direction:column;gap:12px;border-top:1px solid var(--edge);padding-top:20px}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.pair.phone{grid-template-columns:repeat(2,minmax(0,300px))}
+figure{margin:0;display:flex;flex-direction:column;gap:6px;min-width:0}
+figcaption{font:500 12px "IBM Plex Mono",ui-monospace,monospace;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3)}
+figcaption.after{color:var(--accent)}
+figure a{display:block;background:var(--shot);border:1px solid var(--edge);border-radius:8px;overflow:hidden}
+figure img{display:block;width:100%;height:auto}
+.note{font-size:14px;color:var(--ink-2);max-width:80ch}
+.asks{background:var(--ask-soft);border:1px solid var(--ask);border-radius:10px;padding:16px 18px;display:flex;flex-direction:column;gap:8px}
+.asks h2{color:var(--ask)}
+.asks ol{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px;max-width:80ch}
+.tag{display:inline-block;font:500 11px "IBM Plex Mono",ui-monospace,monospace;letter-spacing:.06em;padding:1px 6px;border-radius:4px;background:var(--accent-soft);color:var(--accent);margin-left:6px;vertical-align:2px}
+@media (max-width:760px){.pair{grid-template-columns:1fr}.pair.phone{grid-template-columns:repeat(2,minmax(0,1fr))}h1{font-size:23px}}
+a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+</style>
+
+<div class="wrap">
+  <header class="lede">
+    <div class="eyebrow">Mock-up · D347 · 28 Sep 26</div>
+    <h1>Every Undo and Redo in the top bar</h1>
+    <p class="quote">"All undo and redo buttons should be at the top bar. And it should be standardised as much as possible in terms of the location and layout. Like how the edit schedule is." · "Review both desktop and mobile too."</p>
+    <p>These are pictures of the real app. The "after" pictures move the app's own buttons in the page, so they look exactly as the build will. Tap any picture to open it full size.</p>
+  </header>
+
+  <div class="reads">
+    <h2>What I read into your words</h2>
+    <ol>
+      <li><b>One place, one look.</b> The Undo and Redo pair sits in the top bar where Edit Schedule has it: after the bell, with the words on a desktop and as icons pinned at the right edge on a phone.</li>
+      <li><b>On every page where you can change something Undo takes back:</b> Edit Schedule, the Leave War, Inputs, Quals, Admin and the Logic page. View-only Sched and Help change nothing, so they get no pair.</li>
+      <li><b>The Leave War's pair leaves its Period row</b> and moves up into the top bar.</li>
+      <li><b>On a phone, the Sync chip shrinks to its dot</b> wherever the pair shows, as it already does on Edit Schedule, so the right end of the bar reads the same on every page: dot · bell · Undo · Redo.</li>
+      <li><b>The changes clock stays on Edit Schedule only</b>, beside its pair, as you set it (D171).</li>
+      <li><b>The scheduler board covers the top bar</b>, so its pair stays in the board's own bar, in the same order as Edit Schedule's: Undo, Redo, then History.</li>
+      <li><b>The Tracker's own Undo and Redo move to the top bar too.</b> They still take back the Tracker's own marks and chart edits, because the Tracker keeps its own history. Only their place changes.</li>
+    </ol>
+  </div>
+
+  <section class="page">
+    <h2>Edit Schedule <span class="tag">the model</span></h2>
+    <div class="pair">
+      <figure><figcaption>Desktop · today</figcaption><a href="../img/handpass/2026-09-28-change-recording/mock/desktop-00-editsched.png" target="_blank" rel="noopener"><img src="../img/handpass/2026-09-28-change-recording/mock/desktop-00-editsched.png" alt="Edit Schedule on a desktop: Undo, Redo and the changes clock in the top bar, then Sync, the bell, Insights, Logout and the name badge"></a></figure>
+      <figure><figcaption>Phone · today</figcaption><a href="../img/handpass/2026-09-28-change-recording/mock/phone-00-editsched.png" target="_blank" rel="noopener"><img src="../img/handpass/2026-09-28-change-recording/mock/phone-00-editsched.png" alt="Edit Schedule on a phone: the sync dot, the bell, Undo, Redo and the changes clock at the right of the top bar"></a></figure>
+    </div>
+  </section>
+
+  <section class="page">
+    <h2>Leave War</h2>
+    <p class="note">Today the pair sits in the war's own Period row. After, it moves into the top bar, and the Period row keeps Period, + New and Viewing as.</p>
+    <div class="pair">
+      <figure><figcaption>Desktop · today</figcaption><a href="../img/handpass/2026-09-28-change-recording/mock/desktop-leavewar-before.png" target="_blank" rel="noopener"><img src="../img/handpass/2026-09-28-change-recording/mock/desktop-leavewar-before.png" alt="Leave War on a desktop today, Undo and Redo in the Period row"></a></figure>
+      <figure><figcaption class="after">Desktop · after</figcaption><a href="../img/handpass/2026-09-28-change-recording/mock/desktop-leavewar-after.png" target="_blank" rel="noopener"><img src="../img/handpass/2026-09-28-change-recording/mock/desktop-leavewar-after.png" alt="Leave War on a desktop after, Undo and Redo in the top bar before Sync"></a></figure>
+    </div>
+    <div class="pair phone">
+      <figure><figcaption>Phone · today</figcaption><a href="../img/handpass/2026-09-28-change-recording/mock/phone-leavewar-before.png" target="_blank" rel="noopener"><img src="../img/handpass/2026-09-28-change-recording/mock/phone-leavewar-before.png" alt="Leave War on a phone today"></a></figure>
+      <figure><figcaption class="after">Phone · after</figcaption><a href="../img/handpass/2026-09-28-change-recording/mock/phone-leavewar-after.png" target="_blank" rel="noopener"><img src="../img/handpass/2026-09-28-change-recording/mock/phone-leavewar-after.png" alt="Leave War on a phone after, Undo and Redo at the right of the top bar"></a></figure>
+    </div>
+  </section>
+
+  <section class="page">
+    <h2>Inputs</h2>
+    <p class="note">Inputs you file here can already be undone today, but only from Edit Schedule. After, the pair is right here.</p>
+    <div class="pair">
+      <figure><figcaption>Desktop · today</figcaption><a href="../img/handpass/2026-09-28-change-recording/mock/desktop-inputs-before.png" target="_blank" rel="noopener"><img src="../img/handpass/2026-09-28-change-recording/mock/desktop-inputs-before.png" alt="Inputs on a desktop today, no Undo"></a></figure>
+      <figure><figcaption class="after">Desktop · after</figcaption><a href="../img/handpass/2026-09-28-change-recording/mock/desktop-inputs-after.png" target="_blank" rel="noopener"><img src="../img/handpass/2026-09-28-change-recording/mock/desktop-inputs-after.png" alt="Inputs on a desktop after, Undo and Redo in the top bar"></a></figure>
+    </div>
+    <div class="pair phone">
+      <figure><figcaption>Phone · today</figcaption><a href="../img/handpass/2026-09-28-change-recording/mock/phone-inputs-before.png" target="_blank" rel="noopener"><img src="../img/handpass/2026-09-28-change-recording/mock/phone-inputs-before.png" alt="Inputs on a phone today"></a></figure>
+      <figure><figcaption class="after">Phone · after</figcaption><a href="../img/handpass/2026-09-28-change-recording/mock/phone-inputs-after.png" target="_blank" rel="noopener"><img src="../img/handpass/2026-09-28-change-recording/mock/phone-inputs-after.png" alt="Inputs on a phone after"></a></figure>
+    </div>
+  </section>
+
+  <section class="page">
+    <h2>Quals</h2>
+    <p class="note">New with this build: a Quals change (a tick, a CAT, a callsign) can be undone. Today Undo passes over it.</p>
+    <div class="pair">
+      <figure><figcaption>Desktop · today</figcaption><a href="../img/handpass/2026-09-28-change-recording/mock/desktop-quals-before.png" target="_blank" rel="noopener"><img src="../img/handpass/2026-09-28-change-recording/mock/desktop-quals-before.png" alt="Quals on a desktop today"></a></figure>
+      <figure><figcaption class="after">Desktop · after</figcaption><a href="../img/handpass/2026-09-28-change-recording/mock/desktop-quals-after.png" target="_blank" rel="noopener"><img src="../img/handpass/2026-09-28-change-recording/mock/desktop-quals-after.png" alt="Quals on a desktop after"></a></figure>
+    </div>
+    <div class="pair phone">
+      <figure><figcaption>Phone · today</figcaption><a href="../img/handpass/2026-09-28-change-recording/mock/phone-quals-before.png" target="_blank" rel="noopener"><img src="../img/handpass/2026-09-28-change-recording/mock/phone-quals-before.png" alt="Quals on a phone today"></a></figure>
+      <figure><figcaption class="after">Phone · after</figcaption><a href="../img/handpass/2026-09-28-change-recording/mock/phone-quals-after.png" target="_blank" rel="noopener"><img src="../img/handpass/2026-09-28-change-recording/mock/phone-quals-after.png" alt="Quals on a phone after"></a></figure>
+    </div>
+  </section>
+
+  <section class="page">
+    <h2>Logic</h2>
+    <div class="pair">
+      <figure><figcaption>Desktop · today</figcaption><a href="../img/handpass/2026-09-28-change-recording/mock/desktop-logic-before.png" target="_blank" rel="noopener"><img src="../img/handpass/2026-09-28-change-recording/mock/desktop-logic-before.png" alt="Logic on a desktop today"></a></figure>
+      <figure><figcaption class="after">Desktop · after</figcaption><a href="../img/handpass/2026-09-28-change-recording/mock/desktop-logic-after.png" target="_blank" rel="noopener"><img src="../img/handpass/2026-09-28-change-recording/mock/desktop-logic-after.png" alt="Logic on a desktop after"></a></figure>
+    </div>
+    <div class="pair phone">
+      <figure><figcaption>Phone · today</figcaption><a href="../img/handpass/2026-09-28-change-recording/mock/phone-logic-before.png" target="_blank" rel="noopener"><img src="../img/handpass/2026-09-28-change-recording/mock/phone-logic-before.png" alt="Logic on a phone today"></a></figure>
+      <figure><figcaption class="after">Phone · after</figcaption><a href="../img/handpass/2026-09-28-change-recording/mock/phone-logic-after.png" target="_blank" rel="noopener"><img src="../img/handpass/2026-09-28-change-recording/mock/phone-logic-after.png" alt="Logic on a phone after"></a></figure>
+    </div>
+  </section>
+
+  <section class="page">
+    <h2>Admin</h2>
+    <div class="pair">
+      <figure><figcaption>Desktop · today</figcaption><a href="../img/handpass/2026-09-28-change-recording/mock/desktop-admin-before.png" target="_blank" rel="noopener"><img src="../img/handpass/2026-09-28-change-recording/mock/desktop-admin-before.png" alt="Admin on a desktop today"></a></figure>
+      <figure><figcaption class="after">Desktop · after</figcaption><a href="../img/handpass/2026-09-28-change-recording/mock/desktop-admin-after.png" target="_blank" rel="noopener"><img src="../img/handpass/2026-09-28-change-recording/mock/desktop-admin-after.png" alt="Admin on a desktop after"></a></figure>
+    </div>
+    <div class="pair phone">
+      <figure><figcaption>Phone · today</figcaption><a href="../img/handpass/2026-09-28-change-recording/mock/phone-admin-before.png" target="_blank" rel="noopener"><img src="../img/handpass/2026-09-28-change-recording/mock/phone-admin-before.png" alt="Admin on a phone today"></a></figure>
+      <figure><figcaption class="after">Phone · after</figcaption><a href="../img/handpass/2026-09-28-change-recording/mock/phone-admin-after.png" target="_blank" rel="noopener"><img src="../img/handpass/2026-09-28-change-recording/mock/phone-admin-after.png" alt="Admin on a phone after"></a></figure>
+    </div>
+  </section>
+
+  <section class="page">
+    <h2>Tracker</h2>
+    <p class="note">Today the Tracker's own pair sits in its second row, smaller. After, it moves to the top bar and still undoes the Tracker's own changes.</p>
+    <div class="pair">
+      <figure><figcaption>Desktop · today</figcaption><a href="../img/handpass/2026-09-28-change-recording/mock/desktop-tracker-before.png" target="_blank" rel="noopener"><img src="../img/handpass/2026-09-28-change-recording/mock/desktop-tracker-before.png" alt="Tracker on a desktop today"></a></figure>
+      <figure><figcaption class="after">Desktop · after</figcaption><a href="../img/handpass/2026-09-28-change-recording/mock/desktop-tracker-after.png" target="_blank" rel="noopener"><img src="../img/handpass/2026-09-28-change-recording/mock/desktop-tracker-after.png" alt="Tracker on a desktop after"></a></figure>
+    </div>
+    <div class="pair phone">
+      <figure><figcaption>Phone · today</figcaption><a href="../img/handpass/2026-09-28-change-recording/mock/phone-tracker-before.png" target="_blank" rel="noopener"><img src="../img/handpass/2026-09-28-change-recording/mock/phone-tracker-before.png" alt="Tracker on a phone today"></a></figure>
+      <figure><figcaption class="after">Phone · after</figcaption><a href="../img/handpass/2026-09-28-change-recording/mock/phone-tracker-after.png" target="_blank" rel="noopener"><img src="../img/handpass/2026-09-28-change-recording/mock/phone-tracker-after.png" alt="Tracker on a phone after"></a></figure>
+    </div>
+  </section>
+
+  <section class="page">
+    <h2>The scheduler board <span class="tag">stays in its own bar</span></h2>
+    <p class="note">The board covers the whole screen, top bar included, so it keeps its own pair. It already follows Edit Schedule's order: Undo, Redo, then History. Nothing moves here.</p>
+    <div class="pair">
+      <figure><figcaption>Desktop · today</figcaption><a href="../img/handpass/2026-09-28-change-recording/mock/desktop-board-before.png" target="_blank" rel="noopener"><img src="../img/handpass/2026-09-28-change-recording/mock/desktop-board-before.png" alt="The board on a desktop: Templates, Undo, Redo, History, Sort all, Done, Close"></a></figure>
+      <figure><figcaption>Phone · today</figcaption><a href="../img/handpass/2026-09-28-change-recording/mock/phone-board-before.png" target="_blank" rel="noopener"><img src="../img/handpass/2026-09-28-change-recording/mock/phone-board-before.png" alt="The board on a phone: print, Undo, Redo, History, Sort, Done, Close"></a></figure>
+    </div>
+  </section>
+
+  <div class="asks">
+    <h2>Your answer</h2>
+    <ol>
+      <li><b>Approve as drawn</b>, or name what to change.</li>
+      <li><b>The Tracker (reading 7):</b> move its pair to the top bar too? I recommend yes. It is what "all" means, and the Tracker's buttons then sit where every other page's do.</li>
+      <li><b>The board (reading 6):</b> keep its pair in its own bar, as drawn? I recommend yes.</li>
+    </ol>
+  </div>
+</div>

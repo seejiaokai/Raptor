@@ -59,7 +59,8 @@ whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaini
    [S4-HUNT-REST] — **WALKED 26 Sep 26** on `claude/absence-record-d147-af6a50`; his answers to its questions (D260–D263)
    recorded, and D260–D262 BUILT and FULL-checked there 27 Sep 26 (D263 goes with [DRAFT-PENDING]); from his look, D264–D266
    (one look for the sheets, a Move on every record that can move) — [LW-MOVE-STANDARD], BUILT and MERGED 27 Sep 26
-   (PR #447; archived) — then change-recording (with [UNDO-ROSTER-SETTINGS] and D148),
+   (PR #447; archived) — then change-recording (with [UNDO-ROSTER-SETTINGS], D148 and [UNDO-TOPBAR] — STARTED 28 Sep 26
+   on `claude/change-recording-retest`),
    then the Leave War links LAST (with the 7 Sep phone check). Then "after the hunt" (21 Sep 26): [LW-LOCKMARK] →
    [LW-WEEKDAY-WORK] (talk to him before building any of it) — its first, the published day's unavailable list, was
    closed by the same re-test (built by [LEAVE-LATE-PUBLISHED]; archived).
@@ -1013,6 +1014,16 @@ changes). Walk it first: confirm on screen that Undo stays greyed or skips a ros
 records, so they join this item: when settings are cut over to the one undo, an account restore must re-check the
 guards `[ACCOUNTS]` enforces at the write (at least one admin keeps access; an admin never changes his own account),
 or an undo could lock the squadron out.
+
+### [UNDO-TOPBAR] Every Undo / Redo pair in the top bar, laid out as Edit Schedule's — desktop and phone (D347, 28 Sep 26)
+His ruling D347 (`.claude/rules/decisions/how-we-work.md`): *"all undo and redo buttons should be at the top bar …
+standardised … Like how the edit schedule is"* · *"Review both desktop and mobile too"*. Today the pair is in the top bar
+on Edit Schedule only (`src/ui/Shell.tsx` `.tb-hist`), in the board's own bar (`src/ui/SchedBoard.tsx`), in the Leave
+War's Period row (`src/leavewar/ui/Chrome.tsx`) and in the Tracker's header (`src/tracker/components/Header.jsx`, its
+own undo); Inputs, Quals, Admin and the Logic page carry none (walked 28 Sep 26 — `scripts/handpass/cr-base.mjs` B5).
+**To do:** the readings in D347's row — a mock-up of the real app first (desktop and phone), then the build and a walk at
+both widths. **Place:** built with the change-recording re-test, on `claude/change-recording-retest` (its plan:
+`raptor-port/docs/superpowers/plans/2026-09-28-change-recording-plan.md`).
 
 ### [AVAILWIN-PREVIEW-BAR] On the desktop board the ALL AVAIL window, opened from a preview, covers the preview bar (found 24 Sep 26)
 Found by the amendment re-test's walker W2 (W2-F7). Saturday's board → plans selector → Original → tap the ALL AVAIL

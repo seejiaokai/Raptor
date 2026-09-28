@@ -1109,7 +1109,9 @@ Quals-tick-lifts-the-count integration — are pinned in
 
 - **Undo / redo scope (owner, 30 Aug 26 — "Add undo and redo on leave war").**
   The buttons live in Leave War's own top row (`ui/Chrome.tsx` Topbar), shown to
-  everyone. The stack is a snapshot of the DURABLE state — the same fields
+  everyone. **— NARROWED 28 Sep 26 BY D347: they move to the app's top bar, in the same place and look as Edit Schedule's
+  (`OUTSTANDING.md` `[UNDO-TOPBAR]`, with the change-recording re-test). The snapshot stack this entry describes was
+  replaced by the one global undo on 18 Sep 26 (`docs/undo-contract.md`).** The stack is a snapshot of the DURABLE state — the same fields
   `persist()` writes (every war's grid / states / period, the counter ledger and
   openings, and all of the admin arrangement/config: figure & roster & manning
   order, hidden rows, group defs & priority, manning rules, event types & rows,

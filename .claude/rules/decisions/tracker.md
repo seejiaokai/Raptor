@@ -26,7 +26,8 @@ paths:
 **Loads by itself** whenever a session reads a Tracker file (the `paths:` at the top of this file), so work that strays into the
 Tracker from anywhere else picks these up too. The general rulings are in `.claude/rules/decisions/how-we-work.md`, loaded in every session; the map of every ruling and how to add or retire one: `DECISIONS.md`. Newest first; each row keeps the date it was recorded.
 **Also read** — in How we work, so already loaded: **D62** and **D63** (the Tracker's syllabus data is out of
-every privacy sweep; the aircraft type elsewhere reads "F-15" or "fighter squadron").
+every privacy sweep; the aircraft type elsewhere reads "F-15" or "fighter squadron"); **D347** (every Undo / Redo
+pair — the Tracker's own included — sits in the top bar, in the same place and look as Edit Schedule's).
 
 **No student name, mark or date may enter the repository** (its seed data, `src/tracker/data/`, is verbatim course
 content only). The reason once given was "the repository is public"; it has been PRIVATE since 23 Sep 26 (D59) and
