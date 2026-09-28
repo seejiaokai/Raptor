@@ -12,7 +12,7 @@ const OUT = (process.env.HP_SHOTS || 'C:/Users/User/projects/Raptor/raptor-port/
 rmSync(OUT, { recursive: true, force: true }); mkdirSync(OUT, { recursive: true })
 const CHROMIUM = '/opt/pw-browsers/chromium'
 const browser = await chromium.launch({ headless: true, ...(existsSync(CHROMIUM) ? { executablePath: CHROMIUM } : {}) })
-const page = await (await browser.newContext({ viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true })).newPage()
+const page = await (await browser.newContext({ viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true , deviceScaleFactor: +(process.env.HP_DPR || 1) })).newPage()
 const wait = ms => page.waitForTimeout(ms)
 const shot = n => page.screenshot({ path: `${OUT}/${n}.png` })
 await page.goto(BASE + '/?fresh=1')

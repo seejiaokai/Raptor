@@ -131,7 +131,7 @@ async function drawProposed(page, mode, dayWord) {
 
 /* ---- phone ---- */
 {
-  const page = await (await browser.newContext({ viewport: { width: 430, height: 932 }, hasTouch: true, isMobile: true })).newPage()
+  const page = await (await browser.newContext({ viewport: { width: 430, height: 932 }, hasTouch: true, isMobile: true , deviceScaleFactor: +(process.env.HP_DPR || 1) })).newPage()
   const wait = ms => page.waitForTimeout(ms)
   await world(page)
   await page.evaluate(() => { const h = document.querySelector('#eWeek .day[data-day="0"] .day-head'); h && h.scrollIntoView({ block: 'start' }); window.scrollBy(0, 170) })
@@ -159,7 +159,7 @@ async function drawProposed(page, mode, dayWord) {
 
 /* ---- desktop: the week view (the item's day leads its header) ---- */
 {
-  const page = await (await browser.newContext({ viewport: { width: 1440, height: 900 } })).newPage()
+  const page = await (await browser.newContext({ viewport: { width: 1440, height: 900 } , deviceScaleFactor: +(process.env.HP_DPR || 1) })).newPage()
   const wait = ms => page.waitForTimeout(ms)
   await world(page)
   await page.click('#histBtn'); await wait(500)
