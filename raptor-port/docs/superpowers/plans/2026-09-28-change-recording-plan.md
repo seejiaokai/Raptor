@@ -264,3 +264,28 @@ page he is on, which is the fix). The Tracker's Ctrl+Z note — the Tracker chat
 - **Refusing a request** — Astra: a step (it changes another person's access). Plan: a step (B2).
 - **Snap exactness** — Astra: reopen the exact modal; Fable: the page and the row. Plan: the page and the row/section;
   reopening a closed modal (a template editor) is not done — the bubble names it.
+
+## 10. Folded from the "which changes get Undo" review (his ask; both providers, 28 Sep 26)
+
+Reports: `docs/superpowers/briefs/2026-09-28-change-recording-undoable-list-{fable,astra}.md`. Both agree with the list
+except where named here.
+- **"OK, seen" on a Leave War notice (`lw.ack`) — never a step** (joins B1's `NOT_STEPS`). Fable: a seen mark, and a
+  member's Undo meant for his bid would bring the note back; Astra: a squadron record, so a step. The builder's call:
+  Fable's — it records that a person has read the notice, like the other three seen marks. On the look card.
+- **Give access** — to an EXISTING person: a step (new); as a NEW person: D350's add, never (Astra). B2 wording fixed.
+- **"OIL awards"** means the admin's hand-typed awards; an automatic credit goes and comes back with the publish or OIL
+  choice that made it (both).
+- **Named on the list, already right:** saved plans (park, bring out, rename, delete) and Sort all are schedule steps;
+  "Clear old clutter" is one step (B8 gives it words — today "a batch of inputs"); renaming an ARCHIVED man is a step with
+  the callsign refusal (B5-1 covers it); a document attached to a medical input comes and goes with its input; the
+  Leave War's day event lines are steps; the admin's member-view switch is looking around.
+- **The Tracker's own pair** takes back chart edits and a student's marks and dates — not students, courses, charts,
+  event details or an Import — and clears on ✓ Save changes: one line on the look card, since D349 puts it where the one
+  Undo's pair sits.
+- **Refusals** (both): a sign-in name, one person one account, a deleted man's account — already B5-2 / B4.
+- **A consequence of D350 to tell him once (Fable R4):** an add, Archive, Restore or Delete writes the one accounts
+  record, so it freezes the Undo of earlier account changes (and earlier Quals changes on that man) in the same sign-in —
+  the way back is Enable / Restore.
+- **Put to him (both his):** the Leave War STAGE (Fable: keep, with its own words — `lw.stage`, "Undid: closing
+  bidding"; Astra: never, the stage buttons only); and **Admin → Data → "Clear edit history…"**, the one control that
+  ERASES the squadron's change history (Fable M2) — against the transparency of D169 / D338 (1).
