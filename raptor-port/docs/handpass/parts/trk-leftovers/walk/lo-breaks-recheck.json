@@ -1,0 +1,27 @@
+[
+  {
+    "name": "B2 the + Add search",
+    "pass": true,
+    "said": "RED: 1 failed | 35 skipped (36)"
+  },
+  {
+    "name": "C5 no step for the same day",
+    "pass": true,
+    "said": "RED: 1 failed | 35 skipped (36)"
+  },
+  {
+    "name": "D371 the order of the days",
+    "pass": true,
+    "said": "RED: 1 failed | 35 skipped (36)"
+  },
+  {
+    "name": "D376 + Add remembers",
+    "pass": true,
+    "said": "RED: 1 failed | 35 skipped (36)"
+  },
+  {
+    "name": "D373 the fold row",
+    "pass": true,
+    "said": "RED: 1 failed | 35 skipped (36)"
+  }
+]

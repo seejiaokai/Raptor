@@ -244,8 +244,11 @@ describe('[TRK-RETEST-NOTES] C5 — a date box saves when you leave it, never a 
     const r1 = await C.setUpchit(s, '2026-09-10')
     expect(r1 || '', 'accepted').toBe('')
     expect(depth()).toBe(before + 1)
+    const stamped = C.dates[s].at
+    await new Promise(r => setTimeout(r, 15))
     await C.setUpchit(s, '2026-09-10')
     expect(depth(), 'the same day again makes no step').toBe(before + 1)
+    expect(C.dates[s].at, 'and writes nothing (no fresh stamp)').toBe(stamped)
     await C.setTarget(s, '2026-12-01'); await C.setTarget(s, '2026-12-01')
     expect(C.paceOf(s).target).toBe('2026-12-01')
   })
@@ -665,6 +668,13 @@ describe('[TRK-EDIT-SIDEWAYS] D373 — the folded tool row and its Tools ▾', (
       C.flashHint('That link already exists.')
       await act(async () => { await tick() })
       expect(fold.querySelector('#foldHint')!.textContent).toBe('That link already exists.')
+      /* any other button of the set closes it FIRST, so the question it raises is never under it */
+      await act(async () => { open.click() })
+      const addTest = [...host.querySelectorAll('#arrTools button')].find(b => /\+ Test/.test(b.textContent || '')) as HTMLElement
+      await act(async () => { addTest.click() })
+      expect(host.querySelector('#arrTools')!.classList.contains('open'), '+ Test closes the set').toBe(false)
+      await act(async () => { await until(() => C.dlg) })
+      C.dlgClose(null); await act(async () => { await tick() })
       /* leaving Edit chart layout closes it */
       await act(async () => { open.click() })
       await act(async () => { C.toggleArrange() })
@@ -714,5 +724,61 @@ describe('[TRK-BAKE-STALE] baking an exported chart file into the shipped charts
     /* no student name may reach the shipped data: a roster name found in it refuses */
     const students = { courses: [{ id: 'cabc', name: 'ABC' }], sylcat: charts.sylcat, byCourse: { cabc: { plan: {}, lulls: {}, pace: {}, bySyllabus: { [tx]: { roster: [{ id: 'e1', name: firstTx }], marks: {}, dates: {} } } } } }
     expect(() => bakeCharts(FMT.buildFile({ savedAt: '2026-09-28T00:00:00Z', charts, students }), data)).toThrow(/student name/i)
+  })
+})
+
+/* ---------- the roll-call, looped: every date box the side panel draws, as it is wired ---------- */
+describe('[TRK-RETEST-NOTES] C5 — the roll-call: each side-panel date box saves only when LEFT', () => {
+  it('Last Flown ×2, Upchit, End date A, End date B and a failures-list row: typing saves nothing; leaving the box saves the day', async () => {
+    const s = await pickStudent()
+    const ev = await freshEvent(s, 4)
+    await fail(s, ev, dayAfter(C.isoToday(), -30))
+    const { host, root } = await render(<Live draw={() => <SidePanel zoom={1} />} />)
+    try {
+      C.openFailLog(s); await act(async () => { await tick() })
+      const type = (el: HTMLInputElement, v: string) => act(async () => {
+        Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value')!.set!.call(el, v)
+        el.dispatchEvent(new Event('input', { bubbles: true }))
+      })
+      const leave = (el: HTMLInputElement) => act(async () => { el.dispatchEvent(new FocusEvent('focusout', { bubbles: true })); await tick() })
+      const boxes: [string, () => any][] = [
+        ['#lastSyll', () => C.dates[s].lastSyll], ['#lastCurr', () => C.dates[s].lastCurr], ['#upchit', () => C.dates[s].upchit],
+        ['#targetIn', () => C.paceOf(s).target], ['#targetIn2', () => C.paceOf(s).target2],
+        ['#failLog .frow[data-ev="' + ev + '"] input[type=date]', () => C.failDates(s, ev)[0]],
+      ]
+      for (const [sel, read] of boxes) {
+        const el = host.querySelector(sel) as HTMLInputElement
+        expect(el, sel + ' is drawn').toBeTruthy()
+        const was = read(), day = dayAfter(C.isoToday(), -12)
+        await type(el, dayAfter(C.isoToday(), -25)); await type(el, day)
+        expect(read(), sel + ': nothing saved while typing').toBe(was)
+        await leave(host.querySelector(sel) as HTMLInputElement)
+        expect(read(), sel + ': leaving the box saves the day').toBe(day)
+      }
+    } finally { C.closeFailLog(); await act(async () => { root.unmount() }); host.remove() }
+  })
+
+  it('a failure re-dated to a day that has not come is refused; the pop-up’s Failed on puts a future day back to today and says why', async () => {
+    const s = await pickStudent(); const ev = await freshEvent(s, 5)
+    await fail(s, ev, dayAfter(C.isoToday(), -3))
+    expect(await C.setFailDate(s, ev, 0, dayAfter(C.isoToday(), 2))).toBe(C.NOT_YET)
+    expect(C.failDates(s, ev)).toEqual([dayAfter(C.isoToday(), -3)])
+    C.openPop(ev, { clientX: 5, clientY: 5 })
+    C.popFailDateChanged(dayAfter(C.isoToday(), 1))
+    expect(C.popFailCommit()).toBe(C.NOT_YET)
+    expect(C.popFailDate, 'back to today').toBe(C.isoToday())
+    expect(C.popMsg && C.popMsg.where).toBe('fail')
+    C.closePop()
+  })
+
+  it('an undo that moves the picker remembers that student as this person’s pick (D376)', async () => {
+    const [a, b] = await threeStudents()
+    C.setActive(b, { land: false })
+    const ev = await freshEvent(b, 6)
+    C.openPop(ev, { clientX: 5, clientY: 5 }); await C.popGrade('dco')
+    C.setActive(a, { land: false })
+    await C.doUndo()
+    expect(C.active, 'the undo moved the picker to B').toBe(b)
+    expect(localStorage.getItem('ocuLocal:' + C.pickKey('lastCrew:' + C.course)), 'and B is this person’s remembered pick').toBe(b)
   })
 })
