@@ -2204,48 +2204,7 @@ test('-1.5 subtracts; 0, abc and 1.25 are refused and the run stays', async ({ p
 
   // Every refusal says why AND keeps the run: a rejected number must not cost
   // the person the drag they just made.
-  // TEMPORARY PROBE ([LW-FIGSEL-FLAKE]) — records what moves under the second drag on GitHub's machines.
-  const PROBE = !!process.env.FIGSEL_PROBE
-  if (PROBE) await page.evaluate((ids) => {
-    const w = window as any
-    const t0 = performance.now()
-    const p = w.__probe = { frames: [] as any[], muts: [] as any[], ptr: [] as any[], sel: [] as any[] }
-    const now = () => Math.round(performance.now() - t0)
-    const top = () => Math.round(document.querySelector(`[data-testid="figdrawer"] td.figbox[data-fig="ccl"][data-person="${ids[0]}"]`)?.getBoundingClientRect().top ?? -1)
-    let last = ''
-    const tick = () => {
-      const v = `${Math.round(scrollY)},${top()},${document.querySelector('.mx-wrap')?.getBoundingClientRect().top.toFixed(0)},tb${document.querySelector('.topbar')?.getBoundingClientRect().height.toFixed(0)}`
-      if (v !== last) { last = v; p.frames.push(`${now()}:${v}`) }
-      if (now() < 8000) requestAnimationFrame(tick)
-    }
-    requestAnimationFrame(tick)
-    const name = (n: Node) => { const e = n as HTMLElement; return e.nodeType === 1 ? `${e.tagName}.${(e.className || '').toString().slice(0, 40)}${e.getAttribute?.('data-testid') ? '#' + e.getAttribute('data-testid') : ''}` : '#text' }
-    new MutationObserver(recs => {
-      for (const r of recs) {
-        if (p.muts.length > 150) return
-        if (r.type === 'attributes') { if (r.attributeName === 'data-figsel' || r.attributeName === 'data-figdrag') p.sel.push(`${now()}:${r.attributeName}:${(r.target as HTMLElement).getAttribute('data-person')}:${(r.target as HTMLElement).getAttribute(r.attributeName!) ?? '-'}`); continue }
-        const tgt = r.target as HTMLElement
-        if (tgt.closest?.('td')) continue
-        for (const n of r.addedNodes) p.muts.push(`${now()}:+${name(n)} in ${name(tgt)}`)
-        for (const n of r.removedNodes) p.muts.push(`${now()}:-${name(n)} in ${name(tgt)}`)
-      }
-    }).observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['data-figsel', 'data-figdrag'] })
-    for (const ev of ['pointerdown', 'pointermove', 'pointerup']) document.addEventListener(ev, (e: any) => {
-      const hit = document.elementFromPoint(e.clientX, e.clientY) as HTMLElement | null
-      const box = hit?.closest?.('td.figbox')
-      p.ptr.push(`${now()}:${ev.slice(7)}@${Math.round(e.clientY)}:${box ? box.getAttribute('data-person') : name(hit as any)}`)
-    }, true)
-  }, run)
-  const probeBoxes = PROBE ? await Promise.all(run.map(async p => Math.round((await drawerBox(page, 'ccl', p).boundingBox())!.y))) : []
   await pickRun(page, 'ccl', run)
-  if (PROBE) {
-    const n = await page.locator('[data-testid="figdrawer"] td[data-figsel]').count()
-    const dump = await page.evaluate(() => (window as any).__probe)
-    const selected = await page.locator('[data-testid="figdrawer"] td[data-figsel]').evaluateAll(els => els.map(e => e.getAttribute('data-person')))
-    const tb = await page.evaluate(() => { const b = document.querySelector('.topbar') as HTMLElement; const r = b.getBoundingClientRect(); return `w${Math.round(r.width)} h${Math.round(r.height)} kids=` + [...b.children].map(c => `${(c as HTMLElement).className.toString().split(' ')[0]}:${Math.round(c.getBoundingClientRect().width)}@${Math.round(c.getBoundingClientRect().top)}`).join('|') })
-    console.log(`FIGSEL-PROBE count=${n} run=${run.join(',')} measuredY=${probeBoxes.join(',')} selected=${selected.join(',')} topbar=${tb}`)
-    if (n !== 3 || process.env.FIGSEL_PROBE === 'all') console.log('FIGSEL-PROBE-DUMP ' + JSON.stringify(dump))
-  }
   const err = page.locator('[data-testid="oil-credit-err"]')
   for (const [typed, says] of [
     ['0', 'The amount must be a number other than 0'],
