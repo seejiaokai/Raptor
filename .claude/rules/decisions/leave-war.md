@@ -34,14 +34,18 @@ paths:
 
 # Rulings — the Leave War
 
-**Loads by itself** whenever a session reads a Leave War file (the `paths:` at the top of this file). The general rulings are in `.claude/rules/decisions/how-we-work.md`, loaded in every session; the map of every ruling and how to add or retire one: `DECISIONS.md`. Newest first; each row keeps the date it was recorded.
-**No ruling is filed under the Leave War alone yet.** Its decisions from before this list began are below, in
+**Loads by itself** whenever a session reads a Leave War file (the `paths:` at the top of this file). The general rulings are in `.claude/rules/decisions/how-we-work.md`, loaded in every session; the map of every ruling and how to add or retire one: `DECISIONS.md`.
+**One line per ruling — its number, its date, the rule as it stands (D390). Its full row** — his words, the readings he
+was told, where it lives — **is in `.claude/decisions-full/leave-war.md`, never loaded by itself: open it before acting on a
+ruling's detail or asking him about it** (`grep -h '^| D… |' .claude/decisions-full/*.md` — the shell; the Grep tool
+hides a long row). A "— changed by" tail names the later rulings that changed it. Newest first.
+**Its own rulings are in the table below.** Its decisions from before this list began are below, in
 §Settled before this list, and its architecture in §Architecture (both moved from `raptor-port/CLAUDE.md`,
 24 Sep 26). **The OIL rulings load with every
 Leave War file** (OIL is leave the war banks) — among them **D79, D80, D81, D82** (a hand-typed award: any
 day; never flags a leave day; a worked weekend that earns nobody says so; an award and a worked day add up),
 **D19** (a weekend no Leave War period covers says so and offers to create it) and **D21** (an Off day earns
-no OIL). **Also read** — in `oil.md`: **D260** (a dragged block's Delete and the one-day Clear remove OIL awards too, and name them first; awards never move — and D265 here: a bid beside an award moves alone). In `scheduler.md`: **D274** (Reset order approved as built, 27 Sep 26). In `how-we-work.md`: **D166** (accounts: the war follows the signed-in callsign, not "View as"); **D229, D280, D281, D283, D284** (a posting out's four outcomes — archive + suspend, delete, SANS, transfer — which change the war's post-out sheet; a man posted out as SANS joins the SANS group that day when Show SANS is on, else stays shown as posted out, untracked; a man back from overseas returns as he was); **D308, D320, D323** (a man posted in is asked his post-in date; Archive on Admin → Users is "posted out from today", his past kept; the war keeps every stint a man has in the squadron — "away" between a posting out and a later post-in, his months before it as they were). In `scheduler.md`: **D44, D45** (nothing on a published day changes without the
+no OIL). **Also read** — in `oil.md`: **D260** (a dragged block's Delete and the one-day Clear remove OIL awards too, and name them first; awards never move — and D265 here: a bid beside an award moves alone). In `scheduler.md`: **D274** (Reset order approved as built, 27 Sep 26). In `people-accounts.md` (it loads by itself with the Leave War's posting files; moved there from How we work, D390): **D166** (accounts: the war follows the signed-in callsign, not "View as"); **D229, D280, D281, D283, D284** (a posting out's four outcomes — archive + suspend, delete, SANS, transfer — which change the war's post-out sheet; a man posted out as SANS joins the SANS group that day when Show SANS is on, else stays shown as posted out, untracked; a man back from overseas returns as he was); **D308, D320, D323** (a man posted in is asked his post-in date; Archive on Admin → Users is "posted out from today", his past kept; the war keeps every stint a man has in the squadron — "away" between a posting out and a later post-in, his months before it as they were). In `scheduler.md`: **D44, D45** (nothing on a published day changes without the
 scheduler acknowledging it; the pending mark is the mechanism).
 
 **Where the detail lives:** the grid, its sheets and its window of months — `raptor-port/docs/ui-contracts.md`

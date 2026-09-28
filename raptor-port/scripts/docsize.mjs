@@ -37,8 +37,12 @@
  * of its three headings — [HANDOFF-SHAPE-GUARD]), a new reference doc no map names. Where each fact
  * belongs is `.claude/rules/doc-structure.md`. It runs with the inventory, so the Stop hook enforces it.
  *
+ * THE RULINGS SINCE D390 (28 Sep 26): each ruling is a short line in its area file and a full row, kept whole, in
+ * .claude/decisions-full/ — the shape both this gate and the converter read is docsize-rulings.mjs.
+ *
  * Flags: --inventory runs job 1 only (the Stop hook .claude/hooks/backlog-guard.sh uses it); --moves lists
- * every line that left a Markdown file on this branch and arrived nowhere (the reading list of a D138 check).
+ * every line that left a Markdown file on this branch and arrived nowhere (the reading list of a D138 check);
+ * --marks lists the rulings' back-marks, their drift since the base, and which short lines are extracts (D390).
  * The closing report copies the `Docs:` and `docsize:` lines this prints (bug-check-order §9). */
 import { readFileSync, existsSync } from 'node:fs'
 import { join, dirname } from 'node:path'
@@ -89,8 +93,10 @@ const FILES = [
      never paid for by trimming a live rule. 100 -> 125, 24 Sep 26 (owner, D136 + D137): the rule for
      keeping the rulings whole and split by area, and how a new or replaced ruling is filed, are live
      rules every session must carry — the same argument. 125 -> 145, 26 Sep 26 (owner, D201): what to fix when a
-     ruling overwrites another is a live rule every session must carry, the moment a ruling is heard. */
-  ['.claude/rules/record-decisions.md',  0,  145],
+     ruling overwrites another is a live rule every session must carry, the moment a ruling is heard. 145 -> 160,
+     28 Sep 26 (owner, D390): how a ruling is read and filed now that each loads as one line — open its full row
+     before acting on its detail; search the full-text folder with the shell — is a live rule every session carries. */
+  ['.claude/rules/record-decisions.md',  0,  160],
   ['.claude/rules/plain-language.md',    0,   60],
   /* NEW 24 Sep 26 (owner, D140 + D143): the two rule files every chat carries so the structure and the way a
      change ships are in force before any project file is read. Ceilings set at what they hold plus room. */
@@ -129,7 +135,10 @@ const FILES = [
      it is tier 0; each other area loads only when a file in that area is read, so it is tier 2. Set
      24 Sep 26 at roughly two to three times each file's size on the day it was split — "increase the
      budget to be safe". DECISIONS-ARCHIVE.md has no ceiling: searched, never loaded. */
-  ['DECISIONS.md',                       1,   80],
+  /* 80 -> 90, 28 Sep 26 (owner, D390): the recording steps now say where a full row and its short line go, and how a
+     merge across the slim-down runs — live rules every chat that records a ruling follows (D141: the ceiling rises
+     with its reason). */
+  ['DECISIONS.md',                       1,   90],
 ]
 /* THE AREA RULINGS FILES — a tripwire in UTF-8 BYTES of the whole file, frontmatter and every section included (owner,
    D390 narrowing D141, 28 Sep 26): since each ruling became ONE short line, a line count cannot see a file growing

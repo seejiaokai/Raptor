@@ -182,8 +182,8 @@ sign-in, one-door, posting in or out, archive, restore or delete work, open `peo
 when it leaves); `raptor-port/docs/doc-budget.md` (the full-text tier; the byte tripwire; splitting an area);
 `.claude/hooks/record-decisions.sh` and `backlog-guard.sh` (their words); `raptor-port/docs/file-map.md` (new files);
 `raptor-port/CLAUDE.md` §Where things live (the rulings row); the area headers (leave-war.md's stale "no ruling is
-filed under the Leave War alone yet" corrected); `.gitattributes` pins `.claude/rules/decisions/*.md` and
-`.claude/decisions-full/*.md` to LF (Fable 10f); the brief template for Astra names the full-text files. D136, D140 and
+filed under the Leave War alone yet" corrected); the LF pin of the rulings files stays `[RULINGS-LF-PIN]`'s (its scope now names `.claude/decisions-full/` too): a
+change to `.gitattributes` starts a full check run, which this docs-only branch must not; the brief template for Astra names the full-text files. D136, D140 and
 D141 carry their narrowing marks from the moment D390 is recorded.
 
 ### 2.8 Considered and not built now
@@ -257,7 +257,7 @@ kept in the session's scratchpad; every finding and what became of it:
 | F4 | step 2 marks now live in the full-text file; extra tail names unchecked | §2.3 step 2, §2.1 set equality |
 | F8 | "open the full row" has no mechanism; the Grep tool omits long rows | §2.1 (shell grep or Read at the line); the edit hook filed (§2.8) |
 | F9 | nothing detects short/full drift | §2.5 drift report, date equality |
-| F10c, e, f, g | cap excludes the tail; full-text files outside the map; LF pin; a registry row for the new area | §2.1, §2.5, §2.7 |
+| F10c, e, f, g | cap excludes the tail; full-text files outside the map; LF pin; a registry row for the new area | §2.1, §2.5; the LF pin left to `[RULINGS-LF-PIN]` (a `.gitattributes` change starts a full check run) — §2.7 |
 | F11 | a refused conversion loops the Stop hook without saying why | §2.4 (the refusal names the row and the fix; the gate repeats it) |
 | F14–F17 | ranges paragraph clash; "this file" homes; leave-war's stale header line; tails naming other areas | §3, §2.7, §2.1 |
 

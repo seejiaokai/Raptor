@@ -3,7 +3,10 @@
 The general rulings: how his rulings are recorded, models and reviews, bug checks, merging and pushing, the
 PC that runs the checks, the repo and privacy, the docs. Every session carries these. Each other area loads
 by itself when a file in that area is read — the map, and how to add or retire a ruling: `DECISIONS.md`.
-Newest first; each row keeps the date it was recorded.
+**One line per ruling — its number, its date, the rule as it stands (D390). Its full row** — his words, the readings he
+was told, where it lives — **is in `.claude/decisions-full/how-we-work.md`, never loaded by itself: open it before acting on a
+ruling's detail or asking him about it** (`grep -h '^| D… |' .claude/decisions-full/*.md` — the shell; the Grep tool
+hides a long row). A "— changed by" tail names the later rulings that changed it. Newest first.
 **Also read** — filed under OIL, but it governs every report: **D25** (OIL is earned leave, time off banked —
 never pay or money).
 

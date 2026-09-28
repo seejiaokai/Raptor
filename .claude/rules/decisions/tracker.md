@@ -24,7 +24,11 @@ paths:
 # Rulings — the Tracker
 
 **Loads by itself** whenever a session reads a Tracker file (the `paths:` at the top of this file), so work that strays into the
-Tracker from anywhere else picks these up too. The general rulings are in `.claude/rules/decisions/how-we-work.md`, loaded in every session; the map of every ruling and how to add or retire one: `DECISIONS.md`. Newest first; each row keeps the date it was recorded.
+Tracker from anywhere else picks these up too. The general rulings are in `.claude/rules/decisions/how-we-work.md`, loaded in every session; the map of every ruling and how to add or retire one: `DECISIONS.md`.
+**One line per ruling — its number, its date, the rule as it stands (D390). Its full row** — his words, the readings he
+was told, where it lives — **is in `.claude/decisions-full/tracker.md`, never loaded by itself: open it before acting on a
+ruling's detail or asking him about it** (`grep -h '^| D… |' .claude/decisions-full/*.md` — the shell; the Grep tool
+hides a long row). A "— changed by" tail names the later rulings that changed it. Newest first.
 **Also read** — in How we work, so already loaded: **D62** and **D63** (the Tracker's syllabus data is out of
 every privacy sweep; the aircraft type elsewhere reads "F-15" or "fighter squadron").
 

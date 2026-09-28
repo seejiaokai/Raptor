@@ -966,7 +966,7 @@ or a board change comes near one of them; put the two that change wording or fee
 A leftover of `[DOC-TRIM]` (archived 24 Sep 26). `.gitattributes` pins `OUTSTANDING.md`, `OUTSTANDING-ARCHIVE.md`,
 `DECISIONS.md` and `HANDOFF.md` to LF ([DOCS-GUARD] F4, 23 Sep 26), so no script or editor setting can rewrite every
 line of them at once — a whole-file diff is where a destroyed record hides. The rulings split (D137) added
-`DECISIONS-ARCHIVE.md` and the area files under `.claude/rules/decisions/`, which are NOT pinned; all of them are LF
+`DECISIONS-ARCHIVE.md` and the area files under `.claude/rules/decisions/` — and, since D390, the full rows under `.claude/decisions-full/` — which are NOT pinned; all of them are LF
 today (checked 24 Sep 26 with `git ls-files --eol`). Add them — a pattern for the folder covers a new area file too.
 **Place:** ride the next change that starts the full checks on his PC anyway: `.gitattributes` is not on the deploy
 workflow's docs-only skip list, so a change to it alone starts a full run (D89, D151), which a docs pass must not do.

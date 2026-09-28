@@ -25,11 +25,18 @@ paths:
 # Rulings — the scheduler and amendments
 
 **Loads by itself** whenever a session reads a scheduler, board, engine, amendment or storage file (the
-`paths:` at the top of this file). The general rulings are in `.claude/rules/decisions/how-we-work.md`, loaded in every session; the map of every ruling and how to add or retire one: `DECISIONS.md`. Newest first; each row keeps the date it was recorded.
+`paths:` at the top of this file). The general rulings are in `.claude/rules/decisions/how-we-work.md`, loaded in every session; the map of every ruling and how to add or retire one: `DECISIONS.md`.
+**One line per ruling — its number, its date, the rule as it stands (D390). Its full row** — his words, the readings he
+was told, where it lives — **is in `.claude/decisions-full/scheduler.md`, never loaded by itself: open it before acting on a
+ruling's detail or asking him about it** (`grep -h '^| D… |' .claude/decisions-full/*.md` — the shell; the Grep tool
+hides a long row). A "— changed by" tail names the later rulings that changed it. Newest first.
 **Also read** — in `oil.md` (it loads by itself with the placeholder, publishing and OIL files): **D28, D31,
 D32, D43, D46, D52** (what the ALL / ALL AVAIL pucks earn wherever they may land — the earning list follows
 the landing list), **D48, D49** (a published day and a rule change), **D19** (a weekend no Leave War period
-covers).
+covers). In `people-accounts.md` (it loads by itself with the accounts, Quals and posting files): **D297, D299**
+(a deleted man keeps his puck on every day he already flew; the past keeps its record of him), **D321, D327** (an
+archived man on published days and in the ALL AVAIL crowd), **D213, D215** (a guest sees what a member sees on
+View-only Sched, medical inputs included).
 
 **Where the detail lives:** the rules engine — `raptor-port/docs/engine-rules.md`; how each surface renders,
 drags and edits — `raptor-port/docs/ui-contracts.md`; what a change touches — `raptor-port/docs/feature-impact.md`;

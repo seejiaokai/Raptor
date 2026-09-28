@@ -28,11 +28,16 @@ paths:
 # Rulings — OIL (off in lieu: earned leave)
 
 **Loads by itself** whenever a session reads an OIL, Leave War, placeholder-puck or publishing file (the
-`paths:` at the top of this file). The general rulings are in `.claude/rules/decisions/how-we-work.md`, loaded in every session; the map of every ruling and how to add or retire one: `DECISIONS.md`. Newest first; each row keeps the date it was recorded.
+`paths:` at the top of this file). The general rulings are in `.claude/rules/decisions/how-we-work.md`, loaded in every session; the map of every ruling and how to add or retire one: `DECISIONS.md`.
+**One line per ruling — its number, its date, the rule as it stands (D390). Its full row** — his words, the readings he
+was told, where it lives — **is in `.claude/decisions-full/oil.md`, never loaded by itself: open it before acting on a
+ruling's detail or asking him about it** (`grep -h '^| D… |' .claude/decisions-full/*.md` — the shell; the Grep tool
+hides a long row). A "— changed by" tail names the later rulings that changed it. Newest first.
 **Also read** — in `leave-war.md`: **D265** (a bid that shares its day with an OIL award moves alone; the award stays where it is, D260). In `scheduler.md` (it loads by itself with any board or engine file): **D272** (in OIL Earn mode his own puck shows the green OIL ring, not the purple one); **D27, D33, D47** (where
 the ALL / ALL AVAIL pucks may land and where they are refused), **D36–D41, D51** (who counts as available,
 and the window that lists them), **D44, D45** (the crowd frozen at publication; the pending mark). In How we
-work, already loaded: **D54** (an issued weekend carrying a placeholder raises the mark — leave it) and **D56**.
+work, already loaded: **D54** (an issued weekend carrying a placeholder raises the mark — leave it) and **D56**. In `people-accounts.md`:
+**D327** (an archived man stays in the ALL AVAIL crowd on every day before his archive).
 **Also know** — `[OIL-AUTO-REMOVE]` (the OIL Earn mode; merged 22 Sep 26, D34 — spent, in `DECISIONS-ARCHIVE.md`) went live with his five-minute look WAIVED: its evidence is the walk (`raptor-port/docs/handpass/2026-09-22-oil-walk.md` — the defects it found are fixed red-first; do not re-do them) and the gates, never an owner sighting, so never assume he eyeballed the walked Saturday. Its design of record, with the rulings not to relitigate (§8/§9): `raptor-port/docs/superpowers/specs/2026-09-21-oil-auto-remove-decisions.md`. The item itself: `OUTSTANDING-ARCHIVE.md` (moved 27 Sep 26, `[BACKLOG-TIDY]`).
 
 | # | Date | The rule |

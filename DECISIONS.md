@@ -3,31 +3,36 @@
 **Why this file exists** (owner, 21 Sep 26): rulings stated mid-task were absorbed into the work and never
 written down — the work absorbing a ruling is not the record keeping it (the story: `.claude/rules/record-decisions.md`).
 
-**How the rulings are kept — by RELEVANCE, not all at once (D136, D137, 24 Sep 26).** Every ruling is ONE
-row in ONE area file under `.claude/rules/decisions/`. The general rulings (How we work) load in EVERY session;
-each other area's file loads BY ITSELF the moment a session reads a file in that area (the paths at the top of
-the file), so work that strays into a second area picks up that area's rulings too, and a session never
-carries rulings for areas it does not touch. **This file is the front door:** the map below says which file
-carries which D-number, so a pointer like "DECISIONS.md D38" still lands. Nothing is ever deleted, and the
-list is never shrunk by moving a live ruling out (D136): the only rows that leave an area are rulings
-REPLACED by a later one and one-off permissions once SPENT — they go to `DECISIONS-ARCHIVE.md`, never loaded,
-and SEARCHED before telling him anything is undecided.
+**How the rulings are kept — by RELEVANCE, not all at once (D136, D137, 24 Sep 26), and as ONE LINE each (D390,
+28 Sep 26).** Every ruling is ONE short line — its number, its date, the rule as it stands — in ONE area file under
+`.claude/rules/decisions/`, and ONE full row (his words, the readings, where it lives), kept whole in the same-named
+file under `.claude/decisions-full/`, which is never loaded by itself and is SEARCHED — open a ruling's full row
+before acting on its detail or asking him about it (`grep -h '^| D38 |' .claude/decisions-full/*.md`). How we work
+loads in EVERY session; each other area's file loads BY ITSELF the moment a session reads a file in that area (the
+paths at the top of the file). **This file is the front door:** the map below says which file carries which D-number,
+so a pointer like "DECISIONS.md D38" still lands. Nothing is ever deleted, and no live ruling ever leaves the list
+(D136): the only rows that leave are rulings REPLACED by a later one and one-off permissions once SPENT — they go to
+`DECISIONS-ARCHIVE.md`, never loaded, and SEARCHED before telling him anything is undecided.
 
 **Recording a ruling — the moment he says it, BEFORE the work it implies** (full rule and the misses that made
 it: `.claude/rules/record-decisions.md`; closing reports carry a `Rulings:` line):
-1. **Add ONE row at the top of its area's table** — the date, his words where short enough, what it means, and
-   the file that now carries it (then make that file carry it: this list is an index, never the only home — and
-   write the D-number beside the ruling there; the gate fails a new row whose Markdown home never mentions it — a
-   row renumbered under D78 counts as new: write the new number into each home it names). A
-   ruling that spans areas goes in the one it mostly governs; the other area's "Also read" line names it.
-2. **If it wholly REPLACES an earlier ruling**, start that earlier row's ruling cell with
-   `**REPLACED BY D<n> (<date>).**`; **a one-off permission, once used**, with `**SPENT <date> — <what used it>.**`
-   A ruling changed only IN PART stays live and says so in its own words. **Either way, fix what the old ruling left
-   behind in the same change — the documents, the app (file the build), the lists (D201; `record-decisions.md`).**
-3. **Run `node raptor-port/scripts/backlog-archive.mjs --rulings`** — it moves every marked row to the archive
-   and rewrites the map from the files. The gate (`npm run docsize`, and the check at the end of every turn)
-   fails until the map matches the files, while a marked row is still in an area file, and if a row is
-   written in THIS file instead of its area's.
+1. **Add ONE full row at the top of its area's table** — the date, his words where short enough, what it means, and
+   the file that now carries it (then make that file carry it, with the D-number beside the ruling there: this list is
+   an index, never the only home; the gate fails a new row whose Markdown home never mentions it — a row renumbered
+   under D78 counts as new). **The first bold sentence of "what it means" becomes the line every chat loads: it must
+   state the rule on its own, in at most 350 characters, with no "|".** A ruling that spans areas goes in the one it
+   mostly governs; the other area's "Also read" line names it.
+2. **If it wholly REPLACES an earlier ruling**, start that earlier ruling's FULL row's ruling cell (in
+   `.claude/decisions-full/`) with `**REPLACED BY D<n> (<date>).**`; **a one-off permission, once used**, with
+   `**SPENT <date> — <what used it>.**` A ruling changed only IN PART stays live and says so in its own words in its
+   full row (`**— NARROWED <date> BY D<n>: …**`), and its short line is rewritten to state the rule as it now stands.
+   **Either way, fix what the old ruling left behind in the same change — the documents, the app (file the build), the
+   lists (D201; `record-decisions.md`).**
+3. **Run `node raptor-port/scripts/backlog-archive.mjs --rulings`** — it moves each new full row to the full-text file
+   and leaves its short line, retires every marked row to the archive, names each change on a short line's " — changed
+   by" tail, and rewrites the map. The gate (`npm run docsize`, and the check at the end of every turn) fails until it
+   has run — and if a row is written in THIS file instead of its area's. A branch merging `main` across the slim-down
+   runs it with `--merge` (D390; `raptor-port/docs/superpowers/plans/2026-09-28-rulings-slim-down-plan.md` §2.4).
 
 **Parallel branches (owner, D78):** when several chats run at once, each reaches `main` only on his
 "merge live", ONE AT A TIME; whichever merges later merges `main` in first, and if a D-number
