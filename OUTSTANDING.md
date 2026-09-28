@@ -81,7 +81,7 @@ absence-record re-test), [LW-SPARE-MOVE-DOORS] (low, with the next Leave War mov
 [TRK-EDIT-SIDEWAYS] (their gates have passed), [TRK-PINCH-ASK] (his next Tracker session), [TRK-SESSION-PICK] (low, the next Tracker change), [TRK-DLG-LEFTOVERS] (low, with the next question-box change), [TRK-FLEXBAR-INK] (a question for him, on the Tracker-palette
 look card — D157, merged PR #441), [TRK-BAKE-STALE] (low).
 The amendment area — PR #434, #435, #437 and #438 MERGED (25–26 Sep 26); left: [REQ-ORPHAN-ROW] and [REQ-DOOR-WORDS] (both low). Left from the amendment batch (D91–D111, merged): [AVAILWIN-PREVIEW-BAR] (low), [AMEND-SMALL-SEEN] (any time). The docs and the checks — [DEPLOY-DOCS] (its operational half), [DOC-POINTERS-CODE] and
-[RULINGS-LF-PIN] (with the next code change), [PEEK-ISSUED] (a question for him, low), [RULINGS-SLIM] (NOW, his "Approve", D390 — on `claude/docs-rulings-slim-down-e83c74`) — [DOC-SUBHEADS], [RULING-HOMES-AUDIT]
+[RULINGS-LF-PIN] (with the next code change), [PEEK-ISSUED] (a question for him, low), [RULINGS-SLIM] (NOW, his "Approve", D390 — on `claude/docs-rulings-slim-down-e83c74`), [RULING-HOME-HOOK] (low, after it) — [DOC-SUBHEADS], [RULING-HOMES-AUDIT]
 and [HANDOFF-SHAPE-GUARD] done on `claude/docs-tidy-subheads-audit-ec8f87` (28 Sep 26; archived),
 Roles — [QUALS-MEMBER-SCOPE] (folded into [ACCOUNTS], D200), and beside it [QUALS-PROTO-TOAST] (low, one line of words).
 The five-flags batch (built on `claude/five-flags-batch-build-ef7d85`, 26 Sep 26; FULL-checked and its PR from `claude/five-flags-batch-continue-2cfa70`, 27 Sep 26 — its five items archived) — his answers D270–D275 BUILT and FULL-checked on that branch, 27 Sep 26 (their three items archived); his look card's four questions answered 27 Sep 26 (D276–D279, nothing to build);
@@ -1171,3 +1171,12 @@ gets the same treatment, last. Measured before: ~50k tokens in every chat, ~110k
 Fable reads every short line for meaning (D138); both read the two script changes. **Place:** now, docs and the document
 gate's scripts only, on `claude/docs-rulings-slim-down-e83c74`; the guide step waits for `claude/small-fixes-batch-d223f6`
 to merge. His "merge live" as always.
+
+### [RULING-HOME-HOOK] Name the rulings whose home a file is, at the moment it is edited — OPEN (Fable's red team of [RULINGS-SLIM], 28 Sep 26)
+**What:** once every ruling loads as one short line (D390), the guard that a chat opens the full row before acting on its
+detail is a rule. Fable's stronger, structural form: a hook on Edit / Write that searches the full rows'
+"Where it lives now" cells (`.claude/decisions-full/`) for the path being edited and tells the chat "this file is the home
+of D320, D323, D328 — open their full rows first". **Open before building:** which hook event can put words in front of
+the model without blocking the edit, and how to keep it quiet (once per file per session). **Context:**
+`raptor-port/docs/superpowers/plans/2026-09-28-rulings-slim-down-plan.md` §2.8 and §5. **Place:** low — after
+[RULINGS-SLIM] merges, if a chat is seen acting on a short line alone; put to him first.
