@@ -1216,6 +1216,36 @@ resolved statuses always carry their resolution date
 
 **Principle:** A status written by a chat that has ended goes stale at an event it never sees; the next writer must re-derive such statuses from the system of record, not trust the prose — and a tidy scoped to what the user named should still sweep for the same staleness next to it.
 
+### Observation 328: A scripted audit's first count must be checked against one case by hand before it is believed
+
+**Status:** OPEN
+**Date:** 2026-09-28
+**Session context:** [RULING-HOMES-AUDIT] — a scratch script listing every ruling whose named document home never mentions its D-number.
+**Skill:** New skill candidate: repo-docs-audit (or a line in the task-observer's own "verify" habits)
+**Type:** open-source
+**Phase/Area:** Running a one-off audit script over many records
+
+**Issue:** The first run reported 182 of 264 rulings uncited, against the 24 the backlog item had counted four days earlier. One hand check (a home file that plainly contained "D60") showed the script was wrong: the regex word-boundary `\b` had been written through a shell heredoc inside a JavaScript template literal and arrived as a backspace character, so almost nothing matched. The corrected run gave 44 and, filtered to durable homes, 24.
+
+**Suggested improvement:** When an audit script's first number is far from any prior count, pick one record it flagged and check it by hand before using the number. Write audit scripts with the file tool, not a heredoc, when they carry regex escapes.
+
+**Principle:** A count produced by a new script is a hypothesis until one of its hits has been checked by hand; a surprising number is a reason to check the instrument first.
+
+### Observation 329: Heading-only restructuring scales well with read-only placers and a proving insert script
+
+**Status:** OPEN
+**Date:** 2026-09-28
+**Session context:** [DOC-SUBHEADS] — 81 sub-headings into four reference docs (8,000 + 3,400 + 1,000 + 700 lines), none rewording anything (owner rule: a move never rewords).
+**Skill:** New skill candidate: doc-subheads (restructure long docs without changing a word)
+**Type:** open-source
+**Phase/Area:** Adding navigation to long documents
+
+**Issue:** Placing headings well means reading every line of every long run. Three read-only helpers each read a share in full and returned anchors (the exact start of the line to insert before, checked unique) plus heading text; the main session applied them with a script that refuses a non-unique anchor or one that does not start a block, and proves the file minus the inserted lines equals the original byte for byte. Two structural traps were caught by the helpers, not the script: a long bullet list with no blank lines (a heading needs a blank line on each side there), and a numbered ledger whose written numbers already disagreed with the rendered ones (a heading restarts an ordered list at its first written number, so it may only go where written = rendered). They also found section names other docs already pointed at that had no heading, and one stretch stranded under the wrong section.
+
+**Suggested improvement:** For any heading-only pass: anchors by text, never by line number; a byte-identity proof; brief the placers on list splits and ordered-list renumbering; ask them to report existing "§name" pointers with no heading and prefer those names.
+
+**Principle:** A restructuring that must not change meaning is safest as pure insertion, proved mechanically; judgement goes into WHERE, and the proof covers everything else.
+
 ### Observation 338: A break test on an uncommitted file must be undone from a backup, never by "git checkout -- <file>"
 
 **Status:** OPEN

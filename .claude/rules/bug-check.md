@@ -6,7 +6,7 @@ in force before anything else can talk you out of it. The full method is
 
 ## The trigger — you decide this, never the owner
 
-**He must never have to say which checks to run.** The moment any of these is true, the bug-check
+**He must never have to say which checks to run** (D9). The moment any of these is true, the bug-check
 order is in force:
 
 - he asks to bug-check, test, verify, review, "check for bugs", "make sure it works", or asks
@@ -66,7 +66,7 @@ never heard about is how three bugs reached him on 21 Sep 26.
 
 ## With the Claudex loop
 
-They do not compete: Claudex covers the PLAN and the CODE, this order covers the RUNNING APP, and
+They do not compete (D11): Claudex covers the PLAN and the CODE, this order covers the RUNNING APP, and
 Claudex has no step that runs it. Order of operations: harden the plan with Claudex → build →
 **WALK THE APP** → then Claudex's final inspection, given the finished code AND the evidence sheet
 → report. The walk goes BEFORE the inspection, not after; on the OIL build the inspection ran

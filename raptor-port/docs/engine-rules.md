@@ -11,6 +11,8 @@ produces `WARN {all, byDay, sev, chip}` and publishes `REST`/`EVD` (all three
 are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
 `note`. `overlap()` is **half-open** — abutting windows do not clash.
 
+### The sortie window, the brief and the time cells
+
 - A sortie occupies step (T/O − VCONF.step) to dekit (land + VCONF.dekit).
 - **The brief is the time INDICATED on the line** (owner, 6 Aug 26): `f.br`,
   key `ff:di.gi.li.br`, editable on the edit week and the board. Blank means
@@ -89,6 +91,9 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
     scheduler there is a brief to retype.
   Neither fires where the roll above makes the clock legitimate (`toM <
   VCONF.briefLead`), and neither touches a standalone wave's inert B.
+
+### Crew rest
+
 - Crew rest (VCONF.crewRest) runs off the last commitment of **ANY kind**
   the day before (owner, 21 Aug 26, in two steps the same day: duties
   joined the sortie-or-shift set in the morning — an Ops-O ending 21:30
@@ -188,6 +193,9 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   stricter `<CS> IN TIME` grammar reads every SEED line identically, which
   is what keeps parity untouched where data exercises it; the wider grammar
   is a deliberate port divergence. Pinned in `intimes.test.ts`.
+
+### How crew-rest, long-day and turn warnings are worded and marked
+
 - **A sortie-caused breach spells out the debrief assumption** (owner, 15 Aug
   26 — "state why it would flag… the assumption that the crew will debrief 2
   hours after landing… because actually they can leave quickly after
@@ -240,6 +248,9 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   from — as DATA (`leaveBy`, `prevDi` on the warning), never message text
   since 22 Aug 26: the cross-day trace row's bold lead and the puck's hover
   title are where it prints (owner — the message restating it read twice).
+
+### The cross-day trace and reads across the week edge
+
 - **The breach is also filed against the day that CAUSED it** (owner, 6 Aug
   26). A crew-rest warning is raised where the man is told to report, but the
   only day a scheduler can still change is the one before, so `validate()`
@@ -312,6 +323,9 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   and falls through to the pure seed, never throws — this runs inside
   `validate()`, on every keystroke. An unauthored, unstashed adjacent week
   still seeds nothing, byte-identical to before the stash existed.
+
+### Turns and brief advisories
+
 - Tight turn needs `max(VCONF.tightTurn, dekit + step)`.
 - Double turn: two+ sorties in a day → ONE DT_SUM line naming everyone;
   **adv, not hard** (owner, 4 Aug 26 — double turning is routine and planned),
@@ -336,6 +350,9 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   line. The seed EP-4s carry "BRIEF 30 PRIOR" on both builds, so
   `refwin.ts:relead()` patches the identical parse into the in-memory
   reference for parity.
+
+### Inputs against tasking: the validator gate, per-type and ground-row grading
+
 - There are no OFFERS any more (owner decision, Aug 26). `Office`,
   `Available fly` and `Available duty` were removed as types and `isOffer` is
   gone with them. `Fly with` (named `Fly` until the owner renamed it, 14 Aug 26) gets no exemption: filed under Unavailable it raises
@@ -432,6 +449,9 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   reference has no `row.src`, so an accepted 'Other' vs SC MAIN is a
   documented parity boundary no fixture may build. Pins:
   `scshift-inputs.test.ts`.
+
+### Input types, their predicates, and when an input counts
+
 - **An actioned `Fly with` is AWAY** (owner, Aug 26: it means flying with
   another squadron). `isAway(inp)` = `isOffType(type) || (isFly(type) &&
   acc)` — it feeds `dayOff` (the Available-crew strip and the palette fade),
@@ -514,6 +534,9 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   as the `s`/`e` minutes the record already had, plus a `half:'am'|'pm'`
   LABEL — the engine reads only `s`/`e`. A half-day closes its own half only;
   see §Availability is time-aware below.
+
+### The CAT ladder and crew pairing
+
 - **The CAT ladder is `OCU → D → C → B → A → IW → IP → IR → FI`** (owner,
   Aug 5 '26). The generic `I` tier and the standalone `ip` flag (and its
   derived `quals.instr`) are gone — instructor-ness lives solely in CAT.
@@ -590,6 +613,9 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   (owner scenario run, 5 Aug 26) — a special PEOPLE record filling an unfilled
   seat is never named, ringed or chipped, the same exclusion `collectEvents`
   already applies to `allCrew`.
+
+### AAR, and who may teach it
+
 - **AAR, and who may TEACH it** (owner, 10 Aug 26). Currency is read off the
   remarks and has been since day one — `aarNeed` (`people.ts`) returns
   `DAAR` / `NAAR` / `null`, ignores a `B:` segment (a WSO holds no AAR
@@ -645,6 +671,9 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   Without that last one the privilege would survive invisibly: the page only
   offers the third state to instructor pilots, so a stale `'I'` renders as an
   ordinary tick while still clearing a red warning.
+
+### Standalone spares and the two SC SPARE rules
+
 - Leave and the rest of the absence vocabulary: see `INPUT_META` above.
   A standalone SPARE is barred by `!canSpare(type)` — overseas (OL, OD) and
   every medical code — raising a hard DNIF_FLY/LEAVE_FLY even though spares
@@ -690,6 +719,9 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
 - Standalone waves: SC (spares uncrosschecked beyond the checks above — the
   availability bar, currency, the front seat, and another SC seat or the SC
   desk in the same hours), AVALON/BB (`noconf`, with the four rules below).
+
+### AVALON and BB
+
 - **AVALON's one check (owner, 11 Aug 26) — and the three that joined it on
   7 Sep 26 (owner), listed after it.** AVALON and its desk keep
   `noconf` — nothing on them is cross-checked against tasks, rest or
@@ -794,6 +826,9 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   (validator, picker, OIL, the template desk, the BB twin); `overnight.test.ts`
   keeps the 11 Aug availability pins (its jet-seat fixtures now use an
   SC-NIGHT-current instructor WSO, since every seat asks for currency).
+
+### The midnight tail
+
 - **The midnight tail (owner, 11 Aug 26 — "check in the same modality for
   all applicable rules based on timing").** A window that runs past midnight
   — a night sortie's landing and debrief tail, an overnight duty row, an
@@ -840,6 +875,9 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   before it. A genuinely unauthored previous week still seeds nothing.
   Found by measuring both directions against the same shape: the forward
   case flagged, the backward case was silent.
+
+### Duty desks minted from templates
+
 - **A duty block is minted from a TEMPLATE, not a wave** (owner, 13 Aug 26 —
   supersedes the 10 Aug wave-driven desk). `+ Block` on the scheduler board
   lists the saved templates (`engine/dutytpl.ts`) directly — no wave has to
@@ -874,6 +912,9 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   (§the two SC SPARE rules); a template with no wave mints the PLAIN block
   it always did. The seed week has no template desk, so reference parity is
   untouched. Do not re-add the coupling (`.claude/rules/decisions/scheduler.md` §Settled before this list → Waves & duties; it was `CLAUDE.md` §Stable decisions until 24 Sep 26).
+
+### Chip ranking, the break-day rule (DAYS_RUN) and where flags reach the screen
+
 - Chip ranking `RANK` (highest wins): LD<DT<TT<A<SD<SB<DB<NB<CR<RUN<C<Q.
   Glyphs shorten: CR→R, RUN→7, NB/SB→B, DB/SD→D, LD→L. `A` = on shift AND down for
   a ground event/programme.
@@ -1065,6 +1106,8 @@ flagged correctly and still swept the man out of the crew palette.
   carrying both an all-day and a half-day absence can have the half-day named
   as the reason his whole day is gone.
 
+### Absences across noon, midnight and the new year
+
 **A morning absence does not free a sortie that starts walking before noon.**
 The flying window is padded to the step because that is what the validator
 judges against: Monday's first VL takes off 12:40 and steps at 11:40, so AM
@@ -1113,6 +1156,8 @@ still refused at the write path is a GENUINELY backwards range (an end before
 its start in real time); the calendar cannot make one, but `commitInputEdit`
 guards it anyway, the same as every other malformed value.
 
+### Every input is anchored to a real year
+
 **Every input is ANCHORED to a real year** (owner, 24 Aug 26 — "What if
 another year has the same day and date … fix it very carefully"). The
 implicit-year convention above left a bare label meaning "this label, in
@@ -1154,6 +1199,8 @@ stale year, and no `INPUTS` data is cached anywhere. Anti-staleness pins
 live in `crossyear.test.ts` ("the date memo never serves a stale year").
 Whole-list scans over `INPUTS` remain O(N) by design — cheap now per item;
 a by-date index belongs to the future shared-database work, not before it.
+
+### Double bookings, the busy check, one place per row, duplicate accepts
 
 **Two sorties at once are a CONFLICT, not a turn** (owner, 11 Aug 26).
 Sortie-vs-sortie is excluded from the double-booking loop because two
@@ -1255,6 +1302,8 @@ window (`F/O/A`, `F/O · AM`, `A · 08:00–12:00`). All four live in
 `inputs.ts`, not `html.ts`, because `palette-html.ts` imports from `html.ts`
 and an html-side helper would cycle.
 
+### How an offer is judged: the gate, the picker and the advisory
+
 **`sansGate(id,dt,domain,s,e)` (`avail.ts`) is the one judge** every
 consumer — `slotBar`'s grey-out, the validator's advisory, every badge caller
 — asks, so the rule cannot drift between a picker that agrees with itself and
@@ -1342,6 +1391,8 @@ printed reason) and the plant toast — it just never becomes a PERSISTENT
 entry in the day's warning list. `sansavail.test.ts` pins both the "fires" and
 the "doesn't fire" halves, plus the parity-guard pair (`WCODE.SANS_AVAIL`
 truthy, seed raises zero).
+
+### Who may file one, the offers decision it amends, and the demo records
 
 **The type is restricted to SANS aircrew, and all three editors refuse
 through one function.** `sansRefusal(person,sans)` (`inputedit.tsx`) is what
@@ -1765,6 +1816,8 @@ were `FS`/`HS` until the 28 Aug 26 rename.
     That one genuinely earns nobody anything, so it keeps those words; the
     nought-minute line must never borrow them, because it pays.
 
+### The ALL / ALL AVAIL expansion and the input ask
+
 - **The ALL / ALL AVAIL expansion — REDEFINED 21 Sep 26 ([ALL-AVAIL-REDEF]).**
   A sentinel puck on a ground or Common Programme row expands — via the injected
   `opts.expandAll`, so `engine/oil.ts` stays Leave-War-free — to the people
@@ -1789,7 +1842,10 @@ were `FS`/`HS` until the 28 Aug 26 rename.
   - anything he is **NAMED** for on the day's own schedule that overlaps the
     window drops him (`avail.ts:personBusy` — the same occupancy the validator
     and the crew picker read, which is what closes the app's old disagreement
-    between two notions of "available").
+    between two notions of "available"). A flying man is busy from step to
+    dekit only — never widened to his report or his debrief, because an ops
+    brief is sometimes slotted between a flight's brief and its step, or before
+    its debrief (owner, D36, 22 Sep 26).
   A SENTINEL NEVER BLOCKS ANOTHER SENTINEL (ruled by the build, not the owner):
   only NAMED people count as "planned for something", so two overlapping ALL AVAIL
   rows cannot each empty the other. Without a resolver the sentinel simply drops,
@@ -1833,6 +1889,9 @@ were `FS`/`HS` until the 28 Aug 26 rename.
   page a cyan `.roil` chip (`reviseOil` — rewrites `row.oil` alone, one
   `writeInputsBatch`). Both re-open OilConfirm over every applicable day
   with the standing answers pre-loaded; Save replaces the set wholesale.
+
+### The OIL evidence block and its three states
+
 - **ONE SOURCE, ONE ENVELOPE, ONE GATE — the OIL EVIDENCE BLOCK (21 Sep 26,
   `[OIL-AUTO-REMOVE]`, `engine/oilev.ts`).** This REPLACES the old split gate, in
   which the schedule half read the issued snapshot and the input half read live
@@ -1895,12 +1954,15 @@ were `FS`/`HS` until the 28 Aug 26 rename.
   has published nothing, so live + stash is the whole session; before
   this, navigating off a published weekend let the reverse sweep collect
   its credits.
+
+### Which published version pays, and the guards on a credit
+
 - **A DAY’S OIL COMES FROM ITS LATEST PUBLISHED VERSION, HOWEVER OLD THE DAY — NO LOCK, NO CLOCK**
   (owner, 20 Sep 26 — D142, recorded 24 Sep 26). The latest amendment, or the EOD if that is the latest,
   is what happened: a later amendment or EOD that takes a man off a past day takes that day’s OIL away
   (confirmed by him), and an issued EOD is the final word on the day. It superseded the 11 Sep "lock earned
   OIL on an already-worked day" lean (backlog item `[OIL]`, archived 24 Sep 26); there is no lock to build.
-- **ONLY THE ISSUED SCHEDULE PAYS, BOTH DIRECTIONS** (owner, 21 Sep 26 — R-1,
+- **ONLY THE ISSUED SCHEDULE PAYS, BOTH DIRECTIONS** (owner, 21 Sep 26 — R-1, D2,
   from the cross-provider bug check; triage in
   `docs/superpowers/specs/2026-09-21-oil-bugcheck-fixplan.md`). The credit pass
   used to gate each date on the war's calendar LIVE, before the issued block was
@@ -1912,7 +1974,7 @@ were `FS`/`HS` until the 28 Aug 26 rename.
   both ways: a day that starts earning after it went out waits to be published
   again, and `validateCore` says so on the day (`OIL_STALE_DAY`). The block's own
   ISO must also match the date it is read under, or the date is protected.
-- **THE LIVE ROSTER IS NOT A SECOND MONEY AUTHORITY** (owner, 21 Sep 26 — R-2).
+- **THE LIVE ROSTER IS NOT A SECOND MONEY AUTHORITY** (owner, 21 Sep 26 — R-2, D3).
   `creditable` consulted the current Leave War roster, so archiving a man on the
   Monday deleted the day in lieu an issued Saturday had already promised him. Who
   earned was decided at publication and frozen; nothing the roster does
@@ -1920,7 +1982,7 @@ were `FS`/`HS` until the 28 Aug 26 rename.
   all. An archived man, a hidden SANS and a NAMED ground-crew body all keep what
   they earned; the credit lives on the person and the date, so it lands and waits
   for the row.
-- **A CANCELLED OR ⓘ LANDED ROW EARNS NOTHING** (owner, 21 Sep 26 — R-2). The
+- **A CANCELLED OR ⓘ LANDED ROW EARNS NOTHING** (owner, 21 Sep 26 — R-2, D3). The
   schedule half skips every `src` row so the accepted claim owns it, and the
   input half then never looked at the row it had landed on — so cancelling that
   row, or turning it ⓘ info-only, left the claim paying for work the schedule
@@ -2358,7 +2420,8 @@ already flew keep his puck, and every day from his cutoff loses him.)*
 ## Publishing / amendments
 
 **A DELETED MAN ON A PUBLISHED DAY (`[POST-OUT-OUTCOMES]`, 27 Sep 26 — D297, D299; `state/person-delete.ts`).** The
-delete's cutoff is the later of its date and the calendar date (ONE clock — the posting pass's too). Every day BEFORE it
+delete's cutoff is the later of its date and the calendar date (ONE clock — the posting pass's too; the real calendar date,
+never the demo's own "today" — D304). Every day BEFORE it
 keeps his puck, published or not, and never reads pending for the delete: a published face compares a deleted man's
 roster attributes as they stood when the day was issued (`publish.ts peopleAttrsNow`), and ALL AVAIL counts him on those
 days as before (`leavewar/sync.ts availableFor`, by date). **An ARCHIVED man is read the same way, by his stints**
@@ -2407,6 +2470,8 @@ line (`docs/superpowers/specs/2026-09-24-amendment-behaviour-register.md`).**
   it will put back.
 - **A day template is refused on a published day (D96).** `applyDayTpl` returns false on a published day — see
   §Day templates.
+
+### A published day keeps what it went out with
 
 **A PUBLISHED DAY KEEPS WHAT IT WENT OUT WITH (26 Sep 26 — owner, D177, D178, D179 "freeze everything for now",
 provisional; D183, D184, D185 what stays live; `OUTSTANDING.md` `[LEAVE-LATE-PUBLISHED]`; plan
@@ -2489,6 +2554,8 @@ stay LIVE (below), which the face draws from today and which never make the day 
   (AM1): an input change stays pending after a load, "Discard N edits" does not count it, and the load's message says
   so (`drafts.ts inputsLeftSaid`, F5).
 
+### A request's row and its filing on a published day
+
 **A REQUEST'S ROW AND ITS FILING ON A PUBLISHED DAY (25 Sep 26, evening — owner, D174 and D175, on their own branch
 before accounts; evidence `docs/handpass/2026-09-25-req-one-row.md`).**
 - **Filed since, then taken off, is no change (D174, AM20).** A request the current issued version's filing record does
@@ -2518,6 +2585,8 @@ before accounts; evidence `docs/handpass/2026-09-25-req-one-row.md`).**
   switch (week and board, `board.ts switchDraft`) and the preview banner's "Switch to this plan". A template needs no
   such step (its rows carry no `src`), and undo / redo put back a whole earlier state.
 
+### The amendment book, the four sign-offs and the AL record
+
 **CORRECTED 17 Sep 26 — both record shapes here were stale and the third sentence
 described a removed function.** `SCHED` carries **14** fields, the set
 `state/history.ts:schedFields()` serialises: `changes`, `pending`, `added`, `als`, `al`,
@@ -2545,6 +2614,8 @@ deliberately no "publish all days".
 
 Edits only become AL changes on a day that is already published — edits to
 a draft day are folded in when the day is first published, with no AL mark.
+
+### Removals, reorders and draft additions on a published day
 
 **Structural removals are real AL items even though their cells are gone.** A
 delete first renumbers the surviving address space, then marks an inert
@@ -2975,6 +3046,8 @@ The login is a prototype gate, not security — the deployed app is public. *(Co
 (23 Sep 26) the repo is private and the app sits behind his Vercel sign-in — Vercel's lock, not the app's; the
 login is still no security.)*
 
+### What a member may do: the roles table and the admin sheets
+
 **What a member may do (owner, 5 Aug 26).** The line is *their own record vs
 the squadron's programme*, not read vs write:
 
@@ -3014,6 +3087,8 @@ sessionless test/boot context still renders); a `notify()` on the role flip
 re-renders and closes it, and flipping back to admin restores it with its
 context intact. This makes the render gate the write gate. Pinned in
 `WaveTplModal.test.tsx`.
+
+### The Leave War: moving the stage, batch writers and deciding bids
 
 **In the Leave War, moving the cycle FORWARD is admin-only (owner, 27 Aug 26
 — "for a member i shouldnt be able to click on bidding closed or published,
@@ -3081,6 +3156,8 @@ view: every absence IS an Input, so there is exactly one to find per record).
 The owner's absence clash rules (20 Sep 26) are in
 `docs/superpowers/specs/2026-09-20-arch-stack-4-clash-check.md`; they run at one
 seat, `leavewar/inputgate.ts`.
+
+### A member's own inputs, the member view and who an input is for
 
 **A member edits and deletes only their OWN personal inputs (owner, 27 Aug
 26 — "they cant edit other people's input, only can view").** On the Inputs
@@ -3210,6 +3287,8 @@ history, which the one changes window reads (`ui-contracts.md` §The one changes
   per day it cleared, "Draft marks cleared (N)" — it clears marks, not changes (`commitDiscardPending`, P9); a door's reason
   lives only for the task it was handed in, so a refused door's reason never rides a later command (P12).
 
+### What a row holds, and how each change writes one
+
 Who changed which detail, when, and what it was before. Distinct from
 §History above: that is the undo stack (whole-state snapshots, no
 attribution); this is a per-key record with a name and a clock on it.
@@ -3308,6 +3387,8 @@ Pinned by `ui/editlog-writers.test.tsx`, which drives the real gestures: the
 bug was never in the log, it was in what the callers handed it, so a test
 calling `markEdit` with two values by hand would have passed throughout.
 
+### Reading the log: the three queries, who, and each row's label
+
 **Three queries, and the ORDER of each is part of the contract.** `elogRows`
 is newest-first — a feed answering "what just happened". `elogAllFor(key)` is
 OLDEST-first — the story of one detail, so the last line is what it says now;
@@ -3322,11 +3403,15 @@ two edits would otherwise head its own group with a name it has stopped
 having.
 
 **`who` arrives through `HOOKS.whoami()`**, wired in `wireStore()` from
-`SESSION`/`ACCOUNTS`. Accounts are hard-coded, so today it only ever reads
+`SESSION`/`ACCOUNTS`. **CORRECTED 28 Sep 26 — since `[ACCOUNTS]` (26 Sep 26, D166 (5)) it reads the
+signed-in CALLSIGN ("Guest" for a guest), the person's id kept beside it (`HOOKS.whoamiId`); the next
+sentence is history:** Accounts are hard-coded, so today it only ever reads
 `Admin` or `Squadron member`. That hook is the one seam a real server has to
 fill; nothing else changes when it does.
 
-**Session-scoped, and cleared by `resetSession`.** Not persisted — the
+**CORRECTED 28 Sep 26 — the log is DURABLE since `[DRAFT-PENDING]` (D336 (b), D338 (1)): saved, loaded at
+boot, never cleared at sign-in or sign-out (this section's head). The next two sentences are history; the one
+after them, about undo, still holds:** **Session-scoped, and cleared by `resetSession`.** Not persisted — the
 schedule it describes is not either. Deliberately NOT in `histSnap()`: an
 undo restores the schedule and leaves the record standing, because a log you
 can rewrite by pressing undo is not a log.

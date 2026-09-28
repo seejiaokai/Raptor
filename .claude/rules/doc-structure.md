@@ -65,6 +65,7 @@ on his "merge live"; he sometimes runs two worktrees in parallel and merges both
 `npm run docsize` — in CI (the Docs guard) and, for everything but sizes, at the end of every turn (the Stop hook):
 a lost or doubled backlog item or ruling, a rulings map out of step, a misfiled document (a new `.md` at the repo
 root outside its short list, a document outside `raptor-port/docs/`, an always-loaded rules file nobody registered,
-two `## Now` blocks for one branch, a new reference doc no map names). Each always-read file also has a size
+two `## Now` blocks for one branch, a new reference doc no map names), and `HANDOFF.md` losing its shape — a block's
+`<!-- /now -->`, or one of `## Now`, `## Next, in order`, `## Gate baseline` (each once, in that order). Each always-read file also has a size
 TRIPWIRE (D141): crossing it means "move what does not belong here to its home", never "cut to a number" — and a
 change that touches `raptor-port/src` never trims a document (D29).

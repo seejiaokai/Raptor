@@ -15,7 +15,7 @@ So this file adds the forcing function, not a new opinion.
 |---|---|---|
 | **0 — always loaded**, every session, no choice | `raptor-port/CLAUDE.md` (strictly: once any file under `raptor-port/` is opened — in practice every build session; a root-only chat has only the rule files, so `.claude/rules/shipping.md` and `doc-structure.md` carry what every chat needs), `.claude/rules/*.md` without `paths:` — incl. the general rulings `.claude/rules/decisions/how-we-work.md` | **No line target (D141, 24 Sep 26) — a ceiling per file is a TRIPWIRE (§4).** Index and live rules ONLY, and only what EVERY task needs: an area’s rules and architecture live in its area file (tier 2, D140). (The general rulings are read every session on purpose — D137.) |
 | **1 — read at session start** | `HANDOFF.md`, `OUTSTANDING.md`, `DECISIONS.md` (the rulings map) | **No line target (D141) — a ceiling per file is a TRIPWIRE (§4).** OUTSTANDING is a backlog: priority list + one short block per LIVE item; anything done moves out. |
-| **2 — read when working in that area** | `engine-rules.md`, `ui-contracts.md`, `feature-impact.md`, `bug-check-order.md`, `data-*.md`; and each area's rulings `.claude/rules/decisions/<area>.md`, which LOAD BY THEMSELVES when a file matching their `paths:` is read (D137) — and, since D140, carry that area’s settled decisions and architecture too; `docs/file-map.md`; `docs/gates-and-deploy.md` | No line budget (the rulings files: a ceiling each that RISES, never a trim — D136). Must be navigable: headed sections, no section over ~150 lines without sub-heads. |
+| **2 — read when working in that area** | `engine-rules.md`, `ui-contracts.md`, `feature-impact.md`, `bug-check-order.md`, `data-*.md`; and each area's rulings `.claude/rules/decisions/<area>.md`, which LOAD BY THEMSELVES when a file matching their `paths:` is read (D137) — and, since D140, carry that area’s settled decisions and architecture too; `docs/file-map.md`; `docs/gates-and-deploy.md` | No line budget (the rulings files: a ceiling each that RISES, never a trim — D136). Must be navigable: headed sections, no section over ~150 lines without sub-heads (the four long ones — `ui-contracts.md`, `engine-rules.md`, `feature-impact.md`, `performance.md` — were brought under it on 28 Sep 26, `[DOC-SUBHEADS]`, heading lines only; a change that grows a section past it adds a sub-head in the same change). |
 | **3 — read only for that one task** | `docs/superpowers/specs/*`, `briefs/*`, review and scenario files | None. Never read unless the task names it. **Never linked from tier 0.** |
 | **4 — archive** | `HANDOFF-ARCHIVE.md`, `OUTSTANDING-ARCHIVE.md`, `DECISIONS-ARCHIVE.md`, `raptor-port/docs/archive/` (finished documents and passages), superseded specs | None. Searched, never read. |
 
@@ -75,11 +75,19 @@ Stale is worse than absent — the next session trusts it.
   rule 3). Over a ceiling on a docs-only change fails, because that change is the trim pass.
 - **The rulings.** No D-number may be lost or newly doubled across the rulings files (`DECISIONS.md`,
   `.claude/rules/decisions/`, `DECISIONS-ARCHIVE.md`; numbers may skip — parallel branches hold ranges,
-  D78), every file a ruling names as its home must exist, and every ruling id in
+  D78), every file a ruling names as its home must exist — and a NEW ruling's Markdown homes must mention its
+  number (`[RULING-HOMES-AUDIT]`, 28 Sep 26; the frozen archives excepted) — and every ruling id in
   `scripts/rulecheck.mjs`'s map must still head an entry in a behaviour register. **The structure keeps
   itself (D137):** it fails if the map in `DECISIONS.md` disagrees with the files, if a row marked
   replaced or spent is still in an area file, if an archived row lacks its mark, or if a row is written
   in `DECISIONS.md` itself instead of its area's file.
+- **Misfiling and the handoff's shape** (D140; `[HANDOFF-SHAPE-GUARD]`, 28 Sep 26). A document put where the structure
+  has no place for it fails (`.claude/rules/doc-structure.md` §The check that keeps it lists them). So does `HANDOFF.md`
+  losing its shape: a `## Now` block without its `<!-- /now -->`, a block outside `## Now`, or one of `## Now`,
+  `## Next, in order`, `## Gate baseline` missing, doubled or out of order — the 25 Sep 26 span replace that ate a
+  block's end, the whole order and the gate-counts heading passed this gate into `main` three commits running. A
+  break the base already had is reported, not failed, so a branch is not failed for another's damage (in CI the
+  base is `main`'s tip, not the fork point — a branch forked before a fix on `main` merges `main` in first, D78).
 
 **Moving a finished item** is `node scripts/backlog-archive.mjs <ID> --homes <file>` (from the repo
 root: `raptor-port/scripts/…`) — never a hand edit or a one-off script. It refuses a duplicate id,

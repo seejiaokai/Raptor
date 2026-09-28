@@ -6,7 +6,7 @@ section below), and `.claude/hooks/record-decisions.sh` fires this check on ever
 
 ## The lapse this exists to stop
 
-**Owner, 21 Sep 26:** *"This is a recurring problem. Whenever we discussed something important to
+**Owner, 21 Sep 26 (D13):** *"This is a recurring problem. Whenever we discussed something important to
 note down. I dont see u noting them down. How do we fix your behavior lapse?"*
 
 He is right, and the cause is **not forgetting — it is misclassifying.** A ruling stated mid-task
@@ -32,7 +32,9 @@ it", an explicit no, a supersession of an earlier ruling, an answer to a questio
 What does not: ordinary task instructions ("run the tests", "check that file", "push it"). Those
 die with the task and belong nowhere.
 
-**Every entry names the file that will now carry it — and then you make that file carry it.**
+**Every entry names the file that will now carry it — and then you make that file carry it, with its D-number
+beside the ruling there** (the gate fails a new row whose Markdown home never mentions its number — `[RULING-HOMES-AUDIT]`,
+28 Sep 26: one row's "corrected" home had never been corrected, and only reading found it).
 The rulings list is an INDEX, never the only home. A ruling recorded only there is still lost,
 because nobody reads an index while building. The home is the document the next session will
 actually open: the behaviour register, `engine-rules.md`, `ui-contracts.md`, the standing order,
@@ -87,7 +89,7 @@ next job. Every one of those records was correct and current.
 open choice.** It answered from a CODE COMMENT that had gone stale the same afternoon. He had to
 ask three times before it searched the record.
 
-**Owner, 22 Sep 26:** *"God dam why u need me to tell u 3 times to find the mock up? Is it because
+**Owner, 22 Sep 26 (D53):** *"God dam why u need me to tell u 3 times to find the mock up? Is it because
 u didn't save this to outstanding?"* — the answer was no. Saving was never the problem.
 
 ### The check

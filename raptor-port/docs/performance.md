@@ -400,6 +400,8 @@ through sourcemaps for the JS split, paired A/B runs.
    stops being slow. · Memoised the parse; scans stay O(N) deliberately. ·
    *Invariant:* cache only what data changes can never affect. · engine-rules.md.
 
+## Leave War keep-alive, the Slow-Computer Cut, and the Leave War grid rounds
+
 10. **Leave War keep-alive** (1 Sep). Returning to the tab is near-instant. · Kept
     mounted once visited, hidden with `content-visibility:hidden`; `active` prop +
     `LwBody` memo firewall stops every Raptor notify re-walking the hidden 28k
@@ -474,6 +476,8 @@ through sourcemaps for the JS split, paired A/B runs.
     memo; per-row paint layer. · late-year month 1.9→~0.95 s @4×; year fill
     ~18→~10 s. · `Matrix.tsx`, `matrix.css`.
 
+## Puck drag and drop, one validate per drop, and the CI speed-up
+
 18. **Puck drag: ghost on its own transform layer** (6 Sep). Dragging a puck is
     smoother — the ghost no longer relayouts/repaints the page each move. · Ghost
     carries `will-change:transform`, left/top pinned at 0, moved by one
@@ -510,6 +514,8 @@ through sourcemaps for the JS split, paired A/B runs.
     slowest gate. · `deploy.yml` runs the four gates as six parallel jobs; the
     Leave War unit leg sharded 2×. No app code. · 17m26s → 8m28s. · `deploy.yml`,
     `playwright.config.ts`.
+
+## Compositor layers, the fresh-add box and the cross-week glide
 
 22. **Fewer compositor layers on the desktop edit week** (5 Sep). Dragging a
     puck on the desktop is smoother: the page re-layerises on every move, and
@@ -607,6 +613,8 @@ through sourcemaps for the JS split, paired A/B runs.
     element's box before theorising about tiles. Chromium never showed the
     clip either, because its week was never taller than the viewport's clone
     in the drive (the demo weeks are the same height) — the iPhone found it.
+
+## One lift for every drag
 
 25. **One lift, every drag — a decoration that measures at nothing** (6–7 Sep).
     Every drag in the app now draws one even inset box on the thing being

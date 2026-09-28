@@ -33,7 +33,8 @@
  *
  * JOB 1d, MISFILING (owner, D140, 24 Sep 26) — a document put where the structure has no place for it: a new
  * root .md outside ROOT_ALLOW, a document outside the one docs tree, an always-loaded rules file nobody
- * registered, two HANDOFF.md ## Now blocks for one branch, a new reference doc no map names. Where each fact
+ * registered, two HANDOFF.md ## Now blocks for one branch, HANDOFF.md losing its shape (a block's end marker or one
+ * of its three headings — [HANDOFF-SHAPE-GUARD]), a new reference doc no map names. Where each fact
  * belongs is `.claude/rules/doc-structure.md`. It runs with the inventory, so the Stop hook enforces it.
  *
  * Flags: --inventory runs job 1 only (the Stop hook .claude/hooks/backlog-guard.sh uses it); --moves lists
@@ -323,7 +324,8 @@ function inventory(allow) {
 /* D29's row claimed two homes that did not carry it — the "comment that vouches", committed by the
    entry written to stop exactly that. So every `| D<n> |` row's last cell is read: each backticked
    thing that looks like a file must exist, and a row ADDED in this change must have every file it
-   names touched by this change too (a home you did not write is not a home). Paths after "on
+   names touched by this change too (a home you did not write is not a home) — and every Markdown
+   home it names must mention its number ([RULING-HOMES-AUDIT], 28 Sep 26). Paths after "on
    build:" name a future home and are only checked for existence. Memory entries have no path and
    are not checked. `Docs-guard-allow: homes` for a deliberate exception. */
 const PATHLIKE = /\/|\.(md|mjs|cjs|js|ts|tsx|sh|json|ya?ml|html|css)$/
@@ -354,9 +356,25 @@ function homes(paths, allow) {
       if (!hit.length) { fails.push(`${m[1]} names \`${tok}\` as a home, and no such file exists`); continue }
       if (isNew && (future < 0 || tm.index < future) && !hit.some(h => changed.has(h)))
         fails.push(`${m[1]} is new and names \`${tok}\` as a home, but this change does not touch that file — write the ruling there too`)
+      /* ...and a document home must SAY its number ([RULING-HOMES-AUDIT], 28 Sep 26): touching a file is not carrying the
+         ruling. The audit found rows whose homes had been written without the number — one whose home had never been
+         written at all (D21's "corrected" sentence, still stale four days on) — and could check them only by reading. A
+         home that names the D-number makes the next audit a search. Markdown homes only (a code comment may cite it, but
+         is not required to); the frozen archives are exempt, being append-only; "on build:" homes are future. */
+      else if (isNew && (future < 0 || tm.index < future) && tok.endsWith('.md') && !hit.every(isFrozen) && !hit.filter(h => !isFrozen(h)).some(h => citesRuling(readNow(h), m[1])))
+        fails.push(`${m[1]} is new and names \`${tok}\` as a home, but that file never mentions ${m[1]} — write the number beside the ruling there, so a later check can find it`)
     }
   }
   return { fails, ok: !fails.length }
+}
+/* the archives are append-only or frozen (D29, HANDOFF-ARCHIVE, docs/archive/): a ruling is never written into them */
+const isFrozen = f => [ARCHIVE, RULINGS_ARCHIVE, 'HANDOFF-ARCHIVE.md'].includes(f) || f.startsWith('raptor-port/docs/archive/')
+/* does this text mention ruling D<n> — alone ("D21", never inside "D210") or inside a range ("D5–D13", "D338-D340")? */
+function citesRuling(text, d) {
+  const n = +d.slice(1)
+  if (new RegExp('(^|[^A-Za-z0-9])D' + n + '(?![0-9])').test(text)) return true
+  for (const r of text.matchAll(/(?:^|[^A-Za-z0-9])D(\d+)\s*[–-]\s*D?(\d+)(?![0-9])/g)) if (+r[1] <= n && n <= +r[2]) return true
+  return false
 }
 
 /* ---------- job 1c: the rulings themselves and the rule registers (F7) ---------- */
@@ -447,7 +465,37 @@ function rulings(allow) {
    its reason, in a docs-only commit. HANDOFF-NEXT.md is the three-line signpost his opening line still reads. */
 const ROOT_ALLOW = ['README.md', 'HANDOFF.md', 'HANDOFF-NEXT.md', 'HANDOFF-ARCHIVE.md', 'OUTSTANDING.md', 'OUTSTANDING-ARCHIVE.md',
   'DECISIONS.md', 'DECISIONS-ARCHIVE.md', 'CLAUDE.md', 'AGENTS.md']
-const HANDOFF = 'HANDOFF.md', NOW_MARK = /^<!-- now:(\S+) -->\s*$/
+const HANDOFF = 'HANDOFF.md', NOW_MARK = /^<!-- now:(\S+) -->\s*$/, NOW_END = /^<!-- \/now -->\s*$/
+/* HANDOFF.md's SHAPE ([HANDOFF-SHAPE-GUARD], found 25 Sep 26). One span replace ate everything from a ## Now block's
+   last lines to the gate counts — the block's <!-- /now -->, the whole ## Next, in order and the ## Gate baseline
+   heading — and this gate passed it, three commits running, into main (PR #437): nothing here read HANDOFF.md's
+   shape. So: its three headings each once, in order; every block opened by <!-- now:… --> closed by <!-- /now -->
+   before the next block or ## heading (a block's own ### title is inside it); every block inside ## Now; no end
+   marker with nothing open. Returns the problems as sentences, so the caller can tell a new one from one the base
+   already had. */
+const HANDOFF_HEADS = ['## Now', '## Next, in order', '## Gate baseline']
+function handoffShape(text) {
+  if (!text) return []
+  const probs = [], ls = unfenced(splitLines(text))
+  const at = HANDOFF_HEADS.map(h => ls.flatMap((l, i) => l.trimEnd() === h ? [i] : []))
+  HANDOFF_HEADS.forEach((h, k) => { if (at[k].length !== 1) probs.push(`the heading "${h}" appears ${at[k].length} times — it must appear exactly once`) })
+  const once = at.every(a => a.length === 1)
+  if (once && !(at[0][0] < at[1][0] && at[1][0] < at[2][0])) probs.push(`its headings are out of order — "${HANDOFF_HEADS.join('", then "')}"`)
+  let open = null
+  ls.forEach((l, i) => {
+    const m = NOW_MARK.exec(l)
+    if (m || /^## /.test(l)) {
+      if (open) probs.push(`the ## Now block for ${open} has no <!-- /now --> before the next ${m ? `block (${m[1]})` : `heading "${l.trim()}"`}`)
+      open = m ? m[1] : null
+      if (m && at[0].length === 1 && at[1].length === 1 && !(i > at[0][0] && i < at[1][0])) probs.push(`the block for ${m[1]} sits outside ## Now`)
+    } else if (NOW_END.test(l)) {
+      if (!open) probs.push('a <!-- /now --> closes no block — a block\'s opening <!-- now:<branch> --> line is missing')
+      open = null
+    }
+  })
+  if (open) probs.push(`the ## Now block for ${open} has no <!-- /now --> before the end of the file`)
+  return probs
+}
 function structure() {
   const fails = [], warns = []
   const listed = [...new Set([...(tryGit('ls-files') || '').split('\n'), ...(tryGit('ls-files', '--others', '--exclude-standard') || '').split('\n')])].filter(f => f && existsSync(join(REPO, f)))
@@ -475,6 +523,16 @@ function structure() {
     if (n > 1) fails.push(`${HANDOFF} has ${n} ## Now blocks for ${b} — one block per branch; a chat rewrites only its own (.claude/skills/session-handoff/SKILL.md)`)
     if (isCommit(`origin/${b}`) && isCommit('origin/main') && tryGit('merge-base', '--is-ancestor', `origin/${b}`, 'origin/main') !== null && tryGit('rev-parse', `origin/${b}`)?.trim() !== tryGit('rev-parse', 'origin/main')?.trim())
       warns.push(`${HANDOFF} ## Now still has a block for ${b}, which is merged into main — the next handoff removes it once its open residue is filed`)
+  }
+  /* its shape: a problem the base did not have fails; one the base already had is only reported, so a branch that
+     never touched HANDOFF.md is not failed for someone else's damage (the rest of this job judges only what is new).
+     In CI the base is main's tip, not the fork point (Fable, 28 Sep 26): a branch forked before a fix on main merges
+     main in first (D78), as it must anyway. */
+  const hNow = readNow(HANDOFF), hBase = readBase(HANDOFF), shapeBase = new Set(handoffShape(hBase))
+  if (hBase && !hNow) fails.push(`${HANDOFF} is GONE — it was at the base; it is the one handoff every chat reads first`)
+  for (const p of handoffShape(hNow)) {
+    if (shapeBase.has(p)) warns.push(`${HANDOFF}: ${p} (already so at the base)`)
+    else fails.push(`${HANDOFF} has lost its shape: ${p} — an edit that spanned too much may have eaten the lines between; restore them from the base (git show <base>:${HANDOFF}), never "fix" the check`)
   }
   return { fails, warns }
 }
