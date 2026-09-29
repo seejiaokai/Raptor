@@ -994,7 +994,8 @@ and after.
 The rules:
 
 1. **A scheduler edits a day by taking it** — "✎ Edit <day>" on the day, or "✎ Edit days…" to take several of the
-   week's days at once. Taking several is one take per day: each free day is taken, a day someone else holds is
+   week's days at once, **or simply by changing a free day: the change takes it first (D451, 29 Sep 26)** — refused,
+   naming the holder, on a day someone else holds. Taking several is one take per day: each free day is taken, a day someone else holds is
    named and left, and the result says which. While one person holds a day, every other scheduler sees
    "<callsign> – editing" on it (on Edit Schedule and on the board) and reads it only.
 2. **Everything a scheduler changes on a day needs the day:** its rows, notes, times, crew, sign-offs, a publish or an
@@ -1023,7 +1024,9 @@ The rules:
    so "<callsign> – editing" appears and clears within one check. **This pulls stage 3's incoming side forward into the
    first shared release** (section 6): the lock and the 30-second check land together. The request limit that applies
    to each person on the squadron's licences is asked of the technical team (`OUTSTANDING.md` `[IT-QUESTIONS]`).
-8. **The version check stays underneath.** Every day write still carries the version read (section 9's contract
+8. **The lock is FIRM (owner, D450, 29 Sep 26): the database itself refuses a schedule save from anyone who does not
+   hold that day.** The preferred way needs no custom code: the holder owns the day's row (Open question 8). **The
+   version check stays underneath.** Every day write still carries the version read (section 9's contract
    change): a day written by two people anyway — a lost release, a take-over mid-save — is refused and reloaded, never
    silently overwritten. On Dataverse alone **the lock is advisory**: the platform refuses a stale version but cannot
    by itself refuse a correct-version write from someone who does not hold the lock. A server-side rule (a plug-in:
@@ -1173,7 +1176,7 @@ are kept for a period the squadron sets, then purged by a scheduled job;
    needs it: the cross-module derivations (section 8) and the row merge at
    stage 2 are the two places a server-side step might be simpler than a
    client replaying the feed.
-8. **Can the day lock be strict? (29 Sep 26, D355.)** On Dataverse alone the
+8. **How is the day lock made firm? (29 Sep 26 — it must be: D450.)** On Dataverse alone the
    lock is advisory: a stale version is refused, but a correct-version
    `ScheduleDay` write from someone who does not hold the day is not. One
    server-side rule — a plug-in refusing a `ScheduleDay` update unless the

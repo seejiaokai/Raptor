@@ -950,8 +950,9 @@ secrets live? can server-side rules be plug-ins, and who may deploy them? **and:
 from inside the app, or must IT assign it?** (decides whether "make Hex an admin" is one tap or an IT request). **And (D351,
 28 Sep 26): how long is the change history kept (the retention rule)?** — it decides whether Admin → Data's "Clear edit
 history…" follows that rule or goes; until then it stays as it is. **And (D356, 29 Sep 26): what request limit applies to
-each person's app on our licences?** — others' changes arrive by a small check every 30 seconds while a page is on screen. **And (29 Sep 26, `[DB-SYNC-MODEL]` — `data-model.md` §12 questions 8 and 9): may we deploy a server-side rule
-(a plug-in) that refuses a day's write from someone who does not hold its lock, and who would deploy it? And how should a
+each person's app on our licences?** — others' changes arrive by a small check every 30 seconds while a page is on screen. **And (29 Sep 26, `[DB-SYNC-MODEL]` — `data-model.md` §12 questions 8 and 9): the day lock must be FIRM (D450) — may the
+holder OWN the day's row (Dataverse ownership, no custom code), or else may we deploy a server-side rule (a plug-in)
+that refuses a day's write from someone who does not hold its lock, and who would deploy it? And how should a
 member's filed input reach a day a scheduler holds, when a member may not write the day?**
 **ANSWERS FROM THE IT SIDE, 29 Sep 26 (his chat with them, shown to the OIL award chat):** IT will CLONE the repo and all
 work moves to the new repo; he keeps working with his AI as now, but opens a PULL REQUEST there instead of merging — IT
