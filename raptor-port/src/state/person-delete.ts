@@ -55,7 +55,7 @@ import { peopleStore, settingsStore, finishPeopleWrite } from './people-settings
 import { schedStore, schedApplyEnd, resyncSchedBaseline } from './sched-commit'
 import { weekstashStore } from './store'
 import { mayDeletePerson } from './perms'
-import { deleteAccountProblem, dropAccountOfPid } from './accounts'
+import { deleteAccountProblem, dropAccountOfPid, seedAccounts } from './accounts'
 import { saidOf } from './roster-add'
 import { deletePersonOnWar, warIdentityIfHidden } from '../leavewar/sync'
 import { HOOKS } from '../engine/hooks'
@@ -332,7 +332,8 @@ export function deletedRestoreProblem(changes: any[]): string | null {
          put back un-deleted, or an accounts list that still holds his account, would bring him back whole (D287 — a
          delete is final; a man the war does not hold leaves no posting record to keep the step dead — Fable's red team 10) */
       else if (ch.collection === 'people') hit = rid === id && !!v && !v.deleted
-      else if (ch.collection === 'settings' && rid === 'accounts') hit = Array.isArray(v) && v.some((a: any) => a && a.pid === id)
+      /* a stored null IS the seeded list (accountsLoad; roster-restore.ts reads it so too) — Fable's final read, F5 */
+      else if (ch.collection === 'settings' && rid === 'accounts') { const list = v == null ? seedAccounts() : v; hit = Array.isArray(list) && list.some((a: any) => a && a.pid === id) }
       if (hit) return `${(PEOPLE as any)[id].cs} has been deleted — that change can't be undone`
     }
   }

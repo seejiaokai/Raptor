@@ -308,6 +308,7 @@ test('an admin files leave on the Inputs page over a pending bid: bid gone, ambe
   expect((await inputsOf(page, P)).filter(r => r.startsWith('LL Feb 11'))).toHaveLength(0)
   await redo(page)
   await expect(chip(page, P, D)).toHaveClass(/appr/)
+  await expect(mark(page, P, D)).toHaveCount(0)                       // Redo brings the filing, never the seen notice (Astra F1)
 })
 
 test('the member files leave over their own bid: bid gone, a message, no notice left on the war', async ({ page }) => {

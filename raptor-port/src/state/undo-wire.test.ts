@@ -26,7 +26,7 @@ import { VCONF, RULE_SPEC, rulesSave, rulesResetMem } from '../engine/rules'
 import { storeBackend } from '../engine/hooks'
 import { waveTplLoad } from '../engine'
 import { addWaveTpl, delWaveTpl, setWaveHidden, waveTplSave, WAVETPL_CFG, WAVEHIDE } from '../engine/wavetpl'
-import { installGlobalUndo } from './undo-wire'
+import { installGlobalUndo, _snapView } from './undo-wire'
 import { HIST } from './history'
 
 const DSNAP = JSON.stringify(DAYS)
@@ -298,6 +298,46 @@ describe('B7 — Undo goes to the change’s page, and keeps the board open acro
     view.setSecDefOffer(0)
     expect(globalUndo().ok).toBe(true)
     expect(view.SECDEFOFFER).toBe(null)
+  })
+  it('a sign-off on Saturday, undone and redone with the board on Friday, brings the board to Saturday (walk S14a — the week keeps every day’s sign-offs in one record)', () => {
+    view.setPage('editsched')
+    schedWrite(SCHED_TYPES.sign, () => { setSign(5, 'cur', 'ignite'); HOOKS.histPush() })
+    view.setBoardDay(4)
+    expect(globalUndo().ok).toBe(true)
+    expect(view.SBDAY).toBe(5)
+    view.setBoardDay(4)
+    expect(globalRedo().ok).toBe(true)
+    expect(view.SBDAY).toBe(5)
+  })
+  /* Astra's final read, finding 2: the page is the ACT's, never a consequence's — a weekend publish carries the Leave
+     War's OIL credit (an lw.cell projection) folded into the schedule's step, and must still land on Edit Schedule */
+  const publishWithCredit = () => ({ scope: { module: 'sched', weekId: CURWEEK }, forward: [
+    { op: 'put', collection: 'days', id: `${CURWEEK}#5`, before: {}, after: {} },
+    { op: 'put', collection: 'lw.cell', id: 'w2026:bane:2026-07-18', before: [], after: [{ kind: 'oil' }] }] } as any)
+  it('a schedule step carrying a Leave War credit, undone from Admin or the Leave War, lands on Edit Schedule (Astra F2)', () => {
+    for (const from of ['admin', 'leavewar']) {
+      view.setPage(from as any)
+      _snapView(publishWithCredit(), 'undo')
+      expect(view.CURPAGE).toBe('editsched')
+    }
+  })
+  it('the same step with the board on another day brings the board to the published day (Astra F2)', () => {
+    view.setPage('editsched'); view.setBoardDay(2)
+    _snapView(publishWithCredit(), 'undo')
+    expect(view.SBDAY).toBe(5)
+  })
+  it('a Leave War step that lands a leave on a week, undone from Edit Schedule, goes to the Leave War (Astra F2)', () => {
+    view.setPage('editsched')
+    _snapView({ scope: { module: 'lw', warId: 'w2026' }, forward: [
+      { op: 'put', collection: 'lw.cell', id: 'w2026:bane:2026-07-15', before: [], after: [{ kind: 'bid' }] },
+      { op: 'put', collection: 'days', id: `${CURWEEK}#2`, before: {}, after: {} }] } as any, 'undo')
+    expect(view.CURPAGE).toBe('leavewar')
+  })
+  it('a planning-calendar change undone from another page opens Inputs on its CALENDAR (Fable F2, plan §11.6)', () => {
+    view.setInpView('table'); view.setPage('editsched')
+    _snapView({ scope: { module: 'plan' }, forward: [{ op: 'put', collection: 'plan', id: 'x', before: null, after: {} }] } as any, 'undo')
+    expect(view.CURPAGE).toBe('inputs')
+    expect(view.INPVIEW).toBe('cal')
   })
   it('the board’s Undo that crosses to another week keeps the board open, on the changed day (A1-F2)', () => {
     view.setPage('editsched')

@@ -49,10 +49,12 @@ if (ONLY.includes('C1')) { const o = await world('a'); await step('C1', async ()
   const g0 = await cellGlyph(cell)
   await tap(cell)
   const g1 = await cellGlyph(cell)
+  await page.locator(cell).first().scrollIntoViewIfNeeded().catch(() => {})
   B.ck('C1.1', 'the tick changed on Quals', g1 !== g0, `before "${g0}" after "${g1}"`, await B.shot(page, 'C1-ticked'))
   await go(page, 'leavewar')
   const u = await door(page, 'top', 'undo')
   const page1 = await cur(); const g2 = await cellGlyph(cell)
+  await page.locator(cell).first().scrollIntoViewIfNeeded().catch(() => {})
   B.ck('C1.2', 'Undo on the Leave War lands on Quals (AM39b, A2-F4)', page1 === 'quals', `page ${page1}`, await B.shot(page, 'C1-undone-on-quals'))
   B.ck('C1.3', 'it says what came back — "Ranger’s quals" (B8)', /Undid: Ranger.s quals/.test(said(u)), said(u))
   B.ck('C1.4', 'the tick is back as it was', g2 === g0, `now "${g2}"`)
@@ -93,9 +95,14 @@ if (ONLY.includes('C3')) { const o = await world('a'); await step('C3', async ()
   await go(page, 'editsched')
   const u = await door(page, 'top', 'undo')
   const p = await cur()
-  const v2 = await page.locator(`[data-lgset="${k}"]`).first().inputValue().catch(() => page.locator(`#lgBody`).innerText())
-  B.ck('C3.2', 'Undo from Edit Schedule lands on Logic', p === 'logic', `page ${p}`, await B.shot(page, 'C3-undone-on-logic'))
-  B.ck('C3.3', 'the rule shows its old value again (Fable S18 — a stale box)', await page.evaluate(([kk, vv]) => { const i = document.querySelector(`[data-lgset="${kk}"]`); return i ? i.value === vv : (document.getElementById('lgBody') || document.body).textContent.includes(vv) }, [k, v0]), `now "${v2}"`)
+  B.ck('C3.2', 'Undo from Edit Schedule lands on Logic', p === 'logic', `page ${p}`)
+  /* the proof is the rule's own box: into Edit, the box on screen, its value read (the first run read the page's text) */
+  if (await page.locator('#lgEdit:visible').count()) await tap('#lgEdit')
+  const bx = page.locator(`[data-lgset="${k}"]`).first()
+  await bx.scrollIntoViewIfNeeded().catch(() => {})
+  const v2 = await bx.inputValue().catch(() => 'NO BOX')
+  B.ck('C3.3', 'the rule’s box shows its old value again (Fable S18 — a stale box)', v2 === v0, `box "${v2}", was "${v0}"`, await B.shot(page, 'C3-undone-on-logic'))
+  await tap('#lgDone').catch(() => {})
   B.ck('C3.4', 'the words: "a rule on the Logic page"', /a rule on the Logic page/.test(said(u)), said(u))
 }); await o.browser.close() }
 
@@ -131,9 +138,12 @@ if (ONLY.includes('C6')) { const o = await world('a'); await step('C6', async ()
   await tap('#accAdd'); await toasts(page)
   const u = await door(page, 'top', 'undo')
   B.ck('C6.1', 'Undo of the rename is refused whole, naming the callsign (D286 — B5)', /Hex is taken on the roster now/.test(said(u)), said(u), await B.shot(page, 'C6-refused'))
+  await page.locator('.acc-row .acc-name', { hasText: /^Quasar$/ }).first().scrollIntoViewIfNeeded().catch(() => {})
+  await page.waitForTimeout(3500)   // the bubble's few seconds, so the rows show
+  const pq = await B.shot(page, 'C6-list-after')
   const hexes = await page.locator('.acc-row .acc-name', { hasText: /^Hex$/ }).count()
   const q = await page.locator('.acc-row .acc-name', { hasText: /^Quasar$/ }).count()
-  B.ck('C6.2', 'nothing moved: one Hex (the new man), Quasar still Quasar', hexes === 1 && q === 1, `Hex ×${hexes}, Quasar ×${q}`)
+  B.ck('C6.2', 'nothing moved: one Hex (the new man), Quasar still Quasar', hexes === 1 && q === 1, `Hex ×${hexes}, Quasar ×${q}`, pq)
   B.ck('C6.3', 'the step stays next — Undo still on', u.disabledAfter === false, `disabled after ${u.disabledAfter}`)
 }); await o.browser.close() }
 
@@ -187,16 +197,16 @@ if (ONLY.includes('C11')) { const o = await world('m'); await step('C11', async 
   await go(page, 'viewsched')
   /* the day's own change count opens the changes window for a member (D171) — not the day's status badge, which on a
      phone opens the day summary sheet (the first run tapped that, and the sheet blocked the Undo) */
-  const chip = page.locator('#vWeek [data-chgday]').first()
+  const chip = (await page.locator('#vWeek [data-chgday][data-chgtab="new"]').count()) ? page.locator('#vWeek [data-chgday][data-chgtab="new"]').first() : page.locator('#vWeek [data-chgday]').first()
   if (await chip.count()) { await chip.scrollIntoViewIfNeeded().catch(() => {}); await chip.click(); await page.waitForTimeout(500) }
-  const seen = page.locator('.chgwin button', { hasText: /Mark all as seen/i }).first()
+  const seen = page.locator('button.cw-seen:not([disabled])').first()
   const hadSeen = await seen.count()
   if (hadSeen) { await seen.click(); await page.waitForTimeout(400) }
   await page.keyboard.press('Escape').catch(() => {})
   await closeSheets(page)
   await go(page, 'inputs')
   const u = await door(page, 'top', 'undo')
-  B.ck('C11.1', 'after "Mark all as seen", Undo on Inputs takes his LL — the seen mark is no step (B1, Fable S2)', /Undid: a personal input/.test(said(u)) && (await cur()) === 'inputs', `${said(u)} · seen pressed: ${hadSeen} · iid ${f.iid}`, await B.shot(page, 'C11-undone'))
+  B.ck('C11.1', 'after "Mark all as seen", Undo on Inputs takes his LL — the seen mark is no step (B1, Fable S2)', hadSeen > 0 && /Undid: a personal input/.test(said(u)) && (await cur()) === 'inputs' && !(await page.evaluate(i => window.INPUTS.some(r => r.iid === i), f.iid)), `${said(u)} · seen pressed: ${hadSeen} · iid ${f.iid}`, await B.shot(page, 'C11-undone'))
 }); await o.browser.close() }
 
 B.save(allErrors.flat())

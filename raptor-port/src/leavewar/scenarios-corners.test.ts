@@ -21,7 +21,7 @@ import {
 } from './state/store'
 import { memoryBackend } from './state/storage'
 import { runOilPass, wireLeaveWarSync } from './sync'
-import { globalUndo } from '../undo'
+import { globalUndo, globalRedo } from '../undo'
 import { _resetTimeline, _timelineEntries } from '../undo/timeline'
 import { installGlobalUndo } from '../state/undo-wire'
 
@@ -172,6 +172,17 @@ describe('"OK, seen"', () => {
     const steps = _timelineEntries().length
     expect(ackReplacement('ammo', notice.id)).toBe(1)
     expect(_timelineEntries().length).toBe(steps)
+    expect(recsIn('ammo', '2026-02-10').some(r => r.kind === 'notice')).toBe(false)
+  })
+  it('a notice seen stays seen through Undo and Redo of the filing that raised it (Astra’s final read, F1; Fable F4)', () => {
+    setRole('admin'); setCell('ammo', '2026-02-10', 'LL')
+    file('ammo', 'ATT C', 'Feb 10')
+    const notice = recsIn('ammo', '2026-02-10').find(r => r.kind === 'notice') as any
+    expect(ackReplacement('ammo', notice.id)).toBe(1)
+    expect(globalUndo().ok).toBe(true)                                      // the filing goes: the bid is back
+    expect(recsIn('ammo', '2026-02-10').some(r => r.kind === 'request')).toBe(true)
+    expect(recsIn('ammo', '2026-02-10').some(r => r.kind === 'notice')).toBe(false)
+    expect(globalRedo().ok).toBe(true)                                      // the filing again — the notice stays seen
     expect(recsIn('ammo', '2026-02-10').some(r => r.kind === 'notice')).toBe(false)
   })
 })

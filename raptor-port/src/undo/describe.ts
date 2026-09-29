@@ -140,7 +140,8 @@ const STAGE_TO: Record<string, string> = {
 }
 function stageOf(v: any): string | null { return v && typeof v.stage === 'string' ? v.stage : null }
 function stageMove(entry: UndoEntry): { from: string | null; to: string | null } | null {
-  const w = entry.forward.find(c => c.collection === 'lw.war')
+  /* a move needs a war on both sides — a new war (no before) starts at draft and is no step back (Fable's final read, F1) */
+  const w = entry.forward.find(c => c.collection === 'lw.war' && c.before && c.after)
   if (!w) return null
   const from = stageOf(w.before), to = stageOf(w.after)
   return from !== to ? { from, to } : null
@@ -191,6 +192,9 @@ function lwLabel(entry: UndoEntry): string {
   if (colls.has('lw.balances')) return 'an opening balance'
   if (colls.has('lw.oilpolicy')) return 'the OIL policy'
   if (colls.has('lw.ledger')) return 'an OIL entry'
+  const war = entry.forward.find(c => c.collection === 'lw.war')
+  if (war && !war.before && war.after) return 'a new Leave War period'
+  if (war && war.before && !war.after) return 'deleting a Leave War period'
   if (colls.has('lw.war')) return stageLabel(entry) || 'the war’s dates or name'
   return 'a change on the Leave War'
 }

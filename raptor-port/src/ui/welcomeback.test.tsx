@@ -17,6 +17,10 @@ import { deletePerson } from '../state/person-delete'
 import { SESSION } from '../state/auth'
 import { persistPeople } from '../state/people-settings-commit'
 import { CURPAGE } from '../state/view'
+import { updatePersonField } from '../state/quals-write'
+import { installGlobalUndo } from '../state/undo-wire'
+import { globalUndo, globalRedo } from '../undo'
+import { _resetTimeline } from '../undo/timeline'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 const $ = (sel: string) => document.querySelector(sel) as HTMLElement
@@ -93,6 +97,22 @@ describe('D305 — the man\'s own welcome back', () => {
     expect(P('stiff').back).toBeFalsy()
     expect(P('rocky').back, 'another man\'s note untouched').toBe(true)
     await act(async () => { switchRoleView(); notify() })
+  })
+})
+
+describe('his "Later" stays dismissed through Undo and Redo (Fable’s final read, F4 — B1: a seen mark is never taken back)', () => {
+  it('a tick on his own row, then Later, then Undo / Redo of the tick: the note does not come back', async () => {
+    _resetTimeline(); installGlobalUndo()
+    P('rocky').back = true
+    await signInAs('hex')
+    expect(updatePersonField('rocky', { tick: 'nvg' })).toBe(null)
+    await act(async () => { markBackSeen(); notify() })
+    expect(P('rocky').back).toBeFalsy()
+    await act(async () => { const r = globalUndo(); expect(r.reason || 'ok').toBe('ok'); notify() })
+    expect(P('rocky').back).toBeFalsy()
+    expect($('#welcomeBack')).toBe(null)
+    await act(async () => { expect(globalRedo().ok).toBe(true); notify() })
+    expect(P('rocky').back).toBeFalsy()
   })
 })
 

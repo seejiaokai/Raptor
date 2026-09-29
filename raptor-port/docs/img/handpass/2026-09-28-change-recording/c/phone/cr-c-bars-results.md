@@ -71,13 +71,14 @@
 | member: no console or page errors | PASS | none |
 | the board's bar reads sbUndo · sbRedo · sbHist · sbSync · sbBell · sbDone — no ✕ Close (D349) | PASS | sbUndo · sbRedo · sbHist · sbSync · sbBell · sbDone · 17-board-bar.png |
 | the ⋯ button is in the day row, beside the highlighter | PASS | shown true |
-| the board's bar height | PASS | 75px |
+| the board's bar no taller than on the live app (75px) | PASS | 75px |
 | ⋯ opens a menu with Sort all and the layout switch, drawn on top and on screen | PASS | {"items":["⇅ Sort all","🖥 Desktop layout"],"onTop":true,"inView":true} · 18-board-more-open.png |
 | a tap outside closes it | PASS | menu gone |
 | the layout choice switches the board and closes the menu | PASS | sb-wide on |
+| with the highlighter open the bar keeps its one row of buttons and the ⋯ still shows | PASS | {"pressed":true,"top":111} · 20-board-hl-open.png |
 | the board’s bell answers without leaving the board when there is nowhere to go | PASS | board still open |
 | one Sync state: the board’s chip and the top bar’s agree | PASS | fastsync on / fastsync on |
 | ✓ Done closes the board | PASS | closed |
 | the board: no console or page errors | PASS | none |
 
-77 PASS · 0 FAIL
+78 PASS · 0 FAIL

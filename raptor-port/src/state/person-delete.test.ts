@@ -249,6 +249,10 @@ describe('B4 — undo and redo never put a deleted man, or his account, back', (
     expect(deletedRestoreProblem([{ op: 'put', collection: 'people', id: HIM, after: clone((PEOPLE as any)[HIM]) }])).toBe(null)
     expect(deletedRestoreProblem([{ op: 'put', collection: 'settings', id: 'accounts', after: clone(ACCOUNTS_LIST) }])).toBe(null)
   })
+  it('an accounts image stored as null is the SEEDED list — and it holds Ranger’s account (Fable’s final read, F5)', () => {
+    expect(deletePerson('bane')).toBe(null)
+    expect(deletedRestoreProblem([{ op: 'put', collection: 'settings', id: 'accounts', after: null }])).toMatch(/Ranger has been deleted/)
+  })
 })
 
 describe('PO4 — the refusals: never oneself, never a placeholder, never twice, only an admin; a refusal changes nothing', () => {

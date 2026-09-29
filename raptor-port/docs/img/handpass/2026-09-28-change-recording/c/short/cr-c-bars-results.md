@@ -49,7 +49,7 @@
 | member: no console or page errors | PASS | none |
 | the board's bar reads sbTpl · sbSortAll · sbUndo · sbRedo · sbHist · sbSync · sbBell · sbDone — no ✕ Close (D349) | PASS | sbTpl · sbSortAll · sbUndo · sbRedo · sbHist · sbSync · sbBell · sbDone · 17-board-bar.png |
 | the ⋯ button is not drawn on a desktop | PASS | shown false |
-| the board's bar height | PASS | 188px |
+| the board's bar no taller than on the live app (186px) | PASS | 186px |
 | the board’s bell answers without leaving the board when there is nowhere to go | PASS | board still open |
 | one Sync state: the board’s chip and the top bar’s agree | PASS | fastsync on / fastsync on |
 | ✓ Done closes the board | PASS | closed |

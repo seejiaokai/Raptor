@@ -84,6 +84,18 @@ describe('B3 (D350) — a step Undo cannot take yet says why', () => {
     expect(bubble).toMatch(/posting/i)
     expect(bubble).toMatch(/stays/i)
   })
+  it('an older step under a later add of a person, on the same record, is refused NAMING the act (Fable’s final read, F3)', () => {
+    definePermission('account.addNew', anyone)
+    const s = makeStore('S', 'settings')
+    registerUndoStore(s.store, ['settings']); setCutoverModules(['settings'])
+    edit(s.store, { module: 'settings' }, () => s.set('accounts', [{ pid: 'outlaw', off: true }]))                 // suspend
+    edit(s.store, { module: 'settings' }, () => s.set('accounts', [{ pid: 'outlaw', off: true }, { pid: 'viper' }]), BOSS, 'account.addNew')
+    const r = globalUndo()
+    expect(r.ok).toBe(false)
+    expect(r.reason).toMatch(/later change to a person \(added, archived, restored or posted\)/)
+    expect(r.reason).toMatch(/change it back by hand/)
+    expect(r.reason).not.toMatch(/undo that first/)
+  })
 })
 
 describe('B6.1 (D148) — Undo reverses only your own changes', () => {

@@ -3,7 +3,7 @@
 | # | Check | Result | Observed | Picture(s) |
 |---|---|---|---|---|
 | S24.1 | a man put on Saturday's SDO desk, then board Undo → he is off again | PASS | {"who":"dj","m1":["dj"],"m2":[],"u1":["Undid: a change to the schedule"]} |  |
-| S24.2 | after a reload: still undone; Undo and Redo both greyed (history is per sign-in); the changes window keeps the "Undo — …" line | PASS | {"m3":[],"ts":{"undo":"off \"Undo\"","redo":"off \"Redo\""},"undoLines":["The daySaber · 29/9 09:59Undo — a change to the schedule"],"lines":["The daySaber · 29/9 09:59Undo — a change to the schedule","Duty · SDOSaber · 29/9 09:59Ace put on"]} | desktop/nav-01-reload-after-undo.png |
+| S24.2 | after a reload: still undone; Undo and Redo both greyed (history is per sign-in); the changes window keeps the "Undo — …" line | PASS | {"m3":[],"ts":{"undo":"off \"Undo\"","redo":"off \"Redo\""},"undoLines":["The daySaber · 29/9 10:51Undo — a change to the schedule"],"lines":["The daySaber · 29/9 10:51Undo — a change to the schedule","Duty · SDOSaber · 29/9 10:51Ace put on"]} | desktop/nav-01-reload-after-undo.png |
 | S25.1 | on the board, SDO start 08:00 → 07:00; the top bar's pair is covered while the board is open | PASS | {"t0":"0800","t1":"07:00","covered":"covered by sbday sbweek"} | desktop/nav-02-board-time-changed.png |
 | S25.2 | board closed, top-bar Undo → the week shows 08:00 again | PASS | {"tu":["Undid: a change to the schedule"],"wkTime":"SDO\n08:00\n18:00"} | desktop/nav-03-week-top-undo.png |
 | S25.3 | board reopened, board Redo → 07:00 on the board | PASS | {"br":["Redid: a change to the schedule"],"t2":"07:00","boardVal":"07:00"} | desktop/nav-04-board-redo.png |

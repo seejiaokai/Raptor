@@ -42,6 +42,9 @@ export interface UndoHooks {
   snapView?(entry: UndoEntry, dir: 'undo' | 'redo'): void
   /* pop the undo/redo bubble (§8.2). */
   showBubble?(text: string): void
+  /* B1 — carry a seen mark (`type`, its change `seen`) onto an image of the same record an older step will restore:
+     return the image with the seen state on, or the same object when nothing changes (carrySeen) */
+  seenOverlay?(type: string, seen: Change, image: unknown): unknown
   /* an undo or a redo just SUCCEEDED ([DRAFT-PENDING], 28 Sep 26 — Astra DP-04): the change history writes its line
      here, on the days the step touched, outside the undo timeline so an undo can never undo its own record. Never
      called on a refusal. */
@@ -142,7 +145,7 @@ function ingest(env: CommitEnvelope): void {
       if (isNavOnly(env)) { /* navigation is not an entry (§3.1 R2-10) */ trackExpectation(env); return }
       /* B1 — a person's own "seen" mark is never an Undo step: taking it back would bring a note back, not the
          squadron's record, and a member's could never be taken at all (Fable S2) */
-      if (NOT_STEPS.has(env.type)) { trackExpectation(env); return }
+      if (NOT_STEPS.has(env.type)) { trackExpectation(env); carrySeen(env); return }
       recordEntry(env)
       break
     }
@@ -183,6 +186,26 @@ function ingest(env: CommitEnvelope): void {
    admins' bell, the welcome-back note, "OK, seen" on a Leave War notice — §10) and a waiting person's own request for
    access (he has no Undo door). Their revisions are still tracked, so nothing reads as out-of-band. */
 const NOT_STEPS = new Set<string>(['changes.seen', 'access.seen', 'person.backSeen', 'access.request', 'lw.ack'])
+
+/* A seen mark written INTO a record a step also holds (his welcome note on his own roster record, "OK, seen" on a Leave
+   War day's list, the admins' bell on the requests) — the older step's before- and after-images still hold it unseen,
+   so undoing or redoing that step would bring the note, the notice or the bell back (Fable's final read, F4; Astra's,
+   F1). Every image of that record, undone or not, takes the seen state on — through the hook, which knows each mark's
+   field; the revision is untouched (trackExpectation already advanced it). */
+function carrySeen(env: CommitEnvelope): void {
+  const over = hooks.seenOverlay
+  if (!over) return
+  for (const sc of env.changes) {
+    const k = recordKey(sc)
+    for (const e of entries) for (const list of [e.inverse, e.forward]) for (let i = 0; i < list.length; i++) {
+      const c = list[i]
+      if (recordKey(c) !== k) continue
+      const before = c.before == null ? c.before : over(env.type, sc, c.before)
+      const after = c.after == null ? c.after : over(env.type, sc, c.after)
+      if (before !== c.before || after !== c.after) list[i] = { ...c, before, after }
+    }
+  }
+}
 
 /* an envelope out of every entry's causal line (another person's, the app's own pass, an orphan projection): a sticky
    barrier on each record it wrote, the actor kept, and `expected` advanced to what it left. */
@@ -562,6 +585,9 @@ function undoConflictOf(entry: UndoEntry): Conflict | null {
     if (o === entry || o.undone || o.seq <= entry.seq) continue
     if (sharesKeys(keySet(o), keys)) {
       if (isEligible(o) && !deadFor(o, 'undo')) return { text: 'A later change touches the same thing — undo that first.', sticky: false }
+      /* the newer step is one Undo never takes (D350): say which act, and that the way back is by hand (plan B3; Fable's
+         final read, F3 — the generic sentence left a suspension behind an added person with no way forward) */
+      if (NOT_UNDONE_TYPES.has(o.type)) return { text: 'A later change to a person (added, archived, restored or posted) touches the same thing, so this can’t be undone — change it back by hand.', sticky: false }
       return { text: isEligible(o) ? 'A later change touches the same thing and can’t be undone.' : 'A later change touches the same thing and can’t be undone yet.', sticky: false }
     }
   }

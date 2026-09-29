@@ -23,11 +23,12 @@ import {
   installUndo, registerUndoStore, setCutoverModules, setUndoHooks, setDescribeNames,
 } from '../undo'
 import type { RecordCtx, UndoEntry } from '../undo/types'
+import type { Change } from '../command'
 import { weekOf } from '../undo/derive'
 import { schedStore, schedPostRestore } from './sched-commit'
 import { weekstashStore, loadWeek } from './store'
 import { HIST } from './history'
-import { armDrop, prunePreviews, SBDAY, CURPAGE, setPage, setBoardDay, focusQualsRow, requestAdminUsers, setSecDefOffer } from './view'
+import { armDrop, prunePreviews, SBDAY, CURPAGE, setPage, setBoardDay, focusQualsRow, requestAdminUsers, setSecDefOffer, setInpView } from './view'
 import { canEditSched } from './auth'
 import { bringDayIntoView } from '../ui/highlights'
 import { boardTab } from '../ui/board'
@@ -69,6 +70,20 @@ function schedDayOf(entry: UndoEntry): number | null {
     if (ch.collection === 'days') return Number(ch.id.split('#')[1])
     if (ch.collection === 'sched.orig') return Number(ch.id.slice(ch.id.indexOf(':') + 1))
   }
+  /* the week's book keeps every day's sign-offs, OK flags, drafts … in one record, each map keyed by the day — the day is
+     the one key whose value changed (walk S14a: Saturday's sign-off redone with the board on Friday stayed on Friday) */
+  for (const ch of entry.forward) {
+    if (ch.collection !== 'sched.book') continue
+    const days = new Set<number>()
+    const b = (ch.before || {}) as Record<string, any>, a = (ch.after || {}) as Record<string, any>
+    for (const k of new Set([...Object.keys(b), ...Object.keys(a)])) {
+      const x = b[k], y = a[k]
+      if (!x && !y) continue
+      if ((x && typeof x !== 'object') || (y && typeof y !== 'object')) continue
+      for (let di = 0; di < 7; di++) if (JSON.stringify((x || {})[di]) !== JSON.stringify((y || {})[di])) days.add(di)
+    }
+    if (days.size === 1) return [...days][0]
+  }
   return null
 }
 
@@ -100,53 +115,66 @@ function loadContext(ctx: RecordCtx, entry: UndoEntry): void {
 }
 
 /* WHICH PAGE THE CHANGE LIVES ON — the change-recording re-test B7 (§11.6; walker A2-F4). The register's AM39b: an undo
-   "takes you to where the change was". A closure touching a WEEK goes to the week (the change the eye looks for — the
-   plan's B7), for someone who has Edit Schedule; a war's to the Leave War; an input, the planning calendar and the
-   inputs' look-ahead to Inputs; a roster record to Quals, on his row; the accounts, the requests and the guest switch
-   to Admin → Users; a rule to Logic; the LoX columns to Quals; the templates and the default arrangement to Admin.
-   The stores and the cancel reasons are edited on the board and the week, so they stay. null = stay where you are. */
-type Landing = { pages: string[]; then?: () => void }
+   "takes you to where the change was". The page is the ACT's, read from the step's own area (its scope), never from a
+   consequence folded into it (Astra's final read, F2: a weekend publish carries the Leave War's OIL credit and landed on
+   the war, leaving the board on the wrong day): a schedule step to Edit Schedule, for someone who has it; a war's to the
+   Leave War; an input to Inputs, the planning calendar to Inputs on its calendar (Fable's final read, F2), the inputs'
+   look-ahead to Inputs; a roster record to Quals, on his row; the accounts, the requests and the guest switch to Admin →
+   Users; a rule to Logic; the LoX columns to Quals; the templates and the default arrangement to Admin. The stores and the
+   cancel reasons are edited on the board and the week, so they stay. `also` = the pages an undo may stay on because the
+   change shows there too — only an input's: the loaded week it lands on (walk S16) and, for an absence, the Leave War
+   (step4-leavewar's ATT C cut). null = stay where you are. */
+type Landing = { primary: string | null; also: string[]; then?: () => void }
+const inputRows = (c: { before?: unknown; after?: unknown }) => [c.before, c.after].filter(v => v && typeof v === 'object') as any[]
+/* the loaded week's day an input covers — its day on Edit Schedule */
+function inputDayOf(entry: UndoEntry): number | null {
+  for (const c of entry.forward) {
+    if (c.collection !== 'inputs') continue
+    for (const r of inputRows(c)) for (let di = 0; di < 7; di++) if (DATES[di] && inputCoversDate(r, DATES[di])) return di
+  }
+  return null
+}
 function landingOf(entry: UndoEntry): Landing | null {
-  const fwd = entry.forward
-  const pages: string[] = []
+  const fwd = entry.forward, m = entry.scope.module
+  const also: string[] = []
+  let primary: string | null = null
   let then: (() => void) | undefined
-  /* the act's own page first — a Leave War step belongs on the war even when its approved leave lands on a week */
-  if (entry.scope.module === 'lw' || fwd.some(c => c.collection.startsWith('lw.'))) pages.push('leavewar')
-  if (fwd.some(c => weekOf(c.collection, c.id) != null && c.collection !== 'weekstash') && canEditSched()) pages.push('editsched')
-  if (fwd.some(c => c.collection === 'inputs' || c.collection === 'plan' || c.collection === 'weekstash' || (c.collection === 'settings' && c.id === 'lookahead')))
-    pages.push('inputs')
-  /* an input on a day of the loaded week shows on that day of the schedule (its pending mark, its row): undone on Edit
-     Schedule it stays there (the plan's §11.6 "unless a week context is present"; walk S16 — a leave filed late on a
-     published Sunday, undone, left for Inputs while the day's pending mark it cleared stayed out of sight) */
-  const rows = (c: { before?: unknown; after?: unknown }) => [c.before, c.after].filter(v => v && typeof v === 'object') as any[]
-  if (canEditSched() && fwd.some(c => c.collection === 'inputs' && rows(c).some(r => DATES.some(d => inputCoversDate(r, d)))))
-    pages.push('editsched')
-  /* an absence input (leave, a downchit, CSE, OD) also shows on the Leave War: undone THERE, it stays there — the war is
-     one of the pages it lands on, last, so an undo from elsewhere still opens Inputs (step4-leavewar's ATT C cut) */
-  if (fwd.some(c => c.collection === 'inputs' && [c.before, c.after].some(v => v && typeof v === 'object' && warVisible((v as { type?: unknown }).type))))
-    pages.push('leavewar')
-  const person = fwd.find(c => c.collection === 'people')
-  if (person) { pages.push('quals'); then = () => focusQualsRow(person.id) }
-  const ids = fwd.filter(c => c.collection === 'settings').map(c => c.id)
-  if (ids.some(k => k === 'accounts' || k === 'accessreqs' || k === 'guestview')) { pages.push('admin'); then = then || (() => requestAdminUsers(false)) }
-  if (ids.includes('rules')) pages.push('logic')
-  if (ids.includes('qualcols')) pages.push('quals')
-  if (ids.some(k => k === 'dutytpl' || k === 'wavetpl' || k === 'wavehide' || k === 'daytpl' || k === 'secdefault' || k === 'wavedefault')) pages.push('admin')
-  return pages.length ? { pages, then } : null
+  if (m === 'lw') primary = 'leavewar'
+  else if (m === 'sched') primary = canEditSched() ? 'editsched' : null
+  else if (m === 'inputs' || m === 'plan') {
+    primary = 'inputs'
+    if (m === 'plan' && !fwd.some(c => c.collection === 'inputs')) then = () => setInpView('cal')
+  } else if (m === 'people') {
+    primary = 'quals'
+    const person = fwd.find(c => c.collection === 'people')
+    if (person) then = () => focusQualsRow(person.id)
+  } else if (m === 'settings') {
+    const ids = fwd.filter(c => c.collection === 'settings').map(c => c.id)
+    if (ids.some(k => k === 'accounts' || k === 'accessreqs' || k === 'guestview')) { primary = 'admin'; then = () => requestAdminUsers(false) }
+    else if (ids.includes('rules')) primary = 'logic'
+    else if (ids.includes('qualcols')) primary = 'quals'
+    else if (ids.includes('lookahead')) primary = 'inputs'
+    else if (ids.some(k => k === 'dutytpl' || k === 'wavetpl' || k === 'wavehide' || k === 'daytpl' || k === 'secdefault' || k === 'wavedefault')) primary = 'admin'
+  }
+  if (m === 'inputs') {
+    if (canEditSched() && inputDayOf(entry) != null) also.push('editsched')
+    if (fwd.some(c => c.collection === 'inputs' && inputRows(c).some(r => warVisible(r.type)))) also.push('leavewar')
+  }
+  return primary || also.length ? { primary, also, then } : null
 }
 
 function snapView(entry: UndoEntry, _dir: 'undo' | 'redo'): void {
   const boardWas = BOARD_WAS; BOARD_WAS = null
   const land = landingOf(entry)
   /* not when the change already shows on the page you are on (an input filed on Inputs, undone there) */
-  if (land && !land.pages.includes(CURPAGE)) setPage(land.pages[0])
+  if (land && land.primary && CURPAGE !== land.primary && !land.also.includes(CURPAGE)) setPage(land.primary)
   if (land && land.then) land.then()
-  if (entry.scope.module === 'lw' || entry.forward.some(c => c.collection.startsWith('lw.'))) {
+  if (land && land.primary === 'leavewar') {
     const date = lwDateOf(entry)
     if (date) focusDay(date)
     return
   }
-  const di = schedDayOf(entry)
+  const di = schedDayOf(entry) ?? inputDayOf(entry)
   if (di == null || CURPAGE !== 'editsched') return
   /* the board: bring the changed day onto it — and reopen it there when a week load closed it (A1-F2) */
   if (SBDAY != null) { if (SBDAY !== di) boardTab(di); return }
@@ -201,6 +229,46 @@ function postRestore(entry: UndoEntry, dir: 'undo' | 'redo', pulledBack: Array<{
    registerUndoStore is a Map set, and setCutoverModules/setUndoHooks replace.
    So a second call (e.g. a test after _resetTimeline) re-establishes the same
    wiring harmlessly rather than being skipped by a stale one-shot flag. */
+/* B1 — each seen mark's field, carried onto an older step's image of the same record (timeline.ts carrySeen; Fable's
+   final read F4, Astra's F1). His welcome note: `back` gone from his roster record. "OK, seen": the notices it removed
+   (by their seq — a notice spans the days of one filing) gone from the day's list. The admins' bell: each request's
+   seenBy joined with the one the mark wrote. Anything else: the image untouched. */
+function seenOverlay(type: string, seen: Change, image: unknown): unknown {
+  if (!image || typeof image !== 'object') return image
+  const b: any = seen.before, a: any = seen.after
+  if (type === 'person.backSeen') {
+    if (!(b && b.back) || (a && a.back) || !(image as any).back) return image
+    const c = { ...(image as any) }; delete c.back; return c
+  }
+  if (type === 'lw.ack') {
+    if (!Array.isArray(image) || !Array.isArray(b)) return image
+    const kept = new Set((Array.isArray(a) ? a : []).map((r: any) => r && r.id))
+    const gone = new Set(b.filter((r: any) => r && r.kind === 'notice' && !kept.has(r.id)).map((r: any) => r.seq))
+    if (!gone.size) return image
+    const next = image.filter((r: any) => !(r && r.kind === 'notice' && gone.has(r.seq)))
+    return next.length === image.length ? image : next
+  }
+  if (type === 'access.seen') {
+    if (!Array.isArray(image) || !Array.isArray(a)) return image
+    const by = new Map(a.map((r: any) => [r && r.id, r]))
+    let changed = false
+    const next = image.map((r: any) => {
+      const w: any = r && by.get(r.id)
+      if (!w || !Array.isArray(w.seenBy)) return r
+      const had: string[] = Array.isArray(r.seenBy) ? r.seenBy : []
+      const u = [...new Set([...had, ...w.seenBy])]
+      if (u.length === had.length) return r
+      changed = true
+      return { ...r, seenBy: u }
+    })
+    return changed ? next : image
+  }
+  return image
+}
+
+/** tests only — the landing, driven with a made-up entry */
+export const _snapView = (e: UndoEntry, d: 'undo' | 'redo'): void => snapView(e, d)
+
 export function installGlobalUndo(): void {
   installUndo()
   /* the words name a man by his callsign (describe.ts — the Leave War's records carry his id) */
@@ -231,6 +299,7 @@ export function installGlobalUndo(): void {
     /* [POST-OUT-OUTCOMES]: a step that would put a deleted man back is passed over, never taken (person-delete.ts) */
     deadRefusal: (changes) => deletedRestoreProblem(changes as any),
     /* D148 — the refusal says who: the callsign he goes by (a rename moves nothing, so it is read live) */
+    seenOverlay,
     nameOf: (a) => (a.personId != null && (PEOPLE as any)[a.personId] ? String((PEOPLE as any)[a.personId].cs) : null),
     // currentActor OMITTED — the timeline defaults to deriveActor().
   })

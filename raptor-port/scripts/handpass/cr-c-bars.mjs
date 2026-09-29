@@ -121,7 +121,11 @@ await pagesFor('member', 'us', 'us', ['inputs', 'quals', 'leavewar', 'tracker'])
   const got = bar.ids.filter(id => want.includes(id) || id === 'sbOil' || id === 'sbClose' || id === 'sbWide')
   ok(`the board's bar reads ${want.join(' · ')} — no ✕ Close (D349)`, !bar.close && want.every((id, i) => got.indexOf(id) >= 0 && (i === 0 || got.indexOf(id) > got.indexOf(want[i - 1]))), `${bar.ids.join(' · ')} · ${pic}`)
   ok(`the ⋯ button is ${PHONE ? 'in the day row, beside the highlighter' : 'not drawn on a desktop'}`, bar.more === PHONE, `shown ${bar.more}`)
-  ok(`the board's bar height`, true, `${bar.h}px`)
+  /* the live app's board bar, same size (the bell once made it 2px taller — the picture check found it) */
+  const mainH = await (async () => { const m = await session('ad', 'a', MAIN); await go(m.page, 'editsched')
+    await m.page.evaluate(() => window.openScheduler(0)); await m.page.waitForSelector('#sbDone'); await m.page.waitForTimeout(600)
+    const h = await m.page.evaluate(() => Math.round(document.querySelector('#schedBoard .sb-top').getBoundingClientRect().height)); await m.ctx.close(); return h })()
+  ok(`the board's bar no taller than on the live app (${mainH}px)`, bar.h <= mainH + 1, `${bar.h}px`)
   if (PHONE) {
     await page.click('#sbMore'); await page.waitForTimeout(300)
     const m = await page.evaluate(() => {
@@ -137,8 +141,10 @@ await pagesFor('member', 'us', 'us', ['inputs', 'quals', 'leavewar', 'tracker'])
     ok('the layout choice switches the board and closes the menu', (await page.evaluate(() => document.getElementById('schedBoard').classList.contains('sb-wide'))) && !(await page.locator('#sbMoreMenu').count()), 'sb-wide on')
     await shot(page, 'board-wide', false)
     await page.click('#sbMore'); await page.waitForTimeout(200); await page.click('#sbMoreWide'); await page.waitForTimeout(400)
-    await page.click('#sbHl'); await page.waitForTimeout(300)
-    await shot(page, 'board-hl-open', false)
+    await page.locator('#sbHl').click(); await page.waitForTimeout(400)
+    const hl = await page.evaluate(() => { const b = document.getElementById('sbHl'); return { pressed: b && (b.getAttribute('aria-expanded') === 'true' || b.classList.contains('on')), top: Math.round(document.querySelector('#schedBoard .sb-top').getBoundingClientRect().height) } })
+    const pic3 = await shot(page, 'board-hl-open', false)
+    ok('with the highlighter open the bar keeps its one row of buttons and the ⋯ still shows', hl.pressed && (await page.locator('#sbMore:visible').count()) > 0, `${JSON.stringify(hl)} · ${pic3}`)
   }
   /* the bell on the board: with nothing lit it clears, the board stays */
   await page.click('#sbBell'); await page.waitForTimeout(300)
