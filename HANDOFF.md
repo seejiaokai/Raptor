@@ -28,42 +28,40 @@ the later merge keeps both (D78).
 - **Next:** his pick of the job (put to him 29 Sep 26); nothing to `main` without his "merge live".
 <!-- /now -->
 
-<!-- now:claude/change-recording-retest -->
-### `claude/change-recording-retest` — the change-recording re-test (`[HUMAN-RETEST]`, D147) with `[UNDO-ROSTER-SETTINGS]`, D148 and `[UNDO-TOPBAR]` — BUILT, WALKED, READ BY BOTH, FIXED; waiting on HIS LOOK and "merge live" — written 29 Sep 26 — verify before use
-- **State:** every step of the plan done (`raptor-port/docs/superpowers/plans/2026-09-28-change-recording-plan.md`):
-  B1–B11 built red-first; walked at 1440×900, 1366×768, 390×844, 844×390 (664 checks, all pass — evidence
-  `raptor-port/docs/handpass/2026-09-28-change-recording.md` §4, §7); Fable and Astra read the finished code blind (D353) —
-  every finding fixed red-first and walked (§6; reports `…/briefs/2026-09-28-change-recording-final-read-{fable,astra}.md`);
-  the gates green under the lock (§Gate baseline). `main` (d3650865, the Tracker leftovers) merged in. Pushed; the PR is open.
-- **His look (the card is in the PR and the chat):** the pair on every page; the board's ✓ Done (no ✕) and the phone's ⋯;
-  the laptop-width icon-only pair (the builder's call: with words, six pages' bars grew a second line); §11.5
-  say-once-then-pass-over; "OK, seen" never a step and never undone; the named refusals. Then his "merge live" — NOTHING
-  to `main` without it. After the merge: archive `[UNDO-ROSTER-SETTINGS]` and `[UNDO-TOPBAR]` (both say "closes when it
-  merges") and remove this block.
-- **Filed by this build:** `[PHONE-WIDE-BOARD-BLANK]` (medium — the board's Desktop layout blank on a phone, on `main`
-  too), `[BUBBLE-SMALL-SEEN]` (low — Unpublish says nothing; a bubble over the section-order offer). Earlier:
-  `[UNDO-POSTING-RECORD]`, `[HIST-PER-PAGE]`, `[PHONE-DISCARD-MARKS]`.
-- **Rulings:** D347–D353 are this branch's (28 Sep 26); none new since. D347's and D353's short lines corrected after
-  Astra's D138 check (`…/briefs/2026-09-29-rulings-d347-d353-short-lines-astra.md`) — the slim-down's leftover is done.
-  D354–D359 unused, free.
-- **Parallel chats (D302):** the Tracker leftovers chat merged (#459, #462) and closed; the small-fixes chat
-  (`claude/small-fixes-batch-d223f6`, PR #463) stays out of both bars and told us of any change there — no clash, only
-  `scheduler.css` in different blocks; the later merge brings `main` in first (D78). Observation numbers: this branch
-  #345–#347 (renumbered from #341–#342, which are the small-fixes branch's).
-- **Ports:** preview 4173 (this build), the live copy for the bars walk 4192 (`C:/rw/main`, a detached `origin/main`
-  checkout — remove its node_modules junction before deleting it).
+<!-- now:claude/db-step-now -->
+### `claude/db-step-now` — the database step starts now (D354–D356) and the tidy-up after PR #464 — docs only; waiting on his "merge live" — written 29 Sep 26 — verify before use
+- **His news (D354, 29 Sep 26):** the IT team is taking the app into Dataverse now; he means to keep working on it beside
+  them. D203's timing is overtaken; its order stands. How the app shares once it is in the database is SETTLED in part:
+  **D355** (a scheduler locks a DAY — one or several — others see "<callsign> – editing"; freed after 30 minutes idle; an
+  admin can take over) and **D356** (idle = no change by the holder for 30 minutes, a warning at 25; saved as you go with
+  "Done editing"; others' changes arrive every 30 seconds while on screen). `data-model.md` §9 marked;
+  `OUTSTANDING.md` `[DB-SYNC-MODEL]` (left: the mock-up of the day lock, §9 rewritten, both reviewers' red team).
+- **NEXT (his ask, a fresh chat): `[IT-FLOW-GUIDE]`** — the compact, picture-led flowchart of every journey through the
+  app (what a person clicks, what he sees next) with "what to test" per journey, for the IT team and the next developer.
+  Recommend the format first (the agent's lean: a slide deck — a map slide, then a slide per journey); his memory rule:
+  few words, real screenshots, short captions.
+- **Also due before the tables settle (D354):** bring `raptor-port/docs/handover-dataverse.md` up to date (written 10 Sep;
+  its "one-time import of what is in the browsers today" contradicts the wipe plan D54); `[DB-READINESS]` with
+  `[OIL-AWARD-IS-A-GRANT]` (tell IT the two saving changes coming); his Tracker charts exported before the wipe (D120);
+  before IT gets the code: the runner off the repo (`[REPO-PRIVATE]`, SEC-101). Open question to him: does IT want the
+  documents, the code, or both?
+- **Done here:** PR #464's residue — `[UNDO-ROSTER-SETTINGS]` and `[UNDO-TOPBAR]` archived; its `## Now` block removed.
+  Still first on the test side: `[INPUTSCAL-TAP-FLAKY]` (failed 3 of 4 PC runs on 29 Sep 26). Rulings D357–D359 free.
 <!-- /now -->
 
 ## Next, in order
 
-1. **HIS ORDER to the database step, about two months away (D203, 26 Sep 26):** `[ACCOUNTS]`, `[ACCOUNTS-NEW-PERSON]`,
+0. **THE DATABASE STEP STARTS NOW (D354, 29 Sep 26)** — first `[IT-FLOW-GUIDE]` (his ask for IT), then `[DB-SYNC-MODEL]`'s mock-up (D355, D356) and the readiness work. The IT team is taking the app into Dataverse now, and he means to
+   keep working on the app beside it. What to finish before the hand-over was put to him the same day; record his answer
+   here and in `OUTSTANDING.md`'s priority list the moment he gives it. Everything below keeps its ORDER; its timing is overtaken.
+1. **HIS ORDER to the database step (D203, 26 Sep 26 — its timing overtaken by D354):** `[ACCOUNTS]`, `[ACCOUNTS-NEW-PERSON]`,
    `[POST-OUT-OUTCOMES]`, `[LW-MOVE-STANDARD]` (D264–D266) and `[ONE-DOOR]` (D309, D310, with `[POST-IN-DATE]`) MERGED
    (PRs #442, #443, #446, #447, #450) → **the one changes window (`[DRAFT-PENDING]`)** MERGED (PR #451, 28 Sep 26); its
    two follow-ups `[HIST-PHONE-HIDE]` and `[CHG-BY-ITEM]` (D345, D346) MERGED (PR #455, 28 Sep 26); beside it, he talks to the IT side
    (`[IT-QUESTIONS]`). Development as normal: `[HUMAN-RETEST]`'s remaining three in his order (D147 — the absence record
    with `[S4-HUNT-REST]` and D260–D262 MERGED, PR #444 — then change-recording, the Leave War links last), then `[LW-LOCKMARK]` → `[LW-WEEKDAY-WORK]` (`[PUB-UNAVAIL]`
    closed by the absence-record re-test).
-2. **About a month before the database:** `[DB-READINESS]` with the OIL award fix and the small OIL follow-ups as ONE
+2. **Before the tables are settled (was "about a month before the database" — D354):** `[DB-READINESS]` with the OIL award fix and the small OIL follow-ups as ONE
    batch (D147, D203) → `[DB-STEP]` when Manfred is ready. The whole list: `OUTSTANDING.md`'s priority list.
 3. Filed, none blocking: `[TRK-PINCH-ASK]` (his iPhone look), `[LW-FROZEN-BAR-GAP]`; the Tracker leftovers'
    own residue — `[SAVE-NOTE-COVERS]` (medium, next), `[TRK-REMOUNT-LANDING]`, `[TRK-ASYNC-STALE]` (with `[DB-READINESS]`). Everything else: `OUTSTANDING.md`'s priority list.
