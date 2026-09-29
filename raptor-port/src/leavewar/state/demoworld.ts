@@ -20,7 +20,7 @@
 // and re-keying it would corrupt it.
 
 import { INPUTS, inpId } from '../../engine/inputs'
-import { seedPeople, SEED_ABSENCES, warHolding, type Ledger, type Recs, type WarRec } from '../engine'
+import { seedPeople, SEED_ABSENCES, warHolding, type Ledger, type Recs } from '../engine'
 import { inputRowFor } from '../absences'
 import { projectPeople } from './raptorRoster'
 import { getState, installDemoOil, remapPersonKeys, setPeople } from './store'
@@ -113,16 +113,12 @@ const DEMO_RAPTOR_INPUTS: any[] = [
    shows each shape on first run: a credit used up (archived), one part-drawn
    with its takes stacked, a correction, an untouched grant with a giver, a
    2027 lane, and a row whose only credit is in the archive. */
-let demoN = 0
-/* AN AWARD, not an earned day (N13/N16, 20–21 Sep 26). The helper was called
-   `earned` and the story around it said "every earned day" — both written
-   before an award and an earned credit behaved differently. They now differ in
-   every way that matters: an award flags nothing, stands nobody down, is never
-   touched by the schedule, reads "OIL award" on the day sheet and carries no
-   "Auto" mark on the tracker. Naming these `earned` invited the next reader to
-   believe the demo had schedule-earned credits when it had none. */
-const award = (code: 'FO' | 'HO', note: string, days?: number, givenBy?: string): WarRec[] =>
-  [{ id: `demo${++demoN}`, kind: 'credit', code, oil: 'manual', note, ...(days != null ? { days } : {}), ...(givenBy ? { givenBy } : {}) }]
+/* EVERY HAND-GIVEN DAY HERE IS AN AWARD — a ledger entry, the one kind of
+   hand-given OIL ([OIL-AWARD-IS-A-GRANT], 29 Sep 26), drawn on the grid on its
+   day (D402). They were war records typed on the grid until then; the demo is
+   rewritten, not converted (D401), the same worth on the same days. An award
+   flags nothing, stands nobody down, is never touched by the schedule, reads
+   "OIL award" on the day sheet and carries no "Auto" mark on the tracker. */
 const grant = (id: string, personId: string, amount: number, date: string, reason: string, approvedBy: string, givenBy?: string) =>
   ({ id, personId, counter: 'oil' as const, amount, date, reason, approvedBy, ...(givenBy ? { givenBy } : {}) })
 
@@ -139,29 +135,29 @@ const DEMO_OIL_TAKEN: Array<[string, string]> = [
 export const DEMO_OIL: { recs: Recs; ledger: Ledger } = {
   // opening 3, FO 3 Jan seeded: the opening figure is used up by June
   // (archived), the January day part-drawn, the March grant and April half
-  // day untouched. Every earned day is a HAND-TYPED credit with its reason —
-  // the OIL pass would sweep a generated one the live schedule does not back.
-  recs: {
-    ramp: { '2026-04-18': award('HO', 'SIM') },
-    tata: { '2026-02-07': award('FO', 'FLT'), '2026-03-21': award('FO', 'Duty') },
-    miles: { '2026-05-09': award('FO', 'FLT + SIM') },
-    /* 4 Jul is the ADD-UP day (N16): this 3-day award sits beside the credit
-       the accepted Duty input earns, so the Saturday is worth FOUR — once it
-       earns. The input earns only from a PUBLISHED day, and a fresh demo
-       publishes nothing, so a fresh boot's tracker shows the award's three
-       and no automatic box (seen 24 Sep 26, walking the OIL tracker). */
-    dusk: { '2026-07-04': award('FO', 'Exercise recovery', 3, 'OC Ops'), '2026-08-08': award('HO', 'SIM') },
-    cage: { '2026-08-15': award('FO', 'FLT') },
-    skin: { '2026-08-29': award('FO', 'Duty') },
-    // opening 0: one earned day, taken the week after — the row's ONLY
-    // credit is in the archive, so it reads idle with a count of 1.
-    slammed: { '2026-01-10': award('FO', 'FLT') },
-  },
+  // day untouched.
+  recs: {},
   ledger: [
     grant('dol-1', 'ramp', 2, '2026-03-14', 'Exercise recovery', 'SQNCDR', 'OC Ops'),
     grant('dol-2', 'asics', 1, '2026-06-06', 'Night flying week', 'SQNCDR', 'SQNCDR'),
     grant('dol-3', 'miles', -1, '2026-05-20', 'Correction: double credit', 'SQNCDR'),
     grant('dol-4', 'reset', 2, '2027-01-09', 'Overseas exercise', 'SQNCDR', 'OC Ops'),
+    grant('dol-5', 'ramp', 0.5, '2026-04-18', 'SIM', 'SQNCDR'),
+    grant('dol-6', 'tata', 1, '2026-02-07', 'FLT', 'SQNCDR'),
+    grant('dol-7', 'tata', 1, '2026-03-21', 'Duty', 'SQNCDR'),
+    grant('dol-8', 'miles', 1, '2026-05-09', 'FLT + SIM', 'SQNCDR'),
+    /* 4 Jul is the ADD-UP day (N16): this 3-day award sits beside the credit
+       the accepted Duty input earns, so the Saturday is worth FOUR — once it
+       earns. The input earns only from a PUBLISHED day, and a fresh demo
+       publishes nothing, so a fresh boot's tracker shows the award's three
+       and no automatic box (seen 24 Sep 26, walking the OIL tracker). */
+    grant('dol-9', 'dusk', 3, '2026-07-04', 'Exercise recovery', 'SQNCDR', 'OC Ops'),
+    grant('dol-10', 'dusk', 0.5, '2026-08-08', 'SIM', 'SQNCDR'),
+    grant('dol-11', 'cage', 1, '2026-08-15', 'FLT', 'SQNCDR'),
+    grant('dol-12', 'skin', 1, '2026-08-29', 'Duty', 'SQNCDR'),
+    // opening 0: one hand-given day, taken the week after — the row's ONLY
+    // credit is in the archive, so it reads idle with a count of 1.
+    grant('dol-13', 'slammed', 1, '2026-01-10', 'FLT', 'SQNCDR'),
   ],
 }
 

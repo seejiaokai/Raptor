@@ -191,7 +191,7 @@ Balances are computed and on screen. Two parts of §Counters are not built:
   admin's optional `givenBy` on a grant, `LedgerEntry.givenBy`), the reason
   under it (the sync wire's `FLT` / `SIM` / `Duty` / an input's type name,
   written to the FO/HO cell as `BidRecord.note` — `ingestDutyCredit(…, why)`;
-  an admin's own note on a hand-typed FO/HO via `setCellNote`), the days
+  an award's own reason, a ledger entry's since [OIL-AWARD-IS-A-GRANT] — `setCellNote` went with the hand-typed cell), the days
   TAKEN from it in red (its FIFO draws), and what is left bottom-right.
   Used up → amount, date and reason struck; expired → the same, on a green
   amount. Both sit on a dark-grey fill (`#21262d`, 2 Sep 26 — see the FIFTH

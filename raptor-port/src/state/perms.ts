@@ -56,7 +56,7 @@ export const T = {
   attachment: 'Attachment, InputAttachment',
   war: 'LeaveWar',
   bid: 'LeaveBid',
-  award: 'LeaveBid (a hand-typed OIL award)',
+  award: 'LeaveLedger (an OIL award: counter oil, amount above 0)',
   ledger: 'LeaveOpening, LeaveLedger, LeaveCounter',
   profile: 'LeavePersonProfile',
   tracker: 'Course, Syllabus, TrainingEvent, EventPrerequisite, Layout, CoursePlan, Enrolment, Attempt',
@@ -78,8 +78,11 @@ export const PERMS: Record<string, PermRow> = {
   [T.attachment]: row(cell('R'), cell('R', 'C R')),
   [T.war]: row(cell('C R U D'), cell('R')),
   [T.bid]: row(cell('C R U D'), cell('R', 'C U D')),
-  [T.award]: row(cell('C R U D'), cell('R'), NONE, NONE, ['OIL-AWARD-IS-A-GRANT']),
-  [T.ledger]: row(cell('C R U D'), cell('', 'R')),
+  /* [OIL-AWARD-IS-A-GRANT] (29 Sep 26): every hand-given OIL award is ONE kind of record — a positive OIL ledger entry —
+     and keeps its OWN row: every member reads every man's (the grid draws every row, D402); the rest of the ledger stays
+     his own only, the gap between that and what the app shows filed as [LEDGER-READ-ASK] (both plan reads) */
+  [T.award]: row(cell('C R U D'), cell('R')),
+  [T.ledger]: row(cell('C R U D'), cell('', 'R'), NONE, NONE, ['LEDGER-READ-ASK']),
   [T.profile]: row(cell('C R U D'), cell('R')),
   [T.tracker]: row(cell('C R U D'), cell('C R U D')),
 }
@@ -289,6 +292,12 @@ export const COMMAND_OPS: Record<string, CommandOp> = {
   /* D352 (28 Sep 26): a stage move (Open for bidding / Bidding closed / Published) — the admin's, as the stage always was
      (27 Aug 26); its own type only so Undo can name it */
   'lw.stage': op(T.bid, 'U'),
+  /* [OIL-AWARD-IS-A-GRANT] (Astra's round-2 read, R2-01): an OIL award is written under ITS row of the table, a ledger
+     entry (another pool's credit, a correction) under the ledger's, and a clear that takes an award beside a bid names
+     both — a member's clear takes no award and runs as `lw.edit` */
+  'lw.award': op(T.award, 'U'),
+  'lw.ledger': op(T.ledger, 'U'),
+  'lw.clear': op(T.bid, 'U', 'optional', [[T.award, 'D']]),
   /* the Tracker: everyone with access edits it (D121) */
   'trk.marks': op(T.tracker, 'U'), 'trk.dates': op(T.tracker, 'U'), 'trk.roster': op(T.tracker, 'U'),
   'trk.layout': op(T.tracker, 'U'), 'trk.syls': op(T.tracker, 'U'), 'trk.plan': op(T.tracker, 'U'),
@@ -319,7 +328,7 @@ export const COMMAND_OPS: Record<string, CommandOp> = {
      parked plans, the planning calendar (the schedule family), his sign-off boxes cleared (as the sign-clear command),
      and his inputs from that day deleted or ended the day before. Every table it writes is named (D200). The Leave War
      half (his records, his posting) joins in Part B with LeavePersonProfile. */
-  'person.delete': op(T.person, 'D', 'never', [[T.user, 'D'], [T.accessreq, 'D'], [T.sched, 'U'], [T.amendment, 'C'], [T.input, 'D'], [T.input, 'U'], [T.profile, 'U'], [T.bid, 'D']]),
+  'person.delete': op(T.person, 'D', 'never', [[T.user, 'D'], [T.accessreq, 'D'], [T.sched, 'U'], [T.amendment, 'C'], [T.input, 'D'], [T.input, 'U'], [T.profile, 'U'], [T.bid, 'D'], [T.award, 'D']]),
   /* he's back — Restore (Admin → Users, D310), Restore under another callsign (D284, D286, D295): the person restored (and
      renamed), his sign-in enabled, a new stint opened; never a member's own-row write. (Undo post out on the posting's own
      archive runs the same body as the POSTING command, `lw.postout` below — [DRAFT-PENDING], Astra's read of the fixes, 02) */
@@ -332,7 +341,7 @@ export const COMMAND_OPS: Record<string, CommandOp> = {
      Undo, before or after it ran (leavewar/sync.ts takeBack, and restoreBody's undo mode on the posting's own archive) */
   'lw.postout': op(T.profile, 'U', 'never', [[T.person, 'U'], [T.user, 'U']]),
   /* the posting pass on its date — a reconciler (the system actor); every table an outcome writes is named (D200) */
-  'lw.postoutRun': op(T.profile, 'U', 'never', [[T.person, 'U'], [T.person, 'D'], [T.user, 'U'], [T.user, 'D'], [T.sched, 'U'], [T.amendment, 'C'], [T.input, 'D'], [T.input, 'U'], [T.bid, 'D']]),
+  'lw.postoutRun': op(T.profile, 'U', 'never', [[T.person, 'U'], [T.person, 'D'], [T.user, 'U'], [T.user, 'D'], [T.sched, 'U'], [T.amendment, 'C'], [T.input, 'D'], [T.input, 'U'], [T.bid, 'D'], [T.award, 'D']]),
 }
 for (const k of SETTINGS_KEYS_ALL) COMMAND_OPS[`settings.${k}`] = op(T.setting, 'U')
 

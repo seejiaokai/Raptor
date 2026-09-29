@@ -537,14 +537,27 @@ describe('the per-person breakdown sheet (owner, 17 Aug 26)', () => {
   // longer restates as a single line — every one of the eight figures now
   // defines its own parts (engine/counters.test.ts pins the fallback branch
   // against a stand-in figure instead, since no real one still takes it).
-  it('breaks OIL into opening, granted, earned and taken, and still sums to the balance', () => {
+  it('breaks OIL into opening, earned, awarded and taken, and still sums to the balance (D400)', () => {
     render(<Matrix />)
     pick('oil')
     fireEvent.click(screen.getByTestId('bal-ramp'))
     const rows = [...screen.getByTestId('figure-breakdown').querySelectorAll('.crow-top')].map(r => r.textContent)
-    // ramp: opening 3, no OIL grant, one earned FO day (3 Jan), one pending
-    // half-day OIL taken (10 Feb) = 3 + 0 + 1 − 0.5 = 3.5.
-    expect(rows).toEqual(['opening figure3', 'granted0', 'earned by weekend/PH work1', 'OIL taken-0.5', 'Total3.5'])
+    // ramp: opening 3, nothing the schedule earned, one day AWARDED by hand (3 Jan — the seed's award, a ledger entry
+    // since [OIL-AWARD-IS-A-GRANT]; it read "earned" before D400), one pending half-day OIL taken (10 Feb)
+    // = 3 + 0 + 1 − 0.5 = 3.5. No correction, so no corrections row.
+    expect(rows).toEqual(['opening figure3', 'earned by weekend/PH work0', 'awarded1', 'OIL taken-0.5', 'Total3.5'])
+  })
+
+  it('a correction on OIL is its own row, itemised apart from the awards', () => {
+    setRole('admin')
+    grantTo(['ramp'], 'oil', -0.5, '2026-09-07', 'Double entry')
+    render(<Matrix />)
+    pick('oil')
+    fireEvent.click(screen.getByTestId('bal-ramp'))
+    const rows = [...screen.getByTestId('figure-breakdown').querySelectorAll('.crow-top')].map(r => r.textContent)
+    expect(rows).toEqual(['opening figure3', 'earned by weekend/PH work0', 'awarded1', 'corrections-0.5', 'OIL taken-0.5', 'Total3'])
+    expect(screen.getByTestId('part-corrections').textContent).toContain('Double entry')
+    expect(screen.getByTestId('part-awarded').textContent).not.toContain('Double entry')
   })
 
   /* A grant keyed from the grid's balance bar (6 Sep 26) has to be EXPLAINED

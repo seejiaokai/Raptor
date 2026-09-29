@@ -10,7 +10,7 @@
 
 import { act, fireEvent, render, screen } from '@testing-library/react'
 import { beforeEach, describe, expect, it } from 'vitest'
-import { advanceStage, initStore, reopenStage, setManualCredit, setPostIn, setPostOut, setRole, setViewer } from '../state/store'
+import { advanceStage, initStore, reopenStage, setDayAward, setPostIn, setPostOut, setRole, setViewer } from '../state/store'
 import { memoryBackend } from '../state/storage'
 import { Matrix } from './Matrix'
 
@@ -21,9 +21,9 @@ const INSIDE = '2026-01-06'
 beforeEach(() => {
   initStore(memoryBackend())
   setRole('admin')
-  setManualCredit(ME, OUTSIDE, 'FO', { note: 'Recall', givenBy: 'OC Ops', days: 3 })
-  setManualCredit(ME, INSIDE, 'HO', { note: 'SIM' })
-  setManualCredit('dusk', OUTSIDE, 'FO', { note: 'Not yours' })
+  setDayAward(ME, OUTSIDE, 3, { note: 'Recall', givenBy: 'OC Ops' })
+  setDayAward(ME, INSIDE, 0.5, { note: 'SIM' })
+  setDayAward('dusk', OUTSIDE, 1, { note: 'Not yours' })
 })
 
 const asMember = () => act(() => { setRole('member'); setViewer(ME) })

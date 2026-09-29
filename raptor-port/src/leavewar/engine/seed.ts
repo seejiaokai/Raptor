@@ -4,7 +4,7 @@
 
 import { buildDays, type Period } from './period'
 import type { Person } from './people'
-import { recContribs, type Recs, type WarRec } from './warrecs'
+import { awardContrib, isOilAward, recContribs, type Recs, type WarRec } from './warrecs'
 import { dayView, AM, PM, FULL, type Contrib, type Views } from './dayview'
 import { parseCell } from './codes'
 import { addDays } from './period'
@@ -198,13 +198,14 @@ export interface SeedAbsence {
 let seedN = 0
 const rq = (code: string, state: 'pending' | 'acknowledged' | 'refused'): WarRec[] =>
   [{ id: `seed${++seedN}`, kind: 'request', code, state }]
-const credit = (code: 'FO' | 'HO'): WarRec[] => [{ id: `seed${++seedN}`, kind: 'credit', code, oil: 'manual' }]
 
 export function seedRecs(): Recs {
   seedN = 0
   return {
-    ramp: { '2026-01-03': credit('FO'), '2026-02-10': rq('*OIL', 'pending') },
-    tata: { '2026-01-01': credit('FO'), '2026-01-04': credit('FO') },
+    /* RAMP, TATA and SKIN's hand-given OIL on 1–4 Jan are LEDGER AWARDS now
+       (seedLedger — [OIL-AWARD-IS-A-GRANT], D401: the seed is rewritten, the
+       same worth on the same days), drawn on the grid from there (D402). */
+    ramp: { '2026-02-10': rq('*OIL', 'pending') },
     // SPLICE's LL has no decision recorded — a plain pending bid, the shape a
     // bid nobody has looked at yet renders as.
     splice: { '2026-01-08': rq('LL', 'pending') },
@@ -216,7 +217,6 @@ export function seedRecs(): Recs {
     // a closed-war fact, owner 27 Aug 26).
     miles: { '2026-02-02': rq('LL', 'pending'), '2026-02-03': rq('LL*', 'pending') },
     cross: { '2026-03-10': rq('LL', 'refused') },
-    skin: { '2026-01-03': credit('HO') },
   }
 }
 
@@ -269,6 +269,12 @@ export function seedLedger(): Ledger {
     { id: 'l3', personId: 'cross', counter: 'annual', amount: 14, date: '2026-01-01', reason: 'Annual leave top-up', approvedBy: 'SQNCDR' },
     { id: 'l4', personId: 'jaguar', counter: 'oil', amount: 2, date: '2026-01-19', reason: 'CNY workplan', approvedBy: 'SQNCDR' },
     { id: 'l5', personId: 'asics', counter: 'oil', amount: 1.5, date: '2026-02-02', reason: 'Exercise recovery', approvedBy: 'OC OPS' },
+    // Hand-given OIL on the war's first days — typed on the grid before awards
+    // became ledger entries, the same worth on the same days (D401).
+    { id: 'l7', personId: 'ramp', counter: 'oil', amount: 1, date: '2026-01-03', reason: 'Weekend recovery', approvedBy: 'SQNCDR' },
+    { id: 'l8', personId: 'tata', counter: 'oil', amount: 1, date: '2026-01-01', reason: 'New Year duty', approvedBy: 'SQNCDR' },
+    { id: 'l9', personId: 'tata', counter: 'oil', amount: 1, date: '2026-01-04', reason: 'Weekend recovery', approvedBy: 'SQNCDR' },
+    { id: 'l10', personId: 'skin', counter: 'oil', amount: 0.5, date: '2026-01-03', reason: 'Half-day recovery', approvedBy: 'SQNCDR' },
     // A correction is a negative amount, not a second mechanism — one ledger
     // covers top-ups, awards and fixes alike (§Counters).
     { id: 'l6', personId: 'miles', counter: 'annual', amount: -1, date: '2026-02-14', reason: 'Correction: double-counted 12 Jan', approvedBy: 'SQNCDR' },
@@ -317,6 +323,9 @@ export function seedSources(): Array<LeaveWar & { grid: Grid; states: States; vi
       at.set(k, [...(at.get(k) ?? []), c])
     }
     for (const [pid, row] of Object.entries(w.recs)) for (const [d, list] of Object.entries(row)) for (const c of recContribs(list)) push(pid, d, c)
+    /* the seed ledger's OIL AWARDS, drawn on their days as the store's merge
+       draws them (D402) — ONE builder, `awardContrib` (Fable's plan read F10) */
+    for (const e of seedLedger()) if (isOilAward(e) && e.date >= w.period.start && e.date <= w.period.end) push(e.personId, e.date, awardContrib(e))
     SEED_ABSENCES.forEach((a, i) => {
       const cell = parseCell(a.code)!
       const win = cell.portion === 'am' ? AM : cell.portion === 'pm' ? PM : FULL

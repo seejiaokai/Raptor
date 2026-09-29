@@ -12,9 +12,11 @@
      so it shows on the days it left and the days it reached, never on the days between (Astra DP-05). A door that
      knows WHY (a medical's split) hands its reason in with `elogReason`, inside its command.
    · THE LEAVE WAR (`lw.cell`, `warId:personId:date`): a request acknowledged, refused, put back to a bid, moved,
-     deleted by an admin; an approval is the Input's own line ("approved on the Leave War"); a hand-typed OIL award
-     given, changed or taken; and the credit form's ledger (`lw.ledger`, Astra DP-06). Automatic credits never make a
-     line (they are the schedule's, not a person's). A member placing his own bid is not a line (D263 names decisions).
+     deleted by an admin; an approval is the Input's own line ("approved on the Leave War"). THE LEDGER (`lw.ledger`,
+     one record per entry — Astra DP-06): an OIL AWARD given, changed or taken, however it was given (the grid's +OIL
+     panel, the OIL tracker — one kind of record since [OIL-AWARD-IS-A-GRANT], 29 Sep 26), and every other credit or
+     correction, each on its own day. Automatic credits never make a line (they are the schedule's, not a person's). A
+     member placing his own bid is not a line (D263 names decisions).
    · QUALS (`people/<pid>`, Fable F5 / Astra DP-07): the callsign, CAT, seat, ground crew, SANS, SXO, a qualification
      tick, archived, deleted — dated the day it was made (a roster change is on no schedule day).
    · A PUBLISH OR A WITHDRAWAL (Fable F3 / Astra DP-07): read from the command's own boundary — the version ids carry the
@@ -145,27 +147,26 @@ function warLines(env: CommitEnvelope, approvedFor: Set<string>, backToBid: Set<
     if (g.rec.kind === 'request') {
       if (approvedFor.has(`${g.pid}|${g.date}`)) continue          // approved — the Input's own line says it
       if (admin) say(g, 'deleted')
-    } else if (g.rec.kind === 'credit' && g.rec.oil === 'manual') say(g, `OIL award taken away`)
+    }
   }
   for (const [, c] of came) {
     /* a request that reappears because its approval was taken back is said by the Input's own line; a bid a member
        places is not a decision (D263 names decisions) — only a request that arrives already decided is a line */
     if (c.rec.kind === 'request') { if (!backToBid.has(`${c.pid}|${c.date}`) && c.rec.state !== 'pending') say(c, STATE_WORD[c.rec.state] || c.rec.state); continue }
-    if (c.rec.kind === 'credit' && c.rec.oil === 'manual') say(c, `OIL award given${c.rec.givenBy ? ' by ' + c.rec.givenBy : ''}`)
   }
   for (const { was, now } of both) {
     if (now.rec.kind === 'request' && was.rec.state !== now.rec.state) say(now, STATE_WORD[now.rec.state] || now.rec.state)
-    else if (now.rec.kind === 'credit' && now.rec.oil === 'manual') say(now, 'OIL award changed')
   }
 }
 /* THE WAR'S RECORDS LEAVING IN A COMMAND THAT IS NOT THE WAR'S OWN. Two doors do it: an input filed over a man's bid (the
    Inputs page, the board's + Add, an edit window — leavewar/inputgate.ts replaceBids takes the clashing bid inside the
    INPUT's command; Fable P10), and a person deleted or archived (his records from that day on go inside the people
    command — Astra's final read, ASTRA-DP-FINAL-01). warLines reads only the war's own commands, so without this each left
-   without a word. Each bid, and each OIL award given by hand, that left is ONE line on its day, and it says the cause
-   only when the cause is IN the envelope: "an input covers it" only when an input in the same command covers that man
-   on that day; otherwise plainly "bid removed" / "OIL award taken away". What arrives (the half of a bid an input kept,
-   a notice) is not a decision and says nothing; a credit the schedule earned (`oil: 'auto'`) is never a line. */
+   without a word. Each bid that left is ONE line on its day, and it says the cause only when the cause is IN the
+   envelope: "an input covers it" only when an input in the same command covers that man on that day; otherwise
+   plainly "bid removed". What arrives (the half of a bid an input kept, a notice) is not a decision and says nothing; a
+   credit the schedule earned (`oil: 'auto'`) is never a line. An OIL award that leaves (a person deleted) is a LEDGER
+   entry now, and says so through `ledgerLines`, on its own day ([OIL-AWARD-IS-A-GRANT]). */
 function crossLines(env: CommitEnvelope): void {
   const covered = new Set<string>()
   for (const c of env.changes) {
@@ -181,8 +182,7 @@ function crossLines(env: CommitEnvelope): void {
     const am = new Set(al.map(r => r.id))
     for (const r of bl) {
       if (am.has(r.id)) continue
-      const what = r.kind === 'request' ? (covered.has(`${pid}|${date}`) ? 'bid taken away — an input covers it' : 'bid removed')
-        : r.kind === 'credit' && r.oil === 'manual' ? 'OIL award taken away' : ''
+      const what = r.kind === 'request' ? (covered.has(`${pid}|${date}`) ? 'bid taken away — an input covers it' : 'bid removed') : ''
       if (what) logAction(null, `Leave War · ${cs(pid)} · ${r.code || ''} ${dayWord(date)}: ${what}`.replace('  ', ' '), { date, sect: 'abs', sub: pid })
     }
   }
@@ -311,13 +311,28 @@ function postoutLines(c: Change, env: CommitEnvelope): void {
   }
 }
 function ledgerLines(c: Change): void {
-  const bl: any[] = Array.isArray(c.before) ? c.before : [], al: any[] = Array.isArray(c.after) ? c.after : []
+  /* ONE ENTRY PER CHANGE since the ledger went into small pieces ([OIL-AWARD-IS-A-GRANT], 29 Sep 26); an array is still
+     read, entry by entry, so a change from before that shape says the same */
+  const bl: any[] = Array.isArray(c.before) ? c.before : c.before ? [c.before] : []
+  const al: any[] = Array.isArray(c.after) ? c.after : c.after ? [c.after] : []
   const bm = new Map(bl.map(r => [r.id, r])), am = new Map(al.map(r => [r.id, r]))
-  /* the counter as the app names it — OIL, ANNUAL, CCL … (the Leave War's labels are its keys in capitals; D25: OIL) */
-  const words = (e: any) => `${cs(e.personId)} · ${String(e.counter || '').toUpperCase()} ${+e.amount > 0 ? '+' : ''}${e.amount}${e.reason ? ' — ' + e.reason : ''}`
-  const at = (e: any) => ({ date: /^\d{4}-\d{2}-\d{2}$/.test(e.date) ? e.date : localToday(), sect: 'abs', sub: String(e.personId || '') })
-  for (const e of al) { const o = bm.get(e.id); if (!o) logAction(null, `Leave War · ${words(e)}: given`, at(e)); else if (!same(o, e)) logAction(null, `Leave War · ${words(e)}: changed`, { ...at(e), from: words(o), to: words(e) }) }
-  for (const e of bl) if (!am.has(e.id)) logAction(null, `Leave War · ${words(e)}: taken away`, at(e))
+  const award = (e: any) => e && e.counter === 'oil' && +e.amount > 0
+  const iso = (d: any) => typeof d === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(d)
+  const at = (e: any) => ({ date: iso(e.date) ? e.date : localToday(), sect: 'abs', sub: String(e.personId || '') })
+  /* AN OIL AWARD reads as it always did in the changes window — "Leave War · <him> · FO 9 Feb: OIL award given by …" —
+     whichever door gave it, now with what it is worth (the amount, never worked back from its FO / HO label); any other
+     entry by its counter as the app names it — OIL, ANNUAL, CCL … (D25: OIL) */
+  const head = (e: any) => award(e)
+    ? `Leave War · ${cs(e.personId)} · ${+e.amount === 0.5 ? 'HO' : 'FO'}${iso(e.date) ? ' ' + dayWord(e.date) : ''}`
+    : `Leave War · ${cs(e.personId)} · ${String(e.counter || '').toUpperCase()} ${+e.amount > 0 ? '+' : ''}${e.amount}${iso(e.date) ? ' ' + dayWord(e.date) : ''}${e.reason ? ' — ' + e.reason : ''}`
+  const worth = (e: any) => `${e.amount} ${+e.amount === 1 ? 'day' : 'days'}${e.reason ? ' — ' + e.reason : ''}${e.givenBy ? ' (given by ' + e.givenBy + ')' : ''}${iso(e.date) ? ' · ' + dayWord(e.date) : ''}`
+  for (const e of al) {
+    const o = bm.get(e.id)
+    if (!o) logAction(null, award(e) ? `${head(e)}: OIL award given${e.givenBy ? ' by ' + e.givenBy : ''} · ${e.amount} ${+e.amount === 1 ? 'day' : 'days'}` : `${head(e)}: given`, at(e))
+    /* a correction moved to another day shows on the day it left too (Fable F8; an award's day never moves — D260) */
+    else if (!same(o, e)) logAction(null, award(e) ? `${head(e)}: OIL award changed` : `${head(e)}: changed`, { ...at(e), from: award(o) ? worth(o) : head(o), to: award(e) ? worth(e) : head(e), ...(o.date !== e.date && iso(o.date) ? { wdate: o.date } : {}) })
+  }
+  for (const e of bl) if (!am.has(e.id)) logAction(null, award(e) ? `${head(e)}: OIL award taken away` : `${head(e)}: taken away`, at(e))
 }
 
 /* ---- Quals ---- */
@@ -383,6 +398,9 @@ export function logReversed(entry: { label?: string; forward?: Change[] }, dir: 
     if (c.collection === 'days') { const [wk, di] = id.split('#'); try { const iso = dayIsoOf(wk!, +di!); if (iso) days.add(iso) } catch (_) { /* a malformed id names no day */ } }
     else if (c.collection === 'inputs' && id !== '__order') { addSpan(spanOf(c.before)); addSpan(spanOf(c.after)) }
     else if (c.collection === 'lw.cell') days.add(cellParts(id).date)
+    /* a ledger entry's Undo / Redo lands on its own day (both old and new, for a correction moved) — Astra's round-2
+       read R2-04, Fable's N4 */
+    else if (c.collection === 'lw.ledger') for (const e of [c.before, c.after]) { const d = e && (e as any).date; if (typeof d === 'string') days.add(d) }
     else if (c.collection === 'sched.orig' || c.collection === 'sched.als') { const m = /\d{4}-\d{2}-\d{2}/.exec(id); if (m) days.add(m[0]) }
   }
   const sorted = [...days].filter(d => /^\d{4}-\d{2}-\d{2}$/.test(d)).sort()

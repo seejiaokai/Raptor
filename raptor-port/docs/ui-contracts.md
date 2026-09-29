@@ -6364,9 +6364,10 @@ does not fit moves down a line instead. Top line: amount and date on the left
 right, and a label that cannot sit beside the date drops to its own line, still
 right-aligned (`justify-content: flex-end`); a giver of up to 40 characters
 wraps its own words (`white-space: normal` — every grid cell is `nowrap`, so it
-must be said). The reason line and an award's reason button wrap too, so the
-app's own words after a reason — "· correction", "· not covered", "· 3 days" —
-always show; "· 3 days" and the work hours move down whole. The price is a
+must be said). The reason line wraps too, so the app's own words after a reason —
+"· correction", "· not covered" — always show; the work hours move down whole.
+*(An award's "+ reason" button and its "· 3 days" went on 29 Sep 26 with `[OIL-AWARD-IS-A-GRANT]`: every award is a
+ledger entry, opened by the one editor a tap on its box opens, and its worth is the amount on its top line.)* The price is a
 taller box, and the row grows to its tallest box (as it already did for a
 credit with several takes); the zoom scales all of it together, so the layout
 is the same at every step. Pinned in `e2e/leavewar.spec.ts` "every label and
@@ -7614,6 +7615,43 @@ sheet ITEMISES the entries behind its `granted` row — `+2 · 6 Sep 26 · by ad
 its label-and-number line, where `.csub` already puts a caption (`grantsFor`,
 `CounterSheet.tsx`, `data-testid="breakdown-grants"`). Outside the row it became
 a flex sibling and squeezed in beside the number it explains.
+
+**ONE KIND OF AWARD; EARNED AND AWARDED SHOWN APART (owner, D400, D401, D402, 29 Sep 26) — BUILT by
+`[OIL-AWARD-IS-A-GRANT]`** (plan `docs/superpowers/plans/2026-09-29-oil-award-one-kind-plan.md`).
+- **The record.** Every OIL an admin gives by hand — from the bid sheet's +OIL panel on the grid, from the OIL tracker, or
+  from the figures bar on the OIL figure — is ONE kind of record: a positive `counter: 'oil'` ledger entry
+  (`LedgerEntry`), stamped with who ENTERED it and when (`enteredBy` — a person id, drawn by his live callsign — and
+  `enteredAt`; D200 (2)). A negative OIL entry is a correction. The war stores no award; the schedule's own credit stays
+  the war's record (`oil: 'auto'`). A stored war record in the old `manual` shape is demo data, DROPPED on read, never
+  converted and never allowed to break a load (D401 — `warrecs.ts isRetiredAward`).
+- **On the grid (D402).** Every award is drawn on its date as FO (a day or more) or HO (half a day) — the label follows
+  the amount; the AMOUNT is the worth everywhere (`merge.ts` award index, `warrecs.ts awardContrib`). A tracker credit
+  dated in no war shows on no cell; a correction is never drawn. Several awards may share a day (two tracker credits on
+  one date): the tap list shows each, and the bid sheet's +OIL panel then changes none of them — its button reads "N OIL
+  awards" and it says "change them from the day's list".
+- **Its date is fixed (D260's reading):** an award never moves; one on the wrong day is deleted and given again. The
+  tracker's editor shows the date read only on an award (a correction keeps its date editor), and the store refuses a
+  changed date — and a change of sign (an award never becomes a correction).
+- **The reason:** the tracker's form and the figures bar still require one for OIL; the grid's +OIL panel never has
+  (`setDayAward` — its own command); editing an award that had no reason never demands one, and one that had a reason
+  cannot lose it. Whether the grid should ask one too is a question for him, today's behaviour kept. An award with no
+  reason says so on its tracker box — "no reason — tap to add one" for an admin (a phone has no hover title), "no reason
+  given" for a member (Fable's final read F1).
+- **One ceiling:** an OIL award is at most 365 days (`MAX_GRANT_DAYS`) from every door — the grid's, the tracker's form
+  and editor, the figures bar — "That is more than 365 days" (`ledgerProblem`; both final reads, OA-001 / F4). A
+  correction is not an award; the ceiling is not its rule. A correction's editor has no "given by" box, so its save
+  leaves the one it has alone (OA-002).
+- **Earned and awarded (D400).** "Earned" counts only what the app credited itself — the published schedule or an
+  accepted duty input (`DayView.earnsOil`, `counters.earnedOil`, the tracker's `earned`). The OIL breakdown reads:
+  opening figure · earned by weekend/PH work · **awarded** (each award itemised beneath: amount · date · by <who entered
+  it, his live callsign> (given by) · reason) · **corrections** (only when one exists, itemised the same way) · OIL taken
+  · expired (only when something expired); the rows sum to the figure. Its caption: "opening + earned by weekend/PH work
+  + awarded + corrections − taken − expired". Every other pool keeps "granted". The balance itself never changed (pinned
+  against a literal baseline taken before the move — `oilaward-baseline.test.ts`).
+- **Where it reads back.** The tap list and the bid sheet read an award's reason, "Given by" (only when typed) and a
+  line "Entered by <callsign>"; the tracker box shows "Given by" only when typed, never the enterer in its place; a
+  member opens his own award read only at every stage (D261), a day holding his award beside anything else through the
+  tap list (`ownAwardPresent`).
 
 **After Save**: the bar closes, the selection clears, each changed box flashes
 once (the drawer's existing `lines.top` flash — free confirmation), and one Undo

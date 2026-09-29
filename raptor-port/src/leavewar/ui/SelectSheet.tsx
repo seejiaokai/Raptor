@@ -70,6 +70,8 @@ export function SelectSheet({
   const [portion, setPortion] = useState<Portion>('full')
   const [note, setNote] = useState('')
   const [confirmDel, setConfirmDel] = useState(false)
+  /* the awards the confirm NAMED — the Delete takes these and no other (Astra's round-2 read, R2-02) */
+  const [delAwardIds, setDelAwardIds] = useState<string[]>([])
   const [poOpen, setPoOpen] = useState(false)
   const [poDate, setPoDate] = useState(sel.from)
   /* [POST-OUT-OUTCOMES]: which posting it is (D229) — Overseas Sqn by default; a Delete asks twice (D287 (3)) */
@@ -113,11 +115,12 @@ export function SelectSheet({
   const del = () => {
     if (!confirmDel) {
       setConfirmDel(true)
+      setDelAwardIds(awards.map(a => a.id))
       const incl = awards.length ? `, including ${awardsClause(awards, people)}` : ''
       setNote(`Delete ${nDays === 1 ? 'this day' : `${nDays} days`} for ${who}${incl}? Tap Delete again.`)
       return
     }
-    const { written, skipped } = clearCells(sel.cells)
+    const { written, skipped } = clearCells(sel.cells, delAwardIds)
     if (skipped === 0) return onDone(written > 0)
     setNote(skipNote('deleted', written, skipped))
     if (written > 0) onDone(true, true)

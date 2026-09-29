@@ -2,7 +2,7 @@ import { act, fireEvent, render, screen } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 
 import { balanceOf } from '../engine'
-import { getState, ingestDutyCredit, initStore, setBalance, setCell, setDayEvent, setOilPolicy, setRole } from '../state/store'
+import { awardsOnDay, getState, grantTo, ingestDutyCredit, setDayAward, initStore, setBalance, setCell, setDayEvent, setOilPolicy, setRole } from '../state/store'
 import { memoryBackend } from '../state/storage'
 import { Matrix } from './Matrix'
 
@@ -259,19 +259,23 @@ describe('the credit boxes', () => {
     expect(screen.queryByTestId('oil-entry-l4')).toBeNull()
   })
 
-  it('a hand-typed FO reads "typed by admin" until the admin writes its reason', () => {
+  it('an award given on the grid with no reason opens the SAME editor as a tracker credit, and takes one there', () => {
+    /* one kind of award ([OIL-AWARD-IS-A-GRANT]): the grid's award is a ledger entry, so the tracker's box is its
+       editor — the old "+ reason" button for a hand-typed cell went with the cell. The grid never asked a reason, so the
+       tracker does not force one to change the amount; given one, it keeps one. */
     setRole('admin')
-    act(() => { setCell('slammed', '2026-01-10', 'HO') })   // a Saturday, typed on the grid
+    act(() => { setDayAward('slammed', '2026-01-10', 0.5) })   // a Saturday, given on the grid
+    const id = awardsOnDay('slammed', '2026-01-10')[0]!.id
     openTracker()
     fireEvent.click(screen.getByTestId('oil-range-first'))
-    const box = screen.getByTestId('oil-entry-slammed-award:0:2026-01-10')
+    const box = screen.getByTestId(`oil-entry-${id}`)
     expect(box.textContent).toContain('+0.5')
     expect(box.textContent).not.toContain('Auto')
-    fireEvent.click(screen.getByTestId('oil-note-slammed-award:0:2026-01-10'))
-    fireEvent.change(screen.getByTestId('oil-note-input'), { target: { value: 'SIM' } })
-    fireEvent.click(screen.getByTestId('oil-note-save'))
+    fireEvent.click(box)
+    fireEvent.change(screen.getByTestId('oil-edit-reason'), { target: { value: 'SIM' } })
+    fireEvent.click(screen.getByTestId('oil-edit-save'))
     expect(getState().wars[0]!.states.slammed!['2026-01-10']).toMatchObject({ note: 'SIM' })
-    expect(screen.getByTestId('oil-entry-slammed-award:0:2026-01-10').textContent).toContain('SIM')
+    expect(screen.getByTestId(`oil-entry-${id}`).textContent).toContain('SIM')
   })
 })
 
@@ -531,5 +535,39 @@ describe('the Cinch sheet: an admin sets +LVE', () => {
     // …and takes it off again — the balance follows, nothing was stored.
     act(() => { setDayEvent('2026-01-26', 0, '') })
     expect(screen.getByTestId('bal-ramp').querySelector('.fb')!.textContent).toBe('30')
+  })
+})
+
+/* THE TWO FINAL CODE READS of [OIL-AWARD-IS-A-GRANT] (29 Sep 26) — the tracker's two findings */
+describe('the tracker after the final reads', () => {
+  it('a correction keeps its "given by" when it is edited (Astra OA-002)', () => {
+    setRole('admin')
+    expect(grantTo(['slammed'], 'oil', -0.5, '2026-01-13', 'Double entry', 'OC Ops')).toBeNull()
+    const id = getState().ledger.at(-1)!.id
+    openTracker()
+    fireEvent.click(screen.getByTestId('oil-range-first'))
+    fireEvent.click(screen.getByTestId(`oil-entry-${id}`))
+    fireEvent.change(screen.getByTestId('oil-edit-reason'), { target: { value: 'Double entry, fixed' } })
+    fireEvent.click(screen.getByTestId('oil-edit-save'))
+    expect(getState().ledger.find(e => e.id === id)).toMatchObject({ reason: 'Double entry, fixed', givenBy: 'OC Ops' })
+  })
+
+  it('an award with no reason says so — and to an admin, that a tap adds one (Fable F1)', () => {
+    setRole('admin')
+    act(() => { setDayAward('slammed', '2026-01-13', 1) })
+    const id = awardsOnDay('slammed', '2026-01-13')[0]!.id
+    openTracker()
+    fireEvent.click(screen.getByTestId('oil-range-first'))
+    expect(screen.getByTestId(`oil-noreason-${id}`).textContent).toBe('no reason — tap to add one')
+  })
+
+  it('…and to a member, only that none was given', () => {
+    setRole('admin')
+    act(() => { setDayAward('slammed', '2026-01-13', 1) })
+    const id = awardsOnDay('slammed', '2026-01-13')[0]!.id
+    setRole('member')
+    openTracker()
+    fireEvent.click(screen.getByTestId('oil-range-first'))
+    expect(screen.getByTestId(`oil-noreason-${id}`).textContent).toBe('no reason given')
   })
 })

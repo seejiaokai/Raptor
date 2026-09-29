@@ -21,7 +21,7 @@ import { fireEvent, render, screen } from '@testing-library/react'
 import { beforeEach, describe, expect, it } from 'vitest'
 import { balanceOf, isWeekend } from '../engine'
 import { creditGiver, readRec } from '../engine/warrecs'
-import { getState, ingestDutyCredit, initStore, rawState, setCell, setManualCredit, setPostOut, setRole, setViewer } from '../state/store'
+import { awardsOnDay, getState, ingestDutyCredit, initStore, rawState, setCell, setDayAward, setPostOut, setRole, setViewer } from '../state/store'
 import { memoryBackend } from '../state/storage'
 import { Matrix } from './Matrix'
 
@@ -34,28 +34,35 @@ beforeEach(() => {
   setRole('admin')
 })
 
-const creditOn = (person: string, date: string) =>
-  (rawState().wars.find(w => w.period.start <= date && date <= w.period.end)!.recs[person]?.[date] ?? [])
-    .find(r => r.kind === 'credit') as
-    { code: string; oil: string; note?: string; givenBy?: string; days?: number } | undefined
+/** THE DAY'S AWARD as the sheets read it — a ledger entry since [OIL-AWARD-IS-A-GRANT] (29 Sep 26): its label (drawn from
+ *  the amount — half a day HO, else FO), its reason, its giver and its worth */
+const creditOn = (person: string, date: string) => {
+  const e = awardsOnDay(person, date)[0]
+  return e ? { id: e.id, code: e.amount === 0.5 ? 'HO' : 'FO', note: e.reason || undefined, givenBy: e.givenBy, days: e.amount } : undefined
+}
+/** everything the day is worth: what the schedule EARNED plus every award drawn on it (D400) */
+const worthOf = (person: string, date: string) =>
+  (getState().views[person]?.[date]?.earnsOil ?? 0) + awardsOnDay(person, date).reduce((n, e) => n + e.amount, 0)
 
 const oilOf = (person: string) => {
   const { openings, ledger, wars } = getState()
   return balanceOf(openings, ledger, wars, person, 'oil')
 }
 
-describe('setManualCredit', () => {
+describe('setDayAward', () => {
   it('records the day, the reason, who said so and how many days — in ONE step', () => {
-    expect(setManualCredit(P, SAT, 'FO', { note: 'Call-out', givenBy: 'OC Ops', days: 2 })).toBeNull()
+    expect(setDayAward(P, SAT, 2, { note: 'Call-out', givenBy: 'OC Ops' })).toBeNull()
     expect(creditOn(P, SAT)).toMatchObject({
-      code: 'FO', oil: 'manual', note: 'Call-out', givenBy: 'OC Ops', days: 2,
+      code: 'FO', note: 'Call-out', givenBy: 'OC Ops', days: 2,
     })
+    /* who ENTERED it and when (D200 (2)) — the signed-in person, not the typed giver */
+    expect(awardsOnDay(P, SAT)[0]!.enteredAt).toBeTruthy()
   })
 
   it('lands on ANY day, not only a weekend or a public holiday', () => {
     expect(isWeekend(TUE)).toBe(false)
     const before = oilOf(P)
-    expect(setManualCredit(P, TUE, 'FO', { note: 'Recall' })).toBeNull()
+    expect(setDayAward(P, TUE, 1, { note: 'Recall' })).toBeNull()
     expect(creditOn(P, TUE)?.code).toBe('FO')
     // …and it really does move the balance. That is the point of typing it.
     expect(oilOf(P)).toBe(before + 1)
@@ -63,21 +70,21 @@ describe('setManualCredit', () => {
 
   it('HO is half a day', () => {
     const before = oilOf(P)
-    expect(setManualCredit(P, TUE, 'HO')).toBeNull()
+    expect(setDayAward(P, TUE, 0.5)).toBeNull()
     expect(oilOf(P)).toBe(before + 0.5)
   })
 
-  it('no quantity means the code’s own worth, which is the ordinary case', () => {
-    expect(setManualCredit(P, SAT, 'FO', { note: 'Duty' })).toBeNull()
-    expect(creditOn(P, SAT)!.days).toBeUndefined()
+  it('a day is worth a day — the ordinary case, and FO', () => {
+    expect(setDayAward(P, SAT, 1, { note: 'Duty' })).toBeNull()
+    expect(creditOn(P, SAT)).toMatchObject({ code: 'FO', days: 1 })
   })
 
   it('refuses only where refusing is the truth', () => {
     setRole('member')
-    expect(setManualCredit(P, SAT, 'FO')).toContain('admin')
+    expect(setDayAward(P, SAT, 1)).toContain('admin')
     setRole('admin')
-    expect(setManualCredit(P, SAT, 'FO', { days: 9999 })).toContain('more than')
-    expect(setManualCredit(P, SAT, 'FO', { days: 0 })).toContain('how many days')
+    expect(setDayAward(P, SAT, 9999)).toContain('more than')
+    expect(setDayAward(P, SAT, 0)).toContain('how many days')
     expect(creditOn(P, SAT)).toBeUndefined()
   })
 
@@ -87,10 +94,12 @@ describe('setManualCredit', () => {
        affect each other, so refusing here was the app declining to record a
        fact he has said is separate. */
     expect(ingestDutyCredit(P, SAT, 'FO', 'Duty', [[480, 1080]])).toBe('written')
-    expect(setManualCredit(P, SAT, 'HO', { days: 3 })).toBeNull()
-    const list = rawState().wars[0]!.recs[P]![SAT]!.filter(r => r.kind === 'credit')
-    expect(list).toHaveLength(2)
-    expect(getState().views[P]?.[SAT]?.earnsOil).toBe(4)
+    expect(setDayAward(P, SAT, 3)).toBeNull()
+    /* two facts, two records — the schedule's on the war, the award in the ledger */
+    expect(rawState().wars[0]!.recs[P]![SAT]!.filter(r => r.kind === 'credit')).toHaveLength(1)
+    expect(awardsOnDay(P, SAT)).toHaveLength(1)
+    expect(getState().views[P]?.[SAT]?.earnsOil).toBe(1)          // earned — the schedule's (D400)
+    expect(worthOf(P, SAT)).toBe(4)
   })
 
   it('never refuses for clashing with leave — both land, and an award does not flag the day', () => {
@@ -99,7 +108,7 @@ describe('setManualCredit', () => {
        an AWARD, it says nothing about where the man was, so there is nothing
        for an admin to resolve and the day stays grey. */
     expect(setCell(P, SAT, 'LL')).toBe(true)                 // leave first…
-    expect(setManualCredit(P, SAT, 'FO')).toBeNull()         // …then the award
+    expect(setDayAward(P, SAT, 1)).toBeNull()         // …then the award
     const v = getState().views[P]?.[SAT]
     expect(v?.all.filter(c => c.kind === 'request')).toHaveLength(1)
     expect(v?.all.filter(c => c.kind === 'credit')).toHaveLength(1)
@@ -128,7 +137,7 @@ describe('the OIL control on the day sheet', () => {
     fireEvent.change(screen.getByTestId('oil-days'), { target: { value: '2' } })
     fireEvent.click(screen.getByTestId('oil-give'))
     expect(creditOn(P, TUE)).toMatchObject({
-      code: 'FO', oil: 'manual', note: 'Recall', givenBy: 'OC Ops', days: 2,
+      code: 'FO', note: 'Recall', givenBy: 'OC Ops', days: 2,
     })
   })
 
@@ -203,15 +212,16 @@ describe('who said so is RECORDED and VISIBLE', () => {
   // Recording it and never showing it would be the same shape as the bug this
   // branch opened with: a man charged for leave his row no longer showed.
   it('shows on the OIL tracker row and can be changed there', () => {
-    expect(setManualCredit(P, TUE, 'FO', { note: 'Recall', givenBy: 'OC Ops' })).toBeNull()
+    expect(setDayAward(P, TUE, 1, { note: 'Recall', givenBy: 'OC Ops' })).toBeNull()
     render(<Matrix />)
     fireEvent.click(screen.getByTestId('oil-tracker'))
-    const row = screen.getByTestId(`oil-entry-${P}-award:0:${TUE}`)
+    const id = creditOn(P, TUE)!.id
+    const row = screen.getByTestId(`oil-entry-${id}`)
     expect(row.textContent).toContain('OC Ops')
-    fireEvent.click(screen.getByTestId(`oil-note-${P}-award:0:${TUE}`))
-    expect((screen.getByTestId('oil-note-given') as HTMLInputElement).value).toBe('OC Ops')
-    fireEvent.change(screen.getByTestId('oil-note-given'), { target: { value: 'SQNCDR' } })
-    fireEvent.click(screen.getByTestId('oil-note-save'))
+    fireEvent.click(row)                                   // the one editor every award opens ([OIL-AWARD-IS-A-GRANT])
+    expect((screen.getByTestId('oil-edit-given') as HTMLInputElement).value).toBe('OC Ops')
+    fireEvent.change(screen.getByTestId('oil-edit-given'), { target: { value: 'SQNCDR' } })
+    fireEvent.click(screen.getByTestId('oil-edit-save'))
     expect(creditOn(P, TUE)!.givenBy).toBe('SQNCDR')
   })
 
@@ -220,7 +230,7 @@ describe('who said so is RECORDED and VISIBLE', () => {
     // than a single-record sheet — which is where a person reads what is on
     // their day.
     expect(setCell(P, TUE, 'LL')).toBe(true)
-    expect(setManualCredit(P, TUE, 'FO', { note: 'Recall', givenBy: 'OC Ops' })).toBeNull()
+    expect(setDayAward(P, TUE, 1, { note: 'Recall', givenBy: 'OC Ops' })).toBeNull()
     render(<Matrix />)
     fireEvent.click(screen.getByTestId(`cell-${P}-${TUE}`))
     const list = screen.getByTestId('daylist')
@@ -240,7 +250,7 @@ describe('the OIL on a day, read back on one click', () => {
   }
 
   it('an AWARD shows the reason, the giver and how many days — without opening anything', () => {
-    expect(setManualCredit(P, TUE, 'FO', { note: 'Exercise recovery', givenBy: 'OC Ops', days: 2 })).toBeNull()
+    expect(setDayAward(P, TUE, 2, { note: 'Exercise recovery', givenBy: 'OC Ops' })).toBeNull()
     open(TUE)
     expect(screen.getByTestId('oil-detail-why').textContent).toBe('Exercise recovery')
     expect(screen.getByTestId('oil-detail-given').textContent).toBe('OC Ops')
@@ -248,7 +258,7 @@ describe('the OIL on a day, read back on one click', () => {
   })
 
   it('says so plainly when an award was given with no reason and no name', () => {
-    expect(setManualCredit(P, TUE, 'HO')).toBeNull()
+    expect(setDayAward(P, TUE, 0.5)).toBeNull()
     open(TUE)
     expect(screen.getByTestId('oil-detail-why').textContent).toBe('Not given')
     expect(screen.getByTestId('oil-detail-given').textContent).toBe('Not given')
@@ -287,8 +297,7 @@ describe('the OIL read-back, hardened', () => {
     const stored = { id: 'c9', kind: 'credit', code: 'FO', oil: 'auto', via: 'input', note: 'Duty' }
     expect(readRec(stored)).toMatchObject({ oil: 'auto', via: 'input' })
     expect(creditGiver(readRec(stored) as any)).toBe('Duty input')
-    // a hand-typed one carries no provenance, and a nonsense value is dropped
-    expect(readRec({ id: 'c8', kind: 'credit', code: 'FO', oil: 'manual', via: 'input' })).not.toHaveProperty('via')
+    // a nonsense value is dropped (a hand-typed war credit is no longer a war record at all — D401)
     expect(readRec({ id: 'c7', kind: 'credit', code: 'FO', oil: 'auto', via: 'elsewhere' })).not.toHaveProperty('via')
   })
 
@@ -319,13 +328,13 @@ describe('an award the schedule later earns on top of', () => {
        Since the owner's 20 Sep ruling it is an AWARD: days a man is OWED, which
        the schedule knows nothing about. Replacing it took a 3-day award down to
        the one day the Saturday earns, silently. */
-    expect(setManualCredit(P, SAT, 'FO', { note: 'Exercise recovery', givenBy: 'OC Ops', days: 3 })).toBeNull()
-    expect(getState().views[P]?.[SAT]?.earnsOil).toBe(3)
+    expect(setDayAward(P, SAT, 3, { note: 'Exercise recovery', givenBy: 'OC Ops' })).toBeNull()
+    expect(worthOf(P, SAT)).toBe(3)
     expect(ingestDutyCredit(P, SAT, 'FO', 'Duty', [[480, 1080]])).toBeTruthy()
     /* Was 3 — the takeover kept the LARGER of the two, which was the safe
        reading of a defect while the owner's decision was still open. He
        ruled on 21 Sep that they ADD. */
-    expect(getState().views[P]?.[SAT]?.earnsOil).toBe(4)
+    expect(worthOf(P, SAT)).toBe(4)
   })
 
   it('reads BOTH back on the day — the award and the day he worked, told apart', () => {
@@ -334,10 +343,10 @@ describe('an award the schedule later earns on top of', () => {
        to do, and with two on screen it would either throw or silently pin
        whichever came first — which is no assertion at all. Each block is
        addressed by its own record. */
-    expect(setManualCredit(P, SAT, 'FO', { note: 'Exercise recovery', givenBy: 'OC Ops', days: 3 })).toBeNull()
+    expect(setDayAward(P, SAT, 3, { note: 'Exercise recovery', givenBy: 'OC Ops' })).toBeNull()
     expect(ingestDutyCredit(P, SAT, 'FO', 'Duty', [[480, 1080]])).toBeTruthy()
     const recs = rawState().wars[0]!.recs[P]![SAT]!.filter(r => r.kind === 'credit') as any[]
-    const award = recs.find(r => r.oil === 'manual')!
+    const award = awardsOnDay(P, SAT)[0]!
     const earned = recs.find(r => r.oil === 'auto')!
     render(<Matrix />)
     fireEvent.click(screen.getByTestId(`cell-${P}-${SAT}`))
@@ -354,7 +363,7 @@ describe('an award the schedule later earns on top of', () => {
   it('does not churn: a second pass over the same day writes nothing new', () => {
     /* The pass runs on every change, so a taken-over award it did not
        recognise would be rewritten forever. */
-    expect(setManualCredit(P, SAT, 'FO', { note: 'Exercise recovery', days: 3 })).toBeNull()
+    expect(setDayAward(P, SAT, 3, { note: 'Exercise recovery' })).toBeNull()
     ingestDutyCredit(P, SAT, 'FO', 'Duty', [[480, 1080]])
     const first = JSON.stringify(creditOn(P, SAT))
     ingestDutyCredit(P, SAT, 'FO', 'Duty', [[480, 1080]])
@@ -392,9 +401,9 @@ describe('a day the schedule has already earned on', () => {
     fireEvent.change(screen.getByTestId('oil-why'), { target: { value: 'Exercise recovery' } })
     fireEvent.click(screen.getByTestId('oil-give'))
 
-    const credits = rawState().wars[0]!.recs[P]![SAT]!.filter(r => r.kind === 'credit')
-    expect(credits).toHaveLength(2)
-    expect(getState().views[P]?.[SAT]?.earnsOil).toBe(3.5)
+    expect(rawState().wars[0]!.recs[P]![SAT]!.filter(r => r.kind === 'credit')).toHaveLength(1)
+    expect(awardsOnDay(P, SAT)).toHaveLength(1)
+    expect(worthOf(P, SAT)).toBe(3.5)
   })
 
   it('a MEMBER still gets the read-only sheet — there is nothing there for him to do', () => {
@@ -408,7 +417,7 @@ describe('a day the schedule has already earned on', () => {
   })
 
   it('does not offer it where an award is already there — that day opens the list', () => {
-    setManualCredit(P, SAT, 'FO', { days: 3 })
+    setDayAward(P, SAT, 3)
     expect(ingestDutyCredit(P, SAT, 'FO', 'FLT', [[480, 1080]])).toBe('written')
     render(<Matrix />)
     fireEvent.click(screen.getByTestId(`cell-${P}-${SAT}`))

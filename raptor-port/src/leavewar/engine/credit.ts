@@ -26,7 +26,7 @@ export interface CreditWorthOf {
   days?: number
   /** the pass's own credit — `oil: 'auto'`, or a day view's `auto` flag */
   auto?: boolean
-  oil?: 'auto' | 'manual'
+  oil?: 'auto'
 }
 
 /** The code's own worth: a day for FO, half a day for HO. */

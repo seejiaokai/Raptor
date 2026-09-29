@@ -4,8 +4,12 @@
 //   - REQUESTS — a member's bid and the admin's decision on it while it is
 //     undecided or refused. Approving a request turns it into an Input (the one
 //     absence record) and deletes it; nothing "approved" is ever stored here.
-//   - OIL CREDITS — FO/HO, generated from published weekend/PH work (`auto`)
-//     or typed by an admin (`manual`, optionally with the work times).
+//   - OIL CREDITS — FO/HO, generated from published weekend/PH work or an
+//     accepted duty input (`auto`, with the work times). An OIL AWARD an admin
+//     gives by hand is NOT stored here any more ([OIL-AWARD-IS-A-GRANT], D147,
+//     D400, D402, 29 Sep 26): it is ONE kind of record, a positive OIL entry in
+//     the ledger, and the war DRAWS it on its day (`awardContrib` below, laid in
+//     by `state/merge.ts`) — the way it draws an absence from the Inputs.
 //   - NOTICES — "your LL bid was replaced by ATT C (filed by …)", kept until the
 //     person or an admin taps "OK, seen" (catalogue owner rule + clash check B6).
 // Several can sit on one person/date (a morning bid and an afternoon bid, a
@@ -15,10 +19,11 @@
 // Rules per person/date, enforced by `readRecs` on load and by every writer:
 //   - at most one UNDECIDED request per half (a full-day one takes both);
 //   - at most one refused request per half (a newer refusal replaces the older);
-//   - at most one credit;
+//   - at most one (automatic) credit;
 //   - notices unlimited.
 
 import { parseCell, type Portion } from './codes'
+import type { LedgerEntry } from './counters'
 import { AM, PM, FULL, type Contrib, type RequestState, type Win } from './dayview'
 
 export interface RequestRec {
@@ -41,7 +46,9 @@ export interface Carried { remarks?: string; lwMoved?: Record<string, string> }
  *  published weekend or public holiday it was earned on, or the duty input
  *  the owner accepted — so it says which of those it was. One helper, because
  *  the day window and the OIL tracker must not word it differently. */
-export function creditGiver(c: { oil?: 'auto' | 'manual'; givenBy?: string; via?: 'schedule' | 'input' } | null | undefined): string {
+/* Takes an automatic credit record (`oil: 'auto'`) or any day-view credit
+   contribution (`auto` set on the schedule's, absent on an award). */
+export function creditGiver(c: { oil?: 'auto'; auto?: boolean; givenBy?: string; via?: 'schedule' | 'input' } | null | undefined): string {
   if (!c) return ''
   /* THE EVIDENCE ALWAYS WINS ON AN AUTOMATIC CREDIT (N16, 21 Sep 26).
      A "a name always wins" rule stood here for a few hours on 21 Sep, written
@@ -50,7 +57,7 @@ export function creditGiver(c: { oil?: 'auto' | 'manual'; givenBy?: string; via?
      its own record and keeps its own name — so a name on an automatic credit
      can only be contamination from the retired takeover, and honouring it
      would attribute the SCHEDULE's day to an admin who never granted it. */
-  if (c.oil === 'auto') return c.via === 'input' ? 'Duty input' : 'Weekend/PH'
+  if (c.oil === 'auto' || c.auto) return c.via === 'input' ? 'Duty input' : 'Weekend/PH'
   return c.givenBy ?? ''
 }
 
@@ -58,17 +65,13 @@ export interface CreditRec {
   id: string
   kind: 'credit'
   code: 'FO' | 'HO'
-  /** `auto` = the OIL pass generated it and may take it away again; `manual` =
-   *  an admin typed it and only an admin removes it (design §18 OA3-003) */
-  oil: 'auto' | 'manual'
-  /** why it was earned (FLT, SIM + Duty, a claim's type, an admin's words) */
+  /** Always `auto` now: the OIL pass generated it and may take it away again.
+   *  The hand-typed `manual` credit is retired ([OIL-AWARD-IS-A-GRANT], 29 Sep
+   *  26) — an award is a ledger entry (D402), and a stored `manual` record is
+   *  demo data, DROPPED on read, never converted (D401). */
+  oil: 'auto'
+  /** why it was earned (FLT, SIM + Duty, an input's type) */
   note?: string
-  /** ON WHOSE SAY-SO, on a HAND-TYPED credit (owner, 20 Sep 26 — the same
-   *  optional box the OIL tracker's grant already carries). A credit the
-   *  published schedule earned needs no such field: the schedule IS the
-   *  evidence. One an admin types has none, so the squadron records who said
-   *  the man worked. Free text — a name or a post. */
-  givenBy?: string
   /** WHERE AN AUTOMATIC CREDIT CAME FROM (owner, 21 Sep 26 — he wants the
    *  giver shown on automatic OIL too, as "Weekend/PH", or "Duty input" where
    *  the credit came from a duty-and-commitments input he accepted rather than
@@ -76,36 +79,13 @@ export interface CreditRec {
    *  It is RECORDED rather than worked out from the reason, because the two
    *  are genuinely indistinguishable there: the schedule's own reasons are
    *  FLT / SIM / Duty and one of the input types is also called Duty, so a
-   *  Duty input and a duty desk would read identically. Only an `auto` credit
-   *  carries it; a hand-typed award has `givenBy` instead. */
+   *  Duty input and a duty desk would read identically. */
   via?: 'schedule' | 'input'
   /** the work times, minutes of the day (clash check B8). None = the whole day
-   *  for every overlap check (owner Q7). Only an AUTOMATIC credit carries
-   *  these now: they come off the published schedule, which knows the hours.
-   *  A GRANT has none, because a grant is an award and not an attendance
-   *  record (owner, 20 Sep 26 — "Remove the worked hours. Not required"). */
+   *  for every overlap check (owner Q7). They come off the published schedule,
+   *  which knows the hours; an award is not an attendance record (N13) and has
+   *  none. */
   spans?: Array<[number, number]>
-  /** HOW MANY DAYS this grant is worth, when it is not simply the code's own
-   *  worth (owner, 20 Sep 26 — "on the leave war i can also grant more than 1
-   *  day of OIL credit just like how the oil tracker does it"). Absent means
-   *  FO is one day and HO is half, which is the ordinary case and needs no
-   *  typing. Never set on an automatic credit: the schedule earns exactly what
-   *  the code says. */
-  days?: number
-  /** RETIRED BY N16 (21 Sep 26) — READ, NEVER WRITTEN.
-   *
-   *  The take-over snapshot. An admin typed a credit here first, the published
-   *  schedule later earned one too, and the pass took the award over IN PLACE,
-   *  stashing it here so an unpublish could hand it back. That whole machinery
-   *  existed only because a person/date could hold ONE credit. Since the owner
-   *  ruled that an award and a worked day ADD UP, they are two records side by
-   *  side and nothing is ever taken over — so nothing writes this any more.
-   *
-   *  It is still PARSED, because records stored under the old shape are the
-   *  owner's own balances: `splitTakenOver` below turns each one back into the
-   *  two records it always meant. Deleting the field would silently delete
-   *  every award the schedule had taken over. */
-  manual?: { code: 'FO' | 'HO'; note?: string; givenBy?: string; days?: number; spans?: Array<[number, number]> }
 }
 
 export interface NoticeRec {
@@ -184,7 +164,7 @@ export function recContribs(list: readonly WarRec[]): Contrib[] {
          envelope is what the box shows, the stretches are what clashes read */
       const ws = creditWins(r)
       const env: Win = [Math.min(...ws.map(w => w[0])), Math.max(...ws.map(w => w[1]))]
-      out.push({ id: r.id, kind: 'credit', code: r.code, win: env, ...(ws.length > 1 ? { wins: ws } : {}), ...(r.oil === 'auto' ? { auto: true, ...(r.via ? { via: r.via } : {}) } : {}), ...(r.note ? { note: r.note } : {}), ...(r.givenBy ? { givenBy: r.givenBy } : {}), ...(r.days != null ? { days: r.days } : {}) })
+      out.push({ id: r.id, kind: 'credit', code: r.code, win: env, ...(ws.length > 1 ? { wins: ws } : {}), auto: true, ...(r.via ? { via: r.via } : {}), ...(r.note ? { note: r.note } : {}) })
     } else {
       out.push({ id: r.id, kind: 'notice', code: parseCell(r.code)?.type ?? r.code, win: FULL })
     }
@@ -192,27 +172,42 @@ export function recContribs(list: readonly WarRec[]): Contrib[] {
   return out
 }
 
+/** An OIL AWARD — a positive OIL ledger entry — as the day-view contribution
+ *  the war draws on its date ([OIL-AWARD-IS-A-GRANT], D402, 29 Sep 26). ONE
+ *  builder, used by the store's merge and by the engine's seed sources, so the
+ *  two can never disagree about what an award looks like. The AMOUNT is its
+ *  worth (`days`) and every reader reads it; FO / HO is only how the box is
+ *  labelled — HO for half a day, FO for anything else (Astra, plan read F05).
+ *  No `auto`, no `via`, no hours: an award is not an attendance record (N13),
+ *  so it clashes with nothing (D80), stands nobody down and counts on no
+ *  manning. */
+export function awardContrib(e: LedgerEntry): Contrib {
+  return {
+    id: e.id, kind: 'credit', code: e.amount === 0.5 ? 'HO' : 'FO', win: FULL, days: e.amount,
+    ...(e.reason ? { note: e.reason } : {}), ...(e.givenBy ? { givenBy: e.givenBy } : {}),
+  }
+}
+
+/** Whether a ledger entry is an OIL AWARD — the one kind of hand-given OIL
+ *  (a NEGATIVE OIL entry is a correction, never drawn on the grid — D402). */
+export const isOilAward = (e: { counter: string; amount: number }): boolean => e.counter === 'oil' && e.amount > 0
+
 /* ---- the per-address rules ---------------------------------------------- */
 /** Why a list breaks the per-address rules, or null when it is sound. */
 export function listProblem(list: readonly WarRec[]): string | null {
   const live = { am: 0, pm: 0 }, refused = { am: 0, pm: 0 }
-  /* ONE EARNED CREDIT AND ONE AWARD, AND NO MORE (N16, 21 Sep 26).
-     It was "at most one credit" full stop, which is what made the owner's
-     ruling a data-loss risk rather than a feature: a rejection here makes
-     `readRecs` answer null, `readWars` then throws away EVERY war, and the
-     store re-seeds — so the first restart after publishing a worked Saturday
-     over an award would have taken every bid, award and credit in the app
-     with it. `putList` never runs this check, so it would have passed every
-     test in memory and failed only after a reload.
-     The bound stays, it just counts the two kinds apart: the schedule's credit
-     and the award are different facts (N16), two of either is corruption. */
-  const credits = { auto: 0, manual: 0 }
+  /* ONE EARNED CREDIT PER DAY. The award that could sit beside it (N16) is a
+     ledger entry now ([OIL-AWARD-IS-A-GRANT]) and never reaches this list.
+     A rejection here makes `readRecs` answer null and `readWars` throw away
+     EVERY war — so it stays a bound on corruption, never a rule a legitimate
+     write can meet. */
+  let credits = 0
   const ids = new Set<string>()
   for (const r of list) {
     if (ids.has(r.id)) return 'duplicate id'
     ids.add(r.id)
     if (r.kind === 'credit') {
-      if (++credits[r.oil] > 1) return r.oil === 'auto' ? 'two earned credits' : 'two awards'
+      if (++credits > 1) return 'two earned credits'
       continue
     }
     if (r.kind !== 'request') continue
@@ -256,85 +251,25 @@ export function readRec(x: unknown): WarRec | null {
     return r
   }
   if (x.kind === 'credit') {
-    if ((x.code !== 'FO' && x.code !== 'HO') || (x.oil !== 'auto' && x.oil !== 'manual')) return null
-    const r: CreditRec = { id: x.id, kind: 'credit', code: x.code, oil: x.oil }
+    /* Only the AUTOMATIC credit is a war record ([OIL-AWARD-IS-A-GRANT]); a
+       stored `manual` one is retired demo data — `readRecs` drops it before it
+       gets here (D401), so reaching this line with one is a malformed record. */
+    if ((x.code !== 'FO' && x.code !== 'HO') || x.oil !== 'auto') return null
+    const r: CreditRec = { id: x.id, kind: 'credit', code: x.code, oil: 'auto' }
     /* WHERE AN AUTOMATIC CREDIT CAME FROM SURVIVES A RELOAD (Astra, 21 Sep 26).
-       It was written and then dropped here, so after a reload a credit earned
-       off an accepted DUTY INPUT read as "Weekend/PH" — the wrong evidence,
-       pointing a reader at a schedule that does not back it. Reconciliation
-       repairs most dates on the next pass, but a PROTECTED date is deliberately
-       skipped by both halves of the OIL pass, so there it would never heal. */
-    if (x.oil === 'auto' && (x.via === 'schedule' || x.via === 'input')) r.via = x.via
-    /* RECOVER THE AWARD FROM WHEREVER IT SURVIVED (Astra, 21 Sep 26).
-       This used to accept the nested snapshot ONLY when its own code read
-       exactly FO or HO, and to drop the outer `days`/`givenBy` unconditionally
-       on an automatic record. Between them those two rules threw the award
-       away twice over: a snapshot whose code had been damaged was refused,
-       the duplicated outer fields that could have rebuilt it were binned, and
-       a 3-day award plus a worked Saturday reloaded, with no complaint, as
-       ONE day. Silent, and on the owner's own balances.
-       The retired takeover copied the award onto the outer record AS WELL AS
-       into the snapshot, so there are two places to look and the record is
-       recoverable whenever either survived. The outer CODE is always sound —
-       it is validated above — so there is no unrecoverable case to reject,
-       and rejecting would be worse than the disease: a refusal here discards
-       every war in the app.
-       LEGACY IS ANYTHING AN AUTOMATIC CREDIT MAY NOT LEGITIMATELY CARRY: a
-       snapshot, or the two award-only fields. Nothing writes either now. */
-    const mx = isObj(x.manual) ? x.manual as Record<string, unknown> : undefined
-    const asDays = (v: unknown): number | undefined =>
-      typeof v === 'number' && Number.isFinite(v) && v > 0 && v <= MAX_GRANT_DAYS && v * 2 === Math.round(v * 2) ? v : undefined
-    const asText = (v: unknown, cap: number): string | undefined =>
-      typeof v === 'string' && v.trim() ? v.trim().slice(0, cap) : undefined
-    const asSpans = (v: unknown): Array<[number, number]> | undefined => {
-      if (!Array.isArray(v)) return undefined
-      const s = v.filter(isSpan) as Array<[number, number]>
-      return s.length ? s : undefined
-    }
-    const outerDays = asDays(x.days)
-    const outerGiven = asText(x.givenBy, MAX_GIVEN_BY)
-    const outerNote = asText(x.note, MAX_REC_NOTE)
-    if (x.oil === 'auto' && (mx || outerDays !== undefined || outerGiven !== undefined)) {
-      /* nested first, then what the takeover copied outwards, then the
-         record's own code — which cannot be wrong, having been checked */
-      const code = mx?.code === 'FO' || mx?.code === 'HO' ? mx.code : r.code
-      const note = asText(mx?.note, MAX_REC_NOTE) ?? outerNote
-      const givenBy = asText(mx?.givenBy, MAX_GIVEN_BY) ?? outerGiven
-      const days = asDays(mx?.days) ?? outerDays
-      const spans = asSpans(mx?.spans)
-      const m: NonNullable<CreditRec['manual']> = { code: code as 'FO' | 'HO' }
-      if (note) m.note = note
-      if (givenBy) m.givenBy = givenBy
-      if (days !== undefined) m.days = days
-      if (spans) m.spans = spans
-      r.manual = m
-    }
-    if (outerNote) r.note = outerNote
-    const rSpans = asSpans(x.spans)
-    if (rSpans) r.spans = rSpans
-    /* AN AWARD'S TWO FIELDS ARE REFUSED ON THE SCHEDULE'S OWN RECORD (both
-       reviewers, independently, 21 Sep 26). The type has always said "never
-       set on an automatic credit"; saying it was not enough, because the
-       retired takeover WROTE them there — it copied the award's `days`,
-       `givenBy` and reason onto the auto record as well as into the snapshot.
-       Reading them back would hand the award's three days to the schedule's
-       record as well as to the award, so a taken-over 3-day award would come
-       back worth SIX, and on a week the app cannot read — where both halves
-       of the OIL pass deliberately skip the date — it would never heal.
-       The nested snapshot is still read, just below: that is where the award
-       itself is recovered from. This refuses only the contamination. */
-    if (r.oil === 'manual') {
-      /* An AWARD keeps its own two fields — dropped rather than refused when
-         unreadable, like the note beside them: a bad "given by" must not cost
-         the squadron the record of an award.
-         A nested snapshot on a record that is ALREADY an award is not a shape
-         anything ever wrote, but it costs one line to read it rather than let
-         a damaged blob quietly halve someone's days. */
-      r.givenBy = outerGiven ?? asText(mx?.givenBy, MAX_GIVEN_BY)
-      r.days = outerDays ?? asDays(mx?.days)
-      if (r.givenBy === undefined) delete r.givenBy
-      if (r.days === undefined) delete r.days
-      if (!r.note) { const n = asText(mx?.note, MAX_REC_NOTE); if (n) r.note = n }
+       Dropped here, a credit earned off an accepted DUTY INPUT read as
+       "Weekend/PH" after a reload — and on a PROTECTED date, which both halves
+       of the OIL pass skip, it would never heal. */
+    if (x.via === 'schedule' || x.via === 'input') r.via = x.via
+    const note = typeof x.note === 'string' && x.note.trim() ? x.note.trim().slice(0, MAX_REC_NOTE) : undefined
+    if (note) r.note = note
+    /* A retired take-over snapshot (`manual`) or the award fields it copied
+       outwards (`days`, `givenBy`) are IGNORED, never read: the award they
+       carried is demo data, not converted (D401), and reading them would hand
+       the award's worth to the schedule's record. */
+    if (Array.isArray(x.spans)) {
+      const sp = (x.spans as unknown[]).filter(isSpan) as Array<[number, number]>
+      if (sp.length) r.spans = sp
     }
     return r
   }
@@ -346,63 +281,13 @@ export function readRec(x: unknown): WarRec | null {
   return null
 }
 
-/**
- * A DAY STORED UNDER THE RETIRED TAKE-OVER SHAPE, PUT BACK AS THE TWO RECORDS
- * IT ALWAYS MEANT (N16, 21 Sep 26).
- *
- * Before this ruling, the schedule earning a credit on a day that already held
- * an award TOOK THE AWARD OVER: one `auto` record, with the award stashed in
- * its `manual` snapshot and — after the 21 Sep "keep the larger of the two"
- * fix — the award's quantity, reason and giver copied onto the record ITSELF.
- *
- * Under N16 that record is two facts wearing one coat. Left alone it is worse
- * than stale: the new pass reads it as its own ordinary credit, rewrites it,
- * and the snapshot goes — the award's days gone, silently, on the owner's own
- * balances. So every reader heals it instead.
- *
- * The award is rebuilt from the SNAPSHOT alone, and the schedule's record from
- * scratch rather than spread — anything the takeover copied across has to be
- * left behind, or the award's worth is counted on both records (that is the
- * 3 + 3 = 6 both reviewers found, independently, in the plan for this change).
- * The outer reason is dropped when it is the award's own words: the schedule's
- * reason was overwritten and cannot be recovered, so the day falls back to
- * naming the weekend, which is at least true.
- *
- * The new id is DERIVED, not minted: reading one stored blob twice must give
- * the same answer, or nothing can be compared across a reload. A collision is
- * stepped past, because `listProblem` rejects a duplicate id and a rejection
- * costs the whole war.
- *
- * Returns the SAME array when there is nothing to heal, so a caller can tell
- * cheaply whether anything moved.
- */
-export function splitTakenOver(list: readonly WarRec[]): readonly WarRec[] {
-  if (!list.some(r => r.kind === 'credit' && r.oil === 'auto' && r.manual)) return list
-  const taken = new Set(list.map(r => r.id))
-  const out: WarRec[] = []
-  for (const r of list) {
-    if (r.kind !== 'credit' || r.oil !== 'auto' || !r.manual) { out.push(r); continue }
-    const snap = r.manual
-    const earned: CreditRec = {
-      id: r.id, kind: 'credit', code: r.code, oil: 'auto',
-      ...(r.via ? { via: r.via } : {}),
-      ...(r.note && r.note !== snap.note ? { note: r.note } : {}),
-      ...(r.spans ? { spans: r.spans } : {}),
-    }
-    let id = `${r.id}:award`
-    for (let n = 2; taken.has(id); n++) id = `${r.id}:award${n}`
-    taken.add(id)
-    const award: CreditRec = {
-      id, kind: 'credit', code: snap.code, oil: 'manual',
-      ...(snap.note ? { note: snap.note } : {}),
-      ...(snap.givenBy ? { givenBy: snap.givenBy } : {}),
-      ...(snap.days != null ? { days: snap.days } : {}),
-      ...(snap.spans ? { spans: snap.spans } : {}),
-    }
-    out.push(earned, award)
-  }
-  return out
-}
+/** A stored record in a RETIRED shape the reader drops rather than refuses:
+ *  a hand-typed `manual` credit — an OIL award from before awards became
+ *  ledger entries ([OIL-AWARD-IS-A-GRANT], 29 Sep 26). Demo data, never
+ *  converted (D401); REFUSING it would make `readRecs` null and re-seed every
+ *  war, so it is skipped and everything beside it is kept. */
+export const isRetiredAward = (x: unknown): boolean =>
+  isObj(x) && x.kind === 'credit' && x.oil === 'manual'
 
 /** A whole war's records, or null when anything is malformed or breaks the
  *  per-address rules — the caller then re-seeds the war blob (reset, don't
@@ -416,11 +301,11 @@ export function readRecs(x: unknown): Recs | null {
     for (const [date, list] of Object.entries(row)) {
       if (!ISO.test(date) || !Array.isArray(list)) return null
       const read: WarRec[] = []
-      for (const leaf of list) { const r = readRec(leaf); if (!r) return null; read.push(r) }
-      /* HEAL BEFORE JUDGING. A taken-over record is two credits wearing one
-         coat, and the rules below count credits — so the split runs first, or
-         a legacy day would be measured in the shape it is leaving behind. */
-      const recs = [...splitTakenOver(read)]
+      for (const leaf of list) {
+        if (isRetiredAward(leaf)) continue
+        const r = readRec(leaf); if (!r) return null; read.push(r)
+      }
+      const recs = read
       if (listProblem(recs)) return null
       if (recs.length) kept[date] = recs
     }

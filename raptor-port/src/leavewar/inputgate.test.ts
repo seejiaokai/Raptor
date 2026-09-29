@@ -9,7 +9,7 @@ import { initStore as raptorInitStore, writeInputs } from '../state/store'
 import { setMe, setSession } from '../state/auth'
 import { projectPeople } from './state/raptorRoster'
 import {
-  ackReplacement, advanceStage, awardsIn, cellProblem, getState, setBidState, initStore as lwInitStore, lwEditLists, lwHistInit, rawState, setCell, setCells, clearCells, setBidStates, setManualCredit, setPeople, setRole, setViewer,
+  ackReplacement, advanceStage, awardsIn, cellProblem, getState, setBidState, initStore as lwInitStore, lwEditLists, lwHistInit, rawState, setCell, setCells, clearCells, setBidStates, setDayAward, setPeople, setRole, setViewer,
 } from './state/store'
 import { memoryBackend } from './state/storage'
 import { wireLeaveWarSync, sliceInput, syncAbsences } from './sync'
@@ -101,7 +101,7 @@ describe('leave over recorded work is FLAGGED, not refused (owner, 20 Sep 26)', 
        Invisible until N16 let the two share a day — and the reason this is
        the place it would have gone wrong. */
     setRole('admin')
-    expect(setCell('ammo', '2026-02-14', 'FO')).toBe(true)
+    expect(setDayAward('ammo', '2026-02-14', 1)).toBeNull()
     expect(file('ammo', 'LL', 'Feb 14')).toBe(true)
     expect(said.some(m => m.includes('recorded as working'))).toBe(false)
     expect(getState().views.ammo?.['2026-02-14']?.amber).toBe(false)
@@ -384,9 +384,9 @@ describe('bulk Delete and Approve over mixed days (W3-F3, AB7)', () => {
     setCells([{ personId: 'ammo', date: '2026-02-18' }], 'LL')
     advanceStage()
     setBidStates([{ personId: 'ammo', date: '2026-02-18' }], 'approved')
-    expect(setManualCredit('ammo', '2026-02-18', 'FO', { days: 2 })).toBeNull()
+    expect(setDayAward('ammo', '2026-02-18', 2)).toBeNull()
     expect(file('ammo', 'LL', 'Feb 19')).toBe(true)
-    expect(setManualCredit('ammo', '2026-02-19', 'HO', {})).toBeNull()
+    expect(setDayAward('ammo', '2026-02-19', 0.5)).toBeNull()
     const awardAt = (d: string) => recsAt('ammo', d).some((r: any) => r.kind === 'credit' && r.oil === 'manual')
     expect(awardsIn([{ personId: 'ammo', date: '2026-02-18' }, { personId: 'ammo', date: '2026-02-19' }])).toHaveLength(2)
     clearCells([{ personId: 'ammo', date: '2026-02-18' }, { personId: 'ammo', date: '2026-02-19' }])
@@ -403,7 +403,7 @@ describe('bulk Delete and Approve over mixed days (W3-F3, AB7)', () => {
     setCells([{ personId: 'ammo', date: '2026-02-18' }], 'LL')
     advanceStage()
     setBidStates([{ personId: 'ammo', date: '2026-02-18' }], 'approved')
-    expect(setManualCredit('ammo', '2026-02-18', 'FO', {})).toBeNull()
+    expect(setDayAward('ammo', '2026-02-18', 1)).toBeNull()
     advanceStage()                                      // published
     const r = clearCells([{ personId: 'ammo', date: '2026-02-18' }])
     expect(recsAt('ammo', '2026-02-18').some((x: any) => x.kind === 'credit' && x.oil === 'manual')).toBe(false)

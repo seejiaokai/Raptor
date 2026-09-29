@@ -187,6 +187,11 @@ function lwLabel(entry: UndoEntry): string {
   if (TYPE_PHRASE[entry.type]) return TYPE_PHRASE[entry.type]
   const colls = new Set(entry.forward.map(c => c.collection))
   const cell = lwCellLabel(entry)
+  /* A DELETE THAT TOOK A BID AND AN AWARD says both (Astra's final read, OA-003): since [OIL-AWARD-IS-A-GRANT] the award
+     is a ledger entry in the same command, beside the war's own record */
+  const awardsGone = entry.forward.filter(c => c.collection === 'lw.ledger' && c.before && !c.after
+    && (c.before as any).counter === 'oil' && +(c.before as any).amount > 0).length
+  if (cell && awardsGone && /bid$/.test(cell)) return `${cell} and ${awardsGone === 1 ? 'OIL award' : `${awardsGone} OIL awards`}`
   if (cell) return cell
   /* approved leave lives as ONE input (the absence record), not a war record — the war's own delete of it names the man
      and the leave (the picture check, walk G4: it read "a change on the Leave War") */
@@ -201,7 +206,19 @@ function lwLabel(entry: UndoEntry): string {
   if (colls.has('lw.config')) return 'a Leave War setting'
   if (colls.has('lw.balances')) return 'an opening balance'
   if (colls.has('lw.oilpolicy')) return 'the OIL policy'
-  if (colls.has('lw.ledger')) return 'an OIL entry'
+  if (colls.has('lw.ledger')) {
+    /* an OIL AWARD — a ledger entry, however it was given ([OIL-AWARD-IS-A-GRANT]) — by its own name, as the grid's
+       award was before (per entry since the ledger went into small pieces) */
+    const led = entry.forward.filter(c => c.collection === 'lw.ledger')
+    const isAward = (e: any) => e && e.counter === 'oil' && +e.amount > 0
+    if (led.length && led.every(c => isAward(c.after ?? c.before))) {
+      const pids = new Set(led.map(c => String(((c.after ?? c.before) as any).personId)))
+      const who = pids.size === 1 ? nameOf([...pids][0]!) : null
+      const gone = led.every(c => c.before && !c.after)
+      return who ? `${gone ? 'removing ' : ''}${who}’s OIL award` : gone ? 'removing OIL awards' : 'OIL awards'
+    }
+    return 'an OIL entry'
+  }
   const war = entry.forward.find(c => c.collection === 'lw.war')
   if (war && !war.before && war.after) return 'a new Leave War period'
   if (war && war.before && !war.after) return 'deleting a Leave War period'

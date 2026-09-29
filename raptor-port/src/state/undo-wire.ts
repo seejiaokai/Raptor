@@ -95,6 +95,11 @@ function lwDateOf(entry: UndoEntry): string | null {
       const p = ch.id.split(':')
       if (p.length >= 3) return p[p.length - 1]
     }
+    /* a ledger entry (an OIL award) carries its own day — the undo lands there (Fable's round-2 read, N3) */
+    if (ch.collection === 'lw.ledger') {
+      const d = ((ch.after ?? ch.before) as any)?.date
+      if (typeof d === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(d)) return d
+    }
   }
   return null
 }

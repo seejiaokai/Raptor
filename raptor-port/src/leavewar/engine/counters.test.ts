@@ -408,7 +408,7 @@ describe('FIGURES — the owner\'s eight (6 Sep 26)', () => {
   it('says what each column counts, in the owner\'s words', () => {
     const desc = Object.fromEntries(FIGURES.map(f => [f.id, f.desc]))
     expect(desc.lve).toBe('Balance of local + overseas leave: opening + granted − LL − OL')
-    expect(desc.oil).toBe("The OIL tracker's balance: earned by weekend/PH work + granted − taken − expired")
+    expect(desc.oil).toBe("The OIL tracker's balance: opening + earned by weekend/PH work + awarded + corrections − taken − expired")
     expect(desc.ccl).toBe('Child care leave balance: opening + granted − taken')
     expect(desc.fcl).toBe('Family care leave balance: opening + granted − taken')
     expect(desc.cl).toBe('Compassionate leave balance: opening + granted − taken')
@@ -517,12 +517,13 @@ describe('figureParts — the tap-a-counter breakdown (owner, 17 Aug 26)', () =>
     expect(parts.reduce((s, p) => s + p.value, 0)).toBe(f('lvetot').value(ctx, 'ramp'))
   })
 
-  it('a balance opens as opening + granted (+ earned for OIL) − taken per type, signed so it sums', () => {
+  it('a balance opens as opening + granted − taken per type; OIL as opening + earned + awarded − taken (D400)', () => {
     const oil = figureParts(f('oil'), ctx, 'ramp')
+    /* earned (the schedule's) and awarded (by hand) apart; no correction here, so no corrections row */
     expect(oil).toEqual([
       { label: 'opening figure', value: 2 },
-      { label: 'granted', value: 1 },
       { label: 'earned by weekend/PH work', value: 1 },
+      { label: 'awarded', value: 1 },
       { label: 'OIL taken', value: -1 },
     ])
     expect(oil.reduce((s, p) => s + p.value, 0)).toBe(f('oil').value(ctx, 'ramp'))

@@ -52,17 +52,12 @@ describe('the credit\'s reason and who gave it', () => {
       } },
     }] }
     const led = oilLedgerFor(ctx, 'p', NONE, '2026-02-01')
-    expect(led.credits.map(c => [c.date, c.reason, c.manual ?? false])).toEqual([
-      ['2026-01-03', 'FLT + SIM', false],
-      /* AN AWARD DOES NOT BORROW THE WEEKEND'S WORDS (N16, 21 Sep 26). The
-         fall-back reason is the SCHEDULE'S evidence — it says the app worked
-         this out from a published weekend. An award has no weekend behind
-         it, and since a Saturday can now carry both, one row saying
-         "weekend duty" beside another that really is weekend duty told the
-         reader two contradictory stories. A blank reason is what the
-         tracker's "+ reason" button is for. */
-      ['2026-01-04', '', true],
-      ['2026-01-05', 'typed', true],
+    /* the SCHEDULE'S credits only: the one marked as the war's own (`source: 'bid'`) is a drawn award, and an award is
+       a ledger entry now, read off the ledger — never off the grid ([OIL-AWARD-IS-A-GRANT], D400). An unmarked FO / HO
+       cell in this test shape is the schedule's, so it falls back to the day's kind. */
+    expect(led.credits.map(c => [c.date, c.reason, c.source])).toEqual([
+      ['2026-01-03', 'FLT + SIM', 'auto'],
+      ['2026-01-04', 'weekend duty', 'auto'],
     ])
   })
   it('OIL THE APP EARNED names its giver too — the weekend, or the input behind it', () => {
@@ -81,9 +76,9 @@ describe('the credit\'s reason and who gave it', () => {
       } },
     }] }
     const led = oilLedgerFor(ctx, 'p', NONE, '2026-02-01')
+    /* the drawn award (the war's own, `source: 'bid'`) is not read off the grid at all — it is a ledger entry */
     expect(led.credits.map(c => [c.date, c.givenBy ?? null])).toEqual([
       ['2026-01-03', 'Weekend/PH'],
-      ['2026-01-04', null],
     ])
   })
 
@@ -179,7 +174,9 @@ describe('credits and debits are read from what the store already holds', () => 
     expect(led.credits[1].approvedBy).toBe('SQNCDR')
     expect(led.credits[1].ledgerId).toBe('g1')
     expect(led.debits.map(d => [d.id, d.amount, d.source])).toEqual([['g2', 0.5, 'correction']])
-    expect(led.granted).toBe(1.5)
+    /* awarded and corrections apart (D400; both plan reads — a correction is its own row) */
+    expect(led.awarded).toBe(2)
+    expect(led.corrections).toBe(-0.5)
     expect(led.balance).toBe(3)
   })
 
@@ -290,6 +287,6 @@ describe('with no expiry the tracker IS the old sum', () => {
     // opening (oldest), so the earned day sat unused and expired on 2 Feb.
     expect(led.balance).toBe(0)
     expect(led.expired).toBe(1)
-    expect(1 + led.earned + led.granted - led.taken - led.expired).toBe(led.balance)
+    expect(1 + led.earned + led.awarded + led.corrections - led.taken - led.expired).toBe(led.balance)
   })
 })

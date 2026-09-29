@@ -87,10 +87,11 @@ describe('the amber "!" — only for what an admin must resolve', () => {
     // ...and the same over a medical, the credit's OTHER clash row.
     expect(dayView([ab('c', 'ATTC', AM), aw('w', 'HO', [hm(8), hm(11, 30)])]).amber).toBe(false)
   })
-  it('a credit is worth what it says, not what its code is worth', () => {
-    expect(dayView([grant('g', 'FO', 3)]).earnsOil).toBe(3)
-    expect(dayView([grant('g', 'HO', 2.5)]).earnsOil).toBe(2.5)
-    expect(dayView([grant('g', 'HO')]).earnsOil).toBe(0.5)
+  it('an award drawn on the day EARNS nothing — it is awarded, counted once off the ledger (D400)', () => {
+    /* its worth is its amount (`days`), read by every sheet; the day's "earned" is the schedule's credit alone */
+    expect(dayView([grant('g', 'FO', 3)]).earnsOil).toBe(0)
+    expect(dayView([grant('g', 'HO', 2.5)]).earnsOil).toBe(0)
+    expect(dayView([grant('g', 'FO', 3), { id: 'a', kind: 'credit', code: 'HO', win: FULL, auto: true }]).earnsOil).toBe(0.5)
   })
   it('an end at 12:00 and a start at 12:01 do not overlap', () => {
     expect(dayView([ab('a', 'LL', [hm(8), hm(12)]), ab('b', 'OL', [hm(12, 1), hm(14)])]).amber).toBe(false)
