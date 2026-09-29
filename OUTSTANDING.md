@@ -919,6 +919,11 @@ leaves. **Place:** test-only, any time.
 **Seen again 27 Sep 26** on `claude/five-flags-batch-continue-2cfa70` (`869c7197`, the final gate run): the same test, the
 same "elementFromPoint is not a function"; that branch does not touch the calendar either; alone 3 / 3, and the whole
 unit suite green on its re-run (6256 / 6256). Three branches now — the order- or load-dependence is the lead.
+**Seen again 29 Sep 26** on `claude/change-recording-retest` (PR #464, his PC's "all gates" run on `e37aa41c`): a
+DIFFERENT test in the same file — "the popover orders sections above the inputs block" — the day's popover never opened
+("click target exists: expected null"), after a pointerdown / pointerup pair on a day cell; that branch does not touch
+the calendar (no diff against `main`); alone 3 / 3, and the whole suite 6899 / 6899 locally under the lock the same hour.
+Four branches; two tests of the file — the file's own pointer handling under load is now the likelier lead.
 
 ### [INSIGHTS-WORKING-COPY] Week Insights shows the working copy's week to everyone, members included — a question for him (filed 26 Sep 26)
 Astra's second read of `[LEAVE-LATE-PUBLISHED]` (`raptor-port/docs/handpass/2026-09-26-late-pub-astra-read2.md` #2): the
