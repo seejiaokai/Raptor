@@ -1,5 +1,6 @@
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import * as core from '../app/core.js';
+import { isComposing } from './keys.js';
 
 /* The panel is always in the DOM and hidden with CSS, never conditionally
    rendered. Two reasons: the file name and the save tick-boxes have to stay
@@ -129,7 +130,7 @@ function HeaderSearch() {
           onFocus={() => setList(true)} onBlur={() => setList(false)}
           onChange={e => { setList(true); core.runSearch(e.target.value, false); }}
           onKeyDown={e => {
-            if (e.key === 'Enter') { e.preventDefault(); core.runSearch(core.searchQ, true); }
+            if (e.key === 'Enter' && !isComposing(e)) { e.preventDefault(); core.runSearch(core.searchQ, true); }
             if (e.key === 'ArrowDown') { e.preventDefault(); setList(true); core.searchStep(1); }
             if (e.key === 'ArrowUp') { e.preventDefault(); setList(true); core.searchStep(-1); }
             /* Not stopPropagation: Escape still has to reach the app's own
@@ -295,7 +296,8 @@ export default function Header() {
               the last write; the button, the flow edits still waiting). Keep
               the words, drop the green until nothing is outstanding. Errors
               stay red. */}
-          <span id="saveStat" title={core.saveStat.text} className={'savestat ' + (dirty && core.saveStat.cls === 'ok' ? '' : core.saveStat.cls)}>{core.saveStat.text}</span>
+          {/* no words while the button shows — it says it (core.saveWords, [TRK-RETEST-NOTES] C14) */}
+          <span id="saveStat" title={core.saveWords().title} className={'savestat ' + core.saveWords().cls} hidden={!core.saveWords().text}>{core.saveWords().text}</span>
           {dirty ? <button className="sm dirty" id="saveChanges" title="Save your changes to the syllabus — events, prerequisites and lines" onClick={core.saveChangesClick}>✓ Save changes ●</button> : null}
         </span>
       </div>

@@ -1,0 +1,102 @@
+[
+  {
+    "step": "844×390: the folded row is shown",
+    "pass": true,
+    "said": "{\"top\":187,\"h\":35,\"w\":844,\"bottom\":222,\"shown\":true}"
+  },
+  {
+    "step": "844×390: the full strip is folded away",
+    "pass": true,
+    "said": "{\"top\":0,\"h\":0,\"w\":0,\"bottom\":0,\"shown\":false}"
+  },
+  {
+    "step": "844×390: the Flow / Info / Show All tabs and the hint line step aside",
+    "pass": true,
+    "said": "{\"tabs\":{\"top\":0,\"h\":0,\"w\":0,\"bottom\":0,\"shown\":false},\"hint\":{\"top\":0,\"h\":0,\"w\":0,\"bottom\":0,\"shown\":false}}"
+  },
+  {
+    "step": "844×390: the chart has real room (was 0px)",
+    "pass": true,
+    "said": "chart 169px"
+  },
+  {
+    "step": "844×390: the row names the tool in use and its hint",
+    "pass": true,
+    "said": "{\"tool\":\"✋ Move\",\"hint\":\"drag a ball · drag empty space to pan\"}"
+  },
+  {
+    "step": "844×390: Tools ▾ opens the whole set over the chart",
+    "pass": true,
+    "said": "{\"top\":222,\"h\":119,\"w\":828,\"bottom\":341,\"shown\":true}"
+  },
+  {
+    "step": "844×390: choosing a tool closes the set; the row shows it",
+    "pass": true,
+    "said": "{\"open\":false,\"tool\":\"→ Connect\"}"
+  },
+  {
+    "step": "844×390: Escape closes the set and nothing else",
+    "pass": true,
+    "said": "{\"open\":false,\"editing\":true}"
+  },
+  {
+    "step": "844×390: a press outside closes the set",
+    "pass": true,
+    "said": ""
+  },
+  {
+    "step": "844×390: ⤢ Fit in the row works (no error)",
+    "pass": true,
+    "said": ""
+  },
+  {
+    "step": "844×390: Done editing — the tabs come back, the row goes",
+    "pass": true,
+    "said": "{\"tabs\":{\"top\":187,\"h\":39,\"w\":844,\"bottom\":226,\"shown\":true},\"fold\":null}"
+  },
+  {
+    "step": "844×390: no console or page error",
+    "pass": true,
+    "said": ""
+  },
+  {
+    "step": "390×844: no folded row",
+    "pass": true,
+    "said": "{\"top\":0,\"h\":0,\"w\":0,\"bottom\":0,\"shown\":false}"
+  },
+  {
+    "step": "390×844: the strip shows, as before",
+    "pass": true,
+    "said": "{\"top\":119,\"h\":214,\"w\":390,\"bottom\":332,\"shown\":true}"
+  },
+  {
+    "step": "390×844: the chart keeps its room",
+    "pass": true,
+    "said": "chart 446px"
+  },
+  {
+    "step": "390×844: no console or page error",
+    "pass": true,
+    "said": ""
+  },
+  {
+    "step": "1440×900: no folded row",
+    "pass": true,
+    "said": "{\"top\":0,\"h\":0,\"w\":0,\"bottom\":0,\"shown\":false}"
+  },
+  {
+    "step": "1440×900: the strip shows, as before",
+    "pass": true,
+    "said": "{\"top\":108,\"h\":108,\"w\":1440,\"bottom\":216,\"shown\":true}"
+  },
+  {
+    "step": "1440×900: the chart keeps its room",
+    "pass": true,
+    "said": "chart 633px"
+  },
+  {
+    "step": "1440×900: no console or page error",
+    "pass": true,
+    "said": ""
+  }
+]

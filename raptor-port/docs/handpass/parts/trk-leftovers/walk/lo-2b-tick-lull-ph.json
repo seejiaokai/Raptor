@@ -1,0 +1,90 @@
+{
+  "rows": [
+    {
+      "step": "0 today / roster / picked",
+      "note": "2026-09-28 · STUDENT A · phone 390×844 touch"
+    },
+    {
+      "step": "C6.0 one failure each on BFM-3",
+      "note": "{\"A\":1} · crew STUDENT A"
+    },
+    {
+      "step": "C6.1 chart zoom",
+      "note": "240%"
+    },
+    {
+      "step": "C6.2 STUDENT A picked; B's tick on BFM-3 (lo-2b-ph-t1-bfm3-zoomed-A-picked)",
+      "note": "{\"x\":195,\"y\":547.017578125,\"w\":0,\"h\":20.4,\"hit\":\"line.ftick[wi=1]\"} · view {\"top\":11196,\"left\":688,\"ball\":[195,484],\"zoom\":\"240%\"}"
+    },
+    {
+      "step": "C6.3 the press point is ON B's tick (the tick is what sits there)",
+      "pass": true,
+      "said": "{\"x\":195,\"y\":547.017578125,\"w\":0,\"h\":20.4,\"hit\":\"line.ftick[wi=1]\"}"
+    },
+    {
+      "step": "C6.4 a press on B's tick picks STUDENT B — no grading opens (lo-2b-ph-t2-press-B-tick)",
+      "pass": true,
+      "said": "pop-up none · crew STUDENT B · cyan edge on wedge 1"
+    },
+    {
+      "step": "C6.5 … and the view stays where it was (no scroll, the ball where it was)",
+      "pass": true,
+      "said": "before {\"top\":11196,\"left\":688,\"ball\":[195,484],\"zoom\":\"240%\"} · after {\"top\":11196,\"left\":688,\"ball\":[195,484],\"zoom\":\"240%\"}"
+    },
+    {
+      "step": "C6.6 the press point is ON A's tick",
+      "pass": true,
+      "said": "{\"x\":195,\"y\":421.97900390625,\"w\":0,\"h\":20.4,\"hit\":\"line.ftick[wi=0]\"}"
+    },
+    {
+      "step": "C6.7 with B picked, a press on A's tick picks STUDENT A — no grading, view kept",
+      "pass": true,
+      "said": "pop-up false · crew STUDENT A · view {\"top\":11196,\"left\":688,\"ball\":[195,484],\"zoom\":\"240%\"}"
+    },
+    {
+      "step": "C6.8 a press on the picked student's OWN tick opens HIS grading (\"BFM-3 · STUDENT A\") (lo-2b-ph-t3-press-own-tick)",
+      "pass": true,
+      "said": "pop-up \"BFM-3 · STUDENT A\" · crew STUDENT A · view {\"top\":11196,\"left\":688,\"ball\":[195,484],\"zoom\":\"240%\"}"
+    },
+    {
+      "step": "C7.1 the first \"+ Set lull period\" opens on this month (September 2026)",
+      "pass": true,
+      "said": "{\"head\":\"Set lull period — STUDENT A\",\"month\":\"September 2026\"}"
+    },
+    {
+      "step": "C7.2 a period set in November 2026",
+      "note": "[{\"start\":\"2026-11-12\",\"end\":\"2026-11-14\"}]"
+    },
+    {
+      "step": "C7.3 the chip opens the calendar on the period's own month (November 2026)",
+      "pass": true,
+      "said": "{\"head\":\"Change lull period — STUDENT A\",\"month\":\"November 2026\"}"
+    },
+    {
+      "step": "C7.4 the period changed to 12/12/26→14/12/26 (December 2026)",
+      "pass": true,
+      "said": "[\"2026-12-12→2026-12-14\"]"
+    },
+    {
+      "step": "C7.5 \"+ Set lull period\" after changing a period in December 2026 opens on THIS month, September 2026 (lo-2b-ph-t4-new-period-opens-this-month)",
+      "pass": true,
+      "said": "{\"head\":\"Set lull period — STUDENT A\",\"month\":\"September 2026\"}"
+    },
+    {
+      "step": "C7.6 a new period's calendar arrowed to November 2026, closed with ✕, \"+ Set lull period\" again → September 2026",
+      "pass": true,
+      "said": "{\"head\":\"Set lull period — STUDENT A\",\"month\":\"September 2026\"}"
+    },
+    {
+      "step": "C7.7 the period's chip still opens on its own month (December 2026)",
+      "pass": true,
+      "said": "{\"head\":\"Change lull period — STUDENT A\",\"month\":\"December 2026\"}"
+    },
+    {
+      "step": "no console errors, page errors, failed requests or native dialogs",
+      "pass": true,
+      "said": "[]"
+    }
+  ],
+  "errors": []
+}

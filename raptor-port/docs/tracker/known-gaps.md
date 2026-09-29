@@ -19,7 +19,8 @@
 > marked done, so a flight corrected to an earlier day, or un-marked, pulls it back (it used to only
 > ever move forward); a briefly empty date box is not a day flown. **Deleting a ball (D124):** wipes
 > its marks, so a new ball with the same code starts ungraded. Both BUILT 23 Sep 26 (walker W2-F2/F3/F7);
-> a day typed by hand into Last Flown stands until a later flight (the `handSyll`/`handCurr` marks).
+> a day typed by hand into Last Flown stands until a later flight (the `handSyll`/`handCurr` marks) — **any day up to
+> today: a future day is refused there, in Done on and in Failed on (D374, 28 Sep 26)**.
 > **Four more (owner, 23 Sep 26 — D126–D129, BUILT the same day):** event details belong to the chart they
 > were typed on, never every chart with that code (D126 — so an export carries each chart's own details
 > and an import writes only the imported charts'); the export file remembers a deleted built-in chart,
@@ -254,10 +255,18 @@ he reports it again, ask which button he pressed and what the status line said.
 - **Only `applyCharts` may touch charts and only `applyStudents` may touch
   people.** `applyBundle` no longer deletes stored syllabi — restoring that
   would wipe his charts.
+- **A students import adds a course the app does not have at the BOTTOM of the
+  course list; the courses already here keep their places** (`applyStudents`,
+  "Merge, never replace") — ruled keep, **D375** (28 Sep 26): not the course-order
+  twin of F6 to fix; students do not travel his database route (D120).
 - **Anything remembered per browser goes under `ocuLocal:`, never through
   `sSet`** (every `ocu:` key is what the shared file/database will carry, so a
   view preference stored there would decide what opens for everyone).
-  `kLastStudent`/`kLast` stay shared on purpose.
+  `kLastStudent`/`kLast` stay shared on purpose. **The course and student a
+  person reopens on are remembered per PERSON on the browser** (D376, 28 Sep 26 —
+  "own place"): someone signing in after someone else never lands on the other
+  person's pick; with nobody signed in (the standalone Tracker) the browser keeps
+  one place as before.
 - **`styles.css`'s two `@media(max-width:1050px)` blocks — top and END — are
   load-bearing** (now inside the `#page-tracker` wrapper in `tracker.css`):
   same specificity, later wins, and the general rules sit between them. Phone

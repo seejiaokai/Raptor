@@ -1,0 +1,199 @@
+{
+  "rows": [
+    {
+      "step": "1.0 + Add \"ABCDEFGHIJKLMN\" at 390: the Crew box now shows",
+      "note": "ABCDEFGHIJKLMN"
+    },
+    {
+      "step": "1.1 390: + Add picks the new 14-letter student into the Crew box",
+      "pass": true,
+      "said": "{\"picked\":\"ABCDEFGHIJKLMN\"}"
+    },
+    {
+      "step": "1.2 390: the bar stays two rows (no taller than before: 70px)",
+      "pass": true,
+      "said": "{\"h\":70,\"rows\":2,\"was\":70}"
+    },
+    {
+      "step": "1.3 390: how much of the 14-letter name the Crew box reads",
+      "note": "{\"text\":\"ABCDEFGHIJKLMN\",\"w\":124,\"room\":96,\"need\":110,\"reads\":\"ABCDEFGHIJKL\",\"whole\":false}"
+    },
+    {
+      "step": "1.3 390: the Crew box reads at least 9 letters of a 14-letter name (a puck shows ~9–10, D289) — the start of the name is never lost",
+      "pass": true,
+      "said": "reads \"ABCDEFGHIJKL\" (12 of 14) in 96px of room; needs 110px"
+    },
+    {
+      "step": "1.4 390: the Crew list holds the whole name",
+      "pass": true,
+      "said": "[\"STUDENT A\",\"STUDENT B\",\"ABCDEFGHIJKLMN\"]"
+    },
+    {
+      "step": "1.5 390: no console or page error",
+      "pass": true,
+      "said": ""
+    },
+    {
+      "step": "2.0 844×390 at rest",
+      "note": "{\"h\":38,\"rows\":2,\"crew\":{\"text\":\"STUDENT A\",\"w\":103,\"room\":75,\"need\":69,\"reads\":\"STUDENT A\",\"whole\":true},\"course\":{\"text\":\"26ABSG\",\"w\":81,\"room\":53,\"need\":47,\"reads\":\"26ABSG\",\"whole\":true},\"syl\":{\"text\":\"2026\",\"w\":88,\"room\":60,\"need\":27,\"reads\":\"2026\",\"whole\":true}}"
+    },
+    {
+      "step": "2.1 844×390: the Crew box reads \"STUDENT A\" whole",
+      "pass": true,
+      "said": "{\"text\":\"STUDENT A\",\"w\":103,\"room\":75,\"need\":69,\"reads\":\"STUDENT A\",\"whole\":true}"
+    },
+    {
+      "step": "2.2 844×390: the Course box reads the course whole",
+      "pass": true,
+      "said": "{\"text\":\"26ABSG\",\"w\":81,\"room\":53,\"need\":47,\"reads\":\"26ABSG\",\"whole\":true}"
+    },
+    {
+      "step": "2.3 844×390: the Tracker bar is one row (≤40px, as at 1000px)",
+      "pass": true,
+      "said": "{\"h\":38}"
+    },
+    {
+      "step": "2.4 844×390 with the 14-letter name picked",
+      "note": "{\"text\":\"ABCDEFGHIJKLMN\",\"w\":124,\"room\":96,\"need\":110,\"reads\":\"ABCDEFGHIJKL\",\"whole\":false}"
+    },
+    {
+      "step": "2.4 844×390: the Crew box reads at least 9 letters of the 14-letter name; the bar stays one row",
+      "pass": true,
+      "said": "reads \"ABCDEFGHIJKL\" (12 of 14); h 38"
+    },
+    {
+      "step": "2.5 844×390: no console or page error",
+      "pass": true,
+      "said": ""
+    },
+    {
+      "step": "2b.1000 the Crew box with the 14-letter name picked",
+      "note": "{\"text\":\"ABCDEFGHIJKLMN\",\"w\":124,\"room\":96,\"need\":110,\"reads\":\"ABCDEFGHIJKL\",\"whole\":false}"
+    },
+    {
+      "step": "2b.1000 the Crew box reads at least 9 letters of the 14-letter name; the bar keeps its height (38px)",
+      "pass": true,
+      "said": "reads \"ABCDEFGHIJKL\" (12 of 14) in 96px; needs 110px; bar 38 → 38px"
+    },
+    {
+      "step": "2b.1000 no console or page error",
+      "pass": true,
+      "said": ""
+    },
+    {
+      "step": "2b.1440 the Crew box with the 14-letter name picked",
+      "note": "{\"text\":\"ABCDEFGHIJKLMN\",\"w\":154,\"room\":120,\"need\":114,\"reads\":\"ABCDEFGHIJKLMN\",\"whole\":true}"
+    },
+    {
+      "step": "2b.1440 the Crew box reads at least 9 letters of the 14-letter name; the bar keeps its height (51px)",
+      "pass": true,
+      "said": "reads \"ABCDEFGHIJKLMN\" (14 of 14) in 120px; needs 114px; bar 51 → 51px"
+    },
+    {
+      "step": "2b.1440 no console or page error",
+      "pass": true,
+      "said": ""
+    },
+    {
+      "step": "1200 3.1 an unsaved chart edit: ✓ Save changes shows and the words beside it step aside",
+      "pass": true,
+      "said": "{\"save\":true,\"saveBox\":[1077,117,1184,140],\"saveHit\":\"Save changes\",\"underRetry\":null,\"tracker\":null,\"raptor\":null}"
+    },
+    {
+      "step": "1200 3.2 storage working, a mark: the \"Saving…\" note while it lasts",
+      "note": "[{\"t\":2,\"text\":\"Saving…\",\"covers\":true,\"hit\":\"Save changes\"},{\"t\":48,\"text\":\"Saving…\",\"covers\":true,\"hit\":\"Save changes\"},{\"t\":95,\"text\":\"Saving…\",\"covers\":true,\"hit\":\"Save changes\"},{\"t\":143,\"text\":\"Saving…\",\"covers\":true,\"hit\":\"Save changes\"}] (4 samples)"
+    },
+    {
+      "step": "1200 3.2 storage working: a press on ✓ Save changes is never taken by the passing \"Saving…\" note",
+      "pass": true,
+      "said": "[{\"t\":2,\"text\":\"Saving…\",\"covers\":true,\"hit\":\"Save changes\"},{\"t\":48,\"text\":\"Saving…\",\"covers\":true,\"hit\":\"Save changes\"},{\"t\":95,\"text\":\"Saving…\",\"covers\":true,\"hit\":\"Save changes\"}]"
+    },
+    {
+      "step": "1200 3.3 a mark made while the storage refuses",
+      "note": "{\"save\":true,\"saveBox\":[1077,117,1184,140],\"saveHit\":\"Retry\",\"underRetry\":\"#saveChanges ✓ Save changes ●\",\"tracker\":null,\"raptor\":{\"text\":\"Not saved — Retry\",\"cls\":\"savestat failed\",\"color\":\"rgb(229, 194, 74)\",\"box\":[1037,109,1180,145],\"inWindow\":true,\"coversSave\":true}}"
+    },
+    {
+      "step": "1200 3.3 a mark that cannot be saved, with ✓ Save changes showing: words on screen say it is NOT saved",
+      "pass": true,
+      "said": "Raptor's note: Not saved — Retry (colour rgb(229, 194, 74)); the Tracker's corner: blank"
+    },
+    {
+      "step": "1200 3.4 while \"Not saved — Retry\" shows, ✓ Save changes stays in sight and a press on its middle reaches it",
+      "pass": false,
+      "said": "note [1037,109,1180,145] · Save changes [1077,117,1184,140] · a press on Save's middle hits: Retry · the note's Retry sits on: #saveChanges ✓ Save changes ●"
+    },
+    {
+      "step": "1200 3.5 a spot on the covered ✓ Save changes that a press still reaches",
+      "note": "{\"x\":1081,\"y\":128}"
+    },
+    {
+      "step": "1200 3.5 ✓ Save changes pressed while the storage refuses",
+      "note": "{\"save\":false,\"saveBox\":null,\"saveHit\":null,\"underRetry\":\"#saveStat ● syllabus “2026” saved \",\"tracker\":{\"text\":\"● syllabus “2026” saved (overrides the built-in)\",\"cls\":\"savestat ok\",\"color\":\"rgb(87, 201, 122)\",\"cut\":true},\"raptor\":{\"text\":\"Not saved — Retry\",\"cls\":\"savestat failed\",\"color\":\"rgb(229, 194, 74)\",\"box\":[1037,109,1180,145],\"inWindow\":true,\"coversSave\":false}}"
+    },
+    {
+      "step": "1200 3.5 ✓ Save changes that cannot be written: nothing on screen says \"saved\" while \"Not saved\" shows",
+      "pass": false,
+      "said": "the Tracker's corner: ● syllabus “2026” saved (overrides the built-in) (rgb(87, 201, 122)) · Raptor's note: Not saved — Retry · ✓ Save changes still showing: false"
+    },
+    {
+      "step": "1200 3.6 storage back, Retry: the \"Not saved\" words go",
+      "pass": true,
+      "said": "{\"save\":false,\"saveBox\":null,\"saveHit\":null,\"underRetry\":null,\"tracker\":{\"text\":\"● syllabus “2026” saved (overrides the built-in)\",\"cls\":\"savestat ok\",\"color\":\"rgb(87, 201, 122)\",\"cut\":true},\"raptor\":null}"
+    },
+    {
+      "step": "1200 3.7 console/page errors (the forced refusal may log its own)",
+      "note": ""
+    },
+    {
+      "step": "390 3.1 an unsaved chart edit: ✓ Save changes shows and the words beside it step aside",
+      "pass": true,
+      "said": "{\"save\":true,\"saveBox\":[277,86,382,109],\"saveHit\":\"Save changes\",\"underRetry\":null,\"tracker\":null,\"raptor\":null}"
+    },
+    {
+      "step": "390 3.2 storage working, a mark: the \"Saving…\" note while it lasts",
+      "note": "[{\"t\":1,\"text\":\"Saving…\",\"covers\":false,\"hit\":\"Save changes\"},{\"t\":47,\"text\":\"Saving…\",\"covers\":false,\"hit\":\"Save changes\"},{\"t\":93,\"text\":\"Saving…\",\"covers\":false,\"hit\":\"Save changes\"},{\"t\":140,\"text\":\"Saving…\",\"covers\":false,\"hit\":\"Save changes\"}] (5 samples)"
+    },
+    {
+      "step": "390 3.2 storage working: a press on ✓ Save changes is never taken by the passing \"Saving…\" note",
+      "pass": true,
+      "said": "[{\"t\":1,\"text\":\"Saving…\",\"covers\":false,\"hit\":\"Save changes\"},{\"t\":47,\"text\":\"Saving…\",\"covers\":false,\"hit\":\"Save changes\"},{\"t\":93,\"text\":\"Saving…\",\"covers\":false,\"hit\":\"Save changes\"}]"
+    },
+    {
+      "step": "390 3.3 a mark made while the storage refuses",
+      "note": "{\"save\":true,\"saveBox\":[277,86,382,109],\"saveHit\":\"Save changes\",\"underRetry\":\"#sylMenuBtn ✎\",\"tracker\":null,\"raptor\":{\"text\":\"Not saved — Retry\",\"cls\":\"savestat failed\",\"color\":\"rgb(229, 194, 74)\",\"box\":[233,55,376,91],\"inWindow\":true,\"coversSave\":true}}"
+    },
+    {
+      "step": "390 3.3 a mark that cannot be saved, with ✓ Save changes showing: words on screen say it is NOT saved",
+      "pass": true,
+      "said": "Raptor's note: Not saved — Retry (colour rgb(229, 194, 74)); the Tracker's corner: blank"
+    },
+    {
+      "step": "390 3.4 while \"Not saved — Retry\" shows, ✓ Save changes stays in sight and a press on its middle reaches it",
+      "pass": false,
+      "said": "note [233,55,376,91] · Save changes [277,86,382,109] · a press on Save's middle hits: Save changes · the note's Retry sits on: #sylMenuBtn ✎"
+    },
+    {
+      "step": "390 3.5 a spot on the covered ✓ Save changes that a press still reaches",
+      "note": "{\"x\":281,\"y\":98}"
+    },
+    {
+      "step": "390 3.5 ✓ Save changes pressed while the storage refuses",
+      "note": "{\"save\":false,\"saveBox\":null,\"saveHit\":null,\"underRetry\":\"#sylMenuBtn ✎\",\"tracker\":{\"text\":\"● syllabus “2026” saved (overrides the built-in)\",\"cls\":\"savestat ok\",\"color\":\"rgb(87, 201, 122)\",\"cut\":true},\"raptor\":{\"text\":\"Not saved — Retry\",\"cls\":\"savestat failed\",\"color\":\"rgb(229, 194, 74)\",\"box\":[233,55,376,91],\"inWindow\":true,\"coversSave\":false}}"
+    },
+    {
+      "step": "390 3.5 ✓ Save changes that cannot be written: nothing on screen says \"saved\" while \"Not saved\" shows",
+      "pass": false,
+      "said": "the Tracker's corner: ● syllabus “2026” saved (overrides the built-in) (rgb(87, 201, 122)) · Raptor's note: Not saved — Retry · ✓ Save changes still showing: false"
+    },
+    {
+      "step": "390 3.6 storage back, Retry: the \"Not saved\" words go",
+      "pass": true,
+      "said": "{\"save\":false,\"saveBox\":null,\"saveHit\":null,\"underRetry\":null,\"tracker\":{\"text\":\"● syllabus “2026” saved (overrides the built-in)\",\"cls\":\"savestat ok\",\"color\":\"rgb(87, 201, 122)\",\"cut\":true},\"raptor\":null}"
+    },
+    {
+      "step": "390 3.7 console/page errors (the forced refusal may log its own)",
+      "note": ""
+    }
+  ],
+  "errors": []
+}

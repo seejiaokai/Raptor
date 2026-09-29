@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import * as core from '../app/core.js';
 import { groupByCategory, filterEvents } from '../app/eventOrder.js';
+import { isComposing } from './keys.js';
 
 /* Compact in-place editor for one row of the Show All list — same five fields as the
    pop-up editor, so there is no need to open a modal on top of this panel. */
@@ -26,7 +27,7 @@ function SaEdit({ id, onDone }) {
   /* Esc backs out without saving; Ctrl/Cmd+Enter saves from any field */
   const onKey = e => {
     if (e.key === 'Escape') { e.stopPropagation(); onDone(); }
-    else if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); save(); }
+    else if (e.key === 'Enter' && (e.ctrlKey || e.metaKey) && !isComposing(e)) { e.preventDefault(); save(); }
   };
   return (
     <div className="saedit" onKeyDown={onKey}>

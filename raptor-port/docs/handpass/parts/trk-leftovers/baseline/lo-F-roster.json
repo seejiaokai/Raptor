@@ -1,0 +1,34 @@
+{
+  "rows": [
+    {
+      "step": "J.1 + Add lists",
+      "note": "58 people; first Recon Pilot · OCU | Talisman Pilot · OCU | Wildcard Pilot · OCU"
+    },
+    {
+      "step": "J.2 a pointer press on the Quals tab while + Add is open would land on",
+      "note": "{\"hit\":\"div#dlgOverlay.overlay\",\"isTab\":false}"
+    },
+    {
+      "step": "J.3 keyboard: focus the Quals tab + Enter → page",
+      "note": "quals"
+    },
+    {
+      "step": "J.4 Admin → Users: Add a person ZULU9 (Pilot, OCU), no sign-in; seats =Pick…, FCP=Pilot, RCP=WSO, GND=Personnel (ground crew)",
+      "note": "toast: ZULU9 added to the roster — set flight and quals on the Quals page"
+    },
+    {
+      "step": "J.5 back on the Tracker: the + Add dialog still open?",
+      "note": "true · 58 rows · ZULU9 listed: false"
+    },
+    {
+      "step": "J.6 the dialog left open shows the new person (ZULU9)",
+      "pass": false,
+      "said": "58 rows (was 58); ZULU9 NOT listed"
+    },
+    {
+      "step": "J.7 closed and reopened: + Add lists ZULU9?",
+      "note": "row 4 of 59: ZULU9 Pilot · OCU"
+    }
+  ],
+  "errors": []
+}

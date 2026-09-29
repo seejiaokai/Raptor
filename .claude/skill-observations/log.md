@@ -1275,3 +1275,93 @@ resolved statuses always carry their resolution date
 **Suggested improvement:** When condensing a rule, list its negative clauses, exceptions and scope limits BEFORE cutting, and keep those ahead of examples, dates and rationale; state a supersession's scope with the exact dates it names. Keep the independent meaning read as the gate.
 
 **Principle:** In a compressed rule, the prohibitions and exceptions carry the most risk per character: drop the examples and the story first, never the "don't" or the "except".
+
+### Observation 330: A question put to the owner needs a worked example with real names, not an abstract rule
+
+**Status:** OPEN
+**Date:** 2026-09-28
+**Session context:** Tracker leftovers (branch claude/tracker-leftovers-f79d36) — six product choices put to the owner on one Artifact page, each with pictures of the real app and a recommendation. (Numbered past #329, held on the parallel branch claude/docs-tidy-subheads-audit-ec8f87.)
+**Skill:** New skill candidate: owner-choices page (the "put the open product questions to him" step of the bug-check order §11 and the plain-language rule)
+**Type:** internal
+**Phase/Area:** Writing the questions
+
+**Issue:** He answered four at once and sent two back ("4 explain clearly", "5 what do u mean goes after your own courses"). Both had been worded as rules ("refuse a future day in these four boxes", "a course new to the app goes after the app's own courses"). The four he answered first had a picture or a concrete before/after. The re-put versions that he answered at once each opened with a worked example in the app's own words: "Today is 28 Sep. You grade a flight done and type 29 Sep by mistake…", "Your app has 26ABSG, 27ABSG; you import a file carrying 25ABSG…".
+
+**Suggested improvement:** Every owner question opens with a concrete worked example — a date, a name, a course, what he would press, what he would see — before the rule and the options; a question with no picture must have the example. Check before sending: could he answer it without imagining a scenario himself?
+
+**Principle:** A non-technical decision-maker judges consequences, not rules; a question that makes the reader build the scenario in their head comes back unanswered.
+
+### Observation 331: A backlog item that offers "do A, or B" is a choice for the owner — the plan must not pick one silently
+
+**Status:** OPEN
+**Date:** 2026-09-28
+**Session context:** Tracker leftovers — [TRK-SESSION-PICK] said "start each sign-in on the default course and no student, OR keep the last pick per person". The plan picked "per person" and called it the agent's call; Astra's plan red team (F-08) flagged that no ruling chose between them; put to him, he chose the same ("7 own place", D376).
+**Skill:** claudex-loop (plan review) / the bug-check order's rules sweep
+**Type:** open-source
+**Phase/Area:** Planning — separating implementation choices from product choices
+
+**Issue:** The agent classified a user-visible behaviour choice as an implementation detail because it had a good reason for one option (it changed least of an existing feature). The reviewer caught it only because the brief asked "is anything the plan decided itself actually his?".
+
+**Suggested improvement:** When a plan is written from a backlog item, scan the item for alternatives it names ("or", "either", "one of") and list each as an owner question unless a recorded ruling already picks one; keep the brief's "is anything the plan decided itself actually the user's?" question in every plan red team.
+
+**Principle:** Alternatives written into a task by a previous session are an unanswered question, not an invitation to choose; having a good reason for one option does not make it yours to pick.
+
+### Observation 332: "Compare against main" for a measured number — swap the touched files from main, rebuild, measure, restore
+
+**Status:** OPEN
+**Date:** 2026-09-28
+**Session context:** Tracker leftovers — the walk measured the Tracker's bar at 87px (two rows) at 1060–1150px wide and it looked like a regression from the save-corner change. Swapping the two touched files (the stylesheet and the header component) back to origin/main's versions, rebuilding in place, running the same walk script, then copying the branch's files back showed main is 87px there too — pre-existing, not this work — in five minutes, with no second checkout or install.
+**Skill:** bug-check order (raptor-port/docs/bug-check-order.md §4 "what to do with what they hand back", step 3 "compare against main")
+**Type:** internal
+**Phase/Area:** Walk — dispositioning a measured difference
+
+**Issue:** The order says to compare against main before calling anything newly introduced, but gives no cheap way to do it for a runtime measurement (a height, a row count) that only a built bundle shows; a second worktree with its own install is slow, so the comparison tends to be skipped or guessed.
+
+**Suggested improvement:** Add a line to §4 step 3 (or §7): for a measured number, copy the files the change touched aside, `git show origin/main:<path> > <path>` for each, rebuild, run the SAME walk script into a scratch folder, then copy the branch's files back and `git diff --stat` them to prove they are restored. Never while walkers are served that build.
+
+**Principle:** A baseline you can measure in minutes gets measured; one that costs a fresh checkout gets assumed — make the honest comparison the cheap one.
+
+### Observation 338: A re-walk run with the first walk's output folders silently overwrites the defect evidence
+
+**Status:** OPEN
+**Date:** 2026-09-28
+**Session context:** Tracker leftovers — re-walking walker b's four scripts after fixing its findings (numbered past #333–#337 on `claude/change-recording-retest`)
+**Skill:** New skill candidate: bug-check re-walk (raptor-port/docs/bug-check-order.md §5 "The re-walk")
+**Type:** internal
+**Phase/Area:** the re-walk step, after the fixes
+
+**Issue:** The order says a re-walk goes to a separate output folder because the first walk's pictures are the defect's evidence. The re-walk was launched by copying the walk's own command line — the same `HP_OUT` / `HP_SHOTS` — and it overwrote walker b's uncommitted final run (step logs and pictures). The committed first run survived only because an earlier commit happened to carry it. Nothing warned: the scripts write wherever the environment points.
+
+**Suggested improvement:** Make the helper refuse it: `trk-lib.mjs` (and `lib.mjs`) could refuse to write a step log or picture over a file that is tracked or modified in git unless `HP_REWALK=1` points at a folder named `rewalk`; or the walk scripts could take `rewalk` as an argument that switches both folders. Until then, the re-walk command in each evidence sheet should be written out in full with its `rewalk/` folders, beside the first walk's.
+
+**Principle:** A rule that protects evidence ("write the re-run somewhere else") must be enforced where the write happens; a re-run is almost always launched by reusing the first run's command, so the default path IS the overwrite.
+
+### Observation 343: A test or walk script that "leaves" a date box with one Tab never leaves it in Chrome
+
+**Status:** OPEN
+**Date:** 2026-09-28
+**Session context:** Tracker leftovers — the Tracker smoke failed a re-date after the date boxes were changed to save when LEFT (numbered past #342: #333–#335 and #341–#342 are the small-fixes branch's, #336–#337 the change-recording branch's)
+**Skill:** New skill candidate: bug-check walk scripts (raptor-port/docs/bug-check-order.md §7)
+**Type:** internal
+**Phase/Area:** browser test and walk scripts that type into `<input type="date">`
+
+**Issue:** The suite did `fill(dateBox)` then `press(dateBox, 'Tab')` and read the result 300ms later — nothing had saved. In Chrome a Tab inside a date box steps to its next part (day → month → year) before it leaves the box, so after `fill()` one Tab never blurred it; the save landed only when the list closed. It read as an app defect until a probe recorded where the focus was after the Tab.
+
+**Suggested improvement:** In the walk/test helpers, leave a date box with Enter (when the app commits on Enter) or a click elsewhere, never a single Tab; when a "left the box" step fails, record `document.activeElement` before blaming the app.
+
+**Principle:** A composite native control (date, time, datetime) keeps keyboard focus across its parts; a script's "leave" gesture must be one that leaves the whole control.
+
+### Observation 344: A reviewer's file:line evidence can name files that do not exist — check the path before trusting the lines
+
+**Status:** OPEN
+**Date:** 2026-09-28
+**Session context:** Tracker leftovers — Astra's final code read
+**Skill:** New skill candidate: acting on cross-provider review findings
+**Type:** open-source
+**Phase/Area:** triaging a reviewer's findings before fixing
+
+**Issue:** The reviewer's report cited `public/legacy/core.js` and `src/App.jsx`; neither exists (the real files are `src/tracker/app/core.js` and `src/tracker/App.jsx`), so every line number it gave was unreliable. Two of its three "high" findings did not hold on the real code (one misread how the export file relates to earlier bakes; one described a race that the synchronous storage makes impossible), and its suggested fix for one would have destroyed data.
+
+**Suggested improvement:** Before acting on a finding, confirm every cited path exists and re-trace the claim on the real code; classify each as fixed / not a defect (with the reason) / cannot happen here (with the evidence, and filed for when it can).
+
+**Principle:** A finding is a claim to verify, not a task to execute; wrong paths are the cheapest early signal that the evidence needs re-deriving.

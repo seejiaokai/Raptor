@@ -24,6 +24,12 @@
 let list = []            /* [{ id, cs, seat: 'FCP'|'RCP', q, sxo }] */
 let sig = ''
 let who = () => ''
+/* WHO, as a person id (28 Sep 26 — D376, "own place"): the course and student a
+   person reopens the Tracker on are remembered per PERSON, so the next person on a
+   shared browser never lands on someone else's pick. The id, not the name — a
+   callsign rename keeps his place. '' when nobody is signed in or nothing is wired
+   (the standalone Tracker keeps the browser's one place, as it always did). */
+let whoId = () => ''
 const subs = new Set()
 
 /* one string per person, every field the Tracker shows or files, in order —
@@ -41,3 +47,5 @@ export function getPeople() { return list }
 export function onPeople(f) { subs.add(f); return () => subs.delete(f) }
 export function setWhoami(fn) { who = typeof fn === 'function' ? fn : () => '' }
 export function whoami() { try { const v = who(); return v == null ? '' : String(v) } catch (_) { return '' } }
+export function setWhoamiId(fn) { whoId = typeof fn === 'function' ? fn : () => '' }
+export function whoamiId() { try { const v = whoId(); return v == null ? '' : String(v) } catch (_) { return '' } }

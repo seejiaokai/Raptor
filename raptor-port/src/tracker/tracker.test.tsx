@@ -281,10 +281,12 @@ describe('dated failures and the day an event was done (core.js)', () => {
     core.popFailDateChanged('2026-08-02')
     await core.popFail(1)
     expect(((core.marks as any)[Z]['ST-01']).f, 'the count the ball’s ticks read').toBe(2)
-    expect(core.failDates(Z, 'ST-01')).toEqual([today, '2026-08-02'])
+    /* in the order of their DAYS, not as recorded (owner, 28 Sep 26 — D371): the
+       back-dated one is the plain code, and − takes back the latest day */
+    expect(core.failDates(Z, 'ST-01')).toEqual(['2026-08-02', today])
     expect(core.failList(Z).map(x => x.label), 'each failure its own entry').toEqual(['ST-01', 'ST-01X'])
     await core.popFail(-1)
-    expect(core.failDates(Z, 'ST-01')).toEqual([today])
+    expect(core.failDates(Z, 'ST-01')).toEqual(['2026-08-02'])
     expect(core.failDates(Y, 'ST-01'), 'the other student’s record is untouched').toEqual([])
   })
 
@@ -312,7 +314,9 @@ describe('dated failures and the day an event was done (core.js)', () => {
     await core.popGrade('dco')
     expect(core.doneDate(Z, 'ST-01')).toBe(today)
     core.openPop('ST-01', at)
-    await core.popDoneChanged('2026-08-10')
+    core.popDoneChanged('2026-08-10')
+    expect(core.doneDate(Z, 'ST-01'), 'typing alone re-dates nothing ([TRK-RETEST-NOTES] C5)').toBe(today)
+    await core.popDoneCommit()                     /* the box is left */
     expect(core.doneDate(Z, 'ST-01')).toBe('2026-08-10')
     expect(core.undoWhat()).toBe('the date on ST-01 for STUDENT Z')
     core.closePop()

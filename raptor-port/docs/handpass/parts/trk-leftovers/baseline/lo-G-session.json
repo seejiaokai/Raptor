@@ -1,0 +1,38 @@
+{
+  "rows": [
+    {
+      "step": "M.0 admin, fresh browser: courses",
+      "note": "26ABSG · opens on {\"course\":\"26ABSG\",\"courseIndex\":0,\"student\":\"STUDENT A\",\"syllabus\":\"2026\"}"
+    },
+    {
+      "step": "M.1 only one course — added one with ✎ → + Add course",
+      "note": "New course name (e.g. 26BBSG): Cancel OK · courses now LO SECOND, 26ABSG"
+    },
+    {
+      "step": "M.2 picked course #2 \"26ABSG\": its students",
+      "note": "STUDENT A, STUDENT B"
+    },
+    {
+      "step": "M.3 the admin's pick before logging out",
+      "note": "{\"course\":\"26ABSG\",\"courseIndex\":1,\"student\":\"STUDENT B\",\"syllabus\":\"2026\"}"
+    },
+    {
+      "step": "M.4 logged out through the app's Logout",
+      "note": "the sign-in page is up"
+    },
+    {
+      "step": "M.5 the member (us) signs in on the same browser, opens the Tracker",
+      "note": "{\"course\":\"26ABSG\",\"courseIndex\":1,\"student\":\"STUDENT B\",\"syllabus\":\"2026\"}"
+    },
+    {
+      "step": "M.6 the member opens on the default course (the first) — not the admin's last pick",
+      "pass": false,
+      "said": "{\"course\":\"26ABSG\",\"courseIndex\":1,\"student\":\"STUDENT B\",\"syllabus\":\"2026\"} vs admin {\"course\":\"26ABSG\",\"courseIndex\":1,\"student\":\"STUDENT B\",\"syllabus\":\"2026\"}"
+    },
+    {
+      "step": "M.7 the admin signs in again: the Tracker opens on",
+      "note": "{\"course\":\"26ABSG\",\"courseIndex\":1,\"student\":\"STUDENT B\",\"syllabus\":\"2026\"}"
+    }
+  ],
+  "errors": []
+}
