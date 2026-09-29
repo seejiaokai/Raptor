@@ -48,7 +48,7 @@ said as such, never dressed up as his. One line per item, in plain words; the de
 list (13–23 Sep 26), its finished entries and the "In plain terms" block are in `OUTSTANDING-ARCHIVE.md`, moved
 whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaining).
 
-**THE DATABASE STEP STARTS NOW (D354, 29 Sep 26):** the IT team is taking the app into Dataverse now; the order below
+**THE DATABASE STEP STARTS NOW (D354, 29 Sep 26):** — and how it shares and locks, [DB-SYNC-MODEL] (his idea, 29 Sep 26: design now). The IT team is taking the app into Dataverse now; the order below
 stands, its timing ("about two months away", "about a month before") is overtaken — the readiness batch and the OIL
 award fix are due before the tables are settled. What to finish before the hand-over: his answer to be recorded here.
 **His order — to the database step (D203, 26 Sep 26; D173, D147 within it):**
@@ -860,6 +860,25 @@ section folds are next touched. (Its first half — the wave show/hide toggle le
   screen is already collected in `docs/remarks-vocabulary.md` — **keep that
   file true as rules are added.** Still to gather: the day/AL publishing flow,
   the roles split, what each warning means in practice, the phone gestures.
+
+### [DB-SYNC-MODEL] How the app shares and locks once it is in the database — his idea, to be designed now, built with the adapter (29 Sep 26)
+His idea, stated as "just an idea" (not a ruling yet): *"a refresh to update button for all members. And if a scheduler
+wants to edit a schedule for that particular day they have click edit for that day. This will block any other scheduler
+from editing the schedule until the initial schedule is out of edit mode and the other scheduler can also see who is
+editing. With the callsign - editing. For edit scheduler and schedule board mode. And the scheduler has to click on save
+to save the changes … editing can be opened day by day or multiple days selected. Not sure how the rest of the app should
+work for inputs, leave war, tracker … ideally if we can do like a google sheets/slide standard way of editing conflicts
+that would be ideal."* **What exists:** `raptor-port/docs/data-model.md` §9 — a version check on every save (a stale save
+is refused and reloaded), a stage-1 edit lease per WEEK (`editingBy` + `leaseUntil`, the holder shown, others read-only,
+five minutes renewed on activity), stage-2 row merge (two schedulers on different rows of one day both land — the
+Sheets-like step), and a change feed for live updates; the top bar's Sync pill ("Sync · slow", 1-second sync for
+publishing / meetings) is the placeholder for it. **To decide with him (design now — it shapes the tables):** the lock's
+unit (a day, or chosen days — his; the week — §9's); explicit Save vs saved-as-you-go while the lock is held ("Done
+editing" releases); what frees a forgotten lock (idle time-out; an admin's "take over"); how others see changes (a
+refresh button — his; automatic every few seconds through the Sync pill; both); Inputs, the Leave War, Quals and the
+Tracker per record (a stale save refused, "Hex changed this — reload"), no lock. **Do:** a mock-up of the day lock on
+Edit Schedule and the board, desktop and phone; §9 rewritten to his answers; both reviewers red-team it (a plan, D353);
+hand it to IT with the tables. **Place:** with `[DB-READINESS]`, before the tables are settled (D354).
 
 ### [DB-READINESS] Our side of the database, built against the fake database — before the tables are settled (D203; D354 — the step starts now; filed 26 Sep 26)
 The requirements are `raptor-port/docs/data-model.md` §7 (from the 9 Sep 26 stress test; pinned as GAP tests in
