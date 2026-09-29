@@ -51,7 +51,7 @@ import {
   type Figure,
   type FigureCtx,
 } from '../engine'
-import { awardsOnDay, clearRecordById, figureCtxOf, oilOnDay, recordsAt, setBalance, setDayAward, groupsInOrder, groupPriorityIds, lwHistEpoch, moveGroupTo, moveGroupPriorityTo, displayRoster, getState, movableRecords, moveRecords, moveRecordsProblem, stayingIn, moveManningRowTo, moveEvent, moveEventProblem, moveRosterRow, orderedManningIds, resetManningRules, setPostIn, postingProblem, visibleFigures, hasAccount, postingBlocked, postingLocked, type MoveResult, type MoveRec, type EventMoveResult } from '../state/store'
+import { awardsOnDay, balanceAfterFill, clearRecordById, figureCtxOf, oilOnDay, recordsAt, setBalance, setDayAward, groupsInOrder, groupPriorityIds, lwHistEpoch, moveGroupTo, moveGroupPriorityTo, displayRoster, getState, movableRecords, moveRecords, moveRecordsProblem, stayingIn, moveManningRowTo, moveEvent, moveEventProblem, moveRosterRow, orderedManningIds, resetManningRules, setPostIn, postingProblem, visibleFigures, hasAccount, postingBlocked, postingLocked, type MoveResult, type MoveRec, type EventMoveResult } from '../state/store'
 import { AwardSheet, BidPicker, PostInSheet, PostOutSheet, RaptorSheet } from './BidPicker'
 import { CounterSheet, FigureBreakdownSheet, PersonFiguresSheet } from './CounterSheet'
 import { FigureCell, show } from './FigureCell'
@@ -1071,6 +1071,11 @@ export function Matrix() {
   // Once per store change, not per render — a row prop (see PersonRow).
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const figureCtx = useMemo(() => figureCtxOf(), [version])
+  /* WHAT A BALANCE WOULD READ AFTER A LEAVE FILL — one question for the two sheets that fill leave, so both ask the
+     same thing with the same number before taking someone below zero: the one-day sheet (a day or a picked range) and
+     the drag-selection sheet, which asks too since his ruling D418 (29 Sep 26 — "Drag asks too"). The store answers it
+     (`balanceAfterFill`) from the balance column's own figure, read of the wars as the fill would leave them. */
+  const balanceAfter = (personId: string, dates: readonly string[], code: string) => balanceAfterFill(personId, dates, code)
   const cycle = (by: number) => setShownId(figures[(shownIx + by + figures.length) % figures.length].id)
 
   // Swipe across the counter column to cycle it — the fast path, beside the
@@ -4310,6 +4315,8 @@ export function Matrix() {
         <SelectSheet
           sel={sel}
           people={csOf}
+          /* the ask before a fill takes anyone below zero (D418) */
+          wouldLeave={balanceAfter}
           role={role}
           canDecide={canDecide(period.stage, role)}
           /* never on a deleted man (his posting is final — [POST-OUT-OUTCOMES], Fable F3) */
@@ -4686,19 +4693,8 @@ export function Matrix() {
             if (earns) showFigure('oil')
           }}
           /* What the balance would read AFTER this write, so the sheet can
-             ask before taking someone negative. Computed here because this
-             is where the wars, openings and ledger already are. */
-          wouldLeave={(code, days) => {
-            const spends = codeOf(code)?.spends
-            if (!spends) return null
-            // OIL reads through the tracker (FIFO + expiry) so this warning
-            // and the OIL BAL figure never disagree; every other counter is
-            // the plain sum.
-            const left = spends.counter === 'oil'
-              ? oilLedgerOf(figureCtx, open.id).balance
-              : balanceOf(openings, ledger, wars, open.id, spends.counter, figureCtx)
-            return { counter: spends.counter, after: left - spends.amount * days }
-          }}
+             ask before taking someone negative — the shared body above. */
+          wouldLeave={(code, dates) => balanceAfter(open.id, dates, code)}
           onClose={close}
         />
       )}

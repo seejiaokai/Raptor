@@ -2755,3 +2755,46 @@ first. **State (29 Sep 26, `claude/it-flow-guide-flowchart-da7ca1`):** the sampl
 sent; APPROVED as drawn, and the deck also covers the alternate-plan flow and shows the work flow (D411); it goes step by step through making a schedule and shows every alternate way to do a thing (D412); the Leave War gets its own work flow slide in his order (D413); the Tracker is covered in full (D414); what happens by itself after one change, and where it shows (D415); the two editing modes, board and week (D416); the Leave War's customisable manning (D417). **Built 29 Sep 26:** 42 slides, `raptor-port/docs/it-flow-guide/`; sent to him — closes on his OK and "merge live". How it is made and re-made: `raptor-port/docs/it-flow-guide/README.md`.
 **Place:** NEXT, in a fresh chat — the IT team is waiting (D354).
 
+
+*Moved here 2026-09-29 by backlog-archive.mjs ([LW-DRAG-BELOW-ZERO]). Forward facts: `raptor-port/docs/handpass/2026-09-29-lw-drag-below-zero.md`.*
+
+### [LW-DRAG-BELOW-ZERO] A drag across days on the Leave War goes below zero without asking (his ruling D418, 29 Sep 26)
+Found by the IT flow guide's check: a one-day bid that would take someone below zero asks once ("Tap the same leave again to go
+ahead"); a drag-selection filled with leave (the select sheet) writes straight through — from a balance of 0 a three-day drag wrote -3
+with no word. **His ruling (D418): the drag asks too, as the one-day bid does.** **To do:** the select sheet's leave fill asks once
+before going below zero, in the same words; a test beside `bidding.test.tsx`'s "a bid that would go below zero asks once, then
+writes", for the drag. **Place:** low; with the next small-fixes batch (the Leave War area).
+
+
+*Moved here 2026-09-29 by backlog-archive.mjs ([INPUTSCAL-TAP-FLAKY]). Forward facts: `raptor-port/docs/handpass/2026-09-29-lw-drag-below-zero.md`.*
+
+### [INPUTSCAL-TAP-FLAKY] The calendar's chip-tap test fails now and then inside the full unit run, never alone — test-only (filed 26 Sep 26)
+`raptor-port/src/ui/inputscal.test.tsx` "a real pointerdown+pointerup on an input chip sets INPEDIT to that EXACT record":
+seen twice in full runs on `claude/leave-late-published` — once by Fable's first code read (`document.elementFromPoint is
+not a function` ×7), once in the final gate run on `2cfceae2` (INPEDIT stayed null) — and green in the run before it
+(5972 / 5972) and alone 3 / 3. That branch does not touch the file or the calendar (no diff against `main`), so it is
+order- or load-dependent: some earlier file in the same worker leaves the document without `elementFromPoint`, or a
+listener behind. **Do:** find the file that runs before it in the same worker when it fails (vitest `--sequence.seed` /
+the shard order), and make the test install its own `elementFromPoint` stub and restore it, or reset what the other file
+leaves. **Place:** test-only, any time.
+**Seen again 27 Sep 26** on `claude/five-flags-batch-continue-2cfa70` (`869c7197`, the final gate run): the same test, the
+same "elementFromPoint is not a function"; that branch does not touch the calendar either; alone 3 / 3, and the whole
+unit suite green on its re-run (6256 / 6256). Three branches now — the order- or load-dependence is the lead.
+**Seen again 29 Sep 26** on `claude/change-recording-retest` (PR #464, his PC's "all gates" run on `e37aa41c`): a
+DIFFERENT test in the same file — "the popover orders sections above the inputs block" — the day's popover never opened
+("click target exists: expected null"), after a pointerdown / pointerup pair on a day cell; that branch does not touch
+the calendar (no diff against `main`); alone 3 / 3, and the whole suite 6899 / 6899 locally under the lock the same hour.
+Four branches; two tests of the file — the file's own pointer handling under load is now the likelier lead.
+
+
+*Moved here 2026-09-29 by backlog-archive.mjs ([LW-WINDOW-PRUNE-FLAKE]). Forward facts: `raptor-port/docs/handpass/2026-09-29-lw-drag-below-zero.md`.*
+
+### [LW-WINDOW-PRUNE-FLAKE] The month-window browser test timed out once inside the full run, never alone — test-only (filed 29 Sep 26)
+`raptor-port/e2e/leavewar.spec.ts` "the grid draws a window of months over year-wide placeholders, keeps every row aligned,
+and draws in place" (lw-desktop): after the January button, its 5-second wait for December to leave the drawn months ran
+out (still drawn), in the full gate run on `claude/award-earned-vs-granted-2ed66d` (`e7de1f80`, under the PC lock, 507 of
+508). Alone 3 / 3 and the whole file green (154 passed) straight after; that branch does not touch the month window. The
+desktop off-screen side draws and prunes only while the machine is idle (`state/idle.ts`), so a busy PC can outlast a
+fixed 5 seconds. **Do (D87):** wait on what the prune needs — the idle signal or the window's settled state — not a fixed
+time. **Place:** test-only, low, any time.
+

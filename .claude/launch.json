@@ -165,6 +165,21 @@
         "--strictPort"
       ],
       "port": 4185
+    },
+    {
+      "name": "raptor-lwdz",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "--prefix",
+        "raptor-port",
+        "vite",
+        "preview",
+        "raptor-port",
+        "--port",
+        "4193",
+        "--strictPort"
+      ],
+      "port": 4193
     }
   ]
 }

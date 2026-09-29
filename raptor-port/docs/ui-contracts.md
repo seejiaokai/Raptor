@@ -5620,9 +5620,19 @@ BidPicker's look and vocabulary, not instead of it.
   Pins `awardclear.test.tsx`, `inputgate.test.ts`, `rangeclear.test.tsx`.
   Post-out shows only
   for a single-person selection. Partial writes report in the `sel-note` voice
-  and keep the sheet up. The per-person negative-balance confirm the single
-  sheet shows is deliberately NOT carried here (it would ask a block-spanning
-  question per person).
+  and keep the sheet up. **A fill that would take anyone below zero ASKS ONCE
+  first** (his ruling D418, 29 Sep 26 — "Drag asks too"; it used to be left
+  out on purpose, for fear of a question per man, and a three-day drag from 0
+  wrote -3 unsaid): the first tap of a leave writes nothing and names, in ONE
+  sentence, every man it would take below zero and where — "That takes DRIFTER
+  to -5 FCL and RIDGE to -2 FCL. Tap the same leave again to go ahead." — under
+  Which leave, as the one-day sheet draws its own; the same leave again writes;
+  another leave or half asks afresh; Delete drops the ask. The words are one body
+  for both sheets (`ui/belowzero.ts`, the balance named as its column names it —
+  LVE, not "annual"), and the number is the matrix's one `balanceAfter` (below,
+  §the negative-balance confirm). Pins `selectsheet.test.tsx` (the ask),
+  `e2e/leavewar.spec.ts` "a drag that would go below zero asks once" (the wiring),
+  walk `docs/handpass/2026-09-29-lw-drag-below-zero.md`.
 
 ### Move mode — the landing preview, one chip one move, and the moved mark
 
@@ -7380,6 +7390,27 @@ whole of what the admin sees on an OIL day he has no balance for: it WARNS once
 ("Tap the same leave again to go ahead") and writes on the second tap of the same
 leave, per COUNTER. Pinned in `oiltracker.test.tsx` (no tracker for either role,
 the column still snaps) and `bidding.test.tsx` (warn → write, OIL and CCL at 0).
+**The drag-selection sheet asks the same question since D418** (29 Sep 26), one
+ask for the whole block (above, §the drag-selection sheet). **Both ask ONE
+question** — the store's `balanceAfterFill` (through `Matrix.tsx balanceAfter`):
+the balance column's OWN figure (`balanceOf`, or for OIL the tracker's FIFO and
+expiry ledger) read of the wars as they are and as the fill would leave them
+(`engine/counters.ts withFill` — each day rebuilt the way `setCell` changes it:
+the undecided requests on the half it takes replaced, the other half, absences,
+credits and refused bids kept), over only the days the store would write
+(`cellProblem`). So the ask quotes exactly what the column will show: a weekend or
+holiday day costs nothing, a pilot's run completed to 15 days charges its
+weekends, an afternoon beside a held morning adds its half, an OIL day that uses
+a credit about to expire costs nothing. **It asks only when the balance ends
+below zero AND lower than it started** (`belowzero.ts goesBelow`) — a fill that
+spends nothing never asks, even of a man already in the red. **The second tap
+goes ahead only for what the ask SAID** — the leave, the days and the figures —
+and any other control (How many, the range, How much, Delete, Decide, PO) drops
+it. Before, the one-day sheet counted `amount × days` (a Fri–Mon range asked
+"that takes him to -1" of a fill that left +1) and kept its ask armed by leave
+code alone (Astra's final read, 29 Sep 26, F1–F4). Pins `state/balanceafter.test.ts`,
+`charge.test.ts` "withFill", `bidding.test.tsx` "widening to a range",
+`selectsheet.test.tsx`.
 
 ## Bulk balance entry from the figures (owner, 6 Sep 26)
 

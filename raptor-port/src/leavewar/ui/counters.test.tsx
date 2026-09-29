@@ -478,7 +478,10 @@ describe('going negative is asked about, never refused', () => {
     fireEvent.click(screen.getByTestId('cell-reset-2026-02-11'))
     fireEvent.click(screen.getByTestId('bid-LL'))
     const said = screen.getByTestId('span-note').textContent!
-    expect(said).toContain('ANNUAL')
+    // named as its COLUMN names it — "LVE" (the +LVE figure), not the counter's inner name "annual", which no screen
+    // shows (D418's shared words, ui/belowzero.ts, 29 Sep 26 — the drag sheet asks in the same sentence)
+    expect(said).toContain('LVE')
+    expect(said).not.toContain('ANNUAL')
     expect(said).toMatch(/-\d/)
   })
 
@@ -494,13 +497,24 @@ describe('going negative is asked about, never refused', () => {
 
   // A FORTNIGHT is where this matters most: one day may stay in credit while
   // twelve do not, so the check has to count the whole span.
-  it('counts the whole range, not just its first day', () => {
+  // Counted by the balance column's OWN rule since D418 (29 Sep 26 — the store's `balanceAfterFill`): a weekend or a holiday day of
+  // leave costs nothing, so the span's WORKING days are what it spends. (This test used to take DUSK from 9 to 27 Feb
+  // and ask — only because every calendar day was counted; the fortnight's working days, two holidays off, leave him in
+  // credit, and the column agrees.) From a balance of 5, one Monday alone stays in credit; Mon 9 – Fri 20 Feb spends
+  // ten working days less the two public holidays the demo war marks (17–18 Feb) — 8, so it asks, at -3.
+  it('counts the whole range, not just its first day — its working days, as the column does', () => {
+    const was = getState().role
+    setRole('admin')                                   // a balance is set by an admin; the bid itself as before
+    expect(setBalance('dusk', 'annual', 5)).toBe(true)
+    setRole(was)
     render(<Matrix />)
     fireEvent.click(screen.getByTestId('cell-dusk-2026-02-09'))
     fireEvent.click(screen.getByTestId('span-range'))
-    fireEvent.click(screen.getByTestId('span-day-2026-02-27'))
+    fireEvent.click(screen.getByTestId('span-day-2026-02-20'))
     fireEvent.click(screen.getByTestId('bid-LL'))
-    expect(screen.getByTestId('span-note').textContent).toContain('DUSK')
+    const said = screen.getByTestId('span-note').textContent!
+    expect(said).toContain('DUSK')
+    expect(said).toContain('to -3 LVE')
     expect(getState().grid.dusk?.['2026-02-09']).toBeUndefined()
   })
 

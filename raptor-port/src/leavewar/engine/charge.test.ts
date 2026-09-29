@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { chargedDays, legacyViews, LONG_LEAVE_DAYS, type CountCtx, type LeaveSource } from './charge'
 import { dayView, AM, PM } from './dayview'
-import { balanceOf, drawnFrom, lveConOf, medConOf, takenOf } from './counters'
+import { balanceOf, drawnFrom, lveConOf, medConOf, takenOf, withFill } from './counters'
 import { seedEventDefs } from './eventdefs'
 import type { Person } from './people'
 import { addDays, buildDays, type Period } from './period'
@@ -255,5 +255,66 @@ describe('the remembered day index answers for the CURRENT calendar (6 Sep 26)',
     const leave = { wiz: { [jan5]: 'LL' } }
     expect(drawnFrom([src(leave, feb), src({}, jan)], 'wiz', 'annual', pilotCtx)).toBe(0)
     expect(drawnFrom([src(leave, jan), src({}, feb)], 'wiz', 'annual', pilotCtx)).toBe(0)
+  })
+})
+
+/* THE ASK BEFORE A BALANCE GOES BELOW ZERO READS THIS RULE TOO (his ruling D418, 29 Sep 26): `withFill` is the day
+   views as a fill would leave them, and the ask reads a figure of them — so a fill over a weekend must not claim to
+   spend the weekend, and a new afternoon beside a morning already held must add its half (Astra's final read). */
+describe('withFill — what a fill would spend, by the same rule', () => {
+  const YEAR = period('2026-01-01', '2026-12-31')
+  const war = (grid: Record<string, Record<string, string>> = {}, states = {}) => [src(grid, YEAR, states)]
+  const spend = (sources: LeaveSource[], who: string, counter: 'annual' | 'ccl' | 'fcl', dates: string[], code: string) =>
+    drawnFrom(withFill(sources, who, dates, code), who, counter, pilotCtx) - drawnFrom(sources, who, counter, pilotCtx)
+
+  it('a Fri–Mon fill of LL spends two days, not four (the old amount × days said four)', () => {
+    expect(spend(war(), 'wiz', 'annual', ['2026-01-02', '2026-01-03', '2026-01-04', '2026-01-05'], 'LL')).toBe(2)
+  })
+
+  it('a day already holding the same leave adds nothing; an empty day adds its day', () => {
+    expect(spend(war({ wiz: { '2026-01-05': 'LL' } }), 'wiz', 'annual', ['2026-01-05', '2026-01-06'], 'LL')).toBe(1)
+  })
+
+  it('a half day spends half; leave on another counter spends none of this one', () => {
+    expect(spend(war(), 'wiz', 'annual', ['2026-01-05'], '*LL')).toBe(0.5)
+    expect(spend(war(), 'wiz', 'annual', ['2026-01-05'], 'CCL')).toBe(0)
+    expect(spend(war(), 'wiz', 'ccl', ['2026-01-05', '2026-01-06', '2026-01-07'], 'CCL')).toBe(3)
+  })
+
+  it('an afternoon beside a morning already held adds its half — the morning stays (Astra F1)', () => {
+    expect(spend(war({ wiz: { '2026-01-05': '*FCL' } }), 'wiz', 'fcl', ['2026-01-05'], 'FCL*')).toBe(0.5)
+    // a morning of LL and an afternoon of OL — both LVE, the day becomes a full LL/OL day
+    expect(spend(war({ wiz: { '2026-01-05': '*LL' } }), 'wiz', 'annual', ['2026-01-05'], 'OL*')).toBe(0.5)
+    // the other half spends ANOTHER counter: the new half is charged to its own, the old one untouched
+    const other = war({ wiz: { '2026-01-05': '*CCL' } })
+    expect(spend(other, 'wiz', 'annual', ['2026-01-05'], 'LL*')).toBe(0.5)
+    expect(spend(other, 'wiz', 'ccl', ['2026-01-05'], 'LL*')).toBe(0)
+  })
+
+  it('a whole day over a morning bid REPLACES it, as the write does — half a day more, not a whole', () => {
+    expect(spend(war({ wiz: { '2026-01-05': '*LL' } }), 'wiz', 'annual', ['2026-01-05'], 'LL')).toBe(0.5)
+  })
+
+  it("a pilot's run the fill stretches to 15 days charges its weekends too", () => {
+    // ace holds LL Mon 5 – Fri 16 Jan (12 days, weekends free: 10 charged); three more days make a 15-day run
+    const sources = war({ ace: span('2026-01-05', 12, 'LL') })
+    expect(drawnFrom(sources, 'ace', 'annual', pilotCtx)).toBe(10)
+    expect(spend(sources, 'ace', 'annual', ['2026-01-17', '2026-01-18', '2026-01-19'], 'LL')).toBe(15 - 10)
+  })
+
+  it("the afternoon that completes a pilot's 15th full day charges the whole run (Astra F1)", () => {
+    // ace: LL Mon 5 – Sun 18 Jan (14 days) and a morning of LL on Mon 19 — the run is 14 full days, weekends free
+    const grid = { ace: { ...span('2026-01-05', 14, 'LL'), '2026-01-19': '*LL' } }
+    const sources = war(grid)
+    expect(drawnFrom(sources, 'ace', 'annual', pilotCtx)).toBe(10 + 0.5)
+    // the afternoon makes the 19th full: 15 full days, every day charged
+    expect(spend(sources, 'ace', 'annual', ['2026-01-19'], 'LL*')).toBe(15 - 10.5)
+  })
+
+  it('a refused bid on the day stays refused and draws nothing; a date no war holds is left alone', () => {
+    const refused = war({ wiz: { '2026-01-05': 'LL' } }, { wiz: { '2026-01-05': { state: 'refused' } } })
+    expect(spend(refused, 'wiz', 'annual', ['2026-01-05'], 'LL')).toBe(1)
+    expect(spend(war(), 'wiz', 'annual', ['2027-01-05'], 'LL')).toBe(0)
+    expect(spend(war(), 'wiz', 'annual', [], 'LL')).toBe(0)
   })
 })

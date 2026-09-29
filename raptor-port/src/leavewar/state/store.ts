@@ -58,6 +58,10 @@ import {
   readOilPolicy,
   type OilPolicy,
   type FigureCtx,
+  balanceOf,
+  codeOf as leaveCodeOf,
+  oilLedgerOf,
+  withFill,
   grantedTo,
   drawnFrom,
   localToday,
@@ -3336,6 +3340,27 @@ export function figureCtxOf(): FigureCtx {
   // 3 Sep 26): which typed words are a holiday, and who is a pilot.
   // the MERGED wars (design §4.2 FB2-01): approved leave lives in the Inputs now
   return { openings: state.openings, ledger: state.ledger, sources: getState().wars, oilPolicy: state.oilPolicy, asOf: localToday(), eventDefs: state.eventDefs, people: state.people }
+}
+
+/** What a leave FILL would do to the balance it spends — the one question both leave sheets ask before taking someone
+ *  below zero (the one-day sheet, a day or a picked range; the drag-selection sheet since his ruling D418, 29 Sep 26,
+ *  "Drag asks too"). `before` and `after` are the SAME figure the balance column shows — `balanceOf`, or for OIL the
+ *  tracker's FIFO-and-expiry ledger — read of the wars as they are and as the fill would leave them (`withFill`: each
+ *  day rebuilt the way `setCell` changes it, the other half kept). Only the days the store would write count
+ *  (`cellProblem` refuses the rest). null for leave that spends no balance. The sheets ask when `after` is below zero
+ *  AND below `before` (`belowzero.ts goesBelow`) — a fill that spends nothing never asks, even of a man already in the
+ *  red (Astra's final read, F4). */
+export function balanceAfterFill(personId: string, dates: readonly string[], code: string): { counter: CounterName; before: number; after: number } | null {
+  const spends = leaveCodeOf(code)?.spends
+  if (!spends) return null
+  const counter = spends.counter
+  const ctx = figureCtxOf()
+  const read = (sources: FigureCtx['sources']) => counter === 'oil'
+    ? oilLedgerOf({ ...ctx, sources }, personId).balance
+    : balanceOf(ctx.openings, ctx.ledger, sources, personId, counter, ctx)
+  const before = read(ctx.sources)
+  const writes = dates.filter(d => !cellProblem(personId, d, code))
+  return { counter, before, after: writes.length ? read(withFill(ctx.sources, personId, writes, code)) : before }
 }
 
 export function setOilPolicy(patch: Partial<OilPolicy>): boolean {

@@ -15,6 +15,24 @@ the later merge keeps both (D78).
 
 ## Now
 
+<!-- now:claude/lw-drag-flaky-tests-batch-c0719b -->
+### `claude/lw-drag-flaky-tests-batch-c0719b` — `[LW-DRAG-BELOW-ZERO]` (D418) + the two flaky tests: built, walked, Astra-read, all checks green; waiting on his look and "merge live" — written 29 Sep 26 — verify before use
+- **Built:** a Leave War drag that would take anyone below zero asks ONCE first, naming each man ("That takes Drifter to -5
+  FCL and Ridge to -2 FCL. Tap the same leave again to go ahead."), under Which leave, as the one-day sheet does; the same
+  leave again writes. Both sheets now ask ONE question (the store's `balanceAfterFill` → `counters.ts withFill`), read as the
+  column reads the balance — so the one-day range no longer counts weekends / holidays, and the words say "LVE", not
+  "ANNUAL" (`ui/belowzero.ts`). Evidence: `raptor-port/docs/handpass/2026-09-29-lw-drag-below-zero.md` (18 / 18 walk checks,
+  desktop, phone by finger, a member). Astra's code read found four real defects in the first cut (a half day beside a held
+  half missed, an ask left armed, OIL expiry, a man already in the red) — all fixed red-first. Filed: `[LW-SEL-HALF-LABELS]`.
+- **Flaky tests fixed (test-only), both reproduced on purpose first:** `[INPUTSCAL-TAP-FLAKY]` — a tap was two awaited steps
+  and a real-time hold timer fired between them under load; now one step. `[LW-WINDOW-PRUNE-FLAKE]` — the background fill
+  reached January before the JAN press on a busy PC; the premise is now read with the press.
+- **Parallel (D302):** the DB-sync mock-up chat (D440–D449, observations #370+) and the day-lock chat
+  (`claude/day-lock-mockup-data-model-493d27`, D450–D459, #356–#359) — no shared code; shared docs only in our own items.
+  This chat: D430–D439 (none used), observations #360–#369 (#360 used), preview port 4193 (`raptor-lwdz`).
+- **Next:** his look at the pictures, then his "merge live".
+<!-- /now -->
+
 <!-- now:claude/itflow-update-on-his-word -->
 ### `claude/itflow-update-on-his-word` — the OIL award chat's last word: `[OIL-AWARD-IS-A-GRANT]` is LIVE (PR #469, merged 29 Sep 26 on his "merge live"); this notes-only follow-up (D403) waits for his own "merge live" — written 29 Sep 26 — verify before use
 - **Live:** every hand OIL award is one ledger entry drawn on the grid on its date; "earned" and "awarded" apart (D400–D402).
@@ -102,10 +120,9 @@ the later merge keeps both (D78).
 
 ## Gate baseline
 
-The latest counts watched — 29 Sep 26, `claude/award-earned-vs-granted-2ed66d` (`e7de1f80`), one run under the PC lock: unit
-**6992 / 6992** (433 files) · build clean · tfin **728 / 0** · e2e **507 passed, 1 failed** (the month-window test, a timing
-flake — alone 3 / 3, its file 154 / 0 straight after; `[LW-WINDOW-PRUNE-FLAKE]`), 48 skipped · smoke **445 / 0** · rulecheck
-OK · docsize OK. Restate a count only from a run you watched, and REPLACE the previous counts — never stack a
+The latest counts watched — 29 Sep 26, `claude/lw-drag-flaky-tests-batch-c0719b`, one run under the PC lock: unit
+**7017 / 7017** (434 files) · build clean · tfin **728 / 0** · e2e **509 passed, 0 failed**, 49 skipped (the month-window test,
+once flaky, fixed — `[LW-WINDOW-PRUNE-FLAKE]`) · smoke **445 / 0** · rulecheck OK · docsize OK. Restate a count only from a run you watched, and REPLACE the previous counts — never stack a
 history. How to run them: `raptor-port/CLAUDE.md` §Build & verify; how they mislead, and the checks on his PC:
 `raptor-port/docs/gates-and-deploy.md`.
 

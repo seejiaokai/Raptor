@@ -25,7 +25,7 @@
 // a hand-typed cell, or the seed.
 
 import { chargedDays, viewsOf, type CountCtx, type LeaveSource } from './charge'
-import { portionOf } from './dayview'
+import { AM, dayView, FULL, overlaps, PM, portionOf, type Contrib, type Win } from './dayview'
 import { codeOf, LEAVE_TYPES, parseCell, type CounterName } from './codes'
 import { DEFAULT_OIL_POLICY, oilLedgerFor, type OilOmit, type OilPolicy } from './oiltracker'
 import { localToday } from './period'
@@ -175,6 +175,39 @@ export function balanceOf(
   // working, and adding a zero term for them would just be noise here.
   const earned = counter === 'oil' ? earnedOil(sources, personId) : 0
   return opening + grantedTo(ledger, personId, counter) + earned - drawnFrom(sources, personId, counter, ctx)
+}
+
+/**
+ * The sources as they would read AFTER `code` is written on `dates` for this person — what the two leave sheets read
+ * before taking someone below zero (the one-day sheet, and the drag-selection sheet since D418, 29 Sep 26). A caller
+ * asks any figure of these sources (`balanceOf`, the OIL tracker's ledger) and compares it with the same figure of the
+ * sources as they are, so the ask quotes EXACTLY what the balance column will show once the write lands: the
+ * weekend/PH rule, a pilot's 15-day run the fill completes, and OIL's FIFO and expiry all come from the one reading
+ * path, not from a sum of days (which asked "takes him to -1" of a Fri–Mon fill that left +1).
+ *
+ * Each date's DAY VIEW is rebuilt the way the store's write changes it (`setCell` via `liveRequestsOn`): the
+ * undecided requests on the half (or halves) the new one takes are replaced, and everything else on the day stays —
+ * the other half's leave, filed absences, credits, refused bids (Astra's final read, 29 Sep 26: the first cut laid the
+ * new day OVER the old one and so dropped a morning of leave beside a new afternoon, and the ask missed that half).
+ * Only dates a war's period holds are rewritten — the store writes no other — and the caller passes only the days the
+ * store would accept (`cellProblem`).
+ */
+export function withFill(sources: LeaveSource[], personId: string, dates: readonly string[], code: string): LeaveSource[] {
+  const cell = parseCell(code)
+  if (!cell || !dates.length) return sources
+  const win: Win = cell.portion === 'am' ? AM : cell.portion === 'pm' ? PM : FULL
+  const add: Contrib = { id: 'fill', kind: 'request', code: cell.type, win, state: 'pending' }
+  return sources.map(src => {
+    const held = src.period ? dates.filter(d => d >= src.period!.start && d <= src.period!.end) : []
+    if (!held.length) return src
+    const views = viewsOf(src)
+    const row = { ...(views[personId] ?? {}) }
+    for (const d of held) {
+      const kept = (row[d]?.all ?? []).filter(c => !(c.kind === 'request' && c.state !== 'refused' && overlaps(c.win, win)))
+      row[d] = dayView([...kept, add])
+    }
+    return { ...src, views: { ...views, [personId]: row } }
+  })
 }
 
 // ── The counter column's figures ────────────────────────────────────────────
