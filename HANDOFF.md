@@ -15,18 +15,22 @@ the later merge keeps both (D78).
 
 ## Now
 
-<!-- now:claude/handoff-review-next-priority-165f99 -->
-### `claude/handoff-review-next-priority-165f99` — a handoff review and the next job's pick; no build yet — written 29 Sep 26 — verify before use
-- **The branch:** cut from `main` at PR #465 (the small-fixes tidy); folder `.claude/worktrees/rulings-slim-d391-078ad2`.
-  So far documents only: the merged blocks of `## Now` removed (small-fixes tidy #463/#465, the guide step #460/#461, the
-  docs tidy #457, the five-flags batch #445 — each one's residue checked filed in `OUTSTANDING.md`).
-- **Parallel chats (D302), 29 Sep 26:** `claude/db-step-now` (the main checkout — D354 "the database step starts now", D355
-  the day lock, `[DB-SYNC-MODEL]` — MERGED as PR #467 and taken in here; that chat closed, `[IT-FLOW-GUIDE]` goes to a
-  fresh chat) and `claude/handoff-worktree-d368` (PR #466, D368) — both told this chat's numbers and ports. The database
-  chat recommended to him that this chat take `[OIL-AWARD-IS-A-GRANT]` next — waiting on his word.
-- **Rulings range D400–D409** (clear of D354–D359, D368–D369 and the spent D390–D399). **Ports:** preview 4183, browser
-  tests `E2E_PORT=4197`. Full checks through the PC lock (`node raptor-port/scripts/gatelock.mjs …`, D228).
-- **Next:** his pick of the job (put to him 29 Sep 26); nothing to `main` without his "merge live".
+<!-- now:claude/award-earned-vs-granted-2ed66d -->
+### `claude/award-earned-vs-granted-2ed66d` — `[OIL-AWARD-IS-A-GRANT]` with D400: one kind of hand award; "earned" and "awarded" apart — written 29 Sep 26 — verify before use
+- **The branch:** cut at `21869a2c`, the handoff-review chat's last commit (its block replaced here, with its leave; that
+  branch gets no PR — this one carries its documents: the merged-block tidy, the OIL-sits-today note, D400). Folder
+  `.claude/worktrees/five-flags-batch-continue-2cfa70`.
+- **His brief (29 Sep 26):** build `[OIL-AWARD-IS-A-GRANT]` with `[OIL-EARNED-VS-GRANTED]` folded in (D400); no stored award
+  converted, only the demo seed (D401); plan first, both reviewers on it; FULL tier, both read the final code. **D402**
+  (his answer the same hour): every hand award shows on the grid on its date, wherever it was given.
+- **The plan:** `raptor-port/docs/superpowers/plans/2026-09-29-oil-award-one-kind-plan.md` — the ledger's OIL grant is the
+  one award; the grid draws it on read. Round 1 of the red team out to Fable and Astra (reports under
+  `raptor-port/docs/superpowers/specs/2026-09-29-oil-award-plan-redteam-*.md`).
+- **Rulings range D401–D409** (D400 was the handoff-review chat's; D410–D419 the IT flow guide chat's). **Ports:** preview
+  4183, browser tests `E2E_PORT=4197`; full checks through the PC lock (D228). **Parallel (D302):** the IT flow guide chat
+  (`claude/it-flow-guide-flowchart-da7ca1`) wants a message when the OIL words change and when this merges (its journeys 9
+  and 10 show the Leave War) — promised.
+- **Next:** fold the red team in → build → gates → walk → both final reads → his look → his "merge live".
 <!-- /now -->
 
 <!-- now:claude/db-step-now -->

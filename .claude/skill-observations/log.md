@@ -1543,3 +1543,18 @@ resolved statuses always carry their resolution date
 **Suggested improvement:** In session-handoff's new-chat step: when the next chat continues THIS chat's branch, (1) release the branch from this folder first (detach, after checking everything is pushed), and (2) tell him to tick "worktree", naming the branch — never "reuse this folder". Say it once, the same way every time.
 
 **Principle:** Setup instructions must match the options the user's tool actually shows; verify the mechanism (here, one branch per folder) before telling a non-technical user a step is unnecessary.
+
+### Observation 353: A plan's door table written before the writer map named a door no screen offers
+
+**Status:** OPEN
+**Date:** 2026-09-29
+**Session context:** Planning [OIL-AWARD-IS-A-GRANT] (Raptor, branch claude/award-earned-vs-granted-2ed66d); numbered past 352 (handoff-review branch) and 350 (IT flow guide branch).
+**Skill:** New skill candidate: refactor-planning (moving one stored fact to a new store)
+**Type:** open-source
+**Phase/Area:** planning — the writers/readers table
+
+**Issue:** The first plan draft's "doors" table listed `setCell(…, 'FO'|'HO')` as the grid's award door, from reading the store. A read-only explorer's map, returned later, showed no screen calls it (only tests and a debug bridge); the real door was a different function reached from the bid sheet's panel. Three single-field editors in the same file also had no production caller. The draft was fixed before review, but only because the map arrived before the reviewers were sent.
+
+**Suggested improvement:** When a plan moves a stored fact, build the writer/reader map (every call site, and for each writer its PRODUCTION caller — a screen control) BEFORE drafting the door table; mark any writer with no production caller as "test-only / dead" in the plan so the build either retires it or keeps it deliberately.
+
+**Principle:** A door is a control a person can press, not a function that can write. Map writers to their on-screen callers before planning around them; a function with no production caller is a test seam or dead code, never "the door".
