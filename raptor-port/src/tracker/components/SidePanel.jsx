@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import * as core from '../app/core.js';
+import { DateBox } from './DateBox.jsx';
 
 /* The calendar that the lull pop-up shows. It used to live in the side panel
    with a "Click sets" dropdown offering Last Flown (Currency), Last Flown
@@ -181,8 +182,11 @@ function FailLog() {
             <div className="frow" key={x.id + ':' + x.i} data-ev={x.id} data-fi={x.i}>
               <span className="chip failchip">{x.label}</span>
               <span className="mini">{core.ordinal(x.i + 1)} failure{core.infoFor(x.id).name ? ' · ' + core.infoFor(x.id).name : ''}</span>
-              <input type="date" value={x.date || ''} title={x.date ? 'The day this failure happened' : 'No day recorded for this failure — set one'}
-                onChange={e => core.setFailDate(s, x.id, x.i, e.target.value)} />
+              {/* saves when left, not as typed ([TRK-RETEST-NOTES] C5): typed per keystroke,
+                  a failure re-dated to the 1st on the way to the 17th re-sorted the list
+                  (D371) under the cursor */}
+              <DateBox value={x.date || ''} title={x.date ? 'The day this failure happened' : 'No day recorded for this failure — set one'}
+                onCommit={v => core.setFailDate(s, x.id, x.i, v)} />
             </div>
           ))
           : <div className="mini" style={{ margin: '6px 0' }}>No failures recorded for {core.nameOf(s)} on this chart.</div>}
@@ -328,10 +332,13 @@ export default function SidePanel({ zoom }) {
       <div className="card wide c-curr">
         <h3>Currency &amp; flex</h3>
         <div className="curGrid">
-          <div className="field"><label>Last Flown (Syllabus)</label><input type="date" id="lastSyll" value={core.dates[s].lastSyll || ''} onChange={e => core.setLastSyll(s, e.target.value)} /></div>
-          <div className="field"><label>Last Flown (Currency)</label><input type="date" id="lastCurr" value={core.dates[s].lastCurr || ''} onChange={e => core.setLastCurr(s, e.target.value)} /></div>
+          {/* the date boxes save when LEFT, never as typed, and are keyed by student and
+              field so a Crew switch never carries a half-typed day across
+              ([TRK-RETEST-NOTES] C5 — DateBox.jsx) */}
+          <div className="field"><label>Last Flown (Syllabus)</label><DateBox key={s + ':lastSyll'} id="lastSyll" value={core.dates[s].lastSyll || ''} onCommit={v => core.setLastSyll(s, v)} /></div>
+          <div className="field"><label>Last Flown (Currency)</label><DateBox key={s + ':lastCurr'} id="lastCurr" value={core.dates[s].lastCurr || ''} onCommit={v => core.setLastCurr(s, v)} /></div>
           <div className="field"><label>No. of Down Days</label><input type="number" min="0" id="downDays" value={core.dates[s].downDays || ''} style={{ width: 80 }} onChange={e => core.setDownDays(s, e.target.value)} /></div>
-          <div className="field"><label>Upchit Date</label><input type="date" id="upchit" value={core.dates[s].upchit || ''} onChange={e => core.setUpchit(s, e.target.value)} /></div>
+          <div className="field"><label>Upchit Date</label><DateBox key={s + ':upchit'} id="upchit" value={core.dates[s].upchit || ''} onCommit={v => core.setUpchit(s, v)} /></div>
         </div>
         <div className="curKv">
           <div className="kv"><span>Days since syllabus</span><b>{dSyll == null ? '—' : dSyll + 'd'}</b></div>
@@ -362,12 +369,12 @@ export default function SidePanel({ zoom }) {
           </div>
           <div className="o">
             <div className="t">End date A</div>
-            <input type="date" id="targetIn" value={myPace.target || ''} onChange={e => core.setTarget(s, e.target.value)} />
+            <DateBox key={s + ':target'} id="targetIn" value={myPace.target || ''} onCommit={v => core.setTarget(s, v)} />
             <div className="r" style={{ marginTop: 6 }}>{reqEpw}{reqEpw !== '—' && reqEpw !== 'past' ? ' /wk' : ''}</div><div className="mini">req. pace</div>
           </div>
           <div className="o">
             <div className="t">End date B</div>
-            <input type="date" id="targetIn2" value={myPace.target2 || ''} onChange={e => core.setTarget2(s, e.target.value)} />
+            <DateBox key={s + ':target2'} id="targetIn2" value={myPace.target2 || ''} onCommit={v => core.setTarget2(s, v)} />
             <div className="r" style={{ marginTop: 6 }}>{reqEpw2}{reqEpw2 !== '—' && reqEpw2 !== 'past' ? ' /wk' : ''}</div><div className="mini">req. pace</div>
           </div>
         </div>
@@ -383,11 +390,14 @@ export default function SidePanel({ zoom }) {
           own chip (owner: "when someone fails twice, it should show ST-01,
           ST-01X"), each carrying the day it happened — hover or tap for it;
           the title opens the full list with a date box per failure. Worst
-          event first, its failures oldest first. The total counts failures. */}
+          event first, its failures oldest DAY first (D371). The total counts failures.
+          An event marked N.A. is left out — its ball hides its ticks, and the card
+          and its total follow (owner, 28 Sep 26 — D370); the failures are kept and
+          come back if it is graded again. */}
       {(() => {
         const fails = core.SYL
           .map(e => ({ id: e.id, n: core.failOf(s, e.id) }))
-          .filter(x => x.n > 0)
+          .filter(x => x.n > 0 && core.gradeOf(s, x.id) !== 'na')
           .sort((a, b) => b.n - a.n || a.id.localeCompare(b.id));
         const total = fails.reduce((t, x) => t + x.n, 0);
         return (

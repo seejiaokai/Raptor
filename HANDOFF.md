@@ -144,15 +144,15 @@ the later merge keeps both (D78).
    closed by the absence-record re-test).
 2. **About a month before the database:** `[DB-READINESS]` with the OIL award fix and the small OIL follow-ups as ONE
    batch (D147, D203) → `[DB-STEP]` when Manfred is ready. The whole list: `OUTSTANDING.md`'s priority list.
-3. Filed, none blocking: `[TRK-PINCH-ASK]` (his iPhone look), `[TRK-DLG-LEFTOVERS]`, `[TRK-RETEST-NOTES]`,
-   `[LW-FROZEN-BAR-GAP]`. Everything else: `OUTSTANDING.md`'s priority list.
+3. Filed, none blocking: `[TRK-PINCH-ASK]` (his iPhone look), `[LW-FROZEN-BAR-GAP]`; the Tracker leftovers'
+   own residue — `[SAVE-NOTE-COVERS]` (medium, next), `[TRK-REMOUNT-LANDING]`, `[TRK-ASYNC-STALE]` (with `[DB-READINESS]`). Everything else: `OUTSTANDING.md`'s priority list.
 4. **Before ANY collaborator:** take the checks runner off this repo (Astra SEC-101, `[REPO-PRIVATE]`).
 
 ## Gate baseline
 
-The latest counts watched — 28 Sep 26, `claude/hist-phone-by-item`'s final code (`14b14360`, `main` taken in), one run
-under the PC lock: unit **6775 / 6775** (417 files) · build clean · tfin **728 / 0** · e2e **495 passed**, 48 skipped ·
-smoke **443 / 0** · rulecheck OK · docsize OK. Restate a count only from a run you watched, and REPLACE the previous counts — never stack a
+The latest counts watched — 28 Sep 26, `claude/tracker-leftovers-f79d36`, each run under the PC lock: unit **6827 / 6828**
+(418 files — the one a changes-window test timing out under a full run, alone 9/9: `[HISTLIST-SLOW-TEST]`) · build clean ·
+tfin **728 / 0** · e2e **495 passed**, 48 skipped · smoke **445 / 0** · rulecheck OK · docsize OK. Restate a count only from a run you watched, and REPLACE the previous counts — never stack a
 history. How to run them: `raptor-port/CLAUDE.md` §Build & verify; how they mislead, and the checks on his PC:
 `raptor-port/docs/gates-and-deploy.md`.
 

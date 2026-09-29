@@ -1,0 +1,31 @@
+{
+  "rows": [
+    {
+      "step": "O.1 on the Tracker (x, y, width, height)",
+      "note": "{\"page\":\"tracker\",\"trackerClass\":\"page on\",\"cv\":\"visible\",\"display\":\"block\",\"section\":[0,57,1440,843],\"bar\":[0,57,1440,51],\"board\":[0,133,1084,735],\"ball\":[486,469,61,61],\"crew\":[46,67,111,30]}"
+    },
+    {
+      "step": "O.2 on quals: the Tracker section and its insides",
+      "note": "{\"page\":\"quals\",\"trackerClass\":\"page doze\",\"cv\":\"hidden\",\"display\":\"block\",\"section\":[0,1215,1440,0],\"bar\":[0,1215,1440,51],\"board\":[0,1291,1084,735],\"ball\":[486,1627,61,61],\"crew\":[46,1225,111,30]}"
+    },
+    {
+      "step": "O.3 on quals: a dozing Tracker's insides read 0×0 (as the stylesheet comment says)",
+      "pass": false,
+      "said": "class \"page doze\", content-visibility hidden; bar [0,1215,1440,51] · board [0,1291,1084,735] · a ball [486,1627,61,61] · crew box [46,1225,111,30]"
+    },
+    {
+      "step": "O.2 on leavewar: the Tracker section and its insides",
+      "note": "{\"page\":\"leavewar\",\"trackerClass\":\"page doze\",\"cv\":\"hidden\",\"display\":\"block\",\"section\":[0,2351,1440,0],\"bar\":[0,2351,1440,51],\"board\":[0,2426,1084,735],\"ball\":[486,2763,61,61],\"crew\":[46,2361,111,30]}"
+    },
+    {
+      "step": "O.3 on leavewar: a dozing Tracker's insides read 0×0 (as the stylesheet comment says)",
+      "pass": false,
+      "said": "class \"page doze\", content-visibility hidden; bar [0,2351,1440,51] · board [0,2426,1084,735] · a ball [486,2763,61,61] · crew box [46,2361,111,30]"
+    },
+    {
+      "step": "O.4 back on the Tracker",
+      "note": "{\"page\":\"tracker\",\"trackerClass\":\"page on\",\"cv\":\"visible\",\"display\":\"block\",\"section\":[0,57,1440,843],\"bar\":[0,57,1440,51],\"board\":[0,133,1084,735],\"ball\":[486,469,61,61],\"crew\":[46,67,111,30]}"
+    }
+  ],
+  "errors": []
+}

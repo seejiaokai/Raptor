@@ -439,9 +439,12 @@ img,a{-webkit-user-drag:none;user-drag:none}
    ~260ms at 390px — because display:none discards the subtree's layout,
    while content-visibility:hidden keeps it cached and both flips measured
    1–2ms. The dozing section keeps display:block but renders no content and
-   sizes as empty (height 0), so the active page above it is untouched;
-   descendant rects read 0×0 exactly as under display:none, which is what
-   every Matrix measurement guard already checks for. @supports so a browser
+   sizes as empty (height 0), so the active page above it is untouched.
+   ITS INSIDES DO NOT READ 0×0 (measured 28 Sep 26 — a dozing Tracker's bar
+   1440×51, a ball 61×61; this comment used to say they did): they keep the
+   boxes they last had, only unpainted. A measurement guard that tests an
+   inner element's width for 0 does not see a dozing page — test the
+   section's .on / .doze instead (filed as [LW-DOZE-GUARDS]). @supports so a browser
    without content-visibility falls back to the base display:none — correct,
    just slower to re-show. */
 @supports (content-visibility: hidden) {

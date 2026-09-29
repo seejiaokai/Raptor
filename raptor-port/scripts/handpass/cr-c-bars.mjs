@@ -10,10 +10,14 @@ import { chromium } from '@playwright/test'
 import { existsSync, mkdirSync, writeFileSync } from 'node:fs'
 
 const MODE = process.argv[2] || 'desktop'
-const SIZE = { desktop: [1440, 900], phone: [390, 844], short: [844, 390] }[MODE]
+const SIZE = { desktop: [1440, 900], laptop: [1366, 768], phone: [390, 844], short: [844, 390] }[MODE]
 const [W, H] = SIZE
 const PHONE = W <= 820
 const BASE = process.env.HP_URL || 'http://localhost:4173'
+/* the live app (`main`, served beside the build) — the bar on each page may be no taller than it is there (the plan's
+   B10.2). The first run compared against Edit Schedule's bar, which is two lines on a laptop anyway, and passed a
+   bar that had grown a line; the gate's drag tests found it. */
+const MAIN = process.env.HP_MAIN || 'http://localhost:4192'
 const OUT = (process.env.HP_SHOTS || 'C:/Users/User/projects/Raptor/raptor-port/docs/img/handpass/2026-09-28-change-recording/c') + '/' + MODE
 mkdirSync(OUT, { recursive: true })
 const CHROMIUM = '/opt/pw-browsers/chromium'
@@ -22,12 +26,12 @@ const rows = []
 let n = 0, fails = 0
 const ok = (step, cond, saw) => { rows.push([step, cond ? 'PASS' : 'FAIL', saw]); if (!cond) fails++; console.log(`${cond ? 'PASS' : 'FAIL'} ${step} — ${saw}`) }
 
-async function session(user, pass) {
+async function session(user, pass, url = BASE) {
   const ctx = await browser.newContext({ viewport: { width: W, height: H }, deviceScaleFactor: 2, ...(W < 700 ? { hasTouch: true, isMobile: true } : {}) })
   const page = await ctx.newPage()
   const errs = []
   page.on('pageerror', e => errs.push(String(e))); page.on('console', m => { if (m.type() === 'error') errs.push(m.text()) })
-  await page.goto(BASE + '/')
+  await page.goto(url + '/')
   await page.addStyleTag({ content: '*{scroll-behavior:auto !important}' })
   await page.waitForSelector('#luser'); await page.fill('#luser', user); await page.fill('#lpass', pass)
   await page.click('#loginForm button[type=submit]')
@@ -69,7 +73,13 @@ const readBar = (page) => page.evaluate(() => {
 async function pagesFor(who, user, pass, want) {
   const { ctx, page, errs } = await session(user, pass)
   await go(page, want.includes('editsched') ? 'editsched' : 'viewsched')
-  const ref = await readBar(page)
+  /* the same pages on the live app, same person, same size */
+  const mainH = {}
+  { const m = await session(user, pass, MAIN)
+    for (const p of ['editsched', 'viewsched', 'inputs', 'quals', 'logic', 'leavewar', 'tracker', 'help', 'admin']) {
+      if (who === 'member' && (p === 'editsched' || p === 'admin')) continue
+      await go(m.page, p); mainH[p] = (await readBar(m.page)).h }
+    await m.ctx.close() }
   for (const p of ['editsched', 'viewsched', 'inputs', 'quals', 'logic', 'leavewar', 'tracker', 'help', 'admin']) {
     if (who === 'member' && (p === 'editsched' || p === 'admin')) continue
     await go(page, p)
@@ -85,8 +95,8 @@ async function pagesFor(who, user, pass, want) {
       if (PHONE) ok(`${who} · ${p}: the Sync label drops to its dot where the pair shows`, !b.syncLbl, `label shown: ${b.syncLbl}`)
       if (PHONE) ok(`${who} · ${p}: the bell sits at the right end of the bar`, b.bellRight != null && b.bellRight >= b.right - 1, `bell right ${b.bellRight}, group right ${b.right}`)
     }
-    ok(`${who} · ${p}: the group on one line${PHONE ? ' (the whole bar one row)' : ''}, the bar no taller than ${want.includes('editsched') ? 'Edit Schedule' : 'View-only Sched'}'s (${ref.h}px), no sideways scroll`,
-      b.rows === 1 && (!PHONE || b.phoneRows === 1) && b.h <= ref.h + 1 && b.overflow <= 0, `h ${b.h} · group rows ${b.rows} · bar rows ${b.phoneRows} · overflow ${b.overflow}`)
+    ok(`${who} · ${p}: the group on one line${PHONE ? ' (the whole bar one row)' : ''}, the bar no taller than on the live app (${mainH[p]}px), no sideways scroll`,
+      b.rows === 1 && (!PHONE || b.phoneRows === 1) && b.h <= mainH[p] + 1 && b.overflow <= 0, `h ${b.h} (live ${mainH[p]}) · group rows ${b.rows} · bar rows ${b.phoneRows} · overflow ${b.overflow}`)
   }
   ok(`${who}: no console or page errors`, errs.length === 0, errs.slice(0, 3).join(' | ') || 'none')
   await ctx.close()

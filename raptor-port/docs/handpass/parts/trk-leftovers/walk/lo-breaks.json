@@ -1,0 +1,217 @@
+[
+  {
+    "name": "B1 the queue",
+    "pass": true,
+    "said": "RED: 1 failed | 45 skipped (46)"
+  },
+  {
+    "name": "B1 the end of a session cancels the waiting",
+    "pass": true,
+    "said": "RED: 1 failed | 45 skipped (46)"
+  },
+  {
+    "name": "B1 the door (inert)",
+    "pass": true,
+    "said": "RED: 1 failed | 45 skipped (46)"
+  },
+  {
+    "name": "B1 the Tab wrap",
+    "pass": true,
+    "said": "RED: 1 failed | 45 skipped (46)"
+  },
+  {
+    "name": "B2 the text box",
+    "pass": true,
+    "said": "RED: 1 failed | 45 skipped (46)"
+  },
+  {
+    "name": "B2 the + Add search",
+    "pass": true,
+    "said": "RED: 1 failed | 45 skipped (46)"
+  },
+  {
+    "name": "B2 the Find box",
+    "pass": true,
+    "said": "RED: 1 failed | 45 skipped (46)"
+  },
+  {
+    "name": "B2 Show All",
+    "pass": true,
+    "said": "RED: 1 failed | 45 skipped (46)"
+  },
+  {
+    "name": "C5 the date box commits on leaving",
+    "pass": true,
+    "said": "RED: 1 failed | 45 skipped (46)"
+  },
+  {
+    "name": "C5 the side panel uses it (Last Flown)",
+    "pass": true,
+    "said": "RED: 1 failed | 2 passed | 43 skipped (46)"
+  },
+  {
+    "name": "C5 no step for the same day",
+    "pass": true,
+    "said": "RED: 1 failed | 45 skipped (46)"
+  },
+  {
+    "name": "C5 the pop-up re-dates on leaving",
+    "pass": true,
+    "said": "RED: 1 failed | 45 skipped (46)"
+  },
+  {
+    "name": "D374 Last Flown refuses",
+    "pass": true,
+    "said": "RED: 1 failed | 45 skipped (46)"
+  },
+  {
+    "name": "D374 a grade on a future day",
+    "pass": true,
+    "said": "RED: 1 failed | 45 skipped (46)"
+  },
+  {
+    "name": "F-b1 a refused Done on stays in its box",
+    "pass": true,
+    "said": "RED: 1 failed | 45 skipped (46)"
+  },
+  {
+    "name": "F-b2 a + on a refused Failed on",
+    "pass": true,
+    "said": "RED: 1 failed | 45 skipped (46)"
+  },
+  {
+    "name": "F-b3 a day not finished",
+    "pass": true,
+    "said": "RED: 1 failed | 45 skipped (46)"
+  },
+  {
+    "name": "F-b3 the part-typed flag read on leaving",
+    "pass": true,
+    "said": "RED: 1 failed | 45 skipped (46)"
+  },
+  {
+    "name": "F-b4 the line goes with its day",
+    "pass": true,
+    "said": "RED: 1 failed | 45 skipped (46)"
+  },
+  {
+    "name": "F-b5 the N.A. words in the pop-up",
+    "pass": true,
+    "said": "RED: 1 failed | 45 skipped (46)"
+  },
+  {
+    "name": "D374 a failure re-dated to the future",
+    "pass": true,
+    "said": "RED: 1 failed | 45 skipped (46)"
+  },
+  {
+    "name": "D371 the order of the days",
+    "pass": true,
+    "said": "RED: 1 failed | 45 skipped (46)"
+  },
+  {
+    "name": "D371 − takes the latest day",
+    "pass": true,
+    "said": "RED: 1 failed | 45 skipped (46)"
+  },
+  {
+    "name": "D370 the card",
+    "pass": true,
+    "said": "RED: 1 failed | 45 skipped (46)"
+  },
+  {
+    "name": "D372 the pace is a step",
+    "pass": true,
+    "said": "RED: 1 failed | 45 skipped (46)"
+  },
+  {
+    "name": "D372 a lull is a step",
+    "pass": true,
+    "said": "RED: 1 failed | 45 skipped (46)"
+  },
+  {
+    "name": "D372 Copy to is one step",
+    "pass": true,
+    "said": "RED: 1 failed | 45 skipped (46)"
+  },
+  {
+    "name": "D376 the pick is per person",
+    "pass": true,
+    "said": "RED: 1 failed | 45 skipped (46)"
+  },
+  {
+    "name": "D376 nobody with no session",
+    "pass": true,
+    "said": "RED: 1 failed | 45 skipped (46)"
+  },
+  {
+    "name": "D376 no press while reloading",
+    "pass": true,
+    "said": "RED: 1 failed | 45 skipped (46)"
+  },
+  {
+    "name": "D376 + Add remembers",
+    "pass": true,
+    "said": "RED: 1 failed | 45 skipped (46)"
+  },
+  {
+    "name": "D376 an unsaved edit waits",
+    "pass": true,
+    "said": "RED: 1 failed | 45 skipped (46)"
+  },
+  {
+    "name": "C6 the tick picks its student",
+    "pass": true,
+    "said": "RED: 1 failed | 45 skipped (46)"
+  },
+  {
+    "name": "C7 a new period opens on this month",
+    "pass": true,
+    "said": "RED: 1 failed | 45 skipped (46)"
+  },
+  {
+    "name": "C11 the list is live",
+    "pass": true,
+    "said": "RED: 1 failed | 45 skipped (46)"
+  },
+  {
+    "name": "C14 no words beside Save",
+    "pass": true,
+    "said": "RED: 1 failed | 45 skipped (46)"
+  },
+  {
+    "name": "D373 the fold row",
+    "pass": true,
+    "said": "RED: 1 failed | 1 passed | 44 skipped (46)"
+  },
+  {
+    "name": "D373 the canvas never taller than its box",
+    "pass": true,
+    "said": "RED: 1 failed | 45 skipped (46)"
+  },
+  {
+    "name": "D373 a redraw while editing sizes the canvas by the same rule",
+    "pass": true,
+    "said": "RED: 1 failed | 45 skipped (46)"
+  },
+  {
+    "name": "D373 a turn re-fits the canvas",
+    "pass": true,
+    "said": "RED: 1 failed | 45 skipped (46)"
+  },
+  {
+    "name": "D373 Escape closes the set first",
+    "pass": true,
+    "said": "RED: 1 failed | 1 passed | 44 skipped (46)"
+  },
+  {
+    "name": "E the bake keeps details off the base table",
+    "pass": true,
+    "said": "RED: 1 failed | 45 skipped (46)"
+  },
+  {
+    "name": "E the bake refuses a student name",
+    "pass": true,
+    "said": "RED: 1 failed | 45 skipped (46)"
+  }
+]

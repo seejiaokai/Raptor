@@ -16,7 +16,7 @@ import * as FMT from './fileFormat.js';
 import * as FS from './fileStore.js';
 import { findEvents } from './eventOrder.js';
 import { onTrackerSessionEnd, onBeforeTrackerLogout } from '../role.js';
-import { getPeople, onPeople, whoami } from '../people.js';
+import { getPeople, onPeople, whoami, whoamiId } from '../people.js';
 import { setTrackerUndo, pingTrackerUndo } from '../undo-bridge.js';
 import { mintId, isEntry, upgradeCourseBlock, reconcileIds } from './ids.js';
 import { mintCourseId, isCourseEntry, isCourseId, isReservedCourseName, upgradeCourses, reconcileCourseIds } from './courseIds.js';
@@ -88,13 +88,22 @@ onBeforeTrackerLogout(async show => {
   else { clearDirty(); if (arrangeMode) toggleArrange(); await loadCourse(course); refreshSyl(); renderBoard(); renderSide(); }
   return true;
 });
+/* bumped at every session end: a job that asks more than one question (an import) stops
+   between them once its session has ended, so the next person never gets the next one
+   (Fable's final read F6) */
+let sessionSerial = 0;
 function endSession() {
+  sessionSerial++;
   undoStack = []; redoStack = [];
-  if (dlg) dlgClose(null);            /* a half-answered question: cancelled */
-  pop = null; popDoneDate = ''; popFailDate = '';
+  dlgCancelAll();                     /* a half-answered question, and any waiting: cancelled */
+  pop = null; popDoneDate = ''; popFailDate = ''; popMsg = null;
   failLog = null; lullPick = null; lullCopy = null;
   infoId = null; editId = null; ordMode = null; sylModalOpen = false; showAllOpen = false; copyOpen = false;
-  showDetails = false; hideDetailBubble();
+  showDetails = false; hideDetailBubble(); toolsOpen = false;
+  /* the save words belong to the person leaving: the next one's place (D376) is not the
+     course they named (the leftovers' walk, walker a F1 — "● switched to 26ABSG" over
+     someone else's course) */
+  saveStat = { text: '', cls: '' };
   if (arrangeMode) {
     /* `view` is the editing canvas's pan and zoom: it stays in Edit chart layout */
     arrangeMode = false; connectSrc = null; drawing = null; selBalls = new Set(); tool = 'move'; view = { x: 0, y: 0, k: 1 };
@@ -616,6 +625,14 @@ function trkGesture(fn) {
 const PP = 'ocuLocal:';
 function prefGet(k) { try { return localStorage.getItem(PP + k); } catch (e) { return null; } }
 function prefSet(k, v) { try { localStorage.setItem(PP + k, v); } catch (e) {} }
+/* THE COURSE AND STUDENT A PERSON REOPENS ON ARE HIS OWN (owner, 28 Sep 26 — D376,
+   "own place"; [TRK-SESSION-PICK]). They were remembered per BROWSER, so the next
+   person to sign in opened on the last one's course and student. Every read and
+   write of the two pick keys (`lastCourse`, `lastCrew:<course>`) goes through here:
+   under the signed-in person's id when there is one, else the browser's own key
+   (the standalone Tracker, nobody signed in — as before). The boot converters that
+   rewrite OLD unprefixed keys are left as they are (D120). */
+export function pickKey(k) { const w = whoamiId(); return w ? 'who:' + w + ':' + k : k; }
 
 /* The toolbar hides on demand so the chart gets the whole column (owner phone
    ask, 9 Sep 26 — "have the option to hide this bar so that the space can be
@@ -674,6 +691,41 @@ let loading = true;
 let loadChain = Promise.resolve();
 function onChain(fn) { const p = loadChain.then(fn); loadChain = p.catch(() => {}); return p; }   /* a failed step must not jam the chain */
 export function whenLoaded() { return loadChain; }
+/* WHOSE PICK IS ON SCREEN (D376). The engine boots once per page load and is kept
+   in memory across a logout and the next login, so the next person used to see the
+   last one's course and student. `pickOwner` is the person the loaded pick belongs
+   to; `resumeForPerson` — run whenever the Tracker tab is SHOWN (App.jsx), so a
+   person changed while the tab sat hidden is caught too (Astra F-02) — reloads the
+   signed-in person's own course and student when it is someone else. It decides at
+   once: while it reloads, `resuming` hides the page (App.jsx) and a press on a ball
+   does nothing, so the last person's chart is never graded by the next (Fable F4).
+   The person is read when the queued load RUNS, so a second change queues a load
+   that corrects the first. An unsaved chart edit is never replaced under anyone:
+   the reload waits (the logout already asks about it — D129). */
+let pickOwner = null;
+export let resuming = false;
+export function resumeForPerson() {
+  if (!ready || bootError) return false;
+  if (resuming) return true;
+  if (whoamiId() === pickOwner) return false;
+  if (sylDirty) return false;
+  resuming = true; pop = null; hideDetailBubble();
+  notify();
+  onChain(async () => {
+    const w = whoamiId();
+    const want = prefGet(pickKey('lastCourse'));
+    const c = (want && COURSES.some(x => isCourseEntry(x) && x.id === want)) ? want : (COURSES[0] && COURSES[0].id);
+    if (c) await loadCourseNow(c, true);
+    pickOwner = w;
+  }).finally(() => {
+    resuming = false;
+    refreshCourses(); refreshSyl(); refreshActive(); renderBoard(); renderSide();
+    notify();
+    const land = () => { if (!showLastEdit(active)) scrollToEvent(firstEventId()); };
+    if (typeof requestAnimationFrame !== 'undefined') requestAnimationFrame(land); else land();
+  });
+  return true;
+}
 export let arrangeMode = false, layout = {}, drag = null, AUTO = {}, BORROW = null;
 /* ---- per-edge routing metadata layered on top of the prereq graph ---- */
 let edgeMeta = {}, merges = new Set(), unmerges = new Set(), selEdge = null, mergeFirst = null, selBalls = new Set(), redoStack = [], alignGuides = [];
@@ -714,7 +766,7 @@ export function rowOf(id) { return Math.round((nodePos(id).y || 0) / 92); }
 export let hintBase = 'Select: drag a box on empty space to pick several balls, then drag any of them to move the group.';
 export let hintFlash = null; let hintT = null;
 let hintUntil = 0;
-function flashHint(msg, ms = 1800) {
+export function flashHint(msg, ms = 1800) {
   hintFlash = msg; hintUntil = Date.now() + ms; notify();
   clearTimeout(hintT); hintT = setTimeout(() => { hintFlash = null; notify(); }, ms);
 }
@@ -1724,7 +1776,7 @@ async function loadCourseNow(c, restoreLastSyllabus) {
   course = c;
   /* One site covers init, switchCourse, addCourse, renCourse and delCourse.
      Raw and synchronous, so unlike sSet it never flickers the save status. */
-  prefSet('lastCourse', c);
+  prefSet(pickKey('lastCourse'), c);
   /* A ring left over from another syllabus would re-light the moment the user
      came back to it. Cleared without redrawing: every caller renders anyway. */
   searchHit = null; searchQ = ''; searchCount = 0; searchAt = 0; searchHits = [];
@@ -1739,6 +1791,7 @@ async function loadCourseNow(c, restoreLastSyllabus) {
   undoStack = []; redoStack = [];
   const pr = await sGet(kPlan(c)); plan = sParse(pr, null, 'object') || { lulls: [], mode: 'pace', epw: 2, target: null, sylId: firstSylId() };
   if (!plan.sylId) plan.sylId = firstSylId();
+  const __storedSyl = plan.sylId;
   /* the id-keyed definition store is GLOBAL (v3:master:syls) — customs and
      edited-built-in overrides, both keyed by syllabus id. Reloaded here so an
      import elsewhere in the session is reflected. The legacy per-course/
@@ -1750,7 +1803,13 @@ async function loadCourseNow(c, restoreLastSyllabus) {
      layout load so it costs no second pass. Only at app start; every other
      caller has already decided the syllabus. */
   const __lastS = await sGet(kLastStudent(c));
-  if (__lastS && restoreLastSyllabus) {
+  /* each person's OWN chart on this course comes first (D376, reading 5 — Fable's final read
+     F2): the roster is per chart, so the shared chart below opened the next person on the
+     last person's chart and, their own student not on it, on the last person's student.
+     Signed-in people only; the standalone Tracker keeps the shared answer, as before. */
+  const __mySyl = (restoreLastSyllabus && whoamiId()) ? prefGet(pickKey('lastSyl:' + c)) : null;
+  if (__mySyl && sylSource(__mySyl)) plan.sylId = __mySyl;
+  else if (__lastS && restoreLastSyllabus) {
     try {
       const rec = JSON.parse(await sGet(kLast(c, __lastS)) || 'null');
       if (rec && rec.syl && sylSource(rec.syl)) plan.sylId = rec.syl;
@@ -1761,6 +1820,11 @@ async function loadCourseNow(c, restoreLastSyllabus) {
     plan.sylId = firstSylId();
     await savePlan(); __src = sylSource(plan.sylId) || DEFAULT_SYLLABUS;
   }
+  if (whoamiId()) prefSet(pickKey('lastSyl:' + c), plan.sylId);   /* this person's chart here (F2) */
+  /* the chart on screen is the course's saved chart too: a later reload of this course (an
+     import, discarded chart edits) reads the saved one, and left different it switched the
+     person to the last person's chart (found building F2) */
+  if (plan.sylId !== __storedSyl) await savePlan();
   /* With no charts shipped in the code and none opened yet, DEFAULT_SYLLABUS is
      undefined and JSON.parse(JSON.stringify(undefined)) throws, which aborted
      loadCourse half-way and left the app looking broken. An empty board is the
@@ -1803,7 +1867,7 @@ async function loadCourseNow(c, restoreLastSyllabus) {
      (kLastStudent), then whoever is at the top. The roster is per syllabus, so
      the membership guard quietly handles remembering someone who is not on the
      syllabus being opened. */
-  const __myS = prefGet('lastCrew:' + c);
+  const __myS = prefGet(pickKey('lastCrew:' + c));
   const onRoster = id => !!id && roster.some(r => r.id === id);
   active = onRoster(__myS) ? __myS : (onRoster(__lastS2) ? __lastS2 : (roster[0] ? roster[0].id : null));
   await loadLayout();
@@ -1874,17 +1938,39 @@ let _dlgRes = null;
    still resolves the typed text. Without a list the dialog is the old prompt
    to the byte — the extra fields are null/false/'' and DlgModal draws nothing
    for them. */
-function _dlgShow(msg, { input = false, def = '', cancel = true, cancelLabel = 'Cancel', ok = 'OK', alt = null, list = null, filter = false, placeholder = '', listTitle = '' } = {}) {
+/* ONE QUESTION AT A TIME, IN ORDER ([TRK-DLG-LEFTOVERS], 28 Sep 26). A question asked
+   while another is up used to REPLACE it — the first one's job then waited forever for
+   an answer that could never come (reachable by Tab to a control behind the shade). The
+   fix is a queue, not "answer the first as cancelled": the import asks chart by chart,
+   and cancelling its question would silently SKIP a chart, then its next question would
+   cancel the person's own (the plan's red team, Fable F2 / Astra F-03). So a question
+   asked while one is up WAITS and shows when the one before it is answered; the next is
+   opened BEFORE the answered one's job resumes, so whatever that job asks next queues
+   behind what was already waiting. The door that let a second question in at all is shut
+   in DlgModal (the page behind the shade is inert). */
+let _dlgQueue = [];   /* waiting questions, oldest first: { shape, res } */
+const _dlgCancelled = shape => (shape && shape.input ? null : false);
+function _dlgOpen(shape, res) { _dlgRes = res; dlg = shape; dlgSerial++; notify(); }
+function _dlgShow(msg, { input = false, def = '', cancel = true, cancelLabel = 'Cancel', ok = 'OK', alt = null, list = null, listFn = null, filter = false, placeholder = '', listTitle = '' } = {}) {
+  const shape = { msg, input, def, cancel, cancelLabel, ok, alt, list, listFn, filter, placeholder, listTitle };
   return new Promise(res => {
-    _dlgRes = res;
-    dlg = { msg, input, def, cancel, cancelLabel, ok, alt, list, filter, placeholder, listTitle };
-    dlgSerial++;
-    notify();
+    if (dlg || _dlgQueue.length) { _dlgQueue.push({ shape, res }); return; }
+    _dlgOpen(shape, res);
   });
 }
 export function dlgClose(val) {
   dlg = null;
-  const r = _dlgRes; _dlgRes = null; notify(); if (r) r(val);
+  const r = _dlgRes; _dlgRes = null;
+  const next = _dlgQueue.shift();
+  if (next) _dlgOpen(next.shape, next.res); else notify();
+  if (r) r(val);
+}
+/* The end of a session: every question waiting and the one on screen are answered
+   "cancelled" — they belong to the person leaving, and none may greet the next one. */
+function dlgCancelAll() {
+  const waiting = _dlgQueue; _dlgQueue = [];
+  for (const q of waiting) q.res(_dlgCancelled(q.shape));
+  if (dlg) dlgClose(_dlgCancelled(dlg));
 }
 export async function uiConfirm(msg) { return await _dlgShow(msg); }
 export async function uiPrompt(msg, def) { const v = await _dlgShow(msg, { input: true, def }); return v === null ? null : (v + ''); }
@@ -1892,7 +1978,11 @@ export async function uiAlert(msg) { await _dlgShow(msg, { cancel: false }); }
 /* Pick from a list, or type: resolves { pick: key } for a click on an entry,
    the typed string for OK, null for Cancel. */
 export async function uiPick(msg, list, { input = false, placeholder = '', listTitle = '' } = {}) {
-  const v = await _dlgShow(msg, { input, list: list || [], filter: true, placeholder, listTitle });
+  /* a list given as a function is read LIVE by the box (listFn) — the + Add roster,
+     so a person added or taken off while it is open shows at once ([TRK-RETEST-NOTES]
+     C11); `list` keeps the list it opened with, for anything that reads it */
+  const fn = typeof list === 'function' ? list : null;
+  const v = await _dlgShow(msg, { input, list: (fn ? fn() : list) || [], listFn: fn, filter: true, placeholder, listTitle });
   if (v && typeof v === 'object' && 'pick' in v) return v;
   return v === null ? null : (v + '');
 }
@@ -1911,23 +2001,40 @@ export const isDone = (s, id) => DONE.has(gradeOf(s, id));
    ISO date per failure, oldest first, so fd.length === f. A count recorded
    before dates existed — or read from a file of that time — is that many
    UNDATED failures: nulls here, never an invented day. `f` stays the count the
-   ball's red ticks and the file check read. */
+   ball's red ticks and the file check read.
+   IN THE ORDER OF THEIR DAYS (owner, 28 Sep 26 — D371): the earliest day first, so
+   the plain code is the earliest failure and each later DAY adds an X; a failure
+   with no day recorded comes after every dated one; two on one day keep the order
+   they were recorded. They were kept in the order TYPED — a failure back-dated after
+   today's became ST-02X though it happened first. This one read is the order for
+   every surface (the ball, the card, the full list, the details bubble, the pop-up,
+   the export), and every writer works on its copy and stores it back in this order. */
+export function sortFails(list) {
+  return list.map((d, i) => ({ d: d || null, i }))
+    .sort((a, b) => (a.d && b.d) ? (a.d < b.d ? -1 : a.d > b.d ? 1 : a.i - b.i) : a.d ? -1 : b.d ? 1 : a.i - b.i)
+    .map(x => x.d);
+}
 export function failDates(s, id) {
   const m = marks[s] && marks[s][id]; const n = (m && m.f) || 0;
   const fd = (m && Array.isArray(m.fd)) ? m.fd : [];
   const out = []; for (let i = 0; i < n; i++) out.push(fd[i] || null);
-  return out;
+  return sortFails(out);
 }
 /* The owner's notation (16 Aug; each failure its own entry, 9 Sep 26): the
    first failure is the plain code and every later one adds an X — ST-01,
    ST-01X, ST-01XX. `i` is the failure's index, oldest first. */
 export function failLabel(id, i) { return id + 'X'.repeat(Math.max(0, i | 0)); }
-/* Every failure one student has on this chart, in chart order then as recorded
-   — the full lowdown behind the Failures title. */
+/* Every failure one student has on this chart, in chart order then by day (D371)
+   — the full lowdown behind the Failures title. An event marked N.A. is left out,
+   as the Failures card leaves it out and the ball hides its ticks (owner, 28 Sep
+   26 — D370): its failures are kept, and come back with their days if it is
+   graded again; the grading pop-up and the details bubble still show them. */
 export function failList(s) {
   const out = [];
-  for (const e of [...SYL].sort((a, b) => a.seq - b.seq))
+  for (const e of [...SYL].sort((a, b) => a.seq - b.seq)) {
+    if (gradeOf(s, e.id) === 'na') continue;
     failDates(s, e.id).forEach((d, i) => out.push({ id: e.id, i, label: failLabel(e.id, i), date: d }));
+  }
   return out;
 }
 /* The day an event was accomplished (owner, 9 Sep 26: "the details portion …
@@ -2019,7 +2126,9 @@ function ballGroup(ev, available) {
       for (let t = 0; t < shown; t++) {
         const ang = first + t * gap, rad = ang * Math.PI / 180;
         const x1 = cx + rO * 0.80 * Math.cos(rad), y1 = cy + rO * 0.80 * Math.sin(rad), x2 = cx + (rO + 3) * Math.cos(rad), y2 = cy + (rO + 3) * Math.sin(rad);
-        segs += `<line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}" class="ftick" stroke="${PAL.fail}" stroke-width="2.2" stroke-linecap="round"/>`;
+        /* data-wi: whose slice the tick lies across, so a press on it picks that
+           student as a press on the slice does ([TRK-RETEST-NOTES] C6) */
+        segs += `<line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}" class="ftick" data-wi="${i}" stroke="${PAL.fail}" stroke-width="2.2" stroke-linecap="round"/>`;
       }
     }
   }
@@ -2668,10 +2777,25 @@ export let tool = 'move'; let connectSrc = null, undoStack = [], pan = null;
    renaming students, courses and syllabi, event details, Import — each asks
    first or has its own editor, and a syllabus delete cannot be re-materialised
    from a snapshot of the marks. The disabled state on the bar's buttons reads
-   canUndo/canRedo, so every push notifies. */
+   canUndo/canRedo, so every push notifies.
+   A STUDENT'S PACE, END DATES AND LULL PERIODS ARE STEPS TOO (owner, 28 Sep 26 —
+   D372, "3 a"). They were outside the history, so Ctrl+Z right after changing the
+   pace quietly took back an OLDER mark (the walk's W2 N3). A mark step now
+   snapshots that student's pace and lull periods beside the marks and dates, and
+   restoring one saves all four. "Copy to…", which replaces the lull periods of
+   every student ticked, is ONE step — a GROUP entry { group: [steps], what } —
+   that takes them all back together and leaves the picker where it is. */
 function trimUndo() { if (undoStack.length > 60) undoStack.shift(); }
 function pushUndo() { undoStack.push({ syl: JSON.stringify(SYL), lay: JSON.stringify(layout) }); trimUndo(); redoStack = []; notify(); }
-function markSnap(s, what) { return { who: s, m: JSON.stringify(marks[s] || {}), d: dates[s] ? JSON.stringify(dates[s]) : null, what: what || null, t: Date.now() }; }
+function markSnap(s, what) {
+  return { who: s, m: JSON.stringify(marks[s] || {}), d: dates[s] ? JSON.stringify(dates[s]) : null,
+    p: pace[s] ? JSON.stringify(pace[s]) : null, l: lulls[s] ? JSON.stringify(lulls[s]) : null, what: what || null, t: Date.now() };
+}
+/* one step over several students ("Copy to…"): each one's snapshot, one name */
+function pushGroupUndo(ss, what) {
+  const g = ss.filter(Boolean); if (!g.length) return;
+  undoStack.push({ group: g.map(x => markSnap(x)), what, t: Date.now() }); trimUndo(); redoStack = []; notify();
+}
 /* `field` coalesces: the date and down-days boxes fire on every keystroke, and
    nine undo steps for one typed date would be absurd. Keystrokes into the SAME
    box within two seconds of the first are one step (the first snapshot is the
@@ -2685,15 +2809,29 @@ function pushMarkUndo(s, what, field) {
   undoStack.push(e); trimUndo(); redoStack = []; notify();
 }
 function applyHist(u) { SYL = JSON.parse(u.syl); byid = {}; SYL.forEach(e => byid[e.id] = e); layout = JSON.parse(u.lay); loadEdgeMeta(); selEdge = null; markDirty(); trkRestoring(() => saveLayout()); renderBoard(); renderSide(); }
-async function applyMarkHist(u) {
+/* put one student's snapshot back — marks, dates, pace and lull periods — and save
+   what it holds (a snapshot taken before D372 carries no pace or lulls: those stay) */
+async function restoreSnap(u) {
   const s = u.who;
   marks[s] = JSON.parse(u.m);
   if (u.d == null) delete dates[s]; else dates[s] = JSON.parse(u.d);
+  if ('p' in u) { if (u.p == null) delete pace[s]; else pace[s] = JSON.parse(u.p); }
+  if ('l' in u) { if (u.l == null) delete lulls[s]; else lulls[s] = JSON.parse(u.l); }
+  await trkRestoring(() => saveMarks(s)); if (dates[s]) await trkRestoring(() => saveDates(s));
+  /* a pace that was never set before the change is REMOVED again, not stored as {} — an empty
+     pace read back as a blank pace box after a reload (Fable's final read F4) */
+  if ('p' in u) await trkRestoring(() => (pace[s] ? savePace(s) : delKey(kPace(course, s))));
+  if ('l' in u) await trkRestoring(() => saveLulls(s));
+}
+async function applyMarkHist(u) {
+  const s = u.who;
   /* The pop-up's buttons describe a grade that just changed under it — or,
      when the picker is about to move, somebody else's. */
   if (pop) closePop();
-  if (active !== s) { active = s; prefSet('lastCrew:' + course, s); refreshActive(); }
-  await trkRestoring(() => saveMarks(s)); if (dates[s]) await trkRestoring(() => saveDates(s));
+  /* the lull calendar and the Copy to… list belong to a record about to change (F1) */
+  lullPick = null; lullCopy = null;
+  if (active !== s) { active = s; prefSet(pickKey('lastCrew:' + course), s); refreshActive(); }
+  await restoreSnap(u);
   /* keep the view: the person is looking at the ball they are taking back, as
      grading keeps it (R62) — a plain redraw threw the chart back to its top
      ([HUMAN-RETEST] W2-F6) */
@@ -2701,21 +2839,43 @@ async function applyMarkHist(u) {
 }
 /* The snapshot that a step's reverse pushes onto the other stack: the SAME
    kind as the entry it undoes, taken from the live state before it is applied. */
-function reverseOf(u) { return u.who != null ? markSnap(u.who, u.what) : { syl: JSON.stringify(SYL), lay: JSON.stringify(layout) }; }
+function reverseOf(u) {
+  if (u.group) return { group: u.group.map(g => markSnap(g.who, g.what)), what: u.what, t: Date.now() };
+  return u.who != null ? markSnap(u.who, u.what) : { syl: JSON.stringify(SYL), lay: JSON.stringify(layout) };
+}
+/* a group step, taken back or put again: every member still on the roster; the
+   picker stays on whoever is picked (the step belongs to several students) */
+async function applyGroupHist(u) {
+  if (pop) closePop();
+  lullPick = null; lullCopy = null;   /* as applyMarkHist (F1) */
+  for (const g of u.group) if (marks[g.who]) await restoreSnap(g);
+  renderSide();
+}
 /* A mark entry for a student who is gone (removed on another syllabus, or the
    roster reloaded from a file) is skipped, not applied — removeStudent drops
    them, this is the belt to its braces. */
-function liveEntry(stack) { while (stack.length && stack[stack.length - 1].who != null && !marks[stack[stack.length - 1].who]) stack.pop(); return stack[stack.length - 1] || null; }
+function liveEntry(stack) {
+  for (;;) {
+    const u = stack[stack.length - 1]; if (!u) return null;
+    if (u.group) { u.group = u.group.filter(g => marks[g.who]); if (u.group.length) return u; stack.pop(); continue; }
+    if (u.who != null && !marks[u.who]) { stack.pop(); continue; }
+    return u;
+  }
+}
 export function canUndo() { return !!liveEntry(undoStack); }
 export function canRedo() { return !!liveEntry(redoStack); }
 /* What the next press takes back, for the buttons' tooltips. */
-function whatOf(u) { return !u ? '' : u.who != null ? (u.what || 'a mark') + ' for ' + nameOf(u.who) : 'a chart edit'; }
+function whatOf(u) {
+  if (!u) return '';
+  if (u.group) return u.group.length === 1 ? (u.what || 'the lull periods') + ' for ' + nameOf(u.group[0].who) : (u.what || 'the lull periods') + ' for ' + u.group.length + ' students';
+  return u.who != null ? (u.what || 'a mark') + ' for ' + nameOf(u.who) : 'a chart edit';
+}
 export function undoWhat() { return whatOf(liveEntry(undoStack)); }
 export function redoWhat() { return whatOf(liveEntry(redoStack)); }
 async function step(from, to) {
   const u = liveEntry(from); if (!u) return false;
   from.pop(); to.push(reverseOf(u));
-  if (u.who != null) await applyMarkHist(u); else applyHist(u);
+  if (u.group) await applyGroupHist(u); else if (u.who != null) await applyMarkHist(u); else applyHist(u);
   notify(); return true;
 }
 export async function doUndo() { return step(undoStack, redoStack); }
@@ -2796,7 +2956,7 @@ export function renderBoard() {
   const s = active;
   let nodes = ''; SYL.forEach(e => { nodes += ballGroup(e, isAvail(s, e)); });
   let svgW = W, svgH = H;
-  if (arrangeMode) { svgW = Math.max(300, board.clientWidth - 24); svgH = Math.max(300, board.clientHeight - 24); }
+  if (arrangeMode) { const cv = canvasSize(board); svgW = cv.w; svgH = cv.h; }
   else { view = { x: 0, y: 0, k: 1 }; }
   board.innerHTML = `<div class="flowwrap"><svg id="flowSvg" width="${svgW}" height="${svgH}" viewBox="0 0 ${svgW} ${svgH}" class="${arrangeMode ? 'arrange' : ''}">
    <defs><marker id="arr" markerWidth="8" markerHeight="8" refX="5.5" refY="3" orient="auto-start-reverse"><path d="M0,0 L6,3 L0,6 Z" fill="#5a6172"/></marker></defs>
@@ -3134,6 +3294,30 @@ function canvasOrigin() {
 /* Edit chart layout's twin of chartPointAt / placeChartPoint: its canvas pans
    and zooms by `view` instead of by scrolling. Points in client pixels; `o` is
    canvasOrigin(), passed in when the caller already holds it. */
+/* A PHONE TURNED WHILE EDITING (the leftovers' walk, F1, 28 Sep 26): the canvas kept the
+   size it was cut for and the middle of the chart left the screen — 820×300 in a 390×446
+   box, the middle ball off the right edge — until Done and Edit again. Newly reachable:
+   D373's fold made editing on a phone on its side usable. So the board's middle and the
+   canvas's origin are noted whenever the canvas is laid out (`arrBox`), and when the window
+   changes shape while editing the canvas is re-cut to the new box and the chart point that
+   was in the middle is put back in the middle, as going in and out already does. The
+   folded Tools set closes on a turn too (F5) — it came back open over the chart. */
+let arrBox = null;
+function noteArrBox() {
+  const b = document.getElementById('board');
+  if (!arrangeMode || !b) { arrBox = null; return; }
+  const r = b.getBoundingClientRect();
+  arrBox = { mx: r.left + b.clientLeft + b.clientWidth / 2, my: r.top + b.clientTop + b.clientHeight / 2, o: canvasOrigin() };
+}
+function refitArrange() {
+  if (!arrangeMode) return;
+  const c = arrBox ? canvasPointAt(arrBox.mx, arrBox.my, arrBox.o) : null;
+  fitCanvas();
+  const b = document.getElementById('board'); if (!b) return;
+  const r = b.getBoundingClientRect();
+  if (c) placeCanvasPoint(c, r.left + b.clientLeft + b.clientWidth / 2, r.top + b.clientTop + b.clientHeight / 2);
+  applyView(); noteArrBox();
+}
 function canvasPointAt(cx, cy, o = canvasOrigin()) { return { x: (cx - o.x - view.x) / view.k, y: (cy - o.y - view.y) / view.k }; }
 function placeCanvasPoint(c, cx, cy, o = canvasOrigin()) { view.x = cx - o.x - c.x * view.k; view.y = cy - o.y - c.y * view.k; }
 
@@ -3615,32 +3799,48 @@ function stamp(rec) {
 /* ---------- side panel actions (inputs live in <SidePanel/>) ---------- */
 /* A day typed by hand stands until a later flight moves it (D123) — the hand
    marks say so; an emptied box stands for nothing. */
+/* A DAY AFTER TODAY IS REFUSED where it says when something was flown, done or
+   failed (owner, 28 Sep 26 — D374): Done on, Failed on and both Last Flown boxes. A
+   planned day — Upchit, the two end dates — takes any day. Today is the squadron's
+   calendar day (`isoToday`, Singapore), the one the pop-up fills in by default. The
+   refusal changes nothing and answers with these words, which the box shows. */
+export const NOT_YET = 'That day hasn’t come yet — pick today or earlier.';
+export const NOT_WHOLE = 'That day isn’t finished — type the whole day, or clear the box for today.';
+export function afterToday(v) { return typeof v === 'string' && v !== '' && v > isoToday(); }
+/* Each setter below also returns at once when the box holds the day already saved:
+   a date retyped to what it was made an undo step that took back nothing (the
+   leftovers' baseline walk, E). */
 export async function setLastSyll(s, v) {
+  if (afterToday(v)) return NOT_YET;
+  if (((dates[s] && dates[s].lastSyll) || '') === (v || '')) return;
   pushMarkUndo(s, 'Last Flown (Syllabus)', 'lastSyll');
   const d = dates[s]; d.lastSyll = v; d.lastCurr = v;
   if (v) { d.handSyll = true; d.handCurr = true; } else { delete d.handSyll; delete d.handCurr; }
   stamp(d); await saveDates(s); renderSide();
 }
 export async function setLastCurr(s, v) {
+  if (afterToday(v)) return NOT_YET;
+  if (((dates[s] && dates[s].lastCurr) || '') === (v || '')) return;
   pushMarkUndo(s, 'Last Flown (Currency)', 'lastCurr');
   const d = dates[s]; d.lastCurr = v;
   if (v) d.handCurr = true; else delete d.handCurr;
   stamp(d); await saveDates(s); renderSide();
 }
-export async function setDownDays(s, v) { pushMarkUndo(s, 'the down days', 'downDays'); dates[s].downDays = v; stamp(dates[s]); await saveDates(s); renderSide(); }
-export async function setUpchit(s, v) { pushMarkUndo(s, 'the upchit date', 'upchit'); dates[s].upchit = v; stamp(dates[s]); await saveDates(s); renderSide(); }
+export async function setDownDays(s, v) { if (((dates[s] && dates[s].downDays) || '') === (v || '')) return; pushMarkUndo(s, 'the down days', 'downDays'); dates[s].downDays = v; stamp(dates[s]); await saveDates(s); renderSide(); }
+export async function setUpchit(s, v) { if (((dates[s] && dates[s].upchit) || '') === (v || '')) return; pushMarkUndo(s, 'the upchit date', 'upchit'); dates[s].upchit = v; stamp(dates[s]); await saveDates(s); renderSide(); }
 /* v is kept verbatim — an empty or half-typed box must stay as typed. epwOf()
    does the coercion for the arithmetic. */
-export async function setEpw(s, v) { pace[s] = { ...paceOf(s), epw: v }; await savePace(s); renderSide(); }
-export async function setTarget(s, v) { pace[s] = { ...paceOf(s), target: v }; await savePace(s); renderSide(); }
-export async function setTarget2(s, v) { pace[s] = { ...paceOf(s), target2: v }; await savePace(s); renderSide(); }
+export async function setEpw(s, v) { if (String(paceOf(s).epw ?? '') === String(v ?? '')) return; pushMarkUndo(s, 'the pace', 'epw'); pace[s] = { ...paceOf(s), epw: v }; await savePace(s); renderSide(); }
+export async function setTarget(s, v) { if ((paceOf(s).target || '') === (v || '')) return; pushMarkUndo(s, 'End date A', 'target'); pace[s] = { ...paceOf(s), target: v }; await savePace(s); renderSide(); }
+export async function setTarget2(s, v) { if ((paceOf(s).target2 || '') === (v || '')) return; pushMarkUndo(s, 'End date B', 'target2'); pace[s] = { ...paceOf(s), target2: v }; await savePace(s); renderSide(); }
 /* Asks first: adding a period takes two deliberate clicks, and removing one
-   took one stray tap on its ×, with no undo — lull periods are not in the
-   history ([HUMAN-RETEST] W2-F4). */
+   took one stray tap on its ×, with no undo ([HUMAN-RETEST] W2-F4). Since D372
+   (28 Sep 26) it IS a step ↶ takes back; the question stays. */
 export async function removeLull(s, i) {
   const l = (lulls[s] || [])[i]; if (!l) return;
   if (!await uiConfirm('Remove ' + nameOf(s) + '’s lull period ' + fmt(parseD(l.start)) + ' → ' + fmt(parseD(l.end)) + '?')) return;
   const now = lulls[s] || []; const at = now.indexOf(l); if (at < 0) return;
+  pushMarkUndo(s, 'the lull periods');
   now.splice(at, 1); await saveLulls(s); renderSide();
 }
 export function calPrev() { calView = new Date(calView.getFullYear(), calView.getMonth() - 1, 1); notify(); }
@@ -3657,6 +3857,9 @@ export function openLullPicker(s, index) {
   const cur = (index != null) ? (lulls[s] || [])[index] : null;
   lullPick = { student: s, index: (index == null ? -1 : index), start: null };
   if (cur && cur.start) { const d = parseD(cur.start); if (d) calView = new Date(d.getFullYear(), d.getMonth(), 1); }
+  /* a NEW period opens on this month — the squadron's (isoToday), read without a time
+     zone — not on whichever month was looked at last ([TRK-RETEST-NOTES] C7) */
+  else { const [y, m] = isoToday().split('-').map(Number); calView = new Date(y, m - 1, 1); }
   notify();
 }
 export function closeLullPicker() { lullPick = null; notify(); }
@@ -3666,8 +3869,12 @@ export async function lullDayClick(iso) {
   let a = lullPick.start, b = iso;
   if (parseD(b) < parseD(a)) { const t = a; a = b; b = t; }   /* clicked backwards */
   const s = lullPick.student;
+  pushMarkUndo(s, 'the lull periods');   /* a period set or changed is one step (D372) */
   lulls[s] = lulls[s] || [];
-  if (lullPick.index >= 0) lulls[s][lullPick.index] = { start: a, end: b };
+  /* a period that is no longer there (an undo shortened the list under the calendar) is a
+     new one — writing past the end left a hole, stored as null, and a null blanked the
+     whole app on the next open (Fable's final read F1, 28 Sep 26) */
+  if (lullPick.index >= 0 && lullPick.index < lulls[s].length) lulls[s][lullPick.index] = { start: a, end: b };
   else lulls[s].push({ start: a, end: b });
   lulls[s].sort((x, y) => (x.start < y.start ? -1 : 1));
   lullPick = null;
@@ -3693,6 +3900,7 @@ export async function applyLullCopy() {
   if (!lullCopy) return;
   const src = (lulls[lullCopy.from] || []).map(l => ({ start: l.start, end: l.end }));
   const picked = lullCopy.picked;
+  pushGroupUndo(picked, 'the lull periods');   /* ONE step for every student ticked (D372) */
   // [CMDL-FINISH] §4 (Class B, R3-002) — copying the lull periods to every picked
   // student is ONE gesture = ONE envelope, not one save per student.
   trkGesture(() => { for (const s of picked) { lulls[s] = src.map(l => ({ ...l })); saveLulls(s); } });
@@ -3739,9 +3947,10 @@ export function openPop(id, evt) {
   pop = { id, x: evt.clientX, y: evt.clientY };
   popDoneDate = doneDate(active, id) || isoToday();
   popFailDate = isoToday();
+  popMsg = null; popDonePartial = false; popFailPartial = false;
   notify();
 }
-export function closePop() { pop = null; notify(); }
+export function closePop() { pop = null; popMsg = null; notify(); }
 /* A tap on a ball, outside arrange mode (owner, 9 Sep 26 — "click exactly at
    the portion of the pokeball that person exist in"): the ring is the crew
    picker, one wedge per student — tapping somebody else's wedge PICKS them
@@ -3751,7 +3960,13 @@ export function closePop() { pop = null; notify(); }
    view where it is — the user is looking at the ball they tapped; only the
    Crew dropdown lands on the student's latest work. */
 export function ballTap(id, ev) {
-  const w = ev && ev.target && ev.target.closest ? ev.target.closest('.wedge') : null;
+  /* the chart on screen may still be the last person's while this one's loads */
+  if (resuming) return;
+  /* a red failure tick lies across its student's slice and is drawn over it: a
+     press on it is a press on that slice ([TRK-RETEST-NOTES] C6 — it graded the
+     picked student instead). The cyan edge also carries data-wi but takes no
+     presses (pointer-events none). */
+  const w = ev && ev.target && ev.target.closest ? ev.target.closest('.wedge, .ftick') : null;
   if (w) {
     const r = roster[+w.dataset.wi];
     if (r && r.id !== active) { setActive(r.id, { land: false }); return; }
@@ -3864,6 +4079,9 @@ export async function popGrade(v) {
      on marks[null][id]. Clicking an event on an empty course should do nothing,
      not break the page. */
   if (!s) { closePop(); return; }
+  /* a grade that says "done" on a day that has not come is refused, the pop-up left
+     up to be answered (D374) */
+  if (DONE.has(v)) { const p = popDayProblem(popDoneDate, popDonePartial); if (p) { popMsg = { where: 'done', text: p }; notify(); return; } }
   /* [CMDL-FINISH] §4 (Class A) — the whole grade (last-edit note, the mark, and a
      flight's Last-Flown) is ONE gesture = ONE envelope. No reads to hoist; every
      write's mem mutation is synchronous inside the reducer, storage deferred. */
@@ -3875,8 +4093,8 @@ export async function popGrade(v) {
     /* A grade that means "accomplished" is dated the day it is pressed (the box
        in the pop-up, today unless changed first); Not done and N.A. carry no
        day, so the date goes with the grade. */
-    /* a year still being typed (0002…) is not a day: today, as for an empty box
-       (the two code reads, Fable F-E) */
+    /* a whole day, or today for an empty box — a day not finished was refused above
+       (the leftovers' walk F-b3; Fable F-E once rolled a year still being typed into today) */
     if (DONE.has(v)) m.d = isWholeDay(popDoneDate) ? popDoneDate : isoToday(); else delete m.d;
     stamp(m);
     saveMarks(s);
@@ -3894,14 +4112,22 @@ export async function popFail(delta) {
      Counting up was allowed and the ball then wore red failure ticks over the
      N/A colour. Existing counts are kept, not wiped — mark it back to a real
      grade and the history is still there. */
-  if (delta > 0 && gradeOf(s, popId) === 'na') { flashHint('“' + popId + '” is marked N.A., so it cannot be failed.'); return; }
+  /* said in the pop-up too: on a phone the hint line is under it (the walk, walker b F-b5) */
+  if (delta > 0 && gradeOf(s, popId) === 'na') { const t = '“' + popId + '” is marked N.A., so it cannot be failed.'; flashHint(t); popMsg = { where: 'fail', text: t }; notify(); return; }
+  if (delta > 0) { const p = popDayProblem(popFailDate, popFailPartial); if (p) { popMsg = { where: 'fail', text: p }; notify(); return; } }
   trkGesture(() => {   // [CMDL-FINISH] §4 (Class A) — the count + day list as ONE envelope
     pushMarkUndo(s, 'the failure count on ' + popId);
-    /* + records a failure on the pop-up's failure day; − takes the LATEST one
-       back. The count and the list of days are kept in step. */
-    const fd = failDates(s, popId);
-    for (let k = 0; k < delta; k++) fd.push(popFailDate || isoToday());
-    for (let k = 0; k < -delta && fd.length; k++) fd.pop();
+    /* + records a failure on the pop-up's failure day; − takes back the one with the
+       LATEST DAY (D371 — an undated one only when none has a day). The count and the
+       list of days are kept in step, and stored in the order of their days. */
+    let fd = failDates(s, popId);
+    /* a whole day, or today for an empty box (anything else was refused above) */
+    for (let k = 0; k < delta; k++) fd.push(isWholeDay(popFailDate) ? popFailDate : isoToday());
+    for (let k = 0; k < -delta && fd.length; k++) {
+      let at = fd.length - 1; while (at >= 0 && !fd[at]) at--;
+      fd.splice(at >= 0 ? at : fd.length - 1, 1);
+    }
+    fd = sortFails(fd);
     m.f = fd.length; m.fd = fd;
     stamp(m);
     saveMarks(s);
@@ -3910,27 +4136,79 @@ export async function popFail(delta) {
 }
 /* The pop-up's "Failed on" box: only where the NEXT + lands. Nothing is saved
    until a failure is recorded on that day. */
-export function popFailDateChanged(v) { popFailDate = v; notify(); }
+/* `partial`: the browser flags the box as part-typed (its value then reads empty) */
+export function popFailDateChanged(v, partial) { popFailDate = v; popFailPartial = !!partial; if (popMsg) popMsg = null; notify(); }
+/* THE POP-UP'S TWO BOXES NEVER TURN A REFUSED DAY INTO TODAY (the leftovers' walk,
+   walker b F-b1..F-b3, 28 Sep 26). Leaving a box runs before the press that left it
+   lands: the refused day used to be put back to today, and the grade or the + then
+   landed on today — while the line said "refused". Now a day after today (D374), or a
+   day not finished (a year still being typed, or a box the browser flags as part-typed),
+   STAYS in the box with its line, and a grade or a + on it is refused until the day is
+   put right; an EMPTY box still means today. The robustness doctrine: an impossible day
+   is skipped, never rolled into a different one. (Done on of an event already done is
+   the one exception: re-dating is refused and the box shows the day the mark keeps.) */
+function popDayProblem(v, partial) {
+  if (afterToday(v)) return NOT_YET;
+  if (partial || (v && !isWholeDay(v))) return NOT_WHOLE;
+  return '';
+}
+export function popFailCommit(partial) {
+  /* a box cleared and then only part-typed sends no change at all (its value stays empty),
+     so the box's own part-typed flag is read again as it is left — BOTH ways: one part-typed
+     then cleared is "clear the box for today" again (Fable's final read F3) */
+  popFailPartial = !!partial;
+  const p = popDayProblem(popFailDate, popFailPartial);
+  if (p) { popMsg = { where: 'fail', text: p }; notify(); }
+  return p;
+}
 /* The pop-up's "Done on" box. Before a grade it only sets the day the grade
    will carry; on an event already accomplished it re-dates the mark at once
    (owner: "the user can also manually change the date after"). A flight's day
    is also its Last Flown, as before. */
-export async function popDoneChanged(v) {
-  const s = active; const popId = pop && pop.id;
-  popDoneDate = v; notify();
-  /* While a day is retyped, the date box passes through EMPTY (after the "0"
-     of "09" it holds no full date) and through half-typed years (0002, 0020,
-     0202…). An empty box used to re-date the flight to TODAY for that instant,
-     and Last Flown followed ([HUMAN-RETEST] W2-F2). Only a whole, real day
-     re-dates a mark; a grade pressed on an empty box still takes today. */
-  if (!isWholeDay(v)) return;
-  if (!popId || !s || !DONE.has(gradeOf(s, popId))) return;
-  await setDoneDate(s, popId, v);
+export function popDoneChanged(v, partial) { popDoneDate = v; popDonePartial = !!partial; if (popMsg) popMsg = null; notify(); }
+/* The box re-dates an accomplished mark when it is LEFT, not as it is typed
+   ([TRK-RETEST-NOTES] C5, 28 Sep 26). While a day is retyped the box passes through
+   EMPTY, through half-typed years (0002, 0020, 0202 — [HUMAN-RETEST] W2-F2) and, while
+   the DAY is typed, through whole but WRONG days (the 1st on the way to the 17th — the
+   plan's red team, Fable F1): re-dating on each of those moved Last Flown with it and
+   left an undo step per digit. So typing only changes the box; leaving it (blur, or
+   Enter) re-dates the mark once, to a whole, real day that is not after today (D374 —
+   refused with its words), and anything else puts the box back to the day the mark
+   has (today, for an event not yet done — a grade pressed then takes today). */
+export async function popDoneCommit(partial) {
+  popDonePartial = !!partial;   /* the live reading, as popFailCommit */
+  const s = active; const popId = pop && pop.id; if (!popId || !s) return '';
+  const graded = DONE.has(gradeOf(s, popId));
+  const p = popDayProblem(popDoneDate, popDonePartial);
+  if (!p && !popDoneDate) {   /* emptied: an event done keeps its day; one not done will take today */
+    if (graded) { popDoneDate = doneDate(s, popId) || isoToday(); notify(); }
+    return '';
+  }
+  if (p) {
+    /* a mark already done keeps its day and the box shows it; for one not done the
+       refused day stays in the box, with its line, until it is put right */
+    if (graded) { popDoneDate = doneDate(s, popId) || isoToday(); popDonePartial = false; }
+    popMsg = { where: 'done', text: p }; notify(); return p;
+  }
+  if (graded && popDoneDate !== doneDate(s, popId)) await setDoneDate(s, popId, popDoneDate);
+  return '';
 }
-/* a yyyy-mm-dd a person could mean — not blank, not a year still being typed */
-function isWholeDay(v) { return typeof v === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(v) && v >= '1900-01-01'; }
+/* the pop-up's one line of refusal — { where: 'done' | 'fail', text } — cleared by the
+   next change and when the pop-up opens or closes */
+export let popMsg = null;
+let popDonePartial = false, popFailPartial = false;
+/* A yyyy-mm-dd a person could mean: a four-digit year from 1900 (not a year still
+   being typed), and a day the calendar has (a strict round trip, no time zone). */
+export function isWholeDay(v) {
+  if (typeof v !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(v) || v < '1900-01-01') return false;
+  const y = +v.slice(0, 4), m = +v.slice(5, 7), d = +v.slice(8, 10);
+  const t = new Date(Date.UTC(y, m - 1, d));
+  return t.getUTCFullYear() === y && t.getUTCMonth() === m - 1 && t.getUTCDate() === d;
+}
 export async function setDoneDate(s, id, iso) {
   if (!s || !marks[s] || !marks[s][id] || !DONE.has(gradeOf(s, id))) return;
+  if (afterToday(iso)) return NOT_YET;
+  if ((marks[s][id].d || '') === (iso || '')) return;
   trkGesture(() => {   // [CMDL-FINISH] §4 (Class A) — re-date + a flight's Last-Flown as ONE envelope
     pushMarkUndo(s, 'the date on ' + id, 'doneDate:' + id);
     marks[s][id].d = iso || isoToday();
@@ -3943,10 +4221,12 @@ export async function setDoneDate(s, id, iso) {
    lowdown. An emptied box leaves the failure undated, not deleted. */
 export async function setFailDate(s, id, i, iso) {
   if (!s || !marks[s] || !marks[s][id]) return;
+  if (afterToday(iso)) return NOT_YET;
   const fd = failDates(s, id); if (i < 0 || i >= fd.length) return;
+  if ((fd[i] || null) === (iso || null)) return;
   trkGesture(() => {   // [CMDL-FINISH] §4 (Class A)
     pushMarkUndo(s, 'the date of ' + failLabel(id, i), 'failDate:' + id + ':' + i);
-    fd[i] = iso || null; marks[s][id].fd = fd;
+    fd[i] = iso || null; marks[s][id].fd = sortFails(fd);   /* re-dated: back in the order of the days (D371) */
     stamp(marks[s][id]);
     saveMarks(s); renderSide();
   });
@@ -4129,8 +4409,10 @@ export async function addStudent() {
      raises its dialog before the first await (the browser spends the click),
      and one extra microtask in front of the picker breaks that. */
   if (rosterHeld) { await uiAlert(HELD_MSG); return; }
-  const people = getPeople().map(p => ({ key: p.id, label: p.cs, sub: seatWord(p.seat) + (p.q ? ' · ' + p.q : '') }));
-  const r = people.length
+  /* the list is read LIVE while the box is open: a person added or taken off the roster
+     meanwhile shows at once ([TRK-RETEST-NOTES] C11 — it kept the list it opened with) */
+  const people = () => getPeople().map(p => ({ key: p.id, label: p.cs, sub: seatWord(p.seat) + (p.q ? ' · ' + p.q : '') }));
+  const r = people().length
     ? await uiPick('Add a crew member', people, { input: true, placeholder: 'Or type a callsign', listTitle: 'From the squadron roster' })
     : await uiPrompt('Student callsign:');
   let v, link = null;
@@ -4170,6 +4452,9 @@ export async function addStudent() {
       } else if (link && !r.pid) { r.pid = link; saveRoster(); }
       active = r.id; refreshActive(); renderBoard(); renderSide();
     });
+    /* the student just added is the one on screen, so it is this person's pick too —
+       it never was, and the next visit reopened on the one before (Fable A13) */
+    if (active) prefSet(pickKey('lastCrew:' + course), active);
   });
 }
 export async function removeStudent(v) {
@@ -4195,6 +4480,9 @@ async function removeStudentNow(v) {
     /* Their undo steps go with them: an Undo that brought a removed student's
        mark back would put a mark on nobody's chart. */
     undoStack = undoStack.filter(e => e.who !== v); redoStack = redoStack.filter(e => e.who !== v);
+    /* ...and they leave any "Copy to…" step they were part of (liveEntry drops a step
+       left with nobody) */
+    for (const e of [...undoStack, ...redoStack]) if (e.group) e.group = e.group.filter(g => g.who !== v);
     saveRoster();
     /* Deleting the roster entry alone left their name and every mark sitting in
        storage — and on a shared tracker, in the file the whole team reads. Worse,
@@ -4209,7 +4497,7 @@ async function removeStudentNow(v) {
        pacing they still need on another. */
     if (!elsewhere) { delKey(kPace(c, v)); delKey(kLulls(c, v)); delete pace[v]; delete lulls[v]; }
     if (wasLastStudent) delKey(kLastStudent(c));
-    if (prefGet('lastCrew:' + c) === v) prefSet('lastCrew:' + c, '');
+    if (prefGet(pickKey('lastCrew:' + c)) === v) prefSet(pickKey('lastCrew:' + c), '');
     if (active === v) active = roster[0] ? roster[0].id : null;
     refreshActive(); renderBoard(); renderSide();
   });
@@ -4301,7 +4589,7 @@ export function setActive(v, opts) {
   else go();
   /* Merely looking at someone counts. Before this, only grading was remembered,
      so picking a crew member and coming back tomorrow forgot them. */
-  prefSet('lastCrew:' + course, v);
+  prefSet(pickKey('lastCrew:' + course), v);
 }
 
 /* ---- syllabus display order (ids since 1B-ii) ---- */
@@ -4629,7 +4917,13 @@ function markDirty() { sylDirty = true; notify(); }
 /* Both stacks. Leaving redoStack behind let a Redo pressed after a syllabus
    change write the PREVIOUS chart's positions over the new one and save them
    on the spot — four moved boxes on 2026 landed on Tx 2026 under test. */
-function clearDirty() { sylDirty = false; undoStack = []; redoStack = []; notify(); }
+function clearDirty() {
+  sylDirty = false; undoStack = []; redoStack = []; notify();
+  /* an unsaved chart edit held the Tracker on the last person's place (the resume waits for
+     it); once it is saved or discarded, the person now signed in gets their own (Astra's
+     final read, F3 — the only door is an admin changing his own account's person) */
+  if (ready && !bootError && whoamiId() !== pickOwner) resumeForPerson();
+}
 
 export async function persistSyl() {
   const id = curSylId();
@@ -4957,10 +5251,17 @@ export async function delSyl() {
    the first take-back of a pinch did exactly that, under the fingers
    ([TRK-PINCH-DRAGS-BALL], found by the lost-lift check). Cut to size once the
    strip has landed, and the board's scroll put to zero. */
+/* The editing canvas's size, from its chart box — ONE rule for the redraw and the re-fit
+   (they were two copies). Never taller than its box: the old 300px floor left 130px of
+   canvas below a sideways phone's 169px chart box, a hidden area the box could scroll
+   into (the leftovers' re-walk, 28 Sep 26 — D373 made editing there usable). */
+function canvasSize(board) {
+  return { w: Math.max(300, board.clientWidth - 24), h: Math.max(100, board.clientHeight - 24) };
+}
 function fitCanvas() {
   const board = document.getElementById('board'), svg = document.getElementById('flowSvg');
   if (!arrangeMode || !board || !svg) return;
-  const w = Math.max(300, board.clientWidth - 24), h = Math.max(300, board.clientHeight - 24);
+  const { w, h } = canvasSize(board);
   svg.setAttribute('width', w); svg.setAttribute('height', h); svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
   board.scrollLeft = 0; board.scrollTop = 0;
 }
@@ -4987,12 +5288,13 @@ export function toggleArrange() {
   const mid = () => ({ x: board.clientLeft + board.clientWidth / 2, y: board.clientTop + board.clientHeight / 2 });   /* from the board's outer edge */
   const midOnScreen = () => { const r = board.getBoundingClientRect(), m = mid(); return { x: r.left + m.x, y: r.top + m.y }; };
   const settle = fn => { if (typeof requestAnimationFrame !== 'undefined') requestAnimationFrame(fn); };
+  toolsOpen = false;   /* entering or leaving: the folded tools start shut (D373) */
   if (!arrangeMode) {
     const c = board && flowZoom > 0 ? chartPointAt(board, mid().x, mid().y) : null;
     arrangeMode = true;
     view = { x: 0, y: 0, k: flowZoom };
     setTool('move'); renderBoard();
-    const place = () => { if (!arrangeMode) return; fitCanvas(); if (!c) return; const m = midOnScreen(); placeCanvasPoint(c, m.x, m.y); applyView(); };
+    const place = () => { if (!arrangeMode) return; fitCanvas(); if (c) { const m = midOnScreen(); placeCanvasPoint(c, m.x, m.y); applyView(); } noteArrBox(); };
     place(); settle(place);
   } else {
     let c = null; if (board && document.getElementById('flowSvg')) { const m = midOnScreen(); c = canvasPointAt(m.x, m.y); }
@@ -5016,6 +5318,8 @@ export function handleEscapeKey(e) {
      one closes here — the thing that asked the question stays open underneath,
      so one press can never fall through and shut two layers at once. */
   if (dlg) { e.preventDefault(); dlgClose(dlg.input ? null : false); return; }
+  /* the folded tools' open set (D373) sits over the chart: it goes first */
+  if (toolsOpen) { e.preventDefault(); toolsOpen = false; notify(); return; }
   /* Escape abandons a half-picked lull period rather than saving one end of it. */
   if (lullCopy) { e.preventDefault(); closeLullCopy(); return; }
   if (lullPick) { e.preventDefault(); closeLullPicker(); return; }
@@ -5041,6 +5345,10 @@ export function handleEscapeKey(e) {
 /* Delete / Backspace removes the current selection while arranging */
 export async function handleDeleteKey(e) {
   if (e.key !== 'Delete' && e.key !== 'Backspace') return;
+  /* never behind a question: the key reached the chart through the shade — a second
+     "Delete …?" queued behind the first, and Backspace in the question's own text box
+     deleted a selected line (the leftovers' walk, walker a F2). Ctrl+Z already waits. */
+  if (dlg) return;
   if (!arrangeMode) return;
   if (selLine && !selBalls.size) {
     const t0 = e.target, g0 = (t0 && t0.tagName || '').toLowerCase();
@@ -5055,7 +5363,18 @@ export async function handleDeleteKey(e) {
   await deleteEvents([...selBalls]);
 }
 /* Toolbar: tool select with delete-selection shortcut behaviour */
+/* ON A SHORT SCREEN THE EDIT TOOLS FOLD (owner, 28 Sep 26 — D373, "fold";
+   [TRK-EDIT-SIDEWAYS]). On a phone on its side the strip took the whole screen and
+   left the chart 0px. Under ~500px of height (tracker.css) the strip hides behind
+   ONE row — the tool in use, its hint, ⤢ Fit, "Tools ▾" — and Tools ▾ opens the whole
+   set OVER the chart. `toolsOpen` is that set being open; it closes on a choice, a
+   press outside (ArrangeTools.jsx), Escape (before anything else under it), leaving
+   Edit chart layout and the end of a session. Upright phones and computers keep
+   the strip as it was; this flag then does nothing they can see. */
+export let toolsOpen = false;
+export function setToolsOpen(v) { toolsOpen = !!v; notify(); }
 export async function toolButtonClick(t) {
+  toolsOpen = false;
   if (t === 'delball' && selBalls.size) { await deleteEvents([...selBalls]); return; }
   if (t === 'delball' && selLine) { deleteLine(selLine); return; }
   setTool(t);
@@ -5163,6 +5482,18 @@ export let saveStat = { text: '', cls: '' };
    user their work was both safe and at risk in the same six pixels.
    Now only a caller that passes no message gets the bare word; anything that
    names what it did says so. Three callers rely on the empty form. */
+/* WHAT THE BAR SAYS beside ✓ Save changes ([TRK-RETEST-NOTES] C14, 28 Sep 26). While
+   chart edits wait for the button, the words step ASIDE: the button's own "●" says
+   there is unsaved work (the walk's note: "the button says what matters"). Beside it
+   the words were cut ("● un…", even "● sa…" — the fixed corner leaves them 59px), and
+   a mark saving on its own meanwhile put "● saved" beside the orange button (Astra
+   F-09). Measured 28 Sep 26: widening the corner to fit "● unsaved" wrapped the bar at
+   1060–1200px, and on a phone pushed the corner onto a third row. An error still
+   shows, in red. */
+export function saveWords() {
+  if (sylDirty && saveStat.cls !== 'err') return { text: '', title: '', cls: '' };
+  return { text: saveStat.text, title: saveStat.text, cls: saveStat.cls };
+}
 function setSaveStatus(msg, cls) {
   saveStat = {
     text: (cls === 'saving' ? (msg ? '● ' + msg : '● saving…')
@@ -5801,6 +6132,7 @@ export async function importClick() {
   const pick = (typeof window !== 'undefined' && window.__pickOpenForTests) || FS.pickOpen;
   const picked = await pick();                 /* no await before this — gesture */
   if (!picked) return;
+  const serial = sessionSerial, ended = () => serial !== sessionSerial;
   /* An import reloads the chart on screen from the store, so its unsaved flow
      edits were lost — and the orange Save changes stayed lit over a chart with
      nothing left to save ([HUMAN-RETEST] Fable #3). Asked AFTER the pick: the
@@ -5818,6 +6150,7 @@ export async function importClick() {
   const wanted = Object.create(null);     /* store id → the name the file gives it */
   if (hasCharts) {
     for (const id of charts.order) {
+      if (ended()) return;   /* the session ended under a question: nothing more is asked (F6) */
       if (!(charts.syllabi || {})[id]) continue;
       const label = catById.get(id) ? catById.get(id).name : (sylName(id) || id);
       if (!sylEntry(id)) {   /* new here — bring it straight in (colon allowed, §8) */
@@ -5837,6 +6170,7 @@ export async function importClick() {
         continue;
       }
       const to = ((await uiPrompt('Name for the incoming syllabus:', label + ' (new)')) || '').trim();
+      if (ended()) return;
       if (!to || SYLS.some(e => e.name === to)) { await uiAlert('That name is blank or already taken.'); continue; }
       const newId = mintSylId();
       await applyCharts(charts, { ids: [id], mode: 'add', rename: { from: id, to: newId, label: to } });
@@ -5897,9 +6231,11 @@ export async function importClick() {
       await saveSylOrder(); refreshSyl();
     }
   }
+  if (ended()) return;
   let people = false;
   if (parsed.contains.students && parsed.students) {
     people = await uiConfirm('This file also contains students and marks.\n\nBring them in too? A student already here who is ALSO in the file will have their marks replaced by the file’s. Anyone the file does not name keeps theirs, untouched.');
+    if (ended()) return;
     /* the student guardrail (§19) lives in applyStudents: a pre-v3 / unresolved
        student block is refused with a plain message; charts (above) still import.
        normalizeImport already reconciled a v3 block through the ONE import map;
@@ -5925,6 +6261,7 @@ export async function importClick() {
       catch (e) { await uiAlert((e && e.message) || 'The students could not be brought in.'); people = false; }
     }
   }
+  if (ended()) return;   /* the closing report is the ended session's, not the next person's */
   const what = [done.length ? 'brought in ' + done.join(', ') : null, people ? 'students & marks restored' : null].filter(Boolean).join(' · ');
   if (what) setSaveStatus(what, 'ok');
   const skip = (skipped.length ? '\n\nSkipped, left as they are here: ' + skipped.join(', ') + '.' : '')
@@ -5991,8 +6328,10 @@ export async function init() {
      entries — a course that was deleted, renamed, or only ever existed in
      someone else's browser simply fails the membership test and falls back to
      the top of the list. lastCourse is a course id. */
-  const __want = prefGet('lastCourse');
+  const __who = whoamiId();
+  const __want = prefGet(pickKey('lastCourse'));
   await loadCourse((__want && COURSES.some(c => isCourseEntry(c) && c.id === __want)) ? __want : (COURSES[0] && COURSES[0].id), true);
+  pickOwner = __who;
   await loadEventInfo();
   ready = true;
   /* [ARCH-STACK] phase 5: enable command routing now that every boot migration
@@ -6018,6 +6357,21 @@ export async function init() {
      user has set the zoom themselves. */
   if (typeof window !== 'undefined') {
     let t = null;
+    /* while editing: the canvas follows the new shape, the middle kept (F1); the Tools set shuts (F5) */
+    let ta = null, lastW = window.innerWidth;
+    window.addEventListener('resize', () => {
+      if (!arrangeMode) return;
+      /* a phone's keyboard opening for a box inside the Tools set makes the window shorter,
+         not narrower: that is not a turn, and shutting the set would drop the box and its
+         keyboard (Fable's final read F5 — Android; an iPhone fires no resize for it) */
+      const w = window.innerWidth, a = document.activeElement;
+      const typing = a && a.matches && a.matches('input, textarea') && a.closest && a.closest('#arrTools, #arrFold');
+      if (w === lastW && typing) return;
+      lastW = w;
+      if (toolsOpen) { toolsOpen = false; notify(); }
+      clearTimeout(ta);
+      ta = setTimeout(refitArrange, 150);
+    });
     window.addEventListener('resize', () => {
       if (zoomIsMine || arrangeMode) return;
       clearTimeout(t);
@@ -6034,7 +6388,7 @@ export async function init() {
     window.__coreForTests = { layoutSnapshotFor, collectCharts, collectStudents, applyCharts,
       applyStudents, whenLoaded, migrateAllCourses, migrateCourseIds, migrateSylIds, SYLLABI, DEFAULT_LAYOUTS,
       rosterNow: () => roster, nameOf, byName, courseIdOf, courseName, curCourseName,
-      curSylId, curSylName, sylName, sylIdOf, sylsNow: () => SYLS.slice(),
+      curSylId, curSylName, sylName, sylIdOf, sylsNow: () => SYLS.slice(), pickKey,
       coursesNow: () => COURSES.slice() };
     window.__fileFormatForTests = FMT;
     window.__fileStoreForTests = FS;

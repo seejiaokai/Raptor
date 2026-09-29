@@ -35,6 +35,11 @@ import './tracker.css'
    undo-bridge.js), so its own header leaves them out; set before the first render. The standalone Tracker never loads
    this seam and keeps its own pair. */
 setTrackerHosted(true)
+/* Wired as this chunk loads, not only on the first mount: the engine's boot (a
+   child's effect, which runs BEFORE this page's own) reads the signed-in person to
+   open on his own course and student (D376). Idempotent — the mount's call below
+   is then a no-op. */
+wireTrackerPeople()
 
 const TrBody = memo(function TrBody({ active }: { active: boolean }) {
   return <App active={active} />

@@ -8,7 +8,7 @@
 import { PEOPLE } from '../engine/people'
 import { HOOKS } from '../engine/hooks'
 import { subscribe } from '../state/store'
-import { setPeople, setWhoami } from './people.js'
+import { setPeople, setWhoami, setWhoamiId } from './people.js'
 
 export type TrackerPerson = { id: string; cs: string; seat: string; q: string; sxo: boolean }
 
@@ -46,10 +46,21 @@ export function whoamiForTracker(): string {
   const v = HOOKS.whoami()
   return v === 'Unknown' ? '' : v
 }
+/* The signed-in PERSON's id, for the Tracker's per-person place (D376). Nobody ('')
+   whenever there is no session: after a logout Raptor's person id falls back to the
+   headless default — a real member's id — and a pick written then must never land
+   under his name (the plan's red team, Fable F6). A guest or a pending account has
+   no person. */
+export function whoamiIdForTracker(): string {
+  if (HOOKS.whoami() === 'Unknown') return ''
+  const v = HOOKS.whoamiId()
+  return v ? String(v) : ''
+}
 export function wireTrackerPeople(): void {
   if (wired) return
   wired = true
   setWhoami(whoamiForTracker)
+  setWhoamiId(whoamiIdForTracker)
   const push = () => setPeople(projectForTracker(PEOPLE))
   subscribe(push)
   push()
