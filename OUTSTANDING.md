@@ -67,8 +67,10 @@ award fix are due before the tables are settled. What to finish before the hand-
    then the Leave War links LAST (with the 7 Sep phone check). Then "after the hunt" (21 Sep 26): [LW-LOCKMARK] →
    [LW-WEEKDAY-WORK] (talk to him before building any of it) — its first, the published day's unavailable list, was
    closed by the same re-test (built by [LEAVE-LATE-PUBLISHED]; archived).
-4. **About a month before the database (D203) — ONE batch, done last so it is done once:** **[DB-READINESS]**, with
-   [OIL-AWARD-IS-A-GRANT] and [OIL-EARNED-VS-GRANTED] (D147) and the small OIL follow-ups below.
+4. **Split in two (D453, 29 Sep 26 — narrows D203's "ONE batch"):** **[DB-READINESS] group A** (what decides the tables'
+   shape) BEFORE IT settles its tables, with the small OIL follow-ups below and [OIL-EARNED-VS-GRANTED] (D147);
+   **group B** (tuned against the real database) AFTER the app is connected. First, [DB-SYNC-MODEL]'s design fixed.
+   ([OIL-AWARD-IS-A-GRANT] is DONE, merged 29 Sep 26.)
 5. **When Manfred is ready — [DB-STEP]:** the data model to him, then the one adapter to his tables; the stack
    ([ARCH-STACK]) resumes there, with its step 6 still to come; the [AMEND] work is queued behind it. Architecture first,
    then the individual bugs (D144).
@@ -928,7 +930,10 @@ drift test reads every row); the test that a week record split by day and joined
 answers.
 
 ### [DB-READINESS] Our side of the database, built against the fake database — before the tables are settled (D203; D354 — the step starts now; filed 26 Sep 26)
-The requirements are `raptor-port/docs/data-model.md` §7 (from the 9 Sep 26 stress test; pinned as GAP tests in
+**SPLIT (owner, D453, 29 Sep 26): GROUP A — before the IT team settles its tables — (1) saving in small pieces, (4) never
+seeding demo data, plus the design's shape work from `[DB-SYNC-MODEL]` (the schedule a day per piece, the single change
+log, no week-deleting reconcile, the planning calendar's own records); GROUP B — after the app is connected, tuned
+against the real database — (2), (3), (5), (6), (7).** The requirements are `raptor-port/docs/data-model.md` §7 (from the 9 Sep 26 stress test; pinned as GAP tests in
 `raptor-port/src/storage/dbreadiness.test.ts`). Ours to build now-able, none needing Manfred's tables: (1) **saving in small
 pieces** — `inputs/all`, `people/all` and `leavewar/wars` are one record each, so two people editing different leaves
 overwrite each other; one record per leave / person / war row; (2) **honest refusals** — a save the store refuses (signed

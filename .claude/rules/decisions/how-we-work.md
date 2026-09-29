@@ -12,6 +12,7 @@ never pay or money).
 
 | # | Date | The rule |
 |---|---|---|
+| D453 | 29 Sep 26 | THE ORDER TO THE DATABASE: FIRST THE DAY-LOCK DESIGN FIXED WITH THE RED TEAM'S FINDINGS; THEN GROUP A — WHAT DECIDES THE TABLES' SHAPE — BEFORE THE IT TEAM SETTLES ITS TABLES; THEN GROUP B — WHAT IS TUNED AGAINST THE REAL DATABASE — AFTER THE APP IS CONNECTED; THE LOCK'S SCREENS LAST. |
 | D403 | 29 Sep 26 | THE IT FLOW GUIDE IS RE-SHOT AND REBUILT ONLY WHEN HE SAYS SO — NOT AFTER EACH APP CHANGE, AND NOT ON A SCHEDULE. |
 | D368 | 29 Sep 26 | EVERY HANDOFF TELLS HIM, IN PLAIN WORDS, WHETHER THE NEW CHAT NEEDS A WORKTREE (AND WHAT TO BASE IT ON) AND WHICH BRANCH TO PICK IN THE NEW-CHAT PICKER — AND WHICH TO AVOID — BESIDE THE READY-TO-PASTE OPENING LINE. |
 | D417 | 29 Sep 26 | THE IT FLOW GUIDE SHOWS HOW THE LEAVE WAR'S MANNING IS SET UP AND CUSTOMISED — WHERE THE MANNING ROWS COME FROM, HOW AN ADMIN ADDS, CHANGES OR REMOVES ONE, AND WHAT THE GRID SHOWS AFTER — AS SCREENS, NOT THE COUNT'S ARITHMETIC. |
@@ -35,7 +36,7 @@ never pay or money).
 | D324 | 27 Sep 26 | THE BACKLOG TIDY (`[BACKLOG-TIDY]`) IS DONE NOW, DOCS ONLY, ON ITS OWN BRANCH (`claude/backlog-tidy`, cut from `main`), AND MERGED BEFORE `[ONE-DOOR]` AND `[LW-MOVE-STANDARD]` |
 | D302 | 27 Sep 26 | PARALLEL CHATS COORDINATE DIRECTLY, SO THEY DO NOT CLASH. |
 | D228 | 26 Sep 26 | BOTH PARALLEL CHATS RUN, AND THE FULL CHECKS TAKE TURNS THROUGH ONE LOCK ON HIS PC. |
-| D203 | 26 Sep 26 | The order to the database: [ACCOUNTS], then [POST-OUT-OUTCOMES] (D291), then the one changes window ([DRAFT-PENDING]), talking to the IT side; then the database-readiness batch with the OIL award fix; then the data model to Manfred and [DB-STEP] — the step now starts at once (D354), so the rest is due before the tables settle. Narrows D147 in part. — changed by D354, D291 |
+| D203 | 26 Sep 26 | The order to the database: [ACCOUNTS], then [POST-OUT-OUTCOMES] (D291), then the one changes window ([DRAFT-PENDING]), talking to the IT side; then the database-readiness batch with the OIL award fix; then the data model to Manfred and [DB-STEP] — the step now starts at once (D354), so the rest is due before the tables settle. Narrows D147 in part. — changed by D453, D354, D291 |
 | D201 | 26 Sep 26 | WHEN A NEW RULING OVERWRITES OR NARROWS AN OLDER ONE, FIX EVERYTHING THE OLD ONE LEFT BEHIND — IN THE SAME CHANGE THAT RECORDS IT. |
 | D180 | 25 Sep 26 | [LEAVE-LATE-PUBLISHED] (D177–D179) is built next, on its own branch, BEFORE [ACCOUNTS], with its own full check, his look and "merge live" — amending D173's order in part. |
 | D173 | 25 Sep 26 | The order after his look at PR #435: (1) D114's full check, his look, "merge live"; (2) accounts on a new branch; (3) the one changes window on top of accounts; (4) a full check of (2) and (3) — accounts later got its own (D210), and two steps were inserted (D175, D180). Replaces D115. — changed by D210, D180, D175 |
