@@ -32,6 +32,10 @@ and filed one change (a drag below zero must ask). The guide draws the app as it
 
 ## Remaking it after a screen changes
 
+**Only when he says so (D403, 29 Sep 26 — "I'll tell u when to update").** An app change that alters a screen the guide
+pictures does not re-shoot it by itself; a chat may say once, in its closing report, that the guide now shows an older
+screen. When he asks, re-shoot every journey that changed since the last copy, in one pass.
+
 The pictures come from the running app, so the deck can be re-shot rather than redrawn. From `raptor-port/`:
 
 1. `npm run build`, then serve it on port 4185 (`npx vite preview --port 4185`, or the `raptor-itflow` entry in
