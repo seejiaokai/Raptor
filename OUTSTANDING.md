@@ -48,7 +48,10 @@ said as such, never dressed up as his. One line per item, in plain words; the de
 list (13–23 Sep 26), its finished entries and the "In plain terms" block are in `OUTSTANDING-ARCHIVE.md`, moved
 whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaining).
 
-**His order — to the database step, about two months away (D203, 26 Sep 26; D173, D147 within it):**
+**THE DATABASE STEP STARTS NOW (D354, 29 Sep 26):** the IT team is taking the app into Dataverse now; the order below
+stands, its timing ("about two months away", "about a month before") is overtaken — the readiness batch and the OIL
+award fix are due before the tables are settled. What to finish before the hand-over: his answer to be recorded here.
+**His order — to the database step (D203, 26 Sep 26; D173, D147 within it):**
 1. **Done — [DRAFT-PENDING]**, the one changes window (D210), MERGED 28 Sep 26 (PR #451); its two follow-ups
    [HIST-PHONE-HIDE] and [CHG-BY-ITEM] (D339, D340, D345, D346) MERGED 28 Sep 26 (PR #455), and [LW-FIGSEL-FLAKE] (D342,
    PR #454) — all archived. Before it: **[ONE-DOOR]** (D309, D310, carrying [POST-IN-DATE], D308) MERGED 28 Sep 26 (PR #450;
@@ -72,7 +75,7 @@ whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaini
 6. **Before ANY collaborator is added** — an event, not a slot: take the checks runner off this repo (SEC-101, in
    [REPO-PRIVATE]); and make the repo private again once the public period (D106) ends — his.
 
-**The small OIL follow-ups — ONE batch, with the OIL award fix, about a month before the database (D147, D203):** [OIL-READ-LEFTOVERS] (its items 1, 2, 4),
+**The small OIL follow-ups — ONE batch, with the OIL award fix, before the tables are settled (D147, D203, D354):** [OIL-READ-LEFTOVERS] (its items 1, 2, 4),
 [STORE-READER-SWEEP], [OIL-REQ-NAMEBOX] (a walk question for him), [OIL-WORDS],
 [OIL-PERSONAL-PLACEHOLDER] (FULL tier), [CROWD-SIM-BRIEF] (WALK tier), [OIL-RELINK-XWEEK].
 
@@ -464,7 +467,7 @@ already touches those files; the definition now heads the OIL behaviour register
 deliberately not bundled — it moves persisted balances again and touches ~28 test files, so it is
 its own escalated session. It needs the owner's go before anything is written.** **GO GIVEN (D147, 24 Sep 26):**
 after his after-the-hunt items and BEFORE [DB-STEP], so the database stores one kind of award — **timed by D203 (26 Sep 26):
-with the `[DB-READINESS]` batch, about a month before the database**; [OIL-EARNED-VS-GRANTED]
+with the `[DB-READINESS]` batch, before the tables are settled — the database step starts now, D354**; [OIL-EARNED-VS-GRANTED]
 folds in (its label is still his figure — ask him when it comes); then the small OIL follow-ups as one batch.
 
 After his two rulings an award now: flags nothing, stands nobody down from flying, counts nobody on
@@ -668,7 +671,10 @@ Today each person has ONE running balance per counter; leave on 1 Jan simply com
 year is handled by the admin's "Reset counters". Decide next session: separate balances per year/war,
 carry-over rules, and which year a leave crossing 31 Dec charges. Context: clash catalogue Q10.
 
-### [DB-STEP] The shared-database step (Dataverse) — FUTURE MILESTONE
+### [DB-STEP] The shared-database step (Dataverse) — STARTS NOW (D354, 29 Sep 26)
+
+**STARTED 29 Sep 26 (D354):** the IT team is taking the app into Dataverse now; he means to keep working on the app beside it.
+
 
 **ACCESS CHANGES TAKE EFFECT AT ONCE (Astra's read of `[ACCOUNTS]`, 26 Sep 26):** switching an account off, demoting
 an admin or relinking a person must stop the old rights on his very next request, in every open tab and device — the
@@ -855,7 +861,7 @@ section folds are next touched. (Its first half — the wave show/hide toggle le
   file true as rules are added.** Still to gather: the day/AL publishing flow,
   the roles split, what each warning means in practice, the phone gestures.
 
-### [DB-READINESS] Our side of the database, built against the fake database — about a month before it (D203, filed 26 Sep 26)
+### [DB-READINESS] Our side of the database, built against the fake database — before the tables are settled (D203; D354 — the step starts now; filed 26 Sep 26)
 The requirements are `raptor-port/docs/data-model.md` §7 (from the 9 Sep 26 stress test; pinned as GAP tests in
 `raptor-port/src/storage/dbreadiness.test.ts`). Ours to build now-able, none needing Manfred's tables: (1) **saving in small
 pieces** — `inputs/all`, `people/all` and `leavewar/wars` are one record each, so two people editing different leaves
