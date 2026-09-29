@@ -31,6 +31,6 @@
 | C9.2 | and the time is back | PASS | now "12:40" |  |
 | C10.1 | his own admin step, in the member view, refuses "Switch back…" — every press (D292, D148) | PASS | Switch back to the admin view to undo that. / Switch back to the admin view to undo that. | c-steps-15-C10-member-view.png |
 | C10.2 | switched back, the same Undo takes it | PASS | Undid: Ranger’s quals |  |
-| C11.1 | after "Mark all as seen", Undo on Inputs takes his LL — the seen mark is no step (B1, Fable S2) | **FAIL** | Undid: a personal input · seen pressed: 0 · iid imum2yac2pvdzd2 | c-steps-16-C11-undone.png |
+| C11.1 | after "Mark all as seen", Undo on Inputs takes his LL — the seen mark is no step (B1, Fable S2) | PASS | Undid: a personal input · seen pressed: 1 · iid imum5j0wa6751j6 | c-steps-16-C11-undone.png |
 
 Console / page errors: none

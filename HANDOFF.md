@@ -16,57 +16,29 @@ the later merge keeps both (D78).
 ## Now
 
 <!-- now:claude/change-recording-retest -->
-### `claude/change-recording-retest` — the change-recording re-test (`[HUMAN-RETEST]`, D147) with `[UNDO-ROSTER-SETTINGS]`, D148 and `[UNDO-TOPBAR]` — PLANNED, red-teamed (round 1), Phase A WALKED; NO app code yet; the BUILD is next, in a fresh chat — written 28 Sep 26 — verify before use
-- **BUILD IN PROGRESS (28 Sep 26, late — paused for a PC restart; pushed):** B1–B9 built red-first and committed (the
-  engine rules, B4 → B2 cutover + `lw.stage`, B5 roster-restore, B7 landing, B8 words, B9 Quals columns). B10 is a WIP
-  commit (`[UNDO-TOPBAR] WIP`): its known red — `leavewar/ui/chrome.test.tsx` pair tests (move to a Shell test), the Leave
-  War e2e `lw-undo` ids → `#undoBtn`, the Tracker smoke's undo-button lines (plan §11.10), `histlist.test.tsx` timing out
-  only under a full run. Then B11 docs, the gates under the lock, the walk, the two reads, the look card.
-- **Where it stood before the build:** the main checkout (`C:/Users/User/projects/Raptor`), cut from `main` at `60a6792c`; nothing under
-  `raptor-port/src` changed. The plan: `raptor-port/docs/superpowers/plans/2026-09-28-change-recording-plan.md` (Phases
-  A–D, steps B1–B11). His rulings today: **D347** (every Undo/Redo pair in the top bar, as Edit Schedule's), **D348**
-  (the phone's order is the desktop's; the changes clock stays Edit Schedule's), **D349** (the mock-up
-  `raptor-port/docs/mock/undo-topbar.html` v4 APPROVED — the Tracker's pair moves too; the board gets Sync + bell and ONE
-  exit, ✓ Done; on a phone Sort all + the layout switch behind ⋯), **D350** (adding / archiving / restoring / deleting a
-  person and postings stay OUT of Undo — `[UNDO-POSTING-RECORD]`). Filed: `[HIST-PER-PAGE]`. Baseline walk:
-  `scripts/handpass/cr-base.mjs`.
-- **Done this chat (all committed and pushed):** the scenarios (Fable, Astra), the "which changes get Undo" review
-  (both), the plan's round-1 red team (both) — every finding ACCEPTED and folded into the plan's §10–§11; Phase A walked
-  by two walkers (A1 the schedule and board: 178 pass / 12 fail = 3 real defects; A2 inputs, the Leave War, roles: 158 /
-  8, all words) — folded as §12–§13, reports `raptor-port/docs/handpass/parts/2026-09-28-cr-a{1,2}.md`. His rulings of the
-  day: D347–D353 (D351 Clear edit history kept until the database; D352 the stage stays undoable with its own words;
-  D353 how many reviewers — scenarios / side questions ONE, Astra first; a plan's red team and risky code reads BOTH).
-  Filed: `[UNDO-POSTING-RECORD]`, `[HIST-PER-PAGE]`, `[PHONE-DISCARD-MARKS]`.
-- **Next, in order (the build chat):** (1) read the plan WHOLE — §11–§13 win over §3–§6 where they differ; (2) a round-2
-  red team only if the build finds the plan's shape wrong (D353: both reviewers for a plan red team); (3) reproduce A1-F1–F3
-  and A2-F1–F6 red-first; (4) build in §4's order as §11 amends it (B4 before B2; B6 and B10 split); (5) gates under the PC
-  lock; (6) walk the build at 1440×900, 390×844, 844×390 and re-run the Phase A scripts into a new folder (send the Tracker
-  chat the 844×390 top-bar height); (7) Fable + Astra read the finished code with the evidence sheet
-  `docs/handpass/2026-09-28-change-recording.md`; (8) fix, re-walk, the look card, his "merge live".
-- **Files this branch changes — a parallel chat leaves them alone and says so first (D302):** the undo engine
-  (`src/undo/*`), `src/state/undo-wire.ts`, `src/state/people-settings-commit.ts`, `src/state/person-delete.ts`
-  (`deletedRestoreProblem`), `src/state/accounts.ts` (a restore check), `src/state/roster-restore.ts` (new), the Undo /
-  Redo pairs — `src/ui/Shell.tsx`, `src/ui/SchedBoard.tsx`, `src/leavewar/ui/Chrome.tsx`, `src/tracker/components/Header.jsx`
-  — `src/tracker/undo-bridge.js` (new) + one registration at the END of `core.js init()`, `QualsPage.tsx`'s column list,
-  and `scheduler.css`'s top bar / board bar. Backlog items: `[UNDO-ROSTER-SETTINGS]`, `[UNDO-TOPBAR]`, `[GLOBAL-UNDO]`,
-  `[AMEND-SMALL-SEEN]` item 2.
-- **Agreed with the parallel chats (D302, 28 Sep 26):** the Tracker leftovers chat (`claude/tracker-leftovers-f79d36`,
-  D370–D379) owns core.js's session / dialogs / date boxes / the undo section's bodies (its D372: pace, end-date and lull
-  become Tracker undo steps) and the key handler, and Header.jsx's Crew and find boxes; this branch takes only the ↶ ↷ pair
-  out of Header.jsx and adds the bridge. The small-fixes chat (`claude/small-fixes-batch-d223f6`, D360–D369) changes
-  text in Chrome.tsx (the clash strip) and sync.ts (three refusal sentences), the Leave War store's two dead move doors,
-  scheduler.css away from the top bar. The docs-tidy chat (`claude/docs-tidy-subheads-audit-ec8f87`, D380–D389) inserts
-  heading lines in ui-contracts / engine-rules / feature-impact / performance and a new docsize check (a new ruling's .md
-  homes must name its D-number). **Certain one-line clash:** the `docs/mock/` row of `raptor-port/docs/file-map.md` (both
-  this branch and the Tracker chat add a sentence) — keep both. Keep both sides on every other doc conflict; re-run
-  `backlog-archive.mjs --rulings` after merging `main`.
-- **Ports:** preview 4173 (`raptor-walk`, running), browser tests `E2E_PORT=4190`. **Rulings:** D347–D353 used, D354–D359
-  free. Nothing to `main` without his "merge live".
-- **The rulings slim-down (D390, PR #458) is MERGED INTO THIS BRANCH (28 Sep 26):** D347–D353 are short lines in the
-  area files, their full rows in `.claude/decisions-full/`; the Also-read lines and the ranges sentence re-applied by hand.
-  **Left:** one reviewer (Astra first, D353) reads the seven short lines D347–D353 against their full rows (D138) — the
-  merge printed them as UNREAD. New rulings: add the FULL row at the top of the area table, first bold sentence = the
-  rule on its own (≤350 characters, no "|"), then `backlog-archive.mjs --rulings`.
+### `claude/change-recording-retest` — the change-recording re-test (`[HUMAN-RETEST]`, D147) with `[UNDO-ROSTER-SETTINGS]`, D148 and `[UNDO-TOPBAR]` — BUILT, WALKED, READ BY BOTH, FIXED; waiting on HIS LOOK and "merge live" — written 29 Sep 26 — verify before use
+- **State:** every step of the plan done (`raptor-port/docs/superpowers/plans/2026-09-28-change-recording-plan.md`):
+  B1–B11 built red-first; walked at 1440×900, 1366×768, 390×844, 844×390 (664 checks, all pass — evidence
+  `raptor-port/docs/handpass/2026-09-28-change-recording.md` §4, §7); Fable and Astra read the finished code blind (D353) —
+  every finding fixed red-first and walked (§6; reports `…/briefs/2026-09-28-change-recording-final-read-{fable,astra}.md`);
+  the gates green under the lock (§Gate baseline). `main` (d3650865, the Tracker leftovers) merged in. Pushed; the PR is open.
+- **His look (the card is in the PR and the chat):** the pair on every page; the board's ✓ Done (no ✕) and the phone's ⋯;
+  the laptop-width icon-only pair (the builder's call: with words, six pages' bars grew a second line); §11.5
+  say-once-then-pass-over; "OK, seen" never a step and never undone; the named refusals. Then his "merge live" — NOTHING
+  to `main` without it. After the merge: archive `[UNDO-ROSTER-SETTINGS]` and `[UNDO-TOPBAR]` (both say "closes when it
+  merges") and remove this block.
+- **Filed by this build:** `[PHONE-WIDE-BOARD-BLANK]` (medium — the board's Desktop layout blank on a phone, on `main`
+  too), `[BUBBLE-SMALL-SEEN]` (low — Unpublish says nothing; a bubble over the section-order offer). Earlier:
+  `[UNDO-POSTING-RECORD]`, `[HIST-PER-PAGE]`, `[PHONE-DISCARD-MARKS]`.
+- **Rulings:** D347–D353 are this branch's (28 Sep 26); none new since. D347's and D353's short lines corrected after
+  Astra's D138 check (`…/briefs/2026-09-29-rulings-d347-d353-short-lines-astra.md`) — the slim-down's leftover is done.
+  D354–D359 unused, free.
+- **Parallel chats (D302):** the Tracker leftovers chat merged (#459, #462) and closed; the small-fixes chat
+  (`claude/small-fixes-batch-d223f6`, PR #463) stays out of both bars and told us of any change there — no clash, only
+  `scheduler.css` in different blocks; the later merge brings `main` in first (D78). Observation numbers: this branch
+  #345–#347 (renumbered from #341–#342, which are the small-fixes branch's).
+- **Ports:** preview 4173 (this build), the live copy for the bars walk 4192 (`C:/rw/main`, a detached `origin/main`
+  checkout — remove its node_modules junction before deleting it).
 <!-- /now -->
 
 <!-- now:claude/rulings-slim-d391-078ad2 -->
@@ -150,9 +122,8 @@ the later merge keeps both (D78).
 
 ## Gate baseline
 
-The latest counts watched — 28 Sep 26, `claude/tracker-leftovers-f79d36`, each run under the PC lock: unit **6827 / 6828**
-(418 files — the one a changes-window test timing out under a full run, alone 9/9: `[HISTLIST-SLOW-TEST]`) · build clean ·
-tfin **728 / 0** · e2e **495 passed**, 48 skipped · smoke **445 / 0** · rulecheck OK · docsize OK. Restate a count only from a run you watched, and REPLACE the previous counts — never stack a
+The latest counts watched — 29 Sep 26, `claude/change-recording-retest`, each run under the PC lock: unit **6898 / 6898**
+(423 files) · build clean · tfin **728 / 0** · e2e **495 passed**, 48 skipped · smoke **445 / 0** · rulecheck OK · docsize OK. Restate a count only from a run you watched, and REPLACE the previous counts — never stack a
 history. How to run them: `raptor-port/CLAUDE.md` §Build & verify; how they mislead, and the checks on his PC:
 `raptor-port/docs/gates-and-deploy.md`.
 

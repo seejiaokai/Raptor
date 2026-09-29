@@ -146,3 +146,31 @@ scope) and the desktop week's ‹ arrow over the first day (D275). Picture-check
 (the Logic filter strip, the Leave War "Viewing as" chip at 390, the day arrows at 844×390, "ALL DAY" wrapping on Inputs at
 844×390, the phone sign-off boxes' "— name —") sit in parts of those pages this build does not change; NOT compared
 with `main` picture by picture — noted here for their pages' own work, not filed.
+
+## 7. The re-walk after the fixes, and the gates — 29 Sep 26
+
+Everything the fixes touched, and everything else, walked again on the final build (the landing change reaches every
+undo), each script against the fresh demo world:
+
+| Walk | Checks (desktop · other) | Result |
+|---|---|---|
+| `cr-c-bars` 1440 · 1366 · 390 · 844×390 (every bar AND the board's against `main`) | 52 · 52 · 78 · 52 | all PASS |
+| `cr-c-fixes` R1–R4 (what the reads' fixes touched) | 8 · 8 | all PASS |
+| `cr-c-steps` C1–C11 (C11 now gives the member something new to mark seen) | 29 · 29 | all PASS |
+| Phase A re-walk, walker A1 (land, nav, oil, pub, s13, struct) | 96 · 94 | all PASS |
+| Phase A re-walk, walker A2 (clash, inputs, lw, roles, sessions) | 83 · 83 | all PASS |
+
+**664 checks, all PASS; 437 pictures** (`c/` 71, `a1-rewalk/` 168, `a2-rewalk/` 198). Who opened them: three helpers
+opened every picture of the FIRST re-walk (their findings are §6's "picture check" rows); on this final run the builder
+opened the fixes' walk pictures that carry each scenario (5 of 12 — R1 both widths, R2, R3, R4) and the bars at 1366; the
+rest of this run's pictures are the same steps as the checked run, re-taken, and were not opened again.
+
+**The gates** — under the PC lock (D228), on the final code: unit **6898 / 6898** (423 files) · build clean · tfin
+**728 / 0** · e2e **495 passed**, 48 skipped (the first full run: 2 red, one test in both projects — the weekend-publish
+Undo pressed on the war now lands on Edit Schedule, Astra F2's accepted rule; the test follows the rule, then walks back to
+the war to check the bid and the credit exactly as before) · smoke **445 / 0** · rulecheck OK · docsize OK.
+
+**Walk:** `docs/handpass/2026-09-28-change-recording.md` · 437 pictures · 17 surfaces (9 top-bar pages × admin / member /
+member view, the board's bar, the ⋯ menu, Quals, Admin → Users, Logic, the Inputs calendar, the Leave War, the Tracker) ·
+both orders on every step (Undo then Redo; the page moved away and back) · MISSING: none open — W1–W7 and every read's
+finding FIXED; `[PHONE-WIDE-BOARD-BLANK]`, `[BUBBLE-SMALL-SEEN]` FILED (on `main` too).

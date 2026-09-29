@@ -520,11 +520,20 @@ test('publishing a weekend day KEEPS a pending bid for someone working it and fl
 
   // Undoing the publish takes the CREDIT back and leaves the bid exactly where
   // it always was. B5's "undo brings the bid back" has nothing left to do.
+  // Pressed on the war, the Undo takes you to Edit Schedule: publishing is the
+  // schedule's act, the credit only rides it (Astra's final read, F2 — the page
+  // an undo lands on is the act's, never a folded consequence).
   await undo(page)
+  expect(await page.evaluate(() => (window as any).CURPAGE)).toBe('editsched')
+  expect(await page.evaluate(() => (window as any).dayApproved(5))).toBe(false)
+  await backToWar(page)
+  await showMonth(page, D)
   await expect(chip(page, W, D)).toHaveText('LL')
   await expect(mark(page, W, D)).toHaveCount(0)
-  expect(await page.evaluate(() => (window as any).dayApproved(5))).toBe(false)
   await redo(page)
+  expect(await page.evaluate(() => (window as any).CURPAGE)).toBe('editsched')
+  await backToWar(page)
+  await showMonth(page, D)
   await expect(chip(page, W, D)).toHaveText('FO*')
   await expect(mark(page, W, D)).toHaveText('!')
   await tap(page, W, D)

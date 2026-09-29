@@ -59,8 +59,8 @@ whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaini
    [S4-HUNT-REST] — **WALKED 26 Sep 26** on `claude/absence-record-d147-af6a50`; his answers to its questions (D260–D263)
    recorded, and D260–D262 BUILT and FULL-checked there 27 Sep 26 (D263 goes with [DRAFT-PENDING]); from his look, D264–D266
    (one look for the sheets, a Move on every record that can move) — [LW-MOVE-STANDARD], BUILT and MERGED 27 Sep 26
-   (PR #447; archived) — then change-recording (with [UNDO-ROSTER-SETTINGS], D148 and [UNDO-TOPBAR] — STARTED 28 Sep 26
-   on `claude/change-recording-retest`),
+   (PR #447; archived) — then change-recording (with [UNDO-ROSTER-SETTINGS], D148 and [UNDO-TOPBAR] — BUILT, walked and read by both
+   29 Sep 26 on `claude/change-recording-retest`; waiting on his look and "merge live"),
    then the Leave War links LAST (with the 7 Sep phone check). Then "after the hunt" (21 Sep 26): [LW-LOCKMARK] →
    [LW-WEEKDAY-WORK] (talk to him before building any of it) — its first, the published day's unavailable list, was
    closed by the same re-test (built by [LEAVE-LATE-PUBLISHED]; archived).
