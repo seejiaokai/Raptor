@@ -197,6 +197,7 @@ failed, at 1440 / 390 / 360 on Edit Schedule, View-only Sched and the board (pic
 THUNDERBOLTS on two lines, NIGHT under it). The pictures found one defect of this batch, fixed: at 360px the 48px column
 squeezed the remarks until every stand-alone MAIN / SPARE tag broke in two ("MAI N") — 36px keeps all 12 whole (measured 34–48),
 a new walk check pins it. `e2e/geometry.spec.ts` 149 / 0 (red first: the new callsign test failed on the old style).
+**His look on his iPhone (29 Sep 26): "Looks good"** — preview A on the wrapping version, Monday's four six-letter callsigns.
 
 **Filed, not asked:** `[PLAN-BANNER-DOOR]` — the plan banner's "Switch to this plan" has no screen route; recommended to
 retire it with the next plans-menu change.
