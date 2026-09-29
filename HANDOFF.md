@@ -21,8 +21,9 @@ the later merge keeps both (D78).
   So far documents only: the merged blocks of `## Now` removed (small-fixes tidy #463/#465, the guide step #460/#461, the
   docs tidy #457, the five-flags batch #445 — each one's residue checked filed in `OUTSTANDING.md`).
 - **Parallel chats (D302), 29 Sep 26:** `claude/db-step-now` (the main checkout — D354 "the database step starts now", D355
-  the day lock, `[DB-SYNC-MODEL]`; not merged) and `claude/handoff-worktree-d368` (PR #466, D368) are open beside this one;
-  both told this chat's numbers and ports.
+  the day lock, `[DB-SYNC-MODEL]` — MERGED as PR #467 and taken in here; that chat closed, `[IT-FLOW-GUIDE]` goes to a
+  fresh chat) and `claude/handoff-worktree-d368` (PR #466, D368) — both told this chat's numbers and ports. The database
+  chat recommended to him that this chat take `[OIL-AWARD-IS-A-GRANT]` next — waiting on his word.
 - **Rulings range D400–D409** (clear of D354–D359, D368–D369 and the spent D390–D399). **Ports:** preview 4183, browser
   tests `E2E_PORT=4197`. Full checks through the PC lock (`node raptor-port/scripts/gatelock.mjs …`, D228).
 - **Next:** his pick of the job (put to him 29 Sep 26); nothing to `main` without his "merge live".
