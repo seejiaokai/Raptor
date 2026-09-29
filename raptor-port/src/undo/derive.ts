@@ -49,12 +49,12 @@ export function dayKeyOf(collection: string, id: string): string | null {
   return h < 0 ? wk : `${wk}#${id.slice(h + 1)}`
 }
 
-/* the war a Leave War record belongs to. lw.cell/lw.bid ids are
-   `<warId>:<pid>:<date>`; lw.war id IS the warId. The lw ledger/postouts/config
-   `all` globals name no war. */
+/* the war a Leave War record belongs to. lw.cell ids are
+   `<warId>:<pid>:<date>`; lw.war id IS the warId. The ledger, openings, postings,
+   labels and the `all` globals name no war. */
 export function warOf(collection: string, id: string): string | null {
   if (collection === 'lw.war') return id
-  if (collection === 'lw.cell' || collection === 'lw.bid') return id.split(':')[0]
+  if (collection === 'lw.cell') return id.split(':')[0]
   return null
 }
 
@@ -104,7 +104,7 @@ export function deriveContexts(closure: Change[]): RecordCtx[] {
    it. */
 function ownerOfChange(ch: Change): string | null {
   const { collection, id } = ch
-  if (collection === 'lw.cell' || collection === 'lw.bid') {
+  if (collection === 'lw.cell') {
     // `<warId>:<pid>:<date>` — the pid is the second field FROM THE RIGHT (a warId
     // may itself contain ':', so never split from the left — R3-03/R3-08).
     const p = id.split(':')

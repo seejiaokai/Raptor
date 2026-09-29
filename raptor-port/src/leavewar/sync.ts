@@ -1341,10 +1341,9 @@ export function runOilPass(): void {
  * ADDITIONS AND REMOVALS ONLY. A body Quals gains is appended; a body it loses
  * is dropped; every EXISTING person's record is left exactly as it is. This is
  * deliberate: it lands the owner's ask (a new person shows up) without the
- * reconciler overwriting an in-session edit an admin made through Leave War's
- * own person sheet (`setPerson` — seat / band / SXO) or the demo overlay's
- * posting dates, which a wholesale re-projection silently reverted on the next
- * Raptor notify. A field change to an EXISTING person on the Quals page
+ * reconciler overwriting the demo overlay's posting dates, which a wholesale
+ * re-projection silently reverted on the next Raptor notify. (The war's own
+ * person sheet — `setPerson`, seat / band / SXO — is gone: D460, D461.) A field change to an EXISTING person on the Quals page
  * therefore reaches Leave War on the next reload rather than live — the rare
  * case, and the safe direction to err. Writes only when the set of ids
  * actually changed, so an ordinary leave edit does not repaint the grid; the
@@ -1356,21 +1355,21 @@ function reprojectRoster(): void {
   // projection drops SANS aircrew unless it is on.
   const projected = projectPeople(st.showSans)
   const curById = new Map(st.people.map(p => [p.id, p]))
-  const edits = st.personEdits
   // Raptor owns identity (store.ts §setPeople), so take each person fresh from
   // the projection — that is what carries a Quals change (a new SXO mark, a CAT
   // move, a seat swap, a re-callsign) through to Leave War on the next notify,
   // which the old additions/removals-only pass never did (owner, 18 Aug 26 —
-  // an SXO marked in Quals did not show here). Then lay back the two things
-  // Leave War owns locally: the posting-out window (from/to), and any
-  // deliberate setPerson override an admin made in this session. A person Raptor
-  // no longer has drops out — they are simply absent from `projected`.
+  // an SXO marked in Quals did not show here). Then lay back the one thing
+  // Leave War owns locally: the posting-out window (from/to). Seat, band and SXO
+  // are the projection's alone — Quals is the one place they change (D460,
+  // D461). A person Raptor no longer has drops out — they are simply absent
+  // from `projected`.
   /* the posting window: the STORED record, through the one body setPeople lays it with ([POST-OUT-OUTCOMES] —
      windowFor; Astra A4: the SANS outcome lays no window while Show SANS is on, and two overlays laying it differently
      would defeat that); a window with no record behind it (the demo overlay's, first boot) keeps today's carry-over */
   const next: any[] = projected.map(pp => {
     const ex = curById.get(pp.id)
-    const merged: any = { ...pp, ...(edits[pp.id] || {}) }
+    const merged: any = { ...pp }
     const rec = st.postOuts[pp.id]
     if (rec) Object.assign(merged, windowFor(rec, st.showSans))
     else if (ex) { merged.from = ex.from; merged.to = ex.to; merged.poArchive = ex.poArchive; if (ex.past) merged.past = ex.past }

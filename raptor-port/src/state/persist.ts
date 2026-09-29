@@ -115,10 +115,10 @@ export const isHydrated = () => hydrated
 /* [DB-READINESS] group A, phase 0 (plan §2.8) — "has the Leave War's world already started?" for
    main.tsx's installDemoWorld. The store's stamp answers (storage/schema.ts); only a store stamped
    the old way (a bare number — every browser before this build, until its first seal) falls back to
-   the old sniff of the war record. Once the war is one row per record (phase 3) there is no single
-   `wars` record to sniff, and a started store must never get the demo world back. */
+   the old sniff: the war's old whole record, or — since the war is one row per record (phase 3) — any
+   war row. A started store must never get the demo world back. */
 export function leaveWarStarted(wb: Whiteboard): boolean {
-  return storeInitialized(wb) ?? wb.has('leavewar', 'wars')
+  return storeInitialized(wb) ?? (wb.has('leavewar', 'wars') || wb.keys('leavewar').some(k => k.startsWith('war:')))
 }
 
 function parse(json: string | null): any {

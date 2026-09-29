@@ -29,7 +29,7 @@ async function boot(be: MemoryBackend) {
   hydrate(wb)
   raptorInitStore()
   const had = leaveWarStarted(wb)
-  lwInitStore(leavewarAdapter(wb))
+  lwInitStore(leavewarAdapter(wb), { started: had })
   installDemoWorld(had)
   resyncSchedBaseline()
   wireLeaveWarSync()
@@ -45,18 +45,29 @@ describe('the first boot saves the Leave War world with its seal', () => {
     const first = await boot(be)
     expect(first.had).toBe(false)
     expect(readSchema(be.peek('settings', 'schema'))!.initialized).toBe(true)
-    const stored = be.peek('leavewar', 'wars')
-    expect(stored).not.toBeNull()
-    /* whose rows the demo bids sit on — the dressed roster (slipway, wolf …), never the seed's invented callsigns */
+    /* the war is saved one row per record ([DB-READINESS] group A, phase 3 — leavewar/state/rows.ts), never the old
+       whole-war record; whose rows the demo bids sit on — the dressed roster (slipway, wolf …), never the seed's
+       invented callsigns: every record's row names the person and date it sits on in the live world */
+    expect(be.peek('leavewar', 'wars')).toBeNull()
+    const snap = await be.loadAll()
+    const recRows = Object.keys(snap.leavewar).filter(k => k.startsWith('rec:'))
+    let n = 0
+    for (const w of rawState().wars) {
+      expect(snap.leavewar[`war:${w.period.id}`]).toBeDefined()
+      for (const pid of Object.keys(w.recs)) for (const date of Object.keys(w.recs[pid]!)) for (const r of w.recs[pid]![date]!) {
+        expect(JSON.parse(snap.leavewar[`rec:${w.period.id}:${r.id}`]!)).toMatchObject({ id: r.id, pid, date })
+        n++
+      }
+    }
+    expect(recRows).toHaveLength(n)
     const recs = () => JSON.stringify(rawState().wars.map(w => w.recs))
     const wars = recs()
-    expect(JSON.stringify(JSON.parse(stored!).map((w: any) => w.recs))).toBe(wars)
-    const ledger = JSON.stringify(rawState().ledger)
+    const ledger = JSON.stringify(rawState().ledger.slice().sort((a, b) => (a.id < b.id ? -1 : 1)))
 
     INPUTS.length = 0; JSON.parse(ISNAP).forEach((r: any) => INPUTS.push(r)); stashClear()
     const second = await boot(be)
     expect(second.had).toBe(true)
     expect(recs()).toBe(wars)
-    expect(JSON.stringify(rawState().ledger)).toBe(ledger)   // the demo OIL story was not added twice
+    expect(JSON.stringify(rawState().ledger.slice().sort((a, b) => (a.id < b.id ? -1 : 1)))).toBe(ledger)   // the demo OIL story was not added twice
   })
 })

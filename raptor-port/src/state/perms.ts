@@ -388,7 +388,7 @@ function opAllows(who: Role, table: string, act: Act, own: OwnRule, actor: Actor
    - `people`   only his own row (D149);
    - `lw.cell`  only his own war row (id `war:person:date`); `lw.current` (which war is
                 shown) is his own view; every other war record — the war itself, the
-                ledger, balances, OIL policy, postings, config — is the admin's;
+                ledger, opening balances, OIL policy, postings, labels, config — is the admin's;
    - `settings` and `plan` (the planning calendar) — none;
    - the schedule's records and the week stash — only as the landing of his own input,
                 a child of his authorised input command (16 Sep 26: it lands a row on a
@@ -443,7 +443,7 @@ export function ownershipViolation(env: CommitEnvelope): string | null {
           break
         }
         return `an admin's record (${where})`
-      case 'lw.bid': case 'lw.war': case 'lw.ledger': case 'lw.balances': case 'lw.oilpolicy': case 'lw.postouts': case 'lw.config':
+      case 'lw.war': case 'lw.ledger': case 'lw.opening': case 'lw.oilpolicy': case 'lw.postouts': case 'lw.label': case 'lw.config':
       case 'plan':
         return `an admin's record (${where})`
       default: break                       // the schedule, the week stash, the Tracker

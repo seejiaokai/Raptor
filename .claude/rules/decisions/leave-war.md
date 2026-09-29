@@ -311,3 +311,13 @@ than one record opens the TAP LIST instead (`ui/DayList.tsx`), each record on
 its own line with its own actions. Don't add a fifth seam casually,
 and never call its `initStore` from a component — it clears the store's
 subscribers.
+
+**SAVED ONE ROW PER RECORD, FROM THE COMMAND STREAM (`[DB-READINESS]` group A, phase 3, 30 Sep 26 —
+`src/leavewar/state/rows.ts`).** A war, each of its records (`rec:<war>:<recId>`, with its person, date and place
+`ord`), each ledger entry, each opening and each man's profile (window + label) is its own stored row; the store
+subscribes to the one command stream it already joined and writes, through its OWN door, exactly the rows each
+command's changes land in — a move is one row, a row goes only for a record that command removed. Not a fifth seam:
+the war still stores only through `state/storage.ts`. `rawPersist` writes nothing; a change outside every command is
+not saved. **No Edit person (D460, D461):** the war keeps no seat, band or SXO of its own — `setPerson`,
+`PersonSheet.tsx` and `personEdits` are gone; the projection's are the man's (Quals is the one place they change).
+Detail: `raptor-port/docs/data-schema.md` §World 2.

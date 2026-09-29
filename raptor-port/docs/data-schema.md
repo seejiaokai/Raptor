@@ -407,25 +407,41 @@ are ISO `'yyyy-mm-dd'` throughout.
 
 ### Keys (`raptor:leavewar/*` on the built site; legacy `leavewar:*`)
 
-Every key its `persist()` writes — about twenty (`src/leavewar/state/store.ts`):
-`wars`, `current`, `openings`, `ledger`, `oilpolicy`, `eventdefs`, `figorder`,
-`rosterorder`, `perslabels`, `manningorder`, `manninghidden`, `fighidden`,
-`groupdefs`, `grouppriority`, `grouppriocustom`, `groupcolors`, `manningdefs`,
-`eventrows`, `showsans`, `personedits`, `postouts`. (Since [ARCH-STACK] step 4,
-20 Sep 26, a stored war holds `{ period, recs }`; an older blob is not migrated —
-`SCHEMA_VERSION` 4 clears `inputs`, `weeks` and `leavewar` on a returning browser.)
+**ONE ROW PER RECORD since 30 Sep 26 (`[DB-READINESS]` group A, phase 3 — `src/leavewar/state/rows.ts`).** Each row is written
+FROM THE COMMAND that changed it — the war's store subscribes to the command stream and writes, through its own
+door (`state/storage.ts`), exactly the rows each command's changes land in, inside that command's one saved group; a
+row is removed only for a record that command removed. The first boot stores the seed's world as rows (and the demo
+world replaces it, inside the boot's group); the one-time fold (`store.ts leavewarConverter`) converts an old store.
 
-The last two are the only per-person records Leave War keeps (8 Sep 26 bug
-pass — a posting-out date used to vanish on reload): `personedits` is
-`{ [personId]: { seat?, band?, sxo? } }`, an admin's identity overrides;
-`postouts` is `{ [personId]: Person }` — since `[ONE-DOOR]` (D320, 27 Sep 26) with `past: { from, to }[]` beside `from`/`to`, his CLOSED earlier stints (from `from <= to`, in order, never overlapping, the last ending before the current `from`; a malformed list is dropped whole on reading) — the person as last projected with
+| stored key | the design's table | holds |
+|---|---|---|
+| `war:<warId>` | `LeaveWar` | the war's `Period` (its days, bands, stage, bidding window) with `ord` — its place among the wars, the order they were created (the period picker's) |
+| `rec:<warId>:<recId>` | `LeaveBid` | ONE of the war's own records (a request, an earned credit, a notice — `WarRec` below) with `pid` and `date` (its address) and `ord` (its place at that address). Several share an address; the list there reads back by `(ord, recId)`. A MOVE rewrites the one row (its new `pid` / `date`) |
+| `ledger:<id>` | `LeaveLedger` | one `LedgerEntry`; a reload reads the ledger by (date, entry time, id) — every reader sorts it for itself |
+| `opening:<pid>:<counter>` | `LeaveOpening` | one opening balance, a number |
+| `profile:<pid>` | `LeavePersonProfile` | `{ post?, label? }` — his posting window (`post`: the `postouts` entry below) and his personnel label (`label`, the admin's text for a ground-crew row); the row goes when both do |
+| `current`, `oilpolicy`, `eventdefs`, `figorder`, `rosterorder`, `manningorder`, `manninghidden`, `fighidden`, `groupdefs`, `grouppriority`, `grouppriocustom`, `groupcolors`, `manningdefs`, `eventrows`, `showsans` | `Setting` | one key each, as before — only the keys a command changed are written |
+
+A started store is read as it stands — no opening, ledger entry or window stored means none, never the seed's; a
+row that will not read (or a war claiming a day another already holds, or a record that would break its address's
+rules — two people each bidding the same half at once) is left in storage as it is and not read. *(Until 30 Sep 26:
+every key above in ONE record each for everyone — `wars` (every war with every record), `openings`, `ledger`,
+`postouts`, `perslabels` — rewritten whole by every edit, with `personedits` beside them; the fold removes them.)*
+(Since [ARCH-STACK] step 4, 20 Sep 26, a war's records are `recs` — an older shape is not migrated — `SCHEMA_VERSION` 4
+clears `inputs`, `weeks` and `leavewar` on a returning browser.)
+
+The posting window is the only per-person record Leave War keeps (8 Sep 26 bug
+pass — a posting-out date used to vanish on reload): the `post` of his profile row,
+`Person` — since `[ONE-DOOR]` (D320, 27 Sep 26) with `past: { from, to }[]` beside `from`/`to`, his CLOSED earlier stints (from `from <= to`, in order, never overlapping, the last ending before the current `from`; a malformed list is dropped whole on reading) — the person as last projected with
 the posting-out window (`to`, `poOutcome`, `poDone`, and the older
 `poArchive` kept in step — `true` = `'overseas'`) on them, and `gone: true`
 once he is deleted — an entry exists while either date is set.
 `poOutcome` is which posting it is (`'overseas' | 'delete' | 'sans' | 'none'`,
 `[POST-OUT-OUTCOMES]`, D229); `poDone` the posting date its outcome has run
 for (so it runs once). `people` itself is never stored: it is re-projected from
-Raptor's `PEOPLE` on every boot and these two are laid back on top.
+Raptor's `PEOPLE` on every boot and the window is laid back on top. (The identity
+overrides stored beside it until 30 Sep 26 — `personedits`, `{ [personId]: { seat?, band?,
+sxo? } }`, the war's Edit person — are gone: D460, D461; a man's seat, band and SXO are Quals's.)
 
 ### The state — `src/leavewar/state/store.ts`
 
@@ -442,7 +458,7 @@ persLabels, groupColors: Record<string, string>
 groupDefs: GroupDef[]       groupPriority: string[]        groupPriorityCustom: boolean
 eventRows: number           showSans: boolean
 focusDate: string | null    focusSeq: number
-personEdits: { personId: { seat?, band?, sxo? } }
+postOuts: { personId: Person }   // (personEdits went with the war's Edit person — D460, D461)
 ```
 
 ### Records
@@ -452,8 +468,8 @@ personEdits: { personId: { seat?, band?, sxo? } }
 | `Person` | `id, callsign, seat: 'pilot' \| 'wso' \| 'gnd', band: 'instructor' \| 'ops', sxo, from, to` (dates in squadron, null = open), `poArchive?, poOutcome?, poDone?, gone?, q?, scd?, scn?, xq?: string[], san?, pers?, label?` — built from the scheduler's PEOPLE, **same ids** |
 | `LeaveWar` | `{ period, recs }` — one war (stored) |
 | `Recs` | `personId → date → WarRec[]` — the war's OWN records only ([ARCH-STACK] step 4) |
-| `WarRec` | one of: **request** `{ id, kind:'request', code, state: 'pending' \| 'acknowledged' \| 'refused', shiftedFrom?, carried? }` · **OIL credit** `{ id, kind:'credit', code: 'FO' \| 'HO', oil: 'auto', via?, note?, spans? }` — the SCHEDULE'S credit only; an OIL award is a ledger entry since [OIL-AWARD-IS-A-GRANT] (29 Sep 26), and an old `oil:'manual'` record is dropped on read (D401) · **notice** `{ id, kind:'notice', code, was, byType, byWho, seq, at }` (a replaced bid, until "OK, seen"). Nothing "approved" is ever stored here — approved leave is the Input with `lw` |
-| `Period` | `id, name, start, end, stage: 'draft' \| 'open' \| 'closed' \| 'published', bidFrom, bidTo, days: DayInfo[], bands: EventBand[]` |
+| `WarRec` | each with `ord?` (its place at its address — `[DB-READINESS]` group A, phase 3), one of: **request** `{ id, kind:'request', code, state: 'pending' \| 'acknowledged' \| 'refused', shiftedFrom?, carried? }` · **OIL credit** `{ id, kind:'credit', code: 'FO' \| 'HO', oil: 'auto', via?, note?, spans? }` — the SCHEDULE'S credit only; an OIL award is a ledger entry since [OIL-AWARD-IS-A-GRANT] (29 Sep 26), and an old `oil:'manual'` record is dropped on read (D401) · **notice** `{ id, kind:'notice', code, was, byType, byWho, seq, at }` (a replaced bid, until "OK, seen"). Nothing "approved" is ever stored here — approved leave is the Input with `lw` |
+| `Period` | `id, name, start, end, stage: 'draft' \| 'open' \| 'closed' \| 'published', bidFrom, bidTo, days: DayInfo[], bands: EventBand[], ord?` (its place among the wars — `[DB-READINESS]` group A, phase 3) |
 | `Grid` (derived) | `personId → date → code` — the main code a cell shows |
 | `Cell` | `{ type, portion: 'full' \| 'am' \| 'pm' }` — a parsed code |
 | `States` (derived) | `personId → date → BidRecord` — the main record's colour state; `source: 'raptor'` now means "locked on the war" (filed on the Inputs page, or medical) |

@@ -47,15 +47,14 @@ const SHEETS: { name: string; testid: string; open: () => void }[] = [
       fireEvent.click(screen.getByTestId('cell-asics-2026-01-23'))
     },
   },
+  /* (the person sheet — the war's Edit person — is gone: D460, D461) */
   {
-    name: 'the person sheet',
-    testid: 'person-sheet',
+    name: 'a figure breakdown',
+    testid: 'figure-breakdown',
     open: () => {
-      setRole('admin')
       render(<Matrix />)
-      // The editor sits behind the figures sheet since 17 Aug 26.
       fireEvent.click(screen.getByTestId('person-ramp'))
-      fireEvent.click(screen.getByTestId('person-edit'))
+      fireEvent.click(screen.getByTestId('pfig-lve').querySelector('.crow')!)
     },
   },
   {
@@ -116,18 +115,17 @@ describe('Escape closes a sheet', () => {
     })
   }
 
-  /* Leave War sheets REPLACE one another rather than stacking (the person
-     editor takes the figures sheet's place; a decision sheet yields to the
+  /* Leave War sheets REPLACE one another rather than stacking (a figure's
+     breakdown takes the figures sheet's place; a decision sheet yields to the
      remarks editor), so one press closes the one sheet there is and the grid is
      left clear — no orphan scrim, nothing to tab into. */
   it('leaves no sheet and no scrim behind', () => {
-    setRole('admin')
     render(<Matrix />)
     fireEvent.click(screen.getByTestId('person-ramp'))
-    fireEvent.click(screen.getByTestId('person-edit'))
-    expect(screen.getByTestId('person-sheet')).toBeTruthy()
+    fireEvent.click(screen.getByTestId('pfig-lve').querySelector('.crow')!)
+    expect(screen.getByTestId('figure-breakdown')).toBeTruthy()
     fireEvent.keyDown(document, { key: 'Escape' })
-    expect(screen.queryByTestId('person-sheet')).toBeNull()
+    expect(screen.queryByTestId('figure-breakdown')).toBeNull()
     expect(screen.queryByTestId('person-figures')).toBeNull()
     expect(screen.queryByTestId('sheet-scrim')).toBeNull()
   })
@@ -152,16 +150,14 @@ describe('Escape closes a sheet', () => {
     pg.id = 'page-leavewar'; pg.className = 'page doze'
     document.body.appendChild(pg)
     try {
-      setRole('admin')
       render(<Matrix />)
       fireEvent.click(screen.getByTestId('person-ramp'))
-      fireEvent.click(screen.getByTestId('person-edit'))
-      expect(screen.getByTestId('person-sheet')).toBeTruthy()
+      expect(screen.getByTestId('person-figures')).toBeTruthy()
       fireEvent.keyDown(document, { key: 'Escape' })
-      expect(screen.getByTestId('person-sheet'), 'a hidden tab must not answer Escape').toBeTruthy()
+      expect(screen.getByTestId('person-figures'), 'a hidden tab must not answer Escape').toBeTruthy()
       pg.className = 'page on'
       fireEvent.keyDown(document, { key: 'Escape' })
-      expect(screen.queryByTestId('person-sheet')).toBeNull()
+      expect(screen.queryByTestId('person-figures')).toBeNull()
     } finally { pg.remove() }
   })
 })

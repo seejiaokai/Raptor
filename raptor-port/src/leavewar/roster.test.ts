@@ -47,7 +47,6 @@ import {
   personLabel,
   resetManning,
   setPeople,
-  setPerson,
   setPostOut,
   setRole,
   setRosterOrder,
@@ -377,17 +376,9 @@ describe('the roster stays a live projection of Raptor\'s PEOPLE', () => {
     expect(groupOf(landed!)).toBe('PERS')
   })
 
-  it('an in-session person edit is NOT reverted by the live re-projection', () => {
-    // A deliberate setPerson override is recorded in state.personEdits and
-    // re-applied over the fresh projection, so it survives the next Raptor
-    // notify rather than snapping back to Raptor's projected value.
-    setRole('admin')
-    const someone = getState().people.find(p => !p.pers)!
-    const flipped = someone.seat === 'pilot' ? 'wso' : 'pilot'
-    setPerson(someone.id, { seat: flipped })
-    raptorNotify()
-    expect(getState().people.find(p => p.id === someone.id)!.seat).toBe(flipped)
-  })
+  /* (An in-session person edit made on the war — setPerson, kept over the re-projection — is gone with the war's Edit
+     person: D460, D461. The re-projection's seat, band and SXO are Quals's alone; the next test pins that Quals reaches
+     the war.) */
 
   it('an SXO marked in Quals reaches Leave War on the next notify (owner, 18 Aug 26)', () => {
     // An IR instructor pilot the way the Quals add-person path builds one — an

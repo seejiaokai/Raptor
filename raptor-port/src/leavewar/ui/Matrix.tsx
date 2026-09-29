@@ -56,7 +56,6 @@ import { AwardSheet, BidPicker, PostInSheet, PostOutSheet, RaptorSheet } from '.
 import { CounterSheet, FigureBreakdownSheet, PersonFiguresSheet } from './CounterSheet'
 import { FigureCell, show } from './FigureCell'
 import { FiguresDrawer, FigureTitle, figClass, type DrawerRow } from './FiguresDrawer'
-import { PersonSheet } from './PersonSheet'
 import { OilTracker } from './OilTracker'
 import { CountRows } from './CountRows'
 import { CounterForm } from './CounterForm'
@@ -841,7 +840,6 @@ export function Matrix() {
   // (owner, same day: "everyone should be able to click on that person's
   // name and see these logics").
   const [whoOpen, setWhoOpen] = useState<string | null>(null)
-  const [editingWho, setEditing] = useState<string | null>(null)
   // The QUALIFICATIONS popover (owner, 3 Sep 26 — "hover the mouse over the
   // person to see the qualifications they hold"). A person wears only their CAT
   // chip; every other qualification (SC DAY, TF, NVG…) lives here, shown on a
@@ -1047,9 +1045,9 @@ export function Matrix() {
   useEffect(() => () => { dragCleanup.current?.() }, [])
   useEffect(() => { if (role !== 'admin' && arranging) setArranging(false) }, [role, arranging])
   /* the admin's editors close when the role in force stops being admin — the admin's switch to the member view (D292;
-     Astra's code read 5, 27 Sep 26: Edit aircrew and the counter form stayed open with live controls), so switching back
+     Astra's code read 5, 27 Sep 26: Edit aircrew — gone since D461 — and the counter form stayed open with live controls), so switching back
      never reopens a stale draft either */
-  useEffect(() => { if (role !== 'admin') { setEditing(null); setCounterEdit(false) } }, [role])
+  useEffect(() => { if (role !== 'admin') setCounterEdit(false) }, [role])
   // Falls back to the first visible figure when `shownId` names one an admin
   // has since hidden (or a stale saved id) — `shownIx` is then DERIVED from
   // `shown`, not the other way round, so the dots and the cycle never point
@@ -4444,8 +4442,7 @@ export function Matrix() {
       {/* The tapped person's breakdown of one figure — the column's shown
           one from a counter-cell tap, or whichever row was tapped in the
           person-figures sheet. Guarded on the person still existing — an
-          admin can delete a row while any sheet is up, the same guard
-          PersonSheet carries. Looked up in the FULL catalogue, not the
+          admin can delete a row while any sheet is up. Looked up in the FULL catalogue, not the
           column's `figures` (visible-only, 6 Sep 26): the figure this sheet
           was asked for was chosen before it opened, and an admin can hide a
           figure at any moment — including while this very sheet is up — so a
@@ -4463,15 +4460,15 @@ export function Matrix() {
         />
       )}
       {/* The tapped person's ALL-FIGURES sheet — every role's way in from a
-          callsign. A figure row hands over to the breakdown above; the
-          admin's Edit person button hands over to the editor below. */}
+          callsign. A figure row hands over to the breakdown above. (Its
+          admin's "Edit person" is gone — D460, D461: seat, band and SXO change
+          only on Quals.) */}
       {whoOpen && people.some(p => p.id === whoOpen) && (
         <PersonFiguresSheet
           person={people.find(p => p.id === whoOpen)!}
           onOpenFigure={figureId => { setBalOpen({ person: whoOpen, figureId }); setWhoOpen(null) }}
           onOpenOil={() => { setOilTracker({ person: whoOpen }); setWhoOpen(null) }}
           onSetBalance={role === 'admin' ? (counter, target) => { setBalance(whoOpen, counter, target) } : undefined}
-          onEdit={role === 'admin' ? () => { setEditing(whoOpen); setWhoOpen(null) } : undefined}
           onClose={() => setWhoOpen(null)}
         />
       )}
@@ -4508,12 +4505,6 @@ export function Matrix() {
              renamed 6 Sep 26 when OIL BAL and OIL USED merged into one
              balance figure, 'oil'). */
           onGranted={() => showFigure('oil')}
-        />
-      )}
-      {editingWho && role === 'admin' && people.some(p => p.id === editingWho) && (
-        <PersonSheet
-          person={people.find(p => p.id === editingWho)!}
-          onClose={() => setEditing(null)}
         />
       )}
       {eventEdit && role === 'admin' && (

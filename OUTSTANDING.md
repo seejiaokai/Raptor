@@ -950,7 +950,11 @@ against the fake database before the tables settle. **Group A's plan (30 Sep 26,
 and cannot make anyone SXO) and D461 (the war's Edit person goes — seat, band and SXO change only on Quals) are built in its phase 3; the Tracker joins it (D462, phase 5b) and an empty real database starts the Tracker with no
 course (D463).** With `[OIL-AWARD-IS-A-GRANT]`
 and the small OIL follow-ups as ONE batch. **Tier:** FULL (saved data). **(1) in part, 29 Sep 26 (`[OIL-AWARD-IS-A-GRANT]`):
-the ledger's COMMAND records are one per entry now (`lw.ledger/<id>`); its STORAGE is still one blob (`leavewar/ledger`).**
+the ledger's COMMAND records are one per entry now (`lw.ledger/<id>`); its STORAGE is still one blob (`leavewar/ledger`)
+— until phase 3.** **(1) BUILT, 30 Sep 26, on `claude/db-readiness-table-shaping-4094f6` (not merged): the schedule a day per
+row (phase 1), the requests, the roster and the planning calendar a row each (phase 2), the Leave War a row per war,
+record, ledger entry, opening and man's profile (phase 3 — D460 and D461 built with it: no Edit person on the war). Still
+in group A: the edit log and accounts (phase 4), the Tracker (5b); the plan's §9 is the build log.**
 
 ### [IT-QUESTIONS] Talk to the IT side now — their approvals take weeks (his, not code; D203, filed 26 Sep 26)
 The checklist is the primer's §7 (Artifact "Raptor Backend Primer"; its questions, kept here so they outlive it): code apps

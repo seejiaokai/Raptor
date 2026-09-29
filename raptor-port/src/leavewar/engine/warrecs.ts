@@ -26,7 +26,13 @@ import { parseCell, type Portion } from './codes'
 import type { LedgerEntry } from './counters'
 import { AM, PM, FULL, type Contrib, type RequestState, type Win } from './dayview'
 
-export interface RequestRec {
+/** ITS PLACE AT ITS ADDRESS ([DB-READINESS] group A, phase 3 — plan §8 P3-CELL-DIFF; the design's `LeaveBid.sortIndex`).
+ *  Every record is its own stored row now, so the order of the list at a person/date rides on each record: minted by
+ *  the store when a record arrives or moves (engine/ord.ts — its neighbours' places, a record still in order keeps its
+ *  own), and the list is read back by (ord, id). Absent only on a record not yet placed. */
+interface Placed { ord?: number }
+
+export interface RequestRec extends Placed {
   id: string
   kind: 'request'
   /** the stored notation, portion marks included: `LL`, `*LL`, `OL*` */
@@ -61,7 +67,7 @@ export function creditGiver(c: { oil?: 'auto'; auto?: boolean; givenBy?: string;
   return c.givenBy ?? ''
 }
 
-export interface CreditRec {
+export interface CreditRec extends Placed {
   id: string
   kind: 'credit'
   code: 'FO' | 'HO'
@@ -88,7 +94,7 @@ export interface CreditRec {
   spans?: Array<[number, number]>
 }
 
-export interface NoticeRec {
+export interface NoticeRec extends Placed {
   id: string
   kind: 'notice'
   /** the REPLACED bid's notation */
@@ -241,6 +247,12 @@ function readCarried(x: unknown): Carried | undefined {
  *  demo data is reset, not migrated). A bad note or `carried` is dropped, the
  *  record kept (design §19 FB4-03). */
 export function readRec(x: unknown): WarRec | null {
+  const r = readRecBody(x)
+  /* its place at its address survives a reload ([DB-READINESS] group A, phase 3); a bad one is dropped and re-minted */
+  if (r && isObj(x) && typeof x.ord === 'number' && Number.isFinite(x.ord)) r.ord = x.ord
+  return r
+}
+function readRecBody(x: unknown): WarRec | null {
   if (!isObj(x) || typeof x.id !== 'string' || !x.id || 'source' in x) return null
   if (x.kind === 'request') {
     if (typeof x.code !== 'string' || !parseCell(x.code) || typeof x.state !== 'string' || !REQ_STATES.has(x.state)) return null

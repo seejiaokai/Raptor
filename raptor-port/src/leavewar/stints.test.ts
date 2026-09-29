@@ -173,9 +173,9 @@ describe('D320 — the stored record: tolerant, never backwards', () => {
     const be = memoryBackend(); reboot(be)
     const id = anAircrewId()
     setPostOut(id, '2026-06-15', 'overseas'); openStint(id, '2026-09-01')
-    const raw = JSON.parse(be.read('postouts')!)
-    raw[id].past = [{ from: '2026-05-01', to: '2026-04-01' }]           // backwards
-    be.write('postouts', JSON.stringify(raw))
+    const raw = JSON.parse(be.read(`profile:${id}`)!)                  // his profile row ([DB-READINESS] group A, phase 3)
+    raw.post.past = [{ from: '2026-05-01', to: '2026-04-01' }]         // backwards
+    be.write(`profile:${id}`, JSON.stringify(raw))
     reboot(be)
     expect(him(id).past ?? []).toEqual([])
     expect(him(id).from).toBe('2026-09-01')

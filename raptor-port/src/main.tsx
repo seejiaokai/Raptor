@@ -68,7 +68,9 @@ async function boot(): Promise<void> {
      REAL: a world that came back from storage keeps its wars, its OIL story
      and its inputs; only a first-ever boot gets the demo overlay. */
   const hadStoredWars = leaveWarStarted(wb)
-  lwInitStore(leavewarAdapter(wb))
+  /* the war reads its rows on a started store, and stores the seed as rows on one that has not ([DB-READINESS] group A,
+     phase 3 — leavewar/state/store.ts initStore) */
+  lwInitStore(leavewarAdapter(wb), { started: hadStoredWars })
   installDemoWorld(hadStoredWars)
   /* [ARCH-STACK] step 4 — the demo world files its approved leave as INPUTS
      (raw, before any command). The scheduler's warnings were computed by

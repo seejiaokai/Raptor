@@ -13,7 +13,9 @@
 // Leave War "went session-only (a memory backend)" so EVERY boot is fresh and the
 // caller "always passes hadStoredWars=false". Both halves are false since the
 // 8 Sep 26 storage work. Leave War boots on the WHITEBOARD, and main.tsx passes
-// the REAL flag: `wb.has('leavewar','wars')`. So on a built site a returning
+// the REAL flag: `leaveWarStarted(wb)` (the store's `initialized` stamp since
+// [DB-READINESS] group A phase 0; `wb.has('leavewar','wars')` before it, and a
+// war row since phase 3 — state/persist.ts). So on a built site a returning
 // browser takes the `hadStoredWars=true` branch — people projection only, wars
 // left alone — and that branch is LIVE today, not reserved for the shared
 // database to come. The memory backend is now the dev/test path only
@@ -170,16 +172,16 @@ export function installDemoWorld(hadStoredWars: boolean): void {
   const people = projectPeople(getState().showSans)
 
   if (!hadStoredWars) {
-    /* The demo overlay: sxo and the posting-out window come from the SEED
-       person, applied AFTER projection, so the demo reads exactly as the
-       standalone app's did (one SXO short on the red days, one man posted
-       out mid-January). By construction of DEMO_MAP the sxo flags already
-       agree, so in practice this carries only IGNITE's posting-out date. */
+    /* The demo overlay: the posting-out window comes from the SEED person,
+       applied AFTER projection, so the demo reads as the standalone app's did
+       (one man posted out mid-January — IGNITE). SXO is NOT laid over: the war
+       shows what Quals says and nothing on the war ticks SXO (D460 — it was
+       laid here from the seed too, which by construction of DEMO_MAP agreed
+       with Quals, so nothing on screen changes). */
     const overlay = new Map(seedPeople().map(p => [DEMO_MAP[p.id], p]))
     for (const p of people) {
       const seed = overlay.get(p.id)
       if (seed) {
-        p.sxo = seed.sxo
         p.from = seed.from
         p.to = seed.to
       }

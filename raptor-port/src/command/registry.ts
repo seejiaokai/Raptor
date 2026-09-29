@@ -14,7 +14,8 @@
    BUILT 30 Sep 26 ([DB-READINESS] group A, phase 0): the fold subscriber is the stream consumer in
    state/rowmap.ts — it maps each change to the stored ROW it lives in through per-collection mappers,
    not through this blob table; the table's stale entries (leavewar/balances, leavewar/config, lw.bid)
-   are corrected as group A's phases 1–3 move each collection to rows (plan §2.9).
+   were corrected as group A's phases 1–3 moved each collection to rows (plan §2.9) — the Leave War's
+   in phase 3, whose rows its own store writes through its own door (leavewar/state/rows.ts).
 */
 import type { LogicalCollection } from './types'
 
@@ -38,16 +39,19 @@ export const LOGICAL_TO_BLOB: Record<LogicalCollection, string> = {
   'settings': 'settings',
   // off-week session memory — stored per week under the weeks blob ([CMDL-FINISH] §6)
   'weekstash': 'weeks',
-  // leave war
-  'lw.cell': 'leavewar/wars',
-  'lw.bid': 'leavewar/wars',
-  'lw.war': 'leavewar/wars',
-  'lw.ledger': 'leavewar/ledger',
-  'lw.balances': 'leavewar/balances',
-  'lw.oilpolicy': 'leavewar/oilpolicy',
-  'lw.postouts': 'leavewar/postouts',
-  'lw.current': 'leavewar/current',
-  'lw.config': 'leavewar/config',
+  // leave war — one row per record in the war's own collection ([DB-READINESS] group A, phase 3 —
+  // leavewar/state/rows.ts): a war `war:<id>`, each record at an address `rec:<war>:<id>`, a ledger entry
+  // `ledger:<id>`, an opening `opening:<pid>:<counter>`, a man's window and label together `profile:<pid>`; the
+  // policy, the war on screen and each ⚙ setting its own key
+  'lw.cell': 'leavewar',
+  'lw.war': 'leavewar',
+  'lw.ledger': 'leavewar',
+  'lw.opening': 'leavewar',
+  'lw.oilpolicy': 'leavewar',
+  'lw.postouts': 'leavewar',
+  'lw.label': 'leavewar',
+  'lw.current': 'leavewar',
+  'lw.config': 'leavewar',
   // tracker (the v3: keys)
   'trk.marks': 'tracker/marks',
   'trk.dates': 'tracker/dates',

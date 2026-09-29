@@ -282,7 +282,11 @@ function postoutLines(c: Change, env: CommitEnvelope): void {
      (`lw.postout` — setting one, moving it, taking it back, before or after it ran: Astra's read of the fixes, 02), and
      there the posting line is the one line (personLines leaves out what the posting made) */
   if (env.type === 'person.archive' || env.type === 'person.restore' || env.type === 'person.delete') return
-  const bm: any = (c.before && typeof c.before === 'object') ? c.before : {}, am: any = (c.after && typeof c.after === 'object') ? c.after : {}
+  /* one man's window per change since the war's records went into rows ([DB-READINESS] group A, phase 3 — its id is his
+     person id); a change of the whole map, from before that shape, is still read man by man */
+  const whole = c.id === 'all'
+  const wrap = (v: unknown): any => (v && typeof v === 'object' ? (whole ? v : { [String(c.id)]: v }) : {})
+  const bm: any = wrap(c.before), am: any = wrap(c.after)
   /* a man MADE in the same command (Add a person with his post-in date) is said by "added to the roster" */
   const quiet = new Set<string>()
   for (const x of env.changes) if (x.collection === 'people' && !x.before) quiet.add(String(x.id))

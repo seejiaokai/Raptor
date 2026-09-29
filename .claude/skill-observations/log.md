@@ -1742,3 +1742,28 @@ fail before calling it proven.
 **Principle:** A test is "first" when it fails for the reason the feature exists. For a new write path that reason is
 "nothing reached storage", which is available before a line of the path is written; writing the test after costs a
 break test per mechanism to recover the same proof.
+
+### Observation 383: Recovering "red first" for tests written after the code — one break-and-restore script, not hand edits
+
+**Status:** OPEN
+**Date:** 30 Sep 26
+**Session context:** `[DB-READINESS]` group A phase 3 — the Leave War saved one row per record (a new write path again)
+**Skill:** test-driven-development
+**Type:** open-source
+**Phase/Area:** the recovery step #382 proposes, when some tests were written after the mechanism they guard
+
+**Issue:** Most of this phase's tests were written first and ran red (21 of 24). A few (the reconcile turn's rows, the
+undo's rows) were added after the code. #382's recovery — break each mechanism once and watch its test go red — was done
+this time as ONE script: a list of (file, exact text, replacement, what it breaks); for each it swaps the text in,
+runs only the focused test file, records the failing count, and writes the file's ORIGINAL BYTES back in a `finally`.
+Six mechanisms proved in one command, every one red, nothing left broken — including a file with Windows line
+endings, which a hand edit-and-revert would have risked converting. One snag: printing the test runner's Unicode to the
+Windows console crashed the script after the first break (the `finally` still restored the file); running it with
+`PYTHONIOENCODING=utf-8` fixed it.
+
+**Suggested improvement:** In the skill's "written after" note (with #382's), give the recipe: a break table plus a
+harness that applies one break, runs the narrowest test file, restores the original bytes in `finally`, and prints the
+red count per break; a break that stays green means that mechanism is unguarded.
+
+**Principle:** Post-hoc proof that a test guards a mechanism is cheapest as an automated break table with byte-exact
+restore — repeatable, all-or-nothing, and safe for files whose bytes (line endings) matter.

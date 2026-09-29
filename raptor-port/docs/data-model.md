@@ -649,13 +649,13 @@ Owner: **Leave War**. One leave period — a "war".
 | `bidFrom`, `bidTo` | date | no | the bidding window |
 | `days` | JSON | yes | `DayInfo[]` — the calendar's own annotations |
 | `bands` | JSON | yes | `EventBand[]` |
+| `sortIndex` | decimal | yes | its place among the wars — the order they were created, which the period picker lists them by (`ord`, `[DB-READINESS]` group A, phase 3; added 30 Sep 26) |
 
 Relationships: 1–n `LeaveBid`.
-From today: `raptor:leavewar/wars` — an array of `{ period, recs }`, one
-record for every war (`recs` = the war's own record lists, [ARCH-STACK] step 4).
-App change: the record lists come out of the war record into `LeaveBid`
-rows. That single record is the largest whole-record clobber surface in the
-app today (section 7).
+From today: one stored row per war since 30 Sep 26 (`raptor:leavewar/war:<warId>` — its period, with `ord`; `[DB-READINESS]` group A, phase 3).
+Until then `raptor:leavewar/wars` — an array of `{ period, recs }`, one record for every war (`recs` = the war's own
+record lists, [ARCH-STACK] step 4), the largest whole-record clobber surface in the app (section 7).
+App change: *(built 30 Sep 26)* the record lists came out of the war record into `LeaveBid` rows.
 
 ### LeaveBid
 
@@ -683,12 +683,18 @@ plus the Inputs on read.
 | `carried` | JSON | no | what an un-approval carried back from the Input (remark, moved marks) for the next approval |
 | `note` | string | no | a credit's reason |
 | `replacedBy` / `replacedWho` / `groupSeq` / `at` | string / string / int / datetime | notice only | what replaced the bid, who (frozen label), the command that did it ("OK, seen" clears the group) |
+| `sortIndex` | decimal | yes | its place among the records at its (`warId`, `personId`, `date`); they read back by (`sortIndex`, key) (`ord`, `[DB-READINESS]` group A, phase 3) |
 | `isDeleted` | bool | yes | |
 
 Relationships: n–1 `LeaveWar`, n–1 `Person`.
 Unique on the record id; per (`warId`, `personId`, `date`) at most one
 undecided request per half, one refused per half, one credit.
-From today: `recs` (`personId → date → WarRec[]`) inside the war record.
+From today: one stored row per record since 30 Sep 26 (`raptor:leavewar/rec:<warId>:<recId>` — the record with its
+`pid`, `date` and `ord`; `[DB-READINESS]` group A, phase 3), written from the command that changed it: a MOVE rewrites the one row, and a row
+is removed only for a record that command removed — a stale client never writes back a record another deleted. Two
+records at one address that would break the rules above (two people each bidding the same half at once) are both
+kept in storage; the second in (`sortIndex`, key) order is not read. Until then `recs` (`personId → date → WarRec[]`)
+inside the war record.
 App change: none beyond the move to rows — the Leave War reads the Inputs and
 writes only these records; there is no sync difference to compute and no
 loop-breaker to keep ([ARCH-STACK] step 4).
@@ -704,7 +710,8 @@ Owner: **Leave War**. The leave balances.
 | `LeaveLedger` | `personId`, `counterCode`, `amount` (a grant or a correction), `date`, `reason`, `approvedBy`, `givenBy`, `enteredBy` (ref Person — who entered it, D200 (2)), `enteredAt` (datetime), `isDeleted` — one `LedgerEntry`. **A row with `counterCode = oil` and `amount > 0` is an OIL AWARD** — the ONE kind of hand-given OIL, whether given on the war grid or from the OIL tracker ([OIL-AWARD-IS-A-GRANT], D400, D402, 29 Sep 26); the grid draws it on its date; its date never changes (D260); a negative OIL row is a correction |
 
 Relationships: all n–1 `Person` and n–1 `LeaveCounter`.
-From today: `raptor:leavewar/openings` and `raptor:leavewar/ledger`.
+From today: one stored row each since 30 Sep 26 — `raptor:leavewar/opening:<pid>:<counter>` and
+`raptor:leavewar/ledger:<id>` (`[DB-READINESS]` group A, phase 3; `openings` and `ledger`, one record each for everyone, until then).
 App change: none to the OIL derivation — `OilLedger`, `OilCredit` and
 `OilDebit` stay **derived** from these rows plus the OIL policy, and are not
 stored.
@@ -726,7 +733,9 @@ moved here so the Leave War writes its own table and never the shell's.
 Relationships: 1–1 `Person` (optional on the Person side).
 From today: *(D461, 30 Sep 26: `raptor:leavewar/personedits` goes whole — the war's Edit person is removed; seat and SXO
 are the person's, band is worked out from his CAT, so the profile has no `band`)*
-`raptor:leavewar/postouts`, and the `perslabels` preference.
+`raptor:leavewar/postouts`, and the `perslabels` preference — since 30 Sep 26 one stored row per man
+(`raptor:leavewar/profile:<pid>` = `{ post?, label? }` — his window, as the app's frozen copy of him with it on, and his
+label; `[DB-READINESS]` group A, phase 3).
 App change: `setPeople` lays this row on the projection instead of two
 override records and a label map; a posting-out date is a column, not an
 entry that exists only while `to` is set.
@@ -915,7 +924,7 @@ The "migration notes" say how each shape maps, should a record ever need convert
 | `raptor:settings/qualcols` | `Qualification` + `Setting` | The column list becomes rows — a GUID each, `k` kept as `key` — so `QualMark` can key off the id; display flags travel with each column |
 | IndexedDB `raptor-docs` + `docBackend` map | `Attachment` + shared file store | Bytes to the file store, metadata to the row. Ids are already globally unique (`doc-`+UUID). A pre-drawer browser holds `docId`s with no bytes — import them as "no document on file", never fabricate |
 | `ACCOUNTS`, `SESSION`, `ME`, `USERS[]` (code) | `User` | Not migrated — replaced by the auth provider at stage 4. Map each new principal to a `Person` on first sign-in |
-| `raptor:leavewar/wars` | `LeaveWar` + `LeaveBid` | One `LeaveWar` per war; explode `recs` into one `LeaveBid` per stored record (several may share a person/date). Approved leave is already an `Input` — nothing to convert |
+| `raptor:leavewar/wars` | `LeaveWar` + `LeaveBid` | One `LeaveWar` per war; explode `recs` into one `LeaveBid` per stored record (several may share a person/date), `sortIndex` from each list's order (the wars' from theirs). Approved leave is already an `Input` — nothing to convert. *(The app does this itself since 30 Sep 26 — the fold, `leavewar/state/store.ts leavewarConverter`, into the rows of `[DB-READINESS]` group A, phase 3; the same for the four rows below)* |
 | `raptor:leavewar/openings` | `LeaveOpening` | One row per (person, counter) |
 | `raptor:leavewar/ledger` | `LeaveLedger` | One row per `LedgerEntry`. The OIL ledger stays derived |
 | `raptor:leavewar/oilpolicy`, `eventdefs`, `manningdefs`, `groupdefs`, `grouppriority`, `grouppriocustom`, `groupcolors`, `figorder`, `rosterorder`, `manningorder`, `manninghidden`, `fighidden`, `eventrows`, `showsans`, `current` | `Setting` (scope `leavewar`) | Preferences and definitions, value verbatim, absent = default |
@@ -968,7 +977,7 @@ not a bug in what ships today.
 | Rule | Requirement |
 |---|---|
 | Write-verify | A network store can ack a write that never durably landed, or lose the ack; a later retry of a lost-ack write can resurrect a stale value over a newer one. Confirm every write by version/ETag or read-back. Never report "saved" on the transport's success alone |
-| Per-row writes for the big blobs | `inputs/all`, `people/all` and `leavewar/wars` are one record each today; two people editing unrelated rows clobber each other whole-record. *(Built 30 Sep 26 for the requests, the roster and the planning calendar — `[DB-READINESS]` group A, phase 2: one row each, written from the command that changed it; the war is phase 3.)* `LeaveWar` is the largest surface. Per-row writes (or a field-level merge) are mandatory before two people share the store. **The same for a week of the programme (29 Sep 26, D355):** saved one row per day, so two schedulers on two days of one week never write the same row (section 9, the day lock) |
+| Per-row writes for the big blobs | `inputs/all`, `people/all` and `leavewar/wars` are one record each today; two people editing unrelated rows clobber each other whole-record. *(Built 30 Sep 26 for the requests, the roster and the planning calendar — `[DB-READINESS]` group A, phase 2: one row each, written from the command that changed it; and for the war — phase 3: a war, each of its records, each ledger entry, each opening and each man's profile one row, two people bidding on one war both kept.)* `LeaveWar` is the largest surface. Per-row writes (or a field-level merge) are mandatory before two people share the store. **The same for a week of the programme (29 Sep 26, D355):** saved one row per day, so two schedulers on two days of one week never write the same row (section 9, the day lock) |
 | Ownership before incoming sync | Today's reconcile deletes every `weeks/*` record nothing local backs — correct for one browser, destructive against a shared store. Whole-collection ownership assumptions must be replaced by `ownedBy` / row-level rules **before the first shared release** (29 Sep 26, Fable 6 — was "before stage 3"; the 30-second check comes with stage 1, D356): the reconcile never removes a store row; a week is removed only by Admin → Data, as a tombstone, by an admin holding all seven of its days |
 | Boot timeout and all-or-nothing hydrate | The boot gate awaits one load with no timeout: a hung network load blanks the app, and a partial load half-hydrates — the hydrated flag latches on one record and can re-seed the demo world over real data. Needs a timeout, a loading state, and a hydrate that is all or nothing |
 | Never seed demo data into the shared store | An empty store on first boot must stay empty. The demo roster, days and inputs are test fixtures, not a seed for the squadron's database |

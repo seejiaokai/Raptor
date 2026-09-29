@@ -326,8 +326,8 @@ Custom APIs and Power Automate flows are allowed; reporting on the worked-out pi
   delete an input; file two in a row (one stored row each, order kept); add / archive a person; a planning puck and a
   day title; two tabs each add a puck on one date (both remain); edit two days of one week; edit, Undo to pristine,
   reload; a week with a PUBLISHED day — edit another day, Unpublish, publish again (a reissue) — the issued versions, the
-  four names and the history intact after each reload; bid / decide / move / delete on the war; the war's SXO tap (the
-  schedule and Quals show it); an OIL award; undo and redo each; three quick edits then an immediate reload; delete every
+  four names and the history intact after each reload; bid / decide / move / delete on the war; SXO ticked on Quals
+  shows on the war, and the war's name sheet offers no Edit person (D460, D461 — the war's own SXO tap is gone); an OIL award; undo and redo each; three quick edits then an immediate reload; delete every
   input, reload (no demo back); orders before and after reload (Inputs page, Quals, the pickers, a Leave War cell with two
   records); two tabs on different records (both survive); an edit on one client and the stand-in reader on another (the
   history line arrives); a week switch onto a week another client filed an input for (its group carries a batch or is a
@@ -474,3 +474,46 @@ boot in `main.tsx`; tests `storage/schema.test.ts`, `storage/fold.test.ts`, `sta
   to HOLDS (`storage/dbreadiness.test.ts`).
 - **Gates (30 Sep 26, under the lock):** unit 7136/7136 · build · tfin 728/0 · e2e 509/0 · smoke 445/0 · perf 4/4 (oneEdit
   1.31×, board 1.34× — unchanged) · rulecheck · docsize.
+
+**Phase 3 — built 30 Sep 26** (`src/leavewar/state/rows.ts` new; `leavewar/state/store.ts`, `leavewar/engine/warrecs.ts`,
+`leavewar/engine/period.ts`, `leavewar/sync.ts`, `leavewar/state/demoworld.ts`, `leavewar/ui/{CounterSheet,Matrix}.tsx`,
+`command/{types,registry}.ts`, `undo/{derive,describe}.ts`, `state/{undo-wire,perms,changelines,persist}.ts`, `main.tsx`;
+`leavewar/ui/PersonSheet.tsx` deleted; tests `leavewar/rows.test.ts` (28) and nine older tests moved to the rows):
+- **The rows** (§2.5): `war:<warId>` (the period, with `ord`), `rec:<warId>:<recId>` (one record, with `pid`, `date`,
+  `ord`), `ledger:<id>`, `opening:<pid>:<counter>`, `profile:<pid>` (`{ post?, label? }` — the window and the personnel
+  label share the man's row), and the settings-like keys unchanged. `wars`, `openings`, `ledger`, `postouts`, `perslabels`
+  and `personedits` are never written again; the LW converter (`leavewarConverter`, registered — the target stays 5)
+  folds them.
+- **The mechanism — one technical departure, said plainly:** the war writes its rows through its OWN door, from its own
+  subscriber to the command stream (`lwRegisterCommands` → `lwRows`), not through `state/rowmap.ts`'s registry. The war
+  keeps its own storage seam (the area's architecture: four seams, and the war's store only through `state/storage.ts`),
+  and routing its rows through the scheduler's persistence module would have put Leave War knowledge there. The two
+  properties §2.2 asks for hold the same way: rows written at phase 9 inside the command's own group; a row removed only
+  for a delete the command made. `rawPersist` writes nothing now (the durable version and the legacy undo step only).
+- **P3-CELL-DIFF:** the `lw.cell` lists are spread into records keyed by (war, record) across the whole envelope — a move
+  is one put, an unchanged record is not written, a record gone from its address in that command is the only removal.
+  `ord` is minted at the apply-end (`placeRecords` in `persistNotify`, over the addresses the write changed — a record is
+  replaced, never mutated, since the committed world is the undo's before-image); hydrate reads by `(ord, recId)`; a
+  record that would break its address's rules (two people each bidding the same half at once) is kept in storage and not
+  read. The command records follow the grain: `lw.opening/<pid>:<counter>` (was `lw.balances/all`), `lw.postouts/<pid>`
+  (was one record) and `lw.label/<pid>` (out of `lw.config`, so a label edit stays undoable while a posting stays
+  deferred); `lw.bid` and `lw.balances` gone from `types.ts` and `LOGICAL_TO_BLOB`.
+- **"Started" decides the seed:** `initStore(backend, { started })` — main.tsx passes the stamp's answer; a started store
+  is read as it stands (no openings, ledger or windows stored means none); a fresh one stores the seed as rows at once
+  and the demo world replaces them in the boot group (`persistBootWorld` removes the seed rows the dressed world no
+  longer holds — an opening keyed by a seed person's id). The idle raw writes the plan named are covered: the coalesced
+  reconcile writes are carried by the turn's one projection (tested), the legacy `lwUndo` path is test-only since D347.
+- **D460, D461 built:** the name sheet's Edit person, `PersonSheet.tsx`, `setPerson` and `personEdits` are gone; the
+  roster sync and `setPeople` lay no override; the demo overlay no longer lays SXO (checked: every demo man already had
+  Quals's SXO, so nothing on screen moves).
+- **Found on the way:** the OIL pass's "same credit again" check compared the whole record, so a place (`ord`) on the
+  stored credit would have made it rewrite every credit on every pass — it compares without the place now.
+- **Test order, said plainly:** `rows.test.ts` was written first and ran red (21 of 24, for the right reasons); the
+  reconcile-turn and undo row tests were added after the code — each mechanism was then broken once on purpose (the
+  record removal, the turn's projection, the undo's rows, the apply-end minting, the address rules at read, the first
+  boot's rows) and its tests went red.
+- **Perf, before and after, same machine, alternating runs:** oneEdit 1.38×/1.38× → 1.31×/1.35×, noop 1.46×/1.47× →
+  1.56×/1.47×, board 1.32×/1.27× → 1.27×/1.31×, noopB 1.53×/1.52× → 1.55×/1.53× the reference — no change; 4/4 each run.
+- **P3-CELL-DIFF's "exact `ChangeBatch.items`" test** lands with phase 4, where the batch is built.
+- **Gates (30 Sep 26, under the lock):** unit 7154/7154 · build · tfin 728/0 · e2e 509/0 (49 skipped) · smoke 445/0 ·
+  rulecheck · docsize; perf 4/4 (the side-by-side above).

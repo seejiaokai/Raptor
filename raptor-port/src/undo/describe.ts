@@ -204,7 +204,9 @@ function lwLabel(entry: UndoEntry): string {
     return who ? `${gone ? 'removing ' : ''}${who}’s ${what}` : gone ? 'removing leave on the Leave War' : 'leave on the Leave War'
   }
   if (colls.has('lw.config')) return 'a Leave War setting'
-  if (colls.has('lw.balances')) return 'an opening balance'
+  if (colls.has('lw.opening')) return 'an opening balance'
+  /* a ground-crew row's label on the war — kept in the war's ⚙ record until [DB-READINESS] group A phase 3 */
+  if (colls.has('lw.label')) return 'a Leave War setting'
   if (colls.has('lw.oilpolicy')) return 'the OIL policy'
   if (colls.has('lw.ledger')) {
     /* an OIL AWARD — a ledger entry, however it was given ([OIL-AWARD-IS-A-GRANT]) — by its own name, as the grid's

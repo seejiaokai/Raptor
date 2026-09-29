@@ -1126,11 +1126,12 @@ Quals-tick-lifts-the-count integration — are pinned in
     as, the role, the focused day. An undo must not move you, and switching wars
     RE-BASELINES the stack (undo is scoped to the war in front of you, the same
     way the schedule re-baselines per week).
-  - **Post-out / a person's seat-band-SXO edit** (`setPostOut` / `setPerson`).
+  - **Post-out** (`setPostOut`; and a person's seat-band-SXO edit, `setPerson`,
+    until it was removed with the war's Edit person — D460, D461, 30 Sep 26).
     These write `people`, a live PROJECTION of Raptor's roster owned by the
-    Quals page; they carry their own explicit undo (clear the PO date, flip the
-    field back) and are re-projected on every Raptor notify, so putting them in
-    the snapshot would only let an undo fight Raptor.
+    Quals page; they carry their own explicit undo (clear the PO date) and are
+    re-projected on every Raptor notify, so putting them in the snapshot would
+    only let an undo fight Raptor.
   - **Raptor-driven grid changes** — an OIL credit the OIL pass wrote
     (`ingestDutyCredit` / `clearRaptorCell`, held under the history `locked`;
     since [ARCH-STACK] step 4 leave is never copied onto the war at all). Undoing one would

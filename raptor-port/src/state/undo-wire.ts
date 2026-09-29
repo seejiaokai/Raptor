@@ -75,11 +75,11 @@ function schedDayOf(entry: UndoEntry): number | null {
   return days.size === 1 ? [...days][0] : null
 }
 
-/* the date an LW closure touched (lw.cell / lw.bid id = `<warId>:<pid>:<date>`,
+/* the date an LW closure touched (lw.cell id = `<warId>:<pid>:<date>`,
    the date is the LAST segment — a warId may itself contain ':'). */
 function lwDateOf(entry: UndoEntry): string | null {
   for (const ch of entry.forward) {
-    if (ch.collection === 'lw.cell' || ch.collection === 'lw.bid') {
+    if (ch.collection === 'lw.cell') {
       const p = ch.id.split(':')
       if (p.length >= 3) return p[p.length - 1]
     }

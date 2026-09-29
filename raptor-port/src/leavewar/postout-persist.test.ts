@@ -1,10 +1,12 @@
-// The two things Leave War owns about a person survive a reboot (8 Sep 26
-// bug pass): the posting-out window an admin set through setPostOut, and an
-// identity override made through setPerson. Both used to live only on
-// `state.people`, which is never persisted (it is a projection of Raptor's
-// roster), so a PO date vanished on the next reload and the archived body
-// came back on the roster. They now ride `postouts` / `personedits`, laid
-// back onto the projection by setPeople.
+// What Leave War owns about a person survives a reboot (8 Sep 26 bug pass):
+// the posting-out window an admin set through setPostOut. It used to live only
+// on `state.people`, which is never persisted (it is a projection of Raptor's
+// roster), so a PO date vanished on the next reload and the archived body came
+// back on the roster. It rides his profile row now — `profile:<pid>`, his
+// window with his personnel label ([DB-READINESS] group A, phase 3; the one
+// `postouts` record for everyone until then) — laid back onto the projection
+// by setPeople. (The identity override that rode beside it, `personedits`,
+// written by the war's Edit person, is gone: D460, D461.)
 //
 // Its own file, like poarchive.test.ts: a stored backend is reused across
 // two initStore calls to stand in for a reload.
@@ -12,7 +14,7 @@
 import { beforeEach, describe, expect, it } from 'vitest'
 import { PEOPLE } from '../engine/people'
 import { initStore as raptorInitStore } from '../state/store'
-import { getState, initStore as lwInitStore, setPeople, setPerson, setPostIn, setPostOut, setRole } from './state/store'
+import { getState, initStore as lwInitStore, setPeople, setPostIn, setPostOut, setRole } from './state/store'
 import { memoryBackend, type StorageBackend } from './state/storage'
 import { projectPeople } from './state/raptorRoster'
 
@@ -23,6 +25,12 @@ function reboot(be: StorageBackend) {
   setRole('admin')
 }
 const anAircrewId = () => getState().people.find(p => !p.pers && (PEOPLE as any)[p.id])!.id
+/* his stored window (his profile row's `post`), or undefined */
+const windowOf = (be: StorageBackend, id: string): any => { const r = be.read(`profile:${id}`); return r ? JSON.parse(r).post : undefined }
+/* windows as another build stored them: one profile row each, on a store that has started */
+const storeWindows = (be: StorageBackend, map: Record<string, unknown>) => { for (const [pid, v] of Object.entries(map)) be.write(`profile:${pid}`, JSON.stringify({ post: v })) }
+/* every profile row, as stored */
+const profiles = (be: StorageBackend) => be.keys().filter(k => k.startsWith('profile:')).sort().map(k => `${k}=${be.read(k)}`)
 
 beforeEach(() => { raptorInitStore() })
 
@@ -32,7 +40,7 @@ describe('setPostOut persists the window', () => {
     reboot(be)
     const id = anAircrewId()
     expect(setPostOut(id, '2027-03-01', false)).toBe(true)
-    expect(JSON.parse(be.read('postouts')!)[id].to).toBe('2027-02-28')
+    expect(windowOf(be, id).to).toBe('2027-02-28')
 
     reboot(be)
     const p = getState().people.find(x => x.id === id)!
@@ -40,7 +48,7 @@ describe('setPostOut persists the window', () => {
     expect(p.poArchive).toBe(false)
 
     setPostOut(id, null)
-    expect(be.read('postouts')).toBe('{}')
+    expect(be.read(`profile:${id}`)).toBeNull()
     reboot(be)
     expect(getState().people.find(x => x.id === id)!.to).toBeNull()
   })
@@ -63,26 +71,18 @@ describe('setPostOut persists the window', () => {
   })
 })
 
-describe('setPerson persists the override', () => {
-  it('an SXO flip made here is still on the person after a reboot', () => {
-    const be = memoryBackend()
-    reboot(be)
-    const id = getState().people.find(p => p.seat === 'pilot' && !p.sxo && (PEOPLE as any)[p.id])!.id
-    expect(setPerson(id, { sxo: true })).toBe(true)
-    reboot(be)
-    expect(getState().people.find(x => x.id === id)!.sxo).toBe(true)
-  })
-})
+/* (setPerson's override — an SXO flip made on the war, surviving a reboot — is gone with the war's Edit person: D460,
+   D461. A man's seat, band and SXO come from Quals alone; src/leavewar/rows.test.ts pins that a stored override is
+   never read.) */
 
 describe('untrusted storage', () => {
-  it('garbage in either record reads as empty, and a window without its date is dropped', () => {
+  it('garbage in a profile row reads as no window, and a window without its date is dropped', () => {
     const be = memoryBackend()
-    be.write('postouts', '[1')
-    be.write('personedits', JSON.stringify({ x: { seat: 'bogus', sxo: 'yes' }, y: { band: 'ops' } }))
+    reboot(be)
+    be.write('profile:x', '[1')
     reboot(be)
     expect(getState().postOuts).toEqual({})
-    expect(getState().personEdits).toEqual({ y: { band: 'ops' } })
-    be.write('postouts', JSON.stringify({ a: { id: 'a', callsign: 'A', to: null }, b: { id: 'zz', callsign: 'B', to: '2027-01-01' } }))
+    storeWindows(be, { a: { id: 'a', callsign: 'A', to: null }, b: { id: 'zz', callsign: 'B', to: '2027-01-01' } })
     reboot(be)
     expect(getState().postOuts).toEqual({})
   })
@@ -113,7 +113,7 @@ describe('a posting window that arrives WITH the projection is recorded too', ()
     /* exactly what installDemoWorld does: the date onto the person, then install */
     const people = projectPeople().map(p => (p.id === id ? { ...p, to: '2026-01-13' } : p))
     setPeople(people)
-    expect(JSON.parse(be.read('postouts')!)[id]?.to, 'the window is written down where it lives').toBe('2026-01-13')
+    expect(windowOf(be, id)?.to, 'the window is written down where it lives').toBe('2026-01-13')
     reboot(be)
     expect(getState().people.find(x => x.id === id)!.to, 'and it is still there next time').toBe('2026-01-13')
   })
@@ -125,7 +125,7 @@ describe('a posting window that arrives WITH the projection is recorded too', ()
     setPeople(projectPeople().map(p => (p.id === id ? { ...p, to: '2026-01-13' } : p)))
     setPostOut(id, null)                                   // the admin takes it off
     setPeople(projectPeople())                             // the next re-projection
-    expect(be.read('postouts'), 'a cleared window stays cleared').toBe('{}')
+    expect(be.read(`profile:${id}`), 'a cleared window stays cleared').toBeNull()
     reboot(be)
     expect(getState().people.find(x => x.id === id)!.to).toBeNull()
   })
@@ -133,9 +133,9 @@ describe('a posting window that arrives WITH the projection is recorded too', ()
   it('THE CONTROL: an ordinary projection with no windows writes no record', () => {
     const be = memoryBackend()
     reboot(be)
-    const before = be.read('postouts')
+    const before = profiles(be)
     setPeople(projectPeople())
-    expect(be.read('postouts'), 'nothing to record, nothing written').toBe(before)
+    expect(profiles(be), 'nothing to record, nothing written').toEqual(before)
   })
 
   it('the real boot path keeps the demo man out of the squadron after a reload', async () => {
@@ -210,7 +210,7 @@ describe('a post-IN date survives a reload too', () => {
     const id = anAircrewId()
     setPostIn(id, '2026-03-01')
     setPostIn(id, null)
-    expect(be.read('postouts'), 'both ends clear, so no record at all').toBe('{}')
+    expect(be.read(`profile:${id}`), 'both ends clear, so no record at all').toBeNull()
     reboot(be)
     expect(getState().people.find(x => x.id === id)!.from).toBeNull()
   })
@@ -229,8 +229,9 @@ describe('a post-IN date survives a reload too', () => {
 
   it('THE CONTROL: untrusted storage is no looser than before', () => {
     const be = memoryBackend()
+    reboot(be)
     /* neither end a date, a mismatched id, a missing callsign — all still dropped */
-    be.write('postouts', JSON.stringify({
+    storeWindows(be, ({
       a: { id: 'a', callsign: 'A', from: null, to: null },
       b: { id: 'zz', callsign: 'B', from: '2027-01-01', to: null },
       c: { id: 'c', from: '2027-01-01', to: null },
@@ -251,7 +252,8 @@ describe('a post-IN date survives a reload too', () => {
      string. This demands the SHAPE, which is what it always meant. */
   it('a date-shaped end is required, not merely a string', () => {
     const be = memoryBackend()
-    be.write('postouts', JSON.stringify({
+    reboot(be)
+    storeWindows(be, ({
       a: { id: 'a', callsign: 'A', from: 'June 15', to: null },
       b: { id: 'b', callsign: 'B', from: '', to: null },
       c: { id: 'c', callsign: 'C', from: '2027-1-1', to: null },
@@ -264,7 +266,8 @@ describe('a post-IN date survives a reload too', () => {
 
   it('THE CONTROL: real dates still survive, one end or both', () => {
     const be = memoryBackend()
-    be.write('postouts', JSON.stringify({
+    reboot(be)
+    storeWindows(be, ({
       a: { id: 'a', callsign: 'A', from: '2027-03-01', to: null },
       b: { id: 'b', callsign: 'B', from: null, to: '2027-09-30' },
       c: { id: 'c', callsign: 'C', from: '2027-03-01', to: '2027-09-30' },
@@ -332,7 +335,7 @@ describe('the capture is a projection, never a user edit', () => {
     const before = commandStream().length
     const id = anAircrewId()
     setPeople(projectPeople().map(p => (p.id === id ? { ...p, to: '2026-01-13' } : p)))
-    expect(JSON.parse(be.read('postouts')!)[id]?.to, 'the window is still written down').toBe('2026-01-13')
+    expect(windowOf(be, id)?.to, 'the window is still written down').toBe('2026-01-13')
     /* THE OBSERVABLE THAT CAN TELL THE TWO APART. `lwCanUndo` cannot: it reads
        the legacy stack and answers false whichever route was taken, so a test
        written on it passes with the routing removed — which is exactly the

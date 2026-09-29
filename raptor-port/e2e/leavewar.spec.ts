@@ -3082,25 +3082,18 @@ test('swiping the day columns leaves the counter alone', async ({ page }, testIn
   expect(await page.locator('[data-testid="counter-name"]').textContent()).toBe('+LVE')
 })
 
-// The roster sheet: seat, band and SXO. The category is never edited — it is
-// derived from the first two, which is what lets Raptor's roster replace this
-// one without a migration.
-test('an admin edits who somebody is, and the grid follows', async ({ page }) => {
+// The Leave War has no Edit person (D460, D461 — 30 Sep 26): a man's seat,
+// band and SXO change only on Quals, and the war shows what Quals says. It
+// used to open a roster sheet (Seat, Band, SXO) from the name sheet's Edit
+// person button, for an admin; now the name sheet offers the figures alone,
+// to everyone. (The grid following a Quals change is pinned by
+// src/leavewar/ui/person.test.tsx.)
+test('an admin reaches no Edit person from the name sheet', async ({ page }) => {
   await lwRole(page, 'admin')
-  // The callsign opens the all-figures sheet for everyone since 17 Aug 26;
-  // the editor is its Edit person button.
   await page.locator('[data-testid="person-prowler"]').click()
   await expect(page.locator('[data-testid="person-figures"]')).toBeVisible()
-  await page.locator('[data-testid="person-edit"]').click()
-  await expect(page.locator('[data-testid="person-sheet"]')).toBeVisible()
-  await expect(page.locator('[data-testid="person-category"]')).toHaveText('IP')
-
-  await page.locator('[data-testid="person-sxo"]').click()
-  await expect(page.locator('[data-testid="person-category"]')).toHaveText('IP(S)')
-  // The grid follows by GROUPING now (18 Aug 26), not a suffix: prowler's chip
-  // takes the SXO colour and an SXO group heading is present.
-  await expect(page.locator('[data-testid="cat-prowler"]')).toHaveClass(/q-sxo/)
-  await expect(page.locator('[data-testid="group-SXO"]')).toBeVisible()
+  await expect(page.locator('[data-testid="person-edit"]')).toHaveCount(0)
+  await expect(page.locator('[data-testid="person-sheet"]')).toHaveCount(0)
 })
 
 // The callsign column is 76px on a phone. Its content — the callsign, the
