@@ -1602,3 +1602,18 @@ resolved statuses always carry their resolution date
 **Suggested improvement:** In the walk step, before treating a FAIL as a finding: (1) confirm from the seed or the page what the target day really holds; (2) for a phone run, confirm the surface's phone route (menus, folded panels) — take one picture at the failing step. Record script mistakes on the evidence sheet as such.
 
 **Principle:** A failing assertion is a claim about the world the script believes in; check that world before blaming the app.
+
+### Observation 370: A chat told to "start" a backlog item found another live chat already half-way through it
+
+**Status:** OPEN
+**Date:** 29 Sep 26
+**Session context:** the owner opened a fresh chat with "start [DB-SYNC-MODEL] … show me the mock-up". HANDOFF.md and OUTSTANDING.md on `main` both still listed the item as not started. A parallel chat had in fact made the mock-up, published it to him and pushed its branch about 30 minutes earlier. Only `ListAgents` (a session titled "Day lock mock-up…") and `git branch -r` showed it. Numbered #370 because the ranges agreed by message were #356–#359 for the day-lock chat and #360–#369 for the Leave War chat.
+**Skill:** session-handoff (the opening checks a new chat runs) / the D302 coordination rule in `.claude/rules/shipping.md`
+**Type:** internal
+**Phase/Area:** start of a chat, before any work on a named item
+
+**Issue:** The records on `main` lag every open branch. An item a parallel chat has taken still reads "to do" there until that branch merges. The D302 rule checks for clashes by comparing the FILES two branches change, and that only runs once you are about to edit. It does not catch two chats being handed the same ITEM. This time it was caught before anything was built, only because the coordination step happened to run first.
+
+**Suggested improvement:** Add one opening check to the session-handoff skill's "starting a chat" guidance (or to shipping.md §Parallel chats): before starting a named backlog item, run `ListAgents` and `git branch -r --sort=-committerdate | head`, and look for a session title or branch naming the item. If one exists, message that chat and tell the owner before building anything.
+
+**Principle:** Shared records on the main line show only what has merged. Before claiming a unit of work, ask the live workers what they hold, not just the merged record.
