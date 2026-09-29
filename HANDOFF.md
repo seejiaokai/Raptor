@@ -31,7 +31,9 @@ the later merge keeps both (D78).
   in `deck.mjs` — every test file named must be read to confirm it covers the journey) → look at every slide → one
   reviewer reads the words against the app (D353: ONE) → send him the deck + PDF → commit them → his "merge live".
 - **Parallel (D302):** the handoff-review chat (`claude/handoff-review-next-priority-165f99`) holds D400–D409 and observation
-  #348 — told our files; no clash. This chat: D410–D419 (D410 used), observations #350+, preview port 4185
+  #348 — told our files; no clash. The OIL award chat (`claude/award-earned-vs-granted-2ed66d`, D401–D409) changes the
+  Leave War's OIL words ("earned" / "awarded") and will message us when they change and when it merges — then re-take
+  journeys 9–10's pictures. This chat: D410–D419 (D410 used), observations #350+, preview port 4185
   (`raptor-itflow` in `.claude/launch.json`).
 <!-- /now -->
 
