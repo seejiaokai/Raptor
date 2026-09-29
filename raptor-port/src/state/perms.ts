@@ -402,7 +402,7 @@ const personOfInput = (v: any): string | null => (v && v.person != null ? String
    of these for him (Fable's and Astra's code reads, 26 Sep 26: the second, write-path guard
    the UI gates stand in front of; §11 — members read the schedule only). A refusal rolls
    the schedule back to its last committed state. */
-const SCHEDULE_RECORDS = new Set(['days', 'sched.book', 'sched.mutes', 'sched.orig', 'sched.als', 'sched.retired', 'weekstash'])
+const SCHEDULE_RECORDS = new Set(['days', 'sched.book', 'sched.mutes', 'sched.week', 'sched.issuance', 'sched.retraction', 'weekstash'])
 /* the seen record's entries other than `pid` are the same before and after */
 function onlyOwnEntry(before: any, after: any, pid: string): boolean {
   const b = (before && typeof before === 'object') ? before : {}, f = (after && typeof after === 'object') ? after : {}

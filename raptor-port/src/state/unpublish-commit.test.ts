@@ -60,9 +60,10 @@ describe('unpublish an Original → a plain draft, the Original retired', () => 
     expect(e.type).toBe('sched.unpublish')
     expect(e.boundary!.kind).toBe('unpublish')
     expect(e.boundary!.ids).toEqual([origId])
-    // the retired record moved on the stream; the orig record was deleted
-    expect(e.changes.some(c => c.collection === 'sched.retired')).toBe(true)
-    expect(e.changes.some(c => c.collection === 'sched.orig' && c.op === 'delete')).toBe(true)
+    // the stream carries the Unpublish as a retraction beside the Original — the issuance itself is never touched
+    // ([DB-READINESS] group A, phase 1 — R2-04: an Unpublish adds a retraction and never deletes or moves an issuance)
+    expect(e.changes.some(c => c.collection === 'sched.retraction' && c.op === 'put' && c.id === `${CURWEEK}:${origId}~0`)).toBe(true)
+    expect(e.changes.some(c => c.collection === 'sched.issuance')).toBe(false)
   })
 })
 

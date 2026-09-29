@@ -24,7 +24,7 @@ import {
 } from '../undo'
 import type { RecordCtx, UndoEntry } from '../undo/types'
 import type { Change } from '../command'
-import { weekOf } from '../undo/derive'
+import { weekOf, dayKeyOf } from '../undo/derive'
 import { schedStore, schedPostRestore } from './sched-commit'
 import { weekstashStore, loadWeek } from './store'
 import { HIST } from './history'
@@ -44,7 +44,7 @@ import { DATES, inputCoversDate } from '../engine/inputs'
 /* the 8 collections schedStore owns (the scheduler week + inputs + plan). NOT
    `weekstash` — that is the separate weekstashStore's one collection, registered
    below, so an off-week undo routes through its CURWEEK-guarded write() seam. */
-const SCHED_COLLS = ['days', 'sched.book', 'sched.mutes', 'sched.orig', 'sched.als', 'sched.retired', 'inputs', 'plan']
+const SCHED_COLLS = ['days', 'sched.book', 'sched.mutes', 'sched.week', 'sched.issuance', 'sched.retraction', 'inputs', 'plan']
 
 /* ---- context helpers ------------------------------------------------------ */
 
@@ -63,28 +63,16 @@ function weekIsStashOnly(entry: UndoEntry, wk: string): boolean {
   return sawWeek
 }
 
-/* the day index a scheduler closure touched (days `<wk>#<di>` / sched.orig
-   `<wk>:<di>`), for the view-snap. First match wins. */
+/* the day index a scheduler closure touched, for the view-snap: a day's content first, then an issued version of it, then
+   the one day whose sign-offs, plans or mutes changed — every schedule record names its day since [DB-READINESS] group
+   A, phase 1 (walk S14a: Saturday's sign-off redone with the board on Friday must land on Saturday). */
 function schedDayOf(entry: UndoEntry): number | null {
-  for (const ch of entry.forward) {
-    if (ch.collection === 'days') return Number(ch.id.split('#')[1])
-    if (ch.collection === 'sched.orig') return Number(ch.id.slice(ch.id.indexOf(':') + 1))
-  }
-  /* the week's book keeps every day's sign-offs, OK flags, drafts … in one record, each map keyed by the day — the day is
-     the one key whose value changed (walk S14a: Saturday's sign-off redone with the board on Friday stayed on Friday) */
-  for (const ch of entry.forward) {
-    if (ch.collection !== 'sched.book') continue
-    const days = new Set<number>()
-    const b = (ch.before || {}) as Record<string, any>, a = (ch.after || {}) as Record<string, any>
-    for (const k of new Set([...Object.keys(b), ...Object.keys(a)])) {
-      const x = b[k], y = a[k]
-      if (!x && !y) continue
-      if ((x && typeof x !== 'object') || (y && typeof y !== 'object')) continue
-      for (let di = 0; di < 7; di++) if (JSON.stringify((x || {})[di]) !== JSON.stringify((y || {})[di])) days.add(di)
-    }
-    if (days.size === 1) return [...days][0]
-  }
-  return null
+  const dayOfCh = (ch: Change) => { const dk = dayKeyOf(ch.collection, ch.id); return dk && dk.includes('#') ? Number(dk.split('#')[1]) : null }
+  for (const ch of entry.forward) if (ch.collection === 'days') return dayOfCh(ch)
+  for (const ch of entry.forward) if (ch.collection === 'sched.issuance' || ch.collection === 'sched.retraction') { const d = dayOfCh(ch); if (d != null) return d }
+  const days = new Set<number>()
+  for (const ch of entry.forward) if (ch.collection === 'sched.book' || ch.collection === 'sched.mutes') { const d = dayOfCh(ch); if (d != null) days.add(d) }
+  return days.size === 1 ? [...days][0] : null
 }
 
 /* the date an LW closure touched (lw.cell / lw.bid id = `<warId>:<pid>:<date>`,

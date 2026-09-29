@@ -15,7 +15,7 @@ export function recordKey(c: { collection: string; id: string }): string {
 /* ---- context derivation (§8.1) ------------------------------------------- */
 
 const WEEK_COLLS = new Set<string>([
-  'days', 'sched.book', 'sched.mutes', 'sched.orig', 'sched.als', 'sched.retired', 'weekstash',
+  'days', 'sched.book', 'sched.mutes', 'sched.week', 'sched.issuance', 'sched.retraction', 'weekstash',
 ])
 
 /* the week a scheduler record belongs to. Every scheduler-week key is `<wk>`,
@@ -23,6 +23,30 @@ const WEEK_COLLS = new Set<string>([
    '#'. */
 export function weekOf(collection: string, id: string): string | null {
   return WEEK_COLLS.has(collection) ? id.split(/[:#]/)[0] : null
+}
+
+/* the DAY a scheduler-week record belongs to — `<wk>#<di>`, or `<wk>` for a record of the whole week (its format stamps,
+   a saved week's week row) — or null for a record of no week. A day's own records carry `#<di>`; an issued version's
+   (`<wk>:<verId>~<n>`, a saved week's `<wk>:is:…` / `:rx:…`) falls on the day of its version's date. Read issuance-first:
+   a version id carries a `#` too ([DB-READINESS] group A, phase 1 — F3-09). */
+const DAY_MS = 86_400_000
+function isoOfDay(wk: string, di: number): string {
+  const [d, m, y] = wk.split('/').map(n => parseInt(n, 10))
+  const dt = new Date(Date.UTC(y, m - 1, d) + di * DAY_MS)
+  const p = (n: number) => String(n).padStart(2, '0')
+  return `${dt.getUTCFullYear()}-${p(dt.getUTCMonth() + 1)}-${p(dt.getUTCDate())}`
+}
+export function dayKeyOf(collection: string, id: string): string | null {
+  const wk = weekOf(collection, id)
+  if (wk == null) return null
+  const c = id.indexOf(':')
+  if (c >= 0) {
+    const m = /(\d{4}-\d{2}-\d{2})#\d+~\d+$/.exec(id.slice(c + 1))
+    if (m) for (let di = 0; di < 7; di++) if (isoOfDay(wk, di) === m[1]) return `${wk}#${di}`
+    return wk
+  }
+  const h = id.indexOf('#')
+  return h < 0 ? wk : `${wk}#${id.slice(h + 1)}`
 }
 
 /* the war a Leave War record belongs to. lw.cell/lw.bid ids are
@@ -147,9 +171,12 @@ export function invertClosure(forward: Change[]): Change[] {
 /* ---- the §4.3 / §8.1 key-family test ------------------------------------- */
 
 /* does a closure's key set share a key (or a weekstash key-family member) with
-   `keys`? §8.1: a weekstash key shares with EVERY same-week scheduler key
-   (days / sched.book / sched.orig / … / weekstash), both directions; everything
-   else shares by exact key. */
+   `keys`? §8.1: a weekstash key shares with every same-week scheduler key OF THE
+   SAME DAY (days / sched.book / sched.mutes / an issued version of that day /
+   weekstash), both directions — and a record of the whole week (its stamps, a
+   saved week's week row) with every key of that week; everything else shares by
+   exact key. Per day since [DB-READINESS] group A, phase 1 (plan §2.9): a saved
+   week is one row per day, so another day's change never blocks it. */
 export function sharesKeys(a: Set<string>, b: Set<string>): boolean {
   for (const k of a) if (b.has(k)) return true
   // weekstash key-family (both directions)
@@ -160,24 +187,29 @@ export function sharesKeys(a: Set<string>, b: Set<string>): boolean {
   return false
 }
 
+/* the day keys (`<wk>#<di>`, or `<wk>` for the whole week) of every weekstash key in `keys` */
 function weekstashWeeks(keys: Set<string>): Set<string> {
   const out = new Set<string>()
   for (const k of keys) {
-    if (k.startsWith('weekstash/')) out.add(k.slice('weekstash/'.length).split(/[:#]/)[0])
+    if (k.startsWith('weekstash/')) { const d = dayKeyOf('weekstash', k.slice('weekstash/'.length)); if (d) out.add(d) }
   }
   return out
 }
 
-/* is any key in `keys` a scheduler-week record (days, sched.book, weekstash, …)
-   for one of `weeks`? */
-function anyWeekKey(keys: Set<string>, weeks: Set<string>): boolean {
+/* is any key in `keys` a scheduler-week record (days, sched.book, weekstash, …) on one of `days` (`<wk>#<di>`, or
+   `<wk>` = every day of that week)? A whole-week record of `keys` meets every day of its week. */
+function anyWeekKey(keys: Set<string>, days: Set<string>): boolean {
   for (const k of keys) {
     const slash = k.indexOf('/')
     if (slash < 0) continue
     const coll = k.slice(0, slash)
     if (!WEEK_COLLS.has(coll)) continue
-    const wk = k.slice(slash + 1).split(/[:#]/)[0]
-    if (weeks.has(wk)) return true
+    const dk = dayKeyOf(coll, k.slice(slash + 1))
+    if (!dk) continue
+    if (days.has(dk)) return true
+    const wk = dk.split('#')[0]
+    if (days.has(wk)) return true                                  // a whole-week weekstash record meets this day
+    if (dk === wk) for (const d of days) if (d.split('#')[0] === wk) return true   // a whole-week record meets every day
   }
   return false
 }

@@ -329,20 +329,21 @@ describe('navigation is not an entry (§3.1 R2-10)', () => {
 describe('the derived publication barrier (§6.3)', () => {
   it('an edit behind a later publish of the same day cannot be undone directly', () => {
     const days = makeStore('D', 'days')
-    const orig = makeStore('O', 'sched.orig')
-    registerUndoStore(days.store, ['days']); registerUndoStore(orig.store, ['sched.orig'])
+    const orig = makeStore('O', 'sched.issuance')
+    registerUndoStore(days.store, ['days']); registerUndoStore(orig.store, ['sched.issuance'])
     setCutoverModules(['sched'])
     definePermission('sched.edit', anyone); definePermission('sched.pub', anyone)
-    // edit day W1#0
-    commit({ type: 'sched.edit', scope: { module: 'sched', weekId: 'W1' }, apply: (txn) => { txn.enlist(days.store); days.set('W1#0', { marks: 1 }) } })
+    const W1 = '13/07/2026'
+    // edit Monday of W1
+    commit({ type: 'sched.edit', scope: { module: 'sched', weekId: W1 }, apply: (txn) => { txn.enlist(days.store); days.set(`${W1}#0`, { marks: 1 }) } })
     const editEntry = _timelineEntries()[0]
-    // publish day W1#0 (a boundary entry stamping sched.orig/W1:0)
+    // publish Monday (a boundary entry writing its Original's issuance, `<wk>:<verId>~<n>` — a verId names its day)
     commit({
-      type: 'sched.pub', scope: { module: 'sched', weekId: 'W1' },
-      apply: (txn) => { txn.enlist(orig.store); orig.set('W1:0', { id: 'v1' }); txn.boundary({ kind: 'publish', ids: ['v1'], crossable: true }) },
+      type: 'sched.pub', scope: { module: 'sched', weekId: W1 },
+      apply: (txn) => { txn.enlist(orig.store); orig.set(`${W1}:2026-07-13#0~0`, { id: '2026-07-13#0' }); txn.boundary({ kind: 'publish', ids: ['2026-07-13#0'], crossable: true }) },
     })
-    // the pub barrier now covers W1#0
-    expect(_pubBar().get('W1#0')).toBeDefined()
+    // the pub barrier now covers Monday
+    expect(_pubBar().get(`${W1}#0`)).toBeDefined()
     // undoing the earlier edit is refused (must unpublish first)
     expect(_undoConflict(editEntry)).toMatch(/published after/i)
     /* the refusal names the control the scheduler actually has: the day's Unpublish button

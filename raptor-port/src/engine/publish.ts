@@ -1146,6 +1146,19 @@ function priorVerId(di:any,seq:any):any{di=+di;
   let top=0; (SCHED.als||[]).forEach((a:any)=>{if(+a.di===di){const s=+a.seq; if(s!==+seq&&Number.isSafeInteger(s)&&s>top)top=s;}});
   if(top>0){const a=(SCHED.als||[]).find((x:any)=>+x.di===di&&+x.seq===top); return a&&a.id;}
   const o=(SCHED.orig||{})[di]; return o&&o.id;}
+/* ONE retired entry, built from the issued record `rec` and the retraction's own facts (`at`, `by`, `restoreSeq`,
+   `logged`) — shared by retireIssued and by the saved week's reader, which joins an issuance row and its retraction
+   row back into this entry (state/weekrows.ts; [DB-READINESS] group A, phase 1 — plan §2.9, R2-04). It keeps the
+   issued record WHOLE as `rec`: the database keeps every issuance as one append-only row that an Unpublish never
+   touches, so the issuance must be recoverable from its retired entry byte-for-byte — the snapshot below drops the
+   Original's roster (`ros`) and an amendment's structural adds (`added`). Everything else is the entry as it always
+   read (units: the item count as it went out — D109; Astra 4). */
+export function retiredEntry(rec:any,id:any,n:number,di:number,meta:any):any{
+  return {id,n,di,iso:parseVerId(id).iso,seq:verSeq(id),
+    snap:rec?(rec.snap||{d:rec.d,c:rec.c,fil:rec.fil,inp:rec.inp,w:rec.w,pa:rec.pa,rv:rec.rv}):null,
+    diff:(rec&&rec.diff)||[],units:rec&&rec.units!=null?rec.units:undefined,ukinds:rec&&rec.ukinds?rec.ukinds:undefined,sign:(rec&&rec.sign)||{},
+    at:meta.at,by:meta.by??null,restoreSeq:meta.restoreSeq,logged:!!meta.logged,rec:rec??null};
+}
 /* append the issued version `id` to the retired log as its own immutable snapshot
    (keyed `<id>~<n>`) and remove the live issued record. `logged` = whether the
    version was disseminated (the history panel prints only logged entries); at Step
@@ -1156,11 +1169,7 @@ export function retireIssued(di:any,id:any,opts:any={}):string{di=+di;
   SCHED.retired=SCHED.retired||{};
   const key=`${id}~${nextRetiredN(id)}`;
   if(opts.append!==false){
-    SCHED.retired[key]={id,n:+key.slice(key.lastIndexOf('~')+1),di,iso:parseVerId(id).iso,seq,
-      snap:rec?(rec.snap||{d:rec.d,c:rec.c,fil:rec.fil,inp:rec.inp,w:rec.w,pa:rec.pa,rv:rec.rv}):null,
-      diff:(rec&&rec.diff)||[],units:rec&&rec.units!=null?rec.units:undefined,ukinds:rec&&rec.ukinds?rec.ukinds:undefined,sign:(rec&&rec.sign)||{},   // units: the item count as it went out (D109; Astra 4)
-      at:new Date().toISOString(),by:opts.by??null,
-      restoreSeq:opts.restoreSeq,logged:!!opts.logged};
+    SCHED.retired[key]=retiredEntry(rec,id,+key.slice(key.lastIndexOf('~')+1),di,{at:new Date().toISOString(),by:opts.by??null,restoreSeq:opts.restoreSeq,logged:!!opts.logged});
   }
   if(seq===0){ if(SCHED.orig)delete SCHED.orig[di]; }
   else { const ix=(SCHED.als||[]).findIndex((a:any)=>String(a&&a.id)===String(id)); if(ix>=0)SCHED.als.splice(ix,1); }

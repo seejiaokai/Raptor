@@ -110,7 +110,7 @@ describe('scheduler write() — foreign-week refusal (R2-011) + issued gate (C7)
   })
 
   it('refuses a foreign-week write for every week-scoped collection', () => {
-    for (const [coll, id] of [['days', 'ZZZZ#0'], ['sched.book', 'ZZZZ'], ['sched.mutes', 'ZZZZ'], ['sched.orig', 'ZZZZ:0'], ['sched.als', 'ZZZZ:0']] as const) {
+    for (const [coll, id] of [['days', 'ZZZZ#0'], ['sched.book', 'ZZZZ#0'], ['sched.mutes', 'ZZZZ#0'], ['sched.week', 'ZZZZ'], ['sched.issuance', 'ZZZZ:2026-07-13#0~0'], ['sched.retraction', 'ZZZZ:2026-07-13#0~0']] as const) {
       const r = restore(schedStore, [{ collection: coll as any, id, value: {}, op: 'put' }], { allowIssued: true })
       expect(isOk(r)).toBe(false)
       expect((r as any).reason).toBe('refused')
@@ -118,11 +118,12 @@ describe('scheduler write() — foreign-week refusal (R2-011) + issued gate (C7)
   })
 
   it('refuses an issued record without allowIssued, accepts it with', () => {
-    const orig = [{ collection: 'sched.orig' as const, id: `${CURWEEK}:0`, value: { id: 'iso#0', frozen: true }, op: 'put' as const }]
+    const v = '2026-07-13#0'                             // Monday's Original of the loaded week
+    const orig = [{ collection: 'sched.issuance' as const, id: `${CURWEEK}:${v}~0`, value: { id: v, frozen: true }, op: 'put' as const }]
     expect((restore(schedStore, orig) as any).reason).toBe('refused')
     const r = restore(schedStore, orig, { allowIssued: true })
     expect(isOk(r)).toBe(true)
-    expect((SCHED.orig as any)['0']).toEqual({ id: 'iso#0', frozen: true })
+    expect((SCHED.orig as any)['0']).toEqual({ id: v, frozen: true })
   })
 })
 

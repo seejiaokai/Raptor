@@ -12,9 +12,10 @@ describe('LOGICAL_TO_BLOB', () => {
     expect(cols.length).toBeGreaterThan(20)
     for (const c of cols) expect(LOGICAL_TO_BLOB[c as keyof typeof LOGICAL_TO_BLOB]).toBeTruthy()
   })
-  it('keeps the scheduler issued records in the weeks blob', () => {
-    expect(LOGICAL_TO_BLOB['sched.orig']).toBe('weeks')
-    expect(LOGICAL_TO_BLOB['sched.als']).toBe('weeks')
+  it('keeps the scheduler issued records in the weeks collection', () => {
+    expect(LOGICAL_TO_BLOB['sched.issuance']).toBe('weeks')
+    expect(LOGICAL_TO_BLOB['sched.retraction']).toBe('weeks')
+    expect(LOGICAL_TO_BLOB['sched.week']).toBe('weeks')
   })
   it('keeps LW cells and bids cell-granular under one blob (R4-005)', () => {
     expect(LOGICAL_TO_BLOB['lw.cell']).toBe('leavewar/wars')

@@ -304,16 +304,9 @@ export function applyDelete(id: string, cutoff: string): void {
    repaired silently. The undo timeline asks it when it CHOOSES the next step (undo/timeline.ts — a refused step is
    passed over, so the button never stalls behind it; it still guards older steps that share its records) and again just
    before it restores. The record names are the command layer's (state/sched-commit.ts decompose): `days` `<wk>#<di>`,
-   `sched.book` `<wk>` (its `sg` sign-offs and `dr` parked plans), `inputs` `<iid>`, `plan` `all`, `weekstash` `<wk>`. */
+   `sched.book` `<wk>#<di>` (that day's `sg` sign-offs and `dr` parked plans), `inputs` `<iid>`, `plan` `all`, `weekstash`
+   `<wk>#<di>` (a saved week's day row — state/weekrows.ts; its other rows name no day he could be put back on). */
 const holds = (v: any, id: string): boolean => { try { return JSON.stringify(v ?? null).includes(`"${id}"`) } catch (_e) { return false } }
-function weekHolds(wk: string, blob: any, id: string, cut: string): boolean {
-  if (!blob || typeof blob !== 'object') return false
-  const days = Array.isArray(blob.d) ? blob.d : []
-  for (let di = 0; di < days.length; di++) if (dayIso(wk, di) >= cut && holds(days[di], id)) return true
-  for (const di of Object.keys(blob.sg || {})) if (dayIso(wk, +di) >= cut && holds(blob.sg[di], id)) return true
-  for (const di of Object.keys(blob.dr || {})) if (dayIso(wk, +di) >= cut && holds(blob.dr[di], id)) return true
-  return false
-}
 export function deletedRestoreProblem(changes: any[]): string | null {
   const gone = Object.keys(PEOPLE).filter(id => (PEOPLE as any)[id] && (PEOPLE as any)[id].deleted)
   if (!gone.length) return null
@@ -324,8 +317,11 @@ export function deletedRestoreProblem(changes: any[]): string | null {
       const cut = String((PEOPLE as any)[id].deletedFrom || '')
       let hit = false
       if (ch.collection === 'days') { const [wk, di] = rid.split('#'); hit = !!wk && dayIso(wk, +di) >= cut && holds(v, id) }
-      else if (ch.collection === 'sched.book') hit = weekHolds(rid, { sg: v && v.sg, dr: v && v.dr }, id, cut)
-      else if (ch.collection === 'weekstash') { try { hit = weekHolds(rid, typeof v === 'string' ? JSON.parse(v) : v, id, cut) } catch (_e) { hit = false } }
+      else if (ch.collection === 'sched.book') { const [wk, di] = rid.split('#'); hit = !!wk && di != null && dayIso(wk, +di) >= cut && (holds(v && v.sg, id) || holds(v && v.dr, id)) }
+      else if (ch.collection === 'weekstash') {
+        const [wk, di] = rid.split('#')
+        if (wk && di != null && /^[0-6]$/.test(di)) { try { const row = typeof v === 'string' ? JSON.parse(v) : v; hit = dayIso(wk, +di) >= cut && (holds(row && row.d, id) || holds(row && row.sg, id) || holds(row && row.dr, id)) } catch (_e) { hit = false } }
+      }
       else if (ch.collection === 'inputs') { const a = v && v.person === id ? dateOrd(v.date, v.yr) : null; hit = a != null && a >= isoOrd(cut) }
       else if (ch.collection === 'plan') hit = ((v && v.pp) || []).some((e: any) => e && e.kind === 'pucks' && String(e.iso || '') >= cut && Array.isArray(e.ids) && e.ids.includes(id))
       /* B4 of the change-recording re-test (28 Sep 26): once the one Undo takes roster and settings steps, HIS OWN RECORD

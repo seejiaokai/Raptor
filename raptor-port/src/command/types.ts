@@ -26,15 +26,12 @@ export type Origin = 'user' | 'remote' | 'projection' | 'restore' | 'seed'
    NESTED in the day record: a slot edit yields ONE `days` Change, not a day +
    a row Change (R3-6). */
 export type LogicalCollection =
-  // scheduler — mutable book + per-day/per-week records
-  | 'days' | 'sched.book' | 'sched.mutes'
-  // scheduler — issued (append-only-INTENDED; enforcement is Step 3, §3.4)
-  | 'sched.orig' | 'sched.als'
-  // scheduler — the append-only retired-issuance log (Step 3, §6.1): every
-  // issuance kept as its own immutable snapshot, keyed `<wk>:<id>~<n>`, so a
-  // same-label reissue never collapses the prior one. Read only by the history
-  // panel; never by daySnapIn/dayVersions/nextSeq/issuedIdSet.
-  | 'sched.retired'
+  // scheduler — per day (`<wk>#<di>`): the day, its slice of the mutable book, its muted warnings; and the week's two
+  // format stamps (`<wk>`) — [DB-READINESS] group A, phase 1: the records follow the stored rows (state/weekrows.ts)
+  | 'days' | 'sched.book' | 'sched.mutes' | 'sched.week'
+  // scheduler — every issued version of a day, written once (`<wk>:<verId>~<n>` — the Original is sequence 0, n the
+  // withdrawals before it went out), and every Unpublish beside it; an Unpublish never touches the issuance (R2-04)
+  | 'sched.issuance' | 'sched.retraction'
   // the other scheduler-side stores
   | 'inputs' | 'plan' | 'people' | 'settings'
   // off-week session memory (the weekstash) — one record per stashed week, so a
@@ -164,7 +161,7 @@ export interface EnlistableStore {
      step (Step 3) is the consumer; at CMDL-FINISH it is built + unit-tested but
      has no production caller (no stream-driven undo yet). `opts.allowIssued`
      lets the restore path write append-only-intended issued records
-     (sched.orig/sched.als); a normal write refuses them (C7). `opts.restore`
+     (sched.issuance); a normal write refuses them (C7). `opts.restore`
      marks this write as an undo/redo restore, so a store that keeps DERIVED
      per-week state (the scheduler's input landings) can re-reconcile it against
      the restored records — never on an ordinary forward write ([GLOBAL-UNDO] §11/C3). */

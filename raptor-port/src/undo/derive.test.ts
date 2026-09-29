@@ -16,11 +16,14 @@ const del = (collection: any, id: string, before: unknown): Change =>
 describe('record → week/war/course parsing', () => {
   it('reads the week from every scheduler-week key shape', () => {
     expect(weekOf('days', 'W12#3')).toBe('W12')
-    expect(weekOf('sched.book', 'W12')).toBe('W12')
-    expect(weekOf('sched.orig', 'W12:3')).toBe('W12')
-    expect(weekOf('sched.als', 'W12:v-2026-01-05-1')).toBe('W12')
-    expect(weekOf('sched.retired', 'W12:v-2026-01-05-1~2')).toBe('W12')
+    expect(weekOf('sched.book', 'W12#3')).toBe('W12')
+    expect(weekOf('sched.mutes', 'W12#3')).toBe('W12')
+    expect(weekOf('sched.week', 'W12')).toBe('W12')
+    expect(weekOf('sched.issuance', 'W12:2026-01-05#1~0')).toBe('W12')
+    expect(weekOf('sched.retraction', 'W12:2026-01-05#1~0')).toBe('W12')
     expect(weekOf('weekstash', 'W09')).toBe('W09')
+    expect(weekOf('weekstash', 'W09#4')).toBe('W09')
+    expect(weekOf('weekstash', 'W09:is:2026-01-05#1~0')).toBe('W09')
     expect(weekOf('inputs', 'i1')).toBeNull()
   })
   it('reads the war from lw ids (warId may not be split from the left)', () => {
@@ -40,8 +43,8 @@ describe('deriveContexts', () => {
   it('collects and dedups every context the closure touched', () => {
     const ctx = deriveContexts([
       put('days', 'W12#3', {}, {}),
-      put('sched.book', 'W12', {}, {}),
-      create('sched.orig', 'W12:3', {}),
+      put('sched.book', 'W12#3', {}, {}),
+      create('sched.issuance', 'W12:2026-01-05#0~0', {}),
       put('lw.cell', 'war-1:p3:2026-01-01', 'LL', 'AL'),
       put('trk.marks', 'v3:C1:S1:m:ST-02', {}, {}),
       put('inputs', 'i9', {}, {}),
@@ -60,11 +63,11 @@ describe('deriveOwners (§5)', () => {
     const owners = deriveOwners([
       put('lw.cell', 'war-1:p3:2026-01-01', 'LL', 'AL'),
       put('days', 'W12#3', {}, {}),
-      put('sched.book', 'W12', {}, {}),
+      put('sched.book', 'W12#3', {}, {}),
     ])
     expect(owners.find(o => o.key === 'lw.cell/war-1:p3:2026-01-01')!.person).toBe('p3')
     expect(owners.find(o => o.key === 'days/W12#3')!.person).toBeNull()
-    expect(owners.find(o => o.key === 'sched.book/W12')!.person).toBeNull()
+    expect(owners.find(o => o.key === 'sched.book/W12#3')!.person).toBeNull()
   })
   it('reads an input owner from after, or before on a delete; people owns itself', () => {
     const owners = deriveOwners([
@@ -119,5 +122,21 @@ describe('sharesKeys — weekstash key-family (§8.1)', () => {
   })
   it('weekstash of a DIFFERENT week does not share', () => {
     expect(sharesKeys(keys(put('weekstash', 'W2', {}, {})), keys(put('days', 'W1#5', {}, {})))).toBe(false)
+  })
+  /* [DB-READINESS] group A, phase 1 (plan §2.9) — a saved week is one row per day, so the family is per DAY: a day's
+     saved row meets that day's records alone, an issued version meets its own day, the week row meets every day */
+  it("a saved week's DAY row shares with that day's records only, both directions", () => {
+    const W = '13/07/2026'
+    const tue = keys(put('weekstash', `${W}#1`, {}, {}))
+    expect(sharesKeys(tue, keys(put('days', `${W}#1`, {}, {})))).toBe(true)
+    expect(sharesKeys(keys(put('sched.book', `${W}#1`, {}, {})), tue)).toBe(true)
+    expect(sharesKeys(tue, keys(put('days', `${W}#0`, {}, {})))).toBe(false)
+    expect(sharesKeys(keys(put('sched.mutes', `${W}#5`, {}, {})), tue)).toBe(false)
+  })
+  it('an issued version belongs to the day of its date — saved or loaded', () => {
+    const W = '13/07/2026'
+    expect(sharesKeys(keys(put('weekstash', `${W}:is:2026-07-14#1~0`, {}, {})), keys(put('days', `${W}#1`, {}, {})))).toBe(true)
+    expect(sharesKeys(keys(put('weekstash', `${W}:is:2026-07-14#1~0`, {}, {})), keys(put('days', `${W}#0`, {}, {})))).toBe(false)
+    expect(sharesKeys(keys(put('sched.retraction', `${W}:2026-07-13#0~0`, {}, {})), keys(put('weekstash', `${W}#0`, {}, {})))).toBe(true)
   })
 })

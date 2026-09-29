@@ -23,7 +23,7 @@ import { _resetTimeline } from './timeline'
 
 const DSNAP = JSON.stringify(DAYS)
 const ISNAP = JSON.stringify(INPUTS)
-const SCHED_COLLS = ['days', 'sched.book', 'sched.mutes', 'sched.orig', 'sched.als', 'sched.retired', 'inputs', 'plan', 'weekstash']
+const SCHED_COLLS = ['days', 'sched.book', 'sched.mutes', 'sched.week', 'sched.issuance', 'sched.retraction', 'inputs', 'plan', 'weekstash']
 const sign = (di: number) => { const g = signOf(di); g.cur = 'ignite'; g.sked = 'bane'; g.plan = 'stiff'; g.appr = 'pump' }
 const note0 = () => txtGet('dn:0.0')
 
@@ -129,9 +129,9 @@ describe('undo of a real publish, driven by the timeline, retracts the day', () 
     commitSetDayApproved(0, true)
     expect(dayApproved(0)).toBe(true)
     // undo the publish entry: the timeline replays its recorded inverse (delete the
-    // sched.orig record + restore the book), driving the real schedStore.write().
+    // sched.issuance record + restore the day's book), driving the real schedStore.write().
     const u = globalUndo()
-    expect(u.ok).toBe(true)
+    expect(u.ok, u.reason).toBe(true)
     expect(dayApproved(0)).toBe(false)          // the Original is gone; day is a draft again
     expect((SCHED.orig as any)[0]).toBeUndefined()
     // the plain inverse would restore the pre-publish SIGNED book; postRestore clears it

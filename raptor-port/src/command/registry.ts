@@ -22,13 +22,14 @@ import type { LogicalCollection } from './types'
    records can share one blob; the fold subscriber (Step 5) groups changes by
    blob, re-serializes each once. */
 export const LOGICAL_TO_BLOB: Record<LogicalCollection, string> = {
-  // scheduler — the week blob owns days + the mutable book + issued records + mutes
+  // scheduler — every record is one row of the weeks collection: a day row, the week row, an issuance or a
+  // retraction row ([DB-READINESS] group A, phase 1 — state/weekrows.ts, state/rowmap.ts)
   'days': 'weeks',
   'sched.book': 'weeks',
   'sched.mutes': 'weeks',
-  'sched.orig': 'weeks',
-  'sched.als': 'weeks',
-  'sched.retired': 'weeks',
+  'sched.week': 'weeks',
+  'sched.issuance': 'weeks',
+  'sched.retraction': 'weeks',
   // inputs / plan / people
   'inputs': 'inputs',
   'plan': 'plan',

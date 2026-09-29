@@ -401,7 +401,7 @@ export function logReversed(entry: { label?: string; forward?: Change[] }, dir: 
     /* a ledger entry's Undo / Redo lands on its own day (both old and new, for a correction moved) — Astra's round-2
        read R2-04, Fable's N4 */
     else if (c.collection === 'lw.ledger') for (const e of [c.before, c.after]) { const d = e && (e as any).date; if (typeof d === 'string') days.add(d) }
-    else if (c.collection === 'sched.orig' || c.collection === 'sched.als') { const m = /\d{4}-\d{2}-\d{2}/.exec(id); if (m) days.add(m[0]) }
+    else if (c.collection === 'sched.issuance' || c.collection === 'sched.retraction') { const m = /:(\d{4}-\d{2}-\d{2})#/.exec(id); if (m) days.add(m[1]) }
   }
   const sorted = [...days].filter(d => /^\d{4}-\d{2}-\d{2}$/.test(d)).sort()
   const what = `${dir === 'undo' ? 'Undo' : 'Redo'}${entry.label ? ' — ' + entry.label : ''}`

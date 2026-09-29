@@ -25,8 +25,7 @@ import type {
 } from '../command'
 import type { RecordCtx, RecordOwner, UndoEntry } from './types'
 import {
-  deriveContexts, deriveOwners, invertClosure, recordKey, sharesKeys, weekOf,
-} from './derive'
+  deriveContexts, deriveOwners, invertClosure, recordKey, sharesKeys, weekOf, dayKeyOf } from './derive'
 import { describeEntry, bubbleText } from './describe'
 
 /* ---- pluggable app hooks (snap, bubble, locks, publish-day resolve) ------- */
@@ -469,9 +468,9 @@ export function mayReverse(entry: UndoEntry, cur: Actor): boolean {
 /* ---- the publication barrier (§6.3) -------------------------------------- */
 function resolveBoundaryDay(entry: UndoEntry): { weekId: string; di: number } | null {
   for (const ch of entry.forward) {
-    if (ch.collection === 'sched.orig') {
-      const [wk, di] = ch.id.split(':')
-      return { weekId: wk, di: Number(di) }
+    if (ch.collection === 'sched.issuance') {
+      const dk = dayKeyOf(ch.collection, ch.id)
+      if (dk && dk.includes('#')) { const [wk, di] = dk.split('#'); return { weekId: wk, di: Number(di) } }
     }
   }
   for (const ch of entry.forward) {
@@ -519,12 +518,12 @@ function pulledBackDays(entry: UndoEntry): Array<{ weekId: string; di: number }>
   return out
 }
 
-/* the weekId#di a scheduler-week change belongs to (days / sched.orig carry di). */
+/* the weekId#di a scheduler-week change belongs to (a day's content, or an issued version of it). */
 function dayKeysOf(entry: UndoEntry): string[] {
   const out: string[] = []
   for (const ch of entry.forward) {
     if (ch.collection === 'days') { const [wk, di] = ch.id.split('#'); out.push(`${wk}#${di}`) }
-    else if (ch.collection === 'sched.orig') { const [wk, di] = ch.id.split(':'); out.push(`${wk}#${di}`) }
+    else if (ch.collection === 'sched.issuance') { const dk = dayKeyOf(ch.collection, ch.id); if (dk && dk.includes('#')) out.push(dk) }
   }
   return out
 }
