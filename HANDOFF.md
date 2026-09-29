@@ -28,6 +28,38 @@ the later merge keeps both (D78).
 - **Rulings:** none new so far; this chat's range D450–D459 (D430–D439 went to the Leave War drag chat, D440–D449 to the DB-sync mock-up chat — D302).
 <!-- /now -->
 
+<!-- now:claude/db-sync-model-mockup-4a00e5 -->
+### `claude/db-sync-model-mockup-4a00e5` — the IT hand-over document brought up to date (docs only); waits for his "merge live" — written 29 Sep 26 — verify before use
+- **Asked to start `[DB-SYNC-MODEL]`'s mock-up, found it already done** by the day-lock chat
+  (`claude/day-lock-mockup-data-model-493d27`, his page "Taking a Day to Edit"); built nothing for it. He chose (a):
+  the `claude/db-step-now` block's residue — `handover-dataverse.md` promised "a one-time import of what is in the
+  browsers today", against the wipe (D54, D56, D120). **Done:** its "What happens next" rewritten (the readiness work now,
+  no import — the tables start empty, only his Tracker charts cross by Export → Import — and the 30-second updates,
+  D356); `architecture-direction.md`'s one sentence marked. Its question 6 left to the day-lock chat, which edits it.
+- **Handed to the day-lock chat (D302), since it is editing `data-model.md`:** §7's "One-time legacy import" row and §5's
+  "import only" wording — the same stale idea; it put both on `[DB-SYNC-MODEL]`'s fold-in list (on its branch).
+  Both branches edit `handover-dataverse.md` (different lines) — the later merge brings `main` in first (D78).
+- **Parallel:** rulings D440–D449 (none used), observations #370+; the Leave War chat D430–D439, the day-lock chat D450–D459.
+<!-- /now -->
+
+<!-- now:claude/itflow-handoff -->
+### `claude/itflow-handoff` — the IT flow guide chat's handoff: the guide is LIVE, `main`'s flaky test fixed; nothing pending but this notes branch — written 29 Sep 26 — verify before use
+- **Where it started:** his `[IT-FLOW-GUIDE]` — a picture-led PowerPoint + PDF of every journey for the IT team; grew by his
+  rulings D410–D418 (step by step, every alternate way, the work flows, the Tracker in full, what happens by itself, the two
+  editing modes, the Leave War's manning and his answers on it).
+- **Shipped:** the guide (42 slides, `raptor-port/docs/it-flow-guide/`, made by `raptor-port/scripts/itflow/`) — PR #468, MERGED,
+  live on Vercel. `main` then went red twice on `[HISTLIST-SLOW-TEST]` (a test fault) — split into three tests, PR #470,
+  MERGED (checks green on his PC); archived here. `main`'s own run for #470 was still going when this was written — read it.
+- **Unfinished:** none. Filed: `[ITFLOW-OIL-RESHOOT]` (re-shoot the Leave War pictures — only on his word, D403),
+  `[PDF-PRINT-TWICE]`, `[LW-DRAG-BELOW-ZERO]` (D418), `[TRK-REFUSALS-UNTESTED]`.
+- **Branch:** `claude/itflow-handoff` (notes only); both work branches merged — never reuse them.
+- **Gates:** not run here (docs only); #470's full PC run green; the Docs guard green on each PR.
+- **Open questions for him:** none. The app's Help → Troubleshooting → Review Pinned Git Origins would let the app's own
+  "bring main in" tool work in this repo (it refused on `.claude/launch.json`); `git merge` did the job meanwhile.
+- **Pick up here:** his "merge live" for this notes branch, then remove this block. Next job per `## Next, in order`:
+  `[DB-SYNC-MODEL]`'s mock-up (D355, D356).
+<!-- /now -->
+
 <!-- now:claude/itflow-update-on-his-word -->
 ### `claude/itflow-update-on-his-word` — the OIL award chat's last word: `[OIL-AWARD-IS-A-GRANT]` is LIVE (PR #469, merged 29 Sep 26 on his "merge live"); this notes-only follow-up (D403) waits for his own "merge live" — written 29 Sep 26 — verify before use
 - **Live:** every hand OIL award is one ledger entry drawn on the grid on its date; "earned" and "awarded" apart (D400–D402).
@@ -38,40 +70,6 @@ the later merge keeps both (D78).
 - **Left, filed:** `[LEDGER-READ-ASK]` (his question), `[RESTRICTED-ENV-WORKFLOW]`, `[LW-WINDOW-PRUNE-FLAKE]` (test-only).
   Rulings D404–D409 unused. The IT flow guide chat was told the change merged.
 - **Next:** his "merge live" for this notes branch, then remove this block.
-<!-- /now -->
-
-<!-- now:claude/it-flow-guide-flowchart-da7ca1 -->
-### `claude/it-flow-guide-flowchart-da7ca1` — [IT-FLOW-GUIDE]: DONE — 42 slides, Astra-checked; his "Good merge live" given 29 Sep 26, merging — written 29 Sep 26 — verify before use
-- **His rulings this chat (D410–D418):** the format (D410); the sample approved + the alternate-plan flow and the work flows
-  (D411); step by step with every alternate way — templates, blocks (D412); the Leave War's own flow (D413); the Tracker in full
-  (D414); what happens by itself (D415); the two editing modes (D416); the Leave War's manning (D417); his answers on the Leave
-  War as built — three kept, a drag below zero asks too (D418, filed `[LW-DRAG-BELOW-ZERO]`). Also filed: `[PDF-PRINT-TWICE]`,
-  `[TRK-REFUSALS-UNTESTED]`.
-- **The deck:** map, two work flows, 17 journeys in 39 slides (steps / ways / compare / ripple kinds). Made by
-  `raptor-port/scripts/itflow/` — `capture.mjs` + `j/*.mjs` shoot the running app (port 4185), `content.mjs` holds the words,
-  `deck.mjs` lays out, `pdf.ps1` has PowerPoint write the PDF. `pptxgenjs` and `sharp` live in the chat's scratch folder
-  (`ITFLOW_MODULES`), never `package.json`. The pictures and decks are NOT committed until the final (docs/it-flow-guide/).
-- **Done:** Astra read every caption, check and test against the code (588 checked; 7 wrong, 5 unsupported — all fixed); the
-  final `raptor-it-flow-guide.pptx` (13.6 MB) and `.pdf` (3.9 MB) are in `raptor-port/docs/it-flow-guide/` and were sent to him.
-- **Next:** his "Good merge live" (29 Sep 26): `main` merged in (D368), `[IT-FLOW-GUIDE]` archived; the PR's checks → merge → `main`'s
-  run → live on Vercel. After that this block goes at the next handoff. Later: when the OIL award chat's words change the Leave
-  War, re-shoot and rebuild — filed `[ITFLOW-OIL-RESHOOT]`; the OIL chat will message.
-- **Parallel (D302):** the handoff-review chat (D400–D409, observation #348) and the OIL award chat
-  (`claude/award-earned-vs-granted-2ed66d`, D401–D409) — no shared lines. The OIL chat changes the Leave War's OIL words
-  ("earned" / "awarded") and will message when they change and when it merges — then re-shoot `lw` and `ripple`. This chat:
-  D410–D429 (D410–D418 used), observations #350+, preview port 4185 (`raptor-itflow` in `.claude/launch.json`).
-<!-- /now -->
-
-<!-- now:claude/small-fixes-tidy -->
-### `claude/small-fixes-tidy` — the small-fixes batch is LIVE (PR #463, merged 29 Sep 26 on his "merge live"); this notes-only follow-up waits for his own "merge live" — written 29 Sep 26 — verify before use
-- **What it carries (documents only):** his look at D367 on his iPhone ("Looks good"); `[DOCSIZE-MERGE-CEILING]` filed; the
-  batch's eight finished items archived by the script (`[AVAILWIN-PREVIEW-BAR]`, `[GHOST-FLAG-SHADOW]`, `[ALLAVAIL-OPEN-ROW]`,
-  `[LW-ISO-DATES]`, `[LW-SPARE-MOVE-DOORS]`, `[REQ-DOOR-WORDS]`, `[REQ-ORPHAN-ROW]`, `[ABSENCE-SMALL-SEEN]` — their facts in
-  `raptor-port/docs/ui-contracts.md` and the evidence sheet `raptor-port/docs/handpass/2026-09-28-small-fixes.md`);
-  `[AMEND-SMALL-SEEN]` stays open (items 2 and 6–8 belong to other chats; 5 answered, D362).
-- **Left from the batch, filed:** `[PLAN-BANNER-DOOR]`, `[GATELOCK-STALE-LIVE]`, `[ROW-NO-TIME-MARK]` (D361, a future job),
-  `[APP-FONTS-NOT-LOADED]` (his call), `[DOCSIZE-MERGE-CEILING]`. Rulings D360–D367 (D366 archived); D368–D369 unused.
-- **Next:** his "merge live" for this branch, then remove this block. Folder `.claude/worktrees/trk-smoke-add-race-bug-007eed`.
 <!-- /now -->
 
 <!-- now:claude/db-step-now -->

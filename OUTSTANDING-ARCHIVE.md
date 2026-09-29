@@ -2755,3 +2755,15 @@ first. **State (29 Sep 26, `claude/it-flow-guide-flowchart-da7ca1`):** the sampl
 sent; APPROVED as drawn, and the deck also covers the alternate-plan flow and shows the work flow (D411); it goes step by step through making a schedule and shows every alternate way to do a thing (D412); the Leave War gets its own work flow slide in his order (D413); the Tracker is covered in full (D414); what happens by itself after one change, and where it shows (D415); the two editing modes, board and week (D416); the Leave War's customisable manning (D417). **Built 29 Sep 26:** 42 slides, `raptor-port/docs/it-flow-guide/`; sent to him — closes on his OK and "merge live". How it is made and re-made: `raptor-port/docs/it-flow-guide/README.md`.
 **Place:** NEXT, in a fresh chat — the IT team is waiting (D354).
 
+
+*Moved here 2026-09-29 by backlog-archive.mjs ([HISTLIST-SLOW-TEST]). Forward facts: `raptor-port/src/ui/histlist.test.tsx`.*
+
+### [HISTLIST-SLOW-TEST] One changes-window test runs at 8s alone and times out (20s) in a busy full run — test-only (filed 28 Sep 26)
+**FIXED 29 Sep 26 on `claude/histlist-slow-test` — closes when it merges:** it timed out twice more on `main`'s own run after PR #468 (22s), so `main` read red for a test fault; the one test of three cases (twelve board redraws) is now three tests, one case each, each on its own seat (2.6–4.9s alone; each passes alone and in the file). Found by the IT flow guide chat.
+**Place:** low, test-only — with the next change to the changes window. Found by the Tracker leftovers' gates: `src/ui/histlist.test.tsx`
+"the phone expands the bubble by hand › offers a control only where there is more to show, and only on a phone" took
+8.3s on its own (the file's other eight 1.5–3.2s) and timed out at 20s twice in full unit runs on 28 Sep 26 while the
+PC carried other work (a fanned-out walk; two reviewers reading); alone it passes, 9/9. Not an app fault. **Do:** find
+what makes that one test slow (it likely redraws the board at both widths per case) and trim the setup, or give it
+its own time limit with the reason beside it — never a bare longer limit for the whole file.
+
