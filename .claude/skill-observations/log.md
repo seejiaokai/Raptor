@@ -1717,3 +1717,28 @@ signal nobody listed.
 **Suggested improvement:** In test-driven-development's green step: "when the fix is guarded on an existing flag or mode, find every writer of that flag (grep the assignments) before trusting its comment — a lifecycle comment is a claim, not a proof; if the red test stays red, check the guard first." In systematic-debugging: "to attribute a failure, stash the change and run the identical probe on the base revision before theorising — one run decides new vs pre-existing."
 
 **Principle:** A flag's documented lifecycle is evidence only until its assignments are read; and "is this mine?" is answered by running the same probe on the base, not by reasoning.
+
+### Observation 382: A new write path's integration tests can be written first — "nothing was written" is the red
+
+**Status:** OPEN
+**Date:** 30 Sep 26
+**Session context:** `[DB-READINESS]` group A phase 1 — the schedule saved as rows from the command stream
+**Skill:** test-driven-development
+**Type:** open-source
+**Phase/Area:** "write the failing test first" when the feature is a whole mechanism (a new storage path)
+
+**Issue:** The plan said red tests first for every phase. For the pure parts (split/join, per-day change records) the
+tests were written first and failed for the right reason. For the storage path (rows written from each command,
+week navigation saving only its delta, the other-day writers) the code was written first and the tests after, because
+the tests "needed the mechanism wired". That was not true: every one of those tests would have failed first on "no
+rows were written" or "the wrong rows were written". To regain the proof, each mechanism had to be broken on purpose
+afterwards (three break runs) to show its test could go red.
+
+**Suggested improvement:** In the skill's section on when a test is hard to write first, add: an integration test of a
+NEW write path is never blocked by the path not existing — its first failure is "nothing was written". Write it
+against the storage the app already has; if it was written after, break each mechanism once and watch its named test
+fail before calling it proven.
+
+**Principle:** A test is "first" when it fails for the reason the feature exists. For a new write path that reason is
+"nothing reached storage", which is available before a line of the path is written; writing the test after costs a
+break test per mechanism to recover the same proof.

@@ -16,43 +16,36 @@ the later merge keeps both (D78).
 ## Now
 
 <!-- now:claude/db-readiness-table-shaping-4094f6 -->
-### `claude/db-readiness-table-shaping-4094f6` — `[DB-READINESS]` group A: plan v4 final; **phase 0 BUILT** (all gates green, walked); phase 1 next — written 30 Sep 26 — verify before use
+### `claude/db-readiness-table-shaping-4094f6` — `[DB-READINESS]` group A: plan v4 final; **phases 0 and 1 BUILT** (all gates green); phase 2 next — written 30 Sep 26 — verify before use
 - **Where it started:** his ask: plan group A (D453), red-team it with both reviewers, then build it; D460–D463 ruled on the way.
 - **Shipped (this branch, pushed, no PR):** the plan (`raptor-port/docs/superpowers/plans/2026-09-30-db-readiness-group-a-plan.md`,
-  v4 + §9 build log) and **phase 0**: the store stamp as ONE `SchemaVersion` object (`src/storage/schema.ts`) whose
-  `initialized` replaced the `inputs/all` / `leavewar/wars` sniffs; a first boot's seed + `initialized` saved as one group
-  (`openBootGroup`, sealed in `main.tsx`); a newer store refused ("RAPTOR has been updated"); the fold machinery
-  (`src/storage/fold.ts` — converter manifest, format 6 only when all eight are registered; none registered yet); `changes`
-  collection; the Leave War door's `remove`/`keys`; `clientBootId`; the stream consumer + row mapper (`src/state/rowmap.ts`,
-  wired, maps nothing). **A `main` defect fixed on the way:** a fresh browser saved the Leave War demo UNDRESSED, so after a
-  reload its bids sat on nobody's row (`leavewar/bootseal.test.ts`; `bug-check-order.md` §7.7's walker caution can go once merged).
-  Evidence: `raptor-port/docs/handpass/2026-09-30-dbr-phase0.md` (10/10, pictures looked at).
-- **Two sequencing calls (plan §9):** P0-BOOTSTRAP's Person + User half moves to phase 5.4 (needs BootPolicy); a Leave War
-  with NO period at all is phase 5's test (the page cannot draw it today).
-- **Unfinished:** phases 1 → 5 and 5b (the shape IT needs), then the FULL walk and BOTH reviewers' code reads (D11, D353),
-  then 6 (worked out on read — its hand-over waits on IT's reporting answer, §12 q9), then 7.
-- **Branch:** `claude/db-readiness-table-shaping-4094f6`; no PR. Build on it.
-- **Gates (phase 0, watched, under the lock):** unit 7066/7066 · build · tfin 728/0 · e2e 509/0 · smoke 445/0 · rulecheck ·
-  docsize — all green (§Gate baseline). `npm run perf` / `probes:adapted` NOT run: phase 0 changes no rendering; phase 1
-  runs perf before and after (plan). rulecheck notes AM39d now covered (a BASELINE line to drop — not this chat's).
-- **Phase 1 orientation (read, nothing written yet):** the scheduler's logical records come from `decompose()` of the
-  history snapshot (`src/state/sched-commit.ts`) — `days/<wk>#<di>` per day, but `sched.book/<wk>` and `sched.mutes/<wk>`
-  whole-week, plus `sched.orig` / `sched.als` / `sched.retired`; `schedWriteRecords` is their undo write seam. The stored
-  week is `{ d, ...schedFields(), wo, un }` (`src/state/history.ts` `schedFields`; `src/state/store.ts` `weekStashSnap`).
-  The whiteboard ignores a same-value set, so writing every row of a week sends only the rows that changed. Trap: the
-  Leave War's `LW_READY` is already true once its `initStore` returns (it runs `lwHistInit`).
+  v4 + §9 build log for phases 0 and 1); **phase 0** (the `SchemaVersion` stamp, the boot group, the fold machinery, the stream
+  consumer — see §9); **phase 1 — the schedule one day per piece:** `src/state/weekrows.ts` splits a week into its week row, seven
+  day rows, one row per issuance (`:is:<verId>~<n>`, append-only) and per Unpublish (`:rx:`); the command layer's records follow
+  (per-day `days` / `sched.book` / `sched.mutes`, `sched.week`, `sched.issuance`, `sched.retraction`); the rows are written from each
+  command (a composer in `rowmap.ts`, registered by `persist.ts`); the week-deleting reconcile is gone; `un` is not stored (read
+  from the request's own `acc:'r'`); a week switch is read-only (a saved week's landing is one `sched.load` command, origin seed);
+  the stale-mark sweep and the row-id fixer touch only the days a command changed. **Found on the way:** another person's Tuesday
+  change blocked his Undo of Monday (fixed, D148); the retired entry lost the issued record's `ros` / `added` (now kept as `rec`).
+- **Gates (phase 1, watched, under the lock):** unit 7112/7112 · build · tfin 728/0 · e2e 509/0 (49 skipped) · smoke 445/0 · rulecheck ·
+  docsize. `npm run perf` on the phase-0 build and this one, same run: unchanged (4/4 both).
+- **Unfinished:** phases 2 → 5 and 5b (the shape IT needs), then the FULL walk and BOTH reviewers' code reads (D11, D353), then 6
+  (worked out on read — its hand-over waits on IT's reporting answer, §12 q9), then 7.
+- **Branch:** `claude/db-readiness-table-shaping-4094f6`; no PR. Build on it. A branch push runs no checks (workflows are main / PR only).
 - **Open questions for him:** none of this chat's. For IT (`[IT-QUESTIONS]`): "no plug-in" in writing; Custom APIs / Power
   Automate allowed?; can reports combine a day with the leave and people tables; when do their tables settle.
-- **Parallel (D302):** rulings D460–D469 (D460–D463 used); observations #380–#389 (#380–#381 used). No other chat was building on 30 Sep 26.
-- **Pick up here:** plan §3 phase 1 (the schedule one day per piece) with §8's P1-ISSUANCE-KEY and P1-UN-BEHAVIOUR — red tests
-  first; `npm run perf` before and after; read `src/state/sched-commit.ts` (`decompose`), `src/engine/weekstash.ts`,
-  `src/state/persist.ts`, `src/engine/publish.ts` (issuance/retraction) first.
+- **Parallel (D302):** rulings D460–D469 (D460–D463 used); observations #380–#389 (#380–#382 used). No other chat was building on 30 Sep 26.
+- **Traps met:** `src/state/store.ts` is a CRLF file — edit scripts must convert their literals (memory `python-edits-crlf-trap`);
+  a test that edits a blank week must ADD a note (`dn:0.0` on a week with no notes changes nothing).
+- **Pick up here:** plan §3 phase 2 (inputs, people, the planning calendar one row each; `ord` per §2.3; P2-NULL-SETTING) — red
+  tests first (the storage ones too: "nothing written" is their red — observation #382); read `src/state/persist.ts` (the week
+  composer is the model), `src/state/people-settings-commit.ts`, `src/state/plan.ts`, `src/engine/inputs.ts` (`mintInpIds`) first.
 <!-- /now -->
 
 ## Next, in order
 
 0. **THE DATABASE STEP STARTS NOW (D354, 29 Sep 26)** — `[IT-FLOW-GUIDE]` DONE (the guide for IT, `raptor-port/docs/it-flow-guide/`, 29 Sep 26); `[DB-SYNC-MODEL]`'s design DONE and merged (PR #475); `[DB-READINESS]` group A PLANNED 30 Sep 26 (plan v4,
-   `claude/db-readiness-table-shaping-4094f6`) — its build next (D453). The IT team is taking the app into Dataverse now, and he means to
+   `claude/db-readiness-table-shaping-4094f6`) — its build under way: phases 0 and 1 built 30 Sep 26, phase 2 next (D453). The IT team is taking the app into Dataverse now, and he means to
    keep working on the app beside it. What to finish before the hand-over was put to him the same day; record his answer
    here and in `OUTSTANDING.md`'s priority list the moment he gives it. Everything below keeps its ORDER; its timing is overtaken.
 1. **HIS ORDER to the database step (D203, 26 Sep 26 — its timing overtaken by D354):** `[ACCOUNTS]`, `[ACCOUNTS-NEW-PERSON]`,
@@ -73,8 +66,8 @@ the later merge keeps both (D78).
 
 ## Gate baseline
 
-The latest counts watched — 30 Sep 26, `claude/db-readiness-table-shaping-4094f6` (group A phase 0), under the PC lock: unit
-**7066 / 7066** (440 files) · build clean · tfin **728 / 0** · e2e **509 passed, 0 failed**, 49 skipped · smoke **445 / 0** ·
+The latest counts watched — 30 Sep 26, `claude/db-readiness-table-shaping-4094f6` (group A phase 1), under the PC lock: unit
+**7112 / 7112** (443 files) · build clean · tfin **728 / 0** · e2e **509 passed, 0 failed**, 49 skipped · smoke **445 / 0** ·
 rulecheck OK · docsize OK. Restate a count only from a run you watched, and REPLACE the previous counts — never stack a
 history. How to run them: `raptor-port/CLAUDE.md` §Build & verify; how they mislead, and the checks on his PC:
 `raptor-port/docs/gates-and-deploy.md`.
