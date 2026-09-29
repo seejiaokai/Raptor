@@ -15,6 +15,20 @@ the later merge keeps both (D78).
 
 ## Now
 
+<!-- now:claude/db-sync-model-mockup-4a00e5 -->
+### `claude/db-sync-model-mockup-4a00e5` — the IT hand-over document brought up to date (docs only); waits for his "merge live" — written 29 Sep 26 — verify before use
+- **Asked to start `[DB-SYNC-MODEL]`'s mock-up, found it already done** by the day-lock chat
+  (`claude/day-lock-mockup-data-model-493d27`, his page "Taking a Day to Edit"); built nothing for it. He chose (a):
+  the `claude/db-step-now` block's residue — `handover-dataverse.md` promised "a one-time import of what is in the
+  browsers today", against the wipe (D54, D56, D120). **Done:** its "What happens next" rewritten (the readiness work now,
+  no import — the tables start empty, only his Tracker charts cross by Export → Import — and the 30-second updates,
+  D356); `architecture-direction.md`'s one sentence marked. Its question 6 left to the day-lock chat, which edits it.
+- **Handed to the day-lock chat (D302), since it is editing `data-model.md`:** §7's "One-time legacy import" row and §5's
+  "import only" wording — the same stale idea; it put both on `[DB-SYNC-MODEL]`'s fold-in list (on its branch).
+  Both branches edit `handover-dataverse.md` (different lines) — the later merge brings `main` in first (D78).
+- **Parallel:** rulings D440–D449 (none used), observations #370+; the Leave War chat D430–D439, the day-lock chat D450–D459.
+<!-- /now -->
+
 <!-- now:claude/itflow-handoff -->
 ### `claude/itflow-handoff` — the IT flow guide chat's handoff: the guide is LIVE, `main`'s flaky test fixed; nothing pending but this notes branch — written 29 Sep 26 — verify before use
 - **Where it started:** his `[IT-FLOW-GUIDE]` — a picture-led PowerPoint + PDF of every journey for the IT team; grew by his
