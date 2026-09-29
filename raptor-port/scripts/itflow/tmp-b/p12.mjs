@@ -1,0 +1,12 @@
+import { browser, fresh, go, shot, box, errors } from './lib.mjs'
+const page = await fresh()
+await go(page, 'editsched')
+await page.click('button.wk[data-wk="20/07/2026"]:visible'); await page.waitForTimeout(1200)
+console.log('week', await page.evaluate(() => window.CURWEEK), await page.$$eval('#eWeek .day', a => a.map(d => d.querySelector('.day-head')?.innerText.replace(/\s+/g,' ').slice(0,60) + ' | pucks=' + d.querySelectorAll('.seat[data-slot] .puck, .seat[data-slot][data-person]').length + ' rows=' + d.querySelectorAll('[data-fill]').length)))
+await shot(page, 'p12-jul20')
+await page.click('#eWeek [data-sbday="0"]:visible'); await page.waitForSelector('#schedBoard'); await page.waitForTimeout(900)
+await shot(page, 'p12-jul20-board')
+console.log('board btns', await page.evaluate(() => [...document.querySelectorAll('#schedBoard button')].filter(e => e.offsetWidth && /add|\+/.test(e.className + e.innerText)).map(e => `[${[...e.attributes].filter(a=>a.name.startsWith('data-')).map(a=>a.name+'='+a.value).join(' ')}] "${e.innerText.replace(/\s+/g,' ').slice(0,20)}" @${Math.round(e.getBoundingClientRect().x)},${Math.round(e.getBoundingClientRect().y)}`)))
+console.log('sections', await page.$$eval('#schedBoard .sb-ph', a => a.map(e => e.innerText.replace(/\s+/g,' ').slice(0, 60) + ' @' + Math.round(e.getBoundingClientRect().y))))
+console.log(errors)
+await browser.close()

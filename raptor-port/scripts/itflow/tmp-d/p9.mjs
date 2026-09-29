@@ -1,0 +1,31 @@
+import { browser, fresh, go, box, snap } from './lib.mjs'
+const page = await fresh('ad')
+await go(page, 'leavewar')
+await page.waitForSelector('[data-testid="row-bane"]')
+// + New
+await page.locator('[data-testid="war-new"]').click(); await page.waitForTimeout(400)
+console.log('war-sheet', await box(page,'[data-testid="war-sheet"]'), (await page.locator('[data-testid="war-sheet"]').innerText()).replace(/\n/g,' | ').slice(0,300))
+console.log('war-month', await page.locator('[data-testid="war-month"]').innerText().catch(()=>null))
+const days = await page.$$eval('[data-testid^="war-day-"]', els => els.slice(0,3).map(e=>e.getAttribute('data-testid')+(e.disabled?' dis':'')))
+console.log(days)
+await page.locator('[data-testid="war-name"]').fill('JAN - MAR 28')
+// navigate to Jan 2028
+for (let i=0;i<30;i++){ const t = await page.locator('[data-testid="war-month"]').innerText(); if (/JANUARY 2028/.test(t)) break; await page.locator('[data-testid="war-next-month"]').click() }
+await page.locator('[data-testid="war-day-2028-01-01"]').click()
+for (let i=0;i<3;i++) await page.locator('[data-testid="war-next-month"]').click()
+console.log('month now', await page.locator('[data-testid="war-month"]').innerText())
+await page.locator('[data-testid="war-prev-month"]').click()
+await page.locator('[data-testid="war-day-2028-03-31"]').click()
+console.log('create', await box(page,'[data-testid="war-create"]'), await page.locator('[data-testid="war-create"]').isDisabled())
+await snap(page, 'p9-newwar')
+await page.locator('[data-testid="war-create"]').click(); await page.waitForTimeout(600)
+console.log('problem', await page.locator('[data-testid="war-problem"]').innerText().catch(()=>null))
+console.log('wars', await page.locator('[data-testid="war-picker"] option').allTextContents(), 'selected', await page.locator('[data-testid="war-picker"]').inputValue())
+console.log('stage', await page.locator('[data-testid="stage-now"]').innerText(), await page.locator('[data-testid="stage-advance"]').innerText())
+await snap(page, 'p9-created')
+// logout & login as member in same page
+const lo = page.locator('button:has-text("Logout"), a:has-text("Logout")').first()
+console.log('logout', await lo.count())
+await lo.click(); await page.waitForTimeout(600)
+console.log('login form?', await page.locator('#luser').isVisible().catch(()=>false))
+await browser.close()

@@ -1,0 +1,12 @@
+import { open, go, box, OUT } from './lib.mjs'
+const { browser, page, errs } = await open({ who: 'us' })
+console.log('page', await page.evaluate(() => window.CURPAGE))
+await go(page, 'viewsched')
+await page.screenshot({ path: OUT + '/j6-member-view.png' })
+const days = await page.$$eval('#vWeek > .day', a => a.map(d => ({ head: d.querySelector('.dhead, .day-head, header')?.innerText?.slice(0, 120), vwork: !!d.querySelector('select[data-vwork]'), dver: !!d.querySelector('select[data-dver]'), warn: d.querySelector('.daywarn')?.innerText?.slice(0, 80) })))
+console.log(JSON.stringify(days, null, 1))
+console.log('wkseg', await page.$$eval('#weekSeg button', a => a.map(b => b.innerText + (b.className.includes('on') ? '*' : ''))))
+for (const s of ['#weekSeg', '#weekSeg .wk-cal', '#vWeek', '#vWeek > .day', '#weekPrev', '#weekNext', '#hscroll', '#viewChrome']) console.log(s, JSON.stringify(await box(page, s)))
+console.log('nav visible', await page.$$eval('#topnav a', a => a.map(x => x.textContent + (x.hidden ? '(hidden)' : ''))))
+console.log(errs)
+await browser.close()

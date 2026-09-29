@@ -1,0 +1,32 @@
+import { open, go, box, OUT } from './lib.mjs'
+const who = process.argv[2] || 'us'
+const { browser, page, errs } = await open({ who })
+await go(page, 'quals')
+console.log('qbar', await page.$eval('.qbar', e => e.innerText.replace(/\s+/g, ' ')), 'view', await page.$$eval('#qViewP,#qViewW,#qViewG,#qViewA', a => a.map(b => b.textContent + (b.getAttribute('aria-pressed') === 'true' ? '*' : ''))))
+const me = await page.evaluate(() => { const r = [...document.querySelectorAll('#qtbl td.qname')].find(t => t.textContent.trim() === 'Ranger'); return r?.dataset.person })
+console.log('ranger id', me)
+await page.screenshot({ path: OUT + `/j8-1-${who}-read.png` })
+await page.click('#qEdit'); await page.waitForTimeout(400)
+console.log('editable rows', await page.$$eval('#qtbl tbody tr:not(.qro)', a => a.map(r => r.querySelector('.qname')?.textContent)).then(a => a.slice(0, 8)), 'ro count', await page.$$eval('#qtbl tbody tr.qro', a => a.length))
+const row = `#qtbl td.qname[data-person="${me}"]`
+const rb = await page.locator(row).boundingBox(); console.log('ranger row', JSON.stringify(rb))
+console.log('ranger cells', await page.$$eval(`#qtbl td[data-q^="${me}|"]`, a => a.map(td => td.dataset.q.split('|')[1] + '=' + td.textContent)))
+console.log('heads', await page.$$eval('#qtbl thead th', a => a.map(t => t.textContent.trim()).join(' | ')))
+await page.locator(row).scrollIntoViewIfNeeded()
+await page.screenshot({ path: OUT + `/j8-2-${who}-editing.png` })
+// tick an unticked cell on own row
+const k = await page.$$eval(`#qtbl td[data-q^="${me}|"]`, a => a.find(td => !td.textContent && !td.classList.contains('na'))?.dataset.q)
+console.log('ticking', k)
+await page.click(`#qtbl td[data-q="${k}"]`); await page.waitForTimeout(400)
+console.log('after', await page.$eval(`#qtbl td[data-q="${k}"]`, td => td.textContent), 'toast', await page.$eval('#toastEl', e => e.textContent).catch(() => null))
+console.log('cell box', JSON.stringify(await box(page, `#qtbl td[data-q="${k}"]`)), 'lvl box', JSON.stringify(await box(page, `#qtbl select[data-lvl="${me}"]`)))
+// try someone else's row
+const other = await page.$$eval('#qtbl td[data-q]', (a, me) => a.find(td => !td.dataset.q.startsWith(me + '|') && !td.classList.contains('na'))?.dataset.q, me)
+const before = await page.$eval(`#qtbl td[data-q="${other}"]`, td => td.textContent)
+await page.click(`#qtbl td[data-q="${other}"]`); await page.waitForTimeout(500)
+console.log('other', other, before, '->', await page.$eval(`#qtbl td[data-q="${other}"]`, td => td.textContent), 'toast', await page.$eval('#toastEl', e => e.textContent).catch(() => null))
+await page.screenshot({ path: OUT + `/j8-3-${who}-afterclicks.png` })
+await page.click('#qSave'); await page.waitForTimeout(300)
+console.log('save toast', await page.$eval('#toastEl', e => e.textContent).catch(() => null))
+console.log(errs)
+await browser.close()

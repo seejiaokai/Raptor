@@ -1,0 +1,31 @@
+import { browser, fresh, go, box, snap } from './lib.mjs'
+const page = await fresh('us')
+await go(page, 'tracker')
+await page.waitForSelector('#flowSvg .ball', { timeout: 20000 }); await page.waitForTimeout(500)
+const act = () => page.evaluate(()=>document.getElementById('activeSel').selectedOptions[0].textContent)
+// alt 1: pick student by the select
+await page.selectOption('#activeSel', { label: 'STUDENT B' }); await page.waitForTimeout(400)
+console.log('after select', await act(), await page.locator('.c-overall h3').innerText())
+await page.selectOption('#activeSel', { label: 'STUDENT A' }); await page.waitForTimeout(400)
+// alt 2: tap B's wedge on ST-01
+console.log('wedges', await box(page,'#flowSvg .ball[data-id="ST-01"] .wedge[data-wi="0"]'), await box(page,'#flowSvg .ball[data-id="ST-01"] .wedge[data-wi="1"]'))
+const w = await page.locator('#flowSvg .ball[data-id="ST-01"] .wedge[data-wi="1"]').boundingBox()
+await page.mouse.click(w.x + w.width/2, w.y + w.height - 4); await page.waitForTimeout(400)
+console.log('after wedge tap', await act(), 'pop?', await page.locator('#pop').count())
+await snap(page, 't3-wedge')
+// alt 3: find box
+await page.locator('#hSearch').fill('ACG-05'); await page.waitForTimeout(400)
+console.log('found ring', await page.locator('#flowSvg .ball .found').count(), await page.$$eval('#flowSvg .ball .found', els=>els.map(e=>e.closest('.ball').dataset.id)))
+const preds = await page.$$eval('[id*="Pred"], .preds *, .search-preds *', els => els.slice(0,5).map(e=>e.className+':'+e.textContent)).catch(()=>[])
+console.log('preds', preds)
+console.log('hSearch', await box(page,'#hSearch'))
+await page.keyboard.press('Enter'); await page.waitForTimeout(500)
+console.log('ACG-05 ball', await box(page,'#flowSvg .ball[data-id="ACG-05"]'))
+await snap(page, 't3-find')
+// alt 4: next-event chip
+await page.locator('#hSearch').fill(''); await page.waitForTimeout(200)
+console.log('chips', await page.$$eval('.c-next .evchip', els=>els.map(e=>e.dataset.ev)))
+await page.locator('.c-next .evchip[data-ev="CFT-01"]').click(); await page.waitForTimeout(800)
+console.log('after chip scroll', await box(page,'#flowSvg .ball[data-id="CFT-01"]'), 'found', await page.$$eval('#flowSvg .ball .found', els=>els.map(e=>e.closest('.ball').dataset.id)))
+await snap(page, 't3-chip')
+await browser.close()

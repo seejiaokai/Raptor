@@ -1,0 +1,13 @@
+import { browser, fresh, go, shot, box, errors } from './lib.mjs'
+const page = await fresh()
+await go(page, 'editsched')
+await page.click('button.wk[data-wk="27/07/2026"]:visible'); await page.waitForTimeout(1500)
+console.log('toast', await page.evaluate(() => document.getElementById('toastEl')?.textContent))
+console.log('week', await page.evaluate(() => window.CURWEEK), await page.$$eval('#eWeek .day', a => a.slice(0,7).map(d => d.querySelector('.day-head')?.innerText.replace(/\s+/g,' ').slice(0,60) + ' | pucks=' + d.querySelectorAll('.seat[data-slot]').length + ' fills=' + d.querySelectorAll('[data-fill]').length)))
+await shot(page, 'p13-jul27')
+await page.click('#eWeek [data-sbday="0"]:visible'); await page.waitForSelector('#schedBoard'); await page.waitForTimeout(900)
+await shot(page, 'p13-board')
+console.log('sections', await page.$$eval('#schedBoard .sb-ph', a => a.map(e => e.innerText.replace(/\s+/g,' ').slice(0, 70) + ' @' + Math.round(e.getBoundingClientRect().y))))
+console.log('empties', await page.$$eval('#schedBoard .sb-empty', a => a.map(e => e.innerText.replace(/\s+/g,' ').slice(0, 90))))
+console.log(errors)
+await browser.close()

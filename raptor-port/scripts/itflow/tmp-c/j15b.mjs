@@ -1,0 +1,12 @@
+import { chromium } from 'playwright'
+const browser = await chromium.launch()
+const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } })
+await ctx.addInitScript(() => { window.print = () => { try { (window.top.__pr = window.top.__pr || []).push(location.href + ' len=' + document.documentElement.outerHTML.length + ' title=' + document.title) } catch {} } })
+const page = await ctx.newPage()
+await page.goto('http://localhost:4185/?fresh=1')
+await page.fill('#luser', 'ad'); await page.fill('#lpass', 'a'); await page.click('#loginForm button[type=submit]')
+await page.waitForSelector('#vWeek .day', { state: 'attached' })
+await page.evaluate(() => window.go('editsched')); await page.waitForFunction(() => window.CURPAGE === 'editsched')
+await page.click('#exportPdf'); await page.waitForTimeout(1000)
+console.log('printed count', await page.evaluate(() => window.__pr))
+await browser.close()

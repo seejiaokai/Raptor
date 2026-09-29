@@ -895,7 +895,7 @@ the e2e specs are the raw material). NOT the rules engine's arithmetic. **Format
 deck plus a PDF of it — a map slide of every journey, then one slide per journey (screenshots, numbered click marks,
 arrows, a short caption per step, a "What to test" box naming the checks and the automated tests); a two-slide sample to him
 first. **State (29 Sep 26, `claude/it-flow-guide-flowchart-da7ca1`):** the sample (the map and journey 3, "Publish a day")
-sent; the rest waits on his word. How it is made and re-made: `raptor-port/docs/it-flow-guide/README.md`.
+sent; APPROVED as drawn, and the deck also covers the alternate-plan flow and shows the work flow (D411); it goes step by step through making a schedule and shows every alternate way to do a thing (D412); the Leave War gets its own work flow slide in his order (D413); the Tracker is covered in full (D414); what happens by itself after one change, and where it shows (D415); the two editing modes, board and week (D416); the Leave War's customisable manning (D417). How it is made and re-made: `raptor-port/docs/it-flow-guide/README.md`.
 **Place:** NEXT, in a fresh chat — the IT team is waiting (D354).
 
 ### [DB-READINESS] Our side of the database, built against the fake database — before the tables are settled (D203; D354 — the step starts now; filed 26 Sep 26)

@@ -1,0 +1,17 @@
+import { open, go, box, OUT } from './lib.mjs'
+const who = process.argv[2] || 'us'
+const { browser, page, errs } = await open({ who })
+await go(page, 'inputs')
+await page.click('#inRangeBtn'); await page.click('#inRangeAll'); await page.waitForTimeout(300)
+console.log('rows all', await page.$$eval('#inBody tr', a => a.length), 'range', await page.$eval('#inRangeBtn', e => e.textContent))
+await page.screenshot({ path: OUT + `/j7-10-list-all-${who}.png` })
+await page.click('#inCalBtn'); await page.waitForTimeout(500)
+await page.click('#icPrev'); await page.waitForTimeout(400); await page.click('#icPrev'); await page.waitForTimeout(700)
+console.log('mon', await page.$eval('#inpCal', e => e.innerText.slice(0, 60).replace(/\s+/g, ' ')))
+await page.screenshot({ path: OUT + `/j7-11-cal-jul-${who}.png` })
+await page.click('#inpCal [data-icday="2026-07-15"]'); await page.waitForTimeout(500)
+console.log('pop', await page.$$eval('#icPopClose', a => a.length), await page.evaluate(() => { const b = document.getElementById('icPopClose')?.closest('.ic-pop, .airpop-box, [class*=pop]'); return b ? b.className + ' :: ' + b.innerText.replace(/\s+/g, ' ').slice(0, 300) : null }))
+console.log('icPopAdd', JSON.stringify(await box(page, '#icPopAdd').catch(() => null)))
+await page.screenshot({ path: OUT + `/j7-12-calpop-${who}.png` })
+console.log(errs)
+await browser.close()

@@ -1,0 +1,13 @@
+import { browser, fresh, go, box, snap } from './lib.mjs'
+const page = await fresh('us')
+await go(page, 'tracker')
+await page.waitForSelector('#flowSvg .ball', { timeout: 20000 }); await page.waitForTimeout(500)
+for (const s of ['.nav a[data-page="tracker"]','#activeSel','#courseSel','#sylSel','#courseTitle','#flowSvg','#detailsBtn','#showAllBtn']) console.log(s, await box(page,s))
+console.log('crew', await page.locator('#activeSel option').allTextContents())
+console.log('course', await page.locator('#courseSel option').allTextContents(), await page.locator('#courseSel').inputValue())
+console.log('syl', await page.locator('#sylSel option').allTextContents())
+console.log('active', await page.evaluate(()=>document.getElementById('activeSel').selectedOptions[0].textContent))
+const balls = await page.$$eval('#flowSvg .ball', els => els.slice(0,12).map(g => { const r = g.getBoundingClientRect(); return [g.dataset.id, g.getAttribute('class'), Math.round(r.x), Math.round(r.y), Math.round(r.width)] }))
+console.log(JSON.stringify(balls))
+await snap(page, 't1-tracker')
+await browser.close()
