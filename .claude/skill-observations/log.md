@@ -1558,3 +1558,18 @@ resolved statuses always carry their resolution date
 **Suggested improvement:** When a plan moves a stored fact, build the writer/reader map (every call site, and for each writer its PRODUCTION caller — a screen control) BEFORE drafting the door table; mark any writer with no production caller as "test-only / dead" in the plan so the build either retires it or keeps it deliberately.
 
 **Principle:** A door is a control a person can press, not a function that can write. Map writers to their on-screen callers before planning around them; a function with no production caller is a test seam or dead code, never "the door".
+
+### Observation 354: A walk FAIL is first checked against what the world really holds, and the phone's own route
+
+**Status:** OPEN
+**Date:** 2026-09-29
+**Session context:** [OIL-AWARD-IS-A-GRANT] re-walk of the final reads' fixes
+**Skill:** bug-check order (raptor-port/docs/bug-check-order.md, the walk step)
+**Type:** internal
+**Phase/Area:** the walk — reading a scripted walk's FAIL
+
+**Issue:** Three walk FAILs this session were the script's, not the app's: a check expected "bid and OIL award" on a day whose seed holds only an award; a phone run looked for an Admin → Users row the phone hides behind its Admin menu; a member opened in a fresh browser profile (a new demo world). Each cost a re-run before the cause was read.
+
+**Suggested improvement:** In the walk step, before treating a FAIL as a finding: (1) confirm from the seed or the page what the target day really holds; (2) for a phone run, confirm the surface's phone route (menus, folded panels) — take one picture at the failing step. Record script mistakes on the evidence sheet as such.
+
+**Principle:** A failing assertion is a claim about the world the script believes in; check that world before blaming the app.

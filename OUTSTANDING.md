@@ -81,7 +81,7 @@ award fix are due before the tables are settled. What to finish before the hand-
 
 **Placed by their own lines — not his rulings:** the Leave War — [LW-FROZEN-BAR-GAP] (after [HUMAN-RETEST]; show him
 first), [LW-SCRUBBER-FLAKY] (test-only),
-[PO-RESTORE-POSTING] (low, from its final code read), [LW-OFFER-ONLY-TAKEABLE] (low, with [LW-LOCKMARK]), [LW-HARNESS-VIEWER-PIN] (test-only, low), [CI-FAIL-PICTURES] (his call, low), [LW-DOZE-GUARDS] (low, check first); the shell — [SHELL-SIDEWAYS-BAR] (low, with the next top-bar change), [SAVE-NOTE-COVERS] (medium, next), [TRK-SAVE-FAIL-SAYS-SAVED] (low, with [DB-READINESS]), [TRK-ASYNC-STALE] (with [DB-READINESS]); the Tracker — [TRK-REMOUNT-LANDING] (low, with the next Tracker change); the Inputs calendar — [INPUTSCAL-TAP-FLAKY] (test-only); the changes window — [HISTLIST-SLOW-TEST] (test-only, low). The Tracker — [TRK-PINCH-ASK] (his next Tracker session), [TRK-FLEXBAR-INK] (a question for him, on the Tracker-palette
+[PO-RESTORE-POSTING] (low, from its final code read), [LW-OFFER-ONLY-TAKEABLE] (low, with [LW-LOCKMARK]), [LW-HARNESS-VIEWER-PIN] (test-only, low), [CI-FAIL-PICTURES] (his call, low), [LW-DOZE-GUARDS] (low, check first); the shell — [SHELL-SIDEWAYS-BAR] (low, with the next top-bar change), [SAVE-NOTE-COVERS] (medium, next), [TRK-SAVE-FAIL-SAYS-SAVED] (low, with [DB-READINESS]), [TRK-ASYNC-STALE] (with [DB-READINESS]); the Tracker — [TRK-REMOUNT-LANDING] (low, with the next Tracker change); the Inputs calendar — [INPUTSCAL-TAP-FLAKY] (test-only); the Leave War's months — [LW-WINDOW-PRUNE-FLAKE] (test-only, low); the changes window — [HISTLIST-SLOW-TEST] (test-only, low). The Tracker — [TRK-PINCH-ASK] (his next Tracker session), [TRK-FLEXBAR-INK] (a question for him, on the Tracker-palette
 look card — D157, merged PR #441).
 The amendment area — PR #434, #435, #437 and #438 MERGED (25–26 Sep 26); left (the small-fixes batch, PR #463, merged 29 Sep 26, filed): [PLAN-BANNER-DOOR] (low, filed by that batch's walk), [ROW-NO-TIME-MARK] (low, a future job, D361), [APP-FONTS-NOT-LOADED] (his call — found 29 Sep 26; every measured width rides on it), [GATELOCK-STALE-LIVE] (low, the check lock's stale rule), [DOCSIZE-MERGE-CEILING] (low, a false alarm of the document check on a merge). Left from the amendment batch (D91–D111, merged): [AMEND-SMALL-SEEN] (any time). The docs and the checks — [DEPLOY-DOCS] (its operational half), [DOC-POINTERS-CODE] and
 [RULINGS-LF-PIN] (with the next code change), [PEEK-ISSUED] (a question for him, low), [RULING-HOME-HOOK] (low), [GUIDE-MAP-ROWS] (low, a question for him) — [DOC-SUBHEADS], [RULING-HOMES-AUDIT]
@@ -976,6 +976,15 @@ deliberately slow storage.
 PC carried other work (a fanned-out walk; two reviewers reading); alone it passes, 9/9. Not an app fault. **Do:** find
 what makes that one test slow (it likely redraws the board at both widths per case) and trim the setup, or give it
 its own time limit with the reason beside it — never a bare longer limit for the whole file.
+
+### [LW-WINDOW-PRUNE-FLAKE] The month-window browser test timed out once inside the full run, never alone — test-only (filed 29 Sep 26)
+`raptor-port/e2e/leavewar.spec.ts` "the grid draws a window of months over year-wide placeholders, keeps every row aligned,
+and draws in place" (lw-desktop): after the January button, its 5-second wait for December to leave the drawn months ran
+out (still drawn), in the full gate run on `claude/award-earned-vs-granted-2ed66d` (`e7de1f80`, under the PC lock, 507 of
+508). Alone 3 / 3 and the whole file green (154 passed) straight after; that branch does not touch the month window. The
+desktop off-screen side draws and prunes only while the machine is idle (`state/idle.ts`), so a busy PC can outlast a
+fixed 5 seconds. **Do (D87):** wait on what the prune needs — the idle signal or the window's settled state — not a fixed
+time. **Place:** test-only, low, any time.
 
 ### [INPUTSCAL-TAP-FLAKY] The calendar's chip-tap test fails now and then inside the full unit run, never alone — test-only (filed 26 Sep 26)
 `raptor-port/src/ui/inputscal.test.tsx` "a real pointerdown+pointerup on an input chip sets INPEDIT to that EXACT record":

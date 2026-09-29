@@ -23,14 +23,22 @@ the later merge keeps both (D78).
 - **His brief (29 Sep 26):** build `[OIL-AWARD-IS-A-GRANT]` with `[OIL-EARNED-VS-GRANTED]` folded in (D400); no stored award
   converted, only the demo seed (D401); plan first, both reviewers on it; FULL tier, both read the final code. **D402**
   (his answer the same hour): every hand award shows on the grid on its date, wherever it was given.
-- **The plan:** `raptor-port/docs/superpowers/plans/2026-09-29-oil-award-one-kind-plan.md` — the ledger's OIL grant is the
-  one award; the grid draws it on read. Round 1 of the red team out to Fable and Astra (reports under
-  `raptor-port/docs/superpowers/specs/2026-09-29-oil-award-plan-redteam-*.md`).
-- **Rulings range D401–D409** (D400 was the handoff-review chat's; D410–D429 the IT flow guide chat's). **Ports:** preview
-  4183, browser tests `E2E_PORT=4197`; full checks through the PC lock (D228). **Parallel (D302):** the IT flow guide chat
-  (`claude/it-flow-guide-flowchart-da7ca1`) wants a message when the OIL words change and when this merges (its journeys 9
-  and 10 show the Leave War) — promised.
-- **Next:** fold the red team in → build → gates → walk → both final reads → his look → his "merge live".
+- **BUILT, walked, both final reads fixed — waiting on his look and "merge live".** Plan (r2, two red-team rounds each
+  from Fable and Astra): `raptor-port/docs/superpowers/plans/2026-09-29-oil-award-one-kind-plan.md`. Every hand OIL award
+  is one positive OIL ledger entry, drawn on the grid on its date (FO / HO); "earned" is the automatic credits only,
+  "awarded" every hand award, corrections their own row; an award's date is fixed; one 365-day ceiling; who entered it
+  and when kept; old-shape war awards dropped on read, the demo seed rewritten.
+- **Evidence sheet:** `raptor-port/docs/handpass/2026-09-29-oil-award.md` — roll-call R1–R15, the walk (W1–W8, Astra's
+  ranks, X1–X5 the re-walk of the fixes; desktop and phone, no console errors), the gates, §7 the final reads: Fable
+  SHIP, Astra FIX-FIRST (OA-001 the 365-day cap, OA-002 a correction's "given by", OA-003 the Undo label, OA-004 speed)
+  — every finding fixed red-first (`src/leavewar/oilaward-finalreads.test.ts`) and re-walked.
+- **Filed, not built here:** `[LEDGER-READ-ASK]` (what a member may read of another man's awards — a "+n" day's list
+  shows them; D261 kept as it is), `[RESTRICTED-ENV-WORKFLOW]` (how bug checks work once the app is in IT's restricted
+  environment), `[IT-QUESTIONS]` carries IT's answers.
+- **Rulings D401–D402 recorded** (D403–D409 unused). **Ports:** preview 4183, browser tests `E2E_PORT=4197`; full checks
+  through the PC lock (D228). **Parallel (D302):** the IT flow guide chat was told the OIL words change (29 Sep 26);
+  promised a second message when this merges — its pictures re-shoot waits on that (`[ITFLOW-OIL-RESHOOT]`, filed on its branch, PR #468).
+- **Next:** push → PR → the Vercel link to him → his look → his "merge live" → tell the IT flow guide chat it merged.
 <!-- /now -->
 
 <!-- now:claude/db-step-now -->
@@ -74,8 +82,10 @@ the later merge keeps both (D78).
 
 ## Gate baseline
 
-The latest counts watched — 29 Sep 26, `claude/change-recording-retest`, each run under the PC lock: unit **6898 / 6898**
-(423 files) · build clean · tfin **728 / 0** · e2e **495 passed**, 48 skipped · smoke **445 / 0** · rulecheck OK · docsize OK. Restate a count only from a run you watched, and REPLACE the previous counts — never stack a
+The latest counts watched — 29 Sep 26, `claude/award-earned-vs-granted-2ed66d` (`e7de1f80`), one run under the PC lock: unit
+**6992 / 6992** (433 files) · build clean · tfin **728 / 0** · e2e **507 passed, 1 failed** (the month-window test, a timing
+flake — alone 3 / 3, its file 154 / 0 straight after; `[LW-WINDOW-PRUNE-FLAKE]`), 48 skipped · smoke **445 / 0** · rulecheck
+OK · docsize OK. Restate a count only from a run you watched, and REPLACE the previous counts — never stack a
 history. How to run them: `raptor-port/CLAUDE.md` §Build & verify; how they mislead, and the checks on his PC:
 `raptor-port/docs/gates-and-deploy.md`.
 
