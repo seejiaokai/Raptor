@@ -1260,7 +1260,11 @@ access rules from — says a member reads only his OWN `LeaveLedger` / `LeaveOpe
 award (every member reads every man's, D402 — its own row in §11); everything else in the ledger stays as §11 says, with a
 note naming this gap. **The question:** should a member see every man's ledger entries (as the app shows today) or only his
 own (as §11 says)? If "everyone", §11 and `state/perms.ts` widen; if "own only", the tracker and the breakdown hide other
-men's entries from a member. **Place:** a question for him, before the tables settle (D354).
+men's entries from a member. **Also on the grid (the award walk, 29 Sep 26):** a day wearing a "+n" mark opens its day's
+list for ANY member, as it always has — so a member can read another man's award reason, "Given by" and "Entered by" there
+when that man's day holds two records (two awards, or an award beside his leave); a day holding just his one award opens
+nothing (D261's "another man's award stays as today"). Same answer as the ledger's. **Place:** a question for him, before
+the tables settle (D354).
 
 ### [RESTRICTED-ENV-WORKFLOW] Working and bug-checking once the app lives in the restricted environment (filed 29 Sep 26)
 From IT's answers (`[IT-QUESTIONS]`, 29 Sep 26): the live app runs only inside the restricted environment, which this

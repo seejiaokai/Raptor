@@ -135,6 +135,21 @@
         "--strictPort"
       ],
       "port": 4182
+    },
+    {
+      "name": "raptor-oilaward",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "--prefix",
+        "raptor-port",
+        "vite",
+        "preview",
+        "raptor-port",
+        "--port",
+        "4183",
+        "--strictPort"
+      ],
+      "port": 4183
     }
   ]
 }
