@@ -45,12 +45,14 @@ describe('storage seam ⇄ Leave War sync', () => {
     approve('ammo', ['2026-02-02', '2026-02-03', '2026-02-04'])   // the approval files the Input itself (step 4)
     const rows = INPUTS.filter((r: any) => r.lw)
     expect(rows).toHaveLength(1)
-    expect(JSON.parse(wb.get('inputs', 'all')!).filter((r: any) => r.lw)).toHaveLength(1)
+    /* the approved leave is its own stored row ([DB-READINESS] group A, phase 2) */
+    const id = String(rows[0].iid)
+    expect(JSON.parse(wb.get('inputs', id)!).lw).toBeTruthy()
 
     await vi.advanceTimersByTimeAsync(300 + 200 + 50)
     const inputPuts = () => be.journal.filter(j => j.op === 'put' && j.collection === 'inputs').length
     expect(inputPuts()).toBe(putsBefore + 1)
-    expect(JSON.parse(be.peek('inputs', 'all')!).filter((r: any) => r.lw)).toHaveLength(1)
+    expect(JSON.parse(be.peek('inputs', id)!).lw).toBeTruthy()
 
     syncAbsences()                                              // a fixed point: nothing changes
     await vi.advanceTimersByTimeAsync(600)

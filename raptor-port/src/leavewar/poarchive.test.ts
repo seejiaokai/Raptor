@@ -71,7 +71,8 @@ describe('runPoArchive', () => {
     wirePersist(wb, { weekSnap: weekStashSnap, weekDirty })
     const id = anAircrewId()
     setPostOut(id, today)
-    expect(JSON.parse(wb.get('people', 'all')!)[id].archived).toBe(true)
+    /* the person is his own stored row ([DB-READINESS] group A, phase 2) */
+    expect(JSON.parse(wb.get('people', id)!).archived).toBe(true)
   })
 
   it('a future PO waits for its date', () => {

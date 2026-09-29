@@ -49,9 +49,12 @@ Each of group A's phases registers its collection's mapper and, in the same chan
 day, its book slice and its mutes) in `state/persist.ts`; `persistAll` no longer writes weeks. The scheduler's records
 follow the rows: per day `days/<wk>#<di>`, `sched.book/<wk>#<di>`, `sched.mutes/<wk>#<di>`; the week's stamps
 `sched.week/<wk>`; every issued version `sched.issuance/<wk>:<verId>~<n>` (written once) and every Unpublish
-`sched.retraction/<wk>:<verId>~<n>`; a saved week off screen `weekstash/<wk><row suffix>`, each value the stored row. So
-a durable change to the schedule is saved ONLY by a command — a mutation outside one is lost (the persistence funnel,
-`raptor-port/CLAUDE.md`). A NEW module's durable records need a mapper there too.
+`sched.retraction/<wk>:<verId>~<n>`; a saved week off screen `weekstash/<wk><row suffix>`, each value the stored row.
+**Phase 2 (30 Sep 26): the requests (`inputs/<iid>`), the roster (`people/<pid>`) and the planning calendar
+(`plan/pp:<id>`, `plan/dm:<iso>` — `plan/all` split)** — each a plain per-change mapper; `persistAll` is gone. A list's
+order rides each record (`ord`, `engine/ord.ts`), so the old `inputs/__order` record is retired and a restore puts a
+record back where it stood by its own `ord`. So a durable change is saved ONLY by a command — a mutation outside one is
+lost (the persistence funnel, `raptor-port/CLAUDE.md`). A NEW module's durable records need a mapper there too.
 
 ---
 

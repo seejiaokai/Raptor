@@ -14,7 +14,7 @@
    HOOKS.storeBackend directly: the seam is the one door.
 
    IMPORT-GRAPH CONSTRAINT: this file imports ONLY from ./auth (itself a leaf
-   module). history.ts imports PLANPUCKS/DAYRMK to ride them on the undo
+   module) and engine/newid (a zero-import module). history.ts imports PLANPUCKS/DAYRMK to ride them on the undo
    snapshot, and ui/ imports the mutators below — keeping this module
    leaf-like is what keeps neither of those from ever closing into a cycle.
 
@@ -25,6 +25,7 @@
    other Inputs-page write already goes through, so history and repaint
    happen exactly once, in one place. */
 import { canEditSched } from './auth'
+import { newId } from '../engine/newid'
 
 /* one SECTION dropped on a day, addressed by its own id rather than its
    position, the same reason inpId exists (engine/inputs.ts): an array a
@@ -43,12 +44,11 @@ export const PLANPUCKS: any[] = []
    hold it. */
 export const DAYRMK: Record<string, string> = {}
 
-/* mints ids the same way inpId mints iids (engine/inputs.ts) — monotonic
-   within the session, so a puck created after a history snapshot can never
-   collide with one a replay of that snapshot hands back. */
-let PPN = 0
-export function seedPuckCounter(n: number) { if (n > PPN) PPN = n }
-function nextPuckId() { return 'pp' + (++PPN) }
+/* mints ids the way inpId mints iids (engine/inputs.ts) — the app's one opaque minter, random, never a per-browser
+   counter ([DB-READINESS] group A, phase 2 — F2-07): once each note is its own stored row, two schedulers adding a note
+   from two browsers booted from one store would both have minted 'pp1' and written the same row. A note saved before
+   keeps its old id. */
+function nextPuckId() { return newId('pp') }
 
 /* the day's one-line scheduler remark. Trims; an emptied-out remark DELETES
    the key rather than storing '' — a lingering empty string would read as

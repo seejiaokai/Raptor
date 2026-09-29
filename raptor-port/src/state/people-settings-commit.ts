@@ -50,7 +50,7 @@ import {
   storesLoad, cxReasonsLoad, dutyTplLoad, waveTplLoad, dayTplLoad,
   secDefaultLoad, waveDefaultLoad,
 } from '../engine'
-import { persistPeople as rawPersistPeople } from './persist'
+import { mintOrd, byOrd } from '../engine/ord'
 import { accountsLoad, ACCOUNT_TYPES } from './accounts'
 import { changesLoad, CHANGES_TYPES } from './changes'
 
@@ -153,6 +153,27 @@ function restorePeople(snap: string): void {
   Object.assign(PEOPLE, obj)
   indexCallsigns()
 }
+/* THE ROSTER'S ORDER, ON EACH PERSON ([DB-READINESS] group A, phase 2 — plan §2.3): once each person is one stored row,
+   the roster's order (the key order 27 readers iterate) is each person's own `ord`. Minted at every roster command's
+   finish for a person who needs one — a new person takes 1024 below/above/between his neighbours, nobody else is
+   touched; the placeholder pucks (ALL, ALL AVAIL) are code and carry none. */
+const isPlaceholderBody = (id: string) => id === 'all' || id === 'allavail' || !!((PEOPLE as any)[id] && (PEOPLE as any)[id].special)
+export function mintPeopleOrd(): void {
+  const ids = Object.keys(PEOPLE).filter(id => !isPlaceholderBody(id))
+  const rows = ids.map(id => (PEOPLE as any)[id])
+  const pidOf = new Map(rows.map((p: any, i: number) => [p, ids[i]]))
+  mintOrd(rows, (p: any) => pidOf.get(p)!)
+}
+/* put the roster back in its order after a restore: every person by (ord, id), the placeholders last — so an Undo that
+   brings a person back puts him back where he stood, not at the end */
+function reorderPeople(): void {
+  const cmp = byOrd((row: any) => row.__pid)
+  const ids = Object.keys(PEOPLE).filter(id => !isPlaceholderBody(id))
+    .sort((a, b) => cmp({ ord: (PEOPLE as any)[a]?.ord, __pid: a }, { ord: (PEOPLE as any)[b]?.ord, __pid: b }))
+  const keep = [...ids, ...Object.keys(PEOPLE).filter(isPlaceholderBody)].map(id => [id, (PEOPLE as any)[id]] as [string, any])
+  for (const k of Object.keys(PEOPLE)) delete (PEOPLE as any)[k]
+  for (const [id, p] of keep) (PEOPLE as any)[id] = p
+}
 /* rebuild ID_BY_CS from the whole live PEOPLE (a delete must drop the old cs
    mapping, so a touched-ids-only pass would leave a stale entry — full rebuild is
    the same work restorePeople does). The ONE index body — the roster and the
@@ -165,8 +186,10 @@ export const peopleStore: EnlistableStore = {
   records: peopleRecords,
   signature: () => baseline(),
   /* [CMDL-FINISH] §3 — batch record write for the undo seam. Apply every
-     people/<id> into PEOPLE (delete removes it), rebuild the callsign index once,
-     advance the baseline in the apply, and persist at the boundary. */
+     people/<id> into PEOPLE (delete removes it), put the roster back in its order,
+     rebuild the callsign index once and advance the baseline in the apply. Each
+     restored person's row is written from this command's own change (the stream
+     consumer, state/rowmap.ts — [DB-READINESS] group A, phase 2). */
   write(entries: RecordEntry[]): void {
     for (const e of entries) {
       // [GLOBAL-UNDO] GU2-009 — clone-on-write: never alias the undo entry's recorded
@@ -174,9 +197,9 @@ export const peopleStore: EnlistableStore = {
       if (e.op === 'delete') delete (PEOPLE as any)[e.id]
       else (PEOPLE as any)[e.id] = e.value == null ? e.value : JSON.parse(JSON.stringify(e.value))
     }
+    reorderPeople()
     rebuildIdByCs()
     PEOPLE_BASELINE = JSON.stringify(PEOPLE)
-    cmdDeferEffect(rawPersistPeople)   // persist at the boundary
     cmdDeferEffect(HOOKS.reflow)       // re-validate + repaint (roster feeds the warnings)
   },
 }
@@ -231,7 +254,9 @@ function commitPeopleProjectionCmd(type: string, fn: () => void): CommitResult {
 /* every roster command's finish — and so the one place the callsign index follows an archive, a restore, a rename, an
    add, the posting pass or a delete ([POST-OUT-OUTCOMES], D286: who is ON the roster decides what a typed callsign
    means, so it is re-read after every change to the roster) */
-const advancePeople = () => { indexCallsigns(); rawPersistPeople(); PEOPLE_BASELINE = JSON.stringify(PEOPLE) }
+/* …and it saves nothing itself: each changed person's row is written from the command's own change (the stream
+   consumer — [DB-READINESS] group A, phase 2); a new person first takes his place in the roster's order (mintPeopleOrd) */
+const advancePeople = () => { mintPeopleOrd(); indexCallsigns(); PEOPLE_BASELINE = JSON.stringify(PEOPLE) }
 /* the same finish for a command that enlists the people store beside others (state/person-delete.ts — a delete writes
    people, accounts, the schedule and the stash in ONE command) */
 export const finishPeopleWrite = () => advancePeople()
@@ -299,5 +324,7 @@ export function registerPeopleSettingsCommandLayer(): void {
    edited person, and a rollback would rebuild PEOPLE from the seed and the next
    persistAll would write that seed to storage — losing every roster edit.
    initStore() calls this after hydrate; a unit test that restores the roster calls
-   it too. persistPeople keeps the baseline live thereafter. */
-export function resyncPeopleBaseline(): void { PEOPLE_BASELINE = JSON.stringify(PEOPLE) }
+   it too. persistPeople keeps the baseline live thereafter. Every person takes his
+   place in the roster's order first ([DB-READINESS] group A, phase 2), so the
+   baseline is the roster as the app holds it. */
+export function resyncPeopleBaseline(): void { mintPeopleOrd(); PEOPLE_BASELINE = JSON.stringify(PEOPLE) }

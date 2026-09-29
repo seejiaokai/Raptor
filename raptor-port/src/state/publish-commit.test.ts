@@ -22,6 +22,7 @@ import {
 import { issuedDisclosed, _resetDisclosure } from './disclosure'
 import { histSnap } from './history'
 import { joinParts } from './weekrows'
+import { sortByOrd } from '../engine/ord'
 import { setSession } from './auth'
 import * as view from './view'
 import { onCommit } from '../command'
@@ -177,27 +178,22 @@ describe('completeness — the stream reconstructs the persisted week (§7 / R4-
       d: m.get(`days/${wk}#${di}`)!.value, book: m.get(`sched.book/${wk}#${di}`)!.value, wo: m.get(`sched.mutes/${wk}#${di}`)!.value,
     }))
     const is: Array<[string, any]> = [], rx: Array<[string, any]> = []
-    const inputs: any[] = []
-    let inpOrder: string[] | null = null
+    const inputs: any[] = [], pp: any[] = [], dm: Record<string, string> = {}
     for (const [k, e] of m) {
       if (k.startsWith('sched.issuance/')) is.push([e.id.slice(e.id.indexOf(':') + 1), e.value])
       else if (k.startsWith('sched.retraction/')) rx.push([e.id.slice(e.id.indexOf(':') + 1), e.value])
-      // [CMDL-FINISH] CMDLF-010 — inputs/__order is order metadata, not a row;
-      // consume it to re-sort the inputs, exactly as write() does.
-      else if (k === 'inputs/__order') inpOrder = e.value
       else if (k.startsWith('inputs/')) inputs.push(e.value)
+      else if (k.startsWith('plan/pp:')) pp.push(e.value)
+      else if (k.startsWith('plan/dm:')) dm[e.id.slice(3)] = e.value
     }
-    if (inpOrder) {
-      const pos = new Map(inpOrder.map((id, i) => [id, i]))
-      inputs.sort((a, b) => (pos.get(a.iid) ?? 1e9) - (pos.get(b.iid) ?? 1e9))
-    }
+    /* [DB-READINESS] group A, phase 2 — each request and planning note carries its place (ord) */
+    sortByOrd(inputs, (r: any) => r.iid); sortByOrd(pp, (p: any) => p.id)
     const w = joinParts({ week: m.get(`sched.week/${wk}`)!.value, days, is, rx }, wk)
-    const plan: any = m.get('plan/all')!.value
     return {
       d: w.d, i: inputs,
       c: w.c, p: w.p, ad: w.ad, a: w.a,
       ok: w.ok, sg: w.sg, sb: w.sb, o: w.o, cv: w.cv, dr: w.dr, cd: w.cd,
-      v: w.v, am: w.am, rt: w.rt, cr: w.cr, wo: w.wo, pp: plan.pp, dm: plan.dm,
+      v: w.v, am: w.am, rt: w.rt, cr: w.cr, wo: w.wo, pp, dm,
     }
   }
 

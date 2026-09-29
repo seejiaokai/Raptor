@@ -41,6 +41,7 @@ import { ensureRowIds, rowsOf } from '../engine/rowids'
 import { SCHED, setDayApproved, publishALDay, discardPending, unpublishDay, dayCurVer, signClear, signClearPlans } from '../engine/publish'
 import { parseVerId } from '../engine/verid'
 import { splitParts, canonicalBook, issuedBook, parseVerN, dayIndexOf, BOOK_BY_KEY, BOOK_BY_DAY, type WeekParts } from './weekrows'
+import { mintOrd, sortByOrd } from '../engine/ord'
 import { reconcileIssuedMarks, setTouchedDaysResolver } from '../engine/drafts'
 import { keyDay } from '../engine/keys'
 import { logAction } from '../engine/editlog'
@@ -122,21 +123,23 @@ function decompose(snapStr: string): Map<string, RecordEntry> {
   } else {
     m.set(`sched.week/${wk}`, { collection: 'sched.week', id: wk, value: { frozen: week } })
   }
-  const inpOrder: string[] = []
+  /* the requests, one record each. Their ORDER is meaningful (runInbound keeps the first value per portion; writers use
+     push AND unshift) and rides each request as its own place, `ord` ([DB-READINESS] group A, phase 2 — state/ord.ts):
+     a delete→restore puts the request back where it was by its ord, and a new request on top changes ONE record, never
+     a list of every id (the old `inputs/__order` record, CMDLF-010, retired with it). */
   for (const r of ((s.i as any[]) || [])) {
     const id = r && r.iid
     if (!id) continue
     m.set(`inputs/${id}`, { collection: 'inputs', id, value: r })
-    inpOrder.push(id)
   }
-  /* [CMDL-FINISH] CMDLF-010 — emit the INPUTS order EXPLICITLY. INPUTS order is
-     meaningful (runInbound keeps the first value per portion; writers use push AND
-     unshift), so a delete→restore that pushed the row back at the end would change
-     which leave code wins. With the order in the record set, a reorder is a
-     recorded change and the position round-trips; write() consumes this reserved
-     id to re-sort (below). */
-  m.set(`inputs/${INPUT_ORDER_ID}`, { collection: 'inputs', id: INPUT_ORDER_ID, value: inpOrder })
-  m.set('plan/all', { collection: 'plan', id: 'all', value: { pp: s.pp || [], dm: s.dm || {} } })
+  /* the planning calendar, one record per note or pucks row (`pp:<id>`) and per day title (`dm:<iso>`) — the stored rows
+     `PlanningPuck` and `DayRemark` (phase 2); a note's order is its own `ord` too */
+  for (const p of ((s.pp as any[]) || [])) {
+    if (!p || p.id == null) continue
+    m.set(`plan/pp:${p.id}`, { collection: 'plan', id: `pp:${p.id}`, value: p })
+  }
+  const dm = s.dm && typeof s.dm === 'object' ? s.dm : {}
+  for (const iso of Object.keys(dm)) m.set(`plan/dm:${iso}`, { collection: 'plan', id: `dm:${iso}`, value: dm[iso] })
   DECOMPOSED = { snap: snapStr, wk, m }
   return m
 }
@@ -145,11 +148,11 @@ function decompose(snapStr: string): Map<string, RecordEntry> {
 export function schedRecordsNow(): Map<string, RecordEntry> { return schedRecords() }
 function schedRecords(): Map<string, RecordEntry> { return decompose(baseline()) }
 
-/* [CMDL-FINISH] §3 — a write() entry with this reserved id (collection 'inputs')
-   reorders INPUTS to the carried iid[] sequence (C11/CMDLF-010/011). records() now
-   EMITS it (CMDLF-010), so an order change is a recorded change and a delete→restore
-   round-trips the position rather than pushing the row to the end. */
+/* [CMDL-FINISH] §3 — the reserved id of the retired whole-order record (CMDLF-010); a write() entry carrying it is
+   ignored — the order rides each request's own `ord` since [DB-READINESS] group A, phase 2 */
 const INPUT_ORDER_ID = '__order'
+const inputIdOf = (r: any) => r && r.iid
+const puckIdOf = (p: any) => p && p.id
 
 /* [GLOBAL-UNDO] GU2-009 — CLONE-ON-WRITE. write() applies an undo entry's RECORDED
    inverse image; assigning that image into live state BY REFERENCE would alias the
@@ -199,7 +202,7 @@ function dayOfId(id: string, wk: string): number {
    schedStore. */
 function schedWriteRecords(entries: RecordEntry[], opts?: { allowIssued?: boolean; restore?: boolean }): void {
   const wk = CURWEEK
-  let orderIds: string[] | null = null
+  let inputsTouched = false, pucksTouched = false
   /* the issuances and retractions this write touches, applied together after the loop (state/weekrows.ts issuedBook) */
   const issued: { now: { is: Map<string, any>; rx: Map<string, any> } | null } = { now: null }
   const issuedNow = () => {
@@ -266,7 +269,8 @@ function schedWriteRecords(entries: RecordEntry[], opts?: { allowIssued?: boolea
         break
       }
       case 'inputs': {
-        if (e.id === INPUT_ORDER_ID) { orderIds = (e.value as string[]) || null; break }
+        if (e.id === INPUT_ORDER_ID) break
+        inputsTouched = true
         const ix = INPUTS.findIndex((r: any) => r.iid === e.id)
         if (restore) {
           restoredIids.add(e.id)
@@ -283,20 +287,26 @@ function schedWriteRecords(entries: RecordEntry[], opts?: { allowIssued?: boolea
         break
       }
       case 'plan': {
+        /* a note or pucks row (`pp:<id>`) or a day title (`dm:<iso>`) — one record each since phase 2 */
         const v = cw(e.value) as any   // [GLOBAL-UNDO] GU2-009 — clone-on-write
-        PLANPUCKS.length = 0; ((v && v.pp) || []).forEach((x: any) => PLANPUCKS.push(x))
-        for (const k of Object.keys(DAYRMK)) delete DAYRMK[k]
-        Object.assign(DAYRMK, (v && v.dm) || {})
+        if (e.id.startsWith('dm:')) {
+          const iso = e.id.slice(3)
+          if (e.op === 'delete' || v == null) delete DAYRMK[iso]; else DAYRMK[iso] = v
+        } else if (e.id.startsWith('pp:')) {
+          const id = e.id.slice(3), ix = PLANPUCKS.findIndex((x: any) => x && String(x.id) === id)
+          pucksTouched = true
+          if (e.op === 'delete') { if (ix >= 0) PLANPUCKS.splice(ix, 1) }
+          else if (ix >= 0) PLANPUCKS[ix] = v; else PLANPUCKS.push(v)
+        } else throw new CmdRefused(`scheduler write: no planning record ${e.id}`)
         break
       }
       default:
         throw new CmdRefused(`scheduler write: unexpected collection ${e.collection}`)
     }
   }
-  if (orderIds) {
-    const pos = new Map(orderIds.map((id, i) => [id, i]))
-    INPUTS.sort((a: any, b: any) => (pos.get(a.iid) ?? 1e9) - (pos.get(b.iid) ?? 1e9))
-  }
+  /* a restored request or note goes back to its place — its own ord (state/ord.ts) */
+  if (inputsTouched) sortByOrd(INPUTS, inputIdOf)
+  if (pucksTouched) sortByOrd(PLANPUCKS, puckIdOf)
   if (issued.now) {
     /* the book's Originals, live amendments and retired log, rebuilt from the issuances and retractions as they now
        stand — the same join the saved week's reader runs, so the two cannot disagree (amendments in day / sequence
@@ -381,7 +391,10 @@ export const schedStore: EnlistableStore = {
 function applyEnd(): void {
   keepIdsOnTheirDays()
   ensureRowIds(DAYS)
-  mintInpIds()
+  mintInpIds()   // the requests' ids AND their places in the list (engine/inputs.ts — phase 2)
+  /* the planning notes' places, one `ord` per row, minted beside their ids ([DB-READINESS] group A, phase 2 — plan
+     §2.3): only a row with none, or one a writer moved, takes a new one */
+  mintOrd(PLANPUCKS, puckIdOf)
   SCHED_BASELINE = histSnap()
 }
 
@@ -728,5 +741,7 @@ export function registerSchedCommandLayer(): void {
   registerRecord({ key: 'weeks:sched.issuance/<wk>:<verId>~<n>', cls: 'record', collection: 'sched.issuance', module: 'scheduler' })
   registerRecord({ key: 'weeks:sched.retraction/<wk>:<verId>~<n>', cls: 'record', collection: 'sched.retraction', module: 'scheduler' })
   registerRecord({ key: 'inputs:<iid>', cls: 'record', collection: 'inputs', module: 'inputs' })
-  registerRecord({ key: 'plan:all', cls: 'record', collection: 'plan', module: 'plan' })
+  // [DB-READINESS] group A, phase 2 — the planning calendar one record per note / pucks row and per day title
+  registerRecord({ key: 'plan:pp:<id>', cls: 'record', collection: 'plan', module: 'plan' })
+  registerRecord({ key: 'plan:dm:<iso>', cls: 'record', collection: 'plan', module: 'plan' })
 }

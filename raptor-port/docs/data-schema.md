@@ -19,7 +19,7 @@ shared database replaces; nothing above a door knows where a key lives.
 
 | World | Door (the seam) | Key prefix (built site) | Backed by today |
 |---|---|---|---|
-| Scheduler | `store` + `storeBackend.impl` in `src/engine/hooks.ts`, plugged in once by `src/main.tsx` | `raptor:settings/*`, `raptor:weeks/*`, `raptor:inputs/all`, `raptor:people/all`, `raptor:plan/all` (legacy `sqn142_` imported once) | the whiteboard (`src/storage/`) → BrowserBackend on the built site |
+| Scheduler | `store` + `storeBackend.impl` in `src/engine/hooks.ts`, plugged in once by `src/main.tsx` | `raptor:settings/*`, `raptor:weeks/*` (rows — phase 1), `raptor:inputs/<iid>`, `raptor:people/<pid>`, `raptor:plan/pp:<id>` and `raptor:plan/dm:<iso>` (one row each since 30 Sep 26, `[DB-READINESS]` group A, phase 2; `inputs/all`, `people/all`, `plan/all` until then) (legacy `sqn142_` imported once) | the whiteboard (`src/storage/`) → BrowserBackend on the built site |
 | Leave War | `StorageBackend {read, write, remove, keys}` (remove and keys since 30 Sep 26, `[DB-READINESS]` group A phase 0) in `src/leavewar/state/storage.ts`, now the whiteboard-backed adapter | `raptor:leavewar/*` (legacy `leavewar:` ignored) | the whiteboard (`src/storage/`) → BrowserBackend on the built site |
 | Tracker | `storage {get, set, delete, list}` (async) in `src/tracker/storage.js`; per-browser prefs via `ocuLocal:` (NOT through the whiteboard) | `raptor:tracker/*` (legacy `ocu:` imported once); prefs stay `ocuLocal:*` | the whiteboard (`src/storage/`) → BrowserBackend on the built site — the record; the .json file is an import/export FORMAT only (9 Sep 26) |
 
@@ -287,8 +287,19 @@ each request's own `acc: 'r'` mark, `store.ts takenOff` — `[DB-READINESS]` gro
 | `cr` | `correcting` | a day being corrected after an Unpublish: the version it may reissue under the same label |
 
 It carries **no inputs and no planning layer** — those are global, and
-their own records (`raptor:inputs/all`, `raptor:plan/all`, written
-separately in `src/state/persist.ts:persistAll`).
+their own records: since 30 Sep 26 (`[DB-READINESS]` group A, phase 2) ONE ROW EACH, written from the command
+that changed them (`src/state/persist.ts` — the stream consumer; `persistAll` is gone):
+
+| stored id | row | holds |
+|---|---|---|
+| `raptor:inputs/<iid>` | a request (`Input`) | the whole request, with `ord` — its place in the list (`src/engine/ord.ts`; the design's `sortIndex`) |
+| `raptor:people/<pid>` | a person (`Person`) | the whole roster record, with `ord`; the two placeholder pucks (ALL `all`, ALL AVAIL `allavail`) are code and never stored |
+| `raptor:plan/pp:<id>` | a planning note or pucks row (`PlanningPuck`) | the entry, with `ord`; its id the app's opaque `newId('pp')` (a note saved before keeps its `pp<N>`) |
+| `raptor:plan/dm:<iso>` | a day title (`DayRemark`) | the title string |
+
+A list reads back in its order `(ord, id)` — ties between two people's rows break by id, the same on every device. A
+first boot stores the seed's rows once, in the boot's one group; a row that will not read is left in storage as it is and
+not read. A setting saved as `null` removes its key (it reads as never set).
 
 **The undo snapshot** is `histSnap()` (`src/state/history.ts:histSnap`): the same
 fields plus `i: INPUTS`, `pp: PLANPUCKS`, `dm: DAYRMK`. It is the undo

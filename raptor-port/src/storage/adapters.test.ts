@@ -6,10 +6,18 @@ describe('adapters', () => {
   it('settingsAdapter strips the sqn142_ prefix both ways', () => {
     const wb = new Whiteboard()
     const a = settingsAdapter(wb)
-    a.setItem('sqn142_rules', 'null')
-    expect(wb.get('settings', 'rules')).toBe('null')
-    expect(a.getItem('sqn142_rules')).toBe('null')
+    a.setItem('sqn142_rules', '{"x":1}')
+    expect(wb.get('settings', 'rules')).toBe('{"x":1}')
+    expect(a.getItem('sqn142_rules')).toBe('{"x":1}')
     expect(a.getItem('sqn142_missing')).toBeNull()
+  })
+  it('a setting saved as null is removed, not stored as "null" ([DB-READINESS] group A, phase 2 — F3-07)', () => {
+    const wb = new Whiteboard()
+    const a = settingsAdapter(wb)
+    a.setItem('sqn142_rules', '{"x":1}')
+    a.setItem('sqn142_rules', 'null')
+    expect(wb.has('settings', 'rules')).toBe(false)
+    expect(a.getItem('sqn142_rules')).toBeNull()
   })
   it('leavewarAdapter maps read/write to the leavewar collection', () => {
     const wb = new Whiteboard()

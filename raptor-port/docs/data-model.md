@@ -102,7 +102,7 @@ below; the app's delete is `state/person-delete.ts`, reached from Admin → User
 Relationships: 1–n `QualMark`, `Enrolment`, `Input`, `LeaveBid`,
 `LeaveLedger`, `LeaveOpening`; 0–1 `User`; 0–1 `LeavePersonProfile`;
 referenced by every schedule row that seats a body.
-From today: `PEOPLE[id]` (`raptor:people/all`), plus Leave War's `Person`
+From today: `PEOPLE[id]` — one stored row each since 30 Sep 26 (`raptor:people/<pid>`, with `ord` — the `sortIndex`; `[DB-READINESS]` group A, phase 2; `people/all` until then), plus Leave War's `Person`
 projection. Its two per-person override records, `personedits` and
 `postouts`, and the `perslabels` entry go to `LeavePersonProfile` (below),
 except `seat` and `sxo`, which fold into this row.
@@ -453,7 +453,7 @@ again once the stage-1 snapshot empties.
 
 ### PlanningPuck, DayRemark — the planning calendar (new 29 Sep 26, Fable 1)
 
-Owner: **Scheduler**. The Inputs page's planning layer — today one global record (`plan/all`: `PLANPUCKS`, `DAYRMK`).
+Owner: **Scheduler**. The Inputs page's planning layer — `PLANPUCKS`, `DAYRMK`: one stored row per note or pucks row (`plan/pp:<id>`, with `ord`) and per day title (`plan/dm:<iso>`) since 30 Sep 26 (`[DB-READINESS]` group A, phase 2; one global record `plan/all` until then).
 **No lock** (section 9, rule 10): one record each, reject-and-reload.
 
 - **`PlanningPuck`:** `date` (ISO), `personIds` — the list as the app keeps it, **gaps kept** (a deleted man leaves a
@@ -533,7 +533,7 @@ into it and is the source of truth for what a type means.
 Relationships: n–1 `Person`, n–1 `InputType`; n–n `Attachment` through
 `InputAttachment` (`inputId`, `attachmentId`) — today `docId` / `docIds`;
 0–1 `LeaveBid` per covered day.
-From today: `INPUTS[]` (`raptor:inputs/all`), addressed by `iid`.
+From today: `INPUTS[]` — one stored row per request since 30 Sep 26 (`raptor:inputs/<iid>`, with `ord` — the `sortIndex`; `[DB-READINESS]` group A, phase 2; `inputs/all` until then), addressed by `iid`.
 App change: inputs stay global rather than week-scoped, as they already are.
 The display date and `yr` fold into one ISO date at the storage door.
 
@@ -968,7 +968,7 @@ not a bug in what ships today.
 | Rule | Requirement |
 |---|---|
 | Write-verify | A network store can ack a write that never durably landed, or lose the ack; a later retry of a lost-ack write can resurrect a stale value over a newer one. Confirm every write by version/ETag or read-back. Never report "saved" on the transport's success alone |
-| Per-row writes for the big blobs | `inputs/all`, `people/all` and `leavewar/wars` are one record each today; two people editing unrelated rows clobber each other whole-record. `LeaveWar` is the largest surface. Per-row writes (or a field-level merge) are mandatory before two people share the store. **The same for a week of the programme (29 Sep 26, D355):** saved one row per day, so two schedulers on two days of one week never write the same row (section 9, the day lock) |
+| Per-row writes for the big blobs | `inputs/all`, `people/all` and `leavewar/wars` are one record each today; two people editing unrelated rows clobber each other whole-record. *(Built 30 Sep 26 for the requests, the roster and the planning calendar — `[DB-READINESS]` group A, phase 2: one row each, written from the command that changed it; the war is phase 3.)* `LeaveWar` is the largest surface. Per-row writes (or a field-level merge) are mandatory before two people share the store. **The same for a week of the programme (29 Sep 26, D355):** saved one row per day, so two schedulers on two days of one week never write the same row (section 9, the day lock) |
 | Ownership before incoming sync | Today's reconcile deletes every `weeks/*` record nothing local backs — correct for one browser, destructive against a shared store. Whole-collection ownership assumptions must be replaced by `ownedBy` / row-level rules **before the first shared release** (29 Sep 26, Fable 6 — was "before stage 3"; the 30-second check comes with stage 1, D356): the reconcile never removes a store row; a week is removed only by Admin → Data, as a tombstone, by an admin holding all seven of its days |
 | Boot timeout and all-or-nothing hydrate | The boot gate awaits one load with no timeout: a hung network load blanks the app, and a partial load half-hydrates — the hydrated flag latches on one record and can re-seed the demo world over real data. Needs a timeout, a loading state, and a hydrate that is all or nothing |
 | Never seed demo data into the shared store | An empty store on first boot must stay empty. The demo roster, days and inputs are test fixtures, not a seed for the squadron's database |

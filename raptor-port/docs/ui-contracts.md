@@ -4905,7 +4905,7 @@ input-edit dialog that can open on top of a row).
 
 **Storage semantics.** Day titles (`DAYRMK`) and the note/pucks sections
 (`PLANPUCKS`) live in `state/plan.ts`: **PERSISTED since the 8 Sep 26 storage
-seam** (`persistAll` writes the `plan` collection; the old "SESSION-ONLY by the
+seam** (`persistAll` wrote the `plan` collection — one row per note / day title since 30 Sep 26, `[DB-READINESS]` group A, phase 2; the old "SESSION-ONLY by the
 owner's explicit choice — a reload starts clean" note, and its comparison to a
 then session-only INPUTS, was superseded — corrected 17 Sep 26), gated to
 schedulers at the write path, cleared on login/logout, and riding the undo

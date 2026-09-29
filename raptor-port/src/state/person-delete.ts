@@ -291,7 +291,9 @@ export function applyDelete(id: string, cutoff: string): void {
   }
   /* 3c. the planning calendar's pucks — a gap, never a splice (the surviving pucks keep their places) */
   for (const e of PLANPUCKS) {
-    if (!e || e.kind !== 'pucks' || !Array.isArray(e.ids) || String(e.iso || '') < cutoff) continue
+    /* the row's day is its `date` (state/plan.ts) — this read `iso`, a field no calendar row carries, so a delete never took
+       him off one ([DB-READINESS] group A, phase 2: found moving the calendar to one row each) */
+    if (!e || e.kind !== 'pucks' || !Array.isArray(e.ids) || String(e.date || '') < cutoff) continue
     const ix = e.ids.indexOf(id)
     if (ix >= 0) { e.ids[ix] = ''; trimTail(e.ids) }
   }
@@ -304,7 +306,7 @@ export function applyDelete(id: string, cutoff: string): void {
    repaired silently. The undo timeline asks it when it CHOOSES the next step (undo/timeline.ts — a refused step is
    passed over, so the button never stalls behind it; it still guards older steps that share its records) and again just
    before it restores. The record names are the command layer's (state/sched-commit.ts decompose): `days` `<wk>#<di>`,
-   `sched.book` `<wk>#<di>` (that day's `sg` sign-offs and `dr` parked plans), `inputs` `<iid>`, `plan` `all`, `weekstash`
+   `sched.book` `<wk>#<di>` (that day's `sg` sign-offs and `dr` parked plans), `inputs` `<iid>`, `plan` `pp:<id>`, `weekstash`
    `<wk>#<di>` (a saved week's day row — state/weekrows.ts; its other rows name no day he could be put back on). */
 const holds = (v: any, id: string): boolean => { try { return JSON.stringify(v ?? null).includes(`"${id}"`) } catch (_e) { return false } }
 export function deletedRestoreProblem(changes: any[]): string | null {
@@ -323,7 +325,8 @@ export function deletedRestoreProblem(changes: any[]): string | null {
         if (wk && di != null && /^[0-6]$/.test(di)) { try { const row = typeof v === 'string' ? JSON.parse(v) : v; hit = dayIso(wk, +di) >= cut && (holds(row && row.d, id) || holds(row && row.sg, id) || holds(row && row.dr, id)) } catch (_e) { hit = false } }
       }
       else if (ch.collection === 'inputs') { const a = v && v.person === id ? dateOrd(v.date, v.yr) : null; hit = a != null && a >= isoOrd(cut) }
-      else if (ch.collection === 'plan') hit = ((v && v.pp) || []).some((e: any) => e && e.kind === 'pucks' && String(e.iso || '') >= cut && Array.isArray(e.ids) && e.ids.includes(id))
+      /* one calendar row per record since phase 2 (`plan/pp:<id>`); its day is its `date` */
+      else if (ch.collection === 'plan') hit = !!v && v.kind === 'pucks' && String(v.date || '') >= cut && Array.isArray(v.ids) && v.ids.includes(id)
       /* B4 of the change-recording re-test (28 Sep 26): once the one Undo takes roster and settings steps, HIS OWN RECORD
          put back un-deleted, or an accounts list that still holds his account, would bring him back whole (D287 — a
          delete is final; a man the war does not hold leaves no posting record to keep the step dead — Fable's red team 10) */

@@ -14,7 +14,8 @@ import { installGlobalUndo } from './undo-wire'
 import { txtGet } from '../engine/slots'
 import { undo } from './history'
 import { setSession } from './auth'
-import { hydrate, persistAll, persistPeople, wirePersist, isHydrated, weekId, weekKey } from './persist'
+import { hydrate, wirePersist, isHydrated, weekId, weekKey } from './persist'
+import { persistPeople } from './people-settings-commit'
 import { protectedWeek } from '../engine/publish'
 import { bootStorage } from '../storage/boot'
 import { settingsAdapter } from '../storage/adapters'
@@ -30,6 +31,8 @@ const WEEK_B = '20/07/2026'   // the authored second demo week: an input lands o
 const WEEK_C = '12/10/2026'   // a blank far-off week: nothing lands
 const ROW = { person: 'dj', date: 'Jul 14', allday: true, type: 'LL', remarks: 'persist test', mod: '2026-07-01' }
 const noteTextOf = (d: any) => ((d && d.notes) || []).map(noteText)
+/* the stored row id of the request filed with these remarks */
+const rowIdOf = (remarks: string) => inpId(INPUTS.find((r: any) => r.remarks === remarks))
 
 function resetWorld() {
   INPUTS.length = 0; JSON.parse(ISNAP).forEach((r: any) => INPUTS.push(r))
@@ -76,10 +79,11 @@ describe('hydrate', () => {
     expect(INPUTS.length).toBeGreaterThan(0)
   })
 
+  /* [DB-READINESS] group A, phase 2: a request is one stored row (`inputs/<iid>`), in its list's order (`ord`) */
   it('stored inputs REPLACE the seed and keep their ids; a fresh opaque id cannot collide', async () => {
     const be = new MemoryBackend()
-    const stored = [{ ...ROW, iid: 'i57', yr: 2026 }, { ...ROW, date: 'Jul 15', iid: 'i58', yr: 2026 }]
-    be.seed({ inputs: { all: JSON.stringify(stored) } })
+    const stored = [{ ...ROW, iid: 'i57', yr: 2026, ord: 1024 }, { ...ROW, date: 'Jul 15', iid: 'i58', yr: 2026, ord: 2048 }]
+    be.seed({ inputs: Object.fromEntries(stored.map(r => [r.iid, JSON.stringify(r)])) })
     await boot(be)
     expect(isHydrated()).toBe(true)
     expect(INPUTS).toHaveLength(2)
@@ -94,23 +98,23 @@ describe('hydrate', () => {
   it('stored people replace the roster', async () => {
     const be = new MemoryBackend()
     const people = JSON.parse(PSNAP); people.dj.quals.tf = true
-    be.seed({ people: { all: JSON.stringify(people) } })
+    be.seed({ people: Object.fromEntries(Object.keys(people).filter(id => !people[id].special).map(id => [id, JSON.stringify(people[id])])) })
     await boot(be)
     expect(PEOPLE.dj.quals.tf).toBe(true)
   })
 
-  it('a stored plan layer restores pucks and titles; new puck ids do not collide', async () => {
+  it('a stored plan layer restores pucks and titles; a new note\'s id is its own', async () => {
     const be = new MemoryBackend()
-    be.seed({ plan: { all: JSON.stringify({ pp: [{ id: 'pp4', iso: '2026-07-14', kind: 'note', text: 'x' }], dm: { '2026-07-14': 'Title' } }) } })
+    be.seed({ plan: { 'pp:pp4': JSON.stringify({ id: 'pp4', date: '2026-07-14', kind: 'note', text: 'x', ord: 1024 }), 'dm:2026-07-14': JSON.stringify('Title') } })
     await boot(be)
     expect(PLANPUCKS).toHaveLength(1)
     expect(DAYRMK['2026-07-14']).toBe('Title')
     setSession({ user: 'ad', role: 'admin' })
     addPlanPuck('2026-07-15', 'y')
-    /* addPlanPuck UNSHIFTS (plan.ts), so the fresh no-collision puck lands at
-       index 0 with the restored pp4 pushed to index 1 — its id is pp5, proving
-       seedPuckCounter climbed the counter past the stored pp4 */
-    expect(PLANPUCKS[0].id).toBe('pp5')
+    /* addPlanPuck UNSHIFTS (plan.ts); the fresh note's id is the app's opaque one (engine/newid.ts — F2-07), never the
+       stored pp4 nor a counter that two browsers would both mint */
+    expect(PLANPUCKS[0].id).not.toBe('pp4')
+    expect(PLANPUCKS[0].id).not.toMatch(/^pp\d+$/)
   })
 
   it('a stored week snapshot is restored into the loaded week at boot', async () => {
@@ -206,13 +210,15 @@ describe('a DAMAGED saved week is quarantined, never seeded over (P2-REV2-01)', 
 })
 
 describe('persistAll and the hooks', () => {
+  /* the request is one stored row, `inputs/<iid>` ([DB-READINESS] group A, phase 2) */
   it('an undoable edit lands on the whiteboard at once and reaches the backend after the coalesce wait', async () => {
     const be = new MemoryBackend()
     const { wb } = await boot(be)
     writeInputs(() => { INPUTS.push({ ...ROW }) })
-    expect(JSON.parse(wb.get('inputs', 'all')!)).toHaveLength(INPUTS.length)
+    const id = rowIdOf(ROW.remarks)
+    expect(JSON.parse(wb.get('inputs', id)!).remarks).toBe(ROW.remarks)
     await vi.advanceTimersByTimeAsync(300)
-    expect(be.peek('inputs', 'all')).toBe(wb.get('inputs', 'all'))
+    expect(be.peek('inputs', id)).toBe(wb.get('inputs', id))
   })
 
   /* [DB-READINESS] group A, phase 1 — the week is ROWS (state/weekrows.ts), written from the command that changed it:
@@ -229,17 +235,21 @@ describe('persistAll and the hooks', () => {
     expect(JSON.parse(wb.get('weeks', wid)!), 'the week row is the two stamps alone').toEqual({ v: expect.anything(), am: expect.anything() })
   })
 
+  /* the Undo is a command (the global undo), so it writes its own change: the row it added, removed */
   it('UNDO during a slow save: the whiteboard and the backend both end on the pre-edit state, one letter each', async () => {
     const be = new MemoryBackend(); be.latency = 500
     const { wb } = await boot(be)
-    const before = wb.get('inputs', 'all')
+    await vi.advanceTimersByTimeAsync(2000)             // the first boot's seed rows settle
+    _resetTimeline(); installGlobalUndo(); setSession({ user: 'ad', role: 'admin' })
     writeInputs(() => { INPUTS.push({ ...ROW }) })
+    const id = rowIdOf(ROW.remarks)
     await vi.advanceTimersByTimeAsync(300)            // letter 1 in flight (500 ms)
-    undo()
-    expect(wb.get('inputs', 'all')).toBe(before)      // whiteboard already back
+    expect(globalUndo().ok).toBe(true)
+    expect(wb.has('inputs', id)).toBe(false)          // whiteboard already back
     await vi.advanceTimersByTimeAsync(500 + 300 + 500)
-    expect(be.peek('inputs', 'all')).toBe(before)
-    expect(be.journal.filter(j => j.op === 'put' && j.collection === 'inputs')).toHaveLength(2)
+    expect(be.peek('inputs', id)).toBeNull()
+    expect(be.journal.filter(j => j.collection === 'inputs' && j.id === id)).toHaveLength(2)
+    _resetTimeline()
   })
 
   it('a failed save keeps the whiteboard, reports failed, then saved after the retry', async () => {
@@ -247,40 +257,50 @@ describe('persistAll and the hooks', () => {
     const { wb, postman } = await boot(be)
     be.failNext(1)
     writeInputs(() => { INPUTS.push({ ...ROW }) })
-    const want = wb.get('inputs', 'all')
+    const id = rowIdOf(ROW.remarks)
+    const want = wb.get('inputs', id)
     await vi.advanceTimersByTimeAsync(300)
     expect(postman.status).toBe('failed')
-    expect(wb.get('inputs', 'all')).toBe(want)
+    expect(wb.get('inputs', id)).toBe(want)
     await vi.advanceTimersByTimeAsync(1000)
     expect(postman.status).toBe('saved')
-    expect(be.peek('inputs', 'all')).toBe(want)
+    expect(be.peek('inputs', id)).toBe(want)
   })
 
   it('a dropped letter is acknowledged but absent — documents that stage 1 trusts the ack', async () => {
     const be = new MemoryBackend()
     const { wb } = await boot(be)
-    /* boot persists inputs/people/plan together (persistAll writes them every
-       step). Settle those first so the one letter in flight at the drop is the
-       inputs edit below — otherwise the single dropped letter is consumed by
-       the boot-time people letter that fires ahead of it. */
+    /* a first boot stores the seed's rows. Settle those first so the one letter in flight at the drop is the inputs
+       edit below — otherwise the single dropped letter is consumed by a boot letter ahead of it. */
     await vi.advanceTimersByTimeAsync(300)
     be.dropOne()
-    writeInputs(() => { INPUTS.push({ ...ROW }) })     // only inputs changes now
+    writeInputs(() => { INPUTS.push({ ...ROW }) })     // only its row changes now
+    const id = rowIdOf(ROW.remarks)
     await vi.advanceTimersByTimeAsync(300)
-    expect(be.journal.filter(j => j.op === 'put' && j.collection === 'inputs')).toHaveLength(2)
-    expect(be.peek('inputs', 'all')).not.toBe(wb.get('inputs', 'all'))
+    expect(be.journal.filter(j => j.op === 'put' && j.collection === 'inputs' && j.id === id)).toHaveLength(1)
+    expect(be.peek('inputs', id)).toBeNull()
+    expect(wb.get('inputs', id)).not.toBeNull()
   })
 
-  it('persistPeople writes the roster', async () => {
+  it('a roster write saves that person\'s row (persistPeople, the command-routed door)', async () => {
     const be = new MemoryBackend()
     const { wb } = await boot(be)
     PEOPLE.dj.quals.tf = true
     persistPeople()
-    expect(JSON.parse(wb.get('people', 'all')!).dj.quals.tf).toBe(true)
+    expect(JSON.parse(wb.get('people', 'dj')!).quals.tf).toBe(true)
   })
 
-  it('persistAll is a no-op before wirePersist', () => {
-    expect(() => persistAll()).not.toThrow()
+  /* persistAll is gone ([DB-READINESS] group A, phase 2): nothing rewrites every row — a started store's boot writes none
+     of its requests, people or planning rows (only a first boot stores its seed) */
+  it('a started store\'s boot rewrites no request, person or planning row', async () => {
+    const be = new MemoryBackend()
+    await boot(be)
+    await vi.advanceTimersByTimeAsync(300)
+    const before = be.journal.length
+    resetWorld()
+    await boot(be)
+    await vi.advanceTimersByTimeAsync(300)
+    expect(be.journal.slice(before).filter(j => j.collection === 'inputs' || j.collection === 'people' || j.collection === 'plan')).toEqual([])
   })
 })
 
@@ -312,9 +332,8 @@ describe('the week swap and the stored week records (8 Sep 26 bug pass)', () => 
     const be = new MemoryBackend()
     await boot(be)                                   // seeds + auto-lands activity inputs (acc='g' + rows)
     expect(INPUTS.some((r: any) => r.acc === 'g' && isPersonal(r.type)), 'the seed auto-lands at least one activity input').toBe(true)
-    persistAll()                                     // INPUTS saved with acc='g'; the pristine week is NOT stored
-    await vi.advanceTimersByTimeAsync(300)
-    expect(be.peek('inputs', 'all')).not.toBeNull()
+    await vi.advanceTimersByTimeAsync(300)           // the first boot stored the seed's rows (acc='g'); the pristine week is NOT stored
+    expect(be.peek('inputs', inpId(INPUTS[0]))).not.toBeNull()
     expect(be.peek('weeks', weekId(BOOT_WEEK)), 'a pristine week is deliberately not stored').toBeNull()
     resetWorld()                                     // a fresh reload: module state cleared, same backend
     await boot(be)
@@ -363,8 +382,8 @@ describe('the week swap and the stored week records (8 Sep 26 bug pass)', () => 
     writeText('dn:0.0', 'OLD')
     loadWeek(WEEK_C)                                       // A is stashed and stored
     expect(wb.keys('weeks').filter(k => k.startsWith(weekId(A))).length).toBe(8)
-    persistAll()
-    expect(wb.keys('weeks').filter(k => k.startsWith(weekId(A))).length, 'persistAll never deletes a week').toBe(8)
+    HOOKS.histPush()
+    expect(wb.keys('weeks').filter(k => k.startsWith(weekId(A))).length, 'a history step never deletes a week').toBe(8)
     expect(writeInputsBatchWith([weekstashStore], () => { stashDrop(A) })).toBe(true)
     expect(wb.keys('weeks').filter(k => k.startsWith(weekId(A)))).toEqual([])
     await vi.advanceTimersByTimeAsync(300)
@@ -386,10 +405,11 @@ describe('the week swap and the stored week records (8 Sep 26 bug pass)', () => 
     const { wb } = await boot(be)
     setSession({ user: 'ad', role: 'admin' })
     writeInputs(() => { addPlanPuck('2026-07-15', 'keep me') })
-    expect(wb.get('plan', 'all')).toContain('keep me')
+    const id = `pp:${PLANPUCKS.find((p: any) => p.text === 'keep me').id}`
+    expect(wb.get('plan', id)).toContain('keep me')
     resetSession(null)
     HOOKS.histPush()
-    expect(wb.get('plan', 'all')).toContain('keep me')
+    expect(wb.get('plan', id)).toContain('keep me')
   })
 })
 
@@ -397,8 +417,8 @@ describe('hydrate hardening (8 Sep 26 bug pass)', () => {
   it('a null row in a stored record is dropped, not a crash', async () => {
     const be = new MemoryBackend()
     be.seed({
-      inputs: { all: JSON.stringify([null, { ...ROW, iid: 'i57', yr: 2026 }]) },
-      plan: { all: JSON.stringify({ pp: [null, { id: 'pp4', iso: '2026-07-14', kind: 'note', text: 'x' }], dm: {} }) },
+      inputs: { inull: 'null', i57: JSON.stringify({ ...ROW, iid: 'i57', yr: 2026, ord: 1 }) },
+      plan: { 'pp:pnull': 'null', 'pp:pp4': JSON.stringify({ id: 'pp4', date: '2026-07-14', kind: 'note', text: 'x', ord: 1 }) },
     })
     await boot(be)
     expect(INPUTS).toHaveLength(1)
@@ -409,7 +429,7 @@ describe('hydrate hardening (8 Sep 26 bug pass)', () => {
     const be = new MemoryBackend()
     const people = JSON.parse(PSNAP)
     const oldCs = people.dj.cs; people.dj.cs = 'Renamed'
-    be.seed({ people: { all: JSON.stringify(people) } })
+    be.seed({ people: Object.fromEntries(Object.keys(people).filter(id => !people[id].special).map(id => [id, JSON.stringify(people[id])])) })
     await boot(be)
     expect(nameToId('renamed')).toBe('dj')
     expect(nameToId(oldCs)).toBeUndefined()

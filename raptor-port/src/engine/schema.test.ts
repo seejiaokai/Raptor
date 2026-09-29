@@ -88,12 +88,14 @@ const PERSON: Spec = {
   sanQ: { $opt: { flown: 'number', carry: 'number', missedQtrs: 'number' } },
   tf: 'boolean?', sched: 'boolean?', scDay: 'boolean?', scNight: 'boolean?', daar: { $opt: iflag }, naar: { $opt: iflag },
   quals: QUALS,
+  ord: 'number?',   // the roster's order, on each person ([DB-READINESS] group A, phase 2)
 }
 const inputSpec = (booted: boolean): Spec => ({
   iid: booted ? 'string' : 'string?', person: 'string', date: 'string', endDate: 'string?', yr: 'number?', allday: 'boolean',
   s: 'number?', e: 'number?', half: { $opt: { $lit: ['am', 'pm'] } }, type: { $lit: INPUT_TYPES }, remarks: 'string?',
   mod: 'string', acc: { $opt: { $lit: ['g', 'u', 'r'] } }, lw: 'string?', docId: 'string?', docIds: { $opt: ['string'] },
   oil: { $opt: { $map: { $lit: [0, 0.5, 1] } } }, sans: { $opt: { f: { $opt: { $lit: [true] } }, o: { $opt: { $lit: [true] } }, a: { $opt: { $lit: [true] } } } },
+  ord: 'number?',   // its place in the list ([DB-READINESS] group A, phase 2 — state/ord.ts; every booted row has one — below)
 })
 const FLAGS = { cx: 'boolean?', cxr: 'string?', flag: 'boolean?' }
 const ALLHANDS: Spec = { ...FLAGS, prog: 'string', str: 'string', end: 'string', who: { $opt: { $or: ['string', ['string']] } }, more: { $opt: ['string'] }, info: 'boolean?', rid: 'string?' }
@@ -166,8 +168,8 @@ const SCHED_FIELDS = {
   rt: { $opt: RETIRED }, cr: { $opt: { $map: 'string' } },   // [GLOBAL-UNDO] §6.1 — the issuance log + correction flags ride the snapshot
 }
 const PUCK: Spec = { $or: [
-  { id: 'string', date: 'string', kind: { $opt: { $lit: ['note'] } }, text: 'string' },
-  { id: 'string', date: 'string', kind: { $lit: ['pucks'] }, ids: ['string'] },
+  { id: 'string', date: 'string', kind: { $opt: { $lit: ['note'] } }, text: 'string', ord: 'number?' },
+  { id: 'string', date: 'string', kind: { $lit: ['pucks'] }, ids: ['string'], ord: 'number?' },
 ] }
 const WEEK_SNAP: Spec = { ...SCHED_FIELDS, d: [DAY], i: [inputSpec(true)], wo: ['string'], pp: [PUCK], dm: { $map: 'string' } }
 const STASH_SNAP: Spec = { ...SCHED_FIELDS, d: [DAY], wo: ['string'] }
@@ -276,6 +278,9 @@ describe('after boot', () => {
     conform(JSON.parse(histSnap()), WEEK_SNAP, 'histSnap')
     conform(JSON.parse(weekStashSnap()), STASH_SNAP, 'weekStashSnap')
     conform(INPUTS, [inputSpec(true)], 'INPUTS')
+    /* every booted request and person carries its place in its list ([DB-READINESS] group A, phase 2) */
+    expect(INPUTS.filter((r: any) => typeof r.ord !== 'number').map((r: any) => r.iid), 'every request has an ord').toEqual([])
+    expect(Object.keys(PEOPLE).filter(id => !PEOPLE[id].special && typeof (PEOPLE as any)[id].ord !== 'number'), 'every person has an ord').toEqual([])
     conform(DAYS, [DAY], 'DAYS')
     conform(SCHED, SCHED_SPEC, 'SCHED')
     Object.keys(PEOPLE).forEach(id => expect(isObj(PEOPLE[id].quals), `PEOPLE.${id}.quals`).toBe(true))

@@ -12,7 +12,10 @@ const strip = (k: string) => (k.startsWith(SQN) ? k.slice(SQN.length) : k)
 export function settingsAdapter(wb: Whiteboard): { getItem(k: string): string | null; setItem(k: string, v: string): void } {
   return {
     getItem: k => wb.get('settings', strip(k)),
-    setItem: (k, v) => { wb.set('settings', strip(k), v) },
+    /* a cleared setting (saved as null) removes its key — it reads as never set, which every reader treats the same
+       ([DB-READINESS] group A, phase 2 — F3-07: once each setting is one row, a stored "null" would be a row that says
+       nothing) */
+    setItem: (k, v) => { if (v === 'null') wb.delete('settings', strip(k)); else wb.set('settings', strip(k), v) },
   }
 }
 

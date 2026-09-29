@@ -58,7 +58,9 @@ describe('the all-or-nothing save, real wiring', () => {
     const cols = be.journal.filter(j => j.group === g[0]).map(j => j.collection)
     expect(cols).toContain('inputs')
     expect(cols).toContain('leavewar')
-    expect(JSON.parse(be.peek('inputs', 'all')!).some((r: any) => r.remarks === 'txn test')).toBe(true)
+    /* the request is its own stored row ([DB-READINESS] group A, phase 2) */
+    const all = (await be.loadAll()).inputs
+    expect(Object.values(all).some((raw: any) => JSON.parse(raw).remarks === 'txn test')).toBe(true)
   })
 
   it('a refused Input write that persisted inside its reducer leaves every stored value byte-equal and sends ZERO groups', async () => {
@@ -100,10 +102,12 @@ describe('a new person with his account, real wiring', () => {
     const g = groupsSent(be)
     expect(g).toHaveLength(1)
     const recs = be.journal.filter(j => j.group === g[0]).map(j => `${j.collection}/${j.id}`)
-    expect(recs).toContain('people/all')
+    /* the new person is his own stored row ([DB-READINESS] group A, phase 2) — in the same group as his account */
+    const pid = Object.keys(PEOPLE).find(k => (PEOPLE as any)[k].cs === 'Blaze')!
+    expect(recs).toContain(`people/${pid}`)
     expect(recs).toContain('settings/accounts')
     expect(JSON.parse(be.peek('settings', 'accounts')!).some((a: any) => a.name === 'blaze@mail')).toBe(true)
-    expect(Object.values(JSON.parse(be.peek('people', 'all')!)).some((p: any) => p.cs === 'Blaze')).toBe(true)
+    expect(JSON.parse(be.peek('people', pid)!).cs).toBe('Blaze')
     resetSession(null); drop('Blaze')
   })
   it('a refusal inside, after both halves were written, stores nothing and sends no group', async () => {

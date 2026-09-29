@@ -50,7 +50,9 @@ import { cmdAuthorize, ownershipViolation } from './perms'
 import type { EnlistableStore, RecordEntry, CommitResult } from '../command'
 import { snapshotStash, restoreStash, stashEntries, writeStashRecords } from '../engine/weekstash'
 import { registerSchedCommandLayer, commitSchedVoid, commitSchedValue, commitInputs, commitInputsProjection, commitInputsWith, SCHED_TYPES, resyncSchedBaseline, commitSchedLoad } from './sched-commit'
-import { registerPeopleSettingsCommandLayer, resyncPeopleBaseline } from './people-settings-commit'
+import { registerPeopleSettingsCommandLayer, resyncPeopleBaseline, mintPeopleOrd } from './people-settings-commit'
+import { mintOrd } from '../engine/ord'
+import { PLANPUCKS } from './plan'
 import { accountsLoad } from './accounts'
 
 let VERSION = 0
@@ -787,6 +789,8 @@ export function setToast(fn: (...a: any[]) => any) { HOOKS.toast = fn }
    reload — caught by the audit2 probe (#6 "the override reloaded"). */
 export function initStore() {
   wireStore()
+  /* every person's place in the roster's order, before the people baseline is taken ([DB-READINESS] group A, phase 2) */
+  mintPeopleOrd()
   /* [ARCH-STACK] Fable-5: the people command layer captured its baseline from the
      SEED roster when this module was imported (wireStore runs at eval, before boot);
      hydrate() has since replaced PEOPLE with the stored roster. Re-sync now — this
@@ -857,7 +861,9 @@ export function initStore() {
   /* before histInit, so the FIRST snapshot already carries every input's
      address — see mintInpIds in engine/inputs.ts for why an id minted later
      than the snapshot it should be in is worse than no id at all */
-  mintInpIds()
+  mintInpIds()   // …and every request's place in the list, minted with its id ([DB-READINESS] group A, phase 2)
+  /* every planning note's place, for the same reason */
+  mintOrd(PLANPUCKS, (p: any) => p.id)
   /* land every activity input on its day's ground programme before the first
      validate + baseline — boot-only, so parity (which never boots) stays blind;
      SCHED is fresh here, so every day reads editable. See autoAcceptSeedInputs. */

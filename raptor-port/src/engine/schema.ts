@@ -87,6 +87,8 @@ export type SanQ = {
 export type Person = {
   /** Callsign, the display name — seed; screen (Personnel rename, slots.ts). */
   cs: string
+  /** The person's place in the roster's order — engine (`mintPeopleOrd`, [DB-READINESS] group A, phase 2; the design's `Person.sortIndex`). Never on a placeholder puck. */
+  ord?: number
   /** Seat — seed. */
   seat: Seat
   /** CAT level, '' for ground crew — seed; screen (Quals page dropdown). */
@@ -166,6 +168,8 @@ export type SansOffer = { f?: true; o?: true; a?: true }
 export type Input = {
   /** Stable opaque id (`newId('i')`, engine/newid.ts), minted at creation — engine (`mintInpIds` at boot, `inpId` on add). What filing/accept/undo/edit address by (13 Sep 26, ARCH-STACK 1A). Absent only inside a seed literal before boot. */
   iid?: string
+  /** Its place in the list of requests — state (`mintOrd`, [DB-READINESS] group A, phase 2; the design's `Input.sortIndex`). Absent only inside a seed literal before boot. */
+  ord?: number
   /** A PEOPLE id — seed; screen. */
   person: string
   /** First day, display form 'Jul 13'; carries a trailing year ('Jan 3 2027') when outside the anchor year — seed; screen. */
@@ -584,6 +588,8 @@ export type PlanNote = {
   kind?: 'note'
   /** The note text — screen. */
   text: string
+  /** Its place in the calendar's list — state (`mintOrd`, [DB-READINESS] group A, phase 2; the design's `PlanningPuck.sortIndex`). */
+  ord?: number
 }
 /** A pucks row on a calendar day. */
 export type PuckRow = {
@@ -594,6 +600,8 @@ export type PuckRow = {
   kind: 'pucks'
   /** PEOPLE ids, '' for a gap — screen. */
   ids: string[]
+  /** Its place in the calendar's list — state (`mintOrd`, phase 2). */
+  ord?: number
 }
 export type PlanPuck = PlanNote | PuckRow
 

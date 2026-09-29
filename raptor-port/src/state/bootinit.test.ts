@@ -68,7 +68,8 @@ describe('the scheduler reads "already started" from the stamp', () => {
     expect(isHydrated()).toBe(false)
     expect(INPUTS.length).toBeGreaterThan(0)
     expect(readSchema(be.peek('settings', 'schema'))!.initialized).toBe(true)
-    expect(JSON.parse(be.peek('inputs', 'all')!).length).toBe(INPUTS.length)
+    /* the seed saved as one row per request ([DB-READINESS] group A, phase 2) */
+    expect(Object.keys((await be.loadAll()).inputs).length).toBe(INPUTS.length)
     // the reload: started, so the stored world comes back and nothing is re-seeded
     const n = INPUTS.length
     resetWorld()

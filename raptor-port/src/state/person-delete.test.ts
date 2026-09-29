@@ -14,13 +14,13 @@ import { INPUTS } from '../engine/inputs'
 import { setSlotVal, slotVal, acceptInput } from '../engine/slots'
 import { SCHED, setSign, setDayApproved, dayDelta, daySnapOf, dayCurVer } from '../engine/publish'
 import { stashPut, stashGet, stashDrop } from '../engine/weekstash'
-import { initStore, resetSession, notify, weekStashSnap, weekDirty } from './store'
+import { initStore, resetSession, notify, weekStashSnap, weekDirty, writeInputs } from './store'
 import { Whiteboard } from '../storage/whiteboard'
 import { wirePersist } from './persist'
 import { schedWrite, SCHED_TYPES } from './sched-commit'
 import { HOOKS } from '../engine/hooks'
 import { accountsLoad, accountByName, signIn, sessionFor, ACCOUNTS_LIST } from './accounts'
-import { PLANPUCKS } from './plan'
+import { PLANPUCKS, addPuckRow } from './plan'
 import { newPersonProblem } from './roster-add'
 import { deletePerson, deleteCutoff, personKeysOnDay, effectiveToday, deletedRestoreProblem } from './person-delete'
 import { loadVersionToWorkingCopy, ROWSLEFT, rowsLeftSaid } from '../engine/drafts'
@@ -124,11 +124,20 @@ describe('PO6 — days he flew keep his puck; every day from the cutoff loses hi
     expect(after).not.toContain(`"${HIM}"`)
     expect(stashGet('06/07/2026')).toContain(`"${HIM}"`)
   })
+  /* the calendar's rows carry their day as `date` (state/plan.ts addPuckRow) — the fixture below once wrote `iso`, the
+     field the delete read, so the delete never took him off a real calendar row ([DB-READINESS] group A, phase 2) */
   it('the planning calendar: his puck gone from a day to come (a gap — the others keep their places), kept on a day he flew', () => {
-    PLANPUCKS.push({ id: 'pp1', iso: '2026-07-17', kind: 'pucks', ids: ['bane', HIM, 'pike'] }, { id: 'pp0', iso: '2026-07-13', kind: 'pucks', ids: [HIM] })
+    PLANPUCKS.push({ id: 'pp1', date: '2026-07-17', kind: 'pucks', ids: ['bane', HIM, 'pike'] }, { id: 'pp0', date: '2026-07-13', kind: 'pucks', ids: [HIM] })
     expect(deletePerson(HIM)).toBe(null)
     expect(PLANPUCKS.find(e => e.id === 'pp1').ids).toEqual(['bane', '', 'pike'])
     expect(PLANPUCKS.find(e => e.id === 'pp0').ids).toEqual([HIM])
+  })
+  it('…a pucks row made on the calendar itself (its own door) loses him from a day to come', () => {
+    expect(writeInputs(() => { addPuckRow('2026-07-18', ['bane', HIM]) })).toBe(true)
+    const row = PLANPUCKS.find((e: any) => e.date === '2026-07-18' && e.kind === 'pucks')
+    expect(row.ids).toEqual(['bane', HIM])
+    expect(deletePerson(HIM)).toBe(null)
+    expect(PLANPUCKS.find((e: any) => e.id === row.id).ids).toEqual(['bane'])
   })
 })
 

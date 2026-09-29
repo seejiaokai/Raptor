@@ -17,7 +17,7 @@ import { idbDocStore } from './storage/docstore'
 import { docBoot } from './state/docs'
 import { settingsAdapter, leavewarAdapter, trackerTarget } from './storage/adapters'
 import { useStorageImpl } from './tracker/storage.js'
-import { hydrate, wirePersist, leaveWarStarted } from './state/persist'
+import { hydrate, wirePersist, wireRows, leaveWarStarted } from './state/persist'
 import { openBootGroup, StoreAheadError } from './storage/schema'
 import { setSaveStatusSource } from './ui/SaveStatus'
 import { installGlobalUndo } from './state/undo-wire'
@@ -59,6 +59,9 @@ async function boot(): Promise<void> {
   /* inputs / roster / plan layer / stashed weeks: whiteboard → singletons,
      BEFORE initStore so its seeds know to stand down (state/persist.ts) */
   hydrate(wb)
+  /* the stream consumer, before any command runs — the boot's own commands (the Leave War's boot sync below) save their
+     rows like any other ([DB-READINESS] group A, phase 2 — state/persist.ts) */
+  wireRows(wb)
   initStore()
 
   /* Leave War boots on the whiteboard too. installDemoWorld's flag is now

@@ -268,12 +268,12 @@ export function describeEntry(entry: UndoEntry): string {
   /* read only what the entry holds — a partial one (no closure yet, a test's) is still described */
   if (!Array.isArray(entry.forward)) entry = { ...entry, forward: [] }
   if (entry.type === 'sched.text') return textLabel(entry.detail) || TYPE_PHRASE['sched.text']
-  /* the Inputs calendar's own record (plan/all: its day titles `dm`, its puck rows `pp`), saved through the Inputs page's
-     door — with no input row, the change is on the calendar (the walk, R2: a day title read "a personal input") */
-  const plan = entry.forward.find((c: Change) => c.collection === 'plan')
-  if (plan && inputsCount(entry) === 0) {
-    const b: any = plan.before || {}, a: any = plan.after || {}
-    const dm = JSON.stringify(b.dm || {}) !== JSON.stringify(a.dm || {}), pp = JSON.stringify(b.pp || []) !== JSON.stringify(a.pp || [])
+  /* the Inputs calendar's own records — a day title (`plan/dm:<iso>`), a note or pucks row (`plan/pp:<id>`), one record
+     each since [DB-READINESS] group A, phase 2 — saved through the Inputs page's door: with no input row, the change is
+     on the calendar (the walk, R2: a day title read "a personal input") */
+  const plans = entry.forward.filter((c: Change) => c.collection === 'plan')
+  if (plans.length && inputsCount(entry) === 0) {
+    const dm = plans.some(c => c.id.startsWith('dm:')), pp = plans.some(c => c.id.startsWith('pp:'))
     return dm && !pp ? 'a day title on the calendar' : pp && !dm ? 'pucks on the calendar' : 'a change to the calendar'
   }
   /* one input filed through the Inputs page's batch door is one input (walker A2-F2) */

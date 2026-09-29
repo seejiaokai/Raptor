@@ -451,3 +451,26 @@ boot in `main.tsx`; tests `storage/schema.test.ts`, `storage/fold.test.ts`, `sta
   `undo-contract.md` §0; `schema.ts` (the row types, `RetiredEntry`, no `un`, 16 fields); `file-map.md`;
   `raptor-port/CLAUDE.md` (the persistence funnel: a week change saves only inside a command); the scheduler area's
   settled "weeks remember their edits" note marked.
+
+**Phase 2 — built 30 Sep 26** (`src/engine/ord.ts` new; `persist.ts`, `sched-commit.ts`, `people-settings-commit.ts`,
+`plan.ts`, `engine/inputs.ts`, `storage/adapters.ts`, `undo/describe.ts`, `person-delete.ts`, `main.tsx`; tests
+`state/rows-roster-inputs.test.ts`, `engine/ord.test.ts`; red first — nine red, the two "left as today" halves green):
+- **The rows:** `inputs/<iid>`, `people/<pid>` (never the placeholder pucks — ALL's id is `all`, the old blob's key),
+  `plan/pp:<id>`, `plan/dm:<iso>`; plain per-change mappers; `persistAll` and the raw `persistPeople` are GONE; the stream
+  consumer is wired right after `hydrate` (`wireRows`, main.tsx) so the boot's own commands save their rows; a first boot
+  stores the seed's rows in the boot group (`writeSeedRows`). `hydrate` reads rows in `(ord, id)` order; a row that will not
+  read is left as it is. A store stamped the old way still decides "started" by the old sniff (phase 0's promise).
+- **`ord`** (§2.3): minted with the ids — `mintInpIds` now mints each request's place too (so every path that mints ids,
+  and every test fixture that does, leaves both), `applyEnd` the notes', `mintPeopleOrd` the roster's (at every roster
+  command's finish and at the people baseline's resync). A MOVED row is re-minted by the longest-increasing-run rule, so
+  `movePlanSection` needed no change. A closed gap renumbers the whole list inside the triggering command (every row it
+  changes named in that command's change) — not a separate command; the property the plan wanted (all named) holds.
+  `inputs/__order` retired: a restore re-sorts by `ord`.
+- **Found on the way (a real defect, on `main` too):** deleting a man never took him off the planning calendar's puck
+  rows — the delete read `iso`, a field no calendar row carries (`date`); its test fixture used the same wrong field, so it
+  passed. Fixed with a red test through the calendar's own door (`person-delete.test.ts`).
+- **P2-NULL-SETTING (F3-07):** the settings adapter removes a key saved as `null`.
+- **Puck ids** `newId('pp')` (F2-07); `seedPuckCounter` / `PPN` gone. The GAP test "two people clobber one blob" flipped
+  to HOLDS (`storage/dbreadiness.test.ts`).
+- **Gates (30 Sep 26, under the lock):** unit 7136/7136 · build · tfin 728/0 · e2e 509/0 · smoke 445/0 · perf 4/4 (oneEdit
+  1.31×, board 1.34× — unchanged) · rulecheck · docsize.

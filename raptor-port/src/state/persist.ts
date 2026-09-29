@@ -12,21 +12,28 @@
    one per Unpublish. persistAll no longer writes weeks and no longer deletes one: every command's changes to a week are
    mapped to exactly the rows they touch at phase 9 of that command, inside its one saved group (the composer below,
    through state/rowmap.ts), and a row is removed only for an explicit delete. The old reconcile — "delete every stored
-   week nothing local backs" — is gone: correct for one browser, destructive once the store is shared. */
-import { INPUTS } from '../engine/inputs'
+   week nothing local backs" — is gone: correct for one browser, destructive once the store is shared.
+
+   AND SO ARE THE REQUESTS, THE ROSTER AND THE PLANNING CALENDAR (phase 2 — plan §2.5): one row per request
+   (`inputs/<iid>`), per person (`people/<pid>` — the two placeholder pucks ALL and ALL AVAIL are code, never rows), per
+   planning note or pucks row (`plan/pp:<id>`) and per day title (`plan/dm:<iso>`), each carrying its place in its list
+   (`ord` — state/ord.ts). Written by the same stream consumer; `persistAll` is gone. A first boot stores the seed's rows
+   in the boot's one group (wirePersist). */
+import { INPUTS, mintInpIds } from '../engine/inputs'
 import { PEOPLE, indexCallsigns } from '../engine/people'
 import { CURWEEK } from '../engine/waves'
-import { HOOKS } from '../engine/hooks'
 import { stashPut, stashHas, isPreservedWeek, setPreservedBlob } from '../engine/weekstash'
 import { amFormatOf } from '../engine/publish'
-import { PLANPUCKS, DAYRMK, seedPuckCounter } from './plan'
+import { PLANPUCKS, DAYRMK } from './plan'
 import type { Whiteboard } from '../storage/whiteboard'
 import { storeInitialized } from '../storage/schema'
-import { registerConverter } from '../storage/fold'
-import { deferEffect, setTxnWrapper } from '../command'
+import { registerConverter, type Converter } from '../storage/fold'
+import type { Entry } from '../storage/backend'
+import { setTxnWrapper } from '../command'
 import type { Change, LogicalCollection } from '../command/types'
-import { wireRowConsumer, registerComposer, type RowWrite } from './rowmap'
-import { schedRecordsNow } from './sched-commit'
+import { wireRowConsumer, registerComposer, registerMapper, type RowWrite } from './rowmap'
+import { schedRecordsNow, resyncSchedBaseline } from './sched-commit'
+import { mintOrd, sortByOrd, byOrd } from '../engine/ord'
 import {
   joinWeek, parseRowId, rowSuffix, dayRowJSON, weekRowJSON, stashRows, weeksConverter, type WeekRows,
 } from './weekrows'
@@ -39,10 +46,69 @@ export const weekKey = (id: string) => id.replace(/-/g, '/')
    runs only once every group-A converter is registered (the manifest), so until then no store is touched */
 registerConverter(weeksConverter)
 
+const iidOf = (r: any) => r && r.iid
+const puckIdOf = (p: any) => p && p.id
+/* the roster's placeholder pucks (ALL, ALL AVAIL — engine/people.ts `special`) are code: never stored, never read back */
+const isPlaceholder = (id: string, p?: any) => id === 'all' || id === 'allavail' || !!(p && p.special)
+
+/* the one-time conversions of an old store's whole-list records (storage/fold.ts): each list becomes one row per item,
+   in its old order (`ord` minted from the list's order — state/ord.ts), and the old record is removed in the same
+   group. An old record that will not read is left as it is (the reader never reads it). Pure; each writes its own
+   collection only. */
+const fromList = (raw: string | undefined): any => { if (raw == null) return null; try { return JSON.parse(raw) } catch { return null } }
+export const inputsConverter: Converter = {
+  name: 'inputs', collections: ['inputs'],
+  convert(snap) {
+    const list = fromList(snap.inputs?.all)
+    if (!Array.isArray(list)) return []
+    const rows = list.filter((r: any) => r && typeof r === 'object' && !Array.isArray(r))
+      .map((r: any, i: number) => ({ ...r, iid: r.iid ?? `ifold${i}` }))
+    for (const r of rows) delete r.ord
+    mintOrd(rows, iidOf)
+    const out: Entry[] = rows.map((r: any) => ({ collection: 'inputs', id: String(r.iid), value: JSON.stringify(r) }))
+    out.push({ collection: 'inputs', id: 'all', value: null })
+    return out
+  },
+}
+export const peopleConverter: Converter = {
+  name: 'people', collections: ['people'],
+  convert(snap) {
+    const obj = fromList(snap.people?.all)
+    if (!obj || typeof obj !== 'object' || Array.isArray(obj)) return []
+    const ids = Object.keys(obj).filter(id => obj[id] && typeof obj[id] === 'object' && !isPlaceholder(id, obj[id]))
+    const rows = ids.map(id => { const p = { ...obj[id] }; delete p.ord; return p })
+    const idOf = new Map(rows.map((p, i) => [p, ids[i]]))
+    mintOrd(rows, p => idOf.get(p)!)
+    /* the old record's key IS a placeholder's id (ALL is `all`): its row is the removal, never a person */
+    const out: Entry[] = [{ collection: 'people', id: 'all', value: null }]
+    rows.forEach((p, i) => out.push({ collection: 'people', id: ids[i], value: JSON.stringify(p) }))
+    return out
+  },
+}
+export const planConverter: Converter = {
+  name: 'plan', collections: ['plan'],
+  convert(snap) {
+    const plan = fromList(snap.plan?.all)
+    if (!plan || typeof plan !== 'object') return []
+    const pucks = (Array.isArray(plan.pp) ? plan.pp : []).filter((p: any) => p && typeof p === 'object' && p.id != null)
+      .map((p: any) => { const c = { ...p }; delete c.ord; return c })
+    mintOrd(pucks, puckIdOf)
+    const out: Entry[] = pucks.map((p: any) => ({ collection: 'plan', id: `pp:${p.id}`, value: JSON.stringify(p) }))
+    const dm = plan.dm && typeof plan.dm === 'object' ? plan.dm : {}
+    for (const iso of Object.keys(dm)) if (typeof dm[iso] === 'string') out.push({ collection: 'plan', id: `dm:${iso}`, value: JSON.stringify(dm[iso]) })
+    out.push({ collection: 'plan', id: 'all', value: null })
+    return out
+  },
+}
+registerConverter(inputsConverter)
+registerConverter(peopleConverter)
+registerConverter(planConverter)
+
 type Snapshots = { weekSnap: () => string; weekDirty: () => boolean }
 let wbRef: Whiteboard | null = null
 let hydrated = false
 let unwireRows: (() => void) | null = null
+let wiredTo: Whiteboard | null = null
 
 export const isHydrated = () => hydrated
 
@@ -59,8 +125,6 @@ function parse(json: string | null): any {
   if (json == null) return null
   try { return JSON.parse(json) } catch (e) { console.warn('persist: unreadable record ignored', e) ; return null }
 }
-const maxNum = (ids: string[], prefix: string) =>
-  ids.reduce((m, id) => { const n = id.startsWith(prefix) ? Number(id.slice(prefix.length)) : NaN; return Number.isFinite(n) && n > m ? n : m }, 0)
 
 /* A saved week that cannot be shown as it is saved still loads — READ-ONLY, and its rows are never written again
    (P2-IMPL-02, P2-REV2-01, kept per week — F2-08). Decided HERE, per week, before anything reads it:
@@ -89,27 +153,46 @@ export function hydrate(wb: Whiteboard): void {
   /* [DB-READINESS] group A, phase 0 (plan §2.8) — "already started" is the stamp's `initialized`,
      which seeds skip on (state/store.ts initStore). A STARTED store holding no inputs record has no
      inputs — the seed module's rows are cleared, never shown. Only a store stamped the old way (a
-     bare number, `null` here) still decides by whether its inputs record is there, exactly as before. */
+     bare number, `null` here) still decides by whether it holds any request rows. */
   const started = storeInitialized(wb)
   hydrated = started === true
-  /* a row that is not an object (a null from hand-edited storage) is dropped,
-     not pushed: `r.iid` on it would throw out of here and main.tsx's boot
-     guard would show the whole app the "could not load" screen for ever */
-  const isRow = (r: any) => !!r && typeof r === 'object'
-  const inputs = parse(wb.get('inputs', 'all'))
-  if (Array.isArray(inputs)) {
-    INPUTS.length = 0
-    inputs.forEach((r: any) => { if (isRow(r)) INPUTS.push(r) })
-    /* iid is opaque now (engine/newid.ts) — no counter to seed past stored ids;
-       a stored iid is kept as-is and a row missing one mints via mintInpIds. */
-    if (started === null) hydrated = true
-  } else if (started === true) {
-    INPUTS.length = 0
+  /* a row that is not a record (a null, or bytes that will not read) is left in storage as it is and not read —
+     never pushed: `r.iid` on it would throw out of here and main.tsx's boot guard would show the whole app the "could
+     not load" screen for ever; never deleted: nothing but an explicit delete removes a row (plan §2.2) */
+  const isRecord = (r: any) => !!r && typeof r === 'object' && !Array.isArray(r)
+  /* the requests — one row each, in their saved order (ord, iid). `all` is an old whole-list record the fold replaces:
+     never read as a request. iid is opaque (engine/newid.ts); a row missing one takes its row id. */
+  const inputs: any[] = []
+  for (const id of wb.keys('inputs')) {
+    if (id === 'all') continue
+    const r = parse(wb.get('inputs', id))
+    if (isRecord(r)) { if (r.iid == null) r.iid = id; inputs.push(r) }
   }
-  const people = parse(wb.get('people', 'all'))
-  if (people && typeof people === 'object' && !Array.isArray(people)) {
+  /* started: the stamp says so — or, on a store stamped the old way (a bare number, `null`), it holds requests, as rows
+     or as the old whole-list record (the sniff it always made; the fold turns that record into rows) */
+  const startedNow = started === true || (started === null && (inputs.length > 0 || wb.has('inputs', 'all')))
+  hydrated = startedNow
+  if (startedNow) {
+    sortByOrd(inputs, iidOf)
+    INPUTS.length = 0
+    inputs.forEach(r => INPUTS.push(r))
+  }
+  /* the roster — one row per person, in their saved order; the placeholder pucks come from the code, last, as the seed
+     roster holds them */
+  const people: Array<[string, any]> = []
+  for (const id of wb.keys('people')) {
+    if (isPlaceholder(id, PEOPLE[id])) continue
+    const p = parse(wb.get('people', id))
+    if (isRecord(p)) people.push([id, p])
+  }
+  /* the stored roster replaces the seed's only when there is one — a roster is never emptied by a store that holds none */
+  if (people.length) {
+    const cmp = byOrd((row: any) => row.__pid)
+    people.sort((a, b) => cmp({ ord: a[1].ord, __pid: a[0] }, { ord: b[1].ord, __pid: b[0] }))
+    const placeholders = Object.keys(PEOPLE).filter(k => isPlaceholder(k, PEOPLE[k])).map(k => [k, PEOPLE[k]] as [string, any])
     for (const k of Object.keys(PEOPLE)) delete PEOPLE[k]
-    Object.assign(PEOPLE, people)
+    for (const [id, p] of people) PEOPLE[id] = p
+    for (const [id, p] of placeholders) PEOPLE[id] = p
     /* the callsign index is built once, at module load, from the SEED roster
        (engine/people.ts) — rebuild it for the stored one, or a person added
        or renamed on the Quals page stops resolving after a reload while the
@@ -117,13 +200,18 @@ export function hydrate(wb: Whiteboard): void {
     /* the ONE index body — the roster and the placeholders only ([POST-OUT-OUTCOMES], D286) */
     indexCallsigns()
   }
-  const plan = parse(wb.get('plan', 'all'))
-  if (plan && Array.isArray(plan.pp)) {
+  /* the planning calendar — one row per note or pucks row (`pp:<id>`), per day title (`dm:<iso>`) */
+  const pucks: any[] = [], titles: Record<string, string> = {}
+  for (const id of wb.keys('plan')) {
+    if (id.startsWith('pp:')) { const p = parse(wb.get('plan', id)); if (isRecord(p)) { if (p.id == null) p.id = id.slice(3); pucks.push(p) } }
+    else if (id.startsWith('dm:')) { const t = parse(wb.get('plan', id)); if (typeof t === 'string') titles[id.slice(3)] = t }
+  }
+  if (pucks.length || Object.keys(titles).length || startedNow) {
+    sortByOrd(pucks, puckIdOf)
     PLANPUCKS.length = 0
-    plan.pp.forEach((p: any) => { if (isRow(p)) PLANPUCKS.push(p) })
+    pucks.forEach(p => PLANPUCKS.push(p))
     for (const k of Object.keys(DAYRMK)) delete DAYRMK[k]
-    Object.assign(DAYRMK, plan.dm && typeof plan.dm === 'object' ? plan.dm : {})
-    seedPuckCounter(maxNum(PLANPUCKS.map((p: any) => String(p.id ?? '')), 'pp'))
+    Object.assign(DAYRMK, titles)
   }
   /* every saved week: its rows joined back into the one record the app keeps in memory (the stash), per week */
   const byWeek = new Map<string, WeekRows>()
@@ -143,18 +231,28 @@ export function hydrate(wb: Whiteboard): void {
   }
 }
 
-/** module singletons → whiteboard; wired to every history step. The weeks are not here — they are rows written from
-    the command stream (below). */
-export function persistAll(): void {
-  if (!wbRef) return
-  wbRef.set('inputs', 'all', JSON.stringify(INPUTS))
-  wbRef.set('people', 'all', JSON.stringify(PEOPLE))
-  wbRef.set('plan', 'all', JSON.stringify({ pp: PLANPUCKS, dm: DAYRMK }))
+/* ---- the requests, the roster and the planning calendar: one row each, from the command stream (phase 2) ---- */
+
+/* the rows one change lands in. A put writes the record as it now stands; a delete removes its row — never inferred.
+   A placeholder puck is code and is never written. */
+const rowOf = (collection: 'inputs' | 'people' | 'plan') => (c: Change): RowWrite[] => {
+  if (collection === 'inputs' && c.id === '__order') return []
+  if (collection === 'people' && isPlaceholder(c.id, (c.after ?? c.before) as any)) return []
+  return [{ collection, id: c.id, value: c.op === 'delete' ? null : JSON.stringify(c.after) }]
 }
 
-/** the Quals page's writes are not history steps — it calls this itself */
-export function persistPeople(): void {
-  wbRef?.set('people', 'all', JSON.stringify(PEOPLE))
+/* THE FIRST BOOT'S SEED, AS ROWS (plan §2.8 — "set by the seed in its own group"). A store that has not started gets
+   every seed request, person and planning row written once, inside the boot's one group (main.tsx openBootGroup),
+   after the boot has placed and ordered them. Named here because it is a write outside any command: the only one the
+   rows have besides the fold. */
+export function writeSeedRows(wb: Whiteboard): void {
+  mintInpIds()   // ids and places in the list (engine/inputs.ts)
+  mintOrd(PLANPUCKS, puckIdOf)
+  resyncSchedBaseline()
+  for (const r of INPUTS) if (r && r.iid != null) wb.set('inputs', String(r.iid), JSON.stringify(r))
+  for (const id of Object.keys(PEOPLE)) if (!isPlaceholder(id, PEOPLE[id])) wb.set('people', id, JSON.stringify(PEOPLE[id]))
+  for (const p of PLANPUCKS) if (p && p.id != null) wb.set('plan', `pp:${p.id}`, JSON.stringify(p))
+  for (const iso of Object.keys(DAYRMK)) wb.set('plan', `dm:${iso}`, JSON.stringify(DAYRMK[iso]))
 }
 
 /* ---- the week's rows, written from the command stream ---------------------------------------------------------- */
@@ -240,25 +338,31 @@ function writeLoadedWeekAtBoot(wb: Whiteboard): void {
   for (const sfx of Object.keys(rows)) wb.set('weeks', wid + sfx, rows[sfx])
 }
 
-/** call AFTER initStore() (wireStore sets HOOKS.histPush there) */
-export function wirePersist(wb: Whiteboard, _s?: Snapshots): void {
-  wbRef = wb
+/** THE STREAM CONSUMER, wired to the whiteboard — as early in the boot as the whiteboard exists (main.tsx calls it
+    right after hydrate), so every command the boot itself runs (the Leave War's boot sync) saves its rows. Idempotent. */
+export function wireRows(wb: Whiteboard): void {
+  if (wiredTo === wb) return
+  wiredTo = wb
   /* [ARCH-STACK-4] phase 0 (§20.1) — every command's durable writes become ONE
      all-or-nothing group: the command layer opens a whiteboard transaction per
      outermost command. */
   setTxnWrapper(wb)
-  /* [DB-READINESS] group A (plan §2.2) — the stream consumer: each command's changes, mapped to the stored rows they
-     live in, written inside the command's own group (state/rowmap.ts). Phase 1: the schedule's weeks. */
+  /* [DB-READINESS] group A (plan §2.2) — each command's changes, mapped to the stored rows they live in, written inside
+     the command's own group (state/rowmap.ts). Phase 1: the schedule's weeks (a composer — a day row is three records);
+     phase 2: the requests, the roster, the planning calendar. */
   registerComposer({ name: 'schedule', collections: [...LOADED_COLLS, 'weekstash'], rows: (changes) => scheduleRows(wb, changes) })
+  registerMapper('inputs', rowOf('inputs'))
+  registerMapper('people', rowOf('people'))
+  registerMapper('plan', rowOf('plan'))
   unwireRows?.()
   unwireRows = wireRowConsumer(wb)
-  const push = HOOKS.histPush
-  /* §21.1c — the scheduler's persist joins the command's deferred effects, so a
-     refused command discards it instead of writing its rolled-back world; outside
-     a command it runs inline exactly as before. */
-  HOOKS.histPush = () => { push(); if (!deferEffect(persistAll)) persistAll() }
-  const applied = HOOKS.histApplied
-  HOOKS.histApplied = () => { applied(); persistAll() }
-  persistAll()
+}
+
+/** call AFTER initStore() (wireStore sets HOOKS.histPush there) */
+export function wirePersist(wb: Whiteboard, _s?: Snapshots): void {
+  wbRef = wb
+  wireRows(wb)
+  /* a store that had not started: the seed's rows, once, in the boot's group */
+  if (!hydrated) writeSeedRows(wb)
   writeLoadedWeekAtBoot(wb)
 }

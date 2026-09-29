@@ -90,6 +90,9 @@ export function wireRowConsumer(wb: Whiteboard): () => void {
   })
 }
 
+/** a collection's mapper, registered by the phase that moves it to rows (state/persist.ts wireRows) */
+export function registerMapper(c: LogicalCollection, m: Mapper): void { MAPPERS.set(c, m) }
+
 /** test-only */
 export function _setMapperForTest(c: LogicalCollection, m: Mapper): void { MAPPERS.set(c, m) }
 export function _clearMappersForTest(): void { MAPPERS.clear(); COMPOSERS.clear() }

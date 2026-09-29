@@ -1286,7 +1286,7 @@ reduced to flags — `{ f?: true, o?: true, a?: true }`, `f`/`o`/`a` for
 Fly/OFT/AMT (`SANS_KEY` in `avail.ts`), absent meaning NOT OFFERED. The one
 window applies to every ticked event. No migration for the old per-event
 `{s,e}` shape — **CORRECTED 17 Sep 26:** INPUTS are NOT session-only (they persist on a
-built site, `inputs/all`; CLAUDE.md §Architecture rules "WHAT ACTUALLY PERSISTS"). The
+built site — one row per request, `inputs/<iid>`, since 30 Sep 26; CLAUDE.md §Architecture rules "WHAT ACTUALLY PERSISTS"). The
 reason there is no migration is the owner's dev-phase rule (pre-promulgation demo data —
 reset, don't migrate; `storage/reset.ts` SCHEMA_VERSION), and the seed carries zero SANS
 records. `sansAvailOn(id,dt)` is the one place that finds the record covering
@@ -1407,7 +1407,7 @@ editable on the Quals page: the `san` column's tick writes `p.san` directly
 (not just the one-way-derived `p.quals.san`, which no gate reads — before the
 fix the tick was a no-op). **CORRECTED 17 Sep 26:** a qual tick is NOT session-only — the
 Quals page calls `persistPeople()` on every write, so `PEOPLE` (and `p.san` with it)
-survives a reload on a built site. **A second
+survives a reload on a built site (the changed person's own row, `people/<pid>`, since 30 Sep 26). **A second
 guard, `sansOverlapRefusal(person,date,endDate,except)`, refuses a record whose
 date range overlaps an existing SANS record for the same person** (`except` is
 the row being edited): SANS is one window per record, and two records on one
@@ -3294,7 +3294,7 @@ refused while focus is in an editable field.
 The snapshot also carries the Inputs-calendar's two planning stores
 (`state/plan.ts`) — `PLANPUCKS` (`pp`) and `DAYRMK` (`dm`), the scheduler's
 month-calendar to-dos and day remarks. **CORRECTED 17 Sep 26:** both DO persist
-(`persistAll` writes them as the `plan/all` record); the old "neither persists to storage"
+(`persistAll` wrote them as the `plan/all` record; one row per note and per day title since 30 Sep 26, `[DB-READINESS]` group A, phase 2); the old "neither persists to storage"
 was written before the 8 Sep 26 storage work. They also ride undo/redo like any other edit; an older snapshot
 taken before this feature landed carries neither field and restores both to
 empty rather than throwing.
