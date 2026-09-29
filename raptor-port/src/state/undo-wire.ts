@@ -38,6 +38,7 @@ import { parseVerId, dayIso } from '../engine/verid'
 import { lwStore, LW_COLLS, selectWar, focusDay, bumpLwHistEpoch, restoreBlocker } from '../leavewar/state/store'
 import { restoreAbsencesOf } from '../leavewar/sync'
 import { warVisible } from '../leavewar/absences'
+import { DATES, inputCoversDate } from '../engine/inputs'
 
 /* the 8 collections schedStore owns (the scheduler week + inputs + plan). NOT
    `weekstash` — that is the separate weekstashStore's one collection, registered
@@ -114,6 +115,12 @@ function landingOf(entry: UndoEntry): Landing | null {
   if (fwd.some(c => weekOf(c.collection, c.id) != null && c.collection !== 'weekstash') && canEditSched()) pages.push('editsched')
   if (fwd.some(c => c.collection === 'inputs' || c.collection === 'plan' || c.collection === 'weekstash' || (c.collection === 'settings' && c.id === 'lookahead')))
     pages.push('inputs')
+  /* an input on a day of the loaded week shows on that day of the schedule (its pending mark, its row): undone on Edit
+     Schedule it stays there (the plan's §11.6 "unless a week context is present"; walk S16 — a leave filed late on a
+     published Sunday, undone, left for Inputs while the day's pending mark it cleared stayed out of sight) */
+  const rows = (c: { before?: unknown; after?: unknown }) => [c.before, c.after].filter(v => v && typeof v === 'object') as any[]
+  if (canEditSched() && fwd.some(c => c.collection === 'inputs' && rows(c).some(r => DATES.some(d => inputCoversDate(r, d)))))
+    pages.push('editsched')
   /* an absence input (leave, a downchit, CSE, OD) also shows on the Leave War: undone THERE, it stays there — the war is
      one of the pages it lands on, last, so an undo from elsewhere still opens Inputs (step4-leavewar's ATT C cut) */
   if (fwd.some(c => c.collection === 'inputs' && [c.before, c.after].some(v => v && typeof v === 'object' && warVisible((v as { type?: unknown }).type))))

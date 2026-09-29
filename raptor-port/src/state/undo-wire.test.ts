@@ -275,6 +275,18 @@ describe('B7 — Undo goes to the change’s page, and keeps the board open acro
     expect(globalRedo().ok).toBe(true)
     expect(view.CURPAGE).toBe('inputs')
   })
+  it('an input on the loaded week, undone on Edit Schedule, stays there — the day it lands on is the change (plan §11.6: "unless a week context is present"; walk S16)', () => {
+    writeInputs(() => { INPUTS.push({ person: 'bane', type: 'LL', date: 'Jul 19', yr: 2026, rmk: '', iid: 'iwire5' } as any) })
+    view.setPage('editsched')
+    expect(globalUndo().ok).toBe(true)
+    expect(view.CURPAGE).toBe('editsched')
+  })
+  it('an input on ANOTHER week, undone on Edit Schedule, opens Inputs', () => {
+    writeInputs(() => { INPUTS.push({ person: 'bane', type: 'LL', date: 'Aug 19', yr: 2026, rmk: '', iid: 'iwire6' } as any) })
+    view.setPage('editsched')
+    expect(globalUndo().ok).toBe(true)
+    expect(view.CURPAGE).toBe('inputs')
+  })
   it('an input the war never shows (an appointment), undone on the Leave War, opens Inputs', () => {
     writeInputs(() => { INPUTS.push({ person: 'bane', type: 'APPT', date: 'Jul 15', yr: 2026, rmk: '', iid: 'iwire4' } as any) })
     view.setPage('leavewar')

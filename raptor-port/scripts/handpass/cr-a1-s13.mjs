@@ -77,8 +77,11 @@ const u1 = await door(page, 'top', 'undo')
 const who1 = await page.evaluate(i => window.DAYS[5].allhands[i] ? window.DAYS[5].allhands[i].who : 'ROW GONE', ri)
 h = await dayHead(page, SAT)
 const p1 = await bk.shot(page, 'undo-behind-publish')
-bk.ck('S13.6', 'top-bar Undo → refused: "A day on this week was published after that change — tap Unpublish on that day first, or edit its working copy."; nothing moves',
-  u1.toasts.some(t => /A day on this week was published after that change — tap Unpublish on that day first/.test(t)) && /ORIG/.test(h.tag),
+/* the build's answer (plan §13 A1-F1): the newer step holding the sign-off is the publish, which can never be undone now
+   (it would bring the deleted man's signature back) — so the refusal says it can't be undone, never "undo that first"
+   and never "tap Unpublish first" (after an Unpublish, Undo takes back the Unpublish: that promise led nowhere) */
+bk.ck('S13.6', 'top-bar Undo → refused: "A later change touches the same thing and can’t be undone." — no instruction nobody can follow; nothing moves',
+  u1.toasts.some(t => /A later change touches the same thing and can.t be undone/.test(t)) && !u1.toasts.some(t => /undo that first|tap Unpublish/.test(t)) && /ORIG/.test(h.tag),
   { u1, who1, h: { tag: h.tag, pending: h.pending } }, p1)
 /* a second press: the same message, nothing moves, Undo still offered (D148: never greys) */
 const u2 = await door(page, 'top', 'undo')
@@ -95,7 +98,7 @@ const u3 = await door(page, 'board', 'undo')
 const who3 = await page.evaluate(i => window.DAYS[5].allhands[i] ? window.DAYS[5].allhands[i].who : 'ROW GONE', ri)
 h = await dayHead(page, SAT)
 const p2 = await bk.shot(page, 'after-unpublish-undo')
-bk.ck('S13.8', 'after Unpublish, Undo reaches BEHIND the publish (the step before it reverts), as the message promised', u3.pressed && /^Undid:/.test(u3.toasts.join(' ')) && !/taking a published day back/.test(u3.toasts.join(' ')), { u3, who3, h: { tag: h.tag, pending: h.pending } }, p2)
+bk.ck('S13.8', 'after Unpublish, Undo takes back the Unpublish (the newest step) — and no message had promised it would reach behind', u3.pressed && /Undid: taking a published day back/.test(u3.toasts.join(' ')), { u3, who3, h: { tag: h.tag, pending: h.pending } }, p2)
 /* and the press after that: where does Undo stand now? */
 const u4 = await door(page, 'board', 'undo')
 h = await dayHead(page, SAT)

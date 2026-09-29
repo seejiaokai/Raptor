@@ -208,7 +208,9 @@ await step('H', async () => {
   await toWeek(page, '28/09/2026')
   const w = await changesWindow(page, { day: 'Week' })
   const pic = await B.shot(page, 'H-changes-week-of-28Sep')
-  B.ck('H-today', 'the ⚙ and stage Undo / Redo lines are in the history (dated today, 28 Sep — the week nobody has loaded)', w.lines.filter(l => /Undo —/.test(l)).length >= 2 && w.lines.filter(l => /Redo —/.test(l)).length >= 2,
+  /* the build's answer (plan §13 A2-F5): a ⚙ setting or a stage move writes no history line of its own, so its Undo /
+     Redo writes none either — the first walk found four lines here, dated today, with nothing they undid */
+  B.ck('H-today', 'no ⚙ / stage Undo or Redo line in the history — the change itself wrote none (A2-F5)', w.lines.filter(l => /Undo —|Redo —/.test(l)).length === 0,
     { title: w.title, lines: w.lines.filter(l => /Undo|Redo/.test(l)).slice(0, 8) }, pic)
   await closeChanges(page)
   await toWeek(page, '13/07/2026')

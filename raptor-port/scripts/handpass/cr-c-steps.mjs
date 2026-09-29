@@ -80,8 +80,11 @@ if (ONLY.includes('C2')) { const o = await world('a'); await step('C2', async ()
 if (ONLY.includes('C3')) { const o = await world('a'); await step('C3', async () => {
   await go(page, 'logic')
   await tap('#lgEdit')
-  const box = page.locator('[data-lgset]').first()
-  const k = await box.getAttribute('data-lgset'), v0 = await box.inputValue()
+  /* a box holding a plain number or a clock time (the first run took the first box, which reads "1h" — no change
+     could be typed into it, and C3 proved nothing) */
+  const k = await page.evaluate(() => { const b = [...document.querySelectorAll('[data-lgset]')].find(i => /^(\d+|\d{1,2}:\d{2})$/.test(i.value)); return b ? b.getAttribute('data-lgset') : null })
+  const box = page.locator(`[data-lgset="${k}"]`).first()
+  const v0 = await box.inputValue()
   const next = /^\d+$/.test(v0) ? String(+v0 + 1) : /^(\d{1,2}):(\d{2})$/.test(v0) ? (() => { const [h, m] = v0.split(':').map(Number); const t = h * 60 + m + 5; return `${String(Math.floor(t / 60)).padStart(2, '0')}:${String(t % 60).padStart(2, '0')}` })() : v0
   await box.fill(next); await box.press('Tab'); await page.waitForTimeout(700)
   const v1 = await page.locator(`[data-lgset="${k}"]`).first().inputValue()
@@ -182,12 +185,15 @@ if (ONLY.includes('C10')) { const o = await world('a'); await step('C10', async 
 if (ONLY.includes('C11')) { const o = await world('m'); await step('C11', async () => {
   const f = await fileInput(page, { from: '2026-07-15', type: 'LL', remarks: 'C11 LL' })
   await go(page, 'viewsched')
-  const chip = page.locator('#vWeek .dstat, #vWeek [data-dstat]').first()
-  if (await chip.count()) { await chip.click(); await page.waitForTimeout(500) }
+  /* the day's own change count opens the changes window for a member (D171) — not the day's status badge, which on a
+     phone opens the day summary sheet (the first run tapped that, and the sheet blocked the Undo) */
+  const chip = page.locator('#vWeek [data-chgday]').first()
+  if (await chip.count()) { await chip.scrollIntoViewIfNeeded().catch(() => {}); await chip.click(); await page.waitForTimeout(500) }
   const seen = page.locator('.chgwin button', { hasText: /Mark all as seen/i }).first()
   const hadSeen = await seen.count()
   if (hadSeen) { await seen.click(); await page.waitForTimeout(400) }
   await page.keyboard.press('Escape').catch(() => {})
+  await closeSheets(page)
   await go(page, 'inputs')
   const u = await door(page, 'top', 'undo')
   B.ck('C11.1', 'after "Mark all as seen", Undo on Inputs takes his LL — the seen mark is no step (B1, Fable S2)', /Undid: a personal input/.test(said(u)) && (await cur()) === 'inputs', `${said(u)} · seen pressed: ${hadSeen} · iid ${f.iid}`, await B.shot(page, 'C11-undone'))
