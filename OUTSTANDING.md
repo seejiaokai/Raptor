@@ -59,7 +59,8 @@ whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaini
    [S4-HUNT-REST] — **WALKED 26 Sep 26** on `claude/absence-record-d147-af6a50`; his answers to its questions (D260–D263)
    recorded, and D260–D262 BUILT and FULL-checked there 27 Sep 26 (D263 goes with [DRAFT-PENDING]); from his look, D264–D266
    (one look for the sheets, a Move on every record that can move) — [LW-MOVE-STANDARD], BUILT and MERGED 27 Sep 26
-   (PR #447; archived) — then change-recording (with [UNDO-ROSTER-SETTINGS] and D148),
+   (PR #447; archived) — then change-recording (with [UNDO-ROSTER-SETTINGS], D148 and [UNDO-TOPBAR] — BUILT, walked and read by both
+   29 Sep 26 on `claude/change-recording-retest`; waiting on his look and "merge live"),
    then the Leave War links LAST (with the 7 Sep phone check). Then "after the hunt" (21 Sep 26): [LW-LOCKMARK] →
    [LW-WEEKDAY-WORK] (talk to him before building any of it) — its first, the published day's unavailable list, was
    closed by the same re-test (built by [LEAVE-LATE-PUBLISHED]; archived).
@@ -87,6 +88,8 @@ The five-flags batch (built on `claude/five-flags-batch-build-ef7d85`, 26 Sep 26
 [ARROW-GUTTER-STRIP] (its strip moot by D275; one small leftover, low); low: [GHOST-FLAG-SHADOW], [LW-SETTINGS-SMALL],
 [ALLAVAIL-OPEN-ROW] (investigate first).
 Insights — [INSIGHTS-WORKING-COPY] (a question for him, any time — the changes window it could have gone with merged 28 Sep 26).
+The changes window — [HIST-PER-PAGE] (an idea, filed D349; a mock-up first, after the change-recording re-test). The
+phone — [PHONE-DISCARD-MARKS] (low, from the change-recording walk), [PHONE-WIDE-BOARD-BLANK] (medium, from the same walk). The bubble — [BUBBLE-SMALL-SEEN] (low, from the same walk).
 
 **Waiting on him — no order exists:**
 [OIL-EARNED-VS-GRANTED] (his figure — ask first, when the award fix reaches it;
@@ -261,14 +264,16 @@ below: `git log -S"GU-P2" -- OUTSTANDING.md` (`docs/session-state.md` was delete
   defect. Fix the harness, then un-fixme.
 - **[CMDLF-002]** rebuild the Leave War posting-out windows on a `lw.postouts` restore, and
   whole-Import undo granularity — both inherited from `[CMDL-FINISH]`; `lw.postouts` is still a
-  deferred collection.
+  deferred collection. *(Its person-and-posting half is its own item since D350: `[UNDO-POSTING-RECORD]`.)*
 - **[GU-C3]** reland conflict/auth coverage — the restore re-derives `acc` beyond the entry's
   closure without widening the conflict set. Inert single-user; real with concurrent users.
-- **[GU-MAYREV] ANSWERED (D148, 24 Sep 26): Undo reverses only the signed-in person's own changes, clears on sign-out, and refuses (saying who) if someone else has since changed the same thing — `raptor-port/docs/undo-contract.md` §4. Build it with the amendment or change-recording work. The question as it was put:** — Undo is enabled on the newest eligible entry
+- **[GU-MAYREV] BUILT 28 Sep 26** (the change-recording re-test, `claude/change-recording-retest` — `undo/timeline.ts` `isOwn`, the named barriers; `undo-contract.md` §4). The text below is the question as it stood:
+  **[GU-MAYREV] ANSWERED (D148, 24 Sep 26): Undo reverses only the signed-in person's own changes, clears on sign-out, and refuses (saying who) if someone else has since changed the same thing — `raptor-port/docs/undo-contract.md` §4. Build it with the amendment or change-recording work. The question as it was put:** — Undo is enabled on the newest eligible entry
   whatever the actor, and the timeline is not cleared on logout, so a member behind an admin edit
   sees an enabled-but-refused Undo. Grey it, or skip past non-reversible entries. Clearing the
   timeline on logout is the near-term direction (memory `future-undo-semantics-multiuser`).
-- **[GU-E5]** an input-only undo does not jump to its week (the record restores correctly).
+- **[GU-E5]** an input-only undo does not jump to its week (the record restores correctly). *(28 Sep 26: an input's
+  Undo now lands on the Inputs page, which carries the pair — the page the input was filed on; the week jump stays open.)*
 - **[GU-LWLOCK]** a restore can push a vestigial legacy-LW history step. No user-facing effect.
 - **[GU-COSMETIC]** an AL barrier bound to the loaded week; view-effects not rolled back on a
   failed restore. Both LOW.
@@ -869,7 +874,9 @@ switched on in our environment? a separate development environment? Dataverse av
 developer ("maker") seat in dev? how people get in (a security group, security roles)? which connectors are allowed?
 how work moves from dev to production, and who presses it? auditing and backups on, and how to restore? where settings and
 secrets live? can server-side rules be plug-ins, and who may deploy them? **and: can our squadron admin set a person's role
-from inside the app, or must IT assign it?** (decides whether "make Hex an admin" is one tap or an IT request).
+from inside the app, or must IT assign it?** (decides whether "make Hex an admin" is one tap or an IT request). **And (D351,
+28 Sep 26): how long is the change history kept (the retention rule)?** — it decides whether Admin → Data's "Clear edit
+history…" follows that rule or goes; until then it stays as it is.
 
 ### [PEEK-ISSUED] The desktop next-week preview on View-only Sched shows next week's working copy, even for a published day — a question for him (filed 26 Sep 26)
 Noted by the sweep behind `[LEAVE-LATE-PUBLISHED]` (Astra, its plan read; carried in `[LATE-PUB-FACE-LIVE]`, archived
@@ -912,6 +919,11 @@ leaves. **Place:** test-only, any time.
 **Seen again 27 Sep 26** on `claude/five-flags-batch-continue-2cfa70` (`869c7197`, the final gate run): the same test, the
 same "elementFromPoint is not a function"; that branch does not touch the calendar either; alone 3 / 3, and the whole
 unit suite green on its re-run (6256 / 6256). Three branches now — the order- or load-dependence is the lead.
+**Seen again 29 Sep 26** on `claude/change-recording-retest` (PR #464, his PC's "all gates" run on `e37aa41c`): a
+DIFFERENT test in the same file — "the popover orders sections above the inputs block" — the day's popover never opened
+("click target exists: expected null"), after a pointerdown / pointerup pair on a day cell; that branch does not touch
+the calendar (no diff against `main`); alone 3 / 3, and the whole suite 6899 / 6899 locally under the lock the same hour.
+Four branches; two tests of the file — the file's own pointer handling under load is now the likelier lead.
 
 ### [INSIGHTS-WORKING-COPY] Week Insights shows the working copy's week to everyone, members included — a question for him (filed 26 Sep 26)
 Astra's second read of `[LEAVE-LATE-PUBLISHED]` (`raptor-port/docs/handpass/2026-09-26-late-pub-astra-read2.md` #2): the
@@ -987,11 +999,80 @@ and settings edits ARE undoable — ordinary user changes, never amendments. The
 (`raptor-port/src/state/undo-wire.ts`, `setCutoverModules(['sched', 'lw', 'inputs', 'plan'])`), so adding a person,
 renaming a callsign or changing a Logic setting cannot be undone. **Place:** the change-recording re-test (D147,
 second after the absence record) — it is the one undo's own subject; build it there with D148 (undo only your own
-changes). Walk it first: confirm on screen that Undo stays greyed or skips a roster / settings edit.
+changes). Walk it first: confirm on screen that Undo stays greyed or skips a roster / settings edit. **WALKED 28 Sep 26 (it skips them —
+`scripts/handpass/cr-base.mjs`); STARTED on `claude/change-recording-retest`. Scope narrowed by D350: adding, archiving,
+restoring, deleting a person and postings stay out (`[UNDO-POSTING-RECORD]`); everything else on Quals, Admin, the Logic
+page and the templates becomes undoable.** **BUILT 28–29 Sep 26 on `claude/change-recording-retest`** (B1–B9 of the
+plan; `undo-contract.md` §4, the register AM39d–AM39f) — closes when that branch merges.
 **Accounts (26 Sep 26, `[ACCOUNTS]`):** the accounts, the access requests and the guest switch are three more settings
 records, so they join this item: when settings are cut over to the one undo, an account restore must re-check the
 guards `[ACCOUNTS]` enforces at the write (at least one admin keeps access; an admin never changes his own account),
 or an undo could lock the squadron out.
+
+### [UNDO-TOPBAR] Every Undo / Redo pair in the top bar, laid out as Edit Schedule's — desktop and phone (D347, 28 Sep 26)
+His ruling D347 (`.claude/rules/decisions/how-we-work.md`): *"all undo and redo buttons should be at the top bar …
+standardised … Like how the edit schedule is"* · *"Review both desktop and mobile too"*. Today the pair is in the top bar
+on Edit Schedule only (`src/ui/Shell.tsx` `.tb-hist`), in the board's own bar (`src/ui/SchedBoard.tsx`), in the Leave
+War's Period row (`src/leavewar/ui/Chrome.tsx`) and in the Tracker's header (`src/tracker/components/Header.jsx`, its
+own undo); Inputs, Quals, Admin and the Logic page carry none (walked 28 Sep 26 — `scripts/handpass/cr-base.mjs` B5).
+**To do:** the readings in D347's row — a mock-up of the real app first (desktop and phone), then the build and a walk at
+both widths. **D348 (the same day):** on a phone the order is the desktop's — Undo · Redo (· the clock on Edit Schedule) ·
+the sync dot · the bell at the far right; the changes clock stays on Edit Schedule only. **APPROVED 28 Sep 26 (D349)** —
+the mock-up `raptor-port/docs/mock/undo-topbar.html` (version 4) is the design of record: the Tracker's own pair moves too;
+the board's bar gets Undo · Redo · History · Sync · the bell and ONE exit, ✓ Done (Close goes); on a phone Sort all and
+the layout switch sit behind one ⋯ in its second row. **Place:** built with the change-recording re-test, on `claude/change-recording-retest` (its plan:
+`raptor-port/docs/superpowers/plans/2026-09-28-change-recording-plan.md`). **BUILT 29 Sep 26 on that branch** (B10 —
+`ui/topbits.tsx`, the register AM39g; `ui-contracts.md` §The top bar carries the bell and the Undo / Redo pair) — closes
+when it merges.
+
+### [UNDO-POSTING-RECORD] Undo for adding, archiving, restoring a person and for postings — the war's posting record (D350, 28 Sep 26)
+Left out of the change-recording build by his "4 ok" (D350). All five write the Leave War's posting record
+(`lw.postouts/all` — his stints, D308, D320), which the one undo cannot restore safely: `src/undo/timeline.ts`
+`deferredCollections` holds it out (CMDLF-002, `[GLOBAL-UNDO]`), because restoring the record alone leaves the war's roster
+windows as they were (`reprojectRoster` carries a person's window forward when he has no record, and `setPeople` re-records
+it). **To do:** the global-undo design's §10.1 re-lay (`raptor-port/docs/superpowers/specs/2026-09-17-arch-stack-3-global-undo-design.md`),
+brought up to date for stints — a restored record laid over the clean projection inside `lwStore.write`; then lift the
+deferral; then the restore checks a person's add / archive / restore needs (the one-callsign rule, a man added and since
+used). A Delete stays dead (D287). FULL tier. **Place:** after the change-recording re-test; beside `[DB-READINESS]` if not
+sooner — his call.
+
+### [PHONE-DISCARD-MARKS] A phone has no door to "Discard marks" (found 28 Sep 26)
+Found by the change-recording re-test's walker A1 (O4, `raptor-port/docs/handpass/parts/2026-09-28-cr-a1.md`): the
+Amendments panel that carries "Discard marks" is hidden under 820px, so on a phone a published day's pending changes can
+be discarded by no control (desktop only). **To do:** give the phone a way in (the day's pending list, or the ⓘ day
+panel) — a mock-up first if it adds a control. LOOK / WALK tier. **Place:** low; any time, none blocking.
+
+### [PHONE-WIDE-BOARD-BLANK] On a phone, the board's Desktop layout shows nothing below the sign-off (found 29 Sep 26)
+Found by the change-recording re-test's picture check (`raptor-port/docs/handpass/2026-09-28-change-recording.md` §4), and
+the same on `main` (measured on the live bundle): at 390×844, the board → ⋯ (on `main` the bar's own switch) → Desktop
+layout lays the board out 1180px wide, but every section of the day (`.sb-sec`) is drawn 0px wide at x≈830, so below the
+sign-off the screen is empty; the bar's buttons sit off to the right (pan sideways, as its bubble says). A scheduler who
+picks it on a phone sees a blank day. **To do:** find why the sections collapse in the wide layout under 820px (the
+phone's own grid rules probably still apply), then walk it at 390 and 844×390 with both layouts. WALK tier. **Place:**
+medium; any time, none blocking.
+
+### [BUBBLE-SMALL-SEEN] Two small things about the message bubble, found by the change-recording walk (29 Sep 26)
+Both the same on `main` (the Phase A pictures, taken on `main`, show them): (1) **Unpublish says nothing** — pressed on a
+day, the day goes back as it should, but the bubble still reads the PUBLISH's words ("Published AL1 · 1 item on Sat only ·
+approved by Anvil") for its few seconds, the opposite of what just happened (`a1/<w>/pub-09`). (2) **A bubble covers the
+"Use this section order as the default for every day?" offer** — a section dragged within a few seconds of an Undo /
+Redo shows the offer under the lingering bubble, hiding "Set as default" and, on a phone, "Not now" (`a1/phone/struct-19`).
+(3) **A lingering bubble covers the changes window** — on a phone, an Undo / Redo's bubble still up when the window opens
+sits over its first lines (`a2-rewalk/phone/lw-24`). (4) **An empty gold pill in an input's row** on the Inputs list, on a
+phone, beside the remarks of a LATE leave the admin filed for himself in the member view (`a2/phone/roles-05`, the same on
+the re-walk). **To do:** Unpublish says what it did ("Taken back: <day> — its changes wait on the working copy"); the offer
+opening clears the bubble or sits above it; the window likewise; find what the empty pill is meant to hold. LOOK tier.
+**Place:** low; any time.
+
+### [HIST-PER-PAGE] A changes button on the Leave War and Quals, showing that page's changes — an idea, filed (D349, 28 Sep 26)
+His question during the D347 mock-up: *"should i have a edit history button too for each page thats applicable"* — answered
+not in the change-recording build, and filed on his "ok" (D349). Today the one changes window (Edit Schedule's clock, the
+day counts) already lists inputs, Leave War decisions, OIL awards and Quals changes as lines on their day (D263, D338 (7)),
+so nothing made elsewhere is lost; what a per-page button would add is a view FILTERED to that page's changes, where members
+look (who approved or refused my leave, who changed my quals — D169's transparency). It would also need changes the window
+does not record today (an account change on Admin, a rule on the Logic page) if those pages were included. **To do:** a
+mock-up first (the Leave War and Quals first; Admin and Logic only if he wants them), then his word. **Place:** after the
+change-recording re-test; none blocking.
 
 ### [AVAILWIN-PREVIEW-BAR] On the desktop board the ALL AVAIL window, opened from a preview, covers the preview bar (found 24 Sep 26)
 Found by the amendment re-test's walker W2 (W2-F7). Saturday's board → plans selector → Original → tap the ALL AVAIL
@@ -1006,7 +1087,8 @@ None breaks an amendment rule; each is a line to fix or ask about, from the walk
 1. **Saturday's "Published AL1 · 14 items" toast** is replaced in the same instant by the OIL warning; the person only
    ever sees the warning. **Unpublish** says nothing at all (only the tag changes) — AM15b's principle would favour a word.
 2. **Undo of a take-off time change** says "Undid: a note on the schedule" (AM39b: say what it did) — for the
-   change-recording re-test, with [UNDO-ROSTER-SETTINGS].
+   change-recording re-test, with [UNDO-ROSTER-SETTINGS]. **BUILT 28 Sep 26** on `claude/change-recording-retest`: a text
+   command carries which box it wrote, and Undo says "a take-off time", "a day note" (`undo/describe.ts`).
 3. **Five-letter callsigns** (VIPER, COBRA) drawn "…" in the edit week's callsign column; on the phone board they wrap
    ("VIP/R").
 4. At 390px the solid **"AL1" tag** beside a time is clipped to "AL"; on the desktop week the **left scroll arrow** sits

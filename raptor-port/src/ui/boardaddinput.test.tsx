@@ -172,7 +172,7 @@ describe('the dialog opened from each add', () => {
     expect(($('#inpEditSpan [data-span="all"]') as HTMLElement).getAttribute('aria-pressed'), 'an Unavailable add opens all-day').toBe('true')
     expect(($('#inpEditRmk') as HTMLInputElement).value, 'a one-day pick reads till <that day>, like the Inputs page').toBe('till 13 Jul')
     await act(async () => { setInpEdit(null); notify() })
-    await click($('#sbClose'))
+    await click($('#sbDone'))
   })
   it('Ground Programme + Inputs: activity types only, no calendar', async () => {
     await act(async () => { openScheduler(0); notify() })
@@ -185,7 +185,7 @@ describe('the dialog opened from each add', () => {
        plain tick is up (no halves) and it is unticked, matching the Inputs form */
     expect(($('#inpEditAllday') as HTMLInputElement).checked, 'a personal add opens timed').toBe(false)
     await act(async () => { setInpEdit(null); notify() })
-    await click($('#sbClose'))
+    await click($('#sbDone'))
   })
   it('SANS panel: the type reads fixed, the person list offers SANS aircrew only', async () => {
     await act(async () => { openScheduler(0); notify() })
@@ -197,7 +197,7 @@ describe('the dialog opened from each add', () => {
     expect(people.every(id => PEOPLE[id].san), 'only SANS aircrew are offered').toBe(true)
     expect($('#inpEditSans'), 'the Fly/AMT/OFT ticks are up').toBeTruthy()
     await act(async () => { setInpEdit(null); notify() })
-    await click($('#sbClose'))
+    await click($('#sbDone'))
   })
 })
 
@@ -221,7 +221,7 @@ describe('adding through the board', () => {
     expect(row.remarks).toBe('till 17 Jul')
     /* the board is open on Monday; the span does not cover it, so assert on
        the model + the Inputs-page-visible record rather than the panel */
-    await click($('#sbClose'))
+    await click($('#sbDone'))
     await act(async () => { removeInput(row); notify() })
   })
   it('Ground Programme: + Inputs lands the item ON the programme and the panel repaints with it', async () => {
@@ -243,7 +243,7 @@ describe('adding through the board', () => {
        <input value>, so it lives in the markup, not textContent */
     const grnd = $('#schedBoard .sb-panel.grnd')
     expect(grnd.innerHTML).toContain('MEETING')
-    await click($('#sbClose'))
+    await click($('#sbDone'))
     await act(async () => { removeInput(row); notify() })
     expect((DAYS[0].ground || []).length).toBe(gBefore)
   })
@@ -261,7 +261,7 @@ describe('adding through the board', () => {
     expect(row, 'the offer exists on Monday').toBeTruthy()
     expect(row.sans && row.sans.f, 'Fly is offered').toBe(true)
     expect($(`#schedBoard .sansav [data-inpedit="${row.iid}"]`) || $('#schedBoard .sansav .sanscard'), 'a card is up').toBeTruthy()
-    await click($('#sbClose'))
+    await click($('#sbDone'))
     await act(async () => { removeInput(row); notify() })
   })
   it('SANS: Add with nothing ticked is refused and the dialog stays', async () => {
@@ -273,7 +273,7 @@ describe('adding through the board', () => {
     expect(INPUTS.length).toBe(before)
     expect(TOASTS.some(t => /tick at least one/i.test(t))).toBe(true)
     await act(async () => { setInpEdit(null); notify() })
-    await click($('#sbClose'))
+    await click($('#sbDone'))
   })
   it('Cancel adds nothing', async () => {
     const before = INPUTS.length
@@ -282,7 +282,7 @@ describe('adding through the board', () => {
     await click($('#inpEditCancel'))
     expect(INPEDIT).toBe(null)
     expect(INPUTS.length).toBe(before)
-    await click($('#sbClose'))
+    await click($('#sbDone'))
   })
 })
 

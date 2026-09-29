@@ -52,7 +52,8 @@ const heal = (el: any, want: any) => { if (el.children.length || el.textContent 
    claims (it would otherwise emit a second envelope just to drop the mark). The
    preceding model mutation is captured by the lagging baseline. The caret-safe
    repaint stays deferred in txtCommit. */
-const commitText = (mark: () => void) => schedWrite(SCHED_TYPES.text, () => { reconcileIssuedMarks(); mark() })
+/* `key` — the box it wrote, carried as a fact for Undo's words (the change-recording plan B8) */
+const commitText = (key: string, mark: () => void) => schedWrite(SCHED_TYPES.text, () => { reconcileIssuedMarks(); mark() }, { key })
 
 export function routeFocusOut(e: FocusEvent) {
   /* editMode() (store.ts) drives whether html.ts renders contenteditable="true"
@@ -75,7 +76,7 @@ export function routeFocusOut(e: FocusEvent) {
        tab-through — the edit would never reach the stream. txtCommit still runs
        for the caret-safe repaint; the baseline is now current, so its backstop
        command is a no-op. Same shape for the four sibling branches below. */
-    if (txtSet(p, tx.textContent)) { commitText(() => markEdit()); txtCommit() }
+    if (txtSet(p, tx.textContent)) { commitText(p, () => markEdit()); txtCommit() }
     else { const v = txtGet(p); heal(tx, TIME_TXT.test(p) ? fmtTxt(v) : String(v == null ? '' : v)) }
     return
   }
@@ -129,7 +130,7 @@ export function routeFocusOut(e: FocusEvent) {
          positions until the deferred repaint lands (interactions.ts resolves
          a ✕ by position, exactly for this window) */
       w.intimes = lines.filter((_: any, i: number) => i !== ix)
-      commitText(() => markEdit(`it:${di}.${gi}`, itWas, w.intimes.join(', ')))
+      commitText(`it:${di}.${gi}`, () => markEdit(`it:${di}.${gi}`, itWas, w.intimes.join(', ')))
       const btn = il.nextElementSibling
       if (btn && (btn as HTMLElement).matches && (btn as HTMLElement).matches('[data-itdel]')) btn.remove()
       il.remove()
@@ -144,7 +145,7 @@ export function routeFocusOut(e: FocusEvent) {
        sides is a real edit. */
     if (nv !== lines[ix] && nv !== intimeFold(lines[ix])) {
       w.intimes = lines.map((v: any, i: number) => i === ix ? nv : v)
-      commitText(() => markEdit(`it:${di}.${gi}`, itWas, w.intimes.join(', ')))
+      commitText(`it:${di}.${gi}`, () => markEdit(`it:${di}.${gi}`, itWas, w.intimes.join(', ')))
       txtCommit()
     }
     const want = intimeLineHTML(nv); if (!sameInner(il, want)) il.innerHTML = want
@@ -168,7 +169,7 @@ export function routeFocusOut(e: FocusEvent) {
        rendering of that cell — see stores.ts. */
     const stWas = storesText(o)
     if (nv !== (o.bombs || '')) {
-      commitText(() => { const opts = (a.opts = a.opts || {}); opts.bombs = nv; markEdit(`st:${di}.${gi}.${li}.${ai}`, stWas, storesText(opts)) })
+      commitText(`st:${di}.${gi}.${li}.${ai}`, () => { const opts = (a.opts = a.opts || {}); opts.bombs = nv; markEdit(`st:${di}.${gi}.${li}.${ai}`, stWas, storesText(opts)) })
       /* the save CONFIRM (owner, 26 Aug 26 — "no indication or feedback…
          idk if it's saved or not"): the box saves on blur with nothing
          shown, so a commit that changed the load pulses the box green.
@@ -210,7 +211,7 @@ export function routeFocusOut(e: FocusEvent) {
     /* areaText(f) is what the cell is SHOWING, derived or stored (see the long
        comment above), so it is also the honest "before" for the log */
     const arWas = areaText(f)
-    if (nv !== arWas) { f.area = nv; commitText(() => markEdit(`ar:${di}.${gi}.${li}`, arWas, nv)); txtCommit() }
+    if (nv !== arWas) { f.area = nv; commitText(`ar:${di}.${gi}.${li}`, () => markEdit(`ar:${di}.${gi}.${li}`, arWas, nv)); txtCommit() }
     heal(ar, areaText(f))
     return
   }
@@ -220,7 +221,7 @@ export function routeFocusOut(e: FocusEvent) {
     const f = DAYS[+di!].waves[+gi!].formations[+li!]
     const nv = at.textContent!.trim()
     const atWas = atimeText(f)
-    if (nv !== atWas) { f.atime = nv; commitText(() => markEdit(`at:${di}.${gi}.${li}`, atWas, nv)); txtCommit() }
+    if (nv !== atWas) { f.atime = nv; commitText(`at:${di}.${gi}.${li}`, () => markEdit(`at:${di}.${gi}.${li}`, atWas, nv)); txtCommit() }
     heal(at, atimeText(f))
   }
 }

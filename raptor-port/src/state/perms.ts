@@ -286,6 +286,9 @@ export const COMMAND_OPS: Record<string, CommandOp> = {
   'lw.decideApproved': op(T.bid, 'U'),
   'lw.removeApproved': op(T.bid, 'U'),
   'lw.moveApproved': op(T.bid, 'U'),
+  /* D352 (28 Sep 26): a stage move (Open for bidding / Bidding closed / Published) — the admin's, as the stage always was
+     (27 Aug 26); its own type only so Undo can name it */
+  'lw.stage': op(T.bid, 'U'),
   /* the Tracker: everyone with access edits it (D121) */
   'trk.marks': op(T.tracker, 'U'), 'trk.dates': op(T.tracker, 'U'), 'trk.roster': op(T.tracker, 'U'),
   'trk.layout': op(T.tracker, 'U'), 'trk.syls': op(T.tracker, 'U'), 'trk.plan': op(T.tracker, 'U'),

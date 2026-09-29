@@ -124,12 +124,12 @@ async function figure(page: Page, p: string, fig: Fig): Promise<number> {
    timeline directly), so there is nothing to sit out; each waits only for the
    pair to show the move, and every caller then waits on what it checks. */
 async function undo(page: Page) {
-  await page.locator('[data-testid="lw-undo"]').click()
-  await expect(page.locator('[data-testid="lw-redo"]')).toBeEnabled()
+  await page.locator('#undoBtn').click()
+  await expect(page.locator('#redoBtn')).toBeEnabled()
 }
 async function redo(page: Page) {
-  await page.locator('[data-testid="lw-redo"]').click()
-  await expect(page.locator('[data-testid="lw-undo"]')).toBeEnabled()
+  await page.locator('#redoBtn').click()
+  await expect(page.locator('#undoBtn')).toBeEnabled()
 }
 
 async function clearToast(page: Page) {
@@ -298,9 +298,9 @@ test('an admin files leave on the Inputs page over a pending bid: bid gone, ambe
   await expect(mark(page, P, D)).toHaveCount(0)
   await closeList(page)
 
-  // undo "OK, seen" brings the notice back; undo the filing brings the bid back
-  await undo(page)
-  await expect(mark(page, P, D)).toHaveText('!')
+  /* "OK, seen" is never an Undo step (the change-recording re-test, plan §10 — the builder's call, on his look card: it
+     records that a person READ the notice, like the other seen marks). So Undo goes past it to the filing — which
+     brings the bid back — and the notice, once seen, stays seen. Was: "undo OK seen brings the notice back". */
   await undo(page)
   await expect(mark(page, P, D)).toHaveCount(0)
   await expect(chip(page, P, D)).toHaveText('LL')
@@ -308,9 +308,7 @@ test('an admin files leave on the Inputs page over a pending bid: bid gone, ambe
   expect((await inputsOf(page, P)).filter(r => r.startsWith('LL Feb 11'))).toHaveLength(0)
   await redo(page)
   await expect(chip(page, P, D)).toHaveClass(/appr/)
-  await expect(mark(page, P, D)).toHaveText('!')
-  await redo(page)
-  await expect(mark(page, P, D)).toHaveCount(0)
+  await expect(mark(page, P, D)).toHaveCount(0)                       // Redo brings the filing, never the seen notice (Astra F1)
 })
 
 test('the member files leave over their own bid: bid gone, a message, no notice left on the war', async ({ page }) => {
@@ -522,11 +520,20 @@ test('publishing a weekend day KEEPS a pending bid for someone working it and fl
 
   // Undoing the publish takes the CREDIT back and leaves the bid exactly where
   // it always was. B5's "undo brings the bid back" has nothing left to do.
+  // Pressed on the war, the Undo takes you to Edit Schedule: publishing is the
+  // schedule's act, the credit only rides it (Astra's final read, F2 — the page
+  // an undo lands on is the act's, never a folded consequence).
   await undo(page)
+  expect(await page.evaluate(() => (window as any).CURPAGE)).toBe('editsched')
+  expect(await page.evaluate(() => (window as any).dayApproved(5))).toBe(false)
+  await backToWar(page)
+  await showMonth(page, D)
   await expect(chip(page, W, D)).toHaveText('LL')
   await expect(mark(page, W, D)).toHaveCount(0)
-  expect(await page.evaluate(() => (window as any).dayApproved(5))).toBe(false)
   await redo(page)
+  expect(await page.evaluate(() => (window as any).CURPAGE)).toBe('editsched')
+  await backToWar(page)
+  await showMonth(page, D)
   await expect(chip(page, W, D)).toHaveText('FO*')
   await expect(mark(page, W, D)).toHaveText('!')
   await tap(page, W, D)

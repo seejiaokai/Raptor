@@ -260,8 +260,11 @@ export function shownTemplates() { return WAVETPL_CFG.filter(t => !WAVEHIDE.has(
    all-shown, no-template baseline writes nothing at all, matching the stores/duty
    idiom. Two keys, one save call, so a UI change never persists half the state. */
 export function waveTplSave() {
-  store.set('wavetpl', WAVETPL_CFG.length ? WAVETPL_CFG.map(clone) : null)
-  store.set('wavehide', WAVEHIDE.size ? [...WAVEHIDE] : null)
+  /* the two keys as ONE command — one save, one Undo step (store.group; the change-recording re-test §11.8) */
+  store.group('wavetpl', () => {
+    store.set('wavetpl', WAVETPL_CFG.length ? WAVETPL_CFG.map(clone) : null)
+    store.set('wavehide', WAVEHIDE.size ? [...WAVEHIDE] : null)
+  })
 }
 
 /* Storage is hand-editable, so untrusted (the scar every list loader here carries).

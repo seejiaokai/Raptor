@@ -98,7 +98,7 @@ export function writeText(path: any, v: any) {
     const moved = txtSet(path, v)
     if (moved) afterSchedMutate()
     return moved
-  })
+  }, { key: String(path) })
 }
 
 /* a structural delete. The caller does the splice + shiftKeys inside `fn`;

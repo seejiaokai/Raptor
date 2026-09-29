@@ -1187,6 +1187,9 @@ function lwRegisterCommands(): void {
   /* [ARCH-STACK] step 4 — the war gestures. The role gates live in the writers
      (canDecide / canEditRow), exactly as lw.edit's do. */
   for (const t of ['lw.decide', 'lw.move', 'lw.ack', 'lw.approve', 'lw.decideApproved', 'lw.removeApproved', 'lw.moveApproved']) cmdDefinePermission(t, cmdAnyone)
+  /* D352 (28 Sep 26): a stage move is its own command so Undo can name it ("Undid: closing bidding …"); its authority
+     is perms.ts COMMAND_OPS (admin-only), as every war command's */
+  cmdDefinePermission('lw.stage', cmdAnyone)
   for (const c of LW_COLLS) cmdRegisterRecord({ key: `leavewar:${c}`, cls: 'record', collection: c, module: 'leavewar' })
   // [CMDL-FINISH] C9/P3-END — now that every LW write routes through the command
   // layer (the only post-boot raw path is LW_RESTORING, which runs at idle and is
@@ -3663,7 +3666,8 @@ export function advanceStage(): void {
   if (state.role !== 'admin') return
   const next = nextStage(state.period.stage)
   if (!next) return
-  updateCurrent(w => ({ ...w, period: { ...w.period, stage: next } }))
+  /* its own command, `lw.stage` — D352: the one Undo takes it back AND SAYS SO (undo/describe.ts) */
+  gesture('lw.stage', () => updateCurrent(w => ({ ...w, period: { ...w.period, stage: next } })))
 }
 
 /**
@@ -3686,7 +3690,7 @@ export function reopenStage(): boolean {
   if (!canReopen(state.period.stage, state.role)) return false
   const back = previousStage(state.period.stage)
   if (!back) return false
-  updateCurrent(w => ({ ...w, period: { ...w.period, stage: back } }))
+  gesture('lw.stage', () => updateCurrent(w => ({ ...w, period: { ...w.period, stage: back } })))   // D352
   return true
 }
 

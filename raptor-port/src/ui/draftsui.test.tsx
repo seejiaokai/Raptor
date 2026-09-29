@@ -97,7 +97,7 @@ describe('the ONE selector on both surfaces', () => {
     HOOKS.editMode = () => false
     try { expect(boardHTML(0)).not.toContain('data-draftsadd=') }
     finally { HOOKS.editMode = real }
-    await click($('#sbClose'))
+    await click($('#sbDone'))
   })
 })
 
@@ -149,7 +149,7 @@ describe('the plans menu — the live copy, + Alt Plan, and switching', () => {
     await click($('#sbSign [data-planmenu]'))
     expect(copyRows().length).toBe(2)
     document.body.click()
-    await click($('#sbClose'))
+    await click($('#sbDone'))
   })
 })
 

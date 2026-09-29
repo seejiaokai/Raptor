@@ -23,6 +23,7 @@
 import { memo, useEffect } from 'react'
 import App, { PAGE_ID } from './App.jsx'
 import { wireTrackerPeople } from './peoplewire'
+import { setTrackerHosted } from './undo-bridge.js'
 import './tracker.css'
 
 /* The render firewall (LeaveWarPage.tsx has the measured why): every Raptor
@@ -30,6 +31,10 @@ import './tracker.css'
    (core.js subscribe/getVersion) — nothing it draws arrives through props,
    so the parent's render can stop at this line. `active` is the one prop, and
    a tab switch is exactly when it must re-render. */
+/* [UNDO-TOPBAR] (D349 (2)): inside Raptor the Tracker's ↶ ↷ are drawn in the app's top bar (ui/topbits.tsx, through
+   undo-bridge.js), so its own header leaves them out; set before the first render. The standalone Tracker never loads
+   this seam and keeps its own pair. */
+setTrackerHosted(true)
 /* Wired as this chunk loads, not only on the first mount: the engine's boot (a
    child's effect, which runs BEFORE this page's own) reads the signed-in person to
    open on his own course and student (D376). Idempotent — the mount's call below

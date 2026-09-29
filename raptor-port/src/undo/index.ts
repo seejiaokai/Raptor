@@ -10,5 +10,5 @@ export {
   subscribeUndo, getUndoVersion,
 } from './timeline'
 export type { UndoHooks, UndoResult } from './timeline'
-export { describeEntry, bubbleText } from './describe'
+export { describeEntry, bubbleText, setDescribeNames } from './describe'
 export type { UndoEntry, RecordCtx, RecordOwner } from './types'

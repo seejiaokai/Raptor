@@ -97,6 +97,8 @@ const SEED: Account[] = [
 const SEED_PASS: Record<string, string> = { acad: 'a', acus: 'us' }
 
 export let ACCOUNTS_LIST: Account[] = SEED.map(a => ({ ...a }))
+/* a stored accounts record of null means the seeded list (accountsLoad) — the candidate a restore to it would leave */
+export const seedAccounts = (): Account[] => SEED.map(a => ({ ...a }))
 export let ACCESS_REQS: AccessRequest[] = []
 export let GUESTVIEW = false
 
@@ -448,6 +450,50 @@ export function dropAccountOfPid(pid: string): void {
   if (!a) return
   writeAccounts(ACCOUNTS_LIST.filter(x => x.id !== a.id))
   if (requestByName(a.name)) writeReqs(ACCESS_REQS.filter(r => r.name !== a.name))
+}
+
+/* ---- WHAT AN UNDO OR REDO MAY PUT BACK ON THE ACCOUNTS (the change-recording re-test B5, 28 Sep 26) ----
+   Once the one Undo takes settings steps ([UNDO-ROSTER-SETTINGS]), an account change taken back or redone must obey the
+   SAME guards the write path does — never accountsLoad's forgiving repair, which would quietly drop a duplicate or re-add
+   the seed admin and hide a lock-out until the database step (Astra's red team 2, Fable S21). Asked over the WHOLE
+   candidate (the stored images the restore would write, over the roster as it would then stand — `people`), before the
+   view moves and again inside the restore itself (undo/timeline.ts applyRestore). A sentence, or null.
+   `next` — the accounts list the restore would leave (null: unchanged); `reqs` — the access requests it would leave. */
+export function accountsRestoreProblem(next: any[] | null, reqs: any[] | null, people: Record<string, any>): string | null {
+  const list: any[] = next ?? ACCOUNTS_LIST
+  const ok = (pid: string) => !!people[pid] && !people[pid].special && !people[pid].deleted
+  if (next) {
+    const ids = new Set<string>(), names = new Set<string>(), pids = new Set<string>()
+    for (const a of list) {
+      if (!a || typeof a.id !== 'string') return 'That would leave an account unreadable — it can’t be undone now.'
+      const nm = normName(a.name)
+      if (names.has(nm)) return `That would give the sign-in name ${nm} two accounts — it can’t be undone now.`
+      if (pids.has(a.pid)) return `That would give ${people[a.pid]?.cs || 'one person'} two accounts — it can’t be undone now.`
+      ids.add(a.id); names.add(nm); pids.add(a.pid)
+      /* an account for someone no longer on the roster (a deleted man is kept dead elsewhere — person-delete.ts) */
+      if (!people[a.pid] || people[a.pid].special) return 'That account’s person is no longer on the roster — it can’t be undone now.'
+      /* D322: an archived man's sign-in stays suspended — Restore brings it back with him, never Undo */
+      const live = ACCOUNTS_LIST.find(x => x.id === a.id)
+      const p = people[a.pid]
+      if (a.on !== false && p.archived && !p.deleted && !(live && live.on)) return `${p.cs} is archived — restore him on Admin → Users first`
+    }
+    /* at least one admin who can sign in (ADMIN_LOCK — the write path's own guard) */
+    if (!list.some(a => isAdminAccount(a) && a.on !== false && ok(a.pid))) return ADMIN_LOCK
+    /* never the signed-in person's own account (the D166 guard — every field he would sign in with: Astra's red team 2) */
+    const mine = ACCOUNTS_LIST.find(ownAccount)
+    if (mine) {
+      const there = list.find(a => a.id === mine.id) || list.find(a => a.pid === mine.pid)
+      const same = there && normName(there.name) === mine.name && there.role === mine.role && there.pid === mine.pid && (there.on !== false) === mine.on
+      if (!same) return "You can't change your own account — ask another admin"
+    }
+  }
+  /* a request waiting under a name that has an account is answered — a restore never puts one back (Fable's red team 11:
+     the loader would drop it in memory while the stored list kept it, record and screen disagreeing) */
+  if (reqs) for (const r of reqs) {
+    const nm = normName(r && r.name)
+    if (nm && list.some(a => normName(a.name) === nm)) return `${nm} already has an account`
+  }
+  return null
 }
 
 /* ---- A NEW PERSON WITH HIS ACCOUNT, IN ONE STEP ([ACCOUNTS-NEW-PERSON], D214, D217) ----

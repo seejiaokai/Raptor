@@ -200,6 +200,12 @@ deliberately. Ranked by value for the cost:
 | 3 | **Red-teaming the RULES before building** | One; both if conflicting rulings touch money or authority | Catches a rule that is obsolete, incomplete or self-contradictory before code hardens around it. |
 | 4 | **Attacking the method itself, after a defect escapes** | One drafts, the other attacks | Outsiders change the checking system; the builder defends the process that missed it. After escapes, not routinely. |
 
+**How many, and which (owner, D353, 28 Sep 26):** scenario design (rank 1) and any side question — ONE reviewer, Astra
+first, because it runs on his ChatGPT/Codex account and not his Claude allowance (Fable if Astra is unavailable); the
+red team of an important plan (rank 3) — BOTH; the code reads on high-consequence work (rank 2) — BOTH. Measured on
+28 Sep 26: three Fable runs cost ~1.4M Claude tokens and found the serious issues; the doubled scenario and side-question
+runs mostly repeated each other.
+
 **Do NOT spend them on:**
 
 - **Another code review when the missing evidence is runtime.** This is the trap that was actually

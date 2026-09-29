@@ -14,7 +14,7 @@ import { INPUTS } from '../engine/inputs'
 import { inpId } from '../engine/inputs'
 import { initStore, resetSession, writeInputs, writeInputsBatch } from './store'
 import { signIn, sessionFor } from './accounts'
-import { elogReason, changeLinesFor } from './changelines'
+import { elogReason, changeLinesFor, logReversed } from './changelines'
 import { installGlobalUndo } from './undo-wire'
 import { globalUndo, globalRedo } from '../undo'
 
@@ -180,6 +180,18 @@ describe('an Undo or a Redo (Astra DP-04)', () => {
     elogClear()
     expect(globalRedo().ok).toBe(true)
     expect(ELOG.rows.map(x => x.lbl)).toEqual([expect.stringMatching(/^Redo/)])
+  })
+
+  /* the change-recording re-test (28 Sep 26, plan §11.9 widened by walker A2-F5): an Undo line appears only where its
+     change wrote a line of its own — a Leave War ⚙ setting, a stage move or a Logic rule writes none, so its Undo wrote
+     a lone "Undo —" dated today, in a week nobody opens */
+  it('an undo of a change that wrote no line of its own writes none either (A2-F5)', () => {
+    logReversed({ label: 'a Leave War setting', forward: [{ op: 'put', collection: 'lw.config', id: 'all', before: {}, after: { sans: true } }] as any }, 'undo')
+    logReversed({ label: 'closing bidding', forward: [{ op: 'put', collection: 'lw.war', id: 'w1', before: { stage: 'open' }, after: { stage: 'closed' } }] as any }, 'redo')
+    logReversed({ label: 'a rule on the Logic page', forward: [{ op: 'put', collection: 'settings', id: 'rules', before: null, after: { v: {} } }] as any }, 'undo')
+    expect(ELOG.rows).toHaveLength(0)
+    logReversed({ label: 'Hex’s quals', forward: [{ op: 'put', collection: 'people', id: 'rocky', before: { cs: 'Hex' }, after: { cs: 'Hex', q: 'B' } }] as any }, 'undo')
+    expect(ELOG.rows.map(r => r.lbl)).toEqual(['Undo — Hex’s quals'])
   })
 
   it('a refused Undo writes nothing', () => {

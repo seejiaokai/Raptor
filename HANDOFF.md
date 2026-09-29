@@ -15,6 +15,32 @@ the later merge keeps both (D78).
 
 ## Now
 
+<!-- now:claude/change-recording-retest -->
+### `claude/change-recording-retest` — the change-recording re-test (`[HUMAN-RETEST]`, D147) with `[UNDO-ROSTER-SETTINGS]`, D148 and `[UNDO-TOPBAR]` — BUILT, WALKED, READ BY BOTH, FIXED; waiting on HIS LOOK and "merge live" — written 29 Sep 26 — verify before use
+- **State:** every step of the plan done (`raptor-port/docs/superpowers/plans/2026-09-28-change-recording-plan.md`):
+  B1–B11 built red-first; walked at 1440×900, 1366×768, 390×844, 844×390 (664 checks, all pass — evidence
+  `raptor-port/docs/handpass/2026-09-28-change-recording.md` §4, §7); Fable and Astra read the finished code blind (D353) —
+  every finding fixed red-first and walked (§6; reports `…/briefs/2026-09-28-change-recording-final-read-{fable,astra}.md`);
+  the gates green under the lock (§Gate baseline). `main` (d3650865, the Tracker leftovers) merged in. Pushed; the PR is open.
+- **His look (the card is in the PR and the chat):** the pair on every page; the board's ✓ Done (no ✕) and the phone's ⋯;
+  the laptop-width icon-only pair (the builder's call: with words, six pages' bars grew a second line); §11.5
+  say-once-then-pass-over; "OK, seen" never a step and never undone; the named refusals. Then his "merge live" — NOTHING
+  to `main` without it. After the merge: archive `[UNDO-ROSTER-SETTINGS]` and `[UNDO-TOPBAR]` (both say "closes when it
+  merges") and remove this block.
+- **Filed by this build:** `[PHONE-WIDE-BOARD-BLANK]` (medium — the board's Desktop layout blank on a phone, on `main`
+  too), `[BUBBLE-SMALL-SEEN]` (low — Unpublish says nothing; a bubble over the section-order offer). Earlier:
+  `[UNDO-POSTING-RECORD]`, `[HIST-PER-PAGE]`, `[PHONE-DISCARD-MARKS]`.
+- **Rulings:** D347–D353 are this branch's (28 Sep 26); none new since. D347's and D353's short lines corrected after
+  Astra's D138 check (`…/briefs/2026-09-29-rulings-d347-d353-short-lines-astra.md`) — the slim-down's leftover is done.
+  D354–D359 unused, free.
+- **Parallel chats (D302):** the Tracker leftovers chat merged (#459, #462) and closed; the small-fixes chat
+  (`claude/small-fixes-batch-d223f6`, PR #463) stays out of both bars and told us of any change there — no clash, only
+  `scheduler.css` in different blocks; the later merge brings `main` in first (D78). Observation numbers: this branch
+  #345–#347 (renumbered from #341–#342, which are the small-fixes branch's).
+- **Ports:** preview 4173 (this build), the live copy for the bars walk 4192 (`C:/rw/main`, a detached `origin/main`
+  checkout — remove its node_modules junction before deleting it).
+<!-- /now -->
+
 <!-- now:claude/rulings-slim-d391-078ad2 -->
 ### `claude/rulings-slim-d391-078ad2` — [RULINGS-SLIM]'s guide step (D391): the guide's rules as one-line short forms — BUILT, his "merge live" given — written 28 Sep 26 — verify before use
 - **The branch:** cut from `main` after PR #458 (the rulings part of the slim-down, whose block this replaces — merged; its
@@ -96,9 +122,8 @@ the later merge keeps both (D78).
 
 ## Gate baseline
 
-The latest counts watched — 28 Sep 26, `claude/tracker-leftovers-f79d36`, each run under the PC lock: unit **6827 / 6828**
-(418 files — the one a changes-window test timing out under a full run, alone 9/9: `[HISTLIST-SLOW-TEST]`) · build clean ·
-tfin **728 / 0** · e2e **495 passed**, 48 skipped · smoke **445 / 0** · rulecheck OK · docsize OK. Restate a count only from a run you watched, and REPLACE the previous counts — never stack a
+The latest counts watched — 29 Sep 26, `claude/change-recording-retest`, each run under the PC lock: unit **6898 / 6898**
+(423 files) · build clean · tfin **728 / 0** · e2e **495 passed**, 48 skipped · smoke **445 / 0** · rulecheck OK · docsize OK. Restate a count only from a run you watched, and REPLACE the previous counts — never stack a
 history. How to run them: `raptor-port/CLAUDE.md` §Build & verify; how they mislead, and the checks on his PC:
 `raptor-port/docs/gates-and-deploy.md`.
 

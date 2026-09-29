@@ -1246,6 +1246,35 @@ resolved statuses always carry their resolution date
 
 **Principle:** A restructuring that must not change meaning is safest as pure insertion, proved mechanically; judgement goes into WHERE, and the proof covers everything else.
 
+### Observation 336: A delegated reviewer's report must land in a file from the start, not only in its hand-back message
+
+**Status:** OPEN
+**Date:** 2026-09-28
+**Session context:** the change-recording re-test (Raptor): Fable subagents designed scenarios, reviewed a list and red-teamed a plan; Codex (Astra) ran the same jobs.
+**Skill:** dispatching-parallel-agents
+**Type:** open-source
+**Phase/Area:** briefing a subagent — where its output goes
+
+**Issue:** The Codex runs wrote their reports straight to a file (`-o <path>`), but the read-only Claude subagents returned theirs only as the final hand-back message; the task's output file was empty. Saving each report for the record meant retyping it into a file, so every long report sat in the host's context twice. Late in the session the host had to message the running agents mid-flight to shorten their answers and write files instead.
+
+**Suggested improvement:** In the brief section of the skill: when a subagent's report must be kept, say at dispatch where it goes — an agent that may write files writes the full report to a named path and returns a short summary (count, one line per finding, the path); a read-only agent is told a length cap up front and the host saves its message once, verbatim, by a script, never by retyping.
+
+**Principle:** Decide where a delegated report lives before dispatching it; a report that arrives only as a chat message costs the host its full length twice when it has to be kept.
+
+### Observation 337: A scripted-walk subagent needs a scope bound, or it spends the budget of a whole session
+
+**Status:** OPEN
+**Date:** 2026-09-28
+**Session context:** the same re-test; two Opus walkers each drove the running app through ~12 scenarios at two widths.
+**Skill:** dispatching-parallel-agents
+**Type:** open-source
+**Phase/Area:** briefing a walker — scope and cost
+
+**Issue:** Each walker ran 370–500 tool calls and 800–880k tokens (48–56 minutes), more than all the reviewers together. The brief listed scenarios but set no bound on retries, picture count or depth, and asked for pictures of everything at both widths.
+
+**Suggested improvement:** Brief walkers with a bound: a scenario count per walker, one picture per assertion that matters, a stop-and-report rule after N failed attempts at one gesture, and a summary-plus-file return. Split by cost, not only by area.
+
+**Principle:** A walker's cost is set by its brief; name the stopping rule and the evidence you actually need, or it will gather everything.
 ### Observation 339: Condensing a large decision log into a loaded index + a searched full text — the method that held up
 
 **Status:** OPEN
@@ -1275,6 +1304,35 @@ resolved statuses always carry their resolution date
 **Suggested improvement:** When condensing a rule, list its negative clauses, exceptions and scope limits BEFORE cutting, and keep those ahead of examples, dates and rationale; state a supersession's scope with the exact dates it names. Keep the independent meaning read as the gate.
 
 **Principle:** In a compressed rule, the prohibitions and exceptions carry the most risk per character: drop the examples and the story first, never the "don't" or the "except".
+### Observation 345: A unit test of "this change is recorded" can pass vacuously when the store's record source is absent in the test world
+
+**Status:** OPEN
+**Date:** 2026-09-28
+**Session context:** change-recording build (Raptor), B2 — cutting the settings store over to the one undo; its records are read from persisted storage, which the undo-wire test file never installed.
+**Skill:** test-driven-development
+**Type:** open-source
+**Phase/Area:** red-first — writing the failing test
+
+**Issue:** The first red run of "a Logic rule change is undone" failed for the wrong reason: with no storage backend in the test world, the settings store's before/after images were both null, so no change was recorded at all. Had the implementation already been in place, the test would have failed the same way and been "fixed" by chasing the wrong cause; conversely a looser assertion (e.g. only "undo returned ok:false") would have passed vacuously.
+
+**Suggested improvement:** In the red-first step, add: "before trusting a red, confirm it is red for the RIGHT reason — assert the precondition the feature depends on (the change was actually recorded / the entry exists) as its own expectation, so a missing fixture fails loudly and differently from a missing feature."
+
+**Principle:** A red test proves nothing until you know WHY it is red; pin the precondition separately from the behaviour so a broken fixture cannot impersonate a missing feature.
+
+### Observation 346: A commit chained after a FILTERED test run commits red — the filter's exit code, not the tests', gates it
+
+**Status:** OPEN
+**Date:** 2026-09-28
+**Session context:** change-recording build (Raptor), B8 — "npx vitest run … | grep -E '×|Tests' ; … && git commit" went in with two failing tests, because the pipe's last command (grep) succeeded.
+**Skill:** verification-before-completion
+**Type:** open-source
+**Phase/Area:** committing after a test run
+
+**Issue:** The test output was read through a filter to save space, and the commit was chained in the same command. The chain's success condition was the filter's exit status, so a red run still committed; it was caught only by reading the printed lines afterwards, and needed a follow-up fix commit.
+
+**Suggested improvement:** Add a rule: never chain a commit (or any irreversible step) onto a command whose test output passes through a pipe; run the tests with their exit code captured (to a file, `echo exit $?`) and commit in a separate step only after reading a green result.
+
+**Principle:** The gate on an irreversible step must be the check's own exit code — a pipe or filter in between silently replaces it with the filter's.
 
 ### Observation 330: A question put to the owner needs a worked example with real names, not an abstract rule
 
@@ -1365,3 +1423,18 @@ resolved statuses always carry their resolution date
 **Suggested improvement:** Before acting on a finding, confirm every cited path exists and re-trace the claim on the real code; classify each as fixed / not a defect (with the reason) / cannot happen here (with the evidence, and filed for when it can).
 
 **Principle:** A finding is a claim to verify, not a task to execute; wrong paths are the cheapest early signal that the evidence needs re-deriving.
+
+### Observation 347: A test driven by a hand-made record passed while the real door produced a different record — the fix did nothing in the app
+
+**Status:** OPEN
+**Date:** 2026-09-29
+**Session context:** change-recording build (Raptor), fixing Fable's final-read F2 ("a calendar change should open the Inputs calendar"). Numbered past #344 (#341–#342 are the small-fixes branch's; this branch's two were renumbered #345–#346).
+**Skill:** test-driven-development
+**Type:** open-source
+**Phase/Area:** red-first — choosing how the failing test produces its input
+
+**Issue:** The landing tests were written against a hand-built undo entry (`{ scope: { module: 'plan' }, forward: [...] }`) so they could be red quickly. The fix keyed on that area, the test went red then green — and the walk showed the real calendar save is filed under a DIFFERENT area ('inputs'), so the fix never fired in the app. The hand-made record encoded the author's belief about the code path, which was exactly the thing under test. It was caught only because a walk script drove the real control.
+
+**Suggested improvement:** In the red-first step: a test's input must come from the production door (call the real writer the button calls) unless the door cannot run in the test world; when a hand-made record is unavoidable, add one test through the real door that asserts the record really has that shape (area, collection, type), so a wrong belief fails loudly. Name this in the skill's "red for the right reason" section.
+
+**Principle:** A fabricated input proves the code handles what you THINK arrives; only the real door proves what arrives — the belief under test must not be baked into the test's fixture.

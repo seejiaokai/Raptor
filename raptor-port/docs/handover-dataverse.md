@@ -61,7 +61,9 @@ For the person designing RAPTOR's Dataverse tables. Written 10 Sep 26.
      off by default, lets people waiting read the published week as a guest; the app keeps no password. The `User` and `AccessRequest` tables, and the
      permissions table the app mirrors (drift-tested), are `data-model.md` §3 and §11. Who may enter the app at
      all (the security group / environment roles) is set in your environment, not by the app;
-  4. how long the edit log is kept and who may read it;
+  4. how long the edit log is kept and who may read it; **(owner, D351, 28 Sep 26): until then Admin → Data's "Clear edit
+     history…" stays as it is (admin-only, two taps, permanent, leaving a dated line naming who cleared how much); your
+     retention rule decides whether it follows that rule or goes**;
   5. whether the attempt-by-attempt training history is built from day one
      or after the first migration stage;
   6. whether a week of the flying programme is stored as one record first

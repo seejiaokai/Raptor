@@ -12,14 +12,22 @@ import { SCHED, dayApproved, signOf, daySigned, setSign } from '../engine/publis
 import { draftDup, draftSelect, dayDrafts } from '../engine/drafts'
 import { HOOKS } from '../engine/hooks'
 import { txtGet } from '../engine/slots'
-import { initStore, writeText } from './store'
+import { initStore, writeText, loadWeek, writeInputs, writeInputsBatch } from './store'
+import { CURWEEK } from '../engine/waves'
 import { commitSetDayApproved, schedBaselineClean, schedWrite, SCHED_TYPES } from './sched-commit'
 import { setSession } from './auth'
 import * as view from './view'
 import { _resetDisclosure } from './disclosure'
 import { globalUndo, globalRedo, undoState } from '../undo'
-import { _resetTimeline } from '../undo/timeline'
-import { installGlobalUndo } from './undo-wire'
+import { _resetTimeline, _timelineEntries } from '../undo/timeline'
+import { PEOPLE } from '../engine/people'
+import { updatePersonField } from './quals-write'
+import { VCONF, RULE_SPEC, rulesSave, rulesResetMem } from '../engine/rules'
+import { storeBackend } from '../engine/hooks'
+import { waveTplLoad } from '../engine'
+import { addWaveTpl, delWaveTpl, setWaveHidden, waveTplSave, WAVETPL_CFG, WAVEHIDE } from '../engine/wavetpl'
+import { installGlobalUndo, _snapView } from './undo-wire'
+import { setDayRemark } from './plan'
 import { HIST } from './history'
 
 const DSNAP = JSON.stringify(DAYS)
@@ -178,5 +186,210 @@ describe('Undo and the sign-offs a publish spent (walk W3 — F-w3-1, F-w3-2)', 
     expect(signOf(5).cur).toBe('ignite')                // Saturday's comes back
     expect(signOf(4).cur, 'the step the new change replaced stays gone').toBe('')
     expect(undoState().canRedo).toBe(false)             // nothing left to redo
+  })
+})
+
+/* B2 of the change-recording re-test (28 Sep 26, [UNDO-ROSTER-SETTINGS]) — the roster and the settings are cut over:
+   the 16 Sep 26 rule "roster and settings edits ARE undoable" (register AM39d), narrowed by D350 (adding / archiving /
+   restoring / deleting a person and postings stay out). Each through the app's own writer, red first. */
+describe('B2 — a Quals change, a Logic rule and a template are Undo steps now', () => {
+  /* the settings store's record IS the saved value (people-settings-commit.ts), so these need a saved copy to change */
+  const mem: Record<string, string> = {}
+  beforeEach(() => { Object.keys(mem).forEach(k => delete mem[k]); storeBackend.impl = { getItem: (k: string) => (k in mem ? mem[k]! : null), setItem: (k: string, v: string) => { mem[k] = v } } })
+  afterEach(() => { storeBackend.impl = null; rulesResetMem(); waveTplLoad() })
+  it('a Quals tick is undone and redone, the roster record with it', () => {
+    const pid = 'rocky'
+    const was = !!(PEOPLE as any)[pid].quals.nvg
+    expect(updatePersonField(pid, { tick: 'nvg' })).toBe(null)
+    expect(!!(PEOPLE as any)[pid].quals.nvg).toBe(!was)
+    expect(undoState().canUndo).toBe(true)
+    expect(globalUndo().ok).toBe(true)
+    expect(!!(PEOPLE as any)[pid].quals.nvg).toBe(was)
+    expect(globalRedo().ok).toBe(true)
+    expect(!!(PEOPLE as any)[pid].quals.nvg).toBe(!was)
+  })
+  it('a Logic rule change is undone — the rule itself back', () => {
+    const k = Object.keys(RULE_SPEC)[0]
+    const was = VCONF[k], spec = RULE_SPEC[k]
+    VCONF[k] = was === spec.hi ? spec.lo : spec.hi
+    rulesSave()
+    expect(globalUndo().ok).toBe(true)
+    expect(VCONF[k]).toBe(was)
+  })
+  it('deleting a HIDDEN wave template is ONE step — Undo brings it back still hidden (§11.8, Fable 7)', () => {
+    const t = addWaveTpl('ALPHA', 'fly')!
+    setWaveHidden(t.id, true); waveTplSave()
+    expect(globalUndo().ok).toBe(true)                    // the add-and-hide as one save (itself one step)
+    const t2 = addWaveTpl('BRAVO', 'fly')!
+    setWaveHidden(t2.id, true); waveTplSave()
+    const n = _timelineEntries().length
+    delWaveTpl(t2.id); waveTplSave()
+    expect(_timelineEntries().length).toBe(n + 1)
+    expect(globalUndo().ok).toBe(true)
+    expect(WAVETPL_CFG.some(x => x.id === t2.id)).toBe(true)
+    expect(WAVEHIDE.has(t2.id)).toBe(true)
+  })
+})
+
+/* B7 of the change-recording re-test (28 Sep 26) — an Undo takes you to where the change was (register AM39b, the owner's
+   13 Sep 26 "snaps you to that week and shows what the undo did"): walker A2-F4 (an undo pressed on another page left you
+   where you were), A1-F2 (the board's Undo across weeks closed the board), and the new doors this build adds (§11.6). */
+describe('B7 — Undo goes to the change’s page, and keeps the board open across weeks', () => {
+  const mem: Record<string, string> = {}
+  beforeEach(() => { Object.keys(mem).forEach(k => delete mem[k]); storeBackend.impl = { getItem: (k: string) => (k in mem ? mem[k]! : null), setItem: (k: string, v: string) => { mem[k] = v } } })
+  afterEach(() => { storeBackend.impl = null; rulesResetMem(); view.setPage('viewsched') })
+  it('a Quals change undone from another page lands on Quals, on his row', () => {
+    view.setPage('quals')
+    expect(updatePersonField('rocky', { tick: 'nvg' })).toBe(null)
+    view.setPage('leavewar')
+    expect(globalUndo().ok).toBe(true)
+    expect(view.CURPAGE).toBe('quals')
+    expect(view.QUALSFOCUS).toBe('rocky')
+  })
+  it('a Logic rule undone from Edit Schedule lands on the Logic page', () => {
+    const k = Object.keys(RULE_SPEC)[0], spec = RULE_SPEC[k]
+    VCONF[k] = VCONF[k] === spec.hi ? spec.lo : spec.hi; rulesSave()
+    view.setPage('editsched')
+    expect(globalUndo().ok).toBe(true)
+    expect(view.CURPAGE).toBe('logic')
+  })
+  it('a schedule change undone from the Leave War lands on Edit Schedule', () => {
+    view.setPage('editsched')
+    writeText('dn:0.0', 'SNAP')
+    view.setPage('leavewar')
+    expect(globalUndo().ok).toBe(true)
+    expect(view.CURPAGE).toBe('editsched')
+  })
+  it('an input filed on Inputs and undone there stays on Inputs — the change shows on the page you are on', () => {
+    view.setPage('inputs')
+    writeInputs(() => { INPUTS.push({ person: 'bane', type: 'LL', date: 'Jul 15', yr: 2026, rmk: '', iid: 'iwire1' } as any) })
+    expect(globalUndo().ok).toBe(true)
+    expect(view.CURPAGE).toBe('inputs')
+    expect(INPUTS.some((r: any) => r.iid === 'iwire1')).toBe(false)
+  })
+  it('a leave input undone on the Leave War stays on the war — it shows there too; undone elsewhere it opens Inputs', () => {
+    writeInputs(() => { INPUTS.push({ person: 'bane', type: 'LL', date: 'Jul 15', yr: 2026, rmk: '', iid: 'iwire3' } as any) })
+    view.setPage('leavewar')
+    expect(globalUndo().ok).toBe(true)
+    expect(view.CURPAGE).toBe('leavewar')
+    view.setPage('quals')
+    expect(globalRedo().ok).toBe(true)
+    expect(view.CURPAGE).toBe('inputs')
+  })
+  it('an input on the loaded week, undone on Edit Schedule, stays there — the day it lands on is the change (plan §11.6: "unless a week context is present"; walk S16)', () => {
+    writeInputs(() => { INPUTS.push({ person: 'bane', type: 'LL', date: 'Jul 19', yr: 2026, rmk: '', iid: 'iwire5' } as any) })
+    view.setPage('editsched')
+    expect(globalUndo().ok).toBe(true)
+    expect(view.CURPAGE).toBe('editsched')
+  })
+  it('an input on ANOTHER week, undone on Edit Schedule, opens Inputs', () => {
+    writeInputs(() => { INPUTS.push({ person: 'bane', type: 'LL', date: 'Aug 19', yr: 2026, rmk: '', iid: 'iwire6' } as any) })
+    view.setPage('editsched')
+    expect(globalUndo().ok).toBe(true)
+    expect(view.CURPAGE).toBe('inputs')
+  })
+  it('an input the war never shows (an appointment), undone on the Leave War, opens Inputs', () => {
+    writeInputs(() => { INPUTS.push({ person: 'bane', type: 'APPT', date: 'Jul 15', yr: 2026, rmk: '', iid: 'iwire4' } as any) })
+    view.setPage('leavewar')
+    expect(globalUndo().ok).toBe(true)
+    expect(view.CURPAGE).toBe('inputs')
+  })
+  it('the "set as default order?" offer closes when a step is undone (walker A1 O5)', () => {
+    writeText('dn:0.0', 'O5')
+    view.setSecDefOffer(0)
+    expect(globalUndo().ok).toBe(true)
+    expect(view.SECDEFOFFER).toBe(null)
+  })
+  it('a sign-off on Saturday, undone and redone with the board on Friday, brings the board to Saturday (walk S14a — the week keeps every day’s sign-offs in one record)', () => {
+    view.setPage('editsched')
+    schedWrite(SCHED_TYPES.sign, () => { setSign(5, 'cur', 'ignite'); HOOKS.histPush() })
+    view.setBoardDay(4)
+    expect(globalUndo().ok).toBe(true)
+    expect(view.SBDAY).toBe(5)
+    view.setBoardDay(4)
+    expect(globalRedo().ok).toBe(true)
+    expect(view.SBDAY).toBe(5)
+  })
+  /* Astra's final read, finding 2: the page is the ACT's, never a consequence's — a weekend publish carries the Leave
+     War's OIL credit (an lw.cell projection) folded into the schedule's step, and must still land on Edit Schedule */
+  const publishWithCredit = () => ({ scope: { module: 'sched', weekId: CURWEEK }, forward: [
+    { op: 'put', collection: 'days', id: `${CURWEEK}#5`, before: {}, after: {} },
+    { op: 'put', collection: 'lw.cell', id: 'w2026:bane:2026-07-18', before: [], after: [{ kind: 'oil' }] }] } as any)
+  it('a schedule step carrying a Leave War credit, undone from Admin or the Leave War, lands on Edit Schedule (Astra F2)', () => {
+    for (const from of ['admin', 'leavewar']) {
+      view.setPage(from as any)
+      _snapView(publishWithCredit(), 'undo')
+      expect(view.CURPAGE).toBe('editsched')
+    }
+  })
+  it('the same step with the board on another day brings the board to the published day (Astra F2)', () => {
+    view.setPage('editsched'); view.setBoardDay(2)
+    _snapView(publishWithCredit(), 'undo')
+    expect(view.SBDAY).toBe(5)
+  })
+  it('a Leave War step that lands a leave on a week, undone from Edit Schedule, goes to the Leave War (Astra F2)', () => {
+    view.setPage('editsched')
+    _snapView({ scope: { module: 'lw', warId: 'w2026' }, forward: [
+      { op: 'put', collection: 'lw.cell', id: 'w2026:bane:2026-07-15', before: [], after: [{ kind: 'bid' }] },
+      { op: 'put', collection: 'days', id: `${CURWEEK}#2`, before: {}, after: {} }] } as any, 'undo')
+    expect(view.CURPAGE).toBe('leavewar')
+  })
+  it('a planning-calendar day title undone from another page opens Inputs on its CALENDAR (Fable F2, plan §11.6)', () => {
+    view.setInpView('table'); view.setPage('inputs')
+    writeInputs(() => setDayRemark('2026-07-16', 'B7 PLAN'))           // the calendar's own door (InputsCal.tsx)
+    view.setPage('editsched')
+    expect(globalUndo().ok).toBe(true)
+    expect(view.CURPAGE).toBe('inputs')
+    expect(view.INPVIEW).toBe('cal')
+  })
+  it('an input row undone from another page opens Inputs on its table, not the calendar', () => {
+    view.setInpView('table'); view.setPage('editsched')
+    writeInputs(() => { INPUTS.push({ person: 'bane', type: 'LL', date: 'Aug 20', yr: 2026, rmk: '', iid: 'iwire7' } as any) })
+    expect(globalUndo().ok).toBe(true)
+    expect(view.INPVIEW).toBe('table')
+  })
+  it('the board’s Undo that crosses to another week keeps the board open, on the changed day (A1-F2)', () => {
+    view.setPage('editsched')
+    writeText('dn:0.0', 'WEEK A MONDAY')
+    loadWeek('20/07/2026')
+    view.setBoardDay(3)
+    expect(globalUndo().ok).toBe(true)
+    expect(CURWEEK).toBe('13/07/2026')
+    expect(view.SBDAY).toBe(0)
+  })
+})
+
+/* B8 of the change-recording re-test (28 Sep 26) — the words: one vocabulary for the hover, the bubble and the history
+   line. Walker A2-F6 / [AMEND-SMALL-SEEN] item 2 (a take-off time read "a note on the schedule"), A2-F2 (one input read
+   "a batch of inputs"), and the roster and settings steps now undoable (Fable 3e, S23). */
+describe('B8 — Undo says what came back', () => {
+  const mem: Record<string, string> = {}
+  beforeEach(() => { Object.keys(mem).forEach(k => delete mem[k]); storeBackend.impl = { getItem: (k: string) => (k in mem ? mem[k]! : null), setItem: (k: string, v: string) => { mem[k] = v } } })
+  afterEach(() => { storeBackend.impl = null; rulesResetMem() })
+  it('a take-off time, a landing time, a day note — the box it wrote, not "a note on the schedule"', () => {
+    writeText('ff:0.0.0.to', '10:45')
+    expect(undoState().undoLabel).toBe('a take-off time')
+    writeText('ff:0.0.0.ld', '11:55')
+    expect(undoState().undoLabel).toBe('a landing time')
+    writeText('dn:0.0', 'A DAY NOTE')
+    expect(undoState().undoLabel).toBe('a day note')
+    const r = globalUndo()
+    expect(r.ok).toBe(true)
+    expect(r.entry!.label).toBe('a day note')
+  })
+  it('a day title on the Inputs calendar names the calendar, not "a personal input" (the walk, R2)', () => {
+    writeInputs(() => setDayRemark('2026-07-16', 'B8 TITLE'))
+    expect(undoState().undoLabel).toBe('a day title on the calendar')
+  })
+  it('one input filed through the Inputs page’s batch door is "a personal input"', () => {
+    writeInputsBatch(() => { INPUTS.push({ person: 'bane', type: 'LL', date: 'Jul 16', yr: 2026, rmk: '', iid: 'iwire2' } as any) })
+    expect(undoState().undoLabel).toBe('a personal input')
+  })
+  it('a Quals tick names the man and what changed; a rule names the Logic page', () => {
+    expect(updatePersonField('rocky', { tick: 'nvg' })).toBe(null)
+    expect(undoState().undoLabel).toBe('Hex’s quals')
+    const k = Object.keys(RULE_SPEC)[0], spec = RULE_SPEC[k]
+    VCONF[k] = VCONF[k] === spec.hi ? spec.lo : spec.hi; rulesSave()
+    expect(undoState().undoLabel).toBe('a rule on the Logic page')
   })
 })
