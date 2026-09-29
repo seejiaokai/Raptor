@@ -969,6 +969,13 @@ reviews it and deploys it into the restricted environment after approving; minor
 a major change its own; the Dataverse connection will add files to the code "for reference" (the tables' shape); it all
 starts on HIS go-ahead to deploy. AI inside the restricted environment: only by opening the code in VS Code there and
 connecting his own Claude subscription (Edwin). What this does to the workflow and the bug check: `[RESTRICTED-ENV-WORKFLOW]`.
+**HEARD FROM THE IT SIDE, 30 Sep 26 (his words: "what i heard no plugin for now" — heard, not yet confirmed in writing):
+no plug-in for now.** What it does: (1) `data-model.md` §12 q9 — nothing on the server can write a day, so a member's
+input, a delete and a request handed on are worked out on read (§9 rule 9) with no alternative; `[DB-READINESS]` group A
+no longer waits on q9's answer (its reporting half still goes to IT). (2) D450's firm lock was designed with ONE plug-in
+plus SYSTEM Custom APIs (§3 ScheduleDay, §12 q8): row ownership alone still refuses another person's save, but a
+take-over, freeing an idle day and telling two tabs of one person apart need another route — decided with the lock's
+build (group B, D453), not now. **To ask IT:** is it plug-ins only, or also Custom APIs and Power Automate flows?
 
 ### [PEEK-ISSUED] The desktop next-week preview on View-only Sched shows next week's working copy, even for a published day — a question for him (filed 26 Sep 26)
 Noted by the sweep behind `[LEAVE-LATE-PUBLISHED]` (Astra, its plan read; carried in `[LATE-PUB-FACE-LIVE]`, archived
