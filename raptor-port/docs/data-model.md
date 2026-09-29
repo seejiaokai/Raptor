@@ -734,13 +734,18 @@ picked up rather than frozen. Do not seed this table.
 ### SchemaVersion
 
 Owner: **Shell**. One row. The front end reads it at boot and refuses to run
-against a store it does not understand (section 6).
+against a store it does not understand (section 6). **One object, built 30 Sep 26** (`[DB-READINESS]` group A
+phase 0, Astra R3-03 — `src/storage/schema.ts`): it replaced both the bare format number the browser stored and a
+separate "already started" record, and it is how the app knows a store has STARTED — never by whether one
+particular record happens to exist.
 
 | Field | Type | Req | Meaning |
 |---|---|---|---|
 | `stage` | int | yes | the migration stage the store is at (1–4) |
-| `appliedAt` | datetime | yes | when that stage's migration completed |
-| `minClient` | string | yes | the oldest front-end build allowed to write |
+| `dataFormatVersion` | int | yes | the shape the records are in — 5 today, 6 once every record is one row per thing (the fold, `src/storage/fold.ts`). Reset and fold decisions compare THIS, never `stage` |
+| `initialized` | bool | yes | the store has started — seeded (the demo), folded, or bootstrapped (an empty shared store's first admin, group A phase 5). An initialized store is never seeded; a wipe clears it |
+| `appliedAt` | datetime | yes | when that format was applied |
+| `minClient` | int | yes | the oldest front-end data format allowed to write (a build below it refuses to load) |
 
 ### User
 
@@ -918,15 +923,15 @@ behind the existing door rather than a rewrite above it.
 
 | Stage | What lands | What it lets the squadron do | Rollback |
 |---|---|---|---|
-| **1 — whole-record JSON tables** | The tables of section 5 in their simplest form: `Person`, `Input`, `ScheduleWeek` with one `ScheduleDay` snapshot row per day carrying its lock, `PlanningPuck`, `DayRemark`, `ChangeBatch`, `TakeOverRequest`, `AmendmentRetraction` (29 Sep 26, D355, D450 — the day lock, the change log and the 30-second check of section 9 land with this stage), `Amendment`, `IssuedSignoff`, `EditLog`, `Setting`, `Attachment` metadata, `LeaveWar`, `Enrolment`, `Syllabus`, `TrainingEvent`, `Layout`, `SchemaVersion`. One record in, one row out. The app's doors do not change: the **row fan-out backend** (`FanOutBackend`, a `Backend` behind the same postman) splits the whole-collection records — `people/all`, `inputs/all` — into one row per person / input and `plan/all` into its `PlanningPuck` and `DayRemark` rows, and for the schedule sends the command layer's write set, one changeset per command (section 3, What the adapter writes; D355), and re-joins them on `loadAll`, so the whiteboard above it never learns the difference | One shared copy of the squadron's data instead of one per browser. Everyone sees the same roster, the same weeks, the same charts, from any machine. A real backup | Point the front end back at the browser backend; export the rows to the whole-record shapes with the same fan-out run in reverse. No data shape has changed, so nothing is lost |
+| **1 — whole-record JSON tables** | The tables of section 5 in their simplest form: `Person`, `Input`, `ScheduleWeek` with one `ScheduleDay` snapshot row per day carrying its lock, `PlanningPuck`, `DayRemark`, `ChangeBatch`, `TakeOverRequest`, `AmendmentRetraction` (29 Sep 26, D355, D450 — the day lock, the change log and the 30-second check of section 9 land with this stage), `Amendment`, `IssuedSignoff`, `EditLog`, `Setting`, `Attachment` metadata, `LeaveWar`, `Enrolment`, `Syllabus`, `TrainingEvent`, `Layout`, `SchemaVersion`. One record in, one row out. The app's own records ARE the rows *(corrected 30 Sep 26 — `[DB-READINESS]` group A, plan §2.1, both reviewers: the **row fan-out backend** once described here — a `FanOutBackend` behind the postman splitting `people/all`, `inputs/all` and `plan/all` into rows and re-joining them on `loadAll` — is NOT built)*: each stored record is one row of one table, written from the command stream through ONE mapper (`src/state/rowmap.ts`), one changeset per command (section 3, What the adapter writes; D355), so the adapter is a thin, stateless mapping | One shared copy of the squadron's data instead of one per browser. Everyone sees the same roster, the same weeks, the same charts, from any machine. A real backup | Point the front end back at the browser backend; export the rows to the whole-record shapes with the same fan-out run in reverse. No data shape has changed, so nothing is lost |
 | **2 — stable row ids** | The ScheduleRow family; Tracker students re-keyed by `Enrolment.id` rather than by typed name; `Attempt` rows behind the mark summary; slot keys become derived addresses; `EditLog.rowId` starts being written. **Each `ScheduleDay.snapshot` stays as a read-only shadow for one release**: the rows are the record, the column is rewritten from them on every write and compared at boot, and it is emptied only in the release after | Two people can edit different rows of the same day without overwriting each other. A renamed course or student stops moving storage keys. Progression history becomes real data, not a count | The shadow column IS the rollback: set `SchemaVersion.stage` back to 1 and the stage-1 build reads the snapshot it always did. `Attempt` rows fold back to a summary through the `ProgressionSummary` view |
 | **3 — live-ish sync** | *(29 Sep 26: the incoming side, the change log and the 30-second check moved to stage 1 — D356, section 9; what follows is kept for the stage's other parts.)* The backend contract gains `since(changeSeq)`; the postman gains an incoming side (poll with backoff, one catch-up on return); records reach the whiteboard as per-change deltas; row ownership decides what may be reconciled away. **Dual-write for the whole stage**: every write goes to the rows *and* to the change feed's table, and a nightly job proves the feed replays to the rows | The programme updates on screen while someone else edits it. Presence rides the same poll. This is the stage the "live data updates" half of the recommendation refers to | Switch the incoming side off (a flag); the rows are complete without the feed because of the dual-write, and the stage-2 build reads them unchanged |
 | **4 — Dataverse adapter and sign-in** | One new backend passing the existing `contractTests`, plus Microsoft sign-in feeding `HOOKS.whoami()` and the `User` table | Squadron accounts, real names on every edit and sign-off, and the platform's own audit, backup and reporting | Sign-in and storage are separate flags: either can go back to the previous provider alone. `User` rows are recreated on first sign-in, so dropping them loses nothing |
 
 **The boot check.** Every build carries the stage it was written for. At
 boot the front end reads the one `SchemaVersion` row and compares: a store
-ahead of the build refuses to load (the "could not load" screen, with the
-reason), a store behind it runs the pending migration only when the signed-in
+ahead of the build — a later stage, a later `dataFormatVersion`, or a `minClient` above it — refuses to load (built
+30 Sep 26: "RAPTOR has been updated — reload to get the latest version", nothing written), a store behind it runs the pending migration only when the signed-in
 role is admin and the build says so, and a missing row is an empty store at
 stage 1. This is what makes each rollback above a change of flag rather than
 a restore from backup.

@@ -2292,9 +2292,13 @@ export function setPersLabel(id: string, label: string): void {
  *
  * This exists for exactly one caller: the boot-time demo re-key
  * (state/demoworld.ts), which dresses the seeded demo world in Raptor's real
- * crew. It does not persist — boot must not write, and the result is
- * deterministic, so a fresh browser simply re-keys again next boot; the
- * first real user write persists the re-keyed wars like any other state.
+ * crew. It does not persist itself: installDemoWorld saves the dressed world
+ * once, after both demo writers, through `persistBootWorld`.
+ * (CORRECTED 30 Sep 26, [DB-READINESS] group A phase 0: this said "a fresh
+ * browser simply re-keys again next boot". Not since the storage seam — the
+ * boot's setPeople already saved the UNDRESSED seed, so the next boot read a
+ * stored war, skipped the demo, and the demo bids sat on the seed's invented
+ * callsigns, on nobody's row, until someone happened to write to the war first.)
  */
 export function remapPersonKeys(map: Record<string, string>): void {
   const rekey = <T,>(rows: Record<string, T>): Record<string, T> => {
@@ -2307,6 +2311,20 @@ export function remapPersonKeys(map: Record<string, string>): void {
   const ledger = state.ledger.map(e => ({ ...e, personId: map[e.personId] ?? e.personId, ...(e.enteredBy ? { enteredBy: map[e.enteredBy] ?? e.enteredBy } : {}) }))
   state = withCurrent({ ...state, wars, openings, ledger })
   notify()
+}
+
+/**
+ * Boot only: save the Leave War's world exactly as it now stands ([DB-READINESS]
+ * group A, phase 0 — plan §2.8). The demo world is dressed in memory by two
+ * writers that do not persist (installDemoOil, remapPersonKeys); a first boot
+ * must save the DRESSED world, inside the boot group that seals the store's
+ * `initialized`, or the next boot finds a started store holding the undressed
+ * seed. A raw write, never a command — a boot seed write, like setPeople's
+ * (its one caller is installDemoWorld's demo half; initStore has already run
+ * lwHistInit, so LW_READY cannot tell boot from a session here).
+ */
+export function persistBootWorld(): void {
+  rawPersist()
 }
 
 /**

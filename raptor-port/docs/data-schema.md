@@ -20,7 +20,7 @@ shared database replaces; nothing above a door knows where a key lives.
 | World | Door (the seam) | Key prefix (built site) | Backed by today |
 |---|---|---|---|
 | Scheduler | `store` + `storeBackend.impl` in `src/engine/hooks.ts`, plugged in once by `src/main.tsx` | `raptor:settings/*`, `raptor:weeks/*`, `raptor:inputs/all`, `raptor:people/all`, `raptor:plan/all` (legacy `sqn142_` imported once) | the whiteboard (`src/storage/`) → BrowserBackend on the built site |
-| Leave War | `StorageBackend {read, write}` in `src/leavewar/state/storage.ts`, now the whiteboard-backed adapter | `raptor:leavewar/*` (legacy `leavewar:` ignored) | the whiteboard (`src/storage/`) → BrowserBackend on the built site |
+| Leave War | `StorageBackend {read, write, remove, keys}` (remove and keys since 30 Sep 26, `[DB-READINESS]` group A phase 0) in `src/leavewar/state/storage.ts`, now the whiteboard-backed adapter | `raptor:leavewar/*` (legacy `leavewar:` ignored) | the whiteboard (`src/storage/`) → BrowserBackend on the built site |
 | Tracker | `storage {get, set, delete, list}` (async) in `src/tracker/storage.js`; per-browser prefs via `ocuLocal:` (NOT through the whiteboard) | `raptor:tracker/*` (legacy `ocu:` imported once); prefs stay `ocuLocal:*` | the whiteboard (`src/storage/`) → BrowserBackend on the built site — the record; the .json file is an import/export FORMAT only (9 Sep 26) |
 
 Two smaller seams sit beside these: `docBackend.impl` in `src/state/docs.ts`
@@ -54,6 +54,8 @@ owner approved "everything persists on the built site".
 | The change history (the edit log) and each person's seen record | settings collection (`elog`, `changeseen` — `[DRAFT-PENDING]`, 28 Sep 26) | **Yes** — and it outlives a sign-out (D336 (b)) |
 | Attachment bytes (medical documents) | in-memory cache → per-browser IndexedDB drawer (`raptor-docs`, `src/storage/docstore.ts`) on the built site; memory-only in dev/tests | **Yes** on the built site (per browser, since 8 Sep 26); no in dev/tests |
 | Accounts | hard-coded in `src/state/auth.ts` | n/a |
+| The store's own stamp, `settings/schema` | ONE object since 30 Sep 26 (`[DB-READINESS]` group A phase 0, `src/storage/schema.ts`): `{ stage, dataFormatVersion, initialized, appliedAt, minClient }` — the design's `SchemaVersion` row (`data-model.md`). `initialized` is how the app knows the store has STARTED (it replaced the sniffs of `inputs/all` and `leavewar/wars`); a first boot writes its seed and `initialized` in ONE saved group; a wipe clears it; a store ahead of the build is never touched. A bare number (every store before) still reads, as format 5 with `initialized` unknown, and is upgraded at its next boot | Yes |
+| The change log, `changes/*` | its own collection since 30 Sep 26 (group A phase 0 — cleared by a wipe with `inputs`, `weeks`, `leavewar`); written from group A phase 4 (one `ChangeBatch` per saved group) | Yes |
 
 `?fresh=1` on the URL forces the Memory backend for a clean-start demo. So
 "moving RAPTOR to a database" is now giving these already-per-browser shapes

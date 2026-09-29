@@ -20,6 +20,8 @@ export function leavewarAdapter(wb: Whiteboard): StorageBackend {
   return {
     read: key => wb.get('leavewar', key),
     write: (key, value) => { wb.set('leavewar', key, value) },
+    remove: key => { wb.delete('leavewar', key) },
+    keys: () => wb.keys('leavewar'),
   }
 }
 

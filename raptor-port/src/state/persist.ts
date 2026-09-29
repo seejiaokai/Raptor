@@ -14,7 +14,9 @@ import { HOOKS } from '../engine/hooks'
 import { stashPut, stashKeys, stashGet, stashHas, isPreservedWeek, preservedBlob } from '../engine/weekstash'
 import { PLANPUCKS, DAYRMK, seedPuckCounter } from './plan'
 import type { Whiteboard } from '../storage/whiteboard'
+import { storeInitialized } from '../storage/schema'
 import { deferEffect, setTxnWrapper } from '../command'
+import { wireRowConsumer } from './rowmap'
 
 /* the stash key is dd/mm/yyyy; '/' is the collection/id separator */
 export const weekId = (key: string) => String(key).replace(/\//g, '-')
@@ -32,8 +34,18 @@ let hydrated = false
    has lost it). Inside the window only the stash is written; the arriving
    week is filed once, by weekSwapEnd, after its baseline is set. */
 let swapping = false
+let unwireRows: (() => void) | null = null
 
 export const isHydrated = () => hydrated
+
+/* [DB-READINESS] group A, phase 0 (plan §2.8) — "has the Leave War's world already started?" for
+   main.tsx's installDemoWorld. The store's stamp answers (storage/schema.ts); only a store stamped
+   the old way (a bare number — every browser before this build, until its first seal) falls back to
+   the old sniff of the war record. Once the war is one row per record (phase 3) there is no single
+   `wars` record to sniff, and a started store must never get the demo world back. */
+export function leaveWarStarted(wb: Whiteboard): boolean {
+  return storeInitialized(wb) ?? wb.has('leavewar', 'wars')
+}
 
 function parse(json: string | null): any {
   if (json == null) return null
@@ -44,7 +56,12 @@ const maxNum = (ids: string[], prefix: string) =>
 
 /** whiteboard → module singletons; call BEFORE initStore() */
 export function hydrate(wb: Whiteboard): void {
-  hydrated = false
+  /* [DB-READINESS] group A, phase 0 (plan §2.8) — "already started" is the stamp's `initialized`,
+     which seeds skip on (state/store.ts initStore). A STARTED store holding no inputs record has no
+     inputs — the seed module's rows are cleared, never shown. Only a store stamped the old way (a
+     bare number, `null` here) still decides by whether its inputs record is there, exactly as before. */
+  const started = storeInitialized(wb)
+  hydrated = started === true
   /* a row that is not an object (a null from hand-edited storage) is dropped,
      not pushed: `r.iid` on it would throw out of here and main.tsx's boot
      guard would show the whole app the "could not load" screen for ever */
@@ -55,7 +72,9 @@ export function hydrate(wb: Whiteboard): void {
     inputs.forEach((r: any) => { if (isRow(r)) INPUTS.push(r) })
     /* iid is opaque now (engine/newid.ts) — no counter to seed past stored ids;
        a stored iid is kept as-is and a row missing one mints via mintInpIds. */
-    hydrated = true
+    if (started === null) hydrated = true
+  } else if (started === true) {
+    INPUTS.length = 0
   }
   const people = parse(wb.get('people', 'all'))
   if (people && typeof people === 'object' && !Array.isArray(people)) {
@@ -136,6 +155,11 @@ export function wirePersist(wb: Whiteboard, s: Snapshots): void {
      all-or-nothing group: the command layer opens a whiteboard transaction per
      outermost command. */
   setTxnWrapper(wb)
+  /* [DB-READINESS] group A, phase 0 (plan §2.2) — the stream consumer: each command's changes, mapped
+     to the stored rows they live in, written inside the command's own group (state/rowmap.ts). Wired
+     once per page life; it writes nothing until a phase registers a mapper. */
+  unwireRows?.()
+  unwireRows = wireRowConsumer(wb)
   const push = HOOKS.histPush
   /* §21.1c — the scheduler's persist joins the command's deferred effects, so a
      refused command discards it instead of writing its rolled-back world; outside

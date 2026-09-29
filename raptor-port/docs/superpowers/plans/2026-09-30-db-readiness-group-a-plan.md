@@ -381,3 +381,39 @@ in, with its test written first:
 - **P1-UN-BEHAVIOUR (A-05's concern, kept as a test):** a taken-off input stays off after a reload and after week
   navigation, across a spanning input and a published-then-reopened day.
 
+
+## 9. Build log
+
+**Phase 0 — built 30 Sep 26** (red tests first; `src/storage/{schema,fold,client}.ts`, `src/state/rowmap.ts`, the
+boot in `main.tsx`; tests `storage/schema.test.ts`, `storage/fold.test.ts`, `state/bootinit.test.ts`,
+`state/rowmap.test.ts`, `leavewar/bootseal.test.ts`, `leavewar/storage-door.test.ts`):
+- `SchemaVersion` is one object in `settings/schema`; a bare number still reads (legacy, `initialized` unknown — each
+  part then falls back to its old sniff, so every browser in use boots as before) and is upgraded at the boot's seal.
+  `isHydrated()` and the Leave War's `hadStoredWars` read `initialized`; a started store holding no inputs record has
+  none. A first boot's seed and `initialized` are ONE group (`openBootGroup`, sealed at the end of `main.tsx`'s boot);
+  a wipe writes `initialized: false`; a store ahead in stage, format or `minClient` is refused ("RAPTOR has been
+  updated — reload").
+- The fold: converter registry + manifest (`weeks`, `inputs`, `people`, `plan`, `leavewar`, `elog`, `accounts`,
+  `tracker` — the Tracker added with D462); format 6 only when all are registered; ONE `putMany` before the whiteboard
+  fills, carrying an unfinished group's untouched entries (the superset); a wipe below 5 runs first, then the fold.
+  Production registers none, so the target stays 5.
+- `changes` is a collection and joins `RESET`; the Leave War's storage door gained `remove` and `keys`;
+  `clientBootId()`; the stream consumer and mapper wired in `wirePersist`, mapping nothing.
+- **A defect found on the way, on `main` too, fixed here (red test `leavewar/bootseal.test.ts`):** a first boot saved
+  the Leave War's demo world BEFORE the demo was dressed onto the roster (`installDemoOil` / `remapPersonKeys` never
+  save, and `setPeople` had already saved the undressed seed), so after the first reload the demo bids sat on the seed's
+  invented callsigns — on nobody's row — unless someone had written to the war first. `installDemoWorld` now saves the
+  dressed world (`persistBootWorld`), inside the boot group. (The store's `LW_READY` is already true by then — `initStore`
+  runs `lwHistInit` — so it cannot tell boot from session; the save is unconditional and has one caller.)
+- **Two sequencing calls (technical — mine):**
+  1. **P0-BOOTSTRAP's Person + User half moves to phase 5.4.** It needs the `BootPolicy` (5.1) and the first-admin
+     configuration (5.4) that phase 5 defines; building it against today's `people/all` / `settings/accounts` shapes
+     only to redo it after phases 2 and 4 would be waste. Phase 0 carries the schema half: stage/format ahead refused,
+     initialized-but-empty never seeded, an interrupted boot re-seeds, a repeat writes nothing, wipe then re-seed.
+  2. **"A stamped store with zero wars" is proven at the boot decision in phase 0** (a started store never gets the
+     demo world back, `leaveWarStarted`); the Leave War HOLDING no period at all cannot render today (the store and ~60
+     screen reads assume one) — that is phase 5's listed test ("a stamped store with an empty war list"), with an empty
+     state on the page.
+- §4's documents landed for phase 0: `data-model.md` (`SchemaVersion` as one object; §6's `FanOutBackend` sentence;
+  the boot check), `data-schema.md` (the stamp, `changes`, the Leave War door), `undo-contract.md` §0,
+  `command/registry.ts` header, `docs/file-map.md`. The rest land with their phases.

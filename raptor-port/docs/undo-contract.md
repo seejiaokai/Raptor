@@ -39,6 +39,15 @@ one global undo from the stream and retires the snapshot stacks; **step 5** buil
 persistence + the Dataverse adapter from it. Nothing in step 2 changes a rendered byte
 (`tfin.js` 728/0) or how persistence/undo currently behave.
 
+**Persistence is now a stream consumer (30 Sep 26, `[DB-READINESS]` group A phase 0 — the "step 5" record-level
+persistence above).** `state/rowmap.ts` subscribes to the stream and, at phase 9 of every command, maps each change
+to the stored ROW it lives in, writing it inside the command's one whiteboard transaction — so a command's rows reach
+storage in its ONE all-or-nothing group. A row is removed only for an explicit `delete` change, never by inference.
+It is wired and maps nothing yet; each of group A's phases registers its collection's mapper and, in the same change,
+stops the legacy whole-blob writer (`persistAll`, the Leave War's `rawPersist`) for it
+(`docs/superpowers/plans/2026-09-30-db-readiness-group-a-plan.md` §2.2). A NEW module's durable records need a mapper
+there too.
+
 ---
 
 ## 1. The change stream

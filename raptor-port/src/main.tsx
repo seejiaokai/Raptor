@@ -17,7 +17,8 @@ import { idbDocStore } from './storage/docstore'
 import { docBoot } from './state/docs'
 import { settingsAdapter, leavewarAdapter, trackerTarget } from './storage/adapters'
 import { useStorageImpl } from './tracker/storage.js'
-import { hydrate, wirePersist } from './state/persist'
+import { hydrate, wirePersist, leaveWarStarted } from './state/persist'
+import { openBootGroup, StoreAheadError } from './storage/schema'
 import { setSaveStatusSource } from './ui/SaveStatus'
 import { installGlobalUndo } from './state/undo-wire'
 
@@ -42,6 +43,13 @@ async function boot(): Promise<void> {
     () => toast("Couldn't save that document — your browser storage may be full, so it may not be here after a reload.", 'warn'),
   )
 
+  /* [DB-READINESS] group A, phase 0 (plan §2.8) — on a store that has not started yet, everything
+     the boot writes below (the scheduler's seed, the Leave War's world) and the stamp's
+     `initialized` reach storage as ONE group, sealed at the end of the boot (storage/schema.ts).
+     A started store opens nothing. Opened AFTER the documents drawer's wait, so from here to the
+     seal the boot is synchronous and nothing else can write inside the group. */
+  const bootGroup = openBootGroup(wb)
+
   /* the three doors (storage/adapters.ts): settings, Leave War, Tracker */
   storeBackend.impl = settingsAdapter(wb)
   useStorageImpl(trackerTarget(wb))
@@ -56,7 +64,7 @@ async function boot(): Promise<void> {
   /* Leave War boots on the whiteboard too. installDemoWorld's flag is now
      REAL: a world that came back from storage keeps its wars, its OIL story
      and its inputs; only a first-ever boot gets the demo overlay. */
-  const hadStoredWars = wb.has('leavewar', 'wars')
+  const hadStoredWars = leaveWarStarted(wb)
   lwInitStore(leavewarAdapter(wb))
   installDemoWorld(hadStoredWars)
   /* [ARCH-STACK] step 4 — the demo world files its approved leave as INPUTS
@@ -111,6 +119,7 @@ async function boot(): Promise<void> {
   wirePersist(wb, { weekSnap: weekStashSnap, weekDirty })
   setSaveStatusSource(postman)
   guardUnload(postman)
+  bootGroup.seal()
 
   /* THE PROBE BRIDGE IS INSTALLED ON THIS PC ONLY ([ACCOUNTS], 26 Sep 26 — Astra R1-1,
      Fable R1-3): it puts the app's data and writers (PEOPLE, INPUTS, setSlotVal, the
@@ -131,6 +140,16 @@ boot().catch((err: unknown) => {
   console.error('RAPTOR could not load its data', err)
   const root = document.getElementById('root')
   if (!root) return
+  /* the saved data was written by a newer version of the app (storage/schema.ts): reloading fetches it */
+  if (err instanceof StoreAheadError) {
+    root.innerHTML =
+      '<div class="bootfail" role="alert" style="max-width:520px;margin:20vh auto;padding:24px;font:14px system-ui,sans-serif;color:#eee">' +
+      '<h1 style="font-size:18px;margin:0 0 8px">RAPTOR has been updated</h1>' +
+      '<p style="margin:0 0 16px">Reload to get the latest version. Nothing was opened, so nothing can be lost.</p>' +
+      '<button id="bootRetry" type="button" style="padding:8px 14px;border-radius:10px;border:1px solid #888;background:transparent;color:inherit;cursor:pointer">Reload</button></div>'
+    document.getElementById('bootRetry')?.addEventListener('click', () => location.reload())
+    return
+  }
   root.innerHTML =
     '<div class="bootfail" role="alert" style="max-width:520px;margin:20vh auto;padding:24px;font:14px system-ui,sans-serif;color:#eee">' +
     '<h1 style="font-size:18px;margin:0 0 8px">RAPTOR could not load its data</h1>' +

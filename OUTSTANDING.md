@@ -70,7 +70,8 @@ award fix are due before the tables are settled. What to finish before the hand-
 4. **Split in two (D453, 29 Sep 26 — narrows D203's "ONE batch"):** **[DB-READINESS] group A** (what decides the tables'
    shape) BEFORE IT settles its tables, with the small OIL follow-ups below and [OIL-EARNED-VS-GRANTED] (D147);
    **group B** (tuned against the real database) AFTER the app is connected. First, [DB-SYNC-MODEL]'s design fixed.
-   ([OIL-AWARD-IS-A-GRANT] is DONE, merged 29 Sep 26.)
+   ([OIL-AWARD-IS-A-GRANT] is DONE, merged 29 Sep 26.) Group A: plan v4 final (30 Sep 26); **phase 0 built 30 Sep 26**
+   on `claude/db-readiness-table-shaping-4094f6` (plan §9) — phase 1 next.
 5. **When Manfred is ready — [DB-STEP]:** the data model to him, then the one adapter to his tables; the stack
    ([ARCH-STACK]) resumes there, with its step 6 still to come; the [AMEND] work is queued behind it. Architecture first,
    then the individual bugs (D144).

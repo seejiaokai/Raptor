@@ -3,8 +3,11 @@
    the Dataverse adapter (stage 4) — implements exactly this. Values are JSON
    strings, never objects: a backend is a dumb key/value store and the record
    shapes (docs/data-schema.md) stay the app's business. */
-export type Collection = 'settings' | 'weeks' | 'inputs' | 'people' | 'plan' | 'leavewar' | 'tracker'
-export const COLLECTIONS: Collection[] = ['settings', 'weeks', 'inputs', 'people', 'plan', 'leavewar', 'tracker']
+/* `changes` ([DB-READINESS] group A, phase 0 — F3-05): the change log, one `ChangeBatch` per saved
+   group (written from phase 4). A real collection, so a journal holding one of its entries is a
+   well-formed group and replays whole, and the Browser backend serves it back at boot. */
+export type Collection = 'settings' | 'weeks' | 'inputs' | 'people' | 'plan' | 'leavewar' | 'tracker' | 'changes'
+export const COLLECTIONS: Collection[] = ['settings', 'weeks', 'inputs', 'people', 'plan', 'leavewar', 'tracker', 'changes']
 
 export type Snapshot = Record<Collection, Record<string, string>>
 

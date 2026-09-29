@@ -23,7 +23,7 @@ import { INPUTS, inpId } from '../../engine/inputs'
 import { seedPeople, SEED_ABSENCES, warHolding, type Ledger, type Recs } from '../engine'
 import { inputRowFor } from '../absences'
 import { projectPeople } from './raptorRoster'
-import { getState, installDemoOil, remapPersonKeys, setPeople } from './store'
+import { getState, installDemoOil, persistBootWorld, remapPersonKeys, setPeople } from './store'
 
 /**
  * Seed person -> Raptor person. HAND-PICKED so that every mapped Raptor
@@ -193,6 +193,9 @@ export function installDemoWorld(hadStoredWars: boolean): void {
   if (!hadStoredWars) {
     installDemoOil(DEMO_OIL)
     remapPersonKeys(DEMO_MAP)
+    /* save the DRESSED world now — setPeople above saved the undressed seed, and the next boot, finding a
+       started store, never dresses it again ([DB-READINESS] group A phase 0; store.ts persistBootWorld) */
+    persistBootWorld()
   }
 
   /* The seed's approved / filed leave and the demo's taken OIL days, filed as

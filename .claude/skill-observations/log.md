@@ -1702,3 +1702,18 @@ MISSING" list too.
 **Principle:** A stored record carries meaning by its existence as well as its content; before removing, renaming or
 splitting one, find every reader of its presence and every job its delete path does, or the change silently removes a
 signal nobody listed.
+
+### Observation 381: A guard on an existing state flag must be proven against when the flag REALLY flips — its comment is a claim
+
+**Status:** OPEN
+**Date:** 30 Sep 26
+**Session context:** `[DB-READINESS]` group A phase 0 — a boot-only save was guarded on the Leave War's `LW_READY`, whose declaration comment says "enabled after boot (lwHistInit)"; the red test stayed red because `initStore` itself calls `lwHistInit`, so the flag was already true at the point the new code ran and the guarded save silently did nothing.
+**Skill:** test-driven-development (the green step) · systematic-debugging
+**Type:** open-source
+**Phase/Area:** writing the minimal fix; attributing a failure
+
+**Issue:** The fix read correct against the flag's own comment, and only the still-red test exposed that the guard was a no-op. Separately, before deciding whether a surprising failure was caused by the new change, the cheapest decisive step was to stash the change and run the SAME probe test on the base — it showed the defect already on `main`, which changed its disposition from "my regression" to "pre-existing, in scope, fix with a red test".
+
+**Suggested improvement:** In test-driven-development's green step: "when the fix is guarded on an existing flag or mode, find every writer of that flag (grep the assignments) before trusting its comment — a lifecycle comment is a claim, not a proof; if the red test stays red, check the guard first." In systematic-debugging: "to attribute a failure, stash the change and run the identical probe on the base revision before theorising — one run decides new vs pre-existing."
+
+**Principle:** A flag's documented lifecycle is evidence only until its assignments are read; and "is this mine?" is answered by running the same probe on the base, not by reasoning.

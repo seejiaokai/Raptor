@@ -16,27 +16,29 @@ the later merge keeps both (D78).
 ## Now
 
 <!-- now:claude/db-readiness-table-shaping-4094f6 -->
-### `claude/db-readiness-table-shaping-4094f6` — `[DB-READINESS]` group A PLANNED (plan v4, final; both reviewers, three rounds at his cap); the build is next — documents only so far — written 30 Sep 26 — verify before use
-- **Where it started:** his ask: plan group A (D453 — the table-shaping half, before IT settles its tables) and have both
-  reviewers red-team it before building. On the way he ruled D460–D463 and reported from IT "no plugin for now" (heard,
-  unconfirmed — `OUTSTANDING.md` `[IT-QUESTIONS]`).
-- **Shipped (on this branch, pushed, no PR yet):** the plan `raptor-port/docs/superpowers/plans/2026-09-30-db-readiness-group-a-plan.md`
-  (v4 — §2 decisions and the record→table matrix, §3 phases 0–7 with 5b the Tracker, §8 round 3's binding build checklist);
-  three rounds of both reviewers and their dispositions in `raptor-port/docs/superpowers/briefs/2026-09-30-db-readiness-group-a-*.md`;
-  D461 written into `raptor-port/docs/data-model.md` (Person, LeavePersonProfile, §5). The rest of the plan's §4 document
-  fixes land WITH the build (D201), not yet.
-- **Unfinished:** the whole build — phases 0 → 5 and 5b first (the shape IT needs), then 6 (worked out on read — its
-  final hand-over waits on IT's written answer on reporting, §12 q9), then 7 (the small OIL follow-ups). Tier FULL; the
-  walk before BOTH reviewers' code reads (D11, D353).
+### `claude/db-readiness-table-shaping-4094f6` — `[DB-READINESS]` group A: plan v4 final; **phase 0 BUILT** (all gates green, walked); phase 1 next — written 30 Sep 26 — verify before use
+- **Where it started:** his ask: plan group A (D453), red-team it with both reviewers, then build it; D460–D463 ruled on the way.
+- **Shipped (this branch, pushed, no PR):** the plan (`raptor-port/docs/superpowers/plans/2026-09-30-db-readiness-group-a-plan.md`,
+  v4 + §9 build log) and **phase 0**: the store stamp as ONE `SchemaVersion` object (`src/storage/schema.ts`) whose
+  `initialized` replaced the `inputs/all` / `leavewar/wars` sniffs; a first boot's seed + `initialized` saved as one group
+  (`openBootGroup`, sealed in `main.tsx`); a newer store refused ("RAPTOR has been updated"); the fold machinery
+  (`src/storage/fold.ts` — converter manifest, format 6 only when all eight are registered; none registered yet); `changes`
+  collection; the Leave War door's `remove`/`keys`; `clientBootId`; the stream consumer + row mapper (`src/state/rowmap.ts`,
+  wired, maps nothing). **A `main` defect fixed on the way:** a fresh browser saved the Leave War demo UNDRESSED, so after a
+  reload its bids sat on nobody's row (`leavewar/bootseal.test.ts`; `bug-check-order.md` §7.7's walker caution can go once merged).
+  Evidence: `raptor-port/docs/handpass/2026-09-30-dbr-phase0.md` (10/10, pictures looked at).
+- **Two sequencing calls (plan §9):** P0-BOOTSTRAP's Person + User half moves to phase 5.4 (needs BootPolicy); a Leave War
+  with NO period at all is phase 5's test (the page cannot draw it today).
+- **Unfinished:** phases 1 → 5 and 5b (the shape IT needs), then the FULL walk and BOTH reviewers' code reads (D11, D353),
+  then 6 (worked out on read — its hand-over waits on IT's reporting answer, §12 q9), then 7.
 - **Branch:** `claude/db-readiness-table-shaping-4094f6`; no PR. Build on it.
-- **Gates:** not run — documents only; nothing under `raptor-port/src` changed.
-- **Open questions for him:** none of this chat's. For IT (his, `[IT-QUESTIONS]`): "no plug-in" in writing, and whether
-  Custom APIs / Power Automate flows are allowed; can reports combine a day with the leave and people tables; when do
-  their tables settle.
-- **Parallel (D302):** rulings D460–D469 (D460–D463 used); observations #380–#389 (#380 used). No other open chat was
-  changing this code on 30 Sep 26 — check `ListAgents` before building.
-- **Pick up here:** read the plan whole (§8 included), open the area rulings files it touches (`scheduler.md`,
-  `leave-war.md`, `tracker.md`, `people-accounts.md`, `oil.md`), then build phase 0 on this branch — red tests first.
+- **Gates (phase 0, watched, under the lock):** see §Gate baseline.
+- **Open questions for him:** none of this chat's. For IT (`[IT-QUESTIONS]`): "no plug-in" in writing; Custom APIs / Power
+  Automate allowed?; can reports combine a day with the leave and people tables; when do their tables settle.
+- **Parallel (D302):** rulings D460–D469 (D460–D463 used); observations #380–#389 (#380–#381 used). No other chat was building on 30 Sep 26.
+- **Pick up here:** plan §3 phase 1 (the schedule one day per piece) with §8's P1-ISSUANCE-KEY and P1-UN-BEHAVIOUR — red tests
+  first; `npm run perf` before and after; read `src/state/sched-commit.ts` (`decompose`), `src/engine/weekstash.ts`,
+  `src/state/persist.ts`, `src/engine/publish.ts` (issuance/retraction) first.
 <!-- /now -->
 
 ## Next, in order
@@ -63,9 +65,9 @@ the later merge keeps both (D78).
 
 ## Gate baseline
 
-The latest counts watched — 29 Sep 26, `claude/lw-drag-flaky-tests-batch-c0719b`, one run under the PC lock: unit
-**7017 / 7017** (434 files) · build clean · tfin **728 / 0** · e2e **509 passed, 0 failed**, 49 skipped (the month-window test,
-once flaky, fixed — `[LW-WINDOW-PRUNE-FLAKE]`) · smoke **445 / 0** · rulecheck OK · docsize OK. Restate a count only from a run you watched, and REPLACE the previous counts — never stack a
+The latest counts watched — 30 Sep 26, `claude/db-readiness-table-shaping-4094f6` (group A phase 0), under the PC lock: unit
+**7066 / 7066** (440 files) · build clean · tfin **728 / 0** · e2e **509 passed, 0 failed**, 49 skipped · smoke **445 / 0** ·
+rulecheck OK · docsize OK. Restate a count only from a run you watched, and REPLACE the previous counts — never stack a
 history. How to run them: `raptor-port/CLAUDE.md` §Build & verify; how they mislead, and the checks on his PC:
 `raptor-port/docs/gates-and-deploy.md`.
 

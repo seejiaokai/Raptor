@@ -6,20 +6,25 @@ import { Whiteboard } from './whiteboard'
 import { Postman } from './postman'
 import { MemoryBackend } from './memory'
 import { BrowserBackend } from './browser'
-import { RESET, resetDue, resetPreSchema } from './reset'
+import { RESET, wipeDue, resetPreSchema } from './reset'
+import { refuseAhead, schemaOf } from './schema'
+import { foldDue, runFold, targetFormat } from './fold'
 
 export async function bootStorage(backend: Backend): Promise<{ wb: Whiteboard; postman: Postman }> {
   /* [ARCH-STACK-4] §22.2 — each step durable before the next.
      a. loadAll finishes an unfinished all-or-nothing group first; if it cannot,
         it overlays the group onto the snapshot and reports it as unfinished. */
   const snap = await backend.loadAll()
+  /* [DB-READINESS] group A, phase 0 — a store written by a NEWER build is never touched: no wipe, no
+     fold, no seed. The boot rejects and main.tsx asks for a reload (storage/schema.ts). */
+  refuseAhead(schemaOf(snap), targetFormat())
   /* b. a version bump will wipe `inputs`/`weeks`/`leavewar`: FILTER the
         unfinished group to the collections the reset keeps and write that back
         as the journal BEFORE any reset removal runs — an interruption can then
         neither lose a preserved entry nor resurrect a reset one. A failed
         rewrite rejects the boot (the Retry screen), the old journal intact
         (§23.2). */
-  const due = resetDue(snap)
+  const due = wipeDue(snap)
   const found = backend.unfinished()
   if (due && found) {
     const kept = found.filter(e => !RESET.includes(e.collection))
@@ -31,12 +36,19 @@ export async function bootStorage(backend: Backend): Promise<{ wb: Whiteboard; p
      go through the real backend, not the postman's queued writes. */
   /* c. the reset removals, then the version stamp */
   await resetPreSchema(backend, snap)
+  /* c2. [DB-READINESS] group A, phase 0 (plan §2.6) — THE FOLD: a format-5 store under a build that
+        can convert EVERY old record is turned into one row per thing, in ONE durable group, before
+        the whiteboard fills. Its group already carries every entry of an unfinished group (a
+        superset), so nothing is left for the postman to retry. Never due while production registers
+        no converter (storage/fold.ts). */
+  let unfinished = backend.unfinished()
+  if (foldDue(snap)) { await runFold(backend, snap, unfinished); unfinished = null }
   const wb = new Whiteboard()
   wb.fill(snap)
   /* d. the (filtered) unfinished group becomes the postman's first, FAILED,
         group: the status reads "failed" until it lands, and every later write
         merges over it, so the next journal is always a superset of it (§21.2) */
-  const postman = new Postman(backend, { initialFailed: backend.unfinished() })
+  const postman = new Postman(backend, { initialFailed: unfinished })
   postman.attach(wb)
   return { wb, postman }
 }

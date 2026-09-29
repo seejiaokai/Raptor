@@ -11,6 +11,10 @@
    which misses an omitted field (e.g. SCHED.changes). This table is the map
    from logical collection to the physical blob that owns it (LOGICAL_TO_BLOB),
    used by the Step-5 fold subscriber (defined, activated later — design §4).
+   BUILT 30 Sep 26 ([DB-READINESS] group A, phase 0): the fold subscriber is the stream consumer in
+   state/rowmap.ts — it maps each change to the stored ROW it lives in through per-collection mappers,
+   not through this blob table; the table's stale entries (leavewar/balances, leavewar/config, lw.bid)
+   are corrected as group A's phases 1–3 move each collection to rows (plan §2.9).
 */
 import type { LogicalCollection } from './types'
 
