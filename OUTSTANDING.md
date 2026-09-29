@@ -485,6 +485,15 @@ a real risk attached, not a hole in the paperwork.**
 AND WHEN** — the signed-in person (by id, drawn by his live callsign) and the time, stamped by the store from the session,
 separate from the typed "Given by" (on whose say-so). Not built in `[ACCOUNTS]`: the award's record changes here, once
 (D203). `data-model.md` §11 states the rule.
+**WHERE OIL SITS TODAY (read 29 Sep 26, the handoff-review chat — `leavewar/engine/warrecs.ts` `CreditRec`,
+`oiltracker.ts` `oilLedgerFor`, `counters.ts` `earnedOil` / `balParts`, `state/store.ts` `grantTo`):** three ways in, two
+stores. (1) The AUTOMATIC credit — the published schedule or an accepted duty input — is an FO/HO record on the man's war
+day, `oil: 'auto'`. (2) An award typed on the war grid is the SAME record kind on the same day, `oil: 'manual'`, with
+"Given by" — it began as "the man worked but the schedule missed it" and became a gift on any day with D79 / D82. (3) A
+credit from the OIL tracker sheet is a ledger entry (`lw.ledger`, `counter: 'oil'`), the list every pool's grants use.
+The tracker's "earned" and the figure's "earned by weekend/PH work" count (1) AND (2) — grouped by where a record is
+stored, not by how it came — and "granted" counts only (3); that is `[OIL-EARNED-VS-GRANTED]`. Every record already says
+which it is, so a split needs no guessing. Explained to him 29 Sep 26.
 **Related, deferred on purpose from `[ARCH-STACK-4]` (merged; archived 24 Sep 26):** OIL itself as a read-time
 derivation — the step-4 design §7 (`specs/2026-09-19-arch-stack-4-one-absence-design.md`). Decide both together.
 
