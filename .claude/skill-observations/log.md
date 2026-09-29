@@ -1513,3 +1513,18 @@ resolved statuses always carry their resolution date
 **Suggested improvement:** A waiter must never break a lock on age alone: the holder refreshes a heartbeat (touch the owner file) during its run, and "stale" means no heartbeat for N minutes; a hand-taken lock records the session, not the take command's pid. Until then, before a queued run reaches the stale mark, ask the holder.
 
 **Principle:** Staleness for a shared lock must be judged by a heartbeat from the work it protects, not by age or by the pid of the command that acquired it.
+
+### Observation 348: Removing a delimited block by "first closing marker after the opener" cuts inside a block that QUOTES its own marker
+
+**Status:** OPEN
+**Date:** 2026-09-29
+**Session context:** A handoff review removing four merged blocks from the handoff file's list of open chats, by script.
+**Skill:** session-handoff
+**Type:** open-source
+**Phase/Area:** removing another chat's merged block
+
+**Issue:** The script found each block's end as the first closing marker after its opener (a plain substring search). One block's own text quoted the closing marker in backticks (it described a check that looks for that marker), so the cut ended mid-block and left an orphaned closer; the document gate caught it ("a closing marker closes no block"). Restored from git and redone with a line-anchored, non-greedy match (the marker alone on its own line).
+
+**Suggested improvement:** In the session-handoff skill's step that removes merged blocks, say: match both markers anchored to the start of their own line (multiline regex), never a substring search; run the document check before committing.
+
+**Principle:** A delimiter search over prose must be anchored to the delimiter's structural position (its own line), because documentation about a format will quote the format's own delimiters.

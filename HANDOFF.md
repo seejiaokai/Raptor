@@ -15,16 +15,17 @@ the later merge keeps both (D78).
 
 ## Now
 
-<!-- now:claude/small-fixes-tidy -->
-### `claude/small-fixes-tidy` — the small-fixes batch is LIVE (PR #463, merged 29 Sep 26 on his "merge live"); this notes-only follow-up waits for his own "merge live" — written 29 Sep 26 — verify before use
-- **What it carries (documents only):** his look at D367 on his iPhone ("Looks good"); `[DOCSIZE-MERGE-CEILING]` filed; the
-  batch's eight finished items archived by the script (`[AVAILWIN-PREVIEW-BAR]`, `[GHOST-FLAG-SHADOW]`, `[ALLAVAIL-OPEN-ROW]`,
-  `[LW-ISO-DATES]`, `[LW-SPARE-MOVE-DOORS]`, `[REQ-DOOR-WORDS]`, `[REQ-ORPHAN-ROW]`, `[ABSENCE-SMALL-SEEN]` — their facts in
-  `raptor-port/docs/ui-contracts.md` and the evidence sheet `raptor-port/docs/handpass/2026-09-28-small-fixes.md`);
-  `[AMEND-SMALL-SEEN]` stays open (items 2 and 6–8 belong to other chats; 5 answered, D362).
-- **Left from the batch, filed:** `[PLAN-BANNER-DOOR]`, `[GATELOCK-STALE-LIVE]`, `[ROW-NO-TIME-MARK]` (D361, a future job),
-  `[APP-FONTS-NOT-LOADED]` (his call), `[DOCSIZE-MERGE-CEILING]`. Rulings D360–D367 (D366 archived); D368–D369 unused.
-- **Next:** his "merge live" for this branch, then remove this block. Folder `.claude/worktrees/trk-smoke-add-race-bug-007eed`.
+<!-- now:claude/handoff-review-next-priority-165f99 -->
+### `claude/handoff-review-next-priority-165f99` — a handoff review and the next job's pick; no build yet — written 29 Sep 26 — verify before use
+- **The branch:** cut from `main` at PR #465 (the small-fixes tidy); folder `.claude/worktrees/rulings-slim-d391-078ad2`.
+  So far documents only: the merged blocks of `## Now` removed (small-fixes tidy #463/#465, the guide step #460/#461, the
+  docs tidy #457, the five-flags batch #445 — each one's residue checked filed in `OUTSTANDING.md`).
+- **Parallel chats (D302), 29 Sep 26:** `claude/db-step-now` (the main checkout — D354 "the database step starts now", D355
+  the day lock, `[DB-SYNC-MODEL]`; not merged) and `claude/handoff-worktree-d368` (PR #466, D368) are open beside this one;
+  both told this chat's numbers and ports.
+- **Rulings range D400–D409** (clear of D354–D359, D368–D369 and the spent D390–D399). **Ports:** preview 4183, browser
+  tests `E2E_PORT=4197`. Full checks through the PC lock (`node raptor-port/scripts/gatelock.mjs …`, D228).
+- **Next:** his pick of the job (put to him 29 Sep 26); nothing to `main` without his "merge live".
 <!-- /now -->
 
 <!-- now:claude/change-recording-retest -->
@@ -51,70 +52,6 @@ the later merge keeps both (D78).
   #345–#347 (renumbered from #341–#342, which are the small-fixes branch's).
 - **Ports:** preview 4173 (this build), the live copy for the bars walk 4192 (`C:/rw/main`, a detached `origin/main`
   checkout — remove its node_modules junction before deleting it).
-<!-- /now -->
-
-<!-- now:claude/rulings-slim-d391-078ad2 -->
-### `claude/rulings-slim-d391-078ad2` — [RULINGS-SLIM]'s guide step (D391): the guide's rules as one-line short forms — BUILT, his "merge live" given — written 28 Sep 26 — verify before use
-- **The branch:** cut from `main` after PR #458 (the rulings part of the slim-down, whose block this replaces — merged; its
-  residue: this step, and the optional question 4 kept in the plan §2.1). Docs, the document gate and `docs-guard.yml` only —
-  no `raptor-port/src`, so only the Docs guard runs. No ruling this session.
-- **Done:** 35 blocks of `raptor-port/CLAUDE.md` moved whole to `raptor-port/docs/guide-full.md` by `backlog-archive.mjs --move`,
-  each leaving a short form of at most 350 characters; the gate pairs them (`docsize.mjs guidePairing`, 11 new self-test
-  cases); the guide ~16.2k → ~9.5k tokens (why not ~6k: plan §2.6); its line tripwire 760 → 340; the Docs guard's time
-  limit 5 → 10 minutes. The Leave War row of §Where things live untouched (small fixes edits it); trial merges with small
-  fixes, change-recording and Tracker leftovers are clean, and all three chats were told (D302). Fable's meaning read (30 of 35 faithful, five rewritten from its replacements, its gate points folded — plan §2.6):
-  brief `raptor-port/docs/superpowers/briefs/2026-09-28-guide-short-forms-meaning-brief.md`.
-- **Next:** his "merge live" was given 28 Sep 26 — merge when the PR's checks are green, then `main`'s run, then live.
-  Filed, low: `[GUIDE-MAP-ROWS]` (the map's long rows, a question for him).
-<!-- /now -->
-
-<!-- now:claude/docs-tidy-subheads-audit-ec8f87 -->
-### `claude/docs-tidy-subheads-audit-ec8f87` — docs-only tidy DONE: [HANDOFF-SHAPE-GUARD], [DOC-SUBHEADS], [RULING-HOMES-AUDIT] — waiting for his "merge live" — written 28 Sep 26 — verify before use
-- **The branch:** cut from `main` at PR #456; folder `.claude/worktrees/bg-cwd-guard-4cc654`. Documents and the
-  document gate's scripts only — no `raptor-port/src`, so the full checks do not run; the Docs guard does. Rulings
-  range D380–D389 — none used (no ruling this session).
-- **Done:** the gate fails `HANDOFF.md` losing a block's `<!-- /now -->` or one of its three headings; 81 sub-headings
-  in the four long reference docs (heading lines only, proved byte-identical otherwise); the ruling-homes audit
-  (`raptor-port/docs/superpowers/specs/2026-09-28-ruling-homes-audit.md` — D21's "corrected" contract sentence never had
-  been, now is) and the gate now fails a NEW ruling row whose Markdown home never mentions its number. Fable read it all
-  for meaning (D138); its five findings are fixed. The three items are archived.
-- **Parallel chats (D302):** change-recording, small fixes and Tracker leftovers were told every shared file and the two
-  gate changes before they landed; all three made their new rows pass (D349 fixed on theirs). A trial merge with each is
-  clean except `HANDOFF.md` with the change-recording branch — both blocks added at the top of `## Now`: the later merge
-  keeps BOTH, each with its own `<!-- /now -->` (D78; the new shape check fails a resolution that drops one).
-- **Next:** his look at the PR and "merge live" (one at a time with the parallel chats, D78). Not this branch's: the
-  merged five-flags block below still sits in `## Now` (the gate notes it) — the next handoff that files its residue removes it.
-<!-- /now -->
-
-<!-- now:claude/five-flags-batch-continue-2cfa70 -->
-### `claude/five-flags-batch-continue-2cfa70` — the five-flags batch AND his answers D270–D275: BUILT and FULL-checked (PR #445) — waiting for his look and "merge live"; the red Leave War tests' cause found and fixed (confirm on GitHub) — written 27 Sep 26 — verify before use
-- **The branch:** carries `claude/five-flags-batch-build-ef7d85` whole (that branch has no PR and nothing of its own —
-  delete it once this merges). PR #445 is from THIS branch. This chat worked in the folder
-  `.claude/worktrees/trk-smoke-add-race-bug-007eed` (the block's earlier folder, `five-flags-batch-continue-2cfa70`, is
-  another checkout at the same commit).
-- **Parallel** with `claude/accounts-new-person` (PR #443) / the post-out work on `claude/post-out-outcomes` (the main
-  checkout — its chat asked to coordinate: told the files this branch touches; it won't touch ours) and the absence-record
-  re-test (PR #444, folder `five-flags-batch-build-ef7d85`). Ports: preview 4176 (`.claude/launch.json` "raptor-walk-4"),
-  browser tests `E2E_PORT=4193`; rulings D276–D279 (all four used — his look-card answers). Full checks take turns through the PC-wide lock (D228,
-  `gatelock.mjs … run --from <this worktree>/raptor-port`). The later merge takes `main` in first. Nothing to `main`
-  without his "merge live".
-- **Done 27 Sep 26 (the evidence sheet `raptor-port/docs/handpass/2026-09-27-five-flags-answers.md`):** D275 — the room
-  beside the ‹ arrow taken out (`[ARROW-ROOM-OUT]`); D270 / D272 — his own puck wears any other ring (a flag's, the green
-  OIL one), the purple fill stays; D271 — one man, once per row, REFUSED at every door with the reason, plus Fable's F1 (a
-  request handed to a man already on its row keeps him once). FULL tier: Fable's scenarios, the roll-calls, the walk (W1
-  71/0, W3 f6–f10 all green, W6 18/0 — pictures `docs/img/handpass/2026-09-27-five-flags-answers/`), the gates (§7), Fable
-  and Astra's blind reads (no defect against the rulings; two test gaps fixed), the re-walk, the look card (§9). The three
-  items archived. **His answers to the card's four questions, 27 Sep 26:** Q1 a jet line's two seats stay a warning (D276,
-  against the recommendation), Q2 keep the faded purple ring (D277), Q3 and Q4 leave (D278, D279) — nothing to build.
-- **`[LW-MOVE-CI-RED]` — cause found, tests fixed:** a timing race in three Leave War tests (the second drag straight after
-  an admin's fill, which since `[ACCOUNTS]` re-renders longer on GitHub's machines); fixed with the 18 Sep stable drag
-  (`e2e/leavewar.spec.ts`). It never failed on the PC; GitHub's next two runs of this branch were green with the three passing first time — archived.
-  Side-findings filed: `[LW-HARNESS-VIEWER-PIN]`, `[CI-FAIL-PICTURES]` (his call — public pictures while the repo is public).
-- **Next, in order:** (1) **his look** — the card is the sheet's §9 (the four questions are answered); (2) "merge live", one at a time with #443 and #444. **The absence chat's D262 reworks `select.ts` wireMove** (PR #444) —
-  if it merges first, bring `main` in and re-run the three Move tests here; a conflict in those test lines keeps BOTH its
-  behaviour and the stable drag (told to that chat).
-- **His "2 chats" remark (27 Sep 26)** is still unanswered — put to him once; recommended: keep the one-at-a-time queue
-  for full check runs (two chats working side by side needs nothing).
 <!-- /now -->
 
 ## Next, in order
