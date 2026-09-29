@@ -30,7 +30,7 @@ the later merge keeps both (D78).
   final `raptor-it-flow-guide.pptx` (13.6 MB) and `.pdf` (3.9 MB) are in `raptor-port/docs/it-flow-guide/` and were sent to him.
 - **Next:** his "Good merge live" (29 Sep 26): `main` merged in (D368), `[IT-FLOW-GUIDE]` archived; the PR's checks → merge → `main`'s
   run → live on Vercel. After that this block goes at the next handoff. Later: when the OIL award chat's words change the Leave
-  War, re-shoot `lw` and `ripple` and rebuild (README) — a small follow-up, filed nowhere else: the OIL chat will message.
+  War, re-shoot and rebuild — filed `[ITFLOW-OIL-RESHOOT]`; the OIL chat will message.
 - **Parallel (D302):** the handoff-review chat (D400–D409, observation #348) and the OIL award chat
   (`claude/award-earned-vs-granted-2ed66d`, D401–D409) — no shared lines. The OIL chat changes the Leave War's OIL words
   ("earned" / "awarded") and will message when they change and when it merges — then re-shoot `lw` and `ripple`. This chat:
