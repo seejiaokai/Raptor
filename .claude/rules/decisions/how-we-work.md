@@ -12,6 +12,7 @@ never pay or money).
 
 | # | Date | The rule |
 |---|---|---|
+| D354 | 29 Sep 26 | THE DATABASE STEP STARTS NOW (29 SEP 26), NOT ABOUT TWO MONTHS AWAY: THE IT TEAM IS TAKING THE APP INTO DATAVERSE NOW, AND HE MEANS TO KEEP WORKING ON THE APP BESIDE IT. |
 | D368 | 29 Sep 26 | EVERY HANDOFF TELLS HIM, IN PLAIN WORDS, WHETHER THE NEW CHAT NEEDS A WORKTREE (AND WHAT TO BASE IT ON) AND WHICH BRANCH TO PICK IN THE NEW-CHAT PICKER — AND WHICH TO AVOID — BESIDE THE READY-TO-PASTE OPENING LINE. |
 | D353 | 28 Sep 26 | HOW MANY REVIEWERS: SCENARIO DESIGN AND SIDE QUESTIONS ONE (ASTRA FIRST); AN IMPORTANT PLAN'S RED TEAM BOTH; THE FINAL CODE READS ON RISKY WORK — MONEY / EARNED LEAVE, PERMISSIONS, THE PUBLISHED RECORD, SAVED DATA — BOTH; EVERYTHING ELSE ONE. |
 | D351 | 28 Sep 26 | ADMIN → DATA → "CLEAR EDIT HISTORY…" STAYS AS IT IS UNTIL THE DATABASE STEP, WHERE THE ORGANISATION'S RETENTION RULE DECIDES HOW LONG THE CHANGE HISTORY IS KEPT. |
@@ -25,7 +26,7 @@ never pay or money).
 | D324 | 27 Sep 26 | THE BACKLOG TIDY (`[BACKLOG-TIDY]`) IS DONE NOW, DOCS ONLY, ON ITS OWN BRANCH (`claude/backlog-tidy`, cut from `main`), AND MERGED BEFORE `[ONE-DOOR]` AND `[LW-MOVE-STANDARD]` |
 | D302 | 27 Sep 26 | PARALLEL CHATS COORDINATE DIRECTLY, SO THEY DO NOT CLASH. |
 | D228 | 26 Sep 26 | BOTH PARALLEL CHATS RUN, AND THE FULL CHECKS TAKE TURNS THROUGH ONE LOCK ON HIS PC. |
-| D203 | 26 Sep 26 | The order to the database (about two months away, late Nov 26): now [ACCOUNTS], then [POST-OUT-OUTCOMES] (D291), then the one changes window ([DRAFT-PENDING]), and talk to the IT side now; about a month before, the database-readiness batch with the OIL award fix; then the data model to Manfred and [DB-STEP] when he is ready. Narrows D147 in part. — changed by D291 |
+| D203 | 26 Sep 26 | The order to the database: [ACCOUNTS], then [POST-OUT-OUTCOMES] (D291), then the one changes window ([DRAFT-PENDING]), talking to the IT side; then the database-readiness batch with the OIL award fix; then the data model to Manfred and [DB-STEP] — the step now starts at once (D354), so the rest is due before the tables settle. Narrows D147 in part. — changed by D354, D291 |
 | D201 | 26 Sep 26 | WHEN A NEW RULING OVERWRITES OR NARROWS AN OLDER ONE, FIX EVERYTHING THE OLD ONE LEFT BEHIND — IN THE SAME CHANGE THAT RECORDS IT. |
 | D180 | 25 Sep 26 | [LEAVE-LATE-PUBLISHED] (D177–D179) is built next, on its own branch, BEFORE [ACCOUNTS], with its own full check, his look and "merge live" — amending D173's order in part. |
 | D173 | 25 Sep 26 | The order after his look at PR #435: (1) D114's full check, his look, "merge live"; (2) accounts on a new branch; (3) the one changes window on top of accounts; (4) a full check of (2) and (3) — accounts later got its own (D210), and two steps were inserted (D175, D180). Replaces D115. — changed by D210, D180, D175 |

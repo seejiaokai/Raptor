@@ -959,7 +959,14 @@ can do better.
 | `Input`, `Person`, `LeavePersonProfile`, `QualMark` | one row | reject and reload | 1 |
 | `Amendment`, `Signoff` (issued) | append-only | no conflict possible: an insert with a duplicate `(weekId, number)` or `(weekId, dayIndex, role)` under the same AL is rejected outright | 1 |
 
-**The stage-1 edit lease.** While a week is one record, two schedulers with
+**The stage-1 edit lease — NARROWED 29 Sep 26 BY THE OWNER (D355): the lock is per DAY (one day or several chosen), shown to
+others as "<callsign> – editing" (read only for them), freed after 30 MINUTES idle, and an admin can take it over; what
+counts as idle, Save vs saved-as-you-go, and how others see changes are being settled in `OUTSTANDING.md`
+`[DB-SYNC-MODEL]` — SETTLED the same day (D356): idle = no change on the day by the holder for 30 minutes (a warning at
+25, "Keep editing"; closing the page or signing out frees it at once); changes save as they are made, "Done editing"
+releases the lock; others' changes arrive by themselves every 30 seconds while the page is on screen (paused in the
+background, the Sync fast mode for publishing, a manual refresh as a backup). The paragraph below (a whole week, five
+minutes) is the earlier proposal.** While a week is one record, two schedulers with
 it open would reject each other on every keystroke. `ScheduleWeek.editingBy`
 + `leaseUntil`: opening a week for edit takes the lease (five minutes,
 renewed on activity, released on leave); a second editor sees who holds it
