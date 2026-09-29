@@ -85,7 +85,10 @@ export function legacyViews(grid: Grid, states: States): Views {
       const st = stateOf(states, pid, date)
       const rec = states[pid]?.[date]
       let c: Contrib
-      if (cell.type === 'FO' || cell.type === 'HO') c = { id: date, kind: 'credit', code: cell.type, win, ...(rec?.source === 'raptor' ? { auto: true } : {}), ...(rec?.note ? { note: rec.note } : {}) }
+      /* an FO / HO cell is the SCHEDULE'S credit — an award is a ledger entry now ([OIL-AWARD-IS-A-GRANT]) and reaches
+         a figure from there; only a state marked as the war's own (`source: 'bid'`, what the merge writes for an award
+         drawn on the grid) reads as the drawn award, which earns nothing here (D400) */
+      if (cell.type === 'FO' || cell.type === 'HO') c = { id: date, kind: 'credit', code: cell.type, win, ...(rec?.source === 'bid' ? {} : { auto: true }), ...(rec?.note ? { note: rec.note } : {}) }
       else if (isBiddable(code) && st !== 'approved') c = { id: date, kind: 'request', code: cell.type, win, state: st ?? 'pending' }
       else c = { id: date, kind: 'absence', code: cell.type, win, lw: rec?.source !== 'raptor' }
       if (rec?.shiftedFrom) c.movedFrom = rec.shiftedFrom

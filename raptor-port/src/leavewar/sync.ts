@@ -47,6 +47,7 @@ import {
   warHolding,
   recsAt,
   recContribs,
+  isOilAward,
   requestWin,
   barsWrite,
   forbiddenPair,
@@ -334,11 +335,9 @@ function doorApprove(items: Array<{ personId: string; date: string; recId: strin
     const c: Contrib = { id: 'new', kind: 'absence', code: parseCell(rec.code)!.type, win: requestWin(rec.code) }
     if (absencesAt(it.personId, it.date).some(o => barsWrite(c, o))) { skipped++; why.push(`${shortDate(it.date)} already holds leave or a medical at that time — not approved`); continue }
     /* a bid left standing when work was later credited. Owner Q5 and §26.3
-       used to SKIP that day at approval; reversed 20 Sep 26 — the leave is
-       granted and the day is flagged instead. */
-    const credits = recContribs(recsAt(war.recs, it.personId, it.date)).filter(o => o.kind === 'credit')
-    /* recorded work no longer stops an approval — the leave is granted, the
-       day is flagged, and a human resolves it (owner, 20 Sep 26) */
+       used to SKIP that day at approval; reversed 20 Sep 26 — recorded work no
+       longer stops an approval: the leave is granted, the day is flagged, and
+       a human resolves it. */
     picks.push({ ...it, rec, warId: war.period.id })
   }
   if (!picks.length) return { done: 0, skipped, why }
@@ -1272,7 +1271,7 @@ export function oilCreditBidAgainst(di: number): boolean {
        the tracker reads, so the two cannot diverge on the figure OR the date.
        Only the SCHEDULE'S credit goes; an award on the same day stays in the
        balance and is none of this button's business (N16). */
-    const without = oilLedgerOf(figureCtxOf(), person, c => c.date === iso && c.source === 'auto' && !c.manual)
+    const without = oilLedgerOf(figureCtxOf(), person, c => c.date === iso && c.source === 'auto')
     if (without.balance < 0) return true
   }
   return false
@@ -1627,6 +1626,9 @@ function pastOnWar(id: string, cutoff: string): boolean {
   const cut = +cutoff.replace(/-/g, '')
   return getState().wars.some(w => Object.keys(((w as any).recs || {})[id] || {}).some(d => d < cutoff))
     || INPUTS.some((r: any) => r && r.person === id && (dateOrd(r.date, r.yr) ?? Infinity) < cut)
+    /* an OIL award before the cutoff is his past on the war too — a ledger entry since [OIL-AWARD-IS-A-GRANT], so the
+       war's records no longer carry it (Astra's plan read F03; D299: his past OIL stays, and so does his row) */
+    || rawState().ledger.some(e => e.personId === id && isOilAward(e) && e.date < cutoff)
 }
 /* the war's picture of a man it does NOT show right now (a SANS man with Show SANS off), taken before a delete's mark
    takes him off every projection — null when the war already has his row (the kept rule then carries him) */

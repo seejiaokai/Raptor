@@ -2,8 +2,10 @@
 //
 // The store keeps each war RAW — its own records only (`recs`). What every
 // screen and every figure reads is the MERGED war: those records together with
-// the absences derived from the Inputs (`absences.ts`), one `DayView` per
-// person/date, plus two projections the existing grid code already reads:
+// the absences derived from the Inputs (`absences.ts`) AND the OIL awards drawn
+// from the ledger (the award index below — [OIL-AWARD-IS-A-GRANT], D402), one
+// `DayView` per person/date, plus two projections the existing grid code
+// already reads:
 //   `grid[pid][date]`   — the main code's notation (what the box prints),
 //   `states[pid][date]` — the main record's colour state, its moved-from date,
 //                         its note, and `source: 'raptor'` when the war may not
@@ -18,8 +20,9 @@
 // person, not the squadron.
 
 import type { BidRecord, Grid, LeaveWar, States } from '../engine'
+import type { LedgerEntry } from '../engine/counters'
 import { dayView, type Contrib, type DayView, type Views } from '../engine/dayview'
-import { recContribs, type Recs, type WarRec } from '../engine/warrecs'
+import { awardContrib, recContribs, type Recs, type WarRec } from '../engine/warrecs'
 
 export type { Views }
 export interface MergedWar extends LeaveWar {
@@ -72,10 +75,30 @@ export function absencesAt(personId: string, date: string): readonly Contrib[] {
   return ABS.get(personId)?.get(date) ?? []
 }
 
+/* ---- THE AWARD INDEX ([OIL-AWARD-IS-A-GRANT], D402, 29 Sep 26) ------------
+   Every OIL award is ONE kind of record — a positive OIL ledger entry — and the
+   grid DRAWS each on its day. This index is how: personId → date → the awards
+   on it, built by the store (`getState`) whenever the ledger changes, a person
+   whose entries are unchanged keeping the SAME inner map so his merged rows are
+   reused (Fable's plan read F1). `awardsAt` is the ONE reader of "the awards on
+   this day" — nothing else scans the ledger for them. */
+export type AwardRows = ReadonlyMap<string, ReadonlyMap<string, readonly LedgerEntry[]>>
+const NO_AWD: AwardRows = new Map()
+let AWD: AwardRows = NO_AWD
+let AWD_VER = 0
+export function setAwardRows(ix: AwardRows): void { AWD = ix; AWD_VER++ }
+export function awardRows(): AwardRows { return AWD }
+export function awardVersion(): number { return AWD_VER }
+/** The OIL awards on one person/date, war-agnostic — the amount is the worth. */
+export function awardsAt(personId: string, date: string): readonly LedgerEntry[] {
+  return AWD.get(personId)?.get(date) ?? []
+}
+
 /* per war+person: the inputs last merged and what they produced */
 interface RowCache {
   raw: Record<string, WarRec[]> | undefined
   abs: ReadonlyMap<string, readonly Contrib[]> | undefined
+  awd: ReadonlyMap<string, readonly LedgerEntry[]> | undefined
   start: string
   end: string
   grid: Record<string, string>
@@ -83,10 +106,11 @@ interface RowCache {
   views: Record<string, DayView>
 }
 const ROWS = new Map<string, RowCache>()
-const WARS = new WeakMap<LeaveWar, { ver: number; merged: MergedWar }>()
+const WARS = new WeakMap<LeaveWar, { ver: number; awd: number; merged: MergedWar }>()
 
-/** Test/reset hook: forget every cached row (a world swap). */
-export function resetMergeCache(): void { ROWS.clear() }
+/** Test/reset hook: forget every cached row (a world swap) — the award index
+ *  too; the store rebuilds it from its ledger on the next read. */
+export function resetMergeCache(): void { ROWS.clear(); AWD = NO_AWD; AWD_VER++ }
 
 function projRecord(v: DayView): BidRecord | undefined {
   const m = v.main
@@ -112,19 +136,21 @@ function projRecord(v: DayView): BidRecord | undefined {
 }
 
 function mergeRow(war: LeaveWar, pid: string, raw: Record<string, WarRec[]> | undefined,
-  abs: ReadonlyMap<string, readonly Contrib[]> | undefined): RowCache {
+  abs: ReadonlyMap<string, readonly Contrib[]> | undefined,
+  awd: ReadonlyMap<string, readonly LedgerEntry[]> | undefined): RowCache {
   const { start, end } = war.period
   const key = `${war.period.id}|${pid}`
   const hit = ROWS.get(key)
-  if (hit && hit.raw === raw && hit.abs === abs && hit.start === start && hit.end === end) return hit
+  if (hit && hit.raw === raw && hit.abs === abs && hit.awd === awd && hit.start === start && hit.end === end) return hit
   const dates = new Set<string>(raw ? Object.keys(raw) : [])
   if (abs) for (const d of abs.keys()) if (d >= start && d <= end) dates.add(d)
+  if (awd) for (const d of awd.keys()) if (d >= start && d <= end) dates.add(d)
   const grid: Record<string, string> = {}
   const states: Record<string, BidRecord> = {}
   const views: Record<string, DayView> = {}
   for (const d of dates) {
     const own = raw?.[d]
-    const contribs = [...(own ? recContribs(own) : []), ...(abs?.get(d) ?? [])]
+    const contribs = [...(own ? recContribs(own) : []), ...(abs?.get(d) ?? []), ...(awd?.get(d) ?? []).map(awardContrib)]
     if (!contribs.length) continue
     const v = dayView(contribs)
     views[d] = v
@@ -132,7 +158,7 @@ function mergeRow(war: LeaveWar, pid: string, raw: Record<string, WarRec[]> | un
     const r = projRecord(v)
     if (r) states[d] = r
   }
-  const out: RowCache = { raw, abs, start, end, grid, states, views }
+  const out: RowCache = { raw, abs, awd, start, end, grid, states, views }
   ROWS.set(key, out)
   return out
 }
@@ -141,16 +167,19 @@ function mergeRow(war: LeaveWar, pid: string, raw: Record<string, WarRec[]> | un
  *  version, so a view-only render pays nothing. */
 export function mergeWar(war: LeaveWar): MergedWar {
   const hit = WARS.get(war)
-  if (hit && hit.ver === ABS_VER) return hit.merged
+  if (hit && hit.ver === ABS_VER && hit.awd === AWD_VER) return hit.merged
   const recs: Recs = war.recs
   const people = new Set<string>(Object.keys(recs))
   for (const [pid, rows] of ABS) {
     for (const d of rows.keys()) if (d >= war.period.start && d <= war.period.end) { people.add(pid); break }
   }
+  for (const [pid, rows] of AWD) {
+    for (const d of rows.keys()) if (d >= war.period.start && d <= war.period.end) { people.add(pid); break }
+  }
   const grid: Grid = {}, states: States = {}, views: Views = {}
   const spans = new Map<string, { first: string; last: string }>()
   for (const pid of people) {
-    const row = mergeRow(war, pid, recs[pid], ABS.get(pid))
+    const row = mergeRow(war, pid, recs[pid], ABS.get(pid), AWD.get(pid))
     if (Object.keys(row.grid).length) grid[pid] = row.grid
     if (Object.keys(row.states).length) states[pid] = row.states
     if (Object.keys(row.views).length) views[pid] = row.views
@@ -168,6 +197,6 @@ export function mergeWar(war: LeaveWar): MergedWar {
     if (first) spans.set(pid, { first, last })
   }
   const merged: MergedWar = { ...war, grid, states, views, spans }
-  WARS.set(war, { ver: ABS_VER, merged })
+  WARS.set(war, { ver: ABS_VER, awd: AWD_VER, merged })
   return merged
 }

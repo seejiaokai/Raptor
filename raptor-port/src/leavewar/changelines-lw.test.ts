@@ -7,7 +7,7 @@ import { INPUTS } from '../engine/inputs'
 import { ELOG, elogClear, rowTouches } from '../engine/editlog'
 import { initStore as raptorInitStore } from '../state/store'
 import { projectPeople } from './state/raptorRoster'
-import { getState, initStore as lwInitStore, setCell, setBidState, setPeople, setRole, advanceStage, setManualCredit, clearCells, grantOil, changeAbsenceById, moveCells, moveRecords } from './state/store'
+import { getState, initStore as lwInitStore, setCell, setBidState, setPeople, setRole, advanceStage, setDayAward, clearCells, grantOil, changeAbsenceById, moveCells, moveRecords } from './state/store'
 import { resetSession, writeInputs } from '../state/store'
 import { signIn, sessionFor } from '../state/accounts'
 import { inpId } from '../engine/inputs'
@@ -84,21 +84,25 @@ describe('a decision on the Leave War', () => {
    input takes away — none of them had a test */
 describe('an OIL award, a grant, and a bid an input takes away', () => {
   it('an award given, changed and taken away: one line each, naming who gave it', () => {
-    expect(setManualCredit(pid, '2026-02-09', 'FO', { givenBy: 'Saber' })).toBeNull()
+    expect(setDayAward(pid, '2026-02-09', 1, { givenBy: 'Saber' })).toBeNull()
     expect(war().map(r => r.lbl)).toEqual([expect.stringContaining('OIL award given by Saber')])
     elogClear()
-    expect(setManualCredit(pid, '2026-02-09', 'FO', { givenBy: 'Saber', note: 'the Sunday duty' })).toBeNull()
+    expect(setDayAward(pid, '2026-02-09', 1, { givenBy: 'Saber', note: 'the Sunday duty' })).toBeNull()
     expect(war().map(r => r.lbl)).toEqual([expect.stringContaining('OIL award changed')])
     elogClear()
     clearCells([{ personId: pid, date: '2026-02-09' }])
     expect(war().map(r => r.lbl)).toEqual([expect.stringContaining('OIL award taken away')])
   })
 
-  it('a grant on the OIL tracker reads "OIL", as the app names it (D25), one line per person', () => {
+  it('a credit on the OIL tracker is an OIL AWARD like the grid\'s — one kind, one line per person (D25, D400)', () => {
     expect(grantOil([pid], 1, '2026-02-03', 'given')).toBeNull()
     expect(war()).toHaveLength(1)
-    expect(war()[0]!.lbl).toContain('OIL +1')
-    expect(war()[0]!.lbl).not.toContain('oil +1')
+    expect(war()[0]!.lbl).toContain('OIL award given')
+    elogClear()
+    /* a correction reads by the counter's name, as the app names it — "OIL", never "oil" */
+    expect(grantOil([pid], -0.5, '2026-02-03', 'fix')).toBeNull()
+    expect(war()[0]!.lbl).toContain('OIL -0.5')
+    expect(war()[0]!.lbl).not.toContain('oil -0.5')
   })
 
   it('a bid an admin files an input over: the bid leaving is a line too, beside the line for the input itself', () => {
@@ -120,7 +124,7 @@ describe('a person deleted: what leaves the war says so', () => {
   it('his bid and his OIL award, each ONE honest line — no "input covers it"', () => {
     resetSession(sessionFor(signIn('ad', 'a') as any))
     setRole('admin')
-    expect(setManualCredit(pid, '2026-02-09', 'FO', { givenBy: 'Saber' })).toBeNull()
+    expect(setDayAward(pid, '2026-02-09', 1, { givenBy: 'Saber' })).toBeNull()
     elogClear()
     vi.useFakeTimers({ toFake: ['Date'] }); vi.setSystemTime(new Date(2026, 0, 15, 9, 0, 0))   // "today" before his war days
     try { expect(deletePerson(pid)).toBeNull() } finally { vi.useRealTimers() }

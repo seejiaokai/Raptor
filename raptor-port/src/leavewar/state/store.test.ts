@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import {
-  advanceStage, getState, getVersion, initStore, lwCanRedo, lwCanUndo, lwRedo, lwUndo, setBidState, setCell, createWar, selectWar, setRole, setBidWindow, setCellRange, setDayEvent, setDayEventRange, addEventBand, removeEventBand, moveEvent, moveEventProblem, addEventType, grantOil, grantTo, reasonRequired, HALF_STEP_MSG, setCellNote, updateLedgerEntry, removeLedgerEntry, setOilPolicy, setBalance, figureCtxOf, updateEventType, removeEventType, resetEventTypes, addEventRow, removeEventRow, eventRowUsed, MAX_EVENT_ROWS, setManningThreshold, resetManningThreshold, saveManningRule, deleteManningRule, resetManningRules, setQualCatalog, orderedManningIds, moveManningRow, toggleManningRow, setPeople, setPerson, clearBidWindow, reopenStage, subscribe, setCells, clearCells, setBidStates, moveCells, movableCells, moveProblem, setViewer,
+  advanceStage, getState, getVersion, initStore, lwCanRedo, lwCanUndo, lwRedo, lwUndo, setBidState, setCell, createWar, selectWar, setRole, setBidWindow, setCellRange, setDayEvent, setDayEventRange, addEventBand, removeEventBand, moveEvent, moveEventProblem, addEventType, grantOil, grantTo, reasonRequired, HALF_STEP_MSG, setDayAward, awardsOnDay, updateLedgerEntry, removeLedgerEntry, setOilPolicy, setBalance, figureCtxOf, updateEventType, removeEventType, resetEventTypes, addEventRow, removeEventRow, eventRowUsed, MAX_EVENT_ROWS, setManningThreshold, resetManningThreshold, saveManningRule, deleteManningRule, resetManningRules, setQualCatalog, orderedManningIds, moveManningRow, toggleManningRow, setPeople, setPerson, clearBidWindow, reopenStage, subscribe, setCells, clearCells, setBidStates, moveCells, movableCells, moveProblem, setViewer,
 } from './store'
 import { FIGURES, figureParts, makeWar, seedRequirements, type CounterName } from '../engine'
 import { balanceOf, figureLines } from '../engine/counters'
@@ -1239,11 +1239,13 @@ describe('reopening a period', () => {
     setRole('admin')
     advanceStage()
     setBidState('asics', '2026-01-23', 'approved')
-    setBidState('jaguar', '2026-01-19', 'refused')
+    /* CROSS's 10 Mar, not JAGUAR's 19 Jan: since D402 the seed's OIL award on 19 Jan is drawn on that day and is its
+       box, the refused bid behind it as "+1" ([OIL-AWARD-IS-A-GRANT]) */
+    setBidState('cross', '2026-03-10', 'refused')
     reopenStage()
     expect(getState().period.stage).toBe('open')
     expect(getState().states.asics['2026-01-23'].state).toBe('approved')
-    expect(getState().states.jaguar['2026-01-19'].state).toBe('refused')
+    expect(getState().states.cross['2026-03-10'].state).toBe('refused')
   })
 
   it('leaves the grid and the bidding window alone', () => {
@@ -2078,23 +2080,26 @@ describe('the OIL tracker: grants, corrections and the policy', () => {
     expect(getState().ledger.at(-1)).toMatchObject({ reason: 'Kept', givenBy: 'Boss' })
   })
 
-  it('an FO/HO cell takes a reason note from an admin; the note survives a reload', () => {
+  it('an award given on the grid takes a reason from an admin; the reason survives a reload', () => {
+    /* [OIL-AWARD-IS-A-GRANT]: the award is a ledger entry, its reason the entry's — the hand-typed cell's note editor
+       went with the hand-typed cell */
     const backend = memoryBackend()
     initStore(backend)
     const p = getState().people[0]!.id
     const date = getState().wars[0]!.period.days[3]!.date
-    expect(setCellNote(p, date, 'FLT')).toBe('Only an admin can edit OIL')
+    expect(setDayAward(p, date, 1, { note: 'FLT' })).toBe('Only an admin can enter OIL')
     setRole('admin')
-    expect(setCellNote(p, date, 'FLT')).toBe('Only an FO or HO credit takes a reason')
-    setCell(p, date, 'FO')
-    expect(setCellNote(p, date, ' FLT ')).toBeNull()
-    expect(getState().wars[0]!.states[p]![date]).toMatchObject({ note: 'FLT' })
-    expect(setCellNote(p, date, 'x'.repeat(41))).toBe('A reason is at most 40 characters')
+    expect(setDayAward(p, date, 1)).toBeNull()                        // the grid never asks for a reason
+    const id = awardsOnDay(p, date)[0]!.id
+    expect(updateLedgerEntry(id, { reason: ' FLT ' })).toBeNull()
+    expect(awardsOnDay(p, date)[0]).toMatchObject({ reason: 'FLT' })
+    expect(getState().wars[0]!.views[p]![date]!.all.find(c => c.kind === 'credit')).toMatchObject({ note: 'FLT' })
+    expect(updateLedgerEntry(id, { reason: 'x'.repeat(121) })).toBe('A reason is at most 120 characters')
     initStore(backend)
-    expect(getState().wars[0]!.states[p]![date]!.note).toBe('FLT')
+    expect(awardsOnDay(p, date)[0]!.reason).toBe('FLT')
     setRole('admin')
-    expect(setCellNote(p, date, '')).toBeNull()
-    expect('note' in getState().wars[0]!.states[p]![date]!).toBe(false)
+    /* an award that HAS a reason keeps one — it never loses it silently (Astra's round-2 read, R2-05) */
+    expect(updateLedgerEntry(id, { reason: '' })).toBe('Give a reason')
   })
 
   it('credits one or many people in one batch, stamped with the viewer\'s callsign', () => {
@@ -2107,10 +2112,16 @@ describe('the OIL tracker: grants, corrections and the policy', () => {
       ['dusk', 'oil', 1.5, '2026-03-02', 'Det recovery', 'RAMP'],
       ['miles', 'oil', 1.5, '2026-03-02', 'Det recovery', 'RAMP'],
     ])
-    expect(added.map(e => e.id)).toEqual(['ol-1', 'ol-2'])
-    // A second batch continues the sequence — no clock, no collision.
+    /* OPAQUE IDS, never re-minted (Astra's round-2 read, R2-03): each entry is its own undo record now, so an id is its
+       identity — two in one batch differ, and the next batch's differs from both */
+    const ids = added.map(e => e.id)
+    expect(ids.every(id => id.startsWith('ol-'))).toBe(true)
+    expect(new Set(ids).size).toBe(2)
     expect(grantOil(['dusk'], -0.5, '2026-03-03', 'Correction')).toBeNull()
-    expect(getState().ledger.at(-1)!.id).toBe('ol-3')
+    expect(ids).not.toContain(getState().ledger.at(-1)!.id)
+    /* who ENTERED them and when (D200 (2)): the signed-in person's id, and the time */
+    expect(added[0]).toMatchObject({ enteredBy: 'ramp' })
+    expect(Number.isNaN(Date.parse(added[0]!.enteredAt!))).toBe(false)
     // And the figure moves: dusk's +OIL rose by 1.5 − 0.5.
     const ctx = figureCtxOf()
     expect(FIGURES.find(f => f.id === 'oil')!.value(ctx, 'dusk')).toBe(
@@ -2134,7 +2145,13 @@ describe('the OIL tracker: grants, corrections and the policy', () => {
     const id = getState().ledger.at(-1)!.id
     expect(updateLedgerEntry(id, { amount: 2, reason: 'Det recovery (two days)' })).toBeNull()
     expect(getState().ledger.at(-1)).toMatchObject({ id, amount: 2, date: '2026-03-02', reason: 'Det recovery (two days)', approvedBy: 'admin' })
-    expect(updateLedgerEntry(id, { date: 'never' })).toBe('Pick a date')
+    /* an AWARD's date is fixed (D260's reading); a correction's date is still checked as a date */
+    expect(updateLedgerEntry(id, { date: '2026-03-09' })).toContain('stays on its day')
+    expect(updateLedgerEntry(id, { amount: -1 })).toContain('stays an award')
+    grantOil(['ramp'], -0.5, '2026-03-04', 'Correction')
+    const corr = getState().ledger.at(-1)!.id
+    expect(updateLedgerEntry(corr, { date: 'never' })).toBe('Pick a date')
+    expect(updateLedgerEntry(corr, { date: '2026-03-05' })).toBeNull()
     expect(updateLedgerEntry('ol-999', { amount: 1 })).toBe('That entry is gone')
     setRole('member')
     expect(removeLedgerEntry(id)).toBe(false)
@@ -2227,7 +2244,7 @@ describe('grantTo — a dated credit on any pool', () => {
     expect(bal('ramp', 'ccl')).toBe(before + 2)
     const e = getState().ledger.filter(x => x.personId === 'ramp' && x.counter === 'ccl').at(-1)!
     expect(e).toMatchObject({ amount: 2, date: '2026-09-06', reason: '', approvedBy: 'admin' })
-    expect(e.id).toMatch(/^ol-\d+$/)
+    expect(e.id).toMatch(/^ol-/)
   })
   /* THE DEFAULT COLUMN had no write test of its own (review, 6 Sep 26). Every
      case here ran on `ccl`/`fcl`/`pl`, single-used-type pools; `annual` is the

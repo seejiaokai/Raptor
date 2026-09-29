@@ -387,6 +387,11 @@ replay — no reconciler re-derives anything:
   gone, a notice added when someone else filed it); sick over leave: the medical put + the leave
   trimmed, in the same envelope.
 - Publish a weekend/PH day: the book records + the replaced bids' `lw.cell` lists.
+- An OIL award ([OIL-AWARD-IS-A-GRANT], 29 Sep 26): ONE ledger entry, its own record `lw.ledger/<entry id>` — the
+  ledger is recorded one record per entry, so an Undo conflicts only with a later change to the SAME entry (a person
+  delete dropping another man's future award no longer blocks it). A clear that takes a bid and an award is one
+  envelope carrying the `lw.cell` list and the `lw.ledger` entry; a batch credit to N people is one envelope of N
+  entries. A new entry's id is opaque and never re-minted, so an undone entry's key is never reused.
 
 **Every door re-checks the rules, including redo.** `schedWriteRecords` (the restore body) calls the
 absence gate's `vetRestore` after replaying Inputs: a restore that would put two leaves on the same

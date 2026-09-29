@@ -344,7 +344,8 @@ describe('bid state on a cell', () => {
     render(<Matrix />)
     expect(screen.getByTestId('cell-jaguar-2026-01-16').querySelector('.c')!.className).toContain('appr')
     expect(screen.getByTestId('cell-asics-2026-02-24').querySelector('.c')!.className).toContain('tbc')
-    expect(screen.getByTestId('cell-jaguar-2026-01-19').querySelector('.c')!.className).toContain('ref')
+    /* CROSS's 10 Mar: JAGUAR's refused 19 Jan now sits behind the seed's OIL award drawn on that day (D402) */
+    expect(screen.getByTestId('cell-cross-2026-03-10').querySelector('.c')!.className).toContain('ref')
 
     const pending = screen.getByTestId('cell-asics-2026-01-23').querySelector('.c')!.className
     for (const painted of ['appr', 'tbc', 'ref']) expect(pending).not.toContain(painted)

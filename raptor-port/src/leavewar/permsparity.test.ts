@@ -9,7 +9,7 @@
    Register line AC9. */
 import { beforeEach, describe, expect, it } from 'vitest'
 import {
-  initStore, getState, setRole, setViewer, setCell, setBidStates, setManualCredit, grantTo, advanceStage,
+  initStore, getState, setRole, setViewer, setCell, setBidStates, setDayAward, grantTo, advanceStage,
   setBidWindow, setBalance, setPostOut,
 } from './state/store'
 import { memoryBackend } from './state/storage'
@@ -33,7 +33,7 @@ const CASES: { what: string; table: string; letter: Act; owner: string | null; r
   { what: 'deciding a bid', table: T.bid, letter: 'U', owner: null, run: () => {
       const was = getState().role; setRole('admin'); setCell('tata', '2026-01-22', 'LL'); setRole(was)
       return setBidStates([{ personId: 'tata', date: '2026-01-22' }], 'approved').decided > 0 } },
-  { what: 'a hand-typed OIL award', table: T.award, letter: 'C', owner: null, run: () => setManualCredit('ramp', '2026-02-07', 'FO') === null },
+  { what: 'a hand-typed OIL award', table: T.award, letter: 'C', owner: null, run: () => setDayAward('ramp', '2026-02-07', 1) === null },
   { what: 'a ledger grant', table: T.ledger, letter: 'C', owner: null, run: () => grantTo(['ramp'], 'oil', 1, '2026-02-07', 'weekend duty') === null },
   { what: 'a balance', table: T.ledger, letter: 'U', owner: null, run: () => setBalance('ramp', 'oil', 5) },
   { what: 'moving the war\'s stage forward', table: T.war, letter: 'U', owner: null, run: () => { const s = getState().period.stage; advanceStage(); return getState().period.stage !== s } },

@@ -37,7 +37,8 @@
 // one tap on which brings every archived box back into the lanes (one switch
 // for the whole grid, session-only, opens closed). A live credit with some
 // draws, an uncovered take and a correction never archive — the first is
-// still money, the other two are what makes a negative balance visible.
+// still days owed (earned leave, never money — D25), the other two are what
+// makes a negative balance visible.
 //
 // Selection (admin): a tap on a name toggles the row; a hold-then-drag (a
 // finger) or a plain drag (a mouse) down the NAMES selects the run —
@@ -47,10 +48,13 @@
 // grid: one amount, one date, one reason, an optional "given by", N people.
 //
 // Everything shown is DERIVED by engine/oiltracker.ts from the store's
-// openings, ledger and grid (plus each FO/HO cell's note); what an admin
-// writes here is a ledger entry (grantOil / updateLedgerEntry /
-// removeLedgerEntry), a hand-typed credit's note (setCellNote), or the
-// policy (setOilPolicy).
+// openings, ledger and the automatic credits on the grid; what an admin
+// writes here is a ledger entry (grantTo / updateLedgerEntry /
+// removeLedgerEntry) or the policy (setOilPolicy). Every OIL AWARD is a ledger
+// entry now, however it was given ([OIL-AWARD-IS-A-GRANT], 29 Sep 26) — the
+// one given on the grid opens the same editor as one given here, and an
+// award's DATE is shown, never changed (D260's reading: an award never moves;
+// one on the wrong day is deleted and given again).
 //
 // Role: the sheet DRAWS controls for an admin only (absent, not disabled —
 // the house rule), and the store refuses a member's write regardless.
@@ -63,7 +67,6 @@ import {
   catText,
   groupLabel,
   inWindow,
-  MAX_CELL_NOTE,
   MAX_EXPIRY_DAYS,
   MAX_EXPIRY_MONTHS,
   MAX_HISTORY_MONTHS,
@@ -85,11 +88,10 @@ import {
   MAX_GIVEN_BY,
   MAX_REASON,
   removeLedgerEntry,
-  editManualCredit,
   setOilPolicy,
   updateLedgerEntry,
 } from '../state/store'
-import { hhmm, parseHM } from '../../engine/time'
+import { hhmm } from '../../engine/time'
 import { CreditForm, DayChip } from './CreditForm'
 import { shortDate, shortSpan } from './dates'
 import { RangePicker, type Range } from './RangePicker'
@@ -207,8 +209,7 @@ export function OilTracker({ person, onClose, onGranted }: {
   const [sel, setSel] = useState<Set<string>>(() => new Set())
   const wrapRef = useRef<HTMLDivElement>(null)
 
-  // The grant being edited (its draft), the one armed for deletion, and the
-  // hand-typed credit whose note is being written.
+  // The entry being edited (its draft) and the one armed for deletion.
   const [editId, setEditId] = useState<string | null>(null)
   const [eAmt, setEAmt] = useState('')
   const [eDate, setEDate] = useState('')
@@ -216,17 +217,6 @@ export function OilTracker({ person, onClose, onGranted }: {
   const [eGiven, setEGiven] = useState('')
   const [eErr, setEErr] = useState('')
   const [armDel, setArmDel] = useState<string | null>(null)
-  const [noteId, setNoteId] = useState<string | null>(null)
-  const [noteDraft, setNoteDraft] = useState('')
-  /* The WORK HOURS on a hand-typed credit (CURRENT-STATE item E; clash check
-     B8's "a manual credit MAY carry work times; none = the whole day"). They
-     sit beside the reason because they answer the same question — what this
-     credit was FOR — and because a credit an admin types is the only kind
-     whose hours are his to say. Empty means the whole day, which is B8's own
-     default and the way back from a mistype. */
-  const [hDays, setHDays] = useState('')
-  const [hGiven, setHGiven] = useState('')
-
   const groupDefs = groupsInOrder()
   const priority = groupPriorityIds()
   const homeOf = (p: Person) => assignGroup(p, groupDefs, priority)
@@ -319,44 +309,19 @@ export function OilTracker({ person, onClose, onGranted }: {
   }
   const done = () => { onGranted?.() }
 
-  /* ---- editing a grant / a hand-typed credit's note --------------------- */
+  /* ---- editing an award or a correction ---------------------------------- */
   const startEdit = (c: OilCredit) => {
-    setEditId(c.ledgerId!); setEAmt(String(c.amount)); setEDate(c.date); setEReason(c.reason); setEGiven(c.givenBy ?? ''); setEErr(''); setArmDel(null); setNoteId(null)
+    setEditId(c.ledgerId!); setEAmt(String(c.amount)); setEDate(c.date); setEReason(c.reason); setEGiven(c.givenBy ?? ''); setEErr(''); setArmDel(null); setEIsCorr(false)
   }
+  /* A CORRECTION's editor has no "given by" box, so the save leaves the one it has alone — it used to send the blank and
+     wipe it (Astra's final read, OA-002) */
+  const [eIsCorr, setEIsCorr] = useState(false)
   const saveEdit = () => {
-    const problem = updateLedgerEntry(editId!, { amount: Number(eAmt), date: eDate, reason: eReason, givenBy: eGiven })
+    const problem = updateLedgerEntry(editId!, { amount: Number(eAmt), date: eDate, reason: eReason, ...(eIsCorr ? {} : { givenBy: eGiven }) })
     if (problem) { setEErr(problem); return }
     setEditId(null)
     done()
   }
-  const startNote = (c: OilCredit, personId: string) => {
-    /* KEYED BY THE CREDIT, NOT BY THE DAY (N16, 21 Sep 26). A Saturday can
-       now carry the schedule's credit AND an award, so a key of person+date
-       no longer names one row. Only the award is editable, but the key has
-       to be able to say WHICH row is open.
-       The reason no longer needs comparing against the automatic wording
-       either — an award never falls back to "weekend duty" now. */
-    setNoteId(`${personId}|${c.id}`); setNoteDraft(c.manual ? c.reason : ''); setEditId(null)
-    setHDays(c.days != null ? String(c.days) : '')
-    setHGiven(c.givenBy ?? '')
-  }
-  /* ONE EDIT, ONE STEP (Astra, 21 Sep 26). The reason, the giver and the
-     days used to be written by three separate calls, which is three separate
-     commands: ONE press of undo took back the reason and left the balance
-     changed and the giver rewritten, and a refused value left the earlier
-     two already saved. Ordering them carefully only narrowed the window.
-     `editManualCredit` checks everything first and writes once, so a refusal
-     changes nothing and an undo takes the whole edit back. */
-  const saveNote = (personId: string, date: string, recId: string) => {
-    const raw = hDays.trim()
-    const days = raw ? Number(raw) : null
-    if (raw && !Number.isFinite(days)) { setEErr('Type how many days — or leave it blank'); return }
-    const problem = editManualCredit(personId, date, recId, { note: noteDraft, givenBy: hGiven, days })
-    if (problem) { setEErr(problem); return }
-    setNoteId(null); setEErr('')
-    done()
-  }
-
   /* ---- SETTINGS (admin) ------------------------------------------------ */
   if (view === 'settings' && admin) {
     const exp = oilPolicy.expiry
@@ -454,19 +419,18 @@ export function OilTracker({ person, onClose, onGranted }: {
       const c = b.c
       const usedUp = c.left === 0 && !c.expired && c.used.length > 0
       const editing = editId !== null && c.ledgerId === editId
-      /* WHICH ROW is open, not which DAY (N16, 21 Sep 26): a Saturday can
-         now carry the schedule's credit and an award, so a person and a
-         date no longer name one row. */
-      const noting = noteId === `${p.id}|${c.id}`
-      const cls = `oil-e credit${c.source === 'grant' ? ' grant' : ''}${usedUp ? ' used' : ''}${c.expired ? ' expired' : ''}${editing || noting ? ' editing' : ''}`
+      const cls = `oil-e credit${c.source === 'grant' ? ' grant' : ''}${usedUp ? ' used' : ''}${c.expired ? ' expired' : ''}${editing ? ' editing' : ''}`
+      /* every AWARD is a ledger entry, however it was given — one editor for all (the automatic credit is the
+         schedule's, never edited here) */
       const canEdit = admin && c.source === 'grant'
-      const canNote = admin && c.source === 'auto' && c.manual
       if (editing) {
         return (
           <div key={c.id} className={cls} data-testid={`oil-entry-${tid(c.id, c.ledgerId)}`}>
             <div className="oil-edit">
               <input type="number" step="0.5" className="oil-num" data-testid="oil-edit-amt" value={eAmt} onChange={e => setEAmt(e.target.value)} aria-label="Days" />
-              <DayChip testid="oil-edit-date" pickerId="oileditdate" value={eDate} today={today} onPick={setEDate} />
+              {/* AN AWARD'S DATE IS SHOWN, NEVER CHANGED (D260's reading — delete it and give it again on the right
+                  day); the store refuses a changed date on an award too */}
+              <span className="oil-dateread" data-testid="oil-edit-date">{shortDate(eDate)}</span>
               <input className="oil-text" data-testid="oil-edit-reason" maxLength={MAX_REASON} value={eReason} onChange={e => setEReason(e.target.value)} aria-label="Reason" placeholder="reason" />
               <input className="oil-text given" data-testid="oil-edit-given" maxLength={MAX_GIVEN_BY} value={eGiven} onChange={e => setEGiven(e.target.value)} aria-label="Given by" placeholder="given by (optional)" />
               <span className="acts">
@@ -499,67 +463,22 @@ export function OilTracker({ person, onClose, onGranted }: {
           <div className="l1">
             <span className="amt">{signed(c.amount)}</span>
             <span className="dt">{c.date ? dmy(c.date, lane) : 'carried in'}</span>
-            {c.source === 'auto' && !c.manual && <span className="by auto">Auto</span>}
+            {c.source === 'auto' && <span className="by auto">Auto</span>}
             {/* Who said so — on a grant since 2 Sep 26, and now on a
                 hand-typed credit too, where it answers the sharper question:
                 the schedule is its own evidence, a typed credit has none. */}
             {c.givenBy && <span className="by">{c.givenBy}</span>}
           </div>
-          {noting ? (
-            <div className="l2 noting" onClick={e => e.stopPropagation()}>
-              <input
-                className="oil-text"
-                data-testid="oil-note-input"
-                maxLength={MAX_CELL_NOTE}
-                value={noteDraft}
-                placeholder="why — e.g. FLT, SIM, Duty"
-                aria-label="Reason"
-                autoFocus
-                onChange={e => setNoteDraft(e.target.value)}
-                onKeyDown={e => { if (e.key === 'Enter') saveNote(p.id, c.date, c.recId!); if (e.key === 'Escape') setNoteId(null) }}
-              />
-              {/* HOW MANY DAYS this grant is worth. Blank is the ordinary
-                  case and means the code's own worth — a day for FO, half for
-                  HO — so the common grant needs no typing at all. */}
-              <input
-                className="oil-num"
-                data-testid="oil-note-days"
-                inputMode="decimal"
-                maxLength={5}
-                value={hDays}
-                placeholder="days"
-                aria-label="How many days"
-                onChange={e => { setEErr(''); setHDays(e.target.value) }}
-                onKeyDown={e => { if (e.key === 'Enter') saveNote(p.id, c.date, c.recId!); if (e.key === 'Escape') setNoteId(null) }}
-              />
-              <input
-                className="oil-text given"
-                data-testid="oil-note-given"
-                maxLength={MAX_GIVEN_BY}
-                value={hGiven}
-                placeholder="given by (optional)"
-                aria-label="Given by"
-                onChange={e => { setEErr(''); setHGiven(e.target.value) }}
-                onKeyDown={e => { if (e.key === 'Enter') saveNote(p.id, c.date, c.recId!); if (e.key === 'Escape') setNoteId(null) }}
-              />
-              <button className="dchip approve" data-testid="oil-note-save" onClick={() => saveNote(p.id, c.date, c.recId!)}>Save</button>
-              {eErr && <span className="note warn" data-testid="oil-note-err">{eErr}</span>}
-            </div>
-          ) : (
-            <div className="l2">
-              {canNote ? (
-                <button className="oil-notebtn" data-testid={`oil-note-${tid(c.id, c.ledgerId)}`} onClick={e => { e.stopPropagation(); startNote(c, p.id) }} title="Say why this credit was given">
-                  {/* An award no longer borrows the weekend's words, so the
-                      button simply asks whether it has any of its own. */}
-                  {c.manual && c.reason ? c.reason : '+ reason'}
-                  {c.hours?.[0] && <span className="oil-hrs"> · {hhmm(c.hours[0][0])}–{hhmm(c.hours[0][1])}</span>}
-                  {c.days != null && <span className="oil-hrs"> · {c.days} days</span>}
-                </button>
-              ) : (
-                <span className="rt">{c.reason}</span>
-              )}
-            </div>
-          )}
+          <div className="l2">
+            <span className="rt">
+              {c.reason || (c.source === 'grant'
+                /* an award given on the grid needs no reason (plan §2.2); its box says so, and — for an admin, on a phone
+                   too, where no hover title shows — that a tap adds one (Fable's final read, F1) */
+                ? <span className="rt muted" data-testid={`oil-noreason-${tid(c.id, c.ledgerId)}`}>{admin ? 'no reason — tap to add one' : 'no reason given'}</span>
+                : '')}
+              {c.hours?.[0] && <span className="oil-hrs"> · {hhmm(c.hours[0][0])}–{hhmm(c.hours[0][1])}</span>}
+            </span>
+          </div>
           <div className="l3">
             {/* one row per take (owner, 2 Sep 26 — "subsequent inputs on a new row") */}
             <span className="tk">{c.used.map((u, i) => <span key={i} className="tk1">−{show(u.amount)} {dmy(u.date, lane)}</span>)}</span>
@@ -596,7 +515,7 @@ export function OilTracker({ person, onClose, onGranted }: {
       )
     }
     const canEdit = admin && d.source === 'correction'
-    const startCorrEdit = () => { setEditId(d.ledgerId!); setEAmt(String(-d.amount)); setEDate(d.date); setEReason(d.reason); setEGiven(''); setEErr(''); setArmDel(null) }
+    const startCorrEdit = () => { setEditId(d.ledgerId!); setEAmt(String(-d.amount)); setEDate(d.date); setEReason(d.reason); setEGiven(''); setEErr(''); setArmDel(null); setEIsCorr(true) }
     return (
       <div
         key={d.id}

@@ -229,6 +229,17 @@ export function FigureBreakdownSheet({
   // no way to ask who gave it or when — so the row itemises them underneath.
   // A total names no counter and has no grants to show.
   const grants = figure.counter ? grantsFor(ctx.ledger, person.id, figure.counter) : []
+  /* ON OIL the entries sit under the row that counts them (owner, D400, 29 Sep 26): every AWARD — the one kind of
+     hand-given OIL, grid or tracker — under "awarded", every CORRECTION under "corrections"; every other pool keeps
+     "granted" */
+  const listFor = (label: string) =>
+    label === 'granted' ? grants
+      : label === 'awarded' ? grants.filter(g => g.amount > 0)
+        : label === 'corrections' ? grants.filter(g => g.amount < 0)
+          : []
+  /* WHO ENTERED IT, by his LIVE callsign (D200 (2)) — a rename follows; the approver typed at the time otherwise */
+  const byName = (g: (typeof grants)[number]) =>
+    (g.enteredBy && getState().people.find(p => p.id === g.enteredBy)?.callsign) || g.approvedBy
 
   return (
     <Sheet testid="figure-breakdown" label={`${figure.label} breakdown`} onClose={onClose} narrow>
@@ -254,12 +265,12 @@ export function FigureBreakdownSheet({
                   `.csub` already uses for a caption. Outside it the list
                   became a flex SIBLING of the row and squeezed in beside the
                   number it explains (live-view pass, 6 Sep 26). */}
-              {p.label === 'granted' && grants.length > 0 && (
+              {listFor(p.label).length > 0 && (
                 <span className="bdgrants" data-testid="breakdown-grants">
-                  {grants.map(g => (
+                  {listFor(p.label).map(g => (
                     <span key={g.id} className="bdgrant" data-testid={`grant-${g.id}`}>
                       <b className={g.amount < 0 ? 'neg' : ''}>{g.amount < 0 ? '−' : '+'}{show(Math.abs(g.amount))}</b>
-                      {' · '}{shortDate(g.date)}{' · by '}{g.approvedBy}{g.givenBy ? ` (${g.givenBy})` : ''}{g.reason ? ` · ${g.reason}` : ''}
+                      {' · '}{shortDate(g.date)}{' · by '}{byName(g)}{g.givenBy ? ` (${g.givenBy})` : ''}{g.reason ? ` · ${g.reason}` : ''}
                     </span>
                   ))}
                 </span>

@@ -6,12 +6,16 @@
 // Nothing here is a second record. Every line is DERIVED from what the store
 // already holds, the same three facts `counters.ts:balanceOf` sums:
 //
-//   credits  — the opening figure (`openings[p].oil`), each OIL grant in the
-//              ledger (`counter: 'oil'`, positive), and every FO/HO cell the
-//              publish wire wrote (a full or half day earned by weekend/PH
-//              work — `earnsOil` in codes.ts). The FO/HO cell IS the credit
-//              record; the tracker reads it, it never mints a ledger entry
-//              for it (counters.ts's two-records-of-one-fact rule stands).
+//   credits  — the opening figure (`openings[p].oil`), each OIL AWARD in the
+//              ledger (`counter: 'oil'`, positive — the ONE kind of hand-given
+//              OIL since [OIL-AWARD-IS-A-GRANT], 29 Sep 26, whether given on
+//              the grid or here), and every AUTOMATIC FO/HO credit the publish
+//              wire wrote (a full or half day earned by weekend/PH work). The
+//              automatic credit IS its own record; the tracker reads it, it
+//              never mints a ledger entry for it (counters.ts's
+//              two-records-of-one-fact rule stands). The grid DRAWS each award
+//              on its day too (D402), but that drawing is read here only for
+//              the automatic credits — an award is counted once, off the ledger.
 //   debits   — every OIL day on the grid (`OIL`, `*OIL`, `OIL*`, gated by
 //              the SAME `removesAvailability` the manning rows use, so a
 //              refused bid draws nothing and a half day draws 0.5), a
@@ -114,14 +118,15 @@ export interface OilCredit {
   amount: number
   reason: string
   source: OilSource
-  /** Who recorded a grant (the admin's callsign). */
+  /** Who recorded a grant (the admin's callsign, as typed at the time). */
   approvedBy?: string
+  /** Who ENTERED an award (a person id — D200 (2)), and when; drawn by his
+   *  live callsign where shown. */
+  enteredBy?: string
+  enteredAt?: string
   /** Who GAVE it, when the admin named someone: a grant's approver (owner,
    *  2 Sep 26) or a hand-typed credit's "on whose say-so" (20 Sep 26). */
   givenBy?: string
-  /** An `auto` credit an admin typed by hand (no Raptor-owned record behind
-   *  it), so its reason is theirs to write (`setCellNote`). */
-  manual?: boolean
   /** The war RECORD this row was read off — what an editor addresses.
    *  Since N16 (21 Sep 26) a day can carry two credits, so a person and a
    *  date no longer name one of them. */
@@ -134,10 +139,8 @@ export interface OilCredit {
   left: number
   /** What was left when it expired, if it did. */
   expired: number
-  /** For a grant: the ledger entry behind it (the thing an admin edits). */
+  /** For an award: the ledger entry behind it (the thing an admin edits). */
   ledgerId?: string
-  /** How many days a GRANT is worth, when not the code's own worth. */
-  days?: number
   /** The work hours an AUTOMATIC credit was earned over, read off the
    *  published schedule (clash check B8). Minutes from midnight.
    *  Readonly because it is the contribution's own array, handed straight
@@ -169,8 +172,12 @@ export interface OilLedger {
   debits: OilDebit[]
   /** Σ left − Σ unbacked, as of `asOf`. */
   balance: number
+  /** what the app credited itself — the automatic credits (D400) */
   earned: number
-  granted: number
+  /** every OIL award, however it was given (D400) */
+  awarded: number
+  /** every correction (a negative OIL entry), summed — ≤ 0 */
+  corrections: number
   taken: number
   expired: number
   overdrawn: number
@@ -213,7 +220,7 @@ export function oilLedgerFor(ctx: FigureCtx, personId: string, policy: OilPolicy
   for (const e of ctx.ledger) {
     if (e.personId !== personId || e.counter !== 'oil' || !e.amount) continue
     if (e.amount > 0) {
-      credits.push({ id: e.id, ledgerId: e.id, date: e.date, amount: e.amount, reason: e.reason, source: 'grant', approvedBy: e.approvedBy, ...(e.givenBy ? { givenBy: e.givenBy } : {}), expires: expiryOf(e.date, policy), used: [], left: e.amount, expired: 0 })
+      credits.push({ id: e.id, ledgerId: e.id, date: e.date, amount: e.amount, reason: e.reason, source: 'grant', approvedBy: e.approvedBy, ...(e.givenBy ? { givenBy: e.givenBy } : {}), ...(e.enteredBy ? { enteredBy: e.enteredBy } : {}), ...(e.enteredAt ? { enteredAt: e.enteredAt } : {}), expires: expiryOf(e.date, policy), used: [], left: e.amount, expired: 0 })
     } else {
       debits.push({ id: e.id, ledgerId: e.id, date: e.date, amount: -e.amount, reason: e.reason, source: 'correction', from: [], unbacked: 0 })
     }
@@ -224,36 +231,21 @@ export function oilLedgerFor(ctx: FigureCtx, personId: string, policy: OilPolicy
   const charged = chargedDays(ctx.sources, personId, ctx)
   ctx.sources.forEach((src, wi) => {
     for (const [date, v] of Object.entries(viewsOf(src)[personId] ?? {})) {
-      // a credit: the reason is the sync wire's note (FLT, SIM + Duty, an
-      // input's type — owner, 2 Sep 26) or the admin's; none falls back to
-      // the day's kind. `manual` = hand-typed (the tracker's reason editor).
-      /* ONE ENTRY PER CREDIT (N16, 21 Sep 26 — "an award and a worked day add
-         up"). It took the FIRST credit on the day and paired its reason and
-         giver with the day's already-summed total, which under one credit per
-         day was the same thing. With two it is not: a Saturday worth 4 would
-         have shown as ONE row of 4, reasoned and attributed from whichever
-         record happened to be first, and the man's own tracker could not tell
-         him which three of those days he was owed and which one he worked. */
+      /* THE AUTOMATIC CREDITS, one entry each. The day also draws its AWARDS
+         (D402) — those are ledger entries, read above, so an award is skipped
+         here or it would be counted twice ([OIL-AWARD-IS-A-GRANT], 29 Sep 26).
+         The reason is the sync wire's note (FLT, SIM + Duty, an input's type —
+         owner, 2 Sep 26), else the day's kind; the giver is the evidence behind
+         it — the published weekend or holiday, or the accepted duty input
+         (owner, 21 Sep 26); the hours come off the published schedule. */
       for (const credit of v.all) {
-        if (credit.kind !== 'credit') continue
-        const auto = credit.auto === true
-        const amount = creditWorth({ code: credit.code as 'FO' | 'HO', days: credit.days, auto })
+        if (credit.kind !== 'credit' || !credit.auto) continue
+        const amount = creditWorth({ code: credit.code as 'FO' | 'HO', auto: true })
         if (amount <= 0) continue
-        /* The fall-back reason is the SCHEDULE'S evidence, so only a credit
-           the schedule earned may use it. An award has no weekend behind it —
-           labelling one "weekend duty" beside the row that really was weekend
-           duty would put two contradictory stories on one Saturday. */
-        const reason = credit.note ?? (auto ? (isWeekend(date) ? 'weekend duty' : 'PH duty') : '')
-        /* WHO GAVE IT, on an automatic credit too (owner, 21 Sep 26). It used
-           to be blank for anything the app earned itself, so the tracker's
-           own rows disagreed about whether that column meant anything. An
-           earned credit's giver is the evidence behind it — the published
-           weekend or holiday, or the duty input that was accepted. */
-        const giver = creditGiver({ oil: auto ? 'auto' : 'manual', givenBy: credit.givenBy, via: credit.via })
-        /* Hours belong to the earned credit alone: they are read off the
-           published schedule. An award is not an attendance record (N13). */
-        const hours = !auto ? undefined : credit.wins ?? (credit.win[0] === 0 && credit.win[1] === 1439 ? undefined : [credit.win])
-        credits.push({ id: `${auto ? 'auto' : 'award'}:${wi}:${date}`, recId: credit.id, date, amount, reason, source: 'auto', ...(auto ? {} : { manual: true }), ...(hours ? { hours } : {}), ...(giver ? { givenBy: giver } : {}), ...(credit.days != null ? { days: credit.days } : {}), expires: expiryOf(date, policy), used: [], left: amount, expired: 0 })
+        const reason = credit.note ?? (isWeekend(date) ? 'weekend duty' : 'PH duty')
+        const giver = creditGiver({ auto: true, via: credit.via })
+        const hours = credit.wins ?? (credit.win[0] === 0 && credit.win[1] === 1439 ? undefined : [credit.win])
+        credits.push({ id: `auto:${wi}:${date}`, recId: credit.id, date, amount, reason, source: 'auto', ...(hours ? { hours } : {}), ...(giver ? { givenBy: giver } : {}), expires: expiryOf(date, policy), used: [], left: amount, expired: 0 })
       }
       for (const t of charged.get(date) ?? []) {
         if (t.counter !== 'oil') continue
@@ -301,23 +293,23 @@ export function oilLedgerFor(ctx: FigureCtx, personId: string, policy: OilPolicy
     }
   }
 
-  let earned = 0, granted = 0, taken = 0, expired = 0, overdrawn = 0, left = 0
+  let earned = 0, awarded = 0, corrections = 0, taken = 0, expired = 0, overdrawn = 0, left = 0
   for (const c of credits) {
     if (c.source === 'auto') earned += c.amount
-    else if (c.source === 'grant') granted += c.amount
+    else if (c.source === 'grant') awarded += c.amount
     expired += c.expired
     left += c.left
   }
   for (const d of debits) {
     if (d.source === 'taken') taken += d.amount
-    else if (d.source === 'correction') granted -= d.amount
+    else if (d.source === 'correction') corrections -= d.amount
     overdrawn += d.unbacked
   }
   const dated = [...credits, ...debits].map(x => x.date).filter(Boolean).sort()
   return {
     credits, debits,
     balance: r6(left - overdrawn),
-    earned: r6(earned), granted: r6(granted), taken: r6(taken), expired: r6(expired), overdrawn: r6(overdrawn),
+    earned: r6(earned), awarded: r6(awarded), corrections: r6(corrections), taken: r6(taken), expired: r6(expired), overdrawn: r6(overdrawn),
     first: dated[0] ?? null,
   }
 }

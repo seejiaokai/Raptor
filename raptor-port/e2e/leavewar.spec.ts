@@ -3976,7 +3976,7 @@ async function misplacedOilLabels(page: Page): Promise<string[]> {
       if (amt && amt.getBoundingClientRect().left - line.left > 1) bad.push(`${box.dataset.testid}: the amount is not at the left`)
       for (const by of l1.querySelectorAll<HTMLElement>('.by')) if (line.right - by.getBoundingClientRect().right > 1) bad.push(`${box.dataset.testid}: "${by.textContent}" is not at the right`)
       // one rect per text piece (" · ", "3", " days"), so count LINES, not rects
-      for (const h of box.querySelectorAll<HTMLElement>('.oil-notebtn .oil-hrs')) if (new Set([...h.getClientRects()].map(r => Math.round(r.top))).size > 1) bad.push(`${box.dataset.testid}: "${h.textContent}" is split over two lines`)
+      for (const h of box.querySelectorAll<HTMLElement>('.l2 .oil-hrs')) if (new Set([...h.getClientRects()].map(r => Math.round(r.top))).size > 1) bad.push(`${box.dataset.testid}: "${h.textContent}" is split over two lines`)
     }
     return bad
   })
@@ -4027,7 +4027,10 @@ test('every label and reason on an OIL credit box reads in full, at every zoom s
   await expect(list.locator('.oil-e .l2', { hasText: LONG_REASON })).toHaveCount(1)
   // the demo's own two: a correction, and an award whose worth follows its reason
   await expect(list.locator('[data-testid="oil-entry-dol-3"] .l2')).toHaveText('Correction: double credit · correction')
-  await expect(list.locator('[data-testid="oil-row-ammo"] .oil-notebtn', { hasText: '3 days' })).toHaveText('Exercise recovery · 3 days')
+  /* the demo's 3-day award (a ledger entry since [OIL-AWARD-IS-A-GRANT] — the one editor, no "+ reason" button): its worth
+     on the top line, its reason in full below */
+  await expect(list.locator('[data-testid="oil-entry-dol-9"] .l1 .amt')).toHaveText('+3')
+  await expect(list.locator('[data-testid="oil-entry-dol-9"] .l2')).toHaveText('Exercise recovery')
   const auto = list.locator('[data-testid="oil-row-plasma"] .oil-e', { has: page.locator('.by.auto') })
   await expect(auto).toHaveCount(1)
   await expect(auto.locator('.by.auto')).toHaveText('Auto')

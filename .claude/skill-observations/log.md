@@ -1543,3 +1543,62 @@ resolved statuses always carry their resolution date
 **Suggested improvement:** Add to "Creating with pptxgenjs — gotchas": (1) when overlaying annotation shapes on images from computed coordinates, refuse (throw) any mark whose centre falls outside its image and clip every ring to the image bounds; (2) images are stored per use — downscale to the largest size actually shown (about 1100px for a third-of-slide picture) before adding, and reuse sparingly.
 
 **Principle:** Coordinates computed from another system must be bounds-checked at the boundary where they are applied — fail loudly when out of range, clip when merely oversized — because the render will not complain.
+### Observation 348: Removing a delimited block by "first closing marker after the opener" cuts inside a block that QUOTES its own marker
+
+**Status:** OPEN
+**Date:** 2026-09-29
+**Session context:** A handoff review removing four merged blocks from the handoff file's list of open chats, by script.
+**Skill:** session-handoff
+**Type:** open-source
+**Phase/Area:** removing another chat's merged block
+
+**Issue:** The script found each block's end as the first closing marker after its opener (a plain substring search). One block's own text quoted the closing marker in backticks (it described a check that looks for that marker), so the cut ended mid-block and left an orphaned closer; the document gate caught it ("a closing marker closes no block"). Restored from git and redone with a line-anchored, non-greedy match (the marker alone on its own line).
+
+**Suggested improvement:** In the session-handoff skill's step that removes merged blocks, say: match both markers anchored to the start of their own line (multiline regex), never a substring search; run the document check before committing.
+
+**Principle:** A delimiter search over prose must be anchored to the delimiter's structural position (its own line), because documentation about a format will quote the format's own delimiters.
+
+### Observation 352: A handoff told him "no new worktree — reuse this chat's folder", which the app cannot do
+
+**Status:** OPEN
+**Date:** 2026-09-29
+**Session context:** Handing a job to a fresh chat on this chat's own branch (D368 — say whether a worktree is needed).
+**Skill:** session-handoff
+**Type:** open-source
+**Phase/Area:** the new-chat instructions (worktree and branch)
+
+**Issue:** The handoff said the new chat needs no worktree and "reuses this chat's folder". The app offers only two choices: the main folder (it tries to switch it to the branch) or a NEW worktree. The switch failed ("Couldn't switch branches") because the branch was still checked out in this chat's worktree, and git allows a branch in one folder at a time. The owner had to ask why the advice flipped. (Numbered past #350–#351, held by the parallel IT-flow-guide chat.)
+
+**Suggested improvement:** In session-handoff's new-chat step: when the next chat continues THIS chat's branch, (1) release the branch from this folder first (detach, after checking everything is pushed), and (2) tell him to tick "worktree", naming the branch — never "reuse this folder". Say it once, the same way every time.
+
+**Principle:** Setup instructions must match the options the user's tool actually shows; verify the mechanism (here, one branch per folder) before telling a non-technical user a step is unnecessary.
+
+### Observation 353: A plan's door table written before the writer map named a door no screen offers
+
+**Status:** OPEN
+**Date:** 2026-09-29
+**Session context:** Planning [OIL-AWARD-IS-A-GRANT] (Raptor, branch claude/award-earned-vs-granted-2ed66d); numbered past 352 (handoff-review branch) and 350 (IT flow guide branch).
+**Skill:** New skill candidate: refactor-planning (moving one stored fact to a new store)
+**Type:** open-source
+**Phase/Area:** planning — the writers/readers table
+
+**Issue:** The first plan draft's "doors" table listed `setCell(…, 'FO'|'HO')` as the grid's award door, from reading the store. A read-only explorer's map, returned later, showed no screen calls it (only tests and a debug bridge); the real door was a different function reached from the bid sheet's panel. Three single-field editors in the same file also had no production caller. The draft was fixed before review, but only because the map arrived before the reviewers were sent.
+
+**Suggested improvement:** When a plan moves a stored fact, build the writer/reader map (every call site, and for each writer its PRODUCTION caller — a screen control) BEFORE drafting the door table; mark any writer with no production caller as "test-only / dead" in the plan so the build either retires it or keeps it deliberately.
+
+**Principle:** A door is a control a person can press, not a function that can write. Map writers to their on-screen callers before planning around them; a function with no production caller is a test seam or dead code, never "the door".
+
+### Observation 354: A walk FAIL is first checked against what the world really holds, and the phone's own route
+
+**Status:** OPEN
+**Date:** 2026-09-29
+**Session context:** [OIL-AWARD-IS-A-GRANT] re-walk of the final reads' fixes
+**Skill:** bug-check order (raptor-port/docs/bug-check-order.md, the walk step)
+**Type:** internal
+**Phase/Area:** the walk — reading a scripted walk's FAIL
+
+**Issue:** Three walk FAILs this session were the script's, not the app's: a check expected "bid and OIL award" on a day whose seed holds only an award; a phone run looked for an Admin → Users row the phone hides behind its Admin menu; a member opened in a fresh browser profile (a new demo world). Each cost a re-run before the cause was read.
+
+**Suggested improvement:** In the walk step, before treating a FAIL as a finding: (1) confirm from the seed or the page what the target day really holds; (2) for a phone run, confirm the surface's phone route (menus, folded panels) — take one picture at the failing step. Record script mistakes on the evidence sheet as such.
+
+**Principle:** A failing assertion is a claim about the world the script believes in; check that world before blaming the app.
