@@ -1528,3 +1528,18 @@ resolved statuses always carry their resolution date
 **Suggested improvement:** In the session-handoff skill's step that removes merged blocks, say: match both markers anchored to the start of their own line (multiline regex), never a substring search; run the document check before committing.
 
 **Principle:** A delimiter search over prose must be anchored to the delimiter's structural position (its own line), because documentation about a format will quote the format's own delimiters.
+
+### Observation 352: A handoff told him "no new worktree — reuse this chat's folder", which the app cannot do
+
+**Status:** OPEN
+**Date:** 2026-09-29
+**Session context:** Handing a job to a fresh chat on this chat's own branch (D368 — say whether a worktree is needed).
+**Skill:** session-handoff
+**Type:** open-source
+**Phase/Area:** the new-chat instructions (worktree and branch)
+
+**Issue:** The handoff said the new chat needs no worktree and "reuses this chat's folder". The app offers only two choices: the main folder (it tries to switch it to the branch) or a NEW worktree. The switch failed ("Couldn't switch branches") because the branch was still checked out in this chat's worktree, and git allows a branch in one folder at a time. The owner had to ask why the advice flipped. (Numbered past #350–#351, held by the parallel IT-flow-guide chat.)
+
+**Suggested improvement:** In session-handoff's new-chat step: when the next chat continues THIS chat's branch, (1) release the branch from this folder first (detach, after checking everything is pushed), and (2) tell him to tick "worktree", naming the branch — never "reuse this folder". Say it once, the same way every time.
+
+**Principle:** Setup instructions must match the options the user's tool actually shows; verify the mechanism (here, one branch per folder) before telling a non-technical user a step is unnecessary.
