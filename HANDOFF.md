@@ -16,20 +16,20 @@ the later merge keeps both (D78).
 ## Now
 
 <!-- now:claude/small-fixes-batch-d223f6 -->
-### `claude/small-fixes-batch-d223f6` — the small-fixes batch BUILT, walked, read by both reviewers and gated — waiting to be PUSHED (the push was refused by the permission check; his to allow), then the PR, his look and "merge live" — written 28 Sep 26 — verify before use
-- **The branch:** cut from `main` at `60a6792c`; `main` merged in twice (PR #457, then PR #458 — the rulings slim-down, taken
-  with its own steps: `--rulings --merge`, the oil.md pointer re-applied, D360's short line read by Astra and rewritten).
+### `claude/small-fixes-batch-d223f6` — the small-fixes batch BUILT, walked, read by both reviewers and gated — PUSHED, the PR open — his look and "merge live" left — written 29 Sep 26 — verify before use
+- **The branch:** cut from `main` at `60a6792c`; `main` merged in three times (PR #457, then PR #458 — the rulings slim-down, taken
+  with its own steps: `--rulings --merge`, the oil.md pointer re-applied, D360's short line read by Astra and rewritten; then PRs #459–#462 — the guide step, the Tracker leftovers — documents-only conflicts, each side kept, the only shared app file a comment; built clean, docsize OK).
   Folder `.claude/worktrees/trk-smoke-add-race-bug-007eed`. Ports: preview 4174, `E2E_PORT=4191`. Rulings range D360–D369
-  — D360 used (his `[ALLAVAIL-OPEN-ROW]` answer). **Not on GitHub yet** (no PR).
+  — D360 used (his `[ALLAVAIL-OPEN-ROW]` answer). On GitHub, with its PR (the link in this chat). `claude/change-recording-retest` is NOT merged (no PR on 29 Sep 26) — it merges after this one or before; the later one adapts (D78).
 - **Built (one commit each, red-first):** `[AVAILWIN-PREVIEW-BAR]`, `[GHOST-FLAG-SHADOW]`, `[ALLAVAIL-OPEN-ROW]` (D360),
   `[AMEND-SMALL-SEEN]` 1, 3, 4, 9 (5 is a look-card question), `[REQ-ORPHAN-ROW]`, `[REQ-DOOR-WORDS]` 1–3, `[LW-ISO-DATES]`,
   `[LW-SPARE-MOVE-DOORS]`, `[ABSENCE-SMALL-SEEN]` 1–4 (5 watched). Docs carry each.
 - **Checked:** 13 walks pass (they found four things: fixed ×2, docs corrected, `[PLAN-BANNER-DOOR]` filed); Astra (2) and
   Fable (3) read the code — every finding fixed, measured-and-pinned or put to him; the full gates on `05bdf6a6` (the §Gate
-  baseline below; the merges since brought documents only). Evidence: `raptor-port/docs/handpass/2026-09-28-small-fixes.md`
+  baseline below; the merges since brought documents and the Tracker's own code only — the PR's checks run the lot on the merged code). Evidence: `raptor-port/docs/handpass/2026-09-28-small-fixes.md`
   (§10 the look card — six questions). PR text drafted in this chat (the evidence sheet has the same facts).
-- **Next:** (1) he allows the push (`git -C "<folder>" push -u origin claude/small-fixes-batch-d223f6`); (2) open the PR,
-  unsubscribe from its activity, send him its Vercel link; (3) his look card; (4) his "merge live". `[GATELOCK-STALE-LIVE]`
+- **Next:** (1) read the PR's checks once they finish (never push while they run — D151); (2) his look card (six
+  questions, D361+ for his answers); (3) his "merge live", then archive the items with `backlog-archive.mjs`. `[GATELOCK-STALE-LIVE]`
   filed (the lock's 2-hour rule nearly broke the Tracker chat's live run — asked it, stopped mine).
 - **Parallel chats (D302):** change-recording (`.lw-hist` markup/CSS theirs; `dropInputRow` → `unacceptInput` told),
   Tracker (observation numbers — mine #333–#335, #341–#342; theirs 330–332, 338).
