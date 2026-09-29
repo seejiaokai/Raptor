@@ -871,7 +871,7 @@ work for inputs, leave war, tracker … ideally if we can do like a google sheet
 that would be ideal."* **What exists:** `raptor-port/docs/data-model.md` §9 — a version check on every save (a stale save
 is refused and reloaded), a stage-1 edit lease per WEEK (`editingBy` + `leaseUntil`, the holder shown, others read-only,
 five minutes renewed on activity), stage-2 row merge (two schedulers on different rows of one day both land — the
-Sheets-like step), and a change feed for live updates; the top bar's Sync pill ("Sync · slow", 1-second sync for
+Sheets-like step), and a change feed for live updates; **ANSWERED 29 Sep 26 (D355): lock by DAY (one or several chosen); freed after 30 minutes idle; an admin can take it over** — still open: what idle means, Save vs saved-as-you-go, automatic updates vs a refresh button (his questions back: the pros and cons of each; the downside of automatic updates); the top bar's Sync pill ("Sync · slow", 1-second sync for
 publishing / meetings) is the placeholder for it. **To decide with him (design now — it shapes the tables):** the lock's
 unit (a day, or chosen days — his; the week — §9's); explicit Save vs saved-as-you-go while the lock is held ("Done
 editing" releases); what frees a forgotten lock (idle time-out; an admin's "take over"); how others see changes (a
