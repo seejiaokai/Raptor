@@ -1,10 +1,11 @@
-# [DB-READINESS] group A — the table-shaping half (plan v3, 30 Sep 26)
+# [DB-READINESS] group A — the table-shaping half (plan v4 — final, 30 Sep 26)
 
 **Branch:** `claude/db-readiness-table-shaping-4094f6` (cut from `main` at the day-lock merge, PR #475).
 **His order:** D453 (29 Sep 26) — group A lands BEFORE the IT team settles its tables; group B after the app is connected.
 **Tier:** FULL (saved data). **Reviews:** red-teamed by BOTH Fable and Astra (D353) — rounds 1 and 2 folded in
 (`raptor-port/docs/superpowers/briefs/2026-09-30-db-readiness-group-a-dispositions-r1.md`, `…-r2.md`; v1 commit e2368d9f,
-v2 commit e3d64c29); round 3 is the last (his cap). The finished code read by both (persistence).
+v2 commit e3d64c29, v3 commit c8bb384c); round 3 (the last — his cap) folded into this v4 without a fourth round
+(`…-dispositions-r3.md`); **§8 is the build's binding checklist from round 3**. The finished code read by both (persistence).
 **Rulings range:** D460–D469. **Observations:** #380–#389.
 **"No plug-in for now"** (his words, 30 Sep 26, heard from IT, UNCONFIRMED — `OUTSTANDING.md` `[IT-QUESTIONS]`). Two
 questions are kept apart (Astra R2-08): **how the app works out a day's picture** — on read, from the day row plus the
@@ -100,7 +101,7 @@ eventual adapter a thin mapping. Nothing on screen changes.
 | Stored key | Design table (stage 1) | Written by (command) | Order | Notes |
 |---|---|---|---|---|
 | `weeks/<wk>` | `ScheduleWeek` | the stream (`sched.week`) | — | `v`, `am`; written with the seven day rows when a week is first saved |
-| `weeks/<wk>#<di>` | `ScheduleDay` | the stream (`days`, `sched.book`, `sched.mutes` per day) | — | the day and every field naming it, its `wo` and `un` slices |
+| `weeks/<wk>#<di>` | `ScheduleDay` | the stream (`days`, `sched.book`, `sched.mutes` per day) | — | the day and every field naming it, its `wo` slice (`un` is NOT stored — worked out at load from `Input.acc === 'r'`, round 3 F3-02) |
 | `weeks/<wk>:is:<verId>~<n>` | `Amendment` + 4 `IssuedSignoff` | the stream (`sched.issuance`) | — | EVERY issuance incl. the Original (sequence 0); `n` = the number of retractions of that `verId` when it was issued (0 first); append-only |
 | `weeks/<wk>:rx:<verId>~<n>` | `AmendmentRetraction` | the stream (`sched.retraction`) | — | the retraction of `is:<verId>~<n>`; join rebuilds `orig`, `als` and `retired[<verId>~<n+1>]` as today |
 | `inputs/<iid>` | `Input` | the stream | `ord` | `docIds` JSON on the row (InputAttachment with Attachment, §12 q2) |
@@ -115,11 +116,11 @@ eventual adapter a thin mapping. Nothing on screen changes.
 | `settings/elog:<lineId>` | `EditLog` | at `keep`, inside the command | `(at, lineId)` | lists (`inputIds`, `days`, `wasDays`) JSON on the line |
 | `settings/seen:<pid>` | `EditLogSeen` | the person himself | — | `{ upto: {at, lineId} | null, extra: lineId[] }` |
 | `settings/account:<id>` | `User` | Admin → Users | — | `seenFrom` = a position `(at, lineId)` |
-| `settings/accessreq:<id>` | `AccessRequest` | sign-up, Admin → Users | — | `seenBy` leaves the row → `settings/reqseen:<accountId>` (per admin, like EditLogSeen) |
+| `settings/accessreq:<id>` | `AccessRequest` | sign-up, Admin → Users | — | `seenBy` leaves the row (design corrected) |
+| `settings/reqseen:<accountId>` | `AccessRequestSeen` (NEW table — R3-04) | that admin | — | `userId` (unique), `seenRequestIds` JSON; shell-owned, own row only; removed with its User |
 | `settings/<key>` (templates, rules, stores, …; the Leave War's settings-like keys; `qualcols`) | `Setting` | as today | — | unchanged; a `null` set removes the key (F19). `qualcols` a Setting at stage 1; `Qualification` rows at stage 2 with QualMark (design corrected) |
 | `changes/<batchId>` | `ChangeBatch` | the whiteboard's seal (phase 4) | — | the one new collection; joins `RESET` |
-| `settings/schema` | `SchemaVersion` | the boot, the fold | — | the stand-in's stamp is the design's SchemaVersion row |
-| `settings/booted` | — | the seed, the fold, an empty store's first boot | — | a RESET-class mark, never a Setting the design carries |
+| `settings/schema` | `SchemaVersion` | the boot, the fold, the bootstrap | — | ONE object (R3-03): `stage` (1), `dataFormatVersion` (6), `initialized`, `appliedAt`, `minClient` — replaces the bare number AND v3's separate `settings/booted` |
 | (code) | `InputType`, `LeaveCounter` | reference data, seeded by IT from the shipped catalogues | — | not app-written; the app reads its code copy at stage 1 |
 | — | `TakeOverRequest` | the lock's build (group B) | — | not in group A |
 | the Tracker's `tracker/v3:*` | `Course`, `Syllabus`, `TrainingEvent`, `Layout`, `Enrolment`, `CoursePlan` | the Tracker | — | **unchanged — his question 2 (§5)** |
@@ -129,8 +130,8 @@ eventual adapter a thin mapping. Nothing on screen changes.
    `SCHEMA_VERSION` becomes 6 ONLY in the build that registers every converter (weeks, inputs, people, plan, the Leave
    War, the edit log, accounts); a converter manifest refuses to stamp 6 if any is missing — the store stays at 5 and the
    app boots as today. Two predicates: `wipeDue` (below 5, as today) and `foldDue` (exactly 5). A fold is ONE `putMany`
-   through the real backend before the whiteboard fills — every new row, `null` for every old blob, stamp 6 and
-   `settings/booted`; at a fold boot the journal filter is skipped (the unfinished group's values are already overlaid
+   through the real backend before the whiteboard fills — every new row, `null` for every old blob, the schema object at
+   format 6 with `initialized`; at a fold boot the journal filter is skipped (the unfinished group's values are already overlaid
    on the snapshot and folded with it), so the fold's group is the superset. A store at 6 never looks for old blobs.
 7. **One saved group = one user action with its causal children = one `ChangeBatch`** (A-01's decline upheld by both).
    The batch is a **pure invalidation log**: `items = [{ table, key, op }]` for every other key in the group, `seqs` (every
@@ -140,9 +141,10 @@ eventual adapter a thin mapping. Nothing on screen changes.
    §9's "each changed row's … new version" and "refreshes its local versions from the items" are corrected. The postman
    keeps its merge (the pagehide flush stays synchronous — F3); **group B must replace the merge before promising one
    changeset per command on the wire**, since a merged send cannot be split again once two commands touch one row.
-8. **"Already booted" is one explicit stamp**, `settings/booted`: written by the seed in its own group, by the fold, and
-   alone by an empty shared store's first boot; `isHydrated()` and `hadStoredWars` both read it; a store carrying it is
-   never seeded. **A wipe removes it** (`resetPreSchema`'s wipe branch), so a future reset re-seeds his preview (F2-06).
+8. **"Already booted" is `SchemaVersion.initialized`** (R3-03 — one metadata object, not a separate record): set by the
+   seed in its own group, by the fold, and by an empty shared store's bootstrap; `isHydrated()` and `hadStoredWars` both
+   read it; an initialized store is never seeded. **A wipe clears it** (`resetPreSchema`'s wipe branch), so a future
+   reset re-seeds his preview (F2-06). Reset and fold decisions compare `dataFormatVersion`, never `stage`.
 9. **The command layer's records follow the storage grain:** `sched.book/<wk>#<di>`, `sched.mutes/<wk>#<di>`,
    `sched.week/<wk>`; **`sched.issuance/<wk>:<verId>~<n>`, `sched.retraction/<wk>:<verId>~<n>`** replacing
    `sched.orig` / `sched.als` / `sched.retired` (the Original is issuance sequence 0; an unpublish adds a retraction and
@@ -154,7 +156,7 @@ eventual adapter a thin mapping. Nothing on screen changes.
 ## 3. The work, in phases (red test first in each; its own suites green before the next)
 
 ### Phase 0 — the frame: the fold machinery, the boot stamp, the stream consumer's skeleton
-The converter registry and manifest, the atomic fold (§2.6) — **production stays at schema 5**; `settings/booted`
+The converter registry and manifest, the atomic fold (§2.6) — **production stays at schema 5**; `SchemaVersion.initialized`
 replacing both sniffs (§2.8), and removed by a wipe; the Leave War's `StorageBackend`, `memoryBackend`, `localBackend` and
 `leavewarAdapter` gain `remove` and `keys`; a `clientBootId` (`newId('c')`, once per page life); the phase-9 persistence
 consumer and the mapper, wired but mapping nothing yet. **Tests:** an incomplete manifest writes no stamp 6; a stamped
@@ -164,9 +166,10 @@ including that group's values.
 
 ### Phase 1 — the schedule one day per piece
 1. `src/state/weekrows.ts` (new): `splitWeek` → week row, seven day rows, issuances, retractions; `joinWeek`. `al`
-   dropped; `un` sliced by the day the input would land on (its start, clamped into the week); a key or field naming no
+   dropped; `un` NOT stored — rebuilt at load from `Input.acc === 'r'` (F3-02; it is not in `histSnap`, so no command
+   could write it, and `acc:'r'` already survives the load-time clear); a key or field naming no
    single day FAILS the split loudly; a missing week row at schema ≥ 6 → the stamps CURRENT; a missing day row → a blank
-   day. **Tests first:** split then join equals the original for every retained field, `un` as a set — the two demo
+   day. **Tests first:** split then join equals the original for every retained field, and `split(join(rows))` is byte-stable (F3-08) — the two demo
    weeks, a week published and amended, one unpublished and reissued (the `~n` mapping), one with drafts and saved plans,
    one with a taken-off input; the key-naming-no-day failure; seven day rows and no week row → editable, ids intact.
 2. The mapper learns the schedule: `days`, `sched.book`, `sched.mutes` per day → the day row (a week's first save writes
@@ -181,9 +184,13 @@ including that group's values.
      backfill becomes an explicit boot migration.
    - `discardPending` — an intentional multi-day command: its envelope names every day it changes (at the lock's build
      it will hold every such day).
-   - load-time re-landing and format migrations — `loadWeek` becomes a `sched.load` projection (F2-03): its persist and
-     re-landing are one named group; format migrations are an explicit migration group, never a side effect of an edit.
-     Phase 6(c) removes the re-landing writes altogether.
+   - **week navigation is READ-ONLY** (R3-01, F3-01): `loadWeek` finishes week A's recorded writes, changes `CURWEEK`,
+     installs week B and takes a fresh scheduler baseline on B — no store is ever enlisted across the `CURWEEK` change;
+     only B's actual re-landing delta runs as `sched.load` (dispatched at idle) and writes only the B rows it changed;
+     `weekSwapEnd`'s whole-snapshot persist goes once rows are written from the stream; format migrations are their own
+     explicit migration command; the mapper's rule "same stored key twice in one envelope: the put wins" is a guard.
+     Tests: A→B emits no delete for A and A's rows stay byte-identical; an unchanged B writes nothing; re-landing
+     changes only its exact B rows; a preserved B stays byte-identical. Phase 6(c) removes the re-landing writes.
    - `person-delete` and `clearOilPersonDecisions` — deliberate multi-week system commands, enumerating every changed day
      in their envelopes (phase 6(a) and (d) replace them).
    **Tests, one per writer,** asserting the exact changed logical ids AND the exact stored keys; plus: on a week with a
@@ -271,13 +278,14 @@ table with a named owner and writer) is added before the tables settle.**
 ## 4. Documents fixed in the same change (D201)
 
 `data-model.md`: §6's `FanOutBackend` sentence; §3's field placement (`rt` keyed by version; `o` = issuance 0 →
-`Amendment`; `a` → `Amendment`; `un` a day-row field keyed by input id); §3/§5/§6: `QualMark` and `Qualification` move to
+`Amendment`; `a` → `Amendment`; `un` not stored — worked out on read, as the design already says); §3/§5/§6: `QualMark` and `Qualification` move to
 stage 2 together (marks JSON on `Person` at stage 1), `InputAttachment` goes with `Attachment`, `past` stints and an edit
 line's lists are JSON at stage 1, `AccessRequest.seenBy` becomes a per-admin row; `sortIndex` on `Input`, `Person`,
 `LeaveBid` (decimal; order `(sortIndex, key)`); `LeaveOpening` per (person, counter); `LeavePersonProfile` without the
 `seat` override (it was already "dropped"); §5 the field map = the matrix; §9 `ChangeBatch` as a pure invalidation log
 (`{table, key, op}`, no versions) and "one batch per saved group"; `EditLog.seq` store-assigned, `EditLogSeen.upTo` and
-`User.seenFrom` positions in the log's order; "Admin → Data's clear of a week" marked future; §12 q8, q9 with the "no
+`User.seenFrom` positions in the log's order; "Admin → Data's clear of a week" marked future; `SchemaVersion` as one object (`stage`, `dataFormatVersion`, `initialized`, `appliedAt`, `minClient`); a new
+`AccessRequestSeen` table and `AccessRequest.seenBy` removed; §12 q8, q9 with the "no
 plug-in" news and the two questions kept apart. `data-schema.md` to the new keys. `schema.ts` `SchedFields` + `rt`, `cr`;
 the "FOURTEEN fields" comments. `weekstash.ts` / `persist.ts` Admin-sweep comments. `registry.ts` header (the fold
 subscriber now built). `undo-contract.md` §0 (persistence is now a stream consumer). `leave-war.md` §Architecture (the
@@ -330,3 +338,36 @@ Custom APIs and Power Automate flows are allowed; reporting on the worked-out pi
 - **Order** — phase 2's tests and the walk compare orders before and after reload.
 - **Phase 6 (c) and (d)** touch the engine's readers; the largest items in group A.
 - **Time.** Phases 0–5: several sessions of building plus a FULL check. Phase 6: as long again. Phase 7: one batch.
+
+## 8. Round 3 — binding on the build (the last round; no fourth — his cap)
+
+Both reports: `raptor-port/docs/superpowers/briefs/2026-09-30-db-readiness-group-a-{fable,astra}-r3.md`; dispositions
+`…-dispositions-r3.md`. Folded above: R3-01 / F3-01 (navigation read-only), R3-03 (one `SchemaVersion` object),
+R3-04 (`AccessRequestSeen`), F3-02 (`un` not stored). Each item below is a named checklist line of the phase it sits
+in, with its test written first:
+
+- **P3-CELL-DIFF (R3-02, F3-03):** `lw.cell` changes map at ENVELOPE level — every changed cell's before and after
+  lists expanded into maps keyed by (`warId`, `recId`), diffed (after-only or changed → one put; before-only → one
+  remove; unchanged → nothing), coalesced across cells so a MOVE is exactly one put with its new person/date. `ord`
+  added to every durable `WarRec`, minted at the Leave War's apply-end between the target cell's neighbours (a move takes
+  a new target position); the fold assigns sparse `ord` from today's array order; hydrate and render by `(ord, recId)`.
+  Tests: remove one of two; remove the last; move; update one; concurrent insert into one cell; reload order; the exact
+  `ChangeBatch.items`; a stale client editing Y in a cell never resurrects a deleted X.
+- **P0-BOOTSTRAP (R3-03):** the bootstrap configuration is a principal plus a complete `Person` definition (or a
+  pre-provisioned `personId`); on a truly empty shared store the bootstrap `Person`, its `User` and `initialized` land in
+  ONE group, idempotent, failing closed on an incomplete configuration. Tests: stage 1 with format 6; initialized but
+  empty; an interrupted bootstrap; a repeat; wipe then re-seed; a store ahead in stage; a store ahead in format.
+- **P4.1-TRACKER-RESTORE (R3-05):** the Tracker's undo / redo become named `tracker.undo` / `tracker.redo` restore
+  commands (origin `restore`), enlisting its store and applying synchronously; persistence by the stream consumer, never
+  the raw save helpers; `TRK_RESTORING` may still suppress loops but never command routing. Tests: layout, one student,
+  a group, redo, a deletion restored — each one group with one matching batch.
+- **P5-LANDING (F3-04):** `autoAcceptSeedInputs` is the generic landing pass — under `seedDemo: false` only the DEMO
+  rows are skipped, never the pass.
+- **P0-CHANGES-COLLECTION (F3-05):** `changes` joins `COLLECTIONS` and `RESET`; a journal round-trip test (an unfinished
+  group holding a batch entry is replayed whole, not dropped by `parseGroup`).
+- **P2-NULL-SETTING (F3-07):** a settings `null` arrives as a `put` with `after: null` — the mapper treats it as a remove.
+- **P1-ISSUANCE-KEY (F3-09):** the key parser tests `:is:` / `:rx:` before `#` (a `verId` carries `#`).
+- **P4-BATCH-ID (F3-10):** the batch id uses the first EMITTED seq when the outermost pipeline was a no-op.
+- **P1-UN-BEHAVIOUR (A-05's concern, kept as a test):** a taken-off input stays off after a reload and after week
+  navigation, across a spanning input and a published-then-reopened day.
+
