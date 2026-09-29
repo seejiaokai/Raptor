@@ -234,23 +234,30 @@ describe('the phone expands the bubble by hand', () => {
   /* the 3/4 boundary, pinned explicitly: collapsed already shows the last
      THREE, so three changes leave nothing hidden and four is the first count
      that does. Desktop never collapses at all, so the chevron is absent
-     there regardless of how much history there is. */
-  it('offers a control only where there is more to show, and only on a phone', async () => {
+     there regardless of how much history there is.
+     ONE case per test ([HISTLIST-SLOW-TEST], 29 Sep 26): the three were one test of twelve board redraws, 8s alone,
+     and it timed out at 20s in every busy full run — twice on main's own run after PR #468. Each case keeps its own
+     seat (seedN's idx), and beforeEach clears the history and puts the desktop back, so they stand alone. */
+  it('offers no control when three changes already show in full (phone)', async () => {
     await act(async () => { view.setHistMode(true); notify() })
     phone = true
-
     const k3 = await seedN(3, 0)
     await click($(`#sbBoard [data-slot="${k3}"]`))
     expect(bub()!.querySelector('[data-histmore]'), 'three — the collapsed view already shows all of them').toBeFalsy()
-    hideHistBub()
+  })
 
+  it('offers the control at four, naming the true count (phone)', async () => {
+    await act(async () => { view.setHistMode(true); notify() })
+    phone = true
     const k4 = await seedN(4, 1)
     await click($(`#sbBoard [data-slot="${k4}"]`))
     const more = bub()!.querySelector('[data-histmore]')
     expect(more, 'four — one is hidden past the collapsed three, offer it').toBeTruthy()
     expect(more!.textContent, 'and it names the true count').toContain('4')
+  })
 
-    hideHistBub()
+  it('never offers it on a desktop, however much history there is', async () => {
+    await act(async () => { view.setHistMode(true); notify() })
     phone = false
     const k5 = await seedN(5, 2)
     await hover($(`#sbBoard [data-slot="${k5}"]`))
