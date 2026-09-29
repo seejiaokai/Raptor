@@ -9,7 +9,8 @@ rules-engine detail — how the app is USED, not how it calculates. Few words, p
 **His look at the sample (D411, 29 Sep 26):** approved as drawn — four pictures a slide, the style kept — and the deck
 ALSO covers the alternate-plan flow (saved plans: making one, switching, bringing one out) and SHOWS THE WORK FLOW: a
 slide after the map with the life of a day across the roles, each stage naming its journey slide. The finished deck and
-PDF sit in this folder.
+PDF sit in this folder: `raptor-it-flow-guide.pptx` and `raptor-it-flow-guide.pdf` (built 29 Sep 26; every caption,
+check and test read against the code by Astra — 588 checked, the 12 wrong or unsupported fixed).
 **And step by step (D412, 29 Sep 26):** how a schedule is made, in order, over several slides; and wherever the app
 offers more than one way to do a thing (a puck brought onto a seat, and every other such case — his examples are not the
 limit), a slide shows each way side by side, each with its steps and what to test.

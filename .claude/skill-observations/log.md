@@ -1528,3 +1528,18 @@ resolved statuses always carry their resolution date
 **Suggested improvement:** In "Converting to Images" add: "If PowerPoint is installed (Windows/macOS), prefer exporting through it — PDF via SaveAs format 32, per-slide PNG via Slide.Export — the render is exact and needs no font caveats." In Dependencies: "if pptxgenjs is missing, install it outside the user's project (scratch folder + createRequire) rather than adding a dependency."
 
 **Principle:** Render QA with the same engine the audience will open the file in when it is available; and a tool needed only to produce a document should not become a dependency of the product it documents.
+
+### Observation 351: Annotated screenshots in a generated deck need two guards — marks refused off their picture, rings clipped to it — and media shrunk once
+
+**Status:** OPEN
+**Date:** 29 Sep 26
+**Session context:** a 42-slide picture-led guide built with pptxgenjs from scripted screenshots, each with numbered click marks laid over it as shapes ([IT-FLOW-GUIDE])
+**Skill:** anthropic-skills:pptx
+**Type:** open-source
+**Phase/Area:** Creating with pptxgenjs; Visual QA
+
+**Issue:** Marks computed from element boxes went wrong in two silent ways: an element outside the crop produced a ring drawn off the picture (in the middle of the slide), and an element larger than the crop produced a ring spilling across neighbouring content. Both passed the build and only showed in the rendered pictures. Separately, pptxgenjs embeds an image once per addImage, so pictures reused across slides and 2x screenshots made the deck 22 MB; shrinking each picture once (sharp, 1100px, JPEG 78) brought it to 13.6 MB with no visible loss at slide size.
+
+**Suggested improvement:** Add to "Creating with pptxgenjs — gotchas": (1) when overlaying annotation shapes on images from computed coordinates, refuse (throw) any mark whose centre falls outside its image and clip every ring to the image bounds; (2) images are stored per use — downscale to the largest size actually shown (about 1100px for a third-of-slide picture) before adding, and reuse sparingly.
+
+**Principle:** Coordinates computed from another system must be bounds-checked at the boundary where they are applied — fail loudly when out of range, clip when merely oversized — because the render will not complain.

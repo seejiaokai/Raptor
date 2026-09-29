@@ -120,7 +120,7 @@ export const JOURNEYS = [
           { t: 'Drag from the crew list', shot: 'puck-a', lines: [c(1, 'Pick up a name'), c(2, 'Drop on + ADD or a seat')] },
           { t: 'Tap the seat, then a name', shot: 'puck-b', lines: [c(1, 'The seat arms, list narrows'), c(2, 'Tap a free name')] },
           { t: 'ALL AVAIL or ALL', shot: 'puck-c', lines: [c(1, 'A placeholder, dragged in'), c(2, 'Any seat but a jet\'s')] },
-          { t: 'Seat to seat, or day to day', shot: 'puck-d', lines: [c(1, 'Drag a puck already on'), c(2, 'Onto a puck: they swap')] },
+          { t: 'Seat to seat, or day to day', shot: 'puck-d', lines: [c(1, 'Drag a puck already on'), c(2, 'Onto an empty seat: he moves')] },
         ],
         checks: [
           'A dropped name leaves the FREE count (it drops by one) and Undo lights up.',
@@ -132,7 +132,7 @@ export const JOURNEYS = [
           ['e2e/geometry.spec.ts', 'a real mouse drag lands on the pointer machine'],
           ['drag.test.tsx', 'roster to seat, swaps, drag-off removes'],
           ['editweek.test.tsx', 'arm a seat, then plant a name'],
-          ['palette.test.ts', 'the placeholders and where they land'],
+          ['palette.test.ts', 'the crew list carries ALL AVAIL and ALL'],
         ],
       },
       {
@@ -190,7 +190,7 @@ export const JOURNEYS = [
         tests: [
           ['warnjump.test.tsx', 'an issue click scrolls to the puck'],
           ['interact.test.tsx', 'the issues bar opens and folds'],
-          ['warnmute.test.ts', 'hiding a check on both surfaces'],
+          ['warnmute-week.test.ts', 'one hide, both surfaces'],
         ],
       },
     ],
@@ -342,7 +342,7 @@ export const JOURNEYS = [
         ways: [
           { t: 'The Calendar view', shot: 'inputs-w2', lines: [note('A day → + Input'), c(1, 'Type, times, remarks'), c(2, 'Add')] },
           { t: '+ Inputs on the board (admin)', shot: 'inputs-w3', lines: [c(1, 'For any person, that day')] },
-          { t: 'Leave through the Leave War', shot: 'bid-3', lines: [note('An approved bid becomes'), note('his leave input (slide 11)')] },
+          { t: 'Leave through the Leave War', shot: 'bid-3', lines: [note('An approved bid becomes'), note('his leave input (journey 10)')] },
         ],
         checks: [
           'The Calendar view opens on the real month; ‹ steps back to the demo July.',
@@ -376,7 +376,7 @@ export const JOURNEYS = [
         ['quals-write.test.ts', 'own row only; admin any row'],
         ['quals.test.tsx', 'a member ticks but cannot reshape'],
         ['quals.test.tsx', 'a tick or CAT change re-checks the week'],
-        ['qualcols.test.ts', 'adding and moving columns'],
+        ['qualcols.test.ts', 'a new column, kept after reload'],
       ],
     }],
   },
@@ -411,7 +411,7 @@ export const JOURNEYS = [
           { t: 'Published: your remarks', shot: 'lwflow-remarks', lines: [c(1, 'Your approved day'), c(2, 'Remarks'), c(3, 'Save')] },
         ],
         checks: [
-          'A drag fills the whole span in one go (a drag going below zero will ask too — filed, D418).',
+          'A drag fills the whole span in one go; today it can go below zero without asking (a fix is filed, D418).',
           'Pick a range opens a calendar on the tapped day.',
           'After publishing, a member opens only his own approved leave, for its remarks.',
         ],
@@ -499,7 +499,7 @@ export const JOURNEYS = [
         steps: [
           { shot: 'trk-1', lines: [c(1, 'Crew: whose marks'), c(2, 'Course'), c(3, 'Syllabus: which chart'), see('A ring slice per student')] },
           { shot: 'trk-2', lines: [see('Students, and their progress')] },
-          { shot: 'trk-3', lines: [c(4, 'Show All: every event'), see('Done or not, per event')] },
+          { shot: 'trk-3', lines: [c(4, 'Show All: filter the events'), see('Done or not, per event')] },
           { shot: 'trk-4', lines: [c(5, 'Find event'), see('The matches, ringed')] },
         ],
         checks: [
@@ -597,7 +597,7 @@ export const JOURNEYS = [
           { t: 'A loop in the chart', shot: 'refuse-3', lines: [see('"That link would create a loop"'), c(1, 'OK')] },
         ],
         checks: [
-          'Also refused: the same link twice, a link to itself, a name already used, a colon in a course name, deleting the last course.',
+          'Also refused: the same link twice, a link to itself, a name already used, a colon in a course name, deleting the last course (no automated test yet — filed).',
           'A future day is refused in Done on, Failed on and both Last Flown boxes.',
           'Switching chart, exporting or signing out with unsaved chart edits asks first.',
         ],
@@ -605,7 +605,6 @@ export const JOURNEYS = [
           ['smoke.mjs', 'an N.A. event cannot be failed'],
           ['leftovers.test.tsx', 'a day after today is refused'],
           ['smoke.mjs', 'switching with unsaved edits asks first'],
-          ['OUTSTANDING [TRK-REFUSALS-UNTESTED]', 'the chart refusals still need tests'],
         ],
       },
       {
@@ -681,7 +680,7 @@ export const JOURNEYS = [
     n: 13, title: 'Post out, archive, delete', who: 'admin', page: 'admin', where: 'Leave War (post out) · Admin → Users',
     slides: [{
       steps: [
-        { shot: 'leaving-1', lines: [c(1, 'Leave War: his day → PO'), c(2, 'Where he goes'), c(3, 'Post out')] },
+        { shot: 'leaving-1', lines: [c(1, 'His day → PO: PO from'), c(2, 'Where he goes'), c(3, 'Post out')] },
         { shot: 'leaving-2', lines: [c(4, 'Admin → Users: tap his row'), c(5, 'Archive')] },
         { shot: 'leaving-3', lines: [c(6, 'Restore: his Post in date'), c(7, 'Restore')] },
         { shot: 'leaving-4', lines: [c(8, 'Delete asks twice'), see('It says what goes')] },
@@ -707,7 +706,7 @@ export const JOURNEYS = [
     slides: [
       {
         steps: [
-          { shot: 'settings-1', lines: [c(1, 'Squadron config'), c(2, 'The default section order'), c(3, 'Duty, day, wave templates')] },
+          { shot: 'settings-1', lines: [c(1, 'Squadron config'), c(2, 'Move a section (Sims up)'), c(3, 'Duty templates…')] },
           { shot: 'settings-2', lines: [see('A template editor')] },
           { shot: 'settings-3', lines: [c(4, 'Logic: find a rule'), c(5, 'Edit rules (then Done)'), c(6, 'Change a setting'), see('What changed')] },
           { shot: 'settings-4', lines: [see('"Rules modified" on the schedule')] },
@@ -764,7 +763,6 @@ export const JOURNEYS = [
         ['export-published.test.ts', 'a published day exports as issued'],
         ['printpdf.test.ts', 'the report stands alone, by day'],
         ['wipe.test.tsx', 'clearing takes clutter only; undoable'],
-        ['OUTSTANDING [PDF-PRINT-TWICE]', 'print asks twice — to confirm'],
       ],
     }],
   },
