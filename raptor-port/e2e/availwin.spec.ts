@@ -338,7 +338,7 @@ for (const [label, size] of [['1440×900', PREVIEW_DESK], ['1440×700', { width:
       /* the BOARD closed with the bar still showing (Fable's final read F2 — measured not to happen: the window re-places on
          every redraw): the ALL AVAIL window stays open over the week and goes back to its corner, its height cap gone */
       if (sel === '.availwin') {
-        await page.click('#sbClose')
+        await page.click('#sbDone')   // the board's one exit since D349 (its Close went, 28 Sep 26)
         await page.waitForTimeout(250)
         expect((await rectOf(page, sel)).top, 'the board closed: back in its corner').toBe(96)
         expect(await page.evaluate(s => (document.querySelector(s) as HTMLElement).style.maxHeight, sel), 'and no height cap left').toBe('')
