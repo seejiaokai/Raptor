@@ -188,6 +188,16 @@ function lwLabel(entry: UndoEntry): string {
   const colls = new Set(entry.forward.map(c => c.collection))
   const cell = lwCellLabel(entry)
   if (cell) return cell
+  /* approved leave lives as ONE input (the absence record), not a war record — the war's own delete of it names the man
+     and the leave (the picture check, walk G4: it read "a change on the Leave War") */
+  const rows = entry.forward.filter(c => c.collection === 'inputs' && c.id !== '__order')
+  if (rows.length) {
+    const r: any = rows[0].before || rows[0].after || {}
+    const who = rows.every(c => ((c.before || c.after || {}) as any).person === r.person) && r.person ? nameOf(String(r.person)) : null
+    const what = r.type ? String(r.type) : 'leave'
+    const gone = rows.every(c => c.before && !c.after)
+    return who ? `${gone ? 'removing ' : ''}${who}’s ${what}` : gone ? 'removing leave on the Leave War' : 'leave on the Leave War'
+  }
   if (colls.has('lw.config')) return 'a Leave War setting'
   if (colls.has('lw.balances')) return 'an opening balance'
   if (colls.has('lw.oilpolicy')) return 'the OIL policy'

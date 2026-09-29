@@ -12,7 +12,7 @@ import { setSession } from '../state/auth'
 import { setPage, CURPAGE } from '../state/view'
 import { cmdAuthorize } from '../state/perms'
 import { projectPeople } from './state/raptorRoster'
-import { advanceStage, reopenStage, createWar, getState, initStore as lwInitStore, lwHistInit, setPeople, setRole, setCell } from './state/store'
+import { advanceStage, reopenStage, createWar, clearCells, setBidState, getState, initStore as lwInitStore, lwHistInit, setPeople, setRole, setCell } from './state/store'
 import { memoryBackend } from './state/storage'
 import { wireLeaveWarSync } from './sync'
 import { globalUndo, globalRedo, undoState, bubbleText } from '../undo'
@@ -86,6 +86,15 @@ describe('B8 — the Leave War says what came back', () => {
     setCell('xray', '2026-07-15', 'LL')
     expect(undoState().undoLabel).toBe('Ryder’s bid')
     expect(undoState().undoLabel).not.toMatch(/leave board/)
+  })
+  it('removing an approved leave names the man and the leave — not "a change on the Leave War" (the picture check, lw G4)', () => {
+    setRole('admin')
+    setCell('xray', '2026-07-15', 'LL'); advanceStage()
+    setBidState('xray', '2026-07-15', 'approved')
+    expect(INPUTS.some((r: any) => r.person === 'xray' && r.type === 'LL' && r.lw)).toBe(true)
+    clearCells([{ personId: 'xray', date: '2026-07-15' }])
+    expect(INPUTS.some((r: any) => r.person === 'xray' && r.type === 'LL' && r.lw)).toBe(false)
+    expect(undoState().undoLabel).toBe('removing Ryder’s LL')
   })
   it('a new Leave War period says so — not "taking the war back to a draft" (Fable’s final read, F1)', () => {
     expect(createWar('2029', '2029-01-01', '2029-12-31')).toBe('created')

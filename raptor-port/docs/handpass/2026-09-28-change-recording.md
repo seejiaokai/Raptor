@@ -139,6 +139,10 @@ each fixed red-first (the test red on the code before the fix — checked by swi
 | picture check | The board's bell made its bar 2px taller than `main`'s (844×390, 1440) | real | the bell at the board's 30px | `cr-c-bars`, now against `main` |
 | picture check | On a phone, the board's Desktop layout shows nothing below the sign-off | real, on `main` too | FILED `[PHONE-WIDE-BOARD-BLANK]` (medium) | — |
 | picture check | Unpublish says nothing (the publish's bubble lingers); a bubble covers the section-order offer | small, on `main` too | FILED `[BUBBLE-SMALL-SEEN]` (low) | — |
+| picture check (2nd pass, A2 re-walk) | Removing an approved leave on the war read "a change on the Leave War" | words | "removing Ryder's LL" — the leave is an input; `stage-undo.test` | `a2-lw` G4 |
+| picture check (2nd pass) | A lingering bubble over the changes window (phone); an empty gold pill in a LATE input's row (phone) | small, on `main` too | FILED in `[BUBBLE-SMALL-SEEN]` (3), (4) | — |
+| picture check (2nd pass) | The war's "Viewing as Saber" button cut at 390 | on `main` worse (the war's own pair sat in that row; this build moved it out) | not filed — improved here | — |
+| picture check (2nd pass) | Evidence gaps: inputs-18 (the board's Redo) shows the calendar; the sessions pictures carry no bubble; roles-10 has Echo's row off screen | pictures, not the app — the rows' readings pass | noted; the scripts' shots to be framed on their step when those walks are next run | — |
 | Astra hygiene | "trailing whitespace" in seven lines | not a defect | the CRLF files' own line endings (clean under `cr-at-eol`) | — |
 
 Not findings, by the brief: the plan's decided calls (§11.5 say-once-then-pass-over, §10 "OK, seen" never a step, D350's

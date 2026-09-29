@@ -1052,8 +1052,12 @@ day, the day goes back as it should, but the bubble still reads the PUBLISH's wo
 approved by Anvil") for its few seconds, the opposite of what just happened (`a1/<w>/pub-09`). (2) **A bubble covers the
 "Use this section order as the default for every day?" offer** — a section dragged within a few seconds of an Undo /
 Redo shows the offer under the lingering bubble, hiding "Set as default" and, on a phone, "Not now" (`a1/phone/struct-19`).
-**To do:** Unpublish says what it did ("Taken back: <day> — its changes wait on the working copy"); the offer opening
-clears the bubble or sits above it. LOOK tier. **Place:** low; any time.
+(3) **A lingering bubble covers the changes window** — on a phone, an Undo / Redo's bubble still up when the window opens
+sits over its first lines (`a2-rewalk/phone/lw-24`). (4) **An empty gold pill in an input's row** on the Inputs list, on a
+phone, beside the remarks of a LATE leave the admin filed for himself in the member view (`a2/phone/roles-05`, the same on
+the re-walk). **To do:** Unpublish says what it did ("Taken back: <day> — its changes wait on the working copy"); the offer
+opening clears the bubble or sits above it; the window likewise; find what the empty pill is meant to hold. LOOK tier.
+**Place:** low; any time.
 
 ### [HIST-PER-PAGE] A changes button on the Leave War and Quals, showing that page's changes — an idea, filed (D349, 28 Sep 26)
 His question during the D347 mock-up: *"should i have a edit history button too for each page thats applicable"* — answered
