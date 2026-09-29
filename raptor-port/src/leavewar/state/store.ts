@@ -91,7 +91,7 @@ import {
   recContribs,
   newRecId,
   isCredit,
-  splitTakenOver,
+  isOilAward,
   liveRequestsOn,
   portionOfCode,
   requestWin,
@@ -120,7 +120,7 @@ import {
   type Stage,
   type States,
 } from '../engine'
-import { mergeWar, absencesAt, absenceVersion, type MergedWar, type RecordSpans, type Views } from './merge'
+import { mergeWar, absencesAt, absenceVersion, awardsAt, awardRows, awardVersion, setAwardRows, type AwardRows, type MergedWar, type RecordSpans, type Views } from './merge'
 import { counterLabel } from '../engine/counters'
 import { creditWorth } from '../engine/credit'
 import { localBackend, memoryBackend, type StorageBackend } from './storage'
@@ -440,6 +440,11 @@ function readLedger(x: unknown): Ledger | null {
     const entry: LedgerEntry = { id, personId, counter: counter as CounterName, amount, date, reason, approvedBy }
     // `givenBy` is optional decoration (2 Sep 26); a bad one is dropped.
     if (typeof givenBy === 'string' && givenBy.trim()) entry.givenBy = givenBy.trim().slice(0, MAX_GIVEN_BY)
+    /* WHO ENTERED IT AND WHEN (owner, D200 (2)) survive a reload — a person id kept as given, and a date-time that
+       parses; a bad one is dropped with the entry kept, as `givenBy` is (Fable's plan read F4, 29 Sep 26) */
+    const { enteredBy, enteredAt } = e as { enteredBy?: unknown; enteredAt?: unknown }
+    if (typeof enteredBy === 'string' && enteredBy) entry.enteredBy = enteredBy
+    if (typeof enteredAt === 'string' && !Number.isNaN(Date.parse(enteredAt))) entry.enteredAt = enteredAt
     out.push(entry)
   }
   return out
@@ -901,16 +906,52 @@ export function initStore(b?: StorageBackend): void {
   lwHistInit()
 }
 
-/* the merged read, cached on the raw state ref and the absence index version,
-   so a view-only render pays nothing (design §4.2/§4.3) */
-let MERGED: { raw: State; ver: number; out: MergedState } | null = null
+/* THE AWARD INDEX, rebuilt from the ledger whenever the ledger changes
+   ([OIL-AWARD-IS-A-GRANT], D402; Fable's plan read F1). Every ledger writer
+   replaces the array, so its identity is the key; a reset of the merge cache
+   (a world swap in tests) bumps the index version, which also forces a rebuild.
+   A person whose OIL awards are the same objects in the same order keeps his
+   previous inner map, so the merge re-merges only the people a write touched. */
+let LAST_LEDGER: Ledger | null = null
+let LAST_AWD_VER = -1
+function syncAwardIndex(ledger: Ledger): void {
+  if (ledger === LAST_LEDGER && awardVersion() === LAST_AWD_VER) return
+  const prev = awardRows()
+  const byPerson = new Map<string, LedgerEntry[]>()
+  for (const e of ledger) {
+    if (!isOilAward(e)) continue
+    const list = byPerson.get(e.personId)
+    if (list) list.push(e); else byPerson.set(e.personId, [e])
+  }
+  const next = new Map<string, ReadonlyMap<string, readonly LedgerEntry[]>>()
+  for (const [pid, list] of byPerson) {
+    const old = prev.get(pid)
+    const flat = old ? [...old.values()].flat() : []
+    if (old && flat.length === list.length && flat.every((e, i) => e === list[i])) { next.set(pid, old); continue }
+    const m = new Map<string, LedgerEntry[]>()
+    for (const e of list) {
+      const day = m.get(e.date)
+      if (day) day.push(e); else m.set(e.date, [e])
+    }
+    next.set(pid, m)
+  }
+  setAwardRows(next as AwardRows)
+  LAST_LEDGER = ledger
+  LAST_AWD_VER = awardVersion()
+}
+
+/* the merged read, cached on the raw state ref, the absence index version and
+   the award index version, so a view-only render pays nothing (design §4.2/§4.3) */
+let MERGED: { raw: State; ver: number; awd: number; out: MergedState } | null = null
 export function getState(): MergedState {
+  syncAwardIndex(state.ledger)
   const ver = absenceVersion()
-  if (MERGED && MERGED.raw === state && MERGED.ver === ver) return MERGED.out
+  const awd = awardVersion()
+  if (MERGED && MERGED.raw === state && MERGED.ver === ver && MERGED.awd === awd) return MERGED.out
   const wars = state.wars.map(mergeWar)
   const cur = wars.find(w => w.period.id === state.currentId) ?? wars[0]!
   const out: MergedState = { ...state, wars, grid: cur.grid, states: cur.states, views: cur.views, spans: cur.spans }
-  MERGED = { raw: state, ver, out }
+  MERGED = { raw: state, ver, awd, out }
   return out
 }
 
@@ -1067,7 +1108,11 @@ function lwDecompose(s: State): Map<string, CmdRecordEntry> {
       }
     }
   }
-  m.set('lw.ledger/all', { collection: 'lw.ledger', id: 'all', value: s.ledger })
+  /* ONE RECORD PER LEDGER ENTRY ([OIL-AWARD-IS-A-GRANT], 29 Sep 26 — Fable F6, Astra F11). It was one record for the
+     whole ledger, so once every OIL award lived here any other ledger write — the app's own person delete dropping
+     another man's future award, the posting pass — shared a key with every earlier award and refused its Undo ("a
+     later change … touches the same thing"). Per entry, an Undo conflicts only with a change to the same award. */
+  for (const e of s.ledger) m.set(`lw.ledger/${e.id}`, { collection: 'lw.ledger', id: e.id, value: e })
   m.set('lw.balances/all', { collection: 'lw.balances', id: 'all', value: s.openings })
   m.set('lw.oilpolicy/all', { collection: 'lw.oilpolicy', id: 'all', value: s.oilPolicy })
   m.set('lw.postouts/all', { collection: 'lw.postouts', id: 'all', value: s.postOuts })
@@ -1108,7 +1153,15 @@ function applyLwRecord(s: State, e: CmdRecordEntry): void {
     return
   }
   switch (coll) {
-    case 'lw.ledger': (s as any).ledger = e.value; return
+    case 'lw.ledger': {
+      /* one entry: replaced in place, appended when new, removed on a delete — the order of the rest kept */
+      const cur = (s as any).ledger as Ledger
+      const ix = cur.findIndex(x => x.id === e.id)
+      if (e.op === 'delete') { if (ix >= 0) (s as any).ledger = cur.filter(x => x.id !== e.id) }
+      else if (ix >= 0) (s as any).ledger = cur.map(x => (x.id === e.id ? e.value as LedgerEntry : x))
+      else (s as any).ledger = [...cur, e.value as LedgerEntry]
+      return
+    }
     case 'lw.balances': (s as any).openings = e.value; return
     case 'lw.oilpolicy': (s as any).oilPolicy = e.value; return
     /* [CMDL-FINISH] CMDLF-002 — DEFERRED to [GLOBAL-UNDO]. Restoring postOuts sets
@@ -1190,6 +1243,10 @@ function lwRegisterCommands(): void {
   /* D352 (28 Sep 26): a stage move is its own command so Undo can name it ("Undid: closing bidding …"); its authority
      is perms.ts COMMAND_OPS (admin-only), as every war command's */
   cmdDefinePermission('lw.stage', cmdAnyone)
+  /* [OIL-AWARD-IS-A-GRANT] (Astra's round-2 read, R2-01): an OIL award, a ledger entry and a clear that takes an award
+     are their OWN commands, so the command gate asks the right row of the permissions table (perms.ts COMMAND_OPS:
+     the award's, the ledger's) rather than the bid's */
+  for (const t of ['lw.award', 'lw.ledger', 'lw.clear']) cmdDefinePermission(t, cmdAnyone)
   for (const c of LW_COLLS) cmdRegisterRecord({ key: `leavewar:${c}`, cls: 'record', collection: c, module: 'leavewar' })
   // [CMDL-FINISH] C9/P3-END — now that every LW write routes through the command
   // layer (the only post-boot raw path is LW_RESTORING, which runs at idle and is
@@ -1659,7 +1716,13 @@ export function forgetPersonFrom(id: string, iso: string, frozen: Person | null 
   const kept = people.some(p => p.id === id)
   const { [id]: _dropped, ...rest } = state.postOuts
   const postOuts = kept ? windowRecord(people, id) : had || hadPast ? rest : state.postOuts
-  state = withCurrent({ ...state, wars, people, postOuts })
+  /* HIS OIL AWARDS FROM THE CUTOFF GO TOO — what the delete took when they were war records ([OIL-AWARD-IS-A-GRANT],
+     the award plan §2.6a); his past awards stay (D299), corrections and other pools are untouched, as before. An
+     archive takes nothing (D323). */
+  const ledger = state.ledger.some(e => e.personId === id && isOilAward(e) && e.date >= iso)
+    ? state.ledger.filter(e => !(e.personId === id && isOilAward(e) && e.date >= iso))
+    : state.ledger
+  state = withCurrent({ ...state, wars, people, postOuts, ledger })
   persistNotify()
 }
 
@@ -2233,7 +2296,7 @@ export function remapPersonKeys(map: Record<string, string>): void {
   }
   const wars = state.wars.map(w => ({ ...w, recs: rekey(w.recs) }))
   const openings = rekey(state.openings)
-  const ledger = state.ledger.map(e => ({ ...e, personId: map[e.personId] ?? e.personId }))
+  const ledger = state.ledger.map(e => ({ ...e, personId: map[e.personId] ?? e.personId, ...(e.enteredBy ? { enteredBy: map[e.enteredBy] ?? e.enteredBy } : {}) }))
   state = withCurrent({ ...state, wars, openings, ledger })
   notify()
 }
@@ -2403,16 +2466,10 @@ export function cellProblem(personId: string, date: string, code: string): strin
   if (isMedical(clean)) return 'Medical is filed on the Inputs page, not here.'
   if (!clean) return null
   const list = listAt(personId, date)
-  if (clean === 'FO' || clean === 'HO') {
-    if (state.role !== 'admin') return 'Only an admin can enter OIL.'
-    /* A DAY THE SCHEDULE ALREADY EARNS NO LONGER REFUSES AN AWARD (N16,
-       21 Sep 26). It used to answer "That day already earns OIL from the
-       published schedule" — which under this ruling is the app declining to
-       record a fact the owner has said is separate. An award sits beside the
-       schedule's credit and the two add up. Nothing else stops a credit
-       either: work lands on a leave day and the day is flagged. */
-    return null
-  }
+  /* AN OIL AWARD IS NOT A CELL CODE ([OIL-AWARD-IS-A-GRANT], 29 Sep 26): it is a ledger entry given from the day's
+     +OIL panel or the OIL tracker (`setDayAward`, `grantTo`), and `setCell` refuses FO / HO — said here in the same
+     breath, so a picker that asks first is never told "fine" and then silently refused (Fable's plan read F9) */
+  if (clean === 'FO' || clean === 'HO') return OIL_DOOR_MSG
   if (!isBiddable(clean) || !parseCell(clean)) return 'That is not something you can bid here.'
   const portion = portionOfCode(clean)
   const replaced = liveRequestsOn(list, portion)
@@ -2500,36 +2557,21 @@ export function setCell(personId: string, date: string, code: string): boolean {
   const list = listAt(personId, date)
 
   if (!clean) {
-    /* clear: the requests at the address, and a hand-typed credit for an
-       admin. A generated credit belongs to the schedule; a notice to its
-       "OK, seen". */
-    const next = list.filter(r => !(r.kind === 'request' || (r.kind === 'credit' && r.oil === 'manual' && state.role === 'admin')))
-    if (next.length === list.length) return false
-    return putList(personId, date, next)
+    /* clear: the requests at the address, and — for an admin — the day's OIL awards, which are ledger entries now
+       ([OIL-AWARD-IS-A-GRANT]; D260: a Clear takes the award with the rest). A generated credit belongs to the
+       schedule; a notice to its "OK, seen". ONE command for both stores (Fable's plan read F2). */
+    const next = list.filter(r => r.kind !== 'request')
+    const awards = awardIdsAt(personId, date)
+    if (next.length === list.length && !awards.length) return false
+    return gesture(awards.length ? 'lw.clear' : 'lw.edit', () => {
+      if (next.length !== list.length) putList(personId, date, next)
+      dropLedgerIds(awards)
+      return true
+    })
   }
 
-  if (clean === 'FO' || clean === 'HO') {
-    if (state.role !== 'admin') return false
-    /* THE AWARD, never the schedule's own credit (N16, 21 Sep 26). This used
-       to take whichever credit the day held, which under one record could
-       only ever be the right one. With two, it depends on which landed first
-       — so an award typed onto an already-published Saturday would have been
-       invisible to every edit made here. */
-    const had = list.find(r => isCredit(r) && r.oil === 'manual') as CreditRec | undefined
-    if (had && had.code === clean) return false
-    const c: Contrib = { id: 'new', kind: 'credit', code: clean, win: FULL }
-    if (occupiedFor(c, personId, date, had ? [had] : [])) return false
-    /* CHANGING THE CODE CHANGES THE CODE, AND NOTHING ELSE (Astra, 21 Sep 26).
-       It rebuilt the record from scratch here and carried only the reason and
-       the hours across, so an award's QUANTITY and who gave it were dropped
-       every time an admin re-typed its code — a 3-day award silently becoming
-       half a day, with nothing on screen to say so. That was already true
-       before this ruling; two records only made it cost more. */
-    const rec: CreditRec = had
-      ? { ...had, code: clean }
-      : { id: newRecId('c'), kind: 'credit', code: clean, oil: 'manual' }
-    return putList(personId, date, [...list.filter(r => r !== had), rec])
-  }
+  /* FO / HO is never a cell code: an award is given from the +OIL panel or the tracker (`cellProblem` says so) */
+  if (clean === 'FO' || clean === 'HO') return false
 
   if (!isBiddable(clean) || !parseCell(clean)) return false
   const portion = portionOfCode(clean)
@@ -2574,7 +2616,7 @@ function writeMany(cells: { personId: string; date: string }[], code: string, wh
       for (const { personId, date } of cells) {
         /* clearing an EMPTY cell is neither a write nor a refusal — a loose
            delete-box sweeps up empties around the bids */
-        if (clearing && !listAt(personId, date).some(r => r.kind === 'request' || r.kind === 'credit')) continue
+        if (clearing && !listAt(personId, date).some(r => r.kind === 'request' || r.kind === 'credit') && !awardIdsAt(personId, date).length) continue
         const person = find(personId)
         if (person && !leaveDateOk(person, date)) { skipped++; continue }
         if (setCell(personId, date, code)) written++
@@ -2607,9 +2649,16 @@ export function setCells(cells: { personId: string; date: string }[], code: stri
  *  in the selection is REMOVED through the absence door (design §5.2
  *  `lw.removeApproved` — deliberate delete propagates and sticks), in the same
  *  gesture. */
-export function clearCells(cells: { personId: string; date: string }[]): RangeWrite {
+export function clearCells(cells: { personId: string; date: string }[], awardIds?: readonly string[]): RangeWrite {
   let written = 0, skipped = 0
-  gesture('lw.edit', () => {
+  /* THE AWARDS IT TAKES ARE THE AWARDS ITS CONFIRM NAMED (D260; Astra's round-2 read, R2-02): a sheet passes the ids
+     `awardsIn` gave its confirm, and only those go — an award given on one of these days since the confirm stays. No
+     list (a caller that named none) takes the days' awards as they stand. */
+  const prevOnly = CLEAR_ONLY
+  if (awardIds) CLEAR_ONLY = new Set(awardIds)
+  const takesAward = cells.some(c => awardIdsAt(c.personId, c.date).length > 0)
+  try {
+  gesture(takesAward ? 'lw.clear' : 'lw.edit', () => {
     const approved: Array<{ personId: string; date: string; iid: string }> = []
     const rest: { personId: string; date: string }[] = []
     for (const c of cells) {
@@ -2644,6 +2693,7 @@ export function clearCells(cells: { personId: string; date: string }[]): RangeWr
       written += d.done; skipped += d.skipped
     }
   })
+  } finally { CLEAR_ONLY = prevOnly }
   return { written, skipped }
 }
 
@@ -2653,13 +2703,33 @@ export function clearCells(cells: { personId: string; date: string }[]): RangeWr
 function clearRequestsAt(personId: string, date: string, awards = false): boolean {
   if (!canEditCell(state.period, state.role, date) || !canEditRow(state.role, state.viewer, personId)) return false
   const list = listAt(personId, date)
-  const next = list.filter(r => r.kind !== 'request' && !(awards && isAward(r)))
-  if (next.length === list.length) return false
-  return putList(personId, date, next)
+  const next = list.filter(r => r.kind !== 'request')
+  const ids = awards ? awardIdsAt(personId, date) : []
+  if (next.length === list.length && !ids.length) return false
+  if (next.length !== list.length) putList(personId, date, next)
+  dropLedgerIds(ids)
+  return true
 }
 
-/** A hand-given OIL award the signed-in role may remove — the admin's (N11); the schedule's own credit never. */
-const isAward = (r: WarRec): boolean => r.kind === 'credit' && r.oil === 'manual' && state.role === 'admin'
+/* THE AWARDS A CLEAR MAY TAKE ([OIL-AWARD-IS-A-GRANT], 29 Sep 26). An award is a ledger entry drawn on its day, so the
+   clearing doors ask the ledger (`awardsAt`), never the war's records: the admin's (N11 — a member's clear takes none),
+   narrowed while a sheet's confirmed Delete runs to the awards its confirm named (CLEAR_ONLY — R2-02). */
+let CLEAR_ONLY: ReadonlySet<string> | null = null
+function awardIdsAt(personId: string, date: string): string[] {
+  if (state.role !== 'admin') return []
+  return awardsAt(personId, date).filter(e => !CLEAR_ONLY || CLEAR_ONLY.has(e.id)).map(e => e.id)
+}
+/** Take ledger entries by id — inside the caller's command (a clear's gesture), never a command of its own, so a
+ *  clear that takes a bid and an award is ONE undo step (Fable's plan read F2). */
+function dropLedgerIds(ids: readonly string[]): boolean {
+  if (!ids.length) return false
+  const drop = new Set(ids)
+  const ledger = state.ledger.filter(e => !drop.has(e.id))
+  if (ledger.length === state.ledger.length) return false
+  state = withCurrent({ ...state, ledger })
+  if (!quiet) persistNotify()
+  return true
+}
 
 /** THE OIL AWARDS A CLEAR OF THESE DAYS WOULD TAKE (owner, D260, 27 Sep 26: "the confirm names each award first").
  *  A dragged block's Delete, the bid sheet's Clear and its range Clear all remove the awards on the days they clear —
@@ -2667,18 +2737,59 @@ const isAward = (r: WarRec): boolean => r.kind === 'credit' && r.oil === 'manual
  *  so what they name is exactly what the clear takes: the same gates as `setCell` (stage / window / row, a day in a
  *  war) and the same records (an admin's hand-given credit — a member's clear takes none, and the schedule's own credit
  *  is never cleared). In the cells' order; `days` is what each is worth (`creditWorth`). */
-export function awardsIn(cells: readonly { personId: string; date: string }[]): Array<{ personId: string; date: string; code: 'FO' | 'HO'; days: number }> {
-  const out: Array<{ personId: string; date: string; code: 'FO' | 'HO'; days: number }> = []
+export function awardsIn(cells: readonly { personId: string; date: string }[]): Array<{ id: string; personId: string; date: string; code: 'FO' | 'HO'; days: number }> {
+  const out: Array<{ id: string; personId: string; date: string; code: 'FO' | 'HO'; days: number }> = []
   for (const { personId, date } of cells) {
     if (!warHolding(state.wars, date)) continue
     if (!canEditCell(state.period, state.role, date) || !canEditRow(state.role, state.viewer, personId)) continue
-    for (const r of listAt(personId, date)) {
-      if (!isAward(r)) continue
-      const c = r as CreditRec
-      out.push({ personId, date, code: c.code as 'FO' | 'HO', days: creditWorth(c) })
+    /* the AMOUNT is what an award is worth — never worked back from its FO / HO label (Astra's plan read F05) */
+    for (const e of awardIdsAt(personId, date).map(id => state.ledger.find(x => x.id === id)!)) {
+      out.push({ id: e.id, personId, date, code: e.amount === 0.5 ? 'HO' : 'FO', days: e.amount })
     }
   }
   return out
+}
+
+/** THE OIL AWARDS DRAWN ON ONE DAY — ledger entries, the one kind of hand-given OIL ([OIL-AWARD-IS-A-GRANT], D402).
+ *  What a screen asks; the amount is the worth. */
+export function awardsOnDay(personId: string, date: string): readonly LedgerEntry[] {
+  getState()                       // the index follows the ledger on every read
+  return awardsAt(personId, date)
+}
+
+/** One OIL credit on a day, as every sheet reads it back — the schedule's own (`award` false) or an award (true). The
+ *  amount is the worth; `enteredName` is who entered an award, by his LIVE callsign (D200 (2)), else the approver
+ *  typed at the time. */
+export interface OilShown {
+  id: string
+  award: boolean
+  code: 'FO' | 'HO'
+  days: number
+  note?: string
+  givenBy?: string
+  via?: 'schedule' | 'input'
+  spans?: Array<[number, number]>
+  enteredName?: string
+  enteredAt?: string
+}
+/** Every OIL credit on one day — the schedule's first, then each award (ONE reader for the tap list, the bid sheet and
+ *  the member's own award sheet, so none can see a different set — [OIL-AWARD-IS-A-GRANT]). */
+export function oilOnDay(personId: string, date: string): OilShown[] {
+  const out: OilShown[] = []
+  for (const r of listAt(personId, date)) {
+    if (r.kind !== 'credit') continue
+    out.push({ id: r.id, award: false, code: r.code, days: creditWorth({ code: r.code, auto: true }), ...(r.note ? { note: r.note } : {}), ...(r.via ? { via: r.via } : {}), ...(r.spans ? { spans: r.spans } : {}) })
+  }
+  for (const e of awardsOnDay(personId, date)) out.push(awardShown(e))
+  return out
+}
+export function awardShown(e: LedgerEntry): OilShown {
+  const name = (e.enteredBy && state.people.find(p => p.id === e.enteredBy)?.callsign) || e.approvedBy
+  return {
+    id: e.id, award: true, code: e.amount === 0.5 ? 'HO' : 'FO', days: e.amount,
+    ...(e.reason ? { note: e.reason } : {}), ...(e.givenBy ? { givenBy: e.givenBy } : {}),
+    ...(name ? { enteredName: name } : {}), ...(e.enteredAt ? { enteredAt: e.enteredAt } : {}),
+  }
 }
 
 /** An approved absence the war may change: every absence on the address was
@@ -2792,14 +2903,15 @@ export function recordsAt(personId: string, date: string): readonly WarRec[] {
  *  hand-typed credit (an admin). A generated credit belongs to the schedule and
  *  a notice to its "OK, seen", so neither clears here. */
 export function clearRecordById(personId: string, date: string, recId: string): boolean {
+  /* an OIL AWARD on the day is a ledger entry ([OIL-AWARD-IS-A-GRANT]) — the admin's to take (N11) */
+  if (awardsOnDay(personId, date).some(e => e.id === recId)) {
+    if (state.role !== 'admin') return false
+    return gesture('lw.award', () => dropLedgerIds([recId]))
+  }
   const list = listAt(personId, date)
   const r = list.find(x => x.id === recId)
-  if (!r) return false
-  if (r.kind === 'request') {
-    if (!canEditCell(state.period, state.role, date) || !canEditRow(state.role, state.viewer, personId)) return false
-  } else if (r.kind === 'credit') {
-    if (state.role !== 'admin' || r.oil !== 'manual') return false
-  } else return false
+  if (!r || r.kind !== 'request') return false
+  if (!canEditCell(state.period, state.role, date) || !canEditRow(state.role, state.viewer, personId)) return false
   return gesture('lw.edit', () => putList(personId, date, list.filter(x => x !== r)))
 }
 
@@ -3269,28 +3381,26 @@ export const reasonRequired = (counter: CounterName): boolean => counter === 'oi
 /** The sentence that stops a bad ledger write, or null. Stricter than the
  *  boot reader (which tolerates any string date and a zero amount, so an
  *  older stored ledger still loads): a NEW entry with no date or nothing in
- *  it is a mistake worth telling the admin about. */
-function ledgerProblem(counter: CounterName, amount: number, date: string, reason: string, givenBy = ''): string | null {
+ *  it is a mistake worth telling the admin about. ONE body for every door;
+ *  `requireReason` is the door's own rule (§2.2 of the award plan — the
+ *  tracker's form and the figures bar require a reason for OIL, the grid's
+ *  +OIL panel never has). */
+function ledgerProblem(counter: CounterName, amount: number, date: string, reason: string, givenBy = '', requireReason = reasonRequired(counter)): string | null {
   if (!Number.isFinite(amount) || amount === 0) return 'The amount must be a number other than 0'
   if (!isHalfStep(amount)) return HALF_STEP_MSG
   if (!ISO_DAY.test(date)) return 'Pick a date'
   const clean = reason.trim()
-  if (!clean && reasonRequired(counter)) return 'Give a reason'
+  if (!clean && requireReason) return 'Give a reason'
   if (clean.length > MAX_REASON) return `A reason is at most ${MAX_REASON} characters`
   if (givenBy.trim().length > MAX_GIVEN_BY) return `Given by is at most ${MAX_GIVEN_BY} characters`
   return null
 }
 
-/** Ids are `ol-N`, N past the highest one stored — deterministic (no clock),
- *  so two grants in one batch, or one right after another, never collide. */
-function ledgerSeq(): number {
-  let max = 0
-  for (const e of state.ledger) {
-    const m = /^ol-(\d+)$/.exec(e.id)
-    if (m) max = Math.max(max, Number(m[1]))
-  }
-  return max
-}
+/** A NEW ledger entry's id — opaque and never re-minted (Astra's round-2 read, R2-03; Fable's, N5). Each entry is its
+ *  own record in the command layer now, so an id is that record's identity: the old `ol-N` "one past the highest
+ *  stored" handed an undone entry's id to the next award, which then shared its undo key. Stored ids of any shape
+ *  still read. */
+const ledgerId = (): string => newRecId('ol-')
 
 /** The approver stamped on a grant: the CALLSIGN of whoever is viewing
  *  (`viewer` is a person id and would leak on screen), or "admin". */
@@ -3303,14 +3413,26 @@ export function setViewerCallsign(cs: string | null): void { VIEWER_CS = cs }
 function approverName(): string {
   return state.people.find(p => p.id === state.viewer)?.callsign ?? VIEWER_CS ?? 'admin'
 }
+/** WHO ENTERED IT AND WHEN (owner, D200 (2), 26 Sep 26): the signed-in person's ID — drawn by his LIVE callsign where
+ *  shown — and the time, stamped by the store on a NEW entry and kept through every edit (who changed it is the change
+ *  history's line). No person (a session tied to none) stamps only the time. */
+function entered(): { enteredBy?: string; enteredAt: string } {
+  return { ...(state.viewer ? { enteredBy: state.viewer } : {}), enteredAt: new Date().toISOString() }
+}
+/** The command a ledger write runs as (Astra's round-2 read, R2-01): an OIL AWARD is its own row of the permissions
+ *  table, every other entry the ledger's. */
+const ledgerType = (counter: CounterName, amount: number): string => (isOilAward({ counter, amount }) ? 'lw.award' : 'lw.ledger')
 
 /**
  * Credit a pool to one or many people at once — the tracker's "credit N
  * people" (owner: "drag and select all WSOs to put OIL, date and reason"),
  * and since 6 Sep 26 the figures bar's "+2 for everyone I dragged" on ANY
  * balance. A NEGATIVE amount is a correction, not a second mechanism
- * (§Counters). Returns the error sentence for the form, or null on success.
- * One state write for the whole batch → one persist, one undo step.
+ * (§Counters). A positive OIL credit is an OIL AWARD — the one kind of hand-given
+ * OIL, drawn on the grid on its date (D400, D402). A reason is REQUIRED for OIL
+ * here, as it always was (a direct blank call is refused — Astra's plan read F08).
+ * Returns the error sentence for the form, or null on success.
+ * One command for the whole batch → one persist, one undo step.
  */
 export function grantTo(personIds: string[], counter: CounterName, amount: number, date: string, reason: string, givenBy = ''): string | null {
   if (state.role !== 'admin') return `Only an admin can credit ${counterLabel(counter)}`
@@ -3320,13 +3442,15 @@ export function grantTo(personIds: string[], counter: CounterName, amount: numbe
   if (problem) return problem
   const approvedBy = approverName()
   const by = givenBy.trim()
-  let n = ledgerSeq()
+  const who = entered()
   const entries: Ledger = ids.map(personId => ({
-    id: `ol-${++n}`, personId, counter, amount, date, reason: reason.trim(), approvedBy,
-    ...(by ? { givenBy: by } : {}),
+    id: ledgerId(), personId, counter, amount, date, reason: reason.trim(), approvedBy,
+    ...(by ? { givenBy: by } : {}), ...who,
   }))
-  state = withCurrent({ ...state, ledger: [...state.ledger, ...entries] })
-  persistNotify()
+  gesture(ledgerType(counter, amount), () => {
+    state = withCurrent({ ...state, ledger: [...state.ledger, ...entries] })
+    persistNotify()
+  })
   return null
 }
 
@@ -3336,15 +3460,19 @@ export function grantOil(personIds: string[], amount: number, date: string, reas
   return grantTo(personIds, 'oil', amount, date, reason, givenBy)
 }
 
-/** Edit a grant in place — amount, date or reason. The approver stays who it
- *  was; the edit is visible in undo, which is the audit trail here. */
+/** Edit a ledger entry in place — amount, date, reason or given by. The approver and who entered it stay; the change
+ *  history records who changed it. Three rules keep an OIL AWARD one fact (the award plan, §2.2 and §2.5):
+ *  - ITS DATE IS FIXED (D260's reading: an award never moves — its date is the day it was earned and sets when it runs
+ *    out; one on the wrong day is removed and given again). Refused only when the date CHANGES — the tracker's Save
+ *    sends the date every time (Fable's round-2 read, N1). A correction and every other pool keep their date editor.
+ *  - AN OIL ENTRY KEEPS ITS SIGN: an award never becomes a correction or back, or an award could be re-dated in three
+ *    steps (Fable's round-2 read, N2).
+ *  - ITS REASON: an award keeps one if it had one, and never has to invent one it never had (given on the grid with
+ *    none); a correction always needs one; every other pool keeps its own rule (Astra's round-2 read, R2-05). */
 export function updateLedgerEntry(id: string, patch: { amount?: number; date?: string; reason?: string; givenBy?: string }): string | null {
   // The ENTRY first, then the role — so the refusal can name the pool it is
-  // about (review, 6 Sep 26). This said "Only an admin can edit OIL" whatever
-  // the entry was, from the day the ledger stopped being OIL's alone; a member
-  // editing a CCL credit was told about a pool they had not touched. An id that
-  // names nothing still answers "That entry is gone" first, which is true for a
-  // member and an admin alike and gives away nothing either way.
+  // about (review, 6 Sep 26). An id that names nothing answers "That entry is
+  // gone" first, which is true for a member and an admin alike.
   const cur = state.ledger.find(e => e.id === id)
   if (!cur) return 'That entry is gone'
   if (state.role !== 'admin') return `Only an admin can edit ${counterLabel(cur.counter)}`
@@ -3352,26 +3480,34 @@ export function updateLedgerEntry(id: string, patch: { amount?: number; date?: s
   const date = patch.date ?? cur.date
   const reason = patch.reason ?? cur.reason
   const givenBy = (patch.givenBy ?? cur.givenBy ?? '').trim()
-  const problem = ledgerProblem(cur.counter, amount, date, reason, givenBy)
+  const award = isOilAward(cur)
+  if (award && date !== cur.date) return 'An OIL award stays on its day — delete it and give it again on the right one'
+  if (cur.counter === 'oil' && Math.sign(amount) !== Math.sign(cur.amount)) return award
+    ? 'An OIL award stays an award — delete it and enter a correction instead'
+    : 'A correction stays a correction — delete it and give an award instead'
+  const requireReason = award ? cur.reason.trim() !== '' : reasonRequired(cur.counter)
+  const problem = ledgerProblem(cur.counter, amount, date, reason, givenBy, requireReason)
   if (problem) return problem
-  state = withCurrent({
-    ...state,
-    ledger: state.ledger.map(e => {
-      if (e.id !== id) return e
-      const { givenBy: _g, ...rest } = e
-      return { ...rest, amount, date, reason: reason.trim(), ...(givenBy ? { givenBy } : {}) }
-    }),
+  if (amount === cur.amount && date === cur.date && reason.trim() === cur.reason && givenBy === (cur.givenBy ?? '')) return null
+  gesture(ledgerType(cur.counter, cur.amount), () => {
+    state = withCurrent({
+      ...state,
+      ledger: state.ledger.map(e => {
+        if (e.id !== id) return e
+        const { givenBy: _g, ...rest } = e
+        return { ...rest, amount, date, reason: reason.trim(), ...(givenBy ? { givenBy } : {}) }
+      }),
+    })
+    persistNotify()
   })
-  persistNotify()
   return null
 }
 
 export function removeLedgerEntry(id: string): boolean {
   if (state.role !== 'admin') return false
-  if (!state.ledger.some(e => e.id === id)) return false
-  state = withCurrent({ ...state, ledger: state.ledger.filter(e => e.id !== id) })
-  persistNotify()
-  return true
+  const cur = state.ledger.find(e => e.id === id)
+  if (!cur) return false
+  return gesture(ledgerType(cur.counter, cur.amount), () => dropLedgerIds([id]))
 }
 
 /**
@@ -3721,24 +3857,10 @@ export function ingestDutyCredit(personId: string, date: string, code: 'FO' | 'H
 function ingestDutyCreditImpl(personId: string, date: string, code: 'FO' | 'HO', why?: string, spans?: Array<[number, number]>, via: 'schedule' | 'input' = 'schedule'): IngestResult {
   if (code !== 'FO' && code !== 'HO') return 'ignored'
   if (!warHolding(state.wars, date)) return 'ignored'
-  /* HEAL A TAKEN-OVER DAY FIRST, AND WRITE THE HEALING DOWN (N16, 21 Sep 26).
-     A day stored under the retired take-over shape is an award hiding inside
-     the schedule's record. If this pass read it as its own ordinary credit it
-     would rewrite it and the award would be gone — so it is split back into
-     two records first.
-     The write has to happen HERE, before anything else looks at the list:
-     further down, a credit identical to what this pass would produce takes the
-     short-circuit and returns without writing at all, so a split done only in
-     a local variable would be thrown away — the day reading 1 for the rest of
-     the session and 4 after the next reload (Fable, 21 Sep 26). */
-  const raw = listAt(personId, date)
-  const healed = splitTakenOver(raw)
-  if (healed !== raw) putList(personId, date, healed)
   const list = listAt(personId, date)
   /* THE PASS OWNS ITS OWN CREDIT AND NOTHING ELSE. An award on this day is a
-     different fact — days the man is OWED — and the owner ruled the two add
-     up and never affect each other, so this writer must not be able to see
-     one, let alone take it over. */
+     different fact — days the man is OWED — and a ledger entry, not a war
+     record ([OIL-AWARD-IS-A-GRANT]), so this writer cannot see one at all. */
   const had = list.find(r => isCredit(r) && r.oil === 'auto') as CreditRec | undefined
   const note = (why ?? '').trim().slice(0, MAX_REC_NOTE)
   const clean = spans?.filter(s => Array.isArray(s) && s[0] <= s[1] && s[0] >= 0 && s[1] <= 1439)
@@ -3792,218 +3914,63 @@ function ingestDutyCreditImpl(personId: string, date: string, code: 'FO' | 'HO',
   return clash ? 'clash' : 'written'
 }
 
-/**
- * PLACE A HAND-TYPED OIL CREDIT (owner, 20 Sep 26 — "the admin can also credit
- * OIL on the leave sheet for convenience. We should enable that even on any
- * day").
- *
- * Until now NOTHING in the app could create one. The store accepted an FO/HO
- * cell, the reason editor edited one and the hours box edits one, but the only
- * writers were the automatic pass off the published schedule and the demo
- * seed — so every one of those editors could only ever reach a credit nobody
- * was able to type. This is the missing door.
- *
- * ANY DAY, deliberately (the owner's ruling above, which sets aside the
- * assumption — never actually a rule — that OIL is only earned on a weekend or
- * a public holiday). That restriction is real for the AUTOMATIC pass, which
- * reads the published schedule and only credits non-working days. A credit an
- * admin types by hand is a different thing: it is the squadron recording that
- * a man worked, with no schedule behind it, which is exactly why it carries a
- * reason and who said so. The pass never removes a hand-typed credit, so a
- * weekday one stays until an admin clears it — and it DOES add to the man's
- * OIL balance, which is the point of typing it.
- *
- * ONE command, so it is ONE undo step: doing this as setCell + setCellNote +
- * setCellHours would take three presses of undo to take back one entry.
- *
- * Refused only where refusing is the truth: not an admin, no war on that date,
- * a day the published schedule already earns (its credit is the schedule's —
- * change the schedule), or hours that are not a real span. It is never refused
- * for clashing with leave: work always lands and the day is flagged.
- */
-/** THE DAY'S AWARD — the hand-typed credit, never the schedule's own (N16,
- *  21 Sep 26). One resolver, because a day can hold both and `find(isCredit)`
- *  then answers with whichever landed first. */
-const awardAt = (list: readonly WarRec[]): CreditRec | undefined =>
-  list.find(r => isCredit(r) && r.oil === 'manual') as CreditRec | undefined
+/** What `setCell` / `cellProblem` say to an FO / HO typed as a cell code. */
+export const OIL_DOOR_MSG = 'OIL is given from the day’s +OIL panel or the OIL tracker.'
 
-export function setManualCredit(
-  personId: string, date: string, code: 'FO' | 'HO',
-  opts: { note?: string; givenBy?: string; days?: number | null } = {},
-): string | null {
+/**
+ * GIVE — OR CHANGE — THE DAY'S OIL AWARD FROM THE GRID (the bid sheet's +OIL panel; owner, 20 Sep 26 — "the admin can
+ * also credit OIL on the leave sheet for convenience. We should enable that even on any day", D79).
+ *
+ * Since [OIL-AWARD-IS-A-GRANT] (29 Sep 26) the award is ONE kind of record whichever door gives it: a positive OIL entry
+ * in the ledger, drawn on the grid on its date (D402). This is the grid's door to it. The AMOUNT is the award's worth
+ * (`days`); FO / HO is only how the box is labelled (half a day HO, anything else FO).
+ *
+ * A day holding NO award gets a new one; a day holding exactly ONE has it rewritten (its amount, reason, given by — its
+ * date never, D260); a day holding SEVERAL (two tracker credits on one date) is changed from the day's list, one award at
+ * a time, never here — the panel would have to guess which. ONE command, ONE undo step. A reason is optional here, as
+ * it always was on the grid (the tracker's form asks for one — §2.2 of the plan). Refused only where refusing is the
+ * truth: not an admin, no war on that date, days that are not halves. Never refused for clashing with leave: an award
+ * clashes with nothing (D80) and adds to a worked day (D82).
+ */
+export function setDayAward(personId: string, date: string, days: number, opts: { note?: string; givenBy?: string } = {}): string | null {
   if (state.role !== 'admin') return 'Only an admin can enter OIL'
   if (!warHolding(state.wars, date)) return 'That day is in no war'
-  if (code !== 'FO' && code !== 'HO') return 'That is not an OIL code'
-  const list = listAt(personId, date)
-  /* THE DAY'S AWARD, which is a different record from the schedule's credit
-     since N16 (21 Sep 26) — and re-typing one replaces the award alone. The
-     refusal that stood here, "That day already earns OIL from the published
-     schedule", is gone with the ruling: the two add up. */
-  const had = list.find(r => isCredit(r) && r.oil === 'manual') as CreditRec | undefined
-  const note = (opts.note ?? '').trim().slice(0, MAX_REC_NOTE)
-  const givenBy = (opts.givenBy ?? '').trim().slice(0, MAX_GIVEN_BY)
-  const days = opts.days ?? null
-  if (days !== null) {
-    if (!Number.isFinite(days) || days <= 0) return 'Type how many days \u2014 or leave it blank'
-    if (!isHalfStep(days)) return HALF_STEP_MSG
-    if (days > MAX_GRANT_DAYS) return `That is more than ${MAX_GRANT_DAYS} days`
+  if (!Number.isFinite(days) || days <= 0) return 'Type how many days'
+  if (!isHalfStep(days)) return HALF_STEP_MSG
+  if (days > MAX_GRANT_DAYS) return `That is more than ${MAX_GRANT_DAYS} days`
+  const note = (opts.note ?? '').trim()
+  const givenBy = (opts.givenBy ?? '').trim()
+  const here = awardsOnDay(personId, date)
+  if (here.length > 1) return `This day holds ${here.length} OIL awards — change them from the day’s list`
+  if (here.length === 1) return updateLedgerEntry(here[0]!.id, { amount: days, reason: note, givenBy })
+  const problem = ledgerProblem('oil', days, date, note, givenBy, false)
+  if (problem) return problem
+  const entry: LedgerEntry = {
+    id: ledgerId(), personId, counter: 'oil', amount: days, date, reason: note, approvedBy: approverName(),
+    ...(givenBy ? { givenBy } : {}), ...entered(),
   }
-  const rec: CreditRec = {
-    id: had?.id ?? newRecId('c'), kind: 'credit', code, oil: 'manual',
-    ...(note ? { note } : {}), ...(givenBy ? { givenBy } : {}),
-    ...(days !== null ? { days } : {}),
-  }
-  return putList(personId, date, [...list.filter(r => r !== had), rec]) ? null : 'Could not write that'
-}
-
-/**
- * CHANGE AN AWARD'S REASON, ITS GIVER AND ITS DAYS — AS ONE THING
- * (Astra, 21 Sep 26).
- *
- * The OIL tracker's "Save" called the three single-field editors below in a
- * row. That is three separate commands, so ONE press of undo took back the
- * reason and left the balance changed and the giver rewritten; and a value
- * the third editor refused left the first two already written. The store's own
- * `setManualCredit` says why that is wrong, in so many words — "ONE command,
- * so it is ONE undo step" — and the tracker's editor was built the way that
- * sentence forbids.
- *
- * Addressed by RECORD, not by day: since N16 a day can hold the schedule's
- * credit as well as an award, and only the award is anybody's to edit.
- *
- * Everything is checked before anything is written, so a refusal leaves the
- * record exactly as it was. `null` in a field clears it; a field left out is
- * left alone. Returns null when done, else the reason in the sheet's words.
- */
-export function editManualCredit(
-  personId: string, date: string, recId: string,
-  patch: { note?: string; givenBy?: string; days?: number | null },
-): string | null {
-  if (state.role !== 'admin') return 'Only an admin can edit OIL'
-  if (!warHolding(state.wars, date)) return 'That day is in no war'
-  const list = listAt(personId, date)
-  const had = list.find(r => r.id === recId && isCredit(r)) as CreditRec | undefined
-  if (!had) return 'There is no OIL credit on that day'
-  if (had.oil !== 'manual') return 'That credit comes from the published schedule — change the schedule instead'
-
-  const next: CreditRec = { ...had }
-  if (patch.note !== undefined) {
-    const clean = patch.note.trim()
-    if (clean.length > MAX_REC_NOTE) return `A reason is at most ${MAX_REC_NOTE} characters`
-    if (clean) next.note = clean; else delete next.note
-  }
-  if (patch.givenBy !== undefined) {
-    const clean = patch.givenBy.trim()
-    if (clean.length > MAX_GIVEN_BY) return `Given by is at most ${MAX_GIVEN_BY} characters`
-    if (clean) next.givenBy = clean; else delete next.givenBy
-  }
-  if (patch.days !== undefined) {
-    const days = patch.days
-    if (days === null) delete next.days
-    else {
-      if (!Number.isFinite(days) || days <= 0) return 'Type how many days — or leave it blank'
-      if (!isHalfStep(days)) return HALF_STEP_MSG
-      if (days > MAX_GRANT_DAYS) return `That is more than ${MAX_GRANT_DAYS} days`
-      next.days = days
-      /* THE CODE FOLLOWS THE NUMBER (N19 — the quantity is the fact; the absence-record re-test, W3-F6, 26 Sep 26):
-         under a day reads HO, a day or more FO, the rule the +OIL panel already keeps. An edit of the days here (the
-         OIL tracker, the tap list's Edit…) left the old code, so a 2-day award read HO on the grid. */
-      next.code = days < 1 ? 'HO' : 'FO'
-    }
-  }
-  if (JSON.stringify(next) === JSON.stringify(had)) return null
-  return putList(personId, date, list.map(r => (r === had ? next : r))) ? null : 'Could not change that'
-}
-
-/**
- * HOW MANY DAYS a granted OIL credit is worth (owner, 20 Sep 26 — "on the
- * leave war i can also grant more than 1 day of OIL credit just like how the
- * oil tracker does it").
- *
- * THIS REPLACED A WORK-HOURS BOX BUILT THE DAY BEFORE, and the reason is the
- * model changing under it rather than the box being wrong. The hours existed
- * so a two-hour call-out beside afternoon leave would not flag the day. Then
- * the owner ruled that OIL may be granted "for any reason, doesnt have to be
- * like working on weekends" and told us to drop the hours — which together
- * mean a granted credit is an AWARD, not a record of attendance. An award
- * cannot contradict a day off, so there is nothing for hours to prevent, and
- * `forbiddenPair` now exempts a grant outright. The hours live on only where
- * they are real: the AUTOMATIC credit, which reads them off the published
- * schedule.
- *
- * `null` clears the quantity, which puts the code's own worth back — a day
- * for FO, half for HO. Halves only. Admin only, an existing HAND-TYPED credit
- * only: the schedule earns exactly what its code says, and the pass would
- * overwrite anything typed onto it on the next run.
- *
- * It writes through `putList` like every other record change, so it joins the
- * same command, the same undo and the same persistence as its neighbours.
- */
-export function setCellDays(personId: string, date: string, days: number | null): string | null {
-  if (state.role !== 'admin') return 'Only an admin can edit OIL'
-  if (!warHolding(state.wars, date)) return 'That day is in no war'
-  const list = listAt(personId, date)
-  const had = awardAt(list)
-  if (!had) return list.some(isCredit)
-    ? 'That credit comes from the published schedule — change the schedule instead'
-    : 'There is no OIL credit on that day'
-  if (days !== null) {
-    if (!Number.isFinite(days) || days <= 0) return 'Type how many days — or leave it blank'
-    if (!isHalfStep(days)) return HALF_STEP_MSG
-    if (days > MAX_GRANT_DAYS) return `That is more than ${MAX_GRANT_DAYS} days`
-  }
-  const rest = { ...had }
-  delete (rest as { days?: unknown }).days
-  /* the code follows the number (N19; W3-F6 — as editManualCredit does), so a later caller of this writer cannot
-     reopen a 2-day award reading HO (Fable's final code read, N2) */
-  const rec: CreditRec = days === null ? rest : { ...rest, days, code: days < 1 ? 'HO' : 'FO' }
-  if (JSON.stringify(rec) === JSON.stringify(had)) return null
-  return putList(personId, date, list.map(r => (r === had ? rec : r))) ? null : 'Could not change that'
-}
-
-/**
- * ON WHOSE SAY-SO, on a hand-typed FO/HO credit (owner, 20 Sep 26). The twin
- * of `setCellNote` below, and the same rules: admin only, the day must hold a
- * credit, an empty value clears it. Refused on a credit the published schedule
- * owns, like the hours are — the schedule is its own evidence and needs no
- * name behind it.
- */
-export function setCellGivenBy(personId: string, date: string, givenBy: string): string | null {
-  if (state.role !== 'admin') return 'Only an admin can edit OIL'
-  if (!warHolding(state.wars, date)) return 'That day is in no war'
-  const list = listAt(personId, date)
-  const had = awardAt(list)
-  if (!had) return list.some(isCredit)
-    ? 'That credit comes from the published schedule — change the schedule instead'
-    : 'Only an FO or HO credit takes a given-by'
-  const clean = givenBy.trim()
-  if (clean.length > MAX_GIVEN_BY) return `Given by is at most ${MAX_GIVEN_BY} characters`
-  if (!clean && !had.givenBy) return null
-  if (clean === had.givenBy) return null
-  const { givenBy: _old, ...rest } = had
-  const next: CreditRec = clean ? { ...rest, givenBy: clean } : rest
-  putList(personId, date, list.map(r => (r === had ? next : r)))
+  gesture('lw.award', () => {
+    state = withCurrent({ ...state, ledger: [...state.ledger, entry] })
+    persistNotify()
+  })
   return null
 }
 
 /**
- * The REASON on a hand-entered FO/HO credit (owner, 2 Sep 26). Admin only; the
- * day must hold a credit. An empty note clears it.
+ * CHANGE AN AWARD'S REASON, ITS GIVER AND ITS DAYS — AS ONE THING (Astra, 21 Sep 26): the tap list's Edit… and the day
+ * window. Addressed by the award's own id (a day may hold several). One command, one undo step; everything is checked
+ * before anything is written. `null` days is refused — an award is worth what it says (the old "blank means the code's
+ * own worth" went with the code). Returns null when done, else the reason in the sheet's words.
  */
-export function setCellNote(personId: string, date: string, note: string): string | null {
-  if (state.role !== 'admin') return 'Only an admin can edit OIL'
-  if (!warHolding(state.wars, date)) return 'That day is in no war'
-  const list = listAt(personId, date)
-  const had = awardAt(list)
-  if (!had) return list.some(isCredit)
-    ? 'That credit comes from the published schedule — change the schedule instead'
-    : 'Only an FO or HO credit takes a reason'
-  const clean = note.trim()
-  if (clean.length > MAX_REC_NOTE) return `A reason is at most ${MAX_REC_NOTE} characters`
-  const { note: _old, ...rest } = had
-  const next: CreditRec = clean ? { ...rest, note: clean } : rest
-  putList(personId, date, list.map(r => (r === had ? next : r)))
-  return null
+export function editAward(id: string, patch: { note?: string; givenBy?: string; days?: number }): string | null {
+  const cur = state.ledger.find(e => e.id === id)
+  if (!cur || !isOilAward(cur)) return 'There is no OIL award there'
+  if (patch.days !== undefined && patch.days > MAX_GRANT_DAYS) return `That is more than ${MAX_GRANT_DAYS} days`
+  return updateLedgerEntry(id, {
+    ...(patch.days !== undefined ? { amount: patch.days } : {}),
+    ...(patch.note !== undefined ? { reason: patch.note } : {}),
+    ...(patch.givenBy !== undefined ? { givenBy: patch.givenBy } : {}),
+  })
 }
 
 /**
@@ -4015,15 +3982,9 @@ export function setCellNote(personId: string, date: string, note: string): strin
 export function clearRaptorCell(personId: string, date: string): boolean {
   // Locked: a sync-driven delete is not a Leave War undo step.
   return locked(() => {
-    /* A day stored under the retired take-over shape is healed first, so the
-       award it is hiding is a record of its own before anything is removed. */
-    const raw = listAt(personId, date)
-    const list = splitTakenOver(raw)
+    const list = listAt(personId, date)
     const had = list.find(r => r.kind === 'credit' && r.oil === 'auto') as CreditRec | undefined
-    if (!had) {
-      if (list !== raw) putList(personId, date, list)
-      return false
-    }
+    if (!had) return false
     /* THE HAND-BACK IS GONE, AND THAT IS THE POINT (N16, 21 Sep 26).
        This used to restore an award the schedule had taken over — a whole
        snapshot-and-return apparatus whose only job was to undo damage the
@@ -4138,11 +4099,12 @@ export function stayingIn(
     const key = `${personId}|${date}`
     if (seen.has(key)) continue
     seen.add(key)
+    /* an award never moves (D260, D265) — it is a ledger entry drawn on its day, and says it stays */
+    for (const _a of awardsOnDay(personId, date)) out.push({ personId, date, what: 'award' })
     for (const r of listAt(personId, date)) {
       if (moving.has(`${key}|${r.id}`)) continue
-      if (r.kind === 'credit' && r.oil === 'manual') out.push({ personId, date, what: 'award' })
       /* a refused bid staying behind is said too (Astra's final read, 3): history the move does not carry */
-      else if (r.kind === 'request') out.push({ personId, date, what: r.state === 'refused' ? 'refused' : 'bid' })
+      if (r.kind === 'request') out.push({ personId, date, what: r.state === 'refused' ? 'refused' : 'bid' })
     }
     for (const a of absencesAt(personId, date)) {
       if (moving.has(`${key}|${a.id}`) || !isLeaveCode(a.code)) continue
@@ -4306,7 +4268,8 @@ export function deletableIn(cells: readonly { personId: string; date: string }[]
   for (const { personId, date } of cells) {
     if (!warHolding(state.wars, date)) continue
     const writable = canEditCell(state.period, state.role, date) && canEditRow(state.role, state.viewer, personId)
-    const own = writable && listAt(personId, date).some(r => r.kind === 'request' || isAward(r))
+    /* an award only-day offers Delete to the admin (D260 (c)) — the award is a ledger entry, asked of the ledger */
+    const own = writable && (listAt(personId, date).some(r => r.kind === 'request') || awardIdsAt(personId, date).length > 0)
     const approved = state.role === 'admin' && canDecide(state.period.stage, state.role) && warEditable(personId, date)
     if (own || approved) n++
   }

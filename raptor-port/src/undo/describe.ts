@@ -201,7 +201,19 @@ function lwLabel(entry: UndoEntry): string {
   if (colls.has('lw.config')) return 'a Leave War setting'
   if (colls.has('lw.balances')) return 'an opening balance'
   if (colls.has('lw.oilpolicy')) return 'the OIL policy'
-  if (colls.has('lw.ledger')) return 'an OIL entry'
+  if (colls.has('lw.ledger')) {
+    /* an OIL AWARD — a ledger entry, however it was given ([OIL-AWARD-IS-A-GRANT]) — by its own name, as the grid's
+       award was before (per entry since the ledger went into small pieces) */
+    const led = entry.forward.filter(c => c.collection === 'lw.ledger')
+    const isAward = (e: any) => e && e.counter === 'oil' && +e.amount > 0
+    if (led.length && led.every(c => isAward(c.after ?? c.before))) {
+      const pids = new Set(led.map(c => String(((c.after ?? c.before) as any).personId)))
+      const who = pids.size === 1 ? nameOf([...pids][0]!) : null
+      const gone = led.every(c => c.before && !c.after)
+      return who ? `${gone ? 'removing ' : ''}${who}’s OIL award` : gone ? 'removing OIL awards' : 'OIL awards'
+    }
+    return 'an OIL entry'
+  }
   const war = entry.forward.find(c => c.collection === 'lw.war')
   if (war && !war.before && war.after) return 'a new Leave War period'
   if (war && war.before && !war.after) return 'deleting a Leave War period'

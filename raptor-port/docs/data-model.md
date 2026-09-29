@@ -1035,8 +1035,8 @@ update, delete (delete is the soft delete throughout).
 | `Attachment`, `InputAttachment` | R (D by sweep only) | C R **own**; R | — | — | owned by the person who uploaded it; every member may open it (D211) |
 | `LeaveWar` | C R U D | R | — | — | the stage and the bid window are the admin's |
 | `LeaveBid` | C R U D (decide, move) | R, C U D **own** (while `stage = open`) | — | — | `personId` = my person — the `canEditRow` rule the store enforces; deciding, moving an approved leave and "OK, seen" on another's notice are the admin's |
-| `LeaveBid` (a hand-typed OIL award) | C R U D | R | — | — | written by an admin only, any day (D79); an award and a worked day add up (D82); keeps its typed "Given by" and its date — and who entered it and when, gap: `[OIL-AWARD-IS-A-GRANT]` |
-| `LeaveOpening`, `LeaveLedger`, `LeaveCounter` | C R U D | R **own** | — | — | `personId` = my person; a ledger grant keeps the approving admin's callsign |
+| `LeaveLedger` (an OIL award: counter oil, amount above 0) | C R U D | R | — | — | ONE kind of hand-given OIL, whether given on the grid or from the OIL tracker ([OIL-AWARD-IS-A-GRANT], D400, D402, 29 Sep 26); written by an admin only, any day (D79); an award and a worked day add up (D82); every member reads every man's — the grid draws every row (D402); keeps its typed "Given by", its date (fixed — D260) and who entered it and when (`enteredBy`, `enteredAt` — D200 (2)) |
+| `LeaveOpening`, `LeaveLedger`, `LeaveCounter` | C R U D | R **own** | — | — | `personId` = my person; a ledger grant keeps the approving admin's callsign; the app shows every member every man's OIL tracker and figure breakdown, gap: `[LEDGER-READ-ASK]` |
 | `LeavePersonProfile` | C R U D | R | — | — | — |
 | `Course`, `Syllabus`, `TrainingEvent`, `EventPrerequisite`, `Layout`, `CoursePlan`, `Enrolment`, `Attempt` | C R U D | C R U D | — | — | **everyone edits** the Tracker — owner, 7 Sep 26; since D121, 23 Sep 26, Import / Export too: admin and member have the same access |
 

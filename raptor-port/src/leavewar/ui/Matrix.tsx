@@ -51,7 +51,7 @@ import {
   type Figure,
   type FigureCtx,
 } from '../engine'
-import { clearRecordById, figureCtxOf, recordsAt, setBalance, setManualCredit, groupsInOrder, groupPriorityIds, lwHistEpoch, moveGroupTo, moveGroupPriorityTo, displayRoster, getState, movableRecords, moveRecords, moveRecordsProblem, stayingIn, moveManningRowTo, moveEvent, moveEventProblem, moveRosterRow, orderedManningIds, resetManningRules, setPostIn, postingProblem, visibleFigures, hasAccount, postingBlocked, postingLocked, type MoveResult, type MoveRec, type EventMoveResult } from '../state/store'
+import { awardsOnDay, clearRecordById, figureCtxOf, oilOnDay, recordsAt, setBalance, setDayAward, groupsInOrder, groupPriorityIds, lwHistEpoch, moveGroupTo, moveGroupPriorityTo, displayRoster, getState, movableRecords, moveRecords, moveRecordsProblem, stayingIn, moveManningRowTo, moveEvent, moveEventProblem, moveRosterRow, orderedManningIds, resetManningRules, setPostIn, postingProblem, visibleFigures, hasAccount, postingBlocked, postingLocked, type MoveResult, type MoveRec, type EventMoveResult } from '../state/store'
 import { AwardSheet, BidPicker, PostInSheet, PostOutSheet, RaptorSheet } from './BidPicker'
 import { CounterSheet, FigureBreakdownSheet, PersonFiguresSheet } from './CounterSheet'
 import { FigureCell, show } from './FigureCell'
@@ -298,11 +298,16 @@ function freeHalfBeside(v: DayView | undefined): Portion | null {
   return am && !pm ? 'pm' : pm && !am ? 'am' : null
 }
 
-/** The day holds the viewer's OWN hand-given OIL award and nothing else (D261) — the one record he may always read
- *  back, whatever the stage. A day with more on it opens the tap list, which reads the award back already; the
- *  schedule's own credit opens the read-only sheet through `raptorOwns`. */
-function ownAwardOnly(view: DayView | undefined, viewer: string | null, personId: string): boolean {
-  return viewer !== null && personId === viewer && !!view?.main && view.main.kind === 'credit' && !view.main.auto && !view.mark
+/** The day holds one of the viewer's OWN hand-given OIL awards (D261) — the record he may always read back, whatever
+ *  the stage. ANY of the day's records counts, not only the one on top (Astra's plan read F02): a day holding his award
+ *  beside anything else — the schedule's credit, a second award — opens the tap list, read only for him, which reads
+ *  each award back; a day holding just the award opens its own sheet (`ownAwardAlone`). */
+function ownAwardPresent(view: DayView | undefined, viewer: string | null, personId: string): boolean {
+  return viewer !== null && personId === viewer && !!view && view.all.some(c => c.kind === 'credit' && !c.auto)
+}
+/** …and nothing else on the day — the award's own read-only sheet. */
+function ownAwardAlone(view: DayView | undefined, viewer: string | null, personId: string): boolean {
+  return ownAwardPresent(view, viewer, personId) && !!view?.main && view.main.kind === 'credit' && !view.main.auto && !view.mark
 }
 
 /** Whether a tap on this cell opens SOMETHING — the one body Matrix and the
@@ -310,10 +315,10 @@ function ownAwardOnly(view: DayView | undefined, viewer: string | null, personId
  *  in the sheet from the same facts; this only says "there is a sheet". */
 function cellOpenable(states: States, period: Period, role: Role, viewer: string | null, deciding: boolean, grid: Grid, personId: string, date: string, view?: DayView): boolean {
   return raptorOwns(states, personId, date) ||
-    /* HIS OWN OIL AWARD, AT EVERY STAGE (owner, D261, 27 Sep 26 — "3 yes"): it opens read only (`ownAwardOnly`) where
-       nothing else would — outside the bidding window, once bidding has closed, on a published war. Another man's award
-       stays shut to a member. */
-    ownAwardOnly(view, viewer, personId) ||
+    /* HIS OWN OIL AWARD, AT EVERY STAGE (owner, D261, 27 Sep 26 — "3 yes"): it opens read only (`ownAwardPresent`)
+       where nothing else would — outside the bidding window, once bidding has closed, on a published war. Another man's
+       award stays shut to a member. */
+    ownAwardPresent(view, viewer, personId) ||
     // A member may open a cell to EDIT only on their own row (the person they
     // are viewing as); an admin, any row. Without the row half a member could
     // tap an empty cell on anyone's row and bid it (owner, 27 Aug 26). The
@@ -3520,19 +3525,15 @@ export function Matrix() {
      lock becomes invisible. Everything else about a Raptor-owned cell is
      unchanged: both halves held, or nobody who may edit, and the read-only
      sheet opens exactly as it did. */
-  /* The granted OIL on the open cell, for the sheet to name and reopen. Only a
-     HAND-TYPED one: a credit the published schedule earned is the schedule's
-     to change, and the pass would overwrite anything typed onto it. */
-  const openCredit = open
-    ? (recordsAt(open.id, open.date).find(r => r.kind === 'credit' && r.oil === 'manual') as CreditRec | undefined)
-    : undefined
-  /* EVERY credit on the open cell, award or earned — what the day window
-     reads back on one click (owner, 21 Sep 26). Separate from `openCredit`
-     above, which is only the one an admin may EDIT: the app's own credit is
-     shown and never offered for editing, because the OIL pass owns it. */
-  const openAnyCredit = open
-    ? (recordsAt(open.id, open.date).find(r => r.kind === 'credit') as CreditRec | undefined)
-    : undefined
+  /* The OIL AWARD on the open cell, for the +OIL panel to name and change — when the day holds exactly ONE (a day
+     holding several is changed from the day's list, one at a time; `openAwards` counts them). A credit the published
+     schedule earned is the schedule's to change. Awards are ledger entries drawn on the day ([OIL-AWARD-IS-A-GRANT]). */
+  const openAwards = open ? awardsOnDay(open.id, open.date) : []
+  const openCredit = openAwards.length === 1 ? oilOnDay(open!.id, open!.date).find(c => c.award) : undefined
+  /* EVERY credit on the open cell, schedule's first, then the awards — what the day window reads back on one click
+     (owner, 21 Sep 26). The read-only schedule sheet reads the SCHEDULE's own (Fable's plan read N3). */
+  const openOil = open ? oilOnDay(open.id, open.date) : []
+  const openAnyCredit = openOil[0]
   /* A DAY THE SCHEDULE HAS ALREADY EARNED ON STILL TAKES AN AWARD (N16,
      21 Sep 26). The owner ruled the two add up and that the same two facts
      must not be kept or lost depending on which was entered first. The STORE
@@ -4277,12 +4278,12 @@ export function Matrix() {
           /* An OIL credit the app earned opens here too, and it is not leave
              from the Inputs page — the sheet says which it is, and reads the
              credit back in the same three lines as everywhere else. */
-          creditShown={openAnyCredit && openAnyCredit.oil === 'auto'
+          creditShown={openAnyCredit && !openAnyCredit.award
             ? {
               code: openAnyCredit.code,
               days: openAnyCredit.days,
               note: openAnyCredit.note,
-              giver: creditGiver(openAnyCredit),
+              giver: creditGiver({ auto: true, ...(openAnyCredit.via ? { via: openAnyCredit.via } : {}) }),
               spans: openAnyCredit.spans,
               via: openAnyCredit.via,
             }
@@ -4293,12 +4294,12 @@ export function Matrix() {
       {/* HIS OWN OIL AWARD, READ ONLY (owner, D261, 27 Sep 26), wherever the bid sheet will not open for him — outside
           the bidding window, once bidding has closed, on a published war. Where it does open (inside the window) its
           foot reads the award back already, so this stands aside. */}
-      {open && !listOpen && !canRemark && openCredit && ownAwardOnly(openView, viewer, open.id)
+      {open && !listOpen && !canRemark && openCredit && ownAwardAlone(openView, viewer, open.id)
         && !(canEditCell(period, role, open.date) && canEditRow(role, viewer, open.id)) && (
         <AwardSheet
           callsign={open.callsign}
           date={open.date}
-          award={{ code: openCredit.code, days: openCredit.days, note: openCredit.note, giver: creditGiver(openCredit) }}
+          award={{ code: openCredit.code, days: openCredit.days, note: openCredit.note, giver: openCredit.givenBy ?? '', entered: openCredit.enteredName }}
           onClose={close}
         />
       )}
@@ -4601,6 +4602,8 @@ export function Matrix() {
           credit={role === 'admin' && openCredit
             ? { code: openCredit.code, days: openCredit.days, note: openCredit.note, givenBy: openCredit.givenBy }
             : null}
+          /* a day holding SEVERAL awards: the +OIL panel changes none of them — the day's list carries each */
+          awardCount={role === 'admin' ? openAwards.length : 0}
           /* Read back on one click, for anyone who can see the day — a member
              reading his own OIL is entitled to know why it is there and who
              gave it, the same as an admin (owner, 21 Sep 26). */
@@ -4631,21 +4634,23 @@ export function Matrix() {
               code: openAnyCredit.code,
               days: openAnyCredit.days,
               note: openAnyCredit.note,
-              giver: creditGiver(openAnyCredit),
-              auto: openAnyCredit.oil === 'auto',
+              giver: creditGiver({ auto: !openAnyCredit.award, ...(openAnyCredit.via ? { via: openAnyCredit.via } : {}), ...(openAnyCredit.givenBy ? { givenBy: openAnyCredit.givenBy } : {}) }),
+              auto: !openAnyCredit.award,
               spans: openAnyCredit.spans,
               via: openAnyCredit.via,
+              ...(openAnyCredit.award && openAnyCredit.enteredName ? { entered: openAnyCredit.enteredName } : {}),
             }
             : null}
           onCreditClear={role === 'admin' && openCredit
             ? () => { clearRecordById(open.id, open.date, openCredit.id); close() }
             : undefined}
           onCredit={role === 'admin'
-            ? (code, days, note, givenBy) => {
+            ? (_code, days, note, givenBy) => {
+              /* the AMOUNT is the award (FO / HO is only its label); a blank box is a day, as the panel shows */
               const raw = days.trim()
-              const n = raw ? Number(raw) : null
-              if (raw && (n === null || !Number.isFinite(n))) return 'Type how many days — or leave it blank'
-              const problem = setManualCredit(open.id, open.date, code, { note, givenBy, days: n })
+              const n = raw ? Number(raw) : 1
+              if (!Number.isFinite(n)) return 'Type how many days'
+              const problem = setDayAward(open.id, open.date, n, { note, givenBy })
               if (!problem) showFigure('oil')
               return problem
             }

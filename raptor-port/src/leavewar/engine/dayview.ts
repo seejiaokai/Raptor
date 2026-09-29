@@ -227,8 +227,10 @@ export interface DayView {
   /** at work but off the flying programme — an OIL credit the SCHEDULE earned.
    *  A hand-typed award never sets this (owner, 20 Sep 26). */
   duty: boolean
-  /** OIL earned by the credits on this day: FO a whole day, HO a half — or
-   *  the quantity a grant names, which may be more (owner, 20 Sep 26) */
+  /** OIL EARNED on this day — the AUTOMATIC credits only (the published
+   *  schedule, an accepted duty input): FO a whole day, HO a half. An award
+   *  drawn on the day is NOT earned (owner, D400, 29 Sep 26); it reaches the
+   *  balance once, through the ledger it is stored in. */
   earnsOil: number
   /** both halves covered by LL/OL and no other leave type on the day — what
    *  continues the pilots' 15-day run (owner Q13, clash-check H4) */
@@ -329,12 +331,12 @@ export function dayView(input: readonly Contrib[]): DayView {
        work. Weekend/public-holiday work still credits automatically — that
        credit is `auto` and reads exactly as it always did. */
     duty: shown.some(c => c.kind === 'credit' && c.auto),
-    /* EVERY credit on the day, added up (N16, 21 Sep 26 — "an award and a
-       worked day add up. So it's 4"). It already summed; what changed is that
-       there can now be two to sum. The worth itself comes from `credit.ts`,
-       the one formula, which refuses to read an award's quantity off the
-       schedule's own record. */
-    earnsOil: shown.reduce((n, c) => n + (c.kind === 'credit' ? creditWorth({ code: c.code as 'FO' | 'HO', days: c.days, auto: c.auto }) : 0), 0),
+    /* EARNED, NOT AWARDED (owner, D400, 29 Sep 26 — "earned" is only what the
+       app credited itself). An award drawn on this day adds to the man's OIL
+       as much as ever (N16, "an award and a worked day add up") — but it is a
+       ledger entry, counted ONCE, there ([OIL-AWARD-IS-A-GRANT]); counting it
+       here as well would count it twice and call it earned. */
+    earnsOil: shown.reduce((n, c) => n + (c.kind === 'credit' && c.auto ? creditWorth({ code: c.code as 'FO' | 'HO', auto: true }) : 0), 0),
     annualFull,
   }
 }

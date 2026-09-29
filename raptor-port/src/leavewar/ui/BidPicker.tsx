@@ -17,9 +17,8 @@ import { useState } from 'react'
 import { addDays, displayCell, formatCell, LEAVE_TYPES, type BidState, type CounterName, type Portion, type PostOutcome } from '../engine'
 import { OutcomeChips, outcomeLine } from './OutcomeChips'
 import '../../ui/postout.css'
-import { awardsIn, cellProblem, clearCells, decidableIn, deletableIn, MAX_GIVEN_BY, movableRecords, setBidStates, setCell, setCellRange } from '../state/store'
+import { awardsIn, cellProblem, clearCells, decidableIn, deletableIn, MAX_GIVEN_BY, MAX_REASON, movableRecords, setBidStates, setCell, setCellRange } from '../state/store'
 import { DeleteChip, MoveChip } from './SheetActions'
-import { MAX_REC_NOTE } from '../engine/warrecs'
 import { RangePicker, type Range } from './RangePicker'
 import { Sheet } from './Sheet'
 import { dayLabel, shortDate, shortSpan } from './dates'
@@ -63,6 +62,7 @@ export function BidPicker({
   decide,
   onMove,
   onCreditClear,
+  awardCount = 0,
   onlyPortion,
   heldBy,
   onClose,
@@ -113,13 +113,16 @@ export function BidPicker({
    *  are the same tap. Absent when the day has none, or when the APP earned it
    *  off the published schedule — that one is the schedule's to change. */
   credit?: { code: 'FO' | 'HO'; days?: number; note?: string; givenBy?: string } | null
+  /** How many OIL awards the day holds (admin). SEVERAL — two credits from the tracker on one date — and the +OIL panel
+   *  changes none of them: it says so, and the day's list carries each ([OIL-AWARD-IS-A-GRANT]). */
+  awardCount?: number
   /** WHAT THE OIL ON THIS DAY SAYS, shown on a single click without opening
    *  anything (owner, 21 Sep 26: "When i click on like FO or HO once, At the
    *  bottom i want to see the reason, given by and days granted"). Covers BOTH
    *  kinds: an award, which `credit` above also lets an admin edit, and one
    *  the app credited itself, which is read-only because the OIL pass owns it
    *  and would overwrite anything typed onto it. */
-  creditShown?: { code: 'FO' | 'HO'; days?: number; note?: string; giver?: string; auto?: boolean; spans?: Array<[number, number]>; via?: 'schedule' | 'input' } | null
+  creditShown?: { code: 'FO' | 'HO'; days?: number; note?: string; giver?: string; auto?: boolean; spans?: Array<[number, number]>; via?: 'schedule' | 'input'; entered?: string } | null
   /** THE FOUR THINGS AN ADMIN DOES TO AN INPUT — Ack, Approve, Refuse, Move
    *  — IN EVERY STAGE (owner, 21 Sep 26: "even a single click on an input, i
    *  should be able to click on a move button to move the input just like how
@@ -237,6 +240,9 @@ export function BidPicker({
 
   /* the Delete's own confirm (D260, D332) — apart from `confirming`, which is the negative-balance one, keyed by leave code */
   const [clearAsked, setClearAsked] = useState(false)
+  /* the awards the confirm NAMED — the Delete takes these and no other (Astra's round-2 read, R2-02: an award given on
+     one of these days after the confirm stays) */
+  const [clearIds, setClearIds] = useState<string[]>([])
   /* where the sheet's one note is drawn: under the Selected row for a Delete's confirm, under the leave chips for a
      leave's (the negative-balance ask, a refused write) — beside the button that raised it */
   const [noteAt, setNoteAt] = useState<'sel' | 'leave'>('leave')
@@ -285,6 +291,7 @@ export function BidPicker({
       const awards = awardsIn(cells)
       if (awards.length && !clearAsked) {
         setClearAsked(true)
+        setClearIds(awards.map(a => a.id))
         setConfirming(null)
         return setNote(awards.length === 1
           ? `Delete also takes ${callsign}’s OIL award (${awardDays(awards[0]!.days)}) — tap Delete again to go ahead.`
@@ -321,7 +328,7 @@ export function BidPicker({
          of the old behaviour — and it refuses a PUBLISHED approved leave,
          which is the owner's own rule. */
       if (!code) {
-        const { written } = clearCells([{ personId, date }])
+        const { written } = clearCells([{ personId, date }], clearAsked ? clearIds : awardsIn([{ personId, date }]).map(a => a.id))
         if (!written) return setNote('Nothing here can be deleted from the war — leave filed on the Inputs page is changed there, and an approved leave on a published war needs the war reopened.')
         onWrote?.('')
         return onClose()
@@ -340,7 +347,8 @@ export function BidPicker({
        code written over each day strips only the war's own records, so a leave the WAR approved inside the span stayed,
        unsaid, and the sheet closed as done. `clearCells` removes it through the absence door (or counts it where it may
        not go — a published war's finished paperwork), exactly as the one-day Clear and a dragged block's Delete do. */
-    const { written, skipped } = code ? setCellRange(personId, range.from, range.to, code) : clearCells(spanCells(range))
+    const { written, skipped } = code ? setCellRange(personId, range.from, range.to, code)
+      : clearCells(spanCells(range), clearAsked ? clearIds : awardsIn(spanCells(range)).map(a => a.id))
     if (written > 0) onWrote?.(code)
     if (skipped === 0) return onClose()
     const verb = code ? 'written' : 'deleted'
@@ -568,7 +576,15 @@ export function BidPicker({
               carries the long form rather than the short one. A phone has no
               hover — nothing is lost there, because a phone has no room for
               the long form either. */}
-          {onCredit && (
+          {onCredit && awardCount > 1 && (
+            <button
+              className="dchip po" data-testid="bid-oil"
+              title="This day holds several OIL awards — change them from the day's list"
+              aria-label={`${awardCount} OIL awards`}
+              onClick={() => setOilOpen(true)}
+            >{`${awardCount} OIL awards`}</button>
+          )}
+          {onCredit && awardCount <= 1 && (
             <button
               className="dchip po" data-testid="bid-oil"
               title={credit
@@ -596,7 +612,12 @@ export function BidPicker({
           )}
         </div>
       )}
-      {onCredit && oilOpen && (
+      {onCredit && oilOpen && awardCount > 1 && (
+        <div className="bidsheet-row postout">
+          <span className="note" data-testid="oil-several">This day holds {awardCount} OIL awards — change them from the day’s list.</span>
+        </div>
+      )}
+      {onCredit && oilOpen && awardCount <= 1 && (
         <>
           {/* What is already there, in words, before any box — an admin who
               tapped the cell to READ it should not have to infer it from the
@@ -614,7 +635,7 @@ export function BidPicker({
           )}
           <div className="bidsheet-row postout">
             <input
-              className="oil-text" maxLength={MAX_REC_NOTE}
+              className="oil-text" maxLength={MAX_REASON}
               data-testid="oil-why" aria-label="Reason" placeholder="why — any reason"
               value={oilNote} onChange={e => { setOilErr(''); setOilNote(e.target.value) }}
             />
@@ -786,6 +807,12 @@ export function BidPicker({
               {creditShown.giver?.trim() || 'Not given'}
             </span>
           </div>
+          {!creditShown.auto && creditShown.entered && (
+            <div className="bidsheet-row postout">
+              <span className="lab">Entered by</span>
+              <span className="note" data-testid="oil-detail-entered">{creditShown.entered}</span>
+            </div>
+          )}
           <div className="bidsheet-row postout">
             <span className="lab">Days</span>
             <span className="note" data-testid="oil-detail-days">
@@ -881,7 +908,7 @@ export function RaptorSheet({
  *  schedule earned it (its reason defaults to the work, and the hours it was measured over are shown); else an award,
  *  whose reason is whatever the admin typed. */
 function OilDetailRows({ c, auto }: {
-  c: { code: 'FO' | 'HO'; days?: number; note?: string; giver?: string; spans?: Array<[number, number]> }
+  c: { code: 'FO' | 'HO'; days?: number; note?: string; giver?: string; spans?: Array<[number, number]>; entered?: string }
   auto: boolean
 }) {
   return (
@@ -894,6 +921,13 @@ function OilDetailRows({ c, auto }: {
         <span className="lab">Given by</span>
         <span className="note" data-testid="oil-detail-given">{c.giver?.trim() || 'Not given'}</span>
       </div>
+      {/* WHO ENTERED IT (owner, D200 (2)) — an award's, apart from the typed "Given by" */}
+      {!auto && c.entered && (
+        <div className="bidsheet-row">
+          <span className="lab">Entered by</span>
+          <span className="note" data-testid="oil-detail-entered">{c.entered}</span>
+        </div>
+      )}
       <div className="bidsheet-row">
         <span className="lab">Days</span>
         <span className="note" data-testid="oil-detail-days">
@@ -922,7 +956,7 @@ export function AwardSheet({
 }: {
   callsign: string
   date: string
-  award: { code: 'FO' | 'HO'; days?: number; note?: string; giver?: string }
+  award: { code: 'FO' | 'HO'; days?: number; note?: string; giver?: string; entered?: string }
   onClose: () => void
 }) {
   return (

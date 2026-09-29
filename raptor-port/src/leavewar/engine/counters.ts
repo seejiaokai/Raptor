@@ -76,6 +76,13 @@ export interface LedgerEntry {
   /** Who GAVE it, when that is someone else (owner, 2 Sep 26 — "who the
    *  OIL is given by, that's optional"): a name or a post, free text. */
   givenBy?: string
+  /** WHO ENTERED IT — the signed-in person's ID, stamped by the store on a new
+   *  entry and kept through every edit (owner, D200 (2), 26 Sep 26: "who
+   *  entered it and when", separate from the typed "Given by"). Drawn by his
+   *  LIVE callsign, so a rename follows. Absent on the demo seed. */
+  enteredBy?: string
+  /** WHEN IT WAS ENTERED — an ISO date-time, stamped with `enteredBy`. */
+  enteredAt?: string
 }
 
 export type Ledger = LedgerEntry[]
@@ -128,7 +135,11 @@ export function drawnFrom(sources: LeaveSource[], personId: string, counter: Cou
 }
 
 /**
- * OIL earned by work stood on a non-working day, **across every leave war**
+ * OIL EARNED — the automatic credits only (owner, D400, 29 Sep 26): what the
+ * app credited itself, off the published schedule or an accepted duty input.
+ * An award drawn on the grid is a ledger entry and is counted there, never here
+ * ([OIL-AWARD-IS-A-GRANT]); `DayView.earnsOil` already leaves it out.
+ * Earned by work stood on a non-working day, **across every leave war**
  * — the credit side of the FO/HO cells the sync wire (or a hand) writes.
  * A list of sources for the same reason `drawnFrom` takes one: OIL earned
  * standing a December weekend still belongs to the man in January. No state
@@ -323,11 +334,21 @@ const typeParts = (types: readonly string[]) => (c: FigureCtx, p: string): Figur
  *  `-x`: a person whose every leave day is excused draws 0, and `-0` would
  *  print as a minus sign on some paths. */
 const balParts = (counter: CounterName, types: readonly string[], earns: boolean) => (c: FigureCtx, p: string): FigurePart[] => {
-  const parts: FigurePart[] = [
-    { label: 'opening figure', value: c.openings[p]?.[counter] ?? 0 },
-    { label: 'granted', value: grantedTo(c.ledger, p, counter) },
-  ]
-  if (earns) parts.push({ label: 'earned by weekend/PH work', value: earnedOil(c.sources, p) })
+  const parts: FigurePart[] = [{ label: 'opening figure', value: c.openings[p]?.[counter] ?? 0 }]
+  if (earns) {
+    /* EARNED AND AWARDED APART (owner, D400, 29 Sep 26): "earned" is what the
+       app credited itself; every OIL an admin gives by hand — on the grid or
+       from the tracker, one kind of record now — is "awarded"; a correction (a
+       negative entry) is its own row, only when one exists, as "expired" is
+       (both plan reads, 29 Sep 26 — folded into "awarded" it would show "2"
+       against a tracker listing +3 and −1). The rows still sum to the figure. */
+    parts.push({ label: 'earned by weekend/PH work', value: earnedOil(c.sources, p) })
+    parts.push({ label: 'awarded', value: awardedTo(c.ledger, p) })
+    const corr = correctedFor(c.ledger, p)
+    if (corr) parts.push({ label: 'corrections', value: corr })
+  } else {
+    parts.push({ label: 'granted', value: grantedTo(c.ledger, p, counter) })
+  }
   for (const t of types) parts.push({ label: `${PART_LABEL[t] ?? t} taken`, value: 0 - takenOf(c.sources, p, t, c) })
   // OIL alone can EXPIRE (the tracker's policy, 2 Sep 26). The row appears
   // only when something did, so a squadron with no expiry sees the same rows
@@ -374,7 +395,7 @@ export const FIGURES: readonly Figure[] = Object.freeze([
     desc: 'Balance of local + overseas leave: opening + granted − LL − OL',
     value: plainBal('annual'), parts: balParts('annual', ['LL', 'OL'], false) },
   { id: 'oil', label: 'OIL', title: '+OIL', kind: 'bal', counter: 'oil', used: [used('OIL', 'red')],
-    desc: "The OIL tracker's balance: earned by weekend/PH work + granted − taken − expired",
+    desc: "The OIL tracker's balance: earned by weekend/PH work + awarded ± corrections − taken − expired",
     value: (c, p) => oilLedgerOf(c, p).balance, parts: balParts('oil', ['OIL'], true) },
   { id: 'ccl', label: 'CCL', title: '+CCL', kind: 'bal', counter: 'ccl', used: [used('CCL', 'red')],
     desc: 'Child care leave balance: opening + granted − taken', value: plainBal('ccl'), parts: balParts('ccl', ['CCL'], false) },
@@ -413,6 +434,20 @@ export interface FigureLines { top: number; used: { label: string; tone: Tone; v
  *  the person sheet's `settable` (that excludes OIL, because SET moves an
  *  opening figure and OIL's opening belongs to the tracker). */
 export const selectableFigure = (f: Figure | undefined): f is Figure & { counter: CounterName } => !!f?.counter
+
+/** OIL AWARDED to a person — every positive OIL ledger entry, the one kind of
+ *  hand-given OIL (D400, D402). */
+export function awardedTo(ledger: Ledger, personId: string): number {
+  let t = 0
+  for (const e of ledger) if (e.personId === personId && e.counter === 'oil' && e.amount > 0) t += e.amount
+  return t
+}
+/** His OIL corrections — every negative OIL ledger entry, summed (≤ 0). */
+export function correctedFor(ledger: Ledger, personId: string): number {
+  let t = 0
+  for (const e of ledger) if (e.personId === personId && e.counter === 'oil' && e.amount < 0) t += e.amount
+  return t
+}
 
 /** The entries behind a person's "granted" line on one pool, oldest first —
  *  the breakdown itemises them, so a +2 keyed from the grid is explained (who,
