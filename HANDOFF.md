@@ -32,7 +32,15 @@ the later merge keeps both (D78).
 - **Unfinished:** phases 1 → 5 and 5b (the shape IT needs), then the FULL walk and BOTH reviewers' code reads (D11, D353),
   then 6 (worked out on read — its hand-over waits on IT's reporting answer, §12 q9), then 7.
 - **Branch:** `claude/db-readiness-table-shaping-4094f6`; no PR. Build on it.
-- **Gates (phase 0, watched, under the lock):** see §Gate baseline.
+- **Gates (phase 0, watched, under the lock):** unit 7066/7066 · build · tfin 728/0 · e2e 509/0 · smoke 445/0 · rulecheck ·
+  docsize — all green (§Gate baseline). `npm run perf` / `probes:adapted` NOT run: phase 0 changes no rendering; phase 1
+  runs perf before and after (plan). rulecheck notes AM39d now covered (a BASELINE line to drop — not this chat's).
+- **Phase 1 orientation (read, nothing written yet):** the scheduler's logical records come from `decompose()` of the
+  history snapshot (`src/state/sched-commit.ts`) — `days/<wk>#<di>` per day, but `sched.book/<wk>` and `sched.mutes/<wk>`
+  whole-week, plus `sched.orig` / `sched.als` / `sched.retired`; `schedWriteRecords` is their undo write seam. The stored
+  week is `{ d, ...schedFields(), wo, un }` (`src/state/history.ts` `schedFields`; `src/state/store.ts` `weekStashSnap`).
+  The whiteboard ignores a same-value set, so writing every row of a week sends only the rows that changed. Trap: the
+  Leave War's `LW_READY` is already true once its `initStore` returns (it runs `lwHistInit`).
 - **Open questions for him:** none of this chat's. For IT (`[IT-QUESTIONS]`): "no plug-in" in writing; Custom APIs / Power
   Automate allowed?; can reports combine a day with the leave and people tables; when do their tables settle.
 - **Parallel (D302):** rulings D460–D469 (D460–D463 used); observations #380–#389 (#380–#381 used). No other chat was building on 30 Sep 26.
