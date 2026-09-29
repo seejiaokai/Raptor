@@ -192,7 +192,11 @@ if (ONLY.includes('C10')) { const o = await world('a'); await step('C10', async 
   B.ck('C10.2', 'switched back, the same Undo takes it', /Undid: Ranger.s quals/.test(said(u3)), said(u3))
 }); await o.browser.close() }
 
-if (ONLY.includes('C11')) { const o = await world('m'); await step('C11', async () => {
+if (ONLY.includes('C11')) { const o = await world('a'); await step('C11', async () => {
+  /* something NEW to him first: the admin files an input on the same day, then signs out (the first two runs had nothing
+     new to the member, so "Mark all as seen" was never there to press and C11 proved nothing) */
+  await fileInput(page, { person: 'rocky', from: '2026-07-15', type: 'LL', remarks: 'C11 ADMIN' })
+  await L.signOut(page); await L.signIn(page, 'm')
   const f = await fileInput(page, { from: '2026-07-15', type: 'LL', remarks: 'C11 LL' })
   await go(page, 'viewsched')
   /* the day's own change count opens the changes window for a member (D171) — not the day's status badge, which on a

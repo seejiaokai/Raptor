@@ -120,3 +120,29 @@ the war in Phase A S24; the undo list itself is cleared at sign-out by design, D
 | No undo line where the change wrote none (A2-F5) | `state/changelines.test.ts` A2-F5 |
 | The LoX columns read live on Quals (S19) | `ui/quals.test.tsx` S19 |
 | The pair on every page, the Tracker's own, the board's bar, the laptop-width rule (D347–D349, W1) | `ui/topbar-pair.test.tsx`, `ui/topbar-css.test.ts`, e2e `geometry.spec.ts` |
+
+## 6. The two final code reads (D353 — Fable 5.1 and Astra, blind to each other) and each disposition
+
+Reports: `docs/superpowers/briefs/2026-09-28-change-recording-final-read-fable.md`, `…-astra.md`. Every finding accepted;
+each fixed red-first (the test red on the code before the fix — checked by switching the fix off), then walked.
+
+| # | Finding | Severity | Fixed, and the test | Walked |
+|---|---|---|---|---|
+| Astra F1 = Fable F4 | A seen mark ("OK, seen", his welcome note, the admins' bell) lives in a record an older step also holds: that step's Undo or Redo put it back unseen | medium (Astra) / low (Fable) | every saved image of the record takes the seen state on (`timeline.ts carrySeen`, `undo-wire.ts seenOverlay`) — `scenarios-corners` (the notice through Undo AND Redo), `welcomeback.test` (Later through Undo / Redo), `accounts.test` (a seen request through an older refusal's Undo); e2e `step4-leavewar` no notice after Redo | e2e at both widths; `a2-lw` |
+| Astra F2 | The page an undo lands on followed a folded consequence: a weekend publish (the war's OIL credit riding it) landed on the Leave War and left the board on the wrong day | medium | the page is the ACT's, from the step's own area (`landingOf`); Inputs keeps its two exceptions — `undo-wire.test` B7 (4 new) | `cr-c-fixes` R1 |
+| Fable F2 | A calendar change undone elsewhere opened Inputs on its table, not the calendar | medium | reads the calendar's own record; the test through the calendar's real save (the first cut keyed on an area the app never files — observation #347) | `cr-c-fixes` R2 |
+| Fable F1 | A new Leave War period read "taking the war back to a draft" | medium | "a new Leave War period" / "deleting a Leave War period" — `stage-undo.test` | `cr-c-fixes` R3 |
+| Fable F3 | An older step behind a later add / archive / restore / posting was refused without naming it | low (words) | "A later change to a person (added, archived, restored or posted) touches the same thing, so this can't be undone — change it back by hand." — `timeline-cr.test` B3 | `cr-c-fixes` R4 |
+| Fable F5 | The "a delete is final" scan missed an accounts image stored as null (the seeded list) | low (belt) | null read as the seed — `person-delete.test` B4 | unit only (no route on the seed as shipped) |
+| walk R2 | A calendar day title's undo read "a personal input" (the same on `main`) | words | "a day title on the calendar" / "pucks on the calendar" — `undo-wire.test` B8 | `cr-c-fixes` R2.3 |
+| picture check | Saturday's sign-off undone / redone with the board on Friday stayed on Friday (A1 S14a) | real | the day read out of the week's sign-off record — `undo-wire.test` B7 | `a1-nav` |
+| picture check | The board's bell made its bar 2px taller than `main`'s (844×390, 1440) | real | the bell at the board's 30px | `cr-c-bars`, now against `main` |
+| picture check | On a phone, the board's Desktop layout shows nothing below the sign-off | real, on `main` too | FILED `[PHONE-WIDE-BOARD-BLANK]` (medium) | — |
+| picture check | Unpublish says nothing (the publish's bubble lingers); a bubble covers the section-order offer | small, on `main` too | FILED `[BUBBLE-SMALL-SEEN]` (low) | — |
+| Astra hygiene | "trailing whitespace" in seven lines | not a defect | the CRLF files' own line endings (clean under `cr-at-eol`) | — |
+
+Not findings, by the brief: the plan's decided calls (§11.5 say-once-then-pass-over, §10 "OK, seen" never a step, D350's
+scope) and the desktop week's ‹ arrow over the first day (D275). Picture-check notes on pages this build does not touch
+(the Logic filter strip, the Leave War "Viewing as" chip at 390, the day arrows at 844×390, "ALL DAY" wrapping on Inputs at
+844×390, the phone sign-off boxes' "— name —") sit in parts of those pages this build does not change; NOT compared
+with `main` picture by picture — noted here for their pages' own work, not filed.

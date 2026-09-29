@@ -3970,9 +3970,14 @@ except where noted:
     on a phone the group sits at the bar's right end, the bell at the far right — no `order` pins it (the Aug 26 "pinned
     last" is gone). The Sync pill drops to its dot wherever the pair shows: `.topbar.has-undo` (a phone rule); the blue
     tint stays `.topbar.editing`, Edit Schedule's alone (`ui/topbar-css.test.ts`).
+  - **Between a phone and a wide screen (821–1499px) the pair is icon-only and the Sync pill its dot** on a page carrying
+    the pair — with words the pair put the bar on a second line at 1366 and 1440 on six pages (29 Sep 26, the first gate
+    run). Measured against `main` at nine sizes (`scripts/handpass/cr-c-barheights.mjs`): no page's bar taller. On the
+    board's bar the bell is the board's 30px at every width (it made that bar 2px taller than `main`'s).
   - **The Leave War's pair left its Period row** (`leavewar/ui/Chrome.tsx`), for this one.
   - Roll-call: `ui/topbar-pair.test.tsx` (every page × admin / member / member view); walked by
-    `scripts/handpass/cr-c-bars.mjs` at 1440×900, 390×844, 844×390 (no bar taller than today's).
+    `scripts/handpass/cr-c-bars.mjs` at 1440×900, 1366×768, 390×844, 844×390 — every page's bar, and the board's, against
+    the same page on `main` served beside it (no bar taller than today's).
 - **Undo / redo / Edit history** (`.tb-hist`, `#undoBtn`/`#redoBtn`/`#histBtn`) *[Aug 26 text — "shown only on the
   edit page" and "PINNED at the right edge" below no longer hold: the bullet above]*
   moved OUT of the edit page's scroll-away `.filters` row INTO the sticky bar,

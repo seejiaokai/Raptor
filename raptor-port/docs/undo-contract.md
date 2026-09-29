@@ -300,7 +300,16 @@ ineligible by the record they write AND by their command type (`NOT_UNDONE_TYPES
 callsign on the roster (D286), the accounts' guards and a man still named somewhere — before the snap and again inside the
 restore (`state/roster-restore.ts`); a delete stays dead for the man and his account (`person-delete.ts`).
 **Never a step** (`NOT_STEPS`): each person's own seen marks — the changes window's "Mark all as seen", the admins'
-bell, the welcome-back note, the war's "OK, seen" — and a waiting person's own request.
+bell, the welcome-back note, the war's "OK, seen" — and a waiting person's own request. **And never UNDONE by another
+step** (the two final code reads, 29 Sep 26 — Fable F4, Astra F1): three of them write into a record an older step also
+holds (his roster record's `back`, a war day's list, the requests' `seenBy`), so each seen mark is carried onto every saved
+image of that record (`timeline.ts carrySeen` + the `seenOverlay` hook in `state/undo-wire.ts`) — an Undo or a Redo of
+that older step never brings the note, the notice or the bell back.
+**Where an undo lands** (AM39b; `undo-wire.ts landingOf`): the page of the ACT, read from the step's own area, never from
+a consequence folded into it (Astra F2 — a weekend publish carries the war's OIL credit and must still land on Edit
+Schedule, the board on its day, the day read out of the week's sign-off record where that is what changed); an input's
+undo may stay on the loaded week it lands on or, for an absence, on the Leave War; a calendar change opens Inputs on its
+calendar. A refusal behind a later add / archive / restore / posting names that act and the way back (Fable F3).
 
 ## 5. The checklist — plugging a NEW module or a NEW undo feature in
 
@@ -344,7 +353,9 @@ on the same seam — never a new stack.
   ownership (`mayReverse`, step-3 §5); redo carries the same gate. Choose the next step among the current person's OWN
   entries only (D148) — another person's is passed over, never refused on.
 - **A write that only records what a person has SEEN is never a step** (add its type to `NOT_STEPS`, `undo/timeline.ts`)
-  — its revision still tracked, so nothing reads as out-of-band (the change-recording re-test, B1).
+  — its revision still tracked, so nothing reads as out-of-band (the change-recording re-test, B1). If it writes into a
+  record a step also holds, give `seenOverlay` (`state/undo-wire.ts`) its case, or an older step's Undo / Redo brings the
+  unseen state back.
 - **A cross-record rule a restore could break** (a callsign two men would share, an account guard) is asked twice — before
   the view moves and inside the restore before any write — over the ONE combined candidate (`state/roster-restore.ts`);
   never a loader's forgiving repair.

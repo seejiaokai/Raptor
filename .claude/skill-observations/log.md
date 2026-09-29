@@ -1304,7 +1304,7 @@ resolved statuses always carry their resolution date
 **Suggested improvement:** When condensing a rule, list its negative clauses, exceptions and scope limits BEFORE cutting, and keep those ahead of examples, dates and rationale; state a supersession's scope with the exact dates it names. Keep the independent meaning read as the gate.
 
 **Principle:** In a compressed rule, the prohibitions and exceptions carry the most risk per character: drop the examples and the story first, never the "don't" or the "except".
-### Observation 341: A unit test of "this change is recorded" can pass vacuously when the store's record source is absent in the test world
+### Observation 345: A unit test of "this change is recorded" can pass vacuously when the store's record source is absent in the test world
 
 **Status:** OPEN
 **Date:** 2026-09-28
@@ -1319,7 +1319,7 @@ resolved statuses always carry their resolution date
 
 **Principle:** A red test proves nothing until you know WHY it is red; pin the precondition separately from the behaviour so a broken fixture cannot impersonate a missing feature.
 
-### Observation 342: A commit chained after a FILTERED test run commits red — the filter's exit code, not the tests', gates it
+### Observation 346: A commit chained after a FILTERED test run commits red — the filter's exit code, not the tests', gates it
 
 **Status:** OPEN
 **Date:** 2026-09-28
@@ -1423,3 +1423,18 @@ resolved statuses always carry their resolution date
 **Suggested improvement:** Before acting on a finding, confirm every cited path exists and re-trace the claim on the real code; classify each as fixed / not a defect (with the reason) / cannot happen here (with the evidence, and filed for when it can).
 
 **Principle:** A finding is a claim to verify, not a task to execute; wrong paths are the cheapest early signal that the evidence needs re-deriving.
+
+### Observation 347: A test driven by a hand-made record passed while the real door produced a different record — the fix did nothing in the app
+
+**Status:** OPEN
+**Date:** 2026-09-29
+**Session context:** change-recording build (Raptor), fixing Fable's final-read F2 ("a calendar change should open the Inputs calendar"). Numbered past #344 (#341–#342 are the small-fixes branch's; this branch's two were renumbered #345–#346).
+**Skill:** test-driven-development
+**Type:** open-source
+**Phase/Area:** red-first — choosing how the failing test produces its input
+
+**Issue:** The landing tests were written against a hand-built undo entry (`{ scope: { module: 'plan' }, forward: [...] }`) so they could be red quickly. The fix keyed on that area, the test went red then green — and the walk showed the real calendar save is filed under a DIFFERENT area ('inputs'), so the fix never fired in the app. The hand-made record encoded the author's belief about the code path, which was exactly the thing under test. It was caught only because a walk script drove the real control.
+
+**Suggested improvement:** In the red-first step: a test's input must come from the production door (call the real writer the button calls) unless the door cannot run in the test world; when a hand-made record is unavoidable, add one test through the real door that asserts the record really has that shape (area, collection, type), so a wrong belief fails loudly. Name this in the skill's "red for the right reason" section.
+
+**Principle:** A fabricated input proves the code handles what you THINK arrives; only the real door proves what arrives — the belief under test must not be baked into the test's fixture.
