@@ -42,6 +42,16 @@ const setSelect = async (sel: string, v: string) => act(async () => {
    genuine event, not a stand-in. */
 const ptr = (type: string, x: number, y: number, id = 1) =>
   new PointerEvent(type, { bubbles: true, cancelable: true, clientX: x, clientY: y, pointerId: id, pointerType: 'touch', isPrimary: true })
+/* A TAP IS ONE MOMENT, NOT TWO ([INPUTSCAL-TAP-FLAKY], 29 Sep 26). The press and the lift go in ONE synchronous act,
+   so no timer can fire between them. They used to be two awaited acts, and REAL time passed between the two: past
+   caldrag's 180ms hold a chip was PICKED UP (its lift then asks `document.elementFromPoint`, which jsdom does not
+   have — "is not a function"), and past the calendar's 450ms hold-to-add an empty cell opened the add form instead
+   of the day's popover. Alone the gap is a few ms; inside the full unit run, under load, it was not — four branches
+   failed that way, never alone. A test that means a HOLD drives the clock itself (vi.useFakeTimers, below). */
+const tap = async (el: Element, x: number, y: number) => act(async () => {
+  el.dispatchEvent(ptr('pointerdown', x, y))
+  el.dispatchEvent(ptr('pointerup', x, y))
+})
 /* a React-controlled text input needs the native value setter, or React's
    own change-detection swallows a same-string re-set — the same trick every
    other *.test.tsx in this app uses. */
@@ -258,16 +268,14 @@ describe('filtering the calendar', () => {
 describe('the day popover — tap an empty cell, close it two ways', () => {
   it('a quick tap opens .ic-pop for that day; ✕ closes it; the backdrop closes it too', async () => {
     const cell = $('[data-icday="2026-07-06"]')!
-    await act(async () => { cell.dispatchEvent(ptr('pointerdown', 40, 40)) })
-    await act(async () => { cell.dispatchEvent(ptr('pointerup', 40, 40)) })
+    await tap(cell, 40, 40)
     expect($('.ic-pop'), 'the popover opens on a tap').toBeTruthy()
     expect($('.ic-pop-head b')!.textContent).toBe(fmtDay('2026-07-06'))
 
     await click($('#icPopClose'))
     expect($('.ic-pop'), 'closes on the ✕').toBeFalsy()
 
-    await act(async () => { cell.dispatchEvent(ptr('pointerdown', 40, 40)) })
-    await act(async () => { cell.dispatchEvent(ptr('pointerup', 40, 40)) })
+    await tap(cell, 40, 40)
     expect($('.ic-pop')).toBeTruthy()
     await act(async () => { $('.ic-popwrap')!.dispatchEvent(ptr('pointerdown', 5, 5)) })
     expect($('.ic-pop'), 'closes on a backdrop pointerdown').toBeFalsy()
@@ -341,8 +349,7 @@ describe('a popover entry row shows its remark on an aligned second line', () =>
          click — tap the cell's empty space to open the popover, the same
          gesture the empty-cell test uses */
       const cell = $('[data-icday="2026-07-24"]')!
-      await act(async () => { cell.dispatchEvent(ptr('pointerdown', 40, 40)) })
-      await act(async () => { cell.dispatchEvent(ptr('pointerup', 40, 40)) })
+      await tap(cell, 40, 40)
       expect($('.ic-pop')).toBeTruthy()
       const row = $(`[data-popiid="${withRmk.iid}"]`)!
       const rmk = row.querySelector('.ic-poprow-rmk')
@@ -402,8 +409,7 @@ describe('a popover entry row opens the same edit route as a chip', () => {
     /* a cell TAP is the popover's front door (the +N more button only exists
        past MAX_CHIPS, which the redesigned side-by-side cell rarely hits) */
     const cell = $('[data-icday="2026-07-13"]')!
-    await act(async () => { cell.dispatchEvent(ptr('pointerdown', 10, 10)) })
-    await act(async () => { cell.dispatchEvent(ptr('pointerup', 10, 10)) })
+    await tap(cell, 10, 10)
     const row = $(`[data-popiid="${rec.iid}"]`)!
     expect(row, 'the row renders').toBeTruthy()
     await click(row)
@@ -418,8 +424,7 @@ describe('the day popover — scheduler day remark', () => {
   it('typing #icRmkEdit and blurring commits it to DAYRMK and repaints the cell\'s .ic-rmk; undo reverts it', async () => {
     const iso = '2026-07-09'
     const cell = $(`[data-icday="${iso}"]`)!
-    await act(async () => { cell.dispatchEvent(ptr('pointerdown', 10, 10)) })
-    await act(async () => { cell.dispatchEvent(ptr('pointerup', 10, 10)) })
+    await tap(cell, 10, 10)
     expect($('.ic-pop')).toBeTruthy()
 
     const input = $('#icRmkEdit') as HTMLInputElement
@@ -441,8 +446,7 @@ describe('the day popover — planning notes (pucks)', () => {
   it('+ Note adds one (Enter commits) shown as a .plan chip; ✏ edits, ✕ removes; undo walks it all back', async () => {
     const iso = '2026-07-11'
     const cell = $(`[data-icday="${iso}"]`)!
-    await act(async () => { cell.dispatchEvent(ptr('pointerdown', 10, 10)) })
-    await act(async () => { cell.dispatchEvent(ptr('pointerup', 10, 10)) })
+    await tap(cell, 10, 10)
     expect($('.ic-pop')).toBeTruthy()
 
     await click($('#icAddPuck'))
@@ -486,8 +490,7 @@ describe('a puck chip tap opens the popover with that note already in edit mode'
     try {
       const chip = $(`[data-icday="${iso}"] [data-icdrag][data-pid="${pid}"]`)!
       expect(chip, 'the plan chip renders').toBeTruthy()
-      await act(async () => { chip.dispatchEvent(ptr('pointerdown', 5, 5)) })
-      await act(async () => { chip.dispatchEvent(ptr('pointerup', 5, 5)) })
+      await tap(chip, 5, 5)
 
       expect($('.ic-pop'), 'the popover opened').toBeTruthy()
       expect($('.ic-pop-head b')!.textContent).toBe(fmtDay(iso))
@@ -507,8 +510,7 @@ describe('caldrag chip-tap wiring, driven on the real grid', () => {
     expect(rec, 'the seeded Appointment record exists').toBeTruthy()
     const chip = $(`[data-icday="2026-07-16"] [data-icdrag][data-iid="${rec.iid}"]`)!
     expect(chip, 'the chip renders').toBeTruthy()
-    await act(async () => { chip.dispatchEvent(ptr('pointerdown', 5, 5)) })
-    await act(async () => { chip.dispatchEvent(ptr('pointerup', 5, 5)) })
+    await tap(chip, 5, 5)
     expect(INPEDIT).toBe(rec)
     await act(async () => { setInpEdit(null); notify() })
   })
@@ -538,8 +540,7 @@ describe('the 22 Aug 26 cell redesign — title, sections, side-by-side inputs',
   it('+ Pucks opens the picker; a category FADES the rest without selecting; tapping pucks selects; OK adds them; right-click and ✕ remove', async () => {
     const iso = '2026-07-09'
     const cell = $(`[data-icday="${iso}"]`)!
-    await act(async () => { cell.dispatchEvent(ptr('pointerdown', 10, 10)) })
-    await act(async () => { cell.dispatchEvent(ptr('pointerup', 10, 10)) })
+    await tap(cell, 10, 10)
     expect($('.ic-pop')).toBeTruthy()
 
     await click($('#icAddPucks'))
@@ -603,8 +604,7 @@ describe('the 22 Aug 26 cell redesign — title, sections, side-by-side inputs',
   it('picker: SANS splits into Pilots then WSOs, and every group reads in CAT-ladder order (highest first)', async () => {
     const iso = '2026-07-09'
     const cell = $(`[data-icday="${iso}"]`)!
-    await act(async () => { cell.dispatchEvent(ptr('pointerdown', 10, 10)) })
-    await act(async () => { cell.dispatchEvent(ptr('pointerup', 10, 10)) })
+    await tap(cell, 10, 10)
     await click($('#icAddPucks'))
     expect($('.ic-pick'), 'the picker opened').toBeTruthy()
     try {
@@ -640,8 +640,7 @@ describe('the 22 Aug 26 cell redesign — title, sections, side-by-side inputs',
     const iso = '2026-07-13'
     await act(async () => { addPlanPuck(iso, 'note first'); notify() })
     const cell = $(`[data-icday="${iso}"]`)!
-    await act(async () => { cell.dispatchEvent(ptr('pointerdown', 10, 10)) })
-    await act(async () => { cell.dispatchEvent(ptr('pointerup', 10, 10)) })
+    await tap(cell, 10, 10)
     try {
       const body = $('.ic-pop-body')!
       const secs = body.querySelector('.ic-secs')!
@@ -664,8 +663,7 @@ describe('the 22 Aug 26 cell redesign — title, sections, side-by-side inputs',
   it('the day title renders in the popover head beside the date', async () => {
     const iso = '2026-07-10'
     const cell = $(`[data-icday="${iso}"]`)!
-    await act(async () => { cell.dispatchEvent(ptr('pointerdown', 10, 10)) })
-    await act(async () => { cell.dispatchEvent(ptr('pointerup', 10, 10)) })
+    await tap(cell, 10, 10)
     try {
       const head = $('.ic-pop-head')!
       expect(head.querySelector('#icRmkEdit'), 'the title input lives in the head').toBeTruthy()
@@ -683,8 +681,7 @@ describe('member session — reduced controls, same reach to add and to open a c
     try {
       /* the cell tap is the popover's front door — see the identity test above */
       const cell = $(`[data-icday="${iso}"]`)!
-      await act(async () => { cell.dispatchEvent(ptr('pointerdown', 10, 10)) })
-      await act(async () => { cell.dispatchEvent(ptr('pointerup', 10, 10)) })
+      await tap(cell, 10, 10)
       expect($('.ic-pop')).toBeTruthy()
       expect($('#icRmkEdit'), 'no title editor for a member').toBeFalsy()
       expect($('#icAddPuck'), 'no +Note for a member').toBeFalsy()
@@ -693,8 +690,7 @@ describe('member session — reduced controls, same reach to add and to open a c
       await click($('#icPopClose'))
 
       const chip = $(`[data-icday="2026-07-16"] [data-icdrag][data-iid="${rec.iid}"]`)!
-      await act(async () => { chip.dispatchEvent(ptr('pointerdown', 5, 5)) })
-      await act(async () => { chip.dispatchEvent(ptr('pointerup', 5, 5)) })
+      await tap(chip, 5, 5)
       expect(INPEDIT, 'a chip tap still opens the modal for a member').toBe(rec)
       await act(async () => { setInpEdit(null); notify() })
     } finally {
@@ -722,8 +718,7 @@ describe('one lift, every drag — the day popover (6 Sep 26)', () => {
   const win = (type: string, x: number, y: number) => act(async () => { window.dispatchEvent(ptr(type, x, y)) })
   const openPop = async (iso: string) => {
     const cell = $(`[data-icday="${iso}"]`)!
-    await act(async () => { cell.dispatchEvent(ptr('pointerdown', 10, 10)) })
-    await act(async () => { cell.dispatchEvent(ptr('pointerup', 10, 10)) })
+    await tap(cell, 10, 10)
     expect($('.ic-pop'), `the ${iso} popover opened`).toBeTruthy()
   }
   const dayIds = (iso: string) => PLANPUCKS.filter((p: any) => p.date === iso).map((p: any) => p.id)
@@ -960,8 +955,7 @@ describe('one lift, every drag — the day popover (6 Sep 26)', () => {
 describe('Esc layering: popover first, then the calendar', () => {
   it('the first Esc closes just the popover; the second closes the calendar', async () => {
     const cell = $('[data-icday="2026-07-06"]')!
-    await act(async () => { cell.dispatchEvent(ptr('pointerdown', 10, 10)) })
-    await act(async () => { cell.dispatchEvent(ptr('pointerup', 10, 10)) })
+    await tap(cell, 10, 10)
     expect($('.ic-pop')).toBeTruthy()
 
     await act(async () => { document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true })) })

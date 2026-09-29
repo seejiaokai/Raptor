@@ -1,0 +1,22 @@
+PASS  [LWDZ] D1-sheet — expected: the drag opens the selection sheet for three days | observed: {"open":"select-sheet","text":"Drifter 6 Jan 26 – 8 Jan 26 · 3 days ✕ DECIDE Ack Approve Refuse HOW MUCH Whole day AM PM WHICH LEAV"}
+PASS  [LWDZ] D1-asks — expected: the first tap only asks — "That takes <him> to -3 FCL…" — and nothing is written | observed: {"note":"That takes Drifter to -3 FCL. Tap the same leave again to go ahead.","cells":["01-06:·","01-07:·","01-08:·"],"fclBefore":"0"}
+PASS  [LWDZ] D1-second-tap-writes — expected: the same leave again writes the three days and closes the sheet; his FCL reads -3 | observed: {"sheet":"nothing","cells":["01-06:FCL","01-07:FCL","01-08:FCL"],"fcl":["0","-3 3"]}
+PASS  [LWDZ] D2-other-leave — expected: after the ask, a different leave his balance covers (LL) writes at once — the ask belongs to the leave it was raised for | observed: {"note":"That takes Drifter to -6 FCL. Tap the same leave again to go ahead.","sheet":"nothing","cells":["01-13:LL","01-14:LL","01-15:LL"]}
+NOTE  [LWDZ] D3-rows — {"first":"slipway","second":"razer"}
+PASS  [LWDZ] D3-sheet — expected: a drag over two men opens one selection sheet | observed: {"open":"select-sheet","text":"Drifter, Ridge 3 Feb 26 – 4 Feb 26 · 2 days ✕ DECIDE Ack Approve Refuse HOW MUCH Whole day AM PM WHICH LEAVE LL OL OIL C"}
+PASS  [LWDZ] D3-one-ask — expected: ONE ask naming both men, each with where his FCL would go | observed: {"note":"That takes Drifter to -5 FCL and Ridge to -2 FCL. Tap the same leave again to go ahead."}
+PASS  [LWDZ] D3-closed-writes-nothing — expected: closing the sheet after the ask writes nothing | observed: {"cells":["02-03:·","02-04:·","02-03:·","02-04:·"]}
+PASS  [LWDZ] D4-delete-then-leave — expected: ask → Delete shows Delete's own confirm → the leave tapped next asks afresh; the LL stays untouched | observed: {"n1":"That takes Drifter to -6 FCL. Tap the same leave again to go ahead.","n2":"Delete 3 days for Drifter? Tap Delete again.","n3":"That takes Drifter to -6 FCL. Tap the same leave again to go ahead.","cells":["01-13:LL","01-14:LL","01-15:LL"]}
+PASS  [LWDZ] D5-saturday — expected: one day of FCL on a Saturday costs nothing, so it writes with no ask and his FCL does not move | observed: {"open":"bid-picker","after":"nothing","cell":["01-10:FCL"],"fcl":["0","0"],"note":""}
+PASS  [LWDZ] D5-monday — expected: the Monday still asks, -1 FCL | observed: {"text":"Hunter Mon 12 Jan ✕ HOW MANY Just this day Pick a range HOW MUCH Whole day AM PM WHICH LEAVE LL OL OIL CCL FCL PL EL CL That takes Hunter to -1 FCL. Tap the same leave again to go ahead. +OIL PO PI"}
+PASS  [LWDZ] D7-half-beside-half — expected: with a morning of FCL held (-0.5), an afternoon of FCL asks, "to -1 FCL" — the morning is counted | observed: {"first":"That takes Hunter to -0.","cell":["01-20:<FCL"],"sheet":"select-sheet","note":"That takes Hunter to -1 FCL. Tap the same leave again to go ahead."}
+PASS  [LWDZ] D8-red-weekend — expected: a man already in the red: a Saturday of FCL costs nothing, so it writes with no ask and his FCL stands | observed: {"fcl":["-0.5 0.5","-0.5 0.5"],"after":"nothing"}
+PASS  [LWDZ] D-errors — expected: no console errors, page errors or 4xx on the desktop walk | observed: []
+NOTE  [LWDZ] D6-row — {"me":"bane"}
+PASS  [LWDZ] D6-member — expected: the member dragging his own row is asked too, by his own callsign | observed: {"open":"select-sheet","note":"That takes Ranger to -2 FCL. Tap the same leave again to go ahead."}
+PASS  [LWDZ] D6-member-writes — expected: and his second tap writes | observed: {"cells":["01-20:FCL","01-21:FCL"]}
+PASS  [LWDZ] D6-errors — expected: no console errors on the member walk | observed: []
+PASS  [LWDZ] P1-sheet — expected: a hold-and-drag by finger opens the selection sheet for three days | observed: {"open":"select-sheet","text":"Static 3 Mar 26 – 5 Mar 26 · 3 days ✕ DECIDE Ack Approve Refuse HOW MUCH Whole day AM PM WHICH LEAVE"}
+PASS  [LWDZ] P1-asks — expected: the ask shows whole on the phone, inside the screen, nothing written yet | observed: {"note":"That takes Static to -3 FCL. Tap the same leave again to go ahead.","fits":true,"cells":["03-03:·","03-04:·","03-05:·"]}
+PASS  [LWDZ] P1-writes — expected: the second tap writes the three days and the sheet closes | observed: {"cells":["03-03:FCL","03-04:FCL","03-05:FCL"]}
+PASS  [LWDZ] P-errors — expected: no console errors on the phone walk | observed: []

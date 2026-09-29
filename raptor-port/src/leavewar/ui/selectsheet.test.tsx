@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@testing-library/react'
+import { cleanup, fireEvent, render, screen } from '@testing-library/react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { advanceStage, getState, initStore, setCell, setRole } from '../state/store'
 import { memoryBackend } from '../state/storage'
@@ -148,5 +148,107 @@ describe('a refused post-out on the selection sheet', () => {
     fireEvent.click(screen.getByTestId('sel-po-confirm'))
     expect(onDone).not.toHaveBeenCalled()
     expect(screen.getByTestId('sel-note').textContent).toMatch(/the post-out has to be after that day/)
+  })
+})
+
+/* A DRAG THAT WOULD TAKE SOMEONE BELOW ZERO ASKS ONCE FIRST, AS A ONE-DAY BID DOES (his ruling D418, 29 Sep 26 — "Drag
+   asks too"). Before, a three-day drag of CCL from a balance of 0 wrote -3 with no word. The sheet asks the matrix what
+   each man's balance would read (`wouldLeave`, the one-day sheet's own question) — stubbed here to a plain count so the
+   test is about the ASK; the count itself is pinned in state/balanceafter.test.ts and charge.test.ts (withFill), the wiring in the e2e. */
+describe('the ask before a drag takes anyone below zero (D418)', () => {
+  const zero = (balances: Record<string, number>) =>
+    (pid: string, dates: readonly string[], code: string) =>
+      code.replace(/\*/g, '') === 'CCL' ? { counter: 'ccl' as const, before: balances[pid] ?? 0, after: (balances[pid] ?? 0) - dates.length } : null
+  const two: Selection = {
+    people: ['ramp', 'tata'], from: '2026-01-06', to: '2026-01-07',
+    cells: [cell('ramp', '2026-01-06'), cell('ramp', '2026-01-07'), cell('tata', '2026-01-06'), cell('tata', '2026-01-07')],
+  }
+
+  it('the first tap only asks, naming the man and the figure; the same leave again writes', () => {
+    const onDone = vi.fn()
+    mount(rampTwo, { onDone, wouldLeave: zero({ ramp: 0 }) })
+    fireEvent.click(screen.getByTestId('sel-CCL'))
+    expect(screen.getByTestId('sel-note').textContent).toBe('That takes ramp to -2 CCL. Tap the same leave again to go ahead.')
+    expect(getState().grid.ramp?.['2026-01-06']).toBeUndefined()
+    expect(onDone).not.toHaveBeenCalled()
+    fireEvent.click(screen.getByTestId('sel-CCL'))
+    expect(getState().grid.ramp['2026-01-06']).toBe('CCL')
+    expect(getState().grid.ramp['2026-01-07']).toBe('CCL')
+    expect(onDone).toHaveBeenCalledWith(true)
+  })
+
+  it('a block of several men asks ONCE, naming only those it takes below zero', () => {
+    mount(two, { wouldLeave: zero({ ramp: 0, tata: 5 }) })
+    fireEvent.click(screen.getByTestId('sel-CCL'))
+    expect(screen.getByTestId('sel-note').textContent).toBe('That takes ramp to -2 CCL. Tap the same leave again to go ahead.')
+    cleanup()
+    mount(two, { wouldLeave: zero({ ramp: 0, tata: 1 }) })
+    fireEvent.click(screen.getByTestId('sel-CCL'))
+    expect(screen.getByTestId('sel-note').textContent).toBe('That takes ramp to -2 CCL and tata to -1 CCL. Tap the same leave again to go ahead.')
+  })
+
+  it('a different leave or half asks afresh; a fill that stays at or above zero never asks', () => {
+    mount(rampTwo, { wouldLeave: zero({ ramp: 0 }) })
+    fireEvent.click(screen.getByTestId('sel-CCL'))
+    fireEvent.click(screen.getByTestId('sel-portion-am'))
+    fireEvent.click(screen.getByTestId('sel-CCL'))           // *CCL is another code: it asks again
+    expect(getState().grid.ramp?.['2026-01-06']).toBeUndefined()
+    expect(screen.getByTestId('sel-note').textContent).toContain('Tap the same leave again')
+    fireEvent.click(screen.getByTestId('sel-CCL'))
+    expect(getState().grid.ramp['2026-01-06']).toBe('*CCL')
+  })
+
+  it('a fill that leaves the balance at zero or above writes at once', () => {
+    mount(rampTwo, { wouldLeave: zero({ ramp: 2 }) })          // 2 − 2 = 0: not below zero
+    fireEvent.click(screen.getByTestId('sel-CCL'))
+    expect(screen.queryByTestId('sel-note')).toBeNull()
+    expect(getState().grid.ramp['2026-01-07']).toBe('CCL')
+  })
+
+  it('Delete after the ask drops it — the leave tapped next asks again', () => {
+    setCell('ramp', '2026-01-06', 'LL')
+    mount(rampTwo, { wouldLeave: zero({ ramp: 0 }) })
+    fireEvent.click(screen.getByTestId('sel-CCL'))
+    fireEvent.click(screen.getByTestId('sel-delete'))           // arms Delete, and the leave's ask is dropped
+    fireEvent.click(screen.getByTestId('sel-CCL'))
+    expect(screen.getByTestId('sel-note').textContent).toContain('Tap the same leave again')
+    expect(getState().grid.ramp['2026-01-07']).toBeUndefined()
+  })
+
+  it('How much changed away and back drops the ask — the leave asks again (Astra F2)', () => {
+    mount(rampTwo, { wouldLeave: zero({ ramp: 0 }) })
+    fireEvent.click(screen.getByTestId('sel-CCL'))
+    fireEvent.click(screen.getByTestId('sel-portion-am'))
+    fireEvent.click(screen.getByTestId('sel-portion-full'))
+    fireEvent.click(screen.getByTestId('sel-CCL'))
+    expect(getState().grid.ramp?.['2026-01-06']).toBeUndefined()
+    expect(screen.getByTestId('sel-note').textContent).toContain('Tap the same leave again')
+  })
+
+  it('a Decide between the ask and the leave drops the ask (Astra F2)', () => {
+    setCell('ramp', '2026-01-06', 'LL')
+    setRole('admin'); advanceStage()
+    mount(rampTwo, { canDecide: true, wouldLeave: zero({ ramp: 0 }) })
+    fireEvent.click(screen.getByTestId('sel-CCL'))
+    fireEvent.click(screen.getByTestId('sel-pending'))               // Ack the one bid — a partial decision keeps the sheet
+    fireEvent.click(screen.getByTestId('sel-CCL'))
+    expect(getState().grid.ramp['2026-01-07']).toBeUndefined()
+    expect(screen.getByTestId('sel-note').textContent).toContain('Tap the same leave again')
+  })
+
+  it('a man already below zero whom the fill costs nothing is not asked about (Astra F4)', () => {
+    // the stub for a fill that spends nothing: before = after, both in the red
+    const flat = () => ({ counter: 'ccl' as const, before: -2, after: -2 })
+    mount(rampTwo, { wouldLeave: flat })
+    fireEvent.click(screen.getByTestId('sel-CCL'))
+    expect(screen.queryByTestId('sel-note')).toBeNull()
+    expect(getState().grid.ramp['2026-01-06']).toBe('CCL')
+  })
+
+  it('leave that spends nothing never asks', () => {
+    mount(rampTwo, { wouldLeave: zero({ ramp: 0 }) })
+    fireEvent.click(screen.getByTestId('sel-LL'))               // the stub spends nothing for LL
+    expect(screen.queryByTestId('sel-note')).toBeNull()
+    expect(getState().grid.ramp['2026-01-06']).toBe('LL')
   })
 })

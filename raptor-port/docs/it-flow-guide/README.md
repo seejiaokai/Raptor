@@ -28,7 +28,9 @@ big picture, smaller edits) — set side by side, and each schedule-making step 
 removing one, what the grid shows after. His list closes there ("All I can think of"); the agent adds what else it finds.
 **The Leave War as it is (D418):** his check of the app against his description kept three behaviours — leave reaches
 Inputs at Approve; the admin decides in every stage but Draft; a published war's approved leave offers only its remarks —
-and filed one change (a drag below zero must ask). The guide draws the app as it is.
+and filed one change (a drag below zero must ask). The guide draws the app as it is. *(That change is built — `[LW-DRAG-BELOW-ZERO]`, 29 Sep 26: the
+drag now asks once, naming each man, as a one-day bid does. The words in `scripts/itflow/content.mjs` are corrected; the deck and
+PDF keep the old line until he asks for the rebuild, D403 — noted on `[ITFLOW-OIL-RESHOOT]`.)*
 
 ## Remaking it after a screen changes
 

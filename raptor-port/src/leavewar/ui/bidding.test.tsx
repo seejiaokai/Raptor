@@ -290,4 +290,22 @@ describe('a bid that would go below zero asks once, then writes', () => {
   it('CCL at zero the same way — the confirm is per counter', () => {
     warnThenWrite('CCL', 'ccl', '+CCL')
   })
+
+  /* THE ASK IS FOR WHAT IT SAID (Astra's final read, F2, 29 Sep 26): a one-day ask, then the range widened to three days —
+     the same leave once must ask again, with the new figure, never write the three days on the old day's say-so. */
+  it('widening to a range after the ask asks again, with the figure for the range', () => {
+    setRole('admin')
+    expect(setBalance('dusk', 'ccl', 0)).toBe(true)
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId(CELL))
+    fireEvent.click(screen.getByTestId('bid-CCL'))
+    expect(screen.getByTestId('span-note').textContent).toContain('to -1 CCL')
+    fireEvent.click(screen.getByTestId('span-range'))
+    fireEvent.click(screen.getByTestId('span-day-2026-02-13'))
+    fireEvent.click(screen.getByTestId('bid-CCL'))
+    expect(screen.getByTestId('span-note').textContent).toContain('to -3 CCL')
+    expect(getState().grid.dusk?.['2026-02-11']).toBeUndefined()
+    fireEvent.click(screen.getByTestId('bid-CCL'))
+    for (const d of ['2026-02-11', '2026-02-12', '2026-02-13']) expect(getState().grid.dusk[d]).toBe('CCL')
+  })
 })

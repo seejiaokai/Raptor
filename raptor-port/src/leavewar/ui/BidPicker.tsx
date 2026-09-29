@@ -23,6 +23,7 @@ import { RangePicker, type Range } from './RangePicker'
 import { Sheet } from './Sheet'
 import { dayLabel, shortDate, shortSpan } from './dates'
 import { awardDays, awardsClause } from './awardwords'
+import { belowZeroAsk, goesBelow } from './belowzero'
 import './bidpicker.css'
 import './oiltracker.css'
 import { creditWorthText } from '../engine/credit'
@@ -81,7 +82,7 @@ export function BidPicker({
   /** What the balance would read after this write, or `null` for leave that
    *  spends nothing. Supplied by the matrix, where the wars, openings and
    *  ledger already are. */
-  wouldLeave?: (code: string, days: number) => { counter: CounterName; after: number } | null
+  wouldLeave?: (code: string, dates: readonly string[]) => { counter: CounterName; before: number; after: number } | null
   /** Admin-only: post this person OUT (owner, 18 Aug 26; reworked 19 Aug 26
    *  — any date, not just the tapped day, and the "Archive on PO date"
    *  switch). Present only for an admin; the matrix wires it to the store and
@@ -157,6 +158,9 @@ export function BidPicker({
   // the confirmation — a separate "are you sure" button would be a second
   // control to find on a phone, and tapping the thing you already meant to
   // tap is the least surprising way to say yes.
+  /* The ask is a TOKEN of what it said — the leave, the days, the balance it named — not the leave alone (Astra's final
+     read, F2, 29 Sep 26): a one-day ask kept armed after the range was widened let the wider fill write on ONE tap. It
+     is also dropped whenever How many, the range or How much changes. */
   const [confirming, setConfirming] = useState<string | null>(null)
   // The post-out controls, folded behind the one PO button until the admin
   // asks (owner, 19 Aug 26 — "show this toggle when the admin clicks PO"):
@@ -268,14 +272,6 @@ export function BidPicker({
      (`decidableIn` — `setBidStates`'s own eligibility, the admin at a deciding stage). */
   const canDecideHere = !!decide || (!!range && decidableIn(selCells()) > 0)
 
-  /** Days this write covers — one, or the span if a range is chosen. */
-  const dayCount = () => {
-    if (!range) return 1
-    let n = 0
-    for (let d = range.from; d <= range.to; d = addDays(d, 1)) n++
-    return n
-  }
-
   const write = (code: string) => {
     /* CLEAR NAMES THE OIL AWARD IT TAKES, AND ASKS ONCE (owner, D260, 27 Sep 26 — "B"; the absence-record re-test, AB1).
        A Clear removes the admin's award on the day with everything else (that stands — his ruling), but it used to do
@@ -302,13 +298,16 @@ export function BidPicker({
     // to run negative and the owner was explicit that it must stay possible.
     // What was wrong was doing it silently, so this is a confirmation, not a
     // rule.
-    const after = code && wouldLeave ? wouldLeave(code, dayCount()) : null
-    if (after && after.after < 0 && confirming !== code) {
-      setConfirming(code)
-      return setNote(
-        `That takes ${callsign} to ${after.after} ${after.counter.toUpperCase()}. ` +
-        'Tap the same leave again to go ahead.',
-      )
+    // The days it covers — the one tapped, or every day of a picked range — read
+    // as the balance column reads them (the store's `balanceAfterFill`, D418).
+    const days = selCells().map(c => c.date)
+    const after = code && wouldLeave ? wouldLeave(code, days) : null
+    if (goesBelow(after)) {
+      const token = `${code}|${days.join(',')}|${after.after}`
+      if (confirming !== token) {
+        setConfirming(token)
+        return setNote(belowZeroAsk([{ callsign, counter: after.counter, after: after.after }]))
+      }
     }
     setConfirming(null)
 
@@ -388,7 +387,7 @@ export function BidPicker({
           data-testid="span-one"
           className={`pchip${range ? '' : ' on'}`}
           aria-pressed={!range}
-          onClick={() => { setRange(null); setShowCal(false); setNote(''); setClearAsked(false); setMoveErr('') }}
+          onClick={() => { setRange(null); setShowCal(false); setNote(''); setClearAsked(false); setMoveErr(''); setConfirming(null) }}
         >
           Just this day
         </button>
@@ -400,7 +399,7 @@ export function BidPicker({
           // right month AND the very next tap completes the span. The bidder
           // chose their start by opening this cell; asking for it again would
           // be the extra work this control exists to remove.
-          onClick={() => { setShowCal(true); setRange(r => r ?? { from: date, to: date }); setNote(''); setClearAsked(false); setMoveErr('') }}
+          onClick={() => { setShowCal(true); setRange(r => r ?? { from: date, to: date }); setNote(''); setClearAsked(false); setMoveErr(''); setConfirming(null) }}
         >
           {range ? shortSpan(range.from, range.to) : 'Pick a range'}
         </button>
@@ -416,7 +415,7 @@ export function BidPicker({
             min={dates[0]}
             max={dates[dates.length - 1]}
             value={range}
-            onChange={r => { setRange(r); setNote(''); setClearAsked(false); setMoveErr('') }}
+            onChange={r => { setRange(r); setNote(''); setClearAsked(false); setMoveErr(''); setConfirming(null) }}
           />
         </div>
       )}
@@ -510,7 +509,7 @@ export function BidPicker({
             data-testid={p.testid}
             className={`pchip${portion === p.portion ? ' on' : ''}`}
             aria-pressed={portion === p.portion}
-            onClick={() => setPortion(p.portion)}
+            onClick={() => { setPortion(p.portion); setConfirming(null) }}
           >
             {p.label}
           </button>
