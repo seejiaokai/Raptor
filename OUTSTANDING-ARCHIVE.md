@@ -2756,6 +2756,17 @@ sent; APPROVED as drawn, and the deck also covers the alternate-plan flow and sh
 **Place:** NEXT, in a fresh chat — the IT team is waiting (D354).
 
 
+*Moved here 2026-09-29 by backlog-archive.mjs ([HISTLIST-SLOW-TEST]). Forward facts: `raptor-port/src/ui/histlist.test.tsx`.*
+
+### [HISTLIST-SLOW-TEST] One changes-window test runs at 8s alone and times out (20s) in a busy full run — test-only (filed 28 Sep 26)
+**FIXED 29 Sep 26 on `claude/histlist-slow-test` — closes when it merges:** it timed out twice more on `main`'s own run after PR #468 (22s), so `main` read red for a test fault; the one test of three cases (twelve board redraws) is now three tests, one case each, each on its own seat (2.6–4.9s alone; each passes alone and in the file). Found by the IT flow guide chat.
+**Place:** low, test-only — with the next change to the changes window. Found by the Tracker leftovers' gates: `src/ui/histlist.test.tsx`
+"the phone expands the bubble by hand › offers a control only where there is more to show, and only on a phone" took
+8.3s on its own (the file's other eight 1.5–3.2s) and timed out at 20s twice in full unit runs on 28 Sep 26 while the
+PC carried other work (a fanned-out walk; two reviewers reading); alone it passes, 9/9. Not an app fault. **Do:** find
+what makes that one test slow (it likely redraws the board at both widths per case) and trim the setup, or give it
+its own time limit with the reason beside it — never a bare longer limit for the whole file.
+
 *Moved here 2026-09-29 by backlog-archive.mjs ([LW-DRAG-BELOW-ZERO]). Forward facts: `raptor-port/docs/handpass/2026-09-29-lw-drag-below-zero.md`.*
 
 ### [LW-DRAG-BELOW-ZERO] A drag across days on the Leave War goes below zero without asking (his ruling D418, 29 Sep 26)

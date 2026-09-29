@@ -1,6 +1,7 @@
 # Dataverse handover — read this first
 
-For the person designing RAPTOR's Dataverse tables. Written 10 Sep 26.
+For the person designing RAPTOR's Dataverse tables. Written 10 Sep 26; "What happens next" brought up to date
+29 Sep 26, when the database step started (D354).
 
 ## What we agreed
 
@@ -106,9 +107,21 @@ For the person designing RAPTOR's Dataverse tables. Written 10 Sep 26.
 ## What happens next, on our side
 
 1. Stable ids (the two string keys become ids) — done, with tests (10 Sep 26).
-2. When your schema is shared: the adapter behind the storage doorway, written
-   to your tables, passing the doorway's existing contract tests; then a
-   one-time import of what is in the browsers today; then sign-in.
-3. Live updates (a change feed) once the data is shared.
+2. **Now, before your tables settle (owner, D354, 29 Sep 26 — the database step has started):** how the app saves
+   changes so it suits a shared store — one record per leave, per person and per Leave War row instead of one record
+   each for the lot; a save your store refuses (signed out, not allowed, someone changed it first) says so and stops
+   instead of retrying for ever; a slow or half load says so and never falls back to demo data; nothing seeds demo data
+   into a shared store (`data-model.md` §7; our backlog item `[DB-READINESS]`). We will tell you when a record's shape
+   changes.
+3. When your schema is shared: the adapter behind the storage doorway, written
+   to your tables, passing the doorway's existing contract tests; then sign-in.
+   **No data is imported — CORRECTED 29 Sep 26** (this line promised "a one-time import of what is in the browsers
+   today"): everything in the browsers now is demo data and is cleared before the database step (owner, D54, D56), so
+   your tables start EMPTY and the admin enters the real people himself (question 3 above, D165). The one thing that
+   crosses is the owner's hand-drawn training charts, which he moves himself with the app's own Export → Import of a
+   file (D120; `data-model.md` §6) — no import code on either side. `data-model.md` §5 still maps every record the app
+   keeps to its table, for the adapter to follow, not as data to carry over.
+4. Others' changes reach every open screen by themselves, every 30 seconds, from the day the data is shared (owner,
+   D356); how two schedulers take turns on one day is `data-model.md` §9 (the day lock, D355).
 
 Questions to the owner; he will bring them to us.

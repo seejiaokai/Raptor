@@ -234,6 +234,8 @@ Each stage is independently deployable and reversible; none needs the next.
   `data-schema.md` the INVENTORY he works from; the handover note is
   `raptor-port/docs/handover-dataverse.md`. When he shares his schema, we
   write ONE adapter behind the storage doorway to HIS tables (passing
-  `src/storage/` `contractTests`), then the one-time import, then sign-in. Do
+  `src/storage/` `contractTests`), then sign-in [CORRECTED 29 Sep 26: no one-time import — the stored data is demo data,
+  cleared before the database (D54, D56), so the tables start empty; only his hand-drawn Tracker charts cross, by the
+  app's own Export → Import (D120) — `handover-dataverse.md` §What happens next]. Do
   NOT pre-build an adapter, tables or tenant pieces before that. Stage 2
   (stable ids) is ours, independent, and goes first.
