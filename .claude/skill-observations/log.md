@@ -1678,3 +1678,27 @@ owner as fact.
 
 **Principle:** A design's claims about a third-party platform are facts to verify, not reasoning to review; check them
 against the vendor's documentation first, before anyone spends review rounds or tells the stakeholder a guarantee.
+
+### Observation 380: When a plan removes or reshapes a stored record, search for every reader of its PRESENCE, not only of its content
+
+**Status:** OPEN
+**Date:** 30 Sep 26
+**Session context:** `[DB-READINESS]` group A plan — splitting big stored records (inputs/all, leavewar/wars, one-per-week) into one record per row; round-1 red team (Astra, Fable)
+**Skill:** writing-plans · claudex-loop (the red-team brief)
+**Type:** open-source
+**Phase/Area:** the plan's inventory step, before the red team
+
+**Issue:** Three read-only sweeps inventoried every writer and reader of each record's CONTENT. Both reviewers then found
+what they missed: the boot decided "seed the demo or not" from whether two of those records merely EXISTED, and a
+deleting reconcile also covered an undo-to-pristine case its comment named. Removing the records would have silently
+re-seeded demo data over real data and brought an undone edit back after a reload. The sweeps were asked about
+content, so nothing looked for "has(...)" checks or for the second purpose of a delete loop.
+
+**Suggested improvement:** In the planning/inventory step for any storage reshape, add two mandatory questions per record:
+(1) "Who reads whether this record EXISTS (has / presence / a flag derived from it)?" and (2) "For each loop that deletes
+or rewrites it, list every case its comments or tests say it covers." Put both in the red-team brief's "what is
+MISSING" list too.
+
+**Principle:** A stored record carries meaning by its existence as well as its content; before removing, renaming or
+splitting one, find every reader of its presence and every job its delete path does, or the change silently removes a
+signal nobody listed.
