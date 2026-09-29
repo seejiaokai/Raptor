@@ -1097,10 +1097,21 @@ D450–D452:
    away for good, sent by the tab that took the day), **never the phone going to the background or the tab being
    hidden**: a pocketed phone keeps its day until the 30 minutes. A release that never arrives (a dead phone, no
    signal) is covered by the 30 minutes.
-7. **Take-over (D355).** Any admin — today every scheduler is one (§11). It asks first ("Take over Tuesday from Ranger?
-   last change 4 minutes ago"). It goes through the server check (section 3, ScheduleDay), which changes the
-   row's owner and its lease, so **from that moment the database refuses the old holder's saves** (D450); his unconfirmed changes become his local copy (rule 4). His screen turns read only
-   at its next check with "<callsign> has taken over <day>"; the change history (`EditLog`) keeps a line.
+7. **Take-over (D355, D454 — his answer, 29 Sep 26).** Any admin — today every scheduler is one (§11).
+   - **It asks the holder first.** "Take over" writes a `TakeOverRequest` (below); the holder's screen, at its next
+     check, shows **"Saber asks to take over Tuesday"** with **Hand over** / **Keep editing**.
+   - **No answer within 1 minute hands it over** — the holder has most likely stepped away, or his phone is in his
+     pocket (its check is paused, so it cannot answer). **Keep editing** tells the asker "Ranger is still working on
+     Tuesday"; the asker can still press **"Take over anyway"**, asked again and noted in the change history.
+   - **Every take-over first keeps a copy:** in the same all-or-nothing step, the day as it stands is saved as a saved
+     plan on that day, named **"<callsign> — at take-over HH:MM"** — the holder's work frozen, to compare with the day
+     later or bring back.
+   - Nothing of the holder's is lost: his work was saved as he went (D356), so the taker carries on from it. The change
+     goes through the server check (section 3, ScheduleDay), which allows it only when the request was handed over,
+     ran out, or was pressed "anyway" — and changes the owner and the lease, so **from that moment the database refuses
+     the old holder's saves** (D450); his unconfirmed changes become his local copy (rule 4). His screen turns read only
+     at its next check with "<callsign> has taken over <day>"; the changes window shows him, as new, everything changed
+     after it; the change history (`EditLog`) keeps a line.
 8. **The lock is FIRM (owner, D450, 29 Sep 26).** The database itself refuses a schedule save from anyone who does not
    hold the day — by **row ownership plus one small server-side check** (section 3, ScheduleDay). *Corrected 29 Sep 26
    after round 2 (Fable 1, Astra 1): this said "with no custom code". Ownership alone refuses another person's save,
@@ -1152,6 +1163,11 @@ D450–D452:
     first moments after following a link (controls off until the day and its holder are read); "Edit days…"'s three
     groups; the strip after the 30 minutes freed your day; "Not saved" and the unsaved copy; "Editing on your other
     device"; the warnings naming the date when that week is not on screen.
+
+**`TakeOverRequest`** (new 29 Sep 26, D454): `scheduleDayId`, `requestedBy`, `requestedAt` (the store's clock),
+`answer` (`handOver` | `keepEditing` | none), `answeredAt`, `forced` (Take over anyway). Organisation-owned; an admin
+creates one and the holder answers it; the server check reads it (the 1 minute is measured from `requestedAt`). A
+request is spent by the take-over it allows, or by the next take.
 
 **Still his to answer on the mock-up** (they change screens, not these tables): approve as drawn; whether the board's
 ✓ Done also frees the day; Undo on a day given back (rule 11's default); no lock outside the schedule (rule 10's
@@ -1237,8 +1253,8 @@ the server check for every change of holder and every save — section 3); a mem
 editing" shows to everyone. **The "Signoff" in the `Amendment, Signoff` row above now means `IssuedSignoff`**, and
 `AmendmentRetraction` follows the same row (create and read only — an Unpublish writes one, never an update); the
 working sign-offs are part of the day. The new tables of 29 Sep 26 — `PlanningPuck`, `DayRemark` (a scheduler's, like
-the ScheduleWeek family), `IssuedSignoff`, `AmendmentRetraction`, `ScheduleInputPlacement` (stage 2), `ChangeBatch`
-(created by admins and members alike, read by everyone) — get their own rows here, and in `src/state/perms.ts` with
+the ScheduleWeek family), `IssuedSignoff`, `AmendmentRetraction`, `TakeOverRequest` (D454 — an admin creates, the holder answers),
+`ScheduleInputPlacement` (stage 2), `ChangeBatch` (created by admins and members alike, read by everyone) — get their own rows here, and in `src/state/perms.ts` with
 them, when they are built (`OUTSTANDING.md` `[DB-SYNC-MODEL]`) — the drift test reads every row of this table against
 the app, so the rename waits for the build.
 
@@ -1247,7 +1263,7 @@ Fable 2).** **User- or team-owned** (the owner is a person's `User`, or the free
 every table with an own-row rule — `Input`, `Attachment`, `InputAttachment`, `QualMark`, `LeaveBid`, `LeaveOpening`,
 `LeaveLedger`, `LeaveCounter`, `EditLogSeen`, `AccessRequest`, `User`. **Organisation-owned:** everything else —
 `ScheduleWeek` (its `ownedBy` is a plain column, not the platform's owner), `Amendment`, `AmendmentRetraction`,
-`IssuedSignoff`, `PlanningPuck`, `DayRemark`, `ChangeBatch`, `Person`, `Qualification`, `Setting`, `SchemaVersion`,
+`IssuedSignoff`, `TakeOverRequest`, `PlanningPuck`, `DayRemark`, `ChangeBatch`, `Person`, `Qualification`, `Setting`, `SchemaVersion`,
 `EditLog`, `LeaveWar`, `LeavePersonProfile`, and the Tracker's tables.
 
 **The server enforces, the browser mirrors.** Every rule above is a
