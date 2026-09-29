@@ -207,10 +207,9 @@ the pickers keep their order across a reload.
 ### Phase 3 — the Leave War one record each
 The mapper learns the war: `lw.war`, `lw.cell` → its records, `lw.ledger`, `lw.opening`, `lw.profile`. The war writes
 that today go out OUTSIDE a command (the coalesced idle-reconcile `rawPersist` calls, boot writes before `LW_READY`) are
-routed into commands. **The war's SXO and seat taps write `Person` through `commitPeopleEdit`**
-(`people-settings-commit.ts:258-262`) and come back by `reprojectRoster`; the war's `seat`/`sxo` overrides are no longer
-written or read (band stays in the profile) — a fifth seam across the Leave War boundary, named in `leave-war.md`
-§Architecture, asked of him first (§5 question 5). `LOGICAL_TO_BLOB` corrected. **Tests:** two clients bidding on
+routed into commands. **SXO: Quals is the truth (his ruling, D460, 30 Sep 26)** — the war's person sheet shows SXO read
+only, as Quals has it, and the war stops writing and reading its `sxo` override; nothing on the war ticks SXO. **Seat:**
+the war's seat button is the same kind of local copy — his answer pending (§5 question 5). Band stays in the profile. `LOGICAL_TO_BLOB` corrected. **Tests:** two clients bidding on
 different days of one war both survive; an admin's decision and a member's bid on two records of one person/date both
 survive; a moved bid is ONE row changed; the Leave War's store, undo and e2e suites green; `npm run perf` before and after.
 
@@ -296,9 +295,9 @@ Custom APIs and Power Automate flows are allowed; reporting on the worked-out pi
 3. **An empty real database: should the Tracker start with a course already made?** Today a fresh Tracker creates one
    named "26ABSG". Recommendation: no — the first person to open the Tracker adds the course.
 4. **When do IT's tables settle?** (D453.)
-5. **A Leave War admin changing a man's seat or SXO changes it for the whole app.** Today the war keeps its own copy, so
-   a change there shows only on the war. The design already says one person has one seat. Recommendation: yes, one truth
-   — the war's tap changes the person, and the schedule and Quals show it too.
+5. **SXO — ANSWERED 30 Sep 26 (D460): Quals is the truth; the Leave War cannot make anyone SXO and shows it read only.**
+   **Seat (pilot / WSO / ground):** the war's person sheet has the same kind of local seat button. Recommendation: the
+   same rule — Quals (the person's record) is the truth, the war shows the seat read only.
 
 ## 6. Checks (FULL tier, `raptor-port/docs/bug-check-order.md`)
 

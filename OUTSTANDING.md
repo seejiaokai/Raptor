@@ -944,7 +944,9 @@ team, Fable F10 / Astra DP-01, 28 Sep 26: declined there as the whole app's limi
 one browser; against the shared store the first screen reads only people, settings and the week on screen (with the days
 either side the crew-rest checks read), the Leave War and the Tracker read their own records when first opened, and the
 30-second check brings only what changed (`data-model.md` §8 "Per-collection lazy load", §9 the change feed). Measured
-against the fake database before the tables settle. With `[OIL-AWARD-IS-A-GRANT]`
+against the fake database before the tables settle. **Group A's plan (30 Sep 26, red-teamed by both, three rounds):
+`raptor-port/docs/superpowers/plans/2026-09-30-db-readiness-group-a-plan.md`; D460 (Quals is the truth for SXO — the war shows it read only,
+and cannot make anyone SXO) is built in its phase 3.** With `[OIL-AWARD-IS-A-GRANT]`
 and the small OIL follow-ups as ONE batch. **Tier:** FULL (saved data). **(1) in part, 29 Sep 26 (`[OIL-AWARD-IS-A-GRANT]`):
 the ledger's COMMAND records are one per entry now (`lw.ledger/<id>`); its STORAGE is still one blob (`leavewar/ledger`).**
 
