@@ -7801,7 +7801,7 @@ screen:
     chart edits are unsaved, over the Tracker tab, before the session ends (D129). Each
     PERSON reopens the Tracker on their own last course, the chart they had open on
     it, and their student — kept per person on the browser, never the last
-    person’s (D376, 28 Sep 26; the chart, reading 5, from Fable's final read); the
+    person’s (D376, 28 Sep 26; the chart, reading 5, from Fable's final read — confirmed D377, 29 Sep 26); the
     chart on screen is also the course's saved chart, so a later reload of the course
     keeps it; someone new there starts on the first course. Whose place is on screen
     is re-checked every time the tab is shown, and again when an unsaved chart edit

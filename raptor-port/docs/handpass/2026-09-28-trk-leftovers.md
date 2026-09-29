@@ -272,6 +272,8 @@ left out (the full failures list in D374, the chosen student for someone new in 
 
 ## 11. His look — five minutes, on his phone
 
+**Answered 29 Sep 26, after his "merge live": "Looks good" (D377)** — both readings below stand as built.
+
 Open the Tracker on the Vercel link. Pictures first: `rewalk/lo-2b-ph-9-grade-with-future-doneon.png`,
 `rewalk/lo-2b-ph-f11-card-after-na.png`, `rewalk/lo-2a-P03-member-own-place.png`, `rewalk/fold-1-sideways-folded.png`,
 `rewalk/fold-2b-sideways-after-fit.png`.
