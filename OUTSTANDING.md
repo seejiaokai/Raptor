@@ -468,7 +468,7 @@ deliberately not bundled — it moves persisted balances again and touches ~28 t
 its own escalated session. It needs the owner's go before anything is written.** **GO GIVEN (D147, 24 Sep 26):**
 after his after-the-hunt items and BEFORE [DB-STEP], so the database stores one kind of award — **timed by D203 (26 Sep 26):
 with the `[DB-READINESS]` batch, before the tables are settled — the database step starts now, D354**; [OIL-EARNED-VS-GRANTED]
-folds in (its label is still his figure — ask him when it comes); then the small OIL follow-ups as one batch.
+folds in (its label is still his figure — ask him when it comes — ANSWERED D400, 29 Sep 26: "earned" and "awarded" shown apart); then the small OIL follow-ups as one batch.
 
 After his two rulings an award now: flags nothing, stands nobody down from flying, counts nobody on
 the duty manning, is never touched by the published schedule, and adds to the OIL balance. That is
@@ -498,6 +498,8 @@ which it is, so a split needs no guessing. Explained to him 29 Sep 26.
 derivation — the step-4 design §7 (`specs/2026-09-19-arch-stack-4-one-absence-design.md`). Decide both together.
 
 ### [OIL-EARNED-VS-GRANTED] The tracker calls an award "earned" (Fable, 21 Sep 26)
+**ANSWERED 29 Sep 26 — D400: "earned" is only what the app credited itself; every hand award, grid or tracker, reads
+"awarded". Built with [OIL-AWARD-IS-A-GRANT].** The text below is the question as it stood.
 **Small, and it is the OWNER'S FIGURE to change, which is why it was not folded into
 [OIL-AWARD-ADD] silently.**
 

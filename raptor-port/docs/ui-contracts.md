@@ -7615,6 +7615,12 @@ its label-and-number line, where `.csub` already puts a caption (`grantsFor`,
 `CounterSheet.tsx`, `data-testid="breakdown-grants"`). Outside the row it became
 a flex sibling and squeezed in beside the number it explains.
 
+**EARNED AND AWARDED ARE SHOWN APART (owner, D400, 29 Sep 26) — NOT BUILT YET, built by `[OIL-AWARD-IS-A-GRANT]`.**
+OIL's "earned" (the tracker's summary; the breakdown's "earned by weekend/PH work") will count ONLY what the app
+credited itself — the published schedule or an accepted duty input — and every OIL an admin gives by hand, typed on
+the war grid or credited from the tracker, reads "awarded". Today a hand award typed on the grid counts under
+"earned" (it is stored beside the automatic credits), so one worked Saturday with a three-day award reads "earned 4".
+
 **After Save**: the bar closes, the selection clears, each changed box flashes
 once (the drawer's existing `lines.top` flash — free confirmation), and one Undo
 takes the whole batch back. The closed column does not switch figures; the drag
