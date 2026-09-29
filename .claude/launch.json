@@ -165,6 +165,21 @@
         "--strictPort"
       ],
       "port": 4185
+    },
+    {
+      "name": "raptor-daylock",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "--prefix",
+        "raptor-port",
+        "vite",
+        "preview",
+        "raptor-port",
+        "--port",
+        "4187",
+        "--strictPort"
+      ],
+      "port": 4187
     }
   ]
 }

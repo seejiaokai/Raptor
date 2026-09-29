@@ -1602,3 +1602,25 @@ resolved statuses always carry their resolution date
 **Suggested improvement:** In the walk step, before treating a FAIL as a finding: (1) confirm from the seed or the page what the target day really holds; (2) for a phone run, confirm the surface's phone route (menus, folded panels) — take one picture at the failing step. Record script mistakes on the evidence sheet as such.
 
 **Principle:** A failing assertion is a claim about the world the script believes in; check that world before blaming the app.
+
+### Observation 355: A design job for the owner needs its "why now, and what you'll get" said before the work starts
+
+**Status:** OPEN
+**Date:** 29 Sep 26
+**Session context:** `[DB-SYNC-MODEL]` — the day-lock mock-up and data-model §9, started from a one-line opening prompt
+**Skill:** session-handoff (the opening line it writes) · plain-language rule
+**Type:** internal
+**Phase/Area:** the start of a job handed over from an earlier chat
+
+**Issue:** The job started straight into reading and picture-taking. Within the first half hour the owner asked three
+questions that one opening paragraph would have answered: "is this the step before the database?", "what is the lock
+controls?", "should we design the lock when it's in the database?" — each while the agent was mid-work. The handoff's
+opening line named the job by its backlog id and its three steps, but not why it had to happen now (the lock decides the
+tables' shape) or what he would get (a page of pictures and six questions; nothing in the app changes).
+
+**Suggested improvement:** when a chat starts a job from a handoff, its first message to him says in three plain lines:
+what the job is in his words, why it is due now, and what he will get and when. The session-handoff skill's opening line
+could carry the "why now" so the next chat has it to repeat.
+
+**Principle:** A non-technical owner judges a job by its purpose and its output; state both before starting, or he will
+ask mid-work and the answers arrive piecemeal.

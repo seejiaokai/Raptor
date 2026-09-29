@@ -1,0 +1,137 @@
+<title>Taking a Day to Edit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+:root{
+  --bg:#f3f5f8; --panel:#ffffff; --ink:#18202b; --ink-2:#4a5566; --ink-3:#7a8597; --edge:#d8dee7;
+  --accent:#1a8fb3; --accent-soft:#e1f2f8; --ask:#b36b12; --ask-soft:#fbefdd;
+  --shot:#0d1117;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0e141c; --panel:#151d28; --ink:#e7edf5; --ink-2:#aab6c6; --ink-3:#7f8ba0; --edge:#26324a;
+    --accent:#4cc3e6; --accent-soft:#12303c; --ask:#f0b25a; --ask-soft:#3a2a12; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0e141c; --panel:#151d28; --ink:#e7edf5; --ink-2:#aab6c6; --ink-3:#7f8ba0; --edge:#26324a;
+  --accent:#4cc3e6; --accent-soft:#12303c; --ask:#f0b25a; --ask-soft:#3a2a12; color-scheme:dark;
+}
+body{background:var(--bg);color:var(--ink);font:15px/1.55 "IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif}
+.wrap{max-width:1180px;margin:0 auto;padding-inline:16px;padding-block:28px 64px;display:flex;flex-direction:column;gap:28px}
+h1{font-size:28px;line-height:1.2;margin:0;text-wrap:balance}
+h2{font-size:19px;margin:0;text-wrap:balance}
+p{margin:0;max-width:68ch;color:var(--ink-2)}
+.lede{display:flex;flex-direction:column;gap:10px}
+.eyebrow{font:500 12px "IBM Plex Mono",ui-monospace,monospace;letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+.quote{border-left:3px solid var(--accent);padding:6px 0 6px 12px;color:var(--ink);font-style:italic;max-width:68ch}
+.reads{background:var(--panel);border:1px solid var(--edge);border-radius:10px;padding:16px 18px;display:flex;flex-direction:column;gap:8px}
+.reads ol{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px;color:var(--ink-2);max-width:80ch}
+.reads b{color:var(--ink)}
+section.page{display:flex;flex-direction:column;gap:12px;border-top:1px solid var(--edge);padding-top:20px}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.pair.phone{grid-template-columns:repeat(2,minmax(0,300px))}
+.one{display:grid;grid-template-columns:1fr}
+.one.half{max-width:760px}
+figure{margin:0;display:flex;flex-direction:column;gap:6px;min-width:0}
+figcaption{font:500 12px "IBM Plex Mono",ui-monospace,monospace;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3)}
+figcaption.after{color:var(--accent)}
+figure a{display:block;background:var(--shot);border:1px solid var(--edge);border-radius:8px;overflow:hidden}
+figure img{display:block;width:100%;height:auto}
+.note{font-size:14px;color:var(--ink-2);max-width:80ch}
+.asks{background:var(--ask-soft);border:1px solid var(--ask);border-radius:10px;padding:16px 18px;display:flex;flex-direction:column;gap:8px}
+.asks h2{color:var(--ask)}
+.asks ol{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px;max-width:80ch}
+.tag{display:inline-block;font:500 11px "IBM Plex Mono",ui-monospace,monospace;letter-spacing:.06em;padding:1px 6px;border-radius:4px;background:var(--accent-soft);color:var(--accent);margin-left:6px;vertical-align:2px}
+@media (max-width:760px){.pair{grid-template-columns:1fr}.pair.phone{grid-template-columns:repeat(2,minmax(0,1fr))}h1{font-size:23px}}
+a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+</style>
+
+<div class="wrap">
+  <header class="lede">
+    <div class="eyebrow">Mock-up · D355, D356 · 29 Sep 26 · version 1 · for [DB-SYNC-MODEL] — nothing here is built; it comes with the database</div>
+    <h1>Taking a day to edit</h1>
+    <p class="quote">"If a scheduler wants to edit a schedule for that particular day they have click edit for that day. This will block any other scheduler from editing … and the other scheduler can also see who is editing. With the callsign - editing." · "Lock by day" · "30 minutes if the scheduler just leaves that page on idle … yes an admin should be able to take over" · "A yes · B yes · C yes"</p>
+    <p>These are pictures of the real app with the lock drawn into its own look. Saber is you. Ranger stands in for a second scheduler. Tap any picture to open it full size.</p>
+  </header>
+
+  <div class="reads">
+    <h2>What I read into your answers</h2>
+    <ol>
+      <li><b>You edit a day by taking it.</b> Press Edit on the day, or pick several days at once. While you hold it, other schedulers see "Saber – editing" and can only read it.</li>
+      <li><b>Nothing to save.</b> Every change is saved as you make it. The day still stays unofficial until you publish it, as today. <b>Done editing</b> gives the day back.</li>
+      <li><b>Idle means no change on that day for 30 minutes.</b> Looking at it does not count. You get a warning at 25. A phone that dies or loses signal frees the day after the 30 minutes.</li>
+      <li><b>An admin can take a day over.</b> Today every scheduler is an admin, so any scheduler can. It asks first, the holder is told, and the change history keeps it.</li>
+      <li><b>Other people&#39;s changes arrive by themselves every 30 seconds.</b> Fast sync makes it every second, and Refresh now is there as a backup.</li>
+    </ol>
+  </div>
+
+  <section class="page">
+    <h2>The week, while you hold Monday and Ranger holds Tuesday <span class="tag">D355</span></h2>
+    <p class="note">Each day carries a strip under its sign-off. <b>Teal: you hold it</b>, saved as you go, with Done editing to free it. <b>Amber: someone else holds it</b>, "Ranger – editing", read only for you and faded, with when Ranger last changed something. An admin also sees Take over.</p>
+    <div class="one"><figure><figcaption class="after">Desktop</figcaption><a href="img/day-lock/d1-week.jpg" target="_blank" rel="noopener"><img src="img/day-lock/d1-week.jpg" alt="Edit Schedule on a desktop: Monday with a teal strip, You are editing, saved as you go, Done editing; Tuesday with an amber strip, Ranger – editing, read only, last change 4 min ago, Take over" loading="lazy"></a></figure></div>
+    <div class="pair phone"><figure><figcaption class="after">Phone · Monday, yours</figcaption><a href="img/day-lock/p1-mine.jpg" target="_blank" rel="noopener"><img src="img/day-lock/p1-mine.jpg" alt="Phone, Monday with the teal strip You are editing and Done editing" loading="lazy"></a></figure><figure><figcaption class="after">Phone · Tuesday, Ranger&#39;s</figcaption><a href="img/day-lock/p2-other.jpg" target="_blank" rel="noopener"><img src="img/day-lock/p2-other.jpg" alt="Phone, Tuesday with the amber strip Ranger – editing, read only, Take over" loading="lazy"></a></figure></div>
+  </section>
+
+  <section class="page">
+    <h2>Taking a day, or several <span class="tag">D355</span></h2>
+    <p class="note">A day no one holds says so, with <b>✎ Edit Monday</b>. To take several at once, <b>✎ Edit days…</b> in the row under the top bar lists the week: tick the free ones, then Edit. A day someone else holds is shown and cannot be ticked. On a phone the button reads <b>✎ Days</b>.</p>
+    <div class="one"><figure><figcaption class="after">Desktop · no one editing</figcaption><a href="img/day-lock/d2-free.jpg" target="_blank" rel="noopener"><img src="img/day-lock/d2-free.jpg" alt="Edit Schedule with Monday and Tuesday free: No one is editing Monday, Edit Monday; the new Edit days button in the filters row" loading="lazy"></a></figure></div>
+    <div class="one"><figure><figcaption class="after">Desktop · Edit days…</figcaption><a href="img/day-lock/d3-editdays.jpg" target="_blank" rel="noopener"><img src="img/day-lock/d3-editdays.jpg" alt="The Edit which days list: Mon 13 you, Tue 14 Ranger – editing, Wed 15 and Thu 16 ticked, the rest free; Done editing all mine, Edit 2 days" loading="lazy"></a></figure></div>
+    <div class="pair phone"><figure><figcaption class="after">Phone · ✎ Days</figcaption><a href="img/day-lock/p3-editdays.jpg" target="_blank" rel="noopener"><img src="img/day-lock/p3-editdays.jpg" alt="Phone: the Edit which days list under the Days button" loading="lazy"></a></figure></div>
+  </section>
+
+  <section class="page">
+    <h2>The warning at 25 minutes <span class="tag">D356</span></h2>
+    <p class="note">Only the holder sees it, and only after <b>25 minutes with no change on that day</b>. Looking does not count. <b>Keep editing</b> starts the 30 minutes again; <b>Done editing</b> frees the day now. If nobody answers, the day frees itself at 30 minutes. Closing the page or signing out frees it at once.</p>
+    <div class="one half"><figure><figcaption class="after">Desktop</figcaption><a href="img/day-lock/d4-warn.jpg" target="_blank" rel="noopener"><img src="img/day-lock/d4-warn.jpg" alt="The warning: Still editing Monday? No change for 25 minutes; in 5 minutes it frees itself; everything is saved; Done editing, Keep editing" loading="lazy"></a></figure></div>
+    <div class="pair phone"><figure><figcaption class="after">Phone</figcaption><a href="img/day-lock/p4-warn.jpg" target="_blank" rel="noopener"><img src="img/day-lock/p4-warn.jpg" alt="The same warning on a phone" loading="lazy"></a></figure></div>
+  </section>
+
+  <section class="page">
+    <h2>An admin takes a day over <span class="tag">D355</span></h2>
+    <p class="note">Take over asks first and says how long ago the holder last changed something. <b>Nothing the holder did is lost</b>: it was saved as they went. The holder&#39;s screen turns read only and tells them who took the day. The change history keeps a line for it.</p>
+    <div class="one half"><figure><figcaption class="after">Desktop · the admin asks</figcaption><a href="img/day-lock/d5-takeover.jpg" target="_blank" rel="noopener"><img src="img/day-lock/d5-takeover.jpg" alt="Take over Tuesday from Ranger? Ranger took Tuesday at 09:12, last change 4 minutes ago; everything saved; Ranger told; the change history records it; Cancel, Take over" loading="lazy"></a></figure></div>
+    <div class="pair phone"><figure><figcaption class="after">Phone · what the holder sees</figcaption><a href="img/day-lock/p5-takenover.jpg" target="_blank" rel="noopener"><img src="img/day-lock/p5-takenover.jpg" alt="On the holder&#39;s phone: Saber has taken over Tuesday; your changes up to 09:31 are saved; Tuesday is read only for you now; OK" loading="lazy"></a></figure></div>
+  </section>
+
+  <section class="page">
+    <h2>The scheduler board <span class="tag">D355</span></h2>
+    <p class="note">The same strip sits at the top of the board, for the day on screen. Stepping to another day on the board shows that day&#39;s strip. <b>✓ Done</b> closes the board; the day stays yours until Done editing or the 30 minutes (question 3 below).</p>
+    <div class="one"><figure><figcaption class="after">Desktop · Monday, yours</figcaption><a href="img/day-lock/d7-board-mine.jpg" target="_blank" rel="noopener"><img src="img/day-lock/d7-board-mine.jpg" alt="The board on a desktop: You are editing Monday, saved as you go, Done editing, above the sign-off" loading="lazy"></a></figure></div>
+    <div class="one"><figure><figcaption class="after">Desktop · Tuesday, Ranger&#39;s</figcaption><a href="img/day-lock/d8-board-other.jpg" target="_blank" rel="noopener"><img src="img/day-lock/d8-board-other.jpg" alt="The board on Tuesday: Ranger – editing, read only, Take over; the day faded" loading="lazy"></a></figure></div>
+    <div class="pair phone"><figure><figcaption class="after">Phone · yours</figcaption><a href="img/day-lock/p7-board-mine.jpg" target="_blank" rel="noopener"><img src="img/day-lock/p7-board-mine.jpg" alt="The board on a phone with the teal strip" loading="lazy"></a></figure><figure><figcaption class="after">Phone · Ranger&#39;s</figcaption><a href="img/day-lock/p8-board-other.jpg" target="_blank" rel="noopener"><img src="img/day-lock/p8-board-other.jpg" alt="The board on a phone with the amber strip" loading="lazy"></a></figure></div>
+  </section>
+
+  <section class="page">
+    <h2>Seeing other people&#39;s changes <span class="tag">D356</span></h2>
+    <p class="note">Other people&#39;s changes arrive by themselves <b>every 30 seconds</b> while the page is on screen, and straight away when you come back to it. The Sync chip reads "Sync · 30 s". Tapping it opens a small menu: when it last checked, <b>Refresh now</b>, and the <b>Fast sync</b> switch for publishing or a meeting (every second).</p>
+    <div class="pair"><figure><figcaption class="after">Desktop · the Sync menu</figcaption><a href="img/day-lock/d6-sync.jpg" target="_blank" rel="noopener"><img src="img/day-lock/d6-sync.jpg" alt="The Sync menu: Up to date, checked 12 s ago; Refresh now; Fast sync every second, for publishing or a meeting" loading="lazy"></a></figure></div>
+    <div class="pair phone"><figure><figcaption class="after">Phone · the Sync menu</figcaption><a href="img/day-lock/p6-sync.jpg" target="_blank" rel="noopener"><img src="img/day-lock/p6-sync.jpg" alt="The same Sync menu on a phone, from the dot in the top bar" loading="lazy"></a></figure></div>
+  </section>
+
+  <div class="reads">
+    <h2>What happens behind it (for the database design)</h2>
+    <ol>
+      <li><b>The schedule is saved one day at a time.</b> Today a whole week is saved as one piece. If Saber held Monday and Ranger held Tuesday, their saves would overwrite each other. So the IT team&#39;s tables keep each day as its own piece, and the lock sits on the day.</li>
+      <li><b>A member&#39;s input still lands on a held day.</b> A leave filed for Monday while Saber holds Monday goes in as it does today (on a published day, as a pending change). Saber sees it arrive within 30 seconds. The lock is only between schedulers.</li>
+      <li><b>Publishing a day needs the day free or yours.</b> If Ranger holds Tuesday, Publish day on Tuesday says "Ranger is editing Tuesday".</li>
+      <li><b>One change that touches two days needs both.</b> Moving a man from Monday to Tuesday, or loading a template onto two days, asks you to take the other day first, if it is free.</li>
+      <li><b>The safety check stays underneath.</b> If two saves ever meet on the same day, the second one is refused and reloaded, never silently lost.</li>
+    </ol>
+  </div>
+
+  <div class="asks">
+    <h2>Your answers</h2>
+    <ol>
+      <li><b>Approve as drawn</b>, or name what to change.</li>
+      <li><b>Tapping a free day without pressing Edit:</b> should it ask "Edit Monday?" with one button, or do nothing until you press Edit? I recommend the ask. Otherwise a drag on a free day just does nothing, and it looks broken.</li>
+      <li><b>The board&#39;s ✓ Done:</b> should it only close the board (the day stays yours until Done editing or the 30 minutes), or close the board and free the day too? I recommend <b>close only</b>. People move between the board and the week all the time, and freeing the day at every close would mean taking it again each time.</li>
+      <li><b>Undo after you have given a day back:</b> if the day is free, Undo takes it again by itself and undoes; if someone else holds it, Undo says who. I recommend this. The other choice is that Done editing clears that day from your Undo.</li>
+      <li><b>Everywhere else (Inputs, the Leave War, Quals, the Tracker): no lock.</b> If two people change the same thing at the same moment, the second is told "Ranger changed this a moment ago" and shown the newer version, to do again. I recommend this: these are small records, and a clash is rare.</li>
+      <li><b>The Sync chip opens a menu</b> instead of switching fast sync on at one tap. That is one tap more for fast sync, but it gives Refresh now a place, on a phone too. I recommend it.</li>
+    </ol>
+  </div>
+</div>

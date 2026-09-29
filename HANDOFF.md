@@ -15,6 +15,19 @@ the later merge keeps both (D78).
 
 ## Now
 
+<!-- now:claude/day-lock-mockup-data-model-493d27 -->
+### `claude/day-lock-mockup-data-model-493d27` — `[DB-SYNC-MODEL]`: the day-lock mock-up and `data-model.md` §9 done, the red team running — documents only — written 29 Sep 26 — verify before use
+- **Done:** the mock-up `raptor-port/docs/mock/day-lock.html` (Artifact "Taking a Day to Edit"), made by
+  `raptor-port/scripts/handpass/mk-day-lock.mjs` against the preview on port 4187 (`raptor-daylock` in `.claude/launch.json`);
+  `data-model.md` §9 the day lock (rules 1–10, `DayLock`), §3 a week stored as a week row plus one row per day, §11 note,
+  §12 questions 8–9; the old text in `raptor-port/docs/archive/data-model-2026-09-29.md`; `handover-dataverse.md` q6.
+- **Running:** the red team, Fable and Astra, from `raptor-port/docs/superpowers/briefs/2026-09-29-day-lock-redteam.md`.
+- **Waiting on him:** the mock-up's six screen questions (none changes the tables). His questions this chat, answered in
+  chat: this is a before-the-tables job; the OIL award fix is live (its ledger's saving in small pieces is `[DB-READINESS]`);
+  design now, build with the database.
+- **Rulings:** none new so far; this chat's range D430–D439.
+<!-- /now -->
+
 <!-- now:claude/itflow-update-on-his-word -->
 ### `claude/itflow-update-on-his-word` — the OIL award chat's last word: `[OIL-AWARD-IS-A-GRANT]` is LIVE (PR #469, merged 29 Sep 26 on his "merge live"); this notes-only follow-up (D403) waits for his own "merge live" — written 29 Sep 26 — verify before use
 - **Live:** every hand OIL award is one ledger entry drawn on the grid on its date; "earned" and "awarded" apart (D400–D402).

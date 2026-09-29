@@ -55,7 +55,7 @@ schedule in section 6.
 | One date format | ISO 8601 throughout: `yyyy-mm-dd` for a date, `yyyy-mm-ddThh:mm:ssZ` for an instant, UTC. The three conventions in the app today (`'Jul 13'` display strings, a 0–6 day index, minutes-from-midnight) stay inside the app; the storage door converts on the way in and out. Clock times inside a schedule day stay `HH:MM` strings — they are a time-of-day on a known date, not an instant. |
 | Soft delete where history matters | `deletedBy`/`deletedAt` beside the tombstone on Person, Enrolment, Attempt, Input, Amendment, Attachment, LeaveBid — the tables the app can un-delete (undo) or must keep for history. `Person` is **never hard-deleted**, even after the retention window. Hard delete after the window is allowed only for rows with no history value (display preferences, draft rows never published). |
 | Names are attributes, ids are identity | `Person.callsign`, `Course.name`, `Syllabus.name`, `Enrolment.studentName` are ordinary columns that can be renamed or masked without touching a foreign key. The colon guard shipped on the branch stays until stage 2 has moved the Tracker off name keys; after that it is a display rule only. |
-| JSON columns, deliberately | A shape the app always reads and writes as one unit may live in a single JSON column: a week snapshot, a chart layout's geometry, an aircraft's stores options, a leave period's day/band definitions. **Normalise when something outside the app must query inside the shape** — a report, a Power BI view, a per-row permission, or two people editing different rows of it at once. That last case is why `ScheduleWeek` normalises at stage 2 and `Layout` does not. |
+| JSON columns, deliberately | A shape the app always reads and writes as one unit may live in a single JSON column: a day's snapshot (a week's, before the day lock — D355), a chart layout's geometry, an aircraft's stores options, a leave period's day/band definitions. **Normalise when something outside the app must query inside the shape** — a report, a Power BI view, a per-row permission, or two people editing different rows of it at once. That last case is why the schedule is stored a row per day from stage 1 (D355, the day lock) and normalises into rows at stage 2, and `Layout` does not. |
 
 ## 3. Entity catalogue
 
@@ -322,30 +322,48 @@ their last syllabus — the relationship does it.
 
 ### ScheduleWeek
 
-Owner: **Scheduler**. One week of the flying programme. **Stage 1: a
-whole-record JSON snapshot. Stage 2: the parent of the row tables below.**
+Owner: **Scheduler**. One week of the flying programme. **Stage 1 (29 Sep 26, for the day lock — D355, section 9): a
+small week row, plus one `ScheduleDay` row per day holding that day as a JSON snapshot. Stage 2: the parent of the row
+tables below.** A day, not the week, is what a scheduler takes and what the store saves, so two schedulers on two days
+of one week never write the same row.
 
 | Field | Type | Req | Meaning |
 |---|---|---|---|
 | `weekStart` | date | yes | the Monday, ISO. Unique |
-| `snapshot` | JSON | stage 1 | exactly what `weekStashSnap()` serialises today — the persisted week record (`state/store.ts`, filed by `state/persist.ts`): `d` (the seven days), the `SCHED` fields under their short names, `wo` (muted warnings) and `un` (content keys of inputs a scheduler removed on this week). **Not** the inputs or the planning layer: those are their own records today (`inputs/all`, `plan/all`) and their own tables here. Undo's `histSnap()` is the wider record that also carries them; it is never stored |
-| `mutedWarnings` | string[] | no | `wo` — promoted out of the snapshot at stage 2 |
-| `removedInputKeys` | string[] | no | `un` — promoted out of the snapshot at stage 2, as `Input` lookups |
-| `originals` | JSON | stage 1 | `SCHED.orig` — each day as first published, keyed by day index. Moves to `ScheduleDay.original` at stage 2 |
-| `dayState` | JSON | stage 1 | per day index: `approved` (`dayOK`), `shownAmendmentId` (`cur` — null for `orig`), and the four sign-off slots. Moves to `ScheduleDay` + `Signoff` rows at stage 2 |
-| `planningLayer` | JSON | no | `PLANPUCKS` + `DAYRMK` for this week's dates, keyed by ISO date; own rows at stage 2. Today one global record (`plan/all`) — the migration splits it by week |
+| `formatStamps` | JSON | yes | the week-wide format versions the persisted record carries today (`v` — `SCHED.ridV`, `am` — `SCHED.amV`): written when the week is created and by a format upgrade, **never by an edit to a day** |
 | `ownedBy` | ref User | yes | (new) who created the week — needed before incoming sync (section 7) |
-| `editingBy`, `leaseUntil` | ref User / datetime | no | (new, stage 1) the whole-record edit lease: who holds the week open and until when (section 9) |
 
-Relationships: 1–n `ScheduleDay` (stage 2), `Amendment`, `Signoff`.
+**The rule that makes the split work:** nothing a scheduler does while holding a day writes the week row. Every other
+field of today's persisted week record (`weekStashSnap()`, `state/store.ts`) belongs to one day and moves to that
+day's row: the day itself (`d[di]`); every `SCHED` map keyed by day index (`ok`, `sg`, `sb`, `o`, `cv`, `dr`, `cd`,
+`rt`, `cr`); every map keyed by slot key, split by the day the key names (`c`, `p`, `ad` — `keyDay()`); the muted
+warnings (`wo`) and the removed-input keys (`un`), split by the day each names; the planning layer (`PLANPUCKS`,
+`DAYRMK`) by date. The amendments (`a` — `SCHED.als`) are their own `Amendment` rows already. `SCHED.al` (a week
+counter the per-day numbering no longer reads) is dropped. **At the build, a test proves the split:** a week record
+split into its rows and joined back is byte-identical, and a key or field that names no single day fails it.
+
+Relationships: 1–n `ScheduleDay`, `Amendment`, `Signoff`.
 From today: `raptor:weeks/<dd-mm-yyyy>` — **already persisted**: the
 per-week stash is hydrated from and written to the whiteboard on every
 history step (`state/persist.ts`), so a week survives a reload today. The
 loaded week is filed only once it has changed since load (a pristine seed
 week is never written).
-App change: none at stage 1 — the app already builds this exact record. At
-stage 2 the snapshot column empties as the rows take over.
+App change: the row fan-out backend (section 6) splits the week record into the week row and seven day rows on `put`
+and joins them on `loadAll`, the same way it splits `people/all`; the app above it keeps building one week record.
 
+### ScheduleDay at stage 1, and DayLock
+
+**`ScheduleDay` (stage 1):** `weekId` (ref ScheduleWeek), `dayIndex` 0–6, `date`, and `snapshot` JSON — the day and
+every field of the week record that belongs to it (above). Unique on (`weekId`, `dayIndex`). The unit of the day lock
+and of every scheduler write (section 9). At stage 2 the same row gains the columns of the ScheduleRow family table
+below and its snapshot empties, as the week's did in the earlier plan. **Size:** a Dataverse multi-line text column
+holds about a million characters; a day of the demo week is far below it — to be measured on the squadron's busiest
+real day before the tables settle.
+
+**`DayLock`:** one row per `ScheduleDay` — who holds the day, since when, and their last change as the store's clock saw
+it. Its fields, and how a take, a release and a take-over are written, are section 9 (the day lock).
+
+*The stage-1 whole-week snapshot this entry described before 29 Sep 26 is in `docs/archive/data-model-2026-09-29.md` (replaced for the day lock, D355).*
 ### ScheduleRow family
 
 Owner: **Scheduler**. The stage-2 normalisation of a week. Every row gets a
@@ -443,7 +461,7 @@ and it is never hard-deleted — a correction is the next AL.
 | `isDeleted` | bool | yes | published history is never hard-deleted |
 
 Relationships: n–1 `ScheduleWeek`.
-From today: `SCHED.als[n]`, which also rides inside the week snapshot.
+From today: `SCHED.als[n]`, which also rides inside today's persisted week record.
 App change: split out of the snapshot at stage 1 already (the as-is map's own
 suggested first cut), so amendments can be reported on without opening a week.
 
@@ -451,7 +469,7 @@ suggested first cut), so amendments can be reported on without opening a week.
 
 Owner: **Scheduler**. One signature on one day: who signed which slot, and
 when. **A row is who/when only** — a day's approval and the version it
-shows are day-level facts and live on the day (`ScheduleWeek.dayState` at
+shows are day-level facts and live on the day (the `ScheduleDay` snapshot at
 stage 1, `ScheduleDay.approved` / `shownAmendmentId` at stage 2), not on
 four sign-off rows that would have to agree.
 
@@ -796,12 +814,12 @@ worlds' keys.
 |---|---|---|
 | `raptor:people/all` — `PEOPLE[id]` | `Person` + `QualMark` | One row per person; mint a guid and keep the old handle as `legacyKey`. Granted marks (`tf`, `sched`, `scDay`, `scNight`, `daar`, `naar`, `sxo`, `san`) become QualMark rows. `quals` is **not** migrated — it stays derived at boot |
 | `raptor:inputs/all` — `INPUTS[]` | `Input` (+ `InputAttachment`) | One row per `iid`. Convert `date`/`endDate`/`yr` to ISO at the door; resolve a literal `mod: 'now'` to the import instant. `lw` (a war id) becomes the `leaveWarId` lookup, preserved verbatim. `docId`/`docIds` become link rows |
-| `raptor:weeks/<dd-mm-yyyy>` — the `weekStashSnap()` week (`d`, the `SCHED` short fields, `wo`, `un`) | `ScheduleWeek` | Stage 1: one row, snapshot JSON as-is; `orig` copied out to `originals`, `dayOK`/`cur`/`sign` to `dayState`. Stage 2: expand into the ScheduleRow family and empty the column |
+| `raptor:weeks/<dd-mm-yyyy>` — the `weekStashSnap()` week (`d`, the `SCHED` short fields, `wo`, `un`) | `ScheduleWeek` + seven `ScheduleDay` (+ seven `DayLock`) | Stage 1 (29 Sep 26, D355): split by day — the week row keeps the format stamps, each day's row takes the day and every field that names it (section 3, ScheduleWeek, lists them); a free `DayLock` per day. Stage 2: expand each day into the ScheduleRow family and empty its snapshot. *(Before 29 Sep 26: one week row, snapshot as-is — the archive, `docs/archive/data-model-2026-09-29.md`.)* |
 | `SCHED.als[n]` (inside the week) | `Amendment` | Split out at stage 1 — already the as-is map's own recommendation |
 | `SCHED.sign` | `Signoff` | One row per (week, day, role) with a non-empty id; `''` = no row |
-| `SCHED.dayOK` / `cur` / `orig` | `ScheduleWeek.dayState` + `originals` (stage 1) → `ScheduleDay.approved` / `shownAmendmentId` / `original` (stage 2) | Day-level state, never on a sign-off row |
+| `SCHED.dayOK` / `cur` / `orig` | inside each `ScheduleDay` snapshot (stage 1, D355) → `ScheduleDay.approved` / `shownAmendmentId` / `original` (stage 2) | Day-level state, never on a sign-off row |
 | `SCHED.pending` / `changes` / `added` / `drafts` / `curDraft` | inside the snapshot (stage 1) → row `pendingSince` / `changedFrom`, `DayDraft` (stage 2) | `changes[key] = n` is the AL that issued the key; it resolves to a `changedFrom` lookup |
-| `raptor:plan/all` — `PLANPUCKS`, `DAYRMK` | `ScheduleWeek.planningLayer` | One global record today; split by the ISO `date` of each puck / remark into its week's row. JSON at stage 1; own rows at stage 2 |
+| `raptor:plan/all` — `PLANPUCKS`, `DAYRMK` | each `ScheduleDay` snapshot (stage 1, D355) | One global record today; split by the ISO `date` of each puck / remark into its day's row. JSON at stage 1; own rows at stage 2 |
 | `ELOG.rows` (the settings key `elog`, per browser) | `EditLog` | Nothing to migrate — demo data, cleared (D56); the table starts empty. Decide retention first |
 | `raptor:settings/*` — `daytpl`, `wavetpl`, `wavehide`, `wavedefault`, `dutytpl`, `cxreasons`, `lookahead`, `secdefault`, `stores`, `rules` | `Setting` | One row per key, value verbatim. **Do not write a row for a key that is on the shipped standard** — absent still means default |
 | `raptor:settings/qualcols` | `Qualification` + `Setting` | The column list becomes rows — a GUID each, `k` kept as `key` — so `QualMark` can key off the id; display flags travel with each column |
@@ -833,8 +851,8 @@ behind the existing door rather than a rewrite above it.
 
 | Stage | What lands | What it lets the squadron do | Rollback |
 |---|---|---|---|
-| **1 — whole-record JSON tables** | The tables of section 5 in their simplest form: `Person`, `Input`, `ScheduleWeek` (snapshot column), `Amendment`, `EditLog`, `Setting`, `Attachment` metadata, `LeaveWar`, `Enrolment`, `Syllabus`, `TrainingEvent`, `Layout`, `SchemaVersion`. One record in, one row out. The app's doors do not change: the **row fan-out backend** (`FanOutBackend`, a `Backend` behind the same postman) splits the three whole-collection records — `people/all`, `inputs/all`, `plan/all` — into one row per person / input / week on `put` and re-joins them on `loadAll`, so the whiteboard above it never learns the difference | One shared copy of the squadron's data instead of one per browser. Everyone sees the same roster, the same weeks, the same charts, from any machine. A real backup | Point the front end back at the browser backend; export the rows to the whole-record shapes with the same fan-out run in reverse. No data shape has changed, so nothing is lost |
-| **2 — stable row ids** | The ScheduleRow family; Tracker students re-keyed by `Enrolment.id` rather than by typed name; `Attempt` rows behind the mark summary; slot keys become derived addresses; `EditLog.rowId` starts being written. **`ScheduleWeek.snapshot` stays as a read-only shadow for one release**: the rows are the record, the column is rewritten from them on every write and compared at boot, and it is emptied only in the release after | Two people can edit different rows of the same day without overwriting each other. A renamed course or student stops moving storage keys. Progression history becomes real data, not a count | The shadow column IS the rollback: set `SchemaVersion.stage` back to 1 and the stage-1 build reads the snapshot it always did. `Attempt` rows fold back to a summary through the `ProgressionSummary` view |
+| **1 — whole-record JSON tables** | The tables of section 5 in their simplest form: `Person`, `Input`, `ScheduleWeek` with one `ScheduleDay` snapshot row and one `DayLock` per day (29 Sep 26, D355 — the day lock and the 30-second check of section 9 land with this stage), `Amendment`, `EditLog`, `Setting`, `Attachment` metadata, `LeaveWar`, `Enrolment`, `Syllabus`, `TrainingEvent`, `Layout`, `SchemaVersion`. One record in, one row out. The app's doors do not change: the **row fan-out backend** (`FanOutBackend`, a `Backend` behind the same postman) splits the three whole-collection records — `people/all`, `inputs/all`, `plan/all` — into one row per person / input / week, and each week record into its week row and seven day rows (D355), on `put` and re-joins them on `loadAll`, so the whiteboard above it never learns the difference | One shared copy of the squadron's data instead of one per browser. Everyone sees the same roster, the same weeks, the same charts, from any machine. A real backup | Point the front end back at the browser backend; export the rows to the whole-record shapes with the same fan-out run in reverse. No data shape has changed, so nothing is lost |
+| **2 — stable row ids** | The ScheduleRow family; Tracker students re-keyed by `Enrolment.id` rather than by typed name; `Attempt` rows behind the mark summary; slot keys become derived addresses; `EditLog.rowId` starts being written. **Each `ScheduleDay.snapshot` stays as a read-only shadow for one release**: the rows are the record, the column is rewritten from them on every write and compared at boot, and it is emptied only in the release after | Two people can edit different rows of the same day without overwriting each other. A renamed course or student stops moving storage keys. Progression history becomes real data, not a count | The shadow column IS the rollback: set `SchemaVersion.stage` back to 1 and the stage-1 build reads the snapshot it always did. `Attempt` rows fold back to a summary through the `ProgressionSummary` view |
 | **3 — live-ish sync** | The backend contract gains `since(changeSeq)`; the postman gains an incoming side (poll with backoff, one catch-up on return); records reach the whiteboard as per-change deltas; row ownership decides what may be reconciled away. **Dual-write for the whole stage**: every write goes to the rows *and* to the change feed's table, and a nightly job proves the feed replays to the rows | The programme updates on screen while someone else edits it. Presence rides the same poll. This is the stage the "live data updates" half of the recommendation refers to | Switch the incoming side off (a flag); the rows are complete without the feed because of the dual-write, and the stage-2 build reads them unchanged |
 | **4 — Dataverse adapter and sign-in** | One new backend passing the existing `contractTests`, plus Microsoft sign-in feeding `HOOKS.whoami()` and the `User` table | Squadron accounts, real names on every edit and sign-off, and the platform's own audit, backup and reporting | Sign-in and storage are separate flags: either can go back to the previous provider alone. `User` rows are recreated on first sign-in, so dropping them loses nothing |
 
@@ -860,7 +878,7 @@ not a bug in what ships today.
 | Rule | Requirement |
 |---|---|
 | Write-verify | A network store can ack a write that never durably landed, or lose the ack; a later retry of a lost-ack write can resurrect a stale value over a newer one. Confirm every write by version/ETag or read-back. Never report "saved" on the transport's success alone |
-| Per-row writes for the big blobs | `inputs/all`, `people/all` and `leavewar/wars` are one record each today; two people editing unrelated rows clobber each other whole-record. `LeaveWar` is the largest surface. Per-row writes (or a field-level merge) are mandatory before two people share the store |
+| Per-row writes for the big blobs | `inputs/all`, `people/all` and `leavewar/wars` are one record each today; two people editing unrelated rows clobber each other whole-record. `LeaveWar` is the largest surface. Per-row writes (or a field-level merge) are mandatory before two people share the store. **The same for a week of the programme (29 Sep 26, D355):** saved one row per day, so two schedulers on two days of one week never write the same row (section 9, the day lock) |
 | Ownership before incoming sync | Today's reconcile deletes every `weeks/*` record nothing local backs — correct for one browser, destructive against a shared store. Whole-collection ownership assumptions must be replaced by `ownedBy` / row-level rules before stage 3 |
 | Boot timeout and all-or-nothing hydrate | The boot gate awaits one load with no timeout: a hung network load blanks the app, and a partial load half-hydrates — the hydrated flag latches on one record and can re-seed the demo world over real data. Needs a timeout, a loading state, and a hydrate that is all or nothing |
 | Never seed demo data into the shared store | An empty store on first boot must stay empty. The demo roster, days and inputs are test fixtures, not a seed for the squadron's database |
@@ -951,36 +969,98 @@ can do better.
 
 | Table | Unit of write | Policy | Stage |
 |---|---|---|---|
-| `ScheduleWeek` (snapshot) | the whole week | **reject and reload**, plus the edit lease below so two schedulers rarely collide at all | 1 |
-| ScheduleRow family | one row | **row merge**: two people editing different rows of one day both land; the same row is reject-and-reload | 2 |
+| `ScheduleDay` (stage-1 snapshot) | one day (D355) | **the day lock below** — one scheduler writes a day at a time — with **reject and reload** underneath, never replaced by it | 1 |
+| `ScheduleWeek` (the week row) | the week-wide fields only | reject and reload — written when the week is created and by a format upgrade, never by an edit to a day (section 3, ScheduleWeek) | 1 |
+| `DayLock` | one day's lock | **take by version**: a take, a take-over or a release is an update sent with the version read, so two people pressing Edit on one free day cannot both win — the second is refused and shown who has it | 1 |
+| ScheduleRow family | one row | **row merge**: two people editing different rows of one day both land; the same row is reject-and-reload. Under the day lock two schedulers never share a day, so at stage 2 this matters for the writes the lock does not cover (a member's input landing, below) and for reporting, not for two schedulers | 2 |
 | `LeaveBid` | one record (by id) | **per-record last writer wins** — several records may share a person/date since [ARCH-STACK] step 4; each is one person's bid (or one credit, one notice) and one admin's decision; the row version guards the same record edited twice | 1 |
 | `Attempt`, `Enrolment` | one row | reject and reload — a mark is a fact about one attempt; `applySummary` re-reads and re-applies | 2 |
 | `Setting` | one key | reject and reload — an admin edit over an admin edit is a conversation, not a merge | 1 |
 | `Input`, `Person`, `LeavePersonProfile`, `QualMark` | one row | reject and reload | 1 |
 | `Amendment`, `Signoff` (issued) | append-only | no conflict possible: an insert with a duplicate `(weekId, number)` or `(weekId, dayIndex, role)` under the same AL is rejected outright | 1 |
 
-**The stage-1 edit lease — NARROWED 29 Sep 26 BY THE OWNER (D355): the lock is per DAY (one day or several chosen), shown to
-others as "<callsign> – editing" (read only for them), freed after 30 MINUTES idle, and an admin can take it over; what
-counts as idle, Save vs saved-as-you-go, and how others see changes are being settled in `OUTSTANDING.md`
-`[DB-SYNC-MODEL]` — SETTLED the same day (D356): idle = no change on the day by the holder for 30 minutes (a warning at
-25, "Keep editing"; closing the page or signing out frees it at once); changes save as they are made, "Done editing"
-releases the lock; others' changes arrive by themselves every 30 seconds while the page is on screen (paused in the
-background, the Sync fast mode for publishing, a manual refresh as a backup). The paragraph below (a whole week, five
-minutes) is the earlier proposal.** While a week is one record, two schedulers with
-it open would reject each other on every keystroke. `ScheduleWeek.editingBy`
-+ `leaseUntil`: opening a week for edit takes the lease (five minutes,
-renewed on activity, released on leave); a second editor sees who holds it
-and gets the week read-only until it expires; an expired lease is free to
-take. The version check stays underneath — the lease reduces conflicts, it
-does not replace the guard. The lease goes away at stage 2 with the row
-merge.
+**The stage-1 edit lease** (a whole week, five minutes — the earlier proposal) was replaced by the day lock below on 29 Sep 26 (D355, D356); its text is in `docs/archive/data-model-2026-09-29.md`.
+
+### The day lock — how schedulers share the programme (owner, D355 and D356, 29 Sep 26)
+
+**What the scheduler sees** is the mock-up `docs/mock/day-lock.html` (pictures of the real app with the lock drawn
+in, desktop and phone, Edit Schedule and the board). **Why it shapes the tables:** a day is the unit two schedulers
+must not share, so a day must be the unit the store saves. Stored as one week (the earlier stage 1), two schedulers
+holding Monday and Tuesday of the same week would write the same row and refuse each other on every change. So from
+the first shared release **the schedule is stored one row per day** (`ScheduleDay`, a JSON snapshot of the day at
+stage 1 — section 3), and the lock sits on the day. This is a product rule, not a stop-gap: the lock stays at stage 2
+and after.
+
+The rules:
+
+1. **A scheduler edits a day by taking it** — "✎ Edit <day>" on the day, or "✎ Edit days…" to take several of the
+   week's days at once. Taking several is one take per day: each free day is taken, a day someone else holds is
+   named and left, and the result says which. While one person holds a day, every other scheduler sees
+   "<callsign> – editing" on it (on Edit Schedule and on the board) and reads it only.
+2. **Everything a scheduler changes on a day needs the day:** its rows, notes, times, crew, sign-offs, a publish or an
+   amendment, a saved plan brought out, a template applied, Sort all, the warnings muted on it. **A change that
+   touches two days needs both** (a man moved from Monday to Tuesday, a template loaded onto two days): the app offers
+   to take the other day first if it is free and refuses, naming the holder, if it is not. **A day someone else holds
+   cannot be published** ("Ranger is editing Tuesday").
+3. **Saved as you go.** There is no Save button: every change is written as it is made, and the day stays an
+   unofficial working copy until it is published, as today. **"Done editing"** releases the day.
+4. **Idle is no change on that day by its holder for 30 minutes** — a change is typing, dragging, or a tap that changes
+   the day; looking, scrolling and opening menus do not count. At **25 minutes** the holder alone is warned ("Still
+   editing Monday?", **Keep editing** / **Done editing**); Keep editing starts the 30 minutes again. At 30 minutes the
+   day is free. **Closing the page or signing out frees it at once** (a best-effort release sent as the page goes; if
+   that release is lost — a dead phone, no signal — the 30 minutes free it).
+5. **An admin can take a day over.** Today every scheduler is an admin (§11), so any scheduler can. Take over asks
+   first and says when the holder last changed the day; the holder's changes are all already saved and stay; the
+   holder's screen turns read only at its next check and says "<callsign> has taken over <day>"; the change history
+   (`EditLog`) gets a line.
+6. **Time is the store's clock**, never a device's: the 30 minutes run from `DayLock.touchedAt` as the store stamped it.
+   The 25-minute warning is timed on the holder's own screen from their last change, which is close enough for a
+   warning; the release itself is judged only against the store.
+7. **Other people's changes arrive by themselves every 30 seconds** while the page is on screen — the change feed below,
+   read with `since(changeSeq)` — paused while the phone is locked or the tab is in the background, and read once
+   straight away on return. **Fast sync** (the top bar's Sync chip) reads every second, for the minutes around
+   publishing or a meeting; **Refresh now** reads at once, as a backup. The same read carries every `DayLock` change,
+   so "<callsign> – editing" appears and clears within one check. **This pulls stage 3's incoming side forward into the
+   first shared release** (section 6): the lock and the 30-second check land together. The request limit that applies
+   to each person on the squadron's licences is asked of the technical team (`OUTSTANDING.md` `[IT-QUESTIONS]`).
+8. **The version check stays underneath.** Every day write still carries the version read (section 9's contract
+   change): a day written by two people anyway — a lost release, a take-over mid-save — is refused and reloaded, never
+   silently overwritten. On Dataverse alone **the lock is advisory**: the platform refuses a stale version but cannot
+   by itself refuse a correct-version write from someone who does not hold the lock. A server-side rule (a plug-in:
+   "a `ScheduleDay` update is refused unless the caller holds its `DayLock`") makes it strict — Open question 8.
+9. **Writes the lock does not cover.** The lock is between schedulers. A member's own input (leave, a downchit, a duty),
+   a Leave War decision that files or moves an absence, and an OIL credit are written to their own tables (`Input`,
+   `LeaveBid`, `LeaveLedger`) by people who may not write the day (§11), and they still reach a day someone holds —
+   on a published day as a pending change, as today (D178). **How such a write reaches the day's stored rows is Open
+   question 9**: today the browser lands it on the day itself (an accepted input becomes a row that remembers its
+   input); in the shared store the member cannot write `ScheduleDay`. The holder sees it arrive within one check.
+10. **Everything outside the schedule has no lock** — Inputs, the Leave War, Quals and the Tracker keep the per-record
+    policy in the table above: two people changing the same record at the same moment, the second is refused, told who
+    changed it, and shown the newer one to redo. (The agent's recommendation; his answer is question 5 on the mock-up.)
+
+**The `DayLock` table.** One row per day of the programme, created with the day and never deleted.
+
+| Field | Type | Req | Meaning |
+|---|---|---|---|
+| `dayId` | ref ScheduleDay | yes | unique — one lock per day |
+| `heldBy` | ref User | no | null = free |
+| `takenAt` | datetime | no | when the holder took it (the take-over dialog says it) |
+| `touchedAt` | datetime | no | the holder's last change as the STORE's clock saw it — on Dataverse the row's own `modifiedon`, which the platform stamps whenever the holder's client touches the row: at most once a minute while changing, and on Keep editing |
+| `takenOverFrom` | ref User | no | set by a take-over, cleared at the next take; drives the holder's "taken over" message |
+
+A take is an update from free (or expired: `touchedAt` more than 30 minutes before the store's now — the time the
+store's own reply carries) to `heldBy` = me,
+sent with the version read; a release sets `heldBy` null; a take-over is an admin's update of a held row. Each is one
+small write and rides the change feed. **Still his to answer, on the mock-up (they change screens, not these tables):**
+whether a tap on a free day asks "Edit Monday?"; whether the board's ✓ Done also frees the day; Undo on a day already
+given back; no lock outside the schedule (rule 10); the Sync chip opening a menu.
 
 **The change feed.** Every table carries `changeSeq` and a tombstone
 (section 2). `since(changeSeq)` returns every row of every collection the
 caller may read with a `changeSeq` above the one given, tombstones
 included, in `changeSeq` order — so a client that was away catches up in
 one call, and a deleted row reaches it as a row, not as an absence. The
-postman's incoming side (stage 3) polls it; the Leave War's OIL pass and
+postman's incoming side polls it — every 30 seconds while the page is on screen, from the first shared release (the day lock, rule 7: D356 pulls it forward from stage 3); the Leave War's OIL pass and
 the two sync derivations replay it. On Dataverse this is change tracking
 on each table, and a tombstone is the platform's deleted-row token.
 
@@ -1040,6 +1120,11 @@ update, delete (delete is the soft delete throughout).
 | `LeavePersonProfile` | C R U D | R | — | — | — |
 | `Course`, `Syllabus`, `TrainingEvent`, `EventPrerequisite`, `Layout`, `CoursePlan`, `Enrolment`, `Attempt` | C R U D | C R U D | — | — | **everyone edits** the Tracker — owner, 7 Sep 26; since D121, 23 Sep 26, Import / Export too: admin and member have the same access |
 
+**The day lock's table (29 Sep 26, D355 — section 9):** `DayLock` follows the ScheduleWeek family's row — an admin
+takes, releases and takes over a day (every scheduler is an admin); a member and a guest read it, so "<callsign> –
+editing" shows to everyone. It gets its own row here, and in `src/state/perms.ts` with it, when the lock is built
+(`OUTSTANDING.md` `[DB-SYNC-MODEL]`) — the drift test reads every row of this table against the app.
+
 **The server enforces, the browser mirrors.** Every rule above is a
 privilege on the store (a Dataverse security role) and a check at the API's
 write path; the browser keeps its `canEditSched` / `canEditRow` / role
@@ -1074,7 +1159,10 @@ are kept for a period the squadron sets, then purged by a scheduled job;
 6. **Does the ScheduleWeek normalisation wait for a reporting need?** The
    as-is map's own advice is to normalise only when something outside the app
    must query inside a week. Multi-user editing is now that need — but the
-   team should confirm the trade against the schedule.
+   team should confirm the trade against the schedule. **Narrowed 29 Sep 26
+   (D355):** a week is stored one row per DAY from the start, for the day lock
+   (section 9); what stays open is only whether a day is split into its rows
+   (stage 2) before a report needs it.
 7. **Dataverse or a custom API in front of it** — does the front end call
    the Dataverse Web API directly from the Code App (platform roles
    enforce), or a thin API that owns the version check and the change feed?
@@ -1085,6 +1173,23 @@ are kept for a period the squadron sets, then purged by a scheduled job;
    needs it: the cross-module derivations (section 8) and the row merge at
    stage 2 are the two places a server-side step might be simpler than a
    client replaying the feed.
+8. **Can the day lock be strict? (29 Sep 26, D355.)** On Dataverse alone the
+   lock is advisory: a stale version is refused, but a correct-version
+   `ScheduleDay` write from someone who does not hold the day is not. One
+   server-side rule — a plug-in refusing a `ScheduleDay` update unless the
+   caller holds its `DayLock` — makes it strict. May we deploy it, and who
+   would? (Without it the version check still stops any silent overwrite;
+   section 9, the day lock, rule 8.)
+9. **How does a member's input reach a day someone holds? (29 Sep 26.)** Today
+   the browser lands an accepted input on the day itself — a row that
+   remembers its input — whoever filed it. In the shared store a member may
+   write his `Input` but not the day (§11). Three routes: (a) the day's rows
+   for inputs are derived on read from the `Input` table and only a
+   scheduler's change to one is stored; (b) a server-side step writes the
+   landing into the day; (c) the next scheduler to open the day writes it.
+   Our recommendation: **(a)**, because it needs no one to be online and no
+   write to a held day; it is also the most work in the app, so it is settled
+   with the team before the tables are.
 
 ## 13. Security and classification
 
