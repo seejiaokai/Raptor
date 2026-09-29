@@ -1020,7 +1020,8 @@ The rules:
 7. **Other people's changes arrive by themselves every 30 seconds** while the page is on screen — the change feed below,
    read with `since(changeSeq)` — paused while the phone is locked or the tab is in the background, and read once
    straight away on return. **Fast sync** (the top bar's Sync chip) reads every second, for the minutes around
-   publishing or a meeting; **Refresh now** reads at once, as a backup. The same read carries every `DayLock` change,
+   publishing or a meeting, **and switches itself off after 20 minutes or when the page is left, saying so (owner,
+   D452, 29 Sep 26)** — each person's daily allowance is 40,000 requests on the Power Apps per-user licence; **Refresh now** reads at once, as a backup. The same read carries every `DayLock` change,
    so "<callsign> – editing" appears and clears within one check. **This pulls stage 3's incoming side forward into the
    first shared release** (section 6): the lock and the 30-second check land together. The request limit that applies
    to each person on the squadron's licences is asked of the technical team (`OUTSTANDING.md` `[IT-QUESTIONS]`).

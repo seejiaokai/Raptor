@@ -937,7 +937,12 @@ Retry" is for network failures); his look at the words first; (3) **a safe start
 blank app, never re-seeds demo data; (4) **never seed demo data into a shared store**; (5) a stuck record never marks the whole
 app unsaved; (6) **two tabs of one browser** — each tab keeps its own copy of the store and the last save wins, so two tabs
 open at once overwrite each other's work (every record; the change history's `elog` and `seq` too — `[DRAFT-PENDING]`'s red
-team, Fable F10 / Astra DP-01, 28 Sep 26: declined there as the whole app's limit, filed here). With `[OIL-AWARD-IS-A-GRANT]`
+team, Fable F10 / Astra DP-01, 28 Sep 26: declined there as the whole app's limit, filed here). (7) **load by need** (his question, 29 Sep
+26 — "does it pull only the required data, so it is fast?"): today `loadAll()` reads every collection at start-up, fine in
+one browser; against the shared store the first screen reads only people, settings and the week on screen (with the days
+either side the crew-rest checks read), the Leave War and the Tracker read their own records when first opened, and the
+30-second check brings only what changed (`data-model.md` §8 "Per-collection lazy load", §9 the change feed). Measured
+against the fake database before the tables settle. With `[OIL-AWARD-IS-A-GRANT]`
 and the small OIL follow-ups as ONE batch. **Tier:** FULL (saved data). **(1) in part, 29 Sep 26 (`[OIL-AWARD-IS-A-GRANT]`):
 the ledger's COMMAND records are one per entry now (`lw.ledger/<id>`); its STORAGE is still one blob (`leavewar/ledger`).**
 
@@ -950,7 +955,8 @@ secrets live? can server-side rules be plug-ins, and who may deploy them? **and:
 from inside the app, or must IT assign it?** (decides whether "make Hex an admin" is one tap or an IT request). **And (D351,
 28 Sep 26): how long is the change history kept (the retention rule)?** — it decides whether Admin → Data's "Clear edit
 history…" follows that rule or goes; until then it stays as it is. **And (D356, 29 Sep 26): what request limit applies to
-each person's app on our licences?** — others' changes arrive by a small check every 30 seconds while a page is on screen. **And (29 Sep 26, `[DB-SYNC-MODEL]` — `data-model.md` §12 questions 8 and 9): the day lock must be FIRM (D450) — may the
+each person's app on our licences?** *(29 Sep 26: Microsoft's figure is 40,000 requests a person a day on the Power Apps
+per-user licence, less on lower ones — which licence do our people have? Fast sync turns itself off after 20 minutes, D452.)* — others' changes arrive by a small check every 30 seconds while a page is on screen. **And (29 Sep 26, `[DB-SYNC-MODEL]` — `data-model.md` §12 questions 8 and 9): the day lock must be FIRM (D450) — may the
 holder OWN the day's row (Dataverse ownership, no custom code), or else may we deploy a server-side rule (a plug-in)
 that refuses a day's write from someone who does not hold its lock, and who would deploy it? And how should a
 member's filed input reach a day a scheduler holds, when a member may not write the day?**
