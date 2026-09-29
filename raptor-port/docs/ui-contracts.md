@@ -7620,6 +7620,9 @@ OIL's "earned" (the tracker's summary; the breakdown's "earned by weekend/PH wor
 credited itself — the published schedule or an accepted duty input — and every OIL an admin gives by hand, typed on
 the war grid or credited from the tracker, reads "awarded". Today a hand award typed on the grid counts under
 "earned" (it is stored beside the automatic credits), so one worked Saturday with a three-day award reads "earned 4".
+**And every hand award shows on the war grid on its date, wherever it was given (owner, D402, 29 Sep 26) — NOT BUILT YET,
+same build:** a credit from the OIL tracker draws as an FO or HO box on its day like a grid award (a tap says who gave it
+and why); a date in no war shows on no cell; a correction (a negative entry) is never drawn.
 
 **After Save**: the bar closes, the selection clears, each changed box flashes
 once (the drawer's existing `lines.top` flash — free confirmation), and one Undo

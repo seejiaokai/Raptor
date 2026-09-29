@@ -479,7 +479,10 @@ seam the house rules name. [OIL-AWARD-ADD] adds a fourth reader of it rather tha
 **The shape, if it is ever done:** awards become ledger entries; the Leave War DERIVES the FO/HO
 contribution from the ledger on read, exactly the way an absence is derived from the Inputs page;
 the three cell editors become one ledger edit; a one-time conversion of stored hand-typed credits
-and of the demo seed. **Priority: after the bug hunt, and below [PUB-UNAVAIL] (closed 26 Sep 26) — it is tidiness with
+and of the demo seed. **NARROWED 29 Sep 26 BY D401: no stored award is converted (demo data, wiped — D54, D56); only
+the demo seed is rewritten; an old-shape record must still not break a load.** **D402 (29 Sep 26): every hand award
+shows on the grid on its date, wherever it was given (grid or tracker).** Plan:
+`raptor-port/docs/superpowers/plans/2026-09-29-oil-award-one-kind-plan.md`. **Priority: after the bug hunt, and below [PUB-UNAVAIL] (closed 26 Sep 26) — it is tidiness with
 a real risk attached, not a hole in the paperwork.**
 **ADDED 26 Sep 26 by `[ACCOUNTS]` (D200 (2), Astra's plan read R1-8): a hand-typed award must also keep WHO ENTERED IT
 AND WHEN** — the signed-in person (by id, drawn by his live callsign) and the time, stamped by the store from the session,
