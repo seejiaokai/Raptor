@@ -911,28 +911,25 @@ the day lock (rules 1–10, the `DayLock` table), §3 a week stored as a week ro
 note, §12 Open questions 8 (a plug-in to make the lock strict) and 9 (how a member's input reaches a held day); the old
 text moved whole to `raptor-port/docs/archive/data-model-2026-09-29.md`; `handover-dataverse.md` question 6 narrowed;
 (3) the red team, both providers — brief `raptor-port/docs/superpowers/briefs/2026-09-29-day-lock-redteam.md`.
-**Round 1 back, 29 Sep 26 — both REVISE** (verbatim: `raptor-port/docs/superpowers/briefs/2026-09-29-day-lock-redteam-reviews.md`).
-NOT YET FOLDED IN. The substance, for whoever folds it: the planning calendar must stay OUT of the day rows (its own
-tables, no lock); the fan-out and the command layer's records (`sched.book`, `sched.mutes`) must go per day too, writing
-only changed days the writer holds; `Amendment` and `Signoff` in §3 still describe the pre-per-day record (Astra: the
-tables would be built with wrong keys; the sign-off binding `signBind` has no home); the lock needs a per-take token and a
-session id (two devices of one person), a strict server check (a plug-in, or Fable's no-code route: the holder owns the
-day row), day rows created in one batch on a week's first take; cross-day writes as one changeset; the app's own
-cross-week passes (a Delete, the posting pass, the OIL clear) and member inputs need a defined path (a placement table,
-or derived on read); Dataverse change tracking is per table, so the 30-second check needs its own change log; the
-reconcile that deletes unknown weeks must go before stage 1; Undo must follow D148 per day; unsaved changes when the lock
-is lost; release on close only, never on a phone going to the background; four more mock-up states. **Also for the fold-in (from the parallel
-"one-time import vs wipe" chat, D54, D56, D120 — it stays out of `data-model.md`):** §7's row "One-time legacy import"
-contradicts the wipe (the shared store starts empty; only his Tracker charts cross, by Export → wipe → Import); §5's
-lead-in needs one line — the table is a FIELD MAP for the adapter, and no stored data crosses except the Tracker file.
-**Left for the build (with `[DB-STEP]`):** the `DayLock` row in `data-model.md` §11 and `src/state/perms.ts` together (the
-drift test reads every row); the test that a week record split by day and joined back is byte-identical; his six
-answers.
+**THE DESIGN IS DONE, 29 Sep 26 — three red-team rounds, both providers, closed at his cap** (every finding and what
+was done with it: `raptor-port/docs/superpowers/briefs/2026-09-29-day-lock-redteam-reviews.md`; his rulings on the way:
+D450 the lock firm, D451 a change takes a free day, D452 Fast sync off after 20 minutes, D453 the order, D454 the
+take-over asks first and keeps a saved plan). The design of record is `raptor-port/docs/data-model.md` §3 (a week row,
+one `ScheduleDay` row per day carrying its lock, `PlanningPuck`, `DayRemark`, the per-day `Amendment`,
+`AmendmentRetraction`, working and issued sign-offs, `TakeOverRequest`, `ScheduleInputPlacement` at stage 2), §9 (the
+day lock, rules 1–13; the `ChangeBatch` change log), §11 (who owns each table's rows) and §12 questions 8–10 (for IT).
+**Left, for the build of the lock (with `[DB-STEP]`, after `[DB-READINESS]` — D453):** his answers to the mock-up's
+questions 1, 3, 4, 5 and 6 (question 2 answered, D451); the screens listed in §9 rule 13, drawn then; the §11 rows and
+`src/state/perms.ts` for the new tables, together (the drift test reads every row — the `Amendment, Signoff` row renamed
+then); the server-side check (a plug-in and Custom APIs — IT's, §12 q8); §12 q10 before any stage-2 table.
+**The shape work it hands to `[DB-READINESS]` group A** is listed there.
 
 ### [DB-READINESS] Our side of the database, built against the fake database — before the tables are settled (D203; D354 — the step starts now; filed 26 Sep 26)
 **SPLIT (owner, D453, 29 Sep 26): GROUP A — before the IT team settles its tables — (1) saving in small pieces, (4) never
 seeding demo data, plus the design's shape work from `[DB-SYNC-MODEL]` (the schedule a day per piece, the single change
-log, no week-deleting reconcile, the planning calendar's own records); GROUP B — after the app is connected, tuned
+log, no week-deleting reconcile, the planning calendar's own records — and, from the design's red team: the command
+layer's records per day (`sched.book`, `sched.mutes`), one changeset per command, and the day's effects worked out on
+read instead of written into it — `data-model.md` §3 and §9 rule 9; settle §12 q9 with IT first); GROUP B — after the app is connected, tuned
 against the real database — (2), (3), (5), (6), (7).** The requirements are `raptor-port/docs/data-model.md` §7 (from the 9 Sep 26 stress test; pinned as GAP tests in
 `raptor-port/src/storage/dbreadiness.test.ts`). Ours to build now-able, none needing Manfred's tables: (1) **saving in small
 pieces** — `inputs/all`, `people/all` and `leavewar/wars` are one record each, so two people editing different leaves

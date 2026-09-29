@@ -342,3 +342,112 @@ Fable: APPROVE WITH FIXES. Astra: REVISE. Every round-2 finding was accepted; no
 | Astra 6 — stage 2's batch size | §12 q10 (decide before the stage-2 tables); stage-1 counts written into rule 3 (Fable 4). |
 | Astra 7, Fable 2, 5 — contradictions left for IT | `AmendmentRetraction` (append-only) replaces the retraction columns; §5, §6 (stages 1 and 3), the diagram, §8, §10, §11 (the ownership-type list, and a note that the `Amendment, Signoff` row now means `IssuedSignoff` — the row itself is renamed with `perms.ts` at the build, the drift test reads it), the retention line. |
 | Fable 3, 4 | Rule 9: applied to the working copy before the pending comparison; the Delete's planning gaps named. Rule 1: "Edit days…" is one command per day. |
+
+
+## Round 3 (the last) — Fable 5.1
+
+**Fable — round 3 (the last), the day lock after round 2's fixes (`[DB-SYNC-MODEL]`, D450–D454), 29 Sep 26.** Read only; nothing changed. Read: the diff since round 2's fold-in began, §3 ScheduleDay and `ScheduleInputPlacement`, Amendment / `AmendmentRetraction`, §9 rules 1–13 with `TakeOverRequest` and the change log, §11's two notes, §12 q8–10, D454's full row.
+
+### 1. My round-2 findings
+
+1. **Ownership route cannot hand a day on** — CLOSED. §3 now says it plainly: ownership (Write and Assign at User depth, every scheduler in the free team) plus one REQUIRED server-side check for every change of holder and every save; `ShareToPreviousOwnerOnAssign` false; Referential, Assign = Cascade None; rule 8 and D450's row corrected; q8 asks IT who writes it and how a new admin joins the team.
+2. **Ownership type per table** — CLOSED. §11 lists user/team-owned vs organisation-owned; `AmendmentRetraction` (append-only, org-owned) removes the update on an append-only row.
+3. **Read-derived effects applied to the working copy; the Delete's planning gap** — CLOSED (rule 9).
+4. **Changeset limits and order** — CLOSED (rule 3: counts, fixed write order, no read in a changeset; "Edit days…" one command per day).
+5. **Stale shapes in §5/§6/§11** — CLOSED (stage 1 and 3 rows, the sign-off rows, the retention line, the diagram).
+6. **Change-log overlap** — CLOSED, and I prefer the fold-in's answer to mine: change tracking on the one `ChangeBatch` table gives a server-bounded token instead of a guessed overlap, and treating a batch as an invalidation (read final rows once, redraw once) removes the half-state risk. `items` refreshing the writer's own versions kept.
+
+D454 (ask first, one minute, "Take over anyway", a saved plan at every take-over) is folded consistently: the `TakeOverRequest` row is organisation-owned, created by an admin, answered by the holder, read by the server check, spent by the take; the frozen copy rides the take-over's own changeset. Nothing in it changes a table beyond that one.
+
+### 2. What would still make IT build a permission or a setting wrong
+
+**1. The free team must be an OWNER team with a security role that can read `ScheduleDay`, or nothing can be assigned to it. MAJOR**
+- **Evidence:** §3 ScheduleDay point 1 — "a free day is owned by the free team, of which every scheduler is a member" — says nothing about the team's kind or role. Dataverse has two kinds of team; only an owner team can own rows, and a row cannot be assigned to an owner whose role does not grant it Read on that table (the platform refuses with its "read privilege check for owner failed" error). A week's seven day rows are created owned by the free team (§3 "Created together") and every release assigns back to it — every one of those writes fails if the team was made as an access team or given no role.
+- **Fix (§3, point 1, one sentence):** "The free team is an **owner team** (not an access team), assigned a security role with Read on `ScheduleDay` at Organization depth and nothing else; every scheduler is a member of it. Membership is what lets a scheduler take a free day at User depth."
+
+**2. The server-side check must run as the system, not as the caller, and change tracking must be switched on for `ChangeBatch`. MAJOR**
+- **Evidence:** §3 point 2 has the check "change the owner" on a take-over and an idle take — a row the caller cannot write at User depth. A synchronous plug-in step runs, by default, in the calling user's context and inherits his privileges, so registered that way it is refused exactly where it is needed; the same holds for a Custom API unless its implementation impersonates the system user. And §9's change log now "reads `ChangeBatch` through Dataverse's own change tracking … keeping its delta token": change tracking is a per-table setting that is OFF on a new table; a delta read against a table without it fails outright, and the token's lifetime is the environment's change-tracking retention setting.
+- **Fix:** §3 point 2, add: "The check is registered to run under the **SYSTEM** account (the plug-in step's 'run in user's context' = SYSTEM, or the Custom API impersonating it), so it can change an owner the caller cannot; it reads the caller from the execution context for its own rules (admin, lease, session)." §9 the change log, add: "**Change tracking is enabled on `ChangeBatch`** (a table setting, off by default); the environment's change-tracking retention sets how long a token lives and is the purge age of old batches." Add both to §12 q8's list of settings IT fixes at build, beside `ShareToPreviousOwnerOnAssign` and the cascade rule.
+
+Nothing else in the fold-in would build a table, a permission or a setting wrong: the ownership list is complete for stage 1 (the stage-2 child rows fall under "everything else — organisation-owned" and the check guards them by parent day, as §3 says); `TakeOverRequest` and `AmendmentRetraction` are shaped and owned correctly; the publish check against the change-log place is sound; the counts in rule 3 hold against the code (a template and Sort all are one day each).
+
+**Verdict: APPROVE WITH FIXES** — the two sentences above, then it can go to IT. *(Both applied the same evening — §3 points 1 and 2, the change log, §12 q8.)*
+
+
+## Round 3 (the last) — Astra (Codex, gpt-5.6-sol, high)
+
+Astra 1 — **NOT CLOSED** — mandatory server enforcement is now present, but the permitted Custom API implementation remains bypassable by direct table writes, and rule 5 still measures expiry from `modifiedon` instead of `touchedAt`.
+
+Astra 2 — **NOT CLOSED** — the change-log check is neither serialized with dependency writers nor complete across every table contributing to the effective day.
+
+Astra 3 — **CLOSED** — `ScheduleInputPlacement` now preserves landed and suppressed input decisions at stage 2.
+
+Astra 4 — **CLOSED** — Undo now compares and merges stable row/field addresses rather than rejecting on the whole-day version.
+
+Astra 5 — **CLOSED** — native `ChangeBatch` change tracking, opaque tokens, invalidation semantics, token-expiry resnapshot, and the required table setting replace the unsafe time cursor.
+
+Astra 6 — **NOT CLOSED** — question 10 records the decision that must be made, but no stage-2 operation ceiling or bounded server operation has yet been selected.
+
+Astra 7 — **NOT CLOSED** — the principal amendment/sign-off contradictions are fixed, but the canonical stage, ownership, permission, and relationship catalogues remain incomplete or contradictory.
+
+1. **BLOCKER — choosing the documented Custom API option does not make the lease firm.**
+
+   **Evidence:** The model permits either “a Custom API or a synchronous plug-in” while granting the holder direct Write access ([data-model.md:385](</C:/Users/User/projects/Raptor/.claude/worktrees/day-lock-mockup-data-model-493d27/raptor-port/docs/data-model.md:385>), [data-model.md:1254](</C:/Users/User/projects/Raptor/.claude/worktrees/day-lock-mockup-data-model-493d27/raptor-port/docs/data-model.md:1254>)). A Custom API is separate logic that must be invoked; only a plug-in registered on the relevant table/message intercepts ordinary updates. [Microsoft’s Custom API documentation](https://learn.microsoft.com/en-us/power-apps/developer/data-platform/custom-api), [plug-in registration documentation](https://learn.microsoft.com/en-us/power-apps/developer/data-platform/register-plug-in).
+
+   **Scenario:** Ranger’s obsolete tab reads the current ETag and PATCHes the `ScheduleDay` directly. Because Ranger still owns it, Dataverse accepts the update without invoking a separate Custom API, bypassing `leaseId`, `sessionId`, expiry, and `touchedAt`.
+
+   **Exact fix:** remove the “or.” Either register an unavoidable synchronous plug-in on every `ScheduleDay` Update/Assign and every stage-2 child Create/Update/Delete, or remove direct Write/Assign from interactive roles and make SYSTEM-running Custom APIs the only mutation path. App roles must not receive plug-in-bypass privileges. Also change rule 5’s remaining `modifiedon` instruction ([data-model.md:1095](</C:/Users/User/projects/Raptor/.claude/worktrees/day-lock-mockup-data-model-493d27/raptor-port/docs/data-model.md:1095>)) to `touchedAt`, matching the declared column.
+
+2. **BLOCKER — publish still has a stale-dependency race.**
+
+   **Evidence:** Publish only asks whether a later `ChangeBatch` changed an Input or Person ([data-model.md:1085](</C:/Users/User/projects/Raptor/.claude/worktrees/day-lock-mockup-data-model-493d27/raptor-port/docs/data-model.md:1085>)). The effective day also derives from other records listed in rule 9, including Quals and related state ([data-model.md:1125](</C:/Users/User/projects/Raptor/.claude/worktrees/day-lock-mockup-data-model-493d27/raptor-port/docs/data-model.md:1125>)). Inference: because dependency commands append different rows, the publish query and a concurrent dependency commit have no shared conditional write to serialize them. Dataverse optimistic concurrency protects the same row, not unrelated rows. [Microsoft’s optimistic-concurrency documentation](https://learn.microsoft.com/en-us/power-apps/developer/data-platform/optimistic-concurrency), [transaction documentation](https://learn.microsoft.com/en-us/power-apps/developer/data-platform/scalable-customization-design/database-transactions).
+
+   **Scenario:** Publish checks the log and finds nothing newer. A member’s Input transaction then commits before publish commits. Publish still issues the old effective day and old sign-offs.
+
+   **Exact fix:** add a dependency fence that every relevant Input, Person, QualMark and other effective-day writer conditionally advances in its transaction. Publish must lock/compare the same fence, recompute the effective day and all four bindings server-side, then issue. A client cursor alone cannot authorize publication.
+
+3. **MAJOR — `Person` has an impossible ownership/permission combination.**
+
+   **Evidence:** Members have `U own` on `Person` ([data-model.md:1235](</C:/Users/User/projects/Raptor/.claude/worktrees/day-lock-mockup-data-model-493d27/raptor-port/docs/data-model.md:1235>)), but the ownership list makes `Person` organization-owned ([data-model.md:1266](</C:/Users/User/projects/Raptor/.claude/worktrees/day-lock-mockup-data-model-493d27/raptor-port/docs/data-model.md:1266>)). Organization-owned tables support organization-or-none access, not own-row depth. [Microsoft Dataverse security concepts](https://learn.microsoft.com/en-sg/power-platform/admin/wp-security-cds).
+
+   **Exact fix:** make `Person` user/team-owned, with ordinary people owned by their linked user and non-user rows owned by an administrative team; or retain organization ownership, remove member Update privilege, and expose a server operation that restricts the permitted self-edit fields. Decide before table creation.
+
+4. **MAJOR — `TakeOverRequest` cannot securely represent or authorize D454.**
+
+   **Evidence:** The organization-owned record contains no target holder, target lease, consumed status, or uniqueness rule ([data-model.md:1171](</C:/Users/User/projects/Raptor/.claude/worktrees/day-lock-mockup-data-model-493d27/raptor-port/docs/data-model.md:1171>)). “Admin creates; holder answers” is not expressible through ordinary privileges on an organization-owned table, and the security matrix has no explicit row for it ([data-model.md:1233](</C:/Users/User/projects/Raptor/.claude/worktrees/day-lock-mockup-data-model-493d27/raptor-port/docs/data-model.md:1233>)).
+
+   **Scenario:** Ranger is asked, releases the day, and Viper takes it. The old request does not identify Ranger’s lease, so it can be mistaken for authority to take the day from Viper. If admins receive Update, any admin can also write `handOver` or `forced` directly.
+
+   **Exact fix:** bind each request to `holderId` and `leaseId`; add an explicit active/answered/consumed state and conditional active-request uniqueness. Give app roles no direct Update. Holder answers and requester-forces only through server operations that verify identity, lease and state; takeover conditionally consumes that exact request while creating the saved plan, assigning the day, and writing the batch/history atomically.
+
+5. **MAJOR — stage 2 still has no executable transaction bound.**
+
+   **Evidence:** The unresolved choice remains an open question ([data-model.md:1346](</C:/Users/User/projects/Raptor/.claude/worktrees/day-lock-mockup-data-model-493d27/raptor-port/docs/data-model.md:1346>)). A seven-day template or Sort all can therefore still exceed Dataverse’s batch limit after the child tables are built.
+
+   **Exact fix:** before approving the stage-2 schema, select and record either a product-enforced maximum operation count—including deletes, lock touches, logs and placement rows—or one bounded server-side bulk operation/aggregate representation.
+
+6. **MAJOR — the canonical schema pass still omits newly required tables and relationships.**
+
+   **Evidence:** The stage-1 inventory omits `AmendmentRetraction` and `TakeOverRequest` ([data-model.md:919](</C:/Users/User/projects/Raptor/.claude/worktrees/day-lock-mockup-data-model-493d27/raptor-port/docs/data-model.md:919>)). The Scheduler ownership/API list omits `TakeOverRequest`, `ScheduleInputPlacement`, and `WorkingSignoff` ([data-model.md:968](</C:/Users/User/projects/Raptor/.claude/worktrees/day-lock-mockup-data-model-493d27/raptor-port/docs/data-model.md:968>)). The foreign-key policy likewise gives no relationship behavior for those tables ([data-model.md:1209](</C:/Users/User/projects/Raptor/.claude/worktrees/day-lock-mockup-data-model-493d27/raptor-port/docs/data-model.md:1209>)).
+
+   **Exact fix:** add every table to its stage inventory, module/API owner, explicit security row, ownership type and foreign-key/Assign behavior before handing the model to IT.
+
+**REVISE**
+
+
+
+## What was done with round 3 — and the review closed (Opus 5.5, 29 Sep 26)
+
+Fable: APPROVE WITH FIXES (both fixes applied: the free team an owner team with Read on `ScheduleDay`; the check runs
+as SYSTEM; change tracking switched on for `ChangeBatch`). Astra: REVISE. **The design review stops here** — three
+rounds, his cap on design reviews; what remains is checked by both providers' final code reads when it is built (D353,
+saved data).
+
+| Astra round 3 | Done |
+|---|---|
+| 1 — a Custom API alone is bypassable; rule 5 still said `modifiedon` | ACCEPTED: the check is a synchronous plug-in on every write to a day (no bypass) plus Custom APIs as SYSTEM for the actions a caller cannot do; rule 5 reads `touchedAt`. |
+| 2 — publish race with a dependency committed between the check and the publish | PARTLY: the check now covers quals too. The further fence is DECLINED with its reason, written in rule 3: the issued version is exactly what the four signed, and a change landing in that instant reads pending on the published day, as one filed a second later does (D177, D178) — nothing lost or issued unseen. |
+| 3 — `Person` organisation-owned yet member-editable | ACCEPTED: `Person` is user/team-owned (his `User`; a person with no sign-in by an admin team). |
+| 4 — `TakeOverRequest` not bound to a lease; writable directly | ACCEPTED: `holderId`, `leaseId`, a state, one active per day; only Custom APIs write it; the take consumes it with the saved plan and the owner change in one step. |
+| 5 — stage 2's command size | KEPT OPEN as §12 q10, marked as blocking the stage-2 tables, not stage 1's (D453: group B and stage 2 come later). |
+| 6 — inventories incomplete | ACCEPTED: §6 stage 1, §8's owner list and §10's relationships name `TakeOverRequest`, `AmendmentRetraction`, `WorkingSignoff`, `ScheduleInputPlacement`; the §11 rows come with `perms.ts` at the build (the note says so). |
