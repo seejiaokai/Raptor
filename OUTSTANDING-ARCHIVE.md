@@ -2579,3 +2579,44 @@ the one-table `eventInfo` (before D126). The D120 route (export → wipe → imp
 it only if baking a chart into the shipped data comes back. **Place:** low, after `[TRK-RETEST-NOTES]`.
 **DONE 28 Sep 26** on `claude/tracker-leftovers-f79d36`: the bake runs again from a current export (`scripts/tracker/bake-lib.mjs`, pinned by a test on a real export); evidence `raptor-port/docs/handpass/2026-09-28-trk-leftovers.md` §9.
 
+
+*Moved here 2026-09-29 by backlog-archive.mjs ([UNDO-ROSTER-SETTINGS]). Forward facts: `raptor-port/docs/undo-contract.md`.*
+
+### [UNDO-ROSTER-SETTINGS] The one Undo does not cover roster or settings edits, though his 16 Sep 26 rule says it should (found 24 Sep 26)
+Found by the amendment re-test's rule-to-test mapping (register AM39d,
+`raptor-port/docs/superpowers/specs/2026-09-24-amendment-behaviour-register.md`). His 16 Sep 26 rule, recorded in the
+command-layer design (`raptor-port/docs/superpowers/specs/2026-09-16-arch-stack-2-command-layer-design.md`): roster
+and settings edits ARE undoable — ordinary user changes, never amendments. The "never amendments" half holds; the
+"undoable" half is not built: the global undo's cutover lists only the schedule, the Leave War, inputs and plans
+(`raptor-port/src/state/undo-wire.ts`, `setCutoverModules(['sched', 'lw', 'inputs', 'plan'])`), so adding a person,
+renaming a callsign or changing a Logic setting cannot be undone. **Place:** the change-recording re-test (D147,
+second after the absence record) — it is the one undo's own subject; build it there with D148 (undo only your own
+changes). Walk it first: confirm on screen that Undo stays greyed or skips a roster / settings edit. **WALKED 28 Sep 26 (it skips them —
+`scripts/handpass/cr-base.mjs`); STARTED on `claude/change-recording-retest`. Scope narrowed by D350: adding, archiving,
+restoring, deleting a person and postings stay out (`[UNDO-POSTING-RECORD]`); everything else on Quals, Admin, the Logic
+page and the templates becomes undoable.** **BUILT 28–29 Sep 26 on `claude/change-recording-retest`** (B1–B9 of the
+plan; `undo-contract.md` §4, the register AM39d–AM39f) — closes when that branch merges.
+**Accounts (26 Sep 26, `[ACCOUNTS]`):** the accounts, the access requests and the guest switch are three more settings
+records, so they join this item: when settings are cut over to the one undo, an account restore must re-check the
+guards `[ACCOUNTS]` enforces at the write (at least one admin keeps access; an admin never changes his own account),
+or an undo could lock the squadron out.
+
+
+*Moved here 2026-09-29 by backlog-archive.mjs ([UNDO-TOPBAR]). Forward facts: `raptor-port/docs/ui-contracts.md`.*
+
+### [UNDO-TOPBAR] Every Undo / Redo pair in the top bar, laid out as Edit Schedule's — desktop and phone (D347, 28 Sep 26)
+His ruling D347 (`.claude/rules/decisions/how-we-work.md`): *"all undo and redo buttons should be at the top bar …
+standardised … Like how the edit schedule is"* · *"Review both desktop and mobile too"*. Today the pair is in the top bar
+on Edit Schedule only (`src/ui/Shell.tsx` `.tb-hist`), in the board's own bar (`src/ui/SchedBoard.tsx`), in the Leave
+War's Period row (`src/leavewar/ui/Chrome.tsx`) and in the Tracker's header (`src/tracker/components/Header.jsx`, its
+own undo); Inputs, Quals, Admin and the Logic page carry none (walked 28 Sep 26 — `scripts/handpass/cr-base.mjs` B5).
+**To do:** the readings in D347's row — a mock-up of the real app first (desktop and phone), then the build and a walk at
+both widths. **D348 (the same day):** on a phone the order is the desktop's — Undo · Redo (· the clock on Edit Schedule) ·
+the sync dot · the bell at the far right; the changes clock stays on Edit Schedule only. **APPROVED 28 Sep 26 (D349)** —
+the mock-up `raptor-port/docs/mock/undo-topbar.html` (version 4) is the design of record: the Tracker's own pair moves too;
+the board's bar gets Undo · Redo · History · Sync · the bell and ONE exit, ✓ Done (Close goes); on a phone Sort all and
+the layout switch sit behind one ⋯ in its second row. **Place:** built with the change-recording re-test, on `claude/change-recording-retest` (its plan:
+`raptor-port/docs/superpowers/plans/2026-09-28-change-recording-plan.md`). **BUILT 29 Sep 26 on that branch** (B10 —
+`ui/topbits.tsx`, the register AM39g; `ui-contracts.md` §The top bar carries the bell and the Undo / Redo pair) — closes
+when it merges.
+

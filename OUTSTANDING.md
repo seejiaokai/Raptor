@@ -48,7 +48,7 @@ said as such, never dressed up as his. One line per item, in plain words; the de
 list (13–23 Sep 26), its finished entries and the "In plain terms" block are in `OUTSTANDING-ARCHIVE.md`, moved
 whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaining).
 
-**THE DATABASE STEP STARTS NOW (D354, 29 Sep 26):** — and how it shares and locks, [DB-SYNC-MODEL] (his idea, 29 Sep 26: design now). The IT team is taking the app into Dataverse now; the order below
+**THE DATABASE STEP STARTS NOW (D354, 29 Sep 26):** — and how it shares and locks, [DB-SYNC-MODEL] (D355, D356 — the mock-up and red team left); FIRST, for the IT team: [IT-FLOW-GUIDE] (the picture-led flowchart of every journey, his ask). The IT team is taking the app into Dataverse now; the order below
 stands, its timing ("about two months away", "about a month before") is overtaken — the readiness batch and the OIL
 award fix are due before the tables are settled. What to finish before the hand-over: his answer to be recorded here.
 **His order — to the database step (D203, 26 Sep 26; D173, D147 within it):**
@@ -62,8 +62,8 @@ award fix are due before the tables are settled. What to finish before the hand-
    [S4-HUNT-REST] — **WALKED 26 Sep 26** on `claude/absence-record-d147-af6a50`; his answers to its questions (D260–D263)
    recorded, and D260–D262 BUILT and FULL-checked there 27 Sep 26 (D263 goes with [DRAFT-PENDING]); from his look, D264–D266
    (one look for the sheets, a Move on every record that can move) — [LW-MOVE-STANDARD], BUILT and MERGED 27 Sep 26
-   (PR #447; archived) — then change-recording (with [UNDO-ROSTER-SETTINGS], D148 and [UNDO-TOPBAR] — BUILT, walked and read by both
-   29 Sep 26 on `claude/change-recording-retest`; waiting on his look and "merge live"),
+   (PR #447; archived) — then change-recording (with [UNDO-ROSTER-SETTINGS], D148 and [UNDO-TOPBAR] — MERGED
+   29 Sep 26, PR #464; both archived),
    then the Leave War links LAST (with the 7 Sep phone check). Then "after the hunt" (21 Sep 26): [LW-LOCKMARK] →
    [LW-WEEKDAY-WORK] (talk to him before building any of it) — its first, the published day's unavailable list, was
    closed by the same re-test (built by [LEAVE-LATE-PUBLISHED]; archived).
@@ -346,8 +346,8 @@ here, in his order (D147): the absence record with [S4-HUNT-REST], then change-r
 defect reproduced and fixed red first (evidence `raptor-port/docs/handpass/2026-09-26-absence.md`; plan
 `raptor-port/docs/superpowers/plans/2026-09-26-absence-retest-plan.md`). Its questions for him were [ABSENCE-ASK] (all answered — D260–D263; archived); what
 it filed is [LW-ISO-DATES], [LW-MOVE-BENEATH] (built by [LW-MOVE-STANDARD]; both archived) and a line in [AMEND-SMALL-SEEN] item 6. It closes with the final code
-reads, his look and his "merge live". **Next here: change-recording** (with [UNDO-ROSTER-SETTINGS] and D148), then the
-Leave War links.
+reads, his look and his "merge live". **Next here: change-recording** (with [UNDO-ROSTER-SETTINGS] and D148 — MERGED 29 Sep 26,
+PR #464, evidence `raptor-port/docs/handpass/2026-09-28-change-recording.md`), then the Leave War links.
 **Added 24 Sep 26 (the spring clean, from `HANDOFF.md` §Open as Fable classified it):** the amendment walk includes
 unpublishing an OLDER amendment — the 11 Sep review's "BUG 1" (the day left contradictory) looks dissolved by the
 supersede-never-retract rebuild (`unpublishAL` is gone), which only a walk can confirm; and the Leave War half of
@@ -871,7 +871,7 @@ work for inputs, leave war, tracker … ideally if we can do like a google sheet
 that would be ideal."* **What exists:** `raptor-port/docs/data-model.md` §9 — a version check on every save (a stale save
 is refused and reloaded), a stage-1 edit lease per WEEK (`editingBy` + `leaseUntil`, the holder shown, others read-only,
 five minutes renewed on activity), stage-2 row merge (two schedulers on different rows of one day both land — the
-Sheets-like step), and a change feed for live updates; **ANSWERED 29 Sep 26 (D355): lock by DAY (one or several chosen); freed after 30 minutes idle; an admin can take it over** — still open: what idle means, Save vs saved-as-you-go, automatic updates vs a refresh button (his questions back: the pros and cons of each; the downside of automatic updates); the top bar's Sync pill ("Sync · slow", 1-second sync for
+Sheets-like step), and a change feed for live updates; **ANSWERED 29 Sep 26 (D355): lock by DAY (one or several chosen); freed after 30 minutes idle; an admin can take it over** **and SETTLED the same day (D356): idle = no change by the holder on that day for 30 minutes (a warning at 25; closing the page or signing out frees it); saved as you go with "Done editing"; others' changes arrive by themselves every 30 seconds while on screen (paused in the background; the Sync fast mode; a refresh button as a backup)** — left: the mock-up, §9 rewritten, the red team; the top bar's Sync pill ("Sync · slow", 1-second sync for
 publishing / meetings) is the placeholder for it. **To decide with him (design now — it shapes the tables):** the lock's
 unit (a day, or chosen days — his; the week — §9's); explicit Save vs saved-as-you-go while the lock is held ("Done
 editing" releases); what frees a forgotten lock (idle time-out; an admin's "take over"); how others see changes (a
@@ -879,6 +879,22 @@ refresh button — his; automatic every few seconds through the Sync pill; both)
 Tracker per record (a stale save refused, "Hex changed this — reload"), no lock. **Do:** a mock-up of the day lock on
 Edit Schedule and the board, desktop and phone; §9 rewritten to his answers; both reviewers red-team it (a plan, D353);
 hand it to IT with the tables. **Place:** with `[DB-READINESS]`, before the tables are settled (D354).
+
+### [IT-FLOW-GUIDE] A compact, picture-led flowchart of how the app works, screen by screen — for the IT team and the next developer (his ask, 29 Sep 26)
+His words: *"My IT wants a comprehensive flowchart with visuals but compact version on how the app works in terms of user
+interface, like if I want to do this, how does the app go through each step, what does the user have to click to get
+there. He's not asking about how the rules govern things like the functions like if I put all avail, how does the app
+calculate the number of people to that detail. It's more big picture for each function so that as this app is handed down
+to the next developer, they know what are the tests to test so that the app doesn't break. Like how the app should
+function when they read this flow chart. Think of the best way to present this, word/powerpoint etc. pictures arrows etc.
+since this chat is long we should do it on another chat."* **What it is:** for each thing a person does (sign in, file an
+input, build and publish a day, amend it, bid and decide on the Leave War, mark the Tracker, run Admin → Users …), the
+path through the screens — what he clicks, what he sees next — with real screenshots, numbered click marks and arrows,
+and for each journey the checks that prove it still works (the walk scripts under `raptor-port/scripts/handpass/` and
+the e2e specs are the raw material). NOT the rules engine's arithmetic. **Format:** to recommend at the start of its own
+chat (his memory rule: few words, real blurred-where-needed screenshots, short captions — `guides-fewer-words-more-pictures`);
+the agent's lean: a slide deck (PowerPoint) — one map slide of every journey, then one slide per journey with its
+pictures and a "what to test" box. **Place:** NEXT, in a fresh chat — the IT team is waiting (D354).
 
 ### [DB-READINESS] Our side of the database, built against the fake database — before the tables are settled (D203; D354 — the step starts now; filed 26 Sep 26)
 The requirements are `raptor-port/docs/data-model.md` §7 (from the 9 Sep 26 stress test; pinned as GAP tests in
@@ -901,7 +917,8 @@ how work moves from dev to production, and who presses it? auditing and backups 
 secrets live? can server-side rules be plug-ins, and who may deploy them? **and: can our squadron admin set a person's role
 from inside the app, or must IT assign it?** (decides whether "make Hex an admin" is one tap or an IT request). **And (D351,
 28 Sep 26): how long is the change history kept (the retention rule)?** — it decides whether Admin → Data's "Clear edit
-history…" follows that rule or goes; until then it stays as it is.
+history…" follows that rule or goes; until then it stays as it is. **And (D356, 29 Sep 26): what request limit applies to
+each person's app on our licences?** — others' changes arrive by a small check every 30 seconds while a page is on screen.
 
 ### [PEEK-ISSUED] The desktop next-week preview on View-only Sched shows next week's working copy, even for a published day — a question for him (filed 26 Sep 26)
 Noted by the sweep behind `[LEAVE-LATE-PUBLISHED]` (Astra, its plan read; carried in `[LATE-PUB-FACE-LIVE]`, archived
@@ -1015,25 +1032,6 @@ today (checked 24 Sep 26 with `git ls-files --eol`). Add them — a pattern for 
 **Place:** ride the next change that starts the full checks on his PC anyway: `.gitattributes` is not on the deploy
 workflow's docs-only skip list, so a change to it alone starts a full run (D89, D151), which a docs pass must not do.
 
-### [UNDO-ROSTER-SETTINGS] The one Undo does not cover roster or settings edits, though his 16 Sep 26 rule says it should (found 24 Sep 26)
-Found by the amendment re-test's rule-to-test mapping (register AM39d,
-`raptor-port/docs/superpowers/specs/2026-09-24-amendment-behaviour-register.md`). His 16 Sep 26 rule, recorded in the
-command-layer design (`raptor-port/docs/superpowers/specs/2026-09-16-arch-stack-2-command-layer-design.md`): roster
-and settings edits ARE undoable — ordinary user changes, never amendments. The "never amendments" half holds; the
-"undoable" half is not built: the global undo's cutover lists only the schedule, the Leave War, inputs and plans
-(`raptor-port/src/state/undo-wire.ts`, `setCutoverModules(['sched', 'lw', 'inputs', 'plan'])`), so adding a person,
-renaming a callsign or changing a Logic setting cannot be undone. **Place:** the change-recording re-test (D147,
-second after the absence record) — it is the one undo's own subject; build it there with D148 (undo only your own
-changes). Walk it first: confirm on screen that Undo stays greyed or skips a roster / settings edit. **WALKED 28 Sep 26 (it skips them —
-`scripts/handpass/cr-base.mjs`); STARTED on `claude/change-recording-retest`. Scope narrowed by D350: adding, archiving,
-restoring, deleting a person and postings stay out (`[UNDO-POSTING-RECORD]`); everything else on Quals, Admin, the Logic
-page and the templates becomes undoable.** **BUILT 28–29 Sep 26 on `claude/change-recording-retest`** (B1–B9 of the
-plan; `undo-contract.md` §4, the register AM39d–AM39f) — closes when that branch merges.
-**Accounts (26 Sep 26, `[ACCOUNTS]`):** the accounts, the access requests and the guest switch are three more settings
-records, so they join this item: when settings are cut over to the one undo, an account restore must re-check the
-guards `[ACCOUNTS]` enforces at the write (at least one admin keeps access; an admin never changes his own account),
-or an undo could lock the squadron out.
-
 ### [APP-FONTS-NOT-LOADED] The app names its fonts but never loads them — every device draws a different one (found 29 Sep 26)
 Found by the small-fixes PR's check on GitHub's Linux machines: "a flying line's callsign shows six letters whole" passed on
 the Windows PC and failed there (W6LINE cut on the phone edit week). `scheduler.css` asks for 'Inter Tight' (the body) and
@@ -1054,22 +1052,6 @@ assumed hour, in the window its count opens (D360, D361 — a "~" on the count w
 already makes its ALL AVAIL count a "?" (D360 (4)). **To do:** scope it with him first — which rows (programme, duties,
 sims, ground; the flying line's times?), where the "?" sits (the empty time box, or beside it), what a tap or hover says,
 and whether a published face prints it. LOOK tier. **Place:** low; a future job, his "as a future job I think".
-
-### [UNDO-TOPBAR] Every Undo / Redo pair in the top bar, laid out as Edit Schedule's — desktop and phone (D347, 28 Sep 26)
-His ruling D347 (`.claude/rules/decisions/how-we-work.md`): *"all undo and redo buttons should be at the top bar …
-standardised … Like how the edit schedule is"* · *"Review both desktop and mobile too"*. Today the pair is in the top bar
-on Edit Schedule only (`src/ui/Shell.tsx` `.tb-hist`), in the board's own bar (`src/ui/SchedBoard.tsx`), in the Leave
-War's Period row (`src/leavewar/ui/Chrome.tsx`) and in the Tracker's header (`src/tracker/components/Header.jsx`, its
-own undo); Inputs, Quals, Admin and the Logic page carry none (walked 28 Sep 26 — `scripts/handpass/cr-base.mjs` B5).
-**To do:** the readings in D347's row — a mock-up of the real app first (desktop and phone), then the build and a walk at
-both widths. **D348 (the same day):** on a phone the order is the desktop's — Undo · Redo (· the clock on Edit Schedule) ·
-the sync dot · the bell at the far right; the changes clock stays on Edit Schedule only. **APPROVED 28 Sep 26 (D349)** —
-the mock-up `raptor-port/docs/mock/undo-topbar.html` (version 4) is the design of record: the Tracker's own pair moves too;
-the board's bar gets Undo · Redo · History · Sync · the bell and ONE exit, ✓ Done (Close goes); on a phone Sort all and
-the layout switch sit behind one ⋯ in its second row. **Place:** built with the change-recording re-test, on `claude/change-recording-retest` (its plan:
-`raptor-port/docs/superpowers/plans/2026-09-28-change-recording-plan.md`). **BUILT 29 Sep 26 on that branch** (B10 —
-`ui/topbits.tsx`, the register AM39g; `ui-contracts.md` §The top bar carries the bell and the Undo / Redo pair) — closes
-when it merges.
 
 ### [UNDO-POSTING-RECORD] Undo for adding, archiving, restoring a person and for postings — the war's posting record (D350, 28 Sep 26)
 Left out of the change-recording build by his "4 ok" (D350). All five write the Leave War's posting record
