@@ -6,5 +6,6 @@ import { fileURLToPath } from 'node:url'
 export const WIDTH = process.argv[2] === 'phone' ? 'phone' : 'desktop'
 export const ROOT = fileURLToPath(new URL('../../', import.meta.url)).split('\\').join('/').replace(/\/$/, '')
 process.env.HP_URL = process.env.HP_URL || 'http://localhost:4173'
-process.env.HP_SHOTS = `${ROOT}/docs/img/handpass/2026-09-28-change-recording/a2/${WIDTH}`
+/* CR_REWALK=1 — the re-walk on the built change (Phase C): its own folder */
+process.env.HP_SHOTS = `${ROOT}/docs/img/handpass/2026-09-28-change-recording/${process.env.CR_REWALK ? 'a2-rewalk' : 'a2'}/${WIDTH}`
 process.env.AB_WHO = 'a2'

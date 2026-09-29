@@ -266,6 +266,21 @@ describe('B7 — Undo goes to the change’s page, and keeps the board open acro
     expect(view.CURPAGE).toBe('inputs')
     expect(INPUTS.some((r: any) => r.iid === 'iwire1')).toBe(false)
   })
+  it('a leave input undone on the Leave War stays on the war — it shows there too; undone elsewhere it opens Inputs', () => {
+    writeInputs(() => { INPUTS.push({ person: 'bane', type: 'LL', date: 'Jul 15', yr: 2026, rmk: '', iid: 'iwire3' } as any) })
+    view.setPage('leavewar')
+    expect(globalUndo().ok).toBe(true)
+    expect(view.CURPAGE).toBe('leavewar')
+    view.setPage('quals')
+    expect(globalRedo().ok).toBe(true)
+    expect(view.CURPAGE).toBe('inputs')
+  })
+  it('an input the war never shows (an appointment), undone on the Leave War, opens Inputs', () => {
+    writeInputs(() => { INPUTS.push({ person: 'bane', type: 'APPT', date: 'Jul 15', yr: 2026, rmk: '', iid: 'iwire4' } as any) })
+    view.setPage('leavewar')
+    expect(globalUndo().ok).toBe(true)
+    expect(view.CURPAGE).toBe('inputs')
+  })
   it('the "set as default order?" offer closes when a step is undone (walker A1 O5)', () => {
     writeText('dn:0.0', 'O5')
     view.setSecDefOffer(0)

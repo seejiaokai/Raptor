@@ -5,5 +5,6 @@ export const W = +(process.env.HP_W || 1440)
 export const H = +(process.env.HP_H || (W < 700 ? 844 : 900))
 export const PHONE = W < 700
 export const TAG = PHONE ? 'phone' : 'desktop'
-process.env.HP_SHOTS = 'C:/Users/User/projects/Raptor/raptor-port/docs/img/handpass/2026-09-28-change-recording/a1/' + TAG
+/* CR_REWALK=1 — the re-walk on the built change (Phase C): its own folder, so the first walk's pictures stay the defects' evidence */
+process.env.HP_SHOTS = 'C:/Users/User/projects/Raptor/raptor-port/docs/img/handpass/2026-09-28-change-recording/' + (process.env.CR_REWALK ? 'a1-rewalk/' : 'a1/') + TAG
 process.env.HP_URL ||= 'http://localhost:4173'

@@ -298,9 +298,9 @@ test('an admin files leave on the Inputs page over a pending bid: bid gone, ambe
   await expect(mark(page, P, D)).toHaveCount(0)
   await closeList(page)
 
-  // undo "OK, seen" brings the notice back; undo the filing brings the bid back
-  await undo(page)
-  await expect(mark(page, P, D)).toHaveText('!')
+  /* "OK, seen" is never an Undo step (the change-recording re-test, plan §10 — the builder's call, on his look card: it
+     records that a person READ the notice, like the other seen marks). So Undo goes past it to the filing — which
+     brings the bid back — and the notice, once seen, stays seen. Was: "undo OK seen brings the notice back". */
   await undo(page)
   await expect(mark(page, P, D)).toHaveCount(0)
   await expect(chip(page, P, D)).toHaveText('LL')
@@ -308,9 +308,6 @@ test('an admin files leave on the Inputs page over a pending bid: bid gone, ambe
   expect((await inputsOf(page, P)).filter(r => r.startsWith('LL Feb 11'))).toHaveLength(0)
   await redo(page)
   await expect(chip(page, P, D)).toHaveClass(/appr/)
-  await expect(mark(page, P, D)).toHaveText('!')
-  await redo(page)
-  await expect(mark(page, P, D)).toHaveCount(0)
 })
 
 test('the member files leave over their own bid: bid gone, a message, no notice left on the war', async ({ page }) => {

@@ -96,7 +96,7 @@ export async function viewNow(page) {
 
 /** An Undo / Redo door: 'lw' (the Leave War's Period row), 'top' (Edit Schedule's top bar), 'board' (the board's
     bar). Reads the button's words and state, presses it when it is on, and returns every toast it raised. */
-const DOOR = { lw: ['[data-testid="lw-undo"]', '[data-testid="lw-redo"]'], top: ['#undoBtn', '#redoBtn'], board: ['#sbUndo', '#sbRedo'] }
+const DOOR = { lw: ['#undoBtn', '#redoBtn'] /* the war's pair moved to the app's top bar ([UNDO-TOPBAR], D347) */, top: ['#undoBtn', '#redoBtn'], board: ['#sbUndo', '#sbRedo'] }
 export async function door(page, where, dir = 'undo', { press = true } = {}) {
   const sel = DOOR[where][dir === 'undo' ? 0 : 1]
   const b = page.locator(`${sel}:visible`).first()

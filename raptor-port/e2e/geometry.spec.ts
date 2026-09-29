@@ -2927,7 +2927,9 @@ test.describe('the phone board keeps its controls to one row', () => {
     await login(page)
     await go(page, 'editsched')
     await page.evaluate(() => (window as any).openScheduler(0))
-    await page.waitForSelector('#schedBoard .sb-actions .abtn')
+    /* the bar's FIRST button used to be the phone-only layout switch; it moved into the ⋯ menu ([UNDO-TOPBAR], D349 (3)),
+       and the first is now Templates — hidden on a phone — so wait for Undo, always drawn */
+    await page.waitForSelector('#schedBoard #sbUndo')
 
     const m = await page.evaluate(() => {
       const acts = document.querySelector('.sb-actions') as HTMLElement

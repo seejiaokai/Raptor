@@ -263,6 +263,7 @@ export function Shell() {
   const pairOn = page === 'editsched' || page === 'leavewar' || page === 'inputs' || page === 'quals' || page === 'tracker'
     || ((page === 'admin' || page === 'logic') && admin)
   const eng = page === 'tracker' ? trackerUndoEngine() : globalUndoEngine()
+  const clockNew = page === 'editsched' && admin ? weekNew() : 0
   /* the signed-in person ([ACCOUNTS], D166 (3)) — the badge names him; "View as" is gone */
   const mine = me()
   const mineCs = mine && PEOPLE[mine] ? PEOPLE[mine].cs : ''
@@ -435,7 +436,10 @@ export function Shell() {
                 title={mineCs ? `Signed in as ${mineCs}` : undefined}>{mineCs ? `${mineCs} · ` : ''}{admin ? 'Admin' : 'Member'}</span>}
         </div>
       </div>
-  ), [page, admin, mine, mineCs, canSwitch, waiting, fastSync(), uv, tuv, pairOn, eng.canUndo, eng.canRedo, eng.undoTitle, eng.redoTitle, bellLit(), bugAlert(), oilPend, accAlert])
+  /* the changes clock's number and its open state are read inside the memo, so they are its deps too (the gate found it,
+     29 Sep 26: "Mark all as seen" used to be an Undo step, and the undo version's bump was what repainted this bar — once
+     a seen mark stopped being a step, the clock kept its stale number) */
+  ), [page, admin, mine, mineCs, canSwitch, waiting, fastSync(), uv, tuv, pairOn, eng.canUndo, eng.canRedo, eng.undoTitle, eng.redoTitle, bellLit(), bugAlert(), oilPend, accAlert, clockNew, !!CHGWIN])
 
   const viewPage = useMemo(() => (
       <section className={'page' + (page === 'viewsched' ? ' on' : '')} id="page-viewsched">

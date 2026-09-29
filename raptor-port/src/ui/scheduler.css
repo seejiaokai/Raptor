@@ -392,6 +392,17 @@ img,a{-webkit-user-drag:none;user-drag:none}
 /* the .bi glyph slot: HistIcon's svg is display:block (.btnglyph), so the span
    around it must be a flex box or the icon drops below the button's baseline */
 .tb-hist .bi{display:inline-flex;align-items:center}
+/* [UNDO-TOPBAR] laptop widths (821–1499px): the pair on every page where a change is made (D347, D349) put the bar on a
+   second line at 1366 and 1440 on six pages that fitted one — the plan's rule is no page's bar taller than today. So
+   between the phone and a wide screen the pair goes icon-only, the phone's look, and the sync pill keeps its dot alone
+   on a page that carries the pair; the hover still names the step. Every page's pair looks the same (D347). Measured:
+   scripts/handpass/cr-c-barheights.mjs. */
+@media (min-width:821px) and (max-width:1499px){
+  .topbar .tb-hist .abtn.hbtn{width:34px;min-width:0;padding:0;justify-content:center}
+  .topbar .tb-hist .bl{display:none}
+  .topbar.has-undo .fastsync .synclbl{display:none}
+  .topbar.has-undo .fastsync .dot{margin:0}
+}
 /* the notification bell — an icon button beside Insights, on every page and
    both widths; glows (.on) for the current view + view-as person */
 .bellbtn{position:relative;display:inline-flex;align-items:center;justify-content:center;width:34px;height:32px;

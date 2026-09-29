@@ -37,6 +37,7 @@ import { PEOPLE } from '../engine/people'
 import { parseVerId, dayIso } from '../engine/verid'
 import { lwStore, LW_COLLS, selectWar, focusDay, bumpLwHistEpoch, restoreBlocker } from '../leavewar/state/store'
 import { restoreAbsencesOf } from '../leavewar/sync'
+import { warVisible } from '../leavewar/absences'
 
 /* the 8 collections schedStore owns (the scheduler week + inputs + plan). NOT
    `weekstash` — that is the separate weekstashStore's one collection, registered
@@ -113,6 +114,10 @@ function landingOf(entry: UndoEntry): Landing | null {
   if (fwd.some(c => weekOf(c.collection, c.id) != null && c.collection !== 'weekstash') && canEditSched()) pages.push('editsched')
   if (fwd.some(c => c.collection === 'inputs' || c.collection === 'plan' || c.collection === 'weekstash' || (c.collection === 'settings' && c.id === 'lookahead')))
     pages.push('inputs')
+  /* an absence input (leave, a downchit, CSE, OD) also shows on the Leave War: undone THERE, it stays there — the war is
+     one of the pages it lands on, last, so an undo from elsewhere still opens Inputs (step4-leavewar's ATT C cut) */
+  if (fwd.some(c => c.collection === 'inputs' && [c.before, c.after].some(v => v && typeof v === 'object' && warVisible((v as { type?: unknown }).type))))
+    pages.push('leavewar')
   const person = fwd.find(c => c.collection === 'people')
   if (person) { pages.push('quals'); then = () => focusQualsRow(person.id) }
   const ids = fwd.filter(c => c.collection === 'settings').map(c => c.id)

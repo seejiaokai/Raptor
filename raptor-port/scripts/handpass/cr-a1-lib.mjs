@@ -50,7 +50,7 @@ export async function toasts(page) {
 
 /** An Undo / Redo door — 'top' (Edit Schedule's bar) or 'board' (the board's bar). Reads it, presses it when it is on,
     returns the words it showed and every toast the press raised. */
-const DOOR = { top: ['#undoBtn', '#redoBtn'], board: ['#sbUndo', '#sbRedo'], lw: ['[data-testid="lw-undo"]', '[data-testid="lw-redo"]'] }
+const DOOR = { top: ['#undoBtn', '#redoBtn'], board: ['#sbUndo', '#sbRedo'], lw: ['#undoBtn', '#redoBtn'] /* the war's pair moved to the app's top bar ([UNDO-TOPBAR], D347) */ }
 export async function door(page, where, dir = 'undo', { press = true } = {}) {
   const sel = DOOR[where][dir === 'undo' ? 0 : 1]
   const b = page.locator(`${sel}:visible`).first()

@@ -23,4 +23,10 @@ describe('the top bar: Edit Schedule’s tint and the phone’s sync dot are two
     expect(rule.length).toBeGreaterThan(0)
     for (const r of rule) expect(r).not.toMatch(/order:/)
   })
+  it('between a phone and a wide screen the pair goes icon-only and the Sync pill keeps its dot — no bar grows a line (B10.2)', () => {
+    const block = css.match(/@media \(min-width:821px\) and \(max-width:1499px\)\{([\s\S]*?)\n\}/)
+    expect(block).not.toBe(null)
+    expect(block![1]).toMatch(/\.topbar \.tb-hist \.bl\{display:none\}/)
+    expect(block![1]).toMatch(/\.topbar\.has-undo \.fastsync \.synclbl\{display:none\}/)
+  })
 })
