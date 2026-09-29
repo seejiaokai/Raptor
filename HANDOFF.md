@@ -41,6 +41,40 @@ the later merge keeps both (D78).
 - **Next:** push → PR → the Vercel link to him → his look → his "merge live" → tell the IT flow guide chat it merged.
 <!-- /now -->
 
+<!-- now:claude/it-flow-guide-flowchart-da7ca1 -->
+### `claude/it-flow-guide-flowchart-da7ca1` — [IT-FLOW-GUIDE]: DONE — 42 slides, Astra-checked; his "Good merge live" given 29 Sep 26, merging — written 29 Sep 26 — verify before use
+- **His rulings this chat (D410–D418):** the format (D410); the sample approved + the alternate-plan flow and the work flows
+  (D411); step by step with every alternate way — templates, blocks (D412); the Leave War's own flow (D413); the Tracker in full
+  (D414); what happens by itself (D415); the two editing modes (D416); the Leave War's manning (D417); his answers on the Leave
+  War as built — three kept, a drag below zero asks too (D418, filed `[LW-DRAG-BELOW-ZERO]`). Also filed: `[PDF-PRINT-TWICE]`,
+  `[TRK-REFUSALS-UNTESTED]`.
+- **The deck:** map, two work flows, 17 journeys in 39 slides (steps / ways / compare / ripple kinds). Made by
+  `raptor-port/scripts/itflow/` — `capture.mjs` + `j/*.mjs` shoot the running app (port 4185), `content.mjs` holds the words,
+  `deck.mjs` lays out, `pdf.ps1` has PowerPoint write the PDF. `pptxgenjs` and `sharp` live in the chat's scratch folder
+  (`ITFLOW_MODULES`), never `package.json`. The pictures and decks are NOT committed until the final (docs/it-flow-guide/).
+- **Done:** Astra read every caption, check and test against the code (588 checked; 7 wrong, 5 unsupported — all fixed); the
+  final `raptor-it-flow-guide.pptx` (13.6 MB) and `.pdf` (3.9 MB) are in `raptor-port/docs/it-flow-guide/` and were sent to him.
+- **Next:** his "Good merge live" (29 Sep 26): `main` merged in (D368), `[IT-FLOW-GUIDE]` archived; the PR's checks → merge → `main`'s
+  run → live on Vercel. After that this block goes at the next handoff. Later: when the OIL award chat's words change the Leave
+  War, re-shoot and rebuild — filed `[ITFLOW-OIL-RESHOOT]`; the OIL chat will message.
+- **Parallel (D302):** the handoff-review chat (D400–D409, observation #348) and the OIL award chat
+  (`claude/award-earned-vs-granted-2ed66d`, D401–D409) — no shared lines. The OIL chat changes the Leave War's OIL words
+  ("earned" / "awarded") and will message when they change and when it merges — then re-shoot `lw` and `ripple`. This chat:
+  D410–D429 (D410–D418 used), observations #350+, preview port 4185 (`raptor-itflow` in `.claude/launch.json`).
+<!-- /now -->
+
+<!-- now:claude/small-fixes-tidy -->
+### `claude/small-fixes-tidy` — the small-fixes batch is LIVE (PR #463, merged 29 Sep 26 on his "merge live"); this notes-only follow-up waits for his own "merge live" — written 29 Sep 26 — verify before use
+- **What it carries (documents only):** his look at D367 on his iPhone ("Looks good"); `[DOCSIZE-MERGE-CEILING]` filed; the
+  batch's eight finished items archived by the script (`[AVAILWIN-PREVIEW-BAR]`, `[GHOST-FLAG-SHADOW]`, `[ALLAVAIL-OPEN-ROW]`,
+  `[LW-ISO-DATES]`, `[LW-SPARE-MOVE-DOORS]`, `[REQ-DOOR-WORDS]`, `[REQ-ORPHAN-ROW]`, `[ABSENCE-SMALL-SEEN]` — their facts in
+  `raptor-port/docs/ui-contracts.md` and the evidence sheet `raptor-port/docs/handpass/2026-09-28-small-fixes.md`);
+  `[AMEND-SMALL-SEEN]` stays open (items 2 and 6–8 belong to other chats; 5 answered, D362).
+- **Left from the batch, filed:** `[PLAN-BANNER-DOOR]`, `[GATELOCK-STALE-LIVE]`, `[ROW-NO-TIME-MARK]` (D361, a future job),
+  `[APP-FONTS-NOT-LOADED]` (his call), `[DOCSIZE-MERGE-CEILING]`. Rulings D360–D367 (D366 archived); D368–D369 unused.
+- **Next:** his "merge live" for this branch, then remove this block. Folder `.claude/worktrees/trk-smoke-add-race-bug-007eed`.
+<!-- /now -->
+
 <!-- now:claude/db-step-now -->
 ### `claude/db-step-now` — the database step starts now (D354–D356) and the tidy-up after PR #464 — docs only; waiting on his "merge live" — written 29 Sep 26 — verify before use
 - **His news (D354, 29 Sep 26):** the IT team is taking the app into Dataverse now; he means to keep working on it beside
@@ -64,7 +98,7 @@ the later merge keeps both (D78).
 
 ## Next, in order
 
-0. **THE DATABASE STEP STARTS NOW (D354, 29 Sep 26)** — first `[IT-FLOW-GUIDE]` (his ask for IT), then `[DB-SYNC-MODEL]`'s mock-up (D355, D356) and the readiness work. The IT team is taking the app into Dataverse now, and he means to
+0. **THE DATABASE STEP STARTS NOW (D354, 29 Sep 26)** — `[IT-FLOW-GUIDE]` DONE (the guide for IT, `raptor-port/docs/it-flow-guide/`, 29 Sep 26); next `[DB-SYNC-MODEL]`'s mock-up (D355, D356) and the readiness work. The IT team is taking the app into Dataverse now, and he means to
    keep working on the app beside it. What to finish before the hand-over was put to him the same day; record his answer
    here and in `OUTSTANDING.md`'s priority list the moment he gives it. Everything below keeps its ORDER; its timing is overtaken.
 1. **HIS ORDER to the database step (D203, 26 Sep 26 — its timing overtaken by D354):** `[ACCOUNTS]`, `[ACCOUNTS-NEW-PERSON]`,

@@ -9,3 +9,5 @@ raptor-port/probes/out/
 # was committed by accident and sat in the tree for weeks
 ~$*
 .superpowers/
+# the IT flow guide research probes — scratch, never committed
+raptor-port/scripts/itflow/tmp-*/

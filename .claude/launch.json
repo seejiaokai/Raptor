@@ -150,6 +150,21 @@
         "--strictPort"
       ],
       "port": 4183
+    },
+    {
+      "name": "raptor-itflow",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "--prefix",
+        "raptor-port",
+        "vite",
+        "preview",
+        "raptor-port",
+        "--port",
+        "4185",
+        "--strictPort"
+      ],
+      "port": 4185
     }
   ]
 }
