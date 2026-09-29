@@ -317,19 +317,22 @@ function ledgerLines(c: Change): void {
   const al: any[] = Array.isArray(c.after) ? c.after : c.after ? [c.after] : []
   const bm = new Map(bl.map(r => [r.id, r])), am = new Map(al.map(r => [r.id, r]))
   const award = (e: any) => e && e.counter === 'oil' && +e.amount > 0
-  /* the counter as the app names it — OIL, ANNUAL, CCL … (the Leave War's labels are its keys in capitals; D25: OIL); an
-     OIL AWARD by its own name, with what it is worth (the amount — never its FO / HO label) and its day */
-  const words = (e: any) => award(e)
-    ? `${cs(e.personId)} · OIL award ${e.amount} ${+e.amount === 1 ? 'day' : 'days'} ${/^\d{4}-\d{2}-\d{2}$/.test(e.date) ? dayWord(e.date) : ''}${e.reason ? ' — ' + e.reason : ''}${e.givenBy ? ' (given by ' + e.givenBy + ')' : ''}`.replace('  ', ' ')
-    : `${cs(e.personId)} · ${String(e.counter || '').toUpperCase()} ${+e.amount > 0 ? '+' : ''}${e.amount}${/^\d{4}-\d{2}-\d{2}$/.test(e.date) ? ' ' + dayWord(e.date) : ''}${e.reason ? ' — ' + e.reason : ''}`
-  const at = (e: any) => ({ date: /^\d{4}-\d{2}-\d{2}$/.test(e.date) ? e.date : localToday(), sect: 'abs', sub: String(e.personId || '') })
+  const iso = (d: any) => typeof d === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(d)
+  const at = (e: any) => ({ date: iso(e.date) ? e.date : localToday(), sect: 'abs', sub: String(e.personId || '') })
+  /* AN OIL AWARD reads as it always did in the changes window — "Leave War · <him> · FO 9 Feb: OIL award given by …" —
+     whichever door gave it, now with what it is worth (the amount, never worked back from its FO / HO label); any other
+     entry by its counter as the app names it — OIL, ANNUAL, CCL … (D25: OIL) */
+  const head = (e: any) => award(e)
+    ? `Leave War · ${cs(e.personId)} · ${+e.amount === 0.5 ? 'HO' : 'FO'}${iso(e.date) ? ' ' + dayWord(e.date) : ''}`
+    : `Leave War · ${cs(e.personId)} · ${String(e.counter || '').toUpperCase()} ${+e.amount > 0 ? '+' : ''}${e.amount}${iso(e.date) ? ' ' + dayWord(e.date) : ''}${e.reason ? ' — ' + e.reason : ''}`
+  const worth = (e: any) => `${e.amount} ${+e.amount === 1 ? 'day' : 'days'}${e.reason ? ' — ' + e.reason : ''}${e.givenBy ? ' (given by ' + e.givenBy + ')' : ''}${iso(e.date) ? ' · ' + dayWord(e.date) : ''}`
   for (const e of al) {
     const o = bm.get(e.id)
-    if (!o) logAction(null, `Leave War · ${words(e)}: given`, at(e))
+    if (!o) logAction(null, award(e) ? `${head(e)}: OIL award given${e.givenBy ? ' by ' + e.givenBy : ''} · ${e.amount} ${+e.amount === 1 ? 'day' : 'days'}` : `${head(e)}: given`, at(e))
     /* a correction moved to another day shows on the day it left too (Fable F8; an award's day never moves — D260) */
-    else if (!same(o, e)) logAction(null, `Leave War · ${words(e)}: changed`, { ...at(e), from: words(o), to: words(e), ...(o.date !== e.date && /^\d{4}-\d{2}-\d{2}$/.test(o.date) ? { wdate: o.date } : {}) })
+    else if (!same(o, e)) logAction(null, award(e) ? `${head(e)}: OIL award changed` : `${head(e)}: changed`, { ...at(e), from: award(o) ? worth(o) : head(o), to: award(e) ? worth(e) : head(e), ...(o.date !== e.date && iso(o.date) ? { wdate: o.date } : {}) })
   }
-  for (const e of bl) if (!am.has(e.id)) logAction(null, `Leave War · ${words(e)}: taken away`, at(e))
+  for (const e of bl) if (!am.has(e.id)) logAction(null, award(e) ? `${head(e)}: OIL award taken away` : `${head(e)}: taken away`, at(e))
 }
 
 /* ---- Quals ---- */

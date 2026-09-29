@@ -11,11 +11,14 @@
 // attendance. An award cannot contradict a day off, so there is nothing for
 // hours to prevent. The hours live on only where they are real: the AUTOMATIC
 // credit, which reads them off the published schedule.
+//
+// Since [OIL-AWARD-IS-A-GRANT] (29 Sep 26) the award is a ledger entry — the one kind of hand-given OIL — and its
+// worth is its AMOUNT; FO / HO is only how the grid labels it.
 
 import { fireEvent, render, screen } from '@testing-library/react'
 import { beforeEach, describe, expect, it } from 'vitest'
 import { balanceOf } from '../engine'
-import { getState, HALF_STEP_MSG, initStore, rawState, setCell, setCellDays, setManualCredit, setRole } from '../state/store'
+import { awardsOnDay, editAward, getState, HALF_STEP_MSG, ingestDutyCredit, initStore, rawState, setCell, setDayAward, setRole } from '../state/store'
 import { memoryBackend } from '../state/storage'
 import { Matrix } from './Matrix'
 
@@ -27,9 +30,11 @@ beforeEach(() => {
   setRole('admin')
 })
 
-const creditOn = (person: string, date: string) =>
-  (rawState().wars.find(w => w.period.start <= date && date <= w.period.end)!.recs[person]?.[date] ?? [])
-    .find(r => r.kind === 'credit') as { code: string; oil: string; days?: number } | undefined
+/** the day's award, as the grid draws it: its label and its worth (the amount) */
+const creditOn = (person: string, date: string) => {
+  const e = awardsOnDay(person, date)[0]
+  return e ? { id: e.id, code: e.amount === 0.5 ? 'HO' : 'FO', days: e.amount } : undefined
+}
 
 const oilOf = (person: string) => {
   const { openings, ledger, wars } = getState()
@@ -39,50 +44,49 @@ const oilOf = (person: string) => {
 describe('a grant worth more than one day', () => {
   it('a quantity moves the balance by that much, not by the code’s own worth', () => {
     const before = oilOf(P)
-    expect(setManualCredit(P, TUE, 'FO', { note: 'Exercise', days: 3 })).toBeNull()
+    expect(setDayAward(P, TUE, 3, { note: 'Exercise' })).toBeNull()
     expect(creditOn(P, TUE)!.days).toBe(3)
     expect(oilOf(P)).toBe(before + 3)
   })
 
-  it('no quantity means the code’s own worth, which is the ordinary case', () => {
+  it('half a day is worth half a day, and reads HO', () => {
     const before = oilOf(P)
-    expect(setManualCredit(P, TUE, 'HO', { note: 'Recall' })).toBeNull()
-    expect(creditOn(P, TUE)!.days).toBeUndefined()
+    expect(setDayAward(P, TUE, 0.5, { note: 'Recall' })).toBeNull()
+    expect(creditOn(P, TUE)).toMatchObject({ code: 'HO', days: 0.5 })
     expect(oilOf(P)).toBe(before + 0.5)
   })
 
   it('goes in halves at EVERY door, in the same words (owner, 21 Sep 26)', () => {
-    expect(setManualCredit(P, TUE, 'FO', { days: 1.5 })).toBeNull()
+    expect(setDayAward(P, TUE, 1.5)).toBeNull()
     expect(oilOf(P)).toBeGreaterThan(0)
-    expect(setManualCredit(P, TUE, 'FO', { days: 1.3 })).toBe(HALF_STEP_MSG)
-    expect(setCellDays(P, TUE, 0.3)).toBe(HALF_STEP_MSG)
-    expect(setManualCredit(P, TUE, 'FO', { days: 0 })).toContain('how many days')
-    expect(setManualCredit(P, TUE, 'FO', { days: -2 })).toContain('how many days')
-    expect(setManualCredit(P, TUE, 'FO', { days: 9999 })).toContain('more than')
+    expect(setDayAward(P, TUE, 1.3)).toBe(HALF_STEP_MSG)
+    expect(setDayAward(P, TUE, 1)).toBeNull()
+    expect(editAward(creditOn(P, TUE)!.id, { days: 0.3 })).toBe(HALF_STEP_MSG)
+    expect(setDayAward(P, TUE, 0)).toContain('how many days')
+    expect(setDayAward(P, TUE, -2)).toContain('how many days')
+    expect(setDayAward(P, TUE, 9999)).toContain('more than')
   })
 
   it('is COUNTED ONCE — one record, one number', () => {
-    // The rule counters.ts enforces: never two records of one fact. A grant is
-    // the credit on the day; nothing mints a ledger entry beside it.
+    // The rule counters.ts enforces: never two records of one fact. The award IS one ledger entry (the one kind of
+    // hand-given OIL — [OIL-AWARD-IS-A-GRANT]); the war holds no record of it beside that.
     const before = oilOf(P)
-    expect(setManualCredit(P, TUE, 'FO', { days: 2 })).toBeNull()
+    expect(setDayAward(P, TUE, 2)).toBeNull()
     expect(oilOf(P)).toBe(before + 2)
-    expect(getState().ledger.filter(e => e.personId === P && e.date === TUE)).toHaveLength(0)
+    expect(getState().ledger.filter(e => e.personId === P && e.date === TUE)).toHaveLength(1)
+    expect((rawState().wars[0]!.recs[P]?.[TUE] ?? []).filter(r => r.kind === 'credit')).toHaveLength(0)
   })
 
-  it('setCellDays changes it afterwards, and clearing it puts the code’s worth back', () => {
-    expect(setManualCredit(P, TUE, 'FO', { days: 2 })).toBeNull()
-    expect(setCellDays(P, TUE, 4)).toBeNull()
+  it('its days change afterwards, in one step', () => {
+    expect(setDayAward(P, TUE, 2)).toBeNull()
+    expect(editAward(creditOn(P, TUE)!.id, { days: 4 })).toBeNull()
     expect(creditOn(P, TUE)!.days).toBe(4)
-    expect(setCellDays(P, TUE, null)).toBeNull()
-    expect(creditOn(P, TUE)!.days).toBeUndefined()
   })
 
   it('leaves a credit the published schedule owns alone', () => {
-    expect(setManualCredit(P, TUE, 'FO')).toBeNull()
-    const list = rawState().wars[0]!.recs[P]![TUE]!
-    ;(list.find(r => r.kind === 'credit') as { oil: string }).oil = 'auto'
-    expect(setCellDays(P, TUE, 3)).toContain('published schedule')
+    ingestDutyCredit(P, TUE, 'FO', 'Duty', [[480, 1080]])
+    const auto = (rawState().wars[0]!.recs[P]![TUE] ?? []).find(r => r.kind === 'credit')!
+    expect(editAward(auto.id, { days: 3 })).toContain('no OIL award')
   })
 })
 
@@ -94,7 +98,7 @@ describe('a granted credit still behaves like every other credit', () => {
        so it cannot contradict his leave and the day must not go amber. Both
        records still land; the quantity never mattered either way. */
     expect(setCell(P, TUE, 'LL')).toBe(true)
-    expect(setManualCredit(P, TUE, 'FO', { note: 'Exercise', days: 2 })).toBeNull()
+    expect(setDayAward(P, TUE, 2, { note: 'Exercise' })).toBeNull()
     const v = getState().views[P]?.[TUE]
     expect(v?.all.filter(c => c.kind === 'request')).toHaveLength(1)
     expect(v?.all.filter(c => c.kind === 'credit')).toHaveLength(1)
@@ -103,27 +107,30 @@ describe('a granted credit still behaves like every other credit', () => {
 })
 
 describe('the quantity in the OIL tracker', () => {
-  it('shows on the row and can be changed beside the reason', () => {
-    expect(setManualCredit(P, TUE, 'FO', { note: 'Exercise', givenBy: 'OC Ops', days: 3 })).toBeNull()
+  it('shows on the row and is changed in the one editor every award opens — its date shown, never changed (D260)', () => {
+    expect(setDayAward(P, TUE, 3, { note: 'Exercise', givenBy: 'OC Ops' })).toBeNull()
+    const id = creditOn(P, TUE)!.id
     render(<Matrix />)
     fireEvent.click(screen.getByTestId('oil-tracker'))
-    expect(screen.getByTestId(`oil-entry-${P}-award:0:${TUE}`).textContent).toContain('3 days')
-    fireEvent.click(screen.getByTestId(`oil-note-${P}-award:0:${TUE}`))
-    expect((screen.getByTestId('oil-note-days') as HTMLInputElement).value).toBe('3')
-    fireEvent.change(screen.getByTestId('oil-note-days'), { target: { value: '2.5' } })
-    fireEvent.click(screen.getByTestId('oil-note-save'))
+    expect(screen.getByTestId(`oil-entry-${id}`).textContent).toContain('+3')
+    fireEvent.click(screen.getByTestId(`oil-entry-${id}`))
+    expect((screen.getByTestId('oil-edit-amt') as HTMLInputElement).value).toBe('3')
+    expect(screen.getByTestId('oil-edit-date').tagName).not.toBe('BUTTON')     // read only
+    fireEvent.change(screen.getByTestId('oil-edit-amt'), { target: { value: '2.5' } })
+    fireEvent.click(screen.getByTestId('oil-edit-save'))
     expect(creditOn(P, TUE)!.days).toBe(2.5)
   })
 
   it('says so rather than guessing when the quantity cannot be read', () => {
-    expect(setManualCredit(P, TUE, 'FO', { note: 'Exercise' })).toBeNull()
+    expect(setDayAward(P, TUE, 1, { note: 'Exercise' })).toBeNull()
+    const id = creditOn(P, TUE)!.id
     render(<Matrix />)
     fireEvent.click(screen.getByTestId('oil-tracker'))
-    fireEvent.click(screen.getByTestId(`oil-note-${P}-award:0:${TUE}`))
-    fireEvent.change(screen.getByTestId('oil-note-days'), { target: { value: 'lots' } })
-    fireEvent.click(screen.getByTestId('oil-note-save'))
-    expect(screen.getByTestId('oil-note-err').textContent).toContain('how many days')
-    expect(creditOn(P, TUE)!.days).toBeUndefined()
+    fireEvent.click(screen.getByTestId(`oil-entry-${id}`))
+    fireEvent.change(screen.getByTestId('oil-edit-amt'), { target: { value: 'lots' } })
+    fireEvent.click(screen.getByTestId('oil-edit-save'))
+    expect(screen.getByTestId('oil-edit-err').textContent).toBeTruthy()
+    expect(creditOn(P, TUE)!.days).toBe(1)
   })
 })
 
@@ -136,13 +143,13 @@ describe('tapping an OIL day shows what is on it', () => {
   }
 
   it('the button names it instead of offering to add one', () => {
-    expect(setManualCredit(P, TUE, 'FO', { note: 'Exercise', givenBy: 'OC Ops', days: 3 })).toBeNull()
+    expect(setDayAward(P, TUE, 3, { note: 'Exercise', givenBy: 'OC Ops' })).toBeNull()
     openDay()
     expect(screen.getByTestId('bid-oil').textContent).toBe('FO · 3 days')
   })
 
   it('opens already filled in, and says it in words above the boxes', () => {
-    expect(setManualCredit(P, TUE, 'HO', { note: 'Exercise', givenBy: 'OC Ops' })).toBeNull()
+    expect(setDayAward(P, TUE, 0.5, { note: 'Exercise', givenBy: 'OC Ops' })).toBeNull()
     openDay()
     fireEvent.click(screen.getByTestId('bid-oil'))
     expect(screen.getByTestId('oil-current').textContent).toContain('half a day of OIL')
@@ -153,18 +160,17 @@ describe('tapping an OIL day shows what is on it', () => {
   })
 
   it('changing it writes over the same record rather than adding a second', () => {
-    expect(setManualCredit(P, TUE, 'FO', { note: 'Exercise', days: 3 })).toBeNull()
+    expect(setDayAward(P, TUE, 3, { note: 'Exercise' })).toBeNull()
     openDay()
     fireEvent.click(screen.getByTestId('bid-oil'))
     fireEvent.change(screen.getByTestId('oil-days'), { target: { value: '1' } })
     fireEvent.click(screen.getByTestId('oil-give'))
-    const credits = (rawState().wars[0]!.recs[P]![TUE] ?? []).filter(r => r.kind === 'credit')
-    expect(credits).toHaveLength(1)
+    expect(awardsOnDay(P, TUE)).toHaveLength(1)
     expect(creditOn(P, TUE)!.days).toBe(1)
   })
 
   it('Remove takes it off the day', () => {
-    expect(setManualCredit(P, TUE, 'FO', { note: 'Exercise' })).toBeNull()
+    expect(setDayAward(P, TUE, 1, { note: 'Exercise' })).toBeNull()
     openDay()
     fireEvent.click(screen.getByTestId('bid-oil'))
     fireEvent.click(screen.getByTestId('oil-clear'))
@@ -177,9 +183,7 @@ describe('tapping an OIL day shows what is on it', () => {
        the earned credit itself is read-back only. Nothing offers to change
        its worth, its reason or its giver, and nothing offers to remove it —
        the OIL pass owns it and would overwrite anything typed on top. */
-    expect(setManualCredit(P, TUE, 'FO')).toBeNull()
-    const list = rawState().wars[0]!.recs[P]![TUE]!
-    ;(list.find(r => r.kind === 'credit') as { oil: string }).oil = 'auto'
+    ingestDutyCredit(P, TUE, 'FO', 'Duty', [[480, 1080]])
     openDay()
     // it is read back, in full
     expect(screen.getByTestId('oil-detail-days')).toBeTruthy()
@@ -229,23 +233,22 @@ describe('how many days the sheet asks for', () => {
   it('the default 1 gives a day, and reads FO', () => {
     openOil(TUE)
     fireEvent.click(screen.getByTestId('oil-give'))
-    expect(getState().views[P]?.[TUE]?.earnsOil).toBe(1)
-    expect(creditOn(P, TUE)!.code).toBe('FO')
+    expect(creditOn(P, TUE)).toMatchObject({ code: 'FO', days: 1 })
+    expect(getState().views[P]?.[TUE]?.code).toBe('FO')
   })
 
   it('under a day reads HO and is worth what was typed', () => {
     openOil(TUE)
     days('0.5')
     fireEvent.click(screen.getByTestId('oil-give'))
-    expect(getState().views[P]?.[TUE]?.earnsOil).toBe(0.5)
-    expect(creditOn(P, TUE)!.code).toBe('HO')
+    expect(creditOn(P, TUE)).toMatchObject({ code: 'HO', days: 0.5 })
+    expect(getState().views[P]?.[TUE]?.code).toBe('HO')
   })
 
   it('more than a day reads FO and is worth what was typed', () => {
     openOil(TUE)
     days('3')
     fireEvent.click(screen.getByTestId('oil-give'))
-    expect(getState().views[P]?.[TUE]?.earnsOil).toBe(3)
     expect(creditOn(P, TUE)).toMatchObject({ code: 'FO', days: 3 })
   })
 

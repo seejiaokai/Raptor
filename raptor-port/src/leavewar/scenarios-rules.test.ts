@@ -159,16 +159,17 @@ describe('member permissions at the doors', () => {
 })
 
 describe('records survive a save and reload', () => {
-  it('a notice, a credit with times and a refused bid all come back', () => {
+  /* The war's own CREDIT with its times reading back exactly is pinned in `oil-award-add.test.ts` ("a war record in the
+     old award shape"): here the live OIL pass takes an unbacked credit straight off the day before any save, and a
+     hand-given award is a ledger entry now, not a war record ([OIL-AWARD-IS-A-GRANT]). */
+  it('a notice and a refused bid come back', () => {
     setRole('admin')
     setCell('ammo', '2026-02-10', 'LL')
     file('ammo', 'ATT C', 'Feb 10')                    // leaves a notice
-    setCell('rocky', '2026-02-10', 'FO')               // a hand-typed credit
     setCell('dusk', '2026-02-10', 'LL'); advanceStage(); setBidState('dusk', '2026-02-10', 'refused')
     const blob = JSON.stringify(rawState().wars)
     loadWars(JSON.parse(blob), rawState().currentId)
     expect(recs('ammo', '2026-02-10').some(r => r.kind === 'notice')).toBe(true)
-    expect(recs('rocky', '2026-02-10').some(r => r.kind === 'credit')).toBe(true)
     expect(recs('dusk', '2026-02-10').some(r => r.kind === 'request' && (r as any).state === 'refused')).toBe(true)
   })
 })

@@ -11,7 +11,7 @@
 
 import { act, fireEvent, render, screen } from '@testing-library/react'
 import { beforeEach, describe, expect, it } from 'vitest'
-import { awardsIn, getState, initStore, lwHistInit, lwUndo, rawState, setCell, setManualCredit, setRole, setViewer } from '../state/store'
+import { awardsIn, awardsOnDay, getState, initStore, lwHistInit, lwUndo, rawState, setCell, setDayAward, setRole, setViewer } from '../state/store'
 import { memoryBackend } from '../state/storage'
 import { Matrix } from './Matrix'
 import { SelectSheet } from './SelectSheet'
@@ -23,22 +23,21 @@ beforeEach(() => {
   setRole('admin')
 })
 
-const awardOn = (person: string, date: string) =>
-  ((rawState().wars.find(w => w.period.start <= date && date <= w.period.end)!.recs[person]?.[date] ?? []) as any[])
-    .find(r => r.kind === 'credit' && r.oil === 'manual')
+/* an award is a ledger entry drawn on its day ([OIL-AWARD-IS-A-GRANT]) */
+const awardOn = (person: string, date: string) => awardsOnDay(person, date)[0]
 const cell = (personId: string, date: string) => ({ personId, date })
 const noop = () => {}
 
 describe('awardsIn — the awards a clear of these days would take', () => {
   it('names each hand-given award in the cells, with its worth', () => {
-    setManualCredit('ramp', '2026-01-06', 'FO', { note: 'Recall', days: 3 })
-    setManualCredit('dusk', '2026-01-07', 'HO', { note: 'SIM' })
+    setDayAward('ramp', '2026-01-06', 3, { note: 'Recall' })
+    setDayAward('dusk', '2026-01-07', 0.5, { note: 'SIM' })
     const got = awardsIn([cell('ramp', '2026-01-06'), cell('ramp', '2026-01-07'), cell('dusk', '2026-01-07')])
     expect(got.map(a => [a.personId, a.date, a.days])).toEqual([['ramp', '2026-01-06', 3], ['dusk', '2026-01-07', 0.5]])
   })
 
   it('is empty for a member — his Clear never takes an award (an award is the admin’s)', () => {
-    setManualCredit('ramp', '2026-01-06', 'FO', {})
+    setDayAward('ramp', '2026-01-06', 1)
     setRole('member'); setViewer('ramp')
     expect(awardsIn([cell('ramp', '2026-01-06')])).toEqual([])
   })
@@ -55,8 +54,8 @@ describe('a dragged block’s Delete names the awards and takes them (D260)', ()
 
   it('the confirm names each award BEFORE anything goes; the second tap takes them all', () => {
     setCell('ramp', '2026-01-08', 'LL')
-    setManualCredit('ramp', '2026-01-06', 'FO', { days: 1 })
-    setManualCredit('dusk', '2026-01-07', 'FO', { days: 3 })
+    setDayAward('ramp', '2026-01-06', 1)
+    setDayAward('dusk', '2026-01-07', 3)
     mount()
     fireEvent.click(screen.getByTestId('sel-delete'))
     const note = screen.getByTestId('sel-note').textContent!
@@ -69,8 +68,8 @@ describe('a dragged block’s Delete names the awards and takes them (D260)', ()
   })
 
   it('one Undo brings every award back', () => {
-    setManualCredit('ramp', '2026-01-06', 'FO', { days: 1 })
-    setManualCredit('dusk', '2026-01-07', 'HO', {})
+    setDayAward('ramp', '2026-01-06', 1)
+    setDayAward('dusk', '2026-01-07', 0.5)
     mount()
     fireEvent.click(screen.getByTestId('sel-delete'))
     fireEvent.click(screen.getByTestId('sel-delete'))
@@ -82,7 +81,7 @@ describe('a dragged block’s Delete names the awards and takes them (D260)', ()
 
   it('a block holding ONLY awards still offers Delete — it removes everything in it', () => {
     /* Today the Delete row showed only when the block held a movable bid, so a block of awards had no Delete at all. */
-    setManualCredit('dusk', '2026-01-07', 'FO', {})
+    setDayAward('dusk', '2026-01-07', 1)
     mount()
     expect(screen.getByTestId('sel-delete')).toBeTruthy()
     expect(screen.queryByTestId('sel-move')).toBeNull()        // an award never moves
@@ -100,7 +99,7 @@ describe('a dragged block’s Delete names the awards and takes them (D260)', ()
 
 describe('the bid sheet’s Clear names the award and asks once (D260)', () => {
   it('one day: the first Clear names the award and keeps it; the second takes it', () => {
-    setManualCredit('ramp', '2026-01-06', 'FO', { note: 'Recall', days: 3 })
+    setDayAward('ramp', '2026-01-06', 3, { note: 'Recall' })
     render(<Matrix />)
     fireEvent.click(screen.getByTestId('cell-ramp-2026-01-06'))
     fireEvent.click(screen.getByTestId('bid-clear'))
@@ -111,8 +110,8 @@ describe('the bid sheet’s Clear names the award and asks once (D260)', () => {
   })
 
   it('a range: Clear names every award in the span before it goes', () => {
-    setManualCredit('ramp', '2026-01-06', 'FO', {})
-    setManualCredit('ramp', '2026-01-08', 'HO', {})
+    setDayAward('ramp', '2026-01-06', 1)
+    setDayAward('ramp', '2026-01-08', 0.5)
     render(<Matrix />)
     fireEvent.click(screen.getByTestId('cell-ramp-2026-01-06'))
     fireEvent.click(screen.getByTestId('span-range'))
@@ -127,8 +126,8 @@ describe('the bid sheet’s Clear names the award and asks once (D260)', () => {
   })
 
   it('asked about one day, then a range picked: Clear asks again, naming the range’s awards (Fable’s S17)', () => {
-    setManualCredit('ramp', '2026-01-06', 'FO', {})
-    setManualCredit('ramp', '2026-01-08', 'HO', {})
+    setDayAward('ramp', '2026-01-06', 1)
+    setDayAward('ramp', '2026-01-08', 0.5)
     render(<Matrix />)
     fireEvent.click(screen.getByTestId('cell-ramp-2026-01-06'))
     fireEvent.click(screen.getByTestId('bid-clear'))             // asked about the one day
@@ -153,7 +152,7 @@ describe('the bid sheet’s Clear names the award and asks once (D260)', () => {
      something (the house rule for a control that could not work), so on a day holding only the admin's award he is not
      offered one at all: the award cannot be reached from his sheet. It was a Clear that did nothing. */
   it('a MEMBER is offered no Delete on his own day holding only an award, and the award stays', () => {
-    setManualCredit('ramp', '2026-01-06', 'FO', {})   // inside the bidding window: his tap opens the bid sheet
+    setDayAward('ramp', '2026-01-06', 1)   // inside the bidding window: his tap opens the bid sheet
     act(() => { setRole('member'); setViewer('ramp') })
     render(<Matrix />)
     fireEvent.click(screen.getByTestId('cell-ramp-2026-01-06'))

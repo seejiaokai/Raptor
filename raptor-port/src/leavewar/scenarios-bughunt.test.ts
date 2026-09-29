@@ -13,7 +13,7 @@ import { initStore as raptorInitStore, writeInputs } from '../state/store'
 import { setSession, setMe } from '../state/auth'
 import { projectPeople } from './state/raptorRoster'
 import {
-  cellProblem, clearRaptorCell, getState, ingestDutyCredit, lwEditLists, initStore as lwInitStore, lwHistInit, rawState, setCell, setCellNote, setPeople, setRole, setViewer,
+  cellProblem, clearRaptorCell, getState, ingestDutyCredit, lwEditLists, initStore as lwInitStore, lwHistInit, rawState, setCell, setDayAward, awardsOnDay, OIL_DOOR_MSG, setPeople, setRole, setViewer,
 } from './state/store'
 import { memoryBackend } from './state/storage'
 import { runOilPass, wireLeaveWarSync } from './sync'
@@ -273,14 +273,13 @@ describe('an OIL credit whose hours have changed', () => {
     expect(view('casper', SAT)!.amber).toBe(true)
   })
 
-  it("an admin's own hand-typed credit is never removed by the pass", () => {
-    // design §18 OA3-003 — only an admin takes a manual credit away. Nothing
-    // published earns this one, so the reverse pass sees it unwanted; it must
-    // still survive, because the reverse pass only ever clears `auto`.
-    setCell('bruise', SAT, 'FO')
-    expect(credit('bruise')?.oil).toBe('manual')
+  it("an admin's own award is never removed by the pass", () => {
+    // design §18 OA3-003 — only an admin takes an award away. Nothing published earns this one; the pass cannot even
+    // see it — it is a ledger entry ([OIL-AWARD-IS-A-GRANT]), and the pass clears only the war's `auto` credit.
+    expect(setDayAward('bruise', SAT, 1)).toBeNull()
     runOilPass()
-    expect(credit('bruise')?.oil).toBe('manual')
+    expect(awardsOnDay('bruise', SAT).map(e => e.amount)).toEqual([1])
+    expect(credit('bruise')).toBeUndefined()
   })
 })
 
@@ -408,13 +407,16 @@ describe('a hand-typed credit on a day that already holds leave', () => {
        cannot contradict the leave and the day must not go amber for it. The
        credit is still banked — the OIL is still earned. */
     file('ammo', 'LL', 'Feb 14', timed(at(9), at(11)))
-    expect(cellProblem('ammo', '2026-02-14', 'FO')).toBeNull()
-    expect(setCell('ammo', '2026-02-14', 'FO')).toBe(true)
+    /* an award is given from the +OIL panel or the tracker — never typed as a cell code ([OIL-AWARD-IS-A-GRANT]) */
+    expect(cellProblem('ammo', '2026-02-14', 'FO')).toBe(OIL_DOOR_MSG)
+    expect(setDayAward('ammo', '2026-02-14', 1)).toBeNull()
     const v = view('ammo', '2026-02-14')!
     expect(v.all.some(c => c.kind === 'credit')).toBe(true)
     expect(v.all.some(c => c.code === 'LL')).toBe(true)
     expect(v.amber).toBe(false)
-    expect(v.earnsOil).toBe(1)
+    /* banked — as AWARDED, not earned (D400): the ledger holds it, the day's "earned" is the schedule's alone */
+    expect(v.earnsOil).toBe(0)
+    expect(awardsOnDay('ammo', '2026-02-14').map(e => e.amount)).toEqual([1])
   })
 
   it('…but the SCHEDULE earning one on the same day still flags it', () => {
@@ -446,41 +448,21 @@ describe("an admin's hand-typed credit the schedule later agrees with", () => {
        a takeover and a hand-back can both happen before anything is read.
        What must hold, whatever order they run in, is that the squadron's own
        record and its words are still there. */
-    setCell('dj', D, 'HO')
-    setCellNote('dj', D, 'called out for the recovery')
-    lwEditLists([{ personId: 'dj', date: D, drop: [], add: [] }])   // settle
-    const mine = credOf('dj')
-    expect(mine.oil).toBe('manual')
-    // give the admin's credit its own hours, as the hours box will
-    lwEditLists([{ personId: 'dj', date: D, drop: [mine.id], add: [{ ...mine, spans: [[at(6), at(9)]] }] }])
+    /* Since [OIL-AWARD-IS-A-GRANT] the award is a ledger entry: the pass cannot even see it. */
+    expect(setDayAward('dj', D, 0.5, { note: 'called out for the recovery' })).toBeNull()
+    const mine = awardsOnDay('dj', D)[0]!
 
     // the schedule now earns a DIFFERENT credit that day — BESIDE it (N16)
     ingestDutyCredit('dj', D, 'FO', 'Duty', [[at(8), at(12)]])
+    expect(awardsOnDay('dj', D)).toEqual([mine])                  // untouched, in place
 
-    /* The award is STILL THE AWARD — not an `auto` record wearing a snapshot,
-       which is what the take-over used to leave here. Nothing rewrote it, so
-       there is nothing to hand back.
-       (Only one credit sits here at the end, because this file runs the live
-       sync wire and nothing published backs a Tuesday, so the pass takes its
-       OWN credit straight off again. The two-records-side-by-side case is
-       proved in `oil-award-add.test.ts`, which drives the store directly.) */
-    const after = credOf('dj')
-    expect(after).toBeDefined()                                  // never deleted
-    expect(after.oil).toBe('manual')                             // untouched, in place
-    expect(after.manual).toBeUndefined()                         // no snapshot to carry
-
-    /* And what is left standing is EXACTLY what the admin typed — his code,
-       his hours, his words — because nothing ever rewrote it. Under the
-       take-over this was the hand-back's job, and getting it wrong twice in
-       one night is what retired the take-over. */
+    /* And what is left standing is EXACTLY what the admin typed — his worth and his words — because nothing ever
+       rewrote it. */
     clearRaptorCell('dj', D)
-    const end = credOf('dj')
-    expect(end).toBeDefined()
-    expect(end.oil).toBe('manual')
-    expect(end.code).toBe('HO')                                  // not the schedule's FO
-    expect(end.spans).toEqual([[at(6), at(9)]])                  // not the schedule's hours
-    expect(end.note).toBe('called out for the recovery')
-    expect(end.manual).toBeUndefined()                           // there was never a snapshot
+    const end = awardsOnDay('dj', D)
+    expect(end).toHaveLength(1)
+    expect(end[0]).toMatchObject({ amount: 0.5, reason: 'called out for the recovery' })   // not the schedule's FO
+    expect(credOf('dj')).toBeUndefined()                         // the war holds no award at all
   })
 
   it('a credit the schedule ALONE earned is still removed outright', () => {

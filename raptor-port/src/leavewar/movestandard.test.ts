@@ -20,8 +20,8 @@ import { setMe, setSession } from '../state/auth'
 import { projectPeople } from './state/raptorRoster'
 import {
   advanceStage, deletableIn, getState, initStore as lwInitStore, lwHistInit, movableCells, movableRecords, moveCells,
-  moveProblem, moveRecords, moveRecordsProblem, rawState, setBidStates, setCell, setManualCredit, setPeople, setRole,
-  setViewer, stayingIn, decideRequestById, absenceDoor, setAbsenceDoor, decidableIn,
+  moveProblem, moveRecords, moveRecordsProblem, rawState, setBidStates, setCell, setDayAward, setPeople, setRole,
+  setViewer, stayingIn, decideRequestById, absenceDoor, setAbsenceDoor, decidableIn, awardsOnDay,
 } from './state/store'
 import { memoryBackend } from './state/storage'
 import { wireLeaveWarSync } from './sync'
@@ -55,13 +55,14 @@ function file(person: string, type: string, date: string, extra: Record<string, 
 }
 const recsAt = (p: string, d: string) => rawState().wars[0]!.recs[p]?.[d] ?? []
 const bidsAt = (p: string, d: string) => recsAt(p, d).filter((r: any) => r.kind === 'request')
-const awardAt = (p: string, d: string) => recsAt(p, d).some((r: any) => r.kind === 'credit' && r.oil === 'manual')
+/* an award is a ledger entry drawn on its day ([OIL-AWARD-IS-A-GRANT]) — never a war record */
+const awardAt = (p: string, d: string) => awardsOnDay(p, d).length > 0
 const one = (p: string, d: string) => [{ personId: p, date: d }]
 const lwRows = (p: string) => INPUTS.filter((r: any) => r.person === p && r.lw)
 
 describe('a bid beneath an OIL award (Vector’s 3 Jan — D265)', () => {
   beforeEach(() => {
-    expect(setManualCredit('ammo', '2026-02-10', 'FO', { note: 'Exercise recovery' })).toBeNull()
+    expect(setDayAward('ammo', '2026-02-10', 1, { note: 'Exercise recovery' })).toBeNull()
     expect(setCell('ammo', '2026-02-10', 'LL')).toBe(true)
   })
 
@@ -87,7 +88,7 @@ describe('a bid beneath an OIL award (Vector’s 3 Jan — D265)', () => {
   })
 
   it('a day holding ONLY an award has nothing to move — refused, as before', () => {
-    setManualCredit('ammo', '2026-02-11', 'FO', {})
+    setDayAward('ammo', '2026-02-11', 1)
     expect(movableRecords(one('ammo', '2026-02-11'))).toEqual([])
     expect(moveCells(one('ammo', '2026-02-11'), 3)).toMatchObject({ reason: 'nothing' })
     expect(awardAt('ammo', '2026-02-11')).toBe(true)
@@ -96,7 +97,7 @@ describe('a bid beneath an OIL award (Vector’s 3 Jan — D265)', () => {
 
 describe('the landing beside an award (S3)', () => {
   it('a bid lands on a day holding an award — the award is kept', () => {
-    setManualCredit('ammo', '2026-02-17', 'FO', {})
+    setDayAward('ammo', '2026-02-17', 1)
     setCell('ammo', '2026-02-12', 'LL')
     expect(moveCells(one('ammo', '2026-02-12'), 5)).toBe('moved')
     expect(bidsAt('ammo', '2026-02-17')).toHaveLength(1)
@@ -232,7 +233,7 @@ describe('who may move — one rule at every door (D333)', () => {
 
 describe('what a Delete would take — so the sheets offer Delete only where it can (D332)', () => {
   it('counts the days a Delete would change, for this role', () => {
-    setManualCredit('ammo', '2026-02-11', 'FO', {})
+    setDayAward('ammo', '2026-02-11', 1)
     setCell('ammo', '2026-02-12', 'LL')
     expect(file('ammo', 'LL', 'Feb 13')).toBe(true)
     expect(deletableIn(one('ammo', '2026-02-11'))).toBe(1)      // an award (the admin's)
@@ -339,7 +340,7 @@ describe('FR3 (S32) — the refused bid beside a live one is named as staying (A
 describe('FR4 — what a Decide over these days would answer (Fable 4, Astra 2 — both, blind)', () => {
   it('counts the days holding something to decide', () => {
     setCell('ammo', '2026-02-11', 'LL')
-    setManualCredit('ammo', '2026-02-12', 'FO', {})
+    setDayAward('ammo', '2026-02-12', 1)
     expect(decidableIn(one('ammo', '2026-02-11'))).toBe(1)
     expect(decidableIn(one('ammo', '2026-02-12'))).toBe(0)      // an award is nobody's to decide
     expect(decidableIn(one('ammo', '2026-02-13'))).toBe(0)

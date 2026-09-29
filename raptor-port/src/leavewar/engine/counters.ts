@@ -395,7 +395,9 @@ export const FIGURES: readonly Figure[] = Object.freeze([
     desc: 'Balance of local + overseas leave: opening + granted − LL − OL',
     value: plainBal('annual'), parts: balParts('annual', ['LL', 'OL'], false) },
   { id: 'oil', label: 'OIL', title: '+OIL', kind: 'bal', counter: 'oil', used: [used('OIL', 'red')],
-    desc: "The OIL tracker's balance: earned by weekend/PH work + awarded ± corrections − taken − expired",
+    /* the whole equation, every row of the breakdown named (Astra's round-2 read, R2-06): corrections are negative, so
+       "+ corrections" takes them off; a row that is 0 is not drawn, the caption is always complete */
+    desc: "The OIL tracker's balance: opening + earned by weekend/PH work + awarded + corrections − taken − expired",
     value: (c, p) => oilLedgerOf(c, p).balance, parts: balParts('oil', ['OIL'], true) },
   { id: 'ccl', label: 'CCL', title: '+CCL', kind: 'bal', counter: 'ccl', used: [used('CCL', 'red')],
     desc: 'Child care leave balance: opening + granted − taken', value: plainBal('ccl'), parts: balParts('ccl', ['CCL'], false) },

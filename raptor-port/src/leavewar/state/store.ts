@@ -2717,7 +2717,7 @@ function clearRequestsAt(personId: string, date: string, awards = false): boolea
 let CLEAR_ONLY: ReadonlySet<string> | null = null
 function awardIdsAt(personId: string, date: string): string[] {
   if (state.role !== 'admin') return []
-  return awardsAt(personId, date).filter(e => !CLEAR_ONLY || CLEAR_ONLY.has(e.id)).map(e => e.id)
+  return awardsOnDay(personId, date).filter(e => !CLEAR_ONLY || CLEAR_ONLY.has(e.id)).map(e => e.id)
 }
 /** Take ledger entries by id — inside the caller's command (a clear's gesture), never a command of its own, so a
  *  clear that takes a bid and an award is ONE undo step (Fable's plan read F2). */
@@ -2753,7 +2753,7 @@ export function awardsIn(cells: readonly { personId: string; date: string }[]): 
 /** THE OIL AWARDS DRAWN ON ONE DAY — ledger entries, the one kind of hand-given OIL ([OIL-AWARD-IS-A-GRANT], D402).
  *  What a screen asks; the amount is the worth. */
 export function awardsOnDay(personId: string, date: string): readonly LedgerEntry[] {
-  getState()                       // the index follows the ledger on every read
+  syncAwardIndex(state.ledger)     // the index follows the ledger on every read — a writer may have just changed it
   return awardsAt(personId, date)
 }
 

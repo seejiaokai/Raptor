@@ -3,7 +3,7 @@
 import { act, fireEvent, render, screen, within } from '@testing-library/react'
 import { beforeEach, describe, expect, it } from 'vitest'
 import { INPUTS } from '../../engine/inputs'
-import { advanceStage, ingestDutyCredit, initStore, lwEditLists, rawState, setCell, setManualCredit, setPostOut, setRole, setViewer } from '../state/store'
+import { advanceStage, awardsOnDay, ingestDutyCredit, initStore, lwEditLists, rawState, setCell, setDayAward, setPostOut, setRole, setViewer } from '../state/store'
 import { memoryBackend } from '../state/storage'
 import { fileAbsence } from '../testkit'
 import { syncAbsences } from '../sync'
@@ -141,11 +141,12 @@ describe('the OIL detail blocks on a day holding both (N16, 21 Sep 26)', () => {
   const WORKED: Array<[number, number]> = [[480, 1080]]
   const both = () => {
     setRole('admin')
-    setManualCredit(P, SAT, 'FO', { note: 'Exercise recovery', givenBy: 'OC Ops', days: 3 })
+    setDayAward(P, SAT, 3, { note: 'Exercise recovery', givenBy: 'OC Ops' })
     ingestDutyCredit(P, SAT, 'FO', 'Duty', WORKED)
     const recs = rawState().wars.find(w => w.period.start <= SAT && SAT <= w.period.end)!
       .recs[P]![SAT]!.filter(r => r.kind === 'credit') as any[]
-    return { award: recs.find(r => r.oil === 'manual')!, earned: recs.find(r => r.oil === 'auto')! }
+    /* the award is a ledger entry drawn on the day ([OIL-AWARD-IS-A-GRANT]); the schedule's credit the war's own record */
+    return { award: awardsOnDay(P, SAT)[0]!, earned: recs.find(r => r.oil === 'auto')! }
   }
   const open = () => { render(<Matrix />); fireEvent.click(screen.getByTestId(`cell-${P}-${SAT}`)) }
 
@@ -183,9 +184,7 @@ describe('the OIL detail blocks on a day holding both (N16, 21 Sep 26)', () => {
     fireEvent.change(screen.getByTestId(`oil-edit-days-${award.id}`), { target: { value: '2' } })
     fireEvent.click(screen.getByTestId(`oil-edit-save-${award.id}`))
 
-    const after = rawState().wars.find(w => w.period.start <= SAT && SAT <= w.period.end)!
-      .recs[P]![SAT]!.find((r: any) => r.id === award.id) as any
-    expect(after).toMatchObject({ note: 'Recovery', givenBy: 'CO', days: 2 })
+    expect(awardsOnDay(P, SAT)[0]).toMatchObject({ id: award.id, reason: 'Recovery', givenBy: 'CO', amount: 2 })
     // and the schedule's own credit is untouched by it
     const still = rawState().wars.find(w => w.period.start <= SAT && SAT <= w.period.end)!
       .recs[P]![SAT]!.find((r: any) => r.id === earned.id) as any

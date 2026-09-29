@@ -9,7 +9,7 @@
 // keeps How many, a picked range widening what it acts on.
 import { act, fireEvent, render, screen, within } from '@testing-library/react'
 import { beforeEach, describe, expect, it } from 'vitest'
-import { advanceStage, clearCells, decideRequestById, getState, initStore, lwHistInit, rawState, setCell, setCellRange, setManualCredit, setRole, setViewer } from '../state/store'
+import { advanceStage, awardsOnDay, clearCells, decideRequestById, getState, initStore, lwHistInit, rawState, setCell, setCellRange, setDayAward, setRole, setViewer } from '../state/store'
 import { setLwOnScreen } from '../state/screen'
 import { memoryBackend } from '../state/storage'
 import { fileAbsence } from '../testkit'
@@ -28,7 +28,8 @@ beforeEach(() => {
 const P = 'dusk'
 const recsAt = (p: string, d: string) => rawState().wars[0]!.recs[p]?.[d] ?? []
 const bidsAt = (p: string, d: string) => recsAt(p, d).filter((r: any) => r.kind === 'request') as any[]
-const awardAt = (p: string, d: string) => recsAt(p, d).some((r: any) => r.kind === 'credit' && r.oil === 'manual')
+/* an award is a ledger entry drawn on its day ([OIL-AWARD-IS-A-GRANT]) */
+const awardAt = (p: string, d: string) => awardsOnDay(p, d).length > 0
 const rowOf = (testid: string) => screen.getByTestId(testid).closest('.bidsheet-row') as HTMLElement
 /** Is `a`'s row above `b`'s row in the sheet? */
 const above = (a: string, b: string) => !!(rowOf(a).compareDocumentPosition(rowOf(b)) & Node.DOCUMENT_POSITION_FOLLOWING)
@@ -87,7 +88,7 @@ describe('the one-day sheet, in order A (D331, D335)', () => {
   })
 
   it('a day holding only an OIL award offers Delete (it names the award first) and no Move', () => {
-    setManualCredit(P, '2026-02-13', 'FO', { note: 'Exercise recovery' })
+    setDayAward(P, '2026-02-13', 1, { note: 'Exercise recovery' })
     render(<Matrix />)
     fireEvent.click(screen.getByTestId(`cell-${P}-2026-02-13`))
     expect(screen.queryByTestId('decide-shift')).toBeNull()
@@ -154,7 +155,7 @@ describe('a morning and an afternoon bid — the list picks ONE (D266; Fable’s
 
 describe('a range that sweeps up an award day and an empty day (Fable’s S14)', () => {
   it('moves only the bids — "2 entries", the award named as staying — and keeps the gap between them', async () => {
-    setManualCredit(P, '2026-02-10', 'FO', {})
+    setDayAward(P, '2026-02-10', 1)
     setCell(P, '2026-02-11', 'LL')
     setCell(P, '2026-02-13', 'LL')
     render(<Matrix />)
@@ -175,7 +176,7 @@ describe('a range that sweeps up an award day and an empty day (Fable’s S14)',
 describe('a bid moved once bidding has closed says where it came from on its list line (Fable’s S4)', () => {
   it('the award on top hides the grid’s dotted mark, so the line carries it', async () => {
     setCell(P, '2026-02-11', 'LL')
-    setManualCredit(P, '2026-02-16', 'FO', {})
+    setDayAward(P, '2026-02-16', 1)
     advanceStage()
     render(<Matrix />)
     fireEvent.click(screen.getByTestId(`cell-${P}-2026-02-11`))
@@ -193,7 +194,7 @@ describe('a bid moved once bidding has closed says where it came from on its lis
 
 describe('a bid beside an OIL award — the day’s list (D265, D266)', () => {
   beforeEach(() => {
-    setManualCredit(P, '2026-02-11', 'FO', { note: 'Exercise recovery' })
+    setDayAward(P, '2026-02-11', 1, { note: 'Exercise recovery' })
     setCell(P, '2026-02-11', 'LL')
   })
 
@@ -207,7 +208,7 @@ describe('a bid beside an OIL award — the day’s list (D265, D266)', () => {
     expect(names).toEqual(['Ack', 'Approve', 'Refuse', '⇄Move', 'Delete'])
     isMoveChip(within(line).getByTestId(`dl-move-${bid.id}`))
     isDeleteChip(within(line).getByTestId(`dl-clear-${bid.id}`))
-    const award = recsAt(P, '2026-02-11').find((r: any) => r.kind === 'credit')!
+    const award = awardsOnDay(P, '2026-02-11')[0]!
     const aline = screen.getByTestId(`dl-c-${award.id}`)
     expect(within(aline).queryByTestId(`dl-move-${award.id}`)).toBeNull()
     isDeleteChip(within(aline).getByTestId(`dl-clear-${award.id}`))
@@ -314,7 +315,7 @@ describe('FR4 — Decide over a picked range, from a day with no bid (Fable 4, A
     expect([bidsAt(P, '2026-02-11')[0]?.state, bidsAt(P, '2026-02-13')[0]?.state]).toEqual(['acknowledged', 'acknowledged'])
   })
   it('a range holding nothing to decide (an award) draws no Decide', () => {
-    setManualCredit(P, '2026-02-21', 'FO', {})
+    setDayAward(P, '2026-02-21', 1)
     render(<Matrix />)
     fireEvent.click(screen.getByTestId(`cell-${P}-2026-02-20`))
     fireEvent.click(screen.getByTestId('span-range'))
