@@ -919,7 +919,10 @@ day row), day rows created in one batch on a week's first take; cross-day writes
 cross-week passes (a Delete, the posting pass, the OIL clear) and member inputs need a defined path (a placement table,
 or derived on read); Dataverse change tracking is per table, so the 30-second check needs its own change log; the
 reconcile that deletes unknown weeks must go before stage 1; Undo must follow D148 per day; unsaved changes when the lock
-is lost; release on close only, never on a phone going to the background; four more mock-up states.
+is lost; release on close only, never on a phone going to the background; four more mock-up states. **Also for the fold-in (from the parallel
+"one-time import vs wipe" chat, D54, D56, D120 — it stays out of `data-model.md`):** §7's row "One-time legacy import"
+contradicts the wipe (the shared store starts empty; only his Tracker charts cross, by Export → wipe → Import); §5's
+lead-in needs one line — the table is a FIELD MAP for the adapter, and no stored data crosses except the Tracker file.
 **Left for the build (with `[DB-STEP]`):** the `DayLock` row in `data-model.md` §11 and `src/state/perms.ts` together (the
 drift test reads every row); the test that a week record split by day and joined back is byte-identical; his six
 answers.
