@@ -26,7 +26,7 @@ the later merge keeps both (D78).
 - **The plan:** `raptor-port/docs/superpowers/plans/2026-09-29-oil-award-one-kind-plan.md` — the ledger's OIL grant is the
   one award; the grid draws it on read. Round 1 of the red team out to Fable and Astra (reports under
   `raptor-port/docs/superpowers/specs/2026-09-29-oil-award-plan-redteam-*.md`).
-- **Rulings range D401–D409** (D400 was the handoff-review chat's; D410–D419 the IT flow guide chat's). **Ports:** preview
+- **Rulings range D401–D409** (D400 was the handoff-review chat's; D410–D429 the IT flow guide chat's). **Ports:** preview
   4183, browser tests `E2E_PORT=4197`; full checks through the PC lock (D228). **Parallel (D302):** the IT flow guide chat
   (`claude/it-flow-guide-flowchart-da7ca1`) wants a message when the OIL words change and when this merges (its journeys 9
   and 10 show the Leave War) — promised.
