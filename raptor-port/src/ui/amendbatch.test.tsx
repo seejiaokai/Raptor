@@ -397,6 +397,31 @@ describe('a request taken off (or put on) a published day is ONE change — its 
     expect(t2, 'named after the load too').toContain((PEOPLE as any).bane.cs)
     expect(t2).toMatch(/Meeting[\s\S]*deleted/)
   })
+  /* [REQ-DOOR-WORDS] 3 (28 Sep 26 — Fable's D176 read F2): a request with NO row — filed "→ Unavail" — deleted after
+     the day went out read "A request · under Unavailable → deleted": nothing on the day carried its name. It is named from
+     the issued version's own record of it (snap.inp — Astra 11: never from the change history's wording). */
+  it('a request filed under Unavailable (no row), deleted after publishing: its line says whose and what', async () => {
+    const { pendListHTML } = await import('./pendlist')
+    const { removeInput } = await import('./inputedit')
+    const inp = request()
+    acceptInput(MON, inp, 'u'); publishDay(MON)
+    expect(removeInput(inp)).toBe(true)
+    expect(dayShownPendCount(MON), 'the deletion is pending').toBe(1)
+    const t = el(pendListHTML(MON)).textContent || ''
+    expect(t, 'whose').toContain((PEOPLE as any).bane.cs)
+    expect(t, 'what').toMatch(/Meeting/)
+    expect(t, 'where it stood, and what happened').toMatch(/under Unavailable[\s\S]*deleted/)
+    expect(t, 'never the nameless line').not.toMatch(/A request/)
+  })
+  it('…and one filed only AFTER the day went out, then deleted, is no change at all (D174 / D176 — nothing to name)', async () => {
+    const { removeInput } = await import('./inputedit')
+    publishDay(MON)
+    const inp = request()
+    acceptInput(MON, inp, 'u')
+    expect(dayShownPendCount(MON)).toBe(1)
+    expect(removeInput(inp)).toBe(true)
+    expect(dayShownPendCount(MON), 'back to what was issued').toBe(0)
+  })
   /* The pins Fable's read asked for (2026-09-25-d114-fable-read.md, "Test pins"): the orders the first tests did not walk. */
   it('a two-day request, its row on Monday, ✕: Monday reads one paired change, Tuesday its own one filing', async () => {
     const { dayPendingItems } = await import('../engine/publish')

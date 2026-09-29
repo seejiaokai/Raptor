@@ -80,7 +80,7 @@ whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaini
 first), [LW-SCRUBBER-FLAKY] (test-only), [LW-ISO-DATES] (low, from the
 absence-record re-test), [LW-SPARE-MOVE-DOORS] (low, with the next Leave War move change), [PO-RESTORE-POSTING] (low, from its final code read), [LW-OFFER-ONLY-TAKEABLE] (low, with [LW-LOCKMARK]), [ABSENCE-SMALL-SEEN] (any time), [LW-HARNESS-VIEWER-PIN] (test-only, low), [CI-FAIL-PICTURES] (his call, low), [LW-DOZE-GUARDS] (low, check first); the shell — [SHELL-SIDEWAYS-BAR] (low, with the next top-bar change), [SAVE-NOTE-COVERS] (medium, next), [TRK-SAVE-FAIL-SAYS-SAVED] (low, with [DB-READINESS]), [TRK-ASYNC-STALE] (with [DB-READINESS]); the Tracker — [TRK-REMOUNT-LANDING] (low, with the next Tracker change); the Inputs calendar — [INPUTSCAL-TAP-FLAKY] (test-only); the changes window — [HISTLIST-SLOW-TEST] (test-only, low). The Tracker — [TRK-PINCH-ASK] (his next Tracker session), [TRK-FLEXBAR-INK] (a question for him, on the Tracker-palette
 look card — D157, merged PR #441).
-The amendment area — PR #434, #435, #437 and #438 MERGED (25–26 Sep 26); left: [REQ-ORPHAN-ROW] and [REQ-DOOR-WORDS] (both low). Left from the amendment batch (D91–D111, merged): [AVAILWIN-PREVIEW-BAR] (low), [AMEND-SMALL-SEEN] (any time). The docs and the checks — [DEPLOY-DOCS] (its operational half), [DOC-POINTERS-CODE] and
+The amendment area — PR #434, #435, #437 and #438 MERGED (25–26 Sep 26); left: [REQ-ORPHAN-ROW] and [REQ-DOOR-WORDS] (both low; built on `claude/small-fixes-batch-d223f6`), [PLAN-BANNER-DOOR] (low, filed by that batch's walk), [ROW-NO-TIME-MARK] (low, a future job, D361), [APP-FONTS-NOT-LOADED] (his call — found 29 Sep 26; every measured width rides on it), [GATELOCK-STALE-LIVE] (low, the check lock's stale rule). Left from the amendment batch (D91–D111, merged): [AVAILWIN-PREVIEW-BAR] (low), [AMEND-SMALL-SEEN] (any time). The docs and the checks — [DEPLOY-DOCS] (its operational half), [DOC-POINTERS-CODE] and
 [RULINGS-LF-PIN] (with the next code change), [PEEK-ISSUED] (a question for him, low), [RULING-HOME-HOOK] (low), [GUIDE-MAP-ROWS] (low, a question for him) — [DOC-SUBHEADS], [RULING-HOMES-AUDIT]
 and [HANDOFF-SHAPE-GUARD] done on `claude/docs-tidy-subheads-audit-ec8f87` (28 Sep 26; archived),
 Roles — [QUALS-MEMBER-SCOPE] (folded into [ACCOUNTS], D200), and beside it [QUALS-PROTO-TOAST] (low, one line of words).
@@ -1009,6 +1009,27 @@ records, so they join this item: when settings are cut over to the one undo, an 
 guards `[ACCOUNTS]` enforces at the write (at least one admin keeps access; an admin never changes his own account),
 or an undo could lock the squadron out.
 
+### [APP-FONTS-NOT-LOADED] The app names its fonts but never loads them — every device draws a different one (found 29 Sep 26)
+Found by the small-fixes PR's check on GitHub's Linux machines: "a flying line's callsign shows six letters whole" passed on
+the Windows PC and failed there (W6LINE cut on the phone edit week). `scheduler.css` asks for 'Inter Tight' (the body) and
+'JetBrains Mono' (times, codes), but nothing in the app loads either — no `@font-face`, no font link, no font package (searched
+29 Sep 26). So each device falls back to its own system font: Segoe UI on Windows, San Francisco on an iPhone, Roboto on
+Android, DejaVu on the Linux check machines. Measured at 9.5px bold (29 Sep 26): W6LINE is 35 (Segoe) / 34 (Roboto) /
+36 (Helvetica, near San Francisco) / 43px (a DejaVu-width face); RANGER 38 / 37 / 41 / 45px — so a width "measured" in
+`scheduler.css` holds on the machine it was measured on and may not on his phone. Every measured contract there (the
+puck's 74px, the time boxes sized for "hh:mm" in JetBrains Mono, the callsign column) carries the same assumption.
+**To do:** his call on the direction — ship the two fonts with the app (self-hosted files, ~100–200 KB, one look on every
+device and every check machine; every measured width re-measured once, a wide visual change) or name a system font per
+platform and measure on the widest. **Place:** his call; before the database step is fine.
+
+### [ROW-NO-TIME-MARK] A "?" where a row has no timing or no end time (filed 29 Sep 26, D361)
+**Owner, 29 Sep 26 (D361):** *"In the future I think there’s a ? Shown if no timing or end time is entered. As a future job
+I think."* Today a row with a start and no end shows nothing missing on the row itself; only an ALL AVAIL on it names the
+assumed hour, in the window its count opens (D360, D361 — a "~" on the count was mocked up and declined). A row with NO start
+already makes its ALL AVAIL count a "?" (D360 (4)). **To do:** scope it with him first — which rows (programme, duties,
+sims, ground; the flying line's times?), where the "?" sits (the empty time box, or beside it), what a tap or hover says,
+and whether a published face prints it. LOOK tier. **Place:** low; a future job, his "as a future job I think".
+
 ### [UNDO-TOPBAR] Every Undo / Redo pair in the top bar, laid out as Edit Schedule's — desktop and phone (D347, 28 Sep 26)
 His ruling D347 (`.claude/rules/decisions/how-we-work.md`): *"all undo and redo buttons should be at the top bar …
 standardised … Like how the edit schedule is"* · *"Review both desktop and mobile too"*. Today the pair is in the top bar
@@ -1075,6 +1096,7 @@ mock-up first (the Leave War and Quals first; Admin and Logic only if he wants t
 change-recording re-test; none blocking.
 
 ### [AVAILWIN-PREVIEW-BAR] On the desktop board the ALL AVAIL window, opened from a preview, covers the preview bar (found 24 Sep 26)
+**BUILT 28 Sep 26 on `claude/small-fixes-batch-d223f6`** (the small-fixes batch; evidence `raptor-port/docs/handpass/2026-09-28-small-fixes.md`; plan `raptor-port/docs/superpowers/plans/2026-09-28-small-fixes-batch-plan.md`) — both floating windows open below the board's preview bar (`ui/floatwin.ts BOARD_BAR`); to the archive with the merge.
 Found by the amendment re-test's walker W2 (W2-F7). Saturday's board → plans selector → Original → tap the ALL AVAIL
 count: the window docks top-right (`raptor-port/src/ui/scheduler.css`, its default right/top) exactly over the board's
 preview bar — "Load onto working copy" hidden, "← Back to live copy" mostly covered. It can be dragged aside by its
@@ -1082,6 +1104,7 @@ grip; the week and the phone board are fine. **To do:** open it below the bar wh
 it clear of the bar always). LOOK tier. **Place:** low; with the next [ALL-AVAIL-WINDOW] or board change.
 
 ### [AMEND-SMALL-SEEN] Small things the amendment re-test saw in passing (24 Sep 26)
+**BUILT 28 Sep 26 on `claude/small-fixes-batch-d223f6`** (the small-fixes batch; evidence `raptor-port/docs/handpass/2026-09-28-small-fixes.md`; plan `raptor-port/docs/superpowers/plans/2026-09-28-small-fixes-batch-plan.md`) — items 1 (a publish's messages joined; Unpublish says what it did), 3 (six-letter callsigns), 4 (the time's AL tag under the time; the arrow half answered by D275) and 9 (Sort keeps the sign-offs, on a published day too) built; item 5 (AL8's colour) is a question on its look card. Items 2 and 6–8 stay with their own chats.
 None breaks an amendment rule; each is a line to fix or ask about, from the walkers' reports
 (`raptor-port/docs/handpass/parts/2026-09-24-amendment-w1.md` §5, `-w4.md` §6):
 1. **Saturday's "Published AL1 · 14 items" toast** is replaced in the same instant by the OIL warning; the person only
@@ -1096,7 +1119,7 @@ None breaks an amendment rule; each is a line to fix or ask about, from the walk
    ("ATT C") on the desktop week (the absence-record re-test's re-walk, W2, 26 Sep 26 — pictures
    `raptor-port/docs/img/handpass/2026-09-26-absence/rewalk/w2/rw-w2-05-desktop-P4a-face`, `-P4b-working-copy`); one fix
    with `[VIEW-ARROW-OVER-LIST]`.
-5. **AL7 and AL8** are the same orange; the register names no colour past AL7 (ask him if it matters).
+5. **AL7 and AL8** are the same orange; the register names no colour past AL7 (ask him if it matters). **ANSWERED 29 Sep 26 — D362: leave it.**
 6. **Leave War, phone:** a man's figure sheet sends the grid back to 1 January, and it stays there after the sheet
    closes (desktop keeps its place). **Its sharper form (the absence-record re-test, W4, 26 Sep 26):** for a late joiner
    or a posted-out man, the jump takes his ROW off the screen — in January he is not in the squadron, so the row the
@@ -1125,6 +1148,7 @@ the same walk, small: straight after a window resize a day can sit partly under 
 never re-lands the week); "day a–b of 7" counts a third day that shows only ~212px at 1440. **Place:** his answer; low.
 
 ### [GHOST-FLAG-SHADOW] A dragged flagged puck loses the ghost's dark "lifted" shadow (filed 26 Sep 26)
+**BUILT 28 Sep 26 on `claude/small-fixes-batch-d223f6`** (the small-fixes batch; evidence `raptor-port/docs/handpass/2026-09-28-small-fixes.md`; plan `raptor-port/docs/superpowers/plans/2026-09-28-small-fixes-batch-plan.md`) — the ghost keeps its own ring and its depth rides the veil (`scheduler.css .lift`); to the archive with the merge.
 The five-flags walk (W1, `…/w1/B2-desktop-mouse-ghost-of-saber.png`): the ghost clones the puck, and a flagged puck's red
 ring (`.puck.boxred`, `!important`) replaces the depth shadow `.dragimg.lift` adds, so the carried puck keeps its red ring
 and the cyan veil but not the shadow that makes it read as lifted. Anyone's flagged puck; the same on `main`. **Do:** carry
@@ -1139,11 +1163,16 @@ reset) survives a page switch while the sheet stays open. **Do, if wanted:** giv
 predicate; disarm both on leaving the page. **Place:** low, any time.
 
 ### [ALLAVAIL-OPEN-ROW] An ALL AVAIL on an open-ended row shows no count chip — not yet looked at (filed 26 Sep 26)
+**BUILT 28 Sep 26 on `claude/small-fixes-batch-d223f6`** (the small-fixes batch; evidence `raptor-port/docs/handpass/2026-09-28-small-fixes.md`; plan `raptor-port/docs/superpowers/plans/2026-09-28-small-fixes-batch-plan.md`) — D360 built — the count over the assumed length, no OIL, the admin told why; a row with no start gets its own "?"; to the archive with the merge.
 Seen in passing by the five-flags walk (W1): ALL AVAIL placed on DINNER WITH CMD (18:30, no end time) drew no count chip,
 so that row has no door into the ALL AVAIL window. Possibly D31's "nothing to measure" refusal, as designed — check
 against D31/D41 first. **Place:** low, investigate before building anything.
+**Investigated 28 Sep 26 (the small-fixes batch): a gap, not D31 — the count rides the OIL walk, which skips a row
+without both times. His answer, D360 ("ok, need to say something like no oil worked out due end time to the admin"):
+build the count over the one-hour default, credit nobody, and say so to the admin.** Building on `claude/small-fixes-batch-d223f6`.
 
 ### [REQ-ORPHAN-ROW] A request's row outliving the request — low (25 Sep 26)
+**BUILT 28 Sep 26 on `claude/small-fixes-batch-d223f6`** (the small-fixes batch; evidence `raptor-port/docs/handpass/2026-09-28-small-fixes.md`; plan `raptor-port/docs/superpowers/plans/2026-09-28-small-fixes-batch-plan.md`) — one request, one row across stored weeks (`engine/weekstash.ts rowElsewhere`); a delete never leaves a dead row; its (2) is a question on the look card; to the archive with the merge.
 Two older shapes, the same on `main`: (1) Fable's O2 — a request deleted on the Inputs page while its row stands on a
 day of ANOTHER (not loaded) week: `unacceptInput` searches only the loaded days, so that row stays with a dead link and
 its day reads 1 pending; (2) seen in the D114 walk, step 8 — a published day's version loaded after one of its
@@ -1161,7 +1190,14 @@ the stashed weeks' `ground` by `src`, read by all four, closes both. `engine-rul
 leaves 'r' alone), its Accept does nothing, and deleting the request leaves the row with a dead link. Fix: re-file 'r' to
 'g' when its own row stands on a loaded day, or `dropInputRow` removes any row with the deleted id whatever the filing.
 
+### [GATELOCK-STALE-LIVE] The check lock is broken as "stale" on age alone — it nearly cut into a live run — low (filed 28 Sep 26)
+Found by the small-fixes batch (28 Sep 26): its `gatelock.mjs run` was queued behind the Tracker-leftovers chat, which had taken the PC check lock by hand ~2 h earlier and was running its Tracker smoke under it. The waiter breaks any lock older than 2 hours (`STALE_MS`), and the pid in `owner.txt` is the `take` command's (gone at once), so nothing distinguished a live run from a dead one; the queued run was stopped by hand three minutes before it would have broken the lock. **The fix:** a heartbeat — the holder touches `owner.txt` while its work runs (`run` does it itself; a hand-taken lock is refreshed by `gatelock.mjs beat`, or by each suite it runs) and "stale" means no heartbeat for, say, 20 minutes; the owner file names the session, not the take command's pid. `raptor-port/scripts/gatelock.test.*` gains the case. Until then: ask the holder before a queued run reaches the 2-hour mark (D302). **Place:** low, any time — docs/scripts only; `shipping.md` §The checks describes the stale rule and changes with it.
+
+### [PLAN-BANNER-DOOR] The preview banner's "Switch to this plan" has no screen route — low (filed 28 Sep 26)
+Found by the small-fixes batch's walk (`raptor-port/scripts/handpass/sf/sf-f-banner.mjs`) while walking `[REQ-DOOR-WORDS]` 1, which made that button say the switch in the plans menu's own words. The button is drawn only on an EDIT surface (`html.ts`, `vsel`) over a PLAN preview ('d:'), and no screen reaches one: Edit Schedule's plans menu previews issued versions only and switches plans directly, View-only Sched's plan picker shows the plan's banner read-only (no Switch), and that preview does not carry over to Edit Schedule. So the button, its handler (`interactions.ts` `data-draftgo`) and the wording fix are reachable only by a test. **To decide:** retire the door (as `[LW-SPARE-MOVE-DOORS]` retired the war's unused move doors), or give it a route (a plan preview on the edit surfaces). Not a defect a person can meet today. **Place:** low, with the next change to the plans menu or the preview bar.
+
 ### [REQ-DOOR-WORDS] Two small door-wording gaps around a request's row — low (25 Sep 26)
+**BUILT 28 Sep 26 on `claude/small-fixes-batch-d223f6`** (the small-fixes batch; evidence `raptor-port/docs/handpass/2026-09-28-small-fixes.md`; plan `raptor-port/docs/superpowers/plans/2026-09-28-small-fixes-batch-plan.md`) — 1 (the banner's switch in the menu's words — its door has no screen route: `[PLAN-BANNER-DOOR]`), 2 (the Undo names its day) and 3 (a deleted request named without a row); to the archive with the merge.
 Fable's code read on D175's branch (F4, F5), both older: (1) one act, two sentences — the preview banner's "Switch to this plan"
 (`raptor-port/src/ui/interactions.ts`, `data-draftgo`) words the switch differently from the plans menu and the plan
 editor (`board.ts switchDraft`) and lacks its "· N differences from ORIG pending" tail; the fix is the banner calling
@@ -1174,6 +1210,7 @@ Unavailable → deleted" — Fable's D176 read F2; the name must come from the e
 window (`[DRAFT-PENDING]`) or any time.
 
 ### [LW-ISO-DATES] Three Leave War places print the raw machine date — low (the absence-record re-test, W4-2, 26 Sep 26)
+**BUILT 28 Sep 26 on `claude/small-fixes-batch-d223f6`** (the small-fixes batch; evidence `raptor-port/docs/handpass/2026-09-28-small-fixes.md`; plan `raptor-port/docs/superpowers/plans/2026-09-28-small-fixes-batch-plan.md`) — two date voices, every sheet (`leavewar/ui/dates.ts`); to the archive with the merge.
 The bid sheet's header and its PI / PO buttons ("Ranger 2026-07-17", "Post in from 2026-08-10"), the selection sheet's
 header for ONE day ("Saint 2026-08-06 · 1 day" — a two-day one reads "6 Aug 26 – 7 Aug 26") and the move banner's refusal
 ("That lands on 2026-08-12 which is already booked") print the stored date; the tap list beside them reads "Sat 18 Jul".
@@ -1184,6 +1221,7 @@ Leave War sheet together, with their tests (many tests pin these strings). Evide
 `raptor-port/docs/handpass/parts/2026-09-26-absence-w4.md` §W4-2. **Place:** low, any time; not his ruling.
 
 ### [LW-SPARE-MOVE-DOORS] Two old move doors no screen uses any more — low (Fable's final read, 27 Sep 26)
+**BUILT 28 Sep 26 on `claude/small-fixes-batch-d223f6`** (the small-fixes batch; evidence `raptor-port/docs/handpass/2026-09-28-small-fixes.md`; plan `raptor-port/docs/superpowers/plans/2026-09-28-small-fixes-batch-plan.md`) — `shiftBid` / `moveAbsenceById` retired, their tests through the one door; to the archive with the merge.
 Since `[LW-MOVE-STANDARD]` every move goes through `store.ts moveRecords` (the records it picked). `shiftBid` (the old
 single-bid mover — it reads the day's TOP record) and `moveAbsenceById` (the day's list's old date-box move) now have no
 production caller, only their tests; two doors that read differently from the one in use will drift. **Do:** retire both
@@ -1217,6 +1255,7 @@ root). Not checked against `main` by the walker; the free-half rule predates thi
 `raptor-port/docs/handpass/parts/2026-09-26-absence-rewalk-w3.md`.
 
 ### [ABSENCE-SMALL-SEEN] Small things the absence-record re-test saw in passing (26 Sep 26)
+**BUILT 28 Sep 26 on `claude/small-fixes-batch-d223f6`** (the small-fixes batch; evidence `raptor-port/docs/handpass/2026-09-28-small-fixes.md`; plan `raptor-port/docs/superpowers/plans/2026-09-28-small-fixes-batch-plan.md`) — 1 (each clash line's way out), 2 (the VIEWING AS chip on a phone), 3 (with `[AMEND-SMALL-SEEN]` 3), 4 (the read-only window's look — before/after on the look card) built; 5 watched at 390 (nothing found); to the archive with the merge.
 None breaks an absence rule; each is a line to fix or ask about, from the re-walkers' sheets
 (`raptor-port/docs/handpass/parts/2026-09-26-absence-rewalk-w{1..6}.md`):
 1. **The Leave War's clash strip** says "… — resolve on the sheet", but the day's sheet has no control to resolve it

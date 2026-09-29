@@ -23,7 +23,7 @@
    scheduler sees the overlap and judges it. The availability window stays
    narrow precisely because the app's job here is to SURFACE the clash, not to
    remove him from the list. Do not let this drift into filtering him out. */
-import { useFloatWin, frontWin, raiseWin } from './floatwin'
+import { useFloatWin, frontWin, raiseWin, BOARD_BAR } from './floatwin'
 import { notify } from '../state/store'
 import { PEOPLE } from '../engine/people'
 import { seatShown, byCrewShown } from '../engine/faceattrs'
@@ -32,7 +32,7 @@ import { useVersion } from './useStore'
 import { canEditSched } from '../state/auth'
 import { esc, selectPerson } from '../state/view'
 import { personPuckHTML, personWarnMsgs, withChipWorld } from './html'
-import { oilModeOn, oilSeatHTML, toggleOilPerson, oilFigureFor, oilBlanketOn, oilItemMasked, oilFromWords, oilItemLabel, oilItemHistName, oilPersonSays, evOf } from './oilmode'
+import { oilModeOn, oilSeatHTML, toggleOilPerson, oilFigureFor, oilBlanketOn, oilItemMasked, oilFromWords, oilItemLabel, oilItemHistName, oilPersonSays, evOf, OIL_OPEN_END } from './oilmode'
 import { draftVerLabel } from '../engine/drafts'
 import { oilSentOf, oilReadPass } from '../engine/oilev'
 import { logAction } from '../engine/editlog'
@@ -85,6 +85,7 @@ export function AvailWindow() {
   const open = AVAILWIN
   const { el, onBarDown, onBarMove, onBarUp } = useFloatWin({
     open: !!open, getBox: () => AVAILWIN_BOX, setBox: setAvailWinBox, deps: [open && open.di, open && open.item],
+    ...BOARD_BAR,                           // never over the board's preview bar ([AVAILWIN-PREVIEW-BAR])
   })
 
   if (!open) return <div className="availwin" hidden />
@@ -308,8 +309,12 @@ export function AvailWindow() {
      whole day switched off, "tap a puck to stop a man earning" invited a tap
      that can only be refused. It says what IS true and where the way out is. */
   const masked = oil && !ver && oilItemMasked(di, item)
+  /* A ROW WITH A START AND NO END ([ALLAVAIL-OPEN-ROW], D360 — "need to say something like no oil worked out due end
+     time to the admin"): its crowd is counted over the assumed hour the title names, but the OIL half — where OIL is
+     decided — says nobody is credited from it, and why, on the working copy and on an issued record alike. */
   const hint = !m ? '' : AVAILWIN_FOOT || (m.lost ? '' : oil
-    ? (ver ? 'Who earned OIL on the day as it was issued.'
+    ? (m.lbl.assumed ? `${OIL_OPEN_END}.`
+      : ver ? 'Who earned OIL on the day as it was issued.'
       : masked ? (oilBlanketOn(di)
         ? 'Nothing on this day earns. Turn that off to switch men one by one.'
         : 'This event earns nobody. Turn it back on to switch men one by one.')

@@ -1,71 +1,18 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import {
-  advanceStage,
-  getState,
-  getVersion,
-  initStore,
-  lwCanRedo,
-  lwCanUndo,
-  lwRedo,
-  lwUndo,
-  setBidState,
-  setCell,
-  createWar,
-  selectWar,
-  setRole,
-  setBidWindow,
-  setCellRange,
-  setDayEvent,
-  setDayEventRange,
-  addEventBand,
-  removeEventBand,
-  moveEvent,
-  moveEventProblem,
-  addEventType,
-  grantOil,
-  grantTo,
-  reasonRequired,
-  HALF_STEP_MSG,
-  setCellNote,
-  updateLedgerEntry,
-  removeLedgerEntry,
-  setOilPolicy,
-  setBalance,
-  figureCtxOf,
-  updateEventType,
-  removeEventType,
-  resetEventTypes,
-  addEventRow,
-  removeEventRow,
-  eventRowUsed,
-  MAX_EVENT_ROWS,
-  setManningThreshold,
-  resetManningThreshold,
-  saveManningRule,
-  deleteManningRule,
-  resetManningRules,
-  setQualCatalog,
-  orderedManningIds,
-  moveManningRow,
-  toggleManningRow,
-  setPeople,
-  setPerson,
-  clearBidWindow,
-  shiftBid,
-  reopenStage,
-  subscribe,
-  setCells,
-  clearCells,
-  setBidStates,
-  moveCells,
-  movableCells,
-  moveProblem,
-  setViewer,
+  advanceStage, getState, getVersion, initStore, lwCanRedo, lwCanUndo, lwRedo, lwUndo, setBidState, setCell, createWar, selectWar, setRole, setBidWindow, setCellRange, setDayEvent, setDayEventRange, addEventBand, removeEventBand, moveEvent, moveEventProblem, addEventType, grantOil, grantTo, reasonRequired, HALF_STEP_MSG, setCellNote, updateLedgerEntry, removeLedgerEntry, setOilPolicy, setBalance, figureCtxOf, updateEventType, removeEventType, resetEventTypes, addEventRow, removeEventRow, eventRowUsed, MAX_EVENT_ROWS, setManningThreshold, resetManningThreshold, saveManningRule, deleteManningRule, resetManningRules, setQualCatalog, orderedManningIds, moveManningRow, toggleManningRow, setPeople, setPerson, clearBidWindow, reopenStage, subscribe, setCells, clearCells, setBidStates, moveCells, movableCells, moveProblem, setViewer,
 } from './store'
 import { FIGURES, figureParts, makeWar, seedRequirements, type CounterName } from '../engine'
 import { balanceOf, figureLines } from '../engine/counters'
 import { localBackend, memoryBackend } from './storage'
 import { fileAbsence } from '../testkit'
+/* [LW-SPARE-MOVE-DOORS] (28 Sep 26): the old one-bid mover `shiftBid` is RETIRED — every move goes through the one door,
+   `moveRecords`, which the grid, the one-day sheet and the day's list all use. These tests keep what they pinned by asking
+   that door the way a drag of the day does (`moveCells`, the store's kept cell adapter over it) and answering in the old
+   words ('shifted' / the refusal's reason). */
+const bidGap = (a: string, b: string) => Math.round((Date.UTC(+b.slice(0, 4), +b.slice(5, 7) - 1, +b.slice(8, 10)) - Date.UTC(+a.slice(0, 4), +a.slice(5, 7) - 1, +a.slice(8, 10))) / 86400000)
+const moveBidVia = (pid: string, from: string, to: string) => { const r = moveCells([{ personId: pid, date: from }], bidGap(from, to)); return r === 'moved' ? 'shifted' : r.reason }
+
 
 beforeEach(() => {
   initStore(memoryBackend())
@@ -453,7 +400,7 @@ describe('shifting a bid', () => {
   // they actually do when a week goes red and refusing outright is too blunt.
   it('moves the code to the new date and empties the old one', () => {
     setCell('dusk', '2026-02-11', 'LL')
-    expect(shiftBid('dusk', '2026-02-11', '2026-02-18')).toBe('shifted')
+    expect(moveBidVia('dusk', '2026-02-11', '2026-02-18')).toBe('shifted')
     expect(getState().grid.dusk?.['2026-02-11']).toBeUndefined()
     expect(getState().grid.dusk['2026-02-18']).toBe('LL')
   })
@@ -466,7 +413,7 @@ describe('shifting a bid', () => {
     setRole('admin'); advanceStage()
     setCell('dusk', '2026-02-11', 'LL')
     setBidState('dusk', '2026-02-11', 'acknowledged')
-    shiftBid('dusk', '2026-02-11', '2026-02-18')
+    moveBidVia('dusk', '2026-02-11', '2026-02-18')
     expect(getState().states.dusk['2026-02-18']).toEqual({
       state: 'pending', source: 'bid', shiftedFrom: '2026-02-11',
     })
@@ -475,14 +422,14 @@ describe('shifting a bid', () => {
 
   it('keeps the portion — a shifted morning is still a morning', () => {
     setCell('dusk', '2026-02-11', '*LL')
-    shiftBid('dusk', '2026-02-11', '2026-02-18')
+    moveBidVia('dusk', '2026-02-11', '2026-02-18')
     expect(getState().grid.dusk['2026-02-18']).toBe('*LL')
   })
 
   it('approving afterwards keeps the trail', () => {
     setRole('admin'); advanceStage()   // a management shift once bidding closed
     setCell('dusk', '2026-02-11', 'LL')
-    shiftBid('dusk', '2026-02-11', '2026-02-18')
+    moveBidVia('dusk', '2026-02-11', '2026-02-18')
     setBidState('dusk', '2026-02-18', 'approved')
     expect(getState().states.dusk['2026-02-18']).toEqual({
       state: 'approved', source: 'bid', shiftedFrom: '2026-02-11',
@@ -494,12 +441,12 @@ describe('shifting a bid', () => {
   // (owner, 27 Aug 26). It records the trace only once bidding has closed.
   it('an OPEN-bidding shift records no moved trail; a closed one does', () => {
     setCell('dusk', '2026-02-11', 'LL')            // seed stage is OPEN
-    expect(shiftBid('dusk', '2026-02-11', '2026-02-18')).toBe('shifted')
+    expect(moveBidVia('dusk', '2026-02-11', '2026-02-18')).toBe('shifted')
     expect(getState().states.dusk['2026-02-18']).toEqual({ state: 'pending', source: 'bid' })
     expect(getState().states.dusk['2026-02-18'].shiftedFrom).toBeUndefined()
     // close the war and shift again → NOW the trail is recorded
     setRole('admin'); advanceStage()
-    expect(shiftBid('dusk', '2026-02-18', '2026-02-25')).toBe('shifted')
+    expect(moveBidVia('dusk', '2026-02-18', '2026-02-25')).toBe('shifted')
     expect(getState().states.dusk['2026-02-25']).toEqual({
       state: 'pending', source: 'bid', shiftedFrom: '2026-02-18',
     })
@@ -510,27 +457,29 @@ describe('shifting a bid', () => {
   it('refuses a destination that already holds a code', () => {
     setCell('dusk', '2026-02-11', 'LL')
     setCell('dusk', '2026-02-18', 'OL')
-    expect(shiftBid('dusk', '2026-02-11', '2026-02-18')).toBe('occupied')
+    expect(moveBidVia('dusk', '2026-02-11', '2026-02-18')).toBe('occupied')
     expect(getState().grid.dusk['2026-02-11']).toBe('LL')
     expect(getState().grid.dusk['2026-02-18']).toBe('OL')
   })
 
   it('refuses to move leave filed on the Inputs page', () => {
     fileAbsence('dusk', 'LL', '2026-02-11')
-    expect(shiftBid('dusk', '2026-02-11', '2026-02-18')).toBe('raptor')
+    expect(moveBidVia('dusk', '2026-02-11', '2026-02-18')).toBe('raptor')
     expect(getState().grid.dusk['2026-02-11']).toBe('LL')
     expect(getState().grid.dusk?.['2026-02-18']).toBeUndefined()
   })
 
   it('refuses to move a cell that holds no bid', () => {
-    expect(shiftBid('dusk', '2026-02-11', '2026-02-18')).toBe('nothing')
+    expect(moveBidVia('dusk', '2026-02-11', '2026-02-18')).toBe('nothing')
     setCell('dusk', '2026-02-11', 'CSE')
-    expect(shiftBid('dusk', '2026-02-11', '2026-02-18')).toBe('nothing')
+    expect(moveBidVia('dusk', '2026-02-11', '2026-02-18')).toBe('nothing')
   })
 
   it('refuses to move a bid onto the date it is already on', () => {
     setCell('dusk', '2026-02-11', 'LL')
-    expect(shiftBid('dusk', '2026-02-11', '2026-02-11')).toBe('occupied')
+    /* the one door answers a zero move 'nothing' (the grid says "already on that day" — moveone.test.tsx); the old
+       one-bid mover said 'occupied'. Either way nothing moves ([LW-SPARE-MOVE-DOORS]). */
+    expect(moveBidVia('dusk', '2026-02-11', '2026-02-11')).toBe('nothing')
     expect(getState().grid.dusk['2026-02-11']).toBe('LL')
   })
 
@@ -538,7 +487,7 @@ describe('shifting a bid', () => {
     setCell('dusk', '2026-02-11', 'LL')
     setCell('dusk', '2026-02-18', 'OL')
     const before = getVersion()
-    shiftBid('dusk', '2026-02-11', '2026-02-18')
+    moveBidVia('dusk', '2026-02-11', '2026-02-18')
     expect(getVersion()).toBe(before)
   })
 
@@ -547,7 +496,7 @@ describe('shifting a bid', () => {
     initStore(backend)
     setRole('admin'); advanceStage()   // closed, so the shift leaves a trail
     setCell('dusk', '2026-02-11', 'LL')
-    shiftBid('dusk', '2026-02-11', '2026-02-18')
+    moveBidVia('dusk', '2026-02-11', '2026-02-18')
     initStore(backend)
     expect(getState().states.dusk['2026-02-18'].shiftedFrom).toBe('2026-02-11')
   })
@@ -560,7 +509,9 @@ describe('shifting a bid', () => {
   it('a member cannot shift a bid once bidding has closed', () => {
     setCell('dusk', '2026-02-11', 'LL')
     setRole('admin'); advanceStage(); setRole('member')
-    expect(shiftBid('dusk', '2026-02-11', '2026-02-18')).toBe('window')
+    /* once bidding has closed a member's bid is not a record HE may move (D333: his own bid, while bidding is open) — the
+       one door answers 'nothing' (the old mover said 'window'); either way it does not move ([LW-SPARE-MOVE-DOORS]) */
+    expect(moveBidVia('dusk', '2026-02-11', '2026-02-18')).toBe('nothing')
     expect(getState().grid.dusk['2026-02-11']).toBe('LL')
     expect(getState().grid.dusk?.['2026-02-18']).toBeUndefined()
   })
@@ -569,7 +520,7 @@ describe('shifting a bid', () => {
     setRole('admin')
     setCell('dusk', '2026-02-11', 'LL')
     advanceStage()
-    expect(shiftBid('dusk', '2026-02-11', '2027-02-18')).toBe('window')
+    expect(moveBidVia('dusk', '2026-02-11', '2027-02-18')).toBe('window')
     expect(getState().grid.dusk['2026-02-11']).toBe('LL')
     expect(getState().grid.dusk?.['2027-02-18']).toBeUndefined()
   })
@@ -580,8 +531,8 @@ describe('shifting a bid', () => {
   it('a chain of closed-war shifts keeps the ORIGINAL origin in the trail', () => {
     setRole('admin'); advanceStage()
     setCell('dusk', '2026-02-11', 'LL')
-    shiftBid('dusk', '2026-02-11', '2026-02-18')
-    shiftBid('dusk', '2026-02-18', '2026-02-25')
+    moveBidVia('dusk', '2026-02-11', '2026-02-18')
+    moveBidVia('dusk', '2026-02-18', '2026-02-25')
     expect(getState().states.dusk['2026-02-25'].shiftedFrom).toBe('2026-02-11')
   })
 })

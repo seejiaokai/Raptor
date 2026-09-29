@@ -274,3 +274,98 @@ test('desktop: tapping a second chip while the window is open keeps it where he 
   expect(await page.locator('.availwin .win-ttl').innerText(), 'the second event is showing').toContain('OPS BRIEF')
   expect(r.left, 'in the place he put it').toBe(placed.left)
 })
+
+/* ---- [AVAILWIN-PREVIEW-BAR] (28 Sep 26) — NEVER OVER THE BOARD'S PREVIEW BAR ------------------------------------
+   On a preview the board's side column opens with the bar that is the way home — "← Back to live copy", "Load onto
+   working copy" (and, armed, "Discard N edits & load — confirm" / "Keep editing"). Both floating windows (ALL AVAIL,
+   the changes window) sat in the stylesheet's corner right over it (the amendment re-test, W2-F7). A window he has NOT
+   placed now opens just below the bar, and follows it when the bar appears, grows or goes; a window he dragged or
+   resized is never moved. Pure geometry — only a real browser can say what a finger at a button's centre lands on. */
+const PREVIEW_DESK = { width: 1440, height: 900 }
+async function publishedBoard(page: Page) {
+  await login(page, 'a')
+  await go(page, 'editsched')
+  await page.evaluate(() => {
+    const w = window as any
+    w.DAYS[0].allhands = [{ prog: 'SAFETY BRIEF', str: '08:00', end: '10:00', who: 'allavail' }]
+    w.afterSchedMutate()
+    const g = w.signOf(0); g.cur = 'ignite'; g.sked = 'bane'; g.plan = 'stiff'; g.appr = 'pump'
+    w.setDayApproved(0, true)
+    w.openScheduler(0)
+  })
+  await page.waitForSelector('#schedBoard:not([hidden]) [data-oilsent]', { state: 'visible' })
+}
+const previewOriginal = (page: Page) => page.evaluate(() => { const w = window as any; w.setDayPreview(0, w.dayCurVer(0)) })
+/* each preview-bar button: is it what a finger at its centre lands on? and the bar's rect */
+const barHits = (page: Page) => page.evaluate(() => {
+  const bar = [...document.querySelectorAll('#schedBoard .dprev-bar')].find(x => (x as HTMLElement).offsetWidth) as HTMLElement | undefined
+  if (!bar) return { bar: null as null | number[], hits: [] as string[] }
+  const r = bar.getBoundingClientRect()
+  return { bar: [r.left, r.top, r.right, r.bottom], hits: [...bar.querySelectorAll('button')].map(b => {
+    const q = b.getBoundingClientRect(); const at = document.elementFromPoint(q.left + q.width / 2, q.top + q.height / 2)
+    return `${(b as HTMLElement).innerText.trim()}: ${at && (at === b || b.contains(at)) ? 'reachable' : 'COVERED'}` }) }
+})
+const rectOf = (page: Page, sel: string) => page.evaluate(s => {
+  const w = [...document.querySelectorAll(s)].find(x => !(x as HTMLElement).hidden && (x as HTMLElement).offsetWidth) as HTMLElement
+  const r = w.getBoundingClientRect(); return { top: Math.round(r.top), bottom: Math.round(r.bottom), left: Math.round(r.left), right: Math.round(r.right) }
+}, sel)
+
+for (const [label, size] of [['1440×900', PREVIEW_DESK], ['1440×700', { width: 1440, height: 700 }]] as const) {
+  for (const [name, sel] of [['ALL AVAIL', '.availwin'], ['changes', '.chgwin']] as const) {
+    test(`desktop ${label}: the ${name} window opens clear of the board's preview bar, and follows it`, async ({ page }) => {
+      await page.setViewportSize(size)
+      await publishedBoard(page)
+      await previewOriginal(page)
+      await page.waitForSelector('#schedBoard .dprev-bar', { state: 'visible' })
+      if (sel === '.availwin') await page.locator('#schedBoard .pv-frozen [data-oilsent]:visible').first().click()
+      else await page.click('#sbHist')
+      await page.waitForSelector(`${sel}:not([hidden])`, { state: 'visible' })
+      let b = await barHits(page), w = await rectOf(page, sel)
+      expect(b.hits.length, 'the bar has its buttons').toBeGreaterThan(0)
+      for (const h of b.hits) expect(h, 'every button of the bar is reachable').toMatch(/reachable$/)
+      expect(w.top, 'the window starts below the bar').toBeGreaterThanOrEqual(Math.round(b.bar![3]))
+      expect(w.bottom, 'and ends on the screen').toBeLessThanOrEqual(size.height)
+      /* back to live: no bar, so the window goes back to the stylesheet's corner */
+      await page.click('#schedBoard .dprev-bar [data-golive]')
+      await page.waitForTimeout(250)
+      expect((await rectOf(page, sel)).top, 'with no bar it is back in its corner').toBe(96)
+      /* a preview started UNDER the open window: it moves clear on its own, the same moment */
+      await previewOriginal(page)
+      await page.waitForTimeout(250)
+      b = await barHits(page); w = await rectOf(page, sel)
+      for (const h of b.hits) expect(h, 'a preview started under the window: the bar stays reachable').toMatch(/reachable$/)
+      expect(w.top).toBeGreaterThanOrEqual(Math.round(b.bar![3]))
+      /* the BOARD closed with the bar still showing (Fable's final read F2 — measured not to happen: the window re-places on
+         every redraw): the ALL AVAIL window stays open over the week and goes back to its corner, its height cap gone */
+      if (sel === '.availwin') {
+        await page.click('#sbDone')   // the board's one exit since D349 (its Close went, 28 Sep 26)
+        await page.waitForTimeout(250)
+        expect((await rectOf(page, sel)).top, 'the board closed: back in its corner').toBe(96)
+        expect(await page.evaluate(s => (document.querySelector(s) as HTMLElement).style.maxHeight, sel), 'and no height cap left').toBe('')
+      }
+    })
+  }
+}
+
+test('desktop: a window he dragged is NOT moved when a preview starts under it', async ({ page }) => {
+  await page.setViewportSize(PREVIEW_DESK)
+  await publishedBoard(page)
+  await page.locator('#schedBoard [data-oilsent]:visible').first().click()
+  await page.waitForSelector('.availwin:not([hidden])', { state: 'visible' })
+  await dragBar(page, -400, 200)
+  const placed = await rectOf(page, '.availwin')
+  await previewOriginal(page)
+  await page.waitForTimeout(250)
+  expect(await rectOf(page, '.availwin'), 'where he put it').toEqual(placed)
+})
+
+test('phone: the window stays the bottom panel over a preview (the bar is at the top of the board)', async ({ page }) => {
+  await page.setViewportSize(PHONE)
+  await publishedBoard(page)
+  await previewOriginal(page)
+  await page.locator('#schedBoard .pv-frozen [data-oilsent]:visible').first().click()
+  await page.waitForSelector('.availwin:not([hidden])', { state: 'visible' })
+  const r = await winRect(page)
+  expect(r.left).toBe(12)
+  expect(PHONE.height - r.bottom).toBe(12)
+})

@@ -6,7 +6,7 @@
 import { useEffect, useLayoutEffect, useRef, useState, useSyncExternalStore } from 'react'
 import { biddingClosed, canReopen, evaluatePeriod, FIGURES, isBiddable, isDuty, nextStage, previousStage, stageLabel } from '../engine'
 import { CODE_GLOSSARY } from '../engine/codes'
-import { getClashes, getClashVersion, subscribeClashes } from '../sync'
+import { getClashes, getClashVersion, subscribeClashes, type ClashWayOut } from '../sync'
 import {
   advanceStage,
   clearBidWindow,
@@ -31,6 +31,15 @@ const LIST_WIDTH = 244
  *  word the popover now carries, and the constant has to track the CSS
  *  width exactly or the clamp math above places the popover off-screen. */
 const LEGEND_WIDTH = 312
+/** What each clash line says after its dash — where the admin can actually undo it ([ABSENCE-SMALL-SEEN] 1,
+ *  28 Sep 26; the reason for each is at `clashWayOut` in sync.ts). "Resolve on the sheet" sent him to a sheet with no
+ *  control on it whenever the leave in the way was filed on the Inputs page. */
+const WAY_OUT: Record<ClashWayOut, string> = {
+  bid: 'decide the bid on the sheet',
+  war: 'send the leave back or delete it on the sheet',
+  'war-published': 'the leave is published: step the war back to BIDDING CLOSED to change it',
+  inputs: 'change the leave on the Inputs page',
+}
 
 export function Topbar() {
   useVersion()
@@ -508,9 +517,9 @@ export function StageBar() {
             <span className="row" key={`${c.kind ?? 'leave'}-${c.person}-${c.date}-${c.inputCode}-${c.bidCode}-${i}`}>
               {c.kind === 'duty'
                 ? <>{(people.find(p => p.id === c.person)?.callsign ?? c.person)}: weekend/PH work
-                    earns {c.inputCode} but {shortDate(c.date)} holds {c.bidCode} — resolve on the sheet</>
+                    earns {c.inputCode} but {shortDate(c.date)} holds {c.bidCode} — {WAY_OUT[c.wayOut]}</>
                 : <>{(people.find(p => p.id === c.person)?.callsign ?? c.person)}: input {c.inputCode} vs
-                    bid {c.bidCode} on {shortDate(c.date)} — resolve on the sheet</>}
+                    bid {c.bidCode} on {shortDate(c.date)} — {WAY_OUT[c.wayOut]}</>}
             </span>
           ))}
         </div>

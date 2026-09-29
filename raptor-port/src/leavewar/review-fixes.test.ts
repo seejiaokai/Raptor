@@ -9,8 +9,7 @@ import { initStore as raptorInitStore, writeInputs } from '../state/store'
 import { setMe, setSession } from '../state/auth'
 import { projectPeople } from './state/raptorRoster'
 import {
-  advanceStage, changeAbsenceById, decideRequestById, getState, getVersion, initStore as lwInitStore, lwEditLists, lwHistInit,
-  moveAbsenceById, rawState, setBidState, setCell, setPeople, setRole,
+  advanceStage, changeAbsenceById, decideRequestById, getState, getVersion, initStore as lwInitStore, lwEditLists, lwHistInit, rawState, setBidState, setCell, setPeople, setRole, moveRecords,
 } from './state/store'
 import { memoryBackend } from './state/storage'
 import { wireLeaveWarSync } from './sync'
@@ -18,6 +17,12 @@ import { dayView, FULL, PM, type Contrib } from './engine/dayview'
 import { recContribs } from './engine/warrecs'
 import { _resetTimeline } from '../undo/timeline'
 import { installGlobalUndo } from '../state/undo-wire'
+/* [LW-SPARE-MOVE-DOORS] (28 Sep 26): `moveAbsenceById` (the day's list's old date-box move) is RETIRED — the day's list
+   moves one record through the one door, `moveRecords` (D266). These tests keep what they pinned by moving that one leave,
+   by its id, through that door: null when it moved, else the refusal's reason. */
+const leaveGap = (a: string, b: string) => Math.round((Date.UTC(+b.slice(0, 4), +b.slice(5, 7) - 1, +b.slice(8, 10)) - Date.UTC(+a.slice(0, 4), +a.slice(5, 7) - 1, +a.slice(8, 10))) / 86400000)
+const moveLeaveVia = (pid: string, date: string, iid: string, to: string): string | null => { const r = moveRecords([{ personId: pid, date, id: iid, kind: 'absence' }], leaveGap(date, to)); return r === 'moved' ? null : r.reason }
+
 
 const ISNAP = JSON.stringify(INPUTS)
 const toast = HOOKS.toast
@@ -129,7 +134,7 @@ describe('Codex AS4-002 — un-approving never overwrites a stored request', () 
     lwEditLists([{ personId: 'ammo', date: '2026-02-10', drop: [], add: [{ id: 'old-ref', kind: 'request', code: 'OIL', state: 'refused' } as any] }])
     for (const to of ['pending', 'refused'] as const) {
       const r = changeAbsenceById('ammo', '2026-02-10', iid, to)
-      expect(r).toMatch(/OIL request on 2026-02-10/)
+      expect(r).toMatch(/OIL request on 10 Feb 26/)   // day-first ([LW-ISO-DATES])
       expect(recsAt('ammo', '2026-02-10').find(x => x.id === 'old-ref')).toBeTruthy()
       expect(lwRows('ammo')).toHaveLength(1)
     }
@@ -176,7 +181,7 @@ describe('Codex AS4-006 — the tap list moves ONE leave off a busy day', () => 
     const rows = lwRows('ammo')
     expect(rows.length).toBe(2)
     const am = rows.find((r: any) => r.half === 'am')
-    expect(moveAbsenceById('ammo', '2026-02-10', String(am.iid), '2026-02-12')).toBeNull()
+    expect(moveLeaveVia('ammo', '2026-02-10', String(am.iid), '2026-02-12')).toBeNull()
     const after = lwRows('ammo')
     expect(after.find((r: any) => r.half === 'am')!.date).toBe('Feb 12')
     expect(after.find((r: any) => r.half === 'pm')!.date).toBe('Feb 10')
@@ -194,7 +199,7 @@ describe('Codex round 2 — the per-record doors', () => {
   it('AS4-R2-001: moving leave off a locked week is refused, and the war still shows it where it is', () => {
     const iid = approved('ammo', '2026-02-10')
     stashPut('09/02/2026', 'null')
-    const r = moveAbsenceById('ammo', '2026-02-10', iid, '2026-02-17')
+    const r = moveLeaveVia('ammo', '2026-02-10', iid, '2026-02-17')
     expect(typeof r).toBe('string')
     expect(lwRows('ammo')[0].date).toBe('Feb 10')
     expect(getState().grid.ammo?.['2026-02-10']).toBe('LL')
@@ -204,8 +209,8 @@ describe('Codex round 2 — the per-record doors', () => {
   it('AS4-R2-002: an Input id sent with the wrong person or date moves nothing', () => {
     const iid = approved('ammo', '2026-02-10')
     const before = JSON.stringify(INPUTS)
-    expect(typeof moveAbsenceById('rocky', '2026-02-10', iid, '2026-02-12')).toBe('string')
-    expect(typeof moveAbsenceById('ammo', '2026-02-11', iid, '2026-02-12')).toBe('string')
+    expect(typeof moveLeaveVia('rocky', '2026-02-10', iid, '2026-02-12')).toBe('string')
+    expect(typeof moveLeaveVia('ammo', '2026-02-11', iid, '2026-02-12')).toBe('string')
     expect(JSON.stringify(INPUTS)).toBe(before)
   })
 
@@ -215,7 +220,7 @@ describe('Codex round 2 — the per-record doors', () => {
     writeInputs(() => { row.type = 'ATT C' })    // an admin retyped it; lw stays
     expect(row.lw).toBeTruthy()
     const before = JSON.stringify(INPUTS)
-    expect(typeof moveAbsenceById('ammo', '2026-02-10', iid, '2026-02-12')).toBe('string')
+    expect(typeof moveLeaveVia('ammo', '2026-02-10', iid, '2026-02-12')).toBe('string')
     expect(typeof changeAbsenceById('ammo', '2026-02-10', iid, 'pending')).toBe('string')
     expect(typeof changeAbsenceById('ammo', '2026-02-10', iid, 'removed')).toBe('string')
     expect(JSON.stringify(INPUTS)).toBe(before)

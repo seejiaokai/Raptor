@@ -1,4 +1,5 @@
 import { Fragment, memo, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type MutableRefObject, type PointerEvent as ReactPointerEvent, type RefCallback, type TouchEvent } from 'react'
+import { shortDate } from './dates'
 import {
   addDays,
   balanceOf,
@@ -104,7 +105,7 @@ function postInOr(id: string, from: string): string | undefined {
 /** A move refusal, in plain words for the move banner. */
 function moveReason(r: Exclude<MoveResult, 'moved'>): string {
   switch (r.reason) {
-    case 'occupied': return `That lands on ${r.at} which is already booked — pick another day.`
+    case 'occupied': return `That lands on ${r.at ? shortDate(r.at) : 'a day'} which is already booked — pick another day.`
     case 'raptor': return 'One of those is filed on the Inputs page and cannot be moved here.'
     case 'window': return 'That lands outside what you can edit — pick another day.'
     default: return 'Nothing to move.'
@@ -685,8 +686,8 @@ const PersonMonth = memo(function PersonMonth({ p, period, days, grid, states, v
                 className="polast"
                 data-testid={lastCurrent ? `polast-${p.id}` : `polast-${p.id}-${d.date}`}
                 title={lastCurrent
-                  ? `${p.callsign} posts out ${addDays(p.to!, 1)} — this is their last day in the squadron`
-                  : `${p.callsign} was posted out ${addDays(d.date, 1)} — the last day of an earlier stint`}
+                  ? `${p.callsign} posts out ${shortDate(addDays(p.to!, 1))} — this is their last day in the squadron`
+                  : `${p.callsign} was posted out ${shortDate(addDays(d.date, 1))} — the last day of an earlier stint`}
               >
                 PO
               </span>

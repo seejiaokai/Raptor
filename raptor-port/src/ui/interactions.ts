@@ -3,16 +3,18 @@
    blank-space clear), with the state halves in src/state/view.ts and the
    repaint replaced by the store's notify() (the week re-renders and the
    highlight pass re-runs from ViewWeek's effect). */
-import { slotVal, acceptInput, unacceptInput, txtSet } from '../engine/slots'
+import { slotVal, acceptInput, unacceptInput, txtSet, acceptedDay } from '../engine/slots'
+import { rowElsewhere, isoDayWords } from '../engine/weekstash'
 import { INPUTS, DATES, withRemarksTail, inpId, defaultAllday } from '../engine/inputs'
 import { DAYS } from '../engine/data'
 import { PEOPLE, isSpecial } from '../engine/people'
 import { dayApproved, signClear, markEdit, dayCurVer, dayDiscardCount, verLabel, protectedWeek, alColor, nextSeq, daySnapOf, rowsLeftOut } from '../engine/publish'
+import { verSeq } from '../engine/verid'
 import { posKey } from '../engine/rowids'
 import { closePendList } from './pendlist'
 import { openChanges } from './changesopen'
 import { weekDates } from '../engine/editlog'
-import { draftSelect, draftVerLabel, loadVersionToWorkingCopy, LOADLEFT, LOADMOVED, ROWSLEFT, rowsLeftSaid, inputsLeftSaid } from '../engine/drafts'
+import { dayDrafts, loadVersionToWorkingCopy, LOADLEFT, LOADMOVED, ROWSLEFT, rowsLeftSaid, inputsLeftSaid } from '../engine/drafts'
 import { HOOKS } from '../engine/hooks'
 import { canEditSched } from '../state/auth'
 import * as view from '../state/view'
@@ -27,7 +29,7 @@ import { setDayPop, setAirKey, setDrawer, setInpEdit } from './pops'
 import { reassignInput, rosterOptions, firstPersonalType, firstUnavailType, firstSansType, unfmt } from './inputedit'
 import { openAvailWinFrom } from './AvailWindow'
 import { withDaySnap } from './html'
-import { openScheduler, toggleSbwarn, boardTab, dayTplMenu, planMenu } from './board'
+import { openScheduler, toggleSbwarn, boardTab, dayTplMenu, planMenu, switchDraft } from './board'
 import { hideHistBub, pinHistBubAt, findHistCell } from './histbubble'
 import { pickRosDay } from './pan'
 import { isStandalone, CURWEEK } from '../engine/waves'
@@ -589,6 +591,11 @@ export function routeClick(e: MouseEvent) {
     const di = +ab.dataset.accd!, k = ab.dataset.acck!, dest = ab.dataset.acc!
     const inp = INPUTS.find((x: any) => inpId(x) === k)
     if (!inp) { HOOKS.toast('That input is no longer there', 'warn'); return }
+    /* read BEFORE the write: which day's row an Undo takes off ([REQ-DOOR-WORDS] 2 — the card is drawn on every day the
+       request covers, its one row stands on one of them), and whether an Accept adopts a row already standing
+       ([REQ-ORPHAN-ROW] 3 — a "taken off" request whose own row came back with a plan) */
+    const rowDay = dest === 'x' ? acceptedDay(inp) : -1
+    const adopts = dest !== 'x' && inp.acc === 'r' && DAYS.some((d: any) => ((d && d.ground) || []).some((g: any) => g && g.src === k))
     const ok = dest === 'x' ? unacceptInput(di, inp) : acceptInput(di, inp, dest)
     if (ok) {
       /* SAID ONCE, to the scheduler and to the log, in the same words — the
@@ -601,8 +608,10 @@ export function routeClick(e: MouseEvent) {
          "Bane's LL" says who it happened to, which is the thing the changes
          list is actually for */
       const cs = PEOPLE[inp.person] ? PEOPLE[inp.person].cs : inp.person
-      const said = dest === 'x' ? 'Accept undone'
+      const said = dest === 'x'
+          ? (rowDay >= 0 && rowDay !== di && DAYS[rowDay] ? `Accept undone — its row came off ${DAYS[rowDay].dow}'s programme` : 'Accept undone')
         : dest === 'u' ? `${cs}'s ${inp.type} filed under Unavailable`
+        : adopts ? `${cs}'s ${inp.type} is on the ground programme again — its row was already there`
         : `${cs}'s ${inp.type} added to the ground programme`
       /* the history line is the change history's one writer's (state/changelines.ts): the catch-all command below diffs
          every input against the last committed state, so the filing that moved IS in its envelope and is said once. A
@@ -616,7 +625,13 @@ export function routeClick(e: MouseEvent) {
          all — a control that looks dead. Say why. */
       const cs = PEOPLE[inp.person] ? PEOPLE[inp.person].cs : inp.person
       const onProg = dest !== 'x' && DAYS.some((d: any) => ((d && d.ground) || []).some((g: any) => g && g.src === k))
-      HOOKS.toast(onProg ? `${cs}'s ${inp.type} is already on the programme` : `${cs}'s ${inp.type} can't be changed here right now`, 'warn')
+      /* …and its row on ANOTHER week ([REQ-ORPHAN-ROW], 28 Sep 26): named, with the week to load; a saved week that could
+         not be read refuses too, and says so rather than guess (never a second row on an unknown) */
+      const away = dest !== 'x' && !onProg ? rowElsewhere(k, inp) : null
+      HOOKS.toast(onProg ? `${cs}'s ${inp.type} is already on the programme`
+        : away === 'unreadable' ? `Can't tell whether ${cs}'s ${inp.type} already has a row on another week — load that week first`
+        : away ? `${cs}'s ${inp.type} is already on the programme — on ${isoDayWords(away.iso)}; load that week to change it`
+        : `${cs}'s ${inp.type} can't be changed here right now`, 'warn')
     }
     return
   }
@@ -925,12 +940,25 @@ export function routeClick(e: MouseEvent) {
       HOOKS.toast(`Heads up — ${DAYS[di]?.dow || 'this day'}’s OIL credits are bid against on the Leave War. Unpublishing withdraws them until you republish. Tap again to confirm.`, 'warn')
       notify(); return
     }
+    const armedWithdraw = oilCreditBidAgainst(di)       // the two-tap path: its OIL credits leave the war too
     view.setUnpubArm(null)
+    const was = dayCurVer(di)                              // the version this press withdraws
     // Fable#4 — commitUnpublish refuses (silent CmdRefused) if the day has no
     // retractable latest version (e.g. an orphaned approved day whose snapshot won't
     // resolve). The gate can't see that, so surface the refusal rather than no-op.
     const r = commitUnpublish(di)
     if ((r as any).ok === false) HOOKS.toast('That day can’t be unpublished right now.', 'warn')
+    else if (was != null) {
+      /* UNPUBLISH SAYS WHAT IT DID ([AMEND-SMALL-SEEN] 1, 28 Sep 26 — AM15b: an action says what it did; it said nothing,
+         only the tag changed). Worded from what came off (Fable F6): an ALn is withdrawn and its changes wait on the
+         working copy again, with the version before it the issued schedule; the Original makes the day a draft again. */
+      const dow = DAYS[di]?.dow || 'The day', wl = verLabel(was)
+      const now = dayApproved(di) ? dayCurVer(di) : null
+      HOOKS.toast((verSeq(was) === 0 || now == null
+        ? `${dow} unpublished — it is a draft again; publishing reissues the ${wl}`
+        : `${dow}: ${wl} withdrawn — its changes are back on the working copy as pending; ${verLabel(now)} is the issued schedule; publishing again reissues ${wl}`)
+        + (armedWithdraw ? ' · its OIL credits leave the Leave War until it is published again' : ''))
+    }
     notify(); return
   }
   /* Back to live copy — the home button on the version cluster (owner, 16 Aug
@@ -964,15 +992,14 @@ export function routeClick(e: MouseEvent) {
        available" toast off a button that is merely frozen. */
     if (protectedWeek()) return
     const di = +dgo.dataset.draftgo!, id = dgo.dataset.draftid!
-    const nm = draftVerLabel(di, 'd:' + id)
-    if (view.ARM && view.ARM.di === di) view.disarmSlot()
-    if (!draftSelect(di, id)) { HOOKS.toast('That plan is no longer available', 'warn'); notify(); return }
-    view.setDayPreview(di, null)
-    view.afterSchedMutate()
-    /* a row the plan held for a request now on another day stayed out — named (D175) */
-    const said = `${DAYS[di].dow} switched to plan ${nm} — this is now the live schedule` + rowsLeftSaid(ROWSLEFT)
-    logAction(di, said)
-    HOOKS.toast(said)
+    /* ONE ACT, ONE SENTENCE ([REQ-DOOR-WORDS] 1, 28 Sep 26 — Fable's F4 on D175's branch). The banner used to run its own
+       draftSelect and word the switch its own way ("Monday switched to plan B — this is now the live schedule"), without
+       the plans menu's pending tail ("· 2 differences from ORIG pending") — the same act said two ways. It now runs the
+       menu's one body, board.ts switchDraft — its sentence, its log line, its already-live refusal. The gates above stay
+       here, so a frozen button is inert rather than saying the plan has gone (Fable F13); a plan that really is gone is
+       told so here and only then (switchDraft's false has several reasons — Astra 10). */
+    if (!dayDrafts(di).some((x: any) => x.id === id)) { HOOKS.toast('That plan is no longer available', 'warn'); notify(); return }
+    switchDraft(di, id)
     notify(); return
   }
   /* "Load onto working copy" — a ROLLBACK: that issued version becomes the

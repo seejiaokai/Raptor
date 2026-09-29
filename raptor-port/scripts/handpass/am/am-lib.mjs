@@ -11,7 +11,8 @@ import { go, board as board0 } from '../lib.mjs'
     shared lib's by-name lookup misses it and the board stays open over the week. */
 export async function closeBoard(page) {
   if (!(await page.locator('#schedBoard:visible').count())) return false
-  const x = page.locator('#sbClose:visible').first()
+  /* the board's one exit is ✓ Done since D349 (28 Sep 26 — its ✕ Close went); #sbClose kept for an older build */
+  const x = page.locator('#sbDone:visible, #sbClose:visible').first()
   if (await x.count()) { await x.click(); await page.waitForTimeout(600) }
   else { await page.keyboard.press('Escape'); await page.waitForTimeout(500) }
   return true

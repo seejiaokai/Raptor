@@ -355,6 +355,23 @@ test('the page itself never scrolls sideways — only the grid does', async ({ p
   expect(overflow).toBeLessThanOrEqual(1)
 })
 
+// THE "VIEWING AS" CHIP STAYS ON THE SCREEN ([ABSENCE-SMALL-SEEN] 2, 28 Sep 26 — the re-test's W6 N6). The shell's
+// phone bar rule `.topbar>*{flex:0 0 auto}` leaked onto this row, so it never wrapped: the chip hung past the right edge
+// of a 390px screen inside a row that scrolled sideways. The row now wraps; the chip, its words whole, sits inside it.
+test('the VIEWING AS chip stays inside the screen, its words whole, and the top row never scrolls sideways', async ({ page }) => {
+  await lwView(page, 'slipway')   // the harness runs unscoped; a sign-in always names its person (D166 (4)), and the chip names him
+  const chip = page.locator('[data-testid="lw-viewing"]')
+  await expect(chip).toBeVisible()
+  const m = await chip.evaluate(el => {
+    const r = el.getBoundingClientRect(), lab = el.querySelector('.vlab') as HTMLElement
+    const row = document.querySelector('#page-leavewar .topbar') as HTMLElement
+    return { right: r.right, vw: innerWidth, labCut: lab.scrollWidth > lab.clientWidth + 1 || lab.getBoundingClientRect().right > r.right + 0.5, rowOver: row.scrollWidth - row.clientWidth }
+  })
+  expect(m.right, 'the chip ends inside the screen').toBeLessThanOrEqual(m.vw + 0.5)
+  expect(m.labCut, '"VIEWING AS" is never cut').toBe(false)
+  expect(m.rowOver, 'the top row does not scroll sideways').toBeLessThanOrEqual(1)
+})
+
 // The Raptor restyle repaints .blocked as a tinted amber fill
 // (rgba(229, 168, 59, 0.22)) rather than a solid rgb(255, 165, 0) — see the
 // cascade-order comment on `.mx thead th.blocked` in matrix.css.

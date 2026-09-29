@@ -101,11 +101,15 @@ type Words = { where: string; from: string; to: string; who: string; when: strin
    landing mints the row from the request: who, the type, the remarks), so the line names it from the row and says it was
    deleted (the D114 check, 25 Sep 26: the one paired line read only "A request · on the programme → not on the
    programme") */
-function requestWords(e: any, row?: any): { where: string, from: string, to: string } {
+/* …and a request that had NO row (one filed "→ Unavail", 'u') is named from the ISSUED version's own record of it
+   ([REQ-DOOR-WORDS] 3, 28 Sep 26 — Fable's D176 read F2): it read "A request · under Unavailable → deleted". The issued
+   copy (`snap.inp`, a published day's frozen record) says whose and what — the same source inputWords names a deleted
+   leave from — never the change history's wording (Astra 11). `was`: the pending item's own record, or that copy. */
+function requestWords(e: any, row?: any, was?: any): { where: string, from: string, to: string } {
   const id = decodeURIComponent(String(e.addr || '').split('.').slice(1).join('.'))
   const inp = INPUTS.find((x: any) => inpId(x) === id)
   const from = FIL[e.from || ''] || ''
-  if (!inp) return { where: requestName(null, row), from, to: 'deleted' }
+  if (!inp) return { where: row ? requestName(null, row) : was ? requestName(was) : requestName(null), from, to: 'deleted' }
   return { where: requestName(inp), from, to: FIL[e.to || ''] || '' }
 }
 /* whose · what — from the request while it exists, from its row once it is gone (the row carries who, the type and the
@@ -319,7 +323,8 @@ export function pendItemWords(di: number, it: PendItem): Words {
        load put the version's row back) or as it was issued */
     const id = decodeURIComponent(String(e.addr || '').split('.').slice(1).join('.'))
     const bySrc = (d: any) => ((d && d.ground) || []).find((g: any) => g && g.src === id)
-    return { ...requestWords(e, bySrc(DAYS[di]) || bySrc((issuedDays(di) || [])[di])), ...whoWhen(editRowOf(di, it)), jump: false }
+    const snap: any = daySnapOf(di, dayCurVer(di)), was = (it as any).was || (snap && snap.inp && snap.inp[id]) || null
+    return { ...requestWords(e, bySrc(DAYS[di]) || bySrc((issuedDays(di) || [])[di]), was), ...whoWhen(editRowOf(di, it)), jump: false }
   }
   /* WHAT THE DAY EARNS — say WHO and WHERE when it is the crowd behind a placeholder that moved (walker B1, 25 Sep 26:
      "What this day earns · changed" named nobody and could not be tapped, so the scheduler still had to go looking —

@@ -476,7 +476,7 @@ test('move an approved leave after bidding closes: dotted moved mark, undo, redo
   await redo(page)
   await expect(chip(page, P, to)).toHaveClass(/moved/)
   await tap(page, P, to)
-  await expect(page.locator('[data-testid="bid-picker"]')).toContainText('moved from 2026-02-11')
+  await expect(page.locator('[data-testid="bid-picker"]')).toContainText('moved from 11 Feb 26')
 })
 
 /** Sign Saturday 18 Jul (the demo week is 13–19 Jul 26) so its Publish button is live. */

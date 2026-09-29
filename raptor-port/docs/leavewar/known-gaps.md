@@ -87,7 +87,7 @@ decide (`setBidState`/`setBidStates` check `canDecide` — admin, once bidding
 is no longer open), cannot advance or reopen the stage, cannot write a
 medical marker, cannot touch another person's row (`canEditRow`), and cannot
 shift a bid outside what `canEditCell` lets them edit — the single-cell
-`shiftBid` now carries the same stage/window/day law as the drag mover.
+`shiftBid` now carries the same stage/window/day law as the drag mover. *(retired 28 Sep 26 — every move goes through `moveRecords`, [LW-SPARE-MOVE-DOORS])*
 
 **It is still not a security model.** The whole app is client-side with no
 server: the probe bridge (`src/probe-bridge.ts`, the e2e suite's window

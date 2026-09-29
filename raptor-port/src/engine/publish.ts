@@ -12,7 +12,7 @@ import { INPUTS, inpId, inputCoversDate, inpDetailKey, frozenInputMatch, stableJ
 import { CURWEEK, isStandalone } from './waves'
 import { groundOrder } from './order'
 import { dayIso, verId, parseVerId, verSeq, verSeqLabel, isValidVerId } from './verid'
-import { isPreservedWeek } from './weekstash'
+import { isPreservedWeek, rowElsewhere } from './weekstash'
 import { inputProtected } from './quarantine'   // functions only both ways, so the import loop is safe
 import { rosterIds } from './faceattrs'
 import { oilEvidence, oilEvidenceKey, oilSignKey, oilKeyNoMem, oilDecisionsKey, oilKeyBeforeStand, oilUpgradeMovedMoney, oilMovedInputsOnly } from './oilev'
@@ -747,10 +747,21 @@ export function filingRestorePlan(di:any,fil:any,dayAfter?:any):{put:Array<{inp:
    set as filed (LOADLEFT), and never by moving the other day (AM1). Returns, per request, the other loaded days its row
    stands on (by index); empty when nothing would stand twice. Pure: the load and the switch apply it (drafts.ts), and
    the load's discard count above counts against it, so the confirm and the load agree. */
-export function rowsLeftOut(di:any,dayIn:any):Array<{id:string,days:number[],row:any}>{di=+di;const out:any[]=[];
+/* …AND ON ANOTHER WEEK ([REQ-ORPHAN-ROW], 28 Sep 26 — Fable's G3, F15): a request covering Sun 19 – Mon 20 Jul has one row,
+   and it may stand in the OTHER week (weekstash.ts rowElsewhere, read-only). A load or a switch that would bring back a
+   copy of it here leaves it out the same way and names that day ("it is on Sun 19 Jul's programme") — `away`.
+   A SAVED WEEK THE REQUEST COVERS THAT CANNOT BE READ FAILS CLOSED (Astra's final read #1, 28 Sep 26 — the plan's §9): its
+   row may be there, so the incoming copy is left out too and the sentence says the week could not be read (`away`
+   'unreadable') — a second row on an unknown is the harm; a row left out is put back by Accept once the week is loaded.
+   Narrowed to the weeks the request covers (its request is found by id), so one damaged week blocks only its own. */
+export function rowsLeftOut(di:any,dayIn:any):Array<{id:string,days:number[],row:any,away?:string}>{di=+di;const out:any[]=[];
   ((dayIn&&dayIn.ground)||[]).forEach((r:any)=>{const id=r&&r.src; if(!id||out.some((x:any)=>x.id===String(id)))return;
     const days=DAYS.map((d:any,dj:number)=>(dj!==di&&d&&((d.ground||[]).some((g:any)=>g&&g.src===id)))?dj:-1).filter((dj:number)=>dj>=0);
-    if(days.length)out.push({id:String(id),days,row:r});});
+    if(days.length){out.push({id:String(id),days,row:r});return;}
+    const inp=(INPUTS as any[]).find((x:any)=>x&&String(inpId(x))===String(id));
+    const w=rowElsewhere(id,inp);
+    if(w==='unreadable')out.push({id:String(id),days:[],row:r,away:'unreadable'});
+    else if(w)out.push({id:String(id),days:[],row:r,away:w.iso});});
   return out;}
 /* take those rows out of a day object (a clone the caller owns — never an issued snapshot or a parked plan's record) */
 export function leaveRowsOut(d:any,ids:string[]){
@@ -1239,10 +1250,17 @@ function currentBindNow(di:any){ const d=DAYS[di];
      order on screen — and a first drag freezes the shown order into the array before it moves, so a drag
      could leave the array exactly as it was: "1 reorder" pending, the four still green, and "Publish AL"
      issuing the reorder on signatures given for the old order (AM10, AM11). */
-  /* recorded as the shown order of the array's positions: the digest already binds each position's
-     content, so the pair fixes what is shown — and it does not move when row ids are minted before a publish */
-  const gord=d?groundOrder(d.ground,d.gman).map((x:any)=>x.ri).join(','):'';
-  return {dg:d?digest(d,di):'', iso:dayIso(CURWEEK,di), base:dayCurVer(di)||'', rev:(SCHED.curDraft||{})[di]||'', fil:filingKey(di), oil:oilSignKey(oilEvidence(di),d), gord, pd:pendingKey(di)};}
+  /* …NOW BOUND AS SHOWN, NOT AS STORED ([AMEND-SMALL-SEEN] 9, 28 Sep 26 — the amendment re-test's final read, Fable #1's
+     mirror). The pair above was (the digest of the rows by their raw array position) + (the shown order of those
+     positions), so "Sort" on a ground programme whose rows were STORED out of time order — it is always SHOWN in time
+     order — changed both halves and took the four sign-offs down, while the day read "no changes to publish": a false
+     re-sign for nothing he could see (D103 — only a change that shows takes them down). So the digest reads a COPY of the
+     day whose ground rows stand in their SHOWN order (`groundOrder`, the hand order honoured): position i is the i-th row
+     on screen, so the one digest binds content AND shown order together — a row moving on screen moves its content to
+     another key and clears the four; a re-order only the array sees changes nothing. `gord` is retired (always ''): it
+     only restated the order, and a binding stored while it existed re-signs once (demo data — D56). */
+  const shown=d&&Array.isArray(d.ground)&&d.ground.length?{...d,ground:groundOrder(d.ground,d.gman).map((x:any)=>x.row)}:d;
+  return {dg:d?digest(shown,di):'', iso:dayIso(CURWEEK,di), base:dayCurVer(di)||'', rev:(SCHED.curDraft||{})[di]||'', fil:filingKey(di), oil:oilSignKey(oilEvidence(di),d), gord:'', pd:pendingKey(di)};}
 /* ANY PENDING CHANGE WIPES THE SIGN-OFFS (owner, D103, 25 Sep 26 — his own idea: "why dont we just wipe the
    sign offs for any changes to the schedule?"). ONE rule: something waiting means sign again. So a signature on
    a PUBLISHED day also binds to the whole pending comparison itself — every entry of dayDelta, the same body
@@ -1251,8 +1269,20 @@ function currentBindNow(di:any){ const d=DAYS[di];
    edited request's times, a Quals or posting change. Nothing "clears" it: validity is recomputed on every read,
    so putting the change back restores the four (AM11). On a day not yet published nothing is pending (no issued
    version to differ from) and the key is '' — its content axes above are the whole binding, as before. */
+/* …AND A CURRENT GROUND ROW IS NAMED BY ITS ID, NOT ITS PLACE ([AMEND-SMALL-SEEN] 9, 28 Sep 26 — found by the walk,
+   sf-d9-sort.mjs, after the digest was made to read the rows as shown). The comparison addresses a ground row by its
+   STORED position ("gr:1.3.prog" — the jump needs the real cell), so on a published day with a row added and waiting,
+   "Sort" renamed the added rows' addresses and the four fell although nothing on screen moved and the count held. Here —
+   and only here, the signature's copy — an address naming a row of the CURRENT day (an add, a change) is rewritten to
+   that row's id; one naming the issued day (a delete, a hole — `was`) keeps its issued position, which never moves. A
+   real re-order still clears the four (the ORDER entry, and the digest bound as shown); a legacy row with no id keeps
+   its position. A binding stored before this re-signs once (demo data — D56). */
 function pendingKey(di:any):string{
-  return dayDelta(di).map((e:any)=>`${e.addr}${'␟'}${e.kind}${'␟'}${e.from??''}${'␟'}${e.to??''}`).sort().join('\n');}
+  const g=(DAYS[di]&&DAYS[di].ground)||[];
+  const addr=(e:any)=>{ const a=String(e.addr); if(e.kind==='delete'||e.was)return a;
+    const m=/^(gr?):(\d+)\.(\d+)(.*)$/.exec(a); if(!m||+m[2]!==+di)return a;
+    const r=g[+m[3]]; return r&&r.rid?`${m[1]}:${di}.@${r.rid}${m[4]}`:a; };
+  return dayDelta(di).map((e:any)=>`${addr(e)}${'␟'}${e.kind}${'␟'}${e.from??''}${'␟'}${e.to??''}`).sort().join('\n');}
 /* set a role's signer through the ONE sanctioned write path (ui/Shell.tsx). A
    truthy signer binds that role to the current content; clearing a role drops its
    binding. Tests / a legacy demo book that write signOf(di)[role] directly leave
@@ -1274,8 +1304,8 @@ function signBoundOk(di:any,role:any,cur?:any){const b=(SCHED.signBind||{})[+di]
      carries no oil field, and on a day that earns nothing there is nothing it
      could have failed to promise. A day that DOES carry evidence still
      invalidates, because '' and a real block differ. */
-  /* the ground order axis, like the filing axis: a binding written before it existed (no gord) cannot prove
-     the order was approved, so it re-signs — on a day with ground rows; with none there is no order to prove */
+  /* the ground order axis: RETIRED 28 Sep 26 ([AMEND-SMALL-SEEN] 9) — the digest now binds the rows as SHOWN, so the order
+     rides `dg`. Every new binding carries gord ''; one stored while it existed re-signs once (demo data — D56) */
   /* …and the pending comparison (D103): a binding written before it existed reads '' — which is exactly what a
      day with nothing waiting has, so it stands there and falls the moment anything is pending */
   return x.dg===c.dg&&x.iso===c.iso&&x.base===c.base&&x.rev===c.rev&&x.fil===c.fil&&(x.gord||'')===(c.gord||'')&&(x.pd||'')===(c.pd||'')&&oilBoundOk(di,x.oil,c.oil);}

@@ -20,6 +20,7 @@
 import { INPUTS, DATES, baseYear, dateOrd, inpId, inpWin, isAway, isLeave, isPersonal, canWork, oilAsks, withRemarksTail, remarksTailWord, inputCoversDate, nowStamp } from '../engine/inputs'
 import { dayEngaged, personBusy } from '../engine/avail'
 import { inputProtected, protectedDates } from '../engine/quarantine'
+import { shortDate } from './ui/dates'
 import { mayManageRoster, viewerId, me } from '../state/perms'
 import { SESSION } from '../state/auth'
 /* [ARCH-STACK] phase 3: the command-routed persistPeople (the cross-seam roster
@@ -326,12 +327,12 @@ function doorApprove(items: Array<{ personId: string; date: string; recId: strin
     const war = warHolding(rawState().wars, it.date)
     const rec = war ? recsAt(war.recs, it.personId, it.date).find((r): r is RequestRec => r.kind === 'request' && r.id === it.recId) : undefined
     if (!war || !rec) { skipped++; continue }
-    if (prot.has(it.date)) { skipped++; why.push(`${it.date} is on a locked week — not approved`); continue }
+    if (prot.has(it.date)) { skipped++; why.push(`${shortDate(it.date)} is on a locked week — not approved`); continue }
     /* preflight: the would-be absence against every absence already there
        (a different leave on the same time, a medical) — skipped and reported,
        nothing consumed */
     const c: Contrib = { id: 'new', kind: 'absence', code: parseCell(rec.code)!.type, win: requestWin(rec.code) }
-    if (absencesAt(it.personId, it.date).some(o => barsWrite(c, o))) { skipped++; why.push(`${it.date} already holds leave or a medical at that time — not approved`); continue }
+    if (absencesAt(it.personId, it.date).some(o => barsWrite(c, o))) { skipped++; why.push(`${shortDate(it.date)} already holds leave or a medical at that time — not approved`); continue }
     /* a bid left standing when work was later credited. Owner Q5 and §26.3
        used to SKIP that day at approval; reversed 20 Sep 26 — the leave is
        granted and the day is flagged instead. */
@@ -468,7 +469,7 @@ function doorDecideApproved(items: Array<{ personId: string; date: string; iid: 
   for (const it of items) {
     const row = warLeaveRow(it)
     if (!row) { skipped++; continue }
-    if (prot.has(it.date) || inputProtected(row)) { skipped++; why.push(`${it.date} is on a locked week — not changed`); continue }
+    if (prot.has(it.date) || inputProtected(row)) { skipped++; why.push(`${shortDate(it.date)} is on a locked week — not changed`); continue }
     const contrib = absencesAt(it.personId, it.date).find(c => c.id === it.iid)
     if (!contrib) { skipped++; continue }
     const code = notationOf(contrib.code, contrib.win)
@@ -479,7 +480,7 @@ function doorDecideApproved(items: Array<{ personId: string; date: string; iid: 
        beside a request already stored on that time — pending, acknowledged OR a
        refused one kept as history — for every destination state */
     const blocking = list.filter((r): r is RequestRec => r.kind === 'request' && overlaps(requestWin(r.code), contrib.win))
-    if (blocking.length) { skipped++; why.push(`${blocking[0]!.code} request on ${it.date} — decide or clear it before changing the ${contrib.code}`); continue }
+    if (blocking.length) { skipped++; why.push(`${blocking[0]!.code} request on ${shortDate(it.date)} — decide or clear it before changing the ${contrib.code}`); continue }
     const rec: RequestRec = {
       id: newRecId(), kind: 'request', code, state: to,
       ...(row.lwMoved?.[it.date] ? { shiftedFrom: row.lwMoved[it.date] } : {}),
@@ -508,7 +509,7 @@ function doorRemoveApproved(items: Array<{ personId: string; date: string; iid: 
   for (const it of items) {
     const row = warLeaveRow(it)
     if (!row) { skipped++; continue }
-    if (prot.has(it.date) || inputProtected(row)) { skipped++; why.push(`${it.date} is on a locked week — not deleted`); continue }
+    if (prot.has(it.date) || inputProtected(row)) { skipped++; why.push(`${shortDate(it.date)} is on a locked week — not deleted`); continue }
     const set = cuts.get(it.iid) ?? new Set<string>()
     set.add(it.date)
     cuts.set(it.iid, set)
@@ -622,7 +623,9 @@ function publishLeaveClashes(): void {
              (state/merge.ts puts the war's own records before the absences).
              Order the pair here rather than letting the wording flip. */
           const [a, b] = pair[1].kind === 'credit' && pair[0].kind !== 'credit' ? [pair[1], pair[0]] : pair
-          out.push({ person, date, inputCode: notationOf(a.code, a.win), bidCode: notationOf(b.code, b.win), ...(a.kind === 'credit' || b.kind === 'credit' ? { kind: 'duty' as const } : {}) })
+          const duty = a.kind === 'credit' || b.kind === 'credit'
+          out.push({ person, date, inputCode: notationOf(a.code, a.win), bidCode: notationOf(b.code, b.win), ...(duty ? { kind: 'duty' as const } : {}),
+            wayOut: clashWayOut(duty ? [b] : [a, b], war.period?.stage === 'published') })
         }
       }
     }
@@ -631,7 +634,23 @@ function publishLeaveClashes(): void {
   publishClashes()
 }
 
+/* WHERE A CLASH CAN BE UNDONE ([ABSENCE-SMALL-SEEN] 1, 28 Sep 26 — the re-test's W6 N2: every line said "resolve on
+   the sheet", but for leave filed on the Inputs page the day's sheet has no control; it says "Change it on the Inputs
+   page"). The way out follows the record that is IN THE WAY — for a worked weekend, what the day already holds (the
+   credit is the schedule's and nobody deletes it); for two leaves, the one a person can act on, a bid first: a bid is
+   decided on the sheet at every stage the war decides; leave the war approved is sent back or deleted on the sheet —
+   except once its war is published, when the sheet offers neither (21 Sep 26: published leave is finished paperwork)
+   and the war must step back first; leave filed on the Inputs page is changed there. */
+function clashWayOut(holders: readonly Contrib[], published: boolean): ClashWayOut {
+  if (holders.some(c => c.kind === 'request')) return 'bid'
+  if (holders.some(c => c.kind === 'absence' && c.lw)) return published ? 'war-published' : 'war'
+  return 'inputs'
+}
+
 /* ---- the clash list's shape and its subscribers --------------------------- */
+
+/** Where the admin undoes a clash — the words the strip prints after each line. */
+export type ClashWayOut = 'bid' | 'war' | 'war-published' | 'inputs'
 
 /** A leave input asking for a date the squadron already bid differently on.
  *  The system never overwrites a bid — it raises the clash and a human
@@ -646,6 +665,8 @@ export interface SyncClash {
   /** Absent for a leave clash; 'duty' when a published weekend/PH duty's OIL
    *  credit (wire 4) found the date already holding something else. */
   kind?: 'duty'
+  /** Where it is undone (`clashWayOut`) — so the strip never sends him to a sheet with no control on it. */
+  wayOut: ClashWayOut
 }
 
 /* Re-derived on every pass, never persisted — a clash list is a view of two

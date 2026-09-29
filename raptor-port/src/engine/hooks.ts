@@ -9,6 +9,12 @@
    --------------------------------------------------------------------------- */
 export const HOOKS = {
   toast: (..._a: any[]): any => undefined,
+  /* ONE PRESS, ONE MESSAGE ([AMEND-SMALL-SEEN] 1, 28 Sep 26): run `fn`, and every toast raised inside it is said as ONE
+     line, in order, when it returns (ui/toast.ts toastBatch). The toast is a single element whose text is replaced, so a
+     publish that then raised the OIL check's warning showed only the warning. Scoped on purpose — only a publish uses
+     it; every other toast keeps "the last one wins" (a rolled-back save must never read "… removed · That did not save",
+     Astra 03). Headless: runs `fn` and nothing more. */
+  toastBatch: (fn: () => any): any => fn(),
   reflow: (): void => {},
   histPush: (): void => {},
   renderStatus: (): void => {},

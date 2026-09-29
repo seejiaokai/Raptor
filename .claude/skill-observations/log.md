@@ -1438,3 +1438,78 @@ resolved statuses always carry their resolution date
 **Suggested improvement:** In the red-first step: a test's input must come from the production door (call the real writer the button calls) unless the door cannot run in the test world; when a hand-made record is unavoidable, add one test through the real door that asserts the record really has that shape (area, collection, type), so a wrong belief fails loudly. Name this in the skill's "red for the right reason" section.
 
 **Principle:** A fabricated input proves the code handles what you THINK arrives; only the real door proves what arrives — the belief under test must not be baked into the test's fixture.
+
+### Observation 341: A break test on an uncommitted file must be undone from a backup, never by "git checkout -- <file>"
+
+**Status:** OPEN
+**Date:** 2026-09-28
+**Session context:** Small-fixes batch (claude/small-fixes-batch-d223f6) — the break test for [GHOST-FLAG-SHADOW]: the new CSS rule was put back to the old one with sed to watch the new test go red, then "restored" with git checkout.
+**Skill:** New skill candidate: break-test discipline (bug-check order §8 item 4 — "break that wire once on purpose and watch a named test go red")
+**Type:** open-source
+**Phase/Area:** Verification — the break test
+
+**Issue:** The fix itself was not yet committed. `git checkout -- src/ui/scheduler.css` restored the file to HEAD, which silently threw away the fix along with the deliberate break. It was recovered only because a copy had been taken before the sed; without it the fix would have had to be rewritten from memory, and a hurried rewrite is where a break test's own purpose (proving the wire) is lost.
+
+**Suggested improvement:** In any break-test step: (1) commit the fix first, OR copy the file aside before breaking it; (2) undo the break by restoring that copy (or `git checkout` only when the fix is committed); (3) confirm with `git diff --stat` that the fix is back before moving on.
+
+**Principle:** Undoing a deliberate break must restore the exact pre-break bytes, not the last commit — commit or copy before you break, and verify the fix survived the restore.
+
+### Observation 333: A "no X anywhere on screen" check must prove it can see the screen — the break test is what exposes it
+
+**Status:** OPEN
+**Date:** 2026-09-28
+**Session context:** Small-fixes batch — [LW-ISO-DATES]: a roll-call test rendering every Leave War sheet and asserting no raw `2026-07-17` date in its text.
+**Skill:** New skill candidate: break-test discipline (bug-check order §8 item 4); also test-driven-development
+**Type:** open-source
+**Phase/Area:** Verification — negative assertions
+
+**Issue:** The first cut passed for two independent reasons, both vacuous: (1) the sheets render through a portal into the page body, while the test read the render CONTAINER, which was empty; (2) the date regex used a word boundary (`\b\d{4}-…`), but an element's textContent runs adjacent spans together ("Ranger2026-02-11"), so the boundary never matched. Only the break test (putting one raw date back and seeing the test stay green) showed that the check proved nothing.
+
+**Suggested improvement:** Every negative assertion ("never shows X") ships with two guards: a positive precondition in the same test (the thing is actually on the page — its own words are read), and a break test run once that re-introduces X and must turn it red. When reading textContent, never rely on word boundaries between elements.
+
+**Principle:** A test that asserts absence passes on an empty view; pair it with a presence check and prove it once by breaking it.
+
+### Observation 334: A walk picture taken after the page scrolled hid a whole row under the app's sticky bar — and read as a new defect
+
+**Status:** OPEN
+**Date:** 2026-09-28
+**Session context:** [SMALL-FIXES] batch, `[ABSENCE-SMALL-SEEN]` 2 (the Leave War's "VIEWING AS" chip), re-walking the fix at 390px.
+**Skill:** bug-check order §7 (the walk) — raptor-port/docs/bug-check-order.md; the walk scripts under scripts/handpass/
+**Type:** open-source
+**Phase/Area:** the walk's pictures
+
+**Issue:** After the fix, the "top of the page" picture showed the chip but NOT the row's first line (the period picker, + New). It looked like the fix had pushed the controls off the screen. Measuring showed the layout was right: an earlier clip-screenshot helper had scrolled the chip into view, and the page's own row (not sticky) had moved up under the app's sticky top bar, so the fixed-coordinate picture taken after it cut the first line out.
+
+**Suggested improvement:** A walk that takes a fixed-coordinate "top of page" picture scrolls to the top first, and asserts the positions it relies on (here: the row's other controls sit above the chip) rather than trusting the picture alone. Order the steps so any helper that scrolls runs AFTER the fixed-coordinate picture.
+
+**Principle:** A picture taken at fixed coordinates is only evidence of the state at that scroll position; any step that scrolls before it can manufacture a false defect. Measure the claim, then picture it.
+
+### Observation 335: A transient permission-check outage applied some of a batch of edits and refused the rest — re-read before building on them
+
+**Status:** OPEN
+**Date:** 2026-09-28
+**Session context:** [SMALL-FIXES] batch, `[AMEND-SMALL-SEEN]` 3 (callsign widths) — four edits to one walk script sent in one message during a classifier outage.
+**Skill:** task execution (tool use), no single skill
+**Type:** open-source
+**Phase/Area:** parallel tool calls
+
+**Issue:** Four independent edits to one file were sent together; the safety check had no verdict for three and applied the fourth — which referenced a variable one of the refused edits was meant to define. The file was left broken in a way no error announced (the one success read as normal). An earlier shell edit in the same outage also did not run although nothing said so beyond the refusal message.
+
+**Suggested improvement:** When any call in a batch is refused or errors, treat the whole batch as unknown: re-read the file (or grep for each edit's marker) before the next step, and re-send only what is missing. Prefer one edit per call while the checker is unstable.
+
+**Principle:** A partially applied batch is worse than a failed one — it looks like progress. After any refusal inside a batch, verify each intended change by reading, not by the absence of an error on the others.
+
+### Observation 342: A queued waiter on a shared lock nearly broke a LIVE run as "stale" — the lock's recorded process was the one that took it, not the run
+
+**Status:** OPEN
+**Date:** 2026-09-28
+**Session context:** [SMALL-FIXES] batch — the full gates queued with `gatelock.mjs run` behind a parallel chat that had taken the PC check lock by hand ~2 h earlier.
+**Skill:** repo tooling (`raptor-port/scripts/gatelock.mjs`), not a skill
+**Type:** open-source
+**Phase/Area:** shared-resource locking between parallel sessions
+
+**Issue:** The lock script's waiter breaks any lock older than 2 hours. The holder had taken the lock by hand (`take`) and run several suites under it; the pid in its owner file was the short-lived `take` process, already gone, so "the process is dead" looked like proof the lock was stale. Asking the holder showed its last suite had started a minute earlier — the automatic break would have fired inside it three minutes later. The queued run was stopped in time.
+
+**Suggested improvement:** A waiter must never break a lock on age alone: the holder refreshes a heartbeat (touch the owner file) during its run, and "stale" means no heartbeat for N minutes; a hand-taken lock records the session, not the take command's pid. Until then, before a queued run reaches the stale mark, ask the holder.
+
+**Principle:** Staleness for a shared lock must be judged by a heartbeat from the work it protects, not by age or by the pid of the command that acquired it.

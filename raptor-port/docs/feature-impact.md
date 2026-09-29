@@ -126,6 +126,10 @@ add form / row editor / week cell / board cell / board panel adds
     pass call it; published days and leave/medical are no-ops)         → BOARD/WEEK
   → or a scheduler ACCEPTS/UNDOES it by hand: acceptInput()/unacceptInput()
     (`acceptedDay`, inert amendment keys — the round-trip is unchanged)  → BOARD/WEEK
+  → ONE REQUEST, ONE ROW reads the STORED weeks too (`weekstash.ts rowElsewhere`, 28 Sep 26 — [REQ-ORPHAN-ROW]):
+    acceptInput refuses a second row, an 'r' request whose row stands on a loaded day is adopted, a load / plan
+    switch leaves out a row standing elsewhere; a delete from another week is refused and names the day, and a
+    delete where its row is loaded takes the row with it                                   → BOARD/WEEK/STASH
 ```
 The trap this flow exists to prevent: the **palette and the warning list read
 the same input two different ways.** They must never disagree — a man struck
@@ -594,7 +598,7 @@ check the other):
 
 - **The Leave War batch writers vs their single-cell parents** (27 Aug 26,
   drag-select). `setCells`/`clearCells`/`setBidStates`/`moveCells` MUST call
-  through the exact per-cell guards `setCell`/`setBidState`/`shiftBid` use
+  through the exact per-cell guards `setCell`/`setBidState`/`shiftBid` *(retired 28 Sep 26 — every move goes through `moveRecords`, [LW-SPARE-MOVE-DOORS])* use
   (`raptorOwns`, `canEditCell`, `isBiddable`, `inSquadron`) — a batch API that
   grew its OWN copy of "may this cell be written" is the seam that would let a
   drag write where a click could not. They also all batch to one save-notify
@@ -616,7 +620,7 @@ check the other):
   member writes only their own row (the `viewer` — since `[ACCOUNTS]` the SIGNED-IN person, D166 (4)), an admin
   any; `canEditRow(role, viewer, personId)` (engine/stages.ts) is read at the
   write path (`setCell`, the range/batch writers, `moveCells`/`isMovableSource`,
-  `shiftBid`) AND the grid affordance (`Matrix.tsx` `openable`, the drag `order`
+  `shiftBid` *(retired 28 Sep 26 — every move goes through `moveRecords`, [LW-SPARE-MOVE-DOORS])*) AND the grid affordance (`Matrix.tsx` `openable`, the drag `order`
   restricted to the viewer, the BidPicker's edit gate) — the same drift-seam
   rule as `canEditCell`: whatever the grid stops offering, the store must
   independently refuse. `viewer === null` (raw store / tests only — production

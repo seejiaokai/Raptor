@@ -115,7 +115,11 @@ export function digest(d: any, di: any): string {
    display-mark path; this is the record's authority.
    ===================================================================== */
 export type DeltaKind = 'change' | 'add' | 'delete' | 'move' | 'input' | 'oil' | 'warn'
-export interface DeltaEntry { addr: string; kind: DeltaKind; from?: string; to?: string }
+/* `was` — the entry's address names a row of the PREVIOUS (issued) day, not the current one: set on a hole (a sub-cell
+   gone from a surviving row), whose address is the issued key. A 'delete' names the previous day by its kind. Read only by
+   the signature's pending key (publish.ts pendingKey), which names a current ground row by its id so a re-order the
+   screen never shows cannot move it ([AMEND-SMALL-SEEN] 9). */
+export interface DeltaEntry { addr: string; kind: DeltaKind; from?: string; to?: string; was?: true }
 
 /* every structural row with a stable id + parent, ancestor-collapsing — the
    same enumeration engine/drafts.ts uses; a row with no rid falls back to a
@@ -197,7 +201,7 @@ export function canonicalDiff(prevD: any, newD: any, di: any): DeltaEntry[] {
     if (lk == null || nowC.has(lk)) return        // row gone → structure; survives with a value → handled above
     const rowK = rowKeyOf(String(k)); if (!rowK) return    // a row-level key gone → structural
     const rowLk = toNow(rowK)
-    if (rowLk != null && nowC.has(rowLk)) out.push({ addr: String(k), kind: 'change', from: String(wasC.get(k)), to: '' })  // who[]/more[]/pax[] hole on a surviving row
+    if (rowLk != null && nowC.has(rowLk)) out.push({ addr: String(k), kind: 'change', from: String(wasC.get(k)), to: '', was: true })  // who[]/more[]/pax[] hole on a surviving row
   })
 
   /* ---- STRUCTURE (rid set-difference, ancestor-collapsing) ---- */

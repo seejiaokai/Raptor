@@ -15,6 +15,27 @@ the later merge keeps both (D78).
 
 ## Now
 
+<!-- now:claude/small-fixes-batch-d223f6 -->
+### `claude/small-fixes-batch-d223f6` — the small-fixes batch BUILT, walked, read by both reviewers, look card ANSWERED — PR #463 open, `main` (PR #464) taken in; his "merge live" left — written 29 Sep 26 — verify before use
+- **The branch:** cut from `main` at `60a6792c`; `main` merged in four times (PR #457; #458 the rulings slim-down; #459–#462 the
+  guide step and Tracker leftovers; #464 the change-recording re-test — notes-only conflicts, both sides kept, `--rulings
+  --merge` and its hand lines re-applied; 11 app files changed on both sides merged clean, their unit tests 2720/0 and
+  geometry + Leave War e2e 471 passed / 48 skipped after it). Folder `.claude/worktrees/trk-smoke-add-race-bug-007eed`.
+  Ports: preview 4174, `E2E_PORT=4191`. Rulings D360–D367 used (D366 retired, replaced by D367); D368–D369 free.
+- **Built (one commit each, red-first):** `[AVAILWIN-PREVIEW-BAR]`, `[GHOST-FLAG-SHADOW]`, `[ALLAVAIL-OPEN-ROW]` (D360),
+  `[AMEND-SMALL-SEEN]` 1, 3, 4, 9, `[REQ-ORPHAN-ROW]`, `[REQ-DOOR-WORDS]` 1–3, `[LW-ISO-DATES]`, `[LW-SPARE-MOVE-DOORS]`,
+  `[ABSENCE-SMALL-SEEN]` 1–4; then D367 (a flying line's callsign on the week wraps and grows — his iPhone cut W6LINE
+  on one line; the ≤374px column 48 → 36 so the remarks' MAIN / SPARE tags stay whole). Evidence:
+  `raptor-port/docs/handpass/2026-09-28-small-fixes.md` (§10 the look card and his answers, D361–D367).
+- **Checked:** 13 walks + the D367 re-walk in two fonts; Astra (2) and Fable (3) final reads, every finding closed; the
+  PR's GitHub run GREEN on `56df856b` (before the #464 merge); full local gates last on `05bdf6a6` (§Gate baseline is main's).
+- **Filed:** `[PLAN-BANNER-DOOR]`, `[GATELOCK-STALE-LIVE]`, `[ROW-NO-TIME-MARK]` (D361, a future job),
+  `[APP-FONTS-NOT-LOADED]` (his call — the app loads no font, so each device draws its own).
+- **Next:** (1) the PR's run on the merged code, read when it finishes; (2) his "merge live"; then archive the batch's items
+  with `backlog-archive.mjs` and delete the two look-only branches `claude/callsign-look-a` / `-b` (never merged).
+- **Parallel chats (D302):** change-recording merged (#464); observation numbers — mine #333–#335, #341–#342.
+<!-- /now -->
+
 <!-- now:claude/change-recording-retest -->
 ### `claude/change-recording-retest` — the change-recording re-test (`[HUMAN-RETEST]`, D147) with `[UNDO-ROSTER-SETTINGS]`, D148 and `[UNDO-TOPBAR]` — BUILT, WALKED, READ BY BOTH, FIXED; waiting on HIS LOOK and "merge live" — written 29 Sep 26 — verify before use
 - **State:** every step of the plan done (`raptor-port/docs/superpowers/plans/2026-09-28-change-recording-plan.md`):

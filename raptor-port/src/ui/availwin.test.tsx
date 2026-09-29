@@ -675,9 +675,19 @@ describe('the row behind the window is deleted, or its puck is (Fable S14)', () 
 /* ---- the two final reads (Astra + Fable, 23 Sep 26) — each red first ------- */
 describe("a list that cannot be worked out says WHY (Fable F1)", () => {
   const says = () => $('.availwin .win-body').textContent || ''
-  it('the end time cleared behind it', async () => {
+  /* CHANGED BY D360 (owner, 28 Sep 26 — [ALLAVAIL-OPEN-ROW]): a row with a start and no end is counted over the
+     assumed hour now, so clearing its END keeps the list and says the hour is assumed; clearing its START is the case
+     that cannot be worked out. */
+  it('the end time cleared behind it: the list stays, over the assumed hour (D360)', async () => {
     puckRow(TUE); await openWin(TUE)
     await act(async () => { (DAYS[TUE] as any).ground[0].end = ''; notify() })
+    expect(says(), 'no reason in place of the list').not.toContain('no usable')
+    expect(rows().length, 'the men behind the puck').toBe(CROWD.length)
+    expect($('.availwin .win-ttl').textContent || '').toContain('no end time, an hour assumed')
+  })
+  it('the start time cleared behind it', async () => {
+    puckRow(TUE); await openWin(TUE)
+    await act(async () => { (DAYS[TUE] as any).ground[0].str = ''; notify() })
     expect(says()).toContain('no usable start and end times')
     expect(says(), 'the puck is still on the row').not.toContain('no ALL or ALL AVAIL puck')
   })

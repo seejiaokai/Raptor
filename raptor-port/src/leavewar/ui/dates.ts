@@ -21,3 +21,18 @@ export function shortDate(date: string): string {
 export function shortSpan(start: string, end: string): string {
   return start === end ? shortDate(start) : `${shortDate(start)} – ${shortDate(end)}`
 }
+
+/** `2026-07-17` → `Fri 17 Jul` — a sheet HEADED by one day, in the voice the day's list beside it already uses
+ *  ([LW-ISO-DATES], 28 Sep 26: the bid sheet, the award, the posting sheets printed the stored `2026-07-17`). Moved here
+ *  from DayList so the list and the sheets cannot word a day two ways. UTC maths, so the weekday never shifts with the
+ *  browser's timezone. */
+const WEEKDAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+export function dayLabel(iso: string): string {
+  const [y, m, d] = iso.split('-').map(Number)
+  if (!y || !m || !d) return iso
+  const wd = new Date(Date.UTC(y, m - 1, d)).getUTCDay()
+  return `${WEEKDAYS[wd]} ${d} ${MONTHS[m - 1]}`
+}
+/** An Inputs record's month-first label (`Jul 13`) said day-first (`13 Jul`) — the remarks editor's span. */
+export const inputDayLabel = (lbl: string | undefined): string =>
+  String(lbl || '').trim().replace(/^([A-Za-z]{3}) (\d{1,2})(.*)$/, '$2 $1$3')

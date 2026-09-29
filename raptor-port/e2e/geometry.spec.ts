@@ -507,6 +507,139 @@ test('a callsign too long for its puck fades instead of being clipped clean', as
   expect(m.puck, 'and the puck is still the measured box').toEqual({ w: 74, h: 15 })
 })
 
+/* A FLYING LINE'S CALLSIGN: THE WHOLE NAME, ALWAYS ([AMEND-SMALL-SEEN] 3 + [ABSENCE-SMALL-SEEN] 3, 28 Sep 26; D367,
+   29 Sep 26). VIPER and COBRA were drawn "…" on the edit week, W6LINE "…" on View-only Sched; then, with the column
+   widened, his iPhone still cut W6LINE ("W6LI…") — the app loads no font, so every device draws its own and a width that
+   fits on one machine is cut on another. So the name wraps and grows (D367): every name, THUNDERBOLTS included, shows
+   whole on both weeks at a desktop and a phone — inside its cell, never "…" — whatever font the machine draws it in;
+   on a desktop a six still takes one line (the column's measured width). The phone board's box is `sf-d3`'s walk. */
+test.describe('a flying line\'s callsign shows six letters whole', () => {
+  const NAMES = ['VIPER', 'W6LINE', 'RANGER', 'THUNDERBOLTS']   // the seed Monday holds four flying lines
+  for (const [name, viewport] of [['phone', PHONE], ['desktop', DESK]] as const) {
+    test(`on ${name}, on both weeks`, async ({ page }) => {
+      await page.setViewportSize(viewport)
+      await login(page)
+      /* the first day's flying lines take the names; a day not yet published, so both weeks draw them */
+      const placed = await page.evaluate((names) => {
+        const w = window as any, d = w.DAYS[0]; let i = 0
+        for (const wv of d.waves || []) for (const f of wv.formations || []) if (i < names.length) f.cs = names[i++]
+        w.renderSchedule(); return i
+      }, NAMES)
+      expect(placed, 'the first day holds a flying line for every name').toBe(NAMES.length)
+      for (const [page_, sel] of [['editsched', '#eWeek'], ['viewsched', '#vWeek']] as const) {
+        await go(page, page_)
+        const rows = await page.evaluate(({ sel, names }) => [...document.querySelectorAll(`${sel} .day`)].slice(0, 1)
+          .flatMap(day => [...day.querySelectorAll('.fcell.csmsn b')] as HTMLElement[])
+          .filter(b => names.includes((b.textContent || '').trim()))
+          .map(b => {
+            const tx = (b.querySelector('.ntx') || b) as HTMLElement
+            const range = document.createRange(); range.selectNodeContents(tx)
+            const br = b.getBoundingClientRect(), cell = b.closest('.fcell') as HTMLElement, cr = cell.getBoundingClientRect()
+            const rects = [...range.getClientRects()]
+            /* whole = every letter's box inside the name's box and inside the cell, nothing scrolled out of either,
+               and no "…" drawn in place of letters */
+            const inside = rects.every(q => q.left >= br.left - 0.5 && q.right <= br.right + 0.5 && q.bottom <= cr.bottom + 0.5)
+            const cs = getComputedStyle(b)
+            return { text: (b.textContent || '').trim(), cut: !inside || b.scrollWidth > b.clientWidth + 1 || cell.scrollHeight > cell.clientHeight + 1,
+              ellipsis: cs.textOverflow === 'ellipsis', lines: new Set(rects.map(q => Math.round(q.top))).size }
+          }), { sel, names: NAMES })
+        for (const n of NAMES) {
+          const r = rows.find(x => x.text === n)
+          expect(r, `${page_}: ${n} is drawn`).toBeTruthy()
+          expect(r!.cut, `${page_}: ${n} shows whole, inside its cell`).toBe(false)
+          expect(r!.ellipsis, `${page_}: ${n} is never drawn with "…"`).toBe(false)
+          if (name === 'desktop' && n !== 'THUNDERBOLTS') expect(r!.lines, `${page_}: on a desktop ${n} takes one line`).toBe(1)
+        }
+      }
+    })
+  }
+})
+
+/* A CHANGED TIME'S "ALn" TAG SITS UNDER THE TIME ([AMEND-SMALL-SEEN] 4, 28 Sep 26). Trailing the digits it was cut to
+   "AL" in a flying line's narrow B/TO and LD boxes (a phone, and LD on a desktop too) and ran over the people column
+   beside a duty's start. The tag is a ::after, so it is read through its computed style: on its own line under the
+   time, in every narrow time box, on both weeks, at a phone and a desktop. (The walk sf-d4-altag.mjs issues a real AL1
+   and measures each tag's box against its cell.) */
+test.describe('a changed time\'s AL tag sits under the time', () => {
+  for (const [name, viewport] of [['phone', PHONE], ['desktop', DESK]] as const) {
+    test(`on ${name}, in the flying line and the list rows, on both weeks`, async ({ page }) => {
+      await page.setViewportSize(viewport)
+      await login(page)
+      for (const [page_, sel] of [['editsched', '#eWeek'], ['viewsched', '#vWeek']] as const) {
+        await go(page, page_)
+        const got = await page.evaluate(sel => {
+          /* one time of each kind, marked as issued in AL1 the way the renderer marks it (the attribute alone) */
+          const pick = (q: string) => [...document.querySelectorAll(`${sel} ${q}`)].find(e => /^\d{1,2}:\d{2}$/.test((e.textContent || '').trim())) as HTMLElement | undefined
+          const kinds: Record<string, HTMLElement | undefined> = {
+            'take-off': pick('.form .fcell.bto span:not(.bsug)'), landing: pick('.form .fcell.ld span, .form .fcell.ld'),
+            'list start': pick('.ah-row .t, .pl-row .t'),
+          }
+          const out: Record<string, string> = {}
+          for (const [k, el] of Object.entries(kinds)) {
+            if (!el) { out[k] = 'missing'; continue }
+            el.setAttribute('data-alc', '1')
+            out[k] = getComputedStyle(el, '::after').display
+            el.removeAttribute('data-alc')
+          }
+          return out
+        }, sel)
+        for (const [k, disp] of Object.entries(got)) expect(disp, `${page_}: the ${k} time's tag sits on its own line`).toBe('block')
+      }
+    })
+  }
+})
+
+/* THE READ-ONLY INPUT WINDOW READS AS READ-ONLY ([ABSENCE-SMALL-SEEN] 4, 28 Sep 26 — the re-test's W1). A member
+   opening another man's input gets its body inert, but its fields were drawn as live boxes (the dropdown and its arrow,
+   the remarks box, a text cursor). Locked, a field reads as its value: no box, no arrow, the plain cursor; his OWN
+   input — the control — keeps its live boxes. (The walk sf-g4-readonly.mjs pictures both.) */
+test('the read-only input window draws its locked fields as values, not boxes', async ({ page }) => {
+  await page.setViewportSize(DESK)
+  await login(page, 'user')                                     // us = Ranger (bane), a member
+  await go(page, 'inputs')
+  await page.selectOption('#inFPerson', 'all')
+  await page.locator('#inCalBtn').click()
+  await page.waitForSelector('#inpCal')
+  const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+  for (let i = 0; i < 24; i++) {
+    const cur = ((await page.locator('#inpCal .ic-mon').textContent()) || '').trim()
+    if (cur === 'July 2026') break
+    const [m, y] = cur.split(' ')
+    await page.locator(`${y}-${String(months.indexOf(m) + 1).padStart(2, '0')}` < '2026-07' ? '#icNext' : '#icPrev').click()
+    await page.waitForTimeout(250)
+  }
+  const look = async (mine: boolean) => {
+    const iid = await page.evaluate(mine => {
+      const w = window as any
+      const c = [...document.querySelectorAll('#inpCal [data-iid]')].find(e => { const r = w.INPUTS.find((x: any) => x.iid === e.getAttribute('data-iid')); return r && (mine ? r.person === 'bane' : r.person !== 'bane') && (e as HTMLElement).offsetWidth })
+      return c ? c.getAttribute('data-iid') : null
+    }, mine)
+    expect(iid, mine ? 'his own input in July' : 'another man\'s input in July').toBeTruthy()
+    await page.locator(`#inpCal [data-iid="${iid}"]:visible`).first().click()
+    await page.waitForSelector('#inpEditPop:not([hidden]) .inped-body')
+    const got = await page.evaluate(() => {
+      const body = document.querySelector('#inpEditPop .inped-body')!
+      return { inert: body.hasAttribute('inert'), fields: [...body.querySelectorAll('select, input:not([type=checkbox]):not([type=radio]):not([type=file]), textarea')]
+        .filter(e => (e as HTMLElement).offsetWidth).map(e => { const s = getComputedStyle(e); return { tag: e.tagName, bg: s.backgroundColor, bw: parseFloat(s.borderTopWidth), bc: s.borderTopColor, app: s.appearance, cursor: s.cursor } }) }
+    })
+    await page.locator('#inpEditPop #inpEditCancel').click()
+    await page.waitForSelector('#inpEditPop', { state: 'hidden' })
+    return got
+  }
+  const clear = (c: string) => /rgba\(0, 0, 0, 0\)|transparent/.test(c)
+  const other = await look(false)
+  expect(other.inert, 'another man\'s input opens read only').toBe(true)
+  expect(other.fields.length).toBeGreaterThan(0)
+  for (const f of other.fields) {
+    expect(clear(f.bg) && (f.bw === 0 || clear(f.bc)), `a locked ${f.tag} draws no box`).toBe(true)
+    if (f.tag === 'SELECT') expect(f.app, 'and no dropdown arrow').toBe('none')
+    expect(f.cursor, `and no text cursor over a locked ${f.tag}`).toBe('default')
+  }
+  const own = await look(true)
+  expect(own.inert, 'his own input opens to edit').toBe(false)
+  expect(own.fields.every(f => !clear(f.bg)), 'THE CONTROL: his own fields keep their live boxes').toBe(true)
+})
+
 /* THE DESKTOP SCHEDULER-BOARD CHROME IS TIGHT (owner, 26 Aug 26 — a batch of
    "give me more working space" asks). Four things at once, all jsdom-invisible
    because they are height/row/border geometry: the action buttons match the
@@ -4817,12 +4950,16 @@ test.describe('a mouse drag of a puck runs on the pointer machine, not the nativ
            shadow still under it — and no outline of its own any more */
         lift: !!g && g.classList.contains('lift'),
         shadow: cs ? cs.boxShadow : '', outline: cs ? cs.outlineStyle : '',
+        /* [GHOST-FLAG-SHADOW] (28 Sep 26): the depth rides the VEIL, so no ring on the puck can eat it — and the
+           ghost lifts the puck's clip so the veil's outer shadow is drawn */
+        veil: g ? getComputedStyle(g, '::before').boxShadow : '', overflow: cs ? cs.overflow : '',
       }
     })
     expect(mid.ghost, 'the page-drawn puck ghost is up').toBe(true)
     expect(mid.lift, 'and wears the shared lift').toBe(true)
-    expect(mid.shadow, 'the accent box is drawn inside the ghost\'s edge').toMatch(/inset/)
-    expect(mid.shadow, 'and its depth shadow is still under it').toMatch(/rgba\(0, 0, 0, 0\.6\)/)
+    expect(mid.veil, 'the accent box is drawn inside the ghost\'s edge').toMatch(/inset/)
+    expect(mid.veil, 'and its depth shadow is still under it').toMatch(/rgba\(0, 0, 0, 0\.6\)/)
+    expect(mid.overflow, 'the ghost lets the veil\'s outer shadow show').toBe('visible')
     /* the STYLE, not the width: a newer Chromium computes `outline-width` as its
        initial `medium` (3px) even under `outline-style: none` — the width no
        longer collapses to 0 when nothing is drawn — so the CI runner's browser

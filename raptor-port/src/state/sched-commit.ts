@@ -519,17 +519,23 @@ function commitPublish(type: string, fn: () => void, di: number): CommitResult {
     apply: (txn) => {
       txn.enlist(schedStore)
       const before = issuedIdSet()
-      fn()
-      const added: string[] = []
-      for (const id of issuedIdSet()) if (!before.has(id)) added.push(id)
-      if (added.length) {
-        txn.boundary({ kind: 'publish', ids: added, crossable: !added.some(issuedDisclosed) })
-        /* [ARCH-STACK] step 4 (B5) — weekend / PH work meets a clashing leave bid here: since the
-           owner's 20–21 Sep 26 answer ("keep the bid and flag the day, both ways") the gate KEEPS the
-           bid and flags the day (leavewar/sync.ts publishFlagsBids; register AM48c) — it no longer
-           replaces it. (Comment corrected by the amendment re-test, 24 Sep 26.) */
-        publishGate()?.(di)
-      }
+      /* ONE PRESS, ONE MESSAGE ([AMEND-SMALL-SEEN] 1, 28 Sep 26): the publish says what it published ("Published AL1 · 14
+         items on Sat only") and the OIL check below may speak in the same breath ("…the SXO desk has no usable times, so
+         nobody on it earns OIL"); the toast is one element whose text is replaced, so only the second was ever seen.
+         Both are said together, in one line (HOOKS.toastBatch — this command is its only user). */
+      HOOKS.toastBatch(() => {
+        fn()
+        const added: string[] = []
+        for (const id of issuedIdSet()) if (!before.has(id)) added.push(id)
+        if (added.length) {
+          txn.boundary({ kind: 'publish', ids: added, crossable: !added.some(issuedDisclosed) })
+          /* [ARCH-STACK] step 4 (B5) — weekend / PH work meets a clashing leave bid here: since the
+             owner's 20–21 Sep 26 answer ("keep the bid and flag the day, both ways") the gate KEEPS the
+             bid and flags the day (leavewar/sync.ts publishFlagsBids; register AM48c) — it no longer
+             replaces it. (Comment corrected by the amendment re-test, 24 Sep 26.) */
+          publishGate()?.(di)
+        }
+      })
       applyEnd()   // SR-001: commitPublish builds its OWN Command, so it needs the shared advance too
     },
   }

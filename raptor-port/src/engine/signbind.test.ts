@@ -20,6 +20,12 @@ import {
 import { moveGroundRow } from './reorder'
 import { ensureRowIds } from './rowids'
 import { digest } from './canonical'
+import { groundOrder } from './order'
+/* WHAT A SIGNATURE BINDS (AM-06), the ground programme AS SHOWN ([AMEND-SMALL-SEEN] 9, 28 Sep 26 — publish.ts
+   currentBindNow): the digest of the day with its ground rows in the order the screen shows them. The seed Monday's rows
+   are stored out of time order, so the stored-order digest this test first compared against is not what is bound. */
+const shownDigest = (di: number) => { const d: any = DAYS[di]
+  return digest(d && Array.isArray(d.ground) && d.ground.length ? { ...d, ground: groundOrder(d.ground, d.gman).map((x: any) => x.row) } : d, di) }
 import { dayIso, verId } from './verid'
 import { CURWEEK } from './waves'
 import { histInit, histPush, histApply, HIST } from '../state/history'
@@ -50,8 +56,8 @@ describe('a signature binds to the content it signed (AM-06)', () => {
   it('captures the current canonical digest at sign time, and the day reads signed', () => {
     signAll(0)
     expect(daySigned(0)).toBe(true)
-    expect(signBindOf(0).cur.dg).toBe(digest(DAYS[0], 0))
-    expect(signBindOf(0).appr.dg).toBe(digest(DAYS[0], 0))
+    expect(signBindOf(0).cur.dg).toBe(shownDigest(0))
+    expect(signBindOf(0).appr.dg).toBe(shownDigest(0))
   })
 
   it('an edit invalidates every signature — no cell touched, no hook run', () => {
@@ -97,7 +103,7 @@ describe('undo re-verifies rather than blindly invalidating (F-09, brief §9)', 
     expect(daySigned(0)).toBe(false)
     histApply(HIST.ix - 1)                       // undo the edit
     expect(daySigned(0)).toBe(true)              // signature restored AND still matches
-    expect(signBindOf(0).cur.dg).toBe(digest(DAYS[0], 0))
+    expect(signBindOf(0).cur.dg).toBe(shownDigest(0))
   })
 })
 

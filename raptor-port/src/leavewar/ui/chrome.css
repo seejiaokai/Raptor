@@ -108,6 +108,14 @@
   align-items: center;
   gap: 8px;
   flex-wrap: wrap;
+  /* ALLOWED TO SHRINK, SO IT WRAPS ([ABSENCE-SMALL-SEEN] 2, 28 Sep 26 — the re-test's W6 N6: "VIEWING AS" cut off at
+     390px). The shell's phone bar (scheduler.css, ≤820px) sets `.topbar>*{flex:0 0 auto}` for its own one-line bar,
+     and that leaks onto this row: the spring kept its one-line width (469px on a 390 screen), never wrapped, and the
+     chip hung past the edge inside a row that scrolled sideways. Measured: at 390 the chip cannot share the line with
+     the picker, + New and undo/redo even with its name cut, so on a phone it drops to its own line at the right. The
+     explicit property lives here, per this file's rule (never fix a bleed by editing scheduler.css). */
+  flex: 0 1 auto;
+  min-width: 0;
 }
 
 /* WHOSE view this is — the persistent viewer badge (owner, 28 Aug 26 — "make
@@ -124,6 +132,9 @@
   background: rgba(59, 198, 232, .12);
   border: 1px solid rgba(59, 198, 232, .45);
   white-space: nowrap;
+  /* never wider than its row: a long callsign ends in "…" (below); the words "VIEWING AS" and the eye never shrink */
+  min-width: 0;
+  max-width: 100%;
 }
 
 .lw-viewing .eye {
@@ -132,6 +143,7 @@
 }
 
 .lw-viewing .vlab {
+  flex: 0 0 auto;
   color: var(--ink-3);
   letter-spacing: .04em;
   text-transform: uppercase;
@@ -144,6 +156,9 @@
   font-weight: 800;
   letter-spacing: .04em;
   font-size: 12.5px;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .wk {

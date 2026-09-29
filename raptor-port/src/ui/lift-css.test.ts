@@ -180,6 +180,25 @@ describe('the lift out-ranks every state box a picked-up row already wears', () 
       expect(w!.value, `.puck.${state} still owns the element's box-shadow`).not.toMatch(/var\(--lift-box\)/)
     }
   })
+
+  /* [GHOST-FLAG-SHADOW] (28 Sep 26) — A DRAGGED PUCK WEARS ITS OWN RING, WHATEVER IT IS. The ghost's lift compound used
+     to carry the depth shadow in `box-shadow` — the same property every flag ring uses — so the rings that out-rank it
+     (!important, or more specific) ate the depth, and the ones it out-ranked were eaten by it: a dragged amber puck lost
+     its amber ring. The depth now rides the veil (below); no rule naming the ghost sets its box-shadow at all, so for
+     every ring state the ghost's winning box-shadow is exactly the resting puck's. Replayed from the file, state by state
+     (one class set each — the rings that are only three-class compounds are listed whole). */
+  it('a dragged puck\'s ghost wears its OWN ring for every ring state — no ghost rule touches its box-shadow', () => {
+    for (const cls of ['dragimg', 'tdghost']) {
+      expect(SHADOWS.filter(s => s.classes.includes(cls)).map(s => s.sel), `no .${cls} rule sets the ghost's own box-shadow`).toEqual([])
+      const STATES = [['boxred'], ['boxdash'], ['warn'], ['warn', 'hard'], ['warn', 'note'], ['me'], ['hl'],
+        ['wfoc'], ['wfoc', 'advf'], ['wfoc', 'echo'], ['wfoc', 'echo', 'advf'], ['me', 'boxred']]
+      for (const st of STATES) {
+        const rest = winner(['puck', ...st]), ghost = winner(['puck', ...st, cls, 'lift'])
+        expect(rest, `.puck.${st.join('.')} has a ring at rest`).toBeTruthy()
+        expect(ghost!.sel, `.${cls} of a .puck.${st.join('.')} paints ${ghost!.sel}, not the resting ring ${rest!.sel}`).toBe(rest!.sel)
+      }
+    }
+  })
 })
 
 describe('the frame', () => {
@@ -335,9 +354,14 @@ describe('the ghosts wear the same recipe — inset accent, neutral depth', () =
     }
   })
 
+  /* [GHOST-FLAG-SHADOW] (28 Sep 26): the two PUCK ghosts carry the recipe and the depth on their VEIL, never on the
+     ghost itself (the ring rules own the ghost's box-shadow — the cascade test above); the chip ghost has no ring rule
+     that could eat it, so it keeps both on itself. Where each carries it, the set is the same. */
   it('each carries --lift-box plus its dark drop shadow, and the ONE outer layer is neutral', () => {
     for (const [cls, alpha] of GHOSTS) {
-      const m = ghostBody(cls).match(/box-shadow:\s*([^;}]+)/)
+      const puckGhost = cls !== '.ic-ghost'
+      if (puckGhost) expect(ghostBody(cls), `${cls} leaves its own box-shadow to the ring it wears`).not.toMatch(/box-shadow/)
+      const m = (puckGhost ? bodyOf(`${cls}.lift::before`) : ghostBody(cls)).match(/box-shadow:\s*([^;}]+)/)
       expect(m, `${cls} declares a box-shadow`).toBeTruthy()
       const ls = layers(m![1]!.trim())
       expect(ls[0], `${cls} leads with the shared recipe`).toBe('var(--lift-box)')
@@ -433,6 +457,10 @@ describe('the ghosts wear the same recipe — inset accent, neutral depth', () =
     expect(v).toMatch(/position:\s*absolute/)
     expect(v).toMatch(/inset:\s*0/)
     expect(v).toMatch(/box-shadow:\s*var\(--lift-box\)/)
+    /* [GHOST-FLAG-SHADOW] — and the depth, which only the veil can keep under a ring; the ghost lifts the puck's clip so
+       that OUTER layer is drawn (the veil is a child of a puck that clips its overflow) */
+    expect(v, 'the veil carries the depth shadow too').toMatch(/0 8px 20px rgba\(0,0,0,\.6\)/)
+    expect(bodyOf('.dragimg.lift') + ' ' + bodyOf('.tdghost.lift'), 'the lifted ghost lets the veil\'s outer shadow show').toMatch(/overflow:\s*visible[\s\S]*overflow:\s*visible/)
     expect(v, 'it takes the ghost\'s own corner').toMatch(/border-radius:\s*inherit/)
     expect(v, 'and is never a hit-test target').toMatch(/pointer-events:\s*none/)
     expect(v, 'a ::before is the first child — it needs a z-index to paint over the clone').toMatch(/z-index:\s*[1-9]/)

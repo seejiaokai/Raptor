@@ -31,14 +31,33 @@ export function raiseWin(id: string): boolean { if (FRONT === id) return false; 
 
 export const phoneLayout = () => typeof window !== 'undefined' && !!window.matchMedia && window.matchMedia('(max-width:620px)').matches
 
+/* THE BOARD'S PREVIEW BAR — the one thing a floating window must never open over ([AVAILWIN-PREVIEW-BAR], 28 Sep 26;
+   the amendment re-test's W2-F7). On a preview the board's side column opens with the bar that is the way home —
+   "← Back to live copy", "Load onto working copy" (armed: "Discard N edits & load — confirm", "Keep editing") — and both
+   windows' stylesheet corner (right 16, top 96) sat right over it. ONE body for both windows: `clear` is the bar when it
+   is shown (null otherwise), `watch` the panel the board rewrites it in (`#sbWarn`, SchedBoard.tsx), so a bar that
+   appears, grows when armed, or goes re-places the window at once. The edit week and View-only need none (measured:
+   the corner sits over the week's crew palette there, and View-only's bar carries no button); the phone's windows are
+   the bottom panel and the bar sits at the top of the board's scroller. */
+export const BOARD_BAR = {
+  clear: (): Element | null => {
+    const b = document.querySelector('#schedBoard:not([hidden]) #sbWarn .dprev-bar') as HTMLElement | null
+    return b && (b.offsetWidth || b.offsetHeight) ? b : null
+  },
+  watch: (): Element | null => document.getElementById('sbWarn'),
+}
+
 /* `open` — whether the window is up; `getBox`/`setBox` — the caller's module box; `deps` — what makes a NEW window
-   (the observers are re-armed on it); `closeSel` — the bar's close button, which never starts a drag */
+   (the observers are re-armed on it); `closeSel` — the bar's close button, which never starts a drag; `clear`/`watch`
+   — what a window he has not placed opens clear of, and where that thing is rewritten (BOARD_BAR above) */
 export function useFloatWin(opts: {
   open: boolean
   getBox: () => FloatBox | null
   setBox: (b: FloatBox | null) => void
   deps: any[]
   closeSel?: string
+  clear?: () => Element | null
+  watch?: () => Element | null
 }) {
   const { open, getBox, setBox, deps } = opts
   const el = useRef<HTMLDivElement | null>(null)
@@ -50,9 +69,23 @@ export function useFloatWin(opts: {
     const b = getBox()
     const phone = phoneLayout()
     if (!b || !!b.phone !== phone) {
-      n.style.left = n.style.top = n.style.right = n.style.bottom = n.style.width = n.style.height = ''
+      n.style.left = n.style.top = n.style.right = n.style.bottom = n.style.width = n.style.height = n.style.maxHeight = ''
+      /* HIS PLACE IS HIS; THE STYLESHEET'S CORNER YIELDS TO THE PREVIEW BAR. Only a window he has not placed, on a
+         desktop: when the bar is shown and the corner overlaps it, the window starts just below it, and is capped to
+         end on the screen. Only `top` and `max-height` are written — never width or height — so the ResizeObserver
+         below never mistakes this for a size he chose, and the next place() with no bar clears both again. */
+      const c = !phone && opts.clear ? opts.clear() : null
+      if (c) {
+        const r = n.getBoundingClientRect(), q = c.getBoundingClientRect()
+        if (q.left < r.right && q.right > r.left && q.top < r.bottom && q.bottom > r.top) {
+          const top = Math.round(q.bottom + 8)
+          n.style.top = top + 'px'
+          n.style.maxHeight = Math.max(0, window.innerHeight - top - 12) + 'px'
+        }
+      }
       return
     }
+    n.style.maxHeight = ''
     if (phone) {
       /* the phone panel is the stylesheet's — only how far he dragged it up or down is his, so only its top is
          written, clamped so the bar stays on screen */
@@ -74,6 +107,19 @@ export function useFloatWin(opts: {
     if (!open) return
     window.addEventListener('resize', place)
     return () => window.removeEventListener('resize', place)
+  }, deps)
+  /* THE EXACT MOMENT THE BAR CHANGES. The board writes its preview bar in a PASSIVE effect, after this window's layout
+     effect has placed it, so a preview started while the window is open would be measured one render late. The board
+     REPLACES the panel's markup whenever the bar appears, is armed or goes, so a watch on that panel's children re-places
+     the window then — whatever order the two components mount in. The ref keeps the observer calling today's place(). */
+  const placeRef = useRef(place)
+  placeRef.current = place
+  useEffect(() => {
+    const w = open && opts.watch ? opts.watch() : null
+    if (!w || typeof MutationObserver === 'undefined') return
+    const mo = new MutationObserver(() => placeRef.current())
+    mo.observe(w, { childList: true })
+    return () => mo.disconnect()
   }, deps)
 
   useEffect(() => {

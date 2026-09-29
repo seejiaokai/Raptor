@@ -1781,7 +1781,11 @@ were `FS`/`HS` until the 28 Aug 26 rename.
   - a row with **no readable times** (blank, half-blank, zero-length) — the
     owner's rule is "based on what timing was written", and inventing
     `openEnd`/`simLen` defaults here would mint OIL from a guess (display
-    may guess; money may not);
+    may guess; money may not). **The COUNT is not the money (D360, 28 Sep 26 — `[ALLAVAIL-OPEN-ROW]`):** a placeholder
+    on a row with a start and NO end has its crowd written into the day's membership over that assumed window
+    (`oil.ts openEndRows` → `oilev.ts`), so the chip and the window show who is free; nothing reads it as work and
+    nobody is credited — the admin is told "No OIL worked out — this row has no end time" (`ui-contracts.md`
+    §[ALL-AVAIL-WINDOW]);
   - a **ground row carrying `src`** (an accepted personal input) — the man who
     FILED it is the ask-flow's to credit (`row.oil`, below), never auto: a
     Saturday dental appointment must not mint OIL uninvited.
@@ -2007,6 +2011,14 @@ were `FS`/`HS` until the 28 Aug 26 rename.
   holds a wire-2 leave cell, **leave wins** deterministically (the two
   reconcilers must not fight over one cell). A hand-typed FO/HO matching
   the verdict is taken over in place, like ingest's confirming upgrade.
+  **Each clash line names where it can be undone (`[ABSENCE-SMALL-SEEN]` 1, 28 Sep 26 — the re-test's W6 N2).** Every
+  line used to end "— resolve on the sheet", but leave filed on the Inputs page has no control on the day's sheet, and a
+  published war's approved leave cannot be sent back from it (21 Sep 26). The way out follows the record IN THE WAY —
+  for a worked weekend what the day already holds, for two leaves the one a person can act on (`sync.ts clashWayOut`,
+  carried on each clash as `wayOut`): a bid → "decide the bid on the sheet"; leave the war approved → "send the leave
+  back or delete it on the sheet"; the same once its war is published → "the leave is published: step the war back to
+  BIDDING CLOSED to change it"; leave filed on the Inputs page → "change the leave on the Inputs page" (`ui/Chrome.tsx`
+  `WAY_OUT`). Pinned per holder by `leavewar/clashwayout.test.tsx`.
 
 The interface — the board's **OIL Earn** mode and the **green edge** on the puck
 — is `docs/ui-contracts.md` §OIL on the schedule. The register of every ruling
@@ -2457,6 +2469,20 @@ line (`docs/superpowers/specs/2026-09-24-amendment-behaviour-register.md`).**
   edited request's times, a Quals or posting change, a filing — takes the four down; putting it back restores them
   (AM11). This REPLACES D45's signature half (the OIL key still omits membership; `pd` carries it). A draft day's
   `pd` is ''.
+- **The ground programme is bound AS SHOWN (`[AMEND-SMALL-SEEN]` 9, 28 Sep 26).** The ground rows are SHOWN in time
+  order whatever order they are stored in (`order.ts groundOrder`), and the change count reads that shown order — but
+  the signature's digest keyed them by STORED position, so "Sort" on a published day (it re-orders the array only) took
+  all four signatures down while "no changes to publish" stood beside them. `publish.ts currentBindNow` now digests a
+  copy of the day whose ground rows are in SHOWN order, binding content and shown order together; the separate `gord`
+  (the shown order's positions) is retired and always ''. **And on a published day with changes waiting** (found by the
+  walk, `scripts/handpass/sf/sf-d9-sort.mjs`): the pending comparison the signature also binds (`pd`) names an added
+  ground row by its stored position ("gr:1.3.prog" — the jump needs the real cell), so Sort renamed the waiting rows and
+  the four fell with "2 pending" unchanged. `publish.ts pendingKey` now names a CURRENT ground row by its id; an address
+  naming the ISSUED day (a delete, or a hole — a sub-cell gone from a surviving row, marked `was` by
+  `canonical.ts canonicalDiff`) keeps its issued position, which never moves. A real re-order by hand (`gman`) still
+  takes the four down, putting it back restores them; the Common Programme's and duties' Sort still do (their shown order
+  IS their stored order). A binding stored before this re-signs once (demo data, D56). Pinned by `engine/signsort.test.ts`
+  (a never-published day, and a published one with rows waiting and an extra taken off).
 - **The Original keeps its signers (D95, D102).** `setDayApproved` stores `sign:{[di]:names}` on `SCHED.orig[di]`
   before it clears the four, as `alIssue` always did on an AL; `verSigners(di, ver)` reads any version's.
 - **A load puts back what the version filed (D98, AM6).** `loadVersionToWorkingCopy` sets every request covering the
@@ -2576,9 +2602,22 @@ before accounts; evidence `docs/handpass/2026-09-25-req-one-row.md`).**
   (`publish.ts rowsLeftOut` / `leaveRowsOut`, before the day is installed and before the filing reconcile), and never
   moves that other day. The issued version keeps its row for good (it is a record); a parked plan keeps it only until it
   is switched to — from then on the live day IS that plan, without the row, and leaving it again stows it as it was left
-  (a plan is what you leave it as; Fable's G4, pinned). **Within the loaded week:** like `acceptInput`'s own guard,
-  it sees the loaded days only, so a request spanning a week boundary can still stand on both sides — the stash sweep
-  filed under `[REQ-ORPHAN-ROW]` (1) is where that closes (Fable's G3). The load's "Discard N edits" (`dayDiscardCount`) counts against the day as the load will leave it,
+  (a plan is what you leave it as; Fable's G4, pinned). **Across weeks too, since 28 Sep 26 (`[REQ-ORPHAN-ROW]`,
+  closing Fable's G3):** the rule used to see the loaded days only, so a request spanning a week boundary could stand on
+  both sides. Now every "one request, one row" reader also reads the weeks stored but not loaded
+  (`weekstash.ts rowElsewhere` — a row by its request's id on another stored week, the day it stands on, or
+  'unreadable' when a week the request covers cannot be read; `stashGroundBySrc`, one memoised map per stored week, which
+  `oilev.ts` reads too): `acceptInput` refuses a second row (and the Accept says where the first stands); a request
+  taken off ('r') whose row still stands on a loaded day is ADOPTED (acc 'g') rather than given a second row;
+  `relandInputs` does not re-park such a request; a load or plan switch leaves out a row standing on another stored week
+  and names its day; a request whose row stands on a stored, unloaded week cannot be edited or deleted from here
+  (`inputedit.tsx landedOnUnloadedWeek` — "Load the week of Sun 19 Jul to delete this accepted input"); deleted where
+  its row is loaded, the row goes with it — an 'r' request's row included (`dropInputRow`, through `unacceptInput`).
+  **A saved week the request covers that cannot be read FAILS CLOSED** (Astra's final read #1): a load or plan switch
+  leaves the incoming row out and says the week could not be read (`rowsLeftOut` → `away` 'unreadable', `drafts.ts
+  rowsLeftSaid`); the edit, the delete and the week switch's re-filing are refused or skipped by the older lock on an
+  unreadable week (`quarantine.ts` — every such week is protected), each door's own check a second guard behind it. The filing letter itself (`acc`) stays week-local — only the row is one across weeks. Pinned by
+  `state/reqorphan.test.ts`; the screen words: `ui-contracts.md` §The pending list. The load's "Discard N edits" (`dayDiscardCount`) counts against the day as the load will leave it,
   and the load no longer takes its "already at <version>" short cut when a row would be left out. Every door names each
   request left out in its sentence (toast and Edit history) through ONE body, `drafts.ts rowsLeftSaid` — "Bane · Meeting
   left out — it is on Tuesday's programme": the Load on the preview bar (week and board, one handler), the plans menu's
@@ -3115,7 +3154,7 @@ merge and had left it wholly ungated: a member could self-approve through
 the store). A medical code is refused from a member in `setCell` itself (the
 sheets only ever offered it to an admin; the store now agrees), and the batch
 predicates carry the same term so the refusal lands in the COUNT.
-`moveCells` is `shiftBid` for a whole selection: role-gated by `canEditCell`,
+`moveCells` is `shiftBid` *(retired 28 Sep 26 — every move goes through `moveRecords`, [LW-SPARE-MOVE-DOORS])* for a whole selection: role-gated by `canEditCell`,
 ATOMIC (every source and every landing day validated before any write — a
 half-moved block is worse than a refused one, and there is no undo), landing
 `{state:'pending', source:'bid', shiftedFrom}` per cell; a landing that is
@@ -3123,7 +3162,7 @@ occupied by a non-selected cell, Raptor-owned, or outside the war refuses the
 whole move. All batch to ONE save-and-notify under the store's `quiet`
 suppression. A batch API growing its OWN guard would be the drift-seam to
 avoid — they must always call through the same per-cell checks. Since the
-27 Aug overnight pass that cuts BOTH ways: `shiftBid`, the single-cell mover,
+27 Aug overnight pass that cuts BOTH ways: `shiftBid` *(retired 28 Sep 26 — every move goes through `moveRecords`, [LW-SPARE-MOVE-DOORS])*, the single-cell mover,
 carries `moveCells`' whole day law (stage/window via `canEditCell` on both
 ends, the landing on a real war day the person is still in the squadron for —
 a typed off-war date used to land a bid on a day no column renders, silently

@@ -1126,7 +1126,7 @@ body.ros-open .eroster .ros-tab{background:var(--accent);color:var(--accent-ink)
    AREA + TIME used to be columns 6 and 7, which squeezed RMKS down to ~60px. They now
    sit in a full-width horizontal strip under each formation (.form-area), so the five
    columns above get all the room back. */
-.form{display:grid;grid-template-columns:52px 48px 48px calc(var(--puck-w)*2 + 16px) minmax(0,1fr);align-items:stretch;border-bottom:1px solid rgba(42,49,58,.55)}
+.form{display:grid;grid-template-columns:76px 48px 48px calc(var(--puck-w)*2 + 16px) minmax(0,1fr);align-items:stretch;border-bottom:1px solid rgba(42,49,58,.55)}
 .form:last-child{border-bottom:none}
 .form:hover{background:rgba(255,255,255,.018)}
 .form.cx{opacity:.5}
@@ -1138,7 +1138,25 @@ body.ros-open .eroster .ros-tab{background:var(--accent);color:var(--accent-ink)
 .fcell.ld{grid-column:3;grid-row:1/span var(--gs)}
 .form .csmsn{overflow:hidden}
 .form .bto,.form .ld{white-space:nowrap;overflow:hidden}
-.form .csmsn b{display:block;font-size:10px;font-weight:700;color:var(--ink);white-space:nowrap;line-height:1.15;overflow:hidden;text-overflow:ellipsis}
+.form .csmsn b{display:block;font-size:10px;font-weight:700;color:var(--ink);white-space:normal;overflow-wrap:anywhere;line-height:1.15}
+/* A FLYING LINE'S CALLSIGN WRAPS AND GROWS — THE WHOLE NAME, NEVER "…" (owner, D367, 29 Sep 26: "Why don't it wrap
+   text? So excess the text grows vertically" — on his iPhone the one-line name below was cut, W6LINE "W6LI…", because the
+   app loads no font of its own and his phone draws a wider one than the PC it was measured on, [APP-FONTS-NOT-LOADED]).
+   So the name is no longer one line: it wraps, a word too long for the line breaking inside it (overflow-wrap:anywhere,
+   as the board's boxes do, 20 Aug 26), and the cell grows down into the room a flying line always has (two puck rows at
+   least; the name and the mission use the top two lines). The widths below stay as measured, so the remarks keep theirs.
+   The history, kept for the measurements: SIX LETTERS WHOLE, A LONGER ONE CUT TO "…" ([AMEND-SMALL-SEEN] 3 +
+   [ABSENCE-SMALL-SEEN] 3, 28 Sep 26 — VIPER and COBRA drawn "…" on the edit week, W6LINE "…" on View-only Sched).
+   Two faults, both fixed here. (1) The name sat in the editable INLINE-BLOCK `.ntx` (min-width 30px): an inline-block
+   is one unbreakable piece, so one pixel over and the WHOLE name went to "…" — the dot alone was left. As an ordinary
+   inline run the ellipsis cuts letters instead ("MAGN…"); an empty box still keeps a tappable width while editing.
+   (2) The column was sized for a five-letter name at best. Measured (the walk scripts/handpass/sf/sf-d3-callsigns.mjs,
+   bold Inter at the week's own sizes, plus the mission dot's 7px): desktop 12.5px — W6LINE 47, RANGER 51, WARDEN 55,
+   HAMMER 57, MAGNUM 60 → 76px (content 68: every one whole); phone 9.5px — W6LINE 35, RANGER 38 → 50px (content 46:
+   a wide six like HAMMER ends in "…"); ≤374px 9px → 48px. The room comes from REMARKS (the 1fr track): desktop
+   214 → 190, 390 phone 73 → 61; B/TO and LD are left exactly as measured for a time (below). */
+.form .csmsn b .ntx,.page.editing .form .csmsn b .ntx{display:inline;min-width:0}
+.page.editing .form .csmsn b .ntx:empty{display:inline-block;min-width:14px}
 .form .csmsn i{display:block;font-style:normal;font-size:8.5px;color:var(--ink-3);font-weight:600}
 .form .csmsn .mdot{display:inline-block;width:5px;height:5px;border-radius:50%;margin-right:2px;vertical-align:middle}
 .form .bto{font-family:'JetBrains Mono',monospace;text-align:center;line-height:1.25}
@@ -1196,7 +1214,7 @@ body.ros-open .eroster .ros-tab{background:var(--accent);color:var(--accent-ink)
 body:not(.tdrag) .acrow .seat.empty-slot:hover{border-color:var(--accent);color:var(--accent)}
 .page.editing .acrow .seat[data-slot]{cursor:pointer}
 body:not(.tdrag) .page.editing .acrow .seat[data-slot]:hover .puck{outline:2px solid var(--accent);outline-offset:1px}
-.cols.formcols{display:grid;grid-template-columns:52px 48px 48px calc(var(--puck-w)*2 + 16px) minmax(0,1fr);background:var(--panel-2);border-bottom:1px solid var(--edge);
+.cols.formcols{display:grid;grid-template-columns:76px 48px 48px calc(var(--puck-w)*2 + 16px) minmax(0,1fr);background:var(--panel-2);border-bottom:1px solid var(--edge);
   font-family:'Barlow Condensed','Inter Tight',sans-serif;text-transform:uppercase;letter-spacing:.03em;font-size:8.5px;font-weight:700;color:var(--ink-2)}
 .cols.formcols span{text-align:left;white-space:nowrap;overflow:hidden;padding:3px 5px;border-right:1px solid rgba(42,49,58,.4)}
 .cols.formcols .c-c{text-align:center}
@@ -1839,6 +1857,17 @@ body.dnd .schedboard .ppl[data-fill].dragover .addz{border-color:var(--accent);c
 :is(span,b,i,div)[data-alc]:not(.seat):not(.areacell):not(.timecell):not(.rmkcell):not(.intimes):not(.sb-rcell):not(.verchip)::after{
   content:'AL' attr(data-alc);font-family:'Barlow Condensed','Inter Tight',sans-serif;font-size:7px;font-weight:800;
   letter-spacing:.02em;color:var(--alc);margin-left:3px;vertical-align:top;pointer-events:none}
+/* A CHANGED TIME'S TAG SITS UNDER THE TIME, NOT AFTER IT ([AMEND-SMALL-SEEN] 4, 28 Sep 26 — the re-test's W1: at 390px
+   "AL1" beside a time was cut to "AL"). A time lives in a narrow box: a flying line's B/TO and LD (38 / 32px on a phone,
+   48 on a desktop, `overflow:hidden`) and a list row's start / end (`.t`). Trailing the digits, the tag needs 13–15px
+   more than the box has — measured (scripts/handpass/sf/sf-d4-altag.mjs): cut by the flying line's box at 390 AND on a
+   desktop (LD: 10:45 + AL1 ends 4px past it), and on a duty's start run over the people column beside it. On its own
+   line under the time it is whole in every box at every width, and it never covers a digit; the time keeps its
+   underline in the AL's colour. Only where a time was changed and issued does the row gain the tag's line. The chain
+   of :not()s is the generic rule's own, so this one outweighs it. */
+.form :is(.bto,.ld) :is(span,b,i,div)[data-alc]:not(.seat):not(.areacell):not(.timecell):not(.rmkcell):not(.intimes):not(.sb-rcell):not(.verchip)::after,
+:is(.ah-row,.pl-row) .t[data-alc]:not(.seat):not(.areacell):not(.timecell):not(.rmkcell):not(.intimes):not(.sb-rcell):not(.verchip)::after{
+  display:block;margin-left:0;line-height:1;margin-top:1px}
 /* amendment-level panel (edit page) */
 .alpanel{margin:0 20px 8px;border:1px solid var(--edge);border-radius:10px;background:var(--panel);padding:7px 11px}
 .alpanel .al-h{font-family:'Barlow Condensed','Inter Tight',sans-serif;text-transform:uppercase;letter-spacing:.1em;font-size:9.5px;font-weight:700;color:var(--ink-3);margin-bottom:5px}
@@ -1920,6 +1949,9 @@ body.dnd .schedboard .ppl[data-fill].dragover .addz{border-color:var(--accent);c
 .accb:hover{border-color:rgba(87,201,122,.8);background:rgba(87,201,122,.2)}
 .accb.undo{color:var(--ink-3);border-color:var(--edge-2);background:transparent}
 .accb.undo:hover{color:var(--ink);border-color:var(--edge)}
+/* [REQ-ORPHAN-ROW] (28 Sep 26): a request whose one row stands on ANOTHER week says where, in place of Accept — a note,
+   not a control (its title says to load that week) */
+.accs .acc-away{font-size:9.5px;color:var(--ink-3);white-space:nowrap;letter-spacing:.02em}
 /* the framed blocks (Programme / Available crew) get the same left bar */
 .allhands.sec,.availpuck.sec{border-left:3px solid var(--sec);background:var(--secbg)}
 .allhands.sec .ah-h{color:var(--sec)}
@@ -3440,10 +3472,12 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
      purely as a safety net. The widths are set by what has to render without clipping,
      measured not guessed: a 'hh:mm' in 9px JetBrains Mono is 27px, so B/TO and LD need
      34 and 28 of content respectively, i.e. 38 and 32 of track once .fcell's 2px side
-     padding is counted. */
+     padding is counted.
+     28 Sep 26: CS/MSN 38 → 50 so a six-letter callsign shows whole ([AMEND-SMALL-SEEN] 3 — the reasoning and the
+     measurements at `.form .csmsn b .ntx`); RMKS gives the 12px, 73 → 61 at 390. B/TO and LD are unchanged. */
   .week .go{overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain}
   /* FCP/RCP is derived from the puck: 2 x 74 + 3px gap + 8px .acrow padding = 159 */
-  .form,.cols.formcols{grid-template-columns:38px 38px 32px calc(var(--puck-w)*2 + 11px) minmax(0,1fr)}
+  .form,.cols.formcols{grid-template-columns:50px 38px 32px calc(var(--puck-w)*2 + 11px) minmax(0,1fr)}
   .rmkcell{font-size:8.5px;padding:3px 4px;gap:1px;overflow:hidden}
   /* .ntx carries a 30px min-width globally so an empty editable field stays tappable.
      Inside a phone flight line that min-width is wider than the columns that hold it —
@@ -3559,7 +3593,11 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
    re-proportioned to fix a phone. A tablet's even split was never the
    complaint, so it keeps it. */
 @media (max-width:374px){
-  .form,.cols.formcols{grid-template-columns:34px 36px 30px calc(var(--puck-w)*2 + 6px) minmax(0,1fr)}
+  /* CS/MSN 36px (29 Sep 26, measured): 48px (28 Sep 26, for a six on one line) squeezed REMARKS until a stand-alone
+     line's MAIN / SPARE tag broke in two ("MAI N") at 360px — every one of the walk's 12, where 36px and below keep them
+     all whole and 38px breaks half. Since D367 the callsign wraps instead of being cut, so the extra width bought nothing
+     a name still needs. */
+  .form,.cols.formcols{grid-template-columns:36px 36px 30px calc(var(--puck-w)*2 + 6px) minmax(0,1fr)}
   .form .bto b,.form .bto span,.form .ld{font-size:8.5px}
   .form .csmsn b{font-size:9px}
   .fcell{padding:3px 2px 4px}
@@ -3600,7 +3638,7 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
   /* flying table: larger fonts, tighter columns (ScheduleTrain-style density).
      With AREA + TIME moved out to the strip below each formation, RMKS grows from
      ~61px to ~198px, so remarks and stores chips finally sit on one or two lines. */
-  .form,.cols.formcols{grid-template-columns:52px 48px 48px calc(var(--puck-w)*2 + 16px) minmax(0,1fr)}
+  .form,.cols.formcols{grid-template-columns:76px 48px 48px calc(var(--puck-w)*2 + 16px) minmax(0,1fr)}
   .cols.formcols span{font-size:9.5px;padding:3px 5px}
   .fcell{padding:4px 4px}
   .fcell.csmsn b{font-size:12.5px}
@@ -4266,7 +4304,15 @@ body:not(.tdrag) .sb-slot.empty:hover{border-color:var(--accent);color:var(--acc
    `.lift{box-shadow:var(--lift-box)}` sits later in this file — at equal
    specificity it would replace the depth shadow outright and the ghost would
    read as part of the page. */
-.tdghost.lift,.dragimg.lift{box-shadow:var(--lift-box),0 8px 20px rgba(0,0,0,.6)}
+/* [GHOST-FLAG-SHADOW] (28 Sep 26): THE DEPTH SHADOW MOVED TO THE VEIL BELOW, and this compound now sets NO box-shadow.
+   It carried the depth here, in the same property the flag rings use — so the thin red, dashed, grey-note, "this is you"
+   and clicked-warning rings (!important, or more specific) ATE the depth shadow, and a plain amber advisory ring (same
+   specificity, earlier) was eaten BY it: a dragged amber puck lost its ring. On the veil the depth is its own property,
+   so every ghost keeps its own ring AND reads as lifted. The veil is a child, so the puck's own overflow clip would cut
+   its OUTER shadow: the lifted ghost lifts the clip, as `.haswhy` above already does while the hover reason shows (a
+   long name stays cut — `.puck .nm` clips itself). A filter was the other way; it shadowed the hover reason too
+   (Astra 05). Pinned by lift-css.test.ts and e2e/geometry.spec.ts; walk sf/sf-b-ghost.mjs. */
+.tdghost.lift,.dragimg.lift{overflow:visible}
 /* …and BOTH puck ghosts draw the accent on a VEIL pseudo-element. Two different
    faults, one cure:
    - THE FINGER's ghost (7 Sep 26, found in the live drive and measured edge by
@@ -4309,7 +4355,7 @@ body:not(.tdrag) .sb-slot.empty:hover{border-color:var(--accent);color:var(--acc
    pairs that `.ic-ghost.lift` already out-ranks from later in this file. The
    depth shadow above is an OUTER shadow on the element and was never obscured. */
 .tdghost.lift::before,.dragimg.lift::before{content:'';position:absolute;inset:0;border-radius:inherit;
-  pointer-events:none;z-index:5;box-shadow:var(--lift-box)}
+  pointer-events:none;z-index:5;box-shadow:var(--lift-box),0 8px 20px rgba(0,0,0,.6)}
 /* body.tdrag / body.mdrag are JS STATE MARKERS ONLY — no rule may give them a
    declaration of their own (the slow-computer cut, 3 Sep 26). Measured by
    toggling each class alone on the built app: `body.tdrag{touch-action:none;
@@ -5411,7 +5457,11 @@ button.sanscard:hover{border-color:var(--accent)}
      column needs); the three time tracks are fixed and equal so B/TO/LD line up
      as a block. The B HEADER is no longer hidden (it was in the nth-child list
      below), so the row still matches its own headings. */
-  .sb-lcols,.sb-line{grid-template-columns:20px 36px minmax(0,1fr) 46px 46px 46px;font-size:10px}
+  /* CS 36 → 56 ([AMEND-SMALL-SEEN] 3, 28 Sep 26 — "VIP/R"): the callsign box is 11px JetBrains Mono, 6.6px a letter,
+     so six letters are 40px + 12px padding + 2px border = 54; 36 wrapped a FIVE-letter name onto two lines. The room
+     comes from MSN, the one flexible track (a mission is ~5 letters). A longer callsign still wraps and grows — the
+     owner's 20 Aug 26 rule for every board text box (below, "every free-text box on the board WRAPS AND GROWS"). */
+  .sb-lcols,.sb-line{grid-template-columns:20px 56px minmax(0,1fr) 46px 46px 46px;font-size:10px}
   /* the flying line's first row is tall — the B cell stacks the blue brief time above
      its box, and the input boxes bottom-align to it — so the marker bottom-aligns too,
      at the boxes' own height, giving a measured grip-centre = box-centre (owner, 31 Aug
@@ -5882,6 +5932,17 @@ button.sbi-ty.inpedit:hover{text-decoration:none;filter:brightness(1.3)}
 .inped-hint{font-size:10.5px;color:var(--ink-3);line-height:1.4}
 /* the read-only edit window's one line — who can change this input (W1-F3, 26 Sep 26) */
 .inped-ro{font-size:11px;color:var(--ink-2);line-height:1.4}
+/* THE READ-ONLY WINDOW READS AS READ-ONLY ([ABSENCE-SMALL-SEEN] 4, 28 Sep 26 — the re-test's W1). A member opening
+   another man's input gets the body `inert` (nothing in it answers a tap), but its fields were drawn exactly as live
+   ones — the dropdown box and arrow, the remarks box, the text cursor, the OIL "Change…" button — so only the line at
+   the foot said none of it could be changed. Locked, a field reads as its VALUE: no box, no arrow, no cursor but the
+   plain one, in the quieter ink; a tick box and a button are dimmed rather than removed, so the record still shows
+   what was chosen (the half of the day, the OIL answer). A look question for him on the look card. Keyed on the
+   `inert` the window already sets — one fact, so the look can never say "editable" while the body refuses a tap. */
+.inped-body[inert] :is(select,input:not([type=checkbox]):not([type=radio]),textarea){
+  background:transparent;border-color:transparent;color:var(--ink-2);cursor:default;
+  appearance:none;-webkit-appearance:none;padding-left:0;padding-right:0}
+.inped-body[inert] :is(input[type=checkbox],input[type=radio],button){opacity:.5;cursor:default}
 /* the Unavailable + Add's range calendar (owner, 19 Aug 26) — the same
    .rangecal the Inputs page draws, stacked over its read-out line */
 .inped-dates{display:flex;flex-direction:column;gap:5px}
@@ -6365,6 +6426,11 @@ button.sbi-ty.inpedit:hover{text-decoration:none;filter:brightness(1.3)}
 .availwin .win-ttl{flex:1;min-width:0;font-size:12px;font-weight:700;color:var(--ink);
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .availwin .win-ttl small{display:block;font-size:10.5px;font-weight:500;color:var(--ink-3)}
+/* THE WHEN-LINE WRAPS, the name does not ([ALLAVAIL-OPEN-ROW], D360, 28 Sep 26 — found by the walk, sf-c-openrow.mjs): a
+   row with no end time is titled "Jul 18 · 10:00–11:00 · no end time, an hour assumed", and at the window's 212px
+   default the one-line title cut it to "… no end tim" — the very words D360 asks the window to say. The day and time
+   of an ordinary row still fit one line. */
+.availwin .win-ttl small{white-space:normal}
 .availwin .win-x{background:none;border:1px solid var(--edge-2);color:var(--ink-2);
   border-radius:5px;width:25px;height:25px;font-size:12px;line-height:1;cursor:pointer;
   flex:0 0 auto;font-family:inherit}
