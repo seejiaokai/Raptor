@@ -15,30 +15,16 @@ the later merge keeps both (D78).
 
 ## Now
 
-<!-- now:claude/award-earned-vs-granted-2ed66d -->
-### `claude/award-earned-vs-granted-2ed66d` — `[OIL-AWARD-IS-A-GRANT]` with D400: one kind of hand award; "earned" and "awarded" apart — written 29 Sep 26 — verify before use
-- **The branch:** cut at `21869a2c`, the handoff-review chat's last commit (its block replaced here, with its leave; that
-  branch gets no PR — this one carries its documents: the merged-block tidy, the OIL-sits-today note, D400). Folder
-  `.claude/worktrees/five-flags-batch-continue-2cfa70`.
-- **His brief (29 Sep 26):** build `[OIL-AWARD-IS-A-GRANT]` with `[OIL-EARNED-VS-GRANTED]` folded in (D400); no stored award
-  converted, only the demo seed (D401); plan first, both reviewers on it; FULL tier, both read the final code. **D402**
-  (his answer the same hour): every hand award shows on the grid on its date, wherever it was given.
-- **BUILT, walked, both final reads fixed — waiting on his look and "merge live".** Plan (r2, two red-team rounds each
-  from Fable and Astra): `raptor-port/docs/superpowers/plans/2026-09-29-oil-award-one-kind-plan.md`. Every hand OIL award
-  is one positive OIL ledger entry, drawn on the grid on its date (FO / HO); "earned" is the automatic credits only,
-  "awarded" every hand award, corrections their own row; an award's date is fixed; one 365-day ceiling; who entered it
-  and when kept; old-shape war awards dropped on read, the demo seed rewritten.
-- **Evidence sheet:** `raptor-port/docs/handpass/2026-09-29-oil-award.md` — roll-call R1–R15, the walk (W1–W8, Astra's
-  ranks, X1–X5 the re-walk of the fixes; desktop and phone, no console errors), the gates, §7 the final reads: Fable
-  SHIP, Astra FIX-FIRST (OA-001 the 365-day cap, OA-002 a correction's "given by", OA-003 the Undo label, OA-004 speed)
-  — every finding fixed red-first (`src/leavewar/oilaward-finalreads.test.ts`) and re-walked.
-- **Filed, not built here:** `[LEDGER-READ-ASK]` (what a member may read of another man's awards — a "+n" day's list
-  shows them; D261 kept as it is), `[RESTRICTED-ENV-WORKFLOW]` (how bug checks work once the app is in IT's restricted
-  environment), `[IT-QUESTIONS]` carries IT's answers.
-- **Rulings D401–D402 recorded** (D403–D409 unused). **Ports:** preview 4183, browser tests `E2E_PORT=4197`; full checks
-  through the PC lock (D228). **Parallel (D302):** the IT flow guide chat was told the OIL words change (29 Sep 26);
-  promised a second message when this merges — its pictures re-shoot waits on that (`[ITFLOW-OIL-RESHOOT]`, filed on its branch, PR #468).
-- **Next:** push → PR → the Vercel link to him → his look → his "merge live" → tell the IT flow guide chat it merged.
+<!-- now:claude/itflow-update-on-his-word -->
+### `claude/itflow-update-on-his-word` — the OIL award chat's last word: `[OIL-AWARD-IS-A-GRANT]` is LIVE (PR #469, merged 29 Sep 26 on his "merge live"); this notes-only follow-up (D403) waits for his own "merge live" — written 29 Sep 26 — verify before use
+- **Live:** every hand OIL award is one ledger entry drawn on the grid on its date; "earned" and "awarded" apart (D400–D402).
+  Evidence `raptor-port/docs/handpass/2026-09-29-oil-award.md`; Vercel READY for the merge commit. `main`'s run on his PC
+  was still going when this was written — read its result before trusting `main`.
+- **This branch carries D403** (his answer, 29 Sep 26: *"I'll tell u when to update"*) — the IT flow guide is re-shot only
+  on his word; `[ITFLOW-OIL-RESHOOT]` now waits for it. Homes: the guide's README, the backlog item.
+- **Left, filed:** `[LEDGER-READ-ASK]` (his question), `[RESTRICTED-ENV-WORKFLOW]`, `[LW-WINDOW-PRUNE-FLAKE]` (test-only).
+  Rulings D404–D409 unused. The IT flow guide chat was told the change merged.
+- **Next:** his "merge live" for this notes branch, then remove this block.
 <!-- /now -->
 
 <!-- now:claude/it-flow-guide-flowchart-da7ca1 -->
