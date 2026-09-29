@@ -186,5 +186,9 @@ window, the VIEWING AS chip, the board closing under a window).
    about a quarter of it). Keep the phone as built, or give the wide six the room? *Recommended: keep — flying-line
    callsigns are mostly short, and the phone's remarks are read on every line.*
 
+**His answers (29 Sep 26):** 4 → D361 (kept as built after a mock-up of a "~" mark on the count; a "?" for a row with no
+timing or no end time filed, `[ROW-NO-TIME-MARK]`); "the rest as recommended" → 1 D362 (leave), 2 D363 (leave), 3 D364
+(keep), 5 D365 (keep), 6 D366 (keep).
+
 **Filed, not asked:** `[PLAN-BANNER-DOOR]` — the plan banner's "Switch to this plan" has no screen route; recommended to
 retire it with the next plans-menu change.

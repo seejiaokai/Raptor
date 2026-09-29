@@ -636,6 +636,7 @@ landing time too, and ran over the people column beside a duty's start (measured
 In those narrow time boxes the tag is its own line under the digits (`scheduler.css`, the rule after the generic
 `[data-alc]::after`), whole at every width; the time keeps its underline. The board's times are inputs and wear the
 AL-coloured outline instead, unchanged. Pinned by `e2e/geometry.spec.ts` ("a changed time's AL tag sits under the time").
+**AL8 and every later AL wear AL7's orange (D362, 29 Sep 26 — left as it is):** the tag's number tells them apart; no new colours.
 Pending marks split by surface (owner request, Aug 26): on `#eWeek` and
 `#schedBoard`, `data-aln` items are painted DOTTED in the upcoming AL's colour
 (solid means issued, dotted means coming); the view-only page keeps the neutral
@@ -818,7 +819,7 @@ places. What goes out (the stored diff) and the marks are unchanged. A replaceme
 accepting one onto it — is one change, one line naming the request ("Bane · Meeting: on the programme → taken off"),
 and the issued AL's line reads "1 item · 1 removal" (D114). A request DELETED on the Inputs page is named from its row
 (whose and what — the landing minted the row from the request) and reads "on the programme → deleted"; after a load puts its
-row back, the deletion stays one line of its own, named the same way (the D114 check, 25 Sep 26). A request's row
+row back, the deletion stays one line of its own, named the same way (the D114 check, 25 Sep 26). Loading an older issued version that had such a row puts it back — that is what loading a version means (D363, 29 Sep 26, left as built). A request's row
 removed from this day while the request itself stands on ANOTHER day's programme (✕ here and Accept there, or a load /
 plan switch that left this day's copy out — D175) is named the same way and says where it stands now: "Bane · Meeting:
 on the programme → on Tuesday's programme"; the other day's added row is named too (Fable's code read F3, 25 Sep 26 —
@@ -1605,7 +1606,7 @@ week and View-only** (`.form`, `scheduler.css`): the name was an editable inline
 name went to "…" (only the mission dot was left) — it is an ordinary inline run now, cut after its first letters
 ("MAGN…"), an empty box keeping a tappable width while editing; and the CS/MSN column is 76px on a desktop (12.5px bold:
 every common six, MAGNUM included), 50px on a phone (9.5px: a common six — W6LINE, RANGER — whole; a wide six ends in
-"…"), 48px at ≤374px — the room taken from REMARKS (desktop 214 → 190, 390 phone 73 → 61); B/TO and LD are unchanged.
+"…" — kept so on his look, the remarks keeping their room: D366, 29 Sep 26), 48px at ≤374px — the room taken from REMARKS (desktop 214 → 190, 390 phone 73 → 61); B/TO and LD are unchanged.
 **This board line**: the CS track is 56px (was 36 — six letters of 11px JetBrains Mono are 40px + 12 padding + 2
 border), taken from MSN, the one flexible track; a longer callsign still wraps and grows — the owner's 20 Aug 26 rule for
 every board text box. Pinned by `e2e/geometry.spec.ts` ("a flying line's callsign shows six letters whole"). *(The
@@ -5933,7 +5934,7 @@ Four asks from the same sitting, all on the Leave War grid:
   phone bar rule `.topbar>*{flex:0 0 auto}` (scheduler.css, ≤820px) leaked onto this row, so it never wrapped: at 390 the
   chip hung past the right edge (to 481px) inside a row that scrolled sideways. The row's spacer (`.spring`) may now
   shrink (`chrome.css`), so the chip wraps under the picker, right-aligned; "VIEWING AS" and the eye never shrink and a
-  long callsign ends in "…". Measured: at 390 it cannot share the line even with its name cut. Tablet and desktop keep
+  long callsign ends in "…". Measured: at 390 it cannot share the line even with its name cut. The line of its own, words kept, is his call on the look (D365, 29 Sep 26). Tablet and desktop keep
   the one line. Pinned by `e2e/leavewar.spec.ts` ("the VIEWING AS chip stays inside the screen"); walked
   `scripts/handpass/sf/sf-g2-viewing.mjs`.
   The LIT ROW itself was turned up on 6 Sep 26 (owner, from his iPhone — "make
@@ -6788,7 +6789,7 @@ From the calendar's chip or the day popover a member opening someone else's inpu
 remarks box, a text cursor, the OIL "Change…" button. Keyed on that same `inert` (`scheduler.css`, `.inped-body[inert]`),
 a locked field now reads as its VALUE — no box, no arrow, the plain cursor, the quieter ink — and a tick box or a button
 is dimmed rather than removed, so the record still shows what was chosen. His own input keeps its live boxes. Before and
-after pictures are on the small-fixes look card (his call on the look). Pinned by `e2e/geometry.spec.ts` ("the read-only
+after pictures are on the small-fixes look card — kept on his look (D364, 29 Sep 26). Pinned by `e2e/geometry.spec.ts` ("the read-only
 input window draws its locked fields as values"); walked `scripts/handpass/sf/sf-g4-readonly.mjs`.
 
 ## The ⓘ info-only switch on programme items (owner, 1 Sep 26)
@@ -8253,7 +8254,7 @@ sim row its own "Assumed sim length") and the chip shows. The window's title nam
 an hour assumed", and its flags measure that hour. **Where OIL is decided, the admin is told:** the "Who earns OIL" half
 reads "No OIL worked out — this row has no end time.", so does the row's switch in OIL Earn mode (its title), and so does each man's puck in that half — a tap on him keeps the reason in the footer (Fable's final read F1) —
 nobody is credited from a guessed hour; "who's available", open to everyone, carries the assumed hour only. The crowd is
-frozen at publication like any other (D44), so a later change — the Logic tab's length included — reads pending (D45).
+frozen at publication like any other (D44), so a later change — the Logic tab's length included — reads pending (D45). **Kept as built on his look (D361, 29 Sep 26):** the count stays a plain number (a "~" mark was declined); a "?" where a row has no timing or no end time is filed, `[ROW-NO-TIME-MARK]`.
 **A row with NO start** (or one that starts and ends at the same minute) still counts nobody, but its placeholder wears
 a "?" chip of its own (class `nostart`, title "No start time — give it a time to count who can attend" / "It starts and
 ends at the same time — …"), never the older issued day's "?" (a record kept before membership was); its tap opens the

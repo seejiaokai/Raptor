@@ -46,6 +46,11 @@ speed — `raptor-port/docs/performance.md`; what is stored — `raptor-port/doc
 
 | # | Date | The rule |
 |---|---|---|
+| D366 | 29 Sep 26 | ON A PHONE THE FLYING LINE'S CALLSIGN COLUMN STAYS AS BUILT: A COMMON SIX-LETTER CALLSIGN (W6LINE, RANGER) SHOWS WHOLE, A WIDE ONE (MAGNUM, HAMMER) ENDS IN "…", AND THE REMARKS COLUMN KEEPS ITS ROOM. |
+| D364 | 29 Sep 26 | ANOTHER PERSON'S INPUT, OPENED READ ONLY, DRAWS ITS LOCKED FIELDS AS VALUES — NO BOX, NO ARROW, TICK BOXES AND BUTTONS DIMMED, NOT REMOVED — KEPT AS BUILT. |
+| D363 | 29 Sep 26 | LOADING AN OLDER ISSUED VERSION PUTS BACK EVERY ROW THAT VERSION HAD — A DELETED REQUEST'S ROW INCLUDED — AND THE PENDING LIST NAMES IT ("… on the programme → deleted"); LEFT AS BUILT. |
+| D362 | 29 Sep 26 | AL8 AND EVERY LATER AMENDMENT WEAR AL7'S ORANGE; THE TAG'S NUMBER TELLS THEM APART — LEFT AS IT IS, NO NEW COLOURS. |
+| D361 | 29 Sep 26 | THE ALL AVAIL COUNT ON A ROW WITH A START AND NO END STAYS AS BUILT — A PLAIN NUMBER, THE ASSUMED HOUR NAMED IN THE WINDOW A TAP OPENS, SET BY THE LOGIC TAB (A CHANGE ON A PUBLISHED DAY READS PENDING); A "?" WHERE A ROW HAS NO TIMING OR NO END TIME IS A FUTURE JOB, FILED. |
 | D360 | 28 Sep 26 | ALL AVAIL / ALL on a row with a start but no end: count availability over the schedule’s one-hour Logic default and show the assumed time. Credit no OIL. Admin OIL views say “No OIL worked out — this row has no end time”; the public view shows only the assumption. Frozen at publication; changes are pending. No start: a ? opens the existing reason. |
 | D346 | 28 Sep 26 | Three readings of the changes window stand as built: changes that belong to no single item sit under one group, "The day"; on a desktop a remark's gold dot sits at the far right of its column; in the week view an input covering two days shows as an item under each day. |
 | D345 | 28 Sep 26 | Both mock-ups are the designs of record: [CHG-BY-ITEM] — the changes window grouped by item (the default, "Group by: Item / Who"), the latest-changed on top, every group open; [HIST-PHONE-HIDE] — the phone's "Hide ▾" to a slim bar and a gold dot on every detail with a history. |

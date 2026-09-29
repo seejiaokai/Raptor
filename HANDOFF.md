@@ -28,8 +28,9 @@ the later merge keeps both (D78).
   Fable (3) read the code — every finding fixed, measured-and-pinned or put to him; the full gates on `05bdf6a6` (the §Gate
   baseline below; the merges since brought documents and the Tracker's own code only — the PR's checks run the lot on the merged code). Evidence: `raptor-port/docs/handpass/2026-09-28-small-fixes.md`
   (§10 the look card — six questions). PR text drafted in this chat (the evidence sheet has the same facts).
-- **Next:** (1) read the PR's checks once they finish (never push while they run — D151); (2) his look card (six
-  questions, D361+ for his answers); (3) his "merge live", then archive the items with `backlog-archive.mjs`. `[GATELOCK-STALE-LIVE]`
+- **Next:** (1) the PR's first run FAILED one test — the phone callsign test on GitHub's Linux font (`[APP-FONTS-NOT-LOADED]`, the app never
+  loads its fonts); his call on the callsign column is open (D366's premise held on Windows only); fix, push, re-run; (2) his look
+  card is ANSWERED (D361–D366; `[ROW-NO-TIME-MARK]` filed); (3) his "merge live", then archive the items with `backlog-archive.mjs`. `[GATELOCK-STALE-LIVE]`
   filed (the lock's 2-hour rule nearly broke the Tracker chat's live run — asked it, stopped mine).
 - **Parallel chats (D302):** change-recording (`.lw-hist` markup/CSS theirs; `dropInputRow` → `unacceptInput` told),
   Tracker (observation numbers — mine #333–#335, #341–#342; theirs 330–332, 338).

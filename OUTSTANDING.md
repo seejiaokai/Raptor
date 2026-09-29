@@ -79,7 +79,7 @@ whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaini
 first), [LW-SCRUBBER-FLAKY] (test-only), [LW-ISO-DATES] (low, from the
 absence-record re-test), [LW-SPARE-MOVE-DOORS] (low, with the next Leave War move change), [PO-RESTORE-POSTING] (low, from its final code read), [LW-OFFER-ONLY-TAKEABLE] (low, with [LW-LOCKMARK]), [ABSENCE-SMALL-SEEN] (any time), [LW-HARNESS-VIEWER-PIN] (test-only, low), [CI-FAIL-PICTURES] (his call, low), [LW-DOZE-GUARDS] (low, check first); the shell — [SHELL-SIDEWAYS-BAR] (low, with the next top-bar change), [SAVE-NOTE-COVERS] (medium, next), [TRK-SAVE-FAIL-SAYS-SAVED] (low, with [DB-READINESS]), [TRK-ASYNC-STALE] (with [DB-READINESS]); the Tracker — [TRK-REMOUNT-LANDING] (low, with the next Tracker change); the Inputs calendar — [INPUTSCAL-TAP-FLAKY] (test-only); the changes window — [HISTLIST-SLOW-TEST] (test-only, low). The Tracker — [TRK-PINCH-ASK] (his next Tracker session), [TRK-FLEXBAR-INK] (a question for him, on the Tracker-palette
 look card — D157, merged PR #441).
-The amendment area — PR #434, #435, #437 and #438 MERGED (25–26 Sep 26); left: [REQ-ORPHAN-ROW] and [REQ-DOOR-WORDS] (both low; built on `claude/small-fixes-batch-d223f6`), [PLAN-BANNER-DOOR] (low, filed by that batch's walk), [GATELOCK-STALE-LIVE] (low, the check lock's stale rule). Left from the amendment batch (D91–D111, merged): [AVAILWIN-PREVIEW-BAR] (low), [AMEND-SMALL-SEEN] (any time). The docs and the checks — [DEPLOY-DOCS] (its operational half), [DOC-POINTERS-CODE] and
+The amendment area — PR #434, #435, #437 and #438 MERGED (25–26 Sep 26); left: [REQ-ORPHAN-ROW] and [REQ-DOOR-WORDS] (both low; built on `claude/small-fixes-batch-d223f6`), [PLAN-BANNER-DOOR] (low, filed by that batch's walk), [ROW-NO-TIME-MARK] (low, a future job, D361), [APP-FONTS-NOT-LOADED] (his call — found 29 Sep 26; every measured width rides on it), [GATELOCK-STALE-LIVE] (low, the check lock's stale rule). Left from the amendment batch (D91–D111, merged): [AVAILWIN-PREVIEW-BAR] (low), [AMEND-SMALL-SEEN] (any time). The docs and the checks — [DEPLOY-DOCS] (its operational half), [DOC-POINTERS-CODE] and
 [RULINGS-LF-PIN] (with the next code change), [PEEK-ISSUED] (a question for him, low), [RULING-HOME-HOOK] (low), [GUIDE-MAP-ROWS] (low, a question for him) — [DOC-SUBHEADS], [RULING-HOMES-AUDIT]
 and [HANDOFF-SHAPE-GUARD] done on `claude/docs-tidy-subheads-audit-ec8f87` (28 Sep 26; archived),
 Roles — [QUALS-MEMBER-SCOPE] (folded into [ACCOUNTS], D200), and beside it [QUALS-PROTO-TOAST] (low, one line of words).
@@ -993,6 +993,27 @@ records, so they join this item: when settings are cut over to the one undo, an 
 guards `[ACCOUNTS]` enforces at the write (at least one admin keeps access; an admin never changes his own account),
 or an undo could lock the squadron out.
 
+### [APP-FONTS-NOT-LOADED] The app names its fonts but never loads them — every device draws a different one (found 29 Sep 26)
+Found by the small-fixes PR's check on GitHub's Linux machines: "a flying line's callsign shows six letters whole" passed on
+the Windows PC and failed there (W6LINE cut on the phone edit week). `scheduler.css` asks for 'Inter Tight' (the body) and
+'JetBrains Mono' (times, codes), but nothing in the app loads either — no `@font-face`, no font link, no font package (searched
+29 Sep 26). So each device falls back to its own system font: Segoe UI on Windows, San Francisco on an iPhone, Roboto on
+Android, DejaVu on the Linux check machines. Measured at 9.5px bold (29 Sep 26): W6LINE is 35 (Segoe) / 34 (Roboto) /
+36 (Helvetica, near San Francisco) / 43px (a DejaVu-width face); RANGER 38 / 37 / 41 / 45px — so a width "measured" in
+`scheduler.css` holds on the machine it was measured on and may not on his phone. Every measured contract there (the
+puck's 74px, the time boxes sized for "hh:mm" in JetBrains Mono, the callsign column) carries the same assumption.
+**To do:** his call on the direction — ship the two fonts with the app (self-hosted files, ~100–200 KB, one look on every
+device and every check machine; every measured width re-measured once, a wide visual change) or name a system font per
+platform and measure on the widest. **Place:** his call; before the database step is fine.
+
+### [ROW-NO-TIME-MARK] A "?" where a row has no timing or no end time (filed 29 Sep 26, D361)
+**Owner, 29 Sep 26 (D361):** *"In the future I think there’s a ? Shown if no timing or end time is entered. As a future job
+I think."* Today a row with a start and no end shows nothing missing on the row itself; only an ALL AVAIL on it names the
+assumed hour, in the window its count opens (D360, D361 — a "~" on the count was mocked up and declined). A row with NO start
+already makes its ALL AVAIL count a "?" (D360 (4)). **To do:** scope it with him first — which rows (programme, duties,
+sims, ground; the flying line's times?), where the "?" sits (the empty time box, or beside it), what a tap or hover says,
+and whether a published face prints it. LOOK tier. **Place:** low; a future job, his "as a future job I think".
+
 ### [AVAILWIN-PREVIEW-BAR] On the desktop board the ALL AVAIL window, opened from a preview, covers the preview bar (found 24 Sep 26)
 **BUILT 28 Sep 26 on `claude/small-fixes-batch-d223f6`** (the small-fixes batch; evidence `raptor-port/docs/handpass/2026-09-28-small-fixes.md`; plan `raptor-port/docs/superpowers/plans/2026-09-28-small-fixes-batch-plan.md`) — both floating windows open below the board's preview bar (`ui/floatwin.ts BOARD_BAR`); to the archive with the merge.
 Found by the amendment re-test's walker W2 (W2-F7). Saturday's board → plans selector → Original → tap the ALL AVAIL
@@ -1016,7 +1037,7 @@ None breaks an amendment rule; each is a line to fix or ask about, from the walk
    ("ATT C") on the desktop week (the absence-record re-test's re-walk, W2, 26 Sep 26 — pictures
    `raptor-port/docs/img/handpass/2026-09-26-absence/rewalk/w2/rw-w2-05-desktop-P4a-face`, `-P4b-working-copy`); one fix
    with `[VIEW-ARROW-OVER-LIST]`.
-5. **AL7 and AL8** are the same orange; the register names no colour past AL7 (ask him if it matters).
+5. **AL7 and AL8** are the same orange; the register names no colour past AL7 (ask him if it matters). **ANSWERED 29 Sep 26 — D362: leave it.**
 6. **Leave War, phone:** a man's figure sheet sends the grid back to 1 January, and it stays there after the sheet
    closes (desktop keeps its place). **Its sharper form (the absence-record re-test, W4, 26 Sep 26):** for a late joiner
    or a posted-out man, the jump takes his ROW off the screen — in January he is not in the squadron, so the row the
