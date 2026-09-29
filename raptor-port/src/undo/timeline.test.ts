@@ -121,13 +121,16 @@ describe('out-of-band barrier refuses undo through an unaccounted change (§4.1)
 
 describe('mayReverse — actor identity + ownership (§5)', () => {
   const entryFor = (): UndoEntry => _timelineEntries()[_timelineEntries().length - 1]
-  it('admin may reverse anything; a member may reverse their OWN, not others’, not admin’s', () => {
+  /* D148 (24 Sep 26, built by the change-recording re-test, 28 Sep 26): "Undo reverses only your OWN changes … never
+     undoes another person's change" — the old "admin may reverse anything" went with it (plan B6.1) */
+  it('an admin may reverse only his own; a member may reverse their OWN, not others’, not admin’s (D148)', () => {
     const s = makeStore('S', 'inputs')
     registerUndoStore(s.store, ['inputs']); setCutoverModules(['inputs'])
     // a member (pA) files their own input
     edit(s.store, { module: 'inputs' }, () => s.set('i1', { person: 'pA', v: 1 }), A('member', 'pA'))
     const e = entryFor()
-    expect(mayReverse(e, A('admin'))).toBe(true)               // admin: yes
+    expect(mayReverse(e, A('admin', 'boss'))).toBe(false)      // another person, even an admin: no (D148)
+    expect(mayReverse(e, A('admin', 'pA'))).toBe(true)         // the same person, now an admin: yes
     expect(mayReverse(e, A('member', 'pA'))).toBe(true)        // same member: yes
     expect(mayReverse(e, A('member', 'pB'))).toBe(false)       // another member: no
   })
@@ -139,14 +142,18 @@ describe('mayReverse — actor identity + ownership (§5)', () => {
     expect(mayReverse(e, A('member', 'boss'))).toBe(false)     // view-as-member of the SAME person: no
     expect(mayReverse(e, A('member', 'pC'))).toBe(false)
   })
-  it('globalUndo refuses when the current actor may not reverse', () => {
+  /* D148: another person's step is PASSED OVER — never offered, never refused on ("it never greys out because someone
+     else changed something"); with nothing of his own left, there is nothing to undo */
+  it('globalUndo never takes another person’s step — it is not his to offer', () => {
     const s = makeStore('S', 'settings')
     registerUndoStore(s.store, ['settings']); setCutoverModules(['settings'])
     edit(s.store, { module: 'settings' }, () => s.set('x', { v: 1 }), A('admin', 'boss'))
     setUndoHooks({ currentActor: () => A('member', 'someone') })
+    expect(undoState().canUndo).toBe(false)
     const r = globalUndo()
     expect(r.ok).toBe(false)
-    expect(r.reason).toMatch(/someone else/i)
+    expect(r.reason).toBe('Nothing to undo.')
+    expect(s.get('x')).toEqual({ v: 1 })
   })
 })
 
@@ -255,8 +262,9 @@ describe('deferred collections: non-undoable but still conflict barriers (§7, C
     commit({ type: 'lw.edit', scope: { module: 'lw', warId: 'w1' }, apply: (txn) => { txn.enlist(po.store); po.set('all', { x: 1 }) } })
     expect(undoState().canUndo).toBe(false)
     expect(globalUndo().ok).toBe(false)
-    // a config edit (figure-hide, colours, order) — eligible, restores cleanly
-    commit({ type: 'lw.edit', scope: { module: 'lw', warId: 'w1' }, apply: (txn) => { txn.enlist(cfg.store); cfg.set('all', { hidden: ['f1'] }) } })
+    // a config edit (figure-hide, colours, order) — eligible, restores cleanly. Made AS the reverting admin: a bare
+    // commit() here has no session, so its actor is the system — no one's own step (D148)
+    edit(cfg.store, { module: 'lw', warId: 'w1' }, () => cfg.set('all', { hidden: ['f1'] }), A('admin', 'boss'), 'lw.edit')
     expect(undoState().canUndo).toBe(true)
   })
 
@@ -365,13 +373,14 @@ describe('a step that can never be taken, and the member view’s words', () => 
     expect(r.reason).toBe(DEAD)
     expect(undoState(), 'the button greyed, and its hover says why').toMatchObject({ canUndo: false, undoWhy: DEAD })
   })
-  it('his own admin step, refused in the member view, says "switch back"; another member still reads "someone else"', () => {
+  it('his own admin step, refused in the member view, says "switch back"; another member is never offered it (D148)', () => {
     const s = makeStore('S', 'settings')
     registerUndoStore(s.store, ['settings']); setCutoverModules(['settings'])
     edit(s.store, { module: 'settings' }, () => s.set('x', { v: 1 }), A('admin', 'boss'))
     setUndoHooks({ currentActor: () => A('member', 'boss') })
     expect(globalUndo().reason).toBe('Switch back to the admin view to undo that.')
     setUndoHooks({ currentActor: () => A('member', 'pC') })
-    expect(globalUndo().reason).toMatch(/someone else/i)
+    expect(globalUndo().reason).toBe('Nothing to undo.')
+    expect(s.get('x')).toEqual({ v: 1 })
   })
 })

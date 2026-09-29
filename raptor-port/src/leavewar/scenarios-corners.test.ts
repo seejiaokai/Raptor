@@ -19,8 +19,8 @@ import {
 } from './state/store'
 import { memoryBackend } from './state/storage'
 import { runOilPass, wireLeaveWarSync } from './sync'
-import { globalUndo } from '../undo'
-import { _resetTimeline } from '../undo/timeline'
+import { globalUndo, globalRedo } from '../undo'
+import { _resetTimeline, _timelineEntries } from '../undo/timeline'
 import { installGlobalUndo } from '../state/undo-wire'
 /* [LW-SPARE-MOVE-DOORS] (28 Sep 26): `moveAbsenceById` (the day's list's old date-box move) is RETIRED — the day's list
    moves one record through the one door, `moveRecords` (D266). These tests keep what they pinned by moving that one leave,
@@ -163,16 +163,31 @@ describe('publishing an amendment (the AL path)', () => {
 })
 
 describe('"OK, seen"', () => {
-  it('an admin may clear someone else\'s notice, a member may not clear another\'s, and undo restores it', () => {
+  /* The change-recording re-test (28 Sep 26, plan §10 — the builder's call, on his look card): "OK, seen" records that a
+     person has READ the notice, like the other seen marks, so it is never an Undo step — a member's Undo meant for his bid
+     must not bring the note back (Fable's undoable-list report). It used to be one ("undo restores it"). */
+  it('an admin may clear someone else\'s notice, a member may not clear another\'s, and "OK, seen" is no Undo step', () => {
     setRole('admin'); setCell('ammo', '2026-02-10', 'LL')
     file('ammo', 'ATT C', 'Feb 10')
     const notice = recsIn('ammo', '2026-02-10').find(r => r.kind === 'notice') as any
     setRole('member'); setViewer('rocky')
     expect(ackReplacement('ammo', notice.id)).toBe(0)
     setRole('admin')
+    const steps = _timelineEntries().length
     expect(ackReplacement('ammo', notice.id)).toBe(1)
-    expect(globalUndo().ok).toBe(true)
-    expect(recsIn('ammo', '2026-02-10').some(r => r.kind === 'notice')).toBe(true)
+    expect(_timelineEntries().length).toBe(steps)
+    expect(recsIn('ammo', '2026-02-10').some(r => r.kind === 'notice')).toBe(false)
+  })
+  it('a notice seen stays seen through Undo and Redo of the filing that raised it (Astra’s final read, F1; Fable F4)', () => {
+    setRole('admin'); setCell('ammo', '2026-02-10', 'LL')
+    file('ammo', 'ATT C', 'Feb 10')
+    const notice = recsIn('ammo', '2026-02-10').find(r => r.kind === 'notice') as any
+    expect(ackReplacement('ammo', notice.id)).toBe(1)
+    expect(globalUndo().ok).toBe(true)                                      // the filing goes: the bid is back
+    expect(recsIn('ammo', '2026-02-10').some(r => r.kind === 'request')).toBe(true)
+    expect(recsIn('ammo', '2026-02-10').some(r => r.kind === 'notice')).toBe(false)
+    expect(globalRedo().ok).toBe(true)                                      // the filing again — the notice stays seen
+    expect(recsIn('ammo', '2026-02-10').some(r => r.kind === 'notice')).toBe(false)
   })
 })
 

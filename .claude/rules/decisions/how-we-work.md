@@ -12,6 +12,12 @@ never pay or money).
 
 | # | Date | The rule |
 |---|---|---|
+| D353 | 28 Sep 26 | HOW MANY REVIEWERS: SCENARIO DESIGN AND SIDE QUESTIONS ONE (ASTRA FIRST); AN IMPORTANT PLAN'S RED TEAM BOTH; THE FINAL CODE READS ON RISKY WORK — MONEY / EARNED LEAVE, PERMISSIONS, THE PUBLISHED RECORD, SAVED DATA — BOTH; EVERYTHING ELSE ONE. |
+| D351 | 28 Sep 26 | ADMIN → DATA → "CLEAR EDIT HISTORY…" STAYS AS IT IS UNTIL THE DATABASE STEP, WHERE THE ORGANISATION'S RETENTION RULE DECIDES HOW LONG THE CHANGE HISTORY IS KEPT. |
+| D350 | 28 Sep 26 | IN THIS BUILD THE ONE UNDO DOES NOT TAKE BACK ADDING A PERSON (with or without his sign-in), ARCHIVE, RESTORE / RESTORE AS, DELETE, OR A POSTING (post out / post in and their sheet's undos). |
+| D349 | 28 Sep 26 | THE UNDO-TOPBAR MOCK-UP IS APPROVED AS DRAWN: THE TRACKER'S OWN UNDO / REDO MOVE TO THE TOP BAR TOO, AND THE SCHEDULER BOARD'S BAR GETS SYNC AND THE BELL AND ONE EXIT, ✓ DONE (✕ CLOSE GOES), WITH SORT ALL AND THE LAYOUT SWITCH BEHIND ONE ⋯ ON A PHONE. |
+| D348 | 28 Sep 26 | ON A PHONE THE TOP BAR'S BUTTONS RUN IN THE DESKTOP'S ORDER: UNDO · REDO (· THE CHANGES CLOCK ON EDIT SCHEDULE) · THE SYNC DOT · THE BELL — THE BELL AT THE FAR RIGHT. |
+| D347 | 28 Sep 26 | EVERY UNDO / REDO PAIR SITS IN THE TOP BAR, IN THE SAME PLACE, ORDER AND LOOK AS EDIT SCHEDULE'S — ON THE DESKTOP AND ON THE PHONE; THE SCHEDULER BOARD KEEPS ITS OWN BAR (D349). — changed by D348 |
 | D391 | 28 Sep 26 | THE PROJECT GUIDE'S SHORT FORMS (THE SLIM-DOWN'S GUIDE STEP) ARE DONE NOW, IN A FRESH CHAT ON THEIR OWN BRANCH, WITHOUT WAITING FOR THE SMALL-FIXES BRANCH TO MERGE — LEAVING UNTOUCHED THE ONE ROW OF THE GUIDE THAT BRANCH EDITS (THE LEAVE WAR ROW OF §WHERE THINGS LIVE). |
 | D390 | 28 Sep 26 | Every ruling loads as one short line — its number, its date, the rule — with its full row kept whole beside it in .claude/decisions-full/, searched, never loaded; a chat opens the full row before acting on its detail or asking him; the project guide gets the same treatment, now (D391). — changed by D391 |
 | D343 | 28 Sep 26 | NO PUBLIC GITHUB WEB ADDRESS — D341 IS WITHDRAWN THE SAME HOUR. |
@@ -20,7 +26,6 @@ never pay or money).
 | D228 | 26 Sep 26 | BOTH PARALLEL CHATS RUN, AND THE FULL CHECKS TAKE TURNS THROUGH ONE LOCK ON HIS PC. |
 | D203 | 26 Sep 26 | The order to the database (about two months away, late Nov 26): now [ACCOUNTS], then [POST-OUT-OUTCOMES] (D291), then the one changes window ([DRAFT-PENDING]), and talk to the IT side now; about a month before, the database-readiness batch with the OIL award fix; then the data model to Manfred and [DB-STEP] when he is ready. Narrows D147 in part. — changed by D291 |
 | D201 | 26 Sep 26 | WHEN A NEW RULING OVERWRITES OR NARROWS AN OLDER ONE, FIX EVERYTHING THE OLD ONE LEFT BEHIND — IN THE SAME CHANGE THAT RECORDS IT. |
-| D182 | 26 Sep 26 | UNTIL THE USAGE RESET ON MONDAY 28 SEP 26: DO NOT ECONOMISE ON MODELS OR REVIEWERS. |
 | D180 | 25 Sep 26 | [LEAVE-LATE-PUBLISHED] (D177–D179) is built next, on its own branch, BEFORE [ACCOUNTS], with its own full check, his look and "merge live" — amending D173's order in part. |
 | D173 | 25 Sep 26 | The order after his look at PR #435: (1) D114's full check, his look, "merge live"; (2) accounts on a new branch; (3) the one changes window on top of accounts; (4) a full check of (2) and (3) — accounts later got its own (D210), and two steps were inserted (D175, D180). Replaces D115. — changed by D210, D180, D175 |
 | D106 | 25 Sep 26 | The repo goes public for a short period, for GitHub's faster free machines: while it is public his PC's check runner stays stopped (never a self-hosted runner on a public repo); afterwards it goes private again and the runner restarts. Sets D89 aside for that period. |
@@ -49,7 +54,7 @@ never pay or money).
 | D70 | 23 Sep 26 | CHANGES TO THE WORKING GUIDES (the skills) ARE READ BY BOTH FABLE AND ASTRA BEFORE HE APPROVES THEM — ONE ROUND EACH, NEVER BY THE MODEL THAT WROTE THEM. |
 | D69 | 23 Sep 26 | Write the state into the repo as you go (D68); when the work closes, condense what it wrote in its own docs-only commit, never inside a fix — a saved context is a summary (decisions, state, next step), never the conversation. |
 | D68 | 23 Sep 26 | CORRECTNESS BEATS CONTEXT ECONOMY: NEVER SKIP OR SHRINK A READ TO SAVE CONTEXT. |
-| D67 | 23 Sep 26 | ADOPTED: OPUS 5.5 PLANS AND BUILDS; FABLE 5.1 AND ASTRA REVIEW. |
+| D67 | 23 Sep 26 | ADOPTED: OPUS 5.5 PLANS AND BUILDS; FABLE 5.1 AND ASTRA REVIEW. — changed by D353 |
 | D63 | 23 Sep 26 | The country-specific aircraft type goes: where a sentence describes the squadron or him it reads "fighter squadron"; where it names the aircraft or its documents, the bare "F-15" — the Tracker's event-box hint too (D64); its syllabus data is left (D62). — changed by D64 |
 | D62 | 23 Sep 26 | THE TRACKER'S SYLLABUS DATA IS OUT OF SCOPE FOR EVERY PRIVACY OR "WHAT CAN A STRANGER READ" SWEEP. LEAVE IT; DO NOT FLAG IT AGAIN. |
 | D60 | 23 Sep 26 | PUSHING A BRANCH NEEDS NO PERMISSION; `main` ALWAYS DOES. |

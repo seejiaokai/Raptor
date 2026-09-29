@@ -276,7 +276,7 @@ describe('the puck itself — armed tap, and drag, on both surfaces', () => {
     const boardSeat = $(`#schedBoard .unav [data-inpseat="${iid}"]`)
     expect(boardSeat, 'the board draws the same row').toBeTruthy()
     expect(boardSeat.querySelector('.puck')?.getAttribute('data-person'), 'and the same new person').toBe(next.dataset.person)
-    await click($('#sbClose'))
+    await click($('#sbDone'))
 
     /* put it back so later tests (and any that follow in the file) see the
        seed's original shape */
@@ -297,7 +297,7 @@ describe('the puck itself — armed tap, and drag, on both surfaces', () => {
 
     expect(inp.person).toBe(src.dataset.person)
     expect(inp.acc, 'no eligibility bar, no side effect on any schedule seat — a pure data edit').toBe('u')
-    await click($('#sbClose'))
+    await click($('#sbDone'))
 
     await act(async () => { removeInput(inp); notify() })
   })

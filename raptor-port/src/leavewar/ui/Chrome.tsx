@@ -16,12 +16,6 @@ import {
   selectWar,
   setBidWindow,
 } from '../state/store'
-/* [GLOBAL-UNDO] §13 phase 2 — the Leave War Undo/Redo pair drives the ONE global
-   timeline now, not lwUndo/lwRedo. It reads undoState() and refreshes on the
-   timeline's own version, so undoing a Leave War change and undoing a schedule
-   change share one history in one order. Refusals surface on the shared toast. */
-import { globalUndo, globalRedo, undoState, subscribeUndo, getUndoVersion } from '../../undo'
-import { toast } from '../../ui/toast'
 import { RangePicker, type Range } from './RangePicker'
 import { Sheet } from './Sheet'
 import { shortDate, shortSpan } from './dates'
@@ -49,8 +43,6 @@ const WAY_OUT: Record<ClashWayOut, string> = {
 
 export function Topbar() {
   useVersion()
-  useSyncExternalStore(subscribeUndo, getUndoVersion, getUndoVersion)   // refresh the pair on the timeline's version (C4)
-  const us = undoState()
   const { period, wars, role, people, viewer } = getState()
   const [making, setMaking] = useState(false)
   // WHOSE view this is (owner, 28 Aug 26 — "make it obvious that im viewing as
@@ -102,38 +94,10 @@ export function Topbar() {
             + New
           </button>
         )}
-        {/* Undo / redo (owner, 30 Aug 26 — circled the top bar: "Add undo and
-            redo on leave war here"). Placed in Leave War's OWN top row — the
-            equivalent spot to the schedule's undo/redo, which the app shell only
-            shows on the Edit Schedule page — rather than reaching up into the
-            shared shell bar (that would cross the Leave War app boundary for a
-            button). Shown to everyone: a member undoes their own bids, an admin
-            anything. The .bi/.bl split matches the schedule's pair so the label
-            drops to an icon on a narrow phone; the accessible name stays the
-            word. Disabled state and labels read the ONE timeline (undoState); this
-            bar re-renders on the timeline's own version (subscribeUndo above), so
-            the buttons grey out the instant there is nothing left to undo, whether
-            the last change was here or on the schedule. */}
-        <div className="lw-hist" data-testid="lw-hist">
-          <button
-            className="lw-hbtn"
-            data-testid="lw-undo"
-            title={us.undoLabel ? `Undo — ${us.undoLabel}` : (us.undoWhy || 'Undo the last change')}
-            disabled={!us.canUndo}
-            onClick={() => { const r = globalUndo(); if (!r.ok && r.reason) toast(r.reason, 'warn') }}
-          >
-            <span className="bi" aria-hidden="true">↶</span><span className="bl"> Undo</span>
-          </button>
-          <button
-            className="lw-hbtn"
-            data-testid="lw-redo"
-            title={us.redoLabel ? `Redo — ${us.redoLabel}` : 'Redo'}
-            disabled={!us.canRedo}
-            onClick={() => { const r = globalRedo(); if (!r.ok && r.reason) toast(r.reason, 'warn') }}
-          >
-            <span className="bi" aria-hidden="true">↷</span><span className="bl"> Redo</span>
-          </button>
-        </div>
+        {/* THE WAR'S UNDO / REDO LEFT THIS ROW for the app's top bar ([UNDO-TOPBAR] — owner D347, 28 Sep 26: "all undo
+            and redo buttons should be at the top bar … standardised … like how the edit schedule is", his phone picture
+            circling this pair with an arrow up to the top bar). The same one undo, in Edit Schedule's place and look
+            (ui/Shell.tsx, ui/topbits.tsx). His 30 Aug 26 "Add undo and redo on leave war here" placement is narrowed by it. */}
         {me && (
           <span
             className="lw-viewing"

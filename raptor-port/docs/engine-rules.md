@@ -3256,6 +3256,32 @@ in `inputs.test.tsx`.
 
 ## History
 
+**THE ONE UNDO (18 Sep 26; widened 28 Sep 26 by the change-recording re-test — `[UNDO-ROSTER-SETTINGS]`, `[UNDO-TOPBAR]`,
+D148, D347–D352).** Undo and Redo walk ONE timeline over the command stream (`undo/timeline.ts`; the contract is
+`docs/undo-contract.md`), not the snapshot described below, which still backs the schedule's own save and baseline. What
+a person meets:
+- **Each person's own steps only** (D148), cleared at every sign-in and sign-out; another person's change never enters
+  his list, and when someone else — or the app's posting pass — has since changed the same thing, Undo refuses and says
+  who ("Hawk changed this after your action — it can't be undone now.", "The app changed this after your action (a posting
+  out ran) …"), once, naming the step the next press takes, and then moves on.
+- **What is a step:** the schedule, inputs, the planning calendar, the Leave War (its stage too, D352), and since 28 Sep 26
+  the roster (Quals) and the settings (Admin, Logic, the accounts). **Never a step:** a seen mark (the changes window,
+  the admins' bell, the welcome-back note, the war's "OK, seen") and a waiting person's own request. **Not undone here
+  (D350):** adding, archiving, restoring or deleting a person and a posting — the greyed button says so.
+- **What a roster or settings Undo re-checks** before it puts anything back: one callsign on the roster (D286), the
+  accounts' own guards (an admin able to sign in, never your own account, an archived man's sign-in stays off — D322),
+  and that a delete stays final (D287) — refused whole, in words, the step still next.
+- **Where it takes you** (AM39b): the page the change lives on — the week (the changed day on screen, the board reopened
+  on it), the Leave War, Inputs, Quals on his row, Admin → Users, Logic — unless the change already shows on the page
+  you are on. **What it says:** one vocabulary for the button's hover, the bubble and the history line ("a take-off time",
+  "Ryder's bid", "Hex's quals", "closing bidding — bidding is open again for everyone"); an Undo line is written only
+  where the change wrote one (a settings or war-setting Undo writes none).
+- **Where the pair is** (D347–D349): the top bar, on every page where a change is made (`docs/ui-contracts.md` §The top
+  bar carries the bell and the Undo / Redo pair); the Tracker's own history sits in the same place.
+
+*The paragraphs below are the snapshot history's (Aug 26); "undo/redo restores wholesale" and "refused while focus is in
+an editable field" describe the retired stack — the register's AM39 notes the typing half is moot.*
+
 `histSnap()` serialises `{DAYS, INPUTS, changes, pending, als, al, dayOK,
 sign, orig, cur, drafts, curDraft}` (`o`/`cv`/`dr`/`cd` fields); undo/redo
 restores wholesale. Publishing is its own undo step, and so is a rollback.

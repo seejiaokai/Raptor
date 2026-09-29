@@ -55,7 +55,7 @@ import { peopleStore, settingsStore, finishPeopleWrite } from './people-settings
 import { schedStore, schedApplyEnd, resyncSchedBaseline } from './sched-commit'
 import { weekstashStore } from './store'
 import { mayDeletePerson } from './perms'
-import { deleteAccountProblem, dropAccountOfPid } from './accounts'
+import { deleteAccountProblem, dropAccountOfPid, seedAccounts } from './accounts'
 import { saidOf } from './roster-add'
 import { deletePersonOnWar, warIdentityIfHidden } from '../leavewar/sync'
 import { HOOKS } from '../engine/hooks'
@@ -328,6 +328,12 @@ export function deletedRestoreProblem(changes: any[]): string | null {
       else if (ch.collection === 'weekstash') { try { hit = weekHolds(rid, typeof v === 'string' ? JSON.parse(v) : v, id, cut) } catch (_e) { hit = false } }
       else if (ch.collection === 'inputs') { const a = v && v.person === id ? dateOrd(v.date, v.yr) : null; hit = a != null && a >= isoOrd(cut) }
       else if (ch.collection === 'plan') hit = ((v && v.pp) || []).some((e: any) => e && e.kind === 'pucks' && String(e.iso || '') >= cut && Array.isArray(e.ids) && e.ids.includes(id))
+      /* B4 of the change-recording re-test (28 Sep 26): once the one Undo takes roster and settings steps, HIS OWN RECORD
+         put back un-deleted, or an accounts list that still holds his account, would bring him back whole (D287 — a
+         delete is final; a man the war does not hold leaves no posting record to keep the step dead — Fable's red team 10) */
+      else if (ch.collection === 'people') hit = rid === id && !!v && !v.deleted
+      /* a stored null IS the seeded list (accountsLoad; roster-restore.ts reads it so too) — Fable's final read, F5 */
+      else if (ch.collection === 'settings' && rid === 'accounts') { const list = v == null ? seedAccounts() : v; hit = Array.isArray(list) && list.some((a: any) => a && a.pid === id) }
       if (hit) return `${(PEOPLE as any)[id].cs} has been deleted — that change can't be undone`
     }
   }

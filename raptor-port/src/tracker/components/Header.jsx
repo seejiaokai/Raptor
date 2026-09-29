@@ -1,4 +1,5 @@
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { trackerHosted } from '../undo-bridge.js';
 import * as core from '../app/core.js';
 import { isComposing } from './keys.js';
 
@@ -238,8 +239,11 @@ export default function Header() {
             greyed when there is nothing to take back, and the tooltip names
             what the next press would do. Same ids the edit strip used, so the
             smoke suite's presses land here. */}
-        <button className="sm icon" id="trUndoBtn" disabled={!core.canUndo()} title={core.canUndo() ? 'Undo ' + core.undoWhat() + ' (Ctrl+Z)' : 'Nothing to undo'} onClick={core.doUndo}>↶</button>
-        <button className="sm icon" id="trRedoBtn" disabled={!core.canRedo()} title={core.canRedo() ? 'Redo ' + core.redoWhat() + ' (Ctrl+Y)' : 'Nothing to redo'} onClick={core.doRedo}>↷</button>
+        {/* [UNDO-TOPBAR] (owner D347 / D349 (2), 28 Sep 26): inside Raptor the pair is drawn in the app's TOP BAR, in
+            Edit Schedule's place and look, still undoing the Tracker's own changes (undo-bridge.js); the standalone
+            Tracker keeps it here — nothing hosts it there (Fable's red team 3). */}
+        {!trackerHosted() && <button className="sm icon" id="trUndoBtn" disabled={!core.canUndo()} title={core.canUndo() ? 'Undo ' + core.undoWhat() + ' (Ctrl+Z)' : 'Nothing to undo'} onClick={core.doUndo}>↶</button>}
+        {!trackerHosted() && <button className="sm icon" id="trRedoBtn" disabled={!core.canRedo()} title={core.canRedo() ? 'Redo ' + core.redoWhat() + ' (Ctrl+Y)' : 'Nothing to redo'} onClick={core.doRedo}>↷</button>}
 
         {/* Show All moved to the right of the syllabus group (owner, 9 Sep 26).
             On a phone the button is hidden: the Show All tab under the bar is

@@ -234,19 +234,22 @@ const URL = process.env.PORT_URL || 'http://localhost:4173/'
     await p2.evaluate(() => openScheduler(0)); await p2.waitForTimeout(800)
     const b1 = await p2.evaluate(() => ({
       dir: getComputedStyle(document.querySelector('.sb-main')).flexDirection,
-      wideBtn: getComputedStyle(document.getElementById('sbWide')).display,
+      /* the layout switch lives in the ⋯ menu beside the highlighter since [UNDO-TOPBAR] (owner D349, 28 Sep 26) */
+      wideBtn: getComputedStyle(document.getElementById('sbMore')).display,
     }))
     T('board · the phone board stacks its panels', b1.dir, 'column')
     T('board · and offers the desktop-layout button', b1.wideBtn === 'none' ? 'hidden' : 'offered', 'offered')
 
-    await p2.click('#sbWide'); await p2.waitForTimeout(600)
+    await p2.click('#sbMore'); await p2.waitForTimeout(300)
+    await p2.click('#sbMoreWide'); await p2.waitForTimeout(600)
+    await p2.click('#sbMore'); await p2.waitForTimeout(300)            // open the menu again to read the way back
     const b2 = await p2.evaluate(() => {
       const m = document.querySelector('.sb-main'), sb = document.getElementById('schedBoard')
       const side = document.querySelector('.sb-side')
       return {
         wide: sb.classList.contains('sb-wide'), dir: getComputedStyle(m).flexDirection,
         sidePos: getComputedStyle(side).position, sideW: Math.round(side.getBoundingClientRect().width),
-        panX: sb.scrollWidth - sb.clientWidth, btn: document.getElementById('sbWide').textContent,
+        panX: sb.scrollWidth - sb.clientWidth, btn: document.getElementById('sbMoreWide').textContent,
       }
     })
     console.log(`   board desktop on a phone: sideW ${b2.sideW} · pan ${b2.panX} · btn "${b2.btn}"`)

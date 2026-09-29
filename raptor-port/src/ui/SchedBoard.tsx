@@ -12,7 +12,7 @@ import { CURWEEK } from '../engine/waves'
 import { setWeekCal } from './pops'
 import { CalIcon, HistIcon, HlIcon } from './icons'
 import { HlChips } from './hlchips'
-import { oilShown, oilModeOn, toggleOilMode, oilUndoBoundary } from './oilmode'
+import { oilShown, oilModeOn, toggleOilMode } from './oilmode'
 import { wireHistBubble, hideHistBub, histBubRecheck, refreshHistDots } from './histbubble'
 import { daySnapOf, alColor, dayDiscardCount } from '../engine/publish'
 import { verSeq } from '../engine/verid'
@@ -28,7 +28,7 @@ import { refreshHighlights } from './highlights'
 import { wireRowDrag } from './rowdrag'
 import { editingText } from './textedit'
 import { useBoardVersion, useVersion, useUndoVersion } from './useStore'
-import { globalUndo, globalRedo, undoState } from '../undo'
+import { UndoPair, SyncChip, BellButton, globalUndoEngine } from './topbits'
 
 export function SchedBoard() {
   const version = useVersion()
@@ -36,7 +36,6 @@ export function SchedBoard() {
   /* [GLOBAL-UNDO] §13 phase 2 — the board's Undo/Redo pair drives the ONE timeline
      and refreshes on its version (label/disabled from undoState). */
   useUndoVersion()
-  const us = undoState()
   const boardRef = useRef<HTMLDivElement>(null)
   const signRef = useRef<HTMLDivElement>(null)
   const rosterRef = useRef<HTMLDivElement>(null)
@@ -67,6 +66,23 @@ export function SchedBoard() {
      back on Edit Schedule does NOT resume a day; a scheduler opens one
      again, the same as any other visit. */
   const open = SBDAY != null && CURPAGE === 'editsched'
+
+  /* THE ⋯ MENU ON A PHONE ([UNDO-TOPBAR] — owner D349, 28 Sep 26, his idea: "Maybe sort and phone/desktop can be a setting
+     button?"; ⋯ rather than a gear because Sort all is an action). Sort all and the Phone / Desktop layout switch leave
+     the first row for one ⋯ button in the second row, beside the highlighter, so Sync and the bell fit the first. A
+     click-open popup, so it closes on a tap outside it and after a choice (the 4 Sep 26 rule), and on Escape — which
+     then does not also close the board. Closed with the board. */
+  const [moreOpen, setMoreOpen] = useState(false)
+  const moreRef = useRef<HTMLSpanElement | null>(null)
+  useEffect(() => { if (!open) setMoreOpen(false) }, [open])
+  useEffect(() => {
+    if (!moreOpen) return
+    const down = (e: Event) => { if (moreRef.current && !moreRef.current.contains(e.target as Node)) setMoreOpen(false) }
+    const key = (e: KeyboardEvent) => { if (e.key === 'Escape') { e.stopPropagation(); e.preventDefault(); setMoreOpen(false) } }
+    document.addEventListener('pointerdown', down, true)
+    document.addEventListener('keydown', key, true)
+    return () => { document.removeEventListener('pointerdown', down, true); document.removeEventListener('keydown', key, true) }
+  }, [moreOpen])
 
   /* LOCK THE PAGE WHILE THE BOARD IS OPEN (owner-reported, 11 Aug 26 — "I
      could scroll and see the edit schedule board leaking into it, and in the
@@ -369,6 +385,18 @@ export function SchedBoard() {
           <button className={'abtn sb-hltog' + ((HLSET.size || SEARCH) && !HLOPEN ? ' on' : '')} id="sbHl"
             aria-expanded={HLOPEN} aria-label="Highlight filters" title="Highlight by category / quals"
             onClick={() => { toggleHlOpen(); notify() }}><HlIcon /></button>
+          <span className="sb-morewrap" ref={moreRef}>
+            <button className={'abtn sb-more' + (moreOpen ? ' on' : '')} id="sbMore" aria-haspopup="menu" aria-expanded={moreOpen}
+              aria-label="More — Sort all and the layout" title="Sort all · Phone / Desktop layout"
+              onClick={() => setMoreOpen(o => !o)}>⋯</button>
+            {moreOpen && <div className="sb-moremenu" id="sbMoreMenu" role="menu">
+              {/* the same gate Sort all has on the desktop bar: edit mode, and not while a frozen published version is shown */}
+              {open && HOOKS.editMode() && <button className="sb-moreitem" id="sbMoreSort" role="menuitem" disabled={SBDAY != null && DPREV.has(SBDAY)}
+                onClick={() => { setMoreOpen(false); if (SBDAY != null) askSortAll(SBDAY) }}><span className="bi">⇅</span> Sort all</button>}
+              <button className="sb-moreitem" id="sbMoreWide" role="menuitem"
+                onClick={() => { setMoreOpen(false); toggleWide(); notify() }}><span className="bi">{SBWIDE ? '📱' : '🖥'}</span> {SBWIDE ? 'Phone layout' : 'Desktop layout'}</button>
+            </div>}
+          </span>
           <div className="searchbox sb-search">🔍<input id="searchB" placeholder="name / callsign"
             onInput={e => { setSearch((e.target as HTMLInputElement).value); notify() }} /></div>
           <button className="abtn sb-arrow" id="sbNextDay" title="Next day"
@@ -376,10 +404,8 @@ export function SchedBoard() {
             onClick={() => boardDayStep(1)}><span className="bi">›</span><span className="bl"> Next day</span></button>
         </div>
         <div className="sb-actions">
-          <button className={'abtn sb-widebtn' + (SBWIDE ? ' on' : '')} id="sbWide"
-            title={SBWIDE ? 'Back to the stacked phone layout' : 'Show the board in its full desktop layout'}
-            onClick={() => { toggleWide(); notify() }}>
-            <span className="bi">{SBWIDE ? '📱' : '🖥'}</span><span className="bl"> {SBWIDE ? 'Phone layout' : 'Desktop layout'}</span></button>
+          {/* THE LAYOUT SWITCH LEFT THIS ROW for the ⋯ menu in the second row ([UNDO-TOPBAR], D349) — it was phone-only
+              (.sb-widebtn is display:none on a desktop), so the desktop bar is unchanged by its going. */}
           {/* Undo / redo on the board itself (owner, 11 Aug 26). The board is
               a full-screen modal over the shell, so the shell's own pair is
               unreachable while it is open — every board edit had to be undone
@@ -417,6 +443,23 @@ export function SchedBoard() {
             title={oilModeOn(SBDAY) ? 'Leave OIL mode and edit the schedule again' : 'Show who earns OIL on this day, and change it'}
             onClick={() => { if (SBDAY != null) { const on = toggleOilMode(SBDAY); HOOKS.toast(on ? 'OIL mode — tap a puck to take a man off that event, or an item to stop the whole item earning' : 'Back to editing the schedule'); notify() } }}>
             <span className="bi">◧</span><span className="bl"> OIL Earn</span></button>}
+          {/* [UNDO-TOPBAR] (D349, 28 Sep 26): on a desktop Sort all sits BEFORE Undo, in this desktop-only wrapper (the
+              approved mock-up); on a phone it is in the ⋯ menu beside the highlighter. Sort all — every section on this day at once, not one row like
+              every other control here. Gated on HOOKS.editMode() — the same
+              flag the grip, the nudge buttons and every per-section ⇅ Auto
+              sort already gate on, not the bare role check (review fix, 9
+              Aug 26: canEditSched() alone left this button live and enabled
+              on a read-only board — an admin who has navigated to View
+              sched but still has the board open, per finding #1 — while
+              every sibling control on the same row correctly disappeared).
+              editMode() is re-checked inside askSortAll and sortAllCommit
+              too, so a stale button left over from a role OR page change
+              can't open the dialog or act either. Disabled (not hidden)
+              while previewing a frozen published version, same idiom as
+              +Line/+Wave above. */}
+          {open && HOOKS.editMode() && <button className="abtn" id="sbSortAll" disabled={DPREV.has(SBDAY)}
+            title="Reorder every section on this day back into its own reading order, waves and duty blocks included — one confirm, one undo step"
+            onClick={() => { if (SBDAY != null) askSortAll(SBDAY) }}><span className="bi">⇅</span><span className="bl"> Sort all</span></button>}
           </span>
           {/* UNDO STOPS AT THE DOOR OF THE MODE — AND THIS IS THE BUTTON IT HAS
               TO STOP (walk find, 22 Sep 26). The same guard was already on the
@@ -429,12 +472,9 @@ export function SchedBoard() {
               schedule cannot be changed — silently, with the mode still open.
               Kept identical to Shell.tsx's copy on purpose: two buttons, one
               rule. oilundo-button.test.tsx presses BOTH through the DOM. */}
-          <button className="abtn hbtn" id="sbUndo" title={us.undoLabel ? `Undo — ${us.undoLabel}` : (us.undoWhy || 'Undo')} disabled={!us.canUndo}
-            onClick={() => {
-              if (oilUndoBoundary()) { HOOKS.toast('Left OIL Earn — the next undo would change the day itself', 'ok'); notify(); return }
-              const r = globalUndo(); if (!r.ok && r.reason) HOOKS.toast(r.reason, 'warn'); notify() }}><span className="bi">↶</span><span className="bl"> Undo</span></button>
-          <button className="abtn hbtn" id="sbRedo" title={us.redoLabel ? `Redo — ${us.redoLabel}` : 'Redo'} disabled={!us.canRedo}
-            onClick={() => { const r = globalRedo(); if (!r.ok && r.reason) HOOKS.toast(r.reason, 'warn'); notify() }}><span className="bi">↷</span><span className="bl"> Redo</span></button>
+          {/* the ONE pair (ui/topbits.tsx) — the same component the top bar draws, with the OIL Earn stop inside it, so
+              both doors ask it (oilundo-button.test.tsx presses both) */}
+          <UndoPair eng={globalUndoEngine()} ids={['sbUndo', 'sbRedo']} />
           {/* HISTORY (owner, 11 Aug 26) — a VIEW mode, so unlike Sort all and
               + Wave it carries no editMode() gate: reading who changed a
               detail is not editing it, and a scheduler looking at a read-only
@@ -466,27 +506,17 @@ export function SchedBoard() {
             title={HISTMODE ? 'Close the changes — and stop showing who changed each detail' : 'Show the changes, and who changed each detail — hover it, or tap it on a phone'}
             onClick={() => { hideHistBub(); toggleChanges(weekDates(CURWEEK)[SBDAY ?? 0] || 'week', 'new') }}>
             <span className="bi"><HistIcon /></span><span className="bl"> History</span></button>
+          {/* SYNC AND THE BELL ON THE BOARD ([UNDO-TOPBAR] — owner D349 (3), 28 Sep 26): the board covers the top bar, so its
+              bar carries the same group — Undo · Redo · History · Sync · the bell — then ✓ Done. One component each with
+              the top bar's (ui/topbits.tsx): one Sync state, one bell tap (which closes the board as it navigates — setPage
+              leaves Edit Schedule). Their own ids, so nothing on the page is doubled. */}
+          <SyncChip id="sbSync" lblId="sbSyncLbl" />
+          <BellButton id="sbBell" />
           {/* THE VERSION PICKER LEFT THIS BAR (owner, 26 Aug 26). It moved down
               into the board's sign-off strip, and since the 15 Sep 26 redesign
               that strip carries the ONE plans selector (boardSignHTML →
               planSelectorHTML + verTagHTML), routed by data-planmenu. Nothing on
               this bar replaces it, so the bar simply stays shorter. */}
-          {/* Sort all — every section on this day at once, not one row like
-              every other control here. Gated on HOOKS.editMode() — the same
-              flag the grip, the nudge buttons and every per-section ⇅ Auto
-              sort already gate on, not the bare role check (review fix, 9
-              Aug 26: canEditSched() alone left this button live and enabled
-              on a read-only board — an admin who has navigated to View
-              sched but still has the board open, per finding #1 — while
-              every sibling control on the same row correctly disappeared).
-              editMode() is re-checked inside askSortAll and sortAllCommit
-              too, so a stale button left over from a role OR page change
-              can't open the dialog or act either. Disabled (not hidden)
-              while previewing a frozen published version, same idiom as
-              +Line/+Wave above. */}
-          {open && HOOKS.editMode() && <button className="abtn" id="sbSortAll" disabled={DPREV.has(SBDAY)}
-            title="Reorder every section on this day back into its own reading order, waves and duty blocks included — one confirm, one undo step"
-            onClick={() => { if (SBDAY != null) askSortAll(SBDAY) }}><span className="bi">⇅</span><span className="bl"> Sort all</span></button>}
           {/* + WAVE IS GONE FROM THIS BAR (owner, 13 Aug 26 — "put an add wave
               between common programme and duties, then remove the wave at the
               top bar for desktop and phone"). It is now a section-level control
@@ -498,7 +528,8 @@ export function SchedBoard() {
               "+ Add wave" (#addGo) went with it; the board is the one place a
               wave is created now, and it is reachable on desktop too. */}
           <button className="abtn primary" id="sbDone" onClick={() => { HOOKS.toast('Schedule updated'); closeScheduler() }}><span className="bi">✓</span><span className="bl"> Done</span></button>
-          <button className="abtn ghost" id="sbClose" onClick={closeScheduler}><span className="bi">✕</span><span className="bl"> Close</span></button>
+          {/* ✕ CLOSE IS GONE (owner D349, 28 Sep 26 — "What does tick or close do? is it the same function?"; told yes,
+              he approved "✓ Done only"): ✓ Done is the one way out. Escape and a tap on the scrim still close the board. */}
         </div>
         {/* THE HIGHLIGHT CHIPS STRIP (owner, 23 Aug 26) — the same HlChips the
             two week pages render, so a chip lit here is lit there. Rendered

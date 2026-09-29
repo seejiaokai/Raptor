@@ -387,7 +387,15 @@ export function logReversed(entry: { label?: string; forward?: Change[] }, dir: 
   }
   const sorted = [...days].filter(d => /^\d{4}-\d{2}-\d{2}$/.test(d)).sort()
   const what = `${dir === 'undo' ? 'Undo' : 'Redo'}${entry.label ? ' — ' + entry.label : ''}`
-  if (!sorted.length) { logAction(null, what, { date: localToday(), sect: 'day' }); return }
+  if (!sorted.length) {
+    /* an Undo line only where its change wrote a line of its own (the change-recording plan §11.9, walker A2-F5): the
+       roster, the war's ledger and its postings write theirs dated today (changeLinesFor below), so their Undo does too;
+       a Leave War ⚙ setting, a stage move, a war's dates, a balance, the OIL policy and every settings record write none
+       — until `[HIST-PER-PAGE]` gives Admin, Logic and the war's settings a place — so their Undo writes none either */
+    const wrote = (entry.forward || []).some(c => c.collection === 'people' || c.collection === 'lw.ledger' || c.collection === 'lw.postouts')
+    if (wrote) logAction(null, what, { date: localToday(), sect: 'day' })
+    return
+  }
   let a = sorted[0]!, b = a
   const flush = () => logAction(null, what, { date: a, end: b, sect: 'day' })
   for (const d of sorted.slice(1)) { if (d === nextIso(b)) b = d; else { flush(); a = b = d } }

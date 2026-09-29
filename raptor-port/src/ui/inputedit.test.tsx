@@ -109,7 +109,7 @@ describe('the control — which surfaces carry it, and who may press it', () => 
     await click($('#eWeek .day[data-day="0"] .dt.sb-open'))
     expect($$('#schedBoard .pinp [data-inpedit]').length).toBeGreaterThan(0)
     expect($$('#schedBoard .unav [data-inpedit]').length).toBeGreaterThan(0)
-    await click($('#sbClose'))
+    await click($('#sbDone'))
   })
 })
 

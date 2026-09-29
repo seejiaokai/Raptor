@@ -16,24 +16,50 @@ the later merge keeps both (D78).
 ## Now
 
 <!-- now:claude/small-fixes-batch-d223f6 -->
-### `claude/small-fixes-batch-d223f6` — the small-fixes batch BUILT, walked, read by both reviewers and gated — PUSHED, the PR open — his look and "merge live" left — written 29 Sep 26 — verify before use
-- **The branch:** cut from `main` at `60a6792c`; `main` merged in three times (PR #457, then PR #458 — the rulings slim-down, taken
-  with its own steps: `--rulings --merge`, the oil.md pointer re-applied, D360's short line read by Astra and rewritten; then PRs #459–#462 — the guide step, the Tracker leftovers — documents-only conflicts, each side kept, the only shared app file a comment; built clean, docsize OK).
-  Folder `.claude/worktrees/trk-smoke-add-race-bug-007eed`. Ports: preview 4174, `E2E_PORT=4191`. Rulings range D360–D369
-  — D360 used (his `[ALLAVAIL-OPEN-ROW]` answer). On GitHub, with its PR (the link in this chat). `claude/change-recording-retest` is NOT merged (no PR on 29 Sep 26) — it merges after this one or before; the later one adapts (D78).
+### `claude/small-fixes-batch-d223f6` — the small-fixes batch BUILT, walked, read by both reviewers, look card ANSWERED — PR #463 open, `main` (PR #464) taken in; his "merge live" left — written 29 Sep 26 — verify before use
+- **The branch:** cut from `main` at `60a6792c`; `main` merged in four times (PR #457; #458 the rulings slim-down; #459–#462 the
+  guide step and Tracker leftovers; #464 the change-recording re-test — notes-only conflicts, both sides kept, `--rulings
+  --merge` and its hand lines re-applied; 11 app files changed on both sides merged clean, their unit tests 2720/0 and
+  geometry + Leave War e2e 471 passed / 48 skipped after it). Folder `.claude/worktrees/trk-smoke-add-race-bug-007eed`.
+  Ports: preview 4174, `E2E_PORT=4191`. Rulings D360–D367 used (D366 retired, replaced by D367); D368–D369 free.
 - **Built (one commit each, red-first):** `[AVAILWIN-PREVIEW-BAR]`, `[GHOST-FLAG-SHADOW]`, `[ALLAVAIL-OPEN-ROW]` (D360),
-  `[AMEND-SMALL-SEEN]` 1, 3, 4, 9 (5 is a look-card question), `[REQ-ORPHAN-ROW]`, `[REQ-DOOR-WORDS]` 1–3, `[LW-ISO-DATES]`,
-  `[LW-SPARE-MOVE-DOORS]`, `[ABSENCE-SMALL-SEEN]` 1–4 (5 watched). Docs carry each.
-- **Checked:** 13 walks pass (they found four things: fixed ×2, docs corrected, `[PLAN-BANNER-DOOR]` filed); Astra (2) and
-  Fable (3) read the code — every finding fixed, measured-and-pinned or put to him; the full gates on `05bdf6a6` (the §Gate
-  baseline below; the merges since brought documents and the Tracker's own code only — the PR's checks run the lot on the merged code). Evidence: `raptor-port/docs/handpass/2026-09-28-small-fixes.md`
-  (§10 the look card — six questions). PR text drafted in this chat (the evidence sheet has the same facts).
-- **Next:** (1) the PR's first run FAILED one test — the phone callsign test on GitHub's Linux font (`[APP-FONTS-NOT-LOADED]`, the app never
-  loads its fonts); his call on the callsign column is open (D366's premise held on Windows only); fix, push, re-run; (2) his look
-  card is ANSWERED (D361–D366; `[ROW-NO-TIME-MARK]` filed); (3) his "merge live", then archive the items with `backlog-archive.mjs`. `[GATELOCK-STALE-LIVE]`
-  filed (the lock's 2-hour rule nearly broke the Tracker chat's live run — asked it, stopped mine).
-- **Parallel chats (D302):** change-recording (`.lw-hist` markup/CSS theirs; `dropInputRow` → `unacceptInput` told),
-  Tracker (observation numbers — mine #333–#335, #341–#342; theirs 330–332, 338).
+  `[AMEND-SMALL-SEEN]` 1, 3, 4, 9, `[REQ-ORPHAN-ROW]`, `[REQ-DOOR-WORDS]` 1–3, `[LW-ISO-DATES]`, `[LW-SPARE-MOVE-DOORS]`,
+  `[ABSENCE-SMALL-SEEN]` 1–4; then D367 (a flying line's callsign on the week wraps and grows — his iPhone cut W6LINE
+  on one line; the ≤374px column 48 → 36 so the remarks' MAIN / SPARE tags stay whole). Evidence:
+  `raptor-port/docs/handpass/2026-09-28-small-fixes.md` (§10 the look card and his answers, D361–D367).
+- **Checked:** 13 walks + the D367 re-walk in two fonts; Astra (2) and Fable (3) final reads, every finding closed; the
+  PR's GitHub run GREEN on `56df856b` (before the #464 merge); full local gates last on `05bdf6a6` (§Gate baseline is main's).
+- **Filed:** `[PLAN-BANNER-DOOR]`, `[GATELOCK-STALE-LIVE]`, `[ROW-NO-TIME-MARK]` (D361, a future job),
+  `[APP-FONTS-NOT-LOADED]` (his call — the app loads no font, so each device draws its own).
+- **Next:** (1) the PR's run on the merged code, read when it finishes; (2) his "merge live"; then archive the batch's items
+  with `backlog-archive.mjs` and delete the two look-only branches `claude/callsign-look-a` / `-b` (never merged).
+- **Parallel chats (D302):** change-recording merged (#464); observation numbers — mine #333–#335, #341–#342.
+<!-- /now -->
+
+<!-- now:claude/change-recording-retest -->
+### `claude/change-recording-retest` — the change-recording re-test (`[HUMAN-RETEST]`, D147) with `[UNDO-ROSTER-SETTINGS]`, D148 and `[UNDO-TOPBAR]` — BUILT, WALKED, READ BY BOTH, FIXED; waiting on HIS LOOK and "merge live" — written 29 Sep 26 — verify before use
+- **State:** every step of the plan done (`raptor-port/docs/superpowers/plans/2026-09-28-change-recording-plan.md`):
+  B1–B11 built red-first; walked at 1440×900, 1366×768, 390×844, 844×390 (664 checks, all pass — evidence
+  `raptor-port/docs/handpass/2026-09-28-change-recording.md` §4, §7); Fable and Astra read the finished code blind (D353) —
+  every finding fixed red-first and walked (§6; reports `…/briefs/2026-09-28-change-recording-final-read-{fable,astra}.md`);
+  the gates green under the lock (§Gate baseline). `main` (d3650865, the Tracker leftovers) merged in. Pushed; the PR is open.
+- **His look (the card is in the PR and the chat):** the pair on every page; the board's ✓ Done (no ✕) and the phone's ⋯;
+  the laptop-width icon-only pair (the builder's call: with words, six pages' bars grew a second line); §11.5
+  say-once-then-pass-over; "OK, seen" never a step and never undone; the named refusals. Then his "merge live" — NOTHING
+  to `main` without it. After the merge: archive `[UNDO-ROSTER-SETTINGS]` and `[UNDO-TOPBAR]` (both say "closes when it
+  merges") and remove this block.
+- **Filed by this build:** `[PHONE-WIDE-BOARD-BLANK]` (medium — the board's Desktop layout blank on a phone, on `main`
+  too), `[BUBBLE-SMALL-SEEN]` (low — Unpublish says nothing; a bubble over the section-order offer). Earlier:
+  `[UNDO-POSTING-RECORD]`, `[HIST-PER-PAGE]`, `[PHONE-DISCARD-MARKS]`.
+- **Rulings:** D347–D353 are this branch's (28 Sep 26); none new since. D347's and D353's short lines corrected after
+  Astra's D138 check (`…/briefs/2026-09-29-rulings-d347-d353-short-lines-astra.md`) — the slim-down's leftover is done.
+  D354–D359 unused, free.
+- **Parallel chats (D302):** the Tracker leftovers chat merged (#459, #462) and closed; the small-fixes chat
+  (`claude/small-fixes-batch-d223f6`, PR #463) stays out of both bars and told us of any change there — no clash, only
+  `scheduler.css` in different blocks; the later merge brings `main` in first (D78). Observation numbers: this branch
+  #345–#347 (renumbered from #341–#342, which are the small-fixes branch's).
+- **Ports:** preview 4173 (this build), the live copy for the bars walk 4192 (`C:/rw/main`, a detached `origin/main`
+  checkout — remove its node_modules junction before deleting it).
 <!-- /now -->
 
 <!-- now:claude/rulings-slim-d391-078ad2 -->
@@ -117,10 +143,8 @@ the later merge keeps both (D78).
 
 ## Gate baseline
 
-The latest counts watched — 28 Sep 26, `claude/small-fixes-batch-d223f6`'s final code (`05bdf6a6`, `main` taken in), one run
-under the PC lock: unit **6848 / 6850** (424 files — the 2 were 20-second timeouts under the run's load: both pass alone,
-and time the same on `main` and the branch) · build clean · tfin **728 / 0** · e2e **508 passed**, 48 skipped ·
-smoke **443 / 0** · rulecheck OK · docsize OK. Restate a count only from a run you watched, and REPLACE the previous counts — never stack a
+The latest counts watched — 29 Sep 26, `claude/change-recording-retest`, each run under the PC lock: unit **6898 / 6898**
+(423 files) · build clean · tfin **728 / 0** · e2e **495 passed**, 48 skipped · smoke **445 / 0** · rulecheck OK · docsize OK. Restate a count only from a run you watched, and REPLACE the previous counts — never stack a
 history. How to run them: `raptor-port/CLAUDE.md` §Build & verify; how they mislead, and the checks on his PC:
 `raptor-port/docs/gates-and-deploy.md`.
 

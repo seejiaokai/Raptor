@@ -73,7 +73,8 @@ export async function selPress(page, testid) {
 
 /** The top bar's Undo / Redo (the one timeline): what its hover names first, whether it was on, what toast it raised. */
 export async function lwHist(page, which = 'undo') {
-  const b = page.locator(`[data-testid="lw-${which}"]:visible`).first()
+  /* the war's pair moved to the app's top bar ([UNDO-TOPBAR], D347, 28 Sep 26) */
+  const b = page.locator(`#${which}Btn:visible`).first()
   if (!(await b.count())) return { pressed: false, why: 'no button' }
   const title = await b.getAttribute('title'), disabled = await b.isDisabled()
   if (disabled) return { pressed: false, title, disabled }

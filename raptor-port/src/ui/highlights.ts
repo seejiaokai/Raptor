@@ -362,6 +362,18 @@ export function scrollToWarnFocus(){
    one "take me to this change" (interactions.ts jumpToChange, D107), which lands on the WEEK when the board
    is not open. `root` is the day box (or the board wrap), `tgt` the cell, `weekId` the week the day sits in
    ('eWeek' / 'vWeek'), or null on the board, where there is no sideways pan to make. */
+/* AN UNDO BRINGS ITS DAY ON SCREEN (the change-recording re-test, walker A1-F3, 28 Sep 26 — AM39b): the edit week steps
+   sideways to the changed day when it is not already in view — the same horizontal placement as the warning and change
+   jumps below (onto the day's snap point), without the vertical scroll: the undo changed the day, not one cell to find */
+export function bringDayIntoView(di:number){
+  if(typeof document==='undefined')return;
+  const wid=warnWeekId(); const week:any=document.getElementById(wid);
+  const day:any=week&&week.querySelector(`.day[data-day="${di}"]`);
+  if(!week||!day)return;
+  const wr=week.getBoundingClientRect(), dr=day.getBoundingClientRect();
+  if(wr.width>0&&dr.left>=wr.left-1&&dr.left<wr.right-40)return;   // its front edge already on screen
+  hsSet(week,week.scrollLeft+dr.left-wr.left); hsSync();
+}
 export function bringIntoView(root:any,tgt:any,weekId:string|null){
   /* The week is snap-scrolled (.week{scroll-snap-type:x mandatory} with
      .day{scroll-snap-align:start}), and inline:'center' asks to rest at a

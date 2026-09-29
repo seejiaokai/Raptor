@@ -42,7 +42,7 @@ import {
   cmdDeferEffect,
 } from '../command'
 import { PEOPLE, indexCallsigns } from '../engine/people'
-import { store, setSettingsWriteHook, HOOKS } from '../engine/hooks'
+import { store, setSettingsWriteHook, setSettingsGroupHook, HOOKS } from '../engine/hooks'
 import { rulesLoad, rulesResetMem } from '../engine/rules'
 import { lookaheadLoad } from '../engine/lookahead'
 import { qualColsLoad } from '../engine/qualcols'
@@ -277,6 +277,12 @@ export function registerPeopleSettingsCommandLayer(): void {
   setSettingsWriteHook((k, v, raw) => {
     if (isCommitting() || !(SETTINGS_KEYS as readonly string[]).includes(k)) { raw(k, v); return }
     commitSettings(settingsType(k), () => raw(k, v))
+  })
+  // a save that writes several keys (store.group) is ONE command, named for its first key; inside a running command the
+  // body just runs (every store.set in it then writes raw)
+  setSettingsGroupHook((name, fn) => {
+    if (isCommitting()) { fn(); return }
+    commitSettings(settingsType(name), fn)
   })
   // the derived registry entries (§3.1)
   registerRecord({ key: 'people:<personId>', cls: 'record', collection: 'people', module: 'people' })

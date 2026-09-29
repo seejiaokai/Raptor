@@ -26,6 +26,9 @@ import { DAYS } from '../engine/data'
 import { autoAcceptInput } from '../engine/slots'
 import { afterSchedMutate } from './view'
 import { resyncSchedBaseline } from './sched-commit'
+import { installGlobalUndo } from './undo-wire'
+import { globalUndo } from '../undo'
+import { _resetTimeline } from '../undo/timeline'
 
 /* the settings are stored through storeBackend — a fake here, never real localStorage */
 const mem: Record<string, string> = {}
@@ -421,6 +424,18 @@ describe('NP5 — approving with New person, filled from what he gave (D214, D20
 
 describe("NP6 — each admin's bell is his own (D216, D227)", () => {
   beforeEach(fresh)
+  it('a request he has seen stays seen when he undoes a refusal made before (Fable’s final read, F4 — B1)', () => {
+    _resetTimeline(); installGlobalUndo()
+    signInAs('kite@mail'); ask('Kite')
+    signInAs('wren@mail'); ask('Wren')
+    signInAs('ad', 'a')
+    const me = currentAdminAccountId()!
+    expect(declineRequest(requestByName('kite@mail')!.id)).toBe(null)       // his step, on the requests
+    expect(markRequestsSeen()).toBe(null)                                   // Wren's now seen by him — no step
+    expect(globalUndo().ok).toBe(true)                                      // Kite's request comes back
+    expect(requestByName('kite@mail')).toBeTruthy()
+    expect(requestByName('wren@mail')!.seenBy).toContain(me)                // and Wren's stays seen
+  })
   it('lights for every admin until HE has seen the list; a later request lights it again', () => {
     signInAs('ad', 'a')
     expect(addAccount('b@mail', 'pike', 'admin')).toBe(null)

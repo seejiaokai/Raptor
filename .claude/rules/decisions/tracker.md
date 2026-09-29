@@ -30,7 +30,8 @@ was told, where it lives — **is in `.claude/decisions-full/tracker.md`, never 
 ruling's detail or asking him about it** (`grep -h '^| D… |' .claude/decisions-full/*.md` — the shell; the Grep tool
 hides a long row). A "— changed by" tail names the later rulings that changed it. Newest first.
 **Also read** — in How we work, so already loaded: **D62** and **D63** (the Tracker's syllabus data is out of
-every privacy sweep; the aircraft type elsewhere reads "F-15" or "fighter squadron").
+every privacy sweep; the aircraft type elsewhere reads "F-15" or "fighter squadron"); **D347** (every Undo / Redo
+pair — the Tracker's own included — sits in the top bar, in the same place and look as Edit Schedule's).
 
 **No student name, mark or date may enter the repository** (its seed data, `src/tracker/data/`, is verbatim course
 content only). The reason once given was "the repository is public"; it has been PRIVATE since 23 Sep 26 (D59) and

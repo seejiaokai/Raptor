@@ -133,18 +133,19 @@ async function putDrawerAway(page: Page) {
 }
 
 // Undo / redo (owner, 30 Aug 26). The click LOGIC is unit-tested in the store
-// and chrome suites; this pins the LAYOUT jsdom can't — the pair renders inside
-// the Leave War top row, disabled with nothing to undo yet, on both widths.
-test('the undo/redo pair sits in the Leave War top bar, disabled at rest', async ({ page }) => {
-  const undo = page.locator('[data-testid="lw-undo"]')
-  const redo = page.locator('[data-testid="lw-redo"]')
+// and chrome suites; this pins the LAYOUT jsdom can't — disabled with nothing to undo yet, on both widths.
+// [UNDO-TOPBAR] (owner D347, 28 Sep 26): the pair left the war's own Period row for the APP's top bar, in Edit
+// Schedule's place and look — the same #undoBtn / #redoBtn (ui/topbar-pair.test.tsx holds the roll-call).
+test('the undo/redo pair sits in the app’s top bar on the Leave War, disabled at rest', async ({ page }) => {
+  const undo = page.locator('#undoBtn')
+  const redo = page.locator('#redoBtn')
   await expect(undo).toBeVisible()
   await expect(redo).toBeVisible()
   await expect(undo).toBeDisabled()   // a freshly loaded war has no history to walk
   await expect(redo).toBeDisabled()
   const u = (await undo.boundingBox())!
   const r = (await redo.boundingBox())!
-  const bar = (await page.locator('#page-leavewar .topbar').boundingBox())!
+  const bar = (await page.locator('.topbar').first().boundingBox())!
   // inside the top bar, and redo immediately after undo (a tidy pair)
   expect(u.y).toBeGreaterThanOrEqual(bar.y - 1)
   expect(u.y).toBeLessThan(bar.y + bar.height + 1)
@@ -1910,7 +1911,7 @@ test('the month strip follows the drawer WIDENING while it is already out', asyn
 
   // Undo until every figure is back. The drawer widens under a strip that has
   // been told nothing about it; the readout has to follow anyway.
-  const undo = page.locator('[data-testid="lw-undo"]')
+  const undo = page.locator('#undoBtn')
   for (let i = 0; i < 8 && (await page.locator('.mxdrawer th.fig').count()) < 8; i++) await undo.click()
   await expect(page.locator('.mxdrawer th.fig')).toHaveCount(8)
   await settleGrid(page)
@@ -2198,7 +2199,7 @@ test('the bar takes one number for the run, the boxes flash, and one Undo takes 
 
   // ONE batch, ONE step back: the three credits went in as a single ledger
   // write, so a single Undo has to undo all three.
-  await page.locator('[data-testid="lw-undo"]').click()
+  await page.locator('#undoBtn').click()
   for (const [i, p] of run.entries()) {
     await expect(drawerNum(page, 'ccl', p!)).toHaveText(before[i]!)
   }
@@ -4256,8 +4257,8 @@ test('undo/redo drive a real grid edit: fill, clear, restore', async ({ page }) 
   // which is the reliable path (the grid is already up from the beforeEach).
   await lwRole(page, 'admin')
   await raptorRole(page, 'admin')
-  const undo = page.locator('[data-testid="lw-undo"]')
-  const redo = page.locator('[data-testid="lw-redo"]')
+  const undo = page.locator('#undoBtn')
+  const redo = page.locator('#redoBtn')
   await expect(undo).toBeDisabled()
   await dragSelectStable(page, 'cell-slipway-2026-01-06', 'cell-slipway-2026-01-06')
   await page.locator('[data-testid="sel-LL"]').click()
@@ -4292,7 +4293,7 @@ test.fixme('undo fired in MOVE mode does not corrupt: the grid stays usable', as
   await expect(page.locator('[data-testid="move-banner"]')).toBeVisible()
   const errors: string[] = []
   page.on('pageerror', e => errors.push(e.message))
-  await page.locator('[data-testid="lw-undo"]').click()   // undo mid-move
+  await page.locator('#undoBtn').click()   // undo mid-move
   // the grid is still alive: a fresh drag-select still opens the sheet
   await dragSelectStable(page, 'cell-slipway-2026-01-10', 'cell-slipway-2026-01-11')
   await expect(page.locator('[data-testid="select-sheet"]')).toBeVisible()
@@ -4308,7 +4309,7 @@ test('the select sheet still works, and undo acts on the committed edit', async 
   await expect(page.locator('[data-testid="select-sheet"]')).toBeVisible()
   await page.locator('[data-testid="sel-LL"]').click()
   await expect(page.locator('[data-testid="cell-slipway-2026-01-06"] .c')).toBeVisible()
-  await page.locator('[data-testid="lw-undo"]').click()
+  await page.locator('#undoBtn').click()
   await expect(page.locator('[data-testid="cell-slipway-2026-01-06"] .c')).toHaveCount(0)
 })
 
@@ -4324,8 +4325,8 @@ test.fixme('rapid undo/redo settle to a consistent grid', async ({ page }) => {
   await page.locator('[data-testid="sel-LL"]').click()
   await dragSelectStable(page, 'cell-slipway-2026-01-08', 'cell-slipway-2026-01-08')
   await page.locator('[data-testid="sel-LL"]').click()
-  const undo = page.locator('[data-testid="lw-undo"]')
-  const redo = page.locator('[data-testid="lw-redo"]')
+  const undo = page.locator('#undoBtn')
+  const redo = page.locator('#redoBtn')
   for (let i = 0; i < 5; i++) if (await undo.isEnabled()) await undo.click()
   await expect(undo).toBeDisabled()
   await expect(page.locator('[data-testid="cell-slipway-2026-01-06"] .c')).toHaveCount(0)
