@@ -411,12 +411,12 @@ export const JOURNEYS = [
           { t: 'Published: your remarks', shot: 'lwflow-remarks', lines: [c(1, 'Your approved day'), c(2, 'Remarks'), c(3, 'Save')] },
         ],
         checks: [
-          'A drag fills the whole span in one go; today it can go below zero without asking (a fix is filed, D418).',
+          'A drag fills the whole span in one go; going below zero asks once first, naming each man, as a one-day bid does (D418).',
           'Pick a range opens a calendar on the tapped day.',
           'After publishing, a member opens only his own approved leave, for its remarks.',
         ],
         tests: [
-          ['e2e/leavewar.spec.ts', 'drag-selecting fills the whole span'],
+          ['e2e/leavewar.spec.ts', 'drag-selecting fills the whole span; a drag below zero asks once'],
           ['bidding.test.tsx', 'bidding over a range'],
           ['remarks.test.tsx', 'remarks on an approved leave'],
         ],

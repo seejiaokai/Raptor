@@ -14,10 +14,12 @@
 // one-day sheet's order and look (D264, D331): Decide, Selected (Move ·
 // Delete — SheetActions.tsx), How much, Which leave, PO.
 //
-// The negative-balance confirm the single sheet shows is deliberately NOT
-// carried here: it is per-person, and a block spanning ten people asking ten
-// "are you sure" questions would be worse than a balance running negative,
-// which the owner allows. The single-cell path keeps the confirm.
+// THE ASK BEFORE A BALANCE GOES BELOW ZERO IS CARRIED HERE TOO (his ruling D418, 29 Sep 26 — "Drag asks too"). It was
+// left out at first, on the reasoning that a block spanning ten people asking ten "are you sure" questions would be
+// worse than a balance running negative — and a three-day drag from a balance of 0 wrote -3 with no word, where a
+// one-day bid of the same leave would have asked. It asks ONCE for the whole block, naming everyone the fill would
+// take below zero in one sentence (`belowzero.ts`, the one-day sheet's words), and the same leave tapped again goes
+// ahead. Never a refusal — a balance may run negative.
 
 import { useState } from 'react'
 import { formatCell, LEAVE_TYPES, type BidState, type Portion, type PostOutcome } from '../engine'
@@ -26,6 +28,7 @@ import '../../ui/postout.css'
 import { awardsIn, clearCells, deletableIn, movableCells, postingBlocked, setBidStates, setCells } from '../state/store'
 import { DeleteChip, MoveChip } from './SheetActions'
 import { awardsClause } from './awardwords'
+import { belowZeroAsk, goesBelow, type BalanceAfter, type BelowZero } from './belowzero'
 import { Sheet } from './Sheet'
 import { shortDate, shortSpan } from './dates'
 import type { Selection } from './select'
@@ -40,6 +43,7 @@ const PORTIONS: { portion: Portion; label: string; testid: string }[] = [
 export function SelectSheet({
   sel,
   people,
+  wouldLeave,
   role,
   canDecide,
   onDone,
@@ -51,6 +55,9 @@ export function SelectSheet({
   sel: Selection
   /** callsign per person id, for the header when the selection is small */
   people: (id: string) => string
+  /** What one person's balance would read after this leave is written on these of his days, or `null` for leave that
+   *  spends nothing — the matrix's `balanceAfter`, the one-day sheet's own question (D418) */
+  wouldLeave?: (personId: string, dates: readonly string[], code: string) => BalanceAfter | null
   role: 'admin' | 'member'
   /** admin && closed — the batch Decide row */
   canDecide: boolean
@@ -70,6 +77,14 @@ export function SelectSheet({
   const [portion, setPortion] = useState<Portion>('full')
   const [note, setNote] = useState('')
   const [confirmDel, setConfirmDel] = useState(false)
+  /* what the below-zero ask SAID — the leave and each man's figure (D418) — the same leave tapped again goes ahead only
+     while that still holds; any other control on the sheet (How much, Delete, Decide, PO) drops it (Astra's final read,
+     F2, 29 Sep 26 — a portion changed away and back kept the ask armed) */
+  const [confirming, setConfirming] = useState<string | null>(null)
+  /* WHERE THE ONE NOTE IS DRAWN — beside the button that raised it, as on the one-day sheet (D264, one format and one
+     look): a Delete's confirm under the Selected row, a leave's (the below-zero ask, a partial write) under Which leave,
+     and a decision's or a posting's at the foot, where they always were */
+  const [noteAt, setNoteAt] = useState<'sel' | 'leave' | 'end'>('end')
   /* the awards the confirm NAMED — the Delete takes these and no other (Astra's round-2 read, R2-02) */
   const [delAwardIds, setDelAwardIds] = useState<string[]>([])
   const [poOpen, setPoOpen] = useState(false)
@@ -105,7 +120,31 @@ export function SelectSheet({
       ? `Nothing could be ${verb} — those cells are locked, owned by Raptor, or outside the window.`
       : `${written} ${verb}. ${skipped} skipped — locked, owned by Raptor, or outside the window.`
 
+  /** Everyone this fill would take below zero, in the block's own order — one line each, for the one ask. */
+  const belowZero = (code: string): BelowZero[] => {
+    if (!wouldLeave) return []
+    const out: BelowZero[] = []
+    for (const pid of sel.people) {
+      const dates = sel.cells.filter(c => c.personId === pid).map(c => c.date)
+      const r = dates.length ? wouldLeave(pid, dates, code) : null
+      if (goesBelow(r)) out.push({ callsign: people(pid), counter: r.counter, after: r.after })
+    }
+    return out
+  }
+
   const fill = (code: string) => {
+    /* ASK ONCE BEFORE TAKING ANYONE BELOW ZERO (D418): the first tap names each man and writes nothing; the same leave
+       again goes ahead. A different leave (or a different half) asks afresh, as on the one-day sheet. */
+    setConfirmDel(false)
+    setNoteAt('leave')
+    const below = code ? belowZero(code) : []
+    const token = `${code}|${JSON.stringify(below)}`
+    if (below.length && confirming !== token) {
+      setConfirming(token)
+      setNote(belowZeroAsk(below))
+      return
+    }
+    setConfirming(null)
     const { written, skipped } = code ? setCells(sel.cells, code) : clearCells(sel.cells)
     if (skipped === 0) { onDone(written > 0); return }
     setNote(skipNote(code ? 'written' : 'cleared', written, skipped))
@@ -113,6 +152,8 @@ export function SelectSheet({
   }
 
   const del = () => {
+    setConfirming(null)
+    setNoteAt('sel')
     if (!confirmDel) {
       setConfirmDel(true)
       setDelAwardIds(awards.map(a => a.id))
@@ -127,6 +168,8 @@ export function SelectSheet({
   }
 
   const decide = (bid: BidState) => {
+    setConfirming(null)
+    setNoteAt('end')
     const { decided, skipped, already } = setBidStates(sel.cells, bid)
     if (skipped === 0 && !already) return onDone(decided > 0)
     /* an already-approved leave is said as such, never counted as a decision (AB7) */
@@ -172,6 +215,7 @@ export function SelectSheet({
           {canDelete && <DeleteChip testid="sel-delete" armed={confirmDel} onClick={del} />}
         </div>
       )}
+      {note && noteAt === 'sel' && <div className="bidsheet-row"><span className="note warn" data-testid="sel-note">{note}</span></div>}
 
       {canFill && (
         <>
@@ -181,7 +225,7 @@ export function SelectSheet({
               <button key={p.portion} data-testid={p.testid}
                 className={`pchip${portion === p.portion ? ' on' : ''}`}
                 aria-pressed={portion === p.portion}
-                onClick={() => setPortion(p.portion)}>
+                onClick={() => { setPortion(p.portion); setConfirming(null) }}>
                 {p.label}
               </button>
             ))}
@@ -195,6 +239,7 @@ export function SelectSheet({
                 {formatCell({ type: t.type, portion })}
               </button>
             ))}
+            {note && noteAt === 'leave' && <span className="note warn" data-testid="sel-note">{note}</span>}
           </div>
 
           {/* No Medical row: medical is member-filed only (owner, 13 Sep 26) —
@@ -207,7 +252,7 @@ export function SelectSheet({
           reading, uncorrected — D331). */}
       {onPostOut && nPeople === 1 && !poOpen && (
         <div className="bidsheet-row postout">
-          <button className="dchip po" data-testid="sel-postout" title="Post out — their last day in the squadron" aria-label="Post out" onClick={() => setPoOpen(true)}>PO</button>
+          <button className="dchip po" data-testid="sel-postout" title="Post out — their last day in the squadron" aria-label="Post out" onClick={() => { setPoOpen(true); setConfirming(null) }}>PO</button>
         </div>
       )}
       {onPostOut && nPeople === 1 && poOpen && (
@@ -231,7 +276,7 @@ export function SelectSheet({
                 /* a refused posting keeps the sheet and says why (AB5) — it used to report done whatever the store said */
                 const why = onPostOut(sel.people[0], poDate, poOutcome)
                 setDelArmed(false)
-                if (why) { setNote(why); return }
+                if (why) { setNoteAt('end'); setNote(why); return }
                 onDone(true)
               }}>
               {delArmed ? `Tap again to delete ${who}` : 'Post out'}
@@ -240,7 +285,7 @@ export function SelectSheet({
         </>
       )}
 
-      {note && <div className="bidsheet-row"><span className="note warn" data-testid="sel-note">{note}</span></div>}
+      {note && noteAt === 'end' && <div className="bidsheet-row"><span className="note warn" data-testid="sel-note">{note}</span></div>}
     </Sheet>
   )
 }

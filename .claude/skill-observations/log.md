@@ -1624,6 +1624,22 @@ could carry the "why now" so the next chat has it to repeat.
 
 **Principle:** A non-technical owner judges a job by its purpose and its output; state both before starting, or he will
 ask mid-work and the answers arrive piecemeal.
+
+### Observation 360: Parallel chats' number ranges collide when claimed by message before any pushed record
+
+**Status:** OPEN
+**Date:** 2026-09-29
+**Session context:** Leave War drag / flaky-tests batch, run beside two database chats (D302 coordination by message). Numbered #360 past the day-lock branch's #355 and the ranges the three chats agreed (#356–#359 day-lock, #360–#369 this chat, #370+ the DB-sync chat).
+**Skill:** session-handoff (and the D302 coordination step it implies)
+**Type:** open-source
+**Phase/Area:** starting a parallel chat — claiming a ruling-number / observation-number range
+
+**Issue:** Three chats started within minutes and each announced a ruling range by message. Two picked the same range (D430–D439); the messages crossed, each proposed a different resolution, and it took four more messages to converge. The chat that had already written its claim into a PUSHED handoff block was the one the others deferred to — the pushed record, not the message, was the tie-breaker everyone accepted.
+
+**Suggested improvement:** In session-handoff (or the start-of-chat step that reads HANDOFF.md): before announcing a range, read every open branch's HANDOFF block for claimed ranges (`git show origin/<branch>:HANDOFF.md`), take the next free block, and state the rule "first claim in a pushed block wins; a message-only claim yields". Say it in the first coordination message so crossed messages resolve without a round-trip.
+
+**Principle:** When parallel agents allocate from a shared counter, the tie-breaker must be a durable, readable record that exists before the announcement — messages cross; a written claim does not.
+
 ### Observation 370: A chat told to "start" a backlog item found another live chat already half-way through it
 
 **Status:** OPEN

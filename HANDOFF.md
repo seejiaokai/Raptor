@@ -26,8 +26,8 @@ the later merge keeps both (D78).
   §5–§12 (a row per day carrying its lock; ownership + one required server check — plug-in and SYSTEM Custom APIs;
   `PlanningPuck`, `DayRemark`, per-day `Amendment`, `AmendmentRetraction`, `IssuedSignoff`, `TakeOverRequest`, `ChangeBatch`;
   §12 q8–10 for IT); replaced text in `raptor-port/docs/archive/data-model-2026-09-29.md`; the three rounds and every
-  disposition in `raptor-port/docs/superpowers/briefs/2026-09-29-day-lock-redteam-reviews.md`. PR: see below — open when
-  written, awaiting his "merge live".
+  disposition in `raptor-port/docs/superpowers/briefs/2026-09-29-day-lock-redteam-reviews.md`. PR #475 — "merge live" given
+  29 Sep 26, merging when written; check before acting.
 - **Unfinished:** none of this chat's. Residue filed: `[DB-SYNC-MODEL]` (the lock's build — his mock-up questions 1, 3–6,
   the screens of §9 rule 13, the §11 rows with `perms.ts`, IT's server check, q10 before stage 2); `[DB-READINESS]` group A
   (the shape work this design hands it); `[IT-QUESTIONS]` (the check, the free team, the licence and its 40,000 a day).
@@ -40,6 +40,25 @@ the later merge keeps both (D78).
   D440–D449; observations #355–#359 (#355–#356 used).
 - **Pick up here:** after his "merge live", a fresh chat on `main` for `[DB-READINESS]` group A (`OUTSTANDING.md`, its
   SPLIT line), reading `data-model.md` §3 and §9 first.
+<!-- /now -->
+
+<!-- now:claude/lw-drag-flaky-tests-batch-c0719b -->
+### `claude/lw-drag-flaky-tests-batch-c0719b` — `[LW-DRAG-BELOW-ZERO]` (D418) + the two flaky tests: built, walked, Astra-read, all checks green; his "merge live" given, merging — written 29 Sep 26 — verify before use
+- **Built:** a Leave War drag that would take anyone below zero asks ONCE first, naming each man ("That takes Drifter to -5
+  FCL and Ridge to -2 FCL. Tap the same leave again to go ahead."), under Which leave, as the one-day sheet does; the same
+  leave again writes. Both sheets now ask ONE question (the store's `balanceAfterFill` → `counters.ts withFill`), read as the
+  column reads the balance — so the one-day range no longer counts weekends / holidays, and the words say "LVE", not
+  "ANNUAL" (`ui/belowzero.ts`). Evidence: `raptor-port/docs/handpass/2026-09-29-lw-drag-below-zero.md` (20 / 20 walk checks,
+  desktop, phone by finger, a member). Astra's code read found four real defects in the first cut (a half day beside a held
+  half missed, an ask left armed, OIL expiry, a man already in the red) — all fixed red-first. Filed: `[LW-SEL-HALF-LABELS]`.
+- **Flaky tests fixed (test-only), both reproduced on purpose first:** `[INPUTSCAL-TAP-FLAKY]` — a tap was two awaited steps
+  and a real-time hold timer fired between them under load; now one step. `[LW-WINDOW-PRUNE-FLAKE]` — the background fill
+  reached January before the JAN press on a busy PC; the premise is now read with the press.
+- **Parallel (D302):** the DB-sync mock-up chat (D440–D449, observations #370+) and the day-lock chat
+  (`claude/day-lock-mockup-data-model-493d27`, D450–D459, #356–#359) — no shared code; shared docs only in our own items.
+  This chat: D430–D439 (none used), observations #360–#369 (#360 used), preview port 4193 (`raptor-lwdz`).
+- **Next:** his "merge live" given 29 Sep 26 — `main` merged in (D78), merging; once live on Vercel this block goes at the
+  next handoff (nothing left open but `[LW-SEL-HALF-LABELS]`, filed).
 <!-- /now -->
 
 <!-- now:claude/db-sync-model-mockup-4a00e5 -->
@@ -130,10 +149,9 @@ the later merge keeps both (D78).
 
 ## Gate baseline
 
-The latest counts watched — 29 Sep 26, `claude/award-earned-vs-granted-2ed66d` (`e7de1f80`), one run under the PC lock: unit
-**6992 / 6992** (433 files) · build clean · tfin **728 / 0** · e2e **507 passed, 1 failed** (the month-window test, a timing
-flake — alone 3 / 3, its file 154 / 0 straight after; `[LW-WINDOW-PRUNE-FLAKE]`), 48 skipped · smoke **445 / 0** · rulecheck
-OK · docsize OK. Restate a count only from a run you watched, and REPLACE the previous counts — never stack a
+The latest counts watched — 29 Sep 26, `claude/lw-drag-flaky-tests-batch-c0719b`, one run under the PC lock: unit
+**7017 / 7017** (434 files) · build clean · tfin **728 / 0** · e2e **509 passed, 0 failed**, 49 skipped (the month-window test,
+once flaky, fixed — `[LW-WINDOW-PRUNE-FLAKE]`) · smoke **445 / 0** · rulecheck OK · docsize OK. Restate a count only from a run you watched, and REPLACE the previous counts — never stack a
 history. How to run them: `raptor-port/CLAUDE.md` §Build & verify; how they mislead, and the checks on his PC:
 `raptor-port/docs/gates-and-deploy.md`.
 

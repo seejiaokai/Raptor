@@ -937,6 +937,24 @@ test('drag-selecting a row fills the leave across the whole span', async ({ page
     await expect(page.locator(`[data-testid="cell-slipway-${d}"] .c`)).toBeVisible()
 })
 
+/* A DRAG THAT WOULD TAKE SOMEONE BELOW ZERO ASKS ONCE FIRST, AS A ONE-DAY BID DOES (his ruling D418, 29 Sep 26 — "Drag
+   asks too"). The slipway row holds no FCL, so three days of it would take him to -3: before this, the drag wrote them with no
+   word. This is the wiring the unit tests cannot see — the grid handing the sheet its balance question — through the
+   real drag, on the real balance. */
+test('a drag that would go below zero asks once, then writes on the same leave again', async ({ page }) => {
+  desktopOnly()
+  await lwView(page, 'slipway')
+  await dragSelect(page, 'cell-slipway-2026-01-06', 'cell-slipway-2026-01-08')
+  await expect(page.locator('[data-testid="select-sheet"]')).toBeVisible()
+  await page.locator('[data-testid="sel-FCL"]').click()
+  await expect(page.locator('[data-testid="sel-note"]')).toHaveText(/^That takes \S+ to -3 FCL\. Tap the same leave again to go ahead\.$/)   // the row's callsign, as the roster names him
+  await expect(page.locator('[data-testid="cell-slipway-2026-01-06"] .c')).toHaveCount(0)   // nothing written yet
+  await page.locator('[data-testid="sel-FCL"]').click()
+  await expect(page.locator('[data-testid="select-sheet"]')).toHaveCount(0)
+  for (const d of ['2026-01-06', '2026-01-07', '2026-01-08'])
+    await expect(page.locator(`[data-testid="cell-slipway-${d}"] .c`)).toHaveText('FCL')
+})
+
 // A member edits ONLY their own row — the person they are viewing as (owner,
 // 27 Aug 26 — "if I am viewing as a member and I view as ranger, I shouldn't be
 // able to input on other people's row except mine"). Here the member is scoped
@@ -4554,10 +4572,21 @@ test('the grid draws a window of months over year-wide placeholders, keeps every
   await expect.poll(async () => (await read()).months.includes('2026-12'), { timeout: 6000 }).toBe(true)
   expect((await read()).misaligned).toBe(0)
 
-  // back to January by the strip: January is drawn again and December is not
-  await page.locator('[data-testid="month-JAN"]').click()
+  // back to January by the strip: January is drawn again, and December is dropped — IF January was undrawn when the
+  // button was pressed. [LW-WINDOW-PRUNE-FLAKE] (29 Sep 26): on the desktop the tab on screen fills toward the WHOLE
+  // year, a month per idle beat, so on a busy PC (the full gate run, where the December poll above can take seconds)
+  // the fill reached January first; the jump was then a plain scroll inside the drawn window, nothing was dropped —
+  // correctly — and a 5-second wait for December to leave ran out. Reproduced by pausing 9s here: all twelve drawn.
+  // So the premise is read in the SAME synchronous page task as the press (no fill beat can land between the two), and
+  // each outcome is asserted for what it is (D87 — wait on what the step needs, never a fixed time).
+  const janWasDrawn = await page.evaluate(() => {
+    const drawn = !!document.querySelector('.mx-wrap .mxhead [data-testid="head-2026-01-01"]')
+    document.querySelector<HTMLElement>('[data-testid="month-JAN"]')!.click()
+    return drawn
+  })
   await expect(page.locator('[data-testid="head-2026-01-01"]')).toHaveCount(1)
-  await expect.poll(async () => (await read()).months.includes('2026-12')).toBe(false)
+  if (!janWasDrawn) await expect.poll(async () => (await read()).months.includes('2026-12')).toBe(false)
+  else expect((await read()).months.length).toBe(12)   // the fill finished the year first: the jump only scrolled
   expect((await read()).misaligned).toBe(0)
 })
 

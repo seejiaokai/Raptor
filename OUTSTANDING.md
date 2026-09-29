@@ -83,9 +83,9 @@ award fix are due before the tables are settled. What to finish before the hand-
 
 **Placed by their own lines — not his rulings:** the Leave War — [LW-FROZEN-BAR-GAP] (after [HUMAN-RETEST]; show him
 first), [LW-SCRUBBER-FLAKY] (test-only),
-[PO-RESTORE-POSTING] (low, from its final code read), [LW-OFFER-ONLY-TAKEABLE] (low, with [LW-LOCKMARK]), [LW-HARNESS-VIEWER-PIN] (test-only, low), [CI-FAIL-PICTURES] (his call, low), [LW-DOZE-GUARDS] (low, check first); the shell — [SHELL-SIDEWAYS-BAR] (low, with the next top-bar change), [SAVE-NOTE-COVERS] (medium, next), [TRK-SAVE-FAIL-SAYS-SAVED] (low, with [DB-READINESS]), [TRK-ASYNC-STALE] (with [DB-READINESS]); the Tracker — [TRK-REMOUNT-LANDING] (low, with the next Tracker change); the Inputs calendar — [INPUTSCAL-TAP-FLAKY] (test-only); the Leave War's months — [LW-WINDOW-PRUNE-FLAKE] (test-only, low). The Tracker — [TRK-PINCH-ASK] (his next Tracker session), [TRK-FLEXBAR-INK] (a question for him, on the Tracker-palette
+[PO-RESTORE-POSTING] (low, from its final code read), [LW-OFFER-ONLY-TAKEABLE] (low, with [LW-LOCKMARK]), [LW-HARNESS-VIEWER-PIN] (test-only, low), [CI-FAIL-PICTURES] (his call, low), [LW-DOZE-GUARDS] (low, check first); the shell — [SHELL-SIDEWAYS-BAR] (low, with the next top-bar change), [SAVE-NOTE-COVERS] (medium, next), [TRK-SAVE-FAIL-SAYS-SAVED] (low, with [DB-READINESS]), [TRK-ASYNC-STALE] (with [DB-READINESS]); the Tracker — [TRK-REMOUNT-LANDING] (low, with the next Tracker change). The Tracker — [TRK-PINCH-ASK] (his next Tracker session), [TRK-FLEXBAR-INK] (a question for him, on the Tracker-palette
 look card — D157, merged PR #441).
-The amendment area — PR #434, #435, #437 and #438 MERGED (25–26 Sep 26); left (the small-fixes batch, PR #463, merged 29 Sep 26, filed): [PLAN-BANNER-DOOR] (low, filed by that batch's walk), [ROW-NO-TIME-MARK] (low, a future job, D361), [APP-FONTS-NOT-LOADED] (his call — found 29 Sep 26; every measured width rides on it), [GATELOCK-STALE-LIVE] (low, the check lock's stale rule), [DOCSIZE-MERGE-CEILING] (low, a false alarm of the document check on a merge), [PDF-PRINT-TWICE] (low, found by the IT flow guide research — to confirm in real Chrome), [LW-DRAG-BELOW-ZERO] (low, D418 — a drag below zero asks too), [ITFLOW-OIL-RESHOOT] (low, on his word — D403), [TRK-REFUSALS-UNTESTED] (low, test gaps the guide research found). Left from the amendment batch (D91–D111, merged): [AMEND-SMALL-SEEN] (any time). The docs and the checks — [DEPLOY-DOCS] (its operational half), [DOC-POINTERS-CODE] and
+The amendment area — PR #434, #435, #437 and #438 MERGED (25–26 Sep 26); left (the small-fixes batch, PR #463, merged 29 Sep 26, filed): [PLAN-BANNER-DOOR] (low, filed by that batch's walk), [ROW-NO-TIME-MARK] (low, a future job, D361), [APP-FONTS-NOT-LOADED] (his call — found 29 Sep 26; every measured width rides on it), [GATELOCK-STALE-LIVE] (low, the check lock's stale rule), [DOCSIZE-MERGE-CEILING] (low, a false alarm of the document check on a merge), [PDF-PRINT-TWICE] (low, found by the IT flow guide research — to confirm in real Chrome), [LW-SEL-HALF-LABELS] (low, the drag sheet's half-day labels — D264), [ITFLOW-OIL-RESHOOT] (low, on his word — D403), [TRK-REFUSALS-UNTESTED] (low, test gaps the guide research found). Left from the amendment batch (D91–D111, merged): [AMEND-SMALL-SEEN] (any time). The docs and the checks — [DEPLOY-DOCS] (its operational half), [DOC-POINTERS-CODE] and
 [RULINGS-LF-PIN] (with the next code change), [PEEK-ISSUED] (a question for him, low), [RULING-HOME-HOOK] (low), [GUIDE-MAP-ROWS] (low, a question for him) — [DOC-SUBHEADS], [RULING-HOMES-AUDIT]
 and [HANDOFF-SHAPE-GUARD] done on `claude/docs-tidy-subheads-audit-ec8f87` (28 Sep 26; archived),
 Roles — [QUALS-MEMBER-SCOPE] (folded into [ACCOUNTS], D200), and beside it [QUALS-PROTO-TOAST] (low, one line of words).
@@ -991,32 +991,6 @@ this for the session, Fable's F6); `resumeForPerson` re-runs when the person cha
 answer acts only if what it named is still what is on screen, else says the selection changed. With a test on a
 deliberately slow storage.
 
-### [LW-WINDOW-PRUNE-FLAKE] The month-window browser test timed out once inside the full run, never alone — test-only (filed 29 Sep 26)
-`raptor-port/e2e/leavewar.spec.ts` "the grid draws a window of months over year-wide placeholders, keeps every row aligned,
-and draws in place" (lw-desktop): after the January button, its 5-second wait for December to leave the drawn months ran
-out (still drawn), in the full gate run on `claude/award-earned-vs-granted-2ed66d` (`e7de1f80`, under the PC lock, 507 of
-508). Alone 3 / 3 and the whole file green (154 passed) straight after; that branch does not touch the month window. The
-desktop off-screen side draws and prunes only while the machine is idle (`state/idle.ts`), so a busy PC can outlast a
-fixed 5 seconds. **Do (D87):** wait on what the prune needs — the idle signal or the window's settled state — not a fixed
-time. **Place:** test-only, low, any time.
-
-### [INPUTSCAL-TAP-FLAKY] The calendar's chip-tap test fails now and then inside the full unit run, never alone — test-only (filed 26 Sep 26)
-`raptor-port/src/ui/inputscal.test.tsx` "a real pointerdown+pointerup on an input chip sets INPEDIT to that EXACT record":
-seen twice in full runs on `claude/leave-late-published` — once by Fable's first code read (`document.elementFromPoint is
-not a function` ×7), once in the final gate run on `2cfceae2` (INPEDIT stayed null) — and green in the run before it
-(5972 / 5972) and alone 3 / 3. That branch does not touch the file or the calendar (no diff against `main`), so it is
-order- or load-dependent: some earlier file in the same worker leaves the document without `elementFromPoint`, or a
-listener behind. **Do:** find the file that runs before it in the same worker when it fails (vitest `--sequence.seed` /
-the shard order), and make the test install its own `elementFromPoint` stub and restore it, or reset what the other file
-leaves. **Place:** test-only, any time.
-**Seen again 27 Sep 26** on `claude/five-flags-batch-continue-2cfa70` (`869c7197`, the final gate run): the same test, the
-same "elementFromPoint is not a function"; that branch does not touch the calendar either; alone 3 / 3, and the whole
-unit suite green on its re-run (6256 / 6256). Three branches now — the order- or load-dependence is the lead.
-**Seen again 29 Sep 26** on `claude/change-recording-retest` (PR #464, his PC's "all gates" run on `e37aa41c`): a
-DIFFERENT test in the same file — "the popover orders sections above the inputs block" — the day's popover never opened
-("click target exists: expected null"), after a pointerdown / pointerup pair on a day cell; that branch does not touch
-the calendar (no diff against `main`); alone 3 / 3, and the whole suite 6899 / 6899 locally under the lock the same hour.
-Four branches; two tests of the file — the file's own pointer handling under load is now the likelier lead.
 
 ### [INSIGHTS-WORKING-COPY] Week Insights shows the working copy's week to everyone, members included — a question for him (filed 26 Sep 26)
 Astra's second read of `[LEAVE-LATE-PUBLISHED]` (`raptor-port/docs/handpass/2026-09-26-late-pub-astra-read2.md` #2): the
@@ -1100,13 +1074,17 @@ and boxes, and said it would message when they change and when it merges. **To d
 `capture.mjs` for `lw` and `ripple` (and `map`), rebuild the deck and PDF (the README's four steps), look at the Leave War slides,
 send him the new copies. **Place:** low; **only when he says so (D403, 29 Sep 26 — "I'll tell u when to update")**. The OIL award
 PR merged 29 Sep 26 (PR #469), so the change is ready to picture whenever he asks; fold in any other journey that changed by then.
+**Also changed since the guide was drawn: the drag below zero now asks** (`[LW-DRAG-BELOW-ZERO]`, D418, built 29 Sep 26 on
+`claude/lw-drag-flaky-tests-batch-c0719b`): the "Other ways to bid" slide's check line is already corrected in `scripts/itflow/content.mjs`
+(it said the drag "can go below zero without asking") — the deck and PDF carry the old line until the rebuild he asks for.
 
-### [LW-DRAG-BELOW-ZERO] A drag across days on the Leave War goes below zero without asking (his ruling D418, 29 Sep 26)
-Found by the IT flow guide's check: a one-day bid that would take someone below zero asks once ("Tap the same leave again to go
-ahead"); a drag-selection filled with leave (the select sheet) writes straight through — from a balance of 0 a three-day drag wrote -3
-with no word. **His ruling (D418): the drag asks too, as the one-day bid does.** **To do:** the select sheet's leave fill asks once
-before going below zero, in the same words; a test beside `bidding.test.tsx`'s "a bid that would go below zero asks once, then
-writes", for the drag. **Place:** low; with the next small-fixes batch (the Leave War area).
+### [LW-SEL-HALF-LABELS] The drag-selection sheet labels its half-day leave buttons in the stored notation — "FCL*" — where the one-day sheet shows "<FCL" / "FCL>" (filed 29 Sep 26)
+Seen by `[LW-DRAG-BELOW-ZERO]`'s walk (picture `raptor-port/docs/img/handpass/2026-09-29-lw-drag-below-zero/D7-afternoon-beside-morning.png`):
+with How much on AM or PM, the drag sheet's Which leave buttons read `*LL`, `LL*`… (`SelectSheet.tsx` prints `formatCell`),
+while the one-day sheet's read `<LL`, `LL>` — what the box on the grid will show (`BidPicker.tsx` prints `displayCell`). D264 says
+the two sheets share one format and one look. Not caused by that change (on `main` too). **To do:** print `displayCell(formatCell(…))`
+on the drag sheet's chips, as the one-day sheet does, the write still speaking the stored grammar; a test beside
+`movestandard.test.tsx`'s one-look checks. **Place:** low; with the next Leave War batch.
 
 ### [TRK-REFUSALS-UNTESTED] Some of the Tracker chart editor's refusals have no gate test (found 29 Sep 26)
 Found by the IT flow guide's research into the Tracker (D414): no test in the gates drives → Connect or its refusals ("That link
