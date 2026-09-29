@@ -102,7 +102,7 @@ ruled), [CRP-FLAG]'s remainder and then [FLAG-EXPORT], the [AMEND] leftovers, [A
 D161), with [USER-GUIDE] (wanted, not urgent) and [PERF-RESIDUALS] (two of them change wording
 or feel — his call).
 
-**Future milestones:** [DB-STEP] (item 5 above, with [TRK-DISK] inside it), [XFER], [RECALL], [TRK-ATTEMPTS] (low urgency).
+**Future milestones:** [DB-STEP] (item 5 above, with [TRK-DISK] inside it, and [RESTRICTED-ENV-WORKFLOW] — the stand-in database and the pull-request workflow — before the first deploy he approves), [XFER], [RECALL], [TRK-ATTEMPTS] (low urgency).
 
 ---
 
@@ -933,6 +933,12 @@ from inside the app, or must IT assign it?** (decides whether "make Hex an admin
 28 Sep 26): how long is the change history kept (the retention rule)?** — it decides whether Admin → Data's "Clear edit
 history…" follows that rule or goes; until then it stays as it is. **And (D356, 29 Sep 26): what request limit applies to
 each person's app on our licences?** — others' changes arrive by a small check every 30 seconds while a page is on screen.
+**ANSWERS FROM THE IT SIDE, 29 Sep 26 (his chat with them, shown to the OIL award chat):** IT will CLONE the repo and all
+work moves to the new repo; he keeps working with his AI as now, but opens a PULL REQUEST there instead of merging — IT
+reviews it and deploys it into the restricted environment after approving; minor changes consolidated into one pull request,
+a major change its own; the Dataverse connection will add files to the code "for reference" (the tables' shape); it all
+starts on HIS go-ahead to deploy. AI inside the restricted environment: only by opening the code in VS Code there and
+connecting his own Claude subscription (Edwin). What this does to the workflow and the bug check: `[RESTRICTED-ENV-WORKFLOW]`.
 
 ### [PEEK-ISSUED] The desktop next-week preview on View-only Sched shows next week's working copy, even for a published day — a question for him (filed 26 Sep 26)
 Noted by the sweep behind `[LEAVE-LATE-PUBLISHED]` (Astra, its plan read; carried in `[LATE-PUB-FACE-LIVE]`, archived
@@ -1247,6 +1253,21 @@ award (every member reads every man's, D402 — its own row in §11); everything
 note naming this gap. **The question:** should a member see every man's ledger entries (as the app shows today) or only his
 own (as §11 says)? If "everyone", §11 and `state/perms.ts` widen; if "own only", the tracker and the breakdown hide other
 men's entries from a member. **Place:** a question for him, before the tables settle (D354).
+
+### [RESTRICTED-ENV-WORKFLOW] Working and bug-checking once the app lives in the restricted environment (filed 29 Sep 26)
+From IT's answers (`[IT-QUESTIONS]`, 29 Sep 26): the live app runs only inside the restricted environment, which this
+PC's AI cannot reach; changes go to IT as pull requests. **What is lost:** the agent can no longer drive the REAL app on
+the REAL database (the walk); a Vercel link per branch; seeing what only the real database does (security roles and
+sign-in, request limits, network slowness, real data volume). **What is kept:** every change is still built and checked
+here — the app reaches its database through ONE door (`raptor-port/src/storage/`), so a stand-in database behind that door
+lets every gate and every walk run as today. **To do:** (1) a MOCK DATAVERSE backend behind the storage door, shaped from
+the reference files the Dataverse connection adds to the code (its tables and columns) and behaving like it (a stale save
+refused, the role rules of `data-model.md` §11, the day lock D355/D356, the 30-second refresh) — the walk runs against it;
+(2) ask IT that those reference files live in the repo, and whether a separate development environment exists there;
+(3) a short check INSIDE the restricted environment after each deploy (IT, or him with Claude in VS Code there) for what
+only the real database shows; (4) the app says what went wrong in words he can copy out, so a fault seen there can be
+rebuilt in the stand-in; (5) the shipping rules (`.claude/rules/shipping.md` — "merge live", the Vercel link, "done means
+live") rewritten for pull requests to IT, on his word. **Place:** with `[DB-STEP]`, before the first deploy he approves.
 
 ### [GUIDE-MAP-ROWS] The guide's map table: its long rows to the full text too? — OPEN (the guide step, D391, 28 Sep 26)
 **What:** after the guide step the project guide is ~9.5k tokens, not the plan's ~6k. Of what is left, the map table
