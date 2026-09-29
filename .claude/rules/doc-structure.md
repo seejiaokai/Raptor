@@ -62,7 +62,10 @@ He works until the context is full, then hands off to a fresh chat; he seldom co
 on his "merge live"; he sometimes runs two worktrees in parallel and merges both (D140).
 - **The handoff** is the step that matters: the session-handoff skill rewrites this chat's `## Now` block, files
   what is open, removes merged blocks, and gives him a ready-to-paste opening line that names `HANDOFF.md` and the
-  branch. Compaction, if it happens, is the same: persist first.
+  branch. **Beside it, always, in plain words (D368, 29 Sep 26): whether the new chat needs a WORKTREE and what to base it
+  on, and which branch to PICK in the new-chat picker and which to avoid** — a new job: a worktree on `main`; an unmerged
+  branch continuing: that `claude/<name>` branch; a just-merged branch: never. Compaction, if it happens, is the same:
+  persist first.
 - **Parallel chats** each touch only their own `## Now` block, their own backlog items and their own D-number range;
   the later merge brings `main` in first (D78).
 - **The Claudex loop** (Opus 5.5 builds; Fable and Astra review — D67): plans and review logs are tier-3 docs (the
