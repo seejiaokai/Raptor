@@ -25,6 +25,9 @@ place that changes without anyone touching it, drawn as a "where one change show
 big picture, smaller edits) — set side by side, and each schedule-making step says which mode it uses.
 **The Leave War's manning (D417):** how it is set up and customised — where its rows come from, adding, changing or
 removing one, what the grid shows after. His list closes there ("All I can think of"); the agent adds what else it finds.
+**The Leave War as it is (D418):** his check of the app against his description kept three behaviours — leave reaches
+Inputs at Approve; the admin decides in every stage but Draft; a published war's approved leave offers only its remarks —
+and filed one change (a drag below zero must ask). The guide draws the app as it is.
 
 ## Remaking it after a screen changes
 
