@@ -67,8 +67,10 @@ For the person designing RAPTOR's Dataverse tables. Written 10 Sep 26; "What hap
      retention rule decides whether it follows that rule or goes**;
   5. whether the attempt-by-attempt training history is built from day one
      or after the first migration stage;
-  6. whether a week of the flying programme is stored as one record first
-     and split into rows later, or split from the start;
+  6. whether a day of the flying programme is split into its rows from the start or later — **a week is
+     stored one record per DAY from the start (owner, D355, 29 Sep 26): a scheduler takes a day to edit it, and
+     two schedulers on two days of one week must never write the same record** (`data-model.md` §9, the day
+     lock, with its own two questions for you, Open questions 8 and 9);
   7. whether the app calls the Dataverse Web API directly from the Code App,
      or a thin API sits in front of it.
 

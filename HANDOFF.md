@@ -15,6 +15,33 @@ the later merge keeps both (D78).
 
 ## Now
 
+<!-- now:claude/day-lock-mockup-data-model-493d27 -->
+### `claude/day-lock-mockup-data-model-493d27` — `[DB-SYNC-MODEL]` DONE: the day-lock mock-up and `data-model.md` rewritten to his answers, three red-team rounds closed at his cap — documents only — written 29 Sep 26 — verify before use
+- **Where it started:** his ask: the mock-up of the day lock (D355, D356), §9 rewritten to his answers, both reviewers' red team.
+  On the way he ruled D450 (the lock firm — the database refuses a non-holder), D451 (a change takes a free day), D452
+  (Fast sync off after 20 minutes), D453 (the order: this design → `[DB-READINESS]` group A before IT settles its tables →
+  connection → group B → the lock's screens), D454 (a take-over asks first, 1 minute, "Take over anyway", a saved plan).
+- **Shipped (on this branch):** `raptor-port/docs/mock/day-lock.html` (Artifact "Taking a Day to Edit", version 3; pictures by
+  `raptor-port/scripts/handpass/mk-day-lock.mjs`, preview `raptor-daylock` port 4187); `raptor-port/docs/data-model.md` §3,
+  §5–§12 (a row per day carrying its lock; ownership + one required server check — plug-in and SYSTEM Custom APIs;
+  `PlanningPuck`, `DayRemark`, per-day `Amendment`, `AmendmentRetraction`, `IssuedSignoff`, `TakeOverRequest`, `ChangeBatch`;
+  §12 q8–10 for IT); replaced text in `raptor-port/docs/archive/data-model-2026-09-29.md`; the three rounds and every
+  disposition in `raptor-port/docs/superpowers/briefs/2026-09-29-day-lock-redteam-reviews.md`. PR #475 — "merge live" given
+  29 Sep 26, merging when written; check before acting.
+- **Unfinished:** none of this chat's. Residue filed: `[DB-SYNC-MODEL]` (the lock's build — his mock-up questions 1, 3–6,
+  the screens of §9 rule 13, the §11 rows with `perms.ts`, IT's server check, q10 before stage 2); `[DB-READINESS]` group A
+  (the shape work this design hands it); `[IT-QUESTIONS]` (the check, the free team, the licence and its 40,000 a day).
+- **Branch:** `claude/day-lock-mockup-data-model-493d27`. Once merged, never pick it again.
+- **Gates:** not run — documents, a picture script and pictures only; nothing under `raptor-port/src` changed (the one src
+  file in the diff, `histlist.test.tsx`, came in with `main`).
+- **Open questions for him:** the mock-up's questions 1 (approve as drawn), 3 (the board's ✓ Done frees the day?), 4 (Undo on
+  a day given back), 5 (no lock outside the schedule), 6 (the Sync chip opens a menu) — for the lock's build, not before.
+- **Parallel (D302):** rulings D450–D459 (D450–D454 used); the Leave War drag chat D430–D439, the DB-sync mock-up chat
+  D440–D449; observations #355–#359 (#355–#356 used).
+- **Pick up here:** after his "merge live", a fresh chat on `main` for `[DB-READINESS]` group A (`OUTSTANDING.md`, its
+  SPLIT line), reading `data-model.md` §3 and §9 first.
+<!-- /now -->
+
 <!-- now:claude/lw-drag-flaky-tests-batch-c0719b -->
 ### `claude/lw-drag-flaky-tests-batch-c0719b` — `[LW-DRAG-BELOW-ZERO]` (D418) + the two flaky tests: built, walked, Astra-read, all checks green; his "merge live" given, merging — written 29 Sep 26 — verify before use
 - **Built:** a Leave War drag that would take anyone below zero asks ONCE first, naming each man ("That takes Drifter to -5
@@ -101,7 +128,7 @@ the later merge keeps both (D78).
 
 ## Next, in order
 
-0. **THE DATABASE STEP STARTS NOW (D354, 29 Sep 26)** — `[IT-FLOW-GUIDE]` DONE (the guide for IT, `raptor-port/docs/it-flow-guide/`, 29 Sep 26); next `[DB-SYNC-MODEL]`'s mock-up (D355, D356) and the readiness work. The IT team is taking the app into Dataverse now, and he means to
+0. **THE DATABASE STEP STARTS NOW (D354, 29 Sep 26)** — `[IT-FLOW-GUIDE]` DONE (the guide for IT, `raptor-port/docs/it-flow-guide/`, 29 Sep 26); `[DB-SYNC-MODEL]`'s design DONE (29 Sep 26, `claude/day-lock-mockup-data-model-493d27`, awaiting "merge live"); next `[DB-READINESS]` group A (D453). The IT team is taking the app into Dataverse now, and he means to
    keep working on the app beside it. What to finish before the hand-over was put to him the same day; record his answer
    here and in `OUTSTANDING.md`'s priority list the moment he gives it. Everything below keeps its ORDER; its timing is overtaken.
 1. **HIS ORDER to the database step (D203, 26 Sep 26 — its timing overtaken by D354):** `[ACCOUNTS]`, `[ACCOUNTS-NEW-PERSON]`,
@@ -111,8 +138,11 @@ the later merge keeps both (D78).
    (`[IT-QUESTIONS]`). Development as normal: `[HUMAN-RETEST]`'s remaining three in his order (D147 — the absence record
    with `[S4-HUNT-REST]` and D260–D262 MERGED, PR #444 — then change-recording, the Leave War links last), then `[LW-LOCKMARK]` → `[LW-WEEKDAY-WORK]` (`[PUB-UNAVAIL]`
    closed by the absence-record re-test).
-2. **Before the tables are settled (was "about a month before the database" — D354):** `[DB-READINESS]` with the OIL award fix and the small OIL follow-ups as ONE
-   batch (D147, D203) → `[DB-STEP]` when Manfred is ready. The whole list: `OUTSTANDING.md`'s priority list.
+2. **HIS ORDER NOW (D453, 29 Sep 26):** `[DB-SYNC-MODEL]`'s design fixed with the red team's findings → `[DB-READINESS]`
+   **group A** (what decides the tables' shape — saving in small pieces, the schedule a day per piece, the change log, no
+   week-deleting reconcile, the planning calendar's own records, no demo seed; with the small OIL follow-ups, D147) BEFORE
+   IT settles its tables → the app connected (`[DB-STEP]`) → **group B** (tuned against the real database) → the lock's
+   screens. Ask IT when its tables settle. The whole list: `OUTSTANDING.md`'s priority list.
 3. Filed, none blocking: `[TRK-PINCH-ASK]` (his iPhone look), `[LW-FROZEN-BAR-GAP]`; the Tracker leftovers'
    own residue — `[SAVE-NOTE-COVERS]` (medium, next), `[TRK-REMOUNT-LANDING]`, `[TRK-ASYNC-STALE]` (with `[DB-READINESS]`). Everything else: `OUTSTANDING.md`'s priority list.
 4. **Before ANY collaborator:** take the checks runner off this repo (Astra SEC-101, `[REPO-PRIVATE]`).

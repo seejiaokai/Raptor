@@ -48,7 +48,7 @@ said as such, never dressed up as his. One line per item, in plain words; the de
 list (13–23 Sep 26), its finished entries and the "In plain terms" block are in `OUTSTANDING-ARCHIVE.md`, moved
 whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaining).
 
-**THE DATABASE STEP STARTS NOW (D354, 29 Sep 26):** — and how it shares and locks, [DB-SYNC-MODEL] (D355, D356 — the mock-up and red team left); for the IT team, the flow guide [IT-FLOW-GUIDE] is DONE (42 slides, `raptor-port/docs/it-flow-guide/`, merged on his "merge live" 29 Sep 26; archived). The IT team is taking the app into Dataverse now; the order below
+**THE DATABASE STEP STARTS NOW (D354, 29 Sep 26):** — and how it shares and locks, [DB-SYNC-MODEL] (D355, D356 — the mock-up and §9 DONE 29 Sep 26 on `claude/day-lock-mockup-data-model-493d27`, the red team running; his six screen questions open); for the IT team, the flow guide [IT-FLOW-GUIDE] is DONE (42 slides, `raptor-port/docs/it-flow-guide/`, merged on his "merge live" 29 Sep 26; archived). The IT team is taking the app into Dataverse now; the order below
 stands, its timing ("about two months away", "about a month before") is overtaken — the readiness batch and the OIL
 award fix are due before the tables are settled. What to finish before the hand-over: his answer to be recorded here.
 **His order — to the database step (D203, 26 Sep 26; D173, D147 within it):**
@@ -67,8 +67,10 @@ award fix are due before the tables are settled. What to finish before the hand-
    then the Leave War links LAST (with the 7 Sep phone check). Then "after the hunt" (21 Sep 26): [LW-LOCKMARK] →
    [LW-WEEKDAY-WORK] (talk to him before building any of it) — its first, the published day's unavailable list, was
    closed by the same re-test (built by [LEAVE-LATE-PUBLISHED]; archived).
-4. **About a month before the database (D203) — ONE batch, done last so it is done once:** **[DB-READINESS]**, with
-   [OIL-AWARD-IS-A-GRANT] and [OIL-EARNED-VS-GRANTED] (D147) and the small OIL follow-ups below.
+4. **Split in two (D453, 29 Sep 26 — narrows D203's "ONE batch"):** **[DB-READINESS] group A** (what decides the tables'
+   shape) BEFORE IT settles its tables, with the small OIL follow-ups below and [OIL-EARNED-VS-GRANTED] (D147);
+   **group B** (tuned against the real database) AFTER the app is connected. First, [DB-SYNC-MODEL]'s design fixed.
+   ([OIL-AWARD-IS-A-GRANT] is DONE, merged 29 Sep 26.)
 5. **When Manfred is ready — [DB-STEP]:** the data model to him, then the one adapter to his tables; the stack
    ([ARCH-STACK]) resumes there, with its step 6 still to come; the [AMEND] work is queued behind it. Architecture first,
    then the individual bugs (D144).
@@ -900,9 +902,35 @@ refresh button — his; automatic every few seconds through the Sync pill; both)
 Tracker per record (a stale save refused, "Hex changed this — reload"), no lock. **Do:** a mock-up of the day lock on
 Edit Schedule and the board, desktop and phone; §9 rewritten to his answers; both reviewers red-team it (a plan, D353);
 hand it to IT with the tables. **Place:** with `[DB-READINESS]`, before the tables are settled (D354).
+**29 Sep 26 — DONE on `claude/day-lock-mockup-data-model-493d27`:** (1) the mock-up, `raptor-port/docs/mock/day-lock.html`
+(also an Artifact; pictures by `raptor-port/scripts/handpass/mk-day-lock.mjs`) — the lock strips on Edit Schedule and the
+board, "Edit days…", the 25-minute warning, a take-over, the Sync menu, desktop and phone, with **six screen questions to
+him** (a tap on a free day asks "Edit Monday?"; the board's ✓ Done frees the day or not; Undo on a day given back; no lock
+outside the schedule; the Sync chip opens a menu; approve as drawn); (2) `data-model.md` rewritten to his answers — §9
+the day lock (rules 1–10, the `DayLock` table), §3 a week stored as a week row plus ONE ROW PER DAY from stage 1, §11's
+note, §12 Open questions 8 (a plug-in to make the lock strict) and 9 (how a member's input reaches a held day); the old
+text moved whole to `raptor-port/docs/archive/data-model-2026-09-29.md`; `handover-dataverse.md` question 6 narrowed;
+(3) the red team, both providers — brief `raptor-port/docs/superpowers/briefs/2026-09-29-day-lock-redteam.md`.
+**THE DESIGN IS DONE, 29 Sep 26 — three red-team rounds, both providers, closed at his cap** (every finding and what
+was done with it: `raptor-port/docs/superpowers/briefs/2026-09-29-day-lock-redteam-reviews.md`; his rulings on the way:
+D450 the lock firm, D451 a change takes a free day, D452 Fast sync off after 20 minutes, D453 the order, D454 the
+take-over asks first and keeps a saved plan). The design of record is `raptor-port/docs/data-model.md` §3 (a week row,
+one `ScheduleDay` row per day carrying its lock, `PlanningPuck`, `DayRemark`, the per-day `Amendment`,
+`AmendmentRetraction`, working and issued sign-offs, `TakeOverRequest`, `ScheduleInputPlacement` at stage 2), §9 (the
+day lock, rules 1–13; the `ChangeBatch` change log), §11 (who owns each table's rows) and §12 questions 8–10 (for IT).
+**Left, for the build of the lock (with `[DB-STEP]`, after `[DB-READINESS]` — D453):** his answers to the mock-up's
+questions 1, 3, 4, 5 and 6 (question 2 answered, D451); the screens listed in §9 rule 13, drawn then; the §11 rows and
+`src/state/perms.ts` for the new tables, together (the drift test reads every row — the `Amendment, Signoff` row renamed
+then); the server-side check (a plug-in and Custom APIs — IT's, §12 q8); §12 q10 before any stage-2 table.
+**The shape work it hands to `[DB-READINESS]` group A** is listed there.
 
 ### [DB-READINESS] Our side of the database, built against the fake database — before the tables are settled (D203; D354 — the step starts now; filed 26 Sep 26)
-The requirements are `raptor-port/docs/data-model.md` §7 (from the 9 Sep 26 stress test; pinned as GAP tests in
+**SPLIT (owner, D453, 29 Sep 26): GROUP A — before the IT team settles its tables — (1) saving in small pieces, (4) never
+seeding demo data, plus the design's shape work from `[DB-SYNC-MODEL]` (the schedule a day per piece, the single change
+log, no week-deleting reconcile, the planning calendar's own records — and, from the design's red team: the command
+layer's records per day (`sched.book`, `sched.mutes`), one changeset per command, and the day's effects worked out on
+read instead of written into it — `data-model.md` §3 and §9 rule 9; settle §12 q9 with IT first); GROUP B — after the app is connected, tuned
+against the real database — (2), (3), (5), (6), (7).** The requirements are `raptor-port/docs/data-model.md` §7 (from the 9 Sep 26 stress test; pinned as GAP tests in
 `raptor-port/src/storage/dbreadiness.test.ts`). Ours to build now-able, none needing Manfred's tables: (1) **saving in small
 pieces** — `inputs/all`, `people/all` and `leavewar/wars` are one record each, so two people editing different leaves
 overwrite each other; one record per leave / person / war row; (2) **honest refusals** — a save the store refuses (signed
@@ -911,7 +939,12 @@ Retry" is for network failures); his look at the words first; (3) **a safe start
 blank app, never re-seeds demo data; (4) **never seed demo data into a shared store**; (5) a stuck record never marks the whole
 app unsaved; (6) **two tabs of one browser** — each tab keeps its own copy of the store and the last save wins, so two tabs
 open at once overwrite each other's work (every record; the change history's `elog` and `seq` too — `[DRAFT-PENDING]`'s red
-team, Fable F10 / Astra DP-01, 28 Sep 26: declined there as the whole app's limit, filed here). With `[OIL-AWARD-IS-A-GRANT]`
+team, Fable F10 / Astra DP-01, 28 Sep 26: declined there as the whole app's limit, filed here). (7) **load by need** (his question, 29 Sep
+26 — "does it pull only the required data, so it is fast?"): today `loadAll()` reads every collection at start-up, fine in
+one browser; against the shared store the first screen reads only people, settings and the week on screen (with the days
+either side the crew-rest checks read), the Leave War and the Tracker read their own records when first opened, and the
+30-second check brings only what changed (`data-model.md` §8 "Per-collection lazy load", §9 the change feed). Measured
+against the fake database before the tables settle. With `[OIL-AWARD-IS-A-GRANT]`
 and the small OIL follow-ups as ONE batch. **Tier:** FULL (saved data). **(1) in part, 29 Sep 26 (`[OIL-AWARD-IS-A-GRANT]`):
 the ledger's COMMAND records are one per entry now (`lw.ledger/<id>`); its STORAGE is still one blob (`leavewar/ledger`).**
 
@@ -924,7 +957,12 @@ secrets live? can server-side rules be plug-ins, and who may deploy them? **and:
 from inside the app, or must IT assign it?** (decides whether "make Hex an admin" is one tap or an IT request). **And (D351,
 28 Sep 26): how long is the change history kept (the retention rule)?** — it decides whether Admin → Data's "Clear edit
 history…" follows that rule or goes; until then it stays as it is. **And (D356, 29 Sep 26): what request limit applies to
-each person's app on our licences?** — others' changes arrive by a small check every 30 seconds while a page is on screen.
+each person's app on our licences?** *(29 Sep 26: Microsoft's figure is 40,000 requests a person a day on the Power Apps
+per-user licence, less on lower ones — which licence do our people have? Fast sync turns itself off after 20 minutes, D452.)* — others' changes arrive by a small check every 30 seconds while a page is on screen. **And (29 Sep 26, `[DB-SYNC-MODEL]` — `data-model.md` §12 questions 8 and 9): the day lock must be FIRM (D450): row ownership
+plus ONE small server-side check (a Custom API or plug-in) that every change of holder and every save to a day goes
+through — who writes, deploys and reviews it? How does a new admin join the "free" team? Please set
+`ShareToPreviousOwnerOnAssign` false and every relationship from `ScheduleDay` Referential, Assign = Cascade None. And how should a
+member's filed input reach a day a scheduler holds, when a member may not write the day?**
 **ANSWERS FROM THE IT SIDE, 29 Sep 26 (his chat with them, shown to the OIL award chat):** IT will CLONE the repo and all
 work moves to the new repo; he keeps working with his AI as now, but opens a PULL REQUEST there instead of merging — IT
 reviews it and deploys it into the restricted environment after approving; minor changes consolidated into one pull request,

@@ -1603,6 +1603,28 @@ resolved statuses always carry their resolution date
 
 **Principle:** A failing assertion is a claim about the world the script believes in; check that world before blaming the app.
 
+### Observation 355: A design job for the owner needs its "why now, and what you'll get" said before the work starts
+
+**Status:** OPEN
+**Date:** 29 Sep 26
+**Session context:** `[DB-SYNC-MODEL]` — the day-lock mock-up and data-model §9, started from a one-line opening prompt
+**Skill:** session-handoff (the opening line it writes) · plain-language rule
+**Type:** internal
+**Phase/Area:** the start of a job handed over from an earlier chat
+
+**Issue:** The job started straight into reading and picture-taking. Within the first half hour the owner asked three
+questions that one opening paragraph would have answered: "is this the step before the database?", "what is the lock
+controls?", "should we design the lock when it's in the database?" — each while the agent was mid-work. The handoff's
+opening line named the job by its backlog id and its three steps, but not why it had to happen now (the lock decides the
+tables' shape) or what he would get (a page of pictures and six questions; nothing in the app changes).
+
+**Suggested improvement:** when a chat starts a job from a handoff, its first message to him says in three plain lines:
+what the job is in his words, why it is due now, and what he will get and when. The session-handoff skill's opening line
+could carry the "why now" so the next chat has it to repeat.
+
+**Principle:** A non-technical owner judges a job by its purpose and its output; state both before starting, or he will
+ask mid-work and the answers arrive piecemeal.
+
 ### Observation 360: Parallel chats' number ranges collide when claimed by message before any pushed record
 
 **Status:** OPEN
@@ -1632,3 +1654,27 @@ resolved statuses always carry their resolution date
 **Suggested improvement:** Add one opening check to the session-handoff skill's "starting a chat" guidance (or to shipping.md §Parallel chats): before starting a named backlog item, run `ListAgents` and `git branch -r --sort=-committerdate | head`, and look for a session title or branch naming the item. If one exists, message that chat and tell the owner before building anything.
 
 **Principle:** Shared records on the main line show only what has merged. Before claiming a unit of work, ask the live workers what they hold, not just the merged record.
+
+### Observation 356: A design red team against a platform should check the platform's facts in round 1, not discover them round by round
+
+**Status:** OPEN
+**Date:** 29 Sep 26
+**Session context:** `[DB-SYNC-MODEL]` — the day lock's data model for Dataverse, three red-team rounds (Astra and Fable)
+**Skill:** claudex-loop (the red-team brief) · New skill candidate: platform-design-review
+**Type:** open-source
+**Phase/Area:** writing the round-1 brief for a design that leans on a vendor platform
+
+**Issue:** The author wrote platform claims from memory ("row ownership makes it firm with no custom code", "change
+tracking gives a cross-table cursor", "Assign at Business-unit depth"). Round 1 caught the cross-table claim; round 2
+caught that ownership cannot hand a row between users without a privilege that also allows writing; round 3 caught that
+the owner team needs a read role, the check must run as SYSTEM, change tracking is off by default, and a Custom API
+alone is bypassable. Each round spent a full review on facts one documentation pass would have settled, and the owner
+had to be told a "no custom code" promise was wrong.
+
+**Suggested improvement:** In the red-team brief template, add a mandatory first section: "List every claim this design
+makes about the platform (privileges, defaults, limits, ordering, transactions) and verify each against the vendor's
+documentation, citing it." And have the author mark platform claims as "unverified" until then, so none reaches the
+owner as fact.
+
+**Principle:** A design's claims about a third-party platform are facts to verify, not reasoning to review; check them
+against the vendor's documentation first, before anyone spends review rounds or tells the stakeholder a guarantee.
