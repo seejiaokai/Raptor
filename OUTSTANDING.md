@@ -909,6 +909,17 @@ the day lock (rules 1–10, the `DayLock` table), §3 a week stored as a week ro
 note, §12 Open questions 8 (a plug-in to make the lock strict) and 9 (how a member's input reaches a held day); the old
 text moved whole to `raptor-port/docs/archive/data-model-2026-09-29.md`; `handover-dataverse.md` question 6 narrowed;
 (3) the red team, both providers — brief `raptor-port/docs/superpowers/briefs/2026-09-29-day-lock-redteam.md`.
+**Round 1 back, 29 Sep 26 — both REVISE** (verbatim: `raptor-port/docs/superpowers/briefs/2026-09-29-day-lock-redteam-reviews.md`).
+NOT YET FOLDED IN. The substance, for whoever folds it: the planning calendar must stay OUT of the day rows (its own
+tables, no lock); the fan-out and the command layer's records (`sched.book`, `sched.mutes`) must go per day too, writing
+only changed days the writer holds; `Amendment` and `Signoff` in §3 still describe the pre-per-day record (Astra: the
+tables would be built with wrong keys; the sign-off binding `signBind` has no home); the lock needs a per-take token and a
+session id (two devices of one person), a strict server check (a plug-in, or Fable's no-code route: the holder owns the
+day row), day rows created in one batch on a week's first take; cross-day writes as one changeset; the app's own
+cross-week passes (a Delete, the posting pass, the OIL clear) and member inputs need a defined path (a placement table,
+or derived on read); Dataverse change tracking is per table, so the 30-second check needs its own change log; the
+reconcile that deletes unknown weeks must go before stage 1; Undo must follow D148 per day; unsaved changes when the lock
+is lost; release on close only, never on a phone going to the background; four more mock-up states.
 **Left for the build (with `[DB-STEP]`):** the `DayLock` row in `data-model.md` §11 and `src/state/perms.ts` together (the
 drift test reads every row); the test that a week record split by day and joined back is byte-identical; his six
 answers.

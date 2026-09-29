@@ -25,7 +25,7 @@ the later merge keeps both (D78).
 - **Waiting on him:** the mock-up's six screen questions (none changes the tables). His questions this chat, answered in
   chat: this is a before-the-tables job; the OIL award fix is live (its ledger's saving in small pieces is `[DB-READINESS]`);
   design now, build with the database.
-- **Rulings:** none new so far; this chat's range D430–D439.
+- **Rulings:** none new so far; this chat's range D450–D459 (D430–D439 went to the Leave War drag chat, D440–D449 to the DB-sync mock-up chat — D302).
 <!-- /now -->
 
 <!-- now:claude/itflow-update-on-his-word -->
