@@ -48,7 +48,7 @@ said as such, never dressed up as his. One line per item, in plain words; the de
 list (13–23 Sep 26), its finished entries and the "In plain terms" block are in `OUTSTANDING-ARCHIVE.md`, moved
 whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaining).
 
-**THE DATABASE STEP STARTS NOW (D354, 29 Sep 26):** — and how it shares and locks, [DB-SYNC-MODEL] (D355, D356 — the mock-up and red team left); FIRST, for the IT team: [IT-FLOW-GUIDE] (the picture-led flowchart of every journey, his ask). The IT team is taking the app into Dataverse now; the order below
+**THE DATABASE STEP STARTS NOW (D354, 29 Sep 26):** — and how it shares and locks, [DB-SYNC-MODEL] (D355, D356 — the mock-up and red team left); for the IT team, the flow guide [IT-FLOW-GUIDE] is DONE (42 slides, `raptor-port/docs/it-flow-guide/`, merged on his "merge live" 29 Sep 26; archived). The IT team is taking the app into Dataverse now; the order below
 stands, its timing ("about two months away", "about a month before") is overtaken — the readiness batch and the OIL
 award fix are due before the tables are settled. What to finish before the hand-over: his answer to be recorded here.
 **His order — to the database step (D203, 26 Sep 26; D173, D147 within it):**
@@ -83,7 +83,7 @@ award fix are due before the tables are settled. What to finish before the hand-
 first), [LW-SCRUBBER-FLAKY] (test-only),
 [PO-RESTORE-POSTING] (low, from its final code read), [LW-OFFER-ONLY-TAKEABLE] (low, with [LW-LOCKMARK]), [LW-HARNESS-VIEWER-PIN] (test-only, low), [CI-FAIL-PICTURES] (his call, low), [LW-DOZE-GUARDS] (low, check first); the shell — [SHELL-SIDEWAYS-BAR] (low, with the next top-bar change), [SAVE-NOTE-COVERS] (medium, next), [TRK-SAVE-FAIL-SAYS-SAVED] (low, with [DB-READINESS]), [TRK-ASYNC-STALE] (with [DB-READINESS]); the Tracker — [TRK-REMOUNT-LANDING] (low, with the next Tracker change); the Inputs calendar — [INPUTSCAL-TAP-FLAKY] (test-only); the changes window — [HISTLIST-SLOW-TEST] (test-only, low). The Tracker — [TRK-PINCH-ASK] (his next Tracker session), [TRK-FLEXBAR-INK] (a question for him, on the Tracker-palette
 look card — D157, merged PR #441).
-The amendment area — PR #434, #435, #437 and #438 MERGED (25–26 Sep 26); left (the small-fixes batch, PR #463, merged 29 Sep 26, filed): [PLAN-BANNER-DOOR] (low, filed by that batch's walk), [ROW-NO-TIME-MARK] (low, a future job, D361), [APP-FONTS-NOT-LOADED] (his call — found 29 Sep 26; every measured width rides on it), [GATELOCK-STALE-LIVE] (low, the check lock's stale rule), [DOCSIZE-MERGE-CEILING] (low, a false alarm of the document check on a merge). Left from the amendment batch (D91–D111, merged): [AMEND-SMALL-SEEN] (any time). The docs and the checks — [DEPLOY-DOCS] (its operational half), [DOC-POINTERS-CODE] and
+The amendment area — PR #434, #435, #437 and #438 MERGED (25–26 Sep 26); left (the small-fixes batch, PR #463, merged 29 Sep 26, filed): [PLAN-BANNER-DOOR] (low, filed by that batch's walk), [ROW-NO-TIME-MARK] (low, a future job, D361), [APP-FONTS-NOT-LOADED] (his call — found 29 Sep 26; every measured width rides on it), [GATELOCK-STALE-LIVE] (low, the check lock's stale rule), [DOCSIZE-MERGE-CEILING] (low, a false alarm of the document check on a merge), [PDF-PRINT-TWICE] (low, found by the IT flow guide research — to confirm in real Chrome), [LW-DRAG-BELOW-ZERO] (low, D418 — a drag below zero asks too), [ITFLOW-OIL-RESHOOT] (low, after the OIL award PR merges), [TRK-REFUSALS-UNTESTED] (low, test gaps the guide research found). Left from the amendment batch (D91–D111, merged): [AMEND-SMALL-SEEN] (any time). The docs and the checks — [DEPLOY-DOCS] (its operational half), [DOC-POINTERS-CODE] and
 [RULINGS-LF-PIN] (with the next code change), [PEEK-ISSUED] (a question for him, low), [RULING-HOME-HOOK] (low), [GUIDE-MAP-ROWS] (low, a question for him) — [DOC-SUBHEADS], [RULING-HOMES-AUDIT]
 and [HANDOFF-SHAPE-GUARD] done on `claude/docs-tidy-subheads-audit-ec8f87` (28 Sep 26; archived),
 Roles — [QUALS-MEMBER-SCOPE] (folded into [ACCOUNTS], D200), and beside it [QUALS-PROTO-TOAST] (low, one line of words).
@@ -880,22 +880,6 @@ Tracker per record (a stale save refused, "Hex changed this — reload"), no loc
 Edit Schedule and the board, desktop and phone; §9 rewritten to his answers; both reviewers red-team it (a plan, D353);
 hand it to IT with the tables. **Place:** with `[DB-READINESS]`, before the tables are settled (D354).
 
-### [IT-FLOW-GUIDE] A compact, picture-led flowchart of how the app works, screen by screen — for the IT team and the next developer (his ask, 29 Sep 26)
-His words: *"My IT wants a comprehensive flowchart with visuals but compact version on how the app works in terms of user
-interface, like if I want to do this, how does the app go through each step, what does the user have to click to get
-there. He's not asking about how the rules govern things like the functions like if I put all avail, how does the app
-calculate the number of people to that detail. It's more big picture for each function so that as this app is handed down
-to the next developer, they know what are the tests to test so that the app doesn't break. Like how the app should
-function when they read this flow chart. Think of the best way to present this, word/powerpoint etc. pictures arrows etc.
-since this chat is long we should do it on another chat."* **What it is:** for each thing a person does (sign in, file an
-input, build and publish a day, amend it, bid and decide on the Leave War, mark the Tracker, run Admin → Users …), the
-path through the screens — what he clicks, what he sees next — with real screenshots, numbered click marks and arrows,
-and for each journey the checks that prove it still works (the walk scripts under `raptor-port/scripts/handpass/` and
-the e2e specs are the raw material). NOT the rules engine's arithmetic. **Format:** to recommend at the start of its own
-chat (his memory rule: few words, real blurred-where-needed screenshots, short captions — `guides-fewer-words-more-pictures`);
-the agent's lean: a slide deck (PowerPoint) — one map slide of every journey, then one slide per journey with its
-pictures and a "what to test" box. **Place:** NEXT, in a fresh chat — the IT team is waiting (D354).
-
 ### [DB-READINESS] Our side of the database, built against the fake database — before the tables are settled (D203; D354 — the step starts now; filed 26 Sep 26)
 The requirements are `raptor-port/docs/data-model.md` §7 (from the 9 Sep 26 stress test; pinned as GAP tests in
 `raptor-port/src/storage/dbreadiness.test.ts`). Ours to build now-able, none needing Manfred's tables: (1) **saving in small
@@ -1041,6 +1025,35 @@ a merge reads as a commit that moved the ceiling with code. The same HEAD passed
 not block the PR. **To do:** skip merge commits in that walk (`--no-merges`: every ceiling move is judged in the commit that made
 it, on whichever side) with a self-test — in a docs-only change of its own, never inside a code PR (the gate is not edited to pass
 the PR that trips it). **Place:** low; with the next document-gate change.
+
+### [ITFLOW-OIL-RESHOOT] Re-shoot the IT flow guide's Leave War pictures once the OIL words change (29 Sep 26)
+The IT flow guide (`raptor-port/docs/it-flow-guide/`, archived `[IT-FLOW-GUIDE]`) pictures the Leave War as it was on 29 Sep 26. The OIL
+award chat (`claude/award-earned-vs-granted-2ed66d`, `[OIL-AWARD-IS-A-GRANT]`, D402) changes the war's OIL words ("earned" / "awarded")
+and boxes, and said it would message when they change and when it merges. **To do:** after it merges, re-run
+`capture.mjs` for `lw` and `ripple` (and `map`), rebuild the deck and PDF (the README's four steps), look at the Leave War slides,
+send him the new copies. **Place:** low; right after that PR merges.
+
+### [LW-DRAG-BELOW-ZERO] A drag across days on the Leave War goes below zero without asking (his ruling D418, 29 Sep 26)
+Found by the IT flow guide's check: a one-day bid that would take someone below zero asks once ("Tap the same leave again to go
+ahead"); a drag-selection filled with leave (the select sheet) writes straight through — from a balance of 0 a three-day drag wrote -3
+with no word. **His ruling (D418): the drag asks too, as the one-day bid does.** **To do:** the select sheet's leave fill asks once
+before going below zero, in the same words; a test beside `bidding.test.tsx`'s "a bid that would go below zero asks once, then
+writes", for the drag. **Place:** low; with the next small-fixes batch (the Leave War area).
+
+### [TRK-REFUSALS-UNTESTED] Some of the Tracker chart editor's refusals have no gate test (found 29 Sep 26)
+Found by the IT flow guide's research into the Tracker (D414): no test in the gates drives → Connect or its refusals ("That link
+would create a loop", "That link already exists.", "A link can't start and end on the same event."), nor Edit poke-ball's link refusals
+("No such event", "cannot be its own prerequisite", "Those links would create a loop"), the course-name refusals (a name already
+used, a colon) or "Keep at least one course." Each was seen working in the running app; only the proof is missing. **To do:** add them
+to `scripts/tracker/smoke.mjs` (or `src/tracker/*.test.tsx`), one check each. **Place:** low; with the next Tracker batch.
+
+### [PDF-PRINT-TWICE] Edit Schedule's "Export as PDF" asks the browser to print twice — the first time on a blank page (found 29 Sep 26)
+Found by the IT flow guide's research (`[IT-FLOW-GUIDE]`), with the browser's print stubbed and each call recorded: one press of
+`#exportPdf` prints first an empty frame (`about:blank`), then the report (`about:srcdoc`). The frame's load handler fires when the
+blank frame is inserted AND when the report lands (`src/ui/printpdf.ts` `printSchedPDF`). Headless it is silent; in real Chrome a
+blank print preview may appear first. **To do:** confirm it in real Chrome on the PC and on his iPhone (one press, how many print
+sheets?); if real, print only once the report has landed, with a test that counts the print calls. **Place:** low; with the next
+batch of small fixes.
 
 ### [APP-FONTS-NOT-LOADED] The app names its fonts but never loads them — every device draws a different one (found 29 Sep 26)
 Found by the small-fixes PR's check on GitHub's Linux machines: "a flying line's callsign shows six letters whole" passed on
