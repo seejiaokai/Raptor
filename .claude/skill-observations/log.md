@@ -1261,6 +1261,21 @@ resolved statuses always carry their resolution date
 
 **Principle:** When an index replaces loaded full text, make the full text the identity and gate the index against it; never let a merge tool union raw conflict text in a structured record — replay per-record changes three-way from a known-good side.
 
+### Observation 340: A one-line summary written to a character cap drops the rule's own "don't" first
+
+**Status:** OPEN
+**Date:** 2026-09-28
+**Session context:** Condensing 35 guide blocks into one-line short forms of at most 350 characters (D391), then an independent meaning read.
+**Skill:** New skill candidate: condensing-standing-rules (or the doc-structure rules)
+**Type:** open-source
+**Phase/Area:** writing short forms / summaries of standing rules under a length cap
+
+**Issue:** Tightening each short form to fit the cap, the author cut exactly the clauses a reader would break without opening the full text: an exception ("a wide visual change is still MEDIUM"), a carve-out ("sim who stays free text"), a "don't" ("don't restyle the bare .hl-grp"), a tie-breaker ("in doubt, a one-line heads-up"), and in one case widened a supersession ("the 17 Sep text is history" when only the 7 Sep text was). The reviewer caught all five; the author's own pass, done while cutting for length, did not.
+
+**Suggested improvement:** When condensing a rule, list its negative clauses, exceptions and scope limits BEFORE cutting, and keep those ahead of examples, dates and rationale; state a supersession's scope with the exact dates it names. Keep the independent meaning read as the gate.
+
+**Principle:** In a compressed rule, the prohibitions and exceptions carry the most risk per character: drop the examples and the story first, never the "don't" or the "except".
+
 ### Observation 330: A question put to the owner needs a worked example with real names, not an abstract rule
 
 **Status:** OPEN
