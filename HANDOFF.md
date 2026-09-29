@@ -16,7 +16,7 @@ the later merge keeps both (D78).
 ## Now
 
 <!-- now:claude/db-readiness-table-shaping-4094f6 -->
-### `claude/db-readiness-table-shaping-4094f6` — `[DB-READINESS]` group A: plan v4 final; **phases 0 and 1 BUILT** (all gates green); phase 2 next — written 30 Sep 26 — verify before use
+### `claude/db-readiness-table-shaping-4094f6` — `[DB-READINESS]` group A: plan v4 final; **phases 0, 1 and 2 BUILT** (all gates green); phase 3 next — written 30 Sep 26 — verify before use
 - **Where it started:** his ask: plan group A (D453), red-team it with both reviewers, then build it; D460–D463 ruled on the way.
 - **Shipped (this branch, pushed, no PR):** the plan (`raptor-port/docs/superpowers/plans/2026-09-30-db-readiness-group-a-plan.md`,
   v4 + §9 build log for phases 0 and 1); **phase 0** (the `SchemaVersion` stamp, the boot group, the fold machinery, the stream
@@ -27,25 +27,33 @@ the later merge keeps both (D78).
   from the request's own `acc:'r'`); a week switch is read-only (a saved week's landing is one `sched.load` command, origin seed);
   the stale-mark sweep and the row-id fixer touch only the days a command changed. **Found on the way:** another person's Tuesday
   change blocked his Undo of Monday (fixed, D148); the retired entry lost the issued record's `ros` / `added` (now kept as `rec`).
-- **Gates (phase 1, watched, under the lock):** unit 7112/7112 · build · tfin 728/0 · e2e 509/0 (49 skipped) · smoke 445/0 · rulecheck ·
-  docsize. `npm run perf` on the phase-0 build and this one, same run: unchanged (4/4 both).
-- **Unfinished:** phases 2 → 5 and 5b (the shape IT needs), then the FULL walk and BOTH reviewers' code reads (D11, D353), then 6
+  **Phase 2 — requests, roster, planning calendar one row each** (`inputs/<iid>`, `people/<pid>`, `plan/pp:<id>`,
+  `plan/dm:<iso>`; each list's order on its rows — `ord`, `src/engine/ord.ts`; `persistAll` gone; a first boot stores the seed's
+  rows; opaque note ids; a cleared setting removes its key). **Found on the way (on `main` too):** deleting a man never took him
+  off the planning calendar's puck rows (the delete read `iso`; the rows carry `date`) — fixed red-first.
+- **Gates (phase 2, watched, under the lock):** unit 7136/7136 · build · tfin 728/0 · e2e 509/0 (49 skipped) · smoke 445/0 · perf 4/4
+  (unchanged since before phase 1 — measured side by side then) · rulecheck · docsize.
+- **Unfinished:** phases 3 → 5 and 5b (the shape IT needs), then the FULL walk and BOTH reviewers' code reads (D11, D353), then 6
   (worked out on read — its hand-over waits on IT's reporting answer, §12 q9), then 7.
 - **Branch:** `claude/db-readiness-table-shaping-4094f6`; no PR. Build on it. A branch push runs no checks (workflows are main / PR only).
 - **Open questions for him:** none of this chat's. For IT (`[IT-QUESTIONS]`): "no plug-in" in writing; Custom APIs / Power
   Automate allowed?; can reports combine a day with the leave and people tables; when do their tables settle.
 - **Parallel (D302):** rulings D460–D469 (D460–D463 used); observations #380–#389 (#380–#382 used). No other chat was building on 30 Sep 26.
-- **Traps met:** `src/state/store.ts` is a CRLF file — edit scripts must convert their literals (memory `python-edits-crlf-trap`);
-  a test that edits a blank week must ADD a note (`dn:0.0` on a week with no notes changes nothing).
-- **Pick up here:** plan §3 phase 2 (inputs, people, the planning calendar one row each; `ord` per §2.3; P2-NULL-SETTING) — red
-  tests first (the storage ones too: "nothing written" is their red — observation #382); read `src/state/persist.ts` (the week
-  composer is the model), `src/state/people-settings-commit.ts`, `src/state/plan.ts`, `src/engine/inputs.ts` (`mintInpIds`) first.
+- **Don't send him this branch's preview yet:** between phases a browser holding old whole-list records reads them only
+  after the fold, which runs once all eight converters exist (end of group A); a fresh browser is fine.
+- **Traps met:** `src/state/store.ts` is a CRLF file — edit scripts must convert their literals, and `sed -i` in Git Bash turned it
+  to LF once (fixed by an endings-only commit; memory `python-edits-crlf-trap`); a test that edits a blank week must ADD a note.
+- **Pick up here:** plan §3 phase 3 (the Leave War one record each) with §8's P3-CELL-DIFF — red tests first; `npm run perf`
+  before and after; D460/D461: the war's "Edit person" and `PersonSheet.tsx` go, seat / SXO from the person, band from his CAT.
+  Read `src/leavewar/state/store.ts` (`lwDecompose`, `rawPersist`, `lwStore`), `src/leavewar/engine/warrecs.ts`,
+  `src/leavewar/sync.ts` and `src/state/persist.ts` (the mappers are the model) first; the area file
+  `.claude/rules/decisions/leave-war.md` loads when a Leave War file is read.
 <!-- /now -->
 
 ## Next, in order
 
 0. **THE DATABASE STEP STARTS NOW (D354, 29 Sep 26)** — `[IT-FLOW-GUIDE]` DONE (the guide for IT, `raptor-port/docs/it-flow-guide/`, 29 Sep 26); `[DB-SYNC-MODEL]`'s design DONE and merged (PR #475); `[DB-READINESS]` group A PLANNED 30 Sep 26 (plan v4,
-   `claude/db-readiness-table-shaping-4094f6`) — its build under way: phases 0 and 1 built 30 Sep 26, phase 2 next (D453). The IT team is taking the app into Dataverse now, and he means to
+   `claude/db-readiness-table-shaping-4094f6`) — its build under way: phases 0–2 built 30 Sep 26, phase 3 next (D453). The IT team is taking the app into Dataverse now, and he means to
    keep working on the app beside it. What to finish before the hand-over was put to him the same day; record his answer
    here and in `OUTSTANDING.md`'s priority list the moment he gives it. Everything below keeps its ORDER; its timing is overtaken.
 1. **HIS ORDER to the database step (D203, 26 Sep 26 — its timing overtaken by D354):** `[ACCOUNTS]`, `[ACCOUNTS-NEW-PERSON]`,
@@ -66,8 +74,8 @@ the later merge keeps both (D78).
 
 ## Gate baseline
 
-The latest counts watched — 30 Sep 26, `claude/db-readiness-table-shaping-4094f6` (group A phase 1), under the PC lock: unit
-**7112 / 7112** (443 files) · build clean · tfin **728 / 0** · e2e **509 passed, 0 failed**, 49 skipped · smoke **445 / 0** ·
+The latest counts watched — 30 Sep 26, `claude/db-readiness-table-shaping-4094f6` (group A phase 2), under the PC lock: unit
+**7136 / 7136** (445 files) · build clean · tfin **728 / 0** · e2e **509 passed, 0 failed**, 49 skipped · smoke **445 / 0** ·
 rulecheck OK · docsize OK. Restate a count only from a run you watched, and REPLACE the previous counts — never stack a
 history. How to run them: `raptor-port/CLAUDE.md` §Build & verify; how they mislead, and the checks on his PC:
 `raptor-port/docs/gates-and-deploy.md`.
