@@ -1638,3 +1638,27 @@ ask mid-work and the answers arrive piecemeal.
 **Suggested improvement:** Add one opening check to the session-handoff skill's "starting a chat" guidance (or to shipping.md §Parallel chats): before starting a named backlog item, run `ListAgents` and `git branch -r --sort=-committerdate | head`, and look for a session title or branch naming the item. If one exists, message that chat and tell the owner before building anything.
 
 **Principle:** Shared records on the main line show only what has merged. Before claiming a unit of work, ask the live workers what they hold, not just the merged record.
+
+### Observation 356: A design red team against a platform should check the platform's facts in round 1, not discover them round by round
+
+**Status:** OPEN
+**Date:** 29 Sep 26
+**Session context:** `[DB-SYNC-MODEL]` — the day lock's data model for Dataverse, three red-team rounds (Astra and Fable)
+**Skill:** claudex-loop (the red-team brief) · New skill candidate: platform-design-review
+**Type:** open-source
+**Phase/Area:** writing the round-1 brief for a design that leans on a vendor platform
+
+**Issue:** The author wrote platform claims from memory ("row ownership makes it firm with no custom code", "change
+tracking gives a cross-table cursor", "Assign at Business-unit depth"). Round 1 caught the cross-table claim; round 2
+caught that ownership cannot hand a row between users without a privilege that also allows writing; round 3 caught that
+the owner team needs a read role, the check must run as SYSTEM, change tracking is off by default, and a Custom API
+alone is bypassable. Each round spent a full review on facts one documentation pass would have settled, and the owner
+had to be told a "no custom code" promise was wrong.
+
+**Suggested improvement:** In the red-team brief template, add a mandatory first section: "List every claim this design
+makes about the platform (privileges, defaults, limits, ordering, transactions) and verify each against the vendor's
+documentation, citing it." And have the author mark platform claims as "unverified" until then, so none reaches the
+owner as fact.
+
+**Principle:** A design's claims about a third-party platform are facts to verify, not reasoning to review; check them
+against the vendor's documentation first, before anyone spends review rounds or tells the stakeholder a guarantee.
