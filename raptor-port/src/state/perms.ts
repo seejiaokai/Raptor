@@ -267,6 +267,9 @@ export const COMMAND_OPS: Record<string, CommandOp> = {
   'sched.oil': op(T.sched, 'U'),
   'sched.draft.rename': op(T.sched, 'U'),
   'sched.draft.delete': op(T.sched, 'U'),
+  /* a week load's landing on a week already saved ([DB-READINESS] group A, phase 1.3) — run by the app itself (the
+     system actor, which the gate never asks); the row is here so every registered type has one */
+  'sched.load': op(T.sched, 'U'),
   /* the afterSchedMutate backstop: the one schedule command a member's actor can open (a
      board epilogue raised outside a command lands here, whoever raised it). At the gate it
      rides the input rule; the ownership invariant below then refuses any change it makes to

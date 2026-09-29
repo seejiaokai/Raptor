@@ -28,6 +28,9 @@ import { isValidVerId, parseVerId, verSeq, dayIso } from '../engine/verid'
 import { RID_BOOK_VERSION } from '../engine/rowids'
 import { AMBOOK_VERSION, retiredEntry } from '../engine/publish'
 import { emptyWeek } from '../engine/weeks-data'
+import { stashGet } from '../engine/weekstash'
+import type { Converter } from '../storage/fold'
+import type { Entry } from '../storage/backend'
 
 export class RowShapeError extends Error {
   constructor(message: string) { super(message); this.name = 'RowShapeError' }
@@ -267,6 +270,8 @@ export function issuedBook(is: Array<[string, any]>, rx: Map<string, any>, wk: s
     that will not read or an id that names nothing. */
 export function rowsToParts(rows: WeekRows, wk: string): WeekParts {
   const week = has(rows, '') ? parseRow(rows[''], 'the week row') : { v: RID_BOOK_VERSION, am: AMBOOK_VERSION }
+  /* a row carrying a field no row of its kind holds is not this build's row — read-only, never guessed at */
+  for (const k of Object.keys(week)) if (k !== 'v' && k !== 'am') throw new RowShapeError(`the week row carries ${k}`)
   let blank: any[] | null = null
   const days: DayPart[] = []
   for (let di = 0; di < 7; di++) {
@@ -278,6 +283,7 @@ export function rowsToParts(rows: WeekRows, wk: string): WeekParts {
     }
     const r = parseRow(raw, `day row ${di}`)
     if (!isMap(r.d)) throw new RowShapeError(`day row ${di} has no day`)
+    for (const k of Object.keys(r)) if (k !== 'd' && k !== 'wo' && !BOOK_ORDER.includes(k as any)) throw new RowShapeError(`day row ${di} carries ${k}`)
     const book: Record<string, any> = {}
     for (const f of BOOK_ORDER) if (has(r, f)) book[f] = r[f]
     days.push({ d: r.d, book, wo: Array.isArray(r.wo) ? r.wo : [] })
@@ -315,3 +321,45 @@ export function joinParts(p: WeekParts, wk: string): any {
 
 /** a week's rows → the saved week. Throws on a row that will not read. */
 export function joinWeek(rows: WeekRows, wk: string): any { return joinParts(rowsToParts(rows, wk), wk) }
+
+/* ---- a saved week not on screen, as rows -------------------------------- */
+
+/* the rows of week `wk`'s saved copy (the stash), or null when it has none or it will not split — memoised on the saved
+   copy itself, so a rewritten week is a new key. Read by the saved weeks' change records (state/store.ts
+   weekstashStore) and by the row writer (state/persist.ts). */
+const STASH_ROWS = new Map<string, { blob: string; rows: WeekRows | null }>()
+export function stashRows(wk: string): WeekRows | null {
+  const blob = stashGet(wk)
+  if (blob == null) return null
+  const m = STASH_ROWS.get(wk)
+  if (m && m.blob === blob) return m.rows
+  let rows: WeekRows | null = null
+  try { rows = splitWeek(JSON.parse(blob), wk) } catch { rows = null }
+  STASH_ROWS.set(wk, { blob, rows })
+  return rows
+}
+
+/* ---- the fold's converter for the old whole-week records (storage/fold.ts) ---- */
+
+/* An old store keeps each week as ONE record, `weeks/<dd-mm-yyyy>`. The fold turns it into the week's rows once, in the
+   boot's one saved group: the week row takes the old record's own key (so the old record is replaced, never left
+   beside its rows), and the day, issuance and retraction rows go beside it. A record that will not read, is not a
+   whole week, or does not split (a key naming no day — an older build's book) is left byte-for-byte: the reader then
+   keeps that week read-only (state/persist.ts hydrate), never blanks it. Pure; writes only the weeks collection. */
+export const weeksConverter: Converter = {
+  name: 'weeks',
+  collections: ['weeks'],
+  convert(snap) {
+    const out: Entry[] = []
+    for (const id of Object.keys(snap.weeks || {})) {
+      if (id.includes('#') || id.includes(':')) continue
+      let blob: any
+      try { blob = JSON.parse(snap.weeks[id]) } catch { continue }
+      if (!isMap(blob) || !Array.isArray(blob.d)) continue
+      let rows: WeekRows
+      try { rows = splitWeek(blob, id.replace(/-/g, '/')) } catch { continue }
+      for (const sfx of Object.keys(rows)) out.push({ collection: 'weeks', id: id + sfx, value: rows[sfx] })
+    }
+    return out
+  },
+}

@@ -15,9 +15,9 @@
      remove another);
    - the same stored row named twice in one envelope: a put beats a remove, and the later put wins.
 
-   Phase 0 registers NO mapper: the consumer is wired and runs, and writes nothing. Each later phase
-   registers its own logical collection's mapper (phase 1 the schedule, 2 inputs / people / the
-   planning calendar, 3 the Leave War, 5b the Tracker) as it stops writing that collection's big blob. */
+   Each phase registers its own logical collections' mapper as it stops writing their big blob: phase 1 the
+   schedule (a composer — state/persist.ts), 2 inputs / people / the planning calendar, 3 the Leave War, 5b the
+   Tracker. */
 import type { Collection } from '../storage/backend'
 import type { Whiteboard } from '../storage/whiteboard'
 import type { Change, CommitEnvelope, LogicalCollection } from '../command/types'
@@ -29,7 +29,19 @@ export type Mapper = (c: Change) => RowWrite[]
 
 const MAPPERS = new Map<LogicalCollection, Mapper>()
 
-export function mappedCollections(): LogicalCollection[] { return [...MAPPERS.keys()] }
+/* A COMPOSER maps several logical collections TOGETHER, envelope by envelope — for a stored row that several records
+   make up. The schedule's day row is the day, its slice of the book and its muted warnings: three records, one row
+   (phase 1, state/persist.ts). It is handed every change of its collections in one envelope and returns the rows they
+   land in, built from the world the command committed; it may remove a row only for an explicit delete among them. */
+export type Composer = { name: string; collections: LogicalCollection[]; rows(changes: readonly Change[]): RowWrite[] }
+const COMPOSERS = new Map<string, Composer>()
+export function registerComposer(c: Composer): void { COMPOSERS.set(c.name, c) }
+
+export function mappedCollections(): LogicalCollection[] {
+  const out = new Set<LogicalCollection>(MAPPERS.keys())
+  for (const c of COMPOSERS.values()) for (const k of c.collections) out.add(k)
+  return [...out]
+}
 
 /** the stored rows one logical change lands in ([] for a collection no phase maps yet) */
 export function mapChange(c: Change): RowWrite[] {
@@ -45,15 +57,25 @@ export function mapChange(c: Change): RowWrite[] {
 /** every row one envelope's changes land in, each stored row once (a put beats a remove; the later put wins) */
 export function mapEnvelope(changes: readonly Change[]): RowWrite[] {
   const out = new Map<string, RowWrite>()
-  for (const c of changes) {
-    for (const r of mapChange(c)) {
-      const k = `${r.collection}/${r.id}`
-      const had = out.get(k)
-      if (had && had.value !== null && r.value === null) continue
-      out.delete(k)
-      out.set(k, r)
+  const add = (r: RowWrite) => {
+    const k = `${r.collection}/${r.id}`
+    const had = out.get(k)
+    if (had && had.value !== null && r.value === null) return
+    out.delete(k)
+    out.set(k, r)
+  }
+  const composed = new Set<LogicalCollection>()
+  for (const comp of COMPOSERS.values()) {
+    for (const k of comp.collections) composed.add(k)
+    const mine = changes.filter(c => comp.collections.includes(c.collection))
+    if (!mine.length) continue
+    const deletes = mine.some(c => c.op === 'delete')
+    for (const r of comp.rows(mine)) {
+      if (r.value === null && !deletes) throw new Error(`rowmap: the ${comp.name} composer removed ${r.collection}/${r.id} with no delete to answer — a row is removed only by an explicit delete`)
+      add(r)
     }
   }
+  for (const c of changes) if (!composed.has(c.collection)) for (const r of mapChange(c)) add(r)
   return [...out.values()]
 }
 
@@ -70,4 +92,4 @@ export function wireRowConsumer(wb: Whiteboard): () => void {
 
 /** test-only */
 export function _setMapperForTest(c: LogicalCollection, m: Mapper): void { MAPPERS.set(c, m) }
-export function _clearMappersForTest(): void { MAPPERS.clear() }
+export function _clearMappersForTest(): void { MAPPERS.clear(); COMPOSERS.clear() }

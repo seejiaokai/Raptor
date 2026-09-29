@@ -37,11 +37,11 @@ import {
 import { DAYS } from '../engine/data'
 import { INPUTS, mintInpIds } from '../engine/inputs'
 import { reconcileDayFiling } from '../engine/slots'
-import { ensureRowIds } from '../engine/rowids'
+import { ensureRowIds, rowsOf } from '../engine/rowids'
 import { SCHED, setDayApproved, publishALDay, discardPending, unpublishDay, dayCurVer, signClear, signClearPlans } from '../engine/publish'
 import { parseVerId } from '../engine/verid'
 import { splitParts, canonicalBook, issuedBook, parseVerN, dayIndexOf, BOOK_BY_KEY, BOOK_BY_DAY, type WeekParts } from './weekrows'
-import { reconcileIssuedMarks } from '../engine/drafts'
+import { reconcileIssuedMarks, setTouchedDaysResolver } from '../engine/drafts'
 import { keyDay } from '../engine/keys'
 import { logAction } from '../engine/editlog'
 import { CURWEEK } from '../engine/waves'
@@ -51,7 +51,9 @@ import { issuedDisclosed, discloseIssued } from './disclosure'
 import { PLANPUCKS, DAYRMK } from './plan'
 import { WARNOFF, DPREV, prunePreviews } from './view'
 import { canEditSched } from './auth'
-import { deriveActor, isOk } from '../command'
+import { deriveActor, isOk, isCommitting } from '../command'
+import { commitAs } from '../command/commit'
+import { systemActor } from '../command/actor'
 
 /* ---- the scheduler EnlistableStore (a LAGGING BASELINE, decomposed) --------
    [ARCH-STACK] follow-up #1: copy the People pattern. The unrouted board/text/
@@ -377,9 +379,53 @@ export const schedStore: EnlistableStore = {
    commitPublish (SR-001), and idempotent so a nested child-join re-running it is
    harmless. materializeSigns is GONE — the sign readers are non-mutating now. */
 function applyEnd(): void {
+  keepIdsOnTheirDays()
   ensureRowIds(DAYS)
   mintInpIds()
   SCHED_BASELINE = histSnap()
+}
+
+/* [DB-READINESS] group A, phase 1.3 (plan §3, R2-07) — a day is one saved row, so the command's own housekeeping must not
+   change a day it was not asked to. Two writers did:
+   - ensureRowIds re-mints the SECOND of two rows sharing an id, week-wide, first seen first — so a copy landing on
+     Monday of a row that stands on Thursday re-keyed Thursday's. The day that already held the id (the command's
+     before-image) keeps it; the copy on the other day is cleared here and minted fresh by ensureRowIds. No production
+     path is known to copy an id across days (a copy strips ids — engine/rowids.ts stripRowIds); this keeps it so.
+   - reconcileIssuedMarks swept every published day; it now takes the days the command touched (below). */
+const idsOf = (d: any): string[] => {
+  const out: string[] = []
+  for (const r of rowsOf(d || {})) if (r && typeof r === 'object' && typeof r.rid === 'string' && r.rid) out.push(r.rid)
+  for (const n of (d && Array.isArray(d.notes) ? d.notes : [])) if (n && typeof n === 'object' && typeof n.rid === 'string' && n.rid) out.push(n.rid)
+  return out
+}
+function keepIdsOnTheirDays(): void {
+  const where = new Map<string, Set<number>>()
+  DAYS.forEach((d: any, di: number) => { for (const id of idsOf(d)) { let s = where.get(id); if (!s) where.set(id, s = new Set()); s.add(di) } })
+  let before: Map<string, RecordEntry> | null = null
+  for (const [id, days] of where) {
+    if (days.size < 2) continue
+    before ??= schedRecords()
+    const keeper = [...days].find(di => idsOf(before!.get(`days/${CURWEEK}#${di}`)?.value).includes(id))
+    if (keeper == null) continue                                  // no day held it before: the first-seen rule stands
+    for (const di of days) {
+      if (di === keeper) continue
+      const d: any = DAYS[di]
+      for (const r of rowsOf(d || {})) if (r && r.rid === id) delete r.rid
+      for (const n of (d && Array.isArray(d.notes) ? d.notes : [])) if (n && n.rid === id) delete n.rid
+    }
+  }
+}
+/* the days whose content this command changed so far — the loaded week's live days against the command's before-image
+   (the baseline, not yet advanced). null outside a command: every published day, as before. */
+function touchedDays(): number[] | null {
+  if (!isCommitting()) return null
+  const before = schedRecords()
+  const out: number[] = []
+  for (let di = 0; di < DAYS.length; di++) {
+    const was = before.get(`days/${CURWEEK}#${di}`)?.value
+    if (was === undefined || JSON.stringify(was) !== JSON.stringify(DAYS[di])) out.push(di)
+  }
+  return out
 }
 /* the same apply-end for a command that enlists the scheduler store beside others (state/person-delete.ts) */
 export const schedApplyEnd = () => applyEnd()
@@ -414,6 +460,10 @@ export const SCHED_TYPES = {
   oil: 'sched.oil',
   draftRename: 'sched.draft.rename',
   draftDelete: 'sched.draft.delete',
+  /* [DB-READINESS] group A, phase 1.3 (R3-01, F3-01) — the landing a week load makes on a week already saved: the
+     requests filed on its days put on its ground programme. Run by the app (the system actor, origin `seed`): never an
+     Undo step, its revisions tracked as expected, no barrier (undo/timeline.ts) */
+  load: 'sched.load',
 } as const
 
 const schedScope = (): Scope => ({ module: 'sched', weekId: CURWEEK })
@@ -471,6 +521,19 @@ export function commitInputsWith(stores: EnlistableStore[], type: string, fn: ()
 }
 export function commitSchedValue<T>(type: string, fn: () => T, meta?: any): T {
   return commitSched(type, schedScope(), fn, meta).value
+}
+
+/* [DB-READINESS] group A, phase 1.3 — WEEK NAVIGATION IS READ-ONLY (R3-01, F3-01). loadWeek installs the arriving week
+   with no store enlisted across the change of week; this command then runs only its landing pass, on a baseline taken
+   on the ARRIVING week (both images carry that week's identity), so its envelope names exactly the rows the landing
+   changed — never a record of the week just left. Dispatched only while the command layer is idle (loadWeek checks):
+   from inside another command it would join or queue behind it. */
+export function commitSchedLoad(fn: () => void): CommitResult {
+  resyncSchedBaseline()
+  return commitAs(
+    { type: SCHED_TYPES.load, scope: schedScope(), apply: (txn) => { txn.enlist(schedStore); fn(); applyEnd() } },
+    { actor: systemActor(), origin: 'seed' },
+  )
 }
 
 /* the seam for the previously-unrouted paths. schedWrite is JUST commitSchedVoid
@@ -576,7 +639,7 @@ export function commitPublishALDay(di: number): CommitResult {
      issued value went into the published record as a change AL1 never made ([HUMAN-RETEST] walk
      W1-1, 24 Sep 26; AM20, AM19). Drop such marks first, whatever path left them: the reconcile
      only ever REMOVES a mark whose detail equals the issued version, so it cannot hide a change. */
-  return commitPublish(SCHED_TYPES.publishAL, () => { reconcileIssuedMarks(); publishALDay(di) }, di)
+  return commitPublish(SCHED_TYPES.publishAL, () => { reconcileIssuedMarks([+di]); publishALDay(di) }, di)
 }
 
 /* clear a never-published day's draft marks. Not a publish (mints no issued id,
@@ -613,7 +676,7 @@ export function commitUnpublish(di: number): CommitResult {
          put back to that version's value must not come back as a dotted mark while the head,
          the sign line and the panel say otherwise ([HUMAN-RETEST] walk S1, Fable 5-3, 24 Sep
          26). The same reconcile every edit runs, inside this one command, so it undoes with it. */
-      reconcileIssuedMarks()
+      reconcileIssuedMarks([+di])
       txn.boundary({ kind: 'unpublish', ids: [id], crossable: !disclosed })
       applyEnd()
       cmdDeferEffect(() => { prunePreviews(); HOOKS.reflow(); HOOKS.histPush() })
@@ -643,6 +706,8 @@ export function registerSchedCommandLayer(): void {
   // nothing). No current caller reaches those cases, but the safe form costs
   // nothing and removes the trap.
   setSchedEpilogueHook((raw) => { toastFail(commitSchedVoid(SCHED_TYPES.mutate, raw)) })
+  /* an edit's sweep of stale "changed" marks reaches only the days the command changed ([DB-READINESS] group A, 1.3) */
+  setTouchedDaysResolver(touchedDays)
   // permissive gate at Step 2 (see the file header) — the real gate is unchanged
   for (const t of Object.values(SCHED_TYPES)) definePermission(t, anyone)
   registerGuardedStore(schedStore)

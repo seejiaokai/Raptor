@@ -13,7 +13,7 @@ const syncHistBtns=()=>HOOKS.syncHistBtns()
 /* =====================================================================
    UNDO / REDO — snapshot stack over DAYS + the amendment bookkeeping
    ===================================================================== */
-/* the FOURTEEN SCHED fields (corrected 17 Sep 26 — this said eleven), pulled
+/* the SIXTEEN SCHED fields (corrected 30 Sep 26 — it said fourteen; `rt` and `cr` joined with [GLOBAL-UNDO]), pulled
    out so histSnap (the whole-history undo snapshot, below) and the per-week
    stash (state/store.ts's weekStashSnap, engine/weekstash.ts — it PERSISTS since
    8 Sep 26, so "session stash" here was wrong too) build the identical object

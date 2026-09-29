@@ -557,6 +557,18 @@ export type Sched = {
   ridV: number
   /** Phase-2 amendment-record format version — engine (`AMBOOK_VERSION`). A live SCHED always carries it; a persisted book WITHOUT it that still holds publication content is a PRE-Phase-2 book (`amFormatOf` → 'unsupported', read-only). */
   amV?: number
+  /** The withdrawn issuances, keyed `<verId>~<n>` (n = 1, 2 … per version) — engine (`retireIssued`, [GLOBAL-UNDO] §6.1). */
+  retired?: Record<string, RetiredEntry>
+  /** A day being corrected after an Unpublish: the verId it may reissue under the same label — engine. */
+  correcting?: Record<number, string>
+}
+/** One withdrawn issuance (an Unpublish) — engine (`retiredEntry`). `rec` is the issued record kept whole, so the
+    stored issuance row can always be told from it ([DB-READINESS] group A, phase 1); the rest is read from it. */
+export type RetiredEntry = {
+  id: string; n: number; di: number; iso: string; seq: number
+  snap: any; diff: any[]; units?: number; ukinds?: any; sign: Record<number, SignSet>
+  at: string; by: string | null; restoreSeq?: number; logged: boolean
+  rec: AlRecord | DaySnapshot | null
 }
 
 /* ---------------------------------------------------------------------------
@@ -611,6 +623,8 @@ export type SchedFields = {
   v?: Sched['ridV']
   /** Phase-2 amendment-record format version — absent on a PRE-Phase-2 snapshot (`amFormatOf` → 'unsupported'). */
   am?: Sched['amV']
+  rt?: Sched['retired']
+  cr?: Sched['correcting']
 }
 
 /** The whole-state undo record — `histSnap()`. */
@@ -627,15 +641,34 @@ export type WeekSnapshot = SchedFields & {
   dm: DayRmk
 }
 
-/** The per-week stash record — `weekStashSnap()`: no inputs or plan layer (those are global), plus the removed-input keys. */
+/** The per-week stash record — `weekStashSnap()`: no inputs or plan layer (those are global). The removed-request list
+    (`un`) it once carried is worked out on read from each request's own 'r' mark ([DB-READINESS] group A — F3-02). */
 export type WeekStashSnapshot = SchedFields & {
   /** = DAYS. */
   d: Day[]
   /** Muted warning ids. */
   wo: string[]
-  /** Content keys (`inpKey`) of inputs a scheduler removed ('r') on this week, re-parked on restore. */
-  un: string[]
 }
+
+/* ---------------------------------------------------------------------------
+   A week IN STORAGE — its rows, one per thing (state/weekrows.ts; [DB-READINESS] group A, phase 1 — the design's
+   ScheduleWeek, ScheduleDay, Amendment, AmendmentRetraction). Stored under `weeks/<dd-mm-yyyy><suffix>`.
+   --------------------------------------------------------------------------- */
+
+/** `weeks/<wk>` — the two format stamps, nothing else. */
+export type ScheduleWeekRow = { v?: number; am?: number }
+/** `weeks/<wk>#<di>` — the day and every field that names it; a map with no key for the day is left out. */
+export type ScheduleDayRow = {
+  d: Day
+  c?: Record<string, number>; p?: Record<string, 1>; ad?: Record<string, 1>
+  ok?: 1; sg?: SignSet; sb?: any; cv?: string; dr?: any[]; cd?: string; cr?: string
+  /** the muted warnings whose key leads with this day */
+  wo?: string[]
+}
+/** `weeks/<wk>:is:<verId>~<n>` — one issuance, written once: the Original (a DaySnapshot) or an amendment (an AlRecord). */
+export type IssuanceRow = AlRecord | DaySnapshot
+/** `weeks/<wk>:rx:<verId>~<n>` — the Unpublish of that issuance. */
+export type RetractionRow = { at: string; by: string | null; restoreSeq?: number; logged: boolean }
 
 /* ---------------------------------------------------------------------------
    Settings — the sqn142_* keys (docs/data-schema.md). Each key stores null

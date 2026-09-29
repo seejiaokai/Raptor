@@ -641,9 +641,17 @@ export function loadVersionToWorkingCopy(di: any, ver: any) {
    adds one, so it can never hide a real change; del:/inp: marks (never in
    dayKeys) are left alone by name. A pending FIELD key in NEITHER walk is also
    dropped — see the comment at that branch. Bounded to the published days and
-   their own pending field keys. */
-export function reconcileIssuedMarks() {
+   their own pending field keys.
+   AND TO THE DAYS THE COMMAND TOUCHED ([DB-READINESS] group A, phase 1.3 — plan §3, R2-07): a day is one saved row, and
+   an ordinary edit must write only the day(s) it changed (under the day lock, only the day its scheduler holds). `only`
+   names the days; with none given, the command layer's resolver answers (state/sched-commit.ts — the days whose content
+   differs from the command's before-image); outside any command, every published day, as before. */
+let TOUCHED: (() => number[] | null) | null = null
+export function setTouchedDaysResolver(fn: (() => number[] | null) | null) { TOUCHED = fn }
+export function reconcileIssuedMarks(only?: number[]) {
+  const days = only ?? (TOUCHED ? TOUCHED() : null)
   approvedDays().forEach((di: any) => {
+    if (days && !days.includes(+di)) return
     const pend = Object.keys(SCHED.pending).filter((k: any) => keyDay(k) === di)
     if (!pend.length) return                              // nothing to reconcile — skip the walk
     const ver = dayCurVer(di), snap = ver != null ? daySnapOf(di, ver) : null

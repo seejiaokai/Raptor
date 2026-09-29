@@ -146,6 +146,7 @@ const RETIRED: Spec = { $map: {
   id: 'string', n: 'number', di: 'number', iso: 'string', seq: 'number',
   snap: { $or: [DAYSNAP, { $lit: [null] }] }, diff: [ALDIFF], units: 'number?', ukinds: UKINDS, sign: { $map: SIGNSET },
   at: 'string', by: { $or: ['string', { $lit: [null] }] }, restoreSeq: 'number?', logged: 'boolean',
+  rec: { $opt: { $or: [AL, DAYSNAP, { $lit: [null] }] } },   // the issued record kept whole ([DB-READINESS] group A, phase 1)
 } }
 /* Phase 2: cur is a verId STRING per day (Original = `iso#0`); orig carries an id. */
 const SCHED_SPEC: Spec = {
@@ -169,7 +170,7 @@ const PUCK: Spec = { $or: [
   { id: 'string', date: 'string', kind: { $lit: ['pucks'] }, ids: ['string'] },
 ] }
 const WEEK_SNAP: Spec = { ...SCHED_FIELDS, d: [DAY], i: [inputSpec(true)], wo: ['string'], pp: [PUCK], dm: { $map: 'string' } }
-const STASH_SNAP: Spec = { ...SCHED_FIELDS, d: [DAY], wo: ['string'], un: ['string'] }
+const STASH_SNAP: Spec = { ...SCHED_FIELDS, d: [DAY], wo: ['string'] }
 
 /* pristine copies, taken at import before any test boots the store: the
    seed literals are what the reference-parity harness reads, and this file

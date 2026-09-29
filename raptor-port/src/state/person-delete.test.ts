@@ -17,6 +17,7 @@ import { stashPut, stashGet, stashDrop } from '../engine/weekstash'
 import { initStore, resetSession, notify, weekStashSnap, weekDirty } from './store'
 import { Whiteboard } from '../storage/whiteboard'
 import { wirePersist } from './persist'
+import { schedWrite, SCHED_TYPES } from './sched-commit'
 import { HOOKS } from '../engine/hooks'
 import { accountsLoad, accountByName, signIn, sessionFor, ACCOUNTS_LIST } from './accounts'
 import { PLANPUCKS } from './plan'
@@ -177,14 +178,14 @@ describe('PO6 — the delete is saved: the loaded week filed without him', () =>
   it('after the delete the saved copy of the week on screen no longer holds him on a day to come; a day he flew still does', () => {
     const wb = new Whiteboard()
     wirePersist(wb, { weekSnap: weekStashSnap, weekDirty })
-    plantEveryKind(TO_COME); plantEveryKind(PAST)
-    HOOKS.histPush()
-    const before = JSON.parse(wb.get('weeks', '13-07-2026')!)
-    expect(JSON.stringify(before.d[TO_COME]), 'the fixture is saved').toContain(`"${HIM}"`)
+    /* planted the way the app writes — inside a schedule command, whose rows are the save */
+    schedWrite(SCHED_TYPES.mutate, () => { plantEveryKind(TO_COME); plantEveryKind(PAST) })
+    /* the week is saved as one row per day ([DB-READINESS] group A, phase 1 — state/weekrows.ts) */
+    const day = (di: number) => JSON.parse(wb.get('weeks', `13-07-2026#${di}`)!).d
+    expect(JSON.stringify(day(TO_COME)), 'the fixture is saved').toContain(`"${HIM}"`)
     expect(deletePerson(HIM)).toBe(null)
-    const after = JSON.parse(wb.get('weeks', '13-07-2026')!)
-    expect(JSON.stringify(after.d[TO_COME]), 'a day to come, as saved').not.toContain(`"${HIM}"`)
-    expect(JSON.stringify(after.d[PAST]), 'a day he flew, as saved').toContain(`"${HIM}"`)
+    expect(JSON.stringify(day(TO_COME)), 'a day to come, as saved').not.toContain(`"${HIM}"`)
+    expect(JSON.stringify(day(PAST)), 'a day he flew, as saved').toContain(`"${HIM}"`)
   })
 })
 

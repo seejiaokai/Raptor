@@ -17,6 +17,7 @@ import { slotVal, setSlotVal, renameCallsign } from '../engine/slots'
 import { initStore as raptorInitStore, notify as raptorNotify, resetSession, weekStashSnap, weekDirty } from '../state/store'
 import { Whiteboard } from '../storage/whiteboard'
 import { wirePersist } from '../state/persist'
+import { schedWrite, SCHED_TYPES } from '../state/sched-commit'
 import { accountsLoad, accountByName, signIn, sessionFor, updateAccount } from '../state/accounts'
 import { BACKPROMPT } from '../state/view'
 import { commit, commandStream } from '../command'
@@ -236,10 +237,13 @@ describe('PO5 / PO6 / PO7 — delete: his account and his person; days he flew k
   it('the posting’s delete is SAVED: the week on screen filed without him on a day to come (a reload keeps it)', () => {
     const wb = new Whiteboard()
     wirePersist(wb, { weekSnap: weekStashSnap, weekDirty })
-    plantGround(4, 'rocky'); HOOKS.histPush()
-    expect(JSON.stringify(JSON.parse(wb.get('weeks', '13-07-2026')!).d[4])).toContain('"rocky"')
+    /* planted the way the app writes — inside a schedule command, whose rows are the save; the week is one row per day
+       ([DB-READINESS] group A, phase 1 — state/weekrows.ts) */
+    schedWrite(SCHED_TYPES.mutate, () => { plantGround(4, 'rocky') })
+    const day4 = () => JSON.stringify(JSON.parse(wb.get('weeks', '13-07-2026#4')!).d)
+    expect(day4()).toContain('"rocky"')
     expect(postOut('rocky', TODAY, 'delete')).toBe(true)
-    expect(JSON.stringify(JSON.parse(wb.get('weeks', '13-07-2026')!).d[4]), 'a day to come, as saved').not.toContain('"rocky"')
+    expect(day4(), 'a day to come, as saved').not.toContain('"rocky"')
   })
   it('no door takes it back or changes it — Undo post out, a new posting, Restore, Restore-as', () => {
     expect(postOut('rocky', TODAY, 'delete')).toBe(true)

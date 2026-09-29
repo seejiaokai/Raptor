@@ -1,3 +1,4 @@
+// @vitest-environment jsdom
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 import { INPUTS, inpId, isPersonal } from '../engine/inputs'
 import { PEOPLE, ID_BY_CS, nameToId } from '../engine/people'
@@ -6,7 +7,11 @@ import { CURWEEK } from '../engine/waves'
 import { storeBackend, HOOKS } from '../engine/hooks'
 import { stashClear, stashHas, stashDrop } from '../engine/weekstash'
 import { PLANPUCKS, DAYRMK, addPlanPuck } from './plan'
-import { initStore, writeInputs, weekStashSnap, weekDirty, loadWeek, moveSectionTo, resetSession } from './store'
+import { initStore, writeInputs, writeText, writeInputsBatchWith, weekstashStore, weekStashSnap, weekDirty, loadWeek, moveSectionTo, resetSession } from './store'
+import { globalUndo } from '../undo'
+import { _resetTimeline } from '../undo/timeline'
+import { installGlobalUndo } from './undo-wire'
+import { txtGet } from '../engine/slots'
 import { undo } from './history'
 import { setSession } from './auth'
 import { hydrate, persistAll, persistPeople, wirePersist, isHydrated, weekId, weekKey } from './persist'
@@ -16,6 +21,7 @@ import { settingsAdapter } from '../storage/adapters'
 import { MemoryBackend } from '../storage/memory'
 import { SCHEMA_VERSION } from '../storage/reset'
 import { mkNote, noteText } from '../engine/note'
+import { splitWeek } from './weekrows'
 
 const ISNAP = JSON.stringify(INPUTS)
 const PSNAP = JSON.stringify(PEOPLE)
@@ -23,6 +29,7 @@ const BOOT_WEEK = CURWEEK
 const WEEK_B = '20/07/2026'   // the authored second demo week: an input lands on it
 const WEEK_C = '12/10/2026'   // a blank far-off week: nothing lands
 const ROW = { person: 'dj', date: 'Jul 14', allday: true, type: 'LL', remarks: 'persist test', mod: '2026-07-01' }
+const noteTextOf = (d: any) => ((d && d.notes) || []).map(noteText)
 
 function resetWorld() {
   INPUTS.length = 0; JSON.parse(ISNAP).forEach((r: any) => INPUTS.push(r))
@@ -113,10 +120,13 @@ describe('hydrate', () => {
     const snap = weekStashSnap()
     resetWorld()
     const be2 = new MemoryBackend()
-    be2.seed({ weeks: { [weekId(CURWEEK)]: snap } })
+    /* stored as the week's rows ([DB-READINESS] group A, phase 1 — state/weekrows.ts) */
+    const rows = splitWeek(JSON.parse(snap), CURWEEK)
+    be2.seed({ weeks: Object.fromEntries(Object.keys(rows).map(sfx => [weekId(CURWEEK) + sfx, rows[sfx]])) })
     await boot(be2)
     expect(stashHas(CURWEEK)).toBe(true)
     expect(DAYS[0].notes.map(noteText)).toContain('PERSISTED NOTE')
+    expect(protectedWeek(), 'a week read back from its rows is editable').toBe(false)
   })
 })
 
@@ -205,15 +215,18 @@ describe('persistAll and the hooks', () => {
     expect(be.peek('inputs', 'all')).toBe(wb.get('inputs', 'all'))
   })
 
-  it('the pristine seed week is NOT persisted, an edited week is', async () => {
+  /* [DB-READINESS] group A, phase 1 — the week is ROWS (state/weekrows.ts), written from the command that changed it:
+     its first save writes the week row and all seven day rows together, so a stored week is never a part of one */
+  it('the pristine seed week is NOT persisted; an edited week is — its week row and all seven day rows together', async () => {
     const be = new MemoryBackend()
     const { wb } = await boot(be)
-    expect(wb.has('weeks', weekId(CURWEEK))).toBe(false)
-    writeInputs(() => { INPUTS.push({ ...ROW }) })     // inputs landing changes the week's `un`/acc → dirty
-    HOOKS.histPush()
-    expect(wb.has('weeks', weekId(CURWEEK)) || weekDirty() === false).toBe(true)
-    DAYS[0].notes.push(mkNote('X')); HOOKS.histPush()
-    expect(wb.has('weeks', weekId(CURWEEK))).toBe(true)
+    const wid = weekId(CURWEEK)
+    expect(wb.keys('weeks').filter(k => k.startsWith(wid))).toEqual([])
+    writeText('dn:0.0', 'X')
+    expect(wb.has('weeks', wid)).toBe(true)
+    for (let di = 0; di < 7; di++) expect(wb.has('weeks', `${wid}#${di}`), `day ${di}`).toBe(true)
+    expect(noteTextOf(JSON.parse(wb.get('weeks', `${wid}#0`)!).d)).toContain('X')
+    expect(JSON.parse(wb.get('weeks', wid)!), 'the week row is the two stamps alone').toEqual({ v: expect.anything(), am: expect.anything() })
   })
 
   it('UNDO during a slow save: the whiteboard and the backend both end on the pre-edit state, one letter each', async () => {
@@ -278,13 +291,13 @@ describe('the week swap and the stored week records (8 Sep 26 bug pass)', () => 
     const be = new MemoryBackend()
     const { wb } = await boot(be)
     const A = CURWEEK
-    DAYS[0].notes.push(mkNote('WEEK-A-NOTE')); HOOKS.histPush()
+    writeText('dn:0.0', 'WEEK-A-NOTE')
     loadWeek(WEEK_C)
     expect(wb.has('weeks', weekId(WEEK_C))).toBe(false)
-    expect(wb.get('weeks', weekId(A))).toContain('WEEK-A-NOTE')
-    loadWeek(A)                                            // and back: A's record is not overwritten with C's blank days
-    expect(wb.has('weeks', weekId(WEEK_C))).toBe(false)
-    expect(wb.get('weeks', weekId(A))).toContain('WEEK-A-NOTE')
+    expect(wb.get('weeks', `${weekId(A)}#0`)).toContain('WEEK-A-NOTE')
+    loadWeek(A)                                            // and back: A's rows are not overwritten with C's blank days
+    expect(wb.keys('weeks').filter(k => k.startsWith(weekId(WEEK_C)))).toEqual([])
+    expect(wb.get('weeks', `${weekId(A)}#0`)).toContain('WEEK-A-NOTE')
     expect(DAYS[0].notes.map(noteText)).toContain('WEEK-A-NOTE')
     await vi.advanceTimersByTimeAsync(300)
     resetWorld()                                           // the reload
@@ -320,28 +333,42 @@ describe('the week swap and the stored week records (8 Sep 26 bug pass)', () => 
     expect(wb.has('weeks', weekId(BOOT_WEEK))).toBe(false)
   })
 
-  it('undo back to the load state removes the stored record, so the undone edit does not come back after a reload', async () => {
+  /* the Undo writes the day back as it was (its own command's rows) — the row is never deleted by inference (plan §2.2),
+     so the week stays stored, holding what it held before the edit (F2: edit → Undo to pristine → reload → pristine) */
+  it('undo back to the load state: the stored day is back as it loaded, and a reload shows no trace of the edit', async () => {
     const be = new MemoryBackend()
     const { wb } = await boot(be)
-    DAYS[0].notes.push(mkNote('UNDONE')); HOOKS.histPush()
-    expect(wb.has('weeks', weekId(CURWEEK))).toBe(true)
-    undo()
-    expect(wb.has('weeks', weekId(CURWEEK))).toBe(false)
+    _resetTimeline(); installGlobalUndo()
+    setSession({ user: 'ad', role: 'admin' })
+    const was = txtGet('dn:0.0')
+    writeText('dn:0.0', 'UNDONE')
+    expect(wb.get('weeks', `${weekId(CURWEEK)}#0`)).toContain('UNDONE')
+    const u = globalUndo()
+    expect(u.ok, u.reason).toBe(true)
+    expect(wb.get('weeks', `${weekId(CURWEEK)}#0`)).not.toContain('UNDONE')
     await vi.advanceTimersByTimeAsync(300)
-    expect(be.peek('weeks', weekId(CURWEEK))).toBeNull()
+    expect(be.peek('weeks', `${weekId(CURWEEK)}#0`)).not.toContain('UNDONE')
+    resetWorld()
+    await boot(be)
+    expect(txtGet('dn:0.0')).toBe(was)
+    _resetTimeline()
   })
 
-  it("a week dropped from the stash (the Admin sweep) leaves storage on the next persistAll", async () => {
+  /* a saved week leaves storage only by a command that drops it — each of its rows removed by an explicit delete
+     (plan §2.2), never by a reconcile that finds it unbacked */
+  it('a week dropped from the saved copies by a command leaves storage, every row of it', async () => {
     const be = new MemoryBackend()
     const { wb } = await boot(be)
     const A = CURWEEK
-    DAYS[0].notes.push(mkNote('OLD')); HOOKS.histPush()
+    writeText('dn:0.0', 'OLD')
     loadWeek(WEEK_C)                                       // A is stashed and stored
-    expect(wb.has('weeks', weekId(A))).toBe(true)
-    stashDrop(A); persistAll()
-    expect(wb.has('weeks', weekId(A))).toBe(false)
+    expect(wb.keys('weeks').filter(k => k.startsWith(weekId(A))).length).toBe(8)
+    persistAll()
+    expect(wb.keys('weeks').filter(k => k.startsWith(weekId(A))).length, 'persistAll never deletes a week').toBe(8)
+    expect(writeInputsBatchWith([weekstashStore], () => { stashDrop(A) })).toBe(true)
+    expect(wb.keys('weeks').filter(k => k.startsWith(weekId(A)))).toEqual([])
     await vi.advanceTimersByTimeAsync(300)
-    expect(be.peek('weeks', weekId(A))).toBeNull()
+    expect(be.peek('weeks', `${weekId(A)}#0`)).toBeNull()
   })
 
   it('a section reorder on the board is filed like any other edit', async () => {
@@ -350,8 +377,8 @@ describe('the week swap and the stored week records (8 Sep 26 bug pass)', () => 
     setSession({ user: 'ad', role: 'admin' })
     expect(wb.has('weeks', weekId(CURWEEK))).toBe(false)
     expect(moveSectionTo(0, 'notes', 'waves')).toBe(true)
-    const rec = JSON.parse(wb.get('weeks', weekId(CURWEEK))!)
-    expect(rec.d[0].secOrder[0]).not.toBe('notes')
+    const rec = JSON.parse(wb.get('weeks', `${weekId(CURWEEK)}#0`)!)
+    expect(rec.d.secOrder[0]).not.toBe('notes')
   })
 
   it('a logout keeps the saved planning layer', async () => {
