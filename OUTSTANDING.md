@@ -463,6 +463,11 @@ string says paid, pay or money. The shorthand is in CODE COMMENTS (`ui/oilmode.t
 already touches those files; the definition now heads the OIL behaviour register.
 
 ### [OIL-AWARD-IS-A-GRANT] An award is a ledger grant stored a second way (Fable, 21 Sep 26)
+**BUILT 29 Sep 26 on `claude/award-earned-vs-granted-2ed66d`** (with `[OIL-EARNED-VS-GRANTED]`, D400–D402; plan
+`raptor-port/docs/superpowers/plans/2026-09-29-oil-award-one-kind-plan.md`, both reviewers' two rounds folded in) — every
+hand-given OIL award is one ledger entry drawn on the grid; the ledger recorded per entry for undo; earned / awarded /
+corrections apart. Left before "merge live": the walk, both final code reads, his look. The text below is the item as it
+stood.
 **Raised by the [OIL-AWARD-ADD] design review as the real architectural root cause. NOT built, and
 deliberately not bundled — it moves persisted balances again and touches ~28 test files, so it is
 its own escalated session. It needs the owner's go before anything is written.** **GO GIVEN (D147, 24 Sep 26):**
@@ -501,6 +506,8 @@ which it is, so a split needs no guessing. Explained to him 29 Sep 26.
 derivation — the step-4 design §7 (`specs/2026-09-19-arch-stack-4-one-absence-design.md`). Decide both together.
 
 ### [OIL-EARNED-VS-GRANTED] The tracker calls an award "earned" (Fable, 21 Sep 26)
+**BUILT 29 Sep 26 with `[OIL-AWARD-IS-A-GRANT]`** (on its branch — not merged): "earned" is the automatic credits alone,
+"awarded" every hand award, "corrections" its own row.
 **ANSWERED 29 Sep 26 — D400: "earned" is only what the app credited itself; every hand award, grid or tracker, reads
 "awarded". Built with [OIL-AWARD-IS-A-GRANT].** The text below is the question as it stood.
 **Small, and it is the OWNER'S FIGURE to change, which is why it was not folded into
@@ -921,7 +928,8 @@ blank app, never re-seeds demo data; (4) **never seed demo data into a shared st
 app unsaved; (6) **two tabs of one browser** — each tab keeps its own copy of the store and the last save wins, so two tabs
 open at once overwrite each other's work (every record; the change history's `elog` and `seq` too — `[DRAFT-PENDING]`'s red
 team, Fable F10 / Astra DP-01, 28 Sep 26: declined there as the whole app's limit, filed here). With `[OIL-AWARD-IS-A-GRANT]`
-and the small OIL follow-ups as ONE batch. **Tier:** FULL (saved data).
+and the small OIL follow-ups as ONE batch. **Tier:** FULL (saved data). **(1) in part, 29 Sep 26 (`[OIL-AWARD-IS-A-GRANT]`):
+the ledger's COMMAND records are one per entry now (`lw.ledger/<id>`); its STORAGE is still one blob (`leavewar/ledger`).**
 
 ### [IT-QUESTIONS] Talk to the IT side now — their approvals take weeks (his, not code; D203, filed 26 Sep 26)
 The checklist is the primer's §7 (Artifact "Raptor Backend Primer"; its questions, kept here so they outlive it): code apps

@@ -426,7 +426,7 @@ personEdits: { personId: { seat?, band?, sxo? } }
 | `Person` | `id, callsign, seat: 'pilot' \| 'wso' \| 'gnd', band: 'instructor' \| 'ops', sxo, from, to` (dates in squadron, null = open), `poArchive?, poOutcome?, poDone?, gone?, q?, scd?, scn?, xq?: string[], san?, pers?, label?` — built from the scheduler's PEOPLE, **same ids** |
 | `LeaveWar` | `{ period, recs }` — one war (stored) |
 | `Recs` | `personId → date → WarRec[]` — the war's OWN records only ([ARCH-STACK] step 4) |
-| `WarRec` | one of: **request** `{ id, kind:'request', code, state: 'pending' \| 'acknowledged' \| 'refused', shiftedFrom?, carried? }` · **OIL credit** `{ id, kind:'credit', code: 'FO' \| 'HO', oil: 'auto' \| 'manual', note?, spans? }` · **notice** `{ id, kind:'notice', code, was, byType, byWho, seq, at }` (a replaced bid, until "OK, seen"). Nothing "approved" is ever stored here — approved leave is the Input with `lw` |
+| `WarRec` | one of: **request** `{ id, kind:'request', code, state: 'pending' \| 'acknowledged' \| 'refused', shiftedFrom?, carried? }` · **OIL credit** `{ id, kind:'credit', code: 'FO' \| 'HO', oil: 'auto', via?, note?, spans? }` — the SCHEDULE'S credit only; an OIL award is a ledger entry since [OIL-AWARD-IS-A-GRANT] (29 Sep 26), and an old `oil:'manual'` record is dropped on read (D401) · **notice** `{ id, kind:'notice', code, was, byType, byWho, seq, at }` (a replaced bid, until "OK, seen"). Nothing "approved" is ever stored here — approved leave is the Input with `lw` |
 | `Period` | `id, name, start, end, stage: 'draft' \| 'open' \| 'closed' \| 'published', bidFrom, bidTo, days: DayInfo[], bands: EventBand[]` |
 | `Grid` (derived) | `personId → date → code` — the main code a cell shows |
 | `Cell` | `{ type, portion: 'full' \| 'am' \| 'pm' }` — a parsed code |
@@ -434,10 +434,10 @@ personEdits: { personId: { seat?, band?, sxo? } }
 | `Views` (derived) | `personId → date → DayView` — every record on the day, the main one, the corner mark, the charges (`engine/dayview.ts`) |
 | `Openings` | `personId → { counter: number }` — opening balances |
 | `CounterName` | `'annual' \| 'oil' \| 'ccl' \| 'fcl' \| 'pl' \| 'el' \| 'cl'` |
-| `LedgerEntry` | `id, personId, counter, amount, date, reason, approvedBy, givenBy?` — a grant or correction |
+| `LedgerEntry` | `id, personId, counter, amount, date, reason, approvedBy, givenBy?, enteredBy?, enteredAt?` — a grant or correction; a positive OIL entry is an OIL AWARD, the ONE kind of hand-given OIL (D400, D402), drawn on the war grid on its date; `enteredBy` / `enteredAt` who entered it and when (D200 (2)); a new entry's id is opaque (`ol-…`) |
 | `OilPolicy` | `expiry: { n, unit: 'days' \| 'months' } \| null, historyMonths \| null` |
-| `OilLedger` (derived) | `credits: OilCredit[], debits: OilDebit[], balance, earned, granted, taken, expired, overdrawn, first` |
-| `OilCredit` | `id, date, amount, reason, source: 'opening' \| 'auto' \| 'grant', approvedBy?, givenBy?, manual?, expires, used: [{date, amount}], left, expired, ledgerId?` |
+| `OilLedger` (derived) | `credits: OilCredit[], debits: OilDebit[], balance, earned, awarded, corrections, taken, expired, overdrawn, first` — `earned` the automatic credits, `awarded` every award, `corrections` the negative entries (D400) |
+| `OilCredit` | `id, date, amount, reason, source: 'opening' \| 'auto' \| 'grant', approvedBy?, givenBy?, enteredBy?, enteredAt?, expires, used: [{date, amount}], left, expired, ledgerId?` — `grant` is an award (a ledger entry) |
 | `OilDebit` | `id, date, amount, reason, source: 'taken' \| 'correction' \| 'opening', from: [{creditId, amount}], unbacked, ledgerId?` |
 | `EventDef` | `{ name, kind: 'off' \| 'free' \| 'nolv' \| 'work' }` |
 | `Requirements` | `{ default: { rules: ManningRule[] }, overrides: { key: Requirement } }` |

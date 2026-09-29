@@ -5,7 +5,8 @@ tests `E2E_PORT=4197`; full checks through the PC lock (D228). Planned by Opus 5
 and Astra, independently (D353 — an important plan's red team is BOTH), then built, walked, and both read the final code
 (FULL tier — earned leave, saved data, permissions). Nothing reaches `main` without his "merge live".
 
-**Status: r2 — round 1's findings folded in (§9 lists each and what was done); round 2 is a check of the changes only.**
+**Status: r2, BUILT (29 Sep 26) — round 2's findings folded into the build (§10); no round 3 (Fable: "fold the minors
+into the build"; Astra's two blockers taken whole — the owner's cap on design rounds).** Round 1's findings: §9.
 r1 is in git (`4d24d4eb`). Round 1's reports: `docs/superpowers/specs/2026-09-29-oil-award-plan-redteam-fable.md`
 (REVISE — 6 major, 4 minor, 3 nits) and `…-redteam-astra.md` (BLOCK — 3 blockers, 7 major, 3 minor). Both agreed the
 ledger is the right one store.
@@ -390,3 +391,26 @@ award today — nothing to keep true there.
 | Astra F12 — the seed pin | §2.8, §5 test 3 |
 | Astra F13 / Fable N1 — D25 words | §0 wording; `[OIL-WORDS]` sweep of touched files |
 | Fable N3 — small leftovers | §2.5 (+OIL label), §2.6 (`openCredit` / `openAnyCredit`), §2.5 (`MAX_CELL_NOTE`, `bids.ts`), §7 (handover, engine-rules) |
+
+## 10. Round 2 — every finding and what the build did
+
+Reports: `docs/superpowers/specs/2026-09-29-oil-award-plan-redteam-r2-fable.md` (APPROVE — 18 done, 1 partial, 5 minor,
+4 nits) and `…-redteam-r2-astra.md` (BLOCK — 2 blockers, 4 major/minor).
+
+| Finding | Done in the build |
+|---|---|
+| Astra R2-01 (BLOCKER) — the award's permission class not at the command gate | new command types `lw.award` (T.award U), `lw.ledger` (T.ledger U), `lw.clear` (T.bid U + T.award D); `person.delete` and `lw.postoutRun` name T.award D (`state/perms.ts`, `store.ts lwRegisterCommands`) |
+| Astra R2-02 (BLOCKER) — a Delete could take an award its confirm never named | the sheets pass the confirm's award ids into `clearCells(cells, awardIds)`; only those go (`CLEAR_ONLY`) |
+| Astra R2-03 / Fable N5 — recyclable `ol-N` ids | a new entry's id is opaque (`newRecId('ol-')`), never re-minted |
+| Astra R2-04 / Fable N4 — Undo / Redo lines dated today | `logReversed` reads a ledger entry's date(s) |
+| Fable N3 — an award's Undo lands on no day | `undo-wire.ts lwDateOf` reads a ledger entry's date |
+| Astra R2-05 — the reason rule changed other pools | an award keeps a reason only if it had one; a correction needs one; other pools their own rule |
+| Astra R2-06 / Fable partial — the caption | one caption: "opening + earned by weekend/PH work + awarded + corrections − taken − expired" |
+| Astra R2-07 / Fable N7 — the cache reset | the award version only ever rises; `syncAwardIndex` rebuilds on a version it did not set |
+| Fable N1 — the date refusal on every tracker Save | refused only when the date CHANGES |
+| Fable N2 — re-dating by flipping the sign | an OIL entry keeps its sign |
+| Fable N6, N8, N9 — nits | caption single form; the several-award case tested; T.award's gap marker gone (its row is now the award's; the ledger row carries `[LEDGER-READ-ASK]`) |
+
+**One departure from §2.6b:** the per-entry ledger record keeps NO owner in `undo/derive.ts` (the plan said the entry's
+person). Ownership there only decides whether a MEMBER may reverse a change, and no member ever writes the ledger
+(`perms.ts ownershipViolation` refuses it); giving it an owner would widen nothing and add a path to get wrong.

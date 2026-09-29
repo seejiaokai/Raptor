@@ -53,8 +53,8 @@ export interface BidRecord {
   shiftedFrom?: string
   /** WHY an FO/HO credit cell is here — the OIL tracker's reason for an
    *  earned credit (owner, 2 Sep 26: "SIM, FLT, Duty"). The sync wire writes
-   *  `FLT`, `SIM + Duty`, or an acknowledged input's type name; an admin
-   *  types one on a hand-entered FO/HO (`setCellNote`). At most
+   *  `FLT`, `SIM + Duty`, or an acknowledged input's type name; an award drawn
+   *  on the day carries its ledger entry's reason ([OIL-AWARD-IS-A-GRANT]). At most
    *  `MAX_CELL_NOTE` characters. Absent on every other cell. */
   note?: string
 }
