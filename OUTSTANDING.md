@@ -81,7 +81,7 @@ award fix are due before the tables are settled. What to finish before the hand-
 
 **Placed by their own lines — not his rulings:** the Leave War — [LW-FROZEN-BAR-GAP] (after [HUMAN-RETEST]; show him
 first), [LW-SCRUBBER-FLAKY] (test-only),
-[PO-RESTORE-POSTING] (low, from its final code read), [LW-OFFER-ONLY-TAKEABLE] (low, with [LW-LOCKMARK]), [LW-HARNESS-VIEWER-PIN] (test-only, low), [CI-FAIL-PICTURES] (his call, low), [LW-DOZE-GUARDS] (low, check first); the shell — [SHELL-SIDEWAYS-BAR] (low, with the next top-bar change), [SAVE-NOTE-COVERS] (medium, next), [TRK-SAVE-FAIL-SAYS-SAVED] (low, with [DB-READINESS]), [TRK-ASYNC-STALE] (with [DB-READINESS]); the Tracker — [TRK-REMOUNT-LANDING] (low, with the next Tracker change); the Inputs calendar — [INPUTSCAL-TAP-FLAKY] (test-only); the Leave War's months — [LW-WINDOW-PRUNE-FLAKE] (test-only, low); the changes window — [HISTLIST-SLOW-TEST] (test-only, low). The Tracker — [TRK-PINCH-ASK] (his next Tracker session), [TRK-FLEXBAR-INK] (a question for him, on the Tracker-palette
+[PO-RESTORE-POSTING] (low, from its final code read), [LW-OFFER-ONLY-TAKEABLE] (low, with [LW-LOCKMARK]), [LW-HARNESS-VIEWER-PIN] (test-only, low), [CI-FAIL-PICTURES] (his call, low), [LW-DOZE-GUARDS] (low, check first); the shell — [SHELL-SIDEWAYS-BAR] (low, with the next top-bar change), [SAVE-NOTE-COVERS] (medium, next), [TRK-SAVE-FAIL-SAYS-SAVED] (low, with [DB-READINESS]), [TRK-ASYNC-STALE] (with [DB-READINESS]); the Tracker — [TRK-REMOUNT-LANDING] (low, with the next Tracker change); the Inputs calendar — [INPUTSCAL-TAP-FLAKY] (test-only); the Leave War's months — [LW-WINDOW-PRUNE-FLAKE] (test-only, low). The Tracker — [TRK-PINCH-ASK] (his next Tracker session), [TRK-FLEXBAR-INK] (a question for him, on the Tracker-palette
 look card — D157, merged PR #441).
 The amendment area — PR #434, #435, #437 and #438 MERGED (25–26 Sep 26); left (the small-fixes batch, PR #463, merged 29 Sep 26, filed): [PLAN-BANNER-DOOR] (low, filed by that batch's walk), [ROW-NO-TIME-MARK] (low, a future job, D361), [APP-FONTS-NOT-LOADED] (his call — found 29 Sep 26; every measured width rides on it), [GATELOCK-STALE-LIVE] (low, the check lock's stale rule), [DOCSIZE-MERGE-CEILING] (low, a false alarm of the document check on a merge), [PDF-PRINT-TWICE] (low, found by the IT flow guide research — to confirm in real Chrome), [LW-DRAG-BELOW-ZERO] (low, D418 — a drag below zero asks too), [ITFLOW-OIL-RESHOOT] (low, on his word — D403), [TRK-REFUSALS-UNTESTED] (low, test gaps the guide research found). Left from the amendment batch (D91–D111, merged): [AMEND-SMALL-SEEN] (any time). The docs and the checks — [DEPLOY-DOCS] (its operational half), [DOC-POINTERS-CODE] and
 [RULINGS-LF-PIN] (with the next code change), [PEEK-ISSUED] (a question for him, low), [RULING-HOME-HOOK] (low), [GUIDE-MAP-ROWS] (low, a question for him) — [DOC-SUBHEADS], [RULING-HOMES-AUDIT]
@@ -952,15 +952,6 @@ counter bumped at every session end or load, captured at the start, checked afte
 this for the session, Fable's F6); `resumeForPerson` re-runs when the person changed while it loaded; a question's
 answer acts only if what it named is still what is on screen, else says the selection changed. With a test on a
 deliberately slow storage.
-
-### [HISTLIST-SLOW-TEST] One changes-window test runs at 8s alone and times out (20s) in a busy full run — test-only (filed 28 Sep 26)
-**FIXED 29 Sep 26 on `claude/histlist-slow-test` — closes when it merges:** it timed out twice more on `main`'s own run after PR #468 (22s), so `main` read red for a test fault; the one test of three cases (twelve board redraws) is now three tests, one case each, each on its own seat (2.6–4.9s alone; each passes alone and in the file). Found by the IT flow guide chat.
-**Place:** low, test-only — with the next change to the changes window. Found by the Tracker leftovers' gates: `src/ui/histlist.test.tsx`
-"the phone expands the bubble by hand › offers a control only where there is more to show, and only on a phone" took
-8.3s on its own (the file's other eight 1.5–3.2s) and timed out at 20s twice in full unit runs on 28 Sep 26 while the
-PC carried other work (a fanned-out walk; two reviewers reading); alone it passes, 9/9. Not an app fault. **Do:** find
-what makes that one test slow (it likely redraws the board at both widths per case) and trim the setup, or give it
-its own time limit with the reason beside it — never a bare longer limit for the whole file.
 
 ### [LW-WINDOW-PRUNE-FLAKE] The month-window browser test timed out once inside the full run, never alone — test-only (filed 29 Sep 26)
 `raptor-port/e2e/leavewar.spec.ts` "the grid draws a window of months over year-wide placeholders, keeps every row aligned,
