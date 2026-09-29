@@ -45,6 +45,8 @@ carried-over traps — `raptor-port/docs/tracker/known-gaps.md`; what it stores 
 
 | # | Date | The rule |
 |---|---|---|
+| D462 | 30 Sep 26 | THE TRACKER JOINS `[DB-READINESS]` GROUP A: EVERY TRACKER RECORD THAT HOLDS SEVERAL PEOPLE'S OR SEVERAL CHARTS' WORK IS SAVED ONE PIECE PER THING, LIKE THE REST OF THE APP, BEFORE THE IT TEAM SETTLES ITS TABLES. |
+| D463 | 30 Sep 26 | AN EMPTY REAL DATABASE STARTS THE TRACKER WITH NO COURSE: THE FIRST PERSON TO OPEN IT ADDS ONE; THE DEMO COURSE "26ABSG" AND ITS DEMO STUDENTS NEVER REACH A SHARED STORE. |
 | D377 | 29 Sep 26 | His look at the Tracker leftovers is done ("Looks good"): the chart a person last had open on a course is part of their own place (D376 reading 5), and a half-typed day in Done on or Failed on is refused, never recorded as today — an empty box still means today. |
 | D376 | 28 Sep 26 | Each signed-in person reopens the Tracker on their own last course, chart on it and student, on that browser; a rename keeps it, every way of picking a student updates it, the admin's member view is the same person. Someone new starts on the first course and its last-graded student, else the first. Standalone: one place per browser. |
 | D375 | 28 Sep 26 | Keep: a students import adds a course the app does not have at the bottom of the Course list, and the courses already here keep their places (⇅ Reorder moves it) — ruled, not a defect. |

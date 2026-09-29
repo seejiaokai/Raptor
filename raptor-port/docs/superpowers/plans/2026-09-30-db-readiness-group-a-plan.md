@@ -123,7 +123,7 @@ eventual adapter a thin mapping. Nothing on screen changes.
 | `settings/schema` | `SchemaVersion` | the boot, the fold, the bootstrap | — | ONE object (R3-03): `stage` (1), `dataFormatVersion` (6), `initialized`, `appliedAt`, `minClient` — replaces the bare number AND v3's separate `settings/booted` |
 | (code) | `InputType`, `LeaveCounter` | reference data, seeded by IT from the shipped catalogues | — | not app-written; the app reads its code copy at stage 1 |
 | — | `TakeOverRequest` | the lock's build (group B) | — | not in group A |
-| the Tracker's `tracker/v3:*` | `Course`, `Syllabus`, `TrainingEvent`, `Layout`, `Enrolment`, `CoursePlan` | the Tracker | — | **unchanged — his question 2 (§5)** |
+| the Tracker's `tracker/v3:*` | `Course`, `Syllabus`, `TrainingEvent`, `Layout`, `Enrolment`, `CoursePlan` | the Tracker, through the stream (phase 5b) | `ord` on courses and enrolments | marks, dates, pace, lulls already per student; roster → one per enrolment, courses → one per course, chart definitions → one per chart (D462) |
 | the documents drawer (IndexedDB) | `Attachment`, `InputAttachment` | `docAdd` | — | **excluded until §12 q2** (which file store); its writer is outside every command — named for group B |
 
 6. **Old records are folded once, atomically, and only by a build that can fold them all** (F13, R2-02, F2-11).
@@ -252,7 +252,8 @@ survive; a moved bid is ONE row changed; the Leave War's store, undo and e2e sui
    `accountsLoad`, the Tracker's `applyBundle`, the scheduler's merges and the Leave War's init. So a demo boot after a
    blank boot in one process loads the demo, and the reverse is blank.
 3. With `seedDemo` false, also skipped: `autoAcceptSeedInputs`, `installDemoWorld`'s demo half, the Tracker's demo pair
-   and default course (his question 3), and `accountsLoad`'s lock-out repair (which re-adds the seed admin). The Leave
+   and default course (D463 — the Tracker must work with NO course: its empty state checked, and a way in if it has
+   none), and `accountsLoad`'s lock-out repair (which re-adds the seed admin). The Leave
    War's settings-like DEFAULTS and the built-in syllabus charts stay (defaults and shipped content, D62).
 4. **The first admin:** a bootstrap admin from the root configuration, separate from the demo accounts; the real answer
    to IT (`[IT-QUESTIONS]`). The Tracker gets a test reset hook for its one-shot `init()`.
@@ -260,6 +261,16 @@ survive; a moved bid is ONE row changed; the Leave War's store, undo and e2e sui
    policies; a store holding only new-shape Leave War rows; a stamped store with an empty war list; the Tracker's
    migrations and account repair under blank; the walk-shaped test — the bootstrap admin visits every page, the Leave War
    and the Tracker, and storage then holds only the stamps and what he did.
+
+### Phase 5b — the Tracker one piece per thing (D462, 30 Sep 26 — added after the three review rounds; the code reads cover it)
+Marks, dates, pace and lulls are ALREADY one record per student (`tracker/app/core.js:787-812`). Still one record for
+many: the student list of a course and chart (`kRosterFor`, `core.js:781`, written whole by `saveRoster`), the course
+list (`kCourses`) and every chart's definition in one record (`kSyls`, `core.js:847`). Each becomes one record per
+enrolment (`Enrolment`, with `ord`), per course (`Course`, with `ord`) and per chart (`Syllabus` + its events as JSON at
+stage 1); the Tracker's command records follow (its `trk.roster`, `trk.courses`, `trk.syls` per item) and the stream
+consumer writes them. The Tracker's charts still reach the database by his Export → wipe → Import (D120). **Tests:** two
+clients add two students to one course and chart — both remain; two clients edit two different charts — both remain;
+course and student order kept across a reload; the Tracker smoke suite green.
 
 ### Phase 6 — worked out on read (the app's side; PROVISIONAL until IT confirms in writing)
 Design rule 9, smallest first, each its own step with the whole engine suite, `tfin.js` 728/0 and the walk: (a) a
@@ -298,10 +309,9 @@ Custom APIs and Power Automate flows are allowed; reporting on the worked-out pi
 1. **To IT, in writing:** "no plug-in" confirmed (and whether Custom APIs / Power Automate flows are allowed); and
    whether reports can combine a day with the leave and people tables (§12 q9). The app's side proceeds meanwhile; the
    final hand-over of the day and input tables waits on the second answer.
-2. **The Tracker — include it?** Recommendation: yes — a phase saving one record per student's marks and dates, because
-   the `Enrolment` table IT builds now would carry them.
-3. **An empty real database: should the Tracker start with a course already made?** Today a fresh Tracker creates one
-   named "26ABSG". Recommendation: no — the first person to open the Tracker adds the course.
+2. **The Tracker — ANSWERED 30 Sep 26: "Yes" (D462)** — phase 5b. (The question's example was wrong: marks and dates are
+   already one record per student; the student list, the course list and the chart definitions are not.)
+3. **An empty real database starts the Tracker with no course — ANSWERED 30 Sep 26: "No course" (D463)** — phase 5.
 4. **When do IT's tables settle?** (D453.)
 5. **ANSWERED 30 Sep 26 — D460, D461:** Quals is the truth; the Leave War's Edit person is removed; seat, band and SXO
    change only on Quals.
