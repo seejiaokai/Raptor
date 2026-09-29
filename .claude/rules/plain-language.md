@@ -2,9 +2,9 @@
 
 Applies to EVERY message to the owner, in every session, whatever the task — not only while
 building. The owner is NOT technical. This file is the operative short form; the full reasoning and
-the dated owner decisions behind it live in `raptor-port/CLAUDE.md` §How to work here (6 Aug, 10 Aug
-and 13 Sep 26). Where they differ, CLAUDE.md is the source of truth — but these directives stand on
-their own so they are in force before any project file is read.
+the dated owner decisions behind it live in `raptor-port/CLAUDE.md` §How to work here and, in full, in
+`raptor-port/docs/guide-full.md` (6 Aug, 10 Aug and 13 Sep 26). Where they differ, those are the source of truth —
+but these directives stand on their own so they are in force before any project file is read.
 
 - **Never paste raw output at him.** No log lines, stack traces, JSON, run ids, commit hashes, HTTP
   codes, `file:line` references or CSS class names. Read the thing yourself and report what it

@@ -2484,3 +2484,20 @@ numbers added, four missing rulings written in (D21's "corrected" sentence never
 and the gate now fails a NEW row whose Markdown home never mentions its number. The record, row by row:
 `raptor-port/docs/superpowers/specs/2026-09-28-ruling-homes-audit.md`.
 
+
+*Moved here 2026-09-28 by backlog-archive.mjs ([RULINGS-SLIM]). Forward facts: `raptor-port/docs/superpowers/plans/2026-09-28-rulings-slim-down-plan.md`.*
+
+### [RULINGS-SLIM] Every ruling loads as one short line; its full row sits beside it — NOW (owner, D390, 28 Sep 26)
+**What:** his "Approve" (D390) to the slim-down proposal: each ruling row in the loaded area files becomes a one-to-two-line
+short form (number, date, the rule), its full row moved whole to `.claude/decisions-full/<area>.md` (searched, never loaded);
+the accounts and posting rulings (about 60 rows) move from How we work to a new People & accounts area; `raptor-port/CLAUDE.md`
+gets the same treatment, last. Measured before: ~50k tokens in every chat, ~110k in a scheduler build chat; the draft after:
+~12k and ~31k. **Context:** the plan, with the design, the parallel-chat story and the review log —
+`raptor-port/docs/superpowers/plans/2026-09-28-rulings-slim-down-plan.md`. **Checks:** Fable and Astra red-team the plan;
+Fable reads every short line for meaning (D138); both read the two script changes. **Status (28 Sep 26):** DONE. The rulings
+part MERGED (PR #458). The guide step (D391, plan §2.6) built on `claude/rulings-slim-d391-078ad2`: 35 blocks of
+`raptor-port/CLAUDE.md` moved whole to `raptor-port/docs/guide-full.md`, each leaving a one-line short form (≤ 350 characters),
+paired by the gate (`docsize.mjs guidePairing`); the guide ~16.2k → ~9.5k tokens; Fable's meaning read folded; his "merge live"
+given 28 Sep 26. The Leave War row of §Where things live was left to `claude/small-fixes-batch-d223f6`. The proposal's optional
+question 4 (the older "settled before" notes) stays unasked (plan §2.1); moving the map's long rows is filed as `[GUIDE-MAP-ROWS]`.
+

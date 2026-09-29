@@ -172,6 +172,22 @@ and every pointer names an existing heading (a lighter form of Astra 8's manifes
 every task needs → its short form in the guide, its full text in `guide-full.md`. Fable reads every short form (D138).
 Estimate ~16k → ~6k.
 
+**Built 28 Sep 26** on `claude/rulings-slim-d391-078ad2` (cut from `main` after PR #458 merged — the same tree as this
+branch). 35 blocks moved, each under its own `###` in `guide-full.md` (its `##` sections mirror the guide's), each
+leaving a short form of at most **350 characters** — the ruling short line's cap, enforced by the gate so the guide
+cannot grow back one long line at a time. The pairing gate (`docsize.mjs guidePairing`, 11 self-test cases): every short
+form names an existing `###`; every `###` is named by exactly one short form (the `##` sections are checked to mirror
+the guide's instead of being named); a `§` pointer not at a line's end fails; a full text must sit under the `##` its short form sits in. Every ruling number the guide carried is
+still in it. **Measured:** 60.1k → ~35k bytes (~16.2k → ~9.5k tokens), not ~6k: what stayed in full (the gate
+commands, the slot-key list, the two funnels, the store, the product invariants) is ~11k bytes and the map table ~9k,
+the Leave War row alone 2.2k — left untouched here (D391). The guide's line tripwire went 760 → 340. Fable's meaning
+read (brief `raptor-port/docs/superpowers/briefs/2026-09-28-guide-short-forms-meaning-brief.md`): 30 of 35 faithful; five
+rewritten from its replacements — the whole-ecosystem line had dropped "in doubt, a one-line heads-up"; the process line
+"a wide visual change is MEDIUM"; the person-identity line "sim `who` stays free text"; the highlight-menus line "don't
+restyle the bare `.hl-grp`"; and the Models line had called the 17 Sep "no cheaper model" rule history, which it is not.
+D390's short line faithful. Also folded: the moved-groups preamble, the `doc-structure.md` row (a full text only when a
+rule outgrows its line), and its gate points (the section check, a doubled-heading case, a clearer message).
+
 ### 2.7 The documents the old rules left behind (D201)
 
 `DECISIONS.md` (how the rulings are kept; steps 1–3 as §2.3; the People & accounts map row; the D390–D399 range);
