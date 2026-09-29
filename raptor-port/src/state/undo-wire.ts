@@ -143,7 +143,9 @@ function landingOf(entry: UndoEntry): Landing | null {
   else if (m === 'sched') primary = canEditSched() ? 'editsched' : null
   else if (m === 'inputs' || m === 'plan') {
     primary = 'inputs'
-    if (m === 'plan' && !fwd.some(c => c.collection === 'inputs')) then = () => setInpView('cal')
+    /* the calendar's own records (a day title, its puck rows — saved through the Inputs page's door, so filed under
+       inputs) and no input row: the change is on the calendar */
+    if (fwd.some(c => c.collection === 'plan') && !fwd.some(c => c.collection === 'inputs')) then = () => setInpView('cal')
   } else if (m === 'people') {
     primary = 'quals'
     const person = fwd.find(c => c.collection === 'people')

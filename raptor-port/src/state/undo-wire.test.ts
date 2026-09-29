@@ -27,6 +27,7 @@ import { storeBackend } from '../engine/hooks'
 import { waveTplLoad } from '../engine'
 import { addWaveTpl, delWaveTpl, setWaveHidden, waveTplSave, WAVETPL_CFG, WAVEHIDE } from '../engine/wavetpl'
 import { installGlobalUndo, _snapView } from './undo-wire'
+import { setDayRemark } from './plan'
 import { HIST } from './history'
 
 const DSNAP = JSON.stringify(DAYS)
@@ -333,11 +334,19 @@ describe('B7 — Undo goes to the change’s page, and keeps the board open acro
       { op: 'put', collection: 'days', id: `${CURWEEK}#2`, before: {}, after: {} }] } as any, 'undo')
     expect(view.CURPAGE).toBe('leavewar')
   })
-  it('a planning-calendar change undone from another page opens Inputs on its CALENDAR (Fable F2, plan §11.6)', () => {
-    view.setInpView('table'); view.setPage('editsched')
-    _snapView({ scope: { module: 'plan' }, forward: [{ op: 'put', collection: 'plan', id: 'x', before: null, after: {} }] } as any, 'undo')
+  it('a planning-calendar day title undone from another page opens Inputs on its CALENDAR (Fable F2, plan §11.6)', () => {
+    view.setInpView('table'); view.setPage('inputs')
+    writeInputs(() => setDayRemark('2026-07-16', 'B7 PLAN'))           // the calendar's own door (InputsCal.tsx)
+    view.setPage('editsched')
+    expect(globalUndo().ok).toBe(true)
     expect(view.CURPAGE).toBe('inputs')
     expect(view.INPVIEW).toBe('cal')
+  })
+  it('an input row undone from another page opens Inputs on its table, not the calendar', () => {
+    view.setInpView('table'); view.setPage('editsched')
+    writeInputs(() => { INPUTS.push({ person: 'bane', type: 'LL', date: 'Aug 20', yr: 2026, rmk: '', iid: 'iwire7' } as any) })
+    expect(globalUndo().ok).toBe(true)
+    expect(view.INPVIEW).toBe('table')
   })
   it('the board’s Undo that crosses to another week keeps the board open, on the changed day (A1-F2)', () => {
     view.setPage('editsched')
@@ -367,6 +376,10 @@ describe('B8 — Undo says what came back', () => {
     const r = globalUndo()
     expect(r.ok).toBe(true)
     expect(r.entry!.label).toBe('a day note')
+  })
+  it('a day title on the Inputs calendar names the calendar, not "a personal input" (the walk, R2)', () => {
+    writeInputs(() => setDayRemark('2026-07-16', 'B8 TITLE'))
+    expect(undoState().undoLabel).toBe('a day title on the calendar')
   })
   it('one input filed through the Inputs page’s batch door is "a personal input"', () => {
     writeInputsBatch(() => { INPUTS.push({ person: 'bane', type: 'LL', date: 'Jul 16', yr: 2026, rmk: '', iid: 'iwire2' } as any) })
