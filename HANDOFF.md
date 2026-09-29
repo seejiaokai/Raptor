@@ -16,38 +16,41 @@ the later merge keeps both (D78).
 ## Now
 
 <!-- now:claude/db-readiness-table-shaping-4094f6 -->
-### `claude/db-readiness-table-shaping-4094f6` — `[DB-READINESS]` group A: plan v4 final; **phases 0, 1 and 2 BUILT** (all gates green); phase 3 next — written 30 Sep 26 — verify before use
+### `claude/db-readiness-table-shaping-4094f6` — `[DB-READINESS]` group A: plan v4 final; **phases 0–3 BUILT** (all gates green); phase 4 next — written 30 Sep 26 — verify before use
 - **Where it started:** his ask: plan group A (D453), red-team it with both reviewers, then build it; D460–D463 ruled on the way.
 - **Shipped (this branch, pushed, no PR):** the plan (`raptor-port/docs/superpowers/plans/2026-09-30-db-readiness-group-a-plan.md`,
-  v4 + §9 build log for phases 0 and 1); **phase 0** (the `SchemaVersion` stamp, the boot group, the fold machinery, the stream
-  consumer — see §9); **phase 1 — the schedule one day per piece:** `src/state/weekrows.ts` splits a week into its week row, seven
-  day rows, one row per issuance (`:is:<verId>~<n>`, append-only) and per Unpublish (`:rx:`); the command layer's records follow
-  (per-day `days` / `sched.book` / `sched.mutes`, `sched.week`, `sched.issuance`, `sched.retraction`); the rows are written from each
-  command (a composer in `rowmap.ts`, registered by `persist.ts`); the week-deleting reconcile is gone; `un` is not stored (read
-  from the request's own `acc:'r'`); a week switch is read-only (a saved week's landing is one `sched.load` command, origin seed);
-  the stale-mark sweep and the row-id fixer touch only the days a command changed. **Found on the way:** another person's Tuesday
-  change blocked his Undo of Monday (fixed, D148); the retired entry lost the issued record's `ros` / `added` (now kept as `rec`).
-  **Phase 2 — requests, roster, planning calendar one row each** (`inputs/<iid>`, `people/<pid>`, `plan/pp:<id>`,
-  `plan/dm:<iso>`; each list's order on its rows — `ord`, `src/engine/ord.ts`; `persistAll` gone; a first boot stores the seed's
-  rows; opaque note ids; a cleared setting removes its key). **Found on the way (on `main` too):** deleting a man never took him
-  off the planning calendar's puck rows (the delete read `iso`; the rows carry `date`) — fixed red-first.
-- **Gates (phase 2, watched, under the lock):** unit 7136/7136 · build · tfin 728/0 · e2e 509/0 (49 skipped) · smoke 445/0 · perf 4/4
-  (unchanged since before phase 1 — measured side by side then) · rulecheck · docsize.
-- **Unfinished:** phases 3 → 5 and 5b (the shape IT needs), then the FULL walk and BOTH reviewers' code reads (D11, D353), then 6
+  v4 + §9 build log per phase); **phase 0** (the `SchemaVersion` stamp, the boot group, the fold machinery, the stream
+  consumer); **phase 1 — the schedule one day per row** (`src/state/weekrows.ts`: week row, seven day rows, one row per
+  issuance and per Unpublish; written from each command; a week switch is read-only); **phase 2 — requests, roster,
+  planning calendar one row each** (`ord` on each row — `src/engine/ord.ts`); **phase 3 — the Leave War one row per record**
+  (`src/leavewar/state/rows.ts`: `war:<id>`, `rec:<war>:<recId>` with its person, date and `ord`, `ledger:<id>`,
+  `opening:<pid>:<counter>`, `profile:<pid>` = window + label; written by the war's OWN subscriber through its own door — a
+  move is one row, a row goes only for a record the command removed; `initStore(backend, { started })`; the LW converter
+  registered) **with D460/D461 built** — the war's Edit person, `PersonSheet.tsx`, `setPerson` and `personEdits` are gone.
+  **Found on the way:** Tuesday's change blocked Monday's Undo (phase 1); the retired entry lost `ros`/`added` (phase 1);
+  deleting a man left him on the planning calendar (phase 2, on `main` too); the OIL pass would have rewritten every credit
+  once records carried a place (phase 3).
+- **Gates (phase 3, watched, under the lock):** unit 7154/7154 · build · tfin 728/0 · e2e 509/0 (49 skipped) · smoke 445/0 ·
+  perf 4/4 (side by side with phase 2: no change) · rulecheck · docsize.
+- **Unfinished:** phases 4 → 5 and 5b (the shape IT needs), then the FULL walk and BOTH reviewers' code reads (D11, D353), then 6
   (worked out on read — its hand-over waits on IT's reporting answer, §12 q9), then 7.
 - **Branch:** `claude/db-readiness-table-shaping-4094f6`; no PR. Build on it. A branch push runs no checks (workflows are main / PR only).
 - **Open questions for him:** none of this chat's. For IT (`[IT-QUESTIONS]`): "no plug-in" in writing; Custom APIs / Power
   Automate allowed?; can reports combine a day with the leave and people tables; when do their tables settle.
-- **Parallel (D302):** rulings D460–D469 (D460–D463 used); observations #380–#389 (#380–#382 used). No other chat was building on 30 Sep 26.
+- **Parallel (D302):** rulings D460–D469 (D460–D463 used); observations #380–#389 (#380–#383 used). No other open branch on 30 Sep 26.
 - **Don't send him this branch's preview yet:** between phases a browser holding old whole-list records reads them only
-  after the fold, which runs once all eight converters exist (end of group A); a fresh browser is fine.
-- **Traps met:** `src/state/store.ts` is a CRLF file — edit scripts must convert their literals, and `sed -i` in Git Bash turned it
-  to LF once (fixed by an endings-only commit; memory `python-edits-crlf-trap`); a test that edits a blank week must ADD a note.
-- **Pick up here:** plan §3 phase 3 (the Leave War one record each) with §8's P3-CELL-DIFF — red tests first; `npm run perf`
-  before and after; D460/D461: the war's "Edit person" and `PersonSheet.tsx` go, seat / SXO from the person, band from his CAT.
-  Read `src/leavewar/state/store.ts` (`lwDecompose`, `rawPersist`, `lwStore`), `src/leavewar/engine/warrecs.ts`,
-  `src/leavewar/sync.ts` and `src/state/persist.ts` (the mappers are the model) first; the area file
-  `.claude/rules/decisions/leave-war.md` loads when a Leave War file is read.
+  after the fold, which runs once all eight converters exist (end of group A — five registered now); a fresh browser is fine.
+- **Traps met:** `src/state/store.ts` and `src/leavewar/state/store.ts` are CRLF files — edit them by script converting the
+  literals, never `sed -i` (memory `python-edits-crlf-trap`); an apostrophe in a heredoc'd Python edit lands bare inside a
+  TS string; a test that edits a blank week must ADD a note.
+- **Pick up here:** plan §3 phase 4 with §8's P4.1-TRACKER-RESTORE and P4-BATCH-ID — red tests first: (1) the `ChangeBatch`
+  at the whiteboard's seal (`changes/<clientBootId>-<first emitted seq>`, items `{table, key, op}` = the rest of the group;
+  list every writer that reaches the whiteboard after boot outside a command with its disposition — `loadWeek`'s
+  `sched.load`, the edit log's lines, the Tracker's own); (2) the stand-in reader; (3) the edit log one row per line
+  (`settings/elog:<lineId>`, written at `keep` inside the command — `src/engine/editlog.ts push`/`queueSave`), `seen:<pid>`;
+  (4) accounts, access requests and `reqseen` one row each (`src/state/accounts.ts writeAccounts`/`writeReqs`). Read
+  `src/storage/whiteboard.ts` (transaction/commit), `src/command/commit.ts` (the txn wrapper, seqs), `src/engine/editlog.ts`,
+  `src/state/accounts.ts`, `src/state/changes.ts` first. P3-CELL-DIFF's "exact `ChangeBatch.items`" test lands here.
 <!-- /now -->
 
 ## Next, in order
@@ -74,8 +77,8 @@ the later merge keeps both (D78).
 
 ## Gate baseline
 
-The latest counts watched — 30 Sep 26, `claude/db-readiness-table-shaping-4094f6` (group A phase 2), under the PC lock: unit
-**7136 / 7136** (445 files) · build clean · tfin **728 / 0** · e2e **509 passed, 0 failed**, 49 skipped · smoke **445 / 0** ·
+The latest counts watched — 30 Sep 26, `claude/db-readiness-table-shaping-4094f6` (group A phase 3), under the PC lock: unit
+**7154 / 7154** (446 files) · build clean · tfin **728 / 0** · e2e **509 passed, 0 failed**, 49 skipped · smoke **445 / 0** ·
 rulecheck OK · docsize OK. Restate a count only from a run you watched, and REPLACE the previous counts — never stack a
 history. How to run them: `raptor-port/CLAUDE.md` §Build & verify; how they mislead, and the checks on his PC:
 `raptor-port/docs/gates-and-deploy.md`.
