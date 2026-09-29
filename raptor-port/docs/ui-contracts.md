@@ -7738,10 +7738,16 @@ screen:
   and writes the positions, as the edit did) and a **mark step** — one
   student's grade, failure count or a date box (Last Flown ×2, down days,
   upchit), marks AND dates snapshotted together because a flight graded done
-  moves Last Flown forward. Restoring a mark step saves itself, closes the
+  moves Last Flown forward. Since D372 (28 Sep 26) the pace, End date A / B and
+  the lull periods (set, changed, removed) are mark steps too — the snapshot holds
+  them beside the marks and dates — and “Copy to…” is ONE step over every
+  student ticked (“the lull periods for 3 students”), taken back together
+  without moving the picker. Restoring a mark step saves itself, closes the
   grading pop-up, and **moves the Crew picker to that student** when it has
-  moved on (an undo you cannot see is a mystery). Keystrokes into ONE date
-  box within two seconds are one step. The buttons are greyed
+  moved on (an undo you cannot see is a mystery). A date box saves when it
+  is LEFT (blur, Enter; the pop-up's also on Escape), never per keystroke, so one
+  day typed is one step, and the same day retyped is none ([TRK-RETEST-NOTES] C5,
+  28 Sep 26); a number box's keystrokes within two seconds are one step. The buttons are greyed
   (`disabled`) with nothing to take back and their tooltip names the next
   step ("Undo the mark on ST-05 for STUDENT A (Ctrl+Z)"); Ctrl/⌘+Z undoes,
   Ctrl+Y and Ctrl/⌘+Shift+Z redo, bound only while the tab is up and never
@@ -7829,8 +7835,45 @@ screen:
     plus the students.
   - **Marking.** Last Flown is the latest day actually flown, worked out from
     the done flights; a correction or un-mark pulls it back; a day typed by
-    hand stands until a later flight (D123). A "Done on" box half-typed is
-    never a day. Deleting a ball says its marks go at ✓ Save changes, and they
+    hand stands until a later flight (D123). No date box saves a half-typed
+    day: the eight (Done on, Failed on, each failures-list row, Last Flown ×2,
+    Upchit, End date A / B) save when LEFT, and a half-typed day is put back
+    ([TRK-RETEST-NOTES] C5). A day after today is refused in Done on, Failed on
+    and both Last Flown boxes, with one line under the box saying why; Upchit
+    and the end dates take any day (D374, 28 Sep 26). **The grading pop-up never
+    turns a refused day into today** (the leftovers' walk, walker b, 28 Sep 26):
+    a day after today, or a day not finished (a year still being typed, a part
+    cleared), STAYS in Done on / Failed on with its line — "That day hasn’t come
+    yet…" or "That day isn’t finished — type the whole day, or clear the box for
+    today." — and a grade or a + pressed on it is refused, the pop-up staying
+    open, until the day is put right; an EMPTY box still means today. (Done on of
+    an event already done shows the day its mark keeps instead — re-dating is
+    refused.) A side-panel date box's line goes when the day it refused changes
+    under it. A + on an event marked N.A. says why inside the pop-up too, where a
+    phone can read it. A student’s failures on an
+    event go in the order of their DAYS — the earliest is the plain code, each
+    later day adds an X, an undated one comes last — and − takes back the latest
+    day (D371). An event marked N.A. leaves the Failures card, its total and the
+    full list, as its ticks leave the ball; the grading pop-up and the details
+    bubble still show its failures, and they return, days and all, if it is
+    graded again (D370). A press on a student’s red failure tick is a press on
+    their slice — it picks them, or opens grading if they are the one picked
+    ([TRK-RETEST-NOTES] C6). + Set lull period opens on this month; changing a
+    period opens on its own (C7). The + Add list follows the roster while it is
+    open (C11). While ✓ Save changes ● shows, the save words beside it step
+    aside — the button says it — whatever a background save reports; an error
+    still shows, in red; the corner stays 172px (C14 — widening it to fit words
+    wrapped the bar, measured). On an upright phone the Crew box takes up to 124px
+    (the most the bar's first row holds — at least 9 letters of a 14-letter
+    callsign); from 600px wide, 176px, so a 14-letter callsign reads whole (C10, the
+    walk's c-F4). On a short screen (under ~500px tall) Edit chart
+    layout folds its strip behind one row — the tool in use, its hint, ⤢ Fit,
+    Tools ▾ — and the note, the hint line and the Flow / Info / Show All tabs
+    step aside; Tools ▾ opens the whole set over the chart, closing on a choice,
+    a press outside, Escape or Done (D373, 28 Sep 26). While editing, the canvas
+    is never taller than its chart box (one rule, `canvasSize`, for the redraw and the
+    re-fit), and turning the phone re-fits it with the middle of the chart kept in the
+    middle and shuts the Tools set (the walk's c-F1/F5 and the re-walk's R2). Deleting a ball says its marks go at ✓ Save changes, and they
     do, in every course (D124), with the details typed on it (D130) and any
     student's "last worked" pointer to it; a deleted-but-unsaved code cannot be
     re-added until the save (+ Add and 📋 Edit events alike). An IMPORT never
@@ -7841,7 +7884,17 @@ screen:
     under "Deleted courses" with ↺ Restore — back under its own id, students and
     marks intact (D128). Logout — the top bar's or the phone drawer's, ONE
     function (`src/ui/logout.ts`) — asks Save them / Discard them / Stay when
-    chart edits are unsaved, over the Tracker tab, before the session ends (D129).
+    chart edits are unsaved, over the Tracker tab, before the session ends (D129). Each
+    PERSON reopens the Tracker on their own last course, the chart they had open on
+    it, and their student — kept per person on the browser, never the last
+    person’s (D376, 28 Sep 26; the chart, reading 5, from Fable's final read — confirmed D377, 29 Sep 26); the
+    chart on screen is also the course's saved chart, so a later reload of the course
+    keeps it; someone new there starts on the first course. Whose place is on screen
+    is re-checked every time the tab is shown, and again when an unsaved chart edit
+    that held the last person's place is saved or discarded; while the next person’s
+    is loading the page reads “Loading…” and a press on a ball does nothing. An undo
+    closes the lull calendar and the Copy to… list (the record under them changed); a
+    session ending stops an import between its questions.
   - **Surfaces.** ✓ Save changes is the far-right item of its row, desktop and
     phone; on a desktop the save corner is one fixed width (the status words
     shorten, whole on hover), so the first edit never wraps the bar. The details

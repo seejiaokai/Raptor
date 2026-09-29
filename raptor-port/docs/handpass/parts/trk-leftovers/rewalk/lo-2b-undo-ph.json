@@ -1,0 +1,242 @@
+{
+  "rows": [
+    {
+      "step": "0 today / roster / picked",
+      "note": "2026-09-28 · STUDENT A, STUDENT B · STUDENT A · phone 390×844 touch"
+    },
+    {
+      "step": "0 the older mark: ST-01 graded DCO for STUDENT A (one step)",
+      "pass": true,
+      "said": "ST-01 dco · ↶ \"Undo the mark on ST-01 for STUDENT A (Ctrl+Z)\""
+    },
+    {
+      "step": "1 pace typed \"3\" then \"3.5\" quickly → saved 3.5 as ONE step",
+      "pass": true,
+      "said": "box was \"2\" (stored null) · after \"3\": box 3, stored 3 · now stored 3.5 · steps 1→2"
+    },
+    {
+      "step": "1 pace: ↶'s tooltip names the change",
+      "pass": true,
+      "said": "\"Undo the pace for STUDENT A (Ctrl+Z)\""
+    },
+    {
+      "step": "1 pace: Ctrl+Z on the chart (focus on DIV) takes it back — the older mark (ST-01 DCO) stays",
+      "pass": true,
+      "said": "now [\"2\",\"2\"] (want [\"2\",\"2\"]) · ST-01 dco · crew STUDENT A · ↷ \"Redo the pace for STUDENT A (Ctrl+Y)\""
+    },
+    {
+      "step": "1 pace: ↷ puts it again",
+      "pass": true,
+      "said": "now [\"3.5\",\"3.5\"] (want [\"3.5\",\"3.5\"])"
+    },
+    {
+      "step": "1 pace: ↶ on the bar takes it back too — the older mark stays",
+      "pass": true,
+      "said": "now [\"2\",\"2\"] · ST-01 dco"
+    },
+    {
+      "step": "1 pace: ↷ puts it again",
+      "pass": true,
+      "said": "now [\"3.5\",\"3.5\"]"
+    },
+    {
+      "step": "2 End date A: 27/11/26 typed and left → saved",
+      "pass": true,
+      "said": "[\"2026-11-27\",\"2026-11-27\"]"
+    },
+    {
+      "step": "2 End date A: ↶'s tooltip names the change",
+      "pass": true,
+      "said": "\"Undo End date A for STUDENT A (Ctrl+Z)\""
+    },
+    {
+      "step": "2 End date A: Ctrl+Z on the chart (focus on DIV) takes it back — the older mark (ST-01 DCO) stays",
+      "pass": true,
+      "said": "now [\"\",\"\"] (want [\"\",\"\"]) · ST-01 dco · crew STUDENT A · ↷ \"Redo End date A for STUDENT A (Ctrl+Y)\""
+    },
+    {
+      "step": "2 End date A: ↷ puts it again",
+      "pass": true,
+      "said": "now [\"2026-11-27\",\"2026-11-27\"] (want [\"2026-11-27\",\"2026-11-27\"])"
+    },
+    {
+      "step": "2 End date A: ↶ on the bar takes it back too — the older mark stays",
+      "pass": true,
+      "said": "now [\"\",\"\"] · ST-01 dco"
+    },
+    {
+      "step": "2 End date A: ↷ puts it again",
+      "pass": true,
+      "said": "now [\"2026-11-27\",\"2026-11-27\"]"
+    },
+    {
+      "step": "3 End date B: 27/12/26 typed and left → saved",
+      "pass": true,
+      "said": "[\"2026-12-27\",\"2026-12-27\"]"
+    },
+    {
+      "step": "3 End date B: ↶'s tooltip names the change",
+      "pass": true,
+      "said": "\"Undo End date B for STUDENT A (Ctrl+Z)\""
+    },
+    {
+      "step": "3 End date B: Ctrl+Z on the chart (focus on DIV) takes it back — the older mark (ST-01 DCO) stays",
+      "pass": true,
+      "said": "now [\"\",\"\"] (want [\"\",\"\"]) · ST-01 dco · crew STUDENT A · ↷ \"Redo End date B for STUDENT A (Ctrl+Y)\""
+    },
+    {
+      "step": "3 End date B: ↷ puts it again",
+      "pass": true,
+      "said": "now [\"2026-12-27\",\"2026-12-27\"] (want [\"2026-12-27\",\"2026-12-27\"])"
+    },
+    {
+      "step": "3 End date B: ↶ on the bar takes it back too — the older mark stays",
+      "pass": true,
+      "said": "now [\"\",\"\"] · ST-01 dco"
+    },
+    {
+      "step": "3 End date B: ↷ puts it again",
+      "pass": true,
+      "said": "now [\"2026-12-27\",\"2026-12-27\"]"
+    },
+    {
+      "step": "4 a lull period added 22/09/26→24/09/26",
+      "pass": true,
+      "said": "[[\"22/09/26→24/09/26\"],[\"2026-09-22→2026-09-24\"]]"
+    },
+    {
+      "step": "4 lull added: ↶'s tooltip names the change",
+      "pass": true,
+      "said": "\"Undo the lull periods for STUDENT A (Ctrl+Z)\""
+    },
+    {
+      "step": "4 lull added: Ctrl+Z on the chart (focus on DIV) takes it back — the older mark (ST-01 DCO) stays",
+      "pass": true,
+      "said": "now [[],[]] (want [[],[]]) · ST-01 dco · crew STUDENT A · ↷ \"Redo the lull periods for STUDENT A (Ctrl+Y)\""
+    },
+    {
+      "step": "4 lull added: ↷ puts it again",
+      "pass": true,
+      "said": "now [[\"22/09/26→24/09/26\"],[\"2026-09-22→2026-09-24\"]] (want [[\"22/09/26→24/09/26\"],[\"2026-09-22→2026-09-24\"]])"
+    },
+    {
+      "step": "4 lull added: ↶ on the bar takes it back too — the older mark stays",
+      "pass": true,
+      "said": "now [[],[]] · ST-01 dco"
+    },
+    {
+      "step": "4 lull added: ↷ puts it again",
+      "pass": true,
+      "said": "now [[\"22/09/26→24/09/26\"],[\"2026-09-22→2026-09-24\"]]"
+    },
+    {
+      "step": "5 the lull period changed to 14/09/26→16/09/26 (its chip tapped)",
+      "pass": true,
+      "said": "[[\"14/09/26→16/09/26\"],[\"2026-09-14→2026-09-16\"]]"
+    },
+    {
+      "step": "5 lull changed: ↶'s tooltip names the change",
+      "pass": true,
+      "said": "\"Undo the lull periods for STUDENT A (Ctrl+Z)\""
+    },
+    {
+      "step": "5 lull changed: Ctrl+Z on the chart (focus on DIV) takes it back — the older mark (ST-01 DCO) stays",
+      "pass": true,
+      "said": "now [[\"22/09/26→24/09/26\"],[\"2026-09-22→2026-09-24\"]] (want [[\"22/09/26→24/09/26\"],[\"2026-09-22→2026-09-24\"]]) · ST-01 dco · crew STUDENT A · ↷ \"Redo the lull periods for STUDENT A (Ctrl+Y)\""
+    },
+    {
+      "step": "5 lull changed: ↷ puts it again",
+      "pass": true,
+      "said": "now [[\"14/09/26→16/09/26\"],[\"2026-09-14→2026-09-16\"]] (want [[\"14/09/26→16/09/26\"],[\"2026-09-14→2026-09-16\"]])"
+    },
+    {
+      "step": "5 lull changed: ↶ on the bar takes it back too — the older mark stays",
+      "pass": true,
+      "said": "now [[\"22/09/26→24/09/26\"],[\"2026-09-22→2026-09-24\"]] · ST-01 dco"
+    },
+    {
+      "step": "5 lull changed: ↷ puts it again",
+      "pass": true,
+      "said": "now [[\"14/09/26→16/09/26\"],[\"2026-09-14→2026-09-16\"]]"
+    },
+    {
+      "step": "6 × on the period asks first — \"Remove STUDENT A’s lull period 14/09/26 → 16/09/26? Cancel OK\"; No/Cancel keeps it, no step (lo-2b-ph-u4-lull-remove-asks)",
+      "pass": true,
+      "said": "lulls [\"2026-09-14→2026-09-16\"] · steps 6→6"
+    },
+    {
+      "step": "6 answered yes → removed, one step",
+      "pass": true,
+      "said": "lulls [] · steps 6→7"
+    },
+    {
+      "step": "6 lull removed: ↶'s tooltip names the change",
+      "pass": true,
+      "said": "\"Undo the lull periods for STUDENT A (Ctrl+Z)\""
+    },
+    {
+      "step": "6 lull removed: Ctrl+Z on the chart (focus on DIV) takes it back — the older mark (ST-01 DCO) stays",
+      "pass": true,
+      "said": "now [[\"14/09/26→16/09/26\"],[\"2026-09-14→2026-09-16\"]] (want [[\"14/09/26→16/09/26\"],[\"2026-09-14→2026-09-16\"]]) · ST-01 dco · crew STUDENT A · ↷ \"Redo the lull periods for STUDENT A (Ctrl+Y)\""
+    },
+    {
+      "step": "6 lull removed: ↷ puts it again",
+      "pass": true,
+      "said": "now [[],[]] (want [[],[]])"
+    },
+    {
+      "step": "6 lull removed: ↶ on the bar takes it back too — the older mark stays",
+      "pass": true,
+      "said": "now [[\"14/09/26→16/09/26\"],[\"2026-09-14→2026-09-16\"]] · ST-01 dco"
+    },
+    {
+      "step": "6 lull removed: ↷ puts it again",
+      "pass": true,
+      "said": "now [[],[]]"
+    },
+    {
+      "step": "7.0 + Add typed \"WALKB C\"",
+      "note": "[\"STUDENT A\",\"STUDENT B\",\"WALKB C\"] · crew now WALKB C"
+    },
+    {
+      "step": "7.1 before the copy",
+      "note": "{\"B\":[\"2026-09-03→2026-09-04\"],\"C\":[],\"A\":[\"2026-09-23→2026-09-25\"]} · crew STUDENT A"
+    },
+    {
+      "step": "7 Copy to… STUDENT B and WALKB C → both get A's period, ONE step (lo-2b-ph-u5-copy-to-ticked)",
+      "pass": true,
+      "said": "{\"B\":[\"2026-09-23→2026-09-25\"],\"C\":[\"2026-09-23→2026-09-25\"]} · steps 9→10 · ↶ \"Undo the lull periods for 2 students (Ctrl+Z)\""
+    },
+    {
+      "step": "7 ↶'s tooltip names the copy (\"the lull periods for 2 students\")",
+      "pass": true,
+      "said": "\"Undo the lull periods for 2 students (Ctrl+Z)\""
+    },
+    {
+      "step": "7 Ctrl+Z on the chart (focus on DIV) → BOTH students back together (B his own, C none), Crew stays on STUDENT A, ST-01 still DCO (lo-2b-ph-u6-copy-after-ctrlz)",
+      "pass": true,
+      "said": "[[\"2026-09-03→2026-09-04\"],[]] (want [[\"2026-09-03→2026-09-04\"],[]]) · crew STUDENT A · ↷ \"Redo the lull periods for 2 students (Ctrl+Y)\""
+    },
+    {
+      "step": "7 ↷ → both carry A's period again, crew still A",
+      "pass": true,
+      "said": "[[\"2026-09-23→2026-09-25\"],[\"2026-09-23→2026-09-25\"]] · crew STUDENT A"
+    },
+    {
+      "step": "7 ↶ on the bar → both back together, crew still A",
+      "pass": true,
+      "said": "[[\"2026-09-03→2026-09-04\"],[]] · crew STUDENT A"
+    },
+    {
+      "step": "7 ↷ → both copied again",
+      "pass": true,
+      "said": "[[\"2026-09-23→2026-09-25\"],[\"2026-09-23→2026-09-25\"]]"
+    },
+    {
+      "step": "no console errors, page errors, failed requests or native dialogs",
+      "pass": true,
+      "said": "[]"
+    }
+  ],
+  "errors": []
+}

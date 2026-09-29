@@ -221,6 +221,15 @@ button:disabled:hover{border-color:var(--line)}
 .faillog .lullhd .failtot{margin-left:0}
 /* The pop-up's list of this student's failures on the event, each with its day. */
 .pop .fdates{margin-top:5px;display:flex;flex-wrap:wrap;gap:3px 8px;font-size:10.5px;color:var(--red-ink);line-height:1.4}
+/* A date box that saves when it is LEFT (DateBox.jsx, [TRK-RETEST-NOTES] C5) wraps its box
+   so the one line of refusal (a day after today, D374) can sit right under it; the wrapper
+   takes the box's place in every row, grid and card, so the box keeps its width. */
+.datebox{display:flex;flex-direction:column;gap:2px;min-width:0}
+/* While the Tracker reloads the next person's own course and student (D376) the last
+   person's page is hidden — never shown, never pressed — and one line says why. */
+.tr-root.resuming>*:not(.resumenote){visibility:hidden}
+.resumenote{padding:24px;text-align:center;color:var(--muted)}
+.datewarn{font-size:11px;line-height:1.3;color:var(--red-ink)}
 .pop .fdates b{font-weight:600}
 /* Status badge: dark ink on the grade's own fill, matching the ring colours on
    the board so one vocabulary covers both surfaces. */
@@ -422,6 +431,26 @@ small.hint{color:var(--muted);font-size:11px}
 .port{cursor:crosshair}.endhandle{cursor:move}
 .arrtools input.fontnum{width:52px}
 .arrtools .arrnote{flex-basis:100%;text-align:center;color:var(--muted);font-size:11.5px;margin-top:3px}
+/* ON A SHORT SCREEN THE STRIP FOLDS (owner, 28 Sep 26 — D373, "fold"; [TRK-EDIT-SIDEWAYS]).
+   A phone on its side (844×390) gave the strip's three rows, its note, the hint line and
+   the Flow / Info / Show All tabs everything under Raptor's bar: the chart got 0px. Under
+   500px of height, while editing, ONE row stands in — the tool in use, its hint, ⤢ Fit,
+   Tools ▾ — the note, the hint line and the tabs step aside, and Tools ▾ opens the whole
+   set OVER the chart (z 45: over the chart and the view tabs, under the menus and every
+   window). Taller screens are untouched: the fold row is never shown there. */
+.arrwrap{position:relative}
+.arrfold{display:none}
+@media(max-height:500px){
+ & .tr-root.arranging .arrfold{display:flex;gap:6px;align-items:center;padding:4px 8px;background:var(--panel2);border-bottom:1px solid var(--line)}
+ .arrfold button{padding:4px 9px;font-size:12px;flex:0 0 auto}
+ .arrfold .foldhint{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11.5px;color:var(--muted)}
+ .arrfold .foldtools{border-color:var(--accent);color:var(--accent)}
+ .arrtools.on{display:none}
+ .arrtools.on.open{display:flex;position:absolute;left:8px;right:8px;top:100%;z-index:45;border:1px solid var(--line);border-radius:10px;box-shadow:0 12px 30px rgba(0,0,0,.6);max-height:70vh;overflow:auto}
+ .arrtools .arrnote{display:none}
+ & .tr-root.arranging .arrhintwrap{display:none}
+ & .tr-root.arranging .viewtabs{display:none}
+}
 #flowSvg.arrange{background:#0c0e12;border:1px dashed var(--line);border-radius:10px;touch-action:none}
 #saveChanges.dirty{background:rgba(229,168,59,.16);border-color:var(--orange)}
 #delSyl:hover,#delCourse:hover{border-color:var(--red)}
@@ -579,6 +608,14 @@ small.hint{color:var(--muted);font-size:11px}
  /* Eleven controls only reach two rows in 390px if they are trimmed to it:
     the three dropdowns are the width, and they still print their own value. */
  .controls select{max-width:88px;padding:4px 6px;font-size:12px}
+ /* The Crew box names the student — on the Flow half nothing else does — and at 88px
+    every student read "STUDEN…" ([TRK-RETEST-NOTES] C10): it gets the room a callsign
+    needs (measured: the bar stays two rows at 390px). The Course box keeps its 88px —
+    at 76 a six-letter course read "26ABS…". */
+ .controls #activeSel{max-width:124px}
+ /* ...and where the bar has the room (a phone on its side, a tablet), a 14-letter callsign
+    (D226) reads whole — at 124px it read 12 of 14 (the leftovers' walk, F4) */
+ @media(min-width:600px){ .controls #activeSel{max-width:176px} }
  .controls button.sm{padding:3px 6px}
  /* A 132px box in a 390px row leaves nothing for anything else, so the phone
     gets a 🔍 button and a full-width strip under the bar. position:fixed, not

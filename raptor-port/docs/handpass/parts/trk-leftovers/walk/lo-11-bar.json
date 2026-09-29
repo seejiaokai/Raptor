@@ -1,0 +1,182 @@
+[
+  {
+    "step": "390: the Crew box reads the student whole",
+    "pass": true,
+    "said": "{\"w\":103,\"need\":69,\"room\":75}"
+  },
+  {
+    "step": "390: the Course box reads the course whole",
+    "pass": true,
+    "said": "{\"w\":81,\"need\":47,\"room\":53}"
+  },
+  {
+    "step": "390: the bar is no taller than on main (70px)",
+    "pass": true,
+    "said": "{\"h\":70}"
+  },
+  {
+    "step": "390: with ✓ Save changes showing, no cut-off words beside it",
+    "pass": true,
+    "said": "{\"text\":\"\",\"cut\":false,\"title\":\"\"}"
+  },
+  {
+    "step": "390: and the bar does not grow when it shows (w3-F5)",
+    "pass": true,
+    "said": "{\"h\":66,\"was\":70}"
+  },
+  {
+    "step": "390: no console or page error",
+    "pass": true,
+    "said": ""
+  },
+  {
+    "step": "1000: the Crew box reads the student whole",
+    "pass": true,
+    "said": "{\"w\":103,\"need\":69,\"room\":75}"
+  },
+  {
+    "step": "1000: the Course box reads the course whole",
+    "pass": true,
+    "said": "{\"w\":81,\"need\":47,\"room\":53}"
+  },
+  {
+    "step": "1000: the bar is no taller than on main (38px)",
+    "pass": true,
+    "said": "{\"h\":38}"
+  },
+  {
+    "step": "1000: with ✓ Save changes showing, no cut-off words beside it",
+    "pass": true,
+    "said": "{\"text\":\"\",\"cut\":false,\"title\":\"\"}"
+  },
+  {
+    "step": "1000: and the bar does not grow when it shows (w3-F5)",
+    "pass": true,
+    "said": "{\"h\":37,\"was\":38}"
+  },
+  {
+    "step": "1000: no console or page error",
+    "pass": true,
+    "said": ""
+  },
+  {
+    "step": "1060: the Crew box reads the student whole",
+    "pass": true,
+    "said": "{\"w\":111,\"need\":71,\"room\":77}"
+  },
+  {
+    "step": "1060: the Course box reads the course whole",
+    "pass": true,
+    "said": "{\"w\":89,\"need\":49,\"room\":55}"
+  },
+  {
+    "step": "1060: the bar is no taller than on main (87px)",
+    "pass": true,
+    "said": "{\"h\":87}"
+  },
+  {
+    "step": "1060: with ✓ Save changes showing, no cut-off words beside it",
+    "pass": true,
+    "said": "{\"text\":\"\",\"cut\":false,\"title\":\"\"}"
+  },
+  {
+    "step": "1060: and the bar does not grow when it shows (w3-F5)",
+    "pass": true,
+    "said": "{\"h\":82,\"was\":87}"
+  },
+  {
+    "step": "1060: no console or page error",
+    "pass": true,
+    "said": ""
+  },
+  {
+    "step": "1150: the Crew box reads the student whole",
+    "pass": true,
+    "said": "{\"w\":111,\"need\":71,\"room\":77}"
+  },
+  {
+    "step": "1150: the Course box reads the course whole",
+    "pass": true,
+    "said": "{\"w\":89,\"need\":49,\"room\":55}"
+  },
+  {
+    "step": "1150: the bar is no taller than on main (87px)",
+    "pass": true,
+    "said": "{\"h\":87}"
+  },
+  {
+    "step": "1150: with ✓ Save changes showing, no cut-off words beside it",
+    "pass": true,
+    "said": "{\"text\":\"\",\"cut\":false,\"title\":\"\"}"
+  },
+  {
+    "step": "1150: and the bar does not grow when it shows (w3-F5)",
+    "pass": true,
+    "said": "{\"h\":82,\"was\":87}"
+  },
+  {
+    "step": "1150: no console or page error",
+    "pass": true,
+    "said": ""
+  },
+  {
+    "step": "1200: the Crew box reads the student whole",
+    "pass": true,
+    "said": "{\"w\":111,\"need\":71,\"room\":77}"
+  },
+  {
+    "step": "1200: the Course box reads the course whole",
+    "pass": true,
+    "said": "{\"w\":89,\"need\":49,\"room\":55}"
+  },
+  {
+    "step": "1200: the bar is no taller than on main (51px)",
+    "pass": true,
+    "said": "{\"h\":51}"
+  },
+  {
+    "step": "1200: with ✓ Save changes showing, no cut-off words beside it",
+    "pass": true,
+    "said": "{\"text\":\"\",\"cut\":false,\"title\":\"\"}"
+  },
+  {
+    "step": "1200: and the bar does not grow when it shows (w3-F5)",
+    "pass": true,
+    "said": "{\"h\":51,\"was\":51}"
+  },
+  {
+    "step": "1200: no console or page error",
+    "pass": true,
+    "said": ""
+  },
+  {
+    "step": "1440: the Crew box reads the student whole",
+    "pass": true,
+    "said": "{\"w\":111,\"need\":71,\"room\":77}"
+  },
+  {
+    "step": "1440: the Course box reads the course whole",
+    "pass": true,
+    "said": "{\"w\":89,\"need\":49,\"room\":55}"
+  },
+  {
+    "step": "1440: the bar is no taller than on main (51px)",
+    "pass": true,
+    "said": "{\"h\":51}"
+  },
+  {
+    "step": "1440: with ✓ Save changes showing, no cut-off words beside it",
+    "pass": true,
+    "said": "{\"text\":\"\",\"cut\":false,\"title\":\"\"}"
+  },
+  {
+    "step": "1440: and the bar does not grow when it shows (w3-F5)",
+    "pass": true,
+    "said": "{\"h\":51,\"was\":51}"
+  },
+  {
+    "step": "1440: no console or page error",
+    "pass": true,
+    "said": ""
+  }
+]

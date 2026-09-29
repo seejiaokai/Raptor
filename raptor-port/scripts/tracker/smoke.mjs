@@ -109,9 +109,9 @@ for (const sig of ['unhandledRejection', 'uncaughtException']) {
 /* The one adaptation (see the header): Raptor's login, then the Tracker tab.
    The app remembers nothing of a session across a reload, so every reload the
    standalone suite did is this whole walk again. */
-async function openTracker(page) {
+async function openTracker(page, user = 'ad', pass = 'a') {
   await page.goto(URL, { waitUntil: 'networkidle' });   // OPEN_TRACKER
-  await page.fill('#luser', 'ad'); await page.fill('#lpass', 'a');
+  await page.fill('#luser', user); await page.fill('#lpass', pass);
   await page.click('#loginForm button[type=submit]');
   await page.waitForSelector('#vWeek .day', { state: 'attached' });
   await page.evaluate(() => window.go('tracker'));
@@ -623,8 +623,10 @@ ok('with both boxes ticked the suggested name warns about students',
   ok('the Save button appears once work is outstanding', after.btn === 1);
   ok('nothing still reads green while work is outstanding', !after.cls.includes('ok'),
     `class="${after.cls}" text="${after.text}"`);
-  ok('the status still says what it last did', after.text.trim().length > 0,
-    `text="${after.text}"`);
+  /* C14 (28 Sep 26): while ✓ Save changes shows, the words beside it step aside — the button
+     says there is work to save; a background save's "● saved" never sits beside it */
+  ok('the words step aside while ✓ Save changes shows (the button says it)', after.text.trim() === '' && after.btn === 1,
+    `text="${after.text}" · Save button ${after.btn}`);
   await pg.locator('#saveChanges').click(); await pg.waitForTimeout(600);   /* leave it clean */
 }
 
@@ -1507,10 +1509,15 @@ await pg.waitForTimeout(800);
   ok('the Failures title opens the full list, one row per failure with its date',
     log.open && log.rows.join(',') === 'ST-01,ST-01X,ST-01XX,ST-02' && log.dates.every(d => d === today) && /4 fails/.test(log.total),
     `rows: ${log.rows.join(', ')} · dates: ${log.dates.join(', ')} · ${log.total}`);
-  await pg.fill('#failLog .frow[data-ev="ST-01"][data-fi="1"] input[type=date]', '2026-08-01'); await pg.waitForTimeout(300);
+  /* a date box saves when it is LEFT or on Enter, not as typed ([TRK-RETEST-NOTES] C5, 28 Sep 26).
+     Enter, not Tab: in Chrome a Tab inside a date box steps to its next part (day → month →
+     year) before it leaves the box, so after fill() one Tab never left it (the leftovers' gates) */
+  await pg.fill('#failLog .frow[data-ev="ST-01"][data-fi="1"] input[type=date]', '2026-08-01');
+  await pg.press('#failLog .frow[data-ev="ST-01"][data-fi="1"] input[type=date]', 'Enter'); await pg.waitForTimeout(300);
   const redated = await pg.evaluate(() => [...document.querySelectorAll('#failChips .failchip')].map(c => c.dataset.date));
-  ok('changing a day in the list re-dates that one failure and its chip',
-    redated[1] === '2026-08-01' && redated[0] === redated[2] && redated[0] !== '2026-08-01', `chip dates: ${redated.join(', ')}`);
+  /* the failures follow their DAYS (owner, 28 Sep 26 — D371): the one re-dated to 1 Aug is now the plain code */
+  ok('changing a day in the list re-dates that one failure, and the labels follow the days',
+    redated[0] === '2026-08-01' && redated[1] === redated[2] && redated[1] !== '2026-08-01', `chip dates: ${redated.join(', ')}`);
   await pg.keyboard.press('Escape'); await pg.waitForTimeout(250);
   ok('Escape closes the failures list', !(await pg.locator('#failLog').count()));
 
@@ -1524,13 +1531,13 @@ await pg.waitForTimeout(800);
     labels: [...document.querySelectorAll('#popFailDates .fdate b')].map(e => e.textContent),
   }));
   ok('the pop-up lists this student’s failures on the event with their days',
-    popList.box === today && popList.labels.join(',') === 'ST-01,ST-01X,ST-01XX' && popList.days[1] === '2026-08-01',
+    popList.box === today && popList.labels.join(',') === 'ST-01,ST-01X,ST-01XX' && popList.days[0] === '2026-08-01',
     `box ${popList.box} · ${popList.labels.join(', ')} · ${popList.days.join(', ')}`);
   await pg.fill('#popFailDate', '2026-08-15'); await pg.waitForTimeout(150);
   await pg.click('#popFailPlus'); await pg.waitForTimeout(400);
   const dated = await pg.evaluate(() => [...document.querySelectorAll('#failChips .failchip')].map(c => c.textContent.trim() + '@' + c.dataset.date));
   ok('a + records the failure on the day in the "Failed on" box',
-    dated.includes('ST-01XXX@2026-08-15'), dated.join(', '));
+    dated.includes('ST-01X@2026-08-15'), dated.join(', '));   /* in its place by day (D371) */
   await pg.click('#popFailMinus'); await pg.waitForTimeout(300);
   ok('a − takes the latest failure back',
     (await pg.evaluate(() => document.querySelectorAll('#failChips .failchip').length)) === 4);
@@ -2216,7 +2223,7 @@ await pg.keyboard.press('Escape'); await pg.waitForTimeout(250);
   ok('the pace box can be cleared to type a new number',
     (await pg.inputValue('#epwIn')) === '', `shows "${await pg.inputValue('#epwIn')}"`);
   await pg.fill('#epwIn', '3.5'); await pg.waitForTimeout(300);
-  await pg.fill('#targetIn', '2027-03-01'); await pg.waitForTimeout(300);
+  await pg.fill('#targetIn', '2027-03-01'); await pg.press('#targetIn', 'Enter'); await pg.waitForTimeout(300);   /* Enter: a Tab only steps inside a date box */
   const aPace = await pg.inputValue('#epwIn'), aTgt = await pg.inputValue('#targetIn');
   ok('a pace typed in stays put', aPace === '3.5', `shows "${aPace}"`);
 
@@ -2621,16 +2628,19 @@ await pg.waitForSelector('#flowSvg .ball', { timeout: 15000 });
      lastCourse is the course ID now (course ids, 1B-i), not the name — compare
      it to the current course's id (the dropdown value). */
   const curCourseId = await pg.inputValue('#courseSel');
+  /* and it is this PERSON's (owner, 28 Sep 26 — D376 "own place"): filed under the
+     signed-in person's id, so the next person on the browser opens on their own */
   const where = await pg.evaluate(() => ({
-    mine: localStorage.getItem('ocuLocal:lastCourse'),
+    key: 'ocuLocal:' + window.__coreForTests.pickKey('lastCourse'),
+    mine: localStorage.getItem('ocuLocal:' + window.__coreForTests.pickKey('lastCourse')),
     shared: Object.keys(localStorage).filter(k => k.startsWith('raptor:tracker/') && /lastCourse/i.test(k)),
   }));
-  ok('that memory is this browser\'s alone, not in the shared file',
-    where.mine === curCourseId && where.shared.length === 0,
-    `mine=${where.mine}, curId=${curCourseId}, shared=[${where.shared.join(',')}]`);
+  ok('that memory is this browser\'s and this person\'s alone, not in the shared file',
+    where.key === 'ocuLocal:who:stiff:lastCourse' && where.mine === curCourseId && where.shared.length === 0,
+    `key=${where.key}, mine=${where.mine}, curId=${curCourseId}, shared=[${where.shared.join(',')}]`);
 
   /* Remembering a course that has since gone must not strand the app. */
-  await pg.evaluate(() => localStorage.setItem('ocuLocal:lastCourse', 'NO SUCH COURSE'));
+  await pg.evaluate(() => localStorage.setItem('ocuLocal:' + window.__coreForTests.pickKey('lastCourse'), 'NO SUCH COURSE'));
   const errsBefore = errs.length;
   await openTracker(pg);
   await pg.waitForSelector('#flowSvg .ball', { timeout: 15000 });
@@ -2664,6 +2674,18 @@ await pg.waitForSelector('#flowSvg .ball', { timeout: 15000 });
     ok('the crew-memory check has someone other than the opening pick to choose',
       false, `roster ${crewNow.join(',')}, opened on ${opening}`);
   }
+
+  /* ...and the next PERSON never opens on it (D376). The admin goes to the second
+     course; the member signing in on this browser opens on the first — nobody's
+     pick of his — and the admin, back, is on his own again. */
+  await pg.selectOption('#courseSel', { label: 'SMOKE FIRST' }); await pg.waitForTimeout(800);
+  await openTracker(pg, 'us', 'us');
+  const memberOpens = await pg.textContent('#courseTitle');
+  ok('the next person on the browser opens on their own place, not the last person\'s course',
+    memberOpens === '26ABSG PROGRESS TRACKER', memberOpens);
+  await openTracker(pg);
+  const adminBack = await pg.textContent('#courseTitle');
+  ok('and the admin, back, is on his own course again', adminBack === 'SMOKE FIRST PROGRESS TRACKER', adminBack);
 }
 
 /* ---- the eleven faults found by the 9 Aug system test ----
@@ -3983,7 +4005,7 @@ await openTracker(pg); await pg.waitForSelector('#flowSvg .ball'); await pg.wait
   await pg.click('#arrTools button:has-text("+ Acad")'); await pg.waitForSelector('#dlgInput');
   await pg.fill('#dlgInput', 'SMOKE TMP'); await pg.click('#dlgOk'); await pg.waitForTimeout(400);
   await arr(); await pg.waitForTimeout(300);
-  ok('a new event leaves the chart with unsaved flow edits', /unsaved flow edits/.test(await pg.textContent('#saveStat')));
+  ok('a new event leaves the chart with unsaved flow edits — ✓ Save changes shows', (await pg.locator('#saveChanges').count()) === 1);
   await pg.selectOption('#courseSel', to); await pg.waitForTimeout(400);
   ok('switching course with unsaved flow edits asks first', await pg.locator('#dlgModal').count() === 1
     && /unsaved flow edits/.test(await pg.textContent('#dlgMsg')));

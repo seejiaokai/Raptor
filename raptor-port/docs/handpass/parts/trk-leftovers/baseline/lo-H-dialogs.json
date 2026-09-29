@@ -1,0 +1,35 @@
+{
+  "rows": [
+    {
+      "step": "N.1 ✎ Rename course opens the question box",
+      "note": "\"Rename course “26ABSG” to:\" · course 26ABSG"
+    },
+    {
+      "step": "N.2 Tab order from the open question (until + Add)",
+      "note": "button#dlgCancel \"Cancel\" [in box] → button#dlgOk.primary \"OK\" [in box] → body → a \"Edit Schedule\" → a \"View-only Sched\" → a \"Inputs\" → a \"Quals\" → a \"Logic\" → a \"Leave War\" → a.on \"Tracker\" → a \"Help\" → a \"Admin\" → button#fastSync.fastsync \"Sync · slow\" → button#notifyBell.bellbtn \"Notifications\" → button#insightBtn.abtn \"Insights\" → button#logout.abtn.ghost \"Logout\" → button#roleBadge.abtn.rolechip \"SABER · ADMIN\" → select#activeSel \"STUDENT A STUDENT B\" → select#courseSel \"26ABSG\" → button#courseMenuBtn.sm.icon \"✎\" → select#sylSel \"2024 2026 Tx 2026 A/G - A/A 20\" → button#sylMenuBtn.sm.icon"
+    },
+    {
+      "step": "N.3 Tab stays inside the open question box",
+      "pass": false,
+      "said": "press 3: focus left the box to body; + Add reached at press 34"
+    },
+    {
+      "step": "N.4 Enter on button#addStu.sm \"+ Add\"",
+      "note": "the question box now reads \"Add a crew member\" · question boxes on screen: 1"
+    },
+    {
+      "step": "N.5 no second question opens over the first",
+      "pass": false,
+      "said": "first \"Rename course “26ABSG” to:\" → now \"Add a crew member\""
+    },
+    {
+      "step": "N.6 after Cancel on the second question: a question box on screen?",
+      "note": "null · course 26ABSG"
+    },
+    {
+      "step": "N.7 ✎ Rename course pressed again afterwards",
+      "note": "question \"Rename course “26ABSG” to:\" → course now \"LO RENAMED\""
+    }
+  ],
+  "errors": []
+}

@@ -1,0 +1,230 @@
+{
+  "rows": [
+    {
+      "step": "C1 1440 ACG-04: brought to the middle (true); pressed \"✎ Edit chart layout\" then \"✓ Done editing chart\"",
+      "note": "{\"before\":{\"cx\":471,\"cy\":500,\"fromMid\":{\"dx\":-71,\"dy\":0},\"boardTop\":133,\"boardH\":735,\"w\":57},\"on\":{\"cx\":470,\"cy\":582,\"fromMid\":{\"dx\":-72,\"dy\":-1},\"boardTop\":267,\"boardH\":633,\"w\":56},\"off\":{\"cx\":471,\"cy\":500,\"fromMid\":{\"dx\":-71,\"dy\":0},\"boardTop\":133,\"boardH\":735,\"w\":57}}"
+    },
+    {
+      "step": "C1 1440 ACG-04: entering Edit chart layout keeps the ball where it was against the middle of the chart's box",
+      "pass": true,
+      "said": "from the middle before (-71,0) · editing (-72,-1); box top 133 → 267"
+    },
+    {
+      "step": "C1 1440 ACG-04: after ✓ Done editing chart the ball is back where it was (≤2px)",
+      "pass": true,
+      "said": "(471,500) → (470,582) → (471,500)"
+    },
+    {
+      "step": "C1 1440 BFM-3: brought to the middle (true); pressed \"✎ Edit chart layout\" then \"✓ Done editing chart\"",
+      "note": "{\"before\":{\"cx\":296,\"cy\":500,\"fromMid\":{\"dx\":-246,\"dy\":0},\"boardTop\":133,\"boardH\":735,\"w\":57},\"on\":{\"cx\":296,\"cy\":582,\"fromMid\":{\"dx\":-246,\"dy\":-1},\"boardTop\":267,\"boardH\":633,\"w\":56},\"off\":{\"cx\":296,\"cy\":500,\"fromMid\":{\"dx\":-246,\"dy\":0},\"boardTop\":133,\"boardH\":735,\"w\":57}}"
+    },
+    {
+      "step": "C1 1440 BFM-3: entering Edit chart layout keeps the ball where it was against the middle of the chart's box",
+      "pass": true,
+      "said": "from the middle before (-246,0) · editing (-246,-1); box top 133 → 267"
+    },
+    {
+      "step": "C1 1440 BFM-3: after ✓ Done editing chart the ball is back where it was (≤2px)",
+      "pass": true,
+      "said": "(296,500) → (296,582) → (296,500)"
+    },
+    {
+      "step": "C1 1440: no console or page error",
+      "pass": true,
+      "said": ""
+    },
+    {
+      "step": "C1 390 ACG-04: brought to the middle (true); pressed \"✎ Edit chart layout\" then \"✓ Done editing chart\"",
+      "note": "{\"before\":{\"cx\":198,\"cy\":595,\"fromMid\":{\"dx\":3,\"dy\":110},\"boardTop\":158,\"boardH\":654,\"w\":23},\"on\":{\"cx\":197,\"cy\":729,\"fromMid\":{\"dx\":2,\"dy\":109},\"boardTop\":398,\"boardH\":446,\"w\":22},\"off\":{\"cx\":198,\"cy\":595,\"fromMid\":{\"dx\":3,\"dy\":110},\"boardTop\":158,\"boardH\":654,\"w\":23}}"
+    },
+    {
+      "step": "C1 390 ACG-04: entering Edit chart layout keeps the ball where it was against the middle of the chart's box",
+      "pass": true,
+      "said": "from the middle before (3,110) · editing (2,109); box top 158 → 398"
+    },
+    {
+      "step": "C1 390 ACG-04: after ✓ Done editing chart the ball is back where it was (≤2px)",
+      "pass": true,
+      "said": "(198,595) → (197,729) → (198,595)"
+    },
+    {
+      "step": "C1 390 BFM-3: brought to the middle (true); pressed \"✎ Edit chart layout\" then \"✓ Done editing chart\"",
+      "note": "{\"before\":{\"cx\":128,\"cy\":484,\"fromMid\":{\"dx\":-67,\"dy\":0},\"boardTop\":158,\"boardH\":654,\"w\":23},\"on\":{\"cx\":127,\"cy\":620,\"fromMid\":{\"dx\":-68,\"dy\":-1},\"boardTop\":398,\"boardH\":446,\"w\":22},\"off\":{\"cx\":128,\"cy\":484,\"fromMid\":{\"dx\":-67,\"dy\":0},\"boardTop\":158,\"boardH\":654,\"w\":23}}"
+    },
+    {
+      "step": "C1 390 BFM-3: entering Edit chart layout keeps the ball where it was against the middle of the chart's box",
+      "pass": true,
+      "said": "from the middle before (-67,0) · editing (-68,-1); box top 158 → 398"
+    },
+    {
+      "step": "C1 390 BFM-3: after ✓ Done editing chart the ball is back where it was (≤2px)",
+      "pass": true,
+      "said": "(128,484) → (127,620) → (128,484)"
+    },
+    {
+      "step": "C1 390: no console or page error",
+      "pass": true,
+      "said": ""
+    },
+    {
+      "step": "C1 844x390 ACG-04: brought to the middle (true); pressed \"✎ Edit chart layout\" then \"✓ Done editing chart\"",
+      "note": "{\"before\":{\"cx\":435,\"cy\":292,\"fromMid\":{\"dx\":13,\"dy\":0},\"boardTop\":226,\"boardH\":132,\"w\":52},\"on\":{\"cx\":434,\"cy\":306,\"fromMid\":{\"dx\":12,\"dy\":0},\"boardTop\":222,\"boardH\":169,\"w\":52},\"off\":{\"cx\":435,\"cy\":292,\"fromMid\":{\"dx\":13,\"dy\":0},\"boardTop\":226,\"boardH\":132,\"w\":52}}"
+    },
+    {
+      "step": "C1 844x390 ACG-04: entering Edit chart layout keeps the ball where it was against the middle of the chart's box",
+      "pass": true,
+      "said": "from the middle before (13,0) · editing (12,0); box top 226 → 222"
+    },
+    {
+      "step": "C1 844x390 ACG-04: after ✓ Done editing chart the ball is back where it was (≤2px)",
+      "pass": true,
+      "said": "(435,292) → (434,306) → (435,292)"
+    },
+    {
+      "step": "C1 844x390 BFM-3: brought to the middle (true); pressed \"✎ Edit chart layout\" then \"✓ Done editing chart\"",
+      "note": "{\"before\":{\"cx\":274,\"cy\":292,\"fromMid\":{\"dx\":-148,\"dy\":0},\"boardTop\":226,\"boardH\":132,\"w\":52},\"on\":{\"cx\":274,\"cy\":306,\"fromMid\":{\"dx\":-148,\"dy\":0},\"boardTop\":222,\"boardH\":169,\"w\":52},\"off\":{\"cx\":274,\"cy\":292,\"fromMid\":{\"dx\":-148,\"dy\":0},\"boardTop\":226,\"boardH\":132,\"w\":52}}"
+    },
+    {
+      "step": "C1 844x390 BFM-3: entering Edit chart layout keeps the ball where it was against the middle of the chart's box",
+      "pass": true,
+      "said": "from the middle before (-148,0) · editing (-148,0); box top 226 → 222"
+    },
+    {
+      "step": "C1 844x390 BFM-3: after ✓ Done editing chart the ball is back where it was (≤2px)",
+      "pass": true,
+      "said": "(274,292) → (274,306) → (274,292)"
+    },
+    {
+      "step": "C1 844x390: no console or page error",
+      "pass": true,
+      "said": ""
+    },
+    {
+      "step": "C15 dup-copyonly.0 the unsaved edit (ACG-05 dragged, + Test \"LO-P\", Done editing)",
+      "note": "{\"syllabus\":\"2026\",\"saveChanges\":true,\"lop\":true,\"moved\":\"translate(601.0,339.0)\"}"
+    },
+    {
+      "step": "C15 dup-copyonly.1 the unsaved edit shows: ✓ Save changes, the LO-P ball",
+      "pass": true,
+      "said": "{\"syllabus\":\"2026\",\"saveChanges\":true,\"lop\":true,\"moved\":\"translate(601.0,339.0)\"}"
+    },
+    {
+      "step": "C15 dup-copyonly.2 ⧉ Duplicate asks about the unsaved edit BEFORE the name",
+      "pass": true,
+      "said": "{\"q1\":\"You have unsaved flow edits on “2026”. The copy is made from the chart as it is on screen.\\n\\nKeep the edits on “2026” too?\",\"btns\":[\"dlgCancel=Cancel\",\"dlgAlt=No — only in the copy\",\"dlgOk=Yes — save them on both\"]}"
+    },
+    {
+      "step": "C15 dup-copyonly.3 then the name is asked",
+      "pass": true,
+      "said": "\"Name for the duplicated syllabus:\""
+    },
+    {
+      "step": "C15 dup-copyonly.4 the copy \"LO DUP-COPYONLY\" is on screen WITH the edit, saved (no ✓ Save changes)",
+      "pass": true,
+      "said": "{\"syllabus\":\"LO DUP-COPYONLY ✎\",\"saveChanges\":false,\"lop\":true,\"moved\":\"translate(601.0,339.0)\"}"
+    },
+    {
+      "step": "C15 dup-copyonly.5 the original \"2026\" is as it was (no LO-P) — as the answer said",
+      "pass": true,
+      "said": "{\"syllabus\":\"2026\",\"saveChanges\":false,\"lop\":false,\"moved\":\"translate(601.0,339.0)\"}"
+    },
+    {
+      "step": "C15 dup-copyonly: no console or page error",
+      "pass": true,
+      "said": ""
+    },
+    {
+      "step": "C15 dup-both.0 the unsaved edit (ACG-05 dragged, + Test \"LO-P\", Done editing)",
+      "note": "{\"syllabus\":\"2026\",\"saveChanges\":true,\"lop\":true,\"moved\":\"translate(601.0,339.0)\"}"
+    },
+    {
+      "step": "C15 dup-both.1 the unsaved edit shows: ✓ Save changes, the LO-P ball",
+      "pass": true,
+      "said": "{\"syllabus\":\"2026\",\"saveChanges\":true,\"lop\":true,\"moved\":\"translate(601.0,339.0)\"}"
+    },
+    {
+      "step": "C15 dup-both.2 ⧉ Duplicate asks about the unsaved edit BEFORE the name",
+      "pass": true,
+      "said": "{\"q1\":\"You have unsaved flow edits on “2026”. The copy is made from the chart as it is on screen.\\n\\nKeep the edits on “2026” too?\",\"btns\":[\"dlgCancel=Cancel\",\"dlgAlt=No — only in the copy\",\"dlgOk=Yes — save them on both\"]}"
+    },
+    {
+      "step": "C15 dup-both.3 then the name is asked",
+      "pass": true,
+      "said": "\"Name for the duplicated syllabus:\""
+    },
+    {
+      "step": "C15 dup-both.4 the copy \"LO DUP-BOTH\" is on screen WITH the edit, saved (no ✓ Save changes)",
+      "pass": true,
+      "said": "{\"syllabus\":\"LO DUP-BOTH ✎\",\"saveChanges\":false,\"lop\":true,\"moved\":\"translate(601.0,339.0)\"}"
+    },
+    {
+      "step": "C15 dup-both.5 the original \"2026\" KEEPS the edit (saved, ✎) — as the answer said",
+      "pass": true,
+      "said": "{\"syllabus\":\"2026 ✎\",\"saveChanges\":false,\"lop\":true,\"moved\":\"translate(601.0,339.0)\"}"
+    },
+    {
+      "step": "C15 dup-both: no console or page error",
+      "pass": true,
+      "said": ""
+    },
+    {
+      "step": "C15 dup-cancel.0 the unsaved edit (ACG-05 dragged, + Test \"LO-P\", Done editing)",
+      "note": "{\"syllabus\":\"2026\",\"saveChanges\":true,\"lop\":true,\"moved\":\"translate(601.0,339.0)\"}"
+    },
+    {
+      "step": "C15 dup-cancel.1 the unsaved edit shows: ✓ Save changes, the LO-P ball",
+      "pass": true,
+      "said": "{\"syllabus\":\"2026\",\"saveChanges\":true,\"lop\":true,\"moved\":\"translate(601.0,339.0)\"}"
+    },
+    {
+      "step": "C15 dup-cancel.2 ⧉ Duplicate asks about the unsaved edit BEFORE the name",
+      "pass": true,
+      "said": "{\"q1\":\"You have unsaved flow edits on “2026”. The copy is made from the chart as it is on screen.\\n\\nKeep the edits on “2026” too?\",\"btns\":[\"dlgCancel=Cancel\",\"dlgAlt=No — only in the copy\",\"dlgOk=Yes — save them on both\"]}"
+    },
+    {
+      "step": "C15 dup-cancel.3 Cancel: no copy made, the chart and its unsaved edit stay",
+      "pass": true,
+      "said": "{\"syllabus\":\"2026\",\"saveChanges\":true,\"lop\":true,\"moved\":\"translate(601.0,339.0)\"}"
+    },
+    {
+      "step": "C15 dup-cancel: no console or page error",
+      "pass": true,
+      "said": ""
+    },
+    {
+      "step": "C15 addsyl.0 the unsaved edit (ACG-05 dragged, + Test \"LO-P\", Done editing)",
+      "note": "{\"syllabus\":\"2026\",\"saveChanges\":true,\"lop\":true,\"moved\":\"translate(601.0,339.0)\"}"
+    },
+    {
+      "step": "C15 addsyl.1 + Add syllabus asks about the unsaved edit BEFORE the name (discard?)",
+      "pass": true,
+      "said": "\"You have unsaved flow edits on “2026”.\\nDiscard them and add a new syllabus?\""
+    },
+    {
+      "step": "C15 addsyl.2 Cancel: the chart and the edit stay",
+      "pass": true,
+      "said": "{\"syllabus\":\"2026\",\"saveChanges\":true,\"lop\":true,\"moved\":\"translate(601.0,339.0)\"}"
+    },
+    {
+      "step": "C15 addsyl.3 OK (discard): the name is asked",
+      "pass": true,
+      "said": "\"Name for the new (empty) syllabus:\""
+    },
+    {
+      "step": "C15 addsyl.4 the new empty syllabus \"LO NEW\" is on screen, empty, nothing waiting",
+      "pass": true,
+      "said": "{\"syllabus\":\"LO NEW ✎\",\"saveChanges\":false,\"lop\":false,\"moved\":null,\"balls\":0}"
+    },
+    {
+      "step": "C15 addsyl.5 back on \"2026\": the discarded edit is gone (no LO-P, no ✓ Save changes)",
+      "pass": true,
+      "said": "{\"syllabus\":\"2026\",\"saveChanges\":false,\"lop\":false,\"moved\":\"translate(601.0,339.0)\"}"
+    },
+    {
+      "step": "C15 addsyl: no console or page error",
+      "pass": true,
+      "said": ""
+    }
+  ],
+  "errors": []
+}

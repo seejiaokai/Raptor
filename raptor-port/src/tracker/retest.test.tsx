@@ -620,8 +620,12 @@ describe('[HUMAN-RETEST] the Tracker — the two code reads (Fable + Astra, 23 S
 
   it('Fable F-E — a year still being typed when DCO is pressed is not the flight\'s day', async () => {
     const s = await on26()
+    /* since the leftovers' walk (28 Sep 26, walker b F-b3) a day not finished is REFUSED
+       with its words, never rolled into today (it was today until then) */
     C.openPop('TR-2', at); C.popDoneChanged('0002-09-23'); await C.popGrade('dco')
-    expect(dayOf(s, 'TR-2')).toBe(C.isoToday())
+    expect(dayOf(s, 'TR-2'), 'not graded on a year still being typed').toBeFalsy()
+    expect(C.popMsg && C.popMsg.text).toBe(C.NOT_WHOLE)
+    C.closePop()
     await grade('TR-2', null, '0')
   })
 
@@ -766,10 +770,15 @@ describe('[HUMAN-RETEST] the Tracker — marking, Last Flown, deleting a ball, l
     await grade('TR-2', '2026-09-15')
     expect(lf(s).syll).toBe('2026-09-15')
     C.openPop('TR-2', at)
-    await C.popDoneChanged('')                    /* the box, mid-typing */
+    C.popDoneChanged('')                          /* the box, mid-typing */
     expect(dayOf(s, 'TR-2'), 'the flight keeps its day').toBe('2026-09-15')
     expect(lf(s).syll, 'Last Flown is not today').toBe('2026-09-15')
-    await C.popDoneChanged('2026-09-17')
+    /* since [TRK-RETEST-NOTES] C5 (28 Sep 26) the box re-dates the flight when it is LEFT,
+       and a box left empty goes back to the flight's day */
+    await C.popDoneCommit()
+    expect(C.popDoneDate, 'left empty, the box goes back to the day the flight has').toBe('2026-09-15')
+    expect(dayOf(s, 'TR-2')).toBe('2026-09-15')
+    C.popDoneChanged('2026-09-17'); await C.popDoneCommit()
     expect(dayOf(s, 'TR-2')).toBe('2026-09-17')
     expect(lf(s)).toEqual({ syll: '2026-09-17', curr: '2026-09-17' })
     C.closePop()
@@ -780,7 +789,7 @@ describe('[HUMAN-RETEST] the Tracker — marking, Last Flown, deleting a ball, l
     await grade('TR-2', '2026-09-23')
     await grade('TR-3', '2026-09-21')
     expect(lf(s).syll, 'an older flight entered after a newer one does not drag it back (R50)').toBe('2026-09-23')
-    C.openPop('TR-2', at); await C.popDoneChanged('2026-09-20'); C.closePop()
+    C.openPop('TR-2', at); C.popDoneChanged('2026-09-20'); await C.popDoneCommit(); C.closePop()
     expect(lf(s), 'correcting the newer flight to an earlier day pulls it back to the latest flown').toEqual({ syll: '2026-09-21', curr: '2026-09-21' })
     C.openPop('TR-3', at); await C.popGrade('0')
     expect(lf(s).syll, 'un-marking a flight pulls it back to the latest flight still flown').toBe('2026-09-20')
@@ -794,12 +803,14 @@ describe('[HUMAN-RETEST] the Tracker — marking, Last Flown, deleting a ball, l
 
   it('D123 — a Last Flown typed by hand still stands until a later flight moves it (left as it is today)', async () => {
     const s = await setup()
-    await C.setLastSyll(s, '2026-09-30')
+    /* the days are all before 28 Sep 26: a day after today is refused since D374 (this
+       test first used 30 Sep and 2 Oct, days still to come when it ran) */
+    await C.setLastSyll(s, '2026-09-26')
     await grade('TR-3', '2026-09-21')
-    expect(lf(s).syll, 'an older flight leaves the typed day').toBe('2026-09-30')
-    await grade('TR-2', '2026-10-02')
-    expect(lf(s).syll, 'a later flight moves it').toBe('2026-10-02')
-    C.openPop('TR-2', at); await C.popDoneChanged('2026-09-25'); C.closePop()
+    expect(lf(s).syll, 'an older flight leaves the typed day').toBe('2026-09-26')
+    await grade('TR-2', '2026-09-27')
+    expect(lf(s).syll, 'a later flight moves it').toBe('2026-09-27')
+    C.openPop('TR-2', at); C.popDoneChanged('2026-09-25'); await C.popDoneCommit(); C.closePop()
     expect(lf(s).syll, 'and from then on it is worked out from the flights').toBe('2026-09-25')
     await setup()
   })

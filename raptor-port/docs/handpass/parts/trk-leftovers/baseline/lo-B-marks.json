@@ -1,0 +1,92 @@
+{
+  "rows": [
+    {
+      "step": "crew roster",
+      "note": "STUDENT A, STUDENT B · picked STUDENT A"
+    },
+    {
+      "step": "C.0 the pop-up for ST-02: \"Failed on\" opens on",
+      "note": "2026-09-28"
+    },
+    {
+      "step": "C.1 after the first + (today)",
+      "note": "[\"ST-02 28/09/26\"] count 1"
+    },
+    {
+      "step": "C.2 after typing 10/09/2026 in \"Failed on\" and + again: the pop-up list",
+      "note": "[\"ST-02 28/09/26\",\"ST-02X 10/09/26\"] count 2 (box 2026-09-10)"
+    },
+    {
+      "step": "C.3 the Failures card chips (text / tooltip)",
+      "note": "[[\"ST-02\",\"ST-02 — 1st failure on ST-02 · 28/09/26\"],[\"ST-02X\",\"ST-02X — 2nd failure on ST-02 · 10/09/26\"]] · 2 fails"
+    },
+    {
+      "step": "C.4 − pressed once: the pop-up list left",
+      "note": "[\"ST-02 28/09/26\"] count 1"
+    },
+    {
+      "step": "C.5 the Failures card after −",
+      "note": "[[\"ST-02\",\"ST-02 — 1st failure on ST-02 · 28/09/26\"]] · 1 fail"
+    },
+    {
+      "step": "B.0 ACG-01: two failures recorded",
+      "note": "[\"ACG-01 28/09/26\",\"ACG-01X 28/09/26\"]"
+    },
+    {
+      "step": "B.1 the Failures card before N.A.",
+      "note": "[\"ACG-01\",\"ACG-01X\",\"ST-02\"] · 3 fails"
+    },
+    {
+      "step": "B.2 ACG-01 marked N.A.: red ticks on the ball / the Failures card",
+      "note": "ticks 0 · chips [\"ACG-01\",\"ACG-01X\",\"ST-02\"] · 3 fails"
+    },
+    {
+      "step": "B.3 the Failures card no longer counts or lists ACG-01's failures once it is N.A.",
+      "pass": false,
+      "said": "[\"ACG-01\",\"ACG-01X\",\"ST-02\"] · 3 fails"
+    },
+    {
+      "step": "B.4 the full failures list (the card's title)",
+      "note": "[\"ST-02 1st failure · Checklist Introduction\",\"ACG-01 1st failure · Course Introduction and Aircraft Overview\",\"ACG-01X 2nd failure · Course Introduction and Aircraft Overview\"]"
+    },
+    {
+      "step": "F.0 STUDENT B: one failure on BFM-3",
+      "note": "ticks 1"
+    },
+    {
+      "step": "F.1 STUDENT A picked, a press on B's red tick on BFM-3 (hits line.ftick at 296,525)",
+      "note": "opened grading: \"BFM-3 · STUDENT A\"; crew box still STUDENT A"
+    },
+    {
+      "step": "F.2 the press picks STUDENT B (does not open grading for A)",
+      "pass": false,
+      "said": "opened grading: \"BFM-3 · STUDENT A\"; crew box still STUDENT A"
+    },
+    {
+      "step": "H.0 the Currency card before (today 2026-09-28)",
+      "note": "{\"lastSyll\":\"\",\"lastCurr\":\"\",\"downDays\":\"\",\"upchit\":\"\",\"kv\":[\"Days since syllabus—\",\"Days since currency—\"]}"
+    },
+    {
+      "step": "H.1 TR-2 pop-up opened",
+      "note": "TR-2 · STUDENT A · Done on box 2026-09-28"
+    },
+    {
+      "step": "H.2 typed tomorrow (2026-09-29) into \"Done on\"",
+      "note": "box reads 2026-09-29"
+    },
+    {
+      "step": "H.3 TR-2 reopened after DCO",
+      "note": "Done on 2026-09-29 · caption \"Done on — sets Last Flown\" · title TR-2 · STUDENT A"
+    },
+    {
+      "step": "H.4 the Currency card after",
+      "note": "{\"lastSyll\":\"2026-09-29\",\"lastCurr\":\"2026-09-29\",\"downDays\":\"\",\"upchit\":\"\",\"kv\":[\"Days since syllabus-1d\",\"Days since currency-1d\"]}"
+    },
+    {
+      "step": "H.5 a future \"Done on\" is refused (the flight is not dated tomorrow)",
+      "pass": false,
+      "said": "Done on 2026-09-29 · Last Flown 2026-09-29 / 2026-09-29 · Days since syllabus-1d | Days since currency-1d"
+    }
+  ],
+  "errors": []
+}

@@ -1,0 +1,42 @@
+{
+  "rows": [
+    {
+      "step": "G.0 this month (Singapore)",
+      "note": "September 2026"
+    },
+    {
+      "step": "G.1 first \"+ Set lull period\" opens on",
+      "note": "{\"head\":\"Set lull period — STUDENT A\",\"month\":\"September 2026\",\"step\":\"Pick the first day of the period.\"}"
+    },
+    {
+      "step": "G.2 a period set",
+      "note": "2026-09-21 → 2026-09-22 · chips [\"21/09/26→22/09/26\"]"
+    },
+    {
+      "step": "G.3 the chip tapped: the calendar reads",
+      "note": "{\"head\":\"Change lull period — STUDENT A\",\"month\":\"September 2026\",\"step\":\"Pick the first day of the period.\"}"
+    },
+    {
+      "step": "G.4 arrowed on with ›",
+      "note": "{\"head\":\"Change lull period — STUDENT A\",\"month\":\"November 2026\",\"step\":\"Pick the first day of the period.\"}"
+    },
+    {
+      "step": "G.5 closed with ✕; chips",
+      "note": "[\"21/09/26→22/09/26\"]"
+    },
+    {
+      "step": "G.6 \"+ Set lull period\" pressed again: opens on",
+      "note": "{\"head\":\"Set lull period — STUDENT A\",\"month\":\"November 2026\",\"step\":\"Pick the first day of the period.\"}"
+    },
+    {
+      "step": "G.7 a NEW period opens on this month (September 2026), not the last month looked at",
+      "pass": false,
+      "said": "opens on \"November 2026\" (this month \"September 2026\", last looked at \"November 2026\")"
+    },
+    {
+      "step": "G.8 new period, ‹ twice (to September 2026), Escape, \"+ Set lull period\" again: opens on",
+      "note": "September 2026"
+    }
+  ],
+  "errors": []
+}

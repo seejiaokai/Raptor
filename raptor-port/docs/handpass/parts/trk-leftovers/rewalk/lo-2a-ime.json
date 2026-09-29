@@ -1,0 +1,133 @@
+{
+  "rows": [
+    {
+      "step": "D 1 Rename course: Enter while \"か\" is still being composed does NOT answer — the question stays, nothing renamed",
+      "pass": true,
+      "said": "box \"26ABSGか\" · the Enter the page saw: {\"t\":\"dlgInput\",\"composing\":true,\"ctrl\":false} · question up: true · course \"26ABSG\""
+    },
+    {
+      "step": "D 1 …the word committed, Enter answers OK as usual: renamed",
+      "pass": true,
+      "said": "course now \"26ABSGか\" · the Enter: {\"t\":\"dlgInput\",\"composing\":false,\"ctrl\":false}"
+    },
+    {
+      "step": "D 2 + Add search \"Talis\" + \"m\" being composed, one person left: Enter does NOT pick him",
+      "pass": true,
+      "said": "rows [\"Talisman\"] · the Enter: {\"t\":\"dlgFilter\",\"composing\":true,\"ctrl\":false} · box still up: true · students [\"STUDENT A\",\"STUDENT B\"]"
+    },
+    {
+      "step": "D 2 …committed, Enter picks the one person left as usual",
+      "pass": true,
+      "said": "students [\"STUDENT A\",\"STUDENT B\",\"TALISMAN\"]"
+    },
+    {
+      "step": "D 3 + Add search \"ZQX\" + \"Q\" being composed, nobody matches: Enter does NOT add a half-typed name",
+      "pass": true,
+      "said": "box said \"Add a crew member From the squadron roster Nobody on the roster matches “ZQXQ”. OK adds them as a new crew member. Cancel OK\" · the Enter: {\"t\":\"dlgFilter\",\"composing\":true,\"ctrl\":false} · students [\"STUDENT A\",\"STUDENT B\",\"TALISMAN\"]"
+    },
+    {
+      "step": "D 3 …committed, Enter adds the whole name \"ZQXQ\" as usual (D191)",
+      "pass": true,
+      "said": "students [\"STUDENT A\",\"STUDENT B\",\"TALISMAN\",\"ZQXQ\"]"
+    },
+    {
+      "step": "D 4 Find event \"ACG\" + \"-0\" being composed: Enter does NOT step to the next match",
+      "pass": true,
+      "said": "\"1 of 9\" → \"1 of 9\" · the Enter: {\"t\":\"hSearch\",\"composing\":true,\"ctrl\":false} · box \"ACG-0\""
+    },
+    {
+      "step": "D 4 …committed, Enter steps to the next match as usual",
+      "pass": true,
+      "said": "\"1 of 9\" → \"2 of 9\""
+    },
+    {
+      "step": "D 5 Show All → ACG-01 → Edit → Name: Ctrl+Enter while \"ね\" is being composed does NOT save — the editor stays open",
+      "pass": true,
+      "said": "the Ctrl+Enter: {\"t\":\"input\",\"composing\":true,\"ctrl\":true} · editor open: 1"
+    },
+    {
+      "step": "D 5 …committed, Ctrl+Enter saves as usual: the editor closes, the row shows the new Name",
+      "pass": true,
+      "said": "editor open: 0 · row \"ACG-01 Course Introduction and Aircraft Overviewねnot done Type: Lecture · 1.5 Hrs Crew: — Prerequisites: ST-01 Edit\""
+    },
+    {
+      "step": "D 5 Show All → ACG-01 → Edit → Crew: Ctrl+Enter while \"ね\" is being composed does NOT save — the editor stays open",
+      "pass": true,
+      "said": "the Ctrl+Enter: {\"t\":\"textarea\",\"composing\":true,\"ctrl\":true} · editor open: 1"
+    },
+    {
+      "step": "D 5 …committed, Ctrl+Enter saves as usual: the editor closes, the row shows the new Crew",
+      "pass": true,
+      "said": "editor open: 0 · row \"ACG-01 Course Introduction and Aircraft Overviewねnot done Type: Lecture · 1.5 Hrs Crew: ね Prerequisites: ST-01 Edit\""
+    },
+    {
+      "step": "D console / page errors",
+      "note": "none"
+    },
+    {
+      "step": "P 1 Rename course: Enter while \"か\" is still being composed does NOT answer — the question stays, nothing renamed",
+      "pass": true,
+      "said": "box \"26ABSGか\" · the Enter the page saw: {\"t\":\"dlgInput\",\"composing\":true,\"ctrl\":false} · question up: true · course \"26ABSG\""
+    },
+    {
+      "step": "P 1 …the word committed, Enter answers OK as usual: renamed",
+      "pass": true,
+      "said": "course now \"26ABSGか\" · the Enter: {\"t\":\"dlgInput\",\"composing\":false,\"ctrl\":false}"
+    },
+    {
+      "step": "P 2 + Add search \"Talis\" + \"m\" being composed, one person left: Enter does NOT pick him",
+      "pass": true,
+      "said": "rows [\"Talisman\"] · the Enter: {\"t\":\"dlgFilter\",\"composing\":true,\"ctrl\":false} · box still up: true · students [\"STUDENT A\",\"STUDENT B\"]"
+    },
+    {
+      "step": "P 2 …committed, Enter picks the one person left as usual",
+      "pass": true,
+      "said": "students [\"STUDENT A\",\"STUDENT B\",\"TALISMAN\"]"
+    },
+    {
+      "step": "P 3 + Add search \"ZQX\" + \"Q\" being composed, nobody matches: Enter does NOT add a half-typed name",
+      "pass": true,
+      "said": "box said \"Add a crew member From the squadron roster Nobody on the roster matches “ZQXQ”. OK adds them as a new crew member. Cancel OK\" · the Enter: {\"t\":\"dlgFilter\",\"composing\":true,\"ctrl\":false} · students [\"STUDENT A\",\"STUDENT B\",\"TALISMAN\"]"
+    },
+    {
+      "step": "P 3 …committed, Enter adds the whole name \"ZQXQ\" as usual (D191)",
+      "pass": true,
+      "said": "students [\"STUDENT A\",\"STUDENT B\",\"TALISMAN\",\"ZQXQ\"]"
+    },
+    {
+      "step": "P 4 Find event \"ACG\" + \"-0\" being composed: Enter does NOT step to the next match",
+      "pass": true,
+      "said": "\"1 of 9\" → \"1 of 9\" · the Enter: {\"t\":\"hSearch\",\"composing\":true,\"ctrl\":false} · box \"ACG-0\""
+    },
+    {
+      "step": "P 4 …committed, Enter steps to the next match as usual",
+      "pass": true,
+      "said": "\"1 of 9\" → \"2 of 9\""
+    },
+    {
+      "step": "P 5 Show All → ACG-01 → Edit → Name: Ctrl+Enter while \"ね\" is being composed does NOT save — the editor stays open",
+      "pass": true,
+      "said": "the Ctrl+Enter: {\"t\":\"input\",\"composing\":true,\"ctrl\":true} · editor open: 1"
+    },
+    {
+      "step": "P 5 …committed, Ctrl+Enter saves as usual: the editor closes, the row shows the new Name",
+      "pass": true,
+      "said": "editor open: 0 · row \"ACG-01 Course Introduction and Aircraft Overviewねnot done Type: Lecture · 1.5 Hrs Crew: — Prerequisites: ST-01 Edit\""
+    },
+    {
+      "step": "P 5 Show All → ACG-01 → Edit → Crew: Ctrl+Enter while \"ね\" is being composed does NOT save — the editor stays open",
+      "pass": true,
+      "said": "the Ctrl+Enter: {\"t\":\"textarea\",\"composing\":true,\"ctrl\":true} · editor open: 1"
+    },
+    {
+      "step": "P 5 …committed, Ctrl+Enter saves as usual: the editor closes, the row shows the new Crew",
+      "pass": true,
+      "said": "editor open: 0 · row \"ACG-01 Course Introduction and Aircraft Overviewねnot done Type: Lecture · 1.5 Hrs Crew: ね Prerequisites: ST-01 Edit\""
+    },
+    {
+      "step": "P console / page errors",
+      "note": "none"
+    }
+  ],
+  "errors": []
+}

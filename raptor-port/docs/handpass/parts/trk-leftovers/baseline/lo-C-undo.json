@@ -1,0 +1,93 @@
+{
+  "rows": [
+    {
+      "step": "D.0 three marks made (ST-01, ACG-01, ST-02 DCO); ↶ says",
+      "note": "{\"off\":false,\"t\":\"Undo the mark on ST-02 for STUDENT A (Ctrl+Z)\"} · {\"ST-01\":\"#000000\",\"ACG-01\":\"#000000\",\"ST-02\":\"#000000\"}"
+    },
+    {
+      "step": "D1.1 pace changed to 4: ↶ tooltip just before Ctrl+Z",
+      "note": "\"Undo the mark on ST-02 for STUDENT A (Ctrl+Z)\""
+    },
+    {
+      "step": "D1.2 Ctrl+Z on the chart right after the pace change",
+      "note": "{\"pace\":\"4\",\"marks\":{\"ST-01\":\"#000000\",\"ACG-01\":\"#000000\",\"ST-02\":\"#ffffff\"},\"status\":\"● saved\"}"
+    },
+    {
+      "step": "D1.3 Ctrl+Z does NOT silently take back an older mark after a pace change",
+      "pass": false,
+      "said": "{\"pace\":\"4\",\"ST-02\":\"#ffffff\",\"status\":\"● saved\"}"
+    },
+    {
+      "step": "D2.1 End date A typed (15/12/2026): ↶ tooltip just before Ctrl+Z",
+      "note": "\"Undo the mark on ACG-01 for STUDENT A (Ctrl+Z)\""
+    },
+    {
+      "step": "D2.2 Ctrl+Z right after the End date change",
+      "note": "{\"endA\":\"2026-12-15\",\"marks\":{\"ST-01\":\"#000000\",\"ACG-01\":\"#ffffff\",\"ST-02\":\"#ffffff\"},\"status\":\"● saved\"}"
+    },
+    {
+      "step": "D2.3 Ctrl+Z does NOT silently take back an older mark after an End date change",
+      "pass": false,
+      "said": "{\"endA\":\"2026-12-15\",\"marksBefore\":{\"ST-01\":\"#000000\",\"ACG-01\":\"#000000\",\"ST-02\":\"#ffffff\"},\"marksAfter\":{\"ST-01\":\"#000000\",\"ACG-01\":\"#ffffff\",\"ST-02\":\"#ffffff\"}}"
+    },
+    {
+      "step": "D3.1 lull period added (2026-09-11→2026-09-12): ↶ tooltip just before Ctrl+Z",
+      "note": "\"Undo the mark on ST-01 for STUDENT A (Ctrl+Z)\" (greyed false) · lulls [\"11/09/26→12/09/26\"]"
+    },
+    {
+      "step": "D3.2 Ctrl+Z right after the lull period",
+      "note": "{\"lulls\":[\"11/09/26→12/09/26\"],\"marks\":{\"ST-01\":\"#ffffff\",\"ACG-01\":\"#ffffff\",\"ST-02\":\"#ffffff\"},\"status\":\"● saved\"}"
+    },
+    {
+      "step": "D3.3 Ctrl+Z does NOT silently take back an older mark after a lull period",
+      "pass": false,
+      "said": "{\"marksBefore\":{\"ST-01\":\"#000000\",\"ACG-01\":\"#ffffff\",\"ST-02\":\"#ffffff\"},\"marksAfter\":{\"ST-01\":\"#ffffff\",\"ACG-01\":\"#ffffff\",\"ST-02\":\"#ffffff\"}}"
+    },
+    {
+      "step": "E Upchit: typed 02/11 then the year 2026 one digit every 2.3 s",
+      "note": "{\"before\":\"\",\"series\":[{\"box\":\"0002-11-02\",\"stored\":\"0002-11-02\"},{\"box\":\"0020-11-02\",\"stored\":\"0020-11-02\"},{\"box\":\"0202-11-02\",\"stored\":\"0202-11-02\"},{\"box\":\"2026-11-02\",\"stored\":\"2026-11-02\"}],\"steps\":4,\"afterOneUndo\":\"0202-11-02\",\"storedAfter\":\"0202-11-02\"}"
+    },
+    {
+      "step": "E Upchit: one ↶ does not leave a half-typed year on screen or in the store",
+      "pass": false,
+      "said": "after one ↶ the box reads \"0202-11-02\", stored \"0202-11-02\", 4 steps recorded"
+    },
+    {
+      "step": "E Last Flown (Currency): typed 02/11 then the year 2026 one digit every 2.3 s",
+      "note": "{\"before\":\"\",\"series\":[{\"box\":\"0002-11-02\",\"stored\":\"0002-11-02\"},{\"box\":\"0020-11-02\",\"stored\":\"0020-11-02\"},{\"box\":\"0202-11-02\",\"stored\":\"0202-11-02\"},{\"box\":\"2026-11-02\",\"stored\":\"2026-11-02\"}],\"steps\":4,\"afterOneUndo\":\"0202-11-02\",\"storedAfter\":\"0202-11-02\"}"
+    },
+    {
+      "step": "E Last Flown (Currency): one ↶ does not leave a half-typed year on screen or in the store",
+      "pass": false,
+      "said": "after one ↶ the box reads \"0202-11-02\", stored \"0202-11-02\", 4 steps recorded"
+    },
+    {
+      "step": "E Last Flown (Syllabus): typed 02/11 then the year 2026 one digit every 2.3 s",
+      "note": "{\"before\":\"\",\"series\":[{\"box\":\"0002-11-02\",\"stored\":\"0002-11-02\"},{\"box\":\"0020-11-02\",\"stored\":\"0020-11-02\"},{\"box\":\"0202-11-02\",\"stored\":\"0202-11-02\"},{\"box\":\"2026-11-02\",\"stored\":\"2026-11-02\"}],\"steps\":4,\"afterOneUndo\":\"0202-11-02\",\"storedAfter\":\"0202-11-02\"}"
+    },
+    {
+      "step": "E Last Flown (Syllabus): one ↶ does not leave a half-typed year on screen or in the store",
+      "pass": false,
+      "said": "after one ↶ the box reads \"0202-11-02\", stored \"0202-11-02\", 4 steps recorded"
+    },
+    {
+      "step": "E down days: typed \"12\" one digit every 2.3 s",
+      "note": "{\"before\":\"\",\"series\":[{\"box\":\"1\",\"stored\":\"1\"},{\"box\":\"12\",\"stored\":\"12\"}],\"steps\":2,\"afterOneUndo\":\"1\",\"storedAfter\":\"1\"}"
+    },
+    {
+      "step": "E down days: one ↶ goes back to what the box held before the typing",
+      "pass": false,
+      "said": "after one ↶ the box reads \"1\" (before \"\"), stored \"1\", 2 steps"
+    },
+    {
+      "step": "E Done on (TR-2, DCO today): typed 21/09 then the year one digit every 2.3 s",
+      "note": "{\"before\":\"2026-09-28\",\"series\":[{\"box\":\"0002-09-21\",\"storedDone\":\"2026-09-21\",\"lastFlown\":\"2026-09-21\"},{\"box\":\"0020-09-21\",\"storedDone\":\"2026-09-21\",\"lastFlown\":\"2026-09-21\"},{\"box\":\"0202-09-21\",\"storedDone\":\"2026-09-21\",\"lastFlown\":\"2026-09-21\"},{\"box\":\"2026-09-21\",\"storedDone\":\"2026-09-21\",\"lastFlown\":\"2026-09-21\"}],\"steps\":2,\"afterOneUndo\":\"2026-09-21\",\"storedAfter\":{\"g\":\"dco\",\"f\":0,\"d\":\"2026-09-21\",\"at\":\"2026-09-28T10:20:53.116Z\",\"by\":\"Saber\"},\"lastFlown\":\"2026-09-21\"}"
+    },
+    {
+      "step": "E Done on: no half-typed year ever saved, one ↶ goes back to the day before the typing",
+      "pass": false,
+      "said": "series [{\"box\":\"0002-09-21\",\"storedDone\":\"2026-09-21\",\"lastFlown\":\"2026-09-21\"},{\"box\":\"0020-09-21\",\"storedDone\":\"2026-09-21\",\"lastFlown\":\"2026-09-21\"},{\"box\":\"0202-09-21\",\"storedDone\":\"2026-09-21\",\"lastFlown\":\"2026-09-21\"},{\"box\":\"2026-09-21\",\"storedDone\":\"2026-09-21\",\"lastFlown\":\"2026-09-21\"}] · after one ↶ \"2026-09-21\" (before \"2026-09-28\")"
+    }
+  ],
+  "errors": []
+}

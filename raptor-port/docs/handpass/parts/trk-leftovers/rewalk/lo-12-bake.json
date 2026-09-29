@@ -1,0 +1,22 @@
+[
+  {
+    "step": "the running app exported its charts",
+    "pass": true,
+    "said": "v3, 4 charts"
+  },
+  {
+    "step": "a dry run bakes the four built-ins and writes nothing",
+    "pass": true,
+    "said": "DRY RUN — nothing written. Baked: 2024 · 2026 · Tx 2026 · A/G - A/A 2026\nCharts made in the app, not baked: none\nBuilt-ins the file does not carry, left as they are: none\nEvent details baked: none\nShipped order: 2024 · 2026 · Tx 2026 · A/G - A/A 2026\nStudent names checked: 0\n"
+  },
+  {
+    "step": "a real run completes and says to run the smoke suite",
+    "pass": true,
+    "said": "Baked: 2024 · 2026 · Tx 2026 · A/G - A/A 2026\nCharts made in the app, not baked: none\nBuilt-ins the file does not carry, left as they are: none\nEvent details baked: none\nShipped order: 2024 · 2026 · Tx 2026 · A/G - A/A 2026\nStudent names checked: 0\nNow run the Tracker smoke suite: it asserts some of this data.\n"
+  },
+  {
+    "step": "no console or page error",
+    "pass": true,
+    "said": ""
+  }
+]

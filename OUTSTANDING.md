@@ -77,11 +77,10 @@ whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaini
 
 **Placed by their own lines — not his rulings:** the Leave War — [LW-FROZEN-BAR-GAP] (after [HUMAN-RETEST]; show him
 first), [LW-SCRUBBER-FLAKY] (test-only), [LW-ISO-DATES] (low, from the
-absence-record re-test), [LW-SPARE-MOVE-DOORS] (low, with the next Leave War move change), [PO-RESTORE-POSTING] (low, from its final code read), [LW-OFFER-ONLY-TAKEABLE] (low, with [LW-LOCKMARK]), [ABSENCE-SMALL-SEEN] (any time), [LW-HARNESS-VIEWER-PIN] (test-only, low), [CI-FAIL-PICTURES] (his call, low); the Inputs calendar — [INPUTSCAL-TAP-FLAKY] (test-only). The Tracker — [TRK-RETEST-NOTES] and
-[TRK-EDIT-SIDEWAYS] (their gates have passed), [TRK-PINCH-ASK] (his next Tracker session), [TRK-SESSION-PICK] (low, the next Tracker change), [TRK-DLG-LEFTOVERS] (low, with the next question-box change), [TRK-FLEXBAR-INK] (a question for him, on the Tracker-palette
-look card — D157, merged PR #441), [TRK-BAKE-STALE] (low).
+absence-record re-test), [LW-SPARE-MOVE-DOORS] (low, with the next Leave War move change), [PO-RESTORE-POSTING] (low, from its final code read), [LW-OFFER-ONLY-TAKEABLE] (low, with [LW-LOCKMARK]), [ABSENCE-SMALL-SEEN] (any time), [LW-HARNESS-VIEWER-PIN] (test-only, low), [CI-FAIL-PICTURES] (his call, low), [LW-DOZE-GUARDS] (low, check first); the shell — [SHELL-SIDEWAYS-BAR] (low, with the next top-bar change), [SAVE-NOTE-COVERS] (medium, next), [TRK-SAVE-FAIL-SAYS-SAVED] (low, with [DB-READINESS]), [TRK-ASYNC-STALE] (with [DB-READINESS]); the Tracker — [TRK-REMOUNT-LANDING] (low, with the next Tracker change); the Inputs calendar — [INPUTSCAL-TAP-FLAKY] (test-only); the changes window — [HISTLIST-SLOW-TEST] (test-only, low). The Tracker — [TRK-PINCH-ASK] (his next Tracker session), [TRK-FLEXBAR-INK] (a question for him, on the Tracker-palette
+look card — D157, merged PR #441).
 The amendment area — PR #434, #435, #437 and #438 MERGED (25–26 Sep 26); left: [REQ-ORPHAN-ROW] and [REQ-DOOR-WORDS] (both low; built on `claude/small-fixes-batch-d223f6`), [PLAN-BANNER-DOOR] (low, filed by that batch's walk), [GATELOCK-STALE-LIVE] (low, the check lock's stale rule). Left from the amendment batch (D91–D111, merged): [AVAILWIN-PREVIEW-BAR] (low), [AMEND-SMALL-SEEN] (any time). The docs and the checks — [DEPLOY-DOCS] (its operational half), [DOC-POINTERS-CODE] and
-[RULINGS-LF-PIN] (with the next code change), [PEEK-ISSUED] (a question for him, low), [RULINGS-SLIM] (NOW, his "Approve", D390 — on `claude/docs-rulings-slim-down-e83c74`), [RULING-HOME-HOOK] (low, after it) — [DOC-SUBHEADS], [RULING-HOMES-AUDIT]
+[RULINGS-LF-PIN] (with the next code change), [PEEK-ISSUED] (a question for him, low), [RULING-HOME-HOOK] (low), [GUIDE-MAP-ROWS] (low, a question for him) — [DOC-SUBHEADS], [RULING-HOMES-AUDIT]
 and [HANDOFF-SHAPE-GUARD] done on `claude/docs-tidy-subheads-audit-ec8f87` (28 Sep 26; archived),
 Roles — [QUALS-MEMBER-SCOPE] (folded into [ACCOUNTS], D200), and beside it [QUALS-PROTO-TOAST] (low, one line of words).
 The five-flags batch (built on `claude/five-flags-batch-build-ef7d85`, 26 Sep 26; FULL-checked and its PR from `claude/five-flags-batch-continue-2cfa70`, 27 Sep 26 — its five items archived) — his answers D270–D275 BUILT and FULL-checked on that branch, 27 Sep 26 (their three items archived); his look card's four questions answered 27 Sep 26 (D276–D279, nothing to build);
@@ -782,48 +781,6 @@ the body is `raptor-port/src/engine/oilev.ts` `landedExtras`, and its own commen
 
 ---
 
-### [TRK-RETEST-NOTES] The Tracker walk's smaller notes — filed, not fixed (23 Sep 26)
-**Place:** after the Tracker `[HUMAN-RETEST]` merges; none blocks it. Found by the three walkers
-(`raptor-port/docs/handpass/parts/tracker/w1.md`, `w2.md`, `w3.md`), each with its picture there.
-Marked **his call** where the answer is product direction, not a defect.
-- **Entering ✎ Edit chart layout moves a scrolled chart** 190–240px (ACG-04 500 → 262; back to 449, not
-  500) — the code means to keep the view (`toggleArrange`); the arrange canvas drops the centring slack
-  (`padBoard`) without moving the scroll by it. A real defect, small. (w2 off-list)
-- **The Failures card still counts failures on an N.A. event** while the ball hides its ticks — his call. (w2 N1)
-- **The X labels follow the order failures were RECORDED, not their days**; − takes back the last
-  recorded — his call. (w2 N2)
-- **Ctrl+Z right after a pace / end-date / lull change takes back an OLDER mark** (those are not in the
-  history; the ↶ tooltip is honest, the key is not). (w2 N3)
-- **A slowly typed date undoes through half-typed years** (Upchit read 02/11/0202) — the Done-on box
-  now ignores half-typed years (W2-F2); the Last Flown, down-days and upchit boxes do not. (w2 N4)
-- **A press on another student's red failure tick grades the picked student** instead of picking the
-  owner of that slice (a thin target). (w2 N5)
-- **+ Set lull period opens on the last month looked at**, not this month. (w2 N6)
-- **A future "Done on" day is accepted** (Currency then reads "−1d") — his call; D123 lets it come back
-  down. (w2 N7)
-- **After a students import a course new to the app is added after the app's own courses** (the
-  course-order twin of F6); students are demo data under D120, so low. (w1 O3)
-- **On a phone the Crew box reads "STUDEN…" for every student** (88px at every width under 1050). (w3 O1)
-- **A + Add dialog left open while the roster changes keeps its old list** (keyboard-only). (w3 O3)
-- **At 844×390 Raptor's own top bar is 149px** (the desktop menu in two rows) — a shell matter; the
-  Tracker's column now fits under it (w3-F3). (w3 O4)
-- **A `scheduler.css` comment says a dozing page's insides read 0×0** — they report full boxes. (w3 O5)
-- **At 1200px the status beside ✓ Save changes shortens to "● un…"** (whole on hover) — the price of the
-  fixed save corner (w3-F5); the button says what matters.
-
-### [TRK-EDIT-SIDEWAYS] Edit chart layout on a sideways phone leaves the chart no room (23 Sep 26)
-**Place:** after `[TRK-PINCH-DRAGS-BALL]`. At 844×390 the tool strip fills the screen and the chart area is
-0px — nothing to see, drag or pinch (picture `docs/img/handpass/2026-09-23-tracker-pinch/after-phone-sideways-edit-no-room.png`).
-Upright it keeps 446px. Older than the pinch fix (F-C in its sheet). A layout job: fold or scroll the strip sideways.
-
-### [TRK-SESSION-PICK] The Tracker reopens on the previous person's course and student after a sign-in (filed 26 Sep 26)
-Astra's read of `[ACCOUNTS]` (finding 3): `tracker/app/core.js endSession` clears undo, dialogs, modes and search, but not
-the selected course and student, and the "last course / last crew" it remembers is per browser, not per person — so the
-next person on the same browser opens on the last one's pick. Not a leak (the Tracker is everyone's, D121), a wrong
-starting point. **Do:** start each sign-in on the default course and no student, or keep the "last pick" per person
-(`tracker/role.js` would carry who signed in); extend `retest.test.tsx` F10 across a sign-out. **Place:** low — the next
-Tracker change; its smoke suite pins the "last pick" behaviour, so it is not a one-liner.
-
 ### [TRK-PINCH-ASK] His iPhone look at the pinch fix (24 Sep 26)
 **Place:** his next Tracker session — nothing is broken; `[TRK-PINCH-DRAGS-BALL]` merged on D133 without his look.
 The two feel questions are ANSWERED — **D134: keep both as built** (a deliberate drag joined by a second finger goes
@@ -831,20 +788,48 @@ back; the finger left down after a pinch does nothing). Left: his look card, on 
 `raptor-port/docs/handpass/2026-09-23-tracker-pinch-ball.md` §12 — Safari is the one browser no walk here drives, and
 one line of the fix (the board holding both fingers) is proven only there.
 
-### [TRK-DLG-LEFTOVERS] Two small gaps in the Tracker's question box (25 Sep 26)
-**Place:** low — with the next Tracker change that touches `Modals.jsx` or `core.js` `_dlgShow`. Found by Fable's read
-of `[TRK-SMOKE-ADD-RACE]` (F2, F3), both older, read from the code: (1) a second question opened while one is open
-(reachable by Tab to a control behind the shade, then Enter) replaces it, and the first one's job waits forever --
-fix: `_dlgShow` answers an open question as cancelled before showing the next; test: `uiPrompt('a')` then
-`uiPrompt('b')`, the first resolves null. (2) Enter pressed while a phone keyboard is still composing a word
-submits the half-typed text — fix: skip Enter when `e.nativeEvent.isComposing` (the text box and the search); test
-with `isComposing: true`. Detail: `raptor-port/docs/handpass/2026-09-25-trk-add-race.md` §8.
+### [LW-DOZE-GUARDS] Do the Leave War's measurement guards ever run while its page dozes? (filed 28 Sep 26)
+**Place:** low — check before building anything. Found by Fable's read of the Tracker leftovers plan (F12): the
+`.page.doze` comment in `raptor-port/src/ui/scheduler.css` said a dozing page's insides "read 0×0 … which is what every
+Matrix measurement guard already checks for"; measured 28 Sep 26 (the leftovers' baseline walk, O), they do NOT — a dozing
+section is 0 tall but its insides keep their last boxes, unpainted. The comment is corrected (on
+`claude/tracker-leftovers-f79d36`). **Do:** check whether `raptor-port/src/leavewar/ui/Matrix.tsx`'s guards on
+`width === 0` (~2285, ~3133, ~3135) can run while the Leave War page dozes; if one can, it would measure stale boxes —
+switch it to the section's `.on` / `.doze`. Nothing on screen is known to be wrong.
 
-### [TRK-BAKE-STALE] The chart-baking script no longer runs (found 23 Sep 26)
-`raptor-port/scripts/tracker/bake-user-charts.mjs` resolves `src/data/…` from `scripts/` (the folder
-does not exist — the data is `src/tracker/data/`), reads name-keyed charts (before the 13 Sep ids) and
-the one-table `eventInfo` (before D126). The D120 route (export → wipe → import) does not need it; fix
-it only if baking a chart into the shipped data comes back. **Place:** low, after `[TRK-RETEST-NOTES]`.
+### [SHELL-SIDEWAYS-BAR] Raptor's own top bar is 149px tall on a sideways phone (filed 28 Sep 26)
+**Place:** low — with the next change to Raptor's top bar (the parallel chat's D347 move of the Tracker's ↶ ↷ into it
+measured it at 149px before and after). At 844×390 the desktop menu wraps into two rows and takes 149 of 390px — the
+biggest single piece of a sideways phone's screen (the Tracker walk's w3 O4, moved here from `[TRK-RETEST-NOTES]` when the
+Tracker's own fold, D373, was built). A shell layout question, and a visual one: a picture first.
+
+### [SAVE-NOTE-COVERS] Raptor's "Not saved — Retry" note floats over the page's own controls (filed 28 Sep 26)
+**Place:** medium — next, on its own small branch (a shell matter; the change-recording chat is changing the top bar —
+tell it first, D302). Found by the Tracker leftovers' walk (walker c, F2; pictures
+`raptor-port/docs/img/handpass/2026-09-28-trk-leftovers/walk/lo-2c-b06-1200.png`, `…-b06-390.png`): when a save fails,
+the note that floats under the top bar's right end (since `[LW-FIGSEL-FLAKE]`, merged 28 Sep 26) lands exactly over the
+Tracker's ✓ Save changes at 1200px — a press on Save's middle hits Retry, a press on the note's words passes through to
+Save beneath — and at 390px its Retry sits on the ✎ Syllabus menu button. It reads amber, not red. **Do:** a
+roll-call of every page's controls under the note's spot (Edit Schedule, the board, the Leave War, the Tracker, Quals,
+Admin) at phone and desktop; give the note a place that covers nothing (or pushes nothing), with a browser test that
+the element at each covered control's centre is still that control.
+
+### [TRK-SAVE-FAIL-SAYS-SAVED] Inside Raptor the Tracker says "saved" when the save failed (filed 28 Sep 26)
+**Place:** low — with `[DB-READINESS]` (honest refusals and saves in small pieces are that batch's job). Found by the
+Tracker leftovers' walk (walker c, F3; pictures `…/walk/lo-2c-b07-1200.png`, `…-b07-390.png`): with storage refusing
+writes, ✓ Save changes turned the Tracker's corner green — "● syllabus “2026” saved …" — beside Raptor's "Not saved —
+Retry". Raptor's in-memory store accepts the write and only its background saver fails, so the Tracker never hears of
+it; its red error words can only fire for a failed Export. Nothing is lost if Retry is pressed (walked). **Do:** let the
+Tracker's save status follow the storage seam's real outcome (the whiteboard's pending / failed state), so a failed save
+never reads "saved" anywhere.
+
+### [TRK-REMOUNT-LANDING] Coming back to the Tracker the chart lands at its top corner, or with empty chart above (filed 28 Sep 26)
+**Place:** low — with the next Tracker change. Seen by the Tracker leftovers' walk, both walkers (walker a obs. 3 —
+the same person out and in, the chart jumps from the centred first ball to the top corner, scroll 73 → 396, phone
+36 → 352, `…/walk/lo-2a-D07b…`, `…-D07c…`; walker c — at 390 a reopened Tracker, centred on the last-marked ball, shows
+~240px of empty chart above ST-01, `…/walk/lo-2c-e09…`). The existing remount drawing (App.jsx's ready effect redraws
+without landing), not the per-person pick (D376). **Do:** land a remounted chart the way a pick lands it (the last
+mark, else the first event), and check the phone's landing leaves no empty band above the first ball.
 
 ### [ADMIN-DISPLAY] An Admin "Display" area of per-section fold defaults — awaiting his go-ahead, do NOT build without it (moved from HANDOFF.md, 24 Sep 26)
 **DEFERRED BY HIM (D161, 24 Sep 26): "next time we revisit this again"** — put it to him again when Admin or the
@@ -892,6 +877,28 @@ Noted by the sweep behind `[LEAVE-LATE-PUBLISHED]` (Astra, its plan read; carrie
 working copy, so on View-only Sched a published next-week day shows edits not yet issued. Astra recommends the issued
 content there too, as the published face does (D178, D179). **The question:** should the peek show the published version
 of a published day? **Place:** low; its own small WALK-tier build if yes.
+
+### [TRK-ASYNC-STALE] Once storage is truly slow, a Tracker job must re-check its person and target after every wait (filed 28 Sep 26)
+**Place:** with `[DB-READINESS]` — it cannot happen before the shared database. Found by Astra's final read of the
+Tracker leftovers (ASTRA-02, ASTRA-04): a job that waits on storage and then acts — a person's place loading, + Add,
+Remove, an undo; Delete course, Reset layout after their question — reads the LIVE person, course and chart when it
+acts, not the ones it started with. Today the Tracker's storage answers at once without handing control back to the
+browser, so no tap, sign-in or course switch can land between a job's steps (walked 28 Sep 26: under a 20× slowed
+processor no press could reach the page mid-load). With a network behind it, one could: a sign-in during the last
+person's place loading would leave their place on screen; a course switch landing under "Delete course 26ABSG?" would
+delete the course switched to. **Do:** give each such job the person, course and chart it started with (Astra: a
+counter bumped at every session end or load, captured at the start, checked after each wait — the import already does
+this for the session, Fable's F6); `resumeForPerson` re-runs when the person changed while it loaded; a question's
+answer acts only if what it named is still what is on screen, else says the selection changed. With a test on a
+deliberately slow storage.
+
+### [HISTLIST-SLOW-TEST] One changes-window test runs at 8s alone and times out (20s) in a busy full run — test-only (filed 28 Sep 26)
+**Place:** low, test-only — with the next change to the changes window. Found by the Tracker leftovers' gates: `src/ui/histlist.test.tsx`
+"the phone expands the bubble by hand › offers a control only where there is more to show, and only on a phone" took
+8.3s on its own (the file's other eight 1.5–3.2s) and timed out at 20s twice in full unit runs on 28 Sep 26 while the
+PC carried other work (a fanned-out walk; two reviewers reading); alone it passes, 9/9. Not an app fault. **Do:** find
+what makes that one test slow (it likely redraws the board at both widths per case) and trim the setup, or give it
+its own time limit with the reason beside it — never a bare longer limit for the whole file.
 
 ### [INPUTSCAL-TAP-FLAKY] The calendar's chip-tap test fails now and then inside the full unit run, never alone — test-only (filed 26 Sep 26)
 `raptor-port/src/ui/inputscal.test.tsx` "a real pointerdown+pointerup on an input chip sets INPEDIT to that EXACT record":
@@ -1179,17 +1186,6 @@ login — the pictures show only the invented demo world (no real names — D58,
 ask him with the next change to the checks; the agent's recommendation: yes, once the repo is private again (D106's
 "afterwards").
 
-### [RULINGS-SLIM] Every ruling loads as one short line; its full row sits beside it — NOW (owner, D390, 28 Sep 26)
-**What:** his "Approve" (D390) to the slim-down proposal: each ruling row in the loaded area files becomes a one-to-two-line
-short form (number, date, the rule), its full row moved whole to `.claude/decisions-full/<area>.md` (searched, never loaded);
-the accounts and posting rulings (about 60 rows) move from How we work to a new People & accounts area; `raptor-port/CLAUDE.md`
-gets the same treatment, last. Measured before: ~50k tokens in every chat, ~110k in a scheduler build chat; the draft after:
-~12k and ~31k. **Context:** the plan, with the design, the parallel-chat story and the review log —
-`raptor-port/docs/superpowers/plans/2026-09-28-rulings-slim-down-plan.md`. **Checks:** Fable and Astra red-team the plan;
-Fable reads every short line for meaning (D138); both read the two script changes. **Status (28 Sep 26):** BUILT and read — conversion, People & accounts, the scripts, 178 self-test cases, Fable's meaning read and both code reads folded (the plan's §6). **Left:** the guide step (plan §2.6), his look, "merge live". **Place:** now, docs and the document
-gate's scripts only, on `claude/docs-rulings-slim-down-e83c74`; the guide step goes NOW on its own branch, in a fresh chat (D391),
-leaving the Leave War row that `claude/small-fixes-batch-d223f6` edits untouched. His "merge live" as always.
-
 ### [RULING-HOME-HOOK] Name the rulings whose home a file is, at the moment it is edited — OPEN (Fable's red team of [RULINGS-SLIM], 28 Sep 26)
 **What:** once every ruling loads as one short line (D390), the guard that a chat opens the full row before acting on its
 detail is a rule. Fable's stronger, structural form: a hook on Edit / Write that searches the full rows'
@@ -1198,3 +1194,12 @@ of D320, D323, D328 — open their full rows first". **Open before building:** w
 the model without blocking the edit, and how to keep it quiet (once per file per session). **Context:**
 `raptor-port/docs/superpowers/plans/2026-09-28-rulings-slim-down-plan.md` §2.8 and §5. **Place:** low — after
 [RULINGS-SLIM] merges, if a chat is seen acting on a short line alone; put to him first.
+
+### [GUIDE-MAP-ROWS] The guide's map table: its long rows to the full text too? — OPEN (the guide step, D391, 28 Sep 26)
+**What:** after the guide step the project guide is ~9.5k tokens, not the plan's ~6k. Of what is left, the map table
+(§Where things live) is ~9k bytes, its Leave War row alone 2.2k (left untouched for `claude/small-fixes-batch-d223f6`, D391),
+then the Storage, Tracker, rulings, command-layer and architecture rows (~0.4–0.7k each). Moving their detail to
+`raptor-port/docs/guide-full.md` would save roughly another 1–1.5k tokens in every build chat. **Open before doing it:**
+`backlog-archive.mjs --move` puts a blank line before a block it lands, so a table row moved alone would not sit inside a
+table there — either the mover learns to land a row under a table header, or each row's detail is moved as a paragraph.
+**Place:** low; not a target (D141) — worth it only when the small-fixes branch has merged; put to him first.
