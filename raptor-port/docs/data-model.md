@@ -337,24 +337,40 @@ of one week never write the same row.
 nothing a scheduler does while holding a day writes the week row, and **nothing but the day's holder ever writes the
 day's row**. Every field of today's persisted week record (`weekStashSnap()`, `state/store.ts`) is placed as follows:
 
-- **Into that day's row:** the day itself (`d[di]`); every `SCHED` map keyed by day index (`ok`, `sg`, `sb`, `o`, `cv`,
-  `dr`, `cd`, `rt`, `cr`); every map keyed by slot key, split by the day the key names (`c`, `p`, `ad` — `keyDay()`);
+- **Into that day's row:** the day itself (`d[di]`); every `SCHED` map keyed by day index (`ok`, `sg`, `sb`, `cv`,
+  `dr`, `cd`, `cr`); every map keyed by slot key, split by the day the key names (`c`, `p`, `ad` — `keyDay()`);
   the muted warnings (`wo` — `warnMuteKey` leads with the day). The working sign-offs travel here (Sign-offs, above).
+  *(Corrected 30 Sep 26, `[DB-READINESS]` group A phase 1 — plan §2.5, §4: `o` and `rt` are NOT in the day row. The
+  Original is issuance 0 of its version and each amendment its own issuance — one `Amendment` row each; a withdrawn
+  one keeps its row and gains an `AmendmentRetraction` row beside it. `rt` is keyed by version (`<verId>~<n>`), not by
+  day.)*
 - **Not stored at all — worked out on read:** the removed-input list (`un` — a cache of `Input.acc` and not-landed,
   Fable 7), the input landings' pending marks (`inp:`), and every other effect of a record the holder does not own
   (the day lock, rule 9).
 - **Into its own tables, outside any day:** the planning calendar (`PLANPUCKS`, `DAYRMK` — Fable 1): planning pucks and
   day remarks go on ANY date from the Inputs month view, weeks ahead, with no day held — `PlanningPuck` and `DayRemark`
-  below. The issued versions and their signatures: `Amendment`, `IssuedSignoff` (above).
+  below. The issued versions and their signatures: `Amendment`, `IssuedSignoff` (above) — the Original (`o`) and every
+  amendment (`a`), each one issuance row written once; every Unpublish (`rt`) one `AmendmentRetraction` row.
 - **Kept on the week row:** the two format stamps (`v`, `am`). **Dropped:** `SCHED.al` (no reader).
 
+**Built 30 Sep 26 (`[DB-READINESS]` group A, phase 1 — `state/weekrows.ts`).** The stored ids hang off the week's id
+(`dd-mm-yyyy`): `weeks/<wk>` the week row, `weeks/<wk>#<di>` a day row, `weeks/<wk>:is:<verId>~<n>` an issuance (n = how
+many times that version had been withdrawn before it went out — today's `SCHED.retired` keys less one; `reissue` in
+`Amendment`), `weeks/<wk>:rx:<verId>~<n>` its retraction. A version id carries a `#`, so an id is read issuance-first.
+
 **At the build, a test proves the split:** a week record split into its rows and joined back is byte-identical; a key
-or field that names no single day fails it; a change on one day produces exactly one day write.
+or field that names no single day fails it; a change on one day produces exactly one day write. *(Built 30 Sep 26:
+`state/weekrows.test.ts` — split then join gives the week back, join then split the same bytes;
+`state/weekrows-store.test.ts` — one edit writes one day row, a move two.)*
 
 **The same grain above the store (Fable 3).** The command layer's records (`state/sched-commit.ts` `decompose`) split
 the same way: `sched.book/<wk>` becomes one book record per day (`sched.book/<wk>#<di>`, the day's slice of `c`, `p`,
 `ad`, `ok`, `sg`, `sb`, `cv`, `dr`, `cd`, `cr`) and `sched.mutes/<wk>` one per day; `v` and `am` alone stay week-wide.
 So an Undo step names days, and another person's change on another day never blocks it (D148; section 9, rule 11).
+*(Built 30 Sep 26, `[DB-READINESS]` group A phase 1: also `sched.week/<wk>` (the stamps) and, replacing `sched.orig`,
+`sched.als` and `sched.retired`, `sched.issuance/<wk>:<verId>~<n>` — every issued version, written once — and
+`sched.retraction/<wk>:<verId>~<n>` — every Unpublish beside it. Proven red first: another person's Tuesday change had
+blocked his Undo of Monday through the one week-wide book record; `state/sched-dayrecords.test.ts`.)*
 
 **What the adapter writes (Astra 3, Fable 2).** The adapter does not infer intent from whole records: it takes the
 command layer's write set — which day records a command changed — and sends **one all-or-nothing changeset per
@@ -364,12 +380,14 @@ never sends it (Fable 12); a format upgrade that rewrites every day runs only as
 a server job.
 
 Relationships: 1–n `ScheduleDay`.
-From today: `raptor:weeks/<dd-mm-yyyy>` — **already persisted**: the
-per-week stash is hydrated from and written to the whiteboard on every
-history step (`state/persist.ts`), so a week survives a reload today. The
-loaded week is filed only once it has changed since load (a pristine seed
-week is never written). **Its reconcile deletes every stored week the browser does not hold (`persist.ts`) — correct
-for one browser, destructive once shared: it goes before the first shared release (section 7; `[DB-READINESS]` group A).**
+From today: **stored as these rows since 30 Sep 26** (`[DB-READINESS]` group A, phase 1): each command's changes to a
+week are written as exactly the rows they touched, inside its one saved group (`state/persist.ts`, through the stream
+consumer `state/rowmap.ts`); a week's first save writes its week row and all seven day rows together; a pristine seed
+week is never written; a row is removed only by an explicit delete (an Undo of a publish or of an Unpublish). **The
+reconcile that deleted every stored week the browser did not hold is GONE** (it was correct for one browser and
+destructive once shared). A week switch writes nothing of the week left, and of the week arriving only what its
+landing pass changed (one `sched.load` command). A week that will not read, or was published by an older build, loads
+read-only and its rows are never rewritten.
 
 *The stage-1 whole-week snapshot this entry described before 29 Sep 26 is in `docs/archive/data-model-2026-09-29.md` (replaced for the day lock, D355).*
 
@@ -886,7 +904,7 @@ The "migration notes" say how each shape maps, should a record ever need convert
 |---|---|---|
 | `raptor:people/all` — `PEOPLE[id]` | `Person` + `QualMark` | One row per person; mint a guid and keep the old handle as `legacyKey`. Granted marks (`tf`, `sched`, `scDay`, `scNight`, `daar`, `naar`, `sxo`, `san`) become QualMark rows. `quals` is **not** migrated — it stays derived at boot |
 | `raptor:inputs/all` — `INPUTS[]` | `Input` (+ `InputAttachment`) | One row per `iid`. Convert `date`/`endDate`/`yr` to ISO at the door; resolve a literal `mod: 'now'` to the import instant. `lw` (a war id) becomes the `leaveWarId` lookup, preserved verbatim. `docId`/`docIds` become link rows |
-| `raptor:weeks/<dd-mm-yyyy>` — the `weekStashSnap()` week (`d`, the `SCHED` short fields, `wo`, `un`) | `ScheduleWeek` + seven `ScheduleDay` | Stage 1 (29 Sep 26, D355; revised after the red team): split by day — the week row keeps the format stamps, each day's row takes the day and every field that names it, free (owned by the free team); `un` and the input marks are worked out on read, not stored (section 3, ScheduleWeek, lists every field). Stage 2: expand each day into the ScheduleRow family and empty its snapshot. *(Before 29 Sep 26: one week row, snapshot as-is — the archive, `docs/archive/data-model-2026-09-29.md`.)* |
+| `raptor:weeks/<dd-mm-yyyy>` — the `weekStashSnap()` week (`d`, the `SCHED` short fields, `wo`; `un` until 30 Sep 26) — stored since 30 Sep 26 as `weeks/<wk>`, `weeks/<wk>#<di>`, `weeks/<wk>:is:<verId>~<n>`, `weeks/<wk>:rx:<verId>~<n>` (`state/weekrows.ts`) | `ScheduleWeek` + seven `ScheduleDay` (+ `Amendment`, `AmendmentRetraction`) | Stage 1 (29 Sep 26, D355; revised after the red team): split by day — the week row keeps the format stamps, each day's row takes the day and every field that names it, free (owned by the free team); `un` and the input marks are worked out on read, not stored (section 3, ScheduleWeek, lists every field). Stage 2: expand each day into the ScheduleRow family and empty its snapshot. *(Before 29 Sep 26: one week row, snapshot as-is — the archive, `docs/archive/data-model-2026-09-29.md`.)* |
 | `SCHED.als[]`, `SCHED.retired` (inside the week) | `Amendment` (+ `IssuedSignoff`) | Split out at stage 1: one row per issuance of one day, a retracted one kept with `retractedAt`, a same-label reissue its own row (`reissue`) — section 3 |
 | `SCHED.sign`, `SCHED.signBind` | the working sign-offs inside each `ScheduleDay` snapshot (stage 1), `WorkingSignoff` (stage 2); `IssuedSignoff` for each issued version | 29 Sep 26: no week-scoped `Signoff` table — the working names and what they signed are the day's, the issued ones belong to their `Amendment` (section 3, Sign-offs) |
 | `SCHED.dayOK` / `cur` / `orig` | inside each `ScheduleDay` snapshot (stage 1, D355) → `ScheduleDay.approved` / `shownAmendmentId` / `original` (stage 2) | Day-level state, never on a sign-off row |

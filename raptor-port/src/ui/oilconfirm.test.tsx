@@ -413,7 +413,7 @@ describe('the bell (owner, 28 Aug 26 — the retro notification)', () => {
    A man who worked and answered Yes is paid nothing, silently; and if that day
    was already published the live and frozen keys match, so nothing flags it. */
 describe('a refusal must not survive a hand-over made while its week is off screen', () => {
-  const SCHED_COLLS = ['days', 'sched.book', 'sched.mutes', 'sched.orig', 'sched.als', 'sched.retired', 'inputs', 'plan', 'weekstash']
+  const SCHED_COLLS = ['days', 'sched.book', 'sched.mutes', 'sched.week', 'sched.issuance', 'sched.retraction', 'inputs', 'plan', 'weekstash']
   const plant = (r: any) => { const row: any = { allday: true, remarks: 'oiltest', mod: 'now', yr: 2026, ...r }; inpId(row); writeInputsBatch(() => { INPUTS.unshift(row) }); return INPUTS[0] }
   const handTo = (r: any, person: string) => { const d = draftOf(r); d.person = person; expect(commitInputEdit(r, d)).toBe(true) }
   const keyOn = (di: number, k: string) => (((DAYS[di] as any).oild || {}).people || {})[k]

@@ -53,7 +53,7 @@ export interface UndoHooks {
      reconcilers (they read the private SYNCING). */
   reinstallLocks?(): () => void
   /* §6.3 — resolve a publish boundary's issued verId to its day, when the
-     closure carries no days/sched.orig key to read it from. */
+     closure carries no days/sched.issuance key to read it from. */
   resolvePublishDay?(id: string): { weekId: string; di: number } | null
   /* §6.2/C5 — a per-entry scheduler adjustment run INSIDE the restore reducer (so
      its mutation is enlisted/derived into the envelope), AFTER the inverse writes.

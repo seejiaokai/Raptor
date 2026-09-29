@@ -245,12 +245,11 @@ a day's few inputs and its warning list per version — measured in the evidence
 
 ### The week record — `weekStashSnap()` / the week stash
 
-Two snapshots share one field list (`schedFields()`, `src/state/history.ts` — **14 fields**),
-and only one of them is stored.
+Two snapshots share one field list (`schedFields()`, `src/state/history.ts` — **16 fields**, `rt` and `cr` with
+[GLOBAL-UNDO]), and only one of them is kept — **in memory as one record, in storage as ROWS** (below).
 
 **The week record** is `weekStashSnap()` (`src/state/store.ts:weekStashSnap`) —
-what the stash holds for every visited week and what `raptor:weeks/<week>`
-persists:
+what the stash holds for every visited week, and what `raptor:weeks/<week>` held as one record until 30 Sep 26:
 
 **CORRECTED 17 Sep 26 — the old example listed ELEVEN SCHED fields and mislabelled `un`.**
 Three fields were missing: `sb` (signature BINDINGS), `v` (`ridV`) and `am` (`amV`, the
@@ -261,12 +260,12 @@ binding would be lost (a signature is content-valid only while its binding still
 
 ```
 { d: DAYS,                                  // the seven day objects
-  c, p, ad, a, al, ok, sg, sb, o, cv, dr, cd, v, am,   // the FOURTEEN SCHED fields,
+  c, p, ad, a, al, ok, sg, sb, o, cv, dr, cd, v, am, rt, cr,   // the SIXTEEN SCHED fields,
                                             //   short names, from schedFields()
-  wo: string[],                             // muted warning ids (view.WARNOFF)
-  un: string[] }                            // stable input IDs (inpId) of inputs a
-                                            //   scheduler removed on this week
+  wo: string[] }                            // muted warning ids (view.WARNOFF)
 ```
+*(`un` — the stable ids of the requests a scheduler took off on this week — left the record 30 Sep 26: it is read from
+each request's own `acc: 'r'` mark, `store.ts takenOff` — `[DB-READINESS]` group A, F3-02.)*
 
 | short | `SCHED` field | what it is |
 |---|---|---|
@@ -284,6 +283,8 @@ binding would be lost (a signature is content-valid only while its binding still
 | `cd` | `curDraft` | which plan the live day is |
 | **`v`** | **`ridV`** | **row-id version stamp** |
 | **`am`** | **`amV`** | **amendment-format stamp — a published book WITHOUT this reads as unsupported and is quarantined** |
+| `rt` | `retired` | the withdrawn issuances (an Unpublish), keyed `<verId>~<n>`; each keeps its issued record whole as `rec` |
+| `cr` | `correcting` | a day being corrected after an Unpublish: the version it may reissue under the same label |
 
 It carries **no inputs and no planning layer** — those are global, and
 their own records (`raptor:inputs/all`, `raptor:plan/all`, written
@@ -294,13 +295,25 @@ fields plus `i: INPUTS`, `pp: PLANPUCKS`, `dm: DAYRMK`. It is the undo
 stack's unit only and is never stored.
 
 The week stash (`src/engine/weekstash.ts`) keys week records by week-start
-`'dd/mm/yyyy'` with a per-week change counter, and **it persists**: at
-boot every `weeks/*` record is put back into the stash
-(`src/state/persist.ts:hydrate`), and every history step writes every stashed
-week plus the loaded one — the loaded one only once it has changed since
-load, so a pristine seed week is never written (`:96-105`). The record id
-is the key with `/` replaced by `-` (`raptor:weeks/13-07-2026`). This is
-what the persistence table at the top calls "per-week stash — Yes".
+`'dd/mm/yyyy'` with a per-week change counter, and **it persists — as rows since 30 Sep 26** (`[DB-READINESS]` group A,
+phase 1 — `src/state/weekrows.ts`, the design's `ScheduleWeek`, `ScheduleDay`, `Amendment`, `AmendmentRetraction`).
+The week's id is its key with `/` replaced by `-`; its rows are
+
+| stored id | row | holds |
+|---|---|---|
+| `raptor:weeks/13-07-2026` | the week row | the two format stamps `v`, `am` — nothing else |
+| `raptor:weeks/13-07-2026#<di>` | a day row (0 = Monday … 6) | the day `d`; that day's slice of `c`, `p`, `ad` (the keys naming it); its `ok`, `sg`, `sb`, `cv`, `dr`, `cd`, `cr`; its muted warnings `wo`. A slice with nothing for the day is left out |
+| `raptor:weeks/13-07-2026:is:<verId>~<n>` | an issuance | the issued record as it went out — the Original (`<iso>#0`) or an amendment; `n` = how many times that version had been withdrawn before it went out. Written ONCE: an Unpublish never touches it |
+| `raptor:weeks/13-07-2026:rx:<verId>~<n>` | a retraction | an Unpublish of that issuance: `at`, `by`, `restoreSeq`, `logged` |
+
+`al` and `un` are not stored. At boot every week's rows are joined back into one stash record
+(`src/state/persist.ts:hydrate`); a week whose rows will not read, whose week row still carries a whole old week, or
+that was published by an older build is kept byte-for-byte, loads read-only, and its rows are never rewritten.
+**Written from the command stream, never by `persistAll`**: each command's changes to a week go out as exactly the rows
+they touched, in its one saved group; a week's first save writes its week row and all seven day rows together; a
+pristine seed week is never written; a row is removed only by an explicit delete (an Undo of a publish or an
+Unpublish). A week switch writes nothing of the week left, and of the week arriving only what its landing pass
+changed (the `sched.load` command). This is what the persistence table at the top calls "per-week stash — Yes".
 
 ### Planning layer — `src/state/plan.ts`
 
@@ -668,7 +681,7 @@ normalising on day one:
 |---|---|---|
 | `People` | one person | PEOPLE record (+ Leave War `Person` extras) |
 | `Inputs` | one filed input | INPUTS record |
-| `Weeks` | one week, JSON snapshot column | `weekStashSnap()` — DAYS + SCHED + muted warnings + removed-input keys, exactly the record `raptor:weeks/*` already holds (inputs and the planning layer are their own rows, not part of it) |
+| `Weeks` | one week, JSON snapshot column | `weekStashSnap()` — DAYS + SCHED + muted warnings (the removed-input keys left it 30 Sep 26), stored since 30 Sep 26 as the week's rows — its week row, seven day rows, one per issuance and one per retraction (`src/state/weekrows.ts`; inputs and the planning layer are their own rows, not part of it) |
 | `Amendments` | one published AL | `SCHED.als[n]` (also inside the week snapshot; split out when reporting needs it) |
 | `EditLog` | one edit | `ELogRow` |
 | `Settings` | one `sqn142_*` key | key + JSON value, absent = standard |

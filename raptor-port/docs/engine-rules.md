@@ -522,9 +522,10 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   counts, which is why dormancy is an explicit mark and not "no acc". The
   mark survives week switches (`loadWeek`'s acc-clear skips `'r'`;
   `autoAcceptInput`'s truthy-acc guard refuses to re-land it; the week
-  stash's `un` set records ONLY explicit `'r'` rows — never acc-less ones,
-  which can mean "never landed" and must go on counting, 26 Aug 26 bug
-  pass), and `commitInputEdit` clears a stray `'r'` when a relink fails so a
+  load's taken-off list is read from explicit `'r'` rows ONLY — never acc-less
+  ones, which can mean "never landed" and must go on counting, 26 Aug 26 bug
+  pass; the list was the stash's `un` set until 30 Sep 26, `store.ts takenOff`
+  now — `[DB-READINESS]` group A, F3-02), and `commitInputEdit` clears a stray `'r'` when a relink fails so a
   retype-to-leave can never end up as dormant leave — and clears the park
   outright whenever a dormant record's TYPE changes (same pass: a retype is
   a different commitment, so it fails closed and counts; time/remark edits

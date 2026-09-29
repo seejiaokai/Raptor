@@ -417,3 +417,37 @@ boot in `main.tsx`; tests `storage/schema.test.ts`, `storage/fold.test.ts`, `sta
 - §4's documents landed for phase 0: `data-model.md` (`SchemaVersion` as one object; §6's `FanOutBackend` sentence;
   the boot check), `data-schema.md` (the stamp, `changes`, the Leave War door), `undo-contract.md` §0,
   `command/registry.ts` header, `docs/file-map.md`. The rest land with their phases.
+
+**Phase 1 — built 30 Sep 26** (`src/state/weekrows.ts` new; `sched-commit.ts`, `persist.ts`, `store.ts`, `rowmap.ts`,
+`engine/publish.ts`, `engine/drafts.ts`, the undo readers; tests `state/weekrows.test.ts`, `state/sched-dayrecords.test.ts`,
+`state/weekrows-store.test.ts`, nine older tests moved to the new record names):
+- **1.1** `splitWeek` / `joinWeek` as planned; the Original is issuance 0; `~n` = the withdrawals before it went out (a
+  retired `<verId>~<m>` is issuance m-1). **Found building it:** the retired entry dropped the Original's roster (`ros`)
+  and an AL's structural adds (`added`), so an issuance could not be told from its retired copy — the retired entry now
+  keeps the issued record whole (`rec`, one builder `retiredEntry` shared by `retireIssued` and the join). The join
+  refuses a row carrying a field no row of its kind holds (a damaged week reads read-only, never guessed at).
+- **1.2** the scheduler's rows are a COMPOSER in `rowmap.ts` (several records, one row: the day, its book slice and
+  its mutes → one day row), registered by `persist.ts`; it builds rows from the committed records (the advanced
+  baseline — `schedRecordsNow`), so it is not a pure function of one change: that is the one departure from §2.2's
+  wording, and why. A first save writes the week row and all seven days. The reconcile is gone. Preservation: classified
+  per week at hydrate; a preserved week's rows are never written (verbatim by omission), which satisfies F2-08 without a
+  raw-row map. The weeks converter is registered (target still 5).
+- **1.3** navigation read-only: `sched.load` (system actor, origin `seed` — the timeline tracks it as expected, no
+  barrier) runs only for a SAVED week; a pristine week's landing stays inside the load, unsaved (the settled "pristine
+  weeks are not stored"). `reconcileIssuedMarks` takes the command's touched days (a resolver comparing the live days to
+  the before-image; publish / unpublish pass their day); `applyEnd` keeps a row id on the day that already held it before
+  `ensureRowIds` re-mints a copy; `discardPending` names exactly its days. `person-delete` / `clearOilPersonDecisions`
+  already write per day through the per-day records.
+- **1.4** as planned; the weekstash records are the stored rows themselves (`weekstash/<wk><suffix>`, the value the row
+  string), so the off-week mapper copies them as they are; the weekstash family in `sharesKeys` is per DAY.
+- **Test order, said plainly:** 1.1 and the per-day records were red first. 1.2–1.3's storage tests were written after
+  their code; each mechanism (the id keeper, the touched days, `sched.load`) was then broken once on purpose and its test
+  went red. The F-w3-2 redo test was replayed on one day (a change on another day no longer abandons a redo — by design).
+- **Gates (30 Sep 26, under the lock):** unit 7112/7112 · build · tfin 728/0 · e2e 509/0 (49 skipped) · smoke 445/0 ·
+  rulecheck · docsize. `npm run perf` on the phase-0 build and on this one, same machine, same run: oneEdit 1.35×→1.34×,
+  noop 1.51×→1.49×, board 1.33×→1.31×, noopB 1.56×→1.53× the reference — no change; 4/4 both.
+- §4's documents for phase 1 landed: `data-model.md` §3 (field placement, the ids, the reconcile gone, the records),
+  §5's week row; `data-schema.md` §The week record (the rows); `feature-impact.md` Flow E; `engine-rules.md` (`un`);
+  `undo-contract.md` §0; `schema.ts` (the row types, `RetiredEntry`, no `un`, 16 fields); `file-map.md`;
+  `raptor-port/CLAUDE.md` (the persistence funnel: a week change saves only inside a command); the scheduler area's
+  settled "weeks remember their edits" note marked.

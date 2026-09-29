@@ -190,7 +190,7 @@ function reinstallLocks(): () => void {
 }
 
 /* §6.3 — resolve an AL/publish boundary's issued verId to its day when the
-   closure carries no days/sched.orig key. A publish always lands on the loaded
+   closure carries no days/sched.issuance key. A publish always lands on the loaded
    week, so match the id's ISO date against CURWEEK's seven days (best-effort). */
 function resolvePublishDay(id: string): { weekId: string; di: number } | null {
   const iso = parseVerId(id).iso

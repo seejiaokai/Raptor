@@ -624,14 +624,14 @@ function commitPublish(type: string, fn: () => void, di: number): CommitResult {
   return commit(cmd)
 }
 
-/* first-publish a day (stamps its frozen Original — a sched.orig record + the
+/* first-publish a day (stamps its frozen Original — a sched.issuance record, sequence 0, + the
    publish boundary). Routed additively: the engine setDayApproved runs unchanged
    inside the command. */
 export function commitSetDayApproved(di: number, on: any): CommitResult {
   return commitPublish(SCHED_TYPES.approve, () => setDayApproved(di, on), di)
 }
 
-/* publish one day's changes as its next per-day AL (appends a sched.als record +
+/* publish one day's changes as its next per-day AL (a new sched.issuance record +
    the publish boundary). */
 export function commitPublishALDay(di: number): CommitResult {
   /* the issue step freezes EVERY dotted mark on the day as "changed at ALn" (alIssue), while its

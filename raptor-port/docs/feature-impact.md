@@ -258,10 +258,14 @@ loadWeek           → stashPut(CURWEEK, weekStashSnap()) (weekstash.ts — the
                        `acc` for rows a restore's DAYS already landed, so the
                        pass below does not try to re-add them) → mintInpIds()
                    → stashed? re-run `autoAcceptInput` per row with
-                       pending/changes/added protected, SKIPPING any row this
-                       week deliberately unaccepted (the stash's `un` set of
-                       content keys — else the blanket re-land silently undoes
-                       a scheduler's removal, 24 Aug 26) : autoAcceptSeedInputs()
+                       pending/changes/added protected, SKIPPING any row a
+                       scheduler took off (its own acc 'r' — store.ts takenOff;
+                       else the blanket re-land silently undoes a scheduler's
+                       removal, 24 Aug 26) — AS ONE `sched.load` COMMAND on the
+                       arriving week's own baseline, so exactly the rows the
+                       landing changed are saved (30 Sep 26, [DB-READINESS]
+                       group A — R3-01) : autoAcceptSeedInputs() inside the load,
+                       unsaved (a pristine week is never stored)
                        (both land date-matching inputs on the fresh/restored days)
                    → clear day-index/iid VIEW state; WARNOFF restored from the
                        stash instead of cleared, when there is one
@@ -279,11 +283,13 @@ input is anchored to a real year). `acc` is always cleared first (it
 records the LOADED week's landing only) so `autoAcceptSeedInputs`/the restore
 pass can re-derive it fresh for whichever DAYS this call just put in place. But
 because `INPUTS` is not stashed, a row a scheduler UNACCEPTED on this week would
-be re-landed by that pass on the way back in; the stash therefore also carries
-`un` — the content keys (`inpKey`) of this week's personal rows that are sitting
-UNLANDED on an editable day — and the restore's `autoAcceptInput` loop skips
-them, so a deliberate removal survives a week round-trip while a genuinely new
-input (never in `un`) still lands (`store.ts:unacceptedKeys`; 24 Aug 26).
+be re-landed by that pass on the way back in; the restore's `autoAcceptInput` loop
+therefore skips every request carrying the explicit "taken off" mark (`acc: 'r'`),
+so a deliberate removal survives a week round-trip while a genuinely new input
+still lands (`store.ts:takenOff`; 24 Aug 26). *(Until 30 Sep 26 the stash carried
+that list as `un`; it is read from the request's own mark now — `[DB-READINESS]`
+group A, F3-02 — the mark already survives the acc-clear, and it is the one
+record a command writes.)*
 `SCHED` is keyed by day INDEX; on a fresh (never-stashed) week `resetSched()` is
 still what stops one week's approvals/AL bleeding onto another's identical
 indices, and on a restored week the stash's own SCHED fields serve the same
@@ -295,18 +301,20 @@ back, and the crew-rest flag it should have raised on the next Monday never
 appeared because Flow F's cross-week seed reads only ever saw the un-edited
 seed).** `engine/weekstash.ts` remembers, per week-start key, the last
 snapshot `loadWeek` handed it on the way OUT of that week (`state/store.ts`'s
-`weekStashSnap`, sharing its **fourteen**-field SCHED list with
+`weekStashSnap`, sharing its **sixteen**-field SCHED list with
 `state/history.ts:schedFields` — the whole-history undo snapshot — so the two
 serializers cannot drift; INPUTS/PLANPUCKS/DAYRMK are deliberately excluded,
 being global) and hands a fresh copy back on the way in, restored the same
 in-place technique `history.ts:histApply` uses for Undo. **CORRECTED 17 Sep 26:** the stash
-is NOT session-only — the 8 Sep 26 storage work SUPERSEDED the 23 Aug forget-on-exit rule,
-and `persistAll` writes every stash entry into the `weeks` collection. **Precisely** (a first
-correction here over-reached): a week persists once it has CHANGED since load, or already had
-a stash entry — `persistAll` gates the loaded week on `stashHas(CURWEEK) || weekDirty()`, and
+is NOT session-only — the 8 Sep 26 storage work SUPERSEDED the 23 Aug forget-on-exit rule.
+**Since 30 Sep 26 (`[DB-READINESS]` group A, phase 1) a week is stored as ROWS written from the
+command stream, not by `persistAll`**: a week persists once a command CHANGES it — its first
+save writes its week row and all seven day rows, every later change exactly the rows it
+touched (`state/weekrows.ts`, `state/persist.ts`; `docs/data-schema.md` §The week record) — and
 a byte-copy of the pristine seed is deliberately never written, because a persisted pristine
 copy would outrank a later deploy's updated demo weeks for ever. So: modified or
-previously-stored weeks come back; merely LOOKING at an untouched week stores nothing.
+previously-stored weeks come back; merely LOOKING at an untouched week stores nothing; and the
+week switch itself writes nothing of the week left.
 What remains true: one synchronous stash on the way out of a week, and a stash entry that fails to parse is
 silently dropped (`stashDays` returns null and the read degrades to the pure
 seed — it runs inside `validate()`, which runs on every keystroke). Flow F's `weekctx.ts:bundle()` reads through

@@ -278,8 +278,9 @@ describe('loadWeek', () => {
      acc-less — which is not a removal, and it correctly still counts. The un
      set used to record it anyway (acc-less + unlanded read as "unaccepted"),
      so after a week round-trip the restore re-parked it acc:'r': an input no
-     scheduler ever removed silently stopped flagging. unacceptedKeys now
-     records only the explicit 'r' mark.
+     scheduler ever removed silently stopped flagging. The list is now read from
+     the explicit 'r' mark alone ([DB-READINESS] group A — store.ts takenOff; the
+     week's saved copy no longer carries it, F3-02).
      Phase 2 removed the reopen take-back (setDayApproved(di,false) is a no-op),
      so the round-trip now happens with the day STILL published — the input
      stays refused (never lands) and must still never be parked dormant. */

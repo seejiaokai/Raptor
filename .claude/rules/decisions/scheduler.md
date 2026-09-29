@@ -456,7 +456,9 @@ Contract: `docs/ui-contracts.md` §Dragging sections and waves, §Dense row reor
     writes `inputs`, `people`, the `plan` layer AND every stashed week to the
     whiteboard, and a built site runs on the Browser backend. A reload KEEPS them.
     Memory-only is now just dev/tests/`?fresh=1`. Don't "fix" this by removing the
-    persistence — it is deliberate; see `docs/data-schema.md`.
+    persistence — it is deliberate; see `docs/data-schema.md`. *(30 Sep 26: the weeks
+    are no longer written by `persistAll` but as ROWS from each command's changes —
+    `[DB-READINESS]` group A, phase 1; still persisted, `docs/data-schema.md` §The week record.)*
   - **Pristine weeks are deliberately NOT stashed** (a persisted byte-copy of the seed
     would outrank a later demo-week update forever). Stashed on the way out only if
     changed since load or already carrying an entry. Don't re-add the unconditional
