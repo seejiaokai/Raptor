@@ -82,9 +82,9 @@ below; the app's delete is `state/person-delete.ts`, reached from Admin → User
 |---|---|---|---|
 | `id` | guid | yes | opaque. Today's short lowercase handle is kept as `legacyKey` for the import only |
 | `callsign` | string | yes | the display name (`cs`) |
-| `seat` | choice `FCP\|RCP\|GND` | yes | front cockpit / rear cockpit / ground. The one seat; the Leave War's `personedits.seat` override is dropped |
+| `seat` | choice `FCP\|RCP\|GND` | yes | front cockpit / rear cockpit / ground. The one seat; the Leave War's `personedits.seat` override is dropped — and since D461 (30 Sep 26) the war has no Edit person at all: seat, band and SXO change only on Quals |
 | `category` | choice `OCU,D,C,B,A,IW,IP,IR,FI` or empty | yes | the category ladder (`q`); ground crew hold empty |
-| `sxo` | bool | no | SXO-qualified (the Leave War's `personedits.sxo` override folds into it) |
+| `sxo` | bool | no | SXO-qualified — changed only on Quals (D460, D461, 30 Sep 26: the Leave War's `personedits.sxo` copy goes, not folded in) |
 | `initials`, `flight`, `remarks` | string | no | ground-crew extras; `initials`/`flight` are written for aircrew too |
 | `isGroundPersonnel` | bool | no | `pers` — no flying quals derive |
 | `isSentinel` | bool | no | `special` — `ALL`, `ALL AVAIL`; occupies slots, is not a person |
@@ -700,15 +700,14 @@ moved here so the Leave War writes its own table and never the shell's.
 | Field | Type | Req | Meaning |
 |---|---|---|---|
 | `personId` | ref Person | yes | Unique — at most one profile per person |
-| `band` | choice `instructor\|ops` | no | `personedits.band` |
 | `fromDate`, `toDate` | date | no | in-squadron window; `toDate` null = open (`Person.from`/`to`) |
 | `poOutcome` | choice `overseas\|delete\|sans\|none` | no | **which posting out it is** (D229, D294 — built 27 Sep 26): `overseas` — archived on Quals and his account suspended on the date (D280); `delete` — his person and account deleted on the date (D287); `sans` — SANS on the date (D283); `none` — off the manpower, nothing else. (`transfer`, D281, comes with the multi-squadron database.) Replaces the old `poArchive` (true = `overseas`), which the app still keeps in step for older readers |
 | `poDone` | date | no | the posting date its outcome has RUN for — so it runs once and never undoes a later hand change (an account enabled by hand, a SANS tick taken off); cleared when the date or the outcome changes |
 | `label` | string | no | the `perslabels` entry for this person |
 
 Relationships: 1–1 `Person` (optional on the Person side).
-From today: `raptor:leavewar/personedits` (its `band` only — the `seat` and
-`sxo` overrides fold into `Person` and are dropped as overrides),
+From today: *(D461, 30 Sep 26: `raptor:leavewar/personedits` goes whole — the war's Edit person is removed; seat and SXO
+are the person's, band is worked out from his CAT, so the profile has no `band`)*
 `raptor:leavewar/postouts`, and the `perslabels` preference.
 App change: `setPeople` lays this row on the projection instead of two
 override records and a label map; a posting-out date is a column, not an
@@ -898,7 +897,7 @@ The "migration notes" say how each shape maps, should a record ever need convert
 | `raptor:leavewar/ledger` | `LeaveLedger` | One row per `LedgerEntry`. The OIL ledger stays derived |
 | `raptor:leavewar/oilpolicy`, `eventdefs`, `manningdefs`, `groupdefs`, `grouppriority`, `grouppriocustom`, `groupcolors`, `figorder`, `rosterorder`, `manningorder`, `manninghidden`, `fighidden`, `eventrows`, `showsans`, `current` | `Setting` (scope `leavewar`) | Preferences and definitions, value verbatim, absent = default |
 | `raptor:leavewar/perslabels` | `LeavePersonProfile.label` | One profile row per labelled person |
-| `raptor:leavewar/personedits` | `LeavePersonProfile.band`; `Person.sxo` | `band` to the profile; `sxo` folds onto the person row; the `seat` override is **dropped** (the person's seat is the seat). The override record disappears |
+| `raptor:leavewar/personedits` | — *(D461, 30 Sep 26: dropped whole — the war's Edit person is removed)* — was `LeavePersonProfile.band`; `Person.sxo` | `band` to the profile; `sxo` folds onto the person row; the `seat` override is **dropped** (the person's seat is the seat). The override record disappears |
 | `raptor:leavewar/postouts` | `LeavePersonProfile.fromDate` / `toDate` / `poOutcome` / `poDone`, and his earlier stints (`past` — `[ONE-DOOR]`, D320: a child table of `{ fromDate, toDate }` rows, closed, in order, never overlapping) | An entry exists while either date is set or he has an earlier stint; a profile row is created for each. An old entry with only `poArchive` reads `true` → `overseas`, `false` → `none` (the app reads it so today) |
 | `raptor:tracker/v3:master:syls` | `Syllabus` + `TrainingEvent` (+ `EventPrerequisite`) | Chart per row, event per row; `prereqs` strings resolve to event ids within the same syllabus |
 | `raptor:tracker/v3:master:eventinfo` (per chart, D126; the old one-table `v3:eventinfo` is a converted backup) | `TrainingEvent.name` / `format` / `hours` | Merge each chart's entry into that chart's event row over the shipped wording; parse `hrs` to a number, refuse and report anything that will not parse |

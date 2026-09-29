@@ -111,7 +111,7 @@ eventual adapter a thin mapping. Nothing on screen changes.
 | `leavewar/rec:<warId>:<recId>` | `LeaveBid` | the stream (`lw.cell` → per record) | `ord` within (pid, date) | pid, date, the record |
 | `leavewar/ledger:<id>` | `LeaveLedger` | the stream (`lw.ledger`) | — | |
 | `leavewar/opening:<pid>:<counter>` | `LeaveOpening` | the stream (`lw.opening`) | — | |
-| `leavewar/profile:<pid>` | `LeavePersonProfile` | the stream (`lw.profile`) | — | `band`, the posting window, outcome, label; `past` stints JSON on the row |
+| `leavewar/profile:<pid>` | `LeavePersonProfile` | the stream (`lw.profile`) | — | the posting window, outcome, label; `past` stints JSON on the row; no `band` (from his CAT — D461) |
 | `settings/elog:<lineId>` | `EditLog` | at `keep`, inside the command | `(at, lineId)` | lists (`inputIds`, `days`, `wasDays`) JSON on the line |
 | `settings/seen:<pid>` | `EditLogSeen` | the person himself | — | `{ upto: {at, lineId} | null, extra: lineId[] }` |
 | `settings/account:<id>` | `User` | Admin → Users | — | `seenFrom` = a position `(at, lineId)` |
@@ -207,9 +207,9 @@ the pickers keep their order across a reload.
 ### Phase 3 — the Leave War one record each
 The mapper learns the war: `lw.war`, `lw.cell` → its records, `lw.ledger`, `lw.opening`, `lw.profile`. The war writes
 that today go out OUTSIDE a command (the coalesced idle-reconcile `rawPersist` calls, boot writes before `LW_READY`) are
-routed into commands. **SXO: Quals is the truth (his ruling, D460, 30 Sep 26)** — the war's person sheet shows SXO read
-only, as Quals has it, and the war stops writing and reading its `sxo` override; nothing on the war ticks SXO. **Seat:**
-the war's seat button is the same kind of local copy — his answer pending (§5 question 5). Band stays in the profile. `LOGICAL_TO_BLOB` corrected. **Tests:** two clients bidding on
+routed into commands. **No Edit person on the war (his rulings D460, D461, 30 Sep 26): Quals is the one place a
+man's seat, band and SXO change** — the name sheet's "Edit person" button and `PersonSheet.tsx` go; the war stops writing
+and reading `personedits`; seat and SXO come from the person, band from his CAT; `lw.config`'s `personEdits` goes. `LOGICAL_TO_BLOB` corrected. **Tests:** two clients bidding on
 different days of one war both survive; an admin's decision and a member's bid on two records of one person/date both
 survive; a moved bid is ONE row changed; the Leave War's store, undo and e2e suites green; `npm run perf` before and after.
 
@@ -295,9 +295,8 @@ Custom APIs and Power Automate flows are allowed; reporting on the worked-out pi
 3. **An empty real database: should the Tracker start with a course already made?** Today a fresh Tracker creates one
    named "26ABSG". Recommendation: no — the first person to open the Tracker adds the course.
 4. **When do IT's tables settle?** (D453.)
-5. **SXO — ANSWERED 30 Sep 26 (D460): Quals is the truth; the Leave War cannot make anyone SXO and shows it read only.**
-   **Seat (pilot / WSO / ground):** the war's person sheet has the same kind of local seat button. Recommendation: the
-   same rule — Quals (the person's record) is the truth, the war shows the seat read only.
+5. **ANSWERED 30 Sep 26 — D460, D461:** Quals is the truth; the Leave War's Edit person is removed; seat, band and SXO
+   change only on Quals.
 
 ## 6. Checks (FULL tier, `raptor-port/docs/bug-check-order.md`)
 
