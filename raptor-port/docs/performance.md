@@ -102,6 +102,10 @@ Grouped by area. Each is the short rule; the source has the full story.
   §Architecture rules)
 - **Only the page on screen re-renders.** CURPAGE gates the week effects; Shell
   chrome is memoized; no `validate()` during render. (ui-contracts.md §Rendering)
+  *The Undo / Redo pair on every page and the board's Sync + bell ([UNDO-TOPBAR], 28 Sep 26) are React chrome in that
+  memoized bar — a few buttons, no dense surface; the perf gate measures `#sbBoard`, which they do not touch. The pair
+  re-reads the undo timeline's own version (and the Tracker's, through `tracker/undo-bridge.js`), never the domain
+  stores, so a button refresh wakes no reconciler.*
 - **One `validate()` per mutation.** The drop's epilogue (`afterSchedMutate`)
   is the pass; anything that wants a post-write answer (barDrop, the drop
   delta, placeArmed's reason) reads AFTER it, never revalidates first.

@@ -1250,10 +1250,15 @@ edit week now:
     Withheld on `mvRO` (a frozen preview or a read-only board), which is what
     the old top-bar button's `disabled={DPREV.has(SBDAY)}` did. `addWave` itself
     stays as `window.addWave` for the probe bridge.
-  - **NARROWED 28 Sep 26 BY D347–D349** (`.claude/rules/decisions/how-we-work.md`; `OUTSTANDING.md` `[UNDO-TOPBAR]`): the
-    board's bar carries the top bar's group — Undo · Redo · History · Sync · the bell — then ONE exit, ✓ Done (✕ Close
-    goes: it did what Done does); on a phone Sort all and the layout switch sit behind one ⋯ in the second row. This
-    section is rewritten when it lands.
+  - **BUILT 28 Sep 26 — D349 (3)** (`[UNDO-TOPBAR]`): the board's bar carries the top bar's group — Undo · Redo ·
+    History · Sync · the bell — then ONE exit, ✓ Done (`#sbDone`; ✕ Close is gone — it did what Done does; Escape and a
+    tap on the scrim still close the board). The pair, the Sync chip and the bell are the TOP BAR'S OWN components
+    (`ui/topbits.tsx` — one Sync state, one bell tap, which closes the board as it navigates through `setPage`), under
+    their own ids (`#sbUndo`/`#sbRedo`, `#sbSync`, `#sbBell`). On a desktop Sort all sits BEFORE Undo, inside the
+    desktop-only `.sb-dayctl` wrapper with Templates and OIL Earn; on a phone Sort all and the Phone / Desktop layout
+    switch sit behind ONE ⋯ (`#sbMore`, in the day row beside the highlighter — `#sbMoreSort`, `#sbMoreWide`), a click-open
+    menu that closes on a tap outside, on Escape (which then does not close the board) and after a choice. The phone's
+    one-row gate counts the Sync dot and the bell too (`e2e/geometry.spec.ts`).
   - **Undo and redo joined it.** The board is a full-screen modal over the
     shell, so the shell's own pair is unreachable while it is open; every
     board edit had to be undone after closing it. Same two calls and the
@@ -3915,16 +3920,12 @@ Three things stay decided:
   `opacity:.X;filter:grayscale`, so 728/0 holds — but don't move the grayscale
   back onto the row (`.form.cx`/`.sb-line.cx`): it re-greys the pucks.
 
-## The top bar carries the bell and, while editing, undo/redo (owner, Aug 26)
+## The top bar carries the bell and the Undo / Redo pair (owner, Aug 26; the pair on every page — D347–D349, 28 Sep 26)
 
-> **NARROWED 28 Sep 26 BY D347** (`.claude/rules/decisions/how-we-work.md`): *"all undo and redo buttons should be at the
-> top bar … standardised … Like how the edit schedule is"* — desktop and phone. The pair below is no longer "shown only on
-> the edit page": it shows in this same place and look on every page where a change the one Undo takes back is made, the
-> Leave War's pair leaves its Period row for it, the Tracker's own pair moves here too, and the board keeps its pair in its
-> own top bar laid out the same way. Built with the change-recording re-test (`OUTSTANDING.md` `[UNDO-TOPBAR]`); this
-> section is rewritten when it lands. **And D348 (the same day):** on a phone the bar's buttons run in the desktop's order —
-> Undo · Redo (· the changes clock on Edit Schedule) · the sync dot · the bell, the bell at the far right — not the trio
-> pinned after the bell as below; the changes clock stays Edit Schedule's only.
+> **BUILT 28 Sep 26 — D347, D348, D349** (`[UNDO-TOPBAR]`, the change-recording re-test; the approved mock-up
+> `docs/mock/undo-topbar.html` v4). The section's old name said "while editing, undo/redo"; the pair is no longer the edit
+> page's only. What it is now is the third bullet below; the "Undo / redo / Edit history" bullet under it is the Aug 26
+> text, kept for its history and marked where it no longer holds.
 
 Two additions to the sticky top bar (`ui/Shell.tsx`), both desktop-and-phone
 except where noted:
@@ -3955,7 +3956,25 @@ except where noted:
   per-view registry is session-only, wiped on login/logout; the bug-report
   glow derives from the reports themselves, which SURVIVE a login switch,
   and the OIL glow is derived live from `INPUTS` + the war's calendar.
-- **Undo / redo / Edit history** (`.tb-hist`, `#undoBtn`/`#redoBtn`/`#histBtn`)
+- **THE UNDO / REDO PAIR, ON EVERY PAGE WHERE A CHANGE IS MADE** (D347 — *"all undo and redo buttons should be at the
+  top bar … standardised … like how the edit schedule is"*; D348; D349). ONE component, `ui/topbits.tsx` `UndoPair`,
+  in Edit Schedule's place and look (`.tb-hist`, `.abtn.hbtn` with the `.bi`/`.bl` split), handed an ENGINE — never two:
+  - **the one Undo** (`globalUndoEngine`, `#undoBtn`/`#redoBtn`) on Edit Schedule, the Leave War, Inputs and Quals for
+    anyone who has them, and Admin and Logic for an admin (a member's Logic is read-only, so no pair — the plan's
+    §11.6); the OIL Earn stop is inside the engine, so every door asks it;
+  - **the Tracker's own history** (`trackerUndoEngine`, `#trUndoBtn`/`#trRedoBtn` — D349 (2)) on the Tracker, through the
+    no-import bridge `tracker/undo-bridge.js` (core.js registers at the end of its init; Raptor never loads core.js).
+    The standalone Tracker draws its own pair in its header (the bridge's `hosted` flag, set by `TrackerPage.tsx`).
+  - **none** on View-only Sched and Help (nothing changes there). An admin in the member view is a member here (D292).
+  - **Order, both widths** (D348): Undo · Redo · (the changes clock, Edit Schedule only — `#histBtn`) · Sync · the bell;
+    on a phone the group sits at the bar's right end, the bell at the far right — no `order` pins it (the Aug 26 "pinned
+    last" is gone). The Sync pill drops to its dot wherever the pair shows: `.topbar.has-undo` (a phone rule); the blue
+    tint stays `.topbar.editing`, Edit Schedule's alone (`ui/topbar-css.test.ts`).
+  - **The Leave War's pair left its Period row** (`leavewar/ui/Chrome.tsx`), for this one.
+  - Roll-call: `ui/topbar-pair.test.tsx` (every page × admin / member / member view); walked by
+    `scripts/handpass/cr-c-bars.mjs` at 1440×900, 390×844, 844×390 (no bar taller than today's).
+- **Undo / redo / Edit history** (`.tb-hist`, `#undoBtn`/`#redoBtn`/`#histBtn`) *[Aug 26 text — "shown only on the
+  edit page" and "PINNED at the right edge" below no longer hold: the bullet above]*
   moved OUT of the edit page's scroll-away `.filters` row INTO the sticky bar,
   shown only on the edit page, so they stay in view while the page scrolls
   (owner: "always see it when I'm editing"). BOTH widths since 23 Aug 26 (it

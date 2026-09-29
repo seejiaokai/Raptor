@@ -1112,7 +1112,10 @@ Quals-tick-lifts-the-count integration — are pinned in
   everyone. **— NARROWED 28 Sep 26 BY D347: they move to the app's top bar, in the same place and look as Edit Schedule's
   (`OUTSTANDING.md` `[UNDO-TOPBAR]`, with the change-recording re-test). The snapshot stack this entry describes was
   replaced by the one global undo on 18 Sep 26 (`docs/undo-contract.md`). **And D352 (28 Sep 26, "Stage keep"): the one
-  Undo takes back a stage move (Open for bidding / Bidding closed / Published), with its own words (`lw.stage`).** The stack is a snapshot of the DURABLE state — the same fields
+  Undo takes back a stage move (Open for bidding / Bidding closed / Published), with its own words (`lw.stage`).** **BUILT
+  28 Sep 26: the pair is in the app's top bar (`ui/Shell.tsx`, `ui/topbits.tsx`); the Period row has none; a stage move is
+  `lw.stage` ("Undid: closing bidding — bidding is open again for everyone"); every war act has its own words (`undo/describe.ts`);
+  an Undo pressed elsewhere takes you to the war.** The stack is a snapshot of the DURABLE state — the same fields
   `persist()` writes (every war's grid / states / period, the counter ledger and
   openings, and all of the admin arrangement/config: figure & roster & manning
   order, hidden rows, group defs & priority, manning rules, event types & rows,

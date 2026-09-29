@@ -265,14 +265,16 @@ below: `git log -S"GU-P2" -- OUTSTANDING.md` (`docs/session-state.md` was delete
   defect. Fix the harness, then un-fixme.
 - **[CMDLF-002]** rebuild the Leave War posting-out windows on a `lw.postouts` restore, and
   whole-Import undo granularity — both inherited from `[CMDL-FINISH]`; `lw.postouts` is still a
-  deferred collection.
+  deferred collection. *(Its person-and-posting half is its own item since D350: `[UNDO-POSTING-RECORD]`.)*
 - **[GU-C3]** reland conflict/auth coverage — the restore re-derives `acc` beyond the entry's
   closure without widening the conflict set. Inert single-user; real with concurrent users.
-- **[GU-MAYREV] ANSWERED (D148, 24 Sep 26): Undo reverses only the signed-in person's own changes, clears on sign-out, and refuses (saying who) if someone else has since changed the same thing — `raptor-port/docs/undo-contract.md` §4. Build it with the amendment or change-recording work. The question as it was put:** — Undo is enabled on the newest eligible entry
+- **[GU-MAYREV] BUILT 28 Sep 26** (the change-recording re-test, `claude/change-recording-retest` — `undo/timeline.ts` `isOwn`, the named barriers; `undo-contract.md` §4). The text below is the question as it stood:
+  **[GU-MAYREV] ANSWERED (D148, 24 Sep 26): Undo reverses only the signed-in person's own changes, clears on sign-out, and refuses (saying who) if someone else has since changed the same thing — `raptor-port/docs/undo-contract.md` §4. Build it with the amendment or change-recording work. The question as it was put:** — Undo is enabled on the newest eligible entry
   whatever the actor, and the timeline is not cleared on logout, so a member behind an admin edit
   sees an enabled-but-refused Undo. Grey it, or skip past non-reversible entries. Clearing the
   timeline on logout is the near-term direction (memory `future-undo-semantics-multiuser`).
-- **[GU-E5]** an input-only undo does not jump to its week (the record restores correctly).
+- **[GU-E5]** an input-only undo does not jump to its week (the record restores correctly). *(28 Sep 26: an input's
+  Undo now lands on the Inputs page, which carries the pair — the page the input was filed on; the week jump stays open.)*
 - **[GU-LWLOCK]** a restore can push a vestigial legacy-LW history step. No user-facing effect.
 - **[GU-COSMETIC]** an AL barrier bound to the loaded week; view-effects not rolled back on a
   failed restore. Both LOW.
@@ -988,7 +990,8 @@ second after the absence record) — it is the one undo's own subject; build it 
 changes). Walk it first: confirm on screen that Undo stays greyed or skips a roster / settings edit. **WALKED 28 Sep 26 (it skips them —
 `scripts/handpass/cr-base.mjs`); STARTED on `claude/change-recording-retest`. Scope narrowed by D350: adding, archiving,
 restoring, deleting a person and postings stay out (`[UNDO-POSTING-RECORD]`); everything else on Quals, Admin, the Logic
-page and the templates becomes undoable.**
+page and the templates becomes undoable.** **BUILT 28–29 Sep 26 on `claude/change-recording-retest`** (B1–B9 of the
+plan; `undo-contract.md` §4, the register AM39d–AM39f) — closes when that branch merges.
 **Accounts (26 Sep 26, `[ACCOUNTS]`):** the accounts, the access requests and the guest switch are three more settings
 records, so they join this item: when settings are cut over to the one undo, an account restore must re-check the
 guards `[ACCOUNTS]` enforces at the write (at least one admin keeps access; an admin never changes his own account),
@@ -1006,7 +1009,9 @@ the sync dot · the bell at the far right; the changes clock stays on Edit Sched
 the mock-up `raptor-port/docs/mock/undo-topbar.html` (version 4) is the design of record: the Tracker's own pair moves too;
 the board's bar gets Undo · Redo · History · Sync · the bell and ONE exit, ✓ Done (Close goes); on a phone Sort all and
 the layout switch sit behind one ⋯ in its second row. **Place:** built with the change-recording re-test, on `claude/change-recording-retest` (its plan:
-`raptor-port/docs/superpowers/plans/2026-09-28-change-recording-plan.md`).
+`raptor-port/docs/superpowers/plans/2026-09-28-change-recording-plan.md`). **BUILT 29 Sep 26 on that branch** (B10 —
+`ui/topbits.tsx`, the register AM39g; `ui-contracts.md` §The top bar carries the bell and the Undo / Redo pair) — closes
+when it merges.
 
 ### [UNDO-POSTING-RECORD] Undo for adding, archiving, restoring a person and for postings — the war's posting record (D350, 28 Sep 26)
 Left out of the change-recording build by his "4 ok" (D350). All five write the Leave War's posting record
@@ -1048,7 +1053,8 @@ None breaks an amendment rule; each is a line to fix or ask about, from the walk
 1. **Saturday's "Published AL1 · 14 items" toast** is replaced in the same instant by the OIL warning; the person only
    ever sees the warning. **Unpublish** says nothing at all (only the tag changes) — AM15b's principle would favour a word.
 2. **Undo of a take-off time change** says "Undid: a note on the schedule" (AM39b: say what it did) — for the
-   change-recording re-test, with [UNDO-ROSTER-SETTINGS].
+   change-recording re-test, with [UNDO-ROSTER-SETTINGS]. **BUILT 28 Sep 26** on `claude/change-recording-retest`: a text
+   command carries which box it wrote, and Undo says "a take-off time", "a day note" (`undo/describe.ts`).
 3. **Five-letter callsigns** (VIPER, COBRA) drawn "…" in the edit week's callsign column; on the phone board they wrap
    ("VIP/R").
 4. At 390px the solid **"AL1" tag** beside a time is clipped to "AL"; on the desktop week the **left scroll arrow** sits
