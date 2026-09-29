@@ -517,3 +517,6 @@
 @media (max-width: 520px) {
   #page-leavewar .oil-e .l2.noting .oil-text { flex: 1 1 100%; }
 }
+
+/* an award given with no reason says so, quieter than a reason (Fable's final read, F1 — [OIL-AWARD-IS-A-GRANT]) */
+#page-leavewar .oil-e .rt.muted { opacity: .6; font-style: italic; }

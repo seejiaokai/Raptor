@@ -163,9 +163,14 @@ async function run(kind) {
   }
   await esc(page)
   await page.evaluate(() => window.go('admin')); await page.waitForTimeout(500)
-  const row = page.locator('[data-person="rocky"] .acc-tap')
+  /* a phone's Admin opens on its menu — tap Users first */
+  if (!(await page.locator('.od-row[data-person="rocky"] .acc-tap').isVisible())) {
+    await page.locator('.adm-cat', { hasText: 'Users' }).click(); await page.waitForTimeout(400)
+  }
+  const row = page.locator('.od-row[data-person="rocky"] .acc-tap')
   if (await row.count()) {
-    await row.click(); await page.waitForTimeout(200)
+    await row.scrollIntoViewIfNeeded(); await row.click(); await page.waitForTimeout(300)
+    await page.locator('#accEdDel').scrollIntoViewIfNeeded()
     await page.locator('#accEdDel').click(); await page.waitForTimeout(200)
     await shot('r1-delete-armed')
     await page.locator('#accEdDel').click(); await page.waitForTimeout(600)

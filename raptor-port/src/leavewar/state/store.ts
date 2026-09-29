@@ -925,15 +925,19 @@ function syncAwardIndex(ledger: Ledger): void {
   }
   const next = new Map<string, ReadonlyMap<string, readonly LedgerEntry[]>>()
   for (const [pid, list] of byPerson) {
-    const old = prev.get(pid)
-    const flat = old ? [...old.values()].flat() : []
-    if (old && flat.length === list.length && flat.every((e, i) => e === list[i])) { next.set(pid, old); continue }
     const m = new Map<string, LedgerEntry[]>()
     for (const e of list) {
       const day = m.get(e.date)
       if (day) day.push(e); else m.set(e.date, [e])
     }
-    next.set(pid, m)
+    /* the SAME days holding the same entries in the same order keep his previous map — compared day by day, so awards
+       entered out of date order (3 Jan, 5 Jan, 3 Jan) still match (both final reads, Astra OA-004 / Fable F3) */
+    const old = prev.get(pid)
+    const same = !!old && old.size === m.size && [...m].every(([d, es]) => {
+      const was = old.get(d)
+      return !!was && was.length === es.length && es.every((e, i) => e === was[i])
+    })
+    next.set(pid, same ? old! : m)
   }
   setAwardRows(next as AwardRows)
   LAST_LEDGER = ledger
@@ -2716,6 +2720,9 @@ function clearRequestsAt(personId: string, date: string, awards = false): boolea
    narrowed while a sheet's confirmed Delete runs to the awards its confirm named (CLEAR_ONLY — R2-02). */
 let CLEAR_ONLY: ReadonlySet<string> | null = null
 function awardIdsAt(personId: string, date: string): string[] {
+  /* a day inside a war — the grid's clears never reach any other, and a tracker award dated in no war is on no cell
+     to clear (Fable's final read, F2) */
+  if (!warHolding(state.wars, date)) return []
   if (state.role !== 'admin') return []
   return awardsOnDay(personId, date).filter(e => !CLEAR_ONLY || CLEAR_ONLY.has(e.id)).map(e => e.id)
 }
@@ -3388,6 +3395,11 @@ export const reasonRequired = (counter: CounterName): boolean => counter === 'oi
 function ledgerProblem(counter: CounterName, amount: number, date: string, reason: string, givenBy = '', requireReason = reasonRequired(counter)): string | null {
   if (!Number.isFinite(amount) || amount === 0) return 'The amount must be a number other than 0'
   if (!isHalfStep(amount)) return HALF_STEP_MSG
+  /* ONE CEILING FOR ONE RECORD (both final reads, Astra OA-001 / Fable F4): an OIL award is at most MAX_GRANT_DAYS
+     whichever door gives or changes it — the grid's doors always said so, the tracker's form and editor did not, and
+     since the grid's award opens in the tracker's editor the same record had two limits. A correction is not an award;
+     the ceiling is not its rule. */
+  if (counter === 'oil' && amount > MAX_GRANT_DAYS) return `That is more than ${MAX_GRANT_DAYS} days`
   if (!ISO_DAY.test(date)) return 'Pick a date'
   const clean = reason.trim()
   if (!clean && requireReason) return 'Give a reason'

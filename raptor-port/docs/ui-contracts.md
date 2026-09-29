@@ -7634,7 +7634,13 @@ a flex sibling and squeezed in beside the number it explains.
   changed date — and a change of sign (an award never becomes a correction).
 - **The reason:** the tracker's form and the figures bar still require one for OIL; the grid's +OIL panel never has
   (`setDayAward` — its own command); editing an award that had no reason never demands one, and one that had a reason
-  cannot lose it. Whether the grid should ask one too is a question for him, today's behaviour kept.
+  cannot lose it. Whether the grid should ask one too is a question for him, today's behaviour kept. An award with no
+  reason says so on its tracker box — "no reason — tap to add one" for an admin (a phone has no hover title), "no reason
+  given" for a member (Fable's final read F1).
+- **One ceiling:** an OIL award is at most 365 days (`MAX_GRANT_DAYS`) from every door — the grid's, the tracker's form
+  and editor, the figures bar — "That is more than 365 days" (`ledgerProblem`; both final reads, OA-001 / F4). A
+  correction is not an award; the ceiling is not its rule. A correction's editor has no "given by" box, so its save
+  leaves the one it has alone (OA-002).
 - **Earned and awarded (D400).** "Earned" counts only what the app credited itself — the published schedule or an
   accepted duty input (`DayView.earnsOil`, `counters.earnedOil`, the tracker's `earned`). The OIL breakdown reads:
   opening figure · earned by weekend/PH work · **awarded** (each award itemised beneath: amount · date · by <who entered

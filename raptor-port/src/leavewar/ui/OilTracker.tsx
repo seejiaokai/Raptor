@@ -311,10 +311,13 @@ export function OilTracker({ person, onClose, onGranted }: {
 
   /* ---- editing an award or a correction ---------------------------------- */
   const startEdit = (c: OilCredit) => {
-    setEditId(c.ledgerId!); setEAmt(String(c.amount)); setEDate(c.date); setEReason(c.reason); setEGiven(c.givenBy ?? ''); setEErr(''); setArmDel(null)
+    setEditId(c.ledgerId!); setEAmt(String(c.amount)); setEDate(c.date); setEReason(c.reason); setEGiven(c.givenBy ?? ''); setEErr(''); setArmDel(null); setEIsCorr(false)
   }
+  /* A CORRECTION's editor has no "given by" box, so the save leaves the one it has alone — it used to send the blank and
+     wipe it (Astra's final read, OA-002) */
+  const [eIsCorr, setEIsCorr] = useState(false)
   const saveEdit = () => {
-    const problem = updateLedgerEntry(editId!, { amount: Number(eAmt), date: eDate, reason: eReason, givenBy: eGiven })
+    const problem = updateLedgerEntry(editId!, { amount: Number(eAmt), date: eDate, reason: eReason, ...(eIsCorr ? {} : { givenBy: eGiven }) })
     if (problem) { setEErr(problem); return }
     setEditId(null)
     done()
@@ -468,7 +471,11 @@ export function OilTracker({ person, onClose, onGranted }: {
           </div>
           <div className="l2">
             <span className="rt">
-              {c.reason}
+              {c.reason || (c.source === 'grant'
+                /* an award given on the grid needs no reason (plan §2.2); its box says so, and — for an admin, on a phone
+                   too, where no hover title shows — that a tap adds one (Fable's final read, F1) */
+                ? <span className="rt muted" data-testid={`oil-noreason-${tid(c.id, c.ledgerId)}`}>{admin ? 'no reason — tap to add one' : 'no reason given'}</span>
+                : '')}
               {c.hours?.[0] && <span className="oil-hrs"> · {hhmm(c.hours[0][0])}–{hhmm(c.hours[0][1])}</span>}
             </span>
           </div>
@@ -508,7 +515,7 @@ export function OilTracker({ person, onClose, onGranted }: {
       )
     }
     const canEdit = admin && d.source === 'correction'
-    const startCorrEdit = () => { setEditId(d.ledgerId!); setEAmt(String(-d.amount)); setEDate(d.date); setEReason(d.reason); setEGiven(''); setEErr(''); setArmDel(null) }
+    const startCorrEdit = () => { setEditId(d.ledgerId!); setEAmt(String(-d.amount)); setEDate(d.date); setEReason(d.reason); setEGiven(''); setEErr(''); setArmDel(null); setEIsCorr(true) }
     return (
       <div
         key={d.id}

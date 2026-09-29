@@ -187,6 +187,11 @@ function lwLabel(entry: UndoEntry): string {
   if (TYPE_PHRASE[entry.type]) return TYPE_PHRASE[entry.type]
   const colls = new Set(entry.forward.map(c => c.collection))
   const cell = lwCellLabel(entry)
+  /* A DELETE THAT TOOK A BID AND AN AWARD says both (Astra's final read, OA-003): since [OIL-AWARD-IS-A-GRANT] the award
+     is a ledger entry in the same command, beside the war's own record */
+  const awardsGone = entry.forward.filter(c => c.collection === 'lw.ledger' && c.before && !c.after
+    && (c.before as any).counter === 'oil' && +(c.before as any).amount > 0).length
+  if (cell && awardsGone && /bid$/.test(cell)) return `${cell} and ${awardsGone === 1 ? 'OIL award' : `${awardsGone} OIL awards`}`
   if (cell) return cell
   /* approved leave lives as ONE input (the absence record), not a war record — the war's own delete of it names the man
      and the leave (the picture check, walk G4: it read "a change on the Leave War") */
