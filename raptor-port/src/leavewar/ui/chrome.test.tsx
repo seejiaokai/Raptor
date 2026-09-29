@@ -1,10 +1,8 @@
 import { act, fireEvent, render, screen } from '@testing-library/react'
-import { afterEach, beforeEach, describe, expect, it } from 'vitest'
+import { beforeEach, describe, expect, it } from 'vitest'
 import { advanceStage, getState, initStore, setBidState, setCell, setRole, setViewer } from '../state/store'
 import { memoryBackend } from '../state/storage'
 import { setSession } from '../../state/auth'
-import { installGlobalUndo } from '../../state/undo-wire'
-import { _resetTimeline } from '../../undo/timeline'
 import { StageBar, Topbar } from './Chrome'
 
 beforeEach(() => {
@@ -194,44 +192,15 @@ describe('the leave war picker', () => {
   })
 })
 
+/* [UNDO-TOPBAR] (owner D347, 28 Sep 26): the war's Undo / Redo left this Period row for the app's top bar — the same one
+   undo, in Edit Schedule's place and look. Its pressing and its roll-call (every page, every role) are in
+   ui/topbar-pair.test.tsx; here, only that this row no longer draws a pair of its own. */
 describe('the undo / redo buttons', () => {
-  // [GLOBAL-UNDO] §13 phase 2 — the pair drives the ONE global timeline now, so the
-  // test installs the production cutover (registers lwStore, cuts LW over) and an
-  // admin session (mayReverse gate) — the same world the button runs in live.
-  beforeEach(() => {
+  it('are no longer drawn in the war’s own Period row — the app’s top bar carries them', () => {
     setSession({ user: 'ad', role: 'admin' })
-    _resetTimeline()
-    installGlobalUndo()
-  })
-  afterEach(() => { _resetTimeline() })
-
-  it('sit disabled with nothing to undo, then drive undo and redo', () => {
     render(<Topbar />)
-    const undo = screen.getByTestId('lw-undo') as HTMLButtonElement
-    const redo = screen.getByTestId('lw-redo') as HTMLButtonElement
-    expect(undo.disabled).toBe(true)
-    expect(redo.disabled).toBe(true)
-
-    act(() => setCell('ramp', '2026-01-20', 'LL'))
-    expect(undo.disabled).toBe(false)
-    expect(getState().grid.ramp['2026-01-20']).toBe('LL')
-
-    fireEvent.click(undo)
-    expect(getState().grid.ramp?.['2026-01-20']).toBeUndefined()
-    expect(undo.disabled).toBe(true)
-    expect(redo.disabled).toBe(false)
-
-    fireEvent.click(redo)
-    expect(getState().grid.ramp['2026-01-20']).toBe('LL')
-    expect(redo.disabled).toBe(true)
-  })
-
-  // Undo is for everyone: a member fills their own bids and wants the same
-  // safety net (owner circled the whole top bar, not an admin-only control).
-  it('are shown to a member too', () => {
-    act(() => setRole('member'))
-    render(<Topbar />)
-    expect(screen.getByTestId('lw-undo')).toBeTruthy()
-    expect(screen.getByTestId('lw-redo')).toBeTruthy()
+    expect(screen.queryByTestId('lw-undo')).toBeNull()
+    expect(screen.queryByTestId('lw-redo')).toBeNull()
+    expect(screen.queryByTestId('lw-hist')).toBeNull()
   })
 })

@@ -2932,7 +2932,9 @@ test.describe('the phone board keeps its controls to one row', () => {
     const m = await page.evaluate(() => {
       const acts = document.querySelector('.sb-actions') as HTMLElement
       const top = document.querySelector('.sb-top') as HTMLElement
-      const btns = [...acts.querySelectorAll(':scope > .abtn, :scope > select')] as HTMLElement[]
+      /* the Sync dot and the bell joined this row ([UNDO-TOPBAR], owner D349 (3), 28 Sep 26) — counted too, so the
+         one-row assertion covers every control on it (a stricter count, never a looser one) */
+      const btns = [...acts.querySelectorAll(':scope > .abtn, :scope > select, :scope > .fastsync, :scope > .bellbtn')] as HTMLElement[]
       const tops = new Set(btns.map(b => Math.round(b.getBoundingClientRect().top)))
       return {
         rows: tops.size,
@@ -3567,7 +3569,7 @@ test.describe('the day arrows', () => {
       const hl = document.querySelector('#sbHl') as HTMLElement
       const search = document.querySelector('.sb-nav .sb-search') as HTMLElement
       const r = (e: HTMLElement) => e.getBoundingClientRect()
-      const acts = [...document.querySelectorAll('.sb-actions > .abtn, .sb-actions > select')] as HTMLElement[]
+      const acts = [...document.querySelectorAll('.sb-actions > .abtn, .sb-actions > select, .sb-actions > .fastsync, .sb-actions > .bellbtn')] as HTMLElement[]
       return {
         barH: Math.round(r(top).height),
         prevLeft: Math.round(r(prev).left),

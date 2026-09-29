@@ -124,12 +124,12 @@ async function figure(page: Page, p: string, fig: Fig): Promise<number> {
    timeline directly), so there is nothing to sit out; each waits only for the
    pair to show the move, and every caller then waits on what it checks. */
 async function undo(page: Page) {
-  await page.locator('[data-testid="lw-undo"]').click()
-  await expect(page.locator('[data-testid="lw-redo"]')).toBeEnabled()
+  await page.locator('#undoBtn').click()
+  await expect(page.locator('#redoBtn')).toBeEnabled()
 }
 async function redo(page: Page) {
-  await page.locator('[data-testid="lw-redo"]').click()
-  await expect(page.locator('[data-testid="lw-undo"]')).toBeEnabled()
+  await page.locator('#redoBtn').click()
+  await expect(page.locator('#undoBtn')).toBeEnabled()
 }
 
 async function clearToast(page: Page) {

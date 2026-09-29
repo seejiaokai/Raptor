@@ -8,7 +8,9 @@
  * which the file checks below need), click the Tracker tab, wait for the flow
  * board. The checks themselves are the standalone suite's own, untouched
  * except for two renamed ids (#trUndoBtn/#trRedoBtn — Raptor's own top bar
- * owns #undoBtn/#redoBtn), the phone tab class (now on the page section
+ * owns #undoBtn/#redoBtn; since [UNDO-TOPBAR], owner D347/D349 (2), 28 Sep 26, the Tracker's ↶ ↷ are DRAWN in
+ * Raptor's top bar too, still undoing the Tracker's own history — the two checks that pinned them in the
+ * Tracker's own header now pin them there, deliberately), the phone tab class (now on the page section
  * instead of <body>), the page background read (the Tracker's own column,
  * not Raptor's <body>) and one `.legend` selector scoped to the section
  * (Raptor keeps a hidden .legend of its own earlier in the document).
@@ -984,9 +986,11 @@ ok('Course follows Crew, and each edit pencil sits right after its dropdown',
    there is something unsaved; the ✎ Edit toggle is now inside the Syllabus
    pencil, so it is not a bar control; hSearchBtn is 0-wide on a desktop (the
    search shows as an inline box, hSearch + hSearchClear). */
-ok('the bar reads Crew · Course ✎ · Syllabus ✎ · ⓘ · ↶ ↷ · Show All · File · search · Hide',
+/* ↶ ↷ left this bar for Raptor's top bar ([UNDO-TOPBAR], owner D349 (2), 28 Sep 26) — the checks under "the undo
+   checks" below pin them there */
+ok('the bar reads Crew · Course ✎ · Syllabus ✎ · ⓘ · Show All · File · search · Hide',
   crewFirst.ids.join(',') === ['activeSel', 'courseSel', 'courseMenuBtn',
-    'sylSel', 'sylMenuBtn', 'detailsBtn', 'trUndoBtn', 'trRedoBtn', 'showAllBtn',
+    'sylSel', 'sylMenuBtn', 'detailsBtn', 'showAllBtn',
     'fileMenuBtn', 'hSearch', 'hSearchClear', 'barHideBtn'].join(','),
   crewFirst.ids.join(' → '));
 
@@ -1196,10 +1200,11 @@ ok('the spacer falls after the search, with only the Save slot to its right',
     return { g: u.grade('ST-01'), undo: u.undo, redo: u.redo,
       undoOff: document.getElementById('trUndoBtn').disabled, redoOff: document.getElementById('trRedoBtn').disabled,
       undoTip: document.getElementById('trUndoBtn').title, editing: document.getElementById('arrTools').classList.contains('on'),
-      inStrip: !!document.querySelector('#arrTools #trUndoBtn'), inBar: !!document.querySelector('header .controls #trUndoBtn') };
+      /* the app's TOP BAR, since [UNDO-TOPBAR] (D349 (2)) — and never back in the Tracker's own header */
+      inStrip: !!document.querySelector('#arrTools #trUndoBtn'), inBar: !!document.querySelector('.topbar .tb-hist #trUndoBtn') && !document.querySelector('header .controls #trUndoBtn') };
   });
   const s0 = await st();
-  ok('↶ ↷ sit on the bar, not in the edit strip, and are greyed with nothing to undo',
+  ok('↶ ↷ sit in the app’s top bar, not in the edit strip or the Tracker’s header, and are greyed with nothing to undo',
     s0.inBar && !s0.inStrip && s0.undoOff && s0.redoOff && !s0.editing, `bar ${s0.inBar}, strip ${s0.inStrip}, greyed ${s0.undoOff}/${s0.redoOff}`);
   await pg.evaluate(() => { const g = [...document.querySelectorAll('#flowSvg .ball')].find(x => x.dataset.id === 'ST-01'); g.scrollIntoView({ block: 'center' }); g.dispatchEvent(new MouseEvent('click', { bubbles: true })); });
   await pg.waitForSelector('#pop');
