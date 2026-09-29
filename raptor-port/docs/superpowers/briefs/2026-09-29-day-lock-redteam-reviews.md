@@ -160,3 +160,32 @@ Round 1, from `2026-09-29-day-lock-redteam.md`, on commit 17579150. Both verdict
 **Also checked and found sound:** every live amendment key carries its day (`engine/keys.ts keyDay`; `del:`, `mov:`, `inp:` included; `iu:` never enters the book); `SCHED.al` has no reader (`history.ts:24` only) — dropping it is safe; the cross-week crew-rest and 7-day traces only READ the next week (`weekctx.ts bundle`, `validate.ts:1351-1362`, `di:null` rows are not mutable warnings); Sort all is per day (`board.ts:623-701`); saved plans, templates, OIL decisions on the board are per day; `putMany` is already all-or-nothing (`backend.ts`), which rule 2's two-day move needs — say so in rule 2 ("one group, both or neither").
 
 **Verdict: REVISE** — the tables are right in shape except the planning layer (1); the design needs the per-day grain carried into the fan-out and the command layer (2, 3), the app's own cross-week passes named (4), day-row creation (5), the stage-1 reconcile fix (6), and the four holder states the build would otherwise invent (8–11) before IT builds from it.
+
+
+## What was done with each finding (Opus 5.5, 29 Sep 26 — the fold-in, before round 2)
+
+His rulings the same evening shaped three of them: D450 (the lock is firm — the database refuses a non-holder),
+D451 (a change on a free day takes it), D452 (Fast sync off after 20 minutes); D453 set the order (this fold-in, then
+[DB-READINESS] group A before the tables settle, group B after the app is connected).
+
+| Finding | Done |
+|---|---|
+| Astra 1, Fable 19 — Amendment / Signoff keys | ACCEPTED. §3 Amendment rewritten to the per-day version record (`scheduleDayId`, `sequence`, `versionId`, `reissue`, `snapshot`, `diff`, retracted kept); sign-offs split: working (in the day's snapshot at stage 1, with their binding) and `IssuedSignoff` (append-only). Old entries archived. |
+| Astra 2 — lease token, strict check | ACCEPTED, route changed: D450 + Fable 16 — the lock is columns of `ScheduleDay`, made firm by row OWNERSHIP (no plug-in); `leaseId` and `sessionId` columns; the version check enforces the session (a take by your other device changes the version). Plug-in is the fallback (Open question 8). The separate `DayLock` table is dropped. |
+| Astra 3, Fable 2 — the fan-out infers intent; write only changed, held days | ACCEPTED. §3 "What the adapter writes": the command layer's write set, one changeset per command, never an unheld day; week row only when its stamps change. |
+| Astra 4, Fable 4, 7 — writes the lock does not cover | ACCEPTED with one simplification: no separate placement table — the scheduler's decisions on an input live in the day's snapshot keyed by input id; everything else (landed rows, pending marks, `un`, a deleted man, a handed-on request's OIL decisions) is worked out on read. §9 rule 9; §12 q9. |
+| Astra 5, Fable 17 — change tracking is per table | ACCEPTED. §9 the change log: one `ChangeBatch` row per command in its changeset; read since last-less-two-minutes, deduped by id (covers commit order without a server sequence); one request per check. |
+| Astra 6, Fable 3, 15 — Undo vs D148 | ACCEPTED. Command-layer records per day (§3); §9 rule 11; the contract paragraph corrected (a barrier, not a cleared stack). |
+| Astra 7, Fable 17 — inbound changes during a drag or typing; lock lost mid-edit | ACCEPTED. §9 rule 12 (redraw waits; no edit control before the first check on return or after a link), rule 4 (the unsaved copy). |
+| Astra 8, Fable 18 — missing mock states | ACCEPTED as a list, not new pictures: §9 rule 13 and the mock-up's "Still to draw" — the screens are built last (D453) with his answers. |
+| Fable 1 — the planning calendar | ACCEPTED. `PlanningPuck`, `DayRemark` — own tables, no lock; §5 row. |
+| Fable 5 — day rows for an unsaved week | ACCEPTED. Created in one batch with the week; unique keys; snapshot null = blank day. |
+| Fable 6 — the reconcile deletes unknown weeks | ACCEPTED. §7 "before the first shared release"; §3; `[DB-READINESS]` group A. |
+| Fable 8 — "all saved" when offline | ACCEPTED. Rule 4 ("Not saved", sign-out waits — also his question); the mock-up's words corrected. |
+| Fable 9 — two tabs / devices | ACCEPTED in Astra's form: one SESSION holds the day; the other shows "Editing on your other device — Move editing here". |
+| Fable 10, 11 — after the 30 minutes; release on close only | ACCEPTED. Rules 5 and 6. |
+| Fable 12 — the week row stamped by publishing | ACCEPTED. Written only when the stamps change. |
+| Fable 13 — the take-over window | CLOSED by the ownership route: the take-over's Assign changes the owner and the version, so the old holder's next save is refused at once (rule 7). |
+| Fable 14 — `modifiedon` as the clock is fragile | DECLINED, with its reason: only the app writes these rows, and every confirmed save already writes the row, so `modifiedon` IS the last change; a maker-portal edit extending a lock is negligible (§3). |
+| Fable 16 — ownership route | ACCEPTED as the design (D450). |
+| Peer chat (the one-time import vs the wipe) | §7's "One-time legacy import" row corrected; §5's lead-in says it is a field map, nothing crosses but his Tracker charts. |

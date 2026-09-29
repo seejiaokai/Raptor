@@ -92,7 +92,7 @@ a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 
   <section class="page">
     <h2>An admin takes a day over <span class="tag">D355</span></h2>
-    <p class="note">Take over asks first and says how long ago the holder last changed something. <b>Nothing the holder did is lost</b>: it was saved as they went. The holder&#39;s screen turns read only and tells them who took the day. The change history keeps a line for it.</p>
+    <p class="note">Take over asks first and says how long ago the holder last changed something. <b>Everything the holder had saved is kept</b>. A change that had not reached the database yet (no signal) is kept on their device as an "unsaved copy" they can open, never sent over the new holder's work. The holder&#39;s screen turns read only and tells them who took the day. The change history keeps a line for it.</p>
     <div class="one half"><figure><figcaption class="after">Desktop · the admin asks</figcaption><a href="img/day-lock/d5-takeover.jpg" target="_blank" rel="noopener"><img src="img/day-lock/d5-takeover.jpg" alt="Take over Tuesday from Ranger? Ranger took Tuesday at 09:12, last change 4 minutes ago; everything saved; Ranger told; the change history records it; Cancel, Take over" loading="lazy"></a></figure></div>
     <div class="pair phone"><figure><figcaption class="after">Phone · what the holder sees</figcaption><a href="img/day-lock/p5-takenover.jpg" target="_blank" rel="noopener"><img src="img/day-lock/p5-takenover.jpg" alt="On the holder&#39;s phone: Saber has taken over Tuesday; your changes up to 09:31 are saved; Tuesday is read only for you now; OK" loading="lazy"></a></figure></div>
   </section>
@@ -116,11 +116,19 @@ a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
     <h2>What happens behind it (for the database design)</h2>
     <ol>
       <li><b>The schedule is saved one day at a time.</b> Today a whole week is saved as one piece. If Saber held Monday and Ranger held Tuesday, their saves would overwrite each other. So the IT team&#39;s tables keep each day as its own piece, and the lock sits on the day.</li>
-      <li><b>A member&#39;s input still lands on a held day.</b> A leave filed for Monday while Saber holds Monday goes in as it does today (on a published day, as a pending change). Saber sees it arrive within 30 seconds. The lock is only between schedulers.</li>
+      <li><b>A member&#39;s input still reaches a held day.</b> The member saves only their input; the day shows it by reading the input (on a published day, as a pending change, as today). Saber sees it within 30 seconds. The lock is only between schedulers. The same goes for a deleted person and a request handed to someone else.</li>
       <li><b>Publishing a day needs the day free or yours.</b> If Ranger holds Tuesday, Publish day on Tuesday says "Ranger is editing Tuesday".</li>
-      <li><b>One change that touches two days needs both.</b> Moving a man from Monday to Tuesday, or loading a template onto two days, asks you to take the other day first, if it is free.</li>
+      <li><b>One change that touches two days needs both.</b> Moving a man from Monday to Tuesday, or loading a template onto two days, takes the other day too if it is free (your answer, D451); if someone holds it, it says who.</li>
+      <li><b>The database refuses anyone who does not hold the day</b> (your answer, D450): the holder owns the day&#39;s record, so it is firm, not just a sign.</li>
+      <li><b>One device at a time.</b> If you open a day you hold on another device, it says "Editing on your other device" with "Move editing here".</li>
+      <li><b>Fast sync turns itself off after 20 minutes</b> (your answer, D452), so the day&#39;s request allowance is not used up.</li>
       <li><b>The safety check stays underneath.</b> If two saves ever meet on the same day, the second one is refused and reloaded, never silently lost.</li>
     </ol>
+  </div>
+
+  <div class="reads">
+    <h2>Still to draw, when the lock is built</h2>
+    <p class="note">From the two reviewers (29 Sep 26): a published day someone else holds; a published day you hold; the first moments after following a link (buttons off until the day is read); the result of Edit days… when some days were taken; the strip after the 30 minutes freed your day; "Not saved" and the unsaved copy; "Editing on your other device"; the 25-minute warning naming the date when that week is not on screen.</p>
   </div>
 
   <div class="asks">

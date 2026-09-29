@@ -49,3 +49,68 @@ week is never written).
 App change: none at stage 1 — the app already builds this exact record. At
 stage 2 the snapshot column empties as the rows take over.
 
+
+## 29 Sep 26 — §3 Amendment and Signoff (the pre-Phase-2 week-numbered record, one Signoff table), replaced by the per-day version record and working / issued sign-offs (the day-lock red team, [DB-SYNC-MODEL])
+
+### Amendment
+
+Owner: **Scheduler**. One published amendment (AL) to a day. **Append-only
+once `issuedAt` is set**: no column of an issued amendment is ever updated,
+and it is never hard-deleted — a correction is the next AL.
+
+| Field | Type | Req | Meaning |
+|---|---|---|---|
+| `weekId` | ref ScheduleWeek | yes | |
+| `number` | int | yes | `n`, the AL number |
+| `dayIndexes` | int[] | yes | `days` |
+| `slotKeys` | string[] | yes | `keys` — becomes row ids at stage 2 |
+| `itemCount` | int | yes | `n0`, frozen at issue |
+| `structuralAdds` | string[] | no | `adds` / `structAdds` |
+| `signatures` | JSON | yes | `sign` at issue — the four callsigns per day, a display copy frozen at issue |
+| `snapshot` | JSON | yes | `snap`, the covered days as issued. **Required** — it is the document the squadron signed |
+| `issuedBy`, `issuedAt` | ref User / datetime | yes | today only the signature name is kept |
+| `isDeleted` | bool | yes | published history is never hard-deleted |
+
+Relationships: n–1 `ScheduleWeek`.
+From today: `SCHED.als[n]`, which also rides inside today's persisted week record.
+App change: split out of the snapshot at stage 1 already (the as-is map's own
+suggested first cut), so amendments can be reported on without opening a week.
+
+### Signoff
+
+Owner: **Scheduler**. One signature on one day: who signed which slot, and
+when. **A row is who/when only** — a day's approval and the version it
+shows are day-level facts and live on the day (the `ScheduleDay` snapshot at
+stage 1, `ScheduleDay.approved` / `shownAmendmentId` at stage 2), not on
+four sign-off rows that would have to agree.
+
+| Field | Type | Req | Meaning |
+|---|---|---|---|
+| `weekId` | ref ScheduleWeek | yes | |
+| `dayIndex` | int | yes | 0–6. **Approval is per day, not per week** |
+| `role` | choice `cur\|sked\|plan\|appr` | yes | the four sign-off slots |
+| `signedByPersonId` | ref Person | no | the live `SCHED.sign[di].<role>` value is a `PEOPLE` id when signed — the sign-off picker's options are ids (`ui/html.ts`, written through `ui/Shell.tsx`) — and `''` when unsigned. **Nullable**: null is the unsigned slot |
+| `signedName` | string | no | the callsign frozen on an issued AL (`als[n].sign`) — a display copy, never the identity |
+| `signedAt` | datetime | no | (new) |
+
+Relationships: n–1 `ScheduleWeek`, n–1 `Person`. Unique on (`weekId`,
+`dayIndex`, `role`). Append-only once the day it signs has been issued in
+an `Amendment` (`issuedAt` set): a later re-sign is a new row for the next
+AL, never an update of the frozen one.
+From today: `SCHED.sign` (the rows), `SCHED.dayOK` and `SCHED.cur` (the
+day-level `approved` and `shownAmendmentId`), `SCHED.orig` (the day-level
+`original`).
+App change: `orig` (the day as first published) stays a JSON column on the
+day-level row; the rest becomes queryable.
+
+
+## 29 Sep 26 — §9 the change feed as one cross-table `since(changeSeq)` read on Dataverse change tracking, replaced by the ChangeBatch log (Astra 5, Fable 17 — Dataverse tracks changes one table at a time)
+
+**The change feed.** Every table carries `changeSeq` and a tombstone
+(section 2). `since(changeSeq)` returns every row of every collection the
+caller may read with a `changeSeq` above the one given, tombstones
+included, in `changeSeq` order — so a client that was away catches up in
+one call, and a deleted row reaches it as a row, not as an absence. The
+postman's incoming side polls it — every 30 seconds while the page is on screen, from the first shared release (the day lock, rule 7: D356 pulls it forward from stage 3); the Leave War's OIL pass and
+the two sync derivations replay it. On Dataverse this is change tracking
+on each table, and a tombstone is the platform's deleted-row token.
