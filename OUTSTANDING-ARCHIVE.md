@@ -2734,3 +2734,24 @@ None breaks an absence rule; each is a line to fix or ask about, from the re-wal
 **Place:** any time; items 1–2 with the Leave War links re-test (D147, last).
 
 
+
+*Moved here 2026-09-29 by backlog-archive.mjs ([IT-FLOW-GUIDE]). Forward facts: `raptor-port/docs/it-flow-guide/README.md`.*
+
+### [IT-FLOW-GUIDE] A compact, picture-led flowchart of how the app works, screen by screen — for the IT team and the next developer (his ask, 29 Sep 26)
+His words: *"My IT wants a comprehensive flowchart with visuals but compact version on how the app works in terms of user
+interface, like if I want to do this, how does the app go through each step, what does the user have to click to get
+there. He's not asking about how the rules govern things like the functions like if I put all avail, how does the app
+calculate the number of people to that detail. It's more big picture for each function so that as this app is handed down
+to the next developer, they know what are the tests to test so that the app doesn't break. Like how the app should
+function when they read this flow chart. Think of the best way to present this, word/powerpoint etc. pictures arrows etc.
+since this chat is long we should do it on another chat."* **What it is:** for each thing a person does (sign in, file an
+input, build and publish a day, amend it, bid and decide on the Leave War, mark the Tracker, run Admin → Users …), the
+path through the screens — what he clicks, what he sees next — with real screenshots, numbered click marks and arrows,
+and for each journey the checks that prove it still works (the walk scripts under `raptor-port/scripts/handpass/` and
+the e2e specs are the raw material). NOT the rules engine's arithmetic. **Format — his (D410, 29 Sep 26):** a PowerPoint
+deck plus a PDF of it — a map slide of every journey, then one slide per journey (screenshots, numbered click marks,
+arrows, a short caption per step, a "What to test" box naming the checks and the automated tests); a two-slide sample to him
+first. **State (29 Sep 26, `claude/it-flow-guide-flowchart-da7ca1`):** the sample (the map and journey 3, "Publish a day")
+sent; APPROVED as drawn, and the deck also covers the alternate-plan flow and shows the work flow (D411); it goes step by step through making a schedule and shows every alternate way to do a thing (D412); the Leave War gets its own work flow slide in his order (D413); the Tracker is covered in full (D414); what happens by itself after one change, and where it shows (D415); the two editing modes, board and week (D416); the Leave War's customisable manning (D417). **Built 29 Sep 26:** 42 slides, `raptor-port/docs/it-flow-guide/`; sent to him — closes on his OK and "merge live". How it is made and re-made: `raptor-port/docs/it-flow-guide/README.md`.
+**Place:** NEXT, in a fresh chat — the IT team is waiting (D354).
+

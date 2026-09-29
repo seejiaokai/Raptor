@@ -48,7 +48,7 @@ said as such, never dressed up as his. One line per item, in plain words; the de
 list (13–23 Sep 26), its finished entries and the "In plain terms" block are in `OUTSTANDING-ARCHIVE.md`, moved
 whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaining).
 
-**THE DATABASE STEP STARTS NOW (D354, 29 Sep 26):** — and how it shares and locks, [DB-SYNC-MODEL] (D355, D356 — the mock-up and red team left); FIRST, for the IT team: [IT-FLOW-GUIDE] (the picture-led flowchart of every journey, his ask). The IT team is taking the app into Dataverse now; the order below
+**THE DATABASE STEP STARTS NOW (D354, 29 Sep 26):** — and how it shares and locks, [DB-SYNC-MODEL] (D355, D356 — the mock-up and red team left); for the IT team, the flow guide [IT-FLOW-GUIDE] is DONE (42 slides, `raptor-port/docs/it-flow-guide/`, merged on his "merge live" 29 Sep 26; archived). The IT team is taking the app into Dataverse now; the order below
 stands, its timing ("about two months away", "about a month before") is overtaken — the readiness batch and the OIL
 award fix are due before the tables are settled. What to finish before the hand-over: his answer to be recorded here.
 **His order — to the database step (D203, 26 Sep 26; D173, D147 within it):**
@@ -879,24 +879,6 @@ refresh button — his; automatic every few seconds through the Sync pill; both)
 Tracker per record (a stale save refused, "Hex changed this — reload"), no lock. **Do:** a mock-up of the day lock on
 Edit Schedule and the board, desktop and phone; §9 rewritten to his answers; both reviewers red-team it (a plan, D353);
 hand it to IT with the tables. **Place:** with `[DB-READINESS]`, before the tables are settled (D354).
-
-### [IT-FLOW-GUIDE] A compact, picture-led flowchart of how the app works, screen by screen — for the IT team and the next developer (his ask, 29 Sep 26)
-His words: *"My IT wants a comprehensive flowchart with visuals but compact version on how the app works in terms of user
-interface, like if I want to do this, how does the app go through each step, what does the user have to click to get
-there. He's not asking about how the rules govern things like the functions like if I put all avail, how does the app
-calculate the number of people to that detail. It's more big picture for each function so that as this app is handed down
-to the next developer, they know what are the tests to test so that the app doesn't break. Like how the app should
-function when they read this flow chart. Think of the best way to present this, word/powerpoint etc. pictures arrows etc.
-since this chat is long we should do it on another chat."* **What it is:** for each thing a person does (sign in, file an
-input, build and publish a day, amend it, bid and decide on the Leave War, mark the Tracker, run Admin → Users …), the
-path through the screens — what he clicks, what he sees next — with real screenshots, numbered click marks and arrows,
-and for each journey the checks that prove it still works (the walk scripts under `raptor-port/scripts/handpass/` and
-the e2e specs are the raw material). NOT the rules engine's arithmetic. **Format — his (D410, 29 Sep 26):** a PowerPoint
-deck plus a PDF of it — a map slide of every journey, then one slide per journey (screenshots, numbered click marks,
-arrows, a short caption per step, a "What to test" box naming the checks and the automated tests); a two-slide sample to him
-first. **State (29 Sep 26, `claude/it-flow-guide-flowchart-da7ca1`):** the sample (the map and journey 3, "Publish a day")
-sent; APPROVED as drawn, and the deck also covers the alternate-plan flow and shows the work flow (D411); it goes step by step through making a schedule and shows every alternate way to do a thing (D412); the Leave War gets its own work flow slide in his order (D413); the Tracker is covered in full (D414); what happens by itself after one change, and where it shows (D415); the two editing modes, board and week (D416); the Leave War's customisable manning (D417). **Built 29 Sep 26:** 42 slides, `raptor-port/docs/it-flow-guide/`; sent to him — closes on his OK and "merge live". How it is made and re-made: `raptor-port/docs/it-flow-guide/README.md`.
-**Place:** NEXT, in a fresh chat — the IT team is waiting (D354).
 
 ### [DB-READINESS] Our side of the database, built against the fake database — before the tables are settled (D203; D354 — the step starts now; filed 26 Sep 26)
 The requirements are `raptor-port/docs/data-model.md` §7 (from the 9 Sep 26 stress test; pinned as GAP tests in

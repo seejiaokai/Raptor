@@ -16,7 +16,7 @@ the later merge keeps both (D78).
 ## Now
 
 <!-- now:claude/it-flow-guide-flowchart-da7ca1 -->
-### `claude/it-flow-guide-flowchart-da7ca1` — [IT-FLOW-GUIDE]: the FULL deck (42 slides) built, Astra-checked, committed and SENT to him; waiting on his look — written 29 Sep 26 — verify before use
+### `claude/it-flow-guide-flowchart-da7ca1` — [IT-FLOW-GUIDE]: DONE — 42 slides, Astra-checked; his "Good merge live" given 29 Sep 26, merging — written 29 Sep 26 — verify before use
 - **His rulings this chat (D410–D418):** the format (D410); the sample approved + the alternate-plan flow and the work flows
   (D411); step by step with every alternate way — templates, blocks (D412); the Leave War's own flow (D413); the Tracker in full
   (D414); what happens by itself (D415); the two editing modes (D416); the Leave War's manning (D417); his answers on the Leave
@@ -28,8 +28,9 @@ the later merge keeps both (D78).
   (`ITFLOW_MODULES`), never `package.json`. The pictures and decks are NOT committed until the final (docs/it-flow-guide/).
 - **Done:** Astra read every caption, check and test against the code (588 checked; 7 wrong, 5 unsupported — all fixed); the
   final `raptor-it-flow-guide.pptx` (13.6 MB) and `.pdf` (3.9 MB) are in `raptor-port/docs/it-flow-guide/` and were sent to him.
-- **Next:** his look → any changes (edit `content.mjs` or a `j/` file, re-shoot, rebuild — README) → open the PR (it carries
-  `.mjs`, so the full checks run on his PC) → his "merge live" → archive `[IT-FLOW-GUIDE]`.
+- **Next:** his "Good merge live" (29 Sep 26): `main` merged in (D368), `[IT-FLOW-GUIDE]` archived; the PR's checks → merge → `main`'s
+  run → live on Vercel. After that this block goes at the next handoff. Later: when the OIL award chat's words change the Leave
+  War, re-shoot `lw` and `ripple` and rebuild (README) — a small follow-up, filed nowhere else: the OIL chat will message.
 - **Parallel (D302):** the handoff-review chat (D400–D409, observation #348) and the OIL award chat
   (`claude/award-earned-vs-granted-2ed66d`, D401–D409) — no shared lines. The OIL chat changes the Leave War's OIL words
   ("earned" / "awarded") and will message when they change and when it merges — then re-shoot `lw` and `ripple`. This chat:
@@ -135,7 +136,7 @@ the later merge keeps both (D78).
 
 ## Next, in order
 
-0. **THE DATABASE STEP STARTS NOW (D354, 29 Sep 26)** — first `[IT-FLOW-GUIDE]` (his ask for IT), then `[DB-SYNC-MODEL]`'s mock-up (D355, D356) and the readiness work. The IT team is taking the app into Dataverse now, and he means to
+0. **THE DATABASE STEP STARTS NOW (D354, 29 Sep 26)** — `[IT-FLOW-GUIDE]` DONE (the guide for IT, `raptor-port/docs/it-flow-guide/`, 29 Sep 26); next `[DB-SYNC-MODEL]`'s mock-up (D355, D356) and the readiness work. The IT team is taking the app into Dataverse now, and he means to
    keep working on the app beside it. What to finish before the hand-over was put to him the same day; record his answer
    here and in `OUTSTANDING.md`'s priority list the moment he gives it. Everything below keeps its ORDER; its timing is overtaken.
 1. **HIS ORDER to the database step (D203, 26 Sep 26 — its timing overtaken by D354):** `[ACCOUNTS]`, `[ACCOUNTS-NEW-PERSON]`,
