@@ -188,7 +188,15 @@ window, the VIEWING AS chip, the board closing under a window).
 
 **His answers (29 Sep 26):** 4 → D361 (kept as built after a mock-up of a "~" mark on the count; a "?" for a row with no
 timing or no end time filed, `[ROW-NO-TIME-MARK]`); "the rest as recommended" → 1 D362 (leave), 2 D363 (leave), 3 D364
-(keep), 5 D365 (keep), 6 D366 (keep).
+(keep), 5 D365 (keep), 6 D366 (keep — REPLACED the same day by D367: on his iPhone preview A cut W6LINE and
+MAGNUM, so the callsign now wraps and grows instead).
+
+**D367, built and walked (29 Sep 26):** the week's callsign wraps and its cell grows (`.form .csmsn b`); `sf-d3-callsigns.mjs`
+re-walked twice — this PC's font and a WIDER one (`SF_WIDE=1`, Verdana, standing in for his iPhone's) — 57 checks each, none
+failed, at 1440 / 390 / 360 on Edit Schedule, View-only Sched and the board (pictures `d3-callsigns-wrap/`, `d3-callsigns-wrap-wide/`:
+THUNDERBOLTS on two lines, NIGHT under it). The pictures found one defect of this batch, fixed: at 360px the 48px column
+squeezed the remarks until every stand-alone MAIN / SPARE tag broke in two ("MAI N") — 36px keeps all 12 whole (measured 34–48),
+a new walk check pins it. `e2e/geometry.spec.ts` 149 / 0 (red first: the new callsign test failed on the old style).
 
 **Filed, not asked:** `[PLAN-BANNER-DOOR]` — the plan banner's "Switch to this plan" has no screen route; recommended to
 retire it with the next plans-menu change.

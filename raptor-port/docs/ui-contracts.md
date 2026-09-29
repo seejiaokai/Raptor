@@ -1599,6 +1599,13 @@ edit week now:
 
 ### The phone flying line's three strips, and the drawer body's scroll
 
+**A flying line's callsign shows WHOLE — it wraps and the cell grows, never "…" (D367, 29 Sep 26 — owner: "Why don't it wrap
+text? So excess the text grows vertically").** On his iPhone the one-line name below was still cut ("W6LI…"): the app
+loads no font of its own, so each device draws its own and a width measured on the PC is not his phone's
+(`[APP-FONTS-NOT-LOADED]`). So the week's name wraps (`white-space:normal`, a word too long for a line breaking inside it,
+`overflow-wrap:anywhere`, as the board's boxes do) and the cell grows into the room a flying line always has; the widths
+below are unchanged, so the remarks keep theirs. Edit Schedule, View-only Sched, a published day and the next-week peek
+all draw it through `.form .csmsn b`. *The earlier contract, kept for its measurements:*
 **A flying line's callsign shows six letters whole (`[AMEND-SMALL-SEEN]` 3 + `[ABSENCE-SMALL-SEEN]` 3, 28 Sep 26).**
 VIPER and COBRA were drawn "…" on the edit week, W6LINE "…" on View-only Sched, and this board line wrapped a
 five-letter name onto two lines ("VIP/R"). Measured (`scripts/handpass/sf/sf-d3-callsigns.mjs`), not guessed. **The
@@ -1606,7 +1613,7 @@ week and View-only** (`.form`, `scheduler.css`): the name was an editable inline
 name went to "…" (only the mission dot was left) — it is an ordinary inline run now, cut after its first letters
 ("MAGN…"), an empty box keeping a tappable width while editing; and the CS/MSN column is 76px on a desktop (12.5px bold:
 every common six, MAGNUM included), 50px on a phone (9.5px: a common six — W6LINE, RANGER — whole; a wide six ends in
-"…" — kept so on his look, the remarks keeping their room: D366, 29 Sep 26), 48px at ≤374px — the room taken from REMARKS (desktop 214 → 190, 390 phone 73 → 61); B/TO and LD are unchanged.
+"…" — kept so on his look, the remarks keeping their room: D366, 29 Sep 26, REPLACED the same day by D367 above), 48px at ≤374px (36px since 29 Sep 26: at 48 a stand-alone line's MAIN / SPARE tag broke in two at 360px; the name wraps, D367) — the room taken from REMARKS (desktop 214 → 190, 390 phone 73 → 61); B/TO and LD are unchanged.
 **This board line**: the CS track is 56px (was 36 — six letters of 11px JetBrains Mono are 40px + 12 padding + 2
 border), taken from MSN, the one flexible track; a longer callsign still wraps and grows — the owner's 20 Aug 26 rule for
 every board text box. Pinned by `e2e/geometry.spec.ts` ("a flying line's callsign shows six letters whole"). *(The

@@ -1127,8 +1127,14 @@ body.ros-open .eroster .ros-tab{background:var(--accent);color:var(--accent-ink)
 .fcell.ld{grid-column:3;grid-row:1/span var(--gs)}
 .form .csmsn{overflow:hidden}
 .form .bto,.form .ld{white-space:nowrap;overflow:hidden}
-.form .csmsn b{display:block;font-size:10px;font-weight:700;color:var(--ink);white-space:nowrap;line-height:1.15;overflow:hidden;text-overflow:ellipsis}
-/* A FLYING LINE'S CALLSIGN: SIX LETTERS WHOLE, A LONGER ONE CUT TO "…" AFTER ITS FIRST LETTERS ([AMEND-SMALL-SEEN] 3 +
+.form .csmsn b{display:block;font-size:10px;font-weight:700;color:var(--ink);white-space:normal;overflow-wrap:anywhere;line-height:1.15}
+/* A FLYING LINE'S CALLSIGN WRAPS AND GROWS — THE WHOLE NAME, NEVER "…" (owner, D367, 29 Sep 26: "Why don't it wrap
+   text? So excess the text grows vertically" — on his iPhone the one-line name below was cut, W6LINE "W6LI…", because the
+   app loads no font of its own and his phone draws a wider one than the PC it was measured on, [APP-FONTS-NOT-LOADED]).
+   So the name is no longer one line: it wraps, a word too long for the line breaking inside it (overflow-wrap:anywhere,
+   as the board's boxes do, 20 Aug 26), and the cell grows down into the room a flying line always has (two puck rows at
+   least; the name and the mission use the top two lines). The widths below stay as measured, so the remarks keep theirs.
+   The history, kept for the measurements: SIX LETTERS WHOLE, A LONGER ONE CUT TO "…" ([AMEND-SMALL-SEEN] 3 +
    [ABSENCE-SMALL-SEEN] 3, 28 Sep 26 — VIPER and COBRA drawn "…" on the edit week, W6LINE "…" on View-only Sched).
    Two faults, both fixed here. (1) The name sat in the editable INLINE-BLOCK `.ntx` (min-width 30px): an inline-block
    is one unbreakable piece, so one pixel over and the WHOLE name went to "…" — the dot alone was left. As an ordinary
@@ -3570,7 +3576,11 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
    re-proportioned to fix a phone. A tablet's even split was never the
    complaint, so it keeps it. */
 @media (max-width:374px){
-  .form,.cols.formcols{grid-template-columns:48px 36px 30px calc(var(--puck-w)*2 + 6px) minmax(0,1fr)}
+  /* CS/MSN 36px (29 Sep 26, measured): 48px (28 Sep 26, for a six on one line) squeezed REMARKS until a stand-alone
+     line's MAIN / SPARE tag broke in two ("MAI N") at 360px — every one of the walk's 12, where 36px and below keep them
+     all whole and 38px breaks half. Since D367 the callsign wraps instead of being cut, so the extra width bought nothing
+     a name still needs. */
+  .form,.cols.formcols{grid-template-columns:36px 36px 30px calc(var(--puck-w)*2 + 6px) minmax(0,1fr)}
   .form .bto b,.form .bto span,.form .ld{font-size:8.5px}
   .form .csmsn b{font-size:9px}
   .fcell{padding:3px 2px 4px}

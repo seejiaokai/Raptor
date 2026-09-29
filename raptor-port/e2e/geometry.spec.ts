@@ -507,11 +507,12 @@ test('a callsign too long for its puck fades instead of being clipped clean', as
   expect(m.puck, 'and the puck is still the measured box').toEqual({ w: 74, h: 15 })
 })
 
-/* A FLYING LINE'S CALLSIGN: SIX LETTERS WHOLE ([AMEND-SMALL-SEEN] 3 + [ABSENCE-SMALL-SEEN] 3, 28 Sep 26). VIPER and
-   COBRA were drawn "…" on the edit week, W6LINE "…" on View-only Sched: the name sat in an editable inline-BLOCK, so one
-   pixel over and the whole name went (the dot alone was left), in a column sized for five letters at best. Now: five and
-   six letters whole on one line on both weeks at a desktop and a phone, a longer name cut after its first letters (an
-   inline run, never the one unbreakable piece), and never onto a second line. The phone board's box is `sf-d3`'s walk. */
+/* A FLYING LINE'S CALLSIGN: THE WHOLE NAME, ALWAYS ([AMEND-SMALL-SEEN] 3 + [ABSENCE-SMALL-SEEN] 3, 28 Sep 26; D367,
+   29 Sep 26). VIPER and COBRA were drawn "…" on the edit week, W6LINE "…" on View-only Sched; then, with the column
+   widened, his iPhone still cut W6LINE ("W6LI…") — the app loads no font, so every device draws its own and a width that
+   fits on one machine is cut on another. So the name wraps and grows (D367): every name, THUNDERBOLTS included, shows
+   whole on both weeks at a desktop and a phone — inside its cell, never "…" — whatever font the machine draws it in;
+   on a desktop a six still takes one line (the column's measured width). The phone board's box is `sf-d3`'s walk. */
 test.describe('a flying line\'s callsign shows six letters whole', () => {
   const NAMES = ['VIPER', 'W6LINE', 'RANGER', 'THUNDERBOLTS']   // the seed Monday holds four flying lines
   for (const [name, viewport] of [['phone', PHONE], ['desktop', DESK]] as const) {
@@ -533,15 +534,21 @@ test.describe('a flying line\'s callsign shows six letters whole', () => {
           .map(b => {
             const tx = (b.querySelector('.ntx') || b) as HTMLElement
             const range = document.createRange(); range.selectNodeContents(tx)
-            return { text: (b.textContent || '').trim(), cut: b.scrollWidth > b.clientWidth + 1,
-              lines: new Set([...range.getClientRects()].map(q => Math.round(q.top))).size, disp: getComputedStyle(tx).display }
+            const br = b.getBoundingClientRect(), cell = b.closest('.fcell') as HTMLElement, cr = cell.getBoundingClientRect()
+            const rects = [...range.getClientRects()]
+            /* whole = every letter's box inside the name's box and inside the cell, nothing scrolled out of either,
+               and no "…" drawn in place of letters */
+            const inside = rects.every(q => q.left >= br.left - 0.5 && q.right <= br.right + 0.5 && q.bottom <= cr.bottom + 0.5)
+            const cs = getComputedStyle(b)
+            return { text: (b.textContent || '').trim(), cut: !inside || b.scrollWidth > b.clientWidth + 1 || cell.scrollHeight > cell.clientHeight + 1,
+              ellipsis: cs.textOverflow === 'ellipsis', lines: new Set(rects.map(q => Math.round(q.top))).size }
           }), { sel, names: NAMES })
         for (const n of NAMES) {
           const r = rows.find(x => x.text === n)
           expect(r, `${page_}: ${n} is drawn`).toBeTruthy()
-          expect(r!.lines, `${page_}: ${n} stays on one line`).toBe(1)
-          if (n === 'THUNDERBOLTS') expect(r!.disp, `${page_}: a long name is cut after its first letters, not swallowed whole`).not.toBe('inline-block')
-          else expect(r!.cut, `${page_}: ${n} shows whole`).toBe(false)
+          expect(r!.cut, `${page_}: ${n} shows whole, inside its cell`).toBe(false)
+          expect(r!.ellipsis, `${page_}: ${n} is never drawn with "…"`).toBe(false)
+          if (name === 'desktop' && n !== 'THUNDERBOLTS') expect(r!.lines, `${page_}: on a desktop ${n} takes one line`).toBe(1)
         }
       }
     })
