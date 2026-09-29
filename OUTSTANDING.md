@@ -891,10 +891,12 @@ since this chat is long we should do it on another chat."* **What it is:** for e
 input, build and publish a day, amend it, bid and decide on the Leave War, mark the Tracker, run Admin → Users …), the
 path through the screens — what he clicks, what he sees next — with real screenshots, numbered click marks and arrows,
 and for each journey the checks that prove it still works (the walk scripts under `raptor-port/scripts/handpass/` and
-the e2e specs are the raw material). NOT the rules engine's arithmetic. **Format:** to recommend at the start of its own
-chat (his memory rule: few words, real blurred-where-needed screenshots, short captions — `guides-fewer-words-more-pictures`);
-the agent's lean: a slide deck (PowerPoint) — one map slide of every journey, then one slide per journey with its
-pictures and a "what to test" box. **Place:** NEXT, in a fresh chat — the IT team is waiting (D354).
+the e2e specs are the raw material). NOT the rules engine's arithmetic. **Format — his (D410, 29 Sep 26):** a PowerPoint
+deck plus a PDF of it — a map slide of every journey, then one slide per journey (screenshots, numbered click marks,
+arrows, a short caption per step, a "What to test" box naming the checks and the automated tests); a two-slide sample to him
+first. **State (29 Sep 26, `claude/it-flow-guide-flowchart-da7ca1`):** the sample (the map and journey 3, "Publish a day")
+sent; the rest waits on his word. How it is made and re-made: `raptor-port/docs/it-flow-guide/README.md`.
+**Place:** NEXT, in a fresh chat — the IT team is waiting (D354).
 
 ### [DB-READINESS] Our side of the database, built against the fake database — before the tables are settled (D203; D354 — the step starts now; filed 26 Sep 26)
 The requirements are `raptor-port/docs/data-model.md` §7 (from the 9 Sep 26 stress test; pinned as GAP tests in

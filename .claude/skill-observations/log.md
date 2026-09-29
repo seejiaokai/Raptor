@@ -1513,3 +1513,18 @@ resolved statuses always carry their resolution date
 **Suggested improvement:** A waiter must never break a lock on age alone: the holder refreshes a heartbeat (touch the owner file) during its run, and "stale" means no heartbeat for N minutes; a hand-taken lock records the session, not the take command's pid. Until then, before a queued run reaches the stale mark, ask the holder.
 
 **Principle:** Staleness for a shared lock must be judged by a heartbeat from the work it protects, not by age or by the pid of the command that acquired it.
+
+### Observation 350: On Windows without LibreOffice, let PowerPoint itself make the PDF and the QA pictures
+
+**Status:** OPEN
+**Date:** 29 Sep 26
+**Session context:** building a picture-led PowerPoint + PDF guide with pptxgenjs on a Windows PC ([IT-FLOW-GUIDE]); numbered after #348 on the handoff-review branch
+**Skill:** anthropic-skills:pptx
+**Type:** open-source
+**Phase/Area:** QA (Converting to Images) and the PDF deliverable
+
+**Issue:** The skill's render path is `soffice` → PDF → `pdftoppm`; neither existed on the machine, but PowerPoint did. Driving PowerPoint over COM (`Presentations.Open(path, readOnly, untitled, withWindow=false)`, `SaveAs(pdf, 32)`, `Slide.Export(png, 'PNG', w, h)`) gave the PDF deliverable AND exact slide pictures for visual QA in one short script — more faithful than a LibreOffice render (real fonts, no substitution caveats). Separately, pptxgenjs was not preinstalled; installing it into a scratch folder and loading it with `createRequire(<folder>)` kept it out of the project's package.json.
+
+**Suggested improvement:** In "Converting to Images" add: "If PowerPoint is installed (Windows/macOS), prefer exporting through it — PDF via SaveAs format 32, per-slide PNG via Slide.Export — the render is exact and needs no font caveats." In Dependencies: "if pptxgenjs is missing, install it outside the user's project (scratch folder + createRequire) rather than adding a dependency."
+
+**Principle:** Render QA with the same engine the audience will open the file in when it is available; and a tool needed only to produce a document should not become a dependency of the product it documents.

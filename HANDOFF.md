@@ -15,6 +15,26 @@ the later merge keeps both (D78).
 
 ## Now
 
+<!-- now:claude/it-flow-guide-flowchart-da7ca1 -->
+### `claude/it-flow-guide-flowchart-da7ca1` — [IT-FLOW-GUIDE]: the two-slide SAMPLE sent to him; waiting on his word before the rest — written 29 Sep 26 — verify before use
+- **His format (D410):** a PowerPoint deck plus a PDF — a map slide of every journey, then one slide per journey (real
+  screenshots, numbered orange click marks, green "what you should see" rings, arrows, a caption per step, a "What to test"
+  box: hand checks + the automated tests). No rules-engine detail. Sample = the map + journey 3 "Publish a day".
+- **Made by scripts, so it can be re-shot:** `raptor-port/scripts/itflow/` (capture → deck → pdf); how, in
+  `raptor-port/docs/it-flow-guide/README.md`. `pptxgenjs` lives in the chat's scratch folder, never `package.json`. The sample
+  files themselves were only sent to him (not committed); the finished deck and PDF go in `docs/it-flow-guide/`.
+- **The 16 journeys on the map:** 1 sign in / ask for access · Edit Schedule 2 build a day, 3 publish, 4 amend, 5 saved plans ·
+  6 read the schedule (desktop + phone) · 7 inputs and medical · 8 quals · 9 bid for leave, 10 run the Leave War ·
+  11 Tracker · Admin 12 let in / add a person, 13 post out / archive / delete, 14 squadron settings and rules (Logic),
+  15 print, export, data · 16 undo, redo, change history (top bar).
+- **Next:** his look at the sample → build journeys 1–16 the same way (each: drive it in `capture.mjs`, its words and tests
+  in `deck.mjs` — every test file named must be read to confirm it covers the journey) → look at every slide → one
+  reviewer reads the words against the app (D353: ONE) → send him the deck + PDF → commit them → his "merge live".
+- **Parallel (D302):** the handoff-review chat (`claude/handoff-review-next-priority-165f99`) holds D400–D409 and observation
+  #348 — told our files; no clash. This chat: D410–D419 (D410 used), observations #350+, preview port 4185
+  (`raptor-itflow` in `.claude/launch.json`).
+<!-- /now -->
+
 <!-- now:claude/small-fixes-tidy -->
 ### `claude/small-fixes-tidy` — the small-fixes batch is LIVE (PR #463, merged 29 Sep 26 on his "merge live"); this notes-only follow-up waits for his own "merge live" — written 29 Sep 26 — verify before use
 - **What it carries (documents only):** his look at D367 on his iPhone ("Looks good"); `[DOCSIZE-MERGE-CEILING]` filed; the
