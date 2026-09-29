@@ -35,13 +35,15 @@ The pictures come from the running app, so the deck can be re-shot rather than r
 
 1. `npm run build`, then serve it on port 4185 (`npx vite preview --port 4185`, or the `raptor-itflow` entry in
    `.claude/launch.json`).
-2. `node scripts/itflow/capture.mjs <shotsDir> [journey,…]` — signs in fresh for each journey, drives it,
-   takes each picture and records where every mark goes (`manifest.json`).
+2. `node scripts/itflow/capture.mjs <shotsDir> [journey,…]` — runs each journey file under `scripts/itflow/j/`
+   (or only the ones named): signs in fresh, drives it, takes each picture and records where every mark goes
+   (`manifest.json`). A mark whose element falls outside its picture stops the run — fix the crop, never the check.
 3. `node scripts/itflow/deck.mjs <shotsDir> <deck.pptx>` — lays out the slides. It needs `pptxgenjs`, which is
    NOT an app dependency: `npm i --no-save pptxgenjs`, or point `ITFLOW_MODULES` at a folder that has it.
-   The words of every slide live in `JOURNEYS` at the top of that file.
+   The words of every slide — captions, hand checks, tests — live in `scripts/itflow/content.mjs`. With `sharp`
+   installed beside it too, the pictures are shrunk once so the deck stays light.
 4. `powershell -File scripts/itflow/pdf.ps1 <deck.pptx> [<pngDir>]` — PowerPoint itself writes the PDF (and,
    with a folder, one picture per slide), so the PDF matches the deck exactly.
 
 A journey's "What to test" names real test files; when a test is renamed or a journey's screens change, change
-its entry in `JOURNEYS` and re-run steps 2–4.
+its entry in `content.mjs` and re-run steps 2–4. The deck: a map, two work flows, then 17 journeys in 39 slides.

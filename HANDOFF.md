@@ -16,25 +16,23 @@ the later merge keeps both (D78).
 ## Now
 
 <!-- now:claude/it-flow-guide-flowchart-da7ca1 -->
-### `claude/it-flow-guide-flowchart-da7ca1` — [IT-FLOW-GUIDE]: the two-slide SAMPLE sent to him; waiting on his word before the rest — written 29 Sep 26 — verify before use
-- **His format (D410):** a PowerPoint deck plus a PDF — a map slide of every journey, then one slide per journey (real
-  screenshots, numbered orange click marks, green "what you should see" rings, arrows, a caption per step, a "What to test"
-  box: hand checks + the automated tests). No rules-engine detail. Sample = the map + journey 3 "Publish a day".
-- **Made by scripts, so it can be re-shot:** `raptor-port/scripts/itflow/` (capture → deck → pdf); how, in
-  `raptor-port/docs/it-flow-guide/README.md`. `pptxgenjs` lives in the chat's scratch folder, never `package.json`. The sample
-  files themselves were only sent to him (not committed); the finished deck and PDF go in `docs/it-flow-guide/`.
-- **The 16 journeys on the map:** 1 sign in / ask for access · Edit Schedule 2 build a day, 3 publish, 4 amend, 5 saved plans ·
-  6 read the schedule (desktop + phone) · 7 inputs and medical · 8 quals · 9 bid for leave, 10 run the Leave War ·
-  11 Tracker · Admin 12 let in / add a person, 13 post out / archive / delete, 14 squadron settings and rules (Logic),
-  15 print, export, data · 16 undo, redo, change history (top bar).
-- **Next:** his look at the sample → build journeys 1–16 the same way (each: drive it in `capture.mjs`, its words and tests
-  in `deck.mjs` — every test file named must be read to confirm it covers the journey) → look at every slide → one
-  reviewer reads the words against the app (D353: ONE) → send him the deck + PDF → commit them → his "merge live".
-- **Parallel (D302):** the handoff-review chat (`claude/handoff-review-next-priority-165f99`) holds D400–D409 and observation
-  #348 — told our files; no clash. The OIL award chat (`claude/award-earned-vs-granted-2ed66d`, D401–D409) changes the
-  Leave War's OIL words ("earned" / "awarded") and will message us when they change and when it merges — then re-take
-  journeys 9–10's pictures. This chat: D410–D429 (D410–D417 used), observations #350+, preview port 4185
-  (`raptor-itflow` in `.claude/launch.json`).
+### `claude/it-flow-guide-flowchart-da7ca1` — [IT-FLOW-GUIDE]: the FULL deck (42 slides) built; Astra's read of the words running; then to him — written 29 Sep 26 — verify before use
+- **His rulings this chat (D410–D418):** the format (D410); the sample approved + the alternate-plan flow and the work flows
+  (D411); step by step with every alternate way — templates, blocks (D412); the Leave War's own flow (D413); the Tracker in full
+  (D414); what happens by itself (D415); the two editing modes (D416); the Leave War's manning (D417); his answers on the Leave
+  War as built — three kept, a drag below zero asks too (D418, filed `[LW-DRAG-BELOW-ZERO]`). Also filed: `[PDF-PRINT-TWICE]`,
+  `[TRK-REFUSALS-UNTESTED]`.
+- **The deck:** map, two work flows, 17 journeys in 39 slides (steps / ways / compare / ripple kinds). Made by
+  `raptor-port/scripts/itflow/` — `capture.mjs` + `j/*.mjs` shoot the running app (port 4185), `content.mjs` holds the words,
+  `deck.mjs` lays out, `pdf.ps1` has PowerPoint write the PDF. `pptxgenjs` and `sharp` live in the chat's scratch folder
+  (`ITFLOW_MODULES`), never `package.json`. The pictures and decks are NOT committed until the final (docs/it-flow-guide/).
+- **Next:** (1) Astra's read of `content.mjs` against the code (brief + report in the chat's scratchpad) → fix what is wrong →
+  rebuild; (2) send him the deck + PDF; (3) on his OK commit `raptor-it-flow-guide.pptx` / `.pdf` into `docs/it-flow-guide/`;
+  (4) PR, his "merge live". The PR carries scripts (`.mjs`), so the full checks run on it.
+- **Parallel (D302):** the handoff-review chat (D400–D409, observation #348) and the OIL award chat
+  (`claude/award-earned-vs-granted-2ed66d`, D401–D409) — no shared lines. The OIL chat changes the Leave War's OIL words
+  ("earned" / "awarded") and will message when they change and when it merges — then re-shoot `lw` and `ripple`. This chat:
+  D410–D429 (D410–D418 used), observations #350+, preview port 4185 (`raptor-itflow` in `.claude/launch.json`).
 <!-- /now -->
 
 <!-- now:claude/small-fixes-tidy -->

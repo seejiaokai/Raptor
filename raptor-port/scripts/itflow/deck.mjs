@@ -8,7 +8,7 @@
    `npm i --no-save pptxgenjs` (or point ITFLOW_MODULES at a folder whose node_modules has it). The PDF is
    PowerPoint's own export (pdf.ps1), so it matches the deck. */
 import { createRequire } from 'node:module'
-import { readFileSync } from 'node:fs'
+import { readFileSync, mkdirSync, existsSync } from 'node:fs'
 import { join } from 'node:path'
 import { JOURNEYS, PAGES, FLOWS } from './content.mjs'
 
@@ -45,7 +45,21 @@ pres.layout = 'LAYOUT_WIDE'
 pres.title = 'RAPTOR — how the app works'
 
 const txt = (slide, text, o) => slide.addText(text, { fontFace: FONT, color: C.ink, margin: 0, isTextBox: true, ...o })
-const img = id => join(SHOTS, `${id}.jpg`)
+
+/* The deck carries each picture once per use, so a 2x screenshot used three times weighs three times. When sharp
+   is installed beside pptxgenjs, every picture is shrunk once (at most 1100px wide, JPEG 78) into <shots>/.deck/ —
+   still sharp at slide size — and the deck uses those; without it the deck uses the originals. */
+let small = null
+try { small = req('sharp') } catch { /* optional */ }
+const SMALL = join(SHOTS, '.deck')
+if (small) {
+  mkdirSync(SMALL, { recursive: true })
+  for (const id of Object.keys(MAN)) {
+    const src = join(SHOTS, id + '.jpg'), dst = join(SMALL, id + '.jpg')
+    if (existsSync(src)) await small(src).resize({ width: 1100, withoutEnlargement: true }).jpeg({ quality: 78 }).toFile(dst)
+  }
+}
+const img = id => join(small ? SMALL : SHOTS, `${id}.jpg`)
 
 function footer(slide, i) {
   txt(slide, `RAPTOR · how the app works · ${i} / ${TOTAL}`, { x: 0.5, y: H - 0.38, w: 6, h: 0.25, fontSize: 9, color: C.muted })
@@ -72,7 +86,10 @@ function picture(slide, id, x, y, w, maxH) {
   slide.addImage({ path: img(id), x, y, w, h })
   const pad = 0.035
   for (const k of m.marks) {
-    const bx = x + k.x * w - pad, by = y + k.y * h - pad, bw = k.w * w + 2 * pad, bh = k.h * h + 2 * pad
+    /* a ring never leaves its picture: an element wider than the crop is ringed at the picture's edge */
+    const x1 = Math.max(x - 0.02, x + k.x * w - pad), y1 = Math.max(y - 0.02, y + k.y * h - pad)
+    const x2 = Math.min(x + w + 0.02, x + (k.x + k.w) * w + pad), y2 = Math.min(y + h + 0.02, y + (k.y + k.h) * h + pad)
+    const bx = x1, by = y1, bw = x2 - x1, bh = y2 - y1
     const col = k.see ? C.see : C.click
     slide.addShape(pres.shapes.ROUNDED_RECTANGLE, { x: bx, y: by, w: bw, h: bh, rectRadius: 0.04, fill: { type: 'none' }, line: { color: col, width: 2.5 } })
     if (!k.see) {
@@ -93,11 +110,13 @@ function picture(slide, id, x, y, w, maxH) {
 function capLine(s, l, x, y, w, size = 13) {
   if (l.see) {
     s.addShape(pres.shapes.ROUNDED_RECTANGLE, { x, y: y + 0.07, w: 0.26, h: 0.17, rectRadius: 0.04, fill: { type: 'none' }, line: { color: C.see, width: 2 } })
-  } else if (l.n != null) {
+  } else if (l.n == null) {
+    s.addShape(pres.shapes.OVAL, { x: x + 0.09, y: y + 0.11, w: 0.09, h: 0.09, fill: { color: C.navy }, line: { color: C.navy } })
+  } else {
     s.addShape(pres.shapes.OVAL, { x, y: y + 0.02, w: 0.27, h: 0.27, fill: { color: C.click }, line: { color: C.click } })
     txt(s, String(l.n), { x, y: y + 0.02, w: 0.27, h: 0.27, fontSize: 11, bold: true, color: C.white, align: 'center', valign: 'middle' })
   }
-  txt(s, l.t, { x: x + 0.36, y, w: w - 0.36, h: 0.31, fontSize: size, valign: 'middle', bold: !l.see, fit: 'shrink' })
+  txt(s, l.t, { x: x + 0.36, y, w: w - 0.36, h: 0.31, fontSize: size, valign: 'middle', bold: l.n != null, fit: 'shrink' })
 }
 
 function whoPill(slide, who, x, y) {
@@ -118,13 +137,13 @@ function head(s, j, sl, k) {
 }
 
 /* The "What to test" box across the foot: hand checks on the left, the automated tests on the right. */
-function testBox(s, sl, by) {
+function testBox(s, sl, by, size = 11) {
   const bh = H - by - 0.5
   s.addShape(pres.shapes.ROUNDED_RECTANGLE, { x: 0.5, y: by, w: W - 1, h: bh, rectRadius: 0.1, fill: { color: C.card }, line: { color: C.line, width: 1 } })
   txt(s, 'What to test', { x: 0.75, y: by + 0.12, w: 4, h: 0.32, fontSize: 15, bold: true, color: C.navy })
   txt(s, 'By hand, in the running app', { x: 0.75, y: by + 0.45, w: 6, h: 0.24, fontSize: 10.5, bold: true, color: C.muted })
   txt(s, sl.checks.map((c, k) => ({ text: c, options: { bullet: { code: '2610' }, breakLine: k < sl.checks.length - 1 } })),
-    { x: 0.75, y: by + 0.72, w: 6.55, h: bh - 0.82, fontSize: 11, valign: 'top', paraSpaceAfter: 2, fit: 'shrink' })
+    { x: 0.75, y: by + 0.72, w: 6.55, h: bh - 0.82, fontSize: size, valign: 'top', paraSpaceAfter: 2, fit: 'shrink' })
   txt(s, 'Automated tests that cover it', { x: 7.6, y: by + 0.45, w: 5, h: 0.24, fontSize: 10.5, bold: true, color: C.muted })
   txt(s, sl.tests.flatMap(([f, what], k) => [
     { text: f, options: { bold: true, fontFace: 'Consolas', fontSize: 10, color: C.navy } },
@@ -175,9 +194,8 @@ function mapSlide() {
     let y = 2.25 + th.h + 0.18
     for (const j of JOURNEYS.filter(j => j.page === p)) { chip(s, j, x, y, colW); y += 0.62 }
   })
-  const tj = JOURNEYS.find(j => j.page === 'topbar')
-  txt(s, 'On every page, in the top bar:', { x: cx0, y: 6.55, w: 2.6, h: 0.4, fontSize: 11, color: C.muted, valign: 'middle' })
-  chip(s, tj, cx0 + 2.55, 6.55, 3.2, 0.4)
+  txt(s, 'On every page:', { x: cx0, y: 6.55, w: 1.4, h: 0.4, fontSize: 11, color: C.muted, valign: 'middle' })
+  JOURNEYS.filter(j => j.page === 'topbar').forEach((tj, k) => chip(s, tj, cx0 + 1.45 + k * 3.55, 6.55, 3.4, 0.4))
   footer(s, 1)
 }
 
@@ -233,7 +251,8 @@ function stepsSlide(j, sl, k, i) {
   const n = sl.steps.length, arrowW = 0.42, left = 0.5, py = 1.45
   const pw = (W - 2 * left - (n - 1) * arrowW) / n
   const lines = Math.max(...sl.steps.map(st => st.lines.length))
-  const maxH = Math.min(4.55 - py - 0.17 - lines * 0.34, Math.max(...sl.steps.map(st => pw * MAN[st.shot].h / MAN[st.shot].w)))
+  const natural = Math.max(...sl.steps.map(st => pw * MAN[st.shot].h / MAN[st.shot].w))
+  const maxH = Math.min(natural, Math.max(1.75, 4.55 - py - 0.17 - lines * 0.34))
   sl.steps.forEach((st, q) => {
     const x = left + q * (pw + arrowW)
     const p = picture(s, st.shot, x, py, pw, maxH)
@@ -241,7 +260,7 @@ function stepsSlide(j, sl, k, i) {
     let ly = py + maxH + 0.17
     for (const l of st.lines) { capLine(s, l, x, ly, pw); ly += 0.34 }
   })
-  testBox(s, sl, 4.72)
+  testBox(s, sl, Math.max(4.72, py + maxH + 0.17 + lines * 0.34 + 0.05))
   footer(s, i)
 }
 
@@ -278,7 +297,7 @@ function rippleSlide(j, sl, k, i) {
   const ax = 0.5, ay = 1.45, aw = 3.3
   s.addShape(pres.shapes.ROUNDED_RECTANGLE, { x: ax, y: ay, w: aw, h: 0.34, rectRadius: 0.06, fill: { color: C.click }, line: { color: C.click } })
   txt(s, 'ONE ACTION', { x: ax + 0.1, y: ay, w: aw - 0.2, h: 0.34, fontSize: 11, bold: true, color: C.white, valign: 'middle', charSpacing: 1 })
-  const ap = picture(s, sl.action.shot, ax, ay + 0.46, aw, 1.95)
+  const ap = picture(s, sl.action.shot, ax, ay + 0.46, aw, 4.6 - (ay + 0.46) - 0.1 - sl.action.lines.length * 0.31)
   let ly = ay + 0.46 + ap.h + 0.1
   for (const l of sl.action.lines) { capLine(s, l, ax, ly, aw, 12); ly += 0.31 }
   const n = sl.places.length, cols = n > 4 ? 3 : 2, rows = Math.ceil(n / cols)
@@ -297,7 +316,27 @@ function rippleSlide(j, sl, k, i) {
   footer(s, i)
 }
 
-const KIND = { steps: stepsSlide, ways: waysSlide, ripple: rippleSlide }
+/* ---- a COMPARE slide (D416): two ways of working side by side, each a large picture and what it is for ---- */
+function compareSlide(j, sl, k, i) {
+  const s = pres.addSlide()
+  s.background = { color: C.white }
+  head(s, j, sl, k)
+  const gap = 0.35, pw = (W - 1 - gap) / 2, py = 1.45
+  const lines = Math.max(...sl.ways.map(w => w.lines.length))
+  const maxH = 5.5 - py - 0.46 - 0.1 - lines * 0.29
+  sl.ways.forEach((w, q) => {
+    const x = 0.5 + q * (pw + gap)
+    s.addShape(pres.shapes.ROUNDED_RECTANGLE, { x, y: py, w: pw, h: 0.34, rectRadius: 0.06, fill: { color: C.navy }, line: { color: C.navy } })
+    txt(s, w.t, { x: x + 0.12, y: py, w: pw - 0.24, h: 0.34, fontSize: 13, bold: true, color: C.white, valign: 'middle' })
+    const p = picture(s, w.shot, x, py + 0.46, pw, maxH)
+    let ly = py + 0.46 + maxH + 0.1
+    for (const l of w.lines) { capLine(s, l, x, ly, pw, 11.5); ly += 0.29 }
+  })
+  testBox(s, sl, 5.6, 10.5)
+  footer(s, i)
+}
+
+const KIND = { steps: stepsSlide, ways: waysSlide, ripple: rippleSlide, compare: compareSlide }
 mapSlide()
 FLOWS.forEach((f, k) => flowSlide(f, 2 + k))
 for (const j of JOURNEYS) (j.slides || []).forEach((sl, k) => KIND[sl.kind || 'steps'](j, sl, k, slideOf[j.n] + k))

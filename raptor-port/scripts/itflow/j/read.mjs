@@ -27,8 +27,8 @@ export default async function ({ fresh, go, shot, switchTo, publishDay, around, 
   await page.click('#weekNext'); await page.waitForTimeout(700)
   await shot(page, 'read-w1', { x: 800, y: 380, w: 640, h: 520 }, [{ n: 1, sel: '#weekNext', pos: 'l' }, { see: true, sel: '#hsLbl' }])
   await page.$eval('#vWeek', e => { e.scrollLeft = 2784 }); await page.waitForTimeout(900)
-  const peekHead = '#vWeek .day.peek[data-peek-day="0"] > *:first-child'
-  await page.$eval(peekHead, e => e.scrollIntoView({ inline: 'end', block: 'nearest' })); await page.waitForTimeout(900)
+  const peekHead = page.locator('#vWeek .day.peek[data-peek-day="0"]').getByText(/next week/i).first()
+  await peekHead.evaluate(e => e.scrollIntoView({ inline: 'end', block: 'nearest' })); await page.waitForTimeout(900)
   await shot(page, 'read-w2', await around(page, peekHead, 640, 480, 0.5, 0.2), [{ n: 1, sel: peekHead }])
   await page.context().close()
   // a phone: one day fills the screen; swipe to the next; the menu's date picker
