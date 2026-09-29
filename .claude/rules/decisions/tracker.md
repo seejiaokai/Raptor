@@ -44,6 +44,7 @@ carried-over traps — `raptor-port/docs/tracker/known-gaps.md`; what it stores 
 
 | # | Date | The rule |
 |---|---|---|
+| D377 | 29 Sep 26 | His look at the Tracker leftovers is done ("Looks good"): the chart a person last had open on a course is part of their own place (D376 reading 5), and a half-typed day in Done on or Failed on is refused, never recorded as today — an empty box still means today. |
 | D376 | 28 Sep 26 | Each signed-in person reopens the Tracker on their own last course, chart on it and student, on that browser; a rename keeps it, every way of picking a student updates it, the admin's member view is the same person. Someone new starts on the first course and its last-graded student, else the first. Standalone: one place per browser. |
 | D375 | 28 Sep 26 | Keep: a students import adds a course the app does not have at the bottom of the Course list, and the courses already here keep their places (⇅ Reorder moves it) — ruled, not a defect. |
 | D374 | 28 Sep 26 | A day after the squadron's (Singapore) day is refused in Done on, Failed on (the full failures list's rows too), Last Flown (Syllabus) and Last Flown (Currency): the box goes back, one line says why, nothing is saved and no undo step made. Upchit and End date A / B take any day; a future day already stored is not rewritten. |

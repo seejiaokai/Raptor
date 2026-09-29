@@ -15,23 +15,6 @@ the later merge keeps both (D78).
 
 ## Now
 
-<!-- now:claude/tracker-leftovers-f79d36 -->
-### `claude/tracker-leftovers-f79d36` — the Tracker leftovers BUILT and FULL-checked — his "merge live" given 29 Sep 26 — written 29 Sep 26 — verify before use
-- **The branch:** from `main`, folder `.claude/worktrees/tracker-palette-prompt-a0c90f`; `main` brought in at PR #458 (the
-  rulings slim-down, by its own steps). Preview 4175, `E2E_PORT=4192`, rulings D370–D379 (D370–D376 used). The five items
-  (`[TRK-RETEST-NOTES]`, `[TRK-EDIT-SIDEWAYS]`, `[TRK-SESSION-PICK]`, `[TRK-DLG-LEFTOVERS]`, `[TRK-BAKE-STALE]`) are archived.
-- **Done:** the build and the FULL bug check — the evidence sheet `raptor-port/docs/handpass/2026-09-28-trk-leftovers.md`
-  (roll-calls §3, three walkers §9, the two final reads §9b, the gates §10, his look card §11). Fable and Astra's final
-  reads: nine fixed red-first, two not defects, two filed for the database (`[TRK-ASYNC-STALE]`). Re-walk 535 checks, 0
-  failed; smoke 445/0; 54 break tests all red. Filed: `[SAVE-NOTE-COVERS]` (medium, next), `[TRK-SAVE-FAIL-SAYS-SAVED]`,
-  `[SHELL-SIDEWAYS-BAR]`, `[LW-DOZE-GUARDS]`, `[TRK-REMOUNT-LANDING]`, `[HISTLIST-SLOW-TEST]` (test-only).
-- **His readings to confirm on the look card:** D376 reading (5) — the chart he last had open on a course is part of his
-  place (added from Fable's read); a half-typed day in the grading pop-up is now refused, not recorded as today.
-- **Next:** his "merge live" was given 29 Sep 26 (PR #459, `main` brought in at PR #461 first) — merge when the PR's
-  checks are green, then `main`'s run, then live on Vercel. His two readings on the look card (§11) are still his to
-  confirm. The change-recording chat owns the Tracker's ↶ ↷ in `Header.jsx` (D347) and takes `main` in after this.
-<!-- /now -->
-
 <!-- now:claude/rulings-slim-d391-078ad2 -->
 ### `claude/rulings-slim-d391-078ad2` — [RULINGS-SLIM]'s guide step (D391): the guide's rules as one-line short forms — BUILT, his "merge live" given — written 28 Sep 26 — verify before use
 - **The branch:** cut from `main` after PR #458 (the rulings part of the slim-down, whose block this replaces — merged; its
