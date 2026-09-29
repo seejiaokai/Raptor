@@ -96,7 +96,7 @@ phone — [PHONE-DISCARD-MARKS] (low, from the change-recording walk), [PHONE-WI
 
 **Waiting on him — no order exists:**
 [OIL-EARNED-VS-GRANTED] (his figure — ask first, when the award fix reaches it;
-D147), [LW-COMMIT-MANNING] (his call), [LEAVE-YEAR] ("we will do this next time", 19 Sep — no slot since),
+D147), [LEDGER-READ-ASK] (a question for him, from the OIL award build), [LW-COMMIT-MANNING] (his call), [LEAVE-YEAR] ("we will do this next time", 19 Sep — no slot since),
 [REPO-PRIVATE]'s sharing half, [EOD] (design first; no slot
 ruled), [CRP-FLAG]'s remainder and then [FLAG-EXPORT], the [AMEND] leftovers, [ADMIN-DISPLAY] ("next time we revisit",
 D161), with [USER-GUIDE] (wanted, not urgent) and [PERF-RESIDUALS] (two of them change wording
@@ -1236,6 +1236,17 @@ of D320, D323, D328 — open their full rows first". **Open before building:** w
 the model without blocking the edit, and how to keep it quiet (once per file per session). **Context:**
 `raptor-port/docs/superpowers/plans/2026-09-28-rulings-slim-down-plan.md` §2.8 and §5. **Place:** low — after
 [RULINGS-SLIM] merges, if a chat is seen acting on a short line alone; put to him first.
+
+### [LEDGER-READ-ASK] May a member see other men's OIL tracker entries and leave grants? — a question for him (filed 29 Sep 26)
+Found by both red teams of the `[OIL-AWARD-IS-A-GRANT]` plan (Fable F5, Astra F10): the app has ALWAYS shown every member
+every man's OIL tracker (grants and corrections — `OilTracker.tsx` lists every person for both roles) and every man's
+figure breakdown with its itemised grants on every pool (owner, 17 Aug 26: "everyone should be able to click on that
+person's name and see these logics"), while `raptor-port/docs/data-model.md` §11 — the table IT builds the database's
+access rules from — says a member reads only his OWN `LeaveLedger` / `LeaveOpening` rows. The award build settles only the
+award (every member reads every man's, D402 — its own row in §11); everything else in the ledger stays as §11 says, with a
+note naming this gap. **The question:** should a member see every man's ledger entries (as the app shows today) or only his
+own (as §11 says)? If "everyone", §11 and `state/perms.ts` widen; if "own only", the tracker and the breakdown hide other
+men's entries from a member. **Place:** a question for him, before the tables settle (D354).
 
 ### [GUIDE-MAP-ROWS] The guide's map table: its long rows to the full text too? — OPEN (the guide step, D391, 28 Sep 26)
 **What:** after the guide step the project guide is ~9.5k tokens, not the plan's ~6k. Of what is left, the map table
