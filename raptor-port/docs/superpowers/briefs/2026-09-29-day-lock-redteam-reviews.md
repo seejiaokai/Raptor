@@ -189,3 +189,156 @@ D451 (a change on a free day takes it), D452 (Fast sync off after 20 minutes); D
 | Fable 14 — `modifiedon` as the clock is fragile | DECLINED, with its reason: only the app writes these rows, and every confirmed save already writes the row, so `modifiedon` IS the last change; a maker-portal edit extending a lock is negligible (§3). |
 | Fable 16 — ownership route | ACCEPTED as the design (D450). |
 | Peer chat (the one-time import vs the wipe) | §7's "One-time legacy import" row corrected; §5's lead-in says it is a field map, nothing crosses but his Tracker charts. |
+
+
+## Round 2 — Fable 5.1
+
+**Fable — round 2, the day lock after the fold-in (`[DB-SYNC-MODEL]`, D355/D356, D450–D453), 29 Sep 26.** Read only; nothing changed. Checked against `raptor-port/src` and Microsoft's Dataverse documentation where the design leans on the platform.
+
+### 1. My round-1 findings
+
+| # | Status | Note |
+|---|---|---|
+| 1 planning calendar | CLOSED | `PlanningPuck` / `DayRemark`, no lock. One stale phrase: §5's row still ends "JSON at stage 1; own rows at stage 2" — they are own rows at stage 1 now (finding 5). |
+| 2 write only changed, held days | CLOSED | §3 "What the adapter writes". §6's stage-1 row still says the fan-out "splits … each week record into its week row and seven day rows on `put`" — the old inference the new paragraph replaced (finding 5). |
+| 3 command-layer grain | CLOSED | `sched.book/<wk>#<di>`, mutes per day, `v`/`am` week-wide. |
+| 4 passes that wrote held days | CLOSED | Worked out on read; I agree with keeping the placement inside the day snapshot rather than a table — only the holder writes it, and it is his decision (Astra 4's table would add a second lock-protected row for nothing at stage 1). One app-side note, no table effect: the read rule must be applied to the in-memory working copy before the pending comparison, because the issued snapshot deliberately keeps a deleted man's attributes (`engine/publish.ts:585` — `p.deleted ? pa[id]`), so "reads pending" cannot come from the roster; it comes from the projected working day differing from the issued one. Rule 9 should say "applied to the working copy at load and at each check". |
+| 5 rows for an unsaved week | CLOSED | Created in one batch; unique keys; snapshot null. Creating them "owned by the free team" is an ownership change at create — finding 1 covers what that needs. |
+| 6 reconcile deletes weeks | CLOSED | §7 "before the first shared release". |
+| 7 input marks / `un` | CLOSED | Derived; `Input.acc` an admin's update of the member's row. |
+| 8 "all saved" offline | CLOSED | Rule 4, the unsaved copy; the mock's words corrected. |
+| 9 two tabs / devices | CLOSED | Astra's one-session form is better than mine (a lease per take, "Move editing here"). |
+| 10 after the 30 minutes | CLOSED for the old holder (rule 5). The take of an EXPIRED day by someone else is an ownership change of a row owned by another user — finding 1. |
+| 11 release only on a real close | CLOSED | Rule 6. |
+| 12 week row stamped by a publish | CLOSED | |
+| 13 take-over window | CLOSED **only if finding 1 holds** — it rests on the take-over being a version-bumping update the old holder is then refused on; true under ownership, if the take-over can be performed at all (finding 1). |
+| 14 `modifiedon` as the clock | CLOSED — I accept the decline. Its reason is right once "every confirmed save writes the row" and there is no per-minute touch; a take, a take-over and Move-editing-here also move `modifiedon`, all of them the new holder's, so nothing false comes of it. |
+| 15 D148 vs the contract paragraph | CLOSED | |
+| 16 ownership route | Adopted as design (D450) — but as written it does not deliver a take-over or an expiry take, and it needs two platform settings IT would otherwise leave at default. Finding 1. |
+| 17 change log | CLOSED — I agree with the "less two minutes" overlap over a server sequence: Dataverse has no exposed commit sequence, and `versionnumber` (a global rowversion) is assigned inside the transaction, so it has the same out-of-order edge as `createdon`; an overlap is needed either way. One number to fix (finding 6). |
+| 18 mock states | CLOSED as a list (D453: screens last). |
+| 19 Amendment | CLOSED — but the new entry contradicts itself on `retractedBy/At` and that has an ownership consequence (finding 2). |
+
+### 2–3. What the fold-in introduced, and what would still make IT build a table wrong
+
+**1. The ownership route, as written, cannot perform a take-over or take an expired day — and two platform defaults would defeat it. BLOCKER (a paragraph to fix, but it must be fixed before IT builds the roles)**
+- **Evidence:** §3 ScheduleDay and §11: "Write at *User* depth … Assign at *Business unit* depth; a take, a take-over and a release are an Assign sent with the version read." Microsoft: the Assign message is **deprecated — an ownership change is an ordinary Update of `ownerid`** ([AssignRequest](https://learn.microsoft.com/en-us/dotnet/api/microsoft.crm.sdk.messages.assignrequest?view=dataverse-sdk-latest): "This message request is deprecated. Use the UpdateRequest instead"), and the caller needs "Assign privileges on the table and access rights on the specified record". With Write at User depth a scheduler holds write access only to rows he or his teams own. So: (a) a **take-over** updates a row owned by ANOTHER user — refused at User depth; (b) a **take of an expired day** is the same case (the idle holder still owns it — nothing in Dataverse changes ownership on a clock); (c) a **take of a free day** works only if the scheduler is a member of the "free" team — a team-owned row is writable at User depth only by the team's members. Raising admins' Write to Business-unit depth fixes (a) and (b) and removes the firmness for exactly the people the lock is for — every scheduler is an admin (§11). (d) The org setting `ShareToPreviousOwnerOnAssign` (same page): when true, "a record assigned to a new owner is shared with the previous owner with full rights" — a take-over would leave the old holder able to write. (e) Cascade: an assign "applies to the parent record and the associated records that have the same owner" and follows the relationship's cascade setting ([cascading behavior](https://learn.microsoft.com/en-us/power-apps/developer/data-platform/configure-entity-relationship-cascading-behavior)) — a Parental or Cascade-All relationship from `ScheduleDay` to `Amendment` / `IssuedSignoff` would reassign every issued row of the day on every take (their versions bump, the change log fills, and with user-owned children the unpublish stamp becomes the new holder's to write).
+- **Scenario:** Ranger holds Tuesday and goes home. Saber presses Take over: the update of `ownerid` on a row Ranger owns is refused (User depth). Give admins BU-depth Write to make it work, and Saber can also save Tuesday without taking it — D450 is not met. Meanwhile IT built the Amendment relationship as Parental (the maker portal's usual choice for a child table): Saber's first successful take reassigns Tuesday's six issued amendments.
+- **Exact fix (§3 ScheduleDay, §9 rule 8, §11 note, §12 q8):** replace the privilege sentence with: "`ScheduleDay` is a **user/team-owned** table. Schedulers: Create, Read (Organization depth), Write **User depth**, Assign **User depth** — so a holder can release (assign the row he owns to the free team) and hand it to another device of his own, and no one can save a day he does not own. Every scheduler is a member of the **free team**, so a free day (owned by it) can be taken by an ordinary update of `ownerid` with `If-Match`. **The two changes of owner a non-owner must make — a take-over, and the take of a day idle over 30 minutes — run through one small server-side action** (`SetDayHolder(dayId, action)`: a Custom API or plug-in step running under a service identity that checks 'caller is admin' or 'modifiedon older than 30 minutes' and then reassigns), because Dataverse gives a non-owner no way to change an owner without a privilege depth that would also let him save the day. This is the smallest custom code the lock needs; there is no no-code form of it. Settings IT must fix at build: `ShareToPreviousOwnerOnAssign` = false; every relationship from `ScheduleDay` (to `Amendment`, and through it `IssuedSignoff`) **Referential, Assign = Cascade None**." Reword D450's home line in §9 rule 8 from "with no custom code" to "with no custom code on the SAVE path; the two owner changes a non-owner makes are one server action (Open question 8)". Add to §12 q8: "who adds a new admin to the free team when Admin → Users creates him (D217) — the app cannot without the AddMembersTeam privilege; if IT prefers, the free team is replaced by a service user and every take goes through the same server action."
+
+**2. Ownership TYPE per table is never stated, and it cannot be changed after a table is created. MAJOR**
+- **Evidence:** Dataverse fixes user/team vs organization ownership at table creation ([security concepts](https://learn.microsoft.com/en-us/power-platform/admin/wp-security-cds)). §11 says only "row ownership by the person's `User` where the own-row rule applies". Two entries would be built wrong as they read: `Amendment` says "no column of an issued row is ever updated" and, five lines down, `retractedBy/At` are "set once by an Unpublish" — if IT makes it user-owned (the publisher's) with User-depth Write, another admin cannot unpublish. `ScheduleWeek.ownedBy` "who created the week" reads as user ownership — then no other admin could tombstone the week or run a format upgrade. `ChangeBatch` is "written by every writer": a member's input command must be allowed to create one.
+- **Exact fix (§11, a new two-line table above the roles):** "**User/team-owned:** `ScheduleDay` (the lock), `Input`, `Attachment`, `InputAttachment`, `QualMark`, `LeaveBid`, `LeaveOpening`, `LeaveLedger`, `LeaveCounter`, `EditLogSeen`, `AccessRequest`, `User` — every table with an own-row rule, owner = the person's `User`. **Organization-owned:** everything else — `ScheduleWeek` (`ownedBy` is a plain column, not the platform owner), `Amendment` (append-only except the one retraction stamp, which any admin may set once), `IssuedSignoff`, `PlanningPuck`, `DayRemark`, `ChangeBatch` (Create for admin and member, Read for all), `Person`, `Setting`, the Tracker's, the Leave War's definitions, `EditLog`." Fix the Amendment entry to "no column is ever updated **except** `retractedBy`/`retractedAt`, set once".
+
+**3. "Worked out on read" leaves no write to a held day — confirmed — except the three ownership changes above, which are not day writes. MINOR (state it)**
+- I traced every writer that reached a day in round 1: the member's input (`slots.ts:431-456`), the Delete (`person-delete.ts:261-291`), the handed-on request's OIL clear (`oilmode.ts:359-380`), the posting pass, the format stamp at publish (`publish.ts:320,1054`), the planning calendar. Under the fold-in each writes its own table or nothing; the Delete still writes `PlanningPuck` gaps (own table, no lock — fine) and rule 9's third bullet should name it. The only writes to a day someone else owns are the owner changes of finding 1.
+
+**4. One changeset per command fits the platform. MINOR (write the numbers down so IT does not ask)**
+- Dataverse: a `$batch` holds up to 1,000 requests; a changeset is all-or-nothing ([batch operations](https://learn.microsoft.com/en-us/power-apps/developer/data-platform/webapi/execute-batch-operations-using-web-api)). The largest commands here: creating a week (1 + 7 rows + 1 batch = 9), "Edit days…" on seven free days (7 updates + 1), a publish (day + `Amendment` + 4 `IssuedSignoff` + batch = 7), a Delete (person + his inputs + Leave War rows — tens). A template goes onto one day (`daytpl.ts applyDayTpl(di)`), Sort all is one day (`board.ts:623-701`); no command touches more than a week. Two rules to add to §9 rule 3: "a changeset carries no read — the version of each row written comes back in the reply (`Prefer: return=representation`); the rows of one changeset are written in a fixed order (week, days by index, amendment, sign-offs, batch) so two commands never deadlock". A note that "Edit days…" is one command per day (rule 1's three groups), not one changeset — else "keeping what it took" contradicts all-or-nothing.
+
+**5. Two places still describe the pre-fold-in shape. MINOR**
+- §6 stage 1: "splits … each week record into its week row and seven day rows … on `put`" → "sends the command layer's write set (section 3, What the adapter writes)". §5 planning row: drop "JSON at stage 1; own rows at stage 2". §5 still maps `SCHED.sign` → `Signoff` and §11's retention line says `Signoff` — the table is now the working sign-offs inside the snapshot and `IssuedSignoff`.
+
+**6. The change log's overlap must exceed the platform's longest transaction, and its ownership must let members write it. MINOR**
+- A batch whose `createdon` is stamped early in a changeset that then waits on a lock commits late; Dataverse's transaction limit is about two minutes, so "less two minutes" sits exactly on the edge. **Fix:** "less five minutes", dedupe by id kept for five minutes; `ChangeBatch` organization-owned, Create for admin and member (finding 2). The `items` entry for each written row should carry the new `versionnumber` so a writer's own batch refreshes his local versions without a re-read.
+
+**Verdict: APPROVE WITH FIXES** — findings 1 and 2 must be written in before the document goes to IT (a table's ownership type and a relationship's cascade cannot be undone once built); 3–6 are lines to add. Nothing else in the fold-in is broken.
+
+
+## Round 2 — Astra (Codex, gpt-5.6-sol, high)
+
+Astra 1 — **NOT CLOSED** — the keys and sign-off split are fixed, but publish still lacks server-side validation against the current read-derived day, and `Amendment` is called append-only while Unpublish updates it.
+
+Astra 2 — **NOT CLOSED** — lock columns are acceptable, but Dataverse ownership alone neither permits the proposed take nor enforces session token, expiry, or child-row writes.
+
+Astra 3 — **CLOSED** — the adapter now consumes an explicit per-day command write set and commits one all-or-nothing changeset.
+
+Astra 4 — **NOT CLOSED** — deriving non-holder effects is sound, but input placement stored only in the stage-1 snapshot has no stage-2 home.
+
+Astra 5 — **NOT CLOSED** — `ChangeBatch` fixes cross-table grouping, but a fixed two-minute overlap is not a reliable cursor and changed rows cannot be reconstructed at their listed versions.
+
+Astra 6 — **NOT CLOSED** — per-day command records prevent another day blocking Undo, but do not distinguish unrelated changes on the same day as D148 requires.
+
+Astra 7 — **CLOSED** — rules 4 and 12 now cover unconfirmed writes, lost locks, focused controls, catch-up and whole-batch application.
+
+Astra 8 — **CLOSED** — D453 deliberately defers the enumerated screen states until the build; they are recorded in rule 13 and the mock-up.
+
+1. **BLOCKER — the ownership-only lock cannot be taken as configured and is not a firm session lease.**
+
+   **Evidence:** `data-model.md:378-397,1038-1077,1191-1197,1248-1255` gives schedulers Write at User depth, Assign at Business-unit depth, and parks free rows on a team nobody belongs to. Dataverse requires **ASSIGN, WRITE and READ** access rights to assign a record; User-depth Write does not grant Write on that free-team row or another holder’s row. Granting Business-unit Write would make take-over possible but would also allow direct updates to every held day unless server logic refused them. [Dataverse’s access-right dependencies](https://learn.microsoft.com/en-us/power-apps/developer/data-platform/security-access-rights) state this explicitly. Dataverse may also retain access for the previous owner after assignment, depending on `ShareToPreviousOwnerOnAssign`. [Microsoft’s assigning guidance](https://learn.microsoft.com/en-us/power-apps/developer/data-platform/security-sharing-assigning)
+
+   Ownership also identifies only the user. After “Move editing here”, both tabs still run as that owner; the version rejects the old tab once, but a current-version request from it is still authorised. At 30 minutes ownership does not expire automatically, so the former holder remains database-authorised. At stage 2, edits hit `Wave`, `Sortie`, `WorkingSignoff` and other child rows, not necessarily the owned `ScheduleDay`.
+
+   **Scenario:** Tuesday belongs to the free team. Saber’s Assign fails because he lacks Write on it. If IT raises Write to Business-unit depth, Saber can PATCH Tuesday while Ranger owns it. Ranger’s expired tab or earlier device can likewise write with a refreshed ETag because Dataverse never checks `leaseId` or `sessionId`.
+
+   **Exact fix:** make a synchronous plug-in/custom API mandatory, not fallback. Give it operations for take, mutate, release and take-over; validate caller, `leaseId`, `sessionId`, server-time expiry and every affected parent day; perform the conditional Assign and content mutation transactionally. Apply the same parent-day check to every stage-2 child insert/update/delete and to amendment/sign-off creation. Disable previous-owner sharing. I do **not** object to keeping the lock as columns, but ownership cannot replace lease enforcement.
+
+   I also disagree with Fable 14’s decline: add a real `touchedAt`. Once stage 2 writes child rows, the parent’s `modifiedon` no longer proves activity; administrative repairs and ownership operations can also change it. Touch the parent explicitly once per successful command and on Keep editing.
+
+2. **BLOCKER — publication can issue stale read-derived content with stale sign-offs.**
+
+   **Evidence:** `data-model.md:515-527` says publish writes the day, amendment and issued sign-offs atomically; `:1078-1094` says an `Input`, `Person.deletedFrom`, Quals and related effects change the effective day without writing or versioning `ScheduleDay`. Nothing requires the publish transaction to recompute the effective day or verify the four bindings against those current external rows.
+
+   **Scenario:** Saber reads Monday and its valid sign-offs. A member changes a Monday input. The Input commits without changing Monday’s ETag. Saber’s already-assembled publish changeset then passes the day version check and freezes the old landing and four signatures as an issued version.
+
+   **Exact fix:** publish must be a server command. Inside its transaction, read the current `ScheduleDay`, all contributing Inputs/People and scheduler placement decisions; build the effective day, verify all four bindings, then create the Amendment, exactly four IssuedSignoffs, ChangeBatch/EditLog and update the day. A stale client-provided effective snapshot must never be authoritative.
+
+3. **MAJOR — a suppressed or overridden input has no stage-2 table.**
+
+   **Evidence:** `data-model.md:388,404-406,1078-1086` keeps “taken off, moved, times, remarks, position” in the stage-1 snapshot, but that snapshot is emptied at stage 2. `ProgrammeRow` has `sourceInputId`, yet absence of a row cannot distinguish “not processed” from “deliberately taken off”.
+
+   **Scenario:** Saber takes off Hex’s course input. After stage-2 migration the snapshot is emptied and there is no ProgrammeRow. The read derivation sees the live Input and lands it again.
+
+   **Exact fix:** add `ScheduleInputPlacement(scheduleDayId, inputId, state, programmeRowId, sortIndex, overridesJson, sourceInputVersion)`, unique on day/input, with at least `landed` and `suppressed`; or permanently retain an equally explicit decisions JSON column. I disagree with the disposition that placement can live only in the temporary day snapshot.
+
+4. **MAJOR — D148 Undo is still impossible at the declared conflict grain.**
+
+   **Evidence:** `data-model.md:354-357,992-1004,1098-1102` makes the logical/physical conflict unit one day and asserts that only a change to “the same thing” blocks Undo. The existing contract requires current revisions at the logical-record/cell grain (`undo-contract.md:130-135`); no row/field address or merge rule was added for two different things inside one ScheduleDay.
+
+   **Scenario:** Saber changes Monday’s note, releases it, and Ranger changes a Monday sortie. Monday’s version and day-level barrier advance. Saber’s Undo must either refuse because the whole day changed or restore a stale whole-day image over Ranger’s sortie—both violate D148.
+
+   **Exact fix:** every undo entry must carry stable row/field addresses plus before/after values. After taking the affected days, reload them and compare only those addresses with the recorded `after` values; merge the inverse into the current day and submit it with the current ETag. Refuse only if an addressed value changed, and commit all affected days together.
+
+5. **MAJOR — the change log can miss batches and cannot replay its promised versions.**
+
+   **Evidence:** `data-model.md:1123-1133` advances using `createdon` with a fixed two-minute overlap. Dataverse gives no stated guarantee that commit/visibility reordering is bounded by two minutes. It also stores only row ids and versions; if a row has advanced again before retrieval, Dataverse returns the latest row, not the historical version named by the earlier batch. Applying that batch “whole” can therefore mix part of a later command into it.
+
+   **Scenario:** batch A changes rows X and Y; batch B then changes X and Z before a client polls. While processing A, the client fetches X from B and Y from A but not Z, displaying a state that no committed changeset produced. A sufficiently delayed A can also fall outside the overlap after the cursor advances.
+
+   **Exact fix:** enable native change tracking on the single `ChangeBatch` table and retain its opaque delta token; on token expiry, resnapshot. [Dataverse change tracking](https://learn.microsoft.com/en-us/power-apps/developer/data-platform/use-change-tracking-synchronize-data-external-systems) already supplies this single-table cursor. Either store immutable after-images in ChangeItems for true per-command replay, or define batches as invalidations, coalesce all pending batches, fetch the final union once and repaint atomically. I disagree with the two-minute-overlap disposition.
+
+6. **MAJOR — stage 1 fits Dataverse’s batch limit; stage 2 has no bound.**
+
+   **Evidence:** under the stage-1 grain, a seven-day template is seven ScheduleDay mutations plus ChangeBatch—eight operations, or at most fifteen if takes are separate—and Sort all is one day plus ChangeBatch. Dataverse permits up to 1,000 individual requests in a batch, and a changeset is transactional, so these fit comfortably. [Dataverse batch operations](https://learn.microsoft.com/en-us/power-apps/developer/data-platform/webapi/execute-batch-operations-using-web-api), [service-protection limits](https://learn.microsoft.com/en-us/power-apps/developer/data-platform/api-limits)
+
+   At stage 2, however, a template replacement can delete and create every child row on seven days, while Sort all can update every movable row. The model defines no maximum row count; `board.ts:623-707` explicitly says Sort all rewrites every list.
+
+   **Scenario:** seven dense days collectively require more than 1,000 child deletes/inserts/updates. The required single changeset is rejected before execution, while splitting it violates the all-or-nothing command contract.
+
+   **Exact fix:** before settling stage-2 tables, calculate and enforce a maximum operation count below the environment’s batch limit, including lock touches, log rows and deletions. If no acceptable product cap exists, retain an aggregate day representation for bulk replace/sort or implement those commands as bounded server-side custom operations.
+
+7. **MAJOR — the fold-in still gives IT contradictory table and permission instructions.**
+
+   **Evidence:** the canonical catalogue says Amendment belongs to ScheduleDay and distinguishes WorkingSignoff/IssuedSignoff (`data-model.md:494-530`), but the relationship diagram, mapping, ownership table, foreign-key policy, security matrix and retention text still use week-level `Signoff` (`:788,802-806,856-857,941,1146,1179,1207`). Amendment is declared append-only at `:499`, yet `retractedBy/retractedAt` are later updated at `:511`; security grants only C/R at `:1179`, so Unpublish cannot make that update. Stage 1 says ChangeBatch and the incoming check land immediately (`:892`), while stage 3 says the incoming contract first appears there (`:894`). The stage-1 fan-out also says `plan/all` becomes “one row per … week” instead of PlanningPuck/DayRemark.
+
+   **Scenario:** IT creates a week-scoped Signoff table and grants no update on Amendment. Working signatures are duplicated outside the snapshot, IssuedSignoff’s relationship is absent, and Unpublish fails authorization.
+
+   **Exact fix:** perform one canonical-schema pass: `ScheduleDay → Amendment → IssuedSignoff`; WorkingSignoff inside the stage-1 snapshot and as its own stage-2 table; replace mutable retraction fields with append-only `AmendmentRetraction` or explicitly grant and constrain that one update; correct every diagram, mapping, FK, ownership, security and retention row; move the incoming contract unambiguously to stage 1; correct the `plan/all` fan-out.
+
+REVISE
+
+## What was done with round 2 (Opus 5.5, 29 Sep 26)
+
+Fable: APPROVE WITH FIXES. Astra: REVISE. Every round-2 finding was accepted; none declined.
+
+| Finding | Done |
+|---|---|
+| Fable 1, Astra 1 — ownership cannot hand a day on, nor tell two tabs apart | §3 ScheduleDay: ownership (Write and Assign at User depth, every scheduler in the free team) PLUS one small server-side check, REQUIRED, through which every change of holder and every save go (lease, session, `touchedAt` by the server's clock; stage-2 child rows too); `ShareToPreviousOwnerOnAssign` false; Referential, Assign = Cascade None. §9 rule 8 corrected ("no custom code" was wrong); D450's full row marked; §12 q8 and `[IT-QUESTIONS]` rewritten. Told to him plainly. |
+| Astra 1 (reopened) — `touchedAt` vs Fable 14 | The decline is REVERSED: `touchedAt` is a real column stamped by the server check. |
+| Astra 2 — a publish can freeze stale read-derived content | §9 rule 3: a publish carries the client's change-log place; the server check refuses it if a later batch changed an input covering the day or a person on it. |
+| Astra 3 — placement has no stage-2 home | §3 `ScheduleInputPlacement` (stage 2). |
+| Astra 4 — Undo within one day | §9 rule 11: undo steps compare by row and field address, merged into the current day. |
+| Astra 5, Fable 6 — the change log's cursor and replay | Native change tracking on the one `ChangeBatch` table (a delta token); batches are invalidations — gather, read the final rows once, redraw once. |
+| Astra 6 — stage 2's batch size | §12 q10 (decide before the stage-2 tables); stage-1 counts written into rule 3 (Fable 4). |
+| Astra 7, Fable 2, 5 — contradictions left for IT | `AmendmentRetraction` (append-only) replaces the retraction columns; §5, §6 (stages 1 and 3), the diagram, §8, §10, §11 (the ownership-type list, and a note that the `Amendment, Signoff` row now means `IssuedSignoff` — the row itself is renamed with `perms.ts` at the build, the drift test reads it), the retention line. |
+| Fable 3, 4 | Rule 9: applied to the working copy before the pending comparison; the Delete's planning gaps named. Rule 1: "Edit days…" is one command per day. |
