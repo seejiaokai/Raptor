@@ -57,7 +57,9 @@ describe('an ordinary Tracker save', () => {
     await settle()
     expect(groups).toHaveLength(1)
     expect(trackerRows(groups[0]!).some(c => /:m:sTZRST$/.test(c.id))).toBe(true)
-    oneBatch(groups[0]!)
+    const b = oneBatch(groups[0]!)
+    /* the batch names the mark's own table (data-model.md §5 — the group-A final read, Astra 3: it said Enrolment) */
+    expect(b.items.find((i: any) => /:m:sTZRST$/.test(i.key)).table).toBe('Attempt')
   })
 
   it('a pace typed is ONE saved group with its row and its batch', async () => {
@@ -65,7 +67,8 @@ describe('an ordinary Tracker save', () => {
     await settle()
     expect(groups).toHaveLength(1)
     expect(trackerRows(groups[0]!).map(c => c.id).some(id => /:pace:sTZRST$/.test(id))).toBe(true)
-    oneBatch(groups[0]!)
+    const b = oneBatch(groups[0]!)
+    expect(b.items.find((i: any) => /:pace:sTZRST$/.test(i.key)).table, "a pace is the course plan's row (Astra 3)").toBe('CoursePlan')
   })
 })
 

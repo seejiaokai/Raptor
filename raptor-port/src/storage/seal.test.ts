@@ -138,6 +138,18 @@ describe('the table each stored row belongs to', () => {
     ['settings', 'reqseen:acad', 'AccessRequestSeen'],
     ['settings', 'rules', 'Setting'],
     ['changes', 'c1-4', 'ChangeBatch'],
+    /* the Tracker's per-student records, each its own table (data-model.md §5 — the group-A final read, Astra 3) */
+    ['tracker', 'v3:c1:sb2026:m:e7', 'Attempt'],
+    ['tracker', 'v3:c1:sb2026:d:e7', 'Enrolment'],
+    ['tracker', 'v3:c1:d:e7', 'Enrolment'],
+    ['tracker', 'v3:c1:pace:e7', 'CoursePlan'],
+    ['tracker', 'v3:c1:lulls:e7', 'CoursePlan'],
+    ['tracker', 'v3:c1:plan', 'CoursePlan'],
+    ['tracker', 'v3:c1:sb2026:enr:e7', 'Enrolment'],
+    ['tracker', 'v3:master:course:c1', 'Course'],
+    ['tracker', 'v3:master:chart:sb2026', 'Syllabus'],
+    /* a ball's code may spell a word the later checks look for — its details row is read first */
+    ['tracker', 'v3:master:info:sb2026:m', 'TrainingEvent'],
   ]
   for (const [c, id, t] of cases) it(`${c}/${id} → ${t}`, () => { expect(tableOf(c as any, id)).toBe(t) })
 })

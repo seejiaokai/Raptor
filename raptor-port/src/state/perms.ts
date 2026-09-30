@@ -78,8 +78,9 @@ export const PERMS: Record<string, PermRow> = {
   [T.reqseen]: row(cell('', 'C R U'), NONE),
   [T.sched]: row(cell('C R U D'), cell('R'), cell('R')),
   [T.amendment]: row(cell('C R'), cell('R'), cell('R')),
-  [T.editlog]: row(cell('R'), cell('R')),
-  [T.changebatch]: row(cell('C R'), cell('C R'), cell('R')),
+  /* a history line is written by whoever made the change, in its changeset (group A, phase 4.3; the final read's F1) */
+  [T.editlog]: row(cell('C R D'), cell('C R')),
+  [T.changebatch]: row(cell('C R'), cell('C R'), cell('R'), cell('C')),
   [T.seen]: row(cell('', 'C R U'), cell('', 'C R U')),
   [T.input]: row(cell('C R U D'), cell('R', 'C R U D'), cell('R')),
   [T.attachment]: row(cell('R'), cell('R', 'C R')),
@@ -337,6 +338,9 @@ export const COMMAND_OPS: Record<string, CommandOp> = {
   'access.seen': op(T.reqseen, 'U', 'required'),
   /* [DRAFT-PENDING] (D170): "Mark all as seen" in the changes window — the signed-in person's OWN entry only */
   'changes.seen': op(T.seen, 'U', 'required'),
+  /* Admin → Data "Clear edit history…" (D351): deletes exact history lines, run as the admin who asked — the batch names
+     him (the group-A final read, Fable F1; state/store.ts setElogDoor). The idle `elog.line` is the app's own act. */
+  'elog.sweep': op(T.editlog, 'D'),
   /* a delete ([POST-OUT-OUTCOMES], D287, D290, D297, D299): the person marked (the hidden mark — D is the soft delete),
      his account removed, and on every day from its cutoff he is taken off — the working copy, the stashed weeks, the
      parked plans, the planning calendar (the schedule family), his sign-off boxes cleared (as the sign-clear command),

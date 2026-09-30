@@ -37,10 +37,11 @@ export async function bootStorage(backend: Backend): Promise<{ wb: Whiteboard; p
   /* c. the reset removals, then the version stamp */
   await resetPreSchema(backend, snap)
   /* c2. [DB-READINESS] group A, phase 0 (plan §2.6) — THE FOLD: a format-5 store under a build that
-        can convert EVERY old record is turned into one row per thing, in ONE durable group, before
-        the whiteboard fills. Its group already carries every entry of an unfinished group (a
-        superset), so nothing is left for the postman to retry. Never due while production registers
-        no converter (storage/fold.ts). */
+        can convert EVERY old record is turned into one row per thing, one converter's durable group at
+        a time (the started mark first, the stamp at 6 last — the group-A final read, Fable F3), before
+        the whiteboard fills. Its first group carries every entry of an unfinished group no converter
+        replaces, so nothing is left for the postman to retry. A store too full to take the largest
+        group stops the boot with StoreFullError, nothing written (storage/fold.ts). */
   let unfinished = backend.unfinished()
   if (foldDue(snap)) { await runFold(backend, snap, unfinished); unfinished = null }
   const wb = new Whiteboard()

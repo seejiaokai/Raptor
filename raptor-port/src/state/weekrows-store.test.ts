@@ -6,7 +6,7 @@
    - an edit on one day writes that day's row alone, even beside a published day and a landed request;
    - a publish writes its issuance once; an Unpublish adds a retraction and never touches it; a reissue is ~1;
      Undo of either removes exactly the row it added;
-   - a week switch saves nothing of the week left, and of the week arriving only what its landing changed;
+   - a week switch saves nothing of the week left, and nothing of the week arriving — its landing is worked out at every load;
    - a week read back from storage is the week that was saved; a read-only (preserved) week is never rewritten;
    - a request taken off the programme stays off across a reload and a week switch — worked out from its own mark;
    - the other-day writers — the stale-mark sweep and the row-id fixer — touch only the days a command changed. */
@@ -182,9 +182,10 @@ describe('week navigation is read-only (R3-01, F3-01)', () => {
     expect(Object.fromEntries(wb.keys('weeks').map(k => [k, wb.get('weeks', k)]))).toEqual(a)
   })
 
-  /* a landing on a day no one has saved is not saved: that day re-lands at every load, as a week no one has saved does
-     (state/persist.ts scheduleRows — the group-wide walk's finding H3); on a saved day it is saved, that day alone */
-  it('a saved B re-lands only what changed: nothing when nothing did; exactly the SAVED day a new request lands on', async () => {
+  /* a week load's landing is NEVER saved (the group-A final read, Fable F2, 30 Sep 26): it is worked out again at every
+     load, so saving it only wrote this client's copy of rows another person may have changed since — on a saved day or
+     not, the request's own row included. It still runs as its one `sched.load` command (the undo timeline expects it). */
+  it('a saved B re-lands its requests on screen at every load and writes nothing — saved days and unsaved alike', async () => {
     const wb = await boot(new MemoryBackend())
     loadWeek(W3); schedWrite(SCHED_TYPES.text, () => { DAYS[0].notes.push(mkNote('B-SAVED')); DAYS[2].notes.push(mkNote('WED-SAVED')) })   // B (a blank week) saved: Monday and Wednesday
     loadWeek(W1)
@@ -200,8 +201,10 @@ describe('week navigation is read-only (R3-01, F3-01)', () => {
     expect(load, 'the landing is one sched.load command').toBeDefined()
     expect(load.origin).toBe('seed')
     expect(load.changes.every(c => c.collection === 'inputs' || c.id.startsWith(W3))).toBe(true)
-    expect(weekWrites()).toEqual([`${weekId(W3)}#2`])
-    expect(wb.get('weeks', `${weekId(W3)}#2`)).toContain('LANDS ON WED')
+    expect(weekWrites(), 'a landing onto a SAVED day writes nothing').toEqual([])
+    expect(groups.flat().filter(c => c.collection === 'inputs'), 'nor the request it landed').toEqual([])
+    expect(wb.get('weeks', `${weekId(W3)}#2`)).not.toContain('LANDS ON WED')
+    expect(JSON.stringify(DAYS[2]), 'the request shows on its day').toContain('LANDS ON WED')
     /* Thursday has never been saved: the request lands on it on screen, and nothing is written */
     loadWeek(W1)
     expect(commitNewInput({ person: 'dj', type: 'Meeting', start: '2026-07-30', allday: false, sTime: '09:00', eTime: '10:00', remarks: 'LANDS ON THU' })).toBe(true)

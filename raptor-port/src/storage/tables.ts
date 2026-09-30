@@ -18,7 +18,13 @@ const TRACKER = (id: string): string => {
   if (id.startsWith('v3:master:info:')) return 'TrainingEvent'
   const p = id.split(':'), last = p[p.length - 1], last2 = p[p.length - 2]
   if (last2 === 'enr' && p.length === 5) return 'Enrolment'
-  if (last2 === 'm' || last2 === 'd' || last2 === 'pace' || last2 === 'lulls') return 'Enrolment'
+  /* each per-student record names the table data-model.md §5 maps it to (the group-A final read, Astra 3, 30 Sep 26 —
+     all four were named Enrolment, so a batch sent a reader of a mark or a pace to the wrong table): a mark is the
+     student's attempts on an event, his dates (and the older per-course dates) are his enrolment, his pace and lulls
+     his row of the course plan */
+  if (last2 === 'm') return 'Attempt'
+  if (last2 === 'd') return 'Enrolment'
+  if (last2 === 'pace' || last2 === 'lulls') return 'CoursePlan'
   if (last === 'roster') return 'Enrolment'
   if (last === 'courses' || last === 'delcourses') return 'Course'
   if (last === 'syls' || last === 'syl' || last === 'sylcat' || last === 'sylorder' || last === 'sylhidden' || last === 'syltomb') return 'Syllabus'

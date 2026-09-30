@@ -34,6 +34,10 @@ export interface Backend {
   /** §22.2b — replace the stored journal (null removes it). Only the boot's
       selective-reset filter calls this, before the reset removals run. */
   writeJournal(group: Entry[] | null): Promise<void>
+  /** Optional: can this store still take `chars` more characters (a group's journal and its rows)? Asked by the fold
+      before it writes anything (storage/fold.ts — the group-A final read, Fable F3). A backend with no such limit leaves
+      it out. */
+  canHold?(chars: number): boolean
 }
 
 /* A stored journal is untrusted text: anything but a list of well-formed

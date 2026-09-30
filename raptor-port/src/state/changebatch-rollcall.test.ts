@@ -28,7 +28,7 @@ import { resyncSchedBaseline, schedWrite, SCHED_TYPES } from './sched-commit'
 import { installGlobalUndo } from './undo-wire'
 import { addPlanPuck } from './plan'
 import { updatePersonField } from './quals-write'
-import { signIn, sessionFor, addAccount, ACCOUNTS_LIST } from './accounts'
+import { signIn, sessionFor, addAccount, ACCOUNTS_LIST, requestAccess } from './accounts'
 import { markSeen } from './changes'
 import { globalUndo, globalRedo } from '../undo'
 import { initStore as lwInitStore, lwHistInit, getState, setCell, recordsAt, moveCells, setRole } from '../leavewar/state/store'
@@ -44,6 +44,7 @@ import type { Change, Whiteboard } from '../storage/whiteboard'
 import { useStorageImpl } from '../tracker/storage.js'
 import * as trk from '../tracker/app/core.js'
 import { PEOPLE } from '../engine/people'
+import { PERMS, T } from './perms'
 
 let be: MemoryBackend
 let wb: Whiteboard
@@ -143,6 +144,58 @@ describe('the roll-call: every save after boot carries its batch', () => {
       expect([...b.items].sort(byKey)).toEqual(itemsOf(g).sort(byKey))
     }
     expect(bare, 'groups saved after boot with no batch, outside the named exempt writers').toEqual([])
+  })
+
+  /* THE FINAL READ'S F1 (Fable, 30 Sep 26): every row a MEMBER's own actions save must be one his role may write in the
+     permissions table (perms.ts PERMS = data-model.md §11) — the database checks the signed-in person's rights on every row
+     of his changeset. A history line (EditLog) rides every one of them; §11 said a member only reads it. Two exceptions,
+     each named in §11 / the backlog: his own request landing on its day (ScheduleDay — until phase 6(c)) and the Leave
+     War's "which period is on screen" (`leavewar/current` — filed for group B). */
+  it("a member's own actions save only rows his role may write (§11)", async () => {
+    resetSession(sessionFor(signIn('us', 'us') as any))
+    const me = (ACCOUNTS_LIST.find(a => a.name === 'us') || {} as any).pid as string
+    expect(me, 'the member has a person').toBeTruthy()
+    const from = groups.length
+    expect(writeInputs(() => { INPUTS.push({ person: me, date: 'Aug 3', allday: true, type: 'LL', remarks: 'MEMBER OWN', mod: '2026-07-01' }) })).toBe(true)
+    expect(updatePersonField(me, { remarks: 'member own' } as any)).toBeNull()
+    markSeen(ELOG.rows)
+    setRole('member')
+    const day = String(getState().period.bidFrom || getState().period.start)
+    setCell(me, day, 'LL')
+    await flushAll()
+    const permKey = (table: string) => Object.keys(PERMS).find(k => k.split(', ').includes(table))
+      ?? (table === 'ScheduleDay' || table === 'ScheduleWeek' ? T.sched : table === 'AmendmentRetraction' ? T.amendment : undefined)
+    const refused: string[] = []
+    for (const { g } of groups.slice(from)) {
+      for (const it of itemsOf(g)) {
+        if (it.table === 'ScheduleDay' || it.key === 'leavewar/current') continue
+        const k = permKey(it.table)
+        const c = k ? (PERMS as any)[k].member : null
+        const act = it.op === 'delete' ? 'D' : 'C'
+        const ok = !!c && (c.all.includes(act) || c.own.includes(act) || (act === 'C' && (c.all.includes('U') || c.own.includes('U'))))
+        if (!ok) refused.push(`${it.table} ${it.op} ${it.key}`)
+      }
+    }
+    expect(refused, 'rows a member saves that §11 does not let him write').toEqual([])
+    resetSession(sessionFor(signIn('ad', 'a') as any))
+  })
+
+  /* a person waiting for access saves ONE group: his own request and its batch — both his to create (§11: AccessRequest
+     own C, ChangeBatch C — the group-A final read, Fable F1 / Astra 2); nothing else, no history line */
+  it('a waiting person’s access request saves only his request and its batch — both his role may create (§11)', async () => {
+    resetSession(sessionFor(signIn('wren@mail', 'x') as any))
+    const from = groups.length
+    expect(requestAccess({ cs: 'Wren', ini: '', seat: 'GND', cat: '' } as any)).toBeNull()
+    await flushAll()
+    const mine = groups.slice(from).map(x => x.g)
+    expect(mine, 'one saved group').toHaveLength(1)
+    const items = itemsOf(mine[0]!)
+    expect(items.map(i => i.table).sort()).toEqual(['AccessRequest'])
+    const pend = (t: string) => (PERMS as any)[Object.keys(PERMS).find(k => k.split(', ').includes(t))!].pending
+    expect(pend('AccessRequest').own).toContain('C')
+    expect(pend('ChangeBatch').all).toContain('C')
+    expect(pend('ChangeBatch').all, 'he creates the batch, and reads none').not.toContain('R')
+    resetSession(sessionFor(signIn('ad', 'a') as any))
   })
 
   it('a Leave War MOVE is exactly one row in its batch (P3-CELL-DIFF): the record, put, at its new date', () => {

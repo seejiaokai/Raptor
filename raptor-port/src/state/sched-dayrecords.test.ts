@@ -76,6 +76,18 @@ describe('the records one command changes', () => {
     expect(ids(last())).toEqual([`put sched.mutes/${wk()}#4`])
   })
 
+  /* the group-A final read (Fable F4, 30 Sep 26): a command that would leave the loaded week unable to split into its rows
+     (a mute naming no day — or a new field with no home in weekrows.ts) is REFUSED and rolled back, never "saved" with
+     nothing stored */
+  it('a change that would leave the week unable to split into rows is refused, and nothing changes', () => {
+    const before = histSnap()
+    const n = caught.length
+    const r = schedWriteValue(SCHED_TYPES.warnMute, () => view.toggleWarnOff('x|NO_DAY|nobody|msg'))
+    expect(r, 'refused').toBeFalsy()
+    expect(histSnap(), 'rolled back').toBe(before)
+    expect(caught.length, 'no change recorded').toBe(n)
+  })
+
   it('every record is keyed by day or version — none names the whole week but its stamps', () => {
     const keys = [...schedStore.records().keys()].filter(k => !k.startsWith('inputs/') && !k.startsWith('plan/'))
     const week = keys.filter(k => !/#[0-6]$/.test(k) && !/:[^:]+~\d+$/.test(k))

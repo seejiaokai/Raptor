@@ -104,6 +104,15 @@ export class BrowserBackend implements Backend {
     else this.recovered = group
   }
 
+  /* whether `chars` more characters still fit this origin's browser storage: a probe string that size, written and
+     removed at once (the fold asks before it writes anything — storage/fold.ts) */
+  canHold(chars: number): boolean {
+    const k = BROWSER_PREFIX + '__probe'
+    try { this.ls.setItem(k, 'x'.repeat(Math.max(0, chars))); return true }
+    catch (e) { return false }
+    finally { try { this.ls.removeItem(k) } catch (e) { /* nothing was written */ } }
+  }
+
   async put(collection: Collection, id: string, json: string): Promise<void> {
     this.ls.setItem(BROWSER_PREFIX + recordKey(collection, id), json)   // a throw rejects → postman retries
   }

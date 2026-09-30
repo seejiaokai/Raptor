@@ -80,14 +80,19 @@ describe('the converter manifest', () => {
 })
 
 describe('the fold — once, atomically, before anything reads the store', () => {
-  it('a complete manifest folds a format-5 store in ONE saved group: new rows, old blobs removed, stamp 6', async () => {
+  /* one converter at a time (the group-A final read, Fable F3, 30 Sep 26): the Browser backend journals a group in ONE
+     string, so a fold that was one group the size of the store could never run on a store over about half full */
+  it('a complete manifest folds a format-5 store one converter at a time: its rows first, its old blob last, then stamp 6', async () => {
     registerAll()
     expect(targetFormat()).toBe(FOLD_FORMAT)
     const be = new MemoryBackend()
     be.seed({ settings: at5(), inputs: { all: JSON.stringify([{ iid: 'i1' }, { iid: 'i2' }]) } })
     const { wb } = await bootStorage(be)
-    const groups = be.journal.filter(e => e.group !== undefined)
-    expect(new Set(groups.map(e => e.group)).size).toBe(1)                 // ONE putMany
+    const writes = be.journal.filter(e => e.group !== undefined)
+    const groups = [...new Set(writes.map(e => e.group))].map(g => writes.filter(e => e.group === g))
+    expect(groups).toHaveLength(2)                                          // the inputs converter's group, then the stamp
+    expect(groups[0]!.map((e: any) => `${e.collection}/${e.id}`)).toEqual(['inputs/i1', 'inputs/i2', 'inputs/all'])
+    expect(groups[1]!.map((e: any) => `${e.collection}/${e.id}`)).toEqual(['settings/schema'])
     expect(be.peek('inputs', 'all')).toBeNull()
     expect(JSON.parse(be.peek('inputs', 'i1')!)).toEqual({ iid: 'i1' })
     expect(readSchema(be.peek('settings', 'schema'))).toMatchObject({ dataFormatVersion: FOLD_FORMAT, initialized: true, minClient: FOLD_FORMAT })
@@ -167,6 +172,48 @@ describe('the fold — once, atomically, before anything reads the store', () =>
     expect(be.peek('tracker', 't')).toBe('T2')
     expect(be.peekJournal()).toBeNull()
     expect(postman.status).toBe('saved')
+  })
+
+  it('a store too full to take the largest group stops the boot with StoreFullError — nothing written', async () => {
+    registerAll()
+    class FullBackend extends MemoryBackend { canHold(_chars: number) { return false } }
+    const be = new FullBackend()
+    be.seed({ settings: at5(), inputs: { all: JSON.stringify([{ iid: 'i1' }]) } })
+    await expect(bootStorage(be)).rejects.toMatchObject({ name: 'StoreFullError' })
+    expect(be.journal.filter(e => e.op !== 'loadAll')).toHaveLength(0)
+    expect(be.peek('inputs', 'all')).not.toBeNull()
+    expect(readSchema(be.peek('settings', 'schema'))!.dataFormatVersion).toBe(SCHEMA_VERSION)
+  })
+
+  it('a fold interrupted part-way resumes at the next boot to the very store a clean fold makes', async () => {
+    const clean = new MemoryBackend()
+    registerAll()
+    clean.seed({ settings: at5(), inputs: { all: JSON.stringify([{ iid: 'i1' }, { iid: 'i2' }]) } })
+    await bootStorage(clean)
+    const be = new MemoryBackend()
+    be.seed({ settings: at5(), inputs: { all: JSON.stringify([{ iid: 'i1' }, { iid: 'i2' }]) } })
+    be.crashNextAfter(1)                          // the inputs group: its journal written, one row applied, the tab dies
+    await expect(bootStorage(be)).rejects.toThrow()
+    await bootStorage(be)                         // the reopened tab: the journal replayed, the fold finished
+    for (const id of ['i1', 'i2', 'all']) expect(be.peek('inputs', id)).toBe(clean.peek('inputs', id))
+    expect(readSchema(be.peek('settings', 'schema'))).toMatchObject({ dataFormatVersion: FOLD_FORMAT, initialized: true })
+    expect(be.peekJournal()).toBeNull()
+  })
+
+  it('a legacy bare-5 store is marked STARTED before any old blob is removed — an interrupted fold never reads as a new store', async () => {
+    registerAll()
+    const be = new MemoryBackend()
+    be.seed({ settings: at5(null), inputs: { all: JSON.stringify([{ iid: 'i1' }]) } })
+    let n = 0
+    const put = be.putMany.bind(be)
+    be.putMany = async (entries: Entry[]) => { if (++n === 3) throw new Error('the tab dies before the stamp at 6'); return put(entries) }
+    await expect(bootStorage(be)).rejects.toThrow()
+    expect(be.peek('inputs', 'all'), 'the old blob went with its converter').toBeNull()
+    expect(readSchema(be.peek('settings', 'schema'))).toMatchObject({ dataFormatVersion: SCHEMA_VERSION, initialized: true })
+    be.putMany = put
+    await bootStorage(be)
+    expect(readSchema(be.peek('settings', 'schema'))).toMatchObject({ dataFormatVersion: FOLD_FORMAT, initialized: true })
+    expect(be.peek('inputs', 'i1')).not.toBeNull()
   })
 
   it('an old store below 5 is wiped first, then folded: the kept records are converted too', async () => {

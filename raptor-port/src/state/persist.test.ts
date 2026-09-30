@@ -264,11 +264,12 @@ describe('persistAll and the hooks', () => {
     expect(DAYS.slice(1).map(plain)).toEqual(untouched)
   })
 
-  /* H1 (the group-wide walk, 30 Sep 26): a boot on a SAVED week re-lands the requests filed on it since — the rows it
-     changes go out in ONE group with its change-log batch (`boot`, by the system), like every other save; before, they
-     went out bare, and another reader of the change log never learned the day had changed. A day no one has saved is
-     not written by the landing (it re-lands at every load — H3). */
-  it('a boot on a saved week saves its re-landing in one group with a batch — and only onto the days already saved', async () => {
+  /* A boot on a SAVED week re-lands the requests filed on it since — on screen, and NEVER saved: the group walk found the
+     boot writing those rows bare (H1); the final read (Fable F1, F2, 30 Sep 26) found that ANY landing save writes this
+     browser's copy of rows another person may have changed, and makes a member's boot the writer of days a member may not
+     write. So a landing is worked out at every load, like a week load's; nothing of it is stored until a command changes
+     that day. */
+  it('a boot on a saved week re-lands its requests on screen and writes NO row', async () => {
     const be = new MemoryBackend()
     await boot(be)
     const wid = weekId(CURWEEK)
@@ -278,19 +279,17 @@ describe('persistAll and the hooks', () => {
       INPUTS.push({ person: 'dj', date: 'Jul 13', allday: false, s: 540, e: 600, type: 'Meeting', remarks: 'LANDS MON', mod: '2026-07-01', yr: 2026 })
       INPUTS.push({ person: 'dj', date: 'Jul 15', allday: false, s: 540, e: 600, type: 'Meeting', remarks: 'LANDS WED', mod: '2026-07-01', yr: 2026 })
     })
-    const monBefore = be.peek('weeks', `${wid}#0`)
     await vi.advanceTimersByTimeAsync(300)
+    const monBefore = be.peek('weeks', `${wid}#0`)
+    const stored = JSON.stringify(await be.loadAll())
     resetWorld()
     const { wb } = await boot(be)                        // the boot opens on the saved week and re-lands both requests
-    expect(wb.get('weeks', `${wid}#0`)).toContain('LANDS MON')
-    expect(wb.get('weeks', `${wid}#0`)).not.toBe(monBefore)
-    expect(wb.has('weeks', `${wid}#2`), 'Wednesday was never saved: its landing is not written').toBe(false)
-    expect(JSON.stringify(DAYS[2])).toContain('LANDS WED')
-    const batches = wb.keys('changes').map(id => JSON.parse(wb.get('changes', id)!))
-    const boots = batches.filter((b: any) => b.type === 'boot' && b.items.some((i: any) => i.key === `weeks/${wid}#0`))
-    expect(boots, "the boot's re-landing carries its batch").toHaveLength(1)
-    expect(boots[0].actorId).toBe('system')
-    expect(boots[0].items.map((i: any) => i.key)).toEqual([`weeks/${wid}#0`])
+    expect(JSON.stringify(DAYS[0]), 'Monday shows the request on screen').toContain('LANDS MON')
+    expect(JSON.stringify(DAYS[2]), 'so does Wednesday').toContain('LANDS WED')
+    expect(wb.get('weeks', `${wid}#0`), 'Monday as it was saved').toBe(monBefore)
+    expect(wb.has('weeks', `${wid}#2`), 'Wednesday, never saved, still has no row').toBe(false)
+    await vi.advanceTimersByTimeAsync(300)
+    expect(JSON.stringify(await be.loadAll()), 'the boot wrote no row at all').toBe(stored)
   })
 
   /* the Undo is a command (the global undo), so it writes its own change: the row it added, removed */

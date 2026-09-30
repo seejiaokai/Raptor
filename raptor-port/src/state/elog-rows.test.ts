@@ -21,7 +21,7 @@ import { INPUTS } from '../engine/inputs'
 import { DAYS } from '../engine/data'
 import { storeBackend } from '../engine/hooks'
 import { stashClear } from '../engine/weekstash'
-import { ELOG, elogClear, logAction, elogRemap, elogLoad } from '../engine/editlog'
+import { ELOG, elogClear, logAction, elogRemap, elogLoad, elogSweep } from '../engine/editlog'
 import { txtSet, txtGet } from '../engine/slots'
 import { afterSchedMutate } from './view'
 import { routeFocusOut } from '../ui/textedit'
@@ -38,6 +38,7 @@ import { globalUndo } from '../undo'
 import { _resetTimeline } from '../undo/timeline'
 import { installGlobalUndo } from './undo-wire'
 import { clearEditHistory } from '../ui/inputedit'
+import { SESSION } from './auth'
 import { PEOPLE } from '../engine/people'
 
 const ISNAP = JSON.stringify(INPUTS)
@@ -254,6 +255,23 @@ describe('the lines that rode no command before', () => {
     expect(lineRows(g).filter(c => c.value === null).map(c => c.id).sort()).toEqual(gone.map(id => `elog:${id}`).sort())
     expect(lineRows(g).filter(c => c.value !== null)).toHaveLength(1)
     expect(batchOf(g).type).toBe('elog.sweep')
+    expect(batchOf(g).actorId, 'the batch names the admin who cleared the history (Fable F1)').toBe(SESSION!.user)
+    expect(batchOf(g).actorId).not.toBe('system')
+  })
+
+  /* the command gate itself, behind the page's own check: the sweep reached directly as a member is refused */
+  it('a member cannot run the history sweep, even reached past the page: refused, nothing deleted', async () => {
+    await boot()
+    as('ad', 'a')
+    logAction(0, 'kept one')
+    await kept()
+    as('us', 'us')
+    const before = ELOG.rows.length
+    groups = []
+    elogSweep(null, null)
+    await drain()
+    expect(ELOG.rows.length).toBe(before)
+    expect(groups.flatMap(g => lineRows(g)).filter(c => c.value === null)).toHaveLength(0)
   })
 
   it('a key renumbering inside a refused command changes neither the lines nor their rows', async () => {

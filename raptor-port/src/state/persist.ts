@@ -30,7 +30,7 @@ import { storeInitialized } from '../storage/schema'
 import { registerConverter, type Converter } from '../storage/fold'
 import type { Entry } from '../storage/backend'
 import type { Change, CommitEnvelope, LogicalCollection } from '../command/types'
-import { wireChangeBatches, systemGroup } from './changebatch'
+import { wireChangeBatches } from './changebatch'
 /* the change history's and the accounts' one-time conversions (the fold's `elog` and `accounts` converters — phase 4) */
 import './settingsrows'
 import { wireRowConsumer, registerComposer, registerMapper, type RowWrite } from './rowmap'
@@ -290,9 +290,12 @@ function loadedRows(wk: string): WeekRows | null {
      editing two days of a week nobody had saved yet each wrote the other's day, and the later one wiped the earlier's
      edit — the one thing one row per day is for (and, with the day lock to come, D450, a save of days the saver does
      not hold);
-   - a week load's landing pass (`sched.load` — the requests filed on the week put on its days) → only the days already
-     saved: a day no one has saved re-lands at every load, as a week no one has saved does (store.ts loadWeek), and is
-     saved with the first command that changes it;
+   - a week load's landing pass (`sched.load` — the requests filed on the week put on its days) → NOTHING, the requests'
+     rows included (the inputs mapper below): the landing is worked out again at every load from the stored day and the
+     requests, so saving it only ever wrote this client's copy of rows another person may have changed since — a request's
+     remarks, a day's note — and made every member's browser the writer of days a member may not write (the group-A final
+     read, Fable F2 and F1, 30 Sep 26; the plan's phase 6(c) direction: a landing worked out on read). A day the landing
+     touched is saved, landing and all, with the first command that changes it;
    - a preserved week (read-only, P2-IMPL-02) → nothing, ever. */
 function scheduleRows(wb: Whiteboard, changes: readonly Change[], env?: CommitEnvelope): RowWrite[] {
   const out: RowWrite[] = []
@@ -312,17 +315,14 @@ function scheduleRows(wb: Whiteboard, changes: readonly Change[], env?: CommitEn
   for (const [wk, t] of loaded) {
     /* a loaded-week record names the week on screen; one that does not (never expected) is not guessed at */
     if (wk !== CURWEEK) { console.warn(`persist: a change to week ${wk} arrived while ${CURWEEK} is loaded — not saved`); continue }
-    if (isPreservedWeek(wk)) continue
+    if (isPreservedWeek(wk) || landing) continue
     const rows = loadedRows(wk)
     if (!rows) continue
     const wid = weekId(wk)
     const first = !wb.has('weeks', wid)
     if (first || t.week) put(wid, rows[''])
     if (first) for (const sfx of Object.keys(rows)) if (sfx.startsWith(':')) put(wid + sfx, rows[sfx])
-    for (const di of t.days) {
-      if (landing && !wb.has('weeks', `${wid}#${di}`)) continue
-      put(`${wid}#${di}`, rows[`#${di}`])
-    }
+    for (const di of t.days) put(`${wid}#${di}`, rows[`#${di}`])
     for (const c of t.issued) {
       const sfx = `:${c.collection === 'sched.issuance' ? 'is' : 'rx'}:${c.id.slice(c.id.indexOf(':') + 1)}`
       put(wid + sfx, c.op === 'delete' ? null : (rows[sfx] ?? JSON.stringify(c.after)))
@@ -341,21 +341,11 @@ function scheduleRows(wb: Whiteboard, changes: readonly Change[], env?: CommitEn
   return out
 }
 
-/* the loaded week's rows, written once at boot when that week is already saved: the boot re-lands the requests filed
-   on it since it was saved (state/store.ts applyWeekModel) outside any command, so its changed rows go out here — the
-   whiteboard sends only the rows whose bytes differ. A week never saved stays unsaved (a pristine week is never
-   stored), and so does a DAY never saved (its landing is worked out again at every load, as a week load's is —
-   scheduleRows); a preserved one is never written. ONE saved group, so it carries its change-log batch like every
-   other save (state/changebatch.ts names a group no command opened `boot`): until the group-wide walk (30 Sep 26,
-   finding H1) these rows went out bare — no batch — so another reader of the change log would never learn the day
-   had changed. */
-function writeLoadedWeekAtBoot(wb: Whiteboard): void {
-  if (!stashHas(CURWEEK) || isPreservedWeek(CURWEEK)) return
-  const rows = loadedRows(CURWEEK)
-  if (!rows) return
-  const wid = weekId(CURWEEK)
-  systemGroup(wb, () => { for (const sfx of Object.keys(rows)) if (wb.has('weeks', wid + sfx)) wb.set('weeks', wid + sfx, rows[sfx]) })
-}
+/* THE BOOT WRITES NO WEEK ROW. It re-lands the requests filed on the loaded week since it was saved (state/store.ts
+   applyWeekModel), as every week load does — and, like a week load's, that landing is worked out again at every load and
+   never saved (scheduleRows, above). Until the group-A final read (Fable F2 and F1, 30 Sep 26) the boot wrote those rows —
+   bare at first (the group walk's H1), then in a `boot` group — but a member's boot would then write days a member may
+   not write, and any boot writes this browser's view of rows another person may have changed. */
 
 /** THE STREAM CONSUMER, wired to the whiteboard — as early in the boot as the whiteboard exists (main.tsx calls it
     right after hydrate), so every command the boot itself runs (the Leave War's boot sync) saves its rows. Idempotent. */
@@ -371,7 +361,8 @@ export function wireRows(wb: Whiteboard): void {
      the command's own group (state/rowmap.ts). Phase 1: the schedule's weeks (a composer — a day row is three records);
      phase 2: the requests, the roster, the planning calendar. */
   registerComposer({ name: 'schedule', collections: [...LOADED_COLLS, 'weekstash'], rows: (changes, env) => scheduleRows(wb, changes, env) })
-  registerMapper('inputs', rowOf('inputs'))
+  /* a week load's landing marks the requests it puts on their days — worked out again at every load, never saved (above) */
+  registerMapper('inputs', (c, env) => (env?.type === SCHED_TYPES.load ? [] : rowOf('inputs')(c)))
   registerMapper('people', rowOf('people'))
   registerMapper('plan', rowOf('plan'))
   unwireRows?.()
@@ -384,5 +375,4 @@ export function wirePersist(wb: Whiteboard, _s?: Snapshots): void {
   wireRows(wb)
   /* a store that had not started: the seed's rows, once, in the boot's group */
   if (!hydrated) writeSeedRows(wb)
-  writeLoadedWeekAtBoot(wb)
 }

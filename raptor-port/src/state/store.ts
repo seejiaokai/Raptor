@@ -44,7 +44,9 @@ import { endUndoSession } from '../undo/timeline'
 import { setRole as lwSetRole } from '../leavewar/state/store'
 import { endTrackerSession } from '../tracker/role.js'
 import { isHydrated } from './persist'
-import { deferEffect, CmdRefused, setPermissionResolver, commitPhase, commitProjection, onPipelineBegin } from '../command'
+import { deferEffect, CmdRefused, setPermissionResolver, commitPhase, commitProjection, onPipelineBegin, deriveActor, definePermission, anyone } from '../command'
+/* internal wiring may raise a command as a named person (command/index.ts — commitAs stays off the public surface) */
+import { commitAs } from '../command/commit'
 import { defineInvariant } from '../command/harness'
 import { cmdAuthorize, ownershipViolation } from './perms'
 import type { EnlistableStore, RecordEntry, CommitResult } from '../command'
@@ -620,9 +622,10 @@ export function loadWeek(v: any) {
   if (stashHas(CURWEEK) || leaveSnap !== weekBaseline) stashPut(CURWEEK, isPreservedWeek(CURWEEK) ? (preservedBlob(CURWEEK) ?? leaveSnap) : leaveSnap)
   /* WEEK NAVIGATION IS READ-ONLY ([DB-READINESS] group A, phase 1 — R3-01, F3-01). The week being left has nothing to
      save: every change to it went out, as its rows, with the command that made it; its saved copy above is memory.
-     The arriving week is installed with no store enlisted across the change of week, and only what its landing pass
-     then CHANGES is saved — as ONE `sched.load` command on its own fresh baseline, writing exactly the rows the
-     landing touched (an unchanged week writes nothing). A week never saved lands as part of the load and stays unsaved
+     The arriving week is installed with no store enlisted across the change of week, and its landing pass runs as ONE
+     `sched.load` command on its own fresh baseline — which SAVES NOTHING: the landing is worked out again at every load
+     (state/persist.ts scheduleRows and the inputs mapper — the group-A final read, Fable F2, 30 Sep 26). A week never
+     saved lands as part of the load and stays unsaved
      (a pristine week is never stored — weekstash.ts). The command needs the command layer idle: from inside another
      command it would join or queue behind it, so there the landing runs as part of the load, unsaved, and says so. */
   const saved = stashHas(v)
@@ -778,7 +781,16 @@ export function wireStore() {
   /* …and a line kept with no command running (an idle toggle's line, the Admin → Data history sweep) is written inside
      a command of its own, so it is a saved group with its change-log batch, never a bare write ([DB-READINESS] group A,
      phase 4.3). The app's own act (the system actor): the line itself names who did it. */
-  setElogDoor((type, fn) => { commitProjection({ type, scope: { module: 'settings' }, apply: () => { fn() } } as any) })
+  /* …except the Admin → Data history sweep, which is the admin's own act: it runs as HIM (origin `projection`, so it is
+     no Undo step), and its change-log batch names who cleared the history (the group-A final read, Fable F1 step 4,
+     30 Sep 26). Its authority is perms.ts COMMAND_OPS — a delete on EditLog, an admin's alone. */
+  setElogDoor((type, fn) => {
+    const cmd = { type, scope: { module: 'settings' }, apply: () => { fn() } } as any
+    const actor = deriveActor()
+    if (type === 'elog.sweep' && actor.role !== 'system') { commitAs(cmd, { actor, origin: 'projection' }); return }
+    commitProjection(cmd)
+  })
+  definePermission('elog.sweep', anyone)
   /* …and a line given just BEFORE its command opens (the board's in-place edits, a text box) joins that command's group
      (engine/editlog.ts hold — the group-wide walk's finding H2) */
   if (!ELOG_ADOPT_WIRED) { ELOG_ADOPT_WIRED = true; onPipelineBegin(elogAdoptHeld) }

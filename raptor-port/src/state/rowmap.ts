@@ -25,7 +25,9 @@ import { onCommit } from '../command'
 
 /** one stored row to write: a value, or null = remove it */
 export type RowWrite = { collection: Collection; id: string; value: string | null }
-export type Mapper = (c: Change) => RowWrite[]
+/* `env` (the group-A final read, Fable F2, 30 Sep 26): the envelope the change came in — a week load's landing is never
+   saved, the requests' rows included */
+export type Mapper = (c: Change, env?: CommitEnvelope) => RowWrite[]
 
 const MAPPERS = new Map<LogicalCollection, Mapper>()
 
@@ -46,10 +48,10 @@ export function mappedCollections(): LogicalCollection[] {
 }
 
 /** the stored rows one logical change lands in ([] for a collection no phase maps yet) */
-export function mapChange(c: Change): RowWrite[] {
+export function mapChange(c: Change, env?: CommitEnvelope): RowWrite[] {
   const m = MAPPERS.get(c.collection)
   if (!m) return []
-  const rows = m(c)
+  const rows = m(c, env)
   if (c.op === 'put' && rows.some(r => r.value === null)) {
     throw new Error(`rowmap: the ${c.collection} mapper removed a row for a put of ${c.id} — a row is removed only by an explicit delete`)
   }
@@ -77,7 +79,7 @@ export function mapEnvelope(changes: readonly Change[], env?: CommitEnvelope): R
       add(r)
     }
   }
-  for (const c of changes) if (!composed.has(c.collection)) for (const r of mapChange(c)) add(r)
+  for (const c of changes) if (!composed.has(c.collection)) for (const r of mapChange(c, env)) add(r)
   return [...out.values()]
 }
 

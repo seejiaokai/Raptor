@@ -46,6 +46,7 @@ import { reconcileIssuedMarks, setTouchedDaysResolver } from '../engine/drafts'
 import { keyDay } from '../engine/keys'
 import { logAction } from '../engine/editlog'
 import { CURWEEK } from '../engine/waves'
+import { isPreservedWeek } from '../engine/weekstash'
 import { HIST, histSnap, histRestore, setSchedResync } from './history'
 import { setSchedEpilogueHook, HOOKS } from '../engine/hooks'
 import { issuedDisclosed, discloseIssued } from './disclosure'
@@ -109,6 +110,10 @@ function decompose(snapStr: string): Map<string, RecordEntry> {
        nothing may change it, and its stored rows are never rewritten (state/rowmap.ts skips a preserved week). A live
        week that fails here is a new field with no home in state/weekrows.ts — said once, loudly; its save fails too */
     if (!SPLIT_WARNED) { SPLIT_WARNED = true; console.warn('[sched] the loaded week does not split into rows', e) }
+    /* …and a command that would LEAVE a live week in that state is refused, rolled back and said — never "saved" with
+       nothing stored (the group-A final read, Fable F4, 30 Sep 26: the row writer skips a week that will not split, so
+       every edit after it would have read saved and been lost on reload). A read-only (preserved) week is not asked. */
+    if (isCommitting() && !isPreservedWeek(wk)) throw new CmdRefused(`this week can't be saved as rows: ${(e as Error)?.message || e}`)
   }
   if (parts) {
     parts.days.forEach((p, di) => {

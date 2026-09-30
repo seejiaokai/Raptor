@@ -64,6 +64,19 @@ boot().catch((err: unknown) => {
       `<p style="margin:0">Pass this to whoever set RAPTOR up: ${err.message.replace(/[<>&]/g, c => (c === '<' ? '&lt;' : c === '>' ? '&gt;' : '&amp;'))}</p></div>`
     return
   }
+  /* the one-time conversion found this browser's storage too full to write even one of its groups — nothing was changed
+     (storage/fold.ts StoreFullError; the group-A final read, Fable F3). Clearing the browser's data would lose what only
+     this browser holds (his Tracker charts — D464), so the screen says so first. */
+  if (err && (err as any).name === 'StoreFullError') {
+    root.innerHTML =
+      '<div class="bootfail" role="alert" style="max-width:520px;margin:20vh auto;padding:24px;font:14px system-ui,sans-serif;color:#eee">' +
+      '<h1 style="font-size:18px;margin:0 0 8px">RAPTOR needs more room to update your saved data</h1>' +
+      '<p style="margin:0 0 8px">This browser\u2019s storage is too full to convert the data RAPTOR has saved here. Nothing was changed.</p>' +
+      '<p style="margin:0 0 16px"><b>Do not clear this browser\u2019s data</b> \u2014 your Tracker charts are kept only here. Ask whoever looks after RAPTOR for help.</p>' +
+      '<button id="bootRetry" type="button" style="padding:8px 14px;border-radius:10px;border:1px solid #888;background:transparent;color:inherit;cursor:pointer">Retry</button></div>'
+    document.getElementById('bootRetry')?.addEventListener('click', () => location.reload())
+    return
+  }
   root.innerHTML =
     '<div class="bootfail" role="alert" style="max-width:520px;margin:20vh auto;padding:24px;font:14px system-ui,sans-serif;color:#eee">' +
     '<h1 style="font-size:18px;margin:0 0 8px">RAPTOR could not load its data</h1>' +
