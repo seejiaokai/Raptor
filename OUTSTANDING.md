@@ -1130,6 +1130,9 @@ no longer waits on q9's answer (its reporting half still goes to IT). (2) D450's
 plus SYSTEM Custom APIs (§3 ScheduleDay, §12 q8): row ownership alone still refuses another person's save, but a
 take-over, freeing an idle day and telling two tabs of one person apart need another route — decided with the lock's
 build (group B, D453), not now. **To ask IT:** is it plug-ins only, or also Custom APIs and Power Automate flows?
+And (30 Sep 26 — he found it in his environment's Power Apps menu): are Dataverse **Functions** (Power Fx, marked
+"Preview") allowed, and could one be the lock's small server-side check in place of a plug-in? Unverified that it can
+refuse a save to a day or act for a take-over — ask, and check Microsoft's current documentation before relying on it.
 **And (30 Sep 26, `[DB-READINESS]` group A phase 4 — `data-model.md` §12 q4, §9):** `EditLog.seq` is the store's own
 rising number, assigned as each line is saved (until then the app orders the history by time and its own line id, and
 "seen" and an account's `seenFrom` are positions in that order) — can they assign it? And the change log (`ChangeBatch`,
