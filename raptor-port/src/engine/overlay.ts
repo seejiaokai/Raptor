@@ -19,6 +19,7 @@
 import { PEOPLE, whoId } from './people'
 import { whoArr } from './slots'
 import { dayIso } from './verid'
+import { INPUTS, inpId } from './inputs'
 
 const ROLES = ['cur', 'sked', 'plan', 'appr'] as const
 export const trimTail = (arr: any[]) => { while (arr.length && !arr[arr.length - 1]) arr.pop() }
@@ -85,9 +86,15 @@ export function stripSign(sign: any, bind: any, id: string): boolean {
   for (const r of ROLES) if (sign[r] === id) { sign[r] = ''; if (bind && typeof bind === 'object') delete bind[r]; changed = true }
   return changed
 }
-/* his landed rows on a day: a ground row landed from one of his requests (its holder is him; the request itself is gone
-   or ended by the delete) */
-const hisLanded = (d: any, id: string) => new Set<string>(((d && d.ground) || []).filter((r: any) => r && r.src && whoId(r.who) === id).map((r: any) => String(r.src)))
+/* his landed rows on a day: a ground row landed from one of HIS requests — the request's CURRENT holder decides, never
+   the name the stored row last carried (a request handed to another man since the row was saved is that man's row, and
+   stays — Astra's red team of the phase-6 plan, finding 2: the order "hand A's request to B, then delete A" must leave
+   B's row); a row whose request is gone (the delete removes his requests from the cutoff) goes by the name it carries. */
+const hisLanded = (d: any, id: string) => new Set<string>(((d && d.ground) || []).filter((r: any) => {
+  if (!r || !r.src) return false
+  const inp: any = (INPUTS as any[]).find(x => x && String(inpId(x)) === String(r.src))
+  return inp ? String(inp.person || '') === id : whoId(r.who) === id
+}).map((r: any) => String(r.src)))
 
 /* ---- the deleted men, with the first day each is gone ---- */
 export function deletedCutoffs(): Array<[string, string]> {
