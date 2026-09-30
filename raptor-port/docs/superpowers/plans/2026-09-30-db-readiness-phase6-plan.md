@@ -258,4 +258,4 @@ red); four tests moved to the filing axis; broken on purpose → red. Engine 173
 door broken on purpose → red. **Found on the way:** the Leave War's posting command (`lw.postout`) carried the posting
 pass's day changes (a nested command joins its outer envelope) — why v1's type list could not have held (§2.2).
 Engine, state, Leave War and undo 4648/4648, tfin 728/0.
-**(c)** — v2 under review (round 2).
+**(c)** — round 2 on v2: Fable REVISE (F1–F6), Astra BLOCK (1–3); dispositions `…/briefs/2026-09-30-db-readiness-phase6-dispositions-r2.md` — v3 needs a HOLDER BASE (the week on screen always the overlay applied to the day as its holder last committed it), so a derived removal is reversible by an Undo. Fable F1 step 2 built (commit 3f847bdb). His call where v3 is built. Red tests for (c) drafted (`state/p6c-requestonread.test.ts`, uncommitted — 9 of 12 red on today's code).
