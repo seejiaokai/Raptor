@@ -1,0 +1,111 @@
+{
+ "base": "http://localhost:4201",
+ "at": "2026-09-30T10:05:57.473Z",
+ "results": [
+  {
+   "name": "W1.E1 tab A: Monday note (the week's first save) — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 3 [settings/elog:munxvxb3atre.000001, weeks/13-07-2026, weeks/13-07-2026#0] · del 0 [] · batches sched.text/3"
+  },
+  {
+   "name": "W1.E1 tab B: Tuesday note (B never saw A's save) — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 2 [settings/elog:munxvykzodjh.000001, weeks/13-07-2026#1] · del 0 [] · batches sched.text/3"
+  },
+  {
+   "name": "W1.E1 after the reloads BOTH notes are there (A's Monday and B's Tuesday)",
+   "ok": true,
+   "detail": "{\"aMon\":\"E1 A MONDAY\",\"aTue\":\"E1 B TUESDAY\",\"bMon\":\"E1 A MONDAY\",\"bTue\":\"E1 B TUESDAY\"}"
+  },
+  {
+   "name": "W1.E2 setup: Wednesday note (the week saved) — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 3 [settings/elog:munxw57r5lym.000001, weeks/13-07-2026, weeks/13-07-2026#2] · del 0 [] · batches sched.text/3"
+  },
+  {
+   "name": "W1.E2 tab A: Monday note — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 2 [settings/elog:munxw9520qan.000001, weeks/13-07-2026#0] · del 0 [] · batches sched.text/2"
+  },
+  {
+   "name": "W1.E2 tab A: Monday note — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 2 [settings/elog:munxw9520qan.000001, weeks/13-07-2026#0] · del 0 [] · batches sched.text/2"
+  },
+  {
+   "name": "W1.E2 tab B: Tuesday note (B never saw A's) — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 2 [settings/elog:munxwaesb71g.000001, weeks/13-07-2026#1] · del 0 [] · batches sched.text/2"
+  },
+  {
+   "name": "W1.E2 tab B: Tuesday note (B never saw A's) — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 2 [settings/elog:munxwaesb71g.000001, weeks/13-07-2026#1] · del 0 [] · batches sched.text/2"
+  },
+  {
+   "name": "W1.E2 after the reloads BOTH notes are there, and the setup note too",
+   "ok": true,
+   "detail": "{\"mon\":\"E2 A MONDAY\",\"tue\":\"E2 B TUESDAY\",\"wed\":\"E2 SETUP WED\",\"bMon\":\"E2 A MONDAY\"}"
+  },
+  {
+   "name": "W1.E3 setup: Wednesday note (the week saved) — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 3 [settings/elog:munxwgx1aey6.000001, weeks/13-07-2026, weeks/13-07-2026#2] · del 0 [] · batches sched.text/3"
+  },
+  {
+   "name": "W1.E3 tab A: Monday note 1 — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 2 [settings/elog:munxwklpgqqv.000001, weeks/13-07-2026#0] · del 0 [] · batches sched.text/2"
+  },
+  {
+   "name": "W1.E3 tab B: Monday note 2 (B never saw A's) — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 2 [settings/elog:munxwltdh052.000001, weeks/13-07-2026#0] · del 0 [] · batches sched.text/2"
+  }
+ ],
+ "table": [
+  {
+   "step": "W1.E1",
+   "width": "1440",
+   "did": "two tabs on a week nobody has saved: A types Monday's note; B (opened before, not reloaded) types Tuesday's; both reloaded",
+   "pics": [
+    "W1.E1-2-reloaded-A.png"
+   ],
+   "shown": "after both reloads: Monday \"E1 A MONDAY\", Tuesday \"E1 B TUESDAY\"",
+   "rows": "A: put settings/elog:munxvxb3atre.000001, weeks/13-07-2026, weeks/13-07-2026#0 · B: put settings/elog:munxvykzodjh.000001, weeks/13-07-2026#1",
+   "batches": [],
+   "notes": [],
+   "pass": true,
+   "fails": []
+  },
+  {
+   "step": "W1.E2",
+   "width": "1440",
+   "did": "two tabs on a week already saved: A types Monday's note; B (not reloaded) types Tuesday's; both reloaded",
+   "pics": [
+    "W1.E2-2-reloaded-A.png"
+   ],
+   "shown": "after both reloads: Monday \"E2 A MONDAY\", Tuesday \"E2 B TUESDAY\", Wednesday \"E2 SETUP WED\"",
+   "rows": "A: put settings/elog:munxw9520qan.000001, weeks/13-07-2026#0 · B: put settings/elog:munxwaesb71g.000001, weeks/13-07-2026#1",
+   "batches": [],
+   "notes": [],
+   "pass": true,
+   "fails": []
+  },
+  {
+   "step": "W1.E3",
+   "width": "1440",
+   "did": "two tabs, the SAME day: A types Monday's first note, B (not reloaded) Monday's second — recorded for the day lock (group B)",
+   "pics": [
+    "W1.E3-2-reloaded-A.png"
+   ],
+   "shown": "after the reload: Monday note 1 \"EP: ENGINE FIRE ON TAKE OFF\", note 2 \"E3 B NOTE 2\" — A's note LOST (B's save of the whole Monday row carried its old note 1)",
+   "rows": "",
+   "batches": [],
+   "notes": [],
+   "pass": true,
+   "fails": []
+  }
+ ],
+ "errors": []
+}

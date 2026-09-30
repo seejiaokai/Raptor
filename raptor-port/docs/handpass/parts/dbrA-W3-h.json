@@ -1,0 +1,489 @@
+{
+ "base": "http://localhost:4203",
+ "at": "2026-09-30T09:00:23.225Z",
+ "results": [
+  {
+   "name": "H0 first boot — ONE change-log batch, of type boot",
+   "ok": true,
+   "detail": "[{\"type\":\"boot\",\"n\":199}]"
+  },
+  {
+   "name": "H1 + New war \"H MAR 28\" (1–31 Mar 2028) — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 2 [leavewar/current, leavewar/war:war-2028-03-01-2028-03-31] · del 0 [] · batches lw.edit/1 lw.edit/1"
+  },
+  {
+   "name": "H1 + New war \"H MAR 28\" (1–31 Mar 2028) — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 2 [leavewar/current, leavewar/war:war-2028-03-01-2028-03-31] · del 0 [] · batches lw.edit/1 lw.edit/1"
+  },
+  {
+   "name": "H1 — ONE new war row (a separate small batch records which war is on screen)",
+   "ok": true,
+   "detail": "{\"put\":[\"leavewar/current\",\"leavewar/war:war-2028-03-01-2028-03-31\"],\"batches\":[{\"key\":\"changes/cmunvim9fdno35q-1\",\"type\":\"lw.edit\",\"actorId\":\"acad\",\"n\":1,\"seqs\":[1]},{\"key\":\"changes/cmunvim9fdno35q-2\",\"type\":\"lw.edit\",\"actorId\":\"acad\",\"n\":1,\"seqs\":[2]}]}"
+  },
+  {
+   "name": "H1 create — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026 (the unsaved demo week's hidden row ids set aside)"
+  },
+  {
+   "name": "H1 create — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "H1 create — the war's boxes read the same after the reload",
+   "ok": true,
+   "detail": "{}"
+  },
+  {
+   "name": "H1 — after the reload the picker lists it; the app opened on the war being bid on",
+   "ok": true,
+   "detail": "{\"boot\":\"y2026\"}"
+  },
+  {
+   "name": "H2 stage DRAFT → OPEN FOR BIDDING — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [leavewar/war:war-2028-03-01-2028-03-31] · del 0 [] · batches lw.stage/1"
+  },
+  {
+   "name": "H2 stage DRAFT → OPEN FOR BIDDING — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [leavewar/war:war-2028-03-01-2028-03-31] · del 0 [] · batches lw.stage/1"
+  },
+  {
+   "name": "H2 stage DRAFT → OPEN FOR BIDDING — ONLY the war's own row changed, in ONE batch",
+   "ok": true,
+   "detail": "{\"put\":[\"leavewar/war:war-2028-03-01-2028-03-31\"],\"del\":[],\"batches\":[{\"key\":\"changes/cmunviy30ugo7b9-1\",\"type\":\"lw.stage\",\"actorId\":\"acad\",\"n\":1,\"seqs\":[1]}]}"
+  },
+  {
+   "name": "H2 stage DRAFT → OPEN FOR BIDDING — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026 (the unsaved demo week's hidden row ids set aside)"
+  },
+  {
+   "name": "H2 stage DRAFT → OPEN FOR BIDDING — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "H2 stage DRAFT → OPEN FOR BIDDING — the war's boxes read the same after the reload",
+   "ok": true,
+   "detail": "{}"
+  },
+  {
+   "name": "H2 stage DRAFT → OPEN FOR BIDDING — after the reload the war reads the same",
+   "ok": true,
+   "detail": "{\"before\":{\"stage\":\"OPEN FOR BIDDING\",\"window\":\"THE WHOLE YEAR\",\"ev06\":\"＋\",\"bands\":[]},\"after\":{\"stage\":\"OPEN FOR BIDDING\",\"window\":\"THE WHOLE YEAR\",\"ev06\":\"＋\",\"bands\":[]}}"
+  },
+  {
+   "name": "H2 — reads OPEN FOR BIDDING",
+   "ok": true,
+   "detail": "{\"stage\":\"OPEN FOR BIDDING\",\"window\":\"THE WHOLE YEAR\",\"ev06\":\"＋\",\"bands\":[]}"
+  },
+  {
+   "name": "H3 bidding window: 2–15 Mar 28 — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [leavewar/war:war-2028-03-01-2028-03-31] · del 0 [] · batches lw.edit/1"
+  },
+  {
+   "name": "H3 bidding window: 2–15 Mar 28 — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [leavewar/war:war-2028-03-01-2028-03-31] · del 0 [] · batches lw.edit/1"
+  },
+  {
+   "name": "H3 bidding window: 2–15 Mar 28 — ONLY the war's own row changed, in ONE batch",
+   "ok": true,
+   "detail": "{\"put\":[\"leavewar/war:war-2028-03-01-2028-03-31\"],\"del\":[],\"batches\":[{\"key\":\"changes/cmunvj54wwbma0k-1\",\"type\":\"lw.edit\",\"actorId\":\"acad\",\"n\":1,\"seqs\":[1]}]}"
+  },
+  {
+   "name": "H3 bidding window: 2–15 Mar 28 — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026 (the unsaved demo week's hidden row ids set aside)"
+  },
+  {
+   "name": "H3 bidding window: 2–15 Mar 28 — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "H3 bidding window: 2–15 Mar 28 — the war's boxes read the same after the reload",
+   "ok": true,
+   "detail": "{}"
+  },
+  {
+   "name": "H3 bidding window: 2–15 Mar 28 — after the reload the war reads the same",
+   "ok": true,
+   "detail": "{\"before\":{\"stage\":\"OPEN FOR BIDDING\",\"window\":\"2 Mar 28 – 15 Mar 28\",\"ev06\":\"＋\",\"bands\":[]},\"after\":{\"stage\":\"OPEN FOR BIDDING\",\"window\":\"2 Mar 28 – 15 Mar 28\",\"ev06\":\"＋\",\"bands\":[]}}"
+  },
+  {
+   "name": "H3 — the chip reads 2 Mar – 15 Mar",
+   "ok": true,
+   "detail": "{\"stage\":\"OPEN FOR BIDDING\",\"window\":\"2 Mar 28 – 15 Mar 28\",\"ev06\":\"＋\",\"bands\":[]}"
+  },
+  {
+   "name": "H4 bidding window cleared (the whole period) — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [leavewar/war:war-2028-03-01-2028-03-31] · del 0 [] · batches lw.edit/1"
+  },
+  {
+   "name": "H4 bidding window cleared (the whole period) — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [leavewar/war:war-2028-03-01-2028-03-31] · del 0 [] · batches lw.edit/1"
+  },
+  {
+   "name": "H4 bidding window cleared (the whole period) — ONLY the war's own row changed, in ONE batch",
+   "ok": true,
+   "detail": "{\"put\":[\"leavewar/war:war-2028-03-01-2028-03-31\"],\"del\":[],\"batches\":[{\"key\":\"changes/cmunvjbvuaptev7-1\",\"type\":\"lw.edit\",\"actorId\":\"acad\",\"n\":1,\"seqs\":[1]}]}"
+  },
+  {
+   "name": "H4 bidding window cleared (the whole period) — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026 (the unsaved demo week's hidden row ids set aside)"
+  },
+  {
+   "name": "H4 bidding window cleared (the whole period) — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "H4 bidding window cleared (the whole period) — the war's boxes read the same after the reload",
+   "ok": true,
+   "detail": "{}"
+  },
+  {
+   "name": "H4 bidding window cleared (the whole period) — after the reload the war reads the same",
+   "ok": true,
+   "detail": "{\"before\":{\"stage\":\"OPEN FOR BIDDING\",\"window\":\"THE WHOLE YEAR\",\"ev06\":\"＋\",\"bands\":[]},\"after\":{\"stage\":\"OPEN FOR BIDDING\",\"window\":\"THE WHOLE YEAR\",\"ev06\":\"＋\",\"bands\":[]}}"
+  },
+  {
+   "name": "H4 — the chip reads THE WHOLE YEAR",
+   "ok": true,
+   "detail": "{\"stage\":\"OPEN FOR BIDDING\",\"window\":\"THE WHOLE YEAR\",\"ev06\":\"＋\",\"bands\":[]}"
+  },
+  {
+   "name": "H5 a one-day event: EVENT 1, Mon 6 Mar 28 \"H-DAY\" — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [leavewar/war:war-2028-03-01-2028-03-31] · del 0 [] · batches lw.edit/1"
+  },
+  {
+   "name": "H5 a one-day event: EVENT 1, Mon 6 Mar 28 \"H-DAY\" — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [leavewar/war:war-2028-03-01-2028-03-31] · del 0 [] · batches lw.edit/1"
+  },
+  {
+   "name": "H5 a one-day event: EVENT 1, Mon 6 Mar 28 \"H-DAY\" — ONLY the war's own row changed, in ONE batch",
+   "ok": true,
+   "detail": "{\"put\":[\"leavewar/war:war-2028-03-01-2028-03-31\"],\"del\":[],\"batches\":[{\"key\":\"changes/cmunvjilvc6zvhb-1\",\"type\":\"lw.edit\",\"actorId\":\"acad\",\"n\":1,\"seqs\":[1]}]}"
+  },
+  {
+   "name": "H5 a one-day event: EVENT 1, Mon 6 Mar 28 \"H-DAY\" — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026 (the unsaved demo week's hidden row ids set aside)"
+  },
+  {
+   "name": "H5 a one-day event: EVENT 1, Mon 6 Mar 28 \"H-DAY\" — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "H5 a one-day event: EVENT 1, Mon 6 Mar 28 \"H-DAY\" — the war's boxes read the same after the reload",
+   "ok": true,
+   "detail": "{}"
+  },
+  {
+   "name": "H5 a one-day event: EVENT 1, Mon 6 Mar 28 \"H-DAY\" — after the reload the war reads the same",
+   "ok": true,
+   "detail": "{\"before\":{\"stage\":\"OPEN FOR BIDDING\",\"window\":\"THE WHOLE YEAR\",\"ev06\":\"H-DAY\",\"bands\":[]},\"after\":{\"stage\":\"OPEN FOR BIDDING\",\"window\":\"THE WHOLE YEAR\",\"ev06\":\"H-DAY\",\"bands\":[]}}"
+  },
+  {
+   "name": "H5 — 6 Mar reads H-DAY",
+   "ok": true,
+   "detail": "{\"stage\":\"OPEN FOR BIDDING\",\"window\":\"THE WHOLE YEAR\",\"ev06\":\"H-DAY\",\"bands\":[]}"
+  },
+  {
+   "name": "H6 a range band: EVENT 2, 9–13 Mar 28 \"H-BAND\" — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [leavewar/war:war-2028-03-01-2028-03-31] · del 0 [] · batches lw.edit/1"
+  },
+  {
+   "name": "H6 a range band: EVENT 2, 9–13 Mar 28 \"H-BAND\" — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [leavewar/war:war-2028-03-01-2028-03-31] · del 0 [] · batches lw.edit/1"
+  },
+  {
+   "name": "H6 a range band: EVENT 2, 9–13 Mar 28 \"H-BAND\" — ONLY the war's own row changed, in ONE batch",
+   "ok": true,
+   "detail": "{\"put\":[\"leavewar/war:war-2028-03-01-2028-03-31\"],\"del\":[],\"batches\":[{\"key\":\"changes/cmunvjq8eksbmsb-1\",\"type\":\"lw.edit\",\"actorId\":\"acad\",\"n\":1,\"seqs\":[1]}]}"
+  },
+  {
+   "name": "H6 a range band: EVENT 2, 9–13 Mar 28 \"H-BAND\" — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026 (the unsaved demo week's hidden row ids set aside)"
+  },
+  {
+   "name": "H6 a range band: EVENT 2, 9–13 Mar 28 \"H-BAND\" — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "H6 a range band: EVENT 2, 9–13 Mar 28 \"H-BAND\" — the war's boxes read the same after the reload",
+   "ok": true,
+   "detail": "{}"
+  },
+  {
+   "name": "H6 a range band: EVENT 2, 9–13 Mar 28 \"H-BAND\" — after the reload the war reads the same",
+   "ok": true,
+   "detail": "{\"before\":{\"stage\":\"OPEN FOR BIDDING\",\"window\":\"THE WHOLE YEAR\",\"ev06\":\"H-DAY\",\"bands\":[\"event-band-1-2028-03-09:H-BAND\"]},\"after\":{\"stage\":\"OPEN FOR BIDDING\",\"window\":\"THE WHOLE YEAR\",\"ev06\":\"H-DAY\",\"bands\":[\"event-band-1-2028-03-09:H-BAND\"]}}"
+  },
+  {
+   "name": "H6 — a band on EVENT 2 from 9 Mar reading H-BAND",
+   "ok": true,
+   "detail": "{\"stage\":\"OPEN FOR BIDDING\",\"window\":\"THE WHOLE YEAR\",\"ev06\":\"H-DAY\",\"bands\":[\"event-band-1-2028-03-09:H-BAND\"]}"
+  },
+  {
+   "name": "H7 stage OPEN → BIDDING CLOSED — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [leavewar/war:war-2028-03-01-2028-03-31] · del 0 [] · batches lw.stage/1"
+  },
+  {
+   "name": "H7 stage OPEN → BIDDING CLOSED — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [leavewar/war:war-2028-03-01-2028-03-31] · del 0 [] · batches lw.stage/1"
+  },
+  {
+   "name": "H7 stage OPEN → BIDDING CLOSED — ONLY the war's own row changed, in ONE batch",
+   "ok": true,
+   "detail": "{\"put\":[\"leavewar/war:war-2028-03-01-2028-03-31\"],\"del\":[],\"batches\":[{\"key\":\"changes/cmunvjwdunxzu1e-1\",\"type\":\"lw.stage\",\"actorId\":\"acad\",\"n\":1,\"seqs\":[1]}]}"
+  },
+  {
+   "name": "H7 stage OPEN → BIDDING CLOSED — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026 (the unsaved demo week's hidden row ids set aside)"
+  },
+  {
+   "name": "H7 stage OPEN → BIDDING CLOSED — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "H7 stage OPEN → BIDDING CLOSED — the war's boxes read the same after the reload",
+   "ok": true,
+   "detail": "{}"
+  },
+  {
+   "name": "H7 stage OPEN → BIDDING CLOSED — after the reload the war reads the same",
+   "ok": true,
+   "detail": "{\"before\":{\"stage\":\"BIDDING CLOSED\",\"window\":\"—\",\"ev06\":\"H-DAY\",\"bands\":[\"event-band-1-2028-03-09:H-BAND\"]},\"after\":{\"stage\":\"BIDDING CLOSED\",\"window\":\"—\",\"ev06\":\"H-DAY\",\"bands\":[\"event-band-1-2028-03-09:H-BAND\"]}}"
+  },
+  {
+   "name": "H7 — reads BIDDING CLOSED",
+   "ok": true,
+   "detail": "{\"stage\":\"BIDDING CLOSED\",\"window\":\"—\",\"ev06\":\"H-DAY\",\"bands\":[\"event-band-1-2028-03-09:H-BAND\"]}"
+  },
+  {
+   "name": "H8 stage CLOSED → PUBLISHED — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [leavewar/war:war-2028-03-01-2028-03-31] · del 0 [] · batches lw.stage/1"
+  },
+  {
+   "name": "H8 stage CLOSED → PUBLISHED — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [leavewar/war:war-2028-03-01-2028-03-31] · del 0 [] · batches lw.stage/1"
+  },
+  {
+   "name": "H8 stage CLOSED → PUBLISHED — ONLY the war's own row changed, in ONE batch",
+   "ok": true,
+   "detail": "{\"put\":[\"leavewar/war:war-2028-03-01-2028-03-31\"],\"del\":[],\"batches\":[{\"key\":\"changes/cmunvk2nqi71jb7-1\",\"type\":\"lw.stage\",\"actorId\":\"acad\",\"n\":1,\"seqs\":[1]}]}"
+  },
+  {
+   "name": "H8 stage CLOSED → PUBLISHED — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026 (the unsaved demo week's hidden row ids set aside)"
+  },
+  {
+   "name": "H8 stage CLOSED → PUBLISHED — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "H8 stage CLOSED → PUBLISHED — the war's boxes read the same after the reload",
+   "ok": true,
+   "detail": "{}"
+  },
+  {
+   "name": "H8 stage CLOSED → PUBLISHED — after the reload the war reads the same",
+   "ok": true,
+   "detail": "{\"before\":{\"stage\":\"PUBLISHED\",\"window\":\"—\",\"ev06\":\"H-DAY\",\"bands\":[\"event-band-1-2028-03-09:H-BAND\"]},\"after\":{\"stage\":\"PUBLISHED\",\"window\":\"—\",\"ev06\":\"H-DAY\",\"bands\":[\"event-band-1-2028-03-09:H-BAND\"]}}"
+  },
+  {
+   "name": "H8 — reads PUBLISHED",
+   "ok": true,
+   "detail": "{\"stage\":\"PUBLISHED\",\"window\":\"—\",\"ev06\":\"H-DAY\",\"bands\":[\"event-band-1-2028-03-09:H-BAND\"]}"
+  },
+  {
+   "name": "H9 reopen: PUBLISHED → ← BIDDING CLOSED — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [leavewar/war:war-2028-03-01-2028-03-31] · del 0 [] · batches lw.stage/1"
+  },
+  {
+   "name": "H9 reopen: PUBLISHED → ← BIDDING CLOSED — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [leavewar/war:war-2028-03-01-2028-03-31] · del 0 [] · batches lw.stage/1"
+  },
+  {
+   "name": "H9 reopen: PUBLISHED → ← BIDDING CLOSED — ONLY the war's own row changed, in ONE batch",
+   "ok": true,
+   "detail": "{\"put\":[\"leavewar/war:war-2028-03-01-2028-03-31\"],\"del\":[],\"batches\":[{\"key\":\"changes/cmunvk8zz6ixu0p-1\",\"type\":\"lw.stage\",\"actorId\":\"acad\",\"n\":1,\"seqs\":[1]}]}"
+  },
+  {
+   "name": "H9 reopen: PUBLISHED → ← BIDDING CLOSED — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026 (the unsaved demo week's hidden row ids set aside)"
+  },
+  {
+   "name": "H9 reopen: PUBLISHED → ← BIDDING CLOSED — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "H9 reopen: PUBLISHED → ← BIDDING CLOSED — the war's boxes read the same after the reload",
+   "ok": true,
+   "detail": "{}"
+  },
+  {
+   "name": "H9 reopen: PUBLISHED → ← BIDDING CLOSED — after the reload the war reads the same",
+   "ok": true,
+   "detail": "{\"before\":{\"stage\":\"BIDDING CLOSED\",\"window\":\"—\",\"ev06\":\"H-DAY\",\"bands\":[\"event-band-1-2028-03-09:H-BAND\"]},\"after\":{\"stage\":\"BIDDING CLOSED\",\"window\":\"—\",\"ev06\":\"H-DAY\",\"bands\":[\"event-band-1-2028-03-09:H-BAND\"]}}"
+  },
+  {
+   "name": "H9 — reads BIDDING CLOSED, the events and band kept",
+   "ok": true,
+   "detail": "{\"stage\":\"BIDDING CLOSED\",\"window\":\"—\",\"ev06\":\"H-DAY\",\"bands\":[\"event-band-1-2028-03-09:H-BAND\"]}"
+  },
+  {
+   "name": "part H — exactly three war rows now (the two demo wars and the new one)",
+   "ok": true,
+   "detail": "[\"leavewar/war:y2026\",\"leavewar/war:war-2028-03-01-2028-03-31\",\"leavewar/war:y2027\"]"
+  },
+  {
+   "name": "part H — no console errors, page errors, failed requests or native dialogs",
+   "ok": true,
+   "detail": "[]"
+  }
+ ],
+ "table": [
+  {
+   "step": "H0 first boot",
+   "width": "desktop",
+   "did": "fresh world, Saber",
+   "screen": "—",
+   "rows": "batches boot/199",
+   "ok": true,
+   "pics": []
+  },
+  {
+   "step": "H1 create a period",
+   "width": "desktop",
+   "did": "+ New, \"H MAR 28\", 1–31 Mar 28, Create",
+   "screen": "{\"stage\":\"DRAFT\",\"window\":\"—\",\"ev06\":\"＋\",\"bands\":[]}",
+   "rows": "put 2 [leavewar/current, leavewar/war:war-2028-03-01-2028-03-31] · batches lw.edit/1 lw.edit/1",
+   "ok": true,
+   "pics": [
+    "H1-after-reload.png"
+   ]
+  },
+  {
+   "step": "H2 stage DRAFT → OPEN FOR BIDDING",
+   "width": "desktop",
+   "did": "→ OPEN FOR BIDDING",
+   "screen": "{\"stage\":\"OPEN FOR BIDDING\",\"window\":\"THE WHOLE YEAR\",\"ev06\":\"＋\",\"bands\":[]}",
+   "rows": "put 1 [leavewar/war:war-2028-03-01-2028-03-31] · batches lw.stage/1",
+   "ok": true,
+   "pics": [
+    "H-H2-after-reload.png"
+   ]
+  },
+  {
+   "step": "H3 bidding window: 2–15 Mar 28",
+   "width": "desktop",
+   "did": "the BIDDING ON chip → 2 Mar, 15 Mar → Open these dates",
+   "screen": "{\"stage\":\"OPEN FOR BIDDING\",\"window\":\"2 Mar 28 – 15 Mar 28\",\"ev06\":\"＋\",\"bands\":[]}",
+   "rows": "put 1 [leavewar/war:war-2028-03-01-2028-03-31] · batches lw.edit/1",
+   "ok": true,
+   "pics": [
+    "H3-window-sheet.png",
+    "H-H3-after-reload.png"
+   ]
+  },
+  {
+   "step": "H4 bidding window cleared (the whole period)",
+   "width": "desktop",
+   "did": "the chip → Clear → Open the whole year",
+   "screen": "{\"stage\":\"OPEN FOR BIDDING\",\"window\":\"THE WHOLE YEAR\",\"ev06\":\"＋\",\"bands\":[]}",
+   "rows": "put 1 [leavewar/war:war-2028-03-01-2028-03-31] · batches lw.edit/1",
+   "ok": true,
+   "pics": [
+    "H-H4-after-reload.png"
+   ]
+  },
+  {
+   "step": "H5 a one-day event: EVENT 1, Mon 6 Mar 28 \"H-DAY\"",
+   "width": "desktop",
+   "did": "tap EVENT 1 on 6 Mar, type H-DAY, Save",
+   "screen": "{\"stage\":\"OPEN FOR BIDDING\",\"window\":\"THE WHOLE YEAR\",\"ev06\":\"H-DAY\",\"bands\":[]}",
+   "rows": "put 1 [leavewar/war:war-2028-03-01-2028-03-31] · batches lw.edit/1",
+   "ok": true,
+   "pics": [
+    "H-H5-after-reload.png"
+   ]
+  },
+  {
+   "step": "H6 a range band: EVENT 2, 9–13 Mar 28 \"H-BAND\"",
+   "width": "desktop",
+   "did": "tap EVENT 2 on 9 Mar, H-BAND, A range, 9 → 13 Mar, Save",
+   "screen": "{\"stage\":\"OPEN FOR BIDDING\",\"window\":\"THE WHOLE YEAR\",\"ev06\":\"H-DAY\",\"bands\":[\"event-band-1-2028-03-09:H-BAND\"]}",
+   "rows": "put 1 [leavewar/war:war-2028-03-01-2028-03-31] · batches lw.edit/1",
+   "ok": true,
+   "pics": [
+    "H6-band-sheet.png",
+    "H-H6-after-reload.png"
+   ]
+  },
+  {
+   "step": "H7 stage OPEN → BIDDING CLOSED",
+   "width": "desktop",
+   "did": "→ BIDDING CLOSED",
+   "screen": "{\"stage\":\"BIDDING CLOSED\",\"window\":\"—\",\"ev06\":\"H-DAY\",\"bands\":[\"event-band-1-2028-03-09:H-BAND\"]}",
+   "rows": "put 1 [leavewar/war:war-2028-03-01-2028-03-31] · batches lw.stage/1",
+   "ok": true,
+   "pics": [
+    "H-H7-after-reload.png"
+   ]
+  },
+  {
+   "step": "H8 stage CLOSED → PUBLISHED",
+   "width": "desktop",
+   "did": "→ PUBLISHED",
+   "screen": "{\"stage\":\"PUBLISHED\",\"window\":\"—\",\"ev06\":\"H-DAY\",\"bands\":[\"event-band-1-2028-03-09:H-BAND\"]}",
+   "rows": "put 1 [leavewar/war:war-2028-03-01-2028-03-31] · batches lw.stage/1",
+   "ok": true,
+   "pics": [
+    "H-H8-after-reload.png"
+   ]
+  },
+  {
+   "step": "H9 reopen: PUBLISHED → ← BIDDING CLOSED",
+   "width": "desktop",
+   "did": "← BIDDING CLOSED",
+   "screen": "{\"stage\":\"BIDDING CLOSED\",\"window\":\"—\",\"ev06\":\"H-DAY\",\"bands\":[\"event-band-1-2028-03-09:H-BAND\"]}",
+   "rows": "put 1 [leavewar/war:war-2028-03-01-2028-03-31] · batches lw.stage/1",
+   "ok": true,
+   "pics": [
+    "H-H9-after-reload.png"
+   ]
+  }
+ ],
+ "errors": []
+}

@@ -1,0 +1,975 @@
+{
+ "base": "http://localhost:4202",
+ "at": "2026-09-30T09:10:58.227Z",
+ "results": [
+  {
+   "name": "W2-05a Quals (Enable editing): Gambit's SCNIGHT ticked — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 2 [people/bruise, settings/elog:munvtnq6qd4g.000001] · del 0 [] · batches people.edit/2"
+  },
+  {
+   "name": "W2-05a Quals (Enable editing): Gambit's SCNIGHT ticked — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 2 [people/bruise, settings/elog:munvtnq6qd4g.000001] · del 0 [] · batches people.edit/2"
+  },
+  {
+   "name": "W2-05a — his qualification changed",
+   "ok": true,
+   "detail": "{\"before\":{\"q\":false,\"cat\":\"C\",\"sxo\":false},\"after\":{\"q\":true,\"cat\":\"C\",\"sxo\":false}}"
+  },
+  {
+   "name": "W2-05a — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "W2-05a — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "W2-05a — (pristine week) with the fresh hidden row ids set aside, the reload gives back everything else exactly",
+   "ok": true,
+   "detail": "same"
+  },
+  {
+   "name": "W2-05a reading the screen after the reload — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "W2-05a reading the screen after the reload — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "W2-05a — after the reload: still ticked",
+   "ok": true,
+   "detail": "{\"q\":true,\"cat\":\"C\",\"sxo\":false}"
+  },
+  {
+   "name": "W2-05b Quals: Gambit's CAT changed on his row — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 2 [people/bruise, settings/elog:munvtsf6cja0.000001] · del 0 [] · batches people.edit/2"
+  },
+  {
+   "name": "W2-05b Quals: Gambit's CAT changed on his row — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 2 [people/bruise, settings/elog:munvtsf6cja0.000001] · del 0 [] · batches people.edit/2"
+  },
+  {
+   "name": "W2-05b — his CAT reads OCU",
+   "ok": true,
+   "detail": "{\"q\":true,\"cat\":\"OCU\",\"sxo\":false}"
+  },
+  {
+   "name": "W2-05b — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "W2-05b — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "W2-05b — (pristine week) with the fresh hidden row ids set aside, the reload gives back everything else exactly",
+   "ok": true,
+   "detail": "same"
+  },
+  {
+   "name": "W2-05b reading the screen after the reload — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "W2-05b reading the screen after the reload — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "W2-05b — after the reload: CAT OCU kept",
+   "ok": true,
+   "detail": "{\"q\":true,\"cat\":\"OCU\",\"sxo\":false}"
+  },
+  {
+   "name": "W2-05c Quals: Gambit's SXO ticked — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 2 [people/bruise, settings/elog:munvtxf2c787.000001] · del 0 [] · batches people.edit/2"
+  },
+  {
+   "name": "W2-05c Quals: Gambit's SXO ticked — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 2 [people/bruise, settings/elog:munvtxf2c787.000001] · del 0 [] · batches people.edit/2"
+  },
+  {
+   "name": "W2-05c — he is SXO",
+   "ok": true,
+   "detail": "{\"q\":true,\"cat\":\"OCU\",\"sxo\":true}"
+  },
+  {
+   "name": "W2-05c — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "W2-05c — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "W2-05c — (pristine week) with the fresh hidden row ids set aside, the reload gives back everything else exactly",
+   "ok": true,
+   "detail": "same"
+  },
+  {
+   "name": "W2-05c reading the screen after the reload — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "W2-05c reading the screen after the reload — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "W2-05c — after the reload: still SXO",
+   "ok": true,
+   "detail": "{\"q\":true,\"cat\":\"OCU\",\"sxo\":true}"
+  },
+  {
+   "name": "W2-05d the Leave War read (nothing may be written by looking) — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "W2-05d the Leave War read (nothing may be written by looking) — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "W2-05d the Leave War shows Gambit as SXO (the gold SXO chip, under the SXO heading)",
+   "ok": true,
+   "detail": "{\"cls\":\"catchip q-sxo has-quals\",\"inSxo\":true,\"sheet\":1,\"edit\":0,\"btns\":[\"✕\",\"LVE\\n8\\n1.5\\nset by admin · LL and OL deduct from it\",\"Set\",\"OIL\\n3.5\\n3\\ntap to open the OIL tracker · oldest credit is used first\",\"CCL\\n0\\nset by admin · CCL deducts from it\",\"Set\",\"FCL\\n0\\nset by admin · FCL deducts from it\",\"Set\",\"CL\\n0\\nset by admin · CL deducts from it\",\"Set\",\"PL\\n0\\nset by admin · PL deducts from it\",\"Set\",\"LVE TOT\\n4.5\\nAll leave taken: LL + OL + OIL + CCL + FCL + CL + PL\",\"MED TOT\\n1\\nMedical days: ATT C + HL + OML\"],\"words\":\"Gambit every figure · tap one for its breakdown ✕ + balance left · − days used · LL amber · OL red LVE 8 1.5 set by admin · LL and OL deduct from it Set OIL 3.5 3 tap to open the OIL tracker · oldest credit is used first CCL 0 set by admin · CCL deducts from it Set FCL 0 set by admin · FCL deducts from it Set CL 0 set by admin · CL deducts from it Set PL 0 set by admin · PL deducts from it Set LVE\"}"
+  },
+  {
+   "name": "W2-05d his name sheet opens his figures and offers NO \"Edit person\"",
+   "ok": true,
+   "detail": "{\"btns\":[\"✕\",\"LVE\\n8\\n1.5\\nset by admin · LL and OL deduct from it\",\"Set\",\"OIL\\n3.5\\n3\\ntap to open the OIL tracker · oldest credit is used first\",\"CCL\\n0\\nset by admin · CCL deducts from it\",\"Set\",\"FCL\\n0\\nset by admin · FCL deducts from it\",\"Set\",\"CL\\n0\\nset by admin · CL deducts from it\",\"Set\",\"PL\\n0\\nset by admin · PL deducts from it\",\"Set\",\"LVE TOT\\n4.5\\nAll leave taken: LL + OL + OIL + CCL + FCL + CL + PL\",\"MED TOT\\n1\\nMedical days: ATT C + HL + OML\"]}"
+  },
+  {
+   "name": "W2-05e Quals (editing): Gambit's callsign box renamed \"Gambol\" — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 2 [people/bruise, settings/elog:munvu2awsjpm.000001] · del 0 [] · batches people.edit/2"
+  },
+  {
+   "name": "W2-05e Quals (editing): Gambit's callsign box renamed \"Gambol\" — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 2 [people/bruise, settings/elog:munvu2awsjpm.000001] · del 0 [] · batches people.edit/2"
+  },
+  {
+   "name": "W2-05e — ONE person row; Quals, the Inputs picker, the palette and the Leave War read \"Gambol\"",
+   "ok": true,
+   "detail": "{\"quals\":\"Gambol\",\"picker\":\"Gambol\",\"palette\":\"CGambolO\",\"war\":\"Gambol\"}"
+  },
+  {
+   "name": "W2-05e — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "W2-05e — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "W2-05e — (pristine week) with the fresh hidden row ids set aside, the reload gives back everything else exactly",
+   "ok": true,
+   "detail": "same"
+  },
+  {
+   "name": "W2-05e reading the screen after the reload — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "W2-05e reading the screen after the reload — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "W2-05e — after the reload: every place still reads \"Gambol\"",
+   "ok": true,
+   "detail": "{\"quals\":\"Gambol\",\"picker\":\"Gambol\",\"palette\":\"CGambolO\",\"war\":\"Gambol\"}"
+  },
+  {
+   "name": "W2-05f Quals: Gambol's NAAR ticked (to undo next) — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 2 [people/bruise, settings/elog:munvud5mcca5.000001] · del 0 [] · batches people.edit/2"
+  },
+  {
+   "name": "W2-05f Quals: Gambol's NAAR ticked (to undo next) — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 2 [people/bruise, settings/elog:munvud5mcca5.000001] · del 0 [] · batches people.edit/2"
+  },
+  {
+   "name": "W2-05f — ticked",
+   "ok": true,
+   "detail": "{\"was\":false}"
+  },
+  {
+   "name": "W2-05g the top bar's Undo (↶) takes the tick back — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 2 [people/bruise, settings/elog:munvud5mcca5.000002] · del 0 [] · batches undo.restore/2"
+  },
+  {
+   "name": "W2-05g the top bar's Undo (↶) takes the tick back — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 2 [people/bruise, settings/elog:munvud5mcca5.000002] · del 0 [] · batches undo.restore/2"
+  },
+  {
+   "name": "W2-05g — the tick is back as it was; the Undo named it",
+   "ok": true,
+   "detail": "{\"title\":\"Undo — Gambol’s quals\",\"pressed\":true,\"toasts\":[\"Undid: Gambol’s quals\"]}"
+  },
+  {
+   "name": "W2-05g — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "W2-05g — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "W2-05g — (pristine week) with the fresh hidden row ids set aside, the reload gives back everything else exactly",
+   "ok": true,
+   "detail": "same"
+  },
+  {
+   "name": "W2-05g reading the screen after the reload — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "W2-05g reading the screen after the reload — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "W2-05g — after the reload: after the reload the tick stays taken back",
+   "ok": true,
+   "detail": "{\"h\":false}"
+  },
+  {
+   "name": "W2-05h Quals: the NAAR ticked again, then Undo (both before any reload) — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 2 [settings/elog:munvumofzfmc.000001, settings/elog:munvumofzfmc.000002] · del 0 [] · batches people.edit/2 undo.restore/2"
+  },
+  {
+   "name": "W2-05h Quals: the NAAR ticked again, then Undo (both before any reload) — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 2 [settings/elog:munvumofzfmc.000001, settings/elog:munvumofzfmc.000002] · del 0 [] · batches people.edit/2 undo.restore/2"
+  },
+  {
+   "name": "W2-05h — ticked and taken back",
+   "ok": true,
+   "detail": "{\"u\":{\"title\":\"Undo — Gambol’s quals\",\"pressed\":true,\"toasts\":[\"Undid: Gambol’s quals\"]},\"now\":false}"
+  },
+  {
+   "name": "W2-05i the top bar's Redo (↷) puts the tick back — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 2 [people/bruise, settings/elog:munvumofzfmc.000003] · del 0 [] · batches undo.restore/2"
+  },
+  {
+   "name": "W2-05i the top bar's Redo (↷) puts the tick back — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 2 [people/bruise, settings/elog:munvumofzfmc.000003] · del 0 [] · batches undo.restore/2"
+  },
+  {
+   "name": "W2-05i — ticked again; the Redo named it",
+   "ok": true,
+   "detail": "{\"title\":\"Redo — Gambol’s quals\",\"pressed\":true,\"toasts\":[\"Redid: Gambol’s quals\"]}"
+  },
+  {
+   "name": "W2-05i — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "W2-05i — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "W2-05i — (pristine week) with the fresh hidden row ids set aside, the reload gives back everything else exactly",
+   "ok": true,
+   "detail": "same"
+  },
+  {
+   "name": "W2-05i reading the screen after the reload — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "W2-05i reading the screen after the reload — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "W2-05i — after the reload: after the reload the redone tick stays",
+   "ok": true,
+   "detail": "{\"h\":true}"
+  },
+  {
+   "name": "W2-06a Admin → Users → Add a person: \"Kestrel\" (KES · Pilot · CAT C) with a sign-in kestrel@mail, Member — one step — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 8 [leavewar/profile:pmunvuxjqbeb7m1, people/pmunvuxjqbeb7m1, settings/account:acad, settings/account:achex, settings/account:acmunvuxjrzt0y, settings/account:acoutlaw, settings/account:acus, settings/elog:munvuu1h74de.000001] · del 0 [] · batches account.addNew/8"
+  },
+  {
+   "name": "W2-06a Admin → Users → Add a person: \"Kestrel\" (KES · Pilot · CAT C) with a sign-in kestrel@mail, Member — one step — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 8 [leavewar/profile:pmunvuxjqbeb7m1, people/pmunvuxjqbeb7m1, settings/account:acad, settings/account:achex, settings/account:acmunvuxjrzt0y, settings/account:acoutlaw, settings/account:acus, settings/elog:munvuu1h74de.000001] · del 0 [] · batches account.addNew/8"
+  },
+  {
+   "name": "W2-06a — his person row AND his account row, in ONE batch (the other account rows: the seeded list, stored by this first account write)",
+   "ok": true,
+   "detail": "{\"batches\":[{\"key\":\"changes/cmunvuxjth9rr83-0\",\"type\":\"account.addNew\",\"actorId\":\"acad\",\"n\":8,\"seqs\":[0]}],\"people\":[\"people/pmunvuxjqbeb7m1\"],\"accts\":[\"settings/account:acad\",\"settings/account:achex\",\"settings/account:acmunvuxjrzt0y\",\"settings/account:acoutlaw\",\"settings/account:acus\"],\"others\":[\"leavewar/profile:pmunvuxjqbeb7m1\"]}"
+  },
+  {
+   "name": "W2-06a — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "W2-06a — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "W2-06a — (pristine week) with the fresh hidden row ids set aside, the reload gives back everything else exactly",
+   "ok": true,
+   "detail": "same"
+  },
+  {
+   "name": "W2-06a reading the screen after the reload — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "W2-06a reading the screen after the reload — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "W2-06a — after the reload: Kestrel listed with his sign-in; Quals, the Inputs pickers, the palette and Admin → Users in the same order",
+   "ok": true,
+   "detail": "{\"txt\":\"Kestrel kestrel@mail · Pilot · CAT C MEMBER\",\"quals\":true,\"pickers\":true,\"users\":true}"
+  },
+  {
+   "name": "W2-06a2 Admin → Users → Add a person again, now the accounts are stored: \"Merlin\" (MER · WSO · CAT C), sign-in merlin@mail — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 4 [leavewar/profile:pmunvv7371d22xn, people/pmunvv7371d22xn, settings/account:acmunvv739nqh7, settings/elog:munvv1xtutao.000001] · del 0 [] · batches account.addNew/4"
+  },
+  {
+   "name": "W2-06a2 Admin → Users → Add a person again, now the accounts are stored: \"Merlin\" (MER · WSO · CAT C), sign-in merlin@mail — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 4 [leavewar/profile:pmunvv7371d22xn, people/pmunvv7371d22xn, settings/account:acmunvv739nqh7, settings/elog:munvv1xtutao.000001] · del 0 [] · batches account.addNew/4"
+  },
+  {
+   "name": "W2-06a2 — exactly his person row and his ONE account row, in ONE batch",
+   "ok": true,
+   "detail": "{\"batches\":[{\"key\":\"changes/cmunvv73aqwvuol-0\",\"type\":\"account.addNew\",\"actorId\":\"acad\",\"n\":4,\"seqs\":[0]}],\"people\":[\"people/pmunvv7371d22xn\"],\"accts\":[\"settings/account:acmunvv739nqh7\"],\"others\":[\"leavewar/profile:pmunvv7371d22xn\"]}"
+  },
+  {
+   "name": "W2-06a2 — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "W2-06a2 — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "W2-06a2 — (pristine week) with the fresh hidden row ids set aside, the reload gives back everything else exactly",
+   "ok": true,
+   "detail": "same"
+  },
+  {
+   "name": "W2-06a2 reading the screen after the reload — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "W2-06a2 reading the screen after the reload — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "W2-06a2 — after the reload: Merlin listed with his sign-in; every list in the same order",
+   "ok": true,
+   "detail": "{\"txt\":\"Merlin merlin@mail · WSO · CAT C MEMBER\",\"quals\":true,\"pickers\":true,\"users\":true}"
+  },
+  {
+   "name": "W2-06b Admin → Users: Kestrel's row → Archive — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 3 [people/pmunvuxjqbeb7m1, settings/account:acmunvuxjrzt0y, settings/elog:munvvbi31af2.000001] · del 0 [] · batches person.archive/3"
+  },
+  {
+   "name": "W2-06b Admin → Users: Kestrel's row → Archive — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 3 [people/pmunvuxjqbeb7m1, settings/account:acmunvuxjrzt0y, settings/elog:munvvbi31af2.000001] · del 0 [] · batches person.archive/3"
+  },
+  {
+   "name": "W2-06b — he is archived and his sign-in suspended — his rows only",
+   "ok": true,
+   "detail": "{\"P\":{\"archived\":true},\"acct\":{\"on\":false},\"put\":[\"people/pmunvuxjqbeb7m1\",\"settings/account:acmunvuxjrzt0y\",\"settings/elog:munvvbi31af2.000001\"],\"del\":[]}"
+  },
+  {
+   "name": "W2-06b — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "W2-06b — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "W2-06b — (pristine week) with the fresh hidden row ids set aside, the reload gives back everything else exactly",
+   "ok": true,
+   "detail": "same"
+  },
+  {
+   "name": "W2-06b reading the screen after the reload — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "W2-06b reading the screen after the reload — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "W2-06b — after the reload: Kestrel under ▸ Archived; every list in the same order",
+   "ok": true,
+   "detail": "{\"txt\":\"Kestrel kestrel@mail · Pilot · CAT C Archived 30 Sep 26 by Saber MEMBER\",\"quals\":true,\"pickers\":true,\"users\":true}"
+  },
+  {
+   "name": "W2-06c Admin → Users → ▸ Archived → Kestrel → Restore (post-in today) — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 3 [people/pmunvuxjqbeb7m1, settings/account:acmunvuxjrzt0y, settings/elog:munvvlfekvb0.000001] · del 0 [] · batches person.restore/3"
+  },
+  {
+   "name": "W2-06c Admin → Users → ▸ Archived → Kestrel → Restore (post-in today) — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 3 [people/pmunvuxjqbeb7m1, settings/account:acmunvuxjrzt0y, settings/elog:munvvlfekvb0.000001] · del 0 [] · batches person.restore/3"
+  },
+  {
+   "name": "W2-06c — back on the roster, his sign-in back on",
+   "ok": true,
+   "detail": "{\"P\":{\"archived\":false},\"acct\":{\"on\":true},\"put\":[\"people/pmunvuxjqbeb7m1\",\"settings/account:acmunvuxjrzt0y\",\"settings/elog:munvvlfekvb0.000001\"]}"
+  },
+  {
+   "name": "W2-06c — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "W2-06c — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "W2-06c — (pristine week) with the fresh hidden row ids set aside, the reload gives back everything else exactly",
+   "ok": true,
+   "detail": "same"
+  },
+  {
+   "name": "W2-06c reading the screen after the reload — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "W2-06c reading the screen after the reload — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "W2-06c — after the reload: Kestrel on the roster again; every list in the same order",
+   "ok": true,
+   "detail": "{\"txt\":\"Kestrel kestrel@mail · Pilot · CAT C MEMBER\",\"quals\":true,\"pickers\":true,\"users\":true}"
+  },
+  {
+   "name": "W2-06d Admin → Users → Kestrel → Delete, then \"Tap again to delete Kestrel\" — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 3 [people/pmunvuxjqbeb7m1, settings/elog:munvwimw2mxu.000001, settings/elog:munvwimw2mxu.000002] · del 2 [leavewar/profile:pmunvuxjqbeb7m1, settings/account:acmunvuxjrzt0y] · batches person.delete/5"
+  },
+  {
+   "name": "W2-06d Admin → Users → Kestrel → Delete, then \"Tap again to delete Kestrel\" — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 3 [people/pmunvuxjqbeb7m1, settings/elog:munvwimw2mxu.000001, settings/elog:munvwimw2mxu.000002] · del 2 [leavewar/profile:pmunvuxjqbeb7m1, settings/account:acmunvuxjrzt0y] · batches person.delete/5"
+  },
+  {
+   "name": "W2-06d — the first tap asked (naming him, saying what goes) and wrote nothing; the second deleted him — his account row removed, his person row kept as a hidden mark",
+   "ok": true,
+   "detail": "{\"ask\":{\"btn\":\"Tap again to delete Kestrel\",\"note\":\"Goes: his account, his Quals row, every day still to come. Days he flew keep his puck. Can’t be undone.\",\"wrote\":{\"put\":[],\"del\":[],\"newBatches\":[],\"goneBatches\":[]}},\"P\":{\"deleted\":true},\"acctLeft\":null,\"put\":[\"people/pmunvuxjqbeb7m1\",\"settings/elog:munvwimw2mxu.000001\",\"settings/elog:munvwimw2mxu.000002\"],\"del\":[\"leavewar/profile:pmunvuxjqbeb7m1\",\"settings/account:acmunvuxjrzt0y\"]}"
+  },
+  {
+   "name": "W2-06d — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "W2-06d — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "W2-06d — (pristine week) with the fresh hidden row ids set aside, the reload gives back everything else exactly",
+   "ok": true,
+   "detail": "same"
+  },
+  {
+   "name": "W2-06d reading the screen after the reload — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "W2-06d reading the screen after the reload — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "W2-06d — after the reload: Kestrel not listed; every list in the same order",
+   "ok": true,
+   "detail": "{\"txt\":null,\"quals\":true,\"pickers\":true,\"users\":true}"
+  },
+  {
+   "name": "W2-06e Admin → Users → Blade (a man of the demo: requests, pucks on the week) → Delete, twice — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 4 [leavewar/profile:slash, people/slash, settings/elog:munvwsl4fz3h.000001, settings/elog:munvwsl4fz3h.000002] · del 0 [] · batches person.delete/4"
+  },
+  {
+   "name": "W2-06e Admin → Users → Blade (a man of the demo: requests, pucks on the week) → Delete, twice — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 4 [leavewar/profile:slash, people/slash, settings/elog:munvwsl4fz3h.000001, settings/elog:munvwsl4fz3h.000002] · del 0 [] · batches person.delete/4"
+  },
+  {
+   "name": "W2-06e — Blade deleted (his mark kept)",
+   "ok": true,
+   "detail": "{\"P\":{\"deleted\":true},\"put\":4,\"del\":0,\"kinds\":[\"leavewar/profile\",\"people/slash\",\"settings/elog\"]}"
+  },
+  {
+   "name": "W2-06e — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "W2-06e — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "W2-06e — (pristine week) with the fresh hidden row ids set aside, the reload gives back everything else exactly",
+   "ok": true,
+   "detail": "same"
+  },
+  {
+   "name": "W2-06e reading the screen after the reload — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "W2-06e reading the screen after the reload — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "W2-06e — after the reload: every list in the same order, Blade not in them",
+   "ok": true,
+   "detail": "{\"quals\":true,\"pickers\":true,\"users\":true}"
+  },
+  {
+   "name": "W2-07 the Leave War: Hex's box for today (2026-09-30) → PO → \"Overseas Sqn\" (archived on Quals, account suspended — today) → Post out — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 4 [leavewar/profile:rocky, people/rocky, settings/account:achex, settings/elog:munvx2yrhjgh.000001] · del 0 [] · batches lw.postout/4"
+  },
+  {
+   "name": "W2-07 the Leave War: Hex's box for today (2026-09-30) → PO → \"Overseas Sqn\" (archived on Quals, account suspended — today) → Post out — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 4 [leavewar/profile:rocky, people/rocky, settings/account:achex, settings/elog:munvx2yrhjgh.000001] · del 0 [] · batches lw.postout/4"
+  },
+  {
+   "name": "W2-07 — on its date (today) he is archived and his sign-in suspended; the posting kept on his war profile",
+   "ok": true,
+   "detail": "{\"line\":\"On 30 Sep: archived, account suspended.\",\"P\":{\"archived\":true,\"by\":\"po\"},\"acct\":{\"on\":false,\"name\":\"hex\"},\"put\":[\"leavewar/profile:rocky\",\"people/rocky\",\"settings/account:achex\",\"settings/elog:munvx2yrhjgh.000001\"],\"del\":[]}"
+  },
+  {
+   "name": "W2-07 — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "W2-07 — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "W2-07 — (pristine week) with the fresh hidden row ids set aside, the reload gives back everything else exactly",
+   "ok": true,
+   "detail": "same"
+  },
+  {
+   "name": "W2-07 reading the screen after the reload — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "W2-07 reading the screen after the reload — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "W2-07 — after the reload: still posted out: archived, sign-in suspended",
+   "ok": true,
+   "detail": "{\"P\":{\"archived\":true},\"acct\":false,\"cell\":\"gone act\"}"
+  },
+  {
+   "name": "W2-07b the Leave War: Outlaw's box for today → PO → \"SANS\" → Post out — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 3 [leavewar/profile:casper, people/casper, settings/elog:munvxcbpl20m.000001] · del 0 [] · batches lw.postout/3"
+  },
+  {
+   "name": "W2-07b the Leave War: Outlaw's box for today → PO → \"SANS\" → Post out — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 3 [leavewar/profile:casper, people/casper, settings/elog:munvxcbpl20m.000001] · del 0 [] · batches lw.postout/3"
+  },
+  {
+   "name": "W2-07b — he is a SANS man from today (the rows it says)",
+   "ok": true,
+   "detail": "{\"ret\":{\"line\":\"On 30 Sep: becomes SANS.\",\"ask\":null,\"toasts\":[]},\"P\":{\"san\":true,\"archived\":false},\"put\":[\"leavewar/profile:casper\",\"people/casper\",\"settings/elog:munvxcbpl20m.000001\"],\"del\":[]}"
+  },
+  {
+   "name": "W2-07b — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "W2-07b — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "W2-07b — (pristine week) with the fresh hidden row ids set aside, the reload gives back everything else exactly",
+   "ok": true,
+   "detail": "same"
+  },
+  {
+   "name": "W2-07b reading the screen after the reload — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "W2-07b reading the screen after the reload — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "W2-07b — after the reload: still SANS after the reload",
+   "ok": true,
+   "detail": "{\"san\":true,\"archived\":false}"
+  },
+  {
+   "name": "W2-07c the Leave War: Echo's box for today → PO → \"Delete\" → Post out, and \"Tap again\" — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 4 [leavewar/profile:freak, people/freak, settings/elog:munvxl8z69rd.000001, settings/elog:munvxl8z69rd.000002] · del 0 [] · batches lw.postout/4"
+  },
+  {
+   "name": "W2-07c the Leave War: Echo's box for today → PO → \"Delete\" → Post out, and \"Tap again\" — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 4 [leavewar/profile:freak, people/freak, settings/elog:munvxl8z69rd.000001, settings/elog:munvxl8z69rd.000002] · del 0 [] · batches lw.postout/4"
+  },
+  {
+   "name": "W2-07c — the first press asked again (\"Tap again to delete Echo\"); the second deleted him (D299: this month still shows his past days, PO from today)",
+   "ok": true,
+   "detail": "{\"ret\":{\"line\":\"On 30 Sep: deleted. Days he flew keep his puck.\",\"ask\":\"Tap again to delete Echo\",\"toasts\":[]},\"P\":{\"deleted\":true},\"put\":[\"leavewar/profile:freak\",\"people/freak\",\"settings/elog:munvxl8z69rd.000001\",\"settings/elog:munvxl8z69rd.000002\"],\"del\":[],\"echoRow\":{\"drawn\":true,\"poFrom\":\"2026-09-29\",\"poDays\":94}}"
+  },
+  {
+   "name": "W2-07c — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "W2-07c — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "W2-07c — (pristine week) with the fresh hidden row ids set aside, the reload gives back everything else exactly",
+   "ok": true,
+   "detail": "same"
+  },
+  {
+   "name": "W2-07c reading the screen after the reload — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "W2-07c reading the screen after the reload — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "W2-07c — after the reload: still deleted; his war row this month the same as before the reload (his past kept, PO from today — D299)",
+   "ok": true,
+   "detail": "{\"P\":{\"deleted\":true},\"before\":{\"drawn\":true,\"poFrom\":\"2026-09-29\",\"poDays\":94},\"after\":{\"drawn\":true,\"poFrom\":\"2026-09-29\",\"poDays\":94}}"
+  }
+ ],
+ "table": [
+  {
+   "step": "W2-05a",
+   "width": "desktop",
+   "what": "Quals (Enable editing): Gambit's SCNIGHT ticked",
+   "afterReload": "SCNIGHT ticked",
+   "rows": "put 2 [people/bruise, settings/elog:munvtnq6qd4g.000001] · del 0 · batches people.edit/2",
+   "pass": true,
+   "fails": [],
+   "pics": [
+    "W2-05a-a.png",
+    "W2-05a-b.png"
+   ]
+  },
+  {
+   "step": "W2-05b",
+   "width": "desktop",
+   "what": "Quals: Gambit's CAT changed on his row",
+   "afterReload": "CAT OCU",
+   "rows": "put 2 [people/bruise, settings/elog:munvtsf6cja0.000001] · del 0 · batches people.edit/2",
+   "pass": true,
+   "fails": [],
+   "pics": [
+    "W2-05b-a.png",
+    "W2-05b-b.png"
+   ]
+  },
+  {
+   "step": "W2-05c",
+   "width": "desktop",
+   "what": "Quals: Gambit's SXO ticked",
+   "afterReload": "SXO ticked",
+   "rows": "put 2 [people/bruise, settings/elog:munvtxf2c787.000001] · del 0 · batches people.edit/2",
+   "pass": true,
+   "fails": [],
+   "pics": [
+    "W2-05c-a.png",
+    "W2-05c-b.png"
+   ]
+  },
+  {
+   "step": "W2-05d",
+   "width": "desktop",
+   "what": "the Leave War: Gambit shows as SXO; tapping his callsign opens his figures, no Edit person",
+   "afterReload": "(read only — no reload needed; the SXO read above came after 05c's reload)",
+   "rows": "none (looking wrote nothing)",
+   "pass": true,
+   "fails": [],
+   "pics": [
+    "W2-05d-a.png",
+    "W2-05d-b.png"
+   ]
+  },
+  {
+   "step": "W2-05e",
+   "width": "desktop",
+   "what": "Quals (editing): Gambit's callsign box renamed \"Gambol\"",
+   "afterReload": "Quals Gambol · picker Gambol · palette CGambolO · war Gambol",
+   "rows": "put 2 [people/bruise, settings/elog:munvu2awsjpm.000001] · del 0 · batches people.edit/2",
+   "pass": true,
+   "fails": [],
+   "pics": [
+    "W2-05e-a.png",
+    "W2-05e-b.png"
+   ]
+  },
+  {
+   "step": "W2-05f",
+   "width": "desktop",
+   "what": "Quals: Gambol's NAAR ticked (to undo next)",
+   "afterReload": "",
+   "rows": "put 2 [people/bruise, settings/elog:munvud5mcca5.000001] · del 0 · batches people.edit/2",
+   "pass": true,
+   "fails": [],
+   "pics": [
+    "W2-05f-a.png"
+   ]
+  },
+  {
+   "step": "W2-05g",
+   "width": "desktop",
+   "what": "the top bar's Undo (↶) takes the tick back",
+   "afterReload": "NAAR clear (as before the tick)",
+   "rows": "put 2 [people/bruise, settings/elog:munvud5mcca5.000002] · del 0 · batches undo.restore/2",
+   "pass": true,
+   "fails": [],
+   "pics": [
+    "W2-05g-a.png",
+    "W2-05g-b.png"
+   ]
+  },
+  {
+   "step": "W2-05h",
+   "width": "desktop",
+   "what": "Quals: the NAAR ticked again, then Undo (both before any reload)",
+   "afterReload": "",
+   "rows": "put 2 [settings/elog:munvumofzfmc.000001, settings/elog:munvumofzfmc.000002] · del 0 · batches people.edit/2 undo.restore/2",
+   "pass": true,
+   "fails": [],
+   "pics": [
+    "W2-05h-a.png"
+   ]
+  },
+  {
+   "step": "W2-05i",
+   "width": "desktop",
+   "what": "the top bar's Redo (↷) puts the tick back",
+   "afterReload": "NAAR ticked",
+   "rows": "put 2 [people/bruise, settings/elog:munvumofzfmc.000003] · del 0 · batches undo.restore/2",
+   "pass": true,
+   "fails": [],
+   "pics": [
+    "W2-05i-a.png",
+    "W2-05i-b.png"
+   ]
+  },
+  {
+   "step": "W2-06a",
+   "width": "desktop",
+   "what": "Admin → Users → Add a person: \"Kestrel\" (KES · Pilot · CAT C) with a sign-in kestrel@mail, Member — one step",
+   "afterReload": "\"Kestrel kestrel@mail · Pilot · CAT C MEMBER\" · every list in the same order",
+   "rows": "put 8 [leavewar/profile:pmunvuxjqbeb7m1, people/pmunvuxjqbeb7m1, settings/account:acad, settings/account:achex, settings/account:acmunvuxjrzt0y, settings/account:acoutlaw … (+2)] · del 0 · batches account.addNew/8",
+   "pass": true,
+   "fails": [],
+   "pics": [
+    "W2-06a-a.png",
+    "W2-06a-b.png"
+   ]
+  },
+  {
+   "step": "W2-06a2",
+   "width": "desktop",
+   "what": "Admin → Users → Add a person again, now the accounts are stored: \"Merlin\" (MER · WSO · CAT C), sign-in merlin@mail",
+   "afterReload": "\"Merlin merlin@mail · WSO · CAT C MEMBER\"",
+   "rows": "put 4 [leavewar/profile:pmunvv7371d22xn, people/pmunvv7371d22xn, settings/account:acmunvv739nqh7, settings/elog:munvv1xtutao.000001] · del 0 · batches account.addNew/4",
+   "pass": true,
+   "fails": [],
+   "pics": [
+    "W2-06a2-a.png",
+    "W2-06a2-b.png"
+   ]
+  },
+  {
+   "step": "W2-06b",
+   "width": "desktop",
+   "what": "Admin → Users: Kestrel's row → Archive",
+   "afterReload": "Archived: \"Kestrel kestrel@mail · Pilot · CAT C Archived 30 Sep 26 by Saber MEMBER\"",
+   "rows": "put 3 [people/pmunvuxjqbeb7m1, settings/account:acmunvuxjrzt0y, settings/elog:munvvbi31af2.000001] · del 0 · batches person.archive/3",
+   "pass": true,
+   "fails": [],
+   "pics": [
+    "W2-06b-a.png",
+    "W2-06b-b.png"
+   ]
+  },
+  {
+   "step": "W2-06c",
+   "width": "desktop",
+   "what": "Admin → Users → ▸ Archived → Kestrel → Restore (post-in today)",
+   "afterReload": "\"Kestrel kestrel@mail · Pilot · CAT C MEMBER\"",
+   "rows": "put 3 [people/pmunvuxjqbeb7m1, settings/account:acmunvuxjrzt0y, settings/elog:munvvlfekvb0.000001] · del 0 · batches person.restore/3",
+   "pass": true,
+   "fails": [],
+   "pics": [
+    "W2-06c-a.png",
+    "W2-06c-b.png"
+   ]
+  },
+  {
+   "step": "W2-06d",
+   "width": "desktop",
+   "what": "Admin → Users → Kestrel → Delete, then \"Tap again to delete Kestrel\"",
+   "afterReload": "Kestrel gone from Admin → Users; lists unchanged",
+   "rows": "put 3 [people/pmunvuxjqbeb7m1, settings/elog:munvwimw2mxu.000001, settings/elog:munvwimw2mxu.000002] · del 2 [leavewar/profile:pmunvuxjqbeb7m1, settings/account:acmunvuxjrzt0y] · batches person.delete/5",
+   "pass": true,
+   "fails": [],
+   "pics": [
+    "W2-06d-a.png",
+    "W2-06d-b.png"
+   ]
+  },
+  {
+   "step": "W2-06e",
+   "width": "desktop",
+   "what": "Admin → Users → Blade (a man of the demo: requests, pucks on the week) → Delete, twice",
+   "afterReload": "Blade gone; lists unchanged",
+   "rows": "put 4 [leavewar/profile:slash, people/slash, settings/elog:munvwsl4fz3h.000001, settings/elog:munvwsl4fz3h.000002] · del 0 · batches person.delete/4",
+   "pass": true,
+   "fails": [],
+   "pics": [
+    "W2-06e-a.png",
+    "W2-06e-b.png"
+   ]
+  },
+  {
+   "step": "W2-07",
+   "width": "desktop",
+   "what": "the Leave War: Hex's box for today (2026-09-30) → PO → \"Overseas Sqn\" (archived on Quals, account suspended — today) → Post out",
+   "afterReload": "Hex archived, sign-in suspended; his box today: gone act",
+   "rows": "put 4 [leavewar/profile:rocky, people/rocky, settings/account:achex, settings/elog:munvx2yrhjgh.000001] · del 0 · batches lw.postout/4",
+   "pass": true,
+   "fails": [],
+   "pics": [
+    "W2-07-a.png",
+    "W2-07-b.png"
+   ]
+  },
+  {
+   "step": "W2-07b",
+   "width": "desktop",
+   "what": "the Leave War: Outlaw's box for today → PO → \"SANS\" → Post out",
+   "afterReload": "Outlaw SANS true",
+   "rows": "put 3 [leavewar/profile:casper, people/casper, settings/elog:munvxcbpl20m.000001] · del 0 · batches lw.postout/3",
+   "pass": true,
+   "fails": [],
+   "pics": [
+    "W2-07b-a.png",
+    "W2-07b-b.png"
+   ]
+  },
+  {
+   "step": "W2-07c",
+   "width": "desktop",
+   "what": "the Leave War: Echo's box for today → PO → \"Delete\" → Post out, and \"Tap again\"",
+   "afterReload": "Echo {\"deleted\":true}; war row this month, PO from 2026-09-29 (same as before)",
+   "rows": "put 4 [leavewar/profile:freak, people/freak, settings/elog:munvxl8z69rd.000001, settings/elog:munvxl8z69rd.000002] · del 0 · batches lw.postout/4",
+   "pass": true,
+   "fails": [],
+   "pics": [
+    "W2-07c-a.png",
+    "W2-07c-b.png"
+   ]
+  }
+ ],
+ "errors": [],
+ "bladeRows": {
+  "put": [
+   "leavewar/profile:slash",
+   "people/slash",
+   "settings/elog:munvwsl4fz3h.000001",
+   "settings/elog:munvwsl4fz3h.000002"
+  ],
+  "del": []
+ }
+}

@@ -1,0 +1,212 @@
+{
+ "base": "http://localhost:4203",
+ "at": "2026-09-30T09:23:16.957Z",
+ "results": [
+  {
+   "name": "B0 first boot — ONE change-log batch, of type boot",
+   "ok": true,
+   "detail": "[{\"type\":\"boot\",\"n\":199}]"
+  },
+  {
+   "name": "5 Ranger (member) bids LL on his own row, Tue 17 Feb — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [leavewar/rec:y2026:rmunwc6g4109a8] · del 0 [] · batches lw.edit/1"
+  },
+  {
+   "name": "5 Ranger (member) bids LL on his own row, Tue 17 Feb — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [leavewar/rec:y2026:rmunwc6g4109a8] · del 0 [] · batches lw.edit/1"
+  },
+  {
+   "name": "5 — ONE record row, his, pending; no history line (a member's own bid is not a line — D263)",
+   "ok": true,
+   "detail": "{\"put\":[\"leavewar/rec:y2026:rmunwc6g4109a8\"],\"batches\":[{\"key\":\"changes/cmunwc1st3scidp-1\",\"type\":\"lw.edit\",\"actorId\":\"acus\",\"n\":1,\"seqs\":[1]}],\"ret\":{\"placed\":true,\"pressed\":true,\"asked\":null,\"why\":\"\"}}"
+  },
+  {
+   "name": "5 — the stored record is Ranger's, 17 Feb, a pending LL bid",
+   "ok": true,
+   "detail": "{\"id\":\"rmunwc6g4109a8\",\"kind\":\"request\",\"code\":\"LL\",\"state\":\"pending\",\"ord\":1024,\"pid\":\"bane\",\"date\":\"2026-02-17\"}"
+  },
+  {
+   "name": "5 member bid — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026 (the unsaved demo week's hidden row ids set aside)"
+  },
+  {
+   "name": "5 member bid — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "5 member bid — the war's boxes read the same after the reload",
+   "ok": true,
+   "detail": "{\"bane@2026-02-17\":\"LL\"}"
+  },
+  {
+   "name": "6 (A) a bid for Cinch, Tue 3 Feb — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [leavewar/rec:y2026:rmunwcj9517mnf] · del 0 [] · batches lw.edit/1"
+  },
+  {
+   "name": "6 (A) a bid for Cinch, Tue 3 Feb — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [leavewar/rec:y2026:rmunwcj9517mnf] · del 0 [] · batches lw.edit/1"
+  },
+  {
+   "name": "6 (A) Approve Cinch's bid — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 2 [inputs/imunwcon3vdhij6, settings/elog:munwcf0hoegj.000001] · del 1 [leavewar/rec:y2026:rmunwcj9517mnf] · batches lw.decide/3"
+  },
+  {
+   "name": "6 (A) Approve Cinch's bid — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 2 [inputs/imunwcon3vdhij6, settings/elog:munwcf0hoegj.000001] · del 1 [leavewar/rec:y2026:rmunwcj9517mnf] · batches lw.decide/3"
+  },
+  {
+   "name": "6 (B, not reloaded) a bid for Piston, Thu 12 Feb — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [leavewar/rec:y2026:rmunwcsy516b6z] · del 0 [] · batches lw.edit/1"
+  },
+  {
+   "name": "6 (B, not reloaded) a bid for Piston, Thu 12 Feb — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [leavewar/rec:y2026:rmunwcsy516b6z] · del 0 [] · batches lw.edit/1"
+  },
+  {
+   "name": "6 — B wrote ONLY its own new record row: Cinch's bid row NOT brought back, the approved request NOT removed",
+   "ok": true,
+   "detail": "{\"bPut\":[\"leavewar/rec:y2026:rmunwcsy516b6z\"],\"bDel\":[],\"xKeyBack\":false,\"iidKept\":true}"
+  },
+  {
+   "name": "6 two tabs — after reloading both, the two tabs read the same",
+   "ok": true,
+   "detail": "same"
+  },
+  {
+   "name": "6 two tabs — reloading both tabs wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "6 two tabs — both tabs draw the same boxes",
+   "ok": true,
+   "detail": "{\"snap@2026-02-03\":\"LL\",\"pump@2026-02-12\":\"LL\"}"
+  },
+  {
+   "name": "6 — after reloading both: Cinch's approved leave (ONE request on the Inputs page, its row stored, the bid row gone) AND Piston's bid (its row stored, the sheet a bid), in both tabs",
+   "ok": true,
+   "detail": "{\"inA\":[\"LL/imunwcon3vdhij6\"],\"inB\":[\"LL/imunwcon3vdhij6\"],\"cells\":{\"snap@2026-02-03\":{\"text\":\"LL\",\"cls\":\"act\",\"mark\":\"\"},\"pump@2026-02-12\":{\"text\":\"LL\",\"cls\":\"act\",\"mark\":\"\"}},\"pistonSheet\":\"Piston Thu 12 Feb NOW LL ✕ HOW MANY Just this day Pick a range DECIDE Ack Approve Refuse SELECTED ⇄Move Delete HOW MUCH Whole day AM PM WHICH LEAVE LL OL OIL CC\",\"bSawXBefore\":{\"snap@2026-02-03\":{\"text\":\"LL\",\"cls\":\"act\",\"mark\":\"\"}}}"
+  },
+  {
+   "name": "6b (A) a bid for Sidewinder, Tue 24 Feb — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [leavewar/rec:y2026:rmunwdav21axif] · del 0 [] · batches lw.edit/1"
+  },
+  {
+   "name": "6b (A) a bid for Sidewinder, Tue 24 Feb — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [leavewar/rec:y2026:rmunwdav21axif] · del 0 [] · batches lw.edit/1"
+  },
+  {
+   "name": "6b (A) Approve Sidewinder's bid — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 2 [inputs/imunwdg8u97b8ra, settings/elog:munwcw0maec9.000001] · del 1 [leavewar/rec:y2026:rmunwdav21axif] · batches lw.decide/3"
+  },
+  {
+   "name": "6b (A) Approve Sidewinder's bid — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 2 [inputs/imunwdg8u97b8ra, settings/elog:munwcw0maec9.000001] · del 1 [leavewar/rec:y2026:rmunwdav21axif] · batches lw.decide/3"
+  },
+  {
+   "name": "6b (B = Ranger, not reloaded) bids LL on his own row, Thu 26 Feb — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [leavewar/rec:y2026:rmunwdiz715gqt] · del 0 [] · batches lw.edit/1"
+  },
+  {
+   "name": "6b (B = Ranger, not reloaded) bids LL on his own row, Thu 26 Feb — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [leavewar/rec:y2026:rmunwdiz715gqt] · del 0 [] · batches lw.edit/1"
+  },
+  {
+   "name": "6b — B wrote ONLY its own record row; A's approval (the bid gone, the request filed) stands",
+   "ok": true,
+   "detail": "{\"bPut\":[\"leavewar/rec:y2026:rmunwdiz715gqt\"],\"keyBack\":false,\"iidKept\":true}"
+  },
+  {
+   "name": "6b two tabs — after reloading both, the two tabs read the same",
+   "ok": true,
+   "detail": "same"
+  },
+  {
+   "name": "6b two tabs — reloading both tabs wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "6b two tabs — both tabs draw the same boxes",
+   "ok": true,
+   "detail": "{\"mamba@2026-02-24\":\"LL\",\"bane@2026-02-26\":\"LL\"}"
+  },
+  {
+   "name": "6b — after reloading both: Sidewinder's approved request and Ranger's bid both there, in both tabs",
+   "ok": true,
+   "detail": "{\"inA\":1,\"inB\":1,\"a\":{\"mamba@2026-02-24\":{\"text\":\"LL\",\"cls\":\"act\",\"mark\":\"\"},\"bane@2026-02-26\":{\"text\":\"LL\",\"cls\":\"act\",\"mark\":\"\"}},\"b\":{\"mamba@2026-02-24\":{\"text\":\"LL\",\"cls\":\"\",\"mark\":\"\"},\"bane@2026-02-26\":{\"text\":\"LL\",\"cls\":\"act\",\"mark\":\"\"}}}"
+  },
+  {
+   "name": "part B — no console errors, page errors, failed requests or native dialogs",
+   "ok": true,
+   "detail": "[]"
+  }
+ ],
+ "table": [
+  {
+   "step": "B0 first boot",
+   "width": "desktop",
+   "did": "fresh world, signed in as Ranger (member)",
+   "screen": "—",
+   "rows": "batches boot/199",
+   "ok": true,
+   "pics": []
+  },
+  {
+   "step": "5 member bid",
+   "width": "desktop",
+   "did": "Ranger signed in, tapped his 17 Feb, LL",
+   "screen": "{\"bane@2026-02-17\":{\"text\":\"LL\",\"cls\":\"evoff act\",\"mark\":\"\"}}",
+   "rows": "put 1 [leavewar/rec:y2026:rmunwc6g4109a8] · batches lw.edit/1",
+   "ok": true,
+   "pics": [
+    "B-5-member-bid.png",
+    "B-5-after-reload.png"
+   ]
+  },
+  {
+   "step": "6 two tabs (A approve, B bid)",
+   "width": "desktop",
+   "did": "A: bid Cinch 3 Feb; B opened; A: Approve; B (stale): bid Piston 12 Feb; reload both",
+   "screen": "A and B: {\"snap@2026-02-03\":{\"text\":\"LL\",\"cls\":\"act\",\"mark\":\"\"},\"pump@2026-02-12\":{\"text\":\"LL\",\"cls\":\"act\",\"mark\":\"\"}}; Cinch's request in INPUTS: A LL/imunwcon3vdhij6 B LL/imunwcon3vdhij6",
+   "rows": "A approve: put 2 [inputs/imunwcon3vdhij6, settings/elog:munwcf0hoegj.000001] · del 1 [leavewar/rec:y2026:rmunwcj9517mnf] · batches lw.decide/3 || B bid: put 1 [leavewar/rec:y2026:rmunwcsy516b6z] · batches lw.edit/1",
+   "ok": true,
+   "pics": [
+    "B-6-A-approved.png",
+    "B-6-B-bid.png",
+    "B-6-A-after-reload.png",
+    "B-6-B-after-reload.png",
+    "B-6-A-piston-sheet.png"
+   ]
+  },
+  {
+   "step": "6b two tabs (A approve, B = member bid)",
+   "width": "desktop",
+   "did": "A: bid Sidewinder 24 Feb; B (Ranger) opened; A: Approve; B (stale): his own bid 26 Feb; reload both",
+   "screen": "A: {\"mamba@2026-02-24\":{\"text\":\"LL\",\"cls\":\"act\",\"mark\":\"\"},\"bane@2026-02-26\":{\"text\":\"LL\",\"cls\":\"act\",\"mark\":\"\"}} · B: {\"mamba@2026-02-24\":{\"text\":\"LL\",\"cls\":\"\",\"mark\":\"\"},\"bane@2026-02-26\":{\"text\":\"LL\",\"cls\":\"act\",\"mark\":\"\"}}",
+   "rows": "A approve: put 2 [inputs/imunwdg8u97b8ra, settings/elog:munwcw0maec9.000001] · del 1 [leavewar/rec:y2026:rmunwdav21axif] · batches lw.decide/3 || B bid: put 1 [leavewar/rec:y2026:rmunwdiz715gqt] · batches lw.edit/1",
+   "ok": true,
+   "pics": [
+    "B-6b-A-after-reload.png",
+    "B-6b-B-after-reload.png"
+   ]
+  }
+ ],
+ "errors": []
+}

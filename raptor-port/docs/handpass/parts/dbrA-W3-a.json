@@ -1,0 +1,767 @@
+{
+ "base": "http://localhost:4203",
+ "at": "2026-09-30T09:11:51.004Z",
+ "results": [
+  {
+   "name": "A0 first boot — ONE change-log batch, of type boot",
+   "ok": true,
+   "detail": "{\"byCol\":{\"leavewar\":91,\"people\":61,\"inputs\":46,\"settings\":1,\"changes\":1},\"batches\":[{\"type\":\"boot\",\"n\":199}]}"
+  },
+  {
+   "name": "1a a bid (LL) on Reaper, Tue 13 Jan — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [leavewar/rec:y2026:rmunvv64g12trl] · del 0 [] · batches lw.edit/1"
+  },
+  {
+   "name": "1a a bid (LL) on Reaper, Tue 13 Jan — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [leavewar/rec:y2026:rmunvv64g12trl] · del 0 [] · batches lw.edit/1"
+  },
+  {
+   "name": "1a — exactly ONE record row written",
+   "ok": true,
+   "detail": "[\"leavewar/rec:y2026:rmunvv64g12trl\"]"
+  },
+  {
+   "name": "1a — the bid was placed through the sheet",
+   "ok": true,
+   "detail": "{\"placed\":true,\"pressed\":true,\"asked\":\"Reaper Tue 13 Jan ✕ HOW MANY Just this day Pick a range HOW MUCH Whole day AM PM WHICH LEAVE LL OL OIL CCL FCL PL EL CL That takes Reaper to -1 LVE. Tap the same leave again to go ahead. +OIL PO PI\",\"why\":\"\"}"
+  },
+  {
+   "name": "1a bid — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026 (the unsaved demo week's hidden row ids set aside)"
+  },
+  {
+   "name": "1a bid — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "1a bid — the war's boxes read the same after the reload",
+   "ok": true,
+   "detail": "{\"dice@2026-01-13\":\"LL\"}"
+  },
+  {
+   "name": "1b Approve Reaper's bid — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 2 [inputs/imunvvfc20a6s12, settings/elog:munvv993hjja.000001] · del 1 [leavewar/rec:y2026:rmunvv64g12trl] · batches lw.decide/3"
+  },
+  {
+   "name": "1b Approve Reaper's bid — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 2 [inputs/imunvvfc20a6s12, settings/elog:munvv993hjja.000001] · del 1 [leavewar/rec:y2026:rmunvv64g12trl] · batches lw.decide/3"
+  },
+  {
+   "name": "1b — the bid's own row removed and ONE request row put (D418), in ONE change-log batch",
+   "ok": true,
+   "detail": "{\"del\":[\"leavewar/rec:y2026:rmunvv64g12trl\"],\"inp\":[\"inputs/imunvvfc20a6s12\"],\"batches\":[{\"key\":\"changes/cmunvvfcc4kxnmp-0\",\"type\":\"lw.decide\",\"actorId\":\"acad\",\"n\":3,\"seqs\":[0]}]}"
+  },
+  {
+   "name": "1b — the stored request is Reaper's LL on 13 Jan, filed from the war",
+   "ok": true,
+   "detail": "{\"person\":\"dice\",\"date\":\"Jan 13\",\"yr\":2026,\"type\":\"LL\",\"remarks\":\"on 13 Jan\",\"allday\":true,\"lw\":\"y2026\",\"mod\":\"2026-09-30\",\"iid\":\"imunvvfc20a6s12\",\"ord\":48128}"
+  },
+  {
+   "name": "1b approve — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026 (the unsaved demo week's hidden row ids set aside)"
+  },
+  {
+   "name": "1b approve — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "1b approve — the war's boxes read the same after the reload",
+   "ok": true,
+   "detail": "{\"dice@2026-01-13\":\"LL\"}"
+  },
+  {
+   "name": "1c ⇄ Move the approved leave from 13 Jan to 15 Jan — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 2 [inputs/imunvvpf0j7rrqb, settings/elog:munvvifsjtdv.000001] · del 1 [inputs/imunvvfc20a6s12] · batches lw.move/3"
+  },
+  {
+   "name": "1c ⇄ Move the approved leave from 13 Jan to 15 Jan — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 2 [inputs/imunvvpf0j7rrqb, settings/elog:munvvifsjtdv.000001] · del 1 [inputs/imunvvfc20a6s12] · batches lw.move/3"
+  },
+  {
+   "name": "1c — the approved leave's request cut and re-filed on 15 Jan, no war row touched, ONE batch",
+   "ok": true,
+   "detail": "{\"put\":[\"inputs/imunvvpf0j7rrqb\",\"settings/elog:munvvifsjtdv.000001\"],\"del\":[\"inputs/imunvvfc20a6s12\"],\"batches\":[{\"key\":\"changes/cmunvvpf6378y9i-0\",\"type\":\"lw.move\",\"actorId\":\"acad\",\"n\":3,\"seqs\":[0]}],\"ret\":{\"opened\":\"bid-picker\",\"buttons\":[\"bid-cancel:✕\",\"span-one:Just this day\",\"span-range:Pick a range\",\"decide-ack:Ack\",\"decide-approve:Approve\",\"decide-refuse:Refuse\",\"decide-shift:⇄Move\",\"bid-clear:Delete\",\"portion-full:Whole day\",\"portion-am:AM\",\"portion-pm:PM\",\"bid-LL:LL\",\"bid-OL:OL\",\"bid-OIL:OIL\",\"bid-CCL:CCL\",\"bid-FCL:FCL\",\"bid-PL:PL\",\"bid-EL:EL\",\"bid-CL:CL\",\"bid-oil:+OIL\",\"bid-postout:PO\",\"bid-postin:PI\"],\"pressed\":true,\"banner\":\"Tap a day to move 1 entry Cancel\",\"bannerAfterClick\":\"\",\"bannerEnd\":\"\"}}"
+  },
+  {
+   "name": "1c — the stored request now names 15 Jan",
+   "ok": true,
+   "detail": "{\"person\":\"dice\",\"date\":\"Jan 15\",\"yr\":2026,\"type\":\"LL\",\"remarks\":\"on 15 Jan\",\"allday\":true,\"lw\":\"y2026\",\"mod\":\"2026-09-30\",\"ord\":48128,\"iid\":\"imunvvpf0j7rrqb\"}"
+  },
+  {
+   "name": "1c move — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026 (the unsaved demo week's hidden row ids set aside)"
+  },
+  {
+   "name": "1c move — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "1c move — the war's boxes read the same after the reload",
+   "ok": true,
+   "detail": "{\"dice@2026-01-13\":\"\",\"dice@2026-01-15\":\"LL\"}"
+  },
+  {
+   "name": "1c2 a bid (LL) on Warden, Tue 27 Jan — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [leavewar/rec:y2026:rmunvvzc11m4gv] · del 0 [] · batches lw.edit/1"
+  },
+  {
+   "name": "1c2 a bid (LL) on Warden, Tue 27 Jan — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [leavewar/rec:y2026:rmunvvzc11m4gv] · del 0 [] · batches lw.edit/1"
+  },
+  {
+   "name": "1c2 ⇄ Move Warden's (pending) bid from 27 Jan to 29 Jan — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 2 [leavewar/rec:y2026:rmunvvzc11m4gv, settings/elog:munvvskelrqs.000001] · del 0 [] · batches lw.move/2"
+  },
+  {
+   "name": "1c2 ⇄ Move Warden's (pending) bid from 27 Jan to 29 Jan — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 2 [leavewar/rec:y2026:rmunvvzc11m4gv, settings/elog:munvvskelrqs.000001] · del 0 [] · batches lw.move/2"
+  },
+  {
+   "name": "1c2 — a move of the war's own record is ONE put of the SAME row, never a delete and a put; ONE batch",
+   "ok": true,
+   "detail": "{\"put\":[\"leavewar/rec:y2026:rmunvvzc11m4gv\",\"settings/elog:munvvskelrqs.000001\"],\"del\":[],\"batches\":[{\"key\":\"changes/cmunvvzc5bjsy92-1\",\"type\":\"lw.move\",\"actorId\":\"acad\",\"n\":2,\"seqs\":[1]}]}"
+  },
+  {
+   "name": "1c2 — the stored record now names 29 Jan, still a pending bid, no moved-from mark (bidding is open)",
+   "ok": true,
+   "detail": "{\"was\":\"{\\\"id\\\":\\\"rmunvvzc11m4gv\\\",\\\"kind\\\":\\\"request\\\",\\\"code\\\":\\\"LL\\\",\\\"state\\\":\\\"pending\\\",\\\"ord\\\":1024,\\\"pid\\\":\\\"nact\\\",\\\"date\\\":\\\"2026-01-27\\\"}\",\"now\":{\"id\":\"rmunvvzc11m4gv\",\"kind\":\"request\",\"code\":\"LL\",\"state\":\"pending\",\"ord\":1024,\"pid\":\"nact\",\"date\":\"2026-01-29\"}}"
+  },
+  {
+   "name": "1c2 move a pending bid — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026 (the unsaved demo week's hidden row ids set aside)"
+  },
+  {
+   "name": "1c2 move a pending bid — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "1c2 move a pending bid — the war's boxes read the same after the reload",
+   "ok": true,
+   "detail": "{\"nact@2026-01-27\":\"\",\"nact@2026-01-29\":\"LL\"}"
+  },
+  {
+   "name": "1d Delete the leave on 15 Jan — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [settings/elog:munvw5h57zfi.000001] · del 1 [inputs/imunvvpf0j7rrqb] · batches lw.edit/2"
+  },
+  {
+   "name": "1d Delete the leave on 15 Jan — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [settings/elog:munvw5h57zfi.000001] · del 1 [inputs/imunvvpf0j7rrqb] · batches lw.edit/2"
+  },
+  {
+   "name": "1d — exactly the approved leave's request row removed, ONE batch",
+   "ok": true,
+   "detail": "{\"put\":[\"settings/elog:munvw5h57zfi.000001\"],\"del\":[\"inputs/imunvvpf0j7rrqb\"],\"batches\":[{\"key\":\"changes/cmunvwbqq840xrx-0\",\"type\":\"lw.edit\",\"actorId\":\"acad\",\"n\":2,\"seqs\":[0]}],\"ret\":{\"opened\":\"bid-picker\",\"buttons\":[\"bid-cancel:✕\",\"span-one:Just this day\",\"span-range:Pick a range\",\"decide-ack:Ack\",\"decide-approve:Approve\",\"decide-refuse:Refuse\",\"decide-shift:⇄Move\",\"bid-clear:Delete\",\"portion-full:Whole day\",\"portion-am:AM\",\"portion-pm:PM\",\"bid-LL:LL\",\"bid-OL:OL\",\"bid-OIL:OIL\",\"bid-CCL:CCL\",\"bid-FCL:FCL\",\"bid-PL:PL\",\"bid-EL:EL\",\"bid-CL:CL\",\"bid-oil:+OIL\",\"bid-postout:PO\",\"bid-postin:PI\"],\"asked\":null,\"after\":\"nothing\"}}"
+  },
+  {
+   "name": "1d delete — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026 (the unsaved demo week's hidden row ids set aside)"
+  },
+  {
+   "name": "1d delete — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "1d delete — the war's boxes read the same after the reload",
+   "ok": true,
+   "detail": "{\"dice@2026-01-13\":\"\",\"dice@2026-01-15\":\"\"}"
+  },
+  {
+   "name": "2a a morning of LL on Anvil, 20 Jan — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [leavewar/rec:y2026:rmunvwm4m1v817] · del 0 [] · batches lw.edit/1"
+  },
+  {
+   "name": "2a a morning of LL on Anvil, 20 Jan — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [leavewar/rec:y2026:rmunvwm4m1v817] · del 0 [] · batches lw.edit/1"
+  },
+  {
+   "name": "2a an afternoon of LL beside it — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [leavewar/rec:y2026:rmunvwpdq2ufuq] · del 0 [] · batches lw.edit/1"
+  },
+  {
+   "name": "2a an afternoon of LL beside it — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [leavewar/rec:y2026:rmunvwpdq2ufuq] · del 0 [] · batches lw.edit/1"
+  },
+  {
+   "name": "2a — each half its own record row (two rows at one person and date)",
+   "ok": true,
+   "detail": "{\"first\":[\"leavewar/rec:y2026:rmunvwm4m1v817\"],\"second\":[\"leavewar/rec:y2026:rmunvwpdq2ufuq\"],\"ret\":{\"opened\":\"bid-picker\",\"buttons\":[\"bid-cancel:✕\",\"span-one:Just this day\",\"span-range:Pick a range\",\"decide-ack:Ack\",\"decide-approve:Approve\",\"decide-refuse:Refuse\",\"decide-shift:⇄Move\",\"bid-clear:Delete\",\"portion-full:Whole day\",\"portion-am:AM\",\"portion-pm:PM\",\"bid-LL:LL\",\"bid-OL:OL\",\"bid-OIL:OIL\",\"bid-CCL:CCL\",\"bid-FCL:FCL\",\"bid-PL:PL\",\"bid-EL:EL\",\"bid-CL:CL\",\"bid-oil:+OIL\",\"bid-postout:PO\",\"bid-postin:PI\"],\"text\":\"Anvil Tue 20 Jan NOW <LL ✕ HOW MANY Just this day Pick a range DECIDE Ack Approve Refuse SELECTED ⇄Move Delete HOW MUCH Whole day AM PM WHICH LEAVE LL OL OIL CCL FCL PL EL CL +OIL PO PI\"}}"
+  },
+  {
+   "name": "2a two halves — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026 (the unsaved demo week's hidden row ids set aside)"
+  },
+  {
+   "name": "2a two halves — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "2a two halves — the war's boxes read the same after the reload",
+   "ok": true,
+   "detail": "{\"shaft@2026-01-20\":\"<LL +1\"}"
+  },
+  {
+   "name": "2a — the day's list: two lines, in the same order after the reload",
+   "ok": true,
+   "detail": "{\"open\":\"daylist-sheet\",\"before\":[\"<LL — local leave, morning · bid, not decided yet Ack Approve Refuse ⇄Move Delete\",\"LL> — local leave, afternoon · bid, not decided yet Ack Approve Refuse ⇄Move Delete\"],\"after\":[\"<LL — local leave, morning · bid, not decided yet Ack Approve Refuse ⇄Move Delete\",\"LL> — local leave, afternoon · bid, not decided yet Ack Approve Refuse ⇄Move Delete\"],\"stored\":[{\"key\":\"leavewar/rec:y2026:rmunvwm4m1v817\",\"code\":\"*LL\",\"ord\":1024},{\"key\":\"leavewar/rec:y2026:rmunvwpdq2ufuq\",\"code\":\"LL*\",\"ord\":2048}]}"
+  },
+  {
+   "name": "2b on the day's list, Delete the first line — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [settings/elog:munvws4fchts.000001] · del 1 [leavewar/rec:y2026:rmunvwm4m1v817] · batches lw.edit/2"
+  },
+  {
+   "name": "2b on the day's list, Delete the first line — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [settings/elog:munvws4fchts.000001] · del 1 [leavewar/rec:y2026:rmunvwm4m1v817] · batches lw.edit/2"
+  },
+  {
+   "name": "2b — the first record's row removed, the second's row not rewritten (same bytes, same place)",
+   "ok": true,
+   "detail": "{\"first\":\"leavewar/rec:y2026:rmunvwm4m1v817\",\"second\":\"leavewar/rec:y2026:rmunvwpdq2ufuq\",\"put\":[\"settings/elog:munvws4fchts.000001\"],\"del\":[\"leavewar/rec:y2026:rmunvwm4m1v817\"],\"ret\":{\"opened\":\"daylist-sheet\",\"lines0\":[\"<LL — local leave, morning · bid, not decided yet Ack Approve Refuse ⇄Move Delete\",\"LL> — local leave, afternoon · bid, not decided yet Ack Approve Refuse ⇄Move Delete\"],\"buttons\":[\"daylist-close:✕\",\"dl-ack-rmunvwm4m1v817:Ack\",\"dl-approve-rmunvwm4m1v817:Approve\",\"dl-refuse-rmunvwm4m1v817:Refuse\",\"dl-move-rmunvwm4m1v817:⇄Move\",\"dl-clear-rmunvwm4m1v817:Delete\",\"dl-ack-rmunvwpdq2ufuq:Ack\",\"dl-approve-rmunvwpdq2ufuq:Approve\",\"dl-refuse-rmunvwpdq2ufuq:Refuse\",\"dl-move-rmunvwpdq2ufuq:⇄Move\",\"dl-clear-rmunvwpdq2ufuq:Delete\"],\"pressed\":\"dl-clear-rmunvwm4m1v817\",\"lines\":[]}}"
+  },
+  {
+   "name": "2b delete the first — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026 (the unsaved demo week's hidden row ids set aside)"
+  },
+  {
+   "name": "2b delete the first — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "2b delete the first — the war's boxes read the same after the reload",
+   "ok": true,
+   "detail": "{\"shaft@2026-01-20\":\"LL>\"}"
+  },
+  {
+   "name": "2c an OIL award by hand on Cinch, 22 Jan (+OIL, 1 day) — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 2 [leavewar/ledger:ol-munvx6kb1omzu, settings/elog:munvx00yfebu.000001] · del 0 [] · batches lw.award/2"
+  },
+  {
+   "name": "2c an OIL award by hand on Cinch, 22 Jan (+OIL, 1 day) — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 2 [leavewar/ledger:ol-munvx6kb1omzu, settings/elog:munvx00yfebu.000001] · del 0 [] · batches lw.award/2"
+  },
+  {
+   "name": "2c an LL bid beside the award — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [leavewar/rec:y2026:rmunvx9ad2xlks] · del 0 [] · batches lw.edit/1"
+  },
+  {
+   "name": "2c an LL bid beside the award — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [leavewar/rec:y2026:rmunvx9ad2xlks] · del 0 [] · batches lw.edit/1"
+  },
+  {
+   "name": "2c bid beside award — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026 (the unsaved demo week's hidden row ids set aside)"
+  },
+  {
+   "name": "2c bid beside award — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "2c bid beside award — the war's boxes read the same after the reload",
+   "ok": true,
+   "detail": "{\"snap@2026-01-22\":\"FO +1\"}"
+  },
+  {
+   "name": "2c — the day's list: the award and the bid, same order after the reload",
+   "ok": true,
+   "detail": "{\"open\":\"daylist-sheet\",\"before\":[\"FO — OIL award (W3 two-record day) Edit… Delete\",\"LL — local leave · bid, not decided yet Ack Approve Refuse ⇄Move Delete\"],\"after\":[\"FO — OIL award (W3 two-record day) Edit… Delete\",\"LL — local leave · bid, not decided yet Ack Approve Refuse ⇄Move Delete\"]}"
+  },
+  {
+   "name": "2d on the day's list, Delete the first line (the award) — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [settings/elog:munvxc0rqi05.000001] · del 1 [leavewar/ledger:ol-munvx6kb1omzu] · batches lw.award/2"
+  },
+  {
+   "name": "2d on the day's list, Delete the first line (the award) — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [settings/elog:munvxc0rqi05.000001] · del 1 [leavewar/ledger:ol-munvx6kb1omzu] · batches lw.award/2"
+  },
+  {
+   "name": "2d — the bid's row untouched (same bytes)",
+   "ok": true,
+   "detail": "{\"bid\":\"leavewar/rec:y2026:rmunvx9ad2xlks\",\"put\":[\"settings/elog:munvxc0rqi05.000001\"],\"del\":[\"leavewar/ledger:ol-munvx6kb1omzu\"],\"ret\":{\"lines0\":[\"FO — OIL award (W3 two-record day) Edit… Delete\",\"LL — local leave · bid, not decided yet Ack Approve Refuse ⇄Move Delete\"],\"buttons\":[\"daylist-close:✕\",\"dl-oil-edit-ol-munvx6kb1omzu:Edit…\",\"dl-clear-ol-munvx6kb1omzu:Delete\",\"dl-ack-rmunvx9ad2xlks:Ack\",\"dl-approve-rmunvx9ad2xlks:Approve\",\"dl-refuse-rmunvx9ad2xlks:Refuse\",\"dl-move-rmunvx9ad2xlks:⇄Move\",\"dl-clear-rmunvx9ad2xlks:Delete\"],\"pressed\":\"dl-clear-ol-munvx6kb1omzu\",\"lines\":[],\"after\":\"bid-picker\"}}"
+  },
+  {
+   "name": "2d delete award — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026 (the unsaved demo week's hidden row ids set aside)"
+  },
+  {
+   "name": "2d delete award — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "2d delete award — the war's boxes read the same after the reload",
+   "ok": true,
+   "detail": "{\"snap@2026-01-22\":\"LL\"}"
+  },
+  {
+   "name": "3a +OIL by hand on Piston, 5 Feb (1 day) — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 2 [leavewar/ledger:ol-munvxruv1cfkq, settings/elog:munvxjrvfmob.000001] · del 0 [] · batches lw.award/2"
+  },
+  {
+   "name": "3a +OIL by hand on Piston, 5 Feb (1 day) — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 2 [leavewar/ledger:ol-munvxruv1cfkq, settings/elog:munvxjrvfmob.000001] · del 0 [] · batches lw.award/2"
+  },
+  {
+   "name": "3a — the award is ONE row (plus its history line)",
+   "ok": true,
+   "detail": "{\"put\":[\"leavewar/ledger:ol-munvxruv1cfkq\",\"settings/elog:munvxjrvfmob.000001\"],\"del\":[]}"
+  },
+  {
+   "name": "3a +OIL by hand — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026 (the unsaved demo week's hidden row ids set aside)"
+  },
+  {
+   "name": "3a +OIL by hand — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "3a +OIL by hand — the war's boxes read the same after the reload",
+   "ok": true,
+   "detail": "{\"pump@2026-02-05\":\"FO\"}"
+  },
+  {
+   "name": "3a — the award shows on its date after the reload (D402)",
+   "ok": true,
+   "detail": "{\"pump@2026-02-05\":{\"text\":\"FO\",\"cls\":\"duty act\",\"mark\":\"\"}}"
+  },
+  {
+   "name": "3b the OIL tracker: credit Sidewinder 1 day (today) — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 2 [leavewar/ledger:ol-munvy3bu1s9i7, settings/elog:munvxv1ud2s4.000001] · del 0 [] · batches lw.award/2"
+  },
+  {
+   "name": "3b the OIL tracker: credit Sidewinder 1 day (today) — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 2 [leavewar/ledger:ol-munvy3bu1s9i7, settings/elog:munvxv1ud2s4.000001] · del 0 [] · batches lw.award/2"
+  },
+  {
+   "name": "3b — the credit is ONE ledger row",
+   "ok": true,
+   "detail": "{\"put\":[\"leavewar/ledger:ol-munvy3bu1s9i7\",\"settings/elog:munvxv1ud2s4.000001\"],\"ret\":{\"err\":[],\"bal\":\"1\"}}"
+  },
+  {
+   "name": "3b tracker credit — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026 (the unsaved demo week's hidden row ids set aside)"
+  },
+  {
+   "name": "3b tracker credit — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "3b tracker credit — the war's boxes read the same after the reload",
+   "ok": true,
+   "detail": "{\"mamba@2026-09-30\":\"FO\"}"
+  },
+  {
+   "name": "3b — the tracker's award shows on its date on the grid after the reload (D402)",
+   "ok": true,
+   "detail": "{\"mamba@2026-09-30\":{\"text\":\"FO\",\"cls\":\"duty act\",\"mark\":\"\"}}"
+  },
+  {
+   "name": "10-prep a bid for Ranger, 10 Feb (by the admin) — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [leavewar/rec:y2026:rmunvydt314oih] · del 0 [] · batches lw.edit/1"
+  },
+  {
+   "name": "10-prep a bid for Ranger, 10 Feb (by the admin) — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [leavewar/rec:y2026:rmunvydt314oih] · del 0 [] · batches lw.edit/1"
+  },
+  {
+   "name": "10-prep Approve it — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 2 [inputs/imunvyfxrdctn2q, settings/elog:munvy718b8li.000001] · del 1 [leavewar/rec:y2026:rmunvydt314oih] · batches lw.decide/3"
+  },
+  {
+   "name": "10-prep Approve it — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 2 [inputs/imunvyfxrdctn2q, settings/elog:munvy718b8li.000001] · del 1 [leavewar/rec:y2026:rmunvydt314oih] · batches lw.decide/3"
+  },
+  {
+   "name": "4a stage move OPEN FOR BIDDING → next — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [leavewar/war:y2026] · del 0 [] · batches lw.stage/1"
+  },
+  {
+   "name": "4a stage move OPEN FOR BIDDING → next — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [leavewar/war:y2026] · del 0 [] · batches lw.stage/1"
+  },
+  {
+   "name": "4a — the stage shows /CLOSED/i",
+   "ok": true,
+   "detail": "{\"pressed\":true,\"label\":\"→ BIDDING CLOSED\",\"now\":\"BIDDING CLOSED\"}"
+  },
+  {
+   "name": "4a — the war's own row written, and only it among the wars",
+   "ok": true,
+   "detail": "{\"put\":[\"leavewar/war:y2026\"],\"del\":[]}"
+  },
+  {
+   "name": "4a stage — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026 (the unsaved demo week's hidden row ids set aside)"
+  },
+  {
+   "name": "4a stage — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "4a stage — the war's boxes read the same after the reload",
+   "ok": true,
+   "detail": "{\"bane@2026-02-10\":\"LL\",\"dice@2026-01-13\":\"\"}"
+  },
+  {
+   "name": "4a — after the reload the stage still /CLOSED/i",
+   "ok": true,
+   "detail": "BIDDING CLOSED"
+  },
+  {
+   "name": "4b stage move BIDDING CLOSED → next — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [leavewar/war:y2026] · del 0 [] · batches lw.stage/1"
+  },
+  {
+   "name": "4b stage move BIDDING CLOSED → next — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [leavewar/war:y2026] · del 0 [] · batches lw.stage/1"
+  },
+  {
+   "name": "4b — the stage shows /PUBLISHED/i",
+   "ok": true,
+   "detail": "{\"pressed\":true,\"label\":\"→ PUBLISHED\",\"now\":\"PUBLISHED\"}"
+  },
+  {
+   "name": "4b — the war's own row written, and only it among the wars",
+   "ok": true,
+   "detail": "{\"put\":[\"leavewar/war:y2026\"],\"del\":[]}"
+  },
+  {
+   "name": "4b stage — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026 (the unsaved demo week's hidden row ids set aside)"
+  },
+  {
+   "name": "4b stage — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "4b stage — the war's boxes read the same after the reload",
+   "ok": true,
+   "detail": "{\"bane@2026-02-10\":\"LL\",\"dice@2026-01-13\":\"\"}"
+  },
+  {
+   "name": "4b — after the reload the stage still /PUBLISHED/i",
+   "ok": true,
+   "detail": "PUBLISHED"
+  },
+  {
+   "name": "10 Ranger (member) taps his approved leave, edits its note, Save — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 2 [inputs/imunvyfxrdctn2q, settings/elog:munvyvc3jx72.000001] · del 0 [] · batches inputs.batch/2"
+  },
+  {
+   "name": "10 Ranger (member) taps his approved leave, edits its note, Save — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 2 [inputs/imunvyfxrdctn2q, settings/elog:munvyvc3jx72.000001] · del 0 [] · batches inputs.batch/2"
+  },
+  {
+   "name": "10 — the note is on the request row (inputs), and the war's rows were not written",
+   "ok": true,
+   "detail": "{\"stage\":\"PUBLISHED\",\"put\":[\"inputs/imunvyfxrdctn2q\",\"settings/elog:munvyvc3jx72.000001\"],\"remarks\":\"W3 member note after publish\",\"ret\":{\"opened\":\"remarks-sheet\",\"buttons\":[\"remarks-cancel:✕\",\"remarks-save:Save\"]}}"
+  },
+  {
+   "name": "10 member remarks — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026 (the unsaved demo week's hidden row ids set aside)"
+  },
+  {
+   "name": "10 member remarks — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "10 member remarks — the war's boxes read the same after the reload",
+   "ok": true,
+   "detail": "{\"bane@2026-02-10\":\"LL\"}"
+  },
+  {
+   "name": "part A — no console errors, page errors, failed requests or native dialogs",
+   "ok": true,
+   "detail": "[]"
+  }
+ ],
+ "table": [
+  {
+   "step": "A0 first boot",
+   "width": "desktop",
+   "did": "fresh world, signed in as Saber",
+   "screen": "—",
+   "rows": "by collection {\"leavewar\":91,\"people\":61,\"inputs\":46,\"settings\":1,\"changes\":1}; batches boot/199",
+   "ok": true,
+   "pics": []
+  },
+  {
+   "step": "1a bid",
+   "width": "desktop",
+   "did": "tapped Reaper 13 Jan, LL (Whole day)",
+   "screen": "{\"dice@2026-01-13\":{\"text\":\"LL\",\"cls\":\"act\",\"mark\":\"\"}}",
+   "rows": "put 1 [leavewar/rec:y2026:rmunvv64g12trl] · batches lw.edit/1",
+   "ok": true,
+   "pics": [
+    "A-1a-bid-placed.png",
+    "A-1a-after-reload.png"
+   ]
+  },
+  {
+   "step": "1b approve",
+   "width": "desktop",
+   "did": "tapped the bid, Approve",
+   "screen": "{\"dice@2026-01-13\":{\"text\":\"LL\",\"cls\":\"act\",\"mark\":\"\"}}",
+   "rows": "put 2 [inputs/imunvvfc20a6s12, settings/elog:munvv993hjja.000001] · del 1 [leavewar/rec:y2026:rmunvv64g12trl] · batches lw.decide/3",
+   "ok": true,
+   "pics": [
+    "A-1b-approved.png",
+    "A-1b-after-reload.png"
+   ]
+  },
+  {
+   "step": "1c move",
+   "width": "desktop",
+   "did": "tapped the leave, ⇄ Move, clicked Thu 15 Jan",
+   "screen": "{\"dice@2026-01-13\":{\"text\":\"\",\"cls\":\"act\",\"mark\":\"\"},\"dice@2026-01-15\":{\"text\":\"LL\",\"cls\":\"act\",\"mark\":\"\"}}",
+   "rows": "put 2 [inputs/imunvvpf0j7rrqb, settings/elog:munvvifsjtdv.000001] · del 1 [inputs/imunvvfc20a6s12] · batches lw.move/3",
+   "ok": true,
+   "pics": [
+    "A-1c-moved.png",
+    "A-1c-after-reload.png"
+   ]
+  },
+  {
+   "step": "1c2 move a pending bid",
+   "width": "desktop",
+   "did": "Warden 27 Jan LL; tapped it, ⇄ Move, clicked Thu 29 Jan",
+   "screen": "{\"nact@2026-01-27\":{\"text\":\"\",\"cls\":\"act\",\"mark\":\"\"},\"nact@2026-01-29\":{\"text\":\"LL\",\"cls\":\"act\",\"mark\":\"\"}}",
+   "rows": "put 1 [leavewar/rec:y2026:rmunvvzc11m4gv] · batches lw.edit/1 || put 2 [leavewar/rec:y2026:rmunvvzc11m4gv, settings/elog:munvvskelrqs.000001] · batches lw.move/2",
+   "ok": true,
+   "pics": [
+    "A-1c2-moved.png",
+    "A-1c2-after-reload.png"
+   ]
+  },
+  {
+   "step": "1d delete",
+   "width": "desktop",
+   "did": "tapped the leave, Delete",
+   "screen": "{\"dice@2026-01-13\":{\"text\":\"\",\"cls\":\"act\",\"mark\":\"\"},\"dice@2026-01-15\":{\"text\":\"\",\"cls\":\"act\",\"mark\":\"\"}}",
+   "rows": "put 1 [settings/elog:munvw5h57zfi.000001] · del 1 [inputs/imunvvpf0j7rrqb] · batches lw.edit/2",
+   "ok": true,
+   "pics": [
+    "A-1d-deleted.png",
+    "A-1d-after-reload.png"
+   ]
+  },
+  {
+   "step": "2a two halves",
+   "width": "desktop",
+   "did": "Anvil 20 Jan: Morning LL, then Afternoon LL; opened the day's list",
+   "screen": "list after reload: [\"<LL — local leave, morning · bid, not decided yet Ack Approve Refuse ⇄Move Delete\",\"LL> — local leave, afternoon · bid, not decided yet Ack Approve Refuse ⇄Move Delete\"]",
+   "rows": "put 1 [leavewar/rec:y2026:rmunvwm4m1v817] · batches lw.edit/1 || put 1 [leavewar/rec:y2026:rmunvwpdq2ufuq] · batches lw.edit/1",
+   "ok": true,
+   "pics": [
+    "A-2a-daylist-before-reload.png",
+    "A-2a-daylist-after-reload.png"
+   ]
+  },
+  {
+   "step": "2b delete first of two",
+   "width": "desktop",
+   "did": "the day's list, Delete on the first line",
+   "screen": "cell {\"shaft@2026-01-20\":{\"text\":\"LL>\",\"cls\":\"act\",\"mark\":\"\"}}; tap opens bid-picker []",
+   "rows": "put 1 [settings/elog:munvws4fchts.000001] · del 1 [leavewar/rec:y2026:rmunvwm4m1v817] · batches lw.edit/2",
+   "ok": true,
+   "pics": [
+    "A-2b-daylist-after-delete.png",
+    "A-2b-after-reload.png"
+   ]
+  },
+  {
+   "step": "2c bid beside an award",
+   "width": "desktop",
+   "did": "Cinch 22 Jan: +OIL 1 day, then LL",
+   "screen": "list after reload [\"FO — OIL award (W3 two-record day) Edit… Delete\",\"LL — local leave · bid, not decided yet Ack Approve Refuse ⇄Move Delete\"]",
+   "rows": "put 2 [leavewar/ledger:ol-munvx6kb1omzu, settings/elog:munvx00yfebu.000001] · batches lw.award/2 || put 1 [leavewar/rec:y2026:rmunvx9ad2xlks] · batches lw.edit/1",
+   "ok": true,
+   "pics": [
+    "A-2c-list-before-reload.png",
+    "A-2c-list-after-reload.png"
+   ]
+  },
+  {
+   "step": "2d delete the first (award)",
+   "width": "desktop",
+   "did": "the day's list, Delete on its first line",
+   "screen": "{\"snap@2026-01-22\":{\"text\":\"LL\",\"cls\":\"act\",\"mark\":\"\"}}",
+   "rows": "put 1 [settings/elog:munvxc0rqi05.000001] · del 1 [leavewar/ledger:ol-munvx6kb1omzu] · batches lw.award/2",
+   "ok": true,
+   "pics": [
+    "A-2d-after-delete.png",
+    "A-2d-after-reload.png"
+   ]
+  },
+  {
+   "step": "3a +OIL by hand",
+   "width": "desktop",
+   "did": "Piston 5 Feb: +OIL, 1 day, a reason, Give",
+   "screen": "{\"pump@2026-02-05\":{\"text\":\"FO\",\"cls\":\"duty act\",\"mark\":\"\"}}",
+   "rows": "put 2 [leavewar/ledger:ol-munvxruv1cfkq, settings/elog:munvxjrvfmob.000001] · batches lw.award/2",
+   "ok": true,
+   "pics": [
+    "A-3a-award.png",
+    "A-3a-after-reload.png"
+   ]
+  },
+  {
+   "step": "3b OIL tracker credit",
+   "width": "desktop",
+   "did": "OIL tracker, tapped Sidewinder, 1 day, reason, Save",
+   "screen": "{\"mamba@2026-09-30\":{\"text\":\"FO\",\"cls\":\"duty act\",\"mark\":\"\"}}",
+   "rows": "put 2 [leavewar/ledger:ol-munvy3bu1s9i7, settings/elog:munvxv1ud2s4.000001] · batches lw.award/2",
+   "ok": true,
+   "pics": [
+    "A-3b-tracker-form.png",
+    "A-3b-tracker-after-save.png",
+    "A-3b-grid-today.png",
+    "A-3b-after-reload.png"
+   ]
+  },
+  {
+   "step": "10-prep",
+   "width": "desktop",
+   "did": "bid for Ranger 10 Feb, Approve",
+   "screen": "(reload in step 4)",
+   "rows": "put 1 [leavewar/rec:y2026:rmunvydt314oih] · batches lw.edit/1 || put 2 [inputs/imunvyfxrdctn2q, settings/elog:munvy718b8li.000001] · del 1 [leavewar/rec:y2026:rmunvydt314oih] · batches lw.decide/3",
+   "ok": true,
+   "pics": []
+  },
+  {
+   "step": "4a stage move",
+   "width": "desktop",
+   "did": "OPEN FOR BIDDING → BIDDING CLOSED",
+   "screen": "stage BIDDING CLOSED; {\"bane@2026-02-10\":{\"text\":\"LL\",\"cls\":\"act\",\"mark\":\"\"},\"dice@2026-01-13\":{\"text\":\"\",\"cls\":\"act\",\"mark\":\"\"}}",
+   "rows": "put 1 [leavewar/war:y2026] · batches lw.stage/1",
+   "ok": true,
+   "pics": [
+    "A-4a-stage.png",
+    "A-4a-after-reload.png"
+   ]
+  },
+  {
+   "step": "4b stage move",
+   "width": "desktop",
+   "did": "BIDDING CLOSED → PUBLISHED",
+   "screen": "stage PUBLISHED; {\"bane@2026-02-10\":{\"text\":\"LL\",\"cls\":\"act\",\"mark\":\"\"},\"dice@2026-01-13\":{\"text\":\"\",\"cls\":\"act\",\"mark\":\"\"}}",
+   "rows": "put 1 [leavewar/war:y2026] · batches lw.stage/1",
+   "ok": true,
+   "pics": [
+    "A-4b-stage.png",
+    "A-4b-after-reload.png"
+   ]
+  },
+  {
+   "step": "10 member remarks (published)",
+   "width": "desktop",
+   "did": "Ranger signed in; stage PUBLISHED; tapped his leave 10 Feb, typed a note, Save",
+   "screen": "{\"bane@2026-02-10\":{\"text\":\"LL\",\"cls\":\"locked act\",\"mark\":\"\"}}; tap opens remarks-sheet Ranger 10 Feb LL ✕ REMARKS Save",
+   "rows": "put 2 [inputs/imunvyfxrdctn2q, settings/elog:munvyvc3jx72.000001] · batches inputs.batch/2",
+   "ok": true,
+   "pics": [
+    "A-10-remarks-sheet.png",
+    "A-10-after-reload.png"
+   ]
+  }
+ ],
+ "notes": {
+  "moveInput": {
+   "from": "inputs/imunvvfc20a6s12",
+   "to": "inputs/imunvvpf0j7rrqb"
+  },
+  "halves": [
+   {
+    "key": "leavewar/rec:y2026:rmunvwm4m1v817",
+    "code": "*LL",
+    "ord": 1024
+   },
+   {
+    "key": "leavewar/rec:y2026:rmunvwpdq2ufuq",
+    "code": "LL*",
+    "ord": 2048
+   }
+  ],
+  "awardRows": [
+   "leavewar/ledger:ol-munvx6kb1omzu",
+   "settings/elog:munvx00yfebu.000001"
+  ],
+  "rangerIid": "inputs/imunvyfxrdctn2q",
+  "stage0": {
+   "put": [
+    "leavewar/war:y2026"
+   ],
+   "del": []
+  },
+  "stage1": {
+   "put": [
+    "leavewar/war:y2026"
+   ],
+   "del": []
+  }
+ },
+ "errors": []
+}

@@ -1,0 +1,1169 @@
+{
+ "base": "http://localhost:4201",
+ "at": "2026-09-30T08:38:08.466Z",
+ "results": [
+  {
+   "name": "W1.5a Saturday: the four sign-off boxes signed on Edit Schedule (the week's first save) — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 12 [settings/elog:munupvvcrvvs.000001, settings/elog:munupvvcrvvs.000002, settings/elog:munupvvcrvvs.000003, settings/elog:munupvvcrvvs.000004, weeks/13-07-2026, weeks/13-07-2026#0, weeks/13-07-2026#1, weeks/13-07-2026#2 …] · del 0 [] · batches sched.sign/9 sched.sign/2 sched.sign/2 sched.sign/2"
+  },
+  {
+   "name": "W1.5a Saturday: the four sign-off boxes signed on Edit Schedule (the week's first save) — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 12 [settings/elog:munupvvcrvvs.000001, settings/elog:munupvvcrvvs.000002, settings/elog:munupvvcrvvs.000003, settings/elog:munupvvcrvvs.000004, weeks/13-07-2026, weeks/13-07-2026#0, weeks/13-07-2026#1, weeks/13-07-2026#2 …] · del 0 [] · batches sched.sign/9 sched.sign/2 sched.sign/2 sched.sign/2"
+  },
+  {
+   "name": "W1.5a — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "W1.5a — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "W1.5a the four names are still in their boxes after the reload",
+   "ok": true,
+   "detail": "tag \"DRAFT\" · pending \"4 changes\" · signs [Ace | Anvil | Anvil | Anvil] · signed line \"\" · buttons: publish on  "
+  },
+  {
+   "name": "W1.5b Saturday: Publish day (the Original) — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 4 [leavewar/rec:y2026:cmunuq19h1nw2c, settings/elog:munupz6w1pqi.000001, weeks/13-07-2026#5, weeks/13-07-2026:is:2026-07-18#0~0] · del 0 [] · batches sched.approve/4"
+  },
+  {
+   "name": "W1.5b Saturday: Publish day (the Original) — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 4 [leavewar/rec:y2026:cmunuq19h1nw2c, settings/elog:munupz6w1pqi.000001, weeks/13-07-2026#5, weeks/13-07-2026:is:2026-07-18#0~0] · del 0 [] · batches sched.approve/4"
+  },
+  {
+   "name": "W1.5b — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "W1.5b — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "W1.5b after the reload: Saturday wears the ORIG seal and the four names on its signed line",
+   "ok": true,
+   "detail": "tag \"ORIG\" · pending \"5 changes\" · signs [— name — | — name — | — name — | — name —] · signed line \"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\" · buttons: publish none  · \"Unpublish\""
+  },
+  {
+   "name": "W1.5b after the reload: View-only Sched shows Saturday's signed line with the four names",
+   "ok": true,
+   "detail": "{\"line\":\"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\",\"tag\":\"ORIG\"}"
+  },
+  {
+   "name": "W1.5c Sunday: a day note typed (Saturday is published) — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 2 [settings/elog:munuq31nuslj.000001, weeks/13-07-2026#6] · del 0 [] · batches sched.text/1 elog.line/1"
+  },
+  {
+   "name": "W1.5c Sunday: a day note typed (Saturday is published) — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 2 [settings/elog:munuq31nuslj.000001, weeks/13-07-2026#6] · del 0 [] · batches sched.text/1 elog.line/1"
+  },
+  {
+   "name": "W1.5c — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "W1.5c — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "W1.5c Saturday's stored row is byte-for-byte untouched by Sunday's edit and its reload",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "W1.5d published Saturday: the four signed again (ready for the next version) — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 5 [settings/elog:munuq7xfrq1g.000001, settings/elog:munuq7xfrq1g.000002, settings/elog:munuq7xfrq1g.000003, settings/elog:munuq7xfrq1g.000004, weeks/13-07-2026#5] · del 0 [] · batches sched.sign/2 sched.sign/2 sched.sign/2 sched.sign/2"
+  },
+  {
+   "name": "W1.5d published Saturday: the four signed again (ready for the next version) — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 5 [settings/elog:munuq7xfrq1g.000001, settings/elog:munuq7xfrq1g.000002, settings/elog:munuq7xfrq1g.000003, settings/elog:munuq7xfrq1g.000004, weeks/13-07-2026#5] · del 0 [] · batches sched.sign/2 sched.sign/2 sched.sign/2 sched.sign/2"
+  },
+  {
+   "name": "W1.5d — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "W1.5d — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "W1.5e published Saturday: its day note edited → \"1 pending\", the four fall — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 2 [settings/elog:munuqc2lajcj.000001, weeks/13-07-2026#5] · del 0 [] · batches sched.text/1 elog.line/1"
+  },
+  {
+   "name": "W1.5e published Saturday: its day note edited → \"1 pending\", the four fall — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 2 [settings/elog:munuqc2lajcj.000001, weeks/13-07-2026#5] · del 0 [] · batches sched.text/1 elog.line/1"
+  },
+  {
+   "name": "W1.5e — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "W1.5e — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "W1.5e after the reload: \"1 pending\" and the four sign-offs fell (D103)",
+   "ok": true,
+   "detail": "tag \"ORIG\" · pending \"1 pending\" · signs [— name — | — name — | — name — | — name —] · signed line \"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\" · Not yet signed · buttons: publish none · \"Publish AL1\" · \"Unpublish\""
+  },
+  {
+   "name": "W1.5f Saturday: the four signed for AL1 — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 5 [settings/elog:munuqfuetkdi.000001, settings/elog:munuqfuetkdi.000002, settings/elog:munuqfuetkdi.000003, settings/elog:munuqfuetkdi.000004, weeks/13-07-2026#5] · del 0 [] · batches sched.sign/2 sched.sign/2 sched.sign/2 sched.sign/2"
+  },
+  {
+   "name": "W1.5f Saturday: the four signed for AL1 — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 5 [settings/elog:munuqfuetkdi.000001, settings/elog:munuqfuetkdi.000002, settings/elog:munuqfuetkdi.000003, settings/elog:munuqfuetkdi.000004, weeks/13-07-2026#5] · del 0 [] · batches sched.sign/2 sched.sign/2 sched.sign/2 sched.sign/2"
+  },
+  {
+   "name": "W1.5f — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "W1.5f — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "W1.5g Saturday: Publish AL1 — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 3 [settings/elog:munuqjz43tek.000001, weeks/13-07-2026#5, weeks/13-07-2026:is:2026-07-18#1~0] · del 0 [] · batches sched.publishAL/3"
+  },
+  {
+   "name": "W1.5g Saturday: Publish AL1 — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 3 [settings/elog:munuqjz43tek.000001, weeks/13-07-2026#5, weeks/13-07-2026:is:2026-07-18#1~0] · del 0 [] · batches sched.publishAL/3"
+  },
+  {
+   "name": "W1.5g — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "W1.5g — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "W1.5g after the reload: AL1 on Saturday, nothing pending, two issuance rows",
+   "ok": true,
+   "detail": "tag \"AL1\" · pending \"15 changes\" · signs [— name — | — name — | — name — | — name —] · signed line \"SIGNED AL1 CUR CKAnvil SKED CKBasher PLANNEDBasher APPROVEDBasher\" · buttons: publish none  · \"Unpublish\" · weeks/13-07-2026:is:2026-07-18#0~0, weeks/13-07-2026:is:2026-07-18#1~0"
+  },
+  {
+   "name": "W1.6a Saturday: Unpublish (AL1 withdrawn) — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 3 [settings/elog:munuqnteerge.000001, weeks/13-07-2026#5, weeks/13-07-2026:rx:2026-07-18#1~0] · del 0 [] · batches sched.unpublish/3"
+  },
+  {
+   "name": "W1.6a Saturday: Unpublish (AL1 withdrawn) — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 3 [settings/elog:munuqnteerge.000001, weeks/13-07-2026#5, weeks/13-07-2026:rx:2026-07-18#1~0] · del 0 [] · batches sched.unpublish/3"
+  },
+  {
+   "name": "W1.6a — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "W1.6a — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "W1.6a the issuance rows are untouched (never deleted, never rewritten)",
+   "ok": true,
+   "detail": "weeks/13-07-2026:is:2026-07-18#1~0, weeks/13-07-2026:is:2026-07-18#0~0"
+  },
+  {
+   "name": "W1.6a after the reload: the AL1 tag is gone (ORIG), the change pending again on the working copy",
+   "ok": true,
+   "detail": "tag \"ORIG\" · pending \"1 pending\" · signs [— name — | — name — | — name — | — name —] · signed line \"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\" · Not yet signed · buttons: publish none · \"Publish AL1\" · \"Unpublish\""
+  },
+  {
+   "name": "W1.6b Saturday: the four signed for the reissue (different names) — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 5 [settings/elog:munuqrnqoekz.000001, settings/elog:munuqrnqoekz.000002, settings/elog:munuqrnqoekz.000003, settings/elog:munuqrnqoekz.000004, weeks/13-07-2026#5] · del 0 [] · batches sched.sign/2 sched.sign/2 sched.sign/2 sched.sign/2"
+  },
+  {
+   "name": "W1.6b Saturday: the four signed for the reissue (different names) — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 5 [settings/elog:munuqrnqoekz.000001, settings/elog:munuqrnqoekz.000002, settings/elog:munuqrnqoekz.000003, settings/elog:munuqrnqoekz.000004, weeks/13-07-2026#5] · del 0 [] · batches sched.sign/2 sched.sign/2 sched.sign/2 sched.sign/2"
+  },
+  {
+   "name": "W1.6b — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "W1.6b — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "W1.6c Saturday: Publish AL1 again (the reissue) — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 3 [settings/elog:munuqvsfwctb.000001, weeks/13-07-2026#5, weeks/13-07-2026:is:2026-07-18#1~1] · del 0 [] · batches sched.publishAL/3"
+  },
+  {
+   "name": "W1.6c Saturday: Publish AL1 again (the reissue) — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 3 [settings/elog:munuqvsfwctb.000001, weeks/13-07-2026#5, weeks/13-07-2026:is:2026-07-18#1~1] · del 0 [] · batches sched.publishAL/3"
+  },
+  {
+   "name": "W1.6c — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "W1.6c — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "W1.6c a NEW issuance row (~1), the older rows untouched",
+   "ok": true,
+   "detail": "new weeks/13-07-2026:is:2026-07-18#1~1 · all weeks/13-07-2026:is:2026-07-18#0~0, weeks/13-07-2026:is:2026-07-18#1~0, weeks/13-07-2026:is:2026-07-18#1~1, weeks/13-07-2026:rx:2026-07-18#1~0"
+  },
+  {
+   "name": "W1.6c after the reload: AL1 shows once, the four names of the REISSUE on its signed line",
+   "ok": true,
+   "detail": "tag \"AL1\" · pending \"21 changes\" · signs [— name — | — name — | — name — | — name —] · signed line \"SIGNED AL1 CUR CKBasher SKED CKBolt PLANNEDBolt APPROVEDBolt\" · buttons: publish none  · \"Unpublish\" · chips [\"AL1\",\"AL1\"] · reissue signers {\"cur\":\"Basher\",\"sked\":\"Bolt\",\"plan\":\"Bolt\",\"appr\":\"Bolt\"} · first AL1 signers {\"cur\":\"Anvil\",\"sked\":\"Basher\",\"plan\":\"Basher\",\"appr\":\"Basher\"}"
+  },
+  {
+   "name": "W1.6c after the reload: the history keeps the Original, AL1, the Unpublish and the reissue",
+   "ok": true,
+   "detail": "[\"Signed · CUR CK · Ace (Saber)\",\"Signed · SKED CK · Anvil (Saber)\",\"Signed · PLANNED BY · Anvil (Saber)\",\"Signed · APPROVED BY · Anvil (Saber)\",\"Published — the Original (Saber)\",\"Signed · CUR CK · Ace (Saber)\",\"Signed · SKED CK · Anvil (Saber)\",\"Signed · PLANNED BY · Anvil (Saber)\",\"Signed · APPROVED BY · Anvil (Saber)\",\"Day note (Saber)\",\"Signed · CUR CK · Anvil (Saber)\",\"Signed · SKED CK · Basher (Saber)\",\"Signed · PLANNED BY · Basher (Saber)\",\"Signed · APPROVED BY · Basher (Saber)\",\"Published — AL1 (Saber)\",\"AL1 withdrawn (Saber)\",\"Signed · CUR CK · Basher (Saber)\",\"Signed · SKED CK · Bolt (Saber)\",\"Signed · PLANNED BY · Bolt (Saber)\",\"Signed · APPROVED BY · Bolt (Saber)\",\"Published — AL1 (Saber)\"]"
+  },
+  {
+   "name": "W1.6c View-only Sched: AL1 with the reissue's four names",
+   "ok": true,
+   "detail": "{\"line\":\"SIGNED AL1 CUR CKBasher SKED CKBolt PLANNEDBolt APPROVEDBolt\",\"tag\":\"AL1\"}"
+  },
+  {
+   "name": "W1.7a Saturday: Unpublish again (the reissued AL1 withdrawn) — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 3 [settings/elog:munuqzkyghra.000001, weeks/13-07-2026#5, weeks/13-07-2026:rx:2026-07-18#1~1] · del 0 [] · batches sched.unpublish/3"
+  },
+  {
+   "name": "W1.7a Saturday: Unpublish again (the reissued AL1 withdrawn) — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 3 [settings/elog:munuqzkyghra.000001, weeks/13-07-2026#5, weeks/13-07-2026:rx:2026-07-18#1~1] · del 0 [] · batches sched.unpublish/3"
+  },
+  {
+   "name": "W1.7a — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "W1.7a — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "W1.7b Saturday: signed and AL1 reissued (no reload — the Undo comes next) — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 7 [settings/elog:munur4nyfkhx.000001, settings/elog:munur4nyfkhx.000002, settings/elog:munur4nyfkhx.000003, settings/elog:munur4nyfkhx.000004, settings/elog:munur4nyfkhx.000005, weeks/13-07-2026#5, weeks/13-07-2026:is:2026-07-18#1~2] · del 0 [] · batches sched.sign/2 sched.sign/2 sched.sign/2 sched.sign/2 sched.publishAL/3"
+  },
+  {
+   "name": "W1.7b Saturday: signed and AL1 reissued (no reload — the Undo comes next) — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 7 [settings/elog:munur4nyfkhx.000001, settings/elog:munur4nyfkhx.000002, settings/elog:munur4nyfkhx.000003, settings/elog:munur4nyfkhx.000004, settings/elog:munur4nyfkhx.000005, weeks/13-07-2026#5, weeks/13-07-2026:is:2026-07-18#1~2] · del 0 [] · batches sched.sign/2 sched.sign/2 sched.sign/2 sched.sign/2 sched.publishAL/3"
+  },
+  {
+   "name": "W1.7c the top bar's ↶ Undo — the reissue taken back; then reload — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 2 [settings/elog:munur4nyfkhx.000006, weeks/13-07-2026#5] · del 1 [weeks/13-07-2026:is:2026-07-18#1~2] · batches undo.restore/3"
+  },
+  {
+   "name": "W1.7c the top bar's ↶ Undo — the reissue taken back; then reload — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 2 [settings/elog:munur4nyfkhx.000006, weeks/13-07-2026#5] · del 1 [weeks/13-07-2026:is:2026-07-18#1~2] · batches undo.restore/3"
+  },
+  {
+   "name": "W1.7c — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "W1.7c — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "W1.7c the Undo removed exactly the reissue's own issuance row (~2) and touched no other issuance or retraction",
+   "ok": true,
+   "detail": "removed weeks/13-07-2026:is:2026-07-18#1~2 · rewritten none"
+  },
+  {
+   "name": "W1.7c after the reload: the reissue is taken back — ORIG current, the AL1 change pending again",
+   "ok": true,
+   "detail": "tag \"ORIG\" · pending \"1 pending\" · signs [— name — | — name — | — name — | — name —] · signed line \"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\" · Not yet signed · buttons: publish none · \"Publish AL1\" · \"Unpublish\""
+  },
+  {
+   "name": "W1.7d Saturday: signed and AL1 reissued again (no reload) — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 7 [settings/elog:munurbkgcdms.000001, settings/elog:munurbkgcdms.000002, settings/elog:munurbkgcdms.000003, settings/elog:munurbkgcdms.000004, settings/elog:munurbkgcdms.000005, weeks/13-07-2026#5, weeks/13-07-2026:is:2026-07-18#1~2] · del 0 [] · batches sched.sign/2 sched.sign/2 sched.sign/2 sched.sign/2 sched.publishAL/3"
+  },
+  {
+   "name": "W1.7d Saturday: signed and AL1 reissued again (no reload) — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 7 [settings/elog:munurbkgcdms.000001, settings/elog:munurbkgcdms.000002, settings/elog:munurbkgcdms.000003, settings/elog:munurbkgcdms.000004, settings/elog:munurbkgcdms.000005, weeks/13-07-2026#5, weeks/13-07-2026:is:2026-07-18#1~2] · del 0 [] · batches sched.sign/2 sched.sign/2 sched.sign/2 sched.sign/2 sched.publishAL/3"
+  },
+  {
+   "name": "W1.7e the top bar's ↶ Undo (no reload — the Redo comes next) — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 2 [settings/elog:munurbkgcdms.000006, weeks/13-07-2026#5] · del 1 [weeks/13-07-2026:is:2026-07-18#1~2] · batches undo.restore/3"
+  },
+  {
+   "name": "W1.7e the top bar's ↶ Undo (no reload — the Redo comes next) — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 2 [settings/elog:munurbkgcdms.000006, weeks/13-07-2026#5] · del 1 [weeks/13-07-2026:is:2026-07-18#1~2] · batches undo.restore/3"
+  },
+  {
+   "name": "W1.7f the top bar's ↷ Redo — the reissue published again; then reload — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 3 [settings/elog:munurbkgcdms.000007, weeks/13-07-2026#5, weeks/13-07-2026:is:2026-07-18#1~2] · del 0 [] · batches undo.restore/3"
+  },
+  {
+   "name": "W1.7f the top bar's ↷ Redo — the reissue published again; then reload — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 3 [settings/elog:munurbkgcdms.000007, weeks/13-07-2026#5, weeks/13-07-2026:is:2026-07-18#1~2] · del 0 [] · batches undo.restore/3"
+  },
+  {
+   "name": "W1.7f — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "W1.7f — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "W1.7f the Redo put back exactly the one issuance row (~2) and touched no other",
+   "ok": true,
+   "detail": "added weeks/13-07-2026:is:2026-07-18#1~2 · changed none"
+  },
+  {
+   "name": "W1.7f after the reload: AL1 on Saturday, nothing pending",
+   "ok": true,
+   "detail": "tag \"AL1\" · pending \"35 changes\" · signs [— name — | — name — | — name — | — name —] · signed line \"SIGNED AL1 CUR CKAnvil SKED CKBasher PLANNEDBasher APPROVEDBasher\" · buttons: publish none  · \"Unpublish\""
+  },
+  {
+   "name": "W1.7f View-only Sched agrees: AL1 and a signed line",
+   "ok": true,
+   "detail": "{\"line\":\"SIGNED AL1 CUR CKAnvil SKED CKBasher PLANNEDBasher APPROVEDBasher\",\"tag\":\"AL1\"}"
+  },
+  {
+   "name": "W1.7g Saturday: Unpublish (no reload — the Undo comes next) — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 3 [settings/elog:munurk7l154t.000001, weeks/13-07-2026#5, weeks/13-07-2026:rx:2026-07-18#1~2] · del 0 [] · batches sched.unpublish/3"
+  },
+  {
+   "name": "W1.7g Saturday: Unpublish (no reload — the Undo comes next) — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 3 [settings/elog:munurk7l154t.000001, weeks/13-07-2026#5, weeks/13-07-2026:rx:2026-07-18#1~2] · del 0 [] · batches sched.unpublish/3"
+  },
+  {
+   "name": "W1.7h the top bar's ↶ Undo — the Unpublish taken back; then reload — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 2 [settings/elog:munurk7l154t.000002, weeks/13-07-2026#5] · del 1 [weeks/13-07-2026:rx:2026-07-18#1~2] · batches undo.restore/3"
+  },
+  {
+   "name": "W1.7h the top bar's ↶ Undo — the Unpublish taken back; then reload — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 2 [settings/elog:munurk7l154t.000002, weeks/13-07-2026#5] · del 1 [weeks/13-07-2026:rx:2026-07-18#1~2] · batches undo.restore/3"
+  },
+  {
+   "name": "W1.7h — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "W1.7h — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "W1.7h the Undo removed exactly the retraction it took back (~2) and touched no issuance",
+   "ok": true,
+   "detail": "removed weeks/13-07-2026:rx:2026-07-18#1~2 · rewritten none"
+  },
+  {
+   "name": "W1.7h after the reload: AL1 current again, nothing pending",
+   "ok": true,
+   "detail": "tag \"AL1\" · pending \"37 changes\" · signs [— name — | — name — | — name — | — name —] · signed line \"SIGNED AL1 CUR CKAnvil SKED CKBasher PLANNEDBasher APPROVEDBasher\" · buttons: publish none  · \"Unpublish\""
+  }
+ ],
+ "table": [
+  {
+   "step": "W1.5a",
+   "width": "1440",
+   "did": "Saturday: the four sign-off boxes signed on Edit Schedule (the week's first save)",
+   "pics": [
+    "W1.5a-1-after.png",
+    "W1.5a-2-reloaded.png"
+   ],
+   "shown": "tag \"DRAFT\" · pending \"4 changes\" · signs [Ace | Anvil | Anvil | Anvil] · signed line \"\" · buttons: publish on  ",
+   "rows": "put 12: settings/elog:munupvvcrvvs.000001, settings/elog:munupvvcrvvs.000002, settings/elog:munupvvcrvvs.000003, settings/elog:munupvvcrvvs.000004, weeks/13-07-2026, weeks/13-07-2026#0, weeks/13-07-2026#1, weeks/13-07-2026#2, weeks/13-07-2026#3, weeks/13-07-2026#4, weeks/13-07-2026#5, weeks/13-07-2026#6 · batches: sched.sign(EditLog+ScheduleWeek+ScheduleDay, 9 rows, 1 history line, by acad) + sched.sign(EditLog+ScheduleDay, 2 rows, 1 history line, by acad) + sched.sign(EditLog+ScheduleDay, 2 rows, 1 history line, by acad) + sched.sign(EditLog+ScheduleDay, 2 rows, 1 history line, by acad)",
+   "batches": [
+    {
+     "key": "changes/cmunupvx9o7y2ge-1",
+     "type": "sched.sign",
+     "actor": "acad",
+     "n": 9,
+     "seqs": [
+      1
+     ],
+     "tables": "EditLog+ScheduleWeek+ScheduleDay",
+     "elog": 1
+    },
+    {
+     "key": "changes/cmunupvx9o7y2ge-2",
+     "type": "sched.sign",
+     "actor": "acad",
+     "n": 2,
+     "seqs": [
+      2
+     ],
+     "tables": "EditLog+ScheduleDay",
+     "elog": 1
+    },
+    {
+     "key": "changes/cmunupvx9o7y2ge-3",
+     "type": "sched.sign",
+     "actor": "acad",
+     "n": 2,
+     "seqs": [
+      3
+     ],
+     "tables": "EditLog+ScheduleDay",
+     "elog": 1
+    },
+    {
+     "key": "changes/cmunupvx9o7y2ge-4",
+     "type": "sched.sign",
+     "actor": "acad",
+     "n": 2,
+     "seqs": [
+      4
+     ],
+     "tables": "EditLog+ScheduleDay",
+     "elog": 1
+    }
+   ],
+   "pass": true,
+   "notes": [],
+   "fails": []
+  },
+  {
+   "step": "W1.5b",
+   "width": "1440",
+   "did": "Saturday: Publish day (the Original)",
+   "pics": [
+    "W1.5b-1-after.png",
+    "W1.5b-2-reloaded.png",
+    "view-sat-11333.png"
+   ],
+   "shown": "tag \"ORIG\" · pending \"5 changes\" · signs [— name — | — name — | — name — | — name —] · signed line \"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\" · buttons: publish none  · \"Unpublish\" · View-only Sched: tag \"ORIG\", line \"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\"",
+   "rows": "put 4: leavewar/rec:y2026:cmunuq19h1nw2c, settings/elog:munupz6w1pqi.000001, weeks/13-07-2026#5, weeks/13-07-2026:is:2026-07-18#0~0 · batches: sched.approve(ScheduleDay+Amendment+EditLog+LeaveBid, 4 rows, 1 history line, by acad)",
+   "batches": [
+    {
+     "key": "changes/cmunuq19l75ckna-0",
+     "type": "sched.approve",
+     "actor": "acad",
+     "n": 4,
+     "seqs": [
+      0,
+      1
+     ],
+     "tables": "ScheduleDay+Amendment+EditLog+LeaveBid",
+     "elog": 1
+    }
+   ],
+   "pass": true,
+   "notes": [
+    "W1.5 issuance rows now: weeks/13-07-2026:is:2026-07-18#0~0"
+   ],
+   "fails": []
+  },
+  {
+   "step": "W1.5c",
+   "width": "1440",
+   "did": "Sunday: a day note typed (Saturday is published)",
+   "pics": [
+    "W1.5c-1-after.png",
+    "W1.5c-2-reloaded.png"
+   ],
+   "shown": "Sunday's note \"W1 SUNDAY NOTE\" · Saturday: tag \"ORIG\" · pending \"5 changes\" · signs [— name — | — name — | — name — | — name —] · signed line \"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\" · buttons: publish none  · \"Unpublish\"",
+   "rows": "put 2: settings/elog:munuq31nuslj.000001, weeks/13-07-2026#6 · batches: sched.text(ScheduleDay, 1 rows, by acad) + elog.line(EditLog, 1 rows, 1 history line, by system)",
+   "batches": [
+    {
+     "key": "changes/cmunuq6k53cri2d-0",
+     "type": "sched.text",
+     "actor": "acad",
+     "n": 1,
+     "seqs": [
+      0
+     ],
+     "tables": "ScheduleDay",
+     "elog": 0
+    },
+    {
+     "key": "changes/cmunuq6k53cri2d-g1",
+     "type": "elog.line",
+     "actor": "system",
+     "n": 1,
+     "seqs": [],
+     "tables": "EditLog",
+     "elog": 1
+    }
+   ],
+   "pass": true,
+   "notes": [],
+   "fails": []
+  },
+  {
+   "step": "W1.5d",
+   "width": "1440",
+   "did": "published Saturday: the four signed again (ready for the next version)",
+   "pics": [
+    "W1.5d-1-after.png",
+    "W1.5d-2-reloaded.png"
+   ],
+   "shown": "tag \"ORIG\" · pending \"9 changes\" · signs [Ace | Anvil | Anvil | Anvil] · signed line \"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\" · buttons: publish none  · \"Unpublish\"",
+   "rows": "put 5: settings/elog:munuq7xfrq1g.000001, settings/elog:munuq7xfrq1g.000002, settings/elog:munuq7xfrq1g.000003, settings/elog:munuq7xfrq1g.000004, weeks/13-07-2026#5 · batches: sched.sign(EditLog+ScheduleDay, 2 rows, 1 history line, by acad) + sched.sign(EditLog+ScheduleDay, 2 rows, 1 history line, by acad) + sched.sign(EditLog+ScheduleDay, 2 rows, 1 history line, by acad) + sched.sign(EditLog+ScheduleDay, 2 rows, 1 history line, by acad)",
+   "batches": [
+    {
+     "key": "changes/cmunuqa0h5wmsfb-0",
+     "type": "sched.sign",
+     "actor": "acad",
+     "n": 2,
+     "seqs": [
+      0
+     ],
+     "tables": "EditLog+ScheduleDay",
+     "elog": 1
+    },
+    {
+     "key": "changes/cmunuqa0h5wmsfb-1",
+     "type": "sched.sign",
+     "actor": "acad",
+     "n": 2,
+     "seqs": [
+      1
+     ],
+     "tables": "EditLog+ScheduleDay",
+     "elog": 1
+    },
+    {
+     "key": "changes/cmunuqa0h5wmsfb-2",
+     "type": "sched.sign",
+     "actor": "acad",
+     "n": 2,
+     "seqs": [
+      2
+     ],
+     "tables": "EditLog+ScheduleDay",
+     "elog": 1
+    },
+    {
+     "key": "changes/cmunuqa0h5wmsfb-3",
+     "type": "sched.sign",
+     "actor": "acad",
+     "n": 2,
+     "seqs": [
+      3
+     ],
+     "tables": "EditLog+ScheduleDay",
+     "elog": 1
+    }
+   ],
+   "pass": true,
+   "notes": [],
+   "fails": []
+  },
+  {
+   "step": "W1.5e",
+   "width": "1440",
+   "did": "published Saturday: its day note edited → \"1 pending\", the four fall",
+   "pics": [
+    "W1.5e-1-after.png",
+    "W1.5e-2-reloaded.png"
+   ],
+   "shown": "tag \"ORIG\" · pending \"1 pending\" · signs [— name — | — name — | — name — | — name —] · signed line \"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\" · Not yet signed · buttons: publish none · \"Publish AL1\" · \"Unpublish\"",
+   "rows": "put 2: settings/elog:munuqc2lajcj.000001, weeks/13-07-2026#5 · batches: sched.text(ScheduleDay, 1 rows, by acad) + elog.line(EditLog, 1 rows, 1 history line, by system)",
+   "batches": [
+    {
+     "key": "changes/cmunuqee5k70q6x-0",
+     "type": "sched.text",
+     "actor": "acad",
+     "n": 1,
+     "seqs": [
+      0
+     ],
+     "tables": "ScheduleDay",
+     "elog": 0
+    },
+    {
+     "key": "changes/cmunuqee5k70q6x-g1",
+     "type": "elog.line",
+     "actor": "system",
+     "n": 1,
+     "seqs": [],
+     "tables": "EditLog",
+     "elog": 1
+    }
+   ],
+   "pass": true,
+   "notes": [],
+   "fails": []
+  },
+  {
+   "step": "W1.5f",
+   "width": "1440",
+   "did": "Saturday: the four signed for AL1",
+   "pics": [
+    "W1.5f-1-after.png",
+    "W1.5f-2-reloaded.png"
+   ],
+   "shown": "tag \"ORIG\" · pending \"1 pending\" · signs [Anvil | Basher | Basher | Basher] · signed line \"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\" · Not yet published · buttons: publish none · \"Publish AL1\" · \"Unpublish\"",
+   "rows": "put 5: settings/elog:munuqfuetkdi.000001, settings/elog:munuqfuetkdi.000002, settings/elog:munuqfuetkdi.000003, settings/elog:munuqfuetkdi.000004, weeks/13-07-2026#5 · batches: sched.sign(EditLog+ScheduleDay, 2 rows, 1 history line, by acad) + sched.sign(EditLog+ScheduleDay, 2 rows, 1 history line, by acad) + sched.sign(EditLog+ScheduleDay, 2 rows, 1 history line, by acad) + sched.sign(EditLog+ScheduleDay, 2 rows, 1 history line, by acad)",
+   "batches": [
+    {
+     "key": "changes/cmunuqhvp425gbf-0",
+     "type": "sched.sign",
+     "actor": "acad",
+     "n": 2,
+     "seqs": [
+      0
+     ],
+     "tables": "EditLog+ScheduleDay",
+     "elog": 1
+    },
+    {
+     "key": "changes/cmunuqhvp425gbf-1",
+     "type": "sched.sign",
+     "actor": "acad",
+     "n": 2,
+     "seqs": [
+      1
+     ],
+     "tables": "EditLog+ScheduleDay",
+     "elog": 1
+    },
+    {
+     "key": "changes/cmunuqhvp425gbf-2",
+     "type": "sched.sign",
+     "actor": "acad",
+     "n": 2,
+     "seqs": [
+      2
+     ],
+     "tables": "EditLog+ScheduleDay",
+     "elog": 1
+    },
+    {
+     "key": "changes/cmunuqhvp425gbf-3",
+     "type": "sched.sign",
+     "actor": "acad",
+     "n": 2,
+     "seqs": [
+      3
+     ],
+     "tables": "EditLog+ScheduleDay",
+     "elog": 1
+    }
+   ],
+   "pass": true,
+   "notes": [],
+   "fails": []
+  },
+  {
+   "step": "W1.5g",
+   "width": "1440",
+   "did": "Saturday: Publish AL1",
+   "pics": [
+    "W1.5g-1-after.png",
+    "W1.5g-2-reloaded.png"
+   ],
+   "shown": "tag \"AL1\" · pending \"15 changes\" · signs [— name — | — name — | — name — | — name —] · signed line \"SIGNED AL1 CUR CKAnvil SKED CKBasher PLANNEDBasher APPROVEDBasher\" · buttons: publish none  · \"Unpublish\"",
+   "rows": "put 3: settings/elog:munuqjz43tek.000001, weeks/13-07-2026#5, weeks/13-07-2026:is:2026-07-18#1~0 · batches: sched.publishAL(ScheduleDay+Amendment+EditLog, 3 rows, 1 history line, by acad)",
+   "batches": [
+    {
+     "key": "changes/cmunuqlzqb4czwi-0",
+     "type": "sched.publishAL",
+     "actor": "acad",
+     "n": 3,
+     "seqs": [
+      0
+     ],
+     "tables": "ScheduleDay+Amendment+EditLog",
+     "elog": 1
+    }
+   ],
+   "pass": true,
+   "notes": [
+    "W1.5g issuance rows now: weeks/13-07-2026:is:2026-07-18#0~0, weeks/13-07-2026:is:2026-07-18#1~0"
+   ],
+   "fails": []
+  },
+  {
+   "step": "W1.6a",
+   "width": "1440",
+   "did": "Saturday: Unpublish (AL1 withdrawn)",
+   "pics": [
+    "W1.6a-1-after.png",
+    "W1.6a-2-reloaded.png"
+   ],
+   "shown": "tag \"ORIG\" · pending \"1 pending\" · signs [— name — | — name — | — name — | — name —] · signed line \"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\" · Not yet signed · buttons: publish none · \"Publish AL1\" · \"Unpublish\"",
+   "rows": "put 3: settings/elog:munuqnteerge.000001, weeks/13-07-2026#5, weeks/13-07-2026:rx:2026-07-18#1~0 · batches: sched.unpublish(ScheduleDay+AmendmentRetraction+EditLog, 3 rows, 1 history line, by acad)",
+   "batches": [
+    {
+     "key": "changes/cmunuqpw2x6dxgo-0",
+     "type": "sched.unpublish",
+     "actor": "acad",
+     "n": 3,
+     "seqs": [
+      0
+     ],
+     "tables": "ScheduleDay+AmendmentRetraction+EditLog",
+     "elog": 1
+    }
+   ],
+   "pass": true,
+   "notes": [
+    "W1.6a issuance / retraction rows now: weeks/13-07-2026:is:2026-07-18#0~0, weeks/13-07-2026:is:2026-07-18#1~0, weeks/13-07-2026:rx:2026-07-18#1~0"
+   ],
+   "fails": []
+  },
+  {
+   "step": "W1.6b",
+   "width": "1440",
+   "did": "Saturday: the four signed for the reissue (different names)",
+   "pics": [
+    "W1.6b-1-after.png",
+    "W1.6b-2-reloaded.png"
+   ],
+   "shown": "tag \"ORIG\" · pending \"1 pending\" · signs [Basher | Bolt | Bolt | Bolt] · signed line \"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\" · Not yet published · buttons: publish none · \"Publish AL1\" · \"Unpublish\"",
+   "rows": "put 5: settings/elog:munuqrnqoekz.000001, settings/elog:munuqrnqoekz.000002, settings/elog:munuqrnqoekz.000003, settings/elog:munuqrnqoekz.000004, weeks/13-07-2026#5 · batches: sched.sign(EditLog+ScheduleDay, 2 rows, 1 history line, by acad) + sched.sign(EditLog+ScheduleDay, 2 rows, 1 history line, by acad) + sched.sign(EditLog+ScheduleDay, 2 rows, 1 history line, by acad) + sched.sign(EditLog+ScheduleDay, 2 rows, 1 history line, by acad)",
+   "batches": [
+    {
+     "key": "changes/cmunuqtqup0yq0g-0",
+     "type": "sched.sign",
+     "actor": "acad",
+     "n": 2,
+     "seqs": [
+      0
+     ],
+     "tables": "EditLog+ScheduleDay",
+     "elog": 1
+    },
+    {
+     "key": "changes/cmunuqtqup0yq0g-1",
+     "type": "sched.sign",
+     "actor": "acad",
+     "n": 2,
+     "seqs": [
+      1
+     ],
+     "tables": "EditLog+ScheduleDay",
+     "elog": 1
+    },
+    {
+     "key": "changes/cmunuqtqup0yq0g-2",
+     "type": "sched.sign",
+     "actor": "acad",
+     "n": 2,
+     "seqs": [
+      2
+     ],
+     "tables": "EditLog+ScheduleDay",
+     "elog": 1
+    },
+    {
+     "key": "changes/cmunuqtqup0yq0g-3",
+     "type": "sched.sign",
+     "actor": "acad",
+     "n": 2,
+     "seqs": [
+      3
+     ],
+     "tables": "EditLog+ScheduleDay",
+     "elog": 1
+    }
+   ],
+   "pass": true,
+   "notes": [],
+   "fails": []
+  },
+  {
+   "step": "W1.6c",
+   "width": "1440",
+   "did": "Saturday: Publish AL1 again (the reissue)",
+   "pics": [
+    "W1.6c-1-after.png",
+    "W1.6c-2-reloaded.png",
+    "view-sat-53412.png"
+   ],
+   "shown": "tag \"AL1\" · pending \"21 changes\" · signs [— name — | — name — | — name — | — name —] · signed line \"SIGNED AL1 CUR CKBasher SKED CKBolt PLANNEDBolt APPROVEDBolt\" · buttons: publish none  · \"Unpublish\" · Saturday's history: [\"Signed · CUR CK · Ace (Saber)\",\"Signed · SKED CK · Anvil (Saber)\",\"Signed · PLANNED BY · Anvil (Saber)\",\"Signed · APPROVED BY · Anvil (Saber)\",\"Published — the Original (Saber)\",\"Signed · CUR CK · Ace (Saber)\",\"Signed · SKED CK · Anvil (Saber)\",\"Signed · PLANNED BY · Anvil (Saber)\",\"Signed · APPROVED BY · Anvil (Saber)\",\"Day note (Saber)\",\"Signed · CUR CK · Anvil (Saber)\",\"Signed · SKED CK · Basher (Saber)\",\"Signed · PLANNED BY · Basher (Saber)\",\"Signed · APPROVED BY · Basher (Saber)\",\"Published — AL1 (Saber)\",\"AL1 withdrawn (Saber)\",\"Signed · CUR CK · Basher (Saber)\",\"Signed · SKED CK · Bolt (Saber)\",\"Signed · PLANNED BY · Bolt (Saber)\",\"Signed · APPROVED BY · Bolt (Saber)\",\"Published — AL1 (Saber)\"] · View-only Sched: tag \"AL1\", line \"SIGNED AL1 CUR CKBasher SKED CKBolt PLANNEDBolt APPROVEDBolt\"",
+   "rows": "put 3: settings/elog:munuqvsfwctb.000001, weeks/13-07-2026#5, weeks/13-07-2026:is:2026-07-18#1~1 · batches: sched.publishAL(ScheduleDay+Amendment+EditLog, 3 rows, 1 history line, by acad)",
+   "batches": [
+    {
+     "key": "changes/cmunuqxs9p5417j-0",
+     "type": "sched.publishAL",
+     "actor": "acad",
+     "n": 3,
+     "seqs": [
+      0
+     ],
+     "tables": "ScheduleDay+Amendment+EditLog",
+     "elog": 1
+    }
+   ],
+   "pass": true,
+   "notes": [],
+   "fails": []
+  },
+  {
+   "step": "W1.7a",
+   "width": "1440",
+   "did": "Saturday: Unpublish again (the reissued AL1 withdrawn)",
+   "pics": [
+    "W1.7a-1-after.png",
+    "W1.7a-2-reloaded.png"
+   ],
+   "shown": "tag \"ORIG\" · pending \"1 pending\" · signs [— name — | — name — | — name — | — name —] · signed line \"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\" · Not yet signed · buttons: publish none · \"Publish AL1\" · \"Unpublish\"",
+   "rows": "put 3: settings/elog:munuqzkyghra.000001, weeks/13-07-2026#5, weeks/13-07-2026:rx:2026-07-18#1~1 · batches: sched.unpublish(ScheduleDay+AmendmentRetraction+EditLog, 3 rows, 1 history line, by acad)",
+   "batches": [
+    {
+     "key": "changes/cmunur2vj4tmqeg-0",
+     "type": "sched.unpublish",
+     "actor": "acad",
+     "n": 3,
+     "seqs": [
+      0
+     ],
+     "tables": "ScheduleDay+AmendmentRetraction+EditLog",
+     "elog": 1
+    }
+   ],
+   "pass": true,
+   "notes": [
+    "W1.7a issuance / retraction rows now: weeks/13-07-2026:is:2026-07-18#0~0, weeks/13-07-2026:is:2026-07-18#1~0, weeks/13-07-2026:is:2026-07-18#1~1, weeks/13-07-2026:rx:2026-07-18#1~0, weeks/13-07-2026:rx:2026-07-18#1~1"
+   ],
+   "fails": []
+  },
+  {
+   "step": "W1.7b",
+   "width": "1440",
+   "did": "Saturday: signed and AL1 reissued (no reload — the Undo comes next)",
+   "pics": [
+    "W1.7b-1-after.png"
+   ],
+   "shown": "",
+   "rows": "put 7: settings/elog:munur4nyfkhx.000001, settings/elog:munur4nyfkhx.000002, settings/elog:munur4nyfkhx.000003, settings/elog:munur4nyfkhx.000004, settings/elog:munur4nyfkhx.000005, weeks/13-07-2026#5, weeks/13-07-2026:is:2026-07-18#1~2 · batches: sched.sign(EditLog+ScheduleDay, 2 rows, 1 history line, by acad) + sched.sign(EditLog+ScheduleDay, 2 rows, 1 history line, by acad) + sched.sign(EditLog+ScheduleDay, 2 rows, 1 history line, by acad) + sched.sign(EditLog+ScheduleDay, 2 rows, 1 history line, by acad) + sched.publishAL(ScheduleDay+Amendment+EditLog, 3 rows, 1 history line, by acad)",
+   "batches": [
+    {
+     "key": "changes/cmunur6pnr6yriy-0",
+     "type": "sched.sign",
+     "actor": "acad",
+     "n": 2,
+     "seqs": [
+      0
+     ],
+     "tables": "EditLog+ScheduleDay",
+     "elog": 1
+    },
+    {
+     "key": "changes/cmunur6pnr6yriy-1",
+     "type": "sched.sign",
+     "actor": "acad",
+     "n": 2,
+     "seqs": [
+      1
+     ],
+     "tables": "EditLog+ScheduleDay",
+     "elog": 1
+    },
+    {
+     "key": "changes/cmunur6pnr6yriy-2",
+     "type": "sched.sign",
+     "actor": "acad",
+     "n": 2,
+     "seqs": [
+      2
+     ],
+     "tables": "EditLog+ScheduleDay",
+     "elog": 1
+    },
+    {
+     "key": "changes/cmunur6pnr6yriy-3",
+     "type": "sched.sign",
+     "actor": "acad",
+     "n": 2,
+     "seqs": [
+      3
+     ],
+     "tables": "EditLog+ScheduleDay",
+     "elog": 1
+    },
+    {
+     "key": "changes/cmunur6pnr6yriy-4",
+     "type": "sched.publishAL",
+     "actor": "acad",
+     "n": 3,
+     "seqs": [
+      4
+     ],
+     "tables": "ScheduleDay+Amendment+EditLog",
+     "elog": 1
+    }
+   ],
+   "pass": true,
+   "notes": [
+    "W1.7b issuance / retraction rows now: weeks/13-07-2026:is:2026-07-18#0~0, weeks/13-07-2026:is:2026-07-18#1~0, weeks/13-07-2026:is:2026-07-18#1~1, weeks/13-07-2026:is:2026-07-18#1~2, weeks/13-07-2026:rx:2026-07-18#1~0, weeks/13-07-2026:rx:2026-07-18#1~1"
+   ],
+   "fails": []
+  },
+  {
+   "step": "W1.7c",
+   "width": "1440",
+   "did": "the top bar's ↶ Undo — the reissue taken back; then reload",
+   "pics": [
+    "W1.7c-1-after.png",
+    "W1.7c-2-reloaded.png"
+   ],
+   "shown": "tag \"ORIG\" · pending \"1 pending\" · signs [— name — | — name — | — name — | — name —] · signed line \"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\" · Not yet signed · buttons: publish none · \"Publish AL1\" · \"Unpublish\" · redo after the reload: {\"off\":true,\"title\":\"Redo\"}",
+   "rows": "put 2: settings/elog:munur4nyfkhx.000006, weeks/13-07-2026#5 · del 1: weeks/13-07-2026:is:2026-07-18#1~2 · batches: undo.restore(EditLog+ScheduleDay+Amendment, 3 rows, 1 history line, by acad)",
+   "batches": [
+    {
+     "key": "changes/cmunur6pnr6yriy-5",
+     "type": "undo.restore",
+     "actor": "acad",
+     "n": 3,
+     "seqs": [
+      5
+     ],
+     "tables": "EditLog+ScheduleDay+Amendment",
+     "elog": 1
+    }
+   ],
+   "pass": true,
+   "notes": [
+    "W1.7c Undo: {\"present\":true,\"title\":\"Undo — publishing an amendment\",\"pressed\":true,\"toasts\":[\"Undid: publishing an amendment\"]} · rows settings/elog:munur4nyfkhx.000006, weeks/13-07-2026#5, weeks/13-07-2026:is:2026-07-18#1~2",
+    "W1.7c issuance / retraction rows now: weeks/13-07-2026:is:2026-07-18#0~0, weeks/13-07-2026:is:2026-07-18#1~0, weeks/13-07-2026:is:2026-07-18#1~1, weeks/13-07-2026:rx:2026-07-18#1~0, weeks/13-07-2026:rx:2026-07-18#1~1"
+   ],
+   "fails": []
+  },
+  {
+   "step": "W1.7d",
+   "width": "1440",
+   "did": "Saturday: signed and AL1 reissued again (no reload)",
+   "pics": [
+    "W1.7d-1-after.png"
+   ],
+   "shown": "",
+   "rows": "put 7: settings/elog:munurbkgcdms.000001, settings/elog:munurbkgcdms.000002, settings/elog:munurbkgcdms.000003, settings/elog:munurbkgcdms.000004, settings/elog:munurbkgcdms.000005, weeks/13-07-2026#5, weeks/13-07-2026:is:2026-07-18#1~2 · batches: sched.sign(EditLog+ScheduleDay, 2 rows, 1 history line, by acad) + sched.sign(EditLog+ScheduleDay, 2 rows, 1 history line, by acad) + sched.sign(EditLog+ScheduleDay, 2 rows, 1 history line, by acad) + sched.sign(EditLog+ScheduleDay, 2 rows, 1 history line, by acad) + sched.publishAL(ScheduleDay+Amendment+EditLog, 3 rows, 1 history line, by acad)",
+   "batches": [
+    {
+     "key": "changes/cmunurdmg8hdzax-0",
+     "type": "sched.sign",
+     "actor": "acad",
+     "n": 2,
+     "seqs": [
+      0
+     ],
+     "tables": "EditLog+ScheduleDay",
+     "elog": 1
+    },
+    {
+     "key": "changes/cmunurdmg8hdzax-1",
+     "type": "sched.sign",
+     "actor": "acad",
+     "n": 2,
+     "seqs": [
+      1
+     ],
+     "tables": "EditLog+ScheduleDay",
+     "elog": 1
+    },
+    {
+     "key": "changes/cmunurdmg8hdzax-2",
+     "type": "sched.sign",
+     "actor": "acad",
+     "n": 2,
+     "seqs": [
+      2
+     ],
+     "tables": "EditLog+ScheduleDay",
+     "elog": 1
+    },
+    {
+     "key": "changes/cmunurdmg8hdzax-3",
+     "type": "sched.sign",
+     "actor": "acad",
+     "n": 2,
+     "seqs": [
+      3
+     ],
+     "tables": "EditLog+ScheduleDay",
+     "elog": 1
+    },
+    {
+     "key": "changes/cmunurdmg8hdzax-4",
+     "type": "sched.publishAL",
+     "actor": "acad",
+     "n": 3,
+     "seqs": [
+      4
+     ],
+     "tables": "ScheduleDay+Amendment+EditLog",
+     "elog": 1
+    }
+   ],
+   "pass": true,
+   "notes": [],
+   "fails": []
+  },
+  {
+   "step": "W1.7e",
+   "width": "1440",
+   "did": "the top bar's ↶ Undo (no reload — the Redo comes next)",
+   "pics": [
+    "W1.7e-1-after.png"
+   ],
+   "shown": "",
+   "rows": "put 2: settings/elog:munurbkgcdms.000006, weeks/13-07-2026#5 · del 1: weeks/13-07-2026:is:2026-07-18#1~2 · batches: undo.restore(EditLog+ScheduleDay+Amendment, 3 rows, 1 history line, by acad)",
+   "batches": [
+    {
+     "key": "changes/cmunurdmg8hdzax-5",
+     "type": "undo.restore",
+     "actor": "acad",
+     "n": 3,
+     "seqs": [
+      5
+     ],
+     "tables": "EditLog+ScheduleDay+Amendment",
+     "elog": 1
+    }
+   ],
+   "pass": true,
+   "notes": [
+    "W1.7e Undo: {\"present\":true,\"title\":\"Undo — publishing an amendment\",\"pressed\":true,\"toasts\":[\"Undid: publishing an amendment\"]} · rows settings/elog:munurbkgcdms.000006, weeks/13-07-2026#5, weeks/13-07-2026:is:2026-07-18#1~2"
+   ],
+   "fails": []
+  },
+  {
+   "step": "W1.7f",
+   "width": "1440",
+   "did": "the top bar's ↷ Redo — the reissue published again; then reload",
+   "pics": [
+    "W1.7f-1-after.png",
+    "W1.7f-2-reloaded.png",
+    "view-sat-80172.png"
+   ],
+   "shown": "tag \"AL1\" · pending \"35 changes\" · signs [— name — | — name — | — name — | — name —] · signed line \"SIGNED AL1 CUR CKAnvil SKED CKBasher PLANNEDBasher APPROVEDBasher\" · buttons: publish none  · \"Unpublish\" · history [\"Signed · CUR CK · Ace (Saber)\",\"Signed · SKED CK · Anvil (Saber)\",\"Signed · PLANNED BY · Anvil (Saber)\",\"Signed · APPROVED BY · Anvil (Saber)\",\"Published — the Original (Saber)\",\"Signed · CUR CK · Ace (Saber)\",\"Signed · SKED CK · Anvil (Saber)\",\"Signed · PLANNED BY · Anvil (Saber)\",\"Signed · APPROVED BY · Anvil (Saber)\",\"Day note (Saber)\",\"Signed · CUR CK · Anvil (Saber)\",\"Signed · View-only Sched: tag \"AL1\", line \"SIGNED AL1 CUR CKAnvil SKED CKBasher PLANNEDBasher APPROVEDBasher\"",
+   "rows": "put 3: settings/elog:munurbkgcdms.000007, weeks/13-07-2026#5, weeks/13-07-2026:is:2026-07-18#1~2 · batches: undo.restore(EditLog+ScheduleDay+Amendment, 3 rows, 1 history line, by acad)",
+   "batches": [
+    {
+     "key": "changes/cmunurdmg8hdzax-6",
+     "type": "undo.restore",
+     "actor": "acad",
+     "n": 3,
+     "seqs": [
+      6
+     ],
+     "tables": "EditLog+ScheduleDay+Amendment",
+     "elog": 1
+    }
+   ],
+   "pass": true,
+   "notes": [
+    "W1.7f Redo: {\"present\":true,\"title\":\"Redo — publishing an amendment\",\"pressed\":true,\"toasts\":[\"Redid: publishing an amendment\"]} · rows settings/elog:munurbkgcdms.000007, weeks/13-07-2026#5, weeks/13-07-2026:is:2026-07-18#1~2",
+    "W1.7 issuance / retraction rows at the end: weeks/13-07-2026:is:2026-07-18#0~0, weeks/13-07-2026:is:2026-07-18#1~0, weeks/13-07-2026:is:2026-07-18#1~1, weeks/13-07-2026:is:2026-07-18#1~2, weeks/13-07-2026:rx:2026-07-18#1~0, weeks/13-07-2026:rx:2026-07-18#1~1"
+   ],
+   "fails": []
+  },
+  {
+   "step": "W1.7g",
+   "width": "1440",
+   "did": "Saturday: Unpublish (no reload — the Undo comes next)",
+   "pics": [
+    "W1.7g-1-after.png"
+   ],
+   "shown": "",
+   "rows": "put 3: settings/elog:munurk7l154t.000001, weeks/13-07-2026#5, weeks/13-07-2026:rx:2026-07-18#1~2 · batches: sched.unpublish(ScheduleDay+AmendmentRetraction+EditLog, 3 rows, 1 history line, by acad)",
+   "batches": [
+    {
+     "key": "changes/cmunurnjjio25c8-0",
+     "type": "sched.unpublish",
+     "actor": "acad",
+     "n": 3,
+     "seqs": [
+      0
+     ],
+     "tables": "ScheduleDay+AmendmentRetraction+EditLog",
+     "elog": 1
+    }
+   ],
+   "pass": true,
+   "notes": [],
+   "fails": []
+  },
+  {
+   "step": "W1.7h",
+   "width": "1440",
+   "did": "the top bar's ↶ Undo — the Unpublish taken back; then reload",
+   "pics": [
+    "W1.7h-1-after.png",
+    "W1.7h-2-reloaded.png"
+   ],
+   "shown": "tag \"AL1\" · pending \"37 changes\" · signs [— name — | — name — | — name — | — name —] · signed line \"SIGNED AL1 CUR CKAnvil SKED CKBasher PLANNEDBasher APPROVEDBasher\" · buttons: publish none  · \"Unpublish\"",
+   "rows": "put 2: settings/elog:munurk7l154t.000002, weeks/13-07-2026#5 · del 1: weeks/13-07-2026:rx:2026-07-18#1~2 · batches: undo.restore(EditLog+ScheduleDay+AmendmentRetraction, 3 rows, 1 history line, by acad)",
+   "batches": [
+    {
+     "key": "changes/cmunurnjjio25c8-1",
+     "type": "undo.restore",
+     "actor": "acad",
+     "n": 3,
+     "seqs": [
+      1
+     ],
+     "tables": "EditLog+ScheduleDay+AmendmentRetraction",
+     "elog": 1
+    }
+   ],
+   "pass": true,
+   "notes": [
+    "W1.7h Undo: {\"present\":true,\"title\":\"Undo — taking a published day back\",\"pressed\":true,\"toasts\":[\"Undid: taking a published day back\"]} · rows put settings/elog:munurk7l154t.000002, weeks/13-07-2026#5 · del weeks/13-07-2026:rx:2026-07-18#1~2",
+    "W1.7h issuance / retraction rows at the end: weeks/13-07-2026:is:2026-07-18#0~0, weeks/13-07-2026:is:2026-07-18#1~0, weeks/13-07-2026:is:2026-07-18#1~1, weeks/13-07-2026:is:2026-07-18#1~2, weeks/13-07-2026:rx:2026-07-18#1~0, weeks/13-07-2026:rx:2026-07-18#1~1"
+   ],
+   "fails": []
+  }
+ ],
+ "errors": []
+}

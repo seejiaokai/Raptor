@@ -1,0 +1,123 @@
+{
+ "base": "http://localhost:4201",
+ "at": "2026-09-30T08:38:38.966Z",
+ "results": [
+  {
+   "name": "W1.12a phone, the board (Mon): the first Overall Note typed — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 9 [settings/elog:munus61x6x9s.000001, weeks/13-07-2026, weeks/13-07-2026#0, weeks/13-07-2026#1, weeks/13-07-2026#2, weeks/13-07-2026#3, weeks/13-07-2026#4, weeks/13-07-2026#5 …] · del 0 [] · batches sched.mutate/8 elog.line/1"
+  },
+  {
+   "name": "W1.12a phone, the board (Mon): the first Overall Note typed — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 9 [settings/elog:munus61x6x9s.000001, weeks/13-07-2026, weeks/13-07-2026#0, weeks/13-07-2026#1, weeks/13-07-2026#2, weeks/13-07-2026#3, weeks/13-07-2026#4, weeks/13-07-2026#5 …] · del 0 [] · batches sched.mutate/8 elog.line/1"
+  },
+  {
+   "name": "W1.12a — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "W1.12a — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "W1.12b phone, the board (Mon): an empty crew seat (s:0.amt.1.pax.8) tapped, then a name tapped in the crew list — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 2 [settings/elog:munus9v89wb4.000001, weeks/13-07-2026#0] · del 0 [] · batches sched.mutate/1 elog.line/1"
+  },
+  {
+   "name": "W1.12b phone, the board (Mon): an empty crew seat (s:0.amt.1.pax.8) tapped, then a name tapped in the crew list — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 2 [settings/elog:munus9v89wb4.000001, weeks/13-07-2026#0] · del 0 [] · batches sched.mutate/1 elog.line/1"
+  },
+  {
+   "name": "W1.12b — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "W1.12b — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  }
+ ],
+ "table": [
+  {
+   "step": "W1.12a",
+   "width": "390",
+   "did": "phone, the board (Mon): the first Overall Note typed",
+   "pics": [
+    "W1.12a-1-after.png",
+    "W1.12a-2-reloaded.png"
+   ],
+   "shown": "the board's first note reads \"W1 PHONE NOTE\"",
+   "rows": "put 9: settings/elog:munus61x6x9s.000001, weeks/13-07-2026, weeks/13-07-2026#0, weeks/13-07-2026#1, weeks/13-07-2026#2, weeks/13-07-2026#3, weeks/13-07-2026#4, weeks/13-07-2026#5, weeks/13-07-2026#6 · batches: sched.mutate(ScheduleWeek+ScheduleDay, 8 rows, by acad) + elog.line(EditLog, 1 rows, 1 history line, by system)",
+   "batches": [
+    {
+     "key": "changes/cmunus649367adv-1",
+     "type": "sched.mutate",
+     "actor": "acad",
+     "n": 8,
+     "seqs": [
+      1
+     ],
+     "tables": "ScheduleWeek+ScheduleDay",
+     "elog": 0
+    },
+    {
+     "key": "changes/cmunus649367adv-g1",
+     "type": "elog.line",
+     "actor": "system",
+     "n": 1,
+     "seqs": [],
+     "tables": "EditLog",
+     "elog": 1
+    }
+   ],
+   "pass": true,
+   "notes": [],
+   "fails": []
+  },
+  {
+   "step": "W1.12b",
+   "width": "390",
+   "did": "phone, the board (Mon): an empty crew seat (s:0.amt.1.pax.8) tapped, then a name tapped in the crew list",
+   "pics": [
+    "W1.12b-1-after.png",
+    "W1.12b-2-reloaded.png"
+   ],
+   "shown": "the seat s:0.amt.1.pax.8 holds beams",
+   "rows": "put 2: settings/elog:munus9v89wb4.000001, weeks/13-07-2026#0 · batches: sched.mutate(ScheduleDay, 1 rows, by acad) + elog.line(EditLog, 1 rows, 1 history line, by system)",
+   "batches": [
+    {
+     "key": "changes/cmunuscuurc2arz-0",
+     "type": "sched.mutate",
+     "actor": "acad",
+     "n": 1,
+     "seqs": [
+      0
+     ],
+     "tables": "ScheduleDay",
+     "elog": 0
+    },
+    {
+     "key": "changes/cmunuscuurc2arz-g1",
+     "type": "elog.line",
+     "actor": "system",
+     "n": 1,
+     "seqs": [],
+     "tables": "EditLog",
+     "elog": 1
+    }
+   ],
+   "pass": true,
+   "notes": [
+    "W1.12b {\"armed\":\"s:0.amt.1.pax.8\",\"picked\":\"beams\"}"
+   ],
+   "fails": []
+  }
+ ],
+ "errors": []
+}

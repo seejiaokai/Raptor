@@ -1,0 +1,30 @@
+import * as L from './dbrA-lib.mjs'
+const errors = []
+const b = await L.launch(); const ctx = await L.context(b); const p = await L.page(ctx, errors)
+p.on('console', m => { if (m.type() === 'warning' || m.type() === 'warn') errors.push('WARN ' + m.text()) })
+await L.signIn(p, 'a'); await L.settle(p)
+await L.go(p, 'editsched')
+await L.step(p, 'week A (13 Jul): Monday note', async () => {
+  const el = p.locator('#eWeek [data-txt="dn:0.0"]:visible').first(); await el.click(); await p.keyboard.press('End'); await p.keyboard.type(' ZZZ'); await p.keyboard.press('Tab')
+})
+console.log('A note now', await p.evaluate(() => window.txtGet('dn:0.0')))
+await L.step(p, 'switch to week B (20 Jul) by the week strip', async () => {
+  const b2 = p.locator('[data-wk="20/07/2026"]:visible').first()
+  if (await b2.count()) await b2.click(); else await p.evaluate(() => window.loadWeek('20/07/2026'))
+  await L.sleep(800)
+}, { none: true })
+console.log('week', await p.evaluate(() => window.CURWEEK), 'undo title', await p.evaluate(() => (document.querySelector('#undoBtn') || {}).title))
+const a = await L.step(p, 'Undo (top bar) while B is loaded — reverses A\'s note', async () => {
+  await p.click('#undoBtn'); await L.sleep(900)
+})
+console.log('toast', await p.evaluate(() => (document.querySelector('#toastEl') || {}).innerText), 'week', await p.evaluate(() => window.CURWEEK))
+console.log('undo wrote', a.put, a.del, a.batches)
+await p.evaluate(() => window.loadWeek('13/07/2026')); await L.sleep(600)
+const inMem = await p.evaluate(() => window.txtGet('dn:0.0'))
+console.log('A note in memory after undo', inMem)
+await p.reload(); await L.signIn(p, 'a', { goto: false }); await L.settle(p)
+await p.evaluate(() => window.loadWeek('13/07/2026')); await L.sleep(600)
+const after = await p.evaluate(() => window.txtGet('dn:0.0'))
+L.check('after reload, week A shows the note as the Undo left it', after === inMem, { inMem, after })
+console.log(errors)
+await b.close(); L.save()

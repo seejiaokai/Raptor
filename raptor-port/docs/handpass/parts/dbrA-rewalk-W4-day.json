@@ -1,0 +1,102 @@
+{
+ "base": "http://localhost:4204",
+ "at": "2026-09-30T10:19:21.010Z",
+ "results": [
+  {
+   "name": "DAY-0 a Monday note (the week's first save) — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 3 [settings/elog:munydhq1uevi.000001, weeks/13-07-2026, weeks/13-07-2026#0] · del 0 [] · batches sched.text/3"
+  },
+  {
+   "name": "DAY-0 a Monday note (the week's first save) — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 3 [settings/elog:munydhq1uevi.000001, weeks/13-07-2026, weeks/13-07-2026#0] · del 0 [] · batches sched.text/3"
+  },
+  {
+   "name": "DAY-0: the week is stored as a week row and seven day rows",
+   "ok": false,
+   "detail": "[\"weeks/13-07-2026#0\",\"weeks/13-07-2026\"]"
+  },
+  {
+   "name": "DAY-1: after the reload the WHOLE week reads read-only (every day shows the notice)",
+   "ok": true,
+   "detail": "{\"notes\":[\"This day's published schedule was created by an older version of the app and can't be shown here. It has not changed — open it on the device that created it.\",\"This day's published schedule was created by an older version of the app and can't be shown here. It has not changed — open it on the device that created it.\"],\"days\":14}"
+  },
+  {
+   "name": "DAY-1: …no editable day note on it",
+   "ok": true,
+   "detail": "{\"editableNote\":false}"
+  },
+  {
+   "name": "DAY-1: the reload wrote nothing to the damaged week",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "DAY-2 a note on the NEXT week (20 Jul) — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 3 [settings/elog:munydldbqspf.000001, weeks/20-07-2026, weeks/20-07-2026#1] · del 0 [] · batches sched.text/3"
+  },
+  {
+   "name": "DAY-2 a note on the NEXT week (20 Jul) — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 3 [settings/elog:munydldbqspf.000001, weeks/20-07-2026, weeks/20-07-2026#1] · del 0 [] · batches sched.text/3"
+  },
+  {
+   "name": "DAY-2 — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 20/07/2026"
+  },
+  {
+   "name": "DAY-2 — the reload wrote nothing",
+   "ok": false,
+   "detail": "{\"put\":[\"inputs/imunydhr1cc34nz\"],\"del\":[]}"
+  },
+  {
+   "name": "DAY-3 a request filed — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 2 [inputs/imunydskneuiig7, settings/elog:munydpuiey9c.000001] · del 0 [] · batches inputs.batch/2"
+  },
+  {
+   "name": "DAY-3 a request filed — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 2 [inputs/imunydskneuiig7, settings/elog:munydpuiey9c.000001] · del 0 [] · batches inputs.batch/2"
+  },
+  {
+   "name": "DAY-3 — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 20/07/2026"
+  },
+  {
+   "name": "DAY-3 — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "DAY-3: every byte of the damaged week's rows is unchanged after both edits",
+   "ok": true,
+   "detail": "{\"put\":[],\"del\":[],\"newBatches\":[],\"goneBatches\":[]}"
+  },
+  {
+   "name": "DAY-4: after a reload the other week keeps its edit",
+   "ok": true,
+   "detail": "[\"OTHER WEEK\"]"
+  },
+  {
+   "name": "DAY-4: …and the damaged week's rows are still byte for byte",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "DAY-4: …and still reads read-only",
+   "ok": true,
+   "detail": "{\"notes\":[\"This day's published schedule was created by an older version of the app and can't be shown here. It has not changed — open it on the device that created it.\",\"This day's published schedule was created by an older version of the app and can't be shown here. It has not changed — open it on the device that created it.\"],\"days\":14}"
+  },
+  {
+   "name": "day: no console error, page error or failed request (beyond the expected boot refusal)",
+   "ok": true,
+   "detail": "[]"
+  }
+ ],
+ "part": "day"
+}

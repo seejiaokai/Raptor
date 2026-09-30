@@ -1,0 +1,522 @@
+{
+ "base": "http://localhost:4203",
+ "at": "2026-09-30T09:11:27.034Z",
+ "results": [
+  {
+   "name": "I0 first boot — ONE change-log batch, of type boot",
+   "ok": true,
+   "detail": "[{\"type\":\"boot\",\"n\":199}]"
+  },
+  {
+   "name": "I1 tracker: credit Warden 1 day, today — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 2 [leavewar/ledger:ol-munvv6ai1lglt, settings/elog:munvv0lxvxx1.000001] · del 0 [] · batches lw.award/2"
+  },
+  {
+   "name": "I1 tracker: credit Warden 1 day, today — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 2 [leavewar/ledger:ol-munvv6ai1lglt, settings/elog:munvv0lxvxx1.000001] · del 0 [] · batches lw.award/2"
+  },
+  {
+   "name": "I1 tracker: credit Warden 1 day, today — one ledger row (and its history line), ONE batch, no war record",
+   "ok": true,
+   "detail": "{\"put\":[\"leavewar/ledger:ol-munvv6ai1lglt\",\"settings/elog:munvv0lxvxx1.000001\"],\"del\":[],\"batches\":[{\"key\":\"changes/cmunvv0o73ozgnc-1\",\"type\":\"lw.award\",\"actorId\":\"acad\",\"n\":2,\"seqs\":[1]}]}"
+  },
+  {
+   "name": "I1 tracker: credit Warden 1 day, today — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026 (the unsaved demo week's hidden row ids set aside)"
+  },
+  {
+   "name": "I1 tracker: credit Warden 1 day, today — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "I1 tracker: credit Warden 1 day, today — the war's boxes read the same after the reload",
+   "ok": true,
+   "detail": "{\"nact@2026-09-30\":\"FO\"}"
+  },
+  {
+   "name": "I1 — the grid shows FO on 30 Sep and the tracker a +1 box \"I award\" (they agree)",
+   "ok": true,
+   "detail": "{\"grid\":{\"nact@2026-09-30\":{\"text\":\"FO\",\"cls\":\"duty act\",\"mark\":\"\"}},\"tracker\":{\"bal\":\"1\",\"boxes\":[\"ol-munvv6ai1lglt|+1 30 Sep OC Ops I award 1 left\"]}}"
+  },
+  {
+   "name": "I2 tracker: edit the award — 0.5 day, reason, given by — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 2 [leavewar/ledger:ol-munvv6ai1lglt, settings/elog:munvv8chpkrj.000001] · del 0 [] · batches lw.award/2"
+  },
+  {
+   "name": "I2 tracker: edit the award — 0.5 day, reason, given by — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 2 [leavewar/ledger:ol-munvv6ai1lglt, settings/elog:munvv8chpkrj.000001] · del 0 [] · batches lw.award/2"
+  },
+  {
+   "name": "I2 tracker: edit the award — 0.5 day, reason, given by — one ledger row (and its history line), ONE batch, no war record",
+   "ok": true,
+   "detail": "{\"put\":[\"leavewar/ledger:ol-munvv6ai1lglt\",\"settings/elog:munvv8chpkrj.000001\"],\"del\":[],\"batches\":[{\"key\":\"changes/cmunvvjetdklhv6-0\",\"type\":\"lw.award\",\"actorId\":\"acad\",\"n\":2,\"seqs\":[0]}]}"
+  },
+  {
+   "name": "I2 tracker: edit the award — 0.5 day, reason, given by — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026 (the unsaved demo week's hidden row ids set aside)"
+  },
+  {
+   "name": "I2 tracker: edit the award — 0.5 day, reason, given by — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "I2 tracker: edit the award — 0.5 day, reason, given by — the war's boxes read the same after the reload",
+   "ok": true,
+   "detail": "{\"nact@2026-09-30\":\"HO\"}"
+  },
+  {
+   "name": "I2 — the SAME ledger row now 0.5 day, the new reason and given by; its date unchanged and shown read-only (D260)",
+   "ok": true,
+   "detail": "{\"e\":{\"id\":\"ol-munvv6ai1lglt\",\"personId\":\"nact\",\"counter\":\"oil\",\"amount\":0.5,\"date\":\"2026-09-30\",\"reason\":\"I award edited\",\"approvedBy\":\"Saber\",\"enteredBy\":\"stiff\",\"enteredAt\":\"2026-09-30T09:08:44.826Z\",\"givenBy\":\"OC Flying\"},\"dateIsInput\":false}"
+  },
+  {
+   "name": "I2 — the grid shows HO on 30 Sep and the tracker a +0.5 box (they agree)",
+   "ok": true,
+   "detail": "{\"grid\":{\"nact@2026-09-30\":{\"text\":\"HO\",\"cls\":\"duty act\",\"mark\":\"\"}},\"tracker\":{\"bal\":\"0.5\",\"boxes\":[\"ol-munvv6ai1lglt|+0.5 30 Sep OC Flying I award edited 0.5 left\"]}}"
+  },
+  {
+   "name": "I3 tracker: delete the award — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [settings/elog:munvvlhbedqx.000001] · del 1 [leavewar/ledger:ol-munvv6ai1lglt] · batches lw.award/2"
+  },
+  {
+   "name": "I3 tracker: delete the award — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [settings/elog:munvvlhbedqx.000001] · del 1 [leavewar/ledger:ol-munvv6ai1lglt] · batches lw.award/2"
+  },
+  {
+   "name": "I3 tracker: delete the award — one ledger row (and its history line), ONE batch, no war record",
+   "ok": true,
+   "detail": "{\"put\":[\"settings/elog:munvvlhbedqx.000001\"],\"del\":[\"leavewar/ledger:ol-munvv6ai1lglt\"],\"batches\":[{\"key\":\"changes/cmunvvwgz1i2x5e-0\",\"type\":\"lw.award\",\"actorId\":\"acad\",\"n\":2,\"seqs\":[0]}]}"
+  },
+  {
+   "name": "I3 tracker: delete the award — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026 (the unsaved demo week's hidden row ids set aside)"
+  },
+  {
+   "name": "I3 tracker: delete the award — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "I3 tracker: delete the award — the war's boxes read the same after the reload",
+   "ok": true,
+   "detail": "{\"nact@2026-09-30\":\"\"}"
+  },
+  {
+   "name": "I3 — its row removed; the grid empty on 30 Sep and the tracker without the box (they agree)",
+   "ok": true,
+   "detail": "{\"grid\":{\"nact@2026-09-30\":{\"text\":\"\",\"cls\":\"act\",\"mark\":\"\"}},\"tracker\":{\"bal\":\"0\",\"boxes\":[]}}"
+  },
+  {
+   "name": "I4 grid: +OIL on Warden 10 Mar (1 day) — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 2 [leavewar/ledger:ol-munvw82619irt, settings/elog:munvvyk6yhkj.000001] · del 0 [] · batches lw.award/2"
+  },
+  {
+   "name": "I4 grid: +OIL on Warden 10 Mar (1 day) — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 2 [leavewar/ledger:ol-munvw82619irt, settings/elog:munvvyk6yhkj.000001] · del 0 [] · batches lw.award/2"
+  },
+  {
+   "name": "I4 grid: +OIL on Warden 10 Mar (1 day) — one ledger row (and its history line), ONE batch, no war record",
+   "ok": true,
+   "detail": "{\"put\":[\"leavewar/ledger:ol-munvw82619irt\",\"settings/elog:munvvyk6yhkj.000001\"],\"del\":[],\"batches\":[{\"key\":\"changes/cmunvw829787ser-0\",\"type\":\"lw.award\",\"actorId\":\"acad\",\"n\":2,\"seqs\":[0]}]}"
+  },
+  {
+   "name": "I4 grid: +OIL on Warden 10 Mar (1 day) — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026 (the unsaved demo week's hidden row ids set aside)"
+  },
+  {
+   "name": "I4 grid: +OIL on Warden 10 Mar (1 day) — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "I4 grid: +OIL on Warden 10 Mar (1 day) — the war's boxes read the same after the reload",
+   "ok": true,
+   "detail": "{\"nact@2026-03-10\":\"FO\"}"
+  },
+  {
+   "name": "I4 — the grid shows FO on 10 Mar and the tracker a +1 box on 10 Mar (they agree)",
+   "ok": true,
+   "detail": "{\"grid\":{\"nact@2026-03-10\":{\"text\":\"FO\",\"cls\":\"duty act\",\"mark\":\"\"}},\"tracker\":{\"bal\":\"1\",\"boxes\":[\"ol-munvw82619irt|+1 10 Mar I grid award 1 left\"]}}"
+  },
+  {
+   "name": "I4 an LL bid beside the award (10 Mar) — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [leavewar/rec:y2026:rmunvwj221dllv] · del 0 [] · batches lw.edit/1"
+  },
+  {
+   "name": "I4 an LL bid beside the award (10 Mar) — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [leavewar/rec:y2026:rmunvwj221dllv] · del 0 [] · batches lw.edit/1"
+  },
+  {
+   "name": "I5 grid: the day's list → the award's Edit… → 0.5 day, new reason → Save — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 2 [leavewar/ledger:ol-munvw82619irt, settings/elog:munvw9ivo4o4.000001] · del 0 [] · batches lw.award/2"
+  },
+  {
+   "name": "I5 grid: the day's list → the award's Edit… → 0.5 day, new reason → Save — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 2 [leavewar/ledger:ol-munvw82619irt, settings/elog:munvw9ivo4o4.000001] · del 0 [] · batches lw.award/2"
+  },
+  {
+   "name": "I5 grid: the day's list → the award's Edit… → 0.5 day, new reason → Save — one ledger row (and its history line), ONE batch, no war record",
+   "ok": true,
+   "detail": "{\"put\":[\"leavewar/ledger:ol-munvw82619irt\",\"settings/elog:munvw9ivo4o4.000001\"],\"del\":[],\"batches\":[{\"key\":\"changes/cmunvwj269g48ai-1\",\"type\":\"lw.award\",\"actorId\":\"acad\",\"n\":2,\"seqs\":[1]}],\"ret\":{\"opened\":\"daylist-sheet\",\"lines\":[\"FO — OIL award (I grid award) Edit… Delete\",\"LL — local leave · bid, not decided yet Ack Approve Refuse ⇄Move Delete\"],\"rid\":\"ol-munvw82619irt\"}}"
+  },
+  {
+   "name": "I5 grid: the day's list → the award's Edit… → 0.5 day, new reason → Save — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026 (the unsaved demo week's hidden row ids set aside)"
+  },
+  {
+   "name": "I5 grid: the day's list → the award's Edit… → 0.5 day, new reason → Save — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "I5 grid: the day's list → the award's Edit… → 0.5 day, new reason → Save — the war's boxes read the same after the reload",
+   "ok": true,
+   "detail": "{\"nact@2026-03-10\":\"HO +1\"}"
+  },
+  {
+   "name": "I5 — the SAME ledger row now 0.5 day and the new reason; the grid HO on 10 Mar and the tracker +0.5 (they agree)",
+   "ok": true,
+   "detail": "{\"e\":{\"id\":\"ol-munvw82619irt\",\"personId\":\"nact\",\"counter\":\"oil\",\"amount\":0.5,\"date\":\"2026-03-10\",\"reason\":\"I grid edited\",\"approvedBy\":\"Saber\",\"enteredBy\":\"stiff\",\"enteredAt\":\"2026-09-30T09:09:33.774Z\"},\"grid\":{\"nact@2026-03-10\":{\"text\":\"HO +1\",\"cls\":\"duty act mkd\",\"mark\":\"+1\"}},\"tracker\":{\"bal\":\"0.5\",\"boxes\":[\"ol-munvw82619irt|+0.5 10 Mar I grid edited 0.5 left\"]},\"ret\":{\"opened\":\"daylist-sheet\",\"lines\":[\"FO — OIL award (I grid award) Edit… Delete\",\"LL — local leave · bid, not decided yet Ack Approve Refuse ⇄Move Delete\"],\"rid\":\"ol-munvw82619irt\"}}"
+  },
+  {
+   "name": "I6 grid: the day's list → Delete the award — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [settings/elog:munvwnp2471h.000001] · del 1 [leavewar/ledger:ol-munvw82619irt] · batches lw.award/2"
+  },
+  {
+   "name": "I6 grid: the day's list → Delete the award — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [settings/elog:munvwnp2471h.000001] · del 1 [leavewar/ledger:ol-munvw82619irt] · batches lw.award/2"
+  },
+  {
+   "name": "I6 grid: the day's list → Delete the award — one ledger row (and its history line), ONE batch, no war record",
+   "ok": true,
+   "detail": "{\"put\":[\"settings/elog:munvwnp2471h.000001\"],\"del\":[\"leavewar/ledger:ol-munvw82619irt\"],\"batches\":[{\"key\":\"changes/cmunvwwj0iq36q9-0\",\"type\":\"lw.award\",\"actorId\":\"acad\",\"n\":2,\"seqs\":[0]}],\"ret\":{\"lines\":[\"HO — OIL award (I grid edited) Edit… Delete\",\"LL — local leave · bid, not decided yet Ack Approve Refuse ⇄Move Delete\"],\"btn\":\"dl-clear-ol-munvw82619irt\"}}"
+  },
+  {
+   "name": "I6 grid: the day's list → Delete the award — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026 (the unsaved demo week's hidden row ids set aside)"
+  },
+  {
+   "name": "I6 grid: the day's list → Delete the award — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "I6 grid: the day's list → Delete the award — the war's boxes read the same after the reload",
+   "ok": true,
+   "detail": "{\"nact@2026-03-10\":\"LL\"}"
+  },
+  {
+   "name": "I6 — the award's row removed, the bid's row untouched; the grid shows the LL only and the tracker no 10 Mar box",
+   "ok": true,
+   "detail": "{\"grid\":{\"nact@2026-03-10\":{\"text\":\"LL\",\"cls\":\"act\",\"mark\":\"\"}},\"tracker\":{\"bal\":\"0\",\"boxes\":[]},\"ret\":{\"lines\":[\"HO — OIL award (I grid edited) Edit… Delete\",\"LL — local leave · bid, not decided yet Ack Approve Refuse ⇄Move Delete\"],\"btn\":\"dl-clear-ol-munvw82619irt\"}}"
+  },
+  {
+   "name": "I7a grid: +OIL on Warden 12 Mar, alone — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 2 [leavewar/ledger:ol-munvx88d16f02, settings/elog:munvwyj2kue7.000001] · del 0 [] · batches lw.award/2"
+  },
+  {
+   "name": "I7a grid: +OIL on Warden 12 Mar, alone — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 2 [leavewar/ledger:ol-munvx88d16f02, settings/elog:munvwyj2kue7.000001] · del 0 [] · batches lw.award/2"
+  },
+  {
+   "name": "I7a grid: +OIL on Warden 12 Mar, alone — one ledger row (and its history line), ONE batch, no war record",
+   "ok": true,
+   "detail": "{\"put\":[\"leavewar/ledger:ol-munvx88d16f02\",\"settings/elog:munvwyj2kue7.000001\"],\"del\":[],\"batches\":[{\"key\":\"changes/cmunvx88jpywuzz-0\",\"type\":\"lw.award\",\"actorId\":\"acad\",\"n\":2,\"seqs\":[0]}]}"
+  },
+  {
+   "name": "I7a grid: +OIL on Warden 12 Mar, alone — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026 (the unsaved demo week's hidden row ids set aside)"
+  },
+  {
+   "name": "I7a grid: +OIL on Warden 12 Mar, alone — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "I7a grid: +OIL on Warden 12 Mar, alone — the war's boxes read the same after the reload",
+   "ok": true,
+   "detail": "{\"nact@2026-03-12\":\"FO\"}"
+  },
+  {
+   "name": "I7b grid: the one-day sheet's Remove — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [settings/elog:munvx9s7nehp.000001] · del 1 [leavewar/ledger:ol-munvx88d16f02] · batches lw.award/2"
+  },
+  {
+   "name": "I7b grid: the one-day sheet's Remove — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [settings/elog:munvx9s7nehp.000001] · del 1 [leavewar/ledger:ol-munvx88d16f02] · batches lw.award/2"
+  },
+  {
+   "name": "I7b grid: the one-day sheet's Remove — one ledger row (and its history line), ONE batch, no war record",
+   "ok": true,
+   "detail": "{\"put\":[\"settings/elog:munvx9s7nehp.000001\"],\"del\":[\"leavewar/ledger:ol-munvx88d16f02\"],\"batches\":[{\"key\":\"changes/cmunvxj9e32xbhl-0\",\"type\":\"lw.award\",\"actorId\":\"acad\",\"n\":2,\"seqs\":[0]}],\"ret\":{\"opened\":\"bid-picker\",\"buttons\":[\"bid-cancel:✕\",\"span-one:Just this day\",\"span-range:Pick a range\",\"bid-clear:Delete\",\"portion-full:Whole day\",\"portion-am:AM\",\"portion-pm:PM\",\"bid-LL:LL\",\"bid-OL:OL\",\"bid-OIL:OIL\",\"bid-CCL:CCL\",\"bid-FCL:FCL\",\"bid-PL:PL\",\"bid-EL:EL\",\"bid-CL:CL\",\"bid-oil:FO · a day\",\"bid-postout:PO\",\"bid-postin:PI\"]}}"
+  },
+  {
+   "name": "I7b grid: the one-day sheet's Remove — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026 (the unsaved demo week's hidden row ids set aside)"
+  },
+  {
+   "name": "I7b grid: the one-day sheet's Remove — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "I7b grid: the one-day sheet's Remove — the war's boxes read the same after the reload",
+   "ok": true,
+   "detail": "{\"nact@2026-03-12\":\"\"}"
+  },
+  {
+   "name": "I7 — Remove took the award's row away; the grid and the tracker both clear on 12 Mar",
+   "ok": true,
+   "detail": "{\"grid\":{\"nact@2026-03-12\":{\"text\":\"\",\"cls\":\"act\",\"mark\":\"\"}},\"tracker\":{\"bal\":\"0\",\"boxes\":[]},\"ret\":{\"opened\":\"bid-picker\",\"buttons\":[\"bid-cancel:✕\",\"span-one:Just this day\",\"span-range:Pick a range\",\"bid-clear:Delete\",\"portion-full:Whole day\",\"portion-am:AM\",\"portion-pm:PM\",\"bid-LL:LL\",\"bid-OL:OL\",\"bid-OIL:OIL\",\"bid-CCL:CCL\",\"bid-FCL:FCL\",\"bid-PL:PL\",\"bid-EL:EL\",\"bid-CL:CL\",\"bid-oil:FO · a day\",\"bid-postout:PO\",\"bid-postin:PI\"]}}"
+  },
+  {
+   "name": "I8a tracker: a correction of −1 day, today — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 2 [leavewar/ledger:ol-munvxw3p1ya93, settings/elog:munvxkvyxuky.000001] · del 0 [] · batches lw.ledger/2"
+  },
+  {
+   "name": "I8a tracker: a correction of −1 day, today — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 2 [leavewar/ledger:ol-munvxw3p1ya93, settings/elog:munvxkvyxuky.000001] · del 0 [] · batches lw.ledger/2"
+  },
+  {
+   "name": "I8a tracker: a correction of −1 day, today — one ledger row (and its history line), ONE batch, no war record",
+   "ok": true,
+   "detail": "{\"put\":[\"leavewar/ledger:ol-munvxw3p1ya93\",\"settings/elog:munvxkvyxuky.000001\"],\"del\":[],\"batches\":[{\"key\":\"changes/cmunvxw3ttrhlbt-0\",\"type\":\"lw.ledger\",\"actorId\":\"acad\",\"n\":2,\"seqs\":[0]}]}"
+  },
+  {
+   "name": "I8a tracker: a correction of −1 day, today — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026 (the unsaved demo week's hidden row ids set aside)"
+  },
+  {
+   "name": "I8a tracker: a correction of −1 day, today — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "I8a tracker: a correction of −1 day, today — the war's boxes read the same after the reload",
+   "ok": true,
+   "detail": "{\"nact@2026-09-30\":\"\"}"
+  },
+  {
+   "name": "I8a — a −1 correction stored, dated today; the tracker shows it",
+   "ok": true,
+   "detail": "{\"tracker\":{\"bal\":\"-1\",\"boxes\":[\"ol-munvxw3p1ya93|−1 30 Sep I correction · correction · not covered\"]}}"
+  },
+  {
+   "name": "I8b — the correction's date chip opens a calendar a person can see and tap (29 Sep is what sits under the pointer)",
+   "ok": false,
+   "detail": "{\"inDom\":true,\"box\":[292,371],\"onTop\":false,\"under\":\"DIV.ents\"}"
+  },
+  {
+   "name": "I8c tracker: delete the correction — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [settings/elog:munvxy4fxk5f.000001] · del 1 [leavewar/ledger:ol-munvxw3p1ya93] · batches lw.ledger/2"
+  },
+  {
+   "name": "I8c tracker: delete the correction — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [settings/elog:munvxy4fxk5f.000001] · del 1 [leavewar/ledger:ol-munvxw3p1ya93] · batches lw.ledger/2"
+  },
+  {
+   "name": "I8c tracker: delete the correction — one ledger row (and its history line), ONE batch, no war record",
+   "ok": true,
+   "detail": "{\"put\":[\"settings/elog:munvxy4fxk5f.000001\"],\"del\":[\"leavewar/ledger:ol-munvxw3p1ya93\"],\"batches\":[{\"key\":\"changes/cmunvydig8dgf7s-0\",\"type\":\"lw.ledger\",\"actorId\":\"acad\",\"n\":2,\"seqs\":[0]}]}"
+  },
+  {
+   "name": "I8c tracker: delete the correction — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026 (the unsaved demo week's hidden row ids set aside)"
+  },
+  {
+   "name": "I8c tracker: delete the correction — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "I8c tracker: delete the correction — the war's boxes read the same after the reload",
+   "ok": true,
+   "detail": "{\"nact@2026-09-30\":\"\"}"
+  },
+  {
+   "name": "I8c — its row removed; the tracker without it",
+   "ok": true,
+   "detail": "{\"tracker\":{\"bal\":\"0\",\"boxes\":[]}}"
+  },
+  {
+   "name": "part I — Warden holds no stray ledger row at the end (every award and correction made here is gone)",
+   "ok": true,
+   "detail": "[]"
+  },
+  {
+   "name": "part I — no console errors, page errors, failed requests or native dialogs",
+   "ok": true,
+   "detail": "[]"
+  }
+ ],
+ "table": [
+  {
+   "step": "I0 first boot",
+   "width": "desktop",
+   "did": "fresh world, Saber",
+   "screen": "—",
+   "rows": "batches boot/199",
+   "ok": true,
+   "pics": []
+  },
+  {
+   "step": "I1 tracker: credit Warden 1 day, today",
+   "width": "desktop",
+   "did": "OIL tracker → tap Warden → 1, reason \"I award\", given by \"OC Ops\" → Save",
+   "screen": "grid {\"nact@2026-09-30\":\"FO\"} · tracker bal 1 boxes [\"ol-munvv6ai1lglt|+1 30 Sep OC Ops I award 1 left\"]",
+   "rows": "put 2 [leavewar/ledger:ol-munvv6ai1lglt, settings/elog:munvv0lxvxx1.000001] · batches lw.award/2",
+   "ok": true,
+   "pics": [
+    "I-I1-after-reload.png"
+   ]
+  },
+  {
+   "step": "I2 tracker: edit the award — 0.5 day, reason, given by",
+   "width": "desktop",
+   "did": "OIL tracker → tap the credit → 0.5, \"I award edited\", \"OC Flying\" → Save",
+   "screen": "grid {\"nact@2026-09-30\":\"HO\"} · tracker bal 0.5 boxes [\"ol-munvv6ai1lglt|+0.5 30 Sep OC Flying I award edited 0.5 left\"]",
+   "rows": "put 2 [leavewar/ledger:ol-munvv6ai1lglt, settings/elog:munvv8chpkrj.000001] · batches lw.award/2",
+   "ok": true,
+   "pics": [
+    "I2-tracker-edit.png",
+    "I-I2-after-reload.png"
+   ]
+  },
+  {
+   "step": "I3 tracker: delete the award",
+   "width": "desktop",
+   "did": "OIL tracker → tap the credit → Delete → Really delete?",
+   "screen": "grid {\"nact@2026-09-30\":\"\"} · tracker bal 0 boxes []",
+   "rows": "put 1 [settings/elog:munvvlhbedqx.000001] · del 1 [leavewar/ledger:ol-munvv6ai1lglt] · batches lw.award/2",
+   "ok": true,
+   "pics": [
+    "I-I3-after-reload.png"
+   ]
+  },
+  {
+   "step": "I4 grid: +OIL on Warden 10 Mar (1 day)",
+   "width": "desktop",
+   "did": "tap Warden 10 Mar → +OIL, \"I grid award\", 1 → Give FO",
+   "screen": "grid {\"nact@2026-03-10\":\"FO\"} · tracker bal 1 boxes [\"ol-munvw82619irt|+1 10 Mar I grid award 1 left\"]",
+   "rows": "put 2 [leavewar/ledger:ol-munvw82619irt, settings/elog:munvvyk6yhkj.000001] · batches lw.award/2",
+   "ok": true,
+   "pics": [
+    "I-I4-after-reload.png"
+   ]
+  },
+  {
+   "step": "I5 grid: the day's list → the award's Edit… → 0.5 day, new reason → Save",
+   "width": "desktop",
+   "did": "tap Warden 10 Mar → the day's list → Edit… on the award → 0.5, \"I grid edited\" → Save",
+   "screen": "grid {\"nact@2026-03-10\":\"HO +1\"} · tracker bal 0.5 boxes [\"ol-munvw82619irt|+0.5 10 Mar I grid edited 0.5 left\"]",
+   "rows": "put 2 [leavewar/ledger:ol-munvw82619irt, settings/elog:munvw9ivo4o4.000001] · batches lw.award/2",
+   "ok": true,
+   "pics": [
+    "I5-daylist-edit.png",
+    "I-I5-after-reload.png"
+   ]
+  },
+  {
+   "step": "I6 grid: the day's list → Delete the award",
+   "width": "desktop",
+   "did": "tap Warden 10 Mar → the day's list → Delete on the award line",
+   "screen": "grid {\"nact@2026-03-10\":\"LL\"} · tracker bal 0 boxes []",
+   "rows": "put 1 [settings/elog:munvwnp2471h.000001] · del 1 [leavewar/ledger:ol-munvw82619irt] · batches lw.award/2",
+   "ok": true,
+   "pics": [
+    "I-I6-after-reload.png"
+   ]
+  },
+  {
+   "step": "I7a grid: +OIL on Warden 12 Mar, alone",
+   "width": "desktop",
+   "did": "tap Warden 12 Mar → +OIL, \"I lone award\" → Give FO",
+   "screen": "grid {\"nact@2026-03-12\":\"FO\"} · tracker bal 1 boxes [\"ol-munvx88d16f02|+1 12 Mar I lone award 1 left\"]",
+   "rows": "put 2 [leavewar/ledger:ol-munvx88d16f02, settings/elog:munvwyj2kue7.000001] · batches lw.award/2",
+   "ok": true,
+   "pics": [
+    "I-I7a-after-reload.png"
+   ]
+  },
+  {
+   "step": "I7b grid: the one-day sheet's Remove",
+   "width": "desktop",
+   "did": "tap Warden 12 Mar → +OIL → Remove",
+   "screen": "grid {\"nact@2026-03-12\":\"\"} · tracker bal 0 boxes []",
+   "rows": "put 1 [settings/elog:munvx9s7nehp.000001] · del 1 [leavewar/ledger:ol-munvx88d16f02] · batches lw.award/2",
+   "ok": true,
+   "pics": [
+    "I7-oneday-remove.png",
+    "I-I7b-after-reload.png"
+   ]
+  },
+  {
+   "step": "I8a tracker: a correction of −1 day, today",
+   "width": "desktop",
+   "did": "OIL tracker → tap Warden → − → 1, reason \"I correction\" → Save",
+   "screen": "grid {\"nact@2026-09-30\":\"\"} · tracker bal -1 boxes [\"ol-munvxw3p1ya93|−1 30 Sep I correction · correction · not covered\"]",
+   "rows": "put 2 [leavewar/ledger:ol-munvxw3p1ya93, settings/elog:munvxkvyxuky.000001] · batches lw.ledger/2",
+   "ok": true,
+   "pics": [
+    "I-I8a-after-reload.png"
+   ]
+  },
+  {
+   "step": "I8b tracker: re-date the correction",
+   "width": "desktop",
+   "did": "OIL tracker → tap the −1 correction → tap its date chip \"📅 30 Sep 26 ▾\"",
+   "screen": "the chip reads open, but no calendar is drawn — the spot where 29 Sep sits shows DIV.ents",
+   "rows": "none (not walked — no way to pick the day)",
+   "ok": false,
+   "pics": [
+    "I8-correction-date-chip-open.png"
+   ]
+  },
+  {
+   "step": "I8c tracker: delete the correction",
+   "width": "desktop",
+   "did": "OIL tracker → tap the correction → Delete → Really delete?",
+   "screen": "grid {\"nact@2026-09-30\":\"\"} · tracker bal 0 boxes []",
+   "rows": "put 1 [settings/elog:munvxy4fxk5f.000001] · del 1 [leavewar/ledger:ol-munvxw3p1ya93] · batches lw.ledger/2",
+   "ok": true,
+   "pics": [
+    "I-I8c-after-reload.png"
+   ]
+  }
+ ],
+ "errors": []
+}

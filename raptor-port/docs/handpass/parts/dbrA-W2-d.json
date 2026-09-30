@@ -1,0 +1,695 @@
+{
+ "base": "http://localhost:4202",
+ "at": "2026-09-30T09:07:33.359Z",
+ "results": [
+  {
+   "name": "W2-08a tab A: Hex → Suspend — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 4 [settings/account:acad, settings/account:achex, settings/account:acoutlaw, settings/account:acus] · del 0 [] · batches account.update/4"
+  },
+  {
+   "name": "W2-08a tab A: Hex → Suspend — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 4 [settings/account:acad, settings/account:achex, settings/account:acoutlaw, settings/account:acus] · del 0 [] · batches account.update/4"
+  },
+  {
+   "name": "W2-08a tab B (not reloaded since before A's change): Add a person: Tern (TRN · Pilot · C), tern@mail — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 5 [leavewar/profile:pmunvrklapv5twd, people/pmunvrklapv5twd, settings/account:achex, settings/account:acmunvrklc3h20, settings/elog:munvrflxv833.000001] · del 0 [] · batches account.addNew/8"
+  },
+  {
+   "name": "W2-08a tab B (not reloaded since before A's change): Add a person: Tern (TRN · Pilot · C), tern@mail — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 5 [leavewar/profile:pmunvrklapv5twd, people/pmunvrklapv5twd, settings/account:achex, settings/account:acmunvrklc3h20, settings/elog:munvrflxv833.000001] · del 0 [] · batches account.addNew/8"
+  },
+  {
+   "name": "W2-08a tab B — the rows B's first account write stored (listed — does it rewrite Hex's?)",
+   "ok": true,
+   "detail": "[\"settings/account:achex\",\"settings/account:acmunvrklc3h20\"]"
+  },
+  {
+   "name": "W2-08a — the reload of tab A wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "W2-08a — after tab A's reload: BOTH kept: Hex suspended (A) and Tern's account (B)",
+   "ok": false,
+   "detail": "{\"hex\":{\"on\":true},\"tern\":true,\"hexRow\":\"Hex hex · WSO · CAT C MEMBER\"}"
+  },
+  {
+   "name": "W2-08a — the reload of tab B wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "W2-08a — after tab B's reload: BOTH kept: Hex suspended (A) and Tern's account (B)",
+   "ok": false,
+   "detail": "{\"hex\":{\"on\":true},\"tern\":true,\"hexRow\":\"Hex hex · WSO · CAT C MEMBER\"}"
+  },
+  {
+   "name": "W2-08b Admin → Users → Hex → Suspend — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [settings/account:achex] · del 0 [] · batches account.update/1"
+  },
+  {
+   "name": "W2-08b Admin → Users → Hex → Suspend — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [settings/account:achex] · del 0 [] · batches account.update/1"
+  },
+  {
+   "name": "W2-08b — his sign-in flipped — his account row only",
+   "ok": true,
+   "detail": "{\"was\":true,\"now\":false,\"row\":\"Hex hex · WSO · CAT C MEMBER\"}"
+  },
+  {
+   "name": "W2-08b — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "W2-08b — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "W2-08b — (pristine week) with the fresh hidden row ids set aside, the reload gives back everything else exactly",
+   "ok": true,
+   "detail": "same"
+  },
+  {
+   "name": "W2-08b reading the screen after the reload — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "W2-08b reading the screen after the reload — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "W2-08b — after the reload: kept after the reload",
+   "ok": true,
+   "detail": "{\"on\":false,\"row\":\"Hex hex · WSO · CAT C MEMBER\"}"
+  },
+  {
+   "name": "W2-08c Admin → Users → Hex → Enable (back) — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [settings/account:achex] · del 0 [] · batches account.update/1"
+  },
+  {
+   "name": "W2-08c Admin → Users → Hex → Enable (back) — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [settings/account:achex] · del 0 [] · batches account.update/1"
+  },
+  {
+   "name": "W2-08c — back as it was",
+   "ok": true,
+   "detail": "{\"now\":true}"
+  },
+  {
+   "name": "W2-08c — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "W2-08c — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "W2-08c — (pristine week) with the fresh hidden row ids set aside, the reload gives back everything else exactly",
+   "ok": true,
+   "detail": "same"
+  },
+  {
+   "name": "W2-08c reading the screen after the reload — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "W2-08c reading the screen after the reload — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "W2-08c — after the reload: kept after the reload",
+   "ok": true,
+   "detail": "{\"on\":true}"
+  },
+  {
+   "name": "W2-08d Admin → Users → Add a person: \"Osprey\" (OSP · Pilot · C), sign-in osprey@mail, ADMIN — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 4 [leavewar/profile:pmunvs2mbfx53vo, people/pmunvs2mbfx53vo, settings/account:acmunvs2mdly79, settings/elog:munvryzwndoi.000001] · del 0 [] · batches account.addNew/4"
+  },
+  {
+   "name": "W2-08d Admin → Users → Add a person: \"Osprey\" (OSP · Pilot · C), sign-in osprey@mail, ADMIN — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 4 [leavewar/profile:pmunvs2mbfx53vo, people/pmunvs2mbfx53vo, settings/account:acmunvs2mdly79, settings/elog:munvryzwndoi.000001] · del 0 [] · batches account.addNew/4"
+  },
+  {
+   "name": "W2-08d — his person row and his ONE account row (admin), one batch",
+   "ok": true,
+   "detail": "{\"o\":{\"key\":\"settings/account:acmunvs2mdly79\",\"id\":\"acmunvs2mdly79\",\"name\":\"osprey@mail\",\"role\":\"admin\",\"pid\":\"pmunvs2mbfx53vo\",\"on\":true,\"seenFrom\":{\"at\":1790759156739,\"lineId\":\"munvrflxv833.000001\"},\"createdAt\":1790759180101},\"put\":[\"leavewar/profile:pmunvs2mbfx53vo\",\"people/pmunvs2mbfx53vo\",\"settings/account:acmunvs2mdly79\",\"settings/elog:munvryzwndoi.000001\"]}"
+  },
+  {
+   "name": "W2-08d — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "W2-08d — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "W2-08d — (pristine week) with the fresh hidden row ids set aside, the reload gives back everything else exactly",
+   "ok": true,
+   "detail": "same"
+  },
+  {
+   "name": "W2-08d reading the screen after the reload — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "W2-08d reading the screen after the reload — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "W2-08d — after the reload: Osprey listed, admin",
+   "ok": true,
+   "detail": "Osprey osprey@mail · Pilot · CAT C ADMIN"
+  },
+  {
+   "name": "W2-08e the sign-in card: falcon@mail → Request access (Falcon · FAL · Pilot · CAT C) → Send — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [settings/accessreq:rqmunvs8gw419g] · del 0 [] · batches access.request/1"
+  },
+  {
+   "name": "W2-08e the sign-in card: falcon@mail → Request access (Falcon · FAL · Pilot · CAT C) → Send — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [settings/accessreq:rqmunvs8gw419g] · del 0 [] · batches access.request/1"
+  },
+  {
+   "name": "W2-08e — exactly ONE request row",
+   "ok": true,
+   "detail": "[\"settings/accessreq:rqmunvs8gw419g\"]"
+  },
+  {
+   "name": "W2-08e — the reload wrote nothing",
+   "ok": true,
+   "detail": "{\"put\":[],\"del\":[],\"newBatches\":[],\"goneBatches\":[]}"
+  },
+  {
+   "name": "W2-08e — after the reload, signing in as falcon@mail shows the waiting screen with what he asked",
+   "ok": true,
+   "detail": "{\"asked\":\"You asked for access as Falcon (FAL · Pilot · CAT C). You'll be able to sign in as soon as an admin approves it.\",\"again\":\"You asked for access as Falcon (FAL · Pilot · CAT C). You'll be able to sign in as soon as an admin approves it.\"}"
+  },
+  {
+   "name": "W2-08e fixture: ace@mail asks for access — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [settings/accessreq:rqmunvsc30629o] · del 0 [] · batches access.request/1"
+  },
+  {
+   "name": "W2-08e fixture: ace@mail asks for access — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [settings/accessreq:rqmunvsc30629o] · del 0 [] · batches access.request/1"
+  },
+  {
+   "name": "W2-08e fixture ace@mail — one request row",
+   "ok": true,
+   "detail": "[\"settings/accessreq:rqmunvsc30629o\"]"
+  },
+  {
+   "name": "W2-08e fixture: heron@mail asks for access — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [settings/accessreq:rqmunvse8dynng] · del 0 [] · batches access.request/1"
+  },
+  {
+   "name": "W2-08e fixture: heron@mail asks for access — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [settings/accessreq:rqmunvse8dynng] · del 0 [] · batches access.request/1"
+  },
+  {
+   "name": "W2-08e fixture heron@mail — one request row",
+   "ok": true,
+   "detail": "[\"settings/accessreq:rqmunvse8dynng\"]"
+  },
+  {
+   "name": "W2-08e fixture: gull@mail asks for access — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [settings/accessreq:rqmunvsgd5812d] · del 0 [] · batches access.request/1"
+  },
+  {
+   "name": "W2-08e fixture: gull@mail asks for access — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [settings/accessreq:rqmunvsgd5812d] · del 0 [] · batches access.request/1"
+  },
+  {
+   "name": "W2-08e fixture gull@mail — one request row",
+   "ok": true,
+   "detail": "[\"settings/accessreq:rqmunvsgd5812d\"]"
+  },
+  {
+   "name": "W2-08f — before: both admins' bells lit (four waiting)",
+   "ok": true,
+   "detail": "{\"A\":true,\"B\":true}"
+  },
+  {
+   "name": "W2-08f tab A: Saber's bell → Admin → Users — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [settings/reqseen:acad] · del 0 [] · batches access.seen/1"
+  },
+  {
+   "name": "W2-08f tab A: Saber's bell → Admin → Users — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [settings/reqseen:acad] · del 0 [] · batches access.seen/1"
+  },
+  {
+   "name": "W2-08f tab B (not reloaded since before A's change): (nothing — a look at Edit Schedule) — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "W2-08f tab B (not reloaded since before A's change): (nothing — a look at Edit Schedule) — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "W2-08f — the reload of tab A wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "W2-08f — after tab A's reload: Saber's bell OUT (he has seen the list)",
+   "ok": true,
+   "detail": "{\"on\":false}"
+  },
+  {
+   "name": "W2-08f — the reload of tab B wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "W2-08f — after tab B's reload: Osprey's bell still LIT (Saber's look is not his)",
+   "ok": true,
+   "detail": "{\"on\":true}"
+  },
+  {
+   "name": "W2-08g tab A: (nothing — Edit Schedule) — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "W2-08g tab A: (nothing — Edit Schedule) — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "W2-08g tab B (not reloaded since before A's change): Osprey's bell → Admin → Users — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [settings/reqseen:acmunvs2mdly79] · del 0 [] · batches access.seen/1"
+  },
+  {
+   "name": "W2-08g tab B (not reloaded since before A's change): Osprey's bell → Admin → Users — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [settings/reqseen:acmunvs2mdly79] · del 0 [] · batches access.seen/1"
+  },
+  {
+   "name": "W2-08g tab B — only HIS seen row",
+   "ok": true,
+   "detail": "[\"settings/reqseen:acmunvs2mdly79\"]"
+  },
+  {
+   "name": "W2-08g — the reload of tab A wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "W2-08g — after tab A's reload: bell out",
+   "ok": true,
+   "detail": "{\"on\":false}"
+  },
+  {
+   "name": "W2-08g — the reload of tab B wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "W2-08g — after tab B's reload: bell out",
+   "ok": true,
+   "detail": "{\"on\":false}"
+  },
+  {
+   "name": "W2-08h tab A: Cinder → Give sign-in — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [settings/account:acmunvsx2ld11l] · del 0 [] · batches account.add/1"
+  },
+  {
+   "name": "W2-08h tab A: Cinder → Give sign-in — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [settings/account:acmunvsx2ld11l] · del 0 [] · batches account.add/1"
+  },
+  {
+   "name": "W2-08h tab B (not reloaded since before A's change): Add a person: Petrel, petrel@mail — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 4 [leavewar/profile:pmunvszfr96ws9d, people/pmunvszfr96ws9d, settings/account:acmunvszfsutn5, settings/elog:munvstvd4jer.000001] · del 0 [] · batches account.addNew/4"
+  },
+  {
+   "name": "W2-08h tab B (not reloaded since before A's change): Add a person: Petrel, petrel@mail — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 4 [leavewar/profile:pmunvszfr96ws9d, people/pmunvszfr96ws9d, settings/account:acmunvszfsutn5, settings/elog:munvstvd4jer.000001] · del 0 [] · batches account.addNew/4"
+  },
+  {
+   "name": "W2-08h — the reload of tab A wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "W2-08h — after tab A's reload: BOTH accounts kept (cinder@mail and petrel@mail)",
+   "ok": true,
+   "detail": "{\"cinder\":true,\"petrel\":true}"
+  },
+  {
+   "name": "W2-08h — the reload of tab B wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "W2-08h — after tab B's reload: BOTH accounts kept (cinder@mail and petrel@mail)",
+   "ok": true,
+   "detail": "{\"cinder\":true,\"petrel\":true}"
+  },
+  {
+   "name": "W2-08i Admin → Users → ace@mail (typed \"Ace\", who is on the roster) → Give access → On the roster → Ace → give access — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [settings/account:acmunvt5y6twa6] · del 1 [settings/accessreq:rqmunvsc30629o] · batches access.approve/2"
+  },
+  {
+   "name": "W2-08i Admin → Users → ace@mail (typed \"Ace\", who is on the roster) → Give access → On the roster → Ace → give access — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [settings/account:acmunvt5y6twa6] · del 1 [settings/accessreq:rqmunvsc30629o] · batches access.approve/2"
+  },
+  {
+   "name": "W2-08i — his account (linked to Ace) made and the request removed — in ONE batch",
+   "ok": true,
+   "detail": "{\"ace\":{\"key\":\"settings/account:acmunvt5y6twa6\",\"id\":\"acmunvt5y6twa6\",\"name\":\"ace@mail\",\"role\":\"main\",\"pid\":\"dj\",\"on\":true,\"seenFrom\":{\"at\":1790759222634,\"lineId\":\"munvstvd4jer.000001\"},\"createdAt\":1790759231070},\"left\":false,\"batches\":[{\"key\":\"changes/cmunvt5y654nh1r-0\",\"type\":\"access.approve\",\"actorId\":\"acad\",\"n\":2,\"seqs\":[0]}],\"put\":[\"settings/account:acmunvt5y6twa6\"],\"del\":[\"settings/accessreq:rqmunvsc30629o\"]}"
+  },
+  {
+   "name": "W2-08i — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "W2-08i — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "W2-08i — (pristine week) with the fresh hidden row ids set aside, the reload gives back everything else exactly",
+   "ok": true,
+   "detail": "same"
+  },
+  {
+   "name": "W2-08i reading the screen after the reload — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "W2-08i reading the screen after the reload — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "W2-08i — after the reload: Ace's row carries ace@mail; the request not back",
+   "ok": true,
+   "detail": "{\"t\":\"Ace ace@mail · Pilot · CAT A MEMBER\",\"w\":\"falcon@mail asked as Falcon · FAL · Pilot · CAT C · 30/9 17:06 Give access Refuse heron@mail asked as Heron · HER · WSO · CAT C · 30/9 17:06 Give access Refuse gull@mail asked as Gull · GUL · Pilot · CAT C · 30/9 17:06 Give access Refuse\"}"
+  },
+  {
+   "name": "W2-08j Admin → Users → heron@mail (typed \"Heron\", on no roster) → Give access → New person (as he gave) → Add person and give access — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 4 [leavewar/profile:pmunvtb2t1qayma, people/pmunvtb2t1qayma, settings/account:acmunvtb2urnk1, settings/elog:munvt7a4rmio.000001] · del 1 [settings/accessreq:rqmunvse8dynng] · batches access.approveNew/5"
+  },
+  {
+   "name": "W2-08j Admin → Users → heron@mail (typed \"Heron\", on no roster) → Give access → New person (as he gave) → Add person and give access — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 4 [leavewar/profile:pmunvtb2t1qayma, people/pmunvtb2t1qayma, settings/account:acmunvtb2urnk1, settings/elog:munvt7a4rmio.000001] · del 1 [settings/accessreq:rqmunvse8dynng] · batches access.approveNew/5"
+  },
+  {
+   "name": "W2-08j — the person Heron, his account, the request removed — ONE batch",
+   "ok": true,
+   "detail": "{\"heron\":\"pmunvtb2t1qayma\",\"h\":{\"key\":\"settings/account:acmunvtb2urnk1\",\"id\":\"acmunvtb2urnk1\",\"name\":\"heron@mail\",\"role\":\"main\",\"pid\":\"pmunvtb2t1qayma\",\"on\":true,\"seenFrom\":{\"at\":1790759222634,\"lineId\":\"munvstvd4jer.000001\"},\"createdAt\":1790759237718},\"left\":false,\"batches\":[{\"key\":\"changes/cmunvtb2vil23b8-0\",\"type\":\"access.approveNew\",\"actorId\":\"acad\",\"n\":5,\"seqs\":[0]}],\"put\":[\"leavewar/profile:pmunvtb2t1qayma\",\"people/pmunvtb2t1qayma\",\"settings/account:acmunvtb2urnk1\",\"settings/elog:munvt7a4rmio.000001\"],\"del\":[\"settings/accessreq:rqmunvse8dynng\"]}"
+  },
+  {
+   "name": "W2-08j — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "W2-08j — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "W2-08j — (pristine week) with the fresh hidden row ids set aside, the reload gives back everything else exactly",
+   "ok": true,
+   "detail": "same"
+  },
+  {
+   "name": "W2-08j reading the screen after the reload — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "W2-08j reading the screen after the reload — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "W2-08j — after the reload: Heron listed with heron@mail",
+   "ok": true,
+   "detail": "Heron heron@mail · WSO · CAT C MEMBER"
+  },
+  {
+   "name": "W2-08k Admin → Users → gull@mail → Refuse — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 0 [] · del 1 [settings/accessreq:rqmunvsgd5812d] · batches access.decline/1"
+  },
+  {
+   "name": "W2-08k Admin → Users → gull@mail → Refuse — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 0 [] · del 1 [settings/accessreq:rqmunvsgd5812d] · batches access.decline/1"
+  },
+  {
+   "name": "W2-08k — his request row removed — nothing else",
+   "ok": true,
+   "detail": "{\"put\":[],\"del\":[\"settings/accessreq:rqmunvsgd5812d\"]}"
+  },
+  {
+   "name": "W2-08k — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "W2-08k — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "W2-08k — (pristine week) with the fresh hidden row ids set aside, the reload gives back everything else exactly",
+   "ok": true,
+   "detail": "same"
+  },
+  {
+   "name": "W2-08k reading the screen after the reload — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "W2-08k reading the screen after the reload — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "W2-08k — after the reload: the list no longer holds gull@mail (falcon@mail still waits)",
+   "ok": true,
+   "detail": "falcon@mail asked as Falcon · FAL · Pilot · CAT C · 30/9 17:06 Give access Refuse"
+  },
+  {
+   "name": "W2-08l — Heron and Ace sign in as themselves; Gull, refused, is offered Request access again",
+   "ok": true,
+   "detail": "{\"heronIn\":\"HERON · MEMBER\",\"aceIn\":\"ACE · MEMBER\",\"gullAsk\":true}"
+  }
+ ],
+ "table": [
+  {
+   "step": "W2-08a",
+   "width": "desktop",
+   "what": "fresh demo store, two tabs: A suspends Hex (Admin → Users → Hex → Suspend); B, not reloaded, adds \"Tern\" with a sign-in tern@mail",
+   "afterReload": "tab A: Hex sign-in ON — A's suspension LOST; Tern there · tab B: Hex sign-in ON — A's suspension LOST; Tern there",
+   "rows": "A: put 4 [settings/account:acad, settings/account:achex, settings/account:acoutlaw, settings/account:acus] · del 0 · batches account.update/4 ‖ B: put 5 [leavewar/profile:pmunvrklapv5twd, people/pmunvrklapv5twd, settings/account:achex, settings/account:acmunvrklc3h20, settings/elog:munvrflxv833.000001] · del 0 · batches account.addNew/8",
+   "pass": false,
+   "fails": [
+    "W2-08a — after tab A's reload: BOTH kept: Hex suspended (A) and Tern's account (B): {\"hex\":{\"on\":true},\"tern\":true,\"hexRow\":\"Hex hex · WSO · CAT C MEMBER\"}",
+    "W2-08a — after tab B's reload: BOTH kept: Hex suspended (A) and Tern's account (B): {\"hex\":{\"on\":true},\"tern\":true,\"hexRow\":\"Hex hex · WSO · CAT C MEMBER\"}"
+   ],
+   "pics": [
+    "W2-08a-a-tabA.png",
+    "W2-08a-a-tabB.png",
+    "W2-08a-b-tabA.png",
+    "W2-08a-b-tabB.png"
+   ]
+  },
+  {
+   "step": "W2-08b",
+   "width": "desktop",
+   "what": "Admin → Users → Hex → Suspend",
+   "afterReload": "Hex: Hex hex · WSO · CAT C MEMBER",
+   "rows": "put 1 [settings/account:achex] · del 0 · batches account.update/1",
+   "pass": true,
+   "fails": [],
+   "pics": [
+    "W2-08b-a.png",
+    "W2-08b-b.png"
+   ]
+  },
+  {
+   "step": "W2-08c",
+   "width": "desktop",
+   "what": "Admin → Users → Hex → Enable (back)",
+   "afterReload": "Hex: Hex hex · WSO · CAT C MEMBER",
+   "rows": "put 1 [settings/account:achex] · del 0 · batches account.update/1",
+   "pass": true,
+   "fails": [],
+   "pics": [
+    "W2-08c-a.png",
+    "W2-08c-b.png"
+   ]
+  },
+  {
+   "step": "W2-08d",
+   "width": "desktop",
+   "what": "Admin → Users → Add a person: \"Osprey\" (OSP · Pilot · C), sign-in osprey@mail, ADMIN",
+   "afterReload": "\"Osprey osprey@mail · Pilot · CAT C ADMIN\"",
+   "rows": "put 4 [leavewar/profile:pmunvs2mbfx53vo, people/pmunvs2mbfx53vo, settings/account:acmunvs2mdly79, settings/elog:munvryzwndoi.000001] · del 0 · batches account.addNew/4",
+   "pass": true,
+   "fails": [],
+   "pics": [
+    "W2-08d-a.png",
+    "W2-08d-b.png"
+   ]
+  },
+  {
+   "step": "W2-08e",
+   "width": "desktop",
+   "what": "a sign-up: falcon@mail → Request access → Send",
+   "afterReload": "waiting screen: \"You asked for access as Falcon (FAL · Pilot · CAT C). You'll be able to sign in as soon as an admin approves it.\"",
+   "rows": "put 1 [settings/accessreq:rqmunvs8gw419g] · del 0 · batches access.request/1",
+   "pass": true,
+   "fails": [],
+   "pics": [
+    "W2-08e-a.png",
+    "W2-08e-b.png"
+   ]
+  },
+  {
+   "step": "W2-08f",
+   "width": "desktop",
+   "what": "two admins: A (Saber) taps his bell (it opens Admin → Users); B (Osprey), not reloaded, does nothing — then both reload",
+   "afterReload": "tab A: bell out · tab B: bell lit",
+   "rows": "A: put 1 [settings/reqseen:acad] · del 0 · batches access.seen/1 ‖ B: put 0 · del 0 · batches none",
+   "pass": true,
+   "fails": [],
+   "pics": [
+    "W2-08f-a-tabA.png",
+    "W2-08f-a-tabB.png",
+    "W2-08f-b-tabA.png",
+    "W2-08f-b-tabB.png"
+   ]
+  },
+  {
+   "step": "W2-08g",
+   "width": "desktop",
+   "what": "two admins: now B (Osprey) taps his bell; A does nothing — both reload",
+   "afterReload": "tab A: bell out · tab B: bell out",
+   "rows": "A: put 0 · del 0 · batches none ‖ B: put 1 [settings/reqseen:acmunvs2mdly79] · del 0 · batches access.seen/1",
+   "pass": true,
+   "fails": [],
+   "pics": [
+    "W2-08g-a-tabA.png",
+    "W2-08g-a-tabB.png",
+    "W2-08g-b-tabA.png",
+    "W2-08g-b-tabB.png"
+   ]
+  },
+  {
+   "step": "W2-08h",
+   "width": "desktop",
+   "what": "two admins each add an account: A (Saber) → Cinder's row → Give sign-in cinder@mail; B (Osprey), not reloaded, → Add a person \"Petrel\" with petrel@mail",
+   "afterReload": "tab A: cinder@mail there, petrel@mail there · tab B: cinder@mail there, petrel@mail there",
+   "rows": "A: put 1 [settings/account:acmunvsx2ld11l] · del 0 · batches account.add/1 ‖ B: put 4 [leavewar/profile:pmunvszfr96ws9d, people/pmunvszfr96ws9d, settings/account:acmunvszfsutn5, settings/elog:munvstvd4jer.000001] · del 0 · batches account.addNew/4",
+   "pass": true,
+   "fails": [],
+   "pics": [
+    "W2-08h-a-tabA.png",
+    "W2-08h-a-tabB.png",
+    "W2-08h-b-tabA.png",
+    "W2-08h-b-tabB.png"
+   ]
+  },
+  {
+   "step": "W2-08i",
+   "width": "desktop",
+   "what": "Admin → Users → ace@mail (typed \"Ace\", who is on the roster) → Give access → On the roster → Ace → give access",
+   "afterReload": "Ace: \"Ace ace@mail · Pilot · CAT A MEMBER\"; waiting: \"falcon@mail asked as Falcon · FAL · Pilot · CAT C · 30/9 17:06 Give access Refus\"",
+   "rows": "put 1 [settings/account:acmunvt5y6twa6] · del 1 [settings/accessreq:rqmunvsc30629o] · batches access.approve/2",
+   "pass": true,
+   "fails": [],
+   "pics": [
+    "W2-08i-a.png",
+    "W2-08i-b.png"
+   ]
+  },
+  {
+   "step": "W2-08j",
+   "width": "desktop",
+   "what": "Admin → Users → heron@mail (typed \"Heron\", on no roster) → Give access → New person (as he gave) → Add person and give access",
+   "afterReload": "\"Heron heron@mail · WSO · CAT C MEMBER\"",
+   "rows": "put 4 [leavewar/profile:pmunvtb2t1qayma, people/pmunvtb2t1qayma, settings/account:acmunvtb2urnk1, settings/elog:munvt7a4rmio.000001] · del 1 [settings/accessreq:rqmunvse8dynng] · batches access.approveNew/5",
+   "pass": true,
+   "fails": [],
+   "pics": [
+    "W2-08j-a.png",
+    "W2-08j-b.png"
+   ]
+  },
+  {
+   "step": "W2-08k",
+   "width": "desktop",
+   "what": "Admin → Users → gull@mail → Refuse",
+   "afterReload": "waiting: \"falcon@mail asked as Falcon · FAL · Pilot · CAT C · 30/9 17:06 Give access Refuse\"",
+   "rows": "put 0 · del 1 [settings/accessreq:rqmunvsgd5812d] · batches access.decline/1",
+   "pass": true,
+   "fails": [],
+   "pics": [
+    "W2-08k-a.png",
+    "W2-08k-b.png"
+   ]
+  },
+  {
+   "step": "W2-08l",
+   "width": "desktop",
+   "what": "the people the approvals and the refusal touched sign in",
+   "afterReload": "Heron \"HERON · MEMBER\", Ace \"ACE · MEMBER\", Gull asked again",
+   "rows": "(signing in writes nothing — checked in each step before)",
+   "pass": true,
+   "fails": [],
+   "pics": [
+    "W2-08l-gull-asks-again.png"
+   ]
+  }
+ ],
+ "errors": []
+}

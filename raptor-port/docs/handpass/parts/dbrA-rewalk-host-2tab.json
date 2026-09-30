@@ -1,0 +1,46 @@
+{
+ "base": "http://localhost:4207",
+ "at": "2026-09-30T10:25:00.095Z",
+ "results": [
+  {
+   "name": "tab A: Monday note on a never-saved week (its first save) — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 3 [settings/elog:munyktd34t4e.000001, weeks/13-07-2026, weeks/13-07-2026#0] · del 0 [] · batches sched.text/3"
+  },
+  {
+   "name": "tab B (not reloaded): Wednesday note, same week — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 2 [settings/elog:munykuuse8qs.000001, weeks/13-07-2026#2] · del 0 [] · batches sched.text/3"
+  },
+  {
+   "name": "after both saved and a reload: Monday keeps A's edit",
+   "ok": true,
+   "detail": "EP: ENGINE FIRE ON TAKE OFF AAA"
+  },
+  {
+   "name": "after both saved and a reload: Wednesday keeps B's edit",
+   "ok": true,
+   "detail": "ORDERS: FLYING ORDERS SECTION 2 BBB"
+  },
+  {
+   "name": "tab A: Tuesday note (week already saved) — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 2 [settings/elog:munyl0i0d7l7.000001, weeks/13-07-2026#1] · del 0 [] · batches sched.text/2"
+  },
+  {
+   "name": "tab B: Thursday note (week already saved, B not reloaded) — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 2 [settings/elog:munyl1xc24cw.000001, weeks/13-07-2026#3] · del 0 [] · batches sched.text/2"
+  },
+  {
+   "name": "saved week: Tuesday keeps A's edit",
+   "ok": true,
+   "detail": "ORDERS: FLYING ORDERS SECTION 3 A2"
+  },
+  {
+   "name": "saved week: Thursday keeps B's edit",
+   "ok": true,
+   "detail": "EXAM PERIOD RESTRICTIONS / 21 JUL 0700H - 24 JUL 1800H B2"
+  }
+ ]
+}

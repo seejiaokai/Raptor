@@ -1,0 +1,650 @@
+{
+ "base": "http://localhost:4205",
+ "at": "2026-09-30T10:24:31.563Z",
+ "results": [
+  {
+   "name": "first boot — ONE change-log batch, of type boot",
+   "ok": true,
+   "detail": "1 batch(es): boot · rows by collection {\"leavewar\":91,\"people\":61,\"inputs\":46,\"settings\":1,\"changes\":1}"
+  },
+  {
+   "name": "G1a STUDENT A DCO on the flight TR-1(P) (course 26ABSG) — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 4 [tracker/v3:cmunyibq1qcvz8z:last:smunyibq5i3oq3m, tracker/v3:cmunyibq1qcvz8z:lastStudent, tracker/v3:cmunyibq1qcvz8z:sb2026:d:smunyibq5i3oq3m, tracker/v3:cmunyibq1qcvz8z:sb2026:m:smunyibq5i3oq3m] · del 0 [] · batches trk.gesture/4"
+  },
+  {
+   "name": "G1b details typed on TR-1(P) — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [tracker/v3:master:info:sb2026:TR-1(P)] · del 0 [] · batches trk.eventinfo/1"
+  },
+  {
+   "name": "G1c + Add course \"G-TWO\" (on the same chart, 2026) — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 4 [tracker/v3:cmunyih7mf6hnt0:idmig, tracker/v3:cmunyih7mf6hnt0:plan, tracker/v3:cmunyih7mf6hnt0:rostermig, tracker/v3:master:course:cmunyih7mf6hnt0] · del 0 [] · batches trk.gesture/4"
+  },
+  {
+   "name": "G1d + Add \"G2 STU\" on G-TWO — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 3 [tracker/v3:cmunyih7mf6hnt0:sb2026:d:smunyiibw31fqai, tracker/v3:cmunyih7mf6hnt0:sb2026:enr:smunyiibw31fqai, tracker/v3:cmunyih7mf6hnt0:sb2026:m:smunyiibw31fqai] · del 0 [] · batches trk.gesture/3"
+  },
+  {
+   "name": "G1e G2 STU DCO on TR-1(P) (course G-TWO) — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 4 [tracker/v3:cmunyih7mf6hnt0:last:smunyiibw31fqai, tracker/v3:cmunyih7mf6hnt0:lastStudent, tracker/v3:cmunyih7mf6hnt0:sb2026:d:smunyiibw31fqai, tracker/v3:cmunyih7mf6hnt0:sb2026:m:smunyiibw31fqai] · del 0 [] · batches trk.gesture/4"
+  },
+  {
+   "name": "G1 setup: Last Flown (Syllabus) set on both courses by the flight",
+   "ok": true,
+   "detail": "{\"tracker/v3:cmunyibq1qcvz8z:sb2026:d:smunyibq5i3oq3m\":\"2026-09-30\",\"tracker/v3:cmunyih7mf6hnt0:sb2026:d:smunyiibw31fqai\":\"2026-09-30\"}"
+  },
+  {
+   "name": "G1 setup (a mark on each course, details) — a reload gives back exactly what was there (the app)",
+   "ok": true,
+   "detail": "week 13/07/2026 (the never-saved demo week’s hidden row ids were minted afresh — left out of the compare)"
+  },
+  {
+   "name": "G1 setup (a mark on each course, details) — a reload gives back exactly what was there (the Tracker: every chart, detail, course, student, mark, and the screen)",
+   "ok": true,
+   "detail": "2 courses · 4 charts · on G-TWO / 2026 / G2 STU"
+  },
+  {
+   "name": "G1 setup (a mark on each course, details) — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "G1f Edit chart layout, 🗑 Delete TR-1(P) — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [tracker/v3:master:lay:sb2026] · del 0 [] · batches trk.layout/1"
+  },
+  {
+   "name": "G1f TR-1(P) is off the chart (not saved yet)",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "G1g ↶ Undo (top bar) — the unsaved delete — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [tracker/v3:master:lay:sb2026] · del 0 [] · batches tracker.undo/1"
+  },
+  {
+   "name": "G1g TR-1(P) is back on the chart",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "G1g ✓ Save changes (the chart as it stands — nothing deleted) — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "G1g the undone delete lost nothing: no mark, date or details row changed",
+   "ok": true,
+   "detail": "changed: put tracker/v3:master:lay:sb2026 · del none"
+  },
+  {
+   "name": "G1g ↶ Undo before Save — a reload gives back exactly what was there (the app)",
+   "ok": true,
+   "detail": "week 13/07/2026 (the never-saved demo week’s hidden row ids were minted afresh — left out of the compare)"
+  },
+  {
+   "name": "G1g ↶ Undo before Save — a reload gives back exactly what was there (the Tracker: every chart, detail, course, student, mark, and the screen)",
+   "ok": true,
+   "detail": "2 courses · 4 charts · on G-TWO / 2026 / G2 STU"
+  },
+  {
+   "name": "G1g ↶ Undo before Save — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "G1g after the reload TR-1(P) is there with its mark",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "G1h Edit chart layout, 🗑 Delete TR-1(P) again, Done editing — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [tracker/v3:master:lay:sb2026] · del 0 [] · batches trk.layout/1"
+  },
+  {
+   "name": "G1i ✓ Save changes — TR-1(P) deleted for good — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 5 [tracker/v3:cmunyibq1qcvz8z:sb2026:d:smunyibq5i3oq3m, tracker/v3:cmunyibq1qcvz8z:sb2026:m:smunyibq5i3oq3m, tracker/v3:cmunyih7mf6hnt0:sb2026:d:smunyiibw31fqai, tracker/v3:cmunyih7mf6hnt0:sb2026:m:smunyiibw31fqai, tracker/v3:master:chart:sb2026] · del 3 [tracker/v3:cmunyibq1qcvz8z:last:smunyibq5i3oq3m, tracker/v3:cmunyih7mf6hnt0:last:smunyiibw31fqai, tracker/v3:master:info:sb2026:TR-1(P)] · batches trk.gesture/8"
+  },
+  {
+   "name": "G1i ✓ Save changes (a ball deleted) — one action, ONE change-log batch",
+   "ok": true,
+   "detail": "1 batch"
+  },
+  {
+   "name": "G1i only the chart, its layout, the two courses' marks / dates, the ball's details and last-work rows changed — every other row byte-identical",
+   "ok": true,
+   "detail": "put tracker/v3:cmunyibq1qcvz8z:sb2026:d:smunyibq5i3oq3m, tracker/v3:cmunyibq1qcvz8z:sb2026:m:smunyibq5i3oq3m, tracker/v3:cmunyih7mf6hnt0:sb2026:d:smunyiibw31fqai, tracker/v3:cmunyih7mf6hnt0:sb2026:m:smunyiibw31fqai, tracker/v3:master:chart:sb2026, tracker/v3:master:lay:sb2026 · del tracker/v3:cmunyibq1qcvz8z:last:smunyibq5i3oq3m, tracker/v3:cmunyih7mf6hnt0:last:smunyiibw31fqai, tracker/v3:master:info:sb2026:TR-1(P)"
+  },
+  {
+   "name": "G1i on BOTH courses the mark on TR-1(P) is gone, Last Flown worked out again, and its details gone",
+   "ok": true,
+   "detail": "26ABSG mark null · G-TWO mark null · Last Flown {\"tracker/v3:cmunyibq1qcvz8z:sb2026:d:smunyibq5i3oq3m\":null,\"tracker/v3:cmunyih7mf6hnt0:sb2026:d:smunyiibw31fqai\":null} · details null"
+  },
+  {
+   "name": "G1i ✓ Save changes (ball deleted) — a reload gives back exactly what was there (the app)",
+   "ok": true,
+   "detail": "week 13/07/2026 (the never-saved demo week’s hidden row ids were minted afresh — left out of the compare)"
+  },
+  {
+   "name": "G1i ✓ Save changes (ball deleted) — a reload gives back exactly what was there (the Tracker: every chart, detail, course, student, mark, and the screen)",
+   "ok": true,
+   "detail": "2 courses · 4 charts · on G-TWO / 2026 ✎ / G2 STU"
+  },
+  {
+   "name": "G1i ✓ Save changes (ball deleted) — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "G1 after the reload, course 26ABSG: TR-1(P) is not on the chart",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "G1 after the reload, course G-TWO: TR-1(P) is not on the chart",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "G2a End date A → 30/06/2027 — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [tracker/v3:cmunyibq1qcvz8z:pace:smunyibq5i3oq3m] · del 0 [] · batches trk.pace/1"
+  },
+  {
+   "name": "G2a End date A → 30/06/2027 — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [tracker/v3:cmunyibq1qcvz8z:pace:smunyibq5i3oq3m] · del 0 [] · batches trk.pace/1"
+  },
+  {
+   "name": "G2a End date A → 30/06/2027 — one action, ONE change-log batch",
+   "ok": true,
+   "detail": "1 batch"
+  },
+  {
+   "name": "G2a End date A → 30/06/2027 — a reload gives back exactly what was there (the app)",
+   "ok": true,
+   "detail": "week 13/07/2026 (the never-saved demo week’s hidden row ids were minted afresh — left out of the compare)"
+  },
+  {
+   "name": "G2a End date A → 30/06/2027 — a reload gives back exactly what was there (the Tracker: every chart, detail, course, student, mark, and the screen)",
+   "ok": true,
+   "detail": "2 courses · 4 charts · on 26ABSG / 2026 ✎ / STUDENT A"
+  },
+  {
+   "name": "G2a End date A → 30/06/2027 — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "G2a after the reload End date A reads 2027-06-30",
+   "ok": true,
+   "detail": "2027-06-30"
+  },
+  {
+   "name": "G2b End date B → 30/09/2027 — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [tracker/v3:cmunyibq1qcvz8z:pace:smunyibq5i3oq3m] · del 0 [] · batches trk.pace/1"
+  },
+  {
+   "name": "G2b End date B → 30/09/2027 — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [tracker/v3:cmunyibq1qcvz8z:pace:smunyibq5i3oq3m] · del 0 [] · batches trk.pace/1"
+  },
+  {
+   "name": "G2b End date B → 30/09/2027 — one action, ONE change-log batch",
+   "ok": true,
+   "detail": "1 batch"
+  },
+  {
+   "name": "G2b End date B → 30/09/2027 — a reload gives back exactly what was there (the app)",
+   "ok": true,
+   "detail": "week 13/07/2026 (the never-saved demo week’s hidden row ids were minted afresh — left out of the compare)"
+  },
+  {
+   "name": "G2b End date B → 30/09/2027 — a reload gives back exactly what was there (the Tracker: every chart, detail, course, student, mark, and the screen)",
+   "ok": true,
+   "detail": "2 courses · 4 charts · on 26ABSG / 2026 ✎ / STUDENT A"
+  },
+  {
+   "name": "G2b End date B → 30/09/2027 — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "G2b after the reload End date B reads 2027-09-30",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "G2c Last Flown (Syllabus) → 01/09/2026 — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [tracker/v3:cmunyibq1qcvz8z:sb2026:d:smunyibq5i3oq3m] · del 0 [] · batches trk.dates/1"
+  },
+  {
+   "name": "G2c Last Flown (Syllabus) → 01/09/2026 — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [tracker/v3:cmunyibq1qcvz8z:sb2026:d:smunyibq5i3oq3m] · del 0 [] · batches trk.dates/1"
+  },
+  {
+   "name": "G2c Last Flown (Syllabus) → 01/09/2026 — one action, ONE change-log batch",
+   "ok": true,
+   "detail": "1 batch"
+  },
+  {
+   "name": "G2c Last Flown (Syllabus) → 01/09/2026 — a reload gives back exactly what was there (the app)",
+   "ok": true,
+   "detail": "week 13/07/2026 (the never-saved demo week’s hidden row ids were minted afresh — left out of the compare)"
+  },
+  {
+   "name": "G2c Last Flown (Syllabus) → 01/09/2026 — a reload gives back exactly what was there (the Tracker: every chart, detail, course, student, mark, and the screen)",
+   "ok": true,
+   "detail": "2 courses · 4 charts · on 26ABSG / 2026 ✎ / STUDENT A"
+  },
+  {
+   "name": "G2c Last Flown (Syllabus) → 01/09/2026 — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "G2c after the reload Last Flown (Syllabus) reads 2026-09-01",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "G2d Last Flown (Currency) → 15/09/2026 — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [tracker/v3:cmunyibq1qcvz8z:sb2026:d:smunyibq5i3oq3m] · del 0 [] · batches trk.dates/1"
+  },
+  {
+   "name": "G2d Last Flown (Currency) → 15/09/2026 — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [tracker/v3:cmunyibq1qcvz8z:sb2026:d:smunyibq5i3oq3m] · del 0 [] · batches trk.dates/1"
+  },
+  {
+   "name": "G2d Last Flown (Currency) → 15/09/2026 — one action, ONE change-log batch",
+   "ok": true,
+   "detail": "1 batch"
+  },
+  {
+   "name": "G2d Last Flown (Currency) → 15/09/2026 — a reload gives back exactly what was there (the app)",
+   "ok": true,
+   "detail": "week 13/07/2026 (the never-saved demo week’s hidden row ids were minted afresh — left out of the compare)"
+  },
+  {
+   "name": "G2d Last Flown (Currency) → 15/09/2026 — a reload gives back exactly what was there (the Tracker: every chart, detail, course, student, mark, and the screen)",
+   "ok": true,
+   "detail": "2 courses · 4 charts · on 26ABSG / 2026 ✎ / STUDENT A"
+  },
+  {
+   "name": "G2d Last Flown (Currency) → 15/09/2026 — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "G2d after the reload Last Flown (Currency) reads 2026-09-15",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "G2e Upchit → 15/10/2026 — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [tracker/v3:cmunyibq1qcvz8z:sb2026:d:smunyibq5i3oq3m] · del 0 [] · batches trk.dates/1"
+  },
+  {
+   "name": "G2e Upchit → 15/10/2026 — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [tracker/v3:cmunyibq1qcvz8z:sb2026:d:smunyibq5i3oq3m] · del 0 [] · batches trk.dates/1"
+  },
+  {
+   "name": "G2e Upchit → 15/10/2026 — one action, ONE change-log batch",
+   "ok": true,
+   "detail": "1 batch"
+  },
+  {
+   "name": "G2e Upchit → 15/10/2026 — a reload gives back exactly what was there (the app)",
+   "ok": true,
+   "detail": "week 13/07/2026 (the never-saved demo week’s hidden row ids were minted afresh — left out of the compare)"
+  },
+  {
+   "name": "G2e Upchit → 15/10/2026 — a reload gives back exactly what was there (the Tracker: every chart, detail, course, student, mark, and the screen)",
+   "ok": true,
+   "detail": "2 courses · 4 charts · on 26ABSG / 2026 ✎ / STUDENT A"
+  },
+  {
+   "name": "G2e Upchit → 15/10/2026 — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "G2e after the reload Upchit reads 2026-10-15",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "G2f No. of down days → 3 — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [tracker/v3:cmunyibq1qcvz8z:sb2026:d:smunyibq5i3oq3m] · del 0 [] · batches trk.dates/1"
+  },
+  {
+   "name": "G2f No. of down days → 3 — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [tracker/v3:cmunyibq1qcvz8z:sb2026:d:smunyibq5i3oq3m] · del 0 [] · batches trk.dates/1"
+  },
+  {
+   "name": "G2f No. of down days → 3 — one action, ONE change-log batch",
+   "ok": true,
+   "detail": "1 batch"
+  },
+  {
+   "name": "G2f No. of down days → 3 — a reload gives back exactly what was there (the app)",
+   "ok": true,
+   "detail": "week 13/07/2026 (the never-saved demo week’s hidden row ids were minted afresh — left out of the compare)"
+  },
+  {
+   "name": "G2f No. of down days → 3 — a reload gives back exactly what was there (the Tracker: every chart, detail, course, student, mark, and the screen)",
+   "ok": true,
+   "detail": "2 courses · 4 charts · on 26ABSG / 2026 ✎ / STUDENT A"
+  },
+  {
+   "name": "G2f No. of down days → 3 — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "G2f after the reload down days read 3",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "G2g + Set lull period 01/10 – 08/10/2026 — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [tracker/v3:cmunyibq1qcvz8z:lulls:smunyibq5i3oq3m] · del 0 [] · batches trk.lulls/1"
+  },
+  {
+   "name": "G2g + Set lull period 01/10 – 08/10/2026 — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [tracker/v3:cmunyibq1qcvz8z:lulls:smunyibq5i3oq3m] · del 0 [] · batches trk.lulls/1"
+  },
+  {
+   "name": "G2g + Set lull period 01/10 – 08/10/2026 — one action, ONE change-log batch",
+   "ok": true,
+   "detail": "1 batch"
+  },
+  {
+   "name": "G2g + Set lull period 01/10 – 08/10/2026 — a reload gives back exactly what was there (the app)",
+   "ok": true,
+   "detail": "week 13/07/2026 (the never-saved demo week’s hidden row ids were minted afresh — left out of the compare)"
+  },
+  {
+   "name": "G2g + Set lull period 01/10 – 08/10/2026 — a reload gives back exactly what was there (the Tracker: every chart, detail, course, student, mark, and the screen)",
+   "ok": true,
+   "detail": "2 courses · 4 charts · on 26ABSG / 2026 ✎ / STUDENT A"
+  },
+  {
+   "name": "G2g + Set lull period 01/10 – 08/10/2026 — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "G2g after the reload the lull chip is there",
+   "ok": true,
+   "detail": "01/10/26\n→\n08/10/26\n×"
+  },
+  {
+   "name": "G2h ⧉ Copy to… the lull period onto every other student — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [tracker/v3:cmunyibq1qcvz8z:lulls:smunyibq5m9oadx] · del 0 [] · batches trk.gesture/1"
+  },
+  {
+   "name": "G2h ⧉ Copy to… the lull period onto every other student — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [tracker/v3:cmunyibq1qcvz8z:lulls:smunyibq5m9oadx] · del 0 [] · batches trk.gesture/1"
+  },
+  {
+   "name": "G2h ⧉ Copy to… the lull period onto every other student — one action, ONE change-log batch",
+   "ok": true,
+   "detail": "1 batch"
+  },
+  {
+   "name": "G2h ⧉ Copy to… the lull period onto every other student — a reload gives back exactly what was there (the app)",
+   "ok": true,
+   "detail": "week 13/07/2026 (the never-saved demo week’s hidden row ids were minted afresh — left out of the compare)"
+  },
+  {
+   "name": "G2h ⧉ Copy to… the lull period onto every other student — a reload gives back exactly what was there (the Tracker: every chart, detail, course, student, mark, and the screen)",
+   "ok": true,
+   "detail": "2 courses · 4 charts · on 26ABSG / 2026 ✎ / STUDENT A"
+  },
+  {
+   "name": "G2h ⧉ Copy to… the lull period onto every other student — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "G2i a failure on ACG-01 (pop-up Fails +, Close) — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [tracker/v3:cmunyibq1qcvz8z:sb2026:m:smunyibq5i3oq3m] · del 0 [] · batches trk.gesture/1"
+  },
+  {
+   "name": "G2i a failure on ACG-01 (pop-up Fails +, Close) — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [tracker/v3:cmunyibq1qcvz8z:sb2026:m:smunyibq5i3oq3m] · del 0 [] · batches trk.gesture/1"
+  },
+  {
+   "name": "G2i a failure on ACG-01 (pop-up Fails +, Close) — one action, ONE change-log batch",
+   "ok": true,
+   "detail": "1 batch"
+  },
+  {
+   "name": "G2i a failure on ACG-01 (pop-up Fails +, Close) — a reload gives back exactly what was there (the app)",
+   "ok": true,
+   "detail": "week 13/07/2026 (the never-saved demo week’s hidden row ids were minted afresh — left out of the compare)"
+  },
+  {
+   "name": "G2i a failure on ACG-01 (pop-up Fails +, Close) — a reload gives back exactly what was there (the Tracker: every chart, detail, course, student, mark, and the screen)",
+   "ok": true,
+   "detail": "2 courses · 4 charts · on 26ABSG / 2026 ✎ / STUDENT A"
+  },
+  {
+   "name": "G2i a failure on ACG-01 (pop-up Fails +, Close) — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "G2j re-date that failure (the Failures list) → 20/09/2026 — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [tracker/v3:cmunyibq1qcvz8z:sb2026:m:smunyibq5i3oq3m] · del 0 [] · batches trk.gesture/1"
+  },
+  {
+   "name": "G2j re-date that failure (the Failures list) → 20/09/2026 — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [tracker/v3:cmunyibq1qcvz8z:sb2026:m:smunyibq5i3oq3m] · del 0 [] · batches trk.gesture/1"
+  },
+  {
+   "name": "G2j re-date that failure (the Failures list) → 20/09/2026 — one action, ONE change-log batch",
+   "ok": true,
+   "detail": "1 batch"
+  },
+  {
+   "name": "G2j re-date that failure (the Failures list) → 20/09/2026 — a reload gives back exactly what was there (the app)",
+   "ok": true,
+   "detail": "week 13/07/2026 (the never-saved demo week’s hidden row ids were minted afresh — left out of the compare)"
+  },
+  {
+   "name": "G2j re-date that failure (the Failures list) → 20/09/2026 — a reload gives back exactly what was there (the Tracker: every chart, detail, course, student, mark, and the screen)",
+   "ok": true,
+   "detail": "2 courses · 4 charts · on 26ABSG / 2026 ✎ / STUDENT A"
+  },
+  {
+   "name": "G2j re-date that failure (the Failures list) → 20/09/2026 — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "G2j after the reload the failure is dated 2026-09-20",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "G2k Edit chart layout: ╱ Line drawn in empty space; ▣ Select all, Font 9 — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [tracker/v3:master:lay:sb2026] · del 0 [] · batches trk.layout/1 trk.layout/1"
+  },
+  {
+   "name": "G2l ✓ Save changes (the line and the font) — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [tracker/v3:master:chart:sb2026] · del 0 [] · batches trk.gesture/1"
+  },
+  {
+   "name": "G2l ✓ Save changes (line, font) — one action, ONE change-log batch",
+   "ok": true,
+   "detail": "1 batch"
+  },
+  {
+   "name": "G2l the chart's stored layout holds the drawn line and the font 9",
+   "ok": true,
+   "detail": "__lines, __derived, __font, __edgeMeta, __merges, __unmerges"
+  },
+  {
+   "name": "G2l ✓ Save changes (line, font) — a reload gives back exactly what was there (the app)",
+   "ok": true,
+   "detail": "week 13/07/2026 (the never-saved demo week’s hidden row ids were minted afresh — left out of the compare)"
+  },
+  {
+   "name": "G2l ✓ Save changes (line, font) — a reload gives back exactly what was there (the Tracker: every chart, detail, course, student, mark, and the screen)",
+   "ok": true,
+   "detail": "2 courses · 4 charts · on 26ABSG / 2026 ✎ / STUDENT A"
+  },
+  {
+   "name": "G2l ✓ Save changes (line, font) — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "G2m details typed on ACG-03 — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [tracker/v3:master:info:sb2026:ACG-03] · del 0 [] · batches trk.eventinfo/1"
+  },
+  {
+   "name": "G2n Reset to doc on ACG-03 (pop-up ✎ Edit details → Reset to doc → Save) — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 0 [] · del 1 [tracker/v3:master:info:sb2026:ACG-03] · batches trk.eventinfo/1"
+  },
+  {
+   "name": "G2n Reset to doc on ACG-03 (pop-up ✎ Edit details → Reset to doc → Save) — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 0 [] · del 1 [tracker/v3:master:info:sb2026:ACG-03] · batches trk.eventinfo/1"
+  },
+  {
+   "name": "G2n Reset to doc on ACG-03 (pop-up ✎ Edit details → Reset to doc → Save) — one action, ONE change-log batch",
+   "ok": true,
+   "detail": "1 batch"
+  },
+  {
+   "name": "G2n Reset to doc on ACG-03 (pop-up ✎ Edit details → Reset to doc → Save) — a reload gives back exactly what was there (the app)",
+   "ok": true,
+   "detail": "week 13/07/2026 (the never-saved demo week’s hidden row ids were minted afresh — left out of the compare)"
+  },
+  {
+   "name": "G2n Reset to doc on ACG-03 (pop-up ✎ Edit details → Reset to doc → Save) — a reload gives back exactly what was there (the Tracker: every chart, detail, course, student, mark, and the screen)",
+   "ok": true,
+   "detail": "2 courses · 4 charts · on 26ABSG / 2026 ✎ / STUDENT A"
+  },
+  {
+   "name": "G2n Reset to doc on ACG-03 (pop-up ✎ Edit details → Reset to doc → Save) — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "G2n after the reload ACG-03 has no typed details (the document's wording)",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "G2o ✎ Rename syllabus 2026 → \"2026 W5\" — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [tracker/v3:master:chart:sb2026] · del 0 [] · batches trk.catalogue/1"
+  },
+  {
+   "name": "G2o ✎ Rename syllabus 2026 → \"2026 W5\" — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [tracker/v3:master:chart:sb2026] · del 0 [] · batches trk.catalogue/1"
+  },
+  {
+   "name": "G2o ✎ Rename syllabus 2026 → \"2026 W5\" — one action, ONE change-log batch",
+   "ok": true,
+   "detail": "1 batch"
+  },
+  {
+   "name": "G2o ✎ Rename syllabus 2026 → \"2026 W5\" — a reload gives back exactly what was there (the app)",
+   "ok": true,
+   "detail": "week 13/07/2026 (the never-saved demo week’s hidden row ids were minted afresh — left out of the compare)"
+  },
+  {
+   "name": "G2o ✎ Rename syllabus 2026 → \"2026 W5\" — a reload gives back exactly what was there (the Tracker: every chart, detail, course, student, mark, and the screen)",
+   "ok": true,
+   "detail": "2 courses · 4 charts · on 26ABSG / 2026 W5 ✎ / STUDENT A"
+  },
+  {
+   "name": "G2o ✎ Rename syllabus 2026 → \"2026 W5\" — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "G2o after the reload the dropdown reads \"2026 W5\"",
+   "ok": true,
+   "detail": "2024 · 2026 W5 ✎ · Tx 2026 · A/G - A/A 2026"
+  },
+  {
+   "name": "W5 part G — no console error, page error or failed request",
+   "ok": true,
+   "detail": ""
+  }
+ ],
+ "walker": "W5",
+ "part": "G",
+ "table": [
+  {
+   "step": "G1",
+   "width": "desktop",
+   "did": "2026 shared by 26ABSG and G-TWO, each with a DCO on the flight TR-1(P) and details on it; 🗑 Delete TR-1(P) → ↶ Undo → Done (reload); 🗑 Delete TR-1(P) → Done → ✓ Save changes (reload both courses)",
+   "after": "TR-1(P) gone from 2026; marks and Last Flown gone on both courses; details gone",
+   "rows": "SAVE: put 5 [tracker/v3:cmunyibq1qcvz8z:sb2026:d:smunyibq5i3oq3m, tracker/v3:cmunyibq1qcvz8z:sb2026:m:smunyibq5i3oq3m, tracker/v3:cmunyih7mf6hnt0:sb2026:d:smunyiibw31fqai, tracker/v3:cmunyih7mf6hnt0:sb2026:m:smunyiibw31fqai, tracker/v3:master:chart:sb2026] · del 3 [tracker/v3:cmunyibq1qcvz8z:last:smunyibq5i3oq3m, tracker/v3:cmunyih7mf6hnt0:last:smunyiibw31fqai, tracker/v3:master:info:sb2026:TR-1(P)] · batches 1 (trk.gesture/8)",
+   "pics": [
+    "g1-setup",
+    "g1-deleted-unsaved",
+    "g1-saved",
+    "g1-after-reload"
+   ]
+  },
+  {
+   "step": "G2",
+   "width": "desktop",
+   "did": "End date A, End date B, Last Flown (Syllabus), Last Flown (Currency), Upchit, down days, + Set lull period, ⧉ Copy to…, Fails +, the failure re-dated, ╱ Line + Font 9 → ✓ Save changes, Reset to doc, ✎ Rename syllabus — a reload after each",
+   "after": "each value as set",
+   "rows": "End date A → 30/06/2027: put 1 [tracker/v3:cmunyibq1qcvz8z:pace:smunyibq5i3oq3m] · del 0 · batches 1 (trk.pace/1) ‖ End date B → 30/09/2027: put 1 [tracker/v3:cmunyibq1qcvz8z:pace:smunyibq5i3oq3m] · del 0 · batches 1 (trk.pace/1) ‖ Last Flown (Syllabus) → 01/09/2026: put 1 [tracker/v3:cmunyibq1qcvz8z:sb2026:d:smunyibq5i3oq3m] · del 0 · batches 1 (trk.dates/1) ‖ Last Flown (Currency) → 15/09/2026: put 1 [tracker/v3:cmunyibq1qcvz8z:sb2026:d:smunyibq5i3oq3m] · del 0 · batches 1 (trk.dates/1) ‖ Upchit → 15/10/2026: put 1 [tracker/v3:cmunyibq1qcvz8z:sb2026:d:smunyibq5i3oq3m] · del 0 · batches 1 (trk.dates/1) ‖ No. of down days → 3: put 1 [tracker/v3:cmunyibq1qcvz8z:sb2026:d:smunyibq5i3oq3m] · del 0 · batches 1 (trk.dates/1) ‖ + Set lull period 01/10 – 08/10/2026: put 1 [tracker/v3:cmunyibq1qcvz8z:lulls:smunyibq5i3oq3m] · del 0 · batches 1 (trk.lulls/1) ‖ ⧉ Copy to… the lull period onto every other student: put 1 [tracker/v3:cmunyibq1qcvz8z:lulls:smunyibq5m9oadx] · del 0 · batches 1 (trk.gesture/1) ‖ a failure on ACG-01 (pop-up Fails +, Close): put 1 [tracker/v3:cmunyibq1qcvz8z:sb2026:m:smunyibq5i3oq3m] · del 0 · batches 1 (trk.gesture/1) ‖ re-date that failure (the Failures list) → 20/09/2026: put 1 [tracker/v3:cmunyibq1qcvz8z:sb2026:m:smunyibq5i3oq3m] · del 0 · batches 1 (trk.gesture/1) ‖ line+font: put 1 [tracker/v3:master:lay:sb2026] · del 0 · batches 2 (trk.layout/1 trk.layout/1) ‖ save: put 1 [tracker/v3:master:chart:sb2026] · del 0 · batches 1 (trk.gesture/1) ‖ Reset to doc on ACG-03 (pop-up ✎ Edit details → Reset to doc → Save): put 0 · del 1 [tracker/v3:master:info:sb2026:ACG-03] · batches 1 (trk.eventinfo/1) ‖ ✎ Rename syllabus 2026 → \"2026 W5\": put 1 [tracker/v3:master:chart:sb2026] · del 0 · batches 1 (trk.catalogue/1)",
+   "pics": [
+    "g2-lull-after-reload",
+    "g2-failure-after-reload",
+    "g2-line-font-unsaved",
+    "g2-line-font-after-reload",
+    "g2-renamed-chart-after-reload"
+   ]
+  }
+ ],
+ "notes": [
+  "G1 the flight used: TR-1(P)",
+  "G1f the delete asked: Delete TR-1(P) from this syllabus? Every student’s marks on it are removed when you press ✓ Save changes.",
+  "G1g after ↶ Undo and Done editing, ✓ Save changes is still lit",
+  "G1g that save wrote: put 0 · del 0 · batches 0 ()",
+  "G2k the line and font, before ✓ Save changes, wrote: put 1 [tracker/v3:master:lay:sb2026] · del 0 · batches 2 (trk.layout/1 trk.layout/1)"
+ ],
+ "errors": []
+}

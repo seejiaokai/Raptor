@@ -1,0 +1,237 @@
+{
+ "base": "http://localhost:4204",
+ "at": "2026-09-30T09:21:22.543Z",
+ "results": [
+  {
+   "name": "ROWS-0a a person added with his account (every account is then stored) — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 8 [leavewar/profile:pmunwa6ps8jp98k, people/pmunwa6ps8jp98k, settings/account:acad, settings/account:achex, settings/account:acmunwa6pu53l7, settings/account:acoutlaw, settings/account:acus, settings/elog:munwa4881jmp.000001] · del 0 [] · batches account.addNew/8"
+  },
+  {
+   "name": "ROWS-0b a Monday note (a history line) — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 9 [settings/elog:munwa4881jmp.000002, weeks/13-07-2026, weeks/13-07-2026#0, weeks/13-07-2026#1, weeks/13-07-2026#2, weeks/13-07-2026#3, weeks/13-07-2026#4, weeks/13-07-2026#5 …] · del 0 [] · batches sched.text/8 elog.line/1"
+  },
+  {
+   "name": "ROWS-0c a Tracker student — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 3 [tracker/v3:cmunwaa4ylgzfda:sb2026:d:smunwaawo0y5m27, tracker/v3:cmunwaa4ylgzfda:sb2026:enr:smunwaawo0y5m27, tracker/v3:cmunwaa4ylgzfda:sb2026:m:smunwaawo0y5m27] · del 0 [] · batches trk.gesture/3"
+  },
+  {
+   "name": "ROWS-0: a row of each kind exists to damage",
+   "ok": true,
+   "detail": "[\"REQ=inputs/imunwa4968t980q\",\"WAR=leavewar/rec:y2026:seed1\",\"LINE=settings/elog:munwa4881jmp.000001\",\"ACCT=settings/account:acus\",\"ENR=tracker/v3:cmunwaa4ylgzfda:sb2026:enr:smunwaa514nwj6f\"]"
+  },
+  {
+   "name": "REQ-1: a request row damaged (inputs/imunwa4968t980q) → the app loads and signs in",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "REQ-2: what the screen shows with a request row damaged",
+   "ok": true,
+   "detail": "the request is not listed (23 others are)"
+  },
+  {
+   "name": "REQ-3 an edit elsewhere with a request row damaged — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 2 [inputs/imunwagpnmvhyyw, settings/elog:munwach435g0.000001] · del 0 [] · batches inputs.batch/2"
+  },
+  {
+   "name": "REQ-3: the edit wrote rows (it saved)",
+   "ok": true,
+   "detail": "[\"inputs/imunwagpnmvhyyw\",\"settings/elog:munwach435g0.000001\"]"
+  },
+  {
+   "name": "REQ-3: the damaged row is left byte for byte",
+   "ok": true,
+   "detail": "{\"this row was damaged by hand"
+  },
+  {
+   "name": "REQ-4 — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "REQ-4 — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "REQ-4: after a reload the damaged row is still byte for byte, and the app loads",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "WAR-1: a war record row damaged (leavewar/rec:y2026:seed1) → the app loads and signs in",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "WAR-2: what the screen shows with a war record row damaged",
+   "ok": true,
+   "detail": "[\"02-10:·\"] (was *OIL)"
+  },
+  {
+   "name": "WAR-3 an edit elsewhere with a war record row damaged — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [leavewar/rec:y2026:rmunwapjp1vf2i] · del 0 [] · batches lw.edit/1"
+  },
+  {
+   "name": "WAR-3: the edit wrote rows (it saved)",
+   "ok": true,
+   "detail": "[\"leavewar/rec:y2026:rmunwapjp1vf2i\"]"
+  },
+  {
+   "name": "WAR-3: the damaged row is left byte for byte",
+   "ok": true,
+   "detail": "{\"this row was damaged by hand"
+  },
+  {
+   "name": "WAR-4 — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "WAR-4 — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "WAR-4: after a reload the damaged row is still byte for byte, and the app loads",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "LINE-1: a history line damaged (settings/elog:munwa4881jmp.000001) → the app loads and signs in",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "LINE-2: what the screen shows with a history line damaged",
+   "ok": true,
+   "detail": "⠿ Changes · week of 13/7 1 change this week ✕ New to you 0 All changes 1 Week Mon Tue Wed Thu Fri Sat Sun GROUP BY Item Who Nothing new to you this week. ✓ Mark all as seen"
+  },
+  {
+   "name": "LINE-3 an edit elsewhere with a history line damaged — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 2 [settings/elog:munwatmev71f.000001, weeks/13-07-2026#2] · del 0 [] · batches sched.text/1 elog.line/1"
+  },
+  {
+   "name": "LINE-3: the edit wrote rows (it saved)",
+   "ok": true,
+   "detail": "[\"settings/elog:munwatmev71f.000001\",\"weeks/13-07-2026#2\"]"
+  },
+  {
+   "name": "LINE-3: the damaged row is left byte for byte",
+   "ok": true,
+   "detail": "{\"this row was damaged by hand"
+  },
+  {
+   "name": "LINE-4 — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "LINE-4 — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "LINE-4: after a reload the damaged row is still byte for byte, and the app loads",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "ACCT-1: a non-admin account row (Ranger's) damaged (settings/account:acus) → the app loads and signs in",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "ACCT-2: what the screen shows with a non-admin account row (Ranger's) damaged",
+   "ok": true,
+   "detail": "SIGN-IN | ROSTER | Ace | no sign-in · Pilot · CAT A | Anvil | no sign-in · Pilot · CAT IP | Basher | no sign-in · WSO · CAT IW | Blade | no sign-in · Pilot · CAT IP | Bolt | no sign-in · Pilot · CAT C | Cinch | no sign-in · Pilot · CAT IP | Cinder | no sign-in · WSO · CAT B | Cobra | no sign-in · Pi"
+  },
+  {
+   "name": "ACCT-3 an edit elsewhere with a non-admin account row (Ranger's) damaged — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 4 [leavewar/profile:pmunwb39zs888ik, people/pmunwb39zs888ik, settings/account:acmunwb3a1c99h, settings/elog:munwb0gkt38l.000001] · del 0 [] · batches account.addNew/4"
+  },
+  {
+   "name": "ACCT-3: the edit wrote rows (it saved)",
+   "ok": true,
+   "detail": "[\"leavewar/profile:pmunwb39zs888ik\",\"people/pmunwb39zs888ik\",\"settings/account:acmunwb3a1c99h\",\"settings/elog:munwb0gkt38l.000001\"]"
+  },
+  {
+   "name": "ACCT-3: the damaged row is left byte for byte",
+   "ok": true,
+   "detail": "{\"this row was damaged by hand"
+  },
+  {
+   "name": "ACCT-4 — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "ACCT-4 — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "ACCT-4: after a reload the damaged row is still byte for byte, and the app loads",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "ACCT-5: no OTHER account row was rewritten (no lock-out repair touched them)",
+   "ok": true,
+   "detail": "[]"
+  },
+  {
+   "name": "ENR-1: a Tracker enrolment row damaged (tracker/v3:cmunwaa4ylgzfda:sb2026:enr:smunwaa514nwj6f) → the app loads and signs in",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "ENR-2: what the screen shows with a Tracker enrolment row damaged",
+   "ok": true,
+   "detail": "crew on screen: [\"STUDENT B\",\"DMG STUDENT\"]"
+  },
+  {
+   "name": "ENR-3 an edit elsewhere with a Tracker enrolment row damaged — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 3 [tracker/v3:cmunwaa4ylgzfda:sb2026:d:smunwbadhinuazr, tracker/v3:cmunwaa4ylgzfda:sb2026:enr:smunwbadhinuazr, tracker/v3:cmunwaa4ylgzfda:sb2026:m:smunwbadhinuazr] · del 0 [] · batches trk.gesture/3"
+  },
+  {
+   "name": "ENR-3: the edit wrote rows (it saved)",
+   "ok": true,
+   "detail": "[\"tracker/v3:cmunwaa4ylgzfda:sb2026:d:smunwbadhinuazr\",\"tracker/v3:cmunwaa4ylgzfda:sb2026:enr:smunwbadhinuazr\",\"tracker/v3:cmunwaa4ylgzfda:sb2026:m:smunwbadhinuazr\"]"
+  },
+  {
+   "name": "ENR-3: the damaged row is left byte for byte",
+   "ok": true,
+   "detail": "{\"this row was damaged by hand"
+  },
+  {
+   "name": "ENR-4 — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "ENR-4 — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "ENR-4: after a reload the damaged row is still byte for byte, and the app loads",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "rows: no console error, page error or failed request (beyond the expected boot refusal)",
+   "ok": true,
+   "detail": "[]"
+  }
+ ],
+ "part": "rows"
+}

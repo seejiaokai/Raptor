@@ -1,0 +1,730 @@
+{
+ "base": "http://localhost:4202",
+ "at": "2026-09-30T09:13:51.442Z",
+ "results": [
+  {
+   "name": "W2-13a fixture — Inputs page: an LL for Ranger, Tue 13 Oct — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 2 [inputs/imunvznhlbhnnl3, settings/elog:munvzkpstpml.000001] · del 0 [] · batches inputs.batch/2"
+  },
+  {
+   "name": "W2-13a fixture — Inputs page: an LL for Ranger, Tue 13 Oct — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 2 [inputs/imunvznhlbhnnl3, settings/elog:munvzkpstpml.000001] · del 0 [] · batches inputs.batch/2"
+  },
+  {
+   "name": "W2-13b its ✎ editor: the Person changed from Ranger to Saint → ✓ — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 2 [inputs/imunvznhlbhnnl3, settings/elog:munvzkpstpml.000002] · del 0 [] · batches inputs.batch/2"
+  },
+  {
+   "name": "W2-13b its ✎ editor: the Person changed from Ranger to Saint → ✓ — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 2 [inputs/imunvznhlbhnnl3, settings/elog:munvzkpstpml.000002] · del 0 [] · batches inputs.batch/2"
+  },
+  {
+   "name": "W2-13b — the same request row, now Saint's — its row only",
+   "ok": true,
+   "detail": "{\"r\":{\"iid\":\"imunvznhlbhnnl3\",\"person\":\"salsa\",\"type\":\"LL\",\"date\":\"Oct 13\",\"endDate\":\"\",\"remarks\":\"W2 reassign\",\"ord\":0},\"put\":[\"inputs/imunvznhlbhnnl3\",\"settings/elog:munvzkpstpml.000002\"]}"
+  },
+  {
+   "name": "W2-13b — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "W2-13b — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "W2-13b — (pristine week) with the fresh hidden row ids set aside, the reload gives back everything else exactly",
+   "ok": true,
+   "detail": "same"
+  },
+  {
+   "name": "W2-13b reading the screen after the reload — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "W2-13b reading the screen after the reload — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "W2-13b — after the reload: still Saint's after the reload",
+   "ok": true,
+   "detail": "{\"iid\":\"imunvznhlbhnnl3\",\"person\":\"salsa\",\"type\":\"LL\",\"date\":\"Oct 13\",\"endDate\":\"\",\"remarks\":\"W2 reassign\",\"ord\":0}"
+  },
+  {
+   "name": "W2-13c fixture — a Training for Ranger on Wed 15 Jul (it lands on Wednesday's Ground Programme) — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 10 [inputs/imunvzvvcg4dp7v, settings/elog:munvzsegs782.000001, weeks/13-07-2026, weeks/13-07-2026#0, weeks/13-07-2026#1, weeks/13-07-2026#2, weeks/13-07-2026#3, weeks/13-07-2026#4 …] · del 0 [] · batches inputs.batch/10"
+  },
+  {
+   "name": "W2-13c fixture — a Training for Ranger on Wed 15 Jul (it lands on Wednesday's Ground Programme) — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 10 [inputs/imunvzvvcg4dp7v, settings/elog:munvzsegs782.000001, weeks/13-07-2026, weeks/13-07-2026#0, weeks/13-07-2026#1, weeks/13-07-2026#2, weeks/13-07-2026#3, weeks/13-07-2026#4 …] · del 0 [] · batches inputs.batch/10"
+  },
+  {
+   "name": "W2-13d the scheduler board (Wednesday): the landed Training's ✕ on the Ground Programme — taken off the day — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 3 [inputs/imunvzvvcg4dp7v, settings/elog:munvzsegs782.000002, weeks/13-07-2026#2] · del 0 [] · batches sched.mutate/3"
+  },
+  {
+   "name": "W2-13d the scheduler board (Wednesday): the landed Training's ✕ on the Ground Programme — taken off the day — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 3 [inputs/imunvzvvcg4dp7v, settings/elog:munvzsegs782.000002, weeks/13-07-2026#2] · del 0 [] · batches sched.mutate/3"
+  },
+  {
+   "name": "W2-13d — off Wednesday's Ground Programme; the request kept, marked taken off",
+   "ok": true,
+   "detail": "{\"ground\":false,\"acc\":\"r\"}"
+  },
+  {
+   "name": "W2-13d — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "W2-13d — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "W2-13d reading the screen after the reload — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "W2-13d reading the screen after the reload — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "W2-13d — after the reload: still off the day after the reload (no re-landing)",
+   "ok": true,
+   "detail": "{\"g\":false,\"acc\":\"r\"}"
+  },
+  {
+   "name": "W2-13e the week left (Jul 20) and returned to (Jul 13) — the taken-off request must not land again — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "W2-13e the week left (Jul 20) and returned to (Jul 13) — the taken-off request must not land again — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "W2-13e — back on the week, still off Wednesday",
+   "ok": true,
+   "detail": "{\"ground\":false,\"acc\":\"r\"}"
+  },
+  {
+   "name": "W2-13e — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "W2-13e — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "W2-13e reading the screen after the reload — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "W2-13e reading the screen after the reload — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "W2-13e — after the reload: still off after the reload",
+   "ok": true,
+   "detail": "{\"g\":false,\"acc\":\"r\"}"
+  },
+  {
+   "name": "W2-13f Inputs page: an ATT B for Ranger, Thu 22 Oct, with TWO documents attached (the form's Document button, two PDFs) — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 2 [inputs/imunw0ah9ixd605, settings/elog:munw0637ptke.000001] · del 0 [] · batches inputs.batch/2"
+  },
+  {
+   "name": "W2-13f Inputs page: an ATT B for Ranger, Thu 22 Oct, with TWO documents attached (the form's Document button, two PDFs) — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 2 [inputs/imunw0ah9ixd605, settings/elog:munw0637ptke.000001] · del 0 [] · batches inputs.batch/2"
+  },
+  {
+   "name": "W2-13f — ONE request row carrying two document ids — and no byte of either document in any saved row (they sit in the browser's document drawer)",
+   "ok": true,
+   "detail": "{\"ret\":{\"chips\":2,\"asked\":[],\"iD\":\"imunw0ah9ixd605\"},\"docIds\":[\"doc-5b80ac75-0d96-4265-9456-c47e004aebb2\",\"doc-627cd183-2a05-45f8-991c-96f059a7bf4c\"],\"rowBytes\":315,\"leak\":[],\"drawer\":{\"stores\":[\"docs\"],\"n\":8}}"
+  },
+  {
+   "name": "W2-13f — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "W2-13f — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "W2-13f reading the screen after the reload — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "W2-13f reading the screen after the reload — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "W2-13f — after the reload: the two documents still on the request (its 📎 drawn); still no document bytes in the saved rows",
+   "ok": true,
+   "detail": "{\"docIds\":2,\"clip\":1,\"drawer\":{\"stores\":[\"docs\"],\"n\":8}}"
+  },
+  {
+   "name": "W2-13g its ✎ editor: one document's ✕ → ✓ (one left) — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [inputs/imunw0ah9ixd605] · del 0 [] · batches inputs.batch/1"
+  },
+  {
+   "name": "W2-13g its ✎ editor: one document's ✕ → ✓ (one left) — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [inputs/imunw0ah9ixd605] · del 0 [] · batches inputs.batch/1"
+  },
+  {
+   "name": "W2-13g — one document id left on the request row; still no bytes in the rows",
+   "ok": true,
+   "detail": "{\"n\":1}"
+  },
+  {
+   "name": "W2-13g — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "W2-13g — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "W2-13g reading the screen after the reload — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "W2-13g reading the screen after the reload — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "W2-13g — after the reload: one document after the reload",
+   "ok": true,
+   "detail": "1"
+  },
+  {
+   "name": "W2-13h its ✎ editor: the LAST document's ✕ → ✓ (a medical request keeps at least one — refused) — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "W2-13h its ✎ editor: the LAST document's ✕ → ✓ (a medical request keeps at least one — refused) — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "W2-13h — refused with a reason; nothing written; the document stays",
+   "ok": true,
+   "detail": "{\"n\":1,\"ret\":{\"toasts\":[\"Keep at least one document on this entry — add the replacement before removing the last file\"],\"editorStayed\":true}}"
+  },
+  {
+   "name": "W2-14a Ranger (member), Quals (Enable editing): his OWN NVG ticked — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 2 [people/bane, settings/elog:munw0p3scap0.000001] · del 0 [] · batches people.edit/2"
+  },
+  {
+   "name": "W2-14a Ranger (member), Quals (Enable editing): his OWN NVG ticked — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 2 [people/bane, settings/elog:munw0p3scap0.000001] · del 0 [] · batches people.edit/2"
+  },
+  {
+   "name": "W2-14a — his own row changed",
+   "ok": true,
+   "detail": "{}"
+  },
+  {
+   "name": "W2-14a — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "W2-14a — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "W2-14a reading the screen after the reload — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "W2-14a reading the screen after the reload — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "W2-14a — after the reload: kept after the reload",
+   "ok": true,
+   "detail": "{}"
+  },
+  {
+   "name": "W2-14b Ranger (member), Quals: a tap on SABER's box — refused — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "W2-14b Ranger (member), Quals: a tap on SABER's box — refused — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "W2-14b — nothing changed, no row, no batch; the reason said on screen",
+   "ok": true,
+   "detail": "{\"toasts\":[\"You can only edit your own row\"],\"body\":true}"
+  },
+  {
+   "name": "W2-14c Ranger (member), the Inputs page: another man's request offers no ✎ / ✕ (checked on every row that is not his) — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "W2-14c Ranger (member), the Inputs page: another man's request offers no ✎ / ✕ (checked on every row that is not his) — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "W2-14c — no edit or delete control on anyone else's request",
+   "ok": true,
+   "detail": "{\"rows\":49,\"others\":46,\"withControls\":0}"
+  },
+  {
+   "name": "W2-14d Saber: the name badge → the member view — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "W2-14d Saber: the name badge → the member view — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "W2-14d — the badge says the member view; nothing written",
+   "ok": true,
+   "detail": "SABER · MEMBER"
+  },
+  {
+   "name": "W2-14e Saber in the member view, Quals: a tap on ACE's box — refused — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "W2-14e Saber in the member view, Quals: a tap on ACE's box — refused — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "W2-14e — nothing changed, nothing written",
+   "ok": true,
+   "detail": "{\"h0\":true,\"h1\":true,\"toasts\":[\"You can only edit your own row\"]}"
+  },
+  {
+   "name": "W2-14f Saber: the badge again → back to Admin — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "W2-14f Saber: the badge again → back to Admin — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "W2-14f — admin again; nothing written",
+   "ok": true,
+   "detail": "SABER · ADMIN"
+  },
+  {
+   "name": "W2-14g a man on no list (kite@mail) signs in → \"Request access\"; he signs out without asking — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "W2-14g a man on no list (kite@mail) signs in → \"Request access\"; he signs out without asking — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "W2-14g — the request form was offered; signing in and out wrote nothing",
+   "ok": true,
+   "detail": "{\"form\":1}"
+  },
+  {
+   "name": "W2-14h kite@mail asks for access → the waiting screen (one request row); he can do nothing else — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [settings/accessreq:rqmunw1af75kjq] · del 0 [] · batches access.request/1"
+  },
+  {
+   "name": "W2-14h kite@mail asks for access → the waiting screen (one request row); he can do nothing else — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [settings/accessreq:rqmunw1af75kjq] · del 0 [] · batches access.request/1"
+  },
+  {
+   "name": "W2-14h — one request row; the only thing on his screen to press is Sign out",
+   "ok": true,
+   "detail": "{\"buttons\":[\"Sign out\"]}"
+  },
+  {
+   "name": "W2-14i Saber: Admin → Users → Guest view on (\"Let people waiting for access view the schedule\") — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [settings/guestview] · del 0 [] · batches guestview.set/1"
+  },
+  {
+   "name": "W2-14i Saber: Admin → Users → Guest view on (\"Let people waiting for access view the schedule\") — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [settings/guestview] · del 0 [] · batches guestview.set/1"
+  },
+  {
+   "name": "W2-14i — the switch on",
+   "ok": true,
+   "detail": "{}"
+  },
+  {
+   "name": "W2-14i — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "W2-14i — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "W2-14i reading the screen after the reload — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [settings/reqseen:acad] · del 0 [] · batches access.seen/1"
+  },
+  {
+   "name": "W2-14i reading the screen after the reload — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [settings/reqseen:acad] · del 0 [] · batches access.seen/1"
+  },
+  {
+   "name": "W2-14i — after the reload: still on after the reload",
+   "ok": true,
+   "detail": "{\"on\":true}"
+  },
+  {
+   "name": "W2-14j kite@mail signs in again — the guest view: the week read-only; he taps round it — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "W2-14j kite@mail signs in again — the guest view: the week read-only; he taps round it — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "W2-14j — the guest view is up; tapping round it wrote nothing",
+   "ok": true,
+   "detail": "{\"guest\":1,\"buttons\":[\"Sign out\",\"Jul 06\",\"Jul 13\",\"Jul 20\",\"Jul 27\"]}"
+  },
+  {
+   "name": "W2-12 PHONE — Inputs page: Saber files an LL for Ranger, Thu 8 Oct — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 2 [inputs/imunw1lljm8rjyl, settings/elog:munw1j8b7kwq.000001] · del 0 [] · batches inputs.batch/2"
+  },
+  {
+   "name": "W2-12 PHONE — Inputs page: Saber files an LL for Ranger, Thu 8 Oct — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 2 [inputs/imunw1lljm8rjyl, settings/elog:munw1j8b7kwq.000001] · del 0 [] · batches inputs.batch/2"
+  },
+  {
+   "name": "W2-12 — one request row; listed; the page fits the phone",
+   "ok": true,
+   "detail": "{\"iP\":\"imunw1lljm8rjyl\",\"over\":false}"
+  },
+  {
+   "name": "W2-12 — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "W2-12 — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "W2-12 — (pristine week) with the fresh hidden row ids set aside, the reload gives back everything else exactly",
+   "ok": true,
+   "detail": "same"
+  },
+  {
+   "name": "W2-12 reading the screen after the reload — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "W2-12 reading the screen after the reload — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "W2-12 — after the reload: there after the reload, listed",
+   "ok": true,
+   "detail": "{\"iid\":\"imunw1lljm8rjyl\",\"person\":\"bane\",\"type\":\"LL\",\"date\":\"Oct 8\",\"endDate\":\"\",\"remarks\":\"W2 phone\",\"ord\":0}"
+  }
+ ],
+ "table": [
+  {
+   "step": "W2-13a",
+   "width": "desktop",
+   "what": "fixture — Inputs page: an LL for Ranger, Tue 13 Oct",
+   "afterReload": "",
+   "rows": "put 2 [inputs/imunvznhlbhnnl3, settings/elog:munvzkpstpml.000001] · del 0 · batches inputs.batch/2",
+   "pass": true,
+   "fails": [],
+   "pics": [
+    "W2-13a-a.png"
+   ]
+  },
+  {
+   "step": "W2-13b",
+   "width": "desktop",
+   "what": "its ✎ editor: the Person changed from Ranger to Saint → ✓",
+   "afterReload": "Saint 13 Oct LL LATEW2 reassign now ✎ ✕",
+   "rows": "put 2 [inputs/imunvznhlbhnnl3, settings/elog:munvzkpstpml.000002] · del 0 · batches inputs.batch/2",
+   "pass": true,
+   "fails": [],
+   "pics": [
+    "W2-13b-a.png",
+    "W2-13b-b.png"
+   ]
+  },
+  {
+   "step": "W2-13c",
+   "width": "desktop",
+   "what": "fixture — a Training for Ranger on Wed 15 Jul (it lands on Wednesday's Ground Programme)",
+   "afterReload": "",
+   "rows": "put 10 [inputs/imunvzvvcg4dp7v, settings/elog:munvzsegs782.000001, weeks/13-07-2026, weeks/13-07-2026#0, weeks/13-07-2026#1, weeks/13-07-2026#2 … (+4)] · del 0 · batches inputs.batch/10",
+   "pass": true,
+   "fails": [],
+   "pics": [
+    "W2-13c-a.png"
+   ]
+  },
+  {
+   "step": "W2-13d",
+   "width": "desktop",
+   "what": "the scheduler board (Wednesday): the landed Training's ✕ on the Ground Programme — taken off the day",
+   "afterReload": "Wednesday Ground Programme without it; the request kept, taken off",
+   "rows": "put 3 [inputs/imunvzvvcg4dp7v, settings/elog:munvzsegs782.000002, weeks/13-07-2026#2] · del 0 · batches sched.mutate/3",
+   "pass": true,
+   "fails": [],
+   "pics": [
+    "W2-13d-a.png",
+    "W2-13d-b.png"
+   ]
+  },
+  {
+   "step": "W2-13e",
+   "width": "desktop",
+   "what": "the week left (Jul 20) and returned to (Jul 13) — the taken-off request must not land again",
+   "afterReload": "Wednesday without it",
+   "rows": "put 0 · del 0 · batches none",
+   "pass": true,
+   "fails": [],
+   "pics": [
+    "W2-13e-a.png",
+    "W2-13e-b.png"
+   ]
+  },
+  {
+   "step": "W2-13f",
+   "width": "desktop",
+   "what": "Inputs page: an ATT B for Ranger, Thu 22 Oct, with TWO documents attached (the form's Document button, two PDFs)",
+   "afterReload": "2 documents on it, 📎 shown",
+   "rows": "put 2 [inputs/imunw0ah9ixd605, settings/elog:munw0637ptke.000001] · del 0 · batches inputs.batch/2",
+   "pass": true,
+   "fails": [],
+   "pics": [
+    "W2-13f-a.png",
+    "W2-13f-b.png"
+   ]
+  },
+  {
+   "step": "W2-13g",
+   "width": "desktop",
+   "what": "its ✎ editor: one document's ✕ → ✓ (one left)",
+   "afterReload": "1 document on it",
+   "rows": "put 1 [inputs/imunw0ah9ixd605] · del 0 · batches inputs.batch/1",
+   "pass": true,
+   "fails": [],
+   "pics": [
+    "W2-13g-a.png",
+    "W2-13g-b.png"
+   ]
+  },
+  {
+   "step": "W2-13h",
+   "width": "desktop",
+   "what": "its ✎ editor: the LAST document's ✕ → ✓ (a medical request keeps at least one — refused)",
+   "afterReload": "",
+   "rows": "put 0 · del 0 · batches none",
+   "pass": true,
+   "fails": [],
+   "pics": [
+    "W2-13h-a.png"
+   ]
+  },
+  {
+   "step": "W2-14a",
+   "width": "desktop",
+   "what": "Ranger (member), Quals (Enable editing): his OWN NVG ticked",
+   "afterReload": "NVG clear",
+   "rows": "put 2 [people/bane, settings/elog:munw0p3scap0.000001] · del 0 · batches people.edit/2",
+   "pass": true,
+   "fails": [],
+   "pics": [
+    "W2-14a-a.png",
+    "W2-14a-b.png"
+   ]
+  },
+  {
+   "step": "W2-14b",
+   "width": "desktop",
+   "what": "Ranger (member), Quals: a tap on SABER's box — refused",
+   "afterReload": "",
+   "rows": "put 0 · del 0 · batches none",
+   "pass": true,
+   "fails": [],
+   "pics": [
+    "W2-14b-a.png"
+   ]
+  },
+  {
+   "step": "W2-14c",
+   "width": "desktop",
+   "what": "Ranger (member), the Inputs page: another man's request offers no ✎ / ✕ (checked on every row that is not his)",
+   "afterReload": "",
+   "rows": "put 0 · del 0 · batches none",
+   "pass": true,
+   "fails": [],
+   "pics": [
+    "W2-14c-a.png"
+   ]
+  },
+  {
+   "step": "W2-14d",
+   "width": "desktop",
+   "what": "Saber: the name badge → the member view",
+   "afterReload": "",
+   "rows": "put 0 · del 0 · batches none",
+   "pass": true,
+   "fails": [],
+   "pics": [
+    "W2-14d-a.png"
+   ]
+  },
+  {
+   "step": "W2-14e",
+   "width": "desktop",
+   "what": "Saber in the member view, Quals: a tap on ACE's box — refused",
+   "afterReload": "",
+   "rows": "put 0 · del 0 · batches none",
+   "pass": true,
+   "fails": [],
+   "pics": [
+    "W2-14e-a.png"
+   ]
+  },
+  {
+   "step": "W2-14f",
+   "width": "desktop",
+   "what": "Saber: the badge again → back to Admin",
+   "afterReload": "",
+   "rows": "put 0 · del 0 · batches none",
+   "pass": true,
+   "fails": [],
+   "pics": [
+    "W2-14f-a.png"
+   ]
+  },
+  {
+   "step": "W2-14g",
+   "width": "desktop",
+   "what": "a man on no list (kite@mail) signs in → \"Request access\"; he signs out without asking",
+   "afterReload": "",
+   "rows": "put 0 · del 0 · batches none",
+   "pass": true,
+   "fails": [],
+   "pics": [
+    "W2-14g-a.png"
+   ]
+  },
+  {
+   "step": "W2-14h",
+   "width": "desktop",
+   "what": "kite@mail asks for access → the waiting screen (one request row); he can do nothing else",
+   "afterReload": "",
+   "rows": "put 1 [settings/accessreq:rqmunw1af75kjq] · del 0 · batches access.request/1",
+   "pass": true,
+   "fails": [],
+   "pics": [
+    "W2-14h-a.png"
+   ]
+  },
+  {
+   "step": "W2-14i",
+   "width": "desktop",
+   "what": "Saber: Admin → Users → Guest view on (\"Let people waiting for access view the schedule\")",
+   "afterReload": "guest view on",
+   "rows": "put 1 [settings/guestview] · del 0 · batches guestview.set/1",
+   "pass": true,
+   "fails": [],
+   "pics": [
+    "W2-14i-a.png",
+    "W2-14i-b.png"
+   ]
+  },
+  {
+   "step": "W2-14j",
+   "width": "desktop",
+   "what": "kite@mail signs in again — the guest view: the week read-only; he taps round it",
+   "afterReload": "",
+   "rows": "put 0 · del 0 · batches none",
+   "pass": true,
+   "fails": [],
+   "pics": [
+    "W2-14j-a.png"
+   ]
+  },
+  {
+   "step": "W2-12",
+   "width": "phone 390×844",
+   "what": "PHONE — Inputs page: Saber files an LL for Ranger, Thu 8 Oct",
+   "afterReload": "LL Oct 8 for Ranger listed",
+   "rows": "put 2 [inputs/imunw1lljm8rjyl, settings/elog:munw1j8b7kwq.000001] · del 0 · batches inputs.batch/2",
+   "pass": true,
+   "fails": [],
+   "pics": [
+    "W2-12-a.png",
+    "W2-12-b.png"
+   ]
+  }
+ ],
+ "errors": []
+}

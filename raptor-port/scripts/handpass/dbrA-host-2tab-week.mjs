@@ -1,0 +1,26 @@
+import * as L from './dbrA-lib.mjs'
+const errors = []
+const b = await L.launch(); const ctx = await L.context(b)
+const A = await L.page(ctx, errors, 'A'); const B = await L.page(ctx, errors, 'B')
+await L.signIn(A, 'a'); await L.settle(A)
+await L.signIn(B, 'a'); await L.settle(B)
+for (const p of [A, B]) await L.go(p, 'editsched')
+const edit = async (p, key, text) => { const el = p.locator(`#eWeek [data-txt="${key}"]:visible`).first(); await el.click(); await p.keyboard.press('End'); await p.keyboard.type(text); await p.keyboard.press('Tab'); await L.settle(p) }
+await L.step(A, 'tab A: Monday note on a never-saved week (its first save)', () => edit(A, 'dn:0.0', ' AAA'))
+const b1 = await L.step(B, 'tab B (not reloaded): Wednesday note, same week', () => edit(B, 'dn:2.0', ' BBB'))
+console.log('B wrote', b1.put)
+await A.reload(); await L.signIn(A, 'a', { goto: false }); await L.settle(A)
+const mon = await A.evaluate(() => window.txtGet('dn:0.0')), wed = await A.evaluate(() => window.txtGet('dn:2.0'))
+L.check('after both saved and a reload: Monday keeps A\'s edit', /AAA/.test(mon), mon)
+L.check('after both saved and a reload: Wednesday keeps B\'s edit', /BBB/.test(wed), wed)
+// the same on an ALREADY-saved week: A edits Tuesday, B (not reloaded since the week was saved) edits Thursday
+await B.reload(); await L.signIn(B, 'a', { goto: false }); await L.settle(B)
+await L.go(A, 'editsched'); await L.go(B, 'editsched')
+await L.step(A, 'tab A: Tuesday note (week already saved)', () => edit(A, 'dn:1.0', ' A2'))
+await L.step(B, 'tab B: Thursday note (week already saved, B not reloaded)', () => edit(B, 'dn:3.0', ' B2'))
+await A.reload(); await L.signIn(A, 'a', { goto: false }); await L.settle(A)
+const tue = await A.evaluate(() => window.txtGet('dn:1.0')), thu = await A.evaluate(() => window.txtGet('dn:3.0'))
+L.check('saved week: Tuesday keeps A\'s edit', /A2/.test(tue), tue)
+L.check('saved week: Thursday keeps B\'s edit', /B2/.test(thu), thu)
+console.log(errors)
+await b.close(); L.save()

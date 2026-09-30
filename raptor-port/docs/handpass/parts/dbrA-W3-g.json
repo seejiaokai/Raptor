@@ -1,0 +1,960 @@
+{
+ "base": "http://localhost:4203",
+ "at": "2026-09-30T09:17:15.219Z",
+ "results": [
+  {
+   "name": "G0 first boot — ONE change-log batch, of type boot",
+   "ok": true,
+   "detail": "[{\"type\":\"boot\",\"n\":199}]"
+  },
+  {
+   "name": "G0 — no personedits key and no retired whole-list key in storage",
+   "ok": true,
+   "detail": "[]"
+  },
+  {
+   "name": "G1 event types: add \"W3 TYPE\" (work) — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [leavewar/eventdefs] · del 0 [] · batches lw.edit/1"
+  },
+  {
+   "name": "G1 event types: add \"W3 TYPE\" (work) — only leavewar/eventdefs changed, in ONE batch",
+   "ok": true,
+   "detail": "{\"put\":[\"leavewar/eventdefs\"],\"del\":[],\"batches\":[{\"key\":\"changes/cmunw0yhtyepdfa-1\",\"type\":\"lw.edit\",\"actorId\":\"acad\",\"n\":1,\"seqs\":[1]}]}"
+  },
+  {
+   "name": "G1 event types: add \"W3 TYPE\" (work) — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026 (the unsaved demo week's hidden row ids set aside)"
+  },
+  {
+   "name": "G1 event types: add \"W3 TYPE\" (work) — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "G1 event types: add \"W3 TYPE\" (work) — the war's boxes read the same after the reload",
+   "ok": true,
+   "detail": "{}"
+  },
+  {
+   "name": "G1 event types: add \"W3 TYPE\" (work) — after the reload the screen lists exactly the same",
+   "ok": true,
+   "detail": "{\"before\":[\"PH:off\",\"Off day:free\",\"No Leave:nolv\",\"SC:work\",\"W3 TYPE:work\"],\"after\":[\"PH:off\",\"Off day:free\",\"No Leave:nolv\",\"SC:work\",\"W3 TYPE:work\"]}"
+  },
+  {
+   "name": "G1 event types: add \"W3 TYPE\" (work) — no personedits key and no retired whole-list key in storage",
+   "ok": true,
+   "detail": "[]"
+  },
+  {
+   "name": "G1 — W3 TYPE (work) is listed after the reload",
+   "ok": true,
+   "detail": "[\"PH:off\",\"Off day:free\",\"No Leave:nolv\",\"SC:work\",\"W3 TYPE:work\"]"
+  },
+  {
+   "name": "G2a event types: rename W3 TYPE to \"W3 TYPE2\" — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [leavewar/eventdefs] · del 0 [] · batches lw.edit/1"
+  },
+  {
+   "name": "G2a event types: rename W3 TYPE to \"W3 TYPE2\" — only leavewar/eventdefs changed, in ONE batch",
+   "ok": true,
+   "detail": "{\"put\":[\"leavewar/eventdefs\"],\"del\":[],\"batches\":[{\"key\":\"changes/cmunw1it2x3np7c-0\",\"type\":\"lw.edit\",\"actorId\":\"acad\",\"n\":1,\"seqs\":[0]}]}"
+  },
+  {
+   "name": "G2a event types: rename W3 TYPE to \"W3 TYPE2\" — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026 (the unsaved demo week's hidden row ids set aside)"
+  },
+  {
+   "name": "G2a event types: rename W3 TYPE to \"W3 TYPE2\" — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "G2a event types: rename W3 TYPE to \"W3 TYPE2\" — the war's boxes read the same after the reload",
+   "ok": true,
+   "detail": "{}"
+  },
+  {
+   "name": "G2a event types: rename W3 TYPE to \"W3 TYPE2\" — after the reload the screen lists exactly the same",
+   "ok": true,
+   "detail": "{\"before\":[\"PH:off\",\"Off day:free\",\"No Leave:nolv\",\"SC:work\",\"W3 TYPE2:work\"],\"after\":[\"PH:off\",\"Off day:free\",\"No Leave:nolv\",\"SC:work\",\"W3 TYPE2:work\"]}"
+  },
+  {
+   "name": "G2a event types: rename W3 TYPE to \"W3 TYPE2\" — no personedits key and no retired whole-list key in storage",
+   "ok": true,
+   "detail": "[]"
+  },
+  {
+   "name": "G2a — W3 TYPE2 listed, W3 TYPE gone, after the reload",
+   "ok": true,
+   "detail": "[\"PH:off\",\"Off day:free\",\"No Leave:nolv\",\"SC:work\",\"W3 TYPE2:work\"]"
+  },
+  {
+   "name": "G2b event types: retag W3 TYPE2 as Free — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [leavewar/eventdefs] · del 0 [] · batches lw.edit/1"
+  },
+  {
+   "name": "G2b event types: retag W3 TYPE2 as Free — only leavewar/eventdefs changed, in ONE batch",
+   "ok": true,
+   "detail": "{\"put\":[\"leavewar/eventdefs\"],\"del\":[],\"batches\":[{\"key\":\"changes/cmunw1wm60ondqy-0\",\"type\":\"lw.edit\",\"actorId\":\"acad\",\"n\":1,\"seqs\":[0]}]}"
+  },
+  {
+   "name": "G2b event types: retag W3 TYPE2 as Free — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026 (the unsaved demo week's hidden row ids set aside)"
+  },
+  {
+   "name": "G2b event types: retag W3 TYPE2 as Free — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "G2b event types: retag W3 TYPE2 as Free — the war's boxes read the same after the reload",
+   "ok": true,
+   "detail": "{}"
+  },
+  {
+   "name": "G2b event types: retag W3 TYPE2 as Free — after the reload the screen lists exactly the same",
+   "ok": true,
+   "detail": "{\"before\":[\"PH:off\",\"Off day:free\",\"No Leave:nolv\",\"SC:work\",\"W3 TYPE2:free\"],\"after\":[\"PH:off\",\"Off day:free\",\"No Leave:nolv\",\"SC:work\",\"W3 TYPE2:free\"]}"
+  },
+  {
+   "name": "G2b event types: retag W3 TYPE2 as Free — no personedits key and no retired whole-list key in storage",
+   "ok": true,
+   "detail": "[]"
+  },
+  {
+   "name": "G2b — W3 TYPE2 reads Free after the reload",
+   "ok": true,
+   "detail": "[\"PH:off\",\"Off day:free\",\"No Leave:nolv\",\"SC:work\",\"W3 TYPE2:free\"]"
+  },
+  {
+   "name": "G3 event types: delete W3 TYPE2 — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [leavewar/eventdefs] · del 0 [] · batches lw.edit/1"
+  },
+  {
+   "name": "G3 event types: delete W3 TYPE2 — only leavewar/eventdefs changed, in ONE batch",
+   "ok": true,
+   "detail": "{\"put\":[\"leavewar/eventdefs\"],\"del\":[],\"batches\":[{\"key\":\"changes/cmunw2ak5g99e20-0\",\"type\":\"lw.edit\",\"actorId\":\"acad\",\"n\":1,\"seqs\":[0]}]}"
+  },
+  {
+   "name": "G3 event types: delete W3 TYPE2 — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026 (the unsaved demo week's hidden row ids set aside)"
+  },
+  {
+   "name": "G3 event types: delete W3 TYPE2 — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "G3 event types: delete W3 TYPE2 — the war's boxes read the same after the reload",
+   "ok": true,
+   "detail": "{}"
+  },
+  {
+   "name": "G3 event types: delete W3 TYPE2 — after the reload the screen lists exactly the same",
+   "ok": true,
+   "detail": "{\"before\":[\"PH:off\",\"Off day:free\",\"No Leave:nolv\",\"SC:work\"],\"after\":[\"PH:off\",\"Off day:free\",\"No Leave:nolv\",\"SC:work\"]}"
+  },
+  {
+   "name": "G3 event types: delete W3 TYPE2 — no personedits key and no retired whole-list key in storage",
+   "ok": true,
+   "detail": "[]"
+  },
+  {
+   "name": "G3 — W3 TYPE2 gone after the reload",
+   "ok": true,
+   "detail": "[\"PH:off\",\"Off day:free\",\"No Leave:nolv\",\"SC:work\"]"
+  },
+  {
+   "name": "G4 event types: Reset to standard — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [leavewar/eventdefs] · del 0 [] · batches lw.edit/1"
+  },
+  {
+   "name": "G4 event types: Reset to standard — only leavewar/eventdefs changed, in ONE batch",
+   "ok": true,
+   "detail": "{\"put\":[\"leavewar/eventdefs\"],\"del\":[],\"batches\":[{\"key\":\"changes/cmunw2rb71b601f-1\",\"type\":\"lw.edit\",\"actorId\":\"acad\",\"n\":1,\"seqs\":[1]}]}"
+  },
+  {
+   "name": "G4 event types: Reset to standard — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026 (the unsaved demo week's hidden row ids set aside)"
+  },
+  {
+   "name": "G4 event types: Reset to standard — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "G4 event types: Reset to standard — the war's boxes read the same after the reload",
+   "ok": true,
+   "detail": "{}"
+  },
+  {
+   "name": "G4 event types: Reset to standard — after the reload the screen lists exactly the same",
+   "ok": true,
+   "detail": "{\"before\":[\"PH:off\",\"Off day:free\",\"No Leave:nolv\",\"SC:work\"],\"after\":[\"PH:off\",\"Off day:free\",\"No Leave:nolv\",\"SC:work\"]}"
+  },
+  {
+   "name": "G4 event types: Reset to standard — no personedits key and no retired whole-list key in storage",
+   "ok": true,
+   "detail": "[]"
+  },
+  {
+   "name": "G4 — after Reset and a reload the list is the standard list again",
+   "ok": true,
+   "detail": "{\"std\":[\"PH:off\",\"Off day:free\",\"No Leave:nolv\",\"SC:work\"],\"after\":[\"PH:off\",\"Off day:free\",\"No Leave:nolv\",\"SC:work\"]}"
+  },
+  {
+   "name": "G5 ⚙ → ＋ Event row — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [leavewar/eventrows] · del 0 [] · batches lw.edit/1"
+  },
+  {
+   "name": "G5 ⚙ → ＋ Event row — only leavewar/eventrows changed, in ONE batch",
+   "ok": true,
+   "detail": "{\"put\":[\"leavewar/eventrows\"],\"del\":[],\"batches\":[{\"key\":\"changes/cmunw37an0cb7ee-0\",\"type\":\"lw.edit\",\"actorId\":\"acad\",\"n\":1,\"seqs\":[0]}]}"
+  },
+  {
+   "name": "G5 ⚙ → ＋ Event row — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026 (the unsaved demo week's hidden row ids set aside)"
+  },
+  {
+   "name": "G5 ⚙ → ＋ Event row — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "G5 ⚙ → ＋ Event row — the war's boxes read the same after the reload",
+   "ok": true,
+   "detail": "{}"
+  },
+  {
+   "name": "G5 ⚙ → ＋ Event row — after the reload the screen lists exactly the same",
+   "ok": true,
+   "detail": "{\"before\":[\"event-row-0\",\"event-row-1\",\"event-row-2\"],\"after\":[\"event-row-0\",\"event-row-1\",\"event-row-2\"]}"
+  },
+  {
+   "name": "G5 ⚙ → ＋ Event row — no personedits key and no retired whole-list key in storage",
+   "ok": true,
+   "detail": "[]"
+  },
+  {
+   "name": "G5 — three event rows after the reload",
+   "ok": true,
+   "detail": "[\"event-row-0\",\"event-row-1\",\"event-row-2\"]"
+  },
+  {
+   "name": "G5 ⚙ → － Event row — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [leavewar/eventrows] · del 0 [] · batches lw.edit/1"
+  },
+  {
+   "name": "G5 ⚙ → － Event row — only leavewar/eventrows changed, in ONE batch",
+   "ok": true,
+   "detail": "{\"put\":[\"leavewar/eventrows\"],\"del\":[],\"batches\":[{\"key\":\"changes/cmunw3deu3fucmo-0\",\"type\":\"lw.edit\",\"actorId\":\"acad\",\"n\":1,\"seqs\":[0]}]}"
+  },
+  {
+   "name": "G5 ⚙ → － Event row — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026 (the unsaved demo week's hidden row ids set aside)"
+  },
+  {
+   "name": "G5 ⚙ → － Event row — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "G5 ⚙ → － Event row — the war's boxes read the same after the reload",
+   "ok": true,
+   "detail": "{}"
+  },
+  {
+   "name": "G5 ⚙ → － Event row — after the reload the screen lists exactly the same",
+   "ok": true,
+   "detail": "{\"before\":[\"event-row-0\",\"event-row-1\"],\"after\":[\"event-row-0\",\"event-row-1\"]}"
+  },
+  {
+   "name": "G5 ⚙ → － Event row — no personedits key and no retired whole-list key in storage",
+   "ok": true,
+   "detail": "[]"
+  },
+  {
+   "name": "G5 — back to two event rows after the reload",
+   "ok": true,
+   "detail": "[\"event-row-0\",\"event-row-1\"]"
+  },
+  {
+   "name": "G6 figures: ▼ move \"lve\" down — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [leavewar/figorder] · del 0 [] · batches lw.edit/1"
+  },
+  {
+   "name": "G6 figures: ▼ move \"lve\" down — only leavewar/figorder changed, in ONE batch",
+   "ok": true,
+   "detail": "{\"put\":[\"leavewar/figorder\"],\"del\":[],\"batches\":[{\"key\":\"changes/cmunw3kwxevytpx-0\",\"type\":\"lw.edit\",\"actorId\":\"acad\",\"n\":1,\"seqs\":[0]}]}"
+  },
+  {
+   "name": "G6 figures: ▼ move \"lve\" down — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026 (the unsaved demo week's hidden row ids set aside)"
+  },
+  {
+   "name": "G6 figures: ▼ move \"lve\" down — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "G6 figures: ▼ move \"lve\" down — the war's boxes read the same after the reload",
+   "ok": true,
+   "detail": "{}"
+  },
+  {
+   "name": "G6 figures: ▼ move \"lve\" down — after the reload the screen lists exactly the same",
+   "ok": true,
+   "detail": "{\"before\":[\"oil\",\"lve\",\"ccl\",\"fcl\",\"cl\",\"pl\",\"lvetot\",\"medtot\"],\"after\":[\"oil\",\"lve\",\"ccl\",\"fcl\",\"cl\",\"pl\",\"lvetot\",\"medtot\"]}"
+  },
+  {
+   "name": "G6 figures: ▼ move \"lve\" down — no personedits key and no retired whole-list key in storage",
+   "ok": true,
+   "detail": "[]"
+  },
+  {
+   "name": "G6 — the first figure is second after the reload",
+   "ok": true,
+   "detail": "{\"before\":[\"lve\",\"oil\",\"ccl\",\"fcl\",\"cl\",\"pl\",\"lvetot\",\"medtot\"],\"after\":[\"oil\",\"lve\",\"ccl\",\"fcl\",\"cl\",\"pl\",\"lvetot\",\"medtot\"]}"
+  },
+  {
+   "name": "G6 figures: 👁 hide \"medtot\" — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [leavewar/fighidden] · del 0 [] · batches lw.edit/1"
+  },
+  {
+   "name": "G6 figures: 👁 hide \"medtot\" — only leavewar/fighidden changed, in ONE batch",
+   "ok": true,
+   "detail": "{\"put\":[\"leavewar/fighidden\"],\"del\":[],\"batches\":[{\"key\":\"changes/cmunw3tzeyegxml-0\",\"type\":\"lw.edit\",\"actorId\":\"acad\",\"n\":1,\"seqs\":[0]}]}"
+  },
+  {
+   "name": "G6 figures: 👁 hide \"medtot\" — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026 (the unsaved demo week's hidden row ids set aside)"
+  },
+  {
+   "name": "G6 figures: 👁 hide \"medtot\" — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "G6 figures: 👁 hide \"medtot\" — the war's boxes read the same after the reload",
+   "ok": true,
+   "detail": "{}"
+  },
+  {
+   "name": "G6 figures: 👁 hide \"medtot\" — after the reload the screen lists exactly the same",
+   "ok": true,
+   "detail": "{\"before\":[\"oil\",\"lve\",\"ccl\",\"fcl\",\"cl\",\"pl\",\"lvetot\",\"medtot(hidden)\"],\"after\":[\"oil\",\"lve\",\"ccl\",\"fcl\",\"cl\",\"pl\",\"lvetot\",\"medtot(hidden)\"]}"
+  },
+  {
+   "name": "G6 figures: 👁 hide \"medtot\" — no personedits key and no retired whole-list key in storage",
+   "ok": true,
+   "detail": "[]"
+  },
+  {
+   "name": "G6 — that figure reads hidden after the reload",
+   "ok": true,
+   "detail": "[\"oil\",\"lve\",\"ccl\",\"fcl\",\"cl\",\"pl\",\"lvetot\",\"medtot(hidden)\"]"
+  },
+  {
+   "name": "G6 figures: Reset — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 2 [leavewar/fighidden, leavewar/figorder] · del 0 [] · batches lw.edit/2"
+  },
+  {
+   "name": "G6 figures: Reset — only leavewar/figorder / leavewar/fighidden changed, in ONE batch",
+   "ok": true,
+   "detail": "{\"put\":[\"leavewar/fighidden\",\"leavewar/figorder\"],\"del\":[],\"batches\":[{\"key\":\"changes/cmunw45g6314zuf-0\",\"type\":\"lw.edit\",\"actorId\":\"acad\",\"n\":2,\"seqs\":[0]}]}"
+  },
+  {
+   "name": "G6 figures: Reset — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026 (the unsaved demo week's hidden row ids set aside)"
+  },
+  {
+   "name": "G6 figures: Reset — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "G6 figures: Reset — the war's boxes read the same after the reload",
+   "ok": true,
+   "detail": "{}"
+  },
+  {
+   "name": "G6 figures: Reset — after the reload the screen lists exactly the same",
+   "ok": true,
+   "detail": "{\"before\":[\"lve\",\"oil\",\"ccl\",\"fcl\",\"cl\",\"pl\",\"lvetot\",\"medtot\"],\"after\":[\"lve\",\"oil\",\"ccl\",\"fcl\",\"cl\",\"pl\",\"lvetot\",\"medtot\"]}"
+  },
+  {
+   "name": "G6 figures: Reset — no personedits key and no retired whole-list key in storage",
+   "ok": true,
+   "detail": "[]"
+  },
+  {
+   "name": "G6 — after Reset and a reload the order is the original",
+   "ok": true,
+   "detail": "{\"f0\":[\"lve\",\"oil\",\"ccl\",\"fcl\",\"cl\",\"pl\",\"lvetot\",\"medtot\"],\"after\":[\"lve\",\"oil\",\"ccl\",\"fcl\",\"cl\",\"pl\",\"lvetot\",\"medtot\"]}"
+  },
+  {
+   "name": "G7 manning: archive the \"wmp\" row — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [leavewar/manninghidden] · del 0 [] · batches lw.edit/1"
+  },
+  {
+   "name": "G7 manning: archive the \"wmp\" row — only leavewar/manninghidden changed, in ONE batch",
+   "ok": true,
+   "detail": "{\"put\":[\"leavewar/manninghidden\"],\"del\":[],\"batches\":[{\"key\":\"changes/cmunw4gneure07j-0\",\"type\":\"lw.edit\",\"actorId\":\"acad\",\"n\":1,\"seqs\":[0]}]}"
+  },
+  {
+   "name": "G7 manning: archive the \"wmp\" row — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026 (the unsaved demo week's hidden row ids set aside)"
+  },
+  {
+   "name": "G7 manning: archive the \"wmp\" row — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "G7 manning: archive the \"wmp\" row — the war's boxes read the same after the reload",
+   "ok": true,
+   "detail": "{}"
+  },
+  {
+   "name": "G7 manning: archive the \"wmp\" row — after the reload the screen lists exactly the same",
+   "ok": true,
+   "detail": "{\"before\":[\"sets\",\"ip\",\"iwso\",\"instr\",\"opsp\",\"opsw\",\"flp\",\"sxo\",\"scd\",\"scn\"],\"after\":[\"sets\",\"ip\",\"iwso\",\"instr\",\"opsp\",\"opsw\",\"flp\",\"sxo\",\"scd\",\"scn\"]}"
+  },
+  {
+   "name": "G7 manning: archive the \"wmp\" row — no personedits key and no retired whole-list key in storage",
+   "ok": true,
+   "detail": "[]"
+  },
+  {
+   "name": "G7 — WM P gone from the manning rows after the reload",
+   "ok": true,
+   "detail": "[\"sets\",\"ip\",\"iwso\",\"instr\",\"opsp\",\"opsw\",\"flp\",\"sxo\",\"scd\",\"scn\"]"
+  },
+  {
+   "name": "G7 manning: bring \"wmp\" back — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [leavewar/manninghidden] · del 0 [] · batches lw.edit/1"
+  },
+  {
+   "name": "G7 manning: bring \"wmp\" back — only leavewar/manninghidden changed, in ONE batch",
+   "ok": true,
+   "detail": "{\"put\":[\"leavewar/manninghidden\"],\"del\":[],\"batches\":[{\"key\":\"changes/cmunw4n9qu3qxdf-0\",\"type\":\"lw.edit\",\"actorId\":\"acad\",\"n\":1,\"seqs\":[0]}]}"
+  },
+  {
+   "name": "G7 manning: bring \"wmp\" back — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026 (the unsaved demo week's hidden row ids set aside)"
+  },
+  {
+   "name": "G7 manning: bring \"wmp\" back — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "G7 manning: bring \"wmp\" back — the war's boxes read the same after the reload",
+   "ok": true,
+   "detail": "{}"
+  },
+  {
+   "name": "G7 manning: bring \"wmp\" back — after the reload the screen lists exactly the same",
+   "ok": true,
+   "detail": "{\"before\":[\"sets\",\"ip\",\"iwso\",\"instr\",\"opsp\",\"opsw\",\"flp\",\"wmp\",\"sxo\",\"scd\",\"scn\"],\"after\":[\"sets\",\"ip\",\"iwso\",\"instr\",\"opsp\",\"opsw\",\"flp\",\"wmp\",\"sxo\",\"scd\",\"scn\"]}"
+  },
+  {
+   "name": "G7 manning: bring \"wmp\" back — no personedits key and no retired whole-list key in storage",
+   "ok": true,
+   "detail": "[]"
+  },
+  {
+   "name": "G7 — WM P back in its old place after the reload",
+   "ok": true,
+   "detail": "{\"m0\":[\"sets\",\"ip\",\"iwso\",\"instr\",\"opsp\",\"opsw\",\"flp\",\"wmp\",\"sxo\",\"scd\",\"scn\"],\"after\":[\"sets\",\"ip\",\"iwso\",\"instr\",\"opsp\",\"opsw\",\"flp\",\"wmp\",\"sxo\",\"scd\",\"scn\"]}"
+  },
+  {
+   "name": "G7 manning: drag the SC N row above the IP row — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [leavewar/manningorder] · del 0 [] · batches lw.edit/1"
+  },
+  {
+   "name": "G7 manning: drag the SC N row above the IP row — only leavewar/manningorder changed, in ONE batch",
+   "ok": true,
+   "detail": "{\"put\":[\"leavewar/manningorder\"],\"del\":[],\"batches\":[{\"key\":\"changes/cmunw4ujq9g4tk1-0\",\"type\":\"lw.edit\",\"actorId\":\"acad\",\"n\":1,\"seqs\":[0]}]}"
+  },
+  {
+   "name": "G7 manning: drag the SC N row above the IP row — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026 (the unsaved demo week's hidden row ids set aside)"
+  },
+  {
+   "name": "G7 manning: drag the SC N row above the IP row — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "G7 manning: drag the SC N row above the IP row — the war's boxes read the same after the reload",
+   "ok": true,
+   "detail": "{}"
+  },
+  {
+   "name": "G7 manning: drag the SC N row above the IP row — after the reload the screen lists exactly the same",
+   "ok": true,
+   "detail": "{\"before\":[\"sets\",\"scn\",\"ip\",\"iwso\",\"instr\",\"opsp\",\"opsw\",\"flp\",\"wmp\",\"sxo\",\"scd\"],\"after\":[\"sets\",\"scn\",\"ip\",\"iwso\",\"instr\",\"opsp\",\"opsw\",\"flp\",\"wmp\",\"sxo\",\"scd\"]}"
+  },
+  {
+   "name": "G7 manning: drag the SC N row above the IP row — no personedits key and no retired whole-list key in storage",
+   "ok": true,
+   "detail": "[]"
+  },
+  {
+   "name": "G7 — SC N sits above IP after the reload",
+   "ok": true,
+   "detail": "[\"sets\",\"scn\",\"ip\",\"iwso\",\"instr\",\"opsp\",\"opsw\",\"flp\",\"wmp\",\"sxo\",\"scd\"]"
+  },
+  {
+   "name": "G8 IP row: amber below 14, red below 12, Save — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [leavewar/manningdefs] · del 0 [] · batches lw.edit/1"
+  },
+  {
+   "name": "G8 IP row: amber below 14, red below 12, Save — only leavewar/manningdefs changed, in ONE batch",
+   "ok": true,
+   "detail": "{\"put\":[\"leavewar/manningdefs\"],\"del\":[],\"batches\":[{\"key\":\"changes/cmunw51uzde5id4-0\",\"type\":\"lw.edit\",\"actorId\":\"acad\",\"n\":1,\"seqs\":[0]}]}"
+  },
+  {
+   "name": "G8 IP row: amber below 14, red below 12, Save — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026 (the unsaved demo week's hidden row ids set aside)"
+  },
+  {
+   "name": "G8 IP row: amber below 14, red below 12, Save — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "G8 IP row: amber below 14, red below 12, Save — the war's boxes read the same after the reload",
+   "ok": true,
+   "detail": "{}"
+  },
+  {
+   "name": "G8 IP row: amber below 14, red below 12, Save — after the reload the screen lists exactly the same",
+   "ok": true,
+   "detail": "{\"before\":{\"amber\":\"14\",\"red\":\"12\",\"when\":\"Amber when the day's number drops below 14 · red below 12. Default: amber 3 · red 2.\"},\"after\":{\"amber\":\"14\",\"red\":\"12\",\"when\":\"Amber when the day's number drops below 14 · red below 12. Default: amber 3 · red 2.\"}}"
+  },
+  {
+   "name": "G8 IP row: amber below 14, red below 12, Save — no personedits key and no retired whole-list key in storage",
+   "ok": true,
+   "detail": "[]"
+  },
+  {
+   "name": "G8 — 14 / 12 after the reload",
+   "ok": true,
+   "detail": "{\"t0\":{\"amber\":\"3\",\"red\":\"2\",\"when\":\"Amber when the day's number drops below 3 · red below 2.\"},\"after\":{\"amber\":\"14\",\"red\":\"12\",\"when\":\"Amber when the day's number drops below 14 · red below 12. Default: amber 3 · red 2.\"}}"
+  },
+  {
+   "name": "G8 IP row: Reset to default — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [leavewar/manningdefs] · del 0 [] · batches lw.edit/1"
+  },
+  {
+   "name": "G8 IP row: Reset to default — only leavewar/manningdefs changed, in ONE batch",
+   "ok": true,
+   "detail": "{\"put\":[\"leavewar/manningdefs\"],\"del\":[],\"batches\":[{\"key\":\"changes/cmunw59j5n8ssco-0\",\"type\":\"lw.edit\",\"actorId\":\"acad\",\"n\":1,\"seqs\":[0]}]}"
+  },
+  {
+   "name": "G8 IP row: Reset to default — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026 (the unsaved demo week's hidden row ids set aside)"
+  },
+  {
+   "name": "G8 IP row: Reset to default — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "G8 IP row: Reset to default — the war's boxes read the same after the reload",
+   "ok": true,
+   "detail": "{}"
+  },
+  {
+   "name": "G8 IP row: Reset to default — after the reload the screen lists exactly the same",
+   "ok": true,
+   "detail": "{\"before\":{\"amber\":\"3\",\"red\":\"2\",\"when\":\"Amber when the day's number drops below 3 · red below 2.\"},\"after\":{\"amber\":\"3\",\"red\":\"2\",\"when\":\"Amber when the day's number drops below 3 · red below 2.\"}}"
+  },
+  {
+   "name": "G8 IP row: Reset to default — no personedits key and no retired whole-list key in storage",
+   "ok": true,
+   "detail": "[]"
+  },
+  {
+   "name": "G8 — back to the default after the reload",
+   "ok": true,
+   "detail": "{\"t0\":{\"amber\":\"3\",\"red\":\"2\",\"when\":\"Amber when the day's number drops below 3 · red below 2.\"},\"after\":{\"amber\":\"3\",\"red\":\"2\",\"when\":\"Amber when the day's number drops below 3 · red below 2.\"}}"
+  },
+  {
+   "name": "G9 ⚙ → Add a group: TF — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [leavewar/groupdefs] · del 0 [] · batches lw.edit/1"
+  },
+  {
+   "name": "G9 ⚙ → Add a group: TF — only leavewar/groupdefs changed, in ONE batch",
+   "ok": true,
+   "detail": "{\"put\":[\"leavewar/groupdefs\"],\"del\":[],\"batches\":[{\"key\":\"changes/cmunw5h9r2pgbql-0\",\"type\":\"lw.edit\",\"actorId\":\"acad\",\"n\":1,\"seqs\":[0]}]}"
+  },
+  {
+   "name": "G9 ⚙ → Add a group: TF — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026 (the unsaved demo week's hidden row ids set aside)"
+  },
+  {
+   "name": "G9 ⚙ → Add a group: TF — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "G9 ⚙ → Add a group: TF — the war's boxes read the same after the reload",
+   "ok": true,
+   "detail": "{}"
+  },
+  {
+   "name": "G9 ⚙ → Add a group: TF — after the reload the screen lists exactly the same",
+   "ok": true,
+   "detail": "{\"before\":[\"q:tf\",\"SXO\",\"IP\",\"OPSP\",\"IWSO\",\"OPSW\",\"OCU\",\"PERS\"],\"after\":[\"q:tf\",\"SXO\",\"IP\",\"OPSP\",\"IWSO\",\"OPSW\",\"OCU\",\"PERS\"]}"
+  },
+  {
+   "name": "G9 ⚙ → Add a group: TF — no personedits key and no retired whole-list key in storage",
+   "ok": true,
+   "detail": "[]"
+  },
+  {
+   "name": "G9 — TF is a chosen group after the reload",
+   "ok": true,
+   "detail": "[\"q:tf\",\"SXO\",\"IP\",\"OPSP\",\"IWSO\",\"OPSW\",\"OCU\",\"PERS\"]"
+  },
+  {
+   "name": "G9 ⚙ → drag TF's ⠿ above IP — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [leavewar/groupdefs] · del 0 [] · batches lw.edit/1"
+  },
+  {
+   "name": "G9 ⚙ → drag TF's ⠿ above IP — only leavewar/groupdefs / leavewar/grouppriority changed, in ONE batch",
+   "ok": true,
+   "detail": "{\"put\":[\"leavewar/groupdefs\"],\"del\":[],\"batches\":[{\"key\":\"changes/cmunw5pfyhyep7i-0\",\"type\":\"lw.edit\",\"actorId\":\"acad\",\"n\":1,\"seqs\":[0]}]}"
+  },
+  {
+   "name": "G9 ⚙ → drag TF's ⠿ above IP — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026 (the unsaved demo week's hidden row ids set aside)"
+  },
+  {
+   "name": "G9 ⚙ → drag TF's ⠿ above IP — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "G9 ⚙ → drag TF's ⠿ above IP — the war's boxes read the same after the reload",
+   "ok": true,
+   "detail": "{}"
+  },
+  {
+   "name": "G9 ⚙ → drag TF's ⠿ above IP — after the reload the screen lists exactly the same",
+   "ok": true,
+   "detail": "{\"before\":[\"SXO\",\"q:tf\",\"IP\",\"OPSP\",\"IWSO\",\"OPSW\",\"OCU\",\"PERS\"],\"after\":[\"SXO\",\"q:tf\",\"IP\",\"OPSP\",\"IWSO\",\"OPSW\",\"OCU\",\"PERS\"]}"
+  },
+  {
+   "name": "G9 ⚙ → drag TF's ⠿ above IP — no personedits key and no retired whole-list key in storage",
+   "ok": true,
+   "detail": "[]"
+  },
+  {
+   "name": "G9 — TF above IP after the reload",
+   "ok": true,
+   "detail": "[\"SXO\",\"q:tf\",\"IP\",\"OPSP\",\"IWSO\",\"OPSW\",\"OCU\",\"PERS\"]"
+  },
+  {
+   "name": "G9 ⚙ → remove TF — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [leavewar/groupdefs] · del 0 [] · batches lw.edit/1"
+  },
+  {
+   "name": "G9 ⚙ → remove TF — only leavewar/groupdefs / leavewar/groupcolors / leavewar/grouppriority changed, in ONE batch",
+   "ok": true,
+   "detail": "{\"put\":[\"leavewar/groupdefs\"],\"del\":[],\"batches\":[{\"key\":\"changes/cmunw5x6ply0poo-0\",\"type\":\"lw.edit\",\"actorId\":\"acad\",\"n\":1,\"seqs\":[0]}]}"
+  },
+  {
+   "name": "G9 ⚙ → remove TF — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026 (the unsaved demo week's hidden row ids set aside)"
+  },
+  {
+   "name": "G9 ⚙ → remove TF — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "G9 ⚙ → remove TF — the war's boxes read the same after the reload",
+   "ok": true,
+   "detail": "{}"
+  },
+  {
+   "name": "G9 ⚙ → remove TF — after the reload the screen lists exactly the same",
+   "ok": true,
+   "detail": "{\"before\":[\"SXO\",\"IP\",\"OPSP\",\"IWSO\",\"OPSW\",\"OCU\",\"PERS\"],\"after\":[\"SXO\",\"IP\",\"OPSP\",\"IWSO\",\"OPSW\",\"OCU\",\"PERS\"]}"
+  },
+  {
+   "name": "G9 ⚙ → remove TF — no personedits key and no retired whole-list key in storage",
+   "ok": true,
+   "detail": "[]"
+  },
+  {
+   "name": "G9 — TF gone after the reload",
+   "ok": true,
+   "detail": "[\"SXO\",\"IP\",\"OPSP\",\"IWSO\",\"OPSW\",\"OCU\",\"PERS\"]"
+  },
+  {
+   "name": "G-end — no personedits key and no retired whole-list key in storage",
+   "ok": true,
+   "detail": "[]"
+  },
+  {
+   "name": "part G — no console errors, page errors, failed requests or native dialogs",
+   "ok": true,
+   "detail": "[]"
+  }
+ ],
+ "table": [
+  {
+   "step": "G0 first boot",
+   "width": "desktop",
+   "did": "fresh world, Saber",
+   "screen": "—",
+   "rows": "batches boot/199",
+   "ok": true,
+   "pics": []
+  },
+  {
+   "step": "G1 event type added",
+   "width": "desktop",
+   "did": "EVENT 1 box → Edit types → name W3 TYPE, Work, ＋",
+   "screen": "[\"PH:off\",\"Off day:free\",\"No Leave:nolv\",\"SC:work\",\"W3 TYPE:work\"]",
+   "rows": "put 1 [leavewar/eventdefs] · batches lw.edit/1",
+   "ok": true,
+   "pics": [
+    "G1-types-added.png",
+    "G1-after-reload.png"
+   ]
+  },
+  {
+   "step": "G2a event type renamed",
+   "width": "desktop",
+   "did": "Edit types → rename W3 TYPE → W3 TYPE2 (Enter)",
+   "screen": "[\"PH:off\",\"Off day:free\",\"No Leave:nolv\",\"SC:work\",\"W3 TYPE2:work\"]",
+   "rows": "put 1 [leavewar/eventdefs] · batches lw.edit/1",
+   "ok": true,
+   "pics": [
+    "G2a-after-reload.png"
+   ]
+  },
+  {
+   "step": "G2b event type retagged",
+   "width": "desktop",
+   "did": "Edit types → tap Free on W3 TYPE2",
+   "screen": "[\"PH:off\",\"Off day:free\",\"No Leave:nolv\",\"SC:work\",\"W3 TYPE2:free\"]",
+   "rows": "put 1 [leavewar/eventdefs] · batches lw.edit/1",
+   "ok": true,
+   "pics": [
+    "G2b-after-reload.png"
+   ]
+  },
+  {
+   "step": "G3 event type deleted",
+   "width": "desktop",
+   "did": "Edit types → ✕ on W3 TYPE2",
+   "screen": "[\"PH:off\",\"Off day:free\",\"No Leave:nolv\",\"SC:work\"]",
+   "rows": "put 1 [leavewar/eventdefs] · batches lw.edit/1",
+   "ok": true,
+   "pics": [
+    "G3-after-reload.png"
+   ]
+  },
+  {
+   "step": "G4 event types reset",
+   "width": "desktop",
+   "did": "Edit types → retag the first type, then Reset to standard",
+   "screen": "[\"PH:off\",\"Off day:free\",\"No Leave:nolv\",\"SC:work\"]",
+   "rows": "put 1 [leavewar/eventdefs] · batches lw.edit/1",
+   "ok": true,
+   "pics": [
+    "G4-after-reload.png"
+   ]
+  },
+  {
+   "step": "G5 + Event row",
+   "width": "desktop",
+   "did": "⚙ → ＋ Event row",
+   "screen": "[\"event-row-0\",\"event-row-1\",\"event-row-2\"]",
+   "rows": "put 1 [leavewar/eventrows] · batches lw.edit/1",
+   "ok": true,
+   "pics": [
+    "G5-row-added-after-reload.png"
+   ]
+  },
+  {
+   "step": "G5 − Event row",
+   "width": "desktop",
+   "did": "⚙ → － Event row",
+   "screen": "[\"event-row-0\",\"event-row-1\"]",
+   "rows": "put 1 [leavewar/eventrows] · batches lw.edit/1",
+   "ok": true,
+   "pics": [
+    "G5-row-removed-after-reload.png"
+   ]
+  },
+  {
+   "step": "G6 figure moved",
+   "width": "desktop",
+   "did": "Rearrange → the column head → ▼ on the first figure",
+   "screen": "[\"oil\",\"lve\",\"ccl\",\"fcl\",\"cl\",\"pl\",\"lvetot\",\"medtot\"]",
+   "rows": "put 1 [leavewar/figorder] · batches lw.edit/1",
+   "ok": true,
+   "pics": [
+    "G6-figures-arranging.png",
+    "G6-moved-after-reload.png"
+   ]
+  },
+  {
+   "step": "G6 figure hidden",
+   "width": "desktop",
+   "did": "Rearrange → the column head → 👁 on the last figure",
+   "screen": "[\"oil\",\"lve\",\"ccl\",\"fcl\",\"cl\",\"pl\",\"lvetot\",\"medtot(hidden)\"]",
+   "rows": "put 1 [leavewar/fighidden] · batches lw.edit/1",
+   "ok": true,
+   "pics": [
+    "G6-hidden-after-reload.png"
+   ]
+  },
+  {
+   "step": "G6 figures reset",
+   "width": "desktop",
+   "did": "Rearrange → the column head → Reset",
+   "screen": "[\"lve\",\"oil\",\"ccl\",\"fcl\",\"cl\",\"pl\",\"lvetot\",\"medtot\"]",
+   "rows": "put 2 [leavewar/fighidden, leavewar/figorder] · batches lw.edit/2",
+   "ok": true,
+   "pics": [
+    "G6-reset-after-reload.png"
+   ]
+  },
+  {
+   "step": "G7 manning row archived",
+   "width": "desktop",
+   "did": "Rearrange → 👁 on WM P",
+   "screen": "[\"sets\",\"ip\",\"iwso\",\"instr\",\"opsp\",\"opsw\",\"flp\",\"sxo\",\"scd\",\"scn\"]",
+   "rows": "put 1 [leavewar/manninghidden] · batches lw.edit/1",
+   "ok": true,
+   "pics": [
+    "G7-archived-after-reload.png"
+   ]
+  },
+  {
+   "step": "G7 manning row restored",
+   "width": "desktop",
+   "did": "Rearrange → ↺ on the archived WM P",
+   "screen": "[\"sets\",\"ip\",\"iwso\",\"instr\",\"opsp\",\"opsw\",\"flp\",\"wmp\",\"sxo\",\"scd\",\"scn\"]",
+   "rows": "put 1 [leavewar/manninghidden] · batches lw.edit/1",
+   "ok": true,
+   "pics": [
+    "G7-restored-after-reload.png"
+   ]
+  },
+  {
+   "step": "G7 manning row dragged",
+   "width": "desktop",
+   "did": "Rearrange → drag SC N's ⠿ onto IP",
+   "screen": "[\"sets\",\"scn\",\"ip\",\"iwso\",\"instr\",\"opsp\",\"opsw\",\"flp\",\"wmp\",\"sxo\",\"scd\"]",
+   "rows": "put 1 [leavewar/manningorder] · batches lw.edit/1",
+   "ok": true,
+   "pics": [
+    "G7-dragged-after-reload.png"
+   ]
+  },
+  {
+   "step": "G8 thresholds saved",
+   "width": "desktop",
+   "did": "tap the IP row name → Amber 14, Red 12 → Save",
+   "screen": "{\"amber\":\"14\",\"red\":\"12\",\"when\":\"Amber when the day's number drops below 14 · red below 12. Default: amber 3 · red 2.\"}",
+   "rows": "put 1 [leavewar/manningdefs] · batches lw.edit/1",
+   "ok": true,
+   "pics": [
+    "G8-thresholds-saved.png",
+    "G8-saved-after-reload.png"
+   ]
+  },
+  {
+   "step": "G8 thresholds reset",
+   "width": "desktop",
+   "did": "tap the IP row name → Reset to default",
+   "screen": "{\"amber\":\"3\",\"red\":\"2\",\"when\":\"Amber when the day's number drops below 3 · red below 2.\"}",
+   "rows": "put 1 [leavewar/manningdefs] · batches lw.edit/1",
+   "ok": true,
+   "pics": [
+    "G8-reset-after-reload.png"
+   ]
+  },
+  {
+   "step": "G9 group added",
+   "width": "desktop",
+   "did": "⚙ → + TF (its palette opens) → closed",
+   "screen": "[\"q:tf\",\"SXO\",\"IP\",\"OPSP\",\"IWSO\",\"OPSW\",\"OCU\",\"PERS\"]",
+   "rows": "put 1 [leavewar/groupdefs] · batches lw.edit/1",
+   "ok": true,
+   "pics": [
+    "G9-added-after-reload.png"
+   ]
+  },
+  {
+   "step": "G9 group dragged",
+   "width": "desktop",
+   "did": "⚙ → drag TF's ⠿ onto the IP row",
+   "screen": "[\"SXO\",\"q:tf\",\"IP\",\"OPSP\",\"IWSO\",\"OPSW\",\"OCU\",\"PERS\"]",
+   "rows": "put 1 [leavewar/groupdefs] · batches lw.edit/1",
+   "ok": true,
+   "pics": [
+    "G9-group-dragging.png",
+    "G9-dragged-after-reload.png"
+   ]
+  },
+  {
+   "step": "G9 group removed",
+   "width": "desktop",
+   "did": "⚙ → ✕ on the TF row",
+   "screen": "[\"SXO\",\"IP\",\"OPSP\",\"IWSO\",\"OPSW\",\"OCU\",\"PERS\"]",
+   "rows": "put 1 [leavewar/groupdefs] · batches lw.edit/1",
+   "ok": true,
+   "pics": [
+    "G9-removed-after-reload.png"
+   ]
+  }
+ ],
+ "errors": []
+}
