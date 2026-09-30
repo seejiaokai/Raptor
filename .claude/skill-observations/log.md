@@ -1902,3 +1902,18 @@ restore — repeatable, all-or-nothing, and safe for files whose bytes (line end
 **Suggested improvement:** In writing-plans, add: "When detailing a phase that an earlier, reviewed plan only sketched, treat the sketch's premises as unverified: run a fresh read-only sweep of every mechanism it names (writers, readers, tests that pin today's behaviour) and list which premises held, before writing steps. Review of a plan validates what it details, not what it sketches."
 
 **Principle:** A review certifies the level of detail it was shown; a sketched step inherits none of that confidence and must be re-grounded in the code before it is planned.
+
+### Observation 393: A reviewer's proposed fix is a hypothesis — test it against every order the replaced mechanism guarded before applying it
+
+**Status:** OPEN
+**Date:** 2026-09-30
+**Session context:** Folding a plan red team's finding into an already-built step ([DB-READINESS] phase 6 (a), an earned-leave refusal stamp).
+**Skill:** receiving-code-review
+**Type:** open-source
+**Phase/Area:** applying a reviewer's "Fix — build" instructions
+
+**Issue:** The reviewer's finding was real (a refusal about a man added to a row was dropped once the request was handed to him), and the report gave exact step-by-step fix instructions. Applied as written, the fix would have reintroduced the very bug the old mechanism existed to prevent, on a longer order (added → handed to him → handed away → back to him: the refusal revives). The reviewer had even flagged that order and asked to "pin it" as today's rule — but it was not today's rule; the removed code had voided it. Checking the proposed fix against every order the old code guarded (not only the reviewer's scenario) found a simpler, stricter design (record on the request when it LEFT each man) that satisfied all orders.
+
+**Suggested improvement:** In receiving-code-review, add: "When a finding comes with exact fix steps, treat the steps as a hypothesis. Before applying, list the orders of actions the code being replaced was protecting (its tests, its comments), and check the proposed fix against each — especially any order the reviewer calls 'today's behaviour'; verify that claim against the code before pinning it."
+
+**Principle:** A precise fix instruction can still be wrong on an order its author did not trace; the orders the old mechanism guarded are the checklist for any replacement, whoever proposed it.
