@@ -53,7 +53,7 @@ import { registerSchedCommandLayer, commitSchedVoid, commitSchedValue, commitInp
 import { registerPeopleSettingsCommandLayer, resyncPeopleBaseline, mintPeopleOrd } from './people-settings-commit'
 import { mintOrd } from '../engine/ord'
 import { PLANPUCKS } from './plan'
-import { accountsLoad } from './accounts'
+import { accountsLoad, setAccountSeeds } from './accounts'
 
 let VERSION = 0
 const listeners = new Set<() => void>()
@@ -791,8 +791,12 @@ export function setToast(fn: (...a: any[]) => any) { HOOKS.toast = fn }
    (rulesLoad() runs at its module scope, before bootApp's validate). Without
    the rulesLoad an edited threshold silently reverted to standard on every
    reload — caught by the audit2 probe (#6 "the override reloaded"). */
-export function initStore() {
+/* `seedDemo` — the boot policy's ([DB-READINESS] group A, phase 5 — src/bootpolicy.ts): false on a shared store, where
+   the demo merges below never run (the landing pass still does — it lands REAL requests too: P5-LANDING, Fable F3-04)
+   and the accounts read no seeded list. The default is the demo, as every test and his preview have always booted. */
+export function initStore(policy: { seedDemo: boolean } = { seedDemo: true }) {
   wireStore()
+  setAccountSeeds(policy.seedDemo)
   /* every person's place in the roster's order, before the people baseline is taken ([DB-READINESS] group A, phase 2) */
   mintPeopleOrd()
   /* [ARCH-STACK] Fable-5: the people command layer captured its baseline from the
@@ -834,7 +838,7 @@ export function initStore() {
      roster the squadron has since curated. When NOT hydrated (a fresh
      backend) they run exactly as before, which is what keeps the un-booted
      parity harness and stores-boot.test.ts unchanged. */
-  if (!isHydrated()) {
+  if (!isHydrated() && policy.seedDemo) {
     /* GLOBAL INPUTS (owner, 22 Aug 26 — "show all inputs regardless of which week
        I am selected on"). The module-load INPUTS array is week 1's; merge every
        OTHER authored week's inputs in ONCE here so the Inputs page carries them

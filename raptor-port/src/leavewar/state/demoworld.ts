@@ -167,11 +167,14 @@ export const DEMO_OIL: { recs: Recs; ledger: Ledger } = {
  * Boot-time projection + demo re-key. Called once from main.tsx, after
  * lwInitStore and before the sync wires run.
  */
-export function installDemoWorld(hadStoredWars: boolean): void {
+export function installDemoWorld(hadStoredWars: boolean, seedDemo = true): void {
   /* honour a stored showSans at boot — the store loaded before this runs */
   const people = projectPeople(getState().showSans)
+  /* the demo is laid on only a store that has not started, and only under the demo policy ([DB-READINESS] group A,
+     phase 5 — src/bootpolicy.ts): a SHARED store's first boot gets the roster projection and nothing else */
+  const demo = !hadStoredWars && seedDemo
 
-  if (!hadStoredWars) {
+  if (demo) {
     /* The demo overlay: the posting-out window comes from the SEED person,
        applied AFTER projection, so the demo reads as the standalone app's did
        (one man posted out mid-January — IGNITE). SXO is NOT laid over: the war
@@ -192,7 +195,7 @@ export function installDemoWorld(hadStoredWars: boolean): void {
 
   /* Fresh browsers only: stored wars are real data, never re-keyed — and
      the demo OIL story goes in first, so the re-key dresses it too. */
-  if (!hadStoredWars) {
+  if (demo) {
     installDemoOil(DEMO_OIL)
     remapPersonKeys(DEMO_MAP)
     /* save the DRESSED world now — setPeople above saved the undressed seed, and the next boot, finding a
@@ -204,7 +207,7 @@ export function installDemoWorld(hadStoredWars: boolean): void {
      the Inputs they are ([ARCH-STACK] step 4 — design §9: absences as Inputs,
      with `lw` where the demo shows war-approved leave). Raw pushes before
      LW_READY and before the undo baseline, so none is an undo step (FB-09). */
-  if (!hadStoredWars) {
+  if (demo) {
     const wars = getState().wars
     const seedRows = [
       ...SEED_ABSENCES.map(a => ({ ...a, to: a.endDate ?? a.date })),
@@ -224,7 +227,7 @@ export function installDemoWorld(hadStoredWars: boolean): void {
      came back from storage (hadStoredWars) already holds whatever inputs
      survived — re-filing a demo row a scheduler deleted would resurrect it
      on every boot (storage seam, 8 Sep 26). */
-  if (!hadStoredWars) {
+  if (demo) {
     for (const rec of DEMO_RAPTOR_INPUTS) {
       /* Guarded per person+date+type, the seedDemoSans idiom — a second boot
          against the same INPUTS array must not double-file. */

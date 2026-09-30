@@ -45,6 +45,7 @@ carried-over traps — `raptor-port/docs/tracker/known-gaps.md`; what it stores 
 
 | # | Date | The rule |
 |---|---|---|
+| D464 | 30 Sep 26 | HIS TRACKER CHARTS, SYLLABI AND THE DETAILS TYPED ON EACH BALL ARE HIS OWN WORK AND ARE KEPT: NO CHANGE MAY WIPE THEM WITHOUT PUTTING THEM BACK, AND ANY CHANGE THAT WOULD MUST BE TOLD TO HIM FIRST, SO HE CAN EXPORT A COPY. |
 | D462 | 30 Sep 26 | THE TRACKER JOINS `[DB-READINESS]` GROUP A: EVERY TRACKER RECORD THAT HOLDS SEVERAL PEOPLE'S OR SEVERAL CHARTS' WORK IS SAVED ONE PIECE PER THING, LIKE THE REST OF THE APP, BEFORE THE IT TEAM SETTLES ITS TABLES. |
 | D463 | 30 Sep 26 | AN EMPTY REAL DATABASE STARTS THE TRACKER WITH NO COURSE: THE FIRST PERSON TO OPEN IT ADDS ONE; THE DEMO COURSE "26ABSG" AND ITS DEMO STUDENTS NEVER REACH A SHARED STORE. |
 | D377 | 29 Sep 26 | His look at the Tracker leftovers is done ("Looks good"): the chart a person last had open on a course is part of their own place (D376 reading 5), and a half-typed day in Done on or Failed on is refused, never recorded as today — an empty box still means today. |
@@ -106,7 +107,9 @@ first mount, which is also why the section is KEPT MOUNTED afterwards (the flow
 board is drawn imperatively once). **Three seams cross the boundary, and only
 three:** `resetSession` ends the Tracker's login session through `tracker/role.js`, and every Logout (`ui/logout.ts`) first asks it about unsaved chart edits (D129) (a
 no-import module — importing `core.js` there would put ~280 KB of syllabus data
-into every Raptor visit; `tracker.test.tsx` guards it); `TrackerPage.tsx` is
+into every Raptor visit; `tracker.test.tsx` guards it); `TrackerPage.tsx` is *[since 30 Sep 26 it also hands the
+Tracker the boot policy before its first mount — on a shared store no course and no demo student, D463; its screen then
+says "No course yet" (`[DB-READINESS]` group A phase 5)]*
 the page; and **the people bridge `tracker/people.js`** (9 Sep 26, same
 no-import shape as `role.js`): `TrackerPage.tsx` wires `tracker/peoplewire.ts`
 once, which projects Raptor's `PEOPLE` into the bridge on every notify

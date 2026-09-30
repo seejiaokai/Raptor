@@ -955,9 +955,13 @@ the ledger's COMMAND records are one per entry now (`lw.ledger/<id>`); its STORA
 row (phase 1), the requests, the roster and the planning calendar a row each (phase 2), the Leave War a row per war,
 record, ledger entry, opening and man's profile (phase 3 — D460 and D461 built with it: no Edit person on the war); the
 change log — one `ChangeBatch` per saved group — the change history a row per line, each person's seen and the accounts,
-requests and admins' seen a row each, and every Tracker save and its own Undo / Redo inside their command (phase 4). Still
-in group A: never seeding a shared store (phase 5), the Tracker one piece per thing (5b), then the FULL walk and both code
-reads; the plan's §9 is the build log.** **Found in phase 4, for phase 5b (the Tracker one piece per thing):** the
+requests and admins' seen a row each, and every Tracker save and its own Undo / Redo inside their command (phase 4).
+**(4) BUILT, 30 Sep 26 (phase 5):** the boot policy (`src/bootpolicy.ts` — the demo by default; `VITE_SEED_DEMO=false` a
+shared store), the boot in one function (`src/boot.ts`), frozen seed copies reset every boot (`src/state/seeds.ts`); a
+shared store gets nothing demo — no requests, roster, weeks, accounts, Leave War world, Tracker course or pair (D463) —
+and its first admin from `VITE_BOOTSTRAP_ADMIN` (person, account and stamp in one group, idempotent, failing closed);
+the Leave War stands up with no war ("No leave period yet") and the Tracker with no course ("No course yet"). Still in
+group A: the Tracker one piece per thing (5b), then the FULL walk and both code reads; the plan's §9 is the build log.** **Found in phase 4, for phase 5b (the Tracker one piece per thing):** the
 Tracker writes one person's syllabus pick (D376 — his own last chart, a per-person view choice) into the course's SHARED
 plan record (`v3:<course>:plan` `sylId`, `src/tracker/app/core.js loadCourseNow`) whenever a course loads — in a shared
 store, whoever opened the course last would move everyone's chart. The plan's chart pointer should be the course's, the
@@ -997,6 +1001,15 @@ build (group B, D453), not now. **To ask IT:** is it plug-ins only, or also Cust
 rising number, assigned as each line is saved (until then the app orders the history by time and its own line id, and
 "seen" and an account's `seenFrom` are positions in that order) — can they assign it? And the change log (`ChangeBatch`,
 one row per saved change, naming the rows it changed — §9) needs change tracking switched on for that one table.
+**And (30 Sep 26, `[DB-READINESS]` group A phase 5 — `data-model.md` §12 q11): the FIRST ADMIN of an empty store** — a build
+setting naming his sign-in and his person (or a `Person` IT made) from which the app's first start makes his admin account,
+or IT makes both rows; which do they prefer, where do app settings live, which value does sign-in hand the app (mail, UPN,
+object id) and can the UPN differ from the mail? **And three the plan names for IT (§4):** a decimal `sortIndex` on `Input`,
+`Person`, `LeaveBid` (order `(sortIndex, key)`); the app's own ids as unique ALTERNATE KEYS on every table (plus the design's
+natural keys — a week's start, week + day, a remark's date, person + counter); `InputType` and `LeaveCounter` seeded by IT
+from the app's shipped lists. **The whole list — 29 questions in four groups (A: before the tables settle; B: the day lock;
+C: the design's other open questions; D: environment and process), each with its context — was given to him as a
+copyable text on 30 Sep 26, to send to IT; record their answers here as they come.**
 
 ### [LW-WINDOW-PRUNE-FLAKE-2] The month-window browser test's OTHER branch timed out once inside the full run — test-only (filed 30 Sep 26)
 `raptor-port/e2e/leavewar.spec.ts` "the grid draws a window of months over year-wide placeholders, keeps every row aligned,

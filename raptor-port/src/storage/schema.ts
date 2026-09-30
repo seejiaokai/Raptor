@@ -88,11 +88,14 @@ export function storeInitialized(wb: Whiteboard): boolean | null {
    boot again. Every command dispatched during the boot joins this transaction (a nested whiteboard
    transaction never emits on its own). A started store opens nothing: its boot writes go out as
    they always did. */
-export function openBootGroup(wb: Whiteboard): { seal(): void } {
-  if (storeInitialized(wb) === true) return { seal() {} }
+export function openBootGroup(wb: Whiteboard): { seal(): void; abort(): void } {
+  if (storeInitialized(wb) === true) return { seal() {}, abort() {} }
   const tx = wb.transaction()
   let done = false
   return {
+    /* a boot that fails before its seal (src/boot.ts — a shared store's first admin not configured) writes NOTHING: the
+       group is dropped whole, and the next boot is a first boot again */
+    abort() { if (!done) { done = true; tx.abort() } },
     seal() {
       if (done) return
       done = true

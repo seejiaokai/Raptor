@@ -686,6 +686,14 @@ export function toggleBar() { barHidden = !barHidden; prefSet('barHidden', barHi
    migration converts; nothing but the migration reads COURSES before it runs.) */
 export let COURSES = [], course = null, active = null;
 const DEFAULT_COURSE_NAME = '26ABSG';
+/* THE BOOT POLICY ([DB-READINESS] group A, phase 5 — owner D463, 30 Sep 26: an empty real database starts the Tracker
+   with NO course; the demo course 26ABSG and its demo pair never reach a shared store). Told by the page seam
+   (TrackerPage.tsx) before the first mount, from the policy Raptor booted with (src/bootpolicy.ts); true — the demo, as
+   always — unless told otherwise, and in the standalone Tracker. Off: a store with no course list starts with none
+   (loadCourses, migrateCourseIds), nothing is loaded for a course that does not exist (loadCourseNow), and the screen
+   says so with the two ways in (App.jsx). The built-in charts are shipped content and stay (D62). */
+let SEED_DEMO = true;
+export function setTrackerSeedDemo(on) { SEED_DEMO = on !== false; }
 /* the label for a course id (''=unknown); the id for a name (null=unknown) */
 export function courseName(id) { const e = COURSES.find(c => isCourseEntry(c) && c.id === id); return e ? e.name : (typeof id === 'string' ? '' : ''); }
 export function courseEntry(id) { return COURSES.find(c => isCourseEntry(c) && c.id === id) || null; }
@@ -1055,12 +1063,13 @@ function translateLayoutKeys(lay, idSet) {
 const isRetiredCourse = c => (typeof c === 'string' ? c : (isCourseEntry(c) ? c.name : '')) === 'SYLLABUS EDIT';
 async function loadCourses() {
   const r = await sGet(kCourses);
-  COURSES = sParse(r, [DEFAULT_COURSE_NAME], 'array').filter(c => !isRetiredCourse(c));
-  if (!COURSES.length) COURSES = [DEFAULT_COURSE_NAME];
+  const none = SEED_DEMO ? [DEFAULT_COURSE_NAME] : [];   /* a shared store: no course until someone adds one (D463) */
+  COURSES = sParse(r, none, 'array').filter(c => !isRetiredCourse(c));
+  if (!COURSES.length) COURSES = none.slice();
   /* Left raw here (strings pre-migration, entries after) — migrateCourseIds owns
      the string → entry conversion so it rides the durable one-shot flag. Persist
-     only the retired-course filter, keeping the shape untouched otherwise. */
-  await sSet(kCourses, JSON.stringify(COURSES));
+     only the retired-course filter, keeping the shape untouched otherwise. A shared store holding no list writes none. */
+  if (r != null || COURSES.length) await sSet(kCourses, JSON.stringify(COURSES));
 }
 async function saveCourses() { await sSet(kCourses, JSON.stringify(COURSES)); }
 
@@ -1245,8 +1254,9 @@ export function clearBootError() { bootError = null; }
 const RESERVED_KEY_SEG = new Set(['courses', 'links', 'master', 'lay', 'SYLLABUS EDIT']);
 export async function migrateCourseIds() {
   try {
-    const raw = sParse(await sGet(kCourses), [DEFAULT_COURSE_NAME], 'array').filter(c => !isRetiredCourse(c));
-    const list = raw.length ? raw : [DEFAULT_COURSE_NAME];
+    const none = SEED_DEMO ? [DEFAULT_COURSE_NAME] : [];   /* D463 — see loadCourses */
+    const raw = sParse(await sGet(kCourses), none, 'array').filter(c => !isRetiredCourse(c));
+    const list = raw.length ? raw : none.slice();
     /* Done already — UNLESS a stray bare-string course slipped into the index
        after the flag was set (a hand-edited store, or a future cross-device sync
        from an unmigrated browser): convert it too, rather than leave an un-id'd
@@ -1804,6 +1814,14 @@ async function writeCourseBlock(c, block) {
    something had been marked, the syllabus could not be changed at all. */
 export function loadCourse(c, restoreLastSyllabus = false) { return onChain(() => loadCourseNow(c, restoreLastSyllabus)); }
 async function loadCourseNow(c, restoreLastSyllabus) {
+  /* NO COURSE AT ALL ([DB-READINESS] group A, phase 5 — D463): a shared store's Tracker starts with none, and the screen
+     says so (App.jsx). Nothing is read or written for a course that does not exist — every per-course key would file
+     under "undefined" — and nobody is on screen. */
+  if (c == null) {
+    course = null; roster = []; marks = {}; dates = {}; lulls = {}; lastEdit = {}; pace = {}; active = null;
+    undoStack = []; redoStack = []; pop = null; loading = false;
+    return;
+  }
   loading = true;
   course = c;
   /* One site covers init, switchCourse, addCourse, renCourse and delCourse.
@@ -6338,6 +6356,9 @@ export async function saveChangesClick() { await persistSyl(); }
 /* ---------- init ---------- */
 export let ready = false;
 let initStarted = false;
+/* THE TEST RESET HOOK for the one-shot init ([DB-READINESS] group A, phase 5.4 — Astra R2-09 fix 5): a test that boots
+   the Tracker under one policy and then another, in one module instance, lets init() run again. Never called by the app. */
+export function resetInitForTests() { initStarted = false; ready = false; bootError = null; }
 export async function init() {
   if (initStarted) return; initStarted = true;
   await applyBundle();

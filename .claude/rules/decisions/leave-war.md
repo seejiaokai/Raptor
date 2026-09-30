@@ -250,7 +250,9 @@ first-ever boot. `memoryBackend` is now the DEV/TEST path only (`vite` dev,
 delete this persistence as unintended — it is deliberate.** The seam interface
 (`state/storage.ts`, `memoryBackend`/`localBackend`) stays; the shared database
 replaces the implementation behind it. What is stored: `docs/data-schema.md`. Four seams cross the boundary, and only
-four: `main.tsx` boots it once (`lwInitStore` → `installDemoWorld` →
+four: `main.tsx` boots it once *[since 30 Sep 26 through `src/boot.ts`, the boot moved whole out of `main.tsx`, which
+hands it the boot policy — on a shared store no demo world and no seed war; a store may then hold NO war, and the page
+says "No leave period yet" (`[DB-READINESS]` group A phase 5)]* (`lwInitStore` → `installDemoWorld` →
 `wireLeaveWarSync` → a `histInit` re-baseline, in that order), `resetSession`
 derives its role from the Raptor login (`store.ts:toggleRole` — the admin's
 view-as-member flip, 27 Aug 26 — is the only other production writer, riding

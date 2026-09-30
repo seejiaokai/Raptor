@@ -76,6 +76,10 @@ export default function App({ active = true }) {
      where the engine's state is intact and ready is already true on mount (the
      7 Sep 26 "no chart after re-login" case). */
   useEffect(() => { if (core.ready && !core.bootError && !core.resumeForPerson()) { core.renderBoard(); core.notify(); } }, [core.ready]);
+  /* ...and when the FIRST course arrives on a Tracker that had none ([DB-READINESS] group A, phase 5 — D463): the board's
+     box mounts only with it, empty, so it is drawn once it is there */
+  const hasCourse = core.COURSES.length > 0;
+  useEffect(() => { if (core.ready && !core.bootError && hasCourse) { core.renderBoard(); core.notify(); } }, [hasCourse]);
   /* ...and every time the tab is shown again: the person signed in may have changed
      while it sat hidden (D376 — each person reopens on their own course and student) */
   useEffect(() => { if (active && core.ready && !core.bootError) core.resumeForPerson(); }, [active]);
@@ -138,6 +142,25 @@ export default function App({ active = true }) {
   if (!core.ready)
     return (
       <div className="tr-root" style={{ padding: 24, textAlign: 'center', opacity: 0.7 }}>Loading…</div>
+    );
+  /* NO COURSE YET ([DB-READINESS] group A, phase 5 — owner D463: an empty real database starts the Tracker with no
+     course; the first person to open it adds one). There is no chart to draw and nobody to mark, so the screen says so
+     and offers the two ways in: add a course (the same prompt the Course menu's + uses), or bring charts and students
+     in from a file (the File menu's Import — his own route to the database, D120). The dialog box rides along, for the
+     questions both ask. */
+  if (!hasCourse)
+    return (
+      <div className="tr-root">
+        <div className="nocourse" data-testid="trk-nocourse" role="status">
+          <h2>No course yet</h2>
+          <p>Add the first course, or bring charts and students in from a file.</p>
+          <div className="nocourse-acts">
+            <button className="primary" data-testid="trk-first-course" onClick={core.addCourse}>+ Add a course</button>
+            <button data-testid="trk-first-import" onClick={core.importClick}>⇪ Import a file…</button>
+          </div>
+        </div>
+        <DlgModal />
+      </div>
     );
   return (
     <div className={'tr-root tab-' + tab + (core.resuming ? ' resuming' : '') + (core.arrangeMode ? ' arranging' : '')}>

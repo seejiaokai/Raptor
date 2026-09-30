@@ -819,8 +819,9 @@ describe('creating a leave war', () => {
 describe('reading stored wars', () => {
   /* Each war is one stored row since [DB-READINESS] group A, phase 3 (`war:<id>` — its period; its records their own
      `rec:` rows): `stored` writes each war's row, in order (`ord`), as the app would have. A store holding a war row has
-     started, so what is read is the rows as they stand; the seed's wars come back only when NO war row reads (the war
-     cannot be drawn without one). */
+     started, so what is read is the rows as they stand — and since phase 5, when NO war row reads, NO war is drawn:
+     never the seed's (a started store never gets the demo back; the page shows its empty state). The row that would not
+     read is left in storage byte for byte (plan §2.2). */
   const stored = (backend: ReturnType<typeof memoryBackend>, ...wars: Array<{ period: unknown }>) =>
     wars.forEach((w, i) => { const p: any = w.period; backend.write(`war:${p.id}`, JSON.stringify({ ...p, ord: (i + 1) * 1024 })) })
   const war = (id: string, start: string, end: string) => makeWar(id, id.toUpperCase(), start, end)
@@ -846,21 +847,23 @@ describe('reading stored wars', () => {
 
   it('does not read a war row whose war is not the one its key names', () => {
     const backend = memoryBackend()
-    backend.write('war:a', JSON.stringify(war('b', '2026-01-01', '2026-03-31').period))
+    const raw = JSON.stringify(war('b', '2026-01-01', '2026-03-31').period)
+    backend.write('war:a', raw)
     initStore(backend)
-    expect(getState().wars.map(w => w.period.id)).toEqual(['y2026', 'y2027'])
+    expect(getState().wars).toEqual([])
+    expect(backend.read('war:a')).toBe(raw)
   })
 
   it.each([
     ['not json', 'not json'],
     ['a period with nothing in it', '{}'],
     ['a war that is not an object', '"nope"'],
-  ])('does not read a war row holding %s — no war reads, so the seed\'s are drawn', (_label, raw) => {
+  ])('does not read a war row holding %s — no war reads, so none is drawn (never the seed\'s)', (_label, raw) => {
     const backend = memoryBackend()
     backend.write('war:a', raw)
     initStore(backend)
-    expect(getState().wars).toHaveLength(2)
-    expect(getState().period.name).toBe('JAN - DEC 26')
+    expect(getState().wars).toHaveLength(0)
+    expect(getState().period.id).toBe('')
     expect(backend.read('war:a')).toBe(raw)
   })
 
@@ -870,7 +873,8 @@ describe('reading stored wars', () => {
     w.period.stage = 'reopened'
     stored(backend, w)
     initStore(backend)
-    expect(getState().period.name).toBe('JAN - DEC 26')
+    expect(getState().wars).toHaveLength(0)
+    expect(backend.read('war:a')).not.toBeNull()
   })
 
   it('rejects a war whose range runs backwards', () => {
@@ -879,7 +883,8 @@ describe('reading stored wars', () => {
     w.period.end = '2025-12-01'
     stored(backend, w)
     initStore(backend)
-    expect(getState().period.name).toBe('JAN - DEC 26')
+    expect(getState().wars).toHaveLength(0)
+    expect(backend.read('war:a')).not.toBeNull()
   })
 
   // A day carries events, a blocked flag and its reason — facts the date
@@ -1015,7 +1020,8 @@ describe('the bidding window', () => {
     backend.write('war:bad', JSON.stringify(war.period))
     backend.write('current', JSON.stringify('bad'))
     initStore(backend)
-    expect(getState().wars.map(w => w.period.id)).toEqual(['y2026', 'y2027'])
+    expect(getState().wars.map(w => w.period.id)).toEqual([])
+    expect(backend.read('war:bad')).not.toBeNull()
   })
 })
 

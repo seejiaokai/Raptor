@@ -355,10 +355,16 @@ const listeners = new Set<() => void>()
 function withCurrent(s: Omit<State, 'period'>): State {
   // Falling back to the first war rather than throwing: a `currentId`
   // naming a war that no longer exists is recoverable, and a blank screen
-  // is not. `wars` is never empty — `blank()` seeds it and nothing removes.
+  // is not.
+  // A store can hold NO war since [DB-READINESS] group A, phase 5: a shared store starts with none until an admin
+  // creates the first (the page then shows its empty state — LeaveWarPage.tsx), and a started store is read as it
+  // stands. `period` is then NO_PERIOD: never stored, no days, a draft — every reader of the current period finds
+  // nothing inside it, and no screen shows it.
   const war = s.wars.find(w => w.period.id === s.currentId) ?? s.wars[0]
-  return { ...s, period: war.period }
+  return { ...s, period: war ? war.period : NO_PERIOD }
 }
+/** the current period of a store holding no war (above): code, never data — no id, no days, nothing open */
+export const NO_PERIOD: Period = Object.freeze({ id: '', name: '', start: '', end: '', stage: 'draft', bidFrom: null, bidTo: null, days: [], bands: [] }) as unknown as Period
 
 function blank(): State {
   const wars = seedWars()
@@ -882,8 +888,12 @@ const nowOf = (s: State): LwNow => ({ post: pid => s.postOuts[pid], label: pid =
 let BOOT_KEYS: Set<string> | null = null
 /* THE WHOLE WORLD AS ROWS — the first boot's seed (initStore) and the demo world that replaces it (persistBootWorld),
    both inside the boot's one group. The only writes the war makes outside a command. */
-function writeWorldRows(): void {
-  const rows = allRows(lwDecompose(state).values(), nowOf(state))
+/* `recordsOnly` — a SHARED store's first boot ([DB-READINESS] group A, phase 5): its world holds no war, opening, ledger
+   entry or window, and its settings-like keys are the code's defaults, which read back the same with no row at all — so
+   nothing of the war is stored until someone does something (a demo store's first boot still stores its whole world) */
+function writeWorldRows(recordsOnly = false): void {
+  const isRecord = (k: string) => [WAR, REC, LEDGER, OPENING, PROFILE].some(p => k.startsWith(p))
+  const rows = allRows(lwDecompose(state).values(), nowOf(state)).filter(r => !recordsOnly || isRecord(r.key))
   const keys = new Set(rows.map(r => r.key))
   if (BOOT_KEYS) for (const k of BOOT_KEYS) if (!keys.has(k)) backend.remove(k)
   for (const r of rows) if (r.value !== null) backend.write(r.key, r.value)
@@ -977,7 +987,7 @@ let INIT_HOOK: (() => void) | null = null
 /** Test-only: run after every initStore (the Leave War suite's seed absences). */
 export function _setInitHook(fn: (() => void) | null): void { INIT_HOOK = fn }
 
-export function initStore(b?: StorageBackend, opts: { started?: boolean } = {}): void {
+export function initStore(b?: StorageBackend, opts: { started?: boolean; seedDemo?: boolean } = {}): void {
   backend = b ?? localBackend()
   state = blank()
   BOOT_KEYS = null
@@ -986,11 +996,15 @@ export function initStore(b?: StorageBackend, opts: { started?: boolean } = {}):
      the boot's answer (main.tsx: the stamp's `initialized` — storage/schema.ts), or, standalone and in the tests,
      whether it holds a war row. A started store is read as it stands: no opening, ledger entry or window stored means
      none — never the seed's (a store an admin emptied must not get the demo back). A store that has not started takes
-     the seed, and stores it as rows at once (writeWorldRows, at the end). Only the wars fall back to the seed on a
-     started store holding none: the war cannot be drawn without one (an empty war list is phase 5's). */
+     the seed, and stores it as rows at once (writeWorldRows, at the end).
+     PHASE 5 (plan §3 phase 5): a started store holding no war has NONE — the page shows its empty state, never the
+     seed's wars; and a store that has not started takes the seed only under the demo policy (`seedDemo`, the default —
+     src/bootpolicy.ts): a SHARED store starts with no war, opening, ledger entry or window, and an admin creates its
+     first period. */
   const started = opts.started ?? backend.keys().some(k => k.startsWith(WAR))
+  const seedDemo = opts.seedDemo ?? true
   const stored = started ? readWorldRows() : null
-  const wars = stored && stored.wars.length ? stored.wars : seedWars()
+  const wars = stored ? stored.wars : seedDemo ? seedWars() : []
   /* THE TAB ALWAYS OPENS ON THE WAR BEING WORKED (owner, 7 Sep 26, restated
      and reaffirmed 17 Sep 26): open for bidding first, else bidding-closed,
      else published, else draft. A remembered choice does NOT override it.
@@ -1004,10 +1018,10 @@ export function initStore(b?: StorageBackend, opts: { started?: boolean } = {}):
      year actually open for bidding. `current` is still RECORDED (below, at
      every switch) because it is the reader's last choice and the shared
      database may yet want it per user; it is simply not honoured at boot. */
-  const currentId = pickDefaultPeriodId(wars.map(w => w.period)) || wars[0].period.id
+  const currentId = pickDefaultPeriodId(wars.map(w => w.period)) || (wars[0] ? wars[0].period.id : '')
 
-  const openings = stored ? stored.openings : seedOpenings()
-  const ledger = stored ? stored.ledger : seedLedger()
+  const openings = stored ? stored.openings : seedDemo ? seedOpenings() : {}
+  const ledger = stored ? stored.ledger : seedDemo ? seedLedger() : []
   const eventDefs = readStored('eventdefs', readEventDefs) ?? seedEventDefs()
   const oilPolicy = readStored('oilpolicy', readOilPolicy) ?? { ...DEFAULT_OIL_POLICY }
   const figureOrder = readStored('figorder', readFigureOrder) ?? [...DEFAULT_FIGURE_ORDER]
@@ -1069,7 +1083,7 @@ export function initStore(b?: StorageBackend, opts: { started?: boolean } = {}):
   INIT_HOOK?.()
   /* a store that had not started stores its world now, one row per record — the seed as the boot left it; main.tsx's
      demo world then replaces it with the dressed one (persistBootWorld), inside the same boot group */
-  if (!started) writeWorldRows()
+  if (!started) writeWorldRows(!seedDemo)
   // Baseline undo/redo to the freshly loaded world. main.tsx re-baselines once
   // more after the demo world and the first sync pass are in (so those boot
   // writes fold into the baseline rather than becoming undo steps); this keeps
@@ -1124,8 +1138,11 @@ export function getState(): MergedState {
   const awd = awardVersion()
   if (MERGED && MERGED.raw === state && MERGED.ver === ver && MERGED.awd === awd) return MERGED.out
   const wars = state.wars.map(mergeWar)
-  const cur = wars.find(w => w.period.id === state.currentId) ?? wars[0]!
-  const out: MergedState = { ...state, wars, grid: cur.grid, states: cur.states, views: cur.views, spans: cur.spans }
+  const cur = wars.find(w => w.period.id === state.currentId) ?? wars[0]
+  /* no war at all (phase 5 — withCurrent): nothing on any person's any day */
+  const out: MergedState = cur
+    ? { ...state, wars, grid: cur.grid, states: cur.states, views: cur.views, spans: cur.spans }
+    : { ...state, wars, grid: {}, states: {}, views: {}, spans: new Map() }
   MERGED = { raw: state, ver, awd, out }
   return out
 }
@@ -4555,7 +4572,7 @@ export function selectWar(id: string): void {
 export function loadWars(raw: unknown, currentId: string): boolean {
   const wars = readWars(raw)
   if (!wars) return false
-  const id = wars.some(w => w.period.id === currentId) ? currentId : wars[0].period.id
+  const id = wars.some(w => w.period.id === currentId) ? currentId : (wars[0] ? wars[0].period.id : '')
   state = withCurrent({ ...state, wars, currentId: id })
   notify()
   // A wholesale world swap re-baselines undo — an undo must not reach back to

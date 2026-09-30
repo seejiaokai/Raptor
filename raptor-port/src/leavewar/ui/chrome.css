@@ -408,6 +408,47 @@
   color: var(--accent);
 }
 
+/* NO LEAVE PERIOD YET ([DB-READINESS] group A, phase 5 — LeaveWarPage.tsx NoWar): a shared store's page before its
+   first war. One quiet card, the width of a phone's reading line, clear of the app's top bar. */
+.lw-empty {
+  box-sizing: border-box;
+  width: calc(100% - 32px);   /* a phone keeps its 16px side gutter */
+  max-width: 420px;
+  margin: 48px auto;
+  padding: 20px 18px;
+  border: 1px solid var(--edge);
+  border-radius: 14px;
+  background: var(--panel);
+  color: var(--ink-2);
+  text-align: center;
+}
+.lw-empty h2 {
+  margin: 0 0 8px;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--ink);
+}
+.lw-empty p {
+  margin: 0 0 14px;
+  font-size: 13px;
+  line-height: 1.45;
+}
+.lw-empty p:last-child { margin-bottom: 0; }
+/* the way in: a full-size button (a thumb's reach on a phone), in the app's accent — the one action on the page */
+.lw-empty .lw-first {
+  min-height: 40px;
+  padding: 9px 16px;
+  border: 1px solid var(--accent);
+  border-radius: 11px;
+  background: rgba(59, 198, 232, .12);
+  color: var(--ink);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.lw-empty .lw-first:hover { background: rgba(59, 198, 232, .2); }
+
 /* The war's Undo / Redo pair left the period row for the app's top bar ([UNDO-TOPBAR], owner D347, 28 Sep 26). */
 
 /* The bidding-window chip. Reads as a value when a member looks at it and as

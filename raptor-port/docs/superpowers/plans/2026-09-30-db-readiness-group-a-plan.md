@@ -268,7 +268,7 @@ many: the student list of a course and chart (`kRosterFor`, `core.js:781`, writt
 list (`kCourses`) and every chart's definition in one record (`kSyls`, `core.js:847`). Each becomes one record per
 enrolment (`Enrolment`, with `ord`), per course (`Course`, with `ord`) and per chart (`Syllabus` + its events as JSON at
 stage 1); the Tracker's command records follow (its `trk.roster`, `trk.courses`, `trk.syls` per item) and the stream
-consumer writes them. The Tracker's charts still reach the database by his Export → wipe → Import (D120). **Tests:** two
+consumer writes them. The Tracker's charts still reach the database by his Export → wipe → Import (D120). **His charts, syllabi and every ball's typed details are his own work and are KEPT (D464, 30 Sep 26):** the one-time conversion carries every chart, its layout and every ball's details across, with a test comparing them before and after; nothing wipes them without putting them back; and before "merge live" of this phase he is reminded to export a copy first. **Tests:** two
 clients add two students to one course and chart — both remain; two clients edit two different charts — both remain;
 course and student order kept across a reload; the Tracker smoke suite green.
 
@@ -587,3 +587,70 @@ boot in `main.tsx`; tests `storage/schema.test.ts`, `storage/fold.test.ts`, `sta
   two findings filed under `[DB-READINESS]`: the Tracker writes one person's chart pick into the course's shared plan —
   for 5b; the war's "which war is on screen" is shared data — for group B).
 - **Gates (30 Sep 26, under the lock):** unit 7226/7226 (453 files) · build · tfin 728/0 · e2e 508 passed, 1 failed (the month-window timing flake — `[LW-WINDOW-PRUNE-FLAKE-2]`, alone 3/3 straight after), 49 skipped · smoke 445/0 · rulecheck · docsize; perf 4/4 (four runs: oneEdit 1.32–1.38×, noop 1.48–1.51×, board 1.29–1.34×, noopB 1.55–1.59× — inside phase 3's spread, noopB at its top).
+
+**Phase 5 — built 30 Sep 26** (`src/boot.ts`, `src/bootpolicy.ts`, `src/state/seeds.ts` new; `main.tsx`, `engine/{people,waves,weeks-data}.ts`,
+`state/{store,accounts,roster-add}.ts`, `storage/schema.ts`, `leavewar/state/{store,demoworld}.ts`, `leavewar/LeaveWarPage.tsx`,
+`leavewar/ui/chrome.css`, `tracker/app/core.js`, `tracker/App.jsx`, `tracker/TrackerPage.tsx`, `tracker/tracker.css`; tests
+`src/boot.test.ts` (25), `src/boot-walk.test.tsx` (3), `leavewar/emptywar.test.tsx` (6), `tracker/trk-nocourse.test.tsx` (3); red first —
+20 of 23, then the empty war and the Tracker's no course, each red for the right reason):
+- **5.1 the policy.** `BootPolicy = { seedDemo, bootstrap }` read in `main.tsx` from the build's settings (`VITE_SEED_DEMO`,
+  `VITE_BOOTSTRAP_ADMIN`); the demo by default (tests, dev, e2e, his preview unchanged). **The boot moved whole into
+  `src/boot.ts`** (`bootApp(backend, policy)`, the same order) so tests drive the real boot — `main.tsx` keeps the backend and
+  policy choice, the toast, the save indicator, the unload guard, the probe bridge and the render. Handed separately to the
+  scheduler (`initStore({ seedDemo })`), the accounts (`setAccountSeeds`), the Leave War (`initStore(adapter, { started,
+  seedDemo })`, `installDemoWorld(had, seedDemo)`) and the Tracker — **through its page seam** (`TrackerPage.tsx` →
+  `setTrackerSeedDemo(seedDemoNow())`), not a new crossing (the Tracker's three seams, `tracker.md` §Architecture).
+- **5.2 frozen seeds.** `resetSeedWorld(seedDemo)` (`state/seeds.ts`) runs first in every boot, before storage is read: the
+  live requests, roster (+ callsign index), loaded week (the boot week, `BOOT_WEEK`), dates, schedule book, saved weeks
+  and planning calendar reset IN PLACE from frozen JSON copies (`WEEK1_INPUTS_SNAP`, the new `PEOPLE_SEED_SNAP` taken after
+  every load-time derivation, `WEEK1_DAYS_SNAP`) or to blank; the authored demo weeks switch with it (`setAuthoredWeeks` —
+  `weekBundle` answers a blank week for 13 and 20 Jul 26 under the blank policy, Fable's F3 note). A JSON string is the
+  frozen copy (nothing can change it); the seed accounts are `Object.freeze`d. **Proved:** demo → blank → demo in one
+  process gives back the whole demo, compared field for field with the ids minted per boot blanked out.
+- **5.3 nothing demo.** Under the blank policy: no authored week's inputs, demo SANS or medical merges; no Leave War demo
+  world, seed wars, openings or ledger (and its settings-like DEFAULTS are no longer stored at a shared store's first boot
+  — they read back the same with no row); no Tracker default course or demo pair (D463); no seeded accounts and no
+  lock-out repair ("no rows = none" — `seedAccounts`, `accountsAfter`, `accountBefore` follow). **P5-LANDING:** the landing
+  pass runs under both policies (tested: a real request on a never-opened week lands when the week is opened; the week
+  is pristine, so — the settled phase-1.3 rule — its landing is not a saved change).
+  **A started store holding no war now has NONE under either policy** (it fell back to the seed's wars — "the war cannot
+  be drawn without one"): the store holds `NO_PERIOD` (code, never data — no id, no days, a draft) as its current period,
+  `getState()` an empty grid, and the page draws "No leave period yet" (`NoWar` — an admin's "Create the first period"
+  opens the New-war sheet; a member is told an admin makes it), subscribing to that one fact so the memo firewall holds.
+  Seven older Leave War tests asserted the old fallback (a started store whose every war row is unreadable showed the
+  seed's); they now assert none is drawn and the unreadable row stays byte for byte — the rule changed by this phase, not
+  an assertion weakened. The Tracker with no course: `loadCourses` / `migrateCourseIds` start a shared store with none
+  (and store no empty list), `loadCourseNow(null)` reads and writes nothing, `App.jsx` draws "No course yet" with **+ Add a
+  course** and **⇪ Import a file…**, and the board is drawn when the first course arrives.
+- **5.4 the first admin (P0-BOOTSTRAP's Person + User half).** `bootstrapFirstAdmin` (`src/boot.ts`): only under the blank
+  policy on a store whose stamp says it has not started; the person made from the definition (`personRecord`, the one
+  body `putNewPerson` now shares) or found by `personId`; the account row (`firstAdminRow`) written into the boot's
+  group; his person's row written by the boot's seed rows — so person, account and `initialized` land in ONE group.
+  Idempotent by sign-in name (a wipe keeps settings and people: nothing made twice); fails closed with `BootConfigError`
+  before any write (no setting, an unreadable one, a person the app could not make, a sign-in over 80 letters, a
+  `personId` not in the store) — `main.tsx` shows "RAPTOR is not set up yet"; a boot that throws drops its whole group
+  (`openBootGroup().abort`). The Tracker's test reset hook: `resetInitForTests()`. Tested: first boot stores exactly the
+  stamp, his person, his account and the one batch; a reload writes nothing; the `personId` form leaves IT's row byte for
+  byte; six fail-closed cases; an interrupted first boot leaves nothing and the next makes him once; a wipe; a store ahead
+  in stage and in format refused before anything is made; two blank stores in a row.
+- **5.5 the walk-shaped test** (`src/boot-walk.test.tsx`): the first admin signs in and opens every tab — Edit Schedule,
+  View-only Sched, Inputs, Quals, Logic, Help, Admin, the Leave War (no period) and the Tracker (no course) — and storage
+  afterwards equals what the first boot stored, plus only the Tracker's own first-mount bookkeeping (its migration flags
+  and shipped-chart catalogue — its one named exempt writer), which names no course and no student. Broken once on
+  purpose (the Tracker's default course back) → five tests red, then restored.
+- **Ruled on the way:** D464 (30 Sep 26) — his Tracker charts, syllabi and each ball's details are his own work and are
+  kept; nothing may wipe them without putting them back, and he is told first (phase 5 touches only a store that has never
+  started; phase 5b's conversion must carry them all, and he is reminded to export a copy before its "merge live").
+- **Not changed (said plainly):** the older tests that re-type `main.tsx`'s boot order (`bootinit`, `bootseal`, the
+  roll-call) still do — they pass, and moving them onto `bootApp` is tidying, not this phase's.
+- **The LOOK on a shared-store build** (`scripts/handpass/dbr5-look.mjs`, a bundle built with `VITE_SEED_DEMO=false` and a
+  first admin, pictures `docs/img/handpass/2026-09-30-dbr-phase5/`): 16/16 at desktop and phone — a demo sign-in refused,
+  the first admin in, the schedule holding nobody but him, the two empty pages and their ways in, storage holding only the
+  stamp, his person, his account, the change log and the Tracker's own bookkeeping. **It found two things the tests could
+  not:** both empty cards ran edge to edge on a phone (no 16px gutter) and the war's "Create the first period" wore a
+  class styled only inside a sheet — a small grey box; fixed (`.lw-first`, a 40px accent button; both cards `width:
+  calc(100% - 32px)`). And the New-war calendar, with no war to follow, opened on January 2026 — a demo date — now this
+  month (`WarSheet.tsx nextFreeDay`, `localToday`).
+- **Gates (30 Sep 26, under the lock):** unit 7263/7263 (457 files) · build · tfin 728/0 · e2e 509/0 (49 skipped) · smoke 445/0 ·
+  rulecheck · docsize; perf 4/4 twice (oneEdit 1.38–1.39×, noop 1.41–1.44×, board 1.29–1.31×, noopB 1.48× — inside phase 4's
+  spread). After the look's fixes: the Leave War's screen tests 842/842 and `e2e/leavewar.spec.ts` 299 passed, 0 failed (39 skipped).

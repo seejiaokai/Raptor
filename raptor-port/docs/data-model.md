@@ -991,6 +991,8 @@ The Tracker's own move is already rehearsed: **Export with both boxes ticked
 → wipe → Import, answer yes.** The export file is a format, not a store, and
 it now carries the `links` block alongside charts and students, so the person
 links survive the round trip.
+**His charts, syllabi and every ball's typed details are his own work and are kept (D464, 30 Sep 26):** no change
+may wipe them without putting them back, and one that would is told to him first, so he can export a copy.
 
 ## 7. Multi-user rules the database must own
 
@@ -1431,6 +1433,14 @@ are kept for a period the squadron sets, then purged by a scheduled job;
     ceiling per command, or those two commands kept as one server-side
     operation on the day. **This blocks the stage-2 tables, not stage 1's**
     (round 3, Astra 5).
+11. **The first admin of an empty store (30 Sep 26 — `[DB-READINESS]` group A phase 5).** Your tables start empty, the
+    app admits only people on its own list, and only an admin can add people — so a first admin must exist before anyone
+    can sign in. Built on our side, both ways: (a) a build setting (`VITE_BOOTSTRAP_ADMIN`) naming his sign-in and his
+    person (callsign/name, initials, pilot / WSO / personnel, CAT) — the app's first start on an empty store makes his
+    `Person`, his `User` (admin) and `SchemaVersion.initialized` in ONE changeset, once; or (b) the same setting naming a
+    `Person` you have already made (`personId`) — the app adds his `User`. An incomplete setting refuses to start and
+    writes nothing. Which do you prefer, and where do app settings live (environment variables)? And which value does
+    sign-in hand the app — the mail address, the UPN or an object id — and can the UPN differ from the mail address?
 
 ## 13. Security and classification
 

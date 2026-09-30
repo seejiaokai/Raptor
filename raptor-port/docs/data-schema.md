@@ -57,6 +57,18 @@ owner approved "everything persists on the built site".
 | The store's own stamp, `settings/schema` | ONE object since 30 Sep 26 (`[DB-READINESS]` group A phase 0, `src/storage/schema.ts`): `{ stage, dataFormatVersion, initialized, appliedAt, minClient }` — the design's `SchemaVersion` row (`data-model.md`). `initialized` is how the app knows the store has STARTED (it replaced the sniffs of `inputs/all` and `leavewar/wars`); a first boot writes its seed and `initialized` in ONE saved group; a wipe clears it; a store ahead of the build is never touched. A bare number (every store before) still reads, as format 5 with `initialized` unknown, and is upgraded at its next boot | Yes |
 | The change log, `changes/*` | its own collection since 30 Sep 26 (group A phase 0 — cleared by a wipe with `inputs`, `weeks`, `leavewar`); written since phase 4.1: ONE `changes/<clientBootId>-<first seq>` per saved group, in that group — `{ type, seqs, actorId, at, items: [{ table, key, op }] }`, a pure invalidation log (it names the rows, never their values) — by the whiteboard's seal (`src/state/changebatch.ts`); the newest 200 kept, the oldest retired in the group that adds the newest. A group written outside every command is never sealed — only the Tracker's first mount (its seed and migrations), named in `src/state/changebatch-rollcall.test.ts` | Yes |
 
+**What an empty store starts with — the boot policy (since 30 Sep 26, `[DB-READINESS]` group A phase 5 — `src/bootpolicy.ts`,
+`src/boot.ts`).** The build's own settings choose it: the DEMO (the default — every test, the dev server, the e2e suite,
+his preview) seeds an empty store with the demo world as always; a SHARED store (`VITE_SEED_DEMO=false`) is never
+seeded — no demo requests, roster, weeks (the two authored demo weeks read blank), accounts, Leave War world or Tracker
+course — and its first boot stores exactly the stamp, its FIRST ADMIN's person and account (from `VITE_BOOTSTRAP_ADMIN`:
+a sign-in name and a person, or a person IT already made), and the one change-log batch naming them, in one saved group.
+A shared store whose first admin is not configured, or not as a person the app can make, refuses to start and writes
+nothing. A started store is read as it stands under either policy — no account row then means no account under a shared
+store's policy, a list with no admin is left as it is there, and no war stored means no war under either (the Leave War
+shows "No leave period yet"). Every boot resets the live scheduler data in place from frozen copies of the demo, or to
+blank (`src/state/seeds.ts`), before storage is read.
+
 `?fresh=1` on the URL forces the Memory backend for a clean-start demo. So
 "moving RAPTOR to a database" is now giving these already-per-browser shapes
 a permanent, **shared** home, rather than saving them for the first time.

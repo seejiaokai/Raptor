@@ -195,6 +195,23 @@
         "--strictPort"
       ],
       "port": 4187
+    },
+    {
+      "name": "raptor-blank",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "--prefix",
+        "raptor-port",
+        "vite",
+        "preview",
+        "raptor-port",
+        "--outDir",
+        "dist-blank",
+        "--port",
+        "4191",
+        "--strictPort"
+      ],
+      "port": 4191
     }
   ]
 }

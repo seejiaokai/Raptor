@@ -65,6 +65,8 @@ history names an ACCOUNT, not a person). Both are the same server-shaped hole;
 
 ---
 
+- **A shared store's empty pages** (`[DB-READINESS]` group A phase 5, 30 Sep 26): the Leave War's "No leave period yet" and the Tracker's "No course yet" (`ui-contracts.md` §A shared store's empty pages). A change to the war's or the Tracker's first screen, or to what an empty store starts with (`src/boot.ts`, `src/state/seeds.ts`), checks both under the blank policy — `src/boot-walk.test.tsx` walks every page of an empty store.
+
 ## 2. The flows — how one edit travels
 
 The owner's example, in his words: *"when an input is made or changed, it goes

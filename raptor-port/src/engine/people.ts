@@ -371,3 +371,8 @@ export function scQualOK(id:any,kind:any){
   return kind==='day'?!!p.quals.scDay:!!p.quals.scNight;
 }
 export function isScheduler(id:any){const p=PEOPLE[id];return !!(p&&p.quals&&p.quals.sched);}
+/* THE DEMO ROSTER, FROZEN ([DB-READINESS] group A, phase 5 — Fable F2-05 (a)): PEOPLE as a fresh import holds it — the
+   demo literal after every load-time derivation above — kept as JSON, which nothing can change, so a boot can put the
+   demo roster back after a blank boot in the same page life, or keep only the two placeholder pucks (state/seeds.ts).
+   Read by nothing else. */
+export const PEOPLE_SEED_SNAP=JSON.stringify(PEOPLE);

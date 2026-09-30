@@ -1,5 +1,7 @@
 node_modules
 dist/
+# a shared-store build for a walk ([DB-READINESS] group A phase 5 — raptor-port/scripts/handpass/dbr5-look.mjs)
+dist-blank/
 .vite/
 test-results/
 playwright-report/

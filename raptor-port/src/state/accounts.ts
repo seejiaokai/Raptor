@@ -102,18 +102,26 @@ export const ACCOUNT_TYPES = ['access.request', 'access.decline', 'access.approv
    `us` stays Ranger (bane), as "View as" left every member test before; `ad` is Saber
    (stiff) because one person holds one account; `outlaw` and `hex` are members NOT
    posted out in the demo world. */
-const SEED: Account[] = [
+const SEED: readonly Account[] = Object.freeze([
   { id: 'acad', name: 'ad', role: 'admin', pid: 'stiff', on: true },
   { id: 'acus', name: 'us', role: 'main', pid: 'bane', on: true },
   { id: 'acoutlaw', name: 'outlaw', role: 'main', pid: 'casper', on: true },
   { id: 'achex', name: 'hex', role: 'main', pid: 'rocky', on: true },
-]
+].map(a => Object.freeze(a as Account)))
 /* code only — never written to a stored record (see the header) */
 const SEED_PASS: Record<string, string> = { acad: 'a', acus: 'us' }
 
+/* THE SEEDS ARE THE DEMO'S ([DB-READINESS] group A, phase 5.3 — plan §3 phase 5.3). On a SHARED store (the boot
+   policy's `seedDemo` false — src/bootpolicy.ts, set at every boot by state/seeds.ts) there are none: no account rows
+   read as NO accounts (never the seeded list), a list with no admin who can sign in is left as it is (never the seed
+   admin added — at the database step the environment's own administrator restores access), and the store's first admin
+   is made at its first boot from the build's configuration (src/boot.ts bootstrapFirstAdmin). On by default. */
+let SEEDS_ON = true
+export function setAccountSeeds(on: boolean): void { SEEDS_ON = on; if (!ACCOUNTS_STORED) ACCOUNTS_LIST = seedAccounts() }
 export let ACCOUNTS_LIST: Account[] = SEED.map(a => ({ ...a }))
-/* a stored accounts record of null means the seeded list (accountsLoad) — the candidate a restore to it would leave */
-export const seedAccounts = (): Account[] => SEED.map(a => ({ ...a }))
+/* a stored accounts record of null means the seeded list (accountsLoad) — the candidate a restore to it would leave;
+   none at all on a shared store */
+export const seedAccounts = (): Account[] => SEEDS_ON ? SEED.map(a => ({ ...a })) : []
 export let ACCESS_REQS: AccessRequest[] = []
 export let GUESTVIEW = false
 
@@ -174,7 +182,7 @@ export function readAccounts(images: any[], why?: (text: string) => void): Accou
 export function accountsLoad(): void {
   const stored = rowsOf(ACCOUNT_PFX)
   ACCOUNTS_STORED = stored.size > 0
-  if (!ACCOUNTS_STORED) ACCOUNTS_LIST = SEED.map(a => ({ ...a }))
+  if (!ACCOUNTS_STORED) ACCOUNTS_LIST = seedAccounts()
   else {
     const out = readAccounts([...stored.values()], text => console.warn(text))
     /* THE WAY BACK FROM A LOCK-OUT (Fable R2-6, Astra R3-4): a stored list with no admin
@@ -183,7 +191,7 @@ export function accountsLoad(): void {
        its person), or the fallback could still end with no admin. At the database step
        there are no seeds: the environment's own administrator restores access. */
     let fixed = out
-    if (!out.some(a => isAdminAccount(a) && a.on && personOk(a.pid))) {
+    if (SEEDS_ON && !out.some(a => isAdminAccount(a) && a.on && personOk(a.pid))) {
       const s = SEED[0]
       fixed = out.filter(a => a.id !== s.id && a.name !== s.name && a.pid !== s.pid)
       fixed.push({ ...s })
@@ -554,7 +562,7 @@ export function requestsAfter(changes: readonly any[] | null | undefined): any[]
   return [...rows.values()]
 }
 /* the account an account row's image names, before a step — an unsaved seeded account (no row yet) reads as the seed */
-export const accountBefore = (id: string, image: any): any => image ?? SEED.find(a => a.id === id) ?? null
+export const accountBefore = (id: string, image: any): any => image ?? (SEEDS_ON ? SEED.find(a => a.id === id) : null) ?? null
 
 /* ---- WHAT AN UNDO OR REDO MAY PUT BACK ON THE ACCOUNTS (the change-recording re-test B5, 28 Sep 26) ----
    Once the one Undo takes settings steps ([UNDO-ROSTER-SETTINGS]), an account change taken back or redone must obey the
@@ -598,6 +606,22 @@ export function accountsRestoreProblem(next: any[] | null, reqs: any[] | null, p
     if (nm && list.some(a => normName(a.name) === nm)) return `${nm} already has an account`
   }
   return null
+}
+
+/* ---- THE FIRST ADMIN OF A SHARED STORE ([DB-READINESS] group A, phase 5.4 — P0-BOOTSTRAP) ----
+   The account row src/boot.ts writes at a shared store's first boot, beside his person and the "started" stamp, in the
+   boot's one saved group: an admin, on, tied to his person, the history's start as its `seenFrom` (nothing before him
+   is news to him) and its `createdAt`. The key and the stored image, exactly as every other account row. */
+export function firstAdminRow(nameIn: any, pid: string): [string, any] {
+  const a: Account = { id: newAccountId(), name: normName(nameIn), role: 'admin', pid, on: true, ...newAccountStamp() }
+  return [ACCOUNT_PFX + a.id, accountRow(a)]
+}
+/* the stored account rows that hold a sign-in name — read straight from the store (the boot asks before the accounts
+   are loaded) */
+export function storedAccountNamed(nameIn: any): boolean {
+  const name = normName(nameIn)
+  for (const v of rowsOf(ACCOUNT_PFX).values()) if (v && normName(v.name) === name) return true
+  return false
 }
 
 /* ---- A NEW PERSON WITH HIS ACCOUNT, IN ONE STEP ([ACCOUNTS-NEW-PERSON], D214, D217) ----

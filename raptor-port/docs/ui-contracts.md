@@ -8431,3 +8431,16 @@ title uses, from one shared body (`oilFromWords`). They were two readers once.
   drawer's width, the FLASH painting at all, and the corner switch filling its
   sticky cell out of flow; each with what would show and how tight the margin is
   in `ui-contracts.md` §The figures drawer). Chromium is clean on all four.
+
+## A shared store's empty pages — no leave period, no course (`[DB-READINESS]` group A phase 5, 30 Sep 26)
+
+A shared store starts with nothing demo (`src/bootpolicy.ts`), so two tabs must stand up empty:
+- **The Leave War with no war** (`src/leavewar/LeaveWarPage.tsx` `NoWar`, style `.lw-empty` in `leavewar/ui/chrome.css`):
+  one quiet card — "No leave period yet"; an admin reads what to do and gets **Create the first period** (the same New-war
+  sheet the picker's "+ New" opens); a member reads that an admin creates it. No picker, no stage strip, no grid. The card
+  subscribes to ONE fact (does any war exist), so the grid's memo firewall is unchanged. Also shown for a started store
+  whose every war row is unreadable (those rows are kept byte for byte, never read). Pin: `leavewar/emptywar.test.tsx`.
+- **The Tracker with no course** (`src/tracker/App.jsx`, style `.nocourse` in `tracker/tracker.css` — owner D463): "No
+  course yet" with two full-size buttons — **+ Add a course** (the Course menu's own prompt) and **⇪ Import a file…** (the
+  File menu's Import — his charts and students reach the database by his own Export → Import, D120); the dialog box rides
+  along. The first course brings the usual Tracker back and draws the board. Pin: `tracker/trk-nocourse.test.tsx`.
