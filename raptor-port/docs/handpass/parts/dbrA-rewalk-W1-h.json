@@ -1,36 +1,36 @@
 {
  "base": "http://localhost:4201",
- "at": "2026-09-30T10:10:31.757Z",
+ "at": "2026-09-30T11:05:06.446Z",
  "results": [
   {
    "name": "W1.H23a fresh world: Monday note typed (no reload — Undo and Redo come next) — every row it wrote is named by its change-log batch",
    "ok": true,
-   "detail": "put 3 [settings/elog:muny13j3zn2j.000001, weeks/13-07-2026, weeks/13-07-2026#0] · del 0 [] · batches sched.text/3"
+   "detail": "put 3 [settings/elog:munzz9x9p5xd.000001, weeks/13-07-2026, weeks/13-07-2026#0] · del 0 [] · batches sched.text/3"
   },
   {
    "name": "W1.H23a fresh world: Monday note typed (no reload — Undo and Redo come next) — wrote exactly what it should",
    "ok": true,
-   "detail": "put 3 [settings/elog:muny13j3zn2j.000001, weeks/13-07-2026, weeks/13-07-2026#0] · del 0 [] · batches sched.text/3"
+   "detail": "put 3 [settings/elog:munzz9x9p5xd.000001, weeks/13-07-2026, weeks/13-07-2026#0] · del 0 [] · batches sched.text/3"
   },
   {
    "name": "W1.H23b the top bar's ↶ Undo (no reload) — every row it wrote is named by its change-log batch",
    "ok": true,
-   "detail": "put 2 [settings/elog:muny13j3zn2j.000002, weeks/13-07-2026#0] · del 0 [] · batches undo.restore/2"
+   "detail": "put 2 [settings/elog:munzz9x9p5xd.000002, weeks/13-07-2026#0] · del 0 [] · batches undo.restore/2"
   },
   {
    "name": "W1.H23b the top bar's ↶ Undo (no reload) — wrote exactly what it should",
    "ok": true,
-   "detail": "put 2 [settings/elog:muny13j3zn2j.000002, weeks/13-07-2026#0] · del 0 [] · batches undo.restore/2"
+   "detail": "put 2 [settings/elog:munzz9x9p5xd.000002, weeks/13-07-2026#0] · del 0 [] · batches undo.restore/2"
   },
   {
    "name": "W1.H23c the top bar's ↷ Redo; then reload — every row it wrote is named by its change-log batch",
    "ok": true,
-   "detail": "put 2 [settings/elog:muny13j3zn2j.000003, weeks/13-07-2026#0] · del 0 [] · batches undo.restore/2"
+   "detail": "put 2 [settings/elog:munzz9x9p5xd.000003, weeks/13-07-2026#0] · del 0 [] · batches undo.restore/2"
   },
   {
    "name": "W1.H23c the top bar's ↷ Redo; then reload — wrote exactly what it should",
    "ok": true,
-   "detail": "put 2 [settings/elog:muny13j3zn2j.000003, weeks/13-07-2026#0] · del 0 [] · batches undo.restore/2"
+   "detail": "put 2 [settings/elog:munzz9x9p5xd.000003, weeks/13-07-2026#0] · del 0 [] · batches undo.restore/2"
   },
   {
    "name": "W1.H23c — a reload gives back exactly what was there",
@@ -50,37 +50,37 @@
   {
    "name": "W1.H23d setup: Monday note (the week saved) — every row it wrote is named by its change-log batch",
    "ok": true,
-   "detail": "put 3 [settings/elog:muny1cdf0lv6.000001, weeks/13-07-2026, weeks/13-07-2026#0] · del 0 [] · batches sched.text/3"
+   "detail": "put 3 [settings/elog:munzziw3ag0g.000001, weeks/13-07-2026, weeks/13-07-2026#0] · del 0 [] · batches sched.text/3"
   },
   {
-   "name": "W1.H23d typed in 302 ms; after the close and a new page: Tue / Wed / Thu read C1 / C2 / C3",
+   "name": "W1.H23d typed in 345 ms; after the close and a new page: Tue / Wed / Thu read C1 / C2 / C3",
    "ok": true,
    "detail": "C1 TUE | C2 WED | C3 THU"
   },
   {
    "name": "W1.H23d every row written is named by a change-log batch",
    "ok": true,
-   "detail": "put settings/elog:muny1cdf0lv6.000002, settings/elog:muny1cdf0lv6.000003, settings/elog:muny1cdf0lv6.000004, weeks/13-07-2026#1, weeks/13-07-2026#2, weeks/13-07-2026#3 · batches sched.text/2 sched.text/2 sched.text/2"
+   "detail": "put settings/elog:munzziw3ag0g.000002, settings/elog:munzziw3ag0g.000003, settings/elog:munzziw3ag0g.000004, weeks/13-07-2026#1, weeks/13-07-2026#2, weeks/13-07-2026#3 · batches sched.text/2 sched.text/2 sched.text/2"
   },
   {
    "name": "W1.H23d it wrote exactly Tuesday, Wednesday and Thursday and three history lines",
    "ok": true,
-   "detail": "settings/elog:muny1cdf0lv6.000002, settings/elog:muny1cdf0lv6.000003, settings/elog:muny1cdf0lv6.000004, weeks/13-07-2026#1, weeks/13-07-2026#2, weeks/13-07-2026#3"
+   "detail": "settings/elog:munzziw3ag0g.000002, settings/elog:munzziw3ag0g.000003, settings/elog:munzziw3ag0g.000004, weeks/13-07-2026#1, weeks/13-07-2026#2, weeks/13-07-2026#3"
   },
   {
    "name": "W1.H24 setup: week 13 saved (Monday note in A) — every row it wrote is named by its change-log batch",
    "ok": true,
-   "detail": "put 3 [settings/elog:muny1hjzc0k2.000001, weeks/13-07-2026, weeks/13-07-2026#0] · del 0 [] · batches sched.text/3"
+   "detail": "put 3 [settings/elog:munzzo887nyg.000001, weeks/13-07-2026, weeks/13-07-2026#0] · del 0 [] · batches sched.text/3"
   },
   {
    "name": "W1.H24 tab B (on week 20): a leave for Ranger on Wed 15 Jul filed on the Inputs page — every row it wrote is named by its change-log batch",
    "ok": true,
-   "detail": "put 2 [inputs/imuny1mh0fcyifm, settings/elog:muny1jx08j78.000001] · del 0 [] · batches inputs.batch/2"
+   "detail": "put 2 [inputs/imunzztfwggjzva, settings/elog:munzzqojrttq.000001] · del 0 [] · batches inputs.batch/2"
   },
   {
    "name": "W1.H24 tab B (on week 20): a leave for Ranger on Wed 15 Jul filed on the Inputs page — wrote exactly what it should",
    "ok": true,
-   "detail": "put 2 [inputs/imuny1mh0fcyifm, settings/elog:muny1jx08j78.000001] · del 0 [] · batches inputs.batch/2"
+   "detail": "put 2 [inputs/imunzztfwggjzva, settings/elog:munzzqojrttq.000001] · del 0 [] · batches inputs.batch/2"
   },
   {
    "name": "W1.H24 tab A (never reloaded): the week chip \"Jul 20\" — every row it wrote is named by its change-log batch",
@@ -95,12 +95,12 @@
   {
    "name": "W1.H24 tab A: week 20 Tuesday note (its first save) — every row it wrote is named by its change-log batch",
    "ok": true,
-   "detail": "put 3 [settings/elog:muny1hjzc0k2.000002, weeks/20-07-2026, weeks/20-07-2026#1] · del 0 [] · batches sched.text/3"
+   "detail": "put 3 [settings/elog:munzzo887nyg.000002, weeks/20-07-2026, weeks/20-07-2026#1] · del 0 [] · batches sched.text/3"
   },
   {
    "name": "W1.H24 tab A: week 20 Tuesday note (its first save) — wrote exactly what it should",
    "ok": true,
-   "detail": "put 3 [settings/elog:muny1hjzc0k2.000002, weeks/20-07-2026, weeks/20-07-2026#1] · del 0 [] · batches sched.text/3"
+   "detail": "put 3 [settings/elog:munzzo887nyg.000002, weeks/20-07-2026, weeks/20-07-2026#1] · del 0 [] · batches sched.text/3"
   },
   {
    "name": "W1.H24 tab A: the week chip \"Jul 13\" — back (no reload) — every row it wrote is named by its change-log batch",
@@ -130,22 +130,22 @@
   {
    "name": "W1.H24 tab B (never reloaded, week 20 as it was before A's save): a leave for Ranger on Thu 23 Jul filed — every row it wrote is named by its change-log batch",
    "ok": true,
-   "detail": "put 2 [inputs/imuny1ym2m3j8q5, settings/elog:muny1jx08j78.000002] · del 0 [] · batches inputs.batch/2"
+   "detail": "put 2 [inputs/imuo005kyttfkej, settings/elog:munzzqojrttq.000002] · del 0 [] · batches inputs.batch/2"
   },
   {
    "name": "W1.H24 B's leave filed into week 20 (a week B never saw saved) keeps A's week-20 Tuesday note",
    "ok": true,
-   "detail": "{\"tue20b\":\"H24 A WK20 TUE\",\"wrote7\":0,\"rows\":[\"inputs/imuny1ym2m3j8q5\",\"settings/elog:muny1jx08j78.000002\"]}"
+   "detail": "{\"tue20b\":\"H24 A WK20 TUE\",\"wrote7\":0,\"rows\":[\"inputs/imuo005kyttfkej\",\"settings/elog:munzzqojrttq.000002\"]}"
   },
   {
    "name": "W1.H24c setup: week 13 saved (Monday note in A) — every row it wrote is named by its change-log batch",
    "ok": true,
-   "detail": "put 3 [settings/elog:muny22bnoa5q.000001, weeks/13-07-2026, weeks/13-07-2026#0] · del 0 [] · batches sched.text/3"
+   "detail": "put 3 [settings/elog:muo009djlfq8.000001, weeks/13-07-2026, weeks/13-07-2026#0] · del 0 [] · batches sched.text/3"
   },
   {
    "name": "W1.H24c tab B (on week 20): an Appointment for Ranger on Thu 16 Jul 10:00–11:00 — every row it wrote is named by its change-log batch",
    "ok": true,
-   "detail": "put 2 [inputs/imuny27aic4ac0y, settings/elog:muny24mgkt5i.000001] · del 0 [] · batches inputs.batch/2"
+   "detail": "put 2 [inputs/imuo00ecn1an8jx, settings/elog:muo00bt8wcwl.000001] · del 0 [] · batches inputs.batch/2"
   },
   {
    "name": "W1.H24c A's reload: every row it wrote is named by a change-log batch",
@@ -160,12 +160,12 @@
   {
    "name": "W1.H24d tab A: week 20 Tuesday note (the week's first save) — every row it wrote is named by its change-log batch",
    "ok": true,
-   "detail": "put 3 [settings/elog:muny2cu96675.000001, weeks/20-07-2026, weeks/20-07-2026#1] · del 0 [] · batches sched.text/3"
+   "detail": "put 3 [settings/elog:muo00juxobx7.000001, weeks/20-07-2026, weeks/20-07-2026#1] · del 0 [] · batches sched.text/3"
   },
   {
    "name": "W1.H24d tab B (never saw A's save): an Appointment for Ranger on Thu 23 Jul 10:00–11:00 — every row it wrote is named by its change-log batch",
    "ok": true,
-   "detail": "put 3 [inputs/imuny2iyv2925oz, settings/elog:muny2exue809.000001, weeks/20-07-2026#3] · del 0 [] · batches inputs.batch/4"
+   "detail": "put 3 [inputs/imuo00ppg0ja7y5, settings/elog:muo00ltmkr2m.000001, weeks/20-07-2026#3] · del 0 [] · batches inputs.batch/4"
   },
   {
    "name": "W1.H24d B's appointment and A's Tuesday note are both kept",
@@ -182,10 +182,10 @@
     "W1.H23a-1-after.png"
    ],
    "shown": "",
-   "rows": "put 3: settings/elog:muny13j3zn2j.000001, weeks/13-07-2026, weeks/13-07-2026#0 · batches: sched.text(EditLog+ScheduleWeek+ScheduleDay, 3 rows, 1 history line, by acad)",
+   "rows": "put 3: settings/elog:munzz9x9p5xd.000001, weeks/13-07-2026, weeks/13-07-2026#0 · batches: sched.text(EditLog+ScheduleWeek+ScheduleDay, 3 rows, 1 history line, by acad)",
    "batches": [
     {
-     "key": "changes/cmuny13l1eynqdp-1",
+     "key": "changes/cmunzz9z1f545z0-1",
      "type": "sched.text",
      "actor": "acad",
      "n": 3,
@@ -208,10 +208,10 @@
     "W1.H23b-1-after.png"
    ],
    "shown": "",
-   "rows": "put 2: settings/elog:muny13j3zn2j.000002, weeks/13-07-2026#0 · batches: undo.restore(EditLog+ScheduleDay, 2 rows, 1 history line, by acad)",
+   "rows": "put 2: settings/elog:munzz9x9p5xd.000002, weeks/13-07-2026#0 · batches: undo.restore(EditLog+ScheduleDay, 2 rows, 1 history line, by acad)",
    "batches": [
     {
-     "key": "changes/cmuny13l1eynqdp-2",
+     "key": "changes/cmunzz9z1f545z0-2",
      "type": "undo.restore",
      "actor": "acad",
      "n": 2,
@@ -237,10 +237,10 @@
     "W1.H23c-2-reloaded.png"
    ],
    "shown": "Monday's note after the reload \"H23 REDO ME\"",
-   "rows": "put 2: settings/elog:muny13j3zn2j.000003, weeks/13-07-2026#0 · batches: undo.restore(EditLog+ScheduleDay, 2 rows, 1 history line, by acad)",
+   "rows": "put 2: settings/elog:munzz9x9p5xd.000003, weeks/13-07-2026#0 · batches: undo.restore(EditLog+ScheduleDay, 2 rows, 1 history line, by acad)",
    "batches": [
     {
-     "key": "changes/cmuny13l1eynqdp-3",
+     "key": "changes/cmunzz9z1f545z0-3",
      "type": "undo.restore",
      "actor": "acad",
      "n": 2,
@@ -254,9 +254,9 @@
    "pass": true,
    "notes": [
     "W1.H23c {\"present\":true,\"title\":\"Redo — a day note\",\"pressed\":true,\"toasts\":[\"Redid: a day note\"]}",
-    "W1.H24 B filed: {\"added\":1,\"asked\":[],\"toast\":\"\",\"iid\":\"imuny1hlbdi9lyx\"} · rows inputs/imuny1mh0fcyifm, settings/elog:muny1jx08j78.000001",
-    "W1.H24 B's second filing wrote: inputs/imuny1ym2m3j8q5, settings/elog:muny1jx08j78.000002 · batches inputs.batch/2",
-    "W1.H24c B filed: {\"added\":1,\"asked\":[],\"toast\":\"\",\"iid\":\"imuny22cz8fgh93\"} · rows inputs/imuny27aic4ac0y, settings/elog:muny24mgkt5i.000001 · batches inputs.batch/2"
+    "W1.H24 B filed: {\"added\":1,\"asked\":[],\"toast\":\"\",\"iid\":\"imunzzo9nvvjw36\"} · rows inputs/imunzztfwggjzva, settings/elog:munzzqojrttq.000001",
+    "W1.H24 B's second filing wrote: inputs/imuo005kyttfkej, settings/elog:munzzqojrttq.000002 · batches inputs.batch/2",
+    "W1.H24c B filed: {\"added\":1,\"asked\":[],\"toast\":\"\",\"iid\":\"imuo009f1aijmom\"} · rows inputs/imuo00ecn1an8jx, settings/elog:muo00bt8wcwl.000001 · batches inputs.batch/2"
    ],
    "fails": []
   },
@@ -267,8 +267,8 @@
    "pics": [
     "W1.H23d-2-newpage.png"
    ],
-   "shown": "after the page was closed and a new one opened: Tue \"C1 TUE\", Wed \"C2 WED\", Thu \"C3 THU\" (typed in 302 ms)",
-   "rows": "put settings/elog:muny1cdf0lv6.000002, settings/elog:muny1cdf0lv6.000003, settings/elog:muny1cdf0lv6.000004, weeks/13-07-2026#1, weeks/13-07-2026#2, weeks/13-07-2026#3 · batches sched.text/2 by acad + sched.text/2 by acad + sched.text/2 by acad",
+   "shown": "after the page was closed and a new one opened: Tue \"C1 TUE\", Wed \"C2 WED\", Thu \"C3 THU\" (typed in 345 ms)",
+   "rows": "put settings/elog:munzziw3ag0g.000002, settings/elog:munzziw3ag0g.000003, settings/elog:munzziw3ag0g.000004, weeks/13-07-2026#1, weeks/13-07-2026#2, weeks/13-07-2026#3 · batches sched.text/2 by acad + sched.text/2 by acad + sched.text/2 by acad",
    "batches": [],
    "notes": [],
    "pass": true,
@@ -314,7 +314,7 @@
     "W1.H24d-2-A-week20-after-reload.png"
    ],
    "shown": "after A's reload: week 20 Tuesday \"H24D A TUE\"; B's appointment on Thursday: true; B's filing wrote 1 of week 20's rows (weeks/20-07-2026#3)",
-   "rows": "B's filing wrote: inputs/imuny2iyv2925oz, settings/elog:muny2exue809.000001, weeks/20-07-2026#3 · batches inputs.batch/4",
+   "rows": "B's filing wrote: inputs/imuo00ppg0ja7y5, settings/elog:muo00ltmkr2m.000001, weeks/20-07-2026#3 · batches inputs.batch/4",
    "batches": [],
    "notes": [],
    "pass": true,

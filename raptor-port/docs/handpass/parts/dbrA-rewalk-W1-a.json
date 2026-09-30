@@ -1,6 +1,6 @@
 {
  "base": "http://localhost:4201",
- "at": "2026-09-30T10:15:28.791Z",
+ "at": "2026-09-30T11:03:15.638Z",
  "results": [
   {
    "name": "W1.0 the first boot wrote ONE change-log batch, of type boot",
@@ -20,12 +20,12 @@
   {
    "name": "W1.1a Monday: a day note typed on Edit Schedule (the week's first save) — every row it wrote is named by its change-log batch",
    "ok": true,
-   "detail": "put 3 [settings/elog:muny7qdo7740.000001, weeks/13-07-2026, weeks/13-07-2026#0] · del 0 [] · batches sched.text/3"
+   "detail": "put 3 [settings/elog:munzx6v3x0xe.000001, weeks/13-07-2026, weeks/13-07-2026#0] · del 0 [] · batches sched.text/3"
   },
   {
    "name": "W1.1a Monday: a day note typed on Edit Schedule (the week's first save) — wrote exactly what it should",
    "ok": true,
-   "detail": "put 3 [settings/elog:muny7qdo7740.000001, weeks/13-07-2026, weeks/13-07-2026#0] · del 0 [] · batches sched.text/3"
+   "detail": "put 3 [settings/elog:munzx6v3x0xe.000001, weeks/13-07-2026, weeks/13-07-2026#0] · del 0 [] · batches sched.text/3"
   },
   {
    "name": "W1.1a — a reload gives back exactly what was there",
@@ -45,12 +45,12 @@
   {
    "name": "W1.1b Monday: a crew puck dragged from the crew palette onto the first flying line's WSO seat (freak → beams) — every row it wrote is named by its change-log batch",
    "ok": true,
-   "detail": "put 2 [settings/elog:muny7u1gxb18.000001, weeks/13-07-2026#0] · del 0 [] · batches sched.mutate/2"
+   "detail": "put 2 [settings/elog:munzxaipy2hz.000001, weeks/13-07-2026#0] · del 0 [] · batches sched.mutate/2"
   },
   {
    "name": "W1.1b Monday: a crew puck dragged from the crew palette onto the first flying line's WSO seat (freak → beams) — wrote exactly what it should",
    "ok": true,
-   "detail": "put 2 [settings/elog:muny7u1gxb18.000001, weeks/13-07-2026#0] · del 0 [] · batches sched.mutate/2"
+   "detail": "put 2 [settings/elog:munzxaipy2hz.000001, weeks/13-07-2026#0] · del 0 [] · batches sched.mutate/2"
   },
   {
    "name": "W1.1b — a reload gives back exactly what was there",
@@ -70,12 +70,12 @@
   {
    "name": "W1.1c Wednesday: a day note typed on Edit Schedule — every row it wrote is named by its change-log batch",
    "ok": true,
-   "detail": "put 2 [settings/elog:muny7ys83nu4.000001, weeks/13-07-2026#2] · del 0 [] · batches sched.text/2"
+   "detail": "put 2 [settings/elog:munzxf97r9p6.000001, weeks/13-07-2026#2] · del 0 [] · batches sched.text/2"
   },
   {
    "name": "W1.1c Wednesday: a day note typed on Edit Schedule — wrote exactly what it should",
    "ok": true,
-   "detail": "put 2 [settings/elog:muny7ys83nu4.000001, weeks/13-07-2026#2] · del 0 [] · batches sched.text/2"
+   "detail": "put 2 [settings/elog:munzxf97r9p6.000001, weeks/13-07-2026#2] · del 0 [] · batches sched.text/2"
   },
   {
    "name": "W1.1c — a reload gives back exactly what was there",
@@ -90,12 +90,12 @@
   {
    "name": "W1.2 the week's drag: Monday's 0.1.0.1.w puck (nick) dragged onto Tuesday's ground row (g:1.0.+) — every row it wrote is named by its change-log batch",
    "ok": true,
-   "detail": "put 4 [settings/elog:muny82rpuibk.000001, settings/elog:muny82rpuibk.000002, weeks/13-07-2026#0, weeks/13-07-2026#1] · del 0 [] · batches sched.mutate/4"
+   "detail": "put 4 [settings/elog:munzxj6x2y7o.000001, settings/elog:munzxj6x2y7o.000002, weeks/13-07-2026#0, weeks/13-07-2026#1] · del 0 [] · batches sched.mutate/4"
   },
   {
    "name": "W1.2 the week's drag: Monday's 0.1.0.1.w puck (nick) dragged onto Tuesday's ground row (g:1.0.+) — wrote exactly what it should",
    "ok": true,
-   "detail": "put 4 [settings/elog:muny82rpuibk.000001, settings/elog:muny82rpuibk.000002, weeks/13-07-2026#0, weeks/13-07-2026#1] · del 0 [] · batches sched.mutate/4"
+   "detail": "put 4 [settings/elog:munzxj6x2y7o.000001, settings/elog:munzxj6x2y7o.000002, weeks/13-07-2026#0, weeks/13-07-2026#1] · del 0 [] · batches sched.mutate/4"
   },
   {
    "name": "W1.2 — a reload gives back exactly what was there",
@@ -110,12 +110,12 @@
   {
    "name": "W1.3a board (Mon): an empty crew seat (s:0.amt.1.pax.8) armed and filled from the crew palette (boosh) — every row it wrote is named by its change-log batch",
    "ok": true,
-   "detail": "put 2 [settings/elog:muny87ry72b5.000001, weeks/13-07-2026#0] · del 0 [] · batches sched.mutate/2"
+   "detail": "put 2 [settings/elog:munzxo7e1bwc.000001, weeks/13-07-2026#0] · del 0 [] · batches sched.mutate/2"
   },
   {
    "name": "W1.3a board (Mon): an empty crew seat (s:0.amt.1.pax.8) armed and filled from the crew palette (boosh) — wrote exactly what it should",
    "ok": true,
-   "detail": "put 2 [settings/elog:muny87ry72b5.000001, weeks/13-07-2026#0] · del 0 [] · batches sched.mutate/2"
+   "detail": "put 2 [settings/elog:munzxo7e1bwc.000001, weeks/13-07-2026#0] · del 0 [] · batches sched.mutate/2"
   },
   {
    "name": "W1.3a — a reload gives back exactly what was there",
@@ -130,12 +130,12 @@
   {
    "name": "W1.3b board (Mon): + Wave → a flying wave added — every row it wrote is named by its change-log batch",
    "ok": true,
-   "detail": "put 2 [settings/elog:muny8cflk76d.000001, weeks/13-07-2026#0] · del 0 [] · batches sched.mutate/2"
+   "detail": "put 2 [settings/elog:munzxsw6e60n.000001, weeks/13-07-2026#0] · del 0 [] · batches sched.mutate/2"
   },
   {
    "name": "W1.3b board (Mon): + Wave → a flying wave added — wrote exactly what it should",
    "ok": true,
-   "detail": "put 2 [settings/elog:muny8cflk76d.000001, weeks/13-07-2026#0] · del 0 [] · batches sched.mutate/2"
+   "detail": "put 2 [settings/elog:munzxsw6e60n.000001, weeks/13-07-2026#0] · del 0 [] · batches sched.mutate/2"
   },
   {
    "name": "W1.3b — a reload gives back exactly what was there",
@@ -150,12 +150,12 @@
   {
    "name": "W1.3c board (Mon): a Common Programme row deleted by its ✕ (\"MET + NOTAM BRIEF\") — every row it wrote is named by its change-log batch",
    "ok": true,
-   "detail": "put 2 [settings/elog:muny8h034ooi.000001, weeks/13-07-2026#0] · del 0 [] · batches sched.mutate/2"
+   "detail": "put 2 [settings/elog:munzxxh6pd05.000001, weeks/13-07-2026#0] · del 0 [] · batches sched.mutate/2"
   },
   {
    "name": "W1.3c board (Mon): a Common Programme row deleted by its ✕ (\"MET + NOTAM BRIEF\") — wrote exactly what it should",
    "ok": true,
-   "detail": "put 2 [settings/elog:muny8h034ooi.000001, weeks/13-07-2026#0] · del 0 [] · batches sched.mutate/2"
+   "detail": "put 2 [settings/elog:munzxxh6pd05.000001, weeks/13-07-2026#0] · del 0 [] · batches sched.mutate/2"
   },
   {
    "name": "W1.3c — a reload gives back exactly what was there",
@@ -190,17 +190,17 @@
   {
    "name": "W1.4a fresh world: Monday note typed (no reload — the Undo comes next) — every row it wrote is named by its change-log batch",
    "ok": true,
-   "detail": "put 3 [settings/elog:muny8sw3itbr.000001, weeks/13-07-2026, weeks/13-07-2026#0] · del 0 [] · batches sched.text/3"
+   "detail": "put 3 [settings/elog:munzy9645nuk.000001, weeks/13-07-2026, weeks/13-07-2026#0] · del 0 [] · batches sched.text/3"
   },
   {
    "name": "W1.4a fresh world: Monday note typed (no reload — the Undo comes next) — wrote exactly what it should",
    "ok": true,
-   "detail": "put 3 [settings/elog:muny8sw3itbr.000001, weeks/13-07-2026, weeks/13-07-2026#0] · del 0 [] · batches sched.text/3"
+   "detail": "put 3 [settings/elog:munzy9645nuk.000001, weeks/13-07-2026, weeks/13-07-2026#0] · del 0 [] · batches sched.text/3"
   },
   {
    "name": "W1.4b the top bar's ↶ Undo — back to pristine; then reload — every row it wrote is named by its change-log batch",
    "ok": true,
-   "detail": "put 2 [settings/elog:muny8sw3itbr.000002, weeks/13-07-2026#0] · del 0 [] · batches undo.restore/2"
+   "detail": "put 2 [settings/elog:munzy9645nuk.000002, weeks/13-07-2026#0] · del 0 [] · batches undo.restore/2"
   },
   {
    "name": "W1.4b — a reload gives back exactly what was there",
@@ -230,7 +230,7 @@
    "did": "fresh browser, signed in as Saber",
    "pics": [],
    "shown": "Edit Schedule, week of 13 Jul, every day a draft",
-   "rows": "rows by collection {\"leavewar\":91,\"people\":61,\"inputs\":46,\"settings\":1,\"changes\":1} · batches boot/199",
+   "rows": "rows by collection {\"leavewar\":91,\"people\":61,\"settings\":1,\"inputs\":46,\"changes\":1} · batches boot/199",
    "batches": [],
    "notes": [],
    "pass": true
@@ -244,10 +244,10 @@
     "W1.1a-2-reloaded.png"
    ],
    "shown": "Monday's first note reads \"W1 MONDAY NOTE\"",
-   "rows": "put 3: settings/elog:muny7qdo7740.000001, weeks/13-07-2026, weeks/13-07-2026#0 · batches: sched.text(EditLog+ScheduleWeek+ScheduleDay, 3 rows, 1 history line, by acad)",
+   "rows": "put 3: settings/elog:munzx6v3x0xe.000001, weeks/13-07-2026, weeks/13-07-2026#0 · batches: sched.text(EditLog+ScheduleWeek+ScheduleDay, 3 rows, 1 history line, by acad)",
    "batches": [
     {
-     "key": "changes/cmuny7qfege4zg1-1",
+     "key": "changes/cmunzx6wvfkj8tn-1",
      "type": "sched.text",
      "actor": "acad",
      "n": 3,
@@ -271,10 +271,10 @@
     "W1.1b-2-reloaded.png"
    ],
    "shown": "Monday's first line's WSO seat holds Comet (beams)",
-   "rows": "put 2: settings/elog:muny7u1gxb18.000001, weeks/13-07-2026#0 · batches: sched.mutate(EditLog+ScheduleDay, 2 rows, 1 history line, by acad)",
+   "rows": "put 2: settings/elog:munzxaipy2hz.000001, weeks/13-07-2026#0 · batches: sched.mutate(EditLog+ScheduleDay, 2 rows, 1 history line, by acad)",
    "batches": [
     {
-     "key": "changes/cmuny7wsrx6lozd-0",
+     "key": "changes/cmunzxd9p0qgi2w-0",
      "type": "sched.mutate",
      "actor": "acad",
      "n": 2,
@@ -298,10 +298,10 @@
     "W1.1c-2-reloaded.png"
    ],
    "shown": "Wednesday's note reads \"W1 WEDNESDAY NOTE\"",
-   "rows": "put 2: settings/elog:muny7ys83nu4.000001, weeks/13-07-2026#2 · batches: sched.text(EditLog+ScheduleDay, 2 rows, 1 history line, by acad)",
+   "rows": "put 2: settings/elog:munzxf97r9p6.000001, weeks/13-07-2026#2 · batches: sched.text(EditLog+ScheduleDay, 2 rows, 1 history line, by acad)",
    "batches": [
     {
-     "key": "changes/cmuny81c1rgtpr6-0",
+     "key": "changes/cmunzxhtmqy0ohf-0",
      "type": "sched.text",
      "actor": "acad",
      "n": 2,
@@ -325,10 +325,10 @@
     "W1.2-2-reloaded.png"
    ],
    "shown": "Monday still names him: false · Tuesday names him: true",
-   "rows": "put 4: settings/elog:muny82rpuibk.000001, settings/elog:muny82rpuibk.000002, weeks/13-07-2026#0, weeks/13-07-2026#1 · batches: sched.mutate(EditLog+ScheduleDay, 4 rows, 2 history line, by acad)",
+   "rows": "put 4: settings/elog:munzxj6x2y7o.000001, settings/elog:munzxj6x2y7o.000002, weeks/13-07-2026#0, weeks/13-07-2026#1 · batches: sched.mutate(EditLog+ScheduleDay, 4 rows, 2 history line, by acad)",
    "batches": [
     {
-     "key": "changes/cmuny85sqqjah9t-0",
+     "key": "changes/cmunzxm78o1y9h4-0",
      "type": "sched.mutate",
      "actor": "acad",
      "n": 4,
@@ -354,10 +354,10 @@
     "W1.3a-2-reloaded.png"
    ],
    "shown": "the seat s:0.amt.1.pax.8 holds boosh (the board reopened after the reload)",
-   "rows": "put 2: settings/elog:muny87ry72b5.000001, weeks/13-07-2026#0 · batches: sched.mutate(EditLog+ScheduleDay, 2 rows, 1 history line, by acad)",
+   "rows": "put 2: settings/elog:munzxo7e1bwc.000001, weeks/13-07-2026#0 · batches: sched.mutate(EditLog+ScheduleDay, 2 rows, 1 history line, by acad)",
    "batches": [
     {
-     "key": "changes/cmuny8aypljvjv2-0",
+     "key": "changes/cmunzxrfhnonjx4-0",
      "type": "sched.mutate",
      "actor": "acad",
      "n": 2,
@@ -383,10 +383,10 @@
     "W1.3b-2-reloaded.png"
    ],
    "shown": "Monday has 3 waves (was 2)",
-   "rows": "put 2: settings/elog:muny8cflk76d.000001, weeks/13-07-2026#0 · batches: sched.mutate(EditLog+ScheduleDay, 2 rows, 1 history line, by acad)",
+   "rows": "put 2: settings/elog:munzxsw6e60n.000001, weeks/13-07-2026#0 · batches: sched.mutate(EditLog+ScheduleDay, 2 rows, 1 history line, by acad)",
    "batches": [
     {
-     "key": "changes/cmuny8fe12gpn6i-0",
+     "key": "changes/cmunzxvu8kc1hk5-0",
      "type": "sched.mutate",
      "actor": "acad",
      "n": 2,
@@ -410,10 +410,10 @@
     "W1.3c-2-reloaded.png"
    ],
    "shown": "Monday's Common Programme: [\"SODB\",\"FLIGHT SAFETY STAND-DOWN\",\"WPNS & TACTICS SYNC\",\"STANDARDISATION MEETING\",\"OCU PROGRESS REVIEW\",\"INTEL UPDATE\",\"OPS SHARING + NAV SYS BRIEF\",\"DINNER WITH CMD\",\"CMD ENGAGEMENT @ CREW ROOM (ALL)\"]",
-   "rows": "put 2: settings/elog:muny8h034ooi.000001, weeks/13-07-2026#0 · batches: sched.mutate(EditLog+ScheduleDay, 2 rows, 1 history line, by acad)",
+   "rows": "put 2: settings/elog:munzxxh6pd05.000001, weeks/13-07-2026#0 · batches: sched.mutate(EditLog+ScheduleDay, 2 rows, 1 history line, by acad)",
    "batches": [
     {
-     "key": "changes/cmuny8jkmorc6b0-0",
+     "key": "changes/cmunzy02mxg9r4d-0",
      "type": "sched.mutate",
      "actor": "acad",
      "n": 2,
@@ -440,7 +440,7 @@
    "rows": "put 1: weeks/13-07-2026#0 · batches: sched.section.reorder(ScheduleDay, 1 rows, by acad)",
    "batches": [
     {
-     "key": "changes/cmuny8nxmari3lv-0",
+     "key": "changes/cmunzy4h3lxiiyv-0",
      "type": "sched.section.reorder",
      "actor": "acad",
      "n": 1,
@@ -465,10 +465,10 @@
     "W1.4a-1-after.png"
    ],
    "shown": "",
-   "rows": "put 3: settings/elog:muny8sw3itbr.000001, weeks/13-07-2026, weeks/13-07-2026#0 · batches: sched.text(EditLog+ScheduleWeek+ScheduleDay, 3 rows, 1 history line, by acad)",
+   "rows": "put 3: settings/elog:munzy9645nuk.000001, weeks/13-07-2026, weeks/13-07-2026#0 · batches: sched.text(EditLog+ScheduleWeek+ScheduleDay, 3 rows, 1 history line, by acad)",
    "batches": [
     {
-     "key": "changes/cmuny8sxo0uumso-1",
+     "key": "changes/cmunzy97ssne4dv-1",
      "type": "sched.text",
      "actor": "acad",
      "n": 3,
@@ -492,10 +492,10 @@
     "W1.4b-2-reloaded.png"
    ],
    "shown": "after the reload Monday's note reads \"EP: ENGINE FIRE ON TAKE OFF\"; stored week rows: weeks/13-07-2026#0, weeks/13-07-2026",
-   "rows": "put 2: settings/elog:muny8sw3itbr.000002, weeks/13-07-2026#0 · batches: undo.restore(EditLog+ScheduleDay, 2 rows, 1 history line, by acad)",
+   "rows": "put 2: settings/elog:munzy9645nuk.000002, weeks/13-07-2026#0 · batches: undo.restore(EditLog+ScheduleDay, 2 rows, 1 history line, by acad)",
    "batches": [
     {
-     "key": "changes/cmuny8sxo0uumso-2",
+     "key": "changes/cmunzy97ssne4dv-2",
      "type": "undo.restore",
      "actor": "acad",
      "n": 2,

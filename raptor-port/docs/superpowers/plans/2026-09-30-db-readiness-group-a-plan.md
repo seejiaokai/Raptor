@@ -277,7 +277,9 @@ Design rule 9, smallest first, each its own step with the whole engine suite, `t
 handed-on OIL decision ignored on read — the decision records the input assignment it was made for; (b) the input
 landings' pending marks (`inp:`) counted from the filing against the day's baseline; (c) an input's landing as a
 read-time overlay from the `Input` plus the day's stored decisions keyed by input id — which removes `sched.load`'s
-re-landing writes (18 reader files; `[OIL-RELINK-XWEEK]` goes with it); (d) a delete by `Person.deletedFrom` filtered on
+re-landing writes (18 reader files; `[OIL-RELINK-XWEEK]` goes with it) — *(the WRITES are gone already: since the group-A
+final read, Fable F2 / F1, 30 Sep 26, a week load's and a boot's landing are never saved and are worked out at every load
+— §9; what (c) still owns is a member's OWN request landing on its day inside his own action, and the stored decisions)*; (d) a delete by `Person.deletedFrom` filtered on
 read instead of rewriting every stored week. **The final hand-over of the `ScheduleDay` / `Input` shape waits on IT's
 written answer on reporting (§12 q9); if reports cannot reproduce the overlay, a reportable projection (a view, or a
 table with a named owner and writer) is added before the tables settle.**
@@ -742,3 +744,26 @@ state back, and that a reload writes nothing — `scripts/handpass/dbrA-lib.mjs`
   `[SHARED-OPENS-DEMO-WEEK]`, `[READONLY-WEEK-WORDS]`, `[LW-LABEL-NO-DOOR]`.
 - **The conversion held:** a `main`-written browser of every kind — his kind of Tracker work included (D464) — read and
   exported identically after it, and a second reload wrote nothing.
+
+**The final code reads — 30 Sep 26** (Fable 5.1 and Astra, each blind to the other, the evidence sheet in hand — D11,
+D353; the brief `docs/superpowers/briefs/2026-09-30-db-readiness-group-a-final-read.md`, the reports beside it; the
+dispositions in the evidence sheet §The code reads). **Fable — four findings, all fixed, each red first:**
+- **F1 — §11 matched who now writes the history and the change log.** `EditLog` admin C R D, member C R ("written by
+  whoever made the change", not "by the store" — the database would have refused every member action); `ChangeBatch` C for
+  a waiting person; the Admin → Data sweep runs as the admin who asked (`elog.sweep`, a D on `EditLog`); the ScheduleWeek
+  note for a member's own request's landing until (c) above. Pinned: a member's own actions save only rows his role may write.
+- **F2 — a landing is never saved.** A week switch wrote the landing's request and day rows from this browser's copy,
+  over another person's later change; now `sched.load` writes nothing (the inputs mapper and the loaded week's days), and
+  the boot's landing write (`writeLoadedWeekAtBoot`, the walk's H1 fix) is removed with it — a member's boot would write
+  days a member may not write.
+- **F3 — the conversion one converter at a time.** The whole store as one group could never convert a browser over
+  about half full (the browser store copies a group into one string first); now the started mark, one group per converter,
+  the stamp at 6 — after asking the store whether it can hold the largest group; if not, `StoreFullError`, nothing
+  written, and its own screen (do not clear the browser's data — D464).
+- **F4 — a week that will not split refuses the action** with the reason, instead of saving nothing while saying saved.
+**Astra — three findings, reconciled with Fable's by evidence:** A1 (a week load and the boot rewriting a saved day from a
+stale copy) is Fable's F2, found independently — Astra asked for the same fix, the boot's write removed too, which is
+what was built; A2 (§11's `EditLog` / `ChangeBatch` cells) is Fable's F1 — one disagreement, the sweep's identity: Astra
+would keep it a system action; with no plug-in (§ above) nothing but the signed-in browser can write, so Fable's shape
+stands (the admin's D, his batch naming him). **A3, new:** the change log named a Tracker mark, pace and lulls
+`Enrolment`; now `Attempt`, `CoursePlan` and `CoursePlan`, as `data-model.md` §5 maps them (`storage/tables.ts`).

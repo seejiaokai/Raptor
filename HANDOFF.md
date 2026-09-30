@@ -16,40 +16,36 @@ the later merge keeps both (D78).
 ## Now
 
 <!-- now:claude/db-readiness-table-shaping-4094f6 -->
-### `claude/db-readiness-table-shaping-4094f6` — `[DB-READINESS]` group A: phases 0–5b BUILT; **the group-wide FULL walk DONE, six fixes in; both code reads running** — written 30 Sep 26 — verify before use
+### `claude/db-readiness-table-shaping-4094f6` — `[DB-READINESS]` group A: phases 0–5b BUILT; **the group-wide FULL check DONE — the walk, both code reads, every finding fixed; his look next** — written 30 Sep 26 — verify before use
 - **Where it started:** his ask: plan group A (D453), red-team it with both reviewers, then build it; D460–D464 ruled on the way;
   then (this chat) "run group A's group-wide FULL bug check: the roll-call over phases 0–5b, the walk, then both reviewers'
   code reads (Fable and Astra, blind)".
 - **Shipped (this branch, pushed, no PR):** the plan (`raptor-port/docs/superpowers/plans/2026-09-30-db-readiness-group-a-plan.md`,
-  v4 + §9 build log — phases 0–5b and **the group walk's entry**); every saved record one row per thing, written from each
-  command's changes, one change-log batch per saved group, the one-time conversion (format 6), no demo in a shared store.
+  v4 + §9 build log — phases 0–5b, the group walk, **the final reads**); every saved record one row per thing, written from
+  each command's changes, one change-log batch per saved group, the one-time conversion (format 6), no demo in a shared store.
 - **The group-wide FULL walk (30 Sep 26):** evidence `raptor-port/docs/handpass/2026-09-30-dbrA-group-walk.md` — scenarios by
-  Astra (one reviewer, D353), five walkers on a frozen build, 2,576 checks (the shared driver `scripts/handpass/dbrA-lib.mjs`:
-  every row a step changed named by its batch; a reload gives the state back; a reload writes nothing). **Six fixes, each red
-  first:** H3 (a week's FIRST save wrote all seven days from the saver's copy — two people on two days of a new week, one
-  wiped; plan §2.5's seven-day first save WITHDRAWN — only the days changed; a day with no row reads as the week untouched),
-  H1 (the boot's re-landing onto a saved week bare → a `boot` group), H2 (an edit's history line as a second saved group →
-  held and adopted by the person's next command; the board's structural gestures log first), W5-1 (a Tracker Import's
-  conversion flags bare → `trk.meta` door), W5-2 (three Tracker chart actions in two groups → one), W3-F2 (a Leave War
-  decision rewrote the record beside it → keeps its place). **The conversion held** (a `main`-written browser of every kind,
-  his Tracker work included, identical after — D464). The re-walk of every fix passes. **Filed:** thirteen items (the
-  sheet's table; `OUTSTANDING.md` §Priority's group-A line) — the notable one `[UNDO-PUBLISH-ERASES-ISSUANCE]` (group B:
-  an Undo of a publish deletes the issuance row, against AM4 / AM32).
-- **Gates (after the fixes, watched, under the lock):** unit 7310/7311 (the one a focus-trap timing flake — 3/3 alone) · build ·
-  tfin 728/0 · e2e 509 passed, 0 failed, 49 skipped · smoke 445/0 · rulecheck · docsize (over, deferred — D29) · perf 4/4 (1.30–1.46×).
-  A third full run on the committed code was started beside the reads.
-- **Unfinished:** BOTH reviewers' code reads — running (Fable: `claude -p` read-only, high; Astra: `codex exec` read-only),
-  brief `raptor-port/docs/superpowers/briefs/2026-09-30-db-readiness-group-a-final-read.md`, reports to `…-final-read-{fable,astra}.md`;
-  then reconcile (§4: reproduce, compare with `main`, disposition every claim), fix, re-walk what the fixes touch, gates,
-  the sheet's `Walk:` line, his look card. Then phase 6 (worked out on read — its hand-over waits on IT's reporting answer,
-  §12 q9), then 7.
+  Astra (one reviewer, D353), five walkers on a frozen build, 2,576 checks (the shared driver `scripts/handpass/dbrA-lib.mjs`).
+  Six fixes, each red first (H3, H1, H2, W5-1, W5-2, W3-F2 — the sheet's table); thirteen items filed (the notable one
+  `[UNDO-PUBLISH-ERASES-ISSUANCE]`, group B). The conversion held on a `main`-written browser (D464).
+- **The code reads (30 Sep 26), blind to each other:** Fable (4) and Astra (3) — reports
+  `raptor-port/docs/superpowers/briefs/2026-09-30-db-readiness-group-a-final-read-{fable,astra}.md`, dispositions in the
+  sheet §The code reads. Both found the same two: **a landing is never saved now** (a week switch and the boot wrote this
+  browser's copy of a day or a request over another person's later change — `writeLoadedWeekAtBoot` removed, the walk's H1
+  fix with it), and **§11 matched who writes the history and the change log** (`EditLog` admin C R D / member C R;
+  `ChangeBatch` C for a waiting person; the Admin → Data sweep runs as the admin — Astra's "system identity" set aside by
+  evidence: no plug-in, so only the signed-in browser writes). Fable alone: **the conversion one converter at a time**, a space
+  check first, `StoreFullError` and its own screen (a browser over half full could never convert — D401, D464); **a week that
+  will not split refuses the action**. Astra alone: **the change log names a Tracker mark `Attempt`, pace and lulls
+  `CoursePlan`** (all were `Enrolment`). Each with a break test; re-walked in the app (`dbrA-host-fable2` 3/3,
+  `dbrA-host-final` 10/10).
+- **Gates (with every fix, watched, under the lock):** unit 7329/7329 · build · tfin 728/0 · e2e 509 passed, 0 failed, 49 skipped · smoke 445/0 · rulecheck · docsize (over, deferred — D29) · perf 4/4 (1.31–1.46×). One test fixed on the way: it muted a warning under a key the app never makes, which the split-failure fix now rightly refuses.
 - **Before this branch's "merge live": remind him to EXPORT a copy of his Tracker first (D464)** — the conversion runs on his
   browser at its first load of the new build (walked on a `main`-written browser: nothing lost).
 - **Branch:** `claude/db-readiness-table-shaping-4094f6`; no PR. Build on it. A branch push runs no checks (workflows are main / PR only).
-- **Open questions for him:** none of this chat's (Astra's five scenario questions were answered from the rulings — D376 — or are
-  technical; the sheet says which). **For IT:** `OUTSTANDING.md` `[IT-QUESTIONS]` (+ `data-model.md` §12 q1–q11).
-- **Parallel (D302):** rulings D460–D469 (D460–D464 used); observations #380–#389 (ALL used — #387–#389 by this walk; a next
-  chat on this branch takes a new range). No other open branch on 30 Sep 26.
+- **Open questions for him:** none of this chat's. **For IT:** `OUTSTANDING.md` `[IT-QUESTIONS]` (+ `data-model.md` §12 q1–q11;
+  "no plug-in" is still to be confirmed in writing — the sweep's identity rests on it).
+- **Parallel (D302):** rulings D460–D469 (D460–D464 used); observations #380–#391 (ALL used — #387–#391 by this check; a next
+  chat on this branch takes a new range). No other open branch on 30 Sep 26 past observation #370.
 - **His preview:** send the link only with the export reminder above.
 - **Recipes:** a shared-store build — `VITE_SEED_DEMO=false VITE_BOOTSTRAP_ADMIN='{"principal":"boss@unit.example","person":{"cs":"Boss","ini":"BS","seat":"FCP","cat":"A"}}' npx vite build --outDir dist-blank`;
   `main`'s app — `git archive origin/main raptor-port/src raptor-port/index.html raptor-port/vite.config.ts raptor-port/package.json
@@ -60,17 +56,18 @@ the later merge keeps both (D78).
 - **Traps met:** `src/state/store.ts` and `src/leavewar/state/store.ts` are CRLF — edit by script; `src/engine/editlog.ts` holds one
   NUL byte — edit by bytes; a Python edit script is safest WRITTEN TO A FILE (a heredoc eats `\`); a test that writes a
   history line with no command running now waits for the end of the turn (`await Promise.resolve()`); a test fixture must
-  CHANGE a day for its row to be saved (no seven-day first save); a Tracker test that deletes a key behind the Tracker's mirror
-  (storage only) sees no rewrite through a command — only a raw write re-stores it; `.claude/rules/decisions/tracker.md` is
-  near its byte tripwire (17.6k of 18k).
-- **Pick up here:** read both reports, reconcile per `docs/bug-check-order.md` §4 (never show one reviewer the other's), fix
-  with red tests, re-walk what the fixes touch (`scripts/handpass/dbrA-*.mjs`), gates, the sheet's `Walk:` line, his look card.
+  CHANGE a day for its row to be saved (no seven-day first save); a landing is never saved, so a test that expects a row
+  after a week load or a boot is wrong; a gate run you STOP leaves the PC lock held — release it (`gatelock.mjs release`);
+  the demo's seeded accounts are not stored as rows until one changes (read an account id off a batch instead);
+  `.claude/rules/decisions/tracker.md` is near its byte tripwire (17.6k of 18k).
+- **Pick up here:** his look (the card at the foot of the sheet) on the preview, with the export reminder; then phase 6
+  (worked out on read — its hand-over waits on IT's reporting answer, §12 q9; the landing WRITES are already gone), then 7.
 <!-- /now -->
 
 ## Next, in order
 
 0. **THE DATABASE STEP STARTS NOW (D354, 29 Sep 26)** — `[IT-FLOW-GUIDE]` DONE (the guide for IT, `raptor-port/docs/it-flow-guide/`, 29 Sep 26); `[DB-SYNC-MODEL]`'s design DONE and merged (PR #475); `[DB-READINESS]` group A PLANNED 30 Sep 26 (plan v4,
-   `claude/db-readiness-table-shaping-4094f6`) — its build under way: phases 0–5 and 5b built 30 Sep 26, the group's FULL walk and both code reads next (D453). The IT team is taking the app into Dataverse now, and he means to
+   `claude/db-readiness-table-shaping-4094f6`) — its build under way: phases 0–5 and 5b built 30 Sep 26, the group's FULL check done (the walk and both code reads, every finding fixed) — his look next, then phases 6 and 7 (D453). The IT team is taking the app into Dataverse now, and he means to
    keep working on the app beside it. What to finish before the hand-over was put to him the same day; record his answer
    here and in `OUTSTANDING.md`'s priority list the moment he gives it. Everything below keeps its ORDER; its timing is overtaken.
 1. **HIS ORDER to the database step (D203, 26 Sep 26 — its timing overtaken by D354):** `[ACCOUNTS]`, `[ACCOUNTS-NEW-PERSON]`,
@@ -91,9 +88,8 @@ the later merge keeps both (D78).
 
 ## Gate baseline
 
-The latest counts watched — 30 Sep 26, `claude/db-readiness-table-shaping-4094f6` (group A, after the group walk's fixes), under the
-PC lock: unit **7310 / 7311** (459 files — the one a focus-trap timing flake, 3 / 3 alone) · build clean · tfin **728 / 0** · e2e
-**509 passed, 0 failed**, 49 skipped · smoke **445 / 0** · rulecheck OK · docsize OK · perf 4 / 4. Restate a count only from a run you watched, and REPLACE the previous counts — never stack a
+The latest counts watched — 30 Sep 26, `claude/db-readiness-table-shaping-4094f6` (group A, with the walk's and both code reads' fixes), under the
+PC lock: unit **7329 / 7329** (459 files) · build clean · tfin **728 / 0** · e2e **509 passed, 0 failed**, 49 skipped · smoke **445 / 0** · rulecheck OK · docsize OK · perf 4 / 4. Restate a count only from a run you watched, and REPLACE the previous counts — never stack a
 history. How to run them: `raptor-port/CLAUDE.md` §Build & verify; how they mislead, and the checks on his PC:
 `raptor-port/docs/gates-and-deploy.md`.
 

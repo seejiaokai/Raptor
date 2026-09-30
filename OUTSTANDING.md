@@ -71,7 +71,8 @@ award fix are due before the tables are settled. What to finish before the hand-
    shape) BEFORE IT settles its tables, with the small OIL follow-ups below and [OIL-EARNED-VS-GRANTED] (D147);
    **group B** (tuned against the real database) AFTER the app is connected. First, [DB-SYNC-MODEL]'s design fixed.
    ([OIL-AWARD-IS-A-GRANT] is DONE, merged 29 Sep 26.) Group A: plan v4 final (30 Sep 26); **phases 0–5 and 5b built
-   30 Sep 26** on `claude/db-readiness-table-shaping-4094f6` (plan §9) — next the FULL walk and both reviewers' code reads,
+   30 Sep 26** on `claude/db-readiness-table-shaping-4094f6` (plan §9); **its FULL check done 30 Sep 26** (the walk and both
+   reviewers' code reads, every finding fixed — `raptor-port/docs/handpass/2026-09-30-dbrA-group-walk.md`) — next his look,
    then phase 6, then 7.
 5. **When Manfred is ready — [DB-STEP]:** the data model to him, then the one adapter to his tables; the stack
    ([ARCH-STACK]) resumes there, with its step 6 still to come; the [AMEND] work is queued behind it. Architecture first,
@@ -1091,7 +1092,7 @@ order, hidden, deleted) and the details typed on each ball one row per chart and
 changed, so two people's work on two things never overwrites; a browser's old records are converted once at boot by the
 fold's eighth converter (the store's format is now 6), every chart, layout and detail carried across (tested: his old
 records read and export exactly as before). **Before its "merge live", remind him to EXPORT a copy of his Tracker first
-(D464).** Still in group A: the FULL walk and both code reads, then phase 6, then 7; the plan's §9 is the build log.**
+(D464).** Still in group A: the FULL check is DONE (30 Sep 26 — the walk and both code reads, every finding fixed; the evidence sheet `raptor-port/docs/handpass/2026-09-30-dbrA-group-walk.md`); his look, then phase 6, then 7; the plan's §9 is the build log.**
 **Found in phase 4, for phase 5b — FIXED 30 Sep 26 in phase 5b:** the
 Tracker writes one person's syllabus pick (D376 — his own last chart, a per-person view choice) into the course's SHARED
 plan record (`v3:<course>:plan` `sylId`, `src/tracker/app/core.js loadCourseNow`) whenever a course loads — in a shared

@@ -336,8 +336,9 @@ that was published by an older build is kept byte-for-byte, loads read-only, and
 they touched, in its one saved group; a week's first save writes its week row and ONLY the days it changed (a day no
 one has saved has no row and reads as the week untouched — the group-wide walk's finding H3, 30 Sep 26), and a week load's landing is saved only onto
 days already saved; a pristine seed week is never written; a row is removed only by an explicit delete (an Undo of a publish or an
-Unpublish). A week switch writes nothing of the week left, and of the week arriving only what its landing pass
-changed (the `sched.load` command). This is what the persistence table at the top calls "per-week stash — Yes".
+Unpublish). A week switch writes nothing of the week left, and NOTHING of the week arriving: its landing pass (the
+`sched.load` command) is worked out again at every load, the boot's too (the group-A final read, Fable F2 and F1, 30 Sep 26: saving it wrote this browser's copy of rows another person may have changed, and made a member's browser the writer of days a member may not write — the plan's phase 6(c) direction, a landing worked out on read). This is what the persistence
+table at the top calls "per-week stash — Yes".
 
 ### Planning layer — `src/state/plan.ts`
 

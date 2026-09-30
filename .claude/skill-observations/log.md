@@ -1857,3 +1857,33 @@ restore — repeatable, all-or-nothing, and safe for files whose bytes (line end
 **Suggested improvement:** In §6, for a storage-shape change, add a roll-call column per writer: "on its FIRST write (nothing of it stored yet), and when it re-places a list, does it write ONLY what its own action changed?" — and a two-tab step in the walk for each writer whose answer is not a plain yes, with the second tab opened before the first write.
 
 **Principle:** A row-per-thing store is only as good as its least disciplined write; the first write and any re-ordering write are where "everything I hold" sneaks back in — check them by name.
+
+### Observation 390: A "missing batch" fix wrapped a write that should not have existed at all
+
+**Status:** OPEN
+**Date:** 2026-09-30
+**Session context:** [DB-READINESS] group A's group-wide FULL check — the walk, then Fable's and Astra's blind code reads
+**Skill:** bug-check order (`raptor-port/docs/bug-check-order.md` §5 "fix", §7 findings) — project method, internal
+**Type:** internal
+**Phase/Area:** choosing the fix for a MISSING-line finding
+
+**Issue:** The walk found the boot writing a day row bare, outside every saved group (H1). The fix wrapped that write in a group with its change-log batch — which made the walk's check pass. Both reviewers, independently, then found the write itself was the defect: it saved this browser's (possibly stale) copy of a day another person may have changed, and made a member's browser the writer of days a member may not write. The right fix removed the write. The same happened to a week load's landing save, which the evidence sheet had already reasoned about and called "not a loss, not a clash".
+
+**Suggested improvement:** In §5's fix step, for a finding of the form "X is written outside the rules", ask first — and write the answer in the disposition — "should X be written at all, by this actor, from this copy?" before making the write conform. Name the two questions in the evidence sheet's disposition column for any storage finding.
+
+**Principle:** A check that verifies HOW something is written invites a fix that makes the write compliant; ask WHETHER it should be written before fixing how.
+
+### Observation 391: Stopping a locked full-gate run leaves the PC lock held
+
+**Status:** OPEN
+**Date:** 2026-09-30
+**Session context:** [DB-READINESS] group A — a gate run was stopped mid-way because a reviewer's finding meant a code change
+**Skill:** `raptor-port/scripts/gatelock.mjs` / `.claude/rules/shipping.md` §The checks — project tooling, internal
+**Type:** internal
+**Phase/Area:** the gate lock's release
+
+**Issue:** `gatelock.mjs run` promises to always release, but stopping its task kills it before its release runs; the lock folder stayed, and would have blocked a parallel chat for up to two hours (the stale limit) had it not been released by hand.
+
+**Suggested improvement:** In shipping.md's lock paragraph add one line: "a run you stop is not released — release it yourself at once (`gatelock.mjs release`)"; or have `run` record its pid and let `take` break a lock whose pid is gone.
+
+**Principle:** A cleanup that lives in the process being killed is not a cleanup; say so where the kill happens, or make the next taker check the owner is alive.

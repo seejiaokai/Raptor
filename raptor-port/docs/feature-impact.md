@@ -264,9 +264,10 @@ loadWeek           → stashPut(CURWEEK, weekStashSnap()) (weekstash.ts — the
                        scheduler took off (its own acc 'r' — store.ts takenOff;
                        else the blanket re-land silently undoes a scheduler's
                        removal, 24 Aug 26) — AS ONE `sched.load` COMMAND on the
-                       arriving week's own baseline, so exactly the rows the
-                       landing changed are saved (30 Sep 26, [DB-READINESS]
-                       group A — R3-01) : autoAcceptSeedInputs() inside the load,
+                       arriving week's own baseline, which SAVES NOTHING — the
+                       landing is worked out again at every load (30 Sep 26,
+                       [DB-READINESS] group A — R3-01; the final read, Fable
+                       F2) : autoAcceptSeedInputs() inside the load,
                        unsaved (a pristine week is never stored)
                        (both land date-matching inputs on the fresh/restored days)
                    → clear day-index/iid VIEW state; WARNOFF restored from the

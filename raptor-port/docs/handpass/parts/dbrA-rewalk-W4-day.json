@@ -1,16 +1,16 @@
 {
  "base": "http://localhost:4204",
- "at": "2026-09-30T10:19:21.010Z",
+ "at": "2026-09-30T11:05:51.427Z",
  "results": [
   {
    "name": "DAY-0 a Monday note (the week's first save) — every row it wrote is named by its change-log batch",
    "ok": true,
-   "detail": "put 3 [settings/elog:munydhq1uevi.000001, weeks/13-07-2026, weeks/13-07-2026#0] · del 0 [] · batches sched.text/3"
+   "detail": "put 3 [settings/elog:muo01avfj71q.000001, weeks/13-07-2026, weeks/13-07-2026#0] · del 0 [] · batches sched.text/3"
   },
   {
    "name": "DAY-0 a Monday note (the week's first save) — wrote exactly what it should",
    "ok": true,
-   "detail": "put 3 [settings/elog:munydhq1uevi.000001, weeks/13-07-2026, weeks/13-07-2026#0] · del 0 [] · batches sched.text/3"
+   "detail": "put 3 [settings/elog:muo01avfj71q.000001, weeks/13-07-2026, weeks/13-07-2026#0] · del 0 [] · batches sched.text/3"
   },
   {
    "name": "DAY-0: the week is stored as a week row and seven day rows",
@@ -35,12 +35,12 @@
   {
    "name": "DAY-2 a note on the NEXT week (20 Jul) — every row it wrote is named by its change-log batch",
    "ok": true,
-   "detail": "put 3 [settings/elog:munydldbqspf.000001, weeks/20-07-2026, weeks/20-07-2026#1] · del 0 [] · batches sched.text/3"
+   "detail": "put 3 [settings/elog:muo01eemjg0a.000001, weeks/20-07-2026, weeks/20-07-2026#1] · del 0 [] · batches sched.text/3"
   },
   {
    "name": "DAY-2 a note on the NEXT week (20 Jul) — wrote exactly what it should",
    "ok": true,
-   "detail": "put 3 [settings/elog:munydldbqspf.000001, weeks/20-07-2026, weeks/20-07-2026#1] · del 0 [] · batches sched.text/3"
+   "detail": "put 3 [settings/elog:muo01eemjg0a.000001, weeks/20-07-2026, weeks/20-07-2026#1] · del 0 [] · batches sched.text/3"
   },
   {
    "name": "DAY-2 — a reload gives back exactly what was there",
@@ -49,18 +49,18 @@
   },
   {
    "name": "DAY-2 — the reload wrote nothing",
-   "ok": false,
-   "detail": "{\"put\":[\"inputs/imunydhr1cc34nz\"],\"del\":[]}"
+   "ok": true,
+   "detail": "no row changed"
   },
   {
    "name": "DAY-3 a request filed — every row it wrote is named by its change-log batch",
    "ok": true,
-   "detail": "put 2 [inputs/imunydskneuiig7, settings/elog:munydpuiey9c.000001] · del 0 [] · batches inputs.batch/2"
+   "detail": "put 2 [inputs/imuo01lnh9354zi, settings/elog:muo01ivwqwoc.000001] · del 0 [] · batches inputs.batch/2"
   },
   {
    "name": "DAY-3 a request filed — wrote exactly what it should",
    "ok": true,
-   "detail": "put 2 [inputs/imunydskneuiig7, settings/elog:munydpuiey9c.000001] · del 0 [] · batches inputs.batch/2"
+   "detail": "put 2 [inputs/imuo01lnh9354zi, settings/elog:muo01ivwqwoc.000001] · del 0 [] · batches inputs.batch/2"
   },
   {
    "name": "DAY-3 — a reload gives back exactly what was there",
