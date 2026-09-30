@@ -14,7 +14,7 @@ import { App } from './App'
 import { initStore, setSession, notify, writeInputsBatch } from '../state/store'
 import { INPUTS, inpId, inputCoversDate } from '../engine/inputs'
 import { isSpecial } from '../engine/people'
-import { SCHED } from '../engine/publish'
+import { SCHED, dayFilingFingerprint } from '../engine/publish'
 import { acceptInput } from '../engine/slots'
 import { HOOKS } from '../engine/hooks'
 import { afterSchedMutate } from '../state/view'
@@ -224,12 +224,15 @@ describe('a multi-day filing stays filed on every covered day after a person cha
     expect(acceptInput(1, inp, 'u')).toBe(true)
     afterSchedMutate()
     const token = inp.iid
-    const keysFor = (id: string) => Object.keys(SCHED.pending).filter(k => k.startsWith('inp:') && k.endsWith('.' + id)).sort()
-    expect(keysFor(token)).toEqual([`inp:1.${token}`, `inp:2.${token}`, `inp:3.${token}`])
+    /* [DB-READINESS] group A, phase 6 (b): each covered day READS the filing (dayFilingFingerprint — what the pending
+       count compares); no `inp:` mark is written */
+    const filedOn = () => [1, 2, 3].map(di => dayFilingFingerprint(di)[token])
+    expect(filedOn()).toEqual(['u', 'u', 'u'])
     expect(reassignInput(token, 'bane')).toBe(true)
     expect(inp.person).toBe('bane')
     expect(inp.acc).toBe('u')
-    expect(keysFor(token), 'every covered day still carries the filing mark').toEqual([`inp:1.${token}`, `inp:2.${token}`, `inp:3.${token}`])
+    expect(filedOn(), 'every covered day still reads the filing').toEqual(['u', 'u', 'u'])
+    expect(Object.keys(SCHED.pending).filter(k => k.startsWith('inp:')), 'and none carries a mark').toEqual([])
     expect(['Jul 14', 'Jul 15', 'Jul 16'].every(dt => inputCoversDate(inp, dt))).toBe(true)
     scrap(inp)
   })

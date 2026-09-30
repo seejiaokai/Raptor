@@ -1,6 +1,6 @@
 import { DAYS } from './data'
 import { PEOPLE, whoId, isSpecial, callsignTakenBy, indexCallsigns } from './people'
-import { SCHED, markEdit, markDeletion, deletionWasIssued, markInputFiling, markStructuralAdd, dayApproved, dropRowMarks, protectedWeek, dayCurVer, daySnapOf } from './publish'
+import { SCHED, markEdit, markDeletion, deletionWasIssued, markStructuralAdd, dayApproved, dropRowMarks, protectedWeek, dayCurVer, daySnapOf } from './publish'
 import { parseHM, hhmm, hmOK } from './time'
 import { INPUTS, DATES, inpId, inputCoversDate, isUnavail, isPersonal, inpLabel, dateIx } from './inputs'
 import { shiftKeys, seatRow } from './keys'
@@ -428,7 +428,13 @@ export const rollCx=(f:any)=>{f.cx=f.aircraft.length>0&&f.aircraft.every((a:any)
    that moved with the loaded week would change the key on every week switch
    and orphan the ground rows that store it as `src`. */
 export function inpKey(inp:any){return `${inp.person}|${inp.date}|${inp.type}|${inp.s==null?'':inp.s}|${inp.yr==null?'':inp.yr}`;}
-const markInputDays=(inp:any,fallback:any)=>{const token=inpId(inp);let any=false;DAYS.forEach((d:any,i:any)=>{if(inputCoversDate(inp,d.dt)){markInputFiling(i,token);any=true;}});if(!any&&+fallback>=0)markInputFiling(+fallback,token);};
+/* A FILING IS COUNTED FROM THE FILING, NEVER MARKED ON THE DAYS ([DB-READINESS] group A, phase 6 (b); data-model.md §3
+   ScheduleWeek — the `inp:` marks are "not stored at all — worked out on read"). Filing under Unavailable, its undo and
+   the adoption of a standing row used to write an `inp:<di>.<id>` mark into the book of EVERY loaded day the request
+   covered (markInputDays / publish.ts markInputFiling, both gone): one act writing days its maker may not hold (D450).
+   The marks were already cosmetic — a published day's count, its pending list and its sign-offs come from the filing
+   axis (publish.ts filingDelta against the issued version's `fil`), and "Discard marks" never undid a filing. So the
+   act changes the request's own `acc` and nothing else; the bare markEdit() below is the history / render epilogue. */
 export function acceptInput(di:any,inp:any,dest:any){
   const d=DAYS[di]; if(!d||!inp)return false;
   /* READ-ONLY QUARANTINE (P2-IMPL-03 + P2-QREV-02). Landing an input pushes/edits
@@ -452,7 +458,7 @@ export function acceptInput(di:any,inp:any,dest:any){
      never offers the control for these; this guard keeps any future call
      site honest. */
   if(isUnavail(inp.type))return false;
-  if(dest==='u'){ inp.acc='u'; markInputDays(inp,di); return true; }
+  if(dest==='u'){ inp.acc='u'; markEdit(); return true; }
   /* THE FILING ADDRESS IS THE INPUT'S STABLE ID (13 Sep 26, ARCH-STACK 1A;
      was the content key inpKey). Content keys are not unique — two inputs
      agreeing on person·date·type·start-minute (twins) minted the same `src`, so
@@ -469,7 +475,7 @@ export function acceptInput(di:any,inp:any,dest:any){
        reading "taken off", and Accept did nothing. Accept now ADOPTS that row — the request is on the programme again,
        no second row. (A general re-file on the switch itself was refused: switching back would then wake a deliberate
        removal as a fresh, flagging request — Fable's plan read F1.) Any other filing: the row is already there. */
-    if(inp.acc==='r'){ inp.acc='g'; markInputDays(inp,onDay); markEdit(); return true; }
+    if(inp.acc==='r'){ inp.acc='g'; markEdit(); return true; }
     return false;
   }
   /* …AND NOT A SECOND ROW ON ANOTHER WEEK ([REQ-ORPHAN-ROW], 28 Sep 26; D175 across weeks — Fable's G3). A request covering
@@ -710,10 +716,6 @@ export function unacceptInput(di:any,inp:any){
      landed at all (acc undefined — e.g. filed onto a published day) still
      counts; only a deliberate removal parks. */
   inp.acc='r';
-  if(was==='u'){
-    const d2=+di>=0?+di:dateIx(inp.date,inp.yr);
-    markInputDays(inp,d2);
-  }
   /* The amendment was marked on an inert deletion/input-action key above.
      Keep the bare call as the history/render epilogue; it must never re-mark
      the removed row address, which now belongs to whatever shifted into it. */

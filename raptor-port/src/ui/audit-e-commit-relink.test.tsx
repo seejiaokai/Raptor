@@ -172,17 +172,18 @@ describe('removeInput — filed copies and undo coherence', () => {
     removeInput(back)
   })
 
-  it('deleting a multi-day Unavailable filing marks an inert key on every loaded day it spans', () => {
+  /* [DB-READINESS] group A, phase 6 (b): no `inp:` mark is written for a filing any more — the filing axis counts it
+     (publish.ts filingDelta), and a delete of the request reads from the request being gone. What stays pinned: the
+     delete goes through, and it leaves no mark on any day it spanned. */
+  it('deleting a multi-day Unavailable filing marks no day it spans (phase 6 (b))', () => {
     const inp: any = plant({ person: 'stiff', date: 'Jul 14', endDate: 'Jul 16', allday: true, s: 0, e: 1439, type: 'Other', remarks: 'span file', mod: '' })
     expect(acceptInput(1, inp, 'u')).toBe(true)
     afterSchedMutate()
     const token = inp.iid
     const keys = () => Object.keys(SCHED.pending).filter(k => k.startsWith('inp:') && k.endsWith('.' + token))
-    expect(keys().sort(), 'filing marked Jul 14, 15 and 16').toEqual([`inp:1.${token}`, `inp:2.${token}`, `inp:3.${token}`])
+    expect(keys(), 'the filing marks no day').toEqual([])
     expect(removeInput(inp)).toBe(true)
-    /* the unfiling re-marks the same inert keys — they stay pending for the
-       next AL rather than vanishing from the amendment machinery */
-    expect(keys().sort()).toEqual([`inp:1.${token}`, `inp:2.${token}`, `inp:3.${token}`])
+    expect(keys(), 'nor does its delete').toEqual([])
     expect(INPUTS.indexOf(inp)).toBe(-1)
   })
 })

@@ -977,12 +977,9 @@ export function dropRowMarks(rids:any){
   });
 }
 export function markDeletion(di:any,kind:any,wasIssued:any=true){if(!wasIssued)return '';const key=deletionKey(di,kind);markEdit(key);return key;}
-/* Filing a personal input under Unavailable changes the issued day but has no
-   programme row to tint. The permanent input ID makes one stable inert address per
-   input/day, so filing then unfiling before issue remains one changed detail
-   rather than two contradictory amendment items. Dots are escaped as well as
-   URI punctuation because keyDay relies on the first dot ending the day. */
-export function markInputFiling(di:any,token:any){const id=encodeURIComponent(String(token)).replace(/\./g,'%2E'),key=`inp:${+di}.${id}`;markEdit(key);return key;}
+/* THE FILING MARK IS GONE ([DB-READINESS] group A, phase 6 (b)): a filing under Unavailable is counted from the filing
+   itself (filingDelta, above) and never written into a day's book — see engine/slots.ts, where it was written. An `inp:`
+   key already in a stored book is inert: no cell carries it, and no count reads it. */
 /* record an edit.  `key` is the slot/field address that changed — that single
    item is what gets coloured when the amendment is published.
    `was`/`now` are the edit log's (editlog.ts), and optional for the same
@@ -1205,7 +1202,7 @@ export function unpublishDay(di:any,opts:any={}):any{di=+di;
       delete SCHED.changes[k];
       // a delete/move/input mark, or a field mark whose row still resolves, re-opens
       // as pending; a mark whose row no longer exists is dropped (it can't be edited).
-      if(isDeleteKey(k)||isMoveKey(k)||String(k).startsWith('inp:')||posKey(k,DAYS)!==null)SCHED.pending[k]=1;
+      if(isDeleteKey(k)||isMoveKey(k)||posKey(k,DAYS)!==null)SCHED.pending[k]=1;   // an `inp:` filing mark is never written now (phase 6 (b)) — the filing itself reads pending again
     });
     // restore this AL's structural additions so a row added-then-deleted inside the
     // retracted AL does not mint a spurious del: mark (§6.5).
