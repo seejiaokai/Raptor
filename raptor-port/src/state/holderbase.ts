@@ -77,9 +77,11 @@ function requestAddMarks(di: number): void {
   const issued = new Set((((snap && snap.d && snap.d.ground) || []) as any[]).map((g: any) => g && g.rid).filter(Boolean))
   const d: any = DAYS[di]
   for (const row of ((d && d.ground) || []) as any[]) {
-    if (!row || !row.src || !row.rid || issued.has(row.rid)) continue
+    if (!row || !row.src || !row.rid || row.kept || issued.has(row.rid)) continue
     const r = (INPUTS as any[]).find((x: any) => x && String(x.iid || '') === String(row.src))
-    if (!r || inputProtected(r)) continue
+    /* its STANDING row only: a dead kept row is the holder's addition, and keeps every mark it has (the FULL check, Astra's
+       final read #4) */
+    if (!r || inputProtected(r) || !standingRow(row, r, d.dt)) continue
     const f: any = requestRowFields(r)
     const drop: string[] = []
     for (const k of ['str', 'end', 'rmks']) if (String(row[k] || '') === String(f[k] || '')) drop.push(`gr:${di}.${row.rid}.${k}`)
@@ -132,7 +134,9 @@ export function rederive(opts: { absorb?: Iterable<number>; live?: boolean } = {
      otherwise come back id-less at every pass, and the next command's apply-end would mint it inside that command: a day
      change in whoever's command came next — for a member, a change §11 refuses (Fable's round-3 F6) */
   ensureRowIds(base.map(b => b.d))
-  /* the view, over a copy of the base */
+  /* the view, over a copy of the base; the book it strips a deleted man from (his sign-off, his seat in a parked plan) is
+     the live one — a change there is a change on screen too (Fable's final read F2) */
+  const bookWas = JSON.stringify([SCHED.sign, SCHED.signBind, SCHED.drafts])
   const days = base.map(b => clone(b.d))
   const info = viewOfWeek(String(CURWEEK), days, {
     loaded: true,
@@ -147,7 +151,7 @@ export function rederive(opts: { absorb?: Iterable<number>; live?: boolean } = {
      `DAYS[di]` across a command writes to the day on screen, not to a copy no one reads); its fields are the view's. The
      screen before the pass is kept, shallow, for the messages below. */
   const prev = DAYS.map((d: any) => (d ? { ...d } : d))
-  let changed = false
+  let changed = JSON.stringify([SCHED.sign, SCHED.signBind, SCHED.drafts]) !== bookWas
   for (let di = 0; di < days.length; di++) {
     if (JSON.stringify(days[di]) === JSON.stringify(DAYS[di])) continue
     const cur: any = DAYS[di]

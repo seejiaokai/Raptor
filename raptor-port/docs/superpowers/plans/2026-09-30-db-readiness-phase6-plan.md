@@ -188,7 +188,8 @@ shortened onto a published day it already covered fell off the programme). A req
 only by the holder's Accept, with its issued id (so loading an older version keeps that version's day, D98). The row:
 `acceptInput`'s six fields, `srcv`, and the id `'r' + <request id>` — deterministic, so the same row right after and after
 a reload — with a suffix while another row of the week holds that id (a dead `kept` row of the same request — round 3,
-Fable F3); appended.
+Fable F3); appended — the oldest request first (the FULL check's walk, W1: a request list read front to back landed a later
+filing ABOVE earlier ones).
 
 **4. The finder, and "the request's row"** (round 3, Astra 1 and Fable F1). A request's STANDING row is its row: a dead
 `kept` row (on a day its request cannot stand on) is never it — one predicate, `engine/overlay.ts standsOn`, read by every
@@ -210,7 +211,9 @@ base becomes their view → the messages → if anything changed, `resyncSchedBa
 - **The marks, per day** (Astra 2): the view equals the base's day, or differs from it only by the deleted strip → the
   base's marks, exactly; the request rows differ on a PUBLISHED day → rebuilt from the view against the day's current
   issued version (`drafts.ts rebaseDayPending`) — a target state, so A → B → A, an edit → Undo → Redo and a delete → Undo
-  each come back to the base's marks exactly, with no hollow tag or tombstone left; on a day NOT published → the base's
+  each come back to the base's marks exactly, with no hollow tag or tombstone left — and then a request's NEW row (its id
+  not in the issued day) keeps only the add on its item, as its Accept marks it, plus any box the scheduler set apart from
+  what the request makes (the FULL check's walk, W2: the rebuild marked every box and hung a hollow tag on the puck); on a day NOT published → the base's
   marks less any whose row is not in the view — a derived change there makes no mark (a never-published day's landings
   are its zero state, as at load; `discardableCount` is the only reader of those marks). Declined, as in round 2: a draft
   day's OG tag for a request's change (no line keys one today either).
@@ -355,15 +358,16 @@ screen compared step by step; `docs/handpass/2026-09-30-dbr-phase6-check.md` F1,
 13. **Loading a week no longer runs a command of its own** — nothing a person sees; the change history and the Undo list
    never showed it.
 
-**Found by the FULL check of (c)** (1 Oct 26 — `docs/handpass/2026-10-01-dbr-phase6c-check.md` W3, W4 and the pending list):
+**Found by the FULL check of (c)** (1 Oct 26 — `docs/handpass/2026-10-01-dbr-phase6c-check.md` W3, W4):
 14. **A request moved to another day leaves the scheduler's own additions (a second man, a red box, CX) with the day they
    were made on** — they come back if the request returns there; the old re-link carried them to the new day. Under the day
    lock a member's move cannot write the new day, and a carry worked out from the old day's row would last only until that
    day's holder next saved it. Put to him on his look card; `[REQ-MOVE-EXTRAS]` holds his answer.
 15. **The pending mark of an issued request's changed time sits on the time box, not on the item's name** — the mark sits on
    what changed (D93); the count is the same (one pending). The old re-link re-made the row, which marked its item.
-16. **The pending list names the member who deleted his own issued request as the one who made that change** (it named the
-   holder whose day the old delete wrote).
+*(An item 16 — the pending list naming the member as the one who deleted his issued request — was listed during the check
+and withdrawn the same night: Fable's final-read F2 fix, the baseline always following the pass, brought the list back to
+naming as before.)*
 
 ## 9. Build log
 
@@ -399,3 +403,13 @@ every v3 and round-3 one red on the code before; each round-3 fix broken on purp
 failures read one by one against the plan: tests of the removed relink and refusals rewritten to the new rule, set-ups that
 planted an unplaced request (no longer a state) moved to the app's own route (✕, then Accept or → Unavail), and six real
 defects of the first build found and fixed (the dispositions' last paragraph).
+
+**(c) v3 — its FULL check, 1 Oct 26** (`docs/handpass/2026-10-01-dbr-phase6c-check.md`): Astra's scenarios; eight walks on
+this build and the build before (c), one at phone width; the gates and perf; both final reads (Astra REVISE 1–4, Fable REVISE
+F1–F2, F3 low). Found and fixed, each red first: the landing order (W1), a request's new row's marks on a published day (W2),
+five places a DEAD `kept` row was taken for the request's row — the load's filing (twice: another day's dead row, and the
+version's own row issued dead), the changes-window jump, the retype message, the OIL evidence (money), a dead issued row read
+as the request's placement, the marks of a dead row cleared by another request's change — the load's confirm count, a
+landing's id colliding with a stored dead row (Fable F1), and the baseline after a delete's book change (Fable F2). The one
+rule since: **a row that carries `kept` is never the request's row** — on screen (the view clears the mark from a row that
+can stand) and in an issued version (kept as it went out). §8 items 14–15 added; `[REQ-MOVE-EXTRAS]` put to him.

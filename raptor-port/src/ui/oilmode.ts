@@ -880,7 +880,8 @@ export function oilItemLabel(di: any, item: string): { name: string, when: strin
      day — so the flags and the membership measure one window. */
   if (item.startsWith('i:')) {
     const iid = item.slice(2)
-    const g = (d.ground || []).find((x: any) => x && x.src != null && String(x.src) === iid)
+    /* its row, never a `kept` one (a row brought back although the request could not stand there — oilev.ts landedRow) */
+    const g = (d.ground || []).find((x: any) => x && x.src != null && String(x.src) === iid && !x.kept)
     if (!g) return lost('Request')
     const s0 = parseHM(g.str), e0 = parseHM(g.end)
     const timed = s0 != null && e0 != null && s0 !== e0

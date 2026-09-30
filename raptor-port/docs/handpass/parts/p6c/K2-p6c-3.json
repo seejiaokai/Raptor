@@ -1,0 +1,250 @@
+{
+ "base": "http://localhost:4203",
+ "at": "2026-09-30T18:52:27.910Z",
+ "results": [
+  {
+   "name": "K2-1 an \"Other\" request for Ranger on Saturday; Bolt put on its row — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 5 [inputs/imrldi1s0nn37zn, settings/elog:mrldi1s0r4ir.000001, settings/elog:mrldi1s0r4ir.000002, weeks/13-07-2026, weeks/13-07-2026#5] · del 0 [] · batches inputs.batch/2 sched.mutate/3"
+  },
+  {
+   "name": "K2-1 the premise: Bolt earns on the request's own row (D18)",
+   "ok": true,
+   "detail": "FO"
+  },
+  {
+   "name": "K2-2 + Alt Plan; ✕ on the row; → Unavail; the first plan brought back — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 6 [inputs/imrldi1s0nn37zn, settings/elog:mrldi1s0r4ir.000003, settings/elog:mrldi1s0r4ir.000004, settings/elog:mrldi1s0r4ir.000005, settings/elog:mrldi1s0r4ir.000006, weeks/13-07-2026#5] · del 0 [] · batches sched.mutate/2 sched.mutate/3 sched.mutate/2 sched.mutate/1 elog.line/1"
+  },
+  {
+   "name": "K2-2 — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "K2-2 — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "K2-2 the row is back, kept (dead: its request is under Unavailable)",
+   "ok": true,
+   "detail": "[{\"di\":5,\"ri\":0,\"rid\":\"rimrldi1s0nn37zn\",\"prog\":\"P6C DEAD U\",\"str\":\"09:00\",\"end\":\"17:00\",\"who\":\"bane\",\"more\":[\"yeti\"],\"rmks\":\"P6C DEAD U\",\"kept\":true,\"info\":false,\"flag\":null,\"cx\":null}]"
+  },
+  {
+   "name": "K2-2 Bolt earns NOTHING from it (money — the dead row is not the request's)",
+   "ok": true,
+   "detail": "null"
+  },
+  {
+   "name": "K2-3 the card: out of Unavailable, then Accept — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 3 [inputs/imrldi1s0nn37zn, settings/elog:mrldi1s0ubkw.000006, settings/elog:mrldi1s0ubkw.000007] · del 0 [] · batches sched.mutate/2 sched.mutate/2"
+  },
+  {
+   "name": "K2-4 Saturday's issue loaded back onto the working copy — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 3 [inputs/imrldi1s0nn37zn, settings/elog:mrldi1s0ubkw.000008, settings/elog:mrldi1s0ubkw.000009] · del 0 [] · batches sched.mutate/2 elog.line/1"
+  },
+  {
+   "name": "K2-4 — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "K2-4 — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "K2-4 as issued: filed under Unavailable, its row back dead, nothing pending (D98)",
+   "ok": true,
+   "detail": "{\"acc\":\"u\",\"r4\":[{\"di\":5,\"ri\":0,\"rid\":\"rimrldi1s0nn37zn\",\"prog\":\"P6C DEAD U\",\"str\":\"09:00\",\"end\":\"17:00\",\"who\":\"bane\",\"more\":[\"yeti\"],\"rmks\":\"P6C DEAD U\",\"kept\":true,\"info\":false,\"flag\":null,\"cx\":null}],\"h4\":{\"tag\":\"ORIG\",\"pending\":\"15 changes\",\"beak\":\"none\",\"alpub\":\"\",\"unpub\":\"Unpublish\",\"signs\":[\"— name —\",\"— name —\",\"— name —\",\"— name —\"],\"signed\":\"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\",\"nys\":\"\"}}"
+  }
+ ],
+ "table": [
+  {
+   "step": "K2-1",
+   "width": "desktop",
+   "did": "an \"Other\" request for Ranger on Saturday; Bolt put on its row",
+   "pics": [
+    "K2-1-1-after.png"
+   ],
+   "shown": "",
+   "rows": "put 5: inputs/imrldi1s0nn37zn, settings/elog:mrldi1s0r4ir.000001, settings/elog:mrldi1s0r4ir.000002, weeks/13-07-2026, weeks/13-07-2026#5 · batches: inputs.batch(Input+EditLog, 2 rows, 1 history line, by acad) + sched.mutate(EditLog+ScheduleWeek+ScheduleDay, 3 rows, 1 history line, by acad)",
+   "batches": [
+    {
+     "key": "changes/cmrldi1s0b1ueni-1",
+     "type": "inputs.batch",
+     "actor": "acad",
+     "n": 2,
+     "seqs": [
+      1
+     ],
+     "tables": "Input+EditLog",
+     "elog": 1
+    },
+    {
+     "key": "changes/cmrldi1s0b1ueni-2",
+     "type": "sched.mutate",
+     "actor": "acad",
+     "n": 3,
+     "seqs": [
+      2
+     ],
+     "tables": "EditLog+ScheduleWeek+ScheduleDay",
+     "elog": 1
+    }
+   ],
+   "pass": true,
+   "notes": [],
+   "fails": []
+  },
+  {
+   "step": "K2-2",
+   "width": "desktop",
+   "did": "+ Alt Plan; ✕ on the row; → Unavail; the first plan brought back",
+   "pics": [
+    "K2-2-1-after.png",
+    "K2-2-2-reloaded.png",
+    "K2-2-dead-u-row-oil.png"
+   ],
+   "shown": "",
+   "rows": "put 6: inputs/imrldi1s0nn37zn, settings/elog:mrldi1s0r4ir.000003, settings/elog:mrldi1s0r4ir.000004, settings/elog:mrldi1s0r4ir.000005, settings/elog:mrldi1s0r4ir.000006, weeks/13-07-2026#5 · batches: sched.mutate(EditLog+ScheduleDay, 2 rows, 1 history line, by acad) + sched.mutate(ScheduleDay+Input+EditLog, 3 rows, 1 history line, by acad) + sched.mutate(Input+EditLog, 2 rows, 1 history line, by acad) + sched.mutate(ScheduleDay, 1 rows, by acad) + elog.line(EditLog, 1 rows, 1 history line, by system)",
+   "batches": [
+    {
+     "key": "changes/cmrldi1s0b1ueni-3",
+     "type": "sched.mutate",
+     "actor": "acad",
+     "n": 2,
+     "seqs": [
+      3
+     ],
+     "tables": "EditLog+ScheduleDay",
+     "elog": 1
+    },
+    {
+     "key": "changes/cmrldi1s0b1ueni-4",
+     "type": "sched.mutate",
+     "actor": "acad",
+     "n": 3,
+     "seqs": [
+      4
+     ],
+     "tables": "ScheduleDay+Input+EditLog",
+     "elog": 1
+    },
+    {
+     "key": "changes/cmrldi1s0b1ueni-5",
+     "type": "sched.mutate",
+     "actor": "acad",
+     "n": 2,
+     "seqs": [
+      5
+     ],
+     "tables": "Input+EditLog",
+     "elog": 1
+    },
+    {
+     "key": "changes/cmrldi1s0b1ueni-6",
+     "type": "sched.mutate",
+     "actor": "acad",
+     "n": 1,
+     "seqs": [
+      6
+     ],
+     "tables": "ScheduleDay",
+     "elog": 0
+    },
+    {
+     "key": "changes/cmrldi1s0b1ueni-g1",
+     "type": "elog.line",
+     "actor": "system",
+     "n": 1,
+     "seqs": [],
+     "tables": "EditLog",
+     "elog": 1
+    }
+   ],
+   "pass": true,
+   "notes": [],
+   "fails": []
+  },
+  {
+   "step": "K2-3",
+   "width": "desktop",
+   "did": "the card: out of Unavailable, then Accept",
+   "pics": [
+    "K2-3-1-after.png"
+   ],
+   "shown": "",
+   "rows": "put 3: inputs/imrldi1s0nn37zn, settings/elog:mrldi1s0ubkw.000006, settings/elog:mrldi1s0ubkw.000007 · batches: sched.mutate(Input+EditLog, 2 rows, 1 history line, by acad) + sched.mutate(Input+EditLog, 2 rows, 1 history line, by acad)",
+   "batches": [
+    {
+     "key": "changes/cmrldi1s0tc765p-6",
+     "type": "sched.mutate",
+     "actor": "acad",
+     "n": 2,
+     "seqs": [
+      6
+     ],
+     "tables": "Input+EditLog",
+     "elog": 1
+    },
+    {
+     "key": "changes/cmrldi1s0tc765p-7",
+     "type": "sched.mutate",
+     "actor": "acad",
+     "n": 2,
+     "seqs": [
+      7
+     ],
+     "tables": "Input+EditLog",
+     "elog": 1
+    }
+   ],
+   "pass": true,
+   "notes": [],
+   "fails": []
+  },
+  {
+   "step": "K2-4",
+   "width": "desktop",
+   "did": "Saturday's issue loaded back onto the working copy",
+   "pics": [
+    "K2-4-1-after.png",
+    "K2-4-2-reloaded.png",
+    "K2-4-loaded-as-issued.png"
+   ],
+   "shown": "",
+   "rows": "put 3: inputs/imrldi1s0nn37zn, settings/elog:mrldi1s0ubkw.000008, settings/elog:mrldi1s0ubkw.000009 · batches: sched.mutate(Input+EditLog, 2 rows, 1 history line, by acad) + elog.line(EditLog, 1 rows, 1 history line, by system)",
+   "batches": [
+    {
+     "key": "changes/cmrldi1s0tc765p-8",
+     "type": "sched.mutate",
+     "actor": "acad",
+     "n": 2,
+     "seqs": [
+      8
+     ],
+     "tables": "Input+EditLog",
+     "elog": 1
+    },
+    {
+     "key": "changes/cmrldi1s0tc765p-g1",
+     "type": "elog.line",
+     "actor": "system",
+     "n": 1,
+     "seqs": [],
+     "tables": "EditLog",
+     "elog": 1
+    }
+   ],
+   "pass": true,
+   "notes": [],
+   "fails": []
+  }
+ ],
+ "tag": "p6c"
+}

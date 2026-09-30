@@ -1095,7 +1095,11 @@ flagged correctly and still swept the man out of the crew palette.
   every load (`state/holderbase.ts`, from the day as its holder last saved it) and whenever another week is read
   (`engine/overlay.ts viewOfWeek`): an activity request that is not taken off ('r') or filed under Unavailable ('u') and has
   no row standing anywhere lands on its START day — on a PUBLISHED day unless its current issued version placed it on that
-  day or took it off (so a request filed since lands pending, after a reload too); a row whose request is gone, retyped, or
+  day or took it off (so a request filed since lands pending, after a reload too), the oldest request first, below the rows
+  already there (so a row never moves down a line when someone else files), its new row on a published day marked as its
+  Accept marks it — the add on its item, not every box (the FULL check's walk, 1 Oct 26); a row carrying `kept` (brought
+  back by a version or a plan although its request could not stand there) is never the request's row — no OIL is earned
+  from it, the load does not read it as "landed", an issued one did not place the request (the FULL check's final reads); a row whose request is gone, retyped, or
   no longer covers the day goes (unless `kept` — D363); a row whose request changed is re-made in place (its id, place and
   every field the scheduler set kept; D271). A never-published day's landing makes no mark (its zero state, live and at
   load alike). `autoAcceptInput` / `autoAcceptSeedInputs` are no longer the app's path (the second is gone).)*

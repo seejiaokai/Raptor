@@ -422,8 +422,12 @@ function afterCommandPass(): void {
   cmdDeferEffect(() => {
     if (PASS_FOR === env) PASS_FOR = null
     const changed = rederive({ absorb: daysNamed(env.changes), live: true })
-    /* the checks and the repaint follow what the pass put on screen (Fable F4): the command's own validate ran before it */
-    if (changed) { resyncSchedBaseline(); HOOKS.reflow() }
+    /* the baseline ALWAYS follows the pass — it may have changed the book (a deleted man's sign-off, his seat in a parked
+       plan) with no day moving, and a stale baseline would charge that change to whoever's command came next, whose
+       Undo would then be refused (the FULL check, Fable's final read F2; the delete's own effect resynced unconditionally
+       before (c)). The checks and the repaint follow what the pass put on screen (Fable F4). */
+    resyncSchedBaseline()
+    if (changed) HOOKS.reflow()
   })
 }
 

@@ -701,7 +701,12 @@ export function dayDiscardCount(di:any):number{di=+di;
      the version (a hand-over), and a request filed since landed again — none of those is discarded by the load */
   const after=HOOKS.dayAsLoadLeaves?HOOKS.dayAsLoadLeaves(di,snap.d):(()=>{const left=rowsLeftOut(di,snap.d);return left.length?leaveRowsOut(JSON.parse(JSON.stringify(snap.d)),left.map((x:any)=>x.id)):snap.d;})();
   const units:any[]=canonicalUnits(after,DAYS[di],di);
-  const lone=filingRestorePlan(di,snap.fil,after).put.filter((p:any)=>{
+  /* the filings are planned against the version's day with its rows as they went out — a row issued `kept` (dead) is not
+     "landed" — exactly as the load plans them, before it marks `kept` anew (drafts.ts loadVersionToWorkingCopy; the FULL
+     check's walk K2: counted against the worked-out day, the filing it puts back went uncounted and the button said the
+     day "is already at" its version) */
+  const asIssued=(()=>{const left=rowsLeftOut(di,snap.d);const c=JSON.parse(JSON.stringify(snap.d));return left.length?leaveRowsOut(c,left.map((x:any)=>x.id)):c;})();
+  const lone=filingRestorePlan(di,snap.fil,asIssued).put.filter((p:any)=>{
     const u=requestRowUnit(units,inpId(p.inp),String(p.want||''),String(p.inp.acc||''),after,DAYS[di]);
     if(u){u.inp=true;return false;}
     return true;});
@@ -730,7 +735,10 @@ export function filingRestorePlan(di:any,fil:any,dayAfter?:any):{put:Array<{inp:
        its id but is not its row, and must not read as "landed" here: the load would leave the issued filing as filed
        (D98). Its current filing is not asked — that is what this plan is about to set ([DB-READINESS] phase 6 (c), the
        FULL check: Astra's scenario design §3 B). */
-    const has=(d:any)=>!!d&&inputCoversDate(inp,d.dt)&&((d.ground)||[]).some((g:any)=>g&&g.src===id);
+    /* …and never a row carrying `kept` — on another day a dead one (the view clears the mark from a row that can stand);
+       in the incoming version its row as it went out, dead at issue — so a version issued with its row dead and the
+       request filed under Unavailable puts both back (the FULL check, Astra's final read #2) */
+    const has=(d:any)=>!!d&&inputCoversDate(inp,d.dt)&&((d.ground)||[]).some((g:any)=>g&&g.src===id&&!g.kept);
     const landed=DAYS.some((d0:any,j:number)=>has((j===di&&dayAfter)?dayAfter:d0));
     if(want==='g'?!landed:landed){left.push(id);return;}
     /* the version's OWN row for it stands on this very day: "on the programme" is then the fact, whatever other day the

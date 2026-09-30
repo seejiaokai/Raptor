@@ -497,6 +497,9 @@ export function acceptInput(di:any,inp:any,dest:any){
   if(dayApproved(di)){
     const ver=dayCurVer(di), snap:any=ver!=null?daySnapOf(di,ver):null;
     const ig:any[]=(snap&&snap.d&&snap.d.ground)||[];
+    /* (an issued row carrying `kept` — dead when it went out — is reused too: the published face shows that very row, and a
+       landing on read restores it under the same id (overlay.ts landedRid), so Accept does not read "removed + added" for
+       a row that looks unchanged — the FULL check, Astra's final read #3, its Accept half declined) */
     const ix=ig.findIndex((r:any)=>r&&r.src===key&&r.rid);
     if(ix>=0&&!(d.ground||[]).some((r:any)=>r&&r.rid===ig[ix].rid)){   /* never mint a second row with one id */
       rid=ig[ix].rid;

@@ -17,17 +17,17 @@ import { DAYS } from '../engine/data'
 import { CURWEEK } from '../engine/waves'
 import { storeBackend } from '../engine/hooks'
 import { stashClear } from '../engine/weekstash'
-import { SCHED, signOf, dayShownPendCount, dayPendingItems, dayCurVer, dayDiscardCount } from '../engine/publish'
+import { SCHED, signOf, dayShownPendCount, dayPendingItems, dayCurVer, dayDiscardCount, daySnapOf } from '../engine/publish'
 import { dayEvents } from '../engine/validate'
 import { ELOG } from '../engine/editlog'
-import { projectOilInputs } from '../engine/oilev'
+import { projectOilInputs, oilEvidenceOf, oilEarnedWork } from '../engine/oilev'
 import { HOOKS } from '../engine/hooks'
 import { ownershipViolation } from './perms'
 import { acceptInput, unacceptInput } from '../engine/slots'
-import { loadVersionToWorkingCopy } from '../engine/drafts'
+import { loadVersionToWorkingCopy, draftDup, draftSelect, dayDrafts } from '../engine/drafts'
 import { PLANPUCKS, DAYRMK } from './plan'
 import { initStore, weekStashSnap, weekDirty, loadWeek, writeText, writeFill } from './store'
-import { commitSetDayApproved, schedWrite, SCHED_TYPES } from './sched-commit'
+import { commitSetDayApproved, commitPublishALDay, schedWrite, schedBaselineClean, SCHED_TYPES } from './sched-commit'
 import { setSession, setMe, DEFAULT_ME } from './auth'
 import { hydrate, wirePersist, weekId } from './persist'
 import { bootStorage } from '../storage/boot'
@@ -711,5 +711,132 @@ describe('phase 6 (c) — the FULL check: a dead kept row does not silence the r
     expect(rowOf(iid, THU), 'Thursday\'s row is gone').toBeNull()
     expect(rowOf(iid, WED)!.row.kept, 'the dead Wednesday row stays (D363)').toBe(true)
     expect(said.filter(m => /does not go on the Ground Programme — its row has been removed/.test(m)).length, JSON.stringify(said)).toBe(1)
+  })
+})
+
+/* Astra's FINAL code read (1 Oct 26 — its findings 1–4): a DEAD kept row can also sit on a day its request COVERS — a plan
+   switched in (or a version loaded) brings back the row of a request filed under Unavailable since. The evidence sheet's
+   "cannot happen" missed it. The one rule, everywhere: a row that carries `kept` is never the request's row — on the week
+   on screen (the view clears `kept` from a row that can stand) and in an issued version (frozen as it was at issue). */
+function deadUnavailRow(iid: string, di: number, extra?: string) {
+  const ri = (DAYS[di] as any).ground.findIndex((g: any) => g && g.src === iid)
+  expect(ri, 'its row is on the day').toBeGreaterThanOrEqual(0)
+  if (extra) schedWrite(SCHED_TYPES.mutate, () => { (DAYS[di] as any).ground[ri].more = [extra]; afterSchedMutate() })
+  schedWrite(SCHED_TYPES.mutate, () => { draftDup(di); afterSchedMutate() })                  // Plan A parked, with the row
+  const a = dayDrafts(di).find((x: any) => (x.d.ground || []).some((g: any) => g && g.src === iid))
+  expect(a, 'the parked plan holds it').toBeTruthy()
+  schedWrite(SCHED_TYPES.mutate, () => { unacceptInput(di, reqOf(iid)); afterSchedMutate() })   // ✕
+  schedWrite(SCHED_TYPES.mutate, () => { acceptInput(di, reqOf(iid), 'u'); afterSchedMutate() }) // → Unavail
+  return a
+}
+function bringBack(di: number, a: any) {
+  schedWrite(SCHED_TYPES.mutate, () => { draftSelect(di, a.id); afterSchedMutate() })
+  expect(reqOf(String(((DAYS[di] as any).ground.find((g: any) => g && g.kept) || {}).src)).acc, 'filed under Unavailable').toBe('u')
+}
+describe('phase 6 (c) — the FULL check\'s final read: a kept row on a day its request covers is not its row', () => {
+  it('Astra final #1 — OIL: a second man on the dead row of a request filed under Unavailable earns nothing from it', async () => {
+    await boot(new MemoryBackend())
+    /* an earning Saturday, as the OIL tests make one (in the app a Leave War period covering it does — D19) */
+    const earning = HOOKS.oilEarningDay, iso = HOOKS.oilDayISO
+    HOOKS.oilEarningDay = (di: number) => di === SAT
+    HOOKS.oilDayISO = (di: number) => (di === SAT ? '2026-07-18' : '2026-07-15')
+    try {
+    const iid = file({ type: 'Training', date: 'Jul 18', s: 540, e: 1020, remarks: 'weekend course' })
+    schedWrite(SCHED_TYPES.mutate, () => { reqOf(iid).oil = { '2026-07-18': 1 }; afterSchedMutate() })   // his answer: yes
+    const earnsFromIt = () => (oilEarnedWork(DAYS[SAT], oilEvidenceOf(SAT))['yeti'] || []).filter((w: any) => w.item === 'i:' + iid)
+    const ri = (DAYS[SAT] as any).ground.findIndex((g: any) => g && g.src === iid)
+    schedWrite(SCHED_TYPES.mutate, () => { (DAYS[SAT] as any).ground[ri].more = ['yeti']; afterSchedMutate() })
+    expect(earnsFromIt().length, 'the premise: on the request\'s standing row Bolt earns (D18)').toBeGreaterThan(0)
+    const a = deadUnavailRow(iid, SAT)
+    bringBack(SAT, a)
+    const dead = rowOf(iid, SAT)!.row
+    expect(dead.kept, 'the dead row is back').toBe(true)
+    expect(dead.more, 'with Bolt on it').toContain('yeti')
+    expect(earnsFromIt(), 'Bolt earns nothing from a row that is not the request\'s').toEqual([])
+    } finally { HOOKS.oilEarningDay = earning; HOOKS.oilDayISO = iso }
+  })
+  it('Astra final #2 — a version issued with that dead row and "Unavailable": Accepted since, the load puts both back (D98)', async () => {
+    const be = new MemoryBackend()
+    await boot(be)
+    const iid = file({})
+    const a = deadUnavailRow(iid, WED)
+    bringBack(WED, a)
+    publish(WED)                                                      // issued: the dead row, filed under Unavailable
+    schedWrite(SCHED_TYPES.mutate, () => { unacceptInput(WED, reqOf(iid)); afterSchedMutate() })   // out of Unavailable
+    schedWrite(SCHED_TYPES.mutate, () => { acceptInput(WED, reqOf(iid), 'g'); afterSchedMutate() }) // Accept
+    expect(reqOf(iid).acc).toBe('g')
+    /* the confirm counts it, or the load's button says the day "is already at" its version and never loads (walk K2) */
+    expect(dayDiscardCount(WED), 'the load counts the filing it puts back').toBeGreaterThan(0)
+    schedWrite(SCHED_TYPES.mutate, () => { loadVersionToWorkingCopy(WED, dayCurVer(WED)); afterSchedMutate() })
+    expect(reqOf(iid).acc, 'the issued filing is back').toBe('u')
+    expect(rowOf(iid, WED)!.row.kept, 'and its row, dead, as issued').toBe(true)
+    expect(dayShownPendCount(WED), 'nothing pending — the day is as issued').toBe(0)
+    await reload(be)
+    expect(reqOf(iid).acc).toBe('u')
+    expect(dayShownPendCount(WED)).toBe(0)
+  })
+  it('Astra final #3 — an issued DEAD row did not place the request: deleted since, the request back on the day lands, pending', async () => {
+    const be = new MemoryBackend()
+    await boot(be)
+    const iid = file({})
+    publish(WED)
+    edit(iid, { start: '2026-07-22' })                                // away
+    schedWrite(SCHED_TYPES.mutate, () => { loadVersionToWorkingCopy(WED, dayCurVer(WED)); afterSchedMutate() })
+    expect(rowOf(iid, WED)!.row.kept, 'the issued row back, dead').toBe(true)
+    sign(WED)
+    expect((commitPublishALDay(WED) as any).ok, 'AL1 issued WITH the dead row').toBe(true)
+    expect(((daySnapOf(WED, dayCurVer(WED)) || {}).d.ground || []).some((g: any) => g.src === iid && g.kept), 'the issue holds it dead').toBe(true)
+    const ri = (DAYS[WED] as any).ground.findIndex((g: any) => g && g.src === iid)
+    schedWrite(SCHED_TYPES.mutate, () => { (DAYS[WED] as any).ground.splice(ri, 1); afterSchedMutate() })   // the holder deletes it
+    edit(iid, { start: '2026-07-15' })                                // the request back on Wednesday
+    expect(rowOf(iid, WED), 'it lands — the issued version never placed it').toBeTruthy()
+    await reload(be)
+    expect(rowOf(iid, WED), 'after a reload too').toBeTruthy()
+  })
+  it('Astra final #4 — another request\'s change leaves the dead row\'s own marks exactly as they were', async () => {
+    const be = new MemoryBackend()
+    await boot(be)
+    const iid = file({})
+    const a = deadUnavailRow(iid, WED)
+    publish(WED)                                                      // issued WITHOUT its row
+    bringBack(WED, a)
+    const rid = rowOf(iid, WED)!.row.rid
+    const mine = () => Object.keys(SCHED.pending).filter(k => k.includes(`.${rid}`)).sort()
+    const before = mine()
+    expect(before.length, 'the dead row reads as an addition, every box').toBeGreaterThan(1)
+    file({ person: 'yeti', s: 900, e: 960, remarks: 'another' })     // an unrelated filing on the same day
+    expect(mine(), 'its marks unchanged').toEqual(before)
+    await reload(be)
+    expect(mine()).toEqual(before)
+  })
+})
+
+/* Fable's FINAL code read (1 Oct 26 — its F1 and F2) */
+describe('phase 6 (c) — the FULL check\'s final read (Fable)', () => {
+  it('F1 — a request moved to another day never lands with an id the old day\'s stored row still holds: the holder\'s next save keeps its row and its marks', async () => {
+    const be = new MemoryBackend()
+    await boot(be)
+    const iid = file({})                                            // lands Wednesday
+    writeText(`dn:${WED}.0`, 'SAVED')                               // the holder saves Wednesday, its row with it
+    publish(THU)
+    edit(iid, { start: '2026-07-16' })                              // moved to published Thursday: lands there, pending
+    const rid = rowOf(iid, THU)!.row.rid
+    expect(Object.keys(SCHED.pending).some(k => k === `gr:${THU}.${rid}.prog`), 'its add is marked').toBe(true)
+    writeText(`dn:${THU}.0`, 'THURSDAY SAVED')                      // the holder saves Thursday
+    expect(rowOf(iid, THU)!.row.rid, 'the same row, the same id').toBe(rid)
+    expect(Object.keys(SCHED.pending).some(k => k === `gr:${THU}.${rid}.prog`), 'and still its mark').toBe(true)
+    await reload(be)
+    expect(rowOf(iid, THU)!.row.rid).toBe(rid)
+  })
+  it('F2 — a delete that takes away only a sign-off leaves the command layer in step: the next edit carries nothing of it', async () => {
+    await boot(new MemoryBackend())
+    const onWeek = JSON.stringify(DAYS)
+    const pid = Object.keys(PEOPLE).find(id => id !== 'stiff' && id !== 'bane' && !onWeek.includes(`"${id}"`))!
+    expect(pid, 'a man with no seat on the week').toBeTruthy()
+    schedWrite(SCHED_TYPES.mutate, () => { const g = signOf(WED); g.cur = 'ignite'; g.sked = 'bane'; g.plan = 'stiff'; g.appr = pid; afterSchedMutate() })
+    expect(signOf(WED).appr).toBe(pid)
+    expect(deletePerson(pid), 'deleted').toBeNull()
+    expect(signOf(WED).appr, 'his sign-off is gone from the day').toBeFalsy()
+    expect(schedBaselineClean(), 'and the command layer knows it — the next edit is not charged with it').toBe(true)
   })
 })

@@ -1,0 +1,189 @@
+{
+ "tag": "p6c",
+ "facts": {
+  "O1.rows": [
+   {
+    "di": 5,
+    "ri": 0,
+    "prog": "TRAINING",
+    "str": "10:00",
+    "end": "11:00",
+    "who": "yeti",
+    "more": [],
+    "rmks": "P6C WEEKEND COURSE",
+    "kept": false,
+    "info": false,
+    "flag": null,
+    "cx": null
+   }
+  ],
+  "O1.acc": "g",
+  "O1.boltFigure5": "HO",
+  "O1.pucks5": [
+   {
+    "who": "yeti",
+    "item": "i:imrldi1s01ssegr",
+    "on": true
+   },
+   {
+    "who": "yeti",
+    "item": "i:imrldi1s01ssegr",
+    "on": true
+   }
+  ],
+  "O2.cx": "pressed",
+  "O2.confirm": "confirmed",
+  "O2.sign": {
+   "cur": "Ace",
+   "sked": "Anvil",
+   "plan": "Anvil",
+   "appr": "Anvil"
+  },
+  "O2.pub": {
+   "pressed": true,
+   "label": "Publish day"
+  },
+  "O2.rows": [
+   {
+    "di": 5,
+    "ri": 0,
+    "prog": "TRAINING",
+    "str": "10:00",
+    "end": "11:00",
+    "who": "yeti",
+    "more": [],
+    "rmks": "P6C WEEKEND COURSE",
+    "kept": false,
+    "info": false,
+    "flag": null,
+    "cx": true
+   }
+  ],
+  "O2.acc": "g",
+  "O2.boltFigure5": null,
+  "O3.read": "25 Jul",
+  "O3.rows": [],
+  "O3.acc": "(gone)",
+  "O3b.load": [
+   "Load onto working copy",
+   "Discard 1 edit & load — confirm"
+  ],
+  "O3b.toasts": [
+   "OIL mode — tap a puck to take a man off that event, or an item to stop the whole item earning",
+   "Back to editing the schedule",
+   "Schedule updated",
+   "CX",
+   "Saturday published — APPROVED",
+   "Schedule updated",
+   "Input updated",
+   "Saturday: Original loaded onto the working copy — viewers still see Original until you publish · 1 unpublished edit replaced · 1 member input change stays pending — a load cannot put back a member's own record"
+  ],
+  "O3b.rows": [
+   {
+    "di": 5,
+    "ri": 0,
+    "prog": "TRAINING",
+    "str": "10:00",
+    "end": "11:00",
+    "who": "yeti",
+    "more": [],
+    "rmks": "P6C WEEKEND COURSE",
+    "kept": true,
+    "info": false,
+    "flag": null,
+    "cx": true
+   }
+  ],
+  "O3b.acc": "(gone)",
+  "O4.read": "19 Jul",
+  "O4.rows": [
+   {
+    "di": 5,
+    "ri": 0,
+    "prog": "TRAINING",
+    "str": "10:00",
+    "end": "11:00",
+    "who": "yeti",
+    "more": [],
+    "rmks": "P6C WEEKEND COURSE",
+    "kept": true,
+    "info": false,
+    "flag": null,
+    "cx": true
+   },
+   {
+    "di": 6,
+    "ri": 0,
+    "prog": "TRAINING",
+    "str": "10:00",
+    "end": "11:00",
+    "who": "yeti",
+    "more": [],
+    "rmks": "P6C WEEKEND COURSE till 19 Jul",
+    "kept": false,
+    "info": false,
+    "flag": null,
+    "cx": null
+   }
+  ],
+  "O4.acc": "g",
+  "O4.boltFigure6": "HO",
+  "O4.pucks6": [
+   {
+    "who": "yeti",
+    "item": "i:imrldi1s01ssegr",
+    "on": true
+   },
+   {
+    "who": "yeti",
+    "item": "i:imrldi1s01ssegr",
+    "on": true
+   }
+  ],
+  "O4r.boltFigure6": "HO",
+  "O4r.rows": [
+   {
+    "di": 5,
+    "ri": 0,
+    "prog": "TRAINING",
+    "str": "10:00",
+    "end": "11:00",
+    "who": "yeti",
+    "more": [],
+    "rmks": "P6C WEEKEND COURSE",
+    "kept": true,
+    "info": false,
+    "flag": null,
+    "cx": true
+   },
+   {
+    "di": 6,
+    "ri": 0,
+    "prog": "TRAINING",
+    "str": "10:00",
+    "end": "11:00",
+    "who": "yeti",
+    "more": [],
+    "rmks": "P6C WEEKEND COURSE till 19 Jul",
+    "kept": false,
+    "info": false,
+    "flag": null,
+    "cx": null
+   }
+  ],
+  "O4r.acc": "g",
+  "O5.sign": {
+   "cur": "Ace",
+   "sked": "Anvil",
+   "plan": "Anvil",
+   "appr": "Anvil"
+  },
+  "O5.pub": {
+   "pressed": true,
+   "label": "Publish day"
+  },
+  "O5.boltFigure6": "HO",
+  "O5.frozen": null,
+  "errors": []
+ }
+}

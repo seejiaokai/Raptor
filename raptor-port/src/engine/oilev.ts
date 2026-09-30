@@ -929,8 +929,13 @@ function effectiveStand(day: any, inp: OilInputEv): OilInputEv['stand'] {
  *  to change it (walk find, 22 Sep 26). One body, so they cannot disagree. */
 /** The row an accepted request landed on, if it is still live. A cancelled or
  *  information-only row is not work, so it has nobody on it for this purpose. */
+/* ITS row — never one carrying `kept` ([DB-READINESS] phase 6 (c), the FULL check: Astra's final read #1). A kept row is a
+   version's or a plan's row brought back although its request could not stand there — gone, off the day, or filed under
+   Unavailable (D363) — and a man on it earns nothing from the request. The mark is exact both ways: the view clears it from
+   a row that can stand (overlay.ts rule 3), and an issued day keeps it as it was at issue, so the frozen document reads
+   what it went out with (D2, D142). */
 function landedRow(day: any, iid: string): any {
-  const row = (day && day.ground || []).find((g: any) => g && String(g.src || '') === iid)
+  const row = (day && day.ground || []).find((g: any) => g && String(g.src || '') === iid && !g.kept)
   return (!row || row.cx || row.info) ? null : row
 }
 

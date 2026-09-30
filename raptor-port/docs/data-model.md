@@ -1223,10 +1223,14 @@ D450–D452:
      §3 (c)):** a filing, any edit of a request (the hand-over included), a delete and their Undo / Redo write the `Input`
      alone (the "Load the week of …" refusal is gone). The day's own rows are the holder's: a landed row keeps its place, its
      hand-set times and its extras, and carries `srcv` (what it was made from — it is re-made in place when the request has
-     changed since) and `kept` (a row a loaded version or a switched-in plan brought back although its request is gone — D363).
+     changed since) and `kept` (a row a loaded version or a switched-in plan brought back although its request is gone, off
+     the day or filed under Unavailable — D363; such a row is NEVER the request's row — not for its money, its filing, its
+     placement or its marks — on screen, where the view clears the mark once the request can stand there, and in an issued
+     version, which keeps it as it went out).
      Every read works the request rows out from the stored day (`engine/overlay.ts viewOfWeek`: rows whose request is gone or
      no longer covers the day go, changed ones are re-made, a request with no row lands on its start day — on a published day
-     unless its issued version placed it there or took it off), and the week on screen is always worked out from the day AS
+     unless its issued version placed it there or took it off — oldest request first, below the rows already there; on a
+     published day its new row is marked as its Accept marks it, the add on its item — the FULL check, 1 Oct 26), and the week on screen is always worked out from the day AS
      ITS HOLDER LAST SAVED IT (`state/holderbase.ts` — the holder base), so an Undo of a request's delete brings the exact
      row back. What the working-out shows is saved only when the day's holder next saves that day.
    - **A man deleted (a Delete, or the posting pass on its date — D297, D299):** `Person.deletedFrom` is set; every day

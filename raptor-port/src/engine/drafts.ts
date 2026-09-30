@@ -83,7 +83,10 @@ const restampRev = (bind: any, from: any, to: any) => {
    (publish.ts rowsLeftOut), with whose it is, what, and those days' names. Read by both doors' messages right after the
    replacement, through rowsLeftSaid — the one sentence, so the load and the switch cannot word it two ways. */
 export let ROWSLEFT: Array<{ id: string, who: string, what: string, days: string[], dead?: boolean, unknown?: boolean }> = []
-const leaveOut = (di: number, nd: any) => {
+/* `kept` last, by default: a plan switch marks it against the filings as they are. The load marks it itself, AFTER putting
+   back the version's filings (D98) — marked against the filing it is about to restore, a row the version issued dead
+   ('u' — the FULL check, Astra's final read #2) would read standing, and the filing could never go back. */
+const leaveOut = (di: number, nd: any, kept = true) => {
   const out = rowsLeftOut(di, nd)
   leaveRowsOut(nd, out.map(x => x.id))
   ROWSLEFT = out.map(x => {
@@ -102,7 +105,7 @@ const leaveOut = (di: number, nd: any) => {
   /* …and a DELETED man is never put back on a day from his cutoff ([POST-OUT-OUTCOMES], D297): stripped from the
      incoming day, and the same message says so */
   for (const cs of HOOKS.stripDeleted(di, nd)) ROWSLEFT.push({ id: 'dead:' + cs, who: cs, what: '', days: [], dead: true })
-  markKept(nd)
+  if (kept) markKept(nd)
 }
 /* THE DAY A LOAD ONTO THE WORKING COPY WILL LEAVE — for its confirm's count ("Discard N edits", publish.ts dayDiscardCount;
    Fable's round-2 F5): the version's day through the load's own steps (D175's leave-out, the deleted strip by the request's
@@ -655,7 +658,7 @@ export function loadVersionToWorkingCopy(di: any, ver: any) {
   const nd = liveDay(snap.d)
   /* ONE REQUEST, ONE ROW (D175): the version's row for a request that now stands on another day stays out — putting it
      back would put that request on two days' programmes, and moving the other day is never the load's to do (AM1) */
-  leaveOut(di, nd)
+  leaveOut(di, nd, false)
   nd.today = !!(DAYS[di] && DAYS[di].today)
   DAYS[di] = nd
   reconcileDayFiling(di)   // every replacement, approved or not (P2-QREV-07)
@@ -666,6 +669,7 @@ export function loadVersionToWorkingCopy(di: any, ver: any) {
      put back without moving another day is left as filed and named (LOADLEFT, for the caller's message). */
   const plan = filingRestorePlan(di, snap.fil)
   plan.put.forEach(({ inp, want }) => { if (want) inp.acc = want; else delete inp.acc })   // the plan already skips a quarantined request
+  markKept(nd)   // against the filings as the load leaves them
   LOADLEFT = plan.left
   LOADMOVED = multi.filter(x => (x.inp.acc || '') !== x.was).map(x => ({ id: inpId(x.inp), on: x.inp.acc === 'g',
     days: DAYS.map((d: any, dj: number) => (dj !== di && d && inputCoversDate(x.inp, d.dt)) ? String(d.dow || '').slice(0, 3) : '').filter(Boolean) }))

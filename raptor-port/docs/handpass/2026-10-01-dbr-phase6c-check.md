@@ -42,7 +42,7 @@ became of them:
 | The retype message (`state/holderbase.ts rederive`) | MISSING — a dead kept row silenced it | **FIXED**, red first ("a dead kept row does not silence the retype message"); walked (K5) |
 | The landing order (`engine/overlay.ts landRequests`) | E — new filings landed above older ones | **FIXED**, red first ("a landed row keeps its line…") — found by the walk too (U1) |
 | A published day's marks of a request's new row (`state/holderbase.ts`, after `rebaseDayPending`) | F — every box marked | **FIXED**, red first ("…is marked as its Accept marks it") — found by the walk too (P1, the probe pictures) |
-| The OIL live readers (`engine/oilev.ts landedRow` / `landedHasSentinel` / `landedExtras`, `ui/oilmode.ts oilItemLabel`) | MISSING — raw find by id | **NOT A DEFECT, by construction:** a dead kept row sits only on a day its request cannot stand on (not covered, not an activity, or under Unavailable), so no day ever holds both a dead row and the request's live row; these helpers read ONE day, and every money caller asks only for a request that covers that day (`projectOilInputs`); on an issued face they must read the document raw (Astra agrees, §4). Walked: O4 (Bolt earns on Sunday beside a dead cancelled Saturday row), and round 3's Astra 1 test pins it |
+| The OIL live readers (`engine/oilev.ts landedRow` / `landedHasSentinel` / `landedExtras`, `ui/oilmode.ts oilItemLabel`) | MISSING — raw find by id | **FIXED after the final reads** (Astra's final #1), red first ("Astra final #1 — OIL…"); walked (K2). *This row first read "not a defect, by construction": a dead kept row, I argued, sits only on a day its request cannot stand on because it no longer covers it. Wrong — a request filed under Unavailable covers its day and still cannot stand there, so a plan brought back puts its row there dead; Bolt on that row was paid (the test's premise checked: he earns on the live row). The argument missed one of the three ways a row is dead.* |
 
 The doors (Astra §4, and the plan's own roll-call): the week on screen (`store.ts workOutLoadedWeek`, after every command
 `sched-commit.ts afterCommandPass`), a saved week (`weekstash.ts stashDays`), a week never saved (`weekctx.ts bundle`,
@@ -66,7 +66,9 @@ build before, `p6c-phone/` and `base-phone/` at 390×844.
 | O | OIL: a weekend Training row cancelled on a published Saturday, moved away, the issue loaded back (a dead kept row), moved to Sunday — Bolt earns on Sunday, after a reload and when Sunday is published | 13/13 | 10/13 (the request never reached Sunday) |
 | T | two people at once — two tabs over one store, neither re-reading it: a member's filing never touches a day the scheduler holds | 10/10 | 5/8 — **see finding W5** |
 | K | a dead kept row beside the real one (Astra's §2 items 2, 3, 10): the changes-window jump, the load's filing (D98), the retype message | 15/15 after the fixes | — (no kept rows before (c)) |
-| R | an AL1 withdrawn then the member's edit; the history's lines; a request handed on, then its first holder deleted | (below) | (below) |
+| K2 | a dead kept row on a day its request COVERS (Astra's final read 1, 2): an "Other" request with Bolt on its row, "+ Alt Plan", ✕, → Unavail, the first plan brought back — Bolt earns nothing from the dead row; Saturday published so, the card taken out of Unavailable and Accepted, "Load onto working copy" — back to "Unavailable" with the dead row, nothing pending (D98) | 12/12 after the fixes (first run: the load's button said "Saturday is already at Original" — the count missed the filing it puts back: fixed) | — |
+| R | an AL1 withdrawn then the member's edit (the working copy follows; View-only keeps the issued face; two pending, the four fallen); the change history tells his edit as ONE request line ("Meeting 16 Jul · times 10:00–11:00 → 10:30–11:00"), no line per re-made cell; a request handed from Bolt to Ridge, then Bolt deleted — Ridge's row stays | 12/12 | 11/11 (the same screen; its edit wrote Thursday's day row) |
+| — | §8 item 6, pictured: a request filed for Tue 21 Jul from week 1 shows on the next-week preview (`p6c-2/X4b-peek-tuesday-p6c.png`; the build before: not there) | shown | not shown |
 
 ## What the walk found
 
@@ -84,8 +86,8 @@ on days not yet published (N)" counts no mark a member's act used to leave), ite
 outside…"), item 9 (a load keeps a member's filing on the programme — and so its confirm reads "Discard 1 edit" where it
 read 2, and its message "1 member input change stays pending"), item 10 (Undo of a delete puts the exact row back), item 12
 (retyped back to an activity: on at once), and the storage itself (no day row from a request's command). One more, not in
-§8, now item 16: the pending list names the member who deleted his own issued request as the one who made that change
-("Ranger", where the old build said "Saber" — the holder whose day the old delete wrote).
+§8 for a moment (item 16, withdrawn): the pending list named the member who deleted his own issued request as the one who
+made that change — gone after Fable's F2 fix (the baseline always follows the pass); the re-walk reads as the build before.
 
 ## Astra's scenarios against what was walked
 
@@ -114,12 +116,57 @@ standing predicate at each lookup, §11 — each turned a named test red.
 
 ## Gates
 
-*(filled after the run)*
+**The final code (1 Oct 26, after both reads' fixes, under the PC lock):** unit **7401 / 7401** (463 files) · build clean ·
+tfin **728 / 0** · e2e **509 passed, 0 failed**, 49 skipped · smoke **445 / 0** · rulecheck OK · docsize OK (OVER by 367,
+deferred — D29) · perf **4 / 0** (week DOM 5134 ≤ 5450, board 1024 ≤ 1150; an edit 172 ms, a no-op edit 64 ms, the board
+269 ms, a board no-op 86 ms — in absolute terms level with the build before (c) below; the reference ran faster this time,
+so the ratios read a few points higher).
+
+**The first run (on `37d8e9b7` — the walked build with the walk's five fixes):**
+
+unit **7395 / 7395** (463 files) · build clean · tfin **728 / 0** · e2e **509 passed, 0 failed**, 49 skipped · smoke **445 / 0** ·
+rulecheck OK (it notes `AM39d` is now covered — from `[UNDO-ROSTER-SETTINGS]`, before this branch; left for its own tidy) ·
+perf **4 / 0** (week DOM 5134 ≤ 5450, board 1024 ≤ 1150). **Timing, this build against the build before (c), same machine,
+same minute:** an edit 176 vs 169 ms (1.37× the reference both), the board 272 vs 266 ms (1.30× / 1.31×); an edit that
+changes NOTHING 69 vs 65 ms and on the board 92 vs 83 ms — the after-command pass (the base compared day by day, the view
+worked out over a copy) costs some 5–9 ms a command. Not gated (timings never are); filed with the overlay's cost for group B
+(`[DB-READINESS]`, Fable F2 of 30 Sep 26).
 
 ## The code reads (rank 2 — BOTH, blind, with this sheet)
 
-*(filled after the reads)*
+Briefs `…/briefs/2026-10-01-db-readiness-phase6c-check-final-read-brief.md`; reports `…-final-read-astra.md` (Codex,
+REVISE, four findings) and `…-final-read-fable.md` (Fable 5.1, REVISE, two medium and one low). Neither read the other's.
 
-## His look card
+| Finding | Disposition |
+|---|---|
+| Astra #1 (high) — live OIL paid from a dead kept row of a request filed under Unavailable | **FIXED**, red first (premise checked); walked K2. The rule: a row carrying `kept` is never the request's row (`oilev.ts landedRow`, `oilmode.ts oilItemLabel`) — exact both on screen and in an issued version |
+| Astra #2 (high) — a version issued with a dead row and "Unavailable" could not be loaded back | **FIXED**, red first: the load plans the version's filings against its rows as they went out and marks `kept` after (`drafts.ts loadVersionToWorkingCopy` / `leaveOut`, `publish.ts filingRestorePlan`); the walk (K2) then found the confirm count missed it — **FIXED**, red first (`publish.ts dayDiscardCount`) |
+| Astra #3 (medium) — an issued dead row read as the request's placement | **FIXED** for the landing, red first (`overlay.ts landRequests`); **its Accept half declined**: Accept keeps reusing the issued row's id, because the published face shows that very row and a landing restores it under the same id — a new id would read "removed + added" for a row that looks unchanged (comment at `slots.ts acceptInput`) |
+| Astra #4 (low) — another request's change cleared a dead row's own marks | **FIXED**, red first (`holderbase.ts requestAddMarks`: its standing new row only) |
+| Fable F1 (medium) — a landing took an id the old day's stored row still held; the holder's next save re-minted it and its marks went | **FIXED**, red first (`overlay.ts viewOfWeek` / `landedRid`: every id the days carry as handed in is held) |
+| Fable F2 (medium) — a delete's book change (a sign-off) left the command layer's baseline stale | **FIXED**, red first (`sched-commit.ts afterCommandPass`: the resync is unconditional; `holderbase.ts rederive` counts a book change) |
+| Fable F3 (low) — the view's cost on every read | **Measured** (§Gates: 5–9 ms a command on a no-op edit, the rest level); **filed** for group B (`[DB-READINESS]` (iii)) |
+| Fable's two questions | (1) an undone delete after the holder saved the day waits for Accept — kept as built (the plan's stated limit), one line on his card; (2) a member's remarks edit resets a hand-set time — pre-existing (the old re-link did the same), left |
+| Astra's two questions | (1) Load restores a version's `r` filing and its row exactly — yes, as built (D98); (2) a live request with no standing row: its OIL window reads "not found" rather than a dead row's — as built |
 
-*(filled at the end)*
+**The re-walk** (bug-check order §5): all eight walks run again on the final build, pictures in
+`docs/img/handpass/2026-10-01-dbr-phase6c/p6c-3/` — U 42/42, P 43/43, X 42/42, O 13/13, T 10/10, K 15/15, R 12/12, K2 12/12;
+compared with the build before, every difference is one §8 lists (items 5–7, 9–10, 12, 14–15), a defect of the build before
+closed (W5, W6), or the storage itself. The unit suite after every fix: **7401 / 7401**.
+
+## His look card — five minutes, on his preview
+
+1. **Inputs page, a day not yet published:** file a meeting for Ranger on Thursday. It is on Thursday's Ground Programme at
+   once. Delete it, then press Undo — it comes back in the same place, with anything you set on its row (a time you typed, a
+   second man). Its new rows go BELOW the ones already there.
+2. **A published day:** sign in as Ranger (`us` / `us`) and file a meeting on it. Signed back in as Saber, the day reads
+   "1 pending" and the four sign-offs have fallen; on the working copy only the new row's ITEM box is outlined, as when you
+   press Accept; View-only Sched still shows the day as published.
+3. **Move a request to next week** on the Inputs page: no "Load the week of …", no "Moved outside the programmed week"; it
+   shows on next week's preview at the right of Edit Schedule, and on that week when you open it.
+4. **One question for you (`[REQ-MOVE-EXTRAS]`):** when a member moves his request to another day, it arrives as he filed it
+   — a second man you put on its row stays with the old day (and comes back if the request moves back). Before, he went
+   with it. Under the day lock a member's move cannot change the new day; my recommendation is to leave it. Is that right?
+5. **Known, as designed:** if a member deletes his request on a published day, you then save that day, and he presses Undo —
+   his request comes back under Personal Inputs, and Accept puts its row back.
+6. **Before "merge live":** export a copy of your Tracker first (D464).

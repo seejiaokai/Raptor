@@ -74,13 +74,16 @@ award fix are due before the tables are settled. What to finish before the hand-
    30 Sep 26** on `claude/db-readiness-table-shaping-4094f6` (plan §9); **its FULL check done 30 Sep 26** (the walk and both
    reviewers' code reads, every finding fixed — `raptor-port/docs/handpass/2026-09-30-dbrA-group-walk.md`); **phase 6 (a),
    (b), (d) built and FULL-checked 30 Sep 26** (`raptor-port/docs/handpass/2026-09-30-dbr-phase6-check.md`); **phase 6 (c) v3
-   (the holder base) planned, red-teamed (round 3, the last) and BUILT 1 Oct 26 on `claude/db-readiness-p6c-holder-base`** (D467)
-   — its own FULL check under way; then his look (the cards), then 7.
+   (the holder base) planned, red-teamed (round 3, the last), BUILT and FULL-checked 1 Oct 26 on
+   `claude/db-readiness-p6c-holder-base`** (D467 — `raptor-port/docs/handpass/2026-10-01-dbr-phase6c-check.md`; the walk and
+   both final reads found twelve defects, all fixed red first, one of them money; his answer asked on [REQ-MOVE-EXTRAS]);
+   then his look (the cards), then 7.
 5. **When Manfred is ready — [DB-STEP]:** the data model to him, then the one adapter to his tables; the stack
    ([ARCH-STACK]) resumes there, with its step 6 still to come; the [AMEND] work is queued behind it. Architecture first,
    then the individual bugs (D144).
 6. **Before ANY collaborator is added** — an event, not a slot: take the checks runner off this repo (SEC-101, in
-   [REPO-PRIVATE]); and make the repo private again once the public period (D106) ends — his.
+   [REPO-PRIVATE]); and make the repo private again once the public period (D106) ends — his. IT's clone is such an event
+   ([RESTRICTED-ENV-WORKFLOW]'s go-ahead), and so is [REPO-TIDY]'s screenshot move (the clear of the old worktrees any time).
 
 **The small OIL follow-ups — ONE batch, with the OIL award fix, before the tables are settled (D147, D203, D354):** [OIL-READ-LEFTOVERS] (its items 1, 2, 4),
 [STORE-READER-SWEEP], [OIL-REQ-NAMEBOX] (a walk question for him), [OIL-WORDS],
@@ -1098,6 +1101,12 @@ src → holder map per day, `hisLanded` over the same helper (so the version-loa
 "seat emptied" history lines for the week ON SCREEN only (the requests', bids' and awards' lines are written whatever week
 is open — D337); pre-existing, not phase 6's. Fable's recommendation: leave it — the record of why (his "deleted" line, each
 request's line) is complete; a seat line for every week to come could be made on read once the 30-second check exists.
+(iii) *(c)'s after-command pass costs some 5–9 ms a command* (measured 1 Oct 26 against the build before (c), same machine:
+an edit that changes nothing 69 vs 65 ms, on the board 92 vs 83 ms; a real edit and the board level —
+`raptor-port/docs/handpass/2026-10-01-dbr-phase6c-check.md` §Gates): `state/holderbase.ts rederive` compares each day of
+the base as JSON and works the view out over a copy of all seven, at every scheduler command. Measure again with the
+30-second check (it runs the same pass); if it matters, compare only the days a command named plus those whose requests
+changed (`requestsSig` per day), and skip the view when neither moved.
 
 ### [IT-QUESTIONS] Talk to the IT side now — their approvals take weeks (his, not code; D203, filed 26 Sep 26)
 The checklist is the primer's §7 (Artifact "Raptor Backend Primer"; its questions, kept here so they outlive it): code apps

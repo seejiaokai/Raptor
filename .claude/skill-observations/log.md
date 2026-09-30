@@ -1992,3 +1992,33 @@ restore — repeatable, all-or-nothing, and safe for files whose bytes (line end
 **Suggested improvement:** In test-driven-development's red-green cycle, add: when a test stays green with its fix removed, first assert the fixture's premise (e.g. `expect(req.endDate).toBe(...)`) before suspecting the fix; and write premise assertions into the test so a mis-built fixture fails loudly.
 
 **Principle:** A test must assert its own set-up where the set-up is the point; the break test is how you find a fixture that silently didn't build the scenario.
+
+### Observation 399: A reviewer CLI started in a background shell sat waiting on its input for minutes — close the input explicitly
+
+**Status:** OPEN
+**Date:** 2026-10-01
+**Session context:** [DB-READINESS] phase 6 (c) FULL check — the scenario-design run of the second-provider reviewer (Codex, "Astra") started with `run_in_background`.
+**Skill:** claudex-loop / codex-review
+**Type:** open-source
+**Phase/Area:** Launching the independent reviewer
+
+**Issue:** The reviewer command (`codex exec … "<prompt>" > log`) printed "Reading additional input from stdin..." and then nothing for four minutes; the log showed no session header. Given a prompt argument, the CLI still appends whatever arrives on standard input, and a background shell leaves standard input open, so it waited forever. The same command had run fine in the foreground earlier the same day. The run was stopped and restarted with `< /dev/null`, and completed.
+
+**Suggested improvement:** In the codex-review / claudex-loop launch recipe, always close standard input on a non-interactive reviewer run (`codex exec … < /dev/null`), and check the log for the session header a minute after launch before walking away.
+
+**Principle:** A command-line tool that can read extra input from standard input will hang silently when launched detached with the input left open; close it explicitly on every unattended run, and confirm the first sign of progress rather than assuming the run started.
+
+### Observation 400: A reviewer's "missing call site" was closed by an invariant that missed one case — an invariant disposition must enumerate every way the definition is met, and still get a test
+
+**Status:** OPEN
+**Date:** 2026-10-01
+**Session context:** [DB-READINESS] phase 6 (c) FULL check — the scenario designer marked four OIL helpers MISSING because they find "the request's row" by its id instead of the shared standing-row predicate.
+**Skill:** bug-check order (raptor-port/docs/bug-check-order.md §7.6, dispositions)
+**Type:** open-source
+**Phase/Area:** Dispositioning a static finding
+
+**Issue:** Three MISSING lines beside it were real and fixed red first. The fourth was closed as "not a defect, by construction": a "dead" row, the argument went, can only sit on a day its request no longer covers, so the one-day raw lookup and the predicate always agree. The definition of "dead" had THREE branches (not covering, not an activity, filed under Unavailable) and the argument used one. The final code read (the same provider, blind) built the missed branch — a request filed under Unavailable still covers its day — and a test with its premise checked showed a second man on that row being paid. Written up as settled, the wrong disposition would have shipped a money defect.
+
+**Suggested improvement:** In §7.6, allow "not a defect, by construction" only when (a) the disposition lists EVERY branch of each definition it rests on and argues each, and (b) a test pins the case anyway (the invariant becomes an assertion, not prose). An argument that cannot be turned into a test is a hypothesis.
+
+**Principle:** A proof that a failure cannot happen is only as good as its enumeration of the definitions it uses; pin it with a test, because the branch you did not list is exactly where the next reviewer — or the bug — will be.

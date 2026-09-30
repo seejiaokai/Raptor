@@ -1,0 +1,158 @@
+{
+ "tag": "p6c",
+ "facts": {
+  "K2-1.put": "yeti",
+  "K2-1.rows": [
+   {
+    "di": 5,
+    "ri": 0,
+    "prog": "P6C DEAD U",
+    "str": "09:00",
+    "end": "17:00",
+    "who": "bane",
+    "more": [
+     "yeti"
+    ],
+    "rmks": "P6C DEAD U",
+    "kept": false,
+    "info": false,
+    "flag": null,
+    "cx": null
+   }
+  ],
+  "K2-1.acc": "g",
+  "K2-1.boltFigure": "FO",
+  "K2-2.x": "removed",
+  "K2-2.u": "pressed",
+  "K2-2.sel": "selected",
+  "K2-2.toasts": [],
+  "K2-2.rows": [
+   {
+    "di": 5,
+    "ri": 0,
+    "prog": "P6C DEAD U",
+    "str": "09:00",
+    "end": "17:00",
+    "who": "bane",
+    "more": [
+     "yeti"
+    ],
+    "rmks": "P6C DEAD U",
+    "kept": true,
+    "info": false,
+    "flag": null,
+    "cx": null
+   }
+  ],
+  "K2-2.acc": "u",
+  "K2-2.boltFigure": null,
+  "K2-2.pucks": [
+   {
+    "who": "bane",
+    "item": "i:imrldi1s0nn37zn",
+    "on": true
+   },
+   {
+    "who": "bane",
+    "item": "i:imrldi1s0nn37zn",
+    "on": true
+   }
+  ],
+  "K2-3.sign": {
+   "cur": "Ace",
+   "sked": "Anvil",
+   "plan": "Anvil",
+   "appr": "Anvil"
+  },
+  "K2-3.pub": {
+   "pressed": true,
+   "label": "Publish day"
+  },
+  "K2-3.x": "pressed",
+  "K2-3.g": "pressed",
+  "K2-3.rows": [
+   {
+    "di": 5,
+    "ri": 0,
+    "prog": "P6C DEAD U",
+    "str": "09:00",
+    "end": "17:00",
+    "who": "bane",
+    "more": [
+     "yeti"
+    ],
+    "rmks": "P6C DEAD U",
+    "kept": false,
+    "info": false,
+    "flag": null,
+    "cx": null
+   }
+  ],
+  "K2-3.acc": "g",
+  "K2-3.head": {
+   "tag": "ORIG",
+   "pending": "2 pending",
+   "beak": "none",
+   "alpub": "Publish AL1",
+   "unpub": "Unpublish",
+   "signs": [
+    "— name —",
+    "— name —",
+    "— name —",
+    "— name —"
+   ],
+   "signed": "SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil",
+   "nys": "Not yet signed"
+  },
+  "K2-4.load": [
+   "Load onto working copy",
+   "Discard 1 edit & load — confirm"
+  ],
+  "K2-4.toastsNow": [
+   "OIL mode — tap a puck to take a man off that event, or an item to stop the whole item earning",
+   "Back to editing the schedule",
+   "Schedule updated",
+   "Saturday published — APPROVED",
+   "Accept undone",
+   "Ranger's Other is on the ground programme again — its row was already there",
+   "Schedule updated",
+   "Saturday: Original loaded onto the working copy — viewers still see Original until you publish · 1 unpublished edit replaced"
+  ],
+  "K2-4.toasts": [],
+  "K2-4.rows": [
+   {
+    "di": 5,
+    "ri": 0,
+    "prog": "P6C DEAD U",
+    "str": "09:00",
+    "end": "17:00",
+    "who": "bane",
+    "more": [
+     "yeti"
+    ],
+    "rmks": "P6C DEAD U",
+    "kept": true,
+    "info": false,
+    "flag": null,
+    "cx": null
+   }
+  ],
+  "K2-4.acc": "u",
+  "K2-4.head": {
+   "tag": "ORIG",
+   "pending": "15 changes",
+   "beak": "none",
+   "alpub": "",
+   "unpub": "Unpublish",
+   "signs": [
+    "— name —",
+    "— name —",
+    "— name —",
+    "— name —"
+   ],
+   "signed": "SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil",
+   "nys": ""
+  },
+  "errors": []
+ }
+}

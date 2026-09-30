@@ -24,6 +24,7 @@ import { hhmm } from './time'
 import { inputProtected } from './quarantine'
 import { rowElsewhere } from './weekstash'
 import { DAYS } from './data'
+import { rowsOf } from './rowids'
 
 const ROLES = ['cur', 'sked', 'plan', 'appr'] as const
 export const trimTail = (arr: any[]) => { while (arr.length && !arr[arr.length - 1]) arr.pop() }
@@ -184,8 +185,12 @@ export function srcvOf(inp: any): string {
    reload (a random id would change at every read). Never one another row of the week already holds (the holder's dead,
    `kept` row of the same request can carry it): a second copy would be re-minted by the next command's apply-end
    (rowids.ts ensureRowIds) — inside a member's command, a change to a day he may not make (§11) */
-export function landedRid(iid: string, days: any[]): string {
-  const held = new Set<string>()
+export function landedRid(iid: string, days: any[], taken?: Set<string>): string {
+  /* …nor one a row of the days AS HANDED IN holds (`taken`): a request's row the view took away because the request moved
+     to another day still sits in the holder's stored day with its id, and the holder base de-duplicates ids week-wide
+     (rowids.ts ensureRowIds, first seen wins) — the landing would be re-minted at the new day's next save, and its marks
+     lost with its old id (the FULL check, Fable's final read F1) */
+  const held = new Set<string>(taken || [])
   for (const d of days || []) for (const g of ((d && d.ground) || [])) if (g && g.rid) held.add(String(g.rid))
   let rid = 'r' + iid, n = 2
   while (held.has(rid)) rid = 'r' + iid + 'x' + n++
@@ -287,7 +292,7 @@ function reconcileRequestRows(days: any[], info: ViewDayInfo[]): void {
 }
 
 /* ---- land: an activity request with no row standing anywhere goes on its START day, if that day is in this week ---- */
-function landRequests(days: any[], ctx: ViewCtx, info: ViewDayInfo[]): void {
+function landRequests(days: any[], ctx: ViewCtx, info: ViewDayInfo[], taken?: Set<string>): void {
   const ordOf = days.map((d: any) => (d && d.dt != null ? dateOrd(d.dt) : null))
   const reqs = requestsById()
   const stands = (ds: any[], id: string) => ds.some((d: any) =>
@@ -316,10 +321,12 @@ function landRequests(days: any[], ctx: ViewCtx, info: ViewDayInfo[]): void {
        moved it (Fable's round-3 F2: keyed on the filing record alone, a request shortened onto a published day it already
        covered fell off the programme). */
     const snap = ctx.issued(di)
-    if (snap && (((snap.d && snap.d.ground) || []).some((g: any) => g && String(g.src || '') === id) || (snap.fil || {})[id] === 'r')) continue
+    /* (an issued row carrying `kept` was dead when it went out — the version did not place the request with it: the FULL
+       check, Astra's final read #3) */
+    if (snap && (((snap.d && snap.d.ground) || []).some((g: any) => g && String(g.src || '') === id && !g.kept) || (snap.fil || {})[id] === 'r')) continue
     const d = days[di]
     d.ground = d.ground || []
-    d.ground.push({ ...requestRowFields(r), src: id, srcv: srcvOf(r), rid: landedRid(id, days) })
+    d.ground.push({ ...requestRowFields(r), src: id, srcv: srcvOf(r), rid: landedRid(id, days, taken) })
     info[di].landed.push(id); info[di].reqChanged = true
   }
 }
@@ -329,9 +336,11 @@ function landRequests(days: any[], ctx: ViewCtx, info: ViewDayInfo[]): void {
 export function viewOfWeek(v: string, days: any[], ctx: ViewCtx): ViewDayInfo[] {
   const info: ViewDayInfo[] = (days || []).map(() => ({ reqChanged: false, gone: [], blanked: [], landed: [] }))
   if (!Array.isArray(days)) return info
+  const taken = new Set<string>()
+  for (const d of days) for (const r of rowsOf(d || {})) if (r && r.rid) taken.add(String(r.rid))
   reconcileRequestRows(days, info)
   overlayDeletedWeek(String(v), days, ctx.book)
-  landRequests(days, ctx, info)
+  landRequests(days, ctx, info, taken)
   return info
 }
 /* would a week read need the view's landing — some activity request, not taken off or filed, starts on one of its days.
