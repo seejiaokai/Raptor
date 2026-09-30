@@ -100,7 +100,6 @@ import { markBack, clearBack } from '../state/view'
 import { applyDelete, deleteCutoff, effectiveToday, stashPreflight } from '../state/person-delete'
 import { peopleStore, settingsStore, finishPeopleWrite } from '../state/people-settings-commit'
 import { schedStore, schedApplyEnd, resyncSchedBaseline } from '../state/sched-commit'
-import { weekstashStore } from '../state/store'
 import { renameCallsign } from '../engine/slots'
 import { callsignProblem } from '../state/roster-add'
 import { setPublishGate } from '../state/inputgate-hook'
@@ -1564,7 +1563,7 @@ export function runPoOutcomes(): void {
         try {
           if (needsDays) resyncSchedBaseline()
           txn.enlist(peopleStore); txn.enlist(settingsStore); txn.enlist(lwStore)
-          if (needsDays) { txn.enlist(schedStore); txn.enlist(weekstashStore) }
+          if (needsDays) txn.enlist(schedStore)   // no saved week is written for a delete ([DB-READINESS] group A, phase 6 (d))
           const told: Array<[string, string]> = []
           for (const d0 of due) {
             const d = poDueNow(d0.id, effectiveToday())

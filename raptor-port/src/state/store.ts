@@ -34,6 +34,7 @@ import { registerChangeLines } from './changelines'
 import { markDeletion, resetSched, SCHED, dayApproved, protectedWeek, amFormatOf } from '../engine/publish'
 import { inputProtected, protectedDates } from '../engine/quarantine'
 import { stashPut, stashGet, stashHas, setPreservedBlob, clearPreservedBlob, isPreservedWeek, preservedBlob } from '../engine/weekstash'
+import { overlayDeletedWeek } from '../engine/overlay'
 import { stashRows, joinWeek } from './weekrows'
 import { afterSchedMutate } from './view'
 import * as view from './view'
@@ -552,6 +553,12 @@ function applyWeekModel(v: any, opts?: { landLater?: boolean }): any {
      A missing week (no stash) or a clean current-format one is never preserved. */
   if ((unreadable && stashedJson) || (s && stashedJson && amFormatOf(SCHED, v) === 'unsupported')) setPreservedBlob(v, stashedJson)
   else clearPreservedBlob(v)
+  /* A MAN DELETED IS WORKED OUT ON READ ([DB-READINESS] group A, phase 6 (d); data-model.md §9 rule 9). A delete writes
+     his record (`deletedFrom`), never the weeks — so every week takes him off its days from his cutoff as it comes into
+     memory, here, BEFORE the landing pass and the command layer's baseline: it is nobody's change, and the day's holder
+     saves it without him at his next change to that day (engine/overlay.ts). A byte-preserved (read-only) week is shown
+     as it is saved — the delete refuses while one holds him on a day to come (state/person-delete.ts stashPreflight). */
+  if (!isPreservedWeek(v)) overlayDeletedWeek(String(v), DAYS, { sign: SCHED.sign, signBind: SCHED.signBind, drafts: SCHED.drafts })
   /* INPUTS IS GLOBAL (owner, 22 Aug 26) — NOT swapped with the week. The
      Inputs page shows every week's inputs; each week's schedule still shows
      only its own because autoAcceptSeedInputs and the day builders match by
@@ -906,6 +913,8 @@ export function initStore(policy: { seedDemo: boolean } = { seedDemo: true }) {
        (its INPUTS acc-clear above reconcileLandedAcc); mirror it here so the
        no-stash boot re-lands too. 'r'/'u' are deliberate decisions, kept. */
     INPUTS.forEach((r: any) => { if (r.acc && r.acc !== 'r' && r.acc !== 'u' && !inputProtected(r)) delete r.acc })
+    /* a man deleted, worked out on read — the seed week too (phase 6 (d); applyWeekModel above) */
+    overlayDeletedWeek(String(CURWEEK), DAYS, { sign: SCHED.sign, signBind: SCHED.signBind, drafts: SCHED.drafts })
     autoAcceptSeedInputs()
   }
   /* stable row ids (engine/rowids.ts) BEFORE the baseline: the walk mutates

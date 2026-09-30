@@ -35,6 +35,7 @@ import { stashDays, stashSched } from './weekstash'
 import { getWorld, filingActive, filingHas } from './world'
 import { dayCurVerIn, daySnapIn } from './publish'
 import { canonicalDiff } from './canonical'
+import { overlayDeletedWeek, deletedOverlayDue } from './overlay'
 
 /* weekBundle(v) is a pure function of v for the two authored weeks and a
    fresh-but-identical blank for everything else (weeks-data.ts) — so caching
@@ -95,7 +96,11 @@ function bundle(v:any){
      (loaded year 2026) and as "last week" (loaded year 2027). */
   const ck=v+'@'+baseYear();
   if(!(ck in bundleCache))bundleCache[ck]=weekBundle(v);
-  return bundleCache[ck];
+  /* a man deleted, worked out on read on a copy — the cache holds the pure seed ([DB-READINESS] group A, phase 6 (d)) */
+  if(!deletedOverlayDue(v))return bundleCache[ck];
+  const b=bundleCache[ck], days=JSON.parse(JSON.stringify(b.days));
+  overlayDeletedWeek(String(v),days);
+  return {...b,days};
 }
 
 /* WHICH ids counted as "on the programme" for one bundle day — the seed-side

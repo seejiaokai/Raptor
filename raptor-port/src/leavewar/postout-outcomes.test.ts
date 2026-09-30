@@ -14,7 +14,7 @@ import { storeBackend, HOOKS } from '../engine/hooks'
 import { PEOPLE, indexCallsigns } from '../engine/people'
 import { DAYS } from '../engine/data'
 import { slotVal, setSlotVal, renameCallsign } from '../engine/slots'
-import { initStore as raptorInitStore, notify as raptorNotify, resetSession, weekStashSnap, weekDirty } from '../state/store'
+import { initStore as raptorInitStore, notify as raptorNotify, resetSession, weekStashSnap, weekDirty, writeText } from '../state/store'
 import { Whiteboard } from '../storage/whiteboard'
 import { wirePersist } from '../state/persist'
 import { schedWrite, SCHED_TYPES } from '../state/sched-commit'
@@ -234,7 +234,9 @@ describe('PO5 / PO6 / PO7 — delete: his account and his person; days he flew k
     expect(slotVal(toCome)).toBe('')
     expect(slotVal(flown)).toBe('rocky')
   })
-  it('the posting’s delete is SAVED: the week on screen filed without him on a day to come (a reload keeps it)', () => {
+  /* [DB-READINESS] group A, phase 6 (d): the posting's delete writes no day either (D450) — the week on screen reads
+     without him at once, and a day is filed without him at its next change */
+  it('the posting’s delete: the week on screen reads without him at once; a day to come is filed without him at its next change', () => {
     const wb = new Whiteboard()
     wirePersist(wb, { weekSnap: weekStashSnap, weekDirty })
     /* planted the way the app writes — inside a schedule command, whose rows are the save; the week is one row per day
@@ -243,7 +245,10 @@ describe('PO5 / PO6 / PO7 — delete: his account and his person; days he flew k
     const day4 = () => JSON.stringify(JSON.parse(wb.get('weeks', '13-07-2026#4')!).d)
     expect(day4()).toContain('"rocky"')
     expect(postOut('rocky', TODAY, 'delete')).toBe(true)
-    expect(day4(), 'a day to come, as saved').not.toContain('"rocky"')
+    expect(JSON.stringify((DAYS as any)[4]), 'the week on screen, at once').not.toContain('"rocky"')
+    expect(day4(), 'the delete writes no day').toContain('"rocky"')
+    writeText('dn:4.0', 'NEXT CHANGE')
+    expect(day4(), 'a day to come, as saved at its next change').not.toContain('"rocky"')
   })
   it('no door takes it back or changes it — Undo post out, a new posting, Restore, Restore-as', () => {
     expect(postOut('rocky', TODAY, 'delete')).toBe(true)

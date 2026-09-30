@@ -13,8 +13,8 @@ import { CURWEEK } from '../engine/waves'
 import { INPUTS } from '../engine/inputs'
 import { setSlotVal, slotVal, acceptInput } from '../engine/slots'
 import { SCHED, setSign, setDayApproved, dayDelta, daySnapOf, dayCurVer } from '../engine/publish'
-import { stashPut, stashGet, stashDrop } from '../engine/weekstash'
-import { initStore, resetSession, notify, weekStashSnap, weekDirty, writeInputs } from './store'
+import { stashPut, stashGet, stashDrop, stashDays } from '../engine/weekstash'
+import { initStore, resetSession, notify, weekStashSnap, weekDirty, writeInputs, writeText } from './store'
 import { Whiteboard } from '../storage/whiteboard'
 import { wirePersist } from './persist'
 import { schedWrite, SCHED_TYPES } from './sched-commit'
@@ -113,16 +113,23 @@ describe('PO6 — days he flew keep his puck; every day from the cutoff loses hi
     expect(t.sign.cur).toBe('')
     expect(t.signBind.cur).toBeUndefined()
   })
-  it('a STASHED week to come is swept (its days, sign boxes, parked plans); a stashed week before the cutoff is not', () => {
+  /* [DB-READINESS] group A, phase 6 (d): a saved week is NOT rewritten by a delete (D450 — only a day's holder saves it);
+     it READS without him from his cutoff wherever its days come into memory (engine/overlay.ts). The requirement this
+     pinned — a week to come loses him on its days, its sign boxes and its parked plans; a week before the cutoff keeps
+     him — is unchanged; it is met on read. */
+  it('a STASHED week to come reads without him (its days, sign boxes, parked plans) and is not rewritten; one before the cutoff keeps him', () => {
     const day = clone((DAYS as any)[PAST]); day.ground = [{ who: HIM, str: '0900', end: '1000' }]
     const blob = (plans: boolean) => JSON.stringify({ d: [0, 1, 2, 3, 4, 5, 6].map(() => clone(day)), sg: { 1: { cur: HIM } }, sb: { 1: { cur: { x: 1 } } },
       dr: plans ? { 2: [{ id: 'q', name: 'Q', d: clone(day), sign: { cur: HIM }, signBind: {} }] } : {} })
     stashPut('20/07/2026', blob(true))          // 20–26 Jul: every day to come
     stashPut('06/07/2026', blob(false))         // 6–12 Jul: all before the cutoff
+    const stored = stashGet('20/07/2026')
     expect(deletePerson(HIM)).toBe(null)
-    const after = stashGet('20/07/2026')!
-    expect(after).not.toContain(`"${HIM}"`)
-    expect(stashGet('06/07/2026')).toContain(`"${HIM}"`)
+    expect(stashGet('20/07/2026'), 'the saved week is not rewritten').toBe(stored)
+    expect(JSON.stringify(stashDays('20/07/2026')!.days), 'read, its days are without him').not.toContain(`"${HIM}"`)
+    expect(JSON.stringify(stashDays('06/07/2026')!.days), 'a week before the cutoff keeps him').toContain(`"${HIM}"`)
+    /* its sign boxes and parked plans are read without him when the week is opened (state/store.ts applyWeekModel —
+       pinned in state/p6d-deleteonread.test.ts, which opens weeks on a real saved store) */
   })
   /* the calendar's rows carry their day as `date` (state/plan.ts addPuckRow) — the fixture below once wrote `iso`, the
      field the delete read, so the delete never took him off a real calendar row ([DB-READINESS] group A, phase 2) */
@@ -181,10 +188,12 @@ describe('PO6 — loading a published version never brings a deleted man back on
   })
 })
 
-/* THE DELETE IS SAVED (found by the walk, 27 Sep 26 — every unit test here read the live model, none the saved copy):
-   the loaded week is filed without him on the days from the cutoff, so a reload does not put him back. */
-describe('PO6 — the delete is saved: the loaded week filed without him', () => {
-  it('after the delete the saved copy of the week on screen no longer holds him on a day to come; a day he flew still does', () => {
+/* THE DELETE IS SAVED (found by the walk, 27 Sep 26 — every unit test here read the live model, none the saved copy) — AND,
+   since [DB-READINESS] group A phase 6 (d), saved WITHOUT WRITING A DAY: his record says `deletedFrom`, the week on
+   screen reads without him at once (and after a reload — engine/overlay.ts), and the day's holder saves each day without
+   him at his next change to it (D450: only the holder saves a day). */
+describe('PO6 — the delete is saved: the week on screen reads without him, and the next change to a day files it without him', () => {
+  it('after the delete the week on screen shows him on no day to come; its saved rows are untouched until a day is next changed', () => {
     const wb = new Whiteboard()
     wirePersist(wb, { weekSnap: weekStashSnap, weekDirty })
     /* planted the way the app writes — inside a schedule command, whose rows are the save */
@@ -198,7 +207,10 @@ describe('PO6 — the delete is saved: the loaded week filed without him', () =>
     const day = (di: number) => JSON.parse(wb.get('weeks', `13-07-2026#${di}`)!).d
     expect(JSON.stringify(day(TO_COME)), 'the fixture is saved').toContain(`"${HIM}"`)
     expect(deletePerson(HIM)).toBe(null)
-    expect(JSON.stringify(day(TO_COME)), 'a day to come, as saved').not.toContain(`"${HIM}"`)
+    expect(personKeysOnDay(TO_COME, HIM), 'the week on screen: a day to come, at once').toEqual([])
+    expect(JSON.stringify(day(TO_COME)), 'the delete writes no day (D450)').toContain(`"${HIM}"`)
+    writeText(`dn:${TO_COME}.0`, 'NEXT CHANGE')
+    expect(JSON.stringify(day(TO_COME)), 'a day to come, as saved at its next change').not.toContain(`"${HIM}"`)
     expect(JSON.stringify(day(PAST)), 'a day he flew, as saved').toContain(`"${HIM}"`)
   })
 })

@@ -40,6 +40,7 @@ import { shiftWeek } from './weeknav'
 import { esc } from '../state/view'
 import { fmtT, storesView, rowCls, cxTag, flagTag, fyiTag, plCols, areaText, atimeText, lCell, saRoleText } from './html'
 import { fltNoLen, FLT_NO_LEN_SAYS } from '../engine/validate'
+import { overlayDeletedWeek, deletedSig } from '../engine/overlay'
 
 /* a plain, non-interactive puck — the same visual identity (qual chip, RCP
    tint, SANS line) as html.ts's `puck()`, minus everything that function
@@ -248,7 +249,8 @@ export function peekKey(): string {
      come back to this one — CURWEEK alone returns to the same value and
      would serve the pre-edit markup forever. Per-key generation, so ordinary
      edits to the LOADED week never touch the preview (perf-B). */
-  return CURWEEK + '|' + stashGenOf(shiftWeek(CURWEEK, 1))
+  /* …and who is deleted from when: next week is read without a deleted man from his cutoff (phase 6 (d)) */
+  return CURWEEK + '|' + stashGenOf(shiftWeek(CURWEEK, 1)) + '|' + deletedSig()
 }
 export function peekWeekHTML(): string {
   const key = peekKey()
@@ -259,7 +261,9 @@ export function peekWeekHTML(): string {
      flag seeds read), the pure seed otherwise. A corrupt stash entry parses
      to null and degrades to the seed, matching weekctx's own fallback. */
   const nextWk = shiftWeek(CURWEEK, 1)
-  const bundle = stashDays(nextWk) || weekBundle(nextWk)
+  /* a saved week is read without a deleted man by stashDays itself; a week never saved, here ([DB-READINESS] group A,
+     phase 6 (d) — engine/overlay.ts) */
+  const bundle = stashDays(nextWk) || (() => { const b = weekBundle(nextWk); overlayDeletedWeek(String(nextWk), b.days); return b })()
   cacheHTML = bundle.days.map((d: any, i: number) => peekDayHTML(d, i, i === 0)).join('')
   cacheKey = key
   return cacheHTML

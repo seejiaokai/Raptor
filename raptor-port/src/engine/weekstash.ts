@@ -25,6 +25,7 @@ import { weekBundle } from './weeks-data'
 import { CURWEEK } from './waves'
 import { dayIso } from './verid'
 import { inputCoversDate } from './inputs'
+import { overlayDeletedWeek, deletedSig } from './overlay'
 
 const WEEKSTASH:Record<string,string>={};
 
@@ -195,6 +196,10 @@ export function stashDays(v:any){
        'Dec 28' would resolve to the wrong year. dt is index-determined, and
        `dates` was just re-derived under the current convention. */
     (days||[]).forEach((d:any,i:number)=>{ if(d&&dates[i]!=null)d.dt=dates[i]; });
+    /* A MAN DELETED, WORKED OUT ON READ ([DB-READINESS] group A, phase 6 (d) — engine/overlay.ts): these are the week's
+       WORKING days, as every reader of a saved week sees them (the cross-week checks, the peek, the row finder); a delete
+       never rewrites the stored copy. On the parsed copy — the stash itself is untouched. */
+    overlayDeletedWeek(String(v),days);
     return {days,dates};
   }catch(_e){ return null; }
 }
@@ -217,7 +222,8 @@ const SRC_MEMO=new Map<string,SrcRows|null>()
 export function stashGroundBySrc(v:any):SrcRows|null{
   const blob=stashGet(v);
   if(blob==null)return new Map();
-  const key=String(blob);
+  /* …and on who is deleted from when: the rows are read through stashDays, which works a delete out on read (phase 6 (d)) */
+  const key=String(blob)+'\u0000'+deletedSig();
   if(SRC_MEMO.has(key))return SRC_MEMO.get(key)!;
   const parsed:any=stashDays(v);
   let rows:SrcRows|null=null;
