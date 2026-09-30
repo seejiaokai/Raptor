@@ -1099,7 +1099,13 @@ export function commitInputEdit(r: any, draft: any, keepTail?: any, entryEnd?: a
        day (D450) — but counted: the request's holding moves on, and every
        decision made under an earlier one reads as nothing (engine/oilev.ts
        pruneHandedOverDecisions). The same record, so one undo puts it back. */
-    if (r.person !== wasPerson) r.hand = Number(r.hand || 0) + 1
+    if (r.person !== wasPerson) {
+      r.hand = Number(r.hand || 0) + 1
+      /* …and when it LEFT him: every decision about him made under an earlier holding is void from now on — on every
+         day, in every week, with no day written (engine/oilev.ts pruneHandedOverDecisions). The old write-side clear
+         voided exactly the old holder's decisions; this says the same thing on the request itself. */
+      if (wasPerson) r.leftAt = { ...(r.leftAt || {}), [String(wasPerson)]: r.hand }
+    }
     /* AND a positive answer whose HOURS no longer price what was approved is
        void per day (bug pass, 28 Aug 26): the three gated editors re-ask via
        oilGate, but the board's and week's IN-PLACE cells commit straight

@@ -119,6 +119,10 @@ export type Person = {
   /** Deleted for leaving flying for good — the hidden mark, never erased (D287, D290, D297): on no list, every day he
    *  already flew still points at him — screen (`state/person-delete.ts`). */
   deleted?: boolean
+  /** The first day a deleted man is gone, ISO — state (person-delete.ts, the cutoff: the later of the delete's date and
+   *  today, D304). Every WORKING day from it reads without him (engine/overlay.ts, [DB-READINESS] group A, phase 6 (d));
+   *  every day before it, and every issued version, keeps him (D297, D299). */
+  deletedFrom?: string
   /** His SANS tick was made by a SANS posting on its date (D283) — the tick the posting's Undo, or Archive, takes back;
    *  absent = ticked by hand — screen (`leavewar/sync.ts`). */
   sanBy?: 'po'
@@ -209,6 +213,10 @@ export type Input = {
    *  engine/oilev.ts), so a refusal made for one holding reads as nothing once the request moves on — even when it
    *  comes back to the same man ([DB-READINESS] group A, phase 6 (a); data-model.md §9 rule 9). */
   hand?: number
+  /** Person id → the holding (`hand`) at which the request LEFT him — written by the hand-over (ui/inputedit.tsx
+   *  commitInputEdit). An OIL decision about him made under an earlier holding reads as nothing (engine/oilev.ts
+   *  pruneHandedOverDecisions) — the old write-side clear, said on the request instead of every day (phase 6 (a)). */
+  leftAt?: Record<string, number>
 }
 
 /* ---------------------------------------------------------------------------

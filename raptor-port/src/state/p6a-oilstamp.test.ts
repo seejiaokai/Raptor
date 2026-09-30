@@ -22,6 +22,9 @@ import { SCHED } from '../engine/publish'
 import { inputItemKey, oilEvidence } from '../engine/oilev'
 import { PLANPUCKS, DAYRMK } from './plan'
 import { initStore, weekStashSnap, weekDirty, loadWeek, writeInputsBatch } from './store'
+import { schedWrite, SCHED_TYPES } from './sched-commit'
+import { acceptInput } from '../engine/slots'
+import { afterSchedMutate } from './view'
 import { setSession } from './auth'
 import { hydrate, wirePersist, weekId } from './persist'
 import { bootStorage } from '../storage/boot'
@@ -181,6 +184,63 @@ describe('phase 6 (a) — a refusal belongs to the holding it was made under', (
     toggleOilPerson(5, 'bane', item)                            // refused NOW, while he holds it
     expect(seen(5, `bane|${item}`)).toBe('deny')
     expect(oilFigureFor(5, 'bane', item)).toBe(null)
+  })
+
+  /* FABLE'S RED TEAM OF THE PHASE-6 PLAN, F2 (30 Sep 26): a refusal about a man the scheduler put on the request's ROW as
+     an extra (D18) is about him on that row, not about a holding of the request — handed to him, he is kept once, as its
+     holder (D271), and the refusal must still stand. Stamped with the holding it was tapped under, it read as stale. */
+  it("an EXTRA's refusal stands when the request is then handed to him (Fable F2)", async () => {
+    await boot(new MemoryBackend())
+    const r = plant({ person: 'bane', type: 'Training', date: 'Jul 18', s: 0, e: 1439, oil: { '2026-07-18': 1 } })
+    const iid = String(r.iid), item = inputItemKey(iid)
+    schedWrite(SCHED_TYPES.mutate, () => {
+      expect(acceptInput(5, r, 'g'), 'landed on Saturday').toBe(true)
+      const row: any = ((DAYS[5] as any).ground || []).find((g: any) => g && g.src === iid)
+      row.more = ['stiff']
+      afterSchedMutate()
+    })
+    expect(oilFigureFor(5, 'stiff', item), 'the extra earns from the row (D18)').toBe('FO')
+    toggleOilPerson(5, 'stiff', item)
+    expect(oilFigureFor(5, 'stiff', item), 'the scheduler takes the extra off').toBe(null)
+    handTo(r, 'stiff')
+    writeInputsBatch(() => { r.oil = { '2026-07-18': 1 } })   // his own answer as the holder: Yes
+    expect(seen(5, `stiff|${item}`), 'the refusal was about him on this row — it stands').toBe('deny')
+    expect(oilFigureFor(5, 'stiff', item), 'so he still earns nothing from it').toBe(null)
+  })
+
+  /* the two orders Fable asked to be pinned: the extra's refusal is void once the request LEAVES him (as the old clear
+     decided); and it stands while the request passes between other men with him still on the row */
+  const landWithExtra = (r: any, extra: string) => schedWrite(SCHED_TYPES.mutate, () => {
+    expect(acceptInput(5, r, 'g')).toBe(true)
+    const row: any = ((DAYS[5] as any).ground || []).find((g: any) => g && g.src === String(r.iid))
+    row.more = [extra]
+    afterSchedMutate()
+  })
+  it('an extra refused, handed the request, then it leaves him and comes back: the refusal is void (as the old clear decided)', async () => {
+    await boot(new MemoryBackend())
+    const r = plant({ person: 'bane', type: 'Training', date: 'Jul 18', s: 0, e: 1439, oil: { '2026-07-18': 1 } })
+    const item = inputItemKey(String(r.iid))
+    landWithExtra(r, 'stiff')
+    toggleOilPerson(5, 'stiff', item)
+    handTo(r, 'stiff')
+    handTo(r, 'bane')
+    handTo(r, 'stiff')
+    writeInputsBatch(() => { r.oil = { '2026-07-18': 1 } })
+    expect(seen(5, `stiff|${item}`), 'it left him in between — the refusal died with that').toBeUndefined()
+    expect(oilFigureFor(5, 'stiff', item)).toBe('FO')
+  })
+  it('an extra refused keeps the refusal while the request passes between OTHER men, and when it finally comes to him', async () => {
+    await boot(new MemoryBackend())
+    const r = plant({ person: 'bane', type: 'Training', date: 'Jul 18', s: 0, e: 1439, oil: { '2026-07-18': 1 } })
+    const item = inputItemKey(String(r.iid))
+    landWithExtra(r, 'stiff')
+    toggleOilPerson(5, 'stiff', item)
+    handTo(r, 'pike')
+    expect(seen(5, `stiff|${item}`), 'still on the row as an extra — his refusal stands').toBe('deny')
+    handTo(r, 'stiff')
+    writeInputsBatch(() => { r.oil = { '2026-07-18': 1 } })
+    expect(seen(5, `stiff|${item}`), 'it never left him').toBe('deny')
+    expect(oilFigureFor(5, 'stiff', item)).toBe(null)
   })
 
   it('a decision about a DIFFERENT request is untouched by the hand-over (the other control)', async () => {

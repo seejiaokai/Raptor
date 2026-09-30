@@ -77,9 +77,9 @@ export interface OilDecisions {
   people?: Record<string, OilDecision>
   /** `<personId>|i:<iid>` → the HOLDING of that request the decision was made under (its `Input.hand` then, absent = 0) —
    *  written beside a `people` entry about a request, and only then ([DB-READINESS] group A, phase 6 (a)). A decision about
-   *  the request's holder made under an earlier holding reads as nothing (pruneHandedOverDecisions), so handing a request
-   *  on writes no day at all — and A → B → A cannot bring A's old refusal back. A `people` entry with no `pa` entry was
-   *  made before phase 6 and reads as made under the current holding. */
+   *  a man the request has LEFT since that holding (`Input.leftAt[pid]` greater than it) reads as nothing
+   *  (pruneHandedOverDecisions), so handing a request on writes no day at all — and A → B → A cannot bring A's old refusal
+   *  back. A `people` entry with no `pa` entry reads as made under the first holding (0). */
   pa?: Record<string, number>
 }
 
@@ -443,19 +443,17 @@ function pruneHandedOverDecisions(dec: OilDecisions, day: any): void {
     const iid = item.slice(2)
     const inp = (INPUTS as any[]).find(r => r && String(inpId(r)) === iid)
     if (!inp) continue                                       // orphan: already inert, leave it be
-    if (String(inp.person || '') === person) {               // the man who holds it —
-      /* — AND WHO HELD IT WHEN THE DECISION WAS MADE ([DB-READINESS] group A, phase 6 (a); data-model.md §9 rule 9).
-         Handing the request away and BACK (A → B → A) makes him its holder again, and a refusal made about his FIRST
-         holding would match and take his day a second time. Until phase 6 a write-side pass cleared that refusal on
-         every loaded day and every saved week (ui/oilmode.ts clearOilPersonDecisions, gone) — a pass that rewrote days
-         nobody holds, which the database's day lock refuses (D450). Now the decision says which holding it was made
-         under (`pa`), the request counts its holdings (`Input.hand`), and a mismatch reads as no decision. An Undo of the
-         hand-over puts the count back with the person, so the refusal comes back with it. A decision with no `pa`
-         entry was stored before phase 6 and reads as current. */
-      const was = dec.pa ? dec.pa[k] : undefined
-      if (was != null && Number(was) !== Number(inp.hand || 0)) drop(k)
-      continue
-    }
+    /* A DECISION ABOUT A MAN THE REQUEST HAS LEFT SINCE IT WAS MADE IS VOID ([DB-READINESS] group A, phase 6 (a);
+       data-model.md §9 rule 9). Handing the request away and BACK (A → B → A) makes him its holder again, and a refusal
+       made under his FIRST holding would match and take his day a second time. Until phase 6 a write-side pass cleared
+       the old holder's refusal on every loaded day and every saved week at each hand-over (ui/oilmode.ts
+       clearOilPersonDecisions, gone) — a pass that rewrote days nobody holds, which the database's day lock refuses
+       (D450). Now the hand-over writes the request alone: `leftAt[pid]` = the holding at which it left him, and a decision
+       about him made under an earlier holding (`pa`) reads as nothing. An extra (D18) handed the request keeps his
+       refusal — it never left him (Fable's red team, F2). An Undo of the hand-over puts `leftAt` back with the person. */
+    const left = inp.leftAt && inp.leftAt[person]
+    if (left != null && Number((dec.pa && dec.pa[k]) || 0) < Number(left)) { drop(k); continue }
+    if (String(inp.person || '') === person) continue        // the man who holds it
     /* AND ANYONE THE SCHEDULER PUT ON ITS ROW (D18, 22 Sep 26). This used to
        assume only the requester could carry a decision about a request, which
        was true until a second man on the row started earning from it. Left as

@@ -421,8 +421,11 @@ export function toggleOilPerson(di: any, person: any, item: string): boolean {
     else {
       dec.people[k] = want ? 'allow' : 'deny'
       /* A DECISION ABOUT A REQUEST SAYS WHICH HOLDING OF IT IT WAS MADE UNDER ([DB-READINESS] group A, phase 6 (a)) —
-         the request's hand-over count now, so handing it away and back cannot bring this decision back to life
-         (engine/oilev.ts pruneHandedOverDecisions). A row item (`r:`) has no holder to change. */
+         the request's hand-over count now. It is void once the request has LEFT the man it names since then (the
+         request's `leftAt`, written by the hand-over — engine/oilev.ts pruneHandedOverDecisions): handing it away and
+         back cannot bring it back to life. A man the scheduler put on the row as an extra (D18) keeps his refusal when
+         the request is handed TO him (it never left him — Fable's red team of the phase-6 plan, F2), and loses it once
+         it leaves him, exactly as the old write-side clear decided. A row item (`r:`) has no holder to change. */
       if (item.startsWith('i:')) {
         const inp: any = (INPUTS as any[]).find(r => r && String(inpId(r)) === item.slice(2))
         dec.pa = dec.pa || {}

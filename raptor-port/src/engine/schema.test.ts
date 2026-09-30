@@ -97,6 +97,7 @@ const inputSpec = (booted: boolean): Spec => ({
   oil: { $opt: { $map: { $lit: [0, 0.5, 1] } } }, sans: { $opt: { f: { $opt: { $lit: [true] } }, o: { $opt: { $lit: [true] } }, a: { $opt: { $lit: [true] } } } },
   ord: 'number?',   // its place in the list ([DB-READINESS] group A, phase 2 — state/ord.ts; every booted row has one — below)
   hand: 'number?',  // how many times it has changed hands ([DB-READINESS] group A, phase 6 (a) — an OIL decision's holding)
+  leftAt: { $opt: { $map: 'number' } },   // the holding at which it left each man (phase 6 (a))
 })
 const FLAGS = { cx: 'boolean?', cxr: 'string?', flag: 'boolean?' }
 const ALLHANDS: Spec = { ...FLAGS, prog: 'string', str: 'string', end: 'string', who: { $opt: { $or: ['string', ['string']] } }, more: { $opt: ['string'] }, info: 'boolean?', rid: 'string?' }
