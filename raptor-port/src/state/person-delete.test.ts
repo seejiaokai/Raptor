@@ -188,7 +188,12 @@ describe('PO6 — the delete is saved: the loaded week filed without him', () =>
     const wb = new Whiteboard()
     wirePersist(wb, { weekSnap: weekStashSnap, weekDirty })
     /* planted the way the app writes — inside a schedule command, whose rows are the save */
-    schedWrite(SCHED_TYPES.mutate, () => { plantEveryKind(TO_COME); plantEveryKind(PAST) })
+    /* a day is saved only when its command CHANGES it (the group-wide walk's H3 — no first save of all seven days): the
+       tests above may already have planted him here, so each day also takes a note of this test's own */
+    schedWrite(SCHED_TYPES.mutate, () => {
+      plantEveryKind(TO_COME); plantEveryKind(PAST)
+      for (const di of [TO_COME, PAST]) (DAYS as any)[di].notes.push({ t: 'PO6 SAVED ' + di })
+    })
     /* the week is saved as one row per day ([DB-READINESS] group A, phase 1 — state/weekrows.ts) */
     const day = (di: number) => JSON.parse(wb.get('weeks', `13-07-2026#${di}`)!).d
     expect(JSON.stringify(day(TO_COME)), 'the fixture is saved').toContain(`"${HIM}"`)

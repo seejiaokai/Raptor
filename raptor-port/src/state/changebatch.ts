@@ -87,6 +87,15 @@ function wrapperFor(wb: Whiteboard): TxnWrapper {
   }
 }
 
+/** A saved group no command opens — the boot's own writes on a store that has started (state/persist.ts
+    writeLoadedWeekAtBoot): its batch is `boot`, by the system, never named after whichever command last opened a group
+    that turned out empty (such a group is never sealed, so what it said about itself is still here). */
+export function systemGroup(wb: Whiteboard, fn: () => void): void {
+  if (!wb.inTransaction()) { OPENED = null; SEQS = [] }
+  const tx = wb.transaction()
+  try { fn(); tx.commit() } catch (e) { tx.abort(); throw e }
+}
+
 /** Wire the change log to the whiteboard the app boots on: the command layer's transactions, the sealer, and the
     envelope collector. Idempotent — called by the stream consumer's wiring (state/persist.ts wireRows). */
 export function wireChangeBatches(wb: Whiteboard): void {

@@ -22,6 +22,9 @@ import { DAYS } from '../engine/data'
 import { storeBackend } from '../engine/hooks'
 import { stashClear } from '../engine/weekstash'
 import { ELOG, elogClear, logAction, elogRemap, elogLoad } from '../engine/editlog'
+import { txtSet, txtGet } from '../engine/slots'
+import { afterSchedMutate } from './view'
+import { routeFocusOut } from '../ui/textedit'
 import { initStore, weekStashSnap, weekDirty, writeInputs, resetSession } from './store'
 import { hydrate, wirePersist } from './persist'
 import { bootStorage } from '../storage/boot'
@@ -90,6 +93,59 @@ describe('one line, one row, inside its command', () => {
     expect('seq' in stored).toBe(false)
   })
 
+  /* H2 (the group-wide walk, 30 Sep 26): the board's in-place edits and a text box make their change FIRST, then open
+     the command that saves it (view.ts afterSchedMutate's self-wrap; ui/textedit.ts) — the line that change logs arrives
+     with no command running. It is held and joins that command: the edit and its line ONE group, ONE batch. Before, the
+     line went out as a second saved group of its own (`elog.line`, by the system), ahead of the edit's. */
+  it('an in-place board edit then its self-wrapped command: the edit and its line are ONE group with ONE batch', async () => {
+    await boot()
+    as('ad', 'a')
+    const key = 'dn:0.0'
+    expect(txtSet(key, 'BOARD STYLE')).toBe(true)           // the change first, logging its line with no command open…
+    afterSchedMutate()                                         // …then the command that saves it (the self-wrap)
+    await drain()
+    expect(groups).toHaveLength(1)
+    const g = groups[0]!
+    expect(g.some(c => c.collection === 'weeks')).toBe(true)
+    expect(lineRows(g)).toHaveLength(1)
+    const b = batchOf(g)
+    expect(b.type).toBe('sched.mutate')
+    expect(b.items.map((i: any) => i.key)).toContain(`settings/${lineRows(g)[0]!.id}`)
+    expect(ELOG.rows.map(r => r.lbl).join('|')).toContain(ELOG.rows[ELOG.rows.length - 1]!.lbl)
+  })
+
+  it('a structural board edit (the line logged first, then the self-wrapped save): ONE group with ONE batch', async () => {
+    await boot()
+    as('ad', 'a')
+    ;(DAYS as any)[0].notes.push({ t: 'A NOTE ADDED' })     // the board's + Note: the change…
+    logAction(0, 'Note added')                               // …its line…
+    afterSchedMutate()                                       // …then the save (board.ts, since the group walk's H2)
+    await drain()
+    expect(groups).toHaveLength(1)
+    const g = groups[0]!
+    expect(g.some(c => c.collection === 'weeks')).toBe(true)
+    expect(lineRows(g)).toHaveLength(1)
+    expect(batchOf(g).type).toBe('sched.mutate')
+  })
+
+  it('a text box committed on the screen: its day and its line are ONE group with ONE batch', async () => {
+    await boot()
+    as('ad', 'a')
+    const el = document.createElement('div')
+    el.setAttribute('data-txt', 'dn:0.0'); el.contentEditable = 'true'; el.textContent = txtGet('dn:0.0')
+    document.body.appendChild(el)
+    try {
+      el.textContent = 'TYPED ON SCREEN'
+      routeFocusOut({ target: el } as any)                     // the box's own commit, as focus leaves it
+      await drain()
+    } finally { el.remove() }
+    expect(txtGet('dn:0.0')).toBe('TYPED ON SCREEN')
+    expect(groups).toHaveLength(1)
+    const g = groups[0]!
+    expect(lineRows(g)).toHaveLength(1)
+    expect(batchOf(g).type).toBe('sched.text')
+  })
+
   it('a refused command leaves no line and no row', async () => {
     await boot()
     as('ad', 'a')
@@ -115,6 +171,7 @@ describe('one line, one row, inside its command', () => {
     as('ad', 'a')
     ELOG.cap = 2
     logAction(0, 'a'); logAction(0, 'b')
+    await kept()
     const oldest = ELOG.rows[0]!.lineId
     groups = []
     logAction(0, 'c')
@@ -125,6 +182,10 @@ describe('one line, one row, inside its command', () => {
     expect(ELOG.rows.map(r => r.lbl)).toEqual(['b', 'c'])
   })
 })
+
+/* a line given with no command running is kept at the end of the turn (engine/editlog.ts hold — the group-wide walk's
+   finding H2: a line given just BEFORE its command opens rides that command instead) */
+const kept = () => Promise.resolve()
 
 describe('the order is (at, lineId), on every reload and every client', () => {
   it('a reload loads the lines in order and numbers them afresh', async () => {
@@ -137,6 +198,7 @@ describe('the order is (at, lineId), on every reload and every client', () => {
     expect(ELOG.rows.map(r => r.lbl)).toEqual(['one', 'two', 'three'])
     expect(ELOG.rows.map(r => r.seq)).toEqual([1, 2, 3])
     logAction(0, 'four')
+    await kept()
     expect(ELOG.rows[3]!.seq).toBe(4)
   })
 
@@ -181,6 +243,7 @@ describe('the lines that rode no command before', () => {
     await boot()
     as('ad', 'a')
     logAction(0, 'old one'); logAction(0, 'old two')
+    await kept()
     const gone = ELOG.rows.map(r => r.lineId)
     groups = []
     const d = new Date(Date.now() + 86400000), p = (n: number) => String(n).padStart(2, '0')
@@ -197,6 +260,7 @@ describe('the lines that rode no command before', () => {
     const { wb } = await boot()
     as('ad', 'a')
     logAction(0, 'about a row', { key: 'g:0.1' } as any)
+    await kept()
     const id = ELOG.rows[0]!.lineId
     const before = wb.get('settings', `elog:${id}`)
     commit({ type: 'sched.mutate', scope: { module: 'sched' }, apply: () => { elogRemap((k: any) => (k === 'g:0.1' ? 'g:0.0' : k)); throw new Error('refused') } } as any)
@@ -209,6 +273,7 @@ describe('what is new to you is one row per person, by position (F2-02)', () => 
   it('Mark all as seen writes only your own row, as a position', async () => {
     const { wb } = await boot()
     as('ad', 'a'); logAction(0, 'one'); logAction(1, 'two')
+    await kept()
     as('us', 'us')
     groups = []
     expect(markSeen(ELOG.rows)).toBe(true)
@@ -239,12 +304,14 @@ describe('what is new to you is one row per person, by position (F2-02)', () => 
   it('an account made after the history began starts with nothing new — seenFrom is a position', async () => {
     await boot()
     as('ad', 'a'); logAction(0, 'before he joined')
+    await kept()
     const pid = Object.keys(PEOPLE).find(id => !(PEOPLE as any)[id].special && !(PEOPLE as any)[id].archived && !(PEOPLE as any)[id].deleted && !ACCOUNTS_LIST.some(a => a.pid === id))!
     expect(addAccount('newbie@x', pid, 'main')).toBeNull()
     const acct = ACCOUNTS_LIST.find(a => a.name === 'newbie@x')!
     expect(acct.seenFrom).toEqual({ at: ELOG.rows[0]!.t, lineId: ELOG.rows[0]!.lineId })
     vi.advanceTimersByTime(5)
     logAction(1, 'after he joined')
+    await kept()
     resetSession({ user: acct.id, role: 'member', pid: acct.pid } as any)
     const before = ELOG.rows.find(r => r.lbl === 'before he joined')!, after = ELOG.rows.find(r => r.lbl === 'after he joined')!
     expect(isNewToMe(before)).toBe(false)

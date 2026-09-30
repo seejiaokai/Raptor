@@ -28,7 +28,7 @@ import { seedDemoSans, seedDemoMedical } from './demoseed'
 import { docAdd } from './docs'
 import { storesLoad, cxReasonsLoad, dutyTplLoad, waveTplLoad, dayTplLoad, autoAcceptSeedInputs, reconcileLandedAcc, relandInputs, secOrder, moveSectionModel, reorderSectionTo, secDefaultLoad, waveDefaultLoad } from '../engine'
 import { qualColsLoad } from '../engine/qualcols'
-import { elogFlush, elogLoad, setElogDefer, setElogDoor } from '../engine/editlog'
+import { elogFlush, elogLoad, setElogDefer, setElogDoor, elogAdoptHeld } from '../engine/editlog'
 import { changesLoad } from './changes'
 import { registerChangeLines } from './changelines'
 import { markDeletion, resetSched, SCHED, dayApproved, protectedWeek, amFormatOf } from '../engine/publish'
@@ -44,7 +44,7 @@ import { endUndoSession } from '../undo/timeline'
 import { setRole as lwSetRole } from '../leavewar/state/store'
 import { endTrackerSession } from '../tracker/role.js'
 import { isHydrated } from './persist'
-import { deferEffect, CmdRefused, setPermissionResolver, commitPhase, commitProjection } from '../command'
+import { deferEffect, CmdRefused, setPermissionResolver, commitPhase, commitProjection, onPipelineBegin } from '../command'
 import { defineInvariant } from '../command/harness'
 import { cmdAuthorize, ownershipViolation } from './perms'
 import type { EnlistableStore, RecordEntry, CommitResult } from '../command'
@@ -694,6 +694,7 @@ export function loadWeek(v: any) {
 }
 
 /* ---- wiring ---- */
+let ELOG_ADOPT_WIRED = false
 export function wireStore() {
   /* [ARCH-STACK] Step 2: register the scheduler's command layer (permissions,
      records, guarded store, the HIST.lock suppression context). Idempotent. */
@@ -778,6 +779,9 @@ export function wireStore() {
      a command of its own, so it is a saved group with its change-log batch, never a bare write ([DB-READINESS] group A,
      phase 4.3). The app's own act (the system actor): the line itself names who did it. */
   setElogDoor((type, fn) => { commitProjection({ type, scope: { module: 'settings' }, apply: () => { fn() } } as any) })
+  /* …and a line given just BEFORE its command opens (the board's in-place edits, a text box) joins that command's group
+     (engine/editlog.ts hold — the group-wide walk's finding H2) */
+  if (!ELOG_ADOPT_WIRED) { ELOG_ADOPT_WIRED = true; onPipelineBegin(elogAdoptHeld) }
   HOOKS.isPhone = () => {
     if (typeof window === 'undefined') return false
     try { if (window.matchMedia) return window.matchMedia('(max-width:820px)').matches } catch (_) {}

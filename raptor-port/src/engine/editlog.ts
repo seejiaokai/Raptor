@@ -151,7 +151,8 @@ function dropRow(r: ELogRow) { store.set(ROW_PFX + r.lineId, null) }
 
 /* kept for the callers that asked for "save now" (a sign-out, the tests): every line is saved as it is kept, so there is
    nothing left to write */
-export function elogFlush(): void {}
+/* a sign-out keeps every line still held before the session ends (the line already names who) */
+export function elogFlush(): void { flushHeld() }
 const str = (v: any) => (typeof v === 'string' ? v : '')
 const isoOk = (v: any) => typeof v === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(v)
 /* read the saved history back (boot): every `elog:` row, in (t, lineId) order, the newest `cap`, numbered afresh. Read
@@ -200,6 +201,34 @@ export function setElogDefer(fn: ((fn: () => void) => boolean) | null) { DEFER =
 let DOOR: ((type: string, fn: () => void) => void) | null = null
 export function setElogDoor(fn: ((type: string, fn: () => void) => void) | null) { DOOR = fn }
 function throughDoor(type: string, fn: () => void) { if (DOOR) DOOR(type, fn); else fn() }
+/* A LINE GIVEN WITH NO COMMAND RUNNING IS HELD for the rest of the turn ([DB-READINESS] group A, the group-wide walk's
+   finding H2, 30 Sep 26). The board's in-place edits and a text box make their change first and open the command that
+   saves it right after, so their line used to go out through the door as a SECOND saved group, before the edit's own.
+   Held, it is handed to the next command that begins in this turn (elogAdoptHeld, installed by the state layer on the
+   command layer's pipeline start) and kept among that command's latched effects: one saved group, one batch, and no
+   line if that command is refused. A line no command claims goes through the door at the end of the turn, as before.
+   With no door (headless) a line is kept at once, as it always was. */
+const HELD: Array<() => void> = []
+let HELD_QUEUED = false
+function hold(keep: () => void) {
+  if (!DOOR) { keep(); return }
+  HELD.push(keep)
+  if (!HELD_QUEUED) { HELD_QUEUED = true; queueMicrotask(flushHeld) }
+}
+function flushHeld() {
+  HELD_QUEUED = false
+  const h = HELD.splice(0)
+  if (!h.length) return
+  throughDoor('elog.line', () => { for (const k of h) k() })
+  /* the screen was drawn in the turn that gave the line, before it was kept: draw again, so the history shows it */
+  HOOKS.renderStatus()
+}
+/** hand every held line to the command now beginning (its latched effects keep them, in order) */
+export function elogAdoptHeld(): void {
+  if (!HELD.length || !DEFER) return
+  const h = HELD.splice(0)
+  for (const k of h) if (!DEFER(k)) HELD.push(k)
+}
 
 /* THE ADMIN SWEEP (owner, 25 Aug 26 — "clear the history of edits. On specific
    dates or a range or from this day till history onwards"). Bounds are wall
@@ -393,7 +422,7 @@ function push(row: Omit<ELogRow, 'seq' | 'lineId'>) {
     while (ELOG.rows.length > ELOG.cap) dropRow(ELOG.rows.shift()!)
   }
   if (DEFER && DEFER(keep)) return
-  throughDoor('elog.line', keep)
+  hold(keep)
 }
 
 /* Record one value change. Called from the two choke points every schedule

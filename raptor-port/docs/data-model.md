@@ -396,8 +396,10 @@ a server job.
 Relationships: 1–n `ScheduleDay`.
 From today: **stored as these rows since 30 Sep 26** (`[DB-READINESS]` group A, phase 1): each command's changes to a
 week are written as exactly the rows they touched, inside its one saved group (`state/persist.ts`, through the stream
-consumer `state/rowmap.ts`); a week's first save writes its week row and all seven day rows together; a pristine seed
-week is never written; a row is removed only by an explicit delete (an Undo of a publish or of an Unpublish). **The
+consumer `state/rowmap.ts`); a week's first save writes its week row and ONLY the days it changed — a day no one has
+saved has no row and reads as the week untouched (a blank day on a shared store; the group-wide walk's finding H3, 30 Sep 26: a first save of all
+seven days from the saver's copy wiped another person's day of the same new week, and would save days the saver does not
+hold, D450) — and a week load's landing is saved only onto days already saved; a pristine seed week is never written; a row is removed only by an explicit delete (an Undo of a publish or of an Unpublish). **The
 reconcile that deleted every stored week the browser did not hold is GONE** (it was correct for one browser and
 destructive once shared). A week switch writes nothing of the week left, and of the week arriving only what its
 landing pass changed (one `sched.load` command). A week that will not read, or was published by an older build, loads
@@ -440,7 +442,7 @@ technical team says how (Open question 8).
 | `weekId` | ref ScheduleWeek | yes | |
 | `dayIndex` | int | yes | 0–6. Unique on (`weekId`, `dayIndex`) |
 | `date` | date | yes | ISO |
-| `snapshot` | JSON | no | the day and every field of the week record that belongs to it (above), with the scheduler's decisions on the inputs that land on it (section 9, rule 9 — at stage 2 those decisions move to `ScheduleInputPlacement`, below, never lost with the snapshot). **Null = a blank day** — reads as a blank week reads today |
+| `snapshot` | JSON | no | the day and every field of the week record that belongs to it (above), with the scheduler's decisions on the inputs that land on it (section 9, rule 9 — at stage 2 those decisions move to `ScheduleInputPlacement`, below, never lost with the snapshot). **No row = the day untouched** — a day no one has saved is not stored; it reads as the week before any save (a blank day on a shared store — the group-wide walk's finding H3, 30 Sep 26) |
 | `ownerid` | ref User / team | yes | the platform's owner: the holder, or the "free" team |
 | `leaseId` | guid | no | a new id at every take, so a stale session of the same person is refused (Astra 2) |
 | `sessionId` | string | no | the browser tab that took it (a random id kept per tab), so only that tab's closing releases it (Fable 9) |
@@ -1117,6 +1119,7 @@ can do better.
 | `LeaveBid` | one record (by id) | **per-record last writer wins** — several records may share a person/date since [ARCH-STACK] step 4; each is one person's bid (or one credit, one notice) and one admin's decision; the row version guards the same record edited twice | 1 |
 | `Attempt`, `Enrolment` | one row | reject and reload — a mark is a fact about one attempt; `applySummary` re-reads and re-applies | 2 |
 | `Setting` | one key | reject and reload — an admin edit over an admin edit is a conversation, not a merge | 1 |
+| `LeaveWar` | one period (its stage, bidding window, day events and bands — JSON on the row) | reject and reload — every change to a period is an admin's; two admins on ONE period at once is a conversation, not a merge. The stand-in store has no row versions, so there the later write wins (the group-A walk, 30 Sep 26, W3 finding 1: a stale tab's event brought a closed period back to open) — the database's `If-Match` is what refuses it | 1 |
 | `Input`, `Person`, `LeavePersonProfile`, `QualMark` | one row | reject and reload | 1 |
 | `Amendment`, `IssuedSignoff` | append-only | no conflict possible: an insert with a duplicate (`versionId`, `reissue`) or (`amendmentId`, `role`) is rejected outright, and each is written only in the same changeset as its day (rule 3) | 1 |
 

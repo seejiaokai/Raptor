@@ -5,7 +5,8 @@
    week never write the same row:
 
    - the WEEK ROW (`ScheduleWeek`) — the two format stamps, `v` and `am`, and nothing else;
-   - seven DAY ROWS (`ScheduleDay`) — the day itself and every field that names it: the marks keyed by slot key, split
+   - a DAY ROW (`ScheduleDay`) for each day someone has saved — a day with no row reads as the week untouched (the
+     group-wide walk's finding H3, 30 Sep 26) — the day itself and every field that names it: the marks keyed by slot key, split
      by the day the key names (`c`, `p`, `ad`); every map keyed by day index (`ok`, `sg`, `sb`, `cv`, `dr`, `cd`, `cr`);
      the muted warnings (`wo`, whose key leads with the day);
    - one ISSUANCE ROW per version that ever went out (`Amendment`) — the Original is sequence 0, an AL its number; keyed
@@ -27,7 +28,7 @@ import { keyDay } from '../engine/keys'
 import { isValidVerId, parseVerId, verSeq, dayIso } from '../engine/verid'
 import { RID_BOOK_VERSION } from '../engine/rowids'
 import { AMBOOK_VERSION, retiredEntry } from '../engine/publish'
-import { emptyWeek } from '../engine/weeks-data'
+import { weekBundle } from '../engine/weeks-data'
 import { stashGet } from '../engine/weekstash'
 import type { Converter } from '../storage/fold'
 import type { Entry } from '../storage/backend'
@@ -266,19 +267,22 @@ export function issuedBook(is: Array<[string, any]>, rx: Map<string, any>, wk: s
   return { o, a, rt }
 }
 
-/** rows → parts. A missing week row reads as the current stamps; a missing day row as a blank day. Throws on a row
-    that will not read or an id that names nothing. */
+/** rows → parts. A missing week row reads as the current stamps; a missing day row as that day UNTOUCHED — what the
+    week shows before anyone saves it (the authored demo day under the demo policy, a blank day on a shared store —
+    engine/weeks-data.ts weekBundle): a week's first save writes only the days it changed (state/persist.ts
+    scheduleRows — the group-wide walk's finding H3), so a day no one has saved has no row. Throws on a row that will not
+    read or an id that names nothing. */
 export function rowsToParts(rows: WeekRows, wk: string): WeekParts {
   const week = has(rows, '') ? parseRow(rows[''], 'the week row') : { v: RID_BOOK_VERSION, am: AMBOOK_VERSION }
   /* a row carrying a field no row of its kind holds is not this build's row — read-only, never guessed at */
   for (const k of Object.keys(week)) if (k !== 'v' && k !== 'am') throw new RowShapeError(`the week row carries ${k}`)
-  let blank: any[] | null = null
+  let untouched: any[] | null = null
   const days: DayPart[] = []
   for (let di = 0; di < 7; di++) {
     const raw = rows[`#${di}`]
     if (raw == null) {
-      blank ??= emptyWeek(wk).days
-      days.push({ d: blank[di], book: {}, wo: [] })
+      const u = (untouched ??= weekBundle(wk).days)
+      days.push({ d: u[di], book: {}, wo: [] })
       continue
     }
     const r = parseRow(raw, `day row ${di}`)

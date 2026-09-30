@@ -219,6 +219,19 @@ function drainQueue(): void {
 }
 
 /* ---- the pipeline -------------------------------------------------------- */
+/* HOOKS RUN AS EVERY LOCAL PIPELINE'S REDUCER BEGINS (phase 3, before `apply`) — [DB-READINESS] group A, the group-wide
+   walk's finding H2 (30 Sep 26). The board's in-place edits and a text box make their change FIRST and open the command
+   that saves it right after (state/view.ts afterSchedMutate's self-wrap, ui/textedit.ts); the history line that change
+   logs arrives with no command running. The edit log holds such a line and hands it over here, so it is kept among
+   THIS command's latched effects — the edit and its line one saved group, one change-log batch — and dropped with it if
+   the command is refused. Only a person's own command (origin `user`) adopts: a projection the app runs in the same turn
+   (the Leave War's sync) or a remote change never carries someone's line. */
+const beginHooks: Array<() => void> = []
+export function onPipelineBegin(fn: () => void): () => void {
+  beginHooks.push(fn)
+  return () => { const i = beginHooks.indexOf(fn); if (i >= 0) beginHooks.splice(i, 1) }
+}
+
 function runPipeline(cmd: Command, actor: Actor, origin: Origin, causedBy?: number): CommitResult {
   const env: CommitEnvelope = {
     seq: -1, at: '', actor, origin, scope: cmd.scope, type: cmd.type,
@@ -229,6 +242,7 @@ function runPipeline(cmd: Command, actor: Actor, origin: Origin, causedBy?: numb
   txn.api = makeTxnApi(txn)
   active = txn
   phase = 'reducer'
+  if (origin === 'user') for (const h of beginHooks.slice()) h()
   /* [CMDL-FINISH] §2.1(1) — this pipeline's causal context. INHERIT the cause it
      was raised with (a queued projection's captured causedBy); finalize replaces
      it with this pipeline's OWN seq once it emits. A no-op keeps the inherited

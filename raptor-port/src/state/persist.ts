@@ -8,8 +8,8 @@
    No import of state/store.ts here — store.ts imports isHydrated from us.
 
    THE WEEKS ARE ROWS, WRITTEN FROM THE COMMAND STREAM ([DB-READINESS] group A, phase 1 — plan §2.2, §2.5). A week is
-   stored as the rows of IT's tables (state/weekrows.ts): its week row, seven day rows, one row per issued version and
-   one per Unpublish. persistAll no longer writes weeks and no longer deletes one: every command's changes to a week are
+   stored as the rows of IT's tables (state/weekrows.ts): its week row, a day row for each day someone has saved, one
+   row per issued version and one per Unpublish. persistAll no longer writes weeks and no longer deletes one: every command's changes to a week are
    mapped to exactly the rows they touch at phase 9 of that command, inside its one saved group (the composer below,
    through state/rowmap.ts), and a row is removed only for an explicit delete. The old reconcile — "delete every stored
    week nothing local backs" — is gone: correct for one browser, destructive once the store is shared.
@@ -29,12 +29,12 @@ import type { Whiteboard } from '../storage/whiteboard'
 import { storeInitialized } from '../storage/schema'
 import { registerConverter, type Converter } from '../storage/fold'
 import type { Entry } from '../storage/backend'
-import type { Change, LogicalCollection } from '../command/types'
-import { wireChangeBatches } from './changebatch'
+import type { Change, CommitEnvelope, LogicalCollection } from '../command/types'
+import { wireChangeBatches, systemGroup } from './changebatch'
 /* the change history's and the accounts' one-time conversions (the fold's `elog` and `accounts` converters — phase 4) */
 import './settingsrows'
 import { wireRowConsumer, registerComposer, registerMapper, type RowWrite } from './rowmap'
-import { schedRecordsNow, resyncSchedBaseline } from './sched-commit'
+import { schedRecordsNow, resyncSchedBaseline, SCHED_TYPES } from './sched-commit'
 import { mintOrd, sortByOrd, byOrd } from '../command/ord'
 import {
   joinWeek, parseRowId, rowSuffix, dayRowJSON, weekRowJSON, stashRows, weeksConverter, type WeekRows,
@@ -284,14 +284,22 @@ function loadedRows(wk: string): WeekRows | null {
      command committed; its stamps → the week row; an issued version or an Unpublish → its own row, a delete (an Undo
      of a publish or of an Unpublish) removing that row alone;
    - a saved week not on screen (`weekstash`, already in row form) → the same rows of that week;
-   - a week saved for the FIRST time → its week row and all seven day rows together (and every issued row it has), so
-     a stored week is never a part of one;
+   - a week saved for the FIRST time → its week row, every issued row it has, and ONLY the days this command changed. A
+     day no one has saved has no row and reads as the week's untouched day (state/weekrows.ts rowsToParts). Until the
+     group-wide walk (30 Sep 26, finding H3) a first save wrote all seven days from the saver's own copy: two people
+     editing two days of a week nobody had saved yet each wrote the other's day, and the later one wiped the earlier's
+     edit — the one thing one row per day is for (and, with the day lock to come, D450, a save of days the saver does
+     not hold);
+   - a week load's landing pass (`sched.load` — the requests filed on the week put on its days) → only the days already
+     saved: a day no one has saved re-lands at every load, as a week no one has saved does (store.ts loadWeek), and is
+     saved with the first command that changes it;
    - a preserved week (read-only, P2-IMPL-02) → nothing, ever. */
-function scheduleRows(wb: Whiteboard, changes: readonly Change[]): RowWrite[] {
+function scheduleRows(wb: Whiteboard, changes: readonly Change[], env?: CommitEnvelope): RowWrite[] {
   const out: RowWrite[] = []
   const put = (id: string, value: string | null) => out.push({ collection: 'weeks', id, value })
   const loaded = new Map<string, { days: Set<number>; week: boolean; issued: Change[] }>()
   const saved = new Map<string, Change[]>()
+  const landing = env?.type === SCHED_TYPES.load
   for (const c of changes) {
     const wk = weekOfId(c.id)
     if (c.collection === 'weekstash') { let l = saved.get(wk); if (!l) saved.set(wk, l = []); l.push(c); continue }
@@ -308,9 +316,13 @@ function scheduleRows(wb: Whiteboard, changes: readonly Change[]): RowWrite[] {
     const rows = loadedRows(wk)
     if (!rows) continue
     const wid = weekId(wk)
-    if (!wb.has('weeks', wid)) { for (const sfx of Object.keys(rows)) put(wid + sfx, rows[sfx]); continue }
-    if (t.week) put(wid, rows[''])
-    for (const di of t.days) put(`${wid}#${di}`, rows[`#${di}`])
+    const first = !wb.has('weeks', wid)
+    if (first || t.week) put(wid, rows[''])
+    if (first) for (const sfx of Object.keys(rows)) if (sfx.startsWith(':')) put(wid + sfx, rows[sfx])
+    for (const di of t.days) {
+      if (landing && !wb.has('weeks', `${wid}#${di}`)) continue
+      put(`${wid}#${di}`, rows[`#${di}`])
+    }
     for (const c of t.issued) {
       const sfx = `:${c.collection === 'sched.issuance' ? 'is' : 'rx'}:${c.id.slice(c.id.indexOf(':') + 1)}`
       put(wid + sfx, c.op === 'delete' ? null : (rows[sfx] ?? JSON.stringify(c.after)))
@@ -319,9 +331,10 @@ function scheduleRows(wb: Whiteboard, changes: readonly Change[]): RowWrite[] {
   for (const [wk, cs] of saved) {
     if (isPreservedWeek(wk)) continue
     const wid = weekId(wk)
+    /* first saved while off screen: its week row and issued rows with it, and only the days this command changed */
     if (!wb.has('weeks', wid) && stashHas(wk)) {
       const rows = stashRows(wk)
-      if (rows) { for (const sfx of Object.keys(rows)) put(wid + sfx, rows[sfx]); continue }
+      if (rows) for (const sfx of Object.keys(rows)) if (sfx === '' || sfx.startsWith(':')) put(wid + sfx, rows[sfx])
     }
     for (const c of cs) put(wid + c.id.slice(wk.length), c.op === 'delete' ? null : String(c.after))
   }
@@ -331,13 +344,17 @@ function scheduleRows(wb: Whiteboard, changes: readonly Change[]): RowWrite[] {
 /* the loaded week's rows, written once at boot when that week is already saved: the boot re-lands the requests filed
    on it since it was saved (state/store.ts applyWeekModel) outside any command, so its changed rows go out here — the
    whiteboard sends only the rows whose bytes differ. A week never saved stays unsaved (a pristine week is never
-   stored); a preserved one is never written. */
+   stored), and so does a DAY never saved (its landing is worked out again at every load, as a week load's is —
+   scheduleRows); a preserved one is never written. ONE saved group, so it carries its change-log batch like every
+   other save (state/changebatch.ts names a group no command opened `boot`): until the group-wide walk (30 Sep 26,
+   finding H1) these rows went out bare — no batch — so another reader of the change log would never learn the day
+   had changed. */
 function writeLoadedWeekAtBoot(wb: Whiteboard): void {
   if (!stashHas(CURWEEK) || isPreservedWeek(CURWEEK)) return
   const rows = loadedRows(CURWEEK)
   if (!rows) return
   const wid = weekId(CURWEEK)
-  for (const sfx of Object.keys(rows)) wb.set('weeks', wid + sfx, rows[sfx])
+  systemGroup(wb, () => { for (const sfx of Object.keys(rows)) if (wb.has('weeks', wid + sfx)) wb.set('weeks', wid + sfx, rows[sfx]) })
 }
 
 /** THE STREAM CONSUMER, wired to the whiteboard — as early in the boot as the whiteboard exists (main.tsx calls it
@@ -353,7 +370,7 @@ export function wireRows(wb: Whiteboard): void {
   /* [DB-READINESS] group A (plan §2.2) — each command's changes, mapped to the stored rows they live in, written inside
      the command's own group (state/rowmap.ts). Phase 1: the schedule's weeks (a composer — a day row is three records);
      phase 2: the requests, the roster, the planning calendar. */
-  registerComposer({ name: 'schedule', collections: [...LOADED_COLLS, 'weekstash'], rows: (changes) => scheduleRows(wb, changes) })
+  registerComposer({ name: 'schedule', collections: [...LOADED_COLLS, 'weekstash'], rows: (changes, env) => scheduleRows(wb, changes, env) })
   registerMapper('inputs', rowOf('inputs'))
   registerMapper('people', rowOf('people'))
   registerMapper('plan', rowOf('plan'))

@@ -162,7 +162,7 @@ describe('P6 — a Quals change on "To go out" says who and when', () => {
      "posted out" / "SANS" and named nobody. The posting line now keeps whose it is and that it is a posting (sub, fld),
      so it is the provenance of the two details a posting makes. (The posting pass that runs it on its date makes no line
      — it is not a person's act — so the change here stands in for it.) */
-  it('a man posted out by a posting: To go out names who set the posting', () => {
+  it('a man posted out by a posting: To go out names who set the posting', async () => {
     as('ad', 'a')
     const g = signOf(0); g.cur = 'ignite'; g.sked = 'bane'; g.plan = 'stiff'; g.appr = 'pump'
     setDayApproved(0, true)
@@ -171,6 +171,7 @@ describe('P6 — a Quals change on "To go out" says who and when', () => {
     const was = p.archived
     try {
       logAction(null, `Leave War · ${p.cs} · posting out 13 Jul · Overseas Sqn`, { date: '2026-07-13', sect: 'abs', sub: man, fld: 'posting' })
+      await Promise.resolve()   // a line written with no command running is kept at the end of the turn (editlog.ts hold, H2)
       p.archived = true
       const who = [...el(pendListHTML(0)).querySelectorAll('.pl-who')].map(e => e.textContent || '').join('|')
       expect(who, 'the To go out line names who set the posting').toContain('Saber')

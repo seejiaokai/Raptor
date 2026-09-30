@@ -138,6 +138,24 @@ describe('a bid is one row', () => {
     expect(JSON.parse(recRow(J.be, id)!).state).toBe('acknowledged')
   })
 
+  /* the group-wide walk (30 Sep 26, W3 finding 2): the decision moved its record to the END of the day's list, so the
+     day was out of order and the record BESIDE it was given a new place — its row rewritten by a decision about another
+     (and, from a stale tab, a record someone had deleted brought back). The decided record keeps its place now. */
+  it('deciding the FIRST of two records on a day writes only its row — the other keeps its row and its place', () => {
+    setRole('admin')
+    setCell('ramp', D, '*LL'); setCell('ramp', D, 'LL*')
+    const [am, pm] = idsAt('ramp', D)
+    const pmBytes = recRow(J.be, pm!)
+    J.log.length = 0
+    for (const bid of ['acknowledged', 'refused'] as const) {
+      expect(decideRequestById('ramp', D, am!, bid)).toBe(true)
+      expect(J.log.map(o => o[0] + ' ' + o[1]), bid).toEqual([`put rec:${warId()}:${am}`])
+      expect(recRow(J.be, pm!), 'the other record, byte for byte').toBe(pmBytes)
+      expect(idsAt('ramp', D), 'the day’s order kept').toEqual([am, pm])
+      J.log.length = 0
+    }
+  })
+
   it('an idle reconcile that credits a worked day (the OIL pass) saves its row too', () => {
     const SAT = '2026-01-10'
     expect(ingestDutyCredit('ramp', SAT, 'FO', 'FLT')).toBe('written')

@@ -717,6 +717,11 @@ export function sortAllCommit() {
    Returns the toast, so every `return toast(…)` site became `return act(…)`
    with no change to how any of them behave. */
 const act = (di: any, msg: string) => { logAction(di, msg); return toast(msg) }
+/* A STRUCTURAL EDIT LOGS ITS LINE FIRST, then saves ([DB-READINESS] group A, the group-wide walk's finding H2, 30 Sep 26):
+   a line logged BEFORE afterSchedMutate's self-wrapped command is held and kept inside it — the edit and its line one
+   saved group, one change-log batch (engine/editlog.ts hold); logged AFTER, it went out as a second saved group of its
+   own. So those sites call logAction, then afterSchedMutate, then toast — the words unchanged. `act` stays for a line
+   whose words depend on the result (the OIL switches), which can only follow its command (its own group, its batch). */
 
 /* THE ROW AS THE SCHEDULER READS IT, for the day's history — one body with the
    window's switch now (Fable F5): oilmode.ts oilItemHistName, which carries the
@@ -847,13 +852,13 @@ export function boardMbtn(e: MouseEvent) {
     shiftAircraft(dI, gI, r.li, r.ai)
     if (!r.f.aircraft.length) { rids.push(r.f.rid); r.w.formations.splice(r.li, 1); shiftFormation(dI, gI, r.li) } else rollCx(r.f)
     dropRowMarks(rids)
-    markDeletion(dI, 'line', issued); afterSchedMutate(); notify(); return act(dI, said)
+    markDeletion(dI, 'line', issued); logAction(dI, said); afterSchedMutate(); notify(); return toast(said)
   }
   if (ds.lac != null) {
     const [di, gi, li] = ds.lac.split('.').map(Number)
     const f = DAYS[di].waves[gi].formations[li]
     f.aircraft.push({ p: '', w: '', area: '', rmks: '', opts: {} }); rollCx(f)
-    markStructuralAdd(`fr:${di}.${gi}.${li}.${f.aircraft.length - 1}`); afterSchedMutate(); notify(); return act(di, 'Aircraft added')
+    markStructuralAdd(`fr:${di}.${gi}.${li}.${f.aircraft.length - 1}`); logAction(di, 'Aircraft added'); afterSchedMutate(); notify(); return toast('Aircraft added')
   }
   if (ds.gline != null) {
     const [di, gi] = ds.gline.split('.').map(Number)
@@ -863,7 +868,7 @@ export function boardMbtn(e: MouseEvent) {
        than an empty box, because only the empty one asks to be typed into. */
     const w = DAYS[di].waves[gi]
     w.formations.push({ cs: '', msn: '', to: '', ld: '', aircraft: [{ p: '', w: '', area: '', rmks: '', opts: {} }] })
-    markStructuralAdd(`ff:${di}.${gi}.${w.formations.length - 1}.cs`); afterSchedMutate(); notify(); return act(di, 'Line added')
+    markStructuralAdd(`ff:${di}.${gi}.${w.formations.length - 1}.cs`); logAction(di, 'Line added'); afterSchedMutate(); notify(); return toast('Line added')
   }
   if (ds.gdel != null) {
     const [di, gi] = ds.gdel.split('.').map(Number)
@@ -881,7 +886,7 @@ export function boardMbtn(e: MouseEvent) {
        are decoupled from waves). A desk is placed from a template now and owned
        by nothing on the flying side, so a wave's removal no longer walks the
        dutywaves list to take any desk down with it. */
-    markDeletion(di, 'wave', issued); afterSchedMutate(); notify(); return act(di, said)
+    markDeletion(di, 'wave', issued); logAction(di, said); afterSchedMutate(); notify(); return toast(said)
   }
   if (ds.nadd != null) {
     const d = DAYS[+ds.nadd]; d.notes = d.notes || []; d.notes.push(mkNote(''))
@@ -897,7 +902,7 @@ export function boardMbtn(e: MouseEvent) {
     const raw = noteText(DAYS[di].notes[ni]).trim(), text = clip(raw)
     const said = 'Note removed' + (text ? ` — "${text}${text === raw ? '"' : ''}` : '')
     DAYS[di].notes.splice(ni, 1); shiftKeys(`dn:${di}.`, 0, ni)
-    markDeletion(di, 'note', issued); afterSchedMutate(); notify(); return act(di, said)
+    markDeletion(di, 'note', issued); logAction(di, said); afterSchedMutate(); notify(); return toast(said)
   }
   if (ds.padd != null) {
     const d = DAYS[+ds.padd]; d.allhands = d.allhands || []
@@ -914,7 +919,7 @@ export function boardMbtn(e: MouseEvent) {
     DAYS[di].allhands.splice(ri, 1)
     ;[`ap:${di}.`, `a:${di}.`].forEach(h => shiftKeys(h, 0, ri))
     dropRowMarks([rid])
-    markDeletion(di, 'programme', issued); afterSchedMutate(); notify(); return act(di, said)
+    markDeletion(di, 'programme', issued); logAction(di, said); afterSchedMutate(); notify(); return toast(said)
   }
   if (ds.pcx != null) { const [di, ri] = ds.pcx.split('.').map(Number); return askCx(DAYS[di].allhands[ri], `ap:${di}.${ri}.prog`, 'this item') }
   if (ds.pflag != null) {
@@ -980,7 +985,7 @@ export function boardMbtn(e: MouseEvent) {
     DAYS[di].dutywaves.splice(wi, 1)
     ;[`d:${di}.`, `dr:${di}.`, `dl:${di}.`].forEach(h => shiftKeys(h, 0, wi))
     dropRowMarks([rid])
-    markDeletion(di, 'dutyblock', issued); afterSchedMutate(); notify(); return act(di, said)
+    markDeletion(di, 'dutyblock', issued); logAction(di, said); afterSchedMutate(); notify(); return toast(said)
   }
   if (ds.dradd != null) {
     const [di, wi] = ds.dradd.split('.').map(Number)
@@ -998,7 +1003,7 @@ export function boardMbtn(e: MouseEvent) {
     DAYS[di].dutywaves[wi].rows.splice(ri, 1)
     ;[`d:${di}.${wi}.`, `dr:${di}.${wi}.`].forEach(h => shiftKeys(h, 0, ri))
     dropRowMarks([rid])
-    markDeletion(di, 'duty', issued); afterSchedMutate(); notify(); return act(di, said)
+    markDeletion(di, 'duty', issued); logAction(di, said); afterSchedMutate(); notify(); return toast(said)
   }
   if (ds.drcx != null) { const [di, wi, ri] = ds.drcx.split('.').map(Number); return askCx(DAYS[di].dutywaves[wi].rows[ri], `dr:${di}.${wi}.${ri}.role`, 'this duty') }
   if (ds.drflag != null) {
@@ -1037,7 +1042,7 @@ export function boardMbtn(e: MouseEvent) {
     DAYS[+di].sims[kind].splice(+ri, 1)
     ;[`s:${di}.${kind}.`, `sr:${di}.${kind}.`].forEach(h => shiftKeys(h, 0, +ri))
     dropRowMarks([rid])
-    markDeletion(+di, 'sim', issued); afterSchedMutate(); notify(); return act(+di, said)
+    markDeletion(+di, 'sim', issued); logAction(+di, said); afterSchedMutate(); notify(); return toast(said)
   }
   if (ds.srcx != null) { const [di, kind, ri] = ds.srcx.split('.'); return askCx(DAYS[+di].sims[kind][+ri], `sr:${di}.${kind}.${ri}.label`, 'this sim') }
   if (ds.srflag != null) {
@@ -1076,7 +1081,7 @@ export function boardMbtn(e: MouseEvent) {
     DAYS[di].ground.splice(ri, 1)
     ;[`g:${di}.`, `gr:${di}.`].forEach(h => shiftKeys(h, 0, ri))
     dropRowMarks([rid])
-    markDeletion(di, 'ground', issued); afterSchedMutate(); notify(); return act(di, said)
+    markDeletion(di, 'ground', issued); logAction(di, said); afterSchedMutate(); notify(); return toast(said)
   }
   if (ds.grcx != null) { const [di, ri] = ds.grcx.split('.').map(Number); return askCx(DAYS[di].ground[ri], `gr:${di}.${ri}.prog`, 'this item') }
   if (ds.grflag != null) {
@@ -1356,7 +1361,7 @@ export function addWave(di: number, kind: any) {
        and the suggested-brief time then paints a green in-time off it. */
     d.waves.push({ label: 'WAVE ' + (d.waves.filter((w: any) => !isStandalone(w)).length + 1), night: false, intimes: [], traffic: [], formations: [{ cs: '', msn: '', to: '', ld: '', aircraft: [{ p: '', w: '', area: '', rmks: '', opts: {} }] }] })
     const fi = placeAddedWave(di, 'fly')
-    markStructuralAdd(`wl:${di}.${fi}`); afterSchedMutate(); notify(); return act(di, 'Wave added')
+    markStructuralAdd(`wl:${di}.${fi}`); logAction(di, 'Wave added'); afterSchedMutate(); notify(); return toast('Wave added')
   }
   const w = makeStandalone(kind); if (!w) return
   d.waves.push(w)
@@ -1614,10 +1619,11 @@ export function planMenu(anchor: HTMLElement, di: any) {
            version while the toast says the new plan is live and editable (Codex
            PS-004). setDayPreview(di,null) also clears any armed restore confirm. */
         view.setDayPreview(di, null)
-        /* one undo step for the whole duplicate — histSnap carries the blobs */
+        /* one undo step for the whole duplicate — histSnap carries the blobs; its line logged FIRST, so it is kept
+           inside that step's saved group (the group walk's H2 — see `act`) */
+        logAction(di, `Plan "${t.name}" created — a copy of the day as it stood`)
         afterSchedMutate(); notify()
         const said = `${d.dow} — "${t.name}" is now the live day, edit over it`
-        logAction(di, `Plan "${t.name}" created — a copy of the day as it stood`)
         toast(said)
       }
       e.stopPropagation(); return
@@ -1722,8 +1728,9 @@ export function addWaveFromTpl(di: any, id: string) {
      standby template mints a standalone, so waveKindOf reads its kind; a fly
      template is ordinary → 'fly') */
   const fi = placeAddedWave(di, waveKindOf(w))
-  markStructuralAdd(`wl:${di}.${fi}`); afterSchedMutate(); notify()
-  return act(di, `"${w.label || 'Wave'}" added`)
+  const said = `"${w.label || 'Wave'}" added`
+  logAction(di, said); markStructuralAdd(`wl:${di}.${fi}`); afterSchedMutate(); notify()
+  return toast(said)
 }
 
 /* the board layout choice survives closing and reopening it within a session */

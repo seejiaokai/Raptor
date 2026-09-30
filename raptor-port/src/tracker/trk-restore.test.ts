@@ -169,3 +169,61 @@ describe("the Tracker's own Undo / Redo — one restore command each", () => {
     expect((core as any).lulls[Y] || []).toEqual([])
   })
 })
+
+/* THE GROUP-WIDE WALK (30 Sep 26) — three Tracker actions that were saved as TWO groups, and one that saved rows with no
+   batch at all. Each is now ONE saved group (or, for an Import, every group it writes carries its batch). */
+describe('one Tracker action, one saved group (the group-wide walk, W5 findings 1 and 2)', () => {
+  const chartGroups = (id: string) => groups.filter(g => trackerRows(g).some(c => c.id === 'v3:master:chart:' + id))
+  /* run an action, saying yes to every question it asks on the way (a leftover unsaved chart edit, the delete's own) */
+  const yes = async (p: Promise<any>) => {
+    let done = false; p.then(() => { done = true }, () => { done = true })
+    for (let i = 0; i < 400 && !done; i++) { if ((core as any).dlg) (core as any).dlgClose(true); await settle() }
+    await p
+  }
+
+  it('a built-in chart deleted, then restored: each is ONE saved group with ONE batch', async () => {
+    await yes((core as any).switchSyllabus('sb2024')); await (core as any).whenLoaded(); await settle()
+    groups = []
+    await yes((core as any).delSyl()); await (core as any).whenLoaded(); await settle()
+    const del = chartGroups('sb2024')
+    expect(del, 'the delete: one saved group (hidden AND marked deleted together)').toHaveLength(1)
+    oneBatch(del[0]!)
+    groups = []
+    await (core as any).restoreHiddenSyl('sb2024'); await settle()
+    const back = chartGroups('sb2024')
+    expect(back, 'the restore: one saved group (back AND no longer marked deleted together)').toHaveLength(1)
+    oneBatch(back[0]!)
+  })
+
+  it('✓ Save changes that takes a marked ball off the chart: its marks and the chart are ONE saved group', async () => {
+    await yes((core as any).switchSyllabus('sb2026')); await (core as any).whenLoaded(); await settle()
+    const ev = (core as any).SYL.find((e: any) => e && e.id && e.type !== 'flight' && !String(e.id).startsWith('__'))
+    ;(core as any).setActive(Z)
+    ;(core as any).openPop(ev.id, { clientX: 1, clientY: 1 })
+    await (core as any).popGrade('dco'); await settle()
+    /* the ball taken off the chart being edited (what the editor's delete tool leaves), then saved */
+    const i = (core as any).SYL.indexOf(ev); (core as any).SYL.splice(i, 1); delete (core as any).byid[ev.id]
+    groups = []
+    await yes((core as any).persistSyl())
+    await settle()
+    const saved = chartGroups('sb2026')
+    expect(saved, 'the chart saved').toHaveLength(1)
+    expect(trackerRows(saved[0]!).some(c => /:m:sTZRST$/.test(c.id)), 'its marks went in the SAME group').toBe(true)
+    oneBatch(saved[0]!)
+  })
+
+  it('an Import bringing a course this browser never had: every group it saves carries its batch', async () => {
+    const out = JSON.parse(JSON.stringify(await (core as any).collectStudents()))
+    const first = out.courses[0], cid = typeof first === 'string' ? first : first.id
+    const NEW = 'cimpxnew1'
+    out.courses = [{ id: NEW, name: 'IMPX NEW' }]
+    out.byCourse = { [NEW]: out.byCourse[cid] }
+    groups = []
+    await (core as any).applyStudents(out, null, 3)
+    await (core as any).whenLoaded(); await settle()
+    const ids = groups.flatMap(g => trackerRows(g).map(c => c.id))
+    expect(ids, "the new course's one-time conversions ran").toContain(`v3:${NEW}:rostermig`)
+    for (const g of groups) oneBatch(g)
+  })
+})
+

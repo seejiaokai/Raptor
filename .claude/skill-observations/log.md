@@ -1812,3 +1812,48 @@ restore — repeatable, all-or-nothing, and safe for files whose bytes (line end
 **Suggested improvement:** In the bug-check order's storage row (§2a) and §7, add a recipe: (1) `git archive <base> <app source dirs, config files>` into a short scratch folder (only the source, never the docs/pictures), with its dependencies linked from the working checkout (a junction), and build it; (2) serve the OLD build on a fixed address, create the owner's kind of work through the app's own controls, and save the browser's storage (a Playwright storage state); (3) serve the NEW build on the SAME address (storage belongs to an address), open that storage, and assert the new app reads — and exports — exactly what the old one did, with no old record left.
 
 **Principle:** A conversion is proven against records the previous release really wrote, on the same address a real browser has used — never only against the builder's own reconstruction of the old shape.
+
+### Observation 387: A storage-shape change is walked with a generic per-step audit, not only by eye
+
+**Status:** OPEN
+**Date:** 2026-09-30
+**Session context:** [DB-READINESS] group A's group-wide FULL walk (every saved record moved to one row per thing, written from a command's changes, one change-log record per saved action)
+**Skill:** bug-check order (`raptor-port/docs/bug-check-order.md` §2a "Saved data / storage" row, §7) — project method, internal
+**Type:** internal
+**Phase/Area:** the walk — what each step asserts
+
+**Issue:** When the change is HOW things are saved and nothing on screen is meant to move, a person's eye (and a picture) cannot see the defect class that matters: a save that goes nowhere, a save with no change-log record, a reload that rewrites the store. The walk's shared driver (`scripts/handpass/dbrA-lib.mjs`) made three mechanical checks per step — every row the gesture changed is named by that gesture's change-log record with the right op; the app's in-memory state before a reload equals the state after it; the reload itself writes nothing — and within minutes of a first trial found a real missing line (the boot's re-landing of a request onto a saved week writes a day row with no change-log record) that no per-phase test covered, because every test drove the "after boot" world.
+
+**Suggested improvement:** In §2a's "Saved data / storage" row and §7, add: for a storage change, every walk step runs the three mechanical checks (rows named by their record; reload gives the state back; reload writes nothing) as part of the step, through one shared driver the walkers all use — and the boot / reload itself is a step, not only the thing between steps.
+
+**Principle:** When the change is invisible by design, the walk's assertions must be about what the eye cannot see — derive them from the change's own invariants and run them on every step, including the reload.
+
+### Observation 388: A long scenario-design run need not hold the walkers back
+
+**Status:** OPEN
+**Date:** 2026-09-30
+**Session context:** [DB-READINESS] group A's FULL walk — the independent scenario designer (Astra) read a 140-file diff for over 40 minutes
+**Skill:** bug-check order §4 rank 1 / §5 FULL order — project method, internal
+**Type:** internal
+**Phase/Area:** sequencing the other model's scenarios and the fan-out walk
+
+**Issue:** The order puts the other model's scenarios before the walk. On a very large diff the designer's read ran far longer than the usual 5–10 minutes, and the walkers would have sat idle.
+
+**Suggested improvement:** Say in §5 that the fan-out may start on the plan's own walk list while the designer reads, with each walker told that more scenarios will arrive by message, and the host forwards the designer's list per walker the moment it lands — the scenarios still reach the walk before the reads.
+
+**Principle:** Keep the independent input's ORDER relative to what it must precede (the reads), not relative to work it only adds to.
+
+### Observation 389: In a one-row-per-thing store, hunt the "first write stores everything" path — it recurs
+
+**Status:** OPEN
+**Date:** 2026-09-30
+**Session context:** [DB-READINESS] group A's group-wide FULL walk — every record split into one row per thing
+**Skill:** bug-check order (`raptor-port/docs/bug-check-order.md` §6 roll-call, §2a "Saved data / storage") — project method, internal
+**Type:** internal
+**Phase/Area:** the roll-call's columns for a storage change
+
+**Issue:** The same hole turned up four separate times in one walk, each in a different part of the app: a week's FIRST save wrote all seven day rows from the saver's copy (two people on two days of a new week — one wiped); the Tracker's FIRST chart-order save placed every chart (a stale tab undid it); a demo store's FIRST account write stored every account it held (a stale tab undid a suspension); and a decision that moved a record to the end of its list re-placed its neighbour. Each was correct for one browser and each broke the promise of the change ("two people changing different things never overwrite each other"). The per-phase tests all exercised the steady state, after the first write.
+
+**Suggested improvement:** In §6, for a storage-shape change, add a roll-call column per writer: "on its FIRST write (nothing of it stored yet), and when it re-places a list, does it write ONLY what its own action changed?" — and a two-tab step in the walk for each writer whose answer is not a plain yes, with the second tab opened before the first write.
+
+**Principle:** A row-per-thing store is only as good as its least disciplined write; the first write and any re-ordering write are where "everything I hold" sneaks back in — check them by name.

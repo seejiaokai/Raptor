@@ -333,8 +333,9 @@ The week's id is its key with `/` replaced by `-`; its rows are
 (`src/state/persist.ts:hydrate`); a week whose rows will not read, whose week row still carries a whole old week, or
 that was published by an older build is kept byte-for-byte, loads read-only, and its rows are never rewritten.
 **Written from the command stream, never by `persistAll`**: each command's changes to a week go out as exactly the rows
-they touched, in its one saved group; a week's first save writes its week row and all seven day rows together; a
-pristine seed week is never written; a row is removed only by an explicit delete (an Undo of a publish or an
+they touched, in its one saved group; a week's first save writes its week row and ONLY the days it changed (a day no
+one has saved has no row and reads as the week untouched — the group-wide walk's finding H3, 30 Sep 26), and a week load's landing is saved only onto
+days already saved; a pristine seed week is never written; a row is removed only by an explicit delete (an Undo of a publish or an
 Unpublish). A week switch writes nothing of the week left, and of the week arriving only what its landing pass
 changed (the `sched.load` command). This is what the persistence table at the top calls "per-week stash — Yes".
 
@@ -374,7 +375,9 @@ of what it was, before and after (a person key keeps the person's ID — `elogVa
 `[DRAFT-PENDING]` (28 Sep 26, D336 (b)):** loaded at boot, kept across sign-in and sign-out, never a command record (undo
 never rewinds it). **One row per line since 30 Sep 26 (`[DB-READINESS]` group A, phase 4.3):** `settings/elog:<lineId>` =
 the line without its in-memory `seq`, written the moment the line is kept — inside the command that made it, in its saved
-group and its change-log batch (a line with no command running goes through a command of its own, `elog.line`; the Admin
+group and its change-log batch (a line given just BEFORE its command opens — the board's in-place edits, a text box — is held and kept inside that
+command's group, the group-wide walk's finding H2, 30 Sep 26; a line no command claims by the end of the turn goes
+through a command of its own, `elog.line`; the Admin
 → Data sweep is one command, `elog.sweep`, deleting exact lines). `lineId` (`<page>.<n>`, rising within a page life) is
 the line's identity; the history's order is `(t, lineId)` on every client, and `seq` is only a line's place in the list
 loaded now. Capped at 2,000 lines — the oldest line's row deleted in the same group that adds the newest; a boot loads the
@@ -616,7 +619,10 @@ roster first and parked in `v3:<course>:idmap` (read back before anything
 moves, reused if the run is interrupted so a retry lands every record under
 the same id), each record is written under the id and read back before its
 name key is deleted, the roster is written last and the flag after it; the
-map is deleted with the flag. A course whose conversion did not finish
+map is deleted with the flag. Run at the first mount they are the Tracker's one exempt writer; run AFTER it (an
+Import bringing a course this browser never converted) the flags, the map and the old `v3:links` record are each saved
+as a command of their own (`trk.meta`) with its change-log batch (the group-wide walk's W5 finding 1, 30 Sep 26 — they
+had gone out bare). A course whose conversion did not finish
 (the roster still a string list after the retry) refuses roster writes
 until a later load converts it. `migrateAllCourses()` at init converts
 courses nobody has opened; a course still waiting for the older roster
@@ -762,7 +768,7 @@ normalising on day one:
 |---|---|---|
 | `People` | one person | PEOPLE record (+ Leave War `Person` extras) |
 | `Inputs` | one filed input | INPUTS record |
-| `Weeks` | one week, JSON snapshot column | `weekStashSnap()` — DAYS + SCHED + muted warnings (the removed-input keys left it 30 Sep 26), stored since 30 Sep 26 as the week's rows — its week row, seven day rows, one per issuance and one per retraction (`src/state/weekrows.ts`; inputs and the planning layer are their own rows, not part of it) |
+| `Weeks` | one week, JSON snapshot column | `weekStashSnap()` — DAYS + SCHED + muted warnings (the removed-input keys left it 30 Sep 26), stored since 30 Sep 26 as the week's rows — its week row, a day row for each day someone has saved, one per issuance and one per retraction (`src/state/weekrows.ts`; inputs and the planning layer are their own rows, not part of it) |
 | `Amendments` | one published AL | `SCHED.als[n]` (also inside the week snapshot; split out when reporting needs it) |
 | `EditLog` | one edit | `ELogRow` |
 | `Settings` | one `sqn142_*` key | key + JSON value, absent = standard |

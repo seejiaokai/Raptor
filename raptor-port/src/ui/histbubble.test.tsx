@@ -398,11 +398,12 @@ describe('the gold dots — History on marks every detail with a history (D345)'
     expect(marked('#vWeek').length, 'View-only draws no bubbles, so no dots').toBe(0)
   })
 
-  it('a version look wears none (a document, not your history)', () => {
+  it('a version look wears none (a document, not your history)', async () => {
     const root = document.createElement('div')
     root.innerHTML = '<div class="pv-frozen"><span data-slot="1.0.0.0.p"></span></div><div class="preview"><span data-slot="1.0.0.0.p"></span></div><span data-slot="1.0.0.0.p"></span>'
     document.body.appendChild(root)
     setSlotVal('1.0.0.0.p', slotVal('1.0.0.0.p') === 'bane' ? 'stiff' : 'bane')
+    await Promise.resolve()   // its line, written with no command running, is kept at the end of the turn (editlog.ts hold, H2)
     view.setHistMode(true)
     refreshHistDots(root)
     expect([...root.querySelectorAll('[data-histdot]')].map(e => e.parentElement === root)).toEqual([true])

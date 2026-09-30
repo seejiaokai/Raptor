@@ -83,7 +83,12 @@ award fix are due before the tables are settled. What to finish before the hand-
 [STORE-READER-SWEEP], [OIL-REQ-NAMEBOX] (a walk question for him), [OIL-WORDS],
 [OIL-PERSONAL-PLACEHOLDER] (FULL tier), [CROWD-SIM-BRIEF] (WALK tier), [OIL-RELINK-XWEEK].
 
-**Placed by their own lines — not his rulings:** the Leave War — [LW-FROZEN-BAR-GAP] (after [HUMAN-RETEST]; show him
+**Placed by their own lines — not his rulings:** from the group-A FULL walk (30 Sep 26) — with group B:
+[UNDO-PUBLISH-ERASES-ISSUANCE], [TRK-IMPORT-ONE-GROUP], [TRK-FIRST-ORDER-PLACE] (low); low, with the next change there:
+[TRK-UNDO-WRITES-DEFAULTS], [SECDEFAULT-OFFER-BEHIND-BOARD], [BLOCK-NO-HISTORY-LINE], [ACCOUNTS-SEED-FIRST-WRITE] (demo
+only), [SETTINGS-LIST-ROWS] (a stage-2 split, only if it bites), [LW-OIL-DATECHIP-HIDDEN], [READONLY-WEEK-WORDS];
+before the first real deployment: [SHARED-OPENS-DEMO-WEEK]; a question for him: [LW-LABEL-NO-DOOR]; with group B:
+[ELOG-LINE-AFTER-COMMAND] (low); the Leave War — [LW-FROZEN-BAR-GAP] (after [HUMAN-RETEST]; show him
 first), [LW-SCRUBBER-FLAKY] (test-only),
 [PO-RESTORE-POSTING] (low, from its final code read), [LW-OFFER-ONLY-TAKEABLE] (low, with [LW-LOCKMARK]), [LW-HARNESS-VIEWER-PIN] (test-only, low), [CI-FAIL-PICTURES] (his call, low), [LW-DOZE-GUARDS] (low, check first); the shell — [SHELL-SIDEWAYS-BAR] (low, with the next top-bar change), [SAVE-NOTE-COVERS] (medium, next), [TRK-SAVE-FAIL-SAYS-SAVED] (low, with [DB-READINESS]), [TRK-ASYNC-STALE] (with [DB-READINESS]), [LW-WINDOW-PRUNE-FLAKE-2] (test-only, low); the Tracker — [TRK-REMOUNT-LANDING] (low, with the next Tracker change), [TRK-KEY-NAME-CLIP] (low, with the next Tracker change). The Tracker — [TRK-PINCH-ASK] (his next Tracker session), [TRK-FLEXBAR-INK] (a question for him, on the Tracker-palette
 look card — D157, merged PR #441).
@@ -866,6 +871,116 @@ a chart the key around the course ball puts the third name on the LEFT, and "HIS
 letter under the card's edge. On `main` too (the first picture is main's build), so not the phase's doing; a real
 callsign of ten or more letters would lose its first letters the same way. **Do:** keep every name of the key inside the
 card (shrink the name, or wrap it under the ball, on the left as the right does), and check at the phone width too.
+
+### [UNDO-PUBLISH-ERASES-ISSUANCE] An Undo of a publish deletes the issued version's stored row (filed 30 Sep 26)
+**Place:** with `[DB-READINESS]` group B — before the `Amendment` table has another reader (the database step), where
+"has the shared database registered this version?" (`raptor-port/docs/undo-contract.md` §4, AM32) is first answerable.
+Seen by the group-A FULL walk (W1 steps 7c–7h, `raptor-port/docs/handpass/2026-09-30-dbrA-group-walk.md`): the top bar's
+↶ right after a publish (or a reissue) removes `weeks/<wk>:is:<verId>~<n>`, and its ↷ writes the same key again; an ↶ of an
+Unpublish removes its `:rx:` row. His rulings say otherwise: **AM4** — an issued version is never erased; **AM32** — an
+Undo of a published day IS an Unpublish (a retraction beside the issuance; the version under it current again). Known
+since 24 Sep 26 as the amendment re-test's Q6 (`docs/handpass/2026-09-24-amendment-fable-scenarios.md` 5-10 — then in
+memory only, "a rule/code gap for the database step"); group A made it a real row delete. Nothing on screen differs
+(the day reads exactly as an Unpublish leaves it). **Do:** make the global undo's reversal of `sched.publish` /
+`sched.publishAL` an Unpublish (a `sched.retraction` put, never an issuance delete), its redo a reissue (a new `~n+1`
+issuance), and an undo of an Unpublish a reissue too — the Amendment rows then only ever grow; correct
+`data-model.md` §5's "a row is removed only by … an Undo of a publish" in the same change (D201). Both reviewers' code
+reads of group B cover it.
+
+### [TRK-IMPORT-ONE-GROUP] A Tracker Import is saved as many groups, not one (filed 30 Sep 26)
+**Place:** with `[DB-READINESS]` group B (one changeset per command on the wire). Seen by the group-A FULL walk (W5 C4, C5,
+F1): ⇪ Import of a charts file wrote 7 rows in 9 change-log batches; a students file with a new course 11 rows in 6 —
+every row named (since the walk's fix of its bookkeeping rows, W5 finding 1), but one confirmed action is many saved
+groups, so a failure part-way leaves a half import stored — the very route his charts take to the database (D120:
+Export → wipe → Import). **Do:** gather the import's reads first, then write everything in ONE Tracker gesture (the
+delete-chart pattern, `core.js delSyl`) — one group, one batch.
+
+### [TRK-FIRST-ORDER-PLACE] A stale tab can undo the first save of the chart order (filed 30 Sep 26)
+**Place:** low — with group B's live refresh (which closes most of the stale window). Seen by the group-A FULL walk (W5
+E5): on a store where no chart has a place yet (the shipped charts are stored at the Tracker's first opening without
+one), the FIRST ⇅ Reorder syllabi places every chart; a second tab opened before it, adding a syllabus, places them all
+again in its own old order — the first tab's order is lost (only the order; no chart, detail or mark). After the first
+order save, every later one writes only the chart that moved (walked). On `main` a stale tab overwrites the whole order
+every time. **Do:** give the shipped charts their places when the Tracker first stores them (its first opening), so the
+first reorder writes only the chart moved.
+
+### [TRK-UNDO-WRITES-DEFAULTS] The first Tracker Undo of a mark stores a pace, lulls and dates nobody set (filed 30 Sep 26)
+**Place:** low — with the next Tracker change. Seen by the group-A FULL walk (W5 D2b, F2c; `scripts/handpass/dbrA-W5-probe3.mjs`):
+a fresh world, one mark, ↶ — the undo writes `…:pace:<student>` = `{epw:2}`, `…:lulls:<student>` = `[]`, the chart's dates
+record for him, and leaves his marks row as `{}` instead of removing it; later undos write only the mark. Nothing changes
+on screen (the stored values ARE the defaults), but Export and the database gain records nobody made. Probably on `main`
+too (the same undo snapshot, D372). **Do:** the undo's snapshot restores only what the step changed — a record the
+student never had is removed, not written as its default.
+
+### [SECDEFAULT-OFFER-BEHIND-BOARD] The "Set as default order?" offer after a section drag on the board is drawn behind the board (filed 30 Sep 26)
+**Place:** low — with the next board change. Seen in passing by the group-A FULL walk (W1 G4,
+`docs/img/handpass/2026-09-30-dbrA/W1/W1.G4-offer-hidden-behind-board.png`): the snackbar only shows once ✓ Done closes
+the board. Not a storage matter; likely on `main` too (not compared). **Do:** lift the snackbar above the full-screen
+board, with the bug-check order's §6 layering test (the element at its centre is the snackbar).
+
+### [BLOCK-NO-HISTORY-LINE] Placing a duty block from + Block, or removing a medical document, writes no history line (filed 30 Sep 26)
+**Place:** low — with the next change-history change. Seen in passing by the group-A FULL walk: a block placed (W1 G2c)
+is saved (its day row, one batch) but the changes window has no line for it, unlike + Wave or + Line; a document removed
+from a medical request (W2 13g) saves the request with no line. Probably old behaviour (not compared). **Do:** log the
+block's addition as + Wave logs a wave's, and a document's removal as its addition is logged.
+
+### [ACCOUNTS-SEED-FIRST-WRITE] On a fresh DEMO browser, one tab's first account change can undo another's (filed 30 Sep 26)
+**Place:** low — demo only. Seen by the group-A FULL walk (W2 08a): a fresh browser, two tabs signed in before any account
+changed; A suspends Hex, B (not reloaded) adds a person with a sign-in → after a reload Hex's sign-in is ON again. A demo
+store holds no account rows until the first account write, which stores every account that tab holds
+(`src/state/accounts.ts` — "no account row at all = the seeded list in memory"), stale ones included. **Cannot reach a
+shared store:** there the first admin's account is stored at the first boot (phase 5.4), and the demo accounts never
+exist; once accounts are stored, every save is exact (W2 08h: two admins adding at once — both kept). **Do (if the demo
+should be exact too):** store the seeded accounts as rows in the first boot's group, as the roster's are.
+
+### [SETTINGS-LIST-ROWS] A setting that holds a list (the templates, the rules, the stores) is ONE row — two admins at once, the later wins (filed 30 Sep 26)
+**Place:** low — a stage-2 table split if squadron setup is ever edited by two admins at once. Seen by the group-A FULL
+walk (W2 10e): two tabs rename two DIFFERENT duty templates; after a reload only the later rename is there — each save
+rewrites `settings/dutytpl` whole. The plan decided it (§2.5: `settings/<key>` rows unchanged, "as today"; a variable list
+stays JSON on its parent at stage 1 — Astra R2-01): setup is admin-only and rare, and the day lock does not cover it.
+Recorded here so the choice is visible: wave, duty and day templates, the rules, the stores, the hidden wave types, the
+Leave War's settings-like lists all behave this way — and so does a Leave War period (W3 finding 1: its stage, window and
+events are one `war:` row). **On the database this is not silent:** the design refuses a stale write (`data-model.md` §9,
+reject and reload — `If-Match` on every update; the `LeaveWar` row added to its table 30 Sep 26), so the later admin is
+told and re-reads; only the stand-in store, with no row versions, lets the later write win. **Do (only if it bites):**
+split the template libraries into a row per template (`WaveTemplate`, `DutyTemplate`, `DayTemplate`) — a table-shape
+change, so tell IT first.
+
+### [LW-OIL-DATECHIP-HIDDEN] The OIL tracker's correction date calendar opens hidden behind the rows above (filed 30 Sep 26)
+**Place:** low — with the next OIL tracker change. Seen by the group-A FULL walk (W3 finding 3,
+`docs/img/handpass/2026-09-30-dbrA/W3/I8-correction-date-chip-open.png`): open the OIL tracker, give Warden a −1
+correction, tap its box, tap "📅 30 Sep 26 ▾" — the chip reads open but nothing is drawn; the day it would show sits under
+another row's box, so a correction's date cannot be changed through the app. Not a storage matter; not compared with
+`main`. **Do:** draw the calendar above the tracker's rows, with the bug-check order's §6 layering test.
+
+### [SHARED-OPENS-DEMO-WEEK] A shared store opens on the demo's week (13 Jul 26), not this week (filed 30 Sep 26)
+**Place:** before the first real deployment. Seen by the group-A FULL walk (W4 observation 2): on the shared-store build
+the schedule opens on the week of 13 Jul 26 and the Inputs form's calendar on July 2026 — the demo's boot week
+(`engine/waves.ts BOOT_WEEK`, set by `state/seeds.ts resetSeedWorld` under both policies). Nothing demo is stored; it is
+where the screens land. **Do:** under the shared policy open on the week holding today (the demo keeps its week).
+
+### [READONLY-WEEK-WORDS] A week read-only because a row will not read says "created by an older version … open it on the device that created it" (filed 30 Sep 26)
+**Place:** low — before the database step's first shared use. Seen by the group-A FULL walk (W4 observation 1): a
+hand-damaged day row makes the week read-only (correct), with a notice written for an older app's published schedule;
+"the device that created it" means nothing once the store is shared. `main`'s read-only week says the same. **Do:** say
+what happened and what to do in the app's words ("This week's saved copy could not be read — it is shown read-only. Ask
+an admin.").
+
+### [LW-LABEL-NO-DOOR] The Leave War's personnel label has no control on screen (filed 30 Sep 26)
+**Place:** low — a question for him before building. Seen by the group-A FULL walk (W4 observation 4): the war stores a
+man's personnel label (`leavewar/profile:<pid>` `label`, `setPersLabel`) and reads it, but no screen calls the setter,
+in `main` or this build — a stored field no one can set. **Do:** ask him whether the label is wanted; if yes, give it
+its door (the name sheet); if no, retire the field before IT settles `LeavePersonProfile`.
+
+### [ELOG-LINE-AFTER-COMMAND] A history line worded from its action's result is still saved as its own group (filed 30 Sep 26)
+**Place:** low — with group B (one changeset per command on the wire). The group-A FULL walk (H2) put every other edit's
+line inside its own action's saved group — a line given just BEFORE its command opens is held and adopted by it, and
+the board's structural edits now log first (`src/ui/board.ts`, `act`'s note). Left: a line whose words depend on how the
+action landed, so it can only be logged AFTER its command — the OIL Earn switches (a man, an item, the day's blanket), a
+plan switch (its "N differences pending"), a day template applied, a version loaded onto the working copy (its counts of
+what was replaced or left). Each is its own saved group with its own batch (named, never bare), a moment after its
+action's. **Do:** word the line inside the command (its latched effects see the result), e.g. `schedWrite(type, () => {
+…; logAction(di, wordsFrom(result)) })`.
 
 ### [TRK-REMOUNT-LANDING] Coming back to the Tracker the chart lands at its top corner, or with empty chart above (filed 28 Sep 26)
 **Place:** low — with the next Tracker change. Seen by the Tracker leftovers' walk, both walkers (walker a obs. 3 —

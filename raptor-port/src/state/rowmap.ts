@@ -33,7 +33,9 @@ const MAPPERS = new Map<LogicalCollection, Mapper>()
    make up. The schedule's day row is the day, its slice of the book and its muted warnings: three records, one row
    (phase 1, state/persist.ts). It is handed every change of its collections in one envelope and returns the rows they
    land in, built from the world the command committed; it may remove a row only for an explicit delete among them. */
-export type Composer = { name: string; collections: LogicalCollection[]; rows(changes: readonly Change[]): RowWrite[] }
+/* `env` (the walk's finding H3, 30 Sep 26): the envelope the changes came in — a composer may need to know what KIND of
+   command made them (the schedule's: a week load's landing pass is never saved onto a day no one has saved). */
+export type Composer = { name: string; collections: LogicalCollection[]; rows(changes: readonly Change[], env?: CommitEnvelope): RowWrite[] }
 const COMPOSERS = new Map<string, Composer>()
 export function registerComposer(c: Composer): void { COMPOSERS.set(c.name, c) }
 
@@ -55,7 +57,7 @@ export function mapChange(c: Change): RowWrite[] {
 }
 
 /** every row one envelope's changes land in, each stored row once (a put beats a remove; the later put wins) */
-export function mapEnvelope(changes: readonly Change[]): RowWrite[] {
+export function mapEnvelope(changes: readonly Change[], env?: CommitEnvelope): RowWrite[] {
   const out = new Map<string, RowWrite>()
   const add = (r: RowWrite) => {
     const k = `${r.collection}/${r.id}`
@@ -70,7 +72,7 @@ export function mapEnvelope(changes: readonly Change[]): RowWrite[] {
     const mine = changes.filter(c => comp.collections.includes(c.collection))
     if (!mine.length) continue
     const deletes = mine.some(c => c.op === 'delete')
-    for (const r of comp.rows(mine)) {
+    for (const r of comp.rows(mine, env)) {
       if (r.value === null && !deletes) throw new Error(`rowmap: the ${comp.name} composer removed ${r.collection}/${r.id} with no delete to answer — a row is removed only by an explicit delete`)
       add(r)
     }
@@ -83,7 +85,7 @@ export function mapEnvelope(changes: readonly Change[]): RowWrite[] {
 export function wireRowConsumer(wb: Whiteboard): () => void {
   return onCommit((env: CommitEnvelope) => {
     if (env.emit === false) return                   // a remote change applies silently — never echoed back (design §3.3)
-    for (const r of mapEnvelope(env.changes)) {
+    for (const r of mapEnvelope(env.changes, env)) {
       if (r.value === null) wb.delete(r.collection, r.id)
       else wb.set(r.collection, r.id, r.value)
     }

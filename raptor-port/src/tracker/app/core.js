@@ -433,12 +433,28 @@ function trkCollectionOf(k) {
   if (last === 'eventinfo') return 'trk.eventinfo';
   if (last === 'courses' || last === 'delcourses') return 'trk.courses';   // v3:courses — the course list; v3:delcourses — the deleted ones (D128)
   if (p.indexOf('lay') >= 0) return 'trk.layout';   // v3:master:lay:<syl> or v3:lay:<c>:<name>
-  // NB: the one-shot migration flags (…:sylreset / …:sylcatmig / …:syljournal /
-  // …:idmig / …:rostermig / …:courseidmig / …:idmap), the view-prefs (…:last /
-  // …:lastStudent) and the seed stamp all fall through to raw here, exactly as
-  // intended (seed-exempt, §3.1); every match above is a valid collection, so the
-  // well-formed-change invariant can never roll back a migration write.
+  // NB: the one-shot migration flags (…:sylreset / …:sylcatmig / …:syljournal / …:idmig / …:rostermig /
+  // …:courseidmig / …:idmap), the view-prefs (…:last / …:lastStudent) and the seed stamp all fall through to raw here,
+  // exactly as intended (seed-exempt, §3.1); every match above is a valid collection, so the well-formed-change
+  // invariant can never roll back a migration write. A course conversion's own records written AFTER the first mount go
+  // out through metaWrite (below), in a saved group of their own.
   return null;
+}
+/* A COURSE CONVERSION'S OWN RECORDS — its flags, its in-progress name → id map, the old links record ([DB-READINESS]
+   group A, the group-wide walk — Astra's finding A, W5 finding 1, 30 Sep 26). They stay raw writes (not records of any
+   command: a conversion is bookkeeping, never an undo step), and at the first mount they are the named exempt writer.
+   But written AFTER it — an Import bringing a course this browser never converted runs the conversion — each went out as
+   a bare group with no change-log batch, so another reader of the log would never learn the conversion is done. Now,
+   outside every command, the raw write runs inside a command of its own (`trk.meta`): one saved group, one batch. */
+function isMetaKey(k) {
+  const s = String(k), p = s.split(':'), last = p[p.length - 1];
+  return s === 'v3:links' || s === 'v3:courseidmig' || s === 'v3:courseidmap' || last === 'rostermig' || last === 'idmig' || last === 'idmap';
+}
+function metaWrite(k, write) {
+  if (!isMetaKey(k) || !TRK_COMMANDS || TRK_RESTORING || cmdIsCommitting()) return write();
+  let p;
+  cmdCommit({ type: 'trk.meta', scope: { module: 'trk', courseId: course, sylId: curSylId() }, apply: () => { p = write(); } });
+  return p || Promise.resolve();
 }
 /* the record source is `mem` (the persisted mirror). The mem write happens INSIDE
    the command's apply (the scheduler pattern), so enlist captures the pre-write
@@ -505,6 +521,7 @@ function trkRegisterCommands() {
     cmdRegisterRecord({ key: 'tracker:' + c, cls: 'record', collection: c, module: 'tracker' });
   }
   cmdDefinePermission('trk.gesture', cmdAnyone);   // [CMDL-FINISH] §4 — a multi-collection gesture's envelope
+  cmdDefinePermission('trk.meta', cmdAnyone);      // a course conversion's own records, written after the first mount (metaWrite)
   /* [DB-READINESS] group A, phase 4.1 — the Tracker's own Undo / Redo, each ONE restore command (P4.1-TRACKER-RESTORE) */
   cmdDefinePermission('tracker.undo', cmdAnyone); cmdDefinePermission('tracker.redo', cmdAnyone);
   /* THE TRACKER'S ROWS, WRITTEN FROM EACH COMMAND'S OWN CHANGES ([DB-READINESS] group A, phase 4.1). Every Tracker
@@ -700,7 +717,7 @@ function sSetOne(k, v) {
      is written here. */
   if (saved || TRK_IN_RESTORE) return Promise.resolve();
   setSaveStatus('', 'saving');
-  return storage.set(k, v).then(() => setSaveStatus('', 'ok'), () => setSaveStatus('local only', 'ok'));
+  return metaWrite(k, () => storage.set(k, v)).then(() => setSaveStatus('', 'ok'), () => setSaveStatus('local only', 'ok'));
 }
 /* flush a gesture's pending storage writes at the transaction boundary (M4: via
    cmdDeferEffect, so a rejected gesture never persists and a queued one flushes at
@@ -4798,7 +4815,10 @@ async function loadSylPrefs() {
   try { const r = await sGet(kSylTomb()); SYL_TOMB = r ? JSON.parse(r) : {}; } catch (e) { SYL_TOMB = {}; }
   if (!SYL_TOMB || typeof SYL_TOMB !== 'object') SYL_TOMB = {};
 }
-async function saveSylPrefs() { await sSet(kSylHidden(), JSON.stringify(SYL_HIDDEN)); await sSet(kSylTomb(), JSON.stringify(SYL_TOMB)); }
+/* both writes START in the same turn ([DB-READINESS] group A, the group-wide walk — W5 finding 2): inside a gesture
+   (delSyl, restore) an `await` between them sent the second out after the gesture, as a saved group of its own — the
+   chart hidden but not yet marked deleted, or back but still marked deleted, if the second never landed */
+async function saveSylPrefs() { const a = sSet(kSylHidden(), JSON.stringify(SYL_HIDDEN)), b = sSet(kSylTomb(), JSON.stringify(SYL_TOMB)); await a; await b; }
 /* the catalogue index (SYLS) — written LAST by the migration, the source of
    truth every reader keys off. Load it, then reconcile against the code table. */
 async function loadSylCat() {
@@ -4858,8 +4878,7 @@ async function delKeyOne(k) {
   /* removed by its own command, or by the Undo / Redo restore it is part of — as sSet ([DB-READINESS] group A, 4.1) */
   if (saved || TRK_IN_RESTORE) return;
   try {
-    if (storage && storage.delete) { await storage.delete(k); }
-    else { await storage.set(k, ''); }   // soft-delete fallback; mem already dropped above
+    await metaWrite(k, () => (storage && storage.delete) ? storage.delete(k) : storage.set(k, ''));   // soft-delete fallback; mem already dropped above
   } catch (_) { try { await storage.set(k, ''); } catch (e) {} }
 }
 
@@ -5131,7 +5150,6 @@ export async function persistSyl() {
      back as it was, marks and all (the edit's own undo). */
   const saved = sylSource(id) || [];
   const gone = saved.map(e => e && e.id).filter(x => x && !byid[x]);
-  await sweepChart(id, new Set(gone), saved, SYL);
   /* Built-ins are editable: the saved version is stored as an override under the
      built-in's id and takes precedence when the syllabus is loaded (sylSource). */
   /* A built-in whose events are exactly the shipped ones is not an edit — a
@@ -5141,9 +5159,13 @@ export async function persistSyl() {
      export → import. The same rule the import follows ([HUMAN-RETEST] F7; the
      re-walk found this second writer, 23 Sep 26). */
   const shipped = isBuiltinSylId(id) ? SYLLABI[builtinBaseOf(id)] : null;
-  if (shipped && sameDef(SYL, shipped)) delete customDefs[id];
-  else customDefs[id] = JSON.parse(JSON.stringify(SYL));
-  await sSet(kSyls(course), JSON.stringify(customDefs));
+  const def = JSON.parse(JSON.stringify(SYL));
+  /* the chart itself saved INSIDE the sweep's gesture: its marks and the chart they went with, one saved group */
+  await sweepChart(id, new Set(gone), saved, SYL, () => {
+    if (shipped && sameDef(def, shipped)) delete customDefs[id];
+    else customDefs[id] = def;
+    sSet(kSyls(course), JSON.stringify(customDefs));
+  });
   clearDirty(); refreshSyl(); renderBoard(); renderSide();
   setSaveStatus('syllabus “' + sylName(id) + '” saved' + (isBuiltinSylId(id) && sylHasOwnDef(id) ? ' (overrides the built-in)' : ''), 'ok');
   return true;
@@ -5223,11 +5245,16 @@ async function planSylSweep(sylId, fallback) {
    (the two code reads, Fable F-G / Astra #2). `before` / `after` are the event
    lists as saved and as they will be. READ first, then every write in ONE
    gesture — delSyl's pattern. */
-async function sweepChart(sylId, kill, before, after) {
+/* `also` — the caller's own write of the chart (✓ Save changes, Revert edits), run INSIDE the sweep's one gesture, so
+   the marks going and the chart they went with are ONE saved group ([DB-READINESS] group A, the group-wide walk — W5
+   finding 2: saved after the sweep, the marks were gone while the stored chart still had the ball, if the second never
+   landed); with nothing to sweep it runs as a gesture of its own */
+async function sweepChart(sylId, kill, before, after, also) {
+  const alone = () => { if (also) trkGesture(also); };
   const flights = list => new Set((list || []).filter(e => e && e.type === 'flight').map(e => e.id));
   const was = flights(before), now = flights(after);
   const typeMoved = [...new Set([...was, ...now])].some(x => !kill.has(x) && was.has(x) !== now.has(x));
-  if (!kill.size && !typeMoved) return;
+  if (!kill.size && !typeMoved) { alone(); return; }
   const isFlightNow = x => now.has(x) && !kill.has(x);
   const writes = [], dels = [];
   for (const c of await allCourseNamespaces()) {
@@ -5254,7 +5281,7 @@ async function sweepChart(sylId, kill, before, after) {
   /* and what was typed on them (D130 — "delete them too"): details belong to
      the chart (D126), so it is this chart's entries that go */
   const typed = eventInfo[sylId] ? [...kill].filter(x => eventInfo[sylId][x]) : [];
-  if (!writes.length && !dels.length && !typed.length) return;
+  if (!writes.length && !dels.length && !typed.length) { alone(); return; }
   trkGesture(() => {
     for (const w of writes) {
       sSet(w.k, w.v);
@@ -5266,6 +5293,7 @@ async function sweepChart(sylId, kill, before, after) {
       if (Object.keys(blk).length) eventInfo[sylId] = blk; else delete eventInfo[sylId];
       saveEventInfo();
     }
+    if (also) also();
   });
 }
 /* dupSyl / addSyl are catalogue-only now: mint an sc… id, file the def+layout
@@ -5400,9 +5428,8 @@ export async function delSyl() {
       const edited = customDefs[id] || [], shipped = SYLLABI[builtinBaseOf(id)] || [];
       const back = new Set(shipped.map(e => e && e.id));
       const gone = edited.map(e => e && e.id).filter(x => x && !back.has(x));
-      await sweepChart(id, new Set(gone), edited, shipped);
-      delete customDefs[id];
-      await sSet(kSyls(course), JSON.stringify(customDefs));
+      /* the revert saved inside the sweep's gesture — one saved group (W5 finding 2) */
+      await sweepChart(id, new Set(gone), edited, shipped, () => { delete customDefs[id]; sSet(kSyls(course), JSON.stringify(customDefs)); });
       if (typeof flushNow === 'function') { try { await flushNow(); } catch (_) {} }
       clearDirty(); await loadCourse(course);
       refreshSyl(); refreshActive(); renderBoard(); renderSide();

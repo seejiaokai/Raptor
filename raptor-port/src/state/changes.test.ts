@@ -24,10 +24,16 @@ beforeAll(() => {
 afterAll(() => { storeBackend.impl = null })
 beforeEach(() => { elogClear(); for (const k of [...fake.keys()]) if (k.startsWith('sqn142_seen:') || k.startsWith('sqn142_elog:')) fake.delete(k); changesLoad() })
 
+/* a line written with no command running is kept at the end of the turn (engine/editlog.ts hold — the group-wide walk's
+   finding H2, 30 Sep 26: a line given just BEFORE its command opens rides that command); a test that writes one directly
+   waits for the turn to end before it reads the history */
+const turnEnds = () => Promise.resolve()
+
 describe('what is new to you', () => {
-  it('a change someone else made is new to you; your own never is', () => {
+  it('a change someone else made is new to you; your own never is', async () => {
     as('ad', 'a'); logAction(0, 'Saber moved a man')
     as('us', 'us'); logAction(0, 'Ranger filed leave')
+    await turnEnds()
     const [saber, ranger] = ELOG.rows
     expect(isNewToMe(saber!)).toBe(true)        // Ranger signed in
     expect(isNewToMe(ranger!)).toBe(false)
@@ -36,8 +42,9 @@ describe('what is new to you', () => {
     expect(isNewToMe(ranger!)).toBe(true)
   })
 
-  it('Mark all as seen clears what it was shown, for you alone, and it survives a sign-out and a reload', () => {
+  it('Mark all as seen clears what it was shown, for you alone, and it survives a sign-out and a reload', async () => {
     as('ad', 'a'); logAction(0, 'one'); logAction(1, 'two')
+    await turnEnds()
     as('us', 'us')
     const [one, two] = ELOG.rows
     expect(markSeen([one!])).toBe(true)
@@ -48,6 +55,7 @@ describe('what is new to you', () => {
     expect(isNewToMe(two!)).toBe(true)
     /* another member's view is untouched */
     as('ad', 'a'); logAction(2, 'three')
+    await turnEnds()
     expect(isNewToMe(ELOG.rows[2]!)).toBe(false)
   })
 
@@ -97,13 +105,15 @@ describe('the command gate', () => {
 })
 
 describe('someone given access later (Fable F6)', () => {
-  it('an account made after the history began starts with nothing new; what others do after that is new to him', () => {
+  it('an account made after the history began starts with nothing new; what others do after that is new to him', async () => {
     as('ad', 'a'); logAction(0, 'before he joined')
+    await turnEnds()
     const pid = Object.keys(PEOPLE).find(id => !(PEOPLE as any)[id].special && !(PEOPLE as any)[id].archived && !(PEOPLE as any)[id].deleted && !ACCOUNTS_LIST.some(a => a.pid === id))!
     expect(addAccount('newbie@x', pid, 'main')).toBeNull()
     const acct = ACCOUNTS_LIST.find(a => a.name === 'newbie@x')!
     expect(acct.seenFrom).toEqual(posOf(ELOG.rows[ELOG.rows.length - 1]!))   // a position in the history's order (F2-02)
     logAction(1, 'after he joined')
+    await turnEnds()
     resetSession({ user: acct.id, role: 'member', pid: acct.pid } as any)
     const [before, after] = ELOG.rows.slice(-2)
     expect(isNewToMe(before!)).toBe(false)

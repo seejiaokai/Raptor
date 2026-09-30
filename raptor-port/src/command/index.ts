@@ -13,7 +13,7 @@ export { isOk, isQueued } from './types'
 export {
   commit, onCommit, commandStream, revisionOf,
   deferEffect, isCommitting, registerGuardedStore, setConflictChecker,
-  commitProjection, isInReducer, commitPhase, CmdRefused, setTxnWrapper,
+  commitProjection, isInReducer, commitPhase, CmdRefused, setTxnWrapper, onPipelineBegin,
 } from './commit'
 export type { TxnWrapper, TxnHandle, TxnSavepoint, TxnInfo } from './commit'
 /* [CMDL-FINISH] §2.3 — the reconciler/gesture wiring (LW router, Tracker

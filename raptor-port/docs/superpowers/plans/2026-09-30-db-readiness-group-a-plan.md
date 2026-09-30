@@ -100,7 +100,7 @@ eventual adapter a thin mapping. Nothing on screen changes.
 
 | Stored key | Design table (stage 1) | Written by (command) | Order | Notes |
 |---|---|---|---|---|
-| `weeks/<wk>` | `ScheduleWeek` | the stream (`sched.week`) | — | `v`, `am`; written with the seven day rows when a week is first saved |
+| `weeks/<wk>` | `ScheduleWeek` | the stream (`sched.week`) | — | `v`, `am`; written when a week is first saved — *with the days that save changed only (the "seven day rows" first save was WITHDRAWN 30 Sep 26 by the group walk's H3, §9)* |
 | `weeks/<wk>#<di>` | `ScheduleDay` | the stream (`days`, `sched.book`, `sched.mutes` per day) | — | the day and every field naming it, its `wo` slice (`un` is NOT stored — worked out at load from `Input.acc === 'r'`, round 3 F3-02) |
 | `weeks/<wk>:is:<verId>~<n>` | `Amendment` + 4 `IssuedSignoff` | the stream (`sched.issuance`) | — | EVERY issuance incl. the Original (sequence 0); `n` = the number of retractions of that `verId` when it was issued (0 first); append-only |
 | `weeks/<wk>:rx:<verId>~<n>` | `AmendmentRetraction` | the stream (`sched.retraction`) | — | the retraction of `is:<verId>~<n>`; join rebuilds `orig`, `als` and `retired[<verId>~<n+1>]` as today |
@@ -173,7 +173,7 @@ including that group's values.
    weeks, a week published and amended, one unpublished and reissued (the `~n` mapping), one with drafts and saved plans,
    one with a taken-off input; the key-naming-no-day failure; seven day rows and no week row → editable, ids intact.
 2. The mapper learns the schedule: `days`, `sched.book`, `sched.mutes` per day → the day row (a week's first save writes
-   the week row and all seven day rows together); `sched.week` → the week row; issuance / retraction records → their
+   the week row and all seven day rows together — *withdrawn 30 Sep 26, §9's group walk, H3: the days it changed only*); `sched.week` → the week row; issuance / retraction records → their
    rows, written once. The reconcile at `persist.ts:119` goes. Preservation stays per WEEK with a mechanism (F2-08):
    `PRESERVED` becomes `wk → Map<rowKey, rawString>` classified per week at hydrate BEFORE the join (any row unparseable,
    or the join classifying `unsupported`); a preserved week's rows are written back verbatim and never from the join.
@@ -429,7 +429,7 @@ boot in `main.tsx`; tests `storage/schema.test.ts`, `storage/fold.test.ts`, `sta
 - **1.2** the scheduler's rows are a COMPOSER in `rowmap.ts` (several records, one row: the day, its book slice and
   its mutes → one day row), registered by `persist.ts`; it builds rows from the committed records (the advanced
   baseline — `schedRecordsNow`), so it is not a pure function of one change: that is the one departure from §2.2's
-  wording, and why. A first save writes the week row and all seven days. The reconcile is gone. Preservation: classified
+  wording, and why. A first save writes the week row and all seven days *(withdrawn by the group walk, H3, below: the days it changed only)*. The reconcile is gone. Preservation: classified
   per week at hydrate; a preserved week's rows are never written (verbatim by omission), which satisfies F2-08 without a
   raw-row map. The weeks converter is registered (target still 5).
 - **1.3** navigation read-only: `sched.load` (system actor, origin `seed` — the timeline tracks it as expected, no
@@ -710,3 +710,35 @@ wiped the other's, the chart pick moved the course's chart, the old records stor
   noopB 1.46× — inside phase 5's spread).
 - **Next:** the group-wide FULL walk and BOTH reviewers' code reads (persistence — D11, D353), then phase 6, then 7. Before
   this branch's "merge live": remind him to EXPORT a copy of his Tracker first (D464) — the conversion runs on his browser.
+
+**The group-wide FULL walk — 30 Sep 26** (evidence `docs/handpass/2026-09-30-dbrA-group-walk.md`; the scenarios by Astra,
+one reviewer, D353 — `docs/superpowers/briefs/2026-09-30-db-readiness-group-a-walk-scenarios-astra.md`; five walkers on the
+frozen build, 2,576 checks, every step checking that each row it changed is named by its batch, that a reload gives the
+state back, and that a reload writes nothing — `scripts/handpass/dbrA-lib.mjs`):
+- **Six fixes, each red first** — two of them change this plan's own decisions, said plainly:
+  - **§2.5's "written with the seven day rows when a week is first saved" is WITHDRAWN (H3).** Two people on two days of
+    a week nobody had saved: the second one's first save wrote all seven days from its own copy and wiped the first's
+    day — the one thing a row per day is for, and a save of days the saver does not hold under the day lock (D450). Now a
+    first save writes the week row, its issued rows and only the days it changed; a day with no row reads as the week
+    untouched (`weeks-data.ts weekBundle` — blank on a shared store); a week load's landing is saved only onto days already
+    saved (a day no one saved re-lands at every load, as a week no one saved does). The composer is handed its envelope.
+  - **The boot's re-landing onto a saved week (H1)** went out bare; now one `boot` group with its batch, and only onto
+    rows already stored (a missing week row is no longer re-created at load — W4-F1).
+  - **An edit's history line (H2)** given before its command opened (a text box; every board edit that mutates then
+    self-wraps) went out as a second action; now held for the turn and adopted by the person's next command (`commit.ts
+    onPipelineBegin`), and the board's structural gestures log first — the edit and its line one group, as phase 4.3
+    promised (a line worded from its result still follows: `[ELOG-LINE-AFTER-COMMAND]`).
+  - **The Tracker (W5):** the course conversions' flags after the first mount keep their raw write, run inside a
+    `trk.meta` command of its own (an Import of a new course had written them bare — Astra's finding A); a built-in's delete / restore and ✓ Save changes (and Revert) that
+    sweeps marks are one group each (an `await` had split them).
+  - **The Leave War (W3-F2):** a decision keeps its record in its place on the day — moved to the end, the record beside
+    it had its row rewritten, and a stale tab brought back a deleted one; an updated OIL credit keeps its place too.
+- **Kept, said plainly:** a setting that holds a list and a Leave War period are one row each (§2.5); the database's
+  reject-and-reload (`data-model.md` §9, `If-Match`) refuses a stale write, which the stand-in cannot show — `LeaveWar`
+  added to §9's conflict table.
+- **Filed:** `[UNDO-PUBLISH-ERASES-ISSUANCE]` (group B — AM4 / AM32 against an Undo of a publish deleting its issuance
+  row), `[TRK-IMPORT-ONE-GROUP]`, `[TRK-FIRST-ORDER-PLACE]`, `[TRK-UNDO-WRITES-DEFAULTS]`, `[ACCOUNTS-SEED-FIRST-WRITE]`,
+  `[SETTINGS-LIST-ROWS]`, `[LW-OIL-DATECHIP-HIDDEN]`, `[SECDEFAULT-OFFER-BEHIND-BOARD]`, `[BLOCK-NO-HISTORY-LINE]`,
+  `[SHARED-OPENS-DEMO-WEEK]`, `[READONLY-WEEK-WORDS]`, `[LW-LABEL-NO-DOOR]`.
+- **The conversion held:** a `main`-written browser of every kind — his kind of Tracker work included (D464) — read and
+  exported identically after it, and a second reload wrote nothing.

@@ -94,8 +94,8 @@ describe('one change, the rows it touched — and no others', () => {
     const wb = await boot(new MemoryBackend())
     const wid = weekId(W1)
     expect(INPUTS.some((r: any) => r.acc === 'g'), 'the demo week has a landed request').toBe(true)
-    sign(2); commitSetDayApproved(2, true)                      // the first save: the week row and all seven days
-    expect(wb.keys('weeks').filter(k => k.startsWith(wid)).length).toBe(9)
+    sign(2); commitSetDayApproved(2, true)                      // the first save: the week row, Wednesday, its issuance (H3)
+    expect(wb.keys('weeks').filter(k => k.startsWith(wid)).sort()).toEqual([wid, `${wid}#2`, `${wid}:is:${SCHED.orig[2].id}~0`].sort())
     clear()
     writeText('dn:0.0', 'MONDAY')
     expect(weekWrites()).toEqual([`${wid}#0`])
@@ -182,9 +182,11 @@ describe('week navigation is read-only (R3-01, F3-01)', () => {
     expect(Object.fromEntries(wb.keys('weeks').map(k => [k, wb.get('weeks', k)]))).toEqual(a)
   })
 
-  it('a saved B re-lands only what changed: nothing when nothing did; exactly the day a new request lands on', async () => {
+  /* a landing on a day no one has saved is not saved: that day re-lands at every load, as a week no one has saved does
+     (state/persist.ts scheduleRows — the group-wide walk's finding H3); on a saved day it is saved, that day alone */
+  it('a saved B re-lands only what changed: nothing when nothing did; exactly the SAVED day a new request lands on', async () => {
     const wb = await boot(new MemoryBackend())
-    loadWeek(W3); schedWrite(SCHED_TYPES.text, () => { DAYS[0].notes.push(mkNote('B-SAVED')) })   // B (a blank week) saved
+    loadWeek(W3); schedWrite(SCHED_TYPES.text, () => { DAYS[0].notes.push(mkNote('B-SAVED')); DAYS[2].notes.push(mkNote('WED-SAVED')) })   // B (a blank week) saved: Monday and Wednesday
     loadWeek(W1)
     clear()
     loadWeek(W3)
@@ -200,6 +202,14 @@ describe('week navigation is read-only (R3-01, F3-01)', () => {
     expect(load.changes.every(c => c.collection === 'inputs' || c.id.startsWith(W3))).toBe(true)
     expect(weekWrites()).toEqual([`${weekId(W3)}#2`])
     expect(wb.get('weeks', `${weekId(W3)}#2`)).toContain('LANDS ON WED')
+    /* Thursday has never been saved: the request lands on it on screen, and nothing is written */
+    loadWeek(W1)
+    expect(commitNewInput({ person: 'dj', type: 'Meeting', start: '2026-07-30', allday: false, sTime: '09:00', eTime: '10:00', remarks: 'LANDS ON THU' })).toBe(true)
+    clear()
+    loadWeek(W3)
+    expect(weekWrites(), 'a landing on a day no one has saved writes nothing').toEqual([])
+    expect(wb.has('weeks', `${weekId(W3)}#3`)).toBe(false)
+    expect(JSON.stringify(DAYS[3])).toContain('LANDS ON THU')
   })
 
   it('a read-only (preserved) saved week is never rewritten — visited, edited around, left', async () => {

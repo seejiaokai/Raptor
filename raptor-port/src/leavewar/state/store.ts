@@ -3160,7 +3160,10 @@ function decideRequest(personId: string, date: string, recId: string, bid: BidSt
     if (clash.length) return false
     if (occupiedFor({ id: r.id, kind: 'request', code: parseCell(r.code)!.type, win: requestWin(r.code), state: bid as RequestState }, personId, date, [r])) return false
   }
-  return putList(personId, date, [...rest, next])
+  /* the decided record keeps ITS PLACE on the day ([DB-READINESS] group A, the group-wide walk — W3 finding 2): moved to
+     the end of the list, it put the day out of order and the record beside it was given a new place — its row
+     rewritten by a decision about another, and a stale tab's write of it brought back a record someone had deleted */
+  return putList(personId, date, list.filter(x => x === r || rest.includes(x)).map(x => (x === r ? next : x)))
 }
 
 /** "OK, seen" on a replaced-bid notice — the person or an admin. Clears every
@@ -4142,7 +4145,9 @@ function ingestDutyCreditImpl(personId: string, date: string, code: 'FO' | 'HO',
      found on the night of 20–21 Sep lived inside that snapshot, and so did
      the one both reviewers found in the plan for THIS change. An award the
      pass cannot see is an award the pass cannot damage. */
-  putList(personId, date, [...staying, rec])
+  /* an existing credit is updated IN ITS PLACE, with its place — never moved to the end, which would give the record
+     beside it a new place and rewrite its row (the group-wide walk — W3 finding 2's twin) */
+  putList(personId, date, had ? list.map(r => (r === had ? (typeof had.ord === 'number' ? { ...rec, ord: had.ord } : rec) : r)) : [...staying, rec])
   /* 'clash' still REPORTS — the day needs a human — but it no longer means
      "nothing was written". The credit is on the day either way. */
   return clash ? 'clash' : 'written'

@@ -311,8 +311,8 @@ in-place technique `history.ts:histApply` uses for Undo. **CORRECTED 17 Sep 26:*
 is NOT session-only — the 8 Sep 26 storage work SUPERSEDED the 23 Aug forget-on-exit rule.
 **Since 30 Sep 26 (`[DB-READINESS]` group A, phase 1) a week is stored as ROWS written from the
 command stream, not by `persistAll`**: a week persists once a command CHANGES it — its first
-save writes its week row and all seven day rows, every later change exactly the rows it
-touched (`state/weekrows.ts`, `state/persist.ts`; `docs/data-schema.md` §The week record) — and
+save writes its week row and the days it changed (a day no one saved reads as the week untouched —
+the group-wide walk's H3), every later change exactly the rows it touched (`state/weekrows.ts`, `state/persist.ts`; `docs/data-schema.md` §The week record) — and
 a byte-copy of the pristine seed is deliberately never written, because a persisted pristine
 copy would outrank a later deploy's updated demo weeks for ever. So: modified or
 previously-stored weeks come back; merely LOOKING at an untouched week stores nothing; and the

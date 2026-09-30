@@ -14,7 +14,7 @@ import { RID_BOOK_VERSION } from '../engine/rowids'
 import { draftDup } from '../engine/drafts'
 import { txtSet, unacceptInput } from '../engine/slots'
 import { CURWEEK } from '../engine/waves'
-import { emptyWeek } from '../engine/weeks-data'
+import { emptyWeek, weekBundle, setAuthoredWeeks } from '../engine/weeks-data'
 import { noteText } from '../engine/note'
 import { initStore, weekStashSnap, loadWeek } from './store'
 import { commitSetDayApproved, commitPublishALDay, commitUnpublish, schedWrite, SCHED_TYPES } from './sched-commit'
@@ -185,10 +185,16 @@ describe('rows missing on read', () => {
     expect(j.d.map((d: any) => (d.waves || []).map((w: any) => w.rid))).toEqual(DAYS.map((d: any) => (d.waves || []).map((w: any) => w.rid)))
   })
 
-  it('a missing day row reads as a blank day', () => {
+  /* a week's first save writes only the days it changed (the group-wide walk's finding H3, 30 Sep 26), so a day no one
+     has saved has no row: it reads as the week UNTOUCHED — the authored demo day here (the demo policy), a blank day on a
+     shared store (weekBundle) — never as a blank day in a week that has content */
+  it('a missing day row reads as that day untouched — the authored day under the demo policy, blank on a shared store', () => {
     const rows = splitWeek(blob(), W1)
     delete rows['#5']
-    expect(joinWeek(rows, W1).d[5]).toEqual(emptyWeek(W1).days[5])
+    expect(joinWeek(rows, W1).d[5]).toEqual(weekBundle(W1).days[5])
+    expect(weekBundle(W1).days[5]).not.toEqual(emptyWeek(W1).days[5])
+    setAuthoredWeeks(false)
+    try { expect(joinWeek(rows, W1).d[5]).toEqual(emptyWeek(W1).days[5]) } finally { setAuthoredWeeks(true) }
   })
 
   it('a row that will not parse fails the join (the reader keeps that week read-only)', () => {

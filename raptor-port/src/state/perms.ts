@@ -313,6 +313,7 @@ export const COMMAND_OPS: Record<string, CommandOp> = {
   'trk.layout': op(T.tracker, 'U'), 'trk.syls': op(T.tracker, 'U'), 'trk.plan': op(T.tracker, 'U'),
   'trk.pace': op(T.tracker, 'U'), 'trk.lulls': op(T.tracker, 'U'), 'trk.eventinfo': op(T.tracker, 'U'),
   'trk.catalogue': op(T.tracker, 'U'), 'trk.courses': op(T.tracker, 'U'), 'trk.gesture': op(T.tracker, 'U'),
+  'trk.meta': op(T.tracker, 'U'),
   /* the Tracker's own Undo / Redo, each one restore command ([DB-READINESS] group A, phase 4.1 — P4.1-TRACKER-RESTORE) */
   'tracker.undo': op(T.tracker, 'U'), 'tracker.redo': op(T.tracker, 'U'),
   /* accounts (D166, D204): one intent per command, each writing every key it needs — and

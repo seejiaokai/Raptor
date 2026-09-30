@@ -23,6 +23,8 @@ import { MemoryBackend } from '../storage/memory'
 import { SCHEMA_VERSION } from '../storage/reset'
 import { mkNote, noteText } from '../engine/note'
 import { splitWeek } from './weekrows'
+import { stripRowIds } from '../engine/rowids'
+import { resetSeedWorld } from './seeds'
 
 const ISNAP = JSON.stringify(INPUTS)
 const PSNAP = JSON.stringify(PEOPLE)
@@ -222,17 +224,73 @@ describe('persistAll and the hooks', () => {
   })
 
   /* [DB-READINESS] group A, phase 1 — the week is ROWS (state/weekrows.ts), written from the command that changed it:
-     its first save writes the week row and all seven day rows together, so a stored week is never a part of one */
-  it('the pristine seed week is NOT persisted; an edited week is — its week row and all seven day rows together', async () => {
+     its first save writes the week row and ONLY the day it changed — the group-wide walk's finding H3 (30 Sep 26): a
+     first save that wrote all seven days from the saver's copy wiped another person's day of the same new week. A day
+     no one has saved has no row and reads as the week untouched (weekrows.ts rowsToParts). */
+  it('the pristine seed week is NOT persisted; an edited week is — its week row and the day edited, alone', async () => {
     const be = new MemoryBackend()
     const { wb } = await boot(be)
     const wid = weekId(CURWEEK)
     expect(wb.keys('weeks').filter(k => k.startsWith(wid))).toEqual([])
     writeText('dn:0.0', 'X')
     expect(wb.has('weeks', wid)).toBe(true)
-    for (let di = 0; di < 7; di++) expect(wb.has('weeks', `${wid}#${di}`), `day ${di}`).toBe(true)
+    expect(wb.has('weeks', `${wid}#0`)).toBe(true)
+    for (let di = 1; di < 7; di++) expect(wb.has('weeks', `${wid}#${di}`), `day ${di} — not changed, not written`).toBe(false)
     expect(noteTextOf(JSON.parse(wb.get('weeks', `${wid}#0`)!).d)).toContain('X')
     expect(JSON.parse(wb.get('weeks', wid)!), 'the week row is the two stamps alone').toEqual({ v: expect.anything(), am: expect.anything() })
+  })
+
+  /* the other half of H3: a week saved one day at a time reloads WHOLE — a day no one saved reads as the week untouched
+     (the same days a store that never saved the week shows), never blank */
+  it('a week saved one day at a time reloads whole: the days no one saved read as the week untouched', async () => {
+    /* each boot from the frozen demo seed, as the app's boot does (src/boot.ts) — this file's other boots leave landed rows
+       on the live days, which the app never carries from one boot to the next */
+    resetSeedWorld(true)
+    await boot(new MemoryBackend())
+    /* compared without the row ids and the landed rows' request ids — both minted per store, and these are two stores */
+    const plain = (d: any) => { const c = JSON.parse(JSON.stringify(d)); stripRowIds(c); for (const g of c.ground || []) delete g.src; return JSON.stringify(c) }
+    const untouched = DAYS.slice(1).map(plain)
+    resetWorld()
+    const be = new MemoryBackend()
+    resetSeedWorld(true)
+    await boot(be)
+    writeText('dn:0.0', 'ONLY MONDAY')
+    await vi.advanceTimersByTimeAsync(300)
+    resetWorld()
+    resetSeedWorld(true)
+    const { wb } = await boot(be)
+    expect(wb.keys('weeks').filter(k => k.startsWith(weekId(CURWEEK))).sort()).toEqual([weekId(CURWEEK), `${weekId(CURWEEK)}#0`])
+    expect(noteTextOf(DAYS[0])).toContain('ONLY MONDAY')
+    expect(DAYS.slice(1).map(plain)).toEqual(untouched)
+  })
+
+  /* H1 (the group-wide walk, 30 Sep 26): a boot on a SAVED week re-lands the requests filed on it since — the rows it
+     changes go out in ONE group with its change-log batch (`boot`, by the system), like every other save; before, they
+     went out bare, and another reader of the change log never learned the day had changed. A day no one has saved is
+     not written by the landing (it re-lands at every load — H3). */
+  it('a boot on a saved week saves its re-landing in one group with a batch — and only onto the days already saved', async () => {
+    const be = new MemoryBackend()
+    await boot(be)
+    const wid = weekId(CURWEEK)
+    writeText('dn:0.0', 'SAVED MONDAY')                  // the week is saved: its week row and Monday
+    loadWeek(WEEK_C)
+    writeInputs(() => {
+      INPUTS.push({ person: 'dj', date: 'Jul 13', allday: false, s: 540, e: 600, type: 'Meeting', remarks: 'LANDS MON', mod: '2026-07-01', yr: 2026 })
+      INPUTS.push({ person: 'dj', date: 'Jul 15', allday: false, s: 540, e: 600, type: 'Meeting', remarks: 'LANDS WED', mod: '2026-07-01', yr: 2026 })
+    })
+    const monBefore = be.peek('weeks', `${wid}#0`)
+    await vi.advanceTimersByTimeAsync(300)
+    resetWorld()
+    const { wb } = await boot(be)                        // the boot opens on the saved week and re-lands both requests
+    expect(wb.get('weeks', `${wid}#0`)).toContain('LANDS MON')
+    expect(wb.get('weeks', `${wid}#0`)).not.toBe(monBefore)
+    expect(wb.has('weeks', `${wid}#2`), 'Wednesday was never saved: its landing is not written').toBe(false)
+    expect(JSON.stringify(DAYS[2])).toContain('LANDS WED')
+    const batches = wb.keys('changes').map(id => JSON.parse(wb.get('changes', id)!))
+    const boots = batches.filter((b: any) => b.type === 'boot' && b.items.some((i: any) => i.key === `weeks/${wid}#0`))
+    expect(boots, "the boot's re-landing carries its batch").toHaveLength(1)
+    expect(boots[0].actorId).toBe('system')
+    expect(boots[0].items.map((i: any) => i.key)).toEqual([`weeks/${wid}#0`])
   })
 
   /* the Undo is a command (the global undo), so it writes its own change: the row it added, removed */
@@ -380,10 +438,10 @@ describe('the week swap and the stored week records (8 Sep 26 bug pass)', () => 
     const { wb } = await boot(be)
     const A = CURWEEK
     writeText('dn:0.0', 'OLD')
-    loadWeek(WEEK_C)                                       // A is stashed and stored
-    expect(wb.keys('weeks').filter(k => k.startsWith(weekId(A))).length).toBe(8)
+    loadWeek(WEEK_C)                                       // A is stashed and stored: its week row and Monday (H3)
+    expect(wb.keys('weeks').filter(k => k.startsWith(weekId(A))).length).toBe(2)
     HOOKS.histPush()
-    expect(wb.keys('weeks').filter(k => k.startsWith(weekId(A))).length, 'a history step never deletes a week').toBe(8)
+    expect(wb.keys('weeks').filter(k => k.startsWith(weekId(A))).length, 'a history step never deletes a week').toBe(2)
     expect(writeInputsBatchWith([weekstashStore], () => { stashDrop(A) })).toBe(true)
     expect(wb.keys('weeks').filter(k => k.startsWith(weekId(A)))).toEqual([])
     await vi.advanceTimersByTimeAsync(300)
