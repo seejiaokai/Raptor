@@ -1797,3 +1797,18 @@ restore — repeatable, all-or-nothing, and safe for files whose bytes (line end
 **Suggested improvement:** When the owner asks for a list he will pass to someone else: (1) produce, first time, a plain-text FILE (sent with SendUserFile) — each item spaced out as a heading, "Question:" and "Context:" (why it is asked, what depends on it), urgent group first, "already agreed" at the foot — worded for the recipient, with no named individuals unless he names them; (2) give him, in chat, a short plain-language summary of what the list asks and which items are urgent. In session-handoff: the "open questions for <third party>" line names where the FULL list lives and adds any question the next phase will raise.
 
 **Principle:** A forwarded list has two readers — the recipient, who needs each question's context, and the owner, who needs to understand what he is sending; serve both in the first answer, as a copyable artefact, rather than a chat list that must be reformatted.
+
+### Observation 386: A storage conversion is walked on data the OLD app really wrote — build the old app from a slim extract and serve both on one address
+
+**Status:** OPEN
+**Date:** 2026-09-30
+**Session context:** `[DB-READINESS]` group A phase 5b — the Tracker's lists split one row per thing; the last converter made the one-time boot conversion (the fold) live for every browser, his included.
+**Skill:** bug-check order (raptor-port/docs/bug-check-order.md §2a "Saved data / storage: … older saved data read", §7 the walk)
+**Type:** open-source
+**Phase/Area:** walking a change that converts stored data
+
+**Issue:** The unit tests fed the converter hand-made "old" records — written by the builder from his picture of the old shape. That proves the converter against that picture, not against what the old release actually stores. A full `git worktree` of the base branch into the session's scratch folder failed on Windows (the long scratch path pushed checked-in picture filenames past the path limit), which nearly dropped the step.
+
+**Suggested improvement:** In the bug-check order's storage row (§2a) and §7, add a recipe: (1) `git archive <base> <app source dirs, config files>` into a short scratch folder (only the source, never the docs/pictures), with its dependencies linked from the working checkout (a junction), and build it; (2) serve the OLD build on a fixed address, create the owner's kind of work through the app's own controls, and save the browser's storage (a Playwright storage state); (3) serve the NEW build on the SAME address (storage belongs to an address), open that storage, and assert the new app reads — and exports — exactly what the old one did, with no old record left.
+
+**Principle:** A conversion is proven against records the previous release really wrote, on the same address a real browser has used — never only against the builder's own reconstruction of the old shape.
