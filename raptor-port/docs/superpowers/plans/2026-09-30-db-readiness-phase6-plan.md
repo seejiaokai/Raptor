@@ -1,11 +1,12 @@
-# [DB-READINESS] group A, phase 6 — what a day shows, worked out on read (plan v1, 30 Sep 26)
+# [DB-READINESS] group A, phase 6 — what a day shows, worked out on read (plan v2, 30 Sep 26 — after round 1)
 
 **Branch:** `claude/db-readiness-table-shaping-4094f6` (group A's; phases 0–5b built and FULL-checked there).
 **The parent plan:** `2026-09-30-db-readiness-group-a-plan.md` §3 phase 6 and §9 (this file is phase 6's detail; the parent
 plan's §2 decisions bind it). **The design of record:** `raptor-port/docs/data-model.md` §9 rule 9 (and §3 ScheduleWeek,
 §11). **Tier:** FULL (saved data, the published record, OIL — earned leave, D25 — and who may write a day, §11).
-**Reviews:** the red team BOTH (D353 — an important plan), one round; then the build; then the FULL check (Astra's
-scenarios, the roll-call, the walk, both final code reads). **Rulings range:** D465–D469. **Observations:** #392 on.
+**Reviews:** the red team BOTH (D353 — an important plan): round 1 on v1 (Fable REVISE, Astra BLOCK — dispositions
+`…/briefs/2026-09-30-db-readiness-phase6-dispositions-r1.md`; v1 = commit 90e1bd8a); round 2 on (c) v2 only; then the
+build; then the FULL check (Astra's scenarios, the roll-call, the walk, both final code reads). **Rulings range:** D465–D469. **Observations:** #392 on.
 **PROVISIONAL until IT confirms in writing** (the parent plan's head): "no plug-in" makes working-out-on-read the only
 way; whether REPORTS can reproduce it is IT's (§12 q9) — the final hand-over of the `ScheduleDay` / `Input` shape waits
 on that answer, and nothing here waits on it — **his ruling D465 (30 Sep 26, "Carry on"): phase 6 is built now, (c)
@@ -57,156 +58,146 @@ What the group-A final read already did (Fable F2/F1, 30 Sep 26): **a week load'
 — `sched.load` writes nothing; the landing is worked out at every load. What remains of (c) is a request's own
 command (filed, changed, deleted, handed over) still saving the day rows its landing touched.
 
-## 2. The decisions (technical — mine; stated for the reviewers)
+## 2. The decisions (technical — mine; v2 after round 1 — `…/briefs/2026-09-30-db-readiness-phase6-dispositions-r1.md`)
 
-1. **One read-time overlay, applied where a week's days enter memory** — `state/overlay.ts` (new), pure over a week's
-   days + its dates, used at: `applyWeekModel` (the loaded week, from its saved copy or from the seed — BEFORE the
-   command layer's baseline is taken, so the overlay is not a change of anyone's); `weekctx.ts bundle()` (the cross-week
-   reads — crew rest, the 7-day run; the WORKING world only: the official world reads issued versions, which keep
-   everything they were issued with); `drafts.ts liveDay` (a saved plan switched in, an issued version loaded onto the
-   working copy). It holds (d)'s strip and (c)'s reconciliation; (a) needs none (its prune is already on the one read
-   door).
-2. **Derived day changes are made in memory, inside their command, and NOT SAVED.** A command whose job is a request or
-   a person (§3) still changes the loaded week in memory exactly as today, inside the same command — so the screen
-   updates at once, the undo machinery sees the same records it sees today, and a later Undo of an earlier step on that
-   day compares against what is really there — but the schedule composer (`state/persist.ts scheduleRows`) writes NO
-   day row, week row or off-screen week row for it. The day is saved, overlay and all, by the next command that changes
-   it — the rule `sched.load` already follows (F2). The commands this covers are named in one list
-   (`state/persist.ts DERIVED_DAY_TYPES`): `inputs.batch`, `inputs.write`, `person.delete`, `lw.postoutRun` — and an
-   Undo or Redo of a step of one of them (`undo.restore` whose reversed step's type is in the list; the timeline hands
-   that type to the envelope — `CommitEnvelope.restores`, new, optional).
-3. **Why not by actor** (a member's commands only): the design's rule is by what the command IS — "nothing but the
-   holder writes a day; everything else that changes what a day shows is worked out on read" (§9 rule 9). An admin
-   handing a request over on the Inputs page does not hold its day either (D450). And a rule by command type is one line
-   the reviewers can check against the list of commands.
-4. **The order: (a) → (b) → (d) → (c)**, each its own step with red tests first, its own suites, the whole engine suite
-   and `tfin.js` 728/0 before the next; the parent plan listed (c) before (d) — (d) goes first because it introduces the
-   overlay module and the derived-change rule on the narrower case, and (c) then reuses both.
-5. **Nothing stored is converted.** Every change reads old stored rows correctly (a missing new field reads as "made
+1. **One read-time overlay, `engine/overlay.ts`, applied wherever a week's days come into memory** (the engine may not
+   import `state/`, and the engine's own cross-week readers need it). **The doors** (Fable F1, Astra 1):
+   - the loaded week — `state/store.ts applyWeekModel` and the boot's seed path, BEFORE the command layer's baseline is
+     taken (the overlay is nobody's change);
+   - a saved week read for anything — INSIDE `engine/weekstash.ts stashDays`, so every reader shares one overlaid copy:
+     the cross-week checks in both worlds (`weekctx.ts bundle` — `issuedDayIn` still hands a PUBLISHED day's issued
+     snapshot to the official world, D299), the alias gate (`windowDiverges` / `windowInputs` / `windowFiling`), the
+     next-week peek, the row finder (`stashGroundBySrc` / `rowElsewhere` / `oilev.ts stashStanding`);
+   - a week never saved — `weekctx.ts bundle`'s seed branch (on a copy: the cache holds the pure seed) and `ui/peek.ts`'s
+     seed fallback;
+   - a whole-day replacement — `engine/drafts.ts liveDay` (a plan switched in, a version loaded onto the working copy):
+     D175's leave-out, then the `kept` / `srcv` marking of §3 (c), then the deleted-man strip (`HOOKS.stripDeleted`);
+   - the week on screen after a command that changed a request, a person or a day (§2.2).
+   Memos keyed on a saved week's bytes (`stashGroundBySrc`, the peek) also key on the deleted-men signature (built) and,
+   with (c), a request revision (a counter moved by every command that changed a request).
+   **The contract** (Astra 2): each door hands the overlay the week it reads — its Monday, its days, and (where the
+   door has them) that week's OWN book (sign-offs, their bindings, its saved plans) and issuance context (for a saved
+   week `stashSched(v)`, for the loaded week the live `SCHED`) — never the loaded week's `SCHED` for another week; the
+   official world is never overlaid. **The order: (1) reconcile the request rows, (2) strip the deleted men, (3) land.**
+   Astra asked for land before strip; the composition bug behind it (hand A's request to B, delete A, and B's row lost) is
+   closed at its root instead — the strip decides a landed row by its request's CURRENT holder, never the name the row
+   last carried (built, red first) — and landing last adds rows only for current requests, of which a deleted man has none
+   from his cutoff.
+2. **A derived change is made AFTER its command, never inside it** (Astra 3; and found building (d): a nested command
+   JOINS its outer command's envelope — the Leave War's posting command carried the posting pass's day changes — so no
+   list of command types can tell derived from intended changes). A command changes, inside itself, only what it means
+   to change; everything it changes there is saved as today. What the command's change does to the week on screen is
+   worked out by the overlay AFTER it — a phase-8 effect (after the command's changes are recorded, before its stream
+   consumers), with the command layer's baseline moved on — so it is shown at once, is nobody's change, and nothing saves
+   it until the day's holder next changes that day. Built for (d) (`applyDelete`). For (c): after EVERY command that
+   changed a request, a person or a day (an Undo included — Fable F6's belt), the loaded week is reconciled once.
+   The type list `DERIVED_DAY_TYPES` of v1 is withdrawn; `sched.load` keeps its own rule (a week load's landing, never
+   saved — the group-A final read).
+3. **The order of the steps: (a) → (b) → (d) → (c)**, each with red tests first, its own suites, the engine suite and
+   `tfin.js` 728/0 before the next. (a), (b) and (d) are BUILT (§9).
+4. **Nothing stored is converted.** Every change reads old stored rows correctly (a missing new field reads as "made
    under the current state"); the stored world is demo data, cleared before the database (D54, D56); the format stays 6.
 
 ## 3. The steps
 
-### (a) An OIL decision made for one holding of a request ignores itself when the request is handed on
+### (a) An OIL decision made for one holding of a request ignores itself when the request is handed on — BUILT
 
-- **The stamp.** `Input.hand` (new, a count, absent = 0): +1 at every change of the request's person
-  (`commitInputEdit`, the one place `r.person` is written — every door reaches it: the Inputs page, the edit dialog,
-  `reassignInput` from the Unavailable row and the drag, the medical-move confirm). An Undo restores it with the person,
-  because it is a field of the same record.
-- **The decision records it.** `day.oild.pa` (new, beside `people`): `"<pid>|i:<iid>" → hand` — written by
-  `toggleOilPerson` whenever it writes `people[key]` for an `i:` item, removed with it by `tidy`. Only `i:` items (a
-  hand-built row, `r:<rid>`, has no holder to change).
-- **Read.** `pruneHandedOverDecisions` gains one rule: a decision about the request's CURRENT holder whose recorded
-  holding is not the current one is ignored (a decision with no `pa` entry reads as made under the current holding — the
-  old stored data). Extras on the row (D18) and placeholders keep today's rule.
-- **Gone:** `clearOilPersonDecisions` and its call; the week stash no longer joins a person-change batch
-  (`inputedit.tsx` "THE WEEKSTASH JOINS THE BATCH WHEN THE HOLDER MOVES").
-- **Not done: "dropped at that day's next save"** (the design's line). A stale decision is inert on read forever; dropping
-  it at a save would LOSE a refusal in one order: A→B, then the day is saved by its holder, then the hand-over is undone
-  — A holds the request again, and the refusal the scheduler made about him is gone, so he silently earns OIL on a day
-  he was refused. Kept inert, the Undo brings it back. `data-model.md` §9 rule 9 is corrected to say so (D201).
-- **Found on the way (the sweep):** `dayDiscardCount` compares the RAW decision block (`publish.ts` ~:688) where the
-  pending count reads the pruned one — a stale key could read "Discard 1 edit" beside "0 pending". Compared pruned, with
-  a red test, if it reproduces; filed if it does not.
-- **Tests first:** A→B→A with the refusal on a day of a week NOT loaded (the pinned case, now with no write to that week
-  — its stored row byte-identical); A→B→A on the loaded day; the Undo of the hand-over brings the refusal back (the
-  pinned "ONE undo" test, now with no weekstash in the step); a hand-over writes no week row at all (the request's row
-  only); an extra's decision (D18) survives a hand-over; the stamp survives a reload. The pinned test "handing a request
-  away CLEARS the old holder's decision on every loaded day" changes to "… makes it inert, and writes no day" — the
-  requirement it pinned (the old holder's refusal does not follow the request) is unchanged.
+As built (commits e6ebf963, f1bd1cf6): the request counts its holdings (`Input.hand`, +1 at every change of person in
+`commitInputEdit`) and records when it LEFT each man (`Input.leftAt[pid]` = the new holding); every decision about a
+request records its holding (`oild.pa` beside `oild.people`, written by `toggleOilPerson`, tidied with it, stripped with
+a deleted man's decisions); `pruneHandedOverDecisions` drops a decision about a man the request has left since it was
+made — the old write-side clear's rule (it voided the old holder's decisions), said on the request, so a hand-over
+writes no day. A man on the row as an extra keeps his refusal when the request comes to him and loses it once it leaves
+him (Fable F2 — with a stricter fix than Fable's, which would have revived it on extra → holder → away → back). An Undo
+restores `hand` and `leftAt` with the person. **Not done: "dropped at that day's next save"** — kept inert, so an Undo
+can bring it back (both reviewers agree). `dayDiscardCount`'s raw compare: a hand-over no longer changes the raw block,
+so the case it could mislead on is gone; left.
 
-### (b) An Unavailable filing's pending marks are worked out, never written
+### (b) An Unavailable filing's pending marks are worked out, never written — BUILT
 
-- `markInputFiling` and its three callers go (`slots.ts` — `markInputDays`); Unpublish no longer re-opens `inp:` keys; an
-  `inp:` key already in a stored book is ignored by every reader (old data; nothing new writes one).
-- The published day is unchanged (its count, list and sign-offs already come from the filing axis). A NEVER-published
-  day: "Discard marks" no longer counts a filing — there was never a mark on screen for it (D118: an unpublished day shows
-  no count) and discarding a mark never undid the filing itself.
-- **Tests first:** filing under Unavailable on a published day → "1 pending", the sign-offs fall, the pending list names
-  it, and the day's stored book gains no `inp:` key; its undo → 0; the same on a never-published day → no mark, Discard
-  offers nothing for it; Publish AL then Unpublish → the filing reads pending again from the axis. The tests that pin the
-  mark itself (`engine/accept`, `engine/drafts`, `engine/daytpl`, `engine/rowids`, `ui/unavailedit`,
-  `ui/audit-e-commit-relink`) move to the axis — each change names its reason.
+As built (commit 4cff3bac): `markInputFiling` / `markInputDays` gone; Unpublish no longer re-opens `inp:` keys; the
+filing axis (`filingDelta` against the issued `fil`) counts, lists and binds the sign-offs, as it already did.
 
-### (d) A deleted man is taken off his days on read
+### (d) A deleted man is taken off his days on read — BUILT
 
-- **The overlay's delete half:** for every person with `deleted` and `deletedFrom`, on every WORKING day dated on or
-  after `deletedFrom`: `stripPersonFromDay` (every seat kind, extras, programme names, ground holders, his OIL switches)
-  plus the day's working sign-offs naming him and his places in the day's saved plans (`sg`/`sb`/`dr` — the same fields
-  the delete clears today, `person-delete.ts` §3b), and the ground rows landed from his requests. Days before the cutoff
-  keep him (D297); issued versions keep him (D299 — the published record); loading an issued version onto the working
-  copy still strips him (`HOOKS.stripDeleted`, unchanged).
-- **The delete itself** (`applyDelete`, both doors — Admin → Users and the posting pass): the person, his requests
-  (future ones gone, a spanning one ended), his account, the planning calendar and the Leave War — as today. The loaded
-  week: EXACTLY today's strip, through the edit funnel (the screen, its change-history lines and the undo records as
-  today — D337 "everything the delete took away, one line each" untouched), and NOT saved (§2.2). Saved weeks: NOT
-  rewritten — the `stashEditWeek` pass goes; each is stripped, silently, when it is read (as today: they never had
-  lines).
-- **Kept as is:** the delete's refusals (the last admin; an unreadable or preserved saved week holding him on a day to
-  come — a read-only week is shown as saved, so the refusal still protects what it protected); `deletedRestoreProblem`;
-  the cutoff (`max(date, today)`, D304). `Person.deletedFrom` joins the declared type (`schema.ts`).
-- **Tests first:** after a delete, the stored row of a saved week to come is BYTE-IDENTICAL, and loading that week shows
-  him on no day from the cutoff and on every day before it; a published day to come reads pending with its sign-offs
-  fallen, its issued version byte-identical; the loaded week's rows are not written by the delete, and the next edit of a
-  day there writes it without him; a reload after the delete shows the same as before it; crew rest across a week
-  boundary reads the stripped neighbour; a saved plan switched in on a day to come is stripped; the posting pass at boot
-  writes no week row. The two pinned tests "a stashed week to come is rewritten" and "the saved row no longer holds him"
-  (`state/person-delete.test.ts`, `leavewar/postout-outcomes.test.ts`) change to the read-side assertions above.
+As built (commits 24536325, 79978d3c): `engine/overlay.ts overlayDeletedWeek` at every door of §2.1; the delete writes
+his records only; the week on screen is overlaid after the command (§2.2); the change history keeps one line per seat he
+held on the week on screen, as built (D337); a landed row goes with its request's CURRENT holder. The delete's refusals,
+the version-load belt, the cutoff and `deletedRestoreProblem` are unchanged.
 
-### (c) A request's row is worked out from the request when its day is read
+### (c) A request's row is worked out from the request when its day is read — v2
 
-**The model.** The stored day keeps its landed rows (the scheduler's placement — where, its extras, its hand-set times
-and words), plus two new row fields:
-- `srcv` — a short fingerprint of what the row was last MADE from: the request's type, times, all-day, person and
-  remarks as `acceptInput` writes them. Set by `acceptInput` (every landing and every relink goes through it) and by a
-  holder's whole-day replacement (a plan switched in, a version loaded — the holder is choosing that content).
-- `kept` — set on a row whose request no longer exists when a holder's whole-day replacement brings it back (D363: "a
-  deleted request's row included").
-Neither is canonical content (`restore.ts dayKeys` names the fields it compares; neither is among them), so neither
-changes a digest, a count or a signature.
+**The model.** The stored day keeps its landed rows (the scheduler's placement — where it sits, its extras, its hand-set
+times and words), plus two row fields that are not canonical content (`restore.ts dayKeys` names every field it
+compares; neither is there, so neither moves a digest, a count or a signature):
+- `srcv` — a short fingerprint of what the row was last made or re-made from: the request's type label, times, all-day,
+  person and remarks, as `acceptInput` writes them. Set whenever a row is made or re-made, and by a holder's whole-day
+  replacement (below).
+- `kept` — a row a holder brought back with a version or a plan although its request is gone or no longer covers the day
+  (D363's letter: "every row that version had"). The overlay leaves a `kept` row alone, except the deleted-man strip.
 
-**The overlay's request half** (at every read — §2.1), for each ground row with `src` on a working day:
+**The reconciliation** (one body, `engine/overlay.ts reconcileRequestRows`), for each ground row with `src` on a working
+day of the week it is handed:
 1. its request is gone → the row goes, unless `kept`;
-2. its request no longer covers the day, or is no longer an activity type → the row goes (the request lands on its own
-   day by the landing pass, if that day is loaded);
-3. its request is "taken off" (`acc 'r'`) → left as it stands (today's rule: a row brought back by a plan while its
-   request was taken off stays, and Accept adopts it — `[REQ-ORPHAN-ROW]` 3);
-4. the request's fingerprint differs from `srcv` → the row is re-made from the request, keeping its id, its place and
-   the scheduler's extras (`more`, `flag`, `cx`) — exactly what today's relink keeps (`commitInputEdit`), including
-   D271 (a man who is now the holder is not also an extra);
-5. no `srcv` (old data) → stamped with the current fingerprint, not re-made.
-Then the landing pass as today — with ONE change: on a PUBLISHED day it lands a request the day's current issued
-version never saw (no entry in its `fil`), as a request filed live on a published day already lands (16 Sep 26 — a
-pending amendment on the working copy, the issued face frozen), wearing the same pending mark. A request the issued
-version saw unlanded, or taken off, is left as it is.
+2. its request no longer covers the day, is no longer an activity type, or is filed under Unavailable (`acc 'u'`) → the
+   row goes, unless `kept`;
+3. its request is taken off (`acc 'r'`) → the row stands as it is (`[REQ-ORPHAN-ROW]` 3 — Accept adopts it);
+4. the request's fingerprint differs from `srcv` → the row is re-made from the request, keeping its id, its place and the
+   scheduler's extras (`more`, `flag`, `cx`), with D271 (a man who is now the holder is not also an extra) — one body,
+   `remakeLandedRow`;
+5. no `srcv` (old data) → stamped with the current fingerprint, not re-made;
+6. a second row for the same request in the week → the one on a day the request covers stays, the others go (D175's one
+   row, as a belt).
+**Then the strip (d), then the landing:** on the loaded week, the app's own landing pass (`relandInputs` / the seed pass)
+with one change — on a PUBLISHED day it now also lands a request the day's current issued version never saw (no entry in
+its `fil`), as a request filed live on a published day already lands (16 Sep 26 — a pending amendment on the working
+copy, the issued face frozen) — this is what makes a filing made elsewhere read pending after a reload. On a saved week
+read through `stashDays`, the same landing without touching any request (`acc` is the loaded week's): a request lands on
+its start day in that week unless it is taken off, filed under Unavailable, or already has a row there or on the loaded
+week; a published day uses that week's own issuance context.
+**Marks** (Fable F3), on the loaded week only (a saved week read through `stashDays` has no marks): a re-made row marks
+each cell it changed (`markEdit`, rid-anchored), a removed row its deletion (`markDeletion` with `deletionWasIssued`),
+on any day — live and at load alike, so the same marks stand before and after a reload; a landing marks as today
+(`acceptInput`), and at load only on a published day (a never-published day's landings are its zero state).
 
-**The commands** (§2.2): filing, changing, deleting and handing over a request (`inputs.batch` / `inputs.write`, and
-their Undo / Redo) save the request's row only. The screen of the person who did it updates at once as today; every
-other screen — and his own after a reload — gets the same result from the overlay.
+**The commands** (§2.2): a member's filing, any edit of a request (dates, times, words, type, person — the hand-over
+included), a delete, and their Undo / Redo change the REQUEST only; `commitNewInput` (its auto-landing), `commitInputEdit`
+(its unaccept / re-accept relink and extras restore) and `removeInput` (its row drop) no longer touch a day — the loaded
+week is reconciled after the command, by the same body every other read uses. The messages the relink gave (a retype to
+a leave: "… does not go on the Ground Programme — its row has been removed"; a move off the loaded week) are said from the
+reconciliation's before / after. **What stays inside a command, and is saved:** a scheduler's explicit placements —
+Accept, → Ground, → Unavail, ✕ (take off), the board's Ground "+ Inputs" placing a new request on that day (Astra 3) —
+and every other schedule edit, as today.
 
-**What goes with it:** the §11 exception (a member's request writing `ScheduleWeek` / `ScheduleDay`) — a member's
-actions write no day row, pinned by the ownership test; `[OIL-RELINK-XWEEK]` — a stashed week's row can no longer keep
-the old man or land twice, because every read re-makes it from the request (the item closes); the refusal "Load the
-week of … to edit this accepted input" (`inputedit.tsx landedOnUnloadedWeek`) — the edit goes ahead, the other week's
-row is put right when that week is read; `rowElsewhere` (the "no second row on another week" guard) skips a stashed
-row the overlay would remove (its request no longer covers that day), so a request moved between weeks is not refused
-by its own stale row.
+**A whole-day replacement** (a version loaded, a plan switched in — `drafts.ts liveDay`): D175's leave-out first (a row
+whose request now stands on another day is left out and named, as today); then every request row it brings is the
+holder's choice — one whose request is gone or no longer covers the day is marked `kept` (D363's letter), any other is
+stamped with its request's current fingerprint (not re-made); then the deleted-man strip. `dayDiscardCount` needs no
+change (it already measures the day as the load leaves it).
 
-**The rulings it must keep, each a test:** D114 (taking an accepted request off a published day is ONE pending change),
-D174 and D176 (a request filed since publication and taken off, or taken off at publication and since deleted — 0
-pending), D175 (a load or a plan switch never puts a request on a second day), D177 / D178 (a member's filing, edit,
-delete or move after publication is pending, the issued face frozen), D363 (loading an older version puts back a deleted
-request's row, and the pending list names it — after a RELOAD too), D271, D18 (a second man on a member's row earns),
-16 Sep 26 (a request filed live on a published day lands on the working copy as pending — after a reload too).
+**What goes with it:** the §11 exception (a member's request writing `ScheduleWeek` / `ScheduleDay`) — a member's actions
+write no day row, pinned by the ownership test; the refusal "Load the week of … to edit / delete this accepted input"
+(`inputedit.tsx landedOnUnloadedWeek`) — the edit goes ahead and the other week's row is put right when that week is
+read; `[OIL-RELINK-XWEEK]` — closed (a stashed week's row can no longer keep the old man or land twice). The "no second
+row on another week" guard (`rowElsewhere`) reads the overlaid saved weeks, so a request moved between weeks is not
+refused by its own stale row.
 
-**Tests first:** a member files an activity request on a week that is loaded — the day's stored row is unchanged, the
-request's row is written, the screen shows it at once; reload → the same; the same on a PUBLISHED day → "1 pending" before
-and after a reload, the same mark on the row; he edits its remarks → the scheduler's view (a second client reading the
-store) shows the new remarks; the scheduler had re-timed the row by hand, then the member edits only the remarks → the
-row is re-made (today's relink rule, kept); he deletes it → gone on the other client, "deleted" pending on a published
-day; D363 after a reload; the hand-over on a stashed week's request (the old `[OIL-RELINK-XWEEK]` cases: the new man
-drawn, never two rows); a request moved from week B to week A is landed in A even with B's stale row stored; every
-member action writes only rows his role may write (§11 test, the exception gone).
+**The rulings it must keep, each a test:** D114, D174, D176, D175, D177 / D178, D363 (after a RELOAD too), D271, D18, the
+16 Sep 26 live-filing rule (after a reload too), D170 / D172 (the OG tag on an unpublished day's changed row, before and
+after a reload).
+
+**Tests first** (the reviewers' and mine): a member files an activity request on the week on screen — his request's row
+is written, NO day row, the screen shows it at once, a reload shows the same; the same on a PUBLISHED day — "1 pending"
+and the same mark on the row before and after a reload; he edits its remarks — the second client (the stand-in reader)
+reads the new remarks, the day row untouched; the scheduler had re-timed the row, then the member edits only the remarks —
+the row is re-made (today's relink rule), its id and place kept; he deletes it — gone after a reload, "deleted" pending on
+a published day; the board's Ground "+ Inputs" — the request AND the day row saved (Astra 3); Accept / ✕ — the day row
+saved with the filing; D363 after a reload (`kept`); D175 on a load and a plan switch; the hand-over of a request whose
+row is on a saved week not on screen (the old `[OIL-RELINK-XWEEK]` cases: the new man drawn there, never two rows); a
+request moved from week B to week A lands in A with B's stale row stored; A's request handed to B then A deleted, on the
+week on screen and on a saved week (Astra 2); the next-week peek after a request change (Astra 1); the Undo and Redo of a
+request edit — the week on screen re-derived, no day row written; every member action writes only rows his role may
+write (§11, the exception gone).
 
 ## 4. Documents fixed in the same change (D201)
 
@@ -215,7 +206,7 @@ member action writes only rows his role may write (§11 test, the exception gone
 ScheduleDay (the snapshot's landed rows carry `srcv` / `kept`; `ScheduleInputPlacement.sourceInputVersion` is `srcv`);
 §3 Input (`hand`); §11 (the exception removed); §12 q9 (unchanged: reports and the overlay). `data-schema.md` (the new
 fields). `engine-rules.md` (the delete and the landing worked out on read). `feature-impact.md` Flow E. `undo-contract.md`
-(derived changes are in the undo records but not saved). `file-map.md` (`state/overlay.ts`). The parent plan's §9 build
+(a derived change is made after its command, never saved). `file-map.md` (`engine/overlay.ts`). The parent plan's §9 build
 log. `OUTSTANDING.md`: `[OIL-RELINK-XWEEK]` closed by script; `[DB-READINESS]`'s state; anything filed on the way.
 
 ## 5. Checks (FULL — `raptor-port/docs/bug-check-order.md`)
@@ -248,11 +239,23 @@ a reload is its check); the reportable projection, if IT's answer to q9 needs on
 
 ## 8. What he will see change
 
-Nothing on screen, by design — every change is in where things are saved and when they are worked out. The one new
-behaviour a person could notice: a request filed on a published day by someone else (in the database, another device;
-here, a reload) now shows on that day's working copy as pending when the day is next read, as it already does in the
-browser of the person who filed it (§3 (c), the landing pass).
+Nothing on screen, by design — every change is in where things are saved and when they are worked out — except:
+1. a request filed on a published day by someone else (in the database, another device; here, a reload) shows on that
+   day's working copy as pending when the day is next read, as it already does for the person who filed it (§3 (c));
+2. editing or deleting a request whose row sits on a week not on screen is no longer refused with "Load the week of …
+   to edit this accepted input" — it goes ahead, and that week shows the change when it is opened (§3 (c)).
 
 ## 9. Build log
 
-*(filled as each step lands)*
+**(a) — built 30 Sep 26** (commits e6ebf963, then f1bd1cf6 for Fable F2): `Input.hand`, `Input.leftAt`, `oild.pa`;
+`clearOilPersonDecisions` and the week-stash enlistment gone; red first (`state/p6a-oilstamp.test.ts`, 3 of 6 red, then
+the F2 case red); the pinned `oilconfirm` tests read the evidence; broken on purpose → red. Unit 7335/7335, tfin 728/0.
+**(b) — built 30 Sep 26** (commit 4cff3bac): the filing marks gone; red first (`state/p6b-filingmarks.test.ts`, 5 of 6
+red); four tests moved to the filing axis; broken on purpose → red. Engine 1735/1735, tfin 728/0.
+**(d) — built 30 Sep 26** (commits 24536325, 79978d3c): `engine/overlay.ts` (new — the strip moved from
+`state/person-delete.ts`) at every door of §2.1; the delete's week on screen overlaid after the command; red first
+(`state/p6d-deleteonread.test.ts`, `engine/overlay.test.ts`); two pinned tests moved to the read-side requirement; each
+door broken on purpose → red. **Found on the way:** the Leave War's posting command (`lw.postout`) carried the posting
+pass's day changes (a nested command joins its outer envelope) — why v1's type list could not have held (§2.2).
+Engine, state, Leave War and undo 4648/4648, tfin 728/0.
+**(c)** — v2 under review (round 2).
