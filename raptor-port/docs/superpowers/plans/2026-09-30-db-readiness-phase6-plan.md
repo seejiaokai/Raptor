@@ -9,7 +9,8 @@ scenarios, the roll-call, the walk, both final code reads). **Rulings range:** D
 **PROVISIONAL until IT confirms in writing** (the parent plan's head): "no plug-in" makes working-out-on-read the only
 way; whether REPORTS can reproduce it is IT's (§12 q9) — the final hand-over of the `ScheduleDay` / `Input` shape waits
 on that answer, and nothing here waits on it — **his ruling D465 (30 Sep 26, "Carry on"): phase 6 is built now, (c)
-included, without waiting for IT's written answers.**
+included, without waiting for IT's written answers.** **D466 (the same evening): work that needs IT's confirmation is held
+until it comes; (c) does not — it follows from D450 — so D465 stands.**
 
 ## 0. What phase 6 is for, plainly
 

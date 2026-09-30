@@ -1092,7 +1092,7 @@ order, hidden, deleted) and the details typed on each ball one row per chart and
 changed, so two people's work on two things never overwrites; a browser's old records are converted once at boot by the
 fold's eighth converter (the store's format is now 6), every chart, layout and detail carried across (tested: his old
 records read and export exactly as before). **Before its "merge live", remind him to EXPORT a copy of his Tracker first
-(D464).** Still in group A: the FULL check is DONE (30 Sep 26 — the walk and both code reads, every finding fixed; the evidence sheet `raptor-port/docs/handpass/2026-09-30-dbrA-group-walk.md`); his look, then phase 6, then 7; the plan's §9 is the build log.** **Phase 6 (plan `raptor-port/docs/superpowers/plans/2026-09-30-db-readiness-phase6-plan.md`) is built now, (c) included, without waiting for IT's written answers (D465, 30 Sep 26 — "Carry on"): (a) and (b) BUILT 30 Sep 26.**
+(D464).** Still in group A: the FULL check is DONE (30 Sep 26 — the walk and both code reads, every finding fixed; the evidence sheet `raptor-port/docs/handpass/2026-09-30-dbrA-group-walk.md`); his look, then phase 6, then 7; the plan's §9 is the build log.** **Phase 6 (plan `raptor-port/docs/superpowers/plans/2026-09-30-db-readiness-phase6-plan.md`) is built now, (c) included, without waiting for IT's written answers (D465, 30 Sep 26 — "Carry on"; D466 — only work needing IT's confirmation is held, and (c) does not): (a) and (b) BUILT 30 Sep 26.**
 **Found in phase 4, for phase 5b — FIXED 30 Sep 26 in phase 5b:** the
 Tracker writes one person's syllabus pick (D376 — his own last chart, a per-person view choice) into the course's SHARED
 plan record (`v3:<course>:plan` `sylId`, `src/tracker/app/core.js loadCourseNow`) whenever a course loads — in a shared
@@ -1130,7 +1130,7 @@ no longer waits on q9's answer (its reporting half still goes to IT). (2) D450's
 plus SYSTEM Custom APIs (§3 ScheduleDay, §12 q8): row ownership alone still refuses another person's save, but a
 take-over, freeing an idle day and telling two tabs of one person apart need another route — decided with the lock's
 build (group B, D453), not now. **To ask IT:** is it plug-ins only, or also Custom APIs and Power Automate flows?
-And (30 Sep 26 — he found it in his environment's Power Apps menu): are Dataverse **Functions** (Power Fx, marked
+**Held until IT answers in writing (D466, 30 Sep 26): any piece of work that rests on one of these answers — name the dependency and hold it; work that does not goes ahead.** And (30 Sep 26 — he found it in his environment's Power Apps menu): are Dataverse **Functions** (Power Fx, marked
 "Preview") allowed, and could one be the lock's small server-side check in place of a plug-in? Unverified that it can
 refuse a save to a day or act for a take-over — ask, and check Microsoft's current documentation before relying on it.
 **And (30 Sep 26, `[DB-READINESS]` group A phase 4 — `data-model.md` §12 q4, §9):** `EditLog.seq` is the store's own
