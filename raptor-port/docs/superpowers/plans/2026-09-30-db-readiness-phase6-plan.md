@@ -8,7 +8,8 @@ plan's §2 decisions bind it). **The design of record:** `raptor-port/docs/data-
 scenarios, the roll-call, the walk, both final code reads). **Rulings range:** D465–D469. **Observations:** #392 on.
 **PROVISIONAL until IT confirms in writing** (the parent plan's head): "no plug-in" makes working-out-on-read the only
 way; whether REPORTS can reproduce it is IT's (§12 q9) — the final hand-over of the `ScheduleDay` / `Input` shape waits
-on that answer, and nothing here waits on it.
+on that answer, and nothing here waits on it — **his ruling D465 (30 Sep 26, "Carry on"): phase 6 is built now, (c)
+included, without waiting for IT's written answers.**
 
 ## 0. What phase 6 is for, plainly
 

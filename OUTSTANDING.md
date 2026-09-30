@@ -1092,7 +1092,7 @@ order, hidden, deleted) and the details typed on each ball one row per chart and
 changed, so two people's work on two things never overwrites; a browser's old records are converted once at boot by the
 fold's eighth converter (the store's format is now 6), every chart, layout and detail carried across (tested: his old
 records read and export exactly as before). **Before its "merge live", remind him to EXPORT a copy of his Tracker first
-(D464).** Still in group A: the FULL check is DONE (30 Sep 26 — the walk and both code reads, every finding fixed; the evidence sheet `raptor-port/docs/handpass/2026-09-30-dbrA-group-walk.md`); his look, then phase 6, then 7; the plan's §9 is the build log.**
+(D464).** Still in group A: the FULL check is DONE (30 Sep 26 — the walk and both code reads, every finding fixed; the evidence sheet `raptor-port/docs/handpass/2026-09-30-dbrA-group-walk.md`); his look, then phase 6, then 7; the plan's §9 is the build log.** **Phase 6 (plan `raptor-port/docs/superpowers/plans/2026-09-30-db-readiness-phase6-plan.md`) is built now, (c) included, without waiting for IT's written answers (D465, 30 Sep 26 — "Carry on"): (a) and (b) BUILT 30 Sep 26.**
 **Found in phase 4, for phase 5b — FIXED 30 Sep 26 in phase 5b:** the
 Tracker writes one person's syllabus pick (D376 — his own last chart, a per-person view choice) into the course's SHARED
 plan record (`v3:<course>:plan` `sylId`, `src/tracker/app/core.js loadCourseNow`) whenever a course loads — in a shared
