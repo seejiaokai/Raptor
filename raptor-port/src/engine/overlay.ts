@@ -90,7 +90,7 @@ export function stripSign(sign: any, bind: any, id: string): boolean {
    the name the stored row last carried (a request handed to another man since the row was saved is that man's row, and
    stays — Astra's red team of the phase-6 plan, finding 2: the order "hand A's request to B, then delete A" must leave
    B's row); a row whose request is gone (the delete removes his requests from the cutoff) goes by the name it carries. */
-const hisLanded = (d: any, id: string) => new Set<string>(((d && d.ground) || []).filter((r: any) => {
+export const hisLanded = (d: any, id: string) => new Set<string>(((d && d.ground) || []).filter((r: any) => {
   if (!r || !r.src) return false
   const inp: any = (INPUTS as any[]).find(x => x && String(inpId(x)) === String(r.src))
   return inp ? String(inp.person || '') === id : whoId(r.who) === id

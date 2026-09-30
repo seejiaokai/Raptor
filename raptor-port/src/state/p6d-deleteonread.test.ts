@@ -33,7 +33,7 @@ import { _resetTimeline } from '../undo/timeline'
 import { installGlobalUndo } from './undo-wire'
 import { _resetDisclosure } from './disclosure'
 import * as view from './view'
-import { deletePerson, personKeysOnDay } from './person-delete'
+import { deletePerson, personKeysOnDay, stripDeletedFromDay } from './person-delete'
 
 const ISNAP = JSON.stringify(INPUTS)
 const PSNAP = JSON.stringify(PEOPLE)
@@ -198,6 +198,19 @@ describe('phase 6 (d) — a delete writes his records, never a week; every day f
     expect(JSON.stringify(nextMondaySeed(W1)), 'before the delete').toContain(`"${who}"`)
     expect(deletePerson(who)).toBe(null)
     expect(JSON.stringify(nextMondaySeed(W1)), 'after it: the seed read without him').not.toContain(`"${who}"`)
+  })
+
+  /* FABLE'S ROUND-2 READ OF THE PHASE-6 PLAN, F1 (step 2): the version-load belt took a deleted man's landed row by the
+     NAME the version's row carried — a request handed to another man since, then its former holder deleted, lost its new
+     holder's row at the load door, though every read keeps it (the current-holder rule, engine/overlay.ts hisLanded) */
+  it('the version-load belt decides a landed row by the request\'s CURRENT holder: handed on, then the old holder deleted — the row stays', async () => {
+    await boot(new MemoryBackend())
+    INPUTS.unshift({ iid: 'p6dL', person: 'stiff', date: 'Jul 17', yr: 2026, allday: true, type: 'Meeting', mod: 'now' } as any)
+    Object.assign((PEOPLE as any).pike, { deleted: true, deletedFrom: '2026-07-15' })
+    const nd: any = JSON.parse(JSON.stringify(DAYS[TO_COME]))
+    nd.ground = [{ prog: 'MEETING', who: 'pike', src: 'p6dL', str: '', end: '' }, { prog: 'HIS', who: 'pike', src: 'gone-p6d', str: '', end: '' }]
+    stripDeletedFromDay(TO_COME, nd)
+    expect(nd.ground.map((r: any) => r.src), 'Stiff\'s request keeps its row; the gone request of the deleted man leaves').toEqual(['p6dL'])
   })
 
   it('a saved plan parked on a day to come of a week opened later is read without him', async () => {

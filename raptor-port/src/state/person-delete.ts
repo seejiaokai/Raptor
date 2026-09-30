@@ -52,7 +52,7 @@ import { SCHED } from '../engine/publish'
 import { INPUTS, dateOrd, withRemarksTail, nowStamp } from '../engine/inputs'
 import { ordShift, ordLabel } from '../engine/medical'
 import { stashKeys, stashGet, stashWeekState } from '../engine/weekstash'
-import { stripPersonFromDay, trimTail, overlayDeletedWeek } from '../engine/overlay'
+import { stripPersonFromDay, trimTail, overlayDeletedWeek, hisLanded } from '../engine/overlay'
 import { validate } from '../engine/validate'
 import { localToday } from '../leavewar/engine/period'
 import { PLANPUCKS } from './plan'
@@ -128,9 +128,11 @@ export function stripDeletedFromDay(di: number, nd: any): string[] {
   for (const id of Object.keys(PEOPLE)) {
     const p: any = (PEOPLE as any)[id]
     if (!p || !p.deleted || iso < String(p.deletedFrom || '')) continue
-    /* his landed rows: a row that came from one of his inputs (the input itself is gone or ended by the delete) */
-    const srcs = new Set<string>(((nd.ground || []) as any[]).filter(r => r && r.src && whoId(r.who) === id).map(r => String(r.src)))
-    if (stripPersonFromDay(nd, id, srcs)) out.push(String(p.cs))
+    /* his landed rows: a row landed from one of HIS requests — decided by the request's CURRENT holder, never the name
+       the version's row carries (the one rule every read uses, engine/overlay.ts hisLanded — Fable's round-2 read of the
+       phase-6 plan, F1: a request handed on since the version was issued is its new holder's row, and a version load
+       must not take it with a deleted former holder) */
+    if (stripPersonFromDay(nd, id, hisLanded(nd, id))) out.push(String(p.cs))
   }
   return out
 }
