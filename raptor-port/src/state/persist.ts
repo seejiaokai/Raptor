@@ -35,7 +35,7 @@ import { wireChangeBatches } from './changebatch'
 import './settingsrows'
 import { wireRowConsumer, registerComposer, registerMapper, type RowWrite } from './rowmap'
 import { schedRecordsNow, resyncSchedBaseline } from './sched-commit'
-import { mintOrd, sortByOrd, byOrd } from '../engine/ord'
+import { mintOrd, sortByOrd, byOrd } from '../command/ord'
 import {
   joinWeek, parseRowId, rowSuffix, dayRowJSON, weekRowJSON, stashRows, weeksConverter, type WeekRows,
 } from './weekrows'

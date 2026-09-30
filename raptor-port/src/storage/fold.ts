@@ -16,7 +16,8 @@
      every entry of that group it does not itself replace — so it is a superset, and nothing is left
      to retry;
    - a store at 6 never looks for old blobs again.
-   Production registers no converter yet: each phase that changes a record's shape adds its own. */
+   Each phase that changed a record's shape registered its own converter; the Tracker's (phase 5b, src/tracker/fold.ts,
+   registered by src/boot.ts) completed the manifest on 30 Sep 26 — the app now writes format 6 and folds a format-5 store. */
 import type { Backend, Collection, Entry, Snapshot } from './backend'
 import { recordKey } from './backend'
 import { SCHEMA_VERSION } from './reset'

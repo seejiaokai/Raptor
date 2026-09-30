@@ -60,11 +60,13 @@ export function warOf(collection: string, id: string): string | null {
 
 /* the course a Tracker record belongs to. Course-scoped keys are
    `v3:<course>:<rest…>` (≥3 segments); the global lists (`v3:courses`,
-   `v3:sylcat`, …) are 2 segments and name no course. */
+   `v3:sylcat`, …) are 2 segments and name no course — and nor does anything under
+   `v3:master:`, the global chart records (a chart, its layout, a ball's details — and,
+   since [DB-READINESS] group A phase 5b, one row per course: `v3:master:course:<id>`). */
 export function courseOf(collection: string, id: string): string | null {
   if (!collection.startsWith('trk.')) return null
   const p = id.split(':')
-  return p.length >= 3 ? p[1] : null
+  return p.length >= 3 && p[1] !== 'master' ? p[1] : null
 }
 
 const MODULE_OF_COLL = (collection: string): Module => {

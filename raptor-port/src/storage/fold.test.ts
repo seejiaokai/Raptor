@@ -3,7 +3,8 @@
    per kind) are turned into the new one-row-per-thing records ONCE, atomically, and only by a build
    that can fold them ALL: the format becomes 6 only in the build that registers every converter. A
    converter manifest refuses to stamp 6 while any is missing — the store stays at 5 and the app
-   boots exactly as today. Production ships NO converter yet, so these tests register a stand-in set. */
+   boots exactly as today. These tests clear the registry and register a stand-in set (the app's own eight — complete since
+   phase 5b — are pinned by src/tracker/trk-rows.test.ts, through the app's boot). */
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 import { MemoryBackend } from './memory'
 import { bootStorage } from './boot'
@@ -48,7 +49,7 @@ function registerAll(except?: string) {
 }
 
 describe('the converter manifest', () => {
-  it('production registers no converter yet: the target stays 5, no fold is ever due', async () => {
+  it('with no converter registered, the target stays 5 and no fold is ever due', async () => {
     expect(missingConverters()).toEqual([...REQUIRED_CONVERTERS])
     expect(targetFormat()).toBe(SCHEMA_VERSION)
     const be = new MemoryBackend(); be.seed({ settings: at5() })

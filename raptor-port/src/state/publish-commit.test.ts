@@ -22,7 +22,7 @@ import {
 import { issuedDisclosed, _resetDisclosure } from './disclosure'
 import { histSnap } from './history'
 import { joinParts } from './weekrows'
-import { sortByOrd } from '../engine/ord'
+import { sortByOrd } from '../command/ord'
 import { setSession } from './auth'
 import * as view from './view'
 import { onCommit } from '../command'

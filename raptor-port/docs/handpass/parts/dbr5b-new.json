@@ -1,0 +1,62 @@
+[
+  {
+    "part": "new",
+    "name": "NEW: the boot converted the store once — its format is 6",
+    "ok": true,
+    "detail": "{\"stage\":1,\"dataFormatVersion\":6,\"initialized\":true,\"appliedAt\":\"2026-09-30T07:49:55.116Z\",\"minClient\":6}"
+  },
+  {
+    "part": "new",
+    "name": "NEW: no old whole record is left anywhere",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "part": "new",
+    "name": "NEW: the Tracker is stored one row per course, enrolment, chart and ball's details",
+    "ok": true,
+    "detail": "{\"course\":2,\"enr\":5,\"chart\":5,\"info\":4}"
+  },
+  {
+    "part": "new",
+    "name": "NEW: the rest of the app came through whole — every request, person and war",
+    "ok": true,
+    "detail": "before {\"inputs\":46,\"people\":61,\"wars\":2} · after {\"inputs\":46,\"people\":61,\"wars\":2}"
+  },
+  {
+    "part": "new",
+    "name": "NEW: the Tracker reads and EXPORTS exactly as before — every chart, layout, name, order, detail, course and student (D464)",
+    "ok": true,
+    "detail": "4 charts, 2 courses — the same"
+  },
+  {
+    "part": "new",
+    "name": "NEW: the syllabus dropdown lists the same charts in the same order",
+    "ok": true,
+    "detail": "[\"2026\",\"MY TX\",\"A/G - A/A 2026\",\"HIS OWN: CHART ✎\"]"
+  },
+  {
+    "part": "new",
+    "name": "NEW: his own chart opens, drawn",
+    "ok": true,
+    "detail": "210 balls"
+  },
+  {
+    "part": "new",
+    "name": "NEW: the second course and its student",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "part": "new",
+    "name": "NEW (phone): the Tracker draws after the conversion",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "part": "new",
+    "name": "new: no console error, page error or failed request",
+    "ok": true,
+    "detail": ""
+  }
+]

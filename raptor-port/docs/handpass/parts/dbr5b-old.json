@@ -1,0 +1,26 @@
+[
+  {
+    "part": "old",
+    "name": "OLD: made through the app — a chart of his own, a renamed built-in, a deleted built-in, two courses, details on three balls",
+    "ok": true,
+    "detail": "dropdown [\"2026\",\"MY TX\",\"A/G - A/A 2026\",\"HIS OWN: CHART ✎\"] · courses 27B,26ABSG · details {\"sb2026\":[\"ST-01\",\"ACG-01\"],\"scmunt16s57idf51\":[\"ST-01\",\"ST-02\"]}"
+  },
+  {
+    "part": "old",
+    "name": "OLD: stored the old way — the course list, each student list and the chart records whole",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "part": "old",
+    "name": "OLD: the rest of the app as main keeps it",
+    "ok": true,
+    "detail": "{\"inputs\":46,\"people\":61,\"wars\":2,\"schema\":\"5\"}"
+  },
+  {
+    "part": "old",
+    "name": "old: no console error, page error or failed request",
+    "ok": true,
+    "detail": ""
+  }
+]

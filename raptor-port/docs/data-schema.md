@@ -304,7 +304,7 @@ that changed them (`src/state/persist.ts` — the stream consumer; `persistAll` 
 
 | stored id | row | holds |
 |---|---|---|
-| `raptor:inputs/<iid>` | a request (`Input`) | the whole request, with `ord` — its place in the list (`src/engine/ord.ts`; the design's `sortIndex`) |
+| `raptor:inputs/<iid>` | a request (`Input`) | the whole request, with `ord` — its place in the list (`src/command/ord.ts`; the design's `sortIndex`) |
 | `raptor:people/<pid>` | a person (`Person`) | the whole roster record, with `ord`; the two placeholder pucks (ALL `all`, ALL AVAIL `allavail`) are code and never stored |
 | `raptor:plan/pp:<id>` | a planning note or pucks row (`PlanningPuck`) | the entry, with `ord`; its id the app's opaque `newId('pp')` (a note saved before keeps its `pp<N>`) |
 | `raptor:plan/dm:<iso>` | a day title (`DayRemark`) | the title string |
@@ -553,7 +553,27 @@ group A phase 4.1):** a record a command changed is written by the Tracker's own
 to the command stream, through its storage door, inside that command's saved group and its
 change-log batch — never again after it; its own Undo / Redo is one restore command each
 (`tracker.undo` / `tracker.redo`). Only its first mount (the seed and one-time migrations,
-their flags) writes outside a command. Since the seam the Tracker's data flows through the
+their flags) writes outside a command. **One row per thing (30 Sep 26, `[DB-READINESS]` group A phase 5b — D462,
+D464):** the records that held several people's or several charts' work are STORED one row each, through the row door
+in `core.js` (`app/rows.js` holds the one conversion; every caller still reads and writes the old record whole):
+a course and chart's student list `v3:<course>:<chart>:roster` → `v3:<course>:<chart>:enr:<enrolmentId>` =
+`{ id, name, pid?, ord }` (`Enrolment`); the course list `v3:courses` and the deleted courses `v3:delcourses` →
+`v3:master:course:<courseId>` = `{ id, name, ord, deleted? }` (`Course`); the chart records `v3:master:syls`
+(definitions), `sylcat` (names), `sylorder` (display order), `sylhidden`, `syltomb` → `v3:master:chart:<sylId>` =
+`{ id, name?, base?, userNamed?, ord?, hidden?, tomb?, def? }` (`Syllabus` — the catalogue list now reads in the
+display order, the one order a chart row carries); the details typed on the balls `v3:master:eventinfo` →
+`v3:master:info:<sylId>:<encoded ball code>` = the ball's typed fields (`TrainingEvent`), with a one-time flag
+`v3:eventinfomig` = `'1'` once the details are in their per-chart form (so clearing the last one never brings the old
+one-table `v3:eventinfo` back). Order rides the row (`ord`, read by (ord, id) — `src/command/ord.ts`). A write stores
+only the rows its list CHANGED against what that copy of the Tracker last read, so two people's work on two things never
+overwrites; one write is one command. An old whole record that is still stored (a browser the fold has not reached, the
+standalone Tracker) is read as it stands, and converted to rows at its next write; one that cannot be split (bare names
+from before the ids) is kept whole. A browser's old records are converted once at boot by the fold's `tracker` converter
+(`src/tracker/fold.ts`, registered by `src/boot.ts` — the last of the eight: the store's format is 6). The layouts, marks,
+dates, pace, lulls, plans and flags keep their keys. **The chart a signed-in person has open is his own place** (D376),
+kept on his browser under `ocuLocal:who:<id>:lastSyl:<course>` — never written into the course's shared `v3:<course>:plan`,
+whose `sylId` names the course's own chart (the standalone Tracker, nobody signed in, keeps the one shared answer).
+Since the seam the Tracker's data flows through the
 whiteboard and lands under `raptor:tracker/<key>` (e.g. `raptor:tracker/v3:master:syls`);
 the legacy `ocu:*` keys are imported once. `ocuLocal:*` holds this browser's
 last course and crew member — a view preference, written straight to

@@ -133,9 +133,9 @@ import { counterLabel } from '../engine/counters'
 import { creditWorth } from '../engine/credit'
 import { localBackend, memoryBackend, type StorageBackend } from './storage'
 /* [DB-READINESS] group A, phase 3 — the war saved one row per record (state/rows.ts), each list's order on its records
-   (engine/ord.ts), and the one-time fold of an old store's whole-list records (storage/fold.ts) */
+   (command/ord.ts), and the one-time fold of an old store's whole-list records (storage/fold.ts) */
 import { lwRows, allRows, WAR, REC, LEDGER, OPENING, PROFILE, parseRecKey, parseOpeningKey, type LwNow } from './rows'
-import { mintOrd, byOrd } from '../../engine/ord'
+import { mintOrd, byOrd } from '../../command/ord'
 import { registerConverter, type Converter } from '../../storage/fold'
 import type { Entry } from '../../storage/backend'
 /* [ARCH-STACK] Step 2 phase 4 — the shared command layer (see the persist()
@@ -900,7 +900,7 @@ function writeWorldRows(recordsOnly = false): void {
   BOOT_KEYS = keys
 }
 
-/* EVERY LIST'S ORDER ON ITS RECORDS ([DB-READINESS] group A, phase 3 — plan §8 P3-CELL-DIFF; engine/ord.ts). Run at the
+/* EVERY LIST'S ORDER ON ITS RECORDS ([DB-READINESS] group A, phase 3 — plan §8 P3-CELL-DIFF; command/ord.ts). Run at the
    war's apply-end — persistNotify, which every durable write passes — over the addresses the write changed, compared
    with `prev` (the last committed world; null = every address): a record with no place, or one a writer moved out of
    order, takes one from its neighbours; a record still in order keeps its own, so a new bid writes one row. The wars'
@@ -1069,7 +1069,7 @@ export function initStore(b?: StorageBackend, opts: { started?: boolean; seedDem
      windows, laid onto the projection by setPeople. (The admin's identity
      overrides it read beside them are gone — D460, D461.) */
   state = withCurrent({ ...state, wars, currentId, openings, ledger, oilPolicy, eventDefs, figureOrder, rosterOrder, persLabels, manningOrder, manningHidden, figureHidden, groupDefs, groupPriority, groupPriorityCustom, groupColors: colorsFor(groupDefs, groupColors), requirements, eventRows, showSans, postOuts })
-  /* every list's order on its records — the seed's, and a stored record not yet placed (engine/ord.ts) */
+  /* every list's order on its records — the seed's, and a stored record not yet placed (command/ord.ts) */
   state = placeRecords(null, state)
   /* the committed world is this one: a command the test hook below runs diffs against it, not the last world */
   LW_BASELINE = state

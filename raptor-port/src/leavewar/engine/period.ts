@@ -87,7 +87,7 @@ export interface Period {
   bands: EventBand[]
   /** Its place among the wars — the order they were created in, which the
    *  period picker lists them by ([DB-READINESS] group A, phase 3: each war is
-   *  its own stored row now, so the order rides on the row; engine/ord.ts). */
+   *  its own stored row now, so the order rides on the row; command/ord.ts). */
   ord?: number
 }
 

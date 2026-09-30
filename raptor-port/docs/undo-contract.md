@@ -52,7 +52,7 @@ follow the rows: per day `days/<wk>#<di>`, `sched.book/<wk>#<di>`, `sched.mutes/
 `sched.retraction/<wk>:<verId>~<n>`; a saved week off screen `weekstash/<wk><row suffix>`, each value the stored row.
 **Phase 2 (30 Sep 26): the requests (`inputs/<iid>`), the roster (`people/<pid>`) and the planning calendar
 (`plan/pp:<id>`, `plan/dm:<iso>` — `plan/all` split)** — each a plain per-change mapper; `persistAll` is gone. A list's
-order rides each record (`ord`, `engine/ord.ts`), so the old `inputs/__order` record is retired and a restore puts a
+order rides each record (`ord`, `command/ord.ts`), so the old `inputs/__order` record is retired and a restore puts a
 record back where it stood by its own `ord`. **Phase 3 (30 Sep 26): the Leave War** — its store subscribes to the same
 stream and writes through its OWN door (`leavewar/state/rows.ts`; the war keeps its own seam): `lw.war` → `war:<id>`,
 `lw.cell` → one row per record at the address (`rec:<war>:<recId>` — diffed across the whole envelope, so a move is one

@@ -51,7 +51,7 @@ import type { EnlistableStore, RecordEntry, CommitResult } from '../command'
 import { snapshotStash, restoreStash, stashEntries, writeStashRecords } from '../engine/weekstash'
 import { registerSchedCommandLayer, commitSchedVoid, commitSchedValue, commitInputs, commitInputsProjection, commitInputsWith, SCHED_TYPES, resyncSchedBaseline, commitSchedLoad } from './sched-commit'
 import { registerPeopleSettingsCommandLayer, resyncPeopleBaseline, mintPeopleOrd } from './people-settings-commit'
-import { mintOrd } from '../engine/ord'
+import { mintOrd } from '../command/ord'
 import { PLANPUCKS } from './plan'
 import { accountsLoad, setAccountSeeds } from './accounts'
 

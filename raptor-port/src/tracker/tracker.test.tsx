@@ -28,6 +28,9 @@ import { PEOPLE } from '../engine/people'
 import { readFileSync, readdirSync } from 'node:fs'
 import { join } from 'node:path'
 import { useSyncExternalStore } from 'react'
+/* a stored student list or course list read back as the Tracker reads it ([DB-READINESS] group A, phase 5b — D462: they
+   are stored one row per enrolment / course now, so a raw read of the old key finds nothing) — the doorway's shape */
+const rec = async (k: string) => { const v = await (core as any).storedRecordForTests(k); return v == null ? null : { key: k, value: v } }
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 const $ = (sel: string) => document.querySelector(sel)
@@ -590,7 +593,7 @@ describe('the person bridge and the link (peoplewire.ts → people.js → core.j
     expect(r.pid, 'the person rides the entry now, not a separate record').toBe('p1')
     expect(C.pidOf(r.id)).toBe('p1')
     expect(C.linkedPerson(r.id)).toEqual(P[0])
-    const stored = JSON.parse((await storage.get(`v3:${C.course}:${C.curSyl()}:roster`))!.value)
+    const stored = JSON.parse((await rec(`v3:${C.course}:${C.curSyl()}:roster`))!.value)
     expect(stored.find((e: any) => e.name === 'RANGER')).toEqual(r)
     expect(await storage.get('v3:links'), 'no separate links record is written').toBeNull()
     /* picking somebody already here is the silent dedupe of old — one entry */
@@ -628,7 +631,7 @@ describe('the person bridge and the link (peoplewire.ts → people.js → core.j
     expect(staged, 'the load read the new roster while the dialog was up').toBe(true)
     expect(C.curSyl()).toBe(other)
     expect(C.roster.map((r: any) => r.name), 'on screen').toContain('RACER')
-    const stored = await storage.get(`v3:${C.course}:${other}:roster`)
+    const stored = await rec(`v3:${C.course}:${other}:roster`)
     expect(JSON.parse(stored!.value).map((e: any) => e.name), 'in the store, under the new syllabus').toContain('RACER')
     /* leave things as the tests around this one expect them */
     const rm = C.removeStudent(C.byName('RACER')!.id); await tick(); C.dlgClose(true); await rm
@@ -648,20 +651,21 @@ describe('the person bridge and the link (peoplewire.ts → people.js → core.j
     const realSet = storage.set; let fired = false; let sw: Promise<any> | null = null
     storage.set = async function (k: string, v: string) {
       const r = await realSet.call(storage, k, v)
-      if (!fired && k === rosterKey) { fired = true; sw = C.switchSyllabus(other); await tick(); await tick(); await tick() }
+      /* the roster's save is one row per student since [DB-READINESS] group A phase 5b — the new student's row */
+      if (!fired && k.startsWith(rosterKey.replace(/roster$/, 'enr:'))) { fired = true; sw = C.switchSyllabus(other); await tick(); await tick(); await tick() }
       return r
     } as any
     try { const p = C.addStudent(); await tick(); C.dlgClose('RACER'); await p; await sw } finally { storage.set = realSet }
     expect(fired, 'the switch started inside the add').toBe(true)
     const val = async (k: string) => (await storage.get(k))?.value ?? null
     /* the add landed as an ENTRY on the old syllabus; every key below is its id */
-    const saved = JSON.parse((await val(rosterKey))!)
+    const saved = JSON.parse((await rec(rosterKey))!.value)
     const racer = saved.find((e: any) => e.name === 'RACER')
     expect(racer, 'roster, old syllabus').toBeTruthy()
     expect(await val(`v3:${C.course}:${orig}:m:${racer.id}`), 'marks, old syllabus').toBe('{}')
     expect(JSON.parse((await val(`v3:${C.course}:${orig}:d:${racer.id}`))!), 'dates, old syllabus').toEqual({ lastSyll: null, lastCurr: null })
     expect(await val(`v3:${C.course}:${other}:m:${racer.id}`), 'no marks strayed under the new syllabus').toBeNull()
-    expect(JSON.parse((await val(`v3:${C.course}:${other}:roster`)) || '[]').map((e: any) => e.name)).not.toContain('RACER')
+    expect(JSON.parse((await rec(`v3:${C.course}:${other}:roster`))?.value || '[]').map((e: any) => e.name)).not.toContain('RACER')
     expect(C.curSyl(), 'the switch landed afterwards').toBe(other)
     expect(C.byName('RACER')).toBeNull()
     /* leave things as the tests around this one expect them */
@@ -720,7 +724,7 @@ describe('the person bridge and the link (peoplewire.ts → people.js → core.j
     expect((await storage.get(`v3:${C.course}:idmig`))!.value, 'and the course is flagged done again').toBe('1')
     const p = C.addStudent(); C.dlgClose({ pick: 'p2' }); await p; await C.whenLoaded()
     expect(C.byName('BRAVO')!.pid).toBe('p2')
-    const stored = JSON.parse((await storage.get(`v3:${C.course}:${C.curSyl()}:roster`))!.value)
+    const stored = JSON.parse((await rec(`v3:${C.course}:${C.curSyl()}:roster`))!.value)
     expect(stored.find((e: any) => e.name === 'BRAVO')).toEqual(C.byName('BRAVO'))
     /* leave the store as the tests around this one expect it */
     await storage.delete('v3:links')
@@ -1073,7 +1077,7 @@ describe('the person bridge and the link (peoplewire.ts → people.js → core.j
     expect(after.id, 'the same enrolment id').toBe(before.id)
     expect(after.pid, 'still linked to the same person').toBe('p1')
     expect(C.linkedPerson(after.id)).toEqual(P[0])
-    const stored = JSON.parse((await storage.get(`v3:${C.course}:${C.curSyl()}:roster`))!.value)
+    const stored = JSON.parse((await rec(`v3:${C.course}:${C.curSyl()}:roster`))!.value)
     expect(stored.find((r: any) => r.id === before.id).name, 'the roster carries the new label under the same id').toBe('VIPER')
     expect((await storage.get(markKey))!.value, 'the id-keyed mark record is untouched').toBe(marksVal)
     expect(await storage.get(`v3:${C.course}:${C.curSyl()}:m:VIPER`), 'nothing is filed under the label').toBeNull()
@@ -1132,7 +1136,7 @@ describe('the person bridge and the link (peoplewire.ts → people.js → core.j
     p = C.addStudent(); await answer('RENSYNC'); await p; await C.whenLoaded()   /* same name → the SAME enrolment id */
     expect(C.byName('RENSYNC')!.id, 'one enrolment on both charts').toBe(id)
     p = C.renameStudent(id); await answer('RENSYNCED'); await p; await C.whenLoaded()
-    const labelOn = (sid: string) => storage.get(`v3:${C.course}:${sid}:roster`).then((v: any) => JSON.parse(v.value).find((r: any) => r.id === id)?.name)
+    const labelOn = (sid: string) => rec(`v3:${C.course}:${sid}:roster`).then((v: any) => JSON.parse(v.value).find((r: any) => r.id === id)?.name)
     expect(await labelOn(sylB), 'the visible chart').toBe('RENSYNCED')
     expect(await labelOn(sylA), 'and the other syllabus the id sits on').toBe('RENSYNCED')
     let rm = C.removeStudent(id); await answer(true); await rm                   /* off B */
@@ -1232,7 +1236,7 @@ describe('the person bridge and the link (peoplewire.ts → people.js → core.j
     await until(() => C.dlg && /restored/.test(C.dlg.msg)); C.dlgClose(true); await p
     const limp = C.courseIdOf('LINKIMP')
     expect(limp, 'the imported course exists, under a minted id').toBeTruthy()
-    const r = JSON.parse((await storage.get(`v3:${limp}:${syl}:roster`))!.value)
+    const r = JSON.parse((await rec(`v3:${limp}:${syl}:roster`))!.value)
     expect(r, 'GHOST is on no roster of that course').toEqual([{ id: expect.stringMatching(/^s/), name: 'ALPHA', pid: 'p1' }])
     expect((await storage.get(`v3:${limp}:idmig`))!.value, 'the imported course is already id-keyed').toBe('1')
     delete (window as any).__pickOpenForTests
@@ -1457,7 +1461,7 @@ describe('the person bridge and the link (peoplewire.ts → people.js → core.j
     expect(C.gradeOf(s1, 'ST-01')).toBe('dco'); expect(C.gradeOf(sR, 'ST-01')).toBe('marg')
     expect(await storage.get('v3:' + xid + ':' + syl1 + ':m:sLAPTOP'), 'nothing filed under the file’s id').toBeNull()
     expect(C.paceOf(s1).epw, 'the file’s pace, under the one id').toBe('3')
-    expect(JSON.parse((await storage.get('v3:' + xid + ':' + syl2 + ':roster'))!.value), 'the chart the file did not carry reads the label it brought').toEqual([{ id: s1, name: 'PILOT ONE' }, { id: sR, name: 'RANGER NEW', pid: 'p1' }])
+    expect(JSON.parse((await rec('v3:' + xid + ':' + syl2 + ':roster'))!.value), 'the chart the file did not carry reads the label it brought').toEqual([{ id: s1, name: 'PILOT ONE' }, { id: sR, name: 'RANGER NEW', pid: 'p1' }])
   })
   it('a student added since the export is still on the chart after the file comes in — added to what is here, not written over it', async () => {
     let p: Promise<any> = C.addStudent(); C.dlgClose('pilot two'); await p; await C.whenLoaded()
@@ -1491,7 +1495,7 @@ describe('the person bridge and the link (peoplewire.ts → people.js → core.j
 
   it('an import naming a DIFFERENT person under an existing callsign is REFUSED whole — the student here keeps their id and marks (bug-check 11 Sep 26)', async () => {
     const prevCourse = C.course, prevCourses = (C.COURSES as string[]).slice()
-    const prevList = (await storage.get('v3:courses'))?.value ?? null
+    const prevList = await (core as any).storedRecordForTests('v3:courses')
     try {
       let p: Promise<any> = C.addCourse(); await answer('CLASH'); await p; await C.whenLoaded()
       const syl = C.curSyl()
@@ -1509,7 +1513,7 @@ describe('the person bridge and the link (peoplewire.ts → people.js → core.j
       expect(await storage.get('v3:CLASH:' + syl + ':m:fZ'), 'nothing was written under the file id').toBeNull()
     } finally {
       ;(C.COURSES as string[]).splice(0, (C.COURSES as string[]).length, ...prevCourses)
-      if (prevList == null) await storage.delete('v3:courses'); else await storage.set('v3:courses', prevList)
+      if (prevList != null) await (core as any).storeRecordForTests('v3:courses', prevList)
       await C.loadCourse(prevCourse); await C.whenLoaded()
     }
   })
@@ -1537,7 +1541,8 @@ describe('the person bridge and the link (peoplewire.ts → people.js → core.j
     try { p = C.renCourse(); await answer('LABELONLY'); await p; await C.whenLoaded() } finally { storage.set = realSet }
     expect(C.course, 'the id is unchanged').toBe(old)
     expect(C.courseName(old)).toBe('LABELONLY')
-    expect(writes.some(k => k === 'v3:courses'), 'the index is rewritten').toBe(true)
+    /* the course list is one row per course since [DB-READINESS] group A phase 5b (D462): a rename writes that ONE row */
+    expect([...new Set(writes.filter(k => k.startsWith('v3:master:course:') || k === 'v3:courses'))], 'the index is rewritten — this course\'s one row').toEqual(['v3:master:course:' + old])
     expect(writes.filter(k => k.startsWith('v3:' + old + ':')), 'no per-course record is rewritten by a rename').toEqual([])
     expect((await storage.get('v3:' + old + ':' + syl + ':m:' + b.id))!.value, 'the marks stay put under the id').toContain('dco')
     p = C.renCourse(); await answer(oldName); await p; await C.whenLoaded()
@@ -1572,16 +1577,16 @@ describe('the person bridge and the link (peoplewire.ts → people.js → core.j
 describe('course ids — migration, links translation, fail-closed boot, boundary refusals', () => {
   const C: any = core
   const val = async (k: string) => (await storage.get(k))?.value ?? null
-  const stdKeys = ['v3:courses', 'v3:courseidmig', 'v3:courseidmap', 'v3:links']
   /* run body() with a fixture course list + keys in place, then restore: the
      module COURSES and the four index/flag/link keys are snapshotted and put
      back, the fixture keys and any minted-id keys are deleted, bootError is
      cleared and the done flag re-set, so the shared engine state is unchanged. */
   const runMig = async (rawList: any[], fixtures: Record<string, string>, body: () => Promise<void>) => {
-    const snap = new Map<string, string | null>()
-    for (const k of stdKeys) snap.set(k, await val(k))
+    /* the WHOLE store, snapshotted and put back ([DB-READINESS] group A, phase 5b: the course list is one row per course
+       now, and the migration's write of it touches those rows too) — then the Tracker's mirror made the store again */
+    const before = new Map<string, string>()
+    for (const k of (await storage.list()).keys as string[]) { const v = await val(k); if (v != null) before.set(k, v) }
     const prevCourses = C.COURSES.slice()
-    const knownIds = new Set(prevCourses.filter((e: any) => e && e.id).map((e: any) => e.id))
     const fixtureKeys = Object.keys(fixtures)
     try {
       await storage.delete('v3:courseidmig'); await storage.delete('v3:courseidmap')
@@ -1590,12 +1595,11 @@ describe('course ids — migration, links translation, fail-closed boot, boundar
       C.COURSES.splice(0, C.COURSES.length, ...rawList)
       await body()
     } finally {
-      for (const k of (await storage.list()).keys as string[]) { const m = /^v3:(c[0-9a-z]+):/.exec(k); if (m && !knownIds.has(m[1])) await storage.delete(k) }
-      for (const k of fixtureKeys) await storage.delete(k)
-      for (const [k, v] of snap) { if (v == null) await storage.delete(k); else await storage.set(k, v) }
+      for (const k of (await storage.list()).keys as string[]) if (!before.has(k)) await storage.delete(k)
+      for (const [k, v] of before) if ((await val(k)) !== v) await storage.set(k, v)
+      await C.rehydrateForTests()
       C.COURSES.splice(0, C.COURSES.length, ...prevCourses)
       C.clearBootError()
-      await storage.set('v3:courseidmig', '1')
     }
   }
 
@@ -1619,7 +1623,7 @@ describe('course ids — migration, links translation, fail-closed boot, boundar
       expect(JSON.parse((await val('v3:links'))!).MIGCRS, 'the old name key is gone from links').toBeUndefined()
       expect(await val('v3:courseidmig'), 'the one-shot flag is set').toBe('1')
       expect(await val('v3:courseidmap'), 'the scratch map is cleared').toBeNull()
-      expect(JSON.parse((await val('v3:courses'))!), 'the index is entries').toEqual([{ id, name: 'MIGCRS' }])
+      expect(JSON.parse((await rec('v3:courses'))!.value), 'the index is entries').toEqual([{ id, name: 'MIGCRS' }])
     })
   })
 

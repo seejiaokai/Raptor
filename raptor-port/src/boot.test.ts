@@ -24,6 +24,7 @@ import { ACCOUNTS_LIST, signIn } from './state/accounts'
 import { rawState } from './leavewar/state/store'
 import { MemoryBackend } from './storage/memory'
 import { SCHEMA_VERSION } from './storage/reset'
+import { FOLD_FORMAT } from './storage/fold'
 import { readSchema, StoreAheadError } from './storage/schema'
 import type { Snapshot } from './storage/backend'
 import { bootApp, BootConfigError } from './boot'
@@ -31,7 +32,8 @@ import { bootPolicyFrom, readBootstrap, DEMO_POLICY, type BootPolicy, type Boots
 
 const ADMIN: BootstrapAdmin = { principal: 'Boss@Unit.Example', person: { cs: 'Boss', ini: 'BS', seat: 'FCP', cat: 'A' } }
 const blank = (bootstrap: BootPolicy['bootstrap'] = ADMIN): BootPolicy => ({ seedDemo: false, bootstrap })
-const stamp = (initialized: boolean, format = SCHEMA_VERSION) =>
+/* the format this build writes: 6 since the fold's manifest is complete ([DB-READINESS] group A, phase 5b) */
+const stamp = (initialized: boolean, format = FOLD_FORMAT) =>
   JSON.stringify({ stage: 1, dataFormatVersion: format, initialized, appliedAt: 'x', minClient: format })
 
 async function boot(be: MemoryBackend, policy: BootPolicy) {
@@ -183,7 +185,7 @@ describe("a shared store's first boot: nothing demo, and the first admin", () =>
 
   for (const [what, schema] of [
     ['a later stage', JSON.stringify({ stage: 2, dataFormatVersion: SCHEMA_VERSION, initialized: false, appliedAt: 'x', minClient: SCHEMA_VERSION })],
-    ['a later format', JSON.stringify({ stage: 1, dataFormatVersion: SCHEMA_VERSION + 1, initialized: false, appliedAt: 'x', minClient: SCHEMA_VERSION + 1 })],
+    ['a later format', JSON.stringify({ stage: 1, dataFormatVersion: FOLD_FORMAT + 1, initialized: false, appliedAt: 'x', minClient: FOLD_FORMAT + 1 })],
   ]) {
     it(`a store ahead of this build (${what}) is refused before anything is made — no first admin, nothing written`, async () => {
       const be = new MemoryBackend()

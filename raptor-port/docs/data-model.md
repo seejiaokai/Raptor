@@ -162,9 +162,12 @@ Owner: **Tracker**. A training course, e.g. an OCU intake.
 
 Relationships: 1–n `Enrolment`, 1–n `CoursePlan`.
 From today: `students.courses[]` and the per-course key prefix in
-`raptor:tracker/v3:<course>:…`.
+`raptor:tracker/v3:<course>:…`. **Stored one row per course since 30 Sep 26** (`[DB-READINESS]` group A phase 5b —
+D462): `raptor:tracker/v3:master:course:<id>` = `{ id, name, ord, deleted? }` — `ord` is `sortIndex` (decimal; the
+order is `(sortIndex, id)`), and a course deleted in the app (D128 — its records kept, ↺ Restore brings it back) is the
+same row with `deleted: true` (the `archived` column).
 App change: renaming a course becomes one column write instead of moving
-eight storage keys.
+eight storage keys. (Done: a rename writes that one row.)
 
 ### Syllabus
 
@@ -182,7 +185,12 @@ drawn layout.
 
 Relationships: 1–n `TrainingEvent`, 1–1 `Layout`, 1–n `Enrolment`.
 From today: `charts.syllabi[name]`, `charts.order`, and the alias/hidden/tomb
-registers.
+registers. **Stored one row per chart since 30 Sep 26** (`[DB-READINESS]` group A phase 5b — D462):
+`raptor:tracker/v3:master:chart:<id>` = `{ id, name?, base?, userNamed?, ord?, hidden?, tomb?, def? }` — the chart's
+catalogue entry (`name`; `base` = the shipped chart a built-in draws from, so `isBuiltIn`; `userNamed` = renamed by the
+squadron), its place (`ord` = `sortIndex`), `hidden`, `tomb` (`tombstoned` — a built-in deleted by the squadron, which
+has no name then), and **its events as JSON at stage 1** (`def` — only for a chart drawn or edited in the app; an
+untouched built-in reads its shipped events). `aliasOfId` is retired (a rename keeps the id).
 App change: a syllabus can be referenced by id from an enrolment, so a rename
 no longer has to rewrite marks and rosters.
 
@@ -211,7 +219,11 @@ plus `charts.eventInfoBySyl`. `_b` is drawing state and moves to `Layout`.
 never shows on another chart with the same code, which is exactly the row this
 table already is (one TrainingEvent per syllabus + code).
 App change: the event's details stop living in a second container keyed by
-chart and event id; `hrs` stops being free text.
+chart and event id; `hrs` stops being free text. **At stage 1 (30 Sep 26, `[DB-READINESS]` group A phase 5b — D462,
+D464):** a chart's events ride its `Syllabus` row as JSON; what the squadron TYPED on a ball is its own row,
+`raptor:tracker/v3:master:info:<sylId>:<ball code, URI-encoded>` = the typed fields `{ name?, fmt?, hrs?, crew?, pre? }`
+over the chart's shipped wording — one row per chart and ball, so two people typing on two balls of one chart both
+keep their work.
 
 ### Enrolment
 
@@ -240,7 +252,9 @@ id, and `pid` (the person). The row's id IS the entry's `id` (the
 migration key); `studentName` is `name`; `personId` is `pid` (null where
 the student was typed). The 9 Sep 26 `v3:links` record is already folded
 into `pid` by the app's own migration and is gone from every converted
-browser. App change: none — the re-key is done.
+browser. App change: none — the re-key is done. **Stored one row per enrolment since 30 Sep 26** (`[DB-READINESS]`
+group A phase 5b — D462): `raptor:tracker/v3:<course>:<syl>:enr:<id>` = `{ id, name, pid?, ord }` (`ord` =
+`sortIndex`) — two people adding students to one course and chart at once both keep theirs.
 
 ### Attempt
 
@@ -775,7 +789,7 @@ particular record happens to exist.
 | Field | Type | Req | Meaning |
 |---|---|---|---|
 | `stage` | int | yes | the migration stage the store is at (1–4) |
-| `dataFormatVersion` | int | yes | the shape the records are in — 5 today, 6 once every record is one row per thing (the fold, `src/storage/fold.ts`). Reset and fold decisions compare THIS, never `stage` |
+| `dataFormatVersion` | int | yes | the shape the records are in — 6 since 30 Sep 26, every record one row per thing (the fold, `src/storage/fold.ts`, converts a format-5 browser once at boot — the manifest complete with the Tracker's converter, group A phase 5b); 5 before. Reset and fold decisions compare THIS, never `stage` |
 | `initialized` | bool | yes | the store has started — seeded (the demo), folded, or bootstrapped (an empty shared store's first admin, group A phase 5). An initialized store is never seeded; a wipe clears it |
 | `appliedAt` | datetime | yes | when that format was applied |
 | `minClient` | int | yes | the oldest front-end data format allowed to write (a build below it refuses to load) |
@@ -955,11 +969,11 @@ The "migration notes" say how each shape maps, should a record ever need convert
 | `raptor:leavewar/perslabels` | `LeavePersonProfile.label` | One profile row per labelled person |
 | `raptor:leavewar/personedits` | — *(D461, 30 Sep 26: dropped whole — the war's Edit person is removed)* — was `LeavePersonProfile.band`; `Person.sxo` | `band` to the profile; `sxo` folds onto the person row; the `seat` override is **dropped** (the person's seat is the seat). The override record disappears |
 | `raptor:leavewar/postouts` | `LeavePersonProfile.fromDate` / `toDate` / `poOutcome` / `poDone`, and his earlier stints (`past` — `[ONE-DOOR]`, D320: a child table of `{ fromDate, toDate }` rows, closed, in order, never overlapping) | An entry exists while either date is set or he has an earlier stint; a profile row is created for each. An old entry with only `poArchive` reads `true` → `overseas`, `false` → `none` (the app reads it so today) |
-| `raptor:tracker/v3:master:syls` | `Syllabus` + `TrainingEvent` (+ `EventPrerequisite`) | Chart per row, event per row; `prereqs` strings resolve to event ids within the same syllabus |
-| `raptor:tracker/v3:master:eventinfo` (per chart, D126; the old one-table `v3:eventinfo` is a converted backup) | `TrainingEvent.name` / `format` / `hours` | Merge each chart's entry into that chart's event row over the shipped wording; parse `hrs` to a number, refuse and report anything that will not parse |
+| `raptor:tracker/v3:master:chart:<id>` (since 30 Sep 26 — one row per chart, `[DB-READINESS]` group A phase 5b; it replaced `v3:master:syls`, `sylcat`, `sylorder`, `sylhidden`, `syltomb`) | `Syllabus` (+ `TrainingEvent`, `EventPrerequisite` at stage 2) | One row per chart: `name`, `ord` → `sortIndex`, `base` → `isBuiltIn`, `hidden`, `tomb` → `tombstoned`; its events JSON on the row at stage 1 (`def`), one event per row at stage 2 — `prereqs` strings resolve to event ids within the same syllabus |
+| `raptor:tracker/v3:master:info:<sylId>:<ball>` (since 30 Sep 26 — one row per chart and ball; it replaced `v3:master:eventinfo`, per chart since D126; the old one-table `v3:eventinfo` is a converted backup) | `TrainingEvent.name` / `format` / `hours` | Merge each ball's row into that chart's event over the shipped wording; parse `hrs` to a number, refuse and report anything that will not parse |
 | `raptor:tracker/v3:lay` | `Layout` | One row per chart, geometry JSON verbatim (including each event's `_b`) |
-| `raptor:tracker/v3:courses` | `Course` | One row per name, `sortIndex` from the array order |
-| `raptor:tracker/v3:<course>:<syl>:roster` | `Enrolment` | One row per student name on that roster, `sortIndex` from the array order |
+| `raptor:tracker/v3:master:course:<id>` (since 30 Sep 26 — one row per course; it replaced `v3:courses` and `v3:delcourses`) | `Course` | One row each; `ord` → `sortIndex`; `deleted: true` → `archived` |
+| `raptor:tracker/v3:<course>:<syl>:enr:<id>` (since 30 Sep 26 — one row per enrolment; it replaced `v3:<course>:<syl>:roster`) | `Enrolment` | One row each; `ord` → `sortIndex`, `pid` → `personId`, `name` → `studentName` |
 | `raptor:tracker/v3:links` (this branch) | `Enrolment.personId` | The links record **disappears** into the column. A student with no link imports with a null `personId` |
 | `…:marks` — `{ g, f, fd[], d, by?, at? }` | `Attempt` (+ the `ProgressionSummary` view) | One `applySummary` call per mark: the `d` date becomes one `pass` attempt carrying `g`; each `fd` entry a `fail` attempt; a `null` `fd` entry an attempt with no date and `dateUnknown`, reported. `by`/`at` stamp every row the mark yields |
 | `…:dates` — `lastSyll`, `lastCurr`, `downDays`, `upchit` | `Enrolment` | Straight column copy; the `by`/`at` stamps become `lastEditedBy`/`lastEditedAt` |
@@ -974,7 +988,7 @@ behind the existing door rather than a rewrite above it.
 
 | Stage | What lands | What it lets the squadron do | Rollback |
 |---|---|---|---|
-| **1 — whole-record JSON tables** | The tables of section 5 in their simplest form: `Person`, `Input`, `ScheduleWeek` with one `ScheduleDay` snapshot row per day carrying its lock, `PlanningPuck`, `DayRemark`, `ChangeBatch`, `TakeOverRequest`, `AmendmentRetraction` (29 Sep 26, D355, D450 — the day lock, the change log and the 30-second check of section 9 land with this stage), `Amendment`, `IssuedSignoff`, `EditLog`, `Setting`, `Attachment` metadata, `LeaveWar`, `Enrolment`, `Syllabus`, `TrainingEvent`, `Layout`, `SchemaVersion`. One record in, one row out. The app's own records ARE the rows *(corrected 30 Sep 26 — `[DB-READINESS]` group A, plan §2.1, both reviewers: the **row fan-out backend** once described here — a `FanOutBackend` behind the postman splitting `people/all`, `inputs/all` and `plan/all` into rows and re-joining them on `loadAll` — is NOT built)*: each stored record is one row of one table, written from the command stream through ONE mapper (`src/state/rowmap.ts`), one changeset per command (section 3, What the adapter writes; D355), so the adapter is a thin, stateless mapping | One shared copy of the squadron's data instead of one per browser. Everyone sees the same roster, the same weeks, the same charts, from any machine. A real backup | Point the front end back at the browser backend; export the rows to the whole-record shapes with the same fan-out run in reverse. No data shape has changed, so nothing is lost |
+| **1 — whole-record JSON tables** | The tables of section 5 in their simplest form: `Person`, `Input`, `ScheduleWeek` with one `ScheduleDay` snapshot row per day carrying its lock, `PlanningPuck`, `DayRemark`, `ChangeBatch`, `TakeOverRequest`, `AmendmentRetraction` (29 Sep 26, D355, D450 — the day lock, the change log and the 30-second check of section 9 land with this stage), `Amendment`, `IssuedSignoff`, `EditLog`, `Setting`, `Attachment` metadata, `LeaveWar`, `Course`, `Enrolment`, `Syllabus`, `TrainingEvent`, `Layout`, `CoursePlan`, `SchemaVersion` (the Tracker's since 30 Sep 26 one row per course, enrolment, chart and ball's details — `[DB-READINESS]` group A phase 5b, D462). One record in, one row out. The app's own records ARE the rows *(corrected 30 Sep 26 — `[DB-READINESS]` group A, plan §2.1, both reviewers: the **row fan-out backend** once described here — a `FanOutBackend` behind the postman splitting `people/all`, `inputs/all` and `plan/all` into rows and re-joining them on `loadAll` — is NOT built)*: each stored record is one row of one table, written from the command stream through ONE mapper (`src/state/rowmap.ts`), one changeset per command (section 3, What the adapter writes; D355), so the adapter is a thin, stateless mapping | One shared copy of the squadron's data instead of one per browser. Everyone sees the same roster, the same weeks, the same charts, from any machine. A real backup | Point the front end back at the browser backend; export the rows to the whole-record shapes with the same fan-out run in reverse. No data shape has changed, so nothing is lost |
 | **2 — stable row ids** | The ScheduleRow family; Tracker students re-keyed by `Enrolment.id` rather than by typed name; `Attempt` rows behind the mark summary; slot keys become derived addresses; `EditLog.rowId` starts being written. **Each `ScheduleDay.snapshot` stays as a read-only shadow for one release**: the rows are the record, the column is rewritten from them on every write and compared at boot, and it is emptied only in the release after | Two people can edit different rows of the same day without overwriting each other. A renamed course or student stops moving storage keys. Progression history becomes real data, not a count | The shadow column IS the rollback: set `SchemaVersion.stage` back to 1 and the stage-1 build reads the snapshot it always did. `Attempt` rows fold back to a summary through the `ProgressionSummary` view |
 | **3 — live-ish sync** | *(29 Sep 26: the incoming side, the change log and the 30-second check moved to stage 1 — D356, section 9; what follows is kept for the stage's other parts.)* The backend contract gains `since(changeSeq)`; the postman gains an incoming side (poll with backoff, one catch-up on return); records reach the whiteboard as per-change deltas; row ownership decides what may be reconciled away. **Dual-write for the whole stage**: every write goes to the rows *and* to the change feed's table, and a nightly job proves the feed replays to the rows | The programme updates on screen while someone else edits it. Presence rides the same poll. This is the stage the "live data updates" half of the recommendation refers to | Switch the incoming side off (a flag); the rows are complete without the feed because of the dual-write, and the stage-2 build reads them unchanged |
 | **4 — Dataverse adapter and sign-in** | One new backend passing the existing `contractTests`, plus Microsoft sign-in feeding `HOOKS.whoami()` and the `User` table | Squadron accounts, real names on every edit and sign-off, and the platform's own audit, backup and reporting | Sign-in and storage are separate flags: either can go back to the previous provider alone. `User` rows are recreated on first sign-in, so dropping them loses nothing |

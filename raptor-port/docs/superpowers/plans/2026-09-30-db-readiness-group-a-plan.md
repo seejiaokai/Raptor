@@ -654,3 +654,59 @@ boot in `main.tsx`; tests `storage/schema.test.ts`, `storage/fold.test.ts`, `sta
 - **Gates (30 Sep 26, under the lock):** unit 7263/7263 (457 files) · build · tfin 728/0 · e2e 509/0 (49 skipped) · smoke 445/0 ·
   rulecheck · docsize; perf 4/4 twice (oneEdit 1.38–1.39×, noop 1.41–1.44×, board 1.29–1.31×, noopB 1.48× — inside phase 4's
   spread). After the look's fixes: the Leave War's screen tests 842/842 and `e2e/leavewar.spec.ts` 299 passed, 0 failed (39 skipped).
+
+**Phase 5b — built 30 Sep 26** (`src/tracker/app/rows.js`, `src/tracker/fold.ts` new; `src/engine/ord.ts` MOVED to
+`src/command/ord.ts`; `tracker/app/core.js`, `boot.ts`, `storage/tables.ts`, `undo/derive.ts`; tests `tracker/app/rows.test.ts`
+(27), `tracker/trk-rows.test.ts` (10), two added to `tracker/trk-restore.test.ts`, and the older Tracker tests that read the
+old records by key moved to the rows; red first — 8 of 10 in `trk-rows.test.ts`, each for the right reason: one person's save
+wiped the other's, the chart pick moved the course's chart, the old records stored whole, the manifest incomplete):
+- **The rows (D462):** a course and chart's student list → one row per enrolment `v3:<course>:<chart>:enr:<id>`
+  (`Enrolment`, with `ord`); the course list and the deleted courses → ONE family, `v3:master:course:<id>` (`Course`, a
+  deleted one `deleted: true`); the chart records — definitions `syls`, names `sylcat`, order `sylorder`, `sylhidden`,
+  `syltomb` → one row per chart `v3:master:chart:<id>` (`Syllabus`, its events JSON on the row at stage 1); the details typed
+  on the balls `eventinfo` → one row per chart and ball `v3:master:info:<chart>:<encoded ball>` (`TrainingEvent`). The
+  layouts were already one per chart; marks, dates, pace, lulls and plans one per student / course — untouched.
+- **The mechanism — one technical call, said plainly:** the Tracker keeps its records and their names, and every caller
+  (the boot's upgrades, Import, Export, every save) still reads and writes them WHOLE; a row door under `sGet` / `sSet` /
+  `memGet` / `delKey` stores them as rows (`app/rows.js`, pure — the door, the fold and the tests share it). A write stores
+  only the rows its list CHANGED against what that copy of the Tracker last read (`mem`, now also loaded at the START of the
+  boot), so a row read by nobody here — another person's, saved meanwhile — is never removed; the rows of one write are ONE
+  command, named as the whole-record write was. An old whole record still stored is read as it stands and converted at its
+  next write; one rows cannot hold (bare names from before the ids) is kept whole, and that record's rows go. Chosen over
+  rewriting ~40 call sites to lists of rows: the Tracker's code (6,000 lines, a verbatim port) is untouched above the door,
+  and the boot's name→id upgrades run as they always did.
+- **The chart catalogue's own list order is no longer stored** — it reads in the charts' display order, the one order a
+  chart row carries (`sylorder`'s); only a chart nobody ever placed reads differently (by id rather than by when it was
+  made). The syllabus upgrade's read-back compares what is stored, not its spelling.
+- **The eighth converter** (`src/tracker/fold.ts`, the pure `foldTracker`) is registered by `src/boot.ts` — the Tracker's own
+  code is a lazy chunk the fold cannot wait for; storage, not a fourth seam. **The manifest is complete: the app writes
+  format 6, and a format-5 browser is converted once at its next boot.** The fold's tests run at 6 (`boot.test.ts`'s stamps
+  moved to `FOLD_FORMAT`; "a later format" is 7).
+- **D464 — his work kept:** `trk-rows.test.ts` builds a browser's old records holding every kind (a renamed built-in, a hidden
+  one, a deleted one with details typed before, an edited built-in, a chart of his own with its layout, a font, drawn lines
+  and details on a ball whose code has a colon, two courses and a deleted one, students on two charts, one linked, marks,
+  dates, pace, lulls, and a student list on a chart no longer in the catalogue) and asserts the Tracker reads and EXPORTS
+  exactly the same before the fold and after it. **Before this phase's "merge live", he is reminded to export a copy first.**
+- **The finding filed in phase 4, fixed:** the chart a signed-in person has open is his own place only (D376 reading 5): every
+  load reads it from there (`mySylOn`); a chart switch writes only there (`openSylHere`); the course's plan names the
+  course's own chart — set at creation, repaired when its chart is deleted, brought by an Import (the importer then sees the
+  file's chart, as before), or by the standalone Tracker. Tested with three people's browsers (`trk-rows.test.ts`).
+- **The order rule moved:** `src/engine/ord.ts` → `src/command/ord.ts` — the Tracker's code never imports the engine (a test
+  pins it), and one copy of the rule serves the scheduler, the Leave War and the Tracker.
+- **Found on the way:** (1) the course-id upgrade's prefix move went through the door and read an unstored list as empty —
+  it would have stopped that upgrade on a legacy browser; it moves keys verbatim now. (2) The details' one-time conversion
+  from the older one-table record could no longer tell "never converted" from "converted, now empty" (clearing the last
+  detail would have brought the old ones back) — a one-time flag, `v3:eventinfomig`, set by the boot and by the fold.
+  (3) `undo/derive.ts courseOf` took every `v3:master:` record (layouts already) for a course named "master".
+- **The walk** (`scripts/handpass/dbr5b-walk.mjs`, evidence `docs/handpass/2026-09-30-dbr-phase5b.md`, 9 pictures): `main`'s
+  app — built from main's source, served on the same address — made his kind of work (his own chart, a renamed and a
+  deleted built-in, two courses, details on three balls), then THIS build opened that browser: converted once (format 6),
+  no old record left anywhere, every request, person and war kept, and the Tracker read and exported exactly as before
+  (10/10). A fresh browser: two tabs each adding a student and typing on a different ball — both kept; a course added,
+  renamed, deleted and restored — one row; each person's own chart (8/8). Ten break tests, each red (two had no test —
+  added). Found: a longer name cut off in the Students card's key — on `main` too — filed `[TRK-KEY-NAME-CLIP]`.
+- **Gates (30 Sep 26, under the lock):** unit 7303/7303 (459 files; 7300 in the gate run, three tests added after) · build ·
+  tfin 728/0 · e2e 509/0 (49 skipped) · smoke 445/0 · rulecheck · docsize; perf 4/4 (oneEdit 1.37×, noop 1.46×, board 1.29×,
+  noopB 1.46× — inside phase 5's spread).
+- **Next:** the group-wide FULL walk and BOTH reviewers' code reads (persistence — D11, D353), then phase 6, then 7. Before
+  this branch's "merge live": remind him to EXPORT a copy of his Tracker first (D464) — the conversion runs on his browser.

@@ -70,8 +70,9 @@ award fix are due before the tables are settled. What to finish before the hand-
 4. **Split in two (D453, 29 Sep 26 — narrows D203's "ONE batch"):** **[DB-READINESS] group A** (what decides the tables'
    shape) BEFORE IT settles its tables, with the small OIL follow-ups below and [OIL-EARNED-VS-GRANTED] (D147);
    **group B** (tuned against the real database) AFTER the app is connected. First, [DB-SYNC-MODEL]'s design fixed.
-   ([OIL-AWARD-IS-A-GRANT] is DONE, merged 29 Sep 26.) Group A: plan v4 final (30 Sep 26); **phases 0–4 built 30 Sep 26**
-   on `claude/db-readiness-table-shaping-4094f6` (plan §9) — phase 5 next.
+   ([OIL-AWARD-IS-A-GRANT] is DONE, merged 29 Sep 26.) Group A: plan v4 final (30 Sep 26); **phases 0–5 and 5b built
+   30 Sep 26** on `claude/db-readiness-table-shaping-4094f6` (plan §9) — next the FULL walk and both reviewers' code reads,
+   then phase 6, then 7.
 5. **When Manfred is ready — [DB-STEP]:** the data model to him, then the one adapter to his tables; the stack
    ([ARCH-STACK]) resumes there, with its step 6 still to come; the [AMEND] work is queued behind it. Architecture first,
    then the individual bugs (D144).
@@ -84,7 +85,7 @@ award fix are due before the tables are settled. What to finish before the hand-
 
 **Placed by their own lines — not his rulings:** the Leave War — [LW-FROZEN-BAR-GAP] (after [HUMAN-RETEST]; show him
 first), [LW-SCRUBBER-FLAKY] (test-only),
-[PO-RESTORE-POSTING] (low, from its final code read), [LW-OFFER-ONLY-TAKEABLE] (low, with [LW-LOCKMARK]), [LW-HARNESS-VIEWER-PIN] (test-only, low), [CI-FAIL-PICTURES] (his call, low), [LW-DOZE-GUARDS] (low, check first); the shell — [SHELL-SIDEWAYS-BAR] (low, with the next top-bar change), [SAVE-NOTE-COVERS] (medium, next), [TRK-SAVE-FAIL-SAYS-SAVED] (low, with [DB-READINESS]), [TRK-ASYNC-STALE] (with [DB-READINESS]), [LW-WINDOW-PRUNE-FLAKE-2] (test-only, low); the Tracker — [TRK-REMOUNT-LANDING] (low, with the next Tracker change). The Tracker — [TRK-PINCH-ASK] (his next Tracker session), [TRK-FLEXBAR-INK] (a question for him, on the Tracker-palette
+[PO-RESTORE-POSTING] (low, from its final code read), [LW-OFFER-ONLY-TAKEABLE] (low, with [LW-LOCKMARK]), [LW-HARNESS-VIEWER-PIN] (test-only, low), [CI-FAIL-PICTURES] (his call, low), [LW-DOZE-GUARDS] (low, check first); the shell — [SHELL-SIDEWAYS-BAR] (low, with the next top-bar change), [SAVE-NOTE-COVERS] (medium, next), [TRK-SAVE-FAIL-SAYS-SAVED] (low, with [DB-READINESS]), [TRK-ASYNC-STALE] (with [DB-READINESS]), [LW-WINDOW-PRUNE-FLAKE-2] (test-only, low); the Tracker — [TRK-REMOUNT-LANDING] (low, with the next Tracker change), [TRK-KEY-NAME-CLIP] (low, with the next Tracker change). The Tracker — [TRK-PINCH-ASK] (his next Tracker session), [TRK-FLEXBAR-INK] (a question for him, on the Tracker-palette
 look card — D157, merged PR #441).
 The amendment area — PR #434, #435, #437 and #438 MERGED (25–26 Sep 26); left (the small-fixes batch, PR #463, merged 29 Sep 26, filed): [PLAN-BANNER-DOOR] (low, filed by that batch's walk), [ROW-NO-TIME-MARK] (low, a future job, D361), [APP-FONTS-NOT-LOADED] (his call — found 29 Sep 26; every measured width rides on it), [GATELOCK-STALE-LIVE] (low, the check lock's stale rule), [DOCSIZE-MERGE-CEILING] (low, a false alarm of the document check on a merge), [PDF-PRINT-TWICE] (low, found by the IT flow guide research — to confirm in real Chrome), [LW-SEL-HALF-LABELS] (low, the drag sheet's half-day labels — D264), [ITFLOW-OIL-RESHOOT] (low, on his word — D403), [TRK-REFUSALS-UNTESTED] (low, test gaps the guide research found). Left from the amendment batch (D91–D111, merged): [AMEND-SMALL-SEEN] (any time). The docs and the checks — [DEPLOY-DOCS] (its operational half), [DOC-POINTERS-CODE] and
 [RULINGS-LF-PIN] (with the next code change), [PEEK-ISSUED] (a question for him, low), [RULING-HOME-HOOK] (low), [GUIDE-MAP-ROWS] (low, a question for him) — [DOC-SUBHEADS], [RULING-HOMES-AUDIT]
@@ -858,6 +859,14 @@ it; its red error words can only fire for a failed Export. Nothing is lost if Re
 Tracker's save status follow the storage seam's real outcome (the whiteboard's pending / failed state), so a failed save
 never reads "saved" anywhere.
 
+### [TRK-KEY-NAME-CLIP] A longer student name on the left of the Students card's key is cut off at the card's edge (filed 30 Sep 26)
+**Place:** low — with the next Tracker change. Seen by the `[DB-READINESS]` group A phase 5b walk
+(`raptor-port/docs/img/handpass/2026-09-30-dbr-phase5b/1-old-tracker-his-work.png` and `2-new-…`): with three students on
+a chart the key around the course ball puts the third name on the LEFT, and "HIS STUDENT" reads "IIS STUDENT" — its first
+letter under the card's edge. On `main` too (the first picture is main's build), so not the phase's doing; a real
+callsign of ten or more letters would lose its first letters the same way. **Do:** keep every name of the key inside the
+card (shrink the name, or wrap it under the ball, on the left as the right does), and check at the phone width too.
+
 ### [TRK-REMOUNT-LANDING] Coming back to the Tracker the chart lands at its top corner, or with empty chart above (filed 28 Sep 26)
 **Place:** low — with the next Tracker change. Seen by the Tracker leftovers' walk, both walkers (walker a obs. 3 —
 the same person out and in, the chart jumps from the centred first ball to the top corner, scroll 73 → 396, phone
@@ -960,12 +969,20 @@ requests and admins' seen a row each, and every Tracker save and its own Undo / 
 shared store), the boot in one function (`src/boot.ts`), frozen seed copies reset every boot (`src/state/seeds.ts`); a
 shared store gets nothing demo — no requests, roster, weeks, accounts, Leave War world, Tracker course or pair (D463) —
 and its first admin from `VITE_BOOTSTRAP_ADMIN` (person, account and stamp in one group, idempotent, failing closed);
-the Leave War stands up with no war ("No leave period yet") and the Tracker with no course ("No course yet"). Still in
-group A: the Tracker one piece per thing (5b), then the FULL walk and both code reads; the plan's §9 is the build log.** **Found in phase 4, for phase 5b (the Tracker one piece per thing):** the
+the Leave War stands up with no war ("No leave period yet") and the Tracker with no course ("No course yet").
+**(1) for the Tracker BUILT, 30 Sep 26 (phase 5b — D462, D464):** the course list and the deleted courses one row per
+course, each course and chart's student list one row per enrolment, the charts one row per chart (definitions, names,
+order, hidden, deleted) and the details typed on each ball one row per chart and ball — a save writes only the rows it
+changed, so two people's work on two things never overwrites; a browser's old records are converted once at boot by the
+fold's eighth converter (the store's format is now 6), every chart, layout and detail carried across (tested: his old
+records read and export exactly as before). **Before its "merge live", remind him to EXPORT a copy of his Tracker first
+(D464).** Still in group A: the FULL walk and both code reads, then phase 6, then 7; the plan's §9 is the build log.**
+**Found in phase 4, for phase 5b — FIXED 30 Sep 26 in phase 5b:** the
 Tracker writes one person's syllabus pick (D376 — his own last chart, a per-person view choice) into the course's SHARED
 plan record (`v3:<course>:plan` `sylId`, `src/tracker/app/core.js loadCourseNow`) whenever a course loads — in a shared
 store, whoever opened the course last would move everyone's chart. The plan's chart pointer should be the course's, the
-person's pick his own place. **And for group B:** the Leave War's "which war is on screen" (`leavewar/current`) is saved
+person's pick his own place. *(Fixed: a signed-in person's chart is read from and written to his own place only; the course's plan names the
+course's chart, written at its creation, a repair, an import, or by the standalone Tracker — `trk-rows.test.ts`.)* **And for group B:** the Leave War's "which war is on screen" (`leavewar/current`) is saved
 as shared data with a change-log batch — a per-person view choice (it is recorded, never honoured at boot — settled 7 Sep
 26); move it to per-person or per-browser state when the app is connected.
 

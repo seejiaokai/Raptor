@@ -28,7 +28,7 @@ import { AM, PM, FULL, type Contrib, type RequestState, type Win } from './dayvi
 
 /** ITS PLACE AT ITS ADDRESS ([DB-READINESS] group A, phase 3 — plan §8 P3-CELL-DIFF; the design's `LeaveBid.sortIndex`).
  *  Every record is its own stored row now, so the order of the list at a person/date rides on each record: minted by
- *  the store when a record arrives or moves (engine/ord.ts — its neighbours' places, a record still in order keeps its
+ *  the store when a record arrives or moves (command/ord.ts — its neighbours' places, a record still in order keeps its
  *  own), and the list is read back by (ord, id). Absent only on a record not yet placed. */
 interface Placed { ord?: number }
 

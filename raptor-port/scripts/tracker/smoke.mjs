@@ -666,7 +666,9 @@ const imported = await pg.evaluate(async () => {
      raptor:tracker/* localStorage keys through the write-behind postman (300 ms
      coalesce); the app reads the whiteboard, this raw read must wait for it. */
   await new Promise(r => setTimeout(r, 600));
-  const all = JSON.parse(localStorage['raptor:tracker/v3:master:syls']);
+  /* the charts are stored one row per chart since [DB-READINESS] group A phase 5b (D462): read back from localStorage
+     through the page's own rebuild of them */
+  const all = JSON.parse(t.lsRecord('v3:master:syls'));
   /* the ORIGINAL read the way the app reads it: a built-in whose events are the
      shipped ones holds no stored override since 23 Sep 26 ([HUMAN-RETEST] R-1 —
      a fonts-only Save used to file one), so the stored list alone can be empty
@@ -691,7 +693,7 @@ const applied = await pg.evaluate(async () => {
   await t.applyCharts(charts, { ids: [id], mode: 'replace', rename: null });
   await new Promise(r => setTimeout(r, 600));   // wait for the write-behind postman to flush to raptor:tracker/*
   return { same: JSON.stringify(before) === JSON.stringify(grab()),
-           count: JSON.parse(localStorage['raptor:tracker/v3:master:syls'])[id].length };
+           count: JSON.parse(t.lsRecord('v3:master:syls'))[id].length };
 });
 ok('replacing a syllabus writes the new chart', !!applied && applied.count === 5,
   applied ? `${applied.count} events` : 'no result');
@@ -714,7 +716,7 @@ const noPeople = await pg.evaluate(async () => {
     await new Promise(r => setTimeout(r, 600));
   }
   finally { Storage.prototype.setItem = realSet; }
-  return written.filter(k => /:m:|:d:|:roster/.test(k));
+  return written.filter(k => /:m:|:d:|:roster|:enr:/.test(k));   /* :enr: — a student list's rows since phase 5b */
 });
 ok('applying charts writes no roster, mark or date key',
   !!noPeople && noPeople.length === 0, (noPeople || []).slice(0, 3).join(', '));
@@ -735,7 +737,7 @@ const stApplied = await pg.evaluate(async () => {
   /* The COURSE is id-keyed (course ids, 1B-i) and an imported course new here
      gets a MINTED course id — read under that + the syllabus id, via the bridge. */
   const cid = t.courseIdOf('SMOKE COURSE');
-  const roster = localStorage['raptor:tracker/v3:' + cid + ':' + id + ':roster'];
+  const roster = t.lsRecord('v3:' + cid + ':' + id + ':roster');   /* one row per student since phase 5b */
   let entry = null; try { entry = (JSON.parse(roster || '[]') || []).find(e => e && e.name === 'STUDENT Z'); } catch (_) {}
   return { roster, id: entry ? entry.id : null,
            marks: entry ? localStorage['raptor:tracker/v3:' + cid + ':' + id + ':m:' + entry.id] : null };
@@ -2138,7 +2140,7 @@ const addStudent = async name => {
       const t = window.__coreForTests, P = 'raptor:tracker/';
       return { vals: [...document.querySelectorAll('#sylSel option')].map(o => o.value),
                cur: t.curSylId(), name: t.curSylName(),
-               cat: localStorage.getItem(P + 'v3:master:sylcat'),
+               cat: t.lsRecord('v3:master:sylcat', P),   /* one row per chart since phase 5b */
                flags: [localStorage.getItem(P + 'v3:sylcatmig'), localStorage.getItem(P + 'v3:sylreset')] };
     });
     ok('the syllabus dropdown carries ids, not names',
@@ -2895,7 +2897,7 @@ await pg.waitForSelector('#flowSvg .ball', { timeout: 15000 });
        the store has no delete of its own, that is the tombstone it writes. */
     const stale = Object.keys(localStorage).filter(k =>
       k.startsWith('raptor:tracker/v3:26ABSG:')
-      && (/:m:|:d:|:pace:|:lulls:|:last:/.test(k) || k.endsWith(':roster'))
+      && (/:m:|:d:|:pace:|:lulls:|:last:|:enr:/.test(k) || k.endsWith(':roster'))
       && localStorage.getItem(k));
     return { c, stale: stale.length, staleKeys: stale.slice(0, 3).join(' | '),
       pace: localStorage.getItem('raptor:tracker/v3:' + c + ':pace:' + id),
@@ -3144,7 +3146,7 @@ const fileClobber = await pg.evaluate(async baked => {
   await core.applyCharts({ order: [id], syllabi: snap.syllabi, layouts: {}, sylcat: snap.sylcat, eventInfo: full }, { ids: [id] });
   /* since the seam the Tracker's data lands in BrowserBackend under "raptor:tracker/";
      since D126 per chart, under v3:master:eventinfo */
-  const stored = JSON.parse(localStorage.getItem('raptor:tracker/v3:master:eventinfo') || '{}');
+  const stored = JSON.parse(core.lsRecord('v3:master:eventinfo') || '{}');   /* one row per chart and ball since phase 5b */
   const n = Object.values(stored).reduce((a, b) => a + Object.keys(b || {}).length, 0);
   return { storedKeys: n, sentKeys: Object.keys(full).length };
 }, BAKED_INFO);

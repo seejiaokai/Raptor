@@ -69,6 +69,46 @@ describe('an ordinary Tracker save', () => {
   })
 })
 
+/* [DB-READINESS] group A, phase 5b (D462): the lists kept one row per thing — a save writes ONLY the rows it changed, as
+   ONE command, in ONE saved group with its batch (the batch names the design's tables) */
+describe('a list kept one row per thing, saved', () => {
+  it('a student added is ONE saved group: his enrolment row (and his empty marks and dates) and one batch — no other student\'s row', async () => {
+    const before = wb.keys('tracker').filter(k => k.includes(':enr:'))
+    const envs: any[] = []
+    const off = onCommit(e => envs.push(e))
+    const p = (core as any).addStudent(); for (let i = 0; i < 50 && !(core as any).dlg; i++) await settle()
+    ;(core as any).dlgClose('ROWS ONE'); await p; await (core as any).whenLoaded(); await settle()
+    off()
+    /* his row is a Tracker record in the command's own change (`trk.roster`), so the one Undo and the stream see it */
+    const sid = (core as any).byName('ROWS ONE').id
+    expect(envs.flatMap(e => e.changes).some((c: any) => c.collection === 'trk.roster' && String(c.id).endsWith(':enr:' + sid)), 'the command names his enrolment row').toBe(true)
+    const g = groups.find(x => x.some(c => c.collection === 'tracker' && c.id.includes(':enr:')))!
+    expect(g, 'the add is saved').toBeTruthy()
+    const enr = trackerRows(g).filter(c => c.id.includes(':enr:'))
+    const id = (core as any).byName('ROWS ONE').id
+    /* his row — and this file's two students pushed into the list in memory without a save (beforeAll) are stored with
+       it, as anything on the list not yet stored is; no student ALREADY stored has his row rewritten */
+    const mine = enr.find(c => c.id.endsWith(':enr:' + id))
+    expect(mine, 'his row').toBeTruthy()
+    expect(enr.filter(c => before.includes(c.id)), 'no stored student\'s row is rewritten').toEqual([])
+    expect(before.every(k => wb.has('tracker', k)), 'every other student\'s row still stored').toBe(true)
+    const b = oneBatch(g)
+    expect(b.items.find((i: any) => i.key === 'tracker/' + mine!.id).table).toBe('Enrolment')
+  })
+
+  it('a course renamed is ONE saved group: its one course row (Course) and one batch', async () => {
+    groups = []
+    const c = (core as any).course, old = (core as any).courseName(c)
+    const p = (core as any).renCourse(); for (let i = 0; i < 50 && !(core as any).dlg; i++) await settle()
+    ;(core as any).dlgClose('ROWS RENAMED'); await p; await settle()
+    expect(groups).toHaveLength(1)
+    expect(trackerRows(groups[0]!).map(x => x.id)).toEqual(['v3:master:course:' + c])
+    expect(oneBatch(groups[0]!).items.find((i: any) => i.key === 'tracker/v3:master:course:' + c).table).toBe('Course')
+    const q = (core as any).renCourse(); for (let i = 0; i < 50 && !(core as any).dlg; i++) await settle()
+    ;(core as any).dlgClose(old); await q; await settle()
+  })
+})
+
 describe("the Tracker's own Undo / Redo — one restore command each", () => {
   it('one student: the pace taken back — and, never set before, its row REMOVED — in one group with one batch', async () => {
     await (core as any).setEpw(Y, '5')

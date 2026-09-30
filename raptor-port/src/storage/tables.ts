@@ -6,11 +6,18 @@
 
    Ids are read by their PREFIX, and a schedule row's by its markers before its `#`: an issued version's id carries a
    `#` of its own (`<wk>:is:<iso>#<ver>~<n>`), so `:is:` / `:rx:` are tested first (P1-ISSUANCE-KEY, F3-09).
-   The Tracker's rows are named by their key's grammar as they stand today; phase 5b splits them one per thing. */
+   The Tracker's rows are named by their key's grammar. Since phase 5b (D462) its lists are one row per thing
+   (src/tracker/app/rows.js): a course `v3:master:course:<id>`, an enrolment `v3:<course>:<chart>:enr:<id>`, a chart
+   `v3:master:chart:<id>`, a ball's typed details `v3:master:info:<chart>:<ball>` — read first, since a ball's code may
+   spell any word the older checks look for. */
 import type { Collection } from './backend'
 
 const TRACKER = (id: string): string => {
+  if (id.startsWith('v3:master:course:')) return 'Course'
+  if (id.startsWith('v3:master:chart:')) return 'Syllabus'
+  if (id.startsWith('v3:master:info:')) return 'TrainingEvent'
   const p = id.split(':'), last = p[p.length - 1], last2 = p[p.length - 2]
+  if (last2 === 'enr' && p.length === 5) return 'Enrolment'
   if (last2 === 'm' || last2 === 'd' || last2 === 'pace' || last2 === 'lulls') return 'Enrolment'
   if (last === 'roster') return 'Enrolment'
   if (last === 'courses' || last === 'delcourses') return 'Course'

@@ -1,4 +1,4 @@
-// src/state/ord.ts
+// src/command/ord.ts
 /* THE ORDER OF A LIST, ON EACH ROW ([DB-READINESS] group A, phase 2 — plan §2.3; Fable F5, F2-04; Astra R2-10).
    Once the requests, the roster and the planning notes are one stored row each, a list's order can no longer be the
    position of an item inside one big record. Each row carries its place: `ord`, a number, sparse — the design's

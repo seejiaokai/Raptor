@@ -22,6 +22,9 @@ import { idbDocStore } from './storage/docstore'
 import { docBoot } from './state/docs'
 import { settingsAdapter, leavewarAdapter, trackerTarget } from './storage/adapters'
 import { useStorageImpl } from './tracker/storage.js'
+/* the Tracker's one-time conversion — the fold's last converter ([DB-READINESS] group A, phase 5b): registered by the
+   boot, since the Tracker's own code is a lazy chunk the fold cannot wait for */
+import './tracker/fold'
 import { hydrate, wirePersist, wireRows, leaveWarStarted } from './state/persist'
 import { openBootGroup, storeInitialized } from './storage/schema'
 import { resetSeedWorld } from './state/seeds'

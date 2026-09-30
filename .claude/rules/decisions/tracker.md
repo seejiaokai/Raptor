@@ -91,7 +91,12 @@ under `raptor:tracker/…`; the bare `ocu:` localStorage path is the standalone/
 no-target fallback, and legacy `ocu:` keys are imported once — corrected
 17 Sep 26, see `docs/data-schema.md` §World 3 — the
 standalone app's SharePoint/Dataverse/Firebase layers were dropped; the shared
-database replaces this file when it arrives). **The store is the record; the
+database replaces this file when it arrives). *[Since 30 Sep 26 (`[DB-READINESS]` group A phase 5b, D462, D464) the
+course list, each course and chart's student list and the chart records (definitions, names, order, hidden, deleted, and
+the details typed on each ball) are STORED one row per thing, through a row door in `core.js` (`app/rows.js`, the one
+conversion); a browser's old records are converted once at boot by the fold's `tracker` converter (`src/tracker/fold.ts`,
+registered by `src/boot.ts` — storage, not a fourth seam). The chart a signed-in person has open is his own place (D376),
+never written into the course's shared plan.]* **The store is the record; the
 .json file is a FORMAT, not a store** (owner, 9 Sep 26 — "I thought it should
 be auto synced … isn't it duplicating"): marks, dates, students, event
 details (PER CHART — D126) and a moved ball save themselves, ✓ Save changes writes STRUCTURE

@@ -50,7 +50,7 @@ import {
   storesLoad, cxReasonsLoad, dutyTplLoad, waveTplLoad, dayTplLoad,
   secDefaultLoad, waveDefaultLoad,
 } from '../engine'
-import { mintOrd, byOrd } from '../engine/ord'
+import { mintOrd, byOrd } from '../command/ord'
 import { accountsLoad, ACCOUNT_TYPES } from './accounts'
 import { changesLoad, CHANGES_TYPES } from './changes'
 
