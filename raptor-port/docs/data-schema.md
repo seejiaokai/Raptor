@@ -51,11 +51,11 @@ owner approved "everything persists on the built site".
 | Every Leave War record | whiteboard → backend (Browser on the built site, Memory in dev/tests) | **Yes** on the built site (per browser); no in dev/tests by design |
 | Tracker charts and students | whiteboard → backend (`raptor:tracker/*` on the built site) + the syllabus file | Yes |
 | Undo history | scheduler session memory | **No** — session-only by design |
-| The change history (the edit log) and each person's seen record | settings collection (`elog`, `changeseen` — `[DRAFT-PENDING]`, 28 Sep 26) | **Yes** — and it outlives a sign-out (D336 (b)) |
+| The change history (the edit log) and each person's seen record | settings collection, one row per line (`elog:<lineId>`) and one per person (`seen:<pid>`) since 30 Sep 26 (`[DB-READINESS]` group A phase 4.3 — they were `elog` and `changeseen`, `[DRAFT-PENDING]`, 28 Sep 26) | **Yes** — and it outlives a sign-out (D336 (b)) |
 | Attachment bytes (medical documents) | in-memory cache → per-browser IndexedDB drawer (`raptor-docs`, `src/storage/docstore.ts`) on the built site; memory-only in dev/tests | **Yes** on the built site (per browser, since 8 Sep 26); no in dev/tests |
-| Accounts | hard-coded in `src/state/auth.ts` | n/a |
+| Accounts, access requests, each admin's seen requests | settings collection, one row each — `account:<id>`, `accessreq:<id>`, `reqseen:<accountId>` (since 30 Sep 26, `[DB-READINESS]` group A phase 4.4; they were `accounts` and `accessreqs`) — below, §Accounts and session | Yes |
 | The store's own stamp, `settings/schema` | ONE object since 30 Sep 26 (`[DB-READINESS]` group A phase 0, `src/storage/schema.ts`): `{ stage, dataFormatVersion, initialized, appliedAt, minClient }` — the design's `SchemaVersion` row (`data-model.md`). `initialized` is how the app knows the store has STARTED (it replaced the sniffs of `inputs/all` and `leavewar/wars`); a first boot writes its seed and `initialized` in ONE saved group; a wipe clears it; a store ahead of the build is never touched. A bare number (every store before) still reads, as format 5 with `initialized` unknown, and is upgraded at its next boot | Yes |
-| The change log, `changes/*` | its own collection since 30 Sep 26 (group A phase 0 — cleared by a wipe with `inputs`, `weeks`, `leavewar`); written from group A phase 4 (one `ChangeBatch` per saved group) | Yes |
+| The change log, `changes/*` | its own collection since 30 Sep 26 (group A phase 0 — cleared by a wipe with `inputs`, `weeks`, `leavewar`); written since phase 4.1: ONE `changes/<clientBootId>-<first seq>` per saved group, in that group — `{ type, seqs, actorId, at, items: [{ table, key, op }] }`, a pure invalidation log (it names the rows, never their values) — by the whiteboard's seal (`src/state/changebatch.ts`); the newest 200 kept, the oldest retired in the group that adds the newest. A group written outside every command is never sealed — only the Tracker's first mount (its seed and migrations), named in `src/state/changebatch-rollcall.test.ts` | Yes |
 
 `?fresh=1` on the URL forces the Memory backend for a clean-start demo. So
 "moving RAPTOR to a database" is now giving these already-per-browser shapes
@@ -359,14 +359,30 @@ is about and which of his details (`sub`, `fld` — by id, so a rename never los
 line the person too (`sub`), every input a war decision is about when more than one (`iids` — a moved day is re-filed as a
 new record), and its exact days when they are not one run (`days`, `wdays` — a gap day stays untouched), the slot key, a frozen label
 of what it was, before and after (a person key keeps the person's ID — `elogVal` says his live callsign). **Durable since
-`[DRAFT-PENDING]` (28 Sep 26, D336 (b)):** saved as the settings key `elog` = `{ v: 1, next, rows }` (written raw — never a
-command record, so undo never rewinds it), loaded at boot, kept across sign-in and sign-out. Capped at 2,000 rows (was
-400), oldest falls off; a saved row missing its number or its time is dropped at load.
+`[DRAFT-PENDING]` (28 Sep 26, D336 (b)):** loaded at boot, kept across sign-in and sign-out, never a command record (undo
+never rewinds it). **One row per line since 30 Sep 26 (`[DB-READINESS]` group A, phase 4.3):** `settings/elog:<lineId>` =
+the line without its in-memory `seq`, written the moment the line is kept — inside the command that made it, in its saved
+group and its change-log batch (a line with no command running goes through a command of its own, `elog.line`; the Admin
+→ Data sweep is one command, `elog.sweep`, deleting exact lines). `lineId` (`<page>.<n>`, rising within a page life) is
+the line's identity; the history's order is `(t, lineId)` on every client, and `seq` is only a line's place in the list
+loaded now. Capped at 2,000 lines — the oldest line's row deleted in the same group that adds the newest; a boot loads the
+newest 2,000 in order; a row that will not read, or lacks its time, is left in storage and not read. The old whole record
+(`elog = { v, next, rows }`) is converted by the fold (`src/state/settingsrows.ts elogConverter`), never read.
+**Each person's "seen"** is `settings/seen:<pid>` = `{ upto: { at, lineId } | null, extra: lineId[] }` (was one
+`changeseen` record for everyone): positions in that order, written only by `state/changes.ts` through `changes.seen`,
+his OWN row only (`perms.ts ownershipViolation`) — data-model §11 `EditLogSeen`.
 
 ### Accounts and session — `src/state/accounts.ts`, `src/state/auth.ts` (`[ACCOUNTS]`, 26 Sep 26 — D166, D204)
 
-Three durable settings keys below (`accounts`, `accessreqs`, `guestview`), written ONLY by `state/accounts.ts` through
-its intent commands; the session is memory only (a reload lands on the sign-in, as always).
+Durable settings rows below — one per account (`account:<id>`), per waiting request (`accessreq:<id>`), per admin's
+seen requests (`reqseen:<accountId>`) since 30 Sep 26 (`[DB-READINESS]` group A phase 4.4), and the `guestview` key —
+written ONLY by `state/accounts.ts` through its intent commands, each command writing EXACTLY the rows its own list edit
+changed (never against storage, so a client that has not read another's new account cannot remove it); the session is
+memory only (a reload lands on the sign-in, as always).
+- **No account row at all** = the four seeded demo accounts, held in memory (as a missing record was); the first account
+  write stores every account of the list it leaves. **Two account rows for one person** (two admins at once — the
+  database's unique `personId` refuses the second, group B): the older (`createdAt`; a seeded one, with none, oldest)
+  is kept on load, the other dropped with a logged line.
 - `SESSION`: `{ user, role, pid, name }` — `user` the account id (or `principal:<name>` for someone signed in without
   access), `role` `'admin' | 'main' | 'pending' | 'guest' | 'off'`, `pid` his person (null without access), `name` the
   sign-in name (it stands for the defence mail address)
@@ -392,9 +408,10 @@ a later change to the standard is picked up rather than frozen in a browser.
 | `secdefault` | `string[]` | section order, from `notes, prog, waves, duty, sims, ground, inputs, avail, sans, unav` |
 | `stores` | `[[key, label]]` | the stores list |
 | `qualcols` | `QualCol[]` | the LoX column list — `{ k, h, lav?, apt?, scq?, aar?, fcpOnly? }` in display order (saved since the 8 Sep 26 bug pass: the ticks under a column persist, so the column must too) |
-| `accounts` | `Account[]` | `{ id, name, role: 'admin' \| 'main', pid, on, offBy?, seenFrom? }` — `seenFrom` (`[DRAFT-PENDING]`, Fable F6): the change history's next line number when the account was made, so someone given access later starts with nothing new; `name` the sign-in name (lower-case, unique; stands for the defence mail address), `pid` the person (one account each), `on` false = **suspended** (D285); `offBy: 'po'` only when an "Overseas Sqn" posting suspended it on its date (what "he's back" enables — any hand Suspend / Enable drops it). An account is removed only with its person, by a delete (D287, `[POST-OUT-OUTCOMES]`). **No password.** Null = the four seeded demo accounts (`[ACCOUNTS]`, D166) |
-| `accessreqs` | `AccessRequest[]` | `{ id, name, cs, ini, seat, cat, at, seenBy }` — who asked (the signed-in principal, from the session); what he typed, text only — the displayed callsign/name (≤ 14), initials (may be blank), `seat` `FCP`/`RCP`/`GND`, `cat` (`''` for personnel) — never a link to a puck; when; `seenBy` the account ids of the admins who have had it on screen (each admin's bell). (D204; `[ACCOUNTS-NEW-PERSON]` D214, D216, D227 — the typed name field gave way to the initials, D219) |
-| `changeseen` | `{ [personId]: { upto, extra } }` | each person's own "seen" for the change history (`[DRAFT-PENDING]`, D170): every line numbered up to `upto`, and those in `extra`, are seen; written only by `state/changes.ts` through `changes.seen`, which may change the signed-in person's OWN entry only (`perms.ts ownershipViolation`) — data-model §11 `EditLogSeen` |
+| `account:<id>` | `Account` | one row per account (`[DB-READINESS]` group A phase 4.4 — it was one `accounts` list): `{ id, name, role: 'admin' \| 'main', pid, on, offBy?, seenFrom?, createdAt? }` — `seenFrom` (`[DRAFT-PENDING]`, Fable F6): where the change history stood when the account was made, a POSITION `{ at, lineId }` (phase 4.3), so someone given access later starts with nothing new; `createdAt` (ms) — the older of two accounts for one person wins; `name` the sign-in name (lower-case, unique; stands for the defence mail address), `pid` the person (one account each), `on` false = **suspended** (D285); `offBy: 'po'` only when an "Overseas Sqn" posting suspended it on its date (what "he's back" enables — any hand Suspend / Enable drops it). An account is removed only with its person, by a delete (D287, `[POST-OUT-OUTCOMES]`). **No password.** No row at all = the four seeded demo accounts (`[ACCOUNTS]`, D166) |
+| `accessreq:<id>` | `AccessRequest` | one row per waiting request (was one `accessreqs` list): `{ id, name, cs, ini, seat, cat, at }` — who asked (the signed-in principal, from the session); what he typed, text only — the displayed callsign/name (≤ 14), initials (may be blank), `seat` `FCP`/`RCP`/`GND`, `cat` (`''` for personnel) — never a link to a puck; when. (D204; `[ACCOUNTS-NEW-PERSON]` D214, D216, D227 — the typed name field gave way to the initials, D219). Who has had it on screen is no longer on it: |
+| `reqseen:<accountId>` | `{ userId, seenRequestIds }` | each admin's own row of the requests he has had on screen — his bell (D216, D227); written only by `access.seen`, his own row; removed with his account (data-model `AccessRequestSeen`, R3-04) |
+| `seen:<pid>` | `{ upto, extra }` | each person's own "seen" for the change history — §The change history above (was one `changeseen` record) |
 | `guestview` | `true` or null | the admin's switch letting people waiting for access read the published week as a guest — OFF (null) by default (D204) |
 | `rules` | `{ v: { rule: number }, s: { kind: boolean } }` | overrides only: `v` for thresholds off the standard (`briefLead, dur, step, dekit, minTurn, tightTurn, crewRest, debrief, reportLead, longDay, epBrief, simDebrief, amtDebrief, openEnd, maxRun, inputLead, scDayFrom, scDayTo, simLen, oilFullMin`), `s` for which kinds hard-clash a shift (`fly, sim, duty, shift, ground, prog`) |
 
@@ -519,7 +536,12 @@ every chart that has the event — and then left untouched as a backup
 `{ id, name }[]`; their records stay filed under the id, and ⇅ Reorder courses
 restores one. A Last Flown record (`…:d:<id>`) may carry `handSyll` /
 `handCurr: true` — the day in that box was typed by hand and stands until a
-later flight (D123). Since the seam the Tracker's data flows through the
+later flight (D123). **Each save travels with its command (30 Sep 26, `[DB-READINESS]`
+group A phase 4.1):** a record a command changed is written by the Tracker's own subscriber
+to the command stream, through its storage door, inside that command's saved group and its
+change-log batch — never again after it; its own Undo / Redo is one restore command each
+(`tracker.undo` / `tracker.redo`). Only its first mount (the seed and one-time migrations,
+their flags) writes outside a command. Since the seam the Tracker's data flows through the
 whiteboard and lands under `raptor:tracker/<key>` (e.g. `raptor:tracker/v3:master:syls`);
 the legacy `ocu:*` keys are imported once. `ocuLocal:*` holds this browser's
 last course and crew member — a view preference, written straight to

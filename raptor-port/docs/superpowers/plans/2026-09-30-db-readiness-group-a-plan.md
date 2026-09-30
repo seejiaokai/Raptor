@@ -517,3 +517,73 @@ boot in `main.tsx`; tests `storage/schema.test.ts`, `storage/fold.test.ts`, `sta
 - **P3-CELL-DIFF's "exact `ChangeBatch.items`" test** lands with phase 4, where the batch is built.
 - **Gates (30 Sep 26, under the lock):** unit 7154/7154 · build · tfin 728/0 · e2e 509/0 (49 skipped) · smoke 445/0 ·
   rulecheck · docsize; perf 4/4 (the side-by-side above).
+
+**Phase 4 — built 30 Sep 26** (`src/state/changebatch.ts`, `src/storage/tables.ts`, `src/state/settingsrows.ts` new;
+`storage/whiteboard.ts`, `command/{commit,index}.ts`, `engine/{editlog,hooks}.ts`, `storage/adapters.ts`,
+`state/{changes,accounts,people-settings-commit,perms,persist,store,sched-commit,roster-restore,person-delete,undo-wire}.ts`,
+`undo/{timeline,describe}.ts`, `ui/inputedit.tsx`, `tracker/app/core.js`; tests `storage/seal.test.ts`,
+`state/changebatch.test.ts`, `state/changebatch-rollcall.test.ts`, `state/elog-rows.test.ts`, `state/accounts-rows.test.ts`, `state/settingsrows.test.ts`,
+`tracker/trk-restore.test.ts`, and fifteen older tests moved to the rows):
+- **4.1 the change log.** The whiteboard's `setSealer`: at the outermost commit, a non-empty net change is handed to ONE
+  sealer, whose entries (the batch, and any old batch it retires) are written into the SAME group. The state layer's
+  sealer (`changebatch.ts`) builds `changes/<clientBootId>-<first seq>` = `{ type, seqs, actorId, at, items: [{ table,
+  key, op }] }` — the items every other row of the group (`storage/tables.ts tableOf`, the matrix's table), `seqs` every
+  envelope that landed in it, `type` / `actorId` the OUTERMOST command's (the command layer now hands its transaction door
+  `{ type, actor }` — `TxnInfo`), so a no-op outermost names the batch after the first seq that landed (P4-BATCH-ID). A
+  group opened by no command (the first boot's) is `boot`, by the system. The stand-in keeps the newest 200 batches, the
+  oldest retired in the group that adds the newest (the database's purge is its change-tracking retention).
+  **The roll-call (F2-03), done by a read-only sweep of every writer after boot, and then made a TEST
+  (`changebatch-rollcall.test.ts`: a battery of every kind of writer on the real wiring — schedule, request, roster,
+  calendar, setting, account, seen, an idle line, the war, Undo / Redo, a week switch, sign-out and in, the Tracker — every
+  group after boot carries exactly one batch naming the rest, or is the ONE named exempt writer):** two writers were
+  outside every command after boot — the change history's save (a microtask, after its command's group) and **almost every
+  Tracker save** (its command changed only its in-memory mirror; the storage write came after, a bare group — not in the
+  plan's first list). Dispositions: the history — 4.3; the Tracker — its OWN subscriber to the command stream writes each
+  changed record through its own storage door inside the command's group, and a write that ran its own command is never
+  written again (a refused one, never at all — the sweep's finding); the Tracker's first mount (seed, one-time migrations,
+  their flags) is the one exempt writer. `loadWeek`: read-only (phase 1.3); the Leave War's idle writes: carried by the
+  turn's projection (phase 3); `commitDiscardPending`'s lines and the Undo / Redo lines: moved INSIDE their commands (the
+  global undo's `reversed` hook now runs inside the restore's apply). Checked the roll-call fails when a bare write exists
+  (the idle line's door switched off → red, naming the row).
+  **P4.1-TRACKER-RESTORE:** the Tracker's own Undo / Redo is ONE restore command each (`tracker.undo` / `tracker.redo`,
+  origin `restore`, trkStore enlisted, applied synchronously — the save helpers' writes happen at the call, nothing awaited
+  between them), saved by the rows subscriber; the raw path stays only before init turns routing on (and in the standalone
+  Tracker). Tested: a chart edit, one student (a pace never set before — its row removed), a copy to several students, a
+  redo — each ONE group with one matching batch.
+  **P3-CELL-DIFF's exact items:** a Leave War move's batch names exactly one `LeaveBid` row, put (the rest is its history line).
+- **4.2 the stand-in reader** (test-only, in the roll-call file): a second client holding the store as it last read it
+  reads the batches since its mark, re-reads each named row ONCE, and ends with the first client's view — an input, a day,
+  a war record, a history line — and, row for row, the first client's inputs, weeks, war, roster and calendar.
+- **4.3 the change history one row per line.** `settings/elog:<lineId>`, written at `keep` inside the command (its latched
+  effect); a line kept with no command running goes through a door of its own (`elog.line`, the system actor — the line
+  names who) so it is never bare; the Admin → Data sweep is ONE command (`elog.sweep`) deleting exact lines, with its own
+  line; `queueSave` gone, `elogFlush` a no-op. `lineId` = `<page>.<n>`, rising within a page life; the order `(t, lineId)`
+  everywhere; `seq` only the place in the loaded list (never stored). The 2,000 cap deletes the oldest row in the same
+  group; boot loads the newest 2,000 in order; an unreadable row is left and not read. `elogRemap` is now HELD like a line
+  (applied at the command's latched effects, in order) — a refused command renumbers nothing (it used to change the log in
+  memory and save it whatever the command did — found on the way). `settings/seen:<pid>` = `{ upto: {at, lineId} | null,
+  extra: lineId[] }`; `Account.seenFrom` a position (`elogNow()`). The fold's `elog` converter turns the old record and
+  `changeseen` into rows, numbers into positions.
+- **4.4 accounts one row each.** `settings/account:<id>`, `settings/accessreq:<id>`, `settings/reqseen:<accountId>`
+  (`{ userId, seenRequestIds }` — the new `AccessRequestSeen`; `seenBy` off the request, kept in memory from these rows);
+  each write stores EXACTLY the rows its own list edit changed (before against after in the command, never against
+  storage); no account row at all = the seeded list in memory, and the first write stores every account it leaves; two
+  accounts for one person — the older (`createdAt`, a seeded one oldest) kept, the other dropped with a logged line
+  (`readAccounts`); two admins adding accounts, or marking the waiting list seen, at once — both survive (`accounts-rows.test.ts`,
+  written after the code and broken once on purpose: a save that removed every stored account it did not hold went red).
+  The settings store's records follow the grain (`SETTINGS_ROW_PREFIXES` — each row its own record, so
+  Undo and the permission checks see rows); the old `accounts` / `accessreqs` / `changeseen` records and their
+  `settings.<key>` commands are gone. The Undo's rules, its words and the delete's guard read ONE candidate
+  (`accountsAfter` / `requestsAfter` — what is stored now with the step's rows put back; no account row left = the seed).
+  The admins' bell overlay in Undo went (a request's image no longer carries who has seen it). The fold's `accounts`
+  converter. Permissions and §11 together: `AccessRequestSeen` (admin own C R U), `ChangeBatch` (admin, member C R; guest
+  R), `AccessRequest` loses its U; `access.seen` his own row (`required`); a pending person's own request may add ONE new
+  `accessreq:` row under his own sign-in name and touch no other.
+- **Converters registered:** `elog`, `accounts` (seven of eight — the target stays 5 until the Tracker's, phase 5b).
+- **§4's documents for phase 4 landed:** `data-model.md` §3 (EditLog `lineId`, `seq` store-assigned, the order;
+  EditLogSeen positions; User `seenFrom`, `createdAt`; AccessRequest without `seenBy`; the new `AccessRequestSeen`), §5,
+  §9 (the batch a pure invalidation log, one per saved group — built), §11 (the three rows), §12 q4 (`EditLog.seq` to IT);
+  `data-schema.md` (the rows, the change log, the Tracker's saves); `file-map.md`; `OUTSTANDING.md` (`[IT-QUESTIONS]`, and
+  two findings filed under `[DB-READINESS]`: the Tracker writes one person's chart pick into the course's shared plan —
+  for 5b; the war's "which war is on screen" is shared data — for group B).
+- **Gates (30 Sep 26, under the lock):** unit 7226/7226 (453 files) · build · tfin 728/0 · e2e 508 passed, 1 failed (the month-window timing flake — `[LW-WINDOW-PRUNE-FLAKE-2]`, alone 3/3 straight after), 49 skipped · smoke 445/0 · rulecheck · docsize; perf 4/4 (four runs: oneEdit 1.32–1.38×, noop 1.48–1.51×, board 1.29–1.34×, noopB 1.55–1.59× — inside phase 3's spread, noopB at its top).

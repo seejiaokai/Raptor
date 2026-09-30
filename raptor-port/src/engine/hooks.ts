@@ -142,7 +142,9 @@ export const HOOKS = {
    DOM-free. `storeBackend.impl` is null headless (get returns the default,
    set is dropped); the app plugs window.localStorage in. */
 export const storeBackend: {
-  impl: { getItem(k: string): string | null; setItem(k: string, v: string): void } | null
+  /* `keys` ([DB-READINESS] group A, phase 4): every stored key, in the form getItem takes — a record kept one row per
+     thing (a history line, an account) is found by its prefix; a backend without it holds none of those */
+  impl: { getItem(k: string): string | null; setItem(k: string, v: string): void; keys?(): string[] } | null
 } = { impl: null }
 
 /* [ARCH-STACK] Step 2 phase 3: a dependency-free write seam. The state layer
@@ -190,5 +192,14 @@ export const store = {
   set(k: any, v: any) {
     if (SETTINGS_WRITE_HOOK) SETTINGS_WRITE_HOOK(k, v, rawStoreSet)
     else rawStoreSet(k, v)
+  },
+  /* every stored key that starts with `prefix`, without the store's own prefix — the rows of a record kept one row per
+     thing (`elog:`, `seen:`, `account:` …); none on a backend that cannot list */
+  keys(prefix: string): string[] {
+    try {
+      const all = storeBackend.impl && storeBackend.impl.keys ? storeBackend.impl.keys() : []
+      const p = 'sqn142_' + prefix
+      return all.filter(k => k.startsWith(p)).map(k => k.slice(7))
+    } catch (e) { return [] }
   },
 }

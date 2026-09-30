@@ -150,7 +150,7 @@ describe('clear the edit history', () => {
      days — the dates the History list prints */
   const at = (y: number, m: number, d: number) => new Date(y, m - 1, d, 12).getTime()
   let seq = 0
-  const row = (t: number, lbl: string) => ({ seq: ++seq, t, who: 'BANE', di: null, date: null, key: '', lbl, from: '', to: '' })
+  const row = (t: number, lbl: string) => ({ seq: ++seq, lineId: `w.${seq}`, t, who: 'BANE', di: null, date: null, key: '', lbl, from: '', to: '' })
   beforeEach(() => {
     elogClear()
     ELOG.rows.push(row(at(2026, 1, 5), 'january'), row(at(2026, 3, 1), 'march'), row(at(2026, 7, 14), 'july'))

@@ -14,11 +14,12 @@ import { commit } from '../command'
 
 const fake = new Map<string, string>()
 beforeAll(() => {
-  storeBackend.impl = { getItem: k => (fake.has(k) ? fake.get(k)! : null), setItem: (k, v) => { fake.set(k, v) } }
+  storeBackend.impl = { getItem: k => (fake.has(k) ? fake.get(k)! : null), setItem: (k, v) => { if (v === 'null') fake.delete(k); else fake.set(k, v) }, keys: () => [...fake.keys()] }
   initStore()
 })
 afterAll(() => { storeBackend.impl = null })
-beforeEach(() => { elogClear(); elogFlush() })
+/* a fresh history each time: the lines in memory AND their stored rows (one row per line since [DB-READINESS] group A, phase 4.3) */
+beforeEach(() => { elogClear(); elogFlush(); for (const k of [...fake.keys()]) if (k.startsWith('sqn142_elog:')) fake.delete(k) })
 
 describe('the history is kept', () => {
   it('a sign-out and the next sign-in keep every line', () => {

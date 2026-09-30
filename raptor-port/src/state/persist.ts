@@ -29,8 +29,10 @@ import type { Whiteboard } from '../storage/whiteboard'
 import { storeInitialized } from '../storage/schema'
 import { registerConverter, type Converter } from '../storage/fold'
 import type { Entry } from '../storage/backend'
-import { setTxnWrapper } from '../command'
 import type { Change, LogicalCollection } from '../command/types'
+import { wireChangeBatches } from './changebatch'
+/* the change history's and the accounts' one-time conversions (the fold's `elog` and `accounts` converters — phase 4) */
+import './settingsrows'
 import { wireRowConsumer, registerComposer, registerMapper, type RowWrite } from './rowmap'
 import { schedRecordsNow, resyncSchedBaseline } from './sched-commit'
 import { mintOrd, sortByOrd, byOrd } from '../engine/ord'
@@ -345,8 +347,9 @@ export function wireRows(wb: Whiteboard): void {
   wiredTo = wb
   /* [ARCH-STACK-4] phase 0 (§20.1) — every command's durable writes become ONE
      all-or-nothing group: the command layer opens a whiteboard transaction per
-     outermost command. */
-  setTxnWrapper(wb)
+     outermost command. [DB-READINESS] group A, phase 4.1 — and every such group carries ONE change-log batch naming
+     its rows (state/changebatch.ts: the wrapper, the sealer and the envelope collector). */
+  wireChangeBatches(wb)
   /* [DB-READINESS] group A (plan §2.2) — each command's changes, mapped to the stored rows they live in, written inside
      the command's own group (state/rowmap.ts). Phase 1: the schedule's weeks (a composer — a day row is three records);
      phase 2: the requests, the roster, the planning calendar. */

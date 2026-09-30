@@ -16,11 +16,25 @@
    reaches storage all-or-nothing. `abort()` and `rollbackTo(savepoint)` put
    touched keys back and emit nothing — a refused command leaves NOTHING in
    storage (§21.1: a store's own rollback resets memory only and never
-   re-persists, so the whiteboard has to undo its own writes). */
+   re-persists, so the whiteboard has to undo its own writes).
+
+   THE SEAL ([DB-READINESS] group A, phase 4.1 — plan §2.7). One saved group is
+   one user action with its causal children, and it carries ONE change-log batch
+   (`changes/<batchId>`, the design's `ChangeBatch`) naming every other row in it.
+   `setSealer(fn)` installs the one function that builds it: at the outermost
+   commit, when the net change is not empty, the sealer is handed the group and
+   answers the entries to add — the batch, and any old batch it retires — which
+   are written to the map and sent IN THE SAME group, so a batch never reaches
+   storage apart from the rows it names. A write outside a transaction (its own
+   one-entry group) is never sealed: those are named writers, listed in the
+   phase-4.1 test. The whiteboard knows nothing of commands; the state layer's
+   sealer does (state/changebatch.ts). */
 import { type Collection, type Entry, type Snapshot, emptySnapshot, recordKey, splitKey } from './backend'
 
 export type Change = Entry
 export type Listener = (group: Change[]) => void
+/** the seal: handed a transaction's net change, answers the entries to add to it (or nothing) */
+export type Sealer = (group: readonly Change[]) => Change[] | null
 
 /* the value each key held when a transaction / savepoint first saw it touched;
    undefined = the key did not exist */
@@ -46,11 +60,29 @@ export class Whiteboard {
   private open: Before | null = null        // the transaction's opening values
   private depth = 0                          // nested transaction() calls join the outer one
   private points: Before[] = []              // live savepoints, oldest first
+  private sealer: Sealer | null = null
+  /* each collection's ids, kept beside the map ([DB-READINESS] group A, phase 4): a record kept one row per thing is found
+     by listing its collection, on every command (the settings store's guard) — never by scanning every key stored */
+  private ids = new Map<string, Set<string>>()
+
+  /** install (or remove, with null) the one sealer every transaction group passes through */
+  setSealer(fn: Sealer | null): void { this.sealer = fn }
+
+  /* the ONE pair of raw map writes — the map and the per-collection ids move together */
+  private put(k: string, v: string): void {
+    if (!this.map.has(k)) { const i = k.indexOf('/'); const c = k.slice(0, i); let s = this.ids.get(c); if (!s) this.ids.set(c, s = new Set()); s.add(k.slice(i + 1)) }
+    this.map.set(k, v)
+  }
+  private drop(k: string): void {
+    if (!this.map.delete(k)) return
+    const i = k.indexOf('/'); this.ids.get(k.slice(0, i))?.delete(k.slice(i + 1))
+  }
 
   fill(snap: Snapshot): void {
     this.map.clear()
+    this.ids.clear()
     for (const c of Object.keys(snap) as Collection[]) {
-      for (const id of Object.keys(snap[c])) this.map.set(recordKey(c, id), snap[c][id])
+      for (const id of Object.keys(snap[c])) this.put(recordKey(c, id), snap[c][id])
     }
   }
 
@@ -63,10 +95,8 @@ export class Whiteboard {
   }
 
   keys(collection: Collection): string[] {
-    const prefix = collection + '/'
-    const out: string[] = []
-    for (const k of this.map.keys()) if (k.startsWith(prefix)) out.push(k.slice(prefix.length))
-    return out
+    const s = this.ids.get(collection)
+    return s ? [...s] : []
   }
 
   /** true when the stored value changed (a same-value set is silent). */
@@ -74,7 +104,7 @@ export class Whiteboard {
     const k = recordKey(collection, id)
     if (this.map.get(k) === value) return false
     this.touch(k)
-    this.map.set(k, value)
+    this.put(k, value)
     if (!this.open) this.emit([{ collection, id, value }])
     return true
   }
@@ -83,7 +113,7 @@ export class Whiteboard {
     const k = recordKey(collection, id)
     if (!this.map.has(k)) return false
     this.touch(k)
-    this.map.delete(k)
+    this.drop(k)
     if (!this.open) this.emit([{ collection, id, value: null }])
     return true
   }
@@ -142,6 +172,17 @@ export class Whiteboard {
           group.push({ collection, id, value: now ?? null })
         }
         this.close()
+        /* the seal: its entries go into the map and the SAME group (closed first, so they are plain writes) */
+        if (group.length && this.sealer) {
+          let extra: Change[] | null = null
+          try { extra = this.sealer(group) } catch (e) { console.error('whiteboard sealer threw — group sent without a batch', e) }
+          for (const e of extra ?? []) {
+            const k = recordKey(e.collection, e.id)
+            if (e.value === null) { if (!this.map.has(k)) continue; this.drop(k) }
+            else { if (this.map.get(k) === e.value) continue; this.put(k, e.value) }
+            group.push(e)
+          }
+        }
         if (group.length) this.emit(group)
       },
       abort: () => {
@@ -183,8 +224,8 @@ export class Whiteboard {
   /* raw map writes — a restore is not itself a change anyone must hear about */
   private restore(before: Before): void {
     for (const [k, was] of before) {
-      if (was === undefined) this.map.delete(k)
-      else this.map.set(k, was)
+      if (was === undefined) this.drop(k)
+      else this.put(k, was)
     }
   }
 

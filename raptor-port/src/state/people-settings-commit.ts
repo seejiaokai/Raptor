@@ -61,14 +61,27 @@ import { changesLoad, CHANGES_TYPES } from './changes'
 export const SETTINGS_KEYS = [
   'rules', 'stores', 'cxreasons', 'daytpl', 'dutytpl', 'wavetpl', 'wavehide',
   'qualcols', 'lookahead', 'secdefault', 'wavedefault',
-  /* [ACCOUNTS] (D166, D204, 26 Sep 26): the accounts, the access requests and the
-     guest switch — the Shell's `User` / `AccessRequest` and one `Setting` (data-model
-     §3, §11). Written ONLY by state/accounts.ts, through its intent commands. */
-  'accounts', 'accessreqs', 'guestview',
-  /* [DRAFT-PENDING] (D170, 28 Sep 26): each person's own "seen" for the change history — the `EditLogSeen` of
-     data-model §11. Written ONLY by state/changes.ts, through its one command `changes.seen` (own entry only). */
-  'changeseen',
+  /* [ACCOUNTS] (D166, D204, 26 Sep 26): the guest switch — one `Setting` (data-model §3, §11). Written ONLY by
+     state/accounts.ts, through its intent commands. */
+  'guestview',
 ] as const
+/* THE SETTINGS RECORDS KEPT ONE ROW PER THING ([DB-READINESS] group A, phase 4 — plan §2.5's matrix, §2.9: the command
+   layer's records follow the storage grain). Each row is its own record, `settings/<prefix><id>`, found by its prefix:
+   - `account:<id>`, `accessreq:<id>`, `reqseen:<accountId>` — the Shell's `User`, `AccessRequest` and
+     `AccessRequestSeen` (they were the whole-list `accounts` and `accessreqs`); written ONLY by state/accounts.ts,
+     through its intent commands ([ACCOUNTS], D166, D204);
+   - `seen:<pid>` — each person's own "seen" for the change history, `EditLogSeen` (it was the shared `changeseen`);
+     written ONLY by state/changes.ts, through its one command `changes.seen` (own row only — D170).
+   The change history's own lines (`elog:<lineId>`) are NOT records here: written raw by engine/editlog.ts inside the
+   command that made them, never undone (the log is not in any Undo). */
+export const SETTINGS_ROW_PREFIXES = ['account:', 'accessreq:', 'reqseen:', 'seen:'] as const
+const isRowKey = (k: string) => SETTINGS_ROW_PREFIXES.some(p => k.startsWith(p))
+/* every row stored now — ONE pass over the settings keys (the guard reads this on every command, so never one per kind) */
+const settingsRowKeys = (): string[] => store.keys('').filter(isRowKey)
+/* every settings record's key: the fixed ones, then each row stored now */
+function settingsRecordKeys(): string[] {
+  return [...SETTINGS_KEYS, ...settingsRowKeys()]
+}
 /* every xLoad(), run to rebuild the module CFGs from the (restored) store on a
    rollback — deduped (waveTplLoad rebuilds both wavetpl + wavehide). */
 const SETTINGS_LOADERS: Array<() => void> = [
@@ -80,11 +93,13 @@ function settingsRecords(): Map<string, RecordEntry> {
   for (const k of SETTINGS_KEYS) {
     m.set(`settings/${k}`, { collection: 'settings', id: k, value: store.get(k, null) })
   }
+  /* a row is a record while it is stored; absent, it is no record (so adding one is a put, removing it a delete) */
+  for (const k of settingsRowKeys()) m.set(`settings/${k}`, { collection: 'settings', id: k, value: store.get(k, null) })
   return m
 }
 function captureSettings(): string {
   const o: Record<string, unknown> = {}
-  for (const k of SETTINGS_KEYS) o[k] = store.get(k, null)
+  for (const k of settingsRecordKeys()) o[k] = store.get(k, null)
   return JSON.stringify(o)
 }
 /* [CMDL-FINISH] R3-001 — the side-effect-free RESET-then-overlay rehydrator,
@@ -105,6 +120,9 @@ function rehydrateSettings(): void {
 function restoreSettings(snap: string): void {
   const o = JSON.parse(snap)
   for (const k of SETTINGS_KEYS) store.set(k, k in o ? o[k] : null)
+  /* the rows: every one the snapshot held, back as it was; every one written since, removed */
+  for (const k of settingsRowKeys()) if (!(k in o)) store.set(k, null)
+  for (const k of Object.keys(o)) if (isRowKey(k)) store.set(k, o[k])
   rehydrateSettings()
 }
 export const settingsStore: EnlistableStore = {
@@ -313,6 +331,10 @@ export function registerPeopleSettingsCommandLayer(): void {
   registerRecord({ key: 'people:<personId>', cls: 'record', collection: 'people', module: 'people' })
   for (const k of SETTINGS_KEYS) {
     registerRecord({ key: `settings:${k}`, cls: 'record', collection: 'settings', module: 'settings' })
+  }
+  /* the rows kept one per thing ([DB-READINESS] group A, phase 4) — one registry entry per kind */
+  for (const p of SETTINGS_ROW_PREFIXES) {
+    registerRecord({ key: `settings:${p}<id>`, cls: 'record', collection: 'settings', module: 'settings' })
   }
 }
 

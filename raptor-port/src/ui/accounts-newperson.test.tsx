@@ -48,7 +48,7 @@ let host: HTMLDivElement
 let root: Root
 const origToast = HOOKS.toast, origPhone = HOOKS.isPhone
 beforeAll(async () => {
-  storeBackend.impl = { getItem: (k: string) => (k in mem ? mem[k]! : null), setItem: (k: string, v: string) => { mem[k] = v } }
+  storeBackend.impl = { getItem: (k: string) => (k in mem ? mem[k]! : null), setItem: (k: string, v: string) => { if (v === 'null') delete mem[k]; else mem[k] = v }, keys: () => Object.keys(mem) }
   initStore(); accountsLoad()
   host = document.createElement('div')
   document.body.appendChild(host)
@@ -401,7 +401,7 @@ describe("NP6 — the admins' bell, each admin's own (D216, D227)", () => {
     /* a request arrives while he is there (at the database step, from another device) —
        the Users list is not on his screen, so his bell lights */
     await act(async () => {
-      store.set('accessreqs', [{ id: 'rqx', name: 'kite@mail', cs: 'Kite', ini: '', seat: 'FCP', cat: 'C', at: Date.now(), seenBy: [] }])
+      store.set('accessreq:rqx', { id: 'rqx', name: 'kite@mail', cs: 'Kite', ini: '', seat: 'FCP', cat: 'C', at: Date.now() })
       accountsLoad(); notify()
     })
     expect($('#notifyBell').classList.contains('on')).toBe(true)

@@ -103,7 +103,11 @@ export interface TxnHandle {
   commit(): void
   abort(): void
 }
-export interface TxnWrapper { transaction(): TxnHandle }
+/* [DB-READINESS] group A, phase 4.1 (plan §2.7) — who opened the group: the outermost command's type and actor, handed
+   to the wrapper so the group's change-log batch can name them (state/changebatch.ts), even when that command itself
+   changed nothing and only what it drained did (F3-10). */
+export interface TxnInfo { type: string; actor: Actor }
+export interface TxnWrapper { transaction(info?: TxnInfo): TxnHandle }
 let txnWrapper: TxnWrapper | null = null
 let openTxn: TxnHandle | null = null
 export function setTxnWrapper(w: TxnWrapper | null): void { txnWrapper = w }
@@ -166,7 +170,7 @@ function dispatch(cmd: Command, actor: Actor, origin: Origin, causedBy?: number)
      commit with their stale captured cause. The pipeline's throw is rethrown
      AFTER the drain + reset. */
   let result: CommitResult | undefined
-  const wtx = txnWrapper ? txnWrapper.transaction() : null
+  const wtx = txnWrapper ? txnWrapper.transaction({ type: cmd.type, actor }) : null
   openTxn = wtx
   try {
     result = runPipeline(cmd, actor, origin, causedBy)

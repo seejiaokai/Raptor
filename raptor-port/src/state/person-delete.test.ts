@@ -63,7 +63,7 @@ beforeAll(() => {
 afterAll(() => { vi.useRealTimers(); storeBackend.impl = null })
 beforeEach(() => {
   Object.keys(mem).forEach(k => delete mem[k])
-  storeBackend.impl = { getItem: (k: string) => (k in mem ? mem[k]! : null), setItem: (k: string, v: string) => { mem[k] = v } }
+  storeBackend.impl = { getItem: (k: string) => (k in mem ? mem[k]! : null), setItem: (k: string, v: string) => { if (v === 'null') delete mem[k]; else mem[k] = v }, keys: () => Object.keys(mem) }
   const p0 = JSON.parse(PEOPLE0)
   for (const k of Object.keys(PEOPLE)) delete (PEOPLE as any)[k]
   Object.assign(PEOPLE, p0); indexCallsigns()
@@ -250,18 +250,22 @@ describe('PO5 — kept underneath, gone from every list; his callsign free; his 
    accounts list holding his account, would put him back; a delete of a man the war does not hold writes no posting record,
    so nothing else would keep it dead (Fable's red team 10 — built BEFORE the cutover). */
 describe('B4 — undo and redo never put a deleted man, or his account, back', () => {
-  it('a roster image of him un-deleted, and an accounts list holding his account, are refused; his deleted image is not', () => {
+  /* one row per account since [DB-READINESS] group A, phase 4.4: a step holds a change per account ROW */
+  const rowsOf = (list: any[]) => list.map(a => ({ op: 'put', collection: 'settings', id: `account:${a.id}`, after: clone(a) }))
+  it('a roster image of him un-deleted, and an account row of his, are refused; his deleted image is not', () => {
     const before = clone((PEOPLE as any)[HIM])
     const accts = clone(ACCOUNTS_LIST)
     expect(deletePerson(HIM)).toBe(null)
     expect(deletedRestoreProblem([{ op: 'put', collection: 'people', id: HIM, after: before }])).toMatch(/Hex has been deleted/)
-    expect(deletedRestoreProblem([{ op: 'put', collection: 'settings', id: 'accounts', after: accts }])).toMatch(/Hex has been deleted/)
+    expect(deletedRestoreProblem(rowsOf(accts))).toMatch(/Hex has been deleted/)
     expect(deletedRestoreProblem([{ op: 'put', collection: 'people', id: HIM, after: clone((PEOPLE as any)[HIM]) }])).toBe(null)
-    expect(deletedRestoreProblem([{ op: 'put', collection: 'settings', id: 'accounts', after: clone(ACCOUNTS_LIST) }])).toBe(null)
+    expect(deletedRestoreProblem(rowsOf(ACCOUNTS_LIST))).toBe(null)
   })
-  it('an accounts image stored as null is the SEEDED list — and it holds Ranger’s account (Fable’s final read, F5)', () => {
+  it('a step leaving NO account row is the SEEDED list — and it holds Ranger’s account (Fable’s final read, F5)', () => {
     expect(deletePerson('bane')).toBe(null)
-    expect(deletedRestoreProblem([{ op: 'put', collection: 'settings', id: 'accounts', after: null }])).toMatch(/Ranger has been deleted/)
+    const stored = Object.keys(mem).filter(k => k.startsWith('sqn142_account:')).map(k => k.slice('sqn142_'.length))
+    expect(stored.length, 'the delete stored the accounts it left').toBeGreaterThan(0)
+    expect(deletedRestoreProblem(stored.map(id => ({ op: 'delete', collection: 'settings', id })))).toMatch(/Ranger has been deleted/)
   })
 })
 

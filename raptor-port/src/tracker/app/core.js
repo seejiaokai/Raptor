@@ -31,8 +31,11 @@ import {
 import {
   commit as cmdCommit, isCommitting as cmdIsCommitting, definePermission as cmdDefinePermission,
   anyone as cmdAnyone, registerRecord as cmdRegisterRecord, deferEffect as cmdDeferEffect,
-  registerGuardedStore as cmdRegisterGuardedStore,
+  registerGuardedStore as cmdRegisterGuardedStore, onCommit as cmdOnCommit, deriveActor as cmdDeriveActor,
 } from '../../command';
+/* the Tracker's own Undo / Redo is a RESTORE — the internal door the global undo uses too ([DB-READINESS] group A,
+   phase 4.1, P4.1-TRACKER-RESTORE): origin `restore`, never a new step of anyone's */
+import { commitAs as cmdCommitAs } from '../../command/commit';
 
 export { SYLLABI, SYL_NAMES, DEFAULT_SYL_NAME, DEFAULT_SYL_ORDER, DEFAULT_LAYOUTS, EVENT_INFO };
 export { mintId };
@@ -264,6 +267,10 @@ const TRK_DEL = Symbol('trk.del');
    click landing inside that await must still record normally. */
 let TRK_RESTORING = false;
 function trkRestoring(fn) { const prev = TRK_RESTORING; TRK_RESTORING = true; try { return fn(); } finally { TRK_RESTORING = prev; } }
+/* [DB-READINESS] group A, phase 4.1 (P4.1-TRACKER-RESTORE, Astra R3-05) — set while the Tracker's own Undo / Redo
+   restore command runs: every record it puts back is written to `mem` inside that command and SAVED BY IT (the rows
+   subscriber below, from the command's own changes) — so the raw save helpers write nothing then. */
+let TRK_IN_RESTORE = false;
 /* the persisted mirror, read SYNCHRONOUSLY — the record source once hydrated
    (used by the §3 write()/restore re-derive; nothing on it awaits or calls
    loadCourse — build-advice #5). */
@@ -418,6 +425,22 @@ function trkRegisterCommands() {
     cmdRegisterRecord({ key: 'tracker:' + c, cls: 'record', collection: c, module: 'tracker' });
   }
   cmdDefinePermission('trk.gesture', cmdAnyone);   // [CMDL-FINISH] §4 — a multi-collection gesture's envelope
+  /* [DB-READINESS] group A, phase 4.1 — the Tracker's own Undo / Redo, each ONE restore command (P4.1-TRACKER-RESTORE) */
+  cmdDefinePermission('tracker.undo', cmdAnyone); cmdDefinePermission('tracker.redo', cmdAnyone);
+  /* THE TRACKER'S ROWS, WRITTEN FROM EACH COMMAND'S OWN CHANGES ([DB-READINESS] group A, phase 4.1). Every Tracker
+     record a command changed is saved at its phase 9 — inside the command's one saved group, beside its change-log
+     batch — through the Tracker's own storage door (it keeps its own seam: tracker.md §Architecture), a removed record
+     removed, a record the command did not change never written. A gesture's own boundary flush and the global undo's
+     write seam land the same values earlier in the same group, so nothing is written twice. A change applied from
+     another person (a remote envelope) is never echoed back. */
+  cmdOnCommit(env => {
+    if (env.emit === false) return;
+    for (const c of env.changes) {
+      if (!String(c.collection).startsWith('trk.')) continue;
+      if (c.op === 'delete') { if (storage.delete) storage.delete(c.id); else storage.set(c.id, ''); }
+      else storage.set(c.id, c.after);
+    }
+  });
   /* [CMDL-FINISH] §3 (C9) / P4-END — now that EVERY post-boot Tracker write routes
      through the command layer (per-write via trkWrite/trkDelete, or grouped via
      trkGesture), guard trkStore: its cheap durable-version signature() is checked
@@ -558,7 +581,10 @@ function trkWriteRecords(entries) {
 }
 
 /* the synchronous durable-record write: routed through a named command when
-   enabled + the key is a known record + we're not already committing; else raw. */
+   enabled + the key is a known record + we're not already committing; else raw.
+   Returns TRUE when it ran as its own command — that command then SAVED it ([DB-READINESS] group A, phase 4.1: the
+   rows subscriber writes the record from the command's own change, inside its saved group), or, refused, saved
+   nothing — so the caller must not write it again. */
 function trkWrite(k, v) {
   const col = (TRK_COMMANDS && !TRK_RESTORING) ? trkCollectionOf(k) : null;
   if (col && !cmdIsCommitting()) {
@@ -567,9 +593,10 @@ function trkWrite(k, v) {
       scope: { module: 'trk', courseId: course, sylId: curSylId() },
       apply: (txn) => { txn.enlist(trkStore); mem[k] = v; bumpMemGen(k); TRK_SIG++; },
     });
-  } else {
-    mem[k] = v; bumpMemGen(k); TRK_SIG++;
+    return true;
   }
+  mem[k] = v; bumpMemGen(k); TRK_SIG++;
+  return false;
 }
 /* [CMDL-FINISH] §4 — no longer `async`, so a call inside a gesture completes its
    mem write SYNCHRONOUSLY (no await sequences a later write into a microtask that
@@ -578,8 +605,13 @@ function trkWrite(k, v) {
    raw branch while committing) + record the key; the storage flush is deferred by
    trkGesture to the transaction boundary. */
 function sSet(k, v) {
-  trkWrite(k, v);
+  const saved = trkWrite(k, v);
   if (TRK_GESTURE_PENDING) { TRK_GESTURE_PENDING.set(k, v); return Promise.resolve(); }
+  /* saved by its own command, or by the Undo / Redo restore it is part of ([DB-READINESS] group A, phase 4.1) — a
+     second, raw write AFTER the command would be a saved group of its own with no change-log batch, and would store
+     the value of a command that was refused. Only a write that ran no command (a migration flag, a view key, the boot)
+     is written here. */
+  if (saved || TRK_IN_RESTORE) return Promise.resolve();
   setSaveStatus('', 'saving');
   return storage.set(k, v).then(() => setSaveStatus('', 'ok'), () => setSaveStatus('local only', 'ok'));
 }
@@ -840,7 +872,7 @@ function loadLineDefaults() {
    An undo's own restore is not held — it is not the finger's doing. */
 async function saveLayout() {
   saveEdgeMeta();
-  if (firstFinger && !TRK_RESTORING) { firstFinger.save = true; return; }
+  if (firstFinger && !TRK_RESTORING && !TRK_IN_RESTORE) { firstFinger.save = true; return; }
   await sSet(kLayout(), JSON.stringify(layout));
 }
 
@@ -2808,34 +2840,29 @@ function pushMarkUndo(s, what, field) {
   const e = markSnap(s, what); if (field) e.field = field;
   undoStack.push(e); trimUndo(); redoStack = []; notify();
 }
-function applyHist(u) { SYL = JSON.parse(u.syl); byid = {}; SYL.forEach(e => byid[e.id] = e); layout = JSON.parse(u.lay); loadEdgeMeta(); selEdge = null; markDirty(); trkRestoring(() => saveLayout()); renderBoard(); renderSide(); }
+/* ONE UNDO OR REDO IS ONE RESTORE COMMAND ([DB-READINESS] group A, phase 4.1 — P4.1-TRACKER-RESTORE, Astra R3-05). The
+   records a step puts back are written to `mem` SYNCHRONOUSLY inside it (each save helper's write happens at the call —
+   nothing is awaited between them, so nothing escapes the command), and the command saves them (the rows subscriber);
+   what is only on screen — the redraw, the picker — follows it. The helpers below are the DATA half of each kind. */
+function applyHistData(u) { SYL = JSON.parse(u.syl); byid = {}; SYL.forEach(e => byid[e.id] = e); layout = JSON.parse(u.lay); loadEdgeMeta(); selEdge = null; markDirty(); saveLayout(); }
 /* put one student's snapshot back — marks, dates, pace and lull periods — and save
    what it holds (a snapshot taken before D372 carries no pace or lulls: those stay) */
-async function restoreSnap(u) {
+function restoreSnap(u) {
   const s = u.who;
   marks[s] = JSON.parse(u.m);
   if (u.d == null) delete dates[s]; else dates[s] = JSON.parse(u.d);
   if ('p' in u) { if (u.p == null) delete pace[s]; else pace[s] = JSON.parse(u.p); }
   if ('l' in u) { if (u.l == null) delete lulls[s]; else lulls[s] = JSON.parse(u.l); }
-  await trkRestoring(() => saveMarks(s)); if (dates[s]) await trkRestoring(() => saveDates(s));
+  saveMarks(s); if (dates[s]) saveDates(s);
   /* a pace that was never set before the change is REMOVED again, not stored as {} — an empty
      pace read back as a blank pace box after a reload (Fable's final read F4) */
-  if ('p' in u) await trkRestoring(() => (pace[s] ? savePace(s) : delKey(kPace(course, s))));
-  if ('l' in u) await trkRestoring(() => saveLulls(s));
+  if ('p' in u) { if (pace[s]) savePace(s); else delKey(kPace(course, s)); }
+  if ('l' in u) saveLulls(s);
 }
-async function applyMarkHist(u) {
+function applyMarkHistData(u) {
   const s = u.who;
-  /* The pop-up's buttons describe a grade that just changed under it — or,
-     when the picker is about to move, somebody else's. */
-  if (pop) closePop();
-  /* the lull calendar and the Copy to… list belong to a record about to change (F1) */
-  lullPick = null; lullCopy = null;
-  if (active !== s) { active = s; prefSet(pickKey('lastCrew:' + course), s); refreshActive(); }
-  await restoreSnap(u);
-  /* keep the view: the person is looking at the ball they are taking back, as
-     grading keeps it (R62) — a plain redraw threw the chart back to its top
-     ([HUMAN-RETEST] W2-F6) */
-  redrawKeepView();
+  if (active !== s) { active = s; prefSet(pickKey('lastCrew:' + course), s); }
+  restoreSnap(u);
 }
 /* The snapshot that a step's reverse pushes onto the other stack: the SAME
    kind as the entry it undoes, taken from the live state before it is applied. */
@@ -2845,11 +2872,8 @@ function reverseOf(u) {
 }
 /* a group step, taken back or put again: every member still on the roster; the
    picker stays on whoever is picked (the step belongs to several students) */
-async function applyGroupHist(u) {
-  if (pop) closePop();
-  lullPick = null; lullCopy = null;   /* as applyMarkHist (F1) */
-  for (const g of u.group) if (marks[g.who]) await restoreSnap(g);
-  renderSide();
+function applyGroupHistData(u) {
+  for (const g of u.group) if (marks[g.who]) restoreSnap(g);
 }
 /* A mark entry for a student who is gone (removed on another syllabus, or the
    roster reloaded from a file) is skipped, not applied — removeStudent drops
@@ -2872,14 +2896,45 @@ function whatOf(u) {
 }
 export function undoWhat() { return whatOf(liveEntry(undoStack)); }
 export function redoWhat() { return whatOf(liveEntry(redoStack)); }
-async function step(from, to) {
+function step(from, to, dir) {
   const u = liveEntry(from); if (!u) return false;
-  from.pop(); to.push(reverseOf(u));
-  if (u.group) await applyGroupHist(u); else if (u.who != null) await applyMarkHist(u); else applyHist(u);
+  const marksStep = u.group || u.who != null;
+  /* The pop-up's buttons describe a grade that just changed under it — or, when the picker is about to move, somebody
+     else's; the lull calendar and the Copy to… list belong to a record about to change (F1) */
+  if (marksStep) { if (pop) closePop(); lullPick = null; lullCopy = null; }
+  const rev = reverseOf(u);
+  const apply = () => {
+    from.pop(); to.push(rev);
+    if (u.group) applyGroupHistData(u); else if (u.who != null) applyMarkHistData(u); else applyHistData(u);
+  };
+  let ok = true;
+  if (TRK_COMMANDS && !cmdIsCommitting()) {
+    /* the one restore command: the stacks, `mem` and the live lets change inside it (trkStore enlisted — a refusal puts
+       every one of them back), and it saves exactly the records it put back */
+    TRK_IN_RESTORE = true;
+    try {
+      const r = cmdCommitAs({
+        type: 'tracker.' + dir,
+        scope: { module: 'trk', courseId: course, sylId: curSylId() },
+        apply: (txn) => { txn.enlist(trkStore); apply(); },
+      }, { actor: cmdDeriveActor(), origin: 'restore' });
+      ok = !(r && r.ok === false);
+    } finally { TRK_IN_RESTORE = false; }
+  } else {
+    /* before init has turned the command routing on (and the standalone app): the old raw path — each save helper
+       writes its record as it always did */
+    trkRestoring(apply);
+  }
+  if (!ok) { notify(); return false; }
+  if (u.group) renderSide();
+  /* keep the view: the person is looking at the ball they are taking back, as grading keeps it (R62) — a plain redraw
+     threw the chart back to its top ([HUMAN-RETEST] W2-F6) */
+  else if (u.who != null) { refreshActive(); redrawKeepView(); }
+  else { renderBoard(); renderSide(); }
   notify(); return true;
 }
-export async function doUndo() { return step(undoStack, redoStack); }
-export async function doRedo() { return step(redoStack, undoStack); }
+export async function doUndo() { return step(undoStack, redoStack, 'undo'); }
+export async function doRedo() { return step(redoStack, undoStack, 'redo'); }
 /* Ctrl/⌘+Z undoes, Ctrl+Y and Ctrl/⌘+Shift+Z redo — everywhere on the tab
    EXCEPT inside a text box (the box's own undo is what the user means there)
    and under a question dialog (the answer comes first; App.jsx binds this to
@@ -4649,16 +4704,19 @@ function trkDelete(k) {
       scope: { module: 'trk', courseId: course, sylId: curSylId() },
       apply: (txn) => { txn.enlist(trkStore); delete mem[k]; bumpMemGen(k); TRK_SIG++; },
     });
-  } else {
-    delete mem[k]; bumpMemGen(k); TRK_SIG++;
+    return true;   /* removed by that command (or, refused, not at all) — as trkWrite */
   }
+  delete mem[k]; bumpMemGen(k); TRK_SIG++;
+  return false;
 }
 async function delKey(k) {
-  trkDelete(k);
+  const saved = trkDelete(k);
   /* [CMDL-FINISH] §4 — inside a gesture the mem drop above is synchronous (the
      trkDelete raw branch while committing); record the DELETE so its storage
      flush rides the gesture's ONE boundary effect, exactly as sSet does. */
   if (TRK_GESTURE_PENDING) { TRK_GESTURE_PENDING.set(k, TRK_DEL); return; }
+  /* removed by its own command, or by the Undo / Redo restore it is part of — as sSet ([DB-READINESS] group A, 4.1) */
+  if (saved || TRK_IN_RESTORE) return;
   try {
     if (storage && storage.delete) { await storage.delete(k); }
     else { await storage.set(k, ''); }   // soft-delete fallback; mem already dropped above

@@ -28,7 +28,7 @@ import { seedDemoSans, seedDemoMedical } from './demoseed'
 import { docAdd } from './docs'
 import { storesLoad, cxReasonsLoad, dutyTplLoad, waveTplLoad, dayTplLoad, autoAcceptSeedInputs, reconcileLandedAcc, relandInputs, secOrder, moveSectionModel, reorderSectionTo, secDefaultLoad, waveDefaultLoad } from '../engine'
 import { qualColsLoad } from '../engine/qualcols'
-import { elogFlush, elogLoad, setElogDefer } from '../engine/editlog'
+import { elogFlush, elogLoad, setElogDefer, setElogDoor } from '../engine/editlog'
 import { changesLoad } from './changes'
 import { registerChangeLines } from './changelines'
 import { markDeletion, resetSched, SCHED, dayApproved, protectedWeek, amFormatOf } from '../engine/publish'
@@ -44,7 +44,7 @@ import { endUndoSession } from '../undo/timeline'
 import { setRole as lwSetRole } from '../leavewar/state/store'
 import { endTrackerSession } from '../tracker/role.js'
 import { isHydrated } from './persist'
-import { deferEffect, CmdRefused, setPermissionResolver, commitPhase } from '../command'
+import { deferEffect, CmdRefused, setPermissionResolver, commitPhase, commitProjection } from '../command'
 import { defineInvariant } from '../command/harness'
 import { cmdAuthorize, ownershipViolation } from './perms'
 import type { EnlistableStore, RecordEntry, CommitResult } from '../command'
@@ -378,8 +378,8 @@ export function resetSession(s: any) {
      used to be cleared here — "a half-measure while the app has no server to keep a real per-person record". The one
      changes window IS that record now: every line names who made it (by person, D166 (5)), members read it too
      (D169), and what is NEW is per person (state/changes.ts), so the next person signing in sees the squadron's
-     history as it is, with only other people's changes marked new to them. Saved at once here, so a sign-out never
-     leaves a queued save behind. */
+     history as it is, with only other people's changes marked new to them. (Each line is saved as it is kept, inside its
+     command, since [DB-READINESS] group A phase 4.3 — this flush has nothing left to write, and stays for its callers.) */
   elogFlush()
 }
 
@@ -774,6 +774,10 @@ export function wireStore() {
   /* a line written while a command runs is kept only if the command commits ([DRAFT-PENDING] — the history is
      durable now, so a refused command's lines would otherwise stand for good) */
   setElogDefer(deferEffect)
+  /* …and a line kept with no command running (an idle toggle's line, the Admin → Data history sweep) is written inside
+     a command of its own, so it is a saved group with its change-log batch, never a bare write ([DB-READINESS] group A,
+     phase 4.3). The app's own act (the system actor): the line itself names who did it. */
+  setElogDoor((type, fn) => { commitProjection({ type, scope: { module: 'settings' }, apply: () => { fn() } } as any) })
   HOOKS.isPhone = () => {
     if (typeof window === 'undefined') return false
     try { if (window.matchMedia) return window.matchMedia('(max-width:820px)').matches } catch (_) {}

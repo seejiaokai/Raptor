@@ -17,7 +17,7 @@ import { DAYS } from '../engine/data'
 import { INPUTS } from '../engine/inputs'
 import { stashKeys, stashGet } from '../engine/weekstash'
 import { PLANPUCKS } from './plan'
-import { accountsRestoreProblem, seedAccounts } from './accounts'
+import { accountsRestoreProblem, accountsAfter, requestsAfter } from './accounts'
 import { getState as lwState } from '../leavewar/state/store'
 
 const clone = (v: any) => (v == null ? v : JSON.parse(JSON.stringify(v)))
@@ -66,9 +66,11 @@ function stillNamed(id: string): boolean {
 
 export function rosterRestoreProblem(changes: any[], _dir: 'undo' | 'redo'): string | null {
   const people = (changes || []).filter(ch => ch && ch.collection === 'people')
-  const acct = (changes || []).find(ch => ch && ch.collection === 'settings' && ch.id === 'accounts')
-  const reqs = (changes || []).find(ch => ch && ch.collection === 'settings' && ch.id === 'accessreqs')
-  if (!people.length && !acct && !reqs) return null
+  /* the accounts and the requests are one row each ([DB-READINESS] group A, phase 4.4): the candidate is what is stored
+     now with this step's rows put back (accounts.ts accountsAfter — the seeded list when no account row would be left) */
+  const next = accountsAfter(changes)
+  const rq = requestsAfter(changes)
+  if (!people.length && !next && !rq) return null
   const roster = candidatePeople(changes)
   /* 1. one callsign on the roster (D286, D295): a man whose callsign changes, or who comes back onto the roster */
   for (const ch of people) {
@@ -85,10 +87,7 @@ export function rosterRestoreProblem(changes: any[], _dir: 'undo' | 'redo'): str
     if (live && stillNamed(ch.id)) return `${live.cs} is on the schedule, an input or the Leave War — take him off first.`
   }
   /* 2. the accounts — the write path's own guards, over the candidate (accounts.ts) */
-  if (acct || reqs || people.length) {
-    /* a stored null is the seeded list, as the loader reads it (accounts.ts accountsLoad) — never "no accounts" */
-    const next = acct ? (acct.op !== 'delete' && Array.isArray(acct.after) ? acct.after : seedAccounts()) : null
-    const rq = reqs ? (reqs.op === 'delete' ? [] : (Array.isArray(reqs.after) ? reqs.after : [])) : null
+  if (next || rq || people.length) {
     const bad = accountsRestoreProblem(next, rq, roster)
     if (bad) return bad
   }

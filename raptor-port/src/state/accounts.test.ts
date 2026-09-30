@@ -35,7 +35,9 @@ const mem: Record<string, string> = {}
 let writes = 0
 const fake = {
   getItem: (k: string) => (k in mem ? mem[k]! : null),
-  setItem: (k: string, v: string) => { writes++; mem[k] = v },
+  setItem: (k: string, v: string) => { writes++; if (v === 'null') delete mem[k]; else mem[k] = v },
+  /* the settings keys, as the real adapter lists them — the accounts are one row each ([DB-READINESS] group A, phase 4.4) */
+  keys: () => Object.keys(mem),
 }
 const signInAs = (name: string, pass = 'x') => { const r = signIn(name, pass); resetSession(sessionFor(r)); notify(); return r }
 /* a sign-up as the card sends it ([ACCOUNTS-NEW-PERSON] — D214: callsign/name, initials, seat, CAT) */
@@ -66,13 +68,15 @@ describe('AC1 — the sign-in stands for the defence-mail sign-in (D166 (2))', (
   it('no password is ever written to a stored record — not even the two seeds\' (Astra R1-7)', () => {
     signInAs('ad', 'a')
     expect(addAccount('pike@mail', 'pike', 'main')).toBe(null)
-    const stored = mem['sqn142_accounts']
-    expect(stored).toBeTruthy()
-    expect(stored).not.toMatch(/pass/i)
-    /* every field a stored account may carry, and nothing else — `seenFrom` since [DRAFT-PENDING] (Fable F6: the change
-       history's line number when the account was made), never a password */
-    const OK = ['id', 'name', 'on', 'pid', 'role', 'offBy', 'seenFrom']
-    expect(JSON.parse(stored).every((a: any) => Object.keys(a).every(k => OK.includes(k)))).toBe(true)
+    /* one stored row per account ([DB-READINESS] group A, phase 4.4) — the seeded ones stored with the first write */
+    const rows = Object.keys(mem).filter(k => k.startsWith('sqn142_account:')).map(k => mem[k]!)
+    expect(rows.length).toBe(5)
+    for (const r of rows) expect(r).not.toMatch(/pass/i)
+    /* every field a stored account may carry, and nothing else — `seenFrom` since [DRAFT-PENDING] (Fable F6: where the
+       change history stood when the account was made — a position since phase 4.3), `createdAt` since phase 4.4 (the
+       older of two accounts for one person wins), never a password */
+    const OK = ['id', 'name', 'on', 'pid', 'role', 'offBy', 'seenFrom', 'createdAt']
+    expect(rows.every(r => Object.keys(JSON.parse(r)).every(k => OK.includes(k)))).toBe(true)
   })
 })
 
@@ -141,7 +145,8 @@ describe('AC3 — a new user joins either way (D204)', () => {
     expect(signIn('viper@mail', 'x')).toMatchObject({ kind: 'ok', account: { id: 'achex' } })
   })
   it('a stored request under a name that has an account is never listed (the load, in memory)', () => {
-    mem['sqn142_accessreqs'] = JSON.stringify([{ id: 'r1', name: 'hex', cs: 'H', full: 'H', at: 1 }, { id: 'r2', name: 'kite@mail', cs: 'K', full: 'K', at: 2 }])
+    mem['sqn142_accessreq:r1'] = JSON.stringify({ id: 'r1', name: 'hex', cs: 'H', full: 'H', at: 1 })
+    mem['sqn142_accessreq:r2'] = JSON.stringify({ id: 'r2', name: 'kite@mail', cs: 'K', full: 'K', at: 2 })
     accountsLoad()
     expect(ACCESS_REQS.map(r => r.name)).toEqual(['kite@mail'])
     /* a request an older build stored (a name, no seat — D56: read, never migrated) loads with
@@ -160,7 +165,7 @@ describe('AC3 — a new user joins either way (D204)', () => {
     expect(addAccount('x@mail', 'pike', 'main')).toMatch(/Only an admin/)
     expect(setGuestView(true)).toMatch(/Only an admin/)
     /* the gate itself refuses a request that names someone else (perms.ts COMMAND_OPS) */
-    const r: any = commitSettingsIntent('access.request', { owner: 'someone@else' }, () => store.set('accessreqs', []))
+    const r: any = commitSettingsIntent('access.request', { owner: 'someone@else' }, () => store.set('accessreq:x', { id: 'x', name: 'someone@else', cs: 'X', ini: '', seat: 'FCP', cat: 'C', at: 1 }))
     expect(r.ok).toBe(false)
   })
 })
@@ -209,39 +214,59 @@ describe('AC5 — the records load safely (a settings loader never writes)', () 
     expect(writes).toBe(before)
   })
   it('a stored list with no admin gets the seed admin ADDED, every real account kept (Fable R2-6)', () => {
-    mem['sqn142_accounts'] = JSON.stringify([{ id: 'a1', name: 'm1', role: 'main', pid: 'pike', on: true }, { id: 'a2', name: 'm2', role: 'main', pid: 'dj', on: true }])
+    mem['sqn142_account:a1'] = JSON.stringify({ id: 'a1', name: 'm1', role: 'main', pid: 'pike', on: true })
+    mem['sqn142_account:a2'] = JSON.stringify({ id: 'a2', name: 'm2', role: 'main', pid: 'dj', on: true })
     accountsLoad()
     expect(ACCOUNTS_LIST.map(a => a.name).sort()).toEqual(['ad', 'm1', 'm2'])
   })
   it('…and the seed admin WINS a collision on its name, its person or its id (Astra R3-4)', () => {
-    mem['sqn142_accounts'] = JSON.stringify([
+    for (const a of [
       { id: 'a1', name: 'ad', role: 'main', pid: 'pike', on: true },
       { id: 'a2', name: 'm2', role: 'main', pid: 'stiff', on: true },
       { id: 'acad', name: 'm3', role: 'main', pid: 'dj', on: true },
       { id: 'a4', name: 'm4', role: 'main', pid: 'nact', on: true },
-    ])
+    ]) mem[`sqn142_account:${a.id}`] = JSON.stringify(a)
     accountsLoad()
     expect(ACCOUNTS_LIST.find(a => a.name === 'ad')).toMatchObject({ id: 'acad', role: 'admin', pid: 'stiff', on: true })
     expect(ACCOUNTS_LIST.map(a => a.name).sort()).toEqual(['ad', 'm4'])
   })
+  /* one row each ([DB-READINESS] group A, phase 4.4): a row that is not an account is not read; two for one sign-in name
+     (or one person) — the OLDER is kept, the other dropped with a logged line */
   it('bad entries are dropped, one by one', () => {
-    mem['sqn142_accounts'] = JSON.stringify([null, { id: '', name: 'x' }, { id: 'ok', name: 'Ok', role: 'admin', pid: 'nact' }, { id: 'd', name: 'ok', role: 'main', pid: 'dj' }])
+    mem['sqn142_account:n'] = 'null'
+    mem['sqn142_account:x'] = JSON.stringify({ id: '', name: 'x' })
+    mem['sqn142_account:ok'] = JSON.stringify({ id: 'ok', name: 'Ok', role: 'admin', pid: 'nact', createdAt: 1 })
+    mem['sqn142_account:d'] = JSON.stringify({ id: 'd', name: 'ok', role: 'main', pid: 'dj', createdAt: 2 })
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
     accountsLoad()
-    expect(ACCOUNTS_LIST).toEqual([{ id: 'ok', name: 'ok', role: 'admin', pid: 'nact', on: true }])
+    expect(ACCOUNTS_LIST).toEqual([{ id: 'ok', name: 'ok', role: 'admin', pid: 'nact', on: true, createdAt: 1 }])
+    expect(warn.mock.calls.some(c => /d \(ok\) is dropped/.test(String(c[0])))).toBe(true)
+    warn.mockRestore()
+  })
+  it('two accounts for ONE person (two admins at once): the older is kept, the other dropped with a logged line', () => {
+    mem['sqn142_account:acad'] = JSON.stringify({ id: 'acad', name: 'ad', role: 'admin', pid: 'stiff', on: true })
+    mem['sqn142_account:new2'] = JSON.stringify({ id: 'new2', name: 'second@mail', role: 'main', pid: 'dj', on: true, createdAt: 200 })
+    mem['sqn142_account:new1'] = JSON.stringify({ id: 'new1', name: 'first@mail', role: 'main', pid: 'dj', on: true, createdAt: 100 })
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+    accountsLoad()
+    expect(ACCOUNTS_LIST.filter(a => a.pid === 'dj').map(a => a.id)).toEqual(['new1'])
+    expect(warn.mock.calls.some(c => /new2 \(second@mail\) is dropped — an older account already has its person/.test(String(c[0])))).toBe(true)
+    warn.mockRestore()
   })
 })
 
 describe('AC6 — an account change is one command; its keys roll back together (Astra R2-3)', () => {
   it('a failure inside the intent command leaves every key as it was', () => {
     signInAs('ad', 'a')
-    const before = mem['sqn142_accounts'] ?? null
+    const before = JSON.stringify(Object.keys(mem).filter(k => k.startsWith('sqn142_account')).sort().map(k => [k, mem[k]]))
     const r: any = commitSettingsIntent('access.approve', null, () => {
-      store.set('accounts', [{ id: 'zz', name: 'zz', role: 'admin', pid: 'dj', on: true }])
+      store.set('account:zz', { id: 'zz', name: 'zz', role: 'admin', pid: 'dj', on: true })
+      store.set('accessreq:zz', { id: 'zz', name: 'zz@mail', cs: 'Z', ini: '', seat: 'FCP', cat: 'C', at: 1 })
       throw new Error('boom')
     })
     expect(r.ok).toBe(false)
-    /* a key the rollback puts back to "none" may be stored as null — the same meaning */
-    expect(JSON.parse(mem['sqn142_accounts'] ?? 'null')).toEqual(JSON.parse(before ?? 'null'))
+    /* every row as it was — the new ones gone again ([DB-READINESS] group A, phase 4.4: one row per account) */
+    expect(JSON.stringify(Object.keys(mem).filter(k => k.startsWith('sqn142_account')).sort().map(k => [k, mem[k]]))).toBe(before)
   })
 })
 
@@ -324,7 +349,12 @@ describe('NP3 — a new person with his account is ONE step (D214, D217)', () =>
     expect(accountByName('blaze@mail')).toMatchObject({ pid, role: 'main', on: true })
     const envs = commandStream().slice(n)
     expect(envs.map(e => e.type)).toEqual(['account.addNew'])
-    expect(envs[0].changes.map(c => `${c.collection}/${c.id}`).sort()).toEqual([`people/${pid}`, 'settings/accounts'])
+    /* his person and his account row ([DB-READINESS] group A, phase 4.4) — and, this being the first account write on a
+       store still holding the seeded list, the seeded accounts' rows beside it */
+    const got = envs[0].changes.map(c => `${c.collection}/${c.id}`)
+    expect(got).toContain(`people/${pid}`)
+    expect(got).toContain(`settings/account:${accountByName('blaze@mail')!.id}`)
+    expect(got.every(k => k === `people/${pid}` || k.startsWith('settings/account:'))).toBe(true)
     expect(signInAs('blaze@mail')).toMatchObject({ kind: 'ok' })
     expect(ME).toBe(pid)
   })
@@ -355,13 +385,15 @@ describe('NP3 — a new person with his account is ONE step (D214, D217)', () =>
   it("a throw after the person is written, before the account, rolls BOTH back (Astra's plan read 7)", () => {
     signInAs('ad', 'a')
     const err = vi.spyOn(console, 'error').mockImplementation(() => {})
-    const people = peopleStore.capture(), stored = mem['sqn142_accounts'] ?? null
+    /* the accounts are one row each ([DB-READINESS] group A, phase 4.4) — every row as it was */
+    const rows = () => JSON.stringify(Object.keys(mem).filter(k => k.startsWith('sqn142_account:')).sort().map(k => [k, mem[k]]))
+    const people = peopleStore.capture(), stored = rows()
     try {
       const r: any = commitPeopleSettingsIntent('account.addNew', null, () => { putNewPerson(NEW); throw new Error('boom') })
       expect(r.ok).toBe(false)
       expect(csOf('Blaze')).toBeUndefined()
       expect(peopleStore.capture()).toBe(people)
-      expect(JSON.parse(mem['sqn142_accounts'] ?? 'null')).toEqual(JSON.parse(stored ?? 'null'))
+      expect(rows()).toBe(stored)
     } finally { err.mockRestore() }
   })
   it('a throw after BOTH are written rolls both back, and no screen hears of the half-made person', () => {
@@ -410,7 +442,12 @@ describe('NP5 — approving with New person, filled from what he gave (D214, D20
     expect(ACCESS_REQS).toHaveLength(0)
     const envs = commandStream().slice(n)
     expect(envs.map(e => e.type)).toEqual(['access.approveNew'])
-    expect(envs[0].changes.map(c => `${c.collection}/${c.id}`).sort()).toEqual([`people/${pid}`, 'settings/accessreqs', 'settings/accounts'])
+    /* his person, his account row and the request's row removed — one command ([DB-READINESS] group A, phase 4.4) */
+    const got = envs[0].changes.map(c => `${c.collection}/${c.id}`)
+    expect(got).toContain(`people/${pid}`)
+    expect(got).toContain(`settings/account:${accountByName('viper@mail')!.id}`)
+    expect(envs[0].changes.find(c => c.id === `accessreq:${rq.id}`)?.op).toBe('delete')
+    expect(got.every(k => k === `people/${pid}` || k.startsWith('settings/account:') || k === `settings/accessreq:${rq.id}`)).toBe(true)
   })
   it("a typed callsign that is someone's is refused as New person; the request stays", () => {
     signInAs('viper@mail'); ask('Ranger')

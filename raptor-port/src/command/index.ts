@@ -15,7 +15,7 @@ export {
   deferEffect, isCommitting, registerGuardedStore, setConflictChecker,
   commitProjection, isInReducer, commitPhase, CmdRefused, setTxnWrapper,
 } from './commit'
-export type { TxnWrapper, TxnHandle, TxnSavepoint } from './commit'
+export type { TxnWrapper, TxnHandle, TxnSavepoint, TxnInfo } from './commit'
 /* [CMDL-FINISH] §2.3 — the reconciler/gesture wiring (LW router, Tracker
    trkGesture) reads the engine through these `cmd*` names. Aliases, not new
    behaviour: cmdCommit is the public forward-write, cmdIsCommitting/cmdDeferEffect

@@ -1580,11 +1580,12 @@ export function clearHistoryData(mode: ClearMode, a: string, b?: string, dry?: b
      No input is deleted, no balance moves, no stashed week is dropped and the
      loaded week is untouched, so there is nothing to preflight or persist beyond
      what the batch already does. */
+  /* its history line INSIDE the batch ([DB-READINESS] group A, phase 4.1): one saved group, one change-log batch */
   writeInputsBatch(() => {
     oldPucks.forEach((s: any) => { const ix = PLANPUCKS.indexOf(s); if (ix >= 0) PLANPUCKS.splice(ix, 1) })
     oldRmk.forEach(k => { delete DAYRMK[k] })
+    logAction(null, `Cleared ${n} item${n === 1 ? '' : 's'} of old clutter ${w.said}`, { date: todayIso(), sect: 'day' })
   })
-  logAction(null, `Cleared ${n} item${n === 1 ? '' : 's'} of old clutter ${w.said}`, { date: todayIso(), sect: 'day' })
   return n
 }
 
@@ -1605,11 +1606,10 @@ export function clearEditHistory(mode: ClearMode, a: string, b?: string, dry?: b
     const p = iso.split('-')
     return new Date(+p[0], +p[1] - 1, +p[2]).getTime()
   }
-  const n = elogSweep(ms(w.lo), ms(w.hi), dry)
-  /* dated today (Fable F3) — a line with no day is in no week's window, and the record that history was cleared,
-     and by whom, must be seen */
-  if (!dry && n) logAction(null, `Edit history cleared — ${n} entr${n === 1 ? 'y' : 'ies'} ${w.said}`, { date: todayIso(), sect: 'day' })
-  return n
+  /* ONE named command (`elog.sweep` — engine/editlog.ts): the exact lines it clears, and its own line — dated today
+     (Fable F3): a line with no day is in no week's window, and the record that history was cleared, and by whom, must
+     be seen — in one saved group ([DB-READINESS] group A, phase 4.3) */
+  return elogSweep(ms(w.lo), ms(w.hi), dry, k => `Edit history cleared — ${k} entr${k === 1 ? 'y' : 'ies'} ${w.said}`)
 }
 
 /* ---- the dialog the week and the board open (owner, 10 Aug 26) -----------

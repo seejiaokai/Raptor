@@ -21,7 +21,7 @@ import { globalUndo, globalRedo } from '../undo'
 const fake = new Map<string, string>()
 let ISNAP = ''
 beforeAll(() => {
-  storeBackend.impl = { getItem: k => (fake.has(k) ? fake.get(k)! : null), setItem: (k, v) => { fake.set(k, v) } }
+  storeBackend.impl = { getItem: k => (fake.has(k) ? fake.get(k)! : null), setItem: (k, v) => { if (v === 'null') fake.delete(k); else fake.set(k, v) }, keys: () => [...fake.keys()] }
   initStore()
   ISNAP = JSON.stringify(INPUTS)
   resetSession(sessionFor(signIn('ad', 'a') as any))
@@ -30,7 +30,9 @@ afterAll(() => { storeBackend.impl = null })
 beforeEach(() => {
   INPUTS.length = 0
   JSON.parse(ISNAP).forEach((r: any) => INPUTS.push(r))
+  /* a fresh history: the lines in memory and their stored rows (one row per line — [DB-READINESS] group A, phase 4.3) */
   elogClear()
+  for (const k of [...fake.keys()]) if (k.startsWith('sqn142_elog:')) fake.delete(k)
 })
 
 const add = (row: any) => { writeInputs(() => { inpId(row); INPUTS.unshift(row) }); return row }

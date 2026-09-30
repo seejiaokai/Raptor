@@ -55,7 +55,7 @@ import { peopleStore, settingsStore, finishPeopleWrite } from './people-settings
 import { schedStore, schedApplyEnd, resyncSchedBaseline } from './sched-commit'
 import { weekstashStore } from './store'
 import { mayDeletePerson } from './perms'
-import { deleteAccountProblem, dropAccountOfPid, seedAccounts } from './accounts'
+import { deleteAccountProblem, dropAccountOfPid, accountsAfter } from './accounts'
 import { saidOf } from './roster-add'
 import { deletePersonOnWar, warIdentityIfHidden } from '../leavewar/sync'
 import { HOOKS } from '../engine/hooks'
@@ -312,6 +312,11 @@ const holds = (v: any, id: string): boolean => { try { return JSON.stringify(v ?
 export function deletedRestoreProblem(changes: any[]): string | null {
   const gone = Object.keys(PEOPLE).filter(id => (PEOPLE as any)[id] && (PEOPLE as any)[id].deleted)
   if (!gone.length) return null
+  /* the accounts the step would leave — one row per account since [DB-READINESS] group A, phase 4.4: an account row put
+     back that is his, or a step leaving NO account row, which the loader reads as the seeded list (accounts.ts
+     accountsAfter; Fable's final read, F5) — would bring his sign-in back */
+  const accts = accountsAfter(changes)
+  if (accts) for (const id of gone) if (accts.some((a: any) => a && a.pid === id)) return `${(PEOPLE as any)[id].cs} has been deleted — that change can't be undone`
   for (const ch of changes || []) {
     if (!ch || ch.op !== 'put') continue
     const v = ch.after, rid = String(ch.id || '')
@@ -331,8 +336,6 @@ export function deletedRestoreProblem(changes: any[]): string | null {
          put back un-deleted, or an accounts list that still holds his account, would bring him back whole (D287 — a
          delete is final; a man the war does not hold leaves no posting record to keep the step dead — Fable's red team 10) */
       else if (ch.collection === 'people') hit = rid === id && !!v && !v.deleted
-      /* a stored null IS the seeded list (accountsLoad; roster-restore.ts reads it so too) — Fable's final read, F5 */
-      else if (ch.collection === 'settings' && rid === 'accounts') { const list = v == null ? seedAccounts() : v; hit = Array.isArray(list) && list.some((a: any) => a && a.pid === id) }
       if (hit) return `${(PEOPLE as any)[id].cs} has been deleted — that change can't be undone`
     }
   }

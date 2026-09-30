@@ -41,7 +41,7 @@ const fake = new Map<string, string>()
 const as = (u: string, p: string) => resetSession(sessionFor(signIn(u, p) as any))   // ad = Saber (admin), us = Ranger (member)
 let DAYS0 = '', INP0 = '', SCHED0 = ''
 beforeAll(() => {
-  storeBackend.impl = { getItem: k => (fake.has(k) ? fake.get(k)! : null), setItem: (k, v) => { fake.set(k, v) } }
+  storeBackend.impl = { getItem: k => (fake.has(k) ? fake.get(k)! : null), setItem: (k, v) => { if (v === 'null') fake.delete(k); else fake.set(k, v) }, keys: () => [...fake.keys()] }
   initStore()
   ensureRowIds(DAYS)
   DAYS0 = JSON.stringify(DAYS); INP0 = JSON.stringify(INPUTS); SCHED0 = JSON.stringify(SCHED)
@@ -51,7 +51,9 @@ beforeEach(() => {
   JSON.parse(DAYS0).forEach((d: any, i: number) => { (DAYS as any)[i] = d })
   INPUTS.length = 0; JSON.parse(INP0).forEach((r: any) => INPUTS.push(r))
   Object.assign(SCHED, JSON.parse(SCHED0))
-  fake.delete('sqn142_changeseen'); changesLoad()
+  /* each person's seen and the history's lines are one stored row each ([DB-READINESS] group A, phase 4.3) */
+  for (const k of [...fake.keys()]) if (k.startsWith('sqn142_seen:') || k.startsWith('sqn142_elog:')) fake.delete(k)
+  changesLoad()
   elogClear()
   setPage('editsched')
 })

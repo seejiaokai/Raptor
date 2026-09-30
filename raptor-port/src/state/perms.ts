@@ -48,9 +48,14 @@ export const T = {
   setting: 'Setting, SchemaVersion',
   user: 'User',
   accessreq: 'AccessRequest',
+  /* [DB-READINESS] group A, phase 4.4 (R3-04): each admin's own record of the requests he has had on screen — out of the
+     request row, where every admin's bell shared one list */
+  reqseen: 'AccessRequestSeen',
   sched: 'ScheduleWeek family, DayDraft, RowPerson',
   amendment: 'Amendment, Signoff',
   editlog: 'EditLog',
+  /* [DB-READINESS] group A, phase 4.1: one row per saved group, written by the store with every change (state/changebatch.ts) */
+  changebatch: 'ChangeBatch',
   seen: 'EditLogSeen',
   input: 'Input',
   attachment: 'Attachment, InputAttachment',
@@ -69,10 +74,12 @@ export const PERMS: Record<string, PermRow> = {
   [T.qualmark]: row(cell('C R U D'), cell('R', 'C U D')),
   [T.setting]: row(cell('C R U D'), cell('R')),
   [T.user]: row(cell('C R U D'), cell('', 'R')),
-  [T.accessreq]: row(cell('R U D'), NONE, NONE, cell('', 'C')),
+  [T.accessreq]: row(cell('R D'), NONE, NONE, cell('', 'C')),
+  [T.reqseen]: row(cell('', 'C R U'), NONE),
   [T.sched]: row(cell('C R U D'), cell('R'), cell('R')),
   [T.amendment]: row(cell('C R'), cell('R'), cell('R')),
   [T.editlog]: row(cell('R'), cell('R')),
+  [T.changebatch]: row(cell('C R'), cell('C R'), cell('R')),
   [T.seen]: row(cell('', 'C R U'), cell('', 'C R U')),
   [T.input]: row(cell('C R U D'), cell('R', 'C R U D'), cell('R')),
   [T.attachment]: row(cell('R'), cell('R', 'C R')),
@@ -244,7 +251,7 @@ const op = (table: string, act: Act, own: OwnRule = 'never', more?: [string, Act
   (more ? { table, act, own, more } : { table, act, own })
 
 const SETTINGS_KEYS_ALL = ['rules', 'stores', 'cxreasons', 'daytpl', 'dutytpl', 'wavetpl', 'wavehide',
-  'qualcols', 'lookahead', 'secdefault', 'wavedefault', 'accounts', 'accessreqs', 'guestview', 'changeseen'] as const
+  'qualcols', 'lookahead', 'secdefault', 'wavedefault', 'guestview'] as const
 
 export const COMMAND_OPS: Record<string, CommandOp> = {
   /* the scheduler — its writes are the scheduler's (admin); a joined child command is
@@ -306,6 +313,8 @@ export const COMMAND_OPS: Record<string, CommandOp> = {
   'trk.layout': op(T.tracker, 'U'), 'trk.syls': op(T.tracker, 'U'), 'trk.plan': op(T.tracker, 'U'),
   'trk.pace': op(T.tracker, 'U'), 'trk.lulls': op(T.tracker, 'U'), 'trk.eventinfo': op(T.tracker, 'U'),
   'trk.catalogue': op(T.tracker, 'U'), 'trk.courses': op(T.tracker, 'U'), 'trk.gesture': op(T.tracker, 'U'),
+  /* the Tracker's own Undo / Redo, each one restore command ([DB-READINESS] group A, phase 4.1 — P4.1-TRACKER-RESTORE) */
+  'tracker.undo': op(T.tracker, 'U'), 'tracker.redo': op(T.tracker, 'U'),
   /* accounts (D166, D204): one intent per command, each writing every key it needs — and
      naming every table it writes ([ACCOUNTS-NEW-PERSON]: an account added or renamed onto a
      waiting sign-in name answers — deletes — its request; approving creates the User) */
@@ -323,7 +332,8 @@ export const COMMAND_OPS: Record<string, CommandOp> = {
   'person.add': op(T.person, 'C', 'never', [[T.profile, 'U']]),
   'account.addNew': op(T.user, 'C', 'never', [[T.person, 'C'], [T.accessreq, 'D'], [T.profile, 'U']]),
   'access.approveNew': op(T.accessreq, 'D', 'never', [[T.user, 'C'], [T.person, 'C'], [T.profile, 'U']]),
-  'access.seen': op(T.accessreq, 'U'),
+  /* his OWN row of the requests he has seen (AccessRequestSeen — [DB-READINESS] group A, phase 4.4) */
+  'access.seen': op(T.reqseen, 'U', 'required'),
   /* [DRAFT-PENDING] (D170): "Mark all as seen" in the changes window — the signed-in person's OWN entry only */
   'changes.seen': op(T.seen, 'U', 'required'),
   /* a delete ([POST-OUT-OUTCOMES], D287, D290, D297, D299): the person marked (the hidden mark — D is the soft delete),
@@ -395,7 +405,8 @@ function opAllows(who: Role, table: string, act: Act, own: OwnRule, actor: Actor
                 published day's working copy); never by a top-level `sched.mutate`;
    - the Tracker — everyone's (D121).
    A guest, a pending person and an account switched off change NOTHING, except a
-   pending person's own access request (the `accessreqs` settings record). */
+   pending person's own access request — ONE new `accessreq:<id>` row under his own sign-in name
+   ([DB-READINESS] group A, phase 4.4: the requests are one row each, so his command may add his and touch no other). */
 const INPUT_ORDER = '__order'
 const personOfInput = (v: any): string | null => (v && v.person != null ? String(v.person) : null)
 /* THE SCHEDULE'S OWN RECORDS. A member's change to them is legitimate only as the landing
@@ -406,20 +417,14 @@ const personOfInput = (v: any): string | null => (v && v.person != null ? String
    the UI gates stand in front of; §11 — members read the schedule only). A refusal rolls
    the schedule back to its last committed state. */
 const SCHEDULE_RECORDS = new Set(['days', 'sched.book', 'sched.mutes', 'sched.week', 'sched.issuance', 'sched.retraction', 'weekstash'])
-/* the seen record's entries other than `pid` are the same before and after */
-function onlyOwnEntry(before: any, after: any, pid: string): boolean {
-  const b = (before && typeof before === 'object') ? before : {}, f = (after && typeof after === 'object') ? after : {}
-  const keys = new Set([...Object.keys(b), ...Object.keys(f)])
-  for (const k of keys) if (k !== pid && JSON.stringify(b[k]) !== JSON.stringify(f[k])) return false
-  return true
-}
 export function ownershipViolation(env: CommitEnvelope): string | null {
   const a = env.actor
   if (!a || a.role === 'system' || a.role === 'admin') return null
   for (const c of env.changes) {
     const where = `${c.collection}/${c.id}`
     if (a.role !== 'member') {
-      if (a.role === 'pending' && env.type === 'access.request' && c.collection === 'settings' && c.id === 'accessreqs') continue
+      if (a.role === 'pending' && env.type === 'access.request' && c.collection === 'settings' && c.id.startsWith('accessreq:')
+        && c.op === 'put' && c.before == null && String((c.after as any)?.name ?? '') === String(a.principal ?? '').trim().toLowerCase()) continue
       return `${a.role} may not change ${where}`
     }
     const pid = a.personId == null ? null : String(a.personId)
@@ -435,11 +440,11 @@ export function ownershipViolation(env: CommitEnvelope): string | null {
       case 'people': if (c.id !== pid) return `another person's row (${where})`; break
       case 'lw.cell': { const parts = c.id.split(':'); if (parts[parts.length - 2] !== pid) return `another person's war row (${where})`; break }
       case 'lw.current': break
-      /* [DRAFT-PENDING] (D170): "Mark all as seen" — a member writes the seen record's OWN entry and nothing else of it
-         (EditLogSeen, own row); every other person's entry must come through unchanged */
+      /* [DRAFT-PENDING] (D170): "Mark all as seen" — a member writes his OWN seen row and no other (EditLogSeen, own row
+         — one row per person since [DB-READINESS] group A, phase 4.3) */
       case 'settings':
-        if (c.id === 'changeseen' && env.type === 'changes.seen') {
-          if (!onlyOwnEntry(c.before, c.after, pid)) return `another person's seen record (${where})`
+        if (c.id.startsWith('seen:') && env.type === 'changes.seen') {
+          if (c.id !== `seen:${pid}`) return `another person's seen record (${where})`
           break
         }
         return `an admin's record (${where})`

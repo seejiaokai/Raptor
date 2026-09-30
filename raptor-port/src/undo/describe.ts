@@ -91,8 +91,6 @@ const SETTING_PHRASE: Record<string, string> = {
   stores: 'the stores list',
   cxreasons: 'the cancel reasons',
   guestview: 'the guest switch',
-  accounts: 'an account',
-  accessreqs: 'a request for access',
 }
 
 /* a safe generic label from the entry's module, used when the type is unknown. */
@@ -245,13 +243,18 @@ function peopleLabel(entry: UndoEntry): string | null {
 }
 
 /* ---- the accounts (Admin → Users) ---- */
+/* one change per account ROW since [DB-READINESS] group A, phase 4.4 (`settings/account:<id>`); a seeded account never
+   stored before this step reads as the seed (the injected default, state/undo-wire.ts) */
 function accountLabel(entry: UndoEntry): string | null {
-  const ch = entry.forward.find(c => c.collection === 'settings' && c.id === 'accounts')
-  if (!ch || entry.type !== 'account.update') return null
-  const b = listOf(ch.before == null ? defaultOf('accounts') : ch.before), a = listOf(ch.after)
-  for (const x of a) {
-    const y = b.find((z: any) => z && z.id === x.id)
-    if (!y || JSON.stringify(y) === JSON.stringify(x)) continue
+  if (entry.type !== 'account.update') return null
+  const chs = entry.forward.filter(c => c.collection === 'settings' && c.id.startsWith('account:'))
+  if (!chs.length) return null
+  const seeded = listOf(defaultOf('accounts'))
+  for (const ch of chs) {
+    const x: any = ch.after
+    const id = ch.id.slice('account:'.length)
+    const y: any = ch.before ?? seeded.find((z: any) => z && z.id === id)
+    if (!x || !y || JSON.stringify(y) === JSON.stringify(x)) continue
     const cs = nameOf(x.pid) || x.name
     if ((y.on !== false) !== (x.on !== false)) return x.on === false ? `suspending ${poss(cs)}sign-in` : `enabling ${poss(cs)}sign-in`
     if (y.role !== x.role) return `${poss(cs)}role`

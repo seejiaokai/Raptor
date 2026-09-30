@@ -656,6 +656,10 @@ function applyRestore(entry: UndoEntry, changes: Change[], dir: 'undo' | 'redo')
           for (const [store] of byStore) txn.enlist(store)
           for (const [store, list] of byStore) store.write!(list, { allowIssued: true, restore: true })
           if (hooks.postRestore) hooks.postRestore(entry, dir, pulledBack)
+          /* the change history's Undo / Redo line, INSIDE the restore ([DB-READINESS] group A, phase 4.1 — F2-03): it is
+             kept with the restore's own latched effects, so it travels in the restore's saved group and its change-log
+             batch — and a restore refused after this point leaves no line */
+          if (hooks.reversed) hooks.reversed(entry, dir)
         } finally { if (relock) relock() }
       },
     },
@@ -800,7 +804,6 @@ export function globalUndo(): UndoResult {
   entry.undoneSeq = r.seq
   bumpUndo()
   if (hooks.showBubble) hooks.showBubble(bubbleText(entry, 'undo') + (passedInelig ? ` — the later ${notUndoneWhat(passedInelig)} stays; it isn’t undone here.` : ''))
-  if (hooks.reversed) hooks.reversed(entry, 'undo')
   return { ok: true, entry }
 }
 
@@ -823,7 +826,6 @@ export function globalRedo(): UndoResult {
   entry.undoneAt = undefined
   bumpUndo()
   if (hooks.showBubble) hooks.showBubble(bubbleText(entry, 'redo'))
-  if (hooks.reversed) hooks.reversed(entry, 'redo')
   return { ok: true, entry }
 }
 

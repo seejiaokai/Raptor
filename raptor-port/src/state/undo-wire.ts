@@ -145,7 +145,7 @@ function landingOf(entry: UndoEntry): Landing | null {
     if (person) then = () => focusQualsRow(person.id)
   } else if (m === 'settings') {
     const ids = fwd.filter(c => c.collection === 'settings').map(c => c.id)
-    if (ids.some(k => k === 'accounts' || k === 'accessreqs' || k === 'guestview')) { primary = 'admin'; then = () => requestAdminUsers(false) }
+    if (ids.some(k => k.startsWith('account:') || k.startsWith('accessreq:') || k === 'guestview')) { primary = 'admin'; then = () => requestAdminUsers(false) }
     else if (ids.includes('rules')) primary = 'logic'
     else if (ids.includes('qualcols')) primary = 'quals'
     else if (ids.includes('lookahead')) primary = 'inputs'
@@ -226,8 +226,9 @@ function postRestore(entry: UndoEntry, dir: 'undo' | 'redo', pulledBack: Array<{
    wiring harmlessly rather than being skipped by a stale one-shot flag. */
 /* B1 — each seen mark's field, carried onto an older step's image of the same record (timeline.ts carrySeen; Fable's
    final read F4, Astra's F1). His welcome note: `back` gone from his roster record. "OK, seen": the notices it removed
-   (by their seq — a notice spans the days of one filing) gone from the day's list. The admins' bell: each request's
-   seenBy joined with the one the mark wrote. Anything else: the image untouched. */
+   (by their seq — a notice spans the days of one filing) gone from the day's list. Anything else: the image untouched.
+   (The admins' bell had a branch here while each request carried its `seenBy`; since [DB-READINESS] group A, phase 4.4
+   each admin's seen is a row of his own — AccessRequestSeen — which no step's image of a request holds.) */
 function seenOverlay(type: string, seen: Change, image: unknown): unknown {
   if (!image || typeof image !== 'object') return image
   const b: any = seen.before, a: any = seen.after
@@ -242,21 +243,6 @@ function seenOverlay(type: string, seen: Change, image: unknown): unknown {
     if (!gone.size) return image
     const next = image.filter((r: any) => !(r && r.kind === 'notice' && gone.has(r.seq)))
     return next.length === image.length ? image : next
-  }
-  if (type === 'access.seen') {
-    if (!Array.isArray(image) || !Array.isArray(a)) return image
-    const by = new Map(a.map((r: any) => [r && r.id, r]))
-    let changed = false
-    const next = image.map((r: any) => {
-      const w: any = r && by.get(r.id)
-      if (!w || !Array.isArray(w.seenBy)) return r
-      const had: string[] = Array.isArray(r.seenBy) ? r.seenBy : []
-      const u = [...new Set([...had, ...w.seenBy])]
-      if (u.length === had.length) return r
-      changed = true
-      return { ...r, seenBy: u }
-    })
-    return changed ? next : image
   }
   return image
 }

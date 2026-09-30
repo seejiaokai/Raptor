@@ -9,9 +9,11 @@ import type { StorageBackend } from '../leavewar/state/storage'
 const SQN = 'sqn142_'
 const strip = (k: string) => (k.startsWith(SQN) ? k.slice(SQN.length) : k)
 
-export function settingsAdapter(wb: Whiteboard): { getItem(k: string): string | null; setItem(k: string, v: string): void } {
+export function settingsAdapter(wb: Whiteboard): { getItem(k: string): string | null; setItem(k: string, v: string): void; keys(): string[] } {
   return {
     getItem: k => wb.get('settings', strip(k)),
+    /* every settings key, in getItem's form ([DB-READINESS] group A, phase 4 — the records kept one row per thing) */
+    keys: () => wb.keys('settings').map(k => SQN + k),
     /* a cleared setting (saved as null) removes its key — it reads as never set, which every reader treats the same
        ([DB-READINESS] group A, phase 2 — F3-07: once each setting is one row, a stored "null" would be a row that says
        nothing) */

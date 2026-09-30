@@ -583,16 +583,22 @@ cut, moved, deleted, and the Leave War's decisions), Quals changes, a publish or
 with who (the person's id) and when; durable in the browser, kept across sign-outs (D336 (b)), 2,000 lines. Each person's
 "seen" is `EditLogSeen` below.*
 
-Owner: **Scheduler**. One recorded change. Per browser today (the settings key `elog`, 2,000 lines); in the database it
-is durable and shared.
+Owner: **Scheduler**. One recorded change. Per browser today, 2,000 lines — **one stored row per line since 30 Sep 26**
+(`settings/elog:<lineId>`, `[DB-READINESS]` group A phase 4.3), written inside the command that made the line, in its
+changeset and its `ChangeBatch`; in the database it is durable and shared.
+**Its order (Fable F2-02):** `(at, lineId)` — `at` the wall clock, `lineId` the app's own id, rising within a page life —
+the same on every client. `seq` below is **yours**: the store's own rising number (its `changeSeq`), store-assigned; the
+app keeps no number of its own (its in-memory place in the loaded list is never stored).
 
-**`EditLogSeen`** (new, `[DRAFT-PENDING]`): one row per person — `personId`, `upTo` (every line numbered up to it is
-seen), `extra` (lines above it marked seen one by one). Written only by that person ("Mark all as seen", own row — §11).
-Today the settings key `changeseen`.
+**`EditLogSeen`** (new, `[DRAFT-PENDING]`): one row per person — `personId`, `upTo` (every line at or before this
+POSITION in the log's order — `(at, lineId)` in the stand-in, the store's `seq` once assigned — is seen), `extra` (lines
+after it marked seen one by one, by `lineId`). Written only by that person ("Mark all as seen", own row — §11).
+Today the rows `settings/seen:<pid>` (they were one shared record, `changeseen`, until 30 Sep 26).
 
 | Field | Type | Req | Meaning |
 |---|---|---|---|
-| `seq` | bigint | yes | the line's number — only rises; what `EditLogSeen` points at |
+| `seq` | bigint | yes | the store's own number for the line — only rises, **store-assigned** (`changeSeq`); what `EditLogSeen.upTo` points at once the database assigns it |
+| `lineId` | string | yes | the app's own id for the line (`<page>.<n>`) — unique; the stored row's key; with `at`, the log's order until `seq` exists (30 Sep 26) |
 | `at` | datetime | yes | `t`, wall clock |
 | `byUserId` | ref User | no | `pid` — the person behind it (kept since `[ACCOUNTS]`) |
 | `date`, `endDate` | date | no | the calendar day(s) it is on — the span after for an absence |
@@ -786,11 +792,13 @@ to it — every account IS one callsign (owner, D166, 25 Sep 26).
 | `personId` | ref Person | **yes** | the callsign the account belongs to (D166); one account per person (unique) |
 | `enabled` | bool | yes | false = **suspended** (D280, D285 — the button "Suspend" / "Enable"; a man away). The account itself can be DELETED ("Delete account", D285) — always with his person (D287, built 27 Sep 26) |
 | `suspendedBy` | choice (`po`) | no | the suspension a posting out made (overseas, D280), which "he's back" (Restore) enables — never one an admin made by hand; any hand Suspend / Enable clears it (27 Sep 26) |
+| `seenFrom` | position | no | where the change history stood when the account was made — `(at, lineId)` in the stand-in, the `EditLog.seq` once assigned: every line after it is news to him, none before (`[DRAFT-PENDING]`, Fable F6; a position since 30 Sep 26, F2-02) |
+| `createdAt` | datetime | no | when it was made (the platform's `createdon`) — at stage 1, two accounts stored for one person (two admins at once): the older is kept, the other dropped with a logged line, until your unique `personId` refuses the second (30 Sep 26) |
 | `lastSignInAt` | datetime | no | (new) |
 
 The displayed name is the person's callsign, read live — a rename moves nothing (the one-identity rule).
 Relationships: 1 `Person`; referenced by every `createdBy`/`updatedBy`.
-From today: the `accounts` settings record, `state/accounts.ts` (`[ACCOUNTS]`, 26 Sep 26), managed on Admin → Users.
+From today: one row per account, `settings/account:<id>` (since 30 Sep 26 — it was the one `accounts` settings record), `state/accounts.ts` (`[ACCOUNTS]`, 26 Sep 26), managed on Admin → Users.
 **No password is ever stored in this model — nor in the app today** (the two seeded demo sign-ins' passwords live in code
 only). The auth provider owns credentials; this table maps a signed-in principal to a role and a person. **Two guards the
 server keeps too:** at least one enabled admin always remains; an admin never changes his own account.
@@ -807,16 +815,31 @@ Owner: **Shell**. Someone signed in with his defence mail but on no list, asking
 | `seat` | choice `FCP\|RCP\|GND` | yes | pilot, WSO or personnel (D220) |
 | `cat` | string | for aircrew | his CAT — one the seat may hold; none for personnel |
 | `requestedAt` | datetime | yes | |
-| `seenBy` | ref `User`, many | no | the admins who have had the waiting list on screen since it arrived — each admin's bell goes out for it (D216, D227) |
+
+*(`seenBy` — the admins who had the waiting list on screen — left this table 30 Sep 26: two admins opening the list at
+once each rewrote it. Each admin's own record is `AccessRequestSeen`, below — R3-04.)*
 
 He asks for exactly what the admin's New person form asks (D214, `[ACCOUNTS-NEW-PERSON]`, 26 Sep 26). Approving either
 links the `User` to a `Person` the admin picks on the roster, or — **New person** — creates the `Person` from what he gave,
 with the admin's corrections, together with the `User`, removing the request in the same step; declining removes it. A
 `User` added or renamed onto a waiting sign-in name answers (removes) its request too. The admin sees a count of waiting
 requests on the Admin tab, and his bell lights until he has had the list on screen (a Teams message at the database step).
-From today: the `accessreqs` settings record (the typed name field of 26 Sep 26 `[ACCOUNTS]` gave way to the initials —
-D219). The admin's **guest switch** (people waiting may read the
-published week) is a `Setting` (`guestview`), off by default.
+From today: one row per request, `settings/accessreq:<id>` (since 30 Sep 26 — it was the one `accessreqs` settings
+record; the typed name field of 26 Sep 26 `[ACCOUNTS]` gave way to the initials — D219). The admin's **guest switch**
+(people waiting may read the published week) is a `Setting` (`guestview`), off by default.
+
+### AccessRequestSeen
+
+Owner: **Shell**. New 30 Sep 26 (`[DB-READINESS]` group A phase 4.4 — Astra R3-04). Each admin's own record of the
+waiting requests he has had on screen: his bell lights until he has seen every one (D216, D227 — each admin's bell is his
+own). One row per admin, written only by him (own row — §11), removed with his `User`.
+
+| Field | Type | Req | Meaning |
+|---|---|---|---|
+| `userId` | ref User | yes | the admin — unique |
+| `seenRequestIds` | JSON (ids of `AccessRequest`) | yes | the requests waiting when he last had the list on screen |
+
+From today: `settings/reqseen:<accountId>`.
 
 ### Layout
 
@@ -919,7 +942,8 @@ The "migration notes" say how each shape maps, should a record ever need convert
 | `SCHED.dayOK` / `cur` / `orig` | inside each `ScheduleDay` snapshot (stage 1, D355) → `ScheduleDay.approved` / `shownAmendmentId` / `original` (stage 2) | Day-level state, never on a sign-off row |
 | `SCHED.pending` / `changes` / `added` / `drafts` / `curDraft` | inside the snapshot (stage 1) → row `pendingSince` / `changedFrom`, `DayDraft` (stage 2) | `changes[key] = n` is the AL that issued the key; it resolves to a `changedFrom` lookup |
 | `raptor:plan/all` — `PLANPUCKS`, `DAYRMK` | `PlanningPuck`, `DayRemark` (29 Sep 26 — never inside a day row: the planning calendar is written on any date, with no day held — Fable 1) | One global record today; one `PlanningPuck` per entry, one `DayRemark` per date — own rows from stage 1 |
-| `ELOG.rows` (the settings key `elog`, per browser) | `EditLog` | Nothing to migrate — demo data, cleared (D56); the table starts empty. Decide retention first |
+| `ELOG.rows` — one row per line, `settings/elog:<lineId>` (since 30 Sep 26; the one settings key `elog` before), and each person's `settings/seen:<pid>` (the one `changeseen` before) | `EditLog`, `EditLogSeen` | Nothing to migrate — demo data, cleared (D56); the table starts empty. Decide retention first. Field map: the row as stored, `lineId` kept; `seq` yours (store-assigned) |
+| `settings/account:<id>`, `settings/accessreq:<id>`, `settings/reqseen:<accountId>` (since 30 Sep 26; the one `accounts` / `accessreqs` records before) | `User`, `AccessRequest`, `AccessRequestSeen` | Not migrated — the demo accounts are wiped (D56); the first admin is the bootstrap (group A phase 5). Field map: one row each, as stored |
 | `raptor:settings/*` — `daytpl`, `wavetpl`, `wavehide`, `wavedefault`, `dutytpl`, `cxreasons`, `lookahead`, `secdefault`, `stores`, `rules` | `Setting` | One row per key, value verbatim. **Do not write a row for a key that is on the shipped standard** — absent still means default |
 | `raptor:settings/qualcols` | `Qualification` + `Setting` | The column list becomes rows — a GUID each, `k` kept as `key` — so `QualMark` can key off the id; display flags travel with each column |
 | IndexedDB `raptor-docs` + `docBackend` map | `Attachment` + shared file store | Bytes to the file store, metadata to the row. Ids are already globally unique (`doc-`+UUID). A pre-drawer browser holds `docId`s with no bytes — import them as "no document on file", never fabricate |
@@ -1222,13 +1246,18 @@ default); the Sync chip opening a menu. Question 2 is answered (D451).
 
 **The change log (29 Sep 26 — Astra 5, Fable 17).** Dataverse tracks changes one table at a time, each with its own
 token and no order across tables, and reading every table at every check would spend the request allowance fast. So
-the app keeps its own small log. **Every command's changeset also writes one `ChangeBatch` row:** `id`, `committedAt`
-(the store's `createdon`), `actorId`, and `items` JSON — each changed row's table, id, operation (tombstones included)
-and new version. **The check reads `ChangeBatch` through Dataverse's own change tracking on that one table**, keeping
+the app keeps its own small log. **Every saved group — one user action with its causal children — also writes ONE
+`ChangeBatch` row, in the same changeset:** `id` (`<clientBootId>-<first seq>`), `committedAt` (the store's `createdon`),
+`actorId`, `type` (the action's command), `seqs` (every command that ran in it) and `items` JSON — each OTHER row of the
+changeset: its table, its key and its operation (`put` / `delete` — a delete is the tombstone). **A pure invalidation log
+(30 Sep 26, Astra R2-05 — corrected): no values, no versions, no GUID.** The writer takes its own rows' new versions from
+the changeset's reply; every other reader re-reads the rows a batch names. Built in the stand-in 30 Sep 26
+(`[DB-READINESS]` group A phase 4.1, `src/state/changebatch.ts` — the whiteboard seals each group with its batch; the
+stand-in keeps the newest 200). **The check reads `ChangeBatch` through Dataverse's own change tracking on that one table**, keeping
 its opaque delta token (round 2, Astra 5 — it replaces a time-based overlap, which had no guaranteed bound). A batch is
 an **invalidation**, not a replay: the check gathers every new batch, reads the final state of the rows they name once,
 and redraws once — never a half state no command produced. One request per check when nothing changed. A writer's own
-batch refreshes its local versions from the `items` without a re-read. When the token has expired (a screen away too
+batch needs no re-read — its versions came back with its changeset. When the token has expired (a screen away too
 long), the screen re-reads what it shows. Old batches are purged after the token's lifetime. **Change tracking is switched on for `ChangeBatch`** (a table setting, off by default); the
 environment's change-tracking retention sets how long a token lives and is the purge age of old batches (round 3,
 Fable 2). A "slow down" reply (429) is obeyed. Every write the app makes goes through the one adapter, so every write has its batch; a bulk load by
@@ -1280,10 +1309,12 @@ update, delete (delete is the soft delete throughout).
 | `QualMark` | C R U D | R, C U D **own** | — | — | `personId` = my person — a member ticks his own quals, every one (D149) |
 | `Setting`, `SchemaVersion` | C R U D | R (`Setting` only) | — | — | the guest switch is a `Setting` (D204) |
 | `User` | C R U D | R **own** | — | — | one account per person, tied to it (D166); created with a new `Person` in one step, or linked to one already on the roster (D214, D217); the sign-in name (the defence mail address) unique; **suspended** (`enabled` false — D280, D285) while he is away, and **deleted with his `Person` when he leaves flying for good** (D287 — at the database step the tombstone, D290); **no password is ever stored** — the organisation's sign-in checks it; at least one enabled admin always remains; an admin never changes or deletes his own account |
-| `AccessRequest` | R U D | — | — | C **own** | a person signed in but on no list asks once, giving what the admin's New person form asks — callsign/name, initials, seat, CAT — as typed text (D204, D214); an admin approves — creating the `User`, linked to a person he picks (a typed callsign never claims one) or to a new `Person` made from the request with his corrections — or declines, each one step; a `User` added or renamed onto a waiting sign-in name deletes its request; U — which admins have had it on screen, each admin's bell (D216, D227) |
+| `AccessRequest` | R D | — | — | C **own** | a person signed in but on no list asks once, giving what the admin's New person form asks — callsign/name, initials, seat, CAT — as typed text (D204, D214); an admin approves — creating the `User`, linked to a person he picks (a typed callsign never claims one) or to a new `Person` made from the request with his corrections — or declines, each one step; a `User` added or renamed onto a waiting sign-in name deletes its request; which admins have had it on screen is no longer on the request — each admin's own `AccessRequestSeen` row (`[DB-READINESS]` group A, phase 4.4 — R3-04) |
+| `AccessRequestSeen` | C R U **own** | — | — | — | `userId` = my account — which waiting requests this admin has had on screen, the list of their ids: his bell lights until he has (D216, D227 — each admin's bell is his own); one row per admin, removed with his `User` (`[DB-READINESS]` group A, phase 4.4, 30 Sep 26 — R3-04) |
 | ScheduleWeek family, `DayDraft`, `RowPerson` | C R U D | R | R | — | a member reads the programme; only a scheduler writes it; a guest reads what a member reads on View-only Sched — a published day as issued, another as it stands (D204, D215) |
 | `Amendment`, `Signoff` | C R | R | R (published) | — | append-only for everyone |
 | `EditLog` | R | R | — | — | written by the store, not a role; members read it, a medical change in full (D169, D211) — the one changes window, for admins and members alike (`[DRAFT-PENDING]`, 28 Sep 26); kept across sign-outs (D336 (b)); retention is Open question 4 |
+| `ChangeBatch` | C R | C R | R | — | one row per saved change, written with it in the same changeset by whoever made the change — admins and members alike — never by hand; append-only; read by every screen's 30-second check (section 9 — the change log; `[DB-READINESS]` group A, phase 4.1, 30 Sep 26) |
 | `EditLogSeen` | C R U **own** | C R U **own** | — | — | `personId` = my person — which lines of the history he has seen ("Mark all as seen", D170): a line someone else made is new to him until he marks it; his own never is (`[DRAFT-PENDING]`, 28 Sep 26) |
 | `Input` | C R U D | C R U D **own**; R | R | — | `personId` = my person, or filed for me by a scheduler; every member reads every input, a medical one in full (D211 — his 27 Aug 26 rule re-confirmed); a guest reads the week's inputs as a member does, a medical one in full too (D213, D215) |
 | `Attachment`, `InputAttachment` | R (D by sweep only) | C R **own**; R | — | — | owned by the person who uploaded it; every member may open it (D211) |
@@ -1302,16 +1333,17 @@ editing" shows to everyone. **The "Signoff" in the `Amendment, Signoff` row abov
 `AmendmentRetraction` follows the same row (create and read only — an Unpublish writes one, never an update); the
 working sign-offs are part of the day. The new tables of 29 Sep 26 — `PlanningPuck`, `DayRemark` (a scheduler's, like
 the ScheduleWeek family), `IssuedSignoff`, `AmendmentRetraction`, `TakeOverRequest` (D454 — an admin creates, the holder answers),
-`ScheduleInputPlacement` (stage 2), `ChangeBatch` (created by admins and members alike, read by everyone) — get their own rows here, and in `src/state/perms.ts` with
+`ScheduleInputPlacement` (stage 2) — get their own rows here, and in `src/state/perms.ts` with
 them, when they are built (`OUTSTANDING.md` `[DB-SYNC-MODEL]`) — the drift test reads every row of this table against
-the app, so the rename waits for the build.
+the app, so the rename waits for the build. `ChangeBatch` has its row since it was built (`[DB-READINESS]` group A,
+phase 4.1, 30 Sep 26); so has `AccessRequestSeen` (phase 4.4).
 
 **Who owns each table's rows — fixed when a table is created, and not changeable afterwards (29 Sep 26, round 2,
 Fable 2).** **User- or team-owned** (the owner is a person's `User`, or the free team): `ScheduleDay` (the lock), and
 every table with an own-row rule — `Person` (owned by his linked `User`; a person with no sign-in — D217 — by an
 admin team; round 3, Astra 3: a member edits his own row, which an organisation-owned table cannot allow), `Input`,
 `Attachment`, `InputAttachment`, `QualMark`, `LeaveBid`, `LeaveOpening`,
-`LeaveLedger`, `LeaveCounter`, `EditLogSeen`, `AccessRequest`, `User`. **Organisation-owned:** everything else —
+`LeaveLedger`, `LeaveCounter`, `EditLogSeen`, `AccessRequest`, `AccessRequestSeen`, `User`. **Organisation-owned:** everything else —
 `ScheduleWeek` (its `ownedBy` is a plain column, not the platform's owner), `Amendment`, `AmendmentRetraction`,
 `IssuedSignoff`, `TakeOverRequest`, `PlanningPuck`, `DayRemark`, `ChangeBatch`, `Qualification`, `Setting`, `SchemaVersion`,
 `EditLog`, `LeaveWar`, `LeavePersonProfile`, and the Tracker's tables.
@@ -1341,7 +1373,9 @@ are kept for a period the squadron sets, then purged by a scheduled job;
 4. **EditLog retention** — the app keeps the newest 2,000 lines, per browser, durable across sign-outs since
    `[DRAFT-PENDING]` (28 Sep 26 — it capped 400 in memory before). Shared and durable, how long is it kept, and is it a
    compliance record or an operational convenience? (Who may read it is settled: admins and members, a medical change in
-   full — D169, D211; each person's own "seen" is `EditLogSeen`, §11.)
+   full — D169, D211; each person's own "seen" is `EditLogSeen`, §11.) **And `EditLog.seq` is yours (30 Sep 26):** the
+   store's own rising number, assigned as each line is saved; until then the app orders the log by `(at, lineId)`, and
+   "seen" and an account's `seenFrom` are positions in that order — please confirm you can assign it.
 5. **Is `Attempt` history required from day one?** Two routes: build the
    table at stage 1 and back-fill it from the existing `{ g, f, fd, d }`
    summary (one pass, dates present for most rows), or keep the summary

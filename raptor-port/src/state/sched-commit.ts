@@ -52,7 +52,7 @@ import { issuedDisclosed, discloseIssued } from './disclosure'
 import { PLANPUCKS, DAYRMK } from './plan'
 import { WARNOFF, DPREV, prunePreviews } from './view'
 import { canEditSched } from './auth'
-import { deriveActor, isOk, isCommitting } from '../command'
+import { deriveActor, isCommitting } from '../command'
 import { commitAs } from '../command/commit'
 import { systemActor } from '../command/actor'
 
@@ -663,9 +663,12 @@ export function commitDiscardPending(): CommitResult {
      P9 found it wrote none). It clears marks, not changes: the edits stay, and so do their own lines. */
   const orig: any = SCHED.orig || {}, per = new Map<number, number>()
   Object.keys(SCHED.pending).forEach(k => { const di = keyDay(k); if (!orig[di] && di != null && isFinite(+di)) per.set(+di, (per.get(+di) || 0) + 1) })
-  const r = commitSchedVoid(SCHED_TYPES.discard, () => discardPending())
-  if (isOk(r)) per.forEach((n, di) => logAction(di, `Draft marks cleared (${n})`, { sect: 'day' }))
-  return r
+  /* written INSIDE the discard ([DB-READINESS] group A, phase 4.1 — F2-03): the lines are kept with the command's own
+     latched effects, so they travel in its saved group and its change-log batch, and a refused discard leaves none */
+  return commitSchedVoid(SCHED_TYPES.discard, () => {
+    discardPending()
+    per.forEach((n, di) => logAction(di, `Draft marks cleared (${n})`, { sect: 'day' }))
+  })
 }
 
 /* [GLOBAL-UNDO] §6.5 — retract the latest issued version of a published day back
