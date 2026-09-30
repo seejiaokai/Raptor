@@ -75,6 +75,12 @@ export interface OilDecisions {
   items?: Record<string, 0 | 1>
   /** `<personId>|<itemKey>` → allow | deny (§9.1). */
   people?: Record<string, OilDecision>
+  /** `<personId>|i:<iid>` → the HOLDING of that request the decision was made under (its `Input.hand` then, absent = 0) —
+   *  written beside a `people` entry about a request, and only then ([DB-READINESS] group A, phase 6 (a)). A decision about
+   *  the request's holder made under an earlier holding reads as nothing (pruneHandedOverDecisions), so handing a request
+   *  on writes no day at all — and A → B → A cannot bring A's old refusal back. A `people` entry with no `pa` entry was
+   *  made before phase 6 and reads as made under the current holding. */
+  pa?: Record<string, number>
 }
 
 /* ---- the derived halves (issued snapshots only) -------------------------- */
@@ -422,11 +428,13 @@ export function projectOilInputs(iso: string): OilInputEv[] {
  *  `day` defaults to the loaded week's day, which is what every caller in the
  *  app wants; passing one explicitly is for tests and for a stashed week. */
 /** Drop every per-person override that names a man who no longer holds the
- *  request it is about. Mutates the COPY oilEvidence has already made — never
- *  `DAYS`. Row items (`r:`/`g:`) are not assignments and are never touched. */
+ *  request it is about — or who holds it again, but was decided about under an
+ *  earlier holding. Mutates the COPY oilEvidence has already made — never
+ *  `DAYS`. Row items (`r:`) are not assignments and are never touched. */
 function pruneHandedOverDecisions(dec: OilDecisions, day: any): void {
   const ppl = dec && dec.people
   if (!ppl) return
+  const drop = (k: string) => { delete ppl[k]; if (dec.pa) delete dec.pa[k] }
   for (const k of Object.keys(ppl)) {
     const cut = k.indexOf('|')
     if (cut < 0) continue
@@ -435,7 +443,19 @@ function pruneHandedOverDecisions(dec: OilDecisions, day: any): void {
     const iid = item.slice(2)
     const inp = (INPUTS as any[]).find(r => r && String(inpId(r)) === iid)
     if (!inp) continue                                       // orphan: already inert, leave it be
-    if (String(inp.person || '') === person) continue        // the man who holds it
+    if (String(inp.person || '') === person) {               // the man who holds it —
+      /* — AND WHO HELD IT WHEN THE DECISION WAS MADE ([DB-READINESS] group A, phase 6 (a); data-model.md §9 rule 9).
+         Handing the request away and BACK (A → B → A) makes him its holder again, and a refusal made about his FIRST
+         holding would match and take his day a second time. Until phase 6 a write-side pass cleared that refusal on
+         every loaded day and every saved week (ui/oilmode.ts clearOilPersonDecisions, gone) — a pass that rewrote days
+         nobody holds, which the database's day lock refuses (D450). Now the decision says which holding it was made
+         under (`pa`), the request counts its holdings (`Input.hand`), and a mismatch reads as no decision. An Undo of the
+         hand-over puts the count back with the person, so the refusal comes back with it. A decision with no `pa`
+         entry was stored before phase 6 and reads as current. */
+      const was = dec.pa ? dec.pa[k] : undefined
+      if (was != null && Number(was) !== Number(inp.hand || 0)) drop(k)
+      continue
+    }
     /* AND ANYONE THE SCHEDULER PUT ON ITS ROW (D18, 22 Sep 26). This used to
        assume only the requester could carry a decision about a request, which
        was true until a second man on the row started earning from it. Left as
@@ -452,9 +472,10 @@ function pruneHandedOverDecisions(dec: OilDecisions, day: any): void {
        standing the puck is what makes his decision legitimate, not today's
        answer to who is available. */
     if (landedHasSentinel(day, iid)) continue
-    delete ppl[k]
+    drop(k)
   }
   if (!Object.keys(ppl).length) delete (dec as any).people
+  if (dec.pa && !Object.keys(dec.pa).length) delete dec.pa
 }
 
 export function oilEvidence(di: any, day?: any): OilEvidence {
@@ -470,13 +491,14 @@ export function oilEvidence(di: any, day?: any): OilEvidence {
      The whole point of the block is that the issued answer stops moving. */
   const dec: OilDecisions = clone((d && d.oild) || {})
   /* A DECISION DIES WITH THE ASSIGNMENT (Codex M1, 22 Sep 26). A scheduler's
-     override names a man AND an item; when a request changes hands, the write
-     side clears the old holder's key on every LOADED day, but a request can
-     cover a day in a stashed week that no write can reach. Left there, the key
-     is dormant until that week is opened and then decides against a man who has
-     nothing to do with the request any more.
+     override names a man AND an item; when a request changes hands, the old
+     holder's key must stop deciding — on every day, in every week, including
+     weeks nobody has open. Since [DB-READINESS] group A phase 6 (a) this is the
+     ONLY place it happens: no write clears it (a hand-over writes no day — D450),
+     and a decision made under an earlier holding of the request is dropped here
+     too (the A → B → A case — pruneHandedOverDecisions).
 
-     So it is closed here as well, and only here is it safe to: this runs on the
+     It is safe to do here, and only here: this runs on the
      LIVE day only — an issued day carries its own frozen block, written once at
      publication and never recomputed — and it works on the COPY above, so the
      stored day is untouched and the issued record cannot move.

@@ -52,10 +52,8 @@ import { schedWrite, SCHED_TYPES } from '../state/sched-commit'
 import { envMin, uniformOil, dayOilWork, oilCapableItems, openEndRows, rowItemKey, groundItemKey, inputItemKey, type OilWork } from '../engine/oil'
 import { landedExtras, oilEvidence, oilEvidenceOf, oilEarnedWork, oilInputEligible, oilSentOf, personDecision, itemMasked, itemMark, itemState, spanDefault, type OilEvidence, type OilDecisions } from '../engine/oilev'
 import { OILDAY, setOilDay, afterSchedMutate, esc } from '../state/view'
-import { CURWEEK } from '../engine/waves'
 import { parseHM, win, hm24 } from '../engine/time'
 import { VCONF } from '../engine/rules'
-import { stashKeys, stashEditDays } from '../engine/weekstash'
 import { whoArr } from '../engine/slots'
 import { isDraftVer } from '../engine/drafts'
 import { undoMark } from '../undo'
@@ -324,65 +322,22 @@ function tidyDay(d: any): void {
   const dec = d && d.oild
   if (!dec) return
   if (dec.items && !Object.keys(dec.items).length) delete dec.items
+  /* a holding stamp lives only beside its decision (phase 6 (a)) */
+  if (dec.pa) for (const k of Object.keys(dec.pa)) if (!dec.people || dec.people[k] == null) delete dec.pa[k]
+  if (dec.pa && !Object.keys(dec.pa).length) delete dec.pa
   if (dec.people && !Object.keys(dec.people).length) delete dec.people
   if (!dec.blanket && !dec.items && !dec.people) delete d.oild
 }
 function tidy(di: any): void { tidyDay(DAYS[+di]) }
 
-/** A DECISION DIES WITH THE ASSIGNMENT IT WAS MADE ABOUT (Codex scenario 7,
- *  22 Sep 26). A scheduler's refusal names a man AND an item; nothing ever
- *  cleared it when that man left the item, so it lay dormant while somebody
- *  else held the request and came back to life the moment it was handed back —
- *  taking a day from a man whose refusal everyone believed was cleared.
- *
- *  Cleared on EVERY loaded day, not only the one in front of the scheduler: one
- *  request can cover several days, and the stale key would otherwise wait on
- *  whichever of them nobody was looking at. The item is the request's own id, so
- *  clearing it cannot touch a decision about anything else this man is on.
- *
- *  IT REACHES THE WEEKS NOBODY IS LOOKING AT TOO ([OIL-XWEEK-DENY], 22 Sep 26 —
- *  Fable F1 and Codex rank 2, found independently, which is the strongest signal
- *  the branch produced). This used to walk the seven LOADED days and say so,
- *  leaning on the read-side prune for the rest. But the prune only HIDES a key
- *  while somebody else holds the request: hand it away and BACK — ordinary,
- *  because the Inputs page is global and the scheduler may be on any week — and
- *  the holder matches again, so the old refusal is live the moment its week is
- *  opened. A man who worked and answered Yes is paid nothing, silently; and if
- *  that day was already published the live and frozen keys match, so nothing
- *  flags it either. The prune STAYS, as the guard it always was, for a week the
- *  stash cannot read or is forbidden to rewrite.
- *
- *  It writes through no funnel of its own on purpose: the one caller
- *  (`commitInputEdit`'s person branch) is already inside `writeInputsBatch`, so
- *  the clear, the person change and the relink are ONE undo step — and the
- *  caller enlists the weekstash in that batch when the person moves, so ONE undo
- *  puts back the assignment and the off-week refusal together. */
-export function clearOilPersonDecisions(person: string, item: string): number {
-  if (!person || !item) return 0
-  const k = `${person}|${item}`
-  let n = 0
-  DAYS.forEach((d: any, di: number) => {
-    const ppl = d && d.oild && d.oild.people
-    if (!ppl || ppl[k] == null) return
-    delete ppl[k]; n++
-    tidy(di)
-  })
-  /* the loaded week is DAYS, and writing its stash entry is refused anyway */
-  for (const wk of stashKeys()) {
-    if (wk === CURWEEK) continue
-    stashEditDays(wk, (days: any[]) => {
-      let hit = false
-      for (const d of days || []) {
-        const ppl = d && d.oild && d.oild.people
-        if (!ppl || ppl[k] == null) continue
-        delete ppl[k]; n++; hit = true
-        tidyDay(d)
-      }
-      return hit
-    })
-  }
-  return n
-}
+/* A DECISION DIES WITH THE ASSIGNMENT IT WAS MADE ABOUT (Codex scenario 7, 22 Sep 26) — the rule stands, and since
+   [DB-READINESS] group A phase 6 (a) it is kept on READ alone: engine/oilev.ts pruneHandedOverDecisions ignores a decision
+   about a man who no longer holds the request, and — the A → B → A case — one made about him under an earlier holding of
+   it (`oild.pa` beside `people`, the request's `hand`). The write-side clear that stood here (clearOilPersonDecisions)
+   rewrote every loaded day and every saved week at each hand-over: days nobody holds, which the database's day lock
+   refuses (D450). A hand-over now writes the request alone; an Undo of it puts the holding back, and the refusal with it.
+   A stale decision is never dropped at a later save either — kept inert, the Undo can still bring it back (phase 6
+   plan §3 (a)). */
 
 /** The whole-day blanket (§2.1 item 7). A FACT about the day: it MASKS every row
  *  and person mark rather than deleting them, so turning it off brings them all
@@ -463,7 +418,17 @@ export function toggleOilPerson(di: any, person: any, item: string): boolean {
     dec.people = dec.people || {}
     const k = `${person}|${item}`
     if (want === dflt) delete dec.people[k]
-    else dec.people[k] = want ? 'allow' : 'deny'
+    else {
+      dec.people[k] = want ? 'allow' : 'deny'
+      /* A DECISION ABOUT A REQUEST SAYS WHICH HOLDING OF IT IT WAS MADE UNDER ([DB-READINESS] group A, phase 6 (a)) —
+         the request's hand-over count now, so handing it away and back cannot bring this decision back to life
+         (engine/oilev.ts pruneHandedOverDecisions). A row item (`r:`) has no holder to change. */
+      if (item.startsWith('i:')) {
+        const inp: any = (INPUTS as any[]).find(r => r && String(inpId(r)) === item.slice(2))
+        dec.pa = dec.pa || {}
+        dec.pa[k] = Number((inp && inp.hand) || 0)
+      }
+    }
     tidy(di)
     afterSchedMutate()
   })

@@ -1887,3 +1887,18 @@ restore — repeatable, all-or-nothing, and safe for files whose bytes (line end
 **Suggested improvement:** In shipping.md's lock paragraph add one line: "a run you stop is not released — release it yourself at once (`gatelock.mjs release`)"; or have `run` record its pid and let `take` break a lock whose pid is gone.
 
 **Principle:** A cleanup that lives in the process being killed is not a cleanup; say so where the kill happens, or make the next taker check the owner is alive.
+
+### Observation 392: A phase that a reviewed plan only sketched needs its own code sweep before it is detailed — the sketch's premises were wrong in four places
+
+**Status:** OPEN
+**Date:** 2026-09-30
+**Session context:** Planning [DB-READINESS] group A phase 6 (a four-line sketch inside a plan red-teamed three rounds by two providers).
+**Skill:** writing-plans
+**Type:** open-source
+**Phase/Area:** turning a plan's sketched later phase into a buildable plan
+
+**Issue:** The parent plan's phase 6 was a few lines, carried through three review rounds that focused on the earlier phases. Three parallel read-only sweeps of the code before detailing it overturned four premises: one sub-step was already half built (a read-side filter existed; only one ordering case needed a new stamp), one was already cosmetic (the counts it named were computed elsewhere), one was far narrower than its "18 readers" wording implied (only one category of record is ever written into a day), and one had no single choke point the sketch assumed. Two owner rulings (a restore that deliberately brings back a deleted item's row; a live filing that lands as pending) also constrained the design in ways the sketch never mentioned.
+
+**Suggested improvement:** In writing-plans, add: "When detailing a phase that an earlier, reviewed plan only sketched, treat the sketch's premises as unverified: run a fresh read-only sweep of every mechanism it names (writers, readers, tests that pin today's behaviour) and list which premises held, before writing steps. Review of a plan validates what it details, not what it sketches."
+
+**Principle:** A review certifies the level of detail it was shown; a sketched step inherits none of that confidence and must be re-grounded in the code before it is planned.

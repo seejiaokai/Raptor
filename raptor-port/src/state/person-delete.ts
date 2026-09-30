@@ -157,7 +157,7 @@ function stripOilSwitches(d: any, id: string): boolean {
   const pp = d && d.oild && d.oild.people
   if (!pp || typeof pp !== 'object') return false
   let changed = false
-  for (const k of Object.keys(pp)) if (k.startsWith(`${id}|`)) { delete pp[k]; changed = true }
+  for (const k of Object.keys(pp)) if (k.startsWith(`${id}|`)) { delete pp[k]; if (d.oild.pa) delete d.oild.pa[k]; changed = true }
   return changed
 }
 /* a sign-off record ({cur, sked, plan, appr}) and its bindings: his name cleared, its binding with it */

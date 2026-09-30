@@ -204,6 +204,11 @@ export type Input = {
   oil?: Record<string, 0 | 0.5 | 1>
   /** SANS Availability only: which events are offered — screen. */
   sans?: SansOffer
+  /** How many times the request has changed hands — +1 at every change of `person` (ui/inputedit.tsx commitInputEdit);
+   *  absent = 0, never handed on. An OIL decision about its holder records the holding it was made under (`oild.pa`,
+   *  engine/oilev.ts), so a refusal made for one holding reads as nothing once the request moves on — even when it
+   *  comes back to the same man ([DB-READINESS] group A, phase 6 (a); data-model.md §9 rule 9). */
+  hand?: number
 }
 
 /* ---------------------------------------------------------------------------

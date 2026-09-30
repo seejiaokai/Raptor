@@ -27,14 +27,13 @@ import { hhmm, parseHM, hmOK } from '../engine/time'
 import { HOOKS } from '../engine/hooks'
 import { logAction, elogSweep, todayIso } from '../engine/editlog'
 import { elogReason } from '../state/changelines'
-import { writeInputsBatch, writeInputsBatchWith, weekstashStore, notify, protectedDates, inputProtected } from '../state/store'
+import { writeInputsBatch, notify, protectedDates, inputProtected } from '../state/store'
 /* The Leave War seam (sync.ts is the one crossing point, CLAUDE.md §The Leave
    War tab): retracting a synced row's war cells when it is edited or deleted
    here — not a new seam, a Raptor-side caller of the existing one. */
 import { oilAskPlan } from '../leavewar/sync'
 import { leaveKey } from '../leavewar/absences'
-import { inputOilAmt, inputItemKey } from '../engine/oil'
-import { clearOilPersonDecisions } from './oilmode'
+import { inputOilAmt } from '../engine/oil'
 import { PLANPUCKS, DAYRMK } from '../state/plan'
 import { rowElsewhere, isoDayWords } from '../engine/weekstash'
 import { CURWEEK } from '../engine/waves'
@@ -977,14 +976,12 @@ export function commitInputEdit(r: any, draft: any, keepTail?: any, entryEnd?: a
     HOOKS.toast('This week is locked — it was published by an older version and can’t be edited', 'warn')
     return false
   }
-  /* THE WEEKSTASH JOINS THE BATCH WHEN THE HOLDER MOVES ([OIL-XWEEK-DENY],
-     22 Sep 26). Handing a request over now clears the old holder's refusal out
-     of weeks nobody is looking at as well, and those live in the stash, which
-     `histSnap` does not serialise. Without enlisting it, one undo would put the
-     request back in his name while the refusal it was made about stayed
-     deleted — half a step, which is worse than none. Enlisted only on a person
-     change, so every other edit keeps the cheaper single-store batch. */
-  const ok = (draft.person !== r.person ? (fn: () => void) => writeInputsBatchWith([weekstashStore], fn) : writeInputsBatch)(() => {
+  /* A HAND-OVER WRITES THE REQUEST ALONE ([DB-READINESS] group A, phase 6 (a)). Until phase 6 the week stash joined this
+     batch when the holder moved ([OIL-XWEEK-DENY], 22 Sep 26), because the hand-over cleared the old holder's refusal out
+     of weeks nobody was looking at too. That clear is gone — the refusal is ignored on read (engine/oilev.ts
+     pruneHandedOverDecisions, by the request's `hand` below) — so no week is written, and one Undo still puts back the
+     assignment and the refusal together: the count rides the request. */
+  const ok = writeInputsBatch(() => {
     /* A Leave-War-synced row (owner, 17 Aug 26 — full two-way): editing the
        LEAVE ITSELF — its person, type, dates or which half — changes the war
        too. The old grant is WITHDRAWN first, while the row still says what the
@@ -1097,9 +1094,12 @@ export function commitInputEdit(r: any, draft: any, keepTail?: any, entryEnd?: a
        assignment too (Codex scenario 7, 22 Sep 26). Voiding the member's
        answers above was only half of it: a refusal the scheduler made about the
        old holder stayed on the day, dormant while someone else held the
-       request, and live again the moment it was handed back. Same batch, so it
-       is one undo step with the person change and the relink. */
-    if (r.person !== wasPerson) clearOilPersonDecisions(String(wasPerson || ''), inputItemKey(String(inpId(r))))
+       request, and live again the moment it was handed back. Since [DB-READINESS]
+       group A phase 6 (a) it is not cleared off the days — a hand-over writes no
+       day (D450) — but counted: the request's holding moves on, and every
+       decision made under an earlier one reads as nothing (engine/oilev.ts
+       pruneHandedOverDecisions). The same record, so one undo puts it back. */
+    if (r.person !== wasPerson) r.hand = Number(r.hand || 0) + 1
     /* AND a positive answer whose HOURS no longer price what was approved is
        void per day (bug pass, 28 Aug 26): the three gated editors re-ask via
        oilGate, but the board's and week's IN-PLACE cells commit straight

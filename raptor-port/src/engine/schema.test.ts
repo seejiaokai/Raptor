@@ -96,6 +96,7 @@ const inputSpec = (booted: boolean): Spec => ({
   mod: 'string', acc: { $opt: { $lit: ['g', 'u', 'r'] } }, lw: 'string?', docId: 'string?', docIds: { $opt: ['string'] },
   oil: { $opt: { $map: { $lit: [0, 0.5, 1] } } }, sans: { $opt: { f: { $opt: { $lit: [true] } }, o: { $opt: { $lit: [true] } }, a: { $opt: { $lit: [true] } } } },
   ord: 'number?',   // its place in the list ([DB-READINESS] group A, phase 2 — state/ord.ts; every booted row has one — below)
+  hand: 'number?',  // how many times it has changed hands ([DB-READINESS] group A, phase 6 (a) — an OIL decision's holding)
 })
 const FLAGS = { cx: 'boolean?', cxr: 'string?', flag: 'boolean?' }
 const ALLHANDS: Spec = { ...FLAGS, prog: 'string', str: 'string', end: 'string', who: { $opt: { $or: ['string', ['string']] } }, more: { $opt: ['string'] }, info: 'boolean?', rid: 'string?' }
@@ -109,7 +110,7 @@ const DUTYROW: Spec = { ...FLAGS, role: 'string', id: 'string', str: 'string', e
 const DUTYBLOCK: Spec = { label: 'string', rows: [DUTYROW], sa: { $opt: SAKIND }, noconf: 'boolean?', rid: 'string?' }
 /* [OIL-AUTO-REMOVE] — the day's OIL decisions (stored day content) and, on an
    ISSUED SNAPSHOT'S day copy only, the frozen evidence block. engine/oilev.ts. */
-const OILDEC: Spec = { blanket: { $opt: { $lit: [1] } }, items: { $opt: { $map: 'number' } }, people: { $opt: { $map: 'string' } } }
+const OILDEC: Spec = { blanket: { $opt: { $lit: [1] } }, items: { $opt: { $map: 'number' } }, people: { $opt: { $map: 'string' } }, pa: { $opt: { $map: 'number' } } }
 const OILINP: Spec = { iid: 'string', person: 'string', type: 'string', asks: 'boolean', acc: 'string', win: { $or: [['number'], 'null'] }, ans: { $or: ['number', 'null'] } }
 const OILEV: Spec = { iso: 'string', earns: 'boolean', d: OILDEC, inputs: [OILINP], sent: { $map: ['string'] }, mem: { $opt: { $lit: [1] } } }
 const DAY: Spec = {
