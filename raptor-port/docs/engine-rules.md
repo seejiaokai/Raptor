@@ -2434,7 +2434,10 @@ already flew keep his puck, and every day from his cutoff loses him.)*
 
 **A DELETED MAN ON A PUBLISHED DAY (`[POST-OUT-OUTCOMES]`, 27 Sep 26 — D297, D299; `state/person-delete.ts`).** The
 delete's cutoff is the later of its date and the calendar date (ONE clock — the posting pass's too; the real calendar date,
-never the demo's own "today" — D304). Every day BEFORE it
+never the demo's own "today" — D304). **Since 30 Sep 26 (`[DB-READINESS]` group A phase 6 (d)) the delete writes no week:**
+every working day from the cutoff is READ without him (`engine/overlay.ts`, wherever a week's days come into memory — the
+loaded week, a saved week read for anything, a week never saved; the week on screen right after the delete's command),
+and the day's holder saves it without him at his next change to it. Every day BEFORE it
 keeps his puck, published or not, and never reads pending for the delete: a published face compares a deleted man's
 roster attributes as they stood when the day was issued (`publish.ts peopleAttrsNow`), and ALL AVAIL counts him on those
 days as before (`leavewar/sync.ts availableFor`, by date). **An ARCHIVED man is read the same way, by his stints**

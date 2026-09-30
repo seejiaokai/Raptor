@@ -359,7 +359,8 @@ day's row**. Every field of today's persisted week record (`weekStashSnap()`, `s
   one keeps its row and gains an `AmendmentRetraction` row beside it. `rt` is keyed by version (`<verId>~<n>`), not by
   day.)*
 - **Not stored at all — worked out on read:** the removed-input list (`un` — a cache of `Input.acc` and not-landed,
-  Fable 7), the input landings' pending marks (`inp:`), and every other effect of a record the holder does not own
+  Fable 7), the input landings' pending marks (`inp:` — nothing writes one since 30 Sep 26, `[DB-READINESS]` group A phase 6 (b):
+  the filing axis counts a filing), and every other effect of a record the holder does not own
   (the day lock, rule 9).
 - **Into its own tables, outside any day:** the planning calendar (`PLANPUCKS`, `DAYRMK` — Fable 1): planning pucks and
   day remarks go on ANY date from the Inputs month view, weeks ahead, with no day held — `PlanningPuck` and `DayRemark`
@@ -538,6 +539,8 @@ appointment, duty, SANS availability.
 | `movedFrom` | JSON | no | `lwMoved`: per covered ISO date, the date it was moved from by a closed-bidding move on the war — keeps the dotted "moved" mark through edits and undo |
 | `oilCredit` | JSON | no | `oil`: ISO date → `0 \| 0.5 \| 1` |
 | `sansEvents` | JSON | no | `sans`: which of Fly / OFT / AMT are offered |
+| `handCount` | int | no | `hand` — how many times the request has changed hands (+1 at every change of person; absent = 0). An OIL decision about it records the holding it was made under (the day's `oild.pa`) — `[DB-READINESS]` group A phase 6 (a), 30 Sep 26 (section 9 rule 9) |
+| `leftAt` | JSON | no | person id → the holding at which the request LEFT him — written by the hand-over; an OIL decision about him made under an earlier holding reads as nothing, so a hand-over writes no day (phase 6 (a)) |
 | `isDeleted` | bool | yes | undo can resurrect an input |
 
 `InputType` is a reference table, not free text: `code` (PK), `group`
@@ -1218,11 +1221,18 @@ D450–D452:
      four sign-offs fall, as today (D178, D103) — both worked out, nothing written to the day.
    - **A man deleted (a Delete, or the posting pass on its date — D297, D299):** `Person.deletedFrom` is set; every day
      from that date shows the day without him and reads pending; the holder's next save of each day writes it without
-     him. No pass rewrites every stored week any more (`state/person-delete.ts` today does, in one browser); the
-     Delete still leaves its gap in `PlanningPuck` rows (their own table, no lock).
-   - **A request handed to another man:** an OIL decision stored on a day names the man and the input it was made for;
-     one whose input now names someone else is ignored on read and dropped at that day's next save
-     (`ui/oilmode.ts` today clears them across weeks).
+     him. **Built 30 Sep 26 (`[DB-READINESS]` group A phase 6 (d)):** no pass rewrites any stored week — the delete writes
+     his own records, and every working day from his cutoff is read without him wherever a week's days come into memory
+     (`engine/overlay.ts`: the loaded week, every saved week read for anything, a week never saved); the week on screen is
+     worked out AFTER the delete's command, never inside it, so nothing saves it (a nested command joins its outer one,
+     so no "which command" test could keep it out). Issued versions keep him. The Delete still leaves its gap in
+     `PlanningPuck` rows (their own table, no lock).
+   - **A request handed to another man:** an OIL decision stored on a day names the man and the request it was made for.
+     **Built 30 Sep 26 (phase 6 (a)):** the decision records the holding it was made under (`oild.pa`), the request records
+     when it LEFT each man (`Input.leftAt`), and a decision about a man the request has left since then is ignored on read —
+     so a hand-over writes the request alone, and A → B → A cannot revive A's old refusal. **It is NOT dropped at the day's
+     next save** (corrected — both reviewers of the phase-6 plan agree): kept inert, an Undo of the hand-over brings it
+     back; dropped, the Undo would silently pay a man a scheduler had refused.
    - **A callsign rename, Quals, an archive, a SANS move, an OIL award:** their own tables only.
    So a Delete or a posting never waits for a held day and never fails because of one.
 10. **No lock outside the schedule** — Inputs, the Leave War, Quals, the Tracker and the planning calendar keep the

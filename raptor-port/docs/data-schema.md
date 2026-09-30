@@ -83,7 +83,9 @@ Two fields, and the difference between them is the whole design (`engine/oilev.t
 `docs/engine-rules.md` §Weekend/PH work earns OIL):
 
 - **`oild` — the scheduler's DECISIONS. Day content.** `{ blanket?: 1, items?: {
-  <itemKey>: 0 }, people?: { "<personId>|<itemKey>": 'allow' | 'deny' } }`. Stored on
+  <itemKey>: 0 }, people?: { "<personId>|<itemKey>": 'allow' | 'deny' }, pa?: { "<personId>|i:<iid>": <holding> } }` —
+  `pa` (30 Sep 26, `[DB-READINESS]` group A phase 6 (a)): the holding of the request each decision about it was made under
+  (the request's `hand` then); a decision about a man the request has LEFT since (`Input.leftAt`) reads as nothing. Stored on
   the live day, so it rides the snapshot, a parked plan, an undo and the persistence
   funnel like any typed time, and changing it is publishable as an amendment. Absent
   means nothing was decided, so the ordinary rules decide alone — which is why a mark
@@ -153,6 +155,8 @@ truth for what each type means; the fields below are what a record carries.
 | `remarks` | string? | free text, may be `''`; absent on the seed SANS rows |
 | `mod` | string | last-modified date, ISO `yyyy-mm-dd` on the seeds — but **the app writes the literal `'now'`** on every create, edit and trim (`src/ui/inputedit.tsx:348`, `:712`) and the Leave War sync does the same (`src/leavewar/sync.ts:334`); the reader resolves `'now'` to today's date (`src/engine/inputs.ts:683`). A store that keeps `'now'` keeps "modified today" for ever |
 | `acc` | `undefined \| 'g' \| 'u' \| 'r'` | never landed / landed on the Ground Programme / actioned to Unavailable / **removed by a scheduler (dormant)** |
+| `hand` | number? | how many times the request has changed hands — +1 at every change of person (`ui/inputedit.tsx commitInputEdit`); absent = 0 (`[DB-READINESS]` group A phase 6 (a), 30 Sep 26) |
+| `leftAt` | `{ <personId>: number }`? | the holding at which the request LEFT each man — written by the hand-over; an OIL decision about him made under an earlier holding reads as nothing (phase 6 (a)) |
 | `lw` | string? | the **war id** the leave was approved in — PROVENANCE ("approved in war W"), written by the war's approval door (`src/leavewar/sync.ts` `doorApprove`); a member's own date/type edit clears it ([ARCH-STACK] step 4) |
 | `docId` / `docIds` | string / string[] | attachment ids (see Attachments) |
 | `oil` | `{ 'yyyy-mm-dd': 0 \| 0.5 \| 1 }`? | the per-day OIL credit decision from the OilConfirm ask-flow — written after a create or edit (`src/ui/InputsPage.tsx:425`, `:599`, `:631`; `src/ui/inputedit.tsx:1325`, `:1335`) |

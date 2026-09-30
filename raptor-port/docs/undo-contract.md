@@ -61,6 +61,11 @@ put and only a record the command removed is removed), `lw.ledger` → `ledger:<
 the label was inside `lw.config`) → the man's `profile:<pid>`, the rest their ⚙ keys; its `rawPersist` writes nothing.
 So a durable change is saved ONLY by a command — a mutation outside one is lost (the persistence funnel,
 `raptor-port/CLAUDE.md`). A NEW module's durable records need a mapper there too.
+**And the other way round (phase 6, 30 Sep 26 — `data-model.md` §9 rule 9):** what one record's change does to a DAY it
+does not hold (a man deleted; with phase 6 (c), a request filed or changed) is NOT made inside the command — it is worked
+out AFTER it (a phase-8 effect, the scheduler's baseline moved on: `engine/overlay.ts`), so it is shown at once, saved by
+nobody, and never mixed into the command's own changes (a nested command joins its outer one's envelope, so no test of
+"which command" could keep it out of the save). The day's holder saves it at his next change to that day.
 
 ---
 
