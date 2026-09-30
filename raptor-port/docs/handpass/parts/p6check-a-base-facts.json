@@ -1,0 +1,282 @@
+{
+ "tag": "base",
+ "facts": {
+  "A1.row": [
+   {
+    "who": "yeti",
+    "more": []
+   }
+  ],
+  "A2.oilbtn": "pressed",
+  "A2.pucksBefore": [
+   {
+    "who": "yeti",
+    "item": "i:imrldi1s0aec5df",
+    "on": true
+   },
+   {
+    "who": "yeti",
+    "item": "i:imrldi1s0aec5df",
+    "on": true
+   }
+  ],
+  "A2.tap": "tapped",
+  "A2.pucks": [
+   {
+    "who": "yeti",
+    "item": "i:imrldi1s0aec5df",
+    "on": false
+   },
+   {
+    "who": "yeti",
+    "item": "i:imrldi1s0aec5df",
+    "on": false
+   }
+  ],
+  "A2.oild": {
+   "people": {
+    "yeti|i:imrldi1s0aec5df": "deny"
+   }
+  },
+  "A3.saved": "saved",
+  "A3.input": {
+   "person": "razer",
+   "acc": "g"
+  },
+  "A3.row": [
+   {
+    "who": "razer",
+    "more": []
+   }
+  ],
+  "A3.storedOild": null,
+  "A3.pucks": [
+   {
+    "who": "razer",
+    "item": "i:imrldi1s0aec5df",
+    "on": true
+   },
+   {
+    "who": "razer",
+    "item": "i:imrldi1s0aec5df",
+    "on": true
+   }
+  ],
+  "A4.saved": "saved",
+  "A4.input": {
+   "person": "yeti"
+  },
+  "A4.pucks": [
+   {
+    "who": "yeti",
+    "item": "i:imrldi1s0aec5df",
+    "on": true
+   },
+   {
+    "who": "yeti",
+    "item": "i:imrldi1s0aec5df",
+    "on": true
+   }
+  ],
+  "A6.u1": {
+   "present": true,
+   "title": "Undo — a personal input",
+   "pressed": true,
+   "toasts": [
+    "Undid: a personal input"
+   ]
+  },
+  "A6.after1": "razer",
+  "A6.u2": {
+   "present": true,
+   "title": "Undo — a personal input",
+   "pressed": true,
+   "toasts": [
+    "Undid: a personal input"
+   ]
+  },
+  "A6.after2": {
+   "person": "yeti"
+  },
+  "A6.pucks": [
+   {
+    "who": "yeti",
+    "item": "i:imrldi1s0aec5df",
+    "on": false
+   },
+   {
+    "who": "yeti",
+    "item": "i:imrldi1s0aec5df",
+    "on": false
+   }
+  ],
+  "A7.r1": {
+   "present": true,
+   "title": "Redo — a personal input",
+   "pressed": true,
+   "toasts": [
+    "Redid: a personal input"
+   ]
+  },
+  "A7.r2": {
+   "present": true,
+   "title": "Redo — a personal input",
+   "pressed": true,
+   "toasts": [
+    "Redid: a personal input"
+   ]
+  },
+  "A7.pucks": [
+   {
+    "who": "yeti",
+    "item": "i:imrldi1s0aec5df",
+    "on": true
+   },
+   {
+    "who": "yeti",
+    "item": "i:imrldi1s0aec5df",
+    "on": true
+   }
+  ],
+  "A5.pucks": [
+   {
+    "who": "yeti",
+    "item": "i:imrldi1s0aec5df",
+    "on": true
+   },
+   {
+    "who": "yeti",
+    "item": "i:imrldi1s0aec5df",
+    "on": true
+   }
+  ],
+  "A8.tap": "tapped",
+  "A8.pucks": [
+   {
+    "who": "yeti",
+    "item": "i:imrldi1s0aec5df",
+    "on": false
+   },
+   {
+    "who": "yeti",
+    "item": "i:imrldi1s0aec5df",
+    "on": false
+   }
+  ],
+  "A8.sign": {
+   "cur": "Ace",
+   "sked": "Anvil",
+   "plan": "Anvil",
+   "appr": "Anvil"
+  },
+  "A8.publish": {
+   "pressed": true,
+   "label": "Publish day"
+  },
+  "A8.head": {
+   "tag": "ORIG",
+   "pending": "14 changes",
+   "beak": "none",
+   "alpub": "",
+   "unpub": "Unpublish",
+   "signs": [
+    "— name —",
+    "— name —",
+    "— name —",
+    "— name —"
+   ],
+   "signed": "SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil",
+   "nys": ""
+  },
+  "A9.saved": "saved",
+  "A9.head": {
+   "tag": "ORIG",
+   "pending": "2 pending",
+   "beak": "none",
+   "alpub": "Publish AL1",
+   "unpub": "Unpublish",
+   "signs": [
+    "— name —",
+    "— name —",
+    "— name —",
+    "— name —"
+   ],
+   "signed": "SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil",
+   "nys": "Not yet signed"
+  },
+  "A9.headBoard": {
+   "tag": "ORIG",
+   "pending": "2 pending",
+   "beak": "none",
+   "alpub": "Publish AL1",
+   "unpub": "Unpublish",
+   "signs": [
+    "— name —",
+    "— name —",
+    "— name —",
+    "— name —"
+   ],
+   "signed": "SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil",
+   "nys": "Not yet signed"
+  },
+  "A10.saved": "saved",
+  "A10.head": {
+   "tag": "ORIG",
+   "pending": "1 pending",
+   "beak": "none",
+   "alpub": "Publish AL1",
+   "unpub": "Unpublish",
+   "signs": [
+    "— name —",
+    "— name —",
+    "— name —",
+    "— name —"
+   ],
+   "signed": "SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil",
+   "nys": "Not yet signed"
+  },
+  "A10.pucks": [
+   {
+    "who": "yeti",
+    "item": "i:imrldi1s0aec5df",
+    "on": true
+   },
+   {
+    "who": "yeti",
+    "item": "i:imrldi1s0aec5df",
+    "on": true
+   }
+  ],
+  "A10.headBoard": {
+   "tag": "ORIG",
+   "pending": "1 pending",
+   "beak": "none",
+   "alpub": "Publish AL1",
+   "unpub": "Unpublish",
+   "signs": [
+    "— name —",
+    "— name —",
+    "— name —",
+    "— name —"
+   ],
+   "signed": "SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil",
+   "nys": "Not yet signed"
+  },
+  "A10.headAfterReload": {
+   "tag": "ORIG",
+   "pending": "1 pending",
+   "beak": "none",
+   "alpub": "Publish AL1",
+   "unpub": "Unpublish",
+   "signs": [
+    "— name —",
+    "— name —",
+    "— name —",
+    "— name —"
+   ],
+   "signed": "SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil",
+   "nys": "Not yet signed"
+  },
+  "errors": []
+ }
+}

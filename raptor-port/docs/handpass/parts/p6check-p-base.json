@@ -1,0 +1,155 @@
+{
+ "base": "http://localhost:4211",
+ "at": "2026-09-30T14:56:42.871Z",
+ "results": [
+  {
+   "name": "P1 a note on Friday (an edit to a day to come, before the delete) — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 2 [settings/elog:mrldi1s0hay6.000006, weeks/13-07-2026#4] · del 0 [] · batches sched.text/2"
+  },
+  {
+   "name": "P2 Leave War: Anvil posted out today with \"Delete\" (the posting pass runs on its date) — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 10 [leavewar/profile:shaft, people/shaft, settings/elog:mrldi1s0hay6.000007, settings/elog:mrldi1s0hay6.000008, settings/elog:mrldi1s0hay6.000009, settings/elog:mrldi1s0hay6.00000a, settings/elog:mrldi1s0hay6.00000b, weeks/13-07-2026#2 …] · del 0 [] · batches lw.postout/10"
+  },
+  {
+   "name": "P2 the posting pass deleted him: off every day from Wed, on Mon (a day he flew)",
+   "ok": true,
+   "detail": "[1,0,0,0,0,0,0]"
+  },
+  {
+   "name": "P3 after Undo: Anvil is on no day to come",
+   "ok": true,
+   "detail": "[1,0,0,0,0,0,0]"
+  },
+  {
+   "name": "P4 week 2 (never saved): Anvil on none of its days",
+   "ok": false,
+   "detail": "[0,0,1,0,1,0,0]"
+  },
+  {
+   "name": "P5 reload — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "P5 reload — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "P6 Thursday: its issued ORIG loaded onto the working copy after the delete — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 2 [settings/elog:mrldi1s0vknr.000001, weeks/13-07-2026#3] · del 0 [] · batches sched.mutate/1 elog.line/1"
+  },
+  {
+   "name": "P6 — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "P6 — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "P6 the load left Anvil out of Thursday",
+   "ok": true,
+   "detail": "[1,0,0,0,0,0,0]"
+  }
+ ],
+ "table": [
+  {
+   "step": "P1",
+   "width": "desktop",
+   "did": "a note on Friday (an edit to a day to come, before the delete)",
+   "pics": [
+    "P1-1-after.png"
+   ],
+   "shown": "",
+   "rows": "put 2: settings/elog:mrldi1s0hay6.000006, weeks/13-07-2026#4 · batches: sched.text(EditLog+ScheduleDay, 2 rows, 1 history line, by acad)",
+   "batches": [
+    {
+     "key": "changes/cmrldi1s0ecgz18-6",
+     "type": "sched.text",
+     "actor": "acad",
+     "n": 2,
+     "seqs": [
+      6
+     ],
+     "tables": "EditLog+ScheduleDay",
+     "elog": 1
+    }
+   ],
+   "pass": true,
+   "notes": [],
+   "fails": []
+  },
+  {
+   "step": "P2",
+   "width": "desktop",
+   "did": "Leave War: Anvil posted out today with \"Delete\" (the posting pass runs on its date)",
+   "pics": [
+    "P2-1-after.png",
+    "P2-after-posting-delete.png",
+    "P4-week2-never-saved.png"
+   ],
+   "shown": "",
+   "rows": "put 10: leavewar/profile:shaft, people/shaft, settings/elog:mrldi1s0hay6.000007, settings/elog:mrldi1s0hay6.000008, settings/elog:mrldi1s0hay6.000009, settings/elog:mrldi1s0hay6.00000a, settings/elog:mrldi1s0hay6.00000b, weeks/13-07-2026#2, weeks/13-07-2026#3, weeks/13-07-2026#4 · batches: lw.postout(EditLog+ScheduleDay+Person+LeavePersonProfile, 10 rows, 5 history line, by acad)",
+   "batches": [
+    {
+     "key": "changes/cmrldi1s0ecgz18-7",
+     "type": "lw.postout",
+     "actor": "acad",
+     "n": 10,
+     "seqs": [
+      7
+     ],
+     "tables": "EditLog+ScheduleDay+Person+LeavePersonProfile",
+     "elog": 5
+    }
+   ],
+   "pass": true,
+   "notes": [],
+   "fails": []
+  },
+  {
+   "step": "P6",
+   "width": "desktop",
+   "did": "Thursday: its issued ORIG loaded onto the working copy after the delete",
+   "pics": [
+    "P6-1-after.png",
+    "P6-2-reloaded.png",
+    "P6-orig-loaded.png"
+   ],
+   "shown": "",
+   "rows": "put 2: settings/elog:mrldi1s0vknr.000001, weeks/13-07-2026#3 · batches: sched.mutate(ScheduleDay, 1 rows, by acad) + elog.line(EditLog, 1 rows, 1 history line, by system)",
+   "batches": [
+    {
+     "key": "changes/cmrldi1s0pg1gns-0",
+     "type": "sched.mutate",
+     "actor": "acad",
+     "n": 1,
+     "seqs": [
+      0
+     ],
+     "tables": "ScheduleDay",
+     "elog": 0
+    },
+    {
+     "key": "changes/cmrldi1s0pg1gns-g1",
+     "type": "elog.line",
+     "actor": "system",
+     "n": 1,
+     "seqs": [],
+     "tables": "EditLog",
+     "elog": 1
+    }
+   ],
+   "pass": true,
+   "notes": [],
+   "fails": []
+  }
+ ],
+ "tag": "base"
+}

@@ -1,0 +1,21 @@
+/* phase 6 check — where are an "Other" request's card buttons drawn (the week, the board)? */
+import { boot, world, fileRange } from './p6-lib.mjs'
+const { L, W } = await boot()
+const { browser, p } = await world(L)
+const iid = await fileRange(L, p, { person: 'nact', type: 'Other', fromIso: '2026-07-16', toIso: '2026-07-17', remarks: 'PROBE' })
+await W.toEdit(L, p)
+const q = () => p.evaluate(i => ({ acc: window.INPUTS.find(x => x.iid === i).acc, btns: [...document.querySelectorAll(`[data-acck="${i}"]`)].map(b => ({ in: b.closest('#schedBoard') ? 'board' : b.closest('#eWeek') ? 'week' : b.closest('#vWeek') ? 'view' : 'other', acc: b.dataset.acc, d: b.dataset.accd, vis: !!b.offsetParent, txt: b.innerText })), ground: window.DAYS[3].ground.filter(r => r.src === i).length }), iid)
+console.log('week', JSON.stringify(await q()))
+await W.boardOn(p, 3)
+console.log('board', JSON.stringify(await q()))
+const ri = await p.evaluate(i => window.DAYS[3].ground.findIndex(r => r.src === i), iid)
+const del = p.locator(`#schedBoard [data-grdel="3.${ri}"]:visible`).first()
+console.log('del buttons', await del.count())
+if (await del.count()) { await del.click(); await L.sleep(700) }
+console.log('after del', JSON.stringify(await q()))
+await L.sleep(800)
+console.log('accb anywhere', JSON.stringify(await p.evaluate(i => ({ all: [...document.querySelectorAll('.accb')].slice(0, 12).map(b => b.dataset.acck + ':' + b.dataset.acc + ':' + b.dataset.accd + ':' + !!b.offsetParent), rows: [...document.querySelectorAll('.inprow, .sbi-row')].filter(e => e.innerText.includes('PROBE') || e.innerText.includes('Warden')).map(e => e.outerHTML.slice(0, 600)) }), iid)))
+await W.boardOff(p)
+await W.showDay(p, 3)
+console.log('week accb', JSON.stringify(await p.evaluate(() => [...document.querySelectorAll('#eWeek .accb')].slice(0, 12).map(b => b.dataset.acck + ':' + b.dataset.acc + ':' + b.dataset.accd + ':' + !!b.offsetParent))))
+await browser.close()

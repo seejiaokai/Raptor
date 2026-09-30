@@ -247,6 +247,17 @@ Nothing on screen, by design — every change is in where things are saved and w
 2. editing or deleting a request whose row sits on a week not on screen is no longer refused with "Load the week of …
    to edit this accepted input" — it goes ahead, and that week shows the change when it is opened (§3 (c)).
 
+**Found by the FULL check of (a), (b), (d)** (30 Sep 26 — the walk run on this build and on the build before phase 6, the
+screen compared step by step; `docs/handpass/2026-09-30-dbr-phase6-check.md` F1, F2):
+3. **(b), (d) — the Amendments panel on Edit Schedule no longer counts the marks a filing under Unavailable, or a delete, used
+   to leave on days never published.** Before: after → Unavail on a never-published day it read "Changes are on unpublished
+   days — publish the day first" and offered "Clear the marks on days not yet published (2)", which cleared the two marks and
+   left the filing exactly as it was; now "No pending changes", the button greyed. Every day head, pending list and sign-off
+   is unchanged.
+4. **(d) — a delete now also takes the man off a week nobody has saved yet.** Before phase 6 a delete rewrote only the weeks
+   already saved, so a week still showing its seed (week 2, untouched) kept the deleted man on every day he was seeded; now
+   every week reads without him from his cutoff. A defect of the build before, closed.
+
 ## 9. Build log
 
 **(a) — built 30 Sep 26** (commits e6ebf963, then f1bd1cf6 for Fable F2): `Input.hand`, `Input.leftAt`, `oild.pa`;
@@ -260,4 +271,10 @@ red); four tests moved to the filing axis; broken on purpose → red. Engine 173
 door broken on purpose → red. **Found on the way:** the Leave War's posting command (`lw.postout`) carried the posting
 pass's day changes (a nested command joins its outer envelope) — why v1's type list could not have held (§2.2).
 Engine, state, Leave War and undo 4648/4648, tfin 728/0.
+**The FULL check of (a), (b), (d) — done 30 Sep 26 (D467)** (the evidence sheet `docs/handpass/2026-09-30-dbr-phase6-check.md`):
+Astra's scenarios; the roll-call (no missing door); five walks, each on this build AND the build before phase 6, the screen
+compared fact by fact, and three at phone width; thirteen break tests (four wires had no test — tests written); the gates and
+perf; both final reads (Astra: no findings; Fable: two low — F1, a delete on a read-only week ON SCREEN, fixed red first; F2,
+the overlay's cost growing with the deleted roster, filed for group B). Two visible changes the §8 list lacked, now items 3
+and 4. The orphaned week writers `stashEditDays` / `stashEditWeek` removed.
 **(c)** — round 2 on v2: Fable REVISE (F1–F6), Astra BLOCK (1–3); dispositions `…/briefs/2026-09-30-db-readiness-phase6-dispositions-r2.md` — v3 needs a HOLDER BASE (the week on screen always the overlay applied to the day as its holder last committed it), so a derived removal is reversible by an Undo. Fable F1 step 2 built (commit 3f847bdb). His call where v3 is built. Red tests for (c) drafted (`state/p6c-requestonread.test.ts`, uncommitted — 9 of 12 red on today's code).

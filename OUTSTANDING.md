@@ -72,8 +72,9 @@ award fix are due before the tables are settled. What to finish before the hand-
    **group B** (tuned against the real database) AFTER the app is connected. First, [DB-SYNC-MODEL]'s design fixed.
    ([OIL-AWARD-IS-A-GRANT] is DONE, merged 29 Sep 26.) Group A: plan v4 final (30 Sep 26); **phases 0–5 and 5b built
    30 Sep 26** on `claude/db-readiness-table-shaping-4094f6` (plan §9); **its FULL check done 30 Sep 26** (the walk and both
-   reviewers' code reads, every finding fixed — `raptor-port/docs/handpass/2026-09-30-dbrA-group-walk.md`) — next his look,
-   then phase 6, then 7.
+   reviewers' code reads, every finding fixed — `raptor-port/docs/handpass/2026-09-30-dbrA-group-walk.md`); **phase 6 (a),
+   (b), (d) built and FULL-checked 30 Sep 26** (`raptor-port/docs/handpass/2026-09-30-dbr-phase6-check.md`) — next his look
+   (both cards), then phase 6 (c) v3 in a fresh chat on its own branch (D467), then 7.
 5. **When Manfred is ready — [DB-STEP]:** the data model to him, then the one adapter to his tables; the stack
    ([ARCH-STACK]) resumes there, with its step 6 still to come; the [AMEND] work is queued behind it. Architecture first,
    then the individual bugs (D144).
@@ -1092,7 +1093,7 @@ order, hidden, deleted) and the details typed on each ball one row per chart and
 changed, so two people's work on two things never overwrites; a browser's old records are converted once at boot by the
 fold's eighth converter (the store's format is now 6), every chart, layout and detail carried across (tested: his old
 records read and export exactly as before). **Before its "merge live", remind him to EXPORT a copy of his Tracker first
-(D464).** Still in group A: the FULL check is DONE (30 Sep 26 — the walk and both code reads, every finding fixed; the evidence sheet `raptor-port/docs/handpass/2026-09-30-dbrA-group-walk.md`); his look, then phase 6, then 7; the plan's §9 is the build log.** **Phase 6 (plan `raptor-port/docs/superpowers/plans/2026-09-30-db-readiness-phase6-plan.md`) is built now, (c) included, without waiting for IT's written answers (D465, 30 Sep 26 — "Carry on"; D466 — only work needing IT's confirmation is held, and (c) does not): (a), (b) and (d) BUILT 30 Sep 26 (a hand-over, an Unavailable filing and a delete write no day; a deleted man is read off every day from his cutoff); (c) redesigned after both reviewers' round 1 (plan v2); round 2 (Fable REVISE, Astra BLOCK) — (c) v3 needs a holder base (dispositions r2). **Next (D467, 30 Sep 26): the FULL bug check of (a), (b), (d) in a new chat, then his look; then (c) v3 in a fresh chat on its own branch, its last review round, its build and its own FULL check.**
+(D464).** Still in group A: the FULL check is DONE (30 Sep 26 — the walk and both code reads, every finding fixed; the evidence sheet `raptor-port/docs/handpass/2026-09-30-dbrA-group-walk.md`); his look, then phase 6, then 7; the plan's §9 is the build log.** **Phase 6 (plan `raptor-port/docs/superpowers/plans/2026-09-30-db-readiness-phase6-plan.md`) is built now, (c) included, without waiting for IT's written answers (D465, 30 Sep 26 — "Carry on"; D466 — only work needing IT's confirmation is held, and (c) does not): (a), (b) and (d) BUILT 30 Sep 26 (a hand-over, an Unavailable filing and a delete write no day; a deleted man is read off every day from his cutoff); (c) redesigned after both reviewers' round 1 (plan v2); round 2 (Fable REVISE, Astra BLOCK) — (c) v3 needs a holder base (dispositions r2). **The FULL bug check of (a), (b), (d) DONE 30 Sep 26 (D467 — `raptor-port/docs/handpass/2026-09-30-dbr-phase6-check.md`: the walk on both builds, both reads, every finding fixed or filed below). Next: his look (the card at its foot), then (c) v3 in a fresh chat on its own branch, its last review round, its build and its own FULL check.**
 **Found in phase 4, for phase 5b — FIXED 30 Sep 26 in phase 5b:** the
 Tracker writes one person's syllabus pick (D376 — his own last chart, a per-person view choice) into the course's SHARED
 plan record (`v3:<course>:plan` `sylId`, `src/tracker/app/core.js loadCourseNow`) whenever a course loads — in a shared
@@ -1100,7 +1101,18 @@ store, whoever opened the course last would move everyone's chart. The plan's ch
 person's pick his own place. *(Fixed: a signed-in person's chart is read from and written to his own place only; the course's plan names the
 course's chart, written at its creation, a repair, an import, or by the standalone Tracker — `trk-rows.test.ts`.)* **And for group B:** the Leave War's "which war is on screen" (`leavewar/current`) is saved
 as shared data with a change-log batch — a per-person view choice (it is recorded, never honoured at boot — settled 7 Sep
-26); move it to per-person or per-browser state when the app is connected.
+26); move it to per-person or per-browser state when the app is connected. **And for group B, from phase 6's FULL check
+(30 Sep 26 — `raptor-port/docs/handpass/2026-09-30-dbr-phase6-check.md`):** (i) *the delete's read-time overlay grows with
+the deleted roster* (Fable's final read, F2, low): `engine/overlay.ts overlayDeletedWeek` walks each day once per deleted man
+and finds each landed row's request by a full `INPUTS` search, on every read of a week inside every keystroke's `validate()`;
+a deleted man is never erased (D290). Measured ≈0.2 ms per `validate()` with two deleted (`raptor-port/docs/performance.md`
+item 26). Fix when the 30-second check lands (it runs the same overlay on a day on screen — measure it there): filter the
+cutoffs that reach the week once; one request index per call reading `r.iid` (never `inpId`, which mints on read); one
+src → holder map per day, `hisLanded` over the same helper (so the version-load belt cannot drift); and memoise
+`weekctx.ts bundle`'s overlaid seed on (week, `deletedSig()`). (ii) *A question for him, not urgent:* a delete writes its
+"seat emptied" history lines for the week ON SCREEN only (the requests', bids' and awards' lines are written whatever week
+is open — D337); pre-existing, not phase 6's. Fable's recommendation: leave it — the record of why (his "deleted" line, each
+request's line) is complete; a seat line for every week to come could be made on read once the 30-second check exists.
 
 ### [IT-QUESTIONS] Talk to the IT side now — their approvals take weeks (his, not code; D203, filed 26 Sep 26)
 The checklist is the primer's §7 (Artifact "Raptor Backend Primer"; its questions, kept here so they outlive it): code apps

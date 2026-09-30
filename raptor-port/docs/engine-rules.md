@@ -2444,10 +2444,12 @@ days as before (`leavewar/sync.ts availableFor`, by date). **An ARCHIVED man is 
 (D327, 28 Sep 26 — "shouldnt all avail crowd remain the same as per how that was published?"): in the ALL AVAIL crowd on a
 day he was here, out from his archive on — so a day already published keeps the crowd it went out with and reads nothing
 pending for it; a day he is NAMED on still reads pending (D321 (7)). Every day FROM the cutoff loses him in every kind of slot —
-the loaded week through the funnel, every stashed week, the sign-off boxes, the OIL switches, the parked plans, the
-planning calendar; a published day to come then reads pending (as any change does). His inputs from the cutoff go (one
-spanning it ends the day before, its "till" tail rewritten); he earns no OIL from it. A stored week that cannot be read
-(or a preserved one) holding him refuses the whole delete, nothing changed. Nothing brings him back: loading a version
+every working day of every week, as it is read (above; its sign-off boxes, OIL switches and parked plans with it), and the
+planning calendar, which the delete writes; a published day to come then reads pending (as any change does). His inputs from
+the cutoff go (one spanning it ends the day before, its "till" tail rewritten); he earns no OIL from it. A stored week that
+cannot be read, or a read-only (preserved) one holding him on a day to come, refuses the whole delete, nothing changed —
+**the week on screen included** (the phase-6 FULL check, Fable's final read F1, 30 Sep 26: on screen it used to go ahead and
+a reload put him back; `person-delete.ts stashPreflight`). Nothing brings him back: loading a version
 or switching a plan leaves his rows out (`rowsLeftOut`), and an Undo step that would put him back is passed over and
 said (`undo/timeline.ts deadRefusal`).
 

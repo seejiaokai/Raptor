@@ -437,11 +437,14 @@ BACKPROMPT`). **The seam:** the war never reads Raptor's accounts itself — `se
 
 Two doors, one mutation: Admin → Users' "Delete account" (`state/person-delete.ts deletePerson`, command `person.delete`)
 and a posting's Delete on its date (Flow H → `applyDelete`). The cutoff is the later of its date and the calendar date.
-In one command over the people, settings, schedule and week-stash stores (and the war's, through the seam
+In one command over the people, settings and schedule stores (and the war's, through the seam
 `sync.ts deletePersonOnWar`): the hidden mark (`deleted`, `deletedFrom`, `archived`, `archivedBy: 'del'`), the callsign
-index rebuilt (his callsign free), his account removed, every day from the cutoff emptied of him (the loaded week through
-the funnel; every stashed week; sign boxes; OIL switches; parked plans; the planning calendar), his inputs from the cutoff
-deleted or ended the day before, his war records from the cutoff gone and his row marked `gone`. **What must keep him:**
+index rebuilt (his callsign free), his account removed, the planning calendar's pucks, his inputs from the cutoff deleted
+or ended the day before, his war records from the cutoff gone and his row marked `gone`. **No week is written** (since
+`[DB-READINESS]` phase 6 (d), 30 Sep 26): every working day from the cutoff — its seats, sign boxes, OIL switches, parked
+plans — is READ without him wherever a week comes into memory (`engine/overlay.ts`; the week on screen right after the
+command), and the day's holder saves it without him at his next change. A stored week that cannot be read, or a read-only
+one holding him on a day to come — on screen or not — refuses the whole delete. **What must keep him:**
 every day BEFORE the cutoff, and every published version (a record — never rewritten), so a past published day never
 reads pending for the delete (`publish.ts peopleAttrsNow` — his issued attributes) and ALL AVAIL counts him there by date.
 **What must never bring him back:** a version loaded or a plan switched onto a day from the cutoff, and an Undo step

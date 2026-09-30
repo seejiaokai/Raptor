@@ -131,45 +131,11 @@ export function stashSched(v:any){
     return {dayOK:p.ok||{},cur:p.cv||{},als:p.a||[],orig:p.o||{},drafts:p.dr||{},amV:p.am};
   }catch(_e){ return null; }
 }
-/* EDIT A STASHED WEEK'S DAYS IN PLACE ([OIL-XWEEK-DENY], 22 Sep 26). A scheduler
-   can hand a request to another man — and back — while a DIFFERENT week is on
-   screen, because the Inputs page is global. Anything that must die with that
-   assignment therefore has to reach days nobody is looking at, and until now
-   nothing could: the write side walked the seven loaded days and the read side
-   only HID the key while somebody else held the request.
-   Raw days, exactly as stored: no `dt` re-labelling (that is stashDays's job for
-   READERS and must never leak back into the blob). `edit` returns true if it
-   changed anything, and only then is the week written back — so an untouched
-   week's gen is not bumped and every preview keyed on it stays valid.
-   A PRESERVED (byte-frozen) week is never rewritten: P2-IMPL-02 makes it
-   read-only, and a decision inside one belongs to a book that is closed. */
-export function stashEditDays(v:any,edit:(days:any[])=>boolean):boolean{
-  if(isPreservedWeek(v))return false;
-  const s=stashGet(v); if(!s)return false;
-  try{
-    const p=JSON.parse(s);
-    if(!p||typeof p!=='object'||!Array.isArray(p.d))return false;
-    if(!edit(p.d))return false;
-    stashPut(v,JSON.stringify(p));
-    return true;
-  }catch(_e){ return false; }
-}
-/* EDIT A STASHED WEEK'S WHOLE BLOB — its days `d`, its sign boxes `sg` and their bindings `sb`, its parked plans `dr`
-   ([POST-OUT-OUTCOMES], 27 Sep 26 — Fable F9, Astra A1: a delete must reach every copy of a day to come, and
-   stashEditDays hands over the days alone). The same rules as stashEditDays: raw, exactly as stored; written back ONLY
-   if `edit` changed something; a PRESERVED week never. Readability is asked FIRST by the caller (stashWeekState), so a
-   week that cannot be read or is preserved refuses the whole change rather than being skipped. */
-export function stashEditWeek(v:any,edit:(blob:any)=>boolean):boolean{
-  if(isPreservedWeek(v))return false;
-  const s=stashGet(v); if(!s)return false;
-  try{
-    const p=JSON.parse(s);
-    if(!p||typeof p!=='object'||!Array.isArray(p.d))return false;
-    if(!edit(p))return false;
-    stashPut(v,JSON.stringify(p));
-    return true;
-  }catch(_e){ return false; }
-}
+/* stashEditDays / stashEditWeek — the two writers that edited a SAVED week in place (the hand-over's OIL clear,
+   [OIL-XWEEK-DENY]; the delete's strip, [POST-OUT-OUTCOMES]) — were removed by the FULL check of [DB-READINESS]
+   phase 6 (30 Sep 26): phase 6 (a) and (d) took their last callers away (a hand-over and a delete write no week; the
+   effect is worked out on read — engine/overlay.ts), and in the database a week is written only by its day's holder
+   (D450), so a writer of weeks nobody holds must not be there to be called again. */
 /* can this stashed week be edited — 'ok'; 'preserved' (byte-frozen, P2-IMPL-02); 'unreadable' (no days, or not JSON) */
 export function stashWeekState(v:any):'ok'|'preserved'|'unreadable'{
   if(isPreservedWeek(v))return 'preserved';
@@ -199,7 +165,10 @@ export function stashDays(v:any){
     /* A MAN DELETED, WORKED OUT ON READ ([DB-READINESS] group A, phase 6 (d) — engine/overlay.ts): these are the week's
        WORKING days, as every reader of a saved week sees them (the cross-week checks, the peek, the row finder); a delete
        never rewrites the stored copy. On the parsed copy — the stash itself is untouched. */
-    overlayDeletedWeek(String(v),days);
+    /* …never over a read-only (byte-preserved) week: opening it shows it as it is saved (state/store.ts applyWeekModel),
+       so every other read of it must agree — Fable's final read of phase 6, F1 (a belt: the delete refuses while such a
+       week holds him on a day to come — person-delete.ts stashPreflight) */
+    if(!isPreservedWeek(v))overlayDeletedWeek(String(v),days);
     return {days,dates};
   }catch(_e){ return null; }
 }

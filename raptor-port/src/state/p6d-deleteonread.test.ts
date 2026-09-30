@@ -15,7 +15,8 @@ import { PEOPLE, ID_BY_CS, indexCallsigns } from '../engine/people'
 import { DAYS } from '../engine/data'
 import { CURWEEK } from '../engine/waves'
 import { storeBackend } from '../engine/hooks'
-import { stashClear } from '../engine/weekstash'
+import { stashClear, stashGroundBySrc, setPreservedBlob, clearPreservedBlob } from '../engine/weekstash'
+import { peekWeekHTML } from '../ui/peek'
 import { SCHED, setSign, dayDelta, daySnapOf, dayCurVer } from '../engine/publish'
 import { nextMondaySeed } from '../engine/weekctx'
 import { weekBundle } from '../engine/weeks-data'
@@ -228,6 +229,64 @@ describe('phase 6 (d) — a delete writes his records, never a week; every day f
     const t = (SCHED.drafts as any)[2][0]
     expect(JSON.stringify(t.d), 'the plan\'s day').not.toContain(`"${HIM}"`)
     expect(t.sign.cur, 'the plan\'s sign-off').toBe('')
+  })
+
+  /* THE FULL CHECK'S BREAK TESTS (30 Sep 26, bug-check order §8.4): four doors of the overlay could be broken on purpose
+     with every test above still green — so they had no test, by proof. Each test below goes red with its door broken. */
+  it('a reload with NO week ever saved (the boot reads the seed) shows the week without him from his cutoff', async () => {
+    const be = new MemoryBackend()
+    const wb = await boot(be)
+    expect(personKeysOnDay(2, HIM).length, 'the seed has him flying Wednesday').toBeGreaterThan(0)
+    expect(deletePerson(HIM)).toBe(null)
+    await vi.advanceTimersByTimeAsync(1000)
+    expect(wb.keys('weeks').filter(k => k.startsWith(weekId(W1))), 'no row of this week was ever written').toEqual([])
+    resetWorld()
+    await boot(be)
+    expect(PEOPLE[HIM].deleted, 'read back deleted').toBeTruthy()
+    expect([personKeysOnDay(2, HIM), personKeysOnDay(3, HIM)], 'Wednesday and Thursday — days to come, from the seed').toEqual([[], []])
+    expect(personKeysOnDay(1, HIM).length, 'Tuesday — a day he flew').toBeGreaterThan(0)
+  })
+
+  it('the next-week peek of a week NEVER saved, drawn before the delete, is drawn again without him after it', async () => {
+    await boot(new MemoryBackend())
+    Object.defineProperty(window, 'innerWidth', { value: 1440, configurable: true, writable: true })
+    const cs = String((PEOPLE as any)[HIM].cs)
+    const puckOf = (html: string) => new RegExp(`>${cs}<`).test(html)
+    const before = peekWeekHTML()
+    expect(puckOf(before), 'next Monday (the seed) has him flying — the peek draws his puck').toBe(true)
+    expect(deletePerson(HIM)).toBe(null)
+    expect(puckOf(peekWeekHTML()), 'after the delete — the warmed peek is not served again, and the seed is read without him').toBe(false)
+  })
+
+  it('the row finder, read before the delete, reads a saved week again without him after it (an extra on another man\'s row)', async () => {
+    await boot(new MemoryBackend())
+    INPUTS.unshift({ iid: 'p6dX', person: 'stiff', date: 'Jul 22', yr: 2026, allday: true, type: 'Meeting', mod: 'now' } as any)
+    loadWeek(W2)                                         // the week's load lands Saber's meeting on Wednesday
+    schedWrite(SCHED_TYPES.mutate, () => {
+      const r: any = ((DAYS[2] as any).ground || []).find((g: any) => g && g.src === 'p6dX')
+      r.more = [HIM]                                     // the scheduler puts Hex on it as an extra (D18)
+    })
+    loadWeek(W1)
+    const warm = stashGroundBySrc(W2)
+    expect(warm && warm.get('p6dX')!.row.more, 'before: he is an extra on Saber\'s meeting row').toContain(HIM)
+    expect(deletePerson(HIM)).toBe(null)
+    const after = stashGroundBySrc(W2)
+    expect(after && after.get('p6dX'), 'Saber\'s row stays').toBeTruthy()
+    expect(after!.get('p6dX')!.row.more || [], 'after: he is gone from it — the memo was not served again').not.toContain(HIM)
+  })
+
+  /* FABLE'S FINAL READ, F1 (30 Sep 26): the week ON SCREEN held read-only (a saved book this build cannot edit) — the delete
+     was made there and the overlay took him off the screen, while a reload showed him again (a read-only week is shown as
+     saved). The same week off screen refuses the delete. One rule now: refused whichever week is on screen. */
+  it('the week on screen held read-only, him on a day to come: the delete is refused, as it is for that week off screen', async () => {
+    await boot(new MemoryBackend())
+    planDuty(TO_COME)
+    setPreservedBlob(W1, JSON.stringify({ d: DAYS }))
+    try {
+      expect(deletePerson(HIM), 'refused in the week\'s words').toBe(`The week of ${W1} can't be changed — the delete was not made`)
+      expect(PEOPLE[HIM].deleted, 'not deleted').toBeFalsy()
+      expect(personKeysOnDay(TO_COME, HIM).length, 'still on the day to come').toBeGreaterThan(0)
+    } finally { clearPreservedBlob(W1) }
   })
 
   it("a saved week's own sign-off box naming him on a day to come is read empty when the week is opened", async () => {

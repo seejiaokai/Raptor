@@ -19,8 +19,10 @@
       never rewritten: on a published day to come the working copy then differs, so the day reads pending and its four
       fall (D45, D103, D297).
       SINCE [DB-READINESS] group A PHASE 6 (d) NO WEEK IS WRITTEN FOR IT (data-model.md §9 rule 9 — a delete never waits
-      for a held day, D450): the loaded week's strip is in memory and in the undo records, and not saved (state/persist.ts
-      DERIVED_DAY_TYPES); a saved week is NOT rewritten — every week, the loaded one on its next load included, reads
+      for a held day, D450): the loaded week's strip is worked out AFTER the command (applyDelete's deferred effect, the
+      command layer's baseline moved on with it), so no command records or saves it — it is in memory only (the FULL check
+      of phase 6, 30 Sep 26: this said "in the undo records … state/persist.ts DERIVED_DAY_TYPES", a type list the plan
+      withdrew before the build); a saved week is NOT rewritten — every week, the loaded one on its next load included, reads
       without him from his cutoff (engine/overlay.ts overlayDeletedWeek, applied wherever a week's days come into
       memory); the day's holder saves it without him at his next change to it;
    4. deletes his inputs that start on or after the cutoff, and ends the day before it any that spans it (its "till"
@@ -34,9 +36,9 @@
    demo weeks around a notional today, ui/weeknav.ts TODAY — a delete made now leaves him on those July days, which are
    past by the calendar; on the owner's card, question 3.)
 
-   THE PREFLIGHT (Astra A1): every stashed week with a day on or after the cutoff is read BEFORE the command; one that
-   cannot be read, or is byte-preserved while holding him there, REFUSES the whole delete with its reason. Nothing is
-   skipped silently.
+   THE PREFLIGHT (Astra A1): every stashed week with a day on or after the cutoff — and the week on screen when it is
+   read-only (Fable's final read of phase 6, F1) — is read BEFORE the command; one that cannot be read, or is
+   byte-preserved while holding him there, REFUSES the whole delete with its reason. Nothing is skipped silently.
 
    THE LEAVE WAR HALF (Part B): his war records from the cutoff go, his posting window closes the day before and he is
    marked `gone` (leavewar/sync.ts deletePersonOnWar — the seam); a deleted man earns no OIL from his cutoff and is read
@@ -51,7 +53,7 @@ import { logEdit } from '../engine/editlog'
 import { SCHED } from '../engine/publish'
 import { INPUTS, dateOrd, withRemarksTail, nowStamp } from '../engine/inputs'
 import { ordShift, ordLabel } from '../engine/medical'
-import { stashKeys, stashGet, stashWeekState } from '../engine/weekstash'
+import { stashKeys, stashGet, stashWeekState, isPreservedWeek } from '../engine/weekstash'
 import { stripPersonFromDay, trimTail, overlayDeletedWeek, hisLanded } from '../engine/overlay'
 import { validate } from '../engine/validate'
 import { localToday } from '../leavewar/engine/period'
@@ -144,9 +146,18 @@ export function deleteProblem(id: string): string | null {
   if (p.deleted) return `${p.cs} is already deleted`
   return deleteAccountProblem(id)
 }
-/* every stashed week (not the loaded one) with a day on or after the cutoff, read first: a week that cannot be read — or
-   a byte-preserved one that holds him on such a day — refuses the whole delete (Astra A1). null = all clear. */
+/* every stashed week with a day on or after the cutoff, read first — and the loaded week when it is read-only: a week that
+   cannot be read — or a byte-preserved one that holds him on such a day — refuses the whole delete (Astra A1; the loaded
+   week, Fable's final read of phase 6, F1). null = all clear. */
 export function stashPreflight(id: string, cutoff: string): string | null {
+  /* THE WEEK ON SCREEN TOO (Fable's final read of phase 6, F1, 30 Sep 26): a read-only week holding him on a day to come
+     refused the delete only while it was OFF screen. On screen, the delete went ahead and the after-command overlay took
+     him off the screen — but a read-only week is shown as it is saved, so a reload put him back. One rule for both: the
+     loaded model is the week as it stands (its stash entry, skipped below, is the stale copy written on the way out). */
+  if (isPreservedWeek(CURWEEK) && dayIso(CURWEEK, 6) >= cutoff) {
+    for (let di = 0; di < DAYS.length; di++) if (dayIso(CURWEEK, di) >= cutoff && JSON.stringify((DAYS as any)[di] || {}).includes(`"${id}"`))
+      return `The week of ${CURWEEK} can't be changed — the delete was not made`
+  }
   for (const v of stashKeys()) {
     if (v === CURWEEK) continue
     if (dayIso(v, 6) < cutoff) continue                         // the whole week is before the cutoff — untouched
@@ -205,7 +216,9 @@ export function applyDelete(id: string, cutoff: string): void {
     for (const k of personKeysOnDay(di, id)) logEdit(k, slotVal(k), '')
   }
   cmdDeferEffect(() => {
-    overlayDeletedWeek(String(CURWEEK), DAYS, { sign: SCHED.sign, signBind: SCHED.signBind, drafts: SCHED.drafts })
+    /* never over a read-only week — it is shown as it is saved (store.ts applyWeekModel skips it the same way); the
+       preflight above refuses a delete it would need (Fable's final read, F1) — this is the belt */
+    if (!isPreservedWeek(String(CURWEEK))) overlayDeletedWeek(String(CURWEEK), DAYS, { sign: SCHED.sign, signBind: SCHED.signBind, drafts: SCHED.drafts })
     resyncSchedBaseline()
     validate()
   })

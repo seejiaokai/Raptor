@@ -1,0 +1,209 @@
+{
+ "base": "http://localhost:4210",
+ "at": "2026-09-30T14:46:57.804Z",
+ "results": [
+  {
+   "name": "B1 an \"Other\" request for Warden, Thu 16 – Fri 17 Jul, all day (Inputs page) — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 4 [inputs/imrldi1s03anbhr, settings/elog:mrldi1s00xd6.000001, weeks/13-07-2026, weeks/13-07-2026#3] · del 0 [] · batches inputs.batch/4"
+  },
+  {
+   "name": "B2 → Unavail on its Thursday card (never-published days) — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 2 [inputs/imrldi1s03anbhr, settings/elog:mrldi1s00xd6.000003] · del 0 [] · batches sched.mutate/2"
+  },
+  {
+   "name": "B2 reload — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "B2 reload — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "B4 published days: an \"Other\" request for Piston, Thu 16 – Fri 17, filed live — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 3 [inputs/imrldi1s0eie6lk, settings/elog:mrldi1s0lfa0.00000b, weeks/13-07-2026#3] · del 0 [] · batches inputs.batch/3"
+  },
+  {
+   "name": "B5 published Thursday: → Unavail on Piston's card — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 2 [inputs/imrldi1s0eie6lk, settings/elog:mrldi1s0lfa0.00000d] · del 0 [] · batches sched.mutate/2"
+  },
+  {
+   "name": "B5 reload — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "B5 reload — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "B7 reload — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "B7 reload — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "B8 published Thursday: the card's Undo takes Piston back out of Unavailable — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 2 [inputs/imrldi1s0eie6lk, settings/elog:mrldi1s0kzz9.000001] · del 0 [] · batches sched.mutate/2"
+  },
+  {
+   "name": "B8 reload — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "B8 reload — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  }
+ ],
+ "table": [
+  {
+   "step": "B1",
+   "width": "desktop",
+   "did": "an \"Other\" request for Warden, Thu 16 – Fri 17 Jul, all day (Inputs page)",
+   "pics": [
+    "B1-1-after.png"
+   ],
+   "shown": "",
+   "rows": "put 4: inputs/imrldi1s03anbhr, settings/elog:mrldi1s00xd6.000001, weeks/13-07-2026, weeks/13-07-2026#3 · batches: inputs.batch(ScheduleWeek+ScheduleDay+Input+EditLog, 4 rows, 1 history line, by acad)",
+   "batches": [
+    {
+     "key": "changes/cmrldi1s0pdjhlx-1",
+     "type": "inputs.batch",
+     "actor": "acad",
+     "n": 4,
+     "seqs": [
+      1
+     ],
+     "tables": "ScheduleWeek+ScheduleDay+Input+EditLog",
+     "elog": 1
+    }
+   ],
+   "pass": true,
+   "notes": [],
+   "fails": []
+  },
+  {
+   "step": "B2",
+   "width": "desktop",
+   "did": "→ Unavail on its Thursday card (never-published days)",
+   "pics": [
+    "B2-1-after.png",
+    "B2-filed-unavail.png",
+    "B3-published.png"
+   ],
+   "shown": "",
+   "rows": "put 2: inputs/imrldi1s03anbhr, settings/elog:mrldi1s00xd6.000003 · batches: sched.mutate(Input+EditLog, 2 rows, 1 history line, by acad)",
+   "batches": [
+    {
+     "key": "changes/cmrldi1s0pdjhlx-3",
+     "type": "sched.mutate",
+     "actor": "acad",
+     "n": 2,
+     "seqs": [
+      3
+     ],
+     "tables": "Input+EditLog",
+     "elog": 1
+    }
+   ],
+   "pass": true,
+   "notes": [],
+   "fails": []
+  },
+  {
+   "step": "B4",
+   "width": "desktop",
+   "did": "published days: an \"Other\" request for Piston, Thu 16 – Fri 17, filed live",
+   "pics": [
+    "B4-1-after.png"
+   ],
+   "shown": "",
+   "rows": "put 3: inputs/imrldi1s0eie6lk, settings/elog:mrldi1s0lfa0.00000b, weeks/13-07-2026#3 · batches: inputs.batch(ScheduleDay+Input+EditLog, 3 rows, 1 history line, by acad)",
+   "batches": [
+    {
+     "key": "changes/cmrldi1s0wtqmvj-10",
+     "type": "inputs.batch",
+     "actor": "acad",
+     "n": 3,
+     "seqs": [
+      10
+     ],
+     "tables": "ScheduleDay+Input+EditLog",
+     "elog": 1
+    }
+   ],
+   "pass": true,
+   "notes": [],
+   "fails": []
+  },
+  {
+   "step": "B5",
+   "width": "desktop",
+   "did": "published Thursday: → Unavail on Piston's card",
+   "pics": [
+    "B5-1-after.png",
+    "B5-published-filed-unavail.png",
+    "B6-al1-friday.png",
+    "B7-unpublished-friday.png"
+   ],
+   "shown": "",
+   "rows": "put 2: inputs/imrldi1s0eie6lk, settings/elog:mrldi1s0lfa0.00000d · batches: sched.mutate(Input+EditLog, 2 rows, 1 history line, by acad)",
+   "batches": [
+    {
+     "key": "changes/cmrldi1s0wtqmvj-12",
+     "type": "sched.mutate",
+     "actor": "acad",
+     "n": 2,
+     "seqs": [
+      12
+     ],
+     "tables": "Input+EditLog",
+     "elog": 1
+    }
+   ],
+   "pass": true,
+   "notes": [],
+   "fails": []
+  },
+  {
+   "step": "B8",
+   "width": "desktop",
+   "did": "published Thursday: the card's Undo takes Piston back out of Unavailable",
+   "pics": [
+    "B8-1-after.png"
+   ],
+   "shown": "",
+   "rows": "put 2: inputs/imrldi1s0eie6lk, settings/elog:mrldi1s0kzz9.000001 · batches: sched.mutate(Input+EditLog, 2 rows, 1 history line, by acad)",
+   "batches": [
+    {
+     "key": "changes/cmrldi1s0hjy0mk-0",
+     "type": "sched.mutate",
+     "actor": "acad",
+     "n": 2,
+     "seqs": [
+      0
+     ],
+     "tables": "Input+EditLog",
+     "elog": 1
+    }
+   ],
+   "pass": true,
+   "notes": [],
+   "fails": []
+  }
+ ],
+ "tag": "p6"
+}
