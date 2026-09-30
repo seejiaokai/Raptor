@@ -16,44 +16,41 @@ the later merge keeps both (D78).
 ## Now
 
 <!-- now:claude/db-readiness-table-shaping-4094f6 -->
-### `claude/db-readiness-table-shaping-4094f6` — `[DB-READINESS]` group A: phases 0–5b BUILT and FULL-checked; **phase 6 (a), (b), (d) BUILT (not yet FULL-checked); (c) needs v3** — written 30 Sep 26 — verify before use
-- **Where it started (this chat):** "plan and build phase 6 (worked out on read)"; mid-way he ruled D465 (build it now, (c)
-  included, without waiting for IT), D466 (work needing IT's confirmation is held; (c) does not), D467 (the FULL check of
-  (a), (b), (d) first, in a new chat; (c) v3 after, in a fresh chat on its own branch).
-- **The plan:** `raptor-port/docs/superpowers/plans/2026-09-30-db-readiness-phase6-plan.md` (v2 + §9 build log); reviews and
-  dispositions beside it in `raptor-port/docs/superpowers/briefs/2026-09-30-db-readiness-phase6-*` (round 1: Fable REVISE,
-  Astra BLOCK; round 2 on (c): Fable REVISE, Astra BLOCK).
-- **Shipped (this branch, pushed up to the D466 commit; no PR):** (a) a hand-over writes no day — `Input.hand`, `Input.leftAt`,
-  `oild.pa`, the read-side prune (`engine/oilev.ts`); `clearOilPersonDecisions` gone. (b) no `inp:` filing marks. (d) a delete
-  writes no week — `engine/overlay.ts` (new) applied wherever a week's days come into memory (`applyWeekModel` + the boot's
-  seed path, `weekstash.ts stashDays`, `weekctx.ts bundle`'s seed branch, `ui/peek.ts`) and AFTER the delete's command (a
-  phase-8 effect, baseline moved on — a nested command joins its outer envelope, so no command-type rule could work); the
-  load belt and the overlay decide a landed row by the request's CURRENT holder. Documents fixed (D201).
-- **Unfinished:** (1) the FULL bug check of (a), (b), (d) — not started (D467): roll-call, Astra's scenarios, the walk, both
-  code reads, the evidence sheet, his look. (2) (c) v3 — the HOLDER BASE (the week on screen always = the overlay applied to
-  the day as its holder last committed it), dispositions `…/briefs/2026-09-30-db-readiness-phase6-dispositions-r2.md`; its red
-  tests drafted and committed SKIPPED (`raptor-port/src/state/p6c-requestonread.test.ts`). (3) Phase 7. All under
-  `[DB-READINESS]` in `OUTSTANDING.md`.
-- **Gates (30 Sep 26, under the lock, on (a)+(b)+(d)):** unit 7357/7358 — the one a test premise (b) moved
-  (`ui/amendretest.test.tsx` AM23), fixed and re-run alone 26/26 · build · tfin 728/0 · e2e 509 passed, 0 failed, 49 skipped ·
-  smoke 445/0 · rulecheck · docsize. After that: the load-belt fix (Fable r2 F1) — the delete suites 31/31. `npm run perf`
-  NOT run this chat (the overlay adds work to `stashDays` / `bundle`, read on every keystroke) — run it in the check.
-- **Before this branch's "merge live": remind him to EXPORT a copy of his Tracker first (D464).** His preview only with that
-  reminder. His look at phases 0–5b (the card at the foot of `raptor-port/docs/handpass/2026-09-30-dbrA-group-walk.md`) is
-  also still to do.
-- **Open questions for him:** none open. The FULL check's look card will carry D363 / D175's `kept` reading only once (c) is built.
+### `claude/db-readiness-table-shaping-4094f6` — `[DB-READINESS]` group A: phases 0–5b BUILT and FULL-checked; **phase 6 (a), (b), (d) BUILT and FULL-checked (30 Sep 26); (c) needs v3** — written 30 Sep 26 — verify before use
+- **This chat:** opened with the previous chat's opening line ("plan and build phase 6"); asked, he confirmed D467's order —
+  the FULL bug check of (a), (b), (d) — which is done. No new ruling.
+- **The check:** `raptor-port/docs/handpass/2026-09-30-dbr-phase6-check.md` — Astra's scenarios (one reviewer); the roll-call
+  (no missing door); five walks, each run on this build AND on the build before phase 6 (`0d1a5e18`, exported to `C:\p6b` —
+  a worktree fails on this repo's long picture names), the screen compared fact by fact (`scripts/handpass/p6-*.mjs`); three
+  at phone width; thirteen break tests; the gates and perf; both final reads (Astra: no findings; Fable: two low).
+- **Found and done:** F1 / F2 — two visible changes the plan's §8 lacked (the Amendments panel no longer counts marks a filing
+  or a delete left on never-published days; a delete now also clears a week nobody has saved — a defect of the build before)
+  — plan §8 items 3–4, his look card; F3 a stale comment; F4 four overlay wires with no test — tests written, each red when
+  broken; F5 the orphaned week writers `stashEditDays` / `stashEditWeek` removed; Fable F1 (a delete on a read-only week ON
+  SCREEN went ahead, a reload put him back) — fixed red first, one refusal rule; Fable F2 (the overlay's cost grows with the
+  deleted roster, ≈0.2 ms per `validate()` today) and Fable's question (the delete's seat history lines cover only the week on
+  screen — pre-existing) — both FILED in `OUTSTANDING.md` `[DB-READINESS]` "for group B".
+- **Unfinished:** (1) his look (the card at the foot of the sheet — step 1 walked at the real date) AND his look at phases
+  0–5b (the card at the foot of `…/2026-09-30-dbrA-group-walk.md`). (2) (c) v3 — the HOLDER BASE, dispositions
+  `…/briefs/2026-09-30-db-readiness-phase6-dispositions-r2.md`, red tests committed SKIPPED (`src/state/p6c-requestonread.test.ts`) —
+  in a fresh chat on its own branch (D467). (3) Phase 7. All under `[DB-READINESS]` in `OUTSTANDING.md`.
+- **Gates (30 Sep 26, under the lock, the final code):** unit 7363 passed, 12 skipped · build · tfin 728/0 · e2e 509 passed, 0 failed, 49 skipped · smoke 445/0 · rulecheck OK · docsize OK (OVER by 342, deferred — D29) · perf 4/0 (on the walked build and the build before phase 6, level) · the saved-week test files re-run after the last removal 47 files / 685 passed.
+- **Before this branch's "merge live": remind him to EXPORT a copy of his Tracker first (D464).** Branch pushed; no PR.
+- **Open question for him (not blocking):** the long message after "Load onto working copy" (he asked what it was, 30 Sep
+  26) — offered to file a shorter two-line version as its own small job; his answer, if any, not yet given.
 - **Parallel (D302):** rulings D460–D469 (D460–D467 used — a next chat on this branch takes D468–D469, then a new range);
-  observations #392–#393 used this chat (a next chat takes #394 on). No other open branch known.
-- **Traps met:** a heredoc eats `\` — write Python edit scripts to a FILE; `console.log` in a unit test is swallowed — write
-  debug to a file; the gatelock `run` gate list has no perf; `src/state/store.ts` is LF now (the old CRLF note is stale).
-- **Pick up here:** the FULL bug check of phase 6 (a), (b), (d) — `raptor-port/docs/bug-check-order.md`, the plan's §5; then
-  his look; then (c) v3 per D467.
+  observations #392–#395 used on this branch (a next chat takes #396 on). No other open branch known.
+- **Traps met:** a heredoc eats `\` — write Python edit scripts to a FILE; the gatelock `run` gate list has no perf (run
+  `PORT_URL=<build> npm run perf` under `gatelock take`); `git worktree add` of an old commit fails on this repo (long picture
+  names) — `git archive <commit> raptor-port/src …` to a short path and junction `node_modules`; a walk's toast recorder
+  dies with a reload — re-arm it (or read the picture).
+- **Pick up here:** his look; then (c) v3 per D467 — a fresh chat, its own branch cut from this one.
 <!-- /now -->
 
 ## Next, in order
 
 0. **THE DATABASE STEP STARTS NOW (D354, 29 Sep 26)** — `[IT-FLOW-GUIDE]` DONE (the guide for IT, `raptor-port/docs/it-flow-guide/`, 29 Sep 26); `[DB-SYNC-MODEL]`'s design DONE and merged (PR #475); `[DB-READINESS]` group A PLANNED 30 Sep 26 (plan v4,
-   `claude/db-readiness-table-shaping-4094f6`) — its build under way: phases 0–5 and 5b built 30 Sep 26, the group's FULL check done (the walk and both code reads, every finding fixed); phase 6 (a), (b), (d) built 30 Sep 26 — next their FULL check in a new chat, his look, then phase 6 (c) v3 in a fresh chat on its own branch (D467), then phase 7 (D453). The IT team is taking the app into Dataverse now, and he means to
+   `claude/db-readiness-table-shaping-4094f6`) — its build under way: phases 0–5 and 5b built 30 Sep 26, the group's FULL check done (the walk and both code reads, every finding fixed); phase 6 (a), (b), (d) built and FULL-checked 30 Sep 26 (`raptor-port/docs/handpass/2026-09-30-dbr-phase6-check.md`) — next his look, then phase 6 (c) v3 in a fresh chat on its own branch (D467), then phase 7 (D453). The IT team is taking the app into Dataverse now, and he means to
    keep working on the app beside it. What to finish before the hand-over was put to him the same day; record his answer
    here and in `OUTSTANDING.md`'s priority list the moment he gives it. Everything below keeps its ORDER; its timing is overtaken.
 1. **HIS ORDER to the database step (D203, 26 Sep 26 — its timing overtaken by D354):** `[ACCOUNTS]`, `[ACCOUNTS-NEW-PERSON]`,
@@ -74,8 +71,10 @@ the later merge keeps both (D78).
 
 ## Gate baseline
 
-The latest counts watched — 30 Sep 26, `claude/db-readiness-table-shaping-4094f6` (group A with phase 6 (a), (b), (d)), under the
-PC lock: unit **7357 / 7358** (463 files — the one a test premise phase 6 (b) moved, fixed and re-run alone 26/26) · build clean · tfin **728 / 0** · e2e **509 passed, 0 failed**, 49 skipped · smoke **445 / 0** · rulecheck OK · docsize OK · perf not run (last 4 / 4, before phase 6). Restate a count only from a run you watched, and REPLACE the previous counts — never stack a
+The latest counts watched — 30 Sep 26, `claude/db-readiness-table-shaping-4094f6` (group A with phase 6 (a), (b), (d) and its FULL
+check's fixes), under the PC lock: unit **7363 / 7363** (464 files, 12 skipped — step (c)'s, committed skipped) · build clean · tfin
+**728 / 0** · e2e **509 passed, 0 failed**, 49 skipped · smoke **445 / 0** · rulecheck OK · docsize OK (OVER, deferred — D29) · perf
+**4 / 0** (board DOM 1024 ≤ 1150, week 5134 ≤ 5450). Restate a count only from a run you watched, and REPLACE the previous counts — never stack a
 history. How to run them: `raptor-port/CLAUDE.md` §Build & verify; how they mislead, and the checks on his PC:
 `raptor-port/docs/gates-and-deploy.md`.
 

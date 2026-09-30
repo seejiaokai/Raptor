@@ -1917,3 +1917,33 @@ restore — repeatable, all-or-nothing, and safe for files whose bytes (line end
 **Suggested improvement:** In receiving-code-review, add: "When a finding comes with exact fix steps, treat the steps as a hypothesis. Before applying, list the orders of actions the code being replaced was protecting (its tests, its comments), and check the proposed fix against each — especially any order the reviewer calls 'today's behaviour'; verify that claim against the code before pinning it."
 
 **Principle:** A precise fix instruction can still be wrong on an order its author did not trace; the orders the old mechanism guarded are the checklist for any replacement, whoever proposed it.
+
+### Observation 394: A "nothing on screen changes" build is checked by walking it AND the build before it with one script, and diffing what the screen said
+
+**Status:** OPEN
+**Date:** 2026-09-30
+**Session context:** The FULL bug check of [DB-READINESS] phase 6 (a), (b), (d) — storage-only changes whose plan promised no visible change bar two named ones.
+**Skill:** `raptor-port/docs/bug-check-order.md` §7 / §8 (the project's bug-check method) — internal
+**Type:** internal
+**Phase/Area:** the walk — how to prove a "no visible change" promise
+
+**Issue:** Assertion-style walk steps encode the builder's picture of what should stay the same, so they cannot see a visible change nobody predicted. The check built the commit before the change from a `git archive` export (a worktree failed on Windows path length), served both builds, ran each walk script against both with a `fact(key, value)` recorder of what the screen said at every step (day heads, the Amendments panel, pending lists, OIL switches, who sits where), and diffed the two fact files. It surfaced two visible changes the plan never listed — a panel's count that dropped (the change's side effect) and a defect of the OLD build that the change fixed — both invisible to the assertions, which passed on both builds.
+
+**Suggested improvement:** Add to the bug-check order §8: "When a change promises that nothing on screen changes, run the walk on the build before it too (export that commit's `src` + config to a short path, symlink `node_modules`, build, serve on another port), record screen facts per step, and diff them (`scripts/handpass/p6-compare.mjs` is the worked example). Every difference is either intended storage or a finding; say which." Mention the Windows path-length trap for `git worktree add` on this repo.
+
+**Principle:** To prove "nothing changed", compare against the thing before the change, fact for fact; assertions written from the new code's intent only prove what the author thought to assert.
+
+### Observation 395: A new chat was opened with the PREVIOUS chat's opening line; the handoff block's "Pick up here" caught it, but only because it was read against the ask
+
+**Status:** OPEN
+**Date:** 2026-09-30
+**Session context:** Opening a chat on an in-flight branch; the owner pasted "plan and build phase 6" — the line the last chat had started with — while the handoff block said the next job was the FULL check (his own ruling, D467).
+**Skill:** session-handoff
+**Type:** open-source
+**Phase/Area:** the next chat's first step / the handoff block's contents
+
+**Issue:** The block names the next job in prose ("Pick up here"), but not the exact opening line the owner was given, so nothing flags a pasted stale line except the agent comparing the ask with the block by hand. Here that comparison showed the ask would have jumped ahead of a ruling and built on unchecked work; the owner confirmed the recorded order when asked.
+
+**Suggested improvement:** In session-handoff, write the ready-to-paste opening line INTO the block (a `Opening line:` bullet), and add to the "next chat" guidance: "compare the opening message with the block's Opening line and Pick up here; if they differ, name the difference and ask before starting."
+
+**Principle:** A handoff should carry the instruction it hands over verbatim, so the receiver can tell a stale instruction from a new one instead of guessing.
