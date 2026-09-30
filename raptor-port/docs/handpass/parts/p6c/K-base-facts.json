@@ -1,0 +1,115 @@
+{
+ "tag": "base",
+ "facts": {
+  "K1.sign": {
+   "cur": "Ace",
+   "sked": "Anvil",
+   "plan": "Anvil",
+   "appr": "Anvil"
+  },
+  "K1.pub": {
+   "pressed": true,
+   "label": "Publish day"
+  },
+  "K1.away": "22 Jul",
+  "K1.load": [
+   "Load onto working copy",
+   "Discard 1 edit & load — confirm"
+  ],
+  "K1.back": "16 Jul",
+  "K1.rows": [
+   {
+    "di": 2,
+    "ri": 2,
+    "prog": "MEETING",
+    "str": "10:00",
+    "end": "11:00",
+    "who": "bane",
+    "more": [],
+    "rmks": "P6C KEPT",
+    "kept": false,
+    "info": false,
+    "flag": null,
+    "cx": null
+   }
+  ],
+  "K1.acc": "g",
+  "K1.toasts": [],
+  "K2.lines": [
+   "Wednesday: Original loaded onto the working copy — viewers still see Original until you publish · 1 unpublished edit replaced · 1 member input change stays pending — a load cannot put back a member's own record Saber · 15/7 09:00",
+   "Published — the Original Saber · 15/7 09:00",
+   "Signed · APPROVED BY · Anvil Saber · 15/7 09:00",
+   "Signed · PLANNED BY · Anvil Saber · 15/7 09:00",
+   "Signed · SKED CK · Anvil Saber · 15/7 09:00",
+   "Signed · CUR CK · Ace Saber · 15/7 09:00",
+   "Meeting 22 Jul · filedon the programme → not on the programme Saber · 15/7 09:00",
+   "Meeting 22 Jul · remarksP6C KEPT → P6C KEPT till 22 Jul Saber · 15/7 09:00",
+   "Meeting · dates15 Jul → 22 Jul Saber · 15/7 09:00",
+   "Meeting added · 15 Jul (on the programme) Saber · 15/7 09:00"
+  ],
+  "K2.landed": {
+   "day": 2,
+   "text": "Ranger\nIP"
+  },
+  "K3.x": "no landed row",
+  "K3.sign": {
+   "cur": "Ace",
+   "sked": "Anvil",
+   "plan": "Anvil",
+   "appr": "Anvil"
+  },
+  "K3.pub": {
+   "pressed": true,
+   "label": "Publish day"
+  },
+  "K3.unavail": "no such button",
+  "K3.acc": "g",
+  "K3b.load": [
+   "Load onto working copy"
+  ],
+  "K3b.toasts": [],
+  "K3b.acc": "g",
+  "K3b.rows": [
+   {
+    "di": 2,
+    "ri": 2,
+    "prog": "MEETING",
+    "str": "10:00",
+    "end": "11:00",
+    "who": "bane",
+    "more": [],
+    "rmks": "P6C KEPT",
+    "kept": false,
+    "info": false,
+    "flag": null,
+    "cx": null
+   }
+  ],
+  "K4.acc": "g",
+  "K4.rows": [
+   {
+    "di": 2,
+    "ri": 2,
+    "prog": "MEETING",
+    "str": "10:00",
+    "end": "11:00",
+    "who": "bane",
+    "more": [],
+    "rmks": "P6C KEPT",
+    "kept": false,
+    "info": false,
+    "flag": null,
+    "cx": null
+   }
+  ],
+  "K5.save": "saved",
+  "K5.toasts": [
+   "Schedule updated",
+   "LL does not go on the Ground Programme — its row has been removed",
+   "Input updated"
+  ],
+  "K5.rows": [],
+  "K5.acc": "(gone)",
+  "errors": []
+ }
+}

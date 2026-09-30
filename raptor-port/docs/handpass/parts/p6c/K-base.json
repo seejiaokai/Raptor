@@ -1,0 +1,309 @@
+{
+ "base": "http://localhost:4202",
+ "at": "2026-09-30T18:06:02.460Z",
+ "results": [
+  {
+   "name": "K1 a meeting for Ranger on Wednesday; Wednesday published; moved to Wed 22 Jul; Wednesday's issue loaded back; moved to Thursday — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 16 [inputs/imrldi1s001iamn, settings/elog:mrldi1s0p62k.000001, settings/elog:mrldi1s0p62k.000002, settings/elog:mrldi1s0p62k.000003, settings/elog:mrldi1s0p62k.000004, settings/elog:mrldi1s0p62k.000005, settings/elog:mrldi1s0p62k.000006, settings/elog:mrldi1s0p62k.000007 …] · del 0 [] · batches inputs.batch/4 sched.sign/2 sched.sign/2 sched.sign/2 sched.sign/2 sched.approve/3 inputs.batch/5 sched.mutate/1 inputs.batch/3 elog.line/1"
+  },
+  {
+   "name": "K1 — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "K1 — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "K2 the request's line goes to Thursday — its real row — never Wednesday's dead row",
+   "ok": false,
+   "detail": "{\"day\":2,\"text\":\"Ranger\\nIP\"}"
+  },
+  {
+   "name": "K3 Thursday: ✕ on its row, Thursday published, then → Unavail on its card — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 7 [settings/elog:mrldi1s0o17z.000001, settings/elog:mrldi1s0o17z.000002, settings/elog:mrldi1s0o17z.000003, settings/elog:mrldi1s0o17z.000004, settings/elog:mrldi1s0o17z.000005, weeks/13-07-2026#3, weeks/13-07-2026:is:2026-07-16#0~0] · del 0 [] · batches sched.sign/2 sched.sign/2 sched.sign/2 sched.sign/2 sched.approve/3"
+  },
+  {
+   "name": "K3b Thursday's issue loaded back onto the working copy — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "K3b — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "K3b — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "K3b the issued filing is back — taken off (D98); the dead Wednesday row did not stop it",
+   "ok": false,
+   "detail": "g"
+  },
+  {
+   "name": "K4 Thursday: Accept on its card — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "K5 the meeting retyped to Local leave — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 4 [inputs/imrldi1s001iamn, settings/elog:mrldi1s00gg1.000001, settings/elog:mrldi1s00gg1.000002, weeks/13-07-2026#2] · del 0 [] · batches inputs.batch/4"
+  },
+  {
+   "name": "K5 Thursday's row is gone, Wednesday's dead row stays",
+   "ok": false,
+   "detail": "[]"
+  },
+  {
+   "name": "K5 the app says the row has been removed — once",
+   "ok": true,
+   "detail": "[\"Schedule updated\",\"LL does not go on the Ground Programme — its row has been removed\",\"Input updated\"]"
+  },
+  {
+   "name": "K5 reload — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "K5 reload — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  }
+ ],
+ "table": [
+  {
+   "step": "K1",
+   "width": "desktop",
+   "did": "a meeting for Ranger on Wednesday; Wednesday published; moved to Wed 22 Jul; Wednesday's issue loaded back; moved to Thursday",
+   "pics": [
+    "K1-1-after.png",
+    "K1-2-reloaded.png",
+    "K1-dead-wed-live-thu.png",
+    "K2-changes-jump.png"
+   ],
+   "shown": "",
+   "rows": "put 16: inputs/imrldi1s001iamn, settings/elog:mrldi1s0p62k.000001, settings/elog:mrldi1s0p62k.000002, settings/elog:mrldi1s0p62k.000003, settings/elog:mrldi1s0p62k.000004, settings/elog:mrldi1s0p62k.000005, settings/elog:mrldi1s0p62k.000006, settings/elog:mrldi1s0p62k.000007, settings/elog:mrldi1s0p62k.000008, settings/elog:mrldi1s0p62k.000009, settings/elog:mrldi1s0p62k.00000a, settings/elog:mrldi1s0p62k.00000b, settings/elog:mrldi1s0p62k.00000c, weeks/13-07-2026, weeks/13-07-2026#2, weeks/13-07-2026:is:2026-07-15#0~0 · batches: inputs.batch(ScheduleWeek+ScheduleDay+Input+EditLog, 4 rows, 1 history line, by acad) + sched.sign(EditLog+ScheduleDay, 2 rows, 1 history line, by acad) + sched.sign(EditLog+ScheduleDay, 2 rows, 1 history line, by acad) + sched.sign(EditLog+ScheduleDay, 2 rows, 1 history line, by acad) + sched.sign(EditLog+ScheduleDay, 2 rows, 1 history line, by acad) + sched.approve(ScheduleDay+Amendment+EditLog, 3 rows, 1 history line, by acad) + inputs.batch(ScheduleDay+Input+EditLog, 5 rows, 3 history line, by acad) + sched.mutate(ScheduleDay, 1 rows, by acad) + inputs.batch(Input+EditLog, 3 rows, 2 history line, by acad) + elog.line(EditLog, 1 rows, 1 history line, by system)",
+   "batches": [
+    {
+     "key": "changes/cmrldi1s0au0x9c-1",
+     "type": "inputs.batch",
+     "actor": "acad",
+     "n": 4,
+     "seqs": [
+      1
+     ],
+     "tables": "ScheduleWeek+ScheduleDay+Input+EditLog",
+     "elog": 1
+    },
+    {
+     "key": "changes/cmrldi1s0au0x9c-2",
+     "type": "sched.sign",
+     "actor": "acad",
+     "n": 2,
+     "seqs": [
+      2
+     ],
+     "tables": "EditLog+ScheduleDay",
+     "elog": 1
+    },
+    {
+     "key": "changes/cmrldi1s0au0x9c-3",
+     "type": "sched.sign",
+     "actor": "acad",
+     "n": 2,
+     "seqs": [
+      3
+     ],
+     "tables": "EditLog+ScheduleDay",
+     "elog": 1
+    },
+    {
+     "key": "changes/cmrldi1s0au0x9c-4",
+     "type": "sched.sign",
+     "actor": "acad",
+     "n": 2,
+     "seqs": [
+      4
+     ],
+     "tables": "EditLog+ScheduleDay",
+     "elog": 1
+    },
+    {
+     "key": "changes/cmrldi1s0au0x9c-5",
+     "type": "sched.sign",
+     "actor": "acad",
+     "n": 2,
+     "seqs": [
+      5
+     ],
+     "tables": "EditLog+ScheduleDay",
+     "elog": 1
+    },
+    {
+     "key": "changes/cmrldi1s0au0x9c-6",
+     "type": "sched.approve",
+     "actor": "acad",
+     "n": 3,
+     "seqs": [
+      6
+     ],
+     "tables": "ScheduleDay+Amendment+EditLog",
+     "elog": 1
+    },
+    {
+     "key": "changes/cmrldi1s0au0x9c-7",
+     "type": "inputs.batch",
+     "actor": "acad",
+     "n": 5,
+     "seqs": [
+      7
+     ],
+     "tables": "ScheduleDay+Input+EditLog",
+     "elog": 3
+    },
+    {
+     "key": "changes/cmrldi1s0au0x9c-8",
+     "type": "sched.mutate",
+     "actor": "acad",
+     "n": 1,
+     "seqs": [
+      8
+     ],
+     "tables": "ScheduleDay",
+     "elog": 0
+    },
+    {
+     "key": "changes/cmrldi1s0au0x9c-9",
+     "type": "inputs.batch",
+     "actor": "acad",
+     "n": 3,
+     "seqs": [
+      9
+     ],
+     "tables": "Input+EditLog",
+     "elog": 2
+    },
+    {
+     "key": "changes/cmrldi1s0au0x9c-g1",
+     "type": "elog.line",
+     "actor": "system",
+     "n": 1,
+     "seqs": [],
+     "tables": "EditLog",
+     "elog": 1
+    }
+   ],
+   "pass": true,
+   "notes": [],
+   "fails": []
+  },
+  {
+   "step": "K3",
+   "width": "desktop",
+   "did": "Thursday: ✕ on its row, Thursday published, then → Unavail on its card",
+   "pics": [
+    "K3-1-after.png"
+   ],
+   "shown": "",
+   "rows": "put 7: settings/elog:mrldi1s0o17z.000001, settings/elog:mrldi1s0o17z.000002, settings/elog:mrldi1s0o17z.000003, settings/elog:mrldi1s0o17z.000004, settings/elog:mrldi1s0o17z.000005, weeks/13-07-2026#3, weeks/13-07-2026:is:2026-07-16#0~0 · batches: sched.sign(EditLog+ScheduleDay, 2 rows, 1 history line, by acad) + sched.sign(EditLog+ScheduleDay, 2 rows, 1 history line, by acad) + sched.sign(EditLog+ScheduleDay, 2 rows, 1 history line, by acad) + sched.sign(EditLog+ScheduleDay, 2 rows, 1 history line, by acad) + sched.approve(ScheduleDay+Amendment+EditLog, 3 rows, 1 history line, by acad)",
+   "batches": [
+    {
+     "key": "changes/cmrldi1s0w3tpby-0",
+     "type": "sched.sign",
+     "actor": "acad",
+     "n": 2,
+     "seqs": [
+      0
+     ],
+     "tables": "EditLog+ScheduleDay",
+     "elog": 1
+    },
+    {
+     "key": "changes/cmrldi1s0w3tpby-1",
+     "type": "sched.sign",
+     "actor": "acad",
+     "n": 2,
+     "seqs": [
+      1
+     ],
+     "tables": "EditLog+ScheduleDay",
+     "elog": 1
+    },
+    {
+     "key": "changes/cmrldi1s0w3tpby-2",
+     "type": "sched.sign",
+     "actor": "acad",
+     "n": 2,
+     "seqs": [
+      2
+     ],
+     "tables": "EditLog+ScheduleDay",
+     "elog": 1
+    },
+    {
+     "key": "changes/cmrldi1s0w3tpby-3",
+     "type": "sched.sign",
+     "actor": "acad",
+     "n": 2,
+     "seqs": [
+      3
+     ],
+     "tables": "EditLog+ScheduleDay",
+     "elog": 1
+    },
+    {
+     "key": "changes/cmrldi1s0w3tpby-4",
+     "type": "sched.approve",
+     "actor": "acad",
+     "n": 3,
+     "seqs": [
+      4
+     ],
+     "tables": "ScheduleDay+Amendment+EditLog",
+     "elog": 1
+    }
+   ],
+   "pass": true,
+   "notes": [],
+   "fails": []
+  },
+  {
+   "step": "K3b",
+   "width": "desktop",
+   "did": "Thursday's issue loaded back onto the working copy",
+   "pics": [
+    "K3b-1-after.png",
+    "K3b-2-reloaded.png"
+   ],
+   "shown": "",
+   "rows": "put 0:  · batches: none",
+   "batches": [],
+   "pass": true,
+   "notes": [],
+   "fails": []
+  },
+  {
+   "step": "K4",
+   "width": "desktop",
+   "did": "Thursday: Accept on its card",
+   "pics": [
+    "K4-1-after.png"
+   ],
+   "shown": "",
+   "rows": "put 0:  · batches: none",
+   "batches": [],
+   "pass": true,
+   "notes": [],
+   "fails": []
+  }
+ ],
+ "tag": "base"
+}

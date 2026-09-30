@@ -726,7 +726,11 @@ export function filingRestorePlan(di:any,fil:any,dayAfter?:any):{put:Array<{inp:
     const id=inpId(inp), want=String(((fil||{})[id])||''), cur=String(inp.acc||'');
     if(filingSame(fil,id,cur))return;   // D174: a request the version never held, taken off since, stays taken off — never back to a fresh one that flags
     if(inputProtected(inp))return;   // a quarantined week's request is never touched — in the one plan both callers read (Fable's read, #2)
-    const has=(d:any)=>((d&&d.ground)||[]).some((g:any)=>g&&g.src===id);
+    /* ITS row — on a day it covers. A DEAD kept row (a version's row on a day the request no longer covers, D363) carries
+       its id but is not its row, and must not read as "landed" here: the load would leave the issued filing as filed
+       (D98). Its current filing is not asked — that is what this plan is about to set ([DB-READINESS] phase 6 (c), the
+       FULL check: Astra's scenario design §3 B). */
+    const has=(d:any)=>!!d&&inputCoversDate(inp,d.dt)&&((d.ground)||[]).some((g:any)=>g&&g.src===id);
     const landed=DAYS.some((d0:any,j:number)=>has((j===di&&dayAfter)?dayAfter:d0));
     if(want==='g'?!landed:landed){left.push(id);return;}
     /* the version's OWN row for it stands on this very day: "on the programme" is then the fact, whatever other day the

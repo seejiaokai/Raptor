@@ -1,0 +1,369 @@
+{
+ "base": "http://localhost:4203",
+ "at": "2026-09-30T17:54:24.872Z",
+ "results": [
+  {
+   "name": "U1 Saber files a meeting for Ranger, Thu 16 Jul 10:00-11:00 (Inputs page) — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 2 [inputs/imrldi1s0byx43u, settings/elog:mrldi1s01et0.000001] · del 0 [] · batches inputs.batch/2"
+  },
+  {
+   "name": "U1 — a request's command wrote no week row (§11, D450)",
+   "ok": true,
+   "detail": "[]"
+  },
+  {
+   "name": "U1 the meeting shows on Thursday's Ground Programme, once",
+   "ok": true,
+   "detail": "[{\"di\":3,\"ri\":3,\"rid\":\"rimrldi1s0byx43u\",\"prog\":\"MEETING\",\"str\":\"10:00\",\"end\":\"11:00\",\"who\":\"bane\",\"more\":[],\"rmks\":\"P6C MEETING\",\"kept\":false,\"info\":false,\"flag\":null,\"cx\":null}]"
+  },
+  {
+   "name": "U1 reload — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "U1 reload — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "U1 after a reload: the same row, the same hidden id",
+   "ok": true,
+   "detail": "{\"before\":[{\"di\":3,\"ri\":3,\"rid\":\"rimrldi1s0byx43u\",\"prog\":\"MEETING\",\"str\":\"10:00\",\"end\":\"11:00\",\"who\":\"bane\",\"more\":[],\"rmks\":\"P6C MEETING\",\"kept\":false,\"info\":false,\"flag\":null,\"cx\":null}],\"after\":[{\"di\":3,\"ri\":3,\"rid\":\"rimrldi1s0byx43u\",\"prog\":\"MEETING\",\"str\":\"10:00\",\"end\":\"11:00\",\"who\":\"bane\",\"more\":[],\"rmks\":\"P6C MEETING\",\"kept\":false,\"info\":false,\"flag\":null,\"cx\":null}]}"
+  },
+  {
+   "name": "U2 Saber on the board: the meeting row's start set to 10:30 by hand, Bolt added to it — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 4 [settings/elog:mrldi1s0z445.000001, settings/elog:mrldi1s0z445.000002, weeks/13-07-2026, weeks/13-07-2026#3] · del 0 [] · batches sched.mutate/3 sched.mutate/2"
+  },
+  {
+   "name": "U2 the row carries the hand-set 10:30 and Bolt",
+   "ok": true,
+   "detail": "[{\"di\":3,\"ri\":3,\"rid\":\"rimrldi1s0byx43u\",\"prog\":\"MEETING\",\"str\":\"10:30\",\"end\":\"11:00\",\"who\":\"bane\",\"more\":[\"yeti\"],\"rmks\":\"P6C MEETING\",\"kept\":false,\"info\":false,\"flag\":null,\"cx\":null}]"
+  },
+  {
+   "name": "U2 reload — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "U2 reload — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "U3 Ranger deletes his meeting (Inputs page ✕) — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [settings/elog:mrldi1s0ge0l.000001] · del 1 [inputs/imrldi1s0byx43u] · batches inputs.batch/2"
+  },
+  {
+   "name": "U3 — a request's command wrote no week row (§11, D450)",
+   "ok": true,
+   "detail": "[]"
+  },
+  {
+   "name": "U3 the row is gone from Thursday",
+   "ok": true,
+   "detail": "[]"
+  },
+  {
+   "name": "U4 Ranger presses Undo — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 2 [inputs/imrldi1s0byx43u, settings/elog:mrldi1s0ge0l.000002] · del 0 [] · batches undo.restore/2"
+  },
+  {
+   "name": "U4 — a request's command wrote no week row (§11, D450)",
+   "ok": true,
+   "detail": "[]"
+  },
+  {
+   "name": "U4 Undo: the same row back — same place, same hidden id, the hand-set 10:30 and Bolt (§8 item 10)",
+   "ok": true,
+   "detail": "{\"r4\":[{\"di\":3,\"ri\":3,\"rid\":\"rimrldi1s0byx43u\",\"prog\":\"MEETING\",\"str\":\"10:30\",\"end\":\"11:00\",\"who\":\"bane\",\"more\":[\"yeti\"],\"rmks\":\"P6C MEETING\",\"kept\":false,\"info\":false,\"flag\":null,\"cx\":null}],\"RID\":\"rimrldi1s0byx43u\",\"ri\":3}"
+  },
+  {
+   "name": "U4 reload (as Ranger) — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "U4 reload (as Ranger) — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "U4 after a reload: the same",
+   "ok": true,
+   "detail": "[{\"di\":3,\"ri\":3,\"rid\":\"rimrldi1s0byx43u\",\"prog\":\"MEETING\",\"str\":\"10:30\",\"end\":\"11:00\",\"who\":\"bane\",\"more\":[\"yeti\"],\"rmks\":\"P6C MEETING\",\"kept\":false,\"info\":false,\"flag\":null,\"cx\":null}]"
+  },
+  {
+   "name": "U5 Ranger presses Redo (the delete again) — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [settings/elog:mrldi1s037sb.000003] · del 1 [inputs/imrldi1s0byx43u] · batches undo.restore/2"
+  },
+  {
+   "name": "U5 — a request's command wrote no week row (§11, D450)",
+   "ok": true,
+   "detail": "[]"
+  },
+  {
+   "name": "U5 Redo: the row is gone again",
+   "ok": true,
+   "detail": "[]"
+  },
+  {
+   "name": "U5 reload — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "U5 reload — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "U6 Ranger files a meeting himself, Thu 16 Jul 13:00-14:00 — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 2 [inputs/imrldi1s00yfc4r, settings/elog:mrldi1s01fc7.000001] · del 0 [] · batches inputs.batch/2"
+  },
+  {
+   "name": "U6 — a request's command wrote no week row (§11, D450)",
+   "ok": true,
+   "detail": "[]"
+  },
+  {
+   "name": "U6 his meeting shows on Thursday straight away",
+   "ok": true,
+   "detail": "[{\"di\":3,\"ri\":3,\"rid\":\"rimrldi1s00yfc4r\",\"prog\":\"MEETING\",\"str\":\"13:00\",\"end\":\"14:00\",\"who\":\"bane\",\"more\":[],\"rmks\":\"P6C RANGER OWN\",\"kept\":false,\"info\":false,\"flag\":null,\"cx\":null}]"
+  },
+  {
+   "name": "U7 Ranger edits his meeting's words — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 2 [inputs/imrldi1s00yfc4r, settings/elog:mrldi1s01fc7.000002] · del 0 [] · batches inputs.batch/2"
+  },
+  {
+   "name": "U7 — a request's command wrote no week row (§11, D450)",
+   "ok": true,
+   "detail": "[]"
+  },
+  {
+   "name": "U7 the row says the new words, in the same place with the same id",
+   "ok": true,
+   "detail": "{\"r6\":[{\"di\":3,\"ri\":3,\"rid\":\"rimrldi1s00yfc4r\",\"prog\":\"MEETING\",\"str\":\"13:00\",\"end\":\"14:00\",\"who\":\"bane\",\"more\":[],\"rmks\":\"P6C RANGER OWN\",\"kept\":false,\"info\":false,\"flag\":null,\"cx\":null}],\"r7\":[{\"di\":3,\"ri\":3,\"rid\":\"rimrldi1s00yfc4r\",\"prog\":\"MEETING\",\"str\":\"13:00\",\"end\":\"14:00\",\"who\":\"bane\",\"more\":[],\"rmks\":\"P6C RANGER EDITED\",\"kept\":false,\"info\":false,\"flag\":null,\"cx\":null}]}"
+  },
+  {
+   "name": "U7 the time change reaches the row (13:30)",
+   "ok": true,
+   "detail": "[{\"di\":3,\"ri\":3,\"rid\":\"rimrldi1s00yfc4r\",\"prog\":\"MEETING\",\"str\":\"13:30\",\"end\":\"14:00\",\"who\":\"bane\",\"more\":[],\"rmks\":\"P6C RANGER EDITED\",\"kept\":false,\"info\":false,\"flag\":null,\"cx\":null}]"
+  },
+  {
+   "name": "U7 reload — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "U7 reload — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "U8 Ranger re-dates his meeting to Fri 17 Jul — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 3 [inputs/imrldi1s00yfc4r, settings/elog:mrldi1s01dgu.000001, settings/elog:mrldi1s01dgu.000002] · del 0 [] · batches inputs.batch/3"
+  },
+  {
+   "name": "U8 — a request's command wrote no week row (§11, D450)",
+   "ok": true,
+   "detail": "[]"
+  },
+  {
+   "name": "U8 the row is on Friday now, not Thursday",
+   "ok": true,
+   "detail": "[{\"di\":4,\"ri\":2,\"rid\":\"rimrldi1s00yfc4r\",\"prog\":\"MEETING\",\"str\":\"13:30\",\"end\":\"14:00\",\"who\":\"bane\",\"more\":[],\"rmks\":\"P6C RANGER EDITED till 17 Jul\",\"kept\":false,\"info\":false,\"flag\":null,\"cx\":null}]"
+  },
+  {
+   "name": "U8 Undo: back on Thursday with its old id and place",
+   "ok": true,
+   "detail": "{\"r8u\":[{\"di\":3,\"ri\":3,\"rid\":\"rimrldi1s00yfc4r\",\"prog\":\"MEETING\",\"str\":\"13:30\",\"end\":\"14:00\",\"who\":\"bane\",\"more\":[],\"rmks\":\"P6C RANGER EDITED\",\"kept\":false,\"info\":false,\"flag\":null,\"cx\":null}],\"r7b\":[{\"di\":3,\"ri\":3,\"rid\":\"rimrldi1s00yfc4r\",\"prog\":\"MEETING\",\"str\":\"13:30\",\"end\":\"14:00\",\"who\":\"bane\",\"more\":[],\"rmks\":\"P6C RANGER EDITED\",\"kept\":false,\"info\":false,\"flag\":null,\"cx\":null}]}"
+  },
+  {
+   "name": "U8 reload — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "U8 reload — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "U10 Saber types a note on Thursday (his save of the day) — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 2 [settings/elog:mrldi1s01qv8.000001, weeks/13-07-2026#3] · del 0 [] · batches sched.text/2"
+  },
+  {
+   "name": "U10 — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "U10 — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  }
+ ],
+ "table": [
+  {
+   "step": "U1",
+   "width": "phone",
+   "did": "Saber files a meeting for Ranger, Thu 16 Jul 10:00-11:00 (Inputs page)",
+   "pics": [
+    "U1-1-after.png",
+    "U1-filed-week.png"
+   ],
+   "shown": "",
+   "rows": "put 2: inputs/imrldi1s0byx43u, settings/elog:mrldi1s01et0.000001 · batches: inputs.batch(Input+EditLog, 2 rows, 1 history line, by acad)",
+   "batches": [
+    {
+     "key": "changes/cmrldi1s0p2meav-1",
+     "type": "inputs.batch",
+     "actor": "acad",
+     "n": 2,
+     "seqs": [
+      1
+     ],
+     "tables": "Input+EditLog",
+     "elog": 1
+    }
+   ],
+   "pass": true,
+   "notes": [],
+   "fails": []
+  },
+  {
+   "step": "U2",
+   "width": "phone",
+   "did": "Saber on the board: the meeting row's start set to 10:30 by hand, Bolt added to it",
+   "pics": [
+    "U2-1-after.png",
+    "U2-board-handset.png"
+   ],
+   "shown": "",
+   "rows": "put 4: settings/elog:mrldi1s0z445.000001, settings/elog:mrldi1s0z445.000002, weeks/13-07-2026, weeks/13-07-2026#3 · batches: sched.mutate(EditLog+ScheduleWeek+ScheduleDay, 3 rows, 1 history line, by acad) + sched.mutate(EditLog+ScheduleDay, 2 rows, 1 history line, by acad)",
+   "batches": [
+    {
+     "key": "changes/cmrldi1s0o9mypb-0",
+     "type": "sched.mutate",
+     "actor": "acad",
+     "n": 3,
+     "seqs": [
+      0
+     ],
+     "tables": "EditLog+ScheduleWeek+ScheduleDay",
+     "elog": 1
+    },
+    {
+     "key": "changes/cmrldi1s0o9mypb-1",
+     "type": "sched.mutate",
+     "actor": "acad",
+     "n": 2,
+     "seqs": [
+      1
+     ],
+     "tables": "EditLog+ScheduleDay",
+     "elog": 1
+    }
+   ],
+   "pass": true,
+   "notes": [],
+   "fails": []
+  },
+  {
+   "step": "U3",
+   "width": "phone",
+   "did": "Ranger deletes his meeting (Inputs page ✕)",
+   "pics": [
+    "U3-1-after.png",
+    "U3-deleted-week.png",
+    "U4-undo-row-back.png",
+    "U5-redo-reloaded.png"
+   ],
+   "shown": "",
+   "rows": "put 1: settings/elog:mrldi1s0ge0l.000001 · del 1: inputs/imrldi1s0byx43u · batches: inputs.batch(Input+EditLog, 2 rows, 1 history line, by acus)",
+   "batches": [
+    {
+     "key": "changes/cmrldi1s0oy3v9f-0",
+     "type": "inputs.batch",
+     "actor": "acus",
+     "n": 2,
+     "seqs": [
+      0
+     ],
+     "tables": "Input+EditLog",
+     "elog": 1
+    }
+   ],
+   "pass": true,
+   "notes": [],
+   "fails": []
+  },
+  {
+   "step": "U6",
+   "width": "phone",
+   "did": "Ranger files a meeting himself, Thu 16 Jul 13:00-14:00",
+   "pics": [
+    "U6-1-after.png",
+    "U6-member-filed.png",
+    "U8-redated-friday.png",
+    "U9-saber-board-thursday.png"
+   ],
+   "shown": "",
+   "rows": "put 2: inputs/imrldi1s00yfc4r, settings/elog:mrldi1s01fc7.000001 · batches: inputs.batch(Input+EditLog, 2 rows, 1 history line, by acus)",
+   "batches": [
+    {
+     "key": "changes/cmrldi1s034031g-0",
+     "type": "inputs.batch",
+     "actor": "acus",
+     "n": 2,
+     "seqs": [
+      0
+     ],
+     "tables": "Input+EditLog",
+     "elog": 1
+    }
+   ],
+   "pass": true,
+   "notes": [],
+   "fails": []
+  },
+  {
+   "step": "U10",
+   "width": "phone",
+   "did": "Saber types a note on Thursday (his save of the day)",
+   "pics": [
+    "U10-1-after.png",
+    "U10-2-reloaded.png"
+   ],
+   "shown": "",
+   "rows": "put 2: settings/elog:mrldi1s01qv8.000001, weeks/13-07-2026#3 · batches: sched.text(EditLog+ScheduleDay, 2 rows, 1 history line, by acad)",
+   "batches": [
+    {
+     "key": "changes/cmrldi1s0rlbn1m-0",
+     "type": "sched.text",
+     "actor": "acad",
+     "n": 2,
+     "seqs": [
+      0
+     ],
+     "tables": "EditLog+ScheduleDay",
+     "elog": 1
+    }
+   ],
+   "pass": true,
+   "notes": [],
+   "fails": []
+  }
+ ],
+ "tag": "p6c"
+}

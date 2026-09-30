@@ -1,0 +1,58 @@
+{
+ "base": "http://localhost:4203",
+ "at": "2026-09-30T17:52:53.331Z",
+ "results": [
+  {
+   "name": "T1 tab B: Ranger files a meeting on Thu 16 Jul 13:00-14:00 — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 2 [inputs/imrldi1s0wi0g91, settings/elog:mrldi1s0hwrm.000001] · del 0 [] · batches inputs.batch/2"
+  },
+  {
+   "name": "T1 his filing wrote no week row",
+   "ok": true,
+   "detail": "[]"
+  },
+  {
+   "name": "T2 tab A (stale): Saber types a note on Thursday — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 3 [settings/elog:mrldi1s0ri9r.000001, weeks/13-07-2026, weeks/13-07-2026#3] · del 0 [] · batches sched.text/3"
+  },
+  {
+   "name": "T3 after tab A reloads: Saber's note stands AND Ranger's meeting is on Thursday",
+   "ok": true,
+   "detail": "[{\"di\":3,\"ri\":3,\"prog\":\"MEETING\",\"str\":\"13:00\",\"end\":\"14:00\",\"who\":\"bane\",\"more\":[],\"rmks\":\"P6C TAB B\",\"kept\":false,\"info\":false,\"flag\":null,\"cx\":null}]"
+  },
+  {
+   "name": "T4 tab B (stale): Ranger files a meeting on Fri 17 Jul 09:00-10:00 — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 2 [inputs/imrldi1s0xo2obt, settings/elog:mrldi1s0hwrm.000002] · del 0 [] · batches inputs.batch/2"
+  },
+  {
+   "name": "T4 his filing wrote no week row — it cannot touch the published Friday",
+   "ok": true,
+   "detail": "[]"
+  },
+  {
+   "name": "T4 Friday is still published in the store after his filing",
+   "ok": true,
+   "detail": "{\"a\":{\"ok\":1,\"signed\":true},\"b\":{\"ok\":1,\"signed\":true}}"
+  },
+  {
+   "name": "T5 Friday: still published, his meeting reads pending, the four fallen",
+   "ok": true,
+   "detail": "{\"tag\":\"ORIG\",\"pending\":\"1 pending\",\"beak\":\"none\",\"alpub\":\"Publish AL1\",\"unpub\":\"Unpublish\",\"signs\":[\"— name —\",\"— name —\",\"— name —\",\"— name —\"],\"signed\":\"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\",\"nys\":\"Not yet signed\"}"
+  },
+  {
+   "name": "T6 tab B: Ranger deletes his Thursday meeting — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [settings/elog:mrldi1s0hwrm.000003] · del 1 [inputs/imrldi1s0wi0g91] · batches inputs.batch/2"
+  },
+  {
+   "name": "T6 after tab A reloads: the meeting is gone, the note stays",
+   "ok": true,
+   "detail": ""
+  }
+ ],
+ "table": [],
+ "tag": "p6c"
+}

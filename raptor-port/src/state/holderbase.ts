@@ -26,11 +26,11 @@ import { CURWEEK } from '../engine/waves'
 import { SCHED, dayApproved, dayCurVer, daySnapOf, protectedWeek } from '../engine/publish'
 import { keyDay } from '../engine/keys'
 import { posKey, ensureRowIds } from '../engine/rowids'
-import { viewOfWeek, standingRow } from '../engine/overlay'
+import { viewOfWeek, standingRow, standsOn, requestRowFields } from '../engine/overlay'
 import { rebaseDayPending } from '../engine/drafts'
 import { inputProtected } from '../engine/quarantine'
 import { isPreservedWeek } from '../engine/weekstash'
-import { PEOPLE } from '../engine/people'
+import { PEOPLE, whoId } from '../engine/people'
 import { HOOKS } from '../engine/hooks'
 import type { Change } from '../command'
 
@@ -64,6 +64,28 @@ const sigOf = (di: number) => {
   return JSON.stringify({ d: DAYS[di], m: marksOf(di),
     b: [(S.dayOK || {})[di], (S.sign || {})[di], (S.signBind || {})[di], (S.cur || {})[di], (S.curDraft || {})[di],
       (S.correcting || {})[di], (S.drafts || {})[di], (S.orig || {})[di]] })
+}
+
+/* A REQUEST'S NEW ROW ON A PUBLISHED DAY WEARS THE MARKS ITS ACCEPT GIVES IT — the add, on its item (engine/slots.ts
+   acceptInput → markStructuralAdd `gr:di.ri.prog`). The rebuild against the issued version (drafts.ts rebaseDayPending)
+   marks every box of a row the issued day lacks, so the same filing read one way as a member's (a pending outline on its
+   start, end and remarks, a hollow ALn tag on its puck) and another as the scheduler's Accept, and the build before (c)
+   drew the filing as Accept does. A box the scheduler has since set apart from what the request makes (his own time or
+   words, a man of his on the row) keeps its mark: it is his change. Found by the FULL check's walk (P), 1 Oct 26. */
+function requestAddMarks(di: number): void {
+  const ver = dayCurVer(di), snap: any = ver != null ? daySnapOf(di, ver) : null
+  const issued = new Set((((snap && snap.d && snap.d.ground) || []) as any[]).map((g: any) => g && g.rid).filter(Boolean))
+  const d: any = DAYS[di]
+  for (const row of ((d && d.ground) || []) as any[]) {
+    if (!row || !row.src || !row.rid || issued.has(row.rid)) continue
+    const r = (INPUTS as any[]).find((x: any) => x && String(x.iid || '') === String(row.src))
+    if (!r || inputProtected(r)) continue
+    const f: any = requestRowFields(r)
+    const drop: string[] = []
+    for (const k of ['str', 'end', 'rmks']) if (String(row[k] || '') === String(f[k] || '')) drop.push(`gr:${di}.${row.rid}.${k}`)
+    if (whoId(row.who) === r.person) drop.push(`g:${di}.${row.rid}`)
+    for (const k of drop) delete SCHED.pending[k]
+  }
 }
 
 /** the base is for THIS loaded week (a load or a boot set it) */
@@ -145,7 +167,7 @@ export function rederive(opts: { absorb?: Iterable<number>; live?: boolean } = {
   for (let di = 0; di < DAYS.length; di++) {
     const before = JSON.stringify(marksOf(di))
     if (!info[di].reqChanged) setMarks(di, base[di].m)
-    else if (dayApproved(di)) rebaseDayPending(di)
+    else if (dayApproved(di)) { rebaseDayPending(di); requestAddMarks(di) }
     else {
       const m = clone(base[di].m) as Marks
       for (const [f] of MARKS) for (const k of Object.keys(m[f])) if (posKey(k, DAYS) == null) delete m[f][k]
@@ -170,15 +192,21 @@ export function rederive(opts: { absorb?: Iterable<number>; live?: boolean } = {
   if (opts.live) {
     const said: string[] = []
     const onScreen = (d: any, src: string) => ((d && d.ground) || []).find((g: any) => g && String(g.src || '') === src)
+    const told = new Set<string>()
     info.forEach((x, di) => {
       const had = (src: string) => onScreen(prev[di], src)
       /* a row on screen before this pass and not after, whose request is now a kind that never goes on the programme —
-         a stored row taken away, or a landing no longer made; compared screen to screen, so it is said once */
+         a stored row taken away, or a landing no longer made; compared screen to screen, so it is said once. ITS row: a
+         dead kept row (a version's row on a day the request no longer covers, D363) is neither the row that went nor
+         one that keeps it on screen — it stays, and must not silence the sentence ([DB-READINESS] phase 6 (c), the FULL
+         check: Astra's scenario design §3 D) */
       for (const g of ((prev[di] && prev[di].ground) || [])) {
         const src = g && String(g.src || '')
-        if (!src || DAYS.some((d: any) => onScreen(d, src))) continue
+        if (!src || g.kept || told.has(src)) continue
         const r: any = (INPUTS as any[]).find((i: any) => i && String(i.iid || '') === src)
-        if (r && !isPersonal(r.type)) said.push(`${r.type} does not go on the Ground Programme — its row has been removed`)
+        if (!r || isPersonal(r.type) || DAYS.some((d: any) => standsOn(d, src, r))) continue
+        told.add(src)
+        said.push(`${r.type} does not go on the Ground Programme — its row has been removed`)
       }
       for (const b of x.blanked) {
         const was = had(b.src), now = ((DAYS[di] && DAYS[di].ground) || []).find((g: any) => g && String(g.src || '') === b.src)

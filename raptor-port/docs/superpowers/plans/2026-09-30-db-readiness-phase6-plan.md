@@ -355,6 +355,16 @@ screen compared step by step; `docs/handpass/2026-09-30-dbr-phase6-check.md` F1,
 13. **Loading a week no longer runs a command of its own** — nothing a person sees; the change history and the Undo list
    never showed it.
 
+**Found by the FULL check of (c)** (1 Oct 26 — `docs/handpass/2026-10-01-dbr-phase6c-check.md` W3, W4 and the pending list):
+14. **A request moved to another day leaves the scheduler's own additions (a second man, a red box, CX) with the day they
+   were made on** — they come back if the request returns there; the old re-link carried them to the new day. Under the day
+   lock a member's move cannot write the new day, and a carry worked out from the old day's row would last only until that
+   day's holder next saved it. Put to him on his look card; `[REQ-MOVE-EXTRAS]` holds his answer.
+15. **The pending mark of an issued request's changed time sits on the time box, not on the item's name** — the mark sits on
+   what changed (D93); the count is the same (one pending). The old re-link re-made the row, which marked its item.
+16. **The pending list names the member who deleted his own issued request as the one who made that change** (it named the
+   holder whose day the old delete wrote).
+
 ## 9. Build log
 
 **(a) — built 30 Sep 26** (commits e6ebf963, then f1bd1cf6 for Fable F2): `Input.hand`, `Input.leftAt`, `oild.pa`;

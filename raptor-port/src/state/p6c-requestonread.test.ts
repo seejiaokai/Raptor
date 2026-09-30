@@ -593,3 +593,123 @@ describe('phase 6 (c) v3, round 3 — a dead kept row is never the request\'s ro
     expect(rowOf(iid, WED)!.row.rid).not.toBe(rowOf(iid, THU)!.row.rid)
   })
 })
+
+/* Found by the FULL check's walk (1 Oct 26 — `docs/handpass/2026-10-01-dbr-phase6c-check.md`, walk U): the landings were
+   made in the request list's order, and a new filing goes to the FRONT of that list — so a request filed later landed
+   ABOVE the rows landed earlier and pushed them down a line. The build before (c) appended each landing at its filing, so
+   a row never moved when someone else filed (the board's "nothing re-orders itself", 10 Aug 26). */
+describe('phase 6 (c) — the FULL check\'s walk: a landed row keeps its line when another request lands', () => {
+  it('two all-day meetings on a day not published: the second lands BELOW the first, and the first does not move — right after and after a reload', async () => {
+    const be = new MemoryBackend()
+    await boot(be)
+    const a = file({ allday: true, remarks: 'first' })
+    const aAt = rowOf(a, WED)!
+    const aIx = (DAYS[WED] as any).ground.indexOf(aAt.row)
+    const b = file({ person: 'yeti', allday: true, remarks: 'second' })
+    const g = (DAYS[WED] as any).ground
+    expect(g.findIndex((r: any) => r.src === a), 'the first keeps its place').toBe(aIx)
+    expect(g.findIndex((r: any) => r.src === b), 'the second goes below it').toBeGreaterThan(aIx)
+    await reload(be)
+    const g2 = (DAYS[WED] as any).ground
+    expect(g2.findIndex((r: any) => r.src === a), 'after a reload: the same').toBe(aIx)
+    expect(g2.findIndex((r: any) => r.src === b)).toBeGreaterThan(aIx)
+  })
+})
+
+/* Found by the FULL check's walk (1 Oct 26, walk P): on a published day the marks of a request's change are rebuilt against
+   the issued version (drafts.ts rebaseDayPending), which marks EVERY box of a row the issued day lacks — so a member's live
+   filing wore a pending outline on its start, end and remarks and a hollow ALn tag on its puck, where the same row accepted
+   by the scheduler (slots.ts acceptInput) wears the add on its item only, as the build before (c) drew the filing. */
+describe('phase 6 (c) — the FULL check\'s walk: a request\'s new row on a published day is marked as its Accept marks it', () => {
+  const dayKeysOf = (o: any, di: number) => Object.keys(o || {}).filter(k => k.startsWith(`gr:${di}.`) || k.startsWith(`g:${di}.`)).sort()
+  it('a live filing: the add on its item only — the same marks as the scheduler\'s Accept; right after and after a reload', async () => {
+    const be = new MemoryBackend()
+    await boot(be)
+    publish(WED)
+    const iid = file({})
+    const rid = rowOf(iid, WED)!.row.rid
+    const filed = { p: dayKeysOf(SCHED.pending, WED), a: dayKeysOf(SCHED.added, WED) }
+    expect(filed.p, 'the pending marks: the item only').toEqual([`gr:${WED}.${rid}.prog`])
+    expect(filed.a, 'the add').toEqual([`gr:${WED}.${rid}.prog`])
+    await reload(be)
+    expect(dayKeysOf(SCHED.pending, WED), 'after a reload: the same').toEqual(filed.p)
+    expect(dayKeysOf(SCHED.added, WED)).toEqual(filed.a)
+    /* the scheduler's ✕ and Accept of it: the row his Accept makes wears exactly these */
+    schedWrite(SCHED_TYPES.mutate, () => { unacceptInput(WED, reqOf(iid)); afterSchedMutate() })
+    schedWrite(SCHED_TYPES.mutate, () => { acceptInput(WED, reqOf(iid), 'g'); afterSchedMutate() })
+    const rid2 = rowOf(iid, WED)!.row.rid
+    expect(dayKeysOf(SCHED.pending, WED), 'Accept\'s marks, the same shape').toEqual([`gr:${WED}.${rid2}.prog`])
+  })
+  it('a field the scheduler set apart from the request keeps its mark; the member\'s edit of the request re-makes the rest unmarked', async () => {
+    const be = new MemoryBackend()
+    await boot(be)
+    publish(WED)
+    const iid = file({})
+    const at = rowOf(iid, WED)!
+    const ri = (DAYS[WED] as any).ground.indexOf(at.row)
+    writeText(`gr:${WED}.${ri}.rmks`, 'SCHEDULER WORDS')           // the holder's own words on the row
+    const rid = at.row.rid
+    expect(dayKeysOf(SCHED.pending, WED)).toEqual([`gr:${WED}.${rid}.prog`, `gr:${WED}.${rid}.rmks`].sort())
+    edit(iid, { remarks: 'member words' })                      // re-made: the six fields from the request again
+    expect(rowOf(iid, WED)!.row.rmks).toBe('member words')
+    expect(dayKeysOf(SCHED.pending, WED), 'back to the add alone').toEqual([`gr:${WED}.${rid}.prog`])
+  })
+})
+
+/* Astra's scenario design for the FULL check (1 Oct 26 — `docs/superpowers/briefs/2026-10-01-db-readiness-phase6c-check-
+   scenarios-astra.md` §3 B): the load's filing restore (publish.ts filingRestorePlan) asked "is its row on any loaded day"
+   of every row carrying the request's id — a DEAD kept row too (a version's row on a day the request no longer covers,
+   D363). It is not the request's row, so a load that should put the issued filing back (D98) left it as filed. */
+describe('phase 6 (c) — the FULL check: a dead kept row never decides the load\'s filing (D98)', () => {
+  it('dead kept Wednesday, Thursday issued "taken off", now under Unavailable: loading Thursday\'s issue puts "taken off" back', async () => {
+    const be = new MemoryBackend()
+    await boot(be)
+    const iid = file({})                                            // lands Wednesday
+    deadKeptRow(iid, WED, '2026-07-22', '2026-07-16')               // published, moved away, loaded back, moved to Thursday
+    expect(rowOf(iid, WED)!.row.kept, 'Wednesday holds the version\'s row, dead').toBe(true)
+    expect(rowOf(iid, THU), 'and the request stands on Thursday').toBeTruthy()
+    schedWrite(SCHED_TYPES.mutate, () => { unacceptInput(THU, reqOf(iid)); afterSchedMutate() })   // ✕ on Thursday
+    expect(reqOf(iid).acc).toBe('r')
+    publish(THU)                                                    // issued with it taken off
+    schedWrite(SCHED_TYPES.mutate, () => { acceptInput(THU, reqOf(iid), 'u'); afterSchedMutate() })   // → Unavail
+    expect(reqOf(iid).acc).toBe('u')
+    schedWrite(SCHED_TYPES.mutate, () => { loadVersionToWorkingCopy(THU, dayCurVer(THU)); afterSchedMutate() })
+    expect(reqOf(iid).acc, 'the issued filing is back (D98) — the dead Wednesday row is not its row').toBe('r')
+    expect(rowOf(iid, WED)!.row.kept, 'the dead row stays').toBe(true)
+    await reload(be)
+    expect(reqOf(iid).acc).toBe('r')
+  })
+  it('the control: the version\'s own row on the loaded day, the filing now Unavailable — the load puts it back on the programme', async () => {
+    const be = new MemoryBackend()
+    await boot(be)
+    const iid = file({})
+    publish(WED)                                                    // issued ON the programme
+    schedWrite(SCHED_TYPES.mutate, () => { unacceptInput(WED, reqOf(iid)); afterSchedMutate() })   // ✕, then → Unavail
+    schedWrite(SCHED_TYPES.mutate, () => { acceptInput(WED, reqOf(iid), 'u'); afterSchedMutate() })
+    expect(reqOf(iid).acc).toBe('u')
+    schedWrite(SCHED_TYPES.mutate, () => { loadVersionToWorkingCopy(WED, dayCurVer(WED)); afterSchedMutate() })
+    expect(reqOf(iid).acc, 'on the programme again').toBe('g')
+    expect(rowOf(iid, WED), 'its row').toBeTruthy()
+  })
+})
+
+/* Astra's scenario design §3 D (1 Oct 26): the retype message asked "is any row of it still on screen" of every row with
+   its id — a dead kept row on another day too — so the removal of its REAL row went unsaid. */
+describe('phase 6 (c) — the FULL check: a dead kept row does not silence the retype message', () => {
+  it('dead kept Wednesday, standing Thursday: retyped to a leave, the Thursday row goes and the app says so — once', async () => {
+    await boot(new MemoryBackend())
+    const iid = file({})
+    deadKeptRow(iid, WED, '2026-07-22', '2026-07-16')
+    expect(rowOf(iid, THU), 'standing on Thursday').toBeTruthy()
+    const said: string[] = []
+    const was = HOOKS.toast
+    HOOKS.toast = (m: any) => { said.push(String(m)) }
+    try {
+      edit(iid, { type: 'LL' })
+      await Promise.resolve(); vi.runAllTicks(); await Promise.resolve()
+    } finally { HOOKS.toast = was }
+    expect(rowOf(iid, THU), 'Thursday\'s row is gone').toBeNull()
+    expect(rowOf(iid, WED)!.row.kept, 'the dead Wednesday row stays (D363)').toBe(true)
+    expect(said.filter(m => /does not go on the Ground Programme — its row has been removed/.test(m)).length, JSON.stringify(said)).toBe(1)
+  })
+})

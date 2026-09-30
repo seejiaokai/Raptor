@@ -305,3 +305,26 @@ describe('an input moved from Monday to Tuesday, its line opened on Monday', () 
     expect(j!.di, 'on Tuesday').toBe(1)
   })
 })
+
+/* [DB-READINESS] phase 6 (c), the FULL check — Astra's scenario design §3 C (1 Oct 26): a request's line goes to its
+   STANDING row, never to a dead kept row (a version's row left on a day the request no longer covers, D363) */
+describe('a request with a dead kept row on Monday and its row standing on Tuesday', () => {
+  it('its line goes to Tuesday\'s row, and Monday\'s dead row is no target', () => {
+    as('ad', 'a')
+    const d0: any = (DAYS as any)[0], d1: any = (DAYS as any)[1]
+    const r: any = { person: 'bane', date: d1.dt, yr: 2026, allday: false, s: 600, e: 660, type: 'Meeting', remarks: '', acc: 'g' }
+    inpId(r); INPUTS.unshift(r)
+    d0.ground = [...(d0.ground || []), { prog: 'MEETING', str: '10:00', end: '11:00', who: 'bane', src: r.iid, kept: true }]
+    d1.ground = [...(d1.ground || []), { prog: 'MEETING', str: '10:00', end: '11:00', who: 'bane', src: r.iid }]
+    const monRi = d0.ground.length - 1, tueRi = d1.ground.length - 1
+    const days = ['2026-07-13', '2026-07-14', '2026-07-15', '2026-07-16', '2026-07-17', '2026-07-18', '2026-07-19']
+    const l: any = { iid: r.iid, key: '', rows: [{ date: '2026-07-14', wdate: '2026-07-13', iid: r.iid }] }
+    const j = jumpOf(l, days, null)
+    expect(j, 'a button').not.toBeNull()
+    expect(j!.keys, 'not Monday\'s dead row').not.toContain(`g:0.${monRi}`)
+    expect(j!.keys, 'Tuesday\'s row first').toContain(`g:1.${tueRi}`)
+    expect(j!.di, 'to Tuesday').toBe(1)
+    const j2 = jumpOf(l, days, '2026-07-13')
+    expect(j2!.di, 'opened on Monday it still goes to Tuesday — Monday draws only a dead row').toBe(1)
+  })
+})

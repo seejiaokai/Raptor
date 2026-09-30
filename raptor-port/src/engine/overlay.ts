@@ -292,7 +292,11 @@ function landRequests(days: any[], ctx: ViewCtx, info: ViewDayInfo[]): void {
   const reqs = requestsById()
   const stands = (ds: any[], id: string) => ds.some((d: any) =>
     ((d && d.ground) || []).some((g: any) => g && String(g.src || '') === id && standingRow(g, reqs.get(id), d.dt)))
-  for (const r of INPUTS as any[]) {
+  /* OLDEST FIRST: a filing goes to the FRONT of the request list, so the list read backwards lands each request after the
+     ones filed before it — a row never moves down a line because someone else filed (the board's "nothing re-orders
+     itself", 10 Aug 26; the build before (c) appended each landing at its filing). Found by the FULL check's walk. */
+  for (let i = (INPUTS as any[]).length - 1; i >= 0; i--) {
+    const r = (INPUTS as any[])[i]
     if (!r || !r.iid || !isPersonal(r.type) || r.acc === 'r' || r.acc === 'u' || inputProtected(r)) continue
     const s0 = dateOrd(r.date, r.yr)
     if (s0 == null) continue

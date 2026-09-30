@@ -1494,6 +1494,36 @@ refused, the role rules of `data-model.md` §11, the day lock D355/D356, the 30-
 only the real database shows; (4) the app says what went wrong in words he can copy out, so a fault seen there can be
 rebuilt in the stand-in; (5) the shipping rules (`.claude/rules/shipping.md` — "merge live", the Vercel link, "done means
 live") rewritten for pull requests to IT, on his word. **Place:** with `[DB-STEP]`, before the first deploy he approves.
+**His questions, 1 Oct 26, and the advice he was given** (not rulings — his answers still to come): *"when its in the database, its
+better for me to find bugs right?"* — yes for what only the database shows (two people on one day, the lock, slowness, real
+volumes), but on a TEST copy IT provides, never the live one; the app's own rules are still found the same way, by walking.
+*"should i put this in a database first or just continue working in my repo?"* — keep working here until phase 6 (c) and
+phase 7 are merged (they decide the tables' shape), then give IT the go-ahead; after the clone, work ONLY in IT's repo (one
+copy on his desktop), never two. **To ask IT, with (2) above:** a test environment separate from the live one, with test data,
+that this PC can run the app against (so the walk still runs); push access for branches and pull requests from his desktop;
+whether the checks run on each pull request and whether a preview link exists; that IT's own changes (the connection files)
+come back so the copies never drift. **Before the go-ahead:** the checks runner off this repo (`[REPO-PRIVATE]`, Astra SEC-101
+— IT cloning it is a collaborator), and `[REPO-TIDY]`'s screenshot move.
+
+### [REPO-TIDY] The folder is ~8 GB; the app ~14 MB of code and a ~2 MB built bundle (measured 1 Oct 26, his question)
+**Where it goes:** ~6.2 GB `.claude/worktrees/` — the working copies parallel chats made and left behind, each a full checkout
+with its own tools; ~1.2 GB `raptor-port/docs/` — mostly the walks' screenshots (`docs/img/handpass/`); ~0.9 GB the history
+(`.git`, every screenshot ever committed in it); ~150 MB `node_modules` (build tools, never shipped). Not inefficient code.
+**To do:** (1) clear the leftover worktrees — each checked first for unpushed or uncommitted work, only then removed
+(`git worktree list`, then per worktree `git status` and its branch against its remote); (2) before IT clones the repo,
+consider moving the walk screenshots out of it (and out of its history), or IT downloads ~1 GB of pictures with 14 MB of
+code — put the choice to him with `[RESTRICTED-ENV-WORKFLOW]`'s go-ahead. **Place:** (1) at any clean point, a short job;
+(2) before the go-ahead to IT.
+
+### [REQ-MOVE-EXTRAS] A request moved to another day: should the scheduler's second man go with it? — HIS ANSWER (filed 1 Oct 26)
+Found by the FULL check of `[DB-READINESS]` phase 6 (c) (walk X, `raptor-port/docs/handpass/2026-10-01-dbr-phase6c-check.md`
+W4; plan §8 item 14): a member re-dates his request from Thursday to Friday — its Friday row comes as filed, and a second
+man, a red box or a CX the scheduler put on Thursday's row stay with Thursday's stored row (back if the request returns).
+The build before carried them to Friday. Under the day lock (D450) a member's command cannot write Friday, and carrying them
+on read from Thursday's row would last only until Thursday's holder next saved Thursday — then they would vanish from
+Friday by themselves. **Recommended: leave it** — the scheduler re-adds on the new day what still applies. If he wants them
+to follow, it is a design change (a hidden "moved" record on the old day, read by the new day's landing) — for later, with
+the lock's build. **Place:** his answer at his look at phase 6 (c); nothing is built meanwhile.
 
 ### [GUIDE-MAP-ROWS] The guide's map table: its long rows to the full text too? — OPEN (the guide step, D391, 28 Sep 26)
 **What:** after the guide step the project guide is ~9.5k tokens, not the plan's ~6k. Of what is left, the map table
