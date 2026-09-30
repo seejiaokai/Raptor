@@ -1767,3 +1767,18 @@ red count per break; a break that stays green means that mechanism is unguarded.
 
 **Principle:** Post-hoc proof that a test guards a mechanism is cheapest as an automated break table with byte-exact
 restore — repeatable, all-or-nothing, and safe for files whose bytes (line endings) matter.
+
+### Observation 384: A plan's hand-made list of "writers that break the rule" is a first draft — sweep for all of them, then enforce with a test that watches every occurrence
+
+**Status:** OPEN
+**Date:** 2026-09-30
+**Session context:** Building [DB-READINESS] group A phase 4 (one change-log batch per saved group) from a plan red-teamed three rounds by two reviewers.
+**Skill:** executing-plans
+**Type:** open-source
+**Phase/Area:** executing a plan step whose correctness depends on an enumerated list (call sites, writers, exceptions)
+
+**Issue:** The plan named, after three review rounds, the writers that reach storage outside a transaction (a week switch, a reconciler's idle writes, two history-line callers, a one-time seed). A read-only sweep delegated at the start of the phase found the list incomplete in the largest way: nearly EVERY save of one sub-app ran its transaction on an in-memory mirror and wrote storage a step later, outside it. The phase's own acceptance test ("every group carries exactly one batch, except the named ones") would have failed on that — or, worse, been "fixed" by exempting it.
+
+**Suggested improvement:** In executing-plans, add a rule: when a plan step says "each of these N sites must be handled", (1) re-derive the full set with an exhaustive read-only sweep before building (the plan's list is a pointer, not a scope), and (2) turn the property into a runtime test that OBSERVES every occurrence (drive a battery of every kind of action and assert each event against the rule, with the exemptions named in the test) — then break one site on purpose to see it fail.
+
+**Principle:** An enumerated list in a plan is evidence of what the reviewers saw, not of what exists; a property over "all sites" is only enforced by a test that watches all sites at runtime, with every exemption named inside the test.

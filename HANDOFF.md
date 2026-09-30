@@ -16,47 +16,57 @@ the later merge keeps both (D78).
 ## Now
 
 <!-- now:claude/db-readiness-table-shaping-4094f6 -->
-### `claude/db-readiness-table-shaping-4094f6` — `[DB-READINESS]` group A: plan v4 final; **phases 0–3 BUILT** (all gates green); phase 4 next — written 30 Sep 26 — verify before use
+### `claude/db-readiness-table-shaping-4094f6` — `[DB-READINESS]` group A: plan v4 final; **phases 0–4 BUILT** (all gates green); phase 5 next — written 30 Sep 26 — verify before use
 - **Where it started:** his ask: plan group A (D453), red-team it with both reviewers, then build it; D460–D463 ruled on the way.
 - **Shipped (this branch, pushed, no PR):** the plan (`raptor-port/docs/superpowers/plans/2026-09-30-db-readiness-group-a-plan.md`,
   v4 + §9 build log per phase); **phase 0** (the `SchemaVersion` stamp, the boot group, the fold machinery, the stream
-  consumer); **phase 1 — the schedule one day per row** (`src/state/weekrows.ts`: week row, seven day rows, one row per
-  issuance and per Unpublish; written from each command; a week switch is read-only); **phase 2 — requests, roster,
-  planning calendar one row each** (`ord` on each row — `src/engine/ord.ts`); **phase 3 — the Leave War one row per record**
-  (`src/leavewar/state/rows.ts`: `war:<id>`, `rec:<war>:<recId>` with its person, date and `ord`, `ledger:<id>`,
-  `opening:<pid>:<counter>`, `profile:<pid>` = window + label; written by the war's OWN subscriber through its own door — a
-  move is one row, a row goes only for a record the command removed; `initStore(backend, { started })`; the LW converter
-  registered) **with D460/D461 built** — the war's Edit person, `PersonSheet.tsx`, `setPerson` and `personEdits` are gone.
+  consumer); **phase 1 — the schedule one day per row** (`src/state/weekrows.ts`); **phase 2 — requests, roster, planning
+  calendar one row each** (`ord` — `src/engine/ord.ts`); **phase 3 — the Leave War one row per record**
+  (`src/leavewar/state/rows.ts`) with D460/D461 built (no Edit person on the war); **phase 4 — the change log, the edit log,
+  accounts** — one `changes/<clientBootId>-<first seq>` batch per saved group, built by the whiteboard's seal
+  (`src/state/changebatch.ts`, `src/storage/tables.ts`); the change history one row per line (`settings/elog:<lineId>`,
+  written inside its command; order `(t, lineId)`), each person's seen `settings/seen:<pid>` (positions), accounts /
+  requests / each admin's seen a row each (`account:`, `accessreq:`, `reqseen:`); every Tracker save written by the Tracker's
+  own subscriber inside its command, its own Undo / Redo one restore command each; the `elog` and `accounts` converters
+  (`src/state/settingsrows.ts` — seven of eight registered, target still 5). The roll-call test
+  (`src/state/changebatch-rollcall.test.ts`) drives every kind of writer and fails on any save after boot with no batch;
+  the one named exempt writer is the Tracker's first mount.
   **Found on the way:** Tuesday's change blocked Monday's Undo (phase 1); the retired entry lost `ros`/`added` (phase 1);
   deleting a man left him on the planning calendar (phase 2, on `main` too); the OIL pass would have rewritten every credit
-  once records carried a place (phase 3).
-- **Gates (phase 3, watched, under the lock):** unit 7154/7154 · build · tfin 728/0 · e2e 509/0 (49 skipped) · smoke 445/0 ·
-  perf 4/4 (side by side with phase 2: no change) · rulecheck · docsize.
-- **Unfinished:** phases 4 → 5 and 5b (the shape IT needs), then the FULL walk and BOTH reviewers' code reads (D11, D353), then 6
-  (worked out on read — its hand-over waits on IT's reporting answer, §12 q9), then 7.
+  (phase 3); almost every Tracker save reached storage AFTER its command — a bare save, and a refused one still stored
+  (phase 4); a key renumbering in a refused command still changed the history (phase 4).
+- **Gates (phase 4, watched, under the lock):** unit 7226/7226 (453 files) · build · tfin 728/0 · e2e 508 passed, 1 failed (the month-window timing flake — `[LW-WINDOW-PRUNE-FLAKE-2]`, alone 3/3 straight after), 49 skipped · smoke 445/0 · rulecheck · docsize; perf 4/4 (four runs: oneEdit 1.32–1.38×, noop 1.48–1.51×, board 1.29–1.34×, noopB 1.55–1.59× — inside phase 3's spread, noopB at its top).
+- **Unfinished:** phase 5 (never seed a shared store — `BootPolicy`, frozen seed copies, the bootstrap admin; P0-BOOTSTRAP's
+  Person + User half lands here) and 5b (the Tracker one piece per thing), then the FULL walk and BOTH reviewers' code reads
+  (D11, D353), then 6 (worked out on read — its hand-over waits on IT's reporting answer, §12 q9), then 7.
 - **Branch:** `claude/db-readiness-table-shaping-4094f6`; no PR. Build on it. A branch push runs no checks (workflows are main / PR only).
 - **Open questions for him:** none of this chat's. For IT (`[IT-QUESTIONS]`): "no plug-in" in writing; Custom APIs / Power
-  Automate allowed?; can reports combine a day with the leave and people tables; when do their tables settle.
-- **Parallel (D302):** rulings D460–D469 (D460–D463 used); observations #380–#389 (#380–#383 used). No other open branch on 30 Sep 26.
-- **Don't send him this branch's preview yet:** between phases a browser holding old whole-list records reads them only
-  after the fold, which runs once all eight converters exist (end of group A — five registered now); a fresh browser is fine.
+  Automate allowed?; can reports combine a day with the leave and people tables; when do their tables settle; can they
+  assign `EditLog.seq`; change tracking on for `ChangeBatch`.
+- **Parallel (D302):** rulings D460–D469 (D460–D463 used); observations #380–#389 (#380–#384 used). No other open branch on 30 Sep 26.
+- **Don't send him this branch's preview yet:** a browser holding old whole-list records reads them only after the fold,
+  which runs once all eight converters exist (end of group A — seven registered now); a fresh browser is fine.
 - **Traps met:** `src/state/store.ts` and `src/leavewar/state/store.ts` are CRLF files — edit them by script converting the
-  literals, never `sed -i` (memory `python-edits-crlf-trap`); an apostrophe in a heredoc'd Python edit lands bare inside a
-  TS string; a test that edits a blank week must ADD a note.
-- **Pick up here:** plan §3 phase 4 with §8's P4.1-TRACKER-RESTORE and P4-BATCH-ID — red tests first: (1) the `ChangeBatch`
-  at the whiteboard's seal (`changes/<clientBootId>-<first emitted seq>`, items `{table, key, op}` = the rest of the group;
-  list every writer that reaches the whiteboard after boot outside a command with its disposition — `loadWeek`'s
-  `sched.load`, the edit log's lines, the Tracker's own); (2) the stand-in reader; (3) the edit log one row per line
-  (`settings/elog:<lineId>`, written at `keep` inside the command — `src/engine/editlog.ts push`/`queueSave`), `seen:<pid>`;
-  (4) accounts, access requests and `reqseen` one row each (`src/state/accounts.ts writeAccounts`/`writeReqs`). Read
-  `src/storage/whiteboard.ts` (transaction/commit), `src/command/commit.ts` (the txn wrapper, seqs), `src/engine/editlog.ts`,
-  `src/state/accounts.ts`, `src/state/changes.ts` first. P3-CELL-DIFF's "exact `ChangeBatch.items`" test lands here.
+  literals, never `sed -i` (memory `python-edits-crlf-trap`); `src/engine/editlog.ts` holds one deliberate NUL byte (the
+  grouped view's key) — edit it by bytes, git shows it as binary; a Python edit script with nested quotes is safest
+  written to the scratchpad and run from there; a test fake settings backend needs `keys()` and a `'null'` = delete, as the
+  real adapter has, or rows are invisible to it.
+- **Pick up here:** plan §3 phase 5 with §8's P5-LANDING and P0-BOOTSTRAP (its Person + User half — plan §9 phase 0's
+  sequencing note), red tests first: (1) a `BootPolicy` chosen in `main.tsx` (`seedDemo`, default true — his preview
+  unchanged), passed to the shell, the scheduler, the Leave War, the Tracker and accounts; (2) frozen seed copies, every
+  boot resetting the LIVE arrays from a fresh clone or to blank; (3) with `seedDemo` false: no demo inputs (the landing
+  pass still runs — P5-LANDING), no demo world, no Tracker demo pair or default course (D463 — its empty state, a way in),
+  no seed-admin lock-out repair; the accounts' "no rows = the seeded list" (phase 4.4, `state/accounts.ts`) becomes
+  "no rows = none" there; (4) the bootstrap admin from the root configuration — Person, User and `initialized` in ONE
+  group, idempotent, failing closed. Read `src/main.tsx`, `src/state/store.ts initStore`, `src/leavewar/state/demoworld.ts`,
+  `src/tracker/app/core.js init/applyBundle`, `src/state/accounts.ts accountsLoad` first. Also filed for 5b: the Tracker
+  writes one person's chart pick into the course's shared plan (`OUTSTANDING.md` `[DB-READINESS]`).
 <!-- /now -->
 
 ## Next, in order
 
 0. **THE DATABASE STEP STARTS NOW (D354, 29 Sep 26)** — `[IT-FLOW-GUIDE]` DONE (the guide for IT, `raptor-port/docs/it-flow-guide/`, 29 Sep 26); `[DB-SYNC-MODEL]`'s design DONE and merged (PR #475); `[DB-READINESS]` group A PLANNED 30 Sep 26 (plan v4,
-   `claude/db-readiness-table-shaping-4094f6`) — its build under way: phases 0–2 built 30 Sep 26, phase 3 next (D453). The IT team is taking the app into Dataverse now, and he means to
+   `claude/db-readiness-table-shaping-4094f6`) — its build under way: phases 0–4 built 30 Sep 26, phase 5 next (D453). The IT team is taking the app into Dataverse now, and he means to
    keep working on the app beside it. What to finish before the hand-over was put to him the same day; record his answer
    here and in `OUTSTANDING.md`'s priority list the moment he gives it. Everything below keeps its ORDER; its timing is overtaken.
 1. **HIS ORDER to the database step (D203, 26 Sep 26 — its timing overtaken by D354):** `[ACCOUNTS]`, `[ACCOUNTS-NEW-PERSON]`,
@@ -77,9 +87,10 @@ the later merge keeps both (D78).
 
 ## Gate baseline
 
-The latest counts watched — 30 Sep 26, `claude/db-readiness-table-shaping-4094f6` (group A phase 3), under the PC lock: unit
-**7154 / 7154** (446 files) · build clean · tfin **728 / 0** · e2e **509 passed, 0 failed**, 49 skipped · smoke **445 / 0** ·
-rulecheck OK · docsize OK. Restate a count only from a run you watched, and REPLACE the previous counts — never stack a
+The latest counts watched — 30 Sep 26, `claude/db-readiness-table-shaping-4094f6` (group A phase 4), under the PC lock: unit
+**7226 / 7226** (453 files) · build clean · tfin **728 / 0** · e2e **508 passed, 1 failed** (the known month-window timing
+flake, `[LW-WINDOW-PRUNE-FLAKE-2]` — alone 3 / 3 straight after), 49 skipped · smoke **445 / 0** · rulecheck OK · docsize OK ·
+perf 4 / 4. Restate a count only from a run you watched, and REPLACE the previous counts — never stack a
 history. How to run them: `raptor-port/CLAUDE.md` §Build & verify; how they mislead, and the checks on his PC:
 `raptor-port/docs/gates-and-deploy.md`.
 
