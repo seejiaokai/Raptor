@@ -1782,3 +1782,18 @@ restore — repeatable, all-or-nothing, and safe for files whose bytes (line end
 **Suggested improvement:** In executing-plans, add a rule: when a plan step says "each of these N sites must be handled", (1) re-derive the full set with an exhaustive read-only sweep before building (the plan's list is a pointer, not a scope), and (2) turn the property into a runtime test that OBSERVES every occurrence (drive a battery of every kind of action and assert each event against the rule, with the exemptions named in the test) — then break one site on purpose to see it fail.
 
 **Principle:** An enumerated list in a plan is evidence of what the reviewers saw, not of what exists; a property over "all sites" is only enforced by a test that watches all sites at runtime, with every exemption named inside the test.
+
+### Observation 385: A list the owner will forward to a third party — make it a copyable, self-explaining text from the first answer
+
+**Status:** OPEN
+**Date:** 2026-09-30
+**Session context:** `[DB-READINESS]` group A phase 5 — before building, the owner asked for "all the IT questions" so he could get answers first.
+**Skill:** session-handoff (its handoff block's "open questions" line) and the plain-language rule (new-skill candidate if it recurs: "questions for a third party")
+**Type:** open-source
+**Phase/Area:** answering "list me the questions for X" / a handoff's open-questions line
+
+**Issue:** The first answer was a technical list in the chat (IT's own vocabulary, one line each). The owner then asked, in turn, "explain in layman", then "make it in text format that I can copy and provide the context for each question and space each question out", then "change the name from <the IT person> to IT". Three round trips for one deliverable. Separately, the handoff block's "open questions for IT" line carried 5 of the 29 open questions and missed the one the very next phase creates (who is the first admin of an empty shared database).
+
+**Suggested improvement:** When the owner asks for a list he will pass to someone else: (1) produce, first time, a plain-text FILE (sent with SendUserFile) — each item spaced out as a heading, "Question:" and "Context:" (why it is asked, what depends on it), urgent group first, "already agreed" at the foot — worded for the recipient, with no named individuals unless he names them; (2) give him, in chat, a short plain-language summary of what the list asks and which items are urgent. In session-handoff: the "open questions for <third party>" line names where the FULL list lives and adds any question the next phase will raise.
+
+**Principle:** A forwarded list has two readers — the recipient, who needs each question's context, and the owner, who needs to understand what he is sending; serve both in the first answer, as a copyable artefact, rather than a chat list that must be reformatted.

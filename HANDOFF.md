@@ -16,57 +16,60 @@ the later merge keeps both (D78).
 ## Now
 
 <!-- now:claude/db-readiness-table-shaping-4094f6 -->
-### `claude/db-readiness-table-shaping-4094f6` — `[DB-READINESS]` group A: plan v4 final; **phases 0–4 BUILT** (all gates green); phase 5 next — written 30 Sep 26 — verify before use
-- **Where it started:** his ask: plan group A (D453), red-team it with both reviewers, then build it; D460–D463 ruled on the way.
+### `claude/db-readiness-table-shaping-4094f6` — `[DB-READINESS]` group A: plan v4 final; **phases 0–5 BUILT**; phase 5b next — written 30 Sep 26 — verify before use
+- **Where it started:** his ask: plan group A (D453), red-team it with both reviewers, then build it; D460–D464 ruled on the way.
 - **Shipped (this branch, pushed, no PR):** the plan (`raptor-port/docs/superpowers/plans/2026-09-30-db-readiness-group-a-plan.md`,
   v4 + §9 build log per phase); **phase 0** (the `SchemaVersion` stamp, the boot group, the fold machinery, the stream
   consumer); **phase 1 — the schedule one day per row** (`src/state/weekrows.ts`); **phase 2 — requests, roster, planning
   calendar one row each** (`ord` — `src/engine/ord.ts`); **phase 3 — the Leave War one row per record**
-  (`src/leavewar/state/rows.ts`) with D460/D461 built (no Edit person on the war); **phase 4 — the change log, the edit log,
-  accounts** — one `changes/<clientBootId>-<first seq>` batch per saved group, built by the whiteboard's seal
-  (`src/state/changebatch.ts`, `src/storage/tables.ts`); the change history one row per line (`settings/elog:<lineId>`,
-  written inside its command; order `(t, lineId)`), each person's seen `settings/seen:<pid>` (positions), accounts /
-  requests / each admin's seen a row each (`account:`, `accessreq:`, `reqseen:`); every Tracker save written by the Tracker's
-  own subscriber inside its command, its own Undo / Redo one restore command each; the `elog` and `accounts` converters
-  (`src/state/settingsrows.ts` — seven of eight registered, target still 5). The roll-call test
-  (`src/state/changebatch-rollcall.test.ts`) drives every kind of writer and fails on any save after boot with no batch;
-  the one named exempt writer is the Tracker's first mount.
-  **Found on the way:** Tuesday's change blocked Monday's Undo (phase 1); the retired entry lost `ros`/`added` (phase 1);
-  deleting a man left him on the planning calendar (phase 2, on `main` too); the OIL pass would have rewritten every credit
-  (phase 3); almost every Tracker save reached storage AFTER its command — a bare save, and a refused one still stored
-  (phase 4); a key renumbering in a refused command still changed the history (phase 4).
-- **Gates (phase 4, watched, under the lock):** unit 7226/7226 (453 files) · build · tfin 728/0 · e2e 508 passed, 1 failed (the month-window timing flake — `[LW-WINDOW-PRUNE-FLAKE-2]`, alone 3/3 straight after), 49 skipped · smoke 445/0 · rulecheck · docsize; perf 4/4 (four runs: oneEdit 1.32–1.38×, noop 1.48–1.51×, board 1.29–1.34×, noopB 1.55–1.59× — inside phase 3's spread, noopB at its top).
-- **Unfinished:** phase 5 (never seed a shared store — `BootPolicy`, frozen seed copies, the bootstrap admin; P0-BOOTSTRAP's
-  Person + User half lands here) and 5b (the Tracker one piece per thing), then the FULL walk and BOTH reviewers' code reads
-  (D11, D353), then 6 (worked out on read — its hand-over waits on IT's reporting answer, §12 q9), then 7.
+  (`src/leavewar/state/rows.ts`, D460/D461 built); **phase 4 — the change log, the edit log, accounts** (one
+  `changes/<clientBootId>-<first seq>` batch per saved group; the history a row per line; accounts, requests, seen a row
+  each; every Tracker save inside its command); **phase 5 — never seed a shared store**: the boot policy
+  (`src/bootpolicy.ts` — `VITE_SEED_DEMO=false` = a shared store; the demo by default, his preview unchanged), the boot in
+  one function (`src/boot.ts bootApp`, moved whole out of `main.tsx`), frozen seed copies reset in place every boot
+  (`src/state/seeds.ts`), nothing demo on a shared store (no requests, roster, weeks — the two authored weeks read blank —
+  accounts, Leave War world, Tracker course or pair, D463), the FIRST ADMIN from `VITE_BOOTSTRAP_ADMIN` (person, account
+  and stamp in one group, idempotent, failing closed — "RAPTOR is not set up yet"), the Leave War's "No leave period yet"
+  and the Tracker's "No course yet" pages. Tests: `src/boot.test.ts`, `src/boot-walk.test.tsx` (the first admin opens every
+  page; storage then holds only what the first boot stored), `leavewar/emptywar.test.tsx`, `tracker/trk-nocourse.test.tsx`.
+  **Found on the way:** Tuesday's change blocked Monday's Undo (1); the retired entry lost `ros`/`added` (1); deleting a
+  man left him on the planning calendar (2, on `main` too); the OIL pass would have rewritten every credit (3); almost
+  every Tracker save reached storage AFTER its command (4); a key renumbering in a refused command still changed the
+  history (4); a started store whose war rows all failed to read showed the DEMO's wars (5 — now none, the empty page).
+- **Gates (phase 5, watched, under the lock):** unit 7263/7263 (457 files) · build · tfin 728/0 · e2e 509 passed, 0 failed, 49 skipped · smoke 445/0 · rulecheck · docsize; perf 4/4 (two runs: oneEdit 1.38–1.39×, noop 1.41–1.44×, board 1.29–1.31×, noopB 1.48× — inside phase 4's spread). **The LOOK on a shared-store build:** 16/16 (`raptor-port/scripts/handpass/dbr5-look.mjs`, pictures `raptor-port/docs/img/handpass/2026-09-30-dbr-phase5/`) — it found the two empty cards' phone gutter and the war's unstyled button, fixed after the gate run with the New-war calendar's first month (this month, not January 2026): the Leave War's screen tests 842/842 and `e2e/leavewar.spec.ts` 299 passed, 0 failed (39 skipped).
+- **Unfinished:** 5b (the Tracker one piece per thing — its conversion must carry every chart, layout and ball's details:
+  D464; remind him to EXPORT a copy before its "merge live"), then the FULL walk and BOTH reviewers' code reads (D11,
+  D353), then 6 (worked out on read — its hand-over waits on IT's reporting answer, §12 q9), then 7.
 - **Branch:** `claude/db-readiness-table-shaping-4094f6`; no PR. Build on it. A branch push runs no checks (workflows are main / PR only).
-- **Open questions for him:** none of this chat's. For IT (`[IT-QUESTIONS]`): "no plug-in" in writing; Custom APIs / Power
-  Automate allowed?; can reports combine a day with the leave and people tables; when do their tables settle; can they
-  assign `EditLog.seq`; change tracking on for `ChangeBatch`.
-- **Parallel (D302):** rulings D460–D469 (D460–D463 used); observations #380–#389 (#380–#384 used). No other open branch on 30 Sep 26.
+- **Open questions for him:** none of this chat's. **For IT:** the whole list — 29 questions with their context, in four
+  groups (A before the tables settle: the first admin, "no plug-in" in writing, reports, when the tables settle,
+  `EditLog.seq`, change tracking, `sortIndex`, alternate keys, `InputType`/`LeaveCounter`) — was given to him as a copyable
+  text on 30 Sep 26 to send; the list's home is `OUTSTANDING.md` `[IT-QUESTIONS]` (+ `data-model.md` §12 q1–q11).
+- **Parallel (D302):** rulings D460–D469 (D460–D464 used); observations #380–#389 (#380–#385 used). No other open branch on 30 Sep 26.
 - **Don't send him this branch's preview yet:** a browser holding old whole-list records reads them only after the fold,
-  which runs once all eight converters exist (end of group A — seven registered now); a fresh browser is fine.
+  which runs once all eight converters exist (the Tracker's is 5b's); a fresh browser is fine.
+- **A shared-store build, for a walk:** `VITE_SEED_DEMO=false VITE_BOOTSTRAP_ADMIN='{"principal":"boss@unit.example","person":{"cs":"Boss","ini":"BS","seat":"FCP","cat":"A"}}' npx vite build --outDir dist-blank`,
+  then `npx vite preview --outDir dist-blank --port 4191`; sign in as `boss@unit.example` with any password. The LOOK script:
+  `raptor-port/scripts/handpass/dbr5-look.mjs`.
 - **Traps met:** `src/state/store.ts` and `src/leavewar/state/store.ts` are CRLF files — edit them by script converting the
-  literals, never `sed -i` (memory `python-edits-crlf-trap`); `src/engine/editlog.ts` holds one deliberate NUL byte (the
-  grouped view's key) — edit it by bytes, git shows it as binary; a Python edit script with nested quotes is safest
-  written to the scratchpad and run from there; a test fake settings backend needs `keys()` and a `'null'` = delete, as the
-  real adapter has, or rows are invisible to it.
-- **Pick up here:** plan §3 phase 5 with §8's P5-LANDING and P0-BOOTSTRAP (its Person + User half — plan §9 phase 0's
-  sequencing note), red tests first: (1) a `BootPolicy` chosen in `main.tsx` (`seedDemo`, default true — his preview
-  unchanged), passed to the shell, the scheduler, the Leave War, the Tracker and accounts; (2) frozen seed copies, every
-  boot resetting the LIVE arrays from a fresh clone or to blank; (3) with `seedDemo` false: no demo inputs (the landing
-  pass still runs — P5-LANDING), no demo world, no Tracker demo pair or default course (D463 — its empty state, a way in),
-  no seed-admin lock-out repair; the accounts' "no rows = the seeded list" (phase 4.4, `state/accounts.ts`) becomes
-  "no rows = none" there; (4) the bootstrap admin from the root configuration — Person, User and `initialized` in ONE
-  group, idempotent, failing closed. Read `src/main.tsx`, `src/state/store.ts initStore`, `src/leavewar/state/demoworld.ts`,
-  `src/tracker/app/core.js init/applyBundle`, `src/state/accounts.ts accountsLoad` first. Also filed for 5b: the Tracker
-  writes one person's chart pick into the course's shared plan (`OUTSTANDING.md` `[DB-READINESS]`).
+  literals, never `sed -i` (memory `python-edits-crlf-trap`); `src/engine/editlog.ts` holds one deliberate NUL byte — edit it
+  by bytes; a Python edit script is safest WRITTEN TO A FILE (the Write tool) and run from there — a heredoc through the
+  shell mangled `\'` and one with many quotes would not parse; a test fake settings backend needs `keys()` and a `'null'` =
+  delete, as the real adapter has.
+- **Pick up here:** plan §3 phase 5b (the Tracker one piece per thing — D462) with D464 (his charts, syllabi and ball details
+  are kept: the converter carries them across, tested before and after) and the filed finding (the Tracker writes one
+  person's chart pick into the course's SHARED plan — `OUTSTANDING.md` `[DB-READINESS]`). Red tests first: two clients add
+  two students to one course and chart — both remain; two clients edit two different charts — both remain; course and
+  student order kept across a reload; the conversion keeps every chart, layout and detail; the Tracker smoke green. The
+  eighth converter (`tracker`) makes the fold's format 6 — then run the fold tests at 6. Read `src/tracker/app/core.js`
+  (`kRosterFor`, `saveRoster`, `kCourses`, `kSyls`, `trkRegisterCommands`), `src/storage/tables.ts TRACKER`,
+  `src/storage/fold.ts` first.
 <!-- /now -->
 
 ## Next, in order
 
 0. **THE DATABASE STEP STARTS NOW (D354, 29 Sep 26)** — `[IT-FLOW-GUIDE]` DONE (the guide for IT, `raptor-port/docs/it-flow-guide/`, 29 Sep 26); `[DB-SYNC-MODEL]`'s design DONE and merged (PR #475); `[DB-READINESS]` group A PLANNED 30 Sep 26 (plan v4,
-   `claude/db-readiness-table-shaping-4094f6`) — its build under way: phases 0–4 built 30 Sep 26, phase 5 next (D453). The IT team is taking the app into Dataverse now, and he means to
+   `claude/db-readiness-table-shaping-4094f6`) — its build under way: phases 0–5 built 30 Sep 26, phase 5b next (D453). The IT team is taking the app into Dataverse now, and he means to
    keep working on the app beside it. What to finish before the hand-over was put to him the same day; record his answer
    here and in `OUTSTANDING.md`'s priority list the moment he gives it. Everything below keeps its ORDER; its timing is overtaken.
 1. **HIS ORDER to the database step (D203, 26 Sep 26 — its timing overtaken by D354):** `[ACCOUNTS]`, `[ACCOUNTS-NEW-PERSON]`,
@@ -87,10 +90,9 @@ the later merge keeps both (D78).
 
 ## Gate baseline
 
-The latest counts watched — 30 Sep 26, `claude/db-readiness-table-shaping-4094f6` (group A phase 4), under the PC lock: unit
-**7226 / 7226** (453 files) · build clean · tfin **728 / 0** · e2e **508 passed, 1 failed** (the known month-window timing
-flake, `[LW-WINDOW-PRUNE-FLAKE-2]` — alone 3 / 3 straight after), 49 skipped · smoke **445 / 0** · rulecheck OK · docsize OK ·
-perf 4 / 4. Restate a count only from a run you watched, and REPLACE the previous counts — never stack a
+The latest counts watched — 30 Sep 26, `claude/db-readiness-table-shaping-4094f6` (group A phase 5), under the PC lock: unit
+**7263 / 7263** (457 files) · build clean · tfin **728 / 0** · e2e **509 passed, 0 failed**, 49 skipped · smoke **445 / 0** ·
+rulecheck OK · docsize OK · perf 4 / 4. Restate a count only from a run you watched, and REPLACE the previous counts — never stack a
 history. How to run them: `raptor-port/CLAUDE.md` §Build & verify; how they mislead, and the checks on his PC:
 `raptor-port/docs/gates-and-deploy.md`.
 
