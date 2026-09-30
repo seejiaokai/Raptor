@@ -39,6 +39,16 @@ one global undo from the stream and retires the snapshot stacks; **step 5** buil
 persistence + the Dataverse adapter from it. Nothing in step 2 changes a rendered byte
 (`tfin.js` 728/0) or how persistence/undo currently behave.
 
+**A derived change is made AFTER its command, never inside it (`[DB-READINESS]` group A phase 6, 30 Sep – 1 Oct 26 — plan
+`docs/superpowers/plans/2026-09-30-db-readiness-phase6-plan.md` §2.2).** What a request, a hand-over or a delete does to a
+day — its row made, re-made or taken away, a deleted man taken off — is worked out after the command, at phase 8
+(`state/sched-commit.ts afterCommandPass` → `state/holderbase.ts rederive`), with the command layer's baseline moved on with
+it: nobody's change, never on the stream, never an Undo step, never saved (a day's holder saves it, worked out, at his next
+change to that day). The week on screen is always worked out from the HOLDER BASE — each day as its holder last committed
+it — so undoing the request brings back exactly what its holder had (the phase-6 (c) round-2 finding: an overlay of an
+already-overlaid day could not). A member's command may carry no schedule record at all (`state/perms.ts
+ownershipViolation`).
+
 **Persistence is now a stream consumer (30 Sep 26, `[DB-READINESS]` group A phase 0 — the "step 5" record-level
 persistence above).** `state/rowmap.ts` subscribes to the stream and, at phase 9 of every command, maps each change
 to the stored ROW it lives in, writing it inside the command's one whiteboard transaction — so a command's rows reach

@@ -577,7 +577,9 @@ describe('duty / sim / ground panels on the board (owner request, Aug 26)', () =
       await act(async () => { afterSchedMutate(); notify() })
       const progs = [...document.querySelectorAll('#sbBoard .sb-panel.grnd [data-bfld$=".prog"]')]
         .map(el => (el as HTMLInputElement).value)
-      expect(progs).toEqual(['GMAN-C', 'GMAN-A', 'GMAN-B'])
+      /* the day's requests land again beside the hand rows ([DB-READINESS] phase 6 (c) — overwriting a day's rows does not
+         take its requests off); the manual order of the hand rows is what this pins */
+      expect(progs.filter(p => p.startsWith('GMAN'))).toEqual(['GMAN-C', 'GMAN-A', 'GMAN-B'])
     } finally {
       d.ground = savedGround; d.gman = savedGman
       await act(async () => { afterSchedMutate(); notify() })

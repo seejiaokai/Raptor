@@ -50,6 +50,10 @@ export const HOOKS = {
      (state/person-delete.ts stripDeletedFromDay): it strips every deleted man from the incoming day model and names
      them. Unset (no one ever deleted), nothing is stripped. */
   stripDeleted: (_di: number, _nd: any): string[] => [],
+  /* THE DAY A LOAD ONTO THE WORKING COPY WILL LEAVE, worked out ([DB-READINESS] phase 6 (c) — engine/drafts.ts
+     dayAsLoadLeaves installs it; publish.ts dayDiscardCount reads it — publish.ts cannot import drafts.ts at module level
+     without a loop). Null → the count measures the version's day with D175's leave-out only, as before. */
+  dayAsLoadLeaves: null as null | ((di: number, snapDay: any) => any),
   /* THE DAY'S WARNINGS AS ISSUED ([LEAVE-LATE-PUBLISHED], D179 — publish.ts): the validator lends publishing its
      judgement — at issue, the day's slice of the official warnings to keep (`issuedWarn`), and on every read today's
      slice to compare it with (`warnNow`). engine/validate.ts sets both at load (publish.ts cannot import it — the

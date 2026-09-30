@@ -180,12 +180,21 @@ land.
 *Land*: an activity request, not `'r'` / `'u'`, not read-only (`inputProtected`), with no row standing for it — on this
 week's view, on the loaded week's `DAYS` (when the week read is another), or on any other saved week (`rowElsewhere`, the
 finder §4; `'unreadable'` fails closed, as `acceptInput` does) — lands on its START day if that day is in the week read
-(as `autoAcceptInput` does: never on a later day of its span). **On a published day only if that day's current issued
-version never saw it** (no entry in its `fil`) — the 16 Sep 26 rule, after a reload too; a request the issued version saw
-is never landed on read (so loading an older version keeps that version's day, D98). The row: `acceptInput`'s six fields,
-`srcv`, and the id `'r' + <request id>` — deterministic, so the same row right after and after a reload — appended.
+(as `autoAcceptInput` does: never on a later day of its span). **On a published day, not when that day's current issued
+version placed it on that day (its row is in the issued day) or took it off (`'r'` at issue)** — any other lands as a pending
+change: one filed since (the 16 Sep 26 rule, after a reload too), and one the issued day held while its row stood on
+another day it covers (re-dated onto this day since — round 3, Fable F2: keyed on the filing record alone, a request
+shortened onto a published day it already covered fell off the programme). A request the issued day placed is put back
+only by the holder's Accept, with its issued id (so loading an older version keeps that version's day, D98). The row:
+`acceptInput`'s six fields, `srcv`, and the id `'r' + <request id>` — deterministic, so the same row right after and after
+a reload — with a suffix while another row of the week holds that id (a dead `kept` row of the same request — round 3,
+Fable F3); appended.
 
-**4. The finder** — `weekstash.ts stashGroundBySrc`, read by `rowElsewhere` (the landing's "stands elsewhere", `acceptInput`'s
+**4. The finder, and "the request's row"** (round 3, Astra 1 and Fable F1). A request's STANDING row is its row: a dead
+`kept` row (on a day its request cannot stand on) is never it — one predicate, `engine/overlay.ts standsOn`, read by every
+lookup that acts on "the request's row" on the week on screen (the OIL evidence, Accept's one-row guard, ✕, `acceptedDay`,
+the load's leave-out, the card, the pending list, the checker's accepted-row deferral). On a saved week — `weekstash.ts
+stashGroundBySrc` / `standingRowIn`, read by `rowElsewhere` (the landing's "stands elsewhere", `acceptInput`'s
 guard, the card, the load's leave-out) and `oilev.ts stashStanding` — a saved week's STANDING rows: the parse with rules
 1, 2, 4 and 7 applied (a `kept` row on a day its request does not cover ignored), no landing, no strip (a deleted man's
 requests from his cutoff are gone, so rule 1 takes their rows), memoised on (the stored blob, the activity requests'
@@ -231,7 +240,11 @@ simulated there: the filing the load puts back (D98) — its only effect on the 
 under Unavailable, which then does not land.
 
 **8. The week load and the boot** (`store.ts applyWeekModel`, `initStore`): the base is set from the stored week, every
-`acc` but `'r'` / `'u'` cleared, and the pass run — out of band, then `resyncSchedBaseline()`. The `sched.load` command goes:
+`acc` but `'r'` / `'u'` cleared, and the pass run — out of band, then `resyncSchedBaseline()`. **In that order, AFTER the row
+ids are minted** (`migrateLegacyIds` / `ensureRowIds` / `backfillSnapshotIds` — round 3, Fable F6): a base taken before them
+would hold id-less rows, and the next command's apply-end would mint them inside that command — a day change in whoever's
+command came next, refused if a member's (§9). The load also mints the requests' and the planning notes' places itself
+(the retired command's apply-end did). The `sched.load` command goes:
 it existed to latch the landing's repaint (`markEdit` → `notify` mid-pass), and the pass paints nothing. A read-only
 (byte-preserved) week is shown as it is saved, as for (d): no pass.
 
@@ -334,6 +347,13 @@ screen compared step by step; `docs/handpass/2026-09-30-dbr-phase6-check.md` F1,
    pending either way, D178 / AM1: a load never takes back a member's own filing).
 10. **An Undo of a request's delete puts its row back exactly** — same place, hand-set times and extras — where it used to
    come back as a new row at the end (a defect of v2's design, Astra round 2).
+11. **✕ on a request's row on a day not yet published leaves a removal mark** the Amendments panel's "Clear the marks … (N)"
+   counts — as the removal of any row there does (a member's live filing used to cancel it with its own add mark; under (c)
+   the landing makes no mark — round 3, Fable F4.1).
+12. **A request "taken off" and then retyped to another activity goes on the programme at once**, where it used to wait under
+   Personal Inputs until the next week load (Fable F4.2).
+13. **Loading a week no longer runs a command of its own** — nothing a person sees; the change history and the Undo list
+   never showed it.
 
 ## 9. Build log
 
@@ -357,3 +377,15 @@ and 4. The orphaned week writers `stashEditDays` / `stashEditWeek` removed.
 **(c)** — round 2 on v2: Fable REVISE (F1–F6), Astra BLOCK (1–3); dispositions `…/briefs/2026-09-30-db-readiness-phase6-dispositions-r2.md` — v3 needs a HOLDER BASE (the week on screen always the overlay applied to the day as its holder last committed it), so a derived removal is reversible by an Undo. Fable F1 step 2 built (commit 3f847bdb). His call where v3 is built. Red tests for (c) drafted (`state/p6c-requestonread.test.ts`, uncommitted — 9 of 12 red on today's code).
 **(c) v3 — written 1 Oct 26** on its own branch, `claude/db-readiness-p6c-holder-base` (D467), §3 (c) above; round 3 (the last
 of his cap) next, both reviewers blind.
+**(c) v3 — round 3 and the build, 1 Oct 26:** Astra REVISE (1 — the OIL evidence could read a dead kept row), Fable REVISE (F1–F6);
+all folded into the build — dispositions `…/briefs/2026-10-01-db-readiness-phase6c-dispositions-r3.md`. Built: `state/holderbase.ts`
+(new — the base and the pass), `engine/overlay.ts` (the view: `viewOfWeek`, `requestRowFields`, `srcvOf`, `standsOn`),
+`weekstash.ts` (the standing finder; a saved week worked out on read), `weekctx.ts` / `peek.ts` (a never-saved week too),
+`sched-commit.ts` (the after-command pass; `sched.load` retired), `store.ts` (the load and the boot; the stash is the base),
+`inputedit.tsx` / `InputsPage.tsx` (the request commands write the request only; the refusals gone), `drafts.ts` (`kept`,
+the load's count), `perms.ts` (§11), `changelines.ts`, `board.ts`, `daytpl.ts`, `oilev.ts`, `slots.ts`, `publish.ts`,
+`events.ts`, `interactions.ts`, `pendlist.ts`. Red first: `state/p6c-requestonread.test.ts` (30 cases, 9 of the 12 v2 ones and
+every v3 and round-3 one red on the code before; each round-3 fix broken on purpose → its test red). The unit suite's 67 old
+failures read one by one against the plan: tests of the removed relink and refusals rewritten to the new rule, set-ups that
+planted an unplaced request (no longer a state) moved to the app's own route (✕, then Accept or → Unavail), and six real
+defects of the first build found and fixed (the dispositions' last paragraph).

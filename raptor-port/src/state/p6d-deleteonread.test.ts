@@ -15,7 +15,7 @@ import { PEOPLE, ID_BY_CS, indexCallsigns } from '../engine/people'
 import { DAYS } from '../engine/data'
 import { CURWEEK } from '../engine/waves'
 import { storeBackend } from '../engine/hooks'
-import { stashClear, stashGroundBySrc, setPreservedBlob, clearPreservedBlob } from '../engine/weekstash'
+import { stashClear, stashGroundBySrc, stashDays, setPreservedBlob, clearPreservedBlob } from '../engine/weekstash'
 import { peekWeekHTML } from '../ui/peek'
 import { SCHED, setSign, dayDelta, daySnapOf, dayCurVer } from '../engine/publish'
 import { nextMondaySeed } from '../engine/weekctx'
@@ -258,7 +258,11 @@ describe('phase 6 (d) — a delete writes his records, never a week; every day f
     expect(puckOf(peekWeekHTML()), 'after the delete — the warmed peek is not served again, and the seed is read without him').toBe(false)
   })
 
-  it('the row finder, read before the delete, reads a saved week again without him after it (an extra on another man\'s row)', async () => {
+  /* since [DB-READINESS] phase 6 (c) the row FINDER answers only which request row stands where (weekstash.ts
+     standingRowIn — memoised on the stored blob, the request asked at each lookup); what a saved week SHOWS — without a
+     deleted man from his cutoff — is its read (stashDays → engine/overlay.ts viewOfWeek), never memoised, so it can never
+     serve an answer from before a delete */
+  it('a saved week read before the delete reads again without him after it (an extra on another man\'s row) — his row still stands', async () => {
     await boot(new MemoryBackend())
     INPUTS.unshift({ iid: 'p6dX', person: 'stiff', date: 'Jul 22', yr: 2026, allday: true, type: 'Meeting', mod: 'now' } as any)
     loadWeek(W2)                                         // the week's load lands Saber's meeting on Wednesday
@@ -267,12 +271,12 @@ describe('phase 6 (d) — a delete writes his records, never a week; every day f
       r.more = [HIM]                                     // the scheduler puts Hex on it as an extra (D18)
     })
     loadWeek(W1)
-    const warm = stashGroundBySrc(W2)
-    expect(warm && warm.get('p6dX')!.row.more, 'before: he is an extra on Saber\'s meeting row').toContain(HIM)
+    const rowIn = () => ((stashDays(W2) as any).days[2].ground || []).find((g: any) => g && g.src === 'p6dX')
+    expect(stashGroundBySrc(W2)!.get('p6dX'), 'before: Saber\'s row stands there').toBeTruthy()
+    expect(rowIn().more, 'before: he is an extra on Saber\'s meeting row').toContain(HIM)
     expect(deletePerson(HIM)).toBe(null)
-    const after = stashGroundBySrc(W2)
-    expect(after && after.get('p6dX'), 'Saber\'s row stays').toBeTruthy()
-    expect(after!.get('p6dX')!.row.more || [], 'after: he is gone from it — the memo was not served again').not.toContain(HIM)
+    expect(stashGroundBySrc(W2)!.get('p6dX'), 'Saber\'s row still stands').toBeTruthy()
+    expect(rowIn().more || [], 'after: he is gone from it').not.toContain(HIM)
   })
 
   /* FABLE'S FINAL READ, F1 (30 Sep 26): the week ON SCREEN held read-only (a saved book this build cannot edit) — the delete

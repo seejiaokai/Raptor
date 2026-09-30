@@ -50,11 +50,10 @@ import { CURWEEK } from '../engine/waves'
 import { dayIso } from '../engine/verid'
 import { slotVal, whoArr } from '../engine/slots'
 import { logEdit } from '../engine/editlog'
-import { SCHED } from '../engine/publish'
 import { INPUTS, dateOrd, withRemarksTail, nowStamp } from '../engine/inputs'
 import { ordShift, ordLabel } from '../engine/medical'
 import { stashKeys, stashGet, stashWeekState, isPreservedWeek } from '../engine/weekstash'
-import { stripPersonFromDay, trimTail, overlayDeletedWeek, hisLanded } from '../engine/overlay'
+import { stripPersonFromDay, trimTail, hisLanded } from '../engine/overlay'
 import { validate } from '../engine/validate'
 import { localToday } from '../leavewar/engine/period'
 import { PLANPUCKS } from './plan'
@@ -215,13 +214,11 @@ export function applyDelete(id: string, cutoff: string): void {
     if (dayIso(CURWEEK, di) < cutoff) continue
     for (const k of personKeysOnDay(di, id)) logEdit(k, slotVal(k), '')
   }
-  cmdDeferEffect(() => {
-    /* never over a read-only week — it is shown as it is saved (store.ts applyWeekModel skips it the same way); the
-       preflight above refuses a delete it would need (Fable's final read, F1) — this is the belt */
-    if (!isPreservedWeek(String(CURWEEK))) overlayDeletedWeek(String(CURWEEK), DAYS, { sign: SCHED.sign, signBind: SCHED.signBind, drafts: SCHED.drafts })
-    resyncSchedBaseline()
-    validate()
-  })
+  /* the week on screen is worked out by the ONE after-command pass every scheduler command registers at its apply-end
+     (state/sched-commit.ts afterCommandPass → state/holderbase.ts — [DB-READINESS] phase 6 (c) v3): from the holder base,
+     his seats, landed rows, sign-offs, plans and OIL switches go from his cutoff; never over a read-only week (the preflight
+     above refuses a delete it would need — Fable's final read, F1). Both doors end in that apply-end (deletePerson below,
+     and the posting pass — leavewar/sync.ts). */
   /* 4b. then the inputs themselves */
   for (const r of gone) { const ix = INPUTS.indexOf(r); if (ix >= 0) INPUTS.splice(ix, 1) }
   for (const r of ended) {

@@ -14,7 +14,8 @@ import { PEOPLE } from './people'
 import { validate, WARN } from './validate'
 import { inpShow } from './events'
 import { slotBar, slotRules, dayEngaged } from './avail'
-import { setSlotVal, acceptInput, unacceptInput, autoAcceptInput, autoAcceptSeedInputs } from './slots'
+import { setSlotVal, acceptInput, unacceptInput, autoAcceptInput } from './slots'
+import { baseReset, rederive } from '../state/holderbase'
 import { SCHED, resetSched } from './publish'
 
 const DSNAP = JSON.stringify(DAYS)
@@ -171,11 +172,13 @@ describe('the ground round-trip', () => {
   })
 })
 
-describe('autoAcceptSeedInputs — the boot / week-load pass', () => {
+/* the boot / week-load landing is the load's working-out since [DB-READINESS] phase 6 (c) (state/holderbase.ts — the old
+   autoAcceptSeedInputs pass is gone): the same zero-state */
+describe('the week load working-out: the boot / week-load landing', () => {
   it('lands activity inputs but leaves NO amendment marks (a clean zero-state)', () => {
     fileMeeting(freePilot(), 600, 700)
     resetSched()
-    autoAcceptSeedInputs()
+    baseReset(); rederive()
     expect(DAYS.some((d: any) => (d.ground || []).some((row: any) => row.src))).toBe(true)
     /* the funnel marks each accept pending/added; the pass wipes them so the
        seed's auto-landed rows are the week's zero-state, not unpublished edits */

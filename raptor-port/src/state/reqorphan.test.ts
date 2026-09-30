@@ -10,7 +10,7 @@ import { initStore, loadWeek } from './store'
 import { setSession } from './auth'
 import { DAYS } from '../engine/data'
 import { INPUTS } from '../engine/inputs'
-import { acceptInput, unacceptInput, acceptedDay, relandInputs } from '../engine/slots'
+import { acceptInput, unacceptInput, acceptedDay } from '../engine/slots'
 import { inpId } from '../engine/inputs'
 import { stashClear, stashPut, rowElsewhere } from '../engine/weekstash'
 import { rowsLeftOut } from '../engine/publish'
@@ -117,20 +117,25 @@ describe('a saved week that cannot be read — every door fails closed', () => {
     expect(commitInputEdit(inp, { ...inp, remarks: 'changed' }), 'refused').toBe(false)
     expect(JSON.stringify(inp), 'unchanged').toBe(before)
   })
+  /* since [DB-READINESS] phase 6 (c) a week switch never re-parks a request — "taken off" is set by ✕ alone */
   it('the week switch does not re-park it as "taken off" on the unknown', () => {
     const inp = unreadableW1()
-    relandInputs(new Set([inpId(inp)]))
+    loadWeek(W2); loadWeek(W1)
     expect(inp.acc, 'not silenced — its row may be on the week that could not be read').not.toBe('r')
   })
 })
 
 describe('the delete\'s refusal reads the right weeks', () => {
-  it('its row on ANOTHER week: refused, and the refusal names that day', () => {
+  /* [DB-READINESS] phase 6 (c) (plan §8 item 2): the "Load the week of …" refusal is gone — the row is worked out from the
+     request whenever its week is read, so the delete goes ahead from any week and that week reads without the row */
+  it('its row on ANOTHER week: the delete goes ahead, and that week reads without the row', () => {
     const inp = boundary()
     acceptInput(6, inp, 'g')
     loadWeek(W2)
-    expect(removeInput(inp), 'Load the week of Sun 19 Jul first').toBe(false)
-    expect(INPUTS.includes(inp)).toBe(true)
+    expect(removeInput(inp), 'no "Load the week of Sun 19 Jul first"').toBe(true)
+    expect(INPUTS.includes(inp)).toBe(false)
+    loadWeek(W1)
+    expect(rowsOf(inp), 'gone from Sunday').toEqual([])
   })
   it('the LOADED week\'s own saved copy is stale and never read: a request taken off since deletes (Fable/Astra 1b)', () => {
     const inp: any = { person: 'divot', type: 'Meeting', date: 'Jul 15', s: 540, e: 600, remarks: '', mod: 'now', yr: 2026, _t: 1 }
@@ -177,8 +182,6 @@ describe('a "taken off" request whose own row stands again (a plan switched in) 
     loadWeek(W2)
     expect(inp.acc, 'not silenced as "taken off" — it is on Sunday\'s programme').not.toBe('r')
     expect(accCtl(0, inp)).toContain('On Sun 19 Jul')
-    relandInputs(new Set([inpId(inp)]))
-    expect(inp.acc).not.toBe('r')
   })
 })
 

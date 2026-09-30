@@ -1947,3 +1947,48 @@ restore — repeatable, all-or-nothing, and safe for files whose bytes (line end
 **Suggested improvement:** In session-handoff, write the ready-to-paste opening line INTO the block (a `Opening line:` bullet), and add to the "next chat" guidance: "compare the opening message with the block's Opening line and Pick up here; if they differ, name the difference and ask before starting."
 
 **Principle:** A handoff should carry the instruction it hands over verbatim, so the receiver can tell a stale instruction from a new one instead of guessing.
+
+### Observation 396: A derived view over a saved base must track exactly what the persistence layer writes, including effects that run before the writer reads
+
+**Status:** OPEN
+**Date:** 2026-10-01
+**Session context:** [DB-READINESS] phase 6 (c) v3 — designing a "holder base" so a request's derived effect on a day is reversible by Undo and identical right after an act and after a reload.
+**Skill:** writing-plans (and claudex-loop plan red-teams)
+**Type:** open-source
+**Phase/Area:** Plan design — derived state vs stored state
+
+**Issue:** The design had to keep an in-memory "base" per day that must equal the stored row at all times. Reading the command engine showed the row writer (a phase-9 stream consumer) reads the command layer's baseline AFTER phase-8 effects have run and re-synced it — so an after-command effect that recomputes derived state also changes what gets stored for any day the command wrote. A base updated only from the command's own changes would silently diverge from storage. The fix was "absorb, then bake": a day the command wrote takes the live day as its base, and after the derived view is worked out, the view itself becomes the base — because that is what the writer will store. Also: the in-memory copy written when leaving a screen had to become the base, not the view, or a return to the screen would differ from a reload.
+
+**Suggested improvement:** In writing-plans, add a checklist item for any plan that layers a derived/computed view over persisted state: (1) name the exact moment and source the persistence writer reads; (2) state the invariant "base == stored" and show each writer (commands, effects, caches written on navigation) preserves it; (3) require a test that compares "right after the act" with "after a reload" for every act, including Undo/Redo.
+
+**Principle:** When a derived view sits on a saved base, the base must be defined as what the persistence layer actually writes, at the moment it writes it — trace every effect that runs before the writer, and every cache written on navigation, or "right after" and "after a reload" drift apart.
+
+### Observation 397: A typecheck that checks nothing reads as a clean pass — confirm the command covers the source first
+
+**Status:** OPEN
+**Date:** 2026-10-01
+**Session context:** [DB-READINESS] phase 6 (c) v3 build — typechecking each edit while building.
+**Skill:** verification-before-completion
+**Type:** open-source
+**Phase/Area:** Verification commands — "does this check actually look at my change?"
+
+**Issue:** For most of the build the agent ran `tsc --noEmit -p tsconfig.json`, which in this repo is a solution-style root config with no files of its own (the real settings are in `tsconfig.app.json`, reached by `tsc -b`). Every run printed nothing and was read as "clean". Three files used a new helper without importing it; the gap surfaced only as a runtime ReferenceError inside a unit test ("reducer threw (rolled back)"), which first looked like a design failure.
+
+**Suggested improvement:** In verification-before-completion, add: before trusting a silent checker, prove it checks the change — introduce (or recall) a known error once and see it reported, or use the project's own build script (`npm run build` → `tsc -b`). A checker that has never been seen to fail on this repo is not evidence.
+
+**Principle:** Silence from a check is evidence only if that check has been seen to catch a defect in the same setup; otherwise confirm its coverage first.
+
+### Observation 398: A test helper that renames a field silently drops it — a fixture assertion catches the mis-set-up, not the feature
+
+**Status:** OPEN
+**Date:** 2026-10-01
+**Session context:** [DB-READINESS] phase 6 (c) — red-first tests for round-3 findings.
+**Skill:** test-driven-development
+**Type:** open-source
+**Phase/Area:** Break tests / red-first verification
+
+**Issue:** A new test passed with its fix removed. Investigation showed the helper (`file({ end: ... })`) built its draft from a record field named `endDate`, so the `end` the test passed was silently dropped: the "two-day request" was a one-day request and never exercised the bug. The break test (removing the fix and re-running) is what exposed it; a green run alone would have shipped a test that proves nothing.
+
+**Suggested improvement:** In test-driven-development's red-green cycle, add: when a test stays green with its fix removed, first assert the fixture's premise (e.g. `expect(req.endDate).toBe(...)`) before suspecting the fix; and write premise assertions into the test so a mis-built fixture fails loudly.
+
+**Principle:** A test must assert its own set-up where the set-up is the point; the break test is how you find a fixture that silently didn't build the scenario.

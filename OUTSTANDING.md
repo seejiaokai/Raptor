@@ -73,8 +73,9 @@ award fix are due before the tables are settled. What to finish before the hand-
    ([OIL-AWARD-IS-A-GRANT] is DONE, merged 29 Sep 26.) Group A: plan v4 final (30 Sep 26); **phases 0–5 and 5b built
    30 Sep 26** on `claude/db-readiness-table-shaping-4094f6` (plan §9); **its FULL check done 30 Sep 26** (the walk and both
    reviewers' code reads, every finding fixed — `raptor-port/docs/handpass/2026-09-30-dbrA-group-walk.md`); **phase 6 (a),
-   (b), (d) built and FULL-checked 30 Sep 26** (`raptor-port/docs/handpass/2026-09-30-dbr-phase6-check.md`) — next his look
-   (both cards), then phase 6 (c) v3 in a fresh chat on its own branch (D467), then 7.
+   (b), (d) built and FULL-checked 30 Sep 26** (`raptor-port/docs/handpass/2026-09-30-dbr-phase6-check.md`); **phase 6 (c) v3
+   (the holder base) planned, red-teamed (round 3, the last) and BUILT 1 Oct 26 on `claude/db-readiness-p6c-holder-base`** (D467)
+   — its own FULL check under way; then his look (the cards), then 7.
 5. **When Manfred is ready — [DB-STEP]:** the data model to him, then the one adapter to his tables; the stack
    ([ARCH-STACK]) resumes there, with its step 6 still to come; the [AMEND] work is queued behind it. Architecture first,
    then the individual bugs (D144).
@@ -83,7 +84,7 @@ award fix are due before the tables are settled. What to finish before the hand-
 
 **The small OIL follow-ups — ONE batch, with the OIL award fix, before the tables are settled (D147, D203, D354):** [OIL-READ-LEFTOVERS] (its items 1, 2, 4),
 [STORE-READER-SWEEP], [OIL-REQ-NAMEBOX] (a walk question for him), [OIL-WORDS],
-[OIL-PERSONAL-PLACEHOLDER] (FULL tier), [CROWD-SIM-BRIEF] (WALK tier), [OIL-RELINK-XWEEK].
+[OIL-PERSONAL-PLACEHOLDER] (FULL tier), [CROWD-SIM-BRIEF] (WALK tier). ([OIL-RELINK-XWEEK] closed 1 Oct 26 by `[DB-READINESS]` phase 6 (c).)
 
 **Placed by their own lines — not his rulings:** from the group-A FULL walk (30 Sep 26) — with group B:
 [UNDO-PUBLISH-ERASES-ISSUANCE], [TRK-IMPORT-ONE-GROUP], [TRK-FIRST-ORDER-PLACE] (low); low, with the next change there:
@@ -634,22 +635,6 @@ screen says so. Two spot-checks came back clean (`readPersonEdits` matches
 not been walked. **Small, mechanical, and worth doing once**: for each reader,
 find its writer and diff the shapes. Priority: with the other small follow-ups.
 
-### [OIL-RELINK-XWEEK] A request landed in a stashed week keeps the OLD man, and can land twice — OPEN, 22 Sep 26
-
-**Pre-existing, not OIL-caused, and out of scope for this branch** (Fable F8). Two limits that job
-2's "one row" premise stands on:
-
-- A person change made while the anchor's week is STASHED cannot reach the row. The relink finds
-  nothing to unaccept, toasts "moved outside the programmed week" and drops the landing mark; when
-  that week loads, the row is re-found and re-marked — but its `who` is still the OLD man. The money
-  goes to the new man through the claim while the programme draws the old one.
-- The duplicate-landing guard scans LOADED days only, so a request landed in week B whose start is
-  then moved into week A gets a SECOND row when week A loads. The two rows can disagree (one
-  cancelled, one live), and the standing reads whichever week is loaded.
-
-The stash-aware read built for `[OIL-XWEEK-ELSEWHERE]` is the same seam a stash-aware relink would
-use. **Context.** `…/specs/2026-09-22-oil-jobs12-codereview-fable.md` §3 F8.
-
 ### [LW-SCRUBBER-FLAKY] Leave War e2e tests time out on a saturated machine — PRE-EXISTING (21 Sep 26)
 `e2e/leavewar.spec.ts` "the bottom scrollbar is a year-wide scrubber", lw-desktop only. Under a full
 parallel run it sometimes times out after the SEP month button is clicked: the grid has not scrolled
@@ -1093,7 +1078,7 @@ order, hidden, deleted) and the details typed on each ball one row per chart and
 changed, so two people's work on two things never overwrites; a browser's old records are converted once at boot by the
 fold's eighth converter (the store's format is now 6), every chart, layout and detail carried across (tested: his old
 records read and export exactly as before). **Before its "merge live", remind him to EXPORT a copy of his Tracker first
-(D464).** Still in group A: the FULL check is DONE (30 Sep 26 — the walk and both code reads, every finding fixed; the evidence sheet `raptor-port/docs/handpass/2026-09-30-dbrA-group-walk.md`); his look, then phase 6, then 7; the plan's §9 is the build log.** **Phase 6 (plan `raptor-port/docs/superpowers/plans/2026-09-30-db-readiness-phase6-plan.md`) is built now, (c) included, without waiting for IT's written answers (D465, 30 Sep 26 — "Carry on"; D466 — only work needing IT's confirmation is held, and (c) does not): (a), (b) and (d) BUILT 30 Sep 26 (a hand-over, an Unavailable filing and a delete write no day; a deleted man is read off every day from his cutoff); (c) redesigned after both reviewers' round 1 (plan v2); round 2 (Fable REVISE, Astra BLOCK) — (c) v3 needs a holder base (dispositions r2). **The FULL bug check of (a), (b), (d) DONE 30 Sep 26 (D467 — `raptor-port/docs/handpass/2026-09-30-dbr-phase6-check.md`: the walk on both builds, both reads, every finding fixed or filed below). Next: his look (the card at its foot), then (c) v3 in a fresh chat on its own branch, its last review round, its build and its own FULL check.**
+(D464).** Still in group A: the FULL check is DONE (30 Sep 26 — the walk and both code reads, every finding fixed; the evidence sheet `raptor-port/docs/handpass/2026-09-30-dbrA-group-walk.md`); his look, then phase 6, then 7; the plan's §9 is the build log.** **Phase 6 (plan `raptor-port/docs/superpowers/plans/2026-09-30-db-readiness-phase6-plan.md`) is built now, (c) included, without waiting for IT's written answers (D465, 30 Sep 26 — "Carry on"; D466 — only work needing IT's confirmation is held, and (c) does not): (a), (b) and (d) BUILT 30 Sep 26 (a hand-over, an Unavailable filing and a delete write no day; a deleted man is read off every day from his cutoff); (c) redesigned after both reviewers' round 1 (plan v2); round 2 (Fable REVISE, Astra BLOCK) — (c) v3 needs a holder base (dispositions r2). **The FULL bug check of (a), (b), (d) DONE 30 Sep 26 (D467 — `raptor-port/docs/handpass/2026-09-30-dbr-phase6-check.md`: the walk on both builds, both reads, every finding fixed or filed below). Next: his look (the card at its foot), then (c) v3 in a fresh chat on its own branch, its last review round, its build and its own FULL check.** **(c) v3 BUILT 1 Oct 26** on its own branch, `claude/db-readiness-p6c-holder-base` (D467): round 3 (Astra REVISE — 1; Fable REVISE — F1–F6; all folded into the build — `raptor-port/docs/superpowers/briefs/2026-10-01-db-readiness-phase6c-dispositions-r3.md`), the build (the plan's §9), its FULL check next; `[OIL-RELINK-XWEEK]` closed by it.
 **Found in phase 4, for phase 5b — FIXED 30 Sep 26 in phase 5b:** the
 Tracker writes one person's syllabus pick (D376 — his own last chart, a per-person view choice) into the course's SHARED
 plan record (`v3:<course>:plan` `sylId`, `src/tracker/app/core.js loadCourseNow`) whenever a course loads — in a shared

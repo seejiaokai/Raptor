@@ -145,6 +145,9 @@ function mintBlob(d: any): DayTplBlob {
        input it was promoted from (slots.ts's acceptInput) — an identity
        reference exactly like a crewed seat, not part of the row's shape */
     delete r.src
+    /* …and what rides with the link: what the row was made from, and the holder's "kept" ([DB-READINESS] phase 6 (c) —
+       Fable's round-3 F5): a template's row is nobody's request */
+    delete r.srcv; delete r.kept
     if (Array.isArray(r.more)) r.more = r.more.map(() => '')
   })
 

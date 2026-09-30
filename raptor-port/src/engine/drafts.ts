@@ -10,6 +10,8 @@ import { groundOrder } from './order'
 import { HOOKS } from './hooks'
 import { ridKey, posKey, rowsOf, ensureRowIds } from './rowids'
 import { isoDayWords } from './weekstash'
+import { rowMayStand, viewOfWeek } from './overlay'
+import { CURWEEK } from './waves'
 
 /* PER-DAY ALTERNATE DRAFTS (owner ask, 15 Aug 26 — "allow me to duplicate the
    current day's schedule and edit over it… if one variable change, they can
@@ -100,6 +102,54 @@ const leaveOut = (di: number, nd: any) => {
   /* …and a DELETED man is never put back on a day from his cutoff ([POST-OUT-OUTCOMES], D297): stripped from the
      incoming day, and the same message says so */
   for (const cs of HOOKS.stripDeleted(di, nd)) ROWSLEFT.push({ id: 'dead:' + cs, who: cs, what: '', days: [], dead: true })
+  markKept(nd)
+}
+/* THE DAY A LOAD ONTO THE WORKING COPY WILL LEAVE — for its confirm's count ("Discard N edits", publish.ts dayDiscardCount;
+   Fable's round-2 F5): the version's day through the load's own steps (D175's leave-out, the deleted strip by the request's
+   current holder, `kept`), then worked out with the rest of the week as the after-command pass will work it out
+   (overlay.ts viewOfWeek) — on copies, so nothing live moves. Not simulated: the filings the load puts back (D98), whose only
+   effect here is a request it takes off or files under Unavailable, which then does not land. */
+export function dayAsLoadLeaves(di: number, snapDay: any): any {
+  di = +di
+  const nd = liveDay(snapDay)
+  const left = rowsLeftOut(di, nd)
+  if (left.length) leaveRowsOut(nd, left.map(x => x.id))
+  HOOKS.stripDeleted(di, nd)
+  markKept(nd)
+  nd.today = !!(DAYS[di] && DAYS[di].today)
+  const ctx = {
+    loaded: true,
+    issued: (dj: number) => {
+      if (!dayApproved(dj)) return null
+      const ver = dayCurVer(dj)
+      return (ver != null ? daySnapOf(dj, ver) : null) || {}
+    },
+  }
+  /* like with like: the count compares with the day ON SCREEN, which the app always shows worked out (the working-out is
+     idempotent over it). A week never worked out — a unit test's hand-set week, no load or boot — keeps the count's old
+     measure, the version's day with D175's leave-out only, rather than blame the load for rows the screen never had. */
+  const live = DAYS.map((d: any) => clone(d))
+  viewOfWeek(String(CURWEEK), live, ctx)
+  if (JSON.stringify(live[di]) !== JSON.stringify(DAYS[di])) return nd
+  const days = DAYS.map((d: any, j: number) => (j === di ? nd : clone(d)))
+  viewOfWeek(String(CURWEEK), days, ctx)
+  return days[di]
+}
+HOOKS.dayAsLoadLeaves = dayAsLoadLeaves
+/* THE HOLDER'S CHOICE, KEPT ([DB-READINESS] group A, phase 6 (c) — D363's letter, "every row that version had"): a row the
+   incoming day brings whose request is gone, is not an activity, is filed under Unavailable or no longer covers the day
+   would be taken away the moment the day is worked out (engine/overlay.ts rule 1 / 2). It is the holder's to bring back,
+   so it is marked `kept` and stands — until its request can stand on that day again, when it is the request's row once
+   more (rule 3). Every other request row keeps the `srcv` it carries — the version's own, frozen at issue; a plan's, as
+   parked — so what the request has changed since is re-made (rule 6; Fable's round-2 F1: stamping the current fingerprint
+   here left a handed-over request's row with its old holder for good). */
+function markKept(nd: any) {
+  for (const row of ((nd && nd.ground) || [])) {
+    if (!row || !row.src) continue
+    const r: any = (INPUTS as any[]).find((i: any) => i && String(i.iid || '') === String(row.src))
+    if (r && (inputProtected(r) || rowMayStand(r, nd.dt))) delete row.kept
+    else row.kept = true
+  }
 }
 /* " · Bane · Meeting left out — it is on Tuesday's programme", one clause per request; '' when nothing was left out */
 export function rowsLeftSaid(list: Array<{ who: string, what: string, days: string[], dead?: boolean, unknown?: boolean }>): string {

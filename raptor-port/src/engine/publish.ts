@@ -13,6 +13,7 @@ import { CURWEEK, isStandalone } from './waves'
 import { groundOrder } from './order'
 import { dayIso, verId, parseVerId, verSeq, verSeqLabel, isValidVerId } from './verid'
 import { isPreservedWeek, rowElsewhere } from './weekstash'
+import { standsOn } from './overlay'   // functions only both ways
 import { inputProtected } from './quarantine'   // functions only both ways, so the import loop is safe
 import { rosterIds } from './faceattrs'
 import { oilEvidence, oilEvidenceKey, oilSignKey, oilKeyNoMem, oilDecisionsKey, oilKeyBeforeStand, oilUpgradeMovedMoney, oilMovedInputsOnly } from './oilev'
@@ -695,7 +696,10 @@ export function dayDiscardCount(di:any):number{di=+di;
   /* measured against the day as the load will LEAVE it (D175): a row whose request now stands on another day is not
      put back, so the edit that took it off Monday is not replaced — counting it read "Discard 1 edit" for a load that
      discards nothing */
-  const left=rowsLeftOut(di,snap.d), after=left.length?leaveRowsOut(JSON.parse(JSON.stringify(snap.d)),left.map((x:any)=>x.id)):snap.d;
+  /* …AND as the working-out after it leaves it ([DB-READINESS] phase 6 (c) — Fable's round-2 F5; drafts.ts dayAsLoadLeaves):
+     a deleted man stripped, the rows the holder brings back `kept`, a row re-made for what its request has changed since
+     the version (a hand-over), and a request filed since landed again — none of those is discarded by the load */
+  const after=HOOKS.dayAsLoadLeaves?HOOKS.dayAsLoadLeaves(di,snap.d):(()=>{const left=rowsLeftOut(di,snap.d);return left.length?leaveRowsOut(JSON.parse(JSON.stringify(snap.d)),left.map((x:any)=>x.id)):snap.d;})();
   const units:any[]=canonicalUnits(after,DAYS[di],di);
   const lone=filingRestorePlan(di,snap.fil,after).put.filter((p:any)=>{
     const u=requestRowUnit(units,inpId(p.inp),String(p.want||''),String(p.inp.acc||''),after,DAYS[di]);
@@ -756,7 +760,7 @@ export function filingRestorePlan(di:any,fil:any,dayAfter?:any):{put:Array<{inp:
    Narrowed to the weeks the request covers (its request is found by id), so one damaged week blocks only its own. */
 export function rowsLeftOut(di:any,dayIn:any):Array<{id:string,days:number[],row:any,away?:string}>{di=+di;const out:any[]=[];
   ((dayIn&&dayIn.ground)||[]).forEach((r:any)=>{const id=r&&r.src; if(!id||out.some((x:any)=>x.id===String(id)))return;
-    const days=DAYS.map((d:any,dj:number)=>(dj!==di&&d&&((d.ground||[]).some((g:any)=>g&&g.src===id)))?dj:-1).filter((dj:number)=>dj>=0);
+    const days=DAYS.map((d:any,dj:number)=>(dj!==di&&d&&standsOn(d,id))?dj:-1).filter((dj:number)=>dj>=0);   // STANDS there — a dead kept row does not
     if(days.length){out.push({id:String(id),days,row:r});return;}
     const inp=(INPUTS as any[]).find((x:any)=>x&&String(inpId(x))===String(id));
     const w=rowElsewhere(id,inp);

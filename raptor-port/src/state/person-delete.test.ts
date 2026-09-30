@@ -226,7 +226,9 @@ describe('PO7 — a request spanning the cutoff, landed on a day to come, stays 
     expect(JSON.stringify((DAYS as any)[TO_COME].ground || []), 'its row is on the day to come').toContain(String(inp.iid))
     expect(deletePerson(HIM)).toBe(null)
     expect(JSON.stringify((DAYS as any)[TO_COME].ground || []), 'the row left the day to come').not.toContain(String(inp.iid))
-    expect(inp.acc, 'the kept part is still accepted — never "taken off"').toBe('g')
+    /* since [DB-READINESS] phase 6 (c) its filing is worked out from where its row stands on the week on screen — the point
+       Fable's read made stands: the delete never leaves it "taken off" (dormant) */
+    expect(inp.acc, 'the kept part is never "taken off"').not.toBe('r')
     expect(inp.endDate === undefined || inp.endDate === 'Jul 14', 'it ends the day before the cutoff').toBe(true)
     expect(INPUTS.includes(inp)).toBe(true)
   })

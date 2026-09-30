@@ -53,7 +53,8 @@ import { issuedDisclosed, discloseIssued } from './disclosure'
 import { PLANPUCKS, DAYRMK } from './plan'
 import { WARNOFF, DPREV, prunePreviews } from './view'
 import { canEditSched } from './auth'
-import { deriveActor, isCommitting } from '../command'
+import { deriveActor, isCommitting, activeEnvelope } from '../command'
+import { rederive, daysNamed } from './holderbase'
 import { commitAs } from '../command/commit'
 import { systemActor } from '../command/actor'
 
@@ -401,6 +402,29 @@ function applyEnd(): void {
      §2.3): only a row with none, or one a writer moved, takes a new one */
   mintOrd(PLANPUCKS, puckIdOf)
   SCHED_BASELINE = histSnap()
+  afterCommandPass()
+}
+
+/* THE WEEK ON SCREEN, WORKED OUT AFTER EVERY COMMAND THAT ENLISTED THE SCHEDULER ([DB-READINESS] group A, phase 6 (c) v3 —
+   plan §3 (c) §5; state/holderbase.ts). A command changes, inside itself, only what it means to change — a request, a
+   person, a day its holder edits — and all of that is saved as always. What it does to the week on screen (a request's
+   row made, re-made or taken away; a deleted man taken off) is worked out AFTER it, at phase 8, from the holder base: so it
+   is shown at once, it is nobody's change (the baseline moves on with it, so no command records or saves it), and a
+   refused command — rolled back before phase 8 — moves nothing. Registered ONCE per command (a nested command joins its
+   outer one's envelope), and it reads that envelope's changes: the days whose rows the command wrote are the ones whose
+   base moves (the row writer's own rule). The delete's own after-command overlay folded into it (person-delete.ts). */
+let PASS_FOR: unknown = null
+function afterCommandPass(): void {
+  if (!isCommitting()) return
+  const env = activeEnvelope()
+  if (!env || PASS_FOR === env) return
+  PASS_FOR = env
+  cmdDeferEffect(() => {
+    if (PASS_FOR === env) PASS_FOR = null
+    const changed = rederive({ absorb: daysNamed(env.changes), live: true })
+    /* the checks and the repaint follow what the pass put on screen (Fable F4): the command's own validate ran before it */
+    if (changed) { resyncSchedBaseline(); HOOKS.reflow() }
+  })
 }
 
 /* [DB-READINESS] group A, phase 1.3 (plan §3, R2-07) — a day is one saved row, so the command's own housekeeping must not
@@ -478,9 +502,8 @@ export const SCHED_TYPES = {
   oil: 'sched.oil',
   draftRename: 'sched.draft.rename',
   draftDelete: 'sched.draft.delete',
-  /* [DB-READINESS] group A, phase 1.3 (R3-01, F3-01) — the landing a week load makes on a week already saved: the
-     requests filed on its days put on its ground programme. Run by the app (the system actor, origin `seed`): never an
-     Undo step, its revisions tracked as expected, no barrier (undo/timeline.ts) */
+  /* RETIRED ([DB-READINESS] group A, phase 6 (c), 1 Oct 26): a week load's landing — worked out by the load itself now, no
+     command (state/store.ts workOutLoadedWeek). Kept declared: nothing raises it. */
   load: 'sched.load',
 } as const
 
@@ -541,18 +564,9 @@ export function commitSchedValue<T>(type: string, fn: () => T, meta?: any): T {
   return commitSched(type, schedScope(), fn, meta).value
 }
 
-/* [DB-READINESS] group A, phase 1.3 — WEEK NAVIGATION IS READ-ONLY (R3-01, F3-01). loadWeek installs the arriving week
-   with no store enlisted across the change of week; this command then runs only its landing pass, on a baseline taken
-   on the ARRIVING week (both images carry that week's identity), so its envelope names exactly the rows the landing
-   changed — never a record of the week just left. Dispatched only while the command layer is idle (loadWeek checks):
-   from inside another command it would join or queue behind it. */
-export function commitSchedLoad(fn: () => void): CommitResult {
-  resyncSchedBaseline()
-  return commitAs(
-    { type: SCHED_TYPES.load, scope: schedScope(), apply: (txn) => { txn.enlist(schedStore); fn(); applyEnd() } },
-    { actor: systemActor(), origin: 'seed' },
-  )
-}
+/* THE WEEK LOAD'S OWN COMMAND (commitSchedLoad, `sched.load`) is gone ([DB-READINESS] group A, phase 6 (c), 1 Oct 26): the load
+   works its week out of band (state/store.ts workOutLoadedWeek) and paints nothing, so there is nothing to latch; the type
+   stays declared (its permission and the row writer's skip) for a stream that may still carry one from an older session. */
 
 /* the seam for the previously-unrouted paths. schedWrite is JUST commitSchedVoid
    — no isInReducer branch (R2-03): dispatch already child-joins a reducer-time

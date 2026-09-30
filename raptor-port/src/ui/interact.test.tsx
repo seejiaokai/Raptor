@@ -68,6 +68,9 @@ afterAll(async () => {
   host.remove()
 })
 
+/* the day's hand-made ground rows (no request behind them) — since [DB-READINESS] phase 6 (c) a request's own row is worked
+   out on read, so overwriting a day's rows by hand does not take its requests off: they land again beside the hand rows */
+const handGround = (di: number) => ((DAYS[di] as any).ground || []).filter((x: any) => x && !x.src).map((x: any) => x.prog)
 describe('puck selection (tfin B14)', () => {
   /* owner, Aug 26: clicking a puck lights up EVERY copy of that person — you
      want to see everywhere the name is planted — while the rest dims */
@@ -664,7 +667,7 @@ describe('the Auto sort buttons put a section back in order', () => {
     act(() => notify())
     mountBoard(0)
     clickAttr('[data-sortsec="g.0"]')
-    expect(DAYS[0].ground.map((x: any) => x.prog)).toEqual(['EARLIER', 'LATER'])
+    expect(handGround(0)).toEqual(['EARLIER', 'LATER'])
     expect(DAYS[0].gman).toBeFalsy()
   })
 
@@ -679,7 +682,7 @@ describe('the Auto sort buttons put a section back in order', () => {
     mountBoard(0)
     toasts = []
     clickAttr('[data-sortsec="g.0"]')
-    expect(DAYS[0].ground.map((x: any) => x.prog)).toEqual(['EARLIER', 'LATER'])
+    expect(handGround(0)).toEqual(['EARLIER', 'LATER'])
     expect(DAYS[0].gman).toBeFalsy()
     expect(toasts).not.toContain('Already in order')
     expect(toasts).toContain('Ground programme back to time order')
@@ -773,7 +776,7 @@ describe('Sort all — every section, one confirm, one undo step (owner, 8 Aug 2
     expect(DAYS[di].allhands.map((x: any) => x.prog)).toEqual(['EARLIER', 'LATER'])
     expect(DAYS[di].dutywaves[0].rows.map((r: any) => r.role)).toEqual(['SDO', 'OPS-O'])
     expect(DAYS[di].sims.oft.map((x: any) => x.label)).toEqual(['EARLY', 'LATE'])
-    expect(DAYS[di].ground.map((x: any) => x.prog)).toEqual(['EARLIER', 'LATER'])
+    expect(handGround(di)).toEqual(['EARLIER', 'LATER'])
     expect(DAYS[di].waves[0].formations.map((f: any) => f.cs)).toEqual(['EARLY', 'LATE'])
     expect(DAYS[di].notes).toEqual(['SECOND TYPED', 'FIRST TYPED'])
   })

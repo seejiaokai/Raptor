@@ -11,6 +11,7 @@
    day builders match by date. That global-ness is pinned below too. */
 import { beforeEach, describe, expect, it } from 'vitest'
 import { initStore, loadWeek, weekStashSnap } from './store'
+import { afterSchedMutate } from './view'
 import { DAYS } from '../engine/data'
 import { DATES, INPUTS, inputCoversDate } from '../engine/inputs'
 import { autoAcceptInput, unacceptInput, inpId, acceptInput } from '../engine'
@@ -293,32 +294,30 @@ describe('loadWeek', () => {
     loadWeek('20/07/2026')                       // leave — the week stashes (publish state changed)
     loadWeek('13/07/2026')                       // return via the restore path
     expect(inp.acc, 'never removed → never dormant').not.toBe('r')
-    expect(landed(inp), 'still refused by the published day — not landed, but not removed either').toBe(false)
+    /* [DB-READINESS] phase 6 (c) (plan §8 item 1): a request its published day's issued version never saw lands on the
+       working copy as a pending change — at a load too, as it does when filed live (the 16 Sep 26 rule) */
+    expect(landed(inp), 'on the working copy, pending — not refused, and not removed').toBe(true)
     expect(INPUTS.some((r: any) => r.person === 'divot' && r.type === 'Training' && (r as any)._t),
       'still a live personal input that will land once its day is a draft again').toBe(true)
   })
 
-  /* FINDING 1 (Astra/Fable inspect, 13 Sep 26): editing or deleting an accepted
-     input whose ground row is on a NON-loaded week must be refused — otherwise the
-     stashed row is stranded with stale content (a silent mismatch, since landings
-     address by the stable id now). */
-  it('refuses to edit or delete an accepted input whose row is on a non-loaded week, and allows it once loaded', () => {
+  /* FINDING 1 (Astra/Fable inspect, 13 Sep 26) refused an edit or a delete of an accepted input whose row was on a
+     NON-loaded week — the stashed row would have been stranded with stale content. [DB-READINESS] phase 6 (c) (1 Oct 26 —
+     plan §8 item 2): the row is worked out from the request whenever its week is read, so the edit and the delete go ahead
+     from any week, and that week shows them when it is opened. */
+  it('edits and deletes an accepted input whose row is on a non-loaded week — that week shows each when it is read', () => {
     const X: any = { person: 'divot', type: 'Meeting', date: 'Jul 13', allday: false, s: 540, e: 600, remarks: '', mod: 'now', yr: 2026, _t: 1 }
     INPUTS.push(X); expect(acceptInput(0, X, 'g')).toBe(true)      // land X on the loaded week (its row makes the week dirty)
+    afterSchedMutate()                                            // the scheduler's Accept, saved with the day
     expect(landed(X)).toBe(true)
-    loadWeek('20/07/2026')                                        // leave — the week is stashed WITH X's row, X.acc cleared
+    loadWeek('20/07/2026')                                        // leave — the week is stashed WITH X's row
     expect(acceptedDay(X), 'no landing on the loaded week now').toBeLessThan(0)
-    const toasts: string[] = []
-    const realToast = HOOKS.toast
-    HOOKS.toast = ((m: any) => { toasts.push(String(m)) }) as any
-    try {
-      expect(commitInputEdit(X, draftOf(X)), 'edit refused').toBe(false)
-      expect(removeInput(X), 'delete refused').toBe(false)
-      expect(toasts.some(t => /Load the week/.test(t)), 'told to load the week first').toBe(true)
-    } finally { HOOKS.toast = realToast }
-    expect(INPUTS.indexOf(X), 'the input is untouched — nothing was stranded').toBeGreaterThanOrEqual(0)
-    loadWeek('13/07/2026')                                        // back on X's own week
-    expect(acceptedDay(X), 'its row is loaded again').toBeGreaterThanOrEqual(0)
-    expect(removeInput(X), 'now the delete goes through').toBe(true)
+    expect(commitInputEdit(X, { ...draftOf(X), remarks: 'edited from week 2' }), 'the edit goes ahead').toBe(true)
+    loadWeek('13/07/2026')
+    expect(DAYS[0].ground.find((g: any) => g && g.src === X.iid)?.rmks, 'its week shows the edit').toBe('edited from week 2')
+    loadWeek('20/07/2026')
+    expect(removeInput(X), 'the delete goes ahead').toBe(true)
+    loadWeek('13/07/2026')
+    expect(landed(X), 'and its row is gone from its week').toBe(false)
   })
 })

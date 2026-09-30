@@ -10,6 +10,7 @@ import { HOOKS } from './hooks'
 import { logEdit } from './editlog'
 import { ridWriteKey } from './rowids'
 import { rowElsewhere } from './weekstash'
+import { requestRowFields, srcvOf, standsOn, standingRow } from './overlay'
 export function whoArr(r:any){return Array.isArray(r.who)?r.who.slice():(r.who?[r.who]:[]);}
 /* Blanks are HELD, not filtered out: a cleared slot has to keep its index or
    every person after it shifts up one and the amendment marks — and the keys
@@ -468,7 +469,7 @@ export function acceptInput(di:any,inp:any,dest:any){
      means "this EXACT input already has a landing" — a correct idempotency check
      (re-accepting the same input never duplicates), not a twin refusal. */
   const key=inpId(inp);
-  const onDay=DAYS.findIndex((dd:any)=>((dd&&dd.ground)||[]).some((r:any)=>r.src===key));
+  const onDay=DAYS.findIndex((dd:any)=>!!standsOn(dd,key,inp));   // its STANDING row — never a dead kept one (overlay.ts)
   if(onDay>=0){
     /* A "TAKEN OFF" REQUEST WHOSE OWN ROW STANDS AGAIN ([REQ-ORPHAN-ROW] 3, 28 Sep 26 — Fable's D176 read F3). A plan
        parked WITH the row, the request ✕'d since (dormant 'r'), then the plan switched in: the row is back beside a request
@@ -512,10 +513,10 @@ export function acceptInput(di:any,inp:any,dest:any){
      the landed row prints the callsign unchanged while a rename moves nothing.
      Title is the TYPE and the submitter's remarks land in the row's rmks cell
      (owner, Aug 26): 'APPOINTMENT · dental review', not one mashed title. */
-  const row:any={prog:inpLabel(inp).toUpperCase(),
-                 str:inp.allday?'':hhmm(inp.s), end:inp.allday?'':hhmm(inp.e),
-                 who:inp.person,
-                 rmks:inp.remarks||'', src:key, srcType:inp.type};
+  /* the six fields the request writes on its row are ONE body (overlay.ts requestRowFields — a landing on read and a re-made
+     row mint them the same way), and `srcv` records what the row was made from ([DB-READINESS] phase 6 (c)): a later edit
+     of the request re-makes it, a scheduler's own edit of the row does not */
+  const row:any={...requestRowFields(inp), src:key, srcv:srcvOf(inp)};
   if(rid)row.rid=rid;
   d.ground.splice(ri,0,row);
   inp.acc='g';
@@ -536,28 +537,11 @@ export function acceptInput(di:any,inp:any,dest:any){
   markStructuralAdd(`gr:${di}.${ri}.prog`);
   return true;
 }
-/* AUTO-LAND AN ACTIVITY INPUT ON THE GROUND PROGRAMME (owner, Aug 26). Every
-   personal ACTIVITY input (a meeting, an appointment — isPersonal) drops onto
-   its day's ground programme the moment it is filed, so a scheduler sees the
-   commitment in place and the crew picker's busy-check warns BEFORE a plant,
-   not after. Leave, medical, OD and SANS are not activity types (isPersonal
-   is false), so they never promote — they stay in the Unavailable block, and
-   acceptInput's own isUnavail gate is the backstop.
-
-   A DAY ALREADY PUBLISHED — the two callers now split (owner 16 Sep 26, refining the
-   26 Aug 26 call). A request filed LIVE by a person (the INTERACTIVE creation paths —
-   the two + Add dialogs, the Inputs page) auto-lands on the WORKING COPY as a pending
-   amendment: it increases the pending/changes count so the scheduler sees something
-   changed, and removes it if unwanted; the ISSUED face stays frozen until published (the
-   OFFICIAL pass reads the signed snapshot + fileAcc, so the new input never leaks there).
-   The SEED / week-LOAD passes (autoAcceptSeedInputs, and store.ts's restore-landing loop
-   which runs AFTER dayOK is restored) must NOT churn a published day with a surprise
-   amendment at load — they pass no onApproved, so the guard still holds for them. This is
-   the ONE decision "should a new/seed input auto-land, and do it", so the two paths cannot
-   drift. It fires ONLY at creation and at boot, never on a repaint, so a scheduler who then
-   REMOVES the row (unaccept → acc 'r') keeps it in Personal Inputs — DORMANT, flagging
-   nothing (see unacceptInput) — and the truthy-acc guard below is what stops a week load
-   from silently re-landing it. Returns true when it promoted the row. */
+/* LAND ONE ACTIVITY REQUEST ON ITS START DAY, AS A SCHEDULER'S ACCEPT WOULD — no longer an app path ([DB-READINESS] group A,
+   phase 6 (c), 1 Oct 26). The app lands a request by working it out on read (engine/overlay.ts viewOfWeek, after every
+   command and at every load — state/holderbase.ts): nobody's change, with the request's own row id. This helper, kept for
+   the tests that set a day up by hand, lands through acceptInput instead (a scheduler's placement, its own row id); on a
+   published day only with `onApproved` (the old live-filing rule, 16 Sep 26). Never call it from a door. */
 export function autoAcceptInput(row:any,onApproved?:boolean):boolean{
   if(!row||row.acc||!isPersonal(row.type))return false;
   /* dateIx, not DATES.indexOf (24 Aug 26): the index must come from the DATE
@@ -568,69 +552,11 @@ export function autoAcceptInput(row:any,onApproved?:boolean):boolean{
   if(dayApproved(di)&&!onApproved)return false;   // seed/restore: leave a published day alone
   return acceptInput(di,row,'g');
 }
-/* THE BOOT / WEEK-LOAD PASS (owner, Aug 26). Land every activity input already
-   in INPUTS onto its day's ground programme, so a freshly-loaded week opens
-   with commitments in place exactly as if a scheduler had accepted each one.
-   MUST run only from the boot path (initStore) and the week swap (loadWeek) —
-   NEVER at module scope — because the parity harness reads DAYS/INPUTS pristine
-   and never boots, so these rows stay invisible to it, the SAME guarantee that
-   hides seedDemoSans. Run it where dayApproved() is already clean (a fresh
-   SCHED at boot; AFTER resetSched() on a week swap) so every day reads
-   editable. The seed's auto-landed rows are the week's ZERO-STATE, not
-   unpublished edits — acceptInput marks each pending/added through the
-   amendment funnel (correct for an interactive add), so the marks are wiped
-   here; the ground rows on DAYS remain, and the following histInit() baselines
-   a clean model. */
-export function autoAcceptSeedInputs(){
-  INPUTS.forEach((r:any)=>autoAcceptInput(r));
-  SCHED.pending={}; SCHED.changes={}; SCHED.added={};
-}
-/* RECONCILE AN ALREADY-LANDED ROW WHOSE acc WAS CLEARED (moved here from
-   state/store.ts, 18 Sep 26 — the restore-landing consumer lives outside
-   store.ts now). A week swap and an undo restore both clear the derived 'g'
-   acc first so the landing can be re-derived (state/store.ts applyWeekModel's
-   acc-clear; [GLOBAL-UNDO] §11's inverse strip), but the ground row itself may
-   still be on the day (it was there when the week was last left, or it came
-   back with the restored day record). autoAcceptInput would then refuse the
-   duplicate push AND leave acc unset — the Inputs page would offer to "Accept"
-   a row already on the board. Read acc straight off whether a matching ground
-   row exists on ANY loaded day (a multi-day input can start in a prior week yet
-   land on this week's Monday, P2-REREVIEW-07), with no call into acceptInput,
-   so no duplicate write, no edit-log entry, no flashAdded for a non-add. */
-export function reconcileLandedAcc(){
-  INPUTS.forEach((r:any)=>{
-    if(r.acc||!isPersonal(r.type)||inputProtected(r))return;
-    const key=inpId(r);
-    if(DAYS.some((d:any)=>((d&&d.ground)||[]).some((g:any)=>g.src===key)))r.acc='g';
-  });
-}
-/* THE ONE SHARED "re-derive this week's input landings" PASS ([GLOBAL-UNDO]
-   §11). Extracted from applyWeekModel's restore branch so a stash restore and a
-   Step-3 undo restore cannot drift. Reconcile any row already present back to
-   'g' (no duplicate), then land every still-unlanded personal input — except a
-   row the user deliberately un-landed (its id in `unaccepted`), which re-parks
-   'r' so it does not silently re-land (the 26 Aug 26 surprise). The amendment
-   marks (pending/changes/added) are a property of the restored book, not of
-   this derived landing, so the pass's own marks (acceptInput -> markEdit) are
-   snapshotted and put back — only what THIS pass adds is undone. The caller
-   owns the acc-strip that runs first and the baseline resync that must bracket
-   this (the §11 timing fix), because those differ between a live week swap and
-   an inverse applied to the loaded week. */
-export function relandInputs(unaccepted?:Set<string>){
-  reconcileLandedAcc();
-  const un=unaccepted||new Set<string>();
-  const savedPending={...SCHED.pending}, savedChanges={...SCHED.changes}, savedAdded={...SCHED.added};
-  INPUTS.forEach((r:any)=>{
-    if(inputProtected(r))return;
-    /* a request taken off on THIS week is parked dormant again — unless its row now stands on ANOTHER week ([REQ-ORPHAN-ROW],
-       28 Sep 26 — Astra 02): landed there since, "taken off" would silence a request that is on a programme. A saved week it
-       covers that cannot be read is treated the same (Astra's final read #1 — the resolver fails closed): its row may be
-       there, so it is not silenced on an unknown; it is left as it stands. */
-    if(un.has(inpId(r))){ const away=rowElsewhere(inpId(r),r); if(isPersonal(r.type)&&away===null)r.acc='r'; }
-    else autoAcceptInput(r);
-  });
-  SCHED.pending=savedPending; SCHED.changes=savedChanges; SCHED.added=savedAdded;
-}
+/* THE BOOT / WEEK-LOAD PASS (autoAcceptSeedInputs), THE ACC RE-READ (reconcileLandedAcc) AND THE RESTORE'S RE-LANDING
+   (relandInputs) are gone ([DB-READINESS] group A, phase 6 (c), 1 Oct 26): every load and every command now works the week's
+   request rows out from the holder base (state/holderbase.ts rederive → engine/overlay.ts viewOfWeek) — the landing, the
+   `acc` the loaded week derives, and a request "taken off" staying off, all in one body; a second copy here could only
+   drift from it. */
 /* Which day carries the row this input was accepted onto, or -1. The row does
    NOT record its day, and the caller cannot infer it: a multi-day input
    renders an Accept button on every day it spans, so it may have been accepted
@@ -639,8 +565,7 @@ export function acceptedDay(inp:any){
   if(!inp||inp.acc!=='g')return -1;
   const key=inpId(inp);
   for(let i=0;i<DAYS.length;i++){
-    const g=(DAYS[i]||{}).ground;
-    if(g&&g.some((r:any)=>r.src===key))return i;
+    if(standsOn(DAYS[i],key,inp))return i;   // its STANDING row (overlay.ts — never a dead kept one)
   }
   return -1;
 }
@@ -670,7 +595,7 @@ export function reconcileDayFiling(di:any){
        key directly (NOT acceptedDay, which early-returns unless acc is already
        'g' and so cannot re-derive) — the same scan reconcileLandedAcc uses. */
     const key=inpId(inp);
-    const landed=DAYS.some((d:any)=>((d&&d.ground)||[]).some((g:any)=>g.src===key));
+    const landed=DAYS.some((d:any)=>!!standsOn(d,key,inp));
     /* BOTH directions (P2-REV2-05 + its round-2 regression P2-QREV/Fable-2): a 'g'
        whose row a replacement DROPPED is unfiled; a falsy-acc personal input whose
        row a replacement RESTORED (a draft round-trip) is re-filed 'g' — the old
@@ -690,7 +615,7 @@ export function unacceptInput(di:any,inp:any){
     const key=inpId(inp);
     for(let d2=0;d2<DAYS.length;d2++){
       const g=(DAYS[d2]||{}).ground; if(!g||!g.length)continue;
-      const i=g.findIndex((r:any)=>r.src===key);
+      const i=g.findIndex((r:any)=>r&&r.src===key&&standingRow(r,inp,(DAYS[d2]||{}).dt));   // its row, never a dead kept one
       if(i<0)continue;
       const issued=deletionWasIssued(d2,'ground',i,key);
       const rid=g[i]&&g[i].rid;                      // captured before the splice

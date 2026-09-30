@@ -12,6 +12,7 @@ import { WARN, validate, WCODE, wlbl, fltNoLen, FLT_NO_LEN_SAYS } from '../engin
 import { hhmm, fmtHM, minus, parseHM } from '../engine/time'
 import { VCONF } from '../engine/rules'
 import { slotVal, txtGet, txtSet, acRef, rollCx, whoArr, unacceptInput, TIME_TXT } from '../engine/slots'
+import { standsOn } from '../engine/overlay'
 import { markEdit, markDeletion, deletionWasIssued, markStructuralAdd, alAttr, dayApproved, dayCurVer, dayShownPendCount, dayHasChanges, verLabel, nextSeq, dropRowMarks, protectedWeek, dayVersions, publishReadPass } from '../engine/publish'
 import { logAction } from '../engine/editlog'
 import { hideHistBub } from './histbubble'
@@ -814,7 +815,10 @@ export function boardMbtn(e: MouseEvent) {
        toast can tell that apart from a real reorder, rather than staying
        silent about the one thing that DID happen (review fix, 9 Aug 26). */
     const gDay = kind === 'g' ? DAYS[n[0]] : null
-    const gWasMan = !!(gDay && gDay.gman), gRowsBefore = gDay && gDay.ground
+    /* the rows' ORDER, not the list object: since [DB-READINESS] phase 6 (c) the working-out after the command may put an
+       equal copy of the day's rows in place, so "the same array" no longer tells a reorder from none */
+    const gSig = (r: any) => JSON.stringify([r && r.prog, r && r.str, r && r.end, r && r.src])
+    const gWasMan = !!(gDay && gDay.gman), gRowsBefore: string[] = gDay ? (gDay.ground || []).map(gSig) : []
     let changed = false
     if (kind === 'w') changed = sortWave(n[0], n[1])
     else if (kind === 'd') changed = sortDutyBlock(n[0], n[1])
@@ -823,7 +827,8 @@ export function boardMbtn(e: MouseEvent) {
     else if (kind === 'p') changed = sortProg(n[0])
     if (changed) {
       afterSchedMutate(); notify()
-      if (kind === 'g' && gWasMan && gDay!.ground === gRowsBefore) toast('Ground programme back to time order')
+      const gNow = kind === 'g' ? ((DAYS[n[0]] || {}).ground || []).map(gSig).filter((x: string) => gRowsBefore.includes(x)) : []
+      if (kind === 'g' && gWasMan && gNow.join('|') === gRowsBefore.join('|')) toast('Ground programme back to time order')
     }
     else toast('Already in order')
     return
@@ -1067,7 +1072,9 @@ export function boardMbtn(e: MouseEvent) {
        does (splice + renumber + markDeletion + clear acc, day-searched not
        guessed). Route a src row there; a hand-built ground item still takes the
        direct delete. */
-    const inp = row && row.src ? srcInput(row) : null
+    /* …only when this row IS its request's row: a dead `kept` row (the holder's version row, on a day its request cannot
+       stand on — D363) is his own to remove, by the plain delete below ([DB-READINESS] phase 6 (c); overlay.ts standsOn) */
+    const inp = row && row.src && standsOn(DAYS[di], row.src) === row ? srcInput(row) : null
     if (inp && unacceptInput(di, inp)) {
       afterSchedMutate(); notify()
       /* said to him, not written as a line: the request's own filing line ("… filed: on the programme → taken off the

@@ -1,0 +1,23 @@
+# Phase 6 (c) v3 — round 3 dispositions (1 Oct 26) — the last round of his cap
+
+Reports: `2026-10-01-db-readiness-phase6c-redteam-r3-astra.md` (REVISE — 1 finding) and `…-r3-fable.md` (REVISE — F1–F6),
+blind to each other. Both: every finding folds into the build; no further round. v3 = commit 820557ac. The build was under
+way while they read (Fable read the working tree too, and says so).
+
+| # | Finding | Disposition — folded into the build |
+|---|---|---|
+| Astra 1 (HIGH) / Fable F1 (iii) | A dead `kept` row (the holder's version row on a day its request cannot stand on) can share the week with the request's real row; the OIL evidence (`oilev.ts landedStanding`) took the first row carrying the request's id — a dead CANCELLED one paid nothing for the live row | **Built:** one predicate, `engine/overlay.ts standsOn(day, id, req)` — the request's STANDING row on a day, never a dead kept one — read by `landedStanding` (the loaded week) and, through `weekstash.ts standingRowIn`, by `stashStanding` (a saved week). Test: `p6c-requestonread.test.ts` "Astra 1 — OIL…", red when the fix is removed |
+| Fable F1 (i, ii) | Five more lookups acted on "the first row with its id": the load's leave-out (`publish.ts rowsLeftOut`), Accept's one-row guard (`acceptInput`), `acceptedDay`, `reconcileDayFiling`, the card's adopt / "already on the programme" (`interactions.ts`), the pending list's "moved to" day (`pendlist.ts`), and the checker's accepted-row deferral (`events.ts`) | **Built:** each reads `standsOn`. `unacceptInput` (the card's ✕) takes off the STANDING row; the board's own ✕ pressed ON a dead kept row removes that row by the plain delete (Fable's (6) — the holder's own act; `board.ts`, `standsOn(day, src) === row`). `reconcileLandedAcc` went with the load's pass (below). Tests: the load puts the issued row back beside a dead row; ✕ then Accept on a published day restores the issued row — each red when its fix is removed |
+| Fable F2 | The published-day landing keyed on the issued FILING (a request's global filing at issue), so a two-day request shortened onto a published day it already covered fell off the programme | **Built, §3 (c)'s landing sentence rewritten:** on a published day a request is not landed only when the day's current issued version PLACED IT ON THAT DAY (its row is in the issued day) or TOOK IT OFF (`'r'` at issue); any other lands as a pending change. `ViewCtx.issued(di)` hands the issued snapshot (`d` and `fil`). Test "Fable F2 — a two-day request shortened…", red under the old rule |
+| Fable F3 | The deterministic id could collide with a dead kept row's | **Built before the report** (`landedRid` suffixes `x2`… while another row of the week holds the id); pinned: "Fable F3 — …a member's later edit carries no day record", red when the suffix is removed |
+| Fable F4 | §8 lacks three visible changes | **§8 items 11–13 added:** ✕ on a request's row on a never-published day leaves a removal mark (as any row's removal there — the seed-landed ones always did); a "taken off" request retyped lands at once; and the history's "(on the programme)" / "filed" words now read the week on screen after the working-out (`state/changelines.ts` reads the live request — built, so those words are NOT lost) |
+| Fable F5 | The day template must drop `srcv` / `kept` with `src` | **Built** (`engine/daytpl.ts`) |
+| Fable F6 | Say that the base is taken AFTER the id mints | **Plan §3 (c) 8 says it; built so** (`store.ts workOutLoadedWeek` after `ensureRowIds` in `loadWeek` and `initStore`). Found in the build, the same shape: an id-less row taken into the base out of band came back id-less at every pass — the base now mints once (`holderbase.ts`); and the load now mints the requests' and planning notes' places itself (the retired `sched.load` command's apply-end did — without it a member's next command minted them and was refused, §11) |
+
+**Found by the build itself** (the unit suite, 67 old tests moved or failed — each read against the plan): the load's first
+pass must not absorb (it baked the view into the base — `baseReset` takes the yardstick from the base); a change made out of
+band is the day's whole saved record (content, marks, published state, sign-offs, plans), not only its content; the view
+is installed IN PLACE (a caller holding a day across a command kept a copy nobody read); the board's "back to time order"
+line compared list identity (now the rows' order); the week's copy in memory absorbs an out-of-band change first. The old
+passes `autoAcceptSeedInputs`, `reconcileLandedAcc`, `relandInputs` and the `sched.load` command are gone (a second copy of
+the landing rule could only drift); `autoAcceptInput` stays for tests, marked "never a door".

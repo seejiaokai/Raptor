@@ -44,7 +44,8 @@ import { DAYS } from './data'
 import { INPUTS, inpId, inpWin, oilAsks, dateOrd, dateIx } from './inputs'
 import { weekKeyOfOrd } from './weeks-data'
 import { CURWEEK } from './waves'
-import { stashHas, stashGroundBySrc } from './weekstash'
+import { stashHas, standingRowIn } from './weekstash'
+import { standsOn } from './overlay'
 import { PEOPLE, whoId, isSpecial } from './people'
 import { HOOKS } from './hooks'
 import { dayOilWork, oilItemDefaults, envMin, uniformOil, inputItemKey, rowItemKey, groundItemKey, openEndRows, type OilWork } from './oil'
@@ -357,7 +358,9 @@ function landedStanding(row: any): OilInputEv['stand'] {
   if (acc === 'r' || acc === 'u') return 'unlanded'       // dormant, or a kind that never lands
   const key = String(inpId(row))
   for (let i = 0; i < DAYS.length; i++) {
-    const hit = ((DAYS[i] as any || {}).ground || []).find((r: any) => r && String(r.src || '') === key)
+    /* the request's STANDING row — never a dead `kept` one another day holds (overlay.ts standsOn; Astra's round-3 read,
+       finding 1: a dead cancelled row found first paid nothing for the live one) */
+    const hit = standsOn(DAYS[i], key, row)
     if (hit) return hit.cx ? 'cx' : hit.info ? 'info' : 'active'
   }
   /* `dateIx` is the app's own "is this label one of the loaded days", and it
@@ -386,9 +389,11 @@ function stashStanding(first: number | null, key: string): OilInputEv['stand'] {
   /* ONE BODY for "the rows by request in a stashed week" ([REQ-ORPHAN-ROW], 28 Sep 26 — Fable F7): the parse and its
      memo (keyed on the stored blob, for the reason above) moved to weekstash.ts stashGroundBySrc, which the request door's
      rowElsewhere reads too, so the two can never read a stashed week two ways. The answers here are unchanged. */
-  const rows = stashGroundBySrc(wk)
-  if (!rows) return 'elsewhere'                           // stashed and unreadable
-  const hit = rows.get(key)
+  /* the row that STANDS there ([DB-READINESS] phase 6 (c) — weekstash.ts standingRowIn): a row whose request was since
+     retyped, re-dated off its day or deleted is not its row. A request whose only row there is landed on read reads
+     'unlanded' — the same money as 'active': both pay the man's own answer (ui/oilmode.ts) */
+  const hit = standingRowIn(wk, key)
+  if (hit === 'unreadable') return 'elsewhere'            // stashed and unreadable
   return hit ? (hit.row.cx ? 'cx' : hit.row.info ? 'info' : 'active') : 'unlanded'
 }
 

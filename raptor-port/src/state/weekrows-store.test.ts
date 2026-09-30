@@ -197,10 +197,9 @@ describe('week navigation is read-only (R3-01, F3-01)', () => {
     expect(commitNewInput({ person: 'dj', type: 'Meeting', start: '2026-07-29', allday: false, sTime: '09:00', eTime: '10:00', remarks: 'LANDS ON WED' })).toBe(true)
     clear()
     loadWeek(W3)
-    const load = envs.find(e => e.type === 'sched.load')!
-    expect(load, 'the landing is one sched.load command').toBeDefined()
-    expect(load.origin).toBe('seed')
-    expect(load.changes.every(c => c.collection === 'inputs' || c.id.startsWith(W3))).toBe(true)
+    /* since [DB-READINESS] phase 6 (c) the landing is worked out by the load itself, out of band — no command at all (the
+       sched.load command existed only to latch the old landing's repaint) — so nothing of it can reach storage */
+    expect(envs.filter(e => e.type === 'sched.load'), 'no command for the landing').toEqual([])
     expect(weekWrites(), 'a landing onto a SAVED day writes nothing').toEqual([])
     expect(groups.flat().filter(c => c.collection === 'inputs'), 'nor the request it landed').toEqual([])
     expect(wb.get('weeks', `${weekId(W3)}#2`)).not.toContain('LANDS ON WED')

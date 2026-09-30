@@ -545,6 +545,10 @@ export function isInReducer(): boolean {
   return active != null && phase === 'reducer'
 }
 export function commitPhase(): 'idle' | 'reducer' | 'post' { return phase }
+/* the envelope of the command now running — its changes are final from phase 4, so a phase-8 effect can read which records
+   the command wrote ([DB-READINESS] group A, phase 6 (c): the holder base moves only for the days a command's rows name).
+   null outside a command. */
+export function activeEnvelope(): CommitEnvelope | null { return active ? active.env : null }
 
 /* ---- stream + subscriptions ---------------------------------------------- */
 export function onCommit(fn: (env: CommitEnvelope) => void): () => void {

@@ -30,7 +30,7 @@ import { onCommit } from '../command'
 import type { CommitEnvelope, Change } from '../command/types'
 import { logAction } from '../engine/editlog'
 import { PEOPLE } from '../engine/people'
-import { dateOrd } from '../engine/inputs'
+import { dateOrd, INPUTS } from '../engine/inputs'
 import { parseVerId, dayIso } from '../engine/verid'
 import { qualCols } from '../engine/qualcols'
 import { actorIsAdmin } from './perms'
@@ -89,9 +89,14 @@ function inputLines(c: Change, env: CommitEnvelope, war: boolean): void {
   /* every absence line keeps WHOSE it is, by id (`sub` — Fable's read of the fixes, FF4): "To go out" finds its line by it
      when the input it was about has since been re-filed under another id (a move on the war) */
   const at = (extra: any = {}) => ({ iid, sect: 'abs', sub: String((a || b || {}).person || ''), itype: String((a || b || {}).type || ''), ...extra })
+  /* whether it is on the programme is read as the week on screen now shows it: since [DB-READINESS] phase 6 (c) a request's
+     row is worked out AFTER its command (state/holderbase.ts, phase 8), so its `acc` in the envelope is the one it had
+     before — this line is written at phase 9, after the working-out (Fable's round-3 F4.3) */
+  const live: any = (INPUTS as any[]).find((r: any) => r && String(r.iid || '') === iid)
+  const accNow = (x: any) => (live ? live.acc : x && x.acc)
   if (!b && a) {
     const s = sa
-    logAction(null, `${cs(a.person)} · ${a.type} ${war ? 'approved on the Leave War' : 'added'} · ${spanWords(s)}${a.acc === 'g' ? ' (on the programme)' : ''}${tail}`,
+    logAction(null, `${cs(a.person)} · ${a.type} ${war ? 'approved on the Leave War' : 'added'} · ${spanWords(s)}${accNow(a) === 'g' ? ' (on the programme)' : ''}${tail}`,
       at({ date: s && s.date, end: s && s.end }))
     return
   }
@@ -111,7 +116,7 @@ function inputLines(c: Change, env: CommitEnvelope, war: boolean): void {
      walk: a Save that changed nothing wrote "times: all day → all day") */
   if (timeWords(b) !== timeWords(a)) logAction(null, `${who} · ${what} ${spanWords(sa)} · times`, base({ from: timeWords(b), to: timeWords(a) }))
   if (!same(b.remarks || '', a.remarks || '')) logAction(null, `${who} · ${what} ${spanWords(sa)} · remarks`, base({ from: String(b.remarks || '—'), to: String(a.remarks || '—') }))
-  if (!same(b.acc || '', a.acc || '')) logAction(null, `${who} · ${what} ${spanWords(sa)} · filed`, base({ from: filWords(b.acc), to: filWords(a.acc) }))
+  if (!same(b.acc || '', accNow(a) || '')) logAction(null, `${who} · ${what} ${spanWords(sa)} · filed`, base({ from: filWords(b.acc), to: filWords(accNow(a)) }))
   if (!same(b.oil, a.oil)) logAction(null, `${who} · ${what} ${spanWords(sa)} · OIL`, base({ from: oilWords(b.oil), to: oilWords(a.oil) }))
 }
 

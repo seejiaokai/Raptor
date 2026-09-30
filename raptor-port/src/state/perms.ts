@@ -405,22 +405,22 @@ function opAllows(who: Role, table: string, act: Act, own: OwnRule, actor: Actor
                 shown) is his own view; every other war record — the war itself, the
                 ledger, opening balances, OIL policy, postings, labels, config — is the admin's;
    - `settings` and `plan` (the planning calendar) — none;
-   - the schedule's records and the week stash — only as the landing of his own input,
-                a child of his authorised input command (16 Sep 26: it lands a row on a
-                published day's working copy); never by a top-level `sched.mutate`;
+   - the schedule's records and the week stash — NONE, since [DB-READINESS] group A, phase 6 (c) (1 Oct 26): the
+                landing of his own input (16 Sep 26: it lands a row on a published day's working copy) is worked out
+                after his command, on read (state/holderbase.ts), and is nobody's change — the one exception §11
+                carried, "until phase 6 (c)", is gone (D450: a day is saved only by the scheduler holding it);
    - the Tracker — everyone's (D121).
    A guest, a pending person and an account switched off change NOTHING, except a
    pending person's own access request — ONE new `accessreq:<id>` row under his own sign-in name
    ([DB-READINESS] group A, phase 4.4: the requests are one row each, so his command may add his and touch no other). */
 const INPUT_ORDER = '__order'
 const personOfInput = (v: any): string | null => (v && v.person != null ? String(v.person) : null)
-/* THE SCHEDULE'S OWN RECORDS. A member's change to them is legitimate only as the landing
-   of his own input — which runs INSIDE his authorised input command (a joined child). The
-   bare "the schedule changed" command (`sched.mutate`, the afterSchedMutate backstop) is the
-   one schedule command a member's actor can open, so as a TOP-LEVEL command it changes none
-   of these for him (Fable's and Astra's code reads, 26 Sep 26: the second, write-path guard
-   the UI gates stand in front of; §11 — members read the schedule only). A refusal rolls
-   the schedule back to its last committed state. */
+/* THE SCHEDULE'S OWN RECORDS. A member changes none of them, by any command ([DB-READINESS] group A, phase 6 (c), 1 Oct 26 —
+   data-model.md §11; D450: a day is saved only by the scheduler holding it). They were his to change as the landing of his
+   own input, inside his input command; that landing is now worked out after the command, on read (state/holderbase.ts),
+   and no command records it. Before phase 6 (c) only the bare "the schedule changed" command (`sched.mutate`) was refused
+   him (Fable's and Astra's code reads, 26 Sep 26 — the second, write-path guard the UI gates stand in front of; §11 —
+   members read the schedule only). A refusal rolls the schedule back to its last committed state. */
 const SCHEDULE_RECORDS = new Set(['days', 'sched.book', 'sched.mutes', 'sched.week', 'sched.issuance', 'sched.retraction', 'weekstash'])
 export function ownershipViolation(env: CommitEnvelope): string | null {
   const a = env.actor
@@ -434,7 +434,7 @@ export function ownershipViolation(env: CommitEnvelope): string | null {
     }
     const pid = a.personId == null ? null : String(a.personId)
     if (!pid) return `no person to own ${where}`
-    if (env.type === 'sched.mutate' && SCHEDULE_RECORDS.has(c.collection)) return `the schedule (${where})`
+    if (SCHEDULE_RECORDS.has(c.collection)) return `the schedule (${where})`
     switch (c.collection) {
       case 'inputs': {
         if (c.id === INPUT_ORDER) break
@@ -456,7 +456,7 @@ export function ownershipViolation(env: CommitEnvelope): string | null {
       case 'lw.war': case 'lw.ledger': case 'lw.opening': case 'lw.oilpolicy': case 'lw.postouts': case 'lw.label': case 'lw.config':
       case 'plan':
         return `an admin's record (${where})`
-      default: break                       // the schedule, the week stash, the Tracker
+      default: break                       // the Tracker (the schedule and the week stash are refused above)
     }
   }
   return null

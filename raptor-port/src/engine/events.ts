@@ -7,6 +7,7 @@ import { VCONF, SHIFT_HARD } from './rules'
 import { isStandalone, saExempt, saExemptKind, CURWEEK } from './waves'
 import { whoArr, acceptedDay } from './slots'
 import { edgeDate } from './weeks-data'
+import { standsOn } from './overlay'
 /* THE ACCEPT DEFERRAL IS PER-DAY, NOT PER-INPUT (audit, 12 Aug 26).
    inputFlags defers a timed accepted input to the ground row the accept
    created — but that row lives on ONE day, while the input may cover
@@ -55,7 +56,7 @@ export const inpShow=(inp:any,dt:any,xweek?:any)=>{
     /* a timed accept speaks as its landed ground row: find that row on the SWAPPED DAYS
        by its source id (live-acc-agnostic — acceptedDay's own 'g' guard reads the working
        acc, now 'r'), and defer only on the row's OWN day (per-day carve-out, 12 Aug 26). */
-    let di=-1; for(let i=0;i<DAYS.length;i++){ const g=(DAYS[i]||{}).ground; if(g&&g.some((r:any)=>r.src===inp.iid)){di=i;break;} }
+    let di=-1; for(let i=0;i<DAYS.length;i++){ if(standsOn(DAYS[i],inp.iid,inp)){di=i;break;} }   // its STANDING row — never a dead kept one (overlay.ts)
     return di<0||(DAYS[di]||{}).dt!==dt;
   }
   if(inputDormant(inp))return false;

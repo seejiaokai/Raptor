@@ -35,7 +35,7 @@ import { stashDays, stashSched } from './weekstash'
 import { getWorld, filingActive, filingHas } from './world'
 import { dayCurVerIn, daySnapIn } from './publish'
 import { canonicalDiff } from './canonical'
-import { overlayDeletedWeek, deletedOverlayDue } from './overlay'
+import { viewOfWeek, deletedOverlayDue, landingDue } from './overlay'
 
 /* weekBundle(v) is a pure function of v for the two authored weeks and a
    fresh-but-identical blank for everything else (weeks-data.ts) — so caching
@@ -96,10 +96,12 @@ function bundle(v:any){
      (loaded year 2026) and as "last week" (loaded year 2027). */
   const ck=v+'@'+baseYear();
   if(!(ck in bundleCache))bundleCache[ck]=weekBundle(v);
-  /* a man deleted, worked out on read on a copy — the cache holds the pure seed ([DB-READINESS] group A, phase 6 (d)) */
-  if(!deletedOverlayDue(v))return bundleCache[ck];
+  /* a man deleted, and a request's row landed, worked out on read on a copy — the cache holds the pure seed ([DB-READINESS]
+     group A, phase 6 (d) and (c) — engine/overlay.ts viewOfWeek; Fable's round-2 F2: a week nobody has saved lands its
+     requests too, so the checks read it as they would with it open). A week never saved has no publication state. */
+  if(!deletedOverlayDue(v)&&!landingDue(v))return bundleCache[ck];
   const b=bundleCache[ck], days=JSON.parse(JSON.stringify(b.days));
-  overlayDeletedWeek(String(v),days);
+  viewOfWeek(String(v),days,{loaded:false,issued:()=>null});
   return {...b,days};
 }
 
@@ -109,10 +111,11 @@ function bundle(v:any){
    buildDay's own `events`), filtered EXACTLY as RUNLEN's `on` set is
    (`PEOPLE[e.id]&&!isSpecial(e.id)`); (2) a personal ACTIVITY input that
    would have auto-landed onto that day's ground programme had this been the
-   loaded week (autoAcceptInput, slots.ts: `isPersonal(row.type)` on a
-   date-matching row) — because on a NON-loaded week that landing never
-   actually happens (no live DAYS to land it onto), so without this half a
-   filed activity input would silently not count as work. Two of
+   loaded week (`isPersonal(row.type)` on a date-matching row). Since
+   [DB-READINESS] phase 6 (c) a non-loaded week's own landing IS worked out on
+   read (bundle() above, engine/overlay.ts viewOfWeek) — but only on the
+   request's START day, while this half counts every day the input covers, and
+   the Set dedups the two — so it stays, unchanged. Two of
    autoAcceptInput's own guards are deliberately NOT mirrored: `row.acc`'s
    landed states ('g'/'u'), because those record the LOADED week's landing
    only (loadWeek clears them and re-lands from scratch — an input spanning

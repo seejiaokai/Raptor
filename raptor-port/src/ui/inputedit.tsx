@@ -20,8 +20,7 @@ import { OilConfirm } from './OilConfirm'
 import { DocConfirm } from './DocConfirm'
 import { docAdd, docFields, docGet, rowDocIds } from '../state/docs'
 import { UploadIcon } from './icons'
-import { acceptInput, autoAcceptInput, unacceptInput, acceptedDay } from '../engine/slots'
-import { DAYS } from '../engine/data'
+import { acceptInput } from '../engine/slots'
 import { PEOPLE, isSpecial, whoId } from '../engine/people'
 import { hhmm, parseHM, hmOK } from '../engine/time'
 import { HOOKS } from '../engine/hooks'
@@ -35,7 +34,6 @@ import { oilAskPlan } from '../leavewar/sync'
 import { leaveKey } from '../leavewar/absences'
 import { inputOilAmt } from '../engine/oil'
 import { PLANPUCKS, DAYRMK } from '../state/plan'
-import { rowElsewhere, isoDayWords } from '../engine/weekstash'
 import { CURWEEK } from '../engine/waves'
 import { keyToIso, mondayOf } from './weeknav'
 import { canEditSched } from '../state/auth'
@@ -867,14 +865,12 @@ export function commitNewInput(draft: any, toGround?: boolean, keepTail?: any, e
       const di = dateIx(date)
       if (di >= 0 && !isUnavail(row.type) && !acceptInput(di, row, 'g'))
         HOOKS.toast('An identical row is already on the Ground Programme — added under Personal Inputs instead', 'warn')
-    } else {
-      /* every OTHER add auto-lands an activity input (owner, Aug 26 — the default is
-         "on the programme"). autoAcceptInput is the one gate: leave/medical/SANS stay
-         silent no-ops. onApproved=true: a request filed LIVE on a PUBLISHED day lands as
-         a pending amendment on the working copy (owner 16 Sep 26) — the issued face stays
-         frozen; the scheduler sees the pending count rise and removes it if unwanted. */
-      autoAcceptInput(row, true)
     }
+    /* every OTHER add puts an activity input on the programme (owner, Aug 26 — the default is "on the programme") —
+       worked out after this command, from the request ([DB-READINESS] phase 6 (c) — state/holderbase.ts): the filing
+       writes the request and no day (D450); a request filed LIVE on a PUBLISHED day lands on the working copy as a pending
+       amendment (owner 16 Sep 26), the issued face frozen, and the scheduler removes it if unwanted. The board's Ground
+       "+ Inputs" above is a scheduler's own placement: its row is written inside this command, and saved with it. */
   })
   /* the funnel backstop rolled the batch back (a protected date slipped the
      preflights above) — report failure, don't log a phantom "Input added" (P2-QREV-04) */
@@ -887,36 +883,12 @@ export function commitNewInput(draft: any, toGround?: boolean, keepTail?: any, e
    the caller keeps its editor open on a false, so nothing typed is lost.
    Runs through writeInputsBatch like every other mutation, so an edit joins
    the undo stack as ONE step and re-validates the week. */
-/* ACCEPTED ONTO A WEEK THAT IS NOT LOADED (13 Sep 26, Astra/Fable inspect
-   finding 1). An accepted input's ground row lives on ONE week; leaving that
-   week clears the input's `acc` (store.ts) but the row stays behind in the
-   week's stash, keyed by the input's stable id. Editing or deleting the input
-   from another week cannot reach that row, so the old row would survive with
-   its stale times/person — a SILENT mismatch once landings address by a stable
-   id (before, the changed content minted a visible DUPLICATE instead). So refuse
-   the edit/delete and name the week to load first. Returns that week's date
-   label, or '' when it is safe to proceed (the row is on a loaded day, or the
-   input has no landing at all — the ordinary paths handle those). Its landing on
-   a LOADED day is found by acceptedDay; only a landing on a STASHED (unloaded)
-   week is the trap. */
-const UNREADABLE = 'unreadable'
-function landedOnUnloadedWeek(r: any): string {
-  if (!r || acceptedDay(r) >= 0) return ''
-  /* ONE BODY for "is its row on another week" ([REQ-ORPHAN-ROW], 28 Sep 26 — weekstash.ts rowElsewhere, which the accept
-     guard, the card and a load's leave-out read too). It SKIPS the loaded week's own saved copy, which is the stale one
-     written on the way out: scanning it refused the delete of a request taken off since with "Load the week of <this
-     very week>" (Fable/Astra 1b). The refusal names the day the row is on.
-     A SAVED WEEK THE REQUEST COVERS THAT CANNOT BE READ FAILS CLOSED (Astra's final read #1, 28 Sep 26 — the plan's §9: the
-     resolver fails closed): its row may be in it, and an edit or delete from here would strand it. `UNREADABLE` — the
-     caller refuses and says to load that week; loading it is the way out (the loaded week is never scanned, and leaving
-     it writes a readable copy). Narrowed to the weeks the request covers (`r`), so one damaged week blocks only its own. */
-  const away = rowElsewhere(inpId(r), r)
-  return away === 'unreadable' ? UNREADABLE : away ? isoDayWords(away.iso) : ''
-}
-/* the refusal a door says for a request whose row is on a week not loaded, or may be (an unreadable saved week) */
-const stuckSays = (stuck: string, act: 'edit' | 'delete') => stuck === UNREADABLE
-  ? `Can't tell whether this input has a row on another week — load the weeks it covers first, then ${act} it`
-  : `Load the week of ${stuck} to ${act} this accepted input`
+/* A REQUEST WHOSE ROW IS ON A WEEK NOT ON SCREEN IS EDITED AND DELETED LIKE ANY OTHER ([DB-READINESS] group A, phase 6 (c)).
+   Until phase 6 an edit or a delete here was refused with "Load the week of … to edit / delete this accepted input" (13 Sep
+   26, the inspect's finding 1): the row on that week could not be reached, and would have stayed with its old times or
+   person. The row is worked out from the request whenever its week is read now (engine/overlay.ts viewOfWeek — the saved
+   week's row re-made, taken away or landed on its new day), so the edit goes ahead and that week shows it when it is
+   opened; the refusal, and its "can't tell" twin for an unreadable saved week, went with it. */
 
 export function commitInputEdit(r: any, draft: any, keepTail?: any, entryEnd?: any) {
   if (!r || !draft) return false
@@ -924,10 +896,6 @@ export function commitInputEdit(r: any, draft: any, keepTail?: any, entryEnd?: a
     HOOKS.toast('That input is no longer there — nothing was saved', 'warn')
     return false
   }
-  /* its ground row is on a week that is not loaded — editing here would strand
-     it with stale content (finding 1). Point the scheduler at the week first. */
-  const stuck = landedOnUnloadedWeek(r)
-  if (stuck) { HOOKS.toast(stuckSays(stuck, 'edit'), 'warn'); return false }
   /* the SOURCE date is checked here (r is a model row with real date/endDate);
      the normalized DESTINATION is checked after normalizeInputDraft below, so a
      move INTO a protected week is refused too (P2-REREVIEW-01/02). */
@@ -1007,34 +975,16 @@ export function commitInputEdit(r: any, draft: any, keepTail?: any, entryEnd?: a
        remarks-only edit, and any admin edit, keep it war-approved. */
     const leaveSame = leaveKey(r) === leaveKey({ person: draft.person, type: draft.type, date, endDate, yr: r.yr, allday: draft.allday, half, s, e })
     if (r.lw && !leaveSame && !canEditSched()) delete r.lw
-    /* An ACCEPTED input is linked to the row it created by `src`, a content
-       key of person|date|type|s. Editing any of those silently broke the
-       link: the row stayed on the programme, undo could no longer find it,
-       and it could never be removed. So an accepted input is un-accepted
-       through the real path FIRST, edited, then re-accepted — which also
-       moves the row when the date moves it to another day. */
-    /* 'r' (removed — dormant, engine/inputs.ts inputDormant) reads as NOT
-       accepted here: there is no row to relink, and the re-accept below must
-       not wake a parked input just because its times were edited — only the
-       Accept button re-lands it (owner, 26 Aug 26). */
-    const wasAcc = r.acc === 'r' ? undefined : r.acc
-    /* captured for the dormant-retype clear below — the writes overwrite r.type */
+    /* THE EDIT WRITES THE REQUEST ALONE ([DB-READINESS] group A, phase 6 (c) — D450; plan §3 (c) §6). Its row — on the
+       week on screen or on any other — is worked out from the request after this command and whenever its week is read
+       (engine/overlay.ts viewOfWeek): re-made in place when the request changed (its id, its place and everything the
+       scheduler set on it kept; D271 said there), taken away when it no longer covers the day or is retyped to a kind that
+       never goes on the programme (said there too), landed on its new start day when it moved. The un-accept / re-accept
+       relink that did it here, with its extras restore and its toasts, went with it. What stays here is the request's own
+       filing: a 'taken off' record retyped counts again (below), and one filed under Unavailable stays filed unless it is
+       retyped to a kind never filed there. */
+    /* captured for the filing rules below — the writes overwrite r.type */
     const wasDormant = r.acc === 'r', wasType = r.type, wasPerson = r.person
-    /* the row may sit on any day the input spans, not its start date */
-    const wasDi = wasAcc === 'g' ? acceptedDay(r) : -1
-    /* what a SCHEDULER added to the promoted row by hand — extra crew in
-       `more`, the red flag, a CX — is not derivable from the input, so the
-       unaccept/re-accept relink below used to regenerate the row bare and
-       silently discard it (audit, 12 Aug 26). Captured here, before the
-       unaccept removes the row (and before the edit can change inpKey),
-       and put back onto the regenerated row after the re-accept. */
-    let extras: any = null
-    if (wasDi >= 0) {
-      const oldRow = ((DAYS[wasDi] || {}).ground || []).find((g: any) => g.src === inpId(r))
-      if (oldRow && (oldRow.more?.length || oldRow.flag || oldRow.cx))
-        extras = { more: oldRow.more, flag: oldRow.flag, cx: oldRow.cx }
-    }
-    if (wasAcc) unacceptInput(wasDi, r)
     r.person = draft.person; r.type = draft.type; r.allday = draft.allday
     /* THE REMARK'S DATE TOKEN FOLLOWS THE DATES (the absence-record re-test's final code reads — Fable F1, Astra 3,
        26 Sep 26): "till <last day>" / "on <day>" is the app's own wording (D189). The form's pickers rewrite it as the
@@ -1137,79 +1087,12 @@ export function commitInputEdit(r: any, draft: any, keepTail?: any, entryEnd?: a
        person's other rows — the row itself is excluded (except-style). The plan
        was computed + preflighted above, before the batch (P2-QREV-01). */
     if (medPlan) applyMedPlan(medPlan)
-    if (wasAcc) {
-      /* put it back on the day it was on, if the edit still covers that day;
-         otherwise its new start date — and if the START label is not itself
-         a loaded day, the first loaded day the span still covers. Without
-         that last fallback an Unavailable-filed input whose span BEGINS
-         before the loaded week (wasDi is always -1 for 'u' — acceptedDay
-         answers only 'g') was silently unfiled by any in-place edit, with
-         a false "moved outside the programmed week" toast, though no date
-         had moved (audit, 12 Aug 26). Mirrors markInputDays semantics. */
-      const keep = wasDi >= 0 && DATES[wasDi] && inputCoversDate(r, DATES[wasDi])
-      const startDi = dateIx(r.date, r.yr)
-      const di = keep ? wasDi : (startDi >= 0 ? startDi : DATES.findIndex(dt => inputCoversDate(r, dt)))
-      /* acceptInput REFUSES a leave / medical / overseas-duty type — those are
-         issued through the Unavailable block and never become a programme row.
-         So retyping an accepted Meeting to LL legitimately drops its row, and
-         the drop was silent: the un-accept above had already removed it, this
-         call returned false unread, and the save still reported success. The
-         row vanished from a published programme with nothing said. Say it. */
-      if (di >= 0) {
-        /* two different refusals, and saying the wrong one is its own bug: the
-           TYPE is never accepted (leave/medical/overseas duty), or an identical
-           row is already on the programme and a second would make the link
-           between input and row ambiguous — see acceptInput. */
-        if (!acceptInput(di, r, wasAcc))
-          HOOKS.toast(isUnavail(r.type)
-            ? `${r.type} does not go on the Ground Programme — its row has been removed`
-            : 'An identical row is already on the Ground Programme — this one was not put back', 'warn')
-        else if (extras && wasAcc === 'g') {
-          const nr = ((DAYS[di] || {}).ground || []).find((g: any) => g.src === inpId(r))
-          if (nr) {
-            /* ONE MAN, ONCE PER ROW (owner, D271, 27 Sep 26 — "Q1 refused"; Fable's scenario read F1). The request may
-               now be a man who already stood on this row as one of the extras put back here — he would come back as the
-               holder AND an extra. Kept once, as the holder (the request is his now): his extra place is left empty,
-               held as a removed extra always is, and the toast says so. Every other door onto a row refuses a second
-               copy before writing (engine/avail.ts rowTwice); this one is a hand-over, not an add, so it keeps the
-               edit and drops the copy. */
-            /* compared through whoId, as slots.ts rowPlaces reads a place (Fable's read) */
-            if (extras.more?.length && extras.more.some((v: any) => whoId(v) === r.person)) {
-              const more = extras.more.map((v: any) => whoId(v) === r.person ? '' : v)
-              while (more.length && !more[more.length - 1]) more.pop()
-              extras.more = more
-              /* raised on the NEXT tick: the app has one toast, and every caller of this save shows its own success
-                 line straight after it returns ("Input updated", "X is now unavailable instead of Y", …), which would
-                 replace this note before it could be read (the walk, F9). After it, the note is what stays up. */
-              const note = `${PEOPLE[r.person] ? PEOPLE[r.person].cs : r.person} — already on this row as an extra · kept once, as its holder`
-              queueMicrotask(() => HOOKS.toast(note, 'warn'))
-            }
-            if (extras.more?.length) nr.more = extras.more
-            if (extras.flag) nr.flag = extras.flag
-            if (extras.cx) nr.cx = extras.cx
-          }
-        }
-      }
-      /* 'u' (filed unavailable) is a GLOBAL filing DECISION on the input itself,
-         not a per-week ground landing — it has no DAYS row that must live in the
-         loaded week, so it SURVIVES an edit that leaves the input covering no
-         loaded day (P2-REV2-06). Restore the decision instead of the false
-         "moved outside the programmed week" toast + drop, which used to turn an
-         off-week remarks edit into a fresh, flagging input (the acc-clear below
-         would then delete the parked 'r'). A 'g' input's row genuinely cannot
-         exist off the loaded week, so it still drops and says so. */
-      else if (wasAcc === 'u' && r.type === wasType) r.acc = 'u'   // an off-week edit that KEEPS the type preserves the filing; a type change lets it re-derive (P2-QREV/Fable-9)
-      else HOOKS.toast('Moved outside the programmed week — it is no longer accepted', 'warn')
-      /* the un-accept above parks the input as 'r' (removed — dormant); every
-         SUCCESSFUL re-accept overwrites it, so an 'r' still here means the
-         relink failed (type refused, duplicate key, moved outside the week).
-         That failure is "no longer accepted", NOT "scheduler removed it" —
-         leaving 'r' would silence the input outright (a Meeting retyped to LL
-         would become dormant LEAVE), and would block auto-landing when its
-         new week loads. Scoped inside `wasAcc` so an input that was ALREADY
-         dormant before the edit (wasAcc reads undefined for it) stays so. */
-      if (r.acc === 'r') delete r.acc
-    }
+    /* 'u' (filed under Unavailable) is a scheduler's filing DECISION on the request, not a landing — it survives an edit
+       (P2-REV2-06: an edit off the loaded week used to turn it into a fresh, flagging input). Except a retype to a kind that
+       is never filed there — a leave, a medical, an overseas duty (acceptInput refuses those): then the request is simply
+       that kind, as the loaded week's relink always left it. One rule on and off the loaded week now (P2-QREV/Fable-9 had
+       the off-week edit re-derive on any type change). */
+    if (r.acc === 'u' && r.type !== wasType && isUnavail(r.type)) delete r.acc
   })
   /* the funnel backstop rolled the batch back — report failure so the editor
      stays open and nothing typed is lost (P2-QREV-04) */
@@ -1437,10 +1320,6 @@ export function removeInput(r: any) {
   const inx = INPUTS.indexOf(r)
   if (inx < 0) { HOOKS.toast('That input is no longer there', 'warn'); return false }
   if (protectedInput(r)) return false          // read-only quarantine (P2-IMPL-03)
-  /* its ground row is on a week that is not loaded — deleting here would leave
-     that row behind with a dead source link (finding 1). Load the week first. */
-  const stuck = landedOnUnloadedWeek(r)
-  if (stuck) { HOOKS.toast(stuckSays(stuck, 'delete'), 'warn'); return false }
   /* write-path role backstop (owner, 27 Aug 26): a LOGGED-IN MEMBER deletes
      only their OWN inputs — the row's ✕ is hidden on everyone else's, this
      refuses a hand-made call. Same predicate as commitInputEdit's gate above
@@ -1473,12 +1352,11 @@ function dropInputRow(r: any) {
   /* [ARCH-STACK] step 4: deleting the row IS deleting the absence — the war
      reads it, so there is nothing to withdraw (deliberate delete propagates
      and sticks, owner decision 2, 13 Sep 26). */
-  /* A DELETE NEVER LEAVES A DEAD ROW ([REQ-ORPHAN-ROW] 3, 28 Sep 26 — Fable's D176 read F3): a request reading "taken
-     off" (dormant 'r') can still have its own row on a loaded day — a plan parked with it and switched in since. Its
-     filing says there is no row, so the removal below skipped it and the row stayed on the programme with nothing behind
-     it. When its row stands, the delete takes it, through the one removal a landed request has (unacceptInput). */
-  if (r.acc !== 'g' && DAYS.some((d: any) => ((d && d.ground) || []).some((g: any) => g && g.src === inpId(r)))) r.acc = 'g'
-  if (r.acc) unacceptInput(acceptedDay(r), r)
+  /* THE DELETE WRITES THE REQUEST ALONE ([DB-READINESS] group A, phase 6 (c) — D450): its row goes from every week as that
+     week is read (engine/overlay.ts viewOfWeek, rule 1 — the week on screen straight after this command), a published day
+     reads it pending (D114, D178), and an Undo gives the request back and with it the exact row (state/holderbase.ts). A
+     request "taken off" whose own row stands again (a plan switched in — [REQ-ORPHAN-ROW] 3) needs nothing of its own
+     either: rule 1 takes that row too. */
   const ix = INPUTS.indexOf(r); if (ix >= 0) INPUTS.splice(ix, 1)
 }
 

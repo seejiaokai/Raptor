@@ -17,20 +17,25 @@ import { DAYS } from '../engine/data'
 import { CURWEEK } from '../engine/waves'
 import { storeBackend } from '../engine/hooks'
 import { stashClear } from '../engine/weekstash'
-import { SCHED, signOf, dayShownPendCount, dayPendingItems, dayCurVer } from '../engine/publish'
+import { SCHED, signOf, dayShownPendCount, dayPendingItems, dayCurVer, dayDiscardCount } from '../engine/publish'
+import { dayEvents } from '../engine/validate'
+import { ELOG } from '../engine/editlog'
+import { projectOilInputs } from '../engine/oilev'
+import { HOOKS } from '../engine/hooks'
+import { ownershipViolation } from './perms'
 import { acceptInput, unacceptInput } from '../engine/slots'
 import { loadVersionToWorkingCopy } from '../engine/drafts'
 import { PLANPUCKS, DAYRMK } from './plan'
-import { initStore, weekStashSnap, weekDirty, loadWeek, writeText } from './store'
+import { initStore, weekStashSnap, weekDirty, loadWeek, writeText, writeFill } from './store'
 import { commitSetDayApproved, schedWrite, SCHED_TYPES } from './sched-commit'
-import { setSession } from './auth'
+import { setSession, setMe, DEFAULT_ME } from './auth'
 import { hydrate, wirePersist, weekId } from './persist'
 import { bootStorage } from '../storage/boot'
 import { settingsAdapter } from '../storage/adapters'
 import { MemoryBackend } from '../storage/memory'
 import { SCHEMA_VERSION } from '../storage/reset'
 import type { Change as WbChange, Whiteboard } from '../storage/whiteboard'
-import { globalUndo } from '../undo'
+import { globalUndo, globalRedo } from '../undo'
 import { _resetTimeline } from '../undo/timeline'
 import { installGlobalUndo } from './undo-wire'
 import { _resetDisclosure } from './disclosure'
@@ -98,14 +103,11 @@ const edit = (iid: string, change: any) => { const r = reqOf(iid); const d: any 
 const publish = (di: number) => { sign(di); commitSetDayApproved(di, true) }
 
 beforeEach(() => { vi.useFakeTimers(); vi.setSystemTime(new Date(2026, 6, 13, 9, 0, 0)); resetWorld() })
-afterEach(() => { _resetTimeline(); vi.useRealTimers(); resetWorld(); setSession(null); storeBackend.impl = null })
+afterEach(() => { _resetTimeline(); vi.useRealTimers(); resetWorld(); setSession(null); setMe(DEFAULT_ME); storeBackend.impl = null })
 
-/* SKIPPED UNTIL (c) v3 IS BUILT (D467, 30 Sep 26): these are (c)'s red tests, drafted against v2 — 9 of 12 red on today's
-   code, each for the right reason (a request's own command writes its day row; the "Load the week of…" refusal). (c) v3 adds
-   a HOLDER BASE (round-2 dispositions, `docs/superpowers/briefs/2026-09-30-db-readiness-phase6-dispositions-r2.md`) — the
-   chat that builds it un-skips this file first, adds v3's own cases (an Undo of a request delete restores the exact row;
-   A → B → A marks; `kept`'s exit), and runs them red. */
-describe.skip('phase 6 (c) — a filing, an edit, a delete and a hand-over write the request only; the day is worked out', () => {
+/* (c)'s red tests, drafted against v2 (30 Sep 26) and un-skipped by the chat that builds v3 (D467, 1 Oct 26); v3's own
+   cases — the holder base — follow in the second block. */
+describe('phase 6 (c) — a filing, an edit, a delete and a hand-over write the request only; the day is worked out', () => {
   it('a filing on the week on screen: its row shows at once, NO day row is written, a reload shows the same row', async () => {
     const be = new MemoryBackend()
     await boot(be)
@@ -266,5 +268,328 @@ describe.skip('phase 6 (c) — a filing, an edit, a delete and a hand-over write
     expect(globalUndo().ok).toBe(true)
     expect(weekWrites(), 'no day row').toEqual([])
     expect(rowOf(iid, WED)!.row.rmks).toBe('p6c')
+  })
+})
+
+/* ---- v3: THE HOLDER BASE (plan §3 (c) v3 — round 2's dispositions). The week on screen is always worked out from the day
+   as its holder last committed it, so a removal the view makes is undone by giving the request back: the exact row returns.
+   Each case is checked right after the act AND after a reload (a second boot from the same store — in the database,
+   another device), because the whole design rests on the two agreeing. ---- */
+const member = () => { setSession({ user: 'us', role: 'main', name: 'us' }); setMe('bane') }      // Ranger — his own requests
+const admin = () => { setSession({ user: 'ad', role: 'admin', name: 'ad' }); setMe('stiff') }   // Saber
+const groundIx = (iid: string, di: number) => ((DAYS[di] as any).ground || []).findIndex((g: any) => g && g.src === iid)
+const pendKeys = (di: number, pfx: string) => Object.keys(SCHED.pending).filter(k => k.startsWith(`${pfx}:${di}.`))
+/* the scheduler's own touches on a landed row: a hand-set time and an extra man — then the day is his, saved */
+function placeByHand(iid: string) {
+  const ri = groundIx(iid, WED)
+  writeText(`gr:${WED}.${ri}.str`, '07:00')
+  writeFill(`g:${WED}.${ri}.+`, 'pike')                // the row's "+": first free place, else one more
+  const row = rowOf(iid, WED)!.row
+  expect(row.str, 'the hand-set time').toBe('07:00')
+  expect(row.more, 'the extra man').toEqual(['pike'])
+  return { rid: row.rid, ri }
+}
+
+describe('phase 6 (c) v3 — the holder base: what a request does to its day is undone exactly', () => {
+  it('Astra 1 — a day not published: delete the request, Undo: the SAME row comes back (id, place, time, extras); Redo takes it again; no day row either way', async () => {
+    const be = new MemoryBackend()
+    await boot(be)
+    const iid = file({})
+    const { rid, ri } = placeByHand(iid)
+    clear()
+    expect(removeInput(reqOf(iid))).toBe(true)
+    expect(rowOf(iid), 'gone from the screen').toBeNull()
+    expect(globalUndo().ok).toBe(true)
+    const back = rowOf(iid, WED)
+    expect(back, 'back').toBeTruthy()
+    expect(back!.row.rid, 'the same row').toBe(rid)
+    expect(groundIx(iid, WED), 'in the same place').toBe(ri)
+    expect(back!.row.str, 'with the time the scheduler set').toBe('07:00')
+    expect(back!.row.more, 'and his extra man').toEqual(['pike'])
+    expect(globalRedo().ok).toBe(true)
+    expect(rowOf(iid), 'Redo takes it again').toBeNull()
+    expect(globalUndo().ok).toBe(true)
+    expect(weekWrites(), 'no day row written by the delete, its Undo or its Redo').toEqual([])
+    await reload(be)
+    const r = rowOf(iid, WED)
+    expect(r && r.row.rid, 'after a reload: the same row').toBe(rid)
+    expect(r!.row.str).toBe('07:00')
+    expect(r!.row.more).toEqual(['pike'])
+  })
+
+  it('Astra 1 — a PUBLISHED day: delete reads pending; Undo puts the exact row back and nothing is pending — right after and after a reload', async () => {
+    const be = new MemoryBackend()
+    await boot(be)
+    const iid = file({})
+    const { rid } = placeByHand(iid)
+    publish(WED)
+    expect(dayShownPendCount(WED)).toBe(0)
+    expect(removeInput(reqOf(iid))).toBe(true)
+    expect(dayShownPendCount(WED), 'the removal is one pending change (D114)').toBe(1)
+    expect(globalUndo().ok).toBe(true)
+    expect(rowOf(iid, WED)!.row.rid).toBe(rid)
+    expect(dayShownPendCount(WED), 'back to what was published').toBe(0)
+    expect(pendKeys(WED, 'del'), 'no tombstone left behind').toEqual([])
+    expect(pendKeys(WED, 'gr'), 'no mark left on the row').toEqual([])
+    await reload(be)
+    expect(rowOf(iid, WED)!.row.rid).toBe(rid)
+    expect(dayShownPendCount(WED)).toBe(0)
+  })
+
+  it('the base is what is stored — a load bakes nothing in: the request re-dated away, a RELOAD, then re-dated back — the same row returns', async () => {
+    const be = new MemoryBackend()
+    await boot(be)
+    const iid = file({})
+    const { rid } = placeByHand(iid)                     // Wednesday saved with the row, its time and its extra
+    edit(iid, { start: '2026-07-16' })                   // to Thursday: Wednesday's row taken away on screen only
+    expect(rowOf(iid, WED), 'gone from Wednesday').toBeNull()
+    await reload(be)                                     // the stored Wednesday still holds the row; the load works it out
+    expect(rowOf(iid, WED), 'still gone after a reload').toBeNull()
+    edit(iid, { start: '2026-07-15' })                   // back to Wednesday
+    const back = rowOf(iid, WED)
+    expect(back && back.row.rid, 'the stored row stands again — not a new one').toBe(rid)
+    expect(back!.row.more).toEqual(['pike'])
+    expect(rowsOf(iid)).toBe(1)
+    await reload(be)
+    expect(rowOf(iid, WED)!.row.rid).toBe(rid)
+    expect(rowsOf(iid)).toBe(1)
+  })
+
+  it('Astra 2 — A → B → A on a published day: the mark comes and goes; nothing left behind, before and after a reload', async () => {
+    const be = new MemoryBackend()
+    await boot(be)
+    const iid = file({})
+    publish(WED)
+    edit(iid, { remarks: 'B' })
+    expect(dayShownPendCount(WED), 'A → B is pending').toBe(1)
+    expect(pendKeys(WED, 'gr').length, 'and marked on the row').toBeGreaterThan(0)
+    edit(iid, { remarks: 'p6c' })
+    expect(dayShownPendCount(WED), 'B → A: back to what was published').toBe(0)
+    expect(pendKeys(WED, 'gr'), 'no hollow tag left').toEqual([])
+    await reload(be)
+    expect(dayShownPendCount(WED)).toBe(0)
+    expect(pendKeys(WED, 'gr')).toEqual([])
+  })
+
+  it('Astra 2 — edit → Undo → Redo on a published day: the marks follow the request each way', async () => {
+    const be = new MemoryBackend()
+    await boot(be)
+    const iid = file({})
+    publish(WED)
+    edit(iid, { remarks: 'B' })
+    const marked = pendKeys(WED, 'gr').length
+    expect(marked).toBeGreaterThan(0)
+    expect(globalUndo().ok).toBe(true)
+    expect(dayShownPendCount(WED)).toBe(0)
+    expect(pendKeys(WED, 'gr')).toEqual([])
+    expect(globalRedo().ok).toBe(true)
+    expect(dayShownPendCount(WED)).toBe(1)
+    expect(pendKeys(WED, 'gr').length).toBe(marked)
+    await reload(be)
+    expect(dayShownPendCount(WED)).toBe(1)
+    expect(rowOf(iid, WED)!.row.rmks).toBe('B')
+  })
+
+  it('Astra 3 — kept\'s exit: deleted, the old version loaded (the row kept, D363), the delete undone, then the request edited — the row follows the edit', async () => {
+    const be = new MemoryBackend()
+    await boot(be)
+    member()
+    const iid = file({})
+    admin()
+    publish(WED)
+    member()
+    expect(removeInput(reqOf(iid))).toBe(true)
+    admin()
+    schedWrite(SCHED_TYPES.mutate, () => { loadVersionToWorkingCopy(WED, dayCurVer(WED)); afterSchedMutate() })
+    expect(rowOf(iid, WED)!.row.kept, 'the version\'s row, its request gone: kept').toBe(true)
+    member()
+    const u = globalUndo(); expect(u.ok, 'Ranger takes back his delete: ' + JSON.stringify(u)).toBe(true)
+    expect(reqOf(iid)).toBeTruthy()
+    edit(iid, { remarks: 'after the undo' })
+    expect(rowOf(iid, WED)!.row.rmks, 'the row follows the request again').toBe('after the undo')
+    expect(rowsOf(iid)).toBe(1)
+    await reload(be)
+    expect(rowOf(iid, WED)!.row.rmks).toBe('after the undo')
+    expect(rowsOf(iid)).toBe(1)
+  })
+
+  it('Fable F6 — a kept row on a day its request no longer covers is a dead row: the request lands on its own new day, the dead row stays (D363)', async () => {
+    const be = new MemoryBackend()
+    await boot(be)
+    const iid = file({})
+    publish(WED)
+    edit(iid, { start: '2026-07-22' })                        // to Wed 22 Jul, week 2 — never opened
+    expect(rowOf(iid), 'gone from week 1 at once').toBeNull()
+    schedWrite(SCHED_TYPES.mutate, () => { loadVersionToWorkingCopy(WED, dayCurVer(WED)); afterSchedMutate() })
+    expect(rowOf(iid, WED)!.row.kept, 'the version put it back — kept').toBe(true)
+    loadWeek(W2)
+    expect(rowOf(iid, 2), 'on week 2, it lands on its own day').toBeTruthy()
+    loadWeek(W1)
+    expect(rowOf(iid, WED), 'week 1 keeps the dead row the holder brought back').toBeTruthy()
+    await reload(be)
+    loadWeek(W2)
+    expect(rowOf(iid, 2)).toBeTruthy()
+  })
+
+  it('Fable F1 — the request handed on, then the issued version loaded: the row is re-made for the new holder, before and after a reload', async () => {
+    const be = new MemoryBackend()
+    await boot(be)
+    const iid = file({ person: 'pike' })
+    publish(WED)
+    edit(iid, { person: 'stiff' })
+    expect(rowOf(iid, WED)!.row.who, 'handed on at once').toBe('stiff')
+    schedWrite(SCHED_TYPES.mutate, () => { loadVersionToWorkingCopy(WED, dayCurVer(WED)); afterSchedMutate() })
+    expect(rowOf(iid, WED)!.row.who, 'the version\'s row, re-made for the request as it is').toBe('stiff')
+    expect(rowsOf(iid)).toBe(1)
+    await reload(be)
+    expect(rowOf(iid, WED)!.row.who).toBe('stiff')
+  })
+
+  it('Fable F5 — the load\'s confirm counts what the load really discards: nothing, when only a hand-over differs', async () => {
+    await boot(new MemoryBackend())
+    const iid = file({ person: 'pike' })
+    publish(WED)
+    edit(iid, { person: 'stiff' })
+    expect(dayDiscardCount(WED), 'the load re-makes the row for Stiff again — it discards nothing').toBe(0)
+  })
+
+  it('Fable F3 — a re-made row and a landing write no change-history line of their own (the request\'s line is its record)', async () => {
+    await boot(new MemoryBackend())
+    const iid = file({})
+    publish(WED)
+    const before = ELOG.rows.filter((r: any) => String(r.key || '').startsWith('gr:') || String(r.key || '').startsWith('g:')).length
+    edit(iid, { remarks: 'no cell lines' })
+    expect(rowOf(iid, WED)!.row.rmks).toBe('no cell lines')
+    const after = ELOG.rows.filter((r: any) => String(r.key || '').startsWith('gr:') || String(r.key || '').startsWith('g:')).length
+    expect(after, 'no line for the row\'s cells').toBe(before)
+  })
+
+  it('Fable F4 — the checks see the landed row straight after the filing', async () => {
+    await boot(new MemoryBackend())
+    file({})
+    expect(dayEvents(WED, 'bane').some((e: any) => e.kind === 'ground'), 'Ranger\'s meeting is an event on Wednesday').toBe(true)
+  })
+
+  it('a retype to a leave says its row has been removed', async () => {
+    await boot(new MemoryBackend())
+    const iid = file({})
+    const said: string[] = []
+    const was = HOOKS.toast
+    HOOKS.toast = (m: any) => { said.push(String(m)) }
+    try {
+      edit(iid, { type: 'LL' })
+      await Promise.resolve(); vi.runAllTicks(); await Promise.resolve()
+    } finally { HOOKS.toast = was }
+    expect(rowOf(iid), 'no row').toBeNull()
+    expect(said.some(m => /does not go on the Ground Programme — its row has been removed/.test(m)), JSON.stringify(said)).toBe(true)
+  })
+
+  it('§11 — a member\'s command that carries a schedule record is refused; his own filing carries none', async () => {
+    await boot(new MemoryBackend())
+    member()
+    clear()
+    file({})
+    expect(weekWrites(), 'the member\'s filing writes no day row').toEqual([])
+    const env: any = { type: 'inputs.batch', actor: { id: 'us', role: 'member', personId: 'bane' },
+      changes: [{ op: 'put', collection: 'days', id: `${W1}#${WED}`, before: {}, after: {} }] }
+    expect(ownershipViolation(env), 'a day record in a member\'s command').toBeTruthy()
+  })
+})
+
+/* ---- round 3's findings (Astra 1; Fable F1, F2, F3 — `docs/superpowers/briefs/2026-10-01-db-readiness-phase6c-…-r3-*.md`).
+   A DEAD kept row — the holder's version row on a day its request cannot stand on (D363) — can now sit in the same week as
+   the request's real row; every lookup that ACTS on "the request's row" must find the real one. ---- */
+const THU = 3, SAT = 5, SUN = 6
+/* the request's row on `di` published; the request moved to week 2; that day's version loaded (its row back, kept — D363);
+   then the request moved back into week 1, onto `backIso`: the dead kept row on `di`, the real row landing on the new day */
+function deadKeptRow(iid: string, di: number, awayIso: string, backIso: string) {
+  publish(di)
+  edit(iid, { start: awayIso })
+  schedWrite(SCHED_TYPES.mutate, () => { loadVersionToWorkingCopy(di, dayCurVer(di)); afterSchedMutate() })
+  expect(rowOf(iid, di)!.row.kept, 'the version put it back — kept').toBe(true)
+  edit(iid, { start: backIso })
+}
+
+describe('phase 6 (c) v3, round 3 — a dead kept row is never the request\'s row', () => {
+  it('Astra 1 — OIL: a dead CANCELLED row on Saturday does not stop the live Sunday landing earning', async () => {
+    const be = new MemoryBackend()
+    await boot(be)
+    const iid = file({ type: 'Training', date: 'Jul 18', remarks: 'weekend course' })
+    schedWrite(SCHED_TYPES.mutate, () => { const r = rowOf(iid, SAT)!.row; r.cx = true; afterSchedMutate() })
+    deadKeptRow(iid, SAT, '2026-07-25', '2026-07-19')
+    expect(rowOf(iid, SAT)!.row.cx, 'the dead row is the cancelled one').toBe(true)
+    expect(rowOf(iid, SUN), 'the real row, on Sunday').toBeTruthy()
+    const ev = () => projectOilInputs('2026-07-19').find((x: any) => x.iid === iid)
+    expect(ev()!.stand, 'Sunday\'s claim stands on its live row').toBe('active')
+    await reload(be)
+    expect(ev()!.stand).toBe('active')
+  })
+
+  it('Fable F1 — the load puts the request\'s issued row back although a dead row of it sits on another day', async () => {
+    const be = new MemoryBackend()
+    await boot(be)
+    const iid = file({})
+    deadKeptRow(iid, WED, '2026-07-22', '2026-07-16')             // dead on Wednesday, landed on Thursday
+    publish(THU)
+    writeText(`dn:${THU}.0`, 'EDITED SINCE')
+    schedWrite(SCHED_TYPES.mutate, () => { loadVersionToWorkingCopy(THU, dayCurVer(THU)); afterSchedMutate() })
+    expect(rowOf(iid, THU), 'Thursday\'s own row back').toBeTruthy()
+    expect(dayShownPendCount(THU), 'Thursday is as issued').toBe(0)
+  })
+
+  it('Fable F1 — ✕ then Accept on the real day lands there; it never adopts the dead row on another day', async () => {
+    await boot(new MemoryBackend())
+    const iid = file({})
+    deadKeptRow(iid, WED, '2026-07-22', '2026-07-16')
+    publish(THU)                                                   // its issued Thursday holds the row — a read never puts it back
+    const rid = rowOf(iid, THU)!.row.rid
+    schedWrite(SCHED_TYPES.mutate, () => { unacceptInput(THU, reqOf(iid)); afterSchedMutate() })
+    expect(rowOf(iid, THU), 'taken off Thursday').toBeNull()
+    expect(rowOf(iid, WED)!.row.kept, 'the dead row untouched by the ✕').toBe(true)
+    schedWrite(SCHED_TYPES.mutate, () => { acceptInput(THU, reqOf(iid), 'g'); afterSchedMutate() })
+    expect(rowOf(iid, THU), 'Accept puts it on Thursday').toBeTruthy()
+    expect(rowOf(iid, THU)!.row.rid, 'the issued row, with its issued id').toBe(rid)
+    expect(reqOf(iid).acc).toBe('g')
+    expect(dayShownPendCount(THU), 'Thursday as issued').toBe(0)
+  })
+
+  it('Fable F2 — a two-day request shortened onto the published day it already covered moves there, pending — before and after a reload', async () => {
+    const be = new MemoryBackend()
+    await boot(be)
+    const iid = file({ endDate: 'Jul 16' })                        // Wed–Thu, landed on Wednesday
+    expect(reqOf(iid).endDate, 'a two-day request').toBe('Jul 16')
+    expect(rowOf(iid, WED), 'landed on its start day').toBeTruthy()
+    publish(WED); publish(THU)
+    edit(iid, { start: '2026-07-16', end: '' })                    // Thursday only
+    expect(rowOf(iid, WED), 'off Wednesday').toBeNull()
+    expect(rowOf(iid, THU), 'on Thursday').toBeTruthy()
+    expect(dayShownPendCount(THU), 'Thursday reads it pending').toBeGreaterThan(0)
+    expect(dayShownPendCount(WED), 'and Wednesday its removal').toBeGreaterThan(0)
+    await reload(be)
+    expect(rowOf(iid, THU)).toBeTruthy()
+    expect(rowOf(iid, WED)).toBeNull()
+  })
+
+  it('Fable F3 — the dead row and the landing never share an id; a member\'s later edit carries no day record', async () => {
+    const be = new MemoryBackend()
+    await boot(be)
+    member()
+    const iid = file({})
+    admin()
+    publish(WED)
+    member()
+    edit(iid, { start: '2026-07-22' })
+    admin()
+    schedWrite(SCHED_TYPES.mutate, () => { loadVersionToWorkingCopy(WED, dayCurVer(WED)); afterSchedMutate() })
+    member()
+    edit(iid, { start: '2026-07-16' })
+    const dead = rowOf(iid, WED)!.row, live = rowOf(iid, THU)!.row
+    expect(dead.rid, 'two rows, two ids').not.toBe(live.rid)
+    clear()
+    edit(iid, { remarks: 'his own words' })                         // refused if it carried a day record (§11)
+    expect(rowOf(iid, THU)!.row.rmks).toBe('his own words')
+    expect(weekWrites(), 'no day record').toEqual([])
+    await reload(be)
+    expect(rowOf(iid, WED)!.row.rid).not.toBe(rowOf(iid, THU)!.row.rid)
   })
 })

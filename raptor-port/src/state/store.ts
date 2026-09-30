@@ -18,7 +18,7 @@ import { slotVal, setSlotVal, fillSlot, txtSet } from '../engine/slots'
 import { validate } from '../engine/validate'
 import { lookaheadLoad } from '../engine/lookahead'
 import { rulesLoad } from '../engine/rules'
-import { mintInpIds, INPUTS, DATES, isPersonal, baseYear, dateIx, inputCoversDate, inpId } from '../engine/inputs'
+import { mintInpIds, INPUTS, DATES, baseYear, dateIx, inputCoversDate, inpId } from '../engine/inputs'
 import { DAYS } from '../engine/data'
 import { PEOPLE } from '../engine/people'
 import { ensureRowIds, backfillSnapshotIds, migrateBookKeys, migrateLegacyIds } from '../engine/rowids'
@@ -26,7 +26,7 @@ import { CURWEEK, setCurWeek } from '../engine/waves'
 import { weekBundle, otherWeekInputs } from '../engine/weeks-data'
 import { seedDemoSans, seedDemoMedical } from './demoseed'
 import { docAdd } from './docs'
-import { storesLoad, cxReasonsLoad, dutyTplLoad, waveTplLoad, dayTplLoad, autoAcceptSeedInputs, reconcileLandedAcc, relandInputs, secOrder, moveSectionModel, reorderSectionTo, secDefaultLoad, waveDefaultLoad } from '../engine'
+import { storesLoad, cxReasonsLoad, dutyTplLoad, waveTplLoad, dayTplLoad, secOrder, moveSectionModel, reorderSectionTo, secDefaultLoad, waveDefaultLoad } from '../engine'
 import { qualColsLoad } from '../engine/qualcols'
 import { elogFlush, elogLoad, setElogDefer, setElogDoor, elogAdoptHeld } from '../engine/editlog'
 import { changesLoad } from './changes'
@@ -34,7 +34,7 @@ import { registerChangeLines } from './changelines'
 import { markDeletion, resetSched, SCHED, dayApproved, protectedWeek, amFormatOf } from '../engine/publish'
 import { inputProtected, protectedDates } from '../engine/quarantine'
 import { stashPut, stashGet, stashHas, setPreservedBlob, clearPreservedBlob, isPreservedWeek, preservedBlob } from '../engine/weekstash'
-import { overlayDeletedWeek } from '../engine/overlay'
+import { baseReset, baseSnapshot, rederive } from './holderbase'
 import { stashRows, joinWeek } from './weekrows'
 import { afterSchedMutate } from './view'
 import * as view from './view'
@@ -45,14 +45,14 @@ import { endUndoSession } from '../undo/timeline'
 import { setRole as lwSetRole } from '../leavewar/state/store'
 import { endTrackerSession } from '../tracker/role.js'
 import { isHydrated } from './persist'
-import { deferEffect, CmdRefused, setPermissionResolver, commitPhase, commitProjection, onPipelineBegin, deriveActor, definePermission, anyone } from '../command'
+import { deferEffect, CmdRefused, setPermissionResolver, commitProjection, onPipelineBegin, deriveActor, definePermission, anyone } from '../command'
 /* internal wiring may raise a command as a named person (command/index.ts — commitAs stays off the public surface) */
 import { commitAs } from '../command/commit'
 import { defineInvariant } from '../command/harness'
 import { cmdAuthorize, ownershipViolation } from './perms'
 import type { EnlistableStore, RecordEntry, CommitResult } from '../command'
 import { snapshotStash, restoreStash, stashEntries, writeStashRecords } from '../engine/weekstash'
-import { registerSchedCommandLayer, commitSchedVoid, commitSchedValue, commitInputs, commitInputsProjection, commitInputsWith, SCHED_TYPES, resyncSchedBaseline, commitSchedLoad } from './sched-commit'
+import { registerSchedCommandLayer, commitSchedVoid, commitSchedValue, commitInputs, commitInputsProjection, commitInputsWith, SCHED_TYPES, resyncSchedBaseline } from './sched-commit'
 import { registerPeopleSettingsCommandLayer, resyncPeopleBaseline, mintPeopleOrd } from './people-settings-commit'
 import { mintOrd } from '../command/ord'
 import { PLANPUCKS } from './plan'
@@ -440,20 +440,17 @@ export function switchRoleView() {
    week-scoped (CLAUDE.md's "Personal INPUTS are GLOBAL" decision), and
    restoring them here would roll back edits made to them while the user was
    on a DIFFERENT week. */
-/* WHICH REQUESTS A SCHEDULER DELIBERATELY TOOK OFF THE GROUND (review fix, 24 Aug 26) — worked out ON READ from each
-   request's own mark ([DB-READINESS] group A, phase 1 — F3-02; data-model.md §3: `un` is not stored). A personal
-   activity input auto-lands on its day, but a scheduler may take it off (slots.ts unacceptInput removes the ground row
-   and marks the request 'r' — dormant, engine/inputs.ts inputDormant); on the way back into the week the landing pass
-   must not put it back. The week's saved copy used to carry the list (`un`); the request's 'r' already says it, it
-   survives the week load's acc-clear (applyWeekModel below), and it is the one record a command writes — so the list
-   is read from it, never stored beside it. */
-function takenOff(): Set<string> {
-  const out = new Set<string>()
-  INPUTS.forEach((r: any) => { if (r && r.acc === 'r' && isPersonal(r.type)) out.add(inpId(r)) })
-  return out
-}
+/* A REQUEST A SCHEDULER TOOK OFF ('r' — slots.ts unacceptInput) stays off: the working-out after every command and at every
+   load never lands an 'r' request (engine/overlay.ts viewOfWeek). The load's own list of them (takenOff, and the saved
+   week's `un` before it) went with the load's landing pass ([DB-READINESS] group A, phase 6 (c)). */
+/* THE WEEK'S COPY IN MEMORY IS ITS HOLDER BASE ([DB-READINESS] group A, phase 6 (c) v3 — state/holderbase.ts): the days and
+   their marks as the holder last committed them, never the week as worked out on screen. So a return to the week, and every
+   cross-week read of it, starts from what is stored and works the requests out again — as a reload does; a copy of the
+   screen would carry a request's derived removal, and an Undo of it could never bring the exact row back (Astra's round 2). */
 export function weekStashSnap() {
-  return JSON.stringify({ d: DAYS, ...schedFields(), wo: [...view.WARNOFF] })
+  const b = baseSnapshot()
+  if (!b) return JSON.stringify({ d: DAYS, ...schedFields(), wo: [...view.WARNOFF] })
+  return JSON.stringify({ d: b.d, ...schedFields(), c: b.marks.c, p: b.marks.p, ad: b.marks.ad, wo: [...view.WARNOFF] })
 }
 
 /* WHAT THIS WEEK LOOKED LIKE THE MOMENT IT FINISHED LOADING — the yardstick
@@ -472,9 +469,6 @@ let weekBaseline = ''
    persisted; see weekstash.ts's "persisted pristine copy is a trap") */
 export function weekDirty() { return weekStashSnap() !== weekBaseline }
 
-/* reconcileLandedAcc + the restore-landing pass now live in engine/slots.ts
-   (relandInputs), the ONE shared landing mechanic behind a week swap AND a
-   Step-3 undo restore ([GLOBAL-UNDO] §11) — imported above. */
 
 /* THE ONE PLACE THE SCHEDULE MODEL FOR WEEK v GETS BUILT — loadWeek's one
    entry to both the restore path and the pure-seed path, so the two cannot
@@ -553,12 +547,12 @@ function applyWeekModel(v: any, opts?: { landLater?: boolean }): any {
      A missing week (no stash) or a clean current-format one is never preserved. */
   if ((unreadable && stashedJson) || (s && stashedJson && amFormatOf(SCHED, v) === 'unsupported')) setPreservedBlob(v, stashedJson)
   else clearPreservedBlob(v)
-  /* A MAN DELETED IS WORKED OUT ON READ ([DB-READINESS] group A, phase 6 (d); data-model.md §9 rule 9). A delete writes
-     his record (`deletedFrom`), never the weeks — so every week takes him off its days from his cutoff as it comes into
-     memory, here, BEFORE the landing pass and the command layer's baseline: it is nobody's change, and the day's holder
-     saves it without him at his next change to that day (engine/overlay.ts). A byte-preserved (read-only) week is shown
-     as it is saved — the delete refuses while one holds him on a day to come (state/person-delete.ts stashPreflight). */
-  if (!isPreservedWeek(v)) overlayDeletedWeek(String(v), DAYS, { sign: SCHED.sign, signBind: SCHED.signBind, drafts: SCHED.drafts })
+  /* WHAT A REQUEST OR A DELETE DOES TO THE WEEK IS WORKED OUT ON READ ([DB-READINESS] group A, phase 6 (c) and (d);
+     data-model.md §9 rule 9). Neither writes the weeks — so the week is installed here AS STORED, and its caller (loadWeek,
+     initStore) makes it the holder base and works it out (state/holderbase.ts: the requests' rows reconciled and landed, a
+     deleted man taken off from his cutoff) once its row ids are minted, before the command layer's baseline: it is
+     nobody's change, and the day's holder saves it, worked out, at his next change to that day. A byte-preserved
+     (read-only) week is shown as it is saved. */
   /* INPUTS IS GLOBAL (owner, 22 Aug 26) — NOT swapped with the week. The
      Inputs page shows every week's inputs; each week's schedule still shows
      only its own because autoAcceptSeedInputs and the day builders match by
@@ -577,29 +571,28 @@ function applyWeekModel(v: any, opts?: { landLater?: boolean }): any {
   /* Ground rows belong to the loaded week; acc belongs to the global input.
      A protected-spanning row keeps its filing even when this week has no landing. */
   INPUTS.forEach((r: any) => { if (r.acc && r.acc !== 'r' && r.acc !== 'u' && !inputProtected(r)) delete r.acc })
-  reconcileLandedAcc()
   mintInpIds()
-  /* [ARCH-STACK] f/u#1 (F-01): advance the command-layer baseline to the
-     freshly-swapped week BEFORE the landing pass below, whose autoAccept ->
-     markEdit -> renderStatus -> notify() fires listeners MID-pass (the Leave War
-     sync opens a writeInputsBatch command). Without this, that command would diff
-     the OLD week's model against the new one and emit a spurious whole-week
-     envelope. Advanced again before return so the fully-landed week is the
-     baseline the caller (loadWeek/initStore) is left holding. */
+  /* [ARCH-STACK] f/u#1 (F-01): the command-layer baseline advanced to the freshly-swapped week at once, so nothing that
+     runs before the caller's own re-baseline diffs the OLD week against the new one */
   resyncSchedBaseline()
-  if (opts?.landLater) return s
-  landWeek(s)
-  resyncSchedBaseline()   // the fully-landed week is the baseline the caller leaves with (F-01)
   return s
 }
-/* THE WEEK LOAD'S LANDING PASS — the requests filed on this week's days put on its ground programme. A week restored from
-   its saved copy re-lands through relandInputs (a request a scheduler took off stays off — takenOff, above — and
-   everything else lands, including a request brand new since the week was last open; the re-park-as-'r' of an un-hit
-   request and the amendment-mark preservation live inside relandInputs, engine/slots.ts, [GLOBAL-UNDO] §11); a week
-   from the seed lands them all (dayApproved is clean). */
-function landWeek(s: any): void {
-  if (s) relandInputs(takenOff())
-  else autoAcceptSeedInputs()
+/* THE WEEK AS ITS HOLDER LEFT IT, THEN WORKED OUT — the week load's and the boot's last step before the baseline: the
+   installed week becomes the holder base, and the pass works it out (state/holderbase.ts): each request's row reconciled
+   with the request, a deleted man taken off, and every request with no row landed on its start day — a published day's
+   only if its current issued version never saw it (the 16 Sep 26 rule, after a reload too). It is out of band and paints
+   nothing (no mark on a day not published, no history line, no notify), so it needs no command: the sched.load command
+   it replaces existed to latch the old landing's repaint. Nothing it does is saved — it is worked out again at every
+   load. */
+function workOutLoadedWeek(): void {
+  /* the housekeeping the load's own command used to do at its apply-end, done here as the boot does it: every request's id
+     and place, every planning note's place — or the next command would mint them inside itself, whoever's it is (a
+     member's is then refused, §11 — found when sched.load went) */
+  mintInpIds()
+  mintOrd(PLANPUCKS, (p: any) => p.id)
+  baseReset()
+  rederive({ live: false })
+  resyncSchedBaseline()
 }
 
 /* ---- LOAD A WEEK (the .wk selector) ----
@@ -635,17 +628,13 @@ export function loadWeek(v: any) {
      saved lands as part of the load and stays unsaved
      (a pristine week is never stored — weekstash.ts). The command needs the command layer idle: from inside another
      command it would join or queue behind it, so there the landing runs as part of the load, unsaved, and says so. */
-  const saved = stashHas(v)
-  const idle = commitPhase() === 'idle'
-  if (saved && !idle) console.warn('[loadWeek] a week load inside a command — its landing is not saved')
   setCurWeek(v)
   /* OIL mode belongs to one day of ONE week, so it can never survive a week
      swap — whichever route got us here (Fable, 21 Sep 26). The board's own
      step clears it too; this is the backstop for every other caller. */
   view.setOilDay(null)
   HOOKS.weekSwapped()         // pan.ts drops its arrow-burst corridor (stale-target fix)
-  const landLater = saved && idle
-  const s = applyWeekModel(v, { landLater })
+  const s = applyWeekModel(v)
   view.bumpNav()              // a week swap invalidates a pending day-template-apply confirm (P2-REV2-07)
   view.setBoardDay(null)      // closes the phone board and disarms
   view.armDrop()
@@ -695,8 +684,8 @@ export function loadWeek(v: any) {
        edit). */
     if (wasLegacy) migrateBookKeys(SCHED, DAYS)
   }
-  /* the saved week's landing, as its own command on the arriving week's baseline (commitSchedLoad resyncs first) */
-  if (landLater) commitSchedLoad(() => landWeek(s))
+  /* the week as stored becomes the holder base, and is worked out (requests' rows, a deleted man) */
+  workOutLoadedWeek()
   weekBaseline = weekStashSnap()   // the stash-on-leave yardstick (see its comment)
   validate()
   histInit()                  // new baseline for this week — Undo starts here
@@ -913,9 +902,6 @@ export function initStore(policy: { seedDemo: boolean } = { seedDemo: true }) {
        (its INPUTS acc-clear above reconcileLandedAcc); mirror it here so the
        no-stash boot re-lands too. 'r'/'u' are deliberate decisions, kept. */
     INPUTS.forEach((r: any) => { if (r.acc && r.acc !== 'r' && r.acc !== 'u' && !inputProtected(r)) delete r.acc })
-    /* a man deleted, worked out on read — the seed week too (phase 6 (d); applyWeekModel above) */
-    overlayDeletedWeek(String(CURWEEK), DAYS, { sign: SCHED.sign, signBind: SCHED.signBind, drafts: SCHED.drafts })
-    autoAcceptSeedInputs()
   }
   /* stable row ids (engine/rowids.ts) BEFORE the baseline: the walk mutates
      DAYS, and a mint after the yardstick would make the pristine seed week
@@ -935,6 +921,9 @@ export function initStore(policy: { seedDemo: boolean } = { seedDemo: true }) {
      boot (a modern book is already rid-keyed, and re-running would let a
      leftover positional-fallback key re-bind to a later row). */
   if (wasLegacy) migrateBookKeys(SCHED, DAYS)
+  /* the week as stored (or the seed) becomes the holder base, and is worked out — the seed week's requests land here, a
+     deleted man goes (phase 6 (c), (d)) */
+  workOutLoadedWeek()
   weekBaseline = weekStashSnap()   // the stash-on-leave yardstick (see its comment)
   validate()
   histInit()

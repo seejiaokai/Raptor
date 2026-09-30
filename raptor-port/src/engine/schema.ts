@@ -259,6 +259,13 @@ export type GroundRow = AllhandsRow & {
   src?: string
   /** The TYPE of the input it was landed from ([ARCH-STACK] step 4 §8.1), so the clash grade survives the input's deletion — engine (acceptInput, shiftHardGround). */
   srcType?: string
+  /** What the row was last made or re-made from — a short hash of the six fields its request writes ([DB-READINESS] phase 6
+   *  (c); engine/overlay.ts srcvOf); a row re-made on read when it differs. Not canonical (restore.ts dayKeys). */
+  srcv?: string
+  /** A row a whole-day replacement (a version loaded, a plan switched in) brought back although its request is gone or cannot
+   *  stand on the day — the holder's to keep (D363); cleared in the view once its request can stand there again (phase 6 (c);
+   *  engine/drafts.ts markKept). Not canonical. */
+  kept?: boolean
 }
 
 /** A standalone wave kind: SC, AVALON, BB (a flying wave has none). */

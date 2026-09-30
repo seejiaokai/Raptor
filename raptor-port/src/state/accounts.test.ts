@@ -23,7 +23,7 @@ import { me, isMe, roleOf, viewerId } from './perms'
 import { store } from '../engine/hooks'
 import { INPUTS, DATES, mintInpIds } from '../engine/inputs'
 import { DAYS } from '../engine/data'
-import { autoAcceptInput } from '../engine/slots'
+import { acceptInput } from '../engine/slots'
 import { afterSchedMutate } from './view'
 import { resyncSchedBaseline } from './sched-commit'
 import { installGlobalUndo } from './undo-wire'
@@ -286,17 +286,27 @@ describe('AC7 — a member\'s command changes only his own records (perms.ts own
   /* Fable's and Astra's code reads (26 Sep 26): the bare "the schedule changed" command is
      the one schedule command a member's actor can open — as a top-level command it changes
      nothing of the schedule for him; his own input's landing (inside his input command) still does */
-  it("a member's own activity input lands on the ground programme; a bare schedule change by him rolls back", () => {
+  /* [DB-READINESS] phase 6 (c) (1 Oct 26): the member's command writes his request ONLY — its landing is worked out after
+     the command (state/holderbase.ts), nobody's change; a landing made INSIDE his command is a day record §11 no longer lets
+     him write (data-model.md §11 — the one exception "until phase 6 (c)" is gone) */
+  it("a member's own activity input lands on the ground programme — worked out after his command; a schedule change inside it rolls back", () => {
     mintInpIds(); resyncSchedBaseline()
     signInAs('us', 'us')
     const di = 1, before = JSON.stringify(DAYS[di].ground || [])
     const ok = writeInputs(() => {
       const row: any = { person: 'bane', type: 'Meeting', date: DATES[di], allday: false, s: 900, e: 960, remarks: 'walked brief', mod: '2026-01-01' }
-      INPUTS.unshift(row); autoAcceptInput(row, true)
+      INPUTS.unshift(row)
     })
-    expect(ok, 'his own input and its landing are one allowed command').toBe(true)
+    expect(ok, 'his own input is an allowed command').toBe(true)
     expect(JSON.stringify(DAYS[di].ground || [])).not.toBe(before)
-    expect(JSON.stringify(DAYS[di].ground)).toContain('bane')
+    expect(JSON.stringify(DAYS[di].ground), 'and it is on the programme at once').toContain('bane')
+    const ground = JSON.stringify(DAYS[di].ground || [])
+    const refused = writeInputs(() => {
+      const row: any = { person: 'bane', type: 'Meeting', date: DATES[di], allday: false, s: 1000, e: 1060, remarks: 'landed inside', mod: '2026-01-01' }
+      INPUTS.unshift(row); acceptInput(di, row, 'g')
+    })
+    expect(refused, 'a landing inside his own command writes a day: refused').toBe(false)
+    expect(JSON.stringify(DAYS[di].ground || []), 'nothing changed').toBe(ground)
     const notes = JSON.stringify(DAYS[di].notes || [])
     ;(DAYS[di] as any).notes = [...(DAYS[di].notes || []), { rid: 'nmember', t: 'a member writing the schedule directly' }]
     afterSchedMutate()

@@ -11,7 +11,7 @@ import { initStore, setSession, undo, writeInputs } from '../state/store'
 import { INPUTS, DATES, inpId } from '../engine/inputs'
 import { DAYS } from '../engine/data'
 import { SCHED } from '../engine/publish'
-import { acceptInput, acceptedDay } from '../engine/slots'
+import { acceptInput, acceptedDay, unacceptInput } from '../engine/slots'
 import { commitInputEdit, removeInput, setInpField, draftOf } from './inputedit'
 import { HOOKS } from '../engine/hooks'
 import { afterSchedMutate } from '../state/view'
@@ -29,11 +29,15 @@ beforeEach(() => { TOASTS = [] })
 /* plant through the real write so history has a baseline to undo to */
 const plant = (r: any) => { writeInputs(() => { inpId(r); INPUTS.unshift(r) }); return r }
 const scrap = (r: any) => { const i = INPUTS.indexOf(r); if (i >= 0) removeInput(r) }
+/* [DB-READINESS] phase 6 (c): an activity request is on the programme the moment it is filed â€” its row worked out on read
+   (state/holderbase.ts). Filing it under Unavailable, or Accepting it onto another day, is what the app's own card does
+   then: âœ• first (take it off), then the filing â€” never a filing onto an unplaced request, which no longer exists. */
+const place = (di: number, inp: any, dest: any) => { if (inp.acc === 'g') unacceptInput(acceptedDay(inp), inp); return acceptInput(di, inp, dest) }
 
 describe('commitInputEdit — the keep branch and the moved-outside-week branch', () => {
   it('an edit that still covers the accepted day KEEPS the row on that day', () => {
     const inp: any = plant({ person: 'bane', date: 'Jul 15', endDate: 'Jul 17', allday: false, s: 600, e: 660, type: 'Meeting', remarks: 'keep me', mod: '' })
-    expect(acceptInput(4, inp, 'g'), 'accepted on the LAST day of the span').toBe(true)
+    expect(place(4, inp, 'g'), 'accepted on the LAST day of the span').toBe(true)
     afterSchedMutate()
     expect(acceptedDay(inp)).toBe(4)
     const d = draftOf(inp); d.remarks = 'keep me — edited'
@@ -45,9 +49,11 @@ describe('commitInputEdit — the keep branch and the moved-outside-week branch'
     scrap(inp)
   })
 
-  it('moving the whole input outside the programmed week drops the row and SAYS so', () => {
+  /* [DB-READINESS] phase 6 (c) (plan §8 item 7): the request goes on the programme of the week it moved to when that week
+     is read — "Moved outside the programmed week — it is no longer accepted" is no longer true, and no longer said */
+  it('moving the whole input outside the programmed week drops the row from this week, and says nothing false', () => {
     const inp: any = plant({ person: 'bane', date: 'Jul 14', allday: false, s: 600, e: 660, type: 'Meeting', remarks: 'leaving', mod: '' })
-    expect(acceptInput(1, inp, 'g')).toBe(true)
+    expect(place(1, inp, 'g')).toBe(true)
     afterSchedMutate()
     const key = inpId(inp)
     const d = draftOf(inp); d.start = '2026-07-25'; d.end = ''
@@ -56,13 +62,13 @@ describe('commitInputEdit — the keep branch and the moved-outside-week branch'
     expect(inp.acc, 'no longer accepted').toBeUndefined()
     expect(groundRows().some(g => g.row.src === key), 'no orphan row on any day').toBe(false)
     expect(rowsFor(inp).length).toBe(0)
-    expect(TOASTS.join('|')).toMatch(/Moved outside the programmed week/i)
+    expect(TOASTS.join('|')).not.toMatch(/Moved outside the programmed week|no longer accepted/i)
     writeInputs(() => INPUTS.splice(INPUTS.indexOf(inp), 1))
   })
 
   it('moving an accepted input to another DATE inside the week moves its row there', () => {
     const inp: any = plant({ person: 'bane', date: 'Jul 13', allday: false, s: 600, e: 660, type: 'Meeting', remarks: 'moving day', mod: '' })
-    expect(acceptInput(0, inp, 'g')).toBe(true)
+    expect(place(0, inp, 'g')).toBe(true)
     afterSchedMutate()
     const d = draftOf(inp); d.start = '2026-07-16'
     expect(commitInputEdit(inp, d)).toBe(true)
@@ -74,7 +80,7 @@ describe('commitInputEdit — the keep branch and the moved-outside-week branch'
 
   it('shortening a span so the accepted day falls off moves the row to the new start', () => {
     const inp: any = plant({ person: 'bane', date: 'Jul 14', endDate: 'Jul 17', allday: false, s: 600, e: 660, type: 'Meeting', remarks: 'shrinking', mod: '' })
-    expect(acceptInput(4, inp, 'g'), 'accepted on Jul 17').toBe(true)
+    expect(place(4, inp, 'g'), 'accepted on Jul 17').toBe(true)
     afterSchedMutate()
     const d = draftOf(inp); d.end = '2026-07-15'
     expect(commitInputEdit(inp, d)).toBe(true)
@@ -87,7 +93,7 @@ describe('commitInputEdit — the keep branch and the moved-outside-week branch'
 
   it('extending endDate past the last loaded DATES entry neither throws nor moves the row', () => {
     const inp: any = plant({ person: 'bane', date: 'Jul 18', allday: false, s: 600, e: 660, type: 'Meeting', remarks: 'long tail', mod: '' })
-    expect(acceptInput(5, inp, 'g')).toBe(true)
+    expect(place(5, inp, 'g')).toBe(true)
     afterSchedMutate()
     const d = draftOf(inp); d.end = '2026-07-30'      // 11 days past the last DATES entry
     expect(commitInputEdit(inp, d)).toBe(true)
@@ -106,7 +112,7 @@ describe('commitInputEdit — reassigning an ACCEPTED input to another person', 
   afterEach(() => setSession(null))
   it('relinks the ground row to the new person, keeping its stable id', () => {
     const inp: any = plant({ person: 'bane', date: 'Jul 13', allday: false, s: 600, e: 660, type: 'Meeting', remarks: 'handover', mod: '' })
-    expect(acceptInput(0, inp, 'g')).toBe(true)
+    expect(place(0, inp, 'g')).toBe(true)
     afterSchedMutate()
     const id = inpId(inp)
     const d = draftOf(inp); d.person = 'stiff'
@@ -129,7 +135,7 @@ describe('an Other filed under Unavailable, edited in place', () => {
     /* the input STARTS before the loaded Monday but still covers loaded days —
        exactly the shape inWindow/inputCoversDate exist to keep visible */
     const inp: any = plant({ person: 'bane', date: 'Jul 12', endDate: 'Jul 15', allday: true, s: 0, e: 1439, type: 'Other', remarks: 'errand', mod: '' })
-    expect(acceptInput(0, inp, 'u'), 'filed under Unavailable').toBe(true)
+    expect(place(0, inp, 'u'), 'filed under Unavailable').toBe(true)
     afterSchedMutate()
     expect(inp.acc).toBe('u')
     TOASTS = []
@@ -145,7 +151,7 @@ describe('an Other filed under Unavailable, edited in place', () => {
 
   it('the same edit on an in-week start date keeps the filing (control case)', () => {
     const inp: any = plant({ person: 'bane', date: 'Jul 13', endDate: 'Jul 15', allday: true, s: 0, e: 1439, type: 'Other', remarks: 'errand2', mod: '' })
-    expect(acceptInput(0, inp, 'u')).toBe(true)
+    expect(place(0, inp, 'u')).toBe(true)
     afterSchedMutate()
     expect(setInpField(inp, 'rmks', 'errand2 — updated')).toBe(true)
     expect(inp.acc).toBe('u')
@@ -156,7 +162,7 @@ describe('an Other filed under Unavailable, edited in place', () => {
 describe('removeInput — filed copies and undo coherence', () => {
   it('deleting an accepted input removes the row, and ONE undo brings both back', () => {
     const inp: any = plant({ person: 'stiff', date: 'Jul 13', allday: false, s: 600, e: 660, type: 'Meeting', remarks: 'undo me', mod: '' })
-    expect(acceptInput(0, inp, 'g')).toBe(true)
+    expect(place(0, inp, 'g')).toBe(true)
     afterSchedMutate()
     const key = inpId(inp)
     expect(removeInput(inp)).toBe(true)
@@ -177,7 +183,7 @@ describe('removeInput — filed copies and undo coherence', () => {
      delete goes through, and it leaves no mark on any day it spanned. */
   it('deleting a multi-day Unavailable filing marks no day it spans (phase 6 (b))', () => {
     const inp: any = plant({ person: 'stiff', date: 'Jul 14', endDate: 'Jul 16', allday: true, s: 0, e: 1439, type: 'Other', remarks: 'span file', mod: '' })
-    expect(acceptInput(1, inp, 'u')).toBe(true)
+    expect(place(1, inp, 'u')).toBe(true)
     afterSchedMutate()
     const token = inp.iid
     const keys = () => Object.keys(SCHED.pending).filter(k => k.startsWith('inp:') && k.endsWith('.' + token))
@@ -196,7 +202,7 @@ describe('removeInput — filed copies and undo coherence', () => {
 describe('the relink preserves scheduler additions (fixed 12 Aug 26)', () => {
   it('extra crew and the red flag on the promoted row survive an input edit', () => {
     const inp: any = plant({ person: 'stiff', date: 'Jul 13', allday: false, s: 600, e: 660, type: 'Meeting', remarks: 'probe', mod: '' })
-    expect(acceptInput(0, inp, 'g')).toBe(true)
+    expect(place(0, inp, 'g')).toBe(true)
     afterSchedMutate()
     const row = rowsFor(inp)[0].row
     row.more = ['bane']; row.flag = 1
@@ -222,7 +228,7 @@ describe('the relink never leaves a man on the row twice (D271)', () => {
   afterEach(() => setSession(null))
   it('re-pointing the request to a man already an extra on its row keeps him once, as its holder, and says so', async () => {
     const inp: any = plant({ person: 'stiff', date: 'Jul 13', allday: false, s: 600, e: 660, type: 'Meeting', remarks: 'twice', mod: '' })
-    expect(acceptInput(0, inp, 'g')).toBe(true)
+    expect(place(0, inp, 'g')).toBe(true)
     afterSchedMutate()
     const row = rowsFor(inp)[0].row
     row.more = ['bane', 'boosh']                                  // Ranger and Havoc added as extras by the scheduler
@@ -240,7 +246,7 @@ describe('the relink never leaves a man on the row twice (D271)', () => {
   })
   it('a hand-over to a man NOT on the row keeps every extra, and says nothing about it', async () => {
     const inp: any = plant({ person: 'stiff', date: 'Jul 13', allday: false, s: 600, e: 660, type: 'Meeting', remarks: 'once', mod: '' })
-    expect(acceptInput(0, inp, 'g')).toBe(true)
+    expect(place(0, inp, 'g')).toBe(true)
     afterSchedMutate()
     rowsFor(inp)[0].row.more = ['boosh']
     const d = draftOf(inp); d.person = 'bane'

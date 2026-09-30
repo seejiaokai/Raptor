@@ -274,6 +274,16 @@ loadWeek           → stashPut(CURWEEK, weekStashSnap()) (weekstash.ts — the
                        stash instead of cleared, when there is one
                    → validate() → histInit() → notify()
 ```
+**SINCE 1 OCT 26 (`[DB-READINESS]` group A phase 6 (c)):** the steps above that land requests (`reconcileLandedAcc`, the
+`autoAcceptInput` / `autoAcceptSeedInputs` passes, the `sched.load` command) are replaced by ONE out-of-band step after the
+row ids are minted: `workOutLoadedWeek` — the week as stored becomes the HOLDER BASE (`state/holderbase.ts baseReset`) and
+is worked out from it (`rederive` → `engine/overlay.ts viewOfWeek`: request rows reconciled, a deleted man taken off,
+requests with no row landed), no command, nothing saved. The stash written on the way OUT is that base (the days and marks as
+the holder last committed them), never the worked-out screen. And after EVERY command that enlists the scheduler store, the
+same pass runs again at phase 8 (`state/sched-commit.ts afterCommandPass`): the days whose rows the command wrote become
+the new base (then the view of them — what the row writer stores); a request's or a person's command moves no base, so an
+Undo of a request's delete brings its exact row back. A saved week read for anything (`weekstash.ts stashDays`) and a week
+never saved (`weekctx.ts bundle`, `ui/peek.ts`) are worked out by the same body.
 `DAYS` and `DATES` swap with the week. **`INPUTS` is GLOBAL since 22 Aug 26**
 (owner — "show all inputs regardless of which week I am selected on"): it is
 merged once at boot (`store.ts:initStore` + `weeks-data.ts:otherWeekInputs`) and

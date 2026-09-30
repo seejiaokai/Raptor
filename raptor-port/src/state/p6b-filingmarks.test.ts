@@ -75,7 +75,12 @@ afterEach(() => { _resetTimeline(); vi.useRealTimers(); resetWorld(); setSession
 /* an "Other" request — the one kind a scheduler files under Unavailable ("→ Unavail", ui/html.ts) */
 const plant = (r: any) => { const row: any = { allday: true, remarks: 'filing', mod: 'now', yr: 2026, type: 'Other', ...r }; inpId(row); writeInputsBatch(() => { INPUTS.unshift(row) }); return INPUTS[0] }
 /* the board's door (ui/interactions.ts, data-acc): the write, then the catch-all command */
-const fileUnavail = (di: number, inp: any) => { let ok = false; schedWrite(SCHED_TYPES.mutate, () => { ok = acceptInput(di, inp, 'u'); afterSchedMutate() }); return ok }
+/* since [DB-READINESS] phase 6 (c) an activity request (an Other) is on the programme the moment it is filed — the card then
+   offers ✕, and → Unavail after it: the take-off first, as the app's own door runs it */
+const fileUnavail = (di: number, inp: any) => {
+  if (inp.acc === 'g') schedWrite(SCHED_TYPES.mutate, () => { unacceptInput(di, inp); afterSchedMutate() })
+  let ok = false; schedWrite(SCHED_TYPES.mutate, () => { ok = acceptInput(di, inp, 'u'); afterSchedMutate() }); return ok
+}
 const unfile = (di: number, inp: any) => { let ok = false; schedWrite(SCHED_TYPES.mutate, () => { ok = unacceptInput(di, inp); afterSchedMutate() }); return ok }
 const inpMarks = () => Object.keys(SCHED.pending).concat(Object.keys(SCHED.changes)).filter(k => k.startsWith('inp:'))
 /* every `inp:` key in the stored day rows' books */
@@ -91,7 +96,9 @@ describe('phase 6 (b) — a filing under Unavailable is counted, never marked', 
     expect(fileUnavail(0, inp)).toBe(true)
     expect(inp.acc).toBe('u')
     expect(dayShownPendCount(0), 'the filing is one pending change').toBe(1)
-    expect(dayPendingItems(0).some((e: any) => e.kind === 'input'), 'the pending list names it as a request').toBe(true)
+    /* since phase 6 (c) the request stood on the day when it was published, so the scheduler's ✕ took its row off first: the
+       filing and that removal are ONE item (D114 — the filing folded into its row's) */
+    expect(dayPendingItems(0).some((e: any) => e.kind === 'input' || !!e.inp), 'the pending list names it as a request').toBe(true)
     expect(inpMarks(), 'no mark in the book').toEqual([])
     expect(storedInpMarks(wb), 'and none reached storage').toEqual([])
   })
@@ -116,12 +123,16 @@ describe('phase 6 (b) — a filing under Unavailable is counted, never marked', 
     expect(storedInpMarks(wb)).toEqual([])
   })
 
-  it('on a NEVER-published day: no mark, and "Discard marks" has nothing of it to clear', async () => {
+  it('on a NEVER-published day: no mark, and "Discard marks" has nothing of the filing to clear', async () => {
     await boot(new MemoryBackend())
     const inp = plant({ person: 'waldo', date: 'Jul 13' })
+    /* the ✕ that takes its row off first is a removal like any other on the day (plan §8 item 11 — phase 6 (c)); the filing
+       itself adds nothing */
+    schedWrite(SCHED_TYPES.mutate, () => { unacceptInput(0, inp); afterSchedMutate() })
+    const before = discardableCount()
     expect(fileUnavail(0, inp)).toBe(true)
     expect(inpMarks()).toEqual([])
-    expect(discardableCount(), 'the filing is not a draft mark').toBe(0)
+    expect(discardableCount(), 'the filing is not a draft mark').toBe(before)
   })
 
   it('published as an AL, then Unpublished: the filing reads pending again, from the filing itself', async () => {
@@ -141,9 +152,12 @@ describe('phase 6 (b) — a filing under Unavailable is counted, never marked', 
     await boot(new MemoryBackend())
     const inp = plant({ person: 'waldo', date: 'Jul 13' })
     sign(0); commitSetDayApproved(0, true)
-    fileUnavail(0, inp)
+    fileUnavail(0, inp)                                  // ✕, then → Unavail — two steps (phase 6 (c): it stood on the day)
     expect(globalUndo().ok).toBe(true)
-    expect((INPUTS.find((r: any) => r.iid === inp.iid) as any).acc, 'unfiled').toBeUndefined()
+    expect((INPUTS.find((r: any) => r.iid === inp.iid) as any).acc, 'unfiled — taken off, as before the filing').toBe('r')
+    expect(inpMarks()).toEqual([])
+    expect(globalUndo().ok).toBe(true)
+    expect((INPUTS.find((r: any) => r.iid === inp.iid) as any).acc, 'back on the programme').toBe('g')
     expect(dayShownPendCount(0)).toBe(0)
     expect(inpMarks()).toEqual([])
   })

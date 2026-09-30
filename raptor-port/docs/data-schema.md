@@ -223,6 +223,7 @@ seed-walking check never sees them; each with its writer:
 | seat pair | `spare`, `role` | `saCrewRow` (`src/engine/waves.ts:40`), a standby template (`src/engine/wavetpl.ts:190`), the MAIN/SPARE badge flip |
 | duty block | `sa` (which standalone wave the desk serves), `noconf` | `waveDutyBlock` (`src/engine/waves.ts:96`), `blockFromTpl` (`src/engine/dutytpl.ts:184`) |
 | ground row | `rmks`, `src` (the landed input's content key) | `acceptInput` (`src/engine/slots.ts:367`) |
+| ground row | `srcv` (a short hash of what the row was last made or re-made from — its request's six fields), `kept` (a row a loaded version or a switched-in plan brought back although its request is gone or cannot stand on the day — D363); neither canonical ([DB-READINESS] group A phase 6 (c), 1 Oct 26) | `acceptInput`, the read-time view (`src/engine/overlay.ts viewOfWeek`), a whole-day replacement (`src/engine/drafts.ts markKept`) |
 | day | `gman` (ground list frozen to hand order) | a ground-row drag / Sort (`src/engine/reorder.ts:237`, `:425`) |
 
 ### The publish book — `SCHED`, `src/engine/publish.ts`

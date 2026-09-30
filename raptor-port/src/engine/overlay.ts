@@ -19,7 +19,11 @@
 import { PEOPLE, whoId } from './people'
 import { whoArr } from './slots'
 import { dayIso } from './verid'
-import { INPUTS, inpId } from './inputs'
+import { INPUTS, inpId, inpLabel, isPersonal, inputCoversDate, dateOrd } from './inputs'
+import { hhmm } from './time'
+import { inputProtected } from './quarantine'
+import { rowElsewhere } from './weekstash'
+import { DAYS } from './data'
 
 const ROLES = ['cur', 'sked', 'plan', 'appr'] as const
 export const trimTail = (arr: any[]) => { while (arr.length && !arr[arr.length - 1]) arr.pop() }
@@ -140,4 +144,206 @@ export function overlayDeletedWeek(v: string, days: any[], book?: { sign?: any; 
     }
   }
   return changed
+}
+
+/* ==== (c) A REQUEST'S ROW, WORKED OUT FROM THE REQUEST WHEN ITS DAY IS READ ([DB-READINESS] group A, phase 6 (c) v3 — plan
+   docs/superpowers/plans/2026-09-30-db-readiness-phase6-plan.md §3 (c); data-model.md §9 rule 9).
+
+   In the database a day is written only by the scheduler holding it (D450). A member's filing, any edit of a request, a
+   delete and a hand-over therefore write the REQUEST alone; what they do to the day — the request's row made, re-made or
+   taken away — is worked out HERE, on a copy, whenever a week's days come into memory: the week on screen after every
+   command and at every load (state/holderbase.ts, from the day as its holder last committed it — the holder base), a saved
+   week read for the cross-week checks and the peek (weekstash.ts stashDays), a week never saved (weekctx.ts bundle,
+   ui/peek.ts). One body, so the person who acted, a reload and another device all see the same day. Pure: it changes only
+   the day objects it is handed — never a request, a mark or a record — and writes no history line (Fable F3).
+   ==== */
+
+/* THE SIX FIELDS A REQUEST WRITES ON ITS ROW — the one body acceptInput (a scheduler's Accept, the board's "+ Inputs"), a
+   landing on read and a re-made row share, so the three cannot mint a row two ways. Title is the TYPE (an Other reads by
+   its remarks), the submitter's remarks land in the row's remarks cell, `who` is the stable person id. */
+export function requestRowFields(inp: any) {
+  return {
+    prog: inpLabel(inp).toUpperCase(),
+    str: inp.allday ? '' : hhmm(inp.s), end: inp.allday ? '' : hhmm(inp.e),
+    who: inp.person,
+    rmks: inp.remarks || '', srcType: inp.type,
+  }
+}
+/* `srcv` — what a row was last made or re-made from: a short hash of those six fields. A row whose `srcv` differs from its
+   request's is re-made (rule 6); a scheduler's own edit of the row's cells leaves `srcv` alone, so it is not undone until
+   the request itself changes (today's relink rule). Not canonical (restore.ts dayKeys never names it): it moves no digest,
+   count or signature. */
+export function srcvOf(inp: any): string {
+  const f = requestRowFields(inp)
+  const s = [f.prog, f.str, f.end, f.who, f.rmks, f.srcType].map(x => String(x ?? '')).join('|')
+  let h = 0x811c9dc5
+  for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 0x01000193) }
+  return (h >>> 0).toString(36)
+}
+/* a landing's row id — the request's own, so the row a request lands is the SAME row right after the act and after a
+   reload (a random id would change at every read). Never one another row of the week already holds (the holder's dead,
+   `kept` row of the same request can carry it): a second copy would be re-minted by the next command's apply-end
+   (rowids.ts ensureRowIds) — inside a member's command, a change to a day he may not make (§11) */
+export function landedRid(iid: string, days: any[]): string {
+  const held = new Set<string>()
+  for (const d of days || []) for (const g of ((d && d.ground) || [])) if (g && g.rid) held.add(String(g.rid))
+  let rid = 'r' + iid, n = 2
+  while (held.has(rid)) rid = 'r' + iid + 'x' + n++
+  return rid
+}
+
+/* the requests by id, without minting one (a read never writes) */
+function requestsById(): Map<string, any> {
+  const m = new Map<string, any>()
+  for (const r of INPUTS as any[]) if (r && r.iid) m.set(String(r.iid), r)
+  return m
+}
+/* may a row for request `r` stand on a day dated `dt`: the request is an activity (a meeting, an appointment — isPersonal),
+   covers the day, and is not filed under Unavailable. A request taken off ('r') still qualifies: its row stands as it is. */
+export const rowMayStand = (r: any, dt: any): boolean => !!r && isPersonal(r.type) && r.acc !== 'u' && inputCoversDate(r, dt)
+/* is this row its request's row, for "one request, one row": every row with `src` whose request can stand on its day —
+   never a DEAD one (its request gone, or a `kept` row on a day its request cannot stand on: D363 keeps it on the day the
+   version had it, but it is not the request's row). A read-only request's rows are left exactly as they are. */
+export function standingRow(row: any, r: any, dt: any): boolean {
+  if (!row || !row.src || !r) return false
+  if (inputProtected(r)) return true
+  return rowMayStand(r, dt)
+}
+
+/* THE REQUEST'S STANDING ROW ON ONE DAY — the row that is its row there, or undefined. Never a dead `kept` row (the holder's
+   version row on a day its request cannot stand on — D363), which can sit in the same week as the request's real row once
+   the request has come back to another day: every lookup that ACTS on "the request's row" (Accept's one-row guard, ✕, the
+   OIL evidence, a load's leave-out) asks this, never the first row carrying its id (Astra's round-3 read, finding 1: the
+   OIL evidence found the dead row, cancelled, first and paid nothing for the live one). `r`: the request, when the caller
+   has it (found by id otherwise). */
+export function standsOn(d: any, id: any, r?: any): any {
+  const want = String(id || '')
+  if (!want || !d) return undefined
+  const req = r !== undefined ? r : (INPUTS as any[]).find((x: any) => x && String(x.iid || '') === want)
+  return ((d.ground || []) as any[]).find((g: any) => g && String(g.src || '') === want && standingRow(g, req, d.dt))
+}
+
+export type ViewDayInfo = {
+  /* the request rows differ from the day handed in (a row made, re-made or taken away — not the deleted strip) */
+  reqChanged: boolean
+  /* rows taken away, with why: the request gone, retyped to a kind that never goes on the programme, no longer covering
+     the day, filed under Unavailable, or a second row for one request */
+  gone: Array<{ src: string; why: 'gone' | 'type' | 'cover' | 'u' | 'dup' }>
+  /* a re-made row whose new holder stood among its extras — blanked there (D271) */
+  blanked: Array<{ src: string; who: string }>
+  landed: string[]
+}
+export type ViewCtx = {
+  /* this is the week on screen being worked out (its DAYS are the result), not another week read */
+  loaded: boolean
+  /* a PUBLISHED day's current issued version (its snapshot: `d` the day, `fil` the filings), else null */
+  issued: (di: number) => any
+  /* the book to strip a deleted man from (the week on screen's sign-offs and plans) */
+  book?: { sign?: any; signBind?: any; drafts?: any }
+}
+
+/* ---- reconcile: each row with `src`, against its request (plan §3 (c) rules 1–7) ---- */
+function reconcileRequestRows(days: any[], info: ViewDayInfo[]): void {
+  const reqs = requestsById()
+  const first = new Set<string>()                         // rule 7: the first standing row per request, in day order
+  days.forEach((d: any, di: number) => {
+    if (!d || !Array.isArray(d.ground) || !d.ground.some((g: any) => g && g.src)) return
+    const keep: any[] = []
+    for (const row of d.ground) {
+      if (!row || !row.src) { keep.push(row); continue }
+      const id = String(row.src), r = reqs.get(id)
+      if (r && inputProtected(r)) { keep.push(row); first.add(id); continue }   // a read-only request: left as it is
+      const may = rowMayStand(r, d.dt)
+      /* 3. kept: while its request is gone or cannot stand here, the holder's version choice stands (a dead row); once
+         the request can stand here again the row is its row again — the flag clears in the view (the stored row keeps
+         it until the holder next saves the day) */
+      if (row.kept) {
+        if (!may) { keep.push(row); continue }
+        delete row.kept                                   // not canonical: no mark rebuilt for it
+      }
+      if (!r) { info[di].gone.push({ src: id, why: 'gone' }); info[di].reqChanged = true; continue }            // 1.
+      if (!may) {                                                                                                  // 2.
+        info[di].gone.push({ src: id, why: !isPersonal(r.type) ? 'type' : r.acc === 'u' ? 'u' : 'cover' }); info[di].reqChanged = true; continue
+      }
+      if (first.has(id)) { info[di].gone.push({ src: id, why: 'dup' }); info[di].reqChanged = true; continue }     // 7.
+      first.add(id)
+      keep.push(row)
+      if (r.acc === 'r') continue                                                                                 // 4.
+      const sv = srcvOf(r)
+      if (!row.srcv) { row.srcv = sv; continue }                                                                  // 5.
+      if (row.srcv === sv) continue
+      /* 6. re-made in place: its id, its place and every field a scheduler set (extras, flag, CX, information only) kept */
+      Object.assign(row, requestRowFields(r)); row.srcv = sv; info[di].reqChanged = true
+      /* ONE MAN, ONCE PER ROW (D271): the request's holder standing among the extras is kept once, as the holder */
+      if (Array.isArray(row.more) && row.more.some((x: any) => whoId(x) === r.person)) {
+        const more = row.more.map((x: any) => whoId(x) === r.person ? '' : x)
+        trimTail(more)
+        if (more.length) row.more = more; else delete row.more
+        info[di].blanked.push({ src: id, who: String(r.person) })
+      }
+    }
+    if (keep.length !== d.ground.length) d.ground = keep
+  })
+}
+
+/* ---- land: an activity request with no row standing anywhere goes on its START day, if that day is in this week ---- */
+function landRequests(days: any[], ctx: ViewCtx, info: ViewDayInfo[]): void {
+  const ordOf = days.map((d: any) => (d && d.dt != null ? dateOrd(d.dt) : null))
+  const reqs = requestsById()
+  const stands = (ds: any[], id: string) => ds.some((d: any) =>
+    ((d && d.ground) || []).some((g: any) => g && String(g.src || '') === id && standingRow(g, reqs.get(id), d.dt)))
+  for (const r of INPUTS as any[]) {
+    if (!r || !r.iid || !isPersonal(r.type) || r.acc === 'r' || r.acc === 'u' || inputProtected(r)) continue
+    const s0 = dateOrd(r.date, r.yr)
+    if (s0 == null) continue
+    const di = ordOf.indexOf(s0)
+    if (di < 0) continue
+    const id = String(r.iid)
+    if (stands(days, id)) continue
+    /* a week read that is not on screen: the loaded week's own rows stand too */
+    if (!ctx.loaded && stands(DAYS as any[], id)) continue
+    /* …and every other saved week's (the finder never lands, so this cannot recurse); unreadable fails closed */
+    if (rowElsewhere(id, r) !== null) continue
+    /* a PUBLISHED day: not a request its current issued version PLACED ON THIS DAY (its row is in the issued day — only
+       the holder's Accept puts that one back, with its issued id: a read never undoes a load of an older version, D98),
+       nor one it TOOK OFF ('r' at issue — D174 / D176: woken since, it stays unlanded, as before). Any other lands as a
+       pending change: one filed since (the 16 Sep 26 rule, after a reload too), and one the issued day held unplaced
+       while its row stood on another day it covers — re-dated onto this day since, it moves here, as the old re-link
+       moved it (Fable's round-3 F2: keyed on the filing record alone, a request shortened onto a published day it already
+       covered fell off the programme). */
+    const snap = ctx.issued(di)
+    if (snap && (((snap.d && snap.d.ground) || []).some((g: any) => g && String(g.src || '') === id) || (snap.fil || {})[id] === 'r')) continue
+    const d = days[di]
+    d.ground = d.ground || []
+    d.ground.push({ ...requestRowFields(r), src: id, srcv: srcvOf(r), rid: landedRid(id, days) })
+    info[di].landed.push(id); info[di].reqChanged = true
+  }
+}
+
+/** A WEEK'S DAYS WITH THEIR REQUEST ROWS WORKED OUT — (i) reconcile, (ii) the deleted men stripped (d), (iii) land. `v` is
+ *  the week's Monday (dd/mm/yyyy), `days` its seven day objects (a COPY — changed in place). Returns what changed per day. */
+export function viewOfWeek(v: string, days: any[], ctx: ViewCtx): ViewDayInfo[] {
+  const info: ViewDayInfo[] = (days || []).map(() => ({ reqChanged: false, gone: [], blanked: [], landed: [] }))
+  if (!Array.isArray(days)) return info
+  reconcileRequestRows(days, info)
+  overlayDeletedWeek(String(v), days, ctx.book)
+  landRequests(days, ctx, info)
+  return info
+}
+/* would a week read need the view's landing — some activity request, not taken off or filed, starts on one of its days.
+   A cheap test so a never-saved week with nothing to land keeps its cached seed (weekctx.ts bundle). */
+export function landingDue(v: string): boolean {
+  const lo = +dayIso(String(v), 0).replace(/-/g, ''), hi = +dayIso(String(v), 6).replace(/-/g, '')
+  for (const r of INPUTS as any[]) {
+    if (!r || !isPersonal(r.type) || r.acc === 'r' || r.acc === 'u') continue
+    const s0 = dateOrd(r.date, r.yr)
+    if (s0 != null && s0 >= lo && s0 <= hi) return true
+  }
+  return false
+}
+/* the activity requests' signature — what a memo of a week's worked-out rows must also key on (the peek) */
+export function requestsSig(): string {
+  let s = ''
+  for (const r of INPUTS as any[]) if (r && isPersonal(r.type)) s += `${r.iid}|${r.acc || ''}|${r.date}|${r.endDate || ''}|${r.yr || ''}|${srcvOf(r)};`
+  return s
 }

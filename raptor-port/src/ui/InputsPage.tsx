@@ -13,7 +13,6 @@ import { oilAskPlan } from '../leavewar/sync'
 import { PEOPLE } from '../engine/people'
 import { hhmm, parseHM } from '../engine/time'
 import { HOOKS } from '../engine/hooks'
-import { autoAcceptInput } from '../engine/slots'
 import { LOOK_CFG, LOOK_MAX, LOOK_MIN, lookaheadLabel, lookaheadRange, setLookahead } from '../engine/lookahead'
 import { canEditSched } from '../state/auth'
 import { me, isMe, isAdmin } from '../state/perms'
@@ -493,12 +492,12 @@ export function InputsPage() {
            the SAME undo step, logged with the honest reason */
         if (removals.length)
           applyMedPlan(removals.map((lr: any) => ({ row: lr, action: 'delete', why: 'removed with the upchit' })))
-        /* an ACTIVITY input files straight onto the Ground Programme (owner, Aug
-           26 — "by default all inputs are accepted"); leave/medical/SANS stay silent
-           no-ops. onApproved=true: filed on a PUBLISHED day it lands as a pending
-           amendment on the working copy (owner 16 Sep 26), issued face frozen. Inside the
-           SAME write so add-plus-land is one undo step, as commitNewInput's toGround is. */
-        autoAcceptInput(INPUTS[0], true)
+        /* an ACTIVITY input goes straight onto the Ground Programme (owner, Aug 26 — "by default all inputs are
+           accepted"); leave/medical/SANS never do. */
+        /* the request's row is worked out AFTER this command, from the request, by the one pass every scheduler command ends with
+           ([DB-READINESS] phase 6 (c) — state/holderbase.ts): a member's filing writes his request and no day (D450); on a
+           PUBLISHED day it lands on the working copy as a pending amendment (owner 16 Sep 26), the issued face frozen — and a
+           reload, or another device, shows the same */
       })
       if (ok) finishAdd()   // don't flash/clear the form if the funnel rolled the add back (P2-QREV-04)
     }
@@ -541,7 +540,7 @@ export function InputsPage() {
                 withRemarksTail(remarks.trim(), ordISO(g0.startOrd), ordISO(g0.endOrd), 'till')))
               applyMedPlan(newMedTrimPlan(INPUTS[0].person, type, g0.startOrd, g0.endOrd, INPUTS[0], keepTail, bOrd))
               mintMedSegments(INPUTS[0], segs.slice(1), keepTail, bOrd)
-              autoAcceptInput(INPUTS[0], true)   // interactive filing: land on a published day as a pending amendment (owner 16 Sep 26)
+              /* a medical never goes on the programme; an activity's row is worked out after the command (phase 6 (c)) */
             })
             if (ok) finishAdd()
           },

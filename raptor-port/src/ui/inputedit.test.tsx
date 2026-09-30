@@ -370,7 +370,7 @@ describe('retyping an accepted input into a never-accepted type', () => {
     start: unfmt(r.date), end: null,
   })
 
-  it('drops the programme row AND says so', () => {
+  it('drops the programme row AND says so', async () => {
     const r: any = { person: 'split', date: DATES[0], allday: false, s: 540, e: 1020, type: 'Meeting', remarks: 'sqn brief' }
     INPUTS.push(r)
     expect(acceptInput(0, r, 'g')).toBe(true)
@@ -379,7 +379,9 @@ describe('retyping an accepted input into a never-accepted type', () => {
     const said: string[] = []
     const orig = HOOKS.toast
     HOOKS.toast = (m: any) => { said.push(String(m)) }
-    try { commitInputEdit(r, draftOf(r, 'LL')) } finally { HOOKS.toast = orig }
+    /* said by the working-out after the edit's command ([DB-READINESS] phase 6 (c) — state/holderbase.ts), on the next tick
+       so the caller's own line does not replace it */
+    try { commitInputEdit(r, draftOf(r, 'LL')); await Promise.resolve() } finally { HOOKS.toast = orig }
 
     expect((DAYS[0].ground || []).filter((g: any) => g.src === inpId(r)).length).toBe(0)
     expect(r.acc).toBeFalsy()

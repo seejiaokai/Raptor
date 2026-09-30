@@ -194,8 +194,9 @@ describe('phase 6 (a) — a refusal belongs to the holding it was made under', (
     const r = plant({ person: 'bane', type: 'Training', date: 'Jul 18', s: 0, e: 1439, oil: { '2026-07-18': 1 } })
     const iid = String(r.iid), item = inputItemKey(iid)
     schedWrite(SCHED_TYPES.mutate, () => {
-      expect(acceptInput(5, r, 'g'), 'landed on Saturday').toBe(true)
+      /* on Saturday the moment it was filed — worked out on read ([DB-READINESS] phase 6 (c)); the scheduler adds the extra */
       const row: any = ((DAYS[5] as any).ground || []).find((g: any) => g && g.src === iid)
+      expect(row, 'landed on Saturday').toBeTruthy()
       row.more = ['stiff']
       afterSchedMutate()
     })
@@ -211,8 +212,8 @@ describe('phase 6 (a) — a refusal belongs to the holding it was made under', (
   /* the two orders Fable asked to be pinned: the extra's refusal is void once the request LEAVES him (as the old clear
      decided); and it stands while the request passes between other men with him still on the row */
   const landWithExtra = (r: any, extra: string) => schedWrite(SCHED_TYPES.mutate, () => {
-    expect(acceptInput(5, r, 'g')).toBe(true)
-    const row: any = ((DAYS[5] as any).ground || []).find((g: any) => g && g.src === String(r.iid))
+    const row: any = ((DAYS[5] as any).ground || []).find((g: any) => g && g.src === String(r.iid))   // landed on read (phase 6 (c))
+    expect(row).toBeTruthy()
     row.more = [extra]
     afterSchedMutate()
   })

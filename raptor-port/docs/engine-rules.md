@@ -1090,6 +1090,15 @@ flagged correctly and still swept the man out of the crew palette.
   The boot pass is parity-safe by the demoseed rule — it runs only where the
   harness never does — and wipes its own pending/added marks so the seed's
   auto-landed rows are the week's zero-state.
+  *(SUPERSEDED 1 Oct 26 by `[DB-READINESS]` group A phase 6 (c) — plan `docs/superpowers/plans/2026-09-30-db-readiness-phase6-plan.md`
+  §3 (c); D450: a request's row is WORKED OUT ON READ, never written by the request's command. After every command and at
+  every load (`state/holderbase.ts`, from the day as its holder last saved it) and whenever another week is read
+  (`engine/overlay.ts viewOfWeek`): an activity request that is not taken off ('r') or filed under Unavailable ('u') and has
+  no row standing anywhere lands on its START day — on a PUBLISHED day unless its current issued version placed it on that
+  day or took it off (so a request filed since lands pending, after a reload too); a row whose request is gone, retyped, or
+  no longer covers the day goes (unless `kept` — D363); a row whose request changed is re-made in place (its id, place and
+  every field the scheduler set kept; D271). A never-published day's landing makes no mark (its zero state, live and at
+  load alike). `autoAcceptInput` / `autoAcceptSeedInputs` are no longer the app's path (the second is gone).)*
 - **`dayOff` stays narrow — off for the WHOLE day.** It also feeds the
   day-info "off" tally and the palette's struck-through rank, and a man on AM
   leave is not off for the day. **Known, deliberate consequence: a half-day
