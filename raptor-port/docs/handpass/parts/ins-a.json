@@ -1,0 +1,1891 @@
+{
+ "parts": {
+  "s1-dk": {
+   "at": "2026-10-01T13:40:09.833Z",
+   "base": "http://localhost:4211",
+   "phone": false,
+   "table": [
+    {
+     "id": "1.a",
+     "did": "admin, Edit Schedule: Tuesday signed and published (Publish day); Insights opened by top bar Insights",
+     "saw": "day: tag ORIG · chip \"5 changes\" · no not-signed marker · no Publish AL button · signed line \"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvi\" · bar \"⚠ 4 issues · 2 warning · tap to review ▼\" · window on top at its centre: true · tiles [32 SORTIES | 16 FORMATIONS | 38 AIRCREW FLYING | 33 13 WARNING] · types [Conflict — two events at once 6 ; No time for the flight brief 5 ; Downchit + flying 2 ; Personal input clash 2 ; Double turning 2 ; Long work day 2 ; Tight turn 2 ; Crew combination — CO approval required 2 ; No time for the flight debrief 2 ; OIL waiting — this day is not published 2 ; No time for the sim brief 1 ; No time for the sim debrief 1 ; Crew solo — only allowed under syllabus 1 ; Crew rest (<12h) 1 ; On leave + flying 1 ; Illegal aircrew combination 1] · Tue \"Tuesday 8 sorties · 4 formations · 4 issues\"",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-01-s1-a-orig-editsched.png",
+      "dk-02-s1-a-orig-editsched-foot.png"
+     ]
+    },
+    {
+     "id": "1.b",
+     "did": "Insights left open on Edit Schedule (top bar Insights), then the board opened for Tuesday (by the bridge — with the window open it covers the whole page: {\"covers\":true,\"z\":\"470\"}, so no finger can reach the day's board button)",
+     "saw": "board up: true · the window is still there, on top at its centre: true, same words as before: true",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-03-s1-b-window-then-board.png"
+     ]
+    },
+    {
+     "id": "1.c",
+     "did": "the Scheduler Board up for Tuesday: every button in its own bar, and whether any door to Insights can be reached",
+     "saw": "bar: [Calendar | Highlight by category / qu | ▤ Templates | ⇅ Sort all | ↶ Undo | ↷ Redo | History | Sync · slow | Notifications | ✓ Done | CAT | TYPE | QUALS] · buttons on the board naming Insights: 0 · the app's top-bar Insights button: covered by the board · the ☰: not drawn",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-04-s1-c-board-bar.png"
+     ]
+    },
+    {
+     "id": "1.d",
+     "did": "on the board: Anvil put on Rebel's seat (Go 2, RU lead) — {\"before\":\"romeo\",\"after\":\"shaft\",\"took\":true}; ✓ Done; Insights on Edit Schedule",
+     "saw": "✓ the seat took the new man [{\"before\":\"romeo\",\"after\":\"shaft\",\"took\":true}] · ✓ the board showed the day pending [1 pending / Publish AL1] · ✓ Edit Schedule shows Tuesday pending [tag ORIG · chip \"1 pending\" · \"Not yet signed\" · button \"Publish AL1\" · signed line \"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvi\" · bar \"⚠ 4 is] · ✓ the window is on top at its centre · ✓ the window says word for word what it said at Original [identical] · ✓ Not on the flying programme still lists the new man (issued: he is not flying)",
+     "verdict": "PASS",
+     "pics": [
+      "dk-05-s1-d-board-seat-changed.png",
+      "dk-06-s1-e-pending-editsched.png",
+      "dk-07-s1-e-pending-editsched-foot.png"
+     ]
+    },
+    {
+     "id": "1.e",
+     "did": "Tuesday signed and \"Publish AL1\" pressed; Insights on Edit Schedule",
+     "saw": "✓ the day reads AL1, nothing pending [tag AL1 · chip \"11 changes\" · no not-signed marker · no Publish AL button · signed line \"SIGNED AL1 CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\" · bar \"⚠ ] · ✓ the window moved [WORK HOURS · REPORT TO DEBRIEF, THIS WEEK: −[Anvil 15h | Rebel 5h25] +[Anvil 20h05 | Rebel 20 min] ;; NOT ON THE FLYING PROGRAMME · 20 AVAILABLE: −[Anvil] +[Reb] · ✓ Anvil left \"Not on the flying programme\" · ✓ Rebel joined \"Not on the flying programme\" · ✓ Sorties and Formations unchanged [32 SORTIES | 16 FORMATIONS | 38 AIRCREW FLYING | 33 13 WARNING]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-08-s1-f-AL1-editsched.png",
+      "dk-09-s1-f-AL1-editsched-foot.png"
+     ]
+    },
+    {
+     "id": "1.err",
+     "did": "the browser's error list through this scenario",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "s1-ph": {
+   "at": "2026-10-01T13:41:13.368Z",
+   "base": "http://localhost:4211",
+   "phone": true,
+   "table": [
+    {
+     "id": "1.a",
+     "did": "admin, Edit Schedule: Tuesday signed and published (Publish day); Insights opened by ☰ → Week insights",
+     "saw": "day: tag ORIG · chip \"5 changes\" · no not-signed marker · no Publish AL button · signed line \"SIGNED ORIG Ace Anvil Anvil Anvil\" · bar \"⚠ 4 issues · 2 warning · tap to review ▼\" · window on top at its centre: true · tiles [32 SORTIES | 16 FORMATIONS | 38 AIRCREW FLYING | 33 13 WARNING] · types [Conflict — two events at once 6 ; No time for the flight brief 5 ; Downchit + flying 2 ; Personal input clash 2 ; Double turning 2 ; Long work day 2 ; Tight turn 2 ; Crew combination — CO approval required 2 ; No time for the flight debrief 2 ; OIL waiting — this day is not published 2 ; No time for the sim brief 1 ; No time for the sim debrief 1 ; Crew solo — only allowed under syllabus 1 ; Crew rest (<12h) 1 ; On leave + flying 1 ; Illegal aircrew combination 1] · Tue \"Tuesday 8 sorties · 4 formations · 4 issues\"",
+     "verdict": "RECORDED",
+     "pics": [
+      "ph-01-s1-a-orig-editsched.png",
+      "ph-02-s1-a-orig-editsched-foot.png"
+     ]
+    },
+    {
+     "id": "1.b",
+     "did": "Insights left open on Edit Schedule (☰ → Week insights), then the board opened for Tuesday (by the bridge — with the window open it covers the whole page: {\"covers\":true,\"z\":\"470\"}, so no finger can reach the day's board button)",
+     "saw": "board up: true · the window is still there, on top at its centre: true, same words as before: true",
+     "verdict": "RECORDED",
+     "pics": [
+      "ph-03-s1-b-window-then-board.png"
+     ]
+    },
+    {
+     "id": "1.c",
+     "did": "the Scheduler Board up for Tuesday: every button in its own bar, and whether any door to Insights can be reached",
+     "saw": "bar: [Jump to a date | ‹ | Highlight by category / qu | ⋯ | › | ↶ | ↷ | Show the changes, and who  | Toggle 1-second sync (for  | Notifications | ✓] · buttons on the board naming Insights: 0 · the app's top-bar Insights button: not drawn · the ☰: covered by the board · behind ⋯: ⋯, ⇅ Sort all, 🖥 Desktop layout [ph-04-s1-c-board-more.png]",
+     "verdict": "RECORDED",
+     "pics": [
+      "ph-05-s1-c-board-bar.png"
+     ]
+    },
+    {
+     "id": "1.d",
+     "did": "on the board (phone): CX on Go 2's RU lead line (pressed: Cancel this line); ✓ Done; Insights on Edit Schedule by ☰ → Week insights",
+     "saw": "✓ the board showed the day pending [1 pending / Publish AL1] · ✓ Edit Schedule shows Tuesday pending [tag ORIG · chip \"1 pending\" · \"Not yet signed\" · button \"Publish AL1\" · signed line \"SIGNED ORIG Ace Anvil Anvil Anvil\" · bar \"⚠ 4 issues · 2 warning · tap to r] · ✓ the window is on top at its centre · ✓ the window says word for word what it said at Original [identical] · ✓ By day still reads Tuesday 8 sorties [Tuesday 8 sorties · 4 formations · 4 issues]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-06-s1-d-board-line-cancelled.png",
+      "ph-07-s1-e-pending-editsched.png",
+      "ph-08-s1-e-pending-editsched-foot.png"
+     ]
+    },
+    {
+     "id": "1.e",
+     "did": "Tuesday signed and \"Publish AL1\" pressed; Insights on Edit Schedule",
+     "saw": "✓ the day reads AL1, nothing pending [tag AL1 · chip \"11 changes\" · no not-signed marker · no Publish AL button · signed line \"SIGNED AL1 Ace Anvil Anvil Anvil\" · bar \"⚠ 4 issues · 2 warning · tap t] · ✓ the window moved [tiles: 32 SORTIES | 16 FORMATIONS | 38 AIRCREW FLYING | 33 13 WARNING → 31 SORTIES | 16 FORMATIONS | 36 AIRCREW FLYING | 33 13 WARNING ;; FLYING LOAD · SORTIES ] · ✓ Sorties 32 → 31 [31 SORTIES | 16 FORMATIONS | 36 AIRCREW FLYING | 33 13 WARNING] · ✓ By day reads Tuesday 7 sorties [Tuesday 7 sorties · 4 formations · 4 issues]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-09-s1-f-AL1-editsched.png",
+      "ph-10-s1-f-AL1-editsched-foot.png"
+     ]
+    },
+    {
+     "id": "1.err",
+     "did": "the browser's error list through this scenario",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "s2-dk": {
+   "at": "2026-10-01T13:42:56.526Z",
+   "base": "http://localhost:4211",
+   "phone": false,
+   "table": [
+    {
+     "id": "2.a",
+     "did": "Tuesday (draft): the board's ✕ on Go 2's in-time line \"1300H: SECOND WAVE RU IN TIME + WX/NOTAMS\" (left: [\"1200H: SECOND WAVE VL IN TIME + WX/NOTAMS\"]), so the RU formation has no in-time; signed and Publish day",
+     "saw": "Work hours Rebel 4h45, Cinder 4h25, Vapor 6h55, Marlin 4h25 · issues tile \"33 / 13 WARNING\" · By day \"Tuesday 8 sorties · 4 formations · 4 issues\" · Long work day 2 · whole-week types [Conflict — two events at once 6 ; No time for the flight brief 5 ; Downchit + flying 2 ; Personal input clash 2 ; Double turning 2 ; Long work day 2 ; Tight turn 2 ; Crew combination — CO approval required 2 ; No time for the flight debrief 2 ; OIL waiting — this day is not published 2 ; No time for the sim brief 1 ; No time for the sim debrief 1 ; Crew solo — only allowed under syllabus 1 ; Crew rest (<12h) 1 ; On leave + flying 1 ; Illegal aircrew combination 1] · day on Edit Schedule: tag ORIG · chip \"6 changes\" · no not-signed marker · no Publish AL button · signed line \"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvi\" · bar \"⚠ 4 issues · 2 warning · tap to review ▼\" · View-only bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\"",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-01-s2-a-orig.png",
+      "dk-02-s2-a-orig-editsched.png"
+     ]
+    },
+    {
+     "id": "2.b",
+     "did": "Logic → ✎ Edit rules → \"Flight debrief after land\" 2h → 3h (Tuesday still Original)",
+     "saw": "Work hours Rebel 5h45, Cinder 5h25, Vapor 7h55, Marlin 5h25 · issues tile \"35 / 14 WARNING\" · By day \"Tuesday 8 sorties · 4 formations · 5 issues\" · Long work day 3 · whole-week types [Conflict — two events at once 6 ; No time for the flight brief 5 ; Long work day 3 ; Downchit + flying 2 ; Personal input clash 2 ; Double turning 2 ; Crew rest (<12h) 2 ; Tight turn 2 ; Crew combination — CO approval required 2 ; No time for the flight debrief 2 ; OIL waiting — this day is not published 2 ; No time for the sim brief 1 ; No time for the sim debrief 1 ; Crew solo — only allowed under syllabus 1 ; On leave + flying 1 ; Illegal aircrew combination 1] · vs before: tiles: 32 SORTIES | 16 FORMATIONS | 38 AIRCREW FLYING | 33 13 WARNING → 32 SORTIES | 16 FORMATIONS | 38 AIRCREW FLYING | 35 14 WARNING ;; WORK HOURS · REPORT TO DEBRIEF, THIS WEEK: −[Bolt 27h25 | Ace 25h35 | Vector 22h10 | Static 21h20 | Dash 21h05 | Basher 18h15 | Saber 17h10 | Scope 16h40 | Echo 16h35 | Zenith 16h20 | Relay 16h10 | Fable 15h55 | Hex 15h | Wildcard 14h05 | Ranger 11h30 | Gambit 11h05 | Saint 10h15 | Warden 10h15 | Drifter 10h10 | Piston 9h45 | Outlaw 9h30 | Torch 8h55 | Pixel 8 · day on Edit Schedule: tag ORIG · chip \"1 pending\" · \"Not yet signed\" · button \"Publish AL1\" · signed line \"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvi\" · bar \"⚠ 5 issues · 3 warning · tap to collapse ▲\" · its list: ⚠ 5 issues · 3 warning · tap to collapse ▲ | 0:plain[✕] 1:plain[✕] 2:plain[✕] 3:plain[✕] 4:plain[✕] · View-only bar \"⚠ 5 issues · 3 warning · tap to collapse ▲\"",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-03-s2-b-debrief-3h.png",
+      "dk-04-s2-b-debrief-3h-editsched.png"
+     ]
+    },
+    {
+     "id": "2.c",
+     "did": "Logic → \"Nominal report before T/O\" 3h → 4h (Tuesday still Original)",
+     "saw": "Work hours Rebel 5h45, Cinder 5h25, Vapor 7h55, Marlin 5h25 · issues tile \"37 / 14 WARNING\" · By day \"Tuesday 8 sorties · 4 formations · 7 issues\" · Long work day 3 · whole-week types [Conflict — two events at once 6 ; No time for the flight brief 5 ; Long work day 3 ; Downchit + flying 2 ; Personal input clash 2 ; Double turning 2 ; Crew rest (<12h) 2 ; Tight turning — crew rest 2 ; Tight turn 2 ; Crew combination — CO approval required 2 ; No time for the flight debrief 2 ; OIL waiting — this day is not published 2 ; No time for the sim brief 1 ; No time for the sim debrief 1 ; Crew solo — only allowed under syllabus 1 ; On leave + flying 1 ; Illegal aircrew combination 1] · vs before: tiles: 32 SORTIES | 16 FORMATIONS | 38 AIRCREW FLYING | 35 14 WARNING → 32 SORTIES | 16 FORMATIONS | 38 AIRCREW FLYING | 37 14 WARNING ;; CONFLICTS BY TYPE: −[] +[Tight turning — crew rest 2] ;; BY DAY: −[Tuesday 8 sorties · 4 formations · 5 issues] +[Tuesday 8 sorties · 4 formations · 7 issues] · day on Edit Schedule: tag ORIG · chip \"1 pending\" · \"Not yet signed\" · button \"Publish AL1\" · signed line \"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvi\" · bar \"⚠ 7 issues · 3 warning · tap to collapse ▲\" · its list: ⚠ 7 issues · 3 warning · tap to collapse ▲ | 0:plain[✕] 1:plain[✕] 2:plain[✕] 3:plain[✕] 4:plain[✕] 5:plain[✕] 6:plain[✕ not-on-top:off-screen] · View-only bar \"⚠ 7 issues · 3 warning · tap to collapse ▲\"",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-05-s2-c-report-4h.png",
+      "dk-06-s2-c-report-4h-editsched.png"
+     ]
+    },
+    {
+     "id": "2.d",
+     "did": "the amendment: signed and \"Publish AL1\" pressed",
+     "saw": "Work hours Rebel 5h45, Cinder 5h25, Vapor 7h55, Marlin 5h25 · issues tile \"37 / 14 WARNING\" · By day \"Tuesday 8 sorties · 4 formations · 7 issues\" · Long work day 3 · whole-week types [Conflict — two events at once 6 ; No time for the flight brief 5 ; Long work day 3 ; Downchit + flying 2 ; Personal input clash 2 ; Double turning 2 ; Crew rest (<12h) 2 ; Tight turning — crew rest 2 ; Tight turn 2 ; Crew combination — CO approval required 2 ; No time for the flight debrief 2 ; OIL waiting — this day is not published 2 ; No time for the sim brief 1 ; No time for the sim debrief 1 ; Crew solo — only allowed under syllabus 1 ; On leave + flying 1 ; Illegal aircrew combination 1] · vs before: identical · day on Edit Schedule: tag AL1 · chip \"11 changes\" · no not-signed marker · no Publish AL button · signed line \"SIGNED AL1 CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\" · bar \"⚠ 7 issues · 3 warning · tap to collapse ▲\" · View-only bar \"⚠ 7 issues · 3 warning · tap to collapse ▲\"",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-07-s2-d-after-AL-try.png",
+      "dk-08-s2-d-after-AL-try-editsched.png"
+     ]
+    },
+    {
+     "id": "2.e",
+     "did": "a reload, signed in again",
+     "saw": "Work hours Rebel 5h45, Cinder 5h25, Vapor 7h55, Marlin 5h25 · issues tile \"37 / 14 WARNING\" · By day \"Tuesday 8 sorties · 4 formations · 7 issues\" · Long work day 3 · whole-week types [Conflict — two events at once 6 ; No time for the flight brief 5 ; Long work day 3 ; Downchit + flying 2 ; Personal input clash 2 ; Double turning 2 ; Crew rest (<12h) 2 ; Tight turning — crew rest 2 ; Tight turn 2 ; Crew combination — CO approval required 2 ; No time for the flight debrief 2 ; OIL waiting — this day is not published 2 ; No time for the sim brief 1 ; No time for the sim debrief 1 ; Crew solo — only allowed under syllabus 1 ; On leave + flying 1 ; Illegal aircrew combination 1] · same words as before the reload: true (identical) · day on Edit Schedule: tag AL1 · chip \"11 changes\" · no not-signed marker · no Publish AL button · signed line \"SIGNED AL1 CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\" · bar \"⚠ 7 issues · 3 warning · tap to review ▼\"",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-09-s2-e-reloaded.png",
+      "dk-10-s2-e-reloaded-editsched.png"
+     ]
+    },
+    {
+     "id": "2.sum",
+     "did": "the figures side by side (Original · debrief 3h · report 4h · after the amendment step · reload)",
+     "saw": "Rebel: 4h45 → 5h45 → 5h45 → 5h45 → 5h45 ; Cinder: 4h25 → 5h25 → 5h25 → 5h25 → 5h25 ; Vapor: 6h55 → 7h55 → 7h55 → 7h55 → 7h55 ; Marlin: 4h25 → 5h25 → 5h25 → 5h25 → 5h25 ;; Tuesday By-day issues: 4 issues → 5 issues → 7 issues → 7 issues → 7 issues ;; week issues tile: 33 → 35 → 37 → 37 → 37 ;; Tuesday's own bar on Edit Schedule: 4 issues → 5 issues → 7 issues → 7 issues → 7 issues ;; on View-only: 4 issues → 5 issues → 7 issues → 7 issues → 7 issues ;; pending chip: 6 changes → 1 pending → 1 pending → 11 changes → 11 changes",
+     "verdict": "RECORDED",
+     "pics": []
+    },
+    {
+     "id": "2.err",
+     "did": "the browser's error list through this scenario",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "s2-ph": {
+   "at": "2026-10-01T13:43:56.895Z",
+   "base": "http://localhost:4211",
+   "phone": true,
+   "table": [
+    {
+     "id": "2.a",
+     "did": "Tuesday (draft): the board's ✕ on Go 2's in-time line \"1300H: SECOND WAVE RU IN TIME + WX/NOTAMS\" (left: [\"1200H: SECOND WAVE VL IN TIME + WX/NOTAMS\"]), so the RU formation has no in-time; signed and Publish day",
+     "saw": "Work hours Rebel 4h45, Cinder 4h25, Vapor 6h55, Marlin 4h25 · issues tile \"33 / 13 WARNING\" · By day \"Tuesday 8 sorties · 4 formations · 4 issues\" · Long work day 2 · whole-week types [Conflict — two events at once 6 ; No time for the flight brief 5 ; Downchit + flying 2 ; Personal input clash 2 ; Double turning 2 ; Long work day 2 ; Tight turn 2 ; Crew combination — CO approval required 2 ; No time for the flight debrief 2 ; OIL waiting — this day is not published 2 ; No time for the sim brief 1 ; No time for the sim debrief 1 ; Crew solo — only allowed under syllabus 1 ; Crew rest (<12h) 1 ; On leave + flying 1 ; Illegal aircrew combination 1] · day on Edit Schedule: tag ORIG · chip \"6 changes\" · no not-signed marker · no Publish AL button · signed line \"SIGNED ORIG Ace Anvil Anvil Anvil\" · bar \"⚠ 4 issues · 2 warning · tap to review ▼\" · View-only bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\"",
+     "verdict": "RECORDED",
+     "pics": [
+      "ph-01-s2-a-orig.png",
+      "ph-02-s2-a-orig-editsched.png"
+     ]
+    },
+    {
+     "id": "2.b",
+     "did": "Logic → ✎ Edit rules → \"Flight debrief after land\" 2h → 3h (Tuesday still Original)",
+     "saw": "Work hours Rebel 5h45, Cinder 5h25, Vapor 7h55, Marlin 5h25 · issues tile \"35 / 14 WARNING\" · By day \"Tuesday 8 sorties · 4 formations · 5 issues\" · Long work day 3 · whole-week types [Conflict — two events at once 6 ; No time for the flight brief 5 ; Long work day 3 ; Downchit + flying 2 ; Personal input clash 2 ; Double turning 2 ; Crew rest (<12h) 2 ; Tight turn 2 ; Crew combination — CO approval required 2 ; No time for the flight debrief 2 ; OIL waiting — this day is not published 2 ; No time for the sim brief 1 ; No time for the sim debrief 1 ; Crew solo — only allowed under syllabus 1 ; On leave + flying 1 ; Illegal aircrew combination 1] · vs before: tiles: 32 SORTIES | 16 FORMATIONS | 38 AIRCREW FLYING | 33 13 WARNING → 32 SORTIES | 16 FORMATIONS | 38 AIRCREW FLYING | 35 14 WARNING ;; WORK HOURS · REPORT TO DEBRIEF, THIS WEEK: −[Bolt 27h25 | Ace 25h35 | Vector 22h10 | Static 21h20 | Dash 21h05 | Basher 18h15 | Saber 17h10 | Scope 16h40 | Echo 16h35 | Zenith 16h20 | Relay 16h10 | Fable 15h55 | Hex 15h | Wildcard 14h05 | Ranger 11h30 | Gambit 11h05 | Saint 10h15 | Warden 10h15 | Drifter 10h10 | Piston 9h45 | Outlaw 9h30 | Torch 8h55 | Pixel 8 · day on Edit Schedule: tag ORIG · chip \"1 pending\" · \"Not yet signed\" · button \"Publish AL1\" · signed line \"SIGNED ORIG Ace Anvil Anvil Anvil\" · bar \"⚠ 5 issues · 3 warning · tap to collapse ▲\" · its list: ⚠ 5 issues · 3 warning · tap to collapse ▲ | 0:plain[✕] 1:plain[✕] 2:plain[✕] 3:plain[✕] 4:plain[✕] · View-only bar \"⚠ 5 issues · 3 warning · tap to collapse ▲\"",
+     "verdict": "RECORDED",
+     "pics": [
+      "ph-03-s2-b-debrief-3h.png",
+      "ph-04-s2-b-debrief-3h-editsched.png"
+     ]
+    },
+    {
+     "id": "2.c",
+     "did": "Logic → \"Nominal report before T/O\" 3h → 4h (Tuesday still Original)",
+     "saw": "Work hours Rebel 5h45, Cinder 5h25, Vapor 7h55, Marlin 5h25 · issues tile \"37 / 14 WARNING\" · By day \"Tuesday 8 sorties · 4 formations · 7 issues\" · Long work day 3 · whole-week types [Conflict — two events at once 6 ; No time for the flight brief 5 ; Long work day 3 ; Downchit + flying 2 ; Personal input clash 2 ; Double turning 2 ; Crew rest (<12h) 2 ; Tight turning — crew rest 2 ; Tight turn 2 ; Crew combination — CO approval required 2 ; No time for the flight debrief 2 ; OIL waiting — this day is not published 2 ; No time for the sim brief 1 ; No time for the sim debrief 1 ; Crew solo — only allowed under syllabus 1 ; On leave + flying 1 ; Illegal aircrew combination 1] · vs before: tiles: 32 SORTIES | 16 FORMATIONS | 38 AIRCREW FLYING | 35 14 WARNING → 32 SORTIES | 16 FORMATIONS | 38 AIRCREW FLYING | 37 14 WARNING ;; CONFLICTS BY TYPE: −[] +[Tight turning — crew rest 2] ;; BY DAY: −[Tuesday 8 sorties · 4 formations · 5 issues] +[Tuesday 8 sorties · 4 formations · 7 issues] · day on Edit Schedule: tag ORIG · chip \"1 pending\" · \"Not yet signed\" · button \"Publish AL1\" · signed line \"SIGNED ORIG Ace Anvil Anvil Anvil\" · bar \"⚠ 7 issues · 3 warning · tap to collapse ▲\" · its list: ⚠ 7 issues · 3 warning · tap to collapse ▲ | 0:plain[✕] 1:plain[✕] 2:plain[✕] 3:plain[✕] 4:plain[✕] 5:plain[✕ not-on-top:off-screen] 6:plain[✕ not-on-top:off-screen] · View-only bar \"⚠ 7 issues · 3 warning · tap to collapse ▲\"",
+     "verdict": "RECORDED",
+     "pics": [
+      "ph-05-s2-c-report-4h.png",
+      "ph-06-s2-c-report-4h-editsched.png"
+     ]
+    },
+    {
+     "id": "2.d",
+     "did": "the amendment: signed and \"Publish AL1\" pressed",
+     "saw": "Work hours Rebel 5h45, Cinder 5h25, Vapor 7h55, Marlin 5h25 · issues tile \"37 / 14 WARNING\" · By day \"Tuesday 8 sorties · 4 formations · 7 issues\" · Long work day 3 · whole-week types [Conflict — two events at once 6 ; No time for the flight brief 5 ; Long work day 3 ; Downchit + flying 2 ; Personal input clash 2 ; Double turning 2 ; Crew rest (<12h) 2 ; Tight turning — crew rest 2 ; Tight turn 2 ; Crew combination — CO approval required 2 ; No time for the flight debrief 2 ; OIL waiting — this day is not published 2 ; No time for the sim brief 1 ; No time for the sim debrief 1 ; Crew solo — only allowed under syllabus 1 ; On leave + flying 1 ; Illegal aircrew combination 1] · vs before: identical · day on Edit Schedule: tag AL1 · chip \"11 changes\" · no not-signed marker · no Publish AL button · signed line \"SIGNED AL1 Ace Anvil Anvil Anvil\" · bar \"⚠ 7 issues · 3 warning · tap to collapse ▲\" · View-only bar \"⚠ 7 issues · 3 warning · tap to collapse ▲\"",
+     "verdict": "RECORDED",
+     "pics": [
+      "ph-07-s2-d-after-AL-try.png",
+      "ph-08-s2-d-after-AL-try-editsched.png"
+     ]
+    },
+    {
+     "id": "2.e",
+     "did": "a reload, signed in again",
+     "saw": "Work hours Rebel 5h45, Cinder 5h25, Vapor 7h55, Marlin 5h25 · issues tile \"37 / 14 WARNING\" · By day \"Tuesday 8 sorties · 4 formations · 7 issues\" · Long work day 3 · whole-week types [Conflict — two events at once 6 ; No time for the flight brief 5 ; Long work day 3 ; Downchit + flying 2 ; Personal input clash 2 ; Double turning 2 ; Crew rest (<12h) 2 ; Tight turning — crew rest 2 ; Tight turn 2 ; Crew combination — CO approval required 2 ; No time for the flight debrief 2 ; OIL waiting — this day is not published 2 ; No time for the sim brief 1 ; No time for the sim debrief 1 ; Crew solo — only allowed under syllabus 1 ; On leave + flying 1 ; Illegal aircrew combination 1] · same words as before the reload: true (identical) · day on Edit Schedule: tag AL1 · chip \"11 changes\" · no not-signed marker · no Publish AL button · signed line \"SIGNED AL1 Ace Anvil Anvil Anvil\" · bar \"⚠ 7 issues · 3 warning · tap to review ▼\"",
+     "verdict": "RECORDED",
+     "pics": [
+      "ph-09-s2-e-reloaded.png",
+      "ph-10-s2-e-reloaded-editsched.png"
+     ]
+    },
+    {
+     "id": "2.sum",
+     "did": "the figures side by side (Original · debrief 3h · report 4h · after the amendment step · reload)",
+     "saw": "Rebel: 4h45 → 5h45 → 5h45 → 5h45 → 5h45 ; Cinder: 4h25 → 5h25 → 5h25 → 5h25 → 5h25 ; Vapor: 6h55 → 7h55 → 7h55 → 7h55 → 7h55 ; Marlin: 4h25 → 5h25 → 5h25 → 5h25 → 5h25 ;; Tuesday By-day issues: 4 issues → 5 issues → 7 issues → 7 issues → 7 issues ;; week issues tile: 33 → 35 → 37 → 37 → 37 ;; Tuesday's own bar on Edit Schedule: 4 issues → 5 issues → 7 issues → 7 issues → 7 issues ;; on View-only: 4 issues → 5 issues → 7 issues → 7 issues → 7 issues ;; pending chip: 6 changes → 1 pending → 1 pending → 11 changes → 11 changes",
+     "verdict": "RECORDED",
+     "pics": []
+    },
+    {
+     "id": "2.err",
+     "did": "the browser's error list through this scenario",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "s3-dk": {
+   "at": "2026-10-01T13:46:10.307Z",
+   "base": "http://localhost:4211",
+   "phone": false,
+   "table": [
+    {
+     "id": "3.a",
+     "did": "Monday (draft) board: Go 2's RU line T/O 19:20→10:00, LD 20:45→11:25 (Outlaw lands early); Tuesday signed and Publish day; Monday left draft",
+     "saw": "✓ Tuesday is Original, nothing pending [tag ORIG · chip \"5 changes\" · no not-signed marker · no Publish AL button · signed line \"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvi\" · bar \"⚠ ] · ✓ Monday is a draft [DRAFT] · ✓ no crew-rest line on Tuesday (View-only and Edit Schedule) [⚠ 3 issues · 1 warning · tap to collapse ▲] · ✓ Insights: no Crew rest conflict [Conflict — two events at once 6 ; No time for the flight brief 5 ; Downchit + flying 2 ; Personal input clash 2 ; Double turning 2 ; Long work day 2 ; Tight tur] · ✓ Insights Tuesday = the Tuesday bar [Tuesday 8 sorties · 4 formations · 3 issues / ⚠ 3 issues · 1 warning · tap to collapse ▲] · ✓ no dotted mark on Outlaw on Monday [[0,0]] · ✓ the window on top at its centre",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-s3-a-monday-board-early.png",
+      "dk-02-s3-a-viewonly-monday-puck.png",
+      "dk-03-s3-a-viewonly-tuesday.png",
+      "dk-04-s3-a-insights.png",
+      "dk-05-s3-a-insights-foot.png"
+     ]
+    },
+    {
+     "id": "3.b",
+     "did": "Monday (draft) board: the same line's LD 11:25→20:45 (one edit) — Outlaw now lands late; ✓ Done",
+     "saw": "✓ the published Tuesday list gains the crew-rest line at once (View-only) [⚠ 4 issues · 2 warning · tap to collapse ▲] · ✓ …and on Edit Schedule [⚠ 4 issues · 2 warning · tap to collapse ▲] · ✓ Monday gains the dotted mark on Outlaw (View-only and Edit Schedule) [[1,1]] · ✓ Insights adds one Tuesday issue at once [Tuesday 8 sorties · 4 formations · 3 issues → Tuesday 8 sorties · 4 formations · 4 issues] · ✓ Insights adds one Crew rest conflict [0 → 1] · ✓ Insights Tuesday = the published Tuesday bar [Tuesday 8 sorties · 4 formations · 4 issues / ⚠ 4 issues · 2 warning · tap to collapse ▲] · ✓ the week tile moved by Monday's change + Tuesday's one [32 → 35; Monday Monday 8 sorties · 4 formations · 14 issues → Monday 8 sorties · 4 formations · 16 issues] · ✓ Tuesday gets NO pending change from the live warning [tag ORIG · chip \"5 changes\" · no not-signed marker · no Publish AL button · signed line \"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvi\" · bar \"⚠ ] · ✓ Tuesday still Original [ORIG] · ✓ Monday still a draft (its change is a working-copy change) [DRAFT]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-06-s3-b-viewonly-monday-puck.png",
+      "dk-07-s3-b-viewonly-tuesday.png",
+      "dk-08-s3-b-insights.png",
+      "dk-09-s3-b-insights-foot.png"
+     ]
+    },
+    {
+     "id": "3.b+",
+     "did": "what the window said, before → after the Monday edit",
+     "saw": "tiles: 32 SORTIES | 16 FORMATIONS | 38 AIRCREW FLYING | 32 12 WARNING → 32 SORTIES | 16 FORMATIONS | 38 AIRCREW FLYING | 35 15 WARNING ;; WORK HOURS · REPORT TO DEBRIEF, THIS WEEK: −[Relay 10h30 | Piston 4h05 | Outlaw 10 min | Wisp -2h-30] +[Relay 16h10 | Piston 9h45 | Outlaw 9h30 | Wisp 7h50] ;; CONFLICTS BY TYPE: −[Conflict — two events at once 6] +[Conflict — two events at once 8 | Crew rest (<12h) 1] ;; BY DAY: −[Monday 8 sorties · 4 formations · 14 issues | Tuesday 8 sorties · 4 formations · 3 issues] +[Monday 8 sorties · 4 formations · 16 issues | Tuesday 8 sorties · 4 formations · 4 issues]",
+     "verdict": "RECORDED",
+     "pics": []
+    },
+    {
+     "id": "3.c",
+     "did": "top bar Undo (\"Undo — a change to the schedule\")",
+     "saw": "✓ the crew-rest line is gone from the published Tuesday [⚠ 3 issues · 1 warning · tap to collapse ▲] · ✓ the dotted mark is gone from Monday [[0,0]] · ✓ Insights says word for word what it said before the edit [identical] · ✓ Tuesday not pending [tag ORIG · chip \"5 changes\" · no not-signed marker · no Publish AL button · signed line \"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvi\" · bar \"⚠ ]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-10-s3-c-viewonly-monday-puck.png",
+      "dk-11-s3-c-viewonly-tuesday.png",
+      "dk-12-s3-c-insights.png",
+      "dk-13-s3-c-insights-foot.png"
+     ]
+    },
+    {
+     "id": "3.say",
+     "did": "the three checkpoints",
+     "saw": "BEFORE: View-only Tuesday bar \"⚠ 3 issues · 1 warning · tap to collapse ▲\" (crew-rest line absent) · Edit Schedule Tuesday: tag ORIG · chip \"5 changes\" · no not-signed marker · no Publish AL button · signed line \"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvi\" · bar \"⚠ 3 issues · 1 warning · tap to review ▼\" (crew-rest line absent) · Monday: chip \"2 changes\", tag DRAFT, Outlaw's dotted mark on 0 puck(s) on View-only and 0 on Edit Schedule · Insights: tile 32, \"Monday 8 sorties · 4 formations · 14 issues\", \"Tuesday 8 sorties · 4 formations · 3 issues\", Crew rest 0 ;; LATE: View-only Tuesday bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\" (crew-rest line shown) · Edit Schedule Tuesday: tag ORIG · chip \"5 changes\" · no not-signed marker · no Publish AL button · signed line \"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvi\" · bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\" (crew-rest line shown) · Monday: chip \"3 changes\", tag DRAFT, Outlaw's dotted mark on 1 puck(s) on View-only and 1 on Edit Schedule · Insights: tile 35, \"Monday 8 sorties · 4 formations · 16 issues\", \"Tuesday 8 sorties · 4 formations · 4 issues\", Crew rest 1 ;; UNDONE: View-only Tuesday bar \"⚠ 3 issues · 1 warning · tap to collapse ▲\" (crew-rest line absent) · Edit Schedule Tuesday: tag ORIG · chip \"5 changes\" · no not-signed marker · no Publish AL button · signed line \"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvi\" · bar \"⚠ 3 issues · 1 warning · tap to collapse ▲\" (crew-rest line absent) · Monday: chip \"4 changes\", tag DRAFT, Outlaw's dotted mark on 0 puck(s) on View-only and 0 on Edit Schedule · Insights: tile 32, \"Monday 8 sorties · 4 formations · 14 issues\", \"Tuesday 8 sorties · 4 formations · 3 issues\", Crew rest 0",
+     "verdict": "RECORDED",
+     "pics": []
+    },
+    {
+     "id": "3.err",
+     "did": "the browser's error list through this scenario",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "s3-ph": {
+   "at": "2026-10-01T13:46:53.736Z",
+   "base": "http://localhost:4211",
+   "phone": true,
+   "table": [
+    {
+     "id": "3.a",
+     "did": "Monday (draft) board: Go 2's RU line T/O 19:20→10:00, LD 20:45→11:25 (Outlaw lands early); Tuesday signed and Publish day; Monday left draft",
+     "saw": "✓ Tuesday is Original, nothing pending [tag ORIG · chip \"5 changes\" · no not-signed marker · no Publish AL button · signed line \"SIGNED ORIG Ace Anvil Anvil Anvil\" · bar \"⚠ 3 issues · 1 warning · tap ] · ✓ Monday is a draft [DRAFT] · ✓ no crew-rest line on Tuesday (View-only and Edit Schedule) [⚠ 3 issues · 1 warning · tap to collapse ▲] · ✓ Insights: no Crew rest conflict [Conflict — two events at once 6 ; No time for the flight brief 5 ; Downchit + flying 2 ; Personal input clash 2 ; Double turning 2 ; Long work day 2 ; Tight tur] · ✓ Insights Tuesday = the Tuesday bar [Tuesday 8 sorties · 4 formations · 3 issues / ⚠ 3 issues · 1 warning · tap to collapse ▲] · ✓ no dotted mark on Outlaw on Monday [[0,0]] · ✓ the window on top at its centre",
+     "verdict": "PASS",
+     "pics": [
+      "ph-01-s3-a-monday-board-early.png",
+      "ph-02-s3-a-viewonly-monday-puck.png",
+      "ph-03-s3-a-viewonly-tuesday.png",
+      "ph-04-s3-a-insights.png",
+      "ph-05-s3-a-insights-foot.png"
+     ]
+    },
+    {
+     "id": "3.b",
+     "did": "Monday (draft) board: the same line's LD 11:25→20:45 (one edit) — Outlaw now lands late; ✓ Done",
+     "saw": "✓ the published Tuesday list gains the crew-rest line at once (View-only) [⚠ 4 issues · 2 warning · tap to collapse ▲] · ✓ …and on Edit Schedule [⚠ 4 issues · 2 warning · tap to collapse ▲] · ✓ Monday gains the dotted mark on Outlaw (View-only and Edit Schedule) [[1,1]] · ✓ Insights adds one Tuesday issue at once [Tuesday 8 sorties · 4 formations · 3 issues → Tuesday 8 sorties · 4 formations · 4 issues] · ✓ Insights adds one Crew rest conflict [0 → 1] · ✓ Insights Tuesday = the published Tuesday bar [Tuesday 8 sorties · 4 formations · 4 issues / ⚠ 4 issues · 2 warning · tap to collapse ▲] · ✓ the week tile moved by Monday's change + Tuesday's one [32 → 35; Monday Monday 8 sorties · 4 formations · 14 issues → Monday 8 sorties · 4 formations · 16 issues] · ✓ Tuesday gets NO pending change from the live warning [tag ORIG · chip \"5 changes\" · no not-signed marker · no Publish AL button · signed line \"SIGNED ORIG Ace Anvil Anvil Anvil\" · bar \"⚠ 4 issues · 2 warning · tap ] · ✓ Tuesday still Original [ORIG] · ✓ Monday still a draft (its change is a working-copy change) [DRAFT]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-06-s3-b-viewonly-monday-puck.png",
+      "ph-07-s3-b-viewonly-tuesday.png",
+      "ph-08-s3-b-insights.png",
+      "ph-09-s3-b-insights-foot.png"
+     ]
+    },
+    {
+     "id": "3.b+",
+     "did": "what the window said, before → after the Monday edit",
+     "saw": "tiles: 32 SORTIES | 16 FORMATIONS | 38 AIRCREW FLYING | 32 12 WARNING → 32 SORTIES | 16 FORMATIONS | 38 AIRCREW FLYING | 35 15 WARNING ;; WORK HOURS · REPORT TO DEBRIEF, THIS WEEK: −[Relay 10h30 | Piston 4h05 | Outlaw 10 min | Wisp -2h-30] +[Relay 16h10 | Piston 9h45 | Outlaw 9h30 | Wisp 7h50] ;; CONFLICTS BY TYPE: −[Conflict — two events at once 6] +[Conflict — two events at once 8 | Crew rest (<12h) 1] ;; BY DAY: −[Monday 8 sorties · 4 formations · 14 issues | Tuesday 8 sorties · 4 formations · 3 issues] +[Monday 8 sorties · 4 formations · 16 issues | Tuesday 8 sorties · 4 formations · 4 issues]",
+     "verdict": "RECORDED",
+     "pics": []
+    },
+    {
+     "id": "3.c",
+     "did": "top bar Undo (\"Undo — a change to the schedule\")",
+     "saw": "✓ the crew-rest line is gone from the published Tuesday [⚠ 3 issues · 1 warning · tap to collapse ▲] · ✓ the dotted mark is gone from Monday [[0,0]] · ✓ Insights says word for word what it said before the edit [identical] · ✓ Tuesday not pending [tag ORIG · chip \"5 changes\" · no not-signed marker · no Publish AL button · signed line \"SIGNED ORIG Ace Anvil Anvil Anvil\" · bar \"⚠ 3 issues · 1 warning · tap ]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-10-s3-c-viewonly-monday-puck.png",
+      "ph-11-s3-c-viewonly-tuesday.png",
+      "ph-12-s3-c-insights.png",
+      "ph-13-s3-c-insights-foot.png"
+     ]
+    },
+    {
+     "id": "3.say",
+     "did": "the three checkpoints",
+     "saw": "BEFORE: View-only Tuesday bar \"⚠ 3 issues · 1 warning · tap to collapse ▲\" (crew-rest line absent) · Edit Schedule Tuesday: tag ORIG · chip \"5 changes\" · no not-signed marker · no Publish AL button · signed line \"SIGNED ORIG Ace Anvil Anvil Anvil\" · bar \"⚠ 3 issues · 1 warning · tap to review ▼\" (crew-rest line absent) · Monday: chip \"2 changes\", tag DRAFT, Outlaw's dotted mark on 0 puck(s) on View-only and 0 on Edit Schedule · Insights: tile 32, \"Monday 8 sorties · 4 formations · 14 issues\", \"Tuesday 8 sorties · 4 formations · 3 issues\", Crew rest 0 ;; LATE: View-only Tuesday bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\" (crew-rest line shown) · Edit Schedule Tuesday: tag ORIG · chip \"5 changes\" · no not-signed marker · no Publish AL button · signed line \"SIGNED ORIG Ace Anvil Anvil Anvil\" · bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\" (crew-rest line shown) · Monday: chip \"3 changes\", tag DRAFT, Outlaw's dotted mark on 1 puck(s) on View-only and 1 on Edit Schedule · Insights: tile 35, \"Monday 8 sorties · 4 formations · 16 issues\", \"Tuesday 8 sorties · 4 formations · 4 issues\", Crew rest 1 ;; UNDONE: View-only Tuesday bar \"⚠ 3 issues · 1 warning · tap to collapse ▲\" (crew-rest line absent) · Edit Schedule Tuesday: tag ORIG · chip \"5 changes\" · no not-signed marker · no Publish AL button · signed line \"SIGNED ORIG Ace Anvil Anvil Anvil\" · bar \"⚠ 3 issues · 1 warning · tap to collapse ▲\" (crew-rest line absent) · Monday: chip \"4 changes\", tag DRAFT, Outlaw's dotted mark on 0 puck(s) on View-only and 0 on Edit Schedule · Insights: tile 32, \"Monday 8 sorties · 4 formations · 14 issues\", \"Tuesday 8 sorties · 4 formations · 3 issues\", Crew rest 0",
+     "verdict": "RECORDED",
+     "pics": []
+    },
+    {
+     "id": "3.err",
+     "did": "the browser's error list through this scenario",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "s4-dk": {
+   "at": "2026-10-01T13:49:20.365Z",
+   "base": "http://localhost:4211",
+   "phone": false,
+   "table": [
+    {
+     "id": "4.a",
+     "did": "Tuesday published; on the board Anvil put on Rebel's seat (true) and CX on Go 1's VL no. 2 line (pressed: Cancel this line); signed and \"Publish AL1\"; Insights on Edit Schedule",
+     "saw": "✓ Tuesday reads AL1, nothing pending [tag AL1 · chip \"12 changes\" · no not-signed marker · no Publish AL button · signed line \"SIGNED AL1 CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\" · bar \"⚠ ] · ✓ AL1 differs from Original in the window (Sorties 32 → 31, Tuesday 8 → 7) [31 SORTIES | 16 FORMATIONS | 38 AIRCREW FLYING | 32 12 WARNING · Tuesday 7 sorties · 4 formations · 3 issues] · ✓ Anvil is off the idle list, Rebel on it",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-s4-a-AL1-live.png",
+      "dk-02-s4-a-AL1-live-foot.png"
+     ]
+    },
+    {
+     "id": "4.b",
+     "did": "Tuesday's plans picker → \"Original\" (read-only look); Insights opened beside it",
+     "saw": "✓ the day says it is showing Original [{\"cls\":\"day  dok preview\",\"bar\":\"← Back to live copy 👁 Viewing the issued Original — read-only. This is what was sent out; it never changes. Load onto working ] · ✓ the day is drawing Original (Rebel back on the seat) [romeo] · ✓ the window is on top at its centre · ✓ the window still counts AL1 — word for word what it said before the look [identical] · ✓ Sorties still 31 [31 SORTIES | 16 FORMATIONS | 38 AIRCREW FLYING | 32 12 WARNING]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-03-s4-b-look-original-day.png",
+      "dk-04-s4-b-look-original-insights.png",
+      "dk-05-s4-b-look-original-insights-foot.png"
+     ]
+    },
+    {
+     "id": "4.c",
+     "did": "\"Back to live copy\" (back); Insights again",
+     "saw": "✓ the window is identical to before and during the look [identical] · ✓ the day is AL1, nothing pending — the look changed nothing [tag AL1 · chip \"12 changes\" · no not-signed marker · no Publish AL button · signed line \"SIGNED AL1 CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\" · bar \"⚠ ]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-06-s4-c-back-live.png"
+     ]
+    },
+    {
+     "id": "4.d",
+     "did": "the board's plans picker → \"Original\" (board says: ← Back to live copy 👁 Viewing the issued Original — read-only. This is what was sent out; it never changes. Load onto working copy); ✓ Done; Insights on Edit Schedule (the look is still showing)",
+     "saw": "✓ the window is identical to AL1 [identical]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-07-s4-d-board-look-original.png",
+      "dk-08-s4-d-after-board-look.png"
+     ]
+    },
+    {
+     "id": "4.err",
+     "did": "the browser's error list through this scenario",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "s5-dk": {
+   "at": "2026-10-01T13:51:08.728Z",
+   "base": "http://localhost:4211",
+   "phone": false,
+   "table": [
+    {
+     "id": "5.a",
+     "did": "Tuesday (draft): plans picker (Live working copy ●live now — this is what publishes / + Alt Plan) → \"+ Alt Plan\"; on the new live plan (Plan B) the board: Anvil on Rebel's seat (true), CX on Go 1's VL no. 2 (pressed: Cancel this line), Go 2 VL LD 16:05→17:35; picker now (Plan Atap to make it the live day / Plan B ●live now — this is what publishes / + Alt Plan); switched to \"Plan Atap to make it the live day\"; signed and Publish day",
+     "saw": "✓ Plan A is live and is what went out (Rebel on the seat) [romeo] · ✓ Tuesday is Original, nothing pending [tag ORIG · chip \"10 changes\" · no not-signed marker · no Publish AL button · signed line \"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvi\" · bar \"⚠] · ✓ the window shows Plan A: 32 sorties, Tuesday 8, Anvil idle [32 SORTIES | 16 FORMATIONS | 38 AIRCREW FLYING | 33 13 WARNING · Tuesday 8 sorties · 4 formations · 4 issues]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-s5-0-plan-b-built.png",
+      "dk-02-s5-a-planA-published.png",
+      "dk-03-s5-a-planA-published-foot.png"
+     ]
+    },
+    {
+     "id": "5.b",
+     "did": "Tuesday's plans picker → \"Plan Btap to make it the live day\" (the working copy becomes Plan B); Insights on Edit Schedule, View-only Sched and Inputs",
+     "saw": "✓ the edit surface shows Plan B (Anvil on the seat) [shaft] · ✓ Tuesday is pending, marked \"Not yet signed\", AL1 offered [tag ORIG · chip \"3 pending\" · \"Not yet signed\" · button \"Publish AL1\" · signed line \"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvi\" · bar \"⚠ 3 is] · ✓ Insights on Edit Schedule is word for word Plan A [identical] · ✓ …on View-only Sched too [identical] · ✓ …and on Inputs [identical] · ✓ the published face still reads Original [{\"tag\":\"ORIG\",\"sel\":\"Original — as issued\",\"bar\":\"⚠ 4 issues · 2 warning · tap to collapse ▲\"}] · ✓ the window on top at its centre on each",
+     "verdict": "PASS",
+     "pics": [
+      "dk-04-s5-b-planB-switched-day.png",
+      "dk-05-s5-b-planB-switched-insights.png",
+      "dk-06-s5-b-planB-switched-insights-foot.png"
+     ]
+    },
+    {
+     "id": "5.c",
+     "did": "Tuesday signed and \"Publish AL1\"; Insights",
+     "saw": "✓ Tuesday reads AL1, nothing pending [tag AL1 · chip \"16 changes\" · no not-signed marker · no Publish AL button · signed line \"SIGNED AL1 CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\" · bar \"⚠ ] · ✓ Sorties 32 → 31 and Tuesday 8 → 7 sorties [31 SORTIES | 16 FORMATIONS | 38 AIRCREW FLYING | 32 12 WARNING · Tuesday 7 sorties · 4 formations · 3 issues] · ✓ Anvil leaves the idle list, Rebel joins it · ✓ Work hours moved for the men whose landing moved (Ace) [Ace 25h35 → Ace 27h05] · ✓ Hex's flying load 3 → 2 (his line was cancelled) [Hex 3 → Hex 2]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-07-s5-c-AL1-planB.png",
+      "dk-08-s5-c-AL1-planB-foot.png"
+     ]
+    },
+    {
+     "id": "5.c+",
+     "did": "everything that moved in the window at AL1",
+     "saw": "tiles: 32 SORTIES | 16 FORMATIONS | 38 AIRCREW FLYING | 33 13 WARNING → 31 SORTIES | 16 FORMATIONS | 38 AIRCREW FLYING | 32 12 WARNING ;; FLYING LOAD · SORTIES THIS WEEK: −[Hex 3 | Outlaw 2] +[Hex 2 | Saber 2] ;; WORK HOURS · REPORT TO DEBRIEF, THIS WEEK: −[Ace 25h35 | Static 21h20 | Anvil 15h | Hex 15h | Saint 10h15 | Outlaw 9h30 | Rune 6h05 | Rebel 5h25] +[Ace 27h05 | Static 22h50 | Anvil 20h05 | Saint 11h45 | Hex 8h55 | Rune 7h35 | Outlaw 3h25 | Rebel 20 min] ;; NOT ON THE FLYING PROGRAMME · 20 AVAILABLE: −[Anvil] +[Rebel] ;; CONFLICTS BY TYPE: −[Crew rest (<12h) 1] +[] ;; BY DAY: −[Tuesday 8 sorties · 4 formations · 4 issues] +[Tuesday 7 sorties · 4 formations · 3 issues]",
+     "verdict": "RECORDED",
+     "pics": []
+    },
+    {
+     "id": "5.err",
+     "did": "the browser's error list through this scenario",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "s6-dk": {
+   "at": "2026-10-01T13:52:22.950Z",
+   "base": "http://localhost:4211",
+   "phone": false,
+   "table": [
+    {
+     "id": "6.a",
+     "did": "Tuesday signed and Publish day with four shown issues; Insights on View-only Sched",
+     "saw": "✓ the published Tuesday bar reads 4 issues [⚠ 4 issues · 2 warning · tap to collapse ▲] · ✓ Insights: Tuesday 4 issues [Tuesday 8 sorties · 4 formations · 4 issues] · ✓ the tile, the types and the days add up to one number [tile 33 = types 33 = days 33]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-s6-a-orig.png",
+      "dk-02-s6-a-orig-foot.png"
+     ]
+    },
+    {
+     "id": "6.a+",
+     "did": "the figures at Original",
+     "saw": "tile 33 (\"13 WARNING\") · Long work day 2 · \"Tuesday 8 sorties · 4 formations · 4 issues\"",
+     "verdict": "RECORDED",
+     "pics": []
+    },
+    {
+     "id": "6.b",
+     "did": "Edit Schedule: ✕ on \"Static's long work day (freezes on a published face)\" (pressed); reload; Insights on View-only Sched",
+     "saw": "✓ Tuesday is pending (the hide waits) [tag ORIG · chip \"1 pending\" · \"Not yet signed\" · button \"Publish AL1\" · signed line \"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvi\" · bar \"⚠ 3 is] · ✓ the working list shows the line struck [⚠ 3 issues · 2 warning · tap to collapse ▲ | 0:plain[✕] 1:plain[✕] 2:plain[✕] 3:STRUCK[↺]] · ✓ the published Tuesday still reads 4 issues, the line not struck [⚠ 4 issues · 2 warning · tap to collapse ▲ | 0:plain[no button] 1:plain[no button] 2:plain[no button] 3:plain[no button]] · ✓ Insights is word for word what it was [identical]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-03-s6-b-hide-waiting-day.png",
+      "dk-04-s6-b-hide-waiting-viewonly.png",
+      "dk-05-s6-b-hide-waiting-insights-foot.png"
+     ]
+    },
+    {
+     "id": "6.c",
+     "did": "Tuesday signed and \"Publish AL1\"; Insights on View-only Sched",
+     "saw": "✓ the published Tuesday bar reads 3 issues [⚠ 3 issues · 2 warning · tap to collapse ▲] · ✓ the hidden line is still reachable in Tuesday's list, struck out [{\"ix\":3,\"sev\":\"note\",\"hid\":true,\"struck\":true,\"color\":\"rgb(138, 150, 163)\",\"btn\":\"\",\"btnTop\":null,\"text\":\"Long work day Static — Static has a long work day: 13h] · ✓ Insights: Tuesday 3 issues [Tuesday 8 sorties · 4 formations · 3 issues] · ✓ Insights: the week tile one fewer [33 → 32] · ✓ Insights: Long work day one fewer [2 → 1] · ✓ the tile, the types and the days add up to one number [tile 32 = types 32 = days 32] · ✓ nothing else in the window moved [tiles: 32 SORTIES | 16 FORMATIONS | 38 AIRCREW FLYING | 33 13 WARNING → 32 SORTIES | 16 FORMATIONS | 38 AIRCREW FLYING | 32 13 WARNING ;; CONFLICTS BY TYPE: −[L]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-06-s6-c-AL1-viewonly.png",
+      "dk-07-s6-c-AL1-insights.png",
+      "dk-08-s6-c-AL1-insights-foot.png"
+     ]
+    },
+    {
+     "id": "6.d",
+     "did": "Edit Schedule: ↺ on the same line (pressed); reload; Insights on View-only Sched",
+     "saw": "✓ Tuesday is pending again [tag AL1 · chip \"1 pending\" · \"Not yet signed\" · button \"Publish AL2\" · signed line \"SIGNED AL1 CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\" · bar \"⚠ 4 iss] · ✓ the published Tuesday still reads 3 issues [⚠ 3 issues · 2 warning · tap to collapse ▲] · ✓ Insights is word for word what it was at AL1 [identical]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-09-s6-d-unhide-waiting-viewonly.png",
+      "dk-10-s6-d-unhide-waiting-insights-foot.png"
+     ]
+    },
+    {
+     "id": "6.e",
+     "did": "Tuesday signed and \"Publish AL2\"; Insights on View-only Sched",
+     "saw": "✓ the published Tuesday bar reads 4 issues again, nothing struck [⚠ 4 issues · 2 warning · tap to collapse ▲ | 0:plain[no button] 1:plain[no button] 2:plain[no button] 3:plain[no button]] · ✓ Insights is word for word what it was at Original [identical] · ✓ the tile, the types and the days add up to one number [tile 33 = types 33 = days 33]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-11-s6-e-AL2-viewonly.png",
+      "dk-12-s6-e-AL2-insights.png",
+      "dk-13-s6-e-AL2-insights-foot.png"
+     ]
+    },
+    {
+     "id": "6.sum",
+     "did": "Original · hide waiting · AL1 · unhide waiting · AL2",
+     "saw": "tile 33 (\"13 WARNING\") · Long work day 2 · \"Tuesday 8 sorties · 4 formations · 4 issues\" ;; tile 33 (\"13 WARNING\") · Long work day 2 · \"Tuesday 8 sorties · 4 formations · 4 issues\" ;; tile 32 (\"13 WARNING\") · Long work day 1 · \"Tuesday 8 sorties · 4 formations · 3 issues\" ;; tile 32 (\"13 WARNING\") · Long work day 1 · \"Tuesday 8 sorties · 4 formations · 3 issues\" ;; tile 33 (\"13 WARNING\") · Long work day 2 · \"Tuesday 8 sorties · 4 formations · 4 issues\"",
+     "verdict": "RECORDED",
+     "pics": []
+    },
+    {
+     "id": "6.err",
+     "did": "the browser's error list through this scenario",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "s7-dk": {
+   "at": "2026-10-01T13:55:37.207Z",
+   "base": "http://localhost:4211",
+   "phone": false,
+   "table": [
+    {
+     "id": "7.a",
+     "did": "Tuesday signed and Publish day; Insights on Edit Schedule. (The flying-load list names the twelve busiest only, so a one-sortie man's own bar is never drawn — his flying is read off \"Aircrew flying\", the \"+ N more flying\" line, the idle chips and his Work hours.)",
+     "saw": "Aircrew flying 38 · Sorties 32 · Formations 16 · flying-load list \"+ 26 more flying\" · idle: Rebel not listed, Anvil listed · hours Rebel 5h25, Anvil 15h",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-01-s7-a-orig.png",
+      "dk-02-s7-a-orig-foot.png"
+     ]
+    },
+    {
+     "id": "7.b",
+     "did": "board: Rebel's puck dragged off his seat onto the crew list ({\"before\":\"romeo\",\"after\":\"\"}); ✓ Done; Insights",
+     "saw": "✓ the seat is empty [{\"before\":\"romeo\",\"after\":\"\"}] · ✓ Tuesday is pending [tag ORIG · chip \"1 pending\" · \"Not yet signed\" · button \"Publish AL1\" · signed line \"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvi\" · bar \"⚠ 4 is] · ✓ Insights is word for word the issued assignment [identical]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-03-s7-b-board-seat-empty.png",
+      "dk-04-s7-b-removed-insights-foot.png"
+     ]
+    },
+    {
+     "id": "7.c",
+     "did": "board: Rebel dragged from the crew list back onto the same seat ({\"before\":\"\",\"after\":\"romeo\",\"took\":true}); ✓ Done; Insights",
+     "saw": "✓ Rebel is back on the seat [{\"before\":\"\",\"after\":\"romeo\",\"took\":true}] · ✓ the exact put-back clears pending (no pending chip, no Publish AL button) [tag ORIG · chip \"7 changes\" · no not-signed marker · no Publish AL button · signed line \"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvi\" · bar \"⚠ ] · ✓ the sign-offs stand again (no \"Not yet signed\", the signed line reads Original) [tag ORIG · chip \"7 changes\" · no not-signed marker · no Publish AL button · signed line \"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvi\" · bar \"⚠ ] · ✓ Insights unchanged [identical]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-05-s7-c-put-back-day.png"
+     ]
+    },
+    {
+     "id": "7.d",
+     "did": "board: Anvil dragged from the crew list onto Rebel's seat ({\"before\":\"romeo\",\"after\":\"shaft\",\"took\":true}); ✓ Done; Insights",
+     "saw": "✓ Anvil is on the seat [{\"before\":\"romeo\",\"after\":\"shaft\",\"took\":true}] · ✓ Tuesday is pending [tag ORIG · chip \"1 pending\" · \"Not yet signed\" · button \"Publish AL1\" · signed line \"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvi\" · bar \"⚠ 4 is] · ✓ Insights still shows the issued assignment (Anvil idle, Rebel not) [identical]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-06-s7-d-board-replaced.png",
+      "dk-07-s7-d-replaced-waiting-insights-foot.png"
+     ]
+    },
+    {
+     "id": "7.e",
+     "did": "Tuesday signed and \"Publish AL1\"; Insights",
+     "saw": "✓ Tuesday reads AL1, nothing pending [tag AL1 · chip \"13 changes\" · no not-signed marker · no Publish AL button · signed line \"SIGNED AL1 CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\" · bar \"⚠ ] · ✓ the two men swap on the idle list · ✓ their Work hours swap direction (Rebel down, Anvil up) [Rebel 5h25 → Rebel 20 min ; Anvil 15h → Anvil 20h05] · ✓ Aircrew flying stays (one in, one out) [38 → 38] · ✓ Sorties and Formations stay fixed [32 SORTIES | 16 FORMATIONS | 38 AIRCREW FLYING | 33 13 WARNING] · ✓ nothing else moved [WORK HOURS · REPORT TO DEBRIEF, THIS WEEK: −[Anvil 15h | Rebel 5h25] +[Anvil 20h05 | Rebel 20 min] ;; NOT ON THE FLYING PROGRAMME · 20 AVAILABLE: −[Anvil] +[Reb]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-08-s7-e-AL1.png",
+      "dk-09-s7-e-AL1-foot.png"
+     ]
+    },
+    {
+     "id": "7.sum",
+     "did": "Original · removed (waiting) · put back · replaced (waiting) · AL1",
+     "saw": "Aircrew flying 38 · Sorties 32 · Formations 16 · flying-load list \"+ 26 more flying\" · idle: Rebel not listed, Anvil listed · hours Rebel 5h25, Anvil 15h ;; Aircrew flying 38 · Sorties 32 · Formations 16 · flying-load list \"+ 26 more flying\" · idle: Rebel not listed, Anvil listed · hours Rebel 5h25, Anvil 15h ;; Aircrew flying 38 · Sorties 32 · Formations 16 · flying-load list \"+ 26 more flying\" · idle: Rebel not listed, Anvil listed · hours Rebel 5h25, Anvil 15h ;; Aircrew flying 38 · Sorties 32 · Formations 16 · flying-load list \"+ 26 more flying\" · idle: Rebel not listed, Anvil listed · hours Rebel 5h25, Anvil 15h ;; Aircrew flying 38 · Sorties 32 · Formations 16 · flying-load list \"+ 26 more flying\" · idle: Rebel listed, Anvil not listed · hours Rebel 20 min, Anvil 20h05",
+     "verdict": "RECORDED",
+     "pics": []
+    },
+    {
+     "id": "7.err",
+     "did": "the browser's error list through this scenario",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "s8-dk": {
+   "at": "2026-10-01T13:54:26.124Z",
+   "base": "http://localhost:4211",
+   "phone": false,
+   "table": [
+    {
+     "id": "8.a",
+     "did": "Tuesday signed and Publish day; Insights on Edit Schedule",
+     "saw": "Sorties 32 · Formations 16 · Aircrew flying 38 · Hex 3 · \"Tuesday 8 sorties · 4 formations · 4 issues\"",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-01-s8-a-orig.png",
+      "dk-02-s8-a-orig-foot.png"
+     ]
+    },
+    {
+     "id": "8.b",
+     "did": "board: CX on Go 1's VL no. 2 line with reason WX (pressed: Cancel this line); CX on both lines of Go 2's RU formation (pressed: Cancel this line; pressed: Cancel this line); ✓ Done; Insights; reload; Insights",
+     "saw": "✓ the working copy holds a cancelled line and a cancelled formation [{\"line\":true,\"form\":true}] · ✓ Tuesday is pending [tag ORIG · chip \"4 pending\" · \"Not yet signed\" · button \"Publish AL1\" · signed line \"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvi\" · bar \"⚠ 3 is] · ✓ nothing in the window moved [identical] · ✓ after the reload Tuesday is still pending [tag ORIG · chip \"4 pending\" · \"Not yet signed\" · button \"Publish AL1\" · signed line \"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvi\" · bar \"⚠ 3 is] · ✓ after the reload the window is still the same [identical]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-03-s8-b-board-cancelled.png",
+      "dk-04-s8-b-waiting-insights.png",
+      "dk-05-s8-b-waiting-insights-foot.png"
+     ]
+    },
+    {
+     "id": "8.c",
+     "did": "Tuesday signed and \"Publish AL1\"; Insights",
+     "saw": "✓ Tuesday reads AL1, nothing pending [tag AL1 · chip \"13 changes\" · no not-signed marker · no Publish AL button · signed line \"SIGNED AL1 CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\" · bar \"⚠ ] · ✓ Sorties 32 → 29 (one line + a two-ship) [29] · ✓ Formations 16 → 15 (only the whole formation) [15] · ✓ By day: Tuesday 5 sorties · 3 formations [Tuesday 5 sorties · 3 formations · 3 issues] · ✓ the week tiles equal the sum of the days [days: 29 sorties, 15 formations] · ✓ Hex's flying load 3 → 2 [Hex 3 → Hex 2] · ✓ the four who flew only that formation join the idle list · ✓ Aircrew flying 38 → 34 [34]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-06-s8-c-AL1.png",
+      "dk-07-s8-c-AL1-foot.png"
+     ]
+    },
+    {
+     "id": "8.c+",
+     "did": "everything that moved in the window at AL1",
+     "saw": "tiles: 32 SORTIES | 16 FORMATIONS | 38 AIRCREW FLYING | 33 13 WARNING → 29 SORTIES | 15 FORMATIONS | 34 AIRCREW FLYING | 32 12 WARNING ;; FLYING LOAD · SORTIES THIS WEEK: −[Hex 3 | Outlaw 2 | + 26 more flying] +[Hex 2 | Saber 2 | + 22 more flying] ;; WORK HOURS · REPORT TO DEBRIEF, THIS WEEK: −[Hex 15h | Outlaw 9h30 | Vapor 7h35 | Rebel 5h25 | Cinder 5h05 | Marlin 5h05] +[Hex 8h55 | Outlaw 3h25 | Vapor 2h30 | Rebel 20 min] ;; NOT ON THE FLYING PROGRAMME · 20 AVAILABLE: −[Anvil | Cinch | Cobra | Comet | Diesel | Forge | Ghost | Grit | Havoc | Hunter | Jester | Reaper | Recon | Ridge | Ryder | Scribe | Sidewinder | Talisman | Vandal | Zulu] +[] ;; CONFLICTS BY TYPE: −[Crew rest (<12h) 1] +[] ;; BY DAY: −[Tuesday 8 sorties · 4 formations · 4 issues] +[Tuesday 5 sorties · 3 formations · 3 issues] ;; NOT ON THE FLYING PROGRAMME · 24 AVAILABLE: −[] +[Anvil | Cinch | Cinder | Cobra | Comet | Di",
+     "verdict": "RECORDED",
+     "pics": []
+    },
+    {
+     "id": "8.err",
+     "did": "the browser's error list through this scenario",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "s9-dk": {
+   "at": "2026-10-01T13:59:08.829Z",
+   "base": "http://localhost:4211",
+   "phone": false,
+   "table": [
+    {
+     "id": "9.a",
+     "did": "Tuesday signed and Publish day; Insights on Edit Schedule (Go 2's RU formation: T/O 14:40, LD 16:05)",
+     "saw": "Rebel 5h25, Cinder 5h05, Vapor 7h35, Marlin 5h05 · issues tile 33 · Long work day 2 · \"Tuesday 8 sorties · 4 formations · 4 issues\"",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-01-s9-a-orig.png",
+      "dk-02-s9-a-orig-foot.png"
+     ]
+    },
+    {
+     "id": "9.b",
+     "did": "board: Go 2 RU T/O 14:40→16:40 (two hours) and LD 16:05→18:05; ✓ Done; reload; Insights",
+     "saw": "✓ the working day shows the new time [16:40–18:05] · ✓ Tuesday is pending, before and after the reload [tag ORIG · chip \"2 pending\" · \"Not yet signed\" · button \"Publish AL1\" · signed line \"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvi\" · bar \"⚠ 4 is] · ✓ Insights keeps the issued Work hours [Rebel 5h25, Cinder 5h05, Vapor 7h35, Marlin 5h05 → Rebel 5h25, Cinder 5h05, Vapor 7h35, Marlin 5h05] · ✓ Insights keeps the issued warning figures [33 · Tuesday 8 sorties · 4 formations · 4 issues] · ✓ the whole window is word for word the same [identical]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-03-s9-b-board-time-moved.png",
+      "dk-04-s9-b-reloaded-day.png",
+      "dk-05-s9-b-waiting-insights.png",
+      "dk-06-s9-b-waiting-insights-foot.png"
+     ]
+    },
+    {
+     "id": "9.b+",
+     "did": "the working copy beside it while the change waits",
+     "saw": "Edit Schedule Tuesday bar \"⚠ 4 issues · 2 warning · tap to review ▼\" (working list: ⚠ 4 issues · 2 warning · tap to collapse ▲ | 0:plain[✕] 1:plain[✕] 2:plain[✕] 3:plain[✕]) · published face on View-only \"⚠ 4 issues · 2 warning · tap to collapse ▲\"",
+     "verdict": "RECORDED",
+     "pics": []
+    },
+    {
+     "id": "9.c",
+     "did": "Tuesday signed and \"Publish AL1\"; Insights",
+     "saw": "✓ Tuesday reads AL1, nothing pending [tag AL1 · chip \"12 changes\" · no not-signed marker · no Publish AL button · signed line \"SIGNED AL1 CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\" · bar \"⚠ ] · ✓ the four men's Work hours all moved [Rebel 5h25, Cinder 5h05, Vapor 7h35, Marlin 5h05 → Rebel 7h25, Cinder 7h05, Vapor 9h35, Marlin 7h05] · ✓ Insights Tuesday issues = the published Tuesday bar [Tuesday 8 sorties · 4 formations · 4 issues / ⚠ 4 issues · 2 warning · tap to collapse ▲] · ✓ the issues tile = the sum of the types [33 / 33]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-07-s9-c-AL1.png",
+      "dk-08-s9-c-AL1-foot.png"
+     ]
+    },
+    {
+     "id": "9.c+",
+     "did": "everything that moved in the window at AL1 (hours and warnings together)",
+     "saw": "WORK HOURS · REPORT TO DEBRIEF, THIS WEEK: −[Vapor 7h35 | Rebel 5h25 | Cinder 5h05 | Marlin 5h05] +[Vapor 9h35 | Rebel 7h25 | Cinder 7h05 | Marlin 7h05]",
+     "verdict": "RECORDED",
+     "pics": []
+    },
+    {
+     "id": "9.d",
+     "did": "board: Go 2 VL T/O 14:40→12:40 and LD 16:05→14:05 (Tuesday now AL1 with a change waiting); ✓ Done; reload; Insights",
+     "saw": "✓ Tuesday is pending, AL2 offered [tag AL1 · chip \"2 pending\" · \"Not yet signed\" · button \"Publish AL2\" · signed line \"SIGNED AL1 CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\" · bar \"⚠ 5 iss] · ✓ the window is word for word what it was at AL1 [identical] · ✓ Static's hours unchanged [Static 21h20] · ✓ the published face still reads the same count [⚠ 4 issues · 2 warning · tap to collapse ▲ / ⚠ 4 issues · 2 warning · tap to review ▼]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-10-s9-d-second-move-day.png",
+      "dk-11-s9-d-second-move-waiting-static-bar.png"
+     ]
+    },
+    {
+     "id": "9.d+",
+     "did": "the working copy beside it",
+     "saw": "Edit Schedule Tuesday bar \"⚠ 5 issues · 3 warning · tap to collapse ▲\" · working list: Conflict — two events at once Static — OPS-O duty & VL SAT c | Conflict — two events at once Saint — VL SAT & APPOINTMENT c | Crew rest (<12h) Outlaw — Crew rest breach — Monday landed 2 | No time for the flight brief Static — No time for the VL SAT | No time for the flight debrief Saint — Not enough time to at",
+     "verdict": "RECORDED",
+     "pics": []
+    },
+    {
+     "id": "9.e",
+     "did": "Tuesday signed and \"Publish AL2\"; Insights",
+     "saw": "✓ Tuesday reads AL2, nothing pending [tag AL2 · chip \"19 changes\" · no not-signed marker · no Publish AL button · signed line \"SIGNED AL2 CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\" · bar \"⚠ ] · ✓ Static's Work hours moved [Static 21h20 → Static 19h20] · ✓ the warning figures moved in the same step [Tuesday 8 sorties · 4 formations · 4 issues → Tuesday 8 sorties · 4 formations · 5 issues; Long work day 2 → 1] · ✓ Insights Tuesday issues = the published Tuesday bar [Tuesday 8 sorties · 4 formations · 5 issues / ⚠ 5 issues · 3 warning · tap to review ▼] · ✓ the issues tile = the sum of the types [34 / 34]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-09-s9-c-AL1-rebel-bar.png",
+      "dk-12-s9-e-AL2-static-bar.png",
+      "dk-13-s9-e-AL2-foot.png"
+     ]
+    },
+    {
+     "id": "9.e+",
+     "did": "everything that moved in the window at AL2",
+     "saw": "tiles: 32 SORTIES | 16 FORMATIONS | 38 AIRCREW FLYING | 33 13 WARNING → 32 SORTIES | 16 FORMATIONS | 38 AIRCREW FLYING | 34 14 WARNING ;; WORK HOURS · REPORT TO DEBRIEF, THIS WEEK: −[Ace 25h35 | Static 21h20 | Saint 10h15 | Rune 6h05] +[Ace 23h35 | Static 19h20 | Saint 8h15 | Rune 4h05] ;; CONFLICTS BY TYPE: −[Conflict — two events at once 6 | Long work day 2 | No time for the flight debrief 2] +[Conflict — two events at once 7 | No time for the flight debrief 3 | Long work day 1] ;; BY DAY: −[Tuesday 8 sorties · 4 formations · 4 issues] +[Tuesday 8 sorties · 4 formations · 5 issues]",
+     "verdict": "RECORDED",
+     "pics": []
+    },
+    {
+     "id": "9.err",
+     "did": "the browser's error list through this scenario",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "s10-dk": {
+   "at": "2026-10-01T14:01:48.020Z",
+   "base": "http://localhost:4211",
+   "phone": false,
+   "table": [
+    {
+     "id": "10.a",
+     "did": "Tuesday signed and Publish day; Insights on Edit Schedule",
+     "saw": "✓ Vandal has no Work-hours bar [(none)] · ✓ Zulu has no Work-hours bar [(none)]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-s10-a-orig.png"
+     ]
+    },
+    {
+     "id": "10.b",
+     "did": "board: \"+ Row\" on the 1st-wave duties → RSO 08:00–11:00, Vandal dragged on (dropped); \"+ Item\" on Ground → RANGE BRIEF 13:00–15:30, Zulu dragged on (dropped); ✓ Done; Insights",
+     "saw": "✓ the board holds both rows with their people [{\"duty\":{\"role\":\"RSO\",\"id\":\"split\",\"str\":\"08:00\",\"end\":\"11:00\",\"rid\":\"rmuplrfprg5c6mw\"},\"ground\":{\"prog\":\"RANGE BRIEF\",\"str\":\"13:00\",\"end\":\"15:30\",\"who\":\"bullet] · ✓ Tuesday is pending [tag ORIG · chip \"2 pending\" · \"Not yet signed\" · button \"Publish AL1\" · signed line \"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvi\" · bar \"⚠ 4 is] · ✓ the window is word for word the issued one [identical] · ✓ still no Work-hours bar for Vandal or Zulu · ✓ the published face still reads Original [{\"tag\":\"ORIG\",\"sel\":\"Original — as issued\",\"bar\":\"⚠ 4 issues · 2 warning · tap to review ▼\"}]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-02-s10-b-board-duty-row.png",
+      "dk-03-s10-b-board-ground-row.png",
+      "dk-04-s10-b-waiting-insights-foot-of-hours.png"
+     ]
+    },
+    {
+     "id": "10.c",
+     "did": "Tuesday signed and \"Publish AL1\"; Insights",
+     "saw": "✓ Tuesday reads AL1, nothing pending [tag AL1 · chip \"20 changes\" · no not-signed marker · no Publish AL button · signed line \"SIGNED AL1 CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\" · bar \"⚠ ] · ✓ Vandal appears with 3h (08:00–11:00) [Vandal 3h] · ✓ Zulu appears with 2h30 (13:00–15:30) [Zulu 2h30] · ✓ Insights Tuesday issues = the published Tuesday bar [Tuesday 8 sorties · 4 formations · 4 issues / ⚠ 4 issues · 2 warning · tap to review ▼] · ✓ the issues tile = the sum of the types [33 / 33] · ✓ both men still listed as not flying (a duty is not a sortie)",
+     "verdict": "PASS",
+     "pics": [
+      "dk-05-s10-c-AL1-vandal-zulu-bars.png",
+      "dk-06-s10-c-AL1-foot.png"
+     ]
+    },
+    {
+     "id": "10.c+",
+     "did": "everything that moved in the window at AL1",
+     "saw": "WORK HOURS · REPORT TO DEBRIEF, THIS WEEK: −[] +[Vandal 3h | Zulu 2h30]",
+     "verdict": "RECORDED",
+     "pics": []
+    },
+    {
+     "id": "10.err",
+     "did": "the browser's error list through this scenario",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "s11-dk": {
+   "at": "2026-10-01T14:04:14.787Z",
+   "base": "http://localhost:4211",
+   "phone": false,
+   "table": [
+    {
+     "id": "11.a",
+     "did": "Tuesday signed and Publish day; Insights on Edit Schedule",
+     "saw": "Rebel 5h25, Anvil 15h · tile 33 · On leave + flying 1 · \"Tuesday 8 sorties · 4 formations · 4 issues\" · Rebel idle: false",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-01-s11-a-orig.png",
+      "dk-02-s11-a-orig-foot.png"
+     ]
+    },
+    {
+     "id": "11.b",
+     "did": "Inputs → Add input: LL for Rebel, Tue 14 Jul, all day ({\"asked\":[],\"clash\":false,\"made\":1}); Insights over Inputs",
+     "saw": "✓ the request was made [{\"asked\":[],\"clash\":false,\"iids\":[\"imuplu64zy5ta69\"],\"iid\":\"imuplu64zy5ta69\"}] · ✓ Tuesday shows pending and \"Not yet signed\" [tag ORIG · chip \"1 pending\" · \"Not yet signed\" · button \"Publish AL1\" · signed line \"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvi\" · bar \"⚠ 5 is] · ✓ the window is word for word the issued one [identical] · ✓ the window on top at its centre over Inputs · ✓ the published Tuesday unchanged [{\"tag\":\"ORIG\",\"sel\":\"Original — as issued\",\"bar\":\"⚠ 4 issues · 2 warning · tap to collapse ▲\"}]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-03-s11-b-inputs-leave-filed.png",
+      "dk-04-s11-b-leave-waiting-insights-over-inputs-foot.png",
+      "dk-05-s11-b-leave-waiting-day.png"
+     ]
+    },
+    {
+     "id": "11.c",
+     "did": "Inputs → Add input: Duty for Anvil, Tue 14 Jul 09:00–11:30 (made: true); Insights over Inputs",
+     "saw": "✓ the request was made [imupluat0fv2rzk] · ✓ Tuesday pending [tag ORIG · chip \"2 pending\" · \"Not yet signed\" · button \"Publish AL1\" · signed line \"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvi\" · bar \"⚠ 5 is] · ✓ the window is word for word the issued one (Anvil's hours unchanged) [identical]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-06-s11-c-inputs-duty-filed.png"
+     ]
+    },
+    {
+     "id": "11.d",
+     "did": "Inputs: ✕ on Rebel's leave row (gone) — the leave is abandoned before publication; Insights",
+     "saw": "✓ the leave is gone from the list [gone] · ✓ Tuesday still pending (the duty request waits) [tag ORIG · chip \"1 pending\" · \"Not yet signed\" · button \"Publish AL1\" · signed line \"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvi\" · bar \"⚠ 4 is] · ✓ the window still the issued one [identical]",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "11.e",
+     "did": "Tuesday signed and \"Publish AL1\"; Insights",
+     "saw": "✓ Tuesday reads AL1, nothing pending [tag AL1 · chip \"13 changes\" · no not-signed marker · no Publish AL button · signed line \"SIGNED AL1 CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\" · bar \"⚠ ] · ✓ the abandoned leave never reaches the window (On leave + flying unchanged, Rebel's hours unchanged) [Rebel 5h25, Anvil 17h30 · tile 33 · On leave + flying 1 · \"Tuesday 8 sorties · 4 formations · 4 issues\" · Rebel idle: false] · ✓ Insights Tuesday issues = the published Tuesday bar [Tuesday 8 sorties · 4 formations · 4 issues / ⚠ 4 issues · 2 warning · tap to review ▼] · ✓ the issues tile = the sum of the types [33 / 33]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-07-s11-e-AL1-anvil-bar.png",
+      "dk-08-s11-e-AL1-foot.png"
+     ]
+    },
+    {
+     "id": "11.e+",
+     "did": "what moved in the window at AL1 (the final state: the duty request only)",
+     "saw": "WORK HOURS · REPORT TO DEBRIEF, THIS WEEK: −[Anvil 15h] +[Anvil 17h30] · Anvil Anvil 15h → Anvil 17h30",
+     "verdict": "RECORDED",
+     "pics": []
+    },
+    {
+     "id": "11.f",
+     "did": "round trip: LL for Rebel filed again (pending: \"1 pending\"), then ✕ on its row (gone); Insights",
+     "saw": "✓ filing it made Tuesday pending [tag AL1 · chip \"1 pending\" · \"Not yet signed\" · button \"Publish AL2\" · signed line \"SIGNED AL1 CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\" · bar \"⚠ 5 iss] · ✓ the window did not move while it waited [identical] · ✓ after the delete Tuesday reads zero pending, AL1, no \"Not yet signed\" [tag AL1 · chip \"15 changes\" · no not-signed marker · no Publish AL button · signed line \"SIGNED AL1 CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\" · bar \"⚠ ] · ✓ the window is still AL1's [identical]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-09-s11-f-round-trip-day.png"
+     ]
+    },
+    {
+     "id": "11.g",
+     "did": "LL for Rebel filed once more (made: 1); it waits (\"1 pending\"); Tuesday signed and \"Publish AL2\"; Insights",
+     "saw": "✓ while it waited the window did not move [identical] · ✓ Tuesday reads AL2, nothing pending [tag AL2 · chip \"21 changes\" · no not-signed marker · no Publish AL button · signed line \"SIGNED AL2 CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\" · bar \"⚠ ] · ✓ On leave + flying one more [1 → 2] · ✓ Insights Tuesday issues = the published Tuesday bar [Tuesday 8 sorties · 4 formations · 5 issues / ⚠ 5 issues · 3 warning · tap to collapse ▲] · ✓ the published list names Rebel's leave [Conflict — two events at once Saint — VL SAT & APP | On leave + flying Rebel — On leave but planned to  | Crew rest (<12h) Outlaw — Crew rest breach — Monda | N] · ✓ the issues tile = the sum of the types [34 / 34]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-10-s11-g-AL2-leave-issued-foot.png",
+      "dk-11-s11-g-AL2-viewonly.png"
+     ]
+    },
+    {
+     "id": "11.g+",
+     "did": "what moved in the window at AL2",
+     "saw": "tiles: 32 SORTIES | 16 FORMATIONS | 38 AIRCREW FLYING | 33 13 WARNING → 32 SORTIES | 16 FORMATIONS | 38 AIRCREW FLYING | 34 14 WARNING ;; CONFLICTS BY TYPE: −[On leave + flying 1] +[On leave + flying 2] ;; BY DAY: −[Tuesday 8 sorties · 4 formations · 4 issues] +[Tuesday 8 sorties · 4 formations · 5 issues]",
+     "verdict": "RECORDED",
+     "pics": []
+    },
+    {
+     "id": "11.sum",
+     "did": "Original · leave waiting · + duty waiting · leave deleted · AL1 · round trip · AL2 (leave issued)",
+     "saw": "Rebel 5h25, Anvil 15h · tile 33 · On leave + flying 1 · \"Tuesday 8 sorties · 4 formations · 4 issues\" · Rebel idle: false ;; Rebel 5h25, Anvil 15h · tile 33 · On leave + flying 1 · \"Tuesday 8 sorties · 4 formations · 4 issues\" · Rebel idle: false ;; Rebel 5h25, Anvil 15h · tile 33 · On leave + flying 1 · \"Tuesday 8 sorties · 4 formations · 4 issues\" · Rebel idle: false ;; Rebel 5h25, Anvil 15h · tile 33 · On leave + flying 1 · \"Tuesday 8 sorties · 4 formations · 4 issues\" · Rebel idle: false ;; Rebel 5h25, Anvil 17h30 · tile 33 · On leave + flying 1 · \"Tuesday 8 sorties · 4 formations · 4 issues\" · Rebel idle: false ;; Rebel 5h25, Anvil 17h30 · tile 33 · On leave + flying 1 · \"Tuesday 8 sorties · 4 formations · 4 issues\" · Rebel idle: false ;; Rebel 5h25, Anvil 17h30 · tile 34 · On leave + flying 2 · \"Tuesday 8 sorties · 4 formations · 5 issues\" · Rebel idle: false",
+     "verdict": "RECORDED",
+     "pics": []
+    },
+    {
+     "id": "11.err",
+     "did": "the browser's error list through this scenario",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "s12-dk": {
+   "at": "2026-10-01T14:04:50.331Z",
+   "base": "http://localhost:4211",
+   "phone": false,
+   "table": [
+    {
+     "id": "12.a",
+     "did": "Tuesday signed and Publish day, then CX on one Tuesday line left waiting (pressed: Cancel this line); Wednesday left a draft; Insights",
+     "saw": "✓ Tuesday pending, Wednesday draft [tag ORIG · chip \"1 pending\" · \"Not yet signed\" · button \"Publish AL1\" · signed line \"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvi\" · bar \"⚠ 3 is] · ✓ the window still counts Tuesday as issued (8 sorties) [Tuesday 8 sorties · 4 formations · 4 issues] · ✓ Wednesday reads 8 sorties · 4 formations [Wednesday 8 sorties · 4 formations · 7 issues]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-s12-a-start.png",
+      "dk-02-s12-a-start-foot.png"
+     ]
+    },
+    {
+     "id": "12.b",
+     "did": "Wednesday (draft) board: Anvil dragged onto Nomad's seat ({\"before\":\"pike\",\"after\":\"shaft\",\"took\":true}); ✓ Done; Insights",
+     "saw": "✓ the seat took him [{\"before\":\"pike\",\"after\":\"shaft\",\"took\":true}] · ✓ Anvil leaves the idle list at once · ✓ the window moved [WORK HOURS · REPORT TO DEBRIEF, THIS WEEK: −[Anvil 15h | Nomad 4h25] +[Anvil 17h25] ;; NOT ON THE FLYING PROGRAMME · 20 AVAILABLE: −[Anvil] +[Nomad] ;; CONFLICT] · ✓ Tuesday's row did not move [Tuesday 8 sorties · 4 formations · 4 issues]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-03-s12-b-wed-seat-foot.png"
+     ]
+    },
+    {
+     "id": "12.c",
+     "did": "Wednesday board: CX on both lines of Go 1's RU formation (pressed: Cancel this line; pressed: Cancel this line); ✓ Done; Insights",
+     "saw": "✓ Sorties two fewer at once [32 → 30] · ✓ Formations one fewer at once [16 → 15] · ✓ By day: Wednesday 6 sorties · 3 formations [Wednesday 6 sorties · 3 formations · 6 issues] · ✓ Tuesday's row did not move [Tuesday 8 sorties · 4 formations · 4 issues]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-04-s12-c-wed-board-cancelled.png",
+      "dk-05-s12-c-wed-formation-cancelled.png",
+      "dk-06-s12-c-wed-formation-cancelled-foot.png"
+     ]
+    },
+    {
+     "id": "12.d",
+     "did": "Wednesday board: Go 2 VL T/O 13:00→15:00, LD 14:25→16:25; ✓ Done; Insights",
+     "saw": "✓ Work hours moved at once for the men on that formation (Trident) [Trident 6h55 → Trident 8h55] · ✓ Tuesday's row did not move [Tuesday 8 sorties · 4 formations · 4 issues]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-07-s12-d-wed-time-moved-trident-bar.png"
+     ]
+    },
+    {
+     "id": "12.d+",
+     "did": "what moved in the window with the time",
+     "saw": "tiles: 30 SORTIES | 15 FORMATIONS | 35 AIRCREW FLYING | 32 13 WARNING → 30 SORTIES | 15 FORMATIONS | 35 AIRCREW FLYING | 30 13 WARNING ;; WORK HOURS · REPORT TO DEBRIEF, THIS WEEK: −[Bolt 27h25 | Relay 16h10 | Wisp 7h50 | Trident 6h55] +[Bolt 29h25 | Relay 18h10 | Wisp 9h50 | Trident 8h55] ;; CONFLICTS BY TYPE: −[Tight turn 2] +[] ;; BY DAY: −[Wednesday 6 sorties · 3 formations · 6 issues] +[Wednesday 6 sorties · 3 formations · 4 issues]",
+     "verdict": "RECORDED",
+     "pics": []
+    },
+    {
+     "id": "12.e",
+     "did": "Wednesday's issues list on Edit Schedule: ✕ on \"Conflict — two events at once Anvil — SXO duty & RU BFM clas\" (pressed); Insights",
+     "saw": "✓ the line is struck in Wednesday's list [⚠ 3 issues · 1 warning · tap to collapse ▲ | 0:STRUCK[↺] 1:plain[✕] 2:plain[✕] 3:plain[✕]] · ✓ Wednesday one issue fewer at once [Wednesday 6 sorties · 3 formations · 4 issues → Wednesday 6 sorties · 3 formations · 3 issues] · ✓ the week tile one fewer [30 → 29] · ✓ Insights Wednesday = Wednesday's own bar [Wednesday 6 sorties · 3 formations · 3 issues / ⚠ 3 issues · 1 warning · tap to collapse ▲] · ✓ the tile = the sum of the types [29 / 29] · ✓ Tuesday's row did not move [Tuesday 8 sorties · 4 formations · 4 issues]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-08-s12-e-wed-hide-day.png",
+      "dk-09-s12-e-wed-hidden-foot.png"
+     ]
+    },
+    {
+     "id": "12.f",
+     "did": "Wednesday signed and \"Publish day\"; Insights",
+     "saw": "✓ Wednesday reads Original [tag ORIG · chip \"11 changes\" · no not-signed marker · no Publish AL button · signed line \"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvi\" · bar \"⚠] · ✓ the window is word for word what it was before publishing Wednesday [identical] · ✓ Tuesday is still pending and still counted as issued (8 sorties) [1 pending · Tuesday 8 sorties · 4 formations · 4 issues]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-10-s12-f-wed-published.png",
+      "dk-11-s12-f-wed-published-foot.png"
+     ]
+    },
+    {
+     "id": "12.sum",
+     "did": "start · seat · formation CX · time · hide · Wednesday published",
+     "saw": "Sorties 32 · Formations 16 · Aircrew 38 · issues 33 · \"Tuesday 8 sorties · 4 formations · 4 issues\" · \"Wednesday 8 sorties · 4 formations · 7 issues\" · Anvil idle true ;; Sorties 32 · Formations 16 · Aircrew 38 · issues 33 · \"Tuesday 8 sorties · 4 formations · 4 issues\" · \"Wednesday 8 sorties · 4 formations · 7 issues\" · Anvil idle false ;; Sorties 30 · Formations 15 · Aircrew 35 · issues 32 · \"Tuesday 8 sorties · 4 formations · 4 issues\" · \"Wednesday 6 sorties · 3 formations · 6 issues\" · Anvil idle false ;; Sorties 30 · Formations 15 · Aircrew 35 · issues 30 · \"Tuesday 8 sorties · 4 formations · 4 issues\" · \"Wednesday 6 sorties · 3 formations · 4 issues\" · Anvil idle false ;; Sorties 30 · Formations 15 · Aircrew 35 · issues 29 · \"Tuesday 8 sorties · 4 formations · 4 issues\" · \"Wednesday 6 sorties · 3 formations · 3 issues\" · Anvil idle false ;; Sorties 30 · Formations 15 · Aircrew 35 · issues 29 · \"Tuesday 8 sorties · 4 formations · 4 issues\" · \"Wednesday 6 sorties · 3 formations · 3 issues\" · Anvil idle false",
+     "verdict": "RECORDED",
+     "pics": []
+    },
+    {
+     "id": "12.err",
+     "did": "the browser's error list through this scenario",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "s13a-dk": {
+   "at": "2026-10-01T14:05:08.057Z",
+   "base": "http://localhost:4211",
+   "phone": false,
+   "table": [
+    {
+     "id": "13.admin.a",
+     "did": "admin: Tuesday Publish day; board: Anvil on Rebel's seat (true), RU T/O 14:40→16:40; ✓ Done (3 pending); View-only Sched at \"Original — as issued\"; Insights",
+     "saw": "✓ the page shows the issued day (Rebel, no Anvil, no 16:40) [{\"anvil\":false,\"rebel\":true,\"cls\":\"day  dok issued\",\"txt\":false,\"tag\":\"ORIG\",\"marks\":[]}] · ✓ the window counts the issued day (Anvil idle, Rebel not)",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-s13-admin-a-issued.png",
+      "dk-02-s13-admin-a-issued-foot.png"
+     ]
+    },
+    {
+     "id": "13.admin.b",
+     "did": "View-only Sched: Tuesday's version select → \"Working draft — not issued\"; Insights beside it",
+     "saw": "✓ the day visibly shows the working draft (Anvil on the seat, 16:40) [{\"anvil\":true,\"rebel\":false,\"cls\":\"day  dok\",\"txt\":true,\"tag\":\"ORIG\",\"marks\":[\"Not yet signed\",\"3 pending\"]}] · ✓ the window is on top at its centre · ✓ the window is word for word what it was — still the Original [identical] · ✓ Anvil still idle in the window, Rebel still flying · ✓ Rebel's Work hours unchanged [Rebel 5h25]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-03-s13-admin-b-working-draft-day.png",
+      "dk-04-s13-admin-b-working-draft-insights.png",
+      "dk-05-s13-admin-b-working-draft-insights-foot.png"
+     ]
+    },
+    {
+     "id": "13.admin.c",
+     "did": "the select back to \"Original — as issued\"; Insights",
+     "saw": "✓ no Insights text changed [identical]",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "13a.err",
+     "did": "the browser's error list through this scenario",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "s13m-dk": {
+   "at": "2026-10-01T14:05:26.330Z",
+   "base": "http://localhost:4211",
+   "phone": false,
+   "table": [
+    {
+     "id": "13.admin.a",
+     "did": "admin: Tuesday Publish day; board: Anvil on Rebel's seat (true), RU T/O 14:40→16:40; ✓ Done (3 pending); View-only Sched at \"Original — as issued\"; Insights",
+     "saw": "✓ the page shows the issued day (Rebel, no Anvil, no 16:40) [{\"anvil\":false,\"rebel\":true,\"cls\":\"day  dok issued\",\"txt\":false,\"tag\":\"ORIG\",\"marks\":[]}] · ✓ the window counts the issued day (Anvil idle, Rebel not)",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-s13-admin-a-issued.png",
+      "dk-02-s13-admin-a-issued-foot.png"
+     ]
+    },
+    {
+     "id": "13.admin.b",
+     "did": "View-only Sched: Tuesday's version select → \"Working draft — not issued\"; Insights beside it",
+     "saw": "✓ the day visibly shows the working draft (Anvil on the seat, 16:40) [{\"anvil\":true,\"rebel\":false,\"cls\":\"day  dok\",\"txt\":true,\"tag\":\"ORIG\",\"marks\":[\"Not yet signed\",\"3 pending\"]}] · ✓ the window is on top at its centre · ✓ the window is word for word what it was — still the Original [identical] · ✓ Anvil still idle in the window, Rebel still flying · ✓ Rebel's Work hours unchanged [Rebel 5h25]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-03-s13-admin-b-working-draft-day.png",
+      "dk-04-s13-admin-b-working-draft-insights.png",
+      "dk-05-s13-admin-b-working-draft-insights-foot.png"
+     ]
+    },
+    {
+     "id": "13.admin.c",
+     "did": "the select back to \"Original — as issued\"; Insights",
+     "saw": "✓ no Insights text changed [identical]",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "13a.err",
+     "did": "the browser's error list through this scenario",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "13.member.a",
+     "did": "admin: Tuesday Publish day; board: Anvil on Rebel's seat (true), RU T/O 14:40→16:40; ✓ Done (3 pending); reload, signed in as the member (Ranger); View-only Sched at \"Original — as issued\"; Insights",
+     "saw": "✓ the page shows the issued day (Rebel, no Anvil, no 16:40) [{\"anvil\":false,\"rebel\":true,\"cls\":\"day  dok issued\",\"txt\":false,\"tag\":\"ORIG\",\"marks\":[]}] · ✓ the window counts the issued day (Anvil idle, Rebel not)",
+     "verdict": "PASS",
+     "pics": [
+      "dk-06-s13-member-a-issued.png",
+      "dk-07-s13-member-a-issued-foot.png"
+     ]
+    },
+    {
+     "id": "13.member.b",
+     "did": "View-only Sched: Tuesday's version select → \"Working draft — not issued\"; Insights beside it",
+     "saw": "✓ the day visibly shows the working draft (Anvil on the seat, 16:40) [{\"anvil\":true,\"rebel\":false,\"cls\":\"day  dok\",\"txt\":true,\"tag\":\"ORIG\",\"marks\":[\"Not yet signed\",\"3 pending\"]}] · ✓ the window is on top at its centre · ✓ the window is word for word what it was — still the Original [identical] · ✓ Anvil still idle in the window, Rebel still flying · ✓ Rebel's Work hours unchanged [Rebel 5h25]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-08-s13-member-b-working-draft-day.png",
+      "dk-09-s13-member-b-working-draft-insights.png",
+      "dk-10-s13-member-b-working-draft-insights-foot.png"
+     ]
+    },
+    {
+     "id": "13.member.c",
+     "did": "the select back to \"Original — as issued\"; Insights",
+     "saw": "✓ no Insights text changed [identical]",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "13m.err",
+     "did": "the browser's error list through this scenario",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "s14-dk": {
+   "at": "2026-10-01T14:11:16.701Z",
+   "base": "http://localhost:4211",
+   "phone": false,
+   "table": [
+    {
+     "id": "14.a",
+     "did": "Tuesday signed and Publish day; board: Anvil on Rebel's seat (true); ✓ Done; Insights",
+     "saw": "✓ Tuesday pending [tag ORIG · chip \"1 pending\" · \"Not yet signed\" · button \"Publish AL1\" · signed line \"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvi\" · bar \"⚠ 4 is] · ✓ Insights is the issued one [identical]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-s14-a-orig-foot.png"
+     ]
+    },
+    {
+     "id": "14.b",
+     "did": "top bar Undo (\"Undo — a change to the schedule\"), Insights; top bar Redo (\"Redo — a change to the schedule\"), Insights",
+     "saw": "✓ Undo put Rebel back and cleared pending (sign-offs stand) [seat romeo · tag ORIG · chip \"7 changes\" · no not-signed marker · no Publish AL button · signed line \"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAn] · ✓ Insights did not move on Undo [identical] · ✓ Redo put Anvil on again and Tuesday is pending again [seat shaft · tag ORIG · chip \"1 pending\" · \"Not yet signed\" · button \"Publish AL1\" · signed line \"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvi\" ] · ✓ Insights did not move on Redo [identical]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-02-s14-b-top-undo-day.png",
+      "dk-03-s14-b-top-redo-day.png"
+     ]
+    },
+    {
+     "id": "14.c",
+     "did": "the board's Undo (\"Undo — a change to the schedule\") then the board's Redo (\"Redo — a change to the schedule\"); ✓ Done; Insights",
+     "saw": "✓ board Undo: Rebel back, not pending — the same as the top bar's [seat romeo · chip \"9 changes\" · ] · ✓ board Redo: Anvil on, pending — the same as the top bar's [seat shaft · chip \"1 pending\" · Not yet signed] · ✓ Edit Schedule afterwards reads exactly as after the top bar's Redo [tag ORIG · chip \"1 pending\" · \"Not yet signed\" · button \"Publish AL1\" · signed line \"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvi\" · bar \"⚠ 4 is] · ✓ Insights still the issued one [identical]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-04-s14-c-board-undo.png",
+      "dk-05-s14-c-board-redo.png"
+     ]
+    },
+    {
+     "id": "14.d",
+     "did": "Tuesday signed and \"Publish AL1\"; Insights",
+     "saw": "✓ Tuesday reads AL1 [tag AL1 · chip \"15 changes\" · no not-signed marker · no Publish AL button · signed line \"SIGNED AL1 CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\" · bar \"⚠ ] · ✓ the window moved (Anvil off the idle list, Rebel on) [WORK HOURS · REPORT TO DEBRIEF, THIS WEEK: −[Anvil 15h | Rebel 5h25] +[Anvil 20h05 | Rebel 20 min] ;; NOT ON THE FLYING PROGRAMME · 20 AVAILABLE: −[Anvil] +[Reb]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-06-s14-d-AL1-foot.png"
+     ]
+    },
+    {
+     "id": "14.e",
+     "did": "top bar Undo (\"Undo — publishing an amendment\") — the publication of AL1; Insights",
+     "saw": "✓ the Undo was of the publication [Undo — publishing an amendment] · ✓ Tuesday is back to Original [tag ORIG · chip \"1 pending\" · \"Not yet signed\" · button \"Publish AL1\" · signed line \"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvi\" · bar \"⚠ 4 is] · ✓ the change is open again as pending (Anvil still on the seat) [seat shaft · tag ORIG · chip \"1 pending\" · \"Not yet signed\" · button \"Publish AL1\" · signed line \"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvi\" ] · ✓ Insights is back to the Original, word for word [identical] · ✓ View-only Sched reads Original [{\"tag\":\"ORIG\",\"sel\":\"Original — as issued\",\"bar\":\"⚠ 4 issues · 2 warning · tap to collapse ▲\"}]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-07-s14-e-undo-of-AL1-day.png",
+      "dk-08-s14-e-undo-of-AL1-insights-foot.png"
+     ]
+    },
+    {
+     "id": "14.f",
+     "did": "Edit Schedule again; top bar Redo (\"Redo — publishing an amendment\"); Insights",
+     "saw": "✓ Tuesday reads AL1 again [tag AL1 · chip \"17 changes\" · no not-signed marker · no Publish AL button · signed line \"SIGNED AL1 CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\" · bar \"⚠ ] · ✓ Insights is AL1's again, word for word [identical]",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "14.err",
+     "did": "the browser's error list through this scenario",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "s15A-dk": {
+   "at": "2026-10-01T14:09:23.153Z",
+   "base": "http://localhost:4211",
+   "phone": false,
+   "table": [
+    {
+     "id": "15.a",
+     "did": "Tuesday published; board: Anvil on Rebel's seat + CX on Go 1's VL no. 2; signed and \"Publish AL1\"; Insights",
+     "saw": "✓ Tuesday reads AL1 [tag AL1 · chip \"12 changes\" · no not-signed marker · no Publish AL button · signed line \"SIGNED AL1 CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\" · bar \"⚠ ] · ✓ Original and AL1 differ in the window (32 → 31 sorties; Anvil / Rebel swap on the idle list) [tiles: 32 SORTIES | 16 FORMATIONS | 38 AIRCREW FLYING | 33 13 WARNING → 31 SORTIES | 16 FORMATIONS | 38 AIRCREW FLYING | 32 12 WARNING ;; FLYING LOAD · SORTIES ]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-s15-a-AL1.png",
+      "dk-02-s15-a-AL1-foot.png"
+     ]
+    },
+    {
+     "id": "15.b",
+     "did": "plans picker → \"Original\" (read-only look) → \"Load onto working copy\"; reload; Insights",
+     "saw": "✓ the working copy now holds Original's content (Rebel on the seat, the line not cancelled) [{\"seat\":\"romeo\",\"cancelled\":false}] · ✓ Tuesday is still AL1 and is pending [tag AL1 · chip \"2 pending\" · \"Not yet signed\" · button \"Publish AL2\" · signed line \"SIGNED AL1 CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\" · bar \"⚠ 4 iss] · ✓ Insights is still AL1, word for word [identical] · ✓ View-only Sched still reads AL1 [{\"tag\":\"AL1\",\"sel\":\"AL1 — as issued\",\"bar\":\"⚠ 3 issues · 1 warning · tap to review ▼\"}]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-03-s15-b-loaded-day.png",
+      "dk-04-s15-b-loaded-insights.png",
+      "dk-05-s15-b-loaded-insights-foot.png"
+     ]
+    },
+    {
+     "id": "15.c",
+     "did": "Tuesday's \"Unpublish\" ({\"pressed\":true,\"label\":\"Unpublish\"}); Insights",
+     "saw": "✓ Tuesday reads Original — AL1 is no longer the latest [tag ORIG · chip \"14 changes\" · no not-signed marker · no Publish AL button · signed line \"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvi\" · bar \"⚠] · ✓ Insights is back to the Original, word for word [identical] · ✓ View-only Sched reads Original [{\"tag\":\"ORIG\",\"sel\":\"Original — as issued\",\"bar\":\"⚠ 4 issues · 2 warning · tap to collapse ▲\"}]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-06-s15-c-unpublished-day.png",
+      "dk-07-s15-c-unpublished-insights.png",
+      "dk-08-s15-c-unpublished-insights-foot.png"
+     ]
+    },
+    {
+     "id": "15.c+",
+     "did": "the day after the Unpublish (the working copy was loaded with Original's content before it)",
+     "saw": "tag ORIG · chip \"14 changes\" · no not-signed marker · no Publish AL button · signed line \"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvi\" · bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\"",
+     "verdict": "RECORDED",
+     "pics": []
+    },
+    {
+     "id": "15A.err",
+     "did": "the browser's error list through this scenario",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "s15B-dk": {
+   "at": "2026-10-01T14:09:46.684Z",
+   "base": "http://localhost:4211",
+   "phone": false,
+   "table": [
+    {
+     "id": "15.a",
+     "did": "Tuesday published; board: Anvil on Rebel's seat + CX on Go 1's VL no. 2; signed and \"Publish AL1\"; Insights",
+     "saw": "✓ Tuesday reads AL1 [tag AL1 · chip \"12 changes\" · no not-signed marker · no Publish AL button · signed line \"SIGNED AL1 CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\" · bar \"⚠ ] · ✓ Original and AL1 differ in the window (32 → 31 sorties; Anvil / Rebel swap on the idle list) [tiles: 32 SORTIES | 16 FORMATIONS | 38 AIRCREW FLYING | 33 13 WARNING → 31 SORTIES | 16 FORMATIONS | 38 AIRCREW FLYING | 32 12 WARNING ;; FLYING LOAD · SORTIES ]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-s15-a-AL1.png",
+      "dk-02-s15-a-AL1-foot.png"
+     ]
+    },
+    {
+     "id": "15.b",
+     "did": "plans picker → \"Original\" (read-only look) → \"Load onto working copy\"; reload; Insights",
+     "saw": "✓ the working copy now holds Original's content (Rebel on the seat, the line not cancelled) [{\"seat\":\"romeo\",\"cancelled\":false}] · ✓ Tuesday is still AL1 and is pending [tag AL1 · chip \"2 pending\" · \"Not yet signed\" · button \"Publish AL2\" · signed line \"SIGNED AL1 CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\" · bar \"⚠ 4 iss] · ✓ Insights is still AL1, word for word [identical] · ✓ View-only Sched still reads AL1 [{\"tag\":\"AL1\",\"sel\":\"AL1 — as issued\",\"bar\":\"⚠ 3 issues · 1 warning · tap to review ▼\"}]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-03-s15-b-loaded-day.png",
+      "dk-04-s15-b-loaded-insights.png",
+      "dk-05-s15-b-loaded-insights-foot.png"
+     ]
+    },
+    {
+     "id": "15.c",
+     "did": "Tuesday's \"Unpublish\" ({\"pressed\":true,\"label\":\"Unpublish\"}); Insights",
+     "saw": "✓ Tuesday reads Original — AL1 is no longer the latest [tag ORIG · chip \"14 changes\" · no not-signed marker · no Publish AL button · signed line \"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvi\" · bar \"⚠] · ✓ Insights is back to the Original, word for word [identical] · ✓ View-only Sched reads Original [{\"tag\":\"ORIG\",\"sel\":\"Original — as issued\",\"bar\":\"⚠ 4 issues · 2 warning · tap to collapse ▲\"}]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-06-s15-c-unpublished-day.png",
+      "dk-07-s15-c-unpublished-insights.png",
+      "dk-08-s15-c-unpublished-insights-foot.png"
+     ]
+    },
+    {
+     "id": "15.c+",
+     "did": "the day after the Unpublish (the working copy was loaded with Original's content before it)",
+     "saw": "tag ORIG · chip \"14 changes\" · no not-signed marker · no Publish AL button · signed line \"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvi\" · bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\"",
+     "verdict": "RECORDED",
+     "pics": []
+    },
+    {
+     "id": "15A.err",
+     "did": "the browser's error list through this scenario",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "15.d",
+     "did": "same fixture, no load: Tuesday's \"Unpublish\" ({\"pressed\":true,\"label\":\"Unpublish\"}) while AL1 is current; Insights",
+     "saw": "✓ Tuesday reads Original [tag ORIG · chip \"2 pending\" · \"Not yet signed\" · button \"Publish AL1\" · signed line \"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvi\" · bar \"⚠ 3 is] · ✓ the AL1-shaped edits remain on the working copy, pending (Anvil on the seat, the line cancelled) [{\"seat\":\"shaft\",\"cancelled\":true,\"chip\":\"2 pending\"}] · ✓ Insights reverts to the Original, word for word — not the editable content [identical] · ✓ …and is no longer AL1's",
+     "verdict": "PASS",
+     "pics": [
+      "dk-09-s15-d-plain-unpublish-day.png",
+      "dk-10-s15-d-plain-unpublish-insights.png",
+      "dk-11-s15-d-plain-unpublish-insights-foot.png"
+     ]
+    },
+    {
+     "id": "15.e",
+     "did": "\"Unpublish\" once more ({\"pressed\":true,\"label\":\"Unpublish\"}) — Tuesday is a draft again; Insights",
+     "saw": "✓ Tuesday reads Draft [tag DRAFT · chip \"14 changes\" · no not-signed marker · no Publish AL button · signed line \"\" · bar \"⚠ 3 issues · 1 warning · tap to collapse ▲\"] · ✓ the window now counts the working copy at once (31 sorties, Anvil off the idle list) [31 SORTIES | 16 FORMATIONS | 38 AIRCREW FLYING | 32 12 WARNING · Tuesday 7 sorties · 4 formations · 3 issues]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-12-s15-e-unpublished-to-draft-insights.png",
+      "dk-13-s15-e-unpublished-to-draft-insights-foot.png"
+     ]
+    },
+    {
+     "id": "15B.err",
+     "did": "the browser's error list through this scenario",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "s16-dk": {
+   "at": "2026-10-01T14:13:22.021Z",
+   "base": "http://localhost:4211",
+   "phone": false,
+   "table": [
+    {
+     "id": "16.a",
+     "did": "week of 13 Jul: Tuesday published, changed on the board and \"Publish AL1\" issued, then one more CX left waiting; Insights",
+     "saw": "✓ the title reads Jul 13 – Jul 19 [Week insights · Jul 13 – Jul 19] · ✓ Tuesday is AL1 with a change waiting [tag AL1 · chip \"1 pending\" · \"Not yet signed\" · button \"Publish AL2\" · signed line \"SIGNED AL1 CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\" · bar \"⚠ 2 iss] · ✓ the window counts AL1 (31 sorties, Tuesday 7) [31 SORTIES | 16 FORMATIONS | 38 AIRCREW FLYING | 32 12 WARNING · Tuesday 7 sorties · 4 formations · 3 issues]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-s16-a-week1.png",
+      "dk-02-s16-a-week1-foot.png"
+     ]
+    },
+    {
+     "id": "16.b",
+     "did": "the week bar's \"Jul 20\" chip; Insights reopened",
+     "saw": "✓ the loaded week is 20 Jul [20/07/2026] · ✓ the title reads Jul 20 – Jul 26 [Week insights · Jul 20 – Jul 26] · ✓ that week's Tuesday is a draft [tag DRAFT · chip \"\" · no not-signed marker · no Publish AL button · signed line \"\" · bar \"⚠ 4 issues · tap to review ▼\"] · ✓ seven By-day rows, and the Sorties tile is their sum [17 / 17 · Monday 6 sorties · 3 formations · 10 issues | Tuesday 5 sorties · 3 formations · 4 issues | Wednesday 4 sorties · 2 formations · 1 issue | Thursday 2 ] · ✓ the tiles differ from week 1 [31 SORTIES | 16 FORMATIONS | 38 AIRCREW FLYING | 32 12 WARNING → 17 SORTIES | 9 FORMATIONS | 22 AIRCREW FLYING | 19 4 WARNING] · ✓ no section survives whole from week 1 [[]]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-03-s16-b-week2-by-chip.png",
+      "dk-04-s16-b-week2-by-chip-foot.png"
+     ]
+    },
+    {
+     "id": "16.c",
+     "did": "the week bar's \"Jul 13\" chip; Insights reopened",
+     "saw": "✓ the window is word for word what it was (title too) [identical] · ✓ Tuesday is AL1 with its change still waiting",
+     "verdict": "PASS",
+     "pics": [
+      "dk-05-s16-c-back-week1.png"
+     ]
+    },
+    {
+     "id": "16.d",
+     "did": "the 📅 \"Jump to a date\" calendar → 22 Jul; Insights reopened",
+     "saw": "✓ the loaded week is 20 Jul [20/07/2026] · ✓ the window is word for word what the chip gave for that week [identical]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-06-s16-d-pick-a-date.png",
+      "dk-07-s16-d-week2-by-date-picker-foot.png"
+     ]
+    },
+    {
+     "id": "16.e",
+     "did": "on the Scheduler Board (week of 20 Jul): its own ‹ week step (pressed); ✓ Done; Insights on Edit Schedule",
+     "saw": "✓ the loaded week is 13 Jul [13/07/2026] · ✓ the window is word for word week 1's — the same as the picker gave [identical]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-08-s16-e-board-week-step.png",
+      "dk-09-s16-e-after-board-step-back.png"
+     ]
+    },
+    {
+     "id": "16.f",
+     "did": "on the board: its › week step; ✓ Done; Insights",
+     "saw": "✓ the loaded week is 20 Jul [20/07/2026] · ✓ the window is word for word week 2's [identical]",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "16.sum",
+     "did": "the two weeks",
+     "saw": "week 1: \"Week insights · Jul 13 – Jul 19\" 31 SORTIES | 16 FORMATIONS | 38 AIRCREW FLYING | 32 12 WARNING · Monday 8 sorties · 4 formations · 14 issues | Tuesday 7 sorties · 4 formations · 3 issues | Wednesday 8 sorties · 4 formations · 7 issues | Thursday 8 sorties · 4 formations · 6 issues | Friday 0 sorties · 0 formations · clear | Saturday 0 sorties · 0 formations · 1 issue | Sunday 0 sorties · 0 formations · 1 issue ;; week 2: \"Week insights · Jul 20 – Jul 26\" 17 SORTIES | 9 FORMATIONS | 22 AIRCREW FLYING | 19 4 WARNING · Monday 6 sorties · 3 formations · 10 issues | Tuesday 5 sorties · 3 formations · 4 issues | Wednesday 4 sorties · 2 formations · 1 issue | Thursday 2 sorties · 1 formations · 2 issues | Friday 0 sorties · 0 formations · clear | Saturday 0 sorties · 0 formations · 1 issue | Sunday 0 sorties · 0 formations · 1 issue",
+     "verdict": "RECORDED",
+     "pics": []
+    },
+    {
+     "id": "16.err",
+     "did": "the browser's error list through this scenario",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "s17-dk": {
+   "at": "2026-10-01T14:14:38.586Z",
+   "base": "http://localhost:4211",
+   "phone": false,
+   "table": [
+    {
+     "id": "17.a",
+     "did": "Tuesday signed and published (Original); the save settled (sync: \"Toggle 1-second sync (for publishing / meetings)\"); reload, signed in again; Insights",
+     "saw": "✓ Insights after the reload is word for word what it was before [identical] · ✓ the day's version, pending chip, not-signed marker, button and signed line are unchanged [tag ORIG · chip \"5 changes\" · no not-signed marker · no Publish AL button · signed line \"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvi\" · bar \"⚠ ] · ✓ View-only Sched shows the same version and count [{\"tag\":\"ORIG\",\"sel\":\"Original — as issued\",\"bar\":\"⚠ 4 issues · 2 warning · tap to review ▼\"} ⇒ {\"tag\":\"ORIG\",\"sel\":\"Original — as issued\",\"bar\":\"⚠ 4 issues · 2 ] · ✓ Original stays Original [ORIG]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-s17-a-orig-day.png",
+      "dk-02-s17-a-orig-insights-foot.png"
+     ]
+    },
+    {
+     "id": "17.b",
+     "did": "board: Anvil on Rebel's seat + CX on Go 1's VL no. 2 (waiting); the save settled (sync: \"Toggle 1-second sync (for publishing / meetings)\"); reload, signed in again; Insights",
+     "saw": "✓ Insights after the reload is word for word what it was before [identical] · ✓ the day's version, pending chip, not-signed marker, button and signed line are unchanged [tag ORIG · chip \"2 pending\" · \"Not yet signed\" · button \"Publish AL1\" · signed line \"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvi\" · bar \"⚠ 3 is] · ✓ View-only Sched shows the same version and count [{\"tag\":\"ORIG\",\"sel\":\"Original — as issued\",\"bar\":\"⚠ 4 issues · 2 warning · tap to collapse ▲\"} ⇒ {\"tag\":\"ORIG\",\"sel\":\"Original — as issued\",\"bar\":\"⚠ 4 issues · ] · ✓ the change is still pending [2 pending] · ✓ pending stays invisible to Insights (the window is the Original's) [identical]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-03-s17-b-pending-day.png",
+      "dk-04-s17-b-pending-insights-foot.png"
+     ]
+    },
+    {
+     "id": "17.c",
+     "did": "Tuesday signed and AL1 published; the save settled (sync: \"Toggle 1-second sync (for publishing / meetings)\"); reload, signed in again; Insights",
+     "saw": "✓ Insights after the reload is word for word what it was before [identical] · ✓ the day's version, pending chip, not-signed marker, button and signed line are unchanged [tag AL1 · chip \"12 changes\" · no not-signed marker · no Publish AL button · signed line \"SIGNED AL1 CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\" · bar \"⚠ ] · ✓ View-only Sched shows the same version and count [{\"tag\":\"AL1\",\"sel\":\"AL1 — as issued\",\"bar\":\"⚠ 3 issues · 1 warning · tap to collapse ▲\"} ⇒ {\"tag\":\"AL1\",\"sel\":\"AL1 — as issued\",\"bar\":\"⚠ 3 issues · 1 warning · ] · ✓ AL1 stays counted (31 sorties) [AL1 · 31 SORTIES | 16 FORMATIONS | 38 AIRCREW FLYING | 32 12 WARNING] · ✓ the window differs from the Original's",
+     "verdict": "PASS",
+     "pics": [
+      "dk-05-s17-c-AL1-day.png",
+      "dk-06-s17-c-AL1-insights-foot.png"
+     ]
+    },
+    {
+     "id": "17.d",
+     "did": "plans picker → \"Original\" → \"Load onto working copy\"; the save settled (sync: \"Toggle 1-second sync (for publishing / meetings)\"); reload, signed in again; Insights",
+     "saw": "✓ Insights after the reload is word for word what it was before [identical] · ✓ the day's version, pending chip, not-signed marker, button and signed line are unchanged [tag AL1 · chip \"2 pending\" · \"Not yet signed\" · button \"Publish AL2\" · signed line \"SIGNED AL1 CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\" · bar \"⚠ 4 iss] · ✓ View-only Sched shows the same version and count [{\"tag\":\"AL1\",\"sel\":\"AL1 — as issued\",\"bar\":\"⚠ 3 issues · 1 warning · tap to collapse ▲\"} ⇒ {\"tag\":\"AL1\",\"sel\":\"AL1 — as issued\",\"bar\":\"⚠ 3 issues · 1 warning · ] · ✓ loading the older version stays working-only: the day is AL1, pending [tag AL1 · chip \"2 pending\" · \"Not yet signed\" · button \"Publish AL2\" · signed line \"SIGNED AL1 CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\" · bar \"⚠ 4 iss] · ✓ the window is still AL1's [identical]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-07-s17-d-loaded-day.png",
+      "dk-08-s17-d-loaded-insights-foot.png"
+     ]
+    },
+    {
+     "id": "17.e",
+     "did": "Tuesday's \"Unpublish\" (Unpublish); the save settled (sync: \"Toggle 1-second sync (for publishing / meetings)\"); reload, signed in again; Insights",
+     "saw": "✓ Insights after the reload is word for word what it was before [identical] · ✓ the day's version, pending chip, not-signed marker, button and signed line are unchanged [tag ORIG · chip \"14 changes\" · no not-signed marker · no Publish AL button · signed line \"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvi\" · bar \"⚠] · ✓ View-only Sched shows the same version and count [{\"tag\":\"ORIG\",\"sel\":\"Original — as issued\",\"bar\":\"⚠ 4 issues · 2 warning · tap to collapse ▲\"} ⇒ {\"tag\":\"ORIG\",\"sel\":\"Original — as issued\",\"bar\":\"⚠ 4 issues · ] · ✓ the day reads Original [tag ORIG · chip \"14 changes\" · no not-signed marker · no Publish AL button · signed line \"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvi\" · bar \"⚠] · ✓ the window returns to the Original's, word for word [identical]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-09-s17-e-unpublished-day.png",
+      "dk-10-s17-e-unpublished-insights-foot.png"
+     ]
+    },
+    {
+     "id": "17.err",
+     "did": "the browser's error list through this scenario",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "s18-dk": {
+   "at": "2026-10-01T14:17:33.686Z",
+   "base": "http://localhost:4211",
+   "phone": false,
+   "table": [
+    {
+     "id": "18.fix",
+     "did": "admin: Tuesday published; on the board Anvil on Rebel's seat and CX on Go 1's VL no. 2 ({\"before\":\"romeo\",\"after\":\"shaft\",\"took\":true}); ✓ Done",
+     "saw": "✓ Tuesday is Original with changes waiting [tag ORIG · chip \"2 pending\" · \"Not yet signed\" · button \"Publish AL1\" · signed line \"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvi\" · bar \"⚠ 3 is] · ✓ the expected window is the Original's, word for word [identical]",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "18.ref",
+     "did": "the expected window text (every page must match it word for word)",
+     "saw": "\"Week insights · Jul 13 – Jul 19\" · 32 SORTIES | 16 FORMATIONS | 38 AIRCREW FLYING | 33 13 WARNING · Monday 8 sorties · 4 formations · 14 issues | Tuesday 8 sorties · 4 formations · 4 issues | Wednesday 8 sorties · 4 formations · 7 issues | Thursday 8 sorties · 4 formations · 6 issues | Friday 0 sorties · 0 formations · clear | Saturday 0 sorties · 0 formations · 1 issue | Sunday 0 sorties · 0 formations · 1 issue · idle 20 names · 56 Work-hours bars · 16 types",
+     "verdict": "RECORDED",
+     "pics": []
+    },
+    {
+     "id": "18.admin",
+     "did": "admin (Saber): the top bar's Insights over each page offered — View-only Sched, Edit Schedule, Inputs, Quals, Logic, Leave War, Tracker, Help, Admin",
+     "saw": "✓ all nine pages offered [9] · ✓ every page: the door is there and opens the window [[]] · ✓ every page: identical contents, the right week title [View-only Sched: identical · Edit Schedule: identical · Inputs: identical · Quals: identical · Logic: identical · Leave War: identical · Tracker: identical · He] · ✓ every page: the window is the topmost thing at its centre · ✓ every page: the window fits the screen and its last row (Sunday) can be scrolled to [{\"x\":420,\"y\":72,\"w\":600,\"h\":756} {\"x\":420,\"y\":72,\"w\":600,\"h\":756} {\"x\":420,\"y\":72,\"w\":600,\"h\":756} {\"x\":420,\"y\":72,\"w\":600,\"h\":756} {\"x\":420,\"y\":72,\"w\":600,\"h\":]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-s18-admin-viewsched.png",
+      "dk-02-s18-admin-editsched.png",
+      "dk-03-s18-admin-inputs.png",
+      "dk-04-s18-admin-quals.png",
+      "dk-05-s18-admin-logic.png",
+      "dk-06-s18-admin-leavewar.png",
+      "dk-07-s18-admin-tracker.png",
+      "dk-08-s18-admin-help.png",
+      "dk-09-s18-admin-admin.png"
+     ]
+    },
+    {
+     "id": "18.memberview",
+     "did": "admin's switch to the member view (role badge \"SABER · ADMIN\" → \"SABER · MEMBER\"): the door over each page offered — View-only Sched, Inputs, Quals, Logic, Leave War, Tracker, Help",
+     "saw": "✓ the badge switched to the member view [\"SABER · ADMIN\" → \"SABER · MEMBER\"] · ✓ every page: identical contents, on top, fits, foot reachable [View-only Sched: identical · Inputs: identical · Quals: identical · Logic: identical · Leave War: identical · Tracker: identical · Help: identical]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-10-s18-memberview-viewsched.png",
+      "dk-11-s18-memberview-inputs.png",
+      "dk-12-s18-memberview-quals.png",
+      "dk-13-s18-memberview-logic.png",
+      "dk-14-s18-memberview-leavewar.png",
+      "dk-15-s18-memberview-tracker.png",
+      "dk-16-s18-memberview-help.png"
+     ]
+    },
+    {
+     "id": "18.member",
+     "did": "reload, signed in as the member (Ranger): the door over each page offered — View-only Sched, Inputs, Quals, Logic, Leave War, Tracker, Help",
+     "saw": "✓ every page: identical contents, on top, fits, foot reachable [View-only Sched: identical · Inputs: identical · Quals: identical · Logic: identical · Leave War: identical · Tracker: identical · Help: identical]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-17-s18-member-viewsched.png",
+      "dk-18-s18-member-inputs.png",
+      "dk-19-s18-member-quals.png",
+      "dk-20-s18-member-logic.png",
+      "dk-21-s18-member-leavewar.png",
+      "dk-22-s18-member-tracker.png",
+      "dk-23-s18-member-help.png"
+     ]
+    },
+    {
+     "id": "18.guest",
+     "did": "a guest",
+     "saw": "excluded, as the scenario says — the guest view has no Insights button by design; not walked",
+     "verdict": "NOT WALKED (excluded by the brief)",
+     "pics": []
+    },
+    {
+     "id": "18.err",
+     "did": "the browser's error list through this scenario",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "s18-ph": {
+   "at": "2026-10-01T14:20:41.496Z",
+   "base": "http://localhost:4211",
+   "phone": true,
+   "table": [
+    {
+     "id": "18.fix",
+     "did": "admin: Tuesday published; on the board CX on Go 2's RU lead line (pressed: Cancel this line); ✓ Done",
+     "saw": "✓ Tuesday is Original with changes waiting [tag ORIG · chip \"1 pending\" · \"Not yet signed\" · button \"Publish AL1\" · signed line \"SIGNED ORIG Ace Anvil Anvil Anvil\" · bar \"⚠ 4 issues · 2 warning · tap to r] · ✓ the expected window is the Original's, word for word [identical]",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "18.ref",
+     "did": "the expected window text (every page must match it word for word)",
+     "saw": "\"Week insights · Jul 13 – Jul 19\" · 32 SORTIES | 16 FORMATIONS | 38 AIRCREW FLYING | 33 13 WARNING · Monday 8 sorties · 4 formations · 14 issues | Tuesday 8 sorties · 4 formations · 4 issues | Wednesday 8 sorties · 4 formations · 7 issues | Thursday 8 sorties · 4 formations · 6 issues | Friday 0 sorties · 0 formations · clear | Saturday 0 sorties · 0 formations · 1 issue | Sunday 0 sorties · 0 formations · 1 issue · idle 20 names · 56 Work-hours bars · 16 types",
+     "verdict": "RECORDED",
+     "pics": []
+    },
+    {
+     "id": "18.admin",
+     "did": "admin (Saber): ☰ → Week insights over each page offered — View-only Sched, Edit Schedule, Inputs, Quals, Logic, Leave War, Tracker, Help, Admin",
+     "saw": "✓ all nine pages offered [9] · ✓ every page: the door is there and opens the window [[]] · ✓ every page: identical contents, the right week title [View-only Sched: identical · Edit Schedule: identical · Inputs: identical · Quals: identical · Logic: identical · Leave War: identical · Tracker: identical · He] · ✓ every page: the window is the topmost thing at its centre · ✓ every page: the window fits the screen and its last row (Sunday) can be scrolled to [{\"x\":0,\"y\":84,\"w\":390,\"h\":760} {\"x\":0,\"y\":84,\"w\":390,\"h\":760} {\"x\":0,\"y\":84,\"w\":390,\"h\":760} {\"x\":0,\"y\":84,\"w\":390,\"h\":760} {\"x\":0,\"y\":84,\"w\":390,\"h\":760} {\"x\":]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-01-s18-admin-viewsched.png",
+      "ph-02-s18-admin-editsched.png",
+      "ph-03-s18-admin-inputs.png",
+      "ph-04-s18-admin-quals.png",
+      "ph-05-s18-admin-logic.png",
+      "ph-06-s18-admin-leavewar.png",
+      "ph-07-s18-admin-tracker.png",
+      "ph-08-s18-admin-help.png",
+      "ph-09-s18-admin-admin.png"
+     ]
+    },
+    {
+     "id": "18.memberview",
+     "did": "admin's switch to the member view (☰ → \"Switch to the member view\": \"Signed in as Saber · Admin\" → \"Signed in as Saber · Member MEMBER-VIEW:true\"): the door over each page offered — View-only Sched, Inputs, Quals, Logic, Leave War, Tracker, Help",
+     "saw": "✓ the switch took (the member view) [☰ → \"Switch to the member view\": \"Signed in as Saber · Admin\" → \"Signed in as Saber · Member MEMBER-VIEW:true\"] · ✓ every page: identical contents, on top, fits, foot reachable [View-only Sched: identical · Inputs: identical · Quals: identical · Logic: identical · Leave War: identical · Tracker: identical · Help: identical]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-10-s18-memberview-viewsched.png",
+      "ph-11-s18-memberview-inputs.png",
+      "ph-12-s18-memberview-quals.png",
+      "ph-13-s18-memberview-logic.png",
+      "ph-14-s18-memberview-leavewar.png",
+      "ph-15-s18-memberview-tracker.png",
+      "ph-16-s18-memberview-help.png"
+     ]
+    },
+    {
+     "id": "18.member",
+     "did": "reload, signed in as the member (Ranger): the door over each page offered — View-only Sched, Inputs, Quals, Logic, Leave War, Tracker, Help",
+     "saw": "✓ every page: identical contents, on top, fits, foot reachable [View-only Sched: identical · Inputs: identical · Quals: identical · Logic: identical · Leave War: identical · Tracker: identical · Help: identical]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-17-s18-member-viewsched.png",
+      "ph-18-s18-member-inputs.png",
+      "ph-19-s18-member-quals.png",
+      "ph-20-s18-member-logic.png",
+      "ph-21-s18-member-leavewar.png",
+      "ph-22-s18-member-tracker.png",
+      "ph-23-s18-member-help.png"
+     ]
+    },
+    {
+     "id": "18.guest",
+     "did": "a guest",
+     "saw": "excluded, as the scenario says — the guest view has no Insights button by design; not walked",
+     "verdict": "NOT WALKED (excluded by the brief)",
+     "pics": []
+    },
+    {
+     "id": "18.err",
+     "did": "the browser's error list through this scenario",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "s19-dk": {
+   "at": "2026-10-01T14:28:38.794Z",
+   "base": "http://localhost:4211",
+   "phone": false,
+   "table": [
+    {
+     "id": "19.a",
+     "did": "admin: Saturday signed and Publish day (Fable's 08:00–18:00 duty), Tuesday signed and Publish day; then waiting edits — board CX on Tuesday's Go 2 RU lead (pressed: Cancel this line) and Saturday's duty end 18:00→12:00; everything outside the Insights window recorded",
+     "saw": "✓ Tuesday and Saturday are both Original with a change waiting [tag ORIG · chip \"1 pending\" · \"Not yet signed\" · button \"Publish AL1\" · signed line \"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvi\" · bar \"⚠ 4 is] · ✓ every reader could be read [[]]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-s19-a-before-edit-tue.png",
+      "dk-02-s19-a-before-oil-earn.png",
+      "dk-03-s19-a-before-oil-tracker.png"
+     ]
+    },
+    {
+     "id": "19.a+",
+     "did": "what was recorded (short)",
+     "saw": "edit Tue head: ORIG | 1 pending | Not yet signed | Publish AL1 | SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil | — name —,— name —,— name —,— name —  ;; edit Tue list: Conflict — two events at once Saint — VL SAT & APPOINTMENT clash ✕ | Crew rest (<12h) Outlaw — Crew rest breach — Monday landed 20:45, +2h debrief ass ;; edit Tue ⓘ: Tuesday · Jul 14 · 4 X 3 | ✓ Published — APPROVED 1 unpublished edit | No amendment has touched this day yet | 2 WARNING 1 ADVISORY 1 NOTE | 2 WARNING ;; edit Sat head: ORIG | 1 pending | Not yet signed | Publish AL1 | SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil | (no bar) ;; CSV: 142-schedule.csv · 4400 chars · 33 lines · ﻿\"Day\",\"Date\",\"Wave\",\"CS\",\"Mission\",\"Brief\",\"TO\",\"Land\",\"FCP\",\"FCP lvl\",\"RCP\",\"RCP lvl\",\"Area\",\"Area time\", ;; print: 14832 chars · <!doctype html><html><head><meta charset=\"utf-8\"><title>142 Flying Programme — Mon 13 Jul – Sun 19 Jul</title><style>\n@page{size:A4 port ;; OIL Earn (Sat board): pucks [{\"who\":\"plasma\",\"item\":\"r:rmupmocvvy1p8fa\",\"on\":true}] · chips [] · board head ORIG 1 pending Not yet signed ;; view Tue: ORIG | Original — as issued | ⚠ 4 issues · 2 warning ·  | Conflict — two events at once Saint — VL SAT & APPOINTMENT clash | Crew rest (<12h) Outlaw — ;; view Tue ⓘ: Tuesday · Jul 14 · 4 X 4 | ✓ Published — APPROVED | No amendment has touched this day yet | 2 WARNING 1 ADVISORY 1 NOTE | 2 WARNING 1 ADVISORY 1 NOTE  ;; view Sat: ORIG | Original — as issued | (no bar) ;; Leave War OIL tracker: dice:0::0 shaft:0::0 snap:0::0 pump:0::0 bane:0::0 stiff:0::0 mamba:0::0 nact:0::0 slipway:4:+6.5−2.5:4 razer:0::0 glass:0::0 freak:0::0 slash:3:+7−4: ;; stored rows: inputs/imupmocvv4opiom#192 inputs/imupmocvv6i5byd#187 inputs/imupmocvv8bchwn#188 inputs/imupmocvv98ahsg#232 inputs/imupmocvvbs1x4s#165 inputs/imupmocv ;; stored row count: 231",
+     "verdict": "RECORDED",
+     "pics": []
+    },
+    {
+     "id": "19.b",
+     "did": "Insights opened by the top bar, scrolled to its foot and back, and closed — three times over Edit Schedule, View-only Sched and Leave War (9 openings); everything recorded again",
+     "saw": "✓ every opening drew the window on top [editsched#1: 32/32 · editsched#2: 32/32 · editsched#3: 32/32 · viewsched#1: 32/32 · viewsched#2: 32/32 · viewsched#3: 32/32 · leavewar#1: 32/32 · leavewar#2: 32] · ✓ every recorded value outside the window is unchanged, character for character [[]] · ✓ nothing was written to storage (rows identical, change-log too) [231 → 231 rows]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-04-s19-b-insights.png",
+      "dk-05-s19-b-insights-foot.png",
+      "dk-06-s19-b-after-edit-tue.png",
+      "dk-07-s19-b-after-oil-earn.png",
+      "dk-08-s19-b-after-oil-tracker.png"
+     ]
+    },
+    {
+     "id": "19.c",
+     "did": "reload, signed in again; everything recorded; Insights opened, scrolled and closed twice over View-only Sched and Edit Schedule (4 openings); everything recorded again",
+     "saw": "✓ the reload gave back every recorded value [[]] · ✓ opening the window after the reload changed nothing [[]] · ✓ nothing was written to storage by the openings [231 → 231 rows]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-09-s19-c-reloaded-edit-tue.png",
+      "dk-10-s19-c-reloaded-oil-earn.png",
+      "dk-11-s19-c-reloaded-oil-tracker.png",
+      "dk-12-s19-d-reloaded-after-edit-tue.png",
+      "dk-13-s19-d-reloaded-after-oil-earn.png",
+      "dk-14-s19-d-reloaded-after-oil-tracker.png"
+     ]
+    },
+    {
+     "id": "19.err",
+     "did": "the browser's error list through this scenario",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "s19-ph": {
+   "at": "2026-10-01T14:30:17.108Z",
+   "base": "http://localhost:4211",
+   "phone": true,
+   "table": [
+    {
+     "id": "19.a",
+     "did": "admin: Saturday signed and Publish day (Fable's 08:00–18:00 duty), Tuesday signed and Publish day; then waiting edits — board CX on Tuesday's Go 2 RU lead (pressed: Cancel this line) and Saturday's duty end 18:00→12:00; everything outside the Insights window recorded",
+     "saw": "✓ Tuesday and Saturday are both Original with a change waiting [tag ORIG · chip \"1 pending\" · \"Not yet signed\" · button \"Publish AL1\" · signed line \"SIGNED ORIG Ace Anvil Anvil Anvil\" · bar \"⚠ 4 issues · 2 warning · tap to r] · ✓ every reader could be read [[]]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-01-s19-a-before-edit-tue.png",
+      "ph-02-s19-a-before-oil-earn.png",
+      "ph-03-s19-a-before-oil-tracker.png"
+     ]
+    },
+    {
+     "id": "19.a+",
+     "did": "what was recorded (short)",
+     "saw": "edit Tue head: ORIG | 1 pending | Not yet signed | Publish AL1 | SIGNED ORIG Ace Anvil Anvil Anvil | — name —,— name —,— name —,— name — | ⚠ 4 issues · 2 warning ·  ;; edit Tue list: Conflict — two events at once Saint — VL SAT & APPOINTMENT clash ✕ | Crew rest (<12h) Outlaw — Crew rest breach — Monday landed 20:45, +2h debrief ass ;; edit Tue ⓘ: Tuesday · Jul 14 · 4 X 3 | ✓ Published — APPROVED 1 unpublished edit | No amendment has touched this day yet | 2 WARNING 1 ADVISORY 1 NOTE | 2 WARNING ;; edit Sat head: ORIG | 1 pending | Not yet signed | Publish AL1 | SIGNED ORIG Ace Anvil Anvil Anvil | (no bar) ;; CSV: 142-schedule.csv · 4400 chars · 33 lines · ﻿\"Day\",\"Date\",\"Wave\",\"CS\",\"Mission\",\"Brief\",\"TO\",\"Land\",\"FCP\",\"FCP lvl\",\"RCP\",\"RCP lvl\",\"Area\",\"Area time\", ;; print: 14832 chars · <!doctype html><html><head><meta charset=\"utf-8\"><title>142 Flying Programme — Mon 13 Jul – Sun 19 Jul</title><style>\n@page{size:A4 port ;; OIL Earn (Sat board): pucks [{\"who\":\"plasma\",\"item\":\"r:rmupmqfnhonx6b2\",\"on\":true}] · chips [] · board head ORIG 1 pending Not yet signed ;; view Tue: ORIG | Original — as issued | ⚠ 4 issues · 2 warning ·  | Conflict — two events at once Saint — VL SAT & APPOINTMENT clash | Crew rest (<12h) Outlaw — ;; view Tue ⓘ: Tuesday · Jul 14 · 4 X 4 | ✓ Published — APPROVED | No amendment has touched this day yet | 2 WARNING 1 ADVISORY 1 NOTE | 2 WARNING 1 ADVISORY 1 NOTE  ;; view Sat: ORIG | Original — as issued | (no bar) ;; Leave War OIL tracker: dice:0::0 shaft:0::0 snap:0::0 pump:0::0 bane:0::0 stiff:0::0 mamba:0::0 nact:0::0 slipway:4:+6.5−2.5:4 razer:0::0 glass:0::0 freak:0::0 slash:3:+7−4: ;; stored rows: inputs/imupmqfng0089ts#158 inputs/imupmqfng0ohwne#212 inputs/imupmqfng25llcd#187 inputs/imupmqfng3chh9c#215 inputs/imupmqfng3io6kr#148 inputs/imupmqfn ;; stored row count: 231",
+     "verdict": "RECORDED",
+     "pics": []
+    },
+    {
+     "id": "19.b",
+     "did": "Insights opened by ☰ → Week insights, scrolled to its foot and back, and closed — three times over Edit Schedule, View-only Sched and Leave War (9 openings); everything recorded again",
+     "saw": "✓ every opening drew the window on top [editsched#1: 32/32 · editsched#2: 32/32 · editsched#3: 32/32 · viewsched#1: 32/32 · viewsched#2: 32/32 · viewsched#3: 32/32 · leavewar#1: 32/32 · leavewar#2: 32] · ✓ every recorded value outside the window is unchanged, character for character [[]] · ✓ nothing was written to storage (rows identical, change-log too) [231 → 231 rows]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-04-s19-b-insights.png",
+      "ph-05-s19-b-insights-foot.png",
+      "ph-06-s19-b-after-edit-tue.png",
+      "ph-07-s19-b-after-oil-earn.png",
+      "ph-08-s19-b-after-oil-tracker.png"
+     ]
+    },
+    {
+     "id": "19.c",
+     "did": "reload, signed in again; everything recorded; Insights opened, scrolled and closed twice over View-only Sched and Edit Schedule (4 openings); everything recorded again",
+     "saw": "✓ the reload gave back every recorded value [[]] · ✓ opening the window after the reload changed nothing [[]] · ✓ nothing was written to storage by the openings [231 → 231 rows]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-09-s19-c-reloaded-edit-tue.png",
+      "ph-10-s19-c-reloaded-oil-earn.png",
+      "ph-11-s19-c-reloaded-oil-tracker.png",
+      "ph-12-s19-d-reloaded-after-edit-tue.png",
+      "ph-13-s19-d-reloaded-after-oil-earn.png",
+      "ph-14-s19-d-reloaded-after-oil-tracker.png"
+     ]
+    },
+    {
+     "id": "19.err",
+     "did": "the browser's error list through this scenario",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "s3x-dk": {
+   "at": "2026-10-01T14:35:47.284Z",
+   "base": "http://localhost:4211",
+   "phone": false,
+   "table": [
+    {
+     "id": "3x.a",
+     "did": "fresh world, nothing published. Monday's board: Go 2's RU line T/O 19:20→10:00 and LD 20:45→11:25 (that wave's in-time lines read: [\"1900H: NIGHT WAVE VL IN TIME + WX/NOTAMS\",\"1920H: NIGHT WAVE RU IN TIME + WX/NOTAMS\"]); ✓ Done; Insights",
+     "saw": "✗ no Work-hours figure in the window is negative [Wisp -2h-30]",
+     "verdict": "FAIL",
+     "pics": [
+      "dk-01-s3x-monday-board.png",
+      "dk-02-s3x-insights-wisp-bar.png"
+     ]
+    },
+    {
+     "id": "3x.a+",
+     "did": "the four men on that formation, before → after",
+     "saw": "Piston 9h45 → Piston 4h05 ; Relay 16h10 → Relay 10h30 ; Outlaw 9h30 → Outlaw 10 min ; Wisp 7h50 → Wisp -2h-30",
+     "verdict": "RECORDED",
+     "pics": []
+    },
+    {
+     "id": "3x.a++",
+     "did": "Monday's own issues list after the edit (lines naming Wisp or Outlaw)",
+     "saw": "none",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-03-s3x-monday-list.png"
+     ]
+    },
+    {
+     "id": "3x.err",
+     "did": "the browser's error list through this scenario",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "s5b-dk": {
+   "at": "2026-10-01T14:46:43.148Z",
+   "base": "http://localhost:4211",
+   "phone": false,
+   "table": [
+    {
+     "id": "5b.a",
+     "did": "on the board (Tuesday, draft): its plans picker → \"+ Alt Plan\"; Anvil on Rebel's seat (true); CX on Go 1's VL no. 2 (pressed: Cancel this line); picker → \"Plan Atap to make it the live day\"; ✓ Done; signed and Publish day; board again: picker → \"Plan Btap to make it the live day\"; ✓ Done; Insights on Edit Schedule",
+     "saw": "✓ the board showed Plan B, pending [seat shaft · chip \"2 pending\" · Not yet signed · Publish AL1] · ✓ Edit Schedule shows Tuesday pending, AL1 offered [tag ORIG · chip \"2 pending\" · \"Not yet signed\" · button \"Publish AL1\" · signed line \"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvi\" · bar \"⚠ 3 is] · ✓ the window is word for word Plan A's (the Original) [identical] · ✓ 32 sorties, Tuesday 8, Anvil idle [32 SORTIES | 16 FORMATIONS | 38 AIRCREW FLYING | 33 13 WARNING · Tuesday 8 sorties · 4 formations · 4 issues]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-s5b-board-switched-to-plan-b.png",
+      "dk-02-s5b-after-board-switch-insights.png",
+      "dk-03-s5b-after-board-switch-insights-foot.png"
+     ]
+    },
+    {
+     "id": "5b.b",
+     "did": "Tuesday signed and \"Publish AL1\"; Insights",
+     "saw": "✓ the window is now Plan B: 31 sorties, Tuesday 7, Anvil flying, Rebel idle [31 SORTIES | 16 FORMATIONS | 38 AIRCREW FLYING | 32 12 WARNING · Tuesday 7 sorties · 4 formations · 3 issues]",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "5b.err",
+     "did": "the browser's error list through this scenario",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  }
+ }
+}
