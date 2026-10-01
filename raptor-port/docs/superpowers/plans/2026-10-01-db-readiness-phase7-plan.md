@@ -76,6 +76,8 @@ unit suite's count is unchanged. Nothing on screen says pay or money (checked 22
 dropped on a landed request row's name box) and what the day then shows; the question goes to him with the picture.
 Nothing is built before his answer. If yes: `landedExtras` treats the name box like the extras, the requester still
 excluded, plus a test.
+**ANSWERED 1 Oct 26 — D470: yes.** The man in the name box earns as a man added under the row does; the member who filed
+still earns on his own answer. Built in this phase, red first (`engine/oilnamebox.test.ts`), walked by the host.
 
 ## 2. The rulings that apply (the rules sweep — each walked, pass or fail, in the evidence sheet)
 D25 (earned leave, not pay) · D27, D37 (the count shows wherever the puck lands, OIL Earn on or off) · D31 (never a
@@ -107,6 +109,7 @@ exclusion in the brief) → fix → re-walk what the fixes touched → the gates
 ## 5. For him (product, not technical)
 1. `[OIL-REQ-NAMEBOX]` — after the walk shows the door: should a man put in the name box of someone else's request earn
    from it?
+   **ANSWERED: yes (D470, 1 Oct 26).**
 2. (Assumed, his to overturn) a crowd behind ALL / ALL AVAIL on a member's Personal row is counted and earns nothing.
 
 ## 6. Build log

@@ -812,6 +812,10 @@ OIL build keeps getting bitten by.
 request row's name box, and if so should he earn from it? If yes, it is one line in
 `landedExtras` (treat the name box like the extras, the requester still excluded) plus a test.
 **Priority: with the other small OIL follow-ups, after the walk.**
+**ANSWERED — D470 (owner, 1 Oct 26): YES.** A man the scheduler puts in the name box of another man's request row earns from
+it as a man added under the row does; the member who filed still earns on his own answer. BUILT 1 Oct 26 in `[DB-READINESS]`
+group A phase 7 (`claude/db-readiness-p7-oil-followups`), red first — `raptor-port/src/engine/oilnamebox.test.ts`,
+`src/ui/oilclaimcrowd.test.tsx`; the rule `raptor-port/docs/engine-rules.md` (the D470 paragraph).
 **Context:** `raptor-port/docs/superpowers/specs/2026-09-22-oil-seats-can-earn-plan.md` §5 step 6;
 the body is `raptor-port/src/engine/oilev.ts` `landedExtras`, and its own comment says why.
 
@@ -1565,11 +1569,11 @@ line; and a hidden warning still rings and chips its pucks (the Aug 26 rule: "a 
 (2) a hidden warning marks no puck — no ring, no chip, on the board, the edit week and (see the open reading) the schedule
 that goes out; (3) the hidden line is drawn in place, struck out and darker, its ↺ beside it — the "N hidden" fold goes;
 (4) `ui-contracts.md` §Mute a specific check rewritten to match (its D469 note marks the three sentences today).
-**Three readings to put to him WITH A PICTURE before building** (a mock-up of the struck-out line on the board and the edit
-week, at phone and desktop width): (a) does the day's "N issues · N warning" count still count a hidden one, or drop it;
-(b) a hide on a day ALREADY PUBLISHED — a pending change that goes out with the next amendment (D45), or at once;
-(c) the published and printed schedule drop the hidden item's flag as the working copy does (read from "the report to be
-submitted": yes). **Kept, as he was read:** only a scheduler hides and unhides; a hide is an Undo step; a hidden warning
+**His answers to the readings (D471, 1 Oct 26):** built as ITS OWN job after phase 7; (b) a hide on a day ALREADY PUBLISHED
+WAITS for the next amendment — a pending change (D45, D103); (c) the published and printed schedule DROP the hidden item's
+flag too. **Still open — (a):** does the day's own count of problems ("N issues · N warning — tap to review" at the head of
+the day) still count a hidden one, or drop it and say "1 hidden"? He asked what "N issues" is; explained and asked again,
+1 Oct 26. **A picture first** (the struck-out line on the board and the edit week, phone and desktop), then the build. **Kept, as he was read:** only a scheduler hides and unhides; a hide is an Undo step; a hidden warning
 returns by itself when the situation changes (his Aug 26 words). **Tier:** FULL (the warning list, saved data, the published
 record). **Place:** the next job after `[DB-READINESS]` phase 7, on its own branch — the tables' shape is settled by the
 ruling itself (`wo` stays in the day's row), so IT is not waiting on the build.

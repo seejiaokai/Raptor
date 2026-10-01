@@ -161,3 +161,24 @@ describe('the crowd on a request row is drawn, and every man in it is tappable',
     expect(seats.map(s => s.dataset.oilp).sort()).toEqual(['bane', 'divot'])
   })
 })
+
+/* D470 (owner, 1 Oct 26 — [OIL-REQ-NAMEBOX]): a named man the scheduler puts in the request row's NAME BOX, in place of
+   the member who filed, earns from it as a man added under the row does. The engine half is engine/oilnamebox.test.ts;
+   this is the screen: his puck on the row is a real switch — glowing, tappable, his own decision — never the inert
+   "nothing measurable to earn from here" it was. */
+describe('a named man in the request row\'s NAME BOX earns, and is his own switch (D470)', () => {
+  it('his puck on the row is ON and tappable; a tap takes HIM off and writes a decision about him alone', async () => {
+    landed({}, { who: 'stiff', more: [] })
+    await open(SAT)
+    await click(oilBtn())
+    const seat = () => ([...groundRowEl().querySelectorAll('.seat.oilpk')] as HTMLElement[]).find(s => s.dataset.oilp === 'stiff')!
+    expect(seat(), 'the man in the box is drawn as a switch').toBeTruthy()
+    expect(seat().classList.contains('inert'), 'not inert — he earns').toBe(false)
+    expect(seat().classList.contains('on')).toBe(true)
+    expect(seat().title).toContain('earns')
+    await click(seat().querySelector('.puck'))
+    expect((DAYS[SAT] as any).oild.people[`stiff|${ITEM}`]).toBe('deny')
+    expect(seat().classList.contains('off')).toBe(true)
+    expect(Object.keys((DAYS[SAT] as any).oild.people), 'nobody else was touched').toEqual([`stiff|${ITEM}`])
+  })
+})

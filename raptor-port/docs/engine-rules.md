@@ -1909,6 +1909,14 @@ were `FS`/`HS` until the 28 Aug 26 rename.
   day; a later change reads pending) hold there. **Membership only:** `inputs` — what the request half credits from — is
   untouched, so the crowd earns nothing, as a NAMED man on a Personal row earns nothing (D43: a placeholder behaves like
   named people). Pins: `engine/oilpersonalcrowd.test.ts`, `ui/oilpersonalcrowd.test.tsx`.
+- **A man in the NAME BOX of another man's request row earns from it too (owner, D470, 1 Oct 26 — `[OIL-REQ-NAMEBOX]`,
+  `[DB-READINESS]` group A phase 7).** D18 made a second man the scheduler adds UNDER a member's landed request row earn
+  from it; the row's name box was left alone, because in every ordinary path it holds the member who filed. A scheduler can
+  put someone else there, and that man did the work and earned nothing. Now `oilev.ts landedExtras` gathers the name box
+  like the extras — a real person who is not the request's own holder — as ordinary scheduled work on the request's
+  address: default yes, his own switch in OIL Earn. The member who filed is never gathered there: he stays in the request
+  half, on his own answer, never overwritten (so he still earns when his name has been replaced on the row). A request
+  that never asks (Personal) still earns nobody anything. Pin: `engine/oilnamebox.test.ts`.
 - **A recorded answer is revisable in place** (owner, 29 Aug 26 — his pick
   over a dedicated undo/redo; the global undo stack covers immediate
   regret). `oilAnswered(row)` (`ui/inputedit.tsx`) gates the affordance:

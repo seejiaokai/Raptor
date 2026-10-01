@@ -988,11 +988,13 @@ export function landedHasSentinel(day: any, iid: string): boolean {
  *  a body that resolved availability itself would let an ISSUED day's crowd move
  *  when somebody files leave, which is the one thing D44 forbids.
  *
- *  A NAMED man in the name box is deliberately NOT gathered. In every path the
- *  app has, that box holds the man who filed the request, and he is paid by the
- *  input half on his own answer; crediting whoever is in it would be a second
- *  change to who gets paid, with no case behind it. The box matters here only
- *  when it holds a PLACEHOLDER. */
+ *  A NAMED MAN IN THE NAME BOX WHO IS NOT THE REQUEST'S OWN HOLDER IS GATHERED TOO (owner, D470, 1 Oct 26 —
+ *  [OIL-REQ-NAMEBOX], [DB-READINESS] phase 7). It was deliberately left out when the extras were built: in every
+ *  ordinary path that box holds the man who filed the request, and crediting whoever is in it was a second change to who
+ *  earns with no case behind it. The case was put to him — a scheduler puts another man in the box, who then does the
+ *  work — and he ruled yes: that man earns as a man added under the row does. The HOLDER is never gathered here (`add`
+ *  drops him): he stays in the request half, on his own answer, so he still earns when his name has been replaced on
+ *  the row — and his own No is never buried under an ordinary yes. */
 export function landedExtras(day: any, iid: string, owner: string, crowd?: string[] | null): string[] {
   const row = landedRow(day, iid)
   if (!row) return []
@@ -1002,6 +1004,7 @@ export function landedExtras(day: any, iid: string, owner: string, crowd?: strin
     if (!id || id === owner || isSpecial(id) || !PEOPLE[id]) return
     if (!out.includes(id)) out.push(id)
   }
+  add(row.who)                                            // the name box, when it holds someone other than the holder (D470)
   for (const v of (row.more || [])) add(v)
   /* the crowd joins the men the scheduler typed, rather than replacing them: a
      row can carry a name AND a placeholder, and both are people who were there.

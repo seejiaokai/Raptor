@@ -4082,8 +4082,9 @@ Both are board-side, admin-only, session-only, and DESKTOP-scoped for the resize
   where it is in the day's list, struck out and darker, one tap from being flagged again**; (3) *"the day's header keeps
   its true count and colour"* — while hidden, **the pucks carry no flag for that item**. Kept, as he was read: only a
   scheduler hides and unhides; a hide is an Undo step; a hidden warning returns by itself when the situation changes.
-  Open readings for him (with a picture, before the build): the day's "N issues" count, a hide on a day already
-  published, the published and printed schedule.
+  **D471 (1 Oct 26):** built as its own job after `[DB-READINESS]` phase 7; a hide on a day ALREADY PUBLISHED waits for the
+  next amendment (a pending change — D45, D103); the published and printed schedule drop the hidden item's flag too. Still
+  open, put to him again: whether the day's own count of problems still counts a hidden one.
 - **Mute a specific check — on the board AND the edit week, in sync.** Each
   `.wln` row in the board's checks panel (`board.ts:boardWarnHTML`) and each
   `.witem` row in the edit week's day-issue list (`html.ts:dayWarnHTML`) carries
@@ -8047,6 +8048,8 @@ holiday comes from Leave War through `HOOKS.oilEarningDay`.
 
 ### The green edge (§2.10 — the owner chose it over a chip: "c looks good")
 
+**(D470, 1 Oct 26: a man the scheduler puts in the row's NAME BOX in place of the member is the second kind too — he wears the
+edge as scheduled work, and the member who filed still earns on his own answer.)**
 **A LANDED REQUEST ROW CARRIES TWO KINDS OF MAN (owner, D18, 22 Sep 26).** The man who FILED the
 request wears the edge off his own answer. Anyone the SCHEDULER puts on that row beside him wears
 it as ordinary scheduled work, and each of them can be taken off on his own. So a request row can
