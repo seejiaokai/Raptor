@@ -43,6 +43,14 @@ Nothing here changes what a screen does. The app's own units (a week, a chart
 layout) survive as JSON columns at stage 1 and normalise later, on the
 schedule in section 6.
 
+**When, and who writes the tables (owner, D473, 1 Oct 26):** the app goes into the database at the END, once its features
+are built. This document is the table list: it is kept up to date in the same change as any feature that adds or alters
+something the app saves, and at the end it is turned into the format the IT side asks for, for them to enter into Dataverse
+(they no longer design the tables). The platform as they described it on 1 Oct 26 — no plug-ins or Custom APIs, Dataverse
+functions and Power Automate flows, a 2,000-row reading limit still to be pinned down — is in `OUTSTANDING.md`
+`[IT-QUESTIONS]`; §9's day lock (rule 8, §12 question 8) was designed with one plug-in and is redesigned for that platform
+when the lock is built.
+
 ## 2. Design rules every entity follows
 
 | Rule | What it means in the schema |

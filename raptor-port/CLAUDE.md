@@ -207,6 +207,9 @@ the phone perf budget. Don't convert them to components.
   WALK itself is the 28 Aug standing order at the top of this file, which holds
   the surface list, the flows and the drift-seams): a feature that adds a
   surface, a flow, or a new drift-seam adds a line there.
+- **Keep the table list true in the same PR** (owner, D473, 1 Oct 26 — the database comes at the END): a change that adds or
+  alters something the app SAVES updates `docs/data-schema.md` (what is stored) and `docs/data-model.md` (the table it
+  becomes) in that change — the table format handed to the IT side at the end is written from them.
 
 ## Stable decisions (do not relitigate)
 

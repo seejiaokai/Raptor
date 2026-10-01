@@ -48,6 +48,10 @@ said as such, never dressed up as his. One line per item, in plain words; the de
 list (13–23 Sep 26), its finished entries and the "In plain terms" block are in `OUTSTANDING-ARCHIVE.md`, moved
 whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaining).
 
+**THE DATABASE COMES AT THE END (D473, 1 Oct 26 — replaces D354's "starts now", on the IT side's own advice):** the app's features
+are built first; group A of `[DB-READINESS]` is built and its last phase (7) waits on his look; group B, the lock's screens and
+`[DB-STEP]` wait for the end; the table list is kept up to date as each feature is added, and the table format is written on his
+side for the IT side to enter. The paragraph below is as written while the step was "starting now"; its ORDER stands.
 **THE DATABASE STEP STARTS NOW (D354, 29 Sep 26):** — and how it shares and locks, [DB-SYNC-MODEL] (D355, D356 — the mock-up and §9 DONE 29 Sep 26 on `claude/day-lock-mockup-data-model-493d27`, the red team running; his six screen questions open); for the IT team, the flow guide [IT-FLOW-GUIDE] is DONE (42 slides, `raptor-port/docs/it-flow-guide/`, merged on his "merge live" 29 Sep 26; archived). The IT team is taking the app into Dataverse now; the order below
 stands, its timing ("about two months away", "about a month before") is overtaken — the readiness batch and the OIL
 award fix are due before the tables are settled. What to finish before the hand-over: his answer to be recorded here.
@@ -82,7 +86,8 @@ award fix are due before the tables are settled. What to finish before the hand-
    1 Oct 26 on `claude/db-readiness-p7-oil-followups`** (plan and build log
    `raptor-port/docs/superpowers/plans/2026-10-01-db-readiness-phase7-plan.md`; evidence `raptor-port/docs/handpass/2026-10-01-dbr-phase7-check.md`) — **left: his look
    and "merge live". That closes group A.**
-5. **When Manfred is ready — [DB-STEP]:** the data model to him, then the one adapter to his tables; the stack
+5. **At the END, once the features are built (D473, 1 Oct 26) — [DB-STEP]:** the table format written on his side (with his AI)
+   for the IT side to enter, then the one adapter to those tables; the stack
    ([ARCH-STACK]) resumes there, with its step 6 still to come; the [AMEND] work is queued behind it. Architecture first,
    then the individual bugs (D144).
 6. **Before ANY collaborator is added** — an event, not a slot: take the checks runner off this repo (SEC-101, in
@@ -634,9 +639,13 @@ Today each person has ONE running balance per counter; leave on 1 Jan simply com
 year is handled by the admin's "Reset counters". Decide next session: separate balances per year/war,
 carry-over rules, and which year a leave crossing 31 Dec charges. Context: clash catalogue Q10.
 
-### [DB-STEP] The shared-database step (Dataverse) — STARTS NOW (D354, 29 Sep 26)
+### [DB-STEP] The shared-database step (Dataverse) — AT THE END (D473, 1 Oct 26; "starts now", D354, is replaced)
+**AT THE END (D473, 1 Oct 26 — "Database at the end."):** the app goes into Dataverse once its features are built — the IT side's
+own advice (the app about 60% built; once it is in, every change needs their review and merge, and no AI outside that environment
+can sign in to check it). He, with his AI, writes the table format and schema for them to enter; `raptor-port/docs/data-model.md`
+is that list, kept up to date as each feature is added. What the platform offers today: `[IT-QUESTIONS]` (1 Oct 26).
 
-**STARTED 29 Sep 26 (D354):** the IT team is taking the app into Dataverse now; he means to keep working on the app beside it.
+*(As written 29 Sep 26, replaced by D473:)* **STARTED 29 Sep 26 (D354):** the IT team is taking the app into Dataverse now; he means to keep working on the app beside it.
 
 
 **ACCESS CHANGES TAKE EFFECT AT ONCE (Astra's read of `[ACCOUNTS]`, 26 Sep 26):** switching an account off, demoting
@@ -960,6 +969,9 @@ then); the server-side check (a plug-in and Custom APIs — IT's, §12 q8); §12
 **The shape work it hands to `[DB-READINESS]` group A** is listed there.
 
 ### [DB-READINESS] Our side of the database, built against the fake database — before the tables are settled (D203; D354 — the step starts now; filed 26 Sep 26)
+**D473 (1 Oct 26): THE DATABASE COMES AT THE END. Group A is built (phases 0–7, the last waiting on his look); GROUP B AND THE
+LOCK'S SCREENS WAIT for the connection — no more readiness work until then. New features keep to the same saving route, and the
+table list is updated with each.**
 **SPLIT (owner, D453, 29 Sep 26): GROUP A — before the IT team settles its tables — (1) saving in small pieces, (4) never
 seeding demo data, plus the design's shape work from `[DB-SYNC-MODEL]` (the schedule a day per piece, the single change
 log, no week-deleting reconcile, the planning calendar's own records — and, from the design's red team: the command
@@ -1094,7 +1106,9 @@ hard cap, is still to ask.
 ("the database step starts now"); `handover-dataverse.md` §What we agreed and §What happens next; the day lock's server-side
 check (D450, `data-model.md` §9 and §12 q8 — designed with one plug-in plus Custom APIs; with neither, a take-over and freeing
 an idle day need another route — a Dataverse function or a flow — to design when the lock is built); the 2,000-row reading
-limit against the Leave War's records and the change history (`data-model.md` §8 load by need). **To ask IT next:** an example
+limit against the Leave War's records and the change history (`data-model.md` §8 load by need). **DECIDED 1 Oct 26 — D473:
+"Database at the end."** D354 is replaced, D453 and D203 narrowed in their timing, the handover note corrected at its head; the
+lock's server-side check is redesigned when the lock is built. **To ask IT next (his "I'll answer the questions later"):** an example
 of the format he wants the tables written in (one table, his way), the publisher prefix and naming rule, and what exactly the
 2,000 limit is.
 
@@ -1452,7 +1466,7 @@ live") rewritten for pull requests to IT, on his word. **Place:** with `[DB-STEP
 better for me to find bugs right?"* — yes for what only the database shows (two people on one day, the lock, slowness, real
 volumes), but on a TEST copy IT provides, never the live one; the app's own rules are still found the same way, by walking.
 *"should i put this in a database first or just continue working in my repo?"* — keep working here until phase 6 (c) and
-phase 7 are merged (they decide the tables' shape), then give IT the go-ahead; after the clone, work ONLY in IT's repo (one
+phase 7 are merged (they decide the tables' shape), then give IT the go-ahead *(overtaken 1 Oct 26 by D473 — the database comes at the END, once the features are built)*; after the clone, work ONLY in IT's repo (one
 copy on his desktop), never two. **To ask IT, with (2) above:** a test environment separate from the live one, with test data,
 that this PC can run the app against (so the walk still runs); push access for branches and pull requests from his desktop;
 whether the checks run on each pull request and whether a preview link exists; that IT's own changes (the connection files)

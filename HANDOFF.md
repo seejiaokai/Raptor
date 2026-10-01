@@ -20,30 +20,30 @@ the later merge keeps both (D78).
 - **Where it started:** his opening line — tidy the two merged blocks away (phases 0–6 live, PR #476), then plan and build
   phase 7 with its own bug check, on a new branch cut from `main`. The context was compacted once mid-chat; the plan's build
   log (§6) and the evidence sheet were written as the work went and are the record.
-- **Built (on the branch; ONE pull request to open once it is pushed):** the six small OIL follow-ups — a placeholder on a Personal request's row is counted
+- **Built (on the branch, one pull request):** the six small OIL follow-ups — a placeholder on a Personal request's row is counted
   and earns nobody; the ALL AVAIL window flags a man's sim brief / debrief; a sim row's seat list is saved without holes; the
   stored-record sweep's three fixes; D470 (a man in another man's request name box earns, and the box survives the member's
   own edit); the phone's finger tap on a count; OIL never called pay, on screen or in comments. All six archived.
   Plan and build log `raptor-port/docs/superpowers/plans/2026-10-01-db-readiness-phase7-plan.md`; evidence
   `raptor-port/docs/handpass/2026-10-01-dbr-phase7-check.md` (his look card is its §9).
-- **Rulings this chat:** D469, D471, D472 (hidden warnings — NOT built; `[WARN-HIDE-KEPT]`) and D470 (built).
+- **Rulings this chat:** D469, D471, D472 (hidden warnings — NOT built; `[WARN-HIDE-KEPT]`), D470 (built) and D473 (the database
+  comes at the END — after phase 7 no more database-readiness work; the IT side's answers of 1 Oct 26 are in `[IT-QUESTIONS]`).
 - **Unfinished:** his look and "merge live" (none of it code). On his iPhone: a finger tap on a count under ALL AVAIL on the
   week views — proven in Chromium only (`[COUNT-CHIP-PHONE-TAP]`). Open residue, all filed: `[WARN-HIDE-KEPT]` (the next job),
   `[LOAD-MSG-SHORT]` (a question for him), `[INP-TILL-STALE]`, `[OIL-INERT-TAP-SILENT]`, `[OG-TAG-OVER-COUNT]`,
   `[MEMBER-EDITPAGE-CHECK]`. Noticed, not this chat's: `[OIL-AWARD-IS-A-GRANT]` and `[OIL-EARNED-VS-GRANTED]` merged with
   PR #469 and still sit in the backlog (each now says so).
-- **Branch:** `claude/db-readiness-p7-oil-followups` — **COMMITTED ON HIS PC, NOT PUSHED when this was written (1 Oct 26):
-  the app's permission check refused this chat's push** (the repo is public for now, D106), so there was no PR and no Vercel
-  link; he was asked to allow the push or run it himself. Check first: `git ls-remote --heads origin
-  claude/db-readiness-p7-oil-followups` and `gh pr list --head claude/db-readiness-p7-oil-followups`. If it is on GitHub
-  with no PR, open one (the PR text is ready in the plan's build log and the evidence sheet), unsubscribe from it at once and
-  hand him the Vercel link with the look card. If it has MERGED, the next chat starts from `main` in a new worktree and never
+- **Branch:** `claude/db-readiness-p7-oil-followups` — pushed 1 Oct 26 on his "push it" (the app's permission check had
+  refused this chat's first attempt; the repo is public for now, D106), and its ONE pull request opened with that push.
+  Check before acting: `git ls-remote --heads origin claude/db-readiness-p7-oil-followups` and `gh pr list --head
+  claude/db-readiness-p7-oil-followups` — if the branch is there with no PR, open one, unsubscribe from it at once and hand
+  him the Vercel link with the look card. If it has MERGED, the next chat starts from `main` in a new worktree and never
   picks this branch.
-- **Gates:** the full set green on the final code under the PC lock — counts in §Gate baseline below. GitHub's own checks
-  have never run on this branch: read them after the first push, before anything else (`gh run list --branch
-  claude/db-readiness-p7-oil-followups --limit 2`).
+- **Gates:** the full set green on the final code under the PC lock — counts in §Gate baseline below (the commits after
+  them are documents only). GitHub's own checks first ran with that push: read their result before anything else
+  (`gh run list --branch claude/db-readiness-p7-oil-followups --limit 2`), and never push while they run (D151).
 - **Open questions for him:** none from this chat beyond his look; `[LOAD-MSG-SHORT]` still waits.
-- **Parallel (D302):** this chat used D469–D472 and observations #401–#406. No other open branch known when written.
+- **Parallel (D302):** this chat used D469–D473 and observations #401–#407. No other open branch known when written.
 - **Pick up here:** if he reports something from his look, fix it on this branch (red first, re-walk, the gates). Once he has
   said "merge live" and it is live: `[WARN-HIDE-KEPT]` — a fresh chat, a new worktree on `main`, a picture to him first
   (D469, D471, D472 in `.claude/decisions-full/scheduler.md`), then its own FULL check.
@@ -51,10 +51,13 @@ the later merge keeps both (D78).
 
 ## Next, in order
 
-0. **THE DATABASE STEP STARTS NOW (D354, 29 Sep 26)** — `[IT-FLOW-GUIDE]` DONE (the guide for IT, `raptor-port/docs/it-flow-guide/`, 29 Sep 26); `[DB-SYNC-MODEL]`'s design DONE and merged (PR #475); `[DB-READINESS]` group A PLANNED 30 Sep 26 (plan v4,
+0. **THE DATABASE COMES AT THE END (D473, 1 Oct 26 — replaces D354's "starts now"):** the app's features are built first; after
+   phase 7 no more database-readiness work until then; the table list (`raptor-port/docs/data-model.md`) is kept up to date as
+   each feature is added, and he — with his AI — writes the table format for the IT side to enter. Next job: `[WARN-HIDE-KEPT]`.
+   *Done while the step was "starting now" (29 Sep – 1 Oct 26):* `[IT-FLOW-GUIDE]` DONE (the guide for IT, `raptor-port/docs/it-flow-guide/`, 29 Sep 26); `[DB-SYNC-MODEL]`'s design DONE and merged (PR #475); `[DB-READINESS]` group A PLANNED 30 Sep 26 (plan v4,
    `claude/db-readiness-table-shaping-4094f6`) — its build under way: phases 0–5 and 5b built 30 Sep 26, the group's FULL check done (the walk and both code reads, every finding fixed); phase 6 (a), (b), (d) built and FULL-checked 30 Sep 26 (`raptor-port/docs/handpass/2026-09-30-dbr-phase6-check.md`); phase 6 (c) v3 built and FULL-checked 1 Oct 26 on `claude/db-readiness-p6c-holder-base` (D467 — `…/2026-10-01-dbr-phase6c-check.md`) — phases 0–6 MERGED 1 Oct 26 on his "merge live" (PR #476); phase 7, the small OIL follow-ups, BUILT and FULL-checked 1 Oct 26 on `claude/db-readiness-p7-oil-followups` (`…/2026-10-01-dbr-phase7-check.md`) — waiting for his look and "merge live", which closes group A (D453); then `[WARN-HIDE-KEPT]` (D469, D471, D472). The IT team is taking the app into Dataverse now, and he means to
    keep working on the app beside it. What to finish before the hand-over was put to him the same day; record his answer
-   here and in `OUTSTANDING.md`'s priority list the moment he gives it. Everything below keeps its ORDER; its timing is overtaken.
+   here and in `OUTSTANDING.md`'s priority list the moment he gives it. Everything below keeps its ORDER; its timing is overtaken — *and that hand-over now waits for the end (D473).*
 1. **HIS ORDER to the database step (D203, 26 Sep 26 — its timing overtaken by D354):** `[ACCOUNTS]`, `[ACCOUNTS-NEW-PERSON]`,
    `[POST-OUT-OUTCOMES]`, `[LW-MOVE-STANDARD]` (D264–D266) and `[ONE-DOOR]` (D309, D310, with `[POST-IN-DATE]`) MERGED
    (PRs #442, #443, #446, #447, #450) → **the one changes window (`[DRAFT-PENDING]`)** MERGED (PR #451, 28 Sep 26); its
@@ -66,7 +69,8 @@ the later merge keeps both (D78).
    **group A** (what decides the tables' shape — saving in small pieces, the schedule a day per piece, the change log, no
    week-deleting reconcile, the planning calendar's own records, no demo seed; with the small OIL follow-ups, D147) BEFORE
    IT settles its tables → the app connected (`[DB-STEP]`) → **group B** (tuned against the real database) → the lock's
-   screens. Ask IT when its tables settle. The whole list: `OUTSTANDING.md`'s priority list.
+   screens. *(D473, 1 Oct 26: group A is built; the connection, group B and the lock's screens wait for the end — there is no
+   "before its tables settle" to race now.)* The whole list: `OUTSTANDING.md`'s priority list.
 3. Filed, none blocking: `[TRK-PINCH-ASK]` (his iPhone look), `[LW-FROZEN-BAR-GAP]`; the Tracker leftovers'
    own residue — `[SAVE-NOTE-COVERS]` (medium, next), `[TRK-REMOUNT-LANDING]`, `[TRK-ASYNC-STALE]` (with `[DB-READINESS]`). Everything else: `OUTSTANDING.md`'s priority list.
 4. **Before ANY collaborator:** take the checks runner off this repo (Astra SEC-101, `[REPO-PRIVATE]`).

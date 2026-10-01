@@ -2112,3 +2112,18 @@ restore — repeatable, all-or-nothing, and safe for files whose bytes (line end
 **Suggested improvement:** In record-decisions.md's homes paragraph: name a backlog item in a ruling's row only as "filed as [ID]", never as a home; if it must be listed, the archiving step updates the row to `OUTSTANDING-ARCHIVE.md` FIRST. In session-handoff Step 3, add: "before archiving an item, grep the full rulings rows for `OUTSTANDING.md` + its id".
 
 **Principle:** A pointer to a place whose purpose is to be emptied is a pointer with an expiry date; name durable homes, and treat the transient one as a status.
+
+### Observation 407: A "replaced" mark written in the wrong cell of a ruling's row was silently treated as a narrowing — the filing step said "done"
+
+**Status:** OPEN
+**Date:** 2026-10-01
+**Session context:** Recording a ruling that wholly replaces an earlier one (the repo's DECISIONS.md step 2, then `backlog-archive.mjs --rulings`).
+**Skill:** repo rule .claude/rules/record-decisions.md / DECISIONS.md step 2
+**Type:** internal
+**Phase/Area:** Marking a replaced ruling
+
+**Issue:** Step 2 says to start the earlier ruling's "ruling cell" with `**REPLACED BY D<n> (<date>).**`. The script reads the mark at the start of the THIRD cell (his words), as every archived row shows; the in-part marks (NARROWED) live in the FOURTH. Written in the fourth, the REPLACED mark was accepted as a change (the short line gained "changed by D<n>"), the run printed "done; the inventory is clean", and the replaced ruling stayed live in the list every chat loads. Found only because the count of that row in the archive was checked afterwards.
+
+**Suggested improvement:** In DECISIONS.md step 2 say which cell by position ("the cell right after the date") and show one example row; in the script, refuse a row whose fourth cell opens with REPLACED / SPENT ("the mark belongs at the start of the cell after the date") instead of reading it as a narrowing. After any replacement, verify: the old number is in DECISIONS-ARCHIVE.md once and in no live file.
+
+**Principle:** When a tool accepts a near-miss as a different valid input, "it ran clean" proves nothing; check the outcome the step exists to produce (here: the old ruling is gone from the live list), not the tool's exit.

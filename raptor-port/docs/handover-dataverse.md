@@ -3,6 +3,14 @@
 For the person designing RAPTOR's Dataverse tables. Written 10 Sep 26; "What happens next" brought up to date
 29 Sep 26, when the database step started (D354).
 
+**CHANGED 1 Oct 26 (owner, D473 — on the IT side's own advice): the database comes at the END, once the app's features are
+built, and the table format and schema are written on OUR side (the owner, with his AI) for you to enter into Dataverse —
+you no longer design them.** Until then our proposal (`data-model.md` §3) is kept up to date as each feature is added. The
+sections below are as written under the earlier agreement: where they say "You design the tables" or "Now, before your
+tables settle", this paragraph wins. What we still need from you is smaller: an example of the format you want the tables
+written in, your naming rule and prefix, and the limits of the platform (no plug-ins or Custom APIs today; Dataverse
+functions and Power Automate flows; what the 2,000-row reading limit is).
+
 ## What we agreed
 
 - **You design the tables.** Our documents are a proposal and an inventory,
