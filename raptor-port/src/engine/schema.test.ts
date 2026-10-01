@@ -130,7 +130,8 @@ const SIGNBIND: Spec = { dg: 'string', iso: 'string', base: 'string', rev: 'stri
    checked for shape loosely; the rings, flags, dashes and traces are per-person maps, null when empty */
 const ANYW: Spec = { $or: ['string', 'number', 'boolean', 'object'] }
 const WARNSLICE: Spec = { byDay: { $or: [{ di: 'number', dow: 'string', warns: [{ $map: ANYW }] }, 'object'] }, sev: 'object', chip: 'object', dash: 'object', trace: 'object', cs: { $opt: { $map: 'string' } },
-  face: { $opt: { warns: [{ $map: ANYW }], sev: 'object', chip: 'object', dash: 'object', cs: { $opt: { $map: 'string' } } } } }   // D187: the whole face at issue
+  face: { $opt: { warns: [{ $map: ANYW }], sev: 'object', chip: 'object', dash: 'object', cs: { $opt: { $map: 'string' } } } },   // D187: the whole face at issue
+  wo: { $opt: ['string'] }, shown: { $opt: { sev: 'object', chip: 'object', dash: 'object' } } }   // the hides a version went out with, and its marks as shown ([WARN-HIDE-KEPT], D469 / D471)
 /* the men on the day as the roster drew them, and the rule values the face prints (drawn as issued and compared — D179,
    Astra's code read #2); the roster at issue (`ros` — drawn by the day panel's "free all day", never compared) */
 const PEOPLEATTRS: Spec = { $map: { q: { $or: ['string', 'object'] }, seat: { $or: ['string', 'object'] }, pers: 'boolean', san: 'boolean', sxo: 'boolean', archived: 'boolean' } }
@@ -140,8 +141,8 @@ const DAYSNAP: Spec = { d: DAY, c: { $map: 'number' }, fil: { $opt: { $map: 'str
 /* Phase 2 AlRecord: SINGLE-DAY, keyed by its immutable verId; the canonical
    `diff` replaces the old `keys` list, and there is no n/days/n0/adds/structAdds. */
 const ANYV: Spec = { $or: ['string', 'number', 'boolean'] }
-const ALDIFF: Spec = { addr: 'string', kind: { $lit: ['add', 'delete', 'change', 'move', 'input', 'oil', 'warn'] }, from: { $opt: ANYV }, to: { $opt: ANYV } }
-const UKINDS: Spec = { $opt: { total: 'number', add: 'number', del: 'number', chg: 'number', mov: 'number', inp: 'number', oil: 'number', warn: 'number?' } }   // D114; warn: the warnings item (D179)
+const ALDIFF: Spec = { addr: 'string', kind: { $lit: ['add', 'delete', 'change', 'move', 'input', 'oil', 'warn', 'hide'] }, from: { $opt: ANYV }, to: { $opt: ANYV } }   // hide: a warning hidden / flagged again (D471)
+const UKINDS: Spec = { $opt: { total: 'number', add: 'number', del: 'number', chg: 'number', mov: 'number', inp: 'number', oil: 'number', warn: 'number?', hide: 'number?' } }   // D114; warn: the warnings item (D179)
 const AL: Spec = { id: 'string', di: 'number', iso: 'string', seq: 'number', snap: DAYSNAP, diff: [ALDIFF], units: 'number?', ukinds: UKINDS, sign: { $map: SIGNSET }, added: { $opt: ['string'] } }   // units: the item count as a person counts it (D109)
 const ONE: Spec = { $lit: [1] }
 /* [GLOBAL-UNDO] §6.1 — a retired-issuance snapshot (the append-only log, keyed
@@ -344,6 +345,25 @@ describe('after edits — fields the seeds never carry', () => {
     expect(SCHED.cur[0]).toBe(SCHED.als[0].id)   // cur is the issued verId
     conform(SCHED, SCHED_SPEC, 'SCHED after AL 1')
     conform(JSON.parse(histSnap()), WEEK_SNAP, 'histSnap after AL 1')
+  })
+  /* [WARN-HIDE-KEPT] — Astra's final read 2, Fable's F5 (1 Oct 26): an amendment can now carry a `hide` entry (a warning
+     hidden, or flagged again, on a published day — D471), and the declared shape of the stored record did not list
+     it. The table format handed to the IT side is written from this (D473), so it must say what the app saves. */
+  it('an amendment that carries a hidden warning: its diff holds a `hide` entry, and the record still conforms', async () => {
+    const view = await import('../state/view'), V = await import('./validate'), P = await import('./publish')
+    V.validate()
+    /* Monday published the way the app publishes it: the four names, then the day */
+    P.setSign(0, 'cur', 'ignite'); P.setSign(0, 'sked', 'bane'); P.setSign(0, 'plan', 'stiff'); P.setSign(0, 'appr', 'pump')
+    P.setDayApproved(0, true); V.validate()
+    expect(P.dayApproved(0), 'Monday is published').toBe(true)
+    const w = V.rawWarn().byDay[0].warns[0]
+    view.WARNOFF.add(view.warnMuteKey(w)); V.validate()
+    expect(P.hidePending(0).length, 'one pending hide').toBe(1)
+    alIssue(0)
+    const al = SCHED.als[SCHED.als.length - 1]
+    expect(al.diff.map((e: any) => e.kind), 'the amendment carries the hide').toContain('hide')
+    conform(SCHED, SCHED_SPEC, 'SCHED after an amendment with a hide')
+    view.WARNOFF.clear(); V.validate()
   })
 })
 

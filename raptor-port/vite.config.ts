@@ -27,6 +27,9 @@ export default defineConfig({
           name: 'raptor',
           include: ['src/**/*.test.{ts,tsx}'],
           exclude: ['**/node_modules/**', 'src/leavewar/**'],
+          /* the marks guard ([WARN-HIDE-KEPT], 1 Oct 26): after every validate() of every test, each puck flag must
+             belong to a warning of its own — src/testing/marks-guard.ts */
+          setupFiles: ['src/testing/marks-guard.ts'],
           /* 20s like leavewar's, for the same reason: headroom on a slow
              shared runner, not a target. The default 5s failed main's deploy
              on 19 Aug 26 — a board.test.tsx test that runs ~1s locally timed

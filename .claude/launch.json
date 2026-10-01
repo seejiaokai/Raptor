@@ -312,6 +312,74 @@
         "--strictPort"
       ],
       "port": 4208
+    },
+    {
+      "name": "raptor-wh-a",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "--prefix",
+        "raptor-port",
+        "vite",
+        "preview",
+        "raptor-port",
+        "--outDir",
+        "dist-wh",
+        "--port",
+        "4211",
+        "--strictPort"
+      ],
+      "port": 4211
+    },
+    {
+      "name": "raptor-wh-b",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "--prefix",
+        "raptor-port",
+        "vite",
+        "preview",
+        "raptor-port",
+        "--outDir",
+        "dist-wh",
+        "--port",
+        "4212",
+        "--strictPort"
+      ],
+      "port": 4212
+    },
+    {
+      "name": "raptor-wh-c",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "--prefix",
+        "raptor-port",
+        "vite",
+        "preview",
+        "raptor-port",
+        "--outDir",
+        "dist-wh",
+        "--port",
+        "4213",
+        "--strictPort"
+      ],
+      "port": 4213
+    },
+    {
+      "name": "raptor-wh",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "--prefix",
+        "raptor-port",
+        "vite",
+        "preview",
+        "raptor-port",
+        "--outDir",
+        "dist-wh",
+        "--port",
+        "4214",
+        "--strictPort"
+      ],
+      "port": 4214
     }
   ]
 }

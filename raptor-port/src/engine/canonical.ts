@@ -114,7 +114,7 @@ export function digest(d: any, di: any): string {
    INPUTS. Kept deliberately separate from rebaseDayPending: that stays the
    display-mark path; this is the record's authority.
    ===================================================================== */
-export type DeltaKind = 'change' | 'add' | 'delete' | 'move' | 'input' | 'oil' | 'warn'
+export type DeltaKind = 'change' | 'add' | 'delete' | 'move' | 'input' | 'oil' | 'warn' | 'hide'
 /* `was` — the entry's address names a row of the PREVIOUS (issued) day, not the current one: set on a hole (a sub-cell
    gone from a surviving row), whose address is the issued key. A 'delete' names the previous day by its kind. Read only by
    the signature's pending key (publish.ts pendingKey), which names a current ground row by its id so a re-order the

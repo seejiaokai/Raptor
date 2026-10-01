@@ -29,6 +29,7 @@
 import { onCommit } from '../command'
 import type { CommitEnvelope, Change } from '../command/types'
 import { logAction } from '../engine/editlog'
+import { parseHideDetail } from '../engine/hidedetail'
 import { PEOPLE } from '../engine/people'
 import { dateOrd, INPUTS } from '../engine/inputs'
 import { parseVerId, dayIso } from '../engine/verid'
@@ -404,7 +405,8 @@ export function logReversed(entry: { label?: string; forward?: Change[] }, dir: 
   const addSpan = (s: Span | null) => { if (!s) return; for (let d = s.date; d <= s.end; d = nextIso(d)) days.add(d) }
   for (const c of entry.forward || []) {
     const id = String(c.id)
-    if (c.collection === 'days') { const [wk, di] = id.split('#'); try { const iso = dayIsoOf(wk!, +di!); if (iso) days.add(iso) } catch (_) { /* a malformed id names no day */ } }
+    /* a day of a week — its content, or the warnings hidden on it (`sched.mutes/<wk>#<di>`, [WARN-HIDE-KEPT]) */
+    if (c.collection === 'days' || c.collection === 'sched.mutes') { const [wk, di] = id.split('#'); try { const iso = dayIsoOf(wk!, +di!); if (iso) days.add(iso) } catch (_) { /* a malformed id names no day */ } }
     else if (c.collection === 'inputs' && id !== '__order') { addSpan(spanOf(c.before)); addSpan(spanOf(c.after)) }
     else if (c.collection === 'lw.cell') days.add(cellParts(id).date)
     /* a ledger entry's Undo / Redo lands on its own day (both old and new, for a correction moved) — Astra's round-2
@@ -443,6 +445,14 @@ export function changeLinesFor(env: CommitEnvelope): void {
       else if (c.collection === 'lw.ledger') ledgerLines(c)
       else if (c.collection === 'lw.postouts') postoutLines(c, env)
       else if (c.collection === 'people') personLines(c, env)
+    }
+    /* A WARNING HIDDEN, OR FLAGGED AGAIN ([WARN-HIDE-KEPT], owner D469, 1 Oct 26). A hide is kept with its day for
+       everyone "until another person unhides it" — so who hid it, and when, has to be answerable from the change
+       history. One line, led by its item (D340), under "The day" (D346), written from the command's own words. */
+    if (env.type === 'sched.warnMute') {
+      const h = parseHideDetail((env as any).detail)
+      if (h && env.changes.some(c => c.collection === 'sched.mutes'))
+        logAction(h.di, `Warning · ${h.words}`, { sect: 'day', from: h.hidden ? 'flagged' : 'hidden', to: h.hidden ? 'hidden' : 'flagged again' })
     }
     if (war) warLines(env, wi.approvedFor, wi.backToBid)
     else crossLines(env)

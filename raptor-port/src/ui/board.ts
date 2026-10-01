@@ -8,7 +8,8 @@ import { INPUTS, inputsOn, inputCoversDate, inpById, inpTimeText, inpId } from '
 import { PEOPLE, whoId, isSpecial } from '../engine/people'
 import { isStandalone, makeStandalone, DUTY_PICK, SAWAVE } from '../engine/waves'
 import { waveInTime } from '../engine/events'
-import { WARN, validate, WCODE, wlbl, fltNoLen, FLT_NO_LEN_SAYS } from '../engine/validate'
+import { WARN, validate, WCODE, wlbl, FLT_NO_LEN_SAYS } from '../engine/validate'
+import { shownWarns } from '../engine/warnhide'
 import { hhmm, fmtHM, minus, parseHM } from '../engine/time'
 import { VCONF } from '../engine/rules'
 import { slotVal, txtGet, txtSet, acRef, rollCx, whoArr, unacceptInput, TIME_TXT } from '../engine/slots'
@@ -20,7 +21,7 @@ import { touchDragBusy } from './drag'
 import { shiftAircraft, shiftFormation, shiftWave, shiftKeys, keyDay } from '../engine/keys'
 import { applyMove, sortWave, sortDutyBlock, sortSims, sortGround, sortProg, sortDay } from '../engine/reorder'
 import { HIST } from '../state/history'
-import { signoffHTML, cxText, storesView, intimesInner, areaText, atimeText, dayStatHTML, planSelectorHTML, verTagHTML, nysMarkHTML, signedLineHTML, srcInput, saRoleHTML, availHTML, QUARANTINE_NOTE , mkPeriod, withDaySnap } from './html'
+import { signoffHTML, cxText, storesView, intimesInner, areaText, atimeText, dayStatHTML, planSelectorHTML, verTagHTML, nysMarkHTML, signedLineHTML, srcInput, saRoleHTML, availHTML, QUARANTINE_NOTE , mkPeriod, withDaySnap, fltNoLenShown } from './html'
 import { setInpField } from './inputedit'
 import { STORE_CFG, DUTYTPL_CFG, blockFromTpl, DAYTPL_CFG, applyDayTpl, addDayTpl, dayTplSave, dayTplSummary, secOrder, waveInsertSlot, waveKindOf, moveWave } from '../engine'
 import { DAYTPL_PUBLISHED_MSG } from '../engine/daytpl'
@@ -206,7 +207,7 @@ function boardHTMLBody(di: number, pv?: boolean) {
          marked box and a raised warning can never disagree. `data-warnkey` is
          what the warning's own key resolves to when it is tapped
          (highlights.ts anchorEl) — before this the tap moved nothing at all. */
-      const noLen = fltNoLen(f)
+      const noLen = fltNoLenShown(di, fp, f, pv)   // …and never while that warning is hidden (D469 — ui/html.ts)
       const badCls = noLen ? ' badtm' : ''
       const badAtt = noLen
         /* the ADDRESS only on live paper, like the week's (ui/html.ts): a
@@ -429,7 +430,12 @@ function boardSignBody(di: number, pv?: boolean) {
    no mute and no "create the period" (they act on today's day, not on the record) */
 export function boardWarnHTML(di: number, look = false) {
   const d = DAYS[di]
-  const dw = (WARN.byDay[di] && WARN.byDay[di].warns) || []
+  const all = (WARN.byDay[di] && WARN.byDay[di].warns) || []
+  /* A HIDDEN WARNING IS NOT COUNTED (owner D472, 1 Oct 26 — "it should just show 2 issues"): the count, the "N warnings"
+     and the bar's colour read the SHOWN warnings, as the week's bar does (ui/html.ts dayWarnHTML); the count says nothing
+     about a hidden one. `off` is the warning's own mark from the bundle being drawn — the working copy's hides here, a
+     version's own under a look (D471). */
+  const dw = shownWarns(all)
   /* .sbwrap/.open + data-sbwtog + .sbw-car exist for the PHONE fold (owner,
      8 Aug 26 — the always-open strip scrolled inside the one board
      scroller). Desktop hides the caret and its toggle branch is
@@ -448,9 +454,11 @@ export function boardWarnHTML(di: number, look = false) {
     + `<span class="sbw-car">${SBWOPEN ? '▾' : '▸'}</span>`
     + (dw.length
       ? `<b>⚠ ${dw.length} issue${dw.length > 1 ? 's' : ''}</b>${nh ? ` · ${nh} warning${nh > 1 ? 's' : ''}` : ''} · <span class="dwcue">${SBWOPEN ? 'tap to collapse' : 'tap to review'}</span>`
-      : `No conflicts flagged for ${esc(d.dow)} ✓`)
+      /* every issue hidden (D475): the quiet heading, and the struck lines still under it — on a phone the heading is
+         the fold's own toggle, so it says the list can be opened */
+      : `No conflicts flagged for ${esc(d.dow)} ✓` + (all.length ? ` · <span class="dwcue">${SBWOPEN ? 'tap to collapse' : 'tap to review'}</span>` : ''))
     + `</div>`
-  if (dw.length) {
+  if (all.length) {
     const canMute = !look && canEditSched()
     const wtext = (w: any) => {
       const names = (w.who || []).map((id: any) => PEOPLE[id] ? PEOPLE[id].cs : id).join(', ')
@@ -461,13 +469,12 @@ export function boardWarnHTML(di: number, look = false) {
        second copy of ordering the engine owns — and re-ordering would break the
        index these rows now carry. Same order as the week's .dwlist, which also
        iterates as stored; the two lists could previously disagree.
-       A scheduler can MUTE a specific check (owner, Aug 26): the muted ones drop
-       out of the list here (warnShown) and gather under a "N hidden" line below,
-       reachable to un-mute. The header count above stays the TRUE total on
-       purpose — muting declutters the list, it does not change what the day is. */
-    const muted: number[] = []
-    dw.forEach((w: any, ix: number) => {
-      if (!look && !view.warnShown(w)) { muted.push(ix); return }   // a look shows the whole record (D187)
+       A scheduler can HIDE a specific warning (owner, Aug 26). Since [WARN-HIDE-KEPT] (owner D469 / D475, 1 Oct 26)
+       its line STAYS WHERE IT IS, struck out and darker, its ✕ become ↺ — "it shouldn't totally disappear … ready to
+       be reactivated again for flagging"; the "N hidden" fold is gone. A look at a version draws its own hidden lines
+       struck too, with no button (D187 read with D469: every warning the version holds, the hidden ones struck). */
+    all.forEach((w: any, ix: number) => {
+      const hid = !!w.off
       /* the selected state goes in the STRING, not on a class painted later:
          SchedBoard diffs this html against the last one to decide whether to
          re-hang the panel, so a class added afterwards is lost on the next
@@ -479,9 +486,9 @@ export function boardWarnHTML(di: number, look = false) {
          show what triggered that flagging"). selectPerson clears WFOCUS, so
          `.pksel` and `.on` never apply to the same row. */
       const sel = view.SELID && (w.who || []).includes(view.SELID) ? ' pksel' : ''
-      wh += `<div class="wln ${w.sev}${on}${sel}" data-wdi="${di}" data-wix="${ix}" title="Jump to the puck that caused this">`
+      wh += `<div class="wln ${w.sev}${on}${sel}${hid ? ' hid' : ''}" data-wdi="${di}" data-wix="${ix}" title="${hid ? 'Hidden — it flags no puck and is not counted. ' : ''}Jump to the puck that caused this">`
         + `<span class="wln-t">${wtext(w)}</span>`
-        + (canMute ? `<button class="wln-mute" data-woff="${di}.${ix}" title="Hide this check — it comes back if the situation changes">✕</button>` : '')
+        + (canMute ? `<button class="wln-mute" data-woff="${di}.${ix}" title="${hid ? 'Flag this again' : 'Hide this warning — it flags no puck and is not counted; it comes back if the situation changes'}">${hid ? '↺' : '✕'}</button>` : '')
         /* THE WAY OUT, BESIDE THE REASON, HERE TOO (owner's ruling D19; walk
            find, 22 Sep 26). The week's list already carried this and the
            board's did not, so the surface that tells a scheduler the credit can
@@ -489,21 +496,9 @@ export function boardWarnHTML(di: number, look = false) {
            himself. Same helper as the week (mkPeriod), so the button and the
            sentence cannot name different years, and no other check grows an
            action. */
-        + (!look && mkPeriod(w, di) ? `<button class="wln-act" data-mkperiod="${esc(mkPeriod(w, di))}" title="Creates the ${esc(mkPeriod(w, di))} leave war period in draft and takes you to the Leave War to set its bidding window">Create the ${esc(mkPeriod(w, di))} period</button>` : '')
+        + (!look && !hid && mkPeriod(w, di) ? `<button class="wln-act" data-mkperiod="${esc(mkPeriod(w, di))}" title="Creates the ${esc(mkPeriod(w, di))} leave war period in draft and takes you to the Leave War to set its bidding window">Create the ${esc(mkPeriod(w, di))} period</button>` : '')
         + `</div>`
     })
-    if (muted.length) {
-      const mopen = view.WMOPEN.has(di)
-      wh += `<div class="wmuted-h${mopen ? ' open' : ''}" data-wmtog="${di}" title="Show or hide the checks you have muted">`
-        + `<span class="sbw-car">${mopen ? '▾' : '▸'}</span>${muted.length} hidden</div>`
-      if (mopen) muted.forEach((ix: number) => {
-        const w = dw[ix]
-        wh += `<div class="wln ${w.sev} muted" data-wdi="${di}" data-wix="${ix}" title="Jump to the puck that caused this">`
-          + `<span class="wln-t">${wtext(w)}</span>`
-          + (look ? '' : `<button class="wln-mute" data-woff="${di}.${ix}" title="Show this check again">↺</button>`)
-          + `</div>`
-      })
-    }
   } else wh += `<div class="wln ok">No conflicts flagged for this day ✓</div>`
   /* (the way into the changes list that sat here, while History was on, is gone: the one changes window is the list,
      opened by the day's own chip and the board's History button — [DRAFT-PENDING], D168, 28 Sep 26) */

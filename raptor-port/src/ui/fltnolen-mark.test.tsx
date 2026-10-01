@@ -29,6 +29,7 @@ import { dayHTML } from './html'
 import { boardHTML } from './board'
 import { anchorEl } from './highlights'
 import { peekDayHTML } from './peek'
+import { WARNOFF, warnMuteKey } from '../state/view'
 
 const DSNAP = JSON.stringify(DAYS)
 const ISNAP = JSON.stringify(INPUTS)
@@ -100,6 +101,21 @@ describe('the line itself says the times cannot be right — not only the list o
     expect(warnKey(SAT), 'no crew, no warning').toBe('')
     expect(marked(dayHTML(SAT, true)).length, 'so no mark either').toBe(0)
     expect(marked(boardHTML(SAT)).length).toBe(0)
+  })
+
+  /* [WARN-HIDE-KEPT] (owner D469, 1 Oct 26 — "if it's hidden, the pucks shouldn't have flagging for that specific item"):
+     the amber time box is that warning's flag, drawn off the rule rather than the list — so it has to ask the list (WH3) */
+  it('WH3 — while that warning is HIDDEN the boxes are not marked: edit week, view week and board; flag it again and they are', () => {
+    onlyLine(SAT, '10:00', '10:00')
+    const w = (validate().byDay[SAT]?.warns ?? []).find((x: any) => x.code === 'FLT_NO_LEN')
+    WARNOFF.add(warnMuteKey(w)); validate()
+    try {
+      expect(marked(dayHTML(SAT, true)).length, 'the edit week').toBe(0)
+      expect(marked(dayHTML(SAT, false)).length, 'the view week').toBe(0)
+      expect(marked(boardHTML(SAT)).length, 'the board').toBe(0)
+    } finally { WARNOFF.clear(); validate() }
+    expect(marked(dayHTML(SAT, true)).length, 'flagged again').toBe(2)
+    expect(marked(boardHTML(SAT)).length).toBe(2)
   })
 })
 

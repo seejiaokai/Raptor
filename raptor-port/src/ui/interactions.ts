@@ -9,6 +9,7 @@ import { standsOn } from '../engine/overlay'
 import { INPUTS, DATES, withRemarksTail, inpId, defaultAllday } from '../engine/inputs'
 import { DAYS } from '../engine/data'
 import { PEOPLE, isSpecial } from '../engine/people'
+import { hideDetail } from '../engine/warnhide'
 import { dayApproved, signClear, markEdit, dayCurVer, dayDiscardCount, verLabel, protectedWeek, alColor, nextSeq, daySnapOf, rowsLeftOut } from '../engine/publish'
 import { verSeq } from '../engine/verid'
 import { posKey } from '../engine/rowids'
@@ -30,7 +31,7 @@ import { setDayPop, setAirKey, setDrawer, setInpEdit } from './pops'
 import { reassignInput, rosterOptions, firstPersonalType, firstUnavailType, firstSansType, unfmt } from './inputedit'
 import { openAvailWinFrom } from './AvailWindow'
 import { withDaySnap } from './html'
-import { openScheduler, toggleSbwarn, boardTab, dayTplMenu, planMenu, switchDraft } from './board'
+import { openScheduler, toggleSbwarn, boardTab, dayTplMenu, planMenu, switchDraft, SBWOPEN } from './board'
 import { hideHistBub, pinHistBubAt, findHistCell } from './histbubble'
 import { pickRosDay } from './pan'
 import { isStandalone, CURWEEK } from '../engine/waves'
@@ -54,6 +55,45 @@ function jumpToWarn(di: number, ix: number) {
   view.setWarnFocus({ di, ix, ids: (w.who || []).slice(), sev: w.sev, key: w.key, code: w.code, prevDi: w.prevDi, leaveBy: w.leaveBy })
   view.clearOtherHL()
   notify(); setTimeout(scrollToWarnFocus, 0)
+}
+
+/* TAKE ME TO THIS WARNING'S LINE ([WARN-HIDE-KEPT], the walk's finding, 1 Oct 26) — the To go out tab's "Warning · …
+   flagged → hidden" (D99: a tap takes the view to the change). The change is the LINE, so the view lands on the line:
+   the day's list opened (the board's fold too, on a phone), the line focused — its crew lit, as a tap on the line
+   lights them — brought on screen and marked for a moment in the amendment's colour, like every other change the
+   window takes the schedule to. It does NOT go on to the man's puck as a tap on the line itself does (jumpToWarn):
+   that pan carried the struck line off the screen (the re-walk, 1 Oct 26). Found by the warning's own key, so a list
+   that has re-sorted since still lands on it. The same first steps as jumpToChange: the board turned to the day, a look
+   at an older version left, View-only Sched's published day turned to its working draft (the pending change lives
+   there — the issued face still shows it as it went out). A warning the day no longer raises says so. */
+function jumpToWarnLine(k: string, di: any) {
+  if (di == null) return
+  closePendList()
+  hideHistBub()
+  const onBoard = view.SBDAY != null
+  if (onBoard && view.SBDAY !== +di) boardTab(+di)
+  if (!onBoard && view.DPREV.has(+di)) view.setDayPreview(+di, null)
+  if (!onBoard && view.CURPAGE === 'viewsched' && dayApproved(+di) && !view.VWORK.has(+di)) {
+    view.toggleViewWork(+di, true)
+    HOOKS.toast('Showing the working draft — the change is on it', 'ok')
+  }
+  const g = view.displayedByDay(+di)
+  const ix = ((g && g.warns) || []).findIndex((w: any) => view.warnMuteKey(w) === k)
+  if (ix < 0) { HOOKS.toast('That warning is no longer raised on this day', 'warn'); notify(); return }
+  const w = g.warns[ix]
+  view.DWOPEN.clear(); view.DWOPEN.add(+di)
+  if (onBoard && HOOKS.isPhone() && !SBWOPEN) toggleSbwarn()
+  view.setWarnFocus({ di: +di, ix, ids: (w.who || []).slice(), sev: w.sev, key: w.key, code: w.code, prevDi: w.prevDi, leaveBy: w.leaveBy })
+  view.clearOtherHL()
+  notify()
+  setTimeout(() => {
+    const root: any = onBoard ? document.querySelector('#schedBoard .sb-warn') : document.querySelector(`#${warnWeekId()} .day[data-day="${+di}"]`)
+    const row = root && root.querySelector(onBoard ? `.wln[data-wdi="${+di}"][data-wix="${ix}"]` : `.witem[data-wdi="${+di}"][data-wix="${ix}"]`) as HTMLElement | null
+    if (!row) return
+    if (onBoard) { if (typeof row.scrollIntoView === 'function') row.scrollIntoView({ block: 'center', behavior: 'smooth' }) }
+    else bringIntoView(root, row, warnWeekId())
+    flashChange(row, di)
+  }, 0)
 }
 
 /* THE REVERSE OF jumpToWarn (owner, 26 Aug 26 — "click a puck that has any
@@ -97,6 +137,10 @@ function scrollBoardWarnToSel() {
 export function jumpToChange(key: string | string[], di: any) {
   const cands = (Array.isArray(key) ? key : [key]).filter(Boolean).map(String)
   if (!cands.length) return
+  /* a warning hidden, or flagged again, on a published day ([WARN-HIDE-KEPT], D471): the change is a LINE of the day's
+     list, not a cell — its own route below, the same first steps */
+  const wk = cands.find(k => k.startsWith('warnline:'))
+  if (wk) { jumpToWarnLine(wk.slice('warnline:'.length), di); return }
   closePendList()
   hideHistBub()
   const onBoard = view.SBDAY != null
@@ -1030,7 +1074,7 @@ export function routeClick(e: MouseEvent) {
        the confirm button and this handler can never disagree (P2-IMPL-09).
        Captured HERE, before loadVersionToWorkingCopy swaps the day (and outside
        any withDaySnap that would zero it). */
-    const nd = dayDiscardCount(di)
+    const nd = dayDiscardCount(di, ver)   // the hides half is counted against the version being loaded
     /* already the current version with nothing diverging — close the preview
        without a history step. NOT when the version holds a row the load must leave out (D175): the day then differs
        from it by exactly that row, so "already at" would be untrue beside its "1 pending" — the load runs (nothing to
@@ -1190,13 +1234,11 @@ export function routeClick(e: MouseEvent) {
      is what covers the other seven boxes this one call site never did. */
   /* (the board's "☰ Edit history · N changes" line is gone — the changes window is the list, [DRAFT-PENDING] D168) */
 
-  /* MUTE a specific check (owner, Aug 26 — "turn off that specific warning
-     advisory … but if things change that warning will appear again"). Admin-only,
-     keyed by the warning's CONTENT (view.warnMuteKey) so it comes back on its own
-     when validate() next rebuilds a different warning. CORRECTED 17 Sep 26: NOT
-     session-only — WARNOFF rides histSnap AND weekStashSnap (`wo`), so a mute
-     persists with its week and survives a reload. Caught
-     ABOVE the .wln jump so muting a row never also pans to its puck. */
+  /* HIDE a specific warning, or flag it again (owner, Aug 26 — "turn off that specific warning advisory … but if things
+     change that warning will appear again"; [WARN-HIDE-KEPT], owner D469, 1 Oct 26 — kept with its day for everyone
+     until someone flags it again). A scheduler's alone, keyed by the warning's CONTENT (view.warnMuteKey) so it comes
+     back by itself when validate() next writes a different warning. Caught ABOVE the .wln jump so the tap never also
+     pans to its puck. */
   /* THE MISSING LEAVE WAR PERIOD, CREATED FROM THE SCHEDULE (owner's ruling
      D19, 22 Sep 26). The day says a period for that year does not exist and
      that nothing can be paid for it; this is the way out sitting beside the
@@ -1222,16 +1264,20 @@ export function routeClick(e: MouseEvent) {
   const wo = t.closest('[data-woff]') as HTMLElement | null
   if (wo) {
     e.stopPropagation()
-    if (!canEditSched()) { HOOKS.toast('Only a scheduler can mute a check', 'warn'); return }
+    if (!canEditSched()) { HOOKS.toast('Only a scheduler can hide a warning', 'warn'); return }
     const [di, ix] = (wo.dataset.woff || '').split('.').map(Number)
     const g = view.displayedByDay(di), w = g && g.warns && g.warns[ix]
     if (w) {
-      /* [ARCH-STACK] follow-up #1 (row E): route the mute toggle through a
-         sched.warnMute command. schedWriteValue carries back the `shown` bool the
-         toast reads (R2-11). WARNOFF rides the baseline, so the command captures
-         the mute as a sched.mutes change. histPush kept below, in its old spot. */
-      const shown = schedWriteValue(SCHED_TYPES.warnMute, () => view.toggleWarnOff(view.warnMuteKey(w)))
-      HOOKS.toast(shown ? 'Check shown again' : 'Check hidden — it returns if the day changes', 'ok')
+      /* [ARCH-STACK] follow-up #1 (row E): the toggle is a sched.warnMute command. schedWriteValue carries back the
+         `shown` bool the toast reads (R2-11). WARNOFF rides the baseline, so the command captures the hide as a
+         sched.mutes change. histPush kept below, in its old spot.
+         The command carries WHAT was hidden, in words (its `detail` — engine/warnhide.ts hideDetail) — the change
+         history's line and the Undo label are written from it, never from the stored key, which holds ids
+         ([WARN-HIDE-KEPT]; state/changelines.ts, undo/describe.ts). */
+      const key = view.warnMuteKey(w), names = (w.who || []).map((id: any) => PEOPLE[id] ? PEOPLE[id].cs : id).join(', ')
+      const words = `${names}${names ? ' — ' : ''}${w.msg || ''}`
+      const shown = schedWriteValue(SCHED_TYPES.warnMute, () => view.toggleWarnOff(key), { key: hideDetail(!w.off, di, words) })
+      HOOKS.toast(shown ? 'Warning flagged again' : 'Warning hidden — no flag, not counted. It returns if the day changes', 'ok')
       /* a mute is an undo step now (owner, Aug 26 — "when I click undo I should
          revert my hidden warning changes"): WARNOFF rides the history snapshot,
          so push one after toggling. toggleWarnOff no-ops for a non-scheduler and
@@ -1240,10 +1286,6 @@ export function routeClick(e: MouseEvent) {
     }
     notify(); return
   }
-  /* show / hide the day's muted checks — the reveal so a muted one stays reachable */
-  const wm = t.closest('[data-wmtog]') as HTMLElement | null
-  if (wm) { view.toggleWarnMuted(+wm.dataset.wmtog!); notify(); e.stopPropagation(); return }
-
   /* make a scheduler note public / scheduler-only (owner, Aug 26). Caught before
      the text-cell routing below so tapping the header chip never opens an editor.
      Admin-gated at the write path; not an undo step (the owner asked undo only

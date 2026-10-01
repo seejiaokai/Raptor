@@ -20,16 +20,18 @@ import * as view from './view'
 function dirtyAll() {
   view.DPREV.set(0, 'orig'); view.VWORK.add(0); view.AVSHUT.add(1); view.PIOPEN.add(2)
   view.LATEOFF.add('i1'); view.BELLLIT.add('viewsched|bane'); view.WARNOFF.add('w1')
-  view.WMOPEN.add(3); view.NOTEPUB.add('pn:0')
+  view.NOTEPUB.add('pn:0')
   view.setHistMode(true); view.setCarryDay(5)
   view.setHlOpen(true); view.setHlGroup('cat'); view.setInpView('cal'); view.setCalMonth({ y: 2026, m: 7 }); view.setMedAsOf('2026-07-01')
   view.setRestArm(1, 'orig')
   view.setRosDay(4); view.setSecDefOffer(2)
   view.setAvailWin({ di: 0, item: 'r:x', ver: '', name: 'OPS BRIEF', when: '', tab: 'who' })
 }
+/* the hidden warnings (WARNOFF) are NOT in this list: they are kept with their day for everyone (owner D469, 1 Oct 26)
+   — a week swap clears them (loadWeek puts the arriving week's back), a sign-in does not */
 const setsEmpty = () =>
   view.DPREV.size === 0 && view.VWORK.size === 0 && view.AVSHUT.size === 0 && view.PIOPEN.size === 0 &&
-  view.LATEOFF.size === 0 && view.BELLLIT.size === 0 && view.WARNOFF.size === 0 && view.WMOPEN.size === 0 &&
+  view.LATEOFF.size === 0 && view.BELLLIT.size === 0 &&
   view.NOTEPUB.size === 0
 
 afterEach(() => { view.resetViewState('session'); view.resetViewState('week') })
@@ -39,6 +41,7 @@ describe('the reset registry', () => {
     dirtyAll()
     view.resetViewState('session')
     expect(setsEmpty(), 'the panel/preview sets are cleared').toBe(true)
+    expect(view.WARNOFF.has('w1'), 'WH2, D469: a hidden warning is kept through a sign-in — "hidden until another person unhides it"').toBe(true)
     expect(view.HISTMODE).toBe(false)
     expect(view.CARRYDAY).toBe(null)
     expect(view.HLOPEN).toBe(false)
@@ -54,6 +57,7 @@ describe('the reset registry', () => {
     dirtyAll()
     view.resetViewState('week')
     expect(setsEmpty(), 'the panel/preview sets are cleared').toBe(true)
+    expect(view.WARNOFF.size, 'a week swap clears the leaving week\'s hides (loadWeek restores the arriving week\'s)').toBe(0)
     expect(view.HISTMODE).toBe(false)
     expect(view.CARRYDAY).toBe(null)
     expect(view.ROSDAY).toBe(0)

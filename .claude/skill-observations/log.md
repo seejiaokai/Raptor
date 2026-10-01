@@ -2127,3 +2127,138 @@ restore — repeatable, all-or-nothing, and safe for files whose bytes (line end
 **Suggested improvement:** In DECISIONS.md step 2 say which cell by position ("the cell right after the date") and show one example row; in the script, refuse a row whose fourth cell opens with REPLACED / SPENT ("the mark belongs at the start of the cell after the date") instead of reading it as a narrowing. After any replacement, verify: the old number is in DECISIONS-ARCHIVE.md once and in no live file.
 
 **Principle:** When a tool accepts a near-miss as a different valid input, "it ran clean" proves nothing; check the outcome the step exists to produce (here: the old ruling is gone from the live list), not the tool's exit.
+
+### Observation 408: A new ruling's row that says it "answers" an older ruling is refused until the older row carries a mark naming it — the recording steps do not say so
+
+**Status:** OPEN
+**Date:** 2026-10-01
+**Session context:** [WARN-HIDE-KEPT] — recording D475 (his approval of a mock-up). Its "what it means" cell ended "It answers D469's 'a picture first'"; `backlog-archive.mjs --rulings` converted the row, then the gate failed ("D475 is new and changes D469, but D469's full row carries no mark naming D475") and the script put every file back.
+**Skill:** repo rule .claude/rules/record-decisions.md / DECISIONS.md "Recording a ruling", step 2
+**Type:** internal
+**Phase/Area:** Recording a ruling that completes (not replaces or narrows) an earlier one
+
+**Issue:** The gate reads a list of relation verbs in a new row (`answers`, `settles`, `narrows`, `replaces`, `extends` … followed by a D-number) as "this ruling changes that one" and requires a back-mark in the older ruling's full row (ANSWERED / NARROWED / … BY D<n>). DECISIONS.md step 2 names only REPLACED, SPENT and NARROWED, so a row that merely says which open question it answers trips the gate with no hint in the written steps that an approval or an answer needs a back-mark too. The first run cost a failed filing and a search of the script for the verb list.
+
+**Suggested improvement:** In DECISIONS.md step 2 add one sentence: "A ruling that ANSWERS or SETTLES an open point of an earlier one is a change to it too — write `**— ANSWERED <date> BY D<n>: …**` at the end of the earlier ruling's fourth cell, then run the script"; and have the gate's message list the accepted mark words rather than only NARROWED.
+
+**Principle:** When a checker enforces a wider rule than the written procedure states, the procedure is the defect — write the checker's vocabulary into the step it guards.
+
+### Observation 409: A new thing built "like X" was wired into one of X's two call sites — both reviewers caught it; a sibling call-site sweep would have caught it in the plan
+
+**Status:** OPEN
+**Date:** 2026-10-01
+**Session context:** [WARN-HIDE-KEPT] plan (Raptor): a new pending-change axis ("a hidden warning on a published day") designed beside the existing warnings axis. The plan said "the comparison concatenates it, so the count, the list and the sign-offs follow with no further change". Both red-team reviewers (Fable, Astra), independently, found the same HIGH: the existing axis is wired into TWO authorities (the comparison AND the counting list), the plan wired the new one into one — the publish button would light while the count read zero.
+**Skill:** writing-plans / claudex-loop (plan step); repo bug-check order §6 (roll-call)
+**Type:** open-source
+**Phase/Area:** Planning a feature described as "the same as an existing mechanism"
+
+**Issue:** The plan was written from a read of the mechanism's main function and a sub-agent's summary, and asserted that downstream consumers "follow automatically". Nobody had listed the existing sibling's own call sites. The roll-call in the plan covered READERS of the data (25 rows) but not the WRITERS/WIRINGS of the comparable mechanism.
+
+**Suggested improvement:** When a plan says a new thing behaves "like <existing thing>", add a mechanical step before the design is written: grep every call site of the existing thing's entry points (here `warnDelta(`) and list them in the plan as a table — "the sibling is wired at: A, B, C; the new one goes to: A, B, C (or not, because …)". No blank cells, the same rule as a surface roll-call.
+
+**Principle:** "It follows automatically" is a claim about call sites; when a new mechanism mirrors an old one, enumerate where the old one is plugged in and plug the new one into every socket by name.
+
+### Observation 410: A structural invariant asserted after EVERY run of the core function across the whole test suite — cheap, and it turns "the demo data never shows it" into a covered case
+
+**Status:** OPEN
+**Date:** 2026-10-01
+**Session context:** [WARN-HIDE-KEPT] build: about 48 call sites in a rules engine each had to be tagged with the code of the warning beside them; a mis-tagged site fails silently and only under a rare user action, and the demo fixtures do not raise every rule. A reviewer asked for "fixtures that raise every code through every loop".
+**Skill:** test-driven-development; repo bug-check order §8 ("tests loop over the roll-call")
+**Type:** open-source
+**Phase/Area:** Proving an invariant over many call sites
+
+**Issue:** Writing a fixture per rule would have been a day's work and would still depend on someone remembering to add one for the next rule. Instead the core function gained one optional hook (null in production), and a test setup file installed a checker on it for every test file of both suites — so each of ~7,500 existing tests' own schedules is checked the moment it is validated, and a future rule's first test checks the new site by itself. It found nothing here, and a deliberately broken site is caught by name.
+
+**Suggested improvement:** In the testing guidance, add the pattern: when an invariant must hold for every output of a central function, do not write per-case fixtures — install the invariant as a suite-wide guard (a no-op hook in production, set by a global test setup), throwing from inside the function so the failing test is the one that built the input. Pair it with one unit test that feeds the checker a broken example ("the guard bites").
+
+**Principle:** The existing suite is already the widest fixture set you have; attach the invariant to the function, not to new fixtures.
+
+### Observation 411: A known trap recorded only in a handoff note was hit again — a shell heredoc turned `\b` in generated test code into a backspace
+
+**Status:** OPEN
+**Date:** 2026-10-01
+**Session context:** [WARN-HIDE-KEPT] build: Python edit scripts passed through a Bash heredoc; a regex `\bhid\b` in the text to write arrived as backspace characters, so two assertions silently tested the wrong pattern and failed for a reason that took a character dump to see. An earlier chat's handoff block already said "a heredoc eats `\` — write Python edit scripts to a FILE".
+**Skill:** session-handoff ("Traps met" lines); repo docs/gates-and-deploy.md
+**Type:** internal
+**Phase/Area:** Where a tooling trap is recorded
+
+**Issue:** The trap was written in a `## Now` block that was removed when its branch merged, and in a memory note about a different tool (`node -e`). The next chat read neither at the moment it mattered. Mid-session the host switched to writing scripts with the file-write tool and the problem stopped.
+
+**Suggested improvement:** Traps that are about the TOOLS (not the task) belong in an always-loaded place, one line each: add "never pass code containing backslashes through a shell heredoc or `-e`; write the script to a file with the file tool and run it" to the project guide's Token discipline / tooling line, and have the handoff skill file tool traps there rather than in the branch's block.
+
+**Principle:** A trap noted where it was met dies with that note; a trap about a tool has to live where every user of the tool starts.
+
+### Observation 412: A fix made for a reviewer's predicted gap over-corrected, and only the walk's NEIGHBOUR cases caught it
+
+**Status:** OPEN
+**Date:** 2026-10-01
+**Session context:** [WARN-HIDE-KEPT] FULL check: the scenario designer predicted that a load's confirm counted a pending change against the wrong version; the fix counted every difference from the loaded version instead, so an already-published difference read as an unpublished edit. The designer's own scenario passed; a walker's two neighbour cases (nothing pending; one pending on top) failed.
+**Skill:** bug-check order (repo docs/bug-check-order.md) §7.4 / §8; claudex-loop fix step
+**Type:** open-source
+**Phase/Area:** Fixing a finding, and walking a designed scenario
+
+**Issue:** The red-first test written for the predicted gap pinned exactly the predicted case. The fix was right for it and wrong for its neighbours, because the test never asked the count with NOTHING pending or with a difference that was already published.
+
+**Suggested improvement:** Add to the fix step: a fix to a COUNT or a comparison gets, beside the red test for the reported case, the zero case (nothing to count) and the already-settled case (a difference that is not the user's) — written before the fix. And to the walk brief: a walker given a designed scenario also walks its two nearest neighbours.
+
+**Principle:** A test that pins only the reported case licenses a fix that is right there and wrong beside it; counts need their zero and their already-settled neighbours.
+
+### Observation 413: The roll-call named ONE file for a thing two surfaces draw, so the second surface was never asked
+
+**Status:** OPEN
+**Date:** 2026-10-01
+**Session context:** [WARN-HIDE-KEPT] FULL check: roll-call row 6 (an exempt flying line's own ring) cited the week's builder only. The board draws the same seat through its own builder, which had never carried that rule — found by a walker comparing the two screens, and already wrong on main.
+**Skill:** bug-check order (repo docs/bug-check-order.md) §6 the roll-call
+**Type:** open-source
+**Phase/Area:** Building the roll-call table
+
+**Issue:** The row was produced from a sweep of readers of one data bundle, so a surface that drew the thing WITHOUT reading that bundle's special rule could not appear in it. The row read as covered because it had a file and a test.
+
+**Suggested improvement:** In the roll-call, a row that names a rule a surface applies must list every SURFACE that draws that thing (week, board, preview, print…) with its own builder, not the one file where the rule is written; a surface with no call site is written MISSING, not omitted.
+
+**Principle:** A roll-call built from the callers of a rule cannot list the surface that never called it; enumerate the surfaces that draw the thing, then ask each for the rule.
+
+### Observation 414: A re-run walk script kept a hard-coded conclusion sentence that the fix had made false
+
+**Status:** OPEN
+**Date:** 2026-10-01
+**Session context:** [WARN-HIDE-KEPT] re-walk: a walker's script wrote an information row ending 'so the board already rings the seat and the week does not' as a fixed string. Re-run after the fix, the readings beside it showed both plain, and the sentence still asserted the defect.
+**Skill:** bug-check order — the walk's drivers (repo scripts/handpass); D16 fan-out brief
+**Type:** internal
+**Phase/Area:** Writing walk scripts that will be re-run as the re-walk
+
+**Issue:** The step's verdict was computed from the screen, but its prose was typed at the time of the first run. A reader of the re-walk's table meets a sentence that contradicts the reading in the same cell.
+
+**Suggested improvement:** In the walk brief: every sentence a script records is built from the readings it just took (or is a neutral description of the action); conclusions are written by the walker in the report, never baked into the script.
+
+**Principle:** A script that will be re-run must derive its words from what it reads; a typed conclusion outlives the fact it described.
+
+### Observation 415: The same tooling trap was hit four more times in the session that logged it — a note is not enforcement
+
+**Status:** OPEN
+**Date:** 2026-10-01
+**Session context:** [WARN-HIDE-KEPT] FULL check, after observation 411 was written: code or text containing backslash escapes was again passed through a Bash heredoc four times — a walker's script got a backspace where a regex word boundary was meant (its check then read FAIL beside the right words), a repair script silently re-wrote the same backspace, and two generated files got real newlines inside string literals.
+**Skill:** repo docs/gates-and-deploy.md; a Bash PreToolUse hook; walk brief (bug-check order)
+**Type:** internal
+**Phase/Area:** Passing generated code through a shell
+
+**Issue:** The trap was known, logged and in memory, and it still recurred — in the host AND in a helper that never saw the note. Each time the damage was silent: the command exited 0 and the file looked plausible.
+
+**Suggested improvement:** Make it structural: a PreToolUse hook on Bash that refuses a heredoc (or `-e` / `-c`) whose body contains a backslash followed by a letter and that writes or edits a source file, with the message 'write the script with the Write tool and run the file'. And put the one-line rule in every walk brief, since helpers do not load the host's memory.
+
+**Principle:** A trap that exits 0 cannot be fixed by remembering it; refuse the unsafe form where it is typed, and tell every helper, not only the host.
+
+### Observation 416: A browser test that polled for 'the thing is on screen' passed BEFORE the deferred scroll that carried it away
+
+**Status:** OPEN
+**Date:** 2026-10-01
+**Session context:** [WARN-HIDE-KEPT] re-walk: a fix opened a list and then (one task later) scrolled the page to another element, carrying the wanted line off screen. The first browser test for it used a polling assertion on the line's position; it passed on the first sample, before the deferred scroll ran. Only the break test (put the bad scroll back, expect red) showed the test could not fail.
+**Skill:** bug-check order (repo docs/bug-check-order.md) §8.4 break tests; e2e conventions
+**Type:** open-source
+**Phase/Area:** Writing a browser test for where a view lands
+
+**Issue:** A polling assertion is satisfied by any moment at which the condition holds. For 'where does the view end up', the condition held instantly and stopped holding a frame later — the opposite of the flake polling is meant to absorb.
+
+**Suggested improvement:** For any test of a view's final position: first wait until the page has stopped moving (two equal scroll readings a short interval apart), then assert ONCE. And always run the break test on a new browser test before trusting it — it is the only thing that showed this one could not fail.
+
+**Principle:** Polling proves 'eventually true'; a landing must be judged at rest. A test that has never been seen to fail has not been shown to test anything.

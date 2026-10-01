@@ -876,6 +876,31 @@ describe("a draft day on the view page: the window reads the OFFICIAL world, as 
     expect(oilSeatDeco(TUE, 'allavail', `g:${TUE}.0`).chip, 'drawn in the working world, it does not').not.toContain('data-oilofw')
     expect(withChipWorld(TUE, '', true, () => WARN === officialWarn()), 'the window reads the official flags').toBe(true)
   })
+
+  /* [WARN-HIDE-KEPT] (Astra's plan read #3): with a warning HIDDEN the bundle every surface reads is a shown COPY of the
+     raw one — the chip's "which world was I drawn in" must still answer right, because the face is one memoised shown
+     bundle and `WARN` is that very object while it is being drawn (WH9) */
+  it('WH9 — with a warning hidden, the chip still carries the world it was drawn in, and the window replays it', () => {
+    puckRow(SAT)
+    const sg = signOf(SAT); sg.cur = 'ignite'; sg.sked = 'bane'; sg.plan = 'stiff'; sg.appr = 'pump'
+    setDayApproved(SAT, true)
+    ;(DAYS[SAT] as any).ground.push({ prog: 'LATE ADD', str: '1000', end: '1100', who: 'bane' })
+    puckRow(TUE)
+    ensureRowIds(DAYS)
+    validate()
+    const any = WARN.all.find((w: any) => w.di !== SAT)
+    expect(any, 'a warning on a draft day to hide').toBeTruthy()
+    view.WARNOFF.add(view.warnMuteKey(any)); validate()
+    try {
+      expect(WARN.all.some((w: any) => w.off), 'the working bundle is a shown copy now').toBe(true)
+      expect(officialWarn() !== WARN, 'the two worlds differ').toBe(true)
+      const drawn = withOfficialWarn(() => oilSeatDeco(TUE, 'allavail', `g:${TUE}.0`).chip)
+      expect(drawn, 'drawn in the official world, it says so').toContain('data-oilofw="1"')
+      expect(oilSeatDeco(TUE, 'allavail', `g:${TUE}.0`).chip, 'drawn in the working world, it does not').not.toContain('data-oilofw')
+      expect(withChipWorld(TUE, '', true, () => WARN === officialWarn()), 'the window reads the official flags').toBe(true)
+      expect(officialWarn(), 'the face is one object across calls (its memo)').toBe(officialWarn())
+    } finally { view.WARNOFF.clear(); validate() }
+  })
 })
 
 describe('every window starts clean (Fable S11)', () => {

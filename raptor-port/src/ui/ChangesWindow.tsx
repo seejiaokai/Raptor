@@ -98,6 +98,8 @@ function EntryLine({ e, title, onGo, go: may }: { e: Entry; title?: string; onGo
     <>
       {e.detail ? <span className="cw-det">{e.detail}</span> : null}
       {e.text}
+      {/* a line with its own words AND a from → to (a warning hidden, [WARN-HIDE-KEPT]) keeps a gap between the two */}
+      {e.text && (e.from || e.to) ? ' ' : null}
       {e.from || e.to ? <>{e.from ? <s>{e.from}</s> : null}{e.from && e.to ? ' → ' : ''}{e.to ? <b>{e.to}</b> : null}</> : null}
     </>
   )

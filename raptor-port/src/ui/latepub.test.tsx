@@ -743,19 +743,22 @@ describe('D187, after its reads — a look is the record: whole, read only, its 
     try { expect(displayedByDay(TUE)!.warns.some((w: any) => w.code === 'CREW_REST'), 'its list holds the breach').toBe(true) } finally { DPREV.delete(TUE) }
   })
 
-  it('the edit week\'s look: every warning shown, no mute and no "create the period" — even one muted on the working copy', () => {
+  /* (D469 / D471, 1 Oct 26 — [WARN-HIDE-KEPT]: a look shows the hides the VERSION went out with, struck; a hide made on
+     the working copy since is not the version's, so it strikes nothing here) */
+  it('the edit week\'s look: every warning of the version, no ✕ / ↺ and no "create the period" — a hide made on the working copy since strikes nothing in it', () => {
     publishDay(MON)
     const ver = dayCurVer(MON)
     const w0 = warnsOf(officialWarn(), MON)[0]
-    WARNOFF.add(warnMuteKey(w0))                               // muted on the working copy
+    WARNOFF.add(warnMuteKey(w0)); validate()                   // hidden on the working copy, after it went out
     DWOPEN.add(MON)
     try {
       const look = dayPreviewHTML(MON, ver, true)
-      expect(look, 'no mute').not.toContain('data-woff=')
+      expect(look, 'no ✕ / ↺').not.toContain('data-woff=')
       expect(look, 'no create-the-period').not.toContain('data-mkperiod=')
-      expect(look, 'no "N hidden"').not.toContain('data-wmtog=')
+      expect(look, 'no "N hidden" fold (gone with D469)').not.toContain('data-wmtog=')
+      expect(el(look).querySelectorAll('.witem.hid').length, 'the version went out with nothing hidden — nothing struck').toBe(0)
       expect(el(look).querySelectorAll(`.witem[data-wdi="${MON}"][data-wix]`).length, 'the whole record (its own rows; the cross-day row is Tuesday\'s)').toBe(warnsOf(officialWarn(), MON).length)
-    } finally { WARNOFF.clear(); DWOPEN.delete(MON) }
+    } finally { WARNOFF.clear(); validate(); DWOPEN.delete(MON) }
   })
 
   it('the ⓘ panel beside a look describes the version on screen: its warnings, nothing pending', async () => {
@@ -828,20 +831,27 @@ describe('D187, after its reads — a look is the record: whole, read only, its 
 describe('D187, the board\'s look — the whole record, and an exempt desk keeps its own rule', () => {
   const warnsOf = (b: any, di: number) => ((b && b.byDay && b.byDay[di] && b.byDay[di].warns) || []) as any[]
 
-  it('the board\'s look lists every check, even one muted on the working copy — no "N hidden" (Fable #9)', () => {
+  /* (rewritten with [WARN-HIDE-KEPT], D469 / D471, 1 Oct 26: the control used to be "the working board folds the muted one
+     away under N hidden" — it now keeps the line in place, struck; the look is still the version's own record, and a hide
+     made on the working copy since strikes nothing in it) */
+  it('WH7 — the board\'s look lists every check of the version, unstruck by a hide made on the working copy since (Fable #9)', () => {
     publishDay(MON)
     const ver = dayCurVer(MON)
     const all = warnsOf(officialWarn(), MON)
     expect(all.length, 'Monday goes out with checks').toBeGreaterThan(1)
-    WARNOFF.add(warnMuteKey(all[0]))                          // muted on the working copy
+    WARNOFF.add(warnMuteKey(all[0])); validate()              // hidden on the working copy, after it went out
     try {
       let checks = ''
       withDaySnap(MON, ver, () => withVersionFlags(MON, ver, () => { checks = boardWarnHTML(MON, true) }))
-      expect(checks, 'no "N hidden"').not.toContain('data-wmtog=')
+      expect(checks, 'no "N hidden" fold').not.toContain('data-wmtog=')
       expect(el(checks).querySelectorAll(`.wln[data-wdi="${MON}"][data-wix]`).length, 'every check of the record').toBe(all.length)
-      /* the control: the working board still folds the muted one away */
-      expect(boardWarnHTML(MON), 'the working board folds it').toContain('data-wmtog=')
-    } finally { WARNOFF.clear() }
+      expect(el(checks).querySelectorAll('.wln.hid').length, 'nothing struck in the version\'s own record').toBe(0)
+      /* the control: the working board keeps the hidden one IN PLACE, struck, with its ↺ */
+      const live = el(boardWarnHTML(MON))
+      expect(live.querySelectorAll(`.wln[data-wdi="${MON}"][data-wix]`).length, 'the working board keeps every line').toBe(all.length)
+      expect(live.querySelectorAll('.wln.hid').length, 'one struck').toBe(1)
+      expect(boardWarnHTML(MON), 'no fold').not.toContain('data-wmtog=')
+    } finally { WARNOFF.clear(); validate() }
   })
 
   it('an AVALON desk in the board\'s look stays clean while its man is double-booked elsewhere that day (Fable #7)', () => {

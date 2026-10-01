@@ -177,6 +177,40 @@ describe('another person\'s change on another day never blocks his Undo (D148)',
   })
 })
 
+/* [WARN-HIDE-KEPT] (D469 — "until another person unhides it"; D148): a day's hides are ONE record, so another person's
+   hide or flag-again on the SAME day since his own is "someone has changed the same thing" — his Undo refuses and says
+   who; one on ANOTHER day never blocks it. The walk could not reach this through the app's doors (this build has no
+   server: a second tab learns nothing until its reload, the known two-tabs gap of data-schema.md), so it is pinned here
+   with the same remote envelope the test above uses. */
+describe('Undo of a hide, after another person changed that day\'s hides (D148, WH11)', () => {
+  const hide = (key: string) => schedWriteValue(SCHED_TYPES.warnMute, () => view.toggleWarnOff(key))
+  function remoteHide(key: string) {
+    const r = commitAs({
+      type: SCHED_TYPES.warnMute, scope: { module: 'sched', weekId: CURWEEK },
+      apply: (txn) => { txn.enlist(schedStore); view.WARNOFF.add(key); schedApplyEnd() },
+    }, { actor: { id: 'wolf', role: 'admin', personId: 'wolf', session: null }, origin: 'remote' })   // Static, a man on the roster
+    expect((r as any).ok).toBe(true)
+  }
+
+  it('the same day: his Undo refuses and names who; both hides stand', () => {
+    hide('1|X|a|mine')
+    expect(ids(last())).toEqual([`put sched.mutes/${wk()}#1`])
+    remoteHide('1|Y|b|his')
+    const u = globalUndo()
+    expect(u.ok, 'refused').toBe(false)
+    expect(String(u.reason || ''), 'and it says who — never a bare "cannot undo"').toMatch(/^Static changed this after your action/)
+    expect([...view.WARNOFF].sort(), 'nothing was taken back').toEqual(['1|X|a|mine', '1|Y|b|his'])
+  })
+
+  it('another day: his Undo goes through and leaves the other man\'s hide alone', () => {
+    hide('1|X|a|mine')
+    remoteHide('2|Y|b|his')
+    const u = globalUndo()
+    expect(u.ok, u.reason).toBe(true)
+    expect([...view.WARNOFF]).toEqual(['2|Y|b|his'])
+  })
+})
+
 describe('completeness — the stream rebuilds the week (§7 / R4-004)', () => {
   it('folding every change onto the records before gives the live week back, byte for byte', () => {
     const base = new Map<string, any>()

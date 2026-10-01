@@ -216,6 +216,9 @@ barely more than one.
   implementation itself never leaves the main session
   (`../.claude/rules/raptor-executor.md`). This settles the old conflict with
   the Delegate-frugally bullet below.
+  **One trial, 1 Oct 26 (D476): on the next walk ONE extra walker runs on Sonnet 5.5 beside the Opus ones, on the
+  same scenarios, and the two are compared for him (`docs/bug-check-order.md` §4). Everything else in this rule
+  stands until he rules on the result.**
 
 ### Delegate frugally
 
@@ -225,6 +228,8 @@ barely more than one.
   inherits Opus and takes read-only sweeps only, and the implementation never
   leaves the main session.** The old split — exploration on haiku, mechanical
   code-writing on sonnet — stands only if he later reopens cheaper helpers.
+  *(1 Oct 26, D476: he has opened ONE trial — a Sonnet 5.5 walker beside the Opus ones on the next walk; nothing
+  else moves until he rules on its result.)*
   Whoever is delegated to is handed a precise spec (files, expected
   shape, which tests to run) so it never explores. Agents return diffs
   and conclusions, never file dumps. Small precise work stays inline —

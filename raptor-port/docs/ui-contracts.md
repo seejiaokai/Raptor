@@ -3440,7 +3440,11 @@ and the adapted `wrap` probe are what hold them.
 
 **25 Sep 26 (D94): the scheduler BOARD draws all three as the week does** — its flying, duty / sim and programme
 seats read `html.ts puckMarks`, the week's one reading of a puck's severity, printed flag (the trace's CR / 7
-caption), dash and trace. OIL-mode and exempt-seat pucks keep their own rules.
+caption), dash and trace. OIL-mode and exempt-seat pucks keep their own rules — **the exempt FLYING seat too, since
+1 Oct 26**: the board's cockpit seat (`board-html.ts sbSlot`) reads `html.ts exemptLineOwn`, the one body the week's
+flying loop reads. Until then it read the day-wide marks, so an AVALON / BB / SC SPARE copy wore a clash the man has
+elsewhere, and stayed ringed when every warning of that seat was hidden (found by the `[WARN-HIDE-KEPT]` walk; pins
+`ui/warnhide-readers.test.tsx` "row 6, the BOARD").
 
 One red, three strokes, in order of how directly the puck owns the problem:
 **solid** is his own breach, **dashed** is his own breach that a human
@@ -4074,42 +4078,57 @@ except where noted:
 
 ## Muting a check, and resizing the checks panel (owner, Aug 26)
 
-Both are board-side, admin-only, session-only, and DESKTOP-scoped for the resize.
-- **CHANGED BY D469 (owner, 1 Oct 26) — NOT BUILT YET (`OUTSTANDING.md` `[WARN-HIDE-KEPT]`).** Three sentences of the
-  entry below are replaced by his ruling, and stand here only until the build lands: (1) *"cleared on login/logout"* — a
-  hidden warning now **stays hidden, for everyone, across a reload and a sign-in, until someone unhides it** (kept with
-  its day — `ScheduleDay.wo`); (2) *"the muted ones gather under an N hidden line"* — the hidden warning's line **stays
-  where it is in the day's list, struck out and darker, one tap from being flagged again**; (3) *"the day's header keeps
-  its true count and colour"* — while hidden, **the pucks carry no flag for that item**. Kept, as he was read: only a
-  scheduler hides and unhides; a hide is an Undo step; a hidden warning returns by itself when the situation changes.
-  **D471 (1 Oct 26):** built as its own job after `[DB-READINESS]` phase 7; a hide on a day ALREADY PUBLISHED waits for the
-  next amendment (a pending change — D45, D103); the published and printed schedule drop the hidden item's flag too.
-  **D472 (1 Oct 26):** a hidden warning is NOT COUNTED — a day with 3 issues and one hidden reads "2 issues", with no
-  "1 hidden" beside it; the hidden one is seen only by opening the day's issues list, struck through and darker.
-- **Mute a specific check — on the board AND the edit week, in sync.** Each
-  `.wln` row in the board's checks panel (`board.ts:boardWarnHTML`) and each
-  `.witem` row in the edit week's day-issue list (`html.ts:dayWarnHTML`) carries
-  a `✕` (`data-woff`). Tapping it hides that check; the muted ones gather under a
-  "N hidden" line (`data-wmtog`, `WMOPEN`) that reveals them dimmed with a `↺` to
-  restore. The mute is keyed by the warning's CONTENT — `warnMuteKey` =
-  day|code|people|message, the identity the validator itself dedups on — so it
-  AUTO-RE-ARMS: a check that persists unchanged stays hidden (the scheduler
-  acknowledged it), but the moment the situation changes and `validate()`
-  rebuilds a different warning the key no longer matches and it shows again
-  (owner: "if things change that warning will appear again").
-  The day's HEADER keeps its true count and colour — muting declutters the list,
-  it does not change what the day IS. Admin-gated at the write path
-  (`view.toggleWarnOff`), cleared on login/logout — the LATEOFF precedent.
-  **The board and the edit week are one control, not two** (owner, 29 Aug 26 —
-  "the hide warning option should be available on edit schedule too … and both
-  are in sync"): the two surfaces read and write the SAME `view.WARNOFF` set,
-  so a check hidden on either is hidden on both with no extra wiring, and undo
-  (which snapshots `WARNOFF`) walks over the mute the same way from either. The
-  edit week gates the `✕`/`↺` and the reveal on `editMode()` (exactly the board's
-  `canEditSched()`), so the **View-only week shows no controls and the full,
-  honest list** — its markup is byte-identical to before, and the read-only
-  record is never quietly trimmed. The day-info popup (`dip-list`, `data-adv`)
-  is a separate readout and deliberately keeps the whole list too.
+The hide is a scheduler's, on the board and Edit Schedule alike, and is kept with its day; the resize is board-side,
+desktop-only and session-only. *(The Aug 26 entry this replaces — "cleared on login/logout", the "N hidden" line, "the
+header keeps its true count" — and the D469 / D471 / D472 / D475 note that stood beside it until the build: moved whole,
+1 Oct 26, to `docs/archive/ui-contracts-2026-10-01.md`.)*
+- **Hide a specific warning — Mute a specific check (owner, Aug 26; 29 Aug 26 "both are in sync"; `[WARN-HIDE-KEPT]`,
+  D469 / D471 / D472 / D475, 1 Oct 26 — the approved picture is `docs/mock/warn-hide.html`).** Each row of the board's
+  issues panel (`board.ts boardWarnHTML`, `.wln`) and of Edit Schedule's day list (`html.ts dayWarnHTML`, `.witem`)
+  carries a `✕` (`data-woff`); a scheduler's tap hides THAT warning.
+  - **Kept with its day, for everyone, until someone flags it again (D469):** the hide rides the day's saved row and is
+    read back at every boot and week load; a sign-in does not clear it. One set for the board and Edit Schedule
+    (`state/view.ts WARNOFF` — the working copy's hides), so a hide on either shows on both, and Undo takes it back from
+    either ("hiding a warning" / "flagging a warning again"). The change history says who hid what, under "The day".
+  - **A drop that recreates a clash already hidden still shows the drop's own amber note — kept (D479, 1 Oct 26: "ok keep
+    the amber note"):** the hidden warning itself stays silent (no red message, no pulse, no ring, not counted, its line
+    back already struck), but the drop says once, to the scheduler doing it, "Saint — already on APPOINTMENT 14:00–16:00" —
+    the reason the crew list shows under a busy name (`ui/drag.ts barDrop`, `state/view.ts`), the fallback voice when a
+    drop raised no new SHOWN warning. Not a defect; do not silence it.
+  - **Tied to that exact warning (Aug 26 — "if things change that warning will appear again"):** the key is the day, the
+    rule, the men it names and its words (`engine/warnhide.ts hideKey`), callsigns folded to ids — the moment the
+    situation changes the rules write a different warning and it shows again; a rename of a man it names is a label,
+    not a change.
+  - **The line stays where it is, struck out and darker, one tap from being flagged again (D469, D475):** same place in
+    the list, `.hid` (struck through, grey; a dashed outline and a greyed bar on Edit Schedule), its `✕` become `↺` at
+    full strength. There is no "N hidden" fold. A tap on the struck line still jumps to and lights its crew.
+  - **Not counted (D472):** the day's "N issues", its "N warning" and the bar's colour read the SHOWN warnings; the
+    count line says nothing about a hidden one. The ⓘ popup and Insights count the same way. With every issue of a day
+    hidden, Edit Schedule keeps a quiet bar reading "✓ No issues" that opens the list; the board's heading reads "No
+    conflicts flagged for <day> ✓" with the struck lines under it (D475).
+  - **No flag on the pucks for that item (D469):** no ring, chip, dashed ring or dotted next-day mark — wherever the man is
+    drawn (the seats, the crew list, the Available grid, the ALL AVAIL window) — and no amber time box on a nought-minute
+    line. A man with two warnings keeps the flag of the one still showing; a hidden crew-rest warning drops the dotted
+    "breaks tomorrow" mark on the day before, across the week's edge too. The engine decides it once: every surface
+    reads the bundle "as shown" (`validate.ts shownOf`), and a renderer reads the warning's own `off`, never the set.
+  - **Everyone who opens the list sees the struck line; only a scheduler gets the button (D475):** View-only Sched and a
+    look at a version (👁) draw it struck with no `✕` / `↺`.
+  - **On a day already published it waits for the next amendment (D471):** the hide is ONE pending change — the day
+    reads "N pending", the four sign-offs fall, the To go out list names it ("Warning · … flagged → hidden") — and the
+    published face keeps the flag until that amendment is out; then it strikes the line and drops the flag. Each
+    version keeps the hides it went out with, and a look at an older version shows ITS hides. "Load onto working copy"
+    puts the day's hides back to the loaded version's.
+    **Its To go out line says who hid it and when** (D99 — read from the change history's own line for it,
+    `pendlist.ts pendItemWords`; Fable's final read). **A tap on its To go out line opens the day's list on that warning's line** (D99; the item carries `warnline:<the
+    hide key>`, `interactions.ts jumpToChange` → `jumpToWarnLine`): the list opened (the board's fold too, on a phone),
+    the line focused and its crew lit, the LINE brought on screen and marked for a moment in the amendment's colour — it
+    does not go on to the man's puck as a tap on the line itself does (that pan carried the struck line off the
+    screen); a warning with no seat of its own included; on View-only Sched the day turns to its working draft first,
+    where the pending change is (pin `e2e/warnhide.spec.ts`, both widths). **The load's confirm ("Discard N edits & load") and the "N
+    pending" chip of a look count only the PENDING hides the load will undo** (`publish.ts dayDiscardCount(di, toVer)`):
+    a hide already published is never "your unpublished edit", however it differs from the version loaded, and a
+    pending one the loaded version already shares is not discarded (the walk, 1 Oct 26 — pins
+    `state/warnhide-published.test.ts`).
 - **Resize the checks panel.** On desktop a grip (`.sb-wsplit`) sits on the
   border between the checks panel and the roster below it; dragging it sets an
   explicit height on `.sb-warn` (`wireWarnSplit`, a CSS var + `.sb-warn-sized`
@@ -4730,6 +4749,19 @@ owner's ask). Each late input now carries its OWN control on the board.
   drawing and the drop are eye-verified on the live bundle (jsdom paints 0×0).
 
 ## Week Insights: work hours (owner, 20 Aug 26)
+
+**WHICH SCHEDULE INSIGHTS COUNTS (owner, D477 and D478, 1 Oct 26 — RULED, NOT YET BUILT: `[INSIGHTS-WHICH-COPY]`).** *"It
+should show the latest copy, so if working copy is the only copy then it will use that, unless its published then use
+Original, if theres an AL1 then use AL1 etc."* (D478). Day by day, Insights counts that day's LATEST PUBLISHED version — the
+Original, or the latest amendment — and the working copy only for a day not yet published. Changes waiting on a published
+day are not counted until they go out; a hidden warning is not counted (D472), by the hides that version went out with
+(D477: 4 issues with 1 hidden read 3). One rule on EVERY page — Edit Schedule and the Scheduler Board included, and the
+pages with no schedule on them — and for every figure of the window, not only the issue counts. *(D477's first reading, "the
+schedule the page is showing", with Edit Schedule counting the working copy, was set aside by D478 the same evening.)*
+**As built today** every figure is worked out from the working copy on every page (`ui/Modals.tsx insightsHTML`,
+`engine/insights.ts`), so a change waiting on a published day — a hide included — already moves it; that is the gap the
+build closes.
+
 
 "Perhaps have a section to show everyone's work hours in the insights for the
 week."

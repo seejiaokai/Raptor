@@ -12,6 +12,7 @@ never pay or money).
 
 | # | Date | The rule |
 |---|---|---|
+| D476 | 1 Oct 26 | ON THE NEXT WALK ONE SONNET 5.5 WALKER RUNS THE SAME SCENARIOS AS ONE OPUS WALKER, AND THE TWO ARE COMPARED; UNTIL HE RULES ON THE RESULT NOTHING ELSE GOES TO A CHEAPER MODEL — THE 17 SEP 26 "NO SONNET, NO HAIKU" RULE STANDS FOR EVERYTHING ELSE. |
 | D473 | 1 Oct 26 | THE APP GOES INTO THE DATABASE AT THE END, ONCE ITS FEATURES ARE BUILT — NOT NOW: AFTER PHASE 7 NO MORE DATABASE-READINESS WORK UNTIL THEN; THE TABLE LIST IS KEPT UP TO DATE AS EACH FEATURE IS ADDED; AND HE, WITH HIS AI, WRITES THE TABLE FORMAT AND SCHEMA FOR THE IT SIDE TO ENTER INTO DATAVERSE. |
 | D467 | 30 Sep 26 | PHASE 6's BUILT STEPS (a), (b) AND (d) GET THEIR FULL BUG CHECK FIRST, IN A NEW CHAT; STEP (c) — V3, WITH A HOLDER BASE — IS BUILT AFTER, IN A FRESH CHAT ON ITS OWN BRANCH, WITH ITS LAST REVIEW ROUND (HIS CAP OF ABOUT THREE) AND ITS OWN FULL CHECK. |
 | D466 | 30 Sep 26 | WORK THAT NEEDS THE IT TEAM'S CONFIRMATION IS HELD UNTIL IT COMES, AND HE IS TOLD; WORK THAT DOES NOT GOES AHEAD. PHASE 6 (c) DOES NOT (ONLY THE HAND-OVER OF THE DAY AND REQUEST TABLES DOES), SO D465 STANDS. |
@@ -84,7 +85,7 @@ never pay or money).
 | D23 | 22 Sep 26 | A REVIEWER'S OPEN FINDINGS OUTRANK THE PLANNED JOB LIST. |
 | D22 | 22 Sep 26 | Clearing the demo data is APPROVED whenever it is the simpler path |
 | D17 | 21 Sep 26 | For a long hand pass, drive the app with a SCRIPTED real browser from the start |
-| D16 | 21 Sep 26 | A long hand-test pass is FANNED OUT across parallel Opus agents, not walked serially. |
+| D16 | 21 Sep 26 | A long hand-test pass is FANNED OUT across parallel Opus agents, not walked serially. — changed by D476 |
 | D14 | 21 Sep 26 | Records state the decision, not the transcript: quote him only where the exact words matter; otherwise one line, the date and a pointer — and a condensed record never changes what the original meant (D138). — changed by D141, D138 |
 | D13 | 21 Sep 26 | Record a ruling the moment it is made, before doing the work it implies — a hook on every message and a Rulings: line in every report enforce it. — changed by D137 |
 | D12 | 21 Sep 26 | The bug-check order adapts to any kind of work (interface, rules, cross-platform…), not only the OIL feature. |

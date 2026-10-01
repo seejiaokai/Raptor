@@ -60,6 +60,18 @@ export const HOOKS = {
      validator imports publishing). Null → nothing is frozen and the face reads the official pass, as before. */
   issuedWarn: null as null | ((di: number) => any),
   warnNow: null as null | ((di: number) => any),
+  /* THE HIDDEN WARNINGS ([WARN-HIDE-KEPT], owner D469 / D471, 1 Oct 26). `hiddenKeys` — the working copy's hides, as the
+     validator reads them (state/view.ts lends its set; the engine cannot import state). `hideNow` — for a published
+     day, each warning of today's judgement of the issued day that the working copy also raises, with whether it is
+     hidden on the working copy (engine/validate.ts sets it; publish.ts compares it with the version's own hides — its
+     pending axis). `setDayHides` — a load onto the working copy puts the day's hides back to the loaded version's
+     (state/view.ts; D98). Unset (an engine-only test): nothing is hidden, nothing is compared. */
+  /* `validated` — called with each RAW bundle a validate() builds; set only by the test suite's marks guard
+     (src/testing/marks-guard.ts), null in the app. */
+  validated: null as null | ((raw: any) => void),
+  hiddenKeys: null as null | (() => Set<string>),
+  hideNow: null as null | ((di: number) => Array<{ k: string, on: boolean, code: string, who: string[], msg: string, sev: string, key?: string }>),
+  setDayHides: null as null | ((di: number, keys: string[]) => void),
   /* THE DAY'S REAL DATE, and WHO AN ALL / ALL AVAIL PUCK STANDS FOR — the two
      other facts the OIL evidence block needs and the engine cannot know
      ([OIL-AUTO-REMOVE] §7.1/§7.3, engine/oilev.ts). The date is the week's own

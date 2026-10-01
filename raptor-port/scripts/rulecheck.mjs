@@ -218,6 +218,21 @@ const RULES = {
   PO10: 'an archived man’s callsign is free; Restore asks for another on the spot; Rename on the Archived list (D286, D295)',
   PO11: 'the admin’s member view and back; a member has no switch (D292)',
   PO12: '"Post in" reads just "Post in" (D300)',
+  /* [WARN-HIDE-KEPT] (1 Oct 26 — D469, D471, D472, D475). Register:
+     docs/superpowers/specs/2026-10-01-warn-hide-behaviour-register.md */
+  WH1: 'a hidden warning is kept with its day across a reload, and the next edit keeps it saved',
+  WH2: 'hidden for everyone: a sign-in does not bring it back',
+  WH3: 'while hidden the pucks carry no flag for that item; a man with two warnings keeps the other\'s',
+  WH4: 'its line stays in place, struck out, with the flag-again; no "N hidden" fold',
+  WH5: 'it is not counted, and the count line says nothing about it',
+  WH6: 'every issue hidden: a quiet "No issues" bar that still opens the list',
+  WH7: 'View-only Sched and a look draw it struck with no button; a look shows the version\'s own hides',
+  WH8: 'on a published day a hide is one pending change on every count and drops the four',
+  WH9: 'the published face keeps the flag until the amendment; each version keeps its hides',
+  WH10: 'a hide is tied to that exact warning; a rename is not the situation changing',
+  WH11: 'a scheduler\'s alone, an Undo step, and the history says who hid what',
+  WH12: 'the week-edge mark and the preview follow next Monday\'s own hide',
+  WH13: 'every mark the rules write belongs to a warning of its own',
 }
 
 /* Rules with no test naming them on 20 Sep 26. The check fails if this set

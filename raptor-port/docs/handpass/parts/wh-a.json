@@ -1,0 +1,1752 @@
+{
+ "parts": {
+  "10-tue-dk": {
+   "at": "2026-10-01T09:09:08.486Z",
+   "base": "http://localhost:4211",
+   "phone": false,
+   "table": [
+    {
+     "id": "21 (start)",
+     "did": "Edit Schedule, Tuesday: its issues bar tapped open",
+     "saw": "✓ the bar reads 4 issues · 2 warning [⚠ 4 issues · 2 warning · tap to collapse ▲] · ✓ four lines, none struck, each with ✕ · ✓ Static wears the grey ring and L where he is drawn [flying line@1(1.1.0.0.w):grey/solid red/L ; duty@1(d:1.0.2):grey/solid red/L ; crew list (week):grey/L]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-21a-tue-before.png"
+     ]
+    },
+    {
+     "id": "21",
+     "did": "Edit Schedule, Tuesday's list open → ✕ on its fourth line, Static's long work day (pressed)",
+     "saw": "✓ the bar reads 3 issues · 2 warning [⚠ 3 issues · 2 warning · tap to collapse ▲] · ✓ the count line says nothing about a hidden one [[]] · ✓ still four lines, the long-day line still FOURTH [[\"Conflict — two eve\",\"Crew rest (<12h) O\",\"No time for the fl\",\"Long work day Stat\"]] · ✓ that line is painted struck out, the other three are not · ✓ its button is now ↺ and a finger lands on it [↺ top=true] · ✓ its text is darker than a live line [rgb(138, 150, 163) vs rgb(241, 244, 247)]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-03-21b-tue-fourth-hidden.png"
+     ]
+    },
+    {
+     "id": "20",
+     "did": "the same hide — every place Static is drawn on Tuesday (his flying seat, his duty desk, the crew list beside the week)",
+     "saw": "✓ he is drawn at least twice [flying line@1(1.1.0.0.w):- ; duty@1(d:1.0.2):- ; crew list (week):-] · ✓ no copy of him carries a ring or the L [all plain]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-04-20-static-pucks-after-hide.png"
+     ]
+    },
+    {
+     "id": "24 (hide)",
+     "did": "Insights opened from the top bar after hiding Tuesday's long-day note",
+     "saw": "✓ the weekly issues tile fell by one [33 → 32] · ✓ \"Conflicts by type\" fell by one in all, and \"Long work day\" by one [sum 33 → 32; long day 2 → 1] · ✓ \"By day\" Tuesday fell by one [8 sorties · 4 formations · 4 issues → 8 sorties · 4 formations · 3 issues] · ✓ the three agree with each other",
+     "verdict": "PASS",
+     "pics": [
+      "dk-05-24b-insights-one-hidden.png"
+     ]
+    },
+    {
+     "id": "20 (hours)",
+     "did": "the same Insights window — Static's work hours",
+     "saw": "✓ Static's work-hours figure is unchanged [21h20 → 21h20] · ✓ every man's work-hours figure is unchanged",
+     "verdict": "PASS",
+     "pics": [
+      "dk-05-24b-insights-one-hidden.png"
+     ]
+    },
+    {
+     "id": "23 (one hidden, working face)",
+     "did": "Edit Schedule, Tuesday's ⓘ tapped with the long-day note hidden",
+     "saw": "✓ the counts read 2 warning · 1 advisory and no note [2 WARNING 1 ADVISORY] · ✓ all four lines are still listed, in place [[\"Warning · Conflict — two\",\"Warning · Crew rest (<12\",\"Advisory · No time for t\",\"Note · Long work day Sta\"]] · ✓ the hidden one is painted struck, the others not",
+     "verdict": "PASS",
+     "pics": [
+      "dk-06-23a-dayinfo-one-hidden.png"
+     ]
+    },
+    {
+     "id": "24 (flag again)",
+     "did": "↺ on the struck line (pressed), then Insights again",
+     "saw": "✓ the bar is back to 4 issues, the line unstruck with ✕ [⚠ 4 issues · 2 warning · tap to collapse ▲] · ✓ Static wears the grey ring and L again [flying line@1(1.1.0.0.w):grey/solid red/L ; duty@1(d:1.0.2):grey/solid red/L ; crew list (week):grey/L] · ✓ tile, by type and by day are all back to the first reading [33]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-07-24c-tue-flagged-again.png",
+      "dk-08-24c-insights-flagged-again.png"
+     ]
+    },
+    {
+     "id": "21 (all hidden)",
+     "did": "the other three lines hidden too (✕ on each); the bar tapped shut and open again",
+     "saw": "✓ the bar stays and reads \"✓ No issues\" [✓ No issues · tap to collapse ▲] · ✓ closed, it reads \"✓ No issues · tap to review\" [✓ No issues · tap to review ▼] · ✓ the bar is quiet — not red, not amber [daywarn calm rgb(42, 49, 58) / rgb(26, 31, 38)] · ✓ tapped, it opens all four lines, each painted struck with a reachable ↺ [[\"true/↺/true\",\"true/↺/true\",\"true/↺/true\",\"true/↺/true\"]] · ✓ the lines keep their order (clash, crew rest, brief, long day) · ✓ no \"N hidden\" wording anywhere in the box · ✓ Saint, Outlaw and Static carry no ring or chip on Tuesday [all plain] · ✓ Outlaw's dotted \"breaks Tuesday\" mark on Monday is gone [plain]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-09-21c-tue-all-hidden-open.png",
+      "dk-10-21c-tue-all-hidden-closed.png"
+     ]
+    },
+    {
+     "id": "21 (all hidden) — Monday picture",
+     "did": "Monday scrolled to Outlaw's flying seat with Tuesday's crew-rest breach hidden",
+     "saw": "Outlaw on Monday: flying line@0(0.1.1.1.p):-",
+     "verdict": "PASS",
+     "pics": [
+      "dk-11-21c-monday-outlaw-no-dotted.png"
+     ]
+    },
+    {
+     "id": "23 (all hidden, working face)",
+     "did": "Edit Schedule, Tuesday's ⓘ tapped with all four hidden",
+     "saw": "✓ it says \"Nothing flagged\" (no severity counts) [ | Nothing flagged — this day is clean ✓] · ✓ the four lines are still listed, each painted struck [[true,true,true,true]]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-12-23b-dayinfo-all-hidden.png"
+     ]
+    }
+   ],
+   "errors": []
+  },
+  "10-tue-ph": {
+   "at": "2026-10-01T09:10:20.225Z",
+   "base": "http://localhost:4211",
+   "phone": true,
+   "table": [
+    {
+     "id": "21 (start)",
+     "did": "Edit Schedule, Tuesday: its issues bar tapped open",
+     "saw": "✓ the bar reads 4 issues · 2 warning [⚠ 4 issues · 2 warning · tap to collapse ▲] · ✓ four lines, none struck, each with ✕ · ✓ Static wears the grey ring and L where he is drawn [flying line@1(1.1.0.0.w):grey/solid red/L ; duty@1(d:1.0.2):grey/solid red/L ; crew list (week):grey/L]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-01-21a-tue-before.png"
+     ]
+    },
+    {
+     "id": "21",
+     "did": "Edit Schedule, Tuesday's list open → ✕ on its fourth line, Static's long work day (pressed)",
+     "saw": "✓ the bar reads 3 issues · 2 warning [⚠ 3 issues · 2 warning · tap to collapse ▲] · ✓ the count line says nothing about a hidden one [[]] · ✓ still four lines, the long-day line still FOURTH [[\"Conflict — two eve\",\"Crew rest (<12h) O\",\"No time for the fl\",\"Long work day Stat\"]] · ✓ that line is painted struck out, the other three are not · ✓ its button is now ↺ and a finger lands on it [↺ top=true] · ✓ its text is darker than a live line [rgb(138, 150, 163) vs rgb(241, 244, 247)]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-03-21b-tue-fourth-hidden.png"
+     ]
+    },
+    {
+     "id": "20",
+     "did": "the same hide — every place Static is drawn on Tuesday (his flying seat, his duty desk, the crew list beside the week)",
+     "saw": "✓ he is drawn at least twice [flying line@1(1.1.0.0.w):- ; duty@1(d:1.0.2):- ; crew list (week):-] · ✓ no copy of him carries a ring or the L [all plain]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-04-20-static-pucks-after-hide.png"
+     ]
+    },
+    {
+     "id": "24 (hide)",
+     "did": "Insights opened from the top bar after hiding Tuesday's long-day note",
+     "saw": "✓ the weekly issues tile fell by one [33 → 32] · ✓ \"Conflicts by type\" fell by one in all, and \"Long work day\" by one [sum 33 → 32; long day 2 → 1] · ✓ \"By day\" Tuesday fell by one [8 sorties · 4 formations · 4 issues → 8 sorties · 4 formations · 3 issues] · ✓ the three agree with each other",
+     "verdict": "PASS",
+     "pics": [
+      "ph-05-24b-insights-one-hidden.png"
+     ]
+    },
+    {
+     "id": "20 (hours)",
+     "did": "the same Insights window — Static's work hours",
+     "saw": "✓ Static's work-hours figure is unchanged [21h20 → 21h20] · ✓ every man's work-hours figure is unchanged",
+     "verdict": "PASS",
+     "pics": [
+      "ph-05-24b-insights-one-hidden.png"
+     ]
+    },
+    {
+     "id": "23 (one hidden, working face)",
+     "did": "Edit Schedule, Tuesday's ⓘ tapped with the long-day note hidden",
+     "saw": "✓ the counts read 2 warning · 1 advisory and no note [2 WARNING 1 ADVISORY] · ✓ all four lines are still listed, in place [[\"Warning · Conflict — two\",\"Warning · Crew rest (<12\",\"Advisory · No time for t\",\"Note · Long work day Sta\"]] · ✓ the hidden one is painted struck, the others not",
+     "verdict": "PASS",
+     "pics": [
+      "ph-06-23a-dayinfo-one-hidden.png"
+     ]
+    },
+    {
+     "id": "24 (flag again)",
+     "did": "↺ on the struck line (pressed), then Insights again",
+     "saw": "✓ the bar is back to 4 issues, the line unstruck with ✕ [⚠ 4 issues · 2 warning · tap to collapse ▲] · ✓ Static wears the grey ring and L again [flying line@1(1.1.0.0.w):grey/solid red/L ; duty@1(d:1.0.2):grey/solid red/L ; crew list (week):grey/L] · ✓ tile, by type and by day are all back to the first reading [33]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-07-24c-tue-flagged-again.png",
+      "ph-08-24c-insights-flagged-again.png"
+     ]
+    },
+    {
+     "id": "21 (all hidden)",
+     "did": "the other three lines hidden too (✕ on each); the bar tapped shut and open again",
+     "saw": "✓ the bar stays and reads \"✓ No issues\" [✓ No issues · tap to collapse ▲] · ✓ closed, it reads \"✓ No issues · tap to review\" [✓ No issues · tap to review ▼] · ✓ the bar is quiet — not red, not amber [daywarn calm rgb(42, 49, 58) / rgb(26, 31, 38)] · ✓ tapped, it opens all four lines, each painted struck with a reachable ↺ [[\"true/↺/true\",\"true/↺/true\",\"true/↺/true\",\"true/↺/true\"]] · ✓ the lines keep their order (clash, crew rest, brief, long day) · ✓ no \"N hidden\" wording anywhere in the box · ✓ Saint, Outlaw and Static carry no ring or chip on Tuesday [all plain] · ✓ Outlaw's dotted \"breaks Tuesday\" mark on Monday is gone [plain]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-09-21c-tue-all-hidden-open.png",
+      "ph-10-21c-tue-all-hidden-closed.png"
+     ]
+    },
+    {
+     "id": "21 (all hidden) — Monday picture",
+     "did": "Monday scrolled to Outlaw's flying seat with Tuesday's crew-rest breach hidden",
+     "saw": "Outlaw on Monday: flying line@0(0.1.1.1.p):-",
+     "verdict": "PASS",
+     "pics": [
+      "ph-11-21c-monday-outlaw-no-dotted.png"
+     ]
+    },
+    {
+     "id": "23 (all hidden, working face)",
+     "did": "Edit Schedule, Tuesday's ⓘ tapped with all four hidden",
+     "saw": "✓ it says \"Nothing flagged\" (no severity counts) [ | Nothing flagged — this day is clean ✓] · ✓ the four lines are still listed, each painted struck [[true,true,true,true]]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-12-23b-dayinfo-all-hidden.png"
+     ]
+    }
+   ],
+   "errors": []
+  },
+  "11-board-dk": {
+   "at": "2026-10-01T09:12:11.020Z",
+   "base": "http://localhost:4211",
+   "phone": false,
+   "table": [
+    {
+     "id": "18 (clash hidden)",
+     "did": "Edit Schedule, Tuesday: ✕ on Outlaw's crew-rest line, then ✕ on Saint's clash (the advisory \"no time for the brief\" left showing)",
+     "saw": "✓ before: Saint wears the red ring and C on every copy [flying line@1(1.1.0.1.p):red/solid red/C ; ground@1(g:1.3):red/solid red/C ; Available crew@1:red/solid red/C] · ✓ before, and with only Outlaw's hidden, the bar is red [daywarn hard border rgba(240, 85, 95, 0.4) → daywarn hard border rgba(240, 85, 95, 0.4) (⚠ 3 issues · 1 warning · tap to collapse ▲)] · ✓ after: every copy of Saint is AMBER — not red, not plain [flying line@1(1.1.0.1.p):amber/solid amber/B ; ground@1(g:1.3):amber/solid amber/B ; Available crew@1:amber/solid amber/B] · ✓ after: the bar is amber and reads 2 issues with no \"warning\" count [daywarn adv border rgba(229, 168, 59, 0.35) | ⚠ 2 issues · tap to collapse ▲]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-18a-saint-red.png",
+      "dk-02-18b-bar-amber.png",
+      "dk-03-18b-saint-amber.png"
+     ]
+    },
+    {
+     "id": "18 (advisory hidden too)",
+     "did": "✕ on Saint's \"no time for the brief\" as well",
+     "saw": "✓ every copy of Saint is plain (week and the crew list) [flying line@1(1.1.0.1.p):- ; ground@1(g:1.3):- ; Available crew@1:- ; crew list (week):-] · ✓ the bar is no longer red or amber and reads 1 issue [daywarn note border rgba(138, 150, 163, 0.35) | ⚠ 1 issue · tap to collapse ▲]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-04-18c-bar-note-only.png",
+      "dk-05-18c-saint-plain.png"
+     ]
+    },
+    {
+     "id": "22",
+     "did": "Scheduler Board, Tuesday (checks panel resized by its splitter first: panel 245px → 152px) → ✕ on the fourth line (pressed)",
+     "saw": "✓ before: the heading counts 4 [⚠ 4 issues · 2 warnings · tap to review] · ✓ after: the heading counts 3 and says nothing of a hidden one [⚠ 3 issues · 2 warnings · tap to review | ] · ✓ still four lines in the same order, the long-day line fourth [[\"Saint — VL SAT &\",\"Outlaw — Crew re\",\"Saint — No time \",\"Static — Static \"]] · ✓ it is painted struck; the other three are not · ✓ its ↺ is the thing a finger lands on [↺ top=true] · ✓ Static carries no ring or L anywhere on the board (seat, duty desk, crew list) [flying line(1.1.0.0.w):- ; duty(d:1.0.2):- ; crew list (board):-]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-06-22a-board-before.png",
+      "dk-07-22b-board-fourth-hidden.png"
+     ]
+    },
+    {
+     "id": "22 (all hidden)",
+     "did": "the other three hidden on the board too; the panel resized again by its splitter",
+     "saw": "✓ the heading reads \"No conflicts flagged for Tuesday ✓\" [No conflicts flagged for Tuesday ✓ · tap to review] · ✓ the heading is quiet (not red, not amber) [wh ok] · ✓ the four struck lines sit under it, in order, each with ↺ · ✓ after the resize each ↺ is still the topmost thing at its centre [desktop — the panel does not fold · true,true,true,true] · ✓ Saint, Outlaw and Static are plain everywhere on the board [all plain]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-08-22c-board-all-hidden.png",
+      "dk-09-22c-board-all-hidden-resized.png"
+     ]
+    },
+    {
+     "id": "22 (agrees with Edit Schedule)",
+     "did": "the board closed with ✓ Done; Tuesday's list on Edit Schedule",
+     "saw": "✓ the week's bar reads \"✓ No issues\" and its four lines are struck, same order [✓ No issues · tap to collapse ▲]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-10-22d-week-after-board-hides.png"
+     ]
+    },
+    {
+     "id": "25 (shared)",
+     "did": "Edit Schedule, Tuesday: ✕ on Saint's clash and on Static's long day; then the Scheduler Board opened on Tuesday",
+     "saw": "✓ Edit Schedule: lines 1 and 4 struck with ↺, bar 2 issues [⚠ 2 issues · 1 warning · tap to collapse ▲] · ✓ the board shows the SAME two struck with ↺, the other two live with ✕ [[\"struck↺\",\"live✕\",\"live✕\",\"struck↺\"]] · ✓ the board's heading counts 2 [⚠ 2 issues · 1 warning · tap to review] · ✓ with the week's box open, the hidden line's man (Static) is NOT lit while a shown line's man (Outlaw) is [before Static flying line@1(1.1.0.0.w):grey/solid red/L ; duty@1(d:1.0.2):grey/solid red/L | after Static flying line@1(1.1.0.0.w):- ; duty@1(d:1.0.2):- | Outla]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-11-25a-week-two-hidden.png",
+      "dk-12-25b-board-shows-same.png"
+     ]
+    },
+    {
+     "id": "25 (a struck row still finds its crew)",
+     "did": "on the board, a tap on the WORDS of the struck long-day line",
+     "saw": "✓ Static's pucks light up (an outline that was not there before the tap) [before flying line(1.1.0.0.w):- ; duty(d:1.0.2):- ; crew list (board):- | after flying line(1.1.0.0.w):amber/solid amber ; duty(d:1.0.2):amber/solid amber ; cre] · ✓ one of his lit pucks is brought on screen [[true,false,true]] · ✓ the line stays struck with ↺ (the tap did not flag it again)",
+     "verdict": "PASS",
+     "pics": [
+      "dk-13-25c-board-struck-row-tapped.png"
+     ]
+    },
+    {
+     "id": "25 (flag again on the other list)",
+     "did": "↺ on that line ON THE BOARD, then the board closed and Edit Schedule's list read",
+     "saw": "✓ board: the line is live with ✕, heading counts 3, Static wears the grey ring and L [⚠ 3 issues · 1 warning · tap to review | flying line(1.1.0.0.w):amber/solid amber/L ; duty(d:1.0.2):amber/solid amber/L ; crew list (board):grey/L] · ✓ Edit Schedule: the same line is live with ✕, bar 3 issues, Saint's clash still struck [⚠ 3 issues · 1 warning · tap to collapse ▲] · ✓ Edit Schedule: Static wears the grey ring and L again [flying line@1(1.1.0.0.w):grey/solid red/L ; duty@1(d:1.0.2):grey/solid red/L]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-14-25d-board-flagged-again.png",
+      "dk-15-25e-week-follows.png"
+     ]
+    }
+   ],
+   "errors": []
+  },
+  "11-board-ph": {
+   "at": "2026-10-01T09:12:57.064Z",
+   "base": "http://localhost:4211",
+   "phone": true,
+   "table": [
+    {
+     "id": "18 (clash hidden)",
+     "did": "Edit Schedule, Tuesday: ✕ on Outlaw's crew-rest line, then ✕ on Saint's clash (the advisory \"no time for the brief\" left showing)",
+     "saw": "✓ before: Saint wears the red ring and C on every copy [flying line@1(1.1.0.1.p):red/solid red/C ; ground@1(g:1.3):red/solid red/C ; Available crew@1:red/solid red/C] · ✓ before, and with only Outlaw's hidden, the bar is red [daywarn hard border rgba(240, 85, 95, 0.4) → daywarn hard border rgba(240, 85, 95, 0.4) (⚠ 3 issues · 1 warning · tap to collapse ▲)] · ✓ after: every copy of Saint is AMBER — not red, not plain [flying line@1(1.1.0.1.p):amber/solid amber/B ; ground@1(g:1.3):amber/solid amber/B ; Available crew@1:amber/solid amber/B] · ✓ after: the bar is amber and reads 2 issues with no \"warning\" count [daywarn adv border rgba(229, 168, 59, 0.35) | ⚠ 2 issues · tap to collapse ▲]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-01-18a-saint-red.png",
+      "ph-02-18b-bar-amber.png",
+      "ph-03-18b-saint-amber.png"
+     ]
+    },
+    {
+     "id": "18 (advisory hidden too)",
+     "did": "✕ on Saint's \"no time for the brief\" as well",
+     "saw": "✓ every copy of Saint is plain (week and the crew list) [flying line@1(1.1.0.1.p):- ; ground@1(g:1.3):- ; Available crew@1:- ; crew list (week):-] · ✓ the bar is no longer red or amber and reads 1 issue [daywarn note border rgba(138, 150, 163, 0.35) | ⚠ 1 issue · tap to collapse ▲]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-04-18c-bar-note-only.png",
+      "ph-05-18c-saint-plain.png"
+     ]
+    },
+    {
+     "id": "22",
+     "did": "Scheduler Board, Tuesday (the issues fold opened by its heading) → ✕ on the fourth line (pressed)",
+     "saw": "✓ before: the heading counts 4 [▾ ⚠ 4 issues · 2 warnings · tap to collapse] · ✓ after: the heading counts 3 and says nothing of a hidden one [▾ ⚠ 3 issues · 2 warnings · tap to collapse | ] · ✓ still four lines in the same order, the long-day line fourth [[\"Saint — VL SAT &\",\"Outlaw — Crew re\",\"Saint — No time \",\"Static — Static \"]] · ✓ it is painted struck; the other three are not · ✓ its ↺ is the thing a finger lands on [↺ top=true] · ✓ Static carries no ring or L anywhere on the board (seat, duty desk, crew list) [flying line(1.1.0.0.w):- ; duty(d:1.0.2):- ; crew list (board):-]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-06-22a-board-before.png",
+      "ph-07-22b-board-fourth-hidden.png"
+     ]
+    },
+    {
+     "id": "22 (all hidden)",
+     "did": "the other three hidden on the board too; the fold shut and opened again by its heading",
+     "saw": "✓ the heading reads \"No conflicts flagged for Tuesday ✓\" [▾ No conflicts flagged for Tuesday ✓ · tap to collapse] · ✓ the heading is quiet (not red, not amber) [wh ok] · ✓ the four struck lines sit under it, in order, each with ↺ · ✓ the phone fold still opens (four lines shown), each ↺ topmost [shut: 0 lines shown; open again: 4 (ph-09-22c-board-all-hidden-fold-shut.png) · true,true,true,true] · ✓ Saint, Outlaw and Static are plain everywhere on the board [all plain]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-08-22c-board-all-hidden.png",
+      "ph-10-22c-board-all-hidden-fold-open-again.png"
+     ]
+    },
+    {
+     "id": "22 (agrees with Edit Schedule)",
+     "did": "the board closed with ✓ Done; Tuesday's list on Edit Schedule",
+     "saw": "✓ the week's bar reads \"✓ No issues\" and its four lines are struck, same order [✓ No issues · tap to collapse ▲]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-11-22d-week-after-board-hides.png"
+     ]
+    },
+    {
+     "id": "25 (shared)",
+     "did": "Edit Schedule, Tuesday: ✕ on Saint's clash and on Static's long day; then the Scheduler Board opened on Tuesday",
+     "saw": "✓ Edit Schedule: lines 1 and 4 struck with ↺, bar 2 issues [⚠ 2 issues · 1 warning · tap to collapse ▲] · ✓ the board shows the SAME two struck with ↺, the other two live with ✕ [[\"struck↺\",\"live✕\",\"live✕\",\"struck↺\"]] · ✓ the board's heading counts 2 [▾ ⚠ 2 issues · 1 warning · tap to collapse] · ✓ with the week's box open, the hidden line's man (Static) is NOT lit while a shown line's man (Outlaw) is [before Static flying line@1(1.1.0.0.w):grey/solid red/L ; duty@1(d:1.0.2):grey/solid red/L | after Static flying line@1(1.1.0.0.w):- ; duty@1(d:1.0.2):- | Outla]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-12-25a-week-two-hidden.png",
+      "ph-13-25b-board-shows-same.png"
+     ]
+    },
+    {
+     "id": "25 (a struck row still finds its crew)",
+     "did": "on the board, a tap on the WORDS of the struck long-day line",
+     "saw": "✓ Static's pucks light up (an outline that was not there before the tap) [before flying line(1.1.0.0.w):- ; duty(d:1.0.2):- ; crew list (board):- | after flying line(1.1.0.0.w):amber/solid amber ; duty(d:1.0.2):amber/solid amber ; cre] · ✓ one of his lit pucks is brought on screen [[true,false,true]] · ✓ the line stays struck with ↺ (the tap did not flag it again)",
+     "verdict": "PASS",
+     "pics": [
+      "ph-14-25c-board-struck-row-tapped.png"
+     ]
+    },
+    {
+     "id": "25 (flag again on the other list)",
+     "did": "↺ on that line ON THE BOARD, then the board closed and Edit Schedule's list read",
+     "saw": "✓ board: the line is live with ✕, heading counts 3, Static wears the grey ring and L [▾ ⚠ 3 issues · 1 warning · tap to collapse | flying line(1.1.0.0.w):amber/solid amber/L ; duty(d:1.0.2):amber/solid amber/L ; crew list (board):grey/L] · ✓ Edit Schedule: the same line is live with ✕, bar 3 issues, Saint's clash still struck [⚠ 3 issues · 1 warning · tap to collapse ▲] · ✓ Edit Schedule: Static wears the grey ring and L again [flying line@1(1.1.0.0.w):grey/solid red/L ; duty@1(d:1.0.2):grey/solid red/L]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-15-25d-board-flagged-again.png",
+      "ph-16-25e-week-follows.png"
+     ]
+    }
+   ],
+   "errors": []
+  },
+  "12-kinds-dk": {
+   "at": "2026-10-01T09:18:56.613Z",
+   "base": "http://localhost:4211",
+   "phone": false,
+   "table": [
+    {
+     "id": "2 (start)",
+     "did": "Edit Schedule: a tap on Gambit's puck on Wednesday's VL ACM line (he is flagged Monday and Wednesday, one warning each)",
+     "saw": "✓ Monday's and Wednesday's boxes open [[0,2]] · ✓ Monday's box says \"Gambit is also flagged on Wed\", Wednesday's says \"… on Mon\" [[\"0: Gambit is also flagged on Wed\",\"2: Gambit is also flagged on Mon\"]]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-02-2a-gambit-focused-monday-box.png",
+      "dk-03-2a-gambit-focused-wednesday-box.png"
+     ]
+    },
+    {
+     "id": "2 (hide)",
+     "did": "without clearing the selection: ✕ on Wednesday's only line naming him (pressed)",
+     "saw": "✓ he is still the selected man [10] · ✓ Monday's box NO LONGER says he is also flagged on Wed — at once [(no echo line)] · ✓ his Wednesday pucks are clean (no ring, no chip) [flying line@2(2.0.0.1.p):- ; Unavailable@2:-] · ✓ Wednesday's list, where it is open, shows his line struck with ↺ [[[\"On leave + flying Gambit — On \",true,\"↺\"]] open=0,2]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-04-2b-after-hide-monday-box.png",
+      "dk-05-2b-after-hide-wednesday.png"
+     ]
+    },
+    {
+     "id": "2 (flag again)",
+     "did": "without clearing the selection: ↺ on that line (pressed)",
+     "saw": "✓ Monday's box says \"also flagged on Wed\" again — at once [0: Gambit is also flagged on Wed | 2: Gambit is also flagged on Mon] · ✓ Wednesday's box says \"also flagged on Mon\" [[\"0: Gambit is also flagged on Wed\",\"2: Gambit is also flagged on Mon\"]]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-06-2c-after-flag-again-monday-box.png"
+     ]
+    },
+    {
+     "id": "2 (the clean puck)",
+     "did": "hidden again; the selection dropped (a second tap on him) and the open boxes shut by their bars; then a fresh tap on his clean Wednesday puck; then Wednesday's list opened by its own bar",
+     "saw": "✓ the tap does NOT open Wednesday [open [0] sel 10 (before the tap: open [] sel 0)] · ✓ it does what a tap on his clean Tuesday puck did before any hide (the baseline) [baseline (clean Tuesday puck, nothing hidden) opened [0,2] echo [\"0: Gambit is also flagged on Wed\",\"2: Gambit is also flagged on Mon\"]; now [0] (dk-01-2-baseli] · ✓ no box says he is \"also flagged on Wed\" [(no echo line)] · ✓ opened directly, Wednesday's list still shows his line, struck [⚠ 6 issues · 1 warning · tap to collapse ▲]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-07-2d-clean-puck-tapped.png",
+      "dk-08-2d-clean-puck-tapped-monday.png",
+      "dk-09-2e-wednesday-list-opened-directly.png"
+     ]
+    },
+    {
+     "id": "15",
+     "did": "Edit Schedule, Thursday: ✕ on \"OCU pilot Wildcard with CAT D WSO Pixel — not an authorised combination\" (it names both)",
+     "saw": "✓ before: both Wildcard and Pixel are flagged for it [Wildcard Available crew:red/CP,flying line(3.0.1.1.p):red/CP | Pixel flying line(3.0.1.1.w):red/CP] · ✓ after: BOTH are plain on every copy [Wildcard plain | Pixel plain] · ✓ nobody else on Thursday changed [{\"bapster\":\"Available crew:red/CP ; flying line(3.0.1.1.p):red/CP  →  plain\",\"badger\":\"flying line(3.0.1.1.w):red/CP  →  plain\"}] · ✓ the struck line still names both [Illegal aircrew combination Wildcard, Pixel — OCU pilot Wildcard with CAT D WSO Pixel — not an authorised comb] · ✓ the bar fell from 6 issues to 5 [⚠ 6 issues · 3 warning · tap to collapse ▲ → ⚠ 5 issues · 2 warning · tap to collapse ▲]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-10-15a-thu-pair-before.png",
+      "dk-11-15b-thu-list-pair-hidden.png",
+      "dk-12-15b-thu-pair-after.png"
+     ]
+    },
+    {
+     "id": "15 (an unrelated warning stays)",
+     "did": "Wednesday: ✕ on \"CAT C pilot Nomad with CAT D WSO Pixel … CO approval required\" (Nomad also carries his own hard clash with an input)",
+     "saw": "✓ Pixel becomes plain [flying line(2.1.1.1.w):red/CP → plain] · ✓ Nomad keeps the red ring of his own warning [Unavailable:red/C,flying line(2.1.1.1.p):red/C → Unavailable:red/C,flying line(2.1.1.1.p):red/C] · ✓ the other pair (Kraken + Otter) is untouched [SANS:red/CP,flying line(2.0.1.1.p):red/CP] · ✓ nobody else on Wednesday changed [{\"badger\":\"flying line(2.1.1.1.w):red/CP  →  plain\"}]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-13-15c-wed-nomad-keeps-his-own.png"
+     ]
+    },
+    {
+     "id": "16",
+     "did": "Edit Schedule, Monday: ✕ on \"4 people are double turning: Saber, Echo, Piston, Relay\"",
+     "saw": "✓ before: a DT chip is drawn for the men it names (those not already wearing a stronger mark) [DT on freak, dirty | Saber flying line(0.0.0.0.p):red/C,flying line(0.1.0.0.p):red/C,programme(a:0.7.0):red/C,sim(s:0.oft.0.w):red/C | Echo flying line(0.0.0.0.] · ✓ after: no DT chip on any of the four — week [Saber flying line(0.0.0.0.p):red/C,flying line(0.1.0.0.p):red/C,programme(a:0.7.0):red/C,sim(s:0.oft.0.w):red/C | Echo plain | Piston flying line(0.0.1.1.p):red] · ✓ after: no DT chip on any of the four — the crew list beside the week [stiff: crew list (week):red/C → crew list (week):red/C | freak: crew list (week):-/DT → plain | pump: crew list (week):red/C → crew list (week):red/C | dirty: c] · ✓ Saber and Piston keep their other flags (red C) · ✓ no man it does NOT name changed [{\"freak\":\"flying line(0.0.0.0.w):red/DT ; flying line(0.1.0.0.w):red/DT  →  plain\",\"dirty\":\"flying line(0.0.1.1.w):red/DT ; flying line(0.1.1.0.w):red/DT  →  pl] · ✓ the bar fell from 14 to 13 issues; the line is struck in place [⚠ 14 issues · 6 warning · tap to collapse ▲ → ⚠ 13 issues · 6 warning · tap to collapse ▲]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-14-16a-mon-dt-before.png",
+      "dk-15-16b-mon-dt-after.png"
+     ]
+    },
+    {
+     "id": "17 (same-day TURN)",
+     "did": "Wednesday: ✕ on Trident's \"Tight turn VL ACM→VL BFM\", then ✕ on \"2 people are double turning: Trident, Relay\" (Relay's own tight turn left showing)",
+     "saw": "✓ before: Trident and Relay each wear TT [Trident flying line(2.0.0.0.p):red/TT ; flying line(2.1.0.0.p):red/TT | Relay flying line(2.0.0.0.w):red/TT ; flying line(2.1.0.0.w):red/TT] · ✓ Trident's turn hidden: Trident loses TT and falls to the double-turn's DT (still showing); Relay keeps TT [Trident flying line(2.0.0.0.p):red/DT ; flying line(2.1.0.0.p):red/DT | Relay flying line(2.0.0.0.w):red/TT ; flying line(2.1.0.0.w):red/TT] · ✓ the double-turn line hidden too: Trident is plain; Relay still wears TT (his own turn) [Trident plain | Relay flying line(2.0.0.0.w):red/TT ; flying line(2.1.0.0.w):red/TT] · ✓ nobody else on Wednesday changed [{\"harpoon\":\"flying line(2.0.0.0.p):red/TT ; flying line(2.1.0.0.p):red/TT  →  plain\"}]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-16-17a-wed-trident-turn-hidden.png",
+      "dk-17-17b-wed-double-turn-hidden-too.png"
+     ]
+    },
+    {
+     "id": "17 (CREW_TIGHT, the overnight tight turn)",
+     "did": "not built in this file — see the file wh-a-16 if walked",
+     "saw": "the demo week raises no overnight tight-turn note",
+     "verdict": "see 17 (overnight)",
+     "pics": []
+    },
+    {
+     "id": "19 (OIL reminder, Edit Schedule)",
+     "did": "Edit Schedule, Saturday: ✕ on \"This day is not published yet, so nobody earns their OIL for it\" — a warning that names no man (pressed)",
+     "saw": "✓ before: 1 issue, the line live with ✕ [⚠ 1 issue · tap to collapse ▲] · ✓ after: the bar reads \"✓ No issues\" [✓ No issues · tap to collapse ▲] · ✓ the line is still there, painted struck, with a reachable ↺ [{\"ix\":0,\"sev\":\"adv\",\"hid\":true,\"struck\":true,\"color\":\"rgb(138, 150, 163)\",\"btn\":\"↺\",\"btnTop\":true,\"text\":\"OIL waiting — this day is not published This day is no] · ✓ no puck on Saturday changed [{}] · ✓ Insights: \"OIL waiting — this day is not published\" fell from 2 to 1, Saturday reads clear [0 sorties · 0 formations · 1 issue → 0 sorties · 0 formations · clear]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-18-19a-sat-oil-reminder-hidden.png"
+     ]
+    },
+    {
+     "id": "19 (OIL reminder, the board)",
+     "did": "Scheduler Board, Sunday: ✕ on the same reminder (pressed)",
+     "saw": "✓ before: the heading counts 1 [⚠ 1 issue · tap to review] · ✓ after: the heading reads \"No conflicts flagged for Sunday ✓\" [No conflicts flagged for Sunday ✓ · tap to review] · ✓ the line is struck with a ↺ a finger lands on [{\"ix\":0,\"hid\":true,\"struck\":true,\"shown\":true,\"btn\":\"↺\",\"btnTop\":true,\"text\":\"This day is not published yet, so nobody earns their OIL for it — publish it befor]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-19-19b-board-sun-oil-reminder-hidden.png"
+     ]
+    },
+    {
+     "id": "19 (OIL reminder, back and forth)",
+     "did": "the board moved to Saturday by its day tab: the line hidden on Edit Schedule shows struck there; ↺ (pressed); back on Edit Schedule",
+     "saw": "✓ the board showed Saturday's line struck with ↺ and \"No conflicts flagged for Saturday ✓\" [No conflicts flagged for Saturday ✓ · tap to review] · ✓ after ↺ the board counts 1 and the line is live with ✕ [⚠ 1 issue · tap to review] · ✓ Edit Schedule: Saturday is back to 1 issue (live), Sunday reads \"✓ No issues\" (struck) [⚠ 1 issue · tap to collapse ▲ | ✓ No issues · tap to collapse ▲]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-20-19c-board-sat-flagged-again.png",
+      "dk-21-19d-week-sat-live-sun-hidden.png"
+     ]
+    }
+   ],
+   "errors": []
+  },
+  "12-kinds-ph": {
+   "at": "2026-10-01T09:20:56.728Z",
+   "base": "http://localhost:4211",
+   "phone": true,
+   "table": [
+    {
+     "id": "2 (start)",
+     "did": "Edit Schedule: a tap on Gambit's puck on Wednesday's VL ACM line (he is flagged Monday and Wednesday, one warning each)",
+     "saw": "✓ Monday's and Wednesday's boxes open [[0,2]] · ✓ Monday's box says \"Gambit is also flagged on Wed\", Wednesday's says \"… on Mon\" [[\"0: Gambit is also flagged on Wed\",\"2: Gambit is also flagged on Mon\"]]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-02-2a-gambit-focused-monday-box.png",
+      "ph-03-2a-gambit-focused-wednesday-box.png"
+     ]
+    },
+    {
+     "id": "2 (hide)",
+     "did": "without clearing the selection: ✕ on Wednesday's only line naming him (pressed)",
+     "saw": "✓ he is still the selected man [10] · ✓ Monday's box NO LONGER says he is also flagged on Wed — at once [(no echo line)] · ✓ his Wednesday pucks are clean (no ring, no chip) [flying line@2(2.0.0.1.p):- ; Unavailable@2:-] · ✓ Wednesday's list, where it is open, shows his line struck with ↺ [[[\"On leave + flying Gambit — On \",true,\"↺\"]] open=0,2]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-04-2b-after-hide-monday-box.png",
+      "ph-05-2b-after-hide-wednesday.png"
+     ]
+    },
+    {
+     "id": "2 (flag again)",
+     "did": "without clearing the selection: ↺ on that line (pressed)",
+     "saw": "✓ Monday's box says \"also flagged on Wed\" again — at once [0: Gambit is also flagged on Wed | 2: Gambit is also flagged on Mon] · ✓ Wednesday's box says \"also flagged on Mon\" [[\"0: Gambit is also flagged on Wed\",\"2: Gambit is also flagged on Mon\"]]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-06-2c-after-flag-again-monday-box.png"
+     ]
+    },
+    {
+     "id": "2 (the clean puck)",
+     "did": "hidden again; the selection dropped (a second tap on him) and the open boxes shut by their bars; then a fresh tap on his clean Wednesday puck; then Wednesday's list opened by its own bar",
+     "saw": "✓ the tap does NOT open Wednesday [open [0] sel 10 (before the tap: open [] sel 0)] · ✓ it does what a tap on his clean Tuesday puck did before any hide (the baseline) [baseline (clean Tuesday puck, nothing hidden) opened [0,2] echo [\"0: Gambit is also flagged on Wed\",\"2: Gambit is also flagged on Mon\"]; now [0] (ph-01-2-baseli] · ✓ no box says he is \"also flagged on Wed\" [(no echo line)] · ✓ opened directly, Wednesday's list still shows his line, struck [⚠ 6 issues · 1 warning · tap to collapse ▲]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-07-2d-clean-puck-tapped.png",
+      "ph-08-2d-clean-puck-tapped-monday.png",
+      "ph-09-2e-wednesday-list-opened-directly.png"
+     ]
+    },
+    {
+     "id": "15",
+     "did": "Edit Schedule, Thursday: ✕ on \"OCU pilot Wildcard with CAT D WSO Pixel — not an authorised combination\" (it names both)",
+     "saw": "✓ before: both Wildcard and Pixel are flagged for it [Wildcard Available crew:red/CP,flying line(3.0.1.1.p):red/CP | Pixel flying line(3.0.1.1.w):red/CP] · ✓ after: BOTH are plain on every copy [Wildcard plain | Pixel plain] · ✓ nobody else on Thursday changed [{\"bapster\":\"Available crew:red/CP ; flying line(3.0.1.1.p):red/CP  →  plain\",\"badger\":\"flying line(3.0.1.1.w):red/CP  →  plain\"}] · ✓ the struck line still names both [Illegal aircrew combination Wildcard, Pixel — OCU pilot Wildcard with CAT D WSO Pixel — not an authorised comb] · ✓ the bar fell from 6 issues to 5 [⚠ 6 issues · 3 warning · tap to collapse ▲ → ⚠ 5 issues · 2 warning · tap to collapse ▲]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-10-15a-thu-pair-before.png",
+      "ph-11-15b-thu-list-pair-hidden.png",
+      "ph-12-15b-thu-pair-after.png"
+     ]
+    },
+    {
+     "id": "15 (an unrelated warning stays)",
+     "did": "Wednesday: ✕ on \"CAT C pilot Nomad with CAT D WSO Pixel … CO approval required\" (Nomad also carries his own hard clash with an input)",
+     "saw": "✓ Pixel becomes plain [flying line(2.1.1.1.w):red/CP → plain] · ✓ Nomad keeps the red ring of his own warning [Unavailable:red/C,flying line(2.1.1.1.p):red/C → Unavailable:red/C,flying line(2.1.1.1.p):red/C] · ✓ the other pair (Kraken + Otter) is untouched [SANS:red/CP,flying line(2.0.1.1.p):red/CP] · ✓ nobody else on Wednesday changed [{\"badger\":\"flying line(2.1.1.1.w):red/CP  →  plain\"}]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-13-15c-wed-nomad-keeps-his-own.png"
+     ]
+    },
+    {
+     "id": "16",
+     "did": "Edit Schedule, Monday: ✕ on \"4 people are double turning: Saber, Echo, Piston, Relay\"",
+     "saw": "✓ before: a DT chip is drawn for the men it names (those not already wearing a stronger mark) [DT on freak, dirty | Saber flying line(0.0.0.0.p):red/C,flying line(0.1.0.0.p):red/C,programme(a:0.7.0):red/C,sim(s:0.oft.0.w):red/C | Echo flying line(0.0.0.0.] · ✓ after: no DT chip on any of the four — week [Saber flying line(0.0.0.0.p):red/C,flying line(0.1.0.0.p):red/C,programme(a:0.7.0):red/C,sim(s:0.oft.0.w):red/C | Echo plain | Piston flying line(0.0.1.1.p):red] · ✓ after: no DT chip on any of the four — the crew list beside the week [stiff: crew list (week):red/C → crew list (week):red/C | freak: crew list (week):-/DT → plain | pump: crew list (week):red/C → crew list (week):red/C | dirty: c] · ✓ Saber and Piston keep their other flags (red C) · ✓ no man it does NOT name changed [{\"freak\":\"flying line(0.0.0.0.w):red/DT ; flying line(0.1.0.0.w):red/DT  →  plain\",\"dirty\":\"flying line(0.0.1.1.w):red/DT ; flying line(0.1.1.0.w):red/DT  →  pl] · ✓ the bar fell from 14 to 13 issues; the line is struck in place [⚠ 14 issues · 6 warning · tap to collapse ▲ → ⚠ 13 issues · 6 warning · tap to collapse ▲]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-14-16a-mon-dt-before.png",
+      "ph-15-16b-mon-dt-after.png"
+     ]
+    },
+    {
+     "id": "17 (same-day TURN)",
+     "did": "Wednesday: ✕ on Trident's \"Tight turn VL ACM→VL BFM\", then ✕ on \"2 people are double turning: Trident, Relay\" (Relay's own tight turn left showing)",
+     "saw": "✓ before: Trident and Relay each wear TT [Trident flying line(2.0.0.0.p):red/TT ; flying line(2.1.0.0.p):red/TT | Relay flying line(2.0.0.0.w):red/TT ; flying line(2.1.0.0.w):red/TT] · ✓ Trident's turn hidden: Trident loses TT and falls to the double-turn's DT (still showing); Relay keeps TT [Trident flying line(2.0.0.0.p):red/DT ; flying line(2.1.0.0.p):red/DT | Relay flying line(2.0.0.0.w):red/TT ; flying line(2.1.0.0.w):red/TT] · ✓ the double-turn line hidden too: Trident is plain; Relay still wears TT (his own turn) [Trident plain | Relay flying line(2.0.0.0.w):red/TT ; flying line(2.1.0.0.w):red/TT] · ✓ nobody else on Wednesday changed [{\"harpoon\":\"flying line(2.0.0.0.p):red/TT ; flying line(2.1.0.0.p):red/TT  →  plain\"}]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-16-17a-wed-trident-turn-hidden.png",
+      "ph-17-17b-wed-double-turn-hidden-too.png"
+     ]
+    },
+    {
+     "id": "17 (CREW_TIGHT, the overnight tight turn)",
+     "did": "not built in this file — see the file wh-a-16 if walked",
+     "saw": "the demo week raises no overnight tight-turn note",
+     "verdict": "see 17 (overnight)",
+     "pics": []
+    },
+    {
+     "id": "19 (OIL reminder, Edit Schedule)",
+     "did": "Edit Schedule, Saturday: ✕ on \"This day is not published yet, so nobody earns their OIL for it\" — a warning that names no man (pressed)",
+     "saw": "✓ before: 1 issue, the line live with ✕ [⚠ 1 issue · tap to collapse ▲] · ✓ after: the bar reads \"✓ No issues\" [✓ No issues · tap to collapse ▲] · ✓ the line is still there, painted struck, with a reachable ↺ [{\"ix\":0,\"sev\":\"adv\",\"hid\":true,\"struck\":true,\"color\":\"rgb(138, 150, 163)\",\"btn\":\"↺\",\"btnTop\":true,\"text\":\"OIL waiting — this day is not published This day is no] · ✓ no puck on Saturday changed [{}] · ✓ Insights: \"OIL waiting — this day is not published\" fell from 2 to 1, Saturday reads clear [0 sorties · 0 formations · 1 issue → 0 sorties · 0 formations · clear]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-18-19a-sat-oil-reminder-hidden.png"
+     ]
+    },
+    {
+     "id": "19 (OIL reminder, the board)",
+     "did": "Scheduler Board, Sunday: ✕ on the same reminder (pressed)",
+     "saw": "✓ before: the heading counts 1 [▾ ⚠ 1 issue · tap to collapse] · ✓ after: the heading reads \"No conflicts flagged for Sunday ✓\" [▾ No conflicts flagged for Sunday ✓ · tap to collapse] · ✓ the line is struck with a ↺ a finger lands on [{\"ix\":0,\"hid\":true,\"struck\":true,\"shown\":true,\"btn\":\"↺\",\"btnTop\":true,\"text\":\"This day is not published yet, so nobody earns their OIL for it — publish it befor]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-19-19b-board-sun-oil-reminder-hidden.png"
+     ]
+    },
+    {
+     "id": "19 (OIL reminder, back and forth)",
+     "did": "the board moved to Saturday by its day tab: the line hidden on Edit Schedule shows struck there; ↺ (pressed); back on Edit Schedule",
+     "saw": "✓ the board showed Saturday's line struck with ↺ and \"No conflicts flagged for Saturday ✓\" [▾ No conflicts flagged for Saturday ✓ · tap to collapse] · ✓ after ↺ the board counts 1 and the line is live with ✕ [▾ ⚠ 1 issue · tap to collapse] · ✓ Edit Schedule: Saturday is back to 1 issue (live), Sunday reads \"✓ No issues\" (struck) [⚠ 1 issue · tap to collapse ▲ | ✓ No issues · tap to collapse ▲]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-20-19c-board-sat-flagged-again.png",
+      "ph-21-19d-week-sat-live-sun-hidden.png"
+     ]
+    }
+   ],
+   "errors": []
+  },
+  "13-exempt-dk": {
+   "at": "2026-10-01T09:28:51.072Z",
+   "base": "http://localhost:4211",
+   "phone": false,
+   "table": [
+    {
+     "id": "19 (nought-minute, set up)",
+     "did": "Edit Schedule, Tuesday: the first line's landing time typed the same as its take-off (08:40)",
+     "saw": "✓ a new line \"VL takes off and lands at the same time (08:40)\" that names no man [⚠ 5 issues · 2 warning · tap to collapse ▲ · who []] · ✓ the bar rose to 5 issues [⚠ 5 issues · 2 warning · tap to collapse ▲] · ✓ both of that line's time boxes are drawn flagged on the week (they were not before) [[{\"cell\":\"take-off\",\"flagged\":true,\"shadow\":\"rgb(229, 168, 59) 0px 0px 0px 1px inset\",\"text\":\"06:20 08:40\"},{\"cell\":\"landing\",\"flagged\":true,\"shadow\":\"rgb(229, ]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-19n-a-week-boxes-flagged.png",
+      "dk-02-19n-a-board-flagged.png"
+     ]
+    },
+    {
+     "id": "19 (nought-minute, hidden)",
+     "did": "✕ on that line in Edit Schedule's list (pressed); then the board opened on Tuesday",
+     "saw": "✓ the bar fell back to 4 issues; the line stays in place, struck, with a reachable ↺ [⚠ 4 issues · 2 warning · tap to collapse ▲] · ✓ BOTH time boxes lose their flag on the week — not one, both [[{\"cell\":\"take-off\",\"flagged\":false,\"shadow\":\"none\",\"text\":\"06:20 08:40\"},{\"cell\":\"landing\",\"flagged\":false,\"shadow\":\"none\",\"text\":\"08:40\"}]] · ✓ the times themselves are untouched (08:40 take-off, 08:40 landing) [[\"06:20 08:40\",\"08:40\"]] · ✓ the board lists the same line struck with ↺ and counts 4 [⚠ 4 issues · 2 warnings · tap to review] · ✓ the board's own take-off and landing boxes were both drawn flagged before the hide, and neither is now [before true rgb(229, 168, 59) / true rgb(229, 168, 59) | after false rgb(42, 49, 58) / false rgb(42, 49, 58)]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-03-19n-b-week-list-hidden.png",
+      "dk-04-19n-b-week-boxes-gone.png",
+      "dk-05-19n-b-board-hidden.png"
+     ]
+    },
+    {
+     "id": "19 (nought-minute, flagged again)",
+     "did": "↺ on the board's struck line (pressed); the board closed",
+     "saw": "✓ the board counts 5 again, the line live with ✕ [⚠ 5 issues · 2 warnings · tap to review] · ✓ the board's take-off and landing boxes are flagged again [true rgb(229, 168, 59) / true rgb(229, 168, 59)] · ✓ both time boxes are flagged again on the week [[{\"cell\":\"take-off\",\"flagged\":true,\"shadow\":\"rgb(229, 168, 59) 0px 0px 0px 1px inset\",\"text\":\"06:20 08:40\"},{\"cell\":\"landing\",\"flagged\":true,\"shadow\":\"rgb(229, ] · ✓ Edit Schedule's bar reads 5 issues [⚠ 5 issues · 2 warning · tap to collapse ▲]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-06-19n-c-week-boxes-back.png"
+     ]
+    },
+    {
+     "id": "8 (set up)",
+     "did": "Scheduler Board, Tuesday: \"+ Wave\" → AVALON (added); its first FCP armed and Grit picked from the crew list (seated: \"Grit — SC NIGHT currency needed for AVALON NIGHT MAIN (19:00–07:00) — \"); Grit also added to the first ground item (added) — he is medically down all week and a WSO",
+     "saw": "✓ the AVALON seat raises several warnings of its own [DNIF_FLY ATT C but on AVALON NIGHT — medically do | SC_QUAL SC NIGHT currency needed for AVALON NIGH | QUAL Grit is a WSO — cannot fly FCP (AVALON N] · ✓ he carries another warning elsewhere (the ground item) [DNIF_FLY@g:1.0 Downchit but tasked — OPS BRIEFER / EP S] · ✓ his AVALON copy and his ground copy are both ringed red [flying line(1.2.0.0.p):red/Q ; ground(g:1.0.x0):red/Q ; Unavailable:red/Q ; crew list (board):red/Q]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-07-8a-board-avalon-grit-flagged.png"
+     ]
+    },
+    {
+     "id": "8 (one of its own hidden)",
+     "did": "on the board: ✕ on \"Grit is a WSO — cannot fly FCP (AVALON NIGHT MAIN)\" (pressed)",
+     "saw": "✓ the AVALON copy is still ringed red by the seat's other warnings [flying line(1.2.0.0.p):red/Q] · ✓ the heading fell by one [⚠ 8 issues · 6 warnings · tap to review → ⚠ 7 issues · 5 warnings · tap to review]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-08-8b-board-one-hidden.png"
+     ]
+    },
+    {
+     "id": "8 (all of its own hidden — Edit Schedule)",
+     "did": "on the board: ✕ on every remaining line anchored to the AVALON seat (2 more); the board closed; Edit Schedule read",
+     "saw": "✓ the AVALON copy is PLAIN — no ring, no chip [flying line@1(1.2.0.0.p):-] · ✓ the ground copy is still ringed red (its own warning is still shown) [ground@1(g:1.0.x0):red/C · live: Grit — Downchit but tasked — OPS BRIEFER / EP SUP ] · ✓ every other copy of him (crew list, Unavailable row) follows the warning still shown — ringed red [crew list (week):red/C ; Unavailable@1:red/C]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-11-8d-week-avalon-copy-plain.png"
+     ]
+    },
+    {
+     "id": "8 (all of its own hidden — the board)",
+     "did": "the same moment, read on the board before it was closed",
+     "saw": "✗ the AVALON copy is PLAIN — no ring, no chip [flying line(1.2.0.0.p):red/C (the three AVALON lines are struck; the only live line naming him is the one on the ground item)] · ✓ his ground copy is still ringed red [ground(g:1.0.x0):red/C]",
+     "verdict": "FAIL",
+     "pics": [
+      "dk-09-8c-board-avalon-copy-plain.png",
+      "dk-10-8c-board-ground-copy-still-red.png"
+     ]
+    },
+    {
+     "id": "8 (flag one again)",
+     "did": "Edit Schedule: ↺ on one of the seat's struck lines (pressed)",
+     "saw": "✓ the AVALON copy is ringed red again [flying line@1(1.2.0.0.p):red/solid red/C]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-12-8e-week-avalon-copy-red-again.png"
+     ]
+    },
+    {
+     "id": "8 (every warning naming him hidden — the board)",
+     "did": "on the board: ✕ on every line still naming Grit, the one on the ground item included",
+     "saw": "✓ every copy of him on the board is plain, the AVALON copy too [flying line(1.2.0.0.p):- ; ground(g:1.0.x0):- ; Unavailable:- ; crew list (board):-]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-13-8f-board-every-grit-line-hidden.png"
+     ]
+    },
+    {
+     "id": "8 (baseline — NOTHING hidden)",
+     "did": "a fresh world: \"+ Wave\" → AVALON; Saint picked onto its first FCP (seated) — the seat raises 0 warning(s) of its own for him; he has a clash elsewhere on Tuesday",
+     "saw": "the BOARD draws his AVALON copy flying line(1.2.0.0.p):red/C; EDIT SCHEDULE draws the same seat flying line@1(1.2.0.0.p):-. So with nothing hidden the board already rings an AVALON seat with the man's flags from elsewhere and the week does not.",
+     "verdict": "INFO (baseline for finding 1)",
+     "pics": [
+      "dk-14-8x-baseline-board-saint-on-avalon.png",
+      "dk-15-8x-baseline-week-saint-on-avalon.png"
+     ]
+    },
+    {
+     "id": "9 (set up)",
+     "did": "Scheduler Board, Tuesday: \"+ Block\" → AVALON (added); its first desk armed and Grit picked (seated); Grit also put in the rear seat of a third aircraft added to RU BFM with its \"+\" (1.0.1.2.w: seated)",
+     "saw": "✓ the desk raises its own availability warning [DNIF_FLY ATT C but on SXO duty — medically down — reason: M] · ✓ he is separately flagged on the flying line [DNIF_FLY@1.0.1.2.w] · ✓ desk copy red C; flying copy red [flying line(1.0.1.2.w):red/C ; duty(d:1.2.0):red/C ; Unavailable:red/C ; crew list (board):red/C]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-16-9a-board-avalon-desk-flagged.png"
+     ]
+    },
+    {
+     "id": "9",
+     "did": "on the board: ✕ on \"Grit — ATT C but on SXO duty — medically down\" (pressed); then the board closed and Edit Schedule read",
+     "saw": "✓ board: the desk's red ring and C are gone [duty(d:1.2.0):-] · ✓ board: his flying-line copy is still ringed red [flying line(1.0.1.2.w):red/C] · ✓ Edit Schedule: the desk copy is plain [duty@1(d:1.2.0):-] · ✓ Edit Schedule: the flying-line copy is still ringed red — week and board agree [flying line@1(1.0.1.2.w):red/C] · ✓ the line is struck on the board, the heading one lower [⚠ 6 issues · 4 warnings · tap to review → ⚠ 5 issues · 3 warnings · tap to review]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-17-9b-board-desk-plain.png",
+      "dk-18-9c-week-desk-plain.png",
+      "dk-19-9c-week-flying-still-red.png"
+     ]
+    },
+    {
+     "id": "9 (what he carried)",
+     "did": "for the record: every warning naming Grit after the set-up",
+     "saw": "DNIF_FLY@1.0.1.2.w: Downchit but planned to fly RU BFM — reason: Medically down  | DNIF_FLY@d:1.2.0: ATT C but on SXO duty — medically down — reason: Medically d",
+     "verdict": "INFO",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "13-exempt-ph": {
+   "at": "2026-10-01T09:29:37.125Z",
+   "base": "http://localhost:4211",
+   "phone": true,
+   "table": [
+    {
+     "id": "19 (nought-minute, set up)",
+     "did": "Edit Schedule, Tuesday: the first line's landing time typed the same as its take-off (08:40)",
+     "saw": "✓ a new line \"VL takes off and lands at the same time (08:40)\" that names no man [⚠ 5 issues · 2 warning · tap to collapse ▲ · who []] · ✓ the bar rose to 5 issues [⚠ 5 issues · 2 warning · tap to collapse ▲] · ✓ both of that line's time boxes are drawn flagged on the week (they were not before) [[{\"cell\":\"take-off\",\"flagged\":true,\"shadow\":\"rgb(229, 168, 59) 0px 0px 0px 1px inset\",\"text\":\"06:20 08:40\"},{\"cell\":\"landing\",\"flagged\":true,\"shadow\":\"rgb(229, ]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-01-19n-a-week-boxes-flagged.png",
+      "ph-02-19n-a-board-flagged.png"
+     ]
+    },
+    {
+     "id": "19 (nought-minute, hidden)",
+     "did": "✕ on that line in Edit Schedule's list (pressed); then the board opened on Tuesday",
+     "saw": "✓ the bar fell back to 4 issues; the line stays in place, struck, with a reachable ↺ [⚠ 4 issues · 2 warning · tap to collapse ▲] · ✓ BOTH time boxes lose their flag on the week — not one, both [[{\"cell\":\"take-off\",\"flagged\":false,\"shadow\":\"none\",\"text\":\"06:20 08:40\"},{\"cell\":\"landing\",\"flagged\":false,\"shadow\":\"none\",\"text\":\"08:40\"}]] · ✓ the times themselves are untouched (08:40 take-off, 08:40 landing) [[\"06:20 08:40\",\"08:40\"]] · ✓ the board lists the same line struck with ↺ and counts 4 [▾ ⚠ 4 issues · 2 warnings · tap to collapse] · ✓ the board's own take-off and landing boxes were both drawn flagged before the hide, and neither is now [before true rgb(229, 168, 59) / true rgb(229, 168, 59) | after false rgb(42, 49, 58) / false rgb(42, 49, 58)]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-03-19n-b-week-list-hidden.png",
+      "ph-04-19n-b-week-boxes-gone.png",
+      "ph-05-19n-b-board-hidden.png"
+     ]
+    },
+    {
+     "id": "19 (nought-minute, flagged again)",
+     "did": "↺ on the board's struck line (pressed); the board closed",
+     "saw": "✓ the board counts 5 again, the line live with ✕ [▾ ⚠ 5 issues · 2 warnings · tap to collapse] · ✓ the board's take-off and landing boxes are flagged again [true rgb(229, 168, 59) / true rgb(229, 168, 59)] · ✓ both time boxes are flagged again on the week [[{\"cell\":\"take-off\",\"flagged\":true,\"shadow\":\"rgb(229, 168, 59) 0px 0px 0px 1px inset\",\"text\":\"06:20 08:40\"},{\"cell\":\"landing\",\"flagged\":true,\"shadow\":\"rgb(229, ] · ✓ Edit Schedule's bar reads 5 issues [⚠ 5 issues · 2 warning · tap to collapse ▲]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-06-19n-c-week-boxes-back.png"
+     ]
+    },
+    {
+     "id": "8 (set up)",
+     "did": "Scheduler Board, Tuesday: \"+ Wave\" → AVALON (added); its first FCP armed and Grit picked from the crew list (seated: \"Grit — SC NIGHT currency needed for AVALON NIGHT MAIN (19:00–07:00) — \"); Grit also added to the first ground item (added) — he is medically down all week and a WSO",
+     "saw": "✓ the AVALON seat raises several warnings of its own [DNIF_FLY ATT C but on AVALON NIGHT — medically do | SC_QUAL SC NIGHT currency needed for AVALON NIGH | QUAL Grit is a WSO — cannot fly FCP (AVALON N] · ✓ he carries another warning elsewhere (the ground item) [DNIF_FLY@g:1.0 Downchit but tasked — OPS BRIEFER / EP S] · ✓ his AVALON copy and his ground copy are both ringed red [flying line(1.2.0.0.p):red/Q ; ground(g:1.0.x0):red/Q ; Unavailable:red/Q ; crew list (board):red/Q]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-07-8a-board-avalon-grit-flagged.png"
+     ]
+    },
+    {
+     "id": "8 (one of its own hidden)",
+     "did": "on the board: ✕ on \"Grit is a WSO — cannot fly FCP (AVALON NIGHT MAIN)\" (pressed)",
+     "saw": "✓ the AVALON copy is still ringed red by the seat's other warnings [flying line(1.2.0.0.p):red/Q] · ✓ the heading fell by one [▾ ⚠ 8 issues · 6 warnings · tap to collapse → ▾ ⚠ 7 issues · 5 warnings · tap to collapse]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-08-8b-board-one-hidden.png"
+     ]
+    },
+    {
+     "id": "8 (all of its own hidden — Edit Schedule)",
+     "did": "on the board: ✕ on every remaining line anchored to the AVALON seat (2 more); the board closed; Edit Schedule read",
+     "saw": "✓ the AVALON copy is PLAIN — no ring, no chip [flying line@1(1.2.0.0.p):-] · ✓ the ground copy is still ringed red (its own warning is still shown) [ground@1(g:1.0.x0):red/C · live: Grit — Downchit but tasked — OPS BRIEFER / EP SUP ] · ✓ every other copy of him (crew list, Unavailable row) follows the warning still shown — ringed red [crew list (week):red/C ; Unavailable@1:red/C]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-11-8d-week-avalon-copy-plain.png"
+     ]
+    },
+    {
+     "id": "8 (all of its own hidden — the board)",
+     "did": "the same moment, read on the board before it was closed",
+     "saw": "✗ the AVALON copy is PLAIN — no ring, no chip [flying line(1.2.0.0.p):red/C (the three AVALON lines are struck; the only live line naming him is the one on the ground item)] · ✓ his ground copy is still ringed red [ground(g:1.0.x0):red/C]",
+     "verdict": "FAIL",
+     "pics": [
+      "ph-09-8c-board-avalon-copy-plain.png",
+      "ph-10-8c-board-ground-copy-still-red.png"
+     ]
+    },
+    {
+     "id": "8 (flag one again)",
+     "did": "Edit Schedule: ↺ on one of the seat's struck lines (pressed)",
+     "saw": "✓ the AVALON copy is ringed red again [flying line@1(1.2.0.0.p):red/solid red/C]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-12-8e-week-avalon-copy-red-again.png"
+     ]
+    },
+    {
+     "id": "8 (every warning naming him hidden — the board)",
+     "did": "on the board: ✕ on every line still naming Grit, the one on the ground item included",
+     "saw": "✓ every copy of him on the board is plain, the AVALON copy too [flying line(1.2.0.0.p):- ; ground(g:1.0.x0):- ; Unavailable:- ; crew list (board):-]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-13-8f-board-every-grit-line-hidden.png"
+     ]
+    },
+    {
+     "id": "8 (baseline — NOTHING hidden)",
+     "did": "a fresh world: \"+ Wave\" → AVALON; Saint picked onto its first FCP (seated) — the seat raises 0 warning(s) of its own for him; he has a clash elsewhere on Tuesday",
+     "saw": "the BOARD draws his AVALON copy flying line(1.2.0.0.p):red/C; EDIT SCHEDULE draws the same seat flying line@1(1.2.0.0.p):-. So with nothing hidden the board already rings an AVALON seat with the man's flags from elsewhere and the week does not.",
+     "verdict": "INFO (baseline for finding 1)",
+     "pics": [
+      "ph-14-8x-baseline-board-saint-on-avalon.png",
+      "ph-15-8x-baseline-week-saint-on-avalon.png"
+     ]
+    },
+    {
+     "id": "9 (set up)",
+     "did": "Scheduler Board, Tuesday: \"+ Block\" → AVALON (added); its first desk armed and Grit picked (seated); Grit also put in the rear seat of a third aircraft added to RU BFM with its \"+\" (1.0.1.2.w: seated)",
+     "saw": "✓ the desk raises its own availability warning [DNIF_FLY ATT C but on SXO duty — medically down — reason: M] · ✓ he is separately flagged on the flying line [DNIF_FLY@1.0.1.2.w] · ✓ desk copy red C; flying copy red [flying line(1.0.1.2.w):red/C ; duty(d:1.2.0):red/C ; Unavailable:red/C ; crew list (board):red/C]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-16-9a-board-avalon-desk-flagged.png"
+     ]
+    },
+    {
+     "id": "9",
+     "did": "on the board: ✕ on \"Grit — ATT C but on SXO duty — medically down\" (pressed); then the board closed and Edit Schedule read",
+     "saw": "✓ board: the desk's red ring and C are gone [duty(d:1.2.0):-] · ✓ board: his flying-line copy is still ringed red [flying line(1.0.1.2.w):red/C] · ✓ Edit Schedule: the desk copy is plain [duty@1(d:1.2.0):-] · ✓ Edit Schedule: the flying-line copy is still ringed red — week and board agree [flying line@1(1.0.1.2.w):red/C] · ✓ the line is struck on the board, the heading one lower [▾ ⚠ 6 issues · 4 warnings · tap to collapse → ▾ ⚠ 5 issues · 3 warnings · tap to collapse]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-17-9b-board-desk-plain.png",
+      "ph-18-9c-week-desk-plain.png",
+      "ph-19-9c-week-flying-still-red.png"
+     ]
+    },
+    {
+     "id": "9 (what he carried)",
+     "did": "for the record: every warning naming Grit after the set-up",
+     "saw": "DNIF_FLY@1.0.1.2.w: Downchit but planned to fly RU BFM — reason: Medically down  | DNIF_FLY@d:1.2.0: ATT C but on SXO duty — medically down — reason: Medically d",
+     "verdict": "INFO",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "14-places-dk": {
+   "at": "2026-10-01T09:37:19.752Z",
+   "base": "http://localhost:4211",
+   "phone": false,
+   "table": [
+    {
+     "id": "10 (working face, the board)",
+     "did": "Scheduler Board, Tuesday: ALL AVAIL placed on MASS BRIEF (placed); its count chip tapped → the window; closed; ✕ on Saint's clash, the chip again; ✕ on Saint's \"no time for the brief\", the chip again",
+     "saw": "✓ before: Saint is in the window, ringed red, with \"VL SAT & APPOINTMENT clash\" under him [{\"id\":\"salsa\",\"flagged\":true,\"ring\":\"red\",\"chip\":\"C\",\"why\":\"VL SAT & APPOINTMENT clash\"}] · ✓ clash hidden: he falls to amber and the reason under him is now the brief one (the warning still showing); the footer count is unchanged [{\"id\":\"salsa\",\"flagged\":true,\"ring\":\"amber\",\"chip\":\"B\",\"why\":\"No time for the VL SAT flight brief — APPOINTMENT sits inside 12:20–14:40 (brief 12:20)\"} · \"Tap a] · ✓ both hidden: Saint is STILL in the window [44 men listed (before 44)] · ✓ both hidden: his puck there is plain and no reason is written under him [{\"id\":\"salsa\",\"flagged\":false,\"ring\":\"\",\"chip\":\"\",\"why\":\"\"}] · ✓ \"N men are flagged\" fell by one [\"Tap a puck for why. 5 men are flagged.\" → \"Tap a puck for why. 4 men are flagged.\"] · ✓ the count of available men did not change [44 → 44 (chip 44 → 44)] · ✓ the men drawn with a reason in the window number what the footer says [5/5 → 4/4] · ✓ nobody else in the window changed",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-10a-window-before.png",
+      "dk-02-10b-window-saint-clash-hidden.png",
+      "dk-03-10c-window-saint-both-hidden.png"
+     ]
+    },
+    {
+     "id": "10 (a man with a second reason of the window's own)",
+     "did": "✕ on Outlaw's crew-rest line; the chip again",
+     "saw": "✓ his red ring, R and crew-rest reason are gone from the window; he is still listed [{\"id\":\"casper\",\"flagged\":true,\"ring\":\"\",\"chip\":\"\",\"why\":\"No time for the VL BFM flight brief — MASS BRIEF sits inside 06:20–08:40 (brief 06:20)\"}] · ✓ RECORDED: the window now writes another reason under him — the MASS BRIEF itself sits inside his flight brief (the same reason his formation-mates Warden, Basher and Hex show) — so the footer still counts him [was {\"id\":\"casper\",\"flagged\":true,\"ring\":\"red\",\"chip\":\"R\",\"why\":\"Crew rest breach — Monday landed 20:45, +2h debrief assumed → ended 22:45 → crew rest clear at ]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-04-10d-window-outlaw-hidden.png"
+     ]
+    },
+    {
+     "id": "10 (working face, Edit Schedule; flag again)",
+     "did": "the board closed; the same chip tapped on Edit Schedule's Tuesday; then ↺ on Saint's two struck lines and the chip again",
+     "saw": "✓ from Edit Schedule the window says the same: Saint listed, plain, no reason [{\"id\":\"salsa\",\"flagged\":false,\"ring\":\"\",\"chip\":\"\",\"why\":\"\"} · \"Tap a puck for why. 4 men are flagged.\"] · ✓ after ↺: he is ringed red with his clash under him again, and the footer is one higher [{\"id\":\"salsa\",\"flagged\":true,\"ring\":\"red\",\"chip\":\"C\",\"why\":\"VL SAT & APPOINTMENT clash\"} · \"Tap a puck for why. 5 men are flagged.\"]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-05-10e-window-from-week.png",
+      "dk-06-10f-window-saint-flagged-again.png"
+     ]
+    },
+    {
+     "id": "11",
+     "did": "Scheduler Board, Tuesday: \"+\" adds a third aircraft to RU BFM; its FRONT seat armed and Cutter (a WSO) picked (seated); board closed; Edit Schedule: ✕ on \"Cutter is a WSO — cannot fly FCP\" (pressed); board opened again",
+     "saw": "✓ the qualification flag is his only warning [QUAL] · ✓ before: red ring and Q on his seat and in both crew lists [week flying line@1(1.0.1.2.p):red/Q ; Available crew@1:red/Q ; crew list (week):red/Q | board flying line(1.0.1.2.p):red/Q ; Available crew:red/Q ; crew list (b] · ✓ after, Edit Schedule: no copy carries Q or a ring — seat, Available crew, the crew list beside the week [flying line@1(1.0.1.2.p):- ; Available crew@1:- ; crew list (week):-] · ✓ after, the board: no copy carries Q or a ring — seat, Available crew, the board's crew list [flying line(1.0.1.2.p):- ; Available crew:- ; crew list (board):-]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-07-11a-week-seat-and-crew-list-plain.png",
+      "dk-08-11b-board-seat-and-crew-list-plain.png"
+     ]
+    },
+    {
+     "id": "11 (flag again)",
+     "did": "↺ on the board's struck line (pressed); board closed",
+     "saw": "✓ every copy on the board wears red and Q again [flying line(1.0.1.2.p):red/Q ; Available crew:red/Q ; crew list (board):red/Q] · ✓ every copy on Edit Schedule wears red and Q again [flying line@1(1.0.1.2.p):red/Q ; Available crew@1:red/Q ; crew list (week):red/Q]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-09-11c-week-q-back.png"
+     ]
+    },
+    {
+     "id": "12 (set up)",
+     "did": "Scheduler Board, Tuesday: Anvil picked from the crew list onto Common Programme: MASS BRIEF; ground: MEDICAL APPT (an extra); ground: APPOINTMENT (an extra); sim: SIMS (EXT SQN); sim: BOX; duty desk: 2nd-wave SDO (an extra) (6 of 6 landed)",
+     "saw": "✓ he is drawn on a programme item, a duty desk, a sim, and a ground item (and the crew list) [programme, duty, sim, ground, crew list (board)] · ✓ several clash warnings name him, and at least one advisory [7 clashes (Sim SIMS (EXT SQN) & SDO duty  | SDO duty & MEDICAL APPT clash | SDO duty & APPOINTMENT clash | SDO duty & Sim BOX clash | MEDICAL APPT & APPOINTMENT] · ✓ every copy of him wears the red ring and C [programme(a:1.1.0):red/C ; duty(d:1.1.0.x0):red/C ; sim(s:1.amt.1.w):red/C ; sim(s:1.oft.1.p):red/C ; ground(g:1.2.x0):red/C ; ground(g:1.3.x0):red/C ; crew lis]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-10-12a-board-anvil-everywhere-red.png"
+     ]
+    },
+    {
+     "id": "12",
+     "did": "on the board: ✕ on each of his 7 clash lines, one at a time",
+     "saw": "✓ while any clash naming him is still showing (6 checks), EVERY copy keeps the red ring and C [6 left: true · 5 left: true · 4 left: true · 3 left: true · 2 left: true · 1 left: true] · ✓ only after the LAST clash is hidden does the red ring / C leave — and it leaves every copy [programme(a:1.1.0):amber/B ; duty(d:1.1.0.x0):amber/B ; sim(s:1.amt.1.w):amber/B ; sim(s:1.oft.1.p):amber/B ; ground(g:1.2.x0):amber/B ; ground(g:1.3.x0):amber/] · ✓ Edit Schedule agrees: no copy red or C (programme item, duty desk extra, sims, ground extras, crew list) [programme@1(a:1.1.0):amber/B ; duty@1(d:1.1.0.x0):amber/B ; sim@1(s:1.amt.1.w):amber/B ; sim@1(s:1.oft.1.p):amber/B ; ground@1(g:1.2.x0):amber/B ; ground@1(g:1.]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-11-12b-board-all-clashes-hidden-duty.png",
+      "dk-12-12b-board-all-clashes-hidden-sims.png",
+      "dk-13-12c-week-all-clashes-hidden.png"
+     ]
+    },
+    {
+     "id": "14 (the clash hidden)",
+     "did": "the same fixture, read at his 2nd-wave SDO duty desk (a timed desk; he is an extra on it) — he also carries the unrelated \"no time for the sim brief / debrief\" advisories",
+     "saw": "✓ board: the desk copy fell from red to AMBER (the advisory still showing), not plain [duty(d:1.1.0.x0):amber/B] · ✓ week: the desk copy is amber too [duty@1(d:1.1.0.x0):amber/B]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-11-12b-board-all-clashes-hidden-duty.png",
+      "dk-13-12c-week-all-clashes-hidden.png"
+     ]
+    },
+    {
+     "id": "14 (the advisory hidden too)",
+     "did": "Edit Schedule: ✕ on his 2 advisory line(s); the board opened again",
+     "saw": "✓ nothing naming him is left showing [none] · ✓ week: the desk copy — and every other copy — is plain [programme@1(a:1.1.0):- ; duty@1(d:1.1.0.x0):- ; sim@1(s:1.amt.1.w):- ; sim@1(s:1.oft.1.p):- ; ground@1(g:1.2.x0):- ; ground@1(g:1.3.x0):- ; crew list (week):-] · ✓ board: the desk copy — and every other copy — is plain [programme(a:1.1.0):- ; duty(d:1.1.0.x0):- ; sim(s:1.amt.1.w):- ; sim(s:1.oft.1.p):- ; ground(g:1.2.x0):- ; ground(g:1.3.x0):- ; crew list (board):-]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-14-14b-week-desk-plain.png",
+      "dk-15-14b-board-desk-plain.png"
+     ]
+    },
+    {
+     "id": "14 (untimed duty rows)",
+     "did": "not walked",
+     "saw": "the demo week's duty desks all carry times; an untimed desk was not built",
+     "verdict": "NOT WALKED (no untimed desk in the demo week; the timed desk and its extra are walked above)",
+     "pics": []
+    },
+    {
+     "id": "13 (set up)",
+     "did": "Board, Tuesday: Rebel (a SANS card that day) added to MEDICAL APPT (added); Quill (on local leave — an Unavailable row) added to FLY W EXT SQN (added); board closed; Personal Inputs opened by its header",
+     "saw": "✓ Rebel's SANS card puck is flagged [SANS@1:red/C · DOUBLE_BOOK,NO_BRIEF] · ✓ Quill's Unavailable-row puck is flagged [Unavailable@1:red/C · LEAVE_FLY] · ✓ Saint's Personal Inputs puck and his Available-crew puck are flagged [Personal Inputs@1:red/C | Available crew@1:red/C] · ✓ Outlaw's Available-crew puck is flagged [Available crew@1:red/R]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-16-13a-lower-blocks-flagged.png"
+     ]
+    },
+    {
+     "id": "13",
+     "did": "Edit Schedule, Tuesday's list: ✕ on every line naming Rebel (DOUBLE_BOOK,NO_BRIEF), Quill (LEAVE_FLY), Saint (DOUBLE_BOOK,NO_BRIEF), Outlaw (CREW_REST)",
+     "saw": "✓ SANS: Rebel's card puck is plain; his card is still there [SANS@1:-] · ✓ Unavailable: Quill's row puck is plain; the row and his leave are still there [Unavailable@1:-] · ✓ Personal Inputs: Saint's puck is plain; his Appointment input is still listed [Personal Inputs@1:-] · ✓ Available crew: Saint's and Outlaw's pucks are plain and still listed [Available crew@1:- | Available crew@1:-]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-17-13b-lower-blocks-plain.png"
+     ]
+    },
+    {
+     "id": "13 (the board)",
+     "did": "the board opened on Tuesday: every copy of the four, its lower blocks included",
+     "saw": "✓ no copy of Rebel, Quill, Saint or Outlaw carries a ring or chip [rebel: flying line(1.1.1.0.p):- ; ground(g:1.2.x0):- ; SANS:- ; crew list (board):- | quill: ground(g:1.1.x0):- ; Unavailable:- ; crew list (board):- | saint: f] · ✓ the board draws them in its own lower blocks (Available crew / SANS / Unavailable) [flying line, ground, SANS, crew list (board), Unavailable, Personal Inputs, Available crew]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-18-13c-board-lower-blocks-plain.png"
+     ]
+    }
+   ],
+   "errors": []
+  },
+  "14-places-ph": {
+   "at": "2026-10-01T09:38:35.035Z",
+   "base": "http://localhost:4211",
+   "phone": true,
+   "table": [
+    {
+     "id": "10 (working face, the board)",
+     "did": "Scheduler Board, Tuesday: ALL AVAIL placed on MASS BRIEF (placed); its count chip tapped → the window; closed; ✕ on Saint's clash, the chip again; ✕ on Saint's \"no time for the brief\", the chip again",
+     "saw": "✓ before: Saint is in the window, ringed red, with \"VL SAT & APPOINTMENT clash\" under him [{\"id\":\"salsa\",\"flagged\":true,\"ring\":\"red\",\"chip\":\"C\",\"why\":\"VL SAT & APPOINTMENT clash\"}] · ✓ clash hidden: he falls to amber and the reason under him is now the brief one (the warning still showing); the footer count is unchanged [{\"id\":\"salsa\",\"flagged\":true,\"ring\":\"amber\",\"chip\":\"B\",\"why\":\"No time for the VL SAT flight brief — APPOINTMENT sits inside 12:20–14:40 (brief 12:20)\"} · \"Tap a] · ✓ both hidden: Saint is STILL in the window [44 men listed (before 44)] · ✓ both hidden: his puck there is plain and no reason is written under him [{\"id\":\"salsa\",\"flagged\":false,\"ring\":\"\",\"chip\":\"\",\"why\":\"\"}] · ✓ \"N men are flagged\" fell by one [\"Tap a puck for why. 5 men are flagged.\" → \"Tap a puck for why. 4 men are flagged.\"] · ✓ the count of available men did not change [44 → 44 (chip 44 → 44)] · ✓ the men drawn with a reason in the window number what the footer says [5/5 → 4/4] · ✓ nobody else in the window changed",
+     "verdict": "PASS",
+     "pics": [
+      "ph-01-10a-window-before.png",
+      "ph-02-10b-window-saint-clash-hidden.png",
+      "ph-03-10c-window-saint-both-hidden.png"
+     ]
+    },
+    {
+     "id": "10 (a man with a second reason of the window's own)",
+     "did": "✕ on Outlaw's crew-rest line; the chip again",
+     "saw": "✓ his red ring, R and crew-rest reason are gone from the window; he is still listed [{\"id\":\"casper\",\"flagged\":true,\"ring\":\"\",\"chip\":\"\",\"why\":\"No time for the VL BFM flight brief — MASS BRIEF sits inside 06:20–08:40 (brief 06:20)\"}] · ✓ RECORDED: the window now writes another reason under him — the MASS BRIEF itself sits inside his flight brief (the same reason his formation-mates Warden, Basher and Hex show) — so the footer still counts him [was {\"id\":\"casper\",\"flagged\":true,\"ring\":\"red\",\"chip\":\"R\",\"why\":\"Crew rest breach — Monday landed 20:45, +2h debrief assumed → ended 22:45 → crew rest clear at ]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-04-10d-window-outlaw-hidden.png"
+     ]
+    },
+    {
+     "id": "10 (working face, Edit Schedule; flag again)",
+     "did": "the board closed; the same chip tapped on Edit Schedule's Tuesday; then ↺ on Saint's two struck lines and the chip again",
+     "saw": "✓ from Edit Schedule the window says the same: Saint listed, plain, no reason [{\"id\":\"salsa\",\"flagged\":false,\"ring\":\"\",\"chip\":\"\",\"why\":\"\"} · \"Tap a puck for why. 4 men are flagged.\"] · ✓ after ↺: he is ringed red with his clash under him again, and the footer is one higher [{\"id\":\"salsa\",\"flagged\":true,\"ring\":\"red\",\"chip\":\"C\",\"why\":\"VL SAT & APPOINTMENT clash\"} · \"Tap a puck for why. 5 men are flagged.\"]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-05-10e-window-from-week.png",
+      "ph-06-10f-window-saint-flagged-again.png"
+     ]
+    },
+    {
+     "id": "11",
+     "did": "Scheduler Board, Tuesday: \"+\" adds a third aircraft to RU BFM; its FRONT seat armed and Cutter (a WSO) picked (seated); board closed; Edit Schedule: ✕ on \"Cutter is a WSO — cannot fly FCP\" (pressed); board opened again",
+     "saw": "✓ the qualification flag is his only warning [QUAL] · ✓ before: red ring and Q on his seat and in both crew lists [week flying line@1(1.0.1.2.p):red/Q ; Available crew@1:red/Q ; crew list (week):red/Q | board flying line(1.0.1.2.p):red/Q ; Available crew:red/Q ; crew list (b] · ✓ after, Edit Schedule: no copy carries Q or a ring — seat, Available crew, the crew list beside the week [flying line@1(1.0.1.2.p):- ; Available crew@1:- ; crew list (week):-] · ✓ after, the board: no copy carries Q or a ring — seat, Available crew, the board's crew list [flying line(1.0.1.2.p):- ; Available crew:- ; crew list (board):-]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-07-11a-week-seat-and-crew-list-plain.png",
+      "ph-08-11b-board-seat-and-crew-list-plain.png"
+     ]
+    },
+    {
+     "id": "11 (flag again)",
+     "did": "↺ on the board's struck line (pressed); board closed",
+     "saw": "✓ every copy on the board wears red and Q again [flying line(1.0.1.2.p):red/Q ; Available crew:red/Q ; crew list (board):red/Q] · ✓ every copy on Edit Schedule wears red and Q again [flying line@1(1.0.1.2.p):red/Q ; Available crew@1:red/Q ; crew list (week):red/Q]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-09-11c-week-q-back.png"
+     ]
+    },
+    {
+     "id": "12 (set up)",
+     "did": "Scheduler Board, Tuesday: Anvil picked from the crew list onto Common Programme: MASS BRIEF; ground: MEDICAL APPT (an extra); ground: APPOINTMENT (an extra); sim: SIMS (EXT SQN); sim: BOX; duty desk: 2nd-wave SDO (an extra) (6 of 6 landed)",
+     "saw": "✓ he is drawn on a programme item, a duty desk, a sim, and a ground item (and the crew list) [programme, duty, sim, ground, crew list (board)] · ✓ several clash warnings name him, and at least one advisory [7 clashes (Sim SIMS (EXT SQN) & SDO duty  | SDO duty & MEDICAL APPT clash | SDO duty & APPOINTMENT clash | SDO duty & Sim BOX clash | MEDICAL APPT & APPOINTMENT] · ✓ every copy of him wears the red ring and C [programme(a:1.1.0):red/C ; duty(d:1.1.0.x0):red/C ; sim(s:1.amt.1.p):red/C ; sim(s:1.oft.1.p):red/C ; ground(g:1.2.x0):red/C ; ground(g:1.3.x0):red/C ; crew lis]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-10-12a-board-anvil-everywhere-red.png"
+     ]
+    },
+    {
+     "id": "12",
+     "did": "on the board: ✕ on each of his 7 clash lines, one at a time",
+     "saw": "✓ while any clash naming him is still showing (6 checks), EVERY copy keeps the red ring and C [6 left: true · 5 left: true · 4 left: true · 3 left: true · 2 left: true · 1 left: true] · ✓ only after the LAST clash is hidden does the red ring / C leave — and it leaves every copy [programme(a:1.1.0):amber/B ; duty(d:1.1.0.x0):amber/B ; sim(s:1.amt.1.p):amber/B ; sim(s:1.oft.1.p):amber/B ; ground(g:1.2.x0):amber/B ; ground(g:1.3.x0):amber/] · ✓ Edit Schedule agrees: no copy red or C (programme item, duty desk extra, sims, ground extras, crew list) [programme@1(a:1.1.0):amber/B ; duty@1(d:1.1.0.x0):amber/B ; sim@1(s:1.amt.1.p):amber/B ; sim@1(s:1.oft.1.p):amber/B ; ground@1(g:1.2.x0):amber/B ; ground@1(g:1.]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-11-12b-board-all-clashes-hidden-duty.png",
+      "ph-12-12b-board-all-clashes-hidden-sims.png",
+      "ph-13-12c-week-all-clashes-hidden.png"
+     ]
+    },
+    {
+     "id": "14 (the clash hidden)",
+     "did": "the same fixture, read at his 2nd-wave SDO duty desk (a timed desk; he is an extra on it) — he also carries the unrelated \"no time for the sim brief / debrief\" advisories",
+     "saw": "✓ board: the desk copy fell from red to AMBER (the advisory still showing), not plain [duty(d:1.1.0.x0):amber/B] · ✓ week: the desk copy is amber too [duty@1(d:1.1.0.x0):amber/B]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-11-12b-board-all-clashes-hidden-duty.png",
+      "ph-13-12c-week-all-clashes-hidden.png"
+     ]
+    },
+    {
+     "id": "14 (the advisory hidden too)",
+     "did": "Edit Schedule: ✕ on his 2 advisory line(s); the board opened again",
+     "saw": "✓ nothing naming him is left showing [none] · ✓ week: the desk copy — and every other copy — is plain [programme@1(a:1.1.0):- ; duty@1(d:1.1.0.x0):- ; sim@1(s:1.amt.1.p):- ; sim@1(s:1.oft.1.p):- ; ground@1(g:1.2.x0):- ; ground@1(g:1.3.x0):- ; crew list (week):-] · ✓ board: the desk copy — and every other copy — is plain [programme(a:1.1.0):- ; duty(d:1.1.0.x0):- ; sim(s:1.amt.1.p):- ; sim(s:1.oft.1.p):- ; ground(g:1.2.x0):- ; ground(g:1.3.x0):- ; crew list (board):-]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-14-14b-week-desk-plain.png",
+      "ph-15-14b-board-desk-plain.png"
+     ]
+    },
+    {
+     "id": "14 (untimed duty rows)",
+     "did": "not walked",
+     "saw": "the demo week's duty desks all carry times; an untimed desk was not built",
+     "verdict": "NOT WALKED (no untimed desk in the demo week; the timed desk and its extra are walked above)",
+     "pics": []
+    },
+    {
+     "id": "13 (set up)",
+     "did": "Board, Tuesday: Rebel (a SANS card that day) added to MEDICAL APPT (added); Quill (on local leave — an Unavailable row) added to FLY W EXT SQN (added); board closed; Personal Inputs opened by its header",
+     "saw": "✓ Rebel's SANS card puck is flagged [SANS@1:red/C · DOUBLE_BOOK,NO_BRIEF] · ✓ Quill's Unavailable-row puck is flagged [Unavailable@1:red/C · LEAVE_FLY] · ✓ Saint's Personal Inputs puck and his Available-crew puck are flagged [Personal Inputs@1:red/C | Available crew@1:red/C] · ✓ Outlaw's Available-crew puck is flagged [Available crew@1:red/R]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-16-13a-lower-blocks-flagged.png"
+     ]
+    },
+    {
+     "id": "13",
+     "did": "Edit Schedule, Tuesday's list: ✕ on every line naming Rebel (DOUBLE_BOOK,NO_BRIEF), Quill (LEAVE_FLY), Saint (DOUBLE_BOOK,NO_BRIEF), Outlaw (CREW_REST)",
+     "saw": "✓ SANS: Rebel's card puck is plain; his card is still there [SANS@1:-] · ✓ Unavailable: Quill's row puck is plain; the row and his leave are still there [Unavailable@1:-] · ✓ Personal Inputs: Saint's puck is plain; his Appointment input is still listed [Personal Inputs@1:-] · ✓ Available crew: Saint's and Outlaw's pucks are plain and still listed [Available crew@1:- | Available crew@1:-]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-17-13b-lower-blocks-plain.png"
+     ]
+    },
+    {
+     "id": "13 (the board)",
+     "did": "the board opened on Tuesday: every copy of the four, its lower blocks included",
+     "saw": "✓ no copy of Rebel, Quill, Saint or Outlaw carries a ring or chip [rebel: flying line(1.1.1.0.p):- ; ground(g:1.2.x0):- ; SANS:- ; crew list (board):- | quill: ground(g:1.1.x0):- ; Unavailable:- ; crew list (board):- | saint: f] · ✓ the board draws them in its own lower blocks (Available crew / SANS / Unavailable) [flying line, ground, SANS, crew list (board), Unavailable, Personal Inputs, Available crew]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-18-13c-board-lower-blocks-plain.png"
+     ]
+    }
+   ],
+   "errors": []
+  },
+  "15-change-dk": {
+   "at": "2026-10-01T09:45:50.643Z",
+   "base": "http://localhost:4211",
+   "phone": false,
+   "table": [
+    {
+     "id": "34",
+     "did": "Scheduler Board, Tuesday: ✕ on Static's long work day (13h05, 05:00 → 18:05); then his OPS-O desk's start typed 07:00, then 05:30, then 05:00 again",
+     "saw": "✓ hidden: the line is struck, the heading counts 3 [⚠ 3 issues · 2 warnings · tap to review] · ✓ 07:00 — the day is short enough: no long-day line at all, heading 3, Static plain [⚠ 3 issues · 2 warnings · tap to review · 3 lines · flying line(1.1.0.0.w):- ; duty(d:1.0.2):- ; crew list (board):-] · ✓ 05:30 — a DIFFERENT long day (12h35): the line is back SHOWN (not struck, ✕), heading 4, Static wears grey L [Static — Static has a long work day: 12h35, 05:30 → 18:05 (last landin · ⚠ 4 issues · 2 warnings · tap to review · flying line(1.1.0.0.w):grey/L ; duty(d:1.0.2)] · ✓ 05:00 — the EXACT original (13h05): it is hidden again by itself — struck, ↺, heading 3, Static plain [Static — Static has a long work day: 13h05, 05:00 → 18:05 (last landin · ⚠ 3 issues · 2 warnings · tap to review · flying line(1.1.0.0.w):- ; duty(d:1.0.2):- ; ] · ✓ Edit Schedule agrees: 3 issues, the long-day line struck, Static plain [⚠ 3 issues · 2 warning · tap to collapse ▲ · flying line@1(1.1.0.0.w):- ; duty@1(d:1.0.2):-]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-34a-long-day-hidden.png",
+      "dk-02-34b-day-shortened-warning-gone.png",
+      "dk-03-34c-different-long-day-shown.png",
+      "dk-04-34d-exact-original-hidden-again.png",
+      "dk-05-34e-week-agrees.png"
+     ]
+    },
+    {
+     "id": "34 (what the app said at each change)",
+     "did": "the toasts after typing 05:30 and after typing 05:00",
+     "saw": "05:30 → [] · 05:00 → []",
+     "verdict": "INFO",
+     "pics": []
+    },
+    {
+     "id": "26 (baseline — nothing hidden)",
+     "did": "Scheduler Board, Tuesday: Anvil dragged from the crew list onto Saint's VL SAT seat (Saint out), then Saint dragged back onto it",
+     "saw": "✓ Anvil took the seat, then Saint took it back [shaft → salsa] · ✓ the drop that recreates his clash ANNOUNCES it (a message naming the clash) and his puck pulses [said: Saint — VL SAT & APPOINTMENT clash (+1 more) | Saint — VL SAT & APPOINTMENT clash (+1 more) · puck: {\"flagnew\":true,\"anim\":\"flagnew\",\"cls\":\"puck sm warn h] · ✓ both his lines are back, live [⚠ 4 issues · 2 warnings · tap to review]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-06-26a-baseline-drop-announces.png"
+     ]
+    },
+    {
+     "id": "26 (the exact hidden warning recreated)",
+     "did": "✕ on both of Saint's lines; Anvil dragged onto his seat (the two warnings vanish); Saint dragged back onto it — the exact same clash and brief warning again",
+     "saw": "✓ with Saint off the seat his two lines are gone from the list [⚠ 2 issues · 1 warning · tap to review · 2 lines] · ✓ back on the seat: the same two lines return ALREADY struck with ↺ — still hidden [true / true · ⚠ 2 issues · 1 warning · tap to review] · ✓ the drop does not repeat the words of the hidden lines (the clash line, the brief line) [said: Saint — already on APPOINTMENT 14:00–16:00 | Saint — already on APPOINTMENT 14:00–16:00] · ✗ the drop raises NO message about that conflict at all (scenario 26: \"neither toast nor blink\") [said: \"Saint — already on APPOINTMENT 14:00–16:00 | Saint — already on APPOINTMENT 14:00–16:00\" — where the baseline drop said \"Saint — VL SAT & APPOINTMENT cla] · ✓ his puck does not pulse and carries no ring or chip [{\"flagnew\":false,\"anim\":\"none\",\"cls\":\"puck sm\"} · flying line(1.1.0.1.p):- ; ground(g:1.3):- ; Available crew:- ; crew list (board):-] · ✓ the heading does not count them [⚠ 2 issues · 1 warning · tap to review → ⚠ 2 issues · 1 warning · tap to review]",
+     "verdict": "FAIL",
+     "pics": [
+      "dk-07-26b-exact-hidden-clash-recreated-silent.png"
+     ]
+    },
+    {
+     "id": "26 (a genuinely changed clash)",
+     "did": "Saint dragged from the crew list onto RU ACM's front seat too (he now sits in two aircraft at 14:40)",
+     "saw": "✓ new lines naming Saint come back SHOWN (live, with ✕) [Saint — VL SAT & RU ACM clash ✕ | Saint — RU ACM & APPOINTMENT clash ✕ | Saint — No time for the RU ACM flight brief — APPOINTMENT si] · ✓ the drop announces it [said: Saint — VL SAT & RU ACM clash (+2 more) | Saint — VL SAT & RU ACM clash (+2 more)] · ✓ his pucks are ringed again and the new seat's puck pulses [flying line(1.1.0.1.p):red/C ; flying line(1.1.1.0.p):red/C ; ground(g:1.3):red/C ; Available crew:red/C ; crew list (board):red/C · {\"flagnew\":true,\"anim\":\"fla] · ✓ the heading rose [⚠ 2 issues · 1 warning · tap to review → ⚠ 5 issues · 3 warnings · tap to review]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-08-26c-changed-clash-shown-and-announced.png"
+     ]
+    },
+    {
+     "id": "35",
+     "did": "Edit Schedule, Tuesday: ✕ on Static's long day on the live day; the plan selector → \"+ Alt Plan\" (→ \"Plan B\"); in it his OPS-O desk's start typed 07:00; the selector → Plan A; \"+ Alt Plan\" again (→ \"Plan C\"); → Plan B; → Plan C",
+     "saw": "✓ live day: hidden (struck), 3 issues [{\"plan\":\"Live working copy\",\"bar\":\"⚠ 3 issues · 2 warning · tap to collapse ▲\",\"line\":\"struck ↺ 13h05\",\"st\":\"plain\"}] · ✓ \"Plan B\" (a copy — the exact warning exists): it is hidden there too [{\"plan\":\"Plan B\",\"bar\":\"⚠ 3 issues · 2 warning · tap to collapse ▲\",\"line\":\"struck ↺ 13h05\",\"st\":\"plain\"}] · ✓ Plan B with the desk at 07:00: no long-day line, 3 issues [{\"plan\":\"Plan B\",\"bar\":\"⚠ 3 issues · 2 warning · tap to collapse ▲\",\"line\":\"no long-day line\",\"st\":\"plain\"}] · ✓ back on Plan A: the exact warning is there and still hidden [{\"plan\":\"Plan A\",\"bar\":\"⚠ 3 issues · 2 warning · tap to collapse ▲\",\"line\":\"struck ↺ 13h05\",\"st\":\"plain\"}] · ✓ \"Plan C\" (another copy of A): hidden there as well — the hide was not lost and not duplicated [{\"plan\":\"Plan C\",\"bar\":\"⚠ 3 issues · 2 warning · tap to collapse ▲\",\"line\":\"struck ↺ 13h05\",\"st\":\"plain\"}] · ✓ Plan B again: still no line; then the third plan again: still hidden [Plan B: {\"plan\":\"Plan B\",\"bar\":\"⚠ 3 issues · 2 warning · tap to collapse ▲\",\"line\":\"no long-day line\",\"st\":\"plain\"} | Plan C: {\"plan\":\"Plan C\",\"bar\":\"⚠ 3 issues]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-09-35a-plan-a-hidden.png",
+      "dk-10-35b-plan-b-copy.png",
+      "dk-11-35c-plan-b-no-warning.png",
+      "dk-12-35d-back-on-plan-a.png",
+      "dk-13-35e-plan-c-copy-of-a.png"
+     ]
+    },
+    {
+     "id": "35 (one set of hides for the day)",
+     "did": "on \"Plan C\": ↺ on the struck line; then the selector → Plan A",
+     "saw": "✓ on the third plan the warning is live again: 4 issues, Static grey L [{\"plan\":\"Plan C\",\"bar\":\"⚠ 4 issues · 2 warning · tap to collapse ▲\",\"line\":\"live ✕ 13h05\",\"st\":\"flying line@1(1.1.0.0.w):grey/L ; duty@1(d:1.0.2):grey/L\"}] · ✓ on Plan A it is live too — the plans do not keep separate hides [{\"plan\":\"Plan A\",\"bar\":\"⚠ 4 issues · 2 warning · tap to collapse ▲\",\"line\":\"live ✕ 13h05\",\"st\":\"flying line@1(1.1.0.0.w):grey/L ; duty@1(d:1.0.2):grey/L\"}]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-14-35f-flagged-again-on-c-shows-on-a.png"
+     ]
+    },
+    {
+     "id": "36 (the template does not carry the hide to another day)",
+     "did": "Edit Schedule, Monday: the first line's landing typed equal to its take-off (12:40); ✕ on the new \"takes off and lands at the same time\" line; Templates → \"Save this day as a template\" (named MON-A); Wednesday: Templates → MON-A (\"Applied \"MON-A\" to Wednesday\") — the template brings the lines and times without the men (Wednesday then reads: no nought-minute line), so Anvil is picked onto that line's front seat on the board (seated)",
+     "saw": "✓ Monday: the line is hidden (struck), its time boxes unflagged [{\"bar\":\"⚠ 15 issues · 6 warning · tap to collapse ▲\",\"n\":16,\"line\":\"live ✕\",\"boxes\":\"true,true\",\"key\":\"ff:0.0.0.ld\",\"msg\":\"VL takes off and lands at the same ti] · ✓ Wednesday now carries the same-looking line [{\"bar\":\"⚠ 1 issue · tap to collapse ▲\",\"n\":1,\"line\":\"live ✕\",\"boxes\":\"true,true\",\"key\":\"ff:2.0.0.ld\",\"msg\":\"VL takes off and lands at the same time (12:40) — on] · ✓ on Wednesday it is SHOWN — live with ✕, counted, both time boxes flagged [{\"bar\":\"⚠ 1 issue · tap to collapse ▲\",\"n\":1,\"line\":\"live ✕\",\"boxes\":\"true,true\",\"key\":\"ff:2.0.0.ld\",\"msg\":\"VL takes off and lands at the same time (12:40) — on]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-15-36a-monday-nought-minute-hidden.png",
+      "dk-16-36b-wednesday-after-monday-template.png",
+      "dk-17-36b-wednesday-time-boxes.png"
+     ]
+    },
+    {
+     "id": "36 (Monday changed away and back)",
+     "did": "Tuesday saved as a template (TUE-A); Monday: Templates → TUE-A (\"Applied \"TUE-A\" to Monday\"); Monday: Templates → MON-A (\"Applied \"MON-A\" to Monday\"; before a man is seated Monday reads: no nought-minute line); Anvil picked onto its first line's front seat (seated)",
+     "saw": "✓ with Tuesday's template on it Monday has no nought-minute line [{\"bar\":\"(no bar)\",\"n\":0,\"line\":\"no nought-minute line\",\"boxes\":\"false,false\",\"key\":\"\",\"msg\":\"\"}] · ✓ restored: Monday's exact warning is back and ALREADY hidden — struck with ↺, boxes unflagged [{\"bar\":\"✓ No issues · tap to collapse ▲\",\"n\":1,\"line\":\"struck ↺\",\"boxes\":\"false,false\",\"key\":\"ff:0.0.0.ld\",\"msg\":\"VL takes off and lands at the same time (12:40] · ✓ Wednesday's is still shown [{\"bar\":\"⚠ 1 issue · tap to collapse ▲\",\"n\":1,\"line\":\"live ✕\",\"boxes\":\"true,true\",\"key\":\"ff:2.0.0.ld\",\"msg\":\"VL takes off and lands at the same time (12:40) — on]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-18-36c-monday-changed-away.png",
+      "dk-19-36d-monday-restored.png",
+      "dk-20-36d-monday-time-boxes.png"
+     ]
+    }
+   ],
+   "errors": []
+  },
+  "15-change-ph": {
+   "at": "2026-10-01T09:47:06.036Z",
+   "base": "http://localhost:4211",
+   "phone": true,
+   "table": [
+    {
+     "id": "34",
+     "did": "Scheduler Board, Tuesday: ✕ on Static's long work day (13h05, 05:00 → 18:05); then his OPS-O desk's start typed 07:00, then 05:30, then 05:00 again",
+     "saw": "✓ hidden: the line is struck, the heading counts 3 [▾ ⚠ 3 issues · 2 warnings · tap to collapse] · ✓ 07:00 — the day is short enough: no long-day line at all, heading 3, Static plain [▾ ⚠ 3 issues · 2 warnings · tap to collapse · 3 lines · flying line(1.1.0.0.w):- ; duty(d:1.0.2):- ; crew list (board):-] · ✓ 05:30 — a DIFFERENT long day (12h35): the line is back SHOWN (not struck, ✕), heading 4, Static wears grey L [Static — Static has a long work day: 12h35, 05:30 → 18:05 (last landin · ▾ ⚠ 4 issues · 2 warnings · tap to collapse · flying line(1.1.0.0.w):grey/L ; duty(d:1.] · ✓ 05:00 — the EXACT original (13h05): it is hidden again by itself — struck, ↺, heading 3, Static plain [Static — Static has a long work day: 13h05, 05:00 → 18:05 (last landin · ▾ ⚠ 3 issues · 2 warnings · tap to collapse · flying line(1.1.0.0.w):- ; duty(d:1.0.2):] · ✓ Edit Schedule agrees: 3 issues, the long-day line struck, Static plain [⚠ 3 issues · 2 warning · tap to collapse ▲ · flying line@1(1.1.0.0.w):- ; duty@1(d:1.0.2):-]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-01-34a-long-day-hidden.png",
+      "ph-02-34b-day-shortened-warning-gone.png",
+      "ph-03-34c-different-long-day-shown.png",
+      "ph-04-34d-exact-original-hidden-again.png",
+      "ph-05-34e-week-agrees.png"
+     ]
+    },
+    {
+     "id": "34 (what the app said at each change)",
+     "did": "the toasts after typing 05:30 and after typing 05:00",
+     "saw": "05:30 → [] · 05:00 → []",
+     "verdict": "INFO",
+     "pics": []
+    },
+    {
+     "id": "26",
+     "did": "not walked at phone width",
+     "saw": "a phone has no drag; the board's tap-to-place is the phone's gesture and it does not replace a seated man",
+     "verdict": "NOT WALKED (phone: no drag-and-drop)",
+     "pics": []
+    },
+    {
+     "id": "35",
+     "did": "Edit Schedule, Tuesday: ✕ on Static's long day on the live day; the plan selector → \"+ Alt Plan\" (→ \"Plan B\"); in it his OPS-O desk's start typed 07:00; the selector → Plan A; \"+ Alt Plan\" again (→ \"Plan C\"); → Plan B; → Plan C",
+     "saw": "✓ live day: hidden (struck), 3 issues [{\"plan\":\"Live working copy\",\"bar\":\"⚠ 3 issues · 2 warning · tap to collapse ▲\",\"line\":\"struck ↺ 13h05\",\"st\":\"plain\"}] · ✓ \"Plan B\" (a copy — the exact warning exists): it is hidden there too [{\"plan\":\"Plan B\",\"bar\":\"⚠ 3 issues · 2 warning · tap to collapse ▲\",\"line\":\"struck ↺ 13h05\",\"st\":\"plain\"}] · ✓ Plan B with the desk at 07:00: no long-day line, 3 issues [{\"plan\":\"Plan B\",\"bar\":\"⚠ 3 issues · 2 warning · tap to collapse ▲\",\"line\":\"no long-day line\",\"st\":\"plain\"}] · ✓ back on Plan A: the exact warning is there and still hidden [{\"plan\":\"Plan A\",\"bar\":\"⚠ 3 issues · 2 warning · tap to collapse ▲\",\"line\":\"struck ↺ 13h05\",\"st\":\"plain\"}] · ✓ \"Plan C\" (another copy of A): hidden there as well — the hide was not lost and not duplicated [{\"plan\":\"Plan C\",\"bar\":\"⚠ 3 issues · 2 warning · tap to collapse ▲\",\"line\":\"struck ↺ 13h05\",\"st\":\"plain\"}] · ✓ Plan B again: still no line; then the third plan again: still hidden [Plan B: {\"plan\":\"Plan B\",\"bar\":\"⚠ 3 issues · 2 warning · tap to collapse ▲\",\"line\":\"no long-day line\",\"st\":\"plain\"} | Plan C: {\"plan\":\"Plan C\",\"bar\":\"⚠ 3 issues]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-06-35a-plan-a-hidden.png",
+      "ph-07-35b-plan-b-copy.png",
+      "ph-08-35c-plan-b-no-warning.png",
+      "ph-09-35d-back-on-plan-a.png",
+      "ph-10-35e-plan-c-copy-of-a.png"
+     ]
+    },
+    {
+     "id": "35 (one set of hides for the day)",
+     "did": "on \"Plan C\": ↺ on the struck line; then the selector → Plan A",
+     "saw": "✓ on the third plan the warning is live again: 4 issues, Static grey L [{\"plan\":\"Plan C\",\"bar\":\"⚠ 4 issues · 2 warning · tap to collapse ▲\",\"line\":\"live ✕ 13h05\",\"st\":\"flying line@1(1.1.0.0.w):grey/L ; duty@1(d:1.0.2):grey/L\"}] · ✓ on Plan A it is live too — the plans do not keep separate hides [{\"plan\":\"Plan A\",\"bar\":\"⚠ 4 issues · 2 warning · tap to collapse ▲\",\"line\":\"live ✕ 13h05\",\"st\":\"flying line@1(1.1.0.0.w):grey/L ; duty@1(d:1.0.2):grey/L\"}]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-11-35f-flagged-again-on-c-shows-on-a.png"
+     ]
+    },
+    {
+     "id": "36 (the template does not carry the hide to another day)",
+     "did": "Edit Schedule, Monday: the first line's landing typed equal to its take-off (12:40); ✕ on the new \"takes off and lands at the same time\" line; Templates → \"Save this day as a template\" (named MON-A); Wednesday: Templates → MON-A (\"Applied \"MON-A\" to Wednesday\") — the template brings the lines and times without the men (Wednesday then reads: no nought-minute line), so Anvil is picked onto that line's front seat on the board (seated)",
+     "saw": "✓ Monday: the line is hidden (struck), its time boxes unflagged [{\"bar\":\"⚠ 15 issues · 6 warning · tap to collapse ▲\",\"n\":16,\"line\":\"live ✕\",\"boxes\":\"true,true\",\"key\":\"ff:0.0.0.ld\",\"msg\":\"VL takes off and lands at the same ti] · ✓ Wednesday now carries the same-looking line [{\"bar\":\"⚠ 1 issue · tap to collapse ▲\",\"n\":1,\"line\":\"live ✕\",\"boxes\":\"true,true\",\"key\":\"ff:2.0.0.ld\",\"msg\":\"VL takes off and lands at the same time (12:40) — on] · ✓ on Wednesday it is SHOWN — live with ✕, counted, both time boxes flagged [{\"bar\":\"⚠ 1 issue · tap to collapse ▲\",\"n\":1,\"line\":\"live ✕\",\"boxes\":\"true,true\",\"key\":\"ff:2.0.0.ld\",\"msg\":\"VL takes off and lands at the same time (12:40) — on]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-12-36a-monday-nought-minute-hidden.png",
+      "ph-13-36b-wednesday-after-monday-template.png",
+      "ph-14-36b-wednesday-time-boxes.png"
+     ]
+    },
+    {
+     "id": "36 (Monday changed away and back)",
+     "did": "Tuesday saved as a template (TUE-A); Monday: Templates → TUE-A (\"Applied \"TUE-A\" to Monday\"); Monday: Templates → MON-A (\"Applied \"MON-A\" to Monday\"; before a man is seated Monday reads: no nought-minute line); Anvil picked onto its first line's front seat (seated)",
+     "saw": "✓ with Tuesday's template on it Monday has no nought-minute line [{\"bar\":\"(no bar)\",\"n\":0,\"line\":\"no nought-minute line\",\"boxes\":\"false,false\",\"key\":\"\",\"msg\":\"\"}] · ✓ restored: Monday's exact warning is back and ALREADY hidden — struck with ↺, boxes unflagged [{\"bar\":\"✓ No issues · tap to collapse ▲\",\"n\":1,\"line\":\"struck ↺\",\"boxes\":\"false,false\",\"key\":\"ff:0.0.0.ld\",\"msg\":\"VL takes off and lands at the same time (12:40] · ✓ Wednesday's is still shown [{\"bar\":\"⚠ 1 issue · tap to collapse ▲\",\"n\":1,\"line\":\"live ✕\",\"boxes\":\"true,true\",\"key\":\"ff:2.0.0.ld\",\"msg\":\"VL takes off and lands at the same time (12:40) — on]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-15-36c-monday-changed-away.png",
+      "ph-16-36d-monday-restored.png",
+      "ph-17-36d-monday-time-boxes.png"
+     ]
+    }
+   ],
+   "errors": []
+  },
+  "16-rest-dk": {
+   "at": "2026-10-01T09:50:03.203Z",
+   "base": "http://localhost:4211",
+   "phone": false,
+   "table": [
+    {
+     "id": "WH3 — the dashed ring (a sanctioned late show)",
+     "did": "Edit Schedule, Tuesday: Outlaw's line retimed (take-off 12:00, landing 13:25) and its remark typed \"… LATE SHOW\" — his crew-rest breach is then drawn as a DASHED red ring; ✕ on the crew-rest line (pressed); then ↺ (pressed)",
+     "saw": "✓ set up: his Tuesday seat wears a dashed red ring with R; Monday wears the dotted \"breaks Tuesday\" mark [Tue flying line@1(1.0.0.1.p):-/dashed red/R | Mon flying line@0(0.1.1.1.p):-/dotted red/R | CREW_REST: ed 20:45, +2h debrief assumed → ended 22:45 → crew rest c] · ✓ hidden: no dashed ring, no ring, no R on any Tuesday copy or in the crew list [Tue flying line@1(1.0.0.1.p):- | list crew list (week):-] · ✓ hidden: Monday's dotted mark is gone too [Mon flying line@0(0.1.1.1.p):-] · ✓ hidden: the bar fell by one and the line is struck with ↺ [⚠ 4 issues · 2 warning · tap to collapse ▲ → ⚠ 3 issues · 1 warning · tap to collapse ▲] · ✓ flagged again: the dashed ring and R are back, and Monday's dotted mark [Tue flying line@1(1.0.0.1.p):-/dashed red/R | Mon flying line@0(0.1.1.1.p):-/dotted red/R]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-D1-outlaw-dashed-ring.png",
+      "dk-02-D2-outlaw-dash-gone.png",
+      "dk-03-D2-monday-dotted-gone.png",
+      "dk-04-D3-outlaw-dash-back.png"
+     ]
+    },
+    {
+     "id": "17 (overnight tight turn)",
+     "did": "Edit Schedule, Tuesday: the line retimed again (take-off 13:10, so its brief is 10:50) and the wave's in-time line typed over as 11:00 — the breach becomes \"Tight turning — crew rest\"; ✕ on it (pressed); board opened; ↺ there (pressed)",
+     "saw": "✓ set up: a \"Tight turning\" advisory names Outlaw and the breach is gone; his seat wears TT with no ring [CREW_TIGHT · Tue flying line@1(1.0.0.1.p):-/TT ; Available crew@1:-/TT] · ✓ hidden: no TT on any copy — week, crew list [Tue flying line@1(1.0.0.1.p):- ; Available crew@1:- | list crew list (week):-] · ✓ hidden: the bar fell by one; the line is struck with ↺ [⚠ 4 issues · 1 warning · tap to collapse ▲ → ⚠ 3 issues · 1 warning · tap to collapse ▲] · ✓ the board agrees: line struck, no TT on any copy there [⚠ 3 issues · 1 warning · tap to review · flying line(1.0.0.1.p):- ; Available crew:- ; crew list (board):-] · ✓ flagged again on the board: TT is back on the board and on the week [board flying line(1.0.0.1.p):-/TT ; Available crew:-/TT ; crew list (board):-/TT | week flying line@1(1.0.0.1.p):red/solid red/TT ; Available crew@1:red/solid r]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-05-17o-a-outlaw-tt.png",
+      "dk-06-17o-b-outlaw-tt-gone.png",
+      "dk-07-17o-b-board.png"
+     ]
+    },
+    {
+     "id": "17 (TURN and the overnight note on ONE man)",
+     "did": "not built",
+     "saw": "the same-day tight turn (Wednesday: Trident, Relay) and the overnight note (Tuesday: Outlaw) were walked on different men; each hide moved only its own chip",
+     "verdict": "NOT WALKED (one man carrying both at once was not built)",
+     "pics": []
+    },
+    {
+     "id": "8 (SC SPARE — Edit Schedule)",
+     "did": "Scheduler Board, Tuesday: \"+ Wave\" → SC (added); Grit picked onto a SPARE line's front seat 1.2.0.2.p (seated) and onto the first ground item (added); ✕ on every line anchored to the spare seat (2); board closed",
+     "saw": "✓ the spare seat raised warnings of its own, and he carries another elsewhere [DNIF_FLY@g:1.0 | DNIF_FLY@1.2.0 | QUAL@1.2.0.2.p] · ✓ Edit Schedule: the spare copy is PLAIN once its own are hidden [flying line@1(1.2.0.2.p):-] · ✓ Edit Schedule: his ground copy is still ringed red [ground@1(g:1.0.x0):red/C · still showing: DNIF_FLY@g:1.0]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-08-8s-a-board-spare-flagged.png",
+      "dk-10-8s-c-week-own-hidden.png"
+     ]
+    },
+    {
+     "id": "8 (SC SPARE — the board)",
+     "did": "the same moment, read on the board before it was closed",
+     "saw": "the board drew the spare copy flying line(1.2.0.2.p):red/C (before the hides: flying line(1.2.0.2.p):red/Q); his ground copy ground(g:1.0.x0):red/C",
+     "verdict": "FAIL (same as finding 1: the board rings an exempt flying seat with his flags from elsewhere)",
+     "pics": [
+      "dk-09-8s-b-board-own-hidden.png"
+     ]
+    }
+   ],
+   "errors": []
+  },
+  "16-rest-ph": {
+   "at": "2026-10-01T09:50:39.145Z",
+   "base": "http://localhost:4211",
+   "phone": true,
+   "table": [
+    {
+     "id": "WH3 — the dashed ring (a sanctioned late show)",
+     "did": "Edit Schedule, Tuesday: Outlaw's line retimed (take-off 12:00, landing 13:25) and its remark typed \"… LATE SHOW\" — his crew-rest breach is then drawn as a DASHED red ring; ✕ on the crew-rest line (pressed); then ↺ (pressed)",
+     "saw": "✓ set up: his Tuesday seat wears a dashed red ring with R; Monday wears the dotted \"breaks Tuesday\" mark [Tue flying line@1(1.0.0.1.p):-/dashed red/R | Mon flying line@0(0.1.1.1.p):-/dotted red/R | CREW_REST: ed 20:45, +2h debrief assumed → ended 22:45 → crew rest c] · ✓ hidden: no dashed ring, no ring, no R on any Tuesday copy or in the crew list [Tue flying line@1(1.0.0.1.p):- | list crew list (week):-] · ✓ hidden: Monday's dotted mark is gone too [Mon flying line@0(0.1.1.1.p):-] · ✓ hidden: the bar fell by one and the line is struck with ↺ [⚠ 4 issues · 2 warning · tap to collapse ▲ → ⚠ 3 issues · 1 warning · tap to collapse ▲] · ✓ flagged again: the dashed ring and R are back, and Monday's dotted mark [Tue flying line@1(1.0.0.1.p):-/dashed red/R | Mon flying line@0(0.1.1.1.p):-/dotted red/R]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-01-D1-outlaw-dashed-ring.png",
+      "ph-02-D2-outlaw-dash-gone.png",
+      "ph-03-D2-monday-dotted-gone.png",
+      "ph-04-D3-outlaw-dash-back.png"
+     ]
+    },
+    {
+     "id": "17 (overnight tight turn)",
+     "did": "Edit Schedule, Tuesday: the line retimed again (take-off 13:10, so its brief is 10:50) and the wave's in-time line typed over as 11:00 — the breach becomes \"Tight turning — crew rest\"; ✕ on it (pressed); board opened; ↺ there (pressed)",
+     "saw": "✓ set up: a \"Tight turning\" advisory names Outlaw and the breach is gone; his seat wears TT with no ring [CREW_TIGHT · Tue flying line@1(1.0.0.1.p):-/TT ; Available crew@1:-/TT] · ✓ hidden: no TT on any copy — week, crew list [Tue flying line@1(1.0.0.1.p):- ; Available crew@1:- | list crew list (week):-] · ✓ hidden: the bar fell by one; the line is struck with ↺ [⚠ 4 issues · 1 warning · tap to collapse ▲ → ⚠ 3 issues · 1 warning · tap to collapse ▲] · ✓ the board agrees: line struck, no TT on any copy there [▾ ⚠ 3 issues · 1 warning · tap to collapse · flying line(1.0.0.1.p):- ; Available crew:- ; crew list (board):-] · ✓ flagged again on the board: TT is back on the board and on the week [board flying line(1.0.0.1.p):-/TT ; Available crew:-/TT ; crew list (board):-/TT | week flying line@1(1.0.0.1.p):red/solid red/TT ; Available crew@1:red/solid r]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-05-17o-a-outlaw-tt.png",
+      "ph-06-17o-b-outlaw-tt-gone.png",
+      "ph-07-17o-b-board.png"
+     ]
+    },
+    {
+     "id": "17 (TURN and the overnight note on ONE man)",
+     "did": "not built",
+     "saw": "the same-day tight turn (Wednesday: Trident, Relay) and the overnight note (Tuesday: Outlaw) were walked on different men; each hide moved only its own chip",
+     "verdict": "NOT WALKED (one man carrying both at once was not built)",
+     "pics": []
+    },
+    {
+     "id": "8 (SC SPARE — Edit Schedule)",
+     "did": "Scheduler Board, Tuesday: \"+ Wave\" → SC (added); Grit picked onto a SPARE line's front seat 1.2.0.2.p (seated) and onto the first ground item (added); ✕ on every line anchored to the spare seat (2); board closed",
+     "saw": "✓ the spare seat raised warnings of its own, and he carries another elsewhere [DNIF_FLY@g:1.0 | DNIF_FLY@1.2.0 | QUAL@1.2.0.2.p] · ✓ Edit Schedule: the spare copy is PLAIN once its own are hidden [flying line@1(1.2.0.2.p):-] · ✓ Edit Schedule: his ground copy is still ringed red [ground@1(g:1.0.x0):red/C · still showing: DNIF_FLY@g:1.0]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-08-8s-a-board-spare-flagged.png",
+      "ph-10-8s-c-week-own-hidden.png"
+     ]
+    },
+    {
+     "id": "8 (SC SPARE — the board)",
+     "did": "the same moment, read on the board before it was closed",
+     "saw": "the board drew the spare copy flying line(1.2.0.2.p):red/C (before the hides: flying line(1.2.0.2.p):red/Q); his ground copy ground(g:1.0.x0):red/C",
+     "verdict": "FAIL (same as finding 1: the board rings an exempt flying seat with his flags from elsewhere)",
+     "pics": [
+      "ph-09-8s-b-board-own-hidden.png"
+     ]
+    }
+   ],
+   "errors": []
+  },
+  "17-view-dk": {
+   "at": "2026-10-01T09:52:09.209Z",
+   "base": "http://localhost:4211",
+   "phone": false,
+   "table": [
+    {
+     "id": "21 / WH7 (View-only Sched, a draft day, the scheduler looking)",
+     "did": "Edit Schedule, Tuesday: ✕ on Static's long day (the app says \"Warning hidden — no flag, not counted. It returns if the day changes\"); then the View-only Sched tab, Tuesday's bar tapped open; its ⓘ",
+     "saw": "✓ the bar reads 3 issues · 2 warning [⚠ 3 issues · 2 warning · tap to collapse ▲] · ✓ four lines, the fourth painted struck and darker [[false,false,false,true]] · ✓ NO button on any line — no ✕, no ↺ [0 buttons] · ✓ Static is plain there; Saint still wears red C [Static other@1(1.1.0.0.w):- ; other@1(d:1.0.2):- | Saint other@1(1.1.0.1.p):red/solid red/C ; other@1(g:1.3):red/solid red/C] · ✓ its ⓘ counts 2 warning · 1 advisory and lists the struck line with no button [2 WARNING 1 ADVISORY · buttons 0]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-V1-view-only-one-hidden.png",
+      "dk-02-V1-view-only-dayinfo.png"
+     ]
+    },
+    {
+     "id": "21 / WH6 (View-only Sched, every issue hidden)",
+     "did": "Edit Schedule: the other three hidden; View-only Sched, Tuesday",
+     "saw": "✓ the bar is still there, quiet, reading \"✓ No issues\"; shut it reads \"tap to review\" [✓ No issues · tap to collapse ▲ | ✓ No issues · tap to review ▼] · ✓ it opens the four struck lines, none with a button [[\"true/none\",\"true/none\",\"true/none\",\"true/none\"]] · ✓ Static and Saint are both plain [other@1(1.1.0.0.w):- ; other@1(d:1.0.2):- | other@1(1.1.0.1.p):- ; other@1(g:1.3):-]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-03-V2-view-only-all-hidden.png",
+      "dk-04-V2-view-only-all-hidden-shut.png"
+     ]
+    },
+    {
+     "id": "21 / WH7 (the member's View-only Sched, the same draft day)",
+     "did": "a reload, then the member (Ranger) signs in; Tuesday's bar tapped open",
+     "saw": "✓ he sees \"✓ No issues\" and the four struck lines [✓ No issues · tap to collapse ▲] · ✓ he has no button on any line [0 buttons] · ✓ Static is plain for him too [other@1(1.1.0.0.w):- ; other@1(d:1.0.2):-]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-05-V3-member-view-only-all-hidden.png"
+     ]
+    }
+   ],
+   "errors": []
+  },
+  "17-view-ph": {
+   "at": "2026-10-01T09:54:00.222Z",
+   "base": "http://localhost:4211",
+   "phone": true,
+   "table": [
+    {
+     "id": "21 / WH7 (View-only Sched, a draft day, the scheduler looking)",
+     "did": "Edit Schedule, Tuesday: ✕ on Static's long day (the app says \"Warning hidden — no flag, not counted. It returns if the day changes\"); then the View-only Sched tab, Tuesday's bar tapped open; its ⓘ",
+     "saw": "✓ the bar reads 3 issues · 2 warning [⚠ 3 issues · 2 warning · tap to collapse ▲] · ✓ four lines, the fourth painted struck and darker [[false,false,false,true]] · ✓ NO button on any line — no ✕, no ↺ [0 buttons] · ✓ Static is plain there; Saint still wears red C [Static other@1(1.1.0.0.w):- ; other@1(d:1.0.2):- | Saint other@1(1.1.0.1.p):red/solid red/C ; other@1(g:1.3):red/solid red/C] · ✓ its ⓘ counts 2 warning · 1 advisory and lists the struck line with no button [2 WARNING 1 ADVISORY · buttons 0]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-01-V1-view-only-one-hidden.png",
+      "ph-02-V1-view-only-dayinfo.png"
+     ]
+    },
+    {
+     "id": "21 / WH6 (View-only Sched, every issue hidden)",
+     "did": "Edit Schedule: the other three hidden; View-only Sched, Tuesday",
+     "saw": "✓ the bar is still there, quiet, reading \"✓ No issues\"; shut it reads \"tap to review\" [✓ No issues · tap to collapse ▲ | ✓ No issues · tap to review ▼] · ✓ it opens the four struck lines, none with a button [[\"true/none\",\"true/none\",\"true/none\",\"true/none\"]] · ✓ Static and Saint are both plain [other@1(1.1.0.0.w):- ; other@1(d:1.0.2):- | other@1(1.1.0.1.p):- ; other@1(g:1.3):-]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-03-V2-view-only-all-hidden.png",
+      "ph-04-V2-view-only-all-hidden-shut.png"
+     ]
+    },
+    {
+     "id": "21 / WH7 (the member's View-only Sched, the same draft day)",
+     "did": "a reload, then the member (Ranger) signs in; Tuesday's bar tapped open",
+     "saw": "✓ he sees \"✓ No issues\" and the four struck lines [✓ No issues · tap to collapse ▲] · ✓ he has no button on any line [0 buttons] · ✓ Static is plain for him too [other@1(1.1.0.0.w):- ; other@1(d:1.0.2):-]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-05-V3-member-view-only-all-hidden.png"
+     ]
+    },
+    {
+     "id": "20 (phone: the crew drawer beside the week)",
+     "did": "phone, Edit Schedule: Tuesday's name tapped → the AIRCREW drawer; closed; ✕ on Static's long day; the drawer again",
+     "saw": "✓ before: Static wears the grey ring and L in the drawer [crew list (week):grey/L] · ✓ after: Static is plain in the drawer; Saint still wears red C there [Static crew list (week):- | Saint crew list (week):red/C]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-06-P1-crew-drawer-before.png",
+      "ph-07-P2-crew-drawer-static-plain.png"
+     ]
+    }
+   ],
+   "errors": []
+  },
+  "18-sweep-dk": {
+   "at": "2026-10-01T10:07:11.371Z",
+   "base": "http://localhost:4211",
+   "phone": false,
+   "table": [
+    {
+     "id": "sweep — Monday (14 lines: DOUBLE_BOOK, DNIF_FLY, INPUT_FLY, NO_BRIEF, SIM_BRIEF, SIM_DEBRIEF, DT_SUM, CREW_SOLO, LONGDAY)",
+     "did": "Edit Schedule, Monday: ✕ on each of its 14 lines, one at a time, the box shut and the day read after each; then the board opened",
+     "saw": "✓ after every single ✕ (14 checks): the bar one lower, the line struck in place with ↺, only the men it names changed, each named man plain or still flagged as his other shown warnings say [all held] · ✓ all hidden: the bar reads \"✓ No issues\", quiet, and every line is struck [✓ No issues · tap to collapse ▲ · other rows: [\"Breaks Tuesday Outlaw — had to leave by \"]] · ✓ all hidden: NOT ONE puck in the day carries a ring, chip or dashed mark of this day [{}] · ✓ …while the dotted mark that belongs to Tuesday's crew-rest breach (still shown) STAYS on its man, and the \"Breaks Tuesday\" row stays in the list, not struck [tomorrow's shown breach names [\"casper\"]; kept dotted on [\"casper\"]] · ✓ all hidden: the day before carries no dotted \"breaks\" mark from it [none] · ✓ the board agrees: \"No conflicts flagged for Monday ✓\", 14 struck lines, no flagged puck [No conflicts flagged for Monday ✓ · tap to review · {}]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-S-Mon-all-hidden-list.png",
+      "dk-02-S-Mon-all-hidden-pucks.png",
+      "dk-03-S-Mon-all-hidden-board.png"
+     ]
+    },
+    {
+     "id": "sweep — Tuesday (4 lines: DOUBLE_BOOK, CREW_REST, NO_BRIEF, LONGDAY)",
+     "did": "Edit Schedule, Tuesday: ✕ on each of its 4 lines, one at a time, the box shut and the day read after each; then the board opened",
+     "saw": "✓ after every single ✕ (4 checks): the bar one lower, the line struck in place with ↺, only the men it names changed, each named man plain or still flagged as his other shown warnings say [all held] · ✓ all hidden: the bar reads \"✓ No issues\", quiet, and every line is struck [✓ No issues · tap to collapse ▲ · other rows: []] · ✓ all hidden: NOT ONE puck in the day carries a ring, chip or dashed mark of this day [{}] · ✓ no man of this day carries a mark for a breach of the next day (none is shown there) [tomorrow's shown breach names []; kept dotted on []] · ✓ all hidden: the day before carries no dotted \"breaks\" mark from it [none] · ✓ the board agrees: \"No conflicts flagged for Tuesday ✓\", 4 struck lines, no flagged puck [No conflicts flagged for Tuesday ✓ · tap to review · {}]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-04-S-Tue-all-hidden-list.png",
+      "dk-05-S-Tue-all-hidden-pucks.png",
+      "dk-06-S-Tue-all-hidden-board.png"
+     ]
+    },
+    {
+     "id": "21 (the \"Breaks Tuesday\" row in the list of Monday)",
+     "did": "with the crew-rest breach of Tuesday hidden: the list of Monday opened",
+     "saw": "Monday's list:✓ No issues · tap to collapse ▲; rows that begin \"Breaks\": []; other rows: [] — at the start of the walk Monday's list carried: [\"Breaks Tuesday Outlaw — had to leave by 18:00. Crew rest bre\"]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-07-S-monday-list-with-tuesday-breach-hidden.png"
+     ]
+    },
+    {
+     "id": "sweep — Wednesday (7 lines: LEAVE_FLY, INPUT_FLY, TURN, DT_SUM, CO_APPROVAL)",
+     "did": "Edit Schedule, Wednesday: ✕ on each of its 7 lines, one at a time, the box shut and the day read after each; then the board opened",
+     "saw": "✓ after every single ✕ (7 checks): the bar one lower, the line struck in place with ↺, only the men it names changed, each named man plain or still flagged as his other shown warnings say [all held] · ✓ all hidden: the bar reads \"✓ No issues\", quiet, and every line is struck [✓ No issues · tap to collapse ▲ · other rows: []] · ✓ all hidden: NOT ONE puck in the day carries a ring, chip or dashed mark of this day [{}] · ✓ no man of this day carries a mark for a breach of the next day (none is shown there) [tomorrow's shown breach names []; kept dotted on []] · ✓ all hidden: the day before carries no dotted \"breaks\" mark from it [none] · ✓ the board agrees: \"No conflicts flagged for Wednesday ✓\", 7 struck lines, no flagged puck [No conflicts flagged for Wednesday ✓ · tap to review · {}]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-08-S-Wed-all-hidden-list.png",
+      "dk-09-S-Wed-all-hidden-pucks.png",
+      "dk-10-S-Wed-all-hidden-board.png"
+     ]
+    },
+    {
+     "id": "sweep — Thursday (6 lines: DOUBLE_BOOK, ILLEGAL_CREW, NO_BRIEF, DEBRIEF)",
+     "did": "Edit Schedule, Thursday: ✕ on each of its 6 lines, one at a time, the box shut and the day read after each; then the board opened",
+     "saw": "✓ after every single ✕ (6 checks): the bar one lower, the line struck in place with ↺, only the men it names changed, each named man plain or still flagged as his other shown warnings say [all held] · ✓ all hidden: the bar reads \"✓ No issues\", quiet, and every line is struck [✓ No issues · tap to collapse ▲ · other rows: []] · ✓ all hidden: NOT ONE puck in the day carries a ring, chip or dashed mark of this day [{}] · ✓ no man of this day carries a mark for a breach of the next day (none is shown there) [tomorrow's shown breach names []; kept dotted on []] · ✓ all hidden: the day before carries no dotted \"breaks\" mark from it [none] · ✓ the board agrees: \"No conflicts flagged for Thursday ✓\", 6 struck lines, no flagged puck [No conflicts flagged for Thursday ✓ · tap to review · {}]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-11-S-Thu-all-hidden-list.png",
+      "dk-12-S-Thu-all-hidden-pucks.png",
+      "dk-13-S-Thu-all-hidden-board.png"
+     ]
+    },
+    {
+     "id": "24 (four whole days hidden)",
+     "did": "Insights opened with every line of Monday–Thursday hidden",
+     "saw": "✓ \"By day\" reads \"clear\" for Monday, Tuesday, Wednesday and Thursday [8 sorties · 4 formations · clear | 8 sorties · 4 formations · clear | 8 sorties · 4 formations · clear | 8 sorties · 4 formations · clear] · ✓ the weekly tile counts only what is still shown (Saturday's and Sunday's OIL reminders: 2) [33 → 2 (0 WARNING)] · ✓ \"Conflicts by type\" lists only the OIL reminder, 2 [{\"OIL waiting — this day is not published\":\"2\"}] · ✓ work hours are unchanged for every man",
+     "verdict": "PASS",
+     "pics": [
+      "dk-14-S-insights-four-days-hidden.png"
+     ]
+    },
+    {
+     "id": "sweep — everything flagged again",
+     "did": "↺ on every struck line of the four days, last first; each day compared, puck by puck, with a fresh copy of the demo week",
+     "saw": "✓ each day's bar, lines and every flagged puck are exactly as in a world where nothing was ever hidden [identical] · ✓ Insights is back to its first reading (tile, by type, by day) [33]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-15-S-everything-flagged-again.png"
+     ]
+    }
+   ],
+   "errors": []
+  },
+  "18-sweep-ph": {
+   "at": "2026-10-01T10:09:23.298Z",
+   "base": "http://localhost:4211",
+   "phone": true,
+   "table": [
+    {
+     "id": "sweep — Monday (14 lines: DOUBLE_BOOK, DNIF_FLY, INPUT_FLY, NO_BRIEF, SIM_BRIEF, SIM_DEBRIEF, DT_SUM, CREW_SOLO, LONGDAY)",
+     "did": "Edit Schedule, Monday: ✕ on each of its 14 lines, one at a time, the box shut and the day read after each; then the board opened",
+     "saw": "✓ after every single ✕ (14 checks): the bar one lower, the line struck in place with ↺, only the men it names changed, each named man plain or still flagged as his other shown warnings say [all held] · ✓ all hidden: the bar reads \"✓ No issues\", quiet, and every line is struck [✓ No issues · tap to collapse ▲ · other rows: [\"Breaks Tuesday Outlaw — had to leave by \"]] · ✓ all hidden: NOT ONE puck in the day carries a ring, chip or dashed mark of this day [{}] · ✓ …while the dotted mark that belongs to Tuesday's crew-rest breach (still shown) STAYS on its man, and the \"Breaks Tuesday\" row stays in the list, not struck [tomorrow's shown breach names [\"casper\"]; kept dotted on [\"casper\"]] · ✓ all hidden: the day before carries no dotted \"breaks\" mark from it [none] · ✓ the board agrees: \"No conflicts flagged for Monday ✓\", 14 struck lines, no flagged puck [▾ No conflicts flagged for Monday ✓ · tap to collapse · {}]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-01-S-Mon-all-hidden-list.png",
+      "ph-02-S-Mon-all-hidden-pucks.png",
+      "ph-03-S-Mon-all-hidden-board.png"
+     ]
+    },
+    {
+     "id": "sweep — Tuesday (4 lines: DOUBLE_BOOK, CREW_REST, NO_BRIEF, LONGDAY)",
+     "did": "Edit Schedule, Tuesday: ✕ on each of its 4 lines, one at a time, the box shut and the day read after each; then the board opened",
+     "saw": "✓ after every single ✕ (4 checks): the bar one lower, the line struck in place with ↺, only the men it names changed, each named man plain or still flagged as his other shown warnings say [all held] · ✓ all hidden: the bar reads \"✓ No issues\", quiet, and every line is struck [✓ No issues · tap to collapse ▲ · other rows: []] · ✓ all hidden: NOT ONE puck in the day carries a ring, chip or dashed mark of this day [{}] · ✓ no man of this day carries a mark for a breach of the next day (none is shown there) [tomorrow's shown breach names []; kept dotted on []] · ✓ all hidden: the day before carries no dotted \"breaks\" mark from it [none] · ✓ the board agrees: \"No conflicts flagged for Tuesday ✓\", 4 struck lines, no flagged puck [▾ No conflicts flagged for Tuesday ✓ · tap to collapse · {}]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-04-S-Tue-all-hidden-list.png",
+      "ph-05-S-Tue-all-hidden-pucks.png",
+      "ph-06-S-Tue-all-hidden-board.png"
+     ]
+    },
+    {
+     "id": "21 (the \"Breaks Tuesday\" row in the list of Monday)",
+     "did": "with the crew-rest breach of Tuesday hidden: the list of Monday opened",
+     "saw": "Monday's list:✓ No issues · tap to collapse ▲; rows that begin \"Breaks\": []; other rows: [] — at the start of the walk Monday's list carried: [\"Breaks Tuesday Outlaw — had to leave by 18:00. Crew rest bre\"]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-07-S-monday-list-with-tuesday-breach-hidden.png"
+     ]
+    },
+    {
+     "id": "sweep — Wednesday (7 lines: LEAVE_FLY, INPUT_FLY, TURN, DT_SUM, CO_APPROVAL)",
+     "did": "Edit Schedule, Wednesday: ✕ on each of its 7 lines, one at a time, the box shut and the day read after each; then the board opened",
+     "saw": "✓ after every single ✕ (7 checks): the bar one lower, the line struck in place with ↺, only the men it names changed, each named man plain or still flagged as his other shown warnings say [all held] · ✓ all hidden: the bar reads \"✓ No issues\", quiet, and every line is struck [✓ No issues · tap to collapse ▲ · other rows: []] · ✓ all hidden: NOT ONE puck in the day carries a ring, chip or dashed mark of this day [{}] · ✓ no man of this day carries a mark for a breach of the next day (none is shown there) [tomorrow's shown breach names []; kept dotted on []] · ✓ all hidden: the day before carries no dotted \"breaks\" mark from it [none] · ✓ the board agrees: \"No conflicts flagged for Wednesday ✓\", 7 struck lines, no flagged puck [▾ No conflicts flagged for Wednesday ✓ · tap to collapse · {}]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-08-S-Wed-all-hidden-list.png",
+      "ph-09-S-Wed-all-hidden-pucks.png",
+      "ph-10-S-Wed-all-hidden-board.png"
+     ]
+    },
+    {
+     "id": "sweep — Thursday (6 lines: DOUBLE_BOOK, ILLEGAL_CREW, NO_BRIEF, DEBRIEF)",
+     "did": "Edit Schedule, Thursday: ✕ on each of its 6 lines, one at a time, the box shut and the day read after each; then the board opened",
+     "saw": "✓ after every single ✕ (6 checks): the bar one lower, the line struck in place with ↺, only the men it names changed, each named man plain or still flagged as his other shown warnings say [all held] · ✓ all hidden: the bar reads \"✓ No issues\", quiet, and every line is struck [✓ No issues · tap to collapse ▲ · other rows: []] · ✓ all hidden: NOT ONE puck in the day carries a ring, chip or dashed mark of this day [{}] · ✓ no man of this day carries a mark for a breach of the next day (none is shown there) [tomorrow's shown breach names []; kept dotted on []] · ✓ all hidden: the day before carries no dotted \"breaks\" mark from it [none] · ✓ the board agrees: \"No conflicts flagged for Thursday ✓\", 6 struck lines, no flagged puck [▾ No conflicts flagged for Thursday ✓ · tap to collapse · {}]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-11-S-Thu-all-hidden-list.png",
+      "ph-12-S-Thu-all-hidden-pucks.png",
+      "ph-13-S-Thu-all-hidden-board.png"
+     ]
+    },
+    {
+     "id": "24 (four whole days hidden)",
+     "did": "Insights opened with every line of Monday–Thursday hidden",
+     "saw": "✓ \"By day\" reads \"clear\" for Monday, Tuesday, Wednesday and Thursday [8 sorties · 4 formations · clear | 8 sorties · 4 formations · clear | 8 sorties · 4 formations · clear | 8 sorties · 4 formations · clear] · ✓ the weekly tile counts only what is still shown (Saturday's and Sunday's OIL reminders: 2) [33 → 2 (0 WARNING)] · ✓ \"Conflicts by type\" lists only the OIL reminder, 2 [{\"OIL waiting — this day is not published\":\"2\"}] · ✓ work hours are unchanged for every man",
+     "verdict": "PASS",
+     "pics": [
+      "ph-14-S-insights-four-days-hidden.png"
+     ]
+    },
+    {
+     "id": "sweep — everything flagged again",
+     "did": "↺ on every struck line of the four days, last first; each day compared, puck by puck, with a fresh copy of the demo week",
+     "saw": "✓ each day's bar, lines and every flagged puck are exactly as in a world where nothing was ever hidden [identical] · ✓ Insights is back to its first reading (tile, by type, by day) [33]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-15-S-everything-flagged-again.png"
+     ]
+    }
+   ],
+   "errors": []
+  },
+  "19-boardinfo-dk": {
+   "at": "2026-10-01T10:12:00.525Z",
+   "base": "http://localhost:4211",
+   "phone": false,
+   "table": [
+    {
+     "id": "23 (the board's ⓘ, working face)",
+     "did": "Scheduler Board, Tuesday: ✕ on the long-day line, the board's ⓘ tapped; the other three hidden, ⓘ again",
+     "saw": "✓ one hidden: the popup counts 2 warning · 1 advisory, no note [2 WARNING 1 ADVISORY] · ✓ one hidden: all four lines listed in place, the hidden one struck [[false,false,false,true]] · ✓ all hidden: it says \"Nothing flagged\" and still lists the four, struck [ | Nothing flagged — this day is clean ✓]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-23c-board-dayinfo-one-hidden.png",
+      "dk-02-23d-board-dayinfo-all-hidden.png"
+     ]
+    }
+   ],
+   "errors": []
+  },
+  "19-boardinfo-ph": {
+   "at": "2026-10-01T10:12:09.991Z",
+   "base": "http://localhost:4211",
+   "phone": true,
+   "table": [
+    {
+     "id": "23 (the board's ⓘ, working face)",
+     "did": "Scheduler Board, Tuesday: ✕ on the long-day line, the board's ⓘ tapped; the other three hidden, ⓘ again",
+     "saw": "✓ one hidden: the popup counts 2 warning · 1 advisory, no note [2 WARNING 1 ADVISORY] · ✓ one hidden: all four lines listed in place, the hidden one struck [[false,false,false,true]] · ✓ all hidden: it says \"Nothing flagged\" and still lists the four, struck [ | Nothing flagged — this day is clean ✓]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-01-23c-board-dayinfo-one-hidden.png",
+      "ph-02-23d-board-dayinfo-all-hidden.png"
+     ]
+    }
+   ],
+   "errors": []
+  },
+  "20-bb-dk": {
+   "at": "2026-10-01T10:13:27.890Z",
+   "base": "http://localhost:4211",
+   "phone": false,
+   "table": [
+    {
+     "id": "8 (BB)",
+     "did": "Scheduler Board, Tuesday: \"+ Wave\" → BB (added; \"⠿ Go 3 BB 1st wave 2nd wave 3rd wave 4th wave 5th wave Night wave SC AVALON · night in-time — · 4 ac ⇅ Auto sort + Line \"); Grit picked onto its front seat 1.2.0.0.p (seated)",
+     "saw": "the BB seat raised no warning of its own for him (he carries: DNIF_FLY@g:1.0); Edit Schedule draws the BB copy flying line@1(1.2.0.0.p):-, the board flying line(1.2.0.0.p):red/C",
+     "verdict": "NOT WALKED (the BB seat raised nothing to hide)",
+     "pics": [
+      "dk-01-8b-a-board-bb-flagged.png",
+      "dk-03-8b-c-week-own-hidden.png"
+     ]
+    }
+   ],
+   "errors": []
+  },
+  "20-bb-ph": {
+   "at": "2026-10-01T10:13:37.331Z",
+   "base": "http://localhost:4211",
+   "phone": true,
+   "table": [
+    {
+     "id": "8 (BB)",
+     "did": "Scheduler Board, Tuesday: \"+ Wave\" → BB (added; \"⠿ Go 3 BB 1st wave 2nd wave 3rd wave 4th wave 5th wave Night wave SC AVALON · night in-time — · 4 ac ⇅ Auto sort + Line \"); Grit picked onto its front seat 1.2.0.0.p (seated)",
+     "saw": "the BB seat raised no warning of its own for him (he carries: DNIF_FLY@g:1.0); Edit Schedule draws the BB copy flying line@1(1.2.0.0.p):-, the board flying line(1.2.0.0.p):red/C",
+     "verdict": "NOT WALKED (the BB seat raised nothing to hide)",
+     "pics": [
+      "ph-01-8b-a-board-bb-flagged.png",
+      "ph-03-8b-c-week-own-hidden.png"
+     ]
+    }
+   ],
+   "errors": []
+  }
+ }
+}

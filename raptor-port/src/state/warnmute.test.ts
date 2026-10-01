@@ -9,7 +9,7 @@ import { histInit, histPush, undo, redo } from './history'
    not a timer: change the day / code / people / message and the key changes. */
 beforeEach(() => { WARNOFF.clear(); setSession({ user: 'a', role: 'admin' }) })
 
-describe('a muted board warning', () => {
+describe('a hidden warning — the set and its key (WH10, WH11)', () => {
   it('hides the exact warning but re-appears the moment its content changes', () => {
     const w = { di: 0, code: 'INPUT_FLY', who: ['bane'], msg: 'on a Meeting' }
     expect(warnShown(w)).toBe(true)

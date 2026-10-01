@@ -39,7 +39,9 @@ import { stashDays, stashGenOf } from '../engine/weekstash'
 import { shiftWeek } from './weeknav'
 import { esc } from '../state/view'
 import { fmtT, storesView, rowCls, cxTag, flagTag, fyiTag, plCols, areaText, atimeText, lCell, saRoleText } from './html'
-import { fltNoLen, FLT_NO_LEN_SAYS } from '../engine/validate'
+import { fltNoLen, fltNoLenMsg, FLT_NO_LEN_SAYS } from '../engine/validate'
+import { hideKey } from '../engine/warnhide'
+import { dayHidesIn } from '../engine/weekctx'
 import { viewOfWeek, deletedSig, requestsSig } from '../engine/overlay'
 import { DAYS } from '../engine/data'
 /* the loaded week's request rows (their ids and days) — the peek's landing reads them */
@@ -102,7 +104,12 @@ function peekFormation(w: any, f: any): string {
      rule, so this cannot drift from the warning or from the two live surfaces
      — and it takes the formation alone, which is exactly what this file has:
      a day blob from the seed or the stash, never a day index. */
-  const noLen = fltNoLen(f)
+  /* …BUT NEVER WHILE THAT WARNING IS HIDDEN ([WARN-HIDE-KEPT], owner D469, 1 Oct 26 — "if it's hidden, the pucks shouldn't
+     have flagging for that specific item"; Astra's plan read). The preview has no warning list to ask, so it asks next
+     week's own saved hides for THIS day (weekctx.ts dayHidesIn — its working hides, or its issued version's when the day
+     is published, D471) for the key that warning has there: the same day, rule and words the validator will file
+     (fltNoLenMsg is the one body for the sentence). */
+  const noLen = fltNoLen(f) && !PEEK_HID.has(hideKey({ di: PEEK_DI, code: 'FLT_NO_LEN', who: [], msg: fltNoLenMsg(f, w) }))
   const badCls = noLen ? ' badtm' : ''
   const badAtt = noLen ? ` title="${esc((f.cs || w.label || 'A flying line') + ' ' + FLT_NO_LEN_SAYS(parseHM(f.to), sa))}"` : ''
   let h = `<div class="form${rowCls(f)}">`
@@ -225,7 +232,10 @@ function peekGround(d: any): string {
    every existing `.day[data-day]` query (state/view.ts's weekLeftDay/
    scrollWeekToDay, highlights.ts, interactions.ts) already excludes this node
    by construction, with no per-site change needed. */
+/* the day being drawn and the warnings hidden on it in ITS week — set per day here, read by peekFormation */
+let PEEK_WK: any = null, PEEK_DI = 0, PEEK_HID: Set<string> = new Set()
 export function peekDayHTML(d: any, i: number, first: boolean): string {
+  PEEK_DI = i; PEEK_HID = PEEK_WK != null ? dayHidesIn(PEEK_WK, i) : new Set()
   let h = `<section class="day peek" data-peek-day="${i}">`
   h += `<div class="day-head">${first ? `<span class="peek-nextwk">Next week — click a day to load it</span>` : ''}`
     + `<span class="dow">${esc(d.dow || '')}</span><span class="dt">${esc(d.dt || '')}</span>`
@@ -269,7 +279,8 @@ export function peekWeekHTML(): string {
   /* a saved week is worked out by stashDays itself; a week never saved, here, the same way ([DB-READINESS] group A, phase
      6 (d) and (c) — engine/overlay.ts viewOfWeek: a deleted man taken off, a request's row landed) */
   const bundle = stashDays(nextWk) || (() => { const b = weekBundle(nextWk); viewOfWeek(String(nextWk), b.days, { loaded: false, issued: () => null }); return b })()
-  cacheHTML = bundle.days.map((d: any, i: number) => peekDayHTML(d, i, i === 0)).join('')
+  PEEK_WK = nextWk
+  try { cacheHTML = bundle.days.map((d: any, i: number) => peekDayHTML(d, i, i === 0)).join('') } finally { PEEK_WK = null }
   cacheKey = key
   return cacheHTML
 }

@@ -5,6 +5,8 @@ dist-blank/
 # the build before a change, served beside it for a side-by-side walk ([DB-READINESS] phase 6 (c))
 dist-p6cbase/
 dist-p7/
+# the build under walk, frozen so a fix rebuilt beside it never swaps the bundle under the walkers ([WARN-HIDE-KEPT])
+dist-wh/
 .vite/
 test-results/
 playwright-report/
