@@ -15,6 +15,7 @@ import { keyDay, seatRow } from './keys'
 import { rowPlaces } from './slots'
 import { SCHED, approvedDays, dayApproved, dayDelta, dayDeltaCore, dayCurVer, daySnapOf } from './publish'
 import { hideKey, shownWarns } from './warnhide'
+import { rosterIds } from './faceattrs'
 
 /* the reference guards its header counters with $() lookups; the engine takes
    $ from the hooks (null outside a browser) so the guarded lines stay verbatim */
@@ -1693,7 +1694,15 @@ function officialFor(working:any){
    three until it goes out. While nothing waits the official pass IS the working one (the alias), and so is this.
    Answers for the LAST validate(): a reader calls validate() first (computeInsights does). */
 let ISS_DAYS:any=null, ISS_EVD:any=null;
-export function issuedWorld(){ return {days:ISS_DAYS||DAYS, evd:ISS_EVD||EVD, warn:faceWarn()}; }
+/* …and its ROSTER (Astra's final read, 1 Oct 26): the aircrew of those same days — each published day the roster its
+   current version went out with (publish.ts `snap.ros`, what the day panel's "free all day" counts; a man since deleted
+   outright has nothing to draw and drops, as faceattrs.ts rosterShown), a day not yet published today's — as one list
+   for the week. So a man added or archived since does not move "who is not flying" on a week already published. */
+function issuedRoster(){ const s=new Set<string>(); let now:any=null;
+  DAYS.forEach((_d:any,di:any)=>{ const v=dayApproved(di)?dayCurVer(di):null, sn:any=v!=null?daySnapOf(di,v):null;
+    (sn&&Array.isArray(sn.ros)?sn.ros.filter((id:any)=>!!PEOPLE[id]):(now||(now=rosterIds()))).forEach((id:any)=>s.add(id)); });
+  return [...s]; }
+export function issuedWorld(){ return {days:ISS_DAYS||DAYS, evd:ISS_EVD||EVD, warn:faceWarn(), roster:issuedRoster()}; }
 /* Install EVERY approved day's issued snapshot at once (F-4/CRP-006 — a
    Tuesday-issued day must be judged against a Monday-issued day, not Monday-
    working), run fn against it, then restore DAYS, SCHED and every validate()

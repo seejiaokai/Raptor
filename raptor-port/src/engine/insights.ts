@@ -13,7 +13,7 @@ import { isStandalone } from './waves'
    hidden warning) moves nothing here until its amendment is out. Pins: ui/insights-published.test.tsx. */
 export function computeInsights(){
   validate();
-  const {days:DAYS, evd:EVD, warn:WARN}=issuedWorld();
+  const {days:DAYS, evd:EVD, warn:WARN, roster:ROSTER}=issuedWorld();
   let sorties=0,forms=0; const fc:any={}, dayStats:any[]=[];
   /* WORK HOURS (owner, 20 Aug 26 — "perhaps have a section to show everyone's
      work hours in the insights for the week"). Summed off the SAME per-person
@@ -43,7 +43,9 @@ export function computeInsights(){
     dayStats.push({dow:d.dow,ac:ds,forms:df,warns:dw.length,hard:dw.filter((x:any)=>x.sev==='hard').length});
   });
   const flyers=Object.keys(fc).map((id:any)=>({id,n:fc[id]})).sort((a:any,b:any)=>b.n-a.n||PEOPLE[a.id].cs.localeCompare(PEOPLE[b.id].cs));
-  const idle=Object.keys(PEOPLE).filter((id:any)=>!PEOPLE[id].archived&&!PEOPLE[id].pers&&!fc[id]).sort((a:any,b:any)=>PEOPLE[a].cs.localeCompare(PEOPLE[b].cs));
+  /* who is NOT flying, out of the roster those days went out with — never today's list of people: a man added or
+     archived since a week was published does not move it (issuedWorld's roster; PEOPLE gives the label only) */
+  const idle=ROSTER.filter((id:any)=>PEOPLE[id]&&!fc[id]).sort((a:any,b:any)=>PEOPLE[a].cs.localeCompare(PEOPLE[b].cs));
   const shown=shownWarns(WARN.all), byType:any={}; shown.forEach((w:any)=>byType[w.code]=(byType[w.code]||0)+1);
   /* EVERYONE who has a scheduled hour, longest first — a load picture, so the
      name at the top is the one to look at. `PEOPLE[id]` is guarded because EVD

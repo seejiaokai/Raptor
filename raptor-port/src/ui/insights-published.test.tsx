@@ -26,9 +26,11 @@ import { setPage, DPREV, VWORK, WARNOFF, warnMuteKey, toggleWarnOff, setUnpubArm
 import { dayIssuedHTML } from './html'
 import { insightsHTML } from './Modals'
 import { commitNewInput } from './inputedit'
+import { addPersonAndAccount } from '../state/accounts'
+import { archivePerson } from '../leavewar/sync'
 
 const TUE = 1, WED = 2, TUE_ISO = '2026-07-14'
-let pristine: any[], inputs0: string
+let pristine: any[], inputs0: string, people0: string
 const FOUR: Array<[string, string]> = [['cur', 'ignite'], ['sked', 'bane'], ['plan', 'stiff'], ['appr', 'pump']]
 const sign = (di: number) => { const g = signOf(di); for (const [r, w] of FOUR) (g as any)[r] = w }
 const publishDay = (di: number) => { sign(di); setDayApproved(di, true); validate() }
@@ -65,10 +67,13 @@ beforeAll(() => {
   setSession({ user: 'ad', role: 'admin' } as any)
   pristine = JSON.parse(JSON.stringify(DAYS))
   inputs0 = JSON.stringify(INPUTS)
+  people0 = JSON.stringify(PEOPLE)
 })
 const reset = () => {
   DAYS.length = 0; JSON.parse(JSON.stringify(pristine)).forEach((d: any) => DAYS.push(d))
   INPUTS.length = 0; JSON.parse(inputs0).forEach((i: any) => INPUTS.push(i))
+  for (const k of Object.keys(PEOPLE)) delete PEOPLE[k]
+  Object.assign(PEOPLE, JSON.parse(people0))
   SCHED.pending = {}; SCHED.changes = {}; SCHED.added = {}; SCHED.als = []
   SCHED.al = 0; SCHED.dayOK = {}; SCHED.sign = {}; SCHED.signBind = {}; SCHED.orig = {}; SCHED.cur = {}
   SCHED.drafts = {}; SCHED.curDraft = {}; SCHED.retired = {}; SCHED.correcting = {}
@@ -185,5 +190,40 @@ describe('the window itself — its tiles read the same count as its lists', () 
     amend(TUE)
     expect(tile()).toBe(t0 - 1)
     expect(sum()).toBe(t0 - 1)
+  })
+})
+
+/* Astra's final read, finding 1 (1 Oct 26): "Not on the flying programme" was listed from TODAY's roster, so a man added
+   or archived moved a figure of the window with every day published. Each published version keeps the roster it went out
+   with (publish.ts `snap.ros` — the day panel's "free all day" already counts it); the window now lists the men of those
+   rosters, and today's roster only for a day not yet published. A rename is a label and shows at once. */
+describe("IN1 — who is 'not on the flying programme' follows the published days' own rosters", () => {
+  const idle = () => computeInsights().idle as string[]
+  const newMan = (cs: string) => {
+    expect(addPersonAndAccount(cs.toLowerCase() + '@mail', { cs, ini: 'NB', seat: 'FCP', cat: 'C' } as any, 'main', '2026-07-01')).toBeNull()
+    validate()
+    return Object.keys(PEOPLE).find(id => PEOPLE[id].cs === cs)!
+  }
+  it('every day published: a man added since is not listed, and a man archived since still is — until a day goes out again', () => {
+    for (let di = 0; di < DAYS.length; di++) publishDay(di)
+    const before = idle()
+    const gone = before[0]!
+    const id = newMan('Newbie')
+    expect(id, 'he is on the roster').toBeTruthy()
+    expect(idle(), 'the published week does not know him').toEqual(before)
+    expect(archivePerson(gone).bad, "archived through Admin → Users' own door").toBeNull()
+    validate()
+    expect(idle(), 'and still lists the man archived since').toEqual(before)
+    /* an amendment needs something to carry (D98): a man off a Tuesday seat */
+    setSlotVal(firstFlown(TUE).key, ''); validate()
+    expect(idle(), 'waiting: still the rosters as published').toEqual(before)
+    amend(TUE)
+    expect(idle(), 'the man archived since is off the list once every day he was on has gone out again — not yet').toContain(gone)
+    expect(idle(), "a day issued since carries today's roster: the new man is listed").toContain(id)
+  })
+  it("with a day not yet published the roster is today's: a new man is listed at once", () => {
+    publishDay(TUE)
+    const id = newMan('Rookie')
+    expect(idle()).toContain(id)
   })
 })

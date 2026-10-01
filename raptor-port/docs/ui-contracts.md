@@ -4763,7 +4763,10 @@ type, by day — comes from ONE computation (`engine/insights.ts computeInsights
 (`engine/validate.ts issuedWorld`): the days as the published-schedule pass installs them (each published day its current
 issued version, a draft day the working copy), the per-person events that pass built from them (the work hours), and the
 warnings as View-only Sched's faces show them (each published day under the hides it went out with, a draft day under the
-working hides). It reads no page and no "working draft" switch, so the window says the same thing wherever it is opened.
+working hides). "Not on the flying programme" lists the men of the ROSTER those days went out with (each published version keeps its
+roster — `snap.ros`, what the day panel's "free all day" counts — and a day not yet published has today's): a man added or
+archived since does not move it on a week already published (Astra's final read, 1 Oct 26); a rename is a label and shows
+at once. It reads no page and no "working draft" switch, so the window says the same thing wherever it is opened.
 While nothing waits on any published day that world IS the working copy. A draft day's warnings are judged against its
 published neighbours as published — the same judgement View-only Sched draws. Pins: `ui/insights-published.test.tsx`.
 *Before this build* every figure was worked out from the working copy on every page, so a change waiting on a published
