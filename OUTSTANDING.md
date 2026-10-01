@@ -1606,7 +1606,7 @@ The cause: `engine/validate.ts workSpan` takes the wave's in-time as the report 
 landing, so the day's end falls before its start. Older than that build (the function is untouched; the same on `main`);
 it would happen again to new data, so it is real. It is the one measure the long-work-day warning shares, so the fix is a
 warning-rule change (FULL tier) — decide there what a report later than the take-off means (ignore the in-time for that
-line? flag it?). Pictures: `raptor-port/docs/img/handpass/2026-10-01-insights/host/`. **Place — D483 (1 Oct 26, "U can fix the older
+line? flag it?). Pictures: `raptor-port/docs/img/handpass/2026-10-01-insights/host/`. **AFTER THE RESET of his weekly allowance, Monday 5 Oct 26, 19:00 (D484).** **Place — D483 (1 Oct 26, "U can fix the older
 fault in the next chat"): NEXT, in the next chat, on its own branch, with a FULL check (it changes the measure the
 long-work-day warning shares). The second Sonnet-walker trial (D480) rides on its walk — freeze the build BEFORE the fix for
 the two trial walkers.**

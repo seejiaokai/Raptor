@@ -27,7 +27,12 @@ the later merge keeps both (D78).
   the Scheduler Board gets an Insights button (proposed: beside the bell on a desktop, inside the ⋯ menu on a phone — a
   picture to him first); **D482** — a rule changed on the Logic page moves Insights' work hours at once, as built; **D483** —
   the negative work-hours fault is fixed in the next chat.
-- **THE NEXT CHAT (D483):** `[WORKSPAN-NEGATIVE]` — a new worktree on `main`, its own branch, a FULL check (it changes the
+- **BEFORE THE RESET — light work only (D484):** he is at 93% of his weekly Claude allowance; it resets **Monday 5 Oct 26, 19:00**.
+  Until then: the picture of the Scheduler Board's Insights button (`[INSIGHTS-BOARD-DOOR]`, D481 — a mock-up, no build, no
+  walkers; a fresh chat, a worktree on `main`), and anything Astra can do (it runs on his ChatGPT account). Nothing goes to
+  Sonnet meanwhile. Two questions he raised are with him: build features now and check them after the reset; one combined
+  check for a batch of features instead of one each — record his answer as a ruling.
+- **AFTER THE RESET (D483, D484):** `[WORKSPAN-NEGATIVE]` — a new worktree on `main`, its own branch, a FULL check (it changes the
   measure the long-work-day warning shares). **The second Sonnet trial (D480) rides on its walk:** freeze the build as it
   stands BEFORE the fix for the two trial walkers (one Opus, one Sonnet, the same brief, neither told what is wrong), and
   report what each caught. After it: `[INSIGHTS-BOARD-DOOR]` (D481), a picture first.
