@@ -130,7 +130,7 @@ never deleted, still searched before asking him anything.
 read, once we venture into things concerning other areas then that should be automatically read too … I don't want
 to bloat the ai to context that doesn't matter."* So the rulings are **split by area**, one file each under
 `.claude/rules/decisions/` — Tracker, Leave War, Scheduler & amendments, OIL, How we work (and, since 28 Sep 26, People &
-accounts — D390) — every row keeping its date:
+accounts — D390; since 2 Oct 26, the IT flow guide) — every row keeping its date:
 - **How we work loads in every session** (no `paths:`); **each other area loads by itself** when a session READS a
   file matching its `paths:` — so work that strays into a second area picks that area up too. Choose paths
   generously: a ruling missed costs more than one loaded (D68).

@@ -13,7 +13,7 @@ The full policy and the tiers: `raptor-port/docs/doc-budget.md`. This file is it
   `raptor-port/` is opened; most of its rules are ONE line, each naming its full text in `raptor-port/docs/guide-full.md` (D391).
 - **At the start of a chat:** `HANDOFF.md` — where things stand (`## Now`, a block per chat) and what is next.
 - **By itself, per area:** `.claude/rules/decisions/scheduler.md`, `leave-war.md`, `oil.md`, `tracker.md`,
-  `people-accounts.md` — each area's rulings, settled decisions and architecture — load when a matching file is opened
+  `people-accounts.md`, `it-flow-guide.md` — each area's rulings, settled decisions and architecture — load when a matching file is opened
   **with the Read tool**. A shell read (`cat`, `grep`) does not load them, and neither does planning before any file is
   open: **before planning or editing in an area, open its file yourself** — People & accounts for any work on
   accounts, sign-in, Admin → Users, Quals, one-door, posting in or out, archive, restore or delete (D390). A brief for

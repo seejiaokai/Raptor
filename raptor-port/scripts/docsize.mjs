@@ -130,8 +130,15 @@ const FILES = [
      1330 -> 1430, 27 Sep 26 ([BACKLOG-TIDY], D324): every item was read; the three finished ones left for the archive
      (1,452 -> 1,367 lines) and the other 75 are live work — open, deferred, or a question for him — so what crossed the
      line belongs here (D141: the ceiling rises with its reason, never "cut to a number"). Set about 60 lines above what
-     the file holds, the room two parallel chats ([ONE-DOOR], [LW-MOVE-STANDARD]) need to merge in beside it. */
-  ['OUTSTANDING.md',                     1, 1430],
+     the file holds, the room two parallel chats ([ONE-DOOR], [LW-MOVE-STANDARD]) need to merge in beside it.
+     1430 -> 1650, 2 Oct 26 ([DOCS-SIZE-PASS]): the file had reached 1,706 lines. Every item's heading and first line was
+     read, and each one that looked finished was read whole: the five finished ones left for the archive (1,706 -> about
+     1,590); three that looked finished stay because part of each is still open ([GLOBAL-UNDO]'s seven deferrals,
+     [AMEND-SMALL-SEEN], [DEPLOY-DOCS]). The other 94 are live work — 19 more than at the last tidy, most of them small
+     finds filed by the walks of [DB-READINESS] and the checks since — so what crossed the line belongs here (D141).
+     Set about 60 lines above what the file holds. NOT done here, and owed: the priority list at the head of the file
+     still tells finished stories — rewriting it is a reword, which needs a reader's check (D138): [PRIORITY-LIST-REWRITE]. */
+  ['OUTSTANDING.md',                     1, 1650],
   /* THE RULINGS (owner, D136 + D137, 24 Sep 26). They are MEANT to grow, so each ceiling is its target,
      and a rulings file is NEVER trimmed to fit: at a ceiling, archive what is replaced or spent
      (DECISIONS.md, step 2) and then RAISE the ceiling here, with the reason. DECISIONS.md is now only
@@ -160,6 +167,10 @@ const RULING_BYTES = [
   ['.claude/rules/decisions/oil.md',     2, 12000],
   ['.claude/rules/decisions/leave-war.md', 2, 32000],
   ['.claude/rules/decisions/tracker.md', 2, 18000],
+  /* 2 Oct 26 ([DOCS-SIZE-PASS]): a new area — the nine rulings on what the IT flow guide shows and when it is rebuilt
+     (D403, D410-D417) moved here from How we work, which had crossed its tripwire carrying them into every chat; only
+     a chat working on the guide needs them (D137, D141). Set about 1.5 kB above what it holds. */
+  ['.claude/rules/decisions/it-flow-guide.md', 2, 5000],
 ]
 const RULING_CEILING = f => f === DECISIONS || f.startsWith(RULINGS_DIR + '/')
 

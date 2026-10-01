@@ -26,6 +26,11 @@ the later merge keeps both (D78).
 - **Next:** `[CODE-TIDY-AUDIT]` — write Astra's brief from the spec's §2, run it, report to him in plain words.
   `[SKILL-FUSION]` — after the reset (Monday 5 Oct 26, 19:00), a fresh chat, a worktree on `main` once this branch has merged
   (or this branch if it has not), Opus 5.5; Fable and Astra read the changed guide before he approves it (D70).
+- **The document tidy (`[DOCS-SIZE-PASS]`) was done here, 2 Oct 26, on his word:** five finished backlog items archived, the
+  backlog's tripwire raised with its reason, the nine IT-flow-guide rulings moved to their own area file
+  (`.claude/rules/decisions/it-flow-guide.md` — it loads with the guide's files), D180, D324, D467 archived as spent. The
+  document check passes. Left: `[PRIORITY-LIST-REWRITE]`. The merged `claude/insights-which-copy` block below is still to remove
+  at the next handoff (its residue is filed: `[WORKSPAN-NEGATIVE]`, `[INSIGHTS-BOARD-DOOR]`, `[SONNET-WALKER-TRIAL]`).
 - **Not read at the source:** 13 of APEX's 16 step files, and Make Interfaces Feel Better's five reference files — read them
   before fusing anything from those two.
 - **Parallel (D302):** rulings D486–D489 used here (D487: the buttons keep their size; D488: "Discard marks" is removed — `[DISCARD-MARKS-REMOVE]`, filed, not built) — a next chat takes D490 on; observation #419 used, #420 on.
