@@ -33,7 +33,7 @@ the later merge keeps both (D78).
   at the next handoff (its residue is filed: `[WORKSPAN-NEGATIVE]`, `[INSIGHTS-BOARD-DOOR]`, `[SONNET-WALKER-TRIAL]`).
 - **Not read at the source:** 13 of APEX's 16 step files, and Make Interfaces Feel Better's five reference files — read them
   before fusing anything from those two.
-- **Parallel (D302):** rulings D486–D489 used here (D487: the buttons keep their size; D488: "Discard marks" is removed — `[DISCARD-MARKS-REMOVE]`, filed, not built) — a next chat takes D490 on; observation #419 used, #420 on.
+- **Parallel (D302):** rulings D486–D490 used here (D490: features first by area, fixes riding along, one whole-app check at the end — `[FEATURE-WISHLIST]`) (D487: the buttons keep their size; D488: "Discard marks" is removed — `[DISCARD-MARKS-REMOVE]`, filed, not built) — a next chat takes D491 on; observation #419 used, #420 on.
 <!-- /now -->
 
 <!-- now:claude/insights-which-copy -->

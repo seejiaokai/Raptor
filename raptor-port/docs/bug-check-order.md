@@ -377,6 +377,12 @@ the evidence sheet cover every feature, named one by one; each feature still lan
 is built; nothing of the batch merges before its check (one pull request, one "merge live"). Keep a batch to what one
 check can hold — about two to four features of one area. A feature he wants live at once may go alone.
 
+**Features first, fixes riding along, one whole-app check at the end (owner, D490, 2 Oct 26).** New features are built first,
+grouped by area. An area's open small finds, and any tidy-up of its code, go into the feature batch that touches that area —
+never fixed and checked just before a feature changes the same screens, which pays for the check twice. A fault that harms
+people now (a wrong published record, wrong earned leave, lost data) is still fixed at once. Once the features are in, and
+before the database step (D473), ONE check of the whole app is run; its shape is designed when it is due.
+
 **Order of steps in FULL:** build → gates → roll-call and door check → walk, and fix what it finds
 → gates → the two reads, *with the evidence sheet in their hands* → fix → re-walk only what the
 fixes touched → gates → finish the sheet → the owner's look → his "merge live".
