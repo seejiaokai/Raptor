@@ -123,7 +123,7 @@ phone — [PHONE-DISCARD-MARKS] (low, from the change-recording walk), [PHONE-WI
 
 **His word, D488 (2 Oct 26):** [DISCARD-MARKS-REMOVE] — small; after the reset (D484), in a batch with other small Edit Schedule fixes (D485).
 
-**From the article he sent — his word, D486 (2 Oct 26):** [CODE-TIDY-AUDIT] (Astra's read can run before the reset, D484; the report to him; before [DB-STEP]) and [SKILL-FUSION] (after the reset, a fresh chat on its own branch; three proposals in it wait on his yes or no).
+**From the article he sent — his word, D486 (2 Oct 26):** [CODE-TIDY-AUDIT] (Astra's read can run before the reset, D484; the report to him; before [DB-STEP]) and [SKILL-FUSION] (after the reset, a fresh chat on its own branch; three proposals in it wait on his yes or no). **D491 (3 Oct 26):** Astra's tidiness read and its draft of [WORD-LIST] run BEFORE the reset; three pieces of `mattpocock/skills` ride with [SKILL-FUSION].
 
 **Waiting on him — no order exists:**
 [FEATURE-WISHLIST] (his list of features to come, 2 Oct 26 — features first by area, D490; the order of the batches he gives on 3 Oct 26),
@@ -1534,8 +1534,17 @@ read the changed guide before he approves it (D70); copied upstream text gets it
 allowance (Monday 5 Oct 26, 19:00, D484), a fresh chat on its own branch.**
 **3 Oct 26 — he sent the whole `mattpocock/skills` collection and asked whether to implement it:** read at the source; the
 agent's verdict is not whole (D486's reasoning), with three small pieces PROPOSED to ride with this job — a word list (screen
-name, meaning, code name), two lines for the debugging guide, one line for `[CODE-TIDY-AUDIT]`'s brief. **Waiting on his yes or
-no** — the spec's §8.
+name, meaning, code name), two lines for the debugging guide, one line for `[CODE-TIDY-AUDIT]`'s brief. **APPROVED — D491
+(3 Oct 26, "Yes for all"):** the two debugging lines are built here; the word list is its own item, `[WORD-LIST]`; the spec's §8.
+
+### [WORD-LIST] One page of the app's words — the name on screen, what it means, its name in the code (D491, 3 Oct 26)
+From `mattpocock/skills` (its glossary idea, adapted: theirs forbids the code name, ours keeps it — the translation is the
+point). A reference doc under `raptor-port/docs/` with a row in the project guide's map; searched when writing to him or
+briefing a reviewer, never loaded in every chat; a term settled in a planning round is added the moment it is settled.
+**Astra drafts it before the reset (D491)** — from the screens' own labels and the reference docs, by area; the host checks
+the draft against the app before it is used, and the plain-language rule then points at it (that pointer is a guide change:
+it rides with `[SKILL-FUSION]`, D70). **Context:** `raptor-port/docs/superpowers/specs/2026-10-02-workflow-skills-fusion.md`
+§8. **Place:** the draft now (light work, D484); the check and the pointer with `[SKILL-FUSION]`, after the reset.
 
 ### [CODE-TIDY-AUDIT] One tidiness audit of the code before the database step — a report for him, nothing restructured on its word (D486, 2 Oct 26)
 The "thermo-nuclear" rubric, read at its source, is a reviewer's checklist for ONE change; the audit is our adaptation of it to
@@ -1545,7 +1554,9 @@ that each DELETE something, and for each: what must behave the same, the tests t
 The brief carries D56 and the one-command-layer architecture. He rules on each; an approved restructure becomes its own item,
 built with related work (D485). His question — does it save tokens — is answered in the context doc §2: on building and code
 reads yes, on the walkers (the biggest cost) no. **Context:** `raptor-port/docs/superpowers/specs/2026-10-02-workflow-skills-fusion.md`
-§2. **Place — D486: before `[DB-STEP]`; Astra's read is light work and may run before the reset (D484).**
+§2. **Place — D486: before `[DB-STEP]`; Astra's read is light work and may run before the reset (D484).** **D491 (3 Oct 26):
+it runs BEFORE the reset, and its brief gains the deletion test — report a restructure only if removing the piece gathers the
+complexity in one place, not merely moves it (the spec's §8).**
 
 ### [WORKSPAN-NEGATIVE] A line timed earlier than its wave's in-time gives a negative work-hours figure (found 1 Oct 26)
 Found by the Opus walker of `[INSIGHTS-WHICH-COPY]`, off its list; reproduced by the host. Nothing published; on Monday's

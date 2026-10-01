@@ -211,6 +211,9 @@ code read and the tests — exactly what the bug-check order says is not a bug c
 3. **One line for `[CODE-TIDY-AUDIT]`'s brief** (from `improve-codebase-architecture`): the deletion test — would removing
    this piece gather the complexity in one place, or only move it; report it only if it gathers.
 
+**HIS ANSWER (D491, 3 Oct 26 — "Yes for all"):** the three pieces are APPROVED — what goes in; the wording of a changed guide
+is still read before he approves it (D70). Astra drafts the word list (`[WORD-LIST]`) and runs its tidiness read before the reset.
+
 **Looked at, not proposed:** the git guard refuses every push, which breaks "push a branch freely" (D60); `wait-what` is one
 sentence the plain-language rule already says; `retro` is what the task observer does; `to-questionnaire` is a fair shape for
 `[IT-QUESTIONS]` and needs no install to copy.
