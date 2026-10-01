@@ -3038,3 +3038,145 @@ the known two-tabs gap (`raptor-port/docs/data-schema.md` known gaps, item 12) �
 only be SEEN once there is a shared database (it is pinned by a test). **Next:** his look on the preview, his answers to the
 two questions, "merge live"; then this item leaves by the script.
 
+
+*Moved here 2026-10-02 by backlog-archive.mjs ([INSIGHTS-WHICH-COPY]). Forward facts: `raptor-port/docs/handpass/2026-10-01-insights-which-copy-check.md`, `raptor-port/docs/feature-impact.md`.*
+
+### [INSIGHTS-WHICH-COPY] Insights counts each day's latest PUBLISHED version, the working copy only for a day not yet published — RULED D477, D478 (1 Oct 26); BUILT 1 Oct 26 on `claude/insights-which-copy`, his look and "merge live" next
+Found by Astra's scenario design for `[WARN-HIDE-KEPT]` (its scenario 1). The Insights window (top bar, every page, every
+signed-in person) works every number out from the working copy — sorties, formations, hours, and the issue counts by day
+and by type (`ui/Modals.tsx insightsHTML`, `engine/insights.ts`). So on View-only Sched a member's Insights already
+includes changes waiting on a published day; since D471 that includes a warning hidden but not yet out — Insights reads
+one issue fewer than the published day beside it shows. Not new with the hide (a seat changed and waiting moves the
+sorties count the same way) and not this build's to change: it is what the window means. **The question for him:** on
+View-only Sched, should Insights count the PUBLISHED schedule (as the page does), or keep counting the working copy?
+**Seen in the walk (walker B, scenario 1, 1 Oct 26):** while a hide waits on published Tuesday the member's day reads 4
+issues and his Insights reads 3 for Tuesday (week total 32 against 33, "Long work day" 1 against 2) — pictures
+`raptor-port/docs/img/handpass/2026-10-01-warn-hide/b/dk-07-s1-b-pending-face.png`, `dk-10-s1-b-pending-insights-byday.png`.
+**Astra's final read of `[WARN-HIDE-KEPT]` (1 Oct 26) rates it MEDIUM and would change it:** make Insights count the copy
+the page beside it shows — the issued one for a published day on View-only Sched — its exact steps are in
+`raptor-port/docs/superpowers/briefs/2026-10-01-warn-hide-kept-final-read-astra.md` (finding 1).
+**HIS ANSWERS — D477, then D478 the same evening (1 Oct 26).** D477: *"it should follow the schedule on whats its showing so if
+theres 4 issues. and 1 is hidden then 3 issues will show."* D478, correcting the agent's reading of it: *"It should show the
+latest copy, so if working copy is the only copy then it will use that, unless its published then use Original, if theres an
+AL1 then use AL1 etc."* **The rule as it stands:** day by day, Insights counts that day's LATEST PUBLISHED version (the
+Original, or the latest amendment) and the working copy only for a day not yet published; changes waiting on a published day
+are not counted until they go out; a hidden warning is not counted, by the hides that version went out with. On EVERY page —
+Edit Schedule and the board included (the agent's reading, told to him) — and for every figure of the window. Full rows:
+`.claude/decisions-full/scheduler.md` D477, D478; the contract: `raptor-port/docs/ui-contracts.md` §Week Insights; the rule register (IN1): `raptor-port/docs/superpowers/specs/2026-10-01-insights-which-copy-behaviour-register.md`.
+**To build:** `engine/insights.ts computeInsights` takes the days and the warning bundle it must count instead of reading the
+working globals; `ui/Modals.tsx insightsHTML` hands it, per day, the current issued version's day and its issued face
+(`publish.ts dayCurVer` / `daySnapOf`, `validate.ts faceWarn` — the same world View-only Sched draws a published day from),
+or the working day where none is published — whatever page is open. Tests first: a published Tuesday with a pending hide, a
+pending seat change and a pending leave — every Insights figure equals the published day's, on View-only Sched AND on Edit
+Schedule, until the amendment is out, then all move together; a draft Wednesday beside it moves at once.
+**Place:** its own small job right after `[WARN-HIDE-KEPT]` merges, in a FRESH chat on its own branch (WALK tier: a shared
+window, the published face; one reviewer — Astra, who found it). The Sonnet-walker trial (D476) rides on its walk.
+**BUILT and WALK-checked 1 Oct 26** on `claude/insights-which-copy`: every figure of the window reads one world — each day's
+current issued version, the working copy only for a day not yet published (`engine/validate.ts issuedWorld`,
+`engine/insights.ts`, `ui/Modals.tsx`; tests `ui/insights-published.test.tsx`, rule IN1). Astra's 19 scenarios walked by an
+Opus walker and the trial's Sonnet walker, apart: no defect met. Astra's final read then found one — "Not on the flying
+programme" followed today's roster — fixed red first and re-walked by the host. Evidence and his look card: `raptor-port/docs/handpass/2026-10-01-insights-which-copy-check.md`.
+**Left, all filed:** `[INSIGHTS-BOARD-DOOR]`, `[INSIGHTS-RULE-CHANGE]` (two questions for him), `[WORKSPAN-NEGATIVE]` (older, low).
+**His look card answered and "merge live" given 1 Oct 26 (D480–D483; PR #479).** After the merge this item leaves by the script.
+
+
+*Moved here 2026-10-02 by backlog-archive.mjs ([INSIGHTS-RULE-CHANGE]). Forward facts: `raptor-port/docs/handpass/2026-10-01-insights-which-copy-check.md`.*
+
+### [INSIGHTS-RULE-CHANGE] A rule changed on the Logic page moves Insights' work hours at once, published days included — ANSWERED D482 (1 Oct 26): as built, CLOSED; to archive at the next tidy (found 1 Oct 26)
+Found by Astra's scenario design for `[INSIGHTS-WHICH-COPY]` (its scenario 2), walked by both walkers: with Tuesday
+published, "Flight debrief after land" 2h → 3h moved every flyer's Work hours +1h at once, the week's issues 33 → 35 and
+Tuesday 4 → 5 — and published Tuesday's own bar on View-only Sched read 5 at the same moment; the day went "1 pending";
+publishing AL1 moved nothing more. So the window and the published day agree; both follow the rule change at once.
+**Left as it is, the agent's call, told to him:** the app keeps no versions of its rules (`raptor-port/CLAUDE.md` §Product
+invariants; D186 narrows it for the brief lead only), a published day's live warnings follow today's rules (D183–D185),
+and hours are worked out from the published day's content by today's rules. Holding them at the old rule would mean each
+version storing its hours — a saved-data change. **The question for him:** leave it, or should a published day's hours wait
+for the amendment too? Evidence: `raptor-port/docs/handpass/2026-10-01-insights-which-copy-check.md` §5.2 finding 2. **ANSWERED — D482 (1 Oct 26): "A rule change logic page should
+move the mentioned work hours" — as built; closed.**
+
+
+*Moved here 2026-10-02 by backlog-archive.mjs ([OIL-AWARD-IS-A-GRANT]). Forward facts: `raptor-port/docs/data-model.md`, `raptor-port/docs/data-schema.md`, `raptor-port/docs/engine-rules.md`.*
+
+### [OIL-AWARD-IS-A-GRANT] An award is a ledger grant stored a second way (Fable, 21 Sep 26)
+**BUILT 29 Sep 26 on `claude/award-earned-vs-granted-2ed66d`** (with `[OIL-EARNED-VS-GRANTED]`, D400–D402; plan
+`raptor-port/docs/superpowers/plans/2026-09-29-oil-award-one-kind-plan.md`, both reviewers' two rounds folded in) — every
+hand-given OIL award is one ledger entry drawn on the grid; the ledger recorded per entry for undo; earned / awarded /
+corrections apart. Left before "merge live": the walk, both final code reads, his look. The text below is the item as it
+stood.
+*(Noted 1 Oct 26 by the phase 7 chat: this MERGED — PR #469, 29 Sep 26. Still in the backlog; before it is archived, check its
+"who entered it and when" line, below, against what was built.)*
+**Raised by the [OIL-AWARD-ADD] design review as the real architectural root cause. NOT built, and
+deliberately not bundled — it moves persisted balances again and touches ~28 test files, so it is
+its own escalated session. It needs the owner's go before anything is written.** **GO GIVEN (D147, 24 Sep 26):**
+after his after-the-hunt items and BEFORE [DB-STEP], so the database stores one kind of award — **timed by D203 (26 Sep 26):
+with the `[DB-READINESS]` batch, before the tables are settled — the database step starts now, D354**; [OIL-EARNED-VS-GRANTED]
+folds in (its label is still his figure — ask him when it comes — ANSWERED D400, 29 Sep 26: "earned" and "awarded" shown apart); then the small OIL follow-ups as one batch.
+
+After his two rulings an award now: flags nothing, stands nobody down from flying, counts nobody on
+the duty manning, is never touched by the published schedule, and adds to the OIL balance. That is
+exactly what the OIL tracker's own ledger GRANT already does. The only differences left are where
+it is stored and which editor reaches it — so the same fact lives in two stores, which is the drift
+seam the house rules name. [OIL-AWARD-ADD] adds a fourth reader of it rather than removing one.
+
+**The shape, if it is ever done:** awards become ledger entries; the Leave War DERIVES the FO/HO
+contribution from the ledger on read, exactly the way an absence is derived from the Inputs page;
+the three cell editors become one ledger edit; a one-time conversion of stored hand-typed credits
+and of the demo seed. **NARROWED 29 Sep 26 BY D401: no stored award is converted (demo data, wiped — D54, D56); only
+the demo seed is rewritten; an old-shape record must still not break a load.** **D402 (29 Sep 26): every hand award
+shows on the grid on its date, wherever it was given (grid or tracker).** Plan:
+`raptor-port/docs/superpowers/plans/2026-09-29-oil-award-one-kind-plan.md`. **Priority: after the bug hunt, and below [PUB-UNAVAIL] (closed 26 Sep 26) — it is tidiness with
+a real risk attached, not a hole in the paperwork.**
+**ADDED 26 Sep 26 by `[ACCOUNTS]` (D200 (2), Astra's plan read R1-8): a hand-typed award must also keep WHO ENTERED IT
+AND WHEN** — the signed-in person (by id, drawn by his live callsign) and the time, stamped by the store from the session,
+separate from the typed "Given by" (on whose say-so). Not built in `[ACCOUNTS]`: the award's record changes here, once
+(D203). `data-model.md` §11 states the rule.
+**WHERE OIL SITS TODAY (read 29 Sep 26, the handoff-review chat — `leavewar/engine/warrecs.ts` `CreditRec`,
+`oiltracker.ts` `oilLedgerFor`, `counters.ts` `earnedOil` / `balParts`, `state/store.ts` `grantTo`):** three ways in, two
+stores. (1) The AUTOMATIC credit — the published schedule or an accepted duty input — is an FO/HO record on the man's war
+day, `oil: 'auto'`. (2) An award typed on the war grid is the SAME record kind on the same day, `oil: 'manual'`, with
+"Given by" — it began as "the man worked but the schedule missed it" and became a gift on any day with D79 / D82. (3) A
+credit from the OIL tracker sheet is a ledger entry (`lw.ledger`, `counter: 'oil'`), the list every pool's grants use.
+The tracker's "earned" and the figure's "earned by weekend/PH work" count (1) AND (2) — grouped by where a record is
+stored, not by how it came — and "granted" counts only (3); that is `[OIL-EARNED-VS-GRANTED]`. Every record already says
+which it is, so a split needs no guessing. Explained to him 29 Sep 26.
+**Related, deferred on purpose from `[ARCH-STACK-4]` (merged; archived 24 Sep 26):** OIL itself as a read-time
+derivation — the step-4 design §7 (`specs/2026-09-19-arch-stack-4-one-absence-design.md`). Decide both together.
+
+
+*Moved here 2026-10-02 by backlog-archive.mjs ([OIL-EARNED-VS-GRANTED]). Forward facts: `raptor-port/docs/superpowers/plans/2026-09-29-oil-award-one-kind-plan.md`.*
+
+### [OIL-EARNED-VS-GRANTED] The tracker calls an award "earned" (Fable, 21 Sep 26)
+**BUILT 29 Sep 26 with `[OIL-AWARD-IS-A-GRANT]`** (on its branch — not merged *[merged since: PR #469, 29 Sep 26 — noted 1 Oct 26]*): "earned" is the automatic credits alone,
+"awarded" every hand award, "corrections" its own row.
+**ANSWERED 29 Sep 26 — D400: "earned" is only what the app credited itself; every hand award, grid or tracker, reads
+"awarded". Built with [OIL-AWARD-IS-A-GRANT].** The text below is the question as it stood.
+**Small, and it is the OWNER'S FIGURE to change, which is why it was not folded into
+[OIL-AWARD-ADD] silently.**
+
+The tracker's summary counts a hand-typed award under **earned**, and the +OIL breakdown labels the
+whole lot "earned by weekend/PH work". That has been true since long before the award ruling, and
+[OIL-AWARD-ADD] does not change how a single credit is classified — only that a Saturday can now
+carry two. But it makes the wording visible: a Saturday he worked one day on and was awarded three
+for will read "earned 4".
+
+**If he wants it:** `oiltracker.ts` counts `auto && !manual` as earned and `manual` as granted;
+`counters.ts` splits the +OIL part into "earned by weekend/PH work" and "awarded on the war".
+One afternoon. **Ask him before doing it** — it changes two numbers he reads.
+**Do it as its own small change, in a FRESH chat** (agreed with him 21 Sep 26 — carried here 24 Sep 26 from
+`[OIL-NEXT-TWO]`, now archived, whose other half, his look at the award preview, closed when PR #423 merged).
+
+
+*Moved here 2026-10-02 by backlog-archive.mjs ([DOCS-SIZE-PASS]). Forward facts: `raptor-port/scripts/docsize.mjs`.*
+
+### [DOCS-SIZE-PASS] Two always-read files are over their size tripwires — a documents-only pass is owed (found 1 Oct 26)
+**DONE 2 Oct 26 on `claude/ai-workflow-skills-review-87bf52`:** the backlog — five finished items archived, its tripwire raised
+1430 → 1650 with the reason (`raptor-port/scripts/docsize.mjs`); the How-we-work rulings — the nine IT-flow-guide rulings moved
+to their own area file (`.claude/rules/decisions/it-flow-guide.md`), three spent ones archived (D180, D324, D467), now under
+its tripwire unraised. Left: `[PRIORITY-LIST-REWRITE]`. The text below is the item as filed.
+`npm run docsize` on `main` (1 Oct 26, after PR #477): `OUTSTANDING.md` is about 150 lines over its ceiling of 1430, and
+`.claude/rules/decisions/how-we-work.md` about 400 bytes over its tripwire of 18000. Each code change since has reported it
+"OVER, deferred (D29)"; no job carried the pass itself. **To do, in a change that touches no `raptor-port/src`:** move what no
+longer belongs in each to its home (finished backlog items by `backlog-archive.mjs`; the rulings file is never trimmed — split
+the area or raise its tripwire with the reason, D136, D390), or raise a ceiling with its reason (D141). **Place:** low — its
+own small documents-only branch; a documents-only pull request fails the Docs guard on these sizes until it is done.
+

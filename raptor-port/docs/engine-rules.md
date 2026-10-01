@@ -3413,7 +3413,7 @@ history, which the one changes window reads (`ui-contracts.md` §The one changes
   with his post-in date by "added to the roster" alone; the day a posting runs is the posting pass's, no line; every
   absence line keeps whose it is (`sub`), so "To go out" finds a leave re-filed under another id (Fable FF4); a Quals line keeps the person and the detail by id (`sub`, `fld`), so "To go out" finds who changed it after a
   rename (Astra 03); a ledger line names its counter as the app does — OIL, ANNUAL (P11); "Discard marks" is a line
-  per day it cleared, "Draft marks cleared (N)" — it clears marks, not changes (`commitDiscardPending`, P9); a door's reason
+  per day it cleared, "Draft marks cleared (N)" — it clears marks, not changes (`commitDiscardPending`, P9) — **the button is to be REMOVED (D488, 2 Oct 26; `[DISCARD-MARKS-REMOVE]`): until that is built this is what it does**; a door's reason
   lives only for the task it was handed in, so a refused door's reason never rides a later command (P12).
 
 ### What a row holds, and how each change writes one

@@ -15,34 +15,35 @@ the later merge keeps both (D78).
 
 ## Now
 
-<!-- now:claude/insights-which-copy -->
-### `claude/insights-which-copy` — `[INSIGHTS-WHICH-COPY]` (D477, D478): MERGED on his "merge live" (PR #479, 1 Oct 26); next: `[WORKSPAN-NEGATIVE]` in a fresh chat (D483) — written 1 Oct 26 — verify before use
-- **Done:** the Insights window counts each day's latest published version, the working copy only for a day not yet
-  published, on every page; WALK-checked (Astra's 19 scenarios by an Opus walker and the trial's Sonnet walker; Astra's final
-  read, one finding fixed and re-walked). Evidence: `raptor-port/docs/handpass/2026-10-01-insights-which-copy-check.md`.
-  He said "merge live" on 1 Oct 26 — check `gh pr view 479` shows MERGED and the live app is READY before anything else;
-  then `[INSIGHTS-WHICH-COPY]` leaves `OUTSTANDING.md` by the script (homes: `raptor-port/docs/ui-contracts.md` §Week
-  Insights and the evidence sheet) and this block is removed.
-- **His four answers, recorded (1 Oct 26):** **D480** — one more Sonnet-walker trial, on a build with known defects; **D481** —
-  the Scheduler Board gets an Insights button (proposed: beside the bell on a desktop, inside the ⋯ menu on a phone — a
-  picture to him first); **D482** — a rule changed on the Logic page moves Insights' work hours at once, as built; **D483** —
-  the negative work-hours fault is fixed in the next chat.
-- **BEFORE THE RESET — light work only (D484):** he is at 93% of his weekly Claude allowance; it resets **Monday 5 Oct 26, 19:00**.
-  Until then: the picture of the Scheduler Board's Insights button (`[INSIGHTS-BOARD-DOOR]`, D481 — a mock-up, no build, no
-  walkers; a fresh chat, a worktree on `main`), and anything Astra can do (it runs on his ChatGPT account). Nothing goes to
-  Sonnet meanwhile. **D485 (2 Oct 26, "batch the checks"):** related features are built together on one branch and get ONE check for the lot,
-  sized by the riskiest change. He may also have features BUILT before the reset (tests and the PC's checks only) and their
-  batch check run after it — nothing merges before its check.
-- **AFTER THE RESET (D483, D484):** `[WORKSPAN-NEGATIVE]` — a new worktree on `main`, its own branch, a FULL check (it changes the
-  measure the long-work-day warning shares). **The second Sonnet trial (D480) rides on its walk:** freeze the build as it
-  stands BEFORE the fix for the two trial walkers (one Opus, one Sonnet, the same brief, neither told what is wrong), and
-  report what each caught. After it: `[INSIGHTS-BOARD-DOOR]` (D481), a picture first.
-- **The main checkout** (`C:/Users/User/projects/Raptor`) was on this branch, not a worktree — it is put back on `main`
-  after the merge; check `git -C C:/Users/User/projects/Raptor branch --show-current`.
-- **Traps met:** the app allows five preview servers per folder and earlier chats' walk servers were still up (ports 4201–4203,
-  4212, 4213) — walkers can share one server, each browser context being its own world (observation 417).
-- **Parallel (D302):** rulings D480–D483 used here — a next chat takes D484 on; observations #417–#418 used, #419 on. No
-  other open branch known when written.
+<!-- now:claude/ai-workflow-skills-review-87bf52 -->
+### `claude/ai-workflow-skills-review-87bf52` — the skills review (D486–D490), "Discard marks" to be removed (D488), the document tidy: all documents, PR #480, his "merge live" given 2 Oct 26 — until Monday's reset: PLANNING AND FILING chats only — written 2 Oct 26 — verify before use
+- **UNTIL THE RESET (Monday 5 Oct 26, 19:00 — D484), his plan, 2 Oct 26:** he uses the time to talk through new features and
+  report bugs he has found; each is FILED in `OUTSTANDING.md` under its area, to be built after the reset. No building, no
+  walkers, no reviewers; a feature gets its questions in rounds of at most four, each with a recommended answer, and a short
+  design note linked from its item; a picture only if he asks. Start from `[FEATURE-WISHLIST]` (his five, and his words on the
+  workflow UI pass). **He will say which batch goes first after `[WORKSPAN-NEGATIVE]`** (D490: features first by area, fixes
+  riding along, one whole-app check at the end). Check `gh pr view 480` shows MERGED before anything else.
+- **The main checkout** (`C:/Users/User/projects/Raptor`) may still sit on `claude/insights-which-copy` (merged) — put it back on
+  `main` (`git -C C:/Users/User/projects/Raptor branch --show-current`). Walk servers left up by earlier chats: ports 4201–4203,
+  4212, 4213 (the app allows five preview servers per folder).
+- **Done (documents only):** D486 recorded; the read and the fusion plan are in
+  `raptor-port/docs/superpowers/specs/2026-10-02-workflow-skills-fusion.md`; two jobs filed — `[SKILL-FUSION]`, `[CODE-TIDY-AUDIT]`.
+  No skill, guide or app file was changed.
+- **His answer (D489):** the proposals are approved AS ASTRA CHANGED THEM (the spec's §7 — the guard and the look-and-feel checks
+  narrowed, Astra's "what counts as a finding" rule added, the evidence rules withdrawn). **Still his to say:** whether Astra's
+  tidiness read runs before the reset or after; the flow after Monday he was given: `[WORKSPAN-NEGATIVE]` → `[SKILL-FUSION]` → the
+  audit's report → his choices → each approved clean-up with the feature batch of its area.
+- **Next:** `[CODE-TIDY-AUDIT]` — write Astra's brief from the spec's §2, run it, report to him in plain words.
+  `[SKILL-FUSION]` — after the reset (Monday 5 Oct 26, 19:00), a fresh chat, a worktree on `main` once this branch has merged
+  (or this branch if it has not), Opus 5.5; Fable and Astra read the changed guide before he approves it (D70).
+- **The document tidy (`[DOCS-SIZE-PASS]`) was done here, 2 Oct 26, on his word:** five finished backlog items archived, the
+  backlog's tripwire raised with its reason, the nine IT-flow-guide rulings moved to their own area file
+  (`.claude/rules/decisions/it-flow-guide.md` — it loads with the guide's files), D180, D324, D467 archived as spent. The
+  document check passes. Left: `[PRIORITY-LIST-REWRITE]`. The merged `claude/insights-which-copy` block was removed here (PR #479 merged; its
+  residue is filed: `[WORKSPAN-NEGATIVE]`, `[INSIGHTS-BOARD-DOOR]`, `[SONNET-WALKER-TRIAL]`; D480–D485 are in the rulings).
+- **Not read at the source:** 13 of APEX's 16 step files, and Make Interfaces Feel Better's five reference files — read them
+  before fusing anything from those two.
+- **Parallel (D302):** rulings D486–D490 used here (D490: features first by area, fixes riding along, one whole-app check at the end — `[FEATURE-WISHLIST]`) (D487: the buttons keep their size; D488: "Discard marks" is removed — `[DISCARD-MARKS-REMOVE]`, filed, not built) — a next chat takes D491 on; observation #419 used, #420 on.
 <!-- /now -->
 
 ## Next, in order
