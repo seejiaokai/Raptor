@@ -78,7 +78,8 @@ award fix are due before the tables are settled. What to finish before the hand-
    `claude/db-readiness-p6c-holder-base`** (D467 — `raptor-port/docs/handpass/2026-10-01-dbr-phase6c-check.md`; the walk and
    both final reads found twelve defects, all fixed red first, one of them money; his answer on a moved request's extras:
    leave it, D468);
-   then his look (the cards), then 7.
+   **phases 0–6 MERGED 1 Oct 26 on his "merge live" (PR #476); phase 7 — the small OIL follow-ups below — under way on
+   `claude/db-readiness-p7-oil-followups`** (plan `raptor-port/docs/superpowers/plans/2026-10-01-db-readiness-phase7-plan.md`).
 5. **When Manfred is ready — [DB-STEP]:** the data model to him, then the one adapter to his tables; the stack
    ([ARCH-STACK]) resumes there, with its step 6 still to come; the [AMEND] work is queued behind it. Architecture first,
    then the individual bugs (D144).
@@ -111,6 +112,7 @@ The changes window — [HIST-PER-PAGE] (an idea, filed D349; a mock-up first, af
 phone — [PHONE-DISCARD-MARKS] (low, from the change-recording walk), [PHONE-WIDE-BOARD-BLANK] (medium, from the same walk). The bubble — [BUBBLE-SMALL-SEEN] (low, from the same walk).
 
 **Waiting on him — no order exists:**
+[LOAD-MSG-SHORT] (a question for him, low — the long line after "Load onto working copy"),
 [OIL-EARNED-VS-GRANTED] (his figure — ask first, when the award fix reaches it;
 D147), [LEDGER-READ-ASK] (a question for him, from the OIL award build), [LW-COMMIT-MANNING] (his call), [LEAVE-YEAR] ("we will do this next time", 19 Sep — no slot since),
 [REPO-PRIVATE]'s sharing half, [EOD] (design first; no slot
@@ -1108,6 +1110,8 @@ an edit that changes nothing 69 vs 65 ms, on the board 92 vs 83 ms; a real edit 
 the base as JSON and works the view out over a copy of all seven, at every scheduler command. Measure again with the
 30-second check (it runs the same pass); if it matters, compare only the days a command named plus those whose requests
 changed (`requestsSig` per day), and skip the view when neither moved.
+**Phases 0–6 MERGED 1 Oct 26 (PR #476, his "merge live"; live on Vercel). Phase 7 — the small OIL follow-ups — on
+`claude/db-readiness-p7-oil-followups`: plan and build log `raptor-port/docs/superpowers/plans/2026-10-01-db-readiness-phase7-plan.md`.**
 
 ### [IT-QUESTIONS] Talk to the IT side now — their approvals take weeks (his, not code; D203, filed 26 Sep 26)
 The checklist is the primer's §7 (Artifact "Raptor Backend Primer"; its questions, kept here so they outlive it): code apps
@@ -1533,3 +1537,14 @@ then the Storage, Tracker, rulings, command-layer and architecture rows (~0.4–
 `backlog-archive.mjs --move` puts a blank line before a block it lands, so a table row moved alone would not sit inside a
 table there — either the mover learns to land a row under a table header, or each row's detail is moved as a paragraph.
 **Place:** low; not a target (D141) — worth it only when the small-fixes branch has merged; put to him first.
+
+### [LOAD-MSG-SHORT] The line shown after "Load onto working copy" is long — a shorter two-line version? — a question for him (filed 1 Oct 26)
+**His question, 30 Sep 26** (on the group-A branch's look): what the long message after "Load onto working copy" was. It is
+the one sentence that load writes to the screen AND to the change history (`raptor-port/src/ui/interactions.ts`, the
+`data-restore` branch): "<day>: <version> loaded onto the working copy — viewers still see <version> until you publish ·
+N unpublished edits replaced · N requests also cover another day — left as filed · N requests came back onto the programme
+with their row — <days> read that too …" — each clause a real fact the load could not otherwise say (D98, D175, D363), so
+none can simply be dropped. **Offered to him, unanswered:** a shorter two-line version on screen (the first line what was
+loaded and what viewers still see; the second "N things to know ▾" opening the rest), the full sentence kept in the change
+history. **Place:** low — his call; its own small job (WALK tier: a message on a shared surface), never inside another change.
+Carried here from the merged `claude/db-readiness-table-shaping-4094f6` handoff block when it was removed (1 Oct 26).
