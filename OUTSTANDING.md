@@ -93,7 +93,7 @@ award fix are due before the tables are settled. What to finish before the hand-
 
 **Ruled, to build next (D469, 1 Oct 26):** [WARN-HIDE-KEPT] — a hidden warning stays hidden for everyone until unhidden, flags no puck, and its line stays in the list struck out; a mock-up and three readings to him first, then its own branch and FULL check, after `[DB-READINESS]` phase 7.
 
-**Placed by their own lines — not his rulings:** from the group-A FULL walk (30 Sep 26) — with group B:
+**Placed by their own lines — not his rulings:** from the `[DB-READINESS]` phase 7 walk (1 Oct 26), none of them this batch's — low, each with the next change there: [INP-TILL-STALE] (a remark keeps a "till" date its request no longer reaches — new data), [OIL-INERT-TAP-SILENT], [OG-TAG-OVER-COUNT], [MEMBER-EDITPAGE-CHECK] (a check, not a known fault); from the group-A FULL walk (30 Sep 26) — with group B:
 [UNDO-PUBLISH-ERASES-ISSUANCE], [TRK-IMPORT-ONE-GROUP], [TRK-FIRST-ORDER-PLACE] (low); low, with the next change there:
 [TRK-UNDO-WRITES-DEFAULTS], [SECDEFAULT-OFFER-BEHIND-BOARD], [BLOCK-NO-HISTORY-LINE], [ACCOUNTS-SEED-FIRST-WRITE] (demo
 only), [SETTINGS-LIST-ROWS] (a stage-2 split, only if it bites), [LW-OIL-DATECHIP-HIDDEN], [READONLY-WEEK-WORDS];
@@ -1578,3 +1578,34 @@ on the board and the edit week, phone and desktop), then the build. **Kept, as h
 returns by itself when the situation changes (his Aug 26 words). **Tier:** FULL (the warning list, saved data, the published
 record). **Place:** the next job after `[DB-READINESS]` phase 7, on its own branch — the tables' shape is settled by the
 ruling itself (`wo` stays in the day's row), so IT is not waiting on the build.
+
+### [INP-TILL-STALE] The Inputs editor leaves "till <date>" in the remarks when a range is taken back to one day (walk find, 1 Oct 26)
+Found by walker A of the `[DB-READINESS]` phase 7 walk (its O4; picture `raptor-port/docs/img/handpass/2026-10-01-dbr-phase7/a/A10x.png`),
+outside that batch. **Steps:** Inputs page, the editor of a one-day request on 18 Jul; click 19 Jul in its calendar (dates read
+"18 Jul → 19 Jul", the remarks gain "till 19 Jul"); click 19 Jul again (dates "19 Jul") — the remarks keep "till 19 Jul"; Save
+stores it and the row prints it. New data, not stored-only (so not D56). The app owns that token (`engine/inputs.ts
+withRemarksTail`) and D189 counts it on a published day. **To do:** the editor's re-pick rewrites or drops the token on every
+change of the span, the collapse to one day included; a test that drives the editor's own calendar. **Tier:** WALK (the
+published day's words). **Place:** low — with the next Inputs change.
+
+### [OIL-INERT-TAP-SILENT] In OIL Earn a tap on a puck that cannot earn says nothing (walk find, 1 Oct 26)
+Walker A's O1 (pictures `…/2026-10-01-dbr-phase7/a/A3r-phone-1.png`, `A3r-desk-1.png`). A puck with nothing to earn from its row
+(a row with no end time, a Personal request — and every other inert case) carries its reason as a hover title only; a tap
+selects it (blue) and says nothing, so on a phone the reason cannot be read on the row — only in the ALL AVAIL window's foot.
+The mode's general behaviour, older than phase 7. D31 says a seat with nothing to measure "says why instead"; D26 (leave the
+mode's phone tap targets as they are) is about the targets, not this silence. **To do, if he wants it:** a tap on an inert
+puck in the mode says its reason (the app's own message line), selecting nothing. **Place:** low — with the next OIL Earn change;
+a question for him first.
+
+### [OG-TAG-OVER-COUNT] The "OG" new-to-you tag sits over the top edge of an ALL AVAIL count (walk find, 1 Oct 26)
+Walker A's O3 (pictures `…/2026-10-01-dbr-phase7/a/R4b-*.png`, `R4-1.png`): on the member's View-only Sched, the dotted "OG" tag on
+a changed seat overlaps the count chip's top edge; the number stays legible close up, crowded at normal size. The admin's view
+is clean. Cosmetic, older than phase 7 (D172's tag, D37's chip). **Place:** low — with the next change to the tag or the chip;
+measure both at phone width.
+
+### [MEMBER-EDITPAGE-CHECK] A member sent to Edit Schedule by the developer bridge sees live-looking Amendments buttons — a check (walk note, 1 Oct 26)
+Walker A's O5 (picture `…/2026-10-01-dbr-phase7/a/R4-4.png`). No control leads a member to Edit Schedule; reached through the
+developer bridge on this PC, the page drew the Amendments panel with "Discard marks" and "Publish AL1" looking live. Nothing
+was pressed. The rule is that the page, the write path and the command gate all ask `raptor-port/src/state/perms.ts`.
+**To do:** press each as a member in a walk and confirm the write path refuses with its reason; if the page gate is the only
+thing between a member and those buttons, gate the panel too. **Place:** low — a check to run with the next roles work.

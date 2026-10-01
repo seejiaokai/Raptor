@@ -32,7 +32,7 @@ import { useVersion } from './useStore'
 import { canEditSched } from '../state/auth'
 import { esc, selectPerson } from '../state/view'
 import { personPuckHTML, personWarnMsgs, withChipWorld } from './html'
-import { oilModeOn, oilSeatHTML, toggleOilPerson, oilFigureFor, oilBlanketOn, oilItemMasked, oilFromWords, oilItemLabel, oilItemHistName, oilPersonSays, evOf, OIL_OPEN_END } from './oilmode'
+import { oilModeOn, oilSeatHTML, toggleOilPerson, oilFigureFor, oilBlanketOn, oilItemMasked, oilFromWords, oilItemLabel, oilItemHistName, oilPersonSays, oilNoAskWhy, evOf, OIL_OPEN_END } from './oilmode'
 import { draftVerLabel } from '../engine/drafts'
 import { oilSentOf, oilReadPass } from '../engine/oilev'
 import { logAction } from '../engine/editlog'
@@ -232,6 +232,7 @@ export function AvailWindow() {
           : '')
     return {
       lbl, lost, body, worst, known,
+      noAsk: oilNoAskWhy(di, item),
       n: people.length,
       earn: earners(people),
       flagged: known.filter(id => !!worst[id]).length,
@@ -328,6 +329,9 @@ export function AvailWindow() {
      decided — says nobody is credited from it, and why, on the working copy and on an issued record alike. */
   const hint = !m ? '' : foot || (m.lost ? '' : oil
     ? (m.lbl.assumed ? `${OIL_OPEN_END}.`
+      /* a request that never asks the OIL question (Personal): nobody in the list can earn, so the half says that —
+         never "tap a puck to stop a man earning" beside "0 of 44" (the phase-7 walk, walker A's O2) */
+      : m.noAsk ? `${m.noAsk.charAt(0).toUpperCase()}${m.noAsk.slice(1)}.`
       : ver ? 'Who earned OIL on the day as it was issued.'
       : masked ? (oilBlanketOn(di)
         ? 'Nothing on this day earns. Turn that off to switch men one by one.'

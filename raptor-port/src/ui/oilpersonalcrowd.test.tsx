@@ -133,6 +133,17 @@ describe('inside OIL Earn, on a Saturday: counted, and nobody earns — said wit
     }
   })
 
+  /* the walk (walker A, O2): before any tap the earn half's foot read "Tap a puck to stop a man earning from this
+     event." beside "0 of 2" — an invitation to a tap that can do nothing. The foot says what is true of the row. */
+  it('the earn half\'s own hint says why nobody earns, never "tap a puck to stop a man earning"', async () => {
+    landed(SAT)
+    await open(SAT)
+    await click(oilBtn())
+    await click(groundRowEl().querySelector('.oilcount'))
+    const foot = $('.availwin .win-foot').textContent || ''
+    expect(foot).toBe('A personal request earns no OIL.')
+  })
+
   it('the requester\'s own puck on the row says the same', async () => {
     landed(SAT)
     await open(SAT)

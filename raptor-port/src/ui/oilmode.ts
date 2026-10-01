@@ -592,6 +592,24 @@ export function oilItemCellHTML(di: any, item: string, name: any, cls: string): 
  *  the reason IS the one row, the row's own day and what was done to it are
  *  named. Everything else keeps the plain words — there is no row to name, and
  *  inventing one would be worse than saying little. */
+/** A REQUEST THAT NEVER ASKS THE OIL QUESTION ([OIL-PERSONAL-PLACEHOLDER], phase 7) — its reason, or '' when the item
+ *  is anything else. Since its placeholder's crowd is counted, the window's "Who earns OIL" half lists the men behind it
+ *  — and "nothing measurable" beside a row with written times would send the scheduler looking for a missing time. The
+ *  kind is the reason, so the kind is said: on each man's puck (inertWhy) and as the half's own hint (AvailWindow — the
+ *  walk, walker A's O2: the hint invited a tap that could do nothing). Read off the ROW on the installed day (`srcType`,
+ *  written with the row), so an issued face says what the record says; the live request only where an older row
+ *  carries none. */
+export function oilNoAskWhy(di: any, item: string): string {
+  if (!item || !item.startsWith('i:')) return ''
+  const iid = item.slice(2)
+  if ((evOf(di).inputs || []).some((i: any) => String(i.iid) === iid)) return ''
+  const g = ((DAYS[+di] || {}).ground || []).find((x: any) => x && x.src != null && String(x.src) === iid && !x.kept)
+  const req = (INPUTS as any[]).find(r => r && String(r.iid || '') === iid)
+  const type = (g && g.srcType) || (req && req.type)
+  if (!g || !type || oilAsks(type)) return ''
+  const meta: any = inpMeta(type)
+  return `a ${String((meta && meta.name) || type).trim()} request earns no OIL`
+}
 function inertWhy(di: any, item: string): string {
   const plain = 'nothing measurable to earn from here'
   /* a row with a start and no end ([ALLAVAIL-OPEN-ROW], D360 — Fable's final read F1): the men behind its placeholder say
@@ -601,21 +619,7 @@ function inertWhy(di: any, item: string): string {
   if (!item || !item.startsWith('i:')) return plain
   const iid = item.slice(2)
   const inp = (evOf(di).inputs || []).find((i: any) => String(i.iid) === iid)
-  if (!inp) {
-    /* A REQUEST THAT NEVER ASKS THE OIL QUESTION ([OIL-PERSONAL-PLACEHOLDER], phase 7): since its placeholder's crowd is
-       counted, the window's "Who earns OIL" half lists the men behind it — and "nothing measurable" beside a row with
-       written times would send the scheduler looking for a missing time. The kind is the reason, so the kind is said.
-       Read off the ROW on the installed day (`srcType`, written with the row), so an issued face says what the record
-       says; the live request only where an older row carries none. */
-    const g = ((DAYS[+di] || {}).ground || []).find((x: any) => x && x.src != null && String(x.src) === iid && !x.kept)
-    const req = (INPUTS as any[]).find(r => r && String(r.iid || '') === iid)
-    const type = (g && g.srcType) || (req && req.type)
-    if (g && type && !oilAsks(type)) {
-      const meta: any = inpMeta(type)
-      return `a ${String((meta && meta.name) || type).trim()} request earns no OIL`
-    }
-    return plain
-  }
+  if (!inp) return oilNoAskWhy(di, item) || plain
   const what = String(inp.type || 'request').trim() || 'request'
   const row = (INPUTS as any[]).find(r => r && String(inpId(r)) === iid)
   const when = row && row.date ? ` on ${String(row.date)}` : ''
