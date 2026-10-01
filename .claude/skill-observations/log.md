@@ -2292,3 +2292,18 @@ restore — repeatable, all-or-nothing, and safe for files whose bytes (line end
 **Suggested improvement:** When trialling a cheaper model as a checker, run it on a build with KNOWN defects as well (re-walk an earlier commit whose walk found real ones, or plant two), and report detection separately from compliance.
 
 **Principle:** A checker is judged on what it catches; a comparison needs cases where there is something to catch.
+
+### Observation 419: A verdict on a recommended skill, given from an article's summary, was wrong in its detail for three of five once the source was read
+
+**Status:** OPEN
+**Date:** 2026-10-02
+**Session context:** The owner sent an article recommending five skills and asked whether to install them whole or fuse them into the existing workflow.
+**Skill:** find-skills
+**Type:** open-source
+**Phase/Area:** Evaluating a skill before recommending install, fusion or skip
+
+**Issue:** The first answer compared the five skills to the existing workflow using the article's one-line descriptions (said so, but still gave verdicts). Reading each skill's own text afterwards changed the substance: the "relentless questioning" skill is really a decision-tree method that asks a whole round of independent questions at once (it CLASHES with the installed planning skill's one-question-per-message rule); the "code quality audit" is a per-change reviewer rubric, not a whole-codebase audit; the "interface polish" skill is mostly rules for a framework stack the project does not use, with five that do apply. The verdict headlines held; what to fuse, and where it conflicts, could only be seen at the source.
+
+**Suggested improvement:** In find-skills, before any install / fuse / skip recommendation: fetch the skill's own SKILL.md (and note which bundled files were NOT read), record its licence, and compare it line by line with the installed skill that covers the same step — naming clashes, not only overlaps. A verdict given before that read is labelled provisional.
+
+**Principle:** A description of a skill is marketing; the skill is its text. Judge fit, overlap and conflict from the source, and say which parts of the bundle were not read.

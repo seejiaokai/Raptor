@@ -121,6 +121,8 @@ Insights — [INSIGHTS-WORKING-COPY] (a question for him, any time — the chang
 The changes window — [HIST-PER-PAGE] (an idea, filed D349; a mock-up first, after the change-recording re-test). The
 phone — [PHONE-DISCARD-MARKS] (low, from the change-recording walk), [PHONE-WIDE-BOARD-BLANK] (medium, from the same walk). The bubble — [BUBBLE-SMALL-SEEN] (low, from the same walk).
 
+**From the article he sent — his word, D486 (2 Oct 26):** [CODE-TIDY-AUDIT] (Astra's read can run before the reset, D484; the report to him; before [DB-STEP]) and [SKILL-FUSION] (after the reset, a fresh chat on its own branch; three proposals in it wait on his yes or no).
+
 **Waiting on him — no order exists:**
 [LOAD-MSG-SHORT] (a question for him, low — the long line after "Load onto working copy"),
 [OIL-EARNED-VS-GRANTED] (ANSWERED D400 and built with the award fix — merged, PR #469, 29 Sep 26; the item is still to archive),
@@ -1597,6 +1599,26 @@ and hours are worked out from the published day's content by today's rules. Hold
 version storing its hours — a saved-data change. **The question for him:** leave it, or should a published day's hours wait
 for the amendment too? Evidence: `raptor-port/docs/handpass/2026-10-01-insights-which-copy-check.md` §5.2 finding 2. **ANSWERED — D482 (1 Oct 26): "A rule change logic page should
 move the mentioned work hours" — as built; closed.**
+
+### [SKILL-FUSION] Fuse the harder questioning into the planning step — and three proposals from the same read (D486, 2 Oct 26)
+From the article he sent (codelynx.dev — five recommended skills): none is installed whole (D486). To build, documents only: the
+planning skill (`.claude/skills/brainstorming/SKILL.md`) gains the decision tree, the rulings search first, questions by ROUNDS of
+at most four with a recommended answer each (replacing "one question per message" for him), product choices only, and "done
+means no branch left assumed". **Three PROPOSALS wait on his yes or no** — a standing three-line tidiness guard in the final code
+read's brief; five look-and-feel checks beside Impeccable; three evidence rules for the bug-check order. Both Fable and Astra
+read the changed guide before he approves it (D70); copied upstream text gets its credit line. **Context:**
+`raptor-port/docs/superpowers/specs/2026-10-02-workflow-skills-fusion.md` §1, §3–§5. **Place — D486: after the reset of his weekly
+allowance (Monday 5 Oct 26, 19:00, D484), a fresh chat on its own branch.**
+
+### [CODE-TIDY-AUDIT] One tidiness audit of the code before the database step — a report for him, nothing restructured on its word (D486, 2 Oct 26)
+The "thermo-nuclear" rubric, read at its source, is a reviewer's checklist for ONE change; the audit is our adaptation of it to
+the standing code. One reader, Astra first (D353), never the model that wrote the code (D67); it reads the files that are both
+large and often changed (nineteen files are over 1,000 lines; the table is in the context doc), reports at most ten restructures
+that each DELETE something, and for each: what must behave the same, the tests that pin it, the bug-check tier it would need.
+The brief carries D56 and the one-command-layer architecture. He rules on each; an approved restructure becomes its own item,
+built with related work (D485). His question — does it save tokens — is answered in the context doc §2: on building and code
+reads yes, on the walkers (the biggest cost) no. **Context:** `raptor-port/docs/superpowers/specs/2026-10-02-workflow-skills-fusion.md`
+§2. **Place — D486: before `[DB-STEP]`; Astra's read is light work and may run before the reset (D484).**
 
 ### [WORKSPAN-NEGATIVE] A line timed earlier than its wave's in-time gives a negative work-hours figure (found 1 Oct 26)
 Found by the Opus walker of `[INSIGHTS-WHICH-COPY]`, off its list; reproduced by the host. Nothing published; on Monday's

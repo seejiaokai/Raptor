@@ -15,6 +15,21 @@ the later merge keeps both (D78).
 
 ## Now
 
+<!-- now:claude/ai-workflow-skills-review-87bf52 -->
+### `claude/ai-workflow-skills-review-87bf52` — the five skills from the article he sent, read at the source (D486): nothing installed, two fusions filed, three proposals waiting on him — written 2 Oct 26 — verify before use
+- **Done (documents only):** D486 recorded; the read and the fusion plan are in
+  `raptor-port/docs/superpowers/specs/2026-10-02-workflow-skills-fusion.md`; two jobs filed — `[SKILL-FUSION]`, `[CODE-TIDY-AUDIT]`.
+  No skill, guide or app file was changed.
+- **Waiting on him:** yes or no to the three proposals (the spec's §3, §4, §5), and whether Astra's tidiness read runs before
+  the reset (it is light work under D484).
+- **Next:** `[CODE-TIDY-AUDIT]` — write Astra's brief from the spec's §2, run it, report to him in plain words.
+  `[SKILL-FUSION]` — after the reset (Monday 5 Oct 26, 19:00), a fresh chat, a worktree on `main` once this branch has merged
+  (or this branch if it has not), Opus 5.5; Fable and Astra read the changed guide before he approves it (D70).
+- **Not read at the source:** 13 of APEX's 16 step files, and Make Interfaces Feel Better's five reference files — read them
+  before fusing anything from those two.
+- **Parallel (D302):** ruling D486 used here — a next chat takes D487 on; observation #419 used, #420 on.
+<!-- /now -->
+
 <!-- now:claude/insights-which-copy -->
 ### `claude/insights-which-copy` — `[INSIGHTS-WHICH-COPY]` (D477, D478): MERGED on his "merge live" (PR #479, 1 Oct 26); next: `[WORKSPAN-NEGATIVE]` in a fresh chat (D483) — written 1 Oct 26 — verify before use
 - **Done:** the Insights window counts each day's latest published version, the working copy only for a day not yet
