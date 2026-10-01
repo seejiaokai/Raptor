@@ -18,7 +18,7 @@ the later merge keeps both (D78).
 <!-- now:claude/db-readiness-p6c-holder-base -->
 ### `claude/db-readiness-p6c-holder-base` — `[DB-READINESS]` group A phase 6 (c) v3, the holder base: BUILT and FULL-checked (1 Oct 26, D467) — written 1 Oct 26 — verify before use
 - **This chat:** his opening line (round 3, the build and its FULL check of (c) v3 on a new branch cut from
-  `claude/db-readiness-table-shaping-4094f6`) — all done. No new ruling (D468–D469 unused). He asked, and was answered in
+  `claude/db-readiness-table-shaping-4094f6`) — all done. One ruling: D468 (a moved request's extras stay with the old day — leave it); D469 unused. He asked, and was answered in
   plain words (filed, not ruled): how long; what comes next; whether to build against the database (yes, on IT's TEST copy)
   and whether to move now (after (c) and phase 7 merge; then one repo only) — `[RESTRICTED-ENV-WORKFLOW]`; why the folder is
   8 GB (leftover worktrees ~6 GB, pictures, history — not the code) — `[REPO-TIDY]`.
@@ -36,12 +36,12 @@ the later merge keeps both (D78).
   request; the load's confirm count ("already at Original"); a landing's id colliding with a stored dead row (Fable F1);
   the baseline after a delete's book change (Fable F2). **The one rule since: a row that carries `kept` is never the
   request's row.** **Intended, plan §8 items 14–15:** a moved request leaves the scheduler's additions on the old day
-  (**put to him: `[REQ-MOVE-EXTRAS]`**); an issued row's retimed mark on the time box. **Filed for group B:** the
+  (**his answer, 1 Oct 26: leave it — D468**); an issued row's retimed mark on the time box. **Filed for group B:** the
   after-command pass costs ~5–9 ms a command (`[DB-READINESS]` (iii)).
-- **Unfinished:** his look (the card at the foot of the sheet) and his answer on `[REQ-MOVE-EXTRAS]`; then "merge live" —
+- **Unfinished:** his look (the card at the foot of the sheet); then "merge live" —
   this branch AND its parent `claude/db-readiness-table-shaping-4094f6` (phases 0–6), whose own cards are still unlooked-at.
   **Before "merge live": remind him to EXPORT a copy of his Tracker first (D464).** Then phase 7.
-- **Parallel (D302):** rulings: none used — a next chat on this lineage takes D468–D469, then a new range; observations
+- **Parallel (D302):** rulings: D468 used — a next chat on this lineage takes D469, then a new range; observations
   #396–#400 used here (a next chat takes #401 on).
 - **Traps met:** `codex exec` run in the background waits on stdin forever — add `< /dev/null` (observation #399);
   `tsc -p tsconfig.json` checks nothing here — `npx tsc --noEmit -p tsconfig.app.json` (#397); a CX on the board opens its
@@ -85,7 +85,7 @@ the later merge keeps both (D78).
 ## Next, in order
 
 0. **THE DATABASE STEP STARTS NOW (D354, 29 Sep 26)** — `[IT-FLOW-GUIDE]` DONE (the guide for IT, `raptor-port/docs/it-flow-guide/`, 29 Sep 26); `[DB-SYNC-MODEL]`'s design DONE and merged (PR #475); `[DB-READINESS]` group A PLANNED 30 Sep 26 (plan v4,
-   `claude/db-readiness-table-shaping-4094f6`) — its build under way: phases 0–5 and 5b built 30 Sep 26, the group's FULL check done (the walk and both code reads, every finding fixed); phase 6 (a), (b), (d) built and FULL-checked 30 Sep 26 (`raptor-port/docs/handpass/2026-09-30-dbr-phase6-check.md`); phase 6 (c) v3 built and FULL-checked 1 Oct 26 on `claude/db-readiness-p6c-holder-base` (D467 — `…/2026-10-01-dbr-phase6c-check.md`) — next his look at both, his answer on `[REQ-MOVE-EXTRAS]`, his "merge live", then phase 7 (D453). The IT team is taking the app into Dataverse now, and he means to
+   `claude/db-readiness-table-shaping-4094f6`) — its build under way: phases 0–5 and 5b built 30 Sep 26, the group's FULL check done (the walk and both code reads, every finding fixed); phase 6 (a), (b), (d) built and FULL-checked 30 Sep 26 (`raptor-port/docs/handpass/2026-09-30-dbr-phase6-check.md`); phase 6 (c) v3 built and FULL-checked 1 Oct 26 on `claude/db-readiness-p6c-holder-base` (D467 — `…/2026-10-01-dbr-phase6c-check.md`) — next his look at both, his "merge live", then phase 7 (D453). The IT team is taking the app into Dataverse now, and he means to
    keep working on the app beside it. What to finish before the hand-over was put to him the same day; record his answer
    here and in `OUTSTANDING.md`'s priority list the moment he gives it. Everything below keeps its ORDER; its timing is overtaken.
 1. **HIS ORDER to the database step (D203, 26 Sep 26 — its timing overtaken by D354):** `[ACCOUNTS]`, `[ACCOUNTS-NEW-PERSON]`,

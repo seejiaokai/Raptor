@@ -1097,7 +1097,9 @@ flagged correctly and still swept the man out of the crew palette.
   no row standing anywhere lands on its START day — on a PUBLISHED day unless its current issued version placed it on that
   day or took it off (so a request filed since lands pending, after a reload too), the oldest request first, below the rows
   already there (so a row never moves down a line when someone else files), its new row on a published day marked as its
-  Accept marks it — the add on its item, not every box (the FULL check's walk, 1 Oct 26); a row carrying `kept` (brought
+  Accept marks it — the add on its item, not every box (the FULL check's walk, 1 Oct 26); a request MOVED to another day
+  lands there as filed — the scheduler's additions on its old row (a second man, a red box, a CX) stay with the old day,
+  back if it returns before that day is next saved (D468, owner, 1 Oct 26); a row carrying `kept` (brought
   back by a version or a plan although its request could not stand there) is never the request's row — no OIL is earned
   from it, the load does not read it as "landed", an issued one did not place the request (the FULL check's final reads); a row whose request is gone, retyped, or
   no longer covers the day goes (unless `kept` — D363); a row whose request changed is re-made in place (its id, place and

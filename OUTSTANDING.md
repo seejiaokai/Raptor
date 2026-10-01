@@ -76,7 +76,8 @@ award fix are due before the tables are settled. What to finish before the hand-
    (b), (d) built and FULL-checked 30 Sep 26** (`raptor-port/docs/handpass/2026-09-30-dbr-phase6-check.md`); **phase 6 (c) v3
    (the holder base) planned, red-teamed (round 3, the last), BUILT and FULL-checked 1 Oct 26 on
    `claude/db-readiness-p6c-holder-base`** (D467 — `raptor-port/docs/handpass/2026-10-01-dbr-phase6c-check.md`; the walk and
-   both final reads found twelve defects, all fixed red first, one of them money; his answer asked on [REQ-MOVE-EXTRAS]);
+   both final reads found twelve defects, all fixed red first, one of them money; his answer on a moved request's extras:
+   leave it, D468);
    then his look (the cards), then 7.
 5. **When Manfred is ready — [DB-STEP]:** the data model to him, then the one adapter to his tables; the stack
    ([ARCH-STACK]) resumes there, with its step 6 still to come; the [AMEND] work is queued behind it. Architecture first,
@@ -1523,16 +1524,6 @@ with its own tools; ~1.2 GB `raptor-port/docs/` — mostly the walks' screenshot
 consider moving the walk screenshots out of it (and out of its history), or IT downloads ~1 GB of pictures with 14 MB of
 code — put the choice to him with `[RESTRICTED-ENV-WORKFLOW]`'s go-ahead. **Place:** (1) at any clean point, a short job;
 (2) before the go-ahead to IT.
-
-### [REQ-MOVE-EXTRAS] A request moved to another day: should the scheduler's second man go with it? — HIS ANSWER (filed 1 Oct 26)
-Found by the FULL check of `[DB-READINESS]` phase 6 (c) (walk X, `raptor-port/docs/handpass/2026-10-01-dbr-phase6c-check.md`
-W4; plan §8 item 14): a member re-dates his request from Thursday to Friday — its Friday row comes as filed, and a second
-man, a red box or a CX the scheduler put on Thursday's row stay with Thursday's stored row (back if the request returns).
-The build before carried them to Friday. Under the day lock (D450) a member's command cannot write Friday, and carrying them
-on read from Thursday's row would last only until Thursday's holder next saved Thursday — then they would vanish from
-Friday by themselves. **Recommended: leave it** — the scheduler re-adds on the new day what still applies. If he wants them
-to follow, it is a design change (a hidden "moved" record on the old day, read by the new day's landing) — for later, with
-the lock's build. **Place:** his answer at his look at phase 6 (c); nothing is built meanwhile.
 
 ### [GUIDE-MAP-ROWS] The guide's map table: its long rows to the full text too? — OPEN (the guide step, D391, 28 Sep 26)
 **What:** after the guide step the project guide is ~9.5k tokens, not the plan's ~6k. Of what is left, the map table

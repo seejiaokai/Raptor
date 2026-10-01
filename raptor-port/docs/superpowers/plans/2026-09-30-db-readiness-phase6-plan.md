@@ -362,7 +362,7 @@ screen compared step by step; `docs/handpass/2026-09-30-dbr-phase6-check.md` F1,
 14. **A request moved to another day leaves the scheduler's own additions (a second man, a red box, CX) with the day they
    were made on** — they come back if the request returns there; the old re-link carried them to the new day. Under the day
    lock a member's move cannot write the new day, and a carry worked out from the old day's row would last only until that
-   day's holder next saved it. Put to him on his look card; `[REQ-MOVE-EXTRAS]` holds his answer.
+   day's holder next saved it. **Ruled 1 Oct 26 (D468): leave it** — the scheduler re-adds on the new day what still applies.
 15. **The pending mark of an issued request's changed time sits on the time box, not on the item's name** — the mark sits on
    what changed (D93); the count is the same (one pending). The old re-link re-made the row, which marked its item.
 *(An item 16 — the pending list naming the member as the one who deleted his issued request — was listed during the check
@@ -412,4 +412,4 @@ version's own row issued dead), the changes-window jump, the retype message, the
 as the request's placement, the marks of a dead row cleared by another request's change — the load's confirm count, a
 landing's id colliding with a stored dead row (Fable F1), and the baseline after a delete's book change (Fable F2). The one
 rule since: **a row that carries `kept` is never the request's row** — on screen (the view clears the mark from a row that
-can stand) and in an issued version (kept as it went out). §8 items 14–15 added; `[REQ-MOVE-EXTRAS]` put to him.
+can stand) and in an issued version (kept as it went out). §8 items 14–15 added; `[REQ-MOVE-EXTRAS]` put to him — answered: leave it (D468, 1 Oct 26).

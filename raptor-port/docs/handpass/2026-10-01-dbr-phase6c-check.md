@@ -77,7 +77,7 @@ build before, `p6c-phone/` and `base-phone/` at 390×844.
 | W1 | **A request filed later landed ABOVE earlier landed rows** (U1: the row's place differed from the build before; confirmed with two all-day requests). A time-less row moved down a line when someone else filed — the board's "nothing re-orders itself" (10 Aug 26). | **FIXED**, red first: the landing reads the request list oldest first (`overlay.ts landRequests`). Re-walked: U's facts now equal the build before's. |
 | W2 | **On a published day a member's new request wore a pending outline on every box and a hollow AL1 tag on the puck** (P1; pictures `p6c/probe-grnd-p6c.png` vs `base/probe-grnd-base.png`) — the same row accepted by the scheduler marks its item only. | **FIXED**, red first (`holderbase.ts requestAddMarks`): the add on its item, as Accept; a box the scheduler set apart keeps its mark. |
 | W3 | **The issued request's time moved: the mark now sits on the START box, not the item box** (P0b; `p6c/probe3-grnd-p6c.png` vs `base/…`). The count is the same (1 pending); the old build marked the item because its re-link re-made the row. | **Intended** — the mark sits on what changed (D93: times keep their marks). Added to §8 as item 15; on his look card. |
-| W4 | **A request moved to another day leaves the scheduler's second man behind** (X2: Bolt stays with Thursday's stored row and comes back if the request returns — X5, X6b); the build before carried him to Friday. Under the day lock a member's move cannot write Friday, and carrying him from Thursday's row would last only until Thursday's holder next saved it. | **Kept as built, put to him** — §8 item 14 and his look card; filed `[REQ-MOVE-EXTRAS]` for his answer. |
+| W4 | **A request moved to another day leaves the scheduler's second man behind** (X2: Bolt stays with Thursday's stored row and comes back if the request returns — X5, X6b); the build before carried him to Friday. Under the day lock a member's move cannot write Friday, and carrying him from Thursday's row would last only until Thursday's holder next saved it. | **Kept as built — RULED 1 Oct 26 (D468): leave it**; §8 item 14. |
 | W5 | **(The build before (c) — closed by (c).)** A member's out-of-date tab filing a request **unpublished Friday** (T4/T5: the day row his tab wrote back carried its old, unpublished state), and his later delete **wiped the scheduler's Thursday note** (T6). This build: neither — his command writes his request only. | Closed by (c); pinned by walk T. |
 | W6 | **(The build before (c).)** A weekend request moved back onto Sunday after a version load never reached Sunday, so Bolt earned nothing there (O4). | Closed by (c) (round 3's Astra 1). |
 
@@ -164,9 +164,8 @@ closed (W5, W6), or the storage itself. The unit suite after every fix: **7401 /
    press Accept; View-only Sched still shows the day as published.
 3. **Move a request to next week** on the Inputs page: no "Load the week of …", no "Moved outside the programmed week"; it
    shows on next week's preview at the right of Edit Schedule, and on that week when you open it.
-4. **One question for you (`[REQ-MOVE-EXTRAS]`):** when a member moves his request to another day, it arrives as he filed it
-   — a second man you put on its row stays with the old day (and comes back if the request moves back). Before, he went
-   with it. Under the day lock a member's move cannot change the new day; my recommendation is to leave it. Is that right?
+4. **Answered (D468, 1 Oct 26 — leave it):** a request moved to another day arrives as filed; a second man you put on its
+   row stays with the old day. Check it once: move a request with a second man on it — he is not on the new day.
 5. **Known, as designed:** if a member deletes his request on a published day, you then save that day, and he presses Undo —
    his request comes back under Personal Inputs, and Accept puts its row back.
 6. **Before "merge live":** export a copy of your Tracker first (D464).

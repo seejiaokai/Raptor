@@ -2831,3 +2831,18 @@ time. **Place:** test-only, low, any time.
 The stash-aware read built for `[OIL-XWEEK-ELSEWHERE]` is the same seam a stash-aware relink would
 use. **Context.** `…/specs/2026-09-22-oil-jobs12-codereview-fable.md` §3 F8.
 
+
+*Moved here 2026-10-01 by backlog-archive.mjs ([REQ-MOVE-EXTRAS]). Forward facts: `raptor-port/docs/engine-rules.md`.*
+
+### [REQ-MOVE-EXTRAS] A request moved to another day: should the scheduler's second man go with it? — HIS ANSWER (filed 1 Oct 26)
+Found by the FULL check of `[DB-READINESS]` phase 6 (c) (walk X, `raptor-port/docs/handpass/2026-10-01-dbr-phase6c-check.md`
+W4; plan §8 item 14): a member re-dates his request from Thursday to Friday — its Friday row comes as filed, and a second
+man, a red box or a CX the scheduler put on Thursday's row stay with Thursday's stored row (back if the request returns).
+The build before carried them to Friday. Under the day lock (D450) a member's command cannot write Friday, and carrying them
+on read from Thursday's row would last only until Thursday's holder next saved Thursday — then they would vanish from
+Friday by themselves. **Recommended: leave it** — the scheduler re-adds on the new day what still applies. If he wants them
+to follow, it is a design change (a hidden "moved" record on the old day, read by the new day's landing) — for later, with
+the lock's build. **Place:** his answer at his look at phase 6 (c); nothing is built meanwhile.
+**CLOSED 1 Oct 26 — his answer "1" (D468, `.claude/rules/decisions/scheduler.md`): leave it.** Nothing to build; the rule
+lives in `raptor-port/docs/engine-rules.md` (the landing paragraph) and the phase 6 plan §8 item 14.
+
