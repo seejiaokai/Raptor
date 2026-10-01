@@ -610,7 +610,7 @@ export function oilNoAskWhy(di: any, item: string): string {
   const meta: any = inpMeta(type)
   return `a ${String((meta && meta.name) || type).trim()} request earns no OIL`
 }
-function inertWhy(di: any, item: string): string {
+export function inertWhy(di: any, item: string): string {
   const plain = 'nothing measurable to earn from here'
   /* a row with a start and no end ([ALLAVAIL-OPEN-ROW], D360 — Fable's final read F1): the men behind its placeholder say
      the row's own reason, as the window's footer and the row's switch do — a tap on one of them copies this into the

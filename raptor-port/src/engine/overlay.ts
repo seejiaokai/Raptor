@@ -16,7 +16,7 @@
    and extras, sim seats / passengers / extras, a ground row's name and extras, a Common Programme name and extras — the
    same roll-call as state/person-delete.ts personKeysOnDay), a ground row landed from one of his requests goes, his OIL
    switches go, and the day's working sign-offs and its saved plans lose him. Days before it keep him (D297). */
-import { PEOPLE, whoId } from './people'
+import { PEOPLE, whoId, isSpecial } from './people'
 import { whoArr } from './slots'
 import { dayIso } from './verid'
 import { INPUTS, inpId, inpLabel, isPersonal, inputCoversDate, dateOrd } from './inputs'
@@ -278,9 +278,22 @@ function reconcileRequestRows(days: any[], info: ViewDayInfo[]): void {
       if (!row.srcv) { row.srcv = sv; continue }                                                                  // 5.
       if (row.srcv === sv) continue
       /* 6. re-made in place: its id, its place and every field a scheduler set (extras, flag, CX, information only) kept */
-      Object.assign(row, requestRowFields(r)); row.srcv = sv; info[di].reqChanged = true
-      /* ONE MAN, ONCE PER ROW (D271): the request's holder standing among the extras is kept once, as the holder */
-      if (Array.isArray(row.more) && row.more.some((x: any) => whoId(x) === r.person)) {
+      const f: any = requestRowFields(r)
+      /* THE NAME BOX IS THE SCHEDULER'S WHEN IT HOLDS SOMEONE OTHER THAN THE HOLDER — a man of his (D470: he earns from the
+         row) or a placeholder (D46: its crowd does) — and is KEPT, as the extras are ([DB-READINESS] phase 7, Fable's final
+         read F1). Writing the request's own man back at every re-make took the scheduler's man off the row at the member's
+         next edit of his remarks — and, since D470, his OIL with him — with no line anywhere; state/holderbase.ts
+         requestAddMarks already counts "a man of his in the name box" as the scheduler's change. A FORMER holder left in
+         the box by a hand-over (the request's `leftAt` names him) gives way to the new one. Free text, or an id the roster
+         no longer holds, is not somebody the scheduler placed: the request's man is written, as before. (Known edge: a
+         former holder dragged back into the box deliberately is replaced at the next edit — the extras are his place.) */
+      const w = whoId(row.who)
+      const kept = !!w && w !== String(r.person) && !(r.leftAt && r.leftAt[w] != null) && (isSpecial(w) || !!(PEOPLE as any)[w])
+      if (kept) delete f.who
+      Object.assign(row, f); row.srcv = sv; info[di].reqChanged = true
+      /* ONE MAN, ONCE PER ROW (D271): the request's holder standing among the extras is kept once, as the holder — when
+         the name box is his; under another man's box (kept, above) the extras are where he stands */
+      if (!kept && Array.isArray(row.more) && row.more.some((x: any) => whoId(x) === r.person)) {
         const more = row.more.map((x: any) => whoId(x) === r.person ? '' : x)
         trimTail(more)
         if (more.length) row.more = more; else delete row.more

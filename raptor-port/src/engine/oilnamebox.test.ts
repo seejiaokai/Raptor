@@ -17,7 +17,8 @@ import { HOOKS } from './hooks'
 import { SCHED } from './publish'
 import { ensureRowIds } from './rowids'
 import { envMin, uniformOil, inputItemKey } from './oil'
-import { oilEvidence, oilEarnedWork, landedExtras } from './oilev'
+import { oilEvidence, oilEarnedWork, landedExtras, oilSentOf } from './oilev'
+import { viewOfWeek, srcvOf } from './overlay'
 
 const DSNAP = JSON.stringify(DAYS)
 const ISNAP = JSON.stringify(INPUTS)
@@ -150,5 +151,98 @@ describe('what it does NOT change', () => {
     HOOKS.oilEarningDay = () => false
     landed({}, { who: 'stiff' })
     expect(earners()).toEqual([])
+  })
+})
+
+/* THE NAME BOX IS THE SCHEDULER'S WHEN IT HOLDS SOMEONE OTHER THAN THE HOLDER — AND IT SURVIVES THE MEMBER'S OWN EDIT
+   (Fable's final read, F1 — phase 7). A request's row is worked out from the request whenever its day is read
+   (overlay.ts, rule 6): when the member edits his request, the row is re-made in place, keeping what the scheduler set —
+   the extras, the red box, CX, information only. It did NOT keep the name box: it wrote the request's own man back, so a
+   man the scheduler had put there (D470) or a placeholder (D46) vanished at the member's next edit of his remarks — and,
+   since D470, his OIL with him — with no line anywhere. A FORMER holder left in the box by a hand-over still gives way
+   to the new one. */
+describe('the scheduler\'s man in the name box survives the member\'s own edit of his request (Fable F1)', () => {
+  const view = () => viewOfWeek('13/07/2026', DAYS as any[], { loaded: true, issued: () => null })
+  const row = () => (DAYS[SAT] as any).ground.find((g: any) => g && g.src === 'rq1')
+  /* the row as it was last made from the request — so only the edit below re-makes it */
+  const stamp = (as: any = INPUTS[0]) => { row().srcv = srcvOf(as) }
+
+  it('a named man: still in the box after the member edits his remarks, and still earning', () => {
+    landed({}, { who: 'stiff' }); stamp()
+    ;(INPUTS[0] as any).remarks = 'bring the checklist'
+    view()
+    expect(row().rmks, 'the member\'s edit reached the row').toBe('bring the checklist')
+    expect(row().who, 'and the scheduler\'s man is still in the box').toBe('stiff')
+    expect(earners()).toEqual(['bane', 'stiff'])
+  })
+
+  it('…and after the member changes his times', () => {
+    landed({}, { who: 'stiff' }); stamp()
+    ;(INPUTS[0] as any).s = 10 * 60
+    view()
+    expect(row().who).toBe('stiff')
+    expect(figure('stiff'), 'he earns over the request\'s new window').toBe('FO')
+  })
+
+  it('a placeholder in the box survives it too — its crowd is still written down (D46)', () => {
+    HOOKS.oilSentinel = () => ['plasma']
+    landed({}, { who: 'allavail' }); stamp()
+    ;(INPUTS[0] as any).remarks = 'bring the checklist'
+    view()
+    expect(row().who).toBe('allavail')
+    expect(oilSentOf(oilEvidence(SAT), ITEM).state).toBe('resolved')
+  })
+
+  it('a FORMER holder left in the box by a hand-over gives way to the new holder', () => {
+    landed({}, { who: 'bane' }); stamp()
+    Object.assign(INPUTS[0] as any, { person: 'plasma', hand: 1, leftAt: { bane: 1 }, oil: {} })
+    view()
+    expect(row().who, 'the request\'s new man').toBe('plasma')
+  })
+
+  it('THE CONTROL: the member in his own box — an edit re-makes the row exactly as before', () => {
+    landed({}, { who: 'bane', more: ['stiff'] }); stamp()
+    ;(INPUTS[0] as any).remarks = 'bring the checklist'
+    view()
+    expect(row().who).toBe('bane')
+    expect(row().more, 'the extras kept, as always').toEqual(['stiff'])
+    expect(row().rmks).toBe('bring the checklist')
+  })
+
+  it('the member, moved to the extras under another man\'s box, is not taken off his own row by an edit', () => {
+    landed({}, { who: 'stiff', more: ['bane'] }); stamp()
+    ;(INPUTS[0] as any).remarks = 'bring the checklist'
+    view()
+    expect(row().who).toBe('stiff')
+    expect(row().more).toEqual(['bane'])
+  })
+})
+
+/* A HAND-OVER TO AND FROM THE MAN IN THE BOX, with a decision about him standing (Astra's final read, gap 3). The rule
+   is phase 6 (a)'s for an extra: a decision about a man is void once the request has LEFT him since it was made
+   (`leftAt`), and is kept while he is on the row or holds the request. */
+describe('a hand-over to and from the man in the name box, with a decision about him (Astra, gap 3)', () => {
+  const view = () => viewOfWeek('13/07/2026', DAYS as any[], { loaded: true, issued: () => null })
+  const row = () => (DAYS[SAT] as any).ground.find((g: any) => g && g.src === 'rq1')
+  const KEY = `stiff|${ITEM}`
+
+  it('handed TO him: he is the holder now, his earlier tap-off still stands, and nobody earns twice', () => {
+    landed({}, { who: 'stiff' }); row().srcv = srcvOf(INPUTS[0])
+    ;(DAYS[SAT] as any).oild = { people: { [KEY]: 'deny' } }
+    Object.assign(INPUTS[0] as any, { person: 'stiff', hand: 1, leftAt: { bane: 1 }, oil: { [SAT_ISO]: 1 } })
+    view()
+    expect(row().who, 'the box holds the request\'s man — the same man').toBe('stiff')
+    expect(oilEvidence(SAT).d.people, 'it never left him: the tap-off is kept').toEqual({ [KEY]: 'deny' })
+    expect(earners(), 'so he earns nothing, and the old holder is off the row').toEqual([])
+  })
+
+  it('…and handed on FROM him: the decision made while he was on it is void, and he is off the row', () => {
+    landed({}, { who: 'stiff' }); row().srcv = srcvOf(INPUTS[0])
+    ;(DAYS[SAT] as any).oild = { people: { [KEY]: 'deny' } }
+    Object.assign(INPUTS[0] as any, { person: 'plasma', hand: 2, leftAt: { bane: 1, stiff: 2 }, oil: { [SAT_ISO]: 1 } })
+    view()
+    expect(row().who, 'a former holder gives way').toBe('plasma')
+    expect(oilEvidence(SAT).d.people, 'the stale decision decides nothing').toBeUndefined()
+    expect(earners()).toEqual(['plasma'])
   })
 })

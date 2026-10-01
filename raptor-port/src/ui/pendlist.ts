@@ -359,6 +359,14 @@ function crowdChange(di: number): CrowdRow[] | null {
 }
 /* an OIL item key (`r:<row id>`) back to its row on the live day: the row's name and its cells, puck first */
 function rowByItem(d: any, di: number, item: string): { name: string, keys: string[] } | null {
+  /* A REQUEST's row is addressed by its request (`i:<request id>`), not by a row id ([DB-READINESS] phase 7, Fable's final
+     read F3): its crowd change read "A placeholder · who it stands for" — no row named, nothing to tap. Its row on the
+     live day, never a `kept` one (a version's row whose request cannot stand there is not the request's row). */
+  if (d && String(item).startsWith('i:')) {
+    const src = String(item).slice(2)
+    const gi = (d.ground || []).findIndex((r: any) => r && String(r.src || '') === src && !r.kept)
+    return gi >= 0 ? { name: d.ground[gi].prog || 'request', keys: [`g:${di}.${gi}`, `gr:${di}.${gi}.prog`] } : null
+  }
   const rid = String(item).startsWith('r:') ? String(item).slice(2) : ''
   if (!rid || !d) return null
   let i = (d.ground || []).findIndex((r: any) => r && r.rid === rid)

@@ -144,6 +144,26 @@ describe('inside OIL Earn, on a Saturday: counted, and nobody earns — said wit
     expect(foot).toBe('A personal request earns no OIL.')
   })
 
+  /* Fable's final read, F2: the earn half's foot kept the inert reason from the tap, so a request retyped BEHIND the open
+     window left "…a personal request earns no OIL" standing beside pucks that now earn. The foot keeps WHO was tapped and
+     says what is true of him at every draw — on this half as on the other. */
+  it('the foot about a tapped man follows a retype made behind the open window', async () => {
+    landed(SAT)
+    await open(SAT)
+    await click(oilBtn())
+    await click(groundRowEl().querySelector('.oilcount'))
+    await click($('.availwin').querySelector('.seat.oilpk .puck'))
+    const foot = () => $('.availwin .win-foot').textContent || ''
+    expect(foot()).toContain('a personal request earns no OIL')
+    await act(async () => {
+      Object.assign(INPUTS[0] as any, { type: 'Training', oil: { [SAT_ISO]: 1 } })
+      ;(DAYS[SAT] as any).ground[0].srcType = 'Training'
+      notify()
+    })
+    expect(($('.availwin').querySelector('.seat.oilpk') as HTMLElement).classList.contains('inert'), 'the list: he earns now').toBe(false)
+    expect(foot(), 'and the foot no longer says he cannot').not.toContain('earns no OIL')
+  })
+
   it('the requester\'s own puck on the row says the same', async () => {
     landed(SAT)
     await open(SAT)

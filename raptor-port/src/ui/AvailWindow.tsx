@@ -32,7 +32,7 @@ import { useVersion } from './useStore'
 import { canEditSched } from '../state/auth'
 import { esc, selectPerson } from '../state/view'
 import { personPuckHTML, personWarnMsgs, withChipWorld } from './html'
-import { oilModeOn, oilSeatHTML, toggleOilPerson, oilFigureFor, oilBlanketOn, oilItemMasked, oilFromWords, oilItemLabel, oilItemHistName, oilPersonSays, oilNoAskWhy, evOf, OIL_OPEN_END } from './oilmode'
+import { oilModeOn, oilSeatHTML, toggleOilPerson, oilFigureFor, oilBlanketOn, oilItemMasked, oilFromWords, oilItemLabel, oilItemHistName, oilPersonSays, oilNoAskWhy, oilEligible, inertWhy, evOf, OIL_OPEN_END } from './oilmode'
 import { draftVerLabel } from '../engine/drafts'
 import { oilSentOf, oilReadPass } from '../engine/oilev'
 import { logAction } from '../engine/editlog'
@@ -233,6 +233,11 @@ export function AvailWindow() {
     return {
       lbl, lost, body, worst, known,
       noAsk: oilNoAskWhy(di, item),
+      /* the EARN half's foot about a tapped man who could not earn (Fable's final read, F2): said afresh in the chip's own
+         world while he is still listed and still cannot — and dropped the moment he can (a request retyped behind the
+         window), so the foot never contradicts the puck above it */
+      footOil: oil && AVAILWIN_FOOTID && known.includes(AVAILWIN_FOOTID) && !oilEligible(di, AVAILWIN_FOOTID, item)
+        ? `${((PEOPLE as any)[AVAILWIN_FOOTID] || {}).cs || AVAILWIN_FOOTID} — ${inertWhy(di, item)}` : '',
       n: people.length,
       earn: earners(people),
       flagged: known.filter(id => !!worst[id]).length,
@@ -287,7 +292,7 @@ export function AvailWindow() {
            and it would still cost an amendment on a published day. His seat
            says why; the footer repeats it. */
         const why = (r.querySelector('.seat.oilpk') as HTMLElement | null)?.title || `${cs} has nothing to earn from this event.`
-        setAvailFoot(why); notify(); return
+        setAvailFoot(why, id); notify(); return
       }
       /* the real write, through the same body the board's tap uses, so it lands
          on the day, rides the snapshot and a publish makes it a real amendment
@@ -316,8 +321,8 @@ export function AvailWindow() {
   }
   /* the foot kept from a tap: about a man still in the list → said afresh; about a man no longer behind the puck (or on
      the earn half, where the foot is what a switch did) → as kept, or the tab's own hint */
-  const foot = !m ? '' : AVAILWIN_FOOTID && !oil
-    ? (m.known.includes(AVAILWIN_FOOTID) ? whySays(AVAILWIN_FOOTID) : '')
+  const foot = !m ? '' : AVAILWIN_FOOTID
+    ? (oil ? m.footOil : m.known.includes(AVAILWIN_FOOTID) ? whySays(AVAILWIN_FOOTID) : '')
     : AVAILWIN_FOOT
 
   /* UNDER A MASK THE HINT SAYS SO (walk W2, 23 Sep 26): with the event or the
