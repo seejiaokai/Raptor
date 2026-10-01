@@ -71,7 +71,7 @@ const publishTheSaturday = () => {
   runOilPass()
 }
 /* Publish the day AGAIN as its next amendment — since [OIL-AUTO-REMOVE] this is
-   what moves an already-issued OIL credit, because the money comes only from the
+   what moves an already-issued OIL credit, because the credit comes only from the
    issued document (§7.1). */
 const republishTheSaturday = () => {
   signTheSaturday()
@@ -242,7 +242,7 @@ describe('an OIL credit whose hours have changed', () => {
        TWO OWNER RULINGS MEET HERE, and the LATER one governs (CLAUDE.md, newest
        wins). 20 Sep 26: a credit's hours follow the work, and the old morning
        must never survive — the man did not work it. 21 Sep 26
-       ([OIL-AUTO-REMOVE] §7.1/§7.3): money comes ONLY from the issued document,
+       ([OIL-AUTO-REMOVE] §7.1/§7.3): credit comes ONLY from the issued document,
        because a member must not be able to move his own already-issued credit by
        editing his own input. So re-timing alone moves nothing; PUBLISHING THE
        DAY AGAIN moves it, and then the old morning is gone exactly as the 20 Sep

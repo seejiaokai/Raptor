@@ -7,7 +7,7 @@
    D27 — the pucks are a SCHEDULING feature: dropped anywhere they work out who
    would attend and show the count, whether or not the day earns OIL and whether
    or not the mode is on. Until now the count was a by-product of working out the
-   money, so five days a week the puck stood for nobody and the chip said nothing.
+   credit, so five days a week the puck stood for nobody and the chip said nothing.
 
    D37 — the count reads as WHAT IT IS: who has nothing else on the programme at
    that time. Not a promise that they will be there, and on a day that earns

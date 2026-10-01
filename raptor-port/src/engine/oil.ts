@@ -65,13 +65,13 @@ import { whoArr } from './slots'
    - A cancelled structure at any level (cx) — a duty that did not stand.
    - A row with no readable times: the owner's rule is "based on what timing
      was written", and inventing openEnd/simLen defaults here would mint
-     OIL from a guess (events.ts may guess for display; money may not). */
+     OIL from a guess (events.ts may guess for display; credit may not). */
 
 /* the ENVELOPE of [s,e) spans in minutes — first start to last end, gaps
    included (owner, 29 Aug 26: between two events the person is still in
    squadron, so the day at work runs report to release, not the sum of the
    bookings). The cap-at-one-day is structural: one envelope per day can
-   never pay twice for the same hour. */
+   never credit twice for the same hour. */
 export function envMin(spans:[number,number][]){
   if(!spans.length)return 0;
   let lo=spans[0][0],hi=spans[0][1];
@@ -141,14 +141,14 @@ export function dayOilWork(day:any,opts?:{expandAll?:(win:[number,number],item:s
      it does not offer a switch on one that never could — an AVALON line, its
      desk, an SC spare, a cancelled or ⓘ row, a desk with no times. Reported
      from THIS walk rather than from a second rulebook, so the switch and the
-     money can never disagree about what is capable of earning. */
+     credit can never disagree about what is capable of earning. */
   /* THE ROW'S OWN ANSWER TRAVELS WITH IT (walk, 22 Sep 26). `reach` used to
      report only that a row CAN earn, so an EMPTY exempt row — an AVALON RUNNER
      with nobody on it — had nothing to say and the switch fell through to
      "Earns OIL — tap to stop this item earning". Tapping that would have cost a
-     real amendment on a published day for a decision that moves no money, which
+     real amendment on a published day for a decision that moves no OIL, which
      is the same fault step 2 fixed for rows that can never earn at all. The
-     default is decided once, here, in the walk that also decides the money, so
+     default is decided once, here, in the walk that also decides the credit, so
      the two cannot drift. */
   const reach=(it:string,dfl:boolean)=>{ if(opts&&opts.onItem)opts.onItem(it,dfl); };
   const rid=(v:any)=>{const id=whoId(v);return realP(id)?id:null;};
@@ -181,7 +181,7 @@ export function dayOilWork(day:any,opts?:{expandAll?:(win:[number,number],item:s
      AN UNIDENTIFIED ROW GATHERS NOBODY. The day's frozen membership is written
      per ITEM (`oilev.ts`: `if (item) sent[item] = people`), so a row with no id
      yet has nowhere to record who it stood for: it would draw a crowd in the
-     mode and pay none of them through the evidence, the screen and the money
+     mode and credit none of them through the evidence, the screen and the credit
      disagreeing about the same row. Every painted row is minted an id by the
      mutation, load, publish and draft paths alike, so in practice this never
      fires — it is the belt, and `oilexpand.test.ts` pins it. */
@@ -207,8 +207,8 @@ export function dayOilWork(day:any,opts?:{expandAll?:(win:[number,number],item:s
        DEFAULT rather than being unable to earn at all, so the admin can switch
        one on when it really was work. The skip a line below still keeps them out
        of this walk entirely — step 4 removes it, and they then arrive already
-       carrying this answer rather than defaulting to yes and paying at once,
-       which is F1's silent money. */
+       carrying this answer rather than defaulting to yes and crediting at once,
+       which is F1's silent OIL. */
     const exemptWave=isStandalone(wv)&&wv.kind!=='sc';
     const sc=isStandalone(wv);
     (wv.formations||[]).forEach((f:any)=>{
@@ -232,17 +232,17 @@ export function dayOilWork(day:any,opts?:{expandAll?:(win:[number,number],item:s
            `f.spare||ac.spare`, and a saved SC formation can carry the
            FORMATION-level flag with none on the aircraft row. Naming only the
            aircraft one — which the first rewrite did — would default every
-           occupant of such a shift ON, and pay a spare shift that has never
-           been paid. */
+           occupant of such a shift ON, and credit a spare shift that has never
+           been credited. */
         dflt=!exemptWave&&!f.spare&&!ac.spare;
         /* THE NON-EXPANDING BELT, and it is the bare `put` on purpose (D33/D36,
            Fable M4.5). A placeholder is refused in a cockpit at every door, but
            data can arrive by COPY — a captured day template or a parked plan
-           bypasses those doors — so the money keeps its own guard rather than
+           bypasses those doors — so the credit keeps its own guard rather than
            trusting the doors alone. And the window here is report→debrief, three
            hours wider each side than availability: handing it to the expander
            would gather the men the squadron deliberately schedules around an ops
-           brief (D36, plan §5a) and pay every one of them. */
+           brief (D36, plan §5a) and credit every one of them. */
         [ac.p,ac.w].forEach((v:any)=>put(v,win));
       });
     });
@@ -300,14 +300,14 @@ export function dayOilWork(day:any,opts?:{expandAll?:(win:[number,number],item:s
   return out;
 }
 /* A ROW WITH A START AND NO END ([ALLAVAIL-OPEN-ROW], D360 — owner, 28 Sep 26: "ok, need to say something like no oil
-   worked out due end time to the admin"). The walk above skips it, and must: money is minted only from WRITTEN times
+   worked out due end time to the admin"). The walk above skips it, and must: credit is minted only from WRITTEN times
    (D31 — "display may guess; money may not"). But the ALL / ALL AVAIL count is a SCHEDULING fact (D27, D37 — "on every
    seat the puck can land on"), and every other scheduling reader gives such a row the Logic tab's assumed length (the
-   crew picker, the validator: `time.ts win`). Recorded ONLY by the membership, so the count inherited the money's
+   crew picker, the validator: `time.ts win`). Recorded ONLY by the membership, so the count inherited the credit's
    refusal: no chip, no reason — a silent absence D31 itself forbids.
    So this lists those rows, with the window the rest of the schedule assumes for them — a sim its own `simLen`, any
    other row `openEnd` — for the evidence block to record the crowd behind a placeholder over it (oilev.ts). DISPLAY
-   ONLY: nothing here is reached by the money, no `reach` (no switch), no span. The same skips as the walk above, so a
+   ONLY: nothing here is reached by the credit, no `reach` (no switch), no span. The same skips as the walk above, so a
    row the walk would not stand on (cancelled, ⓘ, a request's own row — its crowd has its own window) is never
    listed. A flying line is never listed: a placeholder is refused in a cockpit (D33). */
 export interface OpenEndRow{item:string;st:number;len:number;puck:boolean}
@@ -333,7 +333,7 @@ export function openEndRows(day:any):OpenEndRow[]{
 /* THE DESKS THAT MEASURE NOTHING (owner, 20 Sep 26 — "Yes i want a warning").
  *
  *  The rule above mints strictly from WRITTEN times, so a duty desk with a man
- *  on it and no start and end earns him nothing. That is correct — money must
+ *  on it and no start and end earns him nothing. That is correct — credit must
  *  not come from a guess — but it used to happen in silence: the day was
  *  published, no OIL appeared, and nothing said why. A man's leave balance was
  *  short and no screen admitted it.
@@ -384,7 +384,7 @@ export function dayOilBlind(day:any):string[]{
      A SHIFT IS THE OTHER WAY ROUND (22 Sep 26, the independent code read). A
      STANDALONE wave — SC MAIN, SC SPARE, AVALON, BB — has no report and no
      debrief: its window IS the written window, so typed 08:00–08:00 it measures
-     nothing and pays nobody, exactly like a desk with no times. D49 never
+     nothing and credits nobody, exactly like a desk with no times. D49 never
      reached it (it is a ruling about a sortie), and on the wave the squadron
      actually works at weekends this is precisely the silent-nothing the owner
      asked to be warned about on 20 Sep 26. So it IS named. */
@@ -412,10 +412,10 @@ export function dayOilBlind(day:any):string[]{
     /* THE FOURTH SKIP, LIFTED (plan C4 / Fable S2 — the plan counted three).
        This is the one that makes an exempt desk SPEAK at publish. While AVALON
        and BB could not earn at all, a desk of theirs carrying a man and no
-       written times was correctly silent: there was no money to miss. Now that
+       written times was correctly silent: there was no OIL to miss. Now that
        the admin can switch such a desk ON, a blank pair of times is the same
        trap it is anywhere else — the day publishes, no OIL appears, and nothing
-       says why. Screen, not money: this names the desk, it does not pay it. */
+       says why. Screen, not credit: this names the desk, it does not credit it. */
     (dw.rows||[]).forEach((r:any)=>{
       if(r.cx)return;
       if(timed(r.str,r.end))return;
@@ -477,8 +477,8 @@ export function dayOilCredits(day:any,opts?:{expandAll?:(win:[number,number],ite
  *  later. The mode uses this so it never draws a switch that could not change
  *  anything: such a switch reads "tap to stop this item earning" beside pucks
  *  that already say they earn nothing, and on a published day tapping it would
- *  cost a real amendment for a decision that moves no money (Fable, 21 Sep 26).
- *  Derived from dayOilWork's own walk, so it cannot drift from the money. */
+ *  cost a real amendment for a decision that moves no OIL (Fable, 21 Sep 26).
+ *  Derived from dayOilWork's own walk, so it cannot drift from the credit. */
 export function oilCapableItems(day:any):Set<string>{
   const out=new Set<string>();
   dayOilWork(day,{expandAll:()=>[],onItem:(it:string)=>{if(it)out.add(it);}});
@@ -488,8 +488,8 @@ export function oilCapableItems(day:any):Set<string>{
  *  `item -> true | false`. The switch needs this for a row NOBODY is standing on
  *  yet: counting the men there gives zero on and zero off, which used to fall
  *  through to "earns", and on an exempt kind that is the screen telling the
- *  admin something false about money. Same walk as `oilCapableItems` and the
- *  money itself, so it cannot disagree with either. */
+ *  admin something false about OIL. Same walk as `oilCapableItems` and the
+ *  credit itself, so it cannot disagree with either. */
 export function oilItemDefaults(day:any):Map<string,boolean>{
   const out=new Map<string,boolean>();
   dayOilWork(day,{expandAll:()=>[],onItem:(it:string,dfl:boolean)=>{if(it&&!out.has(it))out.set(it,dfl);}});

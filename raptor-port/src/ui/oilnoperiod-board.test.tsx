@@ -11,7 +11,7 @@
    demo war periods, so the first uncovered year is 2028): the reason appeared
    on the board and on the week; "Create the 2028 period" appeared on the week
    only. The board is where a scheduler works the day and publishes it, so the
-   surface that tells him the money cannot land is the one that does not offer
+   surface that tells him the credit cannot land is the one that does not offer
    him the way out — he has to know to close the board and go looking.
 
    D19 in the owner's words: "Perhaps indicate that the leave war period doesn't

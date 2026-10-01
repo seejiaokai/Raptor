@@ -414,7 +414,7 @@ describe('the bell (owner, 28 Aug 26 — the retro notification)', () => {
    HIDES a key while somebody else holds the request. Hand the request away and
    BACK while a DIFFERENT week is on screen — ordinary, because the Inputs page
    is global — and the old refusal is live again the moment its week is opened.
-   A man who worked and answered Yes is paid nothing, silently; and if that day
+   A man who worked and answered Yes is credited nothing, silently; and if that day
    was already published the live and frozen keys match, so nothing flags it. */
 describe('a refusal must not survive a hand-over made while its week is off screen', () => {
   const SCHED_COLLS = ['days', 'sched.book', 'sched.mutes', 'sched.week', 'sched.issuance', 'sched.retraction', 'inputs', 'plan', 'weekstash']
@@ -425,7 +425,7 @@ describe('a refusal must not survive a hand-over made while its week is off scre
   const seenOn = (di: number, k: string) => ((oilEvidence(di).d.people || {}) as any)[k]
   let hooks: any
 
-  /* the money half needs the two facts the Leave War normally supplies —
+  /* the credit half needs the two facts the Leave War normally supplies —
      which days earn, and what date a day index is — so the figure below is the
      real one and not a hook returning nothing */
   beforeEach(() => {
@@ -443,7 +443,7 @@ describe('a refusal must not survive a hand-over made while its week is off scre
     _resetTimeline(); stashClear(); loadWeek('13/07/2026')
   })
 
-  it('A → B → A across weeks: the dead refusal is gone and he is paid (Fable F1 / Codex rank 2)', () => {
+  it('A → B → A across weeks: the dead refusal is gone and he is credited (Fable F1 / Codex rank 2)', () => {
     loadWeek('13/07/2026')
     const r = plant({ person: 'bane', type: 'Duty', date: 'Jul 18', s: 0, e: 1439, oil: { '2026-07-18': 1 } })
     const item = inputItemKey(r.iid)
@@ -479,7 +479,7 @@ describe('a refusal must not survive a hand-over made while its week is off scre
   /* CODEX RANK 2's own requirement: one undo must put back the assignment AND
      the off-week decision together. Half a step is worse than none — the
      request back in his name with the refusal about it still deleted means he
-     is PAID over a scheduler's No. Driven through the Undo the app's own button
+     is CREDITED over a scheduler's No. Driven through the Undo the app's own button
      presses, which is the only one that carries the stash. */
   it('ONE undo puts back the assignment AND the off-week refusal together (Codex rank 2)', () => {
     loadWeek('13/07/2026')

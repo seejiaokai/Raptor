@@ -12,7 +12,7 @@
    and REPLACED him, with nothing on screen to say so.
 
    The gap is PRE-EXISTING; what changed is that [OIL-SEATS-CAN-EARN] step 5 made
-   that seat pay real people, so the promise that a placeholder on a sim row
+   that seat credit real people, so the promise that a placeholder on a sim row
    counts the men it stands for could not be exercised through the screen at all.
 
    It costs one row of height on a full sim row. The owner was shown that cost

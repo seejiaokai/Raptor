@@ -405,7 +405,7 @@ describe("a crowd man's SIM brief or debrief is flagged too (D36 + D38)", () => 
   })
 })
 
-describe('the earning half moves real money, so it is gated and it writes (D43/D44)', () => {
+describe('the earning half moves real OIL, so it is gated and it writes (D43/D44)', () => {
   /* NOTE: this does NOT create the row. `puckRow` rewrites `ground` and
      ensureRowIds mints a FRESH id, so calling it again would leave the caller
      holding a key for a row that no longer exists — which is what happened, and
@@ -423,7 +423,7 @@ describe('the earning half moves real money, so it is gated and it writes (D43/D
        not just the screen"). This one test uses the crowd the step-7 fixtures
        use, because those two men demonstrably EARN from a Saturday row — who
        earns depends on what else each man is on that day, and a test that
-       asserts money against a crowd that earns nothing proves only its own
+       asserts credit against a crowd that earns nothing proves only its own
        fixture. The pilot/WSO split is covered by the column tests above. */
     HOOKS.oilSentinel = () => ['plasma', 'stiff']
     /* and clear the seed Saturday's OWN duty and sim rows, as the step-7

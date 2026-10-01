@@ -47,7 +47,7 @@ const clone = (o: any) => JSON.parse(JSON.stringify(o))
 /* A DAY COMING BACK ONTO THE WORKING COPY NEVER CARRIES FROZEN OIL EVIDENCE
    ([OIL-AUTO-REMOVE] §9.3). `daySnap` attaches the block to the issued day copy,
    so a recovery or a plan swap that clones a snapshot would install a projection
-   of the inputs AS THEY WERE — stale money, silently, because the credit pass
+   of the inputs AS THEY WERE — stale OIL, silently, because the credit pass
    reads a present block in preference to deriving one. The live day stores only
    the DECISIONS (`oild`, ordinary content that must survive the clone) and
    re-derives everything else on read. */

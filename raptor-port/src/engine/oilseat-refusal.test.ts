@@ -17,7 +17,7 @@
    person is duplicated, the placeholder is lost, and the caller reports success.
    So the callers PREFLIGHT both ends and reject the whole operation, and the
    writer's own guard is the belt behind them. This file pins the engine half —
-   the preflight body, the writer's belt, the words, and the money belt. The
+   the preflight body, the writer's belt, the words, and the credit belt. The
    DOORS (drag, armed placement, the palette's row) are ui/oilseat-refusal.test.tsx. */
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { DAYS } from './data'
@@ -143,7 +143,7 @@ describe('the reason is one string, and it reaches the hover', () => {
   })
 })
 
-describe('the money belt on the flying branch (Fable M4 step 5)', () => {
+describe('the credit belt on the flying branch (Fable M4 step 5)', () => {
   it('the flying branch NEVER hands its window to the expander', () => {
     /* a day template and a parked plan both re-land a captured day without
        passing either door, so the doors alone cannot keep a placeholder out of a

@@ -11,7 +11,7 @@
    THE OWNER OVERRULED THIS BUILD'S FIRST ANSWER, and the fact that settled it is
    one the code could not supply. The build had argued for "live on a day that
    earns nothing", reasoning that a pending mark for a number owing nobody
-   anything would devalue a mark that does carry money. He knows the squadron
+   anything would devalue a mark that does carry credit. He knows the squadron
    reviews every change at the close of the day and issues an end-of-day version
    as the record of what actually happened — so that mark is the signal their
    process runs on, not noise, and a change in who was available IS something
@@ -142,7 +142,7 @@ describe('D103 — a changed crowd on a published day wipes the sign-offs, and p
     expect(allSigned(TUE), 'AM11: putting it back restores the signatures').toBe(true)
   })
 
-  it('the same on a weekend, where the crowd is money', () => {
+  it('the same on a weekend, where the crowd earns', () => {
     puckRow(SAT)
     signAndPublish(SAT)
     HOOKS.oilSentinel = () => ['bane']
@@ -261,7 +261,7 @@ describe('the signature\'s key does not CARRY the crowd, whatever the fixture do
   it('a day that earns nobody anything binds a signature to no OIL key at all', async () => {
     const { oilEvidence, oilSignKey } = await import('./oilev')
     puckRow(TUE)
-    expect(oilSignKey(oilEvidence(TUE), DAYS[TUE]), 'a weekday has no money to promise').toBe('')
+    expect(oilSignKey(oilEvidence(TUE), DAYS[TUE]), 'a weekday has no OIL to promise').toBe('')
     HOOKS.oilSentinel = () => ['bane']
     expect(oilSignKey(oilEvidence(TUE), DAYS[TUE]), 'and a changed crowd leaves it at nothing').toBe('')
   })
@@ -288,7 +288,7 @@ describe('the signature\'s key does not CARRY the crowd, whatever the fixture do
    This does not decide whether the day should raise the mark at all — that is
    the owner's open question. It makes the day SAY what it actually knows, which
    is what he would want under either answer. Same idiom as OIL_STALE_DAY, which
-   exists for the other way a published day's money moves under it. */
+   exists for the other way a published day's credit moves under it. */
 describe('a day issued before these seats were counted says so, instead of a bare "1 pending"', () => {
   const oldIssuedDeskDay = () => {
     const item = puckRow(SAT)

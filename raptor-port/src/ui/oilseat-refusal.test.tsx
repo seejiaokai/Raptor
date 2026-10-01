@@ -3,7 +3,7 @@
    cockpit, refused with its reason on screen.
    Plan: docs/superpowers/specs/2026-09-22-oil-seats-can-earn-plan.md §5 step 2.
 
-   The engine half (the preflight body, the writers' belt, the words, the money
+   The engine half (the preflight body, the writers' belt, the words, the credit
    belt) is engine/oilseat-refusal.test.ts. This file walks the DOORS, because a
    rule that exists in the engine and is not wired to a door is exactly the class
    of defect the standing order was written after: three of the owner's finds on

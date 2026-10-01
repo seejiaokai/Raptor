@@ -11,7 +11,7 @@
       when some of the men earn nothing, and when every one of them earns but at
       different amounts. The wording read them as one, so a chip reading
       "30 of 30 earn" was captioned "Some of these men earn OIL and some do not"
-      — two sentences contradicting each other, about money, on the face of a
+      — two sentences contradicting each other, about OIL, on the face of a
       published day.
 
    2. D24 — the item's earn switch. The four exempt kinds "all start OFF". The

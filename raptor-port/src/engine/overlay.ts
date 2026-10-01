@@ -219,7 +219,7 @@ export function standingRow(row: any, r: any, dt: any): boolean {
    version row on a day its request cannot stand on — D363), which can sit in the same week as the request's real row once
    the request has come back to another day: every lookup that ACTS on "the request's row" (Accept's one-row guard, ✕, the
    OIL evidence, a load's leave-out) asks this, never the first row carrying its id (Astra's round-3 read, finding 1: the
-   OIL evidence found the dead row, cancelled, first and paid nothing for the live one). `r`: the request, when the caller
+   OIL evidence found the dead row, cancelled, first and credited nothing for the live one). `r`: the request, when the caller
    has it (found by id otherwise). */
 export function standsOn(d: any, id: any, r?: any): any {
   const want = String(id || '')

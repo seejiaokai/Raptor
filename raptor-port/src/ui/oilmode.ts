@@ -117,7 +117,7 @@ export function oilUndoBoundary(): boolean {
 /* ---- reading the day's figures ------------------------------------------- */
 
 /** The evidence a day is showing: the FROZEN block on an issued day (so a
- *  reader's green edge says exactly what the money says), the live candidate on
+ *  reader's green edge says exactly what the credit says), the live candidate on
  *  a working copy. Inside a version preview DAYS[di] IS the snapshot, so this
  *  needs no argument to get the right answer. */
 export function evOf(di: any): OilEvidence { return oilEvidenceOf(+di) }
@@ -181,11 +181,11 @@ export function oilFigureFor(di: any, person: any, item?: string): OilAmt {
  *  IT READS THE DAY'S EVIDENCE, NOT THE DAY'S LIVE DECISIONS
  *  ([OIL-SEATS-CAN-EARN] §5 step 1; F2, confirmed by both reviewers). The rule
  *  was written twice and the two copies read DIFFERENT SOURCES: this one read
- *  `DAYS[di].oild` — the live day — while the money read `ev.d`, the block
+ *  `DAYS[di].oild` — the live day — while the credit read `ev.d`, the block
  *  frozen onto the issued document. They agree today only because publishing
  *  swaps one for the other, so it was a seam rather than a live defect; it is
  *  shut here because every step after this one adds another reader, and the
- *  screen contradicting the money about a man's earned leave is the failure
+ *  screen contradicting the credit about a man's earned leave is the failure
  *  this whole change is built to avoid.
  *
  *  Named `masked` rather than `on` deliberately (Fable R2-2). From step 3 the
@@ -226,10 +226,10 @@ export function oilPersonOn(di: any, person: any, item: string): boolean {
  *  IT NO LONGER ANSWERS `true` FOR EVERYTHING WITHOUT A CLAIM (Fable R2-1 /
  *  Codex OSE-R2-01 — the sharpest finding of round 2, and both reviewers reached
  *  it from opposite ends). Once a seat can default OFF that old answer would draw
- *  a default-off man GLOWING while the money paid him nothing, and his tap would
+ *  a default-off man GLOWING while the credit pass credited him nothing, and his tap would
  *  write `deny` for a credit he never had — making `allow` unreachable, so D24's
- *  only door would not exist. `spanDefault` is the ONE body, and the money reads
- *  it too, so the screen and the payment cannot disagree. */
+ *  only door would not exist. `spanDefault` is the ONE body, and the credit reads
+ *  it too, so the screen and the credit cannot disagree. */
 function itemDefaultFor(di: any, ev: OilEvidence, person: string, item: string): boolean {
   return spanDefault(DAYS[+di] || {}, ev, person, item)
 }
@@ -237,7 +237,7 @@ function itemDefaultFor(di: any, ev: OilEvidence, person: string, item: string):
 /** …and the default AS THE ITEM MARK LEAVES IT. An item the admin has forced ON
  *  earns for everyone standing on it, so THAT is what a person tap must be
  *  compared against: comparing against the seat's own answer would delete the
- *  refusal the moment it was written, and the `1` would pay the man again the
+ *  refusal the moment it was written, and the `1` would credit the man again the
  *  same instant (Codex OSE-R2-01, second half). */
 function effectiveDefault(di: any, ev: OilEvidence, person: string, item: string): boolean {
   return itemMark(ev, item) === 1 ? true : itemDefaultFor(di, ev, person, item)
@@ -247,7 +247,7 @@ function effectiveDefault(di: any, ev: OilEvidence, person: string, item: string
  *  identically today and only one of them is a mistake (hand pass finding 13 /
  *  Fable M3, 22 Sep 26). One sentence covered "the scheduler took him off",
  *  "he said No himself" and "nobody has asked him", and the third is the one
- *  that costs a man money in silence: a request handed to a new holder arrives
+ *  that costs a man credit in silence: a request handed to a new holder arrives
  *  unanswered, and unanswered was drawn with the wording of a refusal.
  *
  *  `denied`   — a scheduler's own mark on this man.
@@ -516,20 +516,20 @@ export function oilItemCellHTML(di: any, item: string, name: any, cls: string): 
      spare, a cancelled row, an ⓘ row and a desk with no written times all read
      "Earns OIL — tap to stop this item earning" while sitting beside pucks that
      already said they earn nothing. Worse, on a published day a tap wrote a real
-     decision, so the day grew an amendment for something that moves no money.
+     decision, so the day grew an amendment for something that moves no OIL.
      An EMPTY ordinary row keeps its switch — put a man on it and he earns, and
      OIL7 says the switch covers later additions too. */
   if (!oilCapableItems(DAYS[+di] || {}).has(item)) {
     /* A CLAIM ROW IS NOT AN INERT ROW, AND MUST NOT BORROW ITS WORDS (walk
        find, 22 Sep 26 — hand-pass finding 13). `oilCapableItems` is derived
-       from the SCHEDULE walk, and a request's money never goes through it:
-       the requester is paid from his own answer (the input half) and D18's
+       from the SCHEDULE walk, and a request's credit never goes through it:
+       the requester is credited from his own answer (the input half) and D18's
        extras are each decided on their own puck. So a live claim's item is
        absent from the capable set for a reason that has nothing to do with
        being unable to earn — and the row was reading "Nothing on this row can
        earn OIL" directly beside a puck reading "Talisman earns half a day".
        Both sentences on screen at once, four rows of it on the everything-
-       Saturday, contradicting each other about money.
+       Saturday, contradicting each other about OIL.
 
        A landed request's row carries the INPUT's key (groundItemKey), so both
        the Personal Inputs echo and the ground row it landed on arrive here
@@ -552,7 +552,7 @@ export function oilItemCellHTML(di: any, item: string, name: any, cls: string): 
      WORDING PASS (Fable R2-10). From this step the switch can be in more states
      than its two old titles could describe, and the wrong ones are not harmless:
      "Earns OIL — tap to stop this item earning" on an AVALON line that earns
-     nothing would be the screen telling the admin something false about money,
+     nothing would be the screen telling the admin something false about OIL,
      for the seven steps between here and the wording pass.
 
      MIXED is not a curiosity either (Fable S8): an SC shift holds MAIN seats
@@ -688,7 +688,7 @@ export function oilEligible(di: any, person: any, item: string): boolean {
   const ev = evOf(di)
   if (!ev.earns) return false
   /* a claim-derived item is eligible when the claim itself is live — ONE body
-     decides that, shared with the money (oilInputEligible), so the mode can
+     decides that, shared with the credit (oilInputEligible), so the mode can
      never offer a toggle on a claim the credit path has already ruled out. */
   const inp = ev.inputs.find(i => inputItemKey(i.iid) === item && i.person === String(person))
   if (inp) return oilInputEligible(d, inp)
@@ -696,10 +696,10 @@ export function oilEligible(di: any, person: any, item: string): boolean {
      fallback below asks `dayOilWork`, whose ground walk skips every `src` row
      whole, so he had no span tagged with the claim's item and came back
      ineligible: drawn inert, "nothing measurable to earn from here", no item
-     and no switch — while `oilEarnedWork` was paying him. Measured on the
+     and no switch — while `oilEarnedWork` was crediting him. Measured on the
      everything-Saturday: a man on NOTHING, dragged onto a landed Training row
-     through the row's own drop zone, was paid HO and told he earned nothing.
-     Same question, same body as the money now (walk find, 22 Sep 26).
+     through the row's own drop zone, was credited HO and told he earned nothing.
+     Same question, same body as the credit now (walk find, 22 Sep 26).
 
      Asked WITHOUT the decision: eligibility means "could this man earn from
      this item", and it must not move when somebody switches him off, or his
@@ -716,7 +716,7 @@ export function oilEligible(di: any, person: any, item: string): boolean {
  *  the request's own window, never the row's: an all-day request lands a row
  *  with no times at all, so reading the row would leave its crowd undrawn on
  *  exactly the request that covers most of the day — the same trap Fable M6
- *  found on the money side of D18's extras. Any other ground row answers null
+ *  found on the credit side of D18's extras. Any other ground row answers null
  *  here and the caller uses the row's written times. */
 export function oilClaimWin(di: any, src: any): [number, number] | null {
   const iid = String(src || '')
@@ -733,8 +733,8 @@ export function oilClaimWin(di: any, src: any): [number, number] | null {
    It used to expand: inside the mode a placeholder became the individual pucks
    of the men behind it, drawn along the row, each tappable to take one man off
    ([OIL-SEATS-CAN-EARN] step 7). That door was built for a real reason — step 5
-   made those seats EARN, and paying a crowd the scheduler cannot correct is
-   worse than not paying it. THE DOOR HAS NOT BEEN REMOVED, IT HAS MOVED: the
+   made those seats EARN, and crediting a crowd the scheduler cannot correct is
+   worse than not crediting it. THE DOOR HAS NOT BEEN REMOVED, IT HAS MOVED: the
    counter chip now opens the window, and the window is where a man is switched
    off. That is what the owner asked for in D38 — the window replaces the
    in-row crowd as well as the bubble of names.
@@ -983,7 +983,7 @@ export function oilSentinelSummary(di: any, item: string):
   if (!item) return null
   /* ON EVERY DAY NOW ([OIL-SEATS-CAN-EARN] step 9, D27). The count is a
      SCHEDULING fact — who would attend — and it used to exist only as a
-     by-product of working out the money, so five days a week the puck stood
+     by-product of working out the credit, so five days a week the puck stood
      for nobody and this returned null. */
   const got = oilSentOf(ev, item)
   /* an ISSUED document written before membership was kept (OSE-T-02): it does

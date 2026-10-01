@@ -6,7 +6,7 @@
    would attend and show the count — whether or not the day earns OIL and
    whether or not the earn mode is on. Until now the count existed only on a
    weekend, inside the mode, because the whole answer was a by-product of
-   working out the money.
+   working out the credit.
 
    D44: who was behind a puck is FROZEN at publication on EVERY day, earning or
    not. The issued schedule keeps the people it went out with; the working copy
@@ -66,7 +66,7 @@ describe('the day writes down who is behind each puck — on EVERY day (D27, D44
     expect(oilEvidence(SAT).sent[item]).toEqual(CROWD)
   })
 
-  it('A WEEKDAY RECORDS IT TOO — the count is a scheduling fact, not a money one', () => {
+  it('A WEEKDAY RECORDS IT TOO — the count is a scheduling fact, not a credit one', () => {
     const item = puckRow(TUE)
     const ev = oilEvidence(TUE)
     expect(ev.earns, 'a Tuesday earns nobody anything').toBe(false)

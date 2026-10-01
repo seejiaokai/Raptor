@@ -115,8 +115,8 @@ describe('dayOilCredits — who earns what from one day blob', () => {
      an admin can credit a line that really was work. The assertion therefore
      moves from ABSENCE to the DEFAULT, which is where the rule now lives — and
      it is stronger for it: absence could not tell "exempt" from "the walk is
-     broken", and the default plus its control can. The MONEY is unchanged:
-     nothing here is paid unless somebody says so. */
+     broken", and the default plus its control can. The CREDIT is unchanged:
+     nothing here is credited unless somebody says so. */
   it('an SC SPARE earns nothing by default — he is standing by at home', () => {
     const d = day([scWave(shift('07:00', '19:00', [main('plasma'), spare('rocky')]))])
     const w = dayOilWork(d, { expandAll: () => [] })
@@ -160,9 +160,9 @@ describe('dayOilCredits — who earns what from one day blob', () => {
      and nothing else. The owner asked (22 Sep 26) about the path he actually
      uses: + Block → a template whose "For wave" is AVALON. If blockFromTpl ever
      stopped stamping the wave onto the minted block, the test above would still
-     pass and a user-made AVALON desk would quietly start paying. This walks the
+     pass and a user-made AVALON desk would quietly start crediting. This walks the
      real mint, and the Standard template is the control that proves the day can
-     pay at all. Driven in the app the same day and it agreed. */
+     credit at all. Driven in the app the same day and it agreed. */
   it('a duty block MINTED from a template carries its wave — an AVALON one earns nothing, a Standard one does (owner, 22 Sep 26; D15)', () => {
     dutyTplLoad()
     const man = (id: string, blk: any) => { blk.rows[0].id = id; blk.rows[0].str = '08:00'; blk.rows[0].end = '18:00'; return blk }
@@ -184,7 +184,7 @@ describe('dayOilCredits — who earns what from one day blob', () => {
     expect(plainBlk.sa).toBeUndefined()
     /* the control: the SAME man, the SAME hours, on a block whose template names
        no wave — he earns a full day. Without this the assertion above would pass
-       just as happily against a day that pays nobody. */
+       just as happily against a day that credits nobody. */
     expect(dayOilCredits({ waves: [], dutywaves: [plainBlk], sims: { amt: [], oft: [] }, ground: [], allhands: [] })).toEqual({ rocky: 1 })
   })
 
@@ -210,7 +210,7 @@ describe('dayOilCredits — who earns what from one day blob', () => {
     expect(dayOilCredits(d)).toEqual({ plasma: 0.5, rocky: 0.5, divot: 0.5 })
   })
 
-  it('an overlapping row inside the envelope changes nothing — the same hour never pays twice', () => {
+  it('an overlapping row inside the envelope changes nothing — the same hour never credits twice', () => {
     const d = day([], [duty('plasma', '0800', '1200')], { allhands: [
       { prog: 'Brief', str: '0900', end: '1000', who: 'plasma' },
     ] })

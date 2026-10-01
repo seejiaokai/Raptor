@@ -4,7 +4,7 @@
 
    WHY THIS IS ITS OWN STEP. A request that has been accepted lands a row on the
    Ground Programme, and that row is the ONE row the day's work walk skips whole
-   — the money for it comes down a separate route, from the request itself. So
+   — the credit for it comes down a separate route, from the request itself. So
    step 5's expansion never reaches it: a placeholder dropped in the request
    row's name box or under it counted nobody and offered nothing, and step 5 did
    not change that by a line.
@@ -20,7 +20,7 @@
 
    AND NOT BY REMOVING THE SKIP. Feeding a request row through the ordinary work
    walk would put the REQUESTER through it too, where the default is yes — which
-   overrides his own No and pays him twice, once as plain scheduled work and
+   overrides his own No and credits him twice, once as plain scheduled work and
    again as his answered request. The requester stays on his own answer; the
    crowd is ordinary work on the same address.
 
@@ -43,7 +43,7 @@ const SAT = 5, SAT_ISO = '2026-07-18'
 const earningDay = HOOKS.oilEarningDay, dayISO = HOOKS.oilDayISO, sentinel = HOOKS.oilSentinel
 /* who the placeholder stands for. `bane` FILES the request in every fixture
    below and is deliberately inside this list: a crowd that swept him up would
-   pay him twice and bury his own answer. */
+   credit him twice and bury his own answer. */
 const CROWD = ['bane', 'stiff', 'plasma']
 const ITEM = inputItemKey('rq1')
 
@@ -73,7 +73,7 @@ const groundRow = (di: number, r: any) => {
   DAYS[di].ground = (DAYS[di].ground || []).concat([r]); ensureRowIds(DAYS)
   return DAYS[di].ground[DAYS[di].ground.length - 1]
 }
-/* THE FIGURE AS THE MONEY SEES IT: off the ISSUED snapshot once the day has
+/* THE FIGURE AS THE CREDIT SEES IT: off the ISSUED snapshot once the day has
    gone out, off the working copy before it has — the choice leavewar/sync.ts
    makes. */
 const figure = (di: number, person: string) => {
@@ -105,10 +105,10 @@ describe('a placeholder on a request row credits the people it stands for (D46)'
 
   it('IN THE NAME BOX itself (Codex OSE-R2-04)', () => {
     /* the requester's name has been replaced by the puck on the row; his
-       REQUEST still names him, so he is still paid from it */
+       REQUEST still names him, so he is still credited from it */
     landed({}, { who: 'allavail' })
     expect(paidNames(SAT)).toEqual(['bane', 'plasma', 'stiff'])
-    expect(figure(SAT, 'bane'), 'his own request still pays him').toBe('FO')
+    expect(figure(SAT, 'bane'), 'his own request still credits him').toBe('FO')
   })
 
   it('and ALL reads the same as ALL AVAIL', () => {
@@ -118,7 +118,7 @@ describe('a placeholder on a request row credits the people it stands for (D46)'
 })
 
 describe('the requester keeps his own answer (the split, not the skip)', () => {
-  it('he is never paid TWICE, even though the crowd names him', () => {
+  it('he is never credited TWICE, even though the crowd names him', () => {
     landed({}, { more: ['allavail'] })
     const work = oilEarnedWork(DAYS[SAT], oilEvidence(SAT))
     expect(work.bane.length, 'one span, from his request — not a second as part of the crowd').toBe(1)
@@ -130,7 +130,7 @@ describe('the requester keeps his own answer (the split, not the skip)', () => {
     expect(figure(SAT, 'stiff'), 'the scheduler put the crowd there; it is ordinary work').toBe('FO')
   })
 
-  it('an UNANSWERED request pays nobody but still gathers the crowd', () => {
+  it('an UNANSWERED request credits nobody but still gathers the crowd', () => {
     landed({ oil: {} }, { more: ['allavail'] })
     expect(figure(SAT, 'bane'), 'he has not answered, so nothing for him yet').toBe(null)
     expect(figure(SAT, 'plasma'), 'the crowd does not wait on his answer').toBe('FO')
@@ -153,7 +153,7 @@ describe('what the crowd is resolved against, and what holds it still', () => {
     publish(SAT)
     expect(figure(SAT, 'plasma'), 'he was on it when it was issued').toBe('FO')
     /* somebody files leave and drops out of the crowd — the issued day must not
-       quietly stop paying him */
+       quietly stop crediting him */
     HOOKS.oilSentinel = () => ['stiff']
     expect(figure(SAT, 'plasma'), 'the issued record is what he is owed against').toBe('FO')
   })
@@ -171,7 +171,7 @@ describe('the scheduler can still decide man by man', () => {
   it('THAT DECISION SURVIVES — it is not swept away as a handed-over request', () => {
     /* the tidy-up that drops overrides naming a man who no longer holds the
        request must not read a crowd member as an impostor. If it did, his
-       refusal would be deleted on the way out and he would be paid anyway —
+       refusal would be deleted on the way out and he would be credited anyway —
        the exact shape D18's own fix had to close. */
     landed({}, { more: ['allavail'] })
     ;(DAYS[SAT] as any).oild = { people: { [`plasma|${ITEM}`]: 'deny' } }
@@ -187,7 +187,7 @@ describe('the scheduler can still decide man by man', () => {
   })
 })
 
-describe('the screen and the money ask the SAME body', () => {
+describe('the screen and the credit ask the SAME body', () => {
   it('landedExtras returns the crowd, so whatever draws the row draws them too', () => {
     landed({}, { more: ['allavail'] })
     const ev = oilEvidence(SAT)
@@ -202,7 +202,7 @@ describe('the screen and the money ask the SAME body', () => {
 })
 
 describe('the controls', () => {
-  it('a CANCELLED request row pays nobody — not the requester, not the crowd', () => {
+  it('a CANCELLED request row credits nobody — not the requester, not the crowd', () => {
     const row = landed({}, { more: ['allavail'] })
     row.cx = true
     expect(paidNames(SAT)).toEqual([])

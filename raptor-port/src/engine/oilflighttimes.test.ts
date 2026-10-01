@@ -1,10 +1,10 @@
 /* [OIL-SEATS-CAN-EARN] STEP 8, AS THE OWNER RULED IT — a flying line whose
-   times cannot be right SAYS SO, and still pays the man.
+   times cannot be right SAYS SO, and still credits the man.
    Plan: docs/superpowers/specs/2026-09-22-oil-seats-can-earn-plan.md §5 step 8
    (finding C2) — **overruled in part, see D49**.
 
    WHAT THE PLAN ASKED FOR, AND WHY IT IS NOT BUILT. Both reviewers found that a
-   flight typed with the SAME take-off and landing minute still pays half a day:
+   flight typed with the SAME take-off and landing minute still credits half a day:
    the rules add three hours of report before take-off and two of debrief after
    landing, so a sortie of no minutes comes out as a five-hour day. They read
    that as the app paying off its own padding, and the plan's step 8 was to
@@ -22,11 +22,11 @@
    WHAT IS KEPT: the day has to SAY the times look wrong, so somebody corrects
    them. Two different sentences, because they are two different facts:
 
-   · TAKE-OFF AND LANDING THE SAME — it pays, but the sortie length cannot be
+   · TAKE-OFF AND LANDING THE SAME — it credits, but the sortie length cannot be
      read and one of the two times is almost certainly a slip. An ADVISORY on
      the line, on any day, because a nought-minute sortie is wrong on a Tuesday
      too.
-   · NO READABLE TIMES AT ALL — it pays nothing, and used to say nothing. That
+   · NO READABLE TIMES AT ALL — it credits nothing, and used to say nothing. That
      is the exact trap the owner raised on 20 Sep 26 about a duty desk ("I would
      also like u to give the warning On the day itself"); a flying line was never
      added to that list. Weekend and holiday only, like the rest of it, because
@@ -69,7 +69,7 @@ const credits = (di: number) => dayOilCredits(DAYS[di], { expandAll: () => [] })
 const advOn = (di: number, code: string) => (validate().byDay[di]?.warns ?? []).filter((w: any) => w.code === code)
 
 describe('D49 — a nought-minute sortie STILL earns, and this pin is the ruling', () => {
-  it('take-off and landing at the same minute pays the man his half day', () => {
+  it('take-off and landing at the same minute credits the man his half day', () => {
     onlyLine(SAT, '09:00', '09:00')
     expect(credits(SAT).bane, 'he reported at 0600 and debriefed until 1100 — he was at work').toBe(0.5)
   })
@@ -136,7 +136,7 @@ describe('but the day SAYS the times cannot be right, so somebody fixes them', (
 describe('a flying line with NO readable times earns nothing, and no longer in silence', () => {
   it('it is named beside the desks, in the same list', () => {
     onlyLine(SAT, '', '')
-    expect(credits(SAT).bane, 'money never comes from a guess').toBeUndefined()
+    expect(credits(SAT).bane, 'credit never comes from a guess').toBeUndefined()
     /* the list NAMES the line; the exact wrapper wording is G1's, pinned in
        its own block below rather than here */
     expect(dayOilBlind(DAYS[SAT]).join(' '), 'and now it says so').toContain('RAP 1')
@@ -179,7 +179,7 @@ describe('a flying line with NO readable times earns nothing, and no longer in s
    before and debriefed for two after, so the half day is real work whatever the
    written times say. A STANDALONE wave — SC MAIN, SC SPARE, AVALON, BB — has no
    such padding: its window IS the written window. Typed 08:00–08:00 it measures
-   nothing, offers no switch and pays nobody, which is D31 working exactly as
+   nothing, offers no switch and credits nobody, which is D31 working exactly as
    ruled.
 
    What was wrong was the SCREEN. The same advisory fired on it, on the line and
@@ -198,8 +198,8 @@ describe('a nought-minute SHIFT says the opposite of a nought-minute sortie', ()
                   { crew = 'bane', spare = false } = {}) => {
     /* MINTED THE WAY THE APP MINTS ONE (`makeStandalone`), never hand-built. A
        hand-built standalone wave is missing the flags the mint sets, and the
-       money engine reads those — the first version of this fixture had an
-       AVALON line paying by default, which is not what the app does and would
+       credit engine reads those — the first version of this fixture had an
+       AVALON line crediting by default, which is not what the app does and would
        have been a false finding about D24. The order's own rule: fixtures write
        the way the app writes. */
     const w = makeStandalone(kind)!
@@ -214,7 +214,7 @@ describe('a nought-minute SHIFT says the opposite of a nought-minute sortie', ()
   const scLine = (di: number, to: string, ld: string, crew = 'bane') => saLine(di, 'sc', to, ld, { crew })
   const blindNames = (di: number) => dayOilBlind(DAYS[di]).map((b: any) => b.name || b.label || b.cs || String(b))
 
-  it('THE FACT, unchanged: it measures nothing, offers no switch and pays nobody', () => {
+  it('THE FACT, unchanged: it measures nothing, offers no switch and credits nobody', () => {
     const f = scLine(SAT, '08:00', '08:00')
     expect(credits(SAT).bane, 'a shift has no report and no debrief to pad it').toBeUndefined()
     expect(oilCapableItems(DAYS[SAT]).has(rowItemKey(f.rid)), 'nothing to measure, so no switch — D31').toBe(false)
@@ -242,7 +242,7 @@ describe('a nought-minute SHIFT says the opposite of a nought-minute sortie', ()
       .toContain('still earns from the report and debrief')
   })
 
-  it('THE CONTROL: a shift with real times pays and is named nowhere', () => {
+  it('THE CONTROL: a shift with real times credits and is named nowhere', () => {
     scLine(SAT, '08:00', '14:00')
     expect(credits(SAT).bane, 'six hours is a half day').toBe(0.5)
     expect(advOn(SAT, 'FLT_NO_LEN'), 'nothing wrong with its times').toHaveLength(0)
@@ -255,7 +255,7 @@ describe('a nought-minute SHIFT says the opposite of a nought-minute sortie', ()
   for (const [kind, what] of [['sc', 'SC MAIN'], ['avalon', 'AVALON'], ['bb', 'BB']] as const) {
     it(`${what}, typed to the same minute: pays nobody, says so, and is named`, () => {
       const f = saLine(SAT, kind, '08:00', '08:00')
-      expect(credits(SAT).bane, 'no padding to pay from').toBeUndefined()
+      expect(credits(SAT).bane, 'no padding to credit from').toBeUndefined()
       expect(oilCapableItems(DAYS[SAT]).has(rowItemKey(f.rid)), 'nothing to measure, so no switch').toBe(false)
       /* by the name the app gives it — an AVALON line's callsign is 'AV', not
          'AVALON', and a list that named the wrong thing would help nobody */
@@ -280,7 +280,7 @@ describe('a nought-minute SHIFT says the opposite of a nought-minute sortie', ()
       /* the DEFAULT is the span's own flag, not what the day would credit with
          every switch on — `dayOilCredits` measures, `dflt` is what it earns
          unless somebody says otherwise. Asserting the wrong one of those two
-         read as an AVALON line paying by default, which it does not. */
+         read as an AVALON line crediting by default, which it does not. */
       const span = dayOilWork(DAYS[SAT], { expandAll: () => [] }).bane
       expect(span && span[0].dflt, `${kind} reaches the walk and earns nothing until somebody says so`).toBe(false)
       expect(advOn(SAT, 'FLT_NO_LEN'), 'nothing wrong with its times').toHaveLength(0)

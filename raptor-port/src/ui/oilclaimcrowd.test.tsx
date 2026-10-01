@@ -4,12 +4,12 @@
    be tapped.
    Plan: docs/superpowers/specs/2026-09-22-oil-seats-can-earn-plan.md §5 step 6.
 
-   The money half is engine/oilclaimcrowd.test.ts. This file exists because the
+   The credit half is engine/oilclaimcrowd.test.ts. This file exists because the
    two have been out of step on this exact row before: a man the credit was
-   paying from a landed request was drawn INERT in the mode — "nothing
+   crediting from a landed request was drawn INERT in the mode — "nothing
    measurable to earn from here" — with no switch to change it, because the
    screen asked the day's work walk and the walk skips every request row whole.
-   The screen contradicting the money about a man's entitlement, with no door.
+   The screen contradicting the credit about a man's entitlement, with no door.
    That was found by opening the app, not by reading code, and it is the reason
    a green engine suite is not enough here.
 
@@ -106,7 +106,7 @@ describe('the crowd on a request row is drawn, and every man in it is tappable',
     const seats = [...el.querySelectorAll('.seat.oilpk')] as HTMLElement[]
     expect(seats.map(s => s.dataset.oilp), 'the man who filed it keeps his own puck').toEqual(['bane'])
     expect(seats.filter(s => s.classList.contains('inert')).length,
-      'and he may not be inert — the money is paying him').toBe(0)
+      'and he may not be inert — the credit pass is crediting him').toBe(0)
     const chip = el.querySelector('.oilcount') as HTMLElement
     expect(chip, 'the placeholder has a counter — this IS the door').toBeTruthy()
     await click(chip)
@@ -115,7 +115,7 @@ describe('the crowd on a request row is drawn, and every man in it is tappable',
     const inWin = ([...w.querySelectorAll('.seat.oilpk')] as HTMLElement[])
     expect(inWin.map(s => s.dataset.oilp).sort(), 'the two he stands beside').toEqual(['plasma', 'stiff'])
     expect(inWin.filter(s => s.classList.contains('inert')).length,
-      'NONE of them may be inert — the money is paying them').toBe(0)
+      'NONE of them may be inert — the credit pass is crediting them').toBe(0)
   })
 
   it('the row does not claim nothing on it can earn', async () => {
