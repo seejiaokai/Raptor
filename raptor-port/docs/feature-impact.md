@@ -688,6 +688,13 @@ check the other):
   report rule, the debrief pad, which event kinds are in `EVD`) moves both, as
   it should — but anything that re-derives a span WITHOUT `workSpan` is a new
   seam.
+- **Insights vs the published day beside it** (D477, D478, 1 Oct 26 — `[INSIGHTS-WHICH-COPY]`). The Insights
+  window opens over every page, and it counts each day's LATEST PUBLISHED version (the working copy only for a day
+  not yet published) — the days, the work hours and the warnings all from `validate.ts issuedWorld()`, the world
+  View-only Sched draws. A new figure added to the window reads that world too, never `DAYS` / `EVD` / `WARN`
+  directly: a figure worked out from the working globals would move for a change still waiting on a published
+  day while the figures beside it stood still. `ui/insights-published.test.tsx` compares the whole window before
+  and after such changes.
 - **The trailing drop zone: one `ADDZ` body, two surfaces** (26 Aug 26). Every
   append-capable people cell needs a drop target that ISN'T over a seated puck, or
   a full row's drop resolves to a `.seat` and swaps it. `html.ts` exports the one

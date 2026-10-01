@@ -233,6 +233,8 @@ const RULES = {
   WH11: 'a scheduler\'s alone, an Undo step, and the history says who hid what',
   WH12: 'the week-edge mark and the preview follow next Monday\'s own hide',
   WH13: 'every mark the rules write belongs to a warning of its own',
+  /* [INSIGHTS-WHICH-COPY] (1 Oct 26 — D477, D478). The rule: docs/ui-contracts.md §Week Insights */
+  IN1: 'Insights counts each day\'s latest published version; the working copy only for a day not yet published',
 }
 
 /* Rules with no test naming them on 20 Sep 26. The check fails if this set

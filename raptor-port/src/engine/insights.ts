@@ -1,13 +1,19 @@
-import { DAYS } from './data'
 import { PEOPLE } from './people'
-import { validate, WARN, EVD, workSpan } from './validate'
+import { validate, issuedWorld, workSpan } from './validate'
 import { shownWarns } from './warnhide'
 import { isStandalone } from './waves'
 /* =====================================================================
    WEEK INSIGHTS — make sense of the week (load, coverage, conflicts)
    ===================================================================== */
+/* WHICH SCHEDULE IT COUNTS (owner D477, D478, 1 Oct 26 — "It should show the latest copy, so if working copy is the only
+   copy then it will use that, unless its published then use Original, if theres an AL1 then use AL1 etc."): day by day,
+   a published day at its LATEST PUBLISHED version, a day not yet published as the working copy — on every page, for
+   every figure below. So the days, the events and the warnings all come from ONE world (validate.ts issuedWorld — what
+   View-only Sched draws), never from the working globals: a change waiting on a published day (a seat, a leave, a
+   hidden warning) moves nothing here until its amendment is out. Pins: ui/insights-published.test.tsx. */
 export function computeInsights(){
   validate();
+  const {days:DAYS, evd:EVD, warn:WARN}=issuedWorld();
   let sorties=0,forms=0; const fc:any={}, dayStats:any[]=[];
   /* WORK HOURS (owner, 20 Aug 26 — "perhaps have a section to show everyone's
      work hours in the insights for the week"). Summed off the SAME per-person
@@ -33,12 +39,12 @@ export function computeInsights(){
       const w=workSpan(ev[id]); if(!w)return;
       wm[id]=(wm[id]||0)+w.span; wd[id]=(wd[id]||0)+1;
     });
-    const dw=shownWarns(WARN.byDay[di]&&WARN.byDay[di].warns);   /* a hidden warning is not counted (owner D472, 1 Oct 26) */
+    const dw=shownWarns(WARN.byDay[di]&&WARN.byDay[di].warns);   /* a hidden warning is not counted (owner D472, 1 Oct 26) — by the hides that version went out with (D477) */
     dayStats.push({dow:d.dow,ac:ds,forms:df,warns:dw.length,hard:dw.filter((x:any)=>x.sev==='hard').length});
   });
   const flyers=Object.keys(fc).map((id:any)=>({id,n:fc[id]})).sort((a:any,b:any)=>b.n-a.n||PEOPLE[a.id].cs.localeCompare(PEOPLE[b.id].cs));
   const idle=Object.keys(PEOPLE).filter((id:any)=>!PEOPLE[id].archived&&!PEOPLE[id].pers&&!fc[id]).sort((a:any,b:any)=>PEOPLE[a].cs.localeCompare(PEOPLE[b].cs));
-  const byType:any={}; shownWarns(WARN.all).forEach((w:any)=>byType[w.code]=(byType[w.code]||0)+1);
+  const shown=shownWarns(WARN.all), byType:any={}; shown.forEach((w:any)=>byType[w.code]=(byType[w.code]||0)+1);
   /* EVERYONE who has a scheduled hour, longest first — a load picture, so the
      name at the top is the one to look at. `PEOPLE[id]` is guarded because EVD
      is keyed by whatever the day's events carry; the flying list beside it
@@ -46,5 +52,6 @@ export function computeInsights(){
   const csOf=(id:any)=>PEOPLE[id]?PEOPLE[id].cs:String(id);
   const hours=Object.keys(wm).map((id:any)=>({id,mins:wm[id],days:wd[id]}))
     .sort((a:any,b:any)=>b.mins-a.mins||csOf(a.id).localeCompare(csOf(b.id)));
-  return {sorties,forms,flyers,idle,byType,dayStats,hours};
+  /* the week's two totals, for the window's tile — counted here so the tile and the lists read one world */
+  return {sorties,forms,flyers,idle,byType,dayStats,hours,issues:shown.length,hard:shown.filter((w:any)=>w.sev==='hard').length};
 }

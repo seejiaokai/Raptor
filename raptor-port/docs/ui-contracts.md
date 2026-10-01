@@ -4750,7 +4750,7 @@ owner's ask). Each late input now carries its OWN control on the board.
 
 ## Week Insights: work hours (owner, 20 Aug 26)
 
-**WHICH SCHEDULE INSIGHTS COUNTS (owner, D477 and D478, 1 Oct 26 — RULED, NOT YET BUILT: `[INSIGHTS-WHICH-COPY]`).** *"It
+**WHICH SCHEDULE INSIGHTS COUNTS (owner, D477 and D478, 1 Oct 26 — BUILT 1 Oct 26, `[INSIGHTS-WHICH-COPY]`; rule id IN1).** *"It
 should show the latest copy, so if working copy is the only copy then it will use that, unless its published then use
 Original, if theres an AL1 then use AL1 etc."* (D478). Day by day, Insights counts that day's LATEST PUBLISHED version — the
 Original, or the latest amendment — and the working copy only for a day not yet published. Changes waiting on a published
@@ -4758,9 +4758,16 @@ day are not counted until they go out; a hidden warning is not counted (D472), b
 (D477: 4 issues with 1 hidden read 3). One rule on EVERY page — Edit Schedule and the Scheduler Board included, and the
 pages with no schedule on them — and for every figure of the window, not only the issue counts. *(D477's first reading, "the
 schedule the page is showing", with Edit Schedule counting the working copy, was set aside by D478 the same evening.)*
-**As built today** every figure is worked out from the working copy on every page (`ui/Modals.tsx insightsHTML`,
-`engine/insights.ts`), so a change waiting on a published day — a hide included — already moves it; that is the gap the
-build closes.
+**As built:** every figure of the window — the four tiles, the flying load, the work hours, who is not flying, conflicts by
+type, by day — comes from ONE computation (`engine/insights.ts computeInsights`), which reads ONE world
+(`engine/validate.ts issuedWorld`): the days as the published-schedule pass installs them (each published day its current
+issued version, a draft day the working copy), the per-person events that pass built from them (the work hours), and the
+warnings as View-only Sched's faces show them (each published day under the hides it went out with, a draft day under the
+working hides). It reads no page and no "working draft" switch, so the window says the same thing wherever it is opened.
+While nothing waits on any published day that world IS the working copy. A draft day's warnings are judged against its
+published neighbours as published — the same judgement View-only Sched draws. Pins: `ui/insights-published.test.tsx`.
+*Before this build* every figure was worked out from the working copy on every page, so a change waiting on a published
+day — a hide included — already moved it.
 
 
 "Perhaps have a section to show everyone's work hours in the insights for the
