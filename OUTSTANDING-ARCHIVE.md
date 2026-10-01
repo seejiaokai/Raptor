@@ -2981,3 +2981,18 @@ the body is `raptor-port/src/engine/oilev.ts` `landedExtras`, and its own commen
 
 ---
 
+
+*Moved here 2026-10-01 by backlog-archive.mjs ([WARN-HIDE-DROP-NOTE]). Forward facts: `raptor-port/docs/ui-contracts.md`.*
+
+### [WARN-HIDE-DROP-NOTE] A drop that recreates a clash already hidden still shows the amber "already on …" note (a question for him; found 1 Oct 26)
+Found by the `[WARN-HIDE-KEPT]` walk (walker A, Astra's scenario 26; picture
+`raptor-port/docs/img/handpass/2026-10-01-warn-hide/a/dk-07-26b-exact-hidden-clash-recreated-silent.png`). Hide Saint's clash,
+move him away, drag him back onto the same seat: the hidden warning itself stays silent — no red message, no pulse, no ring,
+not counted, its line back already struck — but the drop shows its own amber note, "Saint — already on APPOINTMENT
+14:00–16:00". That note is not the warning: it is the drop's fallback voice (`ui/drag.ts barDrop`, `state/view.ts` — the
+reason the crew list prints under a busy name, repeated once at the drop), which speaks when the drop raised no NEW shown
+warning. Left as built: the crew list still strikes the man and says the same words before the drop (the plan's roll-call
+row 18 — the crew list reads the rules, not the hides). **The question for him:** when a drop recreates a clash he has
+already hidden, should that amber note stay, or should the drop say only "Saint planned"? **Place:** low — his answer
+first (it is on the look card of `raptor-port/docs/handpass/2026-10-01-warn-hide-check.md`); then a one-line change (WALK tier).
+

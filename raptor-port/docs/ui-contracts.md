@@ -4090,6 +4090,11 @@ header keeps its true count" — and the D469 / D471 / D472 / D475 note that sto
     read back at every boot and week load; a sign-in does not clear it. One set for the board and Edit Schedule
     (`state/view.ts WARNOFF` — the working copy's hides), so a hide on either shows on both, and Undo takes it back from
     either ("hiding a warning" / "flagging a warning again"). The change history says who hid what, under "The day".
+  - **A drop that recreates a clash already hidden still shows the drop's own amber note — kept (D479, 1 Oct 26: "ok keep
+    the amber note"):** the hidden warning itself stays silent (no red message, no pulse, no ring, not counted, its line
+    back already struck), but the drop says once, to the scheduler doing it, "Saint — already on APPOINTMENT 14:00–16:00" —
+    the reason the crew list shows under a busy name (`ui/drag.ts barDrop`, `state/view.ts`), the fallback voice when a
+    drop raised no new SHOWN warning. Not a defect; do not silence it.
   - **Tied to that exact warning (Aug 26 — "if things change that warning will appear again"):** the key is the day, the
     rule, the men it names and its words (`engine/warnhide.ts hideKey`), callsigns folded to ids — the moment the
     situation changes the rules write a different warning and it shows again; a rename of a man it names is a label,
@@ -4745,14 +4750,17 @@ owner's ask). Each late input now carries its OWN control on the board.
 
 ## Week Insights: work hours (owner, 20 Aug 26)
 
-**WHICH SCHEDULE INSIGHTS COUNTS (owner, D477, 1 Oct 26 — RULED, NOT YET BUILT: `[INSIGHTS-WHICH-COPY]`).** *"it should follow
-the schedule on whats its showing"*: Insights counts the schedule the page is showing. On View-only Sched a PUBLISHED day is
-counted as published — its issued version, its issued hides (a hidden warning is not counted, D472) — never by changes still
-waiting on the working copy; a day that page shows as its working draft is counted as that. Edit Schedule and the Scheduler
-Board show the working copy, and Insights counts it there. Every figure of the window follows the one schedule, not only the
-issue counts. On a page with no schedule on it, Insights counts what View-only Sched shows. **As built today** every figure is
-worked out from the working copy on every page (`ui/Modals.tsx insightsHTML`, `engine/insights.ts`), so on View-only Sched a
-change waiting on a published day — a hide included — already moves it; that is the gap the build closes.
+**WHICH SCHEDULE INSIGHTS COUNTS (owner, D477 and D478, 1 Oct 26 — RULED, NOT YET BUILT: `[INSIGHTS-WHICH-COPY]`).** *"It
+should show the latest copy, so if working copy is the only copy then it will use that, unless its published then use
+Original, if theres an AL1 then use AL1 etc."* (D478). Day by day, Insights counts that day's LATEST PUBLISHED version — the
+Original, or the latest amendment — and the working copy only for a day not yet published. Changes waiting on a published
+day are not counted until they go out; a hidden warning is not counted (D472), by the hides that version went out with
+(D477: 4 issues with 1 hidden read 3). One rule on EVERY page — Edit Schedule and the Scheduler Board included, and the
+pages with no schedule on them — and for every figure of the window, not only the issue counts. *(D477's first reading, "the
+schedule the page is showing", with Edit Schedule counting the working copy, was set aside by D478 the same evening.)*
+**As built today** every figure is worked out from the working copy on every page (`ui/Modals.tsx insightsHTML`,
+`engine/insights.ts`), so a change waiting on a published day — a hide included — already moves it; that is the gap the
+build closes.
 
 
 "Perhaps have a section to show everyone's work hours in the insights for the
