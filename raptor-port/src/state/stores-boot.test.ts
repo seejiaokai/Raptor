@@ -11,7 +11,8 @@ beforeEach(() => {
   Object.keys(mem).forEach(k => delete mem[k])
   storeBackend.impl = {
     getItem: (k: string) => (k in mem ? mem[k]! : null),
-    setItem: (k: string, v: string) => { mem[k] = v },
+    setItem: (k: string, v: string) => { if (v === 'null') delete mem[k]; else mem[k] = v },
+    keys: () => Object.keys(mem),
   }
   storesReset()
 })
@@ -35,11 +36,10 @@ describe('boot', () => {
    Register line AC7. */
 describe('boot — the accounts come back after a reload', () => {
   it('initStore alone loads a stored account, a waiting request and the guest switch', () => {
-    mem['sqn142_accounts'] = JSON.stringify([
-      { id: 'acad', name: 'ad', role: 'admin', pid: 'stiff', on: true },
-      { id: 'acw', name: 'wren@mail', role: 'main', pid: 'dj', on: true },
-    ])
-    mem['sqn142_accessreqs'] = JSON.stringify([{ id: 'rq1', name: 'kite@mail', cs: 'Kite', full: 'K', at: 1 }])
+    /* one row per account and per request ([DB-READINESS] group A, phase 4.4) */
+    mem['sqn142_account:acad'] = JSON.stringify({ id: 'acad', name: 'ad', role: 'admin', pid: 'stiff', on: true })
+    mem['sqn142_account:acw'] = JSON.stringify({ id: 'acw', name: 'wren@mail', role: 'main', pid: 'dj', on: true })
+    mem['sqn142_accessreq:rq1'] = JSON.stringify({ id: 'rq1', name: 'kite@mail', cs: 'Kite', full: 'K', at: 1 })
     mem['sqn142_guestview'] = JSON.stringify(true)
     initStore()
     expect(signIn('wren@mail', 'x')).toMatchObject({ kind: 'ok', account: { id: 'acw', pid: 'dj' } })

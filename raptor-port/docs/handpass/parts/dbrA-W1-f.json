@@ -1,0 +1,975 @@
+{
+ "base": "http://localhost:4201",
+ "at": "2026-09-30T08:51:33.145Z",
+ "results": [
+  {
+   "name": "W1.F15a Wednesday (a flying day): the four signed and Publish day — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 14 [settings/elog:munv6lagn1e1.000001, settings/elog:munv6lagn1e1.000002, settings/elog:munv6lagn1e1.000003, settings/elog:munv6lagn1e1.000004, settings/elog:munv6lagn1e1.000005, weeks/13-07-2026, weeks/13-07-2026#0, weeks/13-07-2026#1 …] · del 0 [] · batches sched.sign/9 sched.sign/2 sched.sign/2 sched.sign/2 sched.approve/3"
+  },
+  {
+   "name": "W1.F15a Wednesday (a flying day): the four signed and Publish day — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 14 [settings/elog:munv6lagn1e1.000001, settings/elog:munv6lagn1e1.000002, settings/elog:munv6lagn1e1.000003, settings/elog:munv6lagn1e1.000004, settings/elog:munv6lagn1e1.000005, weeks/13-07-2026, weeks/13-07-2026#0, weeks/13-07-2026#1 …] · del 0 [] · batches sched.sign/9 sched.sign/2 sched.sign/2 sched.sign/2 sched.approve/3"
+  },
+  {
+   "name": "W1.F15a — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "W1.F15a — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "W1.F15b published Wednesday: its day note changed — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 2 [settings/elog:munv6paz2inl.000001, weeks/13-07-2026#2] · del 0 [] · batches sched.text/1 elog.line/1"
+  },
+  {
+   "name": "W1.F15b published Wednesday: its day note changed — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 2 [settings/elog:munv6paz2inl.000001, weeks/13-07-2026#2] · del 0 [] · batches sched.text/1 elog.line/1"
+  },
+  {
+   "name": "W1.F15b — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "W1.F15b — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "W1.F15c published Wednesday: a crew puck dragged from the crew list onto the first line's WSO seat (dirty → slash) — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 2 [settings/elog:munv6taam1zx.000001, weeks/13-07-2026#2] · del 0 [] · batches sched.mutate/1 elog.line/1"
+  },
+  {
+   "name": "W1.F15c published Wednesday: a crew puck dragged from the crew list onto the first line's WSO seat (dirty → slash) — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 2 [settings/elog:munv6taam1zx.000001, weeks/13-07-2026#2] · del 0 [] · batches sched.mutate/1 elog.line/1"
+  },
+  {
+   "name": "W1.F15c — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "W1.F15c — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "W1.F15c View-only Sched's issued face still shows the Original note, not the pending edit",
+   "ok": true,
+   "detail": "Wednesday Jul 15 ORIG 4 X 4 Original — as issued Working draft — not issued i SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil ⚠ 7 issues · 2 warning · tap to review ▼ COMMON PROGRAMME OR"
+  },
+  {
+   "name": "W1.F15d Wednesday: plans menu → the Original looked at → \"Discard N edits & load\" → confirm — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 2 [settings/elog:munv6y450ad6.000001, weeks/13-07-2026#2] · del 0 [] · batches sched.mutate/1 elog.line/1"
+  },
+  {
+   "name": "W1.F15d Wednesday: plans menu → the Original looked at → \"Discard N edits & load\" → confirm — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 2 [settings/elog:munv6y450ad6.000001, weeks/13-07-2026#2] · del 0 [] · batches sched.mutate/1 elog.line/1"
+  },
+  {
+   "name": "W1.F15d — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "W1.F15d — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "W1.F15d after the reload Wednesday is EXACTLY the issued day again (content, crew, hidden row ids)",
+   "ok": true,
+   "detail": "identical"
+  },
+  {
+   "name": "W1.F15d …and nothing is pending",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "W1.F16a setup: week of 13 Jul saved (Monday note) — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 9 [settings/elog:munv77hdsoax.000001, weeks/13-07-2026, weeks/13-07-2026#0, weeks/13-07-2026#1, weeks/13-07-2026#2, weeks/13-07-2026#3, weeks/13-07-2026#4, weeks/13-07-2026#5 …] · del 0 [] · batches sched.text/8 elog.line/1"
+  },
+  {
+   "name": "W1.F16a setup: week of 13 Jul saved (Monday note) — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 9 [settings/elog:munv77hdsoax.000001, weeks/13-07-2026, weeks/13-07-2026#0, weeks/13-07-2026#1, weeks/13-07-2026#2, weeks/13-07-2026#3, weeks/13-07-2026#4, weeks/13-07-2026#5 …] · del 0 [] · batches sched.text/8 elog.line/1"
+  },
+  {
+   "name": "W1.F16a — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "W1.F16a — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "W1.F16b the week chip \"Jul 20\", then its Monday note (the week's first save) — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 9 [settings/elog:munv7ah7ked7.000001, weeks/20-07-2026, weeks/20-07-2026#0, weeks/20-07-2026#1, weeks/20-07-2026#2, weeks/20-07-2026#3, weeks/20-07-2026#4, weeks/20-07-2026#5 …] · del 0 [] · batches sched.text/8 elog.line/1"
+  },
+  {
+   "name": "W1.F16b the week chip \"Jul 20\", then its Monday note (the week's first save) — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 9 [settings/elog:munv7ah7ked7.000001, weeks/20-07-2026, weeks/20-07-2026#0, weeks/20-07-2026#1, weeks/20-07-2026#2, weeks/20-07-2026#3, weeks/20-07-2026#4, weeks/20-07-2026#5 …] · del 0 [] · batches sched.text/8 elog.line/1"
+  },
+  {
+   "name": "W1.F16b — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 20/07/2026"
+  },
+  {
+   "name": "W1.F16b — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "W1.F16c the week chip \"Jul 13\" — back (a switch writes nothing) — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "W1.F16c the week chip \"Jul 13\" — back (a switch writes nothing) — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "W1.F16c — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "W1.F16c — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "W1.F16d week 13, board (Tue): \"+ Line\" on the first wave — a formation added — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 2 [settings/elog:munv7jgb9z13.000001, weeks/13-07-2026#1] · del 0 [] · batches sched.mutate/1 elog.line/1"
+  },
+  {
+   "name": "W1.F16d week 13, board (Tue): \"+ Line\" on the first wave — a formation added — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 2 [settings/elog:munv7jgb9z13.000001, weeks/13-07-2026#1] · del 0 [] · batches sched.mutate/1 elog.line/1"
+  },
+  {
+   "name": "W1.F16d — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "W1.F16d — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "W1.F16e week 13, board (Tue): a puck (glass) dragged off its seat back onto the crew list — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 2 [settings/elog:munv7nqdzdb7.000001, weeks/13-07-2026#1] · del 0 [] · batches sched.mutate/1 elog.line/1"
+  },
+  {
+   "name": "W1.F16e week 13, board (Tue): a puck (glass) dragged off its seat back onto the crew list — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 2 [settings/elog:munv7nqdzdb7.000001, weeks/13-07-2026#1] · del 0 [] · batches sched.mutate/1 elog.line/1"
+  },
+  {
+   "name": "W1.F16e — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "W1.F16e — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "W1.F16f the week chip \"Jul 20\" (a switch writes nothing) — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "W1.F16f the week chip \"Jul 20\" (a switch writes nothing) — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "W1.F16f — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 20/07/2026"
+  },
+  {
+   "name": "W1.F16f — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "W1.F16f week 20 reads exactly as it was left",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "W1.F16g week 20, board (Wed): a line's remarks box (fr:2.0.0.0) typed — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 2 [settings/elog:munv7y2czze7.000001, weeks/20-07-2026#2] · del 0 [] · batches sched.mutate/1 elog.line/1"
+  },
+  {
+   "name": "W1.F16g week 20, board (Wed): a line's remarks box (fr:2.0.0.0) typed — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 2 [settings/elog:munv7y2czze7.000001, weeks/20-07-2026#2] · del 0 [] · batches sched.mutate/1 elog.line/1"
+  },
+  {
+   "name": "W1.F16g — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 20/07/2026"
+  },
+  {
+   "name": "W1.F16g — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "W1.F16h week 20, board (Wed): a line deleted by its ✕ (2.0.0.0) — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 2 [settings/elog:munv82wfxzwf.000001, weeks/20-07-2026#2] · del 0 [] · batches sched.mutate/1 elog.line/1"
+  },
+  {
+   "name": "W1.F16h week 20, board (Wed): a line deleted by its ✕ (2.0.0.0) — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 2 [settings/elog:munv82wfxzwf.000001, weeks/20-07-2026#2] · del 0 [] · batches sched.mutate/1 elog.line/1"
+  },
+  {
+   "name": "W1.F16h — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 20/07/2026"
+  },
+  {
+   "name": "W1.F16h — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "W1.F16i the week chip \"Jul 13\" (a switch writes nothing) — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "W1.F16i the week chip \"Jul 13\" (a switch writes nothing) — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "W1.F16i — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "W1.F16i — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "W1.F16i week 13 reads exactly as it was left",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "W1.F16j week 13: Wednesday's 2.0.0.0.p puck (harpoon) dragged onto Thursday's Common Programme row (a:3.0.+) — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 4 [settings/elog:munv8d4leycn.000001, settings/elog:munv8d4leycn.000002, weeks/13-07-2026#2, weeks/13-07-2026#3] · del 0 [] · batches sched.mutate/2 elog.line/1 elog.line/1"
+  },
+  {
+   "name": "W1.F16j week 13: Wednesday's 2.0.0.0.p puck (harpoon) dragged onto Thursday's Common Programme row (a:3.0.+) — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 4 [settings/elog:munv8d4leycn.000001, settings/elog:munv8d4leycn.000002, weeks/13-07-2026#2, weeks/13-07-2026#3] · del 0 [] · batches sched.mutate/2 elog.line/1 elog.line/1"
+  },
+  {
+   "name": "W1.F16j — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "W1.F16j — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "W1.F16k week 13, board (Thu): a duty row deleted by its ✕ (3.0.0) — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 2 [settings/elog:munv8i5uzldh.000001, weeks/13-07-2026#3] · del 0 [] · batches sched.mutate/1 elog.line/1"
+  },
+  {
+   "name": "W1.F16k week 13, board (Thu): a duty row deleted by its ✕ (3.0.0) — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 2 [settings/elog:munv8i5uzldh.000001, weeks/13-07-2026#3] · del 0 [] · batches sched.mutate/1 elog.line/1"
+  },
+  {
+   "name": "W1.F16k — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "W1.F16k — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "W1.F16l the week chip \"Jul 20\" (a switch writes nothing) — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "W1.F16l the week chip \"Jul 20\" (a switch writes nothing) — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "W1.F16l — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 20/07/2026"
+  },
+  {
+   "name": "W1.F16l — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "W1.F16l week 20 reads exactly as it was left",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "W1.F16m week 20: Monday's 0.0.0.0.w puck (freak) dragged onto Tuesday (a:1.0.+) — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 4 [settings/elog:munv8rjwad01.000001, settings/elog:munv8rjwad01.000002, weeks/20-07-2026#0, weeks/20-07-2026#1] · del 0 [] · batches sched.mutate/2 elog.line/1 elog.line/1"
+  },
+  {
+   "name": "W1.F16m week 20: Monday's 0.0.0.0.w puck (freak) dragged onto Tuesday (a:1.0.+) — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 4 [settings/elog:munv8rjwad01.000001, settings/elog:munv8rjwad01.000002, weeks/20-07-2026#0, weeks/20-07-2026#1] · del 0 [] · batches sched.mutate/2 elog.line/1 elog.line/1"
+  },
+  {
+   "name": "W1.F16m — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 20/07/2026"
+  },
+  {
+   "name": "W1.F16m — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "W1.F16 after a last reload week 13 reads exactly as left",
+   "ok": true,
+   "detail": "identical"
+  },
+  {
+   "name": "W1.F16 …and week 20 too",
+   "ok": true,
+   "detail": "identical"
+  }
+ ],
+ "table": [
+  {
+   "step": "W1.F15a",
+   "width": "1440",
+   "did": "Wednesday (a flying day): the four signed and Publish day",
+   "pics": [
+    "W1.F15a-1-after.png",
+    "W1.F15a-2-reloaded.png"
+   ],
+   "shown": "tag \"ORIG\" · \"5 changes\"",
+   "rows": "put 14: settings/elog:munv6lagn1e1.000001, settings/elog:munv6lagn1e1.000002, settings/elog:munv6lagn1e1.000003, settings/elog:munv6lagn1e1.000004, settings/elog:munv6lagn1e1.000005, weeks/13-07-2026, weeks/13-07-2026#0, weeks/13-07-2026#1, weeks/13-07-2026#2, weeks/13-07-2026#3, weeks/13-07-2026#4, weeks/13-07-2026#5, weeks/13-07-2026#6, weeks/13-07-2026:is:2026-07-15#0~0 · batches: sched.sign(EditLog+ScheduleWeek+ScheduleDay, 9 rows, 1 history line, by acad) + sched.sign(EditLog+ScheduleDay, 2 rows, 1 history line, by acad) + sched.sign(EditLog+ScheduleDay, 2 rows, 1 history line, by acad) + sched.sign(EditLog+ScheduleDay, 2 rows, 1 history line, by acad) + sched.approve(ScheduleDay+Amendment+EditLog, 3 rows, 1 history line, by acad)",
+   "batches": [
+    {
+     "key": "changes/cmunv6lc3q2vmbo-1",
+     "type": "sched.sign",
+     "actor": "acad",
+     "n": 9,
+     "seqs": [
+      1
+     ],
+     "tables": "EditLog+ScheduleWeek+ScheduleDay",
+     "elog": 1
+    },
+    {
+     "key": "changes/cmunv6lc3q2vmbo-2",
+     "type": "sched.sign",
+     "actor": "acad",
+     "n": 2,
+     "seqs": [
+      2
+     ],
+     "tables": "EditLog+ScheduleDay",
+     "elog": 1
+    },
+    {
+     "key": "changes/cmunv6lc3q2vmbo-3",
+     "type": "sched.sign",
+     "actor": "acad",
+     "n": 2,
+     "seqs": [
+      3
+     ],
+     "tables": "EditLog+ScheduleDay",
+     "elog": 1
+    },
+    {
+     "key": "changes/cmunv6lc3q2vmbo-4",
+     "type": "sched.sign",
+     "actor": "acad",
+     "n": 2,
+     "seqs": [
+      4
+     ],
+     "tables": "EditLog+ScheduleDay",
+     "elog": 1
+    },
+    {
+     "key": "changes/cmunv6lc3q2vmbo-5",
+     "type": "sched.approve",
+     "actor": "acad",
+     "n": 3,
+     "seqs": [
+      5
+     ],
+     "tables": "ScheduleDay+Amendment+EditLog",
+     "elog": 1
+    }
+   ],
+   "pass": true,
+   "notes": [],
+   "fails": []
+  },
+  {
+   "step": "W1.F15b",
+   "width": "1440",
+   "did": "published Wednesday: its day note changed",
+   "pics": [
+    "W1.F15b-1-after.png",
+    "W1.F15b-2-reloaded.png"
+   ],
+   "shown": "\"1 pending\" · signs [— name — | — name — | — name — | — name —]",
+   "rows": "put 2: settings/elog:munv6paz2inl.000001, weeks/13-07-2026#2 · batches: sched.text(ScheduleDay, 1 rows, by acad) + elog.line(EditLog, 1 rows, 1 history line, by system)",
+   "batches": [
+    {
+     "key": "changes/cmunv6rojbo0n58-0",
+     "type": "sched.text",
+     "actor": "acad",
+     "n": 1,
+     "seqs": [
+      0
+     ],
+     "tables": "ScheduleDay",
+     "elog": 0
+    },
+    {
+     "key": "changes/cmunv6rojbo0n58-g1",
+     "type": "elog.line",
+     "actor": "system",
+     "n": 1,
+     "seqs": [],
+     "tables": "EditLog",
+     "elog": 1
+    }
+   ],
+   "pass": true,
+   "notes": [],
+   "fails": []
+  },
+  {
+   "step": "W1.F15c",
+   "width": "1440",
+   "did": "published Wednesday: a crew puck dragged from the crew list onto the first line's WSO seat (dirty → slash)",
+   "pics": [
+    "W1.F15c-1-after.png",
+    "W1.F15c-2-reloaded.png",
+    "W1.F15c-3-viewonly-issued-face.png"
+   ],
+   "shown": "\"2 pending\" · the seat holds slash",
+   "rows": "put 2: settings/elog:munv6taam1zx.000001, weeks/13-07-2026#2 · batches: sched.mutate(ScheduleDay, 1 rows, by acad) + elog.line(EditLog, 1 rows, 1 history line, by system)",
+   "batches": [
+    {
+     "key": "changes/cmunv6w3ukvz3a7-0",
+     "type": "sched.mutate",
+     "actor": "acad",
+     "n": 1,
+     "seqs": [
+      0
+     ],
+     "tables": "ScheduleDay",
+     "elog": 0
+    },
+    {
+     "key": "changes/cmunv6w3ukvz3a7-g1",
+     "type": "elog.line",
+     "actor": "system",
+     "n": 1,
+     "seqs": [],
+     "tables": "EditLog",
+     "elog": 1
+    }
+   ],
+   "pass": true,
+   "notes": [],
+   "fails": []
+  },
+  {
+   "step": "W1.F15d",
+   "width": "1440",
+   "did": "Wednesday: plans menu → the Original looked at → \"Discard N edits & load\" → confirm",
+   "pics": [
+    "W1.F15d-1-after.png",
+    "W1.F15d-2-reloaded.png"
+   ],
+   "shown": "tag \"ORIG\" · \"8 changes\" · note \"ORDERS: FLYING ORDERS SECTION 2\"",
+   "rows": "put 2: settings/elog:munv6y450ad6.000001, weeks/13-07-2026#2 · batches: sched.mutate(ScheduleDay, 1 rows, by acad) + elog.line(EditLog, 1 rows, 1 history line, by system)",
+   "batches": [
+    {
+     "key": "changes/cmunv73h135ynt1-0",
+     "type": "sched.mutate",
+     "actor": "acad",
+     "n": 1,
+     "seqs": [
+      0
+     ],
+     "tables": "ScheduleDay",
+     "elog": 0
+    },
+    {
+     "key": "changes/cmunv73h135ynt1-g1",
+     "type": "elog.line",
+     "actor": "system",
+     "n": 1,
+     "seqs": [],
+     "tables": "EditLog",
+     "elog": 1
+    }
+   ],
+   "pass": true,
+   "notes": [
+    "W1.F15d Discard: {\"lbl\":\"Load onto working copy → Discard 2 edits & load — confirm\",\"toasts\":[\"Wednesday: Original loaded onto the working copy — viewers still see Original until you publish · 2 unpublished edits replaced\"]}",
+    "W1.F15d the only field that differs from the issued day is the derived `today` flag (undefined → false)"
+   ],
+   "fails": []
+  },
+  {
+   "step": "W1.F16a",
+   "width": "1440",
+   "did": "setup: week of 13 Jul saved (Monday note)",
+   "pics": [
+    "W1.F16a-1-after.png",
+    "W1.F16a-2-reloaded.png"
+   ],
+   "shown": "",
+   "rows": "put 9: settings/elog:munv77hdsoax.000001, weeks/13-07-2026, weeks/13-07-2026#0, weeks/13-07-2026#1, weeks/13-07-2026#2, weeks/13-07-2026#3, weeks/13-07-2026#4, weeks/13-07-2026#5, weeks/13-07-2026#6 · batches: sched.text(ScheduleWeek+ScheduleDay, 8 rows, by acad) + elog.line(EditLog, 1 rows, 1 history line, by system)",
+   "batches": [
+    {
+     "key": "changes/cmunv77j2adjk8o-1",
+     "type": "sched.text",
+     "actor": "acad",
+     "n": 8,
+     "seqs": [
+      1
+     ],
+     "tables": "ScheduleWeek+ScheduleDay",
+     "elog": 0
+    },
+    {
+     "key": "changes/cmunv77j2adjk8o-g1",
+     "type": "elog.line",
+     "actor": "system",
+     "n": 1,
+     "seqs": [],
+     "tables": "EditLog",
+     "elog": 1
+    }
+   ],
+   "pass": true,
+   "notes": [],
+   "fails": []
+  },
+  {
+   "step": "W1.F16b",
+   "width": "1440",
+   "did": "the week chip \"Jul 20\", then its Monday note (the week's first save)",
+   "pics": [
+    "W1.F16b-1-after.png",
+    "W1.F16b-2-reloaded.png"
+   ],
+   "shown": "",
+   "rows": "put 9: settings/elog:munv7ah7ked7.000001, weeks/20-07-2026, weeks/20-07-2026#0, weeks/20-07-2026#1, weeks/20-07-2026#2, weeks/20-07-2026#3, weeks/20-07-2026#4, weeks/20-07-2026#5, weeks/20-07-2026#6 · batches: sched.text(ScheduleWeek+ScheduleDay, 8 rows, by acad) + elog.line(EditLog, 1 rows, 1 history line, by system)",
+   "batches": [
+    {
+     "key": "changes/cmunv7dghoztd0c-0",
+     "type": "sched.text",
+     "actor": "acad",
+     "n": 8,
+     "seqs": [
+      0
+     ],
+     "tables": "ScheduleWeek+ScheduleDay",
+     "elog": 0
+    },
+    {
+     "key": "changes/cmunv7dghoztd0c-g1",
+     "type": "elog.line",
+     "actor": "system",
+     "n": 1,
+     "seqs": [],
+     "tables": "EditLog",
+     "elog": 1
+    }
+   ],
+   "pass": true,
+   "notes": [],
+   "fails": []
+  },
+  {
+   "step": "W1.F16c",
+   "width": "1440",
+   "did": "the week chip \"Jul 13\" — back (a switch writes nothing)",
+   "pics": [
+    "W1.F16c-1-after.png",
+    "W1.F16c-2-reloaded.png"
+   ],
+   "shown": "",
+   "rows": "put 0:  · batches: none",
+   "batches": [],
+   "pass": true,
+   "notes": [],
+   "fails": []
+  },
+  {
+   "step": "W1.F16d",
+   "width": "1440",
+   "did": "week 13, board (Tue): \"+ Line\" on the first wave — a formation added",
+   "pics": [
+    "W1.F16d-1-after.png",
+    "W1.F16d-2-reloaded.png"
+   ],
+   "shown": "Tuesday's first wave has 3 formations (was 2)",
+   "rows": "put 2: settings/elog:munv7jgb9z13.000001, weeks/13-07-2026#1 · batches: sched.mutate(ScheduleDay, 1 rows, by acad) + elog.line(EditLog, 1 rows, 1 history line, by system)",
+   "batches": [
+    {
+     "key": "changes/cmunv7m3wgxio7j-0",
+     "type": "sched.mutate",
+     "actor": "acad",
+     "n": 1,
+     "seqs": [
+      0
+     ],
+     "tables": "ScheduleDay",
+     "elog": 0
+    },
+    {
+     "key": "changes/cmunv7m3wgxio7j-g1",
+     "type": "elog.line",
+     "actor": "system",
+     "n": 1,
+     "seqs": [],
+     "tables": "EditLog",
+     "elog": 1
+    }
+   ],
+   "pass": true,
+   "notes": [],
+   "fails": []
+  },
+  {
+   "step": "W1.F16e",
+   "width": "1440",
+   "did": "week 13, board (Tue): a puck (glass) dragged off its seat back onto the crew list",
+   "pics": [
+    "W1.F16e-1-after.png",
+    "W1.F16e-2-reloaded.png"
+   ],
+   "shown": "the seat 1.0.0.0.w holds \"\" (was glass)",
+   "rows": "put 2: settings/elog:munv7nqdzdb7.000001, weeks/13-07-2026#1 · batches: sched.mutate(ScheduleDay, 1 rows, by acad) + elog.line(EditLog, 1 rows, 1 history line, by system)",
+   "batches": [
+    {
+     "key": "changes/cmunv7r6kr94jas-0",
+     "type": "sched.mutate",
+     "actor": "acad",
+     "n": 1,
+     "seqs": [
+      0
+     ],
+     "tables": "ScheduleDay",
+     "elog": 0
+    },
+    {
+     "key": "changes/cmunv7r6kr94jas-g1",
+     "type": "elog.line",
+     "actor": "system",
+     "n": 1,
+     "seqs": [],
+     "tables": "EditLog",
+     "elog": 1
+    }
+   ],
+   "pass": true,
+   "notes": [],
+   "fails": []
+  },
+  {
+   "step": "W1.F16f",
+   "width": "1440",
+   "did": "the week chip \"Jul 20\" (a switch writes nothing)",
+   "pics": [
+    "W1.F16f-1-after.png",
+    "W1.F16f-2-reloaded.png"
+   ],
+   "shown": "",
+   "rows": "put 0:  · batches: none",
+   "batches": [],
+   "pass": true,
+   "notes": [],
+   "fails": []
+  },
+  {
+   "step": "W1.F16g",
+   "width": "1440",
+   "did": "week 20, board (Wed): a line's remarks box (fr:2.0.0.0) typed",
+   "pics": [
+    "W1.F16g-1-after.png",
+    "W1.F16g-2-reloaded.png"
+   ],
+   "shown": "remarks \"F16 REMARK\"",
+   "rows": "put 2: settings/elog:munv7y2czze7.000001, weeks/20-07-2026#2 · batches: sched.mutate(ScheduleDay, 1 rows, by acad) + elog.line(EditLog, 1 rows, 1 history line, by system)",
+   "batches": [
+    {
+     "key": "changes/cmunv81fpcmzsc9-0",
+     "type": "sched.mutate",
+     "actor": "acad",
+     "n": 1,
+     "seqs": [
+      0
+     ],
+     "tables": "ScheduleDay",
+     "elog": 0
+    },
+    {
+     "key": "changes/cmunv81fpcmzsc9-g1",
+     "type": "elog.line",
+     "actor": "system",
+     "n": 1,
+     "seqs": [],
+     "tables": "EditLog",
+     "elog": 1
+    }
+   ],
+   "pass": true,
+   "notes": [],
+   "fails": []
+  },
+  {
+   "step": "W1.F16h",
+   "width": "1440",
+   "did": "week 20, board (Wed): a line deleted by its ✕ (2.0.0.0)",
+   "pics": [
+    "W1.F16h-1-after.png",
+    "W1.F16h-2-reloaded.png"
+   ],
+   "shown": "the formation now has 1 line(s) (was 2)",
+   "rows": "put 2: settings/elog:munv82wfxzwf.000001, weeks/20-07-2026#2 · batches: sched.mutate(ScheduleDay, 1 rows, by acad) + elog.line(EditLog, 1 rows, 1 history line, by system)",
+   "batches": [
+    {
+     "key": "changes/cmunv862sxvoy7b-0",
+     "type": "sched.mutate",
+     "actor": "acad",
+     "n": 1,
+     "seqs": [
+      0
+     ],
+     "tables": "ScheduleDay",
+     "elog": 0
+    },
+    {
+     "key": "changes/cmunv862sxvoy7b-g1",
+     "type": "elog.line",
+     "actor": "system",
+     "n": 1,
+     "seqs": [],
+     "tables": "EditLog",
+     "elog": 1
+    }
+   ],
+   "pass": true,
+   "notes": [],
+   "fails": []
+  },
+  {
+   "step": "W1.F16i",
+   "width": "1440",
+   "did": "the week chip \"Jul 13\" (a switch writes nothing)",
+   "pics": [
+    "W1.F16i-1-after.png",
+    "W1.F16i-2-reloaded.png"
+   ],
+   "shown": "",
+   "rows": "put 0:  · batches: none",
+   "batches": [],
+   "pass": true,
+   "notes": [],
+   "fails": []
+  },
+  {
+   "step": "W1.F16j",
+   "width": "1440",
+   "did": "week 13: Wednesday's 2.0.0.0.p puck (harpoon) dragged onto Thursday's Common Programme row (a:3.0.+)",
+   "pics": [
+    "W1.F16j-1-after.png",
+    "W1.F16j-2-reloaded.png"
+   ],
+   "shown": "Wednesday names him: true · Thursday names him: true",
+   "rows": "put 4: settings/elog:munv8d4leycn.000001, settings/elog:munv8d4leycn.000002, weeks/13-07-2026#2, weeks/13-07-2026#3 · batches: sched.mutate(ScheduleDay, 2 rows, by acad) + elog.line(EditLog, 1 rows, 1 history line, by system) + elog.line(EditLog, 1 rows, 1 history line, by system)",
+   "batches": [
+    {
+     "key": "changes/cmunv8g4elkef8m-0",
+     "type": "sched.mutate",
+     "actor": "acad",
+     "n": 2,
+     "seqs": [
+      0
+     ],
+     "tables": "ScheduleDay",
+     "elog": 0
+    },
+    {
+     "key": "changes/cmunv8g4elkef8m-g1",
+     "type": "elog.line",
+     "actor": "system",
+     "n": 1,
+     "seqs": [],
+     "tables": "EditLog",
+     "elog": 1
+    },
+    {
+     "key": "changes/cmunv8g4elkef8m-g2",
+     "type": "elog.line",
+     "actor": "system",
+     "n": 1,
+     "seqs": [],
+     "tables": "EditLog",
+     "elog": 1
+    }
+   ],
+   "pass": true,
+   "notes": [],
+   "fails": []
+  },
+  {
+   "step": "W1.F16k",
+   "width": "1440",
+   "did": "week 13, board (Thu): a duty row deleted by its ✕ (3.0.0)",
+   "pics": [
+    "W1.F16k-1-after.png",
+    "W1.F16k-2-reloaded.png"
+   ],
+   "shown": "the duty block has 2 rows (was 3)",
+   "rows": "put 2: settings/elog:munv8i5uzldh.000001, weeks/13-07-2026#3 · batches: sched.mutate(ScheduleDay, 1 rows, by acad) + elog.line(EditLog, 1 rows, 1 history line, by system)",
+   "batches": [
+    {
+     "key": "changes/cmunv8l0bih37i7-0",
+     "type": "sched.mutate",
+     "actor": "acad",
+     "n": 1,
+     "seqs": [
+      0
+     ],
+     "tables": "ScheduleDay",
+     "elog": 0
+    },
+    {
+     "key": "changes/cmunv8l0bih37i7-g1",
+     "type": "elog.line",
+     "actor": "system",
+     "n": 1,
+     "seqs": [],
+     "tables": "EditLog",
+     "elog": 1
+    }
+   ],
+   "pass": true,
+   "notes": [],
+   "fails": []
+  },
+  {
+   "step": "W1.F16l",
+   "width": "1440",
+   "did": "the week chip \"Jul 20\" (a switch writes nothing)",
+   "pics": [
+    "W1.F16l-1-after.png",
+    "W1.F16l-2-reloaded.png"
+   ],
+   "shown": "",
+   "rows": "put 0:  · batches: none",
+   "batches": [],
+   "pass": true,
+   "notes": [],
+   "fails": []
+  },
+  {
+   "step": "W1.F16m",
+   "width": "1440",
+   "did": "week 20: Monday's 0.0.0.0.w puck (freak) dragged onto Tuesday (a:1.0.+)",
+   "pics": [
+    "W1.F16m-1-after.png",
+    "W1.F16m-2-reloaded.png",
+    "W1.F16-3-week20-final.png"
+   ],
+   "shown": "week 20/07/2026: Monday names him: true · Tuesday names him: true",
+   "rows": "put 4: settings/elog:munv8rjwad01.000001, settings/elog:munv8rjwad01.000002, weeks/20-07-2026#0, weeks/20-07-2026#1 · batches: sched.mutate(ScheduleDay, 2 rows, by acad) + elog.line(EditLog, 1 rows, 1 history line, by system) + elog.line(EditLog, 1 rows, 1 history line, by system)",
+   "batches": [
+    {
+     "key": "changes/cmunv8v5lgfo27w-0",
+     "type": "sched.mutate",
+     "actor": "acad",
+     "n": 2,
+     "seqs": [
+      0
+     ],
+     "tables": "ScheduleDay",
+     "elog": 0
+    },
+    {
+     "key": "changes/cmunv8v5lgfo27w-g1",
+     "type": "elog.line",
+     "actor": "system",
+     "n": 1,
+     "seqs": [],
+     "tables": "EditLog",
+     "elog": 1
+    },
+    {
+     "key": "changes/cmunv8v5lgfo27w-g2",
+     "type": "elog.line",
+     "actor": "system",
+     "n": 1,
+     "seqs": [],
+     "tables": "EditLog",
+     "elog": 1
+    }
+   ],
+   "pass": true,
+   "notes": [],
+   "fails": []
+  }
+ ],
+ "errors": []
+}

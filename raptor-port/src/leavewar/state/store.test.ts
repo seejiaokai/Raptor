@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import {
-  advanceStage, getState, getVersion, initStore, lwCanRedo, lwCanUndo, lwRedo, lwUndo, setBidState, setCell, createWar, selectWar, setRole, setBidWindow, setCellRange, setDayEvent, setDayEventRange, addEventBand, removeEventBand, moveEvent, moveEventProblem, addEventType, grantOil, grantTo, reasonRequired, HALF_STEP_MSG, setDayAward, awardsOnDay, updateLedgerEntry, removeLedgerEntry, setOilPolicy, setBalance, figureCtxOf, updateEventType, removeEventType, resetEventTypes, addEventRow, removeEventRow, eventRowUsed, MAX_EVENT_ROWS, setManningThreshold, resetManningThreshold, saveManningRule, deleteManningRule, resetManningRules, setQualCatalog, orderedManningIds, moveManningRow, toggleManningRow, setPeople, setPerson, clearBidWindow, reopenStage, subscribe, setCells, clearCells, setBidStates, moveCells, movableCells, moveProblem, setViewer,
+  advanceStage, getState, getVersion, initStore, lwCanRedo, lwCanUndo, lwRedo, lwUndo, setBidState, setCell, createWar, selectWar, setRole, setBidWindow, setCellRange, setDayEvent, setDayEventRange, addEventBand, removeEventBand, moveEvent, moveEventProblem, addEventType, grantOil, grantTo, reasonRequired, HALF_STEP_MSG, setDayAward, awardsOnDay, updateLedgerEntry, removeLedgerEntry, setOilPolicy, setBalance, figureCtxOf, updateEventType, removeEventType, resetEventTypes, addEventRow, removeEventRow, eventRowUsed, MAX_EVENT_ROWS, setManningThreshold, resetManningThreshold, saveManningRule, deleteManningRule, resetManningRules, setQualCatalog, orderedManningIds, moveManningRow, toggleManningRow, setPeople, clearBidWindow, reopenStage, subscribe, setCells, clearCells, setBidStates, moveCells, movableCells, moveProblem, setViewer,
 } from './store'
 import { FIGURES, figureParts, makeWar, seedRequirements, type CounterName } from '../engine'
 import { balanceOf, figureLines } from '../engine/counters'
@@ -543,6 +543,10 @@ describe('balances in the store', () => {
     expect(getState().ledger.length).toBeGreaterThan(0)
   })
 
+  /* The openings and the ledger are one stored row each since [DB-READINESS] group A, phase 3 (state/rows.ts): an
+     opening `opening:<pid>:<counter>`, a ledger entry `ledger:<id>`. A reload reads the ledger in (date, entry time, id)
+     order — every reader sorts it for itself (grantsFor, the OIL tracker), so the order within a date is not a fact. */
+  const byId = (l: readonly { id: string }[]) => l.slice().sort((a, b) => (a.id < b.id ? -1 : 1))
   it('persists and reloads both', () => {
     const backend = memoryBackend()
     initStore(backend)
@@ -550,43 +554,54 @@ describe('balances in the store', () => {
     const ledger = getState().ledger
     initStore(backend)
     expect(getState().openings).toEqual(openings)
-    expect(getState().ledger).toEqual(ledger)
+    expect(byId(getState().ledger)).toEqual(byId(ledger))
   })
 
-  // Each shape is asserted against a seed-only value so a fallback to `{}`
-  // or `[]` would not pass by accident.
+  /* A row that will not read is left as it is and not read — never deleted, never replaced by the seed's figure (a
+     started store is read as it stands). Each shape is written over ramp's real ANNUAL opening (12 in the seed), so a
+     reader that let it through, or fell back to the seed, would not pass by accident. */
   it.each([
-    ['not json', 'not json'],
-    ['an array', '[]'],
-    ['a counter nobody defined', '{"ramp":{"holiday":5}}'],
-    ['a figure that is not a number', '{"ramp":{"annual":"lots"}}'],
+    ['not json', 'annual', 'not json'],
+    ['an array', 'annual', '[]'],
+    ['a counter nobody defined', 'holiday', '5'],
+    ['a figure that is not a number', 'annual', '"lots"'],
     // NaN is the dangerous one: it propagates silently through every sum it
     // touches, turning a whole column of balances into "NaN" with nothing to
     // say why. JSON has no NaN literal, so it arrives as null.
-    ['a non-finite figure', '{"ramp":{"annual":null}}'],
-  ])('falls back to the seeded openings when the backend holds %s', (_label, raw) => {
+    ['a non-finite figure', 'annual', 'null'],
+  ])('does not read an opening row that holds %s, and keeps it', (_label, counter, raw) => {
     const backend = memoryBackend()
-    backend.write('openings', raw)
     initStore(backend)
-    expect(getState().openings.ramp.annual).toBe(12)
+    backend.remove('opening:ramp:annual')
+    backend.write(`opening:ramp:${counter}`, raw)
+    initStore(backend)
+    expect(getState().openings.ramp?.annual).toBeUndefined()
+    expect((getState().openings.ramp as any)?.holiday).toBeUndefined()
+    expect(backend.read(`opening:ramp:${counter}`)).toBe(raw)
   })
 
   it.each([
     ['not json', 'not json'],
-    ['an object rather than a list', '{}'],
-    ['an entry with no reason', '[{"id":"x","personId":"ramp","counter":"annual","amount":1,"date":"2026-01-01","approvedBy":"SQNCDR"}]'],
-    ['an entry with no approver', '[{"id":"x","personId":"ramp","counter":"annual","amount":1,"date":"2026-01-01","reason":"top-up"}]'],
-    ['an entry against an unknown counter', '[{"id":"x","personId":"ramp","counter":"holiday","amount":1,"date":"2026-01-01","reason":"r","approvedBy":"a"}]'],
-  ])('falls back to the seeded ledger when the backend holds %s', (_label, raw) => {
+    ['a list rather than an entry', '[]'],
+    ['an entry with no reason', '{"id":"x","personId":"ramp","counter":"annual","amount":1,"date":"2026-01-01","approvedBy":"SQNCDR"}'],
+    ['an entry with no approver', '{"id":"x","personId":"ramp","counter":"annual","amount":1,"date":"2026-01-01","reason":"top-up"}'],
+    ['an entry against an unknown counter', '{"id":"x","personId":"ramp","counter":"holiday","amount":1,"date":"2026-01-01","reason":"r","approvedBy":"a"}'],
+    ['an entry under another id', '{"id":"y","personId":"ramp","counter":"annual","amount":1,"date":"2026-01-01","reason":"r","approvedBy":"a"}'],
+  ])('does not read a ledger row that holds %s, keeps it, and reads the rest', (_label, raw) => {
     const backend = memoryBackend()
-    backend.write('ledger', raw)
     initStore(backend)
+    backend.write('ledger:x', raw)
+    initStore(backend)
+    expect(getState().ledger.some(e => e.id === 'x' || e.id === 'y')).toBe(false)
     expect(getState().ledger.some(e => e.id === 'l1')).toBe(true)
+    expect(backend.read('ledger:x')).toBe(raw)
   })
 
-  it('keeps a well-formed stored ledger', () => {
+  it('keeps a well-formed stored ledger entry', () => {
     const backend = memoryBackend()
-    backend.write('ledger', '[{"id":"x","personId":"ramp","counter":"oil","amount":2.5,"date":"2026-01-01","reason":"CNY","approvedBy":"SQNCDR"}]')
+    initStore(backend)
+    for (const k of backend.keys()) if (k.startsWith('ledger:')) backend.remove(k)
+    backend.write('ledger:x', '{"id":"x","personId":"ramp","counter":"oil","amount":2.5,"date":"2026-01-01","reason":"CNY","approvedBy":"SQNCDR"}')
     initStore(backend)
     expect(getState().ledger).toEqual([
       { id: 'x', personId: 'ramp', counter: 'oil', amount: 2.5, date: '2026-01-01', reason: 'CNY', approvedBy: 'SQNCDR' },
@@ -802,62 +817,74 @@ describe('creating a leave war', () => {
 })
 
 describe('reading stored wars', () => {
-  const stored = (...wars: unknown[]) => JSON.stringify(wars)
+  /* Each war is one stored row since [DB-READINESS] group A, phase 3 (`war:<id>` — its period; its records their own
+     `rec:` rows): `stored` writes each war's row, in order (`ord`), as the app would have. A store holding a war row has
+     started, so what is read is the rows as they stand — and since phase 5, when NO war row reads, NO war is drawn:
+     never the seed's (a started store never gets the demo back; the page shows its empty state). The row that would not
+     read is left in storage byte for byte (plan §2.2). */
+  const stored = (backend: ReturnType<typeof memoryBackend>, ...wars: Array<{ period: unknown }>) =>
+    wars.forEach((w, i) => { const p: any = w.period; backend.write(`war:${p.id}`, JSON.stringify({ ...p, ord: (i + 1) * 1024 })) })
   const war = (id: string, start: string, end: string) => makeWar(id, id.toUpperCase(), start, end)
 
-  it('keeps a well-formed pair', () => {
+  it('keeps a well-formed pair, in their order', () => {
     const backend = memoryBackend()
-    backend.write('wars', stored(war('a', '2026-01-01', '2026-03-31'), war('b', '2026-04-01', '2026-06-30')))
+    stored(backend, war('b', '2026-04-01', '2026-06-30'), war('a', '2026-01-01', '2026-03-31'))
     initStore(backend)
-    expect(getState().wars.map(w => w.period.id)).toEqual(['a', 'b'])
+    expect(getState().wars.map(w => w.period.id)).toEqual(['b', 'a'])
   })
 
   // The one shape nothing downstream can resolve: two wars claiming the same
   // day. `warHolding` would answer with whichever came first, and a person
-  // could hold leave on that date twice over. Reject the blob entire rather
-  // than pick a winner.
-  it('rejects two wars that share a day, falling back to the seed', () => {
+  // could hold leave on that date twice over. The first in order is read; the
+  // second is left in storage as it is and not read (plan §2.2: never deleted).
+  it('reads the first of two wars that share a day, and leaves the second unread', () => {
     const backend = memoryBackend()
-    backend.write('wars', stored(war('a', '2026-01-01', '2026-03-31'), war('b', '2026-03-31', '2026-06-30')))
+    stored(backend, war('a', '2026-01-01', '2026-03-31'), war('b', '2026-03-31', '2026-06-30'))
     initStore(backend)
-    expect(getState().wars.map(w => w.period.id)).toEqual(['y2026', 'y2027'])
+    expect(getState().wars.map(w => w.period.id)).toEqual(['a'])
+    expect(backend.read('war:b')).not.toBeNull()
   })
 
-  it('rejects two wars sharing an id', () => {
+  it('does not read a war row whose war is not the one its key names', () => {
     const backend = memoryBackend()
-    backend.write('wars', stored(war('a', '2026-01-01', '2026-03-31'), war('a', '2026-04-01', '2026-06-30')))
+    const raw = JSON.stringify(war('b', '2026-01-01', '2026-03-31').period)
+    backend.write('war:a', raw)
     initStore(backend)
-    expect(getState().wars.map(w => w.period.id)).toEqual(['y2026', 'y2027'])
+    expect(getState().wars).toEqual([])
+    expect(backend.read('war:a')).toBe(raw)
   })
 
   it.each([
-    ['an empty list', '[]'],
-    ['not a list', '{}'],
-    ['a war that is not an object', '["nope"]'],
-  ])('rejects %s, falling back to the seed', (_label, raw) => {
+    ['not json', 'not json'],
+    ['a period with nothing in it', '{}'],
+    ['a war that is not an object', '"nope"'],
+  ])('does not read a war row holding %s — no war reads, so none is drawn (never the seed\'s)', (_label, raw) => {
     const backend = memoryBackend()
-    backend.write('wars', raw)
+    backend.write('war:a', raw)
     initStore(backend)
-    expect(getState().wars).toHaveLength(2)
-    expect(getState().period.name).toBe('JAN - DEC 26')
+    expect(getState().wars).toHaveLength(0)
+    expect(getState().period.id).toBe('')
+    expect(backend.read('war:a')).toBe(raw)
   })
 
   it('rejects a war whose stage is not one of the cycle', () => {
     const backend = memoryBackend()
     const w = war('a', '2026-01-01', '2026-03-31') as unknown as { period: Record<string, unknown> }
     w.period.stage = 'reopened'
-    backend.write('wars', stored(w))
+    stored(backend, w)
     initStore(backend)
-    expect(getState().period.name).toBe('JAN - DEC 26')
+    expect(getState().wars).toHaveLength(0)
+    expect(backend.read('war:a')).not.toBeNull()
   })
 
   it('rejects a war whose range runs backwards', () => {
     const backend = memoryBackend()
     const w = war('a', '2026-01-01', '2026-03-31') as unknown as { period: Record<string, unknown> }
     w.period.end = '2025-12-01'
-    backend.write('wars', stored(w))
+    stored(backend, w)
     initStore(backend)
-    expect(getState().period.name).toBe('JAN - DEC 26')
+    expect(getState().wars).toHaveLength(0)
+    expect(backend.read('war:a')).not.toBeNull()
   })
 
   // A day carries events, a blocked flag and its reason — facts the date
@@ -974,7 +1001,7 @@ describe('the bidding window', () => {
     const backend = memoryBackend()
     const war = makeWar('old', 'OLD', '2026-01-01', '2026-12-31')
     const { bidFrom: _f, bidTo: _t, ...periodWithoutWindow } = war.period
-    backend.write('wars', JSON.stringify([{ ...war, period: { ...periodWithoutWindow, stage: 'open' } }]))
+    backend.write('war:old', JSON.stringify({ ...periodWithoutWindow, stage: 'open' }))   // its row ([DB-READINESS] group A, phase 3)
     backend.write('current', JSON.stringify('old'))
     initStore(backend)
 
@@ -990,10 +1017,11 @@ describe('the bidding window', () => {
     const backend = memoryBackend()
     const war = makeWar('bad', 'BAD', '2026-01-01', '2026-12-31')
     war.period.bidFrom = '2025-01-01'
-    backend.write('wars', JSON.stringify([war]))
+    backend.write('war:bad', JSON.stringify(war.period))
     backend.write('current', JSON.stringify('bad'))
     initStore(backend)
-    expect(getState().wars.map(w => w.period.id)).toEqual(['y2026', 'y2027'])
+    expect(getState().wars.map(w => w.period.id)).toEqual([])
+    expect(backend.read('war:bad')).not.toBeNull()
   })
 })
 
@@ -1122,48 +1150,9 @@ describe('editing the roster', () => {
     initStore(memoryBackend())
   })
 
-  it('refuses a member', () => {
-    expect(setPerson('tata', { seat: 'wso' })).toBe(false)
-    expect(getState().people.find(p => p.id === 'tata')!.seat).toBe('pilot')
-  })
-
-  it('changes seat, band and SXO for an admin', () => {
-    setRole('admin')
-    expect(setPerson('tata', { seat: 'wso', band: 'ops', sxo: true })).toBe(true)
-    const tata = getState().people.find(p => p.id === 'tata')!
-    expect(tata).toMatchObject({ seat: 'wso', band: 'ops', sxo: true })
-  })
-
-  it('ignores a person who does not exist, without notifying', () => {
-    setRole('admin')
-    const before = getVersion()
-    expect(setPerson('nobody', { sxo: true })).toBe(false)
-    expect(getVersion()).toBe(before)
-  })
-
-  it('leaves everyone else untouched', () => {
-    setRole('admin')
-    const others = getState().people.filter(p => p.id !== 'tata').map(p => ({ ...p }))
-    setPerson('tata', { sxo: true })
-    expect(getState().people.filter(p => p.id !== 'tata')).toEqual(others)
-  })
-
-  /* Since the sync wires the roster is a PROJECTION of Raptor's PEOPLE
-     (state/raptorRoster.ts), installed by main.tsx via setPeople on every
-     boot and deliberately not persisted — the same reasoning as the role at
-     the merge: a stored copy could only ever disagree with the roster Raptor
-     is actually flying. These pin the non-persistence both ways, exactly as
-     the role tests do: an edit does not survive a re-boot, and a stored
-     roster (a leftover from the standalone app, or a hand edit) is ignored. */
-  it('edits in session, but a re-boot returns to the seed — the roster is not persisted', () => {
-    const backend = memoryBackend()
-    initStore(backend)
-    setRole('admin')
-    setPerson('tata', { seat: 'wso', sxo: true })
-    expect(getState().people.find(p => p.id === 'tata')).toMatchObject({ seat: 'wso', sxo: true })
-    initStore(backend)
-    expect(getState().people.find(p => p.id === 'tata')).toMatchObject({ seat: 'pilot', sxo: false })
-  })
+  /* (The war's own roster editor — setPerson: seat, band and SXO for an admin, refused for a member — is gone with its
+     Edit person: D460, D461, 30 Sep 26. A man's seat, band and SXO change only on Quals; the war shows the projection.
+     Its tests went with it; src/leavewar/rows.test.ts pins that no writer is left and a stored override is not read.) */
 
   it('ignores a stored roster entirely', () => {
     const backend = memoryBackend()

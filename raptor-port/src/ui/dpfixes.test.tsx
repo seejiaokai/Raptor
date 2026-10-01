@@ -41,7 +41,7 @@ const fake = new Map<string, string>()
 const as = (u: string, p: string) => resetSession(sessionFor(signIn(u, p) as any))   // ad = Saber (admin), us = Ranger (member)
 let DAYS0 = '', INP0 = '', SCHED0 = ''
 beforeAll(() => {
-  storeBackend.impl = { getItem: k => (fake.has(k) ? fake.get(k)! : null), setItem: (k, v) => { fake.set(k, v) } }
+  storeBackend.impl = { getItem: k => (fake.has(k) ? fake.get(k)! : null), setItem: (k, v) => { if (v === 'null') fake.delete(k); else fake.set(k, v) }, keys: () => [...fake.keys()] }
   initStore()
   ensureRowIds(DAYS)
   DAYS0 = JSON.stringify(DAYS); INP0 = JSON.stringify(INPUTS); SCHED0 = JSON.stringify(SCHED)
@@ -51,7 +51,9 @@ beforeEach(() => {
   JSON.parse(DAYS0).forEach((d: any, i: number) => { (DAYS as any)[i] = d })
   INPUTS.length = 0; JSON.parse(INP0).forEach((r: any) => INPUTS.push(r))
   Object.assign(SCHED, JSON.parse(SCHED0))
-  fake.delete('sqn142_changeseen'); changesLoad()
+  /* each person's seen and the history's lines are one stored row each ([DB-READINESS] group A, phase 4.3) */
+  for (const k of [...fake.keys()]) if (k.startsWith('sqn142_seen:') || k.startsWith('sqn142_elog:')) fake.delete(k)
+  changesLoad()
   elogClear()
   setPage('editsched')
 })
@@ -160,7 +162,7 @@ describe('P6 — a Quals change on "To go out" says who and when', () => {
      "posted out" / "SANS" and named nobody. The posting line now keeps whose it is and that it is a posting (sub, fld),
      so it is the provenance of the two details a posting makes. (The posting pass that runs it on its date makes no line
      — it is not a person's act — so the change here stands in for it.) */
-  it('a man posted out by a posting: To go out names who set the posting', () => {
+  it('a man posted out by a posting: To go out names who set the posting', async () => {
     as('ad', 'a')
     const g = signOf(0); g.cur = 'ignite'; g.sked = 'bane'; g.plan = 'stiff'; g.appr = 'pump'
     setDayApproved(0, true)
@@ -169,6 +171,7 @@ describe('P6 — a Quals change on "To go out" says who and when', () => {
     const was = p.archived
     try {
       logAction(null, `Leave War · ${p.cs} · posting out 13 Jul · Overseas Sqn`, { date: '2026-07-13', sect: 'abs', sub: man, fld: 'posting' })
+      await Promise.resolve()   // a line written with no command running is kept at the end of the turn (editlog.ts hold, H2)
       p.archived = true
       const who = [...el(pendListHTML(0)).querySelectorAll('.pl-who')].map(e => e.textContent || '').join('|')
       expect(who, 'the To go out line names who set the posting').toContain('Saber')
@@ -300,5 +303,28 @@ describe('an input moved from Monday to Tuesday, its line opened on Monday', () 
     const j = jumpOf(l, days, '2026-07-13')
     expect(j, 'still a button').not.toBeNull()
     expect(j!.di, 'on Tuesday').toBe(1)
+  })
+})
+
+/* [DB-READINESS] phase 6 (c), the FULL check — Astra's scenario design §3 C (1 Oct 26): a request's line goes to its
+   STANDING row, never to a dead kept row (a version's row left on a day the request no longer covers, D363) */
+describe('a request with a dead kept row on Monday and its row standing on Tuesday', () => {
+  it('its line goes to Tuesday\'s row, and Monday\'s dead row is no target', () => {
+    as('ad', 'a')
+    const d0: any = (DAYS as any)[0], d1: any = (DAYS as any)[1]
+    const r: any = { person: 'bane', date: d1.dt, yr: 2026, allday: false, s: 600, e: 660, type: 'Meeting', remarks: '', acc: 'g' }
+    inpId(r); INPUTS.unshift(r)
+    d0.ground = [...(d0.ground || []), { prog: 'MEETING', str: '10:00', end: '11:00', who: 'bane', src: r.iid, kept: true }]
+    d1.ground = [...(d1.ground || []), { prog: 'MEETING', str: '10:00', end: '11:00', who: 'bane', src: r.iid }]
+    const monRi = d0.ground.length - 1, tueRi = d1.ground.length - 1
+    const days = ['2026-07-13', '2026-07-14', '2026-07-15', '2026-07-16', '2026-07-17', '2026-07-18', '2026-07-19']
+    const l: any = { iid: r.iid, key: '', rows: [{ date: '2026-07-14', wdate: '2026-07-13', iid: r.iid }] }
+    const j = jumpOf(l, days, null)
+    expect(j, 'a button').not.toBeNull()
+    expect(j!.keys, 'not Monday\'s dead row').not.toContain(`g:0.${monRi}`)
+    expect(j!.keys, 'Tuesday\'s row first').toContain(`g:1.${tueRi}`)
+    expect(j!.di, 'to Tuesday').toBe(1)
+    const j2 = jumpOf(l, days, '2026-07-13')
+    expect(j2!.di, 'opened on Monday it still goes to Tuesday — Monday draws only a dead row').toBe(1)
   })
 })

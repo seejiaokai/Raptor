@@ -1,0 +1,242 @@
+{
+ "base": "http://localhost:4204",
+ "at": "2026-09-30T09:17:18.690Z",
+ "results": [
+  {
+   "name": "NEW: the boot converted the store once — the stamp reads format 6, started",
+   "ok": true,
+   "detail": "{\"stage\":1,\"dataFormatVersion\":6,\"initialized\":true,\"appliedAt\":\"2026-09-30T09:16:09.605Z\",\"minClient\":6}"
+  },
+  {
+   "name": "NEW: NO old bundle key is left (inputs/all, people/all, plan/all, leavewar/wars…, settings/elog, settings/accounts…, the Tracker's whole records)",
+   "ok": true,
+   "detail": "[]"
+  },
+  {
+   "name": "NEW: no whole-week record holding its days is left (each week is a week row + day rows)",
+   "ok": true,
+   "detail": "[]"
+  },
+  {
+   "name": "NEW: the rows by collection",
+   "ok": true,
+   "detail": "{\"inputs\":50,\"leavewar\":97,\"plan\":3,\"people\":62,\"settings\":41,\"weeks\":20,\"tracker\":41}"
+  },
+  {
+   "name": "NEW: the conversion itself is not a change-log action (the fold writes no batch)",
+   "ok": true,
+   "detail": "0 change-log batches after the fold"
+  },
+  {
+   "name": "NEW: a SECOND reload after the conversion writes nothing (no second conversion; the stamp as it was)",
+   "ok": true,
+   "detail": "{\"put\":[],\"del\":[],\"newBatches\":[],\"goneBatches\":[]}"
+  },
+  {
+   "name": "NEW: the loaded week — every day, request, sign-off, issued version, plan, puck and day title (histSnap) reads the same as on main",
+   "ok": true,
+   "detail": "same"
+  },
+  {
+   "name": "NEW: the second saved week (20 Jul) — its days, requests and plans (histSnap) reads the same as on main",
+   "ok": true,
+   "detail": "same"
+  },
+  {
+   "name": "NEW: the week shown reads the same as on main",
+   "ok": true,
+   "detail": "same"
+  },
+  {
+   "name": "NEW: the roster (every person, archived included) reads the same as on main",
+   "ok": true,
+   "detail": "same"
+  },
+  {
+   "name": "NEW: the change history (every line, in order) reads the same as on main",
+   "ok": true,
+   "detail": "same"
+  },
+  {
+   "name": "NEW: the history icon's number, each day's chip and tag (what \"mark all seen\" left) reads the same as on main",
+   "ok": true,
+   "detail": "same"
+  },
+  {
+   "name": "NEW: the Inputs page's list, in its order reads the same as on main",
+   "ok": true,
+   "detail": "same"
+  },
+  {
+   "name": "NEW: the planning calendar's day (title, pucks row, note) reads the same as on main",
+   "ok": true,
+   "detail": "same"
+  },
+  {
+   "name": "NEW: each request's link to its medical document (docId) reads the same as on main",
+   "ok": true,
+   "detail": "same"
+  },
+  {
+   "name": "NEW: the medical documents' 📎 — NOT COMPARED (the test tool drops the files themselves; main showed it on 4 requests)",
+   "ok": true,
+   "detail": "{\"main\":[\"imunvy0769owecx\",\"imunvy076d47aoa\",\"imunvy0763u2nd3\",\"imunvy076ezhhpf\"],\"thisBuild\":[]}"
+  },
+  {
+   "name": "NEW: Quals' order and the archived list reads the same as on main",
+   "ok": true,
+   "detail": "same"
+  },
+  {
+   "name": "NEW: Admin → Users (every account, the waiting sign-up) reads the same as on main",
+   "ok": true,
+   "detail": "same"
+  },
+  {
+   "name": "NEW: the Leave War's stage reads the same as on main",
+   "ok": true,
+   "detail": "same"
+  },
+  {
+   "name": "NEW: the Leave War grid — every box drawn around February (the bids, the move, the award, the decision) reads the same as on main",
+   "ok": true,
+   "detail": "same"
+  },
+  {
+   "name": "NEW: the Leave War grid — every box drawn around December (the posting-out window) reads the same as on main",
+   "ok": true,
+   "detail": "same"
+  },
+  {
+   "name": "NEW: the Leave War figures of the three men touched reads the same as on main",
+   "ok": true,
+   "detail": "same"
+  },
+  {
+   "name": "NEW: the Tracker — every chart, layout, name, detail, course and student as Export writes it (D464) reads the same as on main",
+   "ok": true,
+   "detail": "same"
+  },
+  {
+   "name": "NEW: the Tracker — the chart list, the course and the crew on screen reads the same as on main",
+   "ok": true,
+   "detail": "same"
+  },
+  {
+   "name": "NEW-E1 a Monday day note after the conversion — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 2 [settings/elog:munw4so9wj3k.000001, weeks/13-07-2026#0] · del 0 [] · batches sched.text/1 elog.line/1"
+  },
+  {
+   "name": "NEW-E1 a Monday day note after the conversion — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 2 [settings/elog:munw4so9wj3k.000001, weeks/13-07-2026#0] · del 0 [] · batches sched.text/1 elog.line/1"
+  },
+  {
+   "name": "NEW-E1 — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "NEW-E1 — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "NEW-E2 a request filed after the conversion — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 2 [inputs/imunw5j23w2bcl2, settings/elog:munw5goe5yvq.000001] · del 0 [] · batches inputs.batch/2"
+  },
+  {
+   "name": "NEW-E2 a request filed after the conversion — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 2 [inputs/imunw5j23w2bcl2, settings/elog:munw5goe5yvq.000001] · del 0 [] · batches inputs.batch/2"
+  },
+  {
+   "name": "NEW-E2 — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "NEW-E2 — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "NEW-E3 the old request r1 deleted after the conversion — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [settings/elog:munw5khhvtwz.000001] · del 1 [inputs/imunvyl9uneg7nm] · batches inputs.batch/2"
+  },
+  {
+   "name": "NEW-E3 the old request r1 deleted after the conversion — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [settings/elog:munw5khhvtwz.000001] · del 1 [inputs/imunvyl9uneg7nm] · batches inputs.batch/2"
+  },
+  {
+   "name": "NEW-E3 — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "NEW-E3 — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "NEW-E3: after the reload the deleted old request stays gone, the rest keep their order",
+   "ok": true,
+   "detail": "[\"imunvy07sfqf4zd\",\"imunvy0769owecx\",\"imunvy076d47aoa\",\"imunvy0763u2nd3\",\"imunvy07608yuf1\",\"imunvy0767ocxan\",\"imunvy0765clm9e\",\"imunvy0767nev5d\",\"imunvy076ohatkm\",\"imunvy076jmoi9m\",\"imunvy0764tnqag\",\"imunvy076magxf3\",\"imunvy076tlomz4\",\"imunvy07676rm9c\",\"imunvy0765pxfdd\",\"imunvy076rtcgkj\",\"imunvy076vsr7b8\",\"imunvy076hirltm\",\"imunvy07smzci50\",\"imunw0bcq1xtd4l\",\"imunvy07smyjbqo\",\"imunvy0761cg6q7\",\"imunvy0761xrcx5\",\"imunvy076ezhhpf\",\"imunvy0760hh1ya\",\"imunvyo03kv7mjx\",\"imunw5j23w2bcl2\"]"
+  },
+  {
+   "name": "NEW-E4 a Leave War bid after the conversion — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [leavewar/rec:y2026:rmunw5tw91nv26] · del 0 [] · batches lw.edit/1"
+  },
+  {
+   "name": "NEW-E4 a Leave War bid after the conversion — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [leavewar/rec:y2026:rmunw5tw91nv26] · del 0 [] · batches lw.edit/1"
+  },
+  {
+   "name": "NEW-E4 — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "NEW-E4 — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "NEW-E4: after the reload the war shows the award and the new bid",
+   "ok": true,
+   "detail": "{\"cells\":[\"02-12:NO CELL\",\"02-17:NO CELL\"],\"cells2\":[\"02-12:FO\",\"02-17:LL\"]}"
+  },
+  {
+   "name": "NEW-E5 a Tracker student added on his own chart after the conversion — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 3 [tracker/v3:cmunvzjrwnjggdu:scmunvzrowcnp42a:d:smunw608vuw66b8, tracker/v3:cmunvzjrwnjggdu:scmunvzrowcnp42a:enr:smunw608vuw66b8, tracker/v3:cmunvzjrwnjggdu:scmunvzrowcnp42a:m:smunw608vuw66b8] · del 0 [] · batches trk.gesture/3"
+  },
+  {
+   "name": "NEW-E5 a Tracker student added on his own chart after the conversion — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 3 [tracker/v3:cmunvzjrwnjggdu:scmunvzrowcnp42a:d:smunw608vuw66b8, tracker/v3:cmunvzjrwnjggdu:scmunvzrowcnp42a:enr:smunw608vuw66b8, tracker/v3:cmunvzjrwnjggdu:scmunvzrowcnp42a:m:smunw608vuw66b8] · del 0 [] · batches trk.gesture/3"
+  },
+  {
+   "name": "NEW-E5: after the reload the Tracker holds the new student and his chart is still his own",
+   "ok": true,
+   "detail": "{\"crew\":[\"W4 STUDENT\",\"W4 AFTER\"],\"dropdown\":[\"W4 TX\",\"2026\",\"A/G - A/A 2026\",\"W4 OWN CHART ✎\"]}"
+  },
+  {
+   "name": "NEW (phone): the kept browser converts the same at phone width — format 6, no old key, the Tracker exactly as on main",
+   "ok": true,
+   "detail": "{\"stamp\":6,\"coll\":{\"inputs\":50,\"leavewar\":97,\"plan\":3,\"people\":62,\"settings\":41,\"weeks\":20,\"tracker\":41}}"
+  },
+  {
+   "name": "new: no console error, page error or failed request",
+   "ok": true,
+   "detail": "[]"
+  }
+ ],
+ "part": "new"
+}

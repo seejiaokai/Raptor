@@ -40,6 +40,10 @@ import { shiftWeek } from './weeknav'
 import { esc } from '../state/view'
 import { fmtT, storesView, rowCls, cxTag, flagTag, fyiTag, plCols, areaText, atimeText, lCell, saRoleText } from './html'
 import { fltNoLen, FLT_NO_LEN_SAYS } from '../engine/validate'
+import { viewOfWeek, deletedSig, requestsSig } from '../engine/overlay'
+import { DAYS } from '../engine/data'
+/* the loaded week's request rows (their ids and days) — the peek's landing reads them */
+const loadedSrcSig = () => DAYS.map((d: any) => ((d && d.ground) || []).map((g: any) => (g && g.src) || '').join(',')).join('/')
 
 /* a plain, non-interactive puck — the same visual identity (qual chip, RCP
    tint, SANS line) as html.ts's `puck()`, minus everything that function
@@ -248,7 +252,10 @@ export function peekKey(): string {
      come back to this one — CURWEEK alone returns to the same value and
      would serve the pre-edit markup forever. Per-key generation, so ordinary
      edits to the LOADED week never touch the preview (perf-B). */
-  return CURWEEK + '|' + stashGenOf(shiftWeek(CURWEEK, 1))
+  /* …and who is deleted from when: next week is read without a deleted man from his cutoff (phase 6 (d)); and the
+     requests as they stand — a request filed, edited or deleted changes the row it has there (phase 6 (c)) — and the
+     loaded week's own request rows, which a landing there reads ("its row stands on the week on screen") */
+  return CURWEEK + '|' + stashGenOf(shiftWeek(CURWEEK, 1)) + '|' + deletedSig() + '|' + requestsSig() + '|' + loadedSrcSig()
 }
 export function peekWeekHTML(): string {
   const key = peekKey()
@@ -259,7 +266,9 @@ export function peekWeekHTML(): string {
      flag seeds read), the pure seed otherwise. A corrupt stash entry parses
      to null and degrades to the seed, matching weekctx's own fallback. */
   const nextWk = shiftWeek(CURWEEK, 1)
-  const bundle = stashDays(nextWk) || weekBundle(nextWk)
+  /* a saved week is worked out by stashDays itself; a week never saved, here, the same way ([DB-READINESS] group A, phase
+     6 (d) and (c) — engine/overlay.ts viewOfWeek: a deleted man taken off, a request's row landed) */
+  const bundle = stashDays(nextWk) || (() => { const b = weekBundle(nextWk); viewOfWeek(String(nextWk), b.days, { loaded: false, issued: () => null }); return b })()
   cacheHTML = bundle.days.map((d: any, i: number) => peekDayHTML(d, i, i === 0)).join('')
   cacheKey = key
   return cacheHTML

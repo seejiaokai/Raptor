@@ -9,7 +9,7 @@
 // sheet in the app reads as the same object in the same place.
 
 import { useState } from 'react'
-import { addDays } from '../engine'
+import { addDays, localToday } from '../engine'
 import { clashingWar, createWar, focusDay, getState, selectWar } from '../state/store'
 import { RangePicker, type Range } from './RangePicker'
 import { shortSpan } from './dates'
@@ -29,7 +29,8 @@ const WHY: Record<string, string> = {
  *  forbidding it to save a few taps would be the wrong trade. */
 function nextFreeDay(): string {
   const ends = getState().wars.map(w => w.period.end)
-  return ends.length ? addDays(ends.reduce((a, b) => (a > b ? a : b)), 1) : '2026-01-01'
+  /* no war yet (a shared store's first — [DB-READINESS] group A, phase 5): this month, never a fixed demo date */
+  return ends.length ? addDays(ends.reduce((a, b) => (a > b ? a : b)), 1) : localToday().slice(0, 8) + '01'
 }
 
 export function WarSheet({ onClose }: { onClose: () => void }) {

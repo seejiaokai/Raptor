@@ -1,0 +1,712 @@
+{
+ "tag": "base",
+ "facts": {
+  "P0.sign": {
+   "cur": "Ace",
+   "sked": "Anvil",
+   "plan": "Anvil",
+   "appr": "Anvil"
+  },
+  "P0.pub": {
+   "pressed": true,
+   "label": "Publish day"
+  },
+  "P0.rows": [
+   {
+    "di": 3,
+    "ri": 3,
+    "prog": "MEETING",
+    "str": "10:00",
+    "end": "11:00",
+    "who": "bane",
+    "more": [],
+    "rmks": "P6C ISSUED",
+    "kept": false,
+    "info": false,
+    "flag": null,
+    "cx": null
+   }
+  ],
+  "P0.head": {
+   "tag": "ORIG",
+   "pending": "6 changes",
+   "beak": "none",
+   "alpub": "",
+   "unpub": "Unpublish",
+   "signs": [
+    "— name —",
+    "— name —",
+    "— name —",
+    "— name —"
+   ],
+   "signed": "SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil",
+   "nys": ""
+  },
+  "P0.al": {
+   "line": "No pending changes",
+   "drop": {
+    "disabled": true,
+    "title": "Nothing to clear — a published day’s changes stay until you publish them or put them back"
+   },
+   "days": []
+  },
+  "P0b.save": "saved",
+  "P0b.weekRowsWritten": [
+   "weeks/13-07-2026#3"
+  ],
+  "P0b.rows": [
+   {
+    "di": 3,
+    "ri": 3,
+    "prog": "MEETING",
+    "str": "10:30",
+    "end": "11:00",
+    "who": "bane",
+    "more": [],
+    "rmks": "P6C ISSUED",
+    "kept": false,
+    "info": false,
+    "flag": null,
+    "cx": null
+   }
+  ],
+  "P0b.marks": {
+   "pending": 2,
+   "changes": 0,
+   "added": 0
+  },
+  "P0b.head": {
+   "tag": "ORIG",
+   "pending": "1 pending",
+   "beak": "none",
+   "alpub": "Publish AL1",
+   "unpub": "Unpublish",
+   "signs": [
+    "— name —",
+    "— name —",
+    "— name —",
+    "— name —"
+   ],
+   "signed": "SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil",
+   "nys": "Not yet signed"
+  },
+  "P0b.al": {
+   "line": "1 day with changes to publish",
+   "drop": {
+    "disabled": true,
+    "title": "Nothing to clear — a published day’s changes stay until you publish them or put them back"
+   },
+   "days": [
+    "Thu · 1 change · 1 input change Publish AL1"
+   ]
+  },
+  "P0b.list": {
+   "tabs": [
+    "New to you 0",
+    "All changes 7",
+    "To go out · AL1 1"
+   ],
+   "lines": [
+    "Waiting to go out as",
+    "AL1",
+    "· 1 change",
+    "Ranger · Meeting",
+    "Saber",
+    "15/7 09:00",
+    "10:00–11:00 → 10:30–11:00",
+    "Tap a change to go to it."
+   ]
+  },
+  "P0br.head": {
+   "tag": "ORIG",
+   "pending": "1 pending",
+   "beak": "none",
+   "alpub": "Publish AL1",
+   "unpub": "Unpublish",
+   "signs": [
+    "— name —",
+    "— name —",
+    "— name —",
+    "— name —"
+   ],
+   "signed": "SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil",
+   "nys": "Not yet signed"
+  },
+  "P0br.al": {
+   "line": "1 day with changes to publish",
+   "drop": {
+    "disabled": true,
+    "title": "Nothing to clear — a published day’s changes stay until you publish them or put them back"
+   },
+   "days": [
+    "Thu · 1 change · 1 input change Publish AL1"
+   ]
+  },
+  "P0c.save": "saved",
+  "P0c.rows": [
+   {
+    "di": 3,
+    "ri": 3,
+    "prog": "MEETING",
+    "str": "10:00",
+    "end": "11:00",
+    "who": "bane",
+    "more": [],
+    "rmks": "P6C ISSUED",
+    "kept": false,
+    "info": false,
+    "flag": null,
+    "cx": null
+   }
+  ],
+  "P0c.marks": {
+   "pending": 3,
+   "changes": 0,
+   "added": 0
+  },
+  "P0c.head": {
+   "tag": "ORIG",
+   "pending": "8 changes",
+   "beak": "none",
+   "alpub": "",
+   "unpub": "Unpublish",
+   "signs": [
+    "— name —",
+    "— name —",
+    "— name —",
+    "— name —"
+   ],
+   "signed": "SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil",
+   "nys": ""
+  },
+  "P0c.al": {
+   "line": "No pending changes",
+   "drop": {
+    "disabled": true,
+    "title": "Nothing to clear — a published day’s changes stay until you publish them or put them back"
+   },
+   "days": []
+  },
+  "P1.weekRowsWritten": [
+   "weeks/13-07-2026#3"
+  ],
+  "P1.rows": [
+   {
+    "di": 3,
+    "ri": 4,
+    "prog": "MEETING",
+    "str": "14:00",
+    "end": "15:00",
+    "who": "bane",
+    "more": [],
+    "rmks": "P6C LIVE",
+    "kept": false,
+    "info": false,
+    "flag": null,
+    "cx": null
+   }
+  ],
+  "P1.marks": {
+   "pending": 4,
+   "changes": 0,
+   "added": 1
+  },
+  "P1.faceHasLive": false,
+  "P1r.rows": [
+   {
+    "di": 3,
+    "ri": 4,
+    "prog": "MEETING",
+    "str": "14:00",
+    "end": "15:00",
+    "who": "bane",
+    "more": [],
+    "rmks": "P6C LIVE",
+    "kept": false,
+    "info": false,
+    "flag": null,
+    "cx": null
+   }
+  ],
+  "P1r.marks": {
+   "pending": 4,
+   "changes": 0,
+   "added": 1
+  },
+  "P2.save": "saved",
+  "P2.weekRowsWritten": [
+   "weeks/13-07-2026#3"
+  ],
+  "P2.rows": [
+   {
+    "di": 3,
+    "ri": 4,
+    "prog": "MEETING",
+    "str": "14:30",
+    "end": "15:00",
+    "who": "bane",
+    "more": [],
+    "rmks": "P6C LIVE",
+    "kept": false,
+    "info": false,
+    "flag": null,
+    "cx": null
+   }
+  ],
+  "P2.marks": {
+   "pending": 4,
+   "changes": 0,
+   "added": 1
+  },
+  "P2b.save": "saved",
+  "P2b.weekRowsWritten": [
+   "weeks/13-07-2026#3"
+  ],
+  "P2b.rows": [
+   {
+    "di": 3,
+    "ri": 4,
+    "prog": "MEETING",
+    "str": "14:00",
+    "end": "15:00",
+    "who": "bane",
+    "more": [],
+    "rmks": "P6C LIVE",
+    "kept": false,
+    "info": false,
+    "flag": null,
+    "cx": null
+   }
+  ],
+  "P2b.marks": {
+   "pending": 4,
+   "changes": 0,
+   "added": 1
+  },
+  "P3.del": "gone",
+  "P3.weekRowsWritten": [
+   "weeks/13-07-2026#3"
+  ],
+  "P3.rows": [],
+  "P3.marks": {
+   "pending": 3,
+   "changes": 0,
+   "added": 0
+  },
+  "P3.undo": {
+   "present": true,
+   "title": "Undo — a personal input",
+   "pressed": true,
+   "toasts": [
+    "Undid: a personal input"
+   ]
+  },
+  "P3u.rows": [
+   {
+    "di": 3,
+    "ri": 4,
+    "prog": "MEETING",
+    "str": "14:00",
+    "end": "15:00",
+    "who": "bane",
+    "more": [],
+    "rmks": "P6C LIVE",
+    "kept": false,
+    "info": false,
+    "flag": null,
+    "cx": null
+   }
+  ],
+  "P3u.marks": {
+   "pending": 4,
+   "changes": 0,
+   "added": 1
+  },
+  "P3.redo": {
+   "present": true,
+   "title": "Redo — a personal input",
+   "pressed": true,
+   "toasts": [
+    "Redid: a personal input"
+   ]
+  },
+  "P3r.rows": [],
+  "P3r.marks": {
+   "pending": 3,
+   "changes": 0,
+   "added": 0
+  },
+  "P3.undo2": {
+   "present": true,
+   "title": "Undo — a personal input",
+   "pressed": true,
+   "toasts": [
+    "Undid: a personal input"
+   ]
+  },
+  "P3u2.rows": [
+   {
+    "di": 3,
+    "ri": 4,
+    "prog": "MEETING",
+    "str": "14:00",
+    "end": "15:00",
+    "who": "bane",
+    "more": [],
+    "rmks": "P6C LIVE",
+    "kept": false,
+    "info": false,
+    "flag": null,
+    "cx": null
+   }
+  ],
+  "P4.del": "gone",
+  "P4.weekRowsWritten": [
+   "weeks/13-07-2026#3"
+  ],
+  "P4.rows": [],
+  "P4.marks": {
+   "pending": 4,
+   "changes": 0,
+   "added": 1
+  },
+  "P4.undo": {
+   "present": true,
+   "title": "Undo — a personal input",
+   "pressed": true,
+   "toasts": [
+    "Undid: a personal input"
+   ]
+  },
+  "P4u.rows": [
+   {
+    "di": 3,
+    "ri": 3,
+    "prog": "MEETING",
+    "str": "10:00",
+    "end": "11:00",
+    "who": "bane",
+    "more": [],
+    "rmks": "P6C ISSUED",
+    "kept": false,
+    "info": false,
+    "flag": null,
+    "cx": null
+   }
+  ],
+  "P4u.marks": {
+   "pending": 4,
+   "changes": 0,
+   "added": 1
+  },
+  "P4.redo": {
+   "present": true,
+   "title": "Redo — a personal input",
+   "pressed": true,
+   "toasts": [
+    "Redid: a personal input"
+   ]
+  },
+  "P4r.rows": [],
+  "P4r.marks": {
+   "pending": 4,
+   "changes": 0,
+   "added": 1
+  },
+  "P4rl.iss.rows": [],
+  "P4rl.live.rows": [
+   {
+    "di": 3,
+    "ri": 3,
+    "prog": "MEETING",
+    "str": "14:00",
+    "end": "15:00",
+    "who": "bane",
+    "more": [],
+    "rmks": "P6C LIVE",
+    "kept": false,
+    "info": false,
+    "flag": null,
+    "cx": null
+   }
+  ],
+  "P4rl.marks": {
+   "pending": 4,
+   "changes": 0,
+   "added": 1
+  },
+  "P5.head": {
+   "tag": "ORIG",
+   "pending": "2 pending",
+   "beak": "none",
+   "alpub": "Publish AL1",
+   "unpub": "Unpublish",
+   "signs": [
+    "— name —",
+    "— name —",
+    "— name —",
+    "— name —"
+   ],
+   "signed": "SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil",
+   "nys": "Not yet signed"
+  },
+  "P5.al": {
+   "line": "1 day with changes to publish",
+   "drop": {
+    "disabled": true,
+    "title": "Nothing to clear — a published day’s changes stay until you publish them or put them back"
+   },
+   "days": [
+    "Thu · 2 changes · 1 removal Publish AL1"
+   ]
+  },
+  "P5.list": {
+   "tabs": [
+    "New to you 10",
+    "All changes 18",
+    "To go out · AL1 2"
+   ],
+   "lines": [
+    "Waiting to go out as",
+    "AL1",
+    "· 2 changes",
+    "Ranger · Meeting",
+    "Ranger",
+    "15/7 09:00",
+    "not on the programme → on the programme",
+    "Ranger · Meeting",
+    "Saber",
+    "15/7 09:00",
+    "on the programme → deleted",
+    "Tap a change to go to it."
+   ]
+  },
+  "P6.load": [
+   "Load onto working copy",
+   "Discard 2 edits & load — confirm"
+  ],
+  "P6.toasts": [
+   "Schedule updated",
+   "Thursday: Original loaded onto the working copy — viewers still see Original until you publish · 2 unpublished edits replaced · 2 member input changes stay pending — a load cannot put back a member's own record"
+  ],
+  "P6.iss.rows": [
+   {
+    "di": 3,
+    "ri": 3,
+    "prog": "MEETING",
+    "str": "10:00",
+    "end": "11:00",
+    "who": "bane",
+    "more": [],
+    "rmks": "P6C ISSUED",
+    "kept": false,
+    "info": false,
+    "flag": null,
+    "cx": null
+   }
+  ],
+  "P6.live.rows": [],
+  "P6.head": {
+   "tag": "ORIG",
+   "pending": "2 pending",
+   "beak": "none",
+   "alpub": "Publish AL1",
+   "unpub": "Unpublish",
+   "signs": [
+    "— name —",
+    "— name —",
+    "— name —",
+    "— name —"
+   ],
+   "signed": "SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil",
+   "nys": "Not yet signed"
+  },
+  "P6.al": {
+   "line": "1 day with changes to publish",
+   "drop": {
+    "disabled": true,
+    "title": "Nothing to clear — a published day’s changes stay until you publish them or put them back"
+   },
+   "days": [
+    "Thu · 2 changes · 2 input changes Publish AL1"
+   ]
+  },
+  "P6.list": {
+   "tabs": [
+    "New to you 10",
+    "All changes 20",
+    "To go out · AL1 2"
+   ],
+   "lines": [
+    "Waiting to go out as",
+    "AL1",
+    "· 2 changes",
+    "Ranger · Meeting",
+    "Saber",
+    "15/7 09:00",
+    "on the programme → deleted",
+    "Ranger · Meeting",
+    "Saber",
+    "15/7 09:00",
+    "filed"
+   ]
+  },
+  "P6r.iss.rows": [
+   {
+    "di": 3,
+    "ri": 3,
+    "prog": "MEETING",
+    "str": "10:00",
+    "end": "11:00",
+    "who": "bane",
+    "more": [],
+    "rmks": "P6C ISSUED",
+    "kept": false,
+    "info": false,
+    "flag": null,
+    "cx": null
+   }
+  ],
+  "P6r.live.rows": [],
+  "P6r.head": {
+   "tag": "ORIG",
+   "pending": "2 pending",
+   "beak": "none",
+   "alpub": "Publish AL1",
+   "unpub": "Unpublish",
+   "signs": [
+    "— name —",
+    "— name —",
+    "— name —",
+    "— name —"
+   ],
+   "signed": "SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil",
+   "nys": "Not yet signed"
+  },
+  "P6r.al": {
+   "line": "1 day with changes to publish",
+   "drop": {
+    "disabled": true,
+    "title": "Nothing to clear — a published day’s changes stay until you publish them or put them back"
+   },
+   "days": [
+    "Thu · 2 changes · 2 input changes Publish AL1"
+   ]
+  },
+  "P6r.list": {
+   "tabs": [
+    "New to you 10",
+    "All changes 20",
+    "To go out · AL1 2"
+   ],
+   "lines": [
+    "Waiting to go out as",
+    "AL1",
+    "· 2 changes",
+    "Ranger · Meeting",
+    "Saber",
+    "15/7 09:00",
+    "on the programme → deleted",
+    "Ranger · Meeting",
+    "Ranger",
+    "15/7 09:00",
+    "filed"
+   ]
+  },
+  "P7.x": "no landed row",
+  "P7.weekRowsWritten": [],
+  "P7.acc": null,
+  "P7.rows": [],
+  "P7.head": {
+   "tag": "ORIG",
+   "pending": "2 pending",
+   "beak": "none",
+   "alpub": "Publish AL1",
+   "unpub": "Unpublish",
+   "signs": [
+    "— name —",
+    "— name —",
+    "— name —",
+    "— name —"
+   ],
+   "signed": "SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil",
+   "nys": "Not yet signed"
+  },
+  "P7.al": {
+   "line": "1 day with changes to publish",
+   "drop": {
+    "disabled": true,
+    "title": "Nothing to clear — a published day’s changes stay until you publish them or put them back"
+   },
+   "days": [
+    "Thu · 2 changes · 2 input changes Publish AL1"
+   ]
+  },
+  "P7.list": {
+   "tabs": [
+    "New to you 10",
+    "All changes 20",
+    "To go out · AL1 2"
+   ],
+   "lines": [
+    "Waiting to go out as",
+    "AL1",
+    "· 2 changes",
+    "Ranger · Meeting",
+    "Saber",
+    "15/7 09:00",
+    "on the programme → deleted",
+    "Ranger · Meeting",
+    "Ranger",
+    "15/7 09:00",
+    "filed"
+   ]
+  },
+  "P8.acc": "pressed",
+  "P8.weekRowsWritten": [
+   "weeks/13-07-2026#3"
+  ],
+  "P8.rows": [
+   {
+    "di": 3,
+    "ri": 4,
+    "prog": "MEETING",
+    "str": "14:00",
+    "end": "15:00",
+    "who": "bane",
+    "more": [],
+    "rmks": "P6C LIVE",
+    "kept": false,
+    "info": false,
+    "flag": null,
+    "cx": null
+   }
+  ],
+  "P8.head": {
+   "tag": "ORIG",
+   "pending": "2 pending",
+   "beak": "none",
+   "alpub": "Publish AL1",
+   "unpub": "Unpublish",
+   "signs": [
+    "— name —",
+    "— name —",
+    "— name —",
+    "— name —"
+   ],
+   "signed": "SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil",
+   "nys": "Not yet signed"
+  },
+  "P8.al": {
+   "line": "1 day with changes to publish",
+   "drop": {
+    "disabled": true,
+    "title": "Nothing to clear — a published day’s changes stay until you publish them or put them back"
+   },
+   "days": [
+    "Thu · 2 changes · 1 input change Publish AL1"
+   ]
+  },
+  "errors": []
+ }
+}

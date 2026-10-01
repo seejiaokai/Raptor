@@ -1,0 +1,302 @@
+{
+ "base": "http://localhost:4206",
+ "at": "2026-09-30T09:23:03.684Z",
+ "results": [
+  {
+   "name": "shared-ph S0: a fresh shared store's first boot stores ONLY the stamp, one person, one account and one change-log batch (boot)",
+   "ok": true,
+   "detail": "[\"changes/cmunwcice34ig0k-g1 (boot/3)\",\"people/pmunwcic530ovly\",\"settings/account:acmunwcic511rk\",\"settings/schema\"]"
+  },
+  {
+   "name": "shared-ph S0: the stamp is format 6, started",
+   "ok": true,
+   "detail": "{\"stage\":1,\"dataFormatVersion\":6,\"initialized\":true,\"appliedAt\":\"2026-09-30T09:22:13.585Z\",\"minClient\":6}"
+  },
+  {
+   "name": "shared-ph S1: the demo sign-in ad / a is REFUSED (no app; the request-access card)",
+   "ok": true,
+   "detail": "{\"shell\":false,\"card\":true,\"text\":\"RAPTOR Request access Signed in as ad You're not on the squadron's list yet. Tell the admins who you are and they'll give you access. DISPLAYED CALLSIGN/NAME IN\"}"
+  },
+  {
+   "name": "shared-ph S1: …and the refused sign-in wrote nothing",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "shared-ph S2 the first admin signs in (any password) — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "shared-ph S2 the first admin signs in (any password) — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "shared-ph S2: the roster holds him alone",
+   "ok": true,
+   "detail": "{\"n\":1,\"cs\":[\"Boss\"]}"
+  },
+  {
+   "name": "shared-ph S3 editsched opens — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "shared-ph S3 editsched opens — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "shared-ph S3 editsched: what it shows",
+   "ok": true,
+   "detail": "LEGEND — COLOURS & FLAGS Monday Jul 13 Templates Live working copy ▾ DRAFT 0 X 0 X 0 i Publish day SIGN-OFF CUR CK — name — — name — Boss SK"
+  },
+  {
+   "name": "shared-ph S3 viewsched opens — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "shared-ph S3 viewsched opens — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "shared-ph S3 viewsched: what it shows",
+   "ok": true,
+   "detail": "LEGEND — COLOURS & FLAGS Monday Jul 13 DRAFT 0 X 0 X 0 i Draft No flying — ground day. UNAVAILABLE Nil Tuesday Jul 14 DRAFT 0 X 0 X 0 i Draf"
+  },
+  {
+   "name": "shared-ph S3 inputs opens — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "shared-ph S3 inputs opens — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "shared-ph S3 inputs: what it shows",
+   "ok": true,
+   "detail": "Personal Inputs 📅 Calendar view Medical PERSON Boss DATES ‹ JUL 2026 › 13 Mo Tu We Th Fr Sa Su 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18"
+  },
+  {
+   "name": "shared-ph S3 quals opens — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "shared-ph S3 quals opens — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "shared-ph S3 quals: what it shows",
+   "ok": true,
+   "detail": "Enable editing Export to Excel 🔍 Similar to a LoX and integrated with the board — a person's CAT drives their puck's qualification chip col"
+  },
+  {
+   "name": "shared-ph S3 logic opens — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "shared-ph S3 logic opens — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "shared-ph S3 logic: what it shows",
+   "ok": true,
+   "detail": "Logic every rule the engine applies — “Edit rules” to change a threshold 🔍 All Warnings Advisories Notes Fired this week ✎ Edit rules 71 of"
+  },
+  {
+   "name": "shared-ph S3 help opens — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "shared-ph S3 help opens — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "shared-ph S3 help: what it shows",
+   "ok": true,
+   "detail": "Help REPORT A PROBLEM Spotted something wrong, or something that could work better? Send it here — the schedulers see every report. CATEGORY"
+  },
+  {
+   "name": "shared-ph S3 admin opens — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "shared-ph S3 admin opens — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "shared-ph S3 admin: what it shows",
+   "ok": true,
+   "detail": "Admin Users Sign-in and roster › Squadron config Duty, day & wave templates › Data Storage & cleanup ›"
+  },
+  {
+   "name": "shared-ph S3 leavewar opens — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "shared-ph S3 leavewar opens — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "shared-ph S3 leavewar: what it shows",
+   "ok": true,
+   "detail": "No leave period yet Create the first leave period — its name and dates. It starts in draft; open it for bidding when the schedule firms up. "
+  },
+  {
+   "name": "shared-ph S3: the Leave War says \"No leave period yet\" and offers \"Create the first period\"",
+   "ok": true,
+   "detail": "No leave period yet Create the first leave period — its name and dates. It starts in draft; open it for bidding when the schedule firms up. Create the first period"
+  },
+  {
+   "name": "shared-ph S3: the Tracker says \"No course yet\" with \"+ Add a course\"",
+   "ok": true,
+   "detail": "No course yet Add the first course, or bring charts and students in from a file. + Add a course ⇪ Import a file…"
+  },
+  {
+   "name": "shared-ph S3: the Tracker's first mount wrote only its own bookkeeping — no course, no student, nothing outside the Tracker",
+   "ok": true,
+   "detail": "{\"put\":[\"tracker/v3:courseidmig\",\"tracker/v3:eventinfomig\",\"tracker/v3:master:chart:sb2024\",\"tracker/v3:master:chart:sb2026\",\"tracker/v3:master:chart:sbagaa2026\",\"tracker/v3:master:chart:sbtx2026\",\"tracker/v3:seedstamp\",\"tracker/v3:sylcatmig\",\"tracker/v3:sylreset\"],\"batches\":[]}"
+  },
+  {
+   "name": "shared-ph S3: after every page, storage holds only the stamp, his person, his account, the change log and the Tracker's bookkeeping",
+   "ok": true,
+   "detail": "[]"
+  },
+  {
+   "name": "shared-ph S4: ad / a is still refused now that the first admin exists",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "shared-ph S4: signing out and in again wrote nothing",
+   "ok": true,
+   "detail": "{\"put\":[],\"del\":[],\"newBatches\":[],\"goneBatches\":[]}"
+  },
+  {
+   "name": "shared-ph S5 the first period (Create the first period → the New-war sheet → Create) — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 2 [leavewar/current, leavewar/war:war-2026-11-02-2026-12-31] · del 0 [] · batches lw.edit/1 lw.edit/1"
+  },
+  {
+   "name": "shared-ph S5 the first period (Create the first period → the New-war sheet → Create) — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 2 [leavewar/current, leavewar/war:war-2026-11-02-2026-12-31] · del 0 [] · batches lw.edit/1 lw.edit/1"
+  },
+  {
+   "name": "shared-ph S5: the war page now draws the period (the empty card gone, his row drawn)",
+   "ok": true,
+   "detail": "{\"empty\":false,\"rows\":1,\"text\":\"PERIOD W4 FIRST PERIOD + New VIEWING AS Boss STAGE DRAFT → OPEN FOR BIDDING UNDER-MANNED 60 days Legend ▾ Manning ⚙ ⇅ ◷ OIL − ＋ CREW SETS 0 0 0 0 0 0 0 0 0 0 0 \"}"
+  },
+  {
+   "name": "shared-ph S5 — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "shared-ph S5 — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "shared-ph S6 the first course (+ Add a course) — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 4 [tracker/v3:cmunwd6z9rw4jpd:idmig, tracker/v3:cmunwd6z9rw4jpd:plan, tracker/v3:cmunwd6z9rw4jpd:rostermig, tracker/v3:master:course:cmunwd6z9rw4jpd] · del 0 [] · batches trk.gesture/4"
+  },
+  {
+   "name": "shared-ph S6 the first course (+ Add a course) — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 4 [tracker/v3:cmunwd6z9rw4jpd:idmig, tracker/v3:cmunwd6z9rw4jpd:plan, tracker/v3:cmunwd6z9rw4jpd:rostermig, tracker/v3:master:course:cmunwd6z9rw4jpd] · del 0 [] · batches trk.gesture/4"
+  },
+  {
+   "name": "shared-ph S6: the course is there, drawn, with no student",
+   "ok": true,
+   "detail": "{\"courses\":[{\"id\":\"cmunwd6z9rw4jpd\",\"name\":\"W4 FIRST COURSE\"}],\"crew\":[]}"
+  },
+  {
+   "name": "shared-ph S6 — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "shared-ph S6 — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "shared-ph S7 a request filed on the Inputs page — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 2 [inputs/imunwdbfju4276u, settings/elog:munwd96nxrov.000001] · del 0 [] · batches inputs.batch/2"
+  },
+  {
+   "name": "shared-ph S7 a request filed on the Inputs page — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 2 [inputs/imunwdbfju4276u, settings/elog:munwd96nxrov.000001] · del 0 [] · batches inputs.batch/2"
+  },
+  {
+   "name": "shared-ph S7 — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "shared-ph S7 — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "shared-ph S8 a person added on Admin → Users (with his sign-in) — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 4 [leavewar/profile:pmunwdeqfbnlekp, people/pmunwdeqfbnlekp, settings/account:acmunwdeqgqcln, settings/elog:munwdcqbteu2.000001] · del 0 [] · batches account.addNew/4"
+  },
+  {
+   "name": "shared-ph S8 a person added on Admin → Users (with his sign-in) — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 4 [leavewar/profile:pmunwdeqfbnlekp, people/pmunwdeqfbnlekp, settings/account:acmunwdeqgqcln, settings/elog:munwdcqbteu2.000001] · del 0 [] · batches account.addNew/4"
+  },
+  {
+   "name": "shared-ph S8 — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "shared-ph S8 — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "shared-ph S9: nothing demo anywhere in storage",
+   "ok": true,
+   "detail": "[]"
+  },
+  {
+   "name": "shared-ph S9: after a reload — his request, the two people, the one period, the one course; nothing else",
+   "ok": true,
+   "detail": "{\"requests\":[\"imunwdbfju4276u | Boss 3 Nov LL till 3 Nov now ✎ ✕\"],\"people\":[\"Boss\",\"Second\"],\"wars\":[\"W4 FIRST PERIOD\"],\"courses\":[{\"id\":\"cmunwd6z9rw4jpd\",\"name\":\"W4 FIRST COURSE\"}]}"
+  },
+  {
+   "name": "shared-ph S9: the rows by collection",
+   "ok": true,
+   "detail": "{\"people\":2,\"tracker\":13,\"leavewar\":3,\"changes\":6,\"settings\":5,\"inputs\":1}"
+  },
+  {
+   "name": "shared-ph: no console error, page error or failed request",
+   "ok": true,
+   "detail": "[]"
+  }
+ ],
+ "width": "phone"
+}

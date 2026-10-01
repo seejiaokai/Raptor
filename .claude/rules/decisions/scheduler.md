@@ -46,6 +46,7 @@ speed — `raptor-port/docs/performance.md`; what is stored — `raptor-port/doc
 
 | # | Date | The rule |
 |---|---|---|
+| D468 | 1 Oct 26 | A REQUEST MOVED TO ANOTHER DAY ARRIVES THERE AS ITS MEMBER FILED IT; WHAT THE SCHEDULER ADDED TO ITS ROW (A SECOND MAN, A RED BOX, A CX) STAYS WITH THE OLD DAY — BACK IF THE REQUEST RETURNS BEFORE THAT DAY IS NEXT SAVED — AND THE SCHEDULER RE-ADDS ON THE NEW DAY WHAT STILL APPLIES. |
 | D454 | 29 Sep 26 | A TAKE-OVER ASKS THE HOLDER FIRST ("SABER ASKS TO TAKE OVER TUESDAY" — HAND OVER / KEEP EDITING); NO ANSWER WITHIN 1 MINUTE HANDS IT OVER; KEEP EDITING TELLS THE ASKER, WHO CAN STILL "TAKE OVER ANYWAY" (ASKED AGAIN, NOTED IN THE HISTORY); EVERY TAKE-OVER FIRST SAVES THE DAY AS A SAVED PLAN "<CALLSIGN> — AT TAKE-OVER HH:MM". |
 | D452 | 29 Sep 26 | IN THE DATABASE, FAST SYNC (EVERY SECOND) SWITCHES ITSELF OFF AFTER 20 MINUTES, OR WHEN THE PAGE IS LEFT, WITH A SMALL NOTE SAYING SO; ONE TAP TURNS IT BACK ON; THE NORMAL CHECK EVERY 30 SECONDS CARRIES ON. |
 | D451 | 29 Sep 26 | A CHANGE ON A DAY NO ONE HOLDS TAKES THE DAY FOR THE SCHEDULER AT ONCE — THE STRIP TURNS TO "YOU'RE EDITING" — AND THE ✎ EDIT BUTTON STAYS AS THE OTHER WAY IN. |
@@ -456,7 +457,9 @@ Contract: `docs/ui-contracts.md` §Dragging sections and waves, §Dense row reor
     writes `inputs`, `people`, the `plan` layer AND every stashed week to the
     whiteboard, and a built site runs on the Browser backend. A reload KEEPS them.
     Memory-only is now just dev/tests/`?fresh=1`. Don't "fix" this by removing the
-    persistence — it is deliberate; see `docs/data-schema.md`.
+    persistence — it is deliberate; see `docs/data-schema.md`. *(30 Sep 26: the weeks
+    are no longer written by `persistAll` but as ROWS from each command's changes —
+    `[DB-READINESS]` group A, phase 1; still persisted, `docs/data-schema.md` §The week record.)*
   - **Pristine weeks are deliberately NOT stashed** (a persisted byte-copy of the seed
     would outrank a later demo-week update forever). Stashed on the way out only if
     changed since load or already carrying an entry. Don't re-add the unconditional

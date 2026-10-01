@@ -1,0 +1,55 @@
+{
+ "base": "http://localhost:4203",
+ "at": "2026-09-30T08:57:40.895Z",
+ "results": [
+  {
+   "name": "P5 (A) Warden 17 Mar, whole day LL — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [leavewar/rec:y2026:rmunvgm9g1d2om] · del 0 [] · batches lw.edit/1"
+  },
+  {
+   "name": "P5 (A) Warden 17 Mar, whole day LL — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [leavewar/rec:y2026:rmunvgm9g1d2om] · del 0 [] · batches lw.edit/1"
+  },
+  {
+   "name": "P5 (B, stale) Warden 17 Mar, whole day OL — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [leavewar/rec:y2026:rmunvgp041wakf] · del 0 [] · batches lw.edit/1"
+  },
+  {
+   "name": "P5 (B, stale) Warden 17 Mar, whole day OL — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [leavewar/rec:y2026:rmunvgp041wakf] · del 0 [] · batches lw.edit/1"
+  },
+  {
+   "name": "P5 — both bids are kept in storage",
+   "ok": true,
+   "detail": "[\"LL/pending#1024(g1d2om)\",\"OL/pending#1024(41wakf)\"]"
+  },
+  {
+   "name": "P5 — both tabs show the same one",
+   "ok": true,
+   "detail": "{\"cA\":{\"nact@2026-03-17\":{\"text\":\"LL\",\"cls\":\"act\",\"mark\":\"\"}},\"cB\":{\"nact@2026-03-17\":{\"text\":\"LL\",\"cls\":\"act\",\"mark\":\"\"}}}"
+  },
+  {
+   "name": "probe 5 — no console errors",
+   "ok": true,
+   "detail": "[]"
+  }
+ ],
+ "table": [
+  {
+   "step": "P5 two tabs, same man, same day, same half",
+   "width": "desktop",
+   "did": "B opened; A: Warden 17 Mar LL; B (stale): the same day OL; reload both",
+   "screen": "grid A \"LL\" B \"LL\"; tap → bid-picker Warden Tue 17 Mar NOW LL ✕ HOW MANY Just this day Pick a range DECIDE Ack Approv",
+   "rows": "stored LL/pending#1024(g1d2om) OL/pending#1024(41wakf) || A: put 1 [leavewar/rec:y2026:rmunvgm9g1d2om] · batches lw.edit/1 || B: put 1 [leavewar/rec:y2026:rmunvgp041wakf] · batches lw.edit/1",
+   "ok": true,
+   "pics": [
+    "P5-same-half-after-both-reloaded.png"
+   ]
+  }
+ ],
+ "errors": []
+}

@@ -28,6 +28,7 @@ import type { PendItem } from '../engine/publish'
 import { ELOG, elogWhen, elogWho, keyLabel, rowTouches, weekDates } from '../engine/editlog'
 import { CURWEEK } from '../engine/waves'
 import { oilEvidence } from '../engine/oilev'
+import { standsOn } from '../engine/overlay'
 import { esc } from '../state/view'
 
 let items: PendItem[] = []
@@ -309,7 +310,7 @@ export function pendItemWords(di: number, it: PendItem): Words {
     const arr = issuedDays(di)
     const row = requestRow(it, (arr || [])[di])
     if (row && row.src) {
-      const dj = DAYS.findIndex((d: any, j: number) => j !== di && ((d && d.ground) || []).some((g: any) => g && g.src === row.src))
+      const dj = DAYS.findIndex((d: any, j: number) => j !== di && !!standsOn(d, row.src))   // where it STANDS now (overlay.ts)
       return { where: rowRequestName(row), from: 'on the programme', to: dj >= 0 ? `on ${DAYS[dj].dow}'s programme` : 'removed', ...none, jump: false }
     }
     return { where: arr ? keyLabel(e.addr, arr) : 'An item', from: '', to: 'removed', ...none, jump: false }

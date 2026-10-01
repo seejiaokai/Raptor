@@ -1,0 +1,908 @@
+{
+ "base": "http://localhost:4201",
+ "at": "2026-09-30T08:38:11.749Z",
+ "results": [
+  {
+   "name": "W1.8 the three edits were made inside 403 ms",
+   "ok": true,
+   "detail": "403 ms"
+  },
+  {
+   "name": "W1.8 after the immediate reload all three notes are there and nothing else differs",
+   "ok": true,
+   "detail": "identical"
+  },
+  {
+   "name": "W1.8 Tue / Wed / Thu read Q1 / Q2 / Q3",
+   "ok": true,
+   "detail": "Q1 TUE | Q2 WED | Q3 THU"
+  },
+  {
+   "name": "W1.8 every row the three edits wrote (saved at the page's leaving) is named by a change-log batch",
+   "ok": true,
+   "detail": "{\"bare\":[],\"wrongOp\":[],\"phantom\":[]}"
+  },
+  {
+   "name": "W1.8 it wrote only the week's rows and three history lines",
+   "ok": true,
+   "detail": "settings/elog:munupw1ager4.000001, settings/elog:munupw1ager4.000002, settings/elog:munupw1ager4.000003, weeks/13-07-2026, weeks/13-07-2026#0, weeks/13-07-2026#1, weeks/13-07-2026#2, weeks/13-07-2026#3, weeks/13-07-2026#4, weeks/13-07-2026#5, weeks/13-07-2026#6"
+  },
+  {
+   "name": "W1.8 (a second, ordinary reload) — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "W1.8 (a second, ordinary reload) — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "W1.9a the week chip \"Jul 20\" pressed — the next week opens — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "W1.9a the week chip \"Jul 20\" pressed — the next week opens — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "W1.9a — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 20/07/2026"
+  },
+  {
+   "name": "W1.9a — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "W1.9b next week: Tuesday's day note typed (the week's first save) — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 9 [settings/elog:munuq3pez4wn.000001, weeks/20-07-2026, weeks/20-07-2026#0, weeks/20-07-2026#1, weeks/20-07-2026#2, weeks/20-07-2026#3, weeks/20-07-2026#4, weeks/20-07-2026#5 …] · del 0 [] · batches sched.text/8 elog.line/1"
+  },
+  {
+   "name": "W1.9b next week: Tuesday's day note typed (the week's first save) — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 9 [settings/elog:munuq3pez4wn.000001, weeks/20-07-2026, weeks/20-07-2026#0, weeks/20-07-2026#1, weeks/20-07-2026#2, weeks/20-07-2026#3, weeks/20-07-2026#4, weeks/20-07-2026#5 …] · del 0 [] · batches sched.text/8 elog.line/1"
+  },
+  {
+   "name": "W1.9b — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 20/07/2026"
+  },
+  {
+   "name": "W1.9b — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "W1.9c the week chip \"Jul 13\" pressed — back to the first week — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "W1.9c the week chip \"Jul 13\" pressed — back to the first week — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "W1.9c — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "W1.9c — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "W1.9c after the reload the next week reads exactly as it was left",
+   "ok": true,
+   "detail": "identical"
+  },
+  {
+   "name": "W1.10a Thursday: the plans menu → \"+ Alt Plan\" (the working copy duplicated as a saved plan) — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 2 [settings/elog:munuqcnzu4fp.000001, weeks/13-07-2026#3] · del 0 [] · batches sched.mutate/1 elog.line/1"
+  },
+  {
+   "name": "W1.10a Thursday: the plans menu → \"+ Alt Plan\" (the working copy duplicated as a saved plan) — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 2 [settings/elog:munuqcnzu4fp.000001, weeks/13-07-2026#3] · del 0 [] · batches sched.mutate/1 elog.line/1"
+  },
+  {
+   "name": "W1.10a — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "W1.10a — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "W1.10b Thursday (live plan): its day note changed — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 2 [settings/elog:munuqisv3y2n.000001, weeks/13-07-2026#3] · del 0 [] · batches sched.text/1 elog.line/1"
+  },
+  {
+   "name": "W1.10b Thursday (live plan): its day note changed — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 2 [settings/elog:munuqisv3y2n.000001, weeks/13-07-2026#3] · del 0 [] · batches sched.text/1 elog.line/1"
+  },
+  {
+   "name": "W1.10b — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "W1.10b — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "W1.10c Thursday: the plans menu → the saved plan tapped — brought out as the live day — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 2 [settings/elog:munuqmfwea23.000001, weeks/13-07-2026#3] · del 0 [] · batches sched.mutate/1 elog.line/1"
+  },
+  {
+   "name": "W1.10c Thursday: the plans menu → the saved plan tapped — brought out as the live day — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 2 [settings/elog:munuqmfwea23.000001, weeks/13-07-2026#3] · del 0 [] · batches sched.mutate/1 elog.line/1"
+  },
+  {
+   "name": "W1.10c — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "W1.10c — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "W1.10c the brought-out plan's note (Q3 THU) is back after the reload",
+   "ok": true,
+   "detail": "Q3 THU"
+  },
+  {
+   "name": "W1.10d Tuesday: Templates → \"+ Save this day as a template\" — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [settings/daytpl] · del 0 [] · batches settings.daytpl/1"
+  },
+  {
+   "name": "W1.10d Tuesday: Templates → \"+ Save this day as a template\" — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [settings/daytpl] · del 0 [] · batches settings.daytpl/1"
+  },
+  {
+   "name": "W1.10d — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "W1.10d — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "W1.10e Wednesday (unpublished): Templates → \"Template 1\" picked (twice if the first pick only arms) — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 2 [settings/elog:munuqva4s5k9.000001, weeks/13-07-2026#2] · del 0 [] · batches sched.mutate/1 elog.line/1"
+  },
+  {
+   "name": "W1.10e Wednesday (unpublished): Templates → \"Template 1\" picked (twice if the first pick only arms) — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 2 [settings/elog:munuqva4s5k9.000001, weeks/13-07-2026#2] · del 0 [] · batches sched.mutate/1 elog.line/1"
+  },
+  {
+   "name": "W1.10e — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "W1.10e — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "W1.10f Friday: the four signed and Publish day — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 7 [settings/elog:munur0br664b.000001, settings/elog:munur0br664b.000002, settings/elog:munur0br664b.000003, settings/elog:munur0br664b.000004, settings/elog:munur0br664b.000005, weeks/13-07-2026#4, weeks/13-07-2026:is:2026-07-17#0~0] · del 0 [] · batches sched.sign/2 sched.sign/2 sched.sign/2 sched.sign/2 sched.approve/3"
+  },
+  {
+   "name": "W1.10f Friday: the four signed and Publish day — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 7 [settings/elog:munur0br664b.000001, settings/elog:munur0br664b.000002, settings/elog:munur0br664b.000003, settings/elog:munur0br664b.000004, settings/elog:munur0br664b.000005, weeks/13-07-2026#4, weeks/13-07-2026:is:2026-07-17#0~0] · del 0 [] · batches sched.sign/2 sched.sign/2 sched.sign/2 sched.sign/2 sched.approve/3"
+  },
+  {
+   "name": "W1.10f — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "W1.10f — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "W1.10g published Friday: two day notes changed → \"2 pending\" — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 3 [settings/elog:munur55exosx.000001, settings/elog:munur55exosx.000002, weeks/13-07-2026#4] · del 0 [] · batches sched.text/1 sched.text/1 elog.line/1 elog.line/1"
+  },
+  {
+   "name": "W1.10g published Friday: two day notes changed → \"2 pending\" — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 3 [settings/elog:munur55exosx.000001, settings/elog:munur55exosx.000002, weeks/13-07-2026#4] · del 0 [] · batches sched.text/1 sched.text/1 elog.line/1 elog.line/1"
+  },
+  {
+   "name": "W1.10g — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "W1.10g — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "W1.10h Friday: the plans menu → the Original looked at → \"Discard 2 edits & load\" → confirm — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 2 [settings/elog:munur97uvu0n.000001, weeks/13-07-2026#4] · del 0 [] · batches sched.mutate/1 elog.line/1"
+  },
+  {
+   "name": "W1.10h Friday: the plans menu → the Original looked at → \"Discard 2 edits & load\" → confirm — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 2 [settings/elog:munur97uvu0n.000001, weeks/13-07-2026#4] · del 0 [] · batches sched.mutate/1 elog.line/1"
+  },
+  {
+   "name": "W1.10h — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "W1.10h — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "W1.10h after the reload Friday reads nothing pending and its notes are the Original's",
+   "ok": true,
+   "detail": "tag \"ORIG\" · \"8 changes\" · signs [— name — | — name — | — name — | — name —]"
+  },
+  {
+   "name": "W1.10i the Amendments panel's \"Discard marks\" (the unpublished days' draft marks) — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 2 [settings/elog:munuremxczgv.000001, weeks/13-07-2026#1] · del 0 [] · batches sched.discard/2"
+  },
+  {
+   "name": "W1.10i the Amendments panel's \"Discard marks\" (the unpublished days' draft marks) — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 2 [settings/elog:munuremxczgv.000001, weeks/13-07-2026#1] · del 0 [] · batches sched.discard/2"
+  },
+  {
+   "name": "W1.10i — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "W1.10i — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "W1.11a Saturday: the four signed and Publish day — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 8 [leavewar/rec:y2026:cmunurl5y1of6n, settings/elog:munuri6juw2k.000001, settings/elog:munuri6juw2k.000002, settings/elog:munuri6juw2k.000003, settings/elog:munuri6juw2k.000004, settings/elog:munuri6juw2k.000005, weeks/13-07-2026#5, weeks/13-07-2026:is:2026-07-18#0~0] · del 0 [] · batches sched.sign/2 sched.sign/2 sched.sign/2 sched.sign/2 sched.approve/4"
+  },
+  {
+   "name": "W1.11a Saturday: the four signed and Publish day — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 8 [leavewar/rec:y2026:cmunurl5y1of6n, settings/elog:munuri6juw2k.000001, settings/elog:munuri6juw2k.000002, settings/elog:munuri6juw2k.000003, settings/elog:munuri6juw2k.000004, settings/elog:munuri6juw2k.000005, weeks/13-07-2026#5, weeks/13-07-2026:is:2026-07-18#0~0] · del 0 [] · batches sched.sign/2 sched.sign/2 sched.sign/2 sched.sign/2 sched.approve/4"
+  },
+  {
+   "name": "W1.11a — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "W1.11a — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "W1.11b published Saturday, OIL Earn on the board: plasma's earning switched off (r:rmunupw27niuy91) — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 2 [settings/elog:munurn229c1y.000001, weeks/13-07-2026#5] · del 0 [] · batches sched.oil/1 elog.line/1"
+  },
+  {
+   "name": "W1.11b published Saturday, OIL Earn on the board: plasma's earning switched off (r:rmunupw27niuy91) — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 2 [settings/elog:munurn229c1y.000001, weeks/13-07-2026#5] · del 0 [] · batches sched.oil/1 elog.line/1"
+  },
+  {
+   "name": "W1.11b — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "W1.11b — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "W1.11b after the reload his earning is still off",
+   "ok": true,
+   "detail": "{\"who\":\"plasma\",\"item\":\"r:rmunupw27niuy91\",\"on\":false}"
+  }
+ ],
+ "table": [
+  {
+   "step": "W1.8",
+   "width": "1440",
+   "did": "three day notes typed on Tue, Wed, Thu inside about a second, then the page reloaded at once (no wait for the save)",
+   "pics": [],
+   "shown": "after the reload Tue \"Q1 TUE\", Wed \"Q2 WED\", Thu \"Q3 THU\" (typed in 403 ms)",
+   "rows": "put 11: settings/elog:munupw1ager4.000001, settings/elog:munupw1ager4.000002, settings/elog:munupw1ager4.000003, weeks/13-07-2026, weeks/13-07-2026#0, weeks/13-07-2026#1, weeks/13-07-2026#2, weeks/13-07-2026#3, weeks/13-07-2026#4, weeks/13-07-2026#5, weeks/13-07-2026#6 · batches: sched.text/8 by acad + sched.text/1 by acad + sched.text/1 by acad + elog.line/1 by system + elog.line/1 by system + elog.line/1 by system",
+   "batches": [],
+   "notes": [],
+   "pass": true,
+   "fails": []
+  },
+  {
+   "step": "W1.9a",
+   "width": "1440",
+   "did": "the week chip \"Jul 20\" pressed — the next week opens",
+   "pics": [
+    "W1.9a-1-after.png",
+    "W1.9a-2-reloaded.png"
+   ],
+   "shown": "week 20/07/2026 · Monday is Jul 20",
+   "rows": "put 0:  · batches: none",
+   "batches": [],
+   "pass": true,
+   "notes": [],
+   "fails": []
+  },
+  {
+   "step": "W1.9b",
+   "width": "1440",
+   "did": "next week: Tuesday's day note typed (the week's first save)",
+   "pics": [
+    "W1.9b-1-after.png",
+    "W1.9b-2-reloaded.png"
+   ],
+   "shown": "week 20/07/2026 · Tuesday's note \"W1 NEXT-WEEK TUESDAY\"",
+   "rows": "put 9: settings/elog:munuq3pez4wn.000001, weeks/20-07-2026, weeks/20-07-2026#0, weeks/20-07-2026#1, weeks/20-07-2026#2, weeks/20-07-2026#3, weeks/20-07-2026#4, weeks/20-07-2026#5, weeks/20-07-2026#6 · batches: sched.text(ScheduleWeek+ScheduleDay, 8 rows, by acad) + elog.line(EditLog, 1 rows, 1 history line, by system)",
+   "batches": [
+    {
+     "key": "changes/cmunuq6mbbr8waa-0",
+     "type": "sched.text",
+     "actor": "acad",
+     "n": 8,
+     "seqs": [
+      0
+     ],
+     "tables": "ScheduleWeek+ScheduleDay",
+     "elog": 0
+    },
+    {
+     "key": "changes/cmunuq6mbbr8waa-g1",
+     "type": "elog.line",
+     "actor": "system",
+     "n": 1,
+     "seqs": [],
+     "tables": "EditLog",
+     "elog": 1
+    }
+   ],
+   "pass": true,
+   "notes": [],
+   "fails": []
+  },
+  {
+   "step": "W1.9c",
+   "width": "1440",
+   "did": "the week chip \"Jul 13\" pressed — back to the first week",
+   "pics": [
+    "W1.9c-1-after.png",
+    "W1.9c-2-reloaded.png",
+    "W1.9c-3-next-week-after-reload.png"
+   ],
+   "shown": "week 13/07/2026 · Tuesday's note \"Q1 TUE\" · next week after the reload: Tuesday's note \"W1 NEXT-WEEK TUESDAY\"",
+   "rows": "put 0:  · batches: none",
+   "batches": [],
+   "pass": true,
+   "notes": [
+    "W1.9 stored week rows: weeks/13-07-2026, weeks/13-07-2026#0, weeks/13-07-2026#1, weeks/13-07-2026#2, weeks/13-07-2026#3, weeks/13-07-2026#4, weeks/13-07-2026#5, weeks/13-07-2026#6, weeks/20-07-2026, weeks/20-07-2026#0, weeks/20-07-2026#1, weeks/20-07-2026#2, weeks/20-07-2026#3, weeks/20-07-2026#4, weeks/20-07-2026#5, weeks/20-07-2026#6"
+   ],
+   "fails": []
+  },
+  {
+   "step": "W1.10a",
+   "width": "1440",
+   "did": "Thursday: the plans menu → \"+ Alt Plan\" (the working copy duplicated as a saved plan)",
+   "pics": [
+    "W1.10a-1-after.png",
+    "W1.10a-2-reloaded.png"
+   ],
+   "shown": "Thursday's plans [\"Plan A\",\"Plan B ●\"]",
+   "rows": "put 2: settings/elog:munuqcnzu4fp.000001, weeks/13-07-2026#3 · batches: sched.mutate(ScheduleDay, 1 rows, by acad) + elog.line(EditLog, 1 rows, 1 history line, by system)",
+   "batches": [
+    {
+     "key": "changes/cmunuqh2st625ir-0",
+     "type": "sched.mutate",
+     "actor": "acad",
+     "n": 1,
+     "seqs": [
+      0
+     ],
+     "tables": "ScheduleDay",
+     "elog": 0
+    },
+    {
+     "key": "changes/cmunuqh2st625ir-g1",
+     "type": "elog.line",
+     "actor": "system",
+     "n": 1,
+     "seqs": [],
+     "tables": "EditLog",
+     "elog": 1
+    }
+   ],
+   "pass": true,
+   "notes": [],
+   "fails": []
+  },
+  {
+   "step": "W1.10b",
+   "width": "1440",
+   "did": "Thursday (live plan): its day note changed",
+   "pics": [
+    "W1.10b-1-after.png",
+    "W1.10b-2-reloaded.png"
+   ],
+   "shown": "Thursday's note \"W1 PLAN B NOTE\" · plans [\"Plan A\",\"Plan B ●\"]",
+   "rows": "put 2: settings/elog:munuqisv3y2n.000001, weeks/13-07-2026#3 · batches: sched.text(ScheduleDay, 1 rows, by acad) + elog.line(EditLog, 1 rows, 1 history line, by system)",
+   "batches": [
+    {
+     "key": "changes/cmunuql1r2ffjfe-0",
+     "type": "sched.text",
+     "actor": "acad",
+     "n": 1,
+     "seqs": [
+      0
+     ],
+     "tables": "ScheduleDay",
+     "elog": 0
+    },
+    {
+     "key": "changes/cmunuql1r2ffjfe-g1",
+     "type": "elog.line",
+     "actor": "system",
+     "n": 1,
+     "seqs": [],
+     "tables": "EditLog",
+     "elog": 1
+    }
+   ],
+   "pass": true,
+   "notes": [],
+   "fails": []
+  },
+  {
+   "step": "W1.10c",
+   "width": "1440",
+   "did": "Thursday: the plans menu → the saved plan tapped — brought out as the live day",
+   "pics": [
+    "W1.10c-1-after.png",
+    "W1.10c-2-reloaded.png"
+   ],
+   "shown": "Thursday's note \"Q3 THU\" · plans [\"Plan A ●\",\"Plan B\"]",
+   "rows": "put 2: settings/elog:munuqmfwea23.000001, weeks/13-07-2026#3 · batches: sched.mutate(ScheduleDay, 1 rows, by acad) + elog.line(EditLog, 1 rows, 1 history line, by system)",
+   "batches": [
+    {
+     "key": "changes/cmunuqoxafzlpcx-0",
+     "type": "sched.mutate",
+     "actor": "acad",
+     "n": 1,
+     "seqs": [
+      0
+     ],
+     "tables": "ScheduleDay",
+     "elog": 0
+    },
+    {
+     "key": "changes/cmunuqoxafzlpcx-g1",
+     "type": "elog.line",
+     "actor": "system",
+     "n": 1,
+     "seqs": [],
+     "tables": "EditLog",
+     "elog": 1
+    }
+   ],
+   "pass": true,
+   "notes": [
+    "W1.10c the menu read: PLANS — THURSDAY Plan Atap to make it the live day ✎ Plan B ●live now — this is what publishes ✎ + Alt Plan ✎ Manage plans"
+   ],
+   "fails": []
+  },
+  {
+   "step": "W1.10d",
+   "width": "1440",
+   "did": "Tuesday: Templates → \"+ Save this day as a template\"",
+   "pics": [
+    "W1.10d-1-after.png",
+    "W1.10d-2-reloaded.png",
+    "W1.10d-3-template-menu.png"
+   ],
+   "shown": "Tuesday's Templates menu after the reload: DAY TEMPLATES — TUESDAY Template 12 waves · 2 duty blocks · 4 ground rows · 5 sims + Save this day as a template ✎ Manage templates",
+   "rows": "put 1: settings/daytpl · batches: settings.daytpl(Setting, 1 rows, by acad)",
+   "batches": [
+    {
+     "key": "changes/cmunuqt8a8p8j2l-0",
+     "type": "settings.daytpl",
+     "actor": "acad",
+     "n": 1,
+     "seqs": [
+      0
+     ],
+     "tables": "Setting",
+     "elog": 0
+    }
+   ],
+   "pass": true,
+   "notes": [
+    "W1.10d saved: {\"toasts\":[\"Saved as \\\"Template 1\\\"\"],\"tname\":\"Template 1\"}"
+   ],
+   "fails": []
+  },
+  {
+   "step": "W1.10e",
+   "width": "1440",
+   "did": "Wednesday (unpublished): Templates → \"Template 1\" picked (twice if the first pick only arms)",
+   "pics": [
+    "W1.10e-1-after.png",
+    "W1.10e-2-reloaded.png"
+   ],
+   "shown": "Wednesday's note \"Q1 TUE\" (Tuesday's is \"Q1 TUE\")",
+   "rows": "put 2: settings/elog:munuqva4s5k9.000001, weeks/13-07-2026#2 · batches: sched.mutate(ScheduleDay, 1 rows, by acad) + elog.line(EditLog, 1 rows, 1 history line, by system)",
+   "batches": [
+    {
+     "key": "changes/cmunuqyh6vfiryl-0",
+     "type": "sched.mutate",
+     "actor": "acad",
+     "n": 1,
+     "seqs": [
+      0
+     ],
+     "tables": "ScheduleDay",
+     "elog": 0
+    },
+    {
+     "key": "changes/cmunuqyh6vfiryl-g1",
+     "type": "elog.line",
+     "actor": "system",
+     "n": 1,
+     "seqs": [],
+     "tables": "EditLog",
+     "elog": 1
+    }
+   ],
+   "pass": true,
+   "notes": [
+    "W1.10e toasts: [[\"Applied \\\"Template 1\\\" to Wednesday\"]]"
+   ],
+   "fails": []
+  },
+  {
+   "step": "W1.10f",
+   "width": "1440",
+   "did": "Friday: the four signed and Publish day",
+   "pics": [
+    "W1.10f-1-after.png",
+    "W1.10f-2-reloaded.png"
+   ],
+   "shown": "tag \"ORIG\" · \"5 changes\" · signs [— name — | — name — | — name — | — name —]",
+   "rows": "put 7: settings/elog:munur0br664b.000001, settings/elog:munur0br664b.000002, settings/elog:munur0br664b.000003, settings/elog:munur0br664b.000004, settings/elog:munur0br664b.000005, weeks/13-07-2026#4, weeks/13-07-2026:is:2026-07-17#0~0 · batches: sched.sign(EditLog+ScheduleDay, 2 rows, 1 history line, by acad) + sched.sign(EditLog+ScheduleDay, 2 rows, 1 history line, by acad) + sched.sign(EditLog+ScheduleDay, 2 rows, 1 history line, by acad) + sched.sign(EditLog+ScheduleDay, 2 rows, 1 history line, by acad) + sched.approve(ScheduleDay+Amendment+EditLog, 3 rows, 1 history line, by acad)",
+   "batches": [
+    {
+     "key": "changes/cmunur2cqddwk45-0",
+     "type": "sched.sign",
+     "actor": "acad",
+     "n": 2,
+     "seqs": [
+      0
+     ],
+     "tables": "EditLog+ScheduleDay",
+     "elog": 1
+    },
+    {
+     "key": "changes/cmunur2cqddwk45-1",
+     "type": "sched.sign",
+     "actor": "acad",
+     "n": 2,
+     "seqs": [
+      1
+     ],
+     "tables": "EditLog+ScheduleDay",
+     "elog": 1
+    },
+    {
+     "key": "changes/cmunur2cqddwk45-2",
+     "type": "sched.sign",
+     "actor": "acad",
+     "n": 2,
+     "seqs": [
+      2
+     ],
+     "tables": "EditLog+ScheduleDay",
+     "elog": 1
+    },
+    {
+     "key": "changes/cmunur2cqddwk45-3",
+     "type": "sched.sign",
+     "actor": "acad",
+     "n": 2,
+     "seqs": [
+      3
+     ],
+     "tables": "EditLog+ScheduleDay",
+     "elog": 1
+    },
+    {
+     "key": "changes/cmunur2cqddwk45-4",
+     "type": "sched.approve",
+     "actor": "acad",
+     "n": 3,
+     "seqs": [
+      4
+     ],
+     "tables": "ScheduleDay+Amendment+EditLog",
+     "elog": 1
+    }
+   ],
+   "pass": true,
+   "notes": [],
+   "fails": []
+  },
+  {
+   "step": "W1.10g",
+   "width": "1440",
+   "did": "published Friday: two day notes changed → \"2 pending\"",
+   "pics": [
+    "W1.10g-1-after.png",
+    "W1.10g-2-reloaded.png"
+   ],
+   "shown": "tag \"ORIG\" · \"2 pending\" · signs [— name — | — name — | — name — | — name —] · Not yet signed",
+   "rows": "put 3: settings/elog:munur55exosx.000001, settings/elog:munur55exosx.000002, weeks/13-07-2026#4 · batches: sched.text(ScheduleDay, 1 rows, by acad) + sched.text(ScheduleDay, 1 rows, by acad) + elog.line(EditLog, 1 rows, 1 history line, by system) + elog.line(EditLog, 1 rows, 1 history line, by system)",
+   "batches": [
+    {
+     "key": "changes/cmunur7da8xxekq-0",
+     "type": "sched.text",
+     "actor": "acad",
+     "n": 1,
+     "seqs": [
+      0
+     ],
+     "tables": "ScheduleDay",
+     "elog": 0
+    },
+    {
+     "key": "changes/cmunur7da8xxekq-1",
+     "type": "sched.text",
+     "actor": "acad",
+     "n": 1,
+     "seqs": [
+      1
+     ],
+     "tables": "ScheduleDay",
+     "elog": 0
+    },
+    {
+     "key": "changes/cmunur7da8xxekq-g1",
+     "type": "elog.line",
+     "actor": "system",
+     "n": 1,
+     "seqs": [],
+     "tables": "EditLog",
+     "elog": 1
+    },
+    {
+     "key": "changes/cmunur7da8xxekq-g2",
+     "type": "elog.line",
+     "actor": "system",
+     "n": 1,
+     "seqs": [],
+     "tables": "EditLog",
+     "elog": 1
+    }
+   ],
+   "pass": true,
+   "notes": [],
+   "fails": []
+  },
+  {
+   "step": "W1.10h",
+   "width": "1440",
+   "did": "Friday: the plans menu → the Original looked at → \"Discard 2 edits & load\" → confirm",
+   "pics": [
+    "W1.10h-1-after.png",
+    "W1.10h-2-reloaded.png"
+   ],
+   "shown": "tag \"ORIG\" · \"8 changes\" · signs [— name — | — name — | — name — | — name —] · notes \"NO FLYING - GROUND TRAINING DAY\" / \"ORDERS: FLYING ORDERS SECTION 5\"",
+   "rows": "put 2: settings/elog:munur97uvu0n.000001, weeks/13-07-2026#4 · batches: sched.mutate(ScheduleDay, 1 rows, by acad) + elog.line(EditLog, 1 rows, 1 history line, by system)",
+   "batches": [
+    {
+     "key": "changes/cmunurcsj7ia11b-0",
+     "type": "sched.mutate",
+     "actor": "acad",
+     "n": 1,
+     "seqs": [
+      0
+     ],
+     "tables": "ScheduleDay",
+     "elog": 0
+    },
+    {
+     "key": "changes/cmunurcsj7ia11b-g1",
+     "type": "elog.line",
+     "actor": "system",
+     "n": 1,
+     "seqs": [],
+     "tables": "EditLog",
+     "elog": 1
+    }
+   ],
+   "pass": true,
+   "notes": [
+    "W1.10h Discard: {\"lbl\":\"Load onto working copy → Discard 2 edits & load — confirm\",\"toasts\":[\"Friday: Original loaded onto the working copy — viewers still see Original until you publish · 2 unpublished edits replaced\"]}",
+    "W1.10i draft marks by day BEFORE Discard marks: {\"1\":1}"
+   ],
+   "fails": []
+  },
+  {
+   "step": "W1.10i",
+   "width": "1440",
+   "did": "the Amendments panel's \"Discard marks\" (the unpublished days' draft marks)",
+   "pics": [
+    "W1.10i-1-after.png",
+    "W1.10i-2-reloaded.png"
+   ],
+   "shown": "the panel reads \"No pending changes\"",
+   "rows": "put 2: settings/elog:munuremxczgv.000001, weeks/13-07-2026#1 · batches: sched.discard(EditLog+ScheduleDay, 2 rows, 1 history line, by acad)",
+   "batches": [
+    {
+     "key": "changes/cmunurgowhq8ie2-0",
+     "type": "sched.discard",
+     "actor": "acad",
+     "n": 2,
+     "seqs": [
+      0
+     ],
+     "tables": "EditLog+ScheduleDay",
+     "elog": 1
+    }
+   ],
+   "pass": true,
+   "notes": [
+    "W1.10i the button was on; rows settings/elog:munuremxczgv.000001, weeks/13-07-2026#1; draft marks by day AFTER: {}"
+   ],
+   "fails": []
+  },
+  {
+   "step": "W1.11a",
+   "width": "1440",
+   "did": "Saturday: the four signed and Publish day",
+   "pics": [
+    "W1.11a-1-after.png",
+    "W1.11a-2-reloaded.png"
+   ],
+   "shown": "tag \"ORIG\" · \"5 changes\" · signs [— name — | — name — | — name — | — name —]",
+   "rows": "put 8: leavewar/rec:y2026:cmunurl5y1of6n, settings/elog:munuri6juw2k.000001, settings/elog:munuri6juw2k.000002, settings/elog:munuri6juw2k.000003, settings/elog:munuri6juw2k.000004, settings/elog:munuri6juw2k.000005, weeks/13-07-2026#5, weeks/13-07-2026:is:2026-07-18#0~0 · batches: sched.sign(EditLog+ScheduleDay, 2 rows, 1 history line, by acad) + sched.sign(EditLog+ScheduleDay, 2 rows, 1 history line, by acad) + sched.sign(EditLog+ScheduleDay, 2 rows, 1 history line, by acad) + sched.sign(EditLog+ScheduleDay, 2 rows, 1 history line, by acad) + sched.approve(ScheduleDay+Amendment+EditLog+LeaveBid, 4 rows, 1 history line, by acad)",
+   "batches": [
+    {
+     "key": "changes/cmunurk04xxn4bo-0",
+     "type": "sched.sign",
+     "actor": "acad",
+     "n": 2,
+     "seqs": [
+      0
+     ],
+     "tables": "EditLog+ScheduleDay",
+     "elog": 1
+    },
+    {
+     "key": "changes/cmunurk04xxn4bo-1",
+     "type": "sched.sign",
+     "actor": "acad",
+     "n": 2,
+     "seqs": [
+      1
+     ],
+     "tables": "EditLog+ScheduleDay",
+     "elog": 1
+    },
+    {
+     "key": "changes/cmunurk04xxn4bo-2",
+     "type": "sched.sign",
+     "actor": "acad",
+     "n": 2,
+     "seqs": [
+      2
+     ],
+     "tables": "EditLog+ScheduleDay",
+     "elog": 1
+    },
+    {
+     "key": "changes/cmunurk04xxn4bo-3",
+     "type": "sched.sign",
+     "actor": "acad",
+     "n": 2,
+     "seqs": [
+      3
+     ],
+     "tables": "EditLog+ScheduleDay",
+     "elog": 1
+    },
+    {
+     "key": "changes/cmunurk04xxn4bo-4",
+     "type": "sched.approve",
+     "actor": "acad",
+     "n": 4,
+     "seqs": [
+      4,
+      5
+     ],
+     "tables": "ScheduleDay+Amendment+EditLog+LeaveBid",
+     "elog": 1
+    }
+   ],
+   "pass": true,
+   "notes": [
+    "W1.11 OIL Earn pucks on Saturday: [{\"who\":\"plasma\",\"item\":\"r:rmunupw27niuy91\",\"on\":true}]"
+   ],
+   "fails": []
+  },
+  {
+   "step": "W1.11b",
+   "width": "1440",
+   "did": "published Saturday, OIL Earn on the board: plasma's earning switched off (r:rmunupw27niuy91)",
+   "pics": [
+    "W1.11b-1-after.png",
+    "W1.11b-2-reloaded.png"
+   ],
+   "shown": "OIL Earn reopened after the reload: plasma on r:rmunupw27niuy91 is off · tag \"ORIG\" · \"1 pending\" · signs [— name — | — name — | — name — | — name —] · Not yet signed",
+   "rows": "put 2: settings/elog:munurn229c1y.000001, weeks/13-07-2026#5 · batches: sched.oil(ScheduleDay, 1 rows, by acad) + elog.line(EditLog, 1 rows, 1 history line, by system)",
+   "batches": [
+    {
+     "key": "changes/cmunurqdi7d3pa4-0",
+     "type": "sched.oil",
+     "actor": "acad",
+     "n": 1,
+     "seqs": [
+      0
+     ],
+     "tables": "ScheduleDay",
+     "elog": 0
+    },
+    {
+     "key": "changes/cmunurqdi7d3pa4-g1",
+     "type": "elog.line",
+     "actor": "system",
+     "n": 1,
+     "seqs": [],
+     "tables": "EditLog",
+     "elog": 1
+    }
+   ],
+   "pass": true,
+   "notes": [],
+   "fails": []
+  }
+ ],
+ "errors": []
+}

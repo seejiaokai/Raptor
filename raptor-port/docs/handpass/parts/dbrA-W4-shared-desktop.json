@@ -1,0 +1,302 @@
+{
+ "base": "http://localhost:4206",
+ "at": "2026-09-30T09:22:12.895Z",
+ "results": [
+  {
+   "name": "shared-dk S0: a fresh shared store's first boot stores ONLY the stamp, one person, one account and one change-log batch (boot)",
+   "ok": true,
+   "detail": "[\"changes/cmunwbfi4eu4565-g1 (boot/3)\",\"people/pmunwbfht06w5mi\",\"settings/account:acmunwbfht5xaz\",\"settings/schema\"]"
+  },
+  {
+   "name": "shared-dk S0: the stamp is format 6, started",
+   "ok": true,
+   "detail": "{\"stage\":1,\"dataFormatVersion\":6,\"initialized\":true,\"appliedAt\":\"2026-09-30T09:21:23.244Z\",\"minClient\":6}"
+  },
+  {
+   "name": "shared-dk S1: the demo sign-in ad / a is REFUSED (no app; the request-access card)",
+   "ok": true,
+   "detail": "{\"shell\":false,\"card\":true,\"text\":\"RAPTOR Request access Signed in as ad You're not on the squadron's list yet. Tell the admins who you are and they'll give you access. DISPLAYED CALLSIGN/NAME IN\"}"
+  },
+  {
+   "name": "shared-dk S1: …and the refused sign-in wrote nothing",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "shared-dk S2 the first admin signs in (any password) — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "shared-dk S2 the first admin signs in (any password) — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "shared-dk S2: the roster holds him alone",
+   "ok": true,
+   "detail": "{\"n\":1,\"cs\":[\"Boss\"]}"
+  },
+  {
+   "name": "shared-dk S3 editsched opens — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "shared-dk S3 editsched opens — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "shared-dk S3 editsched: what it shows",
+   "ok": true,
+   "detail": "Jul 06 Jul 13 Jul 20 Jul 27 CAT TYPE QUALS AMENDMENTS No pending changes Discard marks No amendments published yet — publish a day, edit it,"
+  },
+  {
+   "name": "shared-dk S3 viewsched opens — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "shared-dk S3 viewsched opens — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "shared-dk S3 viewsched: what it shows",
+   "ok": true,
+   "detail": "Jul 06 Jul 13 Jul 20 Jul 27 CAT TYPE QUALS LEGEND — COLOURS & FLAGS Monday Jul 13 DRAFT 0 X 0 X 0 i Draft No flying — ground day. UNAVAILABL"
+  },
+  {
+   "name": "shared-dk S3 inputs opens — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "shared-dk S3 inputs opens — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "shared-dk S3 inputs: what it shows",
+   "ok": true,
+   "detail": "Personal Inputs 📅 Calendar view Medical PERSON Boss DATES ‹ JUL 2026 › 13 Mo Tu We Th Fr Sa Su 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18"
+  },
+  {
+   "name": "shared-dk S3 quals opens — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "shared-dk S3 quals opens — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "shared-dk S3 quals: what it shows",
+   "ok": true,
+   "detail": "Enable editing Export to Excel 🔍 Similar to a LoX and integrated with the board — a person's CAT drives their puck's qualification chip col"
+  },
+  {
+   "name": "shared-dk S3 logic opens — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "shared-dk S3 logic opens — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "shared-dk S3 logic: what it shows",
+   "ok": true,
+   "detail": "Logic every rule the engine applies — “Edit rules” to change a threshold 🔍 All Warnings Advisories Notes Fired this week ✎ Edit rules 71 of"
+  },
+  {
+   "name": "shared-dk S3 help opens — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "shared-dk S3 help opens — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "shared-dk S3 help: what it shows",
+   "ok": true,
+   "detail": "Help REPORT A PROBLEM Spotted something wrong, or something that could work better? Send it here — the schedulers see every report. CATEGORY"
+  },
+  {
+   "name": "shared-dk S3 admin opens — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "shared-dk S3 admin opens — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "shared-dk S3 admin: what it shows",
+   "ok": true,
+   "detail": "Admin Users Sign-in and roster Squadron config Duty, day & wave templates Data Storage & cleanup USERS WAITING FOR ACCESS Nobody is waiting "
+  },
+  {
+   "name": "shared-dk S3 leavewar opens — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "shared-dk S3 leavewar opens — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "shared-dk S3 leavewar: what it shows",
+   "ok": true,
+   "detail": "No leave period yet Create the first leave period — its name and dates. It starts in draft; open it for bidding when the schedule firms up. "
+  },
+  {
+   "name": "shared-dk S3: the Leave War says \"No leave period yet\" and offers \"Create the first period\"",
+   "ok": true,
+   "detail": "No leave period yet Create the first leave period — its name and dates. It starts in draft; open it for bidding when the schedule firms up. Create the first period"
+  },
+  {
+   "name": "shared-dk S3: the Tracker says \"No course yet\" with \"+ Add a course\"",
+   "ok": true,
+   "detail": "No course yet Add the first course, or bring charts and students in from a file. + Add a course ⇪ Import a file…"
+  },
+  {
+   "name": "shared-dk S3: the Tracker's first mount wrote only its own bookkeeping — no course, no student, nothing outside the Tracker",
+   "ok": true,
+   "detail": "{\"put\":[\"tracker/v3:courseidmig\",\"tracker/v3:eventinfomig\",\"tracker/v3:master:chart:sb2024\",\"tracker/v3:master:chart:sb2026\",\"tracker/v3:master:chart:sbagaa2026\",\"tracker/v3:master:chart:sbtx2026\",\"tracker/v3:seedstamp\",\"tracker/v3:sylcatmig\",\"tracker/v3:sylreset\"],\"batches\":[]}"
+  },
+  {
+   "name": "shared-dk S3: after every page, storage holds only the stamp, his person, his account, the change log and the Tracker's bookkeeping",
+   "ok": true,
+   "detail": "[]"
+  },
+  {
+   "name": "shared-dk S4: ad / a is still refused now that the first admin exists",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "shared-dk S4: signing out and in again wrote nothing",
+   "ok": true,
+   "detail": "{\"put\":[],\"del\":[],\"newBatches\":[],\"goneBatches\":[]}"
+  },
+  {
+   "name": "shared-dk S5 the first period (Create the first period → the New-war sheet → Create) — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 2 [leavewar/current, leavewar/war:war-2026-11-02-2026-12-31] · del 0 [] · batches lw.edit/1 lw.edit/1"
+  },
+  {
+   "name": "shared-dk S5 the first period (Create the first period → the New-war sheet → Create) — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 2 [leavewar/current, leavewar/war:war-2026-11-02-2026-12-31] · del 0 [] · batches lw.edit/1 lw.edit/1"
+  },
+  {
+   "name": "shared-dk S5: the war page now draws the period (the empty card gone, his row drawn)",
+   "ok": true,
+   "detail": "{\"empty\":false,\"rows\":1,\"text\":\"PERIOD W4 FIRST PERIOD + New VIEWING AS Boss STAGE DRAFT → OPEN FOR BIDDING UNDER-MANNED 60 days Legend ▾ Manning ⚙ ⇅ Rearrange ◷ OIL tracker − ＋ CREW SETS 0 0 \"}"
+  },
+  {
+   "name": "shared-dk S5 — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "shared-dk S5 — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "shared-dk S6 the first course (+ Add a course) — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 4 [tracker/v3:cmunwc447pithd6:idmig, tracker/v3:cmunwc447pithd6:plan, tracker/v3:cmunwc447pithd6:rostermig, tracker/v3:master:course:cmunwc447pithd6] · del 0 [] · batches trk.gesture/4"
+  },
+  {
+   "name": "shared-dk S6 the first course (+ Add a course) — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 4 [tracker/v3:cmunwc447pithd6:idmig, tracker/v3:cmunwc447pithd6:plan, tracker/v3:cmunwc447pithd6:rostermig, tracker/v3:master:course:cmunwc447pithd6] · del 0 [] · batches trk.gesture/4"
+  },
+  {
+   "name": "shared-dk S6: the course is there, drawn, with no student",
+   "ok": true,
+   "detail": "{\"courses\":[{\"id\":\"cmunwc447pithd6\",\"name\":\"W4 FIRST COURSE\"}],\"crew\":[]}"
+  },
+  {
+   "name": "shared-dk S6 — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "shared-dk S6 — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "shared-dk S7 a request filed on the Inputs page — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 2 [inputs/imunwc8ldts4hy6, settings/elog:munwc6c0l74r.000001] · del 0 [] · batches inputs.batch/2"
+  },
+  {
+   "name": "shared-dk S7 a request filed on the Inputs page — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 2 [inputs/imunwc8ldts4hy6, settings/elog:munwc6c0l74r.000001] · del 0 [] · batches inputs.batch/2"
+  },
+  {
+   "name": "shared-dk S7 — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "shared-dk S7 — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "shared-dk S8 a person added on Admin → Users (with his sign-in) — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 4 [leavewar/profile:pmunwcblofck0g5, people/pmunwcblofck0g5, settings/account:acmunwcblpibt5, settings/elog:munwc9vzkbb7.000001] · del 0 [] · batches account.addNew/4"
+  },
+  {
+   "name": "shared-dk S8 a person added on Admin → Users (with his sign-in) — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 4 [leavewar/profile:pmunwcblofck0g5, people/pmunwcblofck0g5, settings/account:acmunwcblpibt5, settings/elog:munwc9vzkbb7.000001] · del 0 [] · batches account.addNew/4"
+  },
+  {
+   "name": "shared-dk S8 — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "shared-dk S8 — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "shared-dk S9: nothing demo anywhere in storage",
+   "ok": true,
+   "detail": "[]"
+  },
+  {
+   "name": "shared-dk S9: after a reload — his request, the two people, the one period, the one course; nothing else",
+   "ok": true,
+   "detail": "{\"requests\":[\"imunwc8ldts4hy6 | Boss 3 Nov LL till 3 Nov now ✎ ✕\"],\"people\":[\"Boss\",\"Second\"],\"wars\":[\"W4 FIRST PERIOD\"],\"courses\":[{\"id\":\"cmunwc447pithd6\",\"name\":\"W4 FIRST COURSE\"}]}"
+  },
+  {
+   "name": "shared-dk S9: the rows by collection",
+   "ok": true,
+   "detail": "{\"inputs\":1,\"changes\":6,\"tracker\":13,\"leavewar\":3,\"settings\":5,\"people\":2}"
+  },
+  {
+   "name": "shared-dk: no console error, page error or failed request",
+   "ok": true,
+   "detail": "[]"
+  }
+ ],
+ "width": "desktop"
+}

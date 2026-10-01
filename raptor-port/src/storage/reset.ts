@@ -8,6 +8,7 @@
    returning browser's pre-1A blob is CLEARED so the seed reloads fresh, rather
    than migrated. The migration proper happens once, server-side, at the DB step. */
 import type { Backend, Collection, Snapshot } from './backend'
+import { SCHEMA_KEY, makeSchema, schemaJSON, storedFormat } from './schema'
 
 /* bumped whenever a persisted shape changes incompatibly. 1 = step 1A;
    2 = step 1C (who→personId): ground/programme `who` now store the stable
@@ -37,7 +38,9 @@ import type { Backend, Collection, Snapshot } from './backend'
    the inputs and the Leave War — cleared and re-seeded together. Right while the
    app is pre-promulgation; it would be the wrong call the day after it is not. */
 export const SCHEMA_VERSION = 5
-const STAMP: [Collection, string] = ['settings', 'schema']
+/* [DB-READINESS] group A, phase 0 (plan §2.6, §2.8): the stamp is now ONE object (storage/schema.ts),
+   not a bare number — a bare number still reads. Below 5 is the WIPE (this file); exactly 5, under a
+   build whose converter manifest is complete, is the FOLD (storage/fold.ts). */
 
 /* the collections cleared on a version bump. `weeks` holds the days (pre-1A:
    note strings + content-key ground.src; pre-1C: cs-form ground/programme `who`)
@@ -51,22 +54,20 @@ const STAMP: [Collection, string] = ['settings', 'schema']
    installDemoWorld re-seeds the (medical-free) demo clean, with no back-compat code
    (memory dev-phase-reset-demo-data-not-migrate).
    settings/people/tracker carry no reset shape and are kept; day templates are
-   coerced on load (daytpl.sanitiseBlob), so they need no reset. */
-export const RESET: Collection[] = ['inputs', 'weeks', 'leavewar']
+   coerced on load (daytpl.sanitiseBlob), so they need no reset.
+   `changes` joins at group A (F3-05): the change log names rows in the collections a wipe clears, so
+   it is cleared with them. */
+export const RESET: Collection[] = ['inputs', 'weeks', 'leavewar', 'changes']
 
-function storedVersion(snap: Snapshot): number {
-  const v = snap[STAMP[0]] && snap[STAMP[0]][STAMP[1]]
-  if (!v) return 0
-  try { const n = Number(JSON.parse(v)); return Number.isFinite(n) ? n : 0 } catch { return 0 }
-}
+/** the wipe is due on this snapshot (below the current format — the reset below will run) */
+export function wipeDue(snap: Snapshot): boolean { return storedFormat(snap) < SCHEMA_VERSION }
 
-/** a version bump is due on this snapshot (the reset below will run) */
-export function resetDue(snap: Snapshot): boolean { return storedVersion(snap) < SCHEMA_VERSION }
-
+/* the stamp a wipe (or a brand-new store) gets: the current format, NOT started — so the boot that
+   follows seeds it and seals `initialized` with its seed (plan §2.8, F2-06) */
 async function writeStamp(backend: Backend, snap: Snapshot): Promise<void> {
-  const json = JSON.stringify(SCHEMA_VERSION)
-  await backend.put(STAMP[0], STAMP[1], json)
-  snap[STAMP[0]] = { ...(snap[STAMP[0]] || {}), [STAMP[1]]: json }
+  const json = schemaJSON(makeSchema(SCHEMA_VERSION, false))
+  await backend.put(SCHEMA_KEY[0], SCHEMA_KEY[1], json)
+  snap[SCHEMA_KEY[0]] = { ...(snap[SCHEMA_KEY[0]] || {}), [SCHEMA_KEY[1]]: json }
 }
 
 /* Reset any pre-1A persisted scheduler data BEFORE the whiteboard or hydration
@@ -81,7 +82,7 @@ async function writeStamp(backend: Backend, snap: Snapshot): Promise<void> {
    wiped by the next boot's retry. The in-memory snapshot is also cleared up front,
    so nothing pre-1A can hydrate even on the path to the throw. Mutates `snap`. */
 export async function resetPreSchema(backend: Backend, snap: Snapshot): Promise<void> {
-  if (storedVersion(snap) >= SCHEMA_VERSION) return
+  if (!wipeDue(snap)) return
   const pending: Array<[Collection, string]> = []
   for (const c of RESET) { for (const id of Object.keys(snap[c] || {})) pending.push([c, id]); snap[c] = {} }
   // a fresh/empty store has nothing to clear: just stamp it so later boots skip.

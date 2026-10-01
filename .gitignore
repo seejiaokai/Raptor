@@ -1,5 +1,9 @@
 node_modules
 dist/
+# a shared-store build for a walk ([DB-READINESS] group A phase 5 — raptor-port/scripts/handpass/dbr5-look.mjs)
+dist-blank/
+# the build before a change, served beside it for a side-by-side walk ([DB-READINESS] phase 6 (c))
+dist-p6cbase/
 .vite/
 test-results/
 playwright-report/

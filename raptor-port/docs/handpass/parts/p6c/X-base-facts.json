@@ -1,0 +1,235 @@
+{
+ "tag": "base",
+ "facts": {
+  "X1.put": "yeti",
+  "X1.rows": [
+   {
+    "di": 3,
+    "ri": 3,
+    "prog": "MEETING",
+    "str": "10:00",
+    "end": "11:00",
+    "who": "bane",
+    "more": [
+     "yeti"
+    ],
+    "rmks": "P6C MOVER",
+    "kept": false,
+    "info": false,
+    "flag": null,
+    "cx": null
+   }
+  ],
+  "X1.acc": "g",
+  "X2.read": "17 Jul",
+  "X2.weekRowsWritten": [
+   "weeks/13-07-2026#3",
+   "weeks/13-07-2026#4"
+  ],
+  "X2.toasts": [],
+  "X2.rows": [
+   {
+    "di": 4,
+    "ri": 2,
+    "prog": "MEETING",
+    "str": "10:00",
+    "end": "11:00",
+    "who": "bane",
+    "more": [
+     "yeti"
+    ],
+    "rmks": "P6C MOVER till 17 Jul",
+    "kept": false,
+    "info": false,
+    "flag": null,
+    "cx": null
+   }
+  ],
+  "X2.acc": "g",
+  "X3.read": "21 Jul",
+  "X3.weekRowsWritten": [
+   "weeks/13-07-2026#4"
+  ],
+  "X3.toasts": [
+   "Moved outside the programmed week — it is no longer accepted",
+   "Input updated"
+  ],
+  "X3.req": {
+   "person": "bane",
+   "type": "Meeting",
+   "date": "Jul 21",
+   "endDate": "",
+   "s": 600,
+   "e": 660,
+   "remarks": "P6C MOVER till 21 Jul",
+   "acc": null
+  },
+  "X3.rows": [],
+  "X3.acc": "(gone)",
+  "X4.peekHasIt": false,
+  "X4.rows": [
+   {
+    "di": 1,
+    "ri": 2,
+    "prog": "MEETING",
+    "str": "10:00",
+    "end": "11:00",
+    "who": "bane",
+    "more": [],
+    "rmks": "P6C MOVER till 21 Jul",
+    "kept": false,
+    "info": false,
+    "flag": null,
+    "cx": null
+   }
+  ],
+  "X4.acc": "g",
+  "X4r.rows": [
+   {
+    "di": 1,
+    "ri": 2,
+    "prog": "MEETING",
+    "str": "10:00",
+    "end": "11:00",
+    "who": "bane",
+    "more": [],
+    "rmks": "P6C MOVER till 21 Jul",
+    "kept": false,
+    "info": false,
+    "flag": null,
+    "cx": null
+   }
+  ],
+  "X4r.acc": "g",
+  "X5.read": "16 Jul",
+  "X5.weekRowsWritten": [
+   "weeks/20-07-2026",
+   "weeks/20-07-2026#1"
+  ],
+  "X5.toasts": [
+   "Moved outside the programmed week — it is no longer accepted",
+   "Input updated"
+  ],
+  "X5.w2.rows": [],
+  "X5.w2.acc": "(gone)",
+  "X5.w1.rows": [
+   {
+    "di": 3,
+    "ri": 3,
+    "prog": "MEETING",
+    "str": "10:00",
+    "end": "11:00",
+    "who": "bane",
+    "more": [],
+    "rmks": "P6C MOVER till 16 Jul",
+    "kept": false,
+    "info": false,
+    "flag": null,
+    "cx": null
+   }
+  ],
+  "X5.w1.acc": "g",
+  "X6.save": "saved",
+  "X6.weekRowsWritten": [
+   "weeks/13-07-2026#3"
+  ],
+  "X6.toasts": [
+   "LL does not go on the Ground Programme — its row has been removed",
+   "Input updated"
+  ],
+  "X6.rows": [],
+  "X6.acc": "(gone)",
+  "X6b.save": "saved",
+  "X6b.weekRowsWritten": [],
+  "X6b.toasts": [
+   "Input updated"
+  ],
+  "X6b.rows": [],
+  "X6b.acc": "(gone)",
+  "X7.x": "removed",
+  "X7.rows": [],
+  "X7.acc": "r",
+  "X7b.save": "saved",
+  "X7b.weekRowsWritten": [],
+  "X7b.toasts": [
+   "Input updated"
+  ],
+  "X7b.rows": [],
+  "X7b.acc": "(gone)",
+  "X7br.rows": [
+   {
+    "di": 3,
+    "ri": 3,
+    "prog": "TRAINING",
+    "str": "10:00",
+    "end": "11:00",
+    "who": "bane",
+    "more": [],
+    "rmks": "P6C MOVER till 16 Jul",
+    "kept": false,
+    "info": false,
+    "flag": null,
+    "cx": null
+   }
+  ],
+  "X7br.acc": "g",
+  "X8.before": [
+   {
+    "di": 3,
+    "ri": 3,
+    "prog": "TRAINING",
+    "str": "10:00",
+    "end": "11:00",
+    "who": "bane",
+    "more": [],
+    "rmks": "P6C MOVER till 16 Jul",
+    "kept": false,
+    "info": false,
+    "flag": null,
+    "cx": null
+   }
+  ],
+  "X8.putBolt": "yeti",
+  "X8.withBolt": [
+   {
+    "di": 3,
+    "ri": 3,
+    "prog": "TRAINING",
+    "str": "10:00",
+    "end": "11:00",
+    "who": "bane",
+    "more": [
+     "yeti"
+    ],
+    "rmks": "P6C MOVER till 16 Jul",
+    "kept": false,
+    "info": false,
+    "flag": null,
+    "cx": null
+   }
+  ],
+  "X8.saved": "saved",
+  "X8.weekRowsWritten": [
+   "weeks/13-07-2026#3"
+  ],
+  "X8.toasts": [],
+  "X8.rows": [
+   {
+    "di": 3,
+    "ri": 3,
+    "prog": "TRAINING",
+    "str": "10:00",
+    "end": "11:00",
+    "who": "yeti",
+    "more": [],
+    "rmks": "P6C MOVER till 16 Jul",
+    "kept": false,
+    "info": false,
+    "flag": null,
+    "cx": null
+   }
+  ],
+  "X8.acc": "g",
+  "errors": []
+ }
+}

@@ -1,0 +1,229 @@
+{
+ "tag": "base",
+ "facts": {
+  "A2-1.input": {
+   "type": "OD",
+   "acc": null,
+   "oil": {
+    "2026-07-18": 1
+   }
+  },
+  "A2-1.landed": false,
+  "A2-2.before": [
+   {
+    "who": "yeti",
+    "item": "i:imrldi1s0vquw1o",
+    "on": true
+   }
+  ],
+  "A2-2.tap": "tapped",
+  "A2-2.after": [
+   {
+    "who": "yeti",
+    "item": "i:imrldi1s0vquw1o",
+    "on": false
+   }
+  ],
+  "A2-3.sign": {
+   "cur": "Ace",
+   "sked": "Anvil",
+   "plan": "Anvil",
+   "appr": "Anvil"
+  },
+  "A2-3.pub": {
+   "pressed": true,
+   "label": "Publish day"
+  },
+  "A2-3.head": {
+   "tag": "ORIG",
+   "pending": "7 changes",
+   "beak": "none",
+   "alpub": "",
+   "unpub": "Unpublish",
+   "signs": [
+    "— name —",
+    "— name —",
+    "— name —",
+    "— name —"
+   ],
+   "signed": "SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil",
+   "nys": ""
+  },
+  "A2-3.war": null,
+  "A2-4.saved": "saved",
+  "A2-4.weekRows": [
+   "weeks/13-07-2026#5"
+  ],
+  "A2-4.head": {
+   "tag": "ORIG",
+   "pending": "2 pending",
+   "beak": "none",
+   "alpub": "Publish AL1",
+   "unpub": "Unpublish",
+   "signs": [
+    "— name —",
+    "— name —",
+    "— name —",
+    "— name —"
+   ],
+   "signed": "SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil",
+   "nys": "Not yet signed"
+  },
+  "A2-4.list": {
+   "tabs": [
+    "New to you 0",
+    "All changes 8",
+    "To go out · AL1 2"
+   ],
+   "lines": [
+    "Waiting to go out as",
+    "AL1",
+    "· 2 changes",
+    "Ridge · OD",
+    "Saber",
+    "15/7 09:00",
+    "Bolt → Ridge",
+    "What this day earns",
+    "changed"
+   ]
+  },
+  "A2-4.pucks": [
+   {
+    "who": "razer",
+    "item": "i:imrldi1s0vquw1o",
+    "on": true
+   }
+  ],
+  "A2-5.saved": "saved",
+  "A2-5.weekRows": [],
+  "A2-5.head": {
+   "tag": "ORIG",
+   "pending": "1 pending",
+   "beak": "none",
+   "alpub": "Publish AL1",
+   "unpub": "Unpublish",
+   "signs": [
+    "— name —",
+    "— name —",
+    "— name —",
+    "— name —"
+   ],
+   "signed": "SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil",
+   "nys": "Not yet signed"
+  },
+  "A2-5.list": {
+   "tabs": [
+    "New to you 0",
+    "All changes 9",
+    "To go out · AL1 1"
+   ],
+   "lines": [
+    "Waiting to go out as",
+    "AL1",
+    "· 1 change",
+    "What this day earns",
+    "changed"
+   ]
+  },
+  "A2-5.pucks": [
+   {
+    "who": "yeti",
+    "item": "i:imrldi1s0vquw1o",
+    "on": true
+   }
+  ],
+  "A2-5.war": null,
+  "A2-6.u1": {
+   "present": true,
+   "title": "Undo — a personal input",
+   "pressed": true,
+   "toasts": [
+    "Undid: a personal input"
+   ]
+  },
+  "A2-6.u2": {
+   "present": true,
+   "title": "Undo — a personal input",
+   "pressed": true,
+   "toasts": [
+    "Undid: a personal input"
+   ]
+  },
+  "A2-6.head": {
+   "tag": "ORIG",
+   "pending": "11 changes",
+   "beak": "none",
+   "alpub": "",
+   "unpub": "Unpublish",
+   "signs": [
+    "— name —",
+    "— name —",
+    "— name —",
+    "— name —"
+   ],
+   "signed": "SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil",
+   "nys": ""
+  },
+  "A2-6.pucks": [
+   {
+    "who": "yeti",
+    "item": "i:imrldi1s0vquw1o",
+    "on": false
+   }
+  ],
+  "A2-6.r1": {
+   "present": true,
+   "title": "Redo — a personal input",
+   "pressed": true,
+   "toasts": [
+    "Redid: a personal input"
+   ]
+  },
+  "A2-6.r2": {
+   "present": true,
+   "title": "Redo — a personal input",
+   "pressed": true,
+   "toasts": [
+    "Redid: a personal input"
+   ]
+  },
+  "A2-6.headRedo": {
+   "tag": "ORIG",
+   "pending": "1 pending",
+   "beak": "none",
+   "alpub": "Publish AL1",
+   "unpub": "Unpublish",
+   "signs": [
+    "— name —",
+    "— name —",
+    "— name —",
+    "— name —"
+   ],
+   "signed": "SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil",
+   "nys": "Not yet signed"
+  },
+  "A2-7.head": {
+   "tag": "ORIG",
+   "pending": "1 pending",
+   "beak": "none",
+   "alpub": "Publish AL1",
+   "unpub": "Unpublish",
+   "signs": [
+    "— name —",
+    "— name —",
+    "— name —",
+    "— name —"
+   ],
+   "signed": "SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil",
+   "nys": "Not yet signed"
+  },
+  "A2-7.pucks": [
+   {
+    "who": "yeti",
+    "item": "i:imrldi1s0vquw1o",
+    "on": true
+   }
+  ],
+  "errors": []
+ }
+}

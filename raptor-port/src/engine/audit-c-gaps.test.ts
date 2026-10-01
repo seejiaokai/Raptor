@@ -6,6 +6,7 @@ import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { DAYS } from './data'
 import { INPUTS, DATES, inputCoversDate, inpId } from './inputs'
 import { acceptInput, acceptedDay } from './slots'
+import { baseReset, rederive } from '../state/holderbase'
 import { validate } from './validate'
 import { slotBar } from './avail'
 import { dayOff } from './avail'
@@ -36,11 +37,15 @@ const groundRowsWith = (key: string) => {
 }
 
 /* ---- (a) commitInputEdit's keep / "moved outside the programmed week" ---- */
+/* since [DB-READINESS] phase 6 (c) an edit writes the request only, and the row follows it by the working-out after the
+   command, from the week as its holder committed it (state/holderbase.ts) — so these groups take the week as a load does */
+const asLoaded = () => { baseReset(); rederive() }
 describe('gap (a): the accepted-row relink branches of commitInputEdit', () => {
+  beforeEach(asLoaded)
   const seed = () => {
     INPUTS.push({ person: 'split', date: 'Jul 15', endDate: 'Jul 17', allday: false, s: 600, e: 660, type: 'Meeting', remarks: 'audit', mod: '' })
     const r = INPUTS[INPUTS.length - 1]
-    // accepted onto Jul 16 (di 3) — NOT its start date, which is the trap acceptedDay exists for
+    // accepted onto Jul 16 (di 3) — NOT its start date, which is the trap acceptedDay exists for (pushed raw, so not landed yet)
     expect(acceptInput(3, r, 'g')).toBe(true)
     expect(acceptedDay(r)).toBe(3)
     return r
@@ -66,7 +71,9 @@ describe('gap (a): the accepted-row relink branches of commitInputEdit', () => {
     expect(groundRowsWith(inpId(r)).length).toBe(1)
   })
 
-  it('moved outside the programmed week: row removed, no longer accepted, and it SAYS so', () => {
+  /* phase 6 (c), plan §8 item 7: it goes on the programme of the week it moved to when that week is read — "Moved outside
+     the programmed week — it is no longer accepted" is no longer true, and no longer said */
+  it('moved outside the programmed week: row removed from this week, not accepted here, and nothing false said', () => {
     const r = seed()
     const d = draftOf(r)
     d.start = '2026-07-20'; d.end = '' // past the last loaded DATES entry
@@ -74,7 +81,7 @@ describe('gap (a): the accepted-row relink branches of commitInputEdit', () => {
     expect(r.acc).toBeUndefined()
     expect(groundRowsWith(inpId(r))).toEqual([])
     // the toast string HANDOFF says only its definition mentions
-    expect(toasts.some(t => /Moved outside the programmed week/.test(t)), toasts.join('|')).toBe(true)
+    expect(toasts.some(t => /Moved outside the programmed week|no longer accepted/.test(t)), toasts.join('|')).toBe(false)
   })
 })
 
@@ -223,6 +230,7 @@ describe("gap (f): halfOf's boundaries through setInpField", () => {
 
 /* ---- (g) an accepted input reassigned to a different person --------------- */
 describe('gap (g): reassigning an accepted input to another person', () => {
+  beforeEach(asLoaded)
   /* re-personing is a SCHEDULER act since 22 Aug 26 (commitInputEdit's own
      write-path gate — a member files and keeps inputs for the view-as person
      only), so this drives the call under the session the real gesture has */

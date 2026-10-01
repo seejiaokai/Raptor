@@ -87,6 +87,8 @@ export type SanQ = {
 export type Person = {
   /** Callsign, the display name — seed; screen (Personnel rename, slots.ts). */
   cs: string
+  /** The person's place in the roster's order — engine (`mintPeopleOrd`, [DB-READINESS] group A, phase 2; the design's `Person.sortIndex`). Never on a placeholder puck. */
+  ord?: number
   /** Seat — seed. */
   seat: Seat
   /** CAT level, '' for ground crew — seed; screen (Quals page dropdown). */
@@ -117,6 +119,10 @@ export type Person = {
   /** Deleted for leaving flying for good — the hidden mark, never erased (D287, D290, D297): on no list, every day he
    *  already flew still points at him — screen (`state/person-delete.ts`). */
   deleted?: boolean
+  /** The first day a deleted man is gone, ISO — state (person-delete.ts, the cutoff: the later of the delete's date and
+   *  today, D304). Every WORKING day from it reads without him (engine/overlay.ts, [DB-READINESS] group A, phase 6 (d));
+   *  every day before it, and every issued version, keeps him (D297, D299). */
+  deletedFrom?: string
   /** His SANS tick was made by a SANS posting on its date (D283) — the tick the posting's Undo, or Archive, takes back;
    *  absent = ticked by hand — screen (`leavewar/sync.ts`). */
   sanBy?: 'po'
@@ -166,6 +172,8 @@ export type SansOffer = { f?: true; o?: true; a?: true }
 export type Input = {
   /** Stable opaque id (`newId('i')`, engine/newid.ts), minted at creation — engine (`mintInpIds` at boot, `inpId` on add). What filing/accept/undo/edit address by (13 Sep 26, ARCH-STACK 1A). Absent only inside a seed literal before boot. */
   iid?: string
+  /** Its place in the list of requests — state (`mintOrd`, [DB-READINESS] group A, phase 2; the design's `Input.sortIndex`). Absent only inside a seed literal before boot. */
+  ord?: number
   /** A PEOPLE id — seed; screen. */
   person: string
   /** First day, display form 'Jul 13'; carries a trailing year ('Jan 3 2027') when outside the anchor year — seed; screen. */
@@ -200,6 +208,15 @@ export type Input = {
   oil?: Record<string, 0 | 0.5 | 1>
   /** SANS Availability only: which events are offered — screen. */
   sans?: SansOffer
+  /** How many times the request has changed hands — +1 at every change of `person` (ui/inputedit.tsx commitInputEdit);
+   *  absent = 0, never handed on. An OIL decision about its holder records the holding it was made under (`oild.pa`,
+   *  engine/oilev.ts), so a refusal made for one holding reads as nothing once the request moves on — even when it
+   *  comes back to the same man ([DB-READINESS] group A, phase 6 (a); data-model.md §9 rule 9). */
+  hand?: number
+  /** Person id → the holding (`hand`) at which the request LEFT him — written by the hand-over (ui/inputedit.tsx
+   *  commitInputEdit). An OIL decision about him made under an earlier holding reads as nothing (engine/oilev.ts
+   *  pruneHandedOverDecisions) — the old write-side clear, said on the request instead of every day (phase 6 (a)). */
+  leftAt?: Record<string, number>
 }
 
 /* ---------------------------------------------------------------------------
@@ -242,6 +259,13 @@ export type GroundRow = AllhandsRow & {
   src?: string
   /** The TYPE of the input it was landed from ([ARCH-STACK] step 4 §8.1), so the clash grade survives the input's deletion — engine (acceptInput, shiftHardGround). */
   srcType?: string
+  /** What the row was last made or re-made from — a short hash of the six fields its request writes ([DB-READINESS] phase 6
+   *  (c); engine/overlay.ts srcvOf); a row re-made on read when it differs. Not canonical (restore.ts dayKeys). */
+  srcv?: string
+  /** A row a whole-day replacement (a version loaded, a plan switched in) brought back although its request is gone or cannot
+   *  stand on the day — the holder's to keep (D363); cleared in the view once its request can stand there again (phase 6 (c);
+   *  engine/drafts.ts markKept). Not canonical. */
+  kept?: boolean
 }
 
 /** A standalone wave kind: SC, AVALON, BB (a flying wave has none). */
@@ -557,6 +581,18 @@ export type Sched = {
   ridV: number
   /** Phase-2 amendment-record format version — engine (`AMBOOK_VERSION`). A live SCHED always carries it; a persisted book WITHOUT it that still holds publication content is a PRE-Phase-2 book (`amFormatOf` → 'unsupported', read-only). */
   amV?: number
+  /** The withdrawn issuances, keyed `<verId>~<n>` (n = 1, 2 … per version) — engine (`retireIssued`, [GLOBAL-UNDO] §6.1). */
+  retired?: Record<string, RetiredEntry>
+  /** A day being corrected after an Unpublish: the verId it may reissue under the same label — engine. */
+  correcting?: Record<number, string>
+}
+/** One withdrawn issuance (an Unpublish) — engine (`retiredEntry`). `rec` is the issued record kept whole, so the
+    stored issuance row can always be told from it ([DB-READINESS] group A, phase 1); the rest is read from it. */
+export type RetiredEntry = {
+  id: string; n: number; di: number; iso: string; seq: number
+  snap: any; diff: any[]; units?: number; ukinds?: any; sign: Record<number, SignSet>
+  at: string; by: string | null; restoreSeq?: number; logged: boolean
+  rec: AlRecord | DaySnapshot | null
 }
 
 /* ---------------------------------------------------------------------------
@@ -572,6 +608,8 @@ export type PlanNote = {
   kind?: 'note'
   /** The note text — screen. */
   text: string
+  /** Its place in the calendar's list — state (`mintOrd`, [DB-READINESS] group A, phase 2; the design's `PlanningPuck.sortIndex`). */
+  ord?: number
 }
 /** A pucks row on a calendar day. */
 export type PuckRow = {
@@ -582,6 +620,8 @@ export type PuckRow = {
   kind: 'pucks'
   /** PEOPLE ids, '' for a gap — screen. */
   ids: string[]
+  /** Its place in the calendar's list — state (`mintOrd`, phase 2). */
+  ord?: number
 }
 export type PlanPuck = PlanNote | PuckRow
 
@@ -611,6 +651,8 @@ export type SchedFields = {
   v?: Sched['ridV']
   /** Phase-2 amendment-record format version — absent on a PRE-Phase-2 snapshot (`amFormatOf` → 'unsupported'). */
   am?: Sched['amV']
+  rt?: Sched['retired']
+  cr?: Sched['correcting']
 }
 
 /** The whole-state undo record — `histSnap()`. */
@@ -627,15 +669,34 @@ export type WeekSnapshot = SchedFields & {
   dm: DayRmk
 }
 
-/** The per-week stash record — `weekStashSnap()`: no inputs or plan layer (those are global), plus the removed-input keys. */
+/** The per-week stash record — `weekStashSnap()`: no inputs or plan layer (those are global). The removed-request list
+    (`un`) it once carried is worked out on read from each request's own 'r' mark ([DB-READINESS] group A — F3-02). */
 export type WeekStashSnapshot = SchedFields & {
   /** = DAYS. */
   d: Day[]
   /** Muted warning ids. */
   wo: string[]
-  /** Content keys (`inpKey`) of inputs a scheduler removed ('r') on this week, re-parked on restore. */
-  un: string[]
 }
+
+/* ---------------------------------------------------------------------------
+   A week IN STORAGE — its rows, one per thing (state/weekrows.ts; [DB-READINESS] group A, phase 1 — the design's
+   ScheduleWeek, ScheduleDay, Amendment, AmendmentRetraction). Stored under `weeks/<dd-mm-yyyy><suffix>`.
+   --------------------------------------------------------------------------- */
+
+/** `weeks/<wk>` — the two format stamps, nothing else. */
+export type ScheduleWeekRow = { v?: number; am?: number }
+/** `weeks/<wk>#<di>` — the day and every field that names it; a map with no key for the day is left out. */
+export type ScheduleDayRow = {
+  d: Day
+  c?: Record<string, number>; p?: Record<string, 1>; ad?: Record<string, 1>
+  ok?: 1; sg?: SignSet; sb?: any; cv?: string; dr?: any[]; cd?: string; cr?: string
+  /** the muted warnings whose key leads with this day */
+  wo?: string[]
+}
+/** `weeks/<wk>:is:<verId>~<n>` — one issuance, written once: the Original (a DaySnapshot) or an amendment (an AlRecord). */
+export type IssuanceRow = AlRecord | DaySnapshot
+/** `weeks/<wk>:rx:<verId>~<n>` — the Unpublish of that issuance. */
+export type RetractionRow = { at: string; by: string | null; restoreSeq?: number; logged: boolean }
 
 /* ---------------------------------------------------------------------------
    Settings — the sqn142_* keys (docs/data-schema.md). Each key stores null

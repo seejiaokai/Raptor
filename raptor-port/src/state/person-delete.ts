@@ -13,12 +13,18 @@
       hides him with no change of its own), `archivedBy: 'del'` (never 'po', so the Post out's own undo never reads the
       delete's archive as its own — Fable F3) — and rebuilds the callsign index (his callsign is free — D297);
    2. removes his account (and a request waiting under its sign-in name) — accounts.ts dropAccountOfPid;
-   3. takes him off every day ON OR AFTER THE CUTOFF, in every place a working day lives: the loaded week (through the
-      funnel — setSlotVal / unacceptInput / setSign, so the edit log and the pending marks follow as for any edit), every
-      stashed week (its days, its sign boxes and their bindings, its parked plans — engine/weekstash.ts stashEditWeek),
-      the loaded week's parked plans, the OIL-mode switches naming him, and the planning calendar's pucks (a GAP, never a
-      splice). Every PUBLISHED version is a record and is never rewritten: on a published day to come the working copy
-      then differs, so the day reads pending and its four fall (D45, D103, D297);
+   3. takes him off every day ON OR AFTER THE CUTOFF: the week on screen (its seats, landed rows, sign-offs, parked plans
+      and OIL-mode switches — worked out after the command, below; one change-history line per seat he held, as built),
+      and the planning calendar's pucks (a GAP, never a splice). Every PUBLISHED version is a record and is
+      never rewritten: on a published day to come the working copy then differs, so the day reads pending and its four
+      fall (D45, D103, D297).
+      SINCE [DB-READINESS] group A PHASE 6 (d) NO WEEK IS WRITTEN FOR IT (data-model.md §9 rule 9 — a delete never waits
+      for a held day, D450): the loaded week's strip is worked out AFTER the command (applyDelete's deferred effect, the
+      command layer's baseline moved on with it), so no command records or saves it — it is in memory only (the FULL check
+      of phase 6, 30 Sep 26: this said "in the undo records … state/persist.ts DERIVED_DAY_TYPES", a type list the plan
+      withdrew before the build); a saved week is NOT rewritten — every week, the loaded one on its next load included, reads
+      without him from his cutoff (engine/overlay.ts overlayDeletedWeek, applied wherever a week's days come into
+      memory); the day's holder saves it without him at his next change to it;
    4. deletes his inputs that start on or after the cutoff, and ends the day before it any that spans it (its "till"
       tail rewritten — the truth, D189; its documents stay stored — D299: how long medical records are kept is the
       organisation's rule, at the database step); a landed row on a day on or after the cutoff goes with it.
@@ -30,9 +36,9 @@
    demo weeks around a notional today, ui/weeknav.ts TODAY — a delete made now leaves him on those July days, which are
    past by the calendar; on the owner's card, question 3.)
 
-   THE PREFLIGHT (Astra A1): every stashed week with a day on or after the cutoff is read BEFORE the command; one that
-   cannot be read, or is byte-preserved while holding him there, REFUSES the whole delete with its reason. Nothing is
-   skipped silently.
+   THE PREFLIGHT (Astra A1): every stashed week with a day on or after the cutoff — and the week on screen when it is
+   read-only (Fable's final read of phase 6, F1) — is read BEFORE the command; one that cannot be read, or is
+   byte-preserved while holding him there, REFUSES the whole delete with its reason. Nothing is skipped silently.
 
    THE LEAVE WAR HALF (Part B): his war records from the cutoff go, his posting window closes the day before and he is
    marked `gone` (leavewar/sync.ts deletePersonOnWar — the seam); a deleted man earns no OIL from his cutoff and is read
@@ -42,20 +48,20 @@ import { PEOPLE, whoId, indexCallsigns } from '../engine/people'
 import { DAYS } from '../engine/data'
 import { CURWEEK } from '../engine/waves'
 import { dayIso } from '../engine/verid'
-import { setSlotVal, whoArr, unacceptInput } from '../engine/slots'
-import { SCHED, setSign } from '../engine/publish'
-import { INPUTS, dateOrd, withRemarksTail, nowStamp, inpId } from '../engine/inputs'
+import { slotVal, whoArr } from '../engine/slots'
+import { logEdit } from '../engine/editlog'
+import { INPUTS, dateOrd, withRemarksTail, nowStamp } from '../engine/inputs'
 import { ordShift, ordLabel } from '../engine/medical'
-import { stashKeys, stashGet, stashEditWeek, stashWeekState } from '../engine/weekstash'
+import { stashKeys, stashGet, stashWeekState, isPreservedWeek } from '../engine/weekstash'
+import { stripPersonFromDay, trimTail, hisLanded } from '../engine/overlay'
 import { validate } from '../engine/validate'
 import { localToday } from '../leavewar/engine/period'
 import { PLANPUCKS } from './plan'
 import { commit, CmdRefused, isCommitting } from '../command'
 import { peopleStore, settingsStore, finishPeopleWrite } from './people-settings-commit'
 import { schedStore, schedApplyEnd, resyncSchedBaseline } from './sched-commit'
-import { weekstashStore } from './store'
 import { mayDeletePerson } from './perms'
-import { deleteAccountProblem, dropAccountOfPid, seedAccounts } from './accounts'
+import { deleteAccountProblem, dropAccountOfPid, accountsAfter } from './accounts'
 import { saidOf } from './roster-add'
 import { deletePersonOnWar, warIdentityIfHidden } from '../leavewar/sync'
 import { HOOKS } from '../engine/hooks'
@@ -71,7 +77,6 @@ export function deleteCutoff(dateIso?: string | null): string {
 }
 const isoOrd = (iso: string): number => +iso.replace(/-/g, '')
 const ordIso = (o: number): string => `${Math.floor(o / 10000)}-${String(Math.floor(o / 100) % 100).padStart(2, '0')}-${String(o % 100).padStart(2, '0')}`
-const ROLES = ['cur', 'sked', 'plan', 'appr'] as const
 
 /* ---- where he sits on a LIVE day: every slot key that holds his id (the funnel's key grammar, engine/slots.ts).
    The roll-call of slot kinds (bug-check order §6) — each tested by name in person-delete.test.ts: a flying seat, a
@@ -106,67 +111,11 @@ export function personKeysOnDay(di: number, id: string): string[] {
   return out
 }
 
-/* ---- the same, on a day OBJECT that is not the loaded week (a stashed day, a parked plan): blanked in place, holding
-   every index as the funnel does (a list keeps its positions; only trailing blanks are trimmed), and a ground row that
-   came from one of `srcs` (his inputs) removed with it. Returns true if anything changed. ---- */
-const trimTail = (arr: any[]) => { while (arr.length && !arr[arr.length - 1]) arr.pop() }
-export function stripPersonFromDay(d: any, id: string, srcs: Set<string>): boolean {
-  if (!d || !id) return false
-  let changed = false
-  const blankList = (arr: any, match: (v: any) => boolean) => {
-    if (!Array.isArray(arr)) return
-    arr.forEach((v: any, n: number) => { if (match(v)) { arr[n] = ''; changed = true } })
-    trimTail(arr)
-  }
-  const isHim = (v: any) => v === id
-  ;(d.waves || []).forEach((w: any) => (w && w.formations || []).forEach((f: any) => (f && f.aircraft || []).forEach((a: any) => {
-    for (const seat of ['p', 'w']) if (a && a[seat] === id) { a[seat] = ''; changed = true }
-  })))
-  ;(d.dutywaves || []).forEach((dw: any) => (dw && dw.rows || []).forEach((r: any) => {
-    if (!r) return
-    if (r.id === id) { r.id = ''; changed = true }
-    blankList(r.more, isHim)
-  }))
-  Object.keys(d.sims || {}).forEach(kind => ((d.sims || {})[kind] || []).forEach((r: any) => {
-    if (!r) return
-    blankList(r.pax, isHim)
-    for (const seat of ['p', 'w']) if (r[seat] === id) { r[seat] = ''; changed = true }
-    blankList(r.more, isHim)
-  }))
-  if (Array.isArray(d.ground)) {
-    const keep = d.ground.filter((r: any) => !(r && r.src && srcs.has(String(r.src))))
-    if (keep.length !== d.ground.length) { d.ground = keep; changed = true }
-    d.ground.forEach((r: any) => {
-      if (!r) return
-      if (!r.src && whoId(r.who) === id) { r.who = ''; changed = true }
-      blankList(r.more, isHim)
-    })
-  }
-  ;(d.allhands || []).forEach((r: any) => {
-    if (!r) return
-    const arr = whoArr(r); let hit = false
-    arr.forEach((v: any, n: number) => { if (whoId(v) === id) { arr[n] = ''; hit = true } })
-    if (hit) { trimTail(arr); r.who = arr.length > 1 ? arr : (arr[0] || ''); changed = true }
-    blankList(r.more, isHim)
-  })
-  if (stripOilSwitches(d, id)) changed = true
-  return changed
-}
-/* the OIL mode's per-man switches on a day (`oild.people`, keyed `<id>|<item>` — engine/oilev.ts) */
-function stripOilSwitches(d: any, id: string): boolean {
-  const pp = d && d.oild && d.oild.people
-  if (!pp || typeof pp !== 'object') return false
-  let changed = false
-  for (const k of Object.keys(pp)) if (k.startsWith(`${id}|`)) { delete pp[k]; changed = true }
-  return changed
-}
-/* a sign-off record ({cur, sked, plan, appr}) and its bindings: his name cleared, its binding with it */
-function stripSign(sign: any, bind: any, id: string): boolean {
-  if (!sign || typeof sign !== 'object') return false
-  let changed = false
-  for (const r of ROLES) if (sign[r] === id) { sign[r] = ''; if (bind && typeof bind === 'object') delete bind[r]; changed = true }
-  return changed
-}
+/* ---- the same, on a day OBJECT that is not the loaded week (a parked plan, a day read from storage): stripPersonFromDay,
+   stripOilSwitches, stripSign and trimTail moved, unchanged, to engine/overlay.ts ([DB-READINESS] group A, phase 6 (d)) —
+   the read-time overlay that takes a deleted man off every day from his cutoff lives in the engine, which may not import
+   state/. Re-exported here for the callers that knew them here. ---- */
+export { stripPersonFromDay }
 
 /* ---- the refusals, in the app's words, first one found ---- */
 /* THE LOAD BELT (the plan's Round 2 — D297): a version loaded onto the working copy or a saved plan switched in is a
@@ -180,9 +129,11 @@ export function stripDeletedFromDay(di: number, nd: any): string[] {
   for (const id of Object.keys(PEOPLE)) {
     const p: any = (PEOPLE as any)[id]
     if (!p || !p.deleted || iso < String(p.deletedFrom || '')) continue
-    /* his landed rows: a row that came from one of his inputs (the input itself is gone or ended by the delete) */
-    const srcs = new Set<string>(((nd.ground || []) as any[]).filter(r => r && r.src && whoId(r.who) === id).map(r => String(r.src)))
-    if (stripPersonFromDay(nd, id, srcs)) out.push(String(p.cs))
+    /* his landed rows: a row landed from one of HIS requests — decided by the request's CURRENT holder, never the name
+       the version's row carries (the one rule every read uses, engine/overlay.ts hisLanded — Fable's round-2 read of the
+       phase-6 plan, F1: a request handed on since the version was issued is its new holder's row, and a version load
+       must not take it with a deleted former holder) */
+    if (stripPersonFromDay(nd, id, hisLanded(nd, id))) out.push(String(p.cs))
   }
   return out
 }
@@ -194,9 +145,18 @@ export function deleteProblem(id: string): string | null {
   if (p.deleted) return `${p.cs} is already deleted`
   return deleteAccountProblem(id)
 }
-/* every stashed week (not the loaded one) with a day on or after the cutoff, read first: a week that cannot be read — or
-   a byte-preserved one that holds him on such a day — refuses the whole delete (Astra A1). null = all clear. */
+/* every stashed week with a day on or after the cutoff, read first — and the loaded week when it is read-only: a week that
+   cannot be read — or a byte-preserved one that holds him on such a day — refuses the whole delete (Astra A1; the loaded
+   week, Fable's final read of phase 6, F1). null = all clear. */
 export function stashPreflight(id: string, cutoff: string): string | null {
+  /* THE WEEK ON SCREEN TOO (Fable's final read of phase 6, F1, 30 Sep 26): a read-only week holding him on a day to come
+     refused the delete only while it was OFF screen. On screen, the delete went ahead and the after-command overlay took
+     him off the screen — but a read-only week is shown as it is saved, so a reload put him back. One rule for both: the
+     loaded model is the week as it stands (its stash entry, skipped below, is the stale copy written on the way out). */
+  if (isPreservedWeek(CURWEEK) && dayIso(CURWEEK, 6) >= cutoff) {
+    for (let di = 0; di < DAYS.length; di++) if (dayIso(CURWEEK, di) >= cutoff && JSON.stringify((DAYS as any)[di] || {}).includes(`"${id}"`))
+      return `The week of ${CURWEEK} can't be changed — the delete was not made`
+  }
   for (const v of stashKeys()) {
     if (v === CURWEEK) continue
     if (dayIso(v, 6) < cutoff) continue                         // the whole week is before the cutoff — untouched
@@ -240,27 +200,25 @@ export function applyDelete(id: string, cutoff: string): void {
     if (a >= cut) gone.push(r)
     else if (b != null && b >= cut) ended.push(r)
   }
-  const srcs = new Set<string>([...gone, ...ended].map(r => String(inpId(r))))
-  const bySrc = new Map<string, any>([...gone, ...ended].map(r => [String(inpId(r)), r]))
-  const endedSet = new Set<any>(ended)
-  /* 3. the loaded week, day by day from the cutoff, through the funnel */
+  /* 3. the loaded week, from the cutoff. NOT CHANGED INSIDE THE COMMAND ([DB-READINESS] group A, phase 6 (d) —
+     data-model.md §9 rule 9; D450): in the database a day is saved only by the scheduler holding it, and a delete (or the
+     posting pass that runs one, which can join another person's command) must never write — or wait for — a day. So the
+     command changes his own records alone; the week on screen is worked out AFTER it (the deferred effect below: the same
+     read-time overlay every week gets as it comes into memory — engine/overlay.ts), with the command layer's baseline
+     moved on, so it is nobody's change and nothing saves it until the day's holder next changes that day. What the
+     command DOES keep, as built (D337 — "everything the delete took away, one line each"): one change-history line per
+     seat he held on the week on screen, the same line the funnel wrote when the delete emptied it. A landed row of a
+     request that SPANS the cutoff leaves the day to come with the overlay; the kept part stays accepted — its filing is
+     never parked "taken off" (Fable's code read 1, 27 Sep 26). */
   for (let di = 0; di < DAYS.length; di++) {
     if (dayIso(CURWEEK, di) < cutoff) continue
-    const d: any = (DAYS as any)[di]; if (!d) continue
-    /* a row that came from one of those inputs goes with it (the input's own un-landing) */
-    for (const r of [...(d.ground || [])]) if (r && r.src && bySrc.has(String(r.src))) {
-      const inp = bySrc.get(String(r.src)); const was = inp.acc
-      unacceptInput(di, inp)
-      /* the kept part of a request that SPANS the cutoff stays accepted: un-landing its row from a day to come must never
-         park it "taken off" on the days before the cutoff it still covers — it vanished from those days and a published
-         day he flew read pending through its crowd (Fable's code read 1, 27 Sep 26) */
-      if (endedSet.has(inp)) inp.acc = was
-    }
-    for (const k of personKeysOnDay(di, id)) setSlotVal(k, '')
-    for (const role of ROLES) if (((SCHED.sign || {})[di] || {})[role] === id) setSign(di, role, '')
-    stripOilSwitches(d, id)
-    for (const t of ((SCHED.drafts || {})[di] || [])) if (t) { stripPersonFromDay(t.d, id, srcs); stripSign(t.sign, t.signBind, id) }
+    for (const k of personKeysOnDay(di, id)) logEdit(k, slotVal(k), '')
   }
+  /* the week on screen is worked out by the ONE after-command pass every scheduler command registers at its apply-end
+     (state/sched-commit.ts afterCommandPass → state/holderbase.ts — [DB-READINESS] phase 6 (c) v3): from the holder base,
+     his seats, landed rows, sign-offs, plans and OIL switches go from his cutoff; never over a read-only week (the preflight
+     above refuses a delete it would need — Fable's final read, F1). Both doors end in that apply-end (deletePerson below,
+     and the posting pass — leavewar/sync.ts). */
   /* 4b. then the inputs themselves */
   for (const r of gone) { const ix = INPUTS.indexOf(r); if (ix >= 0) INPUTS.splice(ix, 1) }
   for (const r of ended) {
@@ -271,27 +229,13 @@ export function applyDelete(id: string, cutoff: string): void {
     r.remarks = withRemarksTail(r.remarks, ordIso(a), ordIso(end), 'till')
     r.mod = nowStamp()
   }
-  /* 3b. every stashed week (never the loaded one — its live days are authoritative, weekstashStore's C7) */
-  for (const v of stashKeys()) {
-    if (v === CURWEEK || dayIso(v, 6) < cutoff) continue
-    stashEditWeek(v, (blob: any) => {
-      let changed = false
-      const days = blob.d as any[]
-      for (let di = 0; di < days.length; di++) {
-        if (dayIso(v, di) < cutoff) continue
-        if (stripPersonFromDay(days[di], id, srcs)) changed = true
-        if (stripSign(blob.sg && blob.sg[di], blob.sb && blob.sb[di], id)) changed = true
-        for (const t of ((blob.dr || {})[di] || [])) if (t) {
-          if (stripPersonFromDay(t.d, id, srcs)) changed = true
-          if (stripSign(t.sign, t.signBind, id)) changed = true
-        }
-      }
-      return changed
-    })
-  }
+  /* 3b. every saved week — NOT rewritten since phase 6 (d): each reads without him from his cutoff when its days come
+     into memory (engine/overlay.ts). */
   /* 3c. the planning calendar's pucks — a gap, never a splice (the surviving pucks keep their places) */
   for (const e of PLANPUCKS) {
-    if (!e || e.kind !== 'pucks' || !Array.isArray(e.ids) || String(e.iso || '') < cutoff) continue
+    /* the row's day is its `date` (state/plan.ts) — this read `iso`, a field no calendar row carries, so a delete never took
+       him off one ([DB-READINESS] group A, phase 2: found moving the calendar to one row each) */
+    if (!e || e.kind !== 'pucks' || !Array.isArray(e.ids) || String(e.date || '') < cutoff) continue
     const ix = e.ids.indexOf(id)
     if (ix >= 0) { e.ids[ix] = ''; trimTail(e.ids) }
   }
@@ -304,19 +248,17 @@ export function applyDelete(id: string, cutoff: string): void {
    repaired silently. The undo timeline asks it when it CHOOSES the next step (undo/timeline.ts — a refused step is
    passed over, so the button never stalls behind it; it still guards older steps that share its records) and again just
    before it restores. The record names are the command layer's (state/sched-commit.ts decompose): `days` `<wk>#<di>`,
-   `sched.book` `<wk>` (its `sg` sign-offs and `dr` parked plans), `inputs` `<iid>`, `plan` `all`, `weekstash` `<wk>`. */
+   `sched.book` `<wk>#<di>` (that day's `sg` sign-offs and `dr` parked plans), `inputs` `<iid>`, `plan` `pp:<id>`, `weekstash`
+   `<wk>#<di>` (a saved week's day row — state/weekrows.ts; its other rows name no day he could be put back on). */
 const holds = (v: any, id: string): boolean => { try { return JSON.stringify(v ?? null).includes(`"${id}"`) } catch (_e) { return false } }
-function weekHolds(wk: string, blob: any, id: string, cut: string): boolean {
-  if (!blob || typeof blob !== 'object') return false
-  const days = Array.isArray(blob.d) ? blob.d : []
-  for (let di = 0; di < days.length; di++) if (dayIso(wk, di) >= cut && holds(days[di], id)) return true
-  for (const di of Object.keys(blob.sg || {})) if (dayIso(wk, +di) >= cut && holds(blob.sg[di], id)) return true
-  for (const di of Object.keys(blob.dr || {})) if (dayIso(wk, +di) >= cut && holds(blob.dr[di], id)) return true
-  return false
-}
 export function deletedRestoreProblem(changes: any[]): string | null {
   const gone = Object.keys(PEOPLE).filter(id => (PEOPLE as any)[id] && (PEOPLE as any)[id].deleted)
   if (!gone.length) return null
+  /* the accounts the step would leave — one row per account since [DB-READINESS] group A, phase 4.4: an account row put
+     back that is his, or a step leaving NO account row, which the loader reads as the seeded list (accounts.ts
+     accountsAfter; Fable's final read, F5) — would bring his sign-in back */
+  const accts = accountsAfter(changes)
+  if (accts) for (const id of gone) if (accts.some((a: any) => a && a.pid === id)) return `${(PEOPLE as any)[id].cs} has been deleted — that change can't be undone`
   for (const ch of changes || []) {
     if (!ch || ch.op !== 'put') continue
     const v = ch.after, rid = String(ch.id || '')
@@ -324,16 +266,18 @@ export function deletedRestoreProblem(changes: any[]): string | null {
       const cut = String((PEOPLE as any)[id].deletedFrom || '')
       let hit = false
       if (ch.collection === 'days') { const [wk, di] = rid.split('#'); hit = !!wk && dayIso(wk, +di) >= cut && holds(v, id) }
-      else if (ch.collection === 'sched.book') hit = weekHolds(rid, { sg: v && v.sg, dr: v && v.dr }, id, cut)
-      else if (ch.collection === 'weekstash') { try { hit = weekHolds(rid, typeof v === 'string' ? JSON.parse(v) : v, id, cut) } catch (_e) { hit = false } }
+      else if (ch.collection === 'sched.book') { const [wk, di] = rid.split('#'); hit = !!wk && di != null && dayIso(wk, +di) >= cut && (holds(v && v.sg, id) || holds(v && v.dr, id)) }
+      else if (ch.collection === 'weekstash') {
+        const [wk, di] = rid.split('#')
+        if (wk && di != null && /^[0-6]$/.test(di)) { try { const row = typeof v === 'string' ? JSON.parse(v) : v; hit = dayIso(wk, +di) >= cut && (holds(row && row.d, id) || holds(row && row.sg, id) || holds(row && row.dr, id)) } catch (_e) { hit = false } }
+      }
       else if (ch.collection === 'inputs') { const a = v && v.person === id ? dateOrd(v.date, v.yr) : null; hit = a != null && a >= isoOrd(cut) }
-      else if (ch.collection === 'plan') hit = ((v && v.pp) || []).some((e: any) => e && e.kind === 'pucks' && String(e.iso || '') >= cut && Array.isArray(e.ids) && e.ids.includes(id))
+      /* one calendar row per record since phase 2 (`plan/pp:<id>`); its day is its `date` */
+      else if (ch.collection === 'plan') hit = !!v && v.kind === 'pucks' && String(v.date || '') >= cut && Array.isArray(v.ids) && v.ids.includes(id)
       /* B4 of the change-recording re-test (28 Sep 26): once the one Undo takes roster and settings steps, HIS OWN RECORD
          put back un-deleted, or an accounts list that still holds his account, would bring him back whole (D287 — a
          delete is final; a man the war does not hold leaves no posting record to keep the step dead — Fable's red team 10) */
       else if (ch.collection === 'people') hit = rid === id && !!v && !v.deleted
-      /* a stored null IS the seeded list (accountsLoad; roster-restore.ts reads it so too) — Fable's final read, F5 */
-      else if (ch.collection === 'settings' && rid === 'accounts') { const list = v == null ? seedAccounts() : v; hit = Array.isArray(list) && list.some((a: any) => a && a.pid === id) }
       if (hit) return `${(PEOPLE as any)[id].cs} has been deleted — that change can't be undone`
     }
   }
@@ -355,7 +299,7 @@ export function deletePerson(id: string, dateIso?: string | null): string | null
     apply: (txn: any) => {
       /* the baseline to LIVE before enlisting (the input batch's own rule, sched-commit.ts commitInputsWith) */
       resyncSchedBaseline()
-      txn.enlist(peopleStore); txn.enlist(settingsStore); txn.enlist(schedStore); txn.enlist(weekstashStore)
+      txn.enlist(peopleStore); txn.enlist(settingsStore); txn.enlist(schedStore)   // no saved week is written (phase 6 (d))
       /* a man the war does not show (a SANS man with Show SANS off) is caught as the war would draw him BEFORE the mark
          takes him off every projection — so the months he was here keep his row (D299; Astra 3, Fable 3) */
       const frozen = warIdentityIfHidden(id)

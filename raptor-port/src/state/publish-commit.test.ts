@@ -21,6 +21,8 @@ import {
 } from './sched-commit'
 import { issuedDisclosed, _resetDisclosure } from './disclosure'
 import { histSnap } from './history'
+import { joinParts } from './weekrows'
+import { sortByOrd } from '../command/ord'
 import { setSession } from './auth'
 import * as view from './view'
 import { onCommit } from '../command'
@@ -64,7 +66,7 @@ afterEach(() => { unsub() })
 const cols = (e: CommitEnvelope) => e.changes.map(c => c.collection)
 
 describe('first publish (setDayApproved) emits the Original + a publish boundary', () => {
-  it('commitSetDayApproved -> ONE envelope, a sched.orig change, boundary crossable', () => {
+  it('commitSetDayApproved -> ONE envelope, a sched.issuance change, boundary crossable', () => {
     sign(0)
     commitSetDayApproved(0, true)
     expect(dayApproved(0)).toBe(true)
@@ -72,8 +74,8 @@ describe('first publish (setDayApproved) emits the Original + a publish boundary
     const e = caught[0]
     expect(e.type).toBe('sched.approve')
     expect(e.scope).toEqual({ module: 'sched', weekId: CURWEEK })
-    // the Original is emitted as its own append-only record
-    expect(e.changes.some(c => c.collection === 'sched.orig' && c.id === `${CURWEEK}:0`)).toBe(true)
+    // the Original is emitted as its own append-only record — issuance 0 of its version ([DB-READINESS] group A, phase 1)
+    expect(e.changes.some(c => c.collection === 'sched.issuance' && c.id === `${CURWEEK}:${(SCHED.orig as any)[0].id}~0`)).toBe(true)
     // the mutable book moved too (dayOK / cur / pending cleared)
     expect(cols(e)).toContain('sched.book')
     // the publish boundary carries the new issued id, crossable (nothing disclosed)
@@ -92,8 +94,8 @@ describe('first publish (setDayApproved) emits the Original + a publish boundary
   })
 })
 
-describe('an amendment (publishALDay) appends a sched.als record + boundary', () => {
-  it('commitPublishALDay -> a sched.als change and the new AL id in the boundary', () => {
+describe('an amendment (publishALDay) appends a sched.issuance record + boundary', () => {
+  it('commitPublishALDay -> a sched.issuance change and the new AL id in the boundary', () => {
     sign(0)
     commitSetDayApproved(0, true)
     caught = []
@@ -104,7 +106,7 @@ describe('an amendment (publishALDay) appends a sched.als record + boundary', ()
     expect(caught.length).toBe(1)
     const e = caught[0]
     expect(e.type).toBe('sched.publishAL')
-    expect(e.changes.some(c => c.collection === 'sched.als')).toBe(true)
+    expect(e.changes.some(c => c.collection === 'sched.issuance')).toBe(true)
     expect(e.boundary).toBeTruthy()
     expect(e.boundary!.ids.length).toBe(1)
     const newAl = (SCHED.als as any[])[(SCHED.als as any[]).length - 1]
@@ -168,45 +170,30 @@ describe('the on-the-record signal flips crossable for Step 3 (§3.4, owner 17 S
 
 describe('completeness — the stream reconstructs the persisted week (§7 / R4-004)', () => {
   /* invert schedRecords(): fold the change stream onto a pre-command snapshot of
-     the logical records and re-assemble the legacy histSnap shape from them. */
+     the logical records and re-assemble the legacy histSnap shape from them — the
+     week through its rows' own join ([DB-READINESS] group A, phase 1: state/weekrows.ts). */
   function recordsToHist(m: Map<string, { collection: string; id: string; value: any }>): any {
     const wk = CURWEEK
-    const d: any[] = []
-    for (let di = 0; ; di++) { const e = m.get(`days/${wk}#${di}`); if (!e) break; d.push(e.value) }
-    const book: any = m.get(`sched.book/${wk}`)!.value
-    const mutes: any = m.get(`sched.mutes/${wk}`)!.value
-    const orig: any = {}
-    const als: any[] = []
-    const retired: any = {}
-    const inputs: any[] = []
-    let inpOrder: string[] | null = null
+    const days = [0, 1, 2, 3, 4, 5, 6].map(di => ({
+      d: m.get(`days/${wk}#${di}`)!.value, book: m.get(`sched.book/${wk}#${di}`)!.value, wo: m.get(`sched.mutes/${wk}#${di}`)!.value,
+    }))
+    const is: Array<[string, any]> = [], rx: Array<[string, any]> = []
+    const inputs: any[] = [], pp: any[] = [], dm: Record<string, string> = {}
     for (const [k, e] of m) {
-      if (k.startsWith('sched.orig/')) orig[k.slice(k.lastIndexOf(':') + 1)] = e.value
-      // [GLOBAL-UNDO] §6.1 — the retired-issuance log records, keyed by `<verId>~<n>`.
-      else if (k.startsWith('sched.retired/')) retired[k.slice(k.indexOf(':') + 1)] = e.value
-      // [CMDL-FINISH] §5 — the als key is now the verId, not the array index, so
-      // collect the values and order the book by iso/seq (chronological AL order).
-      else if (k.startsWith('sched.als/')) als.push(e.value)
-      // [CMDL-FINISH] CMDLF-010 — inputs/__order is order metadata, not a row;
-      // consume it to re-sort the inputs, exactly as write() does.
-      else if (k === 'inputs/__order') inpOrder = e.value
+      if (k.startsWith('sched.issuance/')) is.push([e.id.slice(e.id.indexOf(':') + 1), e.value])
+      else if (k.startsWith('sched.retraction/')) rx.push([e.id.slice(e.id.indexOf(':') + 1), e.value])
       else if (k.startsWith('inputs/')) inputs.push(e.value)
+      else if (k.startsWith('plan/pp:')) pp.push(e.value)
+      else if (k.startsWith('plan/dm:')) dm[e.id.slice(3)] = e.value
     }
-    if (inpOrder) {
-      const pos = new Map(inpOrder.map((id, i) => [id, i]))
-      inputs.sort((a, b) => (pos.get(a.iid) ?? 1e9) - (pos.get(b.iid) ?? 1e9))
-    }
-    als.sort((a, b) => {
-      const ai = String(a?.iso ?? ''), bi = String(b?.iso ?? '')
-      if (ai !== bi) return ai < bi ? -1 : 1
-      return (Number(a?.seq) || 0) - (Number(b?.seq) || 0)
-    })
-    const plan: any = m.get('plan/all')!.value
+    /* [DB-READINESS] group A, phase 2 — each request and planning note carries its place (ord) */
+    sortByOrd(inputs, (r: any) => r.iid); sortByOrd(pp, (p: any) => p.id)
+    const w = joinParts({ week: m.get(`sched.week/${wk}`)!.value, days, is, rx }, wk)
     return {
-      d, i: inputs,
-      c: book.c, p: book.p, ad: book.ad, a: als, al: book.al,
-      ok: book.ok, sg: book.sg, sb: book.sb, o: orig, cv: book.cv, dr: book.dr, cd: book.cd,
-      v: book.v, am: book.am, rt: retired, cr: book.cr, wo: mutes, pp: plan.pp, dm: plan.dm,
+      d: w.d, i: inputs,
+      c: w.c, p: w.p, ad: w.ad, a: w.a,
+      ok: w.ok, sg: w.sg, sb: w.sb, o: w.o, cv: w.cv, dr: w.dr, cd: w.cd,
+      v: w.v, am: w.am, rt: w.rt, cr: w.cr, wo: w.wo, pp, dm,
     }
   }
 
@@ -226,7 +213,8 @@ describe('completeness — the stream reconstructs the persisted week (§7 / R4-
       if (c.op === 'delete') base.delete(key)
       else base.set(key, { collection: c.collection as string, id: c.id, value: c.after })
     }
-    // the reconstruction must equal the legacy serializer's live output
-    expect(recordsToHist(base)).toEqual(JSON.parse(histSnap()))
+    // the reconstruction must equal the legacy serializer's live output — less `al` (no reader, not stored)
+    const live = JSON.parse(histSnap()); delete live.al
+    expect(JSON.parse(JSON.stringify(recordsToHist(base)))).toEqual(live)
   })
 })

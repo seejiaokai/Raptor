@@ -1,0 +1,72 @@
+{
+ "base": "http://localhost:4204",
+ "at": "2026-09-30T09:19:46.556Z",
+ "results": [
+  {
+   "name": "BUMP-0: a fresh world's first boot wrote ONE change-log batch, of type boot",
+   "ok": true,
+   "detail": "[\"boot/199\"]"
+  },
+  {
+   "name": "BUMP-0: the first boot's rows by collection",
+   "ok": true,
+   "detail": "{\"leavewar\":91,\"people\":61,\"inputs\":46,\"settings\":1,\"changes\":1}"
+  },
+  {
+   "name": "BUMP-0: the stamp is format 6, started",
+   "ok": true,
+   "detail": "{\"stage\":1,\"dataFormatVersion\":6,\"initialized\":true,\"appliedAt\":\"2026-09-30T09:19:17.915Z\",\"minClient\":6}"
+  },
+  {
+   "name": "BUMP-8: a store stamped a LATER format (8) → \"RAPTOR has been updated — reload\"",
+   "ok": true,
+   "detail": "RAPTOR has been updated Reload to get the latest version. Nothing was opened, so nothing can be lost. Reload"
+  },
+  {
+   "name": "BUMP-8: …and NOTHING was written (every row as it was, the stamp still 8)",
+   "ok": true,
+   "detail": "{\"put\":[],\"del\":[],\"newBatches\":[],\"goneBatches\":[]}"
+  },
+  {
+   "name": "BUMP-4: a store stamped an EARLIER format (4) → the wipe ran; the stamp is current again (6, started)",
+   "ok": true,
+   "detail": "{\"stage\":1,\"dataFormatVersion\":6,\"initialized\":true,\"appliedAt\":\"2026-09-30T09:19:37.314Z\",\"minClient\":6}"
+  },
+  {
+   "name": "BUMP-4: the demo is back — the Inputs page lists exactly the demo's requests again (the deleted one back, the filed one gone)",
+   "ok": true,
+   "detail": "{\"before\":24,\"after\":24,\"missing\":[],\"extra\":[]}"
+  },
+  {
+   "name": "BUMP-4: the week is the demo week again (the note typed before the wipe is gone)",
+   "ok": true,
+   "detail": "[\"EP: ENGINE FIRE ON TAKE OFF\",\"ORDERS: FLYING ORDERS SECTION 2\"]"
+  },
+  {
+   "name": "BUMP-4: his Tracker charts survive the wipe (the Tracker is not in the wipe's list — D464)",
+   "ok": true,
+   "detail": "{\"bumper\":true,\"tracker\":5,\"trackerBefore\":5,\"chart\":true}"
+  },
+  {
+   "name": "BUMP-4: a person added before the wipe is kept (people are not in the wipe's list) — noted",
+   "ok": true,
+   "detail": "{\"bumper\":true,\"tracker\":5,\"trackerBefore\":5,\"chart\":true}"
+  },
+  {
+   "name": "BUMP-4: the next reload writes nothing (no second wipe)",
+   "ok": true,
+   "detail": "{\"put\":[],\"del\":[],\"newBatches\":[],\"goneBatches\":[]}"
+  },
+  {
+   "name": "bump: no console error, page error or failed request (beyond the expected boot refusal)",
+   "ok": true,
+   "detail": "[]"
+  },
+  {
+   "name": "bump: the expected errors (the boot's own refusal of a store ahead)",
+   "ok": true,
+   "detail": "[\"bump8: RAPTOR could not load its data StoreAheadError: store format 8 is ahead of this build (6)\\n    at Cc (http://localhost:4204/assets/store-DbjTeBib.js:1:64423)\\n    at IE (http://localhost:4204/assets/index-DOz2I1t9.js:66:225804)\\n    at async aO (http://localhost:4204/assets/index-DOz2I1t9.js:66:244173)\\n    at async lO (http://localhost:4204/assets/index-DOz2I1t9.js:66:245673)\"]"
+  }
+ ],
+ "part": "bump"
+}

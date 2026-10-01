@@ -72,7 +72,10 @@ For the person designing RAPTOR's Dataverse tables. Written 10 Sep 26; "What hap
      two schedulers on two days of one week must never write the same record** (`data-model.md` §9, the day
      lock, with its own two questions for you, Open questions 8 and 9);
   7. whether the app calls the Dataverse Web API directly from the Code App,
-     or a thin API sits in front of it.
+     or a thin API sits in front of it;
+  8. **the first admin of your empty tables** (`data-model.md` §12 q11, 30 Sep 26): a build setting naming his sign-in
+     and person — or a `Person` you made — from which the app's first start makes his admin account, in one changeset;
+     which you prefer, where app settings live, and which value sign-in hands the app.
 
 ## Constraints that are not negotiable
 

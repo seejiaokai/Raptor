@@ -299,10 +299,9 @@ export function FigureBreakdownSheet({
  * picture: the eight figures (visibleFigures — a hidden one drops out here
  * too) with this person's own number, as the same two-line box the grid
  * shows. Tapping a row opens that figure's parts breakdown for this person,
- * so the two sheets chain into the full story. An admin also gets the Edit
- * person button here — the callsign tap used to be the edit shortcut for
- * them, and the edit surface must not become unreachable because the tap now
- * informs.
+ * so the two sheets chain into the full story. (It carried an admin's "Edit
+ * person" button at its foot — the war's own seat / band / SXO editor. Gone:
+ * D460, D461, 30 Sep 26 — a man's seat, band and SXO change only on Quals.)
  *
  * Two kinds of row are special since 2 Sep 26 (owner): +OIL hands over to
  * the OIL TRACKER (the ledger behind the number) instead of the flat
@@ -317,7 +316,6 @@ export function PersonFiguresSheet({
   onOpenFigure,
   onOpenOil,
   onSetBalance,
-  onEdit,
   onClose,
 }: {
   person: Person
@@ -326,8 +324,6 @@ export function PersonFiguresSheet({
   onOpenOil?: () => void
   /** Present for an admin only — each settable balance row grows a Set button. */
   onSetBalance?: (counter: CounterName, target: number) => void
-  /** Present for an admin only — opens the person EDITOR (PersonSheet). */
-  onEdit?: () => void
   onClose: () => void
 }) {
   // The figures a hidden id must not surface here either — "hidden" means
@@ -418,13 +414,6 @@ export function PersonFiguresSheet({
           )
         })}
       </div>
-      {onEdit && (
-        <div className="cfoot">
-          <button className="creset" data-testid="person-edit" onClick={onEdit}>
-            Edit person
-          </button>
-        </div>
-      )}
     </Sheet>
   )
 }

@@ -1,0 +1,132 @@
+{
+ "base": "http://localhost:4203",
+ "at": "2026-09-30T09:11:57.012Z",
+ "results": [
+  {
+   "name": "E0 first boot (phone) — ONE change-log batch, of type boot",
+   "ok": true,
+   "detail": "[{\"type\":\"boot\",\"n\":199}]"
+  },
+  {
+   "name": "11 (phone) opening the Leave War and its month writes nothing — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "11 (phone) opening the Leave War and its month writes nothing — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "11 (phone) a finger taps Cinch's 14 Jan, then LL — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [leavewar/rec:y2026:rmunvytbi1asej] · del 0 [] · batches lw.edit/1"
+  },
+  {
+   "name": "11 (phone) a finger taps Cinch's 14 Jan, then LL — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [leavewar/rec:y2026:rmunvytbi1asej] · del 0 [] · batches lw.edit/1"
+  },
+  {
+   "name": "11 — ONE record row (the bid), ONE batch",
+   "ok": true,
+   "detail": "{\"put\":[\"leavewar/rec:y2026:rmunvytbi1asej\"],\"batches\":[{\"key\":\"changes/cmunvyo07rtuhq0-1\",\"type\":\"lw.edit\",\"actorId\":\"acad\",\"n\":1,\"seqs\":[1]}],\"ret\":{\"firstTap\":\"bid-picker\",\"placed\":true,\"asked\":\"Cinch Wed 14 Jan ✕ HOW MANY Just this day Pick a range HOW MUCH Whole day AM PM WHICH LEAVE LL OL OIL CCL FCL PL EL CL That takes Cinch to -1 LVE. Tap the same leave again to go ahead. +OIL PO PI\"}}"
+  },
+  {
+   "name": "11 phone bid — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026 (the unsaved demo week's hidden row ids set aside)"
+  },
+  {
+   "name": "11 phone bid — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "11 phone bid — the war's boxes read the same after the reload",
+   "ok": true,
+   "detail": "{\"snap@2026-01-14\":\"LL\"}"
+  },
+  {
+   "name": "11 — after the reload the box reads LL",
+   "ok": true,
+   "detail": "{\"snap@2026-01-14\":{\"text\":\"LL\",\"cls\":\"act\",\"mark\":\"\"}}"
+  },
+  {
+   "name": "11 — the phone page does not scroll sideways",
+   "ok": true,
+   "detail": "0"
+  },
+  {
+   "name": "11b (phone) Ranger's finger on his own 15 Jan, then LL — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [leavewar/rec:y2026:rmunvz4nh1yj6a] · del 0 [] · batches lw.edit/1"
+  },
+  {
+   "name": "11b (phone) Ranger's finger on his own 15 Jan, then LL — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [leavewar/rec:y2026:rmunvz4nh1yj6a] · del 0 [] · batches lw.edit/1"
+  },
+  {
+   "name": "11b — ONE record row, ONE batch",
+   "ok": true,
+   "detail": "{\"put\":[\"leavewar/rec:y2026:rmunvz4nh1yj6a\"],\"batches\":[{\"key\":\"changes/cmunvz4nn1i3hbb-0\",\"type\":\"lw.edit\",\"actorId\":\"acus\",\"n\":1,\"seqs\":[0]}],\"ret\":{\"placed\":true,\"pressed\":true,\"asked\":\"Ranger Thu 15 Jan ✕ HOW MANY Just this day Pick a range HOW MUCH Whole day AM PM WHICH LEAVE LL OL OIL CCL FCL PL EL CL That takes Ranger to -1 LVE. Tap the same leave again to go ahead.\",\"why\":\"\"}}"
+  },
+  {
+   "name": "11b phone member bid — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026 (the unsaved demo week's hidden row ids set aside)"
+  },
+  {
+   "name": "11b phone member bid — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "11b phone member bid — the war's boxes read the same after the reload",
+   "ok": true,
+   "detail": "{\"bane@2026-01-15\":\"LL\",\"snap@2026-01-14\":\"LL\"}"
+  },
+  {
+   "name": "part E — no console errors, page errors, failed requests or native dialogs",
+   "ok": true,
+   "detail": "[]"
+  }
+ ],
+ "table": [
+  {
+   "step": "E0 first boot",
+   "width": "phone",
+   "did": "fresh world on a phone, Saber",
+   "screen": "—",
+   "rows": "batches boot/199",
+   "ok": true,
+   "pics": []
+  },
+  {
+   "step": "11 phone bid (admin)",
+   "width": "phone",
+   "did": "finger: tapped Cinch 14 Jan, LL",
+   "screen": "{\"snap@2026-01-14\":{\"text\":\"LL\",\"cls\":\"act\",\"mark\":\"\"}}",
+   "rows": "put 1 [leavewar/rec:y2026:rmunvytbi1asej] · batches lw.edit/1",
+   "ok": true,
+   "pics": [
+    "E-11-sheet.png",
+    "E-11-bid-placed.png",
+    "E-11-after-reload.png"
+   ]
+  },
+  {
+   "step": "11b phone bid (member)",
+   "width": "phone",
+   "did": "Ranger signed in; finger: his 15 Jan, LL",
+   "screen": "{\"bane@2026-01-15\":{\"text\":\"LL\",\"cls\":\"act\",\"mark\":\"\"},\"snap@2026-01-14\":{\"text\":\"LL\",\"cls\":\"\",\"mark\":\"\"}}",
+   "rows": "put 1 [leavewar/rec:y2026:rmunvz4nh1yj6a] · batches lw.edit/1",
+   "ok": true,
+   "pics": [
+    "E-11b-after-reload.png"
+   ]
+  }
+ ],
+ "errors": []
+}

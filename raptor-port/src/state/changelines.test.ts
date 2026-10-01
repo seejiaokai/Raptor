@@ -21,7 +21,7 @@ import { globalUndo, globalRedo } from '../undo'
 const fake = new Map<string, string>()
 let ISNAP = ''
 beforeAll(() => {
-  storeBackend.impl = { getItem: k => (fake.has(k) ? fake.get(k)! : null), setItem: (k, v) => { fake.set(k, v) } }
+  storeBackend.impl = { getItem: k => (fake.has(k) ? fake.get(k)! : null), setItem: (k, v) => { if (v === 'null') fake.delete(k); else fake.set(k, v) }, keys: () => [...fake.keys()] }
   initStore()
   ISNAP = JSON.stringify(INPUTS)
   resetSession(sessionFor(signIn('ad', 'a') as any))
@@ -30,7 +30,9 @@ afterAll(() => { storeBackend.impl = null })
 beforeEach(() => {
   INPUTS.length = 0
   JSON.parse(ISNAP).forEach((r: any) => INPUTS.push(r))
+  /* a fresh history: the lines in memory and their stored rows (one row per line — [DB-READINESS] group A, phase 4.3) */
   elogClear()
+  for (const k of [...fake.keys()]) if (k.startsWith('sqn142_elog:')) fake.delete(k)
 })
 
 const add = (row: any) => { writeInputs(() => { inpId(row); INPUTS.unshift(row) }); return row }
@@ -141,21 +143,23 @@ describe('Quals, and a publish or a withdrawal (Fable F3, F5; Astra DP-07)', () 
     updatePersonField('bane', { tick: 'tf' })
   })
 
-  it('a publish and a withdrawal are read from the command\'s own boundary: the day and the version', () => {
+  it('a publish and a withdrawal are read from the command\'s own boundary: the day and the version', async () => {
     const env: any = { origin: 'user', scope: { module: 'sched' }, changes: [], actor: { role: 'admin' },
       boundary: { kind: 'publish', ids: ['2026-07-14#0'] } }
     changeLinesFor(env)
     changeLinesFor({ ...env, boundary: { kind: 'publish', ids: ['2026-07-14#2'] } })
     changeLinesFor({ ...env, boundary: { kind: 'unpublish', ids: ['2026-07-14#2'] } })
+    await turnEnds()
     expect(ELOG.rows.map(r => r.lbl)).toEqual(['Published — the Original', 'Published — AL2', 'AL2 withdrawn'])
     expect(ELOG.rows.every(r => r.date === '2026-07-14' && r.sect === 'day')).toBe(true)
   })
 
   /* [CHG-BY-ITEM] (Fable F3 / Astra 05): "added to the roster" keeps whose it is, by id, so the changes window files it
      under "Quals · <him>" — never by its words */
-  it('a man added to the roster: ONE line keeping whose it is (sub) and what it is (fld "roster")', () => {
+  it('a man added to the roster: ONE line keeping whose it is (sub) and what it is (fld "roster")', async () => {
     changeLinesFor({ origin: 'user', scope: { module: 'people' }, actor: { role: 'admin' },
       changes: [{ op: 'put', collection: 'people', id: 'newbie', before: undefined, after: { cs: 'Newbie', q: 'C' } }] } as any)
+    await turnEnds()
     expect(ELOG.rows.map(r => [r.lbl, r.sect, r.sub, r.fld])).toEqual([['Newbie · added to the roster', 'quals', 'newbie', 'roster']])
   })
 
@@ -164,6 +168,11 @@ describe('Quals, and a publish or a withdrawal (Fable F3, F5; Astra DP-07)', () 
     expect(ELOG.rows).toHaveLength(0)
   })
 })
+
+/* a line written with no command running is kept at the end of the turn (engine/editlog.ts hold — the group-wide walk's
+   finding H2, 30 Sep 26: a line given just BEFORE its command opens rides that command); a test that writes one directly
+   waits for the turn to end before it reads the history */
+const turnEnds = () => Promise.resolve()
 
 describe('an Undo or a Redo (Astra DP-04)', () => {
   it('a successful Undo is ONE line on the days it touched; the restore itself writes nothing', () => {
@@ -185,12 +194,14 @@ describe('an Undo or a Redo (Astra DP-04)', () => {
   /* the change-recording re-test (28 Sep 26, plan §11.9 widened by walker A2-F5): an Undo line appears only where its
      change wrote a line of its own — a Leave War ⚙ setting, a stage move or a Logic rule writes none, so its Undo wrote
      a lone "Undo —" dated today, in a week nobody opens */
-  it('an undo of a change that wrote no line of its own writes none either (A2-F5)', () => {
+  it('an undo of a change that wrote no line of its own writes none either (A2-F5)', async () => {
     logReversed({ label: 'a Leave War setting', forward: [{ op: 'put', collection: 'lw.config', id: 'all', before: {}, after: { sans: true } }] as any }, 'undo')
     logReversed({ label: 'closing bidding', forward: [{ op: 'put', collection: 'lw.war', id: 'w1', before: { stage: 'open' }, after: { stage: 'closed' } }] as any }, 'redo')
     logReversed({ label: 'a rule on the Logic page', forward: [{ op: 'put', collection: 'settings', id: 'rules', before: null, after: { v: {} } }] as any }, 'undo')
+    await turnEnds()
     expect(ELOG.rows).toHaveLength(0)
     logReversed({ label: 'Hex’s quals', forward: [{ op: 'put', collection: 'people', id: 'rocky', before: { cs: 'Hex' }, after: { cs: 'Hex', q: 'B' } }] as any }, 'undo')
+    await turnEnds()
     expect(ELOG.rows.map(r => r.lbl)).toEqual(['Undo — Hex’s quals'])
   })
 

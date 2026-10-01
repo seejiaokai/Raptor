@@ -1,0 +1,32 @@
+{
+ "base": "http://localhost:4204",
+ "at": "2026-09-30T09:13:19.799Z",
+ "results": [
+  {
+   "name": "OLD: every kind of record was made through the app",
+   "ok": true,
+   "detail": "{\"takenOff\":{\"key\":\"imunvy07608yuf1\",\"acc\":{\"iid\":\"imunvy07608yuf1\",\"acc\":\"r\"}},\"signOrig\":{\"cur\":\"Ace\",\"sked\":\"Anvil\",\"plan\":\"Anvil\",\"appr\":\"Anvil\"},\"pubOrig\":{\"pressed\":true,\"label\":\"Publish day\"},\"signAl\":{\"cur\":\"Ace\",\"sked\":\"Anvil\",\"plan\":\"Anvil\",\"appr\":\"Anvil\"},\"pubAl1\":{\"pressed\":true,\"label\":\"Publish AL1\"},\"unpub\":{\"pressed\":true,\"label\":\"Unpublish\"},\"signRe\":{\"cur\":\"Ace\",\"sked\":\"Anvil\",\"plan\":\"Anvil\",\"appr\":\"Anvil\"},\"pubRe\":{\"pressed\":true,\"label\":\"Publish AL1\"},\"book\":{\"dayOK\":[\"5\"],\"cur\":{\"5\":\"2026-07-18#1\"},\"als\":[\"2026-07-18#1 d5 n=1\"],\"orig\":[\"5\"],\"pending\":[\"dn:0.0\",\"del:0.1.ground\"],\"changes\":{\"dn:5.0\":1},\"retired\":[\"2026-07-18#1~1\"],\"correcting\":{},\"drafts\":{}},\"planItems\":[{\"text\":\"Live working copy ●live now — this is what publishes\",\"does\":\"back-to-live\"},{\"text\":\"+ Alt Plan\",\"does\":\"+alt\"}],\"plans\":{\"1\":[\"Plan A\",\"Plan B*\"]},\"reqs\":{\"r1\":\"imunvyl9uneg7nm\",\"r2\":\"imunvymmn8m83il\",\"r3\":\"imunvyo03kv7mjx\"},\"del\":{\"deleted\":true},\"walker\":\"pmunvyy2bm0f3kg\",\"suspended\":true,\"archived\":true,\"bid1\":{\"placed\":true,\"pressed\":true,\"why\":\"\"},\"bid2\":{\"placed\":true,\"pressed\":true,\"why\":\"\"},\"move\":{\"moved\":true,\"after\":\"nothing\"},\"award\":{\"given\":true,\"err\":\"\"},\"po\":{\"posted\":t"
+  },
+  {
+   "name": "OLD: the Tracker holds every kind (a renamed built-in, a deleted one, his own chart, two courses, a lull, a pace, an end date, a re-dated grade)",
+   "ok": true,
+   "detail": "{\"dropdown\":[\"W4 TX\",\"2026\",\"A/G - A/A 2026\",\"W4 OWN CHART ✎\"],\"courses\":[\"W4 27B\",\"26ABSG\"],\"pace\":\"3\",\"endA\":\"2026-12-15\",\"lull\":[\"20/10/26→31/10/26\"]}"
+  },
+  {
+   "name": "OLD: stored the old way — the whole-bundle records",
+   "ok": true,
+   "detail": "{\"missing\":[],\"weeks\":[\"weeks/13-07-2026\",\"weeks/20-07-2026\"],\"coll\":{\"tracker\":42,\"leavewar\":21,\"settings\":5,\"plan\":1,\"weeks\":2,\"inputs\":1,\"people\":1}}"
+  },
+  {
+   "name": "OLD: the read-out holds what was made",
+   "ok": true,
+   "detail": "{\"inputs\":27,\"cal\":{\"title\":\"W4 DAY TITLE\",\"secs\":[\"note:W4 NOTE\",\"pucks:mamba\"]},\"users\":\"signup@unit.example | asked as | Newbie | · NB · Pilot · CAT C · 30/9 17:12 | Give access | Refuse\",\"dropdown\":[\"W4 TX\",\"2026\",\"A/G - A/A 2026\",\"W4 OWN CHART ✎\"]}"
+  },
+  {
+   "name": "old: no console error, page error or failed request",
+   "ok": true,
+   "detail": "[]"
+  }
+ ],
+ "part": "old"
+}

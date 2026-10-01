@@ -44,7 +44,8 @@ import { DAYS } from './data'
 import { INPUTS, inpId, inpWin, oilAsks, dateOrd, dateIx } from './inputs'
 import { weekKeyOfOrd } from './weeks-data'
 import { CURWEEK } from './waves'
-import { stashHas, stashGroundBySrc } from './weekstash'
+import { stashHas, standingRowIn } from './weekstash'
+import { standsOn } from './overlay'
 import { PEOPLE, whoId, isSpecial } from './people'
 import { HOOKS } from './hooks'
 import { dayOilWork, oilItemDefaults, envMin, uniformOil, inputItemKey, rowItemKey, groundItemKey, openEndRows, type OilWork } from './oil'
@@ -75,6 +76,12 @@ export interface OilDecisions {
   items?: Record<string, 0 | 1>
   /** `<personId>|<itemKey>` → allow | deny (§9.1). */
   people?: Record<string, OilDecision>
+  /** `<personId>|i:<iid>` → the HOLDING of that request the decision was made under (its `Input.hand` then, absent = 0) —
+   *  written beside a `people` entry about a request, and only then ([DB-READINESS] group A, phase 6 (a)). A decision about
+   *  a man the request has LEFT since that holding (`Input.leftAt[pid]` greater than it) reads as nothing
+   *  (pruneHandedOverDecisions), so handing a request on writes no day at all — and A → B → A cannot bring A's old refusal
+   *  back. A `people` entry with no `pa` entry reads as made under the first holding (0). */
+  pa?: Record<string, number>
 }
 
 /* ---- the derived halves (issued snapshots only) -------------------------- */
@@ -351,7 +358,9 @@ function landedStanding(row: any): OilInputEv['stand'] {
   if (acc === 'r' || acc === 'u') return 'unlanded'       // dormant, or a kind that never lands
   const key = String(inpId(row))
   for (let i = 0; i < DAYS.length; i++) {
-    const hit = ((DAYS[i] as any || {}).ground || []).find((r: any) => r && String(r.src || '') === key)
+    /* the request's STANDING row — never a dead `kept` one another day holds (overlay.ts standsOn; Astra's round-3 read,
+       finding 1: a dead cancelled row found first paid nothing for the live one) */
+    const hit = standsOn(DAYS[i], key, row)
     if (hit) return hit.cx ? 'cx' : hit.info ? 'info' : 'active'
   }
   /* `dateIx` is the app's own "is this label one of the loaded days", and it
@@ -380,9 +389,11 @@ function stashStanding(first: number | null, key: string): OilInputEv['stand'] {
   /* ONE BODY for "the rows by request in a stashed week" ([REQ-ORPHAN-ROW], 28 Sep 26 — Fable F7): the parse and its
      memo (keyed on the stored blob, for the reason above) moved to weekstash.ts stashGroundBySrc, which the request door's
      rowElsewhere reads too, so the two can never read a stashed week two ways. The answers here are unchanged. */
-  const rows = stashGroundBySrc(wk)
-  if (!rows) return 'elsewhere'                           // stashed and unreadable
-  const hit = rows.get(key)
+  /* the row that STANDS there ([DB-READINESS] phase 6 (c) — weekstash.ts standingRowIn): a row whose request was since
+     retyped, re-dated off its day or deleted is not its row. A request whose only row there is landed on read reads
+     'unlanded' — the same money as 'active': both pay the man's own answer (ui/oilmode.ts) */
+  const hit = standingRowIn(wk, key)
+  if (hit === 'unreadable') return 'elsewhere'            // stashed and unreadable
   return hit ? (hit.row.cx ? 'cx' : hit.row.info ? 'info' : 'active') : 'unlanded'
 }
 
@@ -422,11 +433,13 @@ export function projectOilInputs(iso: string): OilInputEv[] {
  *  `day` defaults to the loaded week's day, which is what every caller in the
  *  app wants; passing one explicitly is for tests and for a stashed week. */
 /** Drop every per-person override that names a man who no longer holds the
- *  request it is about. Mutates the COPY oilEvidence has already made — never
- *  `DAYS`. Row items (`r:`/`g:`) are not assignments and are never touched. */
+ *  request it is about — or who holds it again, but was decided about under an
+ *  earlier holding. Mutates the COPY oilEvidence has already made — never
+ *  `DAYS`. Row items (`r:`) are not assignments and are never touched. */
 function pruneHandedOverDecisions(dec: OilDecisions, day: any): void {
   const ppl = dec && dec.people
   if (!ppl) return
+  const drop = (k: string) => { delete ppl[k]; if (dec.pa) delete dec.pa[k] }
   for (const k of Object.keys(ppl)) {
     const cut = k.indexOf('|')
     if (cut < 0) continue
@@ -435,6 +448,16 @@ function pruneHandedOverDecisions(dec: OilDecisions, day: any): void {
     const iid = item.slice(2)
     const inp = (INPUTS as any[]).find(r => r && String(inpId(r)) === iid)
     if (!inp) continue                                       // orphan: already inert, leave it be
+    /* A DECISION ABOUT A MAN THE REQUEST HAS LEFT SINCE IT WAS MADE IS VOID ([DB-READINESS] group A, phase 6 (a);
+       data-model.md §9 rule 9). Handing the request away and BACK (A → B → A) makes him its holder again, and a refusal
+       made under his FIRST holding would match and take his day a second time. Until phase 6 a write-side pass cleared
+       the old holder's refusal on every loaded day and every saved week at each hand-over (ui/oilmode.ts
+       clearOilPersonDecisions, gone) — a pass that rewrote days nobody holds, which the database's day lock refuses
+       (D450). Now the hand-over writes the request alone: `leftAt[pid]` = the holding at which it left him, and a decision
+       about him made under an earlier holding (`pa`) reads as nothing. An extra (D18) handed the request keeps his
+       refusal — it never left him (Fable's red team, F2). An Undo of the hand-over puts `leftAt` back with the person. */
+    const left = inp.leftAt && inp.leftAt[person]
+    if (left != null && Number((dec.pa && dec.pa[k]) || 0) < Number(left)) { drop(k); continue }
     if (String(inp.person || '') === person) continue        // the man who holds it
     /* AND ANYONE THE SCHEDULER PUT ON ITS ROW (D18, 22 Sep 26). This used to
        assume only the requester could carry a decision about a request, which
@@ -452,9 +475,10 @@ function pruneHandedOverDecisions(dec: OilDecisions, day: any): void {
        standing the puck is what makes his decision legitimate, not today's
        answer to who is available. */
     if (landedHasSentinel(day, iid)) continue
-    delete ppl[k]
+    drop(k)
   }
   if (!Object.keys(ppl).length) delete (dec as any).people
+  if (dec.pa && !Object.keys(dec.pa).length) delete dec.pa
 }
 
 export function oilEvidence(di: any, day?: any): OilEvidence {
@@ -470,13 +494,14 @@ export function oilEvidence(di: any, day?: any): OilEvidence {
      The whole point of the block is that the issued answer stops moving. */
   const dec: OilDecisions = clone((d && d.oild) || {})
   /* A DECISION DIES WITH THE ASSIGNMENT (Codex M1, 22 Sep 26). A scheduler's
-     override names a man AND an item; when a request changes hands, the write
-     side clears the old holder's key on every LOADED day, but a request can
-     cover a day in a stashed week that no write can reach. Left there, the key
-     is dormant until that week is opened and then decides against a man who has
-     nothing to do with the request any more.
+     override names a man AND an item; when a request changes hands, the old
+     holder's key must stop deciding — on every day, in every week, including
+     weeks nobody has open. Since [DB-READINESS] group A phase 6 (a) this is the
+     ONLY place it happens: no write clears it (a hand-over writes no day — D450),
+     and a decision made under an earlier holding of the request is dropped here
+     too (the A → B → A case — pruneHandedOverDecisions).
 
-     So it is closed here as well, and only here is it safe to: this runs on the
+     It is safe to do here, and only here: this runs on the
      LIVE day only — an issued day carries its own frozen block, written once at
      publication and never recomputed — and it works on the COPY above, so the
      stored day is untouched and the issued record cannot move.
@@ -904,8 +929,13 @@ function effectiveStand(day: any, inp: OilInputEv): OilInputEv['stand'] {
  *  to change it (walk find, 22 Sep 26). One body, so they cannot disagree. */
 /** The row an accepted request landed on, if it is still live. A cancelled or
  *  information-only row is not work, so it has nobody on it for this purpose. */
+/* ITS row — never one carrying `kept` ([DB-READINESS] phase 6 (c), the FULL check: Astra's final read #1). A kept row is a
+   version's or a plan's row brought back although its request could not stand there — gone, off the day, or filed under
+   Unavailable (D363) — and a man on it earns nothing from the request. The mark is exact both ways: the view clears it from
+   a row that can stand (overlay.ts rule 3), and an issued day keeps it as it was at issue, so the frozen document reads
+   what it went out with (D2, D142). */
 function landedRow(day: any, iid: string): any {
-  const row = (day && day.ground || []).find((g: any) => g && String(g.src || '') === iid)
+  const row = (day && day.ground || []).find((g: any) => g && String(g.src || '') === iid && !g.kept)
   return (!row || row.cx || row.info) ? null : row
 }
 

@@ -3,6 +3,7 @@ import { bootStorage, chooseBackend, guardUnload } from './boot'
 import { MemoryBackend } from './memory'
 import { BrowserBackend } from './browser'
 import { SCHEMA_VERSION } from './reset'
+import { readSchema } from './schema'
 
 afterEach(() => { vi.useRealTimers() })
 
@@ -87,7 +88,7 @@ describe('bootStorage', () => {
     const { wb } = await bootStorage(be)
     expect(wb.get('tracker', 't')).toBe('T1')
     expect(wb.has('inputs', 'all')).toBe(false)
-    expect(be.peek('settings', 'schema')).toBe(JSON.stringify(SCHEMA_VERSION))
+    expect(readSchema(be.peek('settings', 'schema'))?.dataFormatVersion).toBe(SCHEMA_VERSION)   // the object stamp since group A phase 0
   })
 })
 

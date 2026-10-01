@@ -12,13 +12,19 @@ describe('LOGICAL_TO_BLOB', () => {
     expect(cols.length).toBeGreaterThan(20)
     for (const c of cols) expect(LOGICAL_TO_BLOB[c as keyof typeof LOGICAL_TO_BLOB]).toBeTruthy()
   })
-  it('keeps the scheduler issued records in the weeks blob', () => {
-    expect(LOGICAL_TO_BLOB['sched.orig']).toBe('weeks')
-    expect(LOGICAL_TO_BLOB['sched.als']).toBe('weeks')
+  it('keeps the scheduler issued records in the weeks collection', () => {
+    expect(LOGICAL_TO_BLOB['sched.issuance']).toBe('weeks')
+    expect(LOGICAL_TO_BLOB['sched.retraction']).toBe('weeks')
+    expect(LOGICAL_TO_BLOB['sched.week']).toBe('weeks')
   })
-  it('keeps LW cells and bids cell-granular under one blob (R4-005)', () => {
-    expect(LOGICAL_TO_BLOB['lw.cell']).toBe('leavewar/wars')
-    expect(LOGICAL_TO_BLOB['lw.bid']).toBe('leavewar/wars')
+  /* [DB-READINESS] group A, phase 3: every war record is a row of the war's own collection — the cell record is still
+     cell-granular for undo (R4-005), and lands in one row per record there (leavewar/state/rows.ts) */
+  it('keeps every Leave War record in the war\'s own collection, and no stale name', () => {
+    for (const c of ['lw.cell', 'lw.war', 'lw.ledger', 'lw.opening', 'lw.oilpolicy', 'lw.postouts', 'lw.label', 'lw.current', 'lw.config'] as const) {
+      expect(LOGICAL_TO_BLOB[c], c).toBe('leavewar')
+    }
+    expect(Object.keys(LOGICAL_TO_BLOB)).not.toContain('lw.bid')
+    expect(Object.keys(LOGICAL_TO_BLOB)).not.toContain('lw.balances')
   })
 })
 

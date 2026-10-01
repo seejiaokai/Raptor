@@ -1,114 +1,27 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './ui/scheduler.css'
-import { initStore, setToast, histInit, weekStashSnap, weekDirty } from './state/store'
-import { resyncSchedBaseline } from './state/sched-commit'
-import { storeBackend, HOOKS } from './engine/hooks'
+import { setToast } from './state/store'
+import { HOOKS } from './engine/hooks'
 import { toast, toastBatch } from './ui/toast'
 import { App } from './ui/App'
-import { initStore as lwInitStore, lwHistInit } from './leavewar/state/store'
-import { installDemoWorld } from './leavewar/state/demoworld'
-import { wireLeaveWarSync } from './leavewar/sync'
-import { validate } from './engine/validate'
 import { installProbeBridge, isLocalHost } from './probe-bridge'
-import { bootStorage, chooseBackend, guardUnload } from './storage/boot'
-import { BrowserBackend } from './storage/browser'
-import { idbDocStore } from './storage/docstore'
-import { docBoot } from './state/docs'
-import { settingsAdapter, leavewarAdapter, trackerTarget } from './storage/adapters'
-import { useStorageImpl } from './tracker/storage.js'
-import { hydrate, wirePersist } from './state/persist'
+import { chooseBackend, guardUnload } from './storage/boot'
+import { StoreAheadError } from './storage/schema'
 import { setSaveStatusSource } from './ui/SaveStatus'
-import { installGlobalUndo } from './state/undo-wire'
+import { bootApp, BootConfigError } from './boot'
+import { bootPolicyFrom } from './bootpolicy'
 
-/* THE BOOT (storage seam, 8 Sep 26 — docs/superpowers/specs/2026-09-08-
-   storage-seam-design.md). The ONE place the app waits: fetch everything
-   from the backend into the whiteboard, plug the three doors in, hydrate
-   the live scheduler state, then run the boot sequence exactly as before
-   the seam, then draw. Nothing below bootStorage ever waits on storage. */
+/* THE COMPOSITION ROOT. It chooses the two things only a page can: the backend (storage/boot.ts chooseBackend) and
+   the boot policy ([DB-READINESS] group A, phase 5 — src/bootpolicy.ts: the demo, or a shared store that nothing demo
+   ever reaches, with its first admin), from the build's own settings. Everything the boot does with them is
+   src/boot.ts, in the order it always ran; then the page's own wiring, the probe bridge and the render. */
 async function boot(): Promise<void> {
-  const backend = chooseBackend()
-  const { wb, postman } = await bootStorage(backend)
-
-  /* supporting documents get their OWN durable drawer (storage/docstore) —
-     photos/PDFs are too big for the text seam — but only on the real browser
-     backend; dev/tests/?fresh stay memory-only in lockstep with the seam.
-     Awaited BEFORE initStore so the cache is warm when the hydrated-boot path
-     SKIPS the demo re-seed (state/store.ts) and the viewer first renders. */
-  await docBoot(
-    backend instanceof BrowserBackend ? idbDocStore() : null,
-    /* a dropped document write is rare (storage full/locked) but must not be
-       silent — the file works this session but won't survive a reload */
-    () => toast("Couldn't save that document — your browser storage may be full, so it may not be here after a reload.", 'warn'),
-  )
-
-  /* the three doors (storage/adapters.ts): settings, Leave War, Tracker */
-  storeBackend.impl = settingsAdapter(wb)
-  useStorageImpl(trackerTarget(wb))
   setToast(toast)
   HOOKS.toastBatch = toastBatch   // one press, one message — only the publish command opens one ([AMEND-SMALL-SEEN] 1)
+  const { postman } = await bootApp(chooseBackend(), bootPolicyFrom(import.meta.env as any))
 
-  /* inputs / roster / plan layer / stashed weeks: whiteboard → singletons,
-     BEFORE initStore so its seeds know to stand down (state/persist.ts) */
-  hydrate(wb)
-  initStore()
-
-  /* Leave War boots on the whiteboard too. installDemoWorld's flag is now
-     REAL: a world that came back from storage keeps its wars, its OIL story
-     and its inputs; only a first-ever boot gets the demo overlay. */
-  const hadStoredWars = wb.has('leavewar', 'wars')
-  lwInitStore(leavewarAdapter(wb))
-  installDemoWorld(hadStoredWars)
-  /* [ARCH-STACK] step 4 — the demo world files its approved leave as INPUTS
-     (raw, before any command). The scheduler's warnings were computed by
-     initStore before those rows existed, so re-derive them now — else a day
-     under a demo leave shows a stale issue count until the first edit (found by
-     the perf gate's "a day-1 edit rewrites only day 1" check). The old boot got
-     this for free from runOutbound's inputs write. */
-  validate()
-
-  /* [ARCH-STACK] follow-up #1 (R2-08): installDemoWorld pushed INPUTS raw (no
-     command), so the scheduler baseline is now stale. Re-sync BEFORE the leave-war
-     boot sync runs its writeInputsBatch command, or that command's envelope would
-     absorb the demo rows as its own puts on a first-ever boot. */
-  resyncSchedBaseline()
-
-  /* same order as before the seam: the boot sync's writes are the world the
-     session STARTS in, and both history baselines are taken after it */
-  wireLeaveWarSync()
-  /* AND AGAIN, BECAUSE THE WIRE IS WHAT TELLS THE ENGINE WHICH DAYS CAN EARN
-     (owner, 22 Sep 26 — "could it be a real problem", of the speed check). It
-     was, and it was not a speed problem. `wireLeaveWarSync` → `installAbsenceDoor`
-     installs `oilEarningDay`, `oilDayISO`, `oilSentinel` and `oilNoPeriod`;
-     until it runs they are the inert defaults, so `oilWouldEarn` answers FALSE
-     for every weekend and the two advisories that depend on it —
-     OIL_UNPUBLISHED ("this day is not published yet, so nobody earns their OIL
-     for it", the warning the owner asked for on 20 Sep 26) and OIL_NO_PERIOD —
-     are absent from the first paint. They appeared the moment anything else was
-     edited, because that revalidate found the hooks: two untouched weekend days
-     growing a warning box out of a weekday edit, which is exactly what the speed
-     gate's "a day-1 edit rewrites only day 1" check was reporting.
-     It reaches the squadron as the failure that warning exists to prevent — a
-     weekend earning nobody anything and saying nothing about it.
-     This is the SAME fault as the validate above, one layer out: that one was
-     added when the demo world's inputs landed after the warnings were computed.
-     Warnings are derived state, so re-deriving is cheap and idempotent, and both
-     history baselines are still taken after it. */
-  validate()
-  histInit()
-  lwHistInit()
-
-  /* [GLOBAL-UNDO] §13 phase 2 — turn on the ONE global undo timeline (state/
-     undo-wire.ts). AFTER both legacy baselines are taken (so the timeline's own
-     seed/expectation state lines up with the world the session starts in) and
-     BEFORE the probe bridge (whose w.undo/redo now point at globalUndo/Redo). This
-     is the line that makes undo/redo, the Unpublish button and off-week undo live;
-     with it absent the engine records but drives nothing. */
-  installGlobalUndo()
-
-  /* every history step, undo/redo and week swap now re-persists; the
-     indicator and the unload guard hang off the postman */
-  wirePersist(wb, { weekSnap: weekStashSnap, weekDirty })
+  /* the indicator and the unload guard hang off the postman */
   setSaveStatusSource(postman)
   guardUnload(postman)
 
@@ -131,6 +44,39 @@ boot().catch((err: unknown) => {
   console.error('RAPTOR could not load its data', err)
   const root = document.getElementById('root')
   if (!root) return
+  /* the saved data was written by a newer version of the app (storage/schema.ts): reloading fetches it */
+  if (err instanceof StoreAheadError) {
+    root.innerHTML =
+      '<div class="bootfail" role="alert" style="max-width:520px;margin:20vh auto;padding:24px;font:14px system-ui,sans-serif;color:#eee">' +
+      '<h1 style="font-size:18px;margin:0 0 8px">RAPTOR has been updated</h1>' +
+      '<p style="margin:0 0 16px">Reload to get the latest version. Nothing was opened, so nothing can be lost.</p>' +
+      '<button id="bootRetry" type="button" style="padding:8px 14px;border-radius:10px;border:1px solid #888;background:transparent;color:inherit;cursor:pointer">Reload</button></div>'
+    document.getElementById('bootRetry')?.addEventListener('click', () => location.reload())
+    return
+  }
+  /* a shared store that has never started, on a build whose first admin is missing or incomplete (src/boot.ts): nothing
+     was written, and a reload cannot help — the setting is IT's to finish ([DB-READINESS] group A, phase 5) */
+  if (err instanceof BootConfigError) {
+    root.innerHTML =
+      '<div class="bootfail" role="alert" style="max-width:520px;margin:20vh auto;padding:24px;font:14px system-ui,sans-serif;color:#eee">' +
+      '<h1 style="font-size:18px;margin:0 0 8px">RAPTOR is not set up yet</h1>' +
+      '<p style="margin:0 0 8px">Its first admin is not set up, so nobody could sign in. Nothing was saved.</p>' +
+      `<p style="margin:0">Pass this to whoever set RAPTOR up: ${err.message.replace(/[<>&]/g, c => (c === '<' ? '&lt;' : c === '>' ? '&gt;' : '&amp;'))}</p></div>`
+    return
+  }
+  /* the one-time conversion found this browser's storage too full to write even one of its groups — nothing was changed
+     (storage/fold.ts StoreFullError; the group-A final read, Fable F3). Clearing the browser's data would lose what only
+     this browser holds (his Tracker charts — D464), so the screen says so first. */
+  if (err && (err as any).name === 'StoreFullError') {
+    root.innerHTML =
+      '<div class="bootfail" role="alert" style="max-width:520px;margin:20vh auto;padding:24px;font:14px system-ui,sans-serif;color:#eee">' +
+      '<h1 style="font-size:18px;margin:0 0 8px">RAPTOR needs more room to update your saved data</h1>' +
+      '<p style="margin:0 0 8px">This browser\u2019s storage is too full to convert the data RAPTOR has saved here. Nothing was changed.</p>' +
+      '<p style="margin:0 0 16px"><b>Do not clear this browser\u2019s data</b> \u2014 your Tracker charts are kept only here. Ask whoever looks after RAPTOR for help.</p>' +
+      '<button id="bootRetry" type="button" style="padding:8px 14px;border-radius:10px;border:1px solid #888;background:transparent;color:inherit;cursor:pointer">Retry</button></div>'
+    document.getElementById('bootRetry')?.addEventListener('click', () => location.reload())
+    return
+  }
   root.innerHTML =
     '<div class="bootfail" role="alert" style="max-width:520px;margin:20vh auto;padding:24px;font:14px system-ui,sans-serif;color:#eee">' +
     '<h1 style="font-size:18px;margin:0 0 8px">RAPTOR could not load its data</h1>' +

@@ -1,0 +1,62 @@
+{
+ "base": "http://localhost:4204",
+ "at": "2026-09-30T09:20:21.327Z",
+ "results": [
+  {
+   "name": "WROW-0 a Monday note (the week's first save) — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 9 [settings/elog:munw9v37ljxa.000001, weeks/13-07-2026, weeks/13-07-2026#0, weeks/13-07-2026#1, weeks/13-07-2026#2, weeks/13-07-2026#3, weeks/13-07-2026#4, weeks/13-07-2026#5 …] · del 0 [] · batches sched.text/8 elog.line/1"
+  },
+  {
+   "name": "WROW-1: what the reload with the week row missing wrote (every row named by a change-log batch)",
+   "ok": false,
+   "detail": "{\"put\":[\"weeks/13-07-2026\"],\"del\":[],\"batches\":[],\"bare\":[\"put weeks/13-07-2026\"],\"weekRow\":\"{\\\"v\\\":2,\\\"am\\\":1}\"}"
+  },
+  {
+   "name": "WROW-1: with its week row gone the week still opens EDITABLE (no read-only notice)",
+   "ok": true,
+   "detail": "{\"notes\":[],\"days\":14}"
+  },
+  {
+   "name": "WROW-1: …its row ids are intact (every row of every day keeps its id)",
+   "ok": true,
+   "detail": "{\"before\":\"[[\\\"rmunw9v432pwwf1\\\",\\\"rmunw9v433770h7\\\",\\\"rmunw9v43j37l57\\\",\\\"rmunw9v43ulzqoh\\\",\\\"rmunw9v43obui3p\\\",\\\"rmunw9v43nf8dm9\\\",\\\"rmunw9v43\",\"after\":\"[[\\\"rmunw9v432pwwf1\\\",\\\"rmunw9v433770h7\\\",\\\"rmunw9v43j37l57\\\",\\\"rmunw9v43ulzqoh\\\",\\\"rmunw9v43obui3p\\\",\\\"rmunw9v43nf8dm9\\\",\\\"rmunw9v43\"}"
+  },
+  {
+   "name": "WROW-1: …and it holds what was saved (the Monday note)",
+   "ok": true,
+   "detail": "[\"SAVED WEEK\",\"ORDERS: FLYING ORDERS SECTION 2\"]"
+  },
+  {
+   "name": "WROW-1: the reload wrote nothing (the day rows as they were, no week row made up)",
+   "ok": false,
+   "detail": ""
+  },
+  {
+   "name": "WROW-2 an edit on Wednesday — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 2 [settings/elog:munw9ylcp09q.000001, weeks/13-07-2026#2] · del 0 [] · batches sched.text/1 elog.line/1"
+  },
+  {
+   "name": "WROW-2 an edit on Wednesday — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 2 [settings/elog:munw9ylcp09q.000001, weeks/13-07-2026#2] · del 0 [] · batches sched.text/1 elog.line/1"
+  },
+  {
+   "name": "WROW-2 — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "WROW-2 — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "weekrow: no console error, page error or failed request (beyond the expected boot refusal)",
+   "ok": true,
+   "detail": "[]"
+  }
+ ],
+ "part": "weekrow"
+}

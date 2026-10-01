@@ -1,0 +1,340 @@
+{
+ "base": "http://localhost:4205",
+ "at": "2026-09-30T08:59:53.057Z",
+ "results": [
+  {
+   "name": "first boot — ONE change-log batch, of type boot",
+   "ok": true,
+   "detail": "1 batch(es): boot · rows by collection {\"inputs\":46,\"leavewar\":91,\"people\":61,\"settings\":1,\"changes\":1}"
+  },
+  {
+   "name": "E0 A: + Add course \"E-SECOND\" (a second course, for the order) — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 4 [tracker/v3:cmunvhvc747xlru:idmig, tracker/v3:cmunvhvc747xlru:plan, tracker/v3:cmunvhvc747xlru:rostermig, tracker/v3:master:course:cmunvhvc747xlru] · del 0 [] · batches trk.gesture/4"
+  },
+  {
+   "name": "E0 A: a second course — a reload gives back exactly what was there (the app)",
+   "ok": true,
+   "detail": "week 13/07/2026 (the never-saved demo week’s hidden row ids were minted afresh — left out of the compare)"
+  },
+  {
+   "name": "E0 A: a second course — a reload gives back exactly what was there (the Tracker: every chart, detail, course, student, mark, and the screen)",
+   "ok": true,
+   "detail": "2 courses · 4 charts · on 26ABSG / 2026 / STUDENT A"
+  },
+  {
+   "name": "E0 A: a second course — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "E1a tab A: + Add \"ALPHA\" — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 3 [tracker/v3:cmunvhtp7t9bofy:sb2026:d:smunvi27d8du7dm, tracker/v3:cmunvhtp7t9bofy:sb2026:enr:smunvi27d8du7dm, tracker/v3:cmunvhtp7t9bofy:sb2026:m:smunvi27d8du7dm] · del 0 [] · batches trk.gesture/3"
+  },
+  {
+   "name": "E1b tab B (not reloaded): rename STUDENT B → \"BRAVO R\" — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [tracker/v3:cmunvhtp7t9bofy:sb2026:enr:smunvhtpax9q3w4] · del 0 [] · batches trk.gesture/1"
+  },
+  {
+   "name": "E1b tab B (not reloaded): rename STUDENT B → \"BRAVO R\" — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [tracker/v3:cmunvhtp7t9bofy:sb2026:enr:smunvhtpax9q3w4] · del 0 [] · batches trk.gesture/1"
+  },
+  {
+   "name": "E1b B's rename wrote ONE row — his own — and did not remove ALPHA's",
+   "ok": true,
+   "detail": "put 1 [tracker/v3:cmunvhtp7t9bofy:sb2026:enr:smunvhtpax9q3w4] · del 0 · batches 1 (trk.gesture/1)"
+  },
+  {
+   "name": "E1c tab B: ⇅ Reorder courses — 26ABSG to the top, Save order — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [tracker/v3:master:course:cmunvhtp7t9bofy] · del 0 [] · batches trk.courses/1"
+  },
+  {
+   "name": "E1c tab B: ⇅ Reorder courses — 26ABSG to the top, Save order — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [tracker/v3:master:course:cmunvhtp7t9bofy] · del 0 [] · batches trk.courses/1"
+  },
+  {
+   "name": "E1d tab A (still not reloaded): rename course E-SECOND → \"E-SECOND R\" — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [tracker/v3:master:course:cmunvhvc747xlru] · del 0 [] · batches trk.courses/1"
+  },
+  {
+   "name": "E1d tab A (still not reloaded): rename course E-SECOND → \"E-SECOND R\" — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [tracker/v3:master:course:cmunvhvc747xlru] · del 0 [] · batches trk.courses/1"
+  },
+  {
+   "name": "E1d A's rename wrote only that course's row (B's new order untouched)",
+   "ok": true,
+   "detail": "put 1 [tracker/v3:master:course:cmunvhvc747xlru] · del 0 · batches 1 (trk.courses/1)"
+  },
+  {
+   "name": "E1 tab A — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "E1 tab B — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "E1 after both reloads, tab A: ALPHA, BRAVO R and STUDENT A on 26ABSG; the courses 26ABSG, E-SECOND R",
+   "ok": true,
+   "detail": "crew STUDENT A, BRAVO R, ALPHA · courses 26ABSG, E-SECOND R"
+  },
+  {
+   "name": "E1 after both reloads, tab B: ALPHA, BRAVO R and STUDENT A on 26ABSG; the courses 26ABSG, E-SECOND R",
+   "ok": true,
+   "detail": "crew STUDENT A, BRAVO R, ALPHA · courses 26ABSG, E-SECOND R"
+  },
+  {
+   "name": "E2a tab A: details on ACG-02 (☰ Show All → Edit) — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [tracker/v3:master:info:sb2026:ACG-02] · del 0 [] · batches trk.eventinfo/1"
+  },
+  {
+   "name": "E2a tab A: details on ACG-02 (☰ Show All → Edit) — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [tracker/v3:master:info:sb2026:ACG-02] · del 0 [] · batches trk.eventinfo/1"
+  },
+  {
+   "name": "E2b tab B (not reloaded): + Add \"BRAVO2\" — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 3 [tracker/v3:cmunvhtp7t9bofy:sb2026:d:smunviftnzw8mne, tracker/v3:cmunvhtp7t9bofy:sb2026:enr:smunviftnzw8mne, tracker/v3:cmunvhtp7t9bofy:sb2026:m:smunviftnzw8mne] · del 0 [] · batches trk.gesture/3"
+  },
+  {
+   "name": "E2c tab B: details on ACG-03 — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [tracker/v3:master:info:sb2026:ACG-03] · del 0 [] · batches trk.eventinfo/1"
+  },
+  {
+   "name": "E2c tab B: details on ACG-03 — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [tracker/v3:master:info:sb2026:ACG-03] · del 0 [] · batches trk.eventinfo/1"
+  },
+  {
+   "name": "E2c B's details wrote only its own ball's row (A's untouched)",
+   "ok": true,
+   "detail": "put 1 [tracker/v3:master:info:sb2026:ACG-03] · del 0 · batches 1 (trk.eventinfo/1)"
+  },
+  {
+   "name": "E2 tab A — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "E2 tab B — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "E2 after both reloads, tab A: both details and all four students",
+   "ok": true,
+   "detail": "ACG-02: TYPED IN TAB A · ACG-03: TYPED IN TAB B · crew STUDENT A, BRAVO R, ALPHA, BRAVO2"
+  },
+  {
+   "name": "E2 after both reloads, tab B: both details and all four students",
+   "ok": true,
+   "detail": "ACG-02: TYPED IN TAB A · ACG-03: TYPED IN TAB B · crew STUDENT A, BRAVO R, ALPHA, BRAVO2"
+  },
+  {
+   "name": "E3a tab A on Tx 2026: + Add \"A-TX\" — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 3 [tracker/v3:cmunvhtp7t9bofy:sbtx2026:d:smunviosafpib5v, tracker/v3:cmunvhtp7t9bofy:sbtx2026:enr:smunviosafpib5v, tracker/v3:cmunvhtp7t9bofy:sbtx2026:m:smunviosafpib5v] · del 0 [] · batches trk.gesture/3"
+  },
+  {
+   "name": "E3b tab B (not reloaded) on 2026: + Add \"B-26\" — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 3 [tracker/v3:cmunvhtp7t9bofy:sb2026:d:smunviqbgr0dl8q, tracker/v3:cmunvhtp7t9bofy:sb2026:enr:smunviqbgr0dl8q, tracker/v3:cmunvhtp7t9bofy:sb2026:m:smunviqbgr0dl8q] · del 0 [] · batches trk.gesture/3"
+  },
+  {
+   "name": "E3c tab A: ⧉ Duplicate syllabus Tx 2026 → \"A CHART\" — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 14 [tracker/v3:master:chart:sb2024, tracker/v3:master:chart:sb2026, tracker/v3:master:chart:sbagaa2026, tracker/v3:master:chart:sbtx2026, tracker/v3:master:chart:scmunvis4n92afsg, tracker/v3:master:info:scmunvis4n92afsg:ACM-2, tracker/v3:master:info:scmunvis4n92afsg:BFM-3, tracker/v3:master:info:scmunvis4n92afsg:BFM-5 …] · del 0 [] · batches trk.gesture/14"
+  },
+  {
+   "name": "E3d tab B (not reloaded): + Add syllabus \"B CHART\" — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 2 [tracker/v3:master:chart:scmunvitk1rx6rdq, tracker/v3:master:lay:scmunvitk1rx6rdq] · del 0 [] · batches trk.gesture/6"
+  },
+  {
+   "name": "E3d B's new chart did not remove or rewrite A's new chart row",
+   "ok": true,
+   "detail": "A's: tracker/v3:master:chart:scmunvis4n92afsg · B wrote put 2 [tracker/v3:master:chart:scmunvitk1rx6rdq, tracker/v3:master:lay:scmunvitk1rx6rdq] · del 0 · batches 1 (trk.gesture/6)"
+  },
+  {
+   "name": "E3 tab A — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "E3 tab B — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "E3 after both reloads, tab A: both new charts; A-TX on Tx 2026, B-26 on 2026",
+   "ok": true,
+   "detail": "charts 2024, 2026, Tx 2026, A/G - A/A 2026, A CHART, B CHART · Tx: A-TX · 2026: STUDENT A, BRAVO R, ALPHA, BRAVO2, B-26"
+  },
+  {
+   "name": "E3 after both reloads, tab B: both new charts; A-TX on Tx 2026, B-26 on 2026",
+   "ok": true,
+   "detail": "charts 2024, 2026, Tx 2026, A/G - A/A 2026, A CHART, B CHART · Tx: A-TX · 2026: STUDENT A, BRAVO R, ALPHA, BRAVO2, B-26"
+  },
+  {
+   "name": "E4a tab A: + Add course \"A-COURSE\" — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 4 [tracker/v3:cmunvj2lht9l4xf:idmig, tracker/v3:cmunvj2lht9l4xf:plan, tracker/v3:cmunvj2lht9l4xf:rostermig, tracker/v3:master:course:cmunvj2lht9l4xf] · del 0 [] · batches trk.gesture/4"
+  },
+  {
+   "name": "E4b tab B (not reloaded): + Add course \"B-COURSE\" — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 4 [tracker/v3:cmunvj3zxer7rq5:idmig, tracker/v3:cmunvj3zxer7rq5:plan, tracker/v3:cmunvj3zxer7rq5:rostermig, tracker/v3:master:course:cmunvj3zxer7rq5] · del 0 [] · batches trk.gesture/4"
+  },
+  {
+   "name": "E4c tab A: + Add \"A-STU\" on A-COURSE — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 3 [tracker/v3:cmunvj2lht9l4xf:sb2026:d:smunvj562xcs871, tracker/v3:cmunvj2lht9l4xf:sb2026:enr:smunvj562xcs871, tracker/v3:cmunvj2lht9l4xf:sb2026:m:smunvj562xcs871] · del 0 [] · batches trk.gesture/3"
+  },
+  {
+   "name": "E4d tab B: + Add \"B-STU\" on B-COURSE — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 3 [tracker/v3:cmunvj3zxer7rq5:sb2026:d:smunvj6p5sdp6q7, tracker/v3:cmunvj3zxer7rq5:sb2026:enr:smunvj6p5sdp6q7, tracker/v3:cmunvj3zxer7rq5:sb2026:m:smunvj6p5sdp6q7] · del 0 [] · batches trk.gesture/3"
+  },
+  {
+   "name": "E4b B's new course did not remove or rewrite A's",
+   "ok": true,
+   "detail": "put 4 [tracker/v3:cmunvj3zxer7rq5:idmig, tracker/v3:cmunvj3zxer7rq5:plan, tracker/v3:cmunvj3zxer7rq5:rostermig, tracker/v3:master:course:cmunvj3zxer7rq5] · del 0 · batches 1 (trk.gesture/4)"
+  },
+  {
+   "name": "E4 tab A — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "E4 tab B — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "E4 after both reloads, tab A: both courses, each with its own student",
+   "ok": true,
+   "detail": "courses A-COURSE, B-COURSE, 26ABSG, E-SECOND R · A-COURSE: A-STU · B-COURSE: B-STU"
+  },
+  {
+   "name": "E4 after both reloads, tab B: both courses, each with its own student",
+   "ok": true,
+   "detail": "courses A-COURSE, B-COURSE, 26ABSG, E-SECOND R · A-COURSE: A-STU · B-COURSE: B-STU"
+  },
+  {
+   "name": "E4 both tabs list the courses in the same order",
+   "ok": true,
+   "detail": "A-COURSE|B-COURSE|26ABSG|E-SECOND R vs A-COURSE|B-COURSE|26ABSG|E-SECOND R"
+  },
+  {
+   "name": "first boot — ONE change-log batch, of type boot",
+   "ok": true,
+   "detail": "1 batch(es): boot · rows by collection {\"leavewar\":91,\"people\":61,\"settings\":1,\"inputs\":46,\"changes\":1}"
+  },
+  {
+   "name": "E5a tab A: ⇅ Reorder syllabi — the last chart to the top, Save order (the charts’ first placing) — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 4 [tracker/v3:master:chart:sb2024, tracker/v3:master:chart:sb2026, tracker/v3:master:chart:sbagaa2026, tracker/v3:master:chart:sbtx2026] · del 0 [] · batches trk.catalogue/4"
+  },
+  {
+   "name": "E5b tab B (not reloaded): + Add syllabus \"B5 CHART\" — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 6 [tracker/v3:master:chart:sb2024, tracker/v3:master:chart:sb2026, tracker/v3:master:chart:sbagaa2026, tracker/v3:master:chart:sbtx2026, tracker/v3:master:chart:scmunvjmc5fvxd4w, tracker/v3:master:lay:scmunvjmc5fvxd4w] · del 0 [] · batches trk.gesture/6"
+  },
+  {
+   "name": "E5 tab A — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "E5 tab B — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "E5 after both reloads, tab A: A's chart order kept, B's new chart after it",
+   "ok": false,
+   "detail": "want A/G - A/A 2026 · 2024 · 2026 · Tx 2026 · B5 CHART · got 2024 · 2026 · Tx 2026 · A/G - A/A 2026 · B5 CHART"
+  },
+  {
+   "name": "E5 after both reloads, tab B: A's chart order kept, B's new chart after it",
+   "ok": false,
+   "detail": "want A/G - A/A 2026 · 2024 · 2026 · Tx 2026 · B5 CHART · got 2024 · 2026 · Tx 2026 · A/G - A/A 2026 · B5 CHART"
+  },
+  {
+   "name": "W5 part E — no console error, page error or failed request",
+   "ok": true,
+   "detail": ""
+  }
+ ],
+ "walker": "W5",
+ "part": "E",
+ "table": [
+  {
+   "step": "E1",
+   "width": "desktop",
+   "did": "A + Add ALPHA; B (stale) ✎ STUDENT B → BRAVO R, ⇅ Reorder courses (26ABSG up); A (stale) ✎ Rename course E-SECOND → E-SECOND R; reload both",
+   "after": "both: STUDENT A, BRAVO R, ALPHA · courses 26ABSG, E-SECOND R",
+   "rows": "A add: put 3 [tracker/v3:cmunvhtp7t9bofy:sb2026:d:smunvi27d8du7dm, tracker/v3:cmunvhtp7t9bofy:sb2026:enr:smunvi27d8du7dm, tracker/v3:cmunvhtp7t9bofy:sb2026:m:smunvi27d8du7dm] · del 0 · batches 1 (trk.gesture/3) ‖ B rename: put 1 [tracker/v3:cmunvhtp7t9bofy:sb2026:enr:smunvhtpax9q3w4] · del 0 · batches 1 (trk.gesture/1) ‖ B reorder: put 1 [tracker/v3:master:course:cmunvhtp7t9bofy] · del 0 · batches 1 (trk.courses/1) ‖ A course rename: put 1 [tracker/v3:master:course:cmunvhvc747xlru] · del 0 · batches 1 (trk.courses/1)",
+   "pics": [
+    "e1-tab-a-after-reload",
+    "e1-tab-b-after-reload"
+   ]
+  },
+  {
+   "step": "E2",
+   "width": "desktop",
+   "did": "A details on ACG-02; B (stale) + Add BRAVO2, details on ACG-03; reload both",
+   "after": "ACG-02 \"TYPED IN TAB A\", ACG-03 \"TYPED IN TAB B\", crew STUDENT A, BRAVO R, ALPHA, BRAVO2",
+   "rows": "A: put 1 [tracker/v3:master:info:sb2026:ACG-02] · del 0 · batches 1 (trk.eventinfo/1) ‖ B add: put 3 [tracker/v3:cmunvhtp7t9bofy:sb2026:d:smunviftnzw8mne, tracker/v3:cmunvhtp7t9bofy:sb2026:enr:smunviftnzw8mne, tracker/v3:cmunvhtp7t9bofy:sb2026:m:smunviftnzw8mne] · del 0 · batches 1 (trk.gesture/3) ‖ B details: put 1 [tracker/v3:master:info:sb2026:ACG-03] · del 0 · batches 1 (trk.eventinfo/1)",
+   "pics": [
+    "e2-tab-b-after-reload"
+   ]
+  },
+  {
+   "step": "E3",
+   "width": "desktop",
+   "did": "A on Tx 2026 + Add A-TX, ⧉ Duplicate → A CHART; B (stale) on 2026 + Add B-26, + Add syllabus B CHART; reload both",
+   "after": "charts 2024, 2026, Tx 2026, A/G - A/A 2026, A CHART ✎, B CHART ✎",
+   "rows": "A add: put 3 [tracker/v3:cmunvhtp7t9bofy:sbtx2026:d:smunviosafpib5v, tracker/v3:cmunvhtp7t9bofy:sbtx2026:enr:smunviosafpib5v, tracker/v3:cmunvhtp7t9bofy:sbtx2026:m:smunviosafpib5v] · del 0 · batches 1 (trk.gesture/3) ‖ B add: put 3 [tracker/v3:cmunvhtp7t9bofy:sb2026:d:smunviqbgr0dl8q, tracker/v3:cmunvhtp7t9bofy:sb2026:enr:smunviqbgr0dl8q, tracker/v3:cmunvhtp7t9bofy:sb2026:m:smunviqbgr0dl8q] · del 0 · batches 1 (trk.gesture/3) ‖ A dup: put 14 [tracker/v3:master:chart:sb2024, tracker/v3:master:chart:sb2026, tracker/v3:master:chart:sbagaa2026, tracker/v3:master:chart:sbtx2026, tracker/v3:master:chart:scmunvis4n92afsg, tracker/v3:master:info:scmunvis4n92afsg:ACM-2 …] · del 0 · batches 1 (trk.gesture/14) ‖ B add chart: put 2 [tracker/v3:master:chart:scmunvitk1rx6rdq, tracker/v3:master:lay:scmunvitk1rx6rdq] · del 0 · batches 1 (trk.gesture/6)",
+   "pics": [
+    "e3-tab-a-after-reload"
+   ]
+  },
+  {
+   "step": "E4",
+   "width": "desktop",
+   "did": "A + Add course A-COURSE, + Add A-STU; B (stale) + Add course B-COURSE, + Add B-STU; reload both",
+   "after": "courses A-COURSE, B-COURSE, 26ABSG, E-SECOND R",
+   "rows": "A course: put 4 [tracker/v3:cmunvj2lht9l4xf:idmig, tracker/v3:cmunvj2lht9l4xf:plan, tracker/v3:cmunvj2lht9l4xf:rostermig, tracker/v3:master:course:cmunvj2lht9l4xf] · del 0 · batches 1 (trk.gesture/4) ‖ B course: put 4 [tracker/v3:cmunvj3zxer7rq5:idmig, tracker/v3:cmunvj3zxer7rq5:plan, tracker/v3:cmunvj3zxer7rq5:rostermig, tracker/v3:master:course:cmunvj3zxer7rq5] · del 0 · batches 1 (trk.gesture/4) ‖ A stu: put 3 [tracker/v3:cmunvj2lht9l4xf:sb2026:d:smunvj562xcs871, tracker/v3:cmunvj2lht9l4xf:sb2026:enr:smunvj562xcs871, tracker/v3:cmunvj2lht9l4xf:sb2026:m:smunvj562xcs871] · del 0 · batches 1 (trk.gesture/3) ‖ B stu: put 3 [tracker/v3:cmunvj3zxer7rq5:sb2026:d:smunvj6p5sdp6q7, tracker/v3:cmunvj3zxer7rq5:sb2026:enr:smunvj6p5sdp6q7, tracker/v3:cmunvj3zxer7rq5:sb2026:m:smunvj6p5sdp6q7] · del 0 · batches 1 (trk.gesture/3)",
+   "pics": [
+    "e4-tab-b-after-reload"
+   ]
+  },
+  {
+   "step": "E5",
+   "width": "desktop",
+   "did": "fresh world, two tabs open; A ⇅ Reorder syllabi (A/G - A/A 2026 to the top — the first time the chart order is saved); B (stale) + Add syllabus \"B5 CHART\"; reload both",
+   "after": "A's order A/G - A/A 2026, 2024, 2026, Tx 2026 → after both reloads 2024, 2026, Tx 2026, A/G - A/A 2026, B5 CHART",
+   "rows": "A reorder: put 4 [tracker/v3:master:chart:sb2024, tracker/v3:master:chart:sb2026, tracker/v3:master:chart:sbagaa2026, tracker/v3:master:chart:sbtx2026] · del 0 · batches 1 (trk.catalogue/4) ‖ B add chart: put 6 [tracker/v3:master:chart:sb2024, tracker/v3:master:chart:sb2026, tracker/v3:master:chart:sbagaa2026, tracker/v3:master:chart:sbtx2026, tracker/v3:master:chart:scmunvjmc5fvxd4w, tracker/v3:master:lay:scmunvjmc5fvxd4w] · del 0 · batches 1 (trk.gesture/6)",
+   "pics": [
+    "e5-tab-a-after-reload"
+   ]
+  }
+ ],
+ "notes": [
+  "E5 A's reorder wrote put 4 [tracker/v3:master:chart:sb2024, tracker/v3:master:chart:sb2026, tracker/v3:master:chart:sbagaa2026, tracker/v3:master:chart:sbtx2026] · del 0 · batches 1 (trk.catalogue/4); B's add wrote put 6 [tracker/v3:master:chart:sb2024, tracker/v3:master:chart:sb2026, tracker/v3:master:chart:sbagaa2026, tracker/v3:master:chart:sbtx2026, tracker/v3:master:chart:scmunvjmc5fvxd4w, tracker/v3:master:lay:scmunvjmc5fvxd4w] · del 0 · batches 1 (trk.gesture/6); rows of A's that B rewrote: tracker/v3:master:chart:sb2024, tracker/v3:master:chart:sb2026, tracker/v3:master:chart:sbagaa2026, tracker/v3:master:chart:sbtx2026"
+ ],
+ "errors": []
+}

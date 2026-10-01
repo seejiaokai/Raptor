@@ -65,6 +65,8 @@ history names an ACCOUNT, not a person). Both are the same server-shaped hole;
 
 ---
 
+- **A shared store's empty pages** (`[DB-READINESS]` group A phase 5, 30 Sep 26): the Leave War's "No leave period yet" and the Tracker's "No course yet" (`ui-contracts.md` §A shared store's empty pages). A change to the war's or the Tracker's first screen, or to what an empty store starts with (`src/boot.ts`, `src/state/seeds.ts`), checks both under the blank policy — `src/boot-walk.test.tsx` walks every page of an empty store.
+
 ## 2. The flows — how one edit travels
 
 The owner's example, in his words: *"when an input is made or changed, it goes
@@ -258,15 +260,30 @@ loadWeek           → stashPut(CURWEEK, weekStashSnap()) (weekstash.ts — the
                        `acc` for rows a restore's DAYS already landed, so the
                        pass below does not try to re-add them) → mintInpIds()
                    → stashed? re-run `autoAcceptInput` per row with
-                       pending/changes/added protected, SKIPPING any row this
-                       week deliberately unaccepted (the stash's `un` set of
-                       content keys — else the blanket re-land silently undoes
-                       a scheduler's removal, 24 Aug 26) : autoAcceptSeedInputs()
+                       pending/changes/added protected, SKIPPING any row a
+                       scheduler took off (its own acc 'r' — store.ts takenOff;
+                       else the blanket re-land silently undoes a scheduler's
+                       removal, 24 Aug 26) — AS ONE `sched.load` COMMAND on the
+                       arriving week's own baseline, which SAVES NOTHING — the
+                       landing is worked out again at every load (30 Sep 26,
+                       [DB-READINESS] group A — R3-01; the final read, Fable
+                       F2) : autoAcceptSeedInputs() inside the load,
+                       unsaved (a pristine week is never stored)
                        (both land date-matching inputs on the fresh/restored days)
                    → clear day-index/iid VIEW state; WARNOFF restored from the
                        stash instead of cleared, when there is one
                    → validate() → histInit() → notify()
 ```
+**SINCE 1 OCT 26 (`[DB-READINESS]` group A phase 6 (c)):** the steps above that land requests (`reconcileLandedAcc`, the
+`autoAcceptInput` / `autoAcceptSeedInputs` passes, the `sched.load` command) are replaced by ONE out-of-band step after the
+row ids are minted: `workOutLoadedWeek` — the week as stored becomes the HOLDER BASE (`state/holderbase.ts baseReset`) and
+is worked out from it (`rederive` → `engine/overlay.ts viewOfWeek`: request rows reconciled, a deleted man taken off,
+requests with no row landed), no command, nothing saved. The stash written on the way OUT is that base (the days and marks as
+the holder last committed them), never the worked-out screen. And after EVERY command that enlists the scheduler store, the
+same pass runs again at phase 8 (`state/sched-commit.ts afterCommandPass`): the days whose rows the command wrote become
+the new base (then the view of them — what the row writer stores); a request's or a person's command moves no base, so an
+Undo of a request's delete brings its exact row back. A saved week read for anything (`weekstash.ts stashDays`) and a week
+never saved (`weekctx.ts bundle`, `ui/peek.ts`) are worked out by the same body.
 `DAYS` and `DATES` swap with the week. **`INPUTS` is GLOBAL since 22 Aug 26**
 (owner — "show all inputs regardless of which week I am selected on"): it is
 merged once at boot (`store.ts:initStore` + `weeks-data.ts:otherWeekInputs`) and
@@ -279,11 +296,13 @@ input is anchored to a real year). `acc` is always cleared first (it
 records the LOADED week's landing only) so `autoAcceptSeedInputs`/the restore
 pass can re-derive it fresh for whichever DAYS this call just put in place. But
 because `INPUTS` is not stashed, a row a scheduler UNACCEPTED on this week would
-be re-landed by that pass on the way back in; the stash therefore also carries
-`un` — the content keys (`inpKey`) of this week's personal rows that are sitting
-UNLANDED on an editable day — and the restore's `autoAcceptInput` loop skips
-them, so a deliberate removal survives a week round-trip while a genuinely new
-input (never in `un`) still lands (`store.ts:unacceptedKeys`; 24 Aug 26).
+be re-landed by that pass on the way back in; the restore's `autoAcceptInput` loop
+therefore skips every request carrying the explicit "taken off" mark (`acc: 'r'`),
+so a deliberate removal survives a week round-trip while a genuinely new input
+still lands (`store.ts:takenOff`; 24 Aug 26). *(Until 30 Sep 26 the stash carried
+that list as `un`; it is read from the request's own mark now — `[DB-READINESS]`
+group A, F3-02 — the mark already survives the acc-clear, and it is the one
+record a command writes.)*
 `SCHED` is keyed by day INDEX; on a fresh (never-stashed) week `resetSched()` is
 still what stops one week's approvals/AL bleeding onto another's identical
 indices, and on a restored week the stash's own SCHED fields serve the same
@@ -295,18 +314,20 @@ back, and the crew-rest flag it should have raised on the next Monday never
 appeared because Flow F's cross-week seed reads only ever saw the un-edited
 seed).** `engine/weekstash.ts` remembers, per week-start key, the last
 snapshot `loadWeek` handed it on the way OUT of that week (`state/store.ts`'s
-`weekStashSnap`, sharing its **fourteen**-field SCHED list with
+`weekStashSnap`, sharing its **sixteen**-field SCHED list with
 `state/history.ts:schedFields` — the whole-history undo snapshot — so the two
 serializers cannot drift; INPUTS/PLANPUCKS/DAYRMK are deliberately excluded,
 being global) and hands a fresh copy back on the way in, restored the same
 in-place technique `history.ts:histApply` uses for Undo. **CORRECTED 17 Sep 26:** the stash
-is NOT session-only — the 8 Sep 26 storage work SUPERSEDED the 23 Aug forget-on-exit rule,
-and `persistAll` writes every stash entry into the `weeks` collection. **Precisely** (a first
-correction here over-reached): a week persists once it has CHANGED since load, or already had
-a stash entry — `persistAll` gates the loaded week on `stashHas(CURWEEK) || weekDirty()`, and
+is NOT session-only — the 8 Sep 26 storage work SUPERSEDED the 23 Aug forget-on-exit rule.
+**Since 30 Sep 26 (`[DB-READINESS]` group A, phase 1) a week is stored as ROWS written from the
+command stream, not by `persistAll`**: a week persists once a command CHANGES it — its first
+save writes its week row and the days it changed (a day no one saved reads as the week untouched —
+the group-wide walk's H3), every later change exactly the rows it touched (`state/weekrows.ts`, `state/persist.ts`; `docs/data-schema.md` §The week record) — and
 a byte-copy of the pristine seed is deliberately never written, because a persisted pristine
 copy would outrank a later deploy's updated demo weeks for ever. So: modified or
-previously-stored weeks come back; merely LOOKING at an untouched week stores nothing.
+previously-stored weeks come back; merely LOOKING at an untouched week stores nothing; and the
+week switch itself writes nothing of the week left.
 What remains true: one synchronous stash on the way out of a week, and a stash entry that fails to parse is
 silently dropped (`stashDays` returns null and the read degrades to the pure
 seed — it runs inside `validate()`, which runs on every keystroke). Flow F's `weekctx.ts:bundle()` reads through
@@ -426,11 +447,14 @@ BACKPROMPT`). **The seam:** the war never reads Raptor's accounts itself — `se
 
 Two doors, one mutation: Admin → Users' "Delete account" (`state/person-delete.ts deletePerson`, command `person.delete`)
 and a posting's Delete on its date (Flow H → `applyDelete`). The cutoff is the later of its date and the calendar date.
-In one command over the people, settings, schedule and week-stash stores (and the war's, through the seam
+In one command over the people, settings and schedule stores (and the war's, through the seam
 `sync.ts deletePersonOnWar`): the hidden mark (`deleted`, `deletedFrom`, `archived`, `archivedBy: 'del'`), the callsign
-index rebuilt (his callsign free), his account removed, every day from the cutoff emptied of him (the loaded week through
-the funnel; every stashed week; sign boxes; OIL switches; parked plans; the planning calendar), his inputs from the cutoff
-deleted or ended the day before, his war records from the cutoff gone and his row marked `gone`. **What must keep him:**
+index rebuilt (his callsign free), his account removed, the planning calendar's pucks, his inputs from the cutoff deleted
+or ended the day before, his war records from the cutoff gone and his row marked `gone`. **No week is written** (since
+`[DB-READINESS]` phase 6 (d), 30 Sep 26): every working day from the cutoff — its seats, sign boxes, OIL switches, parked
+plans — is READ without him wherever a week comes into memory (`engine/overlay.ts`; the week on screen right after the
+command), and the day's holder saves it without him at his next change. A stored week that cannot be read, or a read-only
+one holding him on a day to come — on screen or not — refuses the whole delete. **What must keep him:**
 every day BEFORE the cutoff, and every published version (a record — never rewritten), so a past published day never
 reads pending for the delete (`publish.ts peopleAttrsNow` — his issued attributes) and ALL AVAIL counts him there by date.
 **What must never bring him back:** a version loaded or a plan switched onto a day from the cutoff, and an Undo step

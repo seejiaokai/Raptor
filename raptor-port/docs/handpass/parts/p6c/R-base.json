@@ -1,0 +1,289 @@
+{
+ "base": "http://localhost:4202",
+ "at": "2026-09-30T18:24:01.787Z",
+ "results": [
+  {
+   "name": "R1 Thursday: Ranger's meeting, published; a note, AL1 published; then Unpublish — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 19 [inputs/imrldi1s03zlavg, settings/elog:mrldi1s0b6ei.000001, settings/elog:mrldi1s0b6ei.000002, settings/elog:mrldi1s0b6ei.000003, settings/elog:mrldi1s0b6ei.000004, settings/elog:mrldi1s0b6ei.000005, settings/elog:mrldi1s0b6ei.000006, settings/elog:mrldi1s0b6ei.000007 …] · del 0 [] · batches inputs.batch/4 sched.sign/2 sched.sign/2 sched.publishAL/3 sched.unpublish/3 sched.sign/2 sched.sign/2 sched.sign/2 sched.sign/2 sched.approve/3 sched.text/2 sched.sign/2 sched.sign/2"
+  },
+  {
+   "name": "R1 — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "R1 — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "R2 Ranger moves his meeting to 10:30 — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 3 [inputs/imrldi1s03zlavg, settings/elog:mrldi1s0qfak.000001, weeks/13-07-2026#3] · del 0 [] · batches inputs.batch/3"
+  },
+  {
+   "name": "R2 the working copy's row reads 10:30",
+   "ok": true,
+   "detail": "[{\"di\":3,\"ri\":3,\"rid\":\"rmrldi1s0xvgqux\",\"prog\":\"MEETING\",\"str\":\"10:30\",\"end\":\"11:00\",\"who\":\"bane\",\"more\":[],\"rmks\":\"P6C RECORD\",\"kept\":false,\"info\":false,\"flag\":null,\"cx\":null}]"
+  },
+  {
+   "name": "R3 Thursday reads pending and the four have fallen (D103)",
+   "ok": true,
+   "detail": "{\"tag\":\"ORIG\",\"pending\":\"2 pending\",\"beak\":\"none\",\"alpub\":\"Publish AL1\",\"unpub\":\"Unpublish\",\"signs\":[\"— name —\",\"— name —\",\"— name —\",\"— name —\"],\"signed\":\"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\",\"nys\":\"Not yet signed\"}"
+  },
+  {
+   "name": "R4 a meeting for Bolt on Friday, handed to Ridge — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 4 [inputs/imrldi1s060csi7, settings/elog:mrldi1s0qfak.000002, settings/elog:mrldi1s0qfak.000003, weeks/13-07-2026#4] · del 0 [] · batches inputs.batch/3 inputs.batch/3"
+  },
+  {
+   "name": "R5 Admin → Users → Bolt → Delete, asked twice — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 6 [leavewar/profile:yeti, people/yeti, settings/elog:mrldi1s0qfak.000004, settings/elog:mrldi1s0qfak.000005, settings/elog:mrldi1s0qfak.000006, settings/elog:mrldi1s0qfak.000007] · del 0 [] · batches person.delete/6"
+  },
+  {
+   "name": "R5 — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "R5 — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "R5 Ridge's meeting stays on Friday after Bolt is deleted",
+   "ok": true,
+   "detail": "[{\"di\":4,\"ri\":2,\"rid\":\"rmrldi1s0uhjwsh\",\"prog\":\"MEETING\",\"str\":\"09:00\",\"end\":\"10:00\",\"who\":\"razer\",\"more\":[],\"rmks\":\"P6C HANDED\",\"kept\":false,\"info\":false,\"flag\":null,\"cx\":null}]"
+  }
+ ],
+ "table": [
+  {
+   "step": "R1",
+   "width": "desktop",
+   "did": "Thursday: Ranger's meeting, published; a note, AL1 published; then Unpublish",
+   "pics": [
+    "R1-1-after.png",
+    "R1-2-reloaded.png",
+    "R2-member-viewonly-face.png",
+    "R3-history.png"
+   ],
+   "shown": "",
+   "rows": "put 19: inputs/imrldi1s03zlavg, settings/elog:mrldi1s0b6ei.000001, settings/elog:mrldi1s0b6ei.000002, settings/elog:mrldi1s0b6ei.000003, settings/elog:mrldi1s0b6ei.000004, settings/elog:mrldi1s0b6ei.000005, settings/elog:mrldi1s0b6ei.000006, settings/elog:mrldi1s0b6ei.000007, settings/elog:mrldi1s0b6ei.000008, settings/elog:mrldi1s0b6ei.000009, settings/elog:mrldi1s0b6ei.00000a, settings/elog:mrldi1s0b6ei.00000b, settings/elog:mrldi1s0b6ei.00000c, settings/elog:mrldi1s0b6ei.00000d, weeks/13-07-2026, weeks/13-07-2026#3, weeks/13-07-2026:is:2026-07-16#0~0, weeks/13-07-2026:is:2026-07-16#1~0, weeks/13-07-2026:rx:2026-07-16#1~0 · batches: inputs.batch(ScheduleWeek+ScheduleDay+Input+EditLog, 4 rows, 1 history line, by acad) + sched.sign(EditLog+ScheduleDay, 2 rows, 1 history line, by acad) + sched.sign(EditLog+ScheduleDay, 2 rows, 1 history line, by acad) + sched.publishAL(ScheduleDay+Amendment+EditLog, 3 rows, 1 history line, by acad) + sched.unpublish(ScheduleDay+AmendmentRetraction+EditLog, 3 rows, 1 history line, by acad) + sched.sign(EditLog+ScheduleDay, 2 rows, 1 history line, by acad) + sched.sign(EditLog+ScheduleDay, 2 rows, 1 history line, by acad) + sched.sign(EditLog+ScheduleDay, 2 rows, 1 history line, by acad) + sched.sign(EditLog+ScheduleDay, 2 rows, 1 history line, by acad) + sched.approve(ScheduleDay+Amendment+EditLog, 3 rows, 1 history line, by acad) + sched.text(EditLog+ScheduleDay, 2 rows, 1 history line, by acad) + sched.sign(EditLog+ScheduleDay, 2 rows, 1 history line, by acad) + sched.sign(EditLog+ScheduleDay, 2 rows, 1 history line, by acad)",
+   "batches": [
+    {
+     "key": "changes/cmrldi1s0unlw34-1",
+     "type": "inputs.batch",
+     "actor": "acad",
+     "n": 4,
+     "seqs": [
+      1
+     ],
+     "tables": "ScheduleWeek+ScheduleDay+Input+EditLog",
+     "elog": 1
+    },
+    {
+     "key": "changes/cmrldi1s0unlw34-10",
+     "type": "sched.sign",
+     "actor": "acad",
+     "n": 2,
+     "seqs": [
+      10
+     ],
+     "tables": "EditLog+ScheduleDay",
+     "elog": 1
+    },
+    {
+     "key": "changes/cmrldi1s0unlw34-11",
+     "type": "sched.sign",
+     "actor": "acad",
+     "n": 2,
+     "seqs": [
+      11
+     ],
+     "tables": "EditLog+ScheduleDay",
+     "elog": 1
+    },
+    {
+     "key": "changes/cmrldi1s0unlw34-12",
+     "type": "sched.publishAL",
+     "actor": "acad",
+     "n": 3,
+     "seqs": [
+      12
+     ],
+     "tables": "ScheduleDay+Amendment+EditLog",
+     "elog": 1
+    },
+    {
+     "key": "changes/cmrldi1s0unlw34-13",
+     "type": "sched.unpublish",
+     "actor": "acad",
+     "n": 3,
+     "seqs": [
+      13
+     ],
+     "tables": "ScheduleDay+AmendmentRetraction+EditLog",
+     "elog": 1
+    },
+    {
+     "key": "changes/cmrldi1s0unlw34-2",
+     "type": "sched.sign",
+     "actor": "acad",
+     "n": 2,
+     "seqs": [
+      2
+     ],
+     "tables": "EditLog+ScheduleDay",
+     "elog": 1
+    },
+    {
+     "key": "changes/cmrldi1s0unlw34-3",
+     "type": "sched.sign",
+     "actor": "acad",
+     "n": 2,
+     "seqs": [
+      3
+     ],
+     "tables": "EditLog+ScheduleDay",
+     "elog": 1
+    },
+    {
+     "key": "changes/cmrldi1s0unlw34-4",
+     "type": "sched.sign",
+     "actor": "acad",
+     "n": 2,
+     "seqs": [
+      4
+     ],
+     "tables": "EditLog+ScheduleDay",
+     "elog": 1
+    },
+    {
+     "key": "changes/cmrldi1s0unlw34-5",
+     "type": "sched.sign",
+     "actor": "acad",
+     "n": 2,
+     "seqs": [
+      5
+     ],
+     "tables": "EditLog+ScheduleDay",
+     "elog": 1
+    },
+    {
+     "key": "changes/cmrldi1s0unlw34-6",
+     "type": "sched.approve",
+     "actor": "acad",
+     "n": 3,
+     "seqs": [
+      6
+     ],
+     "tables": "ScheduleDay+Amendment+EditLog",
+     "elog": 1
+    },
+    {
+     "key": "changes/cmrldi1s0unlw34-7",
+     "type": "sched.text",
+     "actor": "acad",
+     "n": 2,
+     "seqs": [
+      7
+     ],
+     "tables": "EditLog+ScheduleDay",
+     "elog": 1
+    },
+    {
+     "key": "changes/cmrldi1s0unlw34-8",
+     "type": "sched.sign",
+     "actor": "acad",
+     "n": 2,
+     "seqs": [
+      8
+     ],
+     "tables": "EditLog+ScheduleDay",
+     "elog": 1
+    },
+    {
+     "key": "changes/cmrldi1s0unlw34-9",
+     "type": "sched.sign",
+     "actor": "acad",
+     "n": 2,
+     "seqs": [
+      9
+     ],
+     "tables": "EditLog+ScheduleDay",
+     "elog": 1
+    }
+   ],
+   "pass": true,
+   "notes": [],
+   "fails": []
+  },
+  {
+   "step": "R4",
+   "width": "desktop",
+   "did": "a meeting for Bolt on Friday, handed to Ridge",
+   "pics": [
+    "R4-1-after.png"
+   ],
+   "shown": "",
+   "rows": "put 4: inputs/imrldi1s060csi7, settings/elog:mrldi1s0qfak.000002, settings/elog:mrldi1s0qfak.000003, weeks/13-07-2026#4 · batches: inputs.batch(ScheduleDay+Input+EditLog, 3 rows, 1 history line, by acad) + inputs.batch(ScheduleDay+Input+EditLog, 3 rows, 1 history line, by acad)",
+   "batches": [
+    {
+     "key": "changes/cmrldi1s09bxrkl-1",
+     "type": "inputs.batch",
+     "actor": "acad",
+     "n": 3,
+     "seqs": [
+      1
+     ],
+     "tables": "ScheduleDay+Input+EditLog",
+     "elog": 1
+    },
+    {
+     "key": "changes/cmrldi1s09bxrkl-2",
+     "type": "inputs.batch",
+     "actor": "acad",
+     "n": 3,
+     "seqs": [
+      2
+     ],
+     "tables": "ScheduleDay+Input+EditLog",
+     "elog": 1
+    }
+   ],
+   "pass": true,
+   "notes": [],
+   "fails": []
+  },
+  {
+   "step": "R5",
+   "width": "desktop",
+   "did": "Admin → Users → Bolt → Delete, asked twice",
+   "pics": [
+    "R5-1-after.png",
+    "R5-2-reloaded.png"
+   ],
+   "shown": "",
+   "rows": "put 6: leavewar/profile:yeti, people/yeti, settings/elog:mrldi1s0qfak.000004, settings/elog:mrldi1s0qfak.000005, settings/elog:mrldi1s0qfak.000006, settings/elog:mrldi1s0qfak.000007 · batches: person.delete(EditLog+Person+LeavePersonProfile, 6 rows, 4 history line, by acad)",
+   "batches": [
+    {
+     "key": "changes/cmrldi1s09bxrkl-3",
+     "type": "person.delete",
+     "actor": "acad",
+     "n": 6,
+     "seqs": [
+      3
+     ],
+     "tables": "EditLog+Person+LeavePersonProfile",
+     "elog": 4
+    }
+   ],
+   "pass": true,
+   "notes": [],
+   "fails": []
+  }
+ ],
+ "tag": "base"
+}

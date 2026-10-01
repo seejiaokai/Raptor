@@ -1,0 +1,57 @@
+{
+ "base": "http://localhost:4202",
+ "at": "2026-09-30T09:15:49.263Z",
+ "results": [
+  {
+   "name": "W2-10e tab A: Duty templates → the FIRST template renamed \"W2 A-DUTY\" — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [settings/dutytpl] · del 0 [] · batches settings.dutytpl/1"
+  },
+  {
+   "name": "W2-10e tab A: Duty templates → the FIRST template renamed \"W2 A-DUTY\" — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [settings/dutytpl] · del 0 [] · batches settings.dutytpl/1"
+  },
+  {
+   "name": "W2-10e tab B (not reloaded): Duty templates → the SECOND template renamed \"W2 B-DUTY\" — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [settings/dutytpl] · del 0 [] · batches settings.dutytpl/1"
+  },
+  {
+   "name": "W2-10e tab B (not reloaded): Duty templates → the SECOND template renamed \"W2 B-DUTY\" — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [settings/dutytpl] · del 0 [] · batches settings.dutytpl/1"
+  },
+  {
+   "name": "W2-10e — after tab A's reload: both renames kept (two different templates)",
+   "ok": false,
+   "detail": "{\"tabs\":[\"Standard\",\"W2 B-DUTY\",\"AVALON\"]}"
+  },
+  {
+   "name": "W2-10e — after tab B's reload: both renames kept (two different templates)",
+   "ok": false,
+   "detail": "{\"tabs\":[\"Standard\",\"W2 B-DUTY\",\"AVALON\"]}"
+  }
+ ],
+ "table": [
+  {
+   "step": "W2-10e",
+   "width": "desktop",
+   "what": "two tabs, two DIFFERENT duty templates: A renames the first, B (not reloaded) the second",
+   "afterReload": "tab A: Standard | W2 B-DUTY | AVALON · tab B: Standard | W2 B-DUTY | AVALON",
+   "rows": "A: put 1 [settings/dutytpl] · del 0 · batches settings.dutytpl/1 ‖ B: put 1 [settings/dutytpl] · del 0 · batches settings.dutytpl/1",
+   "pass": false,
+   "fails": [
+    "W2-10e — after tab A's reload: both renames kept (two different templates): {\"tabs\":[\"Standard\",\"W2 B-DUTY\",\"AVALON\"]}",
+    "W2-10e — after tab B's reload: both renames kept (two different templates): {\"tabs\":[\"Standard\",\"W2 B-DUTY\",\"AVALON\"]}"
+   ],
+   "pics": [
+    "W2-10e-W2ADUTY.png",
+    "W2-10e-W2BDUTY.png",
+    "W2-10e-b-tabA.png",
+    "W2-10e-b-tabB.png"
+   ]
+  }
+ ],
+ "errors": []
+}

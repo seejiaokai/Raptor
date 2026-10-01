@@ -1,0 +1,181 @@
+{
+ "base": "http://localhost:4210",
+ "at": "2026-09-30T15:09:46.923Z",
+ "results": [
+  {
+   "name": "D1 week 2 saved: a note on Mon 20 Jul (Hex flies it) — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 3 [settings/elog:mrldi1s0iwbu.000006, weeks/20-07-2026, weeks/20-07-2026#0] · del 0 [] · batches sched.text/3"
+  },
+  {
+   "name": "D2 Admin → Users → Hex → Delete, asked twice — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 9 [leavewar/profile:rocky, people/rocky, settings/account:acad, settings/account:acoutlaw, settings/account:acus, settings/elog:mrldi1s0iwbu.000007, settings/elog:mrldi1s0iwbu.000008, settings/elog:mrldi1s0iwbu.000009 …] · del 0 [] · batches person.delete/9"
+  },
+  {
+   "name": "D2 the week on screen: Hex on Mon and Tue (days he flew), on no day from Wed",
+   "ok": true,
+   "detail": "[1,1,0,0,0,0,0]"
+  },
+  {
+   "name": "D3 reload after the delete — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "D3 reload after the delete — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "D4 week 2: Hex on none of its days",
+   "ok": true,
+   "detail": "[0,0,0,0,0,0,0]"
+  },
+  {
+   "name": "D5 a note on Wednesday (the holder's next change to a day to come) — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 2 [settings/elog:mrldi1s06jiu.000001, weeks/13-07-2026#2] · del 0 [] · batches sched.text/2"
+  },
+  {
+   "name": "D5 — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "D5 — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "D6 Admin → Users → Anvil → Delete, asked twice — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 7 [leavewar/profile:shaft, people/shaft, settings/elog:mrldi1s0wga0.000001, settings/elog:mrldi1s0wga0.000002, settings/elog:mrldi1s0wga0.000003, settings/elog:mrldi1s0wga0.000004, settings/elog:mrldi1s0wga0.000005] · del 0 [] · batches person.delete/7"
+  },
+  {
+   "name": "D6 — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "D6 — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  }
+ ],
+ "table": [
+  {
+   "step": "D1",
+   "width": "desktop",
+   "did": "week 2 saved: a note on Mon 20 Jul (Hex flies it)",
+   "pics": [
+    "D1-1-after.png",
+    "D1-before.png"
+   ],
+   "shown": "",
+   "rows": "put 3: settings/elog:mrldi1s0iwbu.000006, weeks/20-07-2026, weeks/20-07-2026#0 · batches: sched.text(EditLog+ScheduleWeek+ScheduleDay, 3 rows, 1 history line, by acad)",
+   "batches": [
+    {
+     "key": "changes/cmrldi1s0y2brg9-6",
+     "type": "sched.text",
+     "actor": "acad",
+     "n": 3,
+     "seqs": [
+      6
+     ],
+     "tables": "EditLog+ScheduleWeek+ScheduleDay",
+     "elog": 1
+    }
+   ],
+   "pass": true,
+   "notes": [],
+   "fails": []
+  },
+  {
+   "step": "D2",
+   "width": "desktop",
+   "did": "Admin → Users → Hex → Delete, asked twice",
+   "pics": [
+    "D2-1-after.png",
+    "D2-after-delete-week.png",
+    "D2-after-delete-board-thu.png",
+    "D2-view-only-sched.png",
+    "D4-week2-opened.png"
+   ],
+   "shown": "",
+   "rows": "put 9: leavewar/profile:rocky, people/rocky, settings/account:acad, settings/account:acoutlaw, settings/account:acus, settings/elog:mrldi1s0iwbu.000007, settings/elog:mrldi1s0iwbu.000008, settings/elog:mrldi1s0iwbu.000009, settings/elog:mrldi1s0iwbu.00000a · batches: person.delete(User+EditLog+Person+LeavePersonProfile, 9 rows, 4 history line, by acad)",
+   "batches": [
+    {
+     "key": "changes/cmrldi1s0y2brg9-7",
+     "type": "person.delete",
+     "actor": "acad",
+     "n": 9,
+     "seqs": [
+      7
+     ],
+     "tables": "User+EditLog+Person+LeavePersonProfile",
+     "elog": 4
+    }
+   ],
+   "pass": true,
+   "notes": [],
+   "fails": []
+  },
+  {
+   "step": "D5",
+   "width": "desktop",
+   "did": "a note on Wednesday (the holder's next change to a day to come)",
+   "pics": [
+    "D5-1-after.png",
+    "D5-2-reloaded.png"
+   ],
+   "shown": "",
+   "rows": "put 2: settings/elog:mrldi1s06jiu.000001, weeks/13-07-2026#2 · batches: sched.text(EditLog+ScheduleDay, 2 rows, 1 history line, by acad)",
+   "batches": [
+    {
+     "key": "changes/cmrldi1s04uwzor-0",
+     "type": "sched.text",
+     "actor": "acad",
+     "n": 2,
+     "seqs": [
+      0
+     ],
+     "tables": "EditLog+ScheduleDay",
+     "elog": 1
+    }
+   ],
+   "pass": true,
+   "notes": [],
+   "fails": []
+  },
+  {
+   "step": "D6",
+   "width": "desktop",
+   "did": "Admin → Users → Anvil → Delete, asked twice",
+   "pics": [
+    "D6-1-after.png",
+    "D6-2-reloaded.png",
+    "D6-after-second-delete.png"
+   ],
+   "shown": "",
+   "rows": "put 7: leavewar/profile:shaft, people/shaft, settings/elog:mrldi1s0wga0.000001, settings/elog:mrldi1s0wga0.000002, settings/elog:mrldi1s0wga0.000003, settings/elog:mrldi1s0wga0.000004, settings/elog:mrldi1s0wga0.000005 · batches: person.delete(EditLog+Person+LeavePersonProfile, 7 rows, 5 history line, by acad)",
+   "batches": [
+    {
+     "key": "changes/cmrldi1s05m7j2f-0",
+     "type": "person.delete",
+     "actor": "acad",
+     "n": 7,
+     "seqs": [
+      0
+     ],
+     "tables": "EditLog+Person+LeavePersonProfile",
+     "elog": 5
+    }
+   ],
+   "pass": true,
+   "notes": [],
+   "fails": []
+  }
+ ],
+ "tag": "p6"
+}

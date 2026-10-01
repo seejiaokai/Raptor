@@ -27,11 +27,12 @@
    globals (copied FROM Raptor by design), so inside Raptor they were pure
    duplicates. Every remaining Leave War stylesheet is scoped under
    #page-leavewar — see the comment at the top of each. */
-import { memo, useEffect, useRef } from 'react'
+import { memo, useEffect, useRef, useState, useSyncExternalStore } from 'react'
 import { StageBar, Topbar } from './ui/Chrome'
 import { Matrix } from './ui/Matrix'
+import { WarSheet } from './ui/WarSheet'
 import { setLwOnScreen } from './state/screen'
-import { focusDay, getState } from './state/store'
+import { focusDay, getState, rawState, subscribe } from './state/store'
 import { defaultFocusDate } from './engine'
 
 /* The RENDER FIREWALL that makes staying mounted affordable. Every Raptor
@@ -48,7 +49,7 @@ import { defaultFocusDate } from './engine'
    Re-measured with the memo AND scheduler.css's `.page.doze`
    content-visibility cache: a return commits in ~3ms and paints within two
    frames (~0.1s at 390px, ~0.2s at 1280px) against a ~1s first build. */
-const LwBody = memo(function LwBody() {
+const LwFull = memo(function LwFull() {
   return (
     <>
       <Topbar />
@@ -56,6 +57,35 @@ const LwBody = memo(function LwBody() {
       <Matrix />
     </>
   )
+})
+
+/* NO LEAVE PERIOD YET ([DB-READINESS] group A, phase 5). A shared store starts with no leave war — nothing demo reaches
+   it (src/bootpolicy.ts) — and an admin creates the first; a started store is read as it stands. Until one exists
+   there is no grid to draw, so the page says so: an admin gets the way in (the New-war sheet the picker's "+ New"
+   opens), a member is told who makes it. The firewall above still holds: this subscribes to ONE fact — whether any
+   war exists — so the grid's own renders never re-run it, and it re-renders only when that flips. */
+const hasNoWar = () => rawState().wars.length === 0
+function NoWar() {
+  const [making, setMaking] = useState(false)
+  const admin = useSyncExternalStore(subscribe, () => getState().role === 'admin')
+  return (
+    <div className="lw-empty" data-testid="lw-empty" role="status">
+      <h2>No leave period yet</h2>
+      {admin ? (
+        <>
+          <p>Create the first leave period — its name and dates. It starts in draft; open it for bidding when the schedule firms up.</p>
+          <button className="lw-first" data-testid="lw-first-war" onClick={() => setMaking(true)}>Create the first period</button>
+        </>
+      ) : (
+        <p>An admin creates the leave period. It shows here as soon as it is made.</p>
+      )}
+      {making && <WarSheet onClose={() => setMaking(false)} />}
+    </div>
+  )
+}
+const LwBody = memo(function LwBody() {
+  const empty = useSyncExternalStore(subscribe, hasNoWar)
+  return empty ? <NoWar /> : <LwFull />
 })
 
 export function LeaveWarPage({ active = true }: { active?: boolean }) {
@@ -92,7 +122,8 @@ export function LeaveWarPage({ active = true }: { active?: boolean }) {
        when the bidding window starts later in the year. */
     if (!landedRef.current) {
       landedRef.current = true
-      focusDay(defaultFocusDate(getState().period))
+      /* no war yet (the page's empty state) has no day to land on */
+      if (!hasNoWar()) focusDay(defaultFocusDate(getState().period))
     }
     /* Track the spot continuously rather than reading scrollY on the way
        out: by the time a leave-effect runs the section is already hidden,

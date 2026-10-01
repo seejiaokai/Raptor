@@ -1,0 +1,301 @@
+{
+ "base": "http://localhost:4203",
+ "at": "2026-09-30T18:51:13.861Z",
+ "results": [
+  {
+   "name": "O1 Saber files a Training for Bolt on Sat 18 Jul 10:00-11:00 (Inputs page) — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 2 [inputs/imrldi1s01ssegr, settings/elog:mrldi1s0y30b.000001] · del 0 [] · batches inputs.batch/2"
+  },
+  {
+   "name": "O2 Saber cancels the Training row on Saturday (CX) and publishes Saturday — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 10 [leavewar/rec:y2026:cmrldi1s01llk7, settings/elog:mrldi1s0y30b.000002, settings/elog:mrldi1s0y30b.000003, settings/elog:mrldi1s0y30b.000004, settings/elog:mrldi1s0y30b.000005, settings/elog:mrldi1s0y30b.000006, settings/elog:mrldi1s0y30b.000007, weeks/13-07-2026 …] · del 0 [] · batches sched.mutate/2 sched.sign/2 sched.sign/2 sched.sign/2 sched.sign/2 sched.approve/4 elog.line/1"
+  },
+  {
+   "name": "O3 the Training re-dated to Sat 25 Jul — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 5 [inputs/imrldi1s01ssegr, settings/elog:mrldi1s0y30b.000008, settings/elog:mrldi1s0y30b.000009, settings/elog:mrldi1s0y30b.00000a, settings/elog:mrldi1s0y30b.00000b] · del 0 [] · batches inputs.batch/5"
+  },
+  {
+   "name": "O3b Saber loads Saturday's issued version onto the working copy — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 2 [settings/elog:mrldi1s0y30b.00000c, weeks/13-07-2026#5] · del 0 [] · batches sched.mutate/1 elog.line/1"
+  },
+  {
+   "name": "O4 the Training re-dated to Sun 19 Jul — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 5 [inputs/imrldi1s01ssegr, settings/elog:mrldi1s0y30b.00000d, settings/elog:mrldi1s0y30b.00000e, settings/elog:mrldi1s0y30b.00000f, settings/elog:mrldi1s0y30b.00000g] · del 0 [] · batches inputs.batch/5"
+  },
+  {
+   "name": "O4 a row on Sunday, and Saturday's dead cancelled row stays",
+   "ok": true,
+   "detail": "[{\"di\":5,\"ri\":0,\"rid\":\"rimrldi1s01ssegr\",\"prog\":\"TRAINING\",\"str\":\"10:00\",\"end\":\"11:00\",\"who\":\"yeti\",\"more\":[],\"rmks\":\"P6C WEEKEND COURSE\",\"kept\":true,\"info\":false,\"flag\":null,\"cx\":true},{\"di\":6,\"ri\":0,\"rid\":\"rimrldi1s01ssegrx2\",\"prog\":\"TRAINING\",\"str\":\"10:00\",\"end\":\"11:00\",\"who\":\"yeti\",\"more\":[],\"rmks\":\"P6C WEEKEND COURSE till 19 Jul\",\"kept\":false,\"info\":false,\"flag\":null,\"cx\":null}]"
+  },
+  {
+   "name": "O4 Bolt EARNS on Sunday (the dead row on Saturday is not his row)",
+   "ok": true,
+   "detail": "{\"f4\":\"HO\",\"pk4\":[{\"who\":\"yeti\",\"item\":\"i:imrldi1s01ssegr\",\"on\":true},{\"who\":\"yeti\",\"item\":\"i:imrldi1s01ssegr\",\"on\":true}]}"
+  },
+  {
+   "name": "O4 reload — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "O4 reload — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "O4 after a reload: Bolt still earns on Sunday",
+   "ok": true,
+   "detail": "HO"
+  },
+  {
+   "name": "O5 Saber signs and publishes Sunday — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 9 [leavewar/rec:y2026:cmrldi1s01t1tu, leavewar/rec:y2026:cmrldi1s02yawu, settings/elog:mrldi1s0l18g.000001, settings/elog:mrldi1s0l18g.000002, settings/elog:mrldi1s0l18g.000003, settings/elog:mrldi1s0l18g.000004, settings/elog:mrldi1s0l18g.000005, weeks/13-07-2026#6 …] · del 0 [] · batches sched.sign/2 sched.sign/2 sched.sign/2 sched.sign/2 sched.approve/5"
+  },
+  {
+   "name": "O5 — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "O5 — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  }
+ ],
+ "table": [
+  {
+   "step": "O1",
+   "width": "desktop",
+   "did": "Saber files a Training for Bolt on Sat 18 Jul 10:00-11:00 (Inputs page)",
+   "pics": [
+    "O1-1-after.png",
+    "O1-saturday-oil.png"
+   ],
+   "shown": "",
+   "rows": "put 2: inputs/imrldi1s01ssegr, settings/elog:mrldi1s0y30b.000001 · batches: inputs.batch(Input+EditLog, 2 rows, 1 history line, by acad)",
+   "batches": [
+    {
+     "key": "changes/cmrldi1s0bv9i64-1",
+     "type": "inputs.batch",
+     "actor": "acad",
+     "n": 2,
+     "seqs": [
+      1
+     ],
+     "tables": "Input+EditLog",
+     "elog": 1
+    }
+   ],
+   "pass": true,
+   "notes": [],
+   "fails": []
+  },
+  {
+   "step": "O2",
+   "width": "desktop",
+   "did": "Saber cancels the Training row on Saturday (CX) and publishes Saturday",
+   "pics": [
+    "O2-1-after.png"
+   ],
+   "shown": "",
+   "rows": "put 10: leavewar/rec:y2026:cmrldi1s01llk7, settings/elog:mrldi1s0y30b.000002, settings/elog:mrldi1s0y30b.000003, settings/elog:mrldi1s0y30b.000004, settings/elog:mrldi1s0y30b.000005, settings/elog:mrldi1s0y30b.000006, settings/elog:mrldi1s0y30b.000007, weeks/13-07-2026, weeks/13-07-2026#5, weeks/13-07-2026:is:2026-07-18#0~0 · batches: sched.mutate(ScheduleWeek+ScheduleDay, 2 rows, by acad) + sched.sign(EditLog+ScheduleDay, 2 rows, 1 history line, by acad) + sched.sign(EditLog+ScheduleDay, 2 rows, 1 history line, by acad) + sched.sign(EditLog+ScheduleDay, 2 rows, 1 history line, by acad) + sched.sign(EditLog+ScheduleDay, 2 rows, 1 history line, by acad) + sched.approve(ScheduleDay+Amendment+EditLog+LeaveBid, 4 rows, 1 history line, by acad) + elog.line(EditLog, 1 rows, 1 history line, by system)",
+   "batches": [
+    {
+     "key": "changes/cmrldi1s0bv9i64-2",
+     "type": "sched.mutate",
+     "actor": "acad",
+     "n": 2,
+     "seqs": [
+      2
+     ],
+     "tables": "ScheduleWeek+ScheduleDay",
+     "elog": 0
+    },
+    {
+     "key": "changes/cmrldi1s0bv9i64-3",
+     "type": "sched.sign",
+     "actor": "acad",
+     "n": 2,
+     "seqs": [
+      3
+     ],
+     "tables": "EditLog+ScheduleDay",
+     "elog": 1
+    },
+    {
+     "key": "changes/cmrldi1s0bv9i64-4",
+     "type": "sched.sign",
+     "actor": "acad",
+     "n": 2,
+     "seqs": [
+      4
+     ],
+     "tables": "EditLog+ScheduleDay",
+     "elog": 1
+    },
+    {
+     "key": "changes/cmrldi1s0bv9i64-5",
+     "type": "sched.sign",
+     "actor": "acad",
+     "n": 2,
+     "seqs": [
+      5
+     ],
+     "tables": "EditLog+ScheduleDay",
+     "elog": 1
+    },
+    {
+     "key": "changes/cmrldi1s0bv9i64-6",
+     "type": "sched.sign",
+     "actor": "acad",
+     "n": 2,
+     "seqs": [
+      6
+     ],
+     "tables": "EditLog+ScheduleDay",
+     "elog": 1
+    },
+    {
+     "key": "changes/cmrldi1s0bv9i64-7",
+     "type": "sched.approve",
+     "actor": "acad",
+     "n": 4,
+     "seqs": [
+      7,
+      8
+     ],
+     "tables": "ScheduleDay+Amendment+EditLog+LeaveBid",
+     "elog": 1
+    },
+    {
+     "key": "changes/cmrldi1s0bv9i64-g1",
+     "type": "elog.line",
+     "actor": "system",
+     "n": 1,
+     "seqs": [],
+     "tables": "EditLog",
+     "elog": 1
+    }
+   ],
+   "pass": true,
+   "notes": [],
+   "fails": []
+  },
+  {
+   "step": "O3b",
+   "width": "desktop",
+   "did": "Saber loads Saturday's issued version onto the working copy",
+   "pics": [
+    "O3b-1-after.png",
+    "O4-sunday-oil.png"
+   ],
+   "shown": "",
+   "rows": "put 2: settings/elog:mrldi1s0y30b.00000c, weeks/13-07-2026#5 · batches: sched.mutate(ScheduleDay, 1 rows, by acad) + elog.line(EditLog, 1 rows, 1 history line, by system)",
+   "batches": [
+    {
+     "key": "changes/cmrldi1s0bv9i64-10",
+     "type": "sched.mutate",
+     "actor": "acad",
+     "n": 1,
+     "seqs": [
+      10
+     ],
+     "tables": "ScheduleDay",
+     "elog": 0
+    },
+    {
+     "key": "changes/cmrldi1s0bv9i64-g2",
+     "type": "elog.line",
+     "actor": "system",
+     "n": 1,
+     "seqs": [],
+     "tables": "EditLog",
+     "elog": 1
+    }
+   ],
+   "pass": true,
+   "notes": [],
+   "fails": []
+  },
+  {
+   "step": "O5",
+   "width": "desktop",
+   "did": "Saber signs and publishes Sunday",
+   "pics": [
+    "O5-1-after.png",
+    "O5-2-reloaded.png",
+    "O5-sunday-published.png"
+   ],
+   "shown": "",
+   "rows": "put 9: leavewar/rec:y2026:cmrldi1s01t1tu, leavewar/rec:y2026:cmrldi1s02yawu, settings/elog:mrldi1s0l18g.000001, settings/elog:mrldi1s0l18g.000002, settings/elog:mrldi1s0l18g.000003, settings/elog:mrldi1s0l18g.000004, settings/elog:mrldi1s0l18g.000005, weeks/13-07-2026#6, weeks/13-07-2026:is:2026-07-19#0~0 · batches: sched.sign(EditLog+ScheduleDay, 2 rows, 1 history line, by acad) + sched.sign(EditLog+ScheduleDay, 2 rows, 1 history line, by acad) + sched.sign(EditLog+ScheduleDay, 2 rows, 1 history line, by acad) + sched.sign(EditLog+ScheduleDay, 2 rows, 1 history line, by acad) + sched.approve(ScheduleDay+Amendment+EditLog+LeaveBid, 5 rows, 1 history line, by acad)",
+   "batches": [
+    {
+     "key": "changes/cmrldi1s0aa2cuj-0",
+     "type": "sched.sign",
+     "actor": "acad",
+     "n": 2,
+     "seqs": [
+      0
+     ],
+     "tables": "EditLog+ScheduleDay",
+     "elog": 1
+    },
+    {
+     "key": "changes/cmrldi1s0aa2cuj-1",
+     "type": "sched.sign",
+     "actor": "acad",
+     "n": 2,
+     "seqs": [
+      1
+     ],
+     "tables": "EditLog+ScheduleDay",
+     "elog": 1
+    },
+    {
+     "key": "changes/cmrldi1s0aa2cuj-2",
+     "type": "sched.sign",
+     "actor": "acad",
+     "n": 2,
+     "seqs": [
+      2
+     ],
+     "tables": "EditLog+ScheduleDay",
+     "elog": 1
+    },
+    {
+     "key": "changes/cmrldi1s0aa2cuj-3",
+     "type": "sched.sign",
+     "actor": "acad",
+     "n": 2,
+     "seqs": [
+      3
+     ],
+     "tables": "EditLog+ScheduleDay",
+     "elog": 1
+    },
+    {
+     "key": "changes/cmrldi1s0aa2cuj-4",
+     "type": "sched.approve",
+     "actor": "acad",
+     "n": 5,
+     "seqs": [
+      4,
+      5
+     ],
+     "tables": "ScheduleDay+Amendment+EditLog+LeaveBid",
+     "elog": 1
+    }
+   ],
+   "pass": true,
+   "notes": [],
+   "fails": []
+  }
+ ],
+ "tag": "p6c"
+}

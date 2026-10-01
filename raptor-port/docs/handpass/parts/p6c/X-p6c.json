@@ -1,0 +1,393 @@
+{
+ "base": "http://localhost:4203",
+ "at": "2026-09-30T17:57:29.386Z",
+ "results": [
+  {
+   "name": "X1 Saber files a meeting for Ranger on Thursday; on the board he adds Bolt to its row — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 5 [inputs/imrldi1s0i5vzpf, settings/elog:mrldi1s05ch2.000001, settings/elog:mrldi1s05ch2.000002, weeks/13-07-2026, weeks/13-07-2026#3] · del 0 [] · batches inputs.batch/2 sched.mutate/3"
+  },
+  {
+   "name": "X1 — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "X1 — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "X2 Ranger re-dates his meeting to Fri 17 Jul — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 3 [inputs/imrldi1s0i5vzpf, settings/elog:mrldi1s06l2g.000001, settings/elog:mrldi1s06l2g.000002] · del 0 [] · batches inputs.batch/3"
+  },
+  {
+   "name": "X2 — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "X2 — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "X2 — a request's command wrote no week row (§11, D450)",
+   "ok": true,
+   "detail": "[]"
+  },
+  {
+   "name": "X2 the row is on Friday, not Thursday",
+   "ok": true,
+   "detail": "[{\"di\":4,\"ri\":2,\"rid\":\"rimrldi1s0i5vzpf\",\"prog\":\"MEETING\",\"str\":\"10:00\",\"end\":\"11:00\",\"who\":\"bane\",\"more\":[],\"rmks\":\"P6C MOVER till 17 Jul\",\"kept\":false,\"info\":false,\"flag\":null,\"cx\":null}]"
+  },
+  {
+   "name": "X3 Ranger re-dates his meeting to Tue 21 Jul (next week) — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 4 [inputs/imrldi1s0i5vzpf, settings/elog:mrldi1s022v5.000001, settings/elog:mrldi1s022v5.000002, settings/elog:mrldi1s022v5.000003] · del 0 [] · batches inputs.batch/4"
+  },
+  {
+   "name": "X3 — a request's command wrote no week row (§11, D450)",
+   "ok": true,
+   "detail": "[]"
+  },
+  {
+   "name": "X3 no \"Moved outside the programmed week\" (§8 item 7)",
+   "ok": true,
+   "detail": "[\"Input updated\"]"
+  },
+  {
+   "name": "X3 no row on this week any more",
+   "ok": true,
+   "detail": "[]"
+  },
+  {
+   "name": "X3 reload — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "X3 reload — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "X4 week 2 opened: the meeting is on Tue 21 Jul",
+   "ok": true,
+   "detail": "[{\"di\":1,\"ri\":2,\"rid\":\"rimrldi1s0i5vzpf\",\"prog\":\"MEETING\",\"str\":\"10:00\",\"end\":\"11:00\",\"who\":\"bane\",\"more\":[],\"rmks\":\"P6C MOVER till 21 Jul\",\"kept\":false,\"info\":false,\"flag\":null,\"cx\":null}]"
+  },
+  {
+   "name": "X4 reload on week 2 — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 20/07/2026"
+  },
+  {
+   "name": "X4 reload on week 2 — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "X5 from week 2: the meeting re-dated back to Thu 16 Jul — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 4 [inputs/imrldi1s0i5vzpf, settings/elog:mrldi1s0wu0l.000001, settings/elog:mrldi1s0wu0l.000002, settings/elog:mrldi1s0wu0l.000003] · del 0 [] · batches inputs.batch/4"
+  },
+  {
+   "name": "X5 — a request's command wrote no week row (§11, D450)",
+   "ok": true,
+   "detail": "[]"
+  },
+  {
+   "name": "X5 week 1 opened: the meeting is on Thursday again",
+   "ok": true,
+   "detail": "[{\"di\":3,\"ri\":3,\"rid\":\"rimrldi1s0i5vzpf\",\"prog\":\"MEETING\",\"str\":\"10:00\",\"end\":\"11:00\",\"who\":\"bane\",\"more\":[\"yeti\"],\"rmks\":\"P6C MOVER till 16 Jul\",\"kept\":false,\"info\":false,\"flag\":null,\"cx\":null}]"
+  },
+  {
+   "name": "X6 Ranger retypes his meeting to Local leave — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 3 [inputs/imrldi1s0i5vzpf, settings/elog:mrldi1s0wu0l.000004, settings/elog:mrldi1s0wu0l.000005] · del 0 [] · batches inputs.batch/3"
+  },
+  {
+   "name": "X6 — a request's command wrote no week row (§11, D450)",
+   "ok": true,
+   "detail": "[]"
+  },
+  {
+   "name": "X6 the row is gone",
+   "ok": true,
+   "detail": "[]"
+  },
+  {
+   "name": "X6 the app says the row has been removed",
+   "ok": true,
+   "detail": "[\"Input updated\",\"LL does not go on the Ground Programme — its row has been removed\"]"
+  },
+  {
+   "name": "X6b and back to a meeting — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 3 [inputs/imrldi1s0i5vzpf, settings/elog:mrldi1s0wu0l.000006, settings/elog:mrldi1s0wu0l.000007] · del 0 [] · batches inputs.batch/3"
+  },
+  {
+   "name": "X6b — a request's command wrote no week row (§11, D450)",
+   "ok": true,
+   "detail": "[]"
+  },
+  {
+   "name": "X6b the row is back on Thursday",
+   "ok": true,
+   "detail": "[{\"di\":3,\"ri\":3,\"rid\":\"rimrldi1s0i5vzpf\",\"prog\":\"MEETING\",\"str\":\"10:00\",\"end\":\"11:00\",\"who\":\"bane\",\"more\":[\"yeti\"],\"rmks\":\"P6C MOVER till 16 Jul\",\"kept\":false,\"info\":false,\"flag\":null,\"cx\":null}]"
+  },
+  {
+   "name": "X6 reload — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "X6 reload — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "X7 Saber takes the meeting off Thursday (✕ on its row) — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 3 [inputs/imrldi1s0i5vzpf, settings/elog:mrldi1s09tac.000001, weeks/13-07-2026#3] · del 0 [] · batches sched.mutate/3"
+  },
+  {
+   "name": "X7 — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "X7 — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "X7b Ranger retypes it to Training — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 3 [inputs/imrldi1s0i5vzpf, settings/elog:mrldi1s0i414.000001, settings/elog:mrldi1s0i414.000002] · del 0 [] · batches inputs.batch/3"
+  },
+  {
+   "name": "X7b — a request's command wrote no week row (§11, D450)",
+   "ok": true,
+   "detail": "[]"
+  },
+  {
+   "name": "X7b retyped to another activity: on the programme at once (§8 item 12)",
+   "ok": true,
+   "detail": "[{\"di\":3,\"ri\":3,\"rid\":\"rimrldi1s0i5vzpf\",\"prog\":\"TRAINING\",\"str\":\"10:00\",\"end\":\"11:00\",\"who\":\"bane\",\"more\":[],\"rmks\":\"P6C MOVER till 16 Jul\",\"kept\":false,\"info\":false,\"flag\":null,\"cx\":null}]"
+  },
+  {
+   "name": "X7b reload — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "X7b reload — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "X8 Saber hands the request to Bolt (the Inputs page ✎, person) — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 2 [inputs/imrldi1s0i5vzpf, settings/elog:mrldi1s0yuo4.000002] · del 0 [] · batches inputs.batch/2"
+  },
+  {
+   "name": "X8 — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "X8 — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "X8 — a request's command wrote no week row (§11, D450)",
+   "ok": true,
+   "detail": "[]"
+  },
+  {
+   "name": "X8 Bolt holds the row, and is not also an extra on it (D271)",
+   "ok": true,
+   "detail": "[{\"di\":3,\"ri\":3,\"rid\":\"rimrldi1s0i5vzpf\",\"prog\":\"TRAINING\",\"str\":\"10:00\",\"end\":\"11:00\",\"who\":\"yeti\",\"more\":[],\"rmks\":\"P6C MOVER till 16 Jul\",\"kept\":false,\"info\":false,\"flag\":null,\"cx\":null}]"
+  }
+ ],
+ "table": [
+  {
+   "step": "X1",
+   "width": "desktop",
+   "did": "Saber files a meeting for Ranger on Thursday; on the board he adds Bolt to its row",
+   "pics": [
+    "X1-1-after.png",
+    "X1-2-reloaded.png"
+   ],
+   "shown": "",
+   "rows": "put 5: inputs/imrldi1s0i5vzpf, settings/elog:mrldi1s05ch2.000001, settings/elog:mrldi1s05ch2.000002, weeks/13-07-2026, weeks/13-07-2026#3 · batches: inputs.batch(Input+EditLog, 2 rows, 1 history line, by acad) + sched.mutate(EditLog+ScheduleWeek+ScheduleDay, 3 rows, 1 history line, by acad)",
+   "batches": [
+    {
+     "key": "changes/cmrldi1s06uqii5-1",
+     "type": "inputs.batch",
+     "actor": "acad",
+     "n": 2,
+     "seqs": [
+      1
+     ],
+     "tables": "Input+EditLog",
+     "elog": 1
+    },
+    {
+     "key": "changes/cmrldi1s06uqii5-2",
+     "type": "sched.mutate",
+     "actor": "acad",
+     "n": 3,
+     "seqs": [
+      2
+     ],
+     "tables": "EditLog+ScheduleWeek+ScheduleDay",
+     "elog": 1
+    }
+   ],
+   "pass": true,
+   "notes": [],
+   "fails": []
+  },
+  {
+   "step": "X2",
+   "width": "desktop",
+   "did": "Ranger re-dates his meeting to Fri 17 Jul",
+   "pics": [
+    "X2-1-after.png",
+    "X2-2-reloaded.png"
+   ],
+   "shown": "",
+   "rows": "put 3: inputs/imrldi1s0i5vzpf, settings/elog:mrldi1s06l2g.000001, settings/elog:mrldi1s06l2g.000002 · batches: inputs.batch(Input+EditLog, 3 rows, 2 history line, by acus)",
+   "batches": [
+    {
+     "key": "changes/cmrldi1s0wfogng-0",
+     "type": "inputs.batch",
+     "actor": "acus",
+     "n": 3,
+     "seqs": [
+      0
+     ],
+     "tables": "Input+EditLog",
+     "elog": 2
+    }
+   ],
+   "pass": true,
+   "notes": [],
+   "fails": []
+  },
+  {
+   "step": "X3",
+   "width": "desktop",
+   "did": "Ranger re-dates his meeting to Tue 21 Jul (next week)",
+   "pics": [
+    "X3-1-after.png",
+    "X4-peek-next-week.png",
+    "X4-week2-tuesday.png"
+   ],
+   "shown": "",
+   "rows": "put 4: inputs/imrldi1s0i5vzpf, settings/elog:mrldi1s022v5.000001, settings/elog:mrldi1s022v5.000002, settings/elog:mrldi1s022v5.000003 · batches: inputs.batch(Input+EditLog, 4 rows, 3 history line, by acus)",
+   "batches": [
+    {
+     "key": "changes/cmrldi1s034m3x5-0",
+     "type": "inputs.batch",
+     "actor": "acus",
+     "n": 4,
+     "seqs": [
+      0
+     ],
+     "tables": "Input+EditLog",
+     "elog": 3
+    }
+   ],
+   "pass": true,
+   "notes": [],
+   "fails": []
+  },
+  {
+   "step": "X5",
+   "width": "desktop",
+   "did": "from week 2: the meeting re-dated back to Thu 16 Jul",
+   "pics": [
+    "X5-1-after.png"
+   ],
+   "shown": "",
+   "rows": "put 4: inputs/imrldi1s0i5vzpf, settings/elog:mrldi1s0wu0l.000001, settings/elog:mrldi1s0wu0l.000002, settings/elog:mrldi1s0wu0l.000003 · batches: inputs.batch(Input+EditLog, 4 rows, 3 history line, by acad)",
+   "batches": [
+    {
+     "key": "changes/cmrldi1s0rkd6z3-0",
+     "type": "inputs.batch",
+     "actor": "acad",
+     "n": 4,
+     "seqs": [
+      0
+     ],
+     "tables": "Input+EditLog",
+     "elog": 3
+    }
+   ],
+   "pass": true,
+   "notes": [],
+   "fails": []
+  },
+  {
+   "step": "X7",
+   "width": "desktop",
+   "did": "Saber takes the meeting off Thursday (✕ on its row)",
+   "pics": [
+    "X7-1-after.png",
+    "X7-2-reloaded.png"
+   ],
+   "shown": "",
+   "rows": "put 3: inputs/imrldi1s0i5vzpf, settings/elog:mrldi1s09tac.000001, weeks/13-07-2026#3 · batches: sched.mutate(ScheduleDay+Input+EditLog, 3 rows, 1 history line, by acad)",
+   "batches": [
+    {
+     "key": "changes/cmrldi1s0wr4qbx-0",
+     "type": "sched.mutate",
+     "actor": "acad",
+     "n": 3,
+     "seqs": [
+      0
+     ],
+     "tables": "ScheduleDay+Input+EditLog",
+     "elog": 1
+    }
+   ],
+   "pass": true,
+   "notes": [],
+   "fails": []
+  },
+  {
+   "step": "X8",
+   "width": "desktop",
+   "did": "Saber hands the request to Bolt (the Inputs page ✎, person)",
+   "pics": [
+    "X8-1-after.png",
+    "X8-2-reloaded.png",
+    "X8-handed-to-bolt.png"
+   ],
+   "shown": "",
+   "rows": "put 2: inputs/imrldi1s0i5vzpf, settings/elog:mrldi1s0yuo4.000002 · batches: inputs.batch(Input+EditLog, 2 rows, 1 history line, by acad)",
+   "batches": [
+    {
+     "key": "changes/cmrldi1s0nezun4-1",
+     "type": "inputs.batch",
+     "actor": "acad",
+     "n": 2,
+     "seqs": [
+      1
+     ],
+     "tables": "Input+EditLog",
+     "elog": 1
+    }
+   ],
+   "pass": true,
+   "notes": [],
+   "fails": []
+  }
+ ],
+ "tag": "p6c"
+}

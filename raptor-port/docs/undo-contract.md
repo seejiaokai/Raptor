@@ -39,6 +39,44 @@ one global undo from the stream and retires the snapshot stacks; **step 5** buil
 persistence + the Dataverse adapter from it. Nothing in step 2 changes a rendered byte
 (`tfin.js` 728/0) or how persistence/undo currently behave.
 
+**A derived change is made AFTER its command, never inside it (`[DB-READINESS]` group A phase 6, 30 Sep – 1 Oct 26 — plan
+`docs/superpowers/plans/2026-09-30-db-readiness-phase6-plan.md` §2.2).** What a request, a hand-over or a delete does to a
+day — its row made, re-made or taken away, a deleted man taken off — is worked out after the command, at phase 8
+(`state/sched-commit.ts afterCommandPass` → `state/holderbase.ts rederive`), with the command layer's baseline moved on with
+it: nobody's change, never on the stream, never an Undo step, never saved (a day's holder saves it, worked out, at his next
+change to that day). The week on screen is always worked out from the HOLDER BASE — each day as its holder last committed
+it — so undoing the request brings back exactly what its holder had (the phase-6 (c) round-2 finding: an overlay of an
+already-overlaid day could not). A member's command may carry no schedule record at all (`state/perms.ts
+ownershipViolation`).
+
+**Persistence is now a stream consumer (30 Sep 26, `[DB-READINESS]` group A phase 0 — the "step 5" record-level
+persistence above).** `state/rowmap.ts` subscribes to the stream and, at phase 9 of every command, maps each change
+to the stored ROW it lives in, writing it inside the command's one whiteboard transaction — so a command's rows reach
+storage in its ONE all-or-nothing group. A row is removed only for an explicit `delete` change, never by inference.
+Each of group A's phases registers its collection's mapper and, in the same change, stops the legacy whole-blob writer
+(`persistAll`, the Leave War's `rawPersist`) for it (`docs/superpowers/plans/2026-09-30-db-readiness-group-a-plan.md`
+§2.2). **Phase 1 (30 Sep 26): the schedule's weeks** — a COMPOSER (several records, one stored row: a day row is the
+day, its book slice and its mutes) in `state/persist.ts`; `persistAll` no longer writes weeks. The scheduler's records
+follow the rows: per day `days/<wk>#<di>`, `sched.book/<wk>#<di>`, `sched.mutes/<wk>#<di>`; the week's stamps
+`sched.week/<wk>`; every issued version `sched.issuance/<wk>:<verId>~<n>` (written once) and every Unpublish
+`sched.retraction/<wk>:<verId>~<n>`; a saved week off screen `weekstash/<wk><row suffix>`, each value the stored row.
+**Phase 2 (30 Sep 26): the requests (`inputs/<iid>`), the roster (`people/<pid>`) and the planning calendar
+(`plan/pp:<id>`, `plan/dm:<iso>` — `plan/all` split)** — each a plain per-change mapper; `persistAll` is gone. A list's
+order rides each record (`ord`, `command/ord.ts`), so the old `inputs/__order` record is retired and a restore puts a
+record back where it stood by its own `ord`. **Phase 3 (30 Sep 26): the Leave War** — its store subscribes to the same
+stream and writes through its OWN door (`leavewar/state/rows.ts`; the war keeps its own seam): `lw.war` → `war:<id>`,
+`lw.cell` → one row per record at the address (`rec:<war>:<recId>` — diffed across the whole envelope, so a move is one
+put and only a record the command removed is removed), `lw.ledger` → `ledger:<id>`, `lw.opening/<pid>:<counter>`
+(was `lw.balances/all`) → `opening:…`, `lw.postouts/<pid>` and `lw.label/<pid>` (both were one record for everyone;
+the label was inside `lw.config`) → the man's `profile:<pid>`, the rest their ⚙ keys; its `rawPersist` writes nothing.
+So a durable change is saved ONLY by a command — a mutation outside one is lost (the persistence funnel,
+`raptor-port/CLAUDE.md`). A NEW module's durable records need a mapper there too.
+**And the other way round (phase 6, 30 Sep 26 — `data-model.md` §9 rule 9):** what one record's change does to a DAY it
+does not hold (a man deleted; with phase 6 (c), a request filed or changed) is NOT made inside the command — it is worked
+out AFTER it (a phase-8 effect, the scheduler's baseline moved on: `engine/overlay.ts`), so it is shown at once, saved by
+nobody, and never mixed into the command's own changes (a nested command joins its outer one's envelope, so no test of
+"which command" could keep it out of the save). The day's holder saves it at his next change to that day.
+
 ---
 
 ## 1. The change stream
@@ -153,7 +191,7 @@ on rollback), so a mid-reducer failure leaves NO partial persist/notify/history:
    (`txn.child`); one raised from a subscriber later enqueues.
 4. Derive `Change[]` by per-record deep-equal over every enlisted record.
 5. Conflict + invariant checks (`expectedRevs`, structural integrity, `protectedTouched`).
-   NB: put-once immutability of issued records (`sched.orig`/`sched.als`) is NOT hard-enforced here
+   NB: put-once immutability of issued records (`sched.issuance` — `sched.orig`/`sched.als` until 30 Sep 26) is NOT hard-enforced here
    — deferred to step 3, because today's silent-undo-before-sent legitimately replaces them.
 6. On any failure: restore the enlisted snapshots, discard the latched effects, emit nothing;
    return `conflict` / `invalid` / `unauthorized` / `refused`.
@@ -209,7 +247,7 @@ which every store's implementation must honour and every caller must respect:
 - **Called only from a reducer that has already enlisted this store, and never opens its own
   command.** `write()` is an apply primitive, not a command.
 - **Issued records are refused unless `opts.allowIssued`.** The append-only-intended issued records
-  (`sched.orig`/`sched.als`) reject a normal `write()`; only the restore path may pass
+  (`sched.issuance`; `sched.orig`/`sched.als` until 30 Sep 26) reject a normal `write()`; only the restore path may pass
   `allowIssued:true` (C7). A scheduler `write()` also refuses a foreign-week write for every
   week-scoped collection.
 

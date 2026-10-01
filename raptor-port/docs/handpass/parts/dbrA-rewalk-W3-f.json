@@ -1,0 +1,518 @@
+{
+ "base": "http://localhost:4203",
+ "at": "2026-09-30T10:18:45.898Z",
+ "results": [
+  {
+   "name": "F0 first boot — ONE change-log batch, of type boot",
+   "ok": true,
+   "detail": "[{\"type\":\"boot\",\"n\":199}]"
+  },
+  {
+   "name": "F1 EVENT 1 on Mon 5 Jan: \"W3 EXERCISE\" — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [leavewar/war:y2026] · del 0 [] · batches lw.edit/1"
+  },
+  {
+   "name": "F1 EVENT 1 on Mon 5 Jan: \"W3 EXERCISE\" — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [leavewar/war:y2026] · del 0 [] · batches lw.edit/1"
+  },
+  {
+   "name": "F1 event — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026 (the unsaved demo week's hidden row ids set aside)"
+  },
+  {
+   "name": "F1 event — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "F1 event — the war's boxes read the same after the reload",
+   "ok": true,
+   "detail": "{}"
+  },
+  {
+   "name": "F1 — after the reload the event reads W3 EXERCISE on 5 Jan",
+   "ok": true,
+   "detail": "W3 EXERCISE"
+  },
+  {
+   "name": "F2 (A) EVENT 1 on Wed 7 Jan: \"A-EVENT\" — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [leavewar/war:y2026] · del 0 [] · batches lw.edit/1"
+  },
+  {
+   "name": "F2 (A) EVENT 1 on Wed 7 Jan: \"A-EVENT\" — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [leavewar/war:y2026] · del 0 [] · batches lw.edit/1"
+  },
+  {
+   "name": "F2 (B, not reloaded) EVENT 1 on Wed 21 Jan: \"B-EVENT\" — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [leavewar/war:y2026] · del 0 [] · batches lw.edit/1"
+  },
+  {
+   "name": "F2 (B, not reloaded) EVENT 1 on Wed 21 Jan: \"B-EVENT\" — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [leavewar/war:y2026] · del 0 [] · batches lw.edit/1"
+  },
+  {
+   "name": "F2 — B's save kept A's 7 Jan event in the war's row",
+   "ok": false,
+   "detail": "{\"date\":\"2026-01-07\",\"events\":[\"\",\"\"],\"eventKinds\":[],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false}"
+  },
+  {
+   "name": "F2 two events — after reloading both, the two tabs read the same",
+   "ok": true,
+   "detail": "same"
+  },
+  {
+   "name": "F2 two events — reloading both tabs wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "F2 two events — both tabs draw the same boxes",
+   "ok": true,
+   "detail": "{}"
+  },
+  {
+   "name": "F2 — after reloading both: A's event on 7 Jan AND B's event on 21 Jan, in both tabs",
+   "ok": false,
+   "detail": "{\"tabA\":[\"＋\",\"B-EVENT\"],\"tabB\":[\"＋\",\"B-EVENT\"],\"storedWarRow\":{\"2026-01-07\":[\"\",\"\"],\"2026-01-21\":[\"B-EVENT\",\"\"]}}"
+  },
+  {
+   "name": "F3 (A) stage → BIDDING CLOSED — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [leavewar/war:y2026] · del 0 [] · batches lw.stage/1"
+  },
+  {
+   "name": "F3 (A) stage → BIDDING CLOSED — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [leavewar/war:y2026] · del 0 [] · batches lw.stage/1"
+  },
+  {
+   "name": "F3 (B, not reloaded, still sees OPEN) EVENT 1 on Thu 22 Jan: \"B-EV2\" — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [leavewar/war:y2026] · del 0 [] · batches lw.edit/1"
+  },
+  {
+   "name": "F3 (B, not reloaded, still sees OPEN) EVENT 1 on Thu 22 Jan: \"B-EV2\" — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [leavewar/war:y2026] · del 0 [] · batches lw.edit/1"
+  },
+  {
+   "name": "F3 — B's save kept A's stage (closed) in the war's row",
+   "ok": false,
+   "detail": "{\"storedStage\":\"open\"}"
+  },
+  {
+   "name": "F3 stage + event — after reloading both, the two tabs read the same",
+   "ok": true,
+   "detail": "same"
+  },
+  {
+   "name": "F3 stage + event — reloading both tabs wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "F3 stage + event — both tabs draw the same boxes",
+   "ok": true,
+   "detail": "{}"
+  },
+  {
+   "name": "F3 — after reloading both: the war is BIDDING CLOSED (A's stage move kept) AND B's event is there",
+   "ok": false,
+   "detail": "{\"was\":\"OPEN FOR BIDDING\",\"stageA\":\"OPEN FOR BIDDING\",\"stageB\":\"OPEN FOR BIDDING\",\"event\":\"B-EV2\",\"storedStage\":\"open\"}"
+  },
+  {
+   "name": "F4 (A, admin) a MORNING of LL for Ranger, 3 Mar — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [leavewar/rec:y2026:rmunyai4e1g3tx] · del 0 [] · batches lw.edit/1"
+  },
+  {
+   "name": "F4 (A, admin) a MORNING of LL for Ranger, 3 Mar — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [leavewar/rec:y2026:rmunyai4e1g3tx] · del 0 [] · batches lw.edit/1"
+  },
+  {
+   "name": "F4 (B = Ranger, not reloaded) his AFTERNOON of LL, 3 Mar — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [leavewar/rec:y2026:rmunyalew11j50] · del 0 [] · batches lw.edit/1"
+  },
+  {
+   "name": "F4 (B = Ranger, not reloaded) his AFTERNOON of LL, 3 Mar — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [leavewar/rec:y2026:rmunyalew11j50] · del 0 [] · batches lw.edit/1"
+  },
+  {
+   "name": "F4 two halves two tabs — after reloading both, the two tabs read the same",
+   "ok": true,
+   "detail": "same"
+  },
+  {
+   "name": "F4 two halves two tabs — reloading both tabs wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "F4 two halves two tabs — both tabs draw the same boxes",
+   "ok": true,
+   "detail": "{\"bane@2026-03-03\":\"<LL +1\"}"
+  },
+  {
+   "name": "F4 — after reloading both: BOTH halves stored and BOTH on the day's list",
+   "ok": true,
+   "detail": "{\"stage\":\"OPEN FOR BIDDING\",\"stored\":[\"full#1024\",\"full#1024\"],\"opened\":\"daylist-sheet\",\"lines\":[\"<LL — local leave, morning · bid, not decided yet Ack Approve Refuse ⇄Move Delete\",\"LL> — local leave, afternoon · bid, not decided yet Ack Approve Refuse ⇄Move Delete\"],\"bRet\":{\"placed\":true,\"pressed\":true,\"asked\":\"Ranger Tue 3 Mar ✕ HOW MANY Just this day Pick a range HOW MUCH Whole day AM PM WHICH LEAVE LL> OL> OIL> CCL> FCL> PL> EL> CL> That takes Ranger to -0.5 LVE. Tap the same leave again to go ahead.\",\"why\":\"\"}}"
+  },
+  {
+   "name": "F8 (A) the day's list: Ack the morning — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 2 [leavewar/rec:y2026:rmunyai4e1g3tx, settings/elog:munyamynthfw.000001] · del 0 [] · batches lw.decide/2"
+  },
+  {
+   "name": "F8 (A) the day's list: Ack the morning — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 2 [leavewar/rec:y2026:rmunyai4e1g3tx, settings/elog:munyamynthfw.000001] · del 0 [] · batches lw.decide/2"
+  },
+  {
+   "name": "F8 — ONE put, the morning's own row (same key), now acknowledged",
+   "ok": true,
+   "detail": "{\"put\":[\"leavewar/rec:y2026:rmunyai4e1g3tx\",\"settings/elog:munyamynthfw.000001\"],\"ret\":{\"opened\":\"daylist-sheet\",\"lines\":[\"<LL — local leave, morning · bid, not decided yet Ack Approve Refuse ⇄Move Delete\",\"LL> — local leave, afternoon · bid, not decided yet Ack Approve Refuse ⇄Move Delete\"],\"pressed\":true}}"
+  },
+  {
+   "name": "F8 — Ranger's afternoon row untouched (same bytes)",
+   "ok": true,
+   "detail": "{\"pmKey\":\"leavewar/rec:y2026:rmunyalew11j50\",\"was\":\"{\\\"id\\\":\\\"rmunyalew11j50\\\",\\\"kind\\\":\\\"request\\\",\\\"code\\\":\\\"LL*\\\",\\\"state\\\":\\\"pending\\\",\\\"ord\\\":1024,\\\"pid\\\":\\\"bane\\\",\\\"date\\\":\\\"2026-03-03\\\"}\",\"now\":\"{\\\"id\\\":\\\"rmunyalew11j50\\\",\\\"kind\\\":\\\"request\\\",\\\"code\\\":\\\"LL*\\\",\\\"state\\\":\\\"pending\\\",\\\"ord\\\":1024,\\\"pid\\\":\\\"bane\\\",\\\"date\\\":\\\"2026-03-03\\\"}\"}"
+  },
+  {
+   "name": "F8 ack one of two — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026 (the unsaved demo week's hidden row ids set aside)"
+  },
+  {
+   "name": "F8 ack one of two — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "F8 ack one of two — the war's boxes read the same after the reload",
+   "ok": true,
+   "detail": "{\"bane@2026-03-03\":\"<LL +1\"}"
+  },
+  {
+   "name": "F8 — after the reload the day's list reads the morning acked, the afternoon still a bid, in that order",
+   "ok": true,
+   "detail": "[\"<LL — local leave, morning · bid, acked Approve Refuse ⇄Move Delete\",\"LL> — local leave, afternoon · bid, not decided yet Ack Approve Refuse ⇄Move Delete\"]"
+  },
+  {
+   "name": "F9 (A) the day's list: ⇄ Move the morning to Thu 5 Mar — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 2 [leavewar/rec:y2026:rmunyai4e1g3tx, settings/elog:munyaycfxcdl.000001] · del 0 [] · batches lw.move/2"
+  },
+  {
+   "name": "F9 (A) the day's list: ⇄ Move the morning to Thu 5 Mar — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 2 [leavewar/rec:y2026:rmunyai4e1g3tx, settings/elog:munyaycfxcdl.000001] · del 0 [] · batches lw.move/2"
+  },
+  {
+   "name": "F9 — the move is ONE put at the SAME record key, now naming 5 Mar (a bid again, by design); no delete",
+   "ok": true,
+   "detail": "{\"put\":[\"leavewar/rec:y2026:rmunyai4e1g3tx\",\"settings/elog:munyaycfxcdl.000001\"],\"del\":[],\"rec\":{\"id\":\"rmunyai4e1g3tx\",\"kind\":\"request\",\"code\":\"*LL\",\"state\":\"pending\",\"ord\":1024,\"pid\":\"bane\",\"date\":\"2026-03-05\"},\"ret\":{\"opened\":\"daylist-sheet\",\"pressed\":true,\"bannerEnd\":\"\"}}"
+  },
+  {
+   "name": "F9 — Ranger's afternoon row untouched (same bytes)",
+   "ok": true,
+   "detail": "{\"pmKey\":\"leavewar/rec:y2026:rmunyalew11j50\",\"was\":\"{\\\"id\\\":\\\"rmunyalew11j50\\\",\\\"kind\\\":\\\"request\\\",\\\"code\\\":\\\"LL*\\\",\\\"state\\\":\\\"pending\\\",\\\"ord\\\":1024,\\\"pid\\\":\\\"bane\\\",\\\"date\\\":\\\"2026-03-03\\\"}\",\"now\":\"{\\\"id\\\":\\\"rmunyalew11j50\\\",\\\"kind\\\":\\\"request\\\",\\\"code\\\":\\\"LL*\\\",\\\"state\\\":\\\"pending\\\",\\\"ord\\\":1024,\\\"pid\\\":\\\"bane\\\",\\\"date\\\":\\\"2026-03-03\\\"}\"}"
+  },
+  {
+   "name": "F9 move one of two — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026 (the unsaved demo week's hidden row ids set aside)"
+  },
+  {
+   "name": "F9 move one of two — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "F9 move one of two — the war's boxes read the same after the reload",
+   "ok": true,
+   "detail": "{\"bane@2026-03-03\":\"LL>\",\"bane@2026-03-05\":\"<LL\"}"
+  },
+  {
+   "name": "F10 (A) Delete the morning on 5 Mar — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [settings/elog:munyb6az9m6e.000001] · del 1 [leavewar/rec:y2026:rmunyai4e1g3tx] · batches lw.edit/2"
+  },
+  {
+   "name": "F10 (A) Delete the morning on 5 Mar — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [settings/elog:munyb6az9m6e.000001] · del 1 [leavewar/rec:y2026:rmunyai4e1g3tx] · batches lw.edit/2"
+  },
+  {
+   "name": "F10 — exactly the morning's row removed",
+   "ok": true,
+   "detail": "{\"del\":[\"leavewar/rec:y2026:rmunyai4e1g3tx\"],\"put\":[\"settings/elog:munyb6az9m6e.000001\"]}"
+  },
+  {
+   "name": "F10 — Ranger's afternoon row untouched (same bytes)",
+   "ok": true,
+   "detail": "{\"pmKey\":\"leavewar/rec:y2026:rmunyalew11j50\",\"was\":\"{\\\"id\\\":\\\"rmunyalew11j50\\\",\\\"kind\\\":\\\"request\\\",\\\"code\\\":\\\"LL*\\\",\\\"state\\\":\\\"pending\\\",\\\"ord\\\":1024,\\\"pid\\\":\\\"bane\\\",\\\"date\\\":\\\"2026-03-03\\\"}\",\"now\":\"{\\\"id\\\":\\\"rmunyalew11j50\\\",\\\"kind\\\":\\\"request\\\",\\\"code\\\":\\\"LL*\\\",\\\"state\\\":\\\"pending\\\",\\\"ord\\\":1024,\\\"pid\\\":\\\"bane\\\",\\\"date\\\":\\\"2026-03-03\\\"}\"}"
+  },
+  {
+   "name": "F11 (B = Ranger, stale: still sees the morning on 5 Mar) bids his AFTERNOON there — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [leavewar/rec:y2026:rmunybiq312ipz] · del 0 [] · batches lw.edit/1"
+  },
+  {
+   "name": "F11 (B = Ranger, stale: still sees the morning on 5 Mar) bids his AFTERNOON there — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [leavewar/rec:y2026:rmunybiq312ipz] · del 0 [] · batches lw.edit/1"
+  },
+  {
+   "name": "F11 — the stale tab wrote ONLY its new record; the deleted morning was NOT written back",
+   "ok": true,
+   "detail": "{\"put\":[\"leavewar/rec:y2026:rmunybiq312ipz\"],\"bSawBefore\":{\"bane@2026-03-05\":{\"text\":\"<LL\",\"cls\":\"act\",\"mark\":\"\"}},\"amBack\":false}"
+  },
+  {
+   "name": "F11 no resurrection — after reloading both, the two tabs read the same",
+   "ok": true,
+   "detail": "same"
+  },
+  {
+   "name": "F11 no resurrection — reloading both tabs wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "F11 no resurrection — both tabs draw the same boxes",
+   "ok": true,
+   "detail": "{\"bane@2026-03-03\":\"LL>\",\"bane@2026-03-05\":\"LL>\"}"
+  },
+  {
+   "name": "F11 — after reloading both: 5 Mar holds only Ranger's afternoon; 3 Mar his afternoon, untouched",
+   "ok": true,
+   "detail": "{\"d5\":[\"/pending\"],\"cells\":{\"bane@2026-03-03\":{\"text\":\"LL>\",\"cls\":\"act\",\"mark\":\"\"},\"bane@2026-03-05\":{\"text\":\"LL>\",\"cls\":\"act\",\"mark\":\"\"}},\"sheet\":\"Ranger Thu 5 Mar NOW LL> ✕ HOW MANY Just this day Pick a range DECIDE Ack Approve Refuse SELECTED ⇄Move Delete HOW MUCH \"}"
+  },
+  {
+   "name": "F5 (A) +OIL by hand to Cinch, 10 Mar — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 2 [leavewar/ledger:ol-munybxmy18u8x, settings/elog:munybk87k2zv.000001] · del 0 [] · batches lw.award/2"
+  },
+  {
+   "name": "F5 (A) +OIL by hand to Cinch, 10 Mar — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 2 [leavewar/ledger:ol-munybxmy18u8x, settings/elog:munybk87k2zv.000001] · del 0 [] · batches lw.award/2"
+  },
+  {
+   "name": "F5 (B, not reloaded) OIL tracker: credit Piston 1 day — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 2 [leavewar/ledger:ol-munyc0lx16god, settings/elog:munybt5en4va.000001] · del 0 [] · batches lw.award/2"
+  },
+  {
+   "name": "F5 (B, not reloaded) OIL tracker: credit Piston 1 day — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 2 [leavewar/ledger:ol-munyc0lx16god, settings/elog:munybt5en4va.000001] · del 0 [] · batches lw.award/2"
+  },
+  {
+   "name": "F5 two awards — after reloading both, the two tabs read the same",
+   "ok": true,
+   "detail": "same"
+  },
+  {
+   "name": "F5 two awards — reloading both tabs wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "F5 two awards — both tabs draw the same boxes",
+   "ok": true,
+   "detail": "{\"snap@2026-03-10\":\"FO\",\"pump@2026-09-30\":\"FO\"}"
+  },
+  {
+   "name": "F5 — after reloading both: both awards stored, and each shows on its date (FO)",
+   "ok": true,
+   "detail": "{\"ledger\":[\"snap 2026-03-10 1\",\"pump 2026-09-30 1\"],\"cells\":{\"snap@2026-03-10\":{\"text\":\"FO\",\"cls\":\"duty act\",\"mark\":\"\"},\"pump@2026-09-30\":{\"text\":\"FO\",\"cls\":\"duty act\",\"mark\":\"\"}}}"
+  },
+  {
+   "name": "F6 (A) ⚙ → Show SANS — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [leavewar/showsans] · del 0 [] · batches lw.edit/1"
+  },
+  {
+   "name": "F6 (B, not reloaded) ⚙ → + Counter \"F6 CTR\" — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [leavewar/manningdefs] · del 0 [] · batches lw.edit/1"
+  },
+  {
+   "name": "F6 two settings — after reloading both, the two tabs read the same",
+   "ok": true,
+   "detail": "same"
+  },
+  {
+   "name": "F6 two settings — reloading both tabs wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "F6 two settings — both tabs draw the same boxes",
+   "ok": true,
+   "detail": "{}"
+  },
+  {
+   "name": "F6 — after reloading both: SANS shown (A) AND the F6 CTR counter (B)",
+   "ok": true,
+   "detail": "{\"sans\":true,\"ctr\":true,\"showsans\":\"true\",\"aPut\":[\"leavewar/showsans\"],\"bPut\":[\"leavewar/manningdefs\"]}"
+  },
+  {
+   "name": "F7 (A) + New war \"F7 FEB 28\" (1–29 Feb 2028) — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 2 [leavewar/current, leavewar/war:war-2028-02-01-2028-02-29] · del 0 [] · batches lw.edit/1 lw.edit/1"
+  },
+  {
+   "name": "F7 (B, not reloaded) a bid for Echo, 17 Mar — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [leavewar/rec:y2026:rmunycyca1pkez] · del 0 [] · batches lw.edit/1"
+  },
+  {
+   "name": "F7 (B, not reloaded) a bid for Echo, 17 Mar — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [leavewar/rec:y2026:rmunycyca1pkez] · del 0 [] · batches lw.edit/1"
+  },
+  {
+   "name": "F7 new war + bid — after reloading both, the two tabs read the same",
+   "ok": true,
+   "detail": "same"
+  },
+  {
+   "name": "F7 new war + bid — reloading both tabs wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "F7 new war + bid — both tabs draw the same boxes",
+   "ok": true,
+   "detail": "{\"freak@2026-03-17\":\"LL\"}"
+  },
+  {
+   "name": "F7 — after reloading both: the picker lists F7 FEB 28 in both tabs AND Echo's bid is there",
+   "ok": true,
+   "detail": "{\"pA\":[\"JAN - DEC 26\",\"JAN - DEC 27\",\"F7 FEB 28\"],\"pB\":[\"JAN - DEC 26\",\"JAN - DEC 27\",\"F7 FEB 28\"],\"cell\":{\"freak@2026-03-17\":{\"text\":\"LL\",\"cls\":\"act\",\"mark\":\"\"}},\"aPut\":[\"leavewar/current\",\"leavewar/war:war-2028-02-01-2028-02-29\"]}"
+  },
+  {
+   "name": "part F — no console errors, page errors, failed requests or native dialogs",
+   "ok": true,
+   "detail": "[]"
+  }
+ ],
+ "table": [
+  {
+   "step": "F0 first boot",
+   "width": "desktop",
+   "did": "fresh world, Saber",
+   "screen": "—",
+   "rows": "batches boot/199",
+   "ok": true,
+   "pics": []
+  },
+  {
+   "step": "F1 an event on the grid",
+   "width": "desktop",
+   "did": "tapped EVENT 1 on 5 Jan, typed W3 EXERCISE, Apply",
+   "screen": "EVENT 1, 5 Jan: W3 EXERCISE",
+   "rows": "put 1 [leavewar/war:y2026] · batches lw.edit/1",
+   "ok": true,
+   "pics": [
+    "F1-event.png",
+    "F1-after-reload.png"
+   ]
+  },
+  {
+   "step": "F2 two tabs: two events, two days",
+   "width": "desktop",
+   "did": "B opened; A: EVENT 1 7 Jan \"A-EVENT\"; B (stale): EVENT 1 21 Jan \"B-EVENT\"; reload both",
+   "screen": "A tab: 7 Jan \"＋\", 21 Jan \"B-EVENT\"; B tab: \"＋\", \"B-EVENT\"",
+   "rows": "A: put 1 [leavewar/war:y2026] · batches lw.edit/1 || B: put 1 [leavewar/war:y2026] · batches lw.edit/1",
+   "ok": false,
+   "pics": [
+    "F2-A-typed-A-EVENT.png",
+    "F2-B-typed-B-EVENT.png",
+    "F2-A-after-both-reloaded.png"
+   ]
+  },
+  {
+   "step": "F3 two tabs: stage move + event",
+   "width": "desktop",
+   "did": "B opened; A: OPEN FOR BIDDING → BIDDING CLOSED; B (stale): EVENT 1 22 Jan \"B-EV2\"; reload both",
+   "screen": "stage A \"OPEN FOR BIDDING\" B \"OPEN FOR BIDDING\"; 22 Jan event \"B-EV2\"",
+   "rows": "A: put 1 [leavewar/war:y2026] · batches lw.stage/1 || B: put 1 [leavewar/war:y2026] · batches lw.edit/1",
+   "ok": false,
+   "pics": [
+    "F3-A-closed.png",
+    "F3-B-event-while-A-closed.png",
+    "F3-A-after-both-reloaded.png"
+   ]
+  },
+  {
+   "step": "F4 two tabs: two halves, one man, one day",
+   "width": "desktop",
+   "did": "B (Ranger) opened; A: Ranger 3 Mar Morning LL; B (stale): his Afternoon LL; reload both",
+   "screen": "A's day list: [\"<LL — local leave, morning · bid, not decided yet Ack Approve Refuse ⇄Move Delete\",\"LL> — local leave, afternoon · bid, not decided yet Ack Approve Refuse ⇄Move Delete\"]",
+   "rows": "A: put 1 [leavewar/rec:y2026:rmunyai4e1g3tx] · batches lw.edit/1 || B: put 1 [leavewar/rec:y2026:rmunyalew11j50] · batches lw.edit/1",
+   "ok": true,
+   "pics": [
+    "F4-A-daylist-after-both-reloaded.png"
+   ]
+  },
+  {
+   "step": "F8–F11 one record of two (+ stale tab)",
+   "width": "desktop",
+   "did": "Ranger 3 Mar (AM admin, PM Ranger): Ack AM; Move AM → 5 Mar; stale Ranger tab opened; Delete AM; stale tab bids PM on 5 Mar; reload both",
+   "screen": "3 Mar list after F8 reload: [\"<LL — local leave, morning · bid, acked Approve Refuse ⇄Move Delete\",\"LL> — local leave, afternoon · bid, not decided yet Ack Approve Refuse ⇄Move Delete\"]; after both reloads {\"bane@2026-03-03\":{\"text\":\"LL>\",\"cls\":\"act\",\"mark\":\"\"},\"bane@2026-03-05\":{\"text\":\"LL>\",\"cls\":\"act\",\"mark\":\"\"}}",
+   "rows": "ack: put 2 [leavewar/rec:y2026:rmunyai4e1g3tx, settings/elog:munyamynthfw.000001] · batches lw.decide/2 || move: put 2 [leavewar/rec:y2026:rmunyai4e1g3tx, settings/elog:munyaycfxcdl.000001] · batches lw.move/2 || delete: put 1 [settings/elog:munyb6az9m6e.000001] · del 1 [leavewar/rec:y2026:rmunyai4e1g3tx] · batches lw.edit/2 || stale bid: put 1 [leavewar/rec:y2026:rmunybiq312ipz] · batches lw.edit/1",
+   "ok": true,
+   "pics": [
+    "F8-daylist-after-reload.png",
+    "F9-after-reload.png",
+    "F11-A-after-both-reloaded.png"
+   ]
+  },
+  {
+   "step": "F5 two tabs: two OIL awards",
+   "width": "desktop",
+   "did": "B opened; A: +OIL Cinch 10 Mar; B (stale): tracker credit Piston today; reload both",
+   "screen": "{\"snap@2026-03-10\":{\"text\":\"FO\",\"cls\":\"duty act\",\"mark\":\"\"},\"pump@2026-09-30\":{\"text\":\"FO\",\"cls\":\"duty act\",\"mark\":\"\"}}",
+   "rows": "A: put 2 [leavewar/ledger:ol-munybxmy18u8x, settings/elog:munybk87k2zv.000001] · batches lw.award/2 || B: put 2 [leavewar/ledger:ol-munyc0lx16god, settings/elog:munybt5en4va.000001] · batches lw.award/2",
+   "ok": true,
+   "pics": [
+    "F5-A-after-both-reloaded.png"
+   ]
+  },
+  {
+   "step": "F6 two tabs: two ⚙ settings",
+   "width": "desktop",
+   "did": "B opened; A: Show SANS; B (stale): + Counter F6 CTR; reload both",
+   "screen": "SANS group shown: true; counter shown: true",
+   "rows": "A: put 1 [leavewar/showsans] · batches lw.edit/1 || B: put 1 [leavewar/manningdefs] · batches lw.edit/1",
+   "ok": true,
+   "pics": [
+    "F6-A-after-both-reloaded.png"
+   ]
+  },
+  {
+   "step": "F7 two tabs: a new war + a bid",
+   "width": "desktop",
+   "did": "B opened; A: + New war F7 FEB 28; B (stale): Echo 17 Mar LL; reload both",
+   "screen": "picker: JAN - DEC 26 / JAN - DEC 27 / F7 FEB 28; {\"freak@2026-03-17\":{\"text\":\"LL\",\"cls\":\"act\",\"mark\":\"\"}}",
+   "rows": "A: put 2 [leavewar/current, leavewar/war:war-2028-02-01-2028-02-29] · batches lw.edit/1 lw.edit/1 || B: put 1 [leavewar/rec:y2026:rmunycyca1pkez] · batches lw.edit/1",
+   "ok": true,
+   "pics": [
+    "F7-A-after-both-reloaded.png"
+   ]
+  }
+ ],
+ "errors": []
+}

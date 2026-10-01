@@ -195,6 +195,55 @@
         "--strictPort"
       ],
       "port": 4187
+    },
+    {
+      "name": "raptor-blank",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "--prefix",
+        "raptor-port",
+        "vite",
+        "preview",
+        "raptor-port",
+        "--outDir",
+        "dist-blank",
+        "--port",
+        "4191",
+        "--strictPort"
+      ],
+      "port": 4191
+    },
+    {
+      "name": "raptor-p6c",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "--prefix",
+        "raptor-port",
+        "vite",
+        "preview",
+        "raptor-port",
+        "--port",
+        "4203",
+        "--strictPort"
+      ],
+      "port": 4203
+    },
+    {
+      "name": "raptor-p6c-base",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "--prefix",
+        "raptor-port",
+        "vite",
+        "preview",
+        "raptor-port",
+        "--outDir",
+        "dist-p6cbase",
+        "--port",
+        "4202",
+        "--strictPort"
+      ],
+      "port": 4202
     }
   ]
 }

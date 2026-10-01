@@ -9,10 +9,15 @@ import type { StorageBackend } from '../leavewar/state/storage'
 const SQN = 'sqn142_'
 const strip = (k: string) => (k.startsWith(SQN) ? k.slice(SQN.length) : k)
 
-export function settingsAdapter(wb: Whiteboard): { getItem(k: string): string | null; setItem(k: string, v: string): void } {
+export function settingsAdapter(wb: Whiteboard): { getItem(k: string): string | null; setItem(k: string, v: string): void; keys(): string[] } {
   return {
     getItem: k => wb.get('settings', strip(k)),
-    setItem: (k, v) => { wb.set('settings', strip(k), v) },
+    /* every settings key, in getItem's form ([DB-READINESS] group A, phase 4 — the records kept one row per thing) */
+    keys: () => wb.keys('settings').map(k => SQN + k),
+    /* a cleared setting (saved as null) removes its key — it reads as never set, which every reader treats the same
+       ([DB-READINESS] group A, phase 2 — F3-07: once each setting is one row, a stored "null" would be a row that says
+       nothing) */
+    setItem: (k, v) => { if (v === 'null') wb.delete('settings', strip(k)); else wb.set('settings', strip(k), v) },
   }
 }
 
@@ -20,6 +25,8 @@ export function leavewarAdapter(wb: Whiteboard): StorageBackend {
   return {
     read: key => wb.get('leavewar', key),
     write: (key, value) => { wb.set('leavewar', key, value) },
+    remove: key => { wb.delete('leavewar', key) },
+    keys: () => wb.keys('leavewar'),
   }
 }
 

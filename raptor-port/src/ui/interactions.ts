@@ -5,6 +5,7 @@
    highlight pass re-runs from ViewWeek's effect). */
 import { slotVal, acceptInput, unacceptInput, txtSet, acceptedDay } from '../engine/slots'
 import { rowElsewhere, isoDayWords } from '../engine/weekstash'
+import { standsOn } from '../engine/overlay'
 import { INPUTS, DATES, withRemarksTail, inpId, defaultAllday } from '../engine/inputs'
 import { DAYS } from '../engine/data'
 import { PEOPLE, isSpecial } from '../engine/people'
@@ -595,7 +596,7 @@ export function routeClick(e: MouseEvent) {
        request covers, its one row stands on one of them), and whether an Accept adopts a row already standing
        ([REQ-ORPHAN-ROW] 3 — a "taken off" request whose own row came back with a plan) */
     const rowDay = dest === 'x' ? acceptedDay(inp) : -1
-    const adopts = dest !== 'x' && inp.acc === 'r' && DAYS.some((d: any) => ((d && d.ground) || []).some((g: any) => g && g.src === k))
+    const adopts = dest !== 'x' && inp.acc === 'r' && DAYS.some((d: any) => !!standsOn(d, k, inp))
     const ok = dest === 'x' ? unacceptInput(di, inp) : acceptInput(di, inp, dest)
     if (ok) {
       /* SAID ONCE, to the scheduler and to the log, in the same words — the
@@ -624,7 +625,7 @@ export function routeClick(e: MouseEvent) {
          input whose row is already on the programme, or on a locked week, used to do nothing at
          all — a control that looks dead. Say why. */
       const cs = PEOPLE[inp.person] ? PEOPLE[inp.person].cs : inp.person
-      const onProg = dest !== 'x' && DAYS.some((d: any) => ((d && d.ground) || []).some((g: any) => g && g.src === k))
+      const onProg = dest !== 'x' && DAYS.some((d: any) => !!standsOn(d, k, inp))
       /* …and its row on ANOTHER week ([REQ-ORPHAN-ROW], 28 Sep 26): named, with the week to load; a saved week that could
          not be read refuses too, and says so rather than guess (never a second row on an unknown) */
       const away = dest !== 'x' && !onProg ? rowElsewhere(k, inp) : null

@@ -70,20 +70,34 @@ award fix are due before the tables are settled. What to finish before the hand-
 4. **Split in two (D453, 29 Sep 26 — narrows D203's "ONE batch"):** **[DB-READINESS] group A** (what decides the tables'
    shape) BEFORE IT settles its tables, with the small OIL follow-ups below and [OIL-EARNED-VS-GRANTED] (D147);
    **group B** (tuned against the real database) AFTER the app is connected. First, [DB-SYNC-MODEL]'s design fixed.
-   ([OIL-AWARD-IS-A-GRANT] is DONE, merged 29 Sep 26.)
+   ([OIL-AWARD-IS-A-GRANT] is DONE, merged 29 Sep 26.) Group A: plan v4 final (30 Sep 26); **phases 0–5 and 5b built
+   30 Sep 26** on `claude/db-readiness-table-shaping-4094f6` (plan §9); **its FULL check done 30 Sep 26** (the walk and both
+   reviewers' code reads, every finding fixed — `raptor-port/docs/handpass/2026-09-30-dbrA-group-walk.md`); **phase 6 (a),
+   (b), (d) built and FULL-checked 30 Sep 26** (`raptor-port/docs/handpass/2026-09-30-dbr-phase6-check.md`); **phase 6 (c) v3
+   (the holder base) planned, red-teamed (round 3, the last), BUILT and FULL-checked 1 Oct 26 on
+   `claude/db-readiness-p6c-holder-base`** (D467 — `raptor-port/docs/handpass/2026-10-01-dbr-phase6c-check.md`; the walk and
+   both final reads found twelve defects, all fixed red first, one of them money; his answer on a moved request's extras:
+   leave it, D468);
+   then his look (the cards), then 7.
 5. **When Manfred is ready — [DB-STEP]:** the data model to him, then the one adapter to his tables; the stack
    ([ARCH-STACK]) resumes there, with its step 6 still to come; the [AMEND] work is queued behind it. Architecture first,
    then the individual bugs (D144).
 6. **Before ANY collaborator is added** — an event, not a slot: take the checks runner off this repo (SEC-101, in
-   [REPO-PRIVATE]); and make the repo private again once the public period (D106) ends — his.
+   [REPO-PRIVATE]); and make the repo private again once the public period (D106) ends — his. IT's clone is such an event
+   ([RESTRICTED-ENV-WORKFLOW]'s go-ahead), and so is [REPO-TIDY]'s screenshot move (the clear of the old worktrees any time).
 
 **The small OIL follow-ups — ONE batch, with the OIL award fix, before the tables are settled (D147, D203, D354):** [OIL-READ-LEFTOVERS] (its items 1, 2, 4),
 [STORE-READER-SWEEP], [OIL-REQ-NAMEBOX] (a walk question for him), [OIL-WORDS],
-[OIL-PERSONAL-PLACEHOLDER] (FULL tier), [CROWD-SIM-BRIEF] (WALK tier), [OIL-RELINK-XWEEK].
+[OIL-PERSONAL-PLACEHOLDER] (FULL tier), [CROWD-SIM-BRIEF] (WALK tier). ([OIL-RELINK-XWEEK] closed 1 Oct 26 by `[DB-READINESS]` phase 6 (c).)
 
-**Placed by their own lines — not his rulings:** the Leave War — [LW-FROZEN-BAR-GAP] (after [HUMAN-RETEST]; show him
+**Placed by their own lines — not his rulings:** from the group-A FULL walk (30 Sep 26) — with group B:
+[UNDO-PUBLISH-ERASES-ISSUANCE], [TRK-IMPORT-ONE-GROUP], [TRK-FIRST-ORDER-PLACE] (low); low, with the next change there:
+[TRK-UNDO-WRITES-DEFAULTS], [SECDEFAULT-OFFER-BEHIND-BOARD], [BLOCK-NO-HISTORY-LINE], [ACCOUNTS-SEED-FIRST-WRITE] (demo
+only), [SETTINGS-LIST-ROWS] (a stage-2 split, only if it bites), [LW-OIL-DATECHIP-HIDDEN], [READONLY-WEEK-WORDS];
+before the first real deployment: [SHARED-OPENS-DEMO-WEEK]; a question for him: [LW-LABEL-NO-DOOR]; with group B:
+[ELOG-LINE-AFTER-COMMAND] (low); the Leave War — [LW-FROZEN-BAR-GAP] (after [HUMAN-RETEST]; show him
 first), [LW-SCRUBBER-FLAKY] (test-only),
-[PO-RESTORE-POSTING] (low, from its final code read), [LW-OFFER-ONLY-TAKEABLE] (low, with [LW-LOCKMARK]), [LW-HARNESS-VIEWER-PIN] (test-only, low), [CI-FAIL-PICTURES] (his call, low), [LW-DOZE-GUARDS] (low, check first); the shell — [SHELL-SIDEWAYS-BAR] (low, with the next top-bar change), [SAVE-NOTE-COVERS] (medium, next), [TRK-SAVE-FAIL-SAYS-SAVED] (low, with [DB-READINESS]), [TRK-ASYNC-STALE] (with [DB-READINESS]); the Tracker — [TRK-REMOUNT-LANDING] (low, with the next Tracker change). The Tracker — [TRK-PINCH-ASK] (his next Tracker session), [TRK-FLEXBAR-INK] (a question for him, on the Tracker-palette
+[PO-RESTORE-POSTING] (low, from its final code read), [LW-OFFER-ONLY-TAKEABLE] (low, with [LW-LOCKMARK]), [LW-HARNESS-VIEWER-PIN] (test-only, low), [CI-FAIL-PICTURES] (his call, low), [LW-DOZE-GUARDS] (low, check first); the shell — [SHELL-SIDEWAYS-BAR] (low, with the next top-bar change), [SAVE-NOTE-COVERS] (medium, next), [TRK-SAVE-FAIL-SAYS-SAVED] (low, with [DB-READINESS]), [TRK-ASYNC-STALE] (with [DB-READINESS]), [LW-WINDOW-PRUNE-FLAKE-2] (test-only, low); the Tracker — [TRK-REMOUNT-LANDING] (low, with the next Tracker change), [TRK-KEY-NAME-CLIP] (low, with the next Tracker change). The Tracker — [TRK-PINCH-ASK] (his next Tracker session), [TRK-FLEXBAR-INK] (a question for him, on the Tracker-palette
 look card — D157, merged PR #441).
 The amendment area — PR #434, #435, #437 and #438 MERGED (25–26 Sep 26); left (the small-fixes batch, PR #463, merged 29 Sep 26, filed): [PLAN-BANNER-DOOR] (low, filed by that batch's walk), [ROW-NO-TIME-MARK] (low, a future job, D361), [APP-FONTS-NOT-LOADED] (his call — found 29 Sep 26; every measured width rides on it), [GATELOCK-STALE-LIVE] (low, the check lock's stale rule), [DOCSIZE-MERGE-CEILING] (low, a false alarm of the document check on a merge), [PDF-PRINT-TWICE] (low, found by the IT flow guide research — to confirm in real Chrome), [LW-SEL-HALF-LABELS] (low, the drag sheet's half-day labels — D264), [ITFLOW-OIL-RESHOOT] (low, on his word — D403), [TRK-REFUSALS-UNTESTED] (low, test gaps the guide research found). Left from the amendment batch (D91–D111, merged): [AMEND-SMALL-SEEN] (any time). The docs and the checks — [DEPLOY-DOCS] (its operational half), [DOC-POINTERS-CODE] and
 [RULINGS-LF-PIN] (with the next code change), [PEEK-ISSUED] (a question for him, low), [RULING-HOME-HOOK] (low), [GUIDE-MAP-ROWS] (low, a question for him) — [DOC-SUBHEADS], [RULING-HOMES-AUDIT]
@@ -625,22 +639,6 @@ screen says so. Two spot-checks came back clean (`readPersonEdits` matches
 not been walked. **Small, mechanical, and worth doing once**: for each reader,
 find its writer and diff the shapes. Priority: with the other small follow-ups.
 
-### [OIL-RELINK-XWEEK] A request landed in a stashed week keeps the OLD man, and can land twice — OPEN, 22 Sep 26
-
-**Pre-existing, not OIL-caused, and out of scope for this branch** (Fable F8). Two limits that job
-2's "one row" premise stands on:
-
-- A person change made while the anchor's week is STASHED cannot reach the row. The relink finds
-  nothing to unaccept, toasts "moved outside the programmed week" and drops the landing mark; when
-  that week loads, the row is re-found and re-marked — but its `who` is still the OLD man. The money
-  goes to the new man through the claim while the programme draws the old one.
-- The duplicate-landing guard scans LOADED days only, so a request landed in week B whose start is
-  then moved into week A gets a SECOND row when week A loads. The two rows can disagree (one
-  cancelled, one live), and the standing reads whichever week is loaded.
-
-The stash-aware read built for `[OIL-XWEEK-ELSEWHERE]` is the same seam a stash-aware relink would
-use. **Context.** `…/specs/2026-09-22-oil-jobs12-codereview-fable.md` §3 F8.
-
 ### [LW-SCRUBBER-FLAKY] Leave War e2e tests time out on a saturated machine — PRE-EXISTING (21 Sep 26)
 `e2e/leavewar.spec.ts` "the bottom scrollbar is a year-wide scrubber", lw-desktop only. Under a full
 parallel run it sometimes times out after the SEP month button is clicked: the grid has not scrolled
@@ -857,6 +855,124 @@ it; its red error words can only fire for a failed Export. Nothing is lost if Re
 Tracker's save status follow the storage seam's real outcome (the whiteboard's pending / failed state), so a failed save
 never reads "saved" anywhere.
 
+### [TRK-KEY-NAME-CLIP] A longer student name on the left of the Students card's key is cut off at the card's edge (filed 30 Sep 26)
+**Place:** low — with the next Tracker change. Seen by the `[DB-READINESS]` group A phase 5b walk
+(`raptor-port/docs/img/handpass/2026-09-30-dbr-phase5b/1-old-tracker-his-work.png` and `2-new-…`): with three students on
+a chart the key around the course ball puts the third name on the LEFT, and "HIS STUDENT" reads "IIS STUDENT" — its first
+letter under the card's edge. On `main` too (the first picture is main's build), so not the phase's doing; a real
+callsign of ten or more letters would lose its first letters the same way. **Do:** keep every name of the key inside the
+card (shrink the name, or wrap it under the ball, on the left as the right does), and check at the phone width too.
+
+### [UNDO-PUBLISH-ERASES-ISSUANCE] An Undo of a publish deletes the issued version's stored row (filed 30 Sep 26)
+**Place:** with `[DB-READINESS]` group B — before the `Amendment` table has another reader (the database step), where
+"has the shared database registered this version?" (`raptor-port/docs/undo-contract.md` §4, AM32) is first answerable.
+Seen by the group-A FULL walk (W1 steps 7c–7h, `raptor-port/docs/handpass/2026-09-30-dbrA-group-walk.md`): the top bar's
+↶ right after a publish (or a reissue) removes `weeks/<wk>:is:<verId>~<n>`, and its ↷ writes the same key again; an ↶ of an
+Unpublish removes its `:rx:` row. His rulings say otherwise: **AM4** — an issued version is never erased; **AM32** — an
+Undo of a published day IS an Unpublish (a retraction beside the issuance; the version under it current again). Known
+since 24 Sep 26 as the amendment re-test's Q6 (`docs/handpass/2026-09-24-amendment-fable-scenarios.md` 5-10 — then in
+memory only, "a rule/code gap for the database step"); group A made it a real row delete. Nothing on screen differs
+(the day reads exactly as an Unpublish leaves it). **Do:** make the global undo's reversal of `sched.publish` /
+`sched.publishAL` an Unpublish (a `sched.retraction` put, never an issuance delete), its redo a reissue (a new `~n+1`
+issuance), and an undo of an Unpublish a reissue too — the Amendment rows then only ever grow; correct
+`data-model.md` §5's "a row is removed only by … an Undo of a publish" in the same change (D201). Both reviewers' code
+reads of group B cover it.
+
+### [TRK-IMPORT-ONE-GROUP] A Tracker Import is saved as many groups, not one (filed 30 Sep 26)
+**Place:** with `[DB-READINESS]` group B (one changeset per command on the wire). Seen by the group-A FULL walk (W5 C4, C5,
+F1): ⇪ Import of a charts file wrote 7 rows in 9 change-log batches; a students file with a new course 11 rows in 6 —
+every row named (since the walk's fix of its bookkeeping rows, W5 finding 1), but one confirmed action is many saved
+groups, so a failure part-way leaves a half import stored — the very route his charts take to the database (D120:
+Export → wipe → Import). **Do:** gather the import's reads first, then write everything in ONE Tracker gesture (the
+delete-chart pattern, `core.js delSyl`) — one group, one batch.
+
+### [TRK-FIRST-ORDER-PLACE] A stale tab can undo the first save of the chart order (filed 30 Sep 26)
+**Place:** low — with group B's live refresh (which closes most of the stale window). Seen by the group-A FULL walk (W5
+E5): on a store where no chart has a place yet (the shipped charts are stored at the Tracker's first opening without
+one), the FIRST ⇅ Reorder syllabi places every chart; a second tab opened before it, adding a syllabus, places them all
+again in its own old order — the first tab's order is lost (only the order; no chart, detail or mark). After the first
+order save, every later one writes only the chart that moved (walked). On `main` a stale tab overwrites the whole order
+every time. **Do:** give the shipped charts their places when the Tracker first stores them (its first opening), so the
+first reorder writes only the chart moved.
+
+### [TRK-UNDO-WRITES-DEFAULTS] The first Tracker Undo of a mark stores a pace, lulls and dates nobody set (filed 30 Sep 26)
+**Place:** low — with the next Tracker change. Seen by the group-A FULL walk (W5 D2b, F2c; `scripts/handpass/dbrA-W5-probe3.mjs`):
+a fresh world, one mark, ↶ — the undo writes `…:pace:<student>` = `{epw:2}`, `…:lulls:<student>` = `[]`, the chart's dates
+record for him, and leaves his marks row as `{}` instead of removing it; later undos write only the mark. Nothing changes
+on screen (the stored values ARE the defaults), but Export and the database gain records nobody made. Probably on `main`
+too (the same undo snapshot, D372). **Do:** the undo's snapshot restores only what the step changed — a record the
+student never had is removed, not written as its default.
+
+### [SECDEFAULT-OFFER-BEHIND-BOARD] The "Set as default order?" offer after a section drag on the board is drawn behind the board (filed 30 Sep 26)
+**Place:** low — with the next board change. Seen in passing by the group-A FULL walk (W1 G4,
+`docs/img/handpass/2026-09-30-dbrA/W1/W1.G4-offer-hidden-behind-board.png`): the snackbar only shows once ✓ Done closes
+the board. Not a storage matter; likely on `main` too (not compared). **Do:** lift the snackbar above the full-screen
+board, with the bug-check order's §6 layering test (the element at its centre is the snackbar).
+
+### [BLOCK-NO-HISTORY-LINE] Placing a duty block from + Block, or removing a medical document, writes no history line (filed 30 Sep 26)
+**Place:** low — with the next change-history change. Seen in passing by the group-A FULL walk: a block placed (W1 G2c)
+is saved (its day row, one batch) but the changes window has no line for it, unlike + Wave or + Line; a document removed
+from a medical request (W2 13g) saves the request with no line. Probably old behaviour (not compared). **Do:** log the
+block's addition as + Wave logs a wave's, and a document's removal as its addition is logged.
+
+### [ACCOUNTS-SEED-FIRST-WRITE] On a fresh DEMO browser, one tab's first account change can undo another's (filed 30 Sep 26)
+**Place:** low — demo only. Seen by the group-A FULL walk (W2 08a): a fresh browser, two tabs signed in before any account
+changed; A suspends Hex, B (not reloaded) adds a person with a sign-in → after a reload Hex's sign-in is ON again. A demo
+store holds no account rows until the first account write, which stores every account that tab holds
+(`src/state/accounts.ts` — "no account row at all = the seeded list in memory"), stale ones included. **Cannot reach a
+shared store:** there the first admin's account is stored at the first boot (phase 5.4), and the demo accounts never
+exist; once accounts are stored, every save is exact (W2 08h: two admins adding at once — both kept). **Do (if the demo
+should be exact too):** store the seeded accounts as rows in the first boot's group, as the roster's are.
+
+### [SETTINGS-LIST-ROWS] A setting that holds a list (the templates, the rules, the stores) is ONE row — two admins at once, the later wins (filed 30 Sep 26)
+**Place:** low — a stage-2 table split if squadron setup is ever edited by two admins at once. Seen by the group-A FULL
+walk (W2 10e): two tabs rename two DIFFERENT duty templates; after a reload only the later rename is there — each save
+rewrites `settings/dutytpl` whole. The plan decided it (§2.5: `settings/<key>` rows unchanged, "as today"; a variable list
+stays JSON on its parent at stage 1 — Astra R2-01): setup is admin-only and rare, and the day lock does not cover it.
+Recorded here so the choice is visible: wave, duty and day templates, the rules, the stores, the hidden wave types, the
+Leave War's settings-like lists all behave this way — and so does a Leave War period (W3 finding 1: its stage, window and
+events are one `war:` row). **On the database this is not silent:** the design refuses a stale write (`data-model.md` §9,
+reject and reload — `If-Match` on every update; the `LeaveWar` row added to its table 30 Sep 26), so the later admin is
+told and re-reads; only the stand-in store, with no row versions, lets the later write win. **Do (only if it bites):**
+split the template libraries into a row per template (`WaveTemplate`, `DutyTemplate`, `DayTemplate`) — a table-shape
+change, so tell IT first.
+
+### [LW-OIL-DATECHIP-HIDDEN] The OIL tracker's correction date calendar opens hidden behind the rows above (filed 30 Sep 26)
+**Place:** low — with the next OIL tracker change. Seen by the group-A FULL walk (W3 finding 3,
+`docs/img/handpass/2026-09-30-dbrA/W3/I8-correction-date-chip-open.png`): open the OIL tracker, give Warden a −1
+correction, tap its box, tap "📅 30 Sep 26 ▾" — the chip reads open but nothing is drawn; the day it would show sits under
+another row's box, so a correction's date cannot be changed through the app. Not a storage matter; not compared with
+`main`. **Do:** draw the calendar above the tracker's rows, with the bug-check order's §6 layering test.
+
+### [SHARED-OPENS-DEMO-WEEK] A shared store opens on the demo's week (13 Jul 26), not this week (filed 30 Sep 26)
+**Place:** before the first real deployment. Seen by the group-A FULL walk (W4 observation 2): on the shared-store build
+the schedule opens on the week of 13 Jul 26 and the Inputs form's calendar on July 2026 — the demo's boot week
+(`engine/waves.ts BOOT_WEEK`, set by `state/seeds.ts resetSeedWorld` under both policies). Nothing demo is stored; it is
+where the screens land. **Do:** under the shared policy open on the week holding today (the demo keeps its week).
+
+### [READONLY-WEEK-WORDS] A week read-only because a row will not read says "created by an older version … open it on the device that created it" (filed 30 Sep 26)
+**Place:** low — before the database step's first shared use. Seen by the group-A FULL walk (W4 observation 1): a
+hand-damaged day row makes the week read-only (correct), with a notice written for an older app's published schedule;
+"the device that created it" means nothing once the store is shared. `main`'s read-only week says the same. **Do:** say
+what happened and what to do in the app's words ("This week's saved copy could not be read — it is shown read-only. Ask
+an admin.").
+
+### [LW-LABEL-NO-DOOR] The Leave War's personnel label has no control on screen (filed 30 Sep 26)
+**Place:** low — a question for him before building. Seen by the group-A FULL walk (W4 observation 4): the war stores a
+man's personnel label (`leavewar/profile:<pid>` `label`, `setPersLabel`) and reads it, but no screen calls the setter,
+in `main` or this build — a stored field no one can set. **Do:** ask him whether the label is wanted; if yes, give it
+its door (the name sheet); if no, retire the field before IT settles `LeavePersonProfile`.
+
+### [ELOG-LINE-AFTER-COMMAND] A history line worded from its action's result is still saved as its own group (filed 30 Sep 26)
+**Place:** low — with group B (one changeset per command on the wire). The group-A FULL walk (H2) put every other edit's
+line inside its own action's saved group — a line given just BEFORE its command opens is held and adopted by it, and
+the board's structural edits now log first (`src/ui/board.ts`, `act`'s note). Left: a line whose words depend on how the
+action landed, so it can only be logged AFTER its command — the OIL Earn switches (a man, an item, the day's blanket), a
+plan switch (its "N differences pending"), a day template applied, a version loaded onto the working copy (its counts of
+what was replaced or left). Each is its own saved group with its own batch (named, never bare), a moment after its
+action's. **Do:** word the line inside the command (its latched effects see the result), e.g. `schedWrite(type, () => {
+…; logAction(di, wordsFrom(result)) })`.
+
 ### [TRK-REMOUNT-LANDING] Coming back to the Tracker the chart lands at its top corner, or with empty chart above (filed 28 Sep 26)
 **Place:** low — with the next Tracker change. Seen by the Tracker leftovers' walk, both walkers (walker a obs. 3 —
 the same person out and in, the chart jumps from the centred first ball to the top corner, scroll 73 → 396, phone
@@ -944,9 +1060,54 @@ team, Fable F10 / Astra DP-01, 28 Sep 26: declined there as the whole app's limi
 one browser; against the shared store the first screen reads only people, settings and the week on screen (with the days
 either side the crew-rest checks read), the Leave War and the Tracker read their own records when first opened, and the
 30-second check brings only what changed (`data-model.md` §8 "Per-collection lazy load", §9 the change feed). Measured
-against the fake database before the tables settle. With `[OIL-AWARD-IS-A-GRANT]`
+against the fake database before the tables settle. **Group A's plan (30 Sep 26, red-teamed by both, three rounds):
+`raptor-port/docs/superpowers/plans/2026-09-30-db-readiness-group-a-plan.md`; D460 (Quals is the truth for SXO — the war shows it read only,
+and cannot make anyone SXO) and D461 (the war's Edit person goes — seat, band and SXO change only on Quals) are built in its phase 3; the Tracker joins it (D462, phase 5b) and an empty real database starts the Tracker with no
+course (D463).** With `[OIL-AWARD-IS-A-GRANT]`
 and the small OIL follow-ups as ONE batch. **Tier:** FULL (saved data). **(1) in part, 29 Sep 26 (`[OIL-AWARD-IS-A-GRANT]`):
-the ledger's COMMAND records are one per entry now (`lw.ledger/<id>`); its STORAGE is still one blob (`leavewar/ledger`).**
+the ledger's COMMAND records are one per entry now (`lw.ledger/<id>`); its STORAGE is still one blob (`leavewar/ledger`)
+— until phase 3.** **(1) BUILT, 30 Sep 26, on `claude/db-readiness-table-shaping-4094f6` (not merged): the schedule a day per
+row (phase 1), the requests, the roster and the planning calendar a row each (phase 2), the Leave War a row per war,
+record, ledger entry, opening and man's profile (phase 3 — D460 and D461 built with it: no Edit person on the war); the
+change log — one `ChangeBatch` per saved group — the change history a row per line, each person's seen and the accounts,
+requests and admins' seen a row each, and every Tracker save and its own Undo / Redo inside their command (phase 4).
+**(4) BUILT, 30 Sep 26 (phase 5):** the boot policy (`src/bootpolicy.ts` — the demo by default; `VITE_SEED_DEMO=false` a
+shared store), the boot in one function (`src/boot.ts`), frozen seed copies reset every boot (`src/state/seeds.ts`); a
+shared store gets nothing demo — no requests, roster, weeks, accounts, Leave War world, Tracker course or pair (D463) —
+and its first admin from `VITE_BOOTSTRAP_ADMIN` (person, account and stamp in one group, idempotent, failing closed);
+the Leave War stands up with no war ("No leave period yet") and the Tracker with no course ("No course yet").
+**(1) for the Tracker BUILT, 30 Sep 26 (phase 5b — D462, D464):** the course list and the deleted courses one row per
+course, each course and chart's student list one row per enrolment, the charts one row per chart (definitions, names,
+order, hidden, deleted) and the details typed on each ball one row per chart and ball — a save writes only the rows it
+changed, so two people's work on two things never overwrites; a browser's old records are converted once at boot by the
+fold's eighth converter (the store's format is now 6), every chart, layout and detail carried across (tested: his old
+records read and export exactly as before). **Before its "merge live", remind him to EXPORT a copy of his Tracker first
+(D464).** Still in group A: the FULL check is DONE (30 Sep 26 — the walk and both code reads, every finding fixed; the evidence sheet `raptor-port/docs/handpass/2026-09-30-dbrA-group-walk.md`); his look, then phase 6, then 7; the plan's §9 is the build log.** **Phase 6 (plan `raptor-port/docs/superpowers/plans/2026-09-30-db-readiness-phase6-plan.md`) is built now, (c) included, without waiting for IT's written answers (D465, 30 Sep 26 — "Carry on"; D466 — only work needing IT's confirmation is held, and (c) does not): (a), (b) and (d) BUILT 30 Sep 26 (a hand-over, an Unavailable filing and a delete write no day; a deleted man is read off every day from his cutoff); (c) redesigned after both reviewers' round 1 (plan v2); round 2 (Fable REVISE, Astra BLOCK) — (c) v3 needs a holder base (dispositions r2). **The FULL bug check of (a), (b), (d) DONE 30 Sep 26 (D467 — `raptor-port/docs/handpass/2026-09-30-dbr-phase6-check.md`: the walk on both builds, both reads, every finding fixed or filed below). Next: his look (the card at its foot), then (c) v3 in a fresh chat on its own branch, its last review round, its build and its own FULL check.** **(c) v3 BUILT 1 Oct 26** on its own branch, `claude/db-readiness-p6c-holder-base` (D467): round 3 (Astra REVISE — 1; Fable REVISE — F1–F6; all folded into the build — `raptor-port/docs/superpowers/briefs/2026-10-01-db-readiness-phase6c-dispositions-r3.md`), the build (the plan's §9), its FULL check next; `[OIL-RELINK-XWEEK]` closed by it.
+**Found in phase 4, for phase 5b — FIXED 30 Sep 26 in phase 5b:** the
+Tracker writes one person's syllabus pick (D376 — his own last chart, a per-person view choice) into the course's SHARED
+plan record (`v3:<course>:plan` `sylId`, `src/tracker/app/core.js loadCourseNow`) whenever a course loads — in a shared
+store, whoever opened the course last would move everyone's chart. The plan's chart pointer should be the course's, the
+person's pick his own place. *(Fixed: a signed-in person's chart is read from and written to his own place only; the course's plan names the
+course's chart, written at its creation, a repair, an import, or by the standalone Tracker — `trk-rows.test.ts`.)* **And for group B:** the Leave War's "which war is on screen" (`leavewar/current`) is saved
+as shared data with a change-log batch — a per-person view choice (it is recorded, never honoured at boot — settled 7 Sep
+26); move it to per-person or per-browser state when the app is connected. **And for group B, from phase 6's FULL check
+(30 Sep 26 — `raptor-port/docs/handpass/2026-09-30-dbr-phase6-check.md`):** (i) *the delete's read-time overlay grows with
+the deleted roster* (Fable's final read, F2, low): `engine/overlay.ts overlayDeletedWeek` walks each day once per deleted man
+and finds each landed row's request by a full `INPUTS` search, on every read of a week inside every keystroke's `validate()`;
+a deleted man is never erased (D290). Measured ≈0.2 ms per `validate()` with two deleted (`raptor-port/docs/performance.md`
+item 26). Fix when the 30-second check lands (it runs the same overlay on a day on screen — measure it there): filter the
+cutoffs that reach the week once; one request index per call reading `r.iid` (never `inpId`, which mints on read); one
+src → holder map per day, `hisLanded` over the same helper (so the version-load belt cannot drift); and memoise
+`weekctx.ts bundle`'s overlaid seed on (week, `deletedSig()`). (ii) *A question for him, not urgent:* a delete writes its
+"seat emptied" history lines for the week ON SCREEN only (the requests', bids' and awards' lines are written whatever week
+is open — D337); pre-existing, not phase 6's. Fable's recommendation: leave it — the record of why (his "deleted" line, each
+request's line) is complete; a seat line for every week to come could be made on read once the 30-second check exists.
+(iii) *(c)'s after-command pass costs some 5–9 ms a command* (measured 1 Oct 26 against the build before (c), same machine:
+an edit that changes nothing 69 vs 65 ms, on the board 92 vs 83 ms; a real edit and the board level —
+`raptor-port/docs/handpass/2026-10-01-dbr-phase6c-check.md` §Gates): `state/holderbase.ts rederive` compares each day of
+the base as JSON and works the view out over a copy of all seven, at every scheduler command. Measure again with the
+30-second check (it runs the same pass); if it matters, compare only the days a command named plus those whose requests
+changed (`requestsSig` per day), and skip the view when neither moved.
 
 ### [IT-QUESTIONS] Talk to the IT side now — their approvals take weeks (his, not code; D203, filed 26 Sep 26)
 The checklist is the primer's §7 (Artifact "Raptor Backend Primer"; its questions, kept here so they outlive it): code apps
@@ -969,6 +1130,38 @@ reviews it and deploys it into the restricted environment after approving; minor
 a major change its own; the Dataverse connection will add files to the code "for reference" (the tables' shape); it all
 starts on HIS go-ahead to deploy. AI inside the restricted environment: only by opening the code in VS Code there and
 connecting his own Claude subscription (Edwin). What this does to the workflow and the bug check: `[RESTRICTED-ENV-WORKFLOW]`.
+**HEARD FROM THE IT SIDE, 30 Sep 26 (his words: "what i heard no plugin for now" — heard, not yet confirmed in writing):
+no plug-in for now.** What it does: (1) `data-model.md` §12 q9 — nothing on the server can write a day, so a member's
+input, a delete and a request handed on are worked out on read (§9 rule 9) with no alternative; `[DB-READINESS]` group A
+no longer waits on q9's answer (its reporting half still goes to IT). (2) D450's firm lock was designed with ONE plug-in
+plus SYSTEM Custom APIs (§3 ScheduleDay, §12 q8): row ownership alone still refuses another person's save, but a
+take-over, freeing an idle day and telling two tabs of one person apart need another route — decided with the lock's
+build (group B, D453), not now. **To ask IT:** is it plug-ins only, or also Custom APIs and Power Automate flows?
+**Held until IT answers in writing (D466, 30 Sep 26): any piece of work that rests on one of these answers — name the dependency and hold it; work that does not goes ahead.** And (30 Sep 26 — he found it in his environment's Power Apps menu): are Dataverse **Functions** (Power Fx, marked
+"Preview") allowed, and could one be the lock's small server-side check in place of a plug-in? Unverified that it can
+refuse a save to a day or act for a take-over — ask, and check Microsoft's current documentation before relying on it.
+**And (30 Sep 26, `[DB-READINESS]` group A phase 4 — `data-model.md` §12 q4, §9):** `EditLog.seq` is the store's own
+rising number, assigned as each line is saved (until then the app orders the history by time and its own line id, and
+"seen" and an account's `seenFrom` are positions in that order) — can they assign it? And the change log (`ChangeBatch`,
+one row per saved change, naming the rows it changed — §9) needs change tracking switched on for that one table.
+**And (30 Sep 26, `[DB-READINESS]` group A phase 5 — `data-model.md` §12 q11): the FIRST ADMIN of an empty store** — a build
+setting naming his sign-in and his person (or a `Person` IT made) from which the app's first start makes his admin account,
+or IT makes both rows; which do they prefer, where do app settings live, which value does sign-in hand the app (mail, UPN,
+object id) and can the UPN differ from the mail? **And three the plan names for IT (§4):** a decimal `sortIndex` on `Input`,
+`Person`, `LeaveBid` (order `(sortIndex, key)`); the app's own ids as unique ALTERNATE KEYS on every table (plus the design's
+natural keys — a week's start, week + day, a remark's date, person + counter); `InputType` and `LeaveCounter` seeded by IT
+from the app's shipped lists. **The whole list — 29 questions in four groups (A: before the tables settle; B: the day lock;
+C: the design's other open questions; D: environment and process), each with its context — was given to him as a
+copyable text on 30 Sep 26, to send to IT; record their answers here as they come.**
+
+### [LW-WINDOW-PRUNE-FLAKE-2] The month-window browser test's OTHER branch timed out once inside the full run — test-only (filed 30 Sep 26)
+`raptor-port/e2e/leavewar.spec.ts` "the grid draws a window of months over year-wide placeholders, keeps every row aligned,
+and draws in place" (lw-desktop) failed once in the full gate run on `claude/db-readiness-table-shaping-4094f6` (phase 4,
+557 of 558): January was NOT drawn when its button was pressed, and the 5-second poll for December to leave the drawn
+months ran out. The first fix (`[LW-WINDOW-PRUNE-FLAKE]`, archived 29 Sep 26) made the premise exact; this branch still
+waits a fixed 5 seconds for a prune that happens only when the PC is idle (`state/idle.ts`) — a busy PC outlasts it. Alone
+3 / 3 straight after; phase 4 does not touch the grid. **Do (D87):** wait on the idle signal or the window's settled state,
+not a fixed time. **Place:** test-only, low, any time.
 
 ### [PEEK-ISSUED] The desktop next-week preview on View-only Sched shows next week's working copy, even for a published day — a question for him (filed 26 Sep 26)
 Noted by the sweep behind `[LEAVE-LATE-PUBLISHED]` (Astra, its plan read; carried in `[LATE-PUB-FACE-LIVE]`, archived
@@ -1311,6 +1504,26 @@ refused, the role rules of `data-model.md` §11, the day lock D355/D356, the 30-
 only the real database shows; (4) the app says what went wrong in words he can copy out, so a fault seen there can be
 rebuilt in the stand-in; (5) the shipping rules (`.claude/rules/shipping.md` — "merge live", the Vercel link, "done means
 live") rewritten for pull requests to IT, on his word. **Place:** with `[DB-STEP]`, before the first deploy he approves.
+**His questions, 1 Oct 26, and the advice he was given** (not rulings — his answers still to come): *"when its in the database, its
+better for me to find bugs right?"* — yes for what only the database shows (two people on one day, the lock, slowness, real
+volumes), but on a TEST copy IT provides, never the live one; the app's own rules are still found the same way, by walking.
+*"should i put this in a database first or just continue working in my repo?"* — keep working here until phase 6 (c) and
+phase 7 are merged (they decide the tables' shape), then give IT the go-ahead; after the clone, work ONLY in IT's repo (one
+copy on his desktop), never two. **To ask IT, with (2) above:** a test environment separate from the live one, with test data,
+that this PC can run the app against (so the walk still runs); push access for branches and pull requests from his desktop;
+whether the checks run on each pull request and whether a preview link exists; that IT's own changes (the connection files)
+come back so the copies never drift. **Before the go-ahead:** the checks runner off this repo (`[REPO-PRIVATE]`, Astra SEC-101
+— IT cloning it is a collaborator), and `[REPO-TIDY]`'s screenshot move.
+
+### [REPO-TIDY] The folder is ~8 GB; the app ~14 MB of code and a ~2 MB built bundle (measured 1 Oct 26, his question)
+**Where it goes:** ~6.2 GB `.claude/worktrees/` — the working copies parallel chats made and left behind, each a full checkout
+with its own tools; ~1.2 GB `raptor-port/docs/` — mostly the walks' screenshots (`docs/img/handpass/`); ~0.9 GB the history
+(`.git`, every screenshot ever committed in it); ~150 MB `node_modules` (build tools, never shipped). Not inefficient code.
+**To do:** (1) clear the leftover worktrees — each checked first for unpushed or uncommitted work, only then removed
+(`git worktree list`, then per worktree `git status` and its branch against its remote); (2) before IT clones the repo,
+consider moving the walk screenshots out of it (and out of its history), or IT downloads ~1 GB of pictures with 14 MB of
+code — put the choice to him with `[RESTRICTED-ENV-WORKFLOW]`'s go-ahead. **Place:** (1) at any clean point, a short job;
+(2) before the go-ahead to IT.
 
 ### [GUIDE-MAP-ROWS] The guide's map table: its long rows to the full text too? — OPEN (the guide step, D391, 28 Sep 26)
 **What:** after the guide step the project guide is ~9.5k tokens, not the plan's ~6k. Of what is left, the map table

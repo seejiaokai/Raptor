@@ -1,0 +1,56 @@
+{
+ "base": "http://localhost:4201",
+ "at": "2026-09-30T11:21:44.420Z",
+ "results": [
+  {
+   "name": "the admin’s own edit is saved in a batch naming his account",
+   "ok": true,
+   "detail": "[\"sched.text acad\"]"
+  },
+  {
+   "name": "the sweep removed exactly the lines it said",
+   "ok": true,
+   "detail": "{\"said\":\"Tap again to clear 1 entry\",\"del\":1}"
+  },
+  {
+   "name": "ONE batch, the sweep's",
+   "ok": true,
+   "detail": "[\"elog.sweep\"]"
+  },
+  {
+   "name": "its batch names the admin who cleared it, not \"system\" (Fable F1)",
+   "ok": true,
+   "detail": "{\"actorId\":\"acad\",\"who\":\"acad\"}"
+  },
+  {
+   "name": "FINAL-1 the history cleared, after a reload — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "FINAL-1 the history cleared, after a reload — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "the grade saved its mark row, in a batch",
+   "ok": true,
+   "detail": "[[\"Setting tracker/v3:cmuo0m56st8u22a:last:smuo0m56vy5juyo\",\"Setting tracker/v3:cmuo0m56st8u22a:lastStudent\",\"Attempt tracker/v3:cmuo0m56st8u22a:sb2026:m:smuo0m56vy5juyo\"]]"
+  },
+  {
+   "name": "the batch names the mark's table Attempt, not Enrolment (Astra A3)",
+   "ok": true,
+   "detail": "[{\"table\":\"Attempt\",\"key\":\"tracker/v3:cmuo0m56st8u22a:sb2026:m:smuo0m56vy5juyo\",\"op\":\"put\"}]"
+  },
+  {
+   "name": "a date written with it is named Enrolment",
+   "ok": true,
+   "detail": "[]"
+  },
+  {
+   "name": "no console error, page error or failed request",
+   "ok": true,
+   "detail": "[]"
+  }
+ ]
+}

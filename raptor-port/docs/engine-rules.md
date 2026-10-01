@@ -522,9 +522,10 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   counts, which is why dormancy is an explicit mark and not "no acc". The
   mark survives week switches (`loadWeek`'s acc-clear skips `'r'`;
   `autoAcceptInput`'s truthy-acc guard refuses to re-land it; the week
-  stash's `un` set records ONLY explicit `'r'` rows — never acc-less ones,
-  which can mean "never landed" and must go on counting, 26 Aug 26 bug
-  pass), and `commitInputEdit` clears a stray `'r'` when a relink fails so a
+  load's taken-off list is read from explicit `'r'` rows ONLY — never acc-less
+  ones, which can mean "never landed" and must go on counting, 26 Aug 26 bug
+  pass; the list was the stash's `un` set until 30 Sep 26, `store.ts takenOff`
+  now — `[DB-READINESS]` group A, F3-02), and `commitInputEdit` clears a stray `'r'` when a relink fails so a
   retype-to-leave can never end up as dormant leave — and clears the park
   outright whenever a dormant record's TYPE changes (same pass: a retype is
   a different commitment, so it fails closed and counts; time/remark edits
@@ -1089,6 +1090,21 @@ flagged correctly and still swept the man out of the crew palette.
   The boot pass is parity-safe by the demoseed rule — it runs only where the
   harness never does — and wipes its own pending/added marks so the seed's
   auto-landed rows are the week's zero-state.
+  *(SUPERSEDED 1 Oct 26 by `[DB-READINESS]` group A phase 6 (c) — plan `docs/superpowers/plans/2026-09-30-db-readiness-phase6-plan.md`
+  §3 (c); D450: a request's row is WORKED OUT ON READ, never written by the request's command. After every command and at
+  every load (`state/holderbase.ts`, from the day as its holder last saved it) and whenever another week is read
+  (`engine/overlay.ts viewOfWeek`): an activity request that is not taken off ('r') or filed under Unavailable ('u') and has
+  no row standing anywhere lands on its START day — on a PUBLISHED day unless its current issued version placed it on that
+  day or took it off (so a request filed since lands pending, after a reload too), the oldest request first, below the rows
+  already there (so a row never moves down a line when someone else files), its new row on a published day marked as its
+  Accept marks it — the add on its item, not every box (the FULL check's walk, 1 Oct 26); a request MOVED to another day
+  lands there as filed — the scheduler's additions on its old row (a second man, a red box, a CX) stay with the old day,
+  back if it returns before that day is next saved (D468, owner, 1 Oct 26); a row carrying `kept` (brought
+  back by a version or a plan although its request could not stand there) is never the request's row — no OIL is earned
+  from it, the load does not read it as "landed", an issued one did not place the request (the FULL check's final reads); a row whose request is gone, retyped, or
+  no longer covers the day goes (unless `kept` — D363); a row whose request changed is re-made in place (its id, place and
+  every field the scheduler set kept; D271). A never-published day's landing makes no mark (its zero state, live and at
+  load alike). `autoAcceptInput` / `autoAcceptSeedInputs` are no longer the app's path (the second is gone).)*
 - **`dayOff` stays narrow — off for the WHOLE day.** It also feeds the
   day-info "off" tally and the palette's struck-through rank, and a man on AM
   leave is not off for the day. **Known, deliberate consequence: a half-day
@@ -1285,7 +1301,7 @@ reduced to flags — `{ f?: true, o?: true, a?: true }`, `f`/`o`/`a` for
 Fly/OFT/AMT (`SANS_KEY` in `avail.ts`), absent meaning NOT OFFERED. The one
 window applies to every ticked event. No migration for the old per-event
 `{s,e}` shape — **CORRECTED 17 Sep 26:** INPUTS are NOT session-only (they persist on a
-built site, `inputs/all`; CLAUDE.md §Architecture rules "WHAT ACTUALLY PERSISTS"). The
+built site — one row per request, `inputs/<iid>`, since 30 Sep 26; CLAUDE.md §Architecture rules "WHAT ACTUALLY PERSISTS"). The
 reason there is no migration is the owner's dev-phase rule (pre-promulgation demo data —
 reset, don't migrate; `storage/reset.ts` SCHEMA_VERSION), and the seed carries zero SANS
 records. `sansAvailOn(id,dt)` is the one place that finds the record covering
@@ -1406,7 +1422,7 @@ editable on the Quals page: the `san` column's tick writes `p.san` directly
 (not just the one-way-derived `p.quals.san`, which no gate reads — before the
 fix the tick was a no-op). **CORRECTED 17 Sep 26:** a qual tick is NOT session-only — the
 Quals page calls `persistPeople()` on every write, so `PEOPLE` (and `p.san` with it)
-survives a reload on a built site. **A second
+survives a reload on a built site (the changed person's own row, `people/<pid>`, since 30 Sep 26). **A second
 guard, `sansOverlapRefusal(person,date,endDate,except)`, refuses a record whose
 date range overlaps an existing SANS record for the same person** (`except` is
 the row being edited): SANS is one window per record, and two records on one
@@ -2433,17 +2449,22 @@ already flew keep his puck, and every day from his cutoff loses him.)*
 
 **A DELETED MAN ON A PUBLISHED DAY (`[POST-OUT-OUTCOMES]`, 27 Sep 26 — D297, D299; `state/person-delete.ts`).** The
 delete's cutoff is the later of its date and the calendar date (ONE clock — the posting pass's too; the real calendar date,
-never the demo's own "today" — D304). Every day BEFORE it
+never the demo's own "today" — D304). **Since 30 Sep 26 (`[DB-READINESS]` group A phase 6 (d)) the delete writes no week:**
+every working day from the cutoff is READ without him (`engine/overlay.ts`, wherever a week's days come into memory — the
+loaded week, a saved week read for anything, a week never saved; the week on screen right after the delete's command),
+and the day's holder saves it without him at his next change to it. Every day BEFORE it
 keeps his puck, published or not, and never reads pending for the delete: a published face compares a deleted man's
 roster attributes as they stood when the day was issued (`publish.ts peopleAttrsNow`), and ALL AVAIL counts him on those
 days as before (`leavewar/sync.ts availableFor`, by date). **An ARCHIVED man is read the same way, by his stints**
 (D327, 28 Sep 26 — "shouldnt all avail crowd remain the same as per how that was published?"): in the ALL AVAIL crowd on a
 day he was here, out from his archive on — so a day already published keeps the crowd it went out with and reads nothing
 pending for it; a day he is NAMED on still reads pending (D321 (7)). Every day FROM the cutoff loses him in every kind of slot —
-the loaded week through the funnel, every stashed week, the sign-off boxes, the OIL switches, the parked plans, the
-planning calendar; a published day to come then reads pending (as any change does). His inputs from the cutoff go (one
-spanning it ends the day before, its "till" tail rewritten); he earns no OIL from it. A stored week that cannot be read
-(or a preserved one) holding him refuses the whole delete, nothing changed. Nothing brings him back: loading a version
+every working day of every week, as it is read (above; its sign-off boxes, OIL switches and parked plans with it), and the
+planning calendar, which the delete writes; a published day to come then reads pending (as any change does). His inputs from
+the cutoff go (one spanning it ends the day before, its "till" tail rewritten); he earns no OIL from it. A stored week that
+cannot be read, or a read-only (preserved) one holding him on a day to come, refuses the whole delete, nothing changed —
+**the week on screen included** (the phase-6 FULL check, Fable's final read F1, 30 Sep 26: on screen it used to go ahead and
+a reload put him back; `person-delete.ts stashPreflight`). Nothing brings him back: loading a version
 or switching a plan leaves his rows out (`rowsLeftOut`), and an Undo step that would put him back is passed over and
 said (`undo/timeline.ts deadRefusal`).
 
@@ -3293,7 +3314,7 @@ refused while focus is in an editable field.
 The snapshot also carries the Inputs-calendar's two planning stores
 (`state/plan.ts`) — `PLANPUCKS` (`pp`) and `DAYRMK` (`dm`), the scheduler's
 month-calendar to-dos and day remarks. **CORRECTED 17 Sep 26:** both DO persist
-(`persistAll` writes them as the `plan/all` record); the old "neither persists to storage"
+(`persistAll` wrote them as the `plan/all` record; one row per note and per day title since 30 Sep 26, `[DB-READINESS]` group A, phase 2); the old "neither persists to storage"
 was written before the 8 Sep 26 storage work. They also ride undo/redo like any other edit; an older snapshot
 taken before this feature landed carries neither field and restores both to
 empty rather than throwing.

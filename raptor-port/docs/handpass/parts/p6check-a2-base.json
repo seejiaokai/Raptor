@@ -1,0 +1,165 @@
+{
+ "base": "http://localhost:4211",
+ "at": "2026-09-30T14:53:16.035Z",
+ "results": [
+  {
+   "name": "A2-1 Bolt files an overseas duty (OD) on Sat 18 Jul (Inputs page; OIL asked — Yes) — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 2 [inputs/imrldi1s0vquw1o, settings/elog:mrldi1s0c00p.000001] · del 0 [] · batches inputs.batch/2"
+  },
+  {
+   "name": "A2-2 OIL Earn: Bolt's duty claim switched off — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 3 [settings/elog:mrldi1s0c00p.000002, weeks/13-07-2026, weeks/13-07-2026#5] · del 0 [] · batches sched.oil/2 elog.line/1"
+  },
+  {
+   "name": "A2-4 the duty claim handed from Bolt to Ridge — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 3 [inputs/imrldi1s0vquw1o, settings/elog:mrldi1s0c00p.000008, weeks/13-07-2026#5] · del 0 [] · batches inputs.batch/3"
+  },
+  {
+   "name": "A2-5 handed back from Ridge to Bolt — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 2 [inputs/imrldi1s0vquw1o, settings/elog:mrldi1s0c00p.000009] · del 0 [] · batches inputs.batch/2"
+  },
+  {
+   "name": "A2-5 A → B → A: Bolt earns (the refusal from his first holding is void)",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "A2-6 two Undos: Bolt holds it with his refusal back (off)",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "A2-7 reload — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "A2-7 reload — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  }
+ ],
+ "table": [
+  {
+   "step": "A2-1",
+   "width": "desktop",
+   "did": "Bolt files an overseas duty (OD) on Sat 18 Jul (Inputs page; OIL asked — Yes)",
+   "pics": [
+    "A2-1-1-after.png"
+   ],
+   "shown": "",
+   "rows": "put 2: inputs/imrldi1s0vquw1o, settings/elog:mrldi1s0c00p.000001 · batches: inputs.batch(Input+EditLog, 2 rows, 1 history line, by acad)",
+   "batches": [
+    {
+     "key": "changes/cmrldi1s06hq4ir-1",
+     "type": "inputs.batch",
+     "actor": "acad",
+     "n": 2,
+     "seqs": [
+      1
+     ],
+     "tables": "Input+EditLog",
+     "elog": 1
+    }
+   ],
+   "pass": true,
+   "notes": [],
+   "fails": []
+  },
+  {
+   "step": "A2-2",
+   "width": "desktop",
+   "did": "OIL Earn: Bolt's duty claim switched off",
+   "pics": [
+    "A2-2-1-after.png",
+    "A2-2-claim-off.png"
+   ],
+   "shown": "",
+   "rows": "put 3: settings/elog:mrldi1s0c00p.000002, weeks/13-07-2026, weeks/13-07-2026#5 · batches: sched.oil(ScheduleWeek+ScheduleDay, 2 rows, by acad) + elog.line(EditLog, 1 rows, 1 history line, by system)",
+   "batches": [
+    {
+     "key": "changes/cmrldi1s06hq4ir-2",
+     "type": "sched.oil",
+     "actor": "acad",
+     "n": 2,
+     "seqs": [
+      2
+     ],
+     "tables": "ScheduleWeek+ScheduleDay",
+     "elog": 0
+    },
+    {
+     "key": "changes/cmrldi1s06hq4ir-g1",
+     "type": "elog.line",
+     "actor": "system",
+     "n": 1,
+     "seqs": [],
+     "tables": "EditLog",
+     "elog": 1
+    }
+   ],
+   "pass": true,
+   "notes": [],
+   "fails": []
+  },
+  {
+   "step": "A2-4",
+   "width": "desktop",
+   "did": "the duty claim handed from Bolt to Ridge",
+   "pics": [
+    "A2-4-1-after.png",
+    "A2-4-handed-ridge.png"
+   ],
+   "shown": "",
+   "rows": "put 3: inputs/imrldi1s0vquw1o, settings/elog:mrldi1s0c00p.000008, weeks/13-07-2026#5 · batches: inputs.batch(ScheduleDay+Input+EditLog, 3 rows, 1 history line, by acad)",
+   "batches": [
+    {
+     "key": "changes/cmrldi1s06hq4ir-9",
+     "type": "inputs.batch",
+     "actor": "acad",
+     "n": 3,
+     "seqs": [
+      9
+     ],
+     "tables": "ScheduleDay+Input+EditLog",
+     "elog": 1
+    }
+   ],
+   "pass": true,
+   "notes": [],
+   "fails": []
+  },
+  {
+   "step": "A2-5",
+   "width": "desktop",
+   "did": "handed back from Ridge to Bolt",
+   "pics": [
+    "A2-5-1-after.png",
+    "A2-5-back-bolt.png"
+   ],
+   "shown": "",
+   "rows": "put 2: inputs/imrldi1s0vquw1o, settings/elog:mrldi1s0c00p.000009 · batches: inputs.batch(Input+EditLog, 2 rows, 1 history line, by acad)",
+   "batches": [
+    {
+     "key": "changes/cmrldi1s06hq4ir-10",
+     "type": "inputs.batch",
+     "actor": "acad",
+     "n": 2,
+     "seqs": [
+      10
+     ],
+     "tables": "Input+EditLog",
+     "elog": 1
+    }
+   ],
+   "pass": true,
+   "notes": [],
+   "fails": []
+  }
+ ],
+ "tag": "base"
+}

@@ -14,8 +14,8 @@ import { App } from './App'
 import { initStore, setSession, notify, writeInputsBatch } from '../state/store'
 import { INPUTS, inpId, inputCoversDate } from '../engine/inputs'
 import { isSpecial } from '../engine/people'
-import { SCHED } from '../engine/publish'
-import { acceptInput } from '../engine/slots'
+import { SCHED, dayFilingFingerprint } from '../engine/publish'
+import { acceptInput, unacceptInput, acceptedDay } from '../engine/slots'
 import { HOOKS } from '../engine/hooks'
 import { afterSchedMutate } from '../state/view'
 import * as view from '../state/view'
@@ -47,6 +47,10 @@ const dnd = async (from: Element, to: Element) => {
 }
 
 const MON = 'Jul 13'
+/* [DB-READINESS] phase 6 (c): an activity request is on the programme the moment it is filed — its row worked out on read
+   (state/holderbase.ts). Filing it under Unavailable, or Accepting it onto another day, is what the app's own card does
+   then: ✕ first (take it off), then the filing — never a filing onto an unplaced request, which no longer exists. */
+const place = (di: number, inp: any, dest: any) => { if (inp.acc === 'g') unacceptInput(acceptedDay(inp), inp); return acceptInput(di, inp, dest) }
 /* Monday's own seed rows, unmodified by these tests: divot (OML — an
    isUnavail type, no acc needed to show under Unavailable) and vinci
    (Meeting — an ordinary type, so a fresh copy is filed with acc:'u' where a
@@ -111,7 +115,7 @@ describe('the dialog — a Person field, admin only', () => {
   it('changing Person and saving reassigns the row, keeps it filed and stays open on the SAME record', async () => {
     const inp: any = { person: 'stiff', date: MON, allday: false, s: 600, e: 660, type: 'Meeting', remarks: 'dialog reassign', mod: '' }
     await act(async () => { writeInputsBatch(() => { inpId(inp); INPUTS.unshift(inp) }); notify() })
-    expect(acceptInput(0, inp, 'u')).toBe(true)
+    expect(place(0, inp, 'u')).toBe(true)
     await act(async () => { afterSchedMutate(); notify() })
     await act(async () => { setInpEdit(inp); notify() })
     await act(async () => {
@@ -140,7 +144,7 @@ const scrap = (r: any) => { if (INPUTS.indexOf(r) >= 0) removeInput(r) }
 describe('reassignInput — the shared write both the dialog and the puck use', () => {
   it('reassigning a filed (acc:"u") input keeps it filed, same row, same iid', () => {
     const inp: any = plant({ person: 'bane', date: MON, allday: false, s: 600, e: 660, type: 'Meeting', remarks: 'handover', mod: '' })
-    expect(acceptInput(0, inp, 'u')).toBe(true)
+    expect(place(0, inp, 'u')).toBe(true)
     afterSchedMutate()
     const iid = inp.iid
     expect(reassignInput(iid, 'stiff')).toBe(true)
@@ -154,7 +158,7 @@ describe('reassignInput — the shared write both the dialog and the puck use', 
 
   it('refuses a no-op reassign onto the same person, silently', () => {
     const inp: any = plant({ person: 'bane', date: MON, allday: false, s: 600, e: 660, type: 'Meeting', remarks: 'noop', mod: '' })
-    expect(acceptInput(0, inp, 'u')).toBe(true)
+    expect(place(0, inp, 'u')).toBe(true)
     afterSchedMutate()
     expect(reassignInput(inp.iid, 'bane')).toBe(false)
     expect(inp.person).toBe('bane')
@@ -168,7 +172,7 @@ describe('reassignInput — the shared write both the dialog and the puck use', 
 
   it('refuses a SENTINEL placeholder (ALL AVAIL etc.) — the roster palette still offers them, this dialog\'s own Person field does not', () => {
     const inp: any = plant({ person: 'bane', date: MON, allday: false, s: 600, e: 660, type: 'Meeting', remarks: 'sentinel refusal', mod: '' })
-    expect(acceptInput(0, inp, 'u')).toBe(true)
+    expect(place(0, inp, 'u')).toBe(true)
     afterSchedMutate()
     expect(reassignInput(inp.iid, 'allavail')).toBe(false)
     expect(inp.person).toBe('bane')
@@ -177,7 +181,7 @@ describe('reassignInput — the shared write both the dialog and the puck use', 
 
   it('refuses a reassign for a non-scheduler — the write-path role backstop', () => {
     const inp: any = plant({ person: 'bane', date: MON, allday: false, s: 600, e: 660, type: 'Meeting', remarks: 'role backstop', mod: '' })
-    expect(acceptInput(0, inp, 'u')).toBe(true)
+    expect(place(0, inp, 'u')).toBe(true)
     afterSchedMutate()
     setSession({ user: 'user', role: 'main' })   // a member may edit their own inputs, not reassign whose day this is
     expect(reassignInput(inp.iid, 'stiff')).toBe(false)
@@ -198,7 +202,7 @@ describe('reassignInput — the shared write both the dialog and the puck use', 
 describe('a filed (acc:"u") input survives an edit of any field — regression pins', () => {
   it('a TIME edit keeps it filed', () => {
     const inp: any = plant({ person: 'bane', date: MON, allday: false, s: 600, e: 660, type: 'Meeting', remarks: 'time pin', mod: '' })
-    expect(acceptInput(0, inp, 'u')).toBe(true)
+    expect(place(0, inp, 'u')).toBe(true)
     afterSchedMutate()
     expect(setInpField(inp, 'str', '07:00')).toBe(true)
     expect(inp.s).toBe(420)
@@ -208,7 +212,7 @@ describe('a filed (acc:"u") input survives an edit of any field — regression p
 
   it('a PERSON edit keeps it filed (the shape the task brief called the bug)', () => {
     const inp: any = plant({ person: 'bane', date: MON, allday: false, s: 600, e: 660, type: 'Meeting', remarks: 'person pin', mod: '' })
-    expect(acceptInput(0, inp, 'u')).toBe(true)
+    expect(place(0, inp, 'u')).toBe(true)
     afterSchedMutate()
     const draft = draftOf(inp); draft.person = 'stiff'
     expect(commitInputEdit(inp, draft)).toBe(true)
@@ -221,15 +225,18 @@ describe('a filed (acc:"u") input survives an edit of any field — regression p
 describe('a multi-day filing stays filed on every covered day after a person change', () => {
   it('re-files Tue/Wed/Thu under the new name, not just the start day', () => {
     const inp: any = plant({ person: 'stiff', date: 'Jul 14', endDate: 'Jul 16', allday: true, s: 0, e: 1439, type: 'Other', remarks: 'span reassign', mod: '' })
-    expect(acceptInput(1, inp, 'u')).toBe(true)
+    expect(place(1, inp, 'u')).toBe(true)
     afterSchedMutate()
     const token = inp.iid
-    const keysFor = (id: string) => Object.keys(SCHED.pending).filter(k => k.startsWith('inp:') && k.endsWith('.' + id)).sort()
-    expect(keysFor(token)).toEqual([`inp:1.${token}`, `inp:2.${token}`, `inp:3.${token}`])
+    /* [DB-READINESS] group A, phase 6 (b): each covered day READS the filing (dayFilingFingerprint — what the pending
+       count compares); no `inp:` mark is written */
+    const filedOn = () => [1, 2, 3].map(di => dayFilingFingerprint(di)[token])
+    expect(filedOn()).toEqual(['u', 'u', 'u'])
     expect(reassignInput(token, 'bane')).toBe(true)
     expect(inp.person).toBe('bane')
     expect(inp.acc).toBe('u')
-    expect(keysFor(token), 'every covered day still carries the filing mark').toEqual([`inp:1.${token}`, `inp:2.${token}`, `inp:3.${token}`])
+    expect(filedOn(), 'every covered day still reads the filing').toEqual(['u', 'u', 'u'])
+    expect(Object.keys(SCHED.pending).filter(k => k.startsWith('inp:')), 'and none carries a mark').toEqual([])
     expect(['Jul 14', 'Jul 15', 'Jul 16'].every(dt => inputCoversDate(inp, dt))).toBe(true)
     scrap(inp)
   })
@@ -286,7 +293,7 @@ describe('the puck itself — armed tap, and drag, on both surfaces', () => {
   it('a puck dragged from the roster onto the board\'s Unavailable seat reassigns it, without a ground-seat write anywhere', async () => {
     const inp: any = { person: 'bane', date: MON, allday: false, s: 600, e: 660, type: 'Meeting', remarks: 'drag target', mod: '' }
     await act(async () => { writeInputsBatch(() => { inpId(inp); INPUTS.unshift(inp) }); notify() })
-    expect(acceptInput(0, inp, 'u')).toBe(true)
+    expect(place(0, inp, 'u')).toBe(true)
     await act(async () => { afterSchedMutate(); notify() })
 
     await act(async () => { openScheduler(0); notify() })

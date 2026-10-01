@@ -1,0 +1,594 @@
+{
+ "tag": "p6c",
+ "facts": {
+  "U1.weekRowsWritten": [],
+  "U1.rows": [
+   {
+    "di": 3,
+    "ri": 3,
+    "prog": "MEETING",
+    "str": "10:00",
+    "end": "11:00",
+    "who": "bane",
+    "more": [],
+    "rmks": "P6C MEETING",
+    "kept": false,
+    "info": false,
+    "flag": null,
+    "cx": null
+   }
+  ],
+  "U1.acc": "g",
+  "U1.toasts": [],
+  "U1.head3": {
+   "tag": "DRAFT",
+   "pending": "1 change",
+   "beak": "locked",
+   "alpub": "",
+   "unpub": "",
+   "signs": [
+    "— name —",
+    "— name —",
+    "— name —",
+    "— name —"
+   ],
+   "signed": "",
+   "nys": ""
+  },
+  "U1.head4": {
+   "tag": "DRAFT",
+   "pending": "",
+   "beak": "locked",
+   "alpub": "",
+   "unpub": "",
+   "signs": [
+    "— name —",
+    "— name —",
+    "— name —",
+    "— name —"
+   ],
+   "signed": "",
+   "nys": ""
+  },
+  "U1.al": {
+   "line": "No pending changes",
+   "drop": {
+    "disabled": true,
+    "title": "Nothing to clear — a published day’s changes stay until you publish them or put them back"
+   },
+   "days": []
+  },
+  "U1r.rows": [
+   {
+    "di": 3,
+    "ri": 3,
+    "prog": "MEETING",
+    "str": "10:00",
+    "end": "11:00",
+    "who": "bane",
+    "more": [],
+    "rmks": "P6C MEETING",
+    "kept": false,
+    "info": false,
+    "flag": null,
+    "cx": null
+   }
+  ],
+  "U1r.acc": "g",
+  "U2.put": "yeti",
+  "U2.weekRowsWritten": [
+   "weeks/13-07-2026",
+   "weeks/13-07-2026#3"
+  ],
+  "U2.rows": [
+   {
+    "di": 3,
+    "ri": 3,
+    "prog": "MEETING",
+    "str": "10:30",
+    "end": "11:00",
+    "who": "bane",
+    "more": [
+     "yeti"
+    ],
+    "rmks": "P6C MEETING",
+    "kept": false,
+    "info": false,
+    "flag": null,
+    "cx": null
+   }
+  ],
+  "U2.acc": "g",
+  "U3.del": "gone",
+  "U3.weekRowsWritten": [],
+  "U3.toasts": [
+   "Input deleted"
+  ],
+  "U3.rows": [],
+  "U3.acc": "(gone)",
+  "U3.head3": {
+   "tag": "DRAFT",
+   "pending": "3 new",
+   "beak": "none",
+   "alpub": "",
+   "unpub": "",
+   "signs": [],
+   "signed": "",
+   "nys": ""
+  },
+  "U3.head4": {
+   "tag": "DRAFT",
+   "pending": "",
+   "beak": "none",
+   "alpub": "",
+   "unpub": "",
+   "signs": [],
+   "signed": "",
+   "nys": ""
+  },
+  "U3.al": {
+   "line": "No pending changes",
+   "drop": {
+    "disabled": true,
+    "title": "Nothing to clear — a published day’s changes stay until you publish them or put them back"
+   },
+   "days": []
+  },
+  "U4.undo": {
+   "present": true,
+   "title": "Undo — a personal input",
+   "pressed": true,
+   "toasts": [
+    "Undid: a personal input"
+   ]
+  },
+  "U4.weekRowsWritten": [],
+  "U4.rows": [
+   {
+    "di": 3,
+    "ri": 3,
+    "prog": "MEETING",
+    "str": "10:30",
+    "end": "11:00",
+    "who": "bane",
+    "more": [
+     "yeti"
+    ],
+    "rmks": "P6C MEETING",
+    "kept": false,
+    "info": false,
+    "flag": null,
+    "cx": null
+   }
+  ],
+  "U4.acc": "g",
+  "U4.head3": {
+   "tag": "DRAFT",
+   "pending": "3 new",
+   "beak": "none",
+   "alpub": "",
+   "unpub": "",
+   "signs": [],
+   "signed": "",
+   "nys": ""
+  },
+  "U4.head4": {
+   "tag": "DRAFT",
+   "pending": "",
+   "beak": "none",
+   "alpub": "",
+   "unpub": "",
+   "signs": [],
+   "signed": "",
+   "nys": ""
+  },
+  "U4.al": {
+   "line": "Changes are on unpublished days — publish the day first",
+   "drop": {
+    "disabled": false,
+    "title": "Clear the marks on days not yet published (2)"
+   },
+   "days": []
+  },
+  "U4r.rows": [
+   {
+    "di": 3,
+    "ri": 3,
+    "prog": "MEETING",
+    "str": "10:30",
+    "end": "11:00",
+    "who": "bane",
+    "more": [
+     "yeti"
+    ],
+    "rmks": "P6C MEETING",
+    "kept": false,
+    "info": false,
+    "flag": null,
+    "cx": null
+   }
+  ],
+  "U4r.acc": "g",
+  "U5.del": "gone",
+  "U5.undo": {
+   "present": true,
+   "title": "Undo — a personal input",
+   "pressed": true,
+   "toasts": [
+    "Undid: a personal input"
+   ]
+  },
+  "U5.afterUndo": [
+   {
+    "di": 3,
+    "ri": 3,
+    "prog": "MEETING",
+    "str": "10:30",
+    "end": "11:00",
+    "who": "bane",
+    "more": [
+     "yeti"
+    ],
+    "rmks": "P6C MEETING",
+    "kept": false,
+    "info": false,
+    "flag": null,
+    "cx": null
+   }
+  ],
+  "U5.redo": {
+   "present": true,
+   "title": "Redo — a personal input",
+   "pressed": true,
+   "toasts": [
+    "Redid: a personal input"
+   ]
+  },
+  "U5.weekRowsWritten": [],
+  "U5.rows": [],
+  "U5.acc": "(gone)",
+  "U5r.rows": [],
+  "U5r.head3": {
+   "tag": "DRAFT",
+   "pending": "3 new",
+   "beak": "none",
+   "alpub": "",
+   "unpub": "",
+   "signs": [],
+   "signed": "",
+   "nys": ""
+  },
+  "U5r.head4": {
+   "tag": "DRAFT",
+   "pending": "",
+   "beak": "none",
+   "alpub": "",
+   "unpub": "",
+   "signs": [],
+   "signed": "",
+   "nys": ""
+  },
+  "U5r.al": {
+   "line": "No pending changes",
+   "drop": {
+    "disabled": true,
+    "title": "Nothing to clear — a published day’s changes stay until you publish them or put them back"
+   },
+   "days": []
+  },
+  "U6.weekRowsWritten": [],
+  "U6.rows": [
+   {
+    "di": 3,
+    "ri": 3,
+    "prog": "MEETING",
+    "str": "13:00",
+    "end": "14:00",
+    "who": "bane",
+    "more": [],
+    "rmks": "P6C RANGER OWN",
+    "kept": false,
+    "info": false,
+    "flag": null,
+    "cx": null
+   }
+  ],
+  "U6.acc": "g",
+  "U6.head3": {
+   "tag": "DRAFT",
+   "pending": "3 new",
+   "beak": "none",
+   "alpub": "",
+   "unpub": "",
+   "signs": [],
+   "signed": "",
+   "nys": ""
+  },
+  "U6.head4": {
+   "tag": "DRAFT",
+   "pending": "",
+   "beak": "none",
+   "alpub": "",
+   "unpub": "",
+   "signs": [],
+   "signed": "",
+   "nys": ""
+  },
+  "U6.al": {
+   "line": "No pending changes",
+   "drop": {
+    "disabled": true,
+    "title": "Nothing to clear — a published day’s changes stay until you publish them or put them back"
+   },
+   "days": []
+  },
+  "U7.save": "saved",
+  "U7.weekRowsWritten": [],
+  "U7.rows": [
+   {
+    "di": 3,
+    "ri": 3,
+    "prog": "MEETING",
+    "str": "13:00",
+    "end": "14:00",
+    "who": "bane",
+    "more": [],
+    "rmks": "P6C RANGER EDITED",
+    "kept": false,
+    "info": false,
+    "flag": null,
+    "cx": null
+   }
+  ],
+  "U7.acc": "g",
+  "U7t.rows": [
+   {
+    "di": 3,
+    "ri": 3,
+    "prog": "MEETING",
+    "str": "13:30",
+    "end": "14:00",
+    "who": "bane",
+    "more": [],
+    "rmks": "P6C RANGER EDITED",
+    "kept": false,
+    "info": false,
+    "flag": null,
+    "cx": null
+   }
+  ],
+  "U7t.acc": "g",
+  "U7.toasts": [
+   "Input updated"
+  ],
+  "U7r.rows": [
+   {
+    "di": 3,
+    "ri": 3,
+    "prog": "MEETING",
+    "str": "13:30",
+    "end": "14:00",
+    "who": "bane",
+    "more": [],
+    "rmks": "P6C RANGER EDITED",
+    "kept": false,
+    "info": false,
+    "flag": null,
+    "cx": null
+   }
+  ],
+  "U8.read": "17 Jul",
+  "U8.weekRowsWritten": [],
+  "U8.toasts": [
+   "Input updated"
+  ],
+  "U8.rows": [
+   {
+    "di": 4,
+    "ri": 2,
+    "prog": "MEETING",
+    "str": "13:30",
+    "end": "14:00",
+    "who": "bane",
+    "more": [],
+    "rmks": "P6C RANGER EDITED till 17 Jul",
+    "kept": false,
+    "info": false,
+    "flag": null,
+    "cx": null
+   }
+  ],
+  "U8.acc": "g",
+  "U8.head3": {
+   "tag": "DRAFT",
+   "pending": "3 new",
+   "beak": "none",
+   "alpub": "",
+   "unpub": "",
+   "signs": [],
+   "signed": "",
+   "nys": ""
+  },
+  "U8.head4": {
+   "tag": "DRAFT",
+   "pending": "2 changes",
+   "beak": "none",
+   "alpub": "",
+   "unpub": "",
+   "signs": [],
+   "signed": "",
+   "nys": ""
+  },
+  "U8.al": {
+   "line": "No pending changes",
+   "drop": {
+    "disabled": true,
+    "title": "Nothing to clear — a published day’s changes stay until you publish them or put them back"
+   },
+   "days": []
+  },
+  "U8.undo": {
+   "present": true,
+   "title": "Undo — a personal input",
+   "pressed": true,
+   "toasts": [
+    "Undid: a personal input"
+   ]
+  },
+  "U8u.rows": [
+   {
+    "di": 3,
+    "ri": 3,
+    "prog": "MEETING",
+    "str": "13:30",
+    "end": "14:00",
+    "who": "bane",
+    "more": [],
+    "rmks": "P6C RANGER EDITED",
+    "kept": false,
+    "info": false,
+    "flag": null,
+    "cx": null
+   }
+  ],
+  "U8u.acc": "g",
+  "U8r.rows": [
+   {
+    "di": 3,
+    "ri": 3,
+    "prog": "MEETING",
+    "str": "13:30",
+    "end": "14:00",
+    "who": "bane",
+    "more": [],
+    "rmks": "P6C RANGER EDITED",
+    "kept": false,
+    "info": false,
+    "flag": null,
+    "cx": null
+   }
+  ],
+  "U9.rows1": [],
+  "U9.rows2": [
+   {
+    "di": 3,
+    "ri": 3,
+    "prog": "MEETING",
+    "str": "13:30",
+    "end": "14:00",
+    "who": "bane",
+    "more": [],
+    "rmks": "P6C RANGER EDITED",
+    "kept": false,
+    "info": false,
+    "flag": null,
+    "cx": null
+   }
+  ],
+  "U9.head3": {
+   "tag": "DRAFT",
+   "pending": "11 new",
+   "beak": "locked",
+   "alpub": "",
+   "unpub": "",
+   "signs": [
+    "— name —",
+    "— name —",
+    "— name —",
+    "— name —"
+   ],
+   "signed": "",
+   "nys": ""
+  },
+  "U9.head4": {
+   "tag": "DRAFT",
+   "pending": "3 new",
+   "beak": "locked",
+   "alpub": "",
+   "unpub": "",
+   "signs": [
+    "— name —",
+    "— name —",
+    "— name —",
+    "— name —"
+   ],
+   "signed": "",
+   "nys": ""
+  },
+  "U9.al": {
+   "line": "No pending changes",
+   "drop": {
+    "disabled": true,
+    "title": "Nothing to clear — a published day’s changes stay until you publish them or put them back"
+   },
+   "days": []
+  },
+  "U10.weekRowsWritten": [
+   "weeks/13-07-2026#3"
+  ],
+  "U10.rows1": [],
+  "U10.rows2": [
+   {
+    "di": 3,
+    "ri": 3,
+    "prog": "MEETING",
+    "str": "13:30",
+    "end": "14:00",
+    "who": "bane",
+    "more": [],
+    "rmks": "P6C RANGER EDITED",
+    "kept": false,
+    "info": false,
+    "flag": null,
+    "cx": null
+   }
+  ],
+  "U10.stored": [
+   {
+    "src": "second",
+    "str": "13:30",
+    "more": [],
+    "kept": false
+   }
+  ],
+  "U10.head3": {
+   "tag": "DRAFT",
+   "pending": "11 new",
+   "beak": "locked",
+   "alpub": "",
+   "unpub": "",
+   "signs": [
+    "— name —",
+    "— name —",
+    "— name —",
+    "— name —"
+   ],
+   "signed": "",
+   "nys": ""
+  },
+  "U10.head4": {
+   "tag": "DRAFT",
+   "pending": "3 new",
+   "beak": "locked",
+   "alpub": "",
+   "unpub": "",
+   "signs": [
+    "— name —",
+    "— name —",
+    "— name —",
+    "— name —"
+   ],
+   "signed": "",
+   "nys": ""
+  },
+  "U10.al": {
+   "line": "Changes are on unpublished days — publish the day first",
+   "drop": {
+    "disabled": false,
+    "title": "Clear the marks on days not yet published (1)"
+   },
+   "days": []
+  },
+  "errors": []
+ }
+}

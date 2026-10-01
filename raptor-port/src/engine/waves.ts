@@ -127,7 +127,9 @@ export function dayCount(d:any){
 }
 /* ---- weeks ---- */
 export const WEEKS=[{lbl:'Jun 29',v:'29/06/2026'},{lbl:'Jul 06',v:'06/07/2026'},{lbl:'Jul 13',v:'13/07/2026'},{lbl:'Jul 20',v:'20/07/2026'},{lbl:'Jul 27',v:'27/07/2026'}];
-export let CURWEEK='13/07/2026';
+/* the week every boot opens on ([DB-READINESS] group A, phase 5 — state/seeds.ts resets to it) */
+export const BOOT_WEEK='13/07/2026';
+export let CURWEEK=BOOT_WEEK;
 export function setCurWeek(v:any){ CURWEEK=v }
 
 /* ---- mission → colour ---- */

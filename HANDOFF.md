@@ -15,120 +15,77 @@ the later merge keeps both (D78).
 
 ## Now
 
-<!-- now:claude/day-lock-mockup-data-model-493d27 -->
-### `claude/day-lock-mockup-data-model-493d27` — `[DB-SYNC-MODEL]` DONE: the day-lock mock-up and `data-model.md` rewritten to his answers, three red-team rounds closed at his cap — documents only — written 29 Sep 26 — verify before use
-- **Where it started:** his ask: the mock-up of the day lock (D355, D356), §9 rewritten to his answers, both reviewers' red team.
-  On the way he ruled D450 (the lock firm — the database refuses a non-holder), D451 (a change takes a free day), D452
-  (Fast sync off after 20 minutes), D453 (the order: this design → `[DB-READINESS]` group A before IT settles its tables →
-  connection → group B → the lock's screens), D454 (a take-over asks first, 1 minute, "Take over anyway", a saved plan).
-- **Shipped (on this branch):** `raptor-port/docs/mock/day-lock.html` (Artifact "Taking a Day to Edit", version 3; pictures by
-  `raptor-port/scripts/handpass/mk-day-lock.mjs`, preview `raptor-daylock` port 4187); `raptor-port/docs/data-model.md` §3,
-  §5–§12 (a row per day carrying its lock; ownership + one required server check — plug-in and SYSTEM Custom APIs;
-  `PlanningPuck`, `DayRemark`, per-day `Amendment`, `AmendmentRetraction`, `IssuedSignoff`, `TakeOverRequest`, `ChangeBatch`;
-  §12 q8–10 for IT); replaced text in `raptor-port/docs/archive/data-model-2026-09-29.md`; the three rounds and every
-  disposition in `raptor-port/docs/superpowers/briefs/2026-09-29-day-lock-redteam-reviews.md`. PR #475 — "merge live" given
-  29 Sep 26, merging when written; check before acting.
-- **Unfinished:** none of this chat's. Residue filed: `[DB-SYNC-MODEL]` (the lock's build — his mock-up questions 1, 3–6,
-  the screens of §9 rule 13, the §11 rows with `perms.ts`, IT's server check, q10 before stage 2); `[DB-READINESS]` group A
-  (the shape work this design hands it); `[IT-QUESTIONS]` (the check, the free team, the licence and its 40,000 a day).
-- **Branch:** `claude/day-lock-mockup-data-model-493d27`. Once merged, never pick it again.
-- **Gates:** not run — documents, a picture script and pictures only; nothing under `raptor-port/src` changed (the one src
-  file in the diff, `histlist.test.tsx`, came in with `main`).
-- **Open questions for him:** the mock-up's questions 1 (approve as drawn), 3 (the board's ✓ Done frees the day?), 4 (Undo on
-  a day given back), 5 (no lock outside the schedule), 6 (the Sync chip opens a menu) — for the lock's build, not before.
-- **Parallel (D302):** rulings D450–D459 (D450–D454 used); the Leave War drag chat D430–D439, the DB-sync mock-up chat
-  D440–D449; observations #355–#359 (#355–#356 used).
-- **Pick up here:** after his "merge live", a fresh chat on `main` for `[DB-READINESS]` group A (`OUTSTANDING.md`, its
-  SPLIT line), reading `data-model.md` §3 and §9 first.
+<!-- now:claude/db-readiness-p6c-holder-base -->
+### `claude/db-readiness-p6c-holder-base` — `[DB-READINESS]` group A phase 6 (c) v3, the holder base: BUILT and FULL-checked (1 Oct 26, D467) — written 1 Oct 26 — verify before use
+- **This chat:** his opening line (round 3, the build and its FULL check of (c) v3 on a new branch cut from
+  `claude/db-readiness-table-shaping-4094f6`) — all done. One ruling: D468 (a moved request's extras stay with the old day — leave it); D469 unused. He asked, and was answered in
+  plain words (filed, not ruled): how long; what comes next; whether to build against the database (yes, on IT's TEST copy)
+  and whether to move now (after (c) and phase 7 merge; then one repo only) — `[RESTRICTED-ENV-WORKFLOW]`; why the folder is
+  8 GB (leftover worktrees ~6 GB, pictures, history — not the code) — `[REPO-TIDY]`.
+- **Built:** plan §3 (c) v3 and §9 (`raptor-port/docs/superpowers/plans/2026-09-30-db-readiness-phase6-plan.md`); round 3's
+  dispositions `…/briefs/2026-10-01-db-readiness-phase6c-dispositions-r3.md`.
+- **The check:** `raptor-port/docs/handpass/2026-10-01-dbr-phase6c-check.md` — Astra's scenarios (one reviewer); seven
+  walks (`scripts/handpass/p6c-walk-*.mjs`), each on this build AND the build before (c) (`9191910b`, served from
+  `raptor-port/dist-p6cbase` — ignored; `.claude/launch.json` `raptor-p6c` 4203 / `raptor-p6c-base` 4202), one at phone
+  width; the gates and perf; both final reads (Astra REVISE 1–4, Fable REVISE F1–F2 + F3 low) — every finding fixed red
+  first but Astra #3's Accept half (declined, with its reason) and F3 (measured, filed); the re-walk of all eight, 189/189.
+- **Found and fixed, red first:** new filings landed above older rows (W1); a member's new row on a published day marked on
+  every box (W2); a dead `kept` row taken for the request's row — the load's filing (another day's, and the version's own
+  issued dead), the changes-window jump, the retype message, **the OIL evidence (money: a man on the dead row of a request
+  filed under Unavailable was paid)**, a dead issued row read as its placement, a dead row's marks cleared by another
+  request; the load's confirm count ("already at Original"); a landing's id colliding with a stored dead row (Fable F1);
+  the baseline after a delete's book change (Fable F2). **The one rule since: a row that carries `kept` is never the
+  request's row.** **Intended, plan §8 items 14–15:** a moved request leaves the scheduler's additions on the old day
+  (**his answer, 1 Oct 26: leave it — D468**); an issued row's retimed mark on the time box. **Filed for group B:** the
+  after-command pass costs ~5–9 ms a command (`[DB-READINESS]` (iii)).
+- **Unfinished:** his look (the card at the foot of the sheet); then "merge live" —
+  this branch AND its parent `claude/db-readiness-table-shaping-4094f6` (phases 0–6), whose own cards are still unlooked-at.
+  **Before "merge live": remind him to EXPORT a copy of his Tracker first (D464).** Then phase 7.
+- **Parallel (D302):** rulings: D468 used — a next chat on this lineage takes D469, then a new range; observations
+  #396–#400 used here (a next chat takes #401 on).
+- **Traps met:** `codex exec` run in the background waits on stdin forever — add `< /dev/null` (observation #399);
+  `tsc -p tsconfig.json` checks nothing here — `npx tsc --noEmit -p tsconfig.app.json` (#397); a CX on the board opens its
+  "Cancel this item" sheet ("Cancel line" confirms); the desktop week's scroll is held by the app — to picture the
+  next-week preview, move its scroller by the element's offset (`p6c-probe5.mjs`).
+- **Pick up here:** his look and his answer; then his "merge live" for the lineage (parent first or together — his call).
 <!-- /now -->
 
-<!-- now:claude/lw-drag-flaky-tests-batch-c0719b -->
-### `claude/lw-drag-flaky-tests-batch-c0719b` — `[LW-DRAG-BELOW-ZERO]` (D418) + the two flaky tests: built, walked, Astra-read, all checks green; his "merge live" given, merging — written 29 Sep 26 — verify before use
-- **Built:** a Leave War drag that would take anyone below zero asks ONCE first, naming each man ("That takes Drifter to -5
-  FCL and Ridge to -2 FCL. Tap the same leave again to go ahead."), under Which leave, as the one-day sheet does; the same
-  leave again writes. Both sheets now ask ONE question (the store's `balanceAfterFill` → `counters.ts withFill`), read as the
-  column reads the balance — so the one-day range no longer counts weekends / holidays, and the words say "LVE", not
-  "ANNUAL" (`ui/belowzero.ts`). Evidence: `raptor-port/docs/handpass/2026-09-29-lw-drag-below-zero.md` (20 / 20 walk checks,
-  desktop, phone by finger, a member). Astra's code read found four real defects in the first cut (a half day beside a held
-  half missed, an ask left armed, OIL expiry, a man already in the red) — all fixed red-first. Filed: `[LW-SEL-HALF-LABELS]`.
-- **Flaky tests fixed (test-only), both reproduced on purpose first:** `[INPUTSCAL-TAP-FLAKY]` — a tap was two awaited steps
-  and a real-time hold timer fired between them under load; now one step. `[LW-WINDOW-PRUNE-FLAKE]` — the background fill
-  reached January before the JAN press on a busy PC; the premise is now read with the press.
-- **Parallel (D302):** the DB-sync mock-up chat (D440–D449, observations #370+) and the day-lock chat
-  (`claude/day-lock-mockup-data-model-493d27`, D450–D459, #356–#359) — no shared code; shared docs only in our own items.
-  This chat: D430–D439 (none used), observations #360–#369 (#360 used), preview port 4193 (`raptor-lwdz`).
-- **Next:** his "merge live" given 29 Sep 26 — `main` merged in (D78), merging; once live on Vercel this block goes at the
-  next handoff (nothing left open but `[LW-SEL-HALF-LABELS]`, filed).
-<!-- /now -->
-
-<!-- now:claude/db-sync-model-mockup-4a00e5 -->
-### `claude/db-sync-model-mockup-4a00e5` — the IT hand-over document brought up to date (docs only); waits for his "merge live" — written 29 Sep 26 — verify before use
-- **Asked to start `[DB-SYNC-MODEL]`'s mock-up, found it already done** by the day-lock chat
-  (`claude/day-lock-mockup-data-model-493d27`, his page "Taking a Day to Edit"); built nothing for it. He chose (a):
-  the `claude/db-step-now` block's residue — `handover-dataverse.md` promised "a one-time import of what is in the
-  browsers today", against the wipe (D54, D56, D120). **Done:** its "What happens next" rewritten (the readiness work now,
-  no import — the tables start empty, only his Tracker charts cross by Export → Import — and the 30-second updates,
-  D356); `architecture-direction.md`'s one sentence marked. Its question 6 left to the day-lock chat, which edits it.
-- **Handed to the day-lock chat (D302), since it is editing `data-model.md`:** §7's "One-time legacy import" row and §5's
-  "import only" wording — the same stale idea; it put both on `[DB-SYNC-MODEL]`'s fold-in list (on its branch).
-  Both branches edit `handover-dataverse.md` (different lines) — the later merge brings `main` in first (D78).
-- **Parallel:** rulings D440–D449 (none used), observations #370+; the Leave War chat D430–D439, the day-lock chat D450–D459.
-<!-- /now -->
-
-<!-- now:claude/itflow-handoff -->
-### `claude/itflow-handoff` — the IT flow guide chat's handoff: the guide is LIVE, `main`'s flaky test fixed; nothing pending but this notes branch — written 29 Sep 26 — verify before use
-- **Where it started:** his `[IT-FLOW-GUIDE]` — a picture-led PowerPoint + PDF of every journey for the IT team; grew by his
-  rulings D410–D418 (step by step, every alternate way, the work flows, the Tracker in full, what happens by itself, the two
-  editing modes, the Leave War's manning and his answers on it).
-- **Shipped:** the guide (42 slides, `raptor-port/docs/it-flow-guide/`, made by `raptor-port/scripts/itflow/`) — PR #468, MERGED,
-  live on Vercel. `main` then went red twice on `[HISTLIST-SLOW-TEST]` (a test fault) — split into three tests, PR #470,
-  MERGED (checks green on his PC); archived here. `main`'s own run for #470 was still going when this was written — read it.
-- **Unfinished:** none. Filed: `[ITFLOW-OIL-RESHOOT]` (re-shoot the Leave War pictures — only on his word, D403),
-  `[PDF-PRINT-TWICE]`, `[LW-DRAG-BELOW-ZERO]` (D418), `[TRK-REFUSALS-UNTESTED]`.
-- **Branch:** `claude/itflow-handoff` (notes only); both work branches merged — never reuse them.
-- **Gates:** not run here (docs only); #470's full PC run green; the Docs guard green on each PR.
-- **Open questions for him:** none. The app's Help → Troubleshooting → Review Pinned Git Origins would let the app's own
-  "bring main in" tool work in this repo (it refused on `.claude/launch.json`); `git merge` did the job meanwhile.
-- **Pick up here:** his "merge live" for this notes branch, then remove this block. Next job per `## Next, in order`:
-  `[DB-SYNC-MODEL]`'s mock-up (D355, D356).
-<!-- /now -->
-
-<!-- now:claude/itflow-update-on-his-word -->
-### `claude/itflow-update-on-his-word` — the OIL award chat's last word: `[OIL-AWARD-IS-A-GRANT]` is LIVE (PR #469, merged 29 Sep 26 on his "merge live"); this notes-only follow-up (D403) waits for his own "merge live" — written 29 Sep 26 — verify before use
-- **Live:** every hand OIL award is one ledger entry drawn on the grid on its date; "earned" and "awarded" apart (D400–D402).
-  Evidence `raptor-port/docs/handpass/2026-09-29-oil-award.md`; Vercel READY for the merge commit. `main`'s run on his PC
-  was still going when this was written — read its result before trusting `main`.
-- **This branch carries D403** (his answer, 29 Sep 26: *"I'll tell u when to update"*) — the IT flow guide is re-shot only
-  on his word; `[ITFLOW-OIL-RESHOOT]` now waits for it. Homes: the guide's README, the backlog item.
-- **Left, filed:** `[LEDGER-READ-ASK]` (his question), `[RESTRICTED-ENV-WORKFLOW]`, `[LW-WINDOW-PRUNE-FLAKE]` (test-only).
-  Rulings D404–D409 unused. The IT flow guide chat was told the change merged.
-- **Next:** his "merge live" for this notes branch, then remove this block.
-<!-- /now -->
-
-<!-- now:claude/db-step-now -->
-### `claude/db-step-now` — the database step starts now (D354–D356) and the tidy-up after PR #464 — docs only; waiting on his "merge live" — written 29 Sep 26 — verify before use
-- **His news (D354, 29 Sep 26):** the IT team is taking the app into Dataverse now; he means to keep working on it beside
-  them. D203's timing is overtaken; its order stands. How the app shares once it is in the database is SETTLED in part:
-  **D355** (a scheduler locks a DAY — one or several — others see "<callsign> – editing"; freed after 30 minutes idle; an
-  admin can take over) and **D356** (idle = no change by the holder for 30 minutes, a warning at 25; saved as you go with
-  "Done editing"; others' changes arrive every 30 seconds while on screen). `data-model.md` §9 marked;
-  `OUTSTANDING.md` `[DB-SYNC-MODEL]` (left: the mock-up of the day lock, §9 rewritten, both reviewers' red team).
-- **NEXT (his ask, a fresh chat): `[IT-FLOW-GUIDE]`** — the compact, picture-led flowchart of every journey through the
-  app (what a person clicks, what he sees next) with "what to test" per journey, for the IT team and the next developer.
-  Recommend the format first (the agent's lean: a slide deck — a map slide, then a slide per journey); his memory rule:
-  few words, real screenshots, short captions.
-- **Also due before the tables settle (D354):** bring `raptor-port/docs/handover-dataverse.md` up to date (written 10 Sep;
-  its "one-time import of what is in the browsers today" contradicts the wipe plan D54); `[DB-READINESS]` with
-  `[OIL-AWARD-IS-A-GRANT]` (tell IT the two saving changes coming); his Tracker charts exported before the wipe (D120);
-  before IT gets the code: the runner off the repo (`[REPO-PRIVATE]`, SEC-101). Open question to him: does IT want the
-  documents, the code, or both?
-- **Done here:** PR #464's residue — `[UNDO-ROSTER-SETTINGS]` and `[UNDO-TOPBAR]` archived; its `## Now` block removed.
-  Still first on the test side: `[INPUTSCAL-TAP-FLAKY]` (failed 3 of 4 PC runs on 29 Sep 26). Rulings D357–D359 free.
+<!-- now:claude/db-readiness-table-shaping-4094f6 -->
+### `claude/db-readiness-table-shaping-4094f6` — `[DB-READINESS]` group A: phases 0–5b BUILT and FULL-checked; **phase 6 (a), (b), (d) BUILT and FULL-checked (30 Sep 26); (c) needs v3** — written 30 Sep 26 — verify before use
+- **This chat:** opened with the previous chat's opening line ("plan and build phase 6"); asked, he confirmed D467's order —
+  the FULL bug check of (a), (b), (d) — which is done. No new ruling.
+- **The check:** `raptor-port/docs/handpass/2026-09-30-dbr-phase6-check.md` — Astra's scenarios (one reviewer); the roll-call
+  (no missing door); five walks, each run on this build AND on the build before phase 6 (`0d1a5e18`, exported to `C:\p6b` —
+  a worktree fails on this repo's long picture names), the screen compared fact by fact (`scripts/handpass/p6-*.mjs`); three
+  at phone width; thirteen break tests; the gates and perf; both final reads (Astra: no findings; Fable: two low).
+- **Found and done:** F1 / F2 — two visible changes the plan's §8 lacked (the Amendments panel no longer counts marks a filing
+  or a delete left on never-published days; a delete now also clears a week nobody has saved — a defect of the build before)
+  — plan §8 items 3–4, his look card; F3 a stale comment; F4 four overlay wires with no test — tests written, each red when
+  broken; F5 the orphaned week writers `stashEditDays` / `stashEditWeek` removed; Fable F1 (a delete on a read-only week ON
+  SCREEN went ahead, a reload put him back) — fixed red first, one refusal rule; Fable F2 (the overlay's cost grows with the
+  deleted roster, ≈0.2 ms per `validate()` today) and Fable's question (the delete's seat history lines cover only the week on
+  screen — pre-existing) — both FILED in `OUTSTANDING.md` `[DB-READINESS]` "for group B".
+- **Unfinished:** (1) his look (the card at the foot of the sheet — step 1 walked at the real date) AND his look at phases
+  0–5b (the card at the foot of `…/2026-09-30-dbrA-group-walk.md`). (2) (c) v3 — the HOLDER BASE, dispositions
+  `…/briefs/2026-09-30-db-readiness-phase6-dispositions-r2.md`, red tests committed SKIPPED (`src/state/p6c-requestonread.test.ts`) —
+  in a fresh chat on its own branch (D467). (3) Phase 7. All under `[DB-READINESS]` in `OUTSTANDING.md`.
+- **Gates (30 Sep 26, under the lock, the final code):** unit 7363 passed, 12 skipped · build · tfin 728/0 · e2e 509 passed, 0 failed, 49 skipped · smoke 445/0 · rulecheck OK · docsize OK (OVER by 342, deferred — D29) · perf 4/0 (on the walked build and the build before phase 6, level) · the saved-week test files re-run after the last removal 47 files / 685 passed.
+- **Before this branch's "merge live": remind him to EXPORT a copy of his Tracker first (D464).** Branch pushed; no PR.
+- **Open question for him (not blocking):** the long message after "Load onto working copy" (he asked what it was, 30 Sep
+  26) — offered to file a shorter two-line version as its own small job; his answer, if any, not yet given.
+- **Parallel (D302):** rulings D460–D469 (D460–D467 used — a next chat on this branch takes D468–D469, then a new range);
+  observations #392–#395 used on this branch (a next chat takes #396 on). No other open branch known.
+- **Traps met:** a heredoc eats `\` — write Python edit scripts to a FILE; the gatelock `run` gate list has no perf (run
+  `PORT_URL=<build> npm run perf` under `gatelock take`); `git worktree add` of an old commit fails on this repo (long picture
+  names) — `git archive <commit> raptor-port/src …` to a short path and junction `node_modules`; a walk's toast recorder
+  dies with a reload — re-arm it (or read the picture).
+- **Pick up here:** his look; then (c) v3 per D467 — a fresh chat, its own branch cut from this one.
 <!-- /now -->
 
 ## Next, in order
 
-0. **THE DATABASE STEP STARTS NOW (D354, 29 Sep 26)** — `[IT-FLOW-GUIDE]` DONE (the guide for IT, `raptor-port/docs/it-flow-guide/`, 29 Sep 26); `[DB-SYNC-MODEL]`'s design DONE (29 Sep 26, `claude/day-lock-mockup-data-model-493d27`, awaiting "merge live"); next `[DB-READINESS]` group A (D453). The IT team is taking the app into Dataverse now, and he means to
+0. **THE DATABASE STEP STARTS NOW (D354, 29 Sep 26)** — `[IT-FLOW-GUIDE]` DONE (the guide for IT, `raptor-port/docs/it-flow-guide/`, 29 Sep 26); `[DB-SYNC-MODEL]`'s design DONE and merged (PR #475); `[DB-READINESS]` group A PLANNED 30 Sep 26 (plan v4,
+   `claude/db-readiness-table-shaping-4094f6`) — its build under way: phases 0–5 and 5b built 30 Sep 26, the group's FULL check done (the walk and both code reads, every finding fixed); phase 6 (a), (b), (d) built and FULL-checked 30 Sep 26 (`raptor-port/docs/handpass/2026-09-30-dbr-phase6-check.md`); phase 6 (c) v3 built and FULL-checked 1 Oct 26 on `claude/db-readiness-p6c-holder-base` (D467 — `…/2026-10-01-dbr-phase6c-check.md`) — next his look at both, his "merge live", then phase 7 (D453). The IT team is taking the app into Dataverse now, and he means to
    keep working on the app beside it. What to finish before the hand-over was put to him the same day; record his answer
    here and in `OUTSTANDING.md`'s priority list the moment he gives it. Everything below keeps its ORDER; its timing is overtaken.
 1. **HIS ORDER to the database step (D203, 26 Sep 26 — its timing overtaken by D354):** `[ACCOUNTS]`, `[ACCOUNTS-NEW-PERSON]`,
@@ -149,9 +106,10 @@ the later merge keeps both (D78).
 
 ## Gate baseline
 
-The latest counts watched — 29 Sep 26, `claude/lw-drag-flaky-tests-batch-c0719b`, one run under the PC lock: unit
-**7017 / 7017** (434 files) · build clean · tfin **728 / 0** · e2e **509 passed, 0 failed**, 49 skipped (the month-window test,
-once flaky, fixed — `[LW-WINDOW-PRUNE-FLAKE]`) · smoke **445 / 0** · rulecheck OK · docsize OK. Restate a count only from a run you watched, and REPLACE the previous counts — never stack a
+The latest counts watched — 1 Oct 26, `claude/db-readiness-p6c-holder-base` (phase 6 (c) v3 with every fix of its FULL check
+and both final reads), under the PC lock: unit **7401 / 7401** (463 files) · build clean · tfin **728 / 0** · e2e **509 passed,
+0 failed**, 49 skipped · smoke **445 / 0** · rulecheck OK (notes `AM39d` now covered — older, left) · docsize OK (OVER, deferred
+— D29) · perf **4 / 0** (board DOM 1024 ≤ 1150, week 5134 ≤ 5450). Restate a count only from a run you watched, and REPLACE the previous counts — never stack a
 history. How to run them: `raptor-port/CLAUDE.md` §Build & verify; how they mislead, and the checks on his PC:
 `raptor-port/docs/gates-and-deploy.md`.
 

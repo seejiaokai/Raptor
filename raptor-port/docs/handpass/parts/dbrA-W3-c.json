@@ -1,0 +1,325 @@
+{
+ "base": "http://localhost:4203",
+ "at": "2026-09-30T09:12:55.917Z",
+ "results": [
+  {
+   "name": "C0 first boot — ONE change-log batch, of type boot",
+   "ok": true,
+   "detail": "[{\"type\":\"boot\",\"n\":199}]"
+  },
+  {
+   "name": "7a ⚙ → + Counter \"W3 CTR\", Save — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [leavewar/manningdefs] · del 0 [] · batches lw.edit/1"
+  },
+  {
+   "name": "7a — only settings-like keys `leavewar/<key>` written (the manning rules)",
+   "ok": true,
+   "detail": "{\"put\":[\"leavewar/manningdefs\"],\"del\":[]}"
+  },
+  {
+   "name": "7a — the new counter is a manning row on the grid",
+   "ok": true,
+   "detail": "{\"before\":[\"sets\",\"ip\",\"iwso\",\"instr\",\"opsp\",\"opsw\",\"flp\",\"wmp\",\"sxo\",\"scd\",\"scn\"],\"after\":[\"sets\",\"ip\",\"iwso\",\"instr\",\"opsp\",\"opsw\",\"flp\",\"wmp\",\"sxo\",\"scd\",\"scn\",\"w3-ctr\"]}"
+  },
+  {
+   "name": "7a counter — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026 (the unsaved demo week's hidden row ids set aside)"
+  },
+  {
+   "name": "7a counter — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "7a counter — the war's boxes read the same after the reload",
+   "ok": true,
+   "detail": "{}"
+  },
+  {
+   "name": "7a — after the reload the counter is still a manning row, in the same place",
+   "ok": true,
+   "detail": "{\"before\":[\"sets\",\"ip\",\"iwso\",\"instr\",\"opsp\",\"opsw\",\"flp\",\"wmp\",\"sxo\",\"scd\",\"scn\",\"w3-ctr\"],\"after\":[\"sets\",\"ip\",\"iwso\",\"instr\",\"opsp\",\"opsw\",\"flp\",\"wmp\",\"sxo\",\"scd\",\"scn\",\"w3-ctr\"]}"
+  },
+  {
+   "name": "7b ⚙ → Add a group (the first qualification offered) — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [leavewar/groupdefs] · del 0 [] · batches lw.edit/1"
+  },
+  {
+   "name": "7b — adding a group writes only settings-like keys (the group list)",
+   "ok": true,
+   "detail": "{\"put\":[\"leavewar/groupdefs\"],\"del\":[],\"ret\":{\"offers\":[{\"id\":\"q:sched\",\"t\":\"+ Scheduler\"},{\"id\":\"q:scDay\",\"t\":\"+ SC DAY\"},{\"id\":\"q:scNight\",\"t\":\"+ SC NIGHT\"},{\"id\":\"q:daar\",\"t\":\"+ DAAR\"},{\"id\":\"q:naar\",\"t\":\"+ NAAR\"},{\"id\":\"q:nvg\",\"t\":\"+ NVG\"},{\"id\":\"q:imc\",\"t\":\"+ IMC\"},{\"id\":\"q:tf\",\"t\":\"+ TF\"}],\"gid\":\"q:sched\"}}"
+  },
+  {
+   "name": "7b … and a colour picked from its palette — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [leavewar/groupcolors] · del 0 [] · batches lw.edit/1"
+  },
+  {
+   "name": "7b … and a colour picked from its palette — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [leavewar/groupcolors] · del 0 [] · batches lw.edit/1"
+  },
+  {
+   "name": "7b group — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026 (the unsaved demo week's hidden row ids set aside)"
+  },
+  {
+   "name": "7b group — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "7b group — the war's boxes read the same after the reload",
+   "ok": true,
+   "detail": "{}"
+  },
+  {
+   "name": "7b — after the reload the group headings (with the new group) read the same",
+   "ok": true,
+   "detail": "{\"before\":[\"group-q:sched:▾ Scheduler · 15\",\"group-IP:▾ IP · 6\",\"group-OPSP:▾ OPS P · 8\",\"group-IWSO:▾ IWSO · 4\",\"group-OPSW:▾ OPS W · 11\",\"group-OCU:▾ OCU · 3\",\"group-PERS:▾ Personnel · 3\"],\"after\":[\"group-q:sched:▾ Scheduler · 15\",\"group-IP:▾ IP · 6\",\"group-OPSP:▾ OPS P · 8\",\"group-IWSO:▾ IWSO · 4\",\"group-OPSW:▾ OPS W · 11\",\"group-OCU:▾ OCU · 3\",\"group-PERS:▾ Personnel · 3\"],\"was\":[\"group-SXO:▾ SXO · 12\",\"group-IP:▾ IP · 8\",\"group-OPSP:▾ OPS P · 8\",\"group-IWSO:▾ IWSO · 5\",\"group-OPSW:▾ OPS W · 11\",\"group-OCU:▾ OCU · 3\",\"group-PERS:▾ Personnel · 3\"]}"
+  },
+  {
+   "name": "7c ⚙ → Show SANS — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [leavewar/showsans] · del 0 [] · batches lw.edit/1"
+  },
+  {
+   "name": "7c ⚙ → Show SANS — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [leavewar/showsans] · del 0 [] · batches lw.edit/1"
+  },
+  {
+   "name": "7c sans — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026 (the unsaved demo week's hidden row ids set aside)"
+  },
+  {
+   "name": "7c sans — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "7c sans — the war's boxes read the same after the reload",
+   "ok": true,
+   "detail": "{}"
+  },
+  {
+   "name": "7c — after the reload SANS still shown: the same headings and the same rows in the same order",
+   "ok": true,
+   "detail": "{\"h1\":[\"group-q:sched:▾ Scheduler · 15\",\"group-IP:▾ IP · 6\",\"group-OPSP:▾ OPS P · 8\",\"group-IWSO:▾ IWSO · 4\",\"group-OPSW:▾ OPS W · 11\",\"group-OCU:▾ OCU · 3\",\"group-PERS:▾ Personnel · 3\",\"group-SANS:▾ SANS · 11\"],\"h2\":[\"group-q:sched:▾ Scheduler · 15\",\"group-IP:▾ IP · 6\",\"group-OPSP:▾ OPS P · 8\",\"group-IWSO:▾ IWSO · 4\",\"group-OPSW:▾ OPS W · 11\",\"group-OCU:▾ OCU · 3\",\"group-PERS:▾ Personnel · 3\",\"group-SANS:▾ SANS · 11\"],\"n1\":61,\"n2\":61}"
+  },
+  {
+   "name": "7d ⇅ Rearrange → drag Reaper's row under Piston's — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [leavewar/rosterorder] · del 0 [] · batches lw.edit/1"
+  },
+  {
+   "name": "7d ⇅ Rearrange → drag Reaper's row under Piston's — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [leavewar/rosterorder] · del 0 [] · batches lw.edit/1"
+  },
+  {
+   "name": "7d — Reaper now drawn under Piston",
+   "ok": true,
+   "detail": "{\"before\":[\"dice\",\"shaft\",\"snap\",\"chaps\",\"pump\",\"bane\",\"stiff\",\"mamba\"],\"after\":[\"shaft\",\"snap\",\"chaps\",\"pump\",\"dice\",\"bane\",\"stiff\",\"mamba\"]}"
+  },
+  {
+   "name": "7d rearrange — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026 (the unsaved demo week's hidden row ids set aside)"
+  },
+  {
+   "name": "7d rearrange — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "7d rearrange — the war's boxes read the same after the reload",
+   "ok": true,
+   "detail": "{}"
+  },
+  {
+   "name": "7d — after the reload the rows keep the arranged order",
+   "ok": true,
+   "detail": "{\"after\":[\"shaft\",\"snap\",\"chaps\",\"pump\",\"dice\",\"bane\",\"stiff\",\"mamba\",\"harpoon\",\"nact\"],\"before\":[\"shaft\",\"snap\",\"chaps\",\"pump\",\"dice\",\"bane\",\"stiff\",\"mamba\",\"harpoon\",\"nact\"]}"
+  },
+  {
+   "name": "7e ⚙ → ↺ Reset order, and again to confirm — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [leavewar/rosterorder] · del 0 [] · batches lw.edit/1"
+  },
+  {
+   "name": "7e ⚙ → ↺ Reset order, and again to confirm — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [leavewar/rosterorder] · del 0 [] · batches lw.edit/1"
+  },
+  {
+   "name": "7e — the saved order row changed (re-put or removed), and nothing else",
+   "ok": true,
+   "detail": "{\"put\":[\"leavewar/rosterorder\"],\"del\":[]}"
+  },
+  {
+   "name": "7e — the default order is back (Reaper above Piston again)",
+   "ok": true,
+   "detail": "{\"before\":[\"shaft\",\"snap\",\"chaps\",\"pump\",\"dice\",\"bane\",\"stiff\",\"mamba\"],\"after\":[\"dice\",\"shaft\",\"snap\",\"chaps\",\"pump\",\"bane\",\"stiff\",\"mamba\"],\"ret\":{\"dis\":false,\"armed\":\"Really reset?\"}}"
+  },
+  {
+   "name": "7e reset order — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026 (the unsaved demo week's hidden row ids set aside)"
+  },
+  {
+   "name": "7e reset order — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "7e reset order — the war's boxes read the same after the reload",
+   "ok": true,
+   "detail": "{}"
+  },
+  {
+   "name": "7e — after the reload the default order holds",
+   "ok": true,
+   "detail": "{\"after\":[\"dice\",\"shaft\",\"snap\",\"chaps\",\"pump\",\"bane\",\"stiff\",\"mamba\",\"harpoon\",\"nact\"]}"
+  },
+  {
+   "name": "8 + New war \"W3 JAN 28\", 1–31 Jan 2028, Create — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 2 [leavewar/current, leavewar/war:war-2028-01-01-2028-01-31] · del 0 [] · batches lw.edit/1 lw.edit/1"
+  },
+  {
+   "name": "8 + New war \"W3 JAN 28\", 1–31 Jan 2028, Create — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 2 [leavewar/current, leavewar/war:war-2028-01-01-2028-01-31] · del 0 [] · batches lw.edit/1 lw.edit/1"
+  },
+  {
+   "name": "8 — ONE new war row, and no existing war row touched",
+   "ok": true,
+   "detail": "{\"put\":[\"leavewar/current\",\"leavewar/war:war-2028-01-01-2028-01-31\"],\"batches\":[{\"key\":\"changes/cmunw0e9331y6sc-0\",\"type\":\"lw.edit\",\"actorId\":\"acad\",\"n\":1,\"seqs\":[0]},{\"key\":\"changes/cmunw0e9331y6sc-1\",\"type\":\"lw.edit\",\"actorId\":\"acad\",\"n\":1,\"seqs\":[1]}]}"
+  },
+  {
+   "name": "8 new war — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026 (the unsaved demo week's hidden row ids set aside)"
+  },
+  {
+   "name": "8 new war — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "8 new war — the war's boxes read the same after the reload",
+   "ok": true,
+   "detail": "{}"
+  },
+  {
+   "name": "8 — after the reload the app opens on the war being bid on (y2026), not the draft just made (the stage rule)",
+   "ok": true,
+   "detail": "y2026"
+  },
+  {
+   "name": "8 — after the reload the picker lists it (the war on screen by the stage rule: the open one)",
+   "ok": true,
+   "detail": "{\"before\":{\"opts\":[{\"v\":\"y2026\",\"t\":\"JAN - DEC 26\"},{\"v\":\"y2027\",\"t\":\"JAN - DEC 27\"},{\"v\":\"war-2028-01-01-2028-01-31\",\"t\":\"W3 JAN 28\"}],\"value\":\"war-2028-01-01-2028-01-31\"},\"after\":{\"opts\":[{\"v\":\"y2026\",\"t\":\"JAN - DEC 26\"},{\"v\":\"y2027\",\"t\":\"JAN - DEC 27\"},{\"v\":\"war-2028-01-01-2028-01-31\",\"t\":\"W3 JAN 28\"}],\"value\":\"war-2028-01-01-2028-01-31\"}}"
+  },
+  {
+   "name": "part C — no console errors, page errors, failed requests or native dialogs",
+   "ok": true,
+   "detail": "[]"
+  }
+ ],
+ "table": [
+  {
+   "step": "C0 first boot",
+   "width": "desktop",
+   "did": "fresh world, Saber",
+   "screen": "—",
+   "rows": "batches boot/199",
+   "ok": true,
+   "pics": []
+  },
+  {
+   "step": "7a + Counter",
+   "width": "desktop",
+   "did": "⚙ → + Counter, named W3 CTR, Save",
+   "screen": "manning rows after reload: sets, ip, iwso, instr, opsp, opsw, flp, wmp, sxo, scd, scn, w3-ctr",
+   "rows": "put 1 [leavewar/manningdefs] · batches lw.edit/1",
+   "ok": true,
+   "pics": [
+    "C-7a-counter-form.png",
+    "C-7a-counter-row.png",
+    "C-7a-after-reload.png"
+   ]
+  },
+  {
+   "step": "7b group added + coloured",
+   "width": "desktop",
+   "did": "⚙ → + q:sched, then a colour dot",
+   "screen": "headings group-q:sched:▾ Scheduler · 15 | group-IP:▾ IP · 6 | group-OPSP:▾ OPS P · 8 | group-IWSO:▾ IWSO · 4 | group-OPSW:▾ OPS W · 11 | group-OCU:▾ OCU · 3 | group-PERS:▾ Personnel · 3; colour rgb(108, 123, 224)",
+   "rows": "put 1 [leavewar/groupdefs] · batches lw.edit/1 || put 1 [leavewar/groupcolors] · batches lw.edit/1",
+   "ok": true,
+   "pics": [
+    "C-7b-group-added-palette.png",
+    "C-7b-group-on-grid.png",
+    "C-7b-after-reload.png"
+   ]
+  },
+  {
+   "step": "7c Show SANS",
+   "width": "desktop",
+   "did": "⚙ → Show SANS",
+   "screen": "headings group-q:sched:▾ Scheduler · 15 | group-IP:▾ IP · 6 | group-OPSP:▾ OPS P · 8 | group-IWSO:▾ IWSO · 4 | group-OPSW:▾ OPS W · 11 | group-OCU:▾ OCU · 3 | group-PERS:▾ Personnel · 3 | group-SANS:▾ SANS · 11; 61 rows",
+   "rows": "put 1 [leavewar/showsans] · batches lw.edit/1",
+   "ok": true,
+   "pics": [
+    "C-7c-sans.png",
+    "C-7c-after-reload.png"
+   ]
+  },
+  {
+   "step": "7d rearrange drag",
+   "width": "desktop",
+   "did": "⇅ Rearrange, dragged Reaper's ⠿ under Piston, ⇅ again",
+   "screen": "rows after reload: shaft, snap, chaps, pump, dice, bane, stiff, mamba…",
+   "rows": "put 1 [leavewar/rosterorder] · batches lw.edit/1",
+   "ok": true,
+   "pics": [
+    "C-7d-dragging.png",
+    "C-7d-rearranged.png",
+    "C-7d-after-reload.png"
+   ]
+  },
+  {
+   "step": "7e Reset order",
+   "width": "desktop",
+   "did": "⚙ → ↺ Reset order → Really reset?",
+   "screen": "rows after reload: dice, shaft, snap, chaps, pump, bane, stiff, mamba…",
+   "rows": "put 1 [leavewar/rosterorder] · batches lw.edit/1",
+   "ok": true,
+   "pics": [
+    "C-7e-reset-asks.png",
+    "C-7e-after-reload.png"
+   ]
+  },
+  {
+   "step": "8 + New war",
+   "width": "desktop",
+   "did": "+ New, \"W3 JAN 28\", 1–31 Jan 28, Create",
+   "screen": "picker after reload: JAN - DEC 26 / JAN - DEC 27 / W3 JAN 28 (on screen war-2028-01-01-2028-01-31); picked → W3 JAN 28",
+   "rows": "put 2 [leavewar/current, leavewar/war:war-2028-01-01-2028-01-31] · batches lw.edit/1 lw.edit/1",
+   "ok": true,
+   "pics": [
+    "C-8-new-war-sheet.png",
+    "C-8-created.png",
+    "C-8-after-reload.png",
+    "C-8-picked-after-reload.png"
+   ]
+  }
+ ],
+ "errors": []
+}

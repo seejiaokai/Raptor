@@ -1,0 +1,337 @@
+{
+ "base": "http://localhost:4204",
+ "at": "2026-09-30T09:18:32.999Z",
+ "results": [
+  {
+   "name": "BUNDLE inputs/all: this build opens (never hangs) — what shows",
+   "ok": true,
+   "detail": "{\"first\":\"SIGN-IN\",\"signedIn\":true,\"stamp\":6,\"app\":{\"inputs\":0,\"people\":62,\"elog\":32}}"
+  },
+  {
+   "name": "BUNDLE inputs/all: the app opens and signs in (the conversion never breaks a load — D401)",
+   "ok": true,
+   "detail": "SIGN-IN"
+  },
+  {
+   "name": "BUNDLE inputs/all: the damaged bytes are left untouched",
+   "ok": true,
+   "detail": "{\"damaged old bundle"
+  },
+  {
+   "name": "BUNDLE inputs/all: nothing unrelated is lost (every row the clean conversion made, except the damaged record's own)",
+   "ok": true,
+   "detail": "{\"missing\":50,\"missingSample\":[\"inputs/imunvy07608yuf1\",\"inputs/imunvy0760hh1ya\",\"inputs/imunvy0761cg6q7\",\"inputs/imunvy0761xrcx5\",\"inputs/imunvy0763u2nd3\",\"inputs/imunvy0764tnqag\"],\"extra\":[],\"coll\":{\"leavewar\":97,\"plan\":3,\"people\":62,\"settings\":41,\"weeks\":20,\"tracker\":41,\"inputs\":1}}"
+  },
+  {
+   "name": "BUNDLE inputs/all: his Tracker work — the same as on main? (D464)",
+   "ok": true,
+   "detail": "the same"
+  },
+  {
+   "name": "BUNDLE inputs/all: what the first session's page visits wrote (the Tracker's first mount)",
+   "ok": true,
+   "detail": "[]"
+  },
+  {
+   "name": "BUNDLE inputs/all: a second boot writes nothing and the damaged bytes are still there",
+   "ok": true,
+   "detail": "{\"again\":\"SIGN-IN\",\"put\":[],\"del\":[]}"
+  },
+  {
+   "name": "BUNDLE weeks/13-07-2026: this build opens (never hangs) — what shows",
+   "ok": true,
+   "detail": "{\"first\":\"SIGN-IN\",\"signedIn\":true,\"stamp\":6,\"app\":{\"inputs\":50,\"people\":62,\"elog\":32}}"
+  },
+  {
+   "name": "BUNDLE weeks/13-07-2026: the app opens and signs in (the conversion never breaks a load — D401)",
+   "ok": true,
+   "detail": "SIGN-IN"
+  },
+  {
+   "name": "BUNDLE weeks/13-07-2026: the damaged bytes are left untouched",
+   "ok": true,
+   "detail": "{\"damaged old bundle"
+  },
+  {
+   "name": "BUNDLE weeks/13-07-2026: nothing unrelated is lost (every row the clean conversion made, except the damaged record's own)",
+   "ok": true,
+   "detail": "{\"missing\":11,\"missingSample\":[\"weeks/13-07-2026#0\",\"weeks/13-07-2026#1\",\"weeks/13-07-2026#2\",\"weeks/13-07-2026#3\",\"weeks/13-07-2026#4\",\"weeks/13-07-2026#5\"],\"extra\":[],\"coll\":{\"inputs\":50,\"leavewar\":97,\"plan\":3,\"people\":62,\"settings\":41,\"tracker\":41,\"weeks\":9}}"
+  },
+  {
+   "name": "BUNDLE weeks/13-07-2026: his Tracker work — the same as on main? (D464)",
+   "ok": true,
+   "detail": "the same"
+  },
+  {
+   "name": "BUNDLE weeks/13-07-2026: what the first session's page visits wrote (the Tracker's first mount)",
+   "ok": true,
+   "detail": "[]"
+  },
+  {
+   "name": "BUNDLE weeks/13-07-2026: a second boot writes nothing and the damaged bytes are still there",
+   "ok": true,
+   "detail": "{\"again\":\"SIGN-IN\",\"put\":[],\"del\":[]}"
+  },
+  {
+   "name": "BUNDLE leavewar/wars: this build opens (never hangs) — what shows",
+   "ok": true,
+   "detail": "{\"first\":\"SIGN-IN\",\"signedIn\":true,\"stamp\":6,\"app\":{\"inputs\":50,\"people\":62,\"elog\":32}}"
+  },
+  {
+   "name": "BUNDLE leavewar/wars: the app opens and signs in (the conversion never breaks a load — D401)",
+   "ok": true,
+   "detail": "SIGN-IN"
+  },
+  {
+   "name": "BUNDLE leavewar/wars: the damaged bytes are left untouched",
+   "ok": true,
+   "detail": "{\"damaged old bundle"
+  },
+  {
+   "name": "BUNDLE leavewar/wars: nothing unrelated is lost (every row the clean conversion made, except the damaged record's own)",
+   "ok": true,
+   "detail": "{\"missing\":18,\"missingSample\":[\"leavewar/rec:y2026:cmunvy76r1phbo\",\"leavewar/rec:y2026:rmunvz7o33yq3a\",\"leavewar/rec:y2026:seed1\",\"leavewar/rec:y2026:seed2\",\"leavewar/rec:y2026:seed3\",\"leavewar/rec:y2026:seed4\"],\"extra\":[],\"coll\":{\"inputs\":50,\"leavewar\":80,\"plan\":3,\"people\":62,\"settings\":41,\"weeks\":20,\"tracker\":41}}"
+  },
+  {
+   "name": "BUNDLE leavewar/wars: his Tracker work — the same as on main? (D464)",
+   "ok": true,
+   "detail": "the same"
+  },
+  {
+   "name": "BUNDLE leavewar/wars: what the first session's page visits wrote (the Tracker's first mount)",
+   "ok": true,
+   "detail": "[]"
+  },
+  {
+   "name": "BUNDLE leavewar/wars: a second boot writes nothing and the damaged bytes are still there",
+   "ok": true,
+   "detail": "{\"again\":\"SIGN-IN\",\"put\":[],\"del\":[]}"
+  },
+  {
+   "name": "BUNDLE people/all: this build opens (never hangs) — what shows",
+   "ok": true,
+   "detail": "{\"first\":\"SIGN-IN\",\"signedIn\":true,\"stamp\":6,\"app\":{\"inputs\":50,\"people\":61,\"elog\":32}}"
+  },
+  {
+   "name": "BUNDLE people/all: the app opens and signs in (the conversion never breaks a load — D401)",
+   "ok": true,
+   "detail": "SIGN-IN"
+  },
+  {
+   "name": "BUNDLE people/all: the damaged bytes are left untouched",
+   "ok": true,
+   "detail": "{\"damaged old bundle"
+  },
+  {
+   "name": "BUNDLE people/all: nothing unrelated is lost (every row the clean conversion made, except the damaged record's own)",
+   "ok": true,
+   "detail": "{\"missing\":62,\"missingSample\":[\"people/ammo\",\"people/badger\",\"people/bane\",\"people/bapster\",\"people/beams\",\"people/boosh\"],\"extra\":[],\"coll\":{\"inputs\":50,\"leavewar\":97,\"plan\":3,\"settings\":41,\"weeks\":20,\"tracker\":41,\"people\":1}}"
+  },
+  {
+   "name": "BUNDLE people/all: his Tracker work — the same as on main? (D464)",
+   "ok": true,
+   "detail": "the same"
+  },
+  {
+   "name": "BUNDLE people/all: what the first session's page visits wrote (the Tracker's first mount)",
+   "ok": true,
+   "detail": "[]"
+  },
+  {
+   "name": "BUNDLE people/all: a second boot writes nothing and the damaged bytes are still there",
+   "ok": true,
+   "detail": "{\"again\":\"SIGN-IN\",\"put\":[],\"del\":[]}"
+  },
+  {
+   "name": "BUNDLE settings/elog: this build opens (never hangs) — what shows",
+   "ok": true,
+   "detail": "{\"first\":\"SIGN-IN\",\"signedIn\":true,\"stamp\":6,\"app\":{\"inputs\":50,\"people\":62,\"elog\":0}}"
+  },
+  {
+   "name": "BUNDLE settings/elog: the app opens and signs in (the conversion never breaks a load — D401)",
+   "ok": true,
+   "detail": "SIGN-IN"
+  },
+  {
+   "name": "BUNDLE settings/elog: the damaged bytes are left untouched",
+   "ok": true,
+   "detail": "{\"damaged old bundle"
+  },
+  {
+   "name": "BUNDLE settings/elog: nothing unrelated is lost (every row the clean conversion made, except the damaged record's own)",
+   "ok": true,
+   "detail": "{\"missing\":32,\"missingSample\":[\"settings/elog:f00000001\",\"settings/elog:f00000002\",\"settings/elog:f00000003\",\"settings/elog:f00000004\",\"settings/elog:f00000005\",\"settings/elog:f00000006\"],\"extra\":[],\"coll\":{\"inputs\":50,\"leavewar\":97,\"plan\":3,\"people\":62,\"settings\":10,\"weeks\":20,\"tracker\":41}}"
+  },
+  {
+   "name": "BUNDLE settings/elog: his Tracker work — the same as on main? (D464)",
+   "ok": true,
+   "detail": "the same"
+  },
+  {
+   "name": "BUNDLE settings/elog: what the first session's page visits wrote (the Tracker's first mount)",
+   "ok": true,
+   "detail": "[]"
+  },
+  {
+   "name": "BUNDLE settings/elog: a second boot writes nothing and the damaged bytes are still there",
+   "ok": true,
+   "detail": "{\"again\":\"SIGN-IN\",\"put\":[],\"del\":[]}"
+  },
+  {
+   "name": "BUNDLE settings/accounts: this build opens (never hangs) — what shows",
+   "ok": true,
+   "detail": "{\"first\":\"SIGN-IN\",\"signedIn\":true,\"stamp\":6,\"app\":{\"inputs\":50,\"people\":62,\"elog\":32}}"
+  },
+  {
+   "name": "BUNDLE settings/accounts: the app opens and signs in (the conversion never breaks a load — D401)",
+   "ok": true,
+   "detail": "SIGN-IN"
+  },
+  {
+   "name": "BUNDLE settings/accounts: the damaged bytes are left untouched",
+   "ok": true,
+   "detail": "{\"damaged old bundle"
+  },
+  {
+   "name": "BUNDLE settings/accounts: nothing unrelated is lost (every row the clean conversion made, except the damaged record's own)",
+   "ok": true,
+   "detail": "{\"missing\":5,\"missingSample\":[\"settings/account:acad\",\"settings/account:achex\",\"settings/account:acmunvyy2ch78u\",\"settings/account:acoutlaw\",\"settings/account:acus\"],\"extra\":[],\"coll\":{\"inputs\":50,\"leavewar\":97,\"plan\":3,\"people\":62,\"settings\":37,\"weeks\":20,\"tracker\":41}}"
+  },
+  {
+   "name": "BUNDLE settings/accounts: his Tracker work — the same as on main? (D464)",
+   "ok": true,
+   "detail": "the same"
+  },
+  {
+   "name": "BUNDLE settings/accounts: what the first session's page visits wrote (the Tracker's first mount)",
+   "ok": true,
+   "detail": "[]"
+  },
+  {
+   "name": "BUNDLE settings/accounts: a second boot writes nothing and the damaged bytes are still there",
+   "ok": true,
+   "detail": "{\"again\":\"SIGN-IN\",\"put\":[],\"del\":[]}"
+  },
+  {
+   "name": "BUNDLE tracker/v3:master:syls: this build opens (never hangs) — what shows",
+   "ok": true,
+   "detail": "{\"first\":\"SIGN-IN\",\"signedIn\":true,\"stamp\":6,\"app\":{\"inputs\":50,\"people\":62,\"elog\":32}}"
+  },
+  {
+   "name": "BUNDLE tracker/v3:master:syls: the app opens and signs in (the conversion never breaks a load — D401)",
+   "ok": true,
+   "detail": "SIGN-IN"
+  },
+  {
+   "name": "BUNDLE tracker/v3:master:syls: the damaged bytes are left untouched",
+   "ok": true,
+   "detail": "{\"damaged old bundle"
+  },
+  {
+   "name": "BUNDLE tracker/v3:master:syls: nothing unrelated is lost (every row the clean conversion made, except the damaged record's own)",
+   "ok": true,
+   "detail": "{\"missing\":0,\"missingSample\":[],\"extra\":[],\"coll\":{\"inputs\":50,\"leavewar\":97,\"plan\":3,\"people\":62,\"settings\":41,\"weeks\":20,\"tracker\":42}}"
+  },
+  {
+   "name": "BUNDLE tracker/v3:master:syls: his Tracker work — the same as on main? (D464)",
+   "ok": true,
+   "detail": "{\"dropdown\":[\"W4 TX\",\"2026\",\"A/G - A/A 2026\",\"W4 OWN CHART\"],\"courses\":[\"W4 27B\",\"26ABSG\"],\"crew\":[\"STUDENT A\",\"STUDENT B\",\"W4 STUDENT\"]}"
+  },
+  {
+   "name": "BUNDLE tracker/v3:master:syls: his own chart, opened",
+   "ok": true,
+   "detail": "{\"balls\":210,\"differs\":[\"order\",\"syllabi\",\"layouts\",\"eventInfoBySyl\",\"sylcat\"],\"info\":null}"
+  },
+  {
+   "name": "BUNDLE tracker/v3:master:syls: what the first session's page visits wrote (the Tracker's first mount)",
+   "ok": true,
+   "detail": "[\"tracker/v3:cmunvzjrwnjggdu:plan\"]"
+  },
+  {
+   "name": "BUNDLE tracker/v3:master:syls: a second boot writes nothing and the damaged bytes are still there",
+   "ok": true,
+   "detail": "{\"again\":\"SIGN-IN\",\"put\":[],\"del\":[]}"
+  },
+  {
+   "name": "BUNDLE tracker/v3:master:eventinfo: this build opens (never hangs) — what shows",
+   "ok": true,
+   "detail": "{\"first\":\"SIGN-IN\",\"signedIn\":true,\"stamp\":6,\"app\":{\"inputs\":50,\"people\":62,\"elog\":32}}"
+  },
+  {
+   "name": "BUNDLE tracker/v3:master:eventinfo: the app opens and signs in (the conversion never breaks a load — D401)",
+   "ok": true,
+   "detail": "SIGN-IN"
+  },
+  {
+   "name": "BUNDLE tracker/v3:master:eventinfo: the damaged bytes are left untouched",
+   "ok": true,
+   "detail": "{\"damaged old bundle"
+  },
+  {
+   "name": "BUNDLE tracker/v3:master:eventinfo: nothing unrelated is lost (every row the clean conversion made, except the damaged record's own)",
+   "ok": true,
+   "detail": "{\"missing\":4,\"missingSample\":[\"tracker/v3:eventinfomig\",\"tracker/v3:master:info:sb2026:ST-01\",\"tracker/v3:master:info:scmunvzrowcnp42a:ST-01\",\"tracker/v3:master:info:scmunvzrowcnp42a:ST-02\"],\"extra\":[],\"coll\":{\"inputs\":50,\"leavewar\":97,\"plan\":3,\"people\":62,\"settings\":41,\"weeks\":20,\"tracker\":38}}"
+  },
+  {
+   "name": "BUNDLE tracker/v3:master:eventinfo: his Tracker work — the same as on main? (D464)",
+   "ok": true,
+   "detail": "{\"dropdown\":[\"W4 TX\",\"2026\",\"A/G - A/A 2026\",\"W4 OWN CHART ✎\"],\"courses\":[\"W4 27B\",\"26ABSG\"],\"crew\":[\"W4 STUDENT\"]}"
+  },
+  {
+   "name": "BUNDLE tracker/v3:master:eventinfo: his own chart, opened",
+   "ok": true,
+   "detail": "{\"balls\":210,\"differs\":[\"eventInfoBySyl\"],\"info\":null}"
+  },
+  {
+   "name": "BUNDLE tracker/v3:master:eventinfo: what the first session's page visits wrote (the Tracker's first mount)",
+   "ok": true,
+   "detail": "[\"tracker/v3:eventinfomig\"]"
+  },
+  {
+   "name": "BUNDLE tracker/v3:master:eventinfo: a second boot writes nothing and the damaged bytes are still there",
+   "ok": true,
+   "detail": "{\"again\":\"SIGN-IN\",\"put\":[],\"del\":[]}"
+  },
+  {
+   "name": "BUNDLE tracker/v3:cmunw02dlin2uoq:sbagaa2026:roster: this build opens (never hangs) — what shows",
+   "ok": true,
+   "detail": "{\"first\":\"SIGN-IN\",\"signedIn\":true,\"stamp\":6,\"app\":{\"inputs\":50,\"people\":62,\"elog\":32}}"
+  },
+  {
+   "name": "BUNDLE tracker/v3:cmunw02dlin2uoq:sbagaa2026:roster: the app opens and signs in (the conversion never breaks a load — D401)",
+   "ok": true,
+   "detail": "SIGN-IN"
+  },
+  {
+   "name": "BUNDLE tracker/v3:cmunw02dlin2uoq:sbagaa2026:roster: the damaged bytes are left untouched",
+   "ok": true,
+   "detail": "{\"damaged old bundle"
+  },
+  {
+   "name": "BUNDLE tracker/v3:cmunw02dlin2uoq:sbagaa2026:roster: nothing unrelated is lost (every row the clean conversion made, except the damaged record's own)",
+   "ok": true,
+   "detail": "{\"missing\":0,\"missingSample\":[],\"extra\":[],\"coll\":{\"inputs\":50,\"leavewar\":97,\"plan\":3,\"people\":62,\"settings\":41,\"weeks\":20,\"tracker\":42}}"
+  },
+  {
+   "name": "BUNDLE tracker/v3:cmunw02dlin2uoq:sbagaa2026:roster: his Tracker work — the same as on main? (D464)",
+   "ok": true,
+   "detail": "the same"
+  },
+  {
+   "name": "BUNDLE tracker/v3:cmunw02dlin2uoq:sbagaa2026:roster: what the first session's page visits wrote (the Tracker's first mount)",
+   "ok": true,
+   "detail": "[]"
+  },
+  {
+   "name": "BUNDLE tracker/v3:cmunw02dlin2uoq:sbagaa2026:roster: a second boot writes nothing and the damaged bytes are still there",
+   "ok": true,
+   "detail": "{\"again\":\"SIGN-IN\",\"put\":[],\"del\":[]}"
+  },
+  {
+   "name": "bundles: no console error, page error or failed request",
+   "ok": true,
+   "detail": "[]"
+  }
+ ],
+ "part": "bundles"
+}

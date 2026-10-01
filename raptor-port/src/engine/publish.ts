@@ -13,6 +13,7 @@ import { CURWEEK, isStandalone } from './waves'
 import { groundOrder } from './order'
 import { dayIso, verId, parseVerId, verSeq, verSeqLabel, isValidVerId } from './verid'
 import { isPreservedWeek, rowElsewhere } from './weekstash'
+import { standsOn } from './overlay'   // functions only both ways
 import { inputProtected } from './quarantine'   // functions only both ways, so the import loop is safe
 import { rosterIds } from './faceattrs'
 import { oilEvidence, oilEvidenceKey, oilSignKey, oilKeyNoMem, oilDecisionsKey, oilKeyBeforeStand, oilUpgradeMovedMoney, oilMovedInputsOnly } from './oilev'
@@ -695,9 +696,17 @@ export function dayDiscardCount(di:any):number{di=+di;
   /* measured against the day as the load will LEAVE it (D175): a row whose request now stands on another day is not
      put back, so the edit that took it off Monday is not replaced — counting it read "Discard 1 edit" for a load that
      discards nothing */
-  const left=rowsLeftOut(di,snap.d), after=left.length?leaveRowsOut(JSON.parse(JSON.stringify(snap.d)),left.map((x:any)=>x.id)):snap.d;
+  /* …AND as the working-out after it leaves it ([DB-READINESS] phase 6 (c) — Fable's round-2 F5; drafts.ts dayAsLoadLeaves):
+     a deleted man stripped, the rows the holder brings back `kept`, a row re-made for what its request has changed since
+     the version (a hand-over), and a request filed since landed again — none of those is discarded by the load */
+  const after=HOOKS.dayAsLoadLeaves?HOOKS.dayAsLoadLeaves(di,snap.d):(()=>{const left=rowsLeftOut(di,snap.d);return left.length?leaveRowsOut(JSON.parse(JSON.stringify(snap.d)),left.map((x:any)=>x.id)):snap.d;})();
   const units:any[]=canonicalUnits(after,DAYS[di],di);
-  const lone=filingRestorePlan(di,snap.fil,after).put.filter((p:any)=>{
+  /* the filings are planned against the version's day with its rows as they went out — a row issued `kept` (dead) is not
+     "landed" — exactly as the load plans them, before it marks `kept` anew (drafts.ts loadVersionToWorkingCopy; the FULL
+     check's walk K2: counted against the worked-out day, the filing it puts back went uncounted and the button said the
+     day "is already at" its version) */
+  const asIssued=(()=>{const left=rowsLeftOut(di,snap.d);const c=JSON.parse(JSON.stringify(snap.d));return left.length?leaveRowsOut(c,left.map((x:any)=>x.id)):c;})();
+  const lone=filingRestorePlan(di,snap.fil,asIssued).put.filter((p:any)=>{
     const u=requestRowUnit(units,inpId(p.inp),String(p.want||''),String(p.inp.acc||''),after,DAYS[di]);
     if(u){u.inp=true;return false;}
     return true;});
@@ -722,7 +731,14 @@ export function filingRestorePlan(di:any,fil:any,dayAfter?:any):{put:Array<{inp:
     const id=inpId(inp), want=String(((fil||{})[id])||''), cur=String(inp.acc||'');
     if(filingSame(fil,id,cur))return;   // D174: a request the version never held, taken off since, stays taken off — never back to a fresh one that flags
     if(inputProtected(inp))return;   // a quarantined week's request is never touched — in the one plan both callers read (Fable's read, #2)
-    const has=(d:any)=>((d&&d.ground)||[]).some((g:any)=>g&&g.src===id);
+    /* ITS row — on a day it covers. A DEAD kept row (a version's row on a day the request no longer covers, D363) carries
+       its id but is not its row, and must not read as "landed" here: the load would leave the issued filing as filed
+       (D98). Its current filing is not asked — that is what this plan is about to set ([DB-READINESS] phase 6 (c), the
+       FULL check: Astra's scenario design §3 B). */
+    /* …and never a row carrying `kept` — on another day a dead one (the view clears the mark from a row that can stand);
+       in the incoming version its row as it went out, dead at issue — so a version issued with its row dead and the
+       request filed under Unavailable puts both back (the FULL check, Astra's final read #2) */
+    const has=(d:any)=>!!d&&inputCoversDate(inp,d.dt)&&((d.ground)||[]).some((g:any)=>g&&g.src===id&&!g.kept);
     const landed=DAYS.some((d0:any,j:number)=>has((j===di&&dayAfter)?dayAfter:d0));
     if(want==='g'?!landed:landed){left.push(id);return;}
     /* the version's OWN row for it stands on this very day: "on the programme" is then the fact, whatever other day the
@@ -756,7 +772,7 @@ export function filingRestorePlan(di:any,fil:any,dayAfter?:any):{put:Array<{inp:
    Narrowed to the weeks the request covers (its request is found by id), so one damaged week blocks only its own. */
 export function rowsLeftOut(di:any,dayIn:any):Array<{id:string,days:number[],row:any,away?:string}>{di=+di;const out:any[]=[];
   ((dayIn&&dayIn.ground)||[]).forEach((r:any)=>{const id=r&&r.src; if(!id||out.some((x:any)=>x.id===String(id)))return;
-    const days=DAYS.map((d:any,dj:number)=>(dj!==di&&d&&((d.ground||[]).some((g:any)=>g&&g.src===id)))?dj:-1).filter((dj:number)=>dj>=0);
+    const days=DAYS.map((d:any,dj:number)=>(dj!==di&&d&&standsOn(d,id))?dj:-1).filter((dj:number)=>dj>=0);   // STANDS there — a dead kept row does not
     if(days.length){out.push({id:String(id),days,row:r});return;}
     const inp=(INPUTS as any[]).find((x:any)=>x&&String(inpId(x))===String(id));
     const w=rowElsewhere(id,inp);
@@ -977,12 +993,9 @@ export function dropRowMarks(rids:any){
   });
 }
 export function markDeletion(di:any,kind:any,wasIssued:any=true){if(!wasIssued)return '';const key=deletionKey(di,kind);markEdit(key);return key;}
-/* Filing a personal input under Unavailable changes the issued day but has no
-   programme row to tint. The permanent input ID makes one stable inert address per
-   input/day, so filing then unfiling before issue remains one changed detail
-   rather than two contradictory amendment items. Dots are escaped as well as
-   URI punctuation because keyDay relies on the first dot ending the day. */
-export function markInputFiling(di:any,token:any){const id=encodeURIComponent(String(token)).replace(/\./g,'%2E'),key=`inp:${+di}.${id}`;markEdit(key);return key;}
+/* THE FILING MARK IS GONE ([DB-READINESS] group A, phase 6 (b)): a filing under Unavailable is counted from the filing
+   itself (filingDelta, above) and never written into a day's book — see engine/slots.ts, where it was written. An `inp:`
+   key already in a stored book is inert: no cell carries it, and no count reads it. */
 /* record an edit.  `key` is the slot/field address that changed — that single
    item is what gets coloured when the amendment is published.
    `was`/`now` are the edit log's (editlog.ts), and optional for the same
@@ -1146,6 +1159,19 @@ function priorVerId(di:any,seq:any):any{di=+di;
   let top=0; (SCHED.als||[]).forEach((a:any)=>{if(+a.di===di){const s=+a.seq; if(s!==+seq&&Number.isSafeInteger(s)&&s>top)top=s;}});
   if(top>0){const a=(SCHED.als||[]).find((x:any)=>+x.di===di&&+x.seq===top); return a&&a.id;}
   const o=(SCHED.orig||{})[di]; return o&&o.id;}
+/* ONE retired entry, built from the issued record `rec` and the retraction's own facts (`at`, `by`, `restoreSeq`,
+   `logged`) — shared by retireIssued and by the saved week's reader, which joins an issuance row and its retraction
+   row back into this entry (state/weekrows.ts; [DB-READINESS] group A, phase 1 — plan §2.9, R2-04). It keeps the
+   issued record WHOLE as `rec`: the database keeps every issuance as one append-only row that an Unpublish never
+   touches, so the issuance must be recoverable from its retired entry byte-for-byte — the snapshot below drops the
+   Original's roster (`ros`) and an amendment's structural adds (`added`). Everything else is the entry as it always
+   read (units: the item count as it went out — D109; Astra 4). */
+export function retiredEntry(rec:any,id:any,n:number,di:number,meta:any):any{
+  return {id,n,di,iso:parseVerId(id).iso,seq:verSeq(id),
+    snap:rec?(rec.snap||{d:rec.d,c:rec.c,fil:rec.fil,inp:rec.inp,w:rec.w,pa:rec.pa,rv:rec.rv}):null,
+    diff:(rec&&rec.diff)||[],units:rec&&rec.units!=null?rec.units:undefined,ukinds:rec&&rec.ukinds?rec.ukinds:undefined,sign:(rec&&rec.sign)||{},
+    at:meta.at,by:meta.by??null,restoreSeq:meta.restoreSeq,logged:!!meta.logged,rec:rec??null};
+}
 /* append the issued version `id` to the retired log as its own immutable snapshot
    (keyed `<id>~<n>`) and remove the live issued record. `logged` = whether the
    version was disseminated (the history panel prints only logged entries); at Step
@@ -1156,11 +1182,7 @@ export function retireIssued(di:any,id:any,opts:any={}):string{di=+di;
   SCHED.retired=SCHED.retired||{};
   const key=`${id}~${nextRetiredN(id)}`;
   if(opts.append!==false){
-    SCHED.retired[key]={id,n:+key.slice(key.lastIndexOf('~')+1),di,iso:parseVerId(id).iso,seq,
-      snap:rec?(rec.snap||{d:rec.d,c:rec.c,fil:rec.fil,inp:rec.inp,w:rec.w,pa:rec.pa,rv:rec.rv}):null,
-      diff:(rec&&rec.diff)||[],units:rec&&rec.units!=null?rec.units:undefined,ukinds:rec&&rec.ukinds?rec.ukinds:undefined,sign:(rec&&rec.sign)||{},   // units: the item count as it went out (D109; Astra 4)
-      at:new Date().toISOString(),by:opts.by??null,
-      restoreSeq:opts.restoreSeq,logged:!!opts.logged};
+    SCHED.retired[key]=retiredEntry(rec,id,+key.slice(key.lastIndexOf('~')+1),di,{at:new Date().toISOString(),by:opts.by??null,restoreSeq:opts.restoreSeq,logged:!!opts.logged});
   }
   if(seq===0){ if(SCHED.orig)delete SCHED.orig[di]; }
   else { const ix=(SCHED.als||[]).findIndex((a:any)=>String(a&&a.id)===String(id)); if(ix>=0)SCHED.als.splice(ix,1); }
@@ -1196,7 +1218,7 @@ export function unpublishDay(di:any,opts:any={}):any{di=+di;
       delete SCHED.changes[k];
       // a delete/move/input mark, or a field mark whose row still resolves, re-opens
       // as pending; a mark whose row no longer exists is dropped (it can't be edited).
-      if(isDeleteKey(k)||isMoveKey(k)||String(k).startsWith('inp:')||posKey(k,DAYS)!==null)SCHED.pending[k]=1;
+      if(isDeleteKey(k)||isMoveKey(k)||posKey(k,DAYS)!==null)SCHED.pending[k]=1;   // an `inp:` filing mark is never written now (phase 6 (b)) — the filing itself reads pending again
     });
     // restore this AL's structural additions so a row added-then-deleted inside the
     // retracted AL does not mint a spurious del: mark (§6.5).

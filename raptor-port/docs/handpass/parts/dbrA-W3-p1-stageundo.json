@@ -1,0 +1,33 @@
+{
+ "base": "http://localhost:4203",
+ "at": "2026-09-30T08:45:27.832Z",
+ "results": [
+  {
+   "name": "P1 stage → CLOSED — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [leavewar/war:y2026] · del 0 [] · batches lw.stage/1"
+  },
+  {
+   "name": "P1 ↶ Undo — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [leavewar/war:y2026] · del 0 [] · batches undo.restore/1"
+  },
+  {
+   "name": "P1 ↷ Redo — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [leavewar/war:y2026] · del 0 [] · batches undo.restore/1"
+  },
+  {
+   "name": "probe errors",
+   "ok": true,
+   "detail": "[]"
+  }
+ ],
+ "diffs": {
+  "move": [
+   "stage: \"open\" → \"closed\""
+  ],
+  "undo": [],
+  "redo": []
+ }
+}

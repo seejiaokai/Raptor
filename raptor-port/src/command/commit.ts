@@ -103,7 +103,11 @@ export interface TxnHandle {
   commit(): void
   abort(): void
 }
-export interface TxnWrapper { transaction(): TxnHandle }
+/* [DB-READINESS] group A, phase 4.1 (plan §2.7) — who opened the group: the outermost command's type and actor, handed
+   to the wrapper so the group's change-log batch can name them (state/changebatch.ts), even when that command itself
+   changed nothing and only what it drained did (F3-10). */
+export interface TxnInfo { type: string; actor: Actor }
+export interface TxnWrapper { transaction(info?: TxnInfo): TxnHandle }
 let txnWrapper: TxnWrapper | null = null
 let openTxn: TxnHandle | null = null
 export function setTxnWrapper(w: TxnWrapper | null): void { txnWrapper = w }
@@ -166,7 +170,7 @@ function dispatch(cmd: Command, actor: Actor, origin: Origin, causedBy?: number)
      commit with their stale captured cause. The pipeline's throw is rethrown
      AFTER the drain + reset. */
   let result: CommitResult | undefined
-  const wtx = txnWrapper ? txnWrapper.transaction() : null
+  const wtx = txnWrapper ? txnWrapper.transaction({ type: cmd.type, actor }) : null
   openTxn = wtx
   try {
     result = runPipeline(cmd, actor, origin, causedBy)
@@ -215,6 +219,19 @@ function drainQueue(): void {
 }
 
 /* ---- the pipeline -------------------------------------------------------- */
+/* HOOKS RUN AS EVERY LOCAL PIPELINE'S REDUCER BEGINS (phase 3, before `apply`) — [DB-READINESS] group A, the group-wide
+   walk's finding H2 (30 Sep 26). The board's in-place edits and a text box make their change FIRST and open the command
+   that saves it right after (state/view.ts afterSchedMutate's self-wrap, ui/textedit.ts); the history line that change
+   logs arrives with no command running. The edit log holds such a line and hands it over here, so it is kept among
+   THIS command's latched effects — the edit and its line one saved group, one change-log batch — and dropped with it if
+   the command is refused. Only a person's own command (origin `user`) adopts: a projection the app runs in the same turn
+   (the Leave War's sync) or a remote change never carries someone's line. */
+const beginHooks: Array<() => void> = []
+export function onPipelineBegin(fn: () => void): () => void {
+  beginHooks.push(fn)
+  return () => { const i = beginHooks.indexOf(fn); if (i >= 0) beginHooks.splice(i, 1) }
+}
+
 function runPipeline(cmd: Command, actor: Actor, origin: Origin, causedBy?: number): CommitResult {
   const env: CommitEnvelope = {
     seq: -1, at: '', actor, origin, scope: cmd.scope, type: cmd.type,
@@ -225,6 +242,7 @@ function runPipeline(cmd: Command, actor: Actor, origin: Origin, causedBy?: numb
   txn.api = makeTxnApi(txn)
   active = txn
   phase = 'reducer'
+  if (origin === 'user') for (const h of beginHooks.slice()) h()
   /* [CMDL-FINISH] §2.1(1) — this pipeline's causal context. INHERIT the cause it
      was raised with (a queued projection's captured causedBy); finalize replaces
      it with this pipeline's OWN seq once it emits. A no-op keeps the inherited
@@ -527,6 +545,10 @@ export function isInReducer(): boolean {
   return active != null && phase === 'reducer'
 }
 export function commitPhase(): 'idle' | 'reducer' | 'post' { return phase }
+/* the envelope of the command now running — its changes are final from phase 4, so a phase-8 effect can read which records
+   the command wrote ([DB-READINESS] group A, phase 6 (c): the holder base moves only for the days a command's rows name).
+   null outside a command. */
+export function activeEnvelope(): CommitEnvelope | null { return active ? active.env : null }
 
 /* ---- stream + subscriptions ---------------------------------------------- */
 export function onCommit(fn: (env: CommitEnvelope) => void): () => void {

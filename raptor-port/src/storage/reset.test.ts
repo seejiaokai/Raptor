@@ -1,6 +1,10 @@
 import { describe, it, expect } from 'vitest'
 import { MemoryBackend } from './memory'
 import { resetPreSchema, SCHEMA_VERSION } from './reset'
+import { readSchema } from './schema'
+
+/* the stamp is one object since [DB-READINESS] group A phase 0 — its format is what these pin */
+const stampFormat = (be: MemoryBackend) => readSchema(be.peek('settings', 'schema'))?.dataFormatVersion
 
 /* a store carrying pre-1A demo data: a bare-string note and a content-key
    ground.src on a saved week, plus people/settings that must be KEPT. */
@@ -29,7 +33,7 @@ describe('resetPreSchema — ARCH-STACK 1A storage reset (Astra SID-05/07)', () 
     expect(be.peek('inputs', 'all')).toBeNull()
     expect(be.peek('weeks', '2026-07-13')).toBeNull()
     expect(be.peek('people', 'all')).not.toBeNull()
-    expect(JSON.parse(be.peek('settings', 'schema')!)).toBe(SCHEMA_VERSION)
+    expect(stampFormat(be)).toBe(SCHEMA_VERSION)
   })
 
   it('1C: a v1-stamped (1A) store is still reset — the bump to 2 clears cs-form who weeks', async () => {
@@ -41,7 +45,7 @@ describe('resetPreSchema — ARCH-STACK 1A storage reset (Astra SID-05/07)', () 
     expect(snap.inputs).toEqual({})
     expect(snap.weeks).toEqual({})
     expect(be.peek('weeks', '2026-07-13')).toBeNull()
-    expect(JSON.parse(be.peek('settings', 'schema')!)).toBe(SCHEMA_VERSION)
+    expect(stampFormat(be)).toBe(SCHEMA_VERSION)
   })
 
   it('is a no-op on an already-stamped store — no deletes, no re-stamp', async () => {
@@ -71,14 +75,14 @@ describe('resetPreSchema — ARCH-STACK 1A storage reset (Astra SID-05/07)', () 
     expect(snap.leavewar).toEqual({})
     expect(be.peek('leavewar', 'wars')).toBeNull()     // durably gone → hadStoredWars=false at boot
     expect(be.peek('people', 'all')).not.toBeNull()    // people kept (projected onto the fresh demo)
-    expect(JSON.parse(be.peek('settings', 'schema')!)).toBe(SCHEMA_VERSION)
+    expect(stampFormat(be)).toBe(SCHEMA_VERSION)
   })
 
   it('stamps a fresh empty store (nothing to reset)', async () => {
     const be = new MemoryBackend()
     const snap = await be.loadAll()
     await resetPreSchema(be, snap)
-    expect(JSON.parse(be.peek('settings', 'schema')!)).toBe(SCHEMA_VERSION)
+    expect(stampFormat(be)).toBe(SCHEMA_VERSION)
   })
 
   it('SID-07/IR-02: a failed delete THROWS (boot rejects to Retry) and leaves the stamp unset — the next boot completes', async () => {
@@ -96,6 +100,6 @@ describe('resetPreSchema — ARCH-STACK 1A storage reset (Astra SID-05/07)', () 
     await resetPreSchema(be, snap2)
     expect(be.peek('inputs', 'all')).toBeNull()
     expect(be.peek('weeks', '2026-07-13')).toBeNull()
-    expect(JSON.parse(be.peek('settings', 'schema')!)).toBe(SCHEMA_VERSION)
+    expect(stampFormat(be)).toBe(SCHEMA_VERSION)
   })
 })

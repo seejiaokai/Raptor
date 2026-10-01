@@ -1,0 +1,555 @@
+{
+ "base": "http://localhost:4202",
+ "at": "2026-09-30T09:17:52.384Z",
+ "results": [
+  {
+   "name": "W2-04a the Inputs month calendar: Wed 14 Oct → + Pucks → Ranger and Blade → ✓ Add 2 — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [plan/pp:ppmunw3earvtwd1q] · del 0 [] · batches inputs.write/1"
+  },
+  {
+   "name": "W2-04a the Inputs month calendar: Wed 14 Oct → + Pucks → Ranger and Blade → ✓ Add 2 — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [plan/pp:ppmunw3earvtwd1q] · del 0 [] · batches inputs.write/1"
+  },
+  {
+   "name": "W2-04a — ONE planning-puck row; the day shows Ranger + Blade",
+   "ok": true,
+   "detail": "{\"cell\":{\"title\":\"\",\"pucks\":[\"Ranger+Blade\"]},\"pp\":[{\"id\":\"ppmunw3earvtwd1q\",\"ids\":[\"bane\",\"slash\"],\"kind\":\"pucks\",\"ord\":1024}]}"
+  },
+  {
+   "name": "W2-04a — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "W2-04a — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "W2-04a — (pristine week) with the fresh hidden row ids set aside, the reload gives back everything else exactly",
+   "ok": true,
+   "detail": "same"
+  },
+  {
+   "name": "W2-04a reading the screen after the reload — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "W2-04a reading the screen after the reload — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "W2-04a — after the reload: the day still shows Ranger + Blade",
+   "ok": true,
+   "detail": "{\"title\":\"\",\"pucks\":[\"Ranger+Blade\"]}"
+  },
+  {
+   "name": "W2-04b the day popover of Thu 15 Oct: the day title typed \"W2 DAY TITLE\" — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [plan/dm:2026-10-15] · del 0 [] · batches inputs.write/1"
+  },
+  {
+   "name": "W2-04b the day popover of Thu 15 Oct: the day title typed \"W2 DAY TITLE\" — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [plan/dm:2026-10-15] · del 0 [] · batches inputs.write/1"
+  },
+  {
+   "name": "W2-04b — the day reads its title",
+   "ok": true,
+   "detail": "{\"title\":\"W2 DAY TITLE\",\"pucks\":[]}"
+  },
+  {
+   "name": "W2-04b — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "W2-04b — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "W2-04b — (pristine week) with the fresh hidden row ids set aside, the reload gives back everything else exactly",
+   "ok": true,
+   "detail": "same"
+  },
+  {
+   "name": "W2-04b reading the screen after the reload — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "W2-04b reading the screen after the reload — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "W2-04b — after the reload: the title kept",
+   "ok": true,
+   "detail": "{\"title\":\"W2 DAY TITLE\",\"pucks\":[]}"
+  },
+  {
+   "name": "W2-04c — opening tab B and signing in wrote nothing",
+   "ok": true,
+   "detail": "{\"put\":[],\"del\":[],\"newBatches\":[],\"goneBatches\":[]}"
+  },
+  {
+   "name": "W2-04c tab A: files an LL for Nomad, 26 Oct — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 2 [inputs/imunw3t4c5soe8f, settings/elog:munw3mshvloe.000001] · del 0 [] · batches inputs.batch/2"
+  },
+  {
+   "name": "W2-04c tab A: files an LL for Nomad, 26 Oct — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 2 [inputs/imunw3t4c5soe8f, settings/elog:munw3mshvloe.000001] · del 0 [] · batches inputs.batch/2"
+  },
+  {
+   "name": "W2-04c tab B (not reloaded since before A's change): files an LL for Echo, 27 Oct — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 2 [inputs/imunw3v1tzli340, settings/elog:munw3qcgtrsh.000001] · del 0 [] · batches inputs.batch/2"
+  },
+  {
+   "name": "W2-04c tab B (not reloaded since before A's change): files an LL for Echo, 27 Oct — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 2 [inputs/imunw3v1tzli340, settings/elog:munw3qcgtrsh.000001] · del 0 [] · batches inputs.batch/2"
+  },
+  {
+   "name": "W2-04c — the reload of tab A wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "W2-04c — after tab A's reload: BOTH requests there (Nomad 26 Oct and Echo 27 Oct), listed on the Inputs page",
+   "ok": true,
+   "detail": "{\"has\":[true,true],\"listed\":[true,true]}"
+  },
+  {
+   "name": "W2-04c — the reload of tab B wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "W2-04c — after tab B's reload: BOTH requests there (Nomad 26 Oct and Echo 27 Oct), listed on the Inputs page",
+   "ok": true,
+   "detail": "{\"has\":[true,true],\"listed\":[true,true]}"
+  },
+  {
+   "name": "W2-04c — after both reloads the two tabs hold the same world",
+   "ok": true,
+   "detail": "same"
+  },
+  {
+   "name": "W2-04d tab A: + Pucks on 16 Oct: Hex — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [plan/pp:ppmunw44xl8j3stw] · del 0 [] · batches inputs.write/1"
+  },
+  {
+   "name": "W2-04d tab A: + Pucks on 16 Oct: Hex — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [plan/pp:ppmunw44xl8j3stw] · del 0 [] · batches inputs.write/1"
+  },
+  {
+   "name": "W2-04d tab B (not reloaded since before A's change): + Pucks on 16 Oct: Outlaw — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [plan/pp:ppmunw48e6f7z53i] · del 0 [] · batches inputs.write/1"
+  },
+  {
+   "name": "W2-04d tab B (not reloaded since before A's change): + Pucks on 16 Oct: Outlaw — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [plan/pp:ppmunw48e6f7z53i] · del 0 [] · batches inputs.write/1"
+  },
+  {
+   "name": "W2-04d — the reload of tab A wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "W2-04d — after tab A's reload: BOTH pucks rows on 16 Oct (Hex, Outlaw)",
+   "ok": true,
+   "detail": "{\"cell\":{\"title\":\"\",\"pucks\":[\"Hex\",\"Outlaw\"]},\"pp\":[{\"id\":\"ppmunw44xl8j3stw\",\"ids\":[\"rocky\"],\"kind\":\"pucks\",\"ord\":2048},{\"id\":\"ppmunw48e6f7z53i\",\"ids\":[\"casper\"],\"kind\":\"pucks\",\"ord\":2048}]}"
+  },
+  {
+   "name": "W2-04d — the reload of tab B wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "W2-04d — after tab B's reload: BOTH pucks rows on 16 Oct (Hex, Outlaw)",
+   "ok": true,
+   "detail": "{\"cell\":{\"title\":\"\",\"pucks\":[\"Hex\",\"Outlaw\"]},\"pp\":[{\"id\":\"ppmunw44xl8j3stw\",\"ids\":[\"rocky\"],\"kind\":\"pucks\",\"ord\":2048},{\"id\":\"ppmunw48e6f7z53i\",\"ids\":[\"casper\"],\"kind\":\"pucks\",\"ord\":2048}]}"
+  },
+  {
+   "name": "W2-04d — after both reloads the two tabs hold the same world",
+   "ok": true,
+   "detail": "same"
+  },
+  {
+   "name": "W2-04e tab A: day title on 17 Oct: \"W2 TITLE A\" — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [plan/dm:2026-10-17] · del 0 [] · batches inputs.write/1"
+  },
+  {
+   "name": "W2-04e tab A: day title on 17 Oct: \"W2 TITLE A\" — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [plan/dm:2026-10-17] · del 0 [] · batches inputs.write/1"
+  },
+  {
+   "name": "W2-04e tab B (not reloaded since before A's change): + Pucks on 17 Oct: Ranger — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [plan/pp:ppmunw4kiptiu5nj] · del 0 [] · batches inputs.write/1"
+  },
+  {
+   "name": "W2-04e tab B (not reloaded since before A's change): + Pucks on 17 Oct: Ranger — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [plan/pp:ppmunw4kiptiu5nj] · del 0 [] · batches inputs.write/1"
+  },
+  {
+   "name": "W2-04e — the reload of tab A wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "W2-04e — after tab A's reload: BOTH on 17 Oct: the title \"W2 TITLE A\" and the Ranger row",
+   "ok": true,
+   "detail": "{\"title\":\"W2 TITLE A\",\"pucks\":[\"Ranger\"]}"
+  },
+  {
+   "name": "W2-04e — the reload of tab B wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "W2-04e — after tab B's reload: BOTH on 17 Oct: the title \"W2 TITLE A\" and the Ranger row",
+   "ok": true,
+   "detail": "{\"title\":\"W2 TITLE A\",\"pucks\":[\"Ranger\"]}"
+  },
+  {
+   "name": "W2-04e — after both reloads the two tabs hold the same world",
+   "ok": true,
+   "detail": "same"
+  },
+  {
+   "name": "W2-04f tab A: day title on 18 Oct — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [plan/dm:2026-10-18] · del 0 [] · batches inputs.write/1"
+  },
+  {
+   "name": "W2-04f tab A: day title on 18 Oct — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [plan/dm:2026-10-18] · del 0 [] · batches inputs.write/1"
+  },
+  {
+   "name": "W2-04f tab B (not reloaded since before A's change): day title on 19 Oct — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [plan/dm:2026-10-19] · del 0 [] · batches inputs.write/1"
+  },
+  {
+   "name": "W2-04f tab B (not reloaded since before A's change): day title on 19 Oct — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [plan/dm:2026-10-19] · del 0 [] · batches inputs.write/1"
+  },
+  {
+   "name": "W2-04f — the reload of tab A wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "W2-04f — after tab A's reload: both titles",
+   "ok": true,
+   "detail": "{\"a\":{\"title\":\"W2 TITLE 18\",\"pucks\":[]},\"b\":{\"title\":\"W2 TITLE 19\",\"pucks\":[]}}"
+  },
+  {
+   "name": "W2-04f — the reload of tab B wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "W2-04f — after tab B's reload: both titles",
+   "ok": true,
+   "detail": "{\"a\":{\"title\":\"W2 TITLE 18\",\"pucks\":[]},\"b\":{\"title\":\"W2 TITLE 19\",\"pucks\":[]}}"
+  },
+  {
+   "name": "W2-04f — after both reloads the two tabs hold the same world",
+   "ok": true,
+   "detail": "same"
+  },
+  {
+   "name": "W2-04h tab A: + Note on 16 Oct: \"W2 NOTE A\" — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [plan/pp:ppmunw56fptgwmv4] · del 0 [] · batches inputs.write/1"
+  },
+  {
+   "name": "W2-04h tab A: + Note on 16 Oct: \"W2 NOTE A\" — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [plan/pp:ppmunw56fptgwmv4] · del 0 [] · batches inputs.write/1"
+  },
+  {
+   "name": "W2-04h tab B (not reloaded since before A's change): ⠿ Outlaw's row dragged above Hex's — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [plan/pp:ppmunw48e6f7z53i] · del 0 [] · batches inputs.write/1"
+  },
+  {
+   "name": "W2-04h tab B (not reloaded since before A's change): ⠿ Outlaw's row dragged above Hex's — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [plan/pp:ppmunw48e6f7z53i] · del 0 [] · batches inputs.write/1"
+  },
+  {
+   "name": "W2-04h tab B — the reorder wrote ONE planning row — the moved one",
+   "ok": true,
+   "detail": "{\"put\":[\"plan/pp:ppmunw48e6f7z53i\"],\"ret\":{\"r\":\"dropped\",\"before\":[\"ppmunw44xl8j3stw\",\"ppmunw48e6f7z53i\"],\"after\":[\"ppmunw48e6f7z53i\",\"ppmunw44xl8j3stw\"]}}"
+  },
+  {
+   "name": "W2-04h — the reload of tab A wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "W2-04h — after tab A's reload: all three kept, in one order on both tabs: the note (A put it on top), then Outlaw's row above Hex's (B's reorder)",
+   "ok": true,
+   "detail": "[\"note:W2 NOTE A\",\"casper\",\"rocky\"]"
+  },
+  {
+   "name": "W2-04h — the reload of tab B wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "W2-04h — after tab B's reload: all three kept, in one order on both tabs: the note (A put it on top), then Outlaw's row above Hex's (B's reorder)",
+   "ok": true,
+   "detail": "[\"note:W2 NOTE A\",\"casper\",\"rocky\"]"
+  },
+  {
+   "name": "W2-04h — after both reloads the two tabs hold the same world",
+   "ok": true,
+   "detail": "same"
+  },
+  {
+   "name": "W2-04i tab A: ✕ on Hex's row — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 0 [] · del 1 [plan/pp:ppmunw44xl8j3stw] · batches inputs.write/1"
+  },
+  {
+   "name": "W2-04i tab A: ✕ on Hex's row — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 0 [] · del 1 [plan/pp:ppmunw44xl8j3stw] · batches inputs.write/1"
+  },
+  {
+   "name": "W2-04i tab B (not reloaded since before A's change): + add on Outlaw's row: Ranger — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [plan/pp:ppmunw48e6f7z53i] · del 0 [] · batches inputs.write/1"
+  },
+  {
+   "name": "W2-04i tab B (not reloaded since before A's change): + add on Outlaw's row: Ranger — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [plan/pp:ppmunw48e6f7z53i] · del 0 [] · batches inputs.write/1"
+  },
+  {
+   "name": "W2-04i — the reload of tab A wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "W2-04i — after tab A's reload: Hex's row stays deleted (not drawn, not stored); Outlaw's row holds Outlaw + Ranger; the note kept",
+   "ok": true,
+   "detail": "{\"o\":[\"note:W2 NOTE A\",\"casper+bane\"],\"hexStored\":false}"
+  },
+  {
+   "name": "W2-04i — the reload of tab B wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "W2-04i — after tab B's reload: Hex's row stays deleted (not drawn, not stored); Outlaw's row holds Outlaw + Ranger; the note kept",
+   "ok": true,
+   "detail": "{\"o\":[\"note:W2 NOTE A\",\"casper+bane\"],\"hexStored\":false}"
+  },
+  {
+   "name": "W2-04i — after both reloads the two tabs hold the same world",
+   "ok": true,
+   "detail": "same"
+  },
+  {
+   "name": "W2-04g tab A: ✕ on Nomad's LL — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [settings/elog:munw6dnc3eyb.000001] · del 1 [inputs/imunw3t4c5soe8f] · batches inputs.batch/2"
+  },
+  {
+   "name": "W2-04g tab A: ✕ on Nomad's LL — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [settings/elog:munw6dnc3eyb.000001] · del 1 [inputs/imunw3t4c5soe8f] · batches inputs.batch/2"
+  },
+  {
+   "name": "W2-04g tab B (not reloaded since before A's change): files an Appointment for Hex, 28 Oct — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 2 [inputs/imunw6qw2qdcqsr, settings/elog:munw6i0m5s7f.000001] · del 0 [] · batches inputs.batch/2"
+  },
+  {
+   "name": "W2-04g tab B (not reloaded since before A's change): files an Appointment for Hex, 28 Oct — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 2 [inputs/imunw6qw2qdcqsr, settings/elog:munw6i0m5s7f.000001] · del 0 [] · batches inputs.batch/2"
+  },
+  {
+   "name": "W2-04g — the reload of tab A wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "W2-04g — after tab A's reload: Nomad's LL stays deleted (not on the page, not stored); Hex's Appointment there",
+   "ok": true,
+   "detail": "{\"deletedBack\":false,\"storedBack\":false,\"newThere\":true}"
+  },
+  {
+   "name": "W2-04g — the reload of tab B wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "W2-04g — after tab B's reload: Nomad's LL stays deleted (not on the page, not stored); Hex's Appointment there",
+   "ok": true,
+   "detail": "{\"deletedBack\":false,\"storedBack\":false,\"newThere\":true}"
+  },
+  {
+   "name": "W2-04g — after both reloads the two tabs hold the same world",
+   "ok": true,
+   "detail": "same"
+  }
+ ],
+ "table": [
+  {
+   "step": "W2-04a",
+   "width": "desktop",
+   "what": "the Inputs month calendar: Wed 14 Oct → + Pucks → Ranger and Blade → ✓ Add 2",
+   "afterReload": "14 Oct: Ranger+Blade",
+   "rows": "put 1 [plan/pp:ppmunw3earvtwd1q] · del 0 · batches inputs.write/1",
+   "pass": true,
+   "fails": [],
+   "pics": [
+    "W2-04a-a.png",
+    "W2-04a-b.png"
+   ]
+  },
+  {
+   "step": "W2-04b",
+   "width": "desktop",
+   "what": "the day popover of Thu 15 Oct: the day title typed \"W2 DAY TITLE\"",
+   "afterReload": "15 Oct title \"W2 DAY TITLE\"",
+   "rows": "put 1 [plan/dm:2026-10-15] · del 0 · batches inputs.write/1",
+   "pass": true,
+   "fails": [],
+   "pics": [
+    "W2-04b-a.png",
+    "W2-04b-b.png"
+   ]
+  },
+  {
+   "step": "W2-04c",
+   "width": "desktop",
+   "what": "two tabs on the Inputs page: A files an LL for Nomad (Mon 26 Oct); B, not reloaded, files an LL for Echo (Tue 27 Oct)",
+   "afterReload": "tab A: Nomad there, Echo there · tab B: Nomad there, Echo there",
+   "rows": "A: put 2 [inputs/imunw3t4c5soe8f, settings/elog:munw3mshvloe.000001] · del 0 · batches inputs.batch/2 ‖ B: put 2 [inputs/imunw3v1tzli340, settings/elog:munw3qcgtrsh.000001] · del 0 · batches inputs.batch/2",
+   "pass": true,
+   "fails": [],
+   "pics": [
+    "W2-04c-a-tabA.png",
+    "W2-04c-a-tabB.png",
+    "W2-04c-b-tabA.png",
+    "W2-04c-b-tabB.png"
+   ]
+  },
+  {
+   "step": "W2-04d",
+   "width": "desktop",
+   "what": "two tabs, ONE date of the month calendar: A adds a pucks row (Hex) on Fri 16 Oct; B, not reloaded, adds another (Outlaw) on the same day",
+   "afterReload": "tab A: 16 Oct rows: Hex | Outlaw · tab B: 16 Oct rows: Hex | Outlaw",
+   "rows": "A: put 1 [plan/pp:ppmunw44xl8j3stw] · del 0 · batches inputs.write/1 ‖ B: put 1 [plan/pp:ppmunw48e6f7z53i] · del 0 · batches inputs.write/1",
+   "pass": true,
+   "fails": [],
+   "pics": [
+    "W2-04d-a-tabA.png",
+    "W2-04d-a-tabB.png",
+    "W2-04d-b-tabA.png",
+    "W2-04d-b-tabB.png"
+   ]
+  },
+  {
+   "step": "W2-04e",
+   "width": "desktop",
+   "what": "two tabs, ONE date: A types the day title of Sat 17 Oct; B, not reloaded, adds a pucks row (Ranger) on the same day",
+   "afterReload": "tab A: 17 Oct: title \"W2 TITLE A\", rows Ranger · tab B: 17 Oct: title \"W2 TITLE A\", rows Ranger",
+   "rows": "A: put 1 [plan/dm:2026-10-17] · del 0 · batches inputs.write/1 ‖ B: put 1 [plan/pp:ppmunw4kiptiu5nj] · del 0 · batches inputs.write/1",
+   "pass": true,
+   "fails": [],
+   "pics": [
+    "W2-04e-a-tabA.png",
+    "W2-04e-a-tabB.png",
+    "W2-04e-b-tabA.png",
+    "W2-04e-b-tabB.png"
+   ]
+  },
+  {
+   "step": "W2-04f",
+   "width": "desktop",
+   "what": "two tabs, two dates: A types the title of Sun 18 Oct; B, not reloaded, the title of Mon 19 Oct",
+   "afterReload": "tab A: 18 Oct \"W2 TITLE 18\", 19 Oct \"W2 TITLE 19\" · tab B: 18 Oct \"W2 TITLE 18\", 19 Oct \"W2 TITLE 19\"",
+   "rows": "A: put 1 [plan/dm:2026-10-18] · del 0 · batches inputs.write/1 ‖ B: put 1 [plan/dm:2026-10-19] · del 0 · batches inputs.write/1",
+   "pass": true,
+   "fails": [],
+   "pics": [
+    "W2-04f-a-tabA.png",
+    "W2-04f-a-tabB.png",
+    "W2-04f-b-tabA.png",
+    "W2-04f-b-tabB.png"
+   ]
+  },
+  {
+   "step": "W2-04h",
+   "width": "desktop",
+   "what": "two tabs, one day (16 Oct): A inserts a note (\"+ Note\"); B, not reloaded, drags Outlaw's row above Hex's (⠿)",
+   "afterReload": "tab A: 16 Oct: [\"note:W2 NOTE A\",\"casper\",\"rocky\"] · tab B: 16 Oct: [\"note:W2 NOTE A\",\"casper\",\"rocky\"]",
+   "rows": "A: put 1 [plan/pp:ppmunw56fptgwmv4] · del 0 · batches inputs.write/1 ‖ B: put 1 [plan/pp:ppmunw48e6f7z53i] · del 0 · batches inputs.write/1",
+   "pass": true,
+   "fails": [],
+   "pics": [
+    "W2-04h-a-tabA.png",
+    "W2-04h-a-tabB.png",
+    "W2-04h-b-tabA.png",
+    "W2-04h-b-tabB.png"
+   ]
+  },
+  {
+   "step": "W2-04i",
+   "width": "desktop",
+   "what": "two tabs, one day (16 Oct): A deletes Hex's row (✕); B, not reloaded and still showing it, adds Ranger to Outlaw's row (+ add)",
+   "afterReload": "tab A: 16 Oct: [\"note:W2 NOTE A\",\"casper+bane\"] · tab B: 16 Oct: [\"note:W2 NOTE A\",\"casper+bane\"]",
+   "rows": "A: put 0 · del 1 [plan/pp:ppmunw44xl8j3stw] · batches inputs.write/1 ‖ B: put 1 [plan/pp:ppmunw48e6f7z53i] · del 0 · batches inputs.write/1",
+   "pass": true,
+   "fails": [],
+   "pics": [
+    "W2-04i-a-tabA.png",
+    "W2-04i-a-tabB.png",
+    "W2-04i-b-tabA.png",
+    "W2-04i-b-tabB.png"
+   ]
+  },
+  {
+   "step": "W2-04g",
+   "width": "desktop",
+   "what": "two tabs: A deletes Nomad's LL (26 Oct); B, not reloaded and still showing it, files an Appointment for Hex (Wed 28 Oct)",
+   "afterReload": "tab A: Nomad's LL stays deleted; Hex's Appointment there · tab B: Nomad's LL stays deleted; Hex's Appointment there",
+   "rows": "A: put 1 [settings/elog:munw6dnc3eyb.000001] · del 1 [inputs/imunw3t4c5soe8f] · batches inputs.batch/2 ‖ B: put 2 [inputs/imunw6qw2qdcqsr, settings/elog:munw6i0m5s7f.000001] · del 0 · batches inputs.batch/2",
+   "pass": true,
+   "fails": [],
+   "pics": [
+    "W2-04g-a-tabA.png",
+    "W2-04g-a-tabB.png",
+    "W2-04g-b-tabA.png",
+    "W2-04g-b-tabB.png"
+   ]
+  }
+ ],
+ "errors": []
+}

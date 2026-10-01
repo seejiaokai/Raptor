@@ -174,18 +174,34 @@ describe('Undo and the sign-offs a publish spent (walk W3 — F-w3-1, F-w3-2)', 
     expect(daySigned(0), 'its sign-offs were given before the withdrawn version — re-sign').toBe(false)
   })
 
+  /* The sign-offs are one record PER DAY since [DB-READINESS] group A, phase 1 (plan §2.9): a new change REPLACES an
+     undone step only on the same day's record. So the walk's W3 case is replayed on one day (Friday's CUR CK undone, then
+     a NEW change to Friday's sign-offs), and a change on another day now leaves the undone step redoable. */
   it('Redo is never stuck behind a step a new change replaced (F-w3-2, AM39b)', () => {
     signCmd(4, 'cur', 'ignite')                         // Friday CUR CK
     expect(globalUndo().ok).toBe(true)                  // …undone
-    signCmd(5, 'cur', 'ignite')                         // a NEW change: Saturday CUR CK
+    signCmd(4, 'sked', 'bane')                          // a NEW change to Friday's sign-offs: SKED CK
     expect(globalUndo().ok).toBe(true)                  // …undone
     expect(undoState().canRedo).toBe(true)
     const r = globalRedo()
     expect(r.reason, 'it said "redo that first" — which no control can do').toBeUndefined()
     expect(r.ok).toBe(true)
-    expect(signOf(5).cur).toBe('ignite')                // Saturday's comes back
+    expect(signOf(4).sked).toBe('bane')                 // the SKED CK comes back
     expect(signOf(4).cur, 'the step the new change replaced stays gone').toBe('')
     expect(undoState().canRedo).toBe(false)             // nothing left to redo
+  })
+
+  it('a change on ANOTHER day replaces nothing: the undone step stays redoable, in its turn', () => {
+    signCmd(4, 'cur', 'ignite')                         // Friday CUR CK
+    expect(globalUndo().ok).toBe(true)                  // …undone
+    signCmd(5, 'cur', 'ignite')                         // Saturday CUR CK — another day's record
+    expect(globalUndo().ok).toBe(true)                  // …undone
+    expect(globalRedo().ok).toBe(true)                  // the most recently undone first: Saturday's
+    expect(signOf(5).cur).toBe('ignite')
+    expect(undoState().canRedo, "Friday's was never replaced").toBe(true)
+    expect(globalRedo().ok).toBe(true)
+    expect(signOf(4).cur).toBe('ignite')
+    expect(undoState().canRedo).toBe(false)
   })
 })
 

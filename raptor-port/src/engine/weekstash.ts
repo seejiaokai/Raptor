@@ -24,7 +24,9 @@
 import { weekBundle } from './weeks-data'
 import { CURWEEK } from './waves'
 import { dayIso } from './verid'
-import { inputCoversDate } from './inputs'
+import { INPUTS, inputCoversDate } from './inputs'
+import { viewOfWeek, standingRow } from './overlay'
+import { dayCurVerIn, daySnapIn } from './publish'   // functions only both ways, so the import loop is safe
 
 const WEEKSTASH:Record<string,string>={};
 
@@ -130,45 +132,11 @@ export function stashSched(v:any){
     return {dayOK:p.ok||{},cur:p.cv||{},als:p.a||[],orig:p.o||{},drafts:p.dr||{},amV:p.am};
   }catch(_e){ return null; }
 }
-/* EDIT A STASHED WEEK'S DAYS IN PLACE ([OIL-XWEEK-DENY], 22 Sep 26). A scheduler
-   can hand a request to another man — and back — while a DIFFERENT week is on
-   screen, because the Inputs page is global. Anything that must die with that
-   assignment therefore has to reach days nobody is looking at, and until now
-   nothing could: the write side walked the seven loaded days and the read side
-   only HID the key while somebody else held the request.
-   Raw days, exactly as stored: no `dt` re-labelling (that is stashDays's job for
-   READERS and must never leak back into the blob). `edit` returns true if it
-   changed anything, and only then is the week written back — so an untouched
-   week's gen is not bumped and every preview keyed on it stays valid.
-   A PRESERVED (byte-frozen) week is never rewritten: P2-IMPL-02 makes it
-   read-only, and a decision inside one belongs to a book that is closed. */
-export function stashEditDays(v:any,edit:(days:any[])=>boolean):boolean{
-  if(isPreservedWeek(v))return false;
-  const s=stashGet(v); if(!s)return false;
-  try{
-    const p=JSON.parse(s);
-    if(!p||typeof p!=='object'||!Array.isArray(p.d))return false;
-    if(!edit(p.d))return false;
-    stashPut(v,JSON.stringify(p));
-    return true;
-  }catch(_e){ return false; }
-}
-/* EDIT A STASHED WEEK'S WHOLE BLOB — its days `d`, its sign boxes `sg` and their bindings `sb`, its parked plans `dr`
-   ([POST-OUT-OUTCOMES], 27 Sep 26 — Fable F9, Astra A1: a delete must reach every copy of a day to come, and
-   stashEditDays hands over the days alone). The same rules as stashEditDays: raw, exactly as stored; written back ONLY
-   if `edit` changed something; a PRESERVED week never. Readability is asked FIRST by the caller (stashWeekState), so a
-   week that cannot be read or is preserved refuses the whole change rather than being skipped. */
-export function stashEditWeek(v:any,edit:(blob:any)=>boolean):boolean{
-  if(isPreservedWeek(v))return false;
-  const s=stashGet(v); if(!s)return false;
-  try{
-    const p=JSON.parse(s);
-    if(!p||typeof p!=='object'||!Array.isArray(p.d))return false;
-    if(!edit(p))return false;
-    stashPut(v,JSON.stringify(p));
-    return true;
-  }catch(_e){ return false; }
-}
+/* stashEditDays / stashEditWeek — the two writers that edited a SAVED week in place (the hand-over's OIL clear,
+   [OIL-XWEEK-DENY]; the delete's strip, [POST-OUT-OUTCOMES]) — were removed by the FULL check of [DB-READINESS]
+   phase 6 (30 Sep 26): phase 6 (a) and (d) took their last callers away (a hand-over and a delete write no week; the
+   effect is worked out on read — engine/overlay.ts), and in the database a week is written only by its day's holder
+   (D450), so a writer of weeks nobody holds must not be there to be called again. */
 /* can this stashed week be edited — 'ok'; 'preserved' (byte-frozen, P2-IMPL-02); 'unreadable' (no days, or not JSON) */
 export function stashWeekState(v:any):'ok'|'preserved'|'unreadable'{
   if(isPreservedWeek(v))return 'preserved';
@@ -195,6 +163,23 @@ export function stashDays(v:any){
        'Dec 28' would resolve to the wrong year. dt is index-determined, and
        `dates` was just re-derived under the current convention. */
     (days||[]).forEach((d:any,i:number)=>{ if(d&&dates[i]!=null)d.dt=dates[i]; });
+    /* THE WEEK'S WORKING DAYS, WORKED OUT ON READ ([DB-READINESS] group A, phase 6 (d) and (c) — engine/overlay.ts
+       viewOfWeek): its request rows reconciled with the requests as they stand now (a request edited, handed on, re-dated or
+       deleted from another week reads right here), a deleted man taken off from his cutoff, and a request that has no row
+       anywhere landed on its start day — as every reader of a saved week sees them (the cross-week checks, the peek). The
+       stored copy is never rewritten; this is the parsed copy. A published day of this week lands only a request its own
+       issued version never saw (its own book, never the loaded week's). */
+    /* …never over a read-only (byte-preserved) week: opening it shows it as it is saved (state/store.ts applyWeekModel),
+       so every other read of it must agree — Fable's final read of phase 6, F1 (a belt: the delete refuses while such a
+       week holds him on a day to come — person-delete.ts stashPreflight) */
+    if(!isPreservedWeek(v)){
+      const sc={dayOK:parsed.ok||{},cur:parsed.cv||{},als:parsed.a||[],orig:parsed.o||{},drafts:parsed.dr||{},amV:parsed.am};
+      viewOfWeek(String(v),days,{loaded:false,issued:(di:number)=>{
+        if(!sc.dayOK[di])return null;
+        const ver=dayCurVerIn(sc,di,v);
+        return (ver!=null?daySnapIn(sc,di,ver,v):null)||{};
+      }});
+    }
     return {days,dates};
   }catch(_e){ return null; }
 }
@@ -209,25 +194,54 @@ export function stashDays(v:any){
    The LOADED week's own entry is skipped: it is the stale copy written on the way out, never read back over DAYS (the
    same rule oilev.ts stashStanding keeps). A week never visited has no entry, so it holds no row. A stash that cannot
    be read FAILS CLOSED for a caller that would otherwise make a second row: 'unreadable' (Fable F7). */
-type SrcRows=Map<string,{row:any,di:number}>
-const SRC_MEMO=new Map<string,SrcRows|null>()
-/* every ground row carrying a request (`src`) in stashed week v, by that request's id — the FIRST row per id, as it
-   stands in the week's saved days. null = the week is stashed but cannot be read; an empty map = nothing there (or no
-   entry). Memoised on the stored blob itself, so a rewritten week is a new key and can never serve a stale answer. */
-export function stashGroundBySrc(v:any):SrcRows|null{
+/* THE FINDER READS STANDING ROWS ONLY ([DB-READINESS] group A, phase 6 (c) — Fable's round-2 F2). A row stands in a saved
+   week when its request can stand on that day (overlay.ts standingRow: the request is there, an activity, covering the
+   day, not filed under Unavailable — or read-only); a row whose request has been deleted, retyped or re-dated off the day
+   since the week was saved is not its row any more, and a `kept` row on a day its request cannot stand on is the holder's
+   dead row (D363), never "its row elsewhere". The finder NEVER lands: a landing on read is never "elsewhere" (a row that
+   stands always beats one), and that is what keeps the landing on read (stashDays → overlay.ts viewOfWeek → rowElsewhere)
+   from recursing. The parse is memoised on the stored blob alone — every row with `src`, with its day — and the request
+   is asked at each lookup, so a request edited since is always read as it is now. */
+type SrcCands=Map<string,Array<{row:any,di:number,dt:any}>>
+const SRC_MEMO=new Map<string,SrcCands|null>()
+function stashRowsBySrc(v:any):SrcCands|null{
   const blob=stashGet(v);
   if(blob==null)return new Map();
   const key=String(blob);
   if(SRC_MEMO.has(key))return SRC_MEMO.get(key)!;
-  const parsed:any=stashDays(v);
-  let rows:SrcRows|null=null;
-  if(parsed&&Array.isArray(parsed.days)){
-    rows=new Map();
-    parsed.days.forEach((d:any,di:number)=>{ for(const r of ((d||{}).ground||[])){ const s=r&&String(r.src||''); if(s&&!rows!.has(s))rows!.set(s,{row:r,di}); } });
-  }
+  let rows:SrcCands|null=null;
+  try{
+    const p=JSON.parse(key);
+    if(p&&typeof p==='object'&&Array.isArray(p.d)){
+      const dates=weekBundle(v).dates;
+      rows=new Map();
+      p.d.forEach((d:any,di:number)=>{ for(const r of ((d||{}).ground||[])){ const s=r&&String(r.src||''); if(!s)continue;
+        let l=rows!.get(s); if(!l)rows!.set(s,l=[]); l.push({row:r,di,dt:dates[di]}); } });
+    }
+  }catch(_e){ rows=null; }
   if(SRC_MEMO.size>32)SRC_MEMO.clear();
   SRC_MEMO.set(key,rows);
   return rows;
+}
+const reqOf=(id:string,inp?:any)=>inp&&String(inp.iid||'')===id?inp:(INPUTS as any[]).find((r:any)=>r&&String(r.iid||'')===id)
+/* the request's row that STANDS in saved week v: the first, in day order; null when none; 'unreadable' when the week is
+   saved but cannot be read */
+export function standingRowIn(v:any,id:any,inp?:any):{row:any,di:number}|'unreadable'|null{
+  const m=stashRowsBySrc(v);
+  if(m===null)return 'unreadable';
+  const want=String(id||''), cands=m.get(want);
+  if(!cands)return null;
+  const r=reqOf(want,inp);
+  for(const c of cands)if(standingRow(c.row,r,c.dt))return {row:c.row,di:c.di};
+  return null;
+}
+/* every request's STANDING row in stashed week v — the first per request. null = stashed but unreadable. */
+export function stashGroundBySrc(v:any):Map<string,{row:any,di:number}>|null{
+  const m=stashRowsBySrc(v);
+  if(m===null)return null;
+  const out=new Map<string,{row:any,di:number}>();
+  for(const id of m.keys()){ const hit=standingRowIn(v,id); if(hit&&hit!=='unreadable')out.set(id,hit); }
+  return out;
 }
 /* the request's row on a week OTHER than the loaded one: where it stands, or 'unreadable' when a stashed week it COVERS
    could not be read and none was found readable, or null when it stands nowhere else. `inp` (the request) narrows the
@@ -238,9 +252,8 @@ export function rowElsewhere(id:any,inp?:any):{week:string,di:number,iso:string,
   let unread=false;
   for(const k of stashKeys()){
     if(k===CURWEEK)continue;
-    const m=stashGroundBySrc(k);
-    if(m===null){ if(!inp||(weekBundle(k).dates||[]).some((dt:any)=>inputCoversDate(inp,dt)))unread=true; continue; }
-    const hit=m.get(want);
+    const hit=standingRowIn(k,want,inp);
+    if(hit==='unreadable'){ if(!inp||(weekBundle(k).dates||[]).some((dt:any)=>inputCoversDate(inp,dt)))unread=true; continue; }
     if(hit)return {week:k,di:hit.di,iso:dayIso(k,hit.di),row:hit.row};
   }
   return unread?'unreadable':null;

@@ -105,7 +105,14 @@ export function emptyWeek(v:any){
   const days=labels.map((dt:any,i:number)=>({dow:DOW[i],dt,wc:'0 X 0 X 0',notes:[],allhands:[],waves:[],sims:{amt:[],oft:[]},dutywaves:[],ground:[]}));
   return {days,dates:labels.slice(),inputs:[],seedSans:false};
 }
+/* THE TWO AUTHORED DEMO WEEKS ARE THE DEMO'S ([DB-READINESS] group A, phase 5 — Fable F3 build note): on a shared store
+   (the boot policy's `seedDemo` false, set at every boot by state/seeds.ts) an unsaved 13 or 20 Jul 2026 is a blank week
+   like any other, and no authored week's inputs are merged in — so a scheduler opening one never sees, or saves, demo
+   content. On by default: every test, the dev server and his preview see them as always. */
+let AUTHORED=true;
+export function setAuthoredWeeks(on:any){ AUTHORED=!!on; }
 export function weekBundle(v:any){
+  if(!AUTHORED) return emptyWeek(v);
   if(v==='13/07/2026') return {days:JSON.parse(WEEK1_DAYS_SNAP), dates:WEEK1_DATES.slice(), inputs:JSON.parse(WEEK1_INPUTS_SNAP), seedSans:true};
   if(v==='20/07/2026') return {days:JSON.parse(JSON.stringify(WEEK2_DAYS)), dates:WEEK2_DATES.slice(), inputs:JSON.parse(JSON.stringify(WEEK2_INPUTS)), seedSans:false};
   return emptyWeek(v);
@@ -116,4 +123,4 @@ export function weekBundle(v:any){
    so the Inputs page carries them all while date-matching still scopes each
    week's SCHEDULE to its own. A fresh deep copy — the backing dataset is never
    handed out live. Blank/other weeks contribute nothing. */
-export function otherWeekInputs(){ return JSON.parse(JSON.stringify(WEEK2_INPUTS)); }
+export function otherWeekInputs(){ return AUTHORED ? JSON.parse(JSON.stringify(WEEK2_INPUTS)) : []; }

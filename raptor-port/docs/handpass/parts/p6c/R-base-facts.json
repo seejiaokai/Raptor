@@ -1,0 +1,145 @@
+{
+ "tag": "base",
+ "facts": {
+  "R1.sign": {
+   "cur": "Ace",
+   "sked": "Anvil",
+   "plan": "Anvil",
+   "appr": "Anvil"
+  },
+  "R1.pub": {
+   "pressed": true,
+   "label": "Publish day"
+  },
+  "R1.sign2": {
+   "cur": "Ace",
+   "sked": "Anvil",
+   "plan": "Anvil",
+   "appr": "Anvil"
+  },
+  "R1.al1": {
+   "pressed": true,
+   "label": "Publish AL1"
+  },
+  "R1.unpub": {
+   "pressed": true,
+   "label": "Unpublish"
+  },
+  "R1.head": {
+   "tag": "ORIG",
+   "pending": "1 pending",
+   "beak": "none",
+   "alpub": "Publish AL1",
+   "unpub": "Unpublish",
+   "signs": [
+    "— name —",
+    "— name —",
+    "— name —",
+    "— name —"
+   ],
+   "signed": "SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil",
+   "nys": "Not yet signed"
+  },
+  "R2.save": "saved",
+  "R2.weekRowsWritten": [
+   "weeks/13-07-2026#3"
+  ],
+  "R2.rows": [
+   {
+    "di": 3,
+    "ri": 3,
+    "prog": "MEETING",
+    "str": "10:30",
+    "end": "11:00",
+    "who": "bane",
+    "more": [],
+    "rmks": "P6C RECORD",
+    "kept": false,
+    "info": false,
+    "flag": null,
+    "cx": null
+   }
+  ],
+  "R2.acc": "g",
+  "R2.faceHas1030": true,
+  "R2.faceHasMeeting": true,
+  "R3.head": {
+   "tag": "ORIG",
+   "pending": "2 pending",
+   "beak": "none",
+   "alpub": "Publish AL1",
+   "unpub": "Unpublish",
+   "signs": [
+    "— name —",
+    "— name —",
+    "— name —",
+    "— name —"
+   ],
+   "signed": "SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil",
+   "nys": "Not yet signed"
+  },
+  "R3.list": {
+   "tabs": [
+    "New to you 1",
+    "All changes 14",
+    "To go out · AL1 2"
+   ],
+   "lines": [
+    "Waiting to go out as",
+    "AL1",
+    "· 2 changes",
+    "Day note",
+    "Saber",
+    "15/7 09:00",
+    "EXAM PERIOD RESTRICTIONS / 21 JUL 0700H - 24 JUL 1800H → P6C AL1 NOTE",
+    "Ranger · Meeting",
+    "Ranger",
+    "15/7 09:00",
+    "10:00–11:00 → 10:30–11:00",
+    "Tap a change to go to it."
+   ]
+  },
+  "R3.historyLines": [
+   "Meeting 16 Jul · times10:00–11:00 → 10:30–11:00 Ranger · 15/7 09:00",
+   "Meeting added · 16 Jul (on the programme) Saber · 15/7 09:00"
+  ],
+  "R4.hand": "saved",
+  "R4.rows": [
+   {
+    "di": 4,
+    "ri": 2,
+    "prog": "MEETING",
+    "str": "09:00",
+    "end": "10:00",
+    "who": "razer",
+    "more": [],
+    "rmks": "P6C HANDED",
+    "kept": false,
+    "info": false,
+    "flag": null,
+    "cx": null
+   }
+  ],
+  "R4.acc": "g",
+  "R5.armed": "Tap again to delete Bolt",
+  "R5.weekRowsWritten": [],
+  "R5.rows": [
+   {
+    "di": 4,
+    "ri": 2,
+    "prog": "MEETING",
+    "str": "09:00",
+    "end": "10:00",
+    "who": "razer",
+    "more": [],
+    "rmks": "P6C HANDED",
+    "kept": false,
+    "info": false,
+    "flag": null,
+    "cx": null
+   }
+  ],
+  "R5.acc": "g",
+  "errors": []
+ }
+}

@@ -24,7 +24,7 @@ import {
 } from '../undo'
 import type { RecordCtx, UndoEntry } from '../undo/types'
 import type { Change } from '../command'
-import { weekOf } from '../undo/derive'
+import { weekOf, dayKeyOf } from '../undo/derive'
 import { schedStore, schedPostRestore } from './sched-commit'
 import { weekstashStore, loadWeek } from './store'
 import { HIST } from './history'
@@ -44,7 +44,7 @@ import { DATES, inputCoversDate } from '../engine/inputs'
 /* the 8 collections schedStore owns (the scheduler week + inputs + plan). NOT
    `weekstash` — that is the separate weekstashStore's one collection, registered
    below, so an off-week undo routes through its CURWEEK-guarded write() seam. */
-const SCHED_COLLS = ['days', 'sched.book', 'sched.mutes', 'sched.orig', 'sched.als', 'sched.retired', 'inputs', 'plan']
+const SCHED_COLLS = ['days', 'sched.book', 'sched.mutes', 'sched.week', 'sched.issuance', 'sched.retraction', 'inputs', 'plan']
 
 /* ---- context helpers ------------------------------------------------------ */
 
@@ -63,35 +63,23 @@ function weekIsStashOnly(entry: UndoEntry, wk: string): boolean {
   return sawWeek
 }
 
-/* the day index a scheduler closure touched (days `<wk>#<di>` / sched.orig
-   `<wk>:<di>`), for the view-snap. First match wins. */
+/* the day index a scheduler closure touched, for the view-snap: a day's content first, then an issued version of it, then
+   the one day whose sign-offs, plans or mutes changed — every schedule record names its day since [DB-READINESS] group
+   A, phase 1 (walk S14a: Saturday's sign-off redone with the board on Friday must land on Saturday). */
 function schedDayOf(entry: UndoEntry): number | null {
-  for (const ch of entry.forward) {
-    if (ch.collection === 'days') return Number(ch.id.split('#')[1])
-    if (ch.collection === 'sched.orig') return Number(ch.id.slice(ch.id.indexOf(':') + 1))
-  }
-  /* the week's book keeps every day's sign-offs, OK flags, drafts … in one record, each map keyed by the day — the day is
-     the one key whose value changed (walk S14a: Saturday's sign-off redone with the board on Friday stayed on Friday) */
-  for (const ch of entry.forward) {
-    if (ch.collection !== 'sched.book') continue
-    const days = new Set<number>()
-    const b = (ch.before || {}) as Record<string, any>, a = (ch.after || {}) as Record<string, any>
-    for (const k of new Set([...Object.keys(b), ...Object.keys(a)])) {
-      const x = b[k], y = a[k]
-      if (!x && !y) continue
-      if ((x && typeof x !== 'object') || (y && typeof y !== 'object')) continue
-      for (let di = 0; di < 7; di++) if (JSON.stringify((x || {})[di]) !== JSON.stringify((y || {})[di])) days.add(di)
-    }
-    if (days.size === 1) return [...days][0]
-  }
-  return null
+  const dayOfCh = (ch: Change) => { const dk = dayKeyOf(ch.collection, ch.id); return dk && dk.includes('#') ? Number(dk.split('#')[1]) : null }
+  for (const ch of entry.forward) if (ch.collection === 'days') return dayOfCh(ch)
+  for (const ch of entry.forward) if (ch.collection === 'sched.issuance' || ch.collection === 'sched.retraction') { const d = dayOfCh(ch); if (d != null) return d }
+  const days = new Set<number>()
+  for (const ch of entry.forward) if (ch.collection === 'sched.book' || ch.collection === 'sched.mutes') { const d = dayOfCh(ch); if (d != null) days.add(d) }
+  return days.size === 1 ? [...days][0] : null
 }
 
-/* the date an LW closure touched (lw.cell / lw.bid id = `<warId>:<pid>:<date>`,
+/* the date an LW closure touched (lw.cell id = `<warId>:<pid>:<date>`,
    the date is the LAST segment — a warId may itself contain ':'). */
 function lwDateOf(entry: UndoEntry): string | null {
   for (const ch of entry.forward) {
-    if (ch.collection === 'lw.cell' || ch.collection === 'lw.bid') {
+    if (ch.collection === 'lw.cell') {
       const p = ch.id.split(':')
       if (p.length >= 3) return p[p.length - 1]
     }
@@ -157,7 +145,7 @@ function landingOf(entry: UndoEntry): Landing | null {
     if (person) then = () => focusQualsRow(person.id)
   } else if (m === 'settings') {
     const ids = fwd.filter(c => c.collection === 'settings').map(c => c.id)
-    if (ids.some(k => k === 'accounts' || k === 'accessreqs' || k === 'guestview')) { primary = 'admin'; then = () => requestAdminUsers(false) }
+    if (ids.some(k => k.startsWith('account:') || k.startsWith('accessreq:') || k === 'guestview')) { primary = 'admin'; then = () => requestAdminUsers(false) }
     else if (ids.includes('rules')) primary = 'logic'
     else if (ids.includes('qualcols')) primary = 'quals'
     else if (ids.includes('lookahead')) primary = 'inputs'
@@ -202,7 +190,7 @@ function reinstallLocks(): () => void {
 }
 
 /* §6.3 — resolve an AL/publish boundary's issued verId to its day when the
-   closure carries no days/sched.orig key. A publish always lands on the loaded
+   closure carries no days/sched.issuance key. A publish always lands on the loaded
    week, so match the id's ISO date against CURWEEK's seven days (best-effort). */
 function resolvePublishDay(id: string): { weekId: string; di: number } | null {
   const iso = parseVerId(id).iso
@@ -238,8 +226,9 @@ function postRestore(entry: UndoEntry, dir: 'undo' | 'redo', pulledBack: Array<{
    wiring harmlessly rather than being skipped by a stale one-shot flag. */
 /* B1 — each seen mark's field, carried onto an older step's image of the same record (timeline.ts carrySeen; Fable's
    final read F4, Astra's F1). His welcome note: `back` gone from his roster record. "OK, seen": the notices it removed
-   (by their seq — a notice spans the days of one filing) gone from the day's list. The admins' bell: each request's
-   seenBy joined with the one the mark wrote. Anything else: the image untouched. */
+   (by their seq — a notice spans the days of one filing) gone from the day's list. Anything else: the image untouched.
+   (The admins' bell had a branch here while each request carried its `seenBy`; since [DB-READINESS] group A, phase 4.4
+   each admin's seen is a row of his own — AccessRequestSeen — which no step's image of a request holds.) */
 function seenOverlay(type: string, seen: Change, image: unknown): unknown {
   if (!image || typeof image !== 'object') return image
   const b: any = seen.before, a: any = seen.after
@@ -254,21 +243,6 @@ function seenOverlay(type: string, seen: Change, image: unknown): unknown {
     if (!gone.size) return image
     const next = image.filter((r: any) => !(r && r.kind === 'notice' && gone.has(r.seq)))
     return next.length === image.length ? image : next
-  }
-  if (type === 'access.seen') {
-    if (!Array.isArray(image) || !Array.isArray(a)) return image
-    const by = new Map(a.map((r: any) => [r && r.id, r]))
-    let changed = false
-    const next = image.map((r: any) => {
-      const w: any = r && by.get(r.id)
-      if (!w || !Array.isArray(w.seenBy)) return r
-      const had: string[] = Array.isArray(r.seenBy) ? r.seenBy : []
-      const u = [...new Set([...had, ...w.seenBy])]
-      if (u.length === had.length) return r
-      changed = true
-      return { ...r, seenBy: u }
-    })
-    return changed ? next : image
   }
   return image
 }

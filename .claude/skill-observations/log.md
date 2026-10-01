@@ -1678,3 +1678,347 @@ owner as fact.
 
 **Principle:** A design's claims about a third-party platform are facts to verify, not reasoning to review; check them
 against the vendor's documentation first, before anyone spends review rounds or tells the stakeholder a guarantee.
+
+### Observation 380: When a plan removes or reshapes a stored record, search for every reader of its PRESENCE, not only of its content
+
+**Status:** OPEN
+**Date:** 30 Sep 26
+**Session context:** `[DB-READINESS]` group A plan — splitting big stored records (inputs/all, leavewar/wars, one-per-week) into one record per row; round-1 red team (Astra, Fable)
+**Skill:** writing-plans · claudex-loop (the red-team brief)
+**Type:** open-source
+**Phase/Area:** the plan's inventory step, before the red team
+
+**Issue:** Three read-only sweeps inventoried every writer and reader of each record's CONTENT. Both reviewers then found
+what they missed: the boot decided "seed the demo or not" from whether two of those records merely EXISTED, and a
+deleting reconcile also covered an undo-to-pristine case its comment named. Removing the records would have silently
+re-seeded demo data over real data and brought an undone edit back after a reload. The sweeps were asked about
+content, so nothing looked for "has(...)" checks or for the second purpose of a delete loop.
+
+**Suggested improvement:** In the planning/inventory step for any storage reshape, add two mandatory questions per record:
+(1) "Who reads whether this record EXISTS (has / presence / a flag derived from it)?" and (2) "For each loop that deletes
+or rewrites it, list every case its comments or tests say it covers." Put both in the red-team brief's "what is
+MISSING" list too.
+
+**Principle:** A stored record carries meaning by its existence as well as its content; before removing, renaming or
+splitting one, find every reader of its presence and every job its delete path does, or the change silently removes a
+signal nobody listed.
+
+### Observation 381: A guard on an existing state flag must be proven against when the flag REALLY flips — its comment is a claim
+
+**Status:** OPEN
+**Date:** 30 Sep 26
+**Session context:** `[DB-READINESS]` group A phase 0 — a boot-only save was guarded on the Leave War's `LW_READY`, whose declaration comment says "enabled after boot (lwHistInit)"; the red test stayed red because `initStore` itself calls `lwHistInit`, so the flag was already true at the point the new code ran and the guarded save silently did nothing.
+**Skill:** test-driven-development (the green step) · systematic-debugging
+**Type:** open-source
+**Phase/Area:** writing the minimal fix; attributing a failure
+
+**Issue:** The fix read correct against the flag's own comment, and only the still-red test exposed that the guard was a no-op. Separately, before deciding whether a surprising failure was caused by the new change, the cheapest decisive step was to stash the change and run the SAME probe test on the base — it showed the defect already on `main`, which changed its disposition from "my regression" to "pre-existing, in scope, fix with a red test".
+
+**Suggested improvement:** In test-driven-development's green step: "when the fix is guarded on an existing flag or mode, find every writer of that flag (grep the assignments) before trusting its comment — a lifecycle comment is a claim, not a proof; if the red test stays red, check the guard first." In systematic-debugging: "to attribute a failure, stash the change and run the identical probe on the base revision before theorising — one run decides new vs pre-existing."
+
+**Principle:** A flag's documented lifecycle is evidence only until its assignments are read; and "is this mine?" is answered by running the same probe on the base, not by reasoning.
+
+### Observation 382: A new write path's integration tests can be written first — "nothing was written" is the red
+
+**Status:** OPEN
+**Date:** 30 Sep 26
+**Session context:** `[DB-READINESS]` group A phase 1 — the schedule saved as rows from the command stream
+**Skill:** test-driven-development
+**Type:** open-source
+**Phase/Area:** "write the failing test first" when the feature is a whole mechanism (a new storage path)
+
+**Issue:** The plan said red tests first for every phase. For the pure parts (split/join, per-day change records) the
+tests were written first and failed for the right reason. For the storage path (rows written from each command,
+week navigation saving only its delta, the other-day writers) the code was written first and the tests after, because
+the tests "needed the mechanism wired". That was not true: every one of those tests would have failed first on "no
+rows were written" or "the wrong rows were written". To regain the proof, each mechanism had to be broken on purpose
+afterwards (three break runs) to show its test could go red.
+
+**Suggested improvement:** In the skill's section on when a test is hard to write first, add: an integration test of a
+NEW write path is never blocked by the path not existing — its first failure is "nothing was written". Write it
+against the storage the app already has; if it was written after, break each mechanism once and watch its named test
+fail before calling it proven.
+
+**Principle:** A test is "first" when it fails for the reason the feature exists. For a new write path that reason is
+"nothing reached storage", which is available before a line of the path is written; writing the test after costs a
+break test per mechanism to recover the same proof.
+
+### Observation 383: Recovering "red first" for tests written after the code — one break-and-restore script, not hand edits
+
+**Status:** OPEN
+**Date:** 30 Sep 26
+**Session context:** `[DB-READINESS]` group A phase 3 — the Leave War saved one row per record (a new write path again)
+**Skill:** test-driven-development
+**Type:** open-source
+**Phase/Area:** the recovery step #382 proposes, when some tests were written after the mechanism they guard
+
+**Issue:** Most of this phase's tests were written first and ran red (21 of 24). A few (the reconcile turn's rows, the
+undo's rows) were added after the code. #382's recovery — break each mechanism once and watch its test go red — was done
+this time as ONE script: a list of (file, exact text, replacement, what it breaks); for each it swaps the text in,
+runs only the focused test file, records the failing count, and writes the file's ORIGINAL BYTES back in a `finally`.
+Six mechanisms proved in one command, every one red, nothing left broken — including a file with Windows line
+endings, which a hand edit-and-revert would have risked converting. One snag: printing the test runner's Unicode to the
+Windows console crashed the script after the first break (the `finally` still restored the file); running it with
+`PYTHONIOENCODING=utf-8` fixed it.
+
+**Suggested improvement:** In the skill's "written after" note (with #382's), give the recipe: a break table plus a
+harness that applies one break, runs the narrowest test file, restores the original bytes in `finally`, and prints the
+red count per break; a break that stays green means that mechanism is unguarded.
+
+**Principle:** Post-hoc proof that a test guards a mechanism is cheapest as an automated break table with byte-exact
+restore — repeatable, all-or-nothing, and safe for files whose bytes (line endings) matter.
+
+### Observation 384: A plan's hand-made list of "writers that break the rule" is a first draft — sweep for all of them, then enforce with a test that watches every occurrence
+
+**Status:** OPEN
+**Date:** 2026-09-30
+**Session context:** Building [DB-READINESS] group A phase 4 (one change-log batch per saved group) from a plan red-teamed three rounds by two reviewers.
+**Skill:** executing-plans
+**Type:** open-source
+**Phase/Area:** executing a plan step whose correctness depends on an enumerated list (call sites, writers, exceptions)
+
+**Issue:** The plan named, after three review rounds, the writers that reach storage outside a transaction (a week switch, a reconciler's idle writes, two history-line callers, a one-time seed). A read-only sweep delegated at the start of the phase found the list incomplete in the largest way: nearly EVERY save of one sub-app ran its transaction on an in-memory mirror and wrote storage a step later, outside it. The phase's own acceptance test ("every group carries exactly one batch, except the named ones") would have failed on that — or, worse, been "fixed" by exempting it.
+
+**Suggested improvement:** In executing-plans, add a rule: when a plan step says "each of these N sites must be handled", (1) re-derive the full set with an exhaustive read-only sweep before building (the plan's list is a pointer, not a scope), and (2) turn the property into a runtime test that OBSERVES every occurrence (drive a battery of every kind of action and assert each event against the rule, with the exemptions named in the test) — then break one site on purpose to see it fail.
+
+**Principle:** An enumerated list in a plan is evidence of what the reviewers saw, not of what exists; a property over "all sites" is only enforced by a test that watches all sites at runtime, with every exemption named inside the test.
+
+### Observation 385: A list the owner will forward to a third party — make it a copyable, self-explaining text from the first answer
+
+**Status:** OPEN
+**Date:** 2026-09-30
+**Session context:** `[DB-READINESS]` group A phase 5 — before building, the owner asked for "all the IT questions" so he could get answers first.
+**Skill:** session-handoff (its handoff block's "open questions" line) and the plain-language rule (new-skill candidate if it recurs: "questions for a third party")
+**Type:** open-source
+**Phase/Area:** answering "list me the questions for X" / a handoff's open-questions line
+
+**Issue:** The first answer was a technical list in the chat (IT's own vocabulary, one line each). The owner then asked, in turn, "explain in layman", then "make it in text format that I can copy and provide the context for each question and space each question out", then "change the name from <the IT person> to IT". Three round trips for one deliverable. Separately, the handoff block's "open questions for IT" line carried 5 of the 29 open questions and missed the one the very next phase creates (who is the first admin of an empty shared database).
+
+**Suggested improvement:** When the owner asks for a list he will pass to someone else: (1) produce, first time, a plain-text FILE (sent with SendUserFile) — each item spaced out as a heading, "Question:" and "Context:" (why it is asked, what depends on it), urgent group first, "already agreed" at the foot — worded for the recipient, with no named individuals unless he names them; (2) give him, in chat, a short plain-language summary of what the list asks and which items are urgent. In session-handoff: the "open questions for <third party>" line names where the FULL list lives and adds any question the next phase will raise.
+
+**Principle:** A forwarded list has two readers — the recipient, who needs each question's context, and the owner, who needs to understand what he is sending; serve both in the first answer, as a copyable artefact, rather than a chat list that must be reformatted.
+
+### Observation 386: A storage conversion is walked on data the OLD app really wrote — build the old app from a slim extract and serve both on one address
+
+**Status:** OPEN
+**Date:** 2026-09-30
+**Session context:** `[DB-READINESS]` group A phase 5b — the Tracker's lists split one row per thing; the last converter made the one-time boot conversion (the fold) live for every browser, his included.
+**Skill:** bug-check order (raptor-port/docs/bug-check-order.md §2a "Saved data / storage: … older saved data read", §7 the walk)
+**Type:** open-source
+**Phase/Area:** walking a change that converts stored data
+
+**Issue:** The unit tests fed the converter hand-made "old" records — written by the builder from his picture of the old shape. That proves the converter against that picture, not against what the old release actually stores. A full `git worktree` of the base branch into the session's scratch folder failed on Windows (the long scratch path pushed checked-in picture filenames past the path limit), which nearly dropped the step.
+
+**Suggested improvement:** In the bug-check order's storage row (§2a) and §7, add a recipe: (1) `git archive <base> <app source dirs, config files>` into a short scratch folder (only the source, never the docs/pictures), with its dependencies linked from the working checkout (a junction), and build it; (2) serve the OLD build on a fixed address, create the owner's kind of work through the app's own controls, and save the browser's storage (a Playwright storage state); (3) serve the NEW build on the SAME address (storage belongs to an address), open that storage, and assert the new app reads — and exports — exactly what the old one did, with no old record left.
+
+**Principle:** A conversion is proven against records the previous release really wrote, on the same address a real browser has used — never only against the builder's own reconstruction of the old shape.
+
+### Observation 387: A storage-shape change is walked with a generic per-step audit, not only by eye
+
+**Status:** OPEN
+**Date:** 2026-09-30
+**Session context:** [DB-READINESS] group A's group-wide FULL walk (every saved record moved to one row per thing, written from a command's changes, one change-log record per saved action)
+**Skill:** bug-check order (`raptor-port/docs/bug-check-order.md` §2a "Saved data / storage" row, §7) — project method, internal
+**Type:** internal
+**Phase/Area:** the walk — what each step asserts
+
+**Issue:** When the change is HOW things are saved and nothing on screen is meant to move, a person's eye (and a picture) cannot see the defect class that matters: a save that goes nowhere, a save with no change-log record, a reload that rewrites the store. The walk's shared driver (`scripts/handpass/dbrA-lib.mjs`) made three mechanical checks per step — every row the gesture changed is named by that gesture's change-log record with the right op; the app's in-memory state before a reload equals the state after it; the reload itself writes nothing — and within minutes of a first trial found a real missing line (the boot's re-landing of a request onto a saved week writes a day row with no change-log record) that no per-phase test covered, because every test drove the "after boot" world.
+
+**Suggested improvement:** In §2a's "Saved data / storage" row and §7, add: for a storage change, every walk step runs the three mechanical checks (rows named by their record; reload gives the state back; reload writes nothing) as part of the step, through one shared driver the walkers all use — and the boot / reload itself is a step, not only the thing between steps.
+
+**Principle:** When the change is invisible by design, the walk's assertions must be about what the eye cannot see — derive them from the change's own invariants and run them on every step, including the reload.
+
+### Observation 388: A long scenario-design run need not hold the walkers back
+
+**Status:** OPEN
+**Date:** 2026-09-30
+**Session context:** [DB-READINESS] group A's FULL walk — the independent scenario designer (Astra) read a 140-file diff for over 40 minutes
+**Skill:** bug-check order §4 rank 1 / §5 FULL order — project method, internal
+**Type:** internal
+**Phase/Area:** sequencing the other model's scenarios and the fan-out walk
+
+**Issue:** The order puts the other model's scenarios before the walk. On a very large diff the designer's read ran far longer than the usual 5–10 minutes, and the walkers would have sat idle.
+
+**Suggested improvement:** Say in §5 that the fan-out may start on the plan's own walk list while the designer reads, with each walker told that more scenarios will arrive by message, and the host forwards the designer's list per walker the moment it lands — the scenarios still reach the walk before the reads.
+
+**Principle:** Keep the independent input's ORDER relative to what it must precede (the reads), not relative to work it only adds to.
+
+### Observation 389: In a one-row-per-thing store, hunt the "first write stores everything" path — it recurs
+
+**Status:** OPEN
+**Date:** 2026-09-30
+**Session context:** [DB-READINESS] group A's group-wide FULL walk — every record split into one row per thing
+**Skill:** bug-check order (`raptor-port/docs/bug-check-order.md` §6 roll-call, §2a "Saved data / storage") — project method, internal
+**Type:** internal
+**Phase/Area:** the roll-call's columns for a storage change
+
+**Issue:** The same hole turned up four separate times in one walk, each in a different part of the app: a week's FIRST save wrote all seven day rows from the saver's copy (two people on two days of a new week — one wiped); the Tracker's FIRST chart-order save placed every chart (a stale tab undid it); a demo store's FIRST account write stored every account it held (a stale tab undid a suspension); and a decision that moved a record to the end of its list re-placed its neighbour. Each was correct for one browser and each broke the promise of the change ("two people changing different things never overwrite each other"). The per-phase tests all exercised the steady state, after the first write.
+
+**Suggested improvement:** In §6, for a storage-shape change, add a roll-call column per writer: "on its FIRST write (nothing of it stored yet), and when it re-places a list, does it write ONLY what its own action changed?" — and a two-tab step in the walk for each writer whose answer is not a plain yes, with the second tab opened before the first write.
+
+**Principle:** A row-per-thing store is only as good as its least disciplined write; the first write and any re-ordering write are where "everything I hold" sneaks back in — check them by name.
+
+### Observation 390: A "missing batch" fix wrapped a write that should not have existed at all
+
+**Status:** OPEN
+**Date:** 2026-09-30
+**Session context:** [DB-READINESS] group A's group-wide FULL check — the walk, then Fable's and Astra's blind code reads
+**Skill:** bug-check order (`raptor-port/docs/bug-check-order.md` §5 "fix", §7 findings) — project method, internal
+**Type:** internal
+**Phase/Area:** choosing the fix for a MISSING-line finding
+
+**Issue:** The walk found the boot writing a day row bare, outside every saved group (H1). The fix wrapped that write in a group with its change-log batch — which made the walk's check pass. Both reviewers, independently, then found the write itself was the defect: it saved this browser's (possibly stale) copy of a day another person may have changed, and made a member's browser the writer of days a member may not write. The right fix removed the write. The same happened to a week load's landing save, which the evidence sheet had already reasoned about and called "not a loss, not a clash".
+
+**Suggested improvement:** In §5's fix step, for a finding of the form "X is written outside the rules", ask first — and write the answer in the disposition — "should X be written at all, by this actor, from this copy?" before making the write conform. Name the two questions in the evidence sheet's disposition column for any storage finding.
+
+**Principle:** A check that verifies HOW something is written invites a fix that makes the write compliant; ask WHETHER it should be written before fixing how.
+
+### Observation 391: Stopping a locked full-gate run leaves the PC lock held
+
+**Status:** OPEN
+**Date:** 2026-09-30
+**Session context:** [DB-READINESS] group A — a gate run was stopped mid-way because a reviewer's finding meant a code change
+**Skill:** `raptor-port/scripts/gatelock.mjs` / `.claude/rules/shipping.md` §The checks — project tooling, internal
+**Type:** internal
+**Phase/Area:** the gate lock's release
+
+**Issue:** `gatelock.mjs run` promises to always release, but stopping its task kills it before its release runs; the lock folder stayed, and would have blocked a parallel chat for up to two hours (the stale limit) had it not been released by hand.
+
+**Suggested improvement:** In shipping.md's lock paragraph add one line: "a run you stop is not released — release it yourself at once (`gatelock.mjs release`)"; or have `run` record its pid and let `take` break a lock whose pid is gone.
+
+**Principle:** A cleanup that lives in the process being killed is not a cleanup; say so where the kill happens, or make the next taker check the owner is alive.
+
+### Observation 392: A phase that a reviewed plan only sketched needs its own code sweep before it is detailed — the sketch's premises were wrong in four places
+
+**Status:** OPEN
+**Date:** 2026-09-30
+**Session context:** Planning [DB-READINESS] group A phase 6 (a four-line sketch inside a plan red-teamed three rounds by two providers).
+**Skill:** writing-plans
+**Type:** open-source
+**Phase/Area:** turning a plan's sketched later phase into a buildable plan
+
+**Issue:** The parent plan's phase 6 was a few lines, carried through three review rounds that focused on the earlier phases. Three parallel read-only sweeps of the code before detailing it overturned four premises: one sub-step was already half built (a read-side filter existed; only one ordering case needed a new stamp), one was already cosmetic (the counts it named were computed elsewhere), one was far narrower than its "18 readers" wording implied (only one category of record is ever written into a day), and one had no single choke point the sketch assumed. Two owner rulings (a restore that deliberately brings back a deleted item's row; a live filing that lands as pending) also constrained the design in ways the sketch never mentioned.
+
+**Suggested improvement:** In writing-plans, add: "When detailing a phase that an earlier, reviewed plan only sketched, treat the sketch's premises as unverified: run a fresh read-only sweep of every mechanism it names (writers, readers, tests that pin today's behaviour) and list which premises held, before writing steps. Review of a plan validates what it details, not what it sketches."
+
+**Principle:** A review certifies the level of detail it was shown; a sketched step inherits none of that confidence and must be re-grounded in the code before it is planned.
+
+### Observation 393: A reviewer's proposed fix is a hypothesis — test it against every order the replaced mechanism guarded before applying it
+
+**Status:** OPEN
+**Date:** 2026-09-30
+**Session context:** Folding a plan red team's finding into an already-built step ([DB-READINESS] phase 6 (a), an earned-leave refusal stamp).
+**Skill:** receiving-code-review
+**Type:** open-source
+**Phase/Area:** applying a reviewer's "Fix — build" instructions
+
+**Issue:** The reviewer's finding was real (a refusal about a man added to a row was dropped once the request was handed to him), and the report gave exact step-by-step fix instructions. Applied as written, the fix would have reintroduced the very bug the old mechanism existed to prevent, on a longer order (added → handed to him → handed away → back to him: the refusal revives). The reviewer had even flagged that order and asked to "pin it" as today's rule — but it was not today's rule; the removed code had voided it. Checking the proposed fix against every order the old code guarded (not only the reviewer's scenario) found a simpler, stricter design (record on the request when it LEFT each man) that satisfied all orders.
+
+**Suggested improvement:** In receiving-code-review, add: "When a finding comes with exact fix steps, treat the steps as a hypothesis. Before applying, list the orders of actions the code being replaced was protecting (its tests, its comments), and check the proposed fix against each — especially any order the reviewer calls 'today's behaviour'; verify that claim against the code before pinning it."
+
+**Principle:** A precise fix instruction can still be wrong on an order its author did not trace; the orders the old mechanism guarded are the checklist for any replacement, whoever proposed it.
+
+### Observation 394: A "nothing on screen changes" build is checked by walking it AND the build before it with one script, and diffing what the screen said
+
+**Status:** OPEN
+**Date:** 2026-09-30
+**Session context:** The FULL bug check of [DB-READINESS] phase 6 (a), (b), (d) — storage-only changes whose plan promised no visible change bar two named ones.
+**Skill:** `raptor-port/docs/bug-check-order.md` §7 / §8 (the project's bug-check method) — internal
+**Type:** internal
+**Phase/Area:** the walk — how to prove a "no visible change" promise
+
+**Issue:** Assertion-style walk steps encode the builder's picture of what should stay the same, so they cannot see a visible change nobody predicted. The check built the commit before the change from a `git archive` export (a worktree failed on Windows path length), served both builds, ran each walk script against both with a `fact(key, value)` recorder of what the screen said at every step (day heads, the Amendments panel, pending lists, OIL switches, who sits where), and diffed the two fact files. It surfaced two visible changes the plan never listed — a panel's count that dropped (the change's side effect) and a defect of the OLD build that the change fixed — both invisible to the assertions, which passed on both builds.
+
+**Suggested improvement:** Add to the bug-check order §8: "When a change promises that nothing on screen changes, run the walk on the build before it too (export that commit's `src` + config to a short path, symlink `node_modules`, build, serve on another port), record screen facts per step, and diff them (`scripts/handpass/p6-compare.mjs` is the worked example). Every difference is either intended storage or a finding; say which." Mention the Windows path-length trap for `git worktree add` on this repo.
+
+**Principle:** To prove "nothing changed", compare against the thing before the change, fact for fact; assertions written from the new code's intent only prove what the author thought to assert.
+
+### Observation 395: A new chat was opened with the PREVIOUS chat's opening line; the handoff block's "Pick up here" caught it, but only because it was read against the ask
+
+**Status:** OPEN
+**Date:** 2026-09-30
+**Session context:** Opening a chat on an in-flight branch; the owner pasted "plan and build phase 6" — the line the last chat had started with — while the handoff block said the next job was the FULL check (his own ruling, D467).
+**Skill:** session-handoff
+**Type:** open-source
+**Phase/Area:** the next chat's first step / the handoff block's contents
+
+**Issue:** The block names the next job in prose ("Pick up here"), but not the exact opening line the owner was given, so nothing flags a pasted stale line except the agent comparing the ask with the block by hand. Here that comparison showed the ask would have jumped ahead of a ruling and built on unchecked work; the owner confirmed the recorded order when asked.
+
+**Suggested improvement:** In session-handoff, write the ready-to-paste opening line INTO the block (a `Opening line:` bullet), and add to the "next chat" guidance: "compare the opening message with the block's Opening line and Pick up here; if they differ, name the difference and ask before starting."
+
+**Principle:** A handoff should carry the instruction it hands over verbatim, so the receiver can tell a stale instruction from a new one instead of guessing.
+
+### Observation 396: A derived view over a saved base must track exactly what the persistence layer writes, including effects that run before the writer reads
+
+**Status:** OPEN
+**Date:** 2026-10-01
+**Session context:** [DB-READINESS] phase 6 (c) v3 — designing a "holder base" so a request's derived effect on a day is reversible by Undo and identical right after an act and after a reload.
+**Skill:** writing-plans (and claudex-loop plan red-teams)
+**Type:** open-source
+**Phase/Area:** Plan design — derived state vs stored state
+
+**Issue:** The design had to keep an in-memory "base" per day that must equal the stored row at all times. Reading the command engine showed the row writer (a phase-9 stream consumer) reads the command layer's baseline AFTER phase-8 effects have run and re-synced it — so an after-command effect that recomputes derived state also changes what gets stored for any day the command wrote. A base updated only from the command's own changes would silently diverge from storage. The fix was "absorb, then bake": a day the command wrote takes the live day as its base, and after the derived view is worked out, the view itself becomes the base — because that is what the writer will store. Also: the in-memory copy written when leaving a screen had to become the base, not the view, or a return to the screen would differ from a reload.
+
+**Suggested improvement:** In writing-plans, add a checklist item for any plan that layers a derived/computed view over persisted state: (1) name the exact moment and source the persistence writer reads; (2) state the invariant "base == stored" and show each writer (commands, effects, caches written on navigation) preserves it; (3) require a test that compares "right after the act" with "after a reload" for every act, including Undo/Redo.
+
+**Principle:** When a derived view sits on a saved base, the base must be defined as what the persistence layer actually writes, at the moment it writes it — trace every effect that runs before the writer, and every cache written on navigation, or "right after" and "after a reload" drift apart.
+
+### Observation 397: A typecheck that checks nothing reads as a clean pass — confirm the command covers the source first
+
+**Status:** OPEN
+**Date:** 2026-10-01
+**Session context:** [DB-READINESS] phase 6 (c) v3 build — typechecking each edit while building.
+**Skill:** verification-before-completion
+**Type:** open-source
+**Phase/Area:** Verification commands — "does this check actually look at my change?"
+
+**Issue:** For most of the build the agent ran `tsc --noEmit -p tsconfig.json`, which in this repo is a solution-style root config with no files of its own (the real settings are in `tsconfig.app.json`, reached by `tsc -b`). Every run printed nothing and was read as "clean". Three files used a new helper without importing it; the gap surfaced only as a runtime ReferenceError inside a unit test ("reducer threw (rolled back)"), which first looked like a design failure.
+
+**Suggested improvement:** In verification-before-completion, add: before trusting a silent checker, prove it checks the change — introduce (or recall) a known error once and see it reported, or use the project's own build script (`npm run build` → `tsc -b`). A checker that has never been seen to fail on this repo is not evidence.
+
+**Principle:** Silence from a check is evidence only if that check has been seen to catch a defect in the same setup; otherwise confirm its coverage first.
+
+### Observation 398: A test helper that renames a field silently drops it — a fixture assertion catches the mis-set-up, not the feature
+
+**Status:** OPEN
+**Date:** 2026-10-01
+**Session context:** [DB-READINESS] phase 6 (c) — red-first tests for round-3 findings.
+**Skill:** test-driven-development
+**Type:** open-source
+**Phase/Area:** Break tests / red-first verification
+
+**Issue:** A new test passed with its fix removed. Investigation showed the helper (`file({ end: ... })`) built its draft from a record field named `endDate`, so the `end` the test passed was silently dropped: the "two-day request" was a one-day request and never exercised the bug. The break test (removing the fix and re-running) is what exposed it; a green run alone would have shipped a test that proves nothing.
+
+**Suggested improvement:** In test-driven-development's red-green cycle, add: when a test stays green with its fix removed, first assert the fixture's premise (e.g. `expect(req.endDate).toBe(...)`) before suspecting the fix; and write premise assertions into the test so a mis-built fixture fails loudly.
+
+**Principle:** A test must assert its own set-up where the set-up is the point; the break test is how you find a fixture that silently didn't build the scenario.
+
+### Observation 399: A reviewer CLI started in a background shell sat waiting on its input for minutes — close the input explicitly
+
+**Status:** OPEN
+**Date:** 2026-10-01
+**Session context:** [DB-READINESS] phase 6 (c) FULL check — the scenario-design run of the second-provider reviewer (Codex, "Astra") started with `run_in_background`.
+**Skill:** claudex-loop / codex-review
+**Type:** open-source
+**Phase/Area:** Launching the independent reviewer
+
+**Issue:** The reviewer command (`codex exec … "<prompt>" > log`) printed "Reading additional input from stdin..." and then nothing for four minutes; the log showed no session header. Given a prompt argument, the CLI still appends whatever arrives on standard input, and a background shell leaves standard input open, so it waited forever. The same command had run fine in the foreground earlier the same day. The run was stopped and restarted with `< /dev/null`, and completed.
+
+**Suggested improvement:** In the codex-review / claudex-loop launch recipe, always close standard input on a non-interactive reviewer run (`codex exec … < /dev/null`), and check the log for the session header a minute after launch before walking away.
+
+**Principle:** A command-line tool that can read extra input from standard input will hang silently when launched detached with the input left open; close it explicitly on every unattended run, and confirm the first sign of progress rather than assuming the run started.
+
+### Observation 400: A reviewer's "missing call site" was closed by an invariant that missed one case — an invariant disposition must enumerate every way the definition is met, and still get a test
+
+**Status:** OPEN
+**Date:** 2026-10-01
+**Session context:** [DB-READINESS] phase 6 (c) FULL check — the scenario designer marked four OIL helpers MISSING because they find "the request's row" by its id instead of the shared standing-row predicate.
+**Skill:** bug-check order (raptor-port/docs/bug-check-order.md §7.6, dispositions)
+**Type:** open-source
+**Phase/Area:** Dispositioning a static finding
+
+**Issue:** Three MISSING lines beside it were real and fixed red first. The fourth was closed as "not a defect, by construction": a "dead" row, the argument went, can only sit on a day its request no longer covers, so the one-day raw lookup and the predicate always agree. The definition of "dead" had THREE branches (not covering, not an activity, filed under Unavailable) and the argument used one. The final code read (the same provider, blind) built the missed branch — a request filed under Unavailable still covers its day — and a test with its premise checked showed a second man on that row being paid. Written up as settled, the wrong disposition would have shipped a money defect.
+
+**Suggested improvement:** In §7.6, allow "not a defect, by construction" only when (a) the disposition lists EVERY branch of each definition it rests on and argues each, and (b) a test pins the case anyway (the invariant becomes an assertion, not prose). An argument that cannot be turned into a test is a hypothesis.
+
+**Principle:** A proof that a failure cannot happen is only as good as its enumeration of the definitions it uses; pin it with a test, because the branch you did not list is exactly where the next reviewer — or the bug — will be.

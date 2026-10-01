@@ -1,0 +1,594 @@
+{
+ "base": "http://localhost:4203",
+ "at": "2026-09-30T09:21:08.602Z",
+ "results": [
+  {
+   "name": "D0 first boot — ONE change-log batch, of type boot",
+   "ok": true,
+   "detail": "[{\"type\":\"boot\",\"n\":199}]"
+  },
+  {
+   "name": "9-R1 a bid (LL) on Cobra, 21 Jan — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [leavewar/rec:y2026:rmunw87ym1sog2] · del 0 [] · batches lw.edit/1"
+  },
+  {
+   "name": "9-R1 a bid (LL) on Cobra, 21 Jan — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [leavewar/rec:y2026:rmunw87ym1sog2] · del 0 [] · batches lw.edit/1"
+  },
+  {
+   "name": "9-R1 ↶ Undo the bid — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [settings/elog:munw82hl85p5.000001] · del 1 [leavewar/rec:y2026:rmunw87ym1sog2] · batches undo.restore/2"
+  },
+  {
+   "name": "9-R1 ↶ Undo the bid — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [settings/elog:munw82hl85p5.000001] · del 1 [leavewar/rec:y2026:rmunw87ym1sog2] · batches undo.restore/2"
+  },
+  {
+   "name": "9-R1 bid Undo — exactly the bid's row removed",
+   "ok": true,
+   "detail": "{\"del\":[\"leavewar/rec:y2026:rmunw87ym1sog2\"],\"put\":[\"settings/elog:munw82hl85p5.000001\"],\"ret\":{\"pressed\":true,\"title\":\"Undo — Cobra’s bid\"}}"
+  },
+  {
+   "name": "9-R1 bid Undo — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026 (the unsaved demo week's hidden row ids set aside)"
+  },
+  {
+   "name": "9-R1 bid Undo — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "9-R1 bid Undo — the war's boxes read the same after the reload",
+   "ok": true,
+   "detail": "{\"taipan@2026-01-21\":\"\"}"
+  },
+  {
+   "name": "9-R1 bid Undo — after the reload the day is empty",
+   "ok": true,
+   "detail": "{\"taipan@2026-01-21\":{\"text\":\"\",\"cls\":\"act\",\"mark\":\"\"}}"
+  },
+  {
+   "name": "9-R1 a bid on Cobra 21 Jan again — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [leavewar/rec:y2026:rmunw8j9314mh0] · del 0 [] · batches lw.edit/1"
+  },
+  {
+   "name": "9-R1 a bid on Cobra 21 Jan again — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [leavewar/rec:y2026:rmunw8j9314mh0] · del 0 [] · batches lw.edit/1"
+  },
+  {
+   "name": "9-R1 Approve it — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 2 [inputs/imunw8ldi34uxo0, settings/elog:munw8cm26w2n.000001] · del 1 [leavewar/rec:y2026:rmunw8j9314mh0] · batches lw.decide/3"
+  },
+  {
+   "name": "9-R1 Approve it — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 2 [inputs/imunw8ldi34uxo0, settings/elog:munw8cm26w2n.000001] · del 1 [leavewar/rec:y2026:rmunw8j9314mh0] · batches lw.decide/3"
+  },
+  {
+   "name": "9-R1 ↶ Undo the approval — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 2 [leavewar/rec:y2026:rmunw8j9314mh0, settings/elog:munw8cm26w2n.000002] · del 1 [inputs/imunw8ldi34uxo0] · batches undo.restore/3"
+  },
+  {
+   "name": "9-R1 ↶ Undo the approval — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 2 [leavewar/rec:y2026:rmunw8j9314mh0, settings/elog:munw8cm26w2n.000002] · del 1 [inputs/imunw8ldi34uxo0] · batches undo.restore/3"
+  },
+  {
+   "name": "9-R1 decision Undo — the bid's row back (same row, same bytes) and the request row removed",
+   "ok": true,
+   "detail": "{\"put\":[\"leavewar/rec:y2026:rmunw8j9314mh0\",\"settings/elog:munw8cm26w2n.000002\"],\"del\":[\"inputs/imunw8ldi34uxo0\"],\"same\":true}"
+  },
+  {
+   "name": "9-R1 decision Undo — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026 (the unsaved demo week's hidden row ids set aside)"
+  },
+  {
+   "name": "9-R1 decision Undo — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "9-R1 decision Undo — the war's boxes read the same after the reload",
+   "ok": true,
+   "detail": "{\"taipan@2026-01-21\":\"LL\"}"
+  },
+  {
+   "name": "9-R1 decision Undo — after the reload it is a bid again (the sheet offers Approve)",
+   "ok": true,
+   "detail": "{\"open\":\"bid-picker\",\"cell\":{\"taipan@2026-01-21\":{\"text\":\"LL\",\"cls\":\"act\",\"mark\":\"\"}}}"
+  },
+  {
+   "name": "9-R1 a bid on Comet 23 Jan — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [leavewar/rec:y2026:rmunw8wah12ldk] · del 0 [] · batches lw.edit/1"
+  },
+  {
+   "name": "9-R1 a bid on Comet 23 Jan — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [leavewar/rec:y2026:rmunw8wah12ldk] · del 0 [] · batches lw.edit/1"
+  },
+  {
+   "name": "9-R1 ⇄ Move it to 26 Jan — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 2 [leavewar/rec:y2026:rmunw8wah12ldk, settings/elog:munw8q1f270h.000001] · del 0 [] · batches lw.move/2"
+  },
+  {
+   "name": "9-R1 ⇄ Move it to 26 Jan — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 2 [leavewar/rec:y2026:rmunw8wah12ldk, settings/elog:munw8q1f270h.000001] · del 0 [] · batches lw.move/2"
+  },
+  {
+   "name": "9-R1 ↶ Undo the move — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 3 [leavewar/rec:y2026:rmunw8wah12ldk, settings/elog:munw8q1f270h.000002, settings/elog:munw8q1f270h.000003] · del 0 [] · batches undo.restore/3"
+  },
+  {
+   "name": "9-R1 ↶ Undo the move — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 3 [leavewar/rec:y2026:rmunw8wah12ldk, settings/elog:munw8q1f270h.000002, settings/elog:munw8q1f270h.000003] · del 0 [] · batches undo.restore/3"
+  },
+  {
+   "name": "9-R1 move — the move and its Undo each ONE put of the same row; after Undo the row reads as before the move",
+   "ok": true,
+   "detail": "{\"move\":[\"leavewar/rec:y2026:rmunw8wah12ldk\",\"settings/elog:munw8q1f270h.000001\"],\"undo\":[\"leavewar/rec:y2026:rmunw8wah12ldk\",\"settings/elog:munw8q1f270h.000002\",\"settings/elog:munw8q1f270h.000003\"],\"same\":true}"
+  },
+  {
+   "name": "9-R1 move Undo — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026 (the unsaved demo week's hidden row ids set aside)"
+  },
+  {
+   "name": "9-R1 move Undo — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "9-R1 move Undo — the war's boxes read the same after the reload",
+   "ok": true,
+   "detail": "{\"beams@2026-01-23\":\"LL\",\"beams@2026-01-26\":\"\"}"
+  },
+  {
+   "name": "9-R1 move Undo — after the reload the bid is back on 23 Jan, 26 Jan empty",
+   "ok": true,
+   "detail": "{\"beams@2026-01-23\":{\"text\":\"LL\",\"cls\":\"act\",\"mark\":\"\"},\"beams@2026-01-26\":{\"text\":\"\",\"cls\":\"act\",\"mark\":\"\"}}"
+  },
+  {
+   "name": "9-R1 stage → BIDDING CLOSED — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [leavewar/war:y2026] · del 0 [] · batches lw.stage/1"
+  },
+  {
+   "name": "9-R1 stage → BIDDING CLOSED — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [leavewar/war:y2026] · del 0 [] · batches lw.stage/1"
+  },
+  {
+   "name": "9-R1 ↶ Undo the stage move — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [leavewar/war:y2026] · del 0 [] · batches undo.restore/1"
+  },
+  {
+   "name": "9-R1 ↶ Undo the stage move — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [leavewar/war:y2026] · del 0 [] · batches undo.restore/1"
+  },
+  {
+   "name": "9-R1 stage Undo — the war's row back exactly as before the stage move; open again",
+   "ok": true,
+   "detail": "{\"ret\":{\"pressed\":true,\"title\":\"Undo — closing bidding\",\"toast\":[]},\"now\":\"OPEN FOR BIDDING\"}"
+  },
+  {
+   "name": "9-R1 stage Undo — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026 (the unsaved demo week's hidden row ids set aside)"
+  },
+  {
+   "name": "9-R1 stage Undo — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "9-R1 stage Undo — the war's boxes read the same after the reload",
+   "ok": true,
+   "detail": "{}"
+  },
+  {
+   "name": "9-R1 stage Undo — after the reload the war is open for bidding",
+   "ok": true,
+   "detail": "OPEN FOR BIDDING"
+  },
+  {
+   "name": "9-R2 a bid (LL) on Basher, 14 Jan — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [leavewar/rec:y2026:rmunw9hl51fnlh] · del 0 [] · batches lw.edit/1"
+  },
+  {
+   "name": "9-R2 a bid (LL) on Basher, 14 Jan — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [leavewar/rec:y2026:rmunw9hl51fnlh] · del 0 [] · batches lw.edit/1"
+  },
+  {
+   "name": "9-R2 ↶ Undo the bid — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [settings/elog:munw9cfhjujv.000001] · del 1 [leavewar/rec:y2026:rmunw9hl51fnlh] · batches undo.restore/2"
+  },
+  {
+   "name": "9-R2 ↶ Undo the bid — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [settings/elog:munw9cfhjujv.000001] · del 1 [leavewar/rec:y2026:rmunw9hl51fnlh] · batches undo.restore/2"
+  },
+  {
+   "name": "9-R2 bid Undo — a fresh page reads back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "9-R2 bid Undo — opening the fresh page wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "9-R2 bid Undo — the fresh page's boxes read the same",
+   "ok": true,
+   "detail": "{\"glass@2026-01-14\":\"\"}"
+  },
+  {
+   "name": "9-R2 ↷ Redo the bid — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 2 [leavewar/rec:y2026:rmunw9hl51fnlh, settings/elog:munw9cfhjujv.000002] · del 0 [] · batches undo.restore/2"
+  },
+  {
+   "name": "9-R2 ↷ Redo the bid — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 2 [leavewar/rec:y2026:rmunw9hl51fnlh, settings/elog:munw9cfhjujv.000002] · del 0 [] · batches undo.restore/2"
+  },
+  {
+   "name": "9-R2 bid — Undo removed its row; Redo put back the SAME row, same bytes",
+   "ok": true,
+   "detail": "{\"undo\":[\"leavewar/rec:y2026:rmunw9hl51fnlh\"],\"redo\":[\"leavewar/rec:y2026:rmunw9hl51fnlh\",\"settings/elog:munw9cfhjujv.000002\"],\"same\":true}"
+  },
+  {
+   "name": "9-R2 bid Redo — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026 (the unsaved demo week's hidden row ids set aside)"
+  },
+  {
+   "name": "9-R2 bid Redo — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "9-R2 bid Redo — the war's boxes read the same after the reload",
+   "ok": true,
+   "detail": "{\"glass@2026-01-14\":\"LL\"}"
+  },
+  {
+   "name": "9-R2 Approve Basher's bid — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 2 [inputs/imunw9wr5l0cepk, settings/elog:munw9qk0jkiq.000001] · del 1 [leavewar/rec:y2026:rmunw9hl51fnlh] · batches lw.decide/3"
+  },
+  {
+   "name": "9-R2 Approve Basher's bid — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 2 [inputs/imunw9wr5l0cepk, settings/elog:munw9qk0jkiq.000001] · del 1 [leavewar/rec:y2026:rmunw9hl51fnlh] · batches lw.decide/3"
+  },
+  {
+   "name": "9-R2 ↶ Undo the approval — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 2 [leavewar/rec:y2026:rmunw9hl51fnlh, settings/elog:munw9qk0jkiq.000002] · del 1 [inputs/imunw9wr5l0cepk] · batches undo.restore/3"
+  },
+  {
+   "name": "9-R2 ↶ Undo the approval — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 2 [leavewar/rec:y2026:rmunw9hl51fnlh, settings/elog:munw9qk0jkiq.000002] · del 1 [inputs/imunw9wr5l0cepk] · batches undo.restore/3"
+  },
+  {
+   "name": "9-R2 decision Undo — a fresh page reads back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "9-R2 decision Undo — opening the fresh page wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "9-R2 decision Undo — the fresh page's boxes read the same",
+   "ok": true,
+   "detail": "{\"glass@2026-01-14\":\"LL\"}"
+  },
+  {
+   "name": "9-R2 ↷ Redo the approval — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 2 [inputs/imunw9wr5l0cepk, settings/elog:munw9qk0jkiq.000003] · del 1 [leavewar/rec:y2026:rmunw9hl51fnlh] · batches undo.restore/3"
+  },
+  {
+   "name": "9-R2 ↷ Redo the approval — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 2 [inputs/imunw9wr5l0cepk, settings/elog:munw9qk0jkiq.000003] · del 1 [leavewar/rec:y2026:rmunw9hl51fnlh] · batches undo.restore/3"
+  },
+  {
+   "name": "9-R2 decision — Undo: the bid row back, the request gone; Redo: the SAME request row back (same id, same bytes), the bid row gone",
+   "ok": true,
+   "detail": "{\"undo\":[[\"leavewar/rec:y2026:rmunw9hl51fnlh\",\"settings/elog:munw9qk0jkiq.000002\"],[\"inputs/imunw9wr5l0cepk\"]],\"redo\":[[\"inputs/imunw9wr5l0cepk\",\"settings/elog:munw9qk0jkiq.000003\"],[\"leavewar/rec:y2026:rmunw9hl51fnlh\"]],\"sameReq\":true}"
+  },
+  {
+   "name": "9-R2 decision Redo — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026 (the unsaved demo week's hidden row ids set aside)"
+  },
+  {
+   "name": "9-R2 decision Redo — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "9-R2 decision Redo — the war's boxes read the same after the reload",
+   "ok": true,
+   "detail": "{\"glass@2026-01-14\":\"LL\"}"
+  },
+  {
+   "name": "9-R2 a bid on Echo 16 Jan — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [leavewar/rec:y2026:rmunwabsp1ig0u] · del 0 [] · batches lw.edit/1"
+  },
+  {
+   "name": "9-R2 a bid on Echo 16 Jan — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [leavewar/rec:y2026:rmunwabsp1ig0u] · del 0 [] · batches lw.edit/1"
+  },
+  {
+   "name": "9-R2 ⇄ Move it to 19 Jan — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 2 [leavewar/rec:y2026:rmunwabsp1ig0u, settings/elog:munwa5ktijki.000001] · del 0 [] · batches lw.move/2"
+  },
+  {
+   "name": "9-R2 ⇄ Move it to 19 Jan — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 2 [leavewar/rec:y2026:rmunwabsp1ig0u, settings/elog:munwa5ktijki.000001] · del 0 [] · batches lw.move/2"
+  },
+  {
+   "name": "9-R2 ↶ Undo the move — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 3 [leavewar/rec:y2026:rmunwabsp1ig0u, settings/elog:munwa5ktijki.000002, settings/elog:munwa5ktijki.000003] · del 0 [] · batches undo.restore/3"
+  },
+  {
+   "name": "9-R2 ↶ Undo the move — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 3 [leavewar/rec:y2026:rmunwabsp1ig0u, settings/elog:munwa5ktijki.000002, settings/elog:munwa5ktijki.000003] · del 0 [] · batches undo.restore/3"
+  },
+  {
+   "name": "9-R2 move Undo — a fresh page reads back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "9-R2 move Undo — opening the fresh page wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "9-R2 move Undo — the fresh page's boxes read the same",
+   "ok": true,
+   "detail": "{\"freak@2026-01-16\":\"LL\",\"freak@2026-01-19\":\"\"}"
+  },
+  {
+   "name": "9-R2 ↷ Redo the move — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 3 [leavewar/rec:y2026:rmunwabsp1ig0u, settings/elog:munwa5ktijki.000004, settings/elog:munwa5ktijki.000005] · del 0 [] · batches undo.restore/3"
+  },
+  {
+   "name": "9-R2 ↷ Redo the move — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 3 [leavewar/rec:y2026:rmunwabsp1ig0u, settings/elog:munwa5ktijki.000004, settings/elog:munwa5ktijki.000005] · del 0 [] · batches undo.restore/3"
+  },
+  {
+   "name": "9-R2 move — move, Undo and Redo each ONE put of the same row; after Redo it reads as after the move",
+   "ok": true,
+   "detail": "{\"g\":[\"leavewar/rec:y2026:rmunwabsp1ig0u\",\"settings/elog:munwa5ktijki.000001\"],\"u\":[\"leavewar/rec:y2026:rmunwabsp1ig0u\",\"settings/elog:munwa5ktijki.000002\",\"settings/elog:munwa5ktijki.000003\"],\"rd\":[\"leavewar/rec:y2026:rmunwabsp1ig0u\",\"settings/elog:munwa5ktijki.000004\",\"settings/elog:munwa5ktijki.000005\"]}"
+  },
+  {
+   "name": "9-R2 move Redo — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026 (the unsaved demo week's hidden row ids set aside)"
+  },
+  {
+   "name": "9-R2 move Redo — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "9-R2 move Redo — the war's boxes read the same after the reload",
+   "ok": true,
+   "detail": "{\"freak@2026-01-16\":\"\",\"freak@2026-01-19\":\"LL\"}"
+  },
+  {
+   "name": "9-R2 stage → BIDDING CLOSED — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [leavewar/war:y2026] · del 0 [] · batches lw.stage/1"
+  },
+  {
+   "name": "9-R2 stage → BIDDING CLOSED — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [leavewar/war:y2026] · del 0 [] · batches lw.stage/1"
+  },
+  {
+   "name": "9-R2 ↶ Undo the stage move — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [leavewar/war:y2026] · del 0 [] · batches undo.restore/1"
+  },
+  {
+   "name": "9-R2 ↶ Undo the stage move — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [leavewar/war:y2026] · del 0 [] · batches undo.restore/1"
+  },
+  {
+   "name": "9-R2 stage Undo — a fresh page reads back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "9-R2 stage Undo — opening the fresh page wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "9-R2 stage Undo — the fresh page's boxes read the same",
+   "ok": true,
+   "detail": "{}"
+  },
+  {
+   "name": "9-R2 ↷ Redo the stage move — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [leavewar/war:y2026] · del 0 [] · batches undo.restore/1"
+  },
+  {
+   "name": "9-R2 ↷ Redo the stage move — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [leavewar/war:y2026] · del 0 [] · batches undo.restore/1"
+  },
+  {
+   "name": "9-R2 stage — Undo back to open, Redo closed again: the war's row as after the stage move",
+   "ok": true,
+   "detail": "{\"afterUndo\":\"OPEN FOR BIDDING\",\"now\":\"BIDDING CLOSED\"}"
+  },
+  {
+   "name": "9-R2 stage Redo — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026 (the unsaved demo week's hidden row ids set aside)"
+  },
+  {
+   "name": "9-R2 stage Redo — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "9-R2 stage Redo — the war's boxes read the same after the reload",
+   "ok": true,
+   "detail": "{}"
+  },
+  {
+   "name": "9-R2 stage Redo — after the reload the war reads BIDDING CLOSED",
+   "ok": true,
+   "detail": "BIDDING CLOSED"
+  },
+  {
+   "name": "part D — no console errors, page errors, failed requests or native dialogs",
+   "ok": true,
+   "detail": "[]"
+  }
+ ],
+ "table": [
+  {
+   "step": "D0 first boot",
+   "width": "desktop",
+   "did": "fresh world, Saber",
+   "screen": "—",
+   "rows": "batches boot/199",
+   "ok": true,
+   "pics": []
+  },
+  {
+   "step": "9-R1 bid → Undo → reload",
+   "width": "desktop",
+   "did": "Cobra 21 Jan LL; top bar ↶",
+   "screen": "{\"taipan@2026-01-21\":{\"text\":\"\",\"cls\":\"act\",\"mark\":\"\"}}",
+   "rows": "bid: put 1 [leavewar/rec:y2026:rmunw87ym1sog2] · batches lw.edit/1 || undo: put 1 [settings/elog:munw82hl85p5.000001] · del 1 [leavewar/rec:y2026:rmunw87ym1sog2] · batches undo.restore/2",
+   "ok": true,
+   "pics": [
+    "D-R1-bid-undone.png",
+    "D-R1-bid-undo-after-reload.png"
+   ]
+  },
+  {
+   "step": "9-R1 decision → Undo → reload",
+   "width": "desktop",
+   "did": "Cobra 21 Jan: Approve; top bar ↶",
+   "screen": "{\"taipan@2026-01-21\":{\"text\":\"LL\",\"cls\":\"act\",\"mark\":\"\"}}; tap → bid-picker",
+   "rows": "approve: put 2 [inputs/imunw8ldi34uxo0, settings/elog:munw8cm26w2n.000001] · del 1 [leavewar/rec:y2026:rmunw8j9314mh0] · batches lw.decide/3 || undo: put 2 [leavewar/rec:y2026:rmunw8j9314mh0, settings/elog:munw8cm26w2n.000002] · del 1 [inputs/imunw8ldi34uxo0] · batches undo.restore/3",
+   "ok": true,
+   "pics": [
+    "D-R1-decision-undone.png",
+    "D-R1-decision-undo-after-reload.png"
+   ]
+  },
+  {
+   "step": "9-R1 move → Undo → reload",
+   "width": "desktop",
+   "did": "Comet 23 Jan: ⇄ Move to 26 Jan; top bar ↶",
+   "screen": "{\"beams@2026-01-23\":{\"text\":\"LL\",\"cls\":\"act\",\"mark\":\"\"},\"beams@2026-01-26\":{\"text\":\"\",\"cls\":\"act\",\"mark\":\"\"}}",
+   "rows": "move: put 2 [leavewar/rec:y2026:rmunw8wah12ldk, settings/elog:munw8q1f270h.000001] · batches lw.move/2 || undo: put 3 [leavewar/rec:y2026:rmunw8wah12ldk, settings/elog:munw8q1f270h.000002, settings/elog:munw8q1f270h.000003] · batches undo.restore/3",
+   "ok": true,
+   "pics": [
+    "D-R1-move-undo-after-reload.png"
+   ]
+  },
+  {
+   "step": "9-R1 stage → Undo → reload",
+   "width": "desktop",
+   "did": "→ BIDDING CLOSED; top bar ↶",
+   "screen": "stage OPEN FOR BIDDING",
+   "rows": "stage: put 1 [leavewar/war:y2026] · batches lw.stage/1 || undo: put 1 [leavewar/war:y2026] · batches undo.restore/1",
+   "ok": true,
+   "pics": [
+    "D-R1-stage-undone.png",
+    "D-R1-stage-undo-after-reload.png"
+   ]
+  },
+  {
+   "step": "9-R2 bid → Undo → Redo → reload",
+   "width": "desktop",
+   "did": "Basher 14 Jan LL; ↶ (fresh page read); ↷",
+   "screen": "{\"glass@2026-01-14\":{\"text\":\"LL\",\"cls\":\"act\",\"mark\":\"\"}}",
+   "rows": "undo: put 1 [settings/elog:munw9cfhjujv.000001] · del 1 [leavewar/rec:y2026:rmunw9hl51fnlh] · batches undo.restore/2 || redo: put 2 [leavewar/rec:y2026:rmunw9hl51fnlh, settings/elog:munw9cfhjujv.000002] · batches undo.restore/2",
+   "ok": true,
+   "pics": [
+    "D-R2-bid-redo-after-reload.png"
+   ]
+  },
+  {
+   "step": "9-R2 decision → Undo → Redo → reload",
+   "width": "desktop",
+   "did": "Basher: Approve; ↶ (fresh page read); ↷",
+   "screen": "{\"glass@2026-01-14\":{\"text\":\"LL\",\"cls\":\"act\",\"mark\":\"\"}}; tap → bid-picker",
+   "rows": "approve: put 2 [inputs/imunw9wr5l0cepk, settings/elog:munw9qk0jkiq.000001] · del 1 [leavewar/rec:y2026:rmunw9hl51fnlh] · batches lw.decide/3 || undo: put 2 [leavewar/rec:y2026:rmunw9hl51fnlh, settings/elog:munw9qk0jkiq.000002] · del 1 [inputs/imunw9wr5l0cepk] · batches undo.restore/3 || redo: put 2 [inputs/imunw9wr5l0cepk, settings/elog:munw9qk0jkiq.000003] · del 1 [leavewar/rec:y2026:rmunw9hl51fnlh] · batches undo.restore/3",
+   "ok": true,
+   "pics": [
+    "D-R2-decision-redo-after-reload.png"
+   ]
+  },
+  {
+   "step": "9-R2 move → Undo → Redo → reload",
+   "width": "desktop",
+   "did": "Echo 16 Jan: ⇄ Move to 19 Jan; ↶ (fresh page read); ↷",
+   "screen": "{\"freak@2026-01-16\":{\"text\":\"\",\"cls\":\"act\",\"mark\":\"\"},\"freak@2026-01-19\":{\"text\":\"LL\",\"cls\":\"act\",\"mark\":\"\"}}",
+   "rows": "move: put 2 [leavewar/rec:y2026:rmunwabsp1ig0u, settings/elog:munwa5ktijki.000001] · batches lw.move/2 || undo: put 3 [leavewar/rec:y2026:rmunwabsp1ig0u, settings/elog:munwa5ktijki.000002, settings/elog:munwa5ktijki.000003] · batches undo.restore/3 || redo: put 3 [leavewar/rec:y2026:rmunwabsp1ig0u, settings/elog:munwa5ktijki.000004, settings/elog:munwa5ktijki.000005] · batches undo.restore/3",
+   "ok": true,
+   "pics": [
+    "D-R2-move-redo-after-reload.png"
+   ]
+  },
+  {
+   "step": "9-R2 stage → Undo → Redo → reload",
+   "width": "desktop",
+   "did": "→ BIDDING CLOSED; ↶ (fresh page read); ↷",
+   "screen": "stage BIDDING CLOSED",
+   "rows": "stage: put 1 [leavewar/war:y2026] · batches lw.stage/1 || undo: put 1 [leavewar/war:y2026] · batches undo.restore/1 || redo: put 1 [leavewar/war:y2026] · batches undo.restore/1",
+   "ok": true,
+   "pics": [
+    "D-R2-stage-redo-after-reload.png"
+   ]
+  }
+ ],
+ "errors": []
+}

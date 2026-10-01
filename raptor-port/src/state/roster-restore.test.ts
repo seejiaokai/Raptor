@@ -23,7 +23,7 @@ const clone = (x: any) => JSON.parse(JSON.stringify(x))
 beforeEach(() => {
   if (!PEOPLE0) PEOPLE0 = JSON.stringify(PEOPLE)
   Object.keys(mem).forEach(k => delete mem[k])
-  storeBackend.impl = { getItem: (k: string) => (k in mem ? mem[k]! : null), setItem: (k: string, v: string) => { mem[k] = v } }
+  storeBackend.impl = { getItem: (k: string) => (k in mem ? mem[k]! : null), setItem: (k: string, v: string) => { if (v === 'null') delete mem[k]; else mem[k] = v }, keys: () => Object.keys(mem) }
   const p0 = JSON.parse(PEOPLE0)
   for (const k of Object.keys(PEOPLE)) delete (PEOPLE as any)[k]
   Object.assign(PEOPLE, p0); indexCallsigns()

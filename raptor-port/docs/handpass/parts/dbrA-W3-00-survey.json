@@ -1,0 +1,326 @@
+{
+ "base": "http://localhost:4203",
+ "at": "2026-09-30T08:23:32.572Z",
+ "results": [
+  {
+   "name": "first boot wrote ONE change-log batch, of type boot",
+   "ok": true,
+   "detail": "[{\"key\":\"changes/cmunu8ygclj8iul-0\",\"type\":\"boot\",\"n\":199}]"
+  },
+  {
+   "name": "no console errors on the survey",
+   "ok": true,
+   "detail": "[]"
+  }
+ ],
+ "byCol": {
+  "leavewar": 91,
+  "people": 61,
+  "inputs": 46,
+  "settings": 1,
+  "changes": 1
+ },
+ "batches": [
+  {
+   "key": "changes/cmunu8ygclj8iul-0",
+   "type": "boot",
+   "n": 199
+  }
+ ],
+ "lwKinds": {
+  "opening": 36,
+  "rec": 14,
+  "ledger": 23,
+  "groupdefs": 1,
+  "grouppriocustom": 1,
+  "eventdefs": 1,
+  "groupcolors": 1,
+  "oilpolicy": 1,
+  "manninghidden": 1,
+  "current": 1,
+  "showsans": 1,
+  "eventrows": 1,
+  "manningdefs": 1,
+  "figorder": 1,
+  "manningorder": 1,
+  "fighidden": 1,
+  "war": 2,
+  "profile": 1,
+  "rosterorder": 1,
+  "grouppriority": 1
+ },
+ "wars": [
+  {
+   "key": "leavewar/war:y2026",
+   "id": "y2026",
+   "name": "JAN - DEC 26",
+   "stage": "open",
+   "start": "2026-01-01",
+   "end": "2026-12-31",
+   "bidFrom": "2026-01-01",
+   "bidTo": "2026-03-31",
+   "ord": 1024,
+   "days": 365
+  },
+  {
+   "key": "leavewar/war:y2027",
+   "id": "y2027",
+   "name": "JAN - DEC 27",
+   "stage": "draft",
+   "start": "2027-01-01",
+   "end": "2027-12-31",
+   "bidFrom": null,
+   "bidTo": null,
+   "ord": 2048,
+   "days": 365
+  }
+ ],
+ "settingsLike": [
+  "leavewar/groupdefs",
+  "leavewar/grouppriocustom",
+  "leavewar/eventdefs",
+  "leavewar/groupcolors",
+  "leavewar/oilpolicy",
+  "leavewar/manninghidden",
+  "leavewar/current",
+  "leavewar/showsans",
+  "leavewar/eventrows",
+  "leavewar/manningdefs",
+  "leavewar/figorder",
+  "leavewar/manningorder",
+  "leavewar/fighidden",
+  "leavewar/rosterorder",
+  "leavewar/grouppriority"
+ ],
+ "picker": {
+  "opts": [
+   {
+    "v": "y2026",
+    "t": "JAN - DEC 26"
+   },
+   {
+    "v": "y2027",
+    "t": "JAN - DEC 27"
+   }
+  ],
+  "value": "y2026"
+ },
+ "people": [
+  {
+   "id": "dice",
+   "t": "Reaper IR"
+  },
+  {
+   "id": "shaft",
+   "t": "Anvil IP"
+  },
+  {
+   "id": "snap",
+   "t": "Cinch IP"
+  },
+  {
+   "id": "pump",
+   "t": "Piston IP"
+  },
+  {
+   "id": "bane",
+   "t": "Ranger IP"
+  },
+  {
+   "id": "stiff",
+   "t": "Saber IP"
+  },
+  {
+   "id": "mamba",
+   "t": "Sidewinder IP"
+  },
+  {
+   "id": "nact",
+   "t": "Warden IP"
+  },
+  {
+   "id": "slipway",
+   "t": "Drifter A"
+  },
+  {
+   "id": "razer",
+   "t": "Ridge C"
+  },
+  {
+   "id": "glass",
+   "t": "Basher IW"
+  },
+  {
+   "id": "freak",
+   "t": "Echo IW"
+  },
+  {
+   "id": "slash",
+   "t": "Blade IP"
+  },
+  {
+   "id": "taipan",
+   "t": "Cobra IP"
+  },
+  {
+   "id": "beams",
+   "t": "Comet IP"
+  },
+  {
+   "id": "chaps",
+   "t": "Forge IP"
+  },
+  {
+   "id": "boosh",
+   "t": "Havoc IP"
+  },
+  {
+   "id": "prowler",
+   "t": "Hunter IP"
+  },
+  {
+   "id": "harpoon",
+   "t": "Trident IP"
+  },
+  {
+   "id": "split",
+   "t": "Vandal IP"
+  },
+  {
+   "id": "dj",
+   "t": "Ace A"
+  },
+  {
+   "id": "salsa",
+   "t": "Saint B"
+  },
+  {
+   "id": "bruise",
+   "t": "Gambit C"
+  },
+  {
+   "id": "pike",
+   "t": "Nomad C"
+  },
+  {
+   "id": "casper",
+   "t": "Outlaw C"
+  },
+  {
+   "id": "ignite",
+   "t": "Torch C"
+  },
+  {
+   "id": "fantom",
+   "t": "Diesel D"
+  },
+  {
+   "id": "vegas",
+   "t": "Vapor D"
+  },
+  {
+   "id": "drill",
+   "t": "Ledger IW"
+  },
+  {
+   "id": "nasty",
+   "t": "Quill IW"
+  },
+  {
+   "id": "dirty",
+   "t": "Relay IW"
+  },
+  {
+   "id": "stuff",
+   "t": "Scope IW"
+  },
+  {
+   "id": "wolf",
+   "t": "Static IW"
+  },
+  {
+   "id": "ammo",
+   "t": "Cinder B"
+  },
+  {
+   "id": "pain",
+   "t": "Rune B"
+  },
+  {
+   "id": "psy",
+   "t": "Cutter C"
+  },
+  {
+   "id": "spaceman",
+   "t": "Dash C"
+  },
+  {
+   "id": "plasma",
+   "t": "Fable C"
+  },
+  {
+   "id": "riddler",
+   "t": "Ghost C"
+  },
+  {
+   "id": "sufa",
+   "t": "Grit C"
+  },
+  {
+   "id": "rocky",
+   "t": "Hex C"
+  },
+  {
+   "id": "xray",
+   "t": "Ryder C"
+  },
+  {
+   "id": "divot",
+   "t": "Vector C"
+  },
+  {
+   "id": "shrek",
+   "t": "Wisp C"
+  },
+  {
+   "id": "prism",
+   "t": "Recon OCU"
+  },
+  {
+   "id": "haowen",
+   "t": "Talisman OCU"
+  },
+  {
+   "id": "bapster",
+   "t": "Wildcard OCU"
+  },
+  {
+   "id": "spanner",
+   "t": "Cotter GND"
+  },
+  {
+   "id": "torque",
+   "t": "Ratchet GND"
+  },
+  {
+   "id": "gizmo",
+   "t": "Widget GND"
+  }
+ ],
+ "months": [
+  "month-strip",
+  "month-JAN",
+  "month-FEB",
+  "month-MAR",
+  "month-APR",
+  "month-MAY",
+  "month-JUN",
+  "month-JUL",
+  "month-AUG",
+  "month-SEP",
+  "month-OCT",
+  "month-NOV",
+  "month-DEC",
+  "month-bracket"
+ ]
+}

@@ -1,0 +1,50 @@
+[
+  {
+    "part": "live",
+    "name": "LIVE: two tabs each added a student — after a reload BOTH are there",
+    "ok": true,
+    "detail": "[\"STUDENT A\",\"STUDENT B\",\"ALPHA\",\"BRAVO\"]"
+  },
+  {
+    "part": "live",
+    "name": "LIVE: …and each typed on a different ball — BOTH details kept",
+    "ok": true,
+    "detail": "[\"TYPED IN TAB A\",\"TYPED IN TAB B\"]"
+  },
+  {
+    "part": "live",
+    "name": "LIVE: a course added, renamed, deleted and restored — back in the list after a reload, one row for it",
+    "ok": true,
+    "detail": "list [\"26ABSG\",\"WALK TWO\"] · rows [\"WALK TWO\",\"26ABSG\"]"
+  },
+  {
+    "part": "live",
+    "name": "LIVE: Saber switches the chart — the course's own chart is not changed",
+    "ok": true,
+    "detail": "course's chart sb2026, after the switch sb2026, his sbtx2026"
+  },
+  {
+    "part": "live",
+    "name": "LIVE: Ranger then opens the course on the course's chart, not on Saber's",
+    "ok": true,
+    "detail": "sb2026"
+  },
+  {
+    "part": "live",
+    "name": "LIVE: Saber reopens on his own chart",
+    "ok": true,
+    "detail": "sbtx2026"
+  },
+  {
+    "part": "live",
+    "name": "LIVE (phone): a student added on a phone is there after a reload",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "part": "live",
+    "name": "live: no console error, page error or failed request",
+    "ok": true,
+    "detail": ""
+  }
+]

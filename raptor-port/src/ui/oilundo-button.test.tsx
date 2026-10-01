@@ -42,7 +42,7 @@ import { txtGet } from '../engine/slots'
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
 const SAT = 5, SAT_ISO = '2026-07-18'
-const SCHED_COLLS = ['days', 'sched.book', 'sched.mutes', 'sched.orig', 'sched.als', 'sched.retired', 'inputs', 'plan', 'weekstash']
+const SCHED_COLLS = ['days', 'sched.book', 'sched.mutes', 'sched.week', 'sched.issuance', 'sched.retraction', 'inputs', 'plan', 'weekstash']
 const DSNAP = JSON.stringify(DAYS)
 let host: HTMLDivElement
 let root: Root

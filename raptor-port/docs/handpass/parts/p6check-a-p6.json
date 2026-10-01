@@ -1,0 +1,312 @@
+{
+ "base": "http://localhost:4210",
+ "at": "2026-09-30T14:38:56.754Z",
+ "results": [
+  {
+   "name": "A1 Bolt files a meeting on Sat 18 Jul 09:00-11:00 (Inputs page) — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 4 [inputs/imrldi1s0yo4ns1, settings/elog:mrldi1s024o8.000001, weeks/13-07-2026, weeks/13-07-2026#5] · del 0 [] · batches inputs.batch/4"
+  },
+  {
+   "name": "A1 the meeting landed on Saturday as a ground row of Bolt's",
+   "ok": true,
+   "detail": "[{\"who\":\"yeti\",\"more\":[]}]"
+  },
+  {
+   "name": "A2 OIL Earn on Saturday: Bolt switched off on his meeting — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 2 [settings/elog:mrldi1s024o8.000002, weeks/13-07-2026#5] · del 0 [] · batches sched.oil/1 elog.line/1"
+  },
+  {
+   "name": "A2 Bolt reads off on his meeting",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "A3 the meeting handed from Bolt to Ridge — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 3 [inputs/imrldi1s0yo4ns1, settings/elog:mrldi1s024o8.000003, weeks/13-07-2026#5] · del 0 [] · batches inputs.batch/3"
+  },
+  {
+   "name": "A3 Ridge now holds it and EARNS (Bolt's refusal is his, not Ridge's)",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "A4 the meeting handed back from Ridge to Bolt — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 3 [inputs/imrldi1s0yo4ns1, settings/elog:mrldi1s024o8.000004, weeks/13-07-2026#5] · del 0 [] · batches inputs.batch/3"
+  },
+  {
+   "name": "A4 A → B → A: Bolt EARNS again — the refusal made under his first holding is void",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "A6 two Undos: Bolt holds it again and his refusal is back (he reads off)",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "A7 two Redos: Bolt earns again",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "A5 reload after A → B → A — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "A5 reload after A → B → A — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "A5 after the reload Bolt still earns",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "A8 Bolt switched off again under the current holding — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 2 [settings/elog:mrldi1s0o2yg.000001, weeks/13-07-2026#5] · del 0 [] · batches sched.oil/1 elog.line/1"
+  },
+  {
+   "name": "A8 the new refusal counts: Bolt off",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "A9 published Saturday: the meeting handed to Ridge — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 3 [inputs/imrldi1s0yo4ns1, settings/elog:mrldi1s0o2yg.000007, weeks/13-07-2026#5] · del 0 [] · batches inputs.batch/3"
+  },
+  {
+   "name": "A10 published Saturday: handed back to Bolt — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 3 [inputs/imrldi1s0yo4ns1, settings/elog:mrldi1s0o2yg.000008, weeks/13-07-2026#5] · del 0 [] · batches inputs.batch/3"
+  },
+  {
+   "name": "A10 reload — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "A10 reload — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  }
+ ],
+ "table": [
+  {
+   "step": "A1",
+   "width": "desktop",
+   "did": "Bolt files a meeting on Sat 18 Jul 09:00-11:00 (Inputs page)",
+   "pics": [
+    "A1-1-after.png"
+   ],
+   "shown": "",
+   "rows": "put 4: inputs/imrldi1s0yo4ns1, settings/elog:mrldi1s024o8.000001, weeks/13-07-2026, weeks/13-07-2026#5 · batches: inputs.batch(ScheduleWeek+ScheduleDay+Input+EditLog, 4 rows, 1 history line, by acad)",
+   "batches": [
+    {
+     "key": "changes/cmrldi1s0euulug-1",
+     "type": "inputs.batch",
+     "actor": "acad",
+     "n": 4,
+     "seqs": [
+      1
+     ],
+     "tables": "ScheduleWeek+ScheduleDay+Input+EditLog",
+     "elog": 1
+    }
+   ],
+   "pass": true,
+   "notes": [],
+   "fails": []
+  },
+  {
+   "step": "A2",
+   "width": "desktop",
+   "did": "OIL Earn on Saturday: Bolt switched off on his meeting",
+   "pics": [
+    "A2-1-after.png",
+    "A2-board-oil-bolt-off.png"
+   ],
+   "shown": "",
+   "rows": "put 2: settings/elog:mrldi1s024o8.000002, weeks/13-07-2026#5 · batches: sched.oil(ScheduleDay, 1 rows, by acad) + elog.line(EditLog, 1 rows, 1 history line, by system)",
+   "batches": [
+    {
+     "key": "changes/cmrldi1s0euulug-2",
+     "type": "sched.oil",
+     "actor": "acad",
+     "n": 1,
+     "seqs": [
+      2
+     ],
+     "tables": "ScheduleDay",
+     "elog": 0
+    },
+    {
+     "key": "changes/cmrldi1s0euulug-g1",
+     "type": "elog.line",
+     "actor": "system",
+     "n": 1,
+     "seqs": [],
+     "tables": "EditLog",
+     "elog": 1
+    }
+   ],
+   "pass": true,
+   "notes": [],
+   "fails": []
+  },
+  {
+   "step": "A3",
+   "width": "desktop",
+   "did": "the meeting handed from Bolt to Ridge",
+   "pics": [
+    "A3-1-after.png",
+    "A3-board-oil-ridge.png"
+   ],
+   "shown": "",
+   "rows": "put 3: inputs/imrldi1s0yo4ns1, settings/elog:mrldi1s024o8.000003, weeks/13-07-2026#5 · batches: inputs.batch(ScheduleDay+Input+EditLog, 3 rows, 1 history line, by acad)",
+   "batches": [
+    {
+     "key": "changes/cmrldi1s0euulug-3",
+     "type": "inputs.batch",
+     "actor": "acad",
+     "n": 3,
+     "seqs": [
+      3
+     ],
+     "tables": "ScheduleDay+Input+EditLog",
+     "elog": 1
+    }
+   ],
+   "pass": true,
+   "notes": [],
+   "fails": []
+  },
+  {
+   "step": "A4",
+   "width": "desktop",
+   "did": "the meeting handed back from Ridge to Bolt",
+   "pics": [
+    "A4-1-after.png",
+    "A4-board-oil-bolt-back-on.png",
+    "A6-undo2-bolt-off-again.png",
+    "A5-reloaded-bolt-on.png"
+   ],
+   "shown": "",
+   "rows": "put 3: inputs/imrldi1s0yo4ns1, settings/elog:mrldi1s024o8.000004, weeks/13-07-2026#5 · batches: inputs.batch(ScheduleDay+Input+EditLog, 3 rows, 1 history line, by acad)",
+   "batches": [
+    {
+     "key": "changes/cmrldi1s0euulug-4",
+     "type": "inputs.batch",
+     "actor": "acad",
+     "n": 3,
+     "seqs": [
+      4
+     ],
+     "tables": "ScheduleDay+Input+EditLog",
+     "elog": 1
+    }
+   ],
+   "pass": true,
+   "notes": [],
+   "fails": []
+  },
+  {
+   "step": "A8",
+   "width": "desktop",
+   "did": "Bolt switched off again under the current holding",
+   "pics": [
+    "A8-1-after.png",
+    "A8-published.png"
+   ],
+   "shown": "",
+   "rows": "put 2: settings/elog:mrldi1s0o2yg.000001, weeks/13-07-2026#5 · batches: sched.oil(ScheduleDay, 1 rows, by acad) + elog.line(EditLog, 1 rows, 1 history line, by system)",
+   "batches": [
+    {
+     "key": "changes/cmrldi1s0t417dt-0",
+     "type": "sched.oil",
+     "actor": "acad",
+     "n": 1,
+     "seqs": [
+      0
+     ],
+     "tables": "ScheduleDay",
+     "elog": 0
+    },
+    {
+     "key": "changes/cmrldi1s0t417dt-g1",
+     "type": "elog.line",
+     "actor": "system",
+     "n": 1,
+     "seqs": [],
+     "tables": "EditLog",
+     "elog": 1
+    }
+   ],
+   "pass": true,
+   "notes": [],
+   "fails": []
+  },
+  {
+   "step": "A9",
+   "width": "desktop",
+   "did": "published Saturday: the meeting handed to Ridge",
+   "pics": [
+    "A9-1-after.png",
+    "A9-published-handed-ridge.png"
+   ],
+   "shown": "",
+   "rows": "put 3: inputs/imrldi1s0yo4ns1, settings/elog:mrldi1s0o2yg.000007, weeks/13-07-2026#5 · batches: inputs.batch(ScheduleDay+Input+EditLog, 3 rows, 1 history line, by acad)",
+   "batches": [
+    {
+     "key": "changes/cmrldi1s0t417dt-7",
+     "type": "inputs.batch",
+     "actor": "acad",
+     "n": 3,
+     "seqs": [
+      7
+     ],
+     "tables": "ScheduleDay+Input+EditLog",
+     "elog": 1
+    }
+   ],
+   "pass": true,
+   "notes": [],
+   "fails": []
+  },
+  {
+   "step": "A10",
+   "width": "desktop",
+   "did": "published Saturday: handed back to Bolt",
+   "pics": [
+    "A10-1-after.png",
+    "A10-published-back-bolt.png"
+   ],
+   "shown": "",
+   "rows": "put 3: inputs/imrldi1s0yo4ns1, settings/elog:mrldi1s0o2yg.000008, weeks/13-07-2026#5 · batches: inputs.batch(ScheduleDay+Input+EditLog, 3 rows, 1 history line, by acad)",
+   "batches": [
+    {
+     "key": "changes/cmrldi1s0t417dt-8",
+     "type": "inputs.batch",
+     "actor": "acad",
+     "n": 3,
+     "seqs": [
+      8
+     ],
+     "tables": "ScheduleDay+Input+EditLog",
+     "elog": 1
+    }
+   ],
+   "pass": true,
+   "notes": [],
+   "fails": []
+  }
+ ],
+ "tag": "p6"
+}

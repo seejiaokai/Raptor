@@ -25,8 +25,7 @@ import type {
 } from '../command'
 import type { RecordCtx, RecordOwner, UndoEntry } from './types'
 import {
-  deriveContexts, deriveOwners, invertClosure, recordKey, sharesKeys, weekOf,
-} from './derive'
+  deriveContexts, deriveOwners, invertClosure, recordKey, sharesKeys, weekOf, dayKeyOf } from './derive'
 import { describeEntry, bubbleText } from './describe'
 
 /* ---- pluggable app hooks (snap, bubble, locks, publish-day resolve) ------- */
@@ -54,7 +53,7 @@ export interface UndoHooks {
      reconcilers (they read the private SYNCING). */
   reinstallLocks?(): () => void
   /* §6.3 — resolve a publish boundary's issued verId to its day, when the
-     closure carries no days/sched.orig key to read it from. */
+     closure carries no days/sched.issuance key to read it from. */
   resolvePublishDay?(id: string): { weekId: string; di: number } | null
   /* §6.2/C5 — a per-entry scheduler adjustment run INSIDE the restore reducer (so
      its mutation is enlisted/derived into the envelope), AFTER the inverse writes.
@@ -469,9 +468,9 @@ export function mayReverse(entry: UndoEntry, cur: Actor): boolean {
 /* ---- the publication barrier (§6.3) -------------------------------------- */
 function resolveBoundaryDay(entry: UndoEntry): { weekId: string; di: number } | null {
   for (const ch of entry.forward) {
-    if (ch.collection === 'sched.orig') {
-      const [wk, di] = ch.id.split(':')
-      return { weekId: wk, di: Number(di) }
+    if (ch.collection === 'sched.issuance') {
+      const dk = dayKeyOf(ch.collection, ch.id)
+      if (dk && dk.includes('#')) { const [wk, di] = dk.split('#'); return { weekId: wk, di: Number(di) } }
     }
   }
   for (const ch of entry.forward) {
@@ -519,12 +518,12 @@ function pulledBackDays(entry: UndoEntry): Array<{ weekId: string; di: number }>
   return out
 }
 
-/* the weekId#di a scheduler-week change belongs to (days / sched.orig carry di). */
+/* the weekId#di a scheduler-week change belongs to (a day's content, or an issued version of it). */
 function dayKeysOf(entry: UndoEntry): string[] {
   const out: string[] = []
   for (const ch of entry.forward) {
     if (ch.collection === 'days') { const [wk, di] = ch.id.split('#'); out.push(`${wk}#${di}`) }
-    else if (ch.collection === 'sched.orig') { const [wk, di] = ch.id.split(':'); out.push(`${wk}#${di}`) }
+    else if (ch.collection === 'sched.issuance') { const dk = dayKeyOf(ch.collection, ch.id); if (dk && dk.includes('#')) out.push(dk) }
   }
   return out
 }
@@ -657,6 +656,10 @@ function applyRestore(entry: UndoEntry, changes: Change[], dir: 'undo' | 'redo')
           for (const [store] of byStore) txn.enlist(store)
           for (const [store, list] of byStore) store.write!(list, { allowIssued: true, restore: true })
           if (hooks.postRestore) hooks.postRestore(entry, dir, pulledBack)
+          /* the change history's Undo / Redo line, INSIDE the restore ([DB-READINESS] group A, phase 4.1 — F2-03): it is
+             kept with the restore's own latched effects, so it travels in the restore's saved group and its change-log
+             batch — and a restore refused after this point leaves no line */
+          if (hooks.reversed) hooks.reversed(entry, dir)
         } finally { if (relock) relock() }
       },
     },
@@ -801,7 +804,6 @@ export function globalUndo(): UndoResult {
   entry.undoneSeq = r.seq
   bumpUndo()
   if (hooks.showBubble) hooks.showBubble(bubbleText(entry, 'undo') + (passedInelig ? ` — the later ${notUndoneWhat(passedInelig)} stays; it isn’t undone here.` : ''))
-  if (hooks.reversed) hooks.reversed(entry, 'undo')
   return { ok: true, entry }
 }
 
@@ -824,7 +826,6 @@ export function globalRedo(): UndoResult {
   entry.undoneAt = undefined
   bumpUndo()
   if (hooks.showBubble) hooks.showBubble(bubbleText(entry, 'redo'))
-  if (hooks.reversed) hooks.reversed(entry, 'redo')
   return { ok: true, entry }
 }
 

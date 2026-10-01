@@ -109,17 +109,24 @@ export function newPersonProblem(npIn: NewPerson, opts: { roster?: boolean } = {
   return null
 }
 
+/* the person record a new person is — one body for every door that makes one (the add, approving, and a shared store's
+   first admin at its first boot — src/boot.ts) */
+export function personRecord(npIn: NewPerson): any {
+  const np = tidyPerson(npIn)
+  const p: any = np.seat === 'GND'
+    ? { cs: np.cs, initials: np.ini, seat: 'GND', pers: true, q: '', flight: '-', remarks: '' }
+    : { cs: np.cs, initials: np.ini, seat: np.seat, q: np.cat, flight: '-' }
+  deriveQuals(p)
+  return p
+}
+
 /* the mutation alone — INSIDE a command that enlisted the people store (see the header) */
 export function putNewPerson(npIn: NewPerson): string {
   if (!isCommitting()) throw new Error('putNewPerson runs only inside a people command')
   const bad = newPersonProblem(npIn)
   if (bad) throw new CmdRefused(bad)
-  const np = tidyPerson(npIn)
   const id = newId('p')
-  ;(PEOPLE as any)[id] = np.seat === 'GND'
-    ? { cs: np.cs, initials: np.ini, seat: 'GND', pers: true, q: '', flight: '-', remarks: '' }
-    : { cs: np.cs, initials: np.ini, seat: np.seat, q: np.cat, flight: '-' }
-  deriveQuals((PEOPLE as any)[id])
+  ;(PEOPLE as any)[id] = personRecord(npIn)
   indexCallsigns()
   return id
 }

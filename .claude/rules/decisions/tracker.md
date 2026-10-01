@@ -45,6 +45,9 @@ carried-over traps — `raptor-port/docs/tracker/known-gaps.md`; what it stores 
 
 | # | Date | The rule |
 |---|---|---|
+| D464 | 30 Sep 26 | HIS TRACKER CHARTS, SYLLABI AND THE DETAILS TYPED ON EACH BALL ARE HIS OWN WORK AND ARE KEPT: NO CHANGE MAY WIPE THEM WITHOUT PUTTING THEM BACK, AND ANY CHANGE THAT WOULD MUST BE TOLD TO HIM FIRST, SO HE CAN EXPORT A COPY. |
+| D462 | 30 Sep 26 | THE TRACKER JOINS `[DB-READINESS]` GROUP A: EVERY TRACKER RECORD THAT HOLDS SEVERAL PEOPLE'S OR SEVERAL CHARTS' WORK IS SAVED ONE PIECE PER THING, LIKE THE REST OF THE APP, BEFORE THE IT TEAM SETTLES ITS TABLES. |
+| D463 | 30 Sep 26 | AN EMPTY REAL DATABASE STARTS THE TRACKER WITH NO COURSE: THE FIRST PERSON TO OPEN IT ADDS ONE; THE DEMO COURSE "26ABSG" AND ITS DEMO STUDENTS NEVER REACH A SHARED STORE. |
 | D377 | 29 Sep 26 | His look at the Tracker leftovers is done ("Looks good"): the chart a person last had open on a course is part of their own place (D376 reading 5), and a half-typed day in Done on or Failed on is refused, never recorded as today — an empty box still means today. |
 | D376 | 28 Sep 26 | Each signed-in person reopens the Tracker on their own last course, chart on it and student, on that browser; a rename keeps it, every way of picking a student updates it, the admin's member view is the same person. Someone new starts on the first course and its last-graded student, else the first. Standalone: one place per browser. |
 | D375 | 28 Sep 26 | Keep: a students import adds a course the app does not have at the bottom of the Course list, and the courses already here keep their places (⇅ Reorder moves it) — ruled, not a defect. |
@@ -88,7 +91,12 @@ under `raptor:tracker/…`; the bare `ocu:` localStorage path is the standalone/
 no-target fallback, and legacy `ocu:` keys are imported once — corrected
 17 Sep 26, see `docs/data-schema.md` §World 3 — the
 standalone app's SharePoint/Dataverse/Firebase layers were dropped; the shared
-database replaces this file when it arrives). **The store is the record; the
+database replaces this file when it arrives). *[Since 30 Sep 26 (`[DB-READINESS]` group A phase 5b, D462, D464) the
+course list, each course and chart's student list and the chart records (definitions, names, order, hidden, deleted, and
+the details typed on each ball) are STORED one row per thing, through a row door in `core.js` (`app/rows.js`, the one
+conversion); a browser's old records are converted once at boot by the fold's `tracker` converter (`src/tracker/fold.ts`,
+registered by `src/boot.ts` — storage, not a fourth seam). The chart a signed-in person has open is his own place (D376),
+never written into the course's shared plan.]* **The store is the record; the
 .json file is a FORMAT, not a store** (owner, 9 Sep 26 — "I thought it should
 be auto synced … isn't it duplicating"): marks, dates, students, event
 details (PER CHART — D126) and a moved ball save themselves, ✓ Save changes writes STRUCTURE
@@ -104,7 +112,9 @@ first mount, which is also why the section is KEPT MOUNTED afterwards (the flow
 board is drawn imperatively once). **Three seams cross the boundary, and only
 three:** `resetSession` ends the Tracker's login session through `tracker/role.js`, and every Logout (`ui/logout.ts`) first asks it about unsaved chart edits (D129) (a
 no-import module — importing `core.js` there would put ~280 KB of syllabus data
-into every Raptor visit; `tracker.test.tsx` guards it); `TrackerPage.tsx` is
+into every Raptor visit; `tracker.test.tsx` guards it); `TrackerPage.tsx` is *[since 30 Sep 26 it also hands the
+Tracker the boot policy before its first mount — on a shared store no course and no demo student, D463; its screen then
+says "No course yet" (`[DB-READINESS]` group A phase 5)]*
 the page; and **the people bridge `tracker/people.js`** (9 Sep 26, same
 no-import shape as `role.js`): `TrackerPage.tsx` wires `tracker/peoplewire.ts`
 once, which projects Raptor's `PEOPLE` into the bridge on every notify

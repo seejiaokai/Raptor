@@ -1,0 +1,1168 @@
+{
+ "base": "http://localhost:4202",
+ "at": "2026-09-30T08:39:04.550Z",
+ "results": [
+  {
+   "name": "W2-00 the first boot wrote ONE change-log batch, of type boot, naming every row it stored",
+   "ok": true,
+   "detail": "{\"batches\":[\"changes/cmunuofbbzk6gdg-0 boot/199 by system\"],\"rows\":199,\"unnamed\":[]}"
+  },
+  {
+   "name": "W2-01a Inputs page: Saber files an LL for Ranger, Mon 5 – Tue 6 Oct — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 2 [inputs/imunuoi4leu94zm, settings/elog:munuof9k9c6a.000001] · del 0 [] · batches inputs.batch/2"
+  },
+  {
+   "name": "W2-01a Inputs page: Saber files an LL for Ranger, Mon 5 – Tue 6 Oct — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 2 [inputs/imunuoi4leu94zm, settings/elog:munuof9k9c6a.000001] · del 0 [] · batches inputs.batch/2"
+  },
+  {
+   "name": "W2-01a — exactly ONE request row, and the new row sits at the top of the table (pinned there after an add)",
+   "ok": true,
+   "detail": "{\"inputsPut\":[\"inputs/imunuoi4leu94zm\"],\"top\":\"imunuoi4leu94zm\",\"iid1\":\"imunuoi4leu94zm\",\"toasts\":[]}"
+  },
+  {
+   "name": "W2-01a — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "W2-01a — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "W2-01a — (pristine week) with the fresh hidden row ids set aside, the reload gives back everything else exactly",
+   "ok": true,
+   "detail": "same"
+  },
+  {
+   "name": "W2-01a reading the screen after the reload — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "W2-01a reading the screen after the reload — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "W2-01a — after the reload: the Inputs page lists the same rows in the same order, the leave among them",
+   "ok": true,
+   "detail": "{\"same\":true,\"n\":47,\"row\":{\"iid\":\"imunuoi4leu94zm\",\"person\":\"bane\",\"type\":\"LL\",\"date\":\"Oct 5\",\"endDate\":\"Oct 6\",\"remarks\":\"W2 step 1 leave\",\"ord\":0}}"
+  },
+  {
+   "name": "W2-01b its ✎ editor: the remarks changed to \"W2 step 1 — remarks edited\" — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 2 [inputs/imunuoi4leu94zm, settings/elog:munuokdjl7n3.000001] · del 0 [] · batches inputs.batch/2"
+  },
+  {
+   "name": "W2-01b its ✎ editor: the remarks changed to \"W2 step 1 — remarks edited\" — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 2 [inputs/imunuoi4leu94zm, settings/elog:munuokdjl7n3.000001] · del 0 [] · batches inputs.batch/2"
+  },
+  {
+   "name": "W2-01b — the row reads the new remarks",
+   "ok": true,
+   "detail": "{\"iid\":\"imunuoi4leu94zm\",\"person\":\"bane\",\"type\":\"LL\",\"date\":\"Oct 5\",\"endDate\":\"Oct 6\",\"remarks\":\"W2 step 1 — remarks edited\",\"ord\":0}"
+  },
+  {
+   "name": "W2-01b — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "W2-01b — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "W2-01b — (pristine week) with the fresh hidden row ids set aside, the reload gives back everything else exactly",
+   "ok": true,
+   "detail": "same"
+  },
+  {
+   "name": "W2-01b reading the screen after the reload — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "W2-01b reading the screen after the reload — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "W2-01b — after the reload: the new remarks, the same order",
+   "ok": true,
+   "detail": "{\"same\":true,\"row\":{\"iid\":\"imunuoi4leu94zm\",\"person\":\"bane\",\"type\":\"LL\",\"date\":\"Oct 5\",\"endDate\":\"Oct 6\",\"remarks\":\"W2 step 1 — remarks edited\",\"ord\":0},\"text\":\"Ranger 5 Oct 6 Oct LL LATEW2 step 1 — remarks edited now ✎ ✕\"}"
+  },
+  {
+   "name": "W2-01c its ✎ editor: re-dated to Wed 7 – Thu 8 Oct — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 3 [inputs/imunuoi4leu94zm, settings/elog:munuoqu3rim2.000001, settings/elog:munuoqu3rim2.000002] · del 0 [] · batches inputs.batch/3"
+  },
+  {
+   "name": "W2-01c its ✎ editor: re-dated to Wed 7 – Thu 8 Oct — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 3 [inputs/imunuoi4leu94zm, settings/elog:munuoqu3rim2.000001, settings/elog:munuoqu3rim2.000002] · del 0 [] · batches inputs.batch/3"
+  },
+  {
+   "name": "W2-01c — the row reads Oct 7 – Oct 8",
+   "ok": true,
+   "detail": "{\"iid\":\"imunuoi4leu94zm\",\"person\":\"bane\",\"type\":\"LL\",\"date\":\"Oct 7\",\"endDate\":\"Oct 8\",\"remarks\":\"W2 step 1 — remarks edited till 8 Oct\",\"ord\":0}"
+  },
+  {
+   "name": "W2-01c — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "W2-01c — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "W2-01c — (pristine week) with the fresh hidden row ids set aside, the reload gives back everything else exactly",
+   "ok": true,
+   "detail": "same"
+  },
+  {
+   "name": "W2-01c reading the screen after the reload — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "W2-01c reading the screen after the reload — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "W2-01c — after the reload: Oct 7 – Oct 8 kept, the same order (it moved down by date, as the table sorts)",
+   "ok": true,
+   "detail": "{\"same\":true,\"row\":{\"iid\":\"imunuoi4leu94zm\",\"person\":\"bane\",\"type\":\"LL\",\"date\":\"Oct 7\",\"endDate\":\"Oct 8\",\"remarks\":\"W2 step 1 — remarks edited till 8 Oct\",\"ord\":0}}"
+  },
+  {
+   "name": "W2-01d its ✕ on the table: the leave deleted — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [settings/elog:munuoxkbfw01.000001] · del 1 [inputs/imunuoi4leu94zm] · batches inputs.batch/2"
+  },
+  {
+   "name": "W2-01d its ✕ on the table: the leave deleted — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [settings/elog:munuoxkbfw01.000001] · del 1 [inputs/imunuoi4leu94zm] · batches inputs.batch/2"
+  },
+  {
+   "name": "W2-01d — the row is gone from the table and from the requests",
+   "ok": true,
+   "detail": "{\"toasts\":[]}"
+  },
+  {
+   "name": "W2-01d — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "W2-01d — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "W2-01d — (pristine week) with the fresh hidden row ids set aside, the reload gives back everything else exactly",
+   "ok": true,
+   "detail": "same"
+  },
+  {
+   "name": "W2-01d reading the screen after the reload — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "W2-01d reading the screen after the reload — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "W2-01d — after the reload: not back after the reload; the rest in the same order",
+   "ok": true,
+   "detail": "{\"same\":true,\"n\":46}"
+  },
+  {
+   "name": "W2-01e Inputs page: a Training for Ranger on Thu 16 Jul (the loaded week) — it lands on Thursday's Ground Programme — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 10 [inputs/imunup7l76nz03q, settings/elog:munup45rmwxa.000001, weeks/13-07-2026, weeks/13-07-2026#0, weeks/13-07-2026#1, weeks/13-07-2026#2, weeks/13-07-2026#3, weeks/13-07-2026#4 …] · del 0 [] · batches inputs.batch/10"
+  },
+  {
+   "name": "W2-01e Inputs page: a Training for Ranger on Thu 16 Jul (the loaded week) — it lands on Thursday's Ground Programme — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 10 [inputs/imunup7l76nz03q, settings/elog:munup45rmwxa.000001, weeks/13-07-2026, weeks/13-07-2026#0, weeks/13-07-2026#1, weeks/13-07-2026#2, weeks/13-07-2026#3, weeks/13-07-2026#4 …] · del 0 [] · batches inputs.batch/10"
+  },
+  {
+   "name": "W2-01e — one request row; Thursday's Ground Programme carries it; the week's rows written with it",
+   "ok": true,
+   "detail": "{\"ground\":true,\"weeks\":[\"weeks/13-07-2026\",\"weeks/13-07-2026#0\",\"weeks/13-07-2026#1\",\"weeks/13-07-2026#2\",\"weeks/13-07-2026#3\",\"weeks/13-07-2026#4\",\"weeks/13-07-2026#5\",\"weeks/13-07-2026#6\"]}"
+  },
+  {
+   "name": "W2-01e — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "W2-01e — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "W2-01e reading the screen after the reload — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "W2-01e reading the screen after the reload — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "W2-01e — after the reload: Thursday's Ground Programme still carries the Training",
+   "ok": true,
+   "detail": "{\"g\":true}"
+  },
+  {
+   "name": "W2-02a two in a row (1 of 2): an Appointment for Ranger, Fri 9 Oct — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 2 [inputs/imunupd7x74rsn5, settings/elog:munup9p9ujgd.000001] · del 0 [] · batches inputs.batch/2"
+  },
+  {
+   "name": "W2-02a two in a row (1 of 2): an Appointment for Ranger, Fri 9 Oct — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 2 [inputs/imunupd7x74rsn5, settings/elog:munup9p9ujgd.000001] · del 0 [] · batches inputs.batch/2"
+  },
+  {
+   "name": "W2-02a — one request row; the new one at the top of the table",
+   "ok": true,
+   "detail": "{\"top\":\"imunupd7x74rsn5\",\"iidA\":\"imunupd7x74rsn5\"}"
+  },
+  {
+   "name": "W2-02b two in a row (2 of 2): an LL for Blade, Mon 12 Oct — then reload — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 2 [inputs/imunupf25zw37ne, settings/elog:munup9p9ujgd.000002] · del 0 [] · batches inputs.batch/2"
+  },
+  {
+   "name": "W2-02b two in a row (2 of 2): an LL for Blade, Mon 12 Oct — then reload — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 2 [inputs/imunupf25zw37ne, settings/elog:munup9p9ujgd.000002] · del 0 [] · batches inputs.batch/2"
+  },
+  {
+   "name": "W2-02b — one request row; the newest pinned first, the first just under it; the requests list holds the newest first",
+   "ok": true,
+   "detail": "{\"top2\":[\"imunupf25zw37ne\",\"imunupd7x74rsn5\"],\"arr\":[\"imunupf25zw37ne\",\"imunupd7x74rsn5\"]}"
+  },
+  {
+   "name": "W2-02b — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "W2-02b — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "W2-02b reading the screen after the reload — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "W2-02b reading the screen after the reload — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "W2-02b — after the reload: the same order on the page; the requests still newest first",
+   "ok": true,
+   "detail": "{\"same\":true,\"arr\":[\"imunupf25zw37ne\",\"imunupd7x74rsn5\"]}"
+  },
+  {
+   "name": "W2-02c the request in the MIDDLE of the table deleted (its ✕) — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [settings/elog:munuph76xcvl.000001] · del 1 [inputs/imunuofah7pn47w] · batches inputs.batch/2"
+  },
+  {
+   "name": "W2-02c the request in the MIDDLE of the table deleted (its ✕) — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [settings/elog:munuph76xcvl.000001] · del 1 [inputs/imunuofah7pn47w] · batches inputs.batch/2"
+  },
+  {
+   "name": "W2-02c — the rest keep their order",
+   "ok": true,
+   "detail": "{\"mid\":\"imunuofah7pn47w\",\"same\":true,\"del\":[\"inputs/imunuofah7pn47w\"],\"put\":[\"settings/elog:munuph76xcvl.000001\"]}"
+  },
+  {
+   "name": "W2-02c — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "W2-02c — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "W2-02c reading the screen after the reload — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "W2-02c reading the screen after the reload — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "W2-02c — after the reload: after the reload the rest are in the same order, the deleted one not back",
+   "ok": true,
+   "detail": "{\"same\":true,\"n\":48}"
+  },
+  {
+   "name": "W2-03a an ATT C (medical) for Ranger, Tue 20 – Thu 22 Oct (\"No document\") — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 2 [inputs/imunupsajddv96c, settings/elog:munupnokzljh.000001] · del 0 [] · batches inputs.batch/2"
+  },
+  {
+   "name": "W2-03a an ATT C (medical) for Ranger, Tue 20 – Thu 22 Oct (\"No document\") — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 2 [inputs/imunupsajddv96c, settings/elog:munupnokzljh.000001] · del 0 [] · batches inputs.batch/2"
+  },
+  {
+   "name": "W2-03a — one request row",
+   "ok": true,
+   "detail": "{\"iidC\":\"imunupsajddv96c\"}"
+  },
+  {
+   "name": "W2-03b an OML (medical leave) for Ranger, Mon 19 – Fri 23 Oct over it; the clash sheet: the ATT C keeps its days — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 4 [inputs/imunupvbd2thu1d, inputs/imunupvbdisgvnz, settings/elog:munupnokzljh.000002, settings/elog:munupnokzljh.000003] · del 0 [] · batches inputs.batch/4"
+  },
+  {
+   "name": "W2-03b an OML (medical leave) for Ranger, Mon 19 – Fri 23 Oct over it; the clash sheet: the ATT C keeps its days — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 4 [inputs/imunupvbd2thu1d, inputs/imunupvbdisgvnz, settings/elog:munupnokzljh.000002, settings/elog:munupnokzljh.000003] · del 0 [] · batches inputs.batch/4"
+  },
+  {
+   "name": "W2-03b — the OML is filed as its two pieces (Oct 19 and Oct 23) — ONLY their rows written; the ATT C untouched",
+   "ok": true,
+   "detail": "{\"pieces\":[{\"iid\":\"imunupvbdisgvnz\",\"date\":\"Oct 19\",\"endDate\":\"\"},{\"iid\":\"imunupvbd2thu1d\",\"date\":\"Oct 23\",\"endDate\":\"\"}],\"put\":[\"inputs/imunupvbd2thu1d\",\"inputs/imunupvbdisgvnz\"],\"attc\":{\"iid\":\"imunupsajddv96c\",\"person\":\"bane\",\"type\":\"ATT C\",\"date\":\"Oct 20\",\"endDate\":\"Oct 22\",\"remarks\":\"W2 med\",\"ord\":-3072}}"
+  },
+  {
+   "name": "W2-03b — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "W2-03b — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "W2-03b reading the screen after the reload — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "W2-03b reading the screen after the reload — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "W2-03b — after the reload: the two pieces and the ATT C as they were",
+   "ok": true,
+   "detail": "[\"Oct 19\",\"Oct 23\"]"
+  },
+  {
+   "name": "W2-03c an HL for Ranger on Wed 21 Oct over the ATT C; the clash sheet: HL replaces, the leftover (Oct 22) kept — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 7 [inputs/imunupsajddv96c, inputs/imunuq2541fkvcb, inputs/imunuq254johdub, settings/elog:munupx1cfyxe.000001, settings/elog:munupx1cfyxe.000002, settings/elog:munupx1cfyxe.000003, settings/elog:munupx1cfyxe.000004] · del 0 [] · batches inputs.batch/7"
+  },
+  {
+   "name": "W2-03c an HL for Ranger on Wed 21 Oct over the ATT C; the clash sheet: HL replaces, the leftover (Oct 22) kept — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 7 [inputs/imunupsajddv96c, inputs/imunuq2541fkvcb, inputs/imunuq254johdub, settings/elog:munupx1cfyxe.000001, settings/elog:munupx1cfyxe.000002, settings/elog:munupx1cfyxe.000003, settings/elog:munupx1cfyxe.000004] · del 0 [] · batches inputs.batch/7"
+  },
+  {
+   "name": "W2-03c — the ATT C is cut to Oct 20, its leftover Oct 22 kept as a new piece, the HL Oct 21 — three request rows, nothing else",
+   "ok": true,
+   "detail": "{\"meds\":[{\"iid\":\"imunuq254johdub\",\"t\":\"HL\",\"d\":\"Oct 21\"},{\"iid\":\"imunupsajddv96c\",\"t\":\"ATT C\",\"d\":\"Oct 20\"},{\"iid\":\"imunuq2541fkvcb\",\"t\":\"ATT C\",\"d\":\"Oct 22\"}],\"put\":[\"inputs/imunupsajddv96c\",\"inputs/imunuq2541fkvcb\",\"inputs/imunuq254johdub\"]}"
+  },
+  {
+   "name": "W2-03c — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "W2-03c — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "W2-03c reading the screen after the reload — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "W2-03c reading the screen after the reload — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "W2-03c — after the reload: the three pieces as they were",
+   "ok": true,
+   "detail": "[\"HL Oct 21\",\"ATT C Oct 20\",\"ATT C Oct 22\"]"
+  },
+  {
+   "name": "W2-11 delete imunuofb208kwgc — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [settings/elog:munuq3py82im.000001] · del 1 [inputs/imunuofb208kwgc] · batches inputs.batch/2"
+  },
+  {
+   "name": "W2-11 delete imunuofb208kwgc — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [settings/elog:munuq3py82im.000001] · del 1 [inputs/imunuofb208kwgc] · batches inputs.batch/2"
+  },
+  {
+   "name": "W2-11 delete imunuofb2ydwuqh — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [settings/elog:munuq3py82im.000002] · del 1 [inputs/imunuofb2ydwuqh] · batches inputs.batch/2"
+  },
+  {
+   "name": "W2-11 delete imunuofb2ydwuqh — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [settings/elog:munuq3py82im.000002] · del 1 [inputs/imunuofb2ydwuqh] · batches inputs.batch/2"
+  },
+  {
+   "name": "W2-11 delete imunuofb2s1oo86 — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [settings/elog:munuq3py82im.000003] · del 1 [inputs/imunuofb2s1oo86] · batches inputs.batch/2"
+  },
+  {
+   "name": "W2-11 delete imunuofb2s1oo86 — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [settings/elog:munuq3py82im.000003] · del 1 [inputs/imunuofb2s1oo86] · batches inputs.batch/2"
+  },
+  {
+   "name": "W2-11 delete imunuofb25zm21z — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [settings/elog:munuq3py82im.000004] · del 1 [inputs/imunuofb25zm21z] · batches inputs.batch/2"
+  },
+  {
+   "name": "W2-11 delete imunuofb25zm21z — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [settings/elog:munuq3py82im.000004] · del 1 [inputs/imunuofb25zm21z] · batches inputs.batch/2"
+  },
+  {
+   "name": "W2-11 delete imunuofb2msqrzf — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [settings/elog:munuq3py82im.000005] · del 1 [inputs/imunuofb2msqrzf] · batches inputs.batch/2"
+  },
+  {
+   "name": "W2-11 delete imunuofb2msqrzf — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [settings/elog:munuq3py82im.000005] · del 1 [inputs/imunuofb2msqrzf] · batches inputs.batch/2"
+  },
+  {
+   "name": "W2-11 delete imunuofb2p9aiff — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [settings/elog:munuq3py82im.000006] · del 1 [inputs/imunuofb2p9aiff] · batches inputs.batch/2"
+  },
+  {
+   "name": "W2-11 delete imunuofb2p9aiff — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [settings/elog:munuq3py82im.000006] · del 1 [inputs/imunuofb2p9aiff] · batches inputs.batch/2"
+  },
+  {
+   "name": "W2-11 delete imunuofb2ejckxz — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [settings/elog:munuq3py82im.000007] · del 1 [inputs/imunuofb2ejckxz] · batches inputs.batch/2"
+  },
+  {
+   "name": "W2-11 delete imunuofb2ejckxz — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [settings/elog:munuq3py82im.000007] · del 1 [inputs/imunuofb2ejckxz] · batches inputs.batch/2"
+  },
+  {
+   "name": "W2-11 delete imunuofb2ubw8xv — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [settings/elog:munuq3py82im.000008] · del 1 [inputs/imunuofb2ubw8xv] · batches inputs.batch/2"
+  },
+  {
+   "name": "W2-11 delete imunuofb2ubw8xv — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [settings/elog:munuq3py82im.000008] · del 1 [inputs/imunuofb2ubw8xv] · batches inputs.batch/2"
+  },
+  {
+   "name": "W2-11 delete imunuofb22ly4lv — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [settings/elog:munuq3py82im.000009] · del 1 [inputs/imunuofb22ly4lv] · batches inputs.batch/2"
+  },
+  {
+   "name": "W2-11 delete imunuofb22ly4lv — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [settings/elog:munuq3py82im.000009] · del 1 [inputs/imunuofb22ly4lv] · batches inputs.batch/2"
+  },
+  {
+   "name": "W2-11 delete imunuofb2ranf29 — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [settings/elog:munuq3py82im.00000a] · del 1 [inputs/imunuofb2ranf29] · batches inputs.batch/2"
+  },
+  {
+   "name": "W2-11 delete imunuofb2ranf29 — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [settings/elog:munuq3py82im.00000a] · del 1 [inputs/imunuofb2ranf29] · batches inputs.batch/2"
+  },
+  {
+   "name": "W2-11 delete imunuofb2c61q08 — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [settings/elog:munuq3py82im.00000b] · del 1 [inputs/imunuofb2c61q08] · batches inputs.batch/2"
+  },
+  {
+   "name": "W2-11 delete imunuofb2c61q08 — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [settings/elog:munuq3py82im.00000b] · del 1 [inputs/imunuofb2c61q08] · batches inputs.batch/2"
+  },
+  {
+   "name": "W2-11 delete imunuofb2segx3p — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [settings/elog:munuq3py82im.00000c] · del 1 [inputs/imunuofb2segx3p] · batches inputs.batch/2"
+  },
+  {
+   "name": "W2-11 delete imunuofb2segx3p — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [settings/elog:munuq3py82im.00000c] · del 1 [inputs/imunuofb2segx3p] · batches inputs.batch/2"
+  },
+  {
+   "name": "W2-11 delete imunuofb2r9whef — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [settings/elog:munuq3py82im.00000d] · del 1 [inputs/imunuofb2r9whef] · batches inputs.batch/2"
+  },
+  {
+   "name": "W2-11 delete imunuofb2r9whef — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [settings/elog:munuq3py82im.00000d] · del 1 [inputs/imunuofb2r9whef] · batches inputs.batch/2"
+  },
+  {
+   "name": "W2-11 delete imunuofb2emijlt — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [settings/elog:munuq3py82im.00000e] · del 1 [inputs/imunuofb2emijlt] · batches inputs.batch/2"
+  },
+  {
+   "name": "W2-11 delete imunuofb2emijlt — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [settings/elog:munuq3py82im.00000e] · del 1 [inputs/imunuofb2emijlt] · batches inputs.batch/2"
+  },
+  {
+   "name": "W2-11 delete imunuofb2zmz3d6 — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [settings/elog:munuq3py82im.00000f] · del 1 [inputs/imunuofb2zmz3d6] · batches inputs.batch/2"
+  },
+  {
+   "name": "W2-11 delete imunuofb2zmz3d6 — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [settings/elog:munuq3py82im.00000f] · del 1 [inputs/imunuofb2zmz3d6] · batches inputs.batch/2"
+  },
+  {
+   "name": "W2-11 delete imunuofb2o2a48o — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [settings/elog:munuq3py82im.00000g] · del 1 [inputs/imunuofb2o2a48o] · batches inputs.batch/2"
+  },
+  {
+   "name": "W2-11 delete imunuofb2o2a48o — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [settings/elog:munuq3py82im.00000g] · del 1 [inputs/imunuofb2o2a48o] · batches inputs.batch/2"
+  },
+  {
+   "name": "W2-11 delete imunuofb2dhhh8o — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [settings/elog:munuq3py82im.00000h] · del 1 [inputs/imunuofb2dhhh8o] · batches inputs.batch/2"
+  },
+  {
+   "name": "W2-11 delete imunuofb2dhhh8o — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [settings/elog:munuq3py82im.00000h] · del 1 [inputs/imunuofb2dhhh8o] · batches inputs.batch/2"
+  },
+  {
+   "name": "W2-11 delete imunuofb26a5siw — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [settings/elog:munuq3py82im.00000i] · del 1 [inputs/imunuofb26a5siw] · batches inputs.batch/2"
+  },
+  {
+   "name": "W2-11 delete imunuofb26a5siw — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [settings/elog:munuq3py82im.00000i] · del 1 [inputs/imunuofb26a5siw] · batches inputs.batch/2"
+  },
+  {
+   "name": "W2-11 delete imunuofb2tzljjx — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [settings/elog:munuq3py82im.00000j] · del 1 [inputs/imunuofb2tzljjx] · batches inputs.batch/2"
+  },
+  {
+   "name": "W2-11 delete imunuofb2tzljjx — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [settings/elog:munuq3py82im.00000j] · del 1 [inputs/imunuofb2tzljjx] · batches inputs.batch/2"
+  },
+  {
+   "name": "W2-11 delete imunuofb2kwnwoy — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [settings/elog:munuq3py82im.00000k] · del 1 [inputs/imunuofb2kwnwoy] · batches inputs.batch/2"
+  },
+  {
+   "name": "W2-11 delete imunuofb2kwnwoy — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [settings/elog:munuq3py82im.00000k] · del 1 [inputs/imunuofb2kwnwoy] · batches inputs.batch/2"
+  },
+  {
+   "name": "W2-11 delete imunuofahloc2ff — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [settings/elog:munuq3py82im.00000l] · del 1 [inputs/imunuofahloc2ff] · batches inputs.batch/2"
+  },
+  {
+   "name": "W2-11 delete imunuofahloc2ff — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [settings/elog:munuq3py82im.00000l] · del 1 [inputs/imunuofahloc2ff] · batches inputs.batch/2"
+  },
+  {
+   "name": "W2-11 delete imunuofahr1jds1 — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [settings/elog:munuq3py82im.00000m] · del 1 [inputs/imunuofahr1jds1] · batches inputs.batch/2"
+  },
+  {
+   "name": "W2-11 delete imunuofahr1jds1 — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [settings/elog:munuq3py82im.00000m] · del 1 [inputs/imunuofahr1jds1] · batches inputs.batch/2"
+  },
+  {
+   "name": "W2-11 delete imunuofb2gtj6r3 — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [settings/elog:munuq3py82im.00000n] · del 1 [inputs/imunuofb2gtj6r3] · batches inputs.batch/2"
+  },
+  {
+   "name": "W2-11 delete imunuofb2gtj6r3 — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [settings/elog:munuq3py82im.00000n] · del 1 [inputs/imunuofb2gtj6r3] · batches inputs.batch/2"
+  },
+  {
+   "name": "W2-11 delete imunuofah10j8kc — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [settings/elog:munuq3py82im.00000o] · del 1 [inputs/imunuofah10j8kc] · batches inputs.batch/2"
+  },
+  {
+   "name": "W2-11 delete imunuofah10j8kc — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [settings/elog:munuq3py82im.00000o] · del 1 [inputs/imunuofah10j8kc] · batches inputs.batch/2"
+  },
+  {
+   "name": "W2-11 delete imunuofah955ylg — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [settings/elog:munuq3py82im.00000p] · del 1 [inputs/imunuofah955ylg] · batches inputs.batch/2"
+  },
+  {
+   "name": "W2-11 delete imunuofah955ylg — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [settings/elog:munuq3py82im.00000p] · del 1 [inputs/imunuofah955ylg] · batches inputs.batch/2"
+  },
+  {
+   "name": "W2-11 delete imunuofahnqs436 — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 2 [settings/elog:munuq3py82im.00000q, weeks/13-07-2026#0] · del 1 [inputs/imunuofahnqs436] · batches inputs.batch/3"
+  },
+  {
+   "name": "W2-11 delete imunuofahnqs436 — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 2 [settings/elog:munuq3py82im.00000q, weeks/13-07-2026#0] · del 1 [inputs/imunuofahnqs436] · batches inputs.batch/3"
+  },
+  {
+   "name": "W2-11 delete imunuofahofdyqa — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 2 [settings/elog:munuq3py82im.00000r, weeks/13-07-2026#0] · del 1 [inputs/imunuofahofdyqa] · batches inputs.batch/3"
+  },
+  {
+   "name": "W2-11 delete imunuofahofdyqa — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 2 [settings/elog:munuq3py82im.00000r, weeks/13-07-2026#0] · del 1 [inputs/imunuofahofdyqa] · batches inputs.batch/3"
+  },
+  {
+   "name": "W2-11 delete imunuofah0bt7gp — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 2 [settings/elog:munuq3py82im.00000s, weeks/13-07-2026#0] · del 1 [inputs/imunuofah0bt7gp] · batches inputs.batch/3"
+  },
+  {
+   "name": "W2-11 delete imunuofah0bt7gp — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 2 [settings/elog:munuq3py82im.00000s, weeks/13-07-2026#0] · del 1 [inputs/imunuofah0bt7gp] · batches inputs.batch/3"
+  },
+  {
+   "name": "W2-11 delete imunuofahu4c4rg — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [settings/elog:munuq3py82im.00000t] · del 1 [inputs/imunuofahu4c4rg] · batches inputs.batch/2"
+  },
+  {
+   "name": "W2-11 delete imunuofahu4c4rg — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [settings/elog:munuq3py82im.00000t] · del 1 [inputs/imunuofahu4c4rg] · batches inputs.batch/2"
+  },
+  {
+   "name": "W2-11 delete imunuofahzegw86 — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [settings/elog:munuq3py82im.00000u] · del 1 [inputs/imunuofahzegw86] · batches inputs.batch/2"
+  },
+  {
+   "name": "W2-11 delete imunuofahzegw86 — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [settings/elog:munuq3py82im.00000u] · del 1 [inputs/imunuofahzegw86] · batches inputs.batch/2"
+  },
+  {
+   "name": "W2-11 delete imunuofahq96m9t — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [settings/elog:munuq3py82im.00000v] · del 1 [inputs/imunuofahq96m9t] · batches inputs.batch/2"
+  },
+  {
+   "name": "W2-11 delete imunuofahq96m9t — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [settings/elog:munuq3py82im.00000v] · del 1 [inputs/imunuofahq96m9t] · batches inputs.batch/2"
+  },
+  {
+   "name": "W2-11 delete imunuofahm9bkbu — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [settings/elog:munuq3py82im.00000w] · del 1 [inputs/imunuofahm9bkbu] · batches inputs.batch/2"
+  },
+  {
+   "name": "W2-11 delete imunuofahm9bkbu — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [settings/elog:munuq3py82im.00000w] · del 1 [inputs/imunuofahm9bkbu] · batches inputs.batch/2"
+  },
+  {
+   "name": "W2-11 delete imunuofah0nojqh — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [settings/elog:munuq3py82im.00000x] · del 1 [inputs/imunuofah0nojqh] · batches inputs.batch/2"
+  },
+  {
+   "name": "W2-11 delete imunuofah0nojqh — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [settings/elog:munuq3py82im.00000x] · del 1 [inputs/imunuofah0nojqh] · batches inputs.batch/2"
+  },
+  {
+   "name": "W2-11 delete imunuofahbvy2tg — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 2 [settings/elog:munuq3py82im.00000y, weeks/13-07-2026#1] · del 1 [inputs/imunuofahbvy2tg] · batches inputs.batch/3"
+  },
+  {
+   "name": "W2-11 delete imunuofahbvy2tg — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 2 [settings/elog:munuq3py82im.00000y, weeks/13-07-2026#1] · del 1 [inputs/imunuofahbvy2tg] · batches inputs.batch/3"
+  },
+  {
+   "name": "W2-11 delete imunuofah6ixct2 — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [settings/elog:munuq3py82im.00000z] · del 1 [inputs/imunuofah6ixct2] · batches inputs.batch/2"
+  },
+  {
+   "name": "W2-11 delete imunuofah6ixct2 — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [settings/elog:munuq3py82im.00000z] · del 1 [inputs/imunuofah6ixct2] · batches inputs.batch/2"
+  },
+  {
+   "name": "W2-11 delete imunuofah682lh4 — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [settings/elog:munuq3py82im.000010] · del 1 [inputs/imunuofah682lh4] · batches inputs.batch/2"
+  },
+  {
+   "name": "W2-11 delete imunuofah682lh4 — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [settings/elog:munuq3py82im.000010] · del 1 [inputs/imunuofah682lh4] · batches inputs.batch/2"
+  },
+  {
+   "name": "W2-11 delete imunuofah04x7lz — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [settings/elog:munuq3py82im.000011] · del 1 [inputs/imunuofah04x7lz] · batches inputs.batch/2"
+  },
+  {
+   "name": "W2-11 delete imunuofah04x7lz — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [settings/elog:munuq3py82im.000011] · del 1 [inputs/imunuofah04x7lz] · batches inputs.batch/2"
+  },
+  {
+   "name": "W2-11 delete imunuofahbggjcw — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [settings/elog:munuq3py82im.000012] · del 1 [inputs/imunuofahbggjcw] · batches inputs.batch/2"
+  },
+  {
+   "name": "W2-11 delete imunuofahbggjcw — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [settings/elog:munuq3py82im.000012] · del 1 [inputs/imunuofahbggjcw] · batches inputs.batch/2"
+  },
+  {
+   "name": "W2-11 delete imunuofahlwsvxs — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [settings/elog:munuq3py82im.000013] · del 1 [inputs/imunuofahlwsvxs] · batches inputs.batch/2"
+  },
+  {
+   "name": "W2-11 delete imunuofahlwsvxs — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [settings/elog:munuq3py82im.000013] · del 1 [inputs/imunuofahlwsvxs] · batches inputs.batch/2"
+  },
+  {
+   "name": "W2-11 delete imunuofb2c31zs6 — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [settings/elog:munuq3py82im.000014] · del 1 [inputs/imunuofb2c31zs6] · batches inputs.batch/2"
+  },
+  {
+   "name": "W2-11 delete imunuofb2c31zs6 — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [settings/elog:munuq3py82im.000014] · del 1 [inputs/imunuofb2c31zs6] · batches inputs.batch/2"
+  },
+  {
+   "name": "W2-11 delete imunup7l76nz03q — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 2 [settings/elog:munuq3py82im.000015, weeks/13-07-2026#3] · del 1 [inputs/imunup7l76nz03q] · batches inputs.batch/3"
+  },
+  {
+   "name": "W2-11 delete imunup7l76nz03q — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 2 [settings/elog:munuq3py82im.000015, weeks/13-07-2026#3] · del 1 [inputs/imunup7l76nz03q] · batches inputs.batch/3"
+  },
+  {
+   "name": "W2-11 delete imunuofb2ym06yv — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [settings/elog:munuq3py82im.000016] · del 1 [inputs/imunuofb2ym06yv] · batches inputs.batch/2"
+  },
+  {
+   "name": "W2-11 delete imunuofb2ym06yv — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [settings/elog:munuq3py82im.000016] · del 1 [inputs/imunuofb2ym06yv] · batches inputs.batch/2"
+  },
+  {
+   "name": "W2-11 delete imunuofahg38uvf — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 2 [settings/elog:munuq3py82im.000017, weeks/13-07-2026#3] · del 1 [inputs/imunuofahg38uvf] · batches inputs.batch/3"
+  },
+  {
+   "name": "W2-11 delete imunuofahg38uvf — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 2 [settings/elog:munuq3py82im.000017, weeks/13-07-2026#3] · del 1 [inputs/imunuofahg38uvf] · batches inputs.batch/3"
+  },
+  {
+   "name": "W2-11 delete imunuofah3j8n7p — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [settings/elog:munuq3py82im.000018] · del 1 [inputs/imunuofah3j8n7p] · batches inputs.batch/2"
+  },
+  {
+   "name": "W2-11 delete imunuofah3j8n7p — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [settings/elog:munuq3py82im.000018] · del 1 [inputs/imunuofah3j8n7p] · batches inputs.batch/2"
+  },
+  {
+   "name": "W2-11 delete imunuofah4bwukx — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [settings/elog:munuq3py82im.000019] · del 1 [inputs/imunuofah4bwukx] · batches inputs.batch/2"
+  },
+  {
+   "name": "W2-11 delete imunuofah4bwukx — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [settings/elog:munuq3py82im.000019] · del 1 [inputs/imunuofah4bwukx] · batches inputs.batch/2"
+  },
+  {
+   "name": "W2-11 delete imunuofahtf6ek2 — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [settings/elog:munuq3py82im.00001a] · del 1 [inputs/imunuofahtf6ek2] · batches inputs.batch/2"
+  },
+  {
+   "name": "W2-11 delete imunuofahtf6ek2 — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [settings/elog:munuq3py82im.00001a] · del 1 [inputs/imunuofahtf6ek2] · batches inputs.batch/2"
+  },
+  {
+   "name": "W2-11 delete imunupd7x74rsn5 — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [settings/elog:munuq3py82im.00001b] · del 1 [inputs/imunupd7x74rsn5] · batches inputs.batch/2"
+  },
+  {
+   "name": "W2-11 delete imunupd7x74rsn5 — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [settings/elog:munuq3py82im.00001b] · del 1 [inputs/imunupd7x74rsn5] · batches inputs.batch/2"
+  },
+  {
+   "name": "W2-11 delete imunupf25zw37ne — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [settings/elog:munuq3py82im.00001c] · del 1 [inputs/imunupf25zw37ne] · batches inputs.batch/2"
+  },
+  {
+   "name": "W2-11 delete imunupf25zw37ne — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [settings/elog:munuq3py82im.00001c] · del 1 [inputs/imunupf25zw37ne] · batches inputs.batch/2"
+  },
+  {
+   "name": "W2-11 delete imunupvbdisgvnz — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [settings/elog:munuq3py82im.00001d] · del 1 [inputs/imunupvbdisgvnz] · batches inputs.batch/2"
+  },
+  {
+   "name": "W2-11 delete imunupvbdisgvnz — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [settings/elog:munuq3py82im.00001d] · del 1 [inputs/imunupvbdisgvnz] · batches inputs.batch/2"
+  },
+  {
+   "name": "W2-11 delete imunupsajddv96c — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [settings/elog:munuq3py82im.00001e] · del 1 [inputs/imunupsajddv96c] · batches inputs.batch/2"
+  },
+  {
+   "name": "W2-11 delete imunupsajddv96c — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [settings/elog:munuq3py82im.00001e] · del 1 [inputs/imunupsajddv96c] · batches inputs.batch/2"
+  },
+  {
+   "name": "W2-11 delete imunuq254johdub — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [settings/elog:munuq3py82im.00001f] · del 1 [inputs/imunuq254johdub] · batches inputs.batch/2"
+  },
+  {
+   "name": "W2-11 delete imunuq254johdub — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [settings/elog:munuq3py82im.00001f] · del 1 [inputs/imunuq254johdub] · batches inputs.batch/2"
+  },
+  {
+   "name": "W2-11 delete imunuq2541fkvcb — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [settings/elog:munuq3py82im.00001g] · del 1 [inputs/imunuq2541fkvcb] · batches inputs.batch/2"
+  },
+  {
+   "name": "W2-11 delete imunuq2541fkvcb — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [settings/elog:munuq3py82im.00001g] · del 1 [inputs/imunuq2541fkvcb] · batches inputs.batch/2"
+  },
+  {
+   "name": "W2-11 delete imunupvbd2thu1d — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [settings/elog:munuq3py82im.00001h] · del 1 [inputs/imunupvbd2thu1d] · batches inputs.batch/2"
+  },
+  {
+   "name": "W2-11 delete imunupvbd2thu1d — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [settings/elog:munuq3py82im.00001h] · del 1 [inputs/imunupvbd2thu1d] · batches inputs.batch/2"
+  },
+  {
+   "name": "W2-11 every request deleted through its ✕: the table is empty",
+   "ok": true,
+   "detail": "{\"left\":0}"
+  },
+  {
+   "name": "W2-11 each delete removed exactly its own request row (other rows it wrote are listed)",
+   "ok": true,
+   "detail": "[]"
+  },
+  {
+   "name": "W2-11 — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "W2-11 — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "W2-11 after the reload no request comes back — not on the page, not in storage (no demo request returns)",
+   "ok": true,
+   "detail": "{\"page\":0,\"stored\":0}"
+  }
+ ],
+ "table": [
+  {
+   "step": "W2-00",
+   "width": "desktop",
+   "what": "a fresh browser signs in (the first boot)",
+   "afterReload": "",
+   "rows": "first boot: {\"leavewar/opening\":36,\"people/(one)\":61,\"inputs/(one)\":46,\"leavewar/rec\":14,\"settings/(one)\":1,\"leavewar/ledger\":23,\"leavewar/(one)\":15,\"changes/(one)\":1,\"leavewar/war\":2,\"leavewar/profile\":1} · batches boot/199",
+   "pass": true,
+   "fails": [],
+   "pics": [
+    "W2-00-a.png"
+   ]
+  },
+  {
+   "step": "W2-01a",
+   "width": "desktop",
+   "what": "Inputs page: Saber files an LL for Ranger, Mon 5 – Tue 6 Oct",
+   "afterReload": "47 rows, same order; LL Oct 5–6 \"W2 step 1 leave\" listed",
+   "rows": "put 2 [inputs/imunuoi4leu94zm, settings/elog:munuof9k9c6a.000001] · del 0 · batches inputs.batch/2",
+   "pass": true,
+   "fails": [],
+   "pics": [
+    "W2-01a-a.png",
+    "W2-01a-b.png"
+   ]
+  },
+  {
+   "step": "W2-01b",
+   "width": "desktop",
+   "what": "its ✎ editor: the remarks changed to \"W2 step 1 — remarks edited\"",
+   "afterReload": "remarks read \"W2 step 1 — remarks edited\"; same order",
+   "rows": "put 2 [inputs/imunuoi4leu94zm, settings/elog:munuokdjl7n3.000001] · del 0 · batches inputs.batch/2",
+   "pass": true,
+   "fails": [],
+   "pics": [
+    "W2-01b-a.png",
+    "W2-01b-b.png"
+   ]
+  },
+  {
+   "step": "W2-01c",
+   "width": "desktop",
+   "what": "its ✎ editor: re-dated to Wed 7 – Thu 8 Oct",
+   "afterReload": "LL Oct 7–8; same order",
+   "rows": "put 3 [inputs/imunuoi4leu94zm, settings/elog:munuoqu3rim2.000001, settings/elog:munuoqu3rim2.000002] · del 0 · batches inputs.batch/3",
+   "pass": true,
+   "fails": [],
+   "pics": [
+    "W2-01c-a.png",
+    "W2-01c-b.png"
+   ]
+  },
+  {
+   "step": "W2-01d",
+   "width": "desktop",
+   "what": "its ✕ on the table: the leave deleted",
+   "afterReload": "gone; 46 rows in the same order",
+   "rows": "put 1 [settings/elog:munuoxkbfw01.000001] · del 1 [inputs/imunuoi4leu94zm] · batches inputs.batch/2",
+   "pass": true,
+   "fails": [],
+   "pics": [
+    "W2-01d-a.png",
+    "W2-01d-b.png"
+   ]
+  },
+  {
+   "step": "W2-01e",
+   "width": "desktop",
+   "what": "Inputs page: a Training for Ranger on Thu 16 Jul (the loaded week) — it lands on Thursday's Ground Programme",
+   "afterReload": "Thu 16 Jul Ground Programme shows Ranger's Training",
+   "rows": "put 10 [inputs/imunup7l76nz03q, settings/elog:munup45rmwxa.000001, weeks/13-07-2026, weeks/13-07-2026#0, weeks/13-07-2026#1, weeks/13-07-2026#2 … (+4)] · del 0 · batches inputs.batch/10",
+   "pass": true,
+   "fails": [],
+   "pics": [
+    "W2-01e-a.png",
+    "W2-01e-b.png"
+   ]
+  },
+  {
+   "step": "W2-02a",
+   "width": "desktop",
+   "what": "two in a row (1 of 2): an Appointment for Ranger, Fri 9 Oct",
+   "afterReload": "",
+   "rows": "put 2 [inputs/imunupd7x74rsn5, settings/elog:munup9p9ujgd.000001] · del 0 · batches inputs.batch/2",
+   "pass": true,
+   "fails": [],
+   "pics": [
+    "W2-02a-a.png"
+   ]
+  },
+  {
+   "step": "W2-02b",
+   "width": "desktop",
+   "what": "two in a row (2 of 2): an LL for Blade, Mon 12 Oct — then reload",
+   "afterReload": "both there; table order the same; newest first behind it",
+   "rows": "put 2 [inputs/imunupf25zw37ne, settings/elog:munup9p9ujgd.000002] · del 0 · batches inputs.batch/2",
+   "pass": true,
+   "fails": [],
+   "pics": [
+    "W2-02b-a.png",
+    "W2-02b-b.png"
+   ]
+  },
+  {
+   "step": "W2-02c",
+   "width": "desktop",
+   "what": "the request in the MIDDLE of the table deleted (its ✕)",
+   "afterReload": "the middle row gone; 48 rows in the same order",
+   "rows": "put 1 [settings/elog:munuph76xcvl.000001] · del 1 [inputs/imunuofah7pn47w] · batches inputs.batch/2",
+   "pass": true,
+   "fails": [],
+   "pics": [
+    "W2-02c-a.png",
+    "W2-02c-b.png"
+   ]
+  },
+  {
+   "step": "W2-03a",
+   "width": "desktop",
+   "what": "an ATT C (medical) for Ranger, Tue 20 – Thu 22 Oct (\"No document\")",
+   "afterReload": "",
+   "rows": "put 2 [inputs/imunupsajddv96c, settings/elog:munupnokzljh.000001] · del 0 · batches inputs.batch/2",
+   "pass": true,
+   "fails": [],
+   "pics": [
+    "W2-03a-a.png"
+   ]
+  },
+  {
+   "step": "W2-03b",
+   "width": "desktop",
+   "what": "an OML (medical leave) for Ranger, Mon 19 – Fri 23 Oct over it; the clash sheet: the ATT C keeps its days",
+   "afterReload": "OML pieces Oct 19, Oct 23; ATT C Oct 20–22",
+   "rows": "put 4 [inputs/imunupvbd2thu1d, inputs/imunupvbdisgvnz, settings/elog:munupnokzljh.000002, settings/elog:munupnokzljh.000003] · del 0 · batches inputs.batch/4",
+   "pass": true,
+   "fails": [],
+   "pics": [
+    "W2-03b-a.png",
+    "W2-03b-b.png"
+   ]
+  },
+  {
+   "step": "W2-03c",
+   "width": "desktop",
+   "what": "an HL for Ranger on Wed 21 Oct over the ATT C; the clash sheet: HL replaces, the leftover (Oct 22) kept",
+   "afterReload": "HL Oct 21, ATT C Oct 20, ATT C Oct 22",
+   "rows": "put 7 [inputs/imunupsajddv96c, inputs/imunuq2541fkvcb, inputs/imunuq254johdub, settings/elog:munupx1cfyxe.000001, settings/elog:munupx1cfyxe.000002, settings/elog:munupx1cfyxe.000003 … (+1)] · del 0 · batches inputs.batch/7",
+   "pass": true,
+   "fails": [],
+   "pics": [
+    "W2-03c-a.png",
+    "W2-03c-b.png"
+   ]
+  },
+  {
+   "step": "W2-11",
+   "width": "desktop",
+   "what": "every request on the Inputs page deleted, one ✕ at a time (53), then reload",
+   "afterReload": "0 requests on the page, 0 stored",
+   "rows": "53 deletes; 0 wrote more than their own request row",
+   "pass": true,
+   "fails": [],
+   "pics": [
+    "W2-11-a-first.png",
+    "W2-11-a.png",
+    "W2-11-b.png"
+   ]
+  }
+ ],
+ "errors": [],
+ "firstBoot": {
+  "cols": {
+   "leavewar/opening": 36,
+   "people/(one)": 61,
+   "inputs/(one)": 46,
+   "leavewar/rec": 14,
+   "settings/(one)": 1,
+   "leavewar/ledger": 23,
+   "leavewar/(one)": 15,
+   "changes/(one)": 1,
+   "leavewar/war": 2,
+   "leavewar/profile": 1
+  },
+  "batches": [
+   {
+    "key": "changes/cmunuofbbzk6gdg-0",
+    "type": "boot",
+    "n": 199,
+    "actorId": "system"
+   }
+  ]
+ }
+}

@@ -266,7 +266,20 @@ he reports it again, ask which button he pressed and what the status line said.
   person reopens on are remembered per PERSON on the browser** (D376, 28 Sep 26 —
   "own place"): someone signing in after someone else never lands on the other
   person's pick; with nobody signed in (the standalone Tracker) the browser keeps
-  one place as before.
+  one place as before. **The CHART he has open on a course is part of that place and
+  NOTHING ELSE** (30 Sep 26, `[DB-READINESS]` group A phase 5b): it used to be written
+  into the course's shared plan too (`v3:<course>:plan` `sylId`), so on a shared store
+  whoever opened a course last moved everyone's chart; now every load reads his own pick
+  (`mySylOn`) and the course's plan names only the course's own chart — set when the
+  course is made, repaired when its chart is deleted, brought by an Import (and the
+  person importing then sees the file's chart), or by the standalone Tracker.
+- **Several people's lists are stored one row per thing** (30 Sep 26, phase 5b —
+  D462): a course's student list per chart, the course list, the charts and the
+  details on each ball. A save writes only what it changed against what that copy
+  last read (`app/rows.js`), so it never undoes another person's work saved
+  meanwhile — but two people changing the SAME student's name, or the same chart's
+  events, at the same moment is still last-save-wins (one row; the database's row
+  versions are group B's).
 - **`styles.css`'s two `@media(max-width:1050px)` blocks — top and END — are
   load-bearing** (now inside the `#page-tracker` wrapper in `tracker.css`):
   same specificity, later wins, and the general rules sit between them. Phone

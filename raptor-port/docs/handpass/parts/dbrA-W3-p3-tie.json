@@ -1,0 +1,109 @@
+{
+ "base": "http://localhost:4203",
+ "at": "2026-09-30T08:53:27.414Z",
+ "results": [
+  {
+   "name": "T1 one tab: the admin bids Ranger's MORNING, 3 Mar — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [leavewar/rec:y2026:rmunvaee41b1ds] · del 0 [] · batches lw.edit/1"
+  },
+  {
+   "name": "T1 one tab: the admin bids Ranger's MORNING, 3 Mar — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [leavewar/rec:y2026:rmunvaee41b1ds] · del 0 [] · batches lw.edit/1"
+  },
+  {
+   "name": "T1 … then his AFTERNOON — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [leavewar/rec:y2026:rmunvahnn2mbk8] · del 0 [] · batches lw.edit/1"
+  },
+  {
+   "name": "T1 … then his AFTERNOON — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [leavewar/rec:y2026:rmunvahnn2mbk8] · del 0 [] · batches lw.edit/1"
+  },
+  {
+   "name": "T1 Ack the morning (the day's list) — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 3 [leavewar/rec:y2026:rmunvaee41b1ds, leavewar/rec:y2026:rmunvahnn2mbk8, settings/elog:munva8mdpsqt.000001] · del 0 [] · batches lw.decide/3"
+  },
+  {
+   "name": "T1 — one tab: the Ack writes ONLY the morning's row; the afternoon's is untouched",
+   "ok": false,
+   "detail": "{\"put\":[\"leavewar/rec:y2026:rmunvaee41b1ds\",\"leavewar/rec:y2026:rmunvahnn2mbk8\",\"settings/elog:munva8mdpsqt.000001\"],\"before\":[\"*LL/pending#1024(41b1ds)\",\"LL*/pending#2048(n2mbk8)\"],\"after\":[\"LL*/pending#0(n2mbk8)\",\"*LL/acknowledged#1024(41b1ds)\"]}"
+  },
+  {
+   "name": "T2 (A, Saber) Ranger's MORNING, 3 Mar — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [leavewar/rec:y2026:rmunvaumu1al59] · del 0 [] · batches lw.edit/1"
+  },
+  {
+   "name": "T2 (A, Saber) Ranger's MORNING, 3 Mar — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [leavewar/rec:y2026:rmunvaumu1al59] · del 0 [] · batches lw.edit/1"
+  },
+  {
+   "name": "T2 (B, Ranger, not reloaded) his AFTERNOON, 3 Mar — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [leavewar/rec:y2026:rmunvay0h1dea4] · del 0 [] · batches lw.edit/1"
+  },
+  {
+   "name": "T2 (B, Ranger, not reloaded) his AFTERNOON, 3 Mar — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [leavewar/rec:y2026:rmunvay0h1dea4] · del 0 [] · batches lw.edit/1"
+  },
+  {
+   "name": "T2 (B, Ranger) deletes his afternoon from the day's list — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 0 [] · del 1 [leavewar/rec:y2026:rmunvay0h1dea4] · batches lw.edit/1"
+  },
+  {
+   "name": "T2 (B, Ranger) deletes his afternoon from the day's list — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 0 [] · del 1 [leavewar/rec:y2026:rmunvay0h1dea4] · batches lw.edit/1"
+  },
+  {
+   "name": "T2 — Ranger's delete removed his afternoon's row",
+   "ok": true,
+   "detail": "{\"del\":[\"leavewar/rec:y2026:rmunvay0h1dea4\"],\"ret\":{\"opened\":\"daylist-sheet\",\"buttons\":[\"daylist-close:✕\",\"dl-move-rmunvaumu1al59:⇄Move\",\"dl-clear-rmunvaumu1al59:Delete\",\"dl-move-rmunvay0h1dea4:⇄Move\",\"dl-clear-rmunvay0h1dea4:Delete\"],\"btn\":\"dl-clear-rmunvay0h1dea4\"}}"
+  },
+  {
+   "name": "T2 (A, Saber, not reloaded — still sees the afternoon) Acks the morning — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 3 [leavewar/rec:y2026:rmunvaumu1al59, leavewar/rec:y2026:rmunvay0h1dea4, settings/elog:munvazi98aqq.000001] · del 0 [] · batches lw.decide/3"
+  },
+  {
+   "name": "T2 — after reloading both, Ranger's deleted afternoon stays deleted (A's Ack on the morning must not bring it back)",
+   "ok": false,
+   "detail": "{\"afternoonBack\":true,\"places\":[\"LL*/pending#0(h1dea4)\",\"*LL/acknowledged#1024(u1al59)\"],\"sheet\":\"daylist-sheet\",\"lines\":[\"<LL — local leave, morning · bid, acked Approve Refuse ⇄Move Delete\",\"LL> — local leave, afternoon · bid, not decided yet Ack Approve Refuse ⇄Move Delete\"],\"text\":\"Ranger Tue 3 Mar ✕ <LL — local leave, morning · bid, acked Approve Refuse ⇄Move Delete LL> — local leave, afternoon · bid, not decided yet Ack Approve Refuse ⇄M\",\"aAckPut\":[\"leavewar/rec:y2026:rmunvaumu1al59\",\"leavewar/rec:y2026:rmunvay0h1dea4\",\"settings/elog:munvazi98aqq.000001\"]}"
+  },
+  {
+   "name": "probe 3 — no console errors",
+   "ok": true,
+   "detail": "[]"
+  }
+ ],
+ "table": [
+  {
+   "step": "T1 one tab, Ack one of two",
+   "width": "desktop",
+   "did": "admin: Ranger 3 Mar Morning LL, then Afternoon LL; the day's list → Ack on the morning",
+   "screen": "places *LL/pending#1024(41b1ds) LL*/pending#2048(n2mbk8) → LL*/pending#0(n2mbk8) *LL/acknowledged#1024(41b1ds)",
+   "rows": "put 3 [leavewar/rec:y2026:rmunvaee41b1ds, leavewar/rec:y2026:rmunvahnn2mbk8, settings/elog:munva8mdpsqt.000001] · batches lw.decide/3",
+   "ok": false,
+   "pics": []
+  },
+  {
+   "step": "T2 two tabs: Ack one of two after the other was deleted elsewhere",
+   "width": "desktop",
+   "did": "A: Ranger 3 Mar Morning; B (Ranger, stale): Afternoon; reload both; B: delete his Afternoon; A (stale): Ack the Morning; reload both",
+   "screen": "3 Mar after: daylist-sheet [\"<LL — local leave, morning · bid, acked Approve Refuse ⇄Move Delete\",\"LL> — local leave, afternoon · bid, not decided yet Ack Approve Refuse ⇄Move Delete\"]",
+   "rows": "B delete: put 0 · del 1 [leavewar/rec:y2026:rmunvay0h1dea4] · batches lw.edit/1 || A ack: put 3 [leavewar/rec:y2026:rmunvaumu1al59, leavewar/rec:y2026:rmunvay0h1dea4, settings/elog:munvazi98aqq.000001] · batches lw.decide/3",
+   "ok": false,
+   "pics": [
+    "P3-T2-A-after-both-reloaded.png"
+   ]
+  }
+ ],
+ "errors": []
+}

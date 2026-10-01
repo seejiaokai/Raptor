@@ -361,14 +361,17 @@ describe('a request taken off (or put on) a published day is ONE change — its 
      filing it puts back apart, so the confirm read 2 beside the day head's 1 — D114 names that button. */
   it('"Discard N edits" reads the same ONE, after ✕ and after Accept — and the load then puts both back', () => {
     const inp = request()
+    /* the second request is TAKEN OFF when the day is published — the state an Accept starts from since [DB-READINESS] phase 6
+       (c): a request filed after publication is on the programme by itself (worked out on read), and a load never discards
+       a member's filing (AM1), so the Accept that pairs with the day head is of a request the version had taken off */
+    const inp2: any = { person: 'stiff', date: 'Jul 13', allday: true, type: 'Meeting', remarks: 'D114 second', mod: '2026-07-01', acc: 'r' }
+    INPUTS.push(inp2)
     acceptInput(MON, inp, 'g'); publishDay(MON); unacceptInput(MON, inp)
     expect(dayDiscardCount(MON), '✕: beside the day head').toBe(dayShownPendCount(MON))
     expect(dayDiscardCount(MON)).toBe(1)
     expect(loadVersionToWorkingCopy(MON, dayCurVer(MON))).toBe(true)
     expect(dayShownPendCount(MON), 'back to what was issued').toBe(0)
     expect(inp.acc, 'on the programme again, with its row').toBe('g')
-    const inp2: any = { person: 'stiff', date: 'Jul 13', allday: true, type: 'Meeting', remarks: 'D114 second', mod: '2026-07-01' }
-    INPUTS.push(inp2)
     acceptInput(MON, inp2, 'g')
     expect(dayDiscardCount(MON), 'Accept: beside the day head').toBe(dayShownPendCount(MON))
     expect(dayDiscardCount(MON)).toBe(1)

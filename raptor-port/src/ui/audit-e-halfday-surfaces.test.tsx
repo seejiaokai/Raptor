@@ -100,7 +100,8 @@ describe('halfOf\'s PM boundary, reached through the in-place cells', () => {
 describe('half-days and clears against the ACCEPTED filing', () => {
   it('typing a half window onto an accepted Meeting moves its ground row\'s times', async () => {
     const inp: any = await plant({ person: 'bane', date: 'Jul 13', allday: false, s: 600, e: 660, type: 'Meeting', remarks: 'acc half', mod: 'now' })
-    await act(async () => { expect(acceptInput(0, inp, 'g')).toBe(true); afterSchedMutate(); notify() })
+    /* on the programme the moment it is filed — worked out on read ([DB-READINESS] phase 6 (c)) */
+    expect((DAYS[0].ground || []).some((r: any) => r.src === inpId(inp)), 'landed').toBe(true)
     await type(cell(inp, 'str'), '00:00')
     await type(cell(inp, 'end'), '12:00')
     const row = (DAYS[0].ground || []).find((r: any) => r.src === inpId(inp))

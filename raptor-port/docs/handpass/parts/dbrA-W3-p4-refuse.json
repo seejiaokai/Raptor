@@ -1,0 +1,131 @@
+{
+ "base": "http://localhost:4203",
+ "at": "2026-09-30T08:55:47.988Z",
+ "results": [
+  {
+   "name": "bid Ranger's MORNING 2026-03-03 — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [leavewar/rec:y2026:rmunvdr8i1c0an] · del 0 [] · batches lw.edit/1"
+  },
+  {
+   "name": "bid Ranger's MORNING 2026-03-03 — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [leavewar/rec:y2026:rmunvdr8i1c0an] · del 0 [] · batches lw.edit/1"
+  },
+  {
+   "name": "bid Ranger's AFTERNOON 2026-03-03 — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [leavewar/rec:y2026:rmunvdujx2e7h3] · del 0 [] · batches lw.edit/1"
+  },
+  {
+   "name": "bid Ranger's AFTERNOON 2026-03-03 — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [leavewar/rec:y2026:rmunvdujx2e7h3] · del 0 [] · batches lw.edit/1"
+  },
+  {
+   "name": "R1 the day's list: refuse the morning (2026-03-03) — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 3 [leavewar/rec:y2026:rmunvdr8i1c0an, leavewar/rec:y2026:rmunvdujx2e7h3, settings/elog:munvdljgf6il.000001] · del 0 [] · batches lw.decide/3"
+  },
+  {
+   "name": "R1 — refuse of the morning leaves the other half's row untouched",
+   "ok": false,
+   "detail": "{\"before\":[\"*LL/pending#1024(i1c0an)\",\"LL*/pending#2048(x2e7h3)\"],\"after\":[\"LL*/pending#0(x2e7h3)\",\"*LL/refused#1024(i1c0an)\"],\"put\":[\"leavewar/rec:y2026:rmunvdr8i1c0an\",\"leavewar/rec:y2026:rmunvdujx2e7h3\",\"settings/elog:munvdljgf6il.000001\"],\"del\":[]}"
+  },
+  {
+   "name": "bid Ranger's MORNING 2026-03-04 — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [leavewar/rec:y2026:rmunve1me3jlqq] · del 0 [] · batches lw.edit/1"
+  },
+  {
+   "name": "bid Ranger's MORNING 2026-03-04 — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [leavewar/rec:y2026:rmunve1me3jlqq] · del 0 [] · batches lw.edit/1"
+  },
+  {
+   "name": "bid Ranger's AFTERNOON 2026-03-04 — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [leavewar/rec:y2026:rmunve4v64uel2] · del 0 [] · batches lw.edit/1"
+  },
+  {
+   "name": "bid Ranger's AFTERNOON 2026-03-04 — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [leavewar/rec:y2026:rmunve4v64uel2] · del 0 [] · batches lw.edit/1"
+  },
+  {
+   "name": "R2 the day's list: refuse the afternoon (2026-03-04) — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 2 [leavewar/rec:y2026:rmunve4v64uel2, settings/elog:munvdljgf6il.000002] · del 0 [] · batches lw.decide/2"
+  },
+  {
+   "name": "R2 — refuse of the afternoon leaves the other half's row untouched",
+   "ok": true,
+   "detail": "{\"before\":[\"*LL/pending#1024(e3jlqq)\",\"LL*/pending#2048(64uel2)\"],\"after\":[\"*LL/pending#1024(e3jlqq)\",\"LL*/refused#2048(64uel2)\"],\"put\":[\"leavewar/rec:y2026:rmunve4v64uel2\",\"settings/elog:munvdljgf6il.000002\"],\"del\":[]}"
+  },
+  {
+   "name": "bid Ranger's MORNING 2026-03-05 — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [leavewar/rec:y2026:rmunvebwg5oeyz] · del 0 [] · batches lw.edit/1"
+  },
+  {
+   "name": "bid Ranger's MORNING 2026-03-05 — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [leavewar/rec:y2026:rmunvebwg5oeyz] · del 0 [] · batches lw.edit/1"
+  },
+  {
+   "name": "bid Ranger's AFTERNOON 2026-03-05 — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [leavewar/rec:y2026:rmunvef4y6cl1p] · del 0 [] · batches lw.edit/1"
+  },
+  {
+   "name": "bid Ranger's AFTERNOON 2026-03-05 — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [leavewar/rec:y2026:rmunvef4y6cl1p] · del 0 [] · batches lw.edit/1"
+  },
+  {
+   "name": "R3 the day's list: approve the morning (2026-03-05) — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 2 [inputs/imunveh916z5f3f, settings/elog:munvdljgf6il.000003] · del 1 [leavewar/rec:y2026:rmunvebwg5oeyz] · batches lw.decide/3"
+  },
+  {
+   "name": "R3 — approve of the morning leaves the other half's row untouched",
+   "ok": true,
+   "detail": "{\"before\":[\"*LL/pending#1024(g5oeyz)\",\"LL*/pending#2048(y6cl1p)\"],\"after\":[\"LL*/pending#2048(y6cl1p)\"],\"put\":[\"inputs/imunveh916z5f3f\",\"settings/elog:munvdljgf6il.000003\"],\"del\":[\"leavewar/rec:y2026:rmunvebwg5oeyz\"]}"
+  },
+  {
+   "name": "probe 4 — no console errors",
+   "ok": true,
+   "detail": "[]"
+  }
+ ],
+ "table": [
+  {
+   "step": "R1 one tab, refuse am of two",
+   "width": "desktop",
+   "did": "Ranger 2026-03-03: Morning LL, Afternoon LL; the day's list → refuse on the morning",
+   "screen": "places *LL/pending#1024(i1c0an) LL*/pending#2048(x2e7h3) → LL*/pending#0(x2e7h3) *LL/refused#1024(i1c0an)",
+   "rows": "put 3 [leavewar/rec:y2026:rmunvdr8i1c0an, leavewar/rec:y2026:rmunvdujx2e7h3, settings/elog:munvdljgf6il.000001] · batches lw.decide/3",
+   "ok": false,
+   "pics": []
+  },
+  {
+   "step": "R2 one tab, refuse pm of two",
+   "width": "desktop",
+   "did": "Ranger 2026-03-04: Morning LL, Afternoon LL; the day's list → refuse on the afternoon",
+   "screen": "places *LL/pending#1024(e3jlqq) LL*/pending#2048(64uel2) → *LL/pending#1024(e3jlqq) LL*/refused#2048(64uel2)",
+   "rows": "put 2 [leavewar/rec:y2026:rmunve4v64uel2, settings/elog:munvdljgf6il.000002] · batches lw.decide/2",
+   "ok": true,
+   "pics": []
+  },
+  {
+   "step": "R3 one tab, approve am of two",
+   "width": "desktop",
+   "did": "Ranger 2026-03-05: Morning LL, Afternoon LL; the day's list → approve on the morning",
+   "screen": "places *LL/pending#1024(g5oeyz) LL*/pending#2048(y6cl1p) → LL*/pending#2048(y6cl1p)",
+   "rows": "put 2 [inputs/imunveh916z5f3f, settings/elog:munvdljgf6il.000003] · del 1 [leavewar/rec:y2026:rmunvebwg5oeyz] · batches lw.decide/3",
+   "ok": true,
+   "pics": []
+  }
+ ],
+ "errors": []
+}

@@ -234,7 +234,10 @@ describe('the answers belong to the acknowledged commitment', () => {
      the man's day a second time. Today it is masked, because he also returns
      unanswered and reads "earns nothing" either way; the moment the gate above
      starts asking him properly, the mask comes off and the stale deny decides it. */
-  it('handing a request away CLEARS the old holder’s decision on it, on every loaded day (Codex 7)', () => {
+  /* [DB-READINESS] group A, phase 6 (a): the requirement is unchanged — the old holder's refusal does not follow the
+     request — but it is kept on READ, not by clearing the days: a hand-over writes no day (D450). The stored key stays,
+     inert; the evidence every reader is handed never shows it. */
+  it('handing a request away makes the old holder’s decision on it inert, on every day, and writes no day (Codex 7; phase 6 (a))', () => {
     const r = plant({ person: 'bane', type: 'Duty', date: 'Jul 18', s: 0, e: 1439, oil: { '2026-07-18': 1 } })
     const item = inputItemKey(r.iid)
     const sat = DAYS[5]
@@ -245,9 +248,10 @@ describe('the answers belong to the acknowledged commitment', () => {
     const d = draftOf(r); d.person = 'stiff'
     expect(commitInputEdit(r, d)).toBe(true)
 
-    const ppl = (DAYS[5].oild || {}).people || {}
+    const ppl = (oilEvidence(5).d.people || {}) as any
     expect(ppl[`bane|${item}`], "the man who has left must carry no decision on a request that is no longer his").toBeUndefined()
     expect(ppl['bane|i:someoneelse'], 'his decisions on OTHER requests are untouched').toBe('deny')
+    expect(((DAYS[5].oild || {}).people || {})[`bane|${item}`], 'and the day itself is not rewritten by the hand-over').toBe('deny')
   })
 
   /* THE OTHER HALF OF THE HAND-BACK (Codex M1). The write-side clear above only
@@ -413,10 +417,12 @@ describe('the bell (owner, 28 Aug 26 — the retro notification)', () => {
    A man who worked and answered Yes is paid nothing, silently; and if that day
    was already published the live and frozen keys match, so nothing flags it. */
 describe('a refusal must not survive a hand-over made while its week is off screen', () => {
-  const SCHED_COLLS = ['days', 'sched.book', 'sched.mutes', 'sched.orig', 'sched.als', 'sched.retired', 'inputs', 'plan', 'weekstash']
+  const SCHED_COLLS = ['days', 'sched.book', 'sched.mutes', 'sched.week', 'sched.issuance', 'sched.retraction', 'inputs', 'plan', 'weekstash']
   const plant = (r: any) => { const row: any = { allday: true, remarks: 'oiltest', mod: 'now', yr: 2026, ...r }; inpId(row); writeInputsBatch(() => { INPUTS.unshift(row) }); return INPUTS[0] }
   const handTo = (r: any, person: string) => { const d = draftOf(r); d.person = person; expect(commitInputEdit(r, d)).toBe(true) }
   const keyOn = (di: number, k: string) => (((DAYS[di] as any).oild || {}).people || {})[k]
+  /* what every reader is handed (phase 6 (a): a hand-over clears nothing off the day — the stale key is read as nothing) */
+  const seenOn = (di: number, k: string) => ((oilEvidence(di).d.people || {}) as any)[k]
   let hooks: any
 
   /* the money half needs the two facts the Leave War normally supplies —
@@ -454,7 +460,7 @@ describe('a refusal must not survive a hand-over made while its week is off scre
     writeInputsBatch(() => { r.oil = { '2026-07-18': 1 } })   // he answers Yes again
 
     loadWeek('13/07/2026')
-    expect(keyOn(5, `bane|${item}`), 'the refusal died with the assignment it was made about').toBeUndefined()
+    expect(seenOn(5, `bane|${item}`), 'the refusal died with the assignment it was made about').toBeUndefined()
     expect(oilFigureFor(5, 'bane', item), 'he worked the Saturday and said Yes').toBe('FO')
   })
 
@@ -466,8 +472,8 @@ describe('a refusal must not survive a hand-over made while its week is off scre
     loadWeek('20/07/2026')
     handTo(r, 'stiff')
     loadWeek('13/07/2026')
-    expect(keyOn(5, `bane|${item}`), 'the one that was handed over goes').toBeUndefined()
-    expect(keyOn(5, 'bane|i:someoneelse'), 'and nothing else is touched').toBe('deny')
+    expect(seenOn(5, `bane|${item}`), 'the one that was handed over goes').toBeUndefined()
+    expect(seenOn(5, 'bane|i:someoneelse'), 'and nothing else is touched').toBe('deny')
   })
 
   /* CODEX RANK 2's own requirement: one undo must put back the assignment AND
@@ -486,6 +492,7 @@ describe('a refusal must not survive a hand-over made while its week is off scre
     loadWeek('13/07/2026')
     expect((INPUTS.find((x: any) => inpId(x) === r.iid) as any).person, 'the request is his again').toBe('bane')
     expect(keyOn(5, `bane|${item}`), 'and so is the refusal').toBe('deny')
+    expect(seenOn(5, `bane|${item}`), 'read as his again').toBe('deny')
   })
 })
 

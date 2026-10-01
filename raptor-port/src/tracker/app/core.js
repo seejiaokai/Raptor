@@ -18,6 +18,9 @@ import { findEvents } from './eventOrder.js';
 import { onTrackerSessionEnd, onBeforeTrackerLogout } from '../role.js';
 import { getPeople, onPeople, whoami, whoamiId } from '../people.js';
 import { setTrackerUndo, pingTrackerUndo } from '../undo-bridge.js';
+/* the Tracker one piece per thing ([DB-READINESS] group A, phase 5b — D462): the student lists, the course list and the
+   chart records are STORED one row per thing, through the door below (sGet / sSet / memGet / delKey) */
+import * as TRKROWS from './rows.js';
 import { mintId, isEntry, upgradeCourseBlock, reconcileIds } from './ids.js';
 import { mintCourseId, isCourseEntry, isCourseId, isReservedCourseName, upgradeCourses, reconcileCourseIds } from './courseIds.js';
 import {
@@ -31,8 +34,11 @@ import {
 import {
   commit as cmdCommit, isCommitting as cmdIsCommitting, definePermission as cmdDefinePermission,
   anyone as cmdAnyone, registerRecord as cmdRegisterRecord, deferEffect as cmdDeferEffect,
-  registerGuardedStore as cmdRegisterGuardedStore,
+  registerGuardedStore as cmdRegisterGuardedStore, onCommit as cmdOnCommit, deriveActor as cmdDeriveActor,
 } from '../../command';
+/* the Tracker's own Undo / Redo is a RESTORE — the internal door the global undo uses too ([DB-READINESS] group A,
+   phase 4.1, P4.1-TRACKER-RESTORE): origin `restore`, never a new step of anyone's */
+import { commitAs as cmdCommitAs } from '../../command/commit';
 
 export { SYLLABI, SYL_NAMES, DEFAULT_SYL_NAME, DEFAULT_SYL_ORDER, DEFAULT_LAYOUTS, EVENT_INFO };
 export { mintId };
@@ -143,10 +149,16 @@ const kEventInfoFlat = 'v3:eventinfo';          /* the old one-table shape: read
    BFM-5 flies the BFM-7 profile) */
 function shippedFor(sylId, id) { return shippedDetails(EVENT_INFO, EVENT_INFO_BY_SYL, baseOf(sylId), id); }
 const shippedOfSyl = sylId => id => shippedFor(sylId, id);
+/* THE DETAILS ARE IN THEIR PER-CHART FORM — set once that is true ([DB-READINESS] group A, phase 5b). Stored one row per
+   chart and ball, "no details at all" reads the same as "never converted", so without it clearing the last detail would
+   bring back the old one-table details below on the next boot. A one-time flag, like the other upgrades'. */
+const kEventInfoMig = 'v3:eventinfomig';
 async function loadEventInfo() {
   const r = await sGet(kEventInfo());
   if (r != null && r !== '') { eventInfo = sParse(r, {}, 'object'); if (!isDetailsTable(eventInfo)) eventInfo = {}; }
+  else if (await sGet(kEventInfoMig)) eventInfo = {};
   else { eventInfo = await convertFlatEventInfo(); if (Object.keys(eventInfo).length) await saveEventInfo(); }
+  if (!(await sGet(kEventInfoMig))) await sSet(kEventInfoMig, '1');
   for (const sid of Object.keys(eventInfo)) {
     eventInfo[sid] = scrubBlock(eventInfo[sid], shippedOfSyl(sid));
     if (!Object.keys(eventInfo[sid]).length) delete eventInfo[sid];
@@ -264,11 +276,79 @@ const TRK_DEL = Symbol('trk.del');
    click landing inside that await must still record normally. */
 let TRK_RESTORING = false;
 function trkRestoring(fn) { const prev = TRK_RESTORING; TRK_RESTORING = true; try { return fn(); } finally { TRK_RESTORING = prev; } }
+/* [DB-READINESS] group A, phase 4.1 (P4.1-TRACKER-RESTORE, Astra R3-05) — set while the Tracker's own Undo / Redo
+   restore command runs: every record it puts back is written to `mem` inside that command and SAVED BY IT (the rows
+   subscriber below, from the command's own changes) — so the raw save helpers write nothing then. */
+let TRK_IN_RESTORE = false;
 /* the persisted mirror, read SYNCHRONOUSLY — the record source once hydrated
    (used by the §3 write()/restore re-derive; nothing on it awaits or calls
    loadCourse — build-advice #5). */
-function memGet(k) { return (k in mem) ? mem[k] : null; }
+function memGet(k) {
+  const L = TRKROWS.logicalOf(k);
+  if (!L) return (k in mem) ? mem[k] : null;
+  /* a record kept one row per thing: its old whole record if one is still here, else rebuilt from the rows */
+  const whole = (k in mem) ? mem[k] : null;
+  if (whole != null && whole !== '') return whole;
+  const j = TRKROWS.joinRows(L, familyFromMem(L.prefix));
+  return j != null ? j : TRKROWS.emptyOf(L);
+}
+/* THE DOOR TO THE RECORDS KEPT ONE ROW PER THING ([DB-READINESS] group A, phase 5b — owner D462, 30 Sep 26; plan §3
+   phase 5b; app/rows.js holds the one conversion). A course and chart's student list, the course list and the deleted
+   courses, and the chart records (definitions, names, order, hidden and deleted marks, the details typed on each ball)
+   were each ONE stored record, so two people saving two different things overwrote each other. Every caller here still
+   reads and writes them whole, under their old names; underneath, each is stored as one row per enrolment, course, chart
+   and ball:
+   - a READ returns the old whole record while one is still stored (a browser the fold has not reached — the standalone
+     Tracker — or a list from before the ids, which is not split), else the record rebuilt from its rows;
+   - a WRITE stores only the rows it CHANGES, compared with the rows THIS copy of the Tracker last read (`mem`): a row it
+     never read — another person's, saved meanwhile — is never removed, and a row it did not change is never written.
+     The rows of one write are ONE command (one saved group, one change-log batch), named as the whole-record write was;
+     the old whole record goes in the same command. A value rows cannot hold (bare names from before the ids) is stored
+     whole, as before, and this record's rows go with it — a record is only ever stored one way. */
+function familyFromMem(prefix) {
+  const fam = new Map();
+  for (const k of Object.keys(mem)) if (k.startsWith(prefix) && mem[k] != null && mem[k] !== '') fam.set(k, mem[k]);
+  return fam;
+}
+async function familyFromStore(prefix) {
+  let keys;
+  try { keys = ((await storage.list(prefix)).keys || []); } catch (_) { return familyFromMem(prefix); }
+  const fam = new Map();
+  for (const rk of keys) { const v = await sGetOne(rk); if (v != null && v !== '') fam.set(rk, v); }
+  return fam;
+}
 async function sGet(k) {
+  const L = TRKROWS.logicalOf(k);
+  if (!L) return sGetOne(k);
+  const whole = await sGetOne(k);
+  if (whole != null && whole !== '') return whole;
+  const j = TRKROWS.joinRows(L, await familyFromStore(L.prefix));
+  return j != null ? j : TRKROWS.emptyOf(L);
+}
+function doorSet(L, k, v) {
+  const run = () => {
+    const fam = familyFromMem(L.prefix);
+    const ch = TRKROWS.splitValue(L, v, fam);
+    const ps = [];
+    const apply = c => { for (const [rk, rv] of c) ps.push(rv === null ? delKeyOne(rk) : sSetOne(rk, rv)); };
+    if (!ch) {
+      ps.push(sSetOne(k, v));
+      const clear = TRKROWS.splitValue(L, TRKROWS.emptyOf(L) || '{}', fam);
+      if (clear) apply(clear);
+    } else {
+      apply(ch);
+      ps.push(delKeyOne(k));   /* the old whole record, if any: once its rows are written it is never read again */
+    }
+    return Promise.all(ps).then(() => undefined);
+  };
+  if (TRK_COMMANDS && !TRK_RESTORING && !TRK_GESTURE_PENDING && !cmdIsCommitting()) {
+    let p = Promise.resolve();
+    trkGesture(() => { p = run(); }, trkCollectionOf(k) || 'trk.gesture');
+    return p;
+  }
+  return run();
+}
+async function sGetOne(k) {
   const gen = memGen.get(k);
   try {
     const r = await storage.get(k);
@@ -333,8 +413,15 @@ let TRK_REGISTERED = false;
 /* map a storage key to its logical collection by GRAMMAR (segment-precise, so a
    migration flag like `…:rostermig` never matches `…:roster`), or null = exempt. */
 function trkCollectionOf(k) {
-  const p = String(k).split(':');
+  /* the rows of the records kept one row per thing ([DB-READINESS] group A, phase 5b — app/rows.js), first: a ball's
+     code in a details row may spell any word the checks below look for */
+  const s = String(k);
+  if (s.startsWith(TRKROWS.ROW.course)) return 'trk.courses';
+  if (s.startsWith(TRKROWS.ROW.chart)) return 'trk.syls';
+  if (s.startsWith(TRKROWS.ROW.info)) return 'trk.eventinfo';
+  const p = s.split(':');
   const last = p[p.length - 1], last2 = p[p.length - 2];
+  if (last2 === 'enr' && p.length === 5) return 'trk.roster';   /* v3:<course>:<chart>:enr:<student> */
   if (last2 === 'm') return 'trk.marks';
   if (last2 === 'd') return 'trk.dates';
   if (last2 === 'pace') return 'trk.pace';
@@ -346,12 +433,28 @@ function trkCollectionOf(k) {
   if (last === 'eventinfo') return 'trk.eventinfo';
   if (last === 'courses' || last === 'delcourses') return 'trk.courses';   // v3:courses — the course list; v3:delcourses — the deleted ones (D128)
   if (p.indexOf('lay') >= 0) return 'trk.layout';   // v3:master:lay:<syl> or v3:lay:<c>:<name>
-  // NB: the one-shot migration flags (…:sylreset / …:sylcatmig / …:syljournal /
-  // …:idmig / …:rostermig / …:courseidmig / …:idmap), the view-prefs (…:last /
-  // …:lastStudent) and the seed stamp all fall through to raw here, exactly as
-  // intended (seed-exempt, §3.1); every match above is a valid collection, so the
-  // well-formed-change invariant can never roll back a migration write.
+  // NB: the one-shot migration flags (…:sylreset / …:sylcatmig / …:syljournal / …:idmig / …:rostermig /
+  // …:courseidmig / …:idmap), the view-prefs (…:last / …:lastStudent) and the seed stamp all fall through to raw here,
+  // exactly as intended (seed-exempt, §3.1); every match above is a valid collection, so the well-formed-change
+  // invariant can never roll back a migration write. A course conversion's own records written AFTER the first mount go
+  // out through metaWrite (below), in a saved group of their own.
   return null;
+}
+/* A COURSE CONVERSION'S OWN RECORDS — its flags, its in-progress name → id map, the old links record ([DB-READINESS]
+   group A, the group-wide walk — Astra's finding A, W5 finding 1, 30 Sep 26). They stay raw writes (not records of any
+   command: a conversion is bookkeeping, never an undo step), and at the first mount they are the named exempt writer.
+   But written AFTER it — an Import bringing a course this browser never converted runs the conversion — each went out as
+   a bare group with no change-log batch, so another reader of the log would never learn the conversion is done. Now,
+   outside every command, the raw write runs inside a command of its own (`trk.meta`): one saved group, one batch. */
+function isMetaKey(k) {
+  const s = String(k), p = s.split(':'), last = p[p.length - 1];
+  return s === 'v3:links' || s === 'v3:courseidmig' || s === 'v3:courseidmap' || last === 'rostermig' || last === 'idmig' || last === 'idmap';
+}
+function metaWrite(k, write) {
+  if (!isMetaKey(k) || !TRK_COMMANDS || TRK_RESTORING || cmdIsCommitting()) return write();
+  let p;
+  cmdCommit({ type: 'trk.meta', scope: { module: 'trk', courseId: course, sylId: curSylId() }, apply: () => { p = write(); } });
+  return p || Promise.resolve();
 }
 /* the record source is `mem` (the persisted mirror). The mem write happens INSIDE
    the command's apply (the scheduler pattern), so enlist captures the pre-write
@@ -418,6 +521,23 @@ function trkRegisterCommands() {
     cmdRegisterRecord({ key: 'tracker:' + c, cls: 'record', collection: c, module: 'tracker' });
   }
   cmdDefinePermission('trk.gesture', cmdAnyone);   // [CMDL-FINISH] §4 — a multi-collection gesture's envelope
+  cmdDefinePermission('trk.meta', cmdAnyone);      // a course conversion's own records, written after the first mount (metaWrite)
+  /* [DB-READINESS] group A, phase 4.1 — the Tracker's own Undo / Redo, each ONE restore command (P4.1-TRACKER-RESTORE) */
+  cmdDefinePermission('tracker.undo', cmdAnyone); cmdDefinePermission('tracker.redo', cmdAnyone);
+  /* THE TRACKER'S ROWS, WRITTEN FROM EACH COMMAND'S OWN CHANGES ([DB-READINESS] group A, phase 4.1). Every Tracker
+     record a command changed is saved at its phase 9 — inside the command's one saved group, beside its change-log
+     batch — through the Tracker's own storage door (it keeps its own seam: tracker.md §Architecture), a removed record
+     removed, a record the command did not change never written. A gesture's own boundary flush and the global undo's
+     write seam land the same values earlier in the same group, so nothing is written twice. A change applied from
+     another person (a remote envelope) is never echoed back. */
+  cmdOnCommit(env => {
+    if (env.emit === false) return;
+    for (const c of env.changes) {
+      if (!String(c.collection).startsWith('trk.')) continue;
+      if (c.op === 'delete') { if (storage.delete) storage.delete(c.id); else storage.set(c.id, ''); }
+      else storage.set(c.id, c.after);
+    }
+  });
   /* [CMDL-FINISH] §3 (C9) / P4-END — now that EVERY post-boot Tracker write routes
      through the command layer (per-write via trkWrite/trkDelete, or grouped via
      trkGesture), guard trkStore: its cheap durable-version signature() is checked
@@ -436,9 +556,10 @@ function trkRegisterCommands() {
    (R4-003). */
 function trkReloadCurrentFromMem(rebuildSyl) {
   const c = course;
+  customDefs = sParse(memGet(kSyls(c)), {}, 'object');
   plan = sParse(memGet(kPlan(c)), null, 'object') || { lulls: [], mode: 'pace', epw: 2, target: null, sylId: firstSylId() };
   if (!plan.sylId) plan.sylId = firstSylId();
-  customDefs = sParse(memGet(kSyls(c)), {}, 'object');
+  { const my = mySylOn(c); if (my) plan.sylId = my; }   /* his own chart, never the course's shared pointer (D376) */
   if (rebuildSyl) {
     let __src = sylSource(plan.sylId);
     if (!__src) { plan.sylId = firstSylId(); __src = sylSource(plan.sylId) || DEFAULT_SYLLABUS; }
@@ -505,7 +626,8 @@ function trkWriteRecords(entries) {
   // [CMDL-FINISH] CMDLF-004 — re-derive the global catalogue/event-info lets first
   // (a delete/restore of a syllabus changes them, and the pointer logic below reads
   // SYLS/SYL_ORDER via firstSylId/sylSource).
-  if (entries.some(e => e.collection === 'trk.catalogue' || e.collection === 'trk.eventinfo')) trkReloadGlobalsFromMem();
+  /* a chart row (`trk.syls`) carries the chart's catalogue entry, place and hidden / deleted marks too (phase 5b) */
+  if (entries.some(e => e.collection === 'trk.catalogue' || e.collection === 'trk.eventinfo' || e.collection === 'trk.syls')) trkReloadGlobalsFromMem();
   // the globals that steer the pointers, always re-read from mem
   COURSES = sParse(memGet(kCourses), [], 'array');
   DELCOURSES = sParse(memGet(kDelCourses), [], 'array').filter(c => isCourseEntry(c) && !COURSES.some(x => isCourseEntry(x) && x.id === c.id));
@@ -513,7 +635,8 @@ function trkWriteRecords(entries) {
   if (courseGone) { const first = COURSES.find(isCourseEntry); course = first ? first.id : course; }
   customDefs = sParse(memGet(kSyls(course)), {}, 'object');
   const memPlan = sParse(memGet(kPlan(course)), null, 'object');
-  const newSyl = (memPlan && memPlan.sylId) || firstSylId();
+  /* the chart on screen is this person's own pick where he has one (D376) — the course's plan only names its own */
+  const newSyl = mySylOn(course) || (memPlan && memPlan.sylId) || firstSylId();
   if (courseGone || newSyl !== beforeSyl) {
     trkReloadCurrentFromMem(true);   // whole per-syllabus layer (SYL/byid rebuilt — the old draft is abandoned by design)
   } else {
@@ -524,7 +647,7 @@ function trkWriteRecords(entries) {
       if (e.collection === 'trk.roster' && p[1] === c && p[2] === syl) rosterTouched = true;
       else if ((e.collection === 'trk.marks' || e.collection === 'trk.dates') && p[1] === c && p[2] === syl) studentsTouched = true;
       else if ((e.collection === 'trk.pace' || e.collection === 'trk.lulls') && p[1] === c) studentsTouched = true;
-      else if (e.collection === 'trk.plan' && p[1] === c) plan = sParse(memGet(e.id), null, 'object') || plan;
+      else if (e.collection === 'trk.plan' && p[1] === c) { plan = sParse(memGet(e.id), null, 'object') || plan; plan.sylId = syl; }
       else if (e.collection === 'trk.layout' && p[p.length - 1] === syl) { layout = sParse(memGet(e.id), {}, 'object'); loadLineDefaults(); loadEdgeMeta(); }
     }
     if (rosterTouched) {
@@ -558,7 +681,10 @@ function trkWriteRecords(entries) {
 }
 
 /* the synchronous durable-record write: routed through a named command when
-   enabled + the key is a known record + we're not already committing; else raw. */
+   enabled + the key is a known record + we're not already committing; else raw.
+   Returns TRUE when it ran as its own command — that command then SAVED it ([DB-READINESS] group A, phase 4.1: the
+   rows subscriber writes the record from the command's own change, inside its saved group), or, refused, saved
+   nothing — so the caller must not write it again. */
 function trkWrite(k, v) {
   const col = (TRK_COMMANDS && !TRK_RESTORING) ? trkCollectionOf(k) : null;
   if (col && !cmdIsCommitting()) {
@@ -567,9 +693,10 @@ function trkWrite(k, v) {
       scope: { module: 'trk', courseId: course, sylId: curSylId() },
       apply: (txn) => { txn.enlist(trkStore); mem[k] = v; bumpMemGen(k); TRK_SIG++; },
     });
-  } else {
-    mem[k] = v; bumpMemGen(k); TRK_SIG++;
+    return true;
   }
+  mem[k] = v; bumpMemGen(k); TRK_SIG++;
+  return false;
 }
 /* [CMDL-FINISH] §4 — no longer `async`, so a call inside a gesture completes its
    mem write SYNCHRONOUSLY (no await sequences a later write into a microtask that
@@ -578,10 +705,19 @@ function trkWrite(k, v) {
    raw branch while committing) + record the key; the storage flush is deferred by
    trkGesture to the transaction boundary. */
 function sSet(k, v) {
-  trkWrite(k, v);
+  const L = TRKROWS.logicalOf(k);
+  return L ? doorSet(L, k, v) : sSetOne(k, v);
+}
+function sSetOne(k, v) {
+  const saved = trkWrite(k, v);
   if (TRK_GESTURE_PENDING) { TRK_GESTURE_PENDING.set(k, v); return Promise.resolve(); }
+  /* saved by its own command, or by the Undo / Redo restore it is part of ([DB-READINESS] group A, phase 4.1) — a
+     second, raw write AFTER the command would be a saved group of its own with no change-log batch, and would store
+     the value of a command that was refused. Only a write that ran no command (a migration flag, a view key, the boot)
+     is written here. */
+  if (saved || TRK_IN_RESTORE) return Promise.resolve();
   setSaveStatus('', 'saving');
-  return storage.set(k, v).then(() => setSaveStatus('', 'ok'), () => setSaveStatus('local only', 'ok'));
+  return metaWrite(k, () => storage.set(k, v)).then(() => setSaveStatus('', 'ok'), () => setSaveStatus('local only', 'ok'));
 }
 /* flush a gesture's pending storage writes at the transaction boundary (M4: via
    cmdDeferEffect, so a rejected gesture never persists and a queued one flushes at
@@ -599,13 +735,14 @@ function flushGesture(pending) {
    undo step at Step 3). The caller HOISTS every async read/prompt BEFORE this and
    passes a sync fn. Nested (or already committing) ⇒ just run, joining the open
    transaction. The storage flush is raised as a boundary effect (M4). */
-function trkGesture(fn) {
+/* `type` names the command — a gesture's own, or (the row door above) the record a whole-record write was named for */
+function trkGesture(fn, type) {
   if (TRK_GESTURE_PENDING || cmdIsCommitting() || !TRK_COMMANDS) { fn(); return; }
   const pending = new Map();
   TRK_GESTURE_PENDING = pending;
   try {
     cmdCommit({
-      type: 'trk.gesture',
+      type: type || 'trk.gesture',
       scope: { module: 'trk', courseId: course, sylId: curSylId() },
       apply: (txn) => { txn.enlist(trkStore); fn(); cmdDeferEffect(() => flushGesture(pending)); },
     });
@@ -654,6 +791,14 @@ export function toggleBar() { barHidden = !barHidden; prefSet('barHidden', barHi
    migration converts; nothing but the migration reads COURSES before it runs.) */
 export let COURSES = [], course = null, active = null;
 const DEFAULT_COURSE_NAME = '26ABSG';
+/* THE BOOT POLICY ([DB-READINESS] group A, phase 5 — owner D463, 30 Sep 26: an empty real database starts the Tracker
+   with NO course; the demo course 26ABSG and its demo pair never reach a shared store). Told by the page seam
+   (TrackerPage.tsx) before the first mount, from the policy Raptor booted with (src/bootpolicy.ts); true — the demo, as
+   always — unless told otherwise, and in the standalone Tracker. Off: a store with no course list starts with none
+   (loadCourses, migrateCourseIds), nothing is loaded for a course that does not exist (loadCourseNow), and the screen
+   says so with the two ways in (App.jsx). The built-in charts are shipped content and stay (D62). */
+let SEED_DEMO = true;
+export function setTrackerSeedDemo(on) { SEED_DEMO = on !== false; }
 /* the label for a course id (''=unknown); the id for a name (null=unknown) */
 export function courseName(id) { const e = COURSES.find(c => isCourseEntry(c) && c.id === id); return e ? e.name : (typeof id === 'string' ? '' : ''); }
 export function courseEntry(id) { return COURSES.find(c => isCourseEntry(c) && c.id === id) || null; }
@@ -840,7 +985,7 @@ function loadLineDefaults() {
    An undo's own restore is not held — it is not the finger's doing. */
 async function saveLayout() {
   saveEdgeMeta();
-  if (firstFinger && !TRK_RESTORING) { firstFinger.save = true; return; }
+  if (firstFinger && !TRK_RESTORING && !TRK_IN_RESTORE) { firstFinger.save = true; return; }
   await sSet(kLayout(), JSON.stringify(layout));
 }
 
@@ -1023,12 +1168,13 @@ function translateLayoutKeys(lay, idSet) {
 const isRetiredCourse = c => (typeof c === 'string' ? c : (isCourseEntry(c) ? c.name : '')) === 'SYLLABUS EDIT';
 async function loadCourses() {
   const r = await sGet(kCourses);
-  COURSES = sParse(r, [DEFAULT_COURSE_NAME], 'array').filter(c => !isRetiredCourse(c));
-  if (!COURSES.length) COURSES = [DEFAULT_COURSE_NAME];
+  const none = SEED_DEMO ? [DEFAULT_COURSE_NAME] : [];   /* a shared store: no course until someone adds one (D463) */
+  COURSES = sParse(r, none, 'array').filter(c => !isRetiredCourse(c));
+  if (!COURSES.length) COURSES = none.slice();
   /* Left raw here (strings pre-migration, entries after) — migrateCourseIds owns
      the string → entry conversion so it rides the durable one-shot flag. Persist
-     only the retired-course filter, keeping the shape untouched otherwise. */
-  await sSet(kCourses, JSON.stringify(COURSES));
+     only the retired-course filter, keeping the shape untouched otherwise. A shared store holding no list writes none. */
+  if (r != null || COURSES.length) await sSet(kCourses, JSON.stringify(COURSES));
 }
 async function saveCourses() { await sSet(kCourses, JSON.stringify(COURSES)); }
 
@@ -1081,7 +1227,7 @@ async function storeSylIds(c) {
   for (const k of ((await storage.list(pre)).keys || [])) {
     const rest = k.slice(pre.length), i = rest.indexOf(':'); if (i <= 0) continue;
     const seg = rest.slice(0, i), tail = rest.slice(i + 1);
-    if (isSylId(seg) && (tail === 'roster' || tail.startsWith('m:') || tail.startsWith('d:'))) out.add(seg);
+    if (isSylId(seg) && (tail === 'roster' || tail.startsWith('enr:') || tail.startsWith('m:') || tail.startsWith('d:'))) out.add(seg);
   }
   return [...out];
 }
@@ -1213,8 +1359,9 @@ export function clearBootError() { bootError = null; }
 const RESERVED_KEY_SEG = new Set(['courses', 'links', 'master', 'lay', 'SYLLABUS EDIT']);
 export async function migrateCourseIds() {
   try {
-    const raw = sParse(await sGet(kCourses), [DEFAULT_COURSE_NAME], 'array').filter(c => !isRetiredCourse(c));
-    const list = raw.length ? raw : [DEFAULT_COURSE_NAME];
+    const none = SEED_DEMO ? [DEFAULT_COURSE_NAME] : [];   /* D463 — see loadCourses */
+    const raw = sParse(await sGet(kCourses), none, 'array').filter(c => !isRetiredCourse(c));
+    const list = raw.length ? raw : none.slice();
     /* Done already — UNLESS a stray bare-string course slipped into the index
        after the flag was set (a hand-edited store, or a future cross-device sync
        from an unmigrated browser): convert it too, rather than leave an un-id'd
@@ -1245,12 +1392,15 @@ export async function migrateCourseIds() {
     if ((await sGet(kCourseIdMap)) !== mapStr) { await sSet(kCourseIdMap, mapStr); if ((await sGet(kCourseIdMap)) !== mapStr) return false; }
     /* move one key: absent/empty → nothing; else write dest (unless it already
        holds it — a retry), read back, only then delete source (mirror migrateIds
-       moved()). An empty string reads as absent (the delKey tombstone). */
+       moved()). An empty string reads as absent (the delKey tombstone).
+       KEY BY KEY, VERBATIM ([DB-READINESS] group A, phase 5b): this moves stored keys by their prefix, whatever they
+       hold — an old whole student list and the rows of a new one alike — so it never goes through the row door, which
+       would read a list that is not stored as an empty one and write a moved list as rows twice. */
     const moved = async (from, to) => {
-      const v = await sGet(from); if (v == null || v === '') return true;
-      const cur = await sGet(to);
-      if (cur == null || cur === '') { await sSet(to, v); if ((await sGet(to)) !== v) return false; }
-      await delKey(from); const back = await sGet(from); return back == null || back === '';
+      const v = await sGetOne(from); if (v == null || v === '') return true;
+      const cur = await sGetOne(to);
+      if (cur == null || cur === '') { await sSetOne(to, v); if ((await sGetOne(to)) !== v) return false; }
+      await delKeyOne(from); const back = await sGetOne(from); return back == null || back === '';
     };
     let ok = true;
     const all = (await storage.list()).keys || [];
@@ -1595,7 +1745,12 @@ function raw2plain(v) { try { return JSON.parse(JSON.stringify(v)); } catch (_) 
 /* KEEP — replay the journal's catalogue writes (idempotent whole-object writes),
    read-back-verified, purge sources, then verify all destinations survived. */
 async function applyKeepJournal(j) {
-  const put = async (k, v) => { const s = JSON.stringify(v); await sSet(k, s); return (await sGet(k)) === s; };
+  /* the read-back compares what is STORED, not its spelling ([DB-READINESS] group A, phase 5b): the chart records are
+     stored one row per chart now, and read back in the charts' display order — a list of charts or hidden ids, and a
+     table's keys, may come back in another order and still be exactly what was written */
+  const canon = v => Array.isArray(v) ? v.map(canon).sort((a, b) => (a < b ? -1 : a > b ? 1 : 0)) : (v && typeof v === 'object' ? JSON.stringify(Object.keys(v).sort().map(k => [k, v[k]])) : JSON.stringify(v));
+  const same = (got, v) => { if (got === JSON.stringify(v)) return true; let g; try { g = JSON.parse(got); } catch (_) { return false; } return JSON.stringify(canon(g)) === JSON.stringify(canon(v)); };
+  const put = async (k, v) => { const s = JSON.stringify(v); await sSet(k, s); return same(await sGet(k), v); };
   if (!(await put(kSyls(), j.defs))) return false;
   for (const destKey of Object.keys(j.layouts)) { const s = JSON.stringify(j.layouts[destKey]); await sSet(destKey, s); if ((await sGet(destKey)) !== s) return false; }
   if (!(await put(kSylOrder(), j.order))) return false;
@@ -1606,7 +1761,7 @@ async function applyKeepJournal(j) {
   /* FINAL verify after ALL purges (§16 CSID2-R3-01): a purge must not have
      deleted a destination that shared a key with a legacy name. */
   for (const destKey of Object.keys(j.layouts)) { const v = await sGet(destKey); if (v == null || v === '' || v !== JSON.stringify(j.layouts[destKey])) return false; }
-  if ((await sGet(kSylCat())) !== JSON.stringify(j.sylcat)) return false;
+  if (!same(await sGet(kSylCat()), j.sylcat)) return false;
   return true;
 }
 
@@ -1629,7 +1784,7 @@ async function applyResetJournal(j) {
          literally named 'plan' etc. has a tail (roster/m:/d:) and must still be
          swept (review CSID-REV-07); the def keys (syl/syls) are the KEEP half's */
       if (tail === '' && (seg === 'plan' || seg === 'rostermig' || seg === 'idmig' || seg === 'idmap' || seg === 'syl' || seg === 'syls')) continue;
-      if (tail === 'roster' || tail.startsWith('m:') || tail.startsWith('d:')      /* v3:c:<seg>:roster|m:*|d:* — any middle seg */
+      if (tail === 'roster' || tail.startsWith('enr:') || tail.startsWith('m:') || tail.startsWith('d:')      /* v3:c:<seg>:roster|enr:*|m:*|d:* — any middle seg */
         || seg === 'roster' || seg === 'lulls' || seg === 'pace' || seg === 'last' || seg === 'lastStudent'
         || seg === 'd') await delKey(k);                                            /* legacy flat dates v3:c:d:* */
     }
@@ -1772,6 +1927,14 @@ async function writeCourseBlock(c, block) {
    something had been marked, the syllabus could not be changed at all. */
 export function loadCourse(c, restoreLastSyllabus = false) { return onChain(() => loadCourseNow(c, restoreLastSyllabus)); }
 async function loadCourseNow(c, restoreLastSyllabus) {
+  /* NO COURSE AT ALL ([DB-READINESS] group A, phase 5 — D463): a shared store's Tracker starts with none, and the screen
+     says so (App.jsx). Nothing is read or written for a course that does not exist — every per-course key would file
+     under "undefined" — and nobody is on screen. */
+  if (c == null) {
+    course = null; roster = []; marks = {}; dates = {}; lulls = {}; lastEdit = {}; pace = {}; active = null;
+    undoStack = []; redoStack = []; pop = null; loading = false;
+    return;
+  }
   loading = true;
   course = c;
   /* One site covers init, switchCourse, addCourse, renCourse and delCourse.
@@ -1807,8 +1970,11 @@ async function loadCourseNow(c, restoreLastSyllabus) {
      F2): the roster is per chart, so the shared chart below opened the next person on the
      last person's chart and, their own student not on it, on the last person's student.
      Signed-in people only; the standalone Tracker keeps the shared answer, as before. */
-  const __mySyl = (restoreLastSyllabus && whoamiId()) ? prefGet(pickKey('lastSyl:' + c)) : null;
-  if (__mySyl && sylSource(__mySyl)) plan.sylId = __mySyl;
+  /* and on EVERY load, not only the first ([DB-READINESS] group A, phase 5b): his chart is no longer written into the
+     course's shared plan (below), so a reload of the course — an import, discarded chart edits, a chart switch — reads
+     his pick from his own place */
+  const __mySyl = mySylOn(c);
+  if (__mySyl) plan.sylId = __mySyl;
   else if (__lastS && restoreLastSyllabus) {
     try {
       const rec = JSON.parse(await sGet(kLast(c, __lastS)) || 'null');
@@ -1821,10 +1987,12 @@ async function loadCourseNow(c, restoreLastSyllabus) {
     await savePlan(); __src = sylSource(plan.sylId) || DEFAULT_SYLLABUS;
   }
   if (whoamiId()) prefSet(pickKey('lastSyl:' + c), plan.sylId);   /* this person's chart here (F2) */
-  /* the chart on screen is the course's saved chart too: a later reload of this course (an
-     import, discarded chart edits) reads the saved one, and left different it switched the
-     person to the last person's chart (found building F2) */
-  if (plan.sylId !== __storedSyl) await savePlan();
+  /* THE COURSE'S PLAN NAMES THE COURSE'S CHART, NEVER ONE PERSON'S ([DB-READINESS] group A, phase 5b — the finding filed
+     in phase 4). This used to save the chart on screen as the course's chart too, so that a later reload read it back;
+     but the plan is one record for the whole course, so on a shared store whoever opened the course last moved everyone
+     else's chart. A signed-in person's chart is his own place (D376 reading 5, the line above) and every load reads it
+     from there. The standalone Tracker, with nobody signed in, keeps the one shared answer, as before. */
+  if (!whoamiId() && plan.sylId !== __storedSyl) await savePlan();
   /* With no charts shipped in the code and none opened yet, DEFAULT_SYLLABUS is
      undefined and JSON.parse(JSON.stringify(undefined)) throws, which aborted
      loadCourse half-way and left the app looking broken. An empty board is the
@@ -1898,6 +2066,21 @@ export let rosterHeld = false;
 const HELD_MSG = 'The crew list for this course is still being moved to the new student records, so it cannot be changed yet. Nothing has been lost — reload the page and it will finish, then try again.';
 async function saveRoster() { if (rosterHeld) return; await sSet(kRosterFor(course, curSylId()), JSON.stringify(roster)); }
 async function savePlan() { await sSet(kPlan(course), JSON.stringify(plan)); }
+/* THE CHART A SIGNED-IN PERSON HAS OPEN ON A COURSE — his own place (owner D376 reading 5, confirmed D377), kept on his
+   own browser under his own id, never in the course's shared plan ([DB-READINESS] group A, phase 5b). Null when nobody
+   is signed in (the standalone Tracker), when he has none yet, or when his chart has since gone. */
+function mySylOn(c) {
+  if (!whoamiId() || c == null) return null;
+  const s = prefGet(pickKey('lastSyl:' + c));
+  return (s && sylSource(s)) ? s : null;
+}
+/* Open another chart on the course on screen: a signed-in person's own place; with nobody signed in, the course's plan,
+   as the standalone Tracker always kept it. Runs on the chain, with the load that follows. */
+async function openSylHere(id) {
+  plan.sylId = id;
+  if (whoamiId()) prefSet(pickKey('lastSyl:' + course), id);
+  else await savePlan();
+}
 async function loadStudent() {
   marks = {}; dates = {}; lulls = {}; lastEdit = {}; pace = {};
   for (const { id: s } of roster) {
@@ -2808,34 +2991,29 @@ function pushMarkUndo(s, what, field) {
   const e = markSnap(s, what); if (field) e.field = field;
   undoStack.push(e); trimUndo(); redoStack = []; notify();
 }
-function applyHist(u) { SYL = JSON.parse(u.syl); byid = {}; SYL.forEach(e => byid[e.id] = e); layout = JSON.parse(u.lay); loadEdgeMeta(); selEdge = null; markDirty(); trkRestoring(() => saveLayout()); renderBoard(); renderSide(); }
+/* ONE UNDO OR REDO IS ONE RESTORE COMMAND ([DB-READINESS] group A, phase 4.1 — P4.1-TRACKER-RESTORE, Astra R3-05). The
+   records a step puts back are written to `mem` SYNCHRONOUSLY inside it (each save helper's write happens at the call —
+   nothing is awaited between them, so nothing escapes the command), and the command saves them (the rows subscriber);
+   what is only on screen — the redraw, the picker — follows it. The helpers below are the DATA half of each kind. */
+function applyHistData(u) { SYL = JSON.parse(u.syl); byid = {}; SYL.forEach(e => byid[e.id] = e); layout = JSON.parse(u.lay); loadEdgeMeta(); selEdge = null; markDirty(); saveLayout(); }
 /* put one student's snapshot back — marks, dates, pace and lull periods — and save
    what it holds (a snapshot taken before D372 carries no pace or lulls: those stay) */
-async function restoreSnap(u) {
+function restoreSnap(u) {
   const s = u.who;
   marks[s] = JSON.parse(u.m);
   if (u.d == null) delete dates[s]; else dates[s] = JSON.parse(u.d);
   if ('p' in u) { if (u.p == null) delete pace[s]; else pace[s] = JSON.parse(u.p); }
   if ('l' in u) { if (u.l == null) delete lulls[s]; else lulls[s] = JSON.parse(u.l); }
-  await trkRestoring(() => saveMarks(s)); if (dates[s]) await trkRestoring(() => saveDates(s));
+  saveMarks(s); if (dates[s]) saveDates(s);
   /* a pace that was never set before the change is REMOVED again, not stored as {} — an empty
      pace read back as a blank pace box after a reload (Fable's final read F4) */
-  if ('p' in u) await trkRestoring(() => (pace[s] ? savePace(s) : delKey(kPace(course, s))));
-  if ('l' in u) await trkRestoring(() => saveLulls(s));
+  if ('p' in u) { if (pace[s]) savePace(s); else delKey(kPace(course, s)); }
+  if ('l' in u) saveLulls(s);
 }
-async function applyMarkHist(u) {
+function applyMarkHistData(u) {
   const s = u.who;
-  /* The pop-up's buttons describe a grade that just changed under it — or,
-     when the picker is about to move, somebody else's. */
-  if (pop) closePop();
-  /* the lull calendar and the Copy to… list belong to a record about to change (F1) */
-  lullPick = null; lullCopy = null;
-  if (active !== s) { active = s; prefSet(pickKey('lastCrew:' + course), s); refreshActive(); }
-  await restoreSnap(u);
-  /* keep the view: the person is looking at the ball they are taking back, as
-     grading keeps it (R62) — a plain redraw threw the chart back to its top
-     ([HUMAN-RETEST] W2-F6) */
-  redrawKeepView();
+  if (active !== s) { active = s; prefSet(pickKey('lastCrew:' + course), s); }
+  restoreSnap(u);
 }
 /* The snapshot that a step's reverse pushes onto the other stack: the SAME
    kind as the entry it undoes, taken from the live state before it is applied. */
@@ -2845,11 +3023,8 @@ function reverseOf(u) {
 }
 /* a group step, taken back or put again: every member still on the roster; the
    picker stays on whoever is picked (the step belongs to several students) */
-async function applyGroupHist(u) {
-  if (pop) closePop();
-  lullPick = null; lullCopy = null;   /* as applyMarkHist (F1) */
-  for (const g of u.group) if (marks[g.who]) await restoreSnap(g);
-  renderSide();
+function applyGroupHistData(u) {
+  for (const g of u.group) if (marks[g.who]) restoreSnap(g);
 }
 /* A mark entry for a student who is gone (removed on another syllabus, or the
    roster reloaded from a file) is skipped, not applied — removeStudent drops
@@ -2872,14 +3047,45 @@ function whatOf(u) {
 }
 export function undoWhat() { return whatOf(liveEntry(undoStack)); }
 export function redoWhat() { return whatOf(liveEntry(redoStack)); }
-async function step(from, to) {
+function step(from, to, dir) {
   const u = liveEntry(from); if (!u) return false;
-  from.pop(); to.push(reverseOf(u));
-  if (u.group) await applyGroupHist(u); else if (u.who != null) await applyMarkHist(u); else applyHist(u);
+  const marksStep = u.group || u.who != null;
+  /* The pop-up's buttons describe a grade that just changed under it — or, when the picker is about to move, somebody
+     else's; the lull calendar and the Copy to… list belong to a record about to change (F1) */
+  if (marksStep) { if (pop) closePop(); lullPick = null; lullCopy = null; }
+  const rev = reverseOf(u);
+  const apply = () => {
+    from.pop(); to.push(rev);
+    if (u.group) applyGroupHistData(u); else if (u.who != null) applyMarkHistData(u); else applyHistData(u);
+  };
+  let ok = true;
+  if (TRK_COMMANDS && !cmdIsCommitting()) {
+    /* the one restore command: the stacks, `mem` and the live lets change inside it (trkStore enlisted — a refusal puts
+       every one of them back), and it saves exactly the records it put back */
+    TRK_IN_RESTORE = true;
+    try {
+      const r = cmdCommitAs({
+        type: 'tracker.' + dir,
+        scope: { module: 'trk', courseId: course, sylId: curSylId() },
+        apply: (txn) => { txn.enlist(trkStore); apply(); },
+      }, { actor: cmdDeriveActor(), origin: 'restore' });
+      ok = !(r && r.ok === false);
+    } finally { TRK_IN_RESTORE = false; }
+  } else {
+    /* before init has turned the command routing on (and the standalone app): the old raw path — each save helper
+       writes its record as it always did */
+    trkRestoring(apply);
+  }
+  if (!ok) { notify(); return false; }
+  if (u.group) renderSide();
+  /* keep the view: the person is looking at the ball they are taking back, as grading keeps it (R62) — a plain redraw
+     threw the chart back to its top ([HUMAN-RETEST] W2-F6) */
+  else if (u.who != null) { refreshActive(); redrawKeepView(); }
+  else { renderBoard(); renderSide(); }
   notify(); return true;
 }
-export async function doUndo() { return step(undoStack, redoStack); }
-export async function doRedo() { return step(redoStack, undoStack); }
+export async function doUndo() { return step(undoStack, redoStack, 'undo'); }
+export async function doRedo() { return step(redoStack, undoStack, 'redo'); }
 /* Ctrl/⌘+Z undoes, Ctrl+Y and Ctrl/⌘+Shift+Z redo — everywhere on the tab
    EXCEPT inside a text box (the box's own undo is what the user means there)
    and under a question dialog (the answer comes first; App.jsx binds this to
@@ -4609,7 +4815,10 @@ async function loadSylPrefs() {
   try { const r = await sGet(kSylTomb()); SYL_TOMB = r ? JSON.parse(r) : {}; } catch (e) { SYL_TOMB = {}; }
   if (!SYL_TOMB || typeof SYL_TOMB !== 'object') SYL_TOMB = {};
 }
-async function saveSylPrefs() { await sSet(kSylHidden(), JSON.stringify(SYL_HIDDEN)); await sSet(kSylTomb(), JSON.stringify(SYL_TOMB)); }
+/* both writes START in the same turn ([DB-READINESS] group A, the group-wide walk — W5 finding 2): inside a gesture
+   (delSyl, restore) an `await` between them sent the second out after the gesture, as a saved group of its own — the
+   chart hidden but not yet marked deleted, or back but still marked deleted, if the second never landed */
+async function saveSylPrefs() { const a = sSet(kSylHidden(), JSON.stringify(SYL_HIDDEN)), b = sSet(kSylTomb(), JSON.stringify(SYL_TOMB)); await a; await b; }
 /* the catalogue index (SYLS) — written LAST by the migration, the source of
    truth every reader keys off. Load it, then reconcile against the code table. */
 async function loadSylCat() {
@@ -4649,19 +4858,27 @@ function trkDelete(k) {
       scope: { module: 'trk', courseId: course, sylId: curSylId() },
       apply: (txn) => { txn.enlist(trkStore); delete mem[k]; bumpMemGen(k); TRK_SIG++; },
     });
-  } else {
-    delete mem[k]; bumpMemGen(k); TRK_SIG++;
+    return true;   /* removed by that command (or, refused, not at all) — as trkWrite */
   }
+  delete mem[k]; bumpMemGen(k); TRK_SIG++;
+  return false;
 }
 async function delKey(k) {
-  trkDelete(k);
+  /* a record kept one row per thing: all its rows (and its old whole record) go — the row door, as a write of nothing */
+  const L = TRKROWS.logicalOf(k);
+  if (L) return doorSet(L, k, TRKROWS.emptyOf(L) || '{}');
+  return delKeyOne(k);
+}
+async function delKeyOne(k) {
+  const saved = trkDelete(k);
   /* [CMDL-FINISH] §4 — inside a gesture the mem drop above is synchronous (the
      trkDelete raw branch while committing); record the DELETE so its storage
      flush rides the gesture's ONE boundary effect, exactly as sSet does. */
   if (TRK_GESTURE_PENDING) { TRK_GESTURE_PENDING.set(k, TRK_DEL); return; }
+  /* removed by its own command, or by the Undo / Redo restore it is part of — as sSet ([DB-READINESS] group A, 4.1) */
+  if (saved || TRK_IN_RESTORE) return;
   try {
-    if (storage && storage.delete) { await storage.delete(k); }
-    else { await storage.set(k, ''); }   // soft-delete fallback; mem already dropped above
+    await metaWrite(k, () => (storage && storage.delete) ? storage.delete(k) : storage.set(k, ''));   // soft-delete fallback; mem already dropped above
   } catch (_) { try { await storage.set(k, ''); } catch (e) {} }
 }
 
@@ -4710,7 +4927,7 @@ export async function switchSyllabus(v) {
   if (!await leaveFlowEdits('Discard them and switch to “' + nm + '”?')) { refreshSyl(); return; }
   /* the id flip rides the chain with the load: kMarks/kDates key on curSylId(),
      so a flip landing inside a roster write's tail re-keyed its saves */
-  await onChain(async () => { plan.sylId = v; await savePlan(); await loadCourseNow(course); });
+  await onChain(async () => { await openSylHere(v); await loadCourseNow(course); });
   refreshCourses(); refreshSyl(); refreshActive(); renderBoard(); renderSide(); setSaveStatus('switched to ' + nm, 'ok');
 }
 /* ---------- reorder syllabi, courses or crew (modal is <OrdModal/>) ----------
@@ -4933,7 +5150,6 @@ export async function persistSyl() {
      back as it was, marks and all (the edit's own undo). */
   const saved = sylSource(id) || [];
   const gone = saved.map(e => e && e.id).filter(x => x && !byid[x]);
-  await sweepChart(id, new Set(gone), saved, SYL);
   /* Built-ins are editable: the saved version is stored as an override under the
      built-in's id and takes precedence when the syllabus is loaded (sylSource). */
   /* A built-in whose events are exactly the shipped ones is not an edit — a
@@ -4943,9 +5159,13 @@ export async function persistSyl() {
      export → import. The same rule the import follows ([HUMAN-RETEST] F7; the
      re-walk found this second writer, 23 Sep 26). */
   const shipped = isBuiltinSylId(id) ? SYLLABI[builtinBaseOf(id)] : null;
-  if (shipped && sameDef(SYL, shipped)) delete customDefs[id];
-  else customDefs[id] = JSON.parse(JSON.stringify(SYL));
-  await sSet(kSyls(course), JSON.stringify(customDefs));
+  const def = JSON.parse(JSON.stringify(SYL));
+  /* the chart itself saved INSIDE the sweep's gesture: its marks and the chart they went with, one saved group */
+  await sweepChart(id, new Set(gone), saved, SYL, () => {
+    if (shipped && sameDef(def, shipped)) delete customDefs[id];
+    else customDefs[id] = def;
+    sSet(kSyls(course), JSON.stringify(customDefs));
+  });
   clearDirty(); refreshSyl(); renderBoard(); renderSide();
   setSaveStatus('syllabus “' + sylName(id) + '” saved' + (isBuiltinSylId(id) && sylHasOwnDef(id) ? ' (overrides the built-in)' : ''), 'ok');
   return true;
@@ -4956,7 +5176,7 @@ export async function persistSyl() {
    together, as switchSyllabus's do — see loadChain. */
 async function switchSylNow(id) {
   await onChain(async () => {
-    plan.sylId = id; await savePlan();
+    await openSylHere(id);
     if (typeof flushNow === 'function') { try { await flushNow(); } catch (_) {} }
     clearDirty(); await loadCourseNow(course);
   });
@@ -5025,11 +5245,16 @@ async function planSylSweep(sylId, fallback) {
    (the two code reads, Fable F-G / Astra #2). `before` / `after` are the event
    lists as saved and as they will be. READ first, then every write in ONE
    gesture — delSyl's pattern. */
-async function sweepChart(sylId, kill, before, after) {
+/* `also` — the caller's own write of the chart (✓ Save changes, Revert edits), run INSIDE the sweep's one gesture, so
+   the marks going and the chart they went with are ONE saved group ([DB-READINESS] group A, the group-wide walk — W5
+   finding 2: saved after the sweep, the marks were gone while the stored chart still had the ball, if the second never
+   landed); with nothing to sweep it runs as a gesture of its own */
+async function sweepChart(sylId, kill, before, after, also) {
+  const alone = () => { if (also) trkGesture(also); };
   const flights = list => new Set((list || []).filter(e => e && e.type === 'flight').map(e => e.id));
   const was = flights(before), now = flights(after);
   const typeMoved = [...new Set([...was, ...now])].some(x => !kill.has(x) && was.has(x) !== now.has(x));
-  if (!kill.size && !typeMoved) return;
+  if (!kill.size && !typeMoved) { alone(); return; }
   const isFlightNow = x => now.has(x) && !kill.has(x);
   const writes = [], dels = [];
   for (const c of await allCourseNamespaces()) {
@@ -5056,7 +5281,7 @@ async function sweepChart(sylId, kill, before, after) {
   /* and what was typed on them (D130 — "delete them too"): details belong to
      the chart (D126), so it is this chart's entries that go */
   const typed = eventInfo[sylId] ? [...kill].filter(x => eventInfo[sylId][x]) : [];
-  if (!writes.length && !dels.length && !typed.length) return;
+  if (!writes.length && !dels.length && !typed.length) { alone(); return; }
   trkGesture(() => {
     for (const w of writes) {
       sSet(w.k, w.v);
@@ -5068,6 +5293,7 @@ async function sweepChart(sylId, kill, before, after) {
       if (Object.keys(blk).length) eventInfo[sylId] = blk; else delete eventInfo[sylId];
       saveEventInfo();
     }
+    if (also) also();
   });
 }
 /* dupSyl / addSyl are catalogue-only now: mint an sc… id, file the def+layout
@@ -5202,9 +5428,8 @@ export async function delSyl() {
       const edited = customDefs[id] || [], shipped = SYLLABI[builtinBaseOf(id)] || [];
       const back = new Set(shipped.map(e => e && e.id));
       const gone = edited.map(e => e && e.id).filter(x => x && !back.has(x));
-      await sweepChart(id, new Set(gone), edited, shipped);
-      delete customDefs[id];
-      await sSet(kSyls(course), JSON.stringify(customDefs));
+      /* the revert saved inside the sweep's gesture — one saved group (W5 finding 2) */
+      await sweepChart(id, new Set(gone), edited, shipped, () => { delete customDefs[id]; sSet(kSyls(course), JSON.stringify(customDefs)); });
       if (typeof flushNow === 'function') { try { await flushNow(); } catch (_) {} }
       clearDirty(); await loadCourse(course);
       refreshSyl(); refreshActive(); renderBoard(); renderSide();
@@ -5901,6 +6126,10 @@ export async function applyStudents(students, links, version) {
       b.roster = roster;
     }
     await writeCourseBlock(c, block);
+    /* the chart the file's course is on is the one the person bringing it in now sees there: the course's plan takes the
+       file's chart, and so does HIS OWN place on that course (D376) — no one else's ([DB-READINESS] group A, phase 5b:
+       his chart is no longer the course's plan, so the reload below would otherwise keep him where he was) */
+    if (whoamiId() && block.plan && block.plan.sylId && sylSource(block.plan.sylId)) prefSet(pickKey('lastSyl:' + c), block.plan.sylId);
     /* One label per enrolment across the course (the rule renameStudent keeps):
        the name the file brought in goes onto every chart it did NOT write too,
        or the charts would disagree and findEnrolment would read two students. */
@@ -6280,8 +6509,31 @@ export async function saveChangesClick() { await persistSyl(); }
 /* ---------- init ---------- */
 export let ready = false;
 let initStarted = false;
+/* THE TEST RESET HOOK for the one-shot init ([DB-READINESS] group A, phase 5.4 — Astra R2-09 fix 5): a test that boots
+   the Tracker under one policy and then another, in one module instance, lets init() run again. Never called by the app. */
+export function resetInitForTests() { initStarted = false; ready = false; bootError = null; }
+/* TWO MORE TEST HOOKS ([DB-READINESS] group A, phase 5b), never called by the app:
+   - a record read back from the STORE through the row door — the student list, the course list, a chart record, as the
+     Tracker reads it — or null when none of it is stored (a test that used to read the one stored record by its key);
+   - the mirror made the store again, for a test that changes the store under the Tracker (a new store, or keys written
+     straight into it) without booting it: the row door compares every write with what this copy has read. */
+export async function storedRecordForTests(k) {
+  const L = TRKROWS.logicalOf(k);
+  if (!L) return sGetOne(k);
+  const whole = await sGetOne(k);
+  if (whole != null && whole !== '') return whole;
+  return TRKROWS.joinRows(L, await familyFromStore(L.prefix));
+}
+export function storeRecordForTests(k, v) { return sSet(k, v); }
+export async function rehydrateForTests() {
+  for (const k of Object.keys(mem)) { delete mem[k]; bumpMemGen(k); }
+  await trkHydrateMem();
+}
 export async function init() {
   if (initStarted) return; initStarted = true;
+  /* every stored record into the mirror FIRST ([DB-READINESS] group A, phase 5b): the row door compares each write with
+     the rows this copy of the Tracker has read, and the boot's own upgrades write through it too */
+  await trkHydrateMem();
   await applyBundle();
   await loadCourses();
   /* Course NAMES → course IDS, once per browser, BEFORE anything reads a
@@ -6389,7 +6641,17 @@ export async function init() {
       applyStudents, whenLoaded, migrateAllCourses, migrateCourseIds, migrateSylIds, SYLLABI, DEFAULT_LAYOUTS,
       rosterNow: () => roster, nameOf, byName, courseIdOf, courseName, curCourseName,
       curSylId, curSylName, sylName, sylIdOf, sylsNow: () => SYLS.slice(), pickKey,
-      coursesNow: () => COURSES.slice() };
+      coursesNow: () => COURSES.slice(),
+      /* a record as the browser has DURABLY stored it — read from localStorage itself, as the smoke suite's storage
+         checks always did — rebuilt from its rows where it is kept one row per thing ([DB-READINESS] group A, phase 5b) */
+      lsRecord: (k, pre = 'raptor:tracker/') => {
+        const whole = localStorage.getItem(pre + k);
+        const L = TRKROWS.logicalOf(k);
+        if (!L || (whole != null && whole !== '')) return whole;
+        const fam = new Map();
+        for (let i = 0; i < localStorage.length; i++) { const kk = localStorage.key(i); if (kk && kk.startsWith(pre + L.prefix)) fam.set(kk.slice(pre.length), localStorage.getItem(kk)); }
+        return TRKROWS.joinRows(L, fam);
+      } };
     window.__fileFormatForTests = FMT;
     window.__fileStoreForTests = FS;
     /* Save changes is only on screen while there is an unsaved flow edit, so a

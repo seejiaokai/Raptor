@@ -1,0 +1,443 @@
+{
+ "base": "http://localhost:4205",
+ "at": "2026-09-30T08:29:22.711Z",
+ "results": [
+  {
+   "name": "first boot — ONE change-log batch, of type boot",
+   "ok": true,
+   "detail": "1 batch(es): boot · rows by collection {\"leavewar\":91,\"people\":61,\"inputs\":46,\"settings\":1,\"changes\":1}"
+  },
+  {
+   "name": "A0 first mount — writes only Tracker rows (the seed and its one-time flags), nothing of the rest of the app",
+   "ok": true,
+   "detail": "put 15 [tracker/v3:cmunufkjkoe9aia:idmig, tracker/v3:cmunufkjkoe9aia:plan, tracker/v3:cmunufkjkoe9aia:rostermig, tracker/v3:cmunufkjkoe9aia:sb2026:enr:smunufkjn9mhfxv, tracker/v3:cmunufkjkoe9aia:sb2026:enr:smunufkjnf2eqjp, tracker/v3:courseidmig …] · del 0 · batches 0 ()"
+  },
+  {
+   "name": "A0 first mount — a reload gives back exactly what was there (the app)",
+   "ok": true,
+   "detail": "week 13/07/2026 (the never-saved demo week’s hidden row ids were minted afresh — left out of the compare)"
+  },
+  {
+   "name": "A0 first mount — a reload gives back exactly what was there (the Tracker: every chart, detail, course, student, mark, and the screen)",
+   "ok": true,
+   "detail": "1 courses · 4 charts · on 26ABSG / 2026 / STUDENT A"
+  },
+  {
+   "name": "A0 first mount — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "A1 ⇅ Reorder crew (B above A, Save order) — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [tracker/v3:cmunufkjkoe9aia:sb2026:enr:smunufkjn9mhfxv] · del 0 [] · batches trk.roster/1"
+  },
+  {
+   "name": "A1 ⇅ Reorder crew (B above A, Save order) — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [tracker/v3:cmunufkjkoe9aia:sb2026:enr:smunufkjn9mhfxv] · del 0 [] · batches trk.roster/1"
+  },
+  {
+   "name": "A1 ⇅ Reorder crew — the dropdown and the chips read B, A",
+   "ok": true,
+   "detail": "[\"STUDENT B\",\"STUDENT A\"]"
+  },
+  {
+   "name": "A1 ⇅ Reorder crew — ONE enrolment row written (the one that moved)",
+   "ok": true,
+   "detail": "put 1 [tracker/v3:cmunufkjkoe9aia:sb2026:enr:smunufkjn9mhfxv] · del 0 · batches 1 (trk.roster/1)"
+  },
+  {
+   "name": "A1 ⇅ Reorder crew — a reload gives back exactly what was there (the app)",
+   "ok": true,
+   "detail": "week 13/07/2026 (the never-saved demo week’s hidden row ids were minted afresh — left out of the compare)"
+  },
+  {
+   "name": "A1 ⇅ Reorder crew — a reload gives back exactly what was there (the Tracker: every chart, detail, course, student, mark, and the screen)",
+   "ok": true,
+   "detail": "1 courses · 4 charts · on 26ABSG / 2026 / STUDENT B (let through: .screen.crew: \"STUDENT A\" → \"STUDENT B\" — never picked, D376)"
+  },
+  {
+   "name": "A1 ⇅ Reorder crew — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "A1 ⇅ Reorder crew — after the reload still B, A",
+   "ok": true,
+   "detail": "[\"STUDENT B\",\"STUDENT A\"]"
+  },
+  {
+   "name": "A2 Rename a student (STUDENT A → W5 RENAMED) — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [tracker/v3:cmunufkjkoe9aia:sb2026:enr:smunufkjnf2eqjp] · del 0 [] · batches trk.gesture/1"
+  },
+  {
+   "name": "A2 Rename a student (STUDENT A → W5 RENAMED) — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [tracker/v3:cmunufkjkoe9aia:sb2026:enr:smunufkjnf2eqjp] · del 0 [] · batches trk.gesture/1"
+  },
+  {
+   "name": "A2 Rename — ONE enrolment row written, his own",
+   "ok": true,
+   "detail": "put 1 [tracker/v3:cmunufkjkoe9aia:sb2026:enr:smunufkjnf2eqjp] · del 0 · batches 1 (trk.gesture/1)"
+  },
+  {
+   "name": "A2 Rename a student — a reload gives back exactly what was there (the app)",
+   "ok": true,
+   "detail": "week 13/07/2026 (the never-saved demo week’s hidden row ids were minted afresh — left out of the compare)"
+  },
+  {
+   "name": "A2 Rename a student — a reload gives back exactly what was there (the Tracker: every chart, detail, course, student, mark, and the screen)",
+   "ok": true,
+   "detail": "1 courses · 4 charts · on 26ABSG / 2026 / STUDENT B"
+  },
+  {
+   "name": "A2 Rename a student — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "A2 Rename — after the reload the chip and the dropdown read W5 RENAMED, in its place",
+   "ok": true,
+   "detail": "[\"STUDENT B\",\"W5 RENAMED\"]"
+  },
+  {
+   "name": "A3 + Add course \"W5 SECOND\" — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 4 [tracker/v3:cmunufvyt5hq82s:idmig, tracker/v3:cmunufvyt5hq82s:plan, tracker/v3:cmunufvyt5hq82s:rostermig, tracker/v3:master:course:cmunufvyt5hq82s] · del 0 [] · batches trk.gesture/4"
+  },
+  {
+   "name": "A3 + Add course \"W5 SECOND\" — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 4 [tracker/v3:cmunufvyt5hq82s:idmig, tracker/v3:cmunufvyt5hq82s:plan, tracker/v3:cmunufvyt5hq82s:rostermig, tracker/v3:master:course:cmunufvyt5hq82s] · del 0 [] · batches trk.gesture/4"
+  },
+  {
+   "name": "A3 + Add course — ONE course row",
+   "ok": true,
+   "detail": "put 4 [tracker/v3:cmunufvyt5hq82s:idmig, tracker/v3:cmunufvyt5hq82s:plan, tracker/v3:cmunufvyt5hq82s:rostermig, tracker/v3:master:course:cmunufvyt5hq82s] · del 0 · batches 1 (trk.gesture/4)"
+  },
+  {
+   "name": "A3 + Add course — a reload gives back exactly what was there (the app)",
+   "ok": true,
+   "detail": "week 13/07/2026 (the never-saved demo week’s hidden row ids were minted afresh — left out of the compare)"
+  },
+  {
+   "name": "A3 + Add course — a reload gives back exactly what was there (the Tracker: every chart, detail, course, student, mark, and the screen)",
+   "ok": true,
+   "detail": "2 courses · 4 charts · on W5 SECOND / 2026 / null"
+  },
+  {
+   "name": "A3 + Add course — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "A3 + Add course — after the reload the list reads W5 SECOND, 26ABSG (the newest first, as built)",
+   "ok": true,
+   "detail": "[\"W5 SECOND\",\"26ABSG\"]"
+  },
+  {
+   "name": "A4 ⇅ Reorder courses (26ABSG to the top, Save order) — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [tracker/v3:master:course:cmunufkjkoe9aia] · del 0 [] · batches trk.courses/1"
+  },
+  {
+   "name": "A4 ⇅ Reorder courses (26ABSG to the top, Save order) — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [tracker/v3:master:course:cmunufkjkoe9aia] · del 0 [] · batches trk.courses/1"
+  },
+  {
+   "name": "A4 ⇅ Reorder courses — ONE course row written (the one that moved)",
+   "ok": true,
+   "detail": "put 1 [tracker/v3:master:course:cmunufkjkoe9aia] · del 0 · batches 1 (trk.courses/1)"
+  },
+  {
+   "name": "A4 ⇅ Reorder courses — a reload gives back exactly what was there (the app)",
+   "ok": true,
+   "detail": "week 13/07/2026 (the never-saved demo week’s hidden row ids were minted afresh — left out of the compare)"
+  },
+  {
+   "name": "A4 ⇅ Reorder courses — a reload gives back exactly what was there (the Tracker: every chart, detail, course, student, mark, and the screen)",
+   "ok": true,
+   "detail": "2 courses · 4 charts · on W5 SECOND / 2026 / null"
+  },
+  {
+   "name": "A4 ⇅ Reorder courses — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "A4 ⇅ Reorder courses — after the reload 26ABSG, W5 SECOND",
+   "ok": true,
+   "detail": "[\"26ABSG\",\"W5 SECOND\"]"
+  },
+  {
+   "name": "A5 ⇅ Reorder syllabi (the last chart to the top, Save order) — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 4 [tracker/v3:master:chart:sb2024, tracker/v3:master:chart:sb2026, tracker/v3:master:chart:sbagaa2026, tracker/v3:master:chart:sbtx2026] · del 0 [] · batches trk.catalogue/4"
+  },
+  {
+   "name": "A5 ⇅ Reorder syllabi (the last chart to the top, Save order) — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 4 [tracker/v3:master:chart:sb2024, tracker/v3:master:chart:sb2026, tracker/v3:master:chart:sbagaa2026, tracker/v3:master:chart:sbtx2026] · del 0 [] · batches trk.catalogue/4"
+  },
+  {
+   "name": "A5 ⇅ Reorder syllabi — the dropdown reads the new order",
+   "ok": true,
+   "detail": "2024 · 2026 · Tx 2026 · A/G - A/A 2026 → A/G - A/A 2026 · 2024 · 2026 · Tx 2026"
+  },
+  {
+   "name": "A5 ⇅ Reorder syllabi — the moved chart, plus each chart that had no place yet (its first placing)",
+   "ok": true,
+   "detail": "4 unplaced before · put 4 [tracker/v3:master:chart:sb2024, tracker/v3:master:chart:sb2026, tracker/v3:master:chart:sbagaa2026, tracker/v3:master:chart:sbtx2026] · del 0 · batches 1 (trk.catalogue/4)"
+  },
+  {
+   "name": "A5 ⇅ Reorder syllabi — a reload gives back exactly what was there (the app)",
+   "ok": true,
+   "detail": "week 13/07/2026 (the never-saved demo week’s hidden row ids were minted afresh — left out of the compare)"
+  },
+  {
+   "name": "A5 ⇅ Reorder syllabi — a reload gives back exactly what was there (the Tracker: every chart, detail, course, student, mark, and the screen)",
+   "ok": true,
+   "detail": "2 courses · 4 charts · on W5 SECOND / 2026 / null"
+  },
+  {
+   "name": "A5 ⇅ Reorder syllabi — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "A5 ⇅ Reorder syllabi — after the reload the same order",
+   "ok": true,
+   "detail": "A/G - A/A 2026 · 2024 · 2026 · Tx 2026"
+  },
+  {
+   "name": "A5b ⇅ Reorder syllabi again (the second chart down one, Save order) — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [tracker/v3:master:chart:sb2026] · del 0 [] · batches trk.catalogue/1"
+  },
+  {
+   "name": "A5b ⇅ Reorder syllabi again (the second chart down one, Save order) — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [tracker/v3:master:chart:sb2026] · del 0 [] · batches trk.catalogue/1"
+  },
+  {
+   "name": "A5b ⇅ Reorder syllabi again — ONE chart row written (the one that moved)",
+   "ok": true,
+   "detail": "put 1 [tracker/v3:master:chart:sb2026] · del 0 · batches 1 (trk.catalogue/1)"
+  },
+  {
+   "name": "A5b ⇅ Reorder syllabi again — the dropdown reads the new order",
+   "ok": true,
+   "detail": "A/G - A/A 2026 · 2026 · 2024 · Tx 2026"
+  },
+  {
+   "name": "A5b ⇅ Reorder syllabi again — a reload gives back exactly what was there (the app)",
+   "ok": true,
+   "detail": "week 13/07/2026 (the never-saved demo week’s hidden row ids were minted afresh — left out of the compare)"
+  },
+  {
+   "name": "A5b ⇅ Reorder syllabi again — a reload gives back exactly what was there (the Tracker: every chart, detail, course, student, mark, and the screen)",
+   "ok": true,
+   "detail": "2 courses · 4 charts · on W5 SECOND / 2026 / null"
+  },
+  {
+   "name": "A5b ⇅ Reorder syllabi again — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "A5b ⇅ Reorder syllabi again — after the reload the same order",
+   "ok": true,
+   "detail": "A/G - A/A 2026 · 2026 · 2024 · Tx 2026"
+  },
+  {
+   "name": "A6-pre switch the course dropdown to 26ABSG — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "A6-pre switch the course dropdown to 26ABSG — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "A6a a mark for STUDENT B (DCO on the first ball) — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 3 [tracker/v3:cmunufkjkoe9aia:last:smunufkjn9mhfxv, tracker/v3:cmunufkjkoe9aia:lastStudent, tracker/v3:cmunufkjkoe9aia:sb2026:m:smunufkjn9mhfxv] · del 0 [] · batches trk.gesture/3"
+  },
+  {
+   "name": "A6a a mark for STUDENT B (DCO on the first ball) — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 3 [tracker/v3:cmunufkjkoe9aia:last:smunufkjn9mhfxv, tracker/v3:cmunufkjkoe9aia:lastStudent, tracker/v3:cmunufkjkoe9aia:sb2026:m:smunufkjn9mhfxv] · del 0 [] · batches trk.gesture/3"
+  },
+  {
+   "name": "A6a the mark is on the ball",
+   "ok": true,
+   "detail": "dco"
+  },
+  {
+   "name": "A6a a mark for STUDENT B — a reload gives back exactly what was there (the app)",
+   "ok": true,
+   "detail": "week 13/07/2026 (the never-saved demo week’s hidden row ids were minted afresh — left out of the compare)"
+  },
+  {
+   "name": "A6a a mark for STUDENT B — a reload gives back exactly what was there (the Tracker: every chart, detail, course, student, mark, and the screen)",
+   "ok": true,
+   "detail": "2 courses · 4 charts · on 26ABSG / 2026 / STUDENT B"
+  },
+  {
+   "name": "A6a a mark for STUDENT B — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "A6 Remove a student (STUDENT B, ×, OK) — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 0 [] · del 4 [tracker/v3:cmunufkjkoe9aia:last:smunufkjn9mhfxv, tracker/v3:cmunufkjkoe9aia:lastStudent, tracker/v3:cmunufkjkoe9aia:sb2026:enr:smunufkjn9mhfxv, tracker/v3:cmunufkjkoe9aia:sb2026:m:smunufkjn9mhfxv] · batches trk.gesture/4"
+  },
+  {
+   "name": "A6 Remove a student (STUDENT B, ×, OK) — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 0 [] · del 4 [tracker/v3:cmunufkjkoe9aia:last:smunufkjn9mhfxv, tracker/v3:cmunufkjkoe9aia:lastStudent, tracker/v3:cmunufkjkoe9aia:sb2026:enr:smunufkjn9mhfxv, tracker/v3:cmunufkjkoe9aia:sb2026:m:smunufkjn9mhfxv] · batches trk.gesture/4"
+  },
+  {
+   "name": "A6 Remove — he is gone from the dropdown and the chips",
+   "ok": true,
+   "detail": "[\"W5 RENAMED\"]"
+  },
+  {
+   "name": "A6 Remove a student — a reload gives back exactly what was there (the app)",
+   "ok": true,
+   "detail": "week 13/07/2026 (the never-saved demo week’s hidden row ids were minted afresh — left out of the compare)"
+  },
+  {
+   "name": "A6 Remove a student — a reload gives back exactly what was there (the Tracker: every chart, detail, course, student, mark, and the screen)",
+   "ok": true,
+   "detail": "2 courses · 4 charts · on 26ABSG / 2026 / W5 RENAMED"
+  },
+  {
+   "name": "A6 Remove a student — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "A6 Remove — after the reload he is still gone, and none of his rows is left",
+   "ok": true,
+   "detail": "[\"W5 RENAMED\"]"
+  },
+  {
+   "name": "W5 part A — no console error, page error or failed request",
+   "ok": true,
+   "detail": ""
+  }
+ ],
+ "walker": "W5",
+ "part": "A",
+ "table": [
+  {
+   "step": "A0",
+   "width": "desktop",
+   "did": "fresh world: sign in, open the Tracker the first time, reload",
+   "rows": "put 15 [tracker/v3:cmunufkjkoe9aia:idmig, tracker/v3:cmunufkjkoe9aia:plan, tracker/v3:cmunufkjkoe9aia:rostermig, tracker/v3:cmunufkjkoe9aia:sb2026:enr:smunufkjn9mhfxv, tracker/v3:cmunufkjkoe9aia:sb2026:enr:smunufkjnf2eqjp, tracker/v3:courseidmig …] · del 0 · batches 0 () (exempt: first mount)",
+   "pics": [
+    "a0-first-mount",
+    "a0-after-reload"
+   ]
+  },
+  {
+   "step": "A1",
+   "width": "desktop",
+   "did": "⇅ Reorder (Students card): STUDENT B moved above STUDENT A, Save order",
+   "after": "1 STUDENT B · 2 STUDENT A",
+   "rows": "put 1 [tracker/v3:cmunufkjkoe9aia:sb2026:enr:smunufkjn9mhfxv] · del 0 · batches 1 (trk.roster/1)",
+   "pics": [
+    "a1-reorder-crew-window",
+    "a1-reorder-crew-saved",
+    "a1-after-reload"
+   ]
+  },
+  {
+   "step": "A2",
+   "width": "desktop",
+   "did": "Students card ✎ on STUDENT A → \"W5 RENAMED\"",
+   "after": "1 STUDENT B · 2 W5 RENAMED",
+   "rows": "put 1 [tracker/v3:cmunufkjkoe9aia:sb2026:enr:smunufkjnf2eqjp] · del 0 · batches 1 (trk.gesture/1)",
+   "pics": [
+    "a2-renamed",
+    "a2-after-reload"
+   ]
+  },
+  {
+   "step": "A3",
+   "width": "desktop",
+   "did": "Course ✎ → + Add course \"W5 SECOND\"",
+   "after": "courses W5 SECOND, 26ABSG · on W5 SECOND",
+   "rows": "put 4 [tracker/v3:cmunufvyt5hq82s:idmig, tracker/v3:cmunufvyt5hq82s:plan, tracker/v3:cmunufvyt5hq82s:rostermig, tracker/v3:master:course:cmunufvyt5hq82s] · del 0 · batches 1 (trk.gesture/4)",
+   "pics": [
+    "a3-course-added",
+    "a3-after-reload"
+   ]
+  },
+  {
+   "step": "A4",
+   "width": "desktop",
+   "did": "Course ✎ → ⇅ Reorder courses: 26ABSG ▲ to the top, Save order",
+   "after": "courses 26ABSG, W5 SECOND",
+   "rows": "put 1 [tracker/v3:master:course:cmunufkjkoe9aia] · del 0 · batches 1 (trk.courses/1)",
+   "pics": [
+    "a4-reorder-courses-window",
+    "a4-courses-saved",
+    "a4-after-reload"
+   ]
+  },
+  {
+   "step": "A5",
+   "width": "desktop",
+   "did": "Syllabus ✎ → ⇅ Reorder syllabi: the last chart ▲ to the top, Save order",
+   "after": "charts A/G - A/A 2026, 2024, 2026, Tx 2026",
+   "rows": "put 4 [tracker/v3:master:chart:sb2024, tracker/v3:master:chart:sb2026, tracker/v3:master:chart:sbagaa2026, tracker/v3:master:chart:sbtx2026] · del 0 · batches 1 (trk.catalogue/4)",
+   "pics": [
+    "a5-reorder-syllabi-window",
+    "a5-syllabi-saved",
+    "a5-after-reload"
+   ]
+  },
+  {
+   "step": "A5b",
+   "width": "desktop",
+   "did": "⇅ Reorder syllabi again: the second chart ▼ one place, Save order",
+   "after": "charts A/G - A/A 2026, 2026, 2024, Tx 2026",
+   "rows": "put 1 [tracker/v3:master:chart:sb2026] · del 0 · batches 1 (trk.catalogue/1)",
+   "pics": [
+    "a5b-after-reload"
+   ]
+  },
+  {
+   "step": "A6-pre",
+   "width": "desktop",
+   "did": "Course dropdown → 26ABSG",
+   "after": "26ABSG",
+   "rows": "put 0 · del 0 · batches 0 ()",
+   "pics": []
+  },
+  {
+   "step": "A6",
+   "width": "desktop",
+   "did": "a DCO mark for STUDENT B (reload), then × on his chip, OK",
+   "after": "1 W5 RENAMED",
+   "rows": "mark: put 3 [tracker/v3:cmunufkjkoe9aia:last:smunufkjn9mhfxv, tracker/v3:cmunufkjkoe9aia:lastStudent, tracker/v3:cmunufkjkoe9aia:sb2026:m:smunufkjn9mhfxv] · del 0 · batches 1 (trk.gesture/3) ‖ remove: put 0 · del 4 [tracker/v3:cmunufkjkoe9aia:last:smunufkjn9mhfxv, tracker/v3:cmunufkjkoe9aia:lastStudent, tracker/v3:cmunufkjkoe9aia:sb2026:enr:smunufkjn9mhfxv, tracker/v3:cmunufkjkoe9aia:sb2026:m:smunufkjn9mhfxv] · batches 1 (trk.gesture/4)",
+   "pics": [
+    "a6-removed",
+    "a6-after-reload"
+   ]
+  }
+ ],
+ "notes": [
+  "the Tracker's first mount (its one named exempt writer, plan §9 4.1) wrote 15 rows, 0 batch(es): tracker/v3:cmunufkjkoe9aia:idmig, tracker/v3:cmunufkjkoe9aia:plan, tracker/v3:cmunufkjkoe9aia:rostermig, tracker/v3:cmunufkjkoe9aia:sb2026:enr:smunufkjn9mhfxv, tracker/v3:cmunufkjkoe9aia:sb2026:enr:smunufkjnf2eqjp, tracker/v3:courseidmig, tracker/v3:eventinfomig, tracker/v3:master:chart:sb2024, tracker/v3:master:chart:sb2026, tracker/v3:master:chart:sbagaa2026, tracker/v3:master:chart:sbtx2026, tracker/v3:master:course:cmunufkjkoe9aia, tracker/v3:seedstamp, tracker/v3:sylcatmig, tracker/v3:sylreset",
+  "A5 before the first syllabus reorder, 4 of 4 chart rows carried no place (ord): [[\"sbagaa2026\",null],[\"sb2024\",null],[\"sbtx2026\",null],[\"sb2026\",null]]",
+  "A6 the remove question read: Remove STUDENT B from 2026? Their marks, dates, pace and lull periods on this syllabus are deleted."
+ ],
+ "errors": []
+}

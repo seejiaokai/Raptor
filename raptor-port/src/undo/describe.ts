@@ -91,8 +91,6 @@ const SETTING_PHRASE: Record<string, string> = {
   stores: 'the stores list',
   cxreasons: 'the cancel reasons',
   guestview: 'the guest switch',
-  accounts: 'an account',
-  accessreqs: 'a request for access',
 }
 
 /* a safe generic label from the entry's module, used when the type is unknown. */
@@ -204,7 +202,9 @@ function lwLabel(entry: UndoEntry): string {
     return who ? `${gone ? 'removing ' : ''}${who}’s ${what}` : gone ? 'removing leave on the Leave War' : 'leave on the Leave War'
   }
   if (colls.has('lw.config')) return 'a Leave War setting'
-  if (colls.has('lw.balances')) return 'an opening balance'
+  if (colls.has('lw.opening')) return 'an opening balance'
+  /* a ground-crew row's label on the war — kept in the war's ⚙ record until [DB-READINESS] group A phase 3 */
+  if (colls.has('lw.label')) return 'a Leave War setting'
   if (colls.has('lw.oilpolicy')) return 'the OIL policy'
   if (colls.has('lw.ledger')) {
     /* an OIL AWARD — a ledger entry, however it was given ([OIL-AWARD-IS-A-GRANT]) — by its own name, as the grid's
@@ -243,13 +243,18 @@ function peopleLabel(entry: UndoEntry): string | null {
 }
 
 /* ---- the accounts (Admin → Users) ---- */
+/* one change per account ROW since [DB-READINESS] group A, phase 4.4 (`settings/account:<id>`); a seeded account never
+   stored before this step reads as the seed (the injected default, state/undo-wire.ts) */
 function accountLabel(entry: UndoEntry): string | null {
-  const ch = entry.forward.find(c => c.collection === 'settings' && c.id === 'accounts')
-  if (!ch || entry.type !== 'account.update') return null
-  const b = listOf(ch.before == null ? defaultOf('accounts') : ch.before), a = listOf(ch.after)
-  for (const x of a) {
-    const y = b.find((z: any) => z && z.id === x.id)
-    if (!y || JSON.stringify(y) === JSON.stringify(x)) continue
+  if (entry.type !== 'account.update') return null
+  const chs = entry.forward.filter(c => c.collection === 'settings' && c.id.startsWith('account:'))
+  if (!chs.length) return null
+  const seeded = listOf(defaultOf('accounts'))
+  for (const ch of chs) {
+    const x: any = ch.after
+    const id = ch.id.slice('account:'.length)
+    const y: any = ch.before ?? seeded.find((z: any) => z && z.id === id)
+    if (!x || !y || JSON.stringify(y) === JSON.stringify(x)) continue
     const cs = nameOf(x.pid) || x.name
     if ((y.on !== false) !== (x.on !== false)) return x.on === false ? `suspending ${poss(cs)}sign-in` : `enabling ${poss(cs)}sign-in`
     if (y.role !== x.role) return `${poss(cs)}role`
@@ -268,12 +273,12 @@ export function describeEntry(entry: UndoEntry): string {
   /* read only what the entry holds — a partial one (no closure yet, a test's) is still described */
   if (!Array.isArray(entry.forward)) entry = { ...entry, forward: [] }
   if (entry.type === 'sched.text') return textLabel(entry.detail) || TYPE_PHRASE['sched.text']
-  /* the Inputs calendar's own record (plan/all: its day titles `dm`, its puck rows `pp`), saved through the Inputs page's
-     door — with no input row, the change is on the calendar (the walk, R2: a day title read "a personal input") */
-  const plan = entry.forward.find((c: Change) => c.collection === 'plan')
-  if (plan && inputsCount(entry) === 0) {
-    const b: any = plan.before || {}, a: any = plan.after || {}
-    const dm = JSON.stringify(b.dm || {}) !== JSON.stringify(a.dm || {}), pp = JSON.stringify(b.pp || []) !== JSON.stringify(a.pp || [])
+  /* the Inputs calendar's own records — a day title (`plan/dm:<iso>`), a note or pucks row (`plan/pp:<id>`), one record
+     each since [DB-READINESS] group A, phase 2 — saved through the Inputs page's door: with no input row, the change is
+     on the calendar (the walk, R2: a day title read "a personal input") */
+  const plans = entry.forward.filter((c: Change) => c.collection === 'plan')
+  if (plans.length && inputsCount(entry) === 0) {
+    const dm = plans.some(c => c.id.startsWith('dm:')), pp = plans.some(c => c.id.startsWith('pp:'))
     return dm && !pp ? 'a day title on the calendar' : pp && !dm ? 'pucks on the calendar' : 'a change to the calendar'
   }
   /* one input filed through the Inputs page's batch door is one input (walker A2-F2) */

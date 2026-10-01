@@ -136,6 +136,13 @@ input[type=checkbox]{accent-color:var(--accent)}
 button{cursor:pointer}button:hover{border-color:var(--accent)}
 button.primary{background:var(--on);border-color:var(--accent)}
 button.sm{padding:3px 7px;font-size:11px}
+/* NO COURSE YET ([DB-READINESS] group A, phase 5 — D463; App.jsx): a shared store's Tracker before its first course —
+   one quiet card with the two ways in, each a full-size button (a phone's thumb, not the bar's 11px chips) */
+.nocourse{box-sizing:border-box;width:calc(100% - 32px);max-width:420px;margin:48px auto;padding:20px 18px;border:1px solid var(--line);border-radius:14px;background:var(--panel2);text-align:center;color:var(--muted)}
+.nocourse h2{margin:0 0 8px;font-size:16px;font-weight:600;color:var(--ink)}
+.nocourse p{margin:0 0 14px;font-size:13px;line-height:1.45}
+.nocourse-acts{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+.nocourse-acts button{min-height:40px;padding:8px 14px;font-size:13px}
 /* The Course / Syllabus edit pencils and the ⓘ info toggle are glyph-only: a
    touch bigger than the 11px .sm text so the icon reads, and centred. */
 button.sm.icon{font-size:14px;padding:3px 8px;line-height:1}

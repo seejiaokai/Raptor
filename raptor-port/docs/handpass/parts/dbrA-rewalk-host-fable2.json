@@ -1,0 +1,21 @@
+{
+ "base": "http://localhost:4207",
+ "at": "2026-09-30T11:05:18.870Z",
+ "results": [
+  {
+   "name": "A: Wednesday saved with A's note",
+   "ok": true,
+   "detail": "{\"d\":{\"dow\":\"Wednesday\",\"dt\":\"Jul 22\",\"wc\":\"2 X 2 X 0\",\"notes\":[{\"t\":\"ORDERS: FL"
+  },
+  {
+   "name": "B's week switch does not overwrite A's Wednesday",
+   "ok": true,
+   "detail": "{\"d\":{\"dow\":\"Wednesday\",\"dt\":\"Jul 22\",\"wc\":\"2 X 2 X 0\",\"notes\":[{\"t\":\"ORDERS: FLYING ORDERS SECTION 2 A-WED-NOTE\",\"rid\":"
+  },
+  {
+   "name": "B's week switch writes no row",
+   "ok": true,
+   "detail": ""
+  }
+ ]
+}

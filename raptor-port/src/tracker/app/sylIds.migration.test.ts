@@ -18,7 +18,7 @@ import { useStorageImpl, storage } from '../storage.js'
 import { isSylId, isBuiltinSylId, builtinIdByName } from './sylIds.js'
 
 /* a Map-backed store so a seed is deterministic and isolated from localStorage */
-function makeStore(seed: Record<string, any>, failOnce?: string) {
+async function makeStore(seed: Record<string, any>, failOnce?: string) {
   const m = new Map<string, string>()
   for (const [k, v] of Object.entries(seed)) m.set(k, typeof v === 'string' ? v : JSON.stringify(v))
   let failed = false
@@ -30,9 +30,14 @@ function makeStore(seed: Record<string, any>, failOnce?: string) {
     remove: (k: string) => { m.delete(k) },
     keys: () => [...m.keys()],
   })
+  /* a new store under the Tracker, no boot: its mirror is made this store ([DB-READINESS] group A, phase 5b — the
+     row door compares every write with what the Tracker has read) */
+  await core.rehydrateForTests()
   return m
 }
-const get = async (k: string) => { const r = await storage.get(k); return r ? r.value : null }
+/* a record read back as the Tracker reads it: since phase 5b the student lists and the chart records are stored one row
+   per thing, so they are read through the row door — null when none of it is stored */
+const get = async (k: string) => core.storedRecordForTests(k)
 const getJSON = async (k: string) => { const v = await get(k); return v == null ? null : JSON.parse(v) }
 
 /* a realistic POST-Phase-1 store (courses id-keyed) that is still syllabus-NAME
@@ -59,7 +64,7 @@ describe('migrateSylIds — KEEP the catalogue, RESET the student layer', () => 
   beforeEach(() => { try { core.clearBootError() } catch (_) {} })
 
   it('converts the global catalogue in place and clears the student layer', async () => {
-    makeStore(seed())
+    await makeStore(seed())
     expect(await core.migrateCourseIds(), 'course layer settles first (fills COURSES)').toBe(true)
     expect(await core.migrateSylIds(), 'the syllabus migration succeeds').toBe(true)
     expect(core.bootError, 'no fail-closed boot').toBeNull()
@@ -113,7 +118,7 @@ describe('migrateSylIds — KEEP the catalogue, RESET the student layer', () => 
   })
 
   it('is idempotent — a second run changes nothing', async () => {
-    makeStore(seed())
+    await makeStore(seed())
     await core.migrateCourseIds(); await core.migrateSylIds()
     const cat1 = await get('v3:master:sylcat'), defs1 = await get('v3:master:syls'), lay1 = await get('v3:master:lay:sb2026')
     expect(await core.migrateSylIds(), 'a second pass is a no-op success').toBe(true)
@@ -123,7 +128,7 @@ describe('migrateSylIds — KEEP the catalogue, RESET the student layer', () => 
   })
 
   it('a fresh store (no charts, no students) still builds the built-in catalogue', async () => {
-    makeStore({ 'v3:courses': [{ id: 'cx1', name: '26ABSG' }] })
+    await makeStore({ 'v3:courses': [{ id: 'cx1', name: '26ABSG' }] })
     expect(await core.migrateCourseIds()).toBe(true)
     expect(await core.migrateSylIds()).toBe(true)
     const cat = await getJSON('v3:master:sylcat')
@@ -135,7 +140,7 @@ describe('migrateSylIds — KEEP the catalogue, RESET the student layer', () => 
     /* the old id ST-1 pads to ST-01, which the layout ALSO holds under a
        different position — a silent first-wins keep would lose one, so the
        migration must refuse (bootError) and leave the source intact. */
-    makeStore({
+    await makeStore({
       'v3:courses': [{ id: 'cx1', name: '26ABSG' }],
       'v3:master:lay:2026': { 'ST-1': { x: 1, y: 1 }, 'ST-01': { x: 9, y: 9 } },
     })
@@ -147,7 +152,7 @@ describe('migrateSylIds — KEEP the catalogue, RESET the student layer', () => 
   })
 
   it('RESET sweeps a syllabus literally named "plan" but keeps the exact plan key (review CSID-REV-07)', async () => {
-    makeStore({
+    await makeStore({
       'v3:courses': [{ id: 'cx1', name: '26ABSG' }],
       'v3:cx1:plan': { sylName: '2026', epw: 2 },
       'v3:cx1:rostermig': '1', 'v3:cx1:idmig': '1',
@@ -163,7 +168,7 @@ describe('migrateSylIds — KEEP the catalogue, RESET the student layer', () => 
   })
 
   it('a course pointing at a vanished chart repairs to a LIVE non-tombstoned id, never a deleted default (review CSID-04)', async () => {
-    makeStore({
+    await makeStore({
       'v3:courses': [{ id: 'cx1', name: '26ABSG' }],
       'v3:master:syltomb': { '2026': 1 },                 /* the default built-in is DELETED */
       'v3:cx1:plan': { sylName: 'VANISHED CHART' },       /* points at a chart that no longer exists */
@@ -184,7 +189,7 @@ describe('migrateSylIds — KEEP the catalogue, RESET the student layer', () => 
        own hand-drawn layout under v3:lay:<c>:<sylName>. The layout name collides
        with the built-in name '2026'; routing it by name would hang it on sb2026 and
        DROP the edited chart's positions. It must land on the minted edited id. */
-    makeStore({
+    await makeStore({
       'v3:courses': [{ id: 'cx1', name: '26ABSG' }],
       'v3:cx1:plan': { sylName: '2026', custom: true, epw: 2 },
       'v3:cx1:rostermig': '1', 'v3:cx1:idmig': '1',
@@ -210,7 +215,7 @@ describe('migrateSylIds — KEEP the catalogue, RESET the student layer', () => 
     /* delCourse drops a course from v3:courses but keeps its records. A deleted
        legacy course still holds name-keyed student data; the migration must sweep
        it too, or a later re-import would surface the stale marks. */
-    makeStore({
+    await makeStore({
       'v3:courses': [{ id: 'cx1', name: '26ABSG' }],
       'v3:cx1:plan': { sylName: '2026', epw: 2 },
       'v3:cx1:rostermig': '1', 'v3:cx1:idmig': '1',
@@ -232,7 +237,7 @@ describe('migrateSylIds — KEEP the catalogue, RESET the student layer', () => 
   it('an interrupted flag write keeps the journal and resumes cleanly (review CSID-01)', async () => {
     /* the RESET flag write is swallowed once (a "local only" drop); migrateSylIds
        must NOT report success or delete the journal, so the next run finishes. */
-    makeStore(seed(), 'v3:sylreset')
+    await makeStore(seed(), 'v3:sylreset')
     expect(await core.migrateCourseIds()).toBe(true)
     expect(await core.migrateSylIds(), 'the interrupted run does not claim success').toBe(false)
     expect(await get('v3:syljournal'), 'the journal survives for the resume').toBeTruthy()
@@ -241,6 +246,7 @@ describe('migrateSylIds — KEEP the catalogue, RESET the student layer', () => 
     const m2 = new Map<string, string>()
     for (const k of (await storage.list()).keys) { const v = await get(k); if (v != null) m2.set(k, v) }
     useStorageImpl({ get: (k: string) => (m2.has(k) ? m2.get(k)! : null), set: (k: string, v: string) => { m2.set(k, v) }, remove: (k: string) => { m2.delete(k) }, keys: () => [...m2.keys()] })
+    await core.rehydrateForTests()
     expect(await core.migrateSylIds(), 'the resume completes').toBe(true)
     expect(await get('v3:sylreset')).toBe('1')
     expect(await get('v3:syljournal'), 'journal retired once both flags verified').toBeNull()
@@ -259,7 +265,7 @@ describe('migrateSylIds — KEEP the catalogue, RESET the student layer', () => 
        alias entry was DEAD — the chart showed. A shipped rename even UN-deleted
        such a built-in. Folding the alias onto sb2026 would wrongly hide+delete a
        chart the owner was using. */
-    makeStore({
+    await makeStore({
       'v3:courses': [{ id: 'cx1', name: '26ABSG' }],
       'v3:cx1:plan': { sylName: '2026', epw: 2 },
       'v3:cx1:rostermig': '1', 'v3:cx1:idmig': '1',
@@ -270,8 +276,9 @@ describe('migrateSylIds — KEEP the catalogue, RESET the student layer', () => 
     expect(await core.migrateSylIds()).toBe(true)
     const cat = await getJSON('v3:master:sylcat')
     expect(cat.some((e: any) => e.id === 'sb2026'), '2026 is still catalogued').toBe(true)
-    expect(await getJSON('v3:master:sylhidden'), 'the dead alias hides nothing').toEqual([])
-    expect(await getJSON('v3:master:syltomb'), 'and tombstones nothing').toEqual({})
+    /* nothing stored at all reads as none (phase 5b: an empty list is no rows) */
+    expect((await getJSON('v3:master:sylhidden')) ?? [], 'the dead alias hides nothing').toEqual([])
+    expect((await getJSON('v3:master:syltomb')) ?? {}, 'and tombstones nothing').toEqual({})
     expect((await getJSON('v3:cx1:plan')).sylId, 'the course still opens on 2026').toBe('sb2026')
   })
 
@@ -280,7 +287,7 @@ describe('migrateSylIds — KEEP the catalogue, RESET the student layer', () => 
        custom chart also named '2026' live in v3:master:syls, shown
        unconditionally as CUSTOMS['2026']. Classifying that def onto sb2026 would
        make it a hidden built-in override — a chart the owner sees would vanish. */
-    makeStore({
+    await makeStore({
       'v3:courses': [{ id: 'cx1', name: '26ABSG' }],
       'v3:cx1:plan': { sylName: '2026', epw: 2 },
       'v3:cx1:rostermig': '1', 'v3:cx1:idmig': '1',
@@ -306,7 +313,7 @@ describe('migrateSylIds — KEEP the catalogue, RESET the student layer', () => 
        hand-drew '2026' differently and neither was opened since. Both rank
        'own' — a silent first-wins would throw one hand-drawn layout away, the
        exact "keep charts" loss. It must fail closed with both sources intact. */
-    makeStore({
+    await makeStore({
       'v3:courses': [{ id: 'cx1', name: '26ABSG' }, { id: 'cx2', name: '27ABSG' }],
       'v3:cx1:plan': { sylName: '2026', epw: 2 }, 'v3:cx2:plan': { sylName: '2026', epw: 2 },
       'v3:cx1:rostermig': '1', 'v3:cx1:idmig': '1', 'v3:cx2:rostermig': '1', 'v3:cx2:idmig': '1',
@@ -322,7 +329,7 @@ describe('migrateSylIds — KEEP the catalogue, RESET the student layer', () => 
   })
 
   it('two courses with the SAME own layout for one chart converts cleanly (finding 3 is differing-only)', async () => {
-    makeStore({
+    await makeStore({
       'v3:courses': [{ id: 'cx1', name: '26ABSG' }, { id: 'cx2', name: '27ABSG' }],
       'v3:cx1:plan': { sylName: '2026', epw: 2 }, 'v3:cx2:plan': { sylName: '2026', epw: 2 },
       'v3:cx1:rostermig': '1', 'v3:cx1:idmig': '1', 'v3:cx2:rostermig': '1', 'v3:cx2:idmig': '1',
@@ -343,7 +350,7 @@ describe('migrateSylIds — KEEP the catalogue, RESET the student layer', () => 
        the same chart exists; the old reader ALWAYS used the master. A sticky
        first-seen conflict flag would brick this purely because of read order — the
        winner is decided after the whole sweep, so the master settles it. */
-    makeStore({
+    await makeStore({
       'v3:courses': [{ id: 'cx1', name: '26ABSG' }, { id: 'cx2', name: '27ABSG' }],
       'v3:cx1:plan': { sylName: '2026', epw: 2 }, 'v3:cx2:plan': { sylName: '2026', epw: 2 },
       'v3:cx1:rostermig': '1', 'v3:cx1:idmig': '1', 'v3:cx2:rostermig': '1', 'v3:cx2:idmig': '1',
@@ -361,7 +368,7 @@ describe('migrateSylIds — KEEP the catalogue, RESET the student layer', () => 
     /* identical positions, coordinate keys serialised in a different order. Raw
        JSON-text equality would call them different and brick; structural equality
        recognises them as the same layout. */
-    makeStore({
+    await makeStore({
       'v3:courses': [{ id: 'cx1', name: '26ABSG' }, { id: 'cx2', name: '27ABSG' }],
       'v3:cx1:plan': { sylName: '2026', epw: 2 }, 'v3:cx2:plan': { sylName: '2026', epw: 2 },
       'v3:cx1:rostermig': '1', 'v3:cx1:idmig': '1', 'v3:cx2:rostermig': '1', 'v3:cx2:idmig': '1',
@@ -378,7 +385,7 @@ describe('migrateSylIds — KEEP the catalogue, RESET the student layer', () => 
     /* the empty source is read first; it must not, by arriving first, make the
        real hand-drawn layout look like a differing conflict. Empty candidates are
        discarded when a non-empty one exists at the same precedence. */
-    makeStore({
+    await makeStore({
       'v3:courses': [{ id: 'cx1', name: '26ABSG' }, { id: 'cx2', name: '27ABSG' }],
       'v3:cx1:plan': { sylName: '2026', epw: 2 }, 'v3:cx2:plan': { sylName: '2026', epw: 2 },
       'v3:cx1:rostermig': '1', 'v3:cx1:idmig': '1', 'v3:cx2:rostermig': '1', 'v3:cx2:idmig': '1',
@@ -397,7 +404,7 @@ describe('migrateSylIds — KEEP the catalogue, RESET the student layer', () => 
        a custom. '2026': def ONLY in the legacy master (v3:SYLLABUS EDIT:syls) under a
        hidden+tombstoned name — the old reader's guard refused it, so NOTHING showed;
        minting a visible custom for it would resurrect a chart the owner had deleted. */
-    makeStore({
+    await makeStore({
       'v3:courses': [{ id: 'cx1', name: '26ABSG' }],
       'v3:cx1:plan': { sylName: '2024', epw: 2 },
       'v3:cx1:rostermig': '1', 'v3:cx1:idmig': '1',
@@ -429,7 +436,7 @@ describe('migrateSylIds — KEEP the catalogue, RESET the student layer', () => 
        the chart was still on screen; folding it onto the built-in id makes it a
        HIDDEN override that disappears. It must stay a visible custom, while the
        built-in itself stays catalogued-but-hidden, mirroring the old model. */
-    makeStore({
+    await makeStore({
       'v3:courses': [{ id: 'cx1', name: '26ABSG' }],
       'v3:cx1:plan': { sylName: '2026', epw: 2 },
       'v3:cx1:rostermig': '1', 'v3:cx1:idmig': '1',

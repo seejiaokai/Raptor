@@ -13,13 +13,14 @@ import { CURWEEK } from '../engine/waves'
 import { INPUTS } from '../engine/inputs'
 import { setSlotVal, slotVal, acceptInput } from '../engine/slots'
 import { SCHED, setSign, setDayApproved, dayDelta, daySnapOf, dayCurVer } from '../engine/publish'
-import { stashPut, stashGet, stashDrop } from '../engine/weekstash'
-import { initStore, resetSession, notify, weekStashSnap, weekDirty } from './store'
+import { stashPut, stashGet, stashDrop, stashDays } from '../engine/weekstash'
+import { initStore, resetSession, notify, weekStashSnap, weekDirty, writeInputs, writeText } from './store'
 import { Whiteboard } from '../storage/whiteboard'
 import { wirePersist } from './persist'
+import { schedWrite, SCHED_TYPES } from './sched-commit'
 import { HOOKS } from '../engine/hooks'
 import { accountsLoad, accountByName, signIn, sessionFor, ACCOUNTS_LIST } from './accounts'
-import { PLANPUCKS } from './plan'
+import { PLANPUCKS, addPuckRow } from './plan'
 import { newPersonProblem } from './roster-add'
 import { deletePerson, deleteCutoff, personKeysOnDay, effectiveToday, deletedRestoreProblem } from './person-delete'
 import { loadVersionToWorkingCopy, ROWSLEFT, rowsLeftSaid } from '../engine/drafts'
@@ -62,7 +63,7 @@ beforeAll(() => {
 afterAll(() => { vi.useRealTimers(); storeBackend.impl = null })
 beforeEach(() => {
   Object.keys(mem).forEach(k => delete mem[k])
-  storeBackend.impl = { getItem: (k: string) => (k in mem ? mem[k]! : null), setItem: (k: string, v: string) => { mem[k] = v } }
+  storeBackend.impl = { getItem: (k: string) => (k in mem ? mem[k]! : null), setItem: (k: string, v: string) => { if (v === 'null') delete mem[k]; else mem[k] = v }, keys: () => Object.keys(mem) }
   const p0 = JSON.parse(PEOPLE0)
   for (const k of Object.keys(PEOPLE)) delete (PEOPLE as any)[k]
   Object.assign(PEOPLE, p0); indexCallsigns()
@@ -112,22 +113,38 @@ describe('PO6 — days he flew keep his puck; every day from the cutoff loses hi
     expect(t.sign.cur).toBe('')
     expect(t.signBind.cur).toBeUndefined()
   })
-  it('a STASHED week to come is swept (its days, sign boxes, parked plans); a stashed week before the cutoff is not', () => {
+  /* [DB-READINESS] group A, phase 6 (d): a saved week is NOT rewritten by a delete (D450 — only a day's holder saves it);
+     it READS without him from his cutoff wherever its days come into memory (engine/overlay.ts). The requirement this
+     pinned — a week to come loses him on its days, its sign boxes and its parked plans; a week before the cutoff keeps
+     him — is unchanged; it is met on read. */
+  it('a STASHED week to come reads without him (its days, sign boxes, parked plans) and is not rewritten; one before the cutoff keeps him', () => {
     const day = clone((DAYS as any)[PAST]); day.ground = [{ who: HIM, str: '0900', end: '1000' }]
     const blob = (plans: boolean) => JSON.stringify({ d: [0, 1, 2, 3, 4, 5, 6].map(() => clone(day)), sg: { 1: { cur: HIM } }, sb: { 1: { cur: { x: 1 } } },
       dr: plans ? { 2: [{ id: 'q', name: 'Q', d: clone(day), sign: { cur: HIM }, signBind: {} }] } : {} })
     stashPut('20/07/2026', blob(true))          // 20–26 Jul: every day to come
     stashPut('06/07/2026', blob(false))         // 6–12 Jul: all before the cutoff
+    const stored = stashGet('20/07/2026')
     expect(deletePerson(HIM)).toBe(null)
-    const after = stashGet('20/07/2026')!
-    expect(after).not.toContain(`"${HIM}"`)
-    expect(stashGet('06/07/2026')).toContain(`"${HIM}"`)
+    expect(stashGet('20/07/2026'), 'the saved week is not rewritten').toBe(stored)
+    expect(JSON.stringify(stashDays('20/07/2026')!.days), 'read, its days are without him').not.toContain(`"${HIM}"`)
+    expect(JSON.stringify(stashDays('06/07/2026')!.days), 'a week before the cutoff keeps him').toContain(`"${HIM}"`)
+    /* its sign boxes and parked plans are read without him when the week is opened (state/store.ts applyWeekModel —
+       pinned in state/p6d-deleteonread.test.ts, which opens weeks on a real saved store) */
   })
+  /* the calendar's rows carry their day as `date` (state/plan.ts addPuckRow) — the fixture below once wrote `iso`, the
+     field the delete read, so the delete never took him off a real calendar row ([DB-READINESS] group A, phase 2) */
   it('the planning calendar: his puck gone from a day to come (a gap — the others keep their places), kept on a day he flew', () => {
-    PLANPUCKS.push({ id: 'pp1', iso: '2026-07-17', kind: 'pucks', ids: ['bane', HIM, 'pike'] }, { id: 'pp0', iso: '2026-07-13', kind: 'pucks', ids: [HIM] })
+    PLANPUCKS.push({ id: 'pp1', date: '2026-07-17', kind: 'pucks', ids: ['bane', HIM, 'pike'] }, { id: 'pp0', date: '2026-07-13', kind: 'pucks', ids: [HIM] })
     expect(deletePerson(HIM)).toBe(null)
     expect(PLANPUCKS.find(e => e.id === 'pp1').ids).toEqual(['bane', '', 'pike'])
     expect(PLANPUCKS.find(e => e.id === 'pp0').ids).toEqual([HIM])
+  })
+  it('…a pucks row made on the calendar itself (its own door) loses him from a day to come', () => {
+    expect(writeInputs(() => { addPuckRow('2026-07-18', ['bane', HIM]) })).toBe(true)
+    const row = PLANPUCKS.find((e: any) => e.date === '2026-07-18' && e.kind === 'pucks')
+    expect(row.ids).toEqual(['bane', HIM])
+    expect(deletePerson(HIM)).toBe(null)
+    expect(PLANPUCKS.find((e: any) => e.id === row.id).ids).toEqual(['bane'])
   })
 })
 
@@ -171,20 +188,30 @@ describe('PO6 — loading a published version never brings a deleted man back on
   })
 })
 
-/* THE DELETE IS SAVED (found by the walk, 27 Sep 26 — every unit test here read the live model, none the saved copy):
-   the loaded week is filed without him on the days from the cutoff, so a reload does not put him back. */
-describe('PO6 — the delete is saved: the loaded week filed without him', () => {
-  it('after the delete the saved copy of the week on screen no longer holds him on a day to come; a day he flew still does', () => {
+/* THE DELETE IS SAVED (found by the walk, 27 Sep 26 — every unit test here read the live model, none the saved copy) — AND,
+   since [DB-READINESS] group A phase 6 (d), saved WITHOUT WRITING A DAY: his record says `deletedFrom`, the week on
+   screen reads without him at once (and after a reload — engine/overlay.ts), and the day's holder saves each day without
+   him at his next change to it (D450: only the holder saves a day). */
+describe('PO6 — the delete is saved: the week on screen reads without him, and the next change to a day files it without him', () => {
+  it('after the delete the week on screen shows him on no day to come; its saved rows are untouched until a day is next changed', () => {
     const wb = new Whiteboard()
     wirePersist(wb, { weekSnap: weekStashSnap, weekDirty })
-    plantEveryKind(TO_COME); plantEveryKind(PAST)
-    HOOKS.histPush()
-    const before = JSON.parse(wb.get('weeks', '13-07-2026')!)
-    expect(JSON.stringify(before.d[TO_COME]), 'the fixture is saved').toContain(`"${HIM}"`)
+    /* planted the way the app writes — inside a schedule command, whose rows are the save */
+    /* a day is saved only when its command CHANGES it (the group-wide walk's H3 — no first save of all seven days): the
+       tests above may already have planted him here, so each day also takes a note of this test's own */
+    schedWrite(SCHED_TYPES.mutate, () => {
+      plantEveryKind(TO_COME); plantEveryKind(PAST)
+      for (const di of [TO_COME, PAST]) (DAYS as any)[di].notes.push({ t: 'PO6 SAVED ' + di })
+    })
+    /* the week is saved as one row per day ([DB-READINESS] group A, phase 1 — state/weekrows.ts) */
+    const day = (di: number) => JSON.parse(wb.get('weeks', `13-07-2026#${di}`)!).d
+    expect(JSON.stringify(day(TO_COME)), 'the fixture is saved').toContain(`"${HIM}"`)
     expect(deletePerson(HIM)).toBe(null)
-    const after = JSON.parse(wb.get('weeks', '13-07-2026')!)
-    expect(JSON.stringify(after.d[TO_COME]), 'a day to come, as saved').not.toContain(`"${HIM}"`)
-    expect(JSON.stringify(after.d[PAST]), 'a day he flew, as saved').toContain(`"${HIM}"`)
+    expect(personKeysOnDay(TO_COME, HIM), 'the week on screen: a day to come, at once').toEqual([])
+    expect(JSON.stringify(day(TO_COME)), 'the delete writes no day (D450)').toContain(`"${HIM}"`)
+    writeText(`dn:${TO_COME}.0`, 'NEXT CHANGE')
+    expect(JSON.stringify(day(TO_COME)), 'a day to come, as saved at its next change').not.toContain(`"${HIM}"`)
+    expect(JSON.stringify(day(PAST)), 'a day he flew, as saved').toContain(`"${HIM}"`)
   })
 })
 
@@ -199,7 +226,9 @@ describe('PO7 — a request spanning the cutoff, landed on a day to come, stays 
     expect(JSON.stringify((DAYS as any)[TO_COME].ground || []), 'its row is on the day to come').toContain(String(inp.iid))
     expect(deletePerson(HIM)).toBe(null)
     expect(JSON.stringify((DAYS as any)[TO_COME].ground || []), 'the row left the day to come').not.toContain(String(inp.iid))
-    expect(inp.acc, 'the kept part is still accepted — never "taken off"').toBe('g')
+    /* since [DB-READINESS] phase 6 (c) its filing is worked out from where its row stands on the week on screen — the point
+       Fable's read made stands: the delete never leaves it "taken off" (dormant) */
+    expect(inp.acc, 'the kept part is never "taken off"').not.toBe('r')
     expect(inp.endDate === undefined || inp.endDate === 'Jul 14', 'it ends the day before the cutoff').toBe(true)
     expect(INPUTS.includes(inp)).toBe(true)
   })
@@ -240,18 +269,22 @@ describe('PO5 — kept underneath, gone from every list; his callsign free; his 
    accounts list holding his account, would put him back; a delete of a man the war does not hold writes no posting record,
    so nothing else would keep it dead (Fable's red team 10 — built BEFORE the cutover). */
 describe('B4 — undo and redo never put a deleted man, or his account, back', () => {
-  it('a roster image of him un-deleted, and an accounts list holding his account, are refused; his deleted image is not', () => {
+  /* one row per account since [DB-READINESS] group A, phase 4.4: a step holds a change per account ROW */
+  const rowsOf = (list: any[]) => list.map(a => ({ op: 'put', collection: 'settings', id: `account:${a.id}`, after: clone(a) }))
+  it('a roster image of him un-deleted, and an account row of his, are refused; his deleted image is not', () => {
     const before = clone((PEOPLE as any)[HIM])
     const accts = clone(ACCOUNTS_LIST)
     expect(deletePerson(HIM)).toBe(null)
     expect(deletedRestoreProblem([{ op: 'put', collection: 'people', id: HIM, after: before }])).toMatch(/Hex has been deleted/)
-    expect(deletedRestoreProblem([{ op: 'put', collection: 'settings', id: 'accounts', after: accts }])).toMatch(/Hex has been deleted/)
+    expect(deletedRestoreProblem(rowsOf(accts))).toMatch(/Hex has been deleted/)
     expect(deletedRestoreProblem([{ op: 'put', collection: 'people', id: HIM, after: clone((PEOPLE as any)[HIM]) }])).toBe(null)
-    expect(deletedRestoreProblem([{ op: 'put', collection: 'settings', id: 'accounts', after: clone(ACCOUNTS_LIST) }])).toBe(null)
+    expect(deletedRestoreProblem(rowsOf(ACCOUNTS_LIST))).toBe(null)
   })
-  it('an accounts image stored as null is the SEEDED list — and it holds Ranger’s account (Fable’s final read, F5)', () => {
+  it('a step leaving NO account row is the SEEDED list — and it holds Ranger’s account (Fable’s final read, F5)', () => {
     expect(deletePerson('bane')).toBe(null)
-    expect(deletedRestoreProblem([{ op: 'put', collection: 'settings', id: 'accounts', after: null }])).toMatch(/Ranger has been deleted/)
+    const stored = Object.keys(mem).filter(k => k.startsWith('sqn142_account:')).map(k => k.slice('sqn142_'.length))
+    expect(stored.length, 'the delete stored the accounts it left').toBeGreaterThan(0)
+    expect(deletedRestoreProblem(stored.map(id => ({ op: 'delete', collection: 'settings', id })))).toMatch(/Ranger has been deleted/)
   })
 })
 

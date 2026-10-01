@@ -11,8 +11,9 @@
    - HOLDS: guarantees the seam already keeps under database-like faults.
      These must stay green.
    - GAP: current behaviour that only the SHARED DATABASE stage can fix
-     (write-verify against a dropped ack; per-row writes/merge against a
-     two-writer clobber). They are characterisation tests — they assert what
+     (write-verify against a dropped ack). The per-row one — two writers of one
+     whole-list record clobbering each other — FLIPPED with [DB-READINESS]
+     group A, phase 2 (one row per request). They are characterisation tests — they assert what
      happens TODAY so the gap is visible and can't regress silently. When the
      database stage lands, these expectations flip, and that is the reminder
      to flip them. They are NOT bugs to fix inside stage 1. */
@@ -96,17 +97,20 @@ describe('storage seam — database readiness', () => {
     // DB stage must confirm the write (version / read-back); then this flips to "kept".
   })
 
-  it('GAP (needs per-row writes): two people editing the SAME blob clobber each other', async () => {
+  /* FLIPPED 30 Sep 26 — [DB-READINESS] group A, phase 2: the app stores one row per request (`inputs/<iid>`, written from
+     the command that changed it — state/rowmap.ts), so two people filing two requests write two different rows. The
+     app-level proof (a request filed writes its row alone; a stale client never writes back another's delete) is
+     state/rows-roster-inputs.test.ts. The old whole-list record `inputs/all` is gone. */
+  it('HOLDS (per-row writes, group A phase 2): two people filing two requests both survive — each its own row', async () => {
     const be = new MemoryBackend()
-    be.seed({ inputs: { all: '["seed"]' } })
+    be.seed({ inputs: { iseed: '{"iid":"iseed"}' } })
     const a = client(be), b = client(be)
     a.wb.fill(await be.loadAll()); b.wb.fill(await be.loadAll())   // both boot from the same state
-    a.wb.set('inputs', 'all', JSON.stringify(['seed', 'alpha']))  // A adds alpha
-    b.wb.set('inputs', 'all', JSON.stringify(['seed', 'beta']))   // B adds beta — different edit, same one-blob record
-    await a.pm.flush(); await b.pm.flush()                         // B writes last
+    a.wb.set('inputs', 'ialpha', '{"iid":"ialpha"}')              // A files alpha — its own row
+    b.wb.set('inputs', 'ibeta', '{"iid":"ibeta"}')                // B files beta — its own row
+    await a.pm.flush(); await b.pm.flush()
     const fresh = await be.loadAll()
-    expect(fresh.inputs['all']).toBe('["seed","beta"]')  // last writer won...
-    expect(fresh.inputs['all']).not.toContain('alpha')   // ...A's edit is gone (INPUTS is a single 'all' blob)
-    // DB stage must write per row / merge; then both survive.
+    expect(Object.keys(fresh.inputs).sort()).toEqual(['ialpha', 'ibeta', 'iseed'])
+    expect(fresh.inputs['iseed']).toBe('{"iid":"iseed"}')        // neither save touched another's row
   })
 })

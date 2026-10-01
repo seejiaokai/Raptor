@@ -1,0 +1,25 @@
+{
+ "base": "http://localhost:4203",
+ "at": "2026-09-30T09:02:54.158Z",
+ "results": [
+  {
+   "name": "probe errors",
+   "ok": true,
+   "detail": "[]"
+  }
+ ],
+ "ids": [
+  "oileditdate-picker",
+  "oileditdate-prev-month",
+  "oileditdate-month",
+  "oileditdate-next-month",
+  "oileditdate-day-2026-09-01",
+  "oileditdate-day-2026-09-02",
+  "oileditdate-day-2026-09-03",
+  "oileditdate-day-2026-09-04",
+  "oileditdate-day-2026-09-05",
+  "oileditdate-day-2026-09-06",
+  "oileditdate-day-2026-09-07",
+  "oileditdate-day-2026-09-08"
+ ]
+}

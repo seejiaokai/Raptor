@@ -85,6 +85,10 @@ export interface Period {
    *  Empty on every war that predates the feature, read leniently in the
    *  store's `readWar` so an older stored war loads unchanged. */
   bands: EventBand[]
+  /** Its place among the wars — the order they were created in, which the
+   *  period picker lists them by ([DB-READINESS] group A, phase 3: each war is
+   *  its own stored row now, so the order rides on the row; command/ord.ts). */
+  ord?: number
 }
 
 /** Whether a proposed band overlaps any existing band on the same line. The

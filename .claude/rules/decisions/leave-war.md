@@ -56,6 +56,8 @@ rules — `raptor-port/docs/superpowers/specs/2026-09-20-one-absence-behaviour-r
 
 | # | Date | The rule |
 |---|---|---|
+| D461 | 30 Sep 26 | THE LEAVE WAR HAS NO "EDIT PERSON": A MAN'S SEAT, BAND AND SXO ARE CHANGED ONLY ON QUALS, AND THE WAR SHOWS WHAT QUALS SAYS. |
+| D460 | 30 Sep 26 | THE SXO TICK HE KEEPS ON QUALS IS THE ONE SOURCE THE APP READS (HIS SETTING, NOT A CLAIM ABOUT THE OFFICIAL QUALIFICATION): THE LEAVE WAR CANNOT MAKE ANYONE SXO — IT SHOWS WHAT QUALS SAYS, READ ONLY, AND COUNTS HIM AS SXO ONLY IF QUALS DOES; NOTHING ON THE WAR (ITS PERSON SHEET, A MOVE INTO A CATEGORY) TICKS SXO. — changed by D461 |
 | D418 | 29 Sep 26 | THE LEAVE WAR STAYS AS BUILT ON THREE COUNTS — AN APPROVED LEAVE REACHES INPUTS AT APPROVE; THE ADMIN DECIDES BIDS IN EVERY STAGE BUT DRAFT; A PUBLISHED WAR'S APPROVED LEAVE OFFERS ONLY ITS REMARKS — AND A DRAG ACROSS DAYS THAT GOES BELOW ZERO MUST ASK FIRST, AS A ONE-DAY BID DOES. |
 | D352 | 28 Sep 26 | THE ONE UNDO TAKES BACK A LEAVE WAR STAGE MOVE, AS TODAY — AND SAYS SO. |
 | D365 | 29 Sep 26 | ON A PHONE THE LEAVE WAR'S "VIEWING AS" CHIP TAKES A LINE OF ITS OWN UNDER THE PICKER, WORDS KEPT — AS BUILT; A TABLET AND A DESKTOP KEEP THE ONE LINE. |
@@ -248,7 +250,9 @@ first-ever boot. `memoryBackend` is now the DEV/TEST path only (`vite` dev,
 delete this persistence as unintended — it is deliberate.** The seam interface
 (`state/storage.ts`, `memoryBackend`/`localBackend`) stays; the shared database
 replaces the implementation behind it. What is stored: `docs/data-schema.md`. Four seams cross the boundary, and only
-four: `main.tsx` boots it once (`lwInitStore` → `installDemoWorld` →
+four: `main.tsx` boots it once *[since 30 Sep 26 through `src/boot.ts`, the boot moved whole out of `main.tsx`, which
+hands it the boot policy — on a shared store no demo world and no seed war; a store may then hold NO war, and the page
+says "No leave period yet" (`[DB-READINESS]` group A phase 5)]* (`lwInitStore` → `installDemoWorld` →
 `wireLeaveWarSync` → a `histInit` re-baseline, in that order), `resetSession`
 derives its role from the Raptor login (`store.ts:toggleRole` — the admin's
 view-as-member flip, 27 Aug 26 — is the only other production writer, riding
@@ -309,3 +313,13 @@ than one record opens the TAP LIST instead (`ui/DayList.tsx`), each record on
 its own line with its own actions. Don't add a fifth seam casually,
 and never call its `initStore` from a component — it clears the store's
 subscribers.
+
+**SAVED ONE ROW PER RECORD, FROM THE COMMAND STREAM (`[DB-READINESS]` group A, phase 3, 30 Sep 26 —
+`src/leavewar/state/rows.ts`).** A war, each of its records (`rec:<war>:<recId>`, with its person, date and place
+`ord`), each ledger entry, each opening and each man's profile (window + label) is its own stored row; the store
+subscribes to the one command stream it already joined and writes, through its OWN door, exactly the rows each
+command's changes land in — a move is one row, a row goes only for a record that command removed. Not a fifth seam:
+the war still stores only through `state/storage.ts`. `rawPersist` writes nothing; a change outside every command is
+not saved. **No Edit person (D460, D461):** the war keeps no seat, band or SXO of its own — `setPerson`,
+`PersonSheet.tsx` and `personEdits` are gone; the projection's are the man's (Quals is the one place they change).
+Detail: `raptor-port/docs/data-schema.md` §World 2.

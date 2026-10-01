@@ -1,0 +1,336 @@
+{
+ "base": "http://localhost:4205",
+ "at": "2026-09-30T08:58:18.967Z",
+ "results": [
+  {
+   "name": "first boot — ONE change-log batch, of type boot",
+   "ok": true,
+   "detail": "1 batch(es): boot · rows by collection {\"leavewar\":91,\"people\":61,\"changes\":1,\"inputs\":46,\"settings\":1}"
+  },
+  {
+   "name": "D0 before anything, the top bar's ↶ ↷ are greyed",
+   "ok": true,
+   "detail": "{\"undo\":false,\"redo\":false,\"undoTitle\":\"Nothing to undo\",\"redoTitle\":\"Nothing to redo\"}"
+  },
+  {
+   "name": "D1 a DCO mark on ST-01 — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 3 [tracker/v3:cmunvgwxiwhygiq:last:smunvgwxlaqfv9w, tracker/v3:cmunvgwxiwhygiq:lastStudent, tracker/v3:cmunvgwxiwhygiq:sb2026:m:smunvgwxlaqfv9w] · del 0 [] · batches trk.gesture/3"
+  },
+  {
+   "name": "D1 a DCO mark on ST-01 — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 3 [tracker/v3:cmunvgwxiwhygiq:last:smunvgwxlaqfv9w, tracker/v3:cmunvgwxiwhygiq:lastStudent, tracker/v3:cmunvgwxiwhygiq:sb2026:m:smunvgwxlaqfv9w] · del 0 [] · batches trk.gesture/3"
+  },
+  {
+   "name": "D1 a mark — one action, ONE change-log batch",
+   "ok": true,
+   "detail": "1 batch"
+  },
+  {
+   "name": "D1 a mark — a reload gives back exactly what was there (the app)",
+   "ok": true,
+   "detail": "week 13/07/2026 (the never-saved demo week’s hidden row ids were minted afresh — left out of the compare)"
+  },
+  {
+   "name": "D1 a mark — a reload gives back exactly what was there (the Tracker: every chart, detail, course, student, mark, and the screen)",
+   "ok": true,
+   "detail": "1 courses · 4 charts · on 26ABSG / 2026 / STUDENT A"
+  },
+  {
+   "name": "D1 a mark — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "D1 after the reload the mark is there, and the history is this session's own (↶ greyed)",
+   "ok": true,
+   "detail": "{\"undo\":false,\"redo\":false,\"undoTitle\":\"Nothing to undo\",\"redoTitle\":\"Nothing to redo\"}"
+  },
+  {
+   "name": "D2a a DCO mark on ST-02 — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 2 [tracker/v3:cmunvgwxiwhygiq:last:smunvgwxlaqfv9w, tracker/v3:cmunvgwxiwhygiq:sb2026:m:smunvgwxlaqfv9w] · del 0 [] · batches trk.gesture/2"
+  },
+  {
+   "name": "D2b ↶ Undo (top bar) — the mark on ST-02 — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 4 [tracker/v3:cmunvgwxiwhygiq:lulls:smunvgwxlaqfv9w, tracker/v3:cmunvgwxiwhygiq:pace:smunvgwxlaqfv9w, tracker/v3:cmunvgwxiwhygiq:sb2026:d:smunvgwxlaqfv9w, tracker/v3:cmunvgwxiwhygiq:sb2026:m:smunvgwxlaqfv9w] · del 0 [] · batches tracker.undo/4"
+  },
+  {
+   "name": "D2b ↶ Undo (top bar) — the mark on ST-02 — wrote exactly what it should",
+   "ok": false,
+   "detail": "also changed tracker/v3:cmunvgwxiwhygiq:lulls:smunvgwxlaqfv9w | also changed tracker/v3:cmunvgwxiwhygiq:pace:smunvgwxlaqfv9w"
+  },
+  {
+   "name": "D2b ↶ Undo a mark — one action, ONE change-log batch",
+   "ok": true,
+   "detail": "1 batch"
+  },
+  {
+   "name": "D2b the mark on ST-02 is gone, ST-01 kept",
+   "ok": true,
+   "detail": "ST-02: 0 · ST-01: dco"
+  },
+  {
+   "name": "D2b ↶ Undo a mark — a reload gives back exactly what was there (the app)",
+   "ok": true,
+   "detail": "week 13/07/2026 (the never-saved demo week’s hidden row ids were minted afresh — left out of the compare)"
+  },
+  {
+   "name": "D2b ↶ Undo a mark — a reload gives back exactly what was there (the Tracker: every chart, detail, course, student, mark, and the screen)",
+   "ok": true,
+   "detail": "1 courses · 4 charts · on 26ABSG / 2026 / STUDENT A"
+  },
+  {
+   "name": "D2b ↶ Undo a mark — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "D2b after the reload ST-02 is still unmarked",
+   "ok": true,
+   "detail": "0"
+  },
+  {
+   "name": "D3a a DCO mark on ACG-01 — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 2 [tracker/v3:cmunvgwxiwhygiq:last:smunvgwxlaqfv9w, tracker/v3:cmunvgwxiwhygiq:sb2026:m:smunvgwxlaqfv9w] · del 0 [] · batches trk.gesture/2"
+  },
+  {
+   "name": "D3b ↶ Undo — the mark on ACG-01 — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [tracker/v3:cmunvgwxiwhygiq:sb2026:m:smunvgwxlaqfv9w] · del 0 [] · batches tracker.undo/1"
+  },
+  {
+   "name": "D3b ↶ Undo — the mark on ACG-01 — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [tracker/v3:cmunvgwxiwhygiq:sb2026:m:smunvgwxlaqfv9w] · del 0 [] · batches tracker.undo/1"
+  },
+  {
+   "name": "D3b ACG-01 unmarked, ↷ Redo lit",
+   "ok": true,
+   "detail": "{\"undo\":false,\"redo\":true,\"undoTitle\":\"Nothing to undo\",\"redoTitle\":\"Redo the mark on ACG-01 for STUDENT A (Ctrl+Y)\"}"
+  },
+  {
+   "name": "D3c ↷ Redo (top bar) — the mark on ACG-01 — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [tracker/v3:cmunvgwxiwhygiq:sb2026:m:smunvgwxlaqfv9w] · del 0 [] · batches tracker.redo/1"
+  },
+  {
+   "name": "D3c ↷ Redo (top bar) — the mark on ACG-01 — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [tracker/v3:cmunvgwxiwhygiq:sb2026:m:smunvgwxlaqfv9w] · del 0 [] · batches tracker.redo/1"
+  },
+  {
+   "name": "D3c ↷ Redo a mark — one action, ONE change-log batch",
+   "ok": true,
+   "detail": "1 batch"
+  },
+  {
+   "name": "D3c ACG-01 marked DCO again",
+   "ok": true,
+   "detail": "dco"
+  },
+  {
+   "name": "D3c ↷ Redo a mark — a reload gives back exactly what was there (the app)",
+   "ok": true,
+   "detail": "week 13/07/2026 (the never-saved demo week’s hidden row ids were minted afresh — left out of the compare)"
+  },
+  {
+   "name": "D3c ↷ Redo a mark — a reload gives back exactly what was there (the Tracker: every chart, detail, course, student, mark, and the screen)",
+   "ok": true,
+   "detail": "1 courses · 4 charts · on 26ABSG / 2026 / STUDENT A"
+  },
+  {
+   "name": "D3c ↷ Redo a mark — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "D3c after the reload ACG-01 is DCO",
+   "ok": true,
+   "detail": "dco"
+  },
+  {
+   "name": "D4 pace 3 a week — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [tracker/v3:cmunvgwxiwhygiq:pace:smunvgwxlaqfv9w] · del 0 [] · batches trk.pace/1"
+  },
+  {
+   "name": "D4 pace 3 a week — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [tracker/v3:cmunvgwxiwhygiq:pace:smunvgwxlaqfv9w] · del 0 [] · batches trk.pace/1"
+  },
+  {
+   "name": "D4 a pace — a reload gives back exactly what was there (the app)",
+   "ok": true,
+   "detail": "week 13/07/2026 (the never-saved demo week’s hidden row ids were minted afresh — left out of the compare)"
+  },
+  {
+   "name": "D4 a pace — a reload gives back exactly what was there (the Tracker: every chart, detail, course, student, mark, and the screen)",
+   "ok": true,
+   "detail": "1 courses · 4 charts · on 26ABSG / 2026 / STUDENT A"
+  },
+  {
+   "name": "D4 a pace — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "D4 after the reload the pace reads 3",
+   "ok": true,
+   "detail": "3 / 3"
+  },
+  {
+   "name": "D5a pace 3.5 — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [tracker/v3:cmunvgwxiwhygiq:pace:smunvgwxlaqfv9w] · del 0 [] · batches trk.pace/1"
+  },
+  {
+   "name": "D5a pace 3.5 — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [tracker/v3:cmunvgwxiwhygiq:pace:smunvgwxlaqfv9w] · del 0 [] · batches trk.pace/1"
+  },
+  {
+   "name": "D5b ↶ Undo — the pace — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [tracker/v3:cmunvgwxiwhygiq:pace:smunvgwxlaqfv9w] · del 0 [] · batches tracker.undo/1"
+  },
+  {
+   "name": "D5b ↶ Undo — the pace — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [tracker/v3:cmunvgwxiwhygiq:pace:smunvgwxlaqfv9w] · del 0 [] · batches tracker.undo/1"
+  },
+  {
+   "name": "D5b ↶ Undo a pace — one action, ONE change-log batch",
+   "ok": true,
+   "detail": "1 batch"
+  },
+  {
+   "name": "D5b the pace reads 3 again",
+   "ok": true,
+   "detail": "3 / 3"
+  },
+  {
+   "name": "D5b ↶ Undo a pace — a reload gives back exactly what was there (the app)",
+   "ok": true,
+   "detail": "week 13/07/2026 (the never-saved demo week’s hidden row ids were minted afresh — left out of the compare)"
+  },
+  {
+   "name": "D5b ↶ Undo a pace — a reload gives back exactly what was there (the Tracker: every chart, detail, course, student, mark, and the screen)",
+   "ok": true,
+   "detail": "1 courses · 4 charts · on 26ABSG / 2026 / STUDENT A"
+  },
+  {
+   "name": "D5b ↶ Undo a pace — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "D5b after the reload the pace reads 3",
+   "ok": true,
+   "detail": "3"
+  },
+  {
+   "name": "D6a pace 4 — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [tracker/v3:cmunvgwxiwhygiq:pace:smunvgwxlaqfv9w] · del 0 [] · batches trk.pace/1"
+  },
+  {
+   "name": "D6a pace 4 — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [tracker/v3:cmunvgwxiwhygiq:pace:smunvgwxlaqfv9w] · del 0 [] · batches trk.pace/1"
+  },
+  {
+   "name": "D6b ↶ Undo — the pace — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [tracker/v3:cmunvgwxiwhygiq:pace:smunvgwxlaqfv9w] · del 0 [] · batches tracker.undo/1"
+  },
+  {
+   "name": "D6b ↶ Undo — the pace — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [tracker/v3:cmunvgwxiwhygiq:pace:smunvgwxlaqfv9w] · del 0 [] · batches tracker.undo/1"
+  },
+  {
+   "name": "D6c ↷ Redo — the pace — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [tracker/v3:cmunvgwxiwhygiq:pace:smunvgwxlaqfv9w] · del 0 [] · batches tracker.redo/1"
+  },
+  {
+   "name": "D6c ↷ Redo — the pace — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [tracker/v3:cmunvgwxiwhygiq:pace:smunvgwxlaqfv9w] · del 0 [] · batches tracker.redo/1"
+  },
+  {
+   "name": "D6c ↷ Redo a pace — one action, ONE change-log batch",
+   "ok": true,
+   "detail": "1 batch"
+  },
+  {
+   "name": "D6c the pace reads 4",
+   "ok": true,
+   "detail": "4 / 4"
+  },
+  {
+   "name": "D6c ↷ Redo a pace — a reload gives back exactly what was there (the app)",
+   "ok": true,
+   "detail": "week 13/07/2026 (the never-saved demo week’s hidden row ids were minted afresh — left out of the compare)"
+  },
+  {
+   "name": "D6c ↷ Redo a pace — a reload gives back exactly what was there (the Tracker: every chart, detail, course, student, mark, and the screen)",
+   "ok": true,
+   "detail": "1 courses · 4 charts · on 26ABSG / 2026 / STUDENT A"
+  },
+  {
+   "name": "D6c ↷ Redo a pace — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "D6c after the reload the pace reads 4",
+   "ok": true,
+   "detail": "4"
+  },
+  {
+   "name": "W5 part D — no console error, page error or failed request",
+   "ok": true,
+   "detail": ""
+  }
+ ],
+ "walker": "W5",
+ "part": "D",
+ "table": [
+  {
+   "step": "D1–D3",
+   "width": "desktop",
+   "did": "DCO on ST-01 (reload); DCO on ST-02 → ↶ (reload); DCO on ACG-01 → ↶ → ↷ (reload) — the top bar's pair",
+   "after": "ST-01 DCO · ST-02 not done · ACG-01 DCO",
+   "rows": "mark: put 3 [tracker/v3:cmunvgwxiwhygiq:last:smunvgwxlaqfv9w, tracker/v3:cmunvgwxiwhygiq:lastStudent, tracker/v3:cmunvgwxiwhygiq:sb2026:m:smunvgwxlaqfv9w] · del 0 · batches 1 (trk.gesture/3) ‖ ↶: put 4 [tracker/v3:cmunvgwxiwhygiq:lulls:smunvgwxlaqfv9w, tracker/v3:cmunvgwxiwhygiq:pace:smunvgwxlaqfv9w, tracker/v3:cmunvgwxiwhygiq:sb2026:d:smunvgwxlaqfv9w, tracker/v3:cmunvgwxiwhygiq:sb2026:m:smunvgwxlaqfv9w] · del 0 · batches 1 (tracker.undo/4) ‖ ↶: put 1 [tracker/v3:cmunvgwxiwhygiq:sb2026:m:smunvgwxlaqfv9w] · del 0 · batches 1 (tracker.undo/1) ‖ ↷: put 1 [tracker/v3:cmunvgwxiwhygiq:sb2026:m:smunvgwxlaqfv9w] · del 0 · batches 1 (tracker.redo/1)",
+   "pics": [
+    "d1-mark-after-reload",
+    "d2-undone",
+    "d2-after-reload",
+    "d3-redone",
+    "d3-after-reload"
+   ]
+  },
+  {
+   "step": "D4–D6",
+   "width": "desktop",
+   "did": "pace 3 (reload); 3.5 → ↶ (reload); 4 → ↶ → ↷ (reload)",
+   "after": "pace 3 → 3 → 4",
+   "rows": "pace: put 1 [tracker/v3:cmunvgwxiwhygiq:pace:smunvgwxlaqfv9w] · del 0 · batches 1 (trk.pace/1) ‖ ↶: put 1 [tracker/v3:cmunvgwxiwhygiq:pace:smunvgwxlaqfv9w] · del 0 · batches 1 (tracker.undo/1) ‖ ↶: put 1 [tracker/v3:cmunvgwxiwhygiq:pace:smunvgwxlaqfv9w] · del 0 · batches 1 (tracker.undo/1) ‖ ↷: put 1 [tracker/v3:cmunvgwxiwhygiq:pace:smunvgwxlaqfv9w] · del 0 · batches 1 (tracker.redo/1)",
+   "pics": [
+    "d5-pace-undone",
+    "d6-pace-redone",
+    "d6-after-reload"
+   ]
+  }
+ ],
+ "notes": [
+  "D2 the ↶ title after the mark: Undo the mark on ST-02 for STUDENT A (Ctrl+Z)",
+  "D5 the ↶ title after the pace change: Undo the pace for STUDENT A (Ctrl+Z)"
+ ],
+ "errors": []
+}

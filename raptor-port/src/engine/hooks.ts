@@ -50,6 +50,10 @@ export const HOOKS = {
      (state/person-delete.ts stripDeletedFromDay): it strips every deleted man from the incoming day model and names
      them. Unset (no one ever deleted), nothing is stripped. */
   stripDeleted: (_di: number, _nd: any): string[] => [],
+  /* THE DAY A LOAD ONTO THE WORKING COPY WILL LEAVE, worked out ([DB-READINESS] phase 6 (c) — engine/drafts.ts
+     dayAsLoadLeaves installs it; publish.ts dayDiscardCount reads it — publish.ts cannot import drafts.ts at module level
+     without a loop). Null → the count measures the version's day with D175's leave-out only, as before. */
+  dayAsLoadLeaves: null as null | ((di: number, snapDay: any) => any),
   /* THE DAY'S WARNINGS AS ISSUED ([LEAVE-LATE-PUBLISHED], D179 — publish.ts): the validator lends publishing its
      judgement — at issue, the day's slice of the official warnings to keep (`issuedWarn`), and on every read today's
      slice to compare it with (`warnNow`). engine/validate.ts sets both at load (publish.ts cannot import it — the
@@ -142,7 +146,9 @@ export const HOOKS = {
    DOM-free. `storeBackend.impl` is null headless (get returns the default,
    set is dropped); the app plugs window.localStorage in. */
 export const storeBackend: {
-  impl: { getItem(k: string): string | null; setItem(k: string, v: string): void } | null
+  /* `keys` ([DB-READINESS] group A, phase 4): every stored key, in the form getItem takes — a record kept one row per
+     thing (a history line, an account) is found by its prefix; a backend without it holds none of those */
+  impl: { getItem(k: string): string | null; setItem(k: string, v: string): void; keys?(): string[] } | null
 } = { impl: null }
 
 /* [ARCH-STACK] Step 2 phase 3: a dependency-free write seam. The state layer
@@ -190,5 +196,14 @@ export const store = {
   set(k: any, v: any) {
     if (SETTINGS_WRITE_HOOK) SETTINGS_WRITE_HOOK(k, v, rawStoreSet)
     else rawStoreSet(k, v)
+  },
+  /* every stored key that starts with `prefix`, without the store's own prefix — the rows of a record kept one row per
+     thing (`elog:`, `seen:`, `account:` …); none on a backend that cannot list */
+  keys(prefix: string): string[] {
+    try {
+      const all = storeBackend.impl && storeBackend.impl.keys ? storeBackend.impl.keys() : []
+      const p = 'sqn142_' + prefix
+      return all.filter(k => k.startsWith(p)).map(k => k.slice(7))
+    } catch (e) { return [] }
   },
 }

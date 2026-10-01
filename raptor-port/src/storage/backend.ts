@@ -3,8 +3,11 @@
    the Dataverse adapter (stage 4) — implements exactly this. Values are JSON
    strings, never objects: a backend is a dumb key/value store and the record
    shapes (docs/data-schema.md) stay the app's business. */
-export type Collection = 'settings' | 'weeks' | 'inputs' | 'people' | 'plan' | 'leavewar' | 'tracker'
-export const COLLECTIONS: Collection[] = ['settings', 'weeks', 'inputs', 'people', 'plan', 'leavewar', 'tracker']
+/* `changes` ([DB-READINESS] group A, phase 0 — F3-05): the change log, one `ChangeBatch` per saved
+   group (written from phase 4). A real collection, so a journal holding one of its entries is a
+   well-formed group and replays whole, and the Browser backend serves it back at boot. */
+export type Collection = 'settings' | 'weeks' | 'inputs' | 'people' | 'plan' | 'leavewar' | 'tracker' | 'changes'
+export const COLLECTIONS: Collection[] = ['settings', 'weeks', 'inputs', 'people', 'plan', 'leavewar', 'tracker', 'changes']
 
 export type Snapshot = Record<Collection, Record<string, string>>
 
@@ -31,6 +34,10 @@ export interface Backend {
   /** §22.2b — replace the stored journal (null removes it). Only the boot's
       selective-reset filter calls this, before the reset removals run. */
   writeJournal(group: Entry[] | null): Promise<void>
+  /** Optional: can this store still take `chars` more characters (a group's journal and its rows)? Asked by the fold
+      before it writes anything (storage/fold.ts — the group-A final read, Fable F3). A backend with no such limit leaves
+      it out. */
+  canHold?(chars: number): boolean
 }
 
 /* A stored journal is untrusted text: anything but a list of well-formed

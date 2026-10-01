@@ -1,0 +1,119 @@
+{
+ "tag": "base",
+ "facts": {
+  "T1.weekRowsWritten": [
+   "weeks/13-07-2026",
+   "weeks/13-07-2026#3"
+  ],
+  "T1.storedThu": {
+   "notes": "EXAM PERIOD RESTRICTIONS / 21 JUL 0700H - 24 JUL 1800H|ORDERS: FLYING ORDERS SECTION 4",
+   "ground": [
+    "MEDICAL APPT|undefined",
+    "DENTAL APPT|undefined",
+    "APPOINTMENT|Medical / PHA",
+    "MEETING|P6C TAB B"
+   ]
+  },
+  "T2.weekRowsWritten": [
+   "weeks/13-07-2026#3"
+  ],
+  "T2.storedThu": {
+   "notes": "P6C TAB A NOTE|ORDERS: FLYING ORDERS SECTION 4",
+   "ground": [
+    "MEDICAL APPT|undefined",
+    "DENTAL APPT|undefined",
+    "APPOINTMENT|Medical / PHA"
+   ]
+  },
+  "T3.rows": [
+   {
+    "di": 3,
+    "ri": 3,
+    "prog": "MEETING",
+    "str": "13:00",
+    "end": "14:00",
+    "who": "bane",
+    "more": [],
+    "rmks": "P6C TAB B",
+    "kept": false,
+    "info": false,
+    "flag": null,
+    "cx": null
+   }
+  ],
+  "T3.note": "P6C TAB A NOTE",
+  "T4.sign": {
+   "cur": "Ace",
+   "sked": "Anvil",
+   "plan": "Anvil",
+   "appr": "Anvil"
+  },
+  "T4.pub": {
+   "pressed": true,
+   "label": "Publish day"
+  },
+  "T4.bookAfterPublish": {
+   "ok": 1,
+   "signed": true
+  },
+  "T4.weekRowsWritten": [
+   "weeks/13-07-2026#4"
+  ],
+  "T4.bookAfterFiling": {
+   "ok": null,
+   "signed": false
+  },
+  "T5.rows": [
+   {
+    "di": 4,
+    "ri": 2,
+    "prog": "MEETING",
+    "str": "09:00",
+    "end": "10:00",
+    "who": "bane",
+    "more": [],
+    "rmks": "P6C TAB B FRI",
+    "kept": false,
+    "info": false,
+    "flag": null,
+    "cx": null
+   }
+  ],
+  "T5.head": {
+   "tag": "DRAFT",
+   "pending": "1 new",
+   "beak": "locked",
+   "alpub": "",
+   "unpub": "",
+   "signs": [
+    "— name —",
+    "— name —",
+    "— name —",
+    "— name —"
+   ],
+   "signed": "",
+   "nys": ""
+  },
+  "T6.del": "gone",
+  "T6.weekRowsWritten": [
+   "weeks/13-07-2026#3"
+  ],
+  "T6.rows": [],
+  "T6.headFri": {
+   "tag": "DRAFT",
+   "pending": "1 new",
+   "beak": "locked",
+   "alpub": "",
+   "unpub": "",
+   "signs": [
+    "— name —",
+    "— name —",
+    "— name —",
+    "— name —"
+   ],
+   "signed": "",
+   "nys": ""
+  },
+  "errors": []
+ }
+}

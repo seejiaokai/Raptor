@@ -58,7 +58,9 @@ describe('the all-or-nothing save, real wiring', () => {
     const cols = be.journal.filter(j => j.group === g[0]).map(j => j.collection)
     expect(cols).toContain('inputs')
     expect(cols).toContain('leavewar')
-    expect(JSON.parse(be.peek('inputs', 'all')!).some((r: any) => r.remarks === 'txn test')).toBe(true)
+    /* the request is its own stored row ([DB-READINESS] group A, phase 2) */
+    const all = (await be.loadAll()).inputs
+    expect(Object.values(all).some((raw: any) => JSON.parse(raw).remarks === 'txn test')).toBe(true)
   })
 
   it('a refused Input write that persisted inside its reducer leaves every stored value byte-equal and sends ZERO groups', async () => {
@@ -82,7 +84,11 @@ describe('the all-or-nothing save, real wiring', () => {
     setCell(pid, '2026-02-03', 'LL')
     await vi.advanceTimersByTimeAsync(300)
     expect(groupsSent(be)).toHaveLength(1)
-    expect(be.journal.every(j => j.op === 'loadAll' || j.collection === 'leavewar')).toBe(true)
+    /* the war's rows — and, since [DB-READINESS] group A phase 4, the group's one change-log batch and any history
+       line the edit wrote, in the SAME group */
+    expect(be.journal.every(j => j.op === 'loadAll' || j.collection === 'leavewar' || j.collection === 'changes'
+      || (j.collection === 'settings' && String(j.id).startsWith('elog:')))).toBe(true)
+    expect(be.journal.some(j => j.collection === 'leavewar')).toBe(true)
   })
 })
 
@@ -100,10 +106,14 @@ describe('a new person with his account, real wiring', () => {
     const g = groupsSent(be)
     expect(g).toHaveLength(1)
     const recs = be.journal.filter(j => j.group === g[0]).map(j => `${j.collection}/${j.id}`)
-    expect(recs).toContain('people/all')
-    expect(recs).toContain('settings/accounts')
-    expect(JSON.parse(be.peek('settings', 'accounts')!).some((a: any) => a.name === 'blaze@mail')).toBe(true)
-    expect(Object.values(JSON.parse(be.peek('people', 'all')!)).some((p: any) => p.cs === 'Blaze')).toBe(true)
+    /* the new person is his own stored row ([DB-READINESS] group A, phase 2) — in the same group as his account */
+    const pid = Object.keys(PEOPLE).find(k => (PEOPLE as any)[k].cs === 'Blaze')!
+    expect(recs).toContain(`people/${pid}`)
+    /* his account is its own stored row ([DB-READINESS] group A, phase 4.4) — in the same group as his person */
+    const acct = accountByName('blaze@mail')!
+    expect(recs).toContain(`settings/account:${acct.id}`)
+    expect(JSON.parse(be.peek('settings', `account:${acct.id}`)!).name).toBe('blaze@mail')
+    expect(JSON.parse(be.peek('people', pid)!).cs).toBe('Blaze')
     resetSession(null); drop('Blaze')
   })
   it('a refusal inside, after both halves were written, stores nothing and sends no group', async () => {

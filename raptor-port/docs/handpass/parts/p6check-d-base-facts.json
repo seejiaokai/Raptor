@@ -1,0 +1,429 @@
+{
+ "tag": "base",
+ "facts": {
+  "D1.sign": {
+   "cur": "Ace",
+   "sked": "Anvil",
+   "plan": "Anvil",
+   "appr": "Anvil"
+  },
+  "D1.pub": {
+   "pressed": true,
+   "label": "Publish day"
+  },
+  "D1.w2hex": [
+   1,
+   0,
+   1,
+   0,
+   0,
+   0,
+   0
+  ],
+  "D1.hex": [
+   1,
+   1,
+   1,
+   1,
+   0,
+   0,
+   0
+  ],
+  "D1.anvil": [
+   1,
+   0,
+   1,
+   1,
+   1,
+   0,
+   0
+  ],
+  "D1.head2": {
+   "tag": "DRAFT",
+   "pending": "",
+   "beak": "locked",
+   "alpub": "",
+   "unpub": "",
+   "signs": [
+    "— name —",
+    "— name —",
+    "— name —",
+    "— name —"
+   ],
+   "signed": "",
+   "nys": ""
+  },
+  "D1.head3": {
+   "tag": "ORIG",
+   "pending": "5 changes",
+   "beak": "none",
+   "alpub": "",
+   "unpub": "Unpublish",
+   "signs": [
+    "— name —",
+    "— name —",
+    "— name —",
+    "— name —"
+   ],
+   "signed": "SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil",
+   "nys": ""
+  },
+  "D1.head4": {
+   "tag": "DRAFT",
+   "pending": "",
+   "beak": "locked",
+   "alpub": "",
+   "unpub": "",
+   "signs": [
+    "— name —",
+    "— name —",
+    "— name —",
+    "— name —"
+   ],
+   "signed": "",
+   "nys": ""
+  },
+  "D1.al": {
+   "line": "No pending changes",
+   "drop": {
+    "disabled": true,
+    "title": "Nothing to clear — a published day’s changes stay until you publish them or put them back"
+   },
+   "days": []
+  },
+  "D1.peekHasHex": true,
+  "D1.warnsHex": [
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0
+  ],
+  "D2.armed": "Tap again to delete Hex",
+  "D2.weekRowsWritten": [
+   "weeks/13-07-2026#2",
+   "weeks/13-07-2026#3",
+   "weeks/20-07-2026#0",
+   "weeks/20-07-2026#2"
+  ],
+  "D2.batches": [
+   "person.delete"
+  ],
+  "D2.hex": [
+   1,
+   1,
+   0,
+   0,
+   0,
+   0,
+   0
+  ],
+  "D2.head2": {
+   "tag": "DRAFT",
+   "pending": "3 changes",
+   "beak": "locked",
+   "alpub": "",
+   "unpub": "",
+   "signs": [
+    "— name —",
+    "— name —",
+    "— name —",
+    "— name —"
+   ],
+   "signed": "",
+   "nys": ""
+  },
+  "D2.head3": {
+   "tag": "ORIG",
+   "pending": "1 pending",
+   "beak": "none",
+   "alpub": "Publish AL1",
+   "unpub": "Unpublish",
+   "signs": [
+    "— name —",
+    "— name —",
+    "— name —",
+    "— name —"
+   ],
+   "signed": "SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil",
+   "nys": "Not yet signed"
+  },
+  "D2.head4": {
+   "tag": "DRAFT",
+   "pending": "",
+   "beak": "locked",
+   "alpub": "",
+   "unpub": "",
+   "signs": [
+    "— name —",
+    "— name —",
+    "— name —",
+    "— name —"
+   ],
+   "signed": "",
+   "nys": ""
+  },
+  "D2.al": {
+   "line": "1 day with changes to publish",
+   "drop": {
+    "disabled": false,
+    "title": "Clear the marks on days not yet published (1)"
+   },
+   "days": [
+    "Thu · 1 change Publish AL1"
+   ]
+  },
+  "D2.list3": {
+   "tabs": [
+    "New to you 0",
+    "All changes 6",
+    "To go out · AL1 1"
+   ],
+   "lines": [
+    "Waiting to go out as",
+    "AL1",
+    "· 1 change",
+    "RU BFM · #1 RCP",
+    "Saber",
+    "15/7 09:00",
+    "Hex → taken off",
+    "Tap a change to go to it."
+   ]
+  },
+  "D2.list2": {
+   "tabs": [
+    "New to you 0",
+    "All changes 3"
+   ],
+   "lines": [
+    "▾",
+    "Quals · Hex · 2",
+    "09:00",
+    "deleted— → yes",
+    "Saber · 15/7 09:00",
+    "archived— → yes",
+    "Saber · 15/7 09:00",
+    "Flying · VL ACM",
+    "Saber · 15/7 09:00",
+    "#2 RCPHex taken off"
+   ]
+  },
+  "D2.peekHasHex": false,
+  "D2.warnsHex": [
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0
+  ],
+  "D2.issuedThuHasHex": true,
+  "D2.boardHead": {
+   "tag": "ORIG",
+   "pending": "1 pending",
+   "beak": "none",
+   "alpub": "Publish AL1",
+   "unpub": "Unpublish",
+   "signs": [
+    "— name —",
+    "— name —",
+    "— name —",
+    "— name —"
+   ],
+   "signed": "SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil",
+   "nys": "Not yet signed"
+  },
+  "D2.viewThuHasHex": true,
+  "D3.hex": [
+   1,
+   1,
+   0,
+   0,
+   0,
+   0,
+   0
+  ],
+  "D3.head2": {
+   "tag": "DRAFT",
+   "pending": "3 changes",
+   "beak": "locked",
+   "alpub": "",
+   "unpub": "",
+   "signs": [
+    "— name —",
+    "— name —",
+    "— name —",
+    "— name —"
+   ],
+   "signed": "",
+   "nys": ""
+  },
+  "D3.head3": {
+   "tag": "ORIG",
+   "pending": "1 pending",
+   "beak": "none",
+   "alpub": "Publish AL1",
+   "unpub": "Unpublish",
+   "signs": [
+    "— name —",
+    "— name —",
+    "— name —",
+    "— name —"
+   ],
+   "signed": "SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil",
+   "nys": "Not yet signed"
+  },
+  "D3.head4": {
+   "tag": "DRAFT",
+   "pending": "",
+   "beak": "locked",
+   "alpub": "",
+   "unpub": "",
+   "signs": [
+    "— name —",
+    "— name —",
+    "— name —",
+    "— name —"
+   ],
+   "signed": "",
+   "nys": ""
+  },
+  "D3.al": {
+   "line": "1 day with changes to publish",
+   "drop": {
+    "disabled": false,
+    "title": "Clear the marks on days not yet published (1)"
+   },
+   "days": [
+    "Thu · 1 change Publish AL1"
+   ]
+  },
+  "D3.peekHasHex": false,
+  "D4.w2storedUnchanged": false,
+  "D4.loadWrote": [],
+  "D4.w2hex": [
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0
+  ],
+  "D5.weekRowsWritten": [
+   "weeks/13-07-2026#2"
+  ],
+  "D5.wedStoredHasHex": false,
+  "D6.armed": "Tap again to delete Anvil",
+  "D6.weekRowsWritten": [
+   "weeks/13-07-2026#2",
+   "weeks/13-07-2026#3",
+   "weeks/13-07-2026#4",
+   "weeks/20-07-2026#2",
+   "weeks/20-07-2026#4"
+  ],
+  "D6.anvil": [
+   1,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0
+  ],
+  "D6.head2": {
+   "tag": "DRAFT",
+   "pending": "7 changes",
+   "beak": "locked",
+   "alpub": "",
+   "unpub": "",
+   "signs": [
+    "— name —",
+    "— name —",
+    "— name —",
+    "— name —"
+   ],
+   "signed": "",
+   "nys": ""
+  },
+  "D6.head3": {
+   "tag": "ORIG",
+   "pending": "2 pending",
+   "beak": "none",
+   "alpub": "Publish AL1",
+   "unpub": "Unpublish",
+   "signs": [
+    "— name —",
+    "— name —",
+    "— name —",
+    "— name —"
+   ],
+   "signed": "SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil",
+   "nys": "Not yet signed"
+  },
+  "D6.head4": {
+   "tag": "DRAFT",
+   "pending": "1 change",
+   "beak": "locked",
+   "alpub": "",
+   "unpub": "",
+   "signs": [
+    "— name —",
+    "— name —",
+    "— name —",
+    "— name —"
+   ],
+   "signed": "",
+   "nys": ""
+  },
+  "D6.al": {
+   "line": "1 day with changes to publish",
+   "drop": {
+    "disabled": false,
+    "title": "Clear the marks on days not yet published (4)"
+   },
+   "days": [
+    "Thu · 2 changes Publish AL1"
+   ]
+  },
+  "D6.list3": {
+   "tabs": [
+    "New to you 0",
+    "All changes 7",
+    "To go out · AL1 2"
+   ],
+   "lines": [
+    "Waiting to go out as",
+    "AL1",
+    "· 2 changes",
+    "RU BFM · #1 RCP",
+    "Saber",
+    "15/7 09:00",
+    "Hex → taken off",
+    "SXO",
+    "Saber",
+    "15/7 09:00",
+    "Anvil → taken off",
+    "Tap a change to go to it."
+   ]
+  },
+  "errors": []
+ }
+}

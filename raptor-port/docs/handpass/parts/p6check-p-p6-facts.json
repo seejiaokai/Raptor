@@ -1,0 +1,175 @@
+{
+ "tag": "p6",
+ "facts": {
+  "P1.sign": {
+   "cur": "Ace",
+   "sked": "Anvil",
+   "plan": "Anvil",
+   "appr": "Anvil"
+  },
+  "P1.pub": {
+   "pressed": true,
+   "label": "Publish day"
+  },
+  "P1.him": [
+   1,
+   0,
+   1,
+   1,
+   1,
+   0,
+   0
+  ],
+  "P1.peekHas": false,
+  "P1.week2Rows": [],
+  "P2.cell": 1,
+  "P2.deleted": true,
+  "P2.batches": [
+   "lw.postout"
+  ],
+  "P2.weekRows": [],
+  "P2.him": [
+   1,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0
+  ],
+  "P2.head3": {
+   "tag": "ORIG",
+   "pending": "1 pending",
+   "beak": "none",
+   "alpub": "Publish AL1",
+   "unpub": "Unpublish",
+   "signs": [
+    "— name —",
+    "— name —",
+    "— name —",
+    "— name —"
+   ],
+   "signed": "SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil",
+   "nys": "Not yet signed"
+  },
+  "P2.al": {
+   "line": "1 day with changes to publish",
+   "drop": {
+    "disabled": false,
+    "title": "Clear the marks on days not yet published (1)"
+   },
+   "days": [
+    "Thu · 1 change Publish AL1"
+   ]
+  },
+  "P2.peekHas": false,
+  "P3.undo": {
+   "present": true,
+   "title": "Undo — a sign-off",
+   "pressed": true,
+   "toasts": [
+    "A later change touches the same thing and can’t be undone."
+   ]
+  },
+  "P3.him": [
+   1,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0
+  ],
+  "P3.redo": {
+   "present": true,
+   "title": "Redo",
+   "disabled": true,
+   "pressed": false
+  },
+  "P3.himRedo": [
+   1,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0
+  ],
+  "P4.loadWrote": [],
+  "P4.him": [
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0
+  ],
+  "P5.him": [
+   1,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0
+  ],
+  "P5.head3": {
+   "tag": "ORIG",
+   "pending": "1 pending",
+   "beak": "none",
+   "alpub": "Publish AL1",
+   "unpub": "Unpublish",
+   "signs": [
+    "— name —",
+    "— name —",
+    "— name —",
+    "— name —"
+   ],
+   "signed": "SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil",
+   "nys": "Not yet signed"
+  },
+  "P6.menu": 1,
+  "P6.items": [
+   {
+    "t": "Live working copy ●live now — differences from Original go o",
+    "d": "plangolive=3"
+   },
+   {
+    "t": "Originalread-only — look, don't change",
+    "d": "planpv=2026-07-16#0"
+   },
+   {
+    "t": "+ Alt Plan",
+    "d": "plandup=1"
+   }
+  ],
+  "P6.loadBtn": "Load onto working copy",
+  "P6.him": [
+   1,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0
+  ],
+  "P6.toasts": [],
+  "P6.head3": {
+   "tag": "ORIG",
+   "pending": "1 pending",
+   "beak": "none",
+   "alpub": "Publish AL1",
+   "unpub": "Unpublish",
+   "signs": [
+    "— name —",
+    "— name —",
+    "— name —",
+    "— name —"
+   ],
+   "signed": "SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil",
+   "nys": "Not yet signed"
+  },
+  "errors": []
+ }
+}

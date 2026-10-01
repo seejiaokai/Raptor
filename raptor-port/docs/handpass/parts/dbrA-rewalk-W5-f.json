@@ -1,0 +1,259 @@
+{
+ "base": "http://localhost:4205",
+ "at": "2026-09-30T10:22:41.276Z",
+ "results": [
+  {
+   "name": "first boot — ONE change-log batch, of type boot",
+   "ok": true,
+   "detail": "1 batch(es): boot · rows by collection {\"leavewar\":91,\"people\":61,\"settings\":1,\"inputs\":46,\"changes\":1}"
+  },
+  {
+   "name": "F1 the file (made in a second browser through the app) holds course IMPX, its student and the mark",
+   "ok": true,
+   "detail": "OCU-syllabus-WITH-STUDENTS-2026-09-30.json"
+  },
+  {
+   "name": "first boot — ONE change-log batch, of type boot",
+   "ok": true,
+   "detail": "1 batch(es): boot · rows by collection {\"leavewar\":91,\"people\":61,\"settings\":1,\"inputs\":46,\"changes\":1}"
+  },
+  {
+   "name": "F1 ⇪ Import… a backup holding a NEW course (Skip each chart; Yes to students & marks) — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 11 [tracker/v3:cmunyh0cycgnvg8:idmig, tracker/v3:cmunyh0cycgnvg8:plan, tracker/v3:cmunyh0cycgnvg8:rostermig, tracker/v3:cmunyh0cycgnvg8:sb2026:d:smunyh0rrazor8g, tracker/v3:cmunyh0cycgnvg8:sb2026:enr:smunyh0rrazor8g, tracker/v3:cmunyh0cycgnvg8:sb2026:m:smunyh0rrazor8g, tracker/v3:master:chart:sb2024, tracker/v3:master:chart:sb2026 …] · del 0 [] · batches trk.catalogue/4 trk.plan/1 trk.roster/1 trk.marks/1 trk.dates/1 trk.courses/1 trk.meta/1 trk.meta/1 trk.meta/1 trk.meta/1"
+  },
+  {
+   "name": "F1 the new course's one-time flags are named by a batch (none written bare)",
+   "ok": true,
+   "detail": "flags written: tracker/v3:cmunyh0cycgnvg8:idmig, tracker/v3:cmunyh0cycgnvg8:rostermig — all named"
+  },
+  {
+   "name": "F1 ⇪ Import a new course — a reload gives back exactly what was there (the app)",
+   "ok": true,
+   "detail": "week 13/07/2026 (the never-saved demo week’s hidden row ids were minted afresh — left out of the compare)"
+  },
+  {
+   "name": "F1 ⇪ Import a new course — a reload gives back exactly what was there (the Tracker: every chart, detail, course, student, mark, and the screen)",
+   "ok": true,
+   "detail": "2 courses · 4 charts · on 26ABSG / 2026 / STUDENT A"
+  },
+  {
+   "name": "F1 ⇪ Import a new course — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "F1 after the reload: IMPX once, at the bottom of the course list (D375), its one student with his DCO mark; nothing demo on it",
+   "ok": true,
+   "detail": "courses 26ABSG, IMPX · IMPX crew IMP STUDENT · ST-01 dco"
+  },
+  {
+   "name": "F1 the demo course 26ABSG is untouched by the import (same students and records as before it)",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "first boot — ONE change-log batch, of type boot",
+   "ok": true,
+   "detail": "1 batch(es): boot · rows by collection {\"inputs\":46,\"leavewar\":91,\"people\":61,\"settings\":1,\"changes\":1}"
+  },
+  {
+   "name": "F2a grade ball A (ST-01) DCO — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 3 [tracker/v3:cmunyhg8s65wcvo:last:smunyhg8w6949g5, tracker/v3:cmunyhg8s65wcvo:lastStudent, tracker/v3:cmunyhg8s65wcvo:sb2026:m:smunyhg8w6949g5] · del 0 [] · batches trk.gesture/3"
+  },
+  {
+   "name": "F2a the grade's batch names the mark AND the last-work rows",
+   "ok": true,
+   "detail": "put 3 [tracker/v3:cmunyhg8s65wcvo:last:smunyhg8w6949g5, tracker/v3:cmunyhg8s65wcvo:lastStudent, tracker/v3:cmunyhg8s65wcvo:sb2026:m:smunyhg8w6949g5] · del 0 · batches 1 (trk.gesture/3)"
+  },
+  {
+   "name": "F2a grade A — a reload gives back exactly what was there (the app)",
+   "ok": true,
+   "detail": "week 13/07/2026 (the never-saved demo week’s hidden row ids were minted afresh — left out of the compare)"
+  },
+  {
+   "name": "F2a grade A — a reload gives back exactly what was there (the Tracker: every chart, detail, course, student, mark, and the screen)",
+   "ok": true,
+   "detail": "1 courses · 4 charts · on 26ABSG / 2026 / STUDENT A"
+  },
+  {
+   "name": "F2a grade A — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "F2a after the reload the Tracker lands on STUDENT A and ball A (ST-01)",
+   "ok": true,
+   "detail": "{\"l1\":{\"student\":\"STUDENT A\",\"ball\":\"ST-01\"},\"l2\":{\"student\":\"STUDENT A\",\"ball\":\"ST-01\"}}"
+  },
+  {
+   "name": "F2b grade ball B (AVI-12) DCO — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 2 [tracker/v3:cmunyhg8s65wcvo:last:smunyhg8w6949g5, tracker/v3:cmunyhg8s65wcvo:sb2026:m:smunyhg8w6949g5] · del 0 [] · batches trk.gesture/2"
+  },
+  {
+   "name": "F2b the grade's batch names the mark AND the last-work row it changed",
+   "ok": true,
+   "detail": "put 2 [tracker/v3:cmunyhg8s65wcvo:last:smunyhg8w6949g5, tracker/v3:cmunyhg8s65wcvo:sb2026:m:smunyhg8w6949g5] · del 0 · batches 1 (trk.gesture/2)"
+  },
+  {
+   "name": "F2c ↶ Undo (top bar) — the grade on B — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 4 [tracker/v3:cmunyhg8s65wcvo:lulls:smunyhg8w6949g5, tracker/v3:cmunyhg8s65wcvo:pace:smunyhg8w6949g5, tracker/v3:cmunyhg8s65wcvo:sb2026:d:smunyhg8w6949g5, tracker/v3:cmunyhg8s65wcvo:sb2026:m:smunyhg8w6949g5] · del 0 [] · batches tracker.undo/4"
+  },
+  {
+   "name": "F2c B (AVI-12) is unmarked, A kept",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "F2c ↶ Undo the grade on B — a reload gives back exactly what was there (the app)",
+   "ok": true,
+   "detail": "week 13/07/2026 (the never-saved demo week’s hidden row ids were minted afresh — left out of the compare)"
+  },
+  {
+   "name": "F2c ↶ Undo the grade on B — a reload gives back exactly what was there (the Tracker: every chart, detail, course, student, mark, and the screen)",
+   "ok": true,
+   "detail": "1 courses · 4 charts · on 26ABSG / 2026 / STUDENT A"
+  },
+  {
+   "name": "F2c ↶ Undo the grade on B — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "F2d grade B (AVI-12) again — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [tracker/v3:cmunyhg8s65wcvo:sb2026:m:smunyhg8w6949g5] · del 0 [] · batches trk.gesture/1"
+  },
+  {
+   "name": "F2d ↶ Undo — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [tracker/v3:cmunyhg8s65wcvo:sb2026:m:smunyhg8w6949g5] · del 0 [] · batches tracker.undo/1"
+  },
+  {
+   "name": "F2d ↷ Redo (top bar) — the grade on B — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [tracker/v3:cmunyhg8s65wcvo:sb2026:m:smunyhg8w6949g5] · del 0 [] · batches tracker.redo/1"
+  },
+  {
+   "name": "F2d B (AVI-12) is DCO again",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "F2d ↷ Redo the grade on B — a reload gives back exactly what was there (the app)",
+   "ok": true,
+   "detail": "week 13/07/2026 (the never-saved demo week’s hidden row ids were minted afresh — left out of the compare)"
+  },
+  {
+   "name": "F2d ↷ Redo the grade on B — a reload gives back exactly what was there (the Tracker: every chart, detail, course, student, mark, and the screen)",
+   "ok": true,
+   "detail": "1 courses · 4 charts · on 26ABSG / 2026 / STUDENT A"
+  },
+  {
+   "name": "F2d ↷ Redo the grade on B — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "F2d after the Redo + reload the Tracker lands on STUDENT A and B (AVI-12)",
+   "ok": true,
+   "detail": "{\"l1\":{\"student\":\"STUDENT A\",\"ball\":\"AVI-12\"},\"l2\":{\"student\":\"STUDENT A\",\"ball\":\"AVI-12\"}}"
+  },
+  {
+   "name": "first boot — ONE change-log batch, of type boot",
+   "ok": true,
+   "detail": "1 batch(es): boot · rows by collection {\"leavewar\":91,\"people\":61,\"inputs\":46,\"settings\":1,\"changes\":1}"
+  },
+  {
+   "name": "F3 (phone) a DCO mark on ST-01 by a finger's tap — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 3 [tracker/v3:cmunyi41jr4w7w7:last:smunyi41nv2a2sm, tracker/v3:cmunyi41jr4w7w7:lastStudent, tracker/v3:cmunyi41jr4w7w7:sb2026:m:smunyi41nv2a2sm] · del 0 [] · batches trk.gesture/3"
+  },
+  {
+   "name": "F3 (phone) a DCO mark on ST-01 by a finger's tap — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 3 [tracker/v3:cmunyi41jr4w7w7:last:smunyi41nv2a2sm, tracker/v3:cmunyi41jr4w7w7:lastStudent, tracker/v3:cmunyi41jr4w7w7:sb2026:m:smunyi41nv2a2sm] · del 0 [] · batches trk.gesture/3"
+  },
+  {
+   "name": "F3 (phone) a mark — one action, ONE change-log batch",
+   "ok": true,
+   "detail": "1 batch"
+  },
+  {
+   "name": "F3 (phone) a mark — a reload gives back exactly what was there (the app)",
+   "ok": true,
+   "detail": "week 13/07/2026 (the never-saved demo week’s hidden row ids were minted afresh — left out of the compare)"
+  },
+  {
+   "name": "F3 (phone) a mark — a reload gives back exactly what was there (the Tracker: every chart, detail, course, student, mark, and the screen)",
+   "ok": true,
+   "detail": "1 courses · 4 charts · on 26ABSG / 2026 / STUDENT A"
+  },
+  {
+   "name": "F3 (phone) a mark — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "F3 (phone) after the reload the mark is there",
+   "ok": true,
+   "detail": "dco"
+  },
+  {
+   "name": "W5 part F — no console error, page error or failed request",
+   "ok": true,
+   "detail": ""
+  }
+ ],
+ "walker": "W5",
+ "part": "F",
+ "table": [
+  {
+   "step": "F1",
+   "width": "desktop",
+   "did": "a second browser: + Add course IMPX, + Add IMP STUDENT, DCO, ⤓ Export with students; a fresh browser: File → ⇪ Import… that file, Skip each chart, Yes to students & marks, OK; reload",
+   "after": "courses 26ABSG, IMPX; IMPX: IMP STUDENT, ST-01 DCO",
+   "rows": "put 11 [tracker/v3:cmunyh0cycgnvg8:idmig, tracker/v3:cmunyh0cycgnvg8:plan, tracker/v3:cmunyh0cycgnvg8:rostermig, tracker/v3:cmunyh0cycgnvg8:sb2026:d:smunyh0rrazor8g, tracker/v3:cmunyh0cycgnvg8:sb2026:enr:smunyh0rrazor8g, tracker/v3:cmunyh0cycgnvg8:sb2026:m:smunyh0rrazor8g …] · del 0 · batches 10 (trk.catalogue/4 trk.plan/1 trk.roster/1 trk.marks/1 trk.dates/1 trk.courses/1 trk.meta/1 trk.meta/1 trk.meta/1 trk.meta/1)",
+   "pics": [
+    "f1-maker-impx",
+    "f1-after-import",
+    "f1-after-reload-impx"
+   ]
+  },
+  {
+   "step": "F2",
+   "width": "desktop",
+   "did": "grade A=ST-01 (reload, switch away/back); grade B=AVI-12 → ↶ (reload, switch); grade B → ↶ → ↷ (reload, switch)",
+   "after": "after grading A, reload: lands STUDENT A/ST-01, after switch ST-01 ‖ after ↶ Undo of B, reload: lands STUDENT A/AVI-12, after switch AVI-12 ‖ after ↷ Redo of B, reload: lands STUDENT A/AVI-12, after switch AVI-12",
+   "rows": "grade A: put 3 [tracker/v3:cmunyhg8s65wcvo:last:smunyhg8w6949g5, tracker/v3:cmunyhg8s65wcvo:lastStudent, tracker/v3:cmunyhg8s65wcvo:sb2026:m:smunyhg8w6949g5] · del 0 · batches 1 (trk.gesture/3) ‖ grade B: put 2 [tracker/v3:cmunyhg8s65wcvo:last:smunyhg8w6949g5, tracker/v3:cmunyhg8s65wcvo:sb2026:m:smunyhg8w6949g5] · del 0 · batches 1 (trk.gesture/2) ‖ ↶: put 4 [tracker/v3:cmunyhg8s65wcvo:lulls:smunyhg8w6949g5, tracker/v3:cmunyhg8s65wcvo:pace:smunyhg8w6949g5, tracker/v3:cmunyhg8s65wcvo:sb2026:d:smunyhg8w6949g5, tracker/v3:cmunyhg8s65wcvo:sb2026:m:smunyhg8w6949g5] · del 0 · batches 1 (tracker.undo/4) ‖ ↷: put 1 [tracker/v3:cmunyhg8s65wcvo:sb2026:m:smunyhg8w6949g5] · del 0 · batches 1 (tracker.redo/1)",
+   "pics": [
+    "f2a-landing",
+    "f2c-landing-after-undo",
+    "f2d-landing-after-redo"
+   ]
+  },
+  {
+   "step": "F3",
+   "width": "phone",
+   "did": "a finger's tap on ST-01, DCO in the pop-up; reload",
+   "after": "ST-01 DCO for STUDENT A",
+   "rows": "put 3 [tracker/v3:cmunyi41jr4w7w7:last:smunyi41nv2a2sm, tracker/v3:cmunyi41jr4w7w7:lastStudent, tracker/v3:cmunyi41jr4w7w7:sb2026:m:smunyi41nv2a2sm] · del 0 · batches 1 (trk.gesture/3)",
+   "pics": [
+    "f3-phone-marked",
+    "f3-phone-after-reload"
+   ]
+  }
+ ],
+ "notes": [
+  "F1 import asked: \"“2024” already exists. Replace it, or add the incoming one under a new name?\" → cancel | \"“2026” already exists. Replace it, or add the incoming one under a new name?\" → cancel | \"“Tx 2026” already exists. Replace it, or add the incoming one under a new name?\" → cancel | \"“A/G - A/A 2026” already exists. Replace it, or add the incoming one under a new\" → cancel | \"This file also contains students and marks. Bring them in too? A student already\" → ok | \"Students & marks restored. It is saved. Skipped, left as they are here: 2024, 20\" → ok",
+  "F1 import wrote: put 11 [tracker/v3:cmunyh0cycgnvg8:idmig, tracker/v3:cmunyh0cycgnvg8:plan, tracker/v3:cmunyh0cycgnvg8:rostermig, tracker/v3:cmunyh0cycgnvg8:sb2026:d:smunyh0rrazor8g, tracker/v3:cmunyh0cycgnvg8:sb2026:enr:smunyh0rrazor8g, tracker/v3:cmunyh0cycgnvg8:sb2026:m:smunyh0rrazor8g …] · del 0 · batches 10 (trk.catalogue/4 trk.plan/1 trk.roster/1 trk.marks/1 trk.dates/1 trk.courses/1 trk.meta/1 trk.meta/1 trk.meta/1 trk.meta/1) · bare (no batch names them): none",
+  "F2c ↶ Undo wrote: put 4 [tracker/v3:cmunyhg8s65wcvo:lulls:smunyhg8w6949g5, tracker/v3:cmunyhg8s65wcvo:pace:smunyhg8w6949g5, tracker/v3:cmunyhg8s65wcvo:sb2026:d:smunyhg8w6949g5, tracker/v3:cmunyhg8s65wcvo:sb2026:m:smunyhg8w6949g5] · del 0 · batches 1 (tracker.undo/4); the last-work rows were NOT changed (still name AVI-12): {\"tracker/v3:cmunyhg8s65wcvo:lastStudent\":\"smunyhg8w6949g5\",\"tracker/v3:cmunyhg8s65wcvo:last:smunyhg8w6949g5\":\"{\\\"syl\\\":\\\"sb2026\\\",\\\"event\\\":\\\"AVI-12\\\"}\"}",
+  "F2c after ↶ Undo + reload the Tracker lands on {\"student\":\"STUDENT A\",\"ball\":\"AVI-12\"} (switch away and back: {\"student\":\"STUDENT A\",\"ball\":\"AVI-12\"}) — B's grade is gone",
+  "F2d ↷ Redo wrote: put 1 [tracker/v3:cmunyhg8s65wcvo:sb2026:m:smunyhg8w6949g5] · del 0 · batches 1 (tracker.redo/1)",
+  "F2 landings: [{\"label\":\"after grading A, reload\",\"afterReload\":{\"student\":\"STUDENT A\",\"ball\":\"ST-01\"},\"afterSwitchBack\":{\"student\":\"STUDENT A\",\"ball\":\"ST-01\"}},{\"label\":\"after ↶ Undo of B, reload\",\"afterReload\":{\"student\":\"STUDENT A\",\"ball\":\"AVI-12\"},\"afterSwitchBack\":{\"student\":\"STUDENT A\",\"ball\":\"AVI-12\"}},{\"label\":\"after ↷ Redo of B, reload\",\"afterReload\":{\"student\":\"STUDENT A\",\"ball\":\"AVI-12\"},\"afterSwitchBack\":{\"student\":\"STUDENT A\",\"ball\":\"AVI-12\"}}]"
+ ],
+ "errors": []
+}

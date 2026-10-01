@@ -23,7 +23,7 @@ import { _resetTimeline } from './timeline'
 
 const DSNAP = JSON.stringify(DAYS)
 const ISNAP = JSON.stringify(INPUTS)
-const SCHED_COLLS = ['days', 'sched.book', 'sched.mutes', 'sched.orig', 'sched.als', 'sched.retired', 'inputs', 'plan', 'weekstash']
+const SCHED_COLLS = ['days', 'sched.book', 'sched.mutes', 'sched.week', 'sched.issuance', 'sched.retraction', 'inputs', 'plan', 'weekstash']
 const sign = (di: number) => { const g = signOf(di); g.cur = 'ignite'; g.sked = 'bane'; g.plan = 'stiff'; g.appr = 'pump' }
 const note0 = () => txtGet('dn:0.0')
 
@@ -83,8 +83,11 @@ describe('undo of a real input filing round-trips the landing (reland in restore
   // acc must be read from the LIVE INPUTS entry by id — the restore replaces the
   // object (clone-on-write), so a held reference goes stale.
   const accOf = (iid: string) => (INPUTS.find((r: any) => r.iid === iid) as any)?.acc
-  it('accepting an input then undoing removes its ground row AND clears acc; redo re-lands it', () => {
+  /* since [DB-READINESS] phase 6 (c) an activity request with no row, not taken off, is ON the programme — worked out on
+     read — so the state an Accept starts from is "taken off" ('r'), the card's own: Accept, Undo → taken off again */
+  it('accepting an input then undoing removes its ground row AND puts it back as taken off; redo re-lands it', () => {
     const inp = freshOnDay0()
+    inp.acc = 'r'                                    // taken off (✕) — the state an Accept starts from
     const iid = inpId(inp)
     resyncSchedBaseline()                            // X is pre-existing, so the accept is a PUT (acc), not a create
     const before = DAYS[0].ground.length
@@ -98,7 +101,7 @@ describe('undo of a real input filing round-trips the landing (reland in restore
     expect(u.ok).toBe(true)
     expect(DAYS[0].ground.length).toBe(before)                                  // row gone
     expect(DAYS[0].ground.some((g: any) => g.src === iid)).toBe(false)
-    expect(accOf(iid)).toBeFalsy()                                              // acc re-derived (no dangling 'g')
+    expect(accOf(iid)).toBe('r')                                                // taken off again (no dangling 'g')
 
     const r = globalRedo()
     expect(r.ok).toBe(true)
@@ -106,19 +109,22 @@ describe('undo of a real input filing round-trips the landing (reland in restore
     expect(accOf(iid)).toBe('g')                                               // re-landed
   })
 
-  /* the days-only dangling case (Codex R2-003): a restored day lacks a ground row
-     while the live input still reads acc='g'. reconcileLandedAcc alone (one-way) would
-     leave it dangling; the restore runs reconcileDayFiling (two-way), which clears it. */
-  it('reconciles a dangling g to no-landing when a days-only restore leaves no row', () => {
+  /* the days-only dangling case (Codex R2-003): a restored day lacks a ground row while the live input reads acc='g'. Since
+     [DB-READINESS] phase 6 (c) 'g' is never a state of its own: after every command it is worked out from the week on
+     screen (state/holderbase.ts) — 'g' exactly when its row stands, and an activity request with no row lands on its day.
+     So a dangling 'g' does not survive the next command, and an Undo restoring a day without its row lands it again. */
+  it('a dangling g never survives: "on the programme" always means its row stands, after an edit and after its Undo', () => {
     const inp = freshOnDay0()
     const iid = inpId(inp)
     inp.acc = 'g'                                    // dangling: 'g' but no ground row exists
     resyncSchedBaseline()                            // fold X into the baseline, so the next edit is days-ONLY
+    const stands = () => DAYS.some((d: any) => (d.ground || []).some((g: any) => g && g.src === iid))
     writeText('dn:0.0', 'NOTE')                      // a days-only edit (day note); no inputs change
-    expect(accOf(iid)).toBe('g')
-    const u = globalUndo()                           // restores day 0 (still no row for X)
+    expect(accOf(iid) === 'g', 'on the programme…').toBe(true)
+    expect(stands(), '…because its row now stands').toBe(true)
+    const u = globalUndo()                           // restores day 0 (still no row for X in that image)
     expect(u.ok).toBe(true)
-    expect(accOf(iid)).toBeFalsy()                   // reconcileDayFiling cleared the dangling landing
+    expect(accOf(iid) === 'g').toBe(stands())
   })
 })
 
@@ -129,9 +135,9 @@ describe('undo of a real publish, driven by the timeline, retracts the day', () 
     commitSetDayApproved(0, true)
     expect(dayApproved(0)).toBe(true)
     // undo the publish entry: the timeline replays its recorded inverse (delete the
-    // sched.orig record + restore the book), driving the real schedStore.write().
+    // sched.issuance record + restore the day's book), driving the real schedStore.write().
     const u = globalUndo()
-    expect(u.ok).toBe(true)
+    expect(u.ok, u.reason).toBe(true)
     expect(dayApproved(0)).toBe(false)          // the Original is gone; day is a draft again
     expect((SCHED.orig as any)[0]).toBeUndefined()
     // the plain inverse would restore the pre-publish SIGNED book; postRestore clears it

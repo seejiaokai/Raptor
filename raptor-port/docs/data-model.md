@@ -82,9 +82,9 @@ below; the app's delete is `state/person-delete.ts`, reached from Admin → User
 |---|---|---|---|
 | `id` | guid | yes | opaque. Today's short lowercase handle is kept as `legacyKey` for the import only |
 | `callsign` | string | yes | the display name (`cs`) |
-| `seat` | choice `FCP\|RCP\|GND` | yes | front cockpit / rear cockpit / ground. The one seat; the Leave War's `personedits.seat` override is dropped |
+| `seat` | choice `FCP\|RCP\|GND` | yes | front cockpit / rear cockpit / ground. The one seat; the Leave War's `personedits.seat` override is dropped — and since D461 (30 Sep 26) the war has no Edit person at all: seat, band and SXO change only on Quals |
 | `category` | choice `OCU,D,C,B,A,IW,IP,IR,FI` or empty | yes | the category ladder (`q`); ground crew hold empty |
-| `sxo` | bool | no | SXO-qualified (the Leave War's `personedits.sxo` override folds into it) |
+| `sxo` | bool | no | SXO-qualified — changed only on Quals (D460, D461, 30 Sep 26: the Leave War's `personedits.sxo` copy goes, not folded in) |
 | `initials`, `flight`, `remarks` | string | no | ground-crew extras; `initials`/`flight` are written for aircrew too |
 | `isGroundPersonnel` | bool | no | `pers` — no flying quals derive |
 | `isSentinel` | bool | no | `special` — `ALL`, `ALL AVAIL`; occupies slots, is not a person |
@@ -102,7 +102,7 @@ below; the app's delete is `state/person-delete.ts`, reached from Admin → User
 Relationships: 1–n `QualMark`, `Enrolment`, `Input`, `LeaveBid`,
 `LeaveLedger`, `LeaveOpening`; 0–1 `User`; 0–1 `LeavePersonProfile`;
 referenced by every schedule row that seats a body.
-From today: `PEOPLE[id]` (`raptor:people/all`), plus Leave War's `Person`
+From today: `PEOPLE[id]` — one stored row each since 30 Sep 26 (`raptor:people/<pid>`, with `ord` — the `sortIndex`; `[DB-READINESS]` group A, phase 2; `people/all` until then), plus Leave War's `Person`
 projection. Its two per-person override records, `personedits` and
 `postouts`, and the `perslabels` entry go to `LeavePersonProfile` (below),
 except `seat` and `sxo`, which fold into this row.
@@ -162,9 +162,12 @@ Owner: **Tracker**. A training course, e.g. an OCU intake.
 
 Relationships: 1–n `Enrolment`, 1–n `CoursePlan`.
 From today: `students.courses[]` and the per-course key prefix in
-`raptor:tracker/v3:<course>:…`.
+`raptor:tracker/v3:<course>:…`. **Stored one row per course since 30 Sep 26** (`[DB-READINESS]` group A phase 5b —
+D462): `raptor:tracker/v3:master:course:<id>` = `{ id, name, ord, deleted? }` — `ord` is `sortIndex` (decimal; the
+order is `(sortIndex, id)`), and a course deleted in the app (D128 — its records kept, ↺ Restore brings it back) is the
+same row with `deleted: true` (the `archived` column).
 App change: renaming a course becomes one column write instead of moving
-eight storage keys.
+eight storage keys. (Done: a rename writes that one row.)
 
 ### Syllabus
 
@@ -182,7 +185,12 @@ drawn layout.
 
 Relationships: 1–n `TrainingEvent`, 1–1 `Layout`, 1–n `Enrolment`.
 From today: `charts.syllabi[name]`, `charts.order`, and the alias/hidden/tomb
-registers.
+registers. **Stored one row per chart since 30 Sep 26** (`[DB-READINESS]` group A phase 5b — D462):
+`raptor:tracker/v3:master:chart:<id>` = `{ id, name?, base?, userNamed?, ord?, hidden?, tomb?, def? }` — the chart's
+catalogue entry (`name`; `base` = the shipped chart a built-in draws from, so `isBuiltIn`; `userNamed` = renamed by the
+squadron), its place (`ord` = `sortIndex`), `hidden`, `tomb` (`tombstoned` — a built-in deleted by the squadron, which
+has no name then), and **its events as JSON at stage 1** (`def` — only for a chart drawn or edited in the app; an
+untouched built-in reads its shipped events). `aliasOfId` is retired (a rename keeps the id).
 App change: a syllabus can be referenced by id from an enrolment, so a rename
 no longer has to rewrite marks and rosters.
 
@@ -211,7 +219,11 @@ plus `charts.eventInfoBySyl`. `_b` is drawing state and moves to `Layout`.
 never shows on another chart with the same code, which is exactly the row this
 table already is (one TrainingEvent per syllabus + code).
 App change: the event's details stop living in a second container keyed by
-chart and event id; `hrs` stops being free text.
+chart and event id; `hrs` stops being free text. **At stage 1 (30 Sep 26, `[DB-READINESS]` group A phase 5b — D462,
+D464):** a chart's events ride its `Syllabus` row as JSON; what the squadron TYPED on a ball is its own row,
+`raptor:tracker/v3:master:info:<sylId>:<ball code, URI-encoded>` = the typed fields `{ name?, fmt?, hrs?, crew?, pre? }`
+over the chart's shipped wording — one row per chart and ball, so two people typing on two balls of one chart both
+keep their work.
 
 ### Enrolment
 
@@ -240,7 +252,9 @@ id, and `pid` (the person). The row's id IS the entry's `id` (the
 migration key); `studentName` is `name`; `personId` is `pid` (null where
 the student was typed). The 9 Sep 26 `v3:links` record is already folded
 into `pid` by the app's own migration and is gone from every converted
-browser. App change: none — the re-key is done.
+browser. App change: none — the re-key is done. **Stored one row per enrolment since 30 Sep 26** (`[DB-READINESS]`
+group A phase 5b — D462): `raptor:tracker/v3:<course>:<syl>:enr:<id>` = `{ id, name, pid?, ord }` (`ord` =
+`sortIndex`) — two people adding students to one course and chart at once both keep theirs.
 
 ### Attempt
 
@@ -337,24 +351,41 @@ of one week never write the same row.
 nothing a scheduler does while holding a day writes the week row, and **nothing but the day's holder ever writes the
 day's row**. Every field of today's persisted week record (`weekStashSnap()`, `state/store.ts`) is placed as follows:
 
-- **Into that day's row:** the day itself (`d[di]`); every `SCHED` map keyed by day index (`ok`, `sg`, `sb`, `o`, `cv`,
-  `dr`, `cd`, `rt`, `cr`); every map keyed by slot key, split by the day the key names (`c`, `p`, `ad` — `keyDay()`);
+- **Into that day's row:** the day itself (`d[di]`); every `SCHED` map keyed by day index (`ok`, `sg`, `sb`, `cv`,
+  `dr`, `cd`, `cr`); every map keyed by slot key, split by the day the key names (`c`, `p`, `ad` — `keyDay()`);
   the muted warnings (`wo` — `warnMuteKey` leads with the day). The working sign-offs travel here (Sign-offs, above).
+  *(Corrected 30 Sep 26, `[DB-READINESS]` group A phase 1 — plan §2.5, §4: `o` and `rt` are NOT in the day row. The
+  Original is issuance 0 of its version and each amendment its own issuance — one `Amendment` row each; a withdrawn
+  one keeps its row and gains an `AmendmentRetraction` row beside it. `rt` is keyed by version (`<verId>~<n>`), not by
+  day.)*
 - **Not stored at all — worked out on read:** the removed-input list (`un` — a cache of `Input.acc` and not-landed,
-  Fable 7), the input landings' pending marks (`inp:`), and every other effect of a record the holder does not own
+  Fable 7), the input landings' pending marks (`inp:` — nothing writes one since 30 Sep 26, `[DB-READINESS]` group A phase 6 (b):
+  the filing axis counts a filing), and every other effect of a record the holder does not own
   (the day lock, rule 9).
 - **Into its own tables, outside any day:** the planning calendar (`PLANPUCKS`, `DAYRMK` — Fable 1): planning pucks and
   day remarks go on ANY date from the Inputs month view, weeks ahead, with no day held — `PlanningPuck` and `DayRemark`
-  below. The issued versions and their signatures: `Amendment`, `IssuedSignoff` (above).
+  below. The issued versions and their signatures: `Amendment`, `IssuedSignoff` (above) — the Original (`o`) and every
+  amendment (`a`), each one issuance row written once; every Unpublish (`rt`) one `AmendmentRetraction` row.
 - **Kept on the week row:** the two format stamps (`v`, `am`). **Dropped:** `SCHED.al` (no reader).
 
+**Built 30 Sep 26 (`[DB-READINESS]` group A, phase 1 — `state/weekrows.ts`).** The stored ids hang off the week's id
+(`dd-mm-yyyy`): `weeks/<wk>` the week row, `weeks/<wk>#<di>` a day row, `weeks/<wk>:is:<verId>~<n>` an issuance (n = how
+many times that version had been withdrawn before it went out — today's `SCHED.retired` keys less one; `reissue` in
+`Amendment`), `weeks/<wk>:rx:<verId>~<n>` its retraction. A version id carries a `#`, so an id is read issuance-first.
+
 **At the build, a test proves the split:** a week record split into its rows and joined back is byte-identical; a key
-or field that names no single day fails it; a change on one day produces exactly one day write.
+or field that names no single day fails it; a change on one day produces exactly one day write. *(Built 30 Sep 26:
+`state/weekrows.test.ts` — split then join gives the week back, join then split the same bytes;
+`state/weekrows-store.test.ts` — one edit writes one day row, a move two.)*
 
 **The same grain above the store (Fable 3).** The command layer's records (`state/sched-commit.ts` `decompose`) split
 the same way: `sched.book/<wk>` becomes one book record per day (`sched.book/<wk>#<di>`, the day's slice of `c`, `p`,
 `ad`, `ok`, `sg`, `sb`, `cv`, `dr`, `cd`, `cr`) and `sched.mutes/<wk>` one per day; `v` and `am` alone stay week-wide.
 So an Undo step names days, and another person's change on another day never blocks it (D148; section 9, rule 11).
+*(Built 30 Sep 26, `[DB-READINESS]` group A phase 1: also `sched.week/<wk>` (the stamps) and, replacing `sched.orig`,
+`sched.als` and `sched.retired`, `sched.issuance/<wk>:<verId>~<n>` — every issued version, written once — and
+`sched.retraction/<wk>:<verId>~<n>` — every Unpublish beside it. Proven red first: another person's Tuesday change had
+blocked his Undo of Monday through the one week-wide book record; `state/sched-dayrecords.test.ts`.)*
 
 **What the adapter writes (Astra 3, Fable 2).** The adapter does not infer intent from whole records: it takes the
 command layer's write set — which day records a command changed — and sends **one all-or-nothing changeset per
@@ -364,12 +395,17 @@ never sends it (Fable 12); a format upgrade that rewrites every day runs only as
 a server job.
 
 Relationships: 1–n `ScheduleDay`.
-From today: `raptor:weeks/<dd-mm-yyyy>` — **already persisted**: the
-per-week stash is hydrated from and written to the whiteboard on every
-history step (`state/persist.ts`), so a week survives a reload today. The
-loaded week is filed only once it has changed since load (a pristine seed
-week is never written). **Its reconcile deletes every stored week the browser does not hold (`persist.ts`) — correct
-for one browser, destructive once shared: it goes before the first shared release (section 7; `[DB-READINESS]` group A).**
+From today: **stored as these rows since 30 Sep 26** (`[DB-READINESS]` group A, phase 1): each command's changes to a
+week are written as exactly the rows they touched, inside its one saved group (`state/persist.ts`, through the stream
+consumer `state/rowmap.ts`); a week's first save writes its week row and ONLY the days it changed — a day no one has
+saved has no row and reads as the week untouched (a blank day on a shared store; the group-wide walk's finding H3, 30 Sep 26: a first save of all
+seven days from the saver's copy wiped another person's day of the same new week, and would save days the saver does not
+hold, D450) — and a week load's landing is saved only onto days already saved; a pristine seed week is never written; a row is removed only by an explicit delete (an Undo of a publish or of an Unpublish). **The
+reconcile that deleted every stored week the browser did not hold is GONE** (it was correct for one browser and
+destructive once shared). A week switch writes nothing of the week left, and NOTHING of the week arriving: its landing
+pass (worked out by the load itself since 1 Oct 26 — no command at all, phase 6 (c); one `sched.load` command before) is worked out again at every load, and so is the boot's (the group-A final read, Fable F2 and F1, 30 Sep 26: saving it wrote this browser's copy of rows another person may have changed, and made a member's browser the writer of days a member may not write — the plan's phase 6(c) direction, a landing worked out on read); a day the landing
+touched is saved, landing and all, with the first command that changes it. A week that will not read, or was published
+by an older build, loads read-only and its rows are never rewritten.
 
 *The stage-1 whole-week snapshot this entry described before 29 Sep 26 is in `docs/archive/data-model-2026-09-29.md` (replaced for the day lock, D355).*
 
@@ -408,7 +444,7 @@ technical team says how (Open question 8).
 | `weekId` | ref ScheduleWeek | yes | |
 | `dayIndex` | int | yes | 0–6. Unique on (`weekId`, `dayIndex`) |
 | `date` | date | yes | ISO |
-| `snapshot` | JSON | no | the day and every field of the week record that belongs to it (above), with the scheduler's decisions on the inputs that land on it (section 9, rule 9 — at stage 2 those decisions move to `ScheduleInputPlacement`, below, never lost with the snapshot). **Null = a blank day** — reads as a blank week reads today |
+| `snapshot` | JSON | no | the day and every field of the week record that belongs to it (above), with the scheduler's decisions on the inputs that land on it (section 9, rule 9 — at stage 2 those decisions move to `ScheduleInputPlacement`, below, never lost with the snapshot). **No row = the day untouched** — a day no one has saved is not stored; it reads as the week before any save (a blank day on a shared store — the group-wide walk's finding H3, 30 Sep 26) |
 | `ownerid` | ref User / team | yes | the platform's owner: the holder, or the "free" team |
 | `leaseId` | guid | no | a new id at every take, so a stale session of the same person is refused (Astra 2) |
 | `sessionId` | string | no | the browser tab that took it (a random id kept per tab), so only that tab's closing releases it (Fable 9) |
@@ -435,7 +471,7 @@ again once the stage-1 snapshot empties.
 
 ### PlanningPuck, DayRemark — the planning calendar (new 29 Sep 26, Fable 1)
 
-Owner: **Scheduler**. The Inputs page's planning layer — today one global record (`plan/all`: `PLANPUCKS`, `DAYRMK`).
+Owner: **Scheduler**. The Inputs page's planning layer — `PLANPUCKS`, `DAYRMK`: one stored row per note or pucks row (`plan/pp:<id>`, with `ord`) and per day title (`plan/dm:<iso>`) since 30 Sep 26 (`[DB-READINESS]` group A, phase 2; one global record `plan/all` until then).
 **No lock** (section 9, rule 10): one record each, reject-and-reload.
 
 - **`PlanningPuck`:** `date` (ISO), `personIds` — the list as the app keeps it, **gaps kept** (a deleted man leaves a
@@ -503,6 +539,8 @@ appointment, duty, SANS availability.
 | `movedFrom` | JSON | no | `lwMoved`: per covered ISO date, the date it was moved from by a closed-bidding move on the war — keeps the dotted "moved" mark through edits and undo |
 | `oilCredit` | JSON | no | `oil`: ISO date → `0 \| 0.5 \| 1` |
 | `sansEvents` | JSON | no | `sans`: which of Fly / OFT / AMT are offered |
+| `handCount` | int | no | `hand` — how many times the request has changed hands (+1 at every change of person; absent = 0). An OIL decision about it records the holding it was made under (the day's `oild.pa`) — `[DB-READINESS]` group A phase 6 (a), 30 Sep 26 (section 9 rule 9) |
+| `leftAt` | JSON | no | person id → the holding at which the request LEFT him — written by the hand-over; an OIL decision about him made under an earlier holding reads as nothing, so a hand-over writes no day (phase 6 (a)) |
 | `isDeleted` | bool | yes | undo can resurrect an input |
 
 `InputType` is a reference table, not free text: `code` (PK), `group`
@@ -515,7 +553,7 @@ into it and is the source of truth for what a type means.
 Relationships: n–1 `Person`, n–1 `InputType`; n–n `Attachment` through
 `InputAttachment` (`inputId`, `attachmentId`) — today `docId` / `docIds`;
 0–1 `LeaveBid` per covered day.
-From today: `INPUTS[]` (`raptor:inputs/all`), addressed by `iid`.
+From today: `INPUTS[]` — one stored row per request since 30 Sep 26 (`raptor:inputs/<iid>`, with `ord` — the `sortIndex`; `[DB-READINESS]` group A, phase 2; `inputs/all` until then), addressed by `iid`.
 App change: inputs stay global rather than week-scoped, as they already are.
 The display date and `yr` fold into one ISO date at the storage door.
 
@@ -565,16 +603,22 @@ cut, moved, deleted, and the Leave War's decisions), Quals changes, a publish or
 with who (the person's id) and when; durable in the browser, kept across sign-outs (D336 (b)), 2,000 lines. Each person's
 "seen" is `EditLogSeen` below.*
 
-Owner: **Scheduler**. One recorded change. Per browser today (the settings key `elog`, 2,000 lines); in the database it
-is durable and shared.
+Owner: **Scheduler**. One recorded change. Per browser today, 2,000 lines — **one stored row per line since 30 Sep 26**
+(`settings/elog:<lineId>`, `[DB-READINESS]` group A phase 4.3), written inside the command that made the line, in its
+changeset and its `ChangeBatch`; in the database it is durable and shared.
+**Its order (Fable F2-02):** `(at, lineId)` — `at` the wall clock, `lineId` the app's own id, rising within a page life —
+the same on every client. `seq` below is **yours**: the store's own rising number (its `changeSeq`), store-assigned; the
+app keeps no number of its own (its in-memory place in the loaded list is never stored).
 
-**`EditLogSeen`** (new, `[DRAFT-PENDING]`): one row per person — `personId`, `upTo` (every line numbered up to it is
-seen), `extra` (lines above it marked seen one by one). Written only by that person ("Mark all as seen", own row — §11).
-Today the settings key `changeseen`.
+**`EditLogSeen`** (new, `[DRAFT-PENDING]`): one row per person — `personId`, `upTo` (every line at or before this
+POSITION in the log's order — `(at, lineId)` in the stand-in, the store's `seq` once assigned — is seen), `extra` (lines
+after it marked seen one by one, by `lineId`). Written only by that person ("Mark all as seen", own row — §11).
+Today the rows `settings/seen:<pid>` (they were one shared record, `changeseen`, until 30 Sep 26).
 
 | Field | Type | Req | Meaning |
 |---|---|---|---|
-| `seq` | bigint | yes | the line's number — only rises; what `EditLogSeen` points at |
+| `seq` | bigint | yes | the store's own number for the line — only rises, **store-assigned** (`changeSeq`); what `EditLogSeen.upTo` points at once the database assigns it |
+| `lineId` | string | yes | the app's own id for the line (`<page>.<n>`) — unique; the stored row's key; with `at`, the log's order until `seq` exists (30 Sep 26) |
 | `at` | datetime | yes | `t`, wall clock |
 | `byUserId` | ref User | no | `pid` — the person behind it (kept since `[ACCOUNTS]`) |
 | `date`, `endDate` | date | no | the calendar day(s) it is on — the span after for an absence |
@@ -631,13 +675,13 @@ Owner: **Leave War**. One leave period — a "war".
 | `bidFrom`, `bidTo` | date | no | the bidding window |
 | `days` | JSON | yes | `DayInfo[]` — the calendar's own annotations |
 | `bands` | JSON | yes | `EventBand[]` |
+| `sortIndex` | decimal | yes | its place among the wars — the order they were created, which the period picker lists them by (`ord`, `[DB-READINESS]` group A, phase 3; added 30 Sep 26) |
 
 Relationships: 1–n `LeaveBid`.
-From today: `raptor:leavewar/wars` — an array of `{ period, recs }`, one
-record for every war (`recs` = the war's own record lists, [ARCH-STACK] step 4).
-App change: the record lists come out of the war record into `LeaveBid`
-rows. That single record is the largest whole-record clobber surface in the
-app today (section 7).
+From today: one stored row per war since 30 Sep 26 (`raptor:leavewar/war:<warId>` — its period, with `ord`; `[DB-READINESS]` group A, phase 3).
+Until then `raptor:leavewar/wars` — an array of `{ period, recs }`, one record for every war (`recs` = the war's own
+record lists, [ARCH-STACK] step 4), the largest whole-record clobber surface in the app (section 7).
+App change: *(built 30 Sep 26)* the record lists came out of the war record into `LeaveBid` rows.
 
 ### LeaveBid
 
@@ -665,12 +709,18 @@ plus the Inputs on read.
 | `carried` | JSON | no | what an un-approval carried back from the Input (remark, moved marks) for the next approval |
 | `note` | string | no | a credit's reason |
 | `replacedBy` / `replacedWho` / `groupSeq` / `at` | string / string / int / datetime | notice only | what replaced the bid, who (frozen label), the command that did it ("OK, seen" clears the group) |
+| `sortIndex` | decimal | yes | its place among the records at its (`warId`, `personId`, `date`); they read back by (`sortIndex`, key) (`ord`, `[DB-READINESS]` group A, phase 3) |
 | `isDeleted` | bool | yes | |
 
 Relationships: n–1 `LeaveWar`, n–1 `Person`.
 Unique on the record id; per (`warId`, `personId`, `date`) at most one
 undecided request per half, one refused per half, one credit.
-From today: `recs` (`personId → date → WarRec[]`) inside the war record.
+From today: one stored row per record since 30 Sep 26 (`raptor:leavewar/rec:<warId>:<recId>` — the record with its
+`pid`, `date` and `ord`; `[DB-READINESS]` group A, phase 3), written from the command that changed it: a MOVE rewrites the one row, and a row
+is removed only for a record that command removed — a stale client never writes back a record another deleted. Two
+records at one address that would break the rules above (two people each bidding the same half at once) are both
+kept in storage; the second in (`sortIndex`, key) order is not read. Until then `recs` (`personId → date → WarRec[]`)
+inside the war record.
 App change: none beyond the move to rows — the Leave War reads the Inputs and
 writes only these records; there is no sync difference to compute and no
 loop-breaker to keep ([ARCH-STACK] step 4).
@@ -686,7 +736,8 @@ Owner: **Leave War**. The leave balances.
 | `LeaveLedger` | `personId`, `counterCode`, `amount` (a grant or a correction), `date`, `reason`, `approvedBy`, `givenBy`, `enteredBy` (ref Person — who entered it, D200 (2)), `enteredAt` (datetime), `isDeleted` — one `LedgerEntry`. **A row with `counterCode = oil` and `amount > 0` is an OIL AWARD** — the ONE kind of hand-given OIL, whether given on the war grid or from the OIL tracker ([OIL-AWARD-IS-A-GRANT], D400, D402, 29 Sep 26); the grid draws it on its date; its date never changes (D260); a negative OIL row is a correction |
 
 Relationships: all n–1 `Person` and n–1 `LeaveCounter`.
-From today: `raptor:leavewar/openings` and `raptor:leavewar/ledger`.
+From today: one stored row each since 30 Sep 26 — `raptor:leavewar/opening:<pid>:<counter>` and
+`raptor:leavewar/ledger:<id>` (`[DB-READINESS]` group A, phase 3; `openings` and `ledger`, one record each for everyone, until then).
 App change: none to the OIL derivation — `OilLedger`, `OilCredit` and
 `OilDebit` stay **derived** from these rows plus the OIL policy, and are not
 stored.
@@ -700,16 +751,17 @@ moved here so the Leave War writes its own table and never the shell's.
 | Field | Type | Req | Meaning |
 |---|---|---|---|
 | `personId` | ref Person | yes | Unique — at most one profile per person |
-| `band` | choice `instructor\|ops` | no | `personedits.band` |
 | `fromDate`, `toDate` | date | no | in-squadron window; `toDate` null = open (`Person.from`/`to`) |
 | `poOutcome` | choice `overseas\|delete\|sans\|none` | no | **which posting out it is** (D229, D294 — built 27 Sep 26): `overseas` — archived on Quals and his account suspended on the date (D280); `delete` — his person and account deleted on the date (D287); `sans` — SANS on the date (D283); `none` — off the manpower, nothing else. (`transfer`, D281, comes with the multi-squadron database.) Replaces the old `poArchive` (true = `overseas`), which the app still keeps in step for older readers |
 | `poDone` | date | no | the posting date its outcome has RUN for — so it runs once and never undoes a later hand change (an account enabled by hand, a SANS tick taken off); cleared when the date or the outcome changes |
 | `label` | string | no | the `perslabels` entry for this person |
 
 Relationships: 1–1 `Person` (optional on the Person side).
-From today: `raptor:leavewar/personedits` (its `band` only — the `seat` and
-`sxo` overrides fold into `Person` and are dropped as overrides),
-`raptor:leavewar/postouts`, and the `perslabels` preference.
+From today: *(D461, 30 Sep 26: `raptor:leavewar/personedits` goes whole — the war's Edit person is removed; seat and SXO
+are the person's, band is worked out from his CAT, so the profile has no `band`)*
+`raptor:leavewar/postouts`, and the `perslabels` preference — since 30 Sep 26 one stored row per man
+(`raptor:leavewar/profile:<pid>` = `{ post?, label? }` — his window, as the app's frozen copy of him with it on, and his
+label; `[DB-READINESS]` group A, phase 3).
 App change: `setPeople` lays this row on the projection instead of two
 override records and a label map; a posting-out date is a column, not an
 entry that exists only while `to` is set.
@@ -735,13 +787,18 @@ picked up rather than frozen. Do not seed this table.
 ### SchemaVersion
 
 Owner: **Shell**. One row. The front end reads it at boot and refuses to run
-against a store it does not understand (section 6).
+against a store it does not understand (section 6). **One object, built 30 Sep 26** (`[DB-READINESS]` group A
+phase 0, Astra R3-03 — `src/storage/schema.ts`): it replaced both the bare format number the browser stored and a
+separate "already started" record, and it is how the app knows a store has STARTED — never by whether one
+particular record happens to exist.
 
 | Field | Type | Req | Meaning |
 |---|---|---|---|
 | `stage` | int | yes | the migration stage the store is at (1–4) |
-| `appliedAt` | datetime | yes | when that stage's migration completed |
-| `minClient` | string | yes | the oldest front-end build allowed to write |
+| `dataFormatVersion` | int | yes | the shape the records are in — 6 since 30 Sep 26, every record one row per thing (the fold, `src/storage/fold.ts`, converts a format-5 browser once at boot — the manifest complete with the Tracker's converter, group A phase 5b); 5 before. Reset and fold decisions compare THIS, never `stage` |
+| `initialized` | bool | yes | the store has started — seeded (the demo), folded, or bootstrapped (an empty shared store's first admin, group A phase 5). An initialized store is never seeded; a wipe clears it |
+| `appliedAt` | datetime | yes | when that format was applied |
+| `minClient` | int | yes | the oldest front-end data format allowed to write (a build below it refuses to load) |
 
 ### User
 
@@ -755,11 +812,13 @@ to it — every account IS one callsign (owner, D166, 25 Sep 26).
 | `personId` | ref Person | **yes** | the callsign the account belongs to (D166); one account per person (unique) |
 | `enabled` | bool | yes | false = **suspended** (D280, D285 — the button "Suspend" / "Enable"; a man away). The account itself can be DELETED ("Delete account", D285) — always with his person (D287, built 27 Sep 26) |
 | `suspendedBy` | choice (`po`) | no | the suspension a posting out made (overseas, D280), which "he's back" (Restore) enables — never one an admin made by hand; any hand Suspend / Enable clears it (27 Sep 26) |
+| `seenFrom` | position | no | where the change history stood when the account was made — `(at, lineId)` in the stand-in, the `EditLog.seq` once assigned: every line after it is news to him, none before (`[DRAFT-PENDING]`, Fable F6; a position since 30 Sep 26, F2-02) |
+| `createdAt` | datetime | no | when it was made (the platform's `createdon`) — at stage 1, two accounts stored for one person (two admins at once): the older is kept, the other dropped with a logged line, until your unique `personId` refuses the second (30 Sep 26) |
 | `lastSignInAt` | datetime | no | (new) |
 
 The displayed name is the person's callsign, read live — a rename moves nothing (the one-identity rule).
 Relationships: 1 `Person`; referenced by every `createdBy`/`updatedBy`.
-From today: the `accounts` settings record, `state/accounts.ts` (`[ACCOUNTS]`, 26 Sep 26), managed on Admin → Users.
+From today: one row per account, `settings/account:<id>` (since 30 Sep 26 — it was the one `accounts` settings record), `state/accounts.ts` (`[ACCOUNTS]`, 26 Sep 26), managed on Admin → Users.
 **No password is ever stored in this model — nor in the app today** (the two seeded demo sign-ins' passwords live in code
 only). The auth provider owns credentials; this table maps a signed-in principal to a role and a person. **Two guards the
 server keeps too:** at least one enabled admin always remains; an admin never changes his own account.
@@ -776,16 +835,31 @@ Owner: **Shell**. Someone signed in with his defence mail but on no list, asking
 | `seat` | choice `FCP\|RCP\|GND` | yes | pilot, WSO or personnel (D220) |
 | `cat` | string | for aircrew | his CAT — one the seat may hold; none for personnel |
 | `requestedAt` | datetime | yes | |
-| `seenBy` | ref `User`, many | no | the admins who have had the waiting list on screen since it arrived — each admin's bell goes out for it (D216, D227) |
+
+*(`seenBy` — the admins who had the waiting list on screen — left this table 30 Sep 26: two admins opening the list at
+once each rewrote it. Each admin's own record is `AccessRequestSeen`, below — R3-04.)*
 
 He asks for exactly what the admin's New person form asks (D214, `[ACCOUNTS-NEW-PERSON]`, 26 Sep 26). Approving either
 links the `User` to a `Person` the admin picks on the roster, or — **New person** — creates the `Person` from what he gave,
 with the admin's corrections, together with the `User`, removing the request in the same step; declining removes it. A
 `User` added or renamed onto a waiting sign-in name answers (removes) its request too. The admin sees a count of waiting
 requests on the Admin tab, and his bell lights until he has had the list on screen (a Teams message at the database step).
-From today: the `accessreqs` settings record (the typed name field of 26 Sep 26 `[ACCOUNTS]` gave way to the initials —
-D219). The admin's **guest switch** (people waiting may read the
-published week) is a `Setting` (`guestview`), off by default.
+From today: one row per request, `settings/accessreq:<id>` (since 30 Sep 26 — it was the one `accessreqs` settings
+record; the typed name field of 26 Sep 26 `[ACCOUNTS]` gave way to the initials — D219). The admin's **guest switch**
+(people waiting may read the published week) is a `Setting` (`guestview`), off by default.
+
+### AccessRequestSeen
+
+Owner: **Shell**. New 30 Sep 26 (`[DB-READINESS]` group A phase 4.4 — Astra R3-04). Each admin's own record of the
+waiting requests he has had on screen: his bell lights until he has seen every one (D216, D227 — each admin's bell is his
+own). One row per admin, written only by him (own row — §11), removed with his `User`.
+
+| Field | Type | Req | Meaning |
+|---|---|---|---|
+| `userId` | ref User | yes | the admin — unique |
+| `seenRequestIds` | JSON (ids of `AccessRequest`) | yes | the requests waiting when he last had the list on screen |
+
+From today: `settings/reqseen:<accountId>`.
 
 ### Layout
 
@@ -882,29 +956,30 @@ The "migration notes" say how each shape maps, should a record ever need convert
 |---|---|---|
 | `raptor:people/all` — `PEOPLE[id]` | `Person` + `QualMark` | One row per person; mint a guid and keep the old handle as `legacyKey`. Granted marks (`tf`, `sched`, `scDay`, `scNight`, `daar`, `naar`, `sxo`, `san`) become QualMark rows. `quals` is **not** migrated — it stays derived at boot |
 | `raptor:inputs/all` — `INPUTS[]` | `Input` (+ `InputAttachment`) | One row per `iid`. Convert `date`/`endDate`/`yr` to ISO at the door; resolve a literal `mod: 'now'` to the import instant. `lw` (a war id) becomes the `leaveWarId` lookup, preserved verbatim. `docId`/`docIds` become link rows |
-| `raptor:weeks/<dd-mm-yyyy>` — the `weekStashSnap()` week (`d`, the `SCHED` short fields, `wo`, `un`) | `ScheduleWeek` + seven `ScheduleDay` | Stage 1 (29 Sep 26, D355; revised after the red team): split by day — the week row keeps the format stamps, each day's row takes the day and every field that names it, free (owned by the free team); `un` and the input marks are worked out on read, not stored (section 3, ScheduleWeek, lists every field). Stage 2: expand each day into the ScheduleRow family and empty its snapshot. *(Before 29 Sep 26: one week row, snapshot as-is — the archive, `docs/archive/data-model-2026-09-29.md`.)* |
+| `raptor:weeks/<dd-mm-yyyy>` — the `weekStashSnap()` week (`d`, the `SCHED` short fields, `wo`; `un` until 30 Sep 26) — stored since 30 Sep 26 as `weeks/<wk>`, `weeks/<wk>#<di>`, `weeks/<wk>:is:<verId>~<n>`, `weeks/<wk>:rx:<verId>~<n>` (`state/weekrows.ts`) | `ScheduleWeek` + seven `ScheduleDay` (+ `Amendment`, `AmendmentRetraction`) | Stage 1 (29 Sep 26, D355; revised after the red team): split by day — the week row keeps the format stamps, each day's row takes the day and every field that names it, free (owned by the free team); `un` and the input marks are worked out on read, not stored (section 3, ScheduleWeek, lists every field). Stage 2: expand each day into the ScheduleRow family and empty its snapshot. *(Before 29 Sep 26: one week row, snapshot as-is — the archive, `docs/archive/data-model-2026-09-29.md`.)* |
 | `SCHED.als[]`, `SCHED.retired` (inside the week) | `Amendment` (+ `IssuedSignoff`) | Split out at stage 1: one row per issuance of one day, a retracted one kept with `retractedAt`, a same-label reissue its own row (`reissue`) — section 3 |
 | `SCHED.sign`, `SCHED.signBind` | the working sign-offs inside each `ScheduleDay` snapshot (stage 1), `WorkingSignoff` (stage 2); `IssuedSignoff` for each issued version | 29 Sep 26: no week-scoped `Signoff` table — the working names and what they signed are the day's, the issued ones belong to their `Amendment` (section 3, Sign-offs) |
 | `SCHED.dayOK` / `cur` / `orig` | inside each `ScheduleDay` snapshot (stage 1, D355) → `ScheduleDay.approved` / `shownAmendmentId` / `original` (stage 2) | Day-level state, never on a sign-off row |
 | `SCHED.pending` / `changes` / `added` / `drafts` / `curDraft` | inside the snapshot (stage 1) → row `pendingSince` / `changedFrom`, `DayDraft` (stage 2) | `changes[key] = n` is the AL that issued the key; it resolves to a `changedFrom` lookup |
 | `raptor:plan/all` — `PLANPUCKS`, `DAYRMK` | `PlanningPuck`, `DayRemark` (29 Sep 26 — never inside a day row: the planning calendar is written on any date, with no day held — Fable 1) | One global record today; one `PlanningPuck` per entry, one `DayRemark` per date — own rows from stage 1 |
-| `ELOG.rows` (the settings key `elog`, per browser) | `EditLog` | Nothing to migrate — demo data, cleared (D56); the table starts empty. Decide retention first |
+| `ELOG.rows` — one row per line, `settings/elog:<lineId>` (since 30 Sep 26; the one settings key `elog` before), and each person's `settings/seen:<pid>` (the one `changeseen` before) | `EditLog`, `EditLogSeen` | Nothing to migrate — demo data, cleared (D56); the table starts empty. Decide retention first. Field map: the row as stored, `lineId` kept; `seq` yours (store-assigned) |
+| `settings/account:<id>`, `settings/accessreq:<id>`, `settings/reqseen:<accountId>` (since 30 Sep 26; the one `accounts` / `accessreqs` records before) | `User`, `AccessRequest`, `AccessRequestSeen` | Not migrated — the demo accounts are wiped (D56); the first admin is the bootstrap (group A phase 5). Field map: one row each, as stored |
 | `raptor:settings/*` — `daytpl`, `wavetpl`, `wavehide`, `wavedefault`, `dutytpl`, `cxreasons`, `lookahead`, `secdefault`, `stores`, `rules` | `Setting` | One row per key, value verbatim. **Do not write a row for a key that is on the shipped standard** — absent still means default |
 | `raptor:settings/qualcols` | `Qualification` + `Setting` | The column list becomes rows — a GUID each, `k` kept as `key` — so `QualMark` can key off the id; display flags travel with each column |
 | IndexedDB `raptor-docs` + `docBackend` map | `Attachment` + shared file store | Bytes to the file store, metadata to the row. Ids are already globally unique (`doc-`+UUID). A pre-drawer browser holds `docId`s with no bytes — import them as "no document on file", never fabricate |
 | `ACCOUNTS`, `SESSION`, `ME`, `USERS[]` (code) | `User` | Not migrated — replaced by the auth provider at stage 4. Map each new principal to a `Person` on first sign-in |
-| `raptor:leavewar/wars` | `LeaveWar` + `LeaveBid` | One `LeaveWar` per war; explode `recs` into one `LeaveBid` per stored record (several may share a person/date). Approved leave is already an `Input` — nothing to convert |
+| `raptor:leavewar/wars` | `LeaveWar` + `LeaveBid` | One `LeaveWar` per war; explode `recs` into one `LeaveBid` per stored record (several may share a person/date), `sortIndex` from each list's order (the wars' from theirs). Approved leave is already an `Input` — nothing to convert. *(The app does this itself since 30 Sep 26 — the fold, `leavewar/state/store.ts leavewarConverter`, into the rows of `[DB-READINESS]` group A, phase 3; the same for the four rows below)* |
 | `raptor:leavewar/openings` | `LeaveOpening` | One row per (person, counter) |
 | `raptor:leavewar/ledger` | `LeaveLedger` | One row per `LedgerEntry`. The OIL ledger stays derived |
 | `raptor:leavewar/oilpolicy`, `eventdefs`, `manningdefs`, `groupdefs`, `grouppriority`, `grouppriocustom`, `groupcolors`, `figorder`, `rosterorder`, `manningorder`, `manninghidden`, `fighidden`, `eventrows`, `showsans`, `current` | `Setting` (scope `leavewar`) | Preferences and definitions, value verbatim, absent = default |
 | `raptor:leavewar/perslabels` | `LeavePersonProfile.label` | One profile row per labelled person |
-| `raptor:leavewar/personedits` | `LeavePersonProfile.band`; `Person.sxo` | `band` to the profile; `sxo` folds onto the person row; the `seat` override is **dropped** (the person's seat is the seat). The override record disappears |
+| `raptor:leavewar/personedits` | — *(D461, 30 Sep 26: dropped whole — the war's Edit person is removed)* — was `LeavePersonProfile.band`; `Person.sxo` | `band` to the profile; `sxo` folds onto the person row; the `seat` override is **dropped** (the person's seat is the seat). The override record disappears |
 | `raptor:leavewar/postouts` | `LeavePersonProfile.fromDate` / `toDate` / `poOutcome` / `poDone`, and his earlier stints (`past` — `[ONE-DOOR]`, D320: a child table of `{ fromDate, toDate }` rows, closed, in order, never overlapping) | An entry exists while either date is set or he has an earlier stint; a profile row is created for each. An old entry with only `poArchive` reads `true` → `overseas`, `false` → `none` (the app reads it so today) |
-| `raptor:tracker/v3:master:syls` | `Syllabus` + `TrainingEvent` (+ `EventPrerequisite`) | Chart per row, event per row; `prereqs` strings resolve to event ids within the same syllabus |
-| `raptor:tracker/v3:master:eventinfo` (per chart, D126; the old one-table `v3:eventinfo` is a converted backup) | `TrainingEvent.name` / `format` / `hours` | Merge each chart's entry into that chart's event row over the shipped wording; parse `hrs` to a number, refuse and report anything that will not parse |
+| `raptor:tracker/v3:master:chart:<id>` (since 30 Sep 26 — one row per chart, `[DB-READINESS]` group A phase 5b; it replaced `v3:master:syls`, `sylcat`, `sylorder`, `sylhidden`, `syltomb`) | `Syllabus` (+ `TrainingEvent`, `EventPrerequisite` at stage 2) | One row per chart: `name`, `ord` → `sortIndex`, `base` → `isBuiltIn`, `hidden`, `tomb` → `tombstoned`; its events JSON on the row at stage 1 (`def`), one event per row at stage 2 — `prereqs` strings resolve to event ids within the same syllabus |
+| `raptor:tracker/v3:master:info:<sylId>:<ball>` (since 30 Sep 26 — one row per chart and ball; it replaced `v3:master:eventinfo`, per chart since D126; the old one-table `v3:eventinfo` is a converted backup) | `TrainingEvent.name` / `format` / `hours` | Merge each ball's row into that chart's event over the shipped wording; parse `hrs` to a number, refuse and report anything that will not parse |
 | `raptor:tracker/v3:lay` | `Layout` | One row per chart, geometry JSON verbatim (including each event's `_b`) |
-| `raptor:tracker/v3:courses` | `Course` | One row per name, `sortIndex` from the array order |
-| `raptor:tracker/v3:<course>:<syl>:roster` | `Enrolment` | One row per student name on that roster, `sortIndex` from the array order |
+| `raptor:tracker/v3:master:course:<id>` (since 30 Sep 26 — one row per course; it replaced `v3:courses` and `v3:delcourses`) | `Course` | One row each; `ord` → `sortIndex`; `deleted: true` → `archived` |
+| `raptor:tracker/v3:<course>:<syl>:enr:<id>` (since 30 Sep 26 — one row per enrolment; it replaced `v3:<course>:<syl>:roster`) | `Enrolment` | One row each; `ord` → `sortIndex`, `pid` → `personId`, `name` → `studentName` |
 | `raptor:tracker/v3:links` (this branch) | `Enrolment.personId` | The links record **disappears** into the column. A student with no link imports with a null `personId` |
 | `…:marks` — `{ g, f, fd[], d, by?, at? }` | `Attempt` (+ the `ProgressionSummary` view) | One `applySummary` call per mark: the `d` date becomes one `pass` attempt carrying `g`; each `fd` entry a `fail` attempt; a `null` `fd` entry an attempt with no date and `dateUnknown`, reported. `by`/`at` stamp every row the mark yields |
 | `…:dates` — `lastSyll`, `lastCurr`, `downDays`, `upchit` | `Enrolment` | Straight column copy; the `by`/`at` stamps become `lastEditedBy`/`lastEditedAt` |
@@ -919,15 +994,15 @@ behind the existing door rather than a rewrite above it.
 
 | Stage | What lands | What it lets the squadron do | Rollback |
 |---|---|---|---|
-| **1 — whole-record JSON tables** | The tables of section 5 in their simplest form: `Person`, `Input`, `ScheduleWeek` with one `ScheduleDay` snapshot row per day carrying its lock, `PlanningPuck`, `DayRemark`, `ChangeBatch`, `TakeOverRequest`, `AmendmentRetraction` (29 Sep 26, D355, D450 — the day lock, the change log and the 30-second check of section 9 land with this stage), `Amendment`, `IssuedSignoff`, `EditLog`, `Setting`, `Attachment` metadata, `LeaveWar`, `Enrolment`, `Syllabus`, `TrainingEvent`, `Layout`, `SchemaVersion`. One record in, one row out. The app's doors do not change: the **row fan-out backend** (`FanOutBackend`, a `Backend` behind the same postman) splits the whole-collection records — `people/all`, `inputs/all` — into one row per person / input and `plan/all` into its `PlanningPuck` and `DayRemark` rows, and for the schedule sends the command layer's write set, one changeset per command (section 3, What the adapter writes; D355), and re-joins them on `loadAll`, so the whiteboard above it never learns the difference | One shared copy of the squadron's data instead of one per browser. Everyone sees the same roster, the same weeks, the same charts, from any machine. A real backup | Point the front end back at the browser backend; export the rows to the whole-record shapes with the same fan-out run in reverse. No data shape has changed, so nothing is lost |
+| **1 — whole-record JSON tables** | The tables of section 5 in their simplest form: `Person`, `Input`, `ScheduleWeek` with one `ScheduleDay` snapshot row per day carrying its lock, `PlanningPuck`, `DayRemark`, `ChangeBatch`, `TakeOverRequest`, `AmendmentRetraction` (29 Sep 26, D355, D450 — the day lock, the change log and the 30-second check of section 9 land with this stage), `Amendment`, `IssuedSignoff`, `EditLog`, `Setting`, `Attachment` metadata, `LeaveWar`, `Course`, `Enrolment`, `Syllabus`, `TrainingEvent`, `Layout`, `CoursePlan`, `SchemaVersion` (the Tracker's since 30 Sep 26 one row per course, enrolment, chart and ball's details — `[DB-READINESS]` group A phase 5b, D462). One record in, one row out. The app's own records ARE the rows *(corrected 30 Sep 26 — `[DB-READINESS]` group A, plan §2.1, both reviewers: the **row fan-out backend** once described here — a `FanOutBackend` behind the postman splitting `people/all`, `inputs/all` and `plan/all` into rows and re-joining them on `loadAll` — is NOT built)*: each stored record is one row of one table, written from the command stream through ONE mapper (`src/state/rowmap.ts`), one changeset per command (section 3, What the adapter writes; D355), so the adapter is a thin, stateless mapping | One shared copy of the squadron's data instead of one per browser. Everyone sees the same roster, the same weeks, the same charts, from any machine. A real backup | Point the front end back at the browser backend; export the rows to the whole-record shapes with the same fan-out run in reverse. No data shape has changed, so nothing is lost |
 | **2 — stable row ids** | The ScheduleRow family; Tracker students re-keyed by `Enrolment.id` rather than by typed name; `Attempt` rows behind the mark summary; slot keys become derived addresses; `EditLog.rowId` starts being written. **Each `ScheduleDay.snapshot` stays as a read-only shadow for one release**: the rows are the record, the column is rewritten from them on every write and compared at boot, and it is emptied only in the release after | Two people can edit different rows of the same day without overwriting each other. A renamed course or student stops moving storage keys. Progression history becomes real data, not a count | The shadow column IS the rollback: set `SchemaVersion.stage` back to 1 and the stage-1 build reads the snapshot it always did. `Attempt` rows fold back to a summary through the `ProgressionSummary` view |
 | **3 — live-ish sync** | *(29 Sep 26: the incoming side, the change log and the 30-second check moved to stage 1 — D356, section 9; what follows is kept for the stage's other parts.)* The backend contract gains `since(changeSeq)`; the postman gains an incoming side (poll with backoff, one catch-up on return); records reach the whiteboard as per-change deltas; row ownership decides what may be reconciled away. **Dual-write for the whole stage**: every write goes to the rows *and* to the change feed's table, and a nightly job proves the feed replays to the rows | The programme updates on screen while someone else edits it. Presence rides the same poll. This is the stage the "live data updates" half of the recommendation refers to | Switch the incoming side off (a flag); the rows are complete without the feed because of the dual-write, and the stage-2 build reads them unchanged |
 | **4 — Dataverse adapter and sign-in** | One new backend passing the existing `contractTests`, plus Microsoft sign-in feeding `HOOKS.whoami()` and the `User` table | Squadron accounts, real names on every edit and sign-off, and the platform's own audit, backup and reporting | Sign-in and storage are separate flags: either can go back to the previous provider alone. `User` rows are recreated on first sign-in, so dropping them loses nothing |
 
 **The boot check.** Every build carries the stage it was written for. At
 boot the front end reads the one `SchemaVersion` row and compares: a store
-ahead of the build refuses to load (the "could not load" screen, with the
-reason), a store behind it runs the pending migration only when the signed-in
+ahead of the build — a later stage, a later `dataFormatVersion`, or a `minClient` above it — refuses to load (built
+30 Sep 26: "RAPTOR has been updated — reload to get the latest version", nothing written), a store behind it runs the pending migration only when the signed-in
 role is admin and the build says so, and a missing row is an empty store at
 stage 1. This is what makes each rollback above a change of flag rather than
 a restore from backup.
@@ -936,6 +1011,8 @@ The Tracker's own move is already rehearsed: **Export with both boxes ticked
 → wipe → Import, answer yes.** The export file is a format, not a store, and
 it now carries the `links` block alongside charts and students, so the person
 links survive the round trip.
+**His charts, syllabi and every ball's typed details are his own work and are kept (D464, 30 Sep 26):** no change
+may wipe them without putting them back, and one that would is told to him first, so he can export a copy.
 
 ## 7. Multi-user rules the database must own
 
@@ -946,7 +1023,7 @@ not a bug in what ships today.
 | Rule | Requirement |
 |---|---|
 | Write-verify | A network store can ack a write that never durably landed, or lose the ack; a later retry of a lost-ack write can resurrect a stale value over a newer one. Confirm every write by version/ETag or read-back. Never report "saved" on the transport's success alone |
-| Per-row writes for the big blobs | `inputs/all`, `people/all` and `leavewar/wars` are one record each today; two people editing unrelated rows clobber each other whole-record. `LeaveWar` is the largest surface. Per-row writes (or a field-level merge) are mandatory before two people share the store. **The same for a week of the programme (29 Sep 26, D355):** saved one row per day, so two schedulers on two days of one week never write the same row (section 9, the day lock) |
+| Per-row writes for the big blobs | `inputs/all`, `people/all` and `leavewar/wars` are one record each today; two people editing unrelated rows clobber each other whole-record. *(Built 30 Sep 26 for the requests, the roster and the planning calendar — `[DB-READINESS]` group A, phase 2: one row each, written from the command that changed it; and for the war — phase 3: a war, each of its records, each ledger entry, each opening and each man's profile one row, two people bidding on one war both kept.)* `LeaveWar` is the largest surface. Per-row writes (or a field-level merge) are mandatory before two people share the store. **The same for a week of the programme (29 Sep 26, D355):** saved one row per day, so two schedulers on two days of one week never write the same row (section 9, the day lock) |
 | Ownership before incoming sync | Today's reconcile deletes every `weeks/*` record nothing local backs — correct for one browser, destructive against a shared store. Whole-collection ownership assumptions must be replaced by `ownedBy` / row-level rules **before the first shared release** (29 Sep 26, Fable 6 — was "before stage 3"; the 30-second check comes with stage 1, D356): the reconcile never removes a store row; a week is removed only by Admin → Data, as a tombstone, by an admin holding all seven of its days |
 | Boot timeout and all-or-nothing hydrate | The boot gate awaits one load with no timeout: a hung network load blanks the app, and a partial load half-hydrates — the hydrated flag latches on one record and can re-seed the demo world over real data. Needs a timeout, a loading state, and a hydrate that is all or nothing |
 | Never seed demo data into the shared store | An empty store on first boot must stay empty. The demo roster, days and inputs are test fixtures, not a seed for the squadron's database |
@@ -1046,6 +1123,7 @@ can do better.
 | `LeaveBid` | one record (by id) | **per-record last writer wins** — several records may share a person/date since [ARCH-STACK] step 4; each is one person's bid (or one credit, one notice) and one admin's decision; the row version guards the same record edited twice | 1 |
 | `Attempt`, `Enrolment` | one row | reject and reload — a mark is a fact about one attempt; `applySummary` re-reads and re-applies | 2 |
 | `Setting` | one key | reject and reload — an admin edit over an admin edit is a conversation, not a merge | 1 |
+| `LeaveWar` | one period (its stage, bidding window, day events and bands — JSON on the row) | reject and reload — every change to a period is an admin's; two admins on ONE period at once is a conversation, not a merge. The stand-in store has no row versions, so there the later write wins (the group-A walk, 30 Sep 26, W3 finding 1: a stale tab's event brought a closed period back to open) — the database's `If-Match` is what refuses it | 1 |
 | `Input`, `Person`, `LeavePersonProfile`, `QualMark` | one row | reject and reload | 1 |
 | `Amendment`, `IssuedSignoff` | append-only | no conflict possible: an insert with a duplicate (`versionId`, `reissue`) or (`amendmentId`, `role`) is rejected outright, and each is written only in the same changeset as its day (rule 3) | 1 |
 
@@ -1141,13 +1219,34 @@ D450–D452:
      stored in the day's snapshot, keyed by the input's id. Take off / Accept also writes `Input.acc` (an admin's
      update of the member's row — reject and reload against his own edit). On a published day it reads pending and the
      four sign-offs fall, as today (D178, D103) — both worked out, nothing written to the day.
+     **Built 1 Oct 26 (`[DB-READINESS]` group A phase 6 (c) v3 — plan `superpowers/plans/2026-09-30-db-readiness-phase6-plan.md`
+     §3 (c)):** a filing, any edit of a request (the hand-over included), a delete and their Undo / Redo write the `Input`
+     alone (the "Load the week of …" refusal is gone). The day's own rows are the holder's: a landed row keeps its place, its
+     hand-set times and its extras, and carries `srcv` (what it was made from — it is re-made in place when the request has
+     changed since) and `kept` (a row a loaded version or a switched-in plan brought back although its request is gone, off
+     the day or filed under Unavailable — D363; such a row is NEVER the request's row — not for its money, its filing, its
+     placement or its marks — on screen, where the view clears the mark once the request can stand there, and in an issued
+     version, which keeps it as it went out).
+     Every read works the request rows out from the stored day (`engine/overlay.ts viewOfWeek`: rows whose request is gone or
+     no longer covers the day go, changed ones are re-made, a request with no row lands on its start day — on a published day
+     unless its issued version placed it there or took it off — oldest request first, below the rows already there; on a
+     published day its new row is marked as its Accept marks it, the add on its item — the FULL check, 1 Oct 26), and the week on screen is always worked out from the day AS
+     ITS HOLDER LAST SAVED IT (`state/holderbase.ts` — the holder base), so an Undo of a request's delete brings the exact
+     row back. What the working-out shows is saved only when the day's holder next saves that day.
    - **A man deleted (a Delete, or the posting pass on its date — D297, D299):** `Person.deletedFrom` is set; every day
      from that date shows the day without him and reads pending; the holder's next save of each day writes it without
-     him. No pass rewrites every stored week any more (`state/person-delete.ts` today does, in one browser); the
-     Delete still leaves its gap in `PlanningPuck` rows (their own table, no lock).
-   - **A request handed to another man:** an OIL decision stored on a day names the man and the input it was made for;
-     one whose input now names someone else is ignored on read and dropped at that day's next save
-     (`ui/oilmode.ts` today clears them across weeks).
+     him. **Built 30 Sep 26 (`[DB-READINESS]` group A phase 6 (d)):** no pass rewrites any stored week — the delete writes
+     his own records, and every working day from his cutoff is read without him wherever a week's days come into memory
+     (`engine/overlay.ts`: the loaded week, every saved week read for anything, a week never saved); the week on screen is
+     worked out AFTER the delete's command, never inside it, so nothing saves it (a nested command joins its outer one,
+     so no "which command" test could keep it out). Issued versions keep him. The Delete still leaves its gap in
+     `PlanningPuck` rows (their own table, no lock).
+   - **A request handed to another man:** an OIL decision stored on a day names the man and the request it was made for.
+     **Built 30 Sep 26 (phase 6 (a)):** the decision records the holding it was made under (`oild.pa`), the request records
+     when it LEFT each man (`Input.leftAt`), and a decision about a man the request has left since then is ignored on read —
+     so a hand-over writes the request alone, and A → B → A cannot revive A's old refusal. **It is NOT dropped at the day's
+     next save** (corrected — both reviewers of the phase-6 plan agree): kept inert, an Undo of the hand-over brings it
+     back; dropped, the Undo would silently pay a man a scheduler had refused.
    - **A callsign rename, Quals, an archive, a SANS move, an OIL award:** their own tables only.
    So a Delete or a posting never waits for a held day and never fails because of one.
 10. **No lock outside the schedule** — Inputs, the Leave War, Quals, the Tracker and the planning calendar keep the
@@ -1191,13 +1290,18 @@ default); the Sync chip opening a menu. Question 2 is answered (D451).
 
 **The change log (29 Sep 26 — Astra 5, Fable 17).** Dataverse tracks changes one table at a time, each with its own
 token and no order across tables, and reading every table at every check would spend the request allowance fast. So
-the app keeps its own small log. **Every command's changeset also writes one `ChangeBatch` row:** `id`, `committedAt`
-(the store's `createdon`), `actorId`, and `items` JSON — each changed row's table, id, operation (tombstones included)
-and new version. **The check reads `ChangeBatch` through Dataverse's own change tracking on that one table**, keeping
+the app keeps its own small log. **Every saved group — one user action with its causal children — also writes ONE
+`ChangeBatch` row, in the same changeset:** `id` (`<clientBootId>-<first seq>`), `committedAt` (the store's `createdon`),
+`actorId`, `type` (the action's command), `seqs` (every command that ran in it) and `items` JSON — each OTHER row of the
+changeset: its table, its key and its operation (`put` / `delete` — a delete is the tombstone). **A pure invalidation log
+(30 Sep 26, Astra R2-05 — corrected): no values, no versions, no GUID.** The writer takes its own rows' new versions from
+the changeset's reply; every other reader re-reads the rows a batch names. Built in the stand-in 30 Sep 26
+(`[DB-READINESS]` group A phase 4.1, `src/state/changebatch.ts` — the whiteboard seals each group with its batch; the
+stand-in keeps the newest 200). **The check reads `ChangeBatch` through Dataverse's own change tracking on that one table**, keeping
 its opaque delta token (round 2, Astra 5 — it replaces a time-based overlap, which had no guaranteed bound). A batch is
 an **invalidation**, not a replay: the check gathers every new batch, reads the final state of the rows they name once,
 and redraws once — never a half state no command produced. One request per check when nothing changed. A writer's own
-batch refreshes its local versions from the `items` without a re-read. When the token has expired (a screen away too
+batch needs no re-read — its versions came back with its changeset. When the token has expired (a screen away too
 long), the screen re-reads what it shows. Old batches are purged after the token's lifetime. **Change tracking is switched on for `ChangeBatch`** (a table setting, off by default); the
 environment's change-tracking retention sets how long a token lives and is the purge age of old batches (round 3,
 Fable 2). A "slow down" reply (429) is obeyed. Every write the app makes goes through the one adapter, so every write has its batch; a bulk load by
@@ -1249,10 +1353,12 @@ update, delete (delete is the soft delete throughout).
 | `QualMark` | C R U D | R, C U D **own** | — | — | `personId` = my person — a member ticks his own quals, every one (D149) |
 | `Setting`, `SchemaVersion` | C R U D | R (`Setting` only) | — | — | the guest switch is a `Setting` (D204) |
 | `User` | C R U D | R **own** | — | — | one account per person, tied to it (D166); created with a new `Person` in one step, or linked to one already on the roster (D214, D217); the sign-in name (the defence mail address) unique; **suspended** (`enabled` false — D280, D285) while he is away, and **deleted with his `Person` when he leaves flying for good** (D287 — at the database step the tombstone, D290); **no password is ever stored** — the organisation's sign-in checks it; at least one enabled admin always remains; an admin never changes or deletes his own account |
-| `AccessRequest` | R U D | — | — | C **own** | a person signed in but on no list asks once, giving what the admin's New person form asks — callsign/name, initials, seat, CAT — as typed text (D204, D214); an admin approves — creating the `User`, linked to a person he picks (a typed callsign never claims one) or to a new `Person` made from the request with his corrections — or declines, each one step; a `User` added or renamed onto a waiting sign-in name deletes its request; U — which admins have had it on screen, each admin's bell (D216, D227) |
-| ScheduleWeek family, `DayDraft`, `RowPerson` | C R U D | R | R | — | a member reads the programme; only a scheduler writes it; a guest reads what a member reads on View-only Sched — a published day as issued, another as it stands (D204, D215) |
+| `AccessRequest` | R D | — | — | C **own** | a person signed in but on no list asks once, giving what the admin's New person form asks — callsign/name, initials, seat, CAT — as typed text (D204, D214); an admin approves — creating the `User`, linked to a person he picks (a typed callsign never claims one) or to a new `Person` made from the request with his corrections — or declines, each one step; a `User` added or renamed onto a waiting sign-in name deletes its request; which admins have had it on screen is no longer on the request — each admin's own `AccessRequestSeen` row (`[DB-READINESS]` group A, phase 4.4 — R3-04) |
+| `AccessRequestSeen` | C R U **own** | — | — | — | `userId` = my account — which waiting requests this admin has had on screen, the list of their ids: his bell lights until he has (D216, D227 — each admin's bell is his own); one row per admin, removed with his `User` (`[DB-READINESS]` group A, phase 4.4, 30 Sep 26 — R3-04) |
+| ScheduleWeek family, `DayDraft`, `RowPerson` | C R U D | R | R | — | a member reads the programme; only a scheduler writes it; a guest reads what a member reads on View-only Sched — a published day as issued, another as it stands (D204, D215). **No exception since 1 Oct 26 (phase 6 (c) — built):** a member's own request, filed or changed, writes his `Input` alone; its landing on its day is worked out on read and saved only by the day's holder — the exception said for IT on 30 Sep 26 (a member's changeset carrying the `ScheduleDay` row his request landed on) is gone, and a member's command carrying any schedule record is refused (`state/perms.ts ownershipViolation`). A week load never writes a day (Fable F2, the same read) |
 | `Amendment`, `Signoff` | C R | R | R (published) | — | append-only for everyone |
-| `EditLog` | R | R | — | — | written by the store, not a role; members read it, a medical change in full (D169, D211) — the one changes window, for admins and members alike (`[DRAFT-PENDING]`, 28 Sep 26); kept across sign-outs (D336 (b)); retention is Open question 4 |
+| `EditLog` | C R D | C R | — | — | **written by whoever made the change, in the same changeset as the rows it describes, as `ChangeBatch` is** — one row per line (`[DB-READINESS]` group A, phase 4.3; corrected by the group-A final read, Fable F1, 30 Sep 26: it said "written by the store, not a role", and the store would have refused every member's action); append-only for a member; the Admin → Data sweep deletes exact lines (D), as the admin who asked — its change-log batch names him; members read it, a medical change in full (D169, D211) — the one changes window, for admins and members alike (`[DRAFT-PENDING]`, 28 Sep 26); kept across sign-outs (D336 (b)); retention is Open question 4 |
+| `ChangeBatch` | C R | C R | R | C | one row per saved change, written with it in the same changeset by whoever made the change — admins and members alike, and a waiting person's one access request (Fable F1, 30 Sep 26) — never by hand; append-only; read by every screen's 30-second check (section 9 — the change log; `[DB-READINESS]` group A, phase 4.1, 30 Sep 26) |
 | `EditLogSeen` | C R U **own** | C R U **own** | — | — | `personId` = my person — which lines of the history he has seen ("Mark all as seen", D170): a line someone else made is new to him until he marks it; his own never is (`[DRAFT-PENDING]`, 28 Sep 26) |
 | `Input` | C R U D | C R U D **own**; R | R | — | `personId` = my person, or filed for me by a scheduler; every member reads every input, a medical one in full (D211 — his 27 Aug 26 rule re-confirmed); a guest reads the week's inputs as a member does, a medical one in full too (D213, D215) |
 | `Attachment`, `InputAttachment` | R (D by sweep only) | C R **own**; R | — | — | owned by the person who uploaded it; every member may open it (D211) |
@@ -1271,16 +1377,17 @@ editing" shows to everyone. **The "Signoff" in the `Amendment, Signoff` row abov
 `AmendmentRetraction` follows the same row (create and read only — an Unpublish writes one, never an update); the
 working sign-offs are part of the day. The new tables of 29 Sep 26 — `PlanningPuck`, `DayRemark` (a scheduler's, like
 the ScheduleWeek family), `IssuedSignoff`, `AmendmentRetraction`, `TakeOverRequest` (D454 — an admin creates, the holder answers),
-`ScheduleInputPlacement` (stage 2), `ChangeBatch` (created by admins and members alike, read by everyone) — get their own rows here, and in `src/state/perms.ts` with
+`ScheduleInputPlacement` (stage 2) — get their own rows here, and in `src/state/perms.ts` with
 them, when they are built (`OUTSTANDING.md` `[DB-SYNC-MODEL]`) — the drift test reads every row of this table against
-the app, so the rename waits for the build.
+the app, so the rename waits for the build. `ChangeBatch` has its row since it was built (`[DB-READINESS]` group A,
+phase 4.1, 30 Sep 26); so has `AccessRequestSeen` (phase 4.4).
 
 **Who owns each table's rows — fixed when a table is created, and not changeable afterwards (29 Sep 26, round 2,
 Fable 2).** **User- or team-owned** (the owner is a person's `User`, or the free team): `ScheduleDay` (the lock), and
 every table with an own-row rule — `Person` (owned by his linked `User`; a person with no sign-in — D217 — by an
 admin team; round 3, Astra 3: a member edits his own row, which an organisation-owned table cannot allow), `Input`,
 `Attachment`, `InputAttachment`, `QualMark`, `LeaveBid`, `LeaveOpening`,
-`LeaveLedger`, `LeaveCounter`, `EditLogSeen`, `AccessRequest`, `User`. **Organisation-owned:** everything else —
+`LeaveLedger`, `LeaveCounter`, `EditLogSeen`, `AccessRequest`, `AccessRequestSeen`, `User`. **Organisation-owned:** everything else —
 `ScheduleWeek` (its `ownedBy` is a plain column, not the platform's owner), `Amendment`, `AmendmentRetraction`,
 `IssuedSignoff`, `TakeOverRequest`, `PlanningPuck`, `DayRemark`, `ChangeBatch`, `Qualification`, `Setting`, `SchemaVersion`,
 `EditLog`, `LeaveWar`, `LeavePersonProfile`, and the Tracker's tables.
@@ -1310,7 +1417,9 @@ are kept for a period the squadron sets, then purged by a scheduled job;
 4. **EditLog retention** — the app keeps the newest 2,000 lines, per browser, durable across sign-outs since
    `[DRAFT-PENDING]` (28 Sep 26 — it capped 400 in memory before). Shared and durable, how long is it kept, and is it a
    compliance record or an operational convenience? (Who may read it is settled: admins and members, a medical change in
-   full — D169, D211; each person's own "seen" is `EditLogSeen`, §11.)
+   full — D169, D211; each person's own "seen" is `EditLogSeen`, §11.) **And `EditLog.seq` is yours (30 Sep 26):** the
+   store's own rising number, assigned as each line is saved; until then the app orders the log by `(at, lineId)`, and
+   "seen" and an account's `seenFrom` are positions in that order — please confirm you can assign it.
 5. **Is `Attempt` history required from day one?** Two routes: build the
    table at stage 1 and back-fill it from the existing `{ g, f, fd, d }`
    summary (one pass, dates present for most rows), or keep the summary
@@ -1366,6 +1475,14 @@ are kept for a period the squadron sets, then purged by a scheduled job;
     ceiling per command, or those two commands kept as one server-side
     operation on the day. **This blocks the stage-2 tables, not stage 1's**
     (round 3, Astra 5).
+11. **The first admin of an empty store (30 Sep 26 — `[DB-READINESS]` group A phase 5).** Your tables start empty, the
+    app admits only people on its own list, and only an admin can add people — so a first admin must exist before anyone
+    can sign in. Built on our side, both ways: (a) a build setting (`VITE_BOOTSTRAP_ADMIN`) naming his sign-in and his
+    person (callsign/name, initials, pilot / WSO / personnel, CAT) — the app's first start on an empty store makes his
+    `Person`, his `User` (admin) and `SchemaVersion.initialized` in ONE changeset, once; or (b) the same setting naming a
+    `Person` you have already made (`personId`) — the app adds his `User`. An incomplete setting refuses to start and
+    writes nothing. Which do you prefer, and where do app settings live (environment variables)? And which value does
+    sign-in hand the app — the mail address, the UPN or an object id — and can the UPN differ from the mail address?
 
 ## 13. Security and classification
 

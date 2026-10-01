@@ -8,6 +8,10 @@
 export interface StorageBackend {
   read(key: string): string | null
   write(key: string, value: string): void
+  /** [DB-READINESS] group A, phase 0 — phase 3 keeps one record per bid, so a deleted bid is REMOVED
+      (removing an absent key is not an error) and the war's records are LISTED at boot. */
+  remove(key: string): void
+  keys(): string[]
 }
 
 export function memoryBackend(): StorageBackend {
@@ -15,6 +19,8 @@ export function memoryBackend(): StorageBackend {
   return {
     read: key => map.get(key) ?? null,
     write: (key, value) => void map.set(key, value),
+    remove: key => void map.delete(key),
+    keys: () => [...map.keys()],
   }
 }
 
@@ -35,6 +41,25 @@ export function localBackend(): StorageBackend {
       } catch {
         /* ignore — see read() */
       }
+    },
+    remove: key => {
+      try {
+        localStorage.removeItem(`leavewar:${key}`)
+      } catch {
+        /* ignore — see read() */
+      }
+    },
+    keys: () => {
+      const out: string[] = []
+      try {
+        for (let i = 0; i < localStorage.length; i++) {
+          const k = localStorage.key(i)
+          if (k && k.startsWith('leavewar:')) out.push(k.slice('leavewar:'.length))
+        }
+      } catch {
+        /* see read() */
+      }
+      return out
     },
   }
 }

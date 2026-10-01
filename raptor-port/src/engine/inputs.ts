@@ -2,6 +2,7 @@ import { VCONF } from './rules'
 import { hhmm, hm24 } from './time'
 import { CURWEEK } from './waves'
 import { newId } from './newid'
+import { mintOrd } from '../command/ord'
 /* A STABLE ADDRESS FOR ONE INPUT (owner, 10 Aug 26 — editing an input's times
    and remarks in place, on the week and on the board).
    Every other editable row in this app is addressed by its position in the
@@ -36,7 +37,11 @@ export function inpTimeText(inp:any,field:any){
    now addresses by (below) and what the Dataverse step needs. No counter to
    seed on hydrate any more; a stored iid is just kept. */
 export function inpId(inp:any){return inp.iid||(inp.iid=newId('i'));}
-export function mintInpIds(){INPUTS.forEach(inpId);}
+/* …and its PLACE in the list, `ord`, minted in the same breath ([DB-READINESS] group A, phase 2 — command/ord.ts): each
+   request is one stored row, and the list's order rides each row. Minted only for a row with none (or one a writer
+   moved), from its neighbours — so every path that mints ids (a command's apply-end, the boot, a week load) leaves
+   every request with both, and no later command has to write a row it did not touch. */
+export function mintInpIds(){INPUTS.forEach(inpId);mintOrd(INPUTS,(r:any)=>r.iid);}
 export function inpById(id:any){return INPUTS.find((r:any)=>r.iid===id)||null;}
 /* THE INPUTS ON ONE DATE, AS THE DOCUMENT BEING READ HOLDS THEM ([LEAVE-LATE-PUBLISHED], owner D177–D179, 25 Sep 26 —
    "freeze everything for now"). A published day's face keeps what it was issued with: its issued version freezes the

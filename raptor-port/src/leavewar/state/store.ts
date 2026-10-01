@@ -2,8 +2,9 @@
 // replaced-bid notices — engine/warrecs.ts); approved and filed absences are
 // Raptor Inputs, READ through the merge (state/merge.ts) and changed only
 // through the absence door ([ARCH-STACK] step 4). `setCell` is the only path
-// that writes a request; every write persists through the backend, bumps the
-// version and notifies. A write that skips these is invisible and unsaved.
+// that writes a request; every write is saved (one row per record, from the
+// command it runs in — state/rows.ts), bumps the version and notifies. A write
+// that skips these is invisible and unsaved.
 
 import {
   addDays,
@@ -90,6 +91,9 @@ import {
   type RequestState,
   type Contrib,
   readRecs,
+  readRec,
+  listProblem,
+  isRetiredAward,
   recsAt,
   withList,
   recContribs,
@@ -128,6 +132,12 @@ import { mergeWar, absencesAt, absenceVersion, awardsAt, awardRows, awardVersion
 import { counterLabel } from '../engine/counters'
 import { creditWorth } from '../engine/credit'
 import { localBackend, memoryBackend, type StorageBackend } from './storage'
+/* [DB-READINESS] group A, phase 3 — the war saved one row per record (state/rows.ts), each list's order on its records
+   (command/ord.ts), and the one-time fold of an old store's whole-list records (storage/fold.ts) */
+import { lwRows, allRows, WAR, REC, LEDGER, OPENING, PROFILE, parseRecKey, parseOpeningKey, type LwNow } from './rows'
+import { mintOrd, byOrd } from '../../command/ord'
+import { registerConverter, type Converter } from '../../storage/fold'
+import type { Entry } from '../../storage/backend'
 /* [ARCH-STACK] Step 2 phase 4 — the shared command layer (see the persist()
    router below). Imported here so a Leave War user edit joins the SAME change
    stream + auth gate every module funnels through. */
@@ -136,7 +146,7 @@ import {
   definePermission as cmdDefinePermission, anyone as cmdAnyone, registerRecord as cmdRegisterRecord,
   commitProjection as cmdCommitProjection, isInReducer as cmdIsInReducer,
   registerGuardedStore as cmdRegisterGuardedStore, registerEffectContext as cmdRegisterEffectContext,
-  isQueued, isOk,
+  isQueued, isOk, onCommit as cmdOnCommit,
 } from '../../command'
 import type { EnlistableStore as CmdEnlistableStore, RecordEntry as CmdRecordEntry, Scope as CmdScope } from '../../command'
 
@@ -290,17 +300,10 @@ interface State {
    *  alone cannot say "asked again". */
   focusSeq: number
 
-  /** In-app identity overrides an admin made through `setPerson`, keyed by
-   *  person id — the fields Leave War let them flip locally (seat / band / sxo).
-   *  Raptor's Quals page OWNS identity (see `setPeople`), so the live
-   *  re-projection refreshes every person's identity from Raptor by default;
-   *  this registry is the exception, the deliberate local edits that survive it.
-   *  PERSISTED since the storage seam (8 Sep 26 bug pass): Raptor's PEOPLE
-   *  persists now, so an override no longer goes stale against a reseeded
-   *  roster, and an admin's seat/band/SXO flip survives a reload. Posting-out
-   *  (`from`/`to`) is preserved separately (`postOuts`, `reprojectRoster`); it
-   *  is not an identity field. */
-  personEdits: Record<string, Partial<Pick<Person, 'seat' | 'band' | 'sxo'>>>
+  /* (The war's own seat / band / SXO overrides — `personEdits`, written by its
+     "Edit person" sheet — are GONE: D460, D461, 30 Sep 26. Quals is the one
+     place a man's seat, band and SXO change; the war shows what the projection
+     says, and a stored `personedits` is never read.) */
 
   /** The SQUADRON WINDOWS an admin set by hand, keyed by person id, each
    *  holding the person AS LAST PROJECTED with the window on it. BOTH ends
@@ -352,10 +355,16 @@ const listeners = new Set<() => void>()
 function withCurrent(s: Omit<State, 'period'>): State {
   // Falling back to the first war rather than throwing: a `currentId`
   // naming a war that no longer exists is recoverable, and a blank screen
-  // is not. `wars` is never empty — `blank()` seeds it and nothing removes.
+  // is not.
+  // A store can hold NO war since [DB-READINESS] group A, phase 5: a shared store starts with none until an admin
+  // creates the first (the page then shows its empty state — LeaveWarPage.tsx), and a started store is read as it
+  // stands. `period` is then NO_PERIOD: never stored, no days, a draft — every reader of the current period finds
+  // nothing inside it, and no screen shows it.
   const war = s.wars.find(w => w.period.id === s.currentId) ?? s.wars[0]
-  return { ...s, period: war.period }
+  return { ...s, period: war ? war.period : NO_PERIOD }
 }
+/** the current period of a store holding no war (above): code, never data — no id, no days, nothing open */
+export const NO_PERIOD: Period = Object.freeze({ id: '', name: '', start: '', end: '', stage: 'draft', bidFrom: null, bidTo: null, days: [], bands: [] }) as unknown as Period
 
 function blank(): State {
   const wars = seedWars()
@@ -391,7 +400,6 @@ function blank(): State {
     viewer: null,
     focusDate: null,
     focusSeq: 0,
-    personEdits: {},
     postOuts: {},
   })
 }
@@ -596,22 +604,9 @@ function readManningRules(x: unknown): ManningRule[] | null {
 /** A stored id→label map (personnel labels). Non-string values are dropped
  *  rather than rejecting the whole blob — one bad entry should not blank the
  *  admin's other labels. */
-/* Untrusted storage for the two roster-side records (8 Sep 26): an override
-   keeps only fields with a legal value; a posting-out entry must be keyed by
-   its own id, name a callsign and carry the `to` date it exists for. */
-function readPersonEdits(x: unknown): State['personEdits'] | null {
-  if (!isPlainObject(x)) return null
-  const out: State['personEdits'] = {}
-  for (const [id, v] of Object.entries(x)) {
-    if (!isPlainObject(v)) continue
-    const e: Partial<Pick<Person, 'seat' | 'band' | 'sxo'>> = {}
-    if (v.seat === 'pilot' || v.seat === 'wso' || v.seat === 'gnd') e.seat = v.seat
-    if (v.band === 'instructor' || v.band === 'ops') e.band = v.band
-    if (typeof v.sxo === 'boolean') e.sxo = v.sxo
-    if (Object.keys(e).length) out[id] = e
-  }
-  return out
-}
+/* Untrusted storage for a posting-out entry (8 Sep 26): it must be keyed by its
+   own id, name a callsign and carry a date it exists for. (The override record
+   read beside it, `personedits`, is gone — D460, D461.) */
 /* EITHER END MAKES A WINDOW WORTH KEEPING (22 Sep 26). This insisted on `to`
    being a string, which was right while a posting-OUT date was the only one
    there was. `setPostIn` (owner, 20 Sep 26 — "we need a post in button just like
@@ -777,6 +772,8 @@ function readWar(x: unknown): LeaveWar | null {
       bidFrom: from as string | null, bidTo: to as string | null,
       days: readDays,
       bands: readBands,
+      /* its place among the wars ([DB-READINESS] group A, phase 3); a bad one is dropped and re-minted */
+      ...(typeof (period as any).ord === 'number' && Number.isFinite((period as any).ord) ? { ord: (period as any).ord as number } : {}),
     },
     recs: readRecsOrNull,
   }
@@ -822,15 +819,192 @@ function readStored<T>(key: string, parse: (x: unknown) => T | null): T | null {
   }
 }
 
+/* THE WAR'S ROWS, READ BACK — a started store ([DB-READINESS] group A, phase 3; state/rows.ts). Each row is read with
+   the reader the old whole record was read with. A row that will not read — or a record naming a war no row holds, a
+   second war claiming a day another already holds, a record that would break its address's rules (two people each
+   bidding the same half at once) — is left in storage as it is and not read: never deleted (plan §2.2), said once. Each
+   address's records in their order (ord, id); the wars in theirs; the ledger by date. */
+function readWorldRows(): { wars: LeaveWar[]; openings: Openings; ledger: Ledger; postOuts: Record<string, Person>; persLabels: Record<string, string> } {
+  const periods: Period[] = []
+  const recRows: Array<{ key: string; warId: string; pid: string; date: string; rec: WarRec }> = []
+  const openings: Openings = {}
+  const ledger: Ledger = []
+  const postOuts: Record<string, Person> = {}
+  const persLabels: Record<string, string> = {}
+  const skipped: string[] = []
+  const parse = (k: string): any => { try { return JSON.parse(backend.read(k) ?? 'null') } catch { return undefined } }
+  for (const k of backend.keys()) {
+    if (k.startsWith(WAR)) {
+      const w = readWar({ period: parse(k), recs: {} })
+      if (w && w.period.id === k.slice(WAR.length)) periods.push(w.period)
+      else skipped.push(k)
+    } else if (k.startsWith(REC)) {
+      const at = parseRecKey(k), x = parse(k)
+      /* a hand-typed award from before awards were ledger entries is retired demo data (D401) — skipped, as readRecs does */
+      if (isPlainObject(x) && isRetiredAward(x)) continue
+      const rec = at && isPlainObject(x) && x.id === at.recId && typeof x.pid === 'string' && x.pid && isDay(x.date) ? readRec(x) : null
+      if (at && rec) recRows.push({ key: k, warId: at.warId, pid: x.pid, date: x.date, rec })
+      else skipped.push(k)
+    } else if (k.startsWith(LEDGER)) {
+      const e = readLedger([parse(k)])?.[0]
+      if (e && e.id === k.slice(LEDGER.length)) ledger.push(e)
+      else skipped.push(k)
+    } else if (k.startsWith(OPENING)) {
+      const o = parseOpeningKey(k), n = parse(k)
+      if (o && readOpenings({ [o.pid]: { [o.counter]: n } })) (openings[o.pid] ??= {})[o.counter as CounterName] = n
+      else skipped.push(k)
+    } else if (k.startsWith(PROFILE)) {
+      const pid = k.slice(PROFILE.length), x = parse(k)
+      const post = isPlainObject(x) && x.post !== undefined ? readPostOuts({ [pid]: x.post })?.[pid] : undefined
+      if (!isPlainObject(x) || (x.post !== undefined && !post)) { skipped.push(k); continue }
+      if (post) postOuts[pid] = post
+      if (typeof x.label === 'string' && x.label) persLabels[pid] = x.label
+    }
+  }
+  periods.sort(byOrd((p: Period) => p.id))
+  const wars: LeaveWar[] = []
+  for (const period of periods) {
+    if (wars.some(w => overlapping(w.period, period))) { skipped.push(WAR + period.id); continue }
+    wars.push({ period, recs: {} })
+  }
+  const recOrder = byOrd((r: WarRec) => r.id)
+  recRows.sort((a, b) => recOrder(a.rec, b.rec))
+  for (const { key, warId, pid, date, rec } of recRows) {
+    const war = wars.find(w => w.period.id === warId)
+    const list = war ? ((war.recs[pid] ??= {})[date] ??= []) : null
+    if (!list || listProblem([...list, rec])) { skipped.push(key); continue }
+    list.push(rec)
+  }
+  ledger.sort((a, b) => (a.date < b.date ? -1 : a.date > b.date ? 1 : (a.enteredAt ?? '') < (b.enteredAt ?? '') ? -1 : (a.enteredAt ?? '') > (b.enteredAt ?? '') ? 1 : a.id < b.id ? -1 : a.id > b.id ? 1 : 0))
+  if (skipped.length) console.warn(`leavewar: ${skipped.length} saved row(s) this build cannot read are kept as they are, not read: ${skipped.slice(0, 5).join(', ')}${skipped.length > 5 ? ' …' : ''}`)
+  return { wars, openings, ledger, postOuts, persLabels }
+}
+
+/* what stands now for the half of a man's profile a command did not change (state/rows.ts lwRows) */
+const nowOf = (s: State): LwNow => ({ post: pid => s.postOuts[pid], label: pid => s.persLabels[pid] })
+
+/* the rows the boot itself stored (the seed, before the demo world dressed it) — persistBootWorld removes the ones the
+   dressed world no longer has (an opening keyed by a seed person's id) */
+let BOOT_KEYS: Set<string> | null = null
+/* THE WHOLE WORLD AS ROWS — the first boot's seed (initStore) and the demo world that replaces it (persistBootWorld),
+   both inside the boot's one group. The only writes the war makes outside a command. */
+/* `recordsOnly` — a SHARED store's first boot ([DB-READINESS] group A, phase 5): its world holds no war, opening, ledger
+   entry or window, and its settings-like keys are the code's defaults, which read back the same with no row at all — so
+   nothing of the war is stored until someone does something (a demo store's first boot still stores its whole world) */
+function writeWorldRows(recordsOnly = false): void {
+  const isRecord = (k: string) => [WAR, REC, LEDGER, OPENING, PROFILE].some(p => k.startsWith(p))
+  const rows = allRows(lwDecompose(state).values(), nowOf(state)).filter(r => !recordsOnly || isRecord(r.key))
+  const keys = new Set(rows.map(r => r.key))
+  if (BOOT_KEYS) for (const k of BOOT_KEYS) if (!keys.has(k)) backend.remove(k)
+  for (const r of rows) if (r.value !== null) backend.write(r.key, r.value)
+  BOOT_KEYS = keys
+}
+
+/* EVERY LIST'S ORDER ON ITS RECORDS ([DB-READINESS] group A, phase 3 — plan §8 P3-CELL-DIFF; command/ord.ts). Run at the
+   war's apply-end — persistNotify, which every durable write passes — over the addresses the write changed, compared
+   with `prev` (the last committed world; null = every address): a record with no place, or one a writer moved out of
+   order, takes one from its neighbours; a record still in order keeps its own, so a new bid writes one row. The wars'
+   own order (the picker's — the order they were created in) the same way. Records are REPLACED, never mutated: the
+   committed world is the undo's before-image. */
+function placeRecords(prev: State | null, s: State): State {
+  const outOfOrder = (list: readonly any[], idOf: (r: any) => string): boolean => {
+    const cmp = byOrd(idOf)
+    return list.some((r, i) => typeof r.ord !== 'number' || (i > 0 && cmp(list[i - 1], r) >= 0))
+  }
+  let wars = s.wars
+  if (outOfOrder(wars.map(w => w.period), (p: Period) => p.id)) {
+    const ps = wars.map(w => ({ ...w.period }))
+    mintOrd(ps, (p: Period) => p.id)
+    wars = wars.map((w, i) => (ps[i]!.ord === w.period.ord ? w : { ...w, period: ps[i]! }))
+  }
+  const placed = wars.map(w => {
+    const pw = prev ? prev.wars.find(x => x.period.id === w.period.id) : undefined
+    if (pw && pw.recs === w.recs) return w
+    let recs = w.recs
+    for (const pid of Object.keys(w.recs)) {
+      const row = w.recs[pid]!, prow = pw ? pw.recs[pid] : undefined
+      if (prow === row) continue
+      for (const date of Object.keys(row)) {
+        const list = row[date]!
+        if ((prow && prow[date] === list) || !outOfOrder(list, (r: WarRec) => r.id)) continue
+        const copy = list.map(r => ({ ...r }))
+        mintOrd(copy, (r: WarRec) => r.id)
+        recs = withList(recs, pid, date, list.map((r, i) => (copy[i]!.ord === r.ord ? r : copy[i]!)))
+      }
+    }
+    return recs === w.recs ? w : { ...w, recs }
+  })
+  return placed.some((w, i) => w !== s.wars[i]) ? withCurrent({ ...s, wars: placed }) : s
+}
+
+/* THE ONE-TIME FOLD OF AN OLD STORE (storage/fold.ts — plan §2.6): the war's whole-list records become its rows — each
+   list's order kept as `ord`, the wars' too — and the old records are removed in the same group. Read with the readers
+   the boot used on them; a record that will not read is left as it is (never read again). `personedits` is dropped
+   whole: the war's Edit person is gone (D461). Pure: it writes the war's own collection only. */
+export const leavewarConverter: Converter = {
+  name: 'leavewar',
+  collections: ['leavewar'],
+  convert(snap) {
+    const lw: Record<string, string> = (snap as any).leavewar ?? {}
+    const json = (k: string): unknown => { try { return JSON.parse(lw[k]!) } catch { return undefined } }
+    const recs: Array<{ collection: string; id: string; value: unknown }> = []
+    const replaced: string[] = []
+    const wars = lw.wars != null ? readWars(json('wars')) : null
+    if (wars) {
+      const periods = wars.map(w => { const p = { ...w.period }; delete p.ord; return p })
+      mintOrd(periods, (p: Period) => p.id)
+      wars.forEach((w, i) => {
+        recs.push({ collection: 'lw.war', id: w.period.id, value: periods[i] })
+        for (const pid of Object.keys(w.recs)) for (const date of Object.keys(w.recs[pid]!)) {
+          const list = w.recs[pid]![date]!.map(r => { const c = { ...r }; delete c.ord; return c })
+          mintOrd(list, (r: WarRec) => r.id)
+          recs.push({ collection: 'lw.cell', id: `${w.period.id}:${pid}:${date}`, value: list })
+        }
+      })
+      replaced.push('wars')
+    }
+    const openings = lw.openings != null ? readOpenings(json('openings')) : null
+    if (openings) {
+      for (const pid of Object.keys(openings)) for (const c of Object.keys(openings[pid]!)) recs.push({ collection: 'lw.opening', id: `${pid}:${c}`, value: (openings[pid] as any)[c] })
+      replaced.push('openings')
+    }
+    const ledger = lw.ledger != null ? readLedger(json('ledger')) : null
+    if (ledger) { for (const e of ledger) recs.push({ collection: 'lw.ledger', id: e.id, value: e }); replaced.push('ledger') }
+    const postOuts = lw.postouts != null ? readPostOuts(json('postouts')) : null
+    if (postOuts) { for (const pid of Object.keys(postOuts)) recs.push({ collection: 'lw.postouts', id: pid, value: postOuts[pid] }); replaced.push('postouts') }
+    const labels = lw.perslabels != null ? readLabelMap(json('perslabels')) : null
+    if (labels) { for (const pid of Object.keys(labels)) if (labels[pid]) recs.push({ collection: 'lw.label', id: pid, value: labels[pid] }); replaced.push('perslabels') }
+    if (lw.personedits != null) replaced.push('personedits')
+    const out: Entry[] = []
+    for (const r of allRows(recs, { post: () => undefined, label: () => undefined })) if (r.value !== null) out.push({ collection: 'leavewar', id: r.key, value: r.value })
+    for (const k of replaced) out.push({ collection: 'leavewar', id: k, value: null })
+    return out
+  },
+}
+registerConverter(leavewarConverter)
+
 let INIT_HOOK: (() => void) | null = null
 /** Test-only: run after every initStore (the Leave War suite's seed absences). */
 export function _setInitHook(fn: (() => void) | null): void { INIT_HOOK = fn }
 
-export function initStore(b?: StorageBackend): void {
+export function initStore(b?: StorageBackend, opts: { started?: boolean; seedDemo?: boolean } = {}): void {
   backend = b ?? localBackend()
   state = blank()
+  BOOT_KEYS = null
 
-  const wars = readStored('wars', readWars) ?? seedWars()
+  /* [DB-READINESS] group A, phase 3 — THE WAR IS READ FROM ITS ROWS (state/rows.ts). Whether the store has STARTED is
+     the boot's answer (main.tsx: the stamp's `initialized` — storage/schema.ts), or, standalone and in the tests,
+     whether it holds a war row. A started store is read as it stands: no opening, ledger entry or window stored means
+     none — never the seed's (a store an admin emptied must not get the demo back). A store that has not started takes
+     the seed, and stores it as rows at once (writeWorldRows, at the end).
+     PHASE 5 (plan §3 phase 5): a started store holding no war has NONE — the page shows its empty state, never the
+     seed's wars; and a store that has not started takes the seed only under the demo policy (`seedDemo`, the default —
+     src/bootpolicy.ts): a SHARED store starts with no war, opening, ledger entry or window, and an admin creates its
+     first period. */
+  const started = opts.started ?? backend.keys().some(k => k.startsWith(WAR))
+  const seedDemo = opts.seedDemo ?? true
+  const stored = started ? readWorldRows() : null
+  const wars = stored ? stored.wars : seedDemo ? seedWars() : []
   /* THE TAB ALWAYS OPENS ON THE WAR BEING WORKED (owner, 7 Sep 26, restated
      and reaffirmed 17 Sep 26): open for bidding first, else bidding-closed,
      else published, else draft. A remembered choice does NOT override it.
@@ -844,15 +1018,16 @@ export function initStore(b?: StorageBackend): void {
      year actually open for bidding. `current` is still RECORDED (below, at
      every switch) because it is the reader's last choice and the shared
      database may yet want it per user; it is simply not honoured at boot. */
-  const currentId = pickDefaultPeriodId(wars.map(w => w.period)) || wars[0].period.id
+  const currentId = pickDefaultPeriodId(wars.map(w => w.period)) || (wars[0] ? wars[0].period.id : '')
 
-  const openings = readStored('openings', readOpenings) ?? seedOpenings()
-  const ledger = readStored('ledger', readLedger) ?? seedLedger()
+  const openings = stored ? stored.openings : seedDemo ? seedOpenings() : {}
+  const ledger = stored ? stored.ledger : seedDemo ? seedLedger() : []
   const eventDefs = readStored('eventdefs', readEventDefs) ?? seedEventDefs()
   const oilPolicy = readStored('oilpolicy', readOilPolicy) ?? { ...DEFAULT_OIL_POLICY }
   const figureOrder = readStored('figorder', readFigureOrder) ?? [...DEFAULT_FIGURE_ORDER]
   const rosterOrder = readStored('rosterorder', readIdList) ?? []
-  const persLabels = readStored('perslabels', readLabelMap) ?? {}
+  /* the personnel labels ride each man's profile row with his posting window (LeavePersonProfile) */
+  const persLabels = stored ? stored.persLabels : {}
   const manningOrder = readStored('manningorder', readIdList) ?? []
   const manningHidden = readStored('manninghidden', readIdList) ?? []
   const figureHidden = readStored('fighidden', readIdList) ?? []
@@ -877,8 +1052,7 @@ export function initStore(b?: StorageBackend): void {
     typeof x === 'number' && Number.isInteger(x) && x >= DEFAULT_EVENT_ROWS && x <= MAX_EVENT_ROWS ? x : null,
   ) ?? DEFAULT_EVENT_ROWS
   const showSans = readStored('showsans', x => (typeof x === 'boolean' ? x : null)) ?? false
-  const personEdits = readStored('personedits', readPersonEdits) ?? {}
-  const postOuts = readStored('postouts', readPostOuts) ?? {}
+  const postOuts = stored ? stored.postOuts : {}
 
   /* The role is neither read nor persisted since the Raptor merge: it is
      derived from the Raptor login on every session change (resetSession in
@@ -891,10 +1065,14 @@ export function initStore(b?: StorageBackend): void {
      boot, so a stored copy could only ever disagree with the roster Raptor
      is actually flying. Boot leaves the seed — the vendored unit suite reads
      it pristine — and the projection that follows replaces it. What IS read
-     back are the two things Leave War owns about a person (8 Sep 26): the
-     admin's identity overrides and the posting-out windows, laid onto the
-     projection by setPeople. */
-  state = withCurrent({ ...state, wars, currentId, openings, ledger, oilPolicy, eventDefs, figureOrder, rosterOrder, persLabels, manningOrder, manningHidden, figureHidden, groupDefs, groupPriority, groupPriorityCustom, groupColors: colorsFor(groupDefs, groupColors), requirements, eventRows, showSans, personEdits, postOuts })
+     back is what Leave War owns about a person (8 Sep 26): the posting-out
+     windows, laid onto the projection by setPeople. (The admin's identity
+     overrides it read beside them are gone — D460, D461.) */
+  state = withCurrent({ ...state, wars, currentId, openings, ledger, oilPolicy, eventDefs, figureOrder, rosterOrder, persLabels, manningOrder, manningHidden, figureHidden, groupDefs, groupPriority, groupPriorityCustom, groupColors: colorsFor(groupDefs, groupColors), requirements, eventRows, showSans, postOuts })
+  /* every list's order on its records — the seed's, and a stored record not yet placed (command/ord.ts) */
+  state = placeRecords(null, state)
+  /* the committed world is this one: a command the test hook below runs diffs against it, not the last world */
+  LW_BASELINE = state
 
   version = 0
   listeners.clear()
@@ -903,6 +1081,9 @@ export function initStore(b?: StorageBackend): void {
   // approved leave as Inputs here (test-only; production files it through
   // installDemoWorld). Never set in the app.
   INIT_HOOK?.()
+  /* a store that had not started stores its world now, one row per record — the seed as the boot left it; main.tsx's
+     demo world then replaces it with the dressed one (persistBootWorld), inside the same boot group */
+  if (!started) writeWorldRows(!seedDemo)
   // Baseline undo/redo to the freshly loaded world. main.tsx re-baselines once
   // more after the demo world and the first sync pass are in (so those boot
   // writes fold into the baseline rather than becoming undo steps); this keeps
@@ -957,8 +1138,11 @@ export function getState(): MergedState {
   const awd = awardVersion()
   if (MERGED && MERGED.raw === state && MERGED.ver === ver && MERGED.awd === awd) return MERGED.out
   const wars = state.wars.map(mergeWar)
-  const cur = wars.find(w => w.period.id === state.currentId) ?? wars[0]!
-  const out: MergedState = { ...state, wars, grid: cur.grid, states: cur.states, views: cur.views, spans: cur.spans }
+  const cur = wars.find(w => w.period.id === state.currentId) ?? wars[0]
+  /* no war at all (phase 5 — withCurrent): nothing on any person's any day */
+  const out: MergedState = cur
+    ? { ...state, wars, grid: cur.grid, states: cur.states, views: cur.views, spans: cur.spans }
+    : { ...state, wars, grid: {}, states: {}, views: {}, spans: new Map() }
   MERGED = { raw: state, ver, awd, out }
   return out
 }
@@ -995,41 +1179,18 @@ function rawNotify(): void {
 }
 function notify(): void { rawNotify() }
 
-// One writer for all three keys, so no write path can save a grid and forget
-// the states that have to agree with it.
+/* THE DURABLE STEP'S EPILOGUE. Since [DB-READINESS] group A, phase 3 the war is
+   saved FROM THE COMMAND STREAM — every command's changes to the war, mapped to
+   the rows they land in (state/rows.ts) and written through the war's own door
+   by the subscriber lwRegisterCommands installs, inside the command's own saved
+   group — so nothing is written here any more: a change outside every command is
+   not saved (the persistence funnel, raptor-port/CLAUDE.md). The boot's seed and
+   demo world are the one exception, written whole (writeWorldRows). What is left
+   here is the durable version and the legacy undo step. (It wrote every big
+   record whole until then — `wars`, `openings`, `ledger`, `postouts`, … — the
+   fold removes them; `current` and each ⚙ setting are still their own keys,
+   written by the same subscriber.) */
 function rawPersist(): void {
-  backend.write('wars', JSON.stringify(state.wars))
-  // Recorded, but deliberately NOT read back at boot — initStore always opens
-  // on the war being worked (owner, 17 Sep 26; see the stage-pick comment
-  // there). Kept because it is the reader's last choice and the shared
-  // database may want it per user. Do not "restore" it as the boot default.
-  backend.write('current', state.currentId)
-  backend.write('openings', JSON.stringify(state.openings))
-  backend.write('ledger', JSON.stringify(state.ledger))
-  backend.write('oilpolicy', JSON.stringify(state.oilPolicy))
-  backend.write('eventdefs', JSON.stringify(state.eventDefs))
-  backend.write('figorder', JSON.stringify(state.figureOrder))
-  backend.write('rosterorder', JSON.stringify(state.rosterOrder))
-  backend.write('perslabels', JSON.stringify(state.persLabels))
-  backend.write('manningorder', JSON.stringify(state.manningOrder))
-  backend.write('manninghidden', JSON.stringify(state.manningHidden))
-  backend.write('fighidden', JSON.stringify(state.figureHidden))
-  backend.write('groupdefs', JSON.stringify(state.groupDefs))
-  backend.write('grouppriority', JSON.stringify(state.groupPriority))
-  backend.write('grouppriocustom', JSON.stringify(state.groupPriorityCustom))
-  backend.write('groupcolors', JSON.stringify(state.groupColors))
-  backend.write('manningdefs', JSON.stringify(state.requirements.default.rules))
-  backend.write('eventrows', JSON.stringify(state.eventRows))
-  backend.write('showsans', JSON.stringify(state.showSans))
-  backend.write('personedits', JSON.stringify(state.personEdits))
-  backend.write('postouts', JSON.stringify(state.postOuts))
-  /* `people` deliberately absent: the roster is a projection of Raptor's
-     PEOPLE (see initStore) — persisting it would store a copy that can only
-     disagree with the projection the next boot installs. The roster ORDER,
-     the personnel LABELS, the identity OVERRIDES and the posting-out WINDOWS
-     are kept instead: they are the admin's arrangement of that projection,
-     keyed by id, so they survive a roster that gains or loses a body. */
-
   LW_SIG++   // [CMDL-FINISH] C9 — the durable version advanced
   // A save IS an undo step: record the durable snapshot now that the backend
   // holds it (the UNDO / REDO block below). Skipped while a restore or a
@@ -1121,18 +1282,24 @@ function lwDecompose(s: State): Map<string, CmdRecordEntry> {
      another man's future award, the posting pass — shared a key with every earlier award and refused its Undo ("a
      later change … touches the same thing"). Per entry, an Undo conflicts only with a change to the same award. */
   for (const e of s.ledger) m.set(`lw.ledger/${e.id}`, { collection: 'lw.ledger', id: e.id, value: e })
-  m.set('lw.balances/all', { collection: 'lw.balances', id: 'all', value: s.openings })
+  /* ONE RECORD PER OPENING BALANCE, PER POSTING WINDOW, PER LABEL ([DB-READINESS] group A, phase 3) — each is its own
+     stored row (state/rows.ts; a man's window and label share his profile row), so an Undo of one man's opening,
+     window or label conflicts only with a change to the same one. They were one record each for everyone. */
+  for (const pid of Object.keys(s.openings)) {
+    const row = s.openings[pid] as Record<string, number> | undefined
+    for (const c of Object.keys(row || {})) m.set(`lw.opening/${pid}:${c}`, { collection: 'lw.opening', id: `${pid}:${c}`, value: row![c] })
+  }
+  for (const pid of Object.keys(s.postOuts)) m.set(`lw.postouts/${pid}`, { collection: 'lw.postouts', id: pid, value: s.postOuts[pid] })
+  for (const pid of Object.keys(s.persLabels)) m.set(`lw.label/${pid}`, { collection: 'lw.label', id: pid, value: s.persLabels[pid] })
   m.set('lw.oilpolicy/all', { collection: 'lw.oilpolicy', id: 'all', value: s.oilPolicy })
-  m.set('lw.postouts/all', { collection: 'lw.postouts', id: 'all', value: s.postOuts })
   m.set('lw.current/all', { collection: 'lw.current', id: 'all', value: s.currentId })
   m.set('lw.config/all', {
     collection: 'lw.config', id: 'all', value: {
       eventDefs: s.eventDefs, figureOrder: s.figureOrder, rosterOrder: s.rosterOrder,
-      persLabels: s.persLabels, manningOrder: s.manningOrder, manningHidden: s.manningHidden,
+      manningOrder: s.manningOrder, manningHidden: s.manningHidden,
       figureHidden: s.figureHidden, groupDefs: s.groupDefs, groupPriority: s.groupPriority,
       groupPriorityCustom: s.groupPriorityCustom, groupColors: s.groupColors,
       requirements: s.requirements, eventRows: s.eventRows, showSans: s.showSans,
-      personEdits: s.personEdits,
     },
   })
   return m
@@ -1170,7 +1337,22 @@ function applyLwRecord(s: State, e: CmdRecordEntry): void {
       else (s as any).ledger = [...cur, e.value as LedgerEntry]
       return
     }
-    case 'lw.balances': (s as any).openings = e.value; return
+    case 'lw.opening': {
+      /* one opening balance: `<pid>:<counter>`, the counter from the RIGHT */
+      const i = e.id.lastIndexOf(':'), pid = e.id.slice(0, i), c = e.id.slice(i + 1)
+      const openings = { ...((s as any).openings as Openings) }
+      const row: Record<string, number> = { ...(openings[pid] || {}) } as Record<string, number>
+      if (e.op === 'delete') delete row[c]; else row[c] = e.value as number
+      if (Object.keys(row).length) openings[pid] = row; else delete openings[pid]
+      ;(s as any).openings = openings
+      return
+    }
+    case 'lw.label': {
+      const labels = { ...((s as any).persLabels as Record<string, string>) }
+      if (e.op === 'delete') delete labels[e.id]; else labels[e.id] = e.value as string
+      ;(s as any).persLabels = labels
+      return
+    }
     case 'lw.oilpolicy': (s as any).oilPolicy = e.value; return
     /* [CMDL-FINISH] CMDLF-002 — DEFERRED to [GLOBAL-UNDO]. Restoring postOuts sets
        the record, but the people posting-WINDOWS on the roster are a projection:
@@ -1182,17 +1364,22 @@ function applyLwRecord(s: State, e: CmdRecordEntry): void {
        reconcilers. That orchestration belongs to the undo consumer (with the
        clean-projection context), not to a bare record apply. Latent: no production
        path restores postOuts at this step. */
-    case 'lw.postouts': (s as any).postOuts = e.value; return
+    case 'lw.postouts': {
+      /* one man's window (per person since [DB-READINESS] group A, phase 3) */
+      const po = { ...((s as any).postOuts as Record<string, Person>) }
+      if (e.op === 'delete') delete po[e.id]; else po[e.id] = e.value as Person
+      ;(s as any).postOuts = po
+      return
+    }
     case 'lw.current': (s as any).currentId = e.value; return
     case 'lw.config': {
       const v = e.value as any
       Object.assign(s as any, {
         eventDefs: v.eventDefs, figureOrder: v.figureOrder, rosterOrder: v.rosterOrder,
-        persLabels: v.persLabels, manningOrder: v.manningOrder, manningHidden: v.manningHidden,
+        manningOrder: v.manningOrder, manningHidden: v.manningHidden,
         figureHidden: v.figureHidden, groupDefs: v.groupDefs, groupPriority: v.groupPriority,
         groupPriorityCustom: v.groupPriorityCustom, groupColors: v.groupColors,
         requirements: v.requirements, eventRows: v.eventRows, showSans: v.showSans,
-        personEdits: v.personEdits,
       })
       return
     }
@@ -1235,11 +1422,11 @@ export const lwStore: CmdEnlistableStore = {
 }
 
 /* [GLOBAL-UNDO] §13 phase 2 (Codex GU-P2-009) — the AUTHORITATIVE list of the
-   nine collections lwStore owns. ONE exported source, used for BOTH the command-
+   collections lwStore owns. ONE exported source, used for BOTH the command-
    layer record registration below AND the undo-store registration (undo-wire.ts):
    an omitted collection would fail the restore reducer with "no restore target".
    `lw.current` is in the list (harmless — nav is never restored). */
-export const LW_COLLS = ['lw.cell', 'lw.war', 'lw.ledger', 'lw.balances', 'lw.oilpolicy', 'lw.postouts', 'lw.current', 'lw.config'] as const
+export const LW_COLLS = ['lw.cell', 'lw.war', 'lw.ledger', 'lw.opening', 'lw.oilpolicy', 'lw.postouts', 'lw.label', 'lw.current', 'lw.config'] as const
 
 function lwRegisterCommands(): void {
   if (LW_REGISTERED) return
@@ -1256,6 +1443,18 @@ function lwRegisterCommands(): void {
      the award's, the ledger's) rather than the bid's */
   for (const t of ['lw.award', 'lw.ledger', 'lw.clear']) cmdDefinePermission(t, cmdAnyone)
   for (const c of LW_COLLS) cmdRegisterRecord({ key: `leavewar:${c}`, cls: 'record', collection: c, module: 'leavewar' })
+  /* [DB-READINESS] group A, phase 3 — THE WAR'S ROWS, WRITTEN FROM THE COMMAND STREAM (state/rows.ts): every command's
+     changes to the war, mapped to the rows they land in and written through the war's own door at phase 9 — inside the
+     command's own saved group (the whiteboard's, in the app). A remote change applied silently is never echoed back. */
+  cmdOnCommit(env => {
+    if (env.emit === false) return
+    const mine = env.changes.filter(c => c.collection.startsWith('lw.'))
+    if (!mine.length) return
+    for (const r of lwRows(mine, nowOf(LW_BASELINE))) {
+      if (r.value === null) backend.remove(r.key)
+      else backend.write(r.key, r.value)
+    }
+  })
   // [CMDL-FINISH] C9/P3-END — now that every LW write routes through the command
   // layer (the only post-boot raw path is LW_RESTORING, which runs at idle and is
   // never nested inside another command), lwStore is safe to guard. The guard
@@ -1280,6 +1479,8 @@ function lwRegisterCommands(): void {
    a user edit's repaint DEFERS into the command (phase 8, causal seq live) and the
    cross-side reconciler it wakes chains to the edit instead of orphaning (C1). */
 function persistNotify(): void {
+  /* [DB-READINESS] group A, phase 3 — every list's order on its records, before the write is taken (placeRecords) */
+  state = placeRecords(LW_BASELINE, state)
   const scope = { module: 'lw', warId: state.currentId } as CmdScope
   if (!LW_READY)    { rawPersist(); LW_BASELINE = state; rawNotify(); return }   // boot/seed
   if (LW_RESTORING) { rawPersist(); LW_BASELINE = state; rawNotify(); return }   // legacy undo — off-stream (C4)
@@ -1361,8 +1562,8 @@ export function lwSyncTurn<T>(fn: () => T): T {
      edits; an undo must not switch wars or change the viewer. Switching wars
      instead RE-BASELINES the stack (selectWar), so undo is scoped to the war
      on screen — the same rule the scheduler follows per week.
-   - people / qualCatalog / personEdits — a live PROJECTION of Raptor's roster
-     (sync.ts), owned by Raptor's Quals page; undo here must not fight it.
+   - people / qualCatalog — a live PROJECTION of Raptor's roster (sync.ts),
+     owned by Raptor's Quals page; undo here must not fight it.
 
    Raptor-DRIVEN writes (the OIL pass's ingestDutyCredit / clearRaptorCell;
    since [ARCH-STACK] step 4 leave is never copied onto the war) run under `locked`, so
@@ -1521,34 +1722,9 @@ function updateWar(id: string, fn: (war: LeaveWar) => LeaveWar): void {
   persistNotify()
 }
 
-/**
- * Change a person's seat, band or SXO qualification.
- *
- * Admin-only, and checked here rather than trusted to a hidden control, for
- * the same reason `createWar` re-checks it: the role switch is an affordance,
- * so the store is the only place it can mean anything.
- *
- * The CATEGORY is not settable and never will be — it is derived from seat
- * and band by `categoryOf`, which is what lets Raptor's roster replace this
- * one without a migration. A setter for it would create a second version of
- * a fact the two systems have to agree on.
- */
-export function setPerson(id: string, patch: Partial<Pick<Person, 'seat' | 'band' | 'sxo'>>): boolean {
-  if (state.role !== 'admin') return false
-  const person = state.people.find(p => p.id === id)
-  if (!person) return false
-  state = withCurrent({
-    ...state,
-    people: state.people.map(p => (p.id === id ? { ...p, ...patch } : p)),
-    // Record the override so the live re-projection keeps it. Raptor owns
-    // identity and `reprojectRoster` refreshes every person from Raptor's
-    // projection by default; without this entry the next Raptor notify would
-    // snap this deliberate local edit straight back to the projected value.
-    personEdits: { ...state.personEdits, [id]: { ...state.personEdits[id], ...patch } },
-  })
-  persistNotify()
-  return true
-}
+/* (setPerson — the war's own seat / band / SXO writer behind its "Edit person"
+   sheet — is GONE: D460, D461, 30 Sep 26. A man's seat, band and SXO change only
+   on Quals; the war shows what the projection says.) */
 
 /**
  * Post a person OUT from a date, or clear it (owner, 18 Aug 26 — "PO… they are
@@ -1892,22 +2068,20 @@ function windowRecord(people: Person[], id: string): Record<string, Person> {
  *
  * Deliberately NOT persisted, mirroring setRole: the projection is derived
  * from Raptor's roster on every boot, so a stored copy could only ever
- * disagree with it. In-session edits through setPerson stay session-only for
- * the same reason — Raptor's Quals page owns identity.
+ * disagree with it. Raptor's Quals page owns identity — the war has no writer
+ * of its own for a seat, a band or SXO (D460, D461).
  */
 export function setPeople(people: Person[]): void {
-  /* Lay Leave War's own two records over the projection (State.postOuts,
-     State.personEdits — both persisted since 8 Sep 26): a stored posting-out
-     window goes back onto its person, an identity override too, and a person
+  /* Lay Leave War's own record over the projection (State.postOuts, persisted
+     since 8 Sep 26): a stored posting-out window goes back onto its person, and a person
      with a window whom the projection no longer has (archived when the date
      arrived) is put back from the frozen copy — reprojectRoster's keep rule,
      which used to hold only within a session. Empty records make this the
      plain install it always was. */
-  const po = state.postOuts, edits = state.personEdits
+  const po = state.postOuts
   const next: Person[] = people.map(p => {
     const w = po[p.id]
-    const merged: Person = { ...p, ...(edits[p.id] || {}) }
-    return w ? { ...merged, ...windowFor(w, state.showSans) } : merged
+    return w ? { ...p, ...windowFor(w, state.showSans) } : { ...p }
   })
   const ids = new Set(next.map(p => p.id))
   /* `.to`, not merely a record (22 Sep 26). The comment above says what this is
@@ -2292,9 +2466,13 @@ export function setPersLabel(id: string, label: string): void {
  *
  * This exists for exactly one caller: the boot-time demo re-key
  * (state/demoworld.ts), which dresses the seeded demo world in Raptor's real
- * crew. It does not persist — boot must not write, and the result is
- * deterministic, so a fresh browser simply re-keys again next boot; the
- * first real user write persists the re-keyed wars like any other state.
+ * crew. It does not persist itself: installDemoWorld saves the dressed world
+ * once, after both demo writers, through `persistBootWorld`.
+ * (CORRECTED 30 Sep 26, [DB-READINESS] group A phase 0: this said "a fresh
+ * browser simply re-keys again next boot". Not since the storage seam — the
+ * boot's setPeople already saved the UNDRESSED seed, so the next boot read a
+ * stored war, skipped the demo, and the demo bids sat on the seed's invented
+ * callsigns, on nobody's row, until someone happened to write to the war first.)
  */
 export function remapPersonKeys(map: Record<string, string>): void {
   const rekey = <T,>(rows: Record<string, T>): Record<string, T> => {
@@ -2307,6 +2485,24 @@ export function remapPersonKeys(map: Record<string, string>): void {
   const ledger = state.ledger.map(e => ({ ...e, personId: map[e.personId] ?? e.personId, ...(e.enteredBy ? { enteredBy: map[e.enteredBy] ?? e.enteredBy } : {}) }))
   state = withCurrent({ ...state, wars, openings, ledger })
   notify()
+}
+
+/**
+ * Boot only: save the Leave War's world exactly as it now stands ([DB-READINESS]
+ * group A, phase 0 — plan §2.8). The demo world is dressed in memory by two
+ * writers that do not persist (installDemoOil, remapPersonKeys); a first boot
+ * must save the DRESSED world, inside the boot group that seals the store's
+ * `initialized`, or the next boot finds a started store holding the undressed
+ * seed. A raw write, never a command — a boot seed write, like setPeople's
+ * (its one caller is installDemoWorld's demo half; initStore has already run
+ * lwHistInit, so LW_READY cannot tell boot from a session here).
+ */
+export function persistBootWorld(): void {
+  /* [DB-READINESS] group A, phase 3 — the whole dressed world as rows, replacing the undressed seed's rows initStore
+     stored (writeWorldRows), every list's order placed first */
+  state = placeRecords(null, state)
+  writeWorldRows()
+  rawPersist()
 }
 
 /**
@@ -2964,7 +3160,10 @@ function decideRequest(personId: string, date: string, recId: string, bid: BidSt
     if (clash.length) return false
     if (occupiedFor({ id: r.id, kind: 'request', code: parseCell(r.code)!.type, win: requestWin(r.code), state: bid as RequestState }, personId, date, [r])) return false
   }
-  return putList(personId, date, [...rest, next])
+  /* the decided record keeps ITS PLACE on the day ([DB-READINESS] group A, the group-wide walk — W3 finding 2): moved to
+     the end of the list, it put the day out of order and the record beside it was given a new place — its row
+     rewritten by a decision about another, and a stale tab's write of it brought back a record someone had deleted */
+  return putList(personId, date, list.filter(x => x === r || rest.includes(x)).map(x => (x === r ? next : x)))
 }
 
 /** "OK, seen" on a replaced-bid notice — the person or an admin. Clears every
@@ -3927,7 +4126,8 @@ function ingestDutyCreditImpl(personId: string, date: string, code: 'FO' | 'HO',
      is simple again — the record on the day is the pass's own and carries
      nothing it did not put there, so it is compared against exactly what this
      run would write. */
-  const same = had && had.code === code && JSON.stringify(had) === JSON.stringify(rec)
+  /* its place at the address (`ord`, [DB-READINESS] group A phase 3) is the store's, not the credit's — compared without it */
+  const same = had && had.code === code && JSON.stringify({ ...had, ord: undefined }) === JSON.stringify(rec)
   if (same) return clash ? 'clash' : 'confirmed'
   /* NOTHING IS TAKEN OVER ANY MORE (N16, 21 Sep 26 — "an award and a worked
      day add up. So it's 4. The auto oil credits don't get affected by manual
@@ -3945,7 +4145,9 @@ function ingestDutyCreditImpl(personId: string, date: string, code: 'FO' | 'HO',
      found on the night of 20–21 Sep lived inside that snapshot, and so did
      the one both reviewers found in the plan for THIS change. An award the
      pass cannot see is an award the pass cannot damage. */
-  putList(personId, date, [...staying, rec])
+  /* an existing credit is updated IN ITS PLACE, with its place — never moved to the end, which would give the record
+     beside it a new place and rewrite its row (the group-wide walk — W3 finding 2's twin) */
+  putList(personId, date, had ? list.map(r => (r === had ? (typeof had.ord === 'number' ? { ...rec, ord: had.ord } : rec) : r)) : [...staying, rec])
   /* 'clash' still REPORTS — the day needs a human — but it no longer means
      "nothing was written". The credit is on the day either way. */
   return clash ? 'clash' : 'written'
@@ -4375,7 +4577,7 @@ export function selectWar(id: string): void {
 export function loadWars(raw: unknown, currentId: string): boolean {
   const wars = readWars(raw)
   if (!wars) return false
-  const id = wars.some(w => w.period.id === currentId) ? currentId : wars[0].period.id
+  const id = wars.some(w => w.period.id === currentId) ? currentId : (wars[0] ? wars[0].period.id : '')
   state = withCurrent({ ...state, wars, currentId: id })
   notify()
   // A wholesale world swap re-baselines undo — an undo must not reach back to

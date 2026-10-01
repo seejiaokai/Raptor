@@ -158,7 +158,9 @@ describe('AM23 — every count of a day\'s unpublished changes agrees with the d
     expect(acceptInput(MON, inp, 'u')).toBe(true)   // the round trip, after publishing
     expect(unacceptInput(MON, inp)).toBe(true)
     expect(dayDelta(MON).length, 'nothing differs from what was issued').toBe(0)
-    expect(dayPendCount(MON), 'a raw mark is left behind (inert, by design)').toBeGreaterThan(0)
+    /* [DB-READINESS] group A, phase 6 (b): the filing writes no mark at all now (the filing axis counts it), so there is
+       no leftover mark to mis-count — the requirement below is unchanged */
+    expect(dayPendCount(MON), 'no filing mark is written (phase 6 (b))').toBe(0)
     expect(headCount(MON)).toBe(0)
     expect(infoCount(MON), 'so the ⓘ panel must not report an unpublished edit').toBe(0)
   })

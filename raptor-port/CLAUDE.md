@@ -172,8 +172,11 @@ before the AL is a net no-op, not a removal. The bare
 Storage row, where nobody scanning for rules would find it). Every mutation of
 `DAYS`/`SCHED`/`INPUTS`/`PEOPLE`/`PLAN` must end in **`HOOKS.histPush`** (never
 the raw `histPush`), undo/redo, `loadWeek`, or an explicit `persistPeople()`.
-Anything else is silently unsaved after a reload — no error, no clue, the edit
-just isn't there next time. Leave War: whatever it owns about a person beyond
+**Since 30 Sep 26 a change to a WEEK, a REQUEST, a PERSON, the PLANNING CALENDAR or the
+LEAVE WAR is saved only by the command it runs in** — its rows are written from that command's
+changes (`[DB-READINESS]` group A, phases 1–3; `docs/undo-contract.md` §0): an in-place
+mutation outside every command is not saved, whatever `histPush` it ends in. Anything else is silently
+unsaved after a reload — no error, no clue, the edit just isn't there next time. Leave War: whatever it owns about a person beyond
 the projection goes in a persisted record laid back on by `setPeople`.
 
 **WHAT ACTUALLY PERSISTS** (verified 17 Sep 26): on a built site nearly everything survives a reload; memory-only is the dev server, tests, `?fresh=1` or storage that cannot be touched; session-only by design: undo/redo, the edit log and the view state. An older "session-only" sentence is stale — fix it, don't obey it · full text: docs/guide-full.md §What actually persists

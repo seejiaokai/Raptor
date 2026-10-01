@@ -1,0 +1,62 @@
+{
+ "base": "http://localhost:4204",
+ "at": "2026-09-30T10:18:58.049Z",
+ "results": [
+  {
+   "name": "WROW-0 a Monday note (the week's first save) — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 3 [settings/elog:munyd8e9h3be.000001, weeks/13-07-2026, weeks/13-07-2026#0] · del 0 [] · batches sched.text/3"
+  },
+  {
+   "name": "WROW-1: what the reload with the week row missing wrote (every row named by a change-log batch)",
+   "ok": true,
+   "detail": "{\"put\":[],\"del\":[],\"batches\":[],\"bare\":[],\"weekRow\":null}"
+  },
+  {
+   "name": "WROW-1: with its week row gone the week still opens EDITABLE (no read-only notice)",
+   "ok": true,
+   "detail": "{\"notes\":[],\"days\":14}"
+  },
+  {
+   "name": "WROW-1: …its row ids are intact (every row of every day keeps its id)",
+   "ok": false,
+   "detail": "{\"before\":\"[[\\\"rmunyd8fa5yimu0\\\",\\\"rmunyd8fav4tyi1\\\",\\\"rmunyd8fas6meo6\\\",\\\"rmunyd8fa8irwko\\\",\\\"rmunyd8fajusa8r\\\",\\\"rmunyd8faksu1xq\\\",\\\"rmunyd8fa\",\"after\":\"[[\\\"rmunyd8fa5yimu0\\\",\\\"rmunyd8fav4tyi1\\\",\\\"rmunyd8fas6meo6\\\",\\\"rmunyd8fa8irwko\\\",\\\"rmunyd8fajusa8r\\\",\\\"rmunyd8faksu1xq\\\",\\\"rmunyd8fa\"}"
+  },
+  {
+   "name": "WROW-1: …and it holds what was saved (the Monday note)",
+   "ok": true,
+   "detail": "[\"SAVED WEEK\",\"ORDERS: FLYING ORDERS SECTION 2\"]"
+  },
+  {
+   "name": "WROW-1: the reload wrote nothing (the day rows as they were, no week row made up)",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "WROW-2 an edit on Wednesday — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 3 [settings/elog:munydc1n9dzg.000001, weeks/13-07-2026, weeks/13-07-2026#2] · del 0 [] · batches sched.text/3"
+  },
+  {
+   "name": "WROW-2 an edit on Wednesday — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 3 [settings/elog:munydc1n9dzg.000001, weeks/13-07-2026, weeks/13-07-2026#2] · del 0 [] · batches sched.text/3"
+  },
+  {
+   "name": "WROW-2 — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "WROW-2 — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "weekrow: no console error, page error or failed request (beyond the expected boot refusal)",
+   "ok": true,
+   "detail": "[]"
+  }
+ ],
+ "part": "weekrow"
+}

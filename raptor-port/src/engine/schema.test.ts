@@ -88,16 +88,20 @@ const PERSON: Spec = {
   sanQ: { $opt: { flown: 'number', carry: 'number', missedQtrs: 'number' } },
   tf: 'boolean?', sched: 'boolean?', scDay: 'boolean?', scNight: 'boolean?', daar: { $opt: iflag }, naar: { $opt: iflag },
   quals: QUALS,
+  ord: 'number?',   // the roster's order, on each person ([DB-READINESS] group A, phase 2)
 }
 const inputSpec = (booted: boolean): Spec => ({
   iid: booted ? 'string' : 'string?', person: 'string', date: 'string', endDate: 'string?', yr: 'number?', allday: 'boolean',
   s: 'number?', e: 'number?', half: { $opt: { $lit: ['am', 'pm'] } }, type: { $lit: INPUT_TYPES }, remarks: 'string?',
   mod: 'string', acc: { $opt: { $lit: ['g', 'u', 'r'] } }, lw: 'string?', docId: 'string?', docIds: { $opt: ['string'] },
   oil: { $opt: { $map: { $lit: [0, 0.5, 1] } } }, sans: { $opt: { f: { $opt: { $lit: [true] } }, o: { $opt: { $lit: [true] } }, a: { $opt: { $lit: [true] } } } },
+  ord: 'number?',   // its place in the list ([DB-READINESS] group A, phase 2 — state/ord.ts; every booted row has one — below)
+  hand: 'number?',  // how many times it has changed hands ([DB-READINESS] group A, phase 6 (a) — an OIL decision's holding)
+  leftAt: { $opt: { $map: 'number' } },   // the holding at which it left each man (phase 6 (a))
 })
 const FLAGS = { cx: 'boolean?', cxr: 'string?', flag: 'boolean?' }
 const ALLHANDS: Spec = { ...FLAGS, prog: 'string', str: 'string', end: 'string', who: { $opt: { $or: ['string', ['string']] } }, more: { $opt: ['string'] }, info: 'boolean?', rid: 'string?' }
-const GROUND: Spec = { ...(ALLHANDS as object), rmks: 'string?', src: 'string?', srcType: 'string?' }
+const GROUND: Spec = { ...(ALLHANDS as object), rmks: 'string?', src: 'string?', srcType: 'string?', srcv: 'string?', kept: 'boolean?' }
 const SAKIND: Spec = { $lit: ['sc', 'avalon', 'bb'] }
 const SEAT: Spec = { ...FLAGS, p: 'string', w: 'string', area: 'string', rmks: 'string', opts: { $map: { $or: ['boolean', 'string'] } }, spare: 'boolean?', role: { $opt: { $lit: ['MAIN', 'SPARE'] } }, rid: 'string?' }
 const FORMATION: Spec = { cs: 'string', msn: 'string', shift: 'string?', to: 'string', ld: 'string', br: 'string?', area: 'string?', atime: 'string?', aircraft: [SEAT], cx: 'boolean?', cxr: 'string?', rid: 'string?' }
@@ -107,7 +111,7 @@ const DUTYROW: Spec = { ...FLAGS, role: 'string', id: 'string', str: 'string', e
 const DUTYBLOCK: Spec = { label: 'string', rows: [DUTYROW], sa: { $opt: SAKIND }, noconf: 'boolean?', rid: 'string?' }
 /* [OIL-AUTO-REMOVE] — the day's OIL decisions (stored day content) and, on an
    ISSUED SNAPSHOT'S day copy only, the frozen evidence block. engine/oilev.ts. */
-const OILDEC: Spec = { blanket: { $opt: { $lit: [1] } }, items: { $opt: { $map: 'number' } }, people: { $opt: { $map: 'string' } } }
+const OILDEC: Spec = { blanket: { $opt: { $lit: [1] } }, items: { $opt: { $map: 'number' } }, people: { $opt: { $map: 'string' } }, pa: { $opt: { $map: 'number' } } }
 const OILINP: Spec = { iid: 'string', person: 'string', type: 'string', asks: 'boolean', acc: 'string', win: { $or: [['number'], 'null'] }, ans: { $or: ['number', 'null'] } }
 const OILEV: Spec = { iso: 'string', earns: 'boolean', d: OILDEC, inputs: [OILINP], sent: { $map: ['string'] }, mem: { $opt: { $lit: [1] } } }
 const DAY: Spec = {
@@ -146,6 +150,7 @@ const RETIRED: Spec = { $map: {
   id: 'string', n: 'number', di: 'number', iso: 'string', seq: 'number',
   snap: { $or: [DAYSNAP, { $lit: [null] }] }, diff: [ALDIFF], units: 'number?', ukinds: UKINDS, sign: { $map: SIGNSET },
   at: 'string', by: { $or: ['string', { $lit: [null] }] }, restoreSeq: 'number?', logged: 'boolean',
+  rec: { $opt: { $or: [AL, DAYSNAP, { $lit: [null] }] } },   // the issued record kept whole ([DB-READINESS] group A, phase 1)
 } }
 /* Phase 2: cur is a verId STRING per day (Original = `iso#0`); orig carries an id. */
 const SCHED_SPEC: Spec = {
@@ -165,11 +170,11 @@ const SCHED_FIELDS = {
   rt: { $opt: RETIRED }, cr: { $opt: { $map: 'string' } },   // [GLOBAL-UNDO] §6.1 — the issuance log + correction flags ride the snapshot
 }
 const PUCK: Spec = { $or: [
-  { id: 'string', date: 'string', kind: { $opt: { $lit: ['note'] } }, text: 'string' },
-  { id: 'string', date: 'string', kind: { $lit: ['pucks'] }, ids: ['string'] },
+  { id: 'string', date: 'string', kind: { $opt: { $lit: ['note'] } }, text: 'string', ord: 'number?' },
+  { id: 'string', date: 'string', kind: { $lit: ['pucks'] }, ids: ['string'], ord: 'number?' },
 ] }
 const WEEK_SNAP: Spec = { ...SCHED_FIELDS, d: [DAY], i: [inputSpec(true)], wo: ['string'], pp: [PUCK], dm: { $map: 'string' } }
-const STASH_SNAP: Spec = { ...SCHED_FIELDS, d: [DAY], wo: ['string'], un: ['string'] }
+const STASH_SNAP: Spec = { ...SCHED_FIELDS, d: [DAY], wo: ['string'] }
 
 /* pristine copies, taken at import before any test boots the store: the
    seed literals are what the reference-parity harness reads, and this file
@@ -275,6 +280,9 @@ describe('after boot', () => {
     conform(JSON.parse(histSnap()), WEEK_SNAP, 'histSnap')
     conform(JSON.parse(weekStashSnap()), STASH_SNAP, 'weekStashSnap')
     conform(INPUTS, [inputSpec(true)], 'INPUTS')
+    /* every booted request and person carries its place in its list ([DB-READINESS] group A, phase 2) */
+    expect(INPUTS.filter((r: any) => typeof r.ord !== 'number').map((r: any) => r.iid), 'every request has an ord').toEqual([])
+    expect(Object.keys(PEOPLE).filter(id => !PEOPLE[id].special && typeof (PEOPLE as any)[id].ord !== 'number'), 'every person has an ord').toEqual([])
     conform(DAYS, [DAY], 'DAYS')
     conform(SCHED, SCHED_SPEC, 'SCHED')
     Object.keys(PEOPLE).forEach(id => expect(isObj(PEOPLE[id].quals), `PEOPLE.${id}.quals`).toBe(true))

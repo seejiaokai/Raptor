@@ -11,6 +11,11 @@
    which misses an omitted field (e.g. SCHED.changes). This table is the map
    from logical collection to the physical blob that owns it (LOGICAL_TO_BLOB),
    used by the Step-5 fold subscriber (defined, activated later — design §4).
+   BUILT 30 Sep 26 ([DB-READINESS] group A, phase 0): the fold subscriber is the stream consumer in
+   state/rowmap.ts — it maps each change to the stored ROW it lives in through per-collection mappers,
+   not through this blob table; the table's stale entries (leavewar/balances, leavewar/config, lw.bid)
+   were corrected as group A's phases 1–3 moved each collection to rows (plan §2.9) — the Leave War's
+   in phase 3, whose rows its own store writes through its own door (leavewar/state/rows.ts).
 */
 import type { LogicalCollection } from './types'
 
@@ -18,13 +23,14 @@ import type { LogicalCollection } from './types'
    records can share one blob; the fold subscriber (Step 5) groups changes by
    blob, re-serializes each once. */
 export const LOGICAL_TO_BLOB: Record<LogicalCollection, string> = {
-  // scheduler — the week blob owns days + the mutable book + issued records + mutes
+  // scheduler — every record is one row of the weeks collection: a day row, the week row, an issuance or a
+  // retraction row ([DB-READINESS] group A, phase 1 — state/weekrows.ts, state/rowmap.ts)
   'days': 'weeks',
   'sched.book': 'weeks',
   'sched.mutes': 'weeks',
-  'sched.orig': 'weeks',
-  'sched.als': 'weeks',
-  'sched.retired': 'weeks',
+  'sched.week': 'weeks',
+  'sched.issuance': 'weeks',
+  'sched.retraction': 'weeks',
   // inputs / plan / people
   'inputs': 'inputs',
   'plan': 'plan',
@@ -33,16 +39,19 @@ export const LOGICAL_TO_BLOB: Record<LogicalCollection, string> = {
   'settings': 'settings',
   // off-week session memory — stored per week under the weeks blob ([CMDL-FINISH] §6)
   'weekstash': 'weeks',
-  // leave war
-  'lw.cell': 'leavewar/wars',
-  'lw.bid': 'leavewar/wars',
-  'lw.war': 'leavewar/wars',
-  'lw.ledger': 'leavewar/ledger',
-  'lw.balances': 'leavewar/balances',
-  'lw.oilpolicy': 'leavewar/oilpolicy',
-  'lw.postouts': 'leavewar/postouts',
-  'lw.current': 'leavewar/current',
-  'lw.config': 'leavewar/config',
+  // leave war — one row per record in the war's own collection ([DB-READINESS] group A, phase 3 —
+  // leavewar/state/rows.ts): a war `war:<id>`, each record at an address `rec:<war>:<id>`, a ledger entry
+  // `ledger:<id>`, an opening `opening:<pid>:<counter>`, a man's window and label together `profile:<pid>`; the
+  // policy, the war on screen and each ⚙ setting its own key
+  'lw.cell': 'leavewar',
+  'lw.war': 'leavewar',
+  'lw.ledger': 'leavewar',
+  'lw.opening': 'leavewar',
+  'lw.oilpolicy': 'leavewar',
+  'lw.postouts': 'leavewar',
+  'lw.label': 'leavewar',
+  'lw.current': 'leavewar',
+  'lw.config': 'leavewar',
   // tracker (the v3: keys)
   'trk.marks': 'tracker/marks',
   'trk.dates': 'tracker/dates',

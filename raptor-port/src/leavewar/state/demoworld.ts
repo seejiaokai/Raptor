@@ -13,7 +13,9 @@
 // Leave War "went session-only (a memory backend)" so EVERY boot is fresh and the
 // caller "always passes hadStoredWars=false". Both halves are false since the
 // 8 Sep 26 storage work. Leave War boots on the WHITEBOARD, and main.tsx passes
-// the REAL flag: `wb.has('leavewar','wars')`. So on a built site a returning
+// the REAL flag: `leaveWarStarted(wb)` (the store's `initialized` stamp since
+// [DB-READINESS] group A phase 0; `wb.has('leavewar','wars')` before it, and a
+// war row since phase 3 — state/persist.ts). So on a built site a returning
 // browser takes the `hadStoredWars=true` branch — people projection only, wars
 // left alone — and that branch is LIVE today, not reserved for the shared
 // database to come. The memory backend is now the dev/test path only
@@ -23,7 +25,7 @@ import { INPUTS, inpId } from '../../engine/inputs'
 import { seedPeople, SEED_ABSENCES, warHolding, type Ledger, type Recs } from '../engine'
 import { inputRowFor } from '../absences'
 import { projectPeople } from './raptorRoster'
-import { getState, installDemoOil, remapPersonKeys, setPeople } from './store'
+import { getState, installDemoOil, persistBootWorld, remapPersonKeys, setPeople } from './store'
 
 /**
  * Seed person -> Raptor person. HAND-PICKED so that every mapped Raptor
@@ -165,21 +167,24 @@ export const DEMO_OIL: { recs: Recs; ledger: Ledger } = {
  * Boot-time projection + demo re-key. Called once from main.tsx, after
  * lwInitStore and before the sync wires run.
  */
-export function installDemoWorld(hadStoredWars: boolean): void {
+export function installDemoWorld(hadStoredWars: boolean, seedDemo = true): void {
   /* honour a stored showSans at boot — the store loaded before this runs */
   const people = projectPeople(getState().showSans)
+  /* the demo is laid on only a store that has not started, and only under the demo policy ([DB-READINESS] group A,
+     phase 5 — src/bootpolicy.ts): a SHARED store's first boot gets the roster projection and nothing else */
+  const demo = !hadStoredWars && seedDemo
 
-  if (!hadStoredWars) {
-    /* The demo overlay: sxo and the posting-out window come from the SEED
-       person, applied AFTER projection, so the demo reads exactly as the
-       standalone app's did (one SXO short on the red days, one man posted
-       out mid-January). By construction of DEMO_MAP the sxo flags already
-       agree, so in practice this carries only IGNITE's posting-out date. */
+  if (demo) {
+    /* The demo overlay: the posting-out window comes from the SEED person,
+       applied AFTER projection, so the demo reads as the standalone app's did
+       (one man posted out mid-January — IGNITE). SXO is NOT laid over: the war
+       shows what Quals says and nothing on the war ticks SXO (D460 — it was
+       laid here from the seed too, which by construction of DEMO_MAP agreed
+       with Quals, so nothing on screen changes). */
     const overlay = new Map(seedPeople().map(p => [DEMO_MAP[p.id], p]))
     for (const p of people) {
       const seed = overlay.get(p.id)
       if (seed) {
-        p.sxo = seed.sxo
         p.from = seed.from
         p.to = seed.to
       }
@@ -190,16 +195,19 @@ export function installDemoWorld(hadStoredWars: boolean): void {
 
   /* Fresh browsers only: stored wars are real data, never re-keyed — and
      the demo OIL story goes in first, so the re-key dresses it too. */
-  if (!hadStoredWars) {
+  if (demo) {
     installDemoOil(DEMO_OIL)
     remapPersonKeys(DEMO_MAP)
+    /* save the DRESSED world now — setPeople above saved the undressed seed, and the next boot, finding a
+       started store, never dresses it again ([DB-READINESS] group A phase 0; store.ts persistBootWorld) */
+    persistBootWorld()
   }
 
   /* The seed's approved / filed leave and the demo's taken OIL days, filed as
      the Inputs they are ([ARCH-STACK] step 4 — design §9: absences as Inputs,
      with `lw` where the demo shows war-approved leave). Raw pushes before
      LW_READY and before the undo baseline, so none is an undo step (FB-09). */
-  if (!hadStoredWars) {
+  if (demo) {
     const wars = getState().wars
     const seedRows = [
       ...SEED_ABSENCES.map(a => ({ ...a, to: a.endDate ?? a.date })),
@@ -219,7 +227,7 @@ export function installDemoWorld(hadStoredWars: boolean): void {
      came back from storage (hadStoredWars) already holds whatever inputs
      survived — re-filing a demo row a scheduler deleted would resurrect it
      on every boot (storage seam, 8 Sep 26). */
-  if (!hadStoredWars) {
+  if (demo) {
     for (const rec of DEMO_RAPTOR_INPUTS) {
       /* Guarded per person+date+type, the seedDemoSans idiom — a second boot
          against the same INPUTS array must not double-file. */

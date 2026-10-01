@@ -1,0 +1,297 @@
+{
+ "base": "http://localhost:4205",
+ "at": "2026-09-30T08:38:38.980Z",
+ "results": [
+  {
+   "name": "first boot — ONE change-log batch, of type boot",
+   "ok": true,
+   "detail": "1 batch(es): boot · rows by collection {\"leavewar\":91,\"inputs\":46,\"people\":61,\"settings\":1,\"changes\":1}"
+  },
+  {
+   "name": "C0a ⧉ Duplicate syllabus 2026 as \"W5 OWN\" — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 6 [tracker/v3:master:chart:sb2024, tracker/v3:master:chart:sb2026, tracker/v3:master:chart:sbagaa2026, tracker/v3:master:chart:sbtx2026, tracker/v3:master:chart:scmunur9eivw9p0e, tracker/v3:master:lay:scmunur9eivw9p0e] · del 0 [] · batches trk.gesture/6"
+  },
+  {
+   "name": "C0b details typed on W5 OWN's ST-01 (☰ Show All → Edit) — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [tracker/v3:master:info:scmunur9eivw9p0e:ST-01] · del 0 [] · batches trk.eventinfo/1"
+  },
+  {
+   "name": "C0 his own chart with details — a reload gives back exactly what was there (the app)",
+   "ok": true,
+   "detail": "week 13/07/2026 (the never-saved demo week’s hidden row ids were minted afresh — left out of the compare)"
+  },
+  {
+   "name": "C0 his own chart with details — a reload gives back exactly what was there (the Tracker: every chart, detail, course, student, mark, and the screen)",
+   "ok": true,
+   "detail": "1 courses · 5 charts · on 26ABSG / W5 OWN ✎ / null"
+  },
+  {
+   "name": "C0 his own chart with details — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "C0c a DCO mark for STUDENT A on ST-02 — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 3 [tracker/v3:cmunur7rb3z9ggk:last:smunur7retmeb4t, tracker/v3:cmunur7rb3z9ggk:lastStudent, tracker/v3:cmunur7rb3z9ggk:sb2026:m:smunur7retmeb4t] · del 0 [] · batches trk.gesture/3"
+  },
+  {
+   "name": "C0d the pace for STUDENT A: 2.5 a week — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [tracker/v3:cmunur7rb3z9ggk:pace:smunur7retmeb4t] · del 0 [] · batches trk.pace/1"
+  },
+  {
+   "name": "C0d the pace for STUDENT A: 2.5 a week — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 1 [tracker/v3:cmunur7rb3z9ggk:pace:smunur7retmeb4t] · del 0 [] · batches trk.pace/1"
+  },
+  {
+   "name": "C0 a mark and a pace — a reload gives back exactly what was there (the app)",
+   "ok": true,
+   "detail": "week 13/07/2026 (the never-saved demo week’s hidden row ids were minted afresh — left out of the compare)"
+  },
+  {
+   "name": "C0 a mark and a pace — a reload gives back exactly what was there (the Tracker: every chart, detail, course, student, mark, and the screen)",
+   "ok": true,
+   "detail": "1 courses · 5 charts · on 26ABSG / 2026 / STUDENT A"
+  },
+  {
+   "name": "C0 a mark and a pace — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "C1 ⤓ Export… every chart (no students) — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "C1 ⤓ Export… every chart (no students) — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "C1 the charts file holds his own chart with its details, and no student",
+   "ok": true,
+   "detail": "5 charts · file OCU-syllabus-2026-09-30.json"
+  },
+  {
+   "name": "C2 ⤓ Export… every chart + students & marks — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "C2 ⤓ Export… every chart + students & marks — wrote exactly what it should",
+   "ok": true,
+   "detail": "put 0 [] · del 0 [] · batches "
+  },
+  {
+   "name": "C2 the students file holds the mark and the pace",
+   "ok": true,
+   "detail": "1 course(s)"
+  },
+  {
+   "name": "C2 after the two exports — a reload gives back exactly what was there (the app)",
+   "ok": true,
+   "detail": "week 13/07/2026 (the never-saved demo week’s hidden row ids were minted afresh — left out of the compare)"
+  },
+  {
+   "name": "C2 after the two exports — a reload gives back exactly what was there (the Tracker: every chart, detail, course, student, mark, and the screen)",
+   "ok": true,
+   "detail": "1 courses · 5 charts · on 26ABSG / 2026 / STUDENT A"
+  },
+  {
+   "name": "C2 after the two exports — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "C3a 🗑 Delete syllabus W5 OWN (his own), OK — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 0 [] · del 3 [tracker/v3:master:chart:scmunur9eivw9p0e, tracker/v3:master:info:scmunur9eivw9p0e:ST-01, tracker/v3:master:lay:scmunur9eivw9p0e] · batches trk.gesture/3"
+  },
+  {
+   "name": "C3a his chart and its details are gone",
+   "ok": true,
+   "detail": "2024 · 2026 · Tx 2026 · A/G - A/A 2026"
+  },
+  {
+   "name": "C3a 🗑 Delete his own chart — one action, ONE change-log batch",
+   "ok": true,
+   "detail": "1 batch"
+  },
+  {
+   "name": "C3b the mark on ST-02 taken back (Not done) — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [tracker/v3:cmunur7rb3z9ggk:sb2026:m:smunur7retmeb4t] · del 0 [] · batches trk.gesture/1"
+  },
+  {
+   "name": "C3c the pace changed to 4 — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 1 [tracker/v3:cmunur7rb3z9ggk:pace:smunur7retmeb4t] · del 0 [] · batches trk.pace/1"
+  },
+  {
+   "name": "C3d + Add student \"W5 LATE\" — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 3 [tracker/v3:cmunur7rb3z9ggk:sb2026:d:smunurw7bev81kw, tracker/v3:cmunur7rb3z9ggk:sb2026:enr:smunurw7bev81kw, tracker/v3:cmunur7rb3z9ggk:sb2026:m:smunurw7bev81kw] · del 0 [] · batches trk.gesture/3"
+  },
+  {
+   "name": "C3e a DCO mark for W5 LATE on ST-01 — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 3 [tracker/v3:cmunur7rb3z9ggk:last:smunurw7bev81kw, tracker/v3:cmunur7rb3z9ggk:lastStudent, tracker/v3:cmunur7rb3z9ggk:sb2026:m:smunurw7bev81kw] · del 0 [] · batches trk.gesture/3"
+  },
+  {
+   "name": "C3 the changes after the export — a reload gives back exactly what was there (the app)",
+   "ok": true,
+   "detail": "week 13/07/2026 (the never-saved demo week’s hidden row ids were minted afresh — left out of the compare)"
+  },
+  {
+   "name": "C3 the changes after the export — a reload gives back exactly what was there (the Tracker: every chart, detail, course, student, mark, and the screen)",
+   "ok": true,
+   "detail": "1 courses · 4 charts · on 26ABSG / 2026 / W5 LATE"
+  },
+  {
+   "name": "C3 the changes after the export — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "C4 ⇪ Import… the charts file (Replace it for each chart here) — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 7 [tracker/v3:master:chart:scmunur9eivw9p0e, tracker/v3:master:info:scmunur9eivw9p0e:ST-01, tracker/v3:master:lay:sb2024, tracker/v3:master:lay:sb2026, tracker/v3:master:lay:sbagaa2026, tracker/v3:master:lay:sbtx2026, tracker/v3:master:lay:scmunur9eivw9p0e] · del 0 [] · batches trk.layout/1 trk.layout/1 trk.layout/1 trk.layout/1 trk.layout/1 trk.syls/1 trk.eventinfo/1 trk.catalogue/1 trk.catalogue/1"
+  },
+  {
+   "name": "C4 ⇪ Import charts — a reload gives back exactly what was there (the app)",
+   "ok": true,
+   "detail": "week 13/07/2026 (the never-saved demo week’s hidden row ids were minted afresh — left out of the compare)"
+  },
+  {
+   "name": "C4 ⇪ Import charts — a reload gives back exactly what was there (the Tracker: every chart, detail, course, student, mark, and the screen)",
+   "ok": true,
+   "detail": "1 courses · 5 charts · on 26ABSG / 2026 / W5 LATE"
+  },
+  {
+   "name": "C4 ⇪ Import charts — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "C4 every chart reads EXACTLY as exported — his own back with its layout and details, the order, the deleted list (D120, D464)",
+   "ok": true,
+   "detail": "5 charts"
+  },
+  {
+   "name": "C4 his chart is back in the dropdown",
+   "ok": true,
+   "detail": "2024 · 2026 · Tx 2026 · A/G - A/A 2026 · W5 OWN ✎"
+  },
+  {
+   "name": "C4 a chart import touches no student, mark, date, pace or course (every student record reads as before the import)",
+   "ok": true,
+   "detail": "unchanged"
+  },
+  {
+   "name": "C5 ⇪ Import… the students file (Skip each chart; Yes to students & marks) — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 2 [tracker/v3:cmunur7rb3z9ggk:pace:smunur7retmeb4t, tracker/v3:cmunur7rb3z9ggk:sb2026:m:smunur7retmeb4t] · del 0 [] · batches trk.pace/1 trk.marks/1"
+  },
+  {
+   "name": "C5 ⇪ Import students & marks — a reload gives back exactly what was there (the app)",
+   "ok": true,
+   "detail": "week 13/07/2026 (the never-saved demo week’s hidden row ids were minted afresh — left out of the compare)"
+  },
+  {
+   "name": "C5 ⇪ Import students & marks — a reload gives back exactly what was there (the Tracker: every chart, detail, course, student, mark, and the screen)",
+   "ok": true,
+   "detail": "1 courses · 5 charts · on 26ABSG / 2026 / W5 LATE"
+  },
+  {
+   "name": "C5 ⇪ Import students & marks — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "C5 STUDENT A's mark and pace are the file's again (DCO on ST-02, 2.5/wk)",
+   "ok": true,
+   "detail": "ST-02: dco · pace {\"epw\":\"2.5\",\"target\":null,\"target2\":null}"
+  },
+  {
+   "name": "C5 W5 LATE — not in the file — keeps his mark (D132: an import never deletes anyone's marks)",
+   "ok": true,
+   "detail": "ST-01: dco"
+  },
+  {
+   "name": "W5 part C — no console error, page error or failed request",
+   "ok": true,
+   "detail": ""
+  }
+ ],
+ "walker": "W5",
+ "part": "C",
+ "table": [
+  {
+   "step": "C0",
+   "width": "desktop",
+   "did": "setup: ⧉ Duplicate 2026 → \"W5 OWN\"; details on its ST-01; DCO on ST-02 for STUDENT A; pace 2.5/wk",
+   "after": "all there after a reload",
+   "rows": "dup: put 6 [tracker/v3:master:chart:sb2024, tracker/v3:master:chart:sb2026, tracker/v3:master:chart:sbagaa2026, tracker/v3:master:chart:sbtx2026, tracker/v3:master:chart:scmunur9eivw9p0e, tracker/v3:master:lay:scmunur9eivw9p0e] · del 0 · batches 1 (trk.gesture/6) ‖ details: put 1 [tracker/v3:master:info:scmunur9eivw9p0e:ST-01] · del 0 · batches 1 (trk.eventinfo/1) ‖ mark: put 3 [tracker/v3:cmunur7rb3z9ggk:last:smunur7retmeb4t, tracker/v3:cmunur7rb3z9ggk:lastStudent, tracker/v3:cmunur7rb3z9ggk:sb2026:m:smunur7retmeb4t] · del 0 · batches 1 (trk.gesture/3) ‖ pace: put 1 [tracker/v3:cmunur7rb3z9ggk:pace:smunur7retmeb4t] · del 0 · batches 1 (trk.pace/1)",
+   "pics": [
+    "c0-before-export"
+   ]
+  },
+  {
+   "step": "C1–C2",
+   "width": "desktop",
+   "did": "File ⇪ → ⤓ Export…: every chart (C1); every chart + Students & courses (C2); OK",
+   "after": "two files; nothing changed",
+   "rows": "C1: put 0 · del 0 · batches 0 () ‖ C2: put 0 · del 0 · batches 0 ()",
+   "pics": [
+    "c2-after-exports"
+   ]
+  },
+  {
+   "step": "C3",
+   "width": "desktop",
+   "did": "after the export: 🗑 Delete W5 OWN; Not done on ST-02; pace 4; + Add \"W5 LATE\"; DCO on ST-01 for him",
+   "after": "all there after a reload",
+   "rows": "delete: put 0 · del 3 [tracker/v3:master:chart:scmunur9eivw9p0e, tracker/v3:master:info:scmunur9eivw9p0e:ST-01, tracker/v3:master:lay:scmunur9eivw9p0e] · batches 1 (trk.gesture/3) ‖ undone mark: put 1 [tracker/v3:cmunur7rb3z9ggk:sb2026:m:smunur7retmeb4t] · del 0 · batches 1 (trk.gesture/1) ‖ pace: put 1 [tracker/v3:cmunur7rb3z9ggk:pace:smunur7retmeb4t] · del 0 · batches 1 (trk.pace/1) ‖ add: put 3 [tracker/v3:cmunur7rb3z9ggk:sb2026:d:smunurw7bev81kw, tracker/v3:cmunur7rb3z9ggk:sb2026:enr:smunurw7bev81kw, tracker/v3:cmunur7rb3z9ggk:sb2026:m:smunurw7bev81kw] · del 0 · batches 1 (trk.gesture/3) ‖ his mark: put 3 [tracker/v3:cmunur7rb3z9ggk:last:smunurw7bev81kw, tracker/v3:cmunur7rb3z9ggk:lastStudent, tracker/v3:cmunur7rb3z9ggk:sb2026:m:smunurw7bev81kw] · del 0 · batches 1 (trk.gesture/3)",
+   "pics": [
+    "c3-changed-since-export"
+   ]
+  },
+  {
+   "step": "C4",
+   "width": "desktop",
+   "did": "File ⇪ → Import… the charts file; \"Replace it\" for each chart already here; OK",
+   "after": "charts as exported: 2024, 2026, Tx 2026, A/G - A/A 2026, W5 OWN ✎",
+   "rows": "put 7 [tracker/v3:master:chart:scmunur9eivw9p0e, tracker/v3:master:info:scmunur9eivw9p0e:ST-01, tracker/v3:master:lay:sb2024, tracker/v3:master:lay:sb2026, tracker/v3:master:lay:sbagaa2026, tracker/v3:master:lay:sbtx2026 …] · del 0 · batches 9 (trk.layout/1 trk.layout/1 trk.layout/1 trk.layout/1 trk.layout/1 trk.syls/1 trk.eventinfo/1 trk.catalogue/1 trk.catalogue/1)",
+   "pics": [
+    "c4-after-import-charts",
+    "c4-after-reload"
+   ]
+  },
+  {
+   "step": "C5",
+   "width": "desktop",
+   "did": "File ⇪ → Import… the students file; \"Skip this one\" for each chart; Yes to students & marks; OK",
+   "after": "STUDENT A: ST-02 dco, pace 2.5; W5 LATE: ST-01 dco",
+   "rows": "put 2 [tracker/v3:cmunur7rb3z9ggk:pace:smunur7retmeb4t, tracker/v3:cmunur7rb3z9ggk:sb2026:m:smunur7retmeb4t] · del 0 · batches 2 (trk.pace/1 trk.marks/1)",
+   "pics": [
+    "c5-after-import-students",
+    "c5-after-reload-studentA",
+    "c5-after-reload-late"
+   ]
+  }
+ ],
+ "notes": [
+  "C1 export said: Exported as “OCU-syllabus-2026-09-30.json”. It contains every chart — no student names or marks.",
+  "C2 export said: Exported as “OCU-syllabus-WITH-STUDENTS-2026-09-30.json”. It CONTAINS student names and marks, with every chart — a full backup; only send it to someone entitled to see them.",
+  "C4 import asked: \"“2024” already exists. Replace it, or add the incoming one under a new name?\" → ok | \"“2026” already exists. Replace it, or add the incoming one under a new name?\" → ok | \"“Tx 2026” already exists. Replace it, or add the incoming one under a new name?\" → ok | \"“A/G - A/A 2026” already exists. Replace it, or add the incoming one under a new name?\" → ok | \"Brought in 2024, 2026, Tx 2026, A/G - A/A 2026, W5 OWN. Everyone’s marks are untouched. It\" → ok",
+  "C4 import saved in 9 change-log batches: trk.layout/1 trk.layout/1 trk.layout/1 trk.layout/1 trk.layout/1 trk.syls/1 trk.eventinfo/1 trk.catalogue/1 trk.catalogue/1",
+  "C5 import asked: \"“2024” already exists. Replace it, or add the incoming one under a new name?\" → cancel | \"“2026” already exists. Replace it, or add the incoming one under a new name?\" → cancel | \"“Tx 2026” already exists. Replace it, or add the incoming one under a new name?\" → cancel | \"“A/G - A/A 2026” already exists. Replace it, or add the incoming one under a new name?\" → cancel | \"“W5 OWN” already exists. Replace it, or add the incoming one under a new name?\" → cancel | \"This file also contains students and marks. Bring them in too? A student already here who \" → ok | \"Students & marks restored. It is saved. Skipped, left as they are here: 2024, 2026, Tx 202\" → ok",
+  "C5 import saved in 2 change-log batches: trk.pace/1 trk.marks/1"
+ ],
+ "errors": []
+}

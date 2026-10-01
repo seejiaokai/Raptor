@@ -71,7 +71,8 @@ describe('the lagging baseline stays in step', () => {
     expect(schedBaselineClean()).toBe(true)
     caught = []; commitSchedVoid(SCHED_TYPES.mutate, () => {}); expect(caught.length).toBe(0)
     // resetSession — clears WARNOFF, which rides the baseline (SR-007)
-    schedWriteValue(SCHED_TYPES.warnMute, () => view.toggleWarnOff('some.check.key'))
+    expect(schedWriteValue(SCHED_TYPES.warnMute, () => view.toggleWarnOff(view.warnMuteKey({ di: 0, code: 'SOME_CHECK', who: [], msg: 'k' }))), 'the mute is kept (a real key, its day first)').toBe(false)
+    expect(view.WARNOFF.size).toBeGreaterThan(0)
     resetSession({ user: 'ad', role: 'admin' })
     expect(schedBaselineClean()).toBe(true)
     caught = []; commitSchedVoid(SCHED_TYPES.mutate, () => {}); expect(caught.length).toBe(0)
@@ -110,7 +111,10 @@ describe('the previously-unrouted paths now emit exactly one envelope', () => {
 
   it('row E: a warn-mute emits ONE sched.warnMute envelope with a sched.mutes change', () => {
     caught = []
-    const shown = schedWriteValue(SCHED_TYPES.warnMute, () => view.toggleWarnOff('CREW_REST|0'))
+    /* the key the app makes (`warnMuteKey` — its day first): a key naming no day is refused, since its row cannot be
+       saved on any day (the group-A final read, Fable F4; pinned in sched-dayrecords.test) */
+    const key = view.warnMuteKey({ di: 0, code: 'CREW_REST', who: [], msg: 'row E' })
+    const shown = schedWriteValue(SCHED_TYPES.warnMute, () => view.toggleWarnOff(key))
     expect(shown).toBe(false)                 // first toggle hides it (schedWriteValue carried the bool back — R2-11)
     expect(caught.length).toBe(1)
     expect(caught[0].type).toBe('sched.warnMute')

@@ -660,6 +660,19 @@ through sourcemaps for the JS split, paired A/B runs.
     the counted subtrees — board 1023/1150, week 5098/5450, the Leave War
     `.mx *` band unchanged.
 
+## A week read with a deleted man worked out (the read-time overlay)
+
+26. **What the overlay costs once someone is deleted** (`[DB-READINESS]` phase 6 (d), measured in its FULL check, 30 Sep
+    26). `npm run perf` boots the demo, where nobody is deleted, so `engine/overlay.ts overlayDeletedWeek` returns at once
+    and the gate cannot see it (4/0, timings level with the build before phase 6). Measured apart
+    (`scripts/handpass/p6-perf-deleted.mjs`, desktop, no throttle, 300 calls per sample): one `validate()` takes
+    **≈0.61 ms** with nobody deleted; after two deletes **≈0.90 ms** here against **≈0.72 ms** on the build before phase 6
+    (on a never-saved week 2: ≈1.18 against ≈1.01). The extra ≈0.2 ms is the overlay in `stashDays` and, above all,
+    `weekctx.ts bundle`'s seed branch cloning the whole seed week on every read once a cutoff is due (the cache holds the
+    pure seed) — under 1% of a painted edit at 4× (oneEdit ≈145 ms). *Not built, recorded:* a memo of the overlaid seed on
+    (week, `deletedSig()`) would take it back; on a shared store there is no seed, so it matters most in the demo. The 30-second
+    check (group B) will run the same overlay on a day already on screen — measure it there. · *No ceiling moved.*
+
 ---
 
 # Where the rules live (pointer map)

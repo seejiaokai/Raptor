@@ -1,0 +1,48 @@
+{
+ "base": "http://localhost:4202",
+ "at": "2026-09-30T17:52:53.097Z",
+ "results": [
+  {
+   "name": "T1 tab B: Ranger files a meeting on Thu 16 Jul 13:00-14:00 — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 4 [inputs/imrldi1s0khpb4c, settings/elog:mrldi1s01mvc.000001, weeks/13-07-2026, weeks/13-07-2026#3] · del 0 [] · batches inputs.batch/4"
+  },
+  {
+   "name": "T2 tab A (stale): Saber types a note on Thursday — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 2 [settings/elog:mrldi1s00fn8.000001, weeks/13-07-2026#3] · del 0 [] · batches sched.text/3"
+  },
+  {
+   "name": "T3 after tab A reloads: Saber's note stands AND Ranger's meeting is on Thursday",
+   "ok": true,
+   "detail": "[{\"di\":3,\"ri\":3,\"prog\":\"MEETING\",\"str\":\"13:00\",\"end\":\"14:00\",\"who\":\"bane\",\"more\":[],\"rmks\":\"P6C TAB B\",\"kept\":false,\"info\":false,\"flag\":null,\"cx\":null}]"
+  },
+  {
+   "name": "T4 tab B (stale): Ranger files a meeting on Fri 17 Jul 09:00-10:00 — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 3 [inputs/imrldi1s00a15cq, settings/elog:mrldi1s01mvc.000002, weeks/13-07-2026#4] · del 0 [] · batches inputs.batch/3"
+  },
+  {
+   "name": "T4 Friday is still published in the store after his filing",
+   "ok": false,
+   "detail": "{\"a\":{\"ok\":null,\"signed\":false},\"b\":{\"ok\":null,\"signed\":false}}"
+  },
+  {
+   "name": "T5 Friday: still published, his meeting reads pending, the four fallen",
+   "ok": false,
+   "detail": "{\"tag\":\"DRAFT\",\"pending\":\"1 new\",\"beak\":\"locked\",\"alpub\":\"\",\"unpub\":\"\",\"signs\":[\"— name —\",\"— name —\",\"— name —\",\"— name —\"],\"signed\":\"\",\"nys\":\"\"}"
+  },
+  {
+   "name": "T6 tab B: Ranger deletes his Thursday meeting — every row it wrote is named by its change-log batch",
+   "ok": true,
+   "detail": "put 2 [settings/elog:mrldi1s01mvc.000003, weeks/13-07-2026#3] · del 1 [inputs/imrldi1s0khpb4c] · batches inputs.batch/3"
+  },
+  {
+   "name": "T6 after tab A reloads: the meeting is gone, the note stays",
+   "ok": false,
+   "detail": ""
+  }
+ ],
+ "table": [],
+ "tag": "base"
+}

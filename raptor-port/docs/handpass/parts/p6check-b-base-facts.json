@@ -1,0 +1,872 @@
+{
+ "tag": "base",
+ "facts": {
+  "B1.input": {
+   "person": "nact",
+   "type": "Other",
+   "date": "Jul 16",
+   "end": "Jul 17",
+   "acc": "g"
+  },
+  "B1.head3": {
+   "tag": "DRAFT",
+   "pending": "1 change",
+   "beak": "locked",
+   "alpub": "",
+   "unpub": "",
+   "signs": [
+    "— name —",
+    "— name —",
+    "— name —",
+    "— name —"
+   ],
+   "signed": "",
+   "nys": ""
+  },
+  "B1.head4": {
+   "tag": "DRAFT",
+   "pending": "1 change",
+   "beak": "locked",
+   "alpub": "",
+   "unpub": "",
+   "signs": [
+    "— name —",
+    "— name —",
+    "— name —",
+    "— name —"
+   ],
+   "signed": "",
+   "nys": ""
+  },
+  "B1.al": {
+   "line": "Changes are on unpublished days — publish the day first",
+   "drop": {
+    "disabled": false,
+    "title": "Clear the marks on days not yet published (1)"
+   },
+   "days": []
+  },
+  "B1x.press": "removed",
+  "B1x.acc": "r",
+  "B1x.head3": {
+   "tag": "DRAFT",
+   "pending": "2 changes",
+   "beak": "locked",
+   "alpub": "",
+   "unpub": "",
+   "signs": [
+    "— name —",
+    "— name —",
+    "— name —",
+    "— name —"
+   ],
+   "signed": "",
+   "nys": ""
+  },
+  "B1x.head4": {
+   "tag": "DRAFT",
+   "pending": "2 changes",
+   "beak": "locked",
+   "alpub": "",
+   "unpub": "",
+   "signs": [
+    "— name —",
+    "— name —",
+    "— name —",
+    "— name —"
+   ],
+   "signed": "",
+   "nys": ""
+  },
+  "B1x.al": {
+   "line": "No pending changes",
+   "drop": {
+    "disabled": true,
+    "title": "Nothing to clear — a published day’s changes stay until you publish them or put them back"
+   },
+   "days": []
+  },
+  "B2.press": "pressed",
+  "B2.dayRowsWritten": [
+   "weeks/13-07-2026#3",
+   "weeks/13-07-2026#4"
+  ],
+  "B2.acc": "u",
+  "B2.pendingKeys": [
+   "inp:3.imrldi1s0nf4t9x",
+   "inp:4.imrldi1s0nf4t9x"
+  ],
+  "B2.head3": {
+   "tag": "DRAFT",
+   "pending": "3 changes",
+   "beak": "locked",
+   "alpub": "",
+   "unpub": "",
+   "signs": [
+    "— name —",
+    "— name —",
+    "— name —",
+    "— name —"
+   ],
+   "signed": "",
+   "nys": ""
+  },
+  "B2.head4": {
+   "tag": "DRAFT",
+   "pending": "3 changes",
+   "beak": "locked",
+   "alpub": "",
+   "unpub": "",
+   "signs": [
+    "— name —",
+    "— name —",
+    "— name —",
+    "— name —"
+   ],
+   "signed": "",
+   "nys": ""
+  },
+  "B2.al": {
+   "line": "Changes are on unpublished days — publish the day first",
+   "drop": {
+    "disabled": false,
+    "title": "Clear the marks on days not yet published (2)"
+   },
+   "days": []
+  },
+  "B2.undo": {
+   "present": true,
+   "title": "Undo — a change to the schedule",
+   "pressed": true,
+   "toasts": [
+    "Undid: a change to the schedule"
+   ]
+  },
+  "B2u.acc": "r",
+  "B2u.head3": {
+   "tag": "DRAFT",
+   "pending": "4 changes",
+   "beak": "locked",
+   "alpub": "",
+   "unpub": "",
+   "signs": [
+    "— name —",
+    "— name —",
+    "— name —",
+    "— name —"
+   ],
+   "signed": "",
+   "nys": ""
+  },
+  "B2u.head4": {
+   "tag": "DRAFT",
+   "pending": "4 changes",
+   "beak": "locked",
+   "alpub": "",
+   "unpub": "",
+   "signs": [
+    "— name —",
+    "— name —",
+    "— name —",
+    "— name —"
+   ],
+   "signed": "",
+   "nys": ""
+  },
+  "B2u.al": {
+   "line": "No pending changes",
+   "drop": {
+    "disabled": true,
+    "title": "Nothing to clear — a published day’s changes stay until you publish them or put them back"
+   },
+   "days": []
+  },
+  "B2.redo": {
+   "present": true,
+   "title": "Redo — a change to the schedule",
+   "pressed": true,
+   "toasts": [
+    "Redid: a change to the schedule"
+   ]
+  },
+  "B2r.acc": "u",
+  "B2r.head3": {
+   "tag": "DRAFT",
+   "pending": "5 changes",
+   "beak": "locked",
+   "alpub": "",
+   "unpub": "",
+   "signs": [
+    "— name —",
+    "— name —",
+    "— name —",
+    "— name —"
+   ],
+   "signed": "",
+   "nys": ""
+  },
+  "B2r.head4": {
+   "tag": "DRAFT",
+   "pending": "5 changes",
+   "beak": "locked",
+   "alpub": "",
+   "unpub": "",
+   "signs": [
+    "— name —",
+    "— name —",
+    "— name —",
+    "— name —"
+   ],
+   "signed": "",
+   "nys": ""
+  },
+  "B2r.al": {
+   "line": "Changes are on unpublished days — publish the day first",
+   "drop": {
+    "disabled": false,
+    "title": "Clear the marks on days not yet published (2)"
+   },
+   "days": []
+  },
+  "B2reload.head3": {
+   "tag": "DRAFT",
+   "pending": "5 changes",
+   "beak": "locked",
+   "alpub": "",
+   "unpub": "",
+   "signs": [
+    "— name —",
+    "— name —",
+    "— name —",
+    "— name —"
+   ],
+   "signed": "",
+   "nys": ""
+  },
+  "B2reload.head4": {
+   "tag": "DRAFT",
+   "pending": "5 changes",
+   "beak": "locked",
+   "alpub": "",
+   "unpub": "",
+   "signs": [
+    "— name —",
+    "— name —",
+    "— name —",
+    "— name —"
+   ],
+   "signed": "",
+   "nys": ""
+  },
+  "B2reload.al": {
+   "line": "Changes are on unpublished days — publish the day first",
+   "drop": {
+    "disabled": false,
+    "title": "Clear the marks on days not yet published (2)"
+   },
+   "days": []
+  },
+  "B3.sign3": {
+   "cur": "Ace",
+   "sked": "Anvil",
+   "plan": "Anvil",
+   "appr": "Anvil"
+  },
+  "B3.pub3": {
+   "pressed": true,
+   "label": "Publish day"
+  },
+  "B3.sign4": {
+   "cur": "Ace",
+   "sked": "Anvil",
+   "plan": "Anvil",
+   "appr": "Anvil"
+  },
+  "B3.pub4": {
+   "pressed": true,
+   "label": "Publish day"
+  },
+  "B3.head3": {
+   "tag": "ORIG",
+   "pending": "10 changes",
+   "beak": "none",
+   "alpub": "",
+   "unpub": "Unpublish",
+   "signs": [
+    "— name —",
+    "— name —",
+    "— name —",
+    "— name —"
+   ],
+   "signed": "SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil",
+   "nys": ""
+  },
+  "B3.head4": {
+   "tag": "ORIG",
+   "pending": "10 changes",
+   "beak": "none",
+   "alpub": "",
+   "unpub": "Unpublish",
+   "signs": [
+    "— name —",
+    "— name —",
+    "— name —",
+    "— name —"
+   ],
+   "signed": "SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil",
+   "nys": ""
+  },
+  "B3.al": {
+   "line": "No pending changes",
+   "drop": {
+    "disabled": true,
+    "title": "Nothing to clear — a published day’s changes stay until you publish them or put them back"
+   },
+   "days": []
+  },
+  "B4.head3": {
+   "tag": "ORIG",
+   "pending": "1 pending",
+   "beak": "none",
+   "alpub": "Publish AL1",
+   "unpub": "Unpublish",
+   "signs": [
+    "— name —",
+    "— name —",
+    "— name —",
+    "— name —"
+   ],
+   "signed": "SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil",
+   "nys": "Not yet signed"
+  },
+  "B4.head4": {
+   "tag": "ORIG",
+   "pending": "1 pending",
+   "beak": "none",
+   "alpub": "Publish AL1",
+   "unpub": "Unpublish",
+   "signs": [
+    "— name —",
+    "— name —",
+    "— name —",
+    "— name —"
+   ],
+   "signed": "SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil",
+   "nys": "Not yet signed"
+  },
+  "B4.al": {
+   "line": "2 days with changes to publish",
+   "drop": {
+    "disabled": true,
+    "title": "Nothing to clear — a published day’s changes stay until you publish them or put them back"
+   },
+   "days": [
+    "Thu · 1 change Publish AL1",
+    "Fri · 1 change · 1 input change Publish AL1"
+   ]
+  },
+  "B4.list3": {
+   "tabs": [
+    "New to you 0",
+    "All changes 11",
+    "To go out · AL1 1"
+   ],
+   "lines": [
+    "Waiting to go out as",
+    "AL1",
+    "· 1 change",
+    "Piston · P6B OTHER TWO",
+    "Saber",
+    "15/7 09:00",
+    "not on the programme → on the programme",
+    "Tap a change to go to it."
+   ]
+  },
+  "B4.acc": "g",
+  "B4x.press": "removed",
+  "B4x.acc": "r",
+  "B4x.head3": {
+   "tag": "ORIG",
+   "pending": "12 changes",
+   "beak": "none",
+   "alpub": "",
+   "unpub": "Unpublish",
+   "signs": [
+    "— name —",
+    "— name —",
+    "— name —",
+    "— name —"
+   ],
+   "signed": "SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil",
+   "nys": ""
+  },
+  "B4x.head4": {
+   "tag": "ORIG",
+   "pending": "12 changes",
+   "beak": "none",
+   "alpub": "",
+   "unpub": "Unpublish",
+   "signs": [
+    "— name —",
+    "— name —",
+    "— name —",
+    "— name —"
+   ],
+   "signed": "SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil",
+   "nys": ""
+  },
+  "B4x.al": {
+   "line": "No pending changes",
+   "drop": {
+    "disabled": true,
+    "title": "Nothing to clear — a published day’s changes stay until you publish them or put them back"
+   },
+   "days": []
+  },
+  "B5.press": "pressed",
+  "B5.dayRowsWritten": [
+   "weeks/13-07-2026#3",
+   "weeks/13-07-2026#4"
+  ],
+  "B5.pendingKeys": [
+   "inp:3.imrldi1s0051yhj",
+   "inp:4.imrldi1s0051yhj"
+  ],
+  "B5.head3": {
+   "tag": "ORIG",
+   "pending": "1 pending",
+   "beak": "none",
+   "alpub": "Publish AL1",
+   "unpub": "Unpublish",
+   "signs": [
+    "— name —",
+    "— name —",
+    "— name —",
+    "— name —"
+   ],
+   "signed": "SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil",
+   "nys": "Not yet signed"
+  },
+  "B5.head4": {
+   "tag": "ORIG",
+   "pending": "1 pending",
+   "beak": "none",
+   "alpub": "Publish AL1",
+   "unpub": "Unpublish",
+   "signs": [
+    "— name —",
+    "— name —",
+    "— name —",
+    "— name —"
+   ],
+   "signed": "SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil",
+   "nys": "Not yet signed"
+  },
+  "B5.al": {
+   "line": "2 days with changes to publish",
+   "drop": {
+    "disabled": true,
+    "title": "Nothing to clear — a published day’s changes stay until you publish them or put them back"
+   },
+   "days": [
+    "Thu · 1 change · 1 input change Publish AL1",
+    "Fri · 1 change · 1 input change Publish AL1"
+   ]
+  },
+  "B5.list3": {
+   "tabs": [
+    "New to you 0",
+    "All changes 13",
+    "To go out · AL1 1"
+   ],
+   "lines": [
+    "Waiting to go out as",
+    "AL1",
+    "· 1 change",
+    "Piston · P6B OTHER TWO",
+    "Saber",
+    "15/7 09:00",
+    "not on the programme → under Unavailable"
+   ]
+  },
+  "B5.list4": {
+   "tabs": [
+    "New to you 0",
+    "All changes 13",
+    "To go out · AL1 1"
+   ],
+   "lines": [
+    "Waiting to go out as",
+    "AL1",
+    "· 1 change",
+    "Piston · P6B OTHER TWO",
+    "Saber",
+    "15/7 09:00",
+    "not on the programme → under Unavailable"
+   ]
+  },
+  "B5.undo": {
+   "present": true,
+   "title": "Undo — a change to the schedule",
+   "pressed": true,
+   "toasts": [
+    "Undid: a change to the schedule"
+   ]
+  },
+  "B5u.head3": {
+   "tag": "ORIG",
+   "pending": "14 changes",
+   "beak": "none",
+   "alpub": "",
+   "unpub": "Unpublish",
+   "signs": [
+    "— name —",
+    "— name —",
+    "— name —",
+    "— name —"
+   ],
+   "signed": "SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil",
+   "nys": ""
+  },
+  "B5u.head4": {
+   "tag": "ORIG",
+   "pending": "14 changes",
+   "beak": "none",
+   "alpub": "",
+   "unpub": "Unpublish",
+   "signs": [
+    "— name —",
+    "— name —",
+    "— name —",
+    "— name —"
+   ],
+   "signed": "SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil",
+   "nys": ""
+  },
+  "B5u.al": {
+   "line": "No pending changes",
+   "drop": {
+    "disabled": true,
+    "title": "Nothing to clear — a published day’s changes stay until you publish them or put them back"
+   },
+   "days": []
+  },
+  "B5.redo": {
+   "present": true,
+   "title": "Redo — a change to the schedule",
+   "pressed": true,
+   "toasts": [
+    "Redid: a change to the schedule"
+   ]
+  },
+  "B5r.head3": {
+   "tag": "ORIG",
+   "pending": "1 pending",
+   "beak": "none",
+   "alpub": "Publish AL1",
+   "unpub": "Unpublish",
+   "signs": [
+    "— name —",
+    "— name —",
+    "— name —",
+    "— name —"
+   ],
+   "signed": "SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil",
+   "nys": "Not yet signed"
+  },
+  "B5r.head4": {
+   "tag": "ORIG",
+   "pending": "1 pending",
+   "beak": "none",
+   "alpub": "Publish AL1",
+   "unpub": "Unpublish",
+   "signs": [
+    "— name —",
+    "— name —",
+    "— name —",
+    "— name —"
+   ],
+   "signed": "SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil",
+   "nys": "Not yet signed"
+  },
+  "B5r.al": {
+   "line": "2 days with changes to publish",
+   "drop": {
+    "disabled": true,
+    "title": "Nothing to clear — a published day’s changes stay until you publish them or put them back"
+   },
+   "days": [
+    "Thu · 1 change · 1 input change Publish AL1",
+    "Fri · 1 change · 1 input change Publish AL1"
+   ]
+  },
+  "B5reload.head3": {
+   "tag": "ORIG",
+   "pending": "1 pending",
+   "beak": "none",
+   "alpub": "Publish AL1",
+   "unpub": "Unpublish",
+   "signs": [
+    "— name —",
+    "— name —",
+    "— name —",
+    "— name —"
+   ],
+   "signed": "SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil",
+   "nys": "Not yet signed"
+  },
+  "B5reload.head4": {
+   "tag": "ORIG",
+   "pending": "1 pending",
+   "beak": "none",
+   "alpub": "Publish AL1",
+   "unpub": "Unpublish",
+   "signs": [
+    "— name —",
+    "— name —",
+    "— name —",
+    "— name —"
+   ],
+   "signed": "SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil",
+   "nys": "Not yet signed"
+  },
+  "B5reload.al": {
+   "line": "2 days with changes to publish",
+   "drop": {
+    "disabled": true,
+    "title": "Nothing to clear — a published day’s changes stay until you publish them or put them back"
+   },
+   "days": [
+    "Thu · 1 change · 1 input change Publish AL1",
+    "Fri · 1 change · 1 input change Publish AL1"
+   ]
+  },
+  "B6.sign": {
+   "cur": "Ace",
+   "sked": "Anvil",
+   "plan": "Anvil",
+   "appr": "Anvil"
+  },
+  "B6.al": {
+   "line": "1 day with changes to publish",
+   "drop": {
+    "disabled": true,
+    "title": "Nothing to clear — a published day’s changes stay until you publish them or put them back"
+   },
+   "days": [
+    "Thu · 1 change · 1 input change Publish AL1"
+   ]
+  },
+  "B6.head3": {
+   "tag": "ORIG",
+   "pending": "1 pending",
+   "beak": "none",
+   "alpub": "Publish AL1",
+   "unpub": "Unpublish",
+   "signs": [
+    "— name —",
+    "— name —",
+    "— name —",
+    "— name —"
+   ],
+   "signed": "SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil",
+   "nys": "Not yet signed"
+  },
+  "B6.head4": {
+   "tag": "AL1",
+   "pending": "20 changes",
+   "beak": "none",
+   "alpub": "",
+   "unpub": "Unpublish",
+   "signs": [
+    "— name —",
+    "— name —",
+    "— name —",
+    "— name —"
+   ],
+   "signed": "SIGNED AL1 CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil",
+   "nys": ""
+  },
+  "B7.unpub": {
+   "pressed": true,
+   "label": "Unpublish"
+  },
+  "B7.head3": {
+   "tag": "ORIG",
+   "pending": "1 pending",
+   "beak": "none",
+   "alpub": "Publish AL1",
+   "unpub": "Unpublish",
+   "signs": [
+    "— name —",
+    "— name —",
+    "— name —",
+    "— name —"
+   ],
+   "signed": "SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil",
+   "nys": "Not yet signed"
+  },
+  "B7.head4": {
+   "tag": "ORIG",
+   "pending": "1 pending",
+   "beak": "none",
+   "alpub": "Publish AL1",
+   "unpub": "Unpublish",
+   "signs": [
+    "— name —",
+    "— name —",
+    "— name —",
+    "— name —"
+   ],
+   "signed": "SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil",
+   "nys": "Not yet signed"
+  },
+  "B7.al": {
+   "line": "2 days with changes to publish",
+   "drop": {
+    "disabled": true,
+    "title": "Nothing to clear — a published day’s changes stay until you publish them or put them back"
+   },
+   "days": [
+    "Thu · 1 change · 1 input change Publish AL1",
+    "Fri · 1 change · 1 input change Publish AL1"
+   ]
+  },
+  "B7.list4": {
+   "tabs": [
+    "New to you 0",
+    "All changes 21",
+    "To go out · AL1 1"
+   ],
+   "lines": [
+    "Waiting to go out as",
+    "AL1",
+    "· 1 change",
+    "Piston · P6B OTHER TWO",
+    "Saber",
+    "15/7 09:00",
+    "not on the programme → under Unavailable"
+   ]
+  },
+  "B7reload.head3": {
+   "tag": "ORIG",
+   "pending": "1 pending",
+   "beak": "none",
+   "alpub": "Publish AL1",
+   "unpub": "Unpublish",
+   "signs": [
+    "— name —",
+    "— name —",
+    "— name —",
+    "— name —"
+   ],
+   "signed": "SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil",
+   "nys": "Not yet signed"
+  },
+  "B7reload.head4": {
+   "tag": "ORIG",
+   "pending": "1 pending",
+   "beak": "none",
+   "alpub": "Publish AL1",
+   "unpub": "Unpublish",
+   "signs": [
+    "— name —",
+    "— name —",
+    "— name —",
+    "— name —"
+   ],
+   "signed": "SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil",
+   "nys": "Not yet signed"
+  },
+  "B7reload.al": {
+   "line": "2 days with changes to publish",
+   "drop": {
+    "disabled": true,
+    "title": "Nothing to clear — a published day’s changes stay until you publish them or put them back"
+   },
+   "days": [
+    "Thu · 1 change · 1 input change Publish AL1",
+    "Fri · 1 change · 1 input change Publish AL1"
+   ]
+  },
+  "B8.press": "pressed",
+  "B8.dayRowsWritten": [],
+  "B8.head3": {
+   "tag": "ORIG",
+   "pending": "16 changes",
+   "beak": "none",
+   "alpub": "",
+   "unpub": "Unpublish",
+   "signs": [
+    "— name —",
+    "— name —",
+    "— name —",
+    "— name —"
+   ],
+   "signed": "SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil",
+   "nys": ""
+  },
+  "B8.head4": {
+   "tag": "ORIG",
+   "pending": "22 changes",
+   "beak": "none",
+   "alpub": "",
+   "unpub": "Unpublish",
+   "signs": [
+    "— name —",
+    "— name —",
+    "— name —",
+    "— name —"
+   ],
+   "signed": "SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil",
+   "nys": ""
+  },
+  "B8.al": {
+   "line": "No pending changes",
+   "drop": {
+    "disabled": true,
+    "title": "Nothing to clear — a published day’s changes stay until you publish them or put them back"
+   },
+   "days": []
+  },
+  "B8reload.head3": {
+   "tag": "ORIG",
+   "pending": "16 changes",
+   "beak": "none",
+   "alpub": "",
+   "unpub": "Unpublish",
+   "signs": [
+    "— name —",
+    "— name —",
+    "— name —",
+    "— name —"
+   ],
+   "signed": "SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil",
+   "nys": ""
+  },
+  "B8reload.head4": {
+   "tag": "ORIG",
+   "pending": "22 changes",
+   "beak": "none",
+   "alpub": "",
+   "unpub": "Unpublish",
+   "signs": [
+    "— name —",
+    "— name —",
+    "— name —",
+    "— name —"
+   ],
+   "signed": "SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil",
+   "nys": ""
+  },
+  "B8reload.al": {
+   "line": "No pending changes",
+   "drop": {
+    "disabled": true,
+    "title": "Nothing to clear — a published day’s changes stay until you publish them or put them back"
+   },
+   "days": []
+  },
+  "errors": []
+ }
+}

@@ -9,7 +9,7 @@ import { isSpecial } from './people'
 import { acceptInput, unacceptInput, inpKey, slotVal, txtGet, txtSet } from './slots'
 import { keyDay } from './keys'
 import { dayKeys } from './restore'
-import { SCHED, signOf, setDayApproved, publishALDay, protectedWeek, dayHasChanges, dayDiscardCount } from './publish'
+import { SCHED, signOf, setDayApproved, publishALDay, protectedWeek, dayHasChanges, dayDiscardCount, dayPendingItems, dayFilingFingerprint } from './publish'
 import { makeStandalone } from './waves'
 import { validate } from './validate'
 import { HOOKS } from './hooks'
@@ -208,28 +208,30 @@ describe('accepting a personal input', () => {
     expect(SCHED.pending).toEqual({})
   })
 
+  /* [DB-READINESS] group A, phase 6 (b): the filing is counted from the filing itself (publish.ts filingDelta against the
+     issued version's `fil`), never written as an `inp:` mark into the days it covers — the requirement these two pinned
+     (a filing after publish is an amendment; its undo is the next one; every covered day reads it) is unchanged. */
   it('filing under Unavailable after publish becomes an amendment, and undoing it becomes the next one', () => {
     const inp = findInp('Meeting')!
     sign(0); setDayApproved(0, 1)
     expect(acceptInput(0, inp, 'u')).toBe(true)
-    const filed = Object.keys(SCHED.pending)[0]
-    expect(filed).toMatch(/^inp:0\./)
+    expect(dayPendingItems(0).filter((e: any) => e.kind === 'input').length, 'the filing is one change').toBe(1)
+    expect(Object.keys(SCHED.pending).filter(k => k.startsWith('inp:')), 'and no mark is written for it').toEqual([])
     sign(0); publishALDay(0)
-    expect(SCHED.changes[filed]).toBe(1)
+    expect(dayPendingItems(0).length, 'issued').toBe(0)
     expect(unacceptInput(0, inp)).toBe(true)
-    expect(Object.keys(SCHED.pending)).toEqual([filed])
+    expect(dayPendingItems(0).filter((e: any) => e.kind === 'input').length, 'its undo is the next change').toBe(1)
   })
 
-  it('filing and unfiling a spanning input marks every loaded day it covers', () => {
+  it('filing and unfiling a spanning input: every loaded day it covers reads it, none is marked', () => {
     const inp = { person: 'waldo', date: 'Jul 13', endDate: 'Jul 15', allday: true, type: 'Meeting', remarks: '' }
     INPUTS.push(inp)
     expect(acceptInput(0, inp, 'u')).toBe(true)
-    expect(Object.keys(SCHED.pending).map(keyDay).sort()).toEqual([0, 1, 2])
-    expect(Object.keys(SCHED.pending).every(k => /^inp:\d+\./.test(k))).toBe(true)
-    SCHED.pending = {}
+    expect([0, 1, 2].map(di => dayFilingFingerprint(di)[inpId(inp)]), 'filed on each day it covers').toEqual(['u', 'u', 'u'])
+    expect(Object.keys(SCHED.pending).filter(k => k.startsWith('inp:'))).toEqual([])
     expect(unacceptInput(0, inp)).toBe(true)
-    expect(Object.keys(SCHED.pending).map(keyDay).sort()).toEqual([0, 1, 2])
-    expect(Object.keys(SCHED.pending).every(k => /^inp:\d+\./.test(k))).toBe(true)
+    expect([0, 1, 2].map(di => dayFilingFingerprint(di)[inpId(inp)]), 'taken off on each').toEqual(['r', 'r', 'r'])
+    expect(Object.keys(SCHED.pending).filter(k => k.startsWith('inp:'))).toEqual([])
   })
 
   it('keeps one amendment address when editable input details change before unfiling', () => {

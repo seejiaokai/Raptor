@@ -151,6 +151,11 @@ describe('the command gate (cmdAuthorize) — every command the app registers', 
     const types = [...m![1].matchAll(/'([^']+)'/g)].map(x => x[1]).concat(['trk.gesture'])
     expect(types.length).toBe(12)
     for (const t of types) expect(COMMAND_OPS[t], t).toBeTruthy()
+    /* its own Undo / Redo, each one restore command ([DB-READINESS] group A, phase 4.1 — P4.1-TRACKER-RESTORE) */
+    for (const t of ['tracker.undo', 'tracker.redo']) {
+      expect(src.includes(`cmdDefinePermission('${t}'`), `${t} registered`).toBe(true)
+      expect(COMMAND_OPS[t], t).toBeTruthy()
+    }
   })
   it('an unmapped type is refused', () => {
     expect(cmdAuthorize('no.such.type', actor('admin', 'stiff'))).toBe(false)
@@ -190,13 +195,20 @@ describe('the command gate (cmdAuthorize) — every command the app registers', 
     expect(cmdAuthorize('settings.accessreqs', actor('pending', undefined, 'p@mail'), { owner: 'p@mail' })).toBe(false)
   })
   it('accounts, the guest switch and every settings key are the admin\'s', () => {
+    /* the accounts and the requests are rows since [DB-READINESS] group A, phase 4.4 — written only by their intents,
+       never by a bare `settings.<key>` command */
     for (const t of ['account.add', 'account.update', 'access.approve', 'access.decline', 'guestview.set',
-      'settings.accounts', 'settings.accessreqs', 'settings.guestview', 'settings.rules',
-      /* [ACCOUNTS-NEW-PERSON] (NP8): a new person alone, with his account, by approval; the bell's seen */
-      'person.add', 'account.addNew', 'access.approveNew', 'access.seen']) {
+      'settings.guestview', 'settings.rules',
+      /* [ACCOUNTS-NEW-PERSON] (NP8): a new person alone, with his account, by approval */
+      'person.add', 'account.addNew', 'access.approveNew']) {
       expect(cmdAuthorize(t, actor('admin', 'stiff')), t).toBe(true)
       expect(cmdAuthorize(t, actor('member', 'bane')), t).toBe(false)
     }
+    /* the bell's seen: his OWN row (AccessRequestSeen, R3-04) — never another admin's, never a member's */
+    expect(cmdAuthorize('access.seen', actor('admin', 'stiff'), { owner: 'stiff' })).toBe(true)
+    expect(cmdAuthorize('access.seen', actor('admin', 'stiff'), { owner: 'bane' })).toBe(false)
+    expect(cmdAuthorize('access.seen', actor('member', 'bane'), { owner: 'bane' })).toBe(false)
+    for (const t of ['settings.accounts', 'settings.accessreqs', 'settings.changeseen']) expect(cmdAuthorize(t, actor('admin', 'stiff')), t).toBe(false)
   })
   it('the Leave War: a member\'s own bid rides the war\'s writer; deciding is the admin\'s', () => {
     expect(cmdAuthorize('lw.edit', actor('member', 'bane'))).toBe(true)

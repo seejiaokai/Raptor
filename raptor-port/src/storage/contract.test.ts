@@ -25,7 +25,7 @@ export function contractTests(name: string, make: () => Backend | Promise<Backen
     it('loadAll on an empty store returns every collection, empty', async () => {
       const b = await make()
       const snap = await b.loadAll()
-      expect(Object.keys(snap).sort()).toEqual(['inputs', 'leavewar', 'people', 'plan', 'settings', 'tracker', 'weeks'])
+      expect(Object.keys(snap).sort()).toEqual(['changes', 'inputs', 'leavewar', 'people', 'plan', 'settings', 'tracker', 'weeks'])
       for (const c of Object.values(snap)) expect(c).toEqual({})
     })
     it('put then loadAll round-trips the exact string', async () => {

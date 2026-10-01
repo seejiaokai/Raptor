@@ -31,6 +31,7 @@ import { CURWEEK } from '../engine/waves'
 import { DAYS } from '../engine/data'
 import { INPUTS, inpId, inputCoversDate } from '../engine/inputs'
 import { posKey } from '../engine/rowids'
+import { standsOn } from '../engine/overlay'
 import { dayApproved, dayPendingItems, nextSeq } from '../engine/publish'
 import { markSeen } from '../state/changes'
 import { isMember, isAdmin } from '../state/perms'
@@ -53,8 +54,10 @@ export function jumpOf(l: CLine, days: string[], pick: string | null): { keys: s
     const inp: any = INPUTS.find((x: any) => inpId(x) === l.iid)
     if (!inp) return null
     const keys: string[] = []
-    /* an accepted request: its row on the programme first (Astra DP-08), then its row under Unavailable */
-    DAYS.forEach((d: any, di: number) => (d.ground || []).forEach((g: any, ri: number) => { if (g && g.src === l.iid) keys.push(`g:${di}.${ri}`) }))
+    /* an accepted request: its row on the programme first (Astra DP-08), then its row under Unavailable. Its STANDING row
+       only — a dead kept row (a version's row on a day the request no longer covers, D363) carries its id but is not its
+       row, and a line never goes there ([DB-READINESS] phase 6 (c), the FULL check: Astra's scenario design §3 C) */
+    DAYS.forEach((d: any, di: number) => { const g = standsOn(d, l.iid, inp); const ri = g ? (d.ground || []).indexOf(g) : -1; if (ri >= 0) keys.push(`g:${di}.${ri}`) })
     /* the day it goes to is a day its row is DRAWN on now — its programme row's day, or a day its dates cover (under
        Unavailable or Personal Inputs) — the chosen day only when it is one of them: a line shown on a day by the days the
        input LEFT goes to where it is now (Astra's read of the fixes, 03); drawn on no day of this week, the line is listed,
@@ -62,7 +65,7 @@ export function jumpOf(l: CLine, days: string[], pick: string | null): { keys: s
     const on = new Set<number>()
     DAYS.forEach((d: any, di: number) => {
       if (di >= days.length) return
-      if ((d.ground || []).some((g: any) => g && g.src === l.iid) || (d.dt && inputCoversDate(inp, d.dt))) on.add(di)
+      if (standsOn(d, l.iid, inp) || (d.dt && inputCoversDate(inp, d.dt))) on.add(di)
     })
     if (!on.size) return null
     keys.push(`iu:${l.iid}`)

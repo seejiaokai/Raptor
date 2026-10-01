@@ -2809,3 +2809,40 @@ desktop off-screen side draws and prunes only while the machine is idle (`state/
 fixed 5 seconds. **Do (D87):** wait on what the prune needs — the idle signal or the window's settled state — not a fixed
 time. **Place:** test-only, low, any time.
 
+
+*Moved here 2026-10-01 by backlog-archive.mjs ([OIL-RELINK-XWEEK]). Forward facts: `raptor-port/docs/data-model.md`.*
+
+### [OIL-RELINK-XWEEK] A request landed in a stashed week keeps the OLD man, and can land twice — OPEN, 22 Sep 26
+
+**Closed by `[DB-READINESS]` group A phase 6 (c) v3 (1 Oct 26, branch `claude/db-readiness-p6c-holder-base`):** a request's row on ANY week is worked out from the request whenever that week is read (`raptor-port/src/engine/overlay.ts viewOfWeek` — re-made for the new man, taken away when the request moved; one row per request across weeks through the standing-row finder, `engine/weekstash.ts rowElsewhere`), so a hand-over made from another week draws the new man there and a request moved between weeks never lands twice. Pinned: `raptor-port/src/state/p6c-requestonread.test.ts` ("a request whose row is on a saved week NOT on screen…", "a request moved from week 2 to week 1…"). Home: `raptor-port/docs/data-model.md` §9 rule 9 (built 1 Oct 26).
+
+
+**Pre-existing, not OIL-caused, and out of scope for this branch** (Fable F8). Two limits that job
+2's "one row" premise stands on:
+
+- A person change made while the anchor's week is STASHED cannot reach the row. The relink finds
+  nothing to unaccept, toasts "moved outside the programmed week" and drops the landing mark; when
+  that week loads, the row is re-found and re-marked — but its `who` is still the OLD man. The money
+  goes to the new man through the claim while the programme draws the old one.
+- The duplicate-landing guard scans LOADED days only, so a request landed in week B whose start is
+  then moved into week A gets a SECOND row when week A loads. The two rows can disagree (one
+  cancelled, one live), and the standing reads whichever week is loaded.
+
+The stash-aware read built for `[OIL-XWEEK-ELSEWHERE]` is the same seam a stash-aware relink would
+use. **Context.** `…/specs/2026-09-22-oil-jobs12-codereview-fable.md` §3 F8.
+
+
+*Moved here 2026-10-01 by backlog-archive.mjs ([REQ-MOVE-EXTRAS]). Forward facts: `raptor-port/docs/engine-rules.md`.*
+
+### [REQ-MOVE-EXTRAS] A request moved to another day: should the scheduler's second man go with it? — HIS ANSWER (filed 1 Oct 26)
+Found by the FULL check of `[DB-READINESS]` phase 6 (c) (walk X, `raptor-port/docs/handpass/2026-10-01-dbr-phase6c-check.md`
+W4; plan §8 item 14): a member re-dates his request from Thursday to Friday — its Friday row comes as filed, and a second
+man, a red box or a CX the scheduler put on Thursday's row stay with Thursday's stored row (back if the request returns).
+The build before carried them to Friday. Under the day lock (D450) a member's command cannot write Friday, and carrying them
+on read from Thursday's row would last only until Thursday's holder next saved Thursday — then they would vanish from
+Friday by themselves. **Recommended: leave it** — the scheduler re-adds on the new day what still applies. If he wants them
+to follow, it is a design change (a hidden "moved" record on the old day, read by the new day's landing) — for later, with
+the lock's build. **Place:** his answer at his look at phase 6 (c); nothing is built meanwhile.
+**CLOSED 1 Oct 26 — his answer "1" (D468, `.claude/rules/decisions/scheduler.md`): leave it.** Nothing to build; the rule
+lives in `raptor-port/docs/engine-rules.md` (the landing paragraph) and the phase 6 plan §8 item 14.
+

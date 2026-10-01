@@ -110,7 +110,7 @@ describe('scheduler write() — foreign-week refusal (R2-011) + issued gate (C7)
   })
 
   it('refuses a foreign-week write for every week-scoped collection', () => {
-    for (const [coll, id] of [['days', 'ZZZZ#0'], ['sched.book', 'ZZZZ'], ['sched.mutes', 'ZZZZ'], ['sched.orig', 'ZZZZ:0'], ['sched.als', 'ZZZZ:0']] as const) {
+    for (const [coll, id] of [['days', 'ZZZZ#0'], ['sched.book', 'ZZZZ#0'], ['sched.mutes', 'ZZZZ#0'], ['sched.week', 'ZZZZ'], ['sched.issuance', 'ZZZZ:2026-07-13#0~0'], ['sched.retraction', 'ZZZZ:2026-07-13#0~0']] as const) {
       const r = restore(schedStore, [{ collection: coll as any, id, value: {}, op: 'put' }], { allowIssued: true })
       expect(isOk(r)).toBe(false)
       expect((r as any).reason).toBe('refused')
@@ -118,11 +118,12 @@ describe('scheduler write() — foreign-week refusal (R2-011) + issued gate (C7)
   })
 
   it('refuses an issued record without allowIssued, accepts it with', () => {
-    const orig = [{ collection: 'sched.orig' as const, id: `${CURWEEK}:0`, value: { id: 'iso#0', frozen: true }, op: 'put' as const }]
+    const v = '2026-07-13#0'                             // Monday's Original of the loaded week
+    const orig = [{ collection: 'sched.issuance' as const, id: `${CURWEEK}:${v}~0`, value: { id: v, frozen: true }, op: 'put' as const }]
     expect((restore(schedStore, orig) as any).reason).toBe('refused')
     const r = restore(schedStore, orig, { allowIssued: true })
     expect(isOk(r)).toBe(true)
-    expect((SCHED.orig as any)['0']).toEqual({ id: 'iso#0', frozen: true })
+    expect((SCHED.orig as any)['0']).toEqual({ id: v, frozen: true })
   })
 })
 
@@ -156,17 +157,15 @@ describe('two-store restore (scheduler + LW in one reducer) runs NO reconciler b
   })
 })
 
-describe('scheduler write() — INPUTS order round-trips via inputs/__order (CMDLF-010)', () => {
-  it('records() emits the order record, and restoring a sequence re-sorts live INPUTS', () => {
-    // the order is a first-class record now (not implicit array position)
-    const ord = schedStore.records().get('inputs/__order')
-    expect(ord && (ord as any).collection).toBe('inputs')
-    expect(Array.isArray((ord as any).value)).toBe(true)
-    // a scrambled live order (as a delete→restore that pushed a row to the end
-    // would leave it) is recovered by restoring the recorded sequence
+/* The order rode ONE record of every id (`inputs/__order`, CMDLF-010) until [DB-READINESS] group A, phase 2: it rides each
+   request as its own place (`ord`, state/ord.ts), so a restore puts a request back where it stood and a new request on top
+   changes one record, never a list. */
+describe('scheduler write() — the INPUTS order round-trips on each request (CMDLF-010, phase 2)', () => {
+  it('no whole-order record; a restored request goes back to its place by its own ord', () => {
+    expect(schedStore.records().has('inputs/__order')).toBe(false)
     INPUTS.length = 0
-    INPUTS.push({ iid: 'iA' } as any, { iid: 'iC' } as any, { iid: 'iB' } as any)
-    restore(schedStore, [{ collection: 'inputs', id: '__order', value: ['iA', 'iB', 'iC'] } as any])
+    INPUTS.push({ iid: 'iA', ord: 1 } as any, { iid: 'iC', ord: 3 } as any)
+    restore(schedStore, [{ collection: 'inputs', id: 'iB', value: { iid: 'iB', ord: 2 }, op: 'put' } as any])
     expect(INPUTS.map((x: any) => x.iid)).toEqual(['iA', 'iB', 'iC'])
   })
 })
