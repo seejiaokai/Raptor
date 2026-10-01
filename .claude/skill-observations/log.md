@@ -2307,3 +2307,18 @@ restore — repeatable, all-or-nothing, and safe for files whose bytes (line end
 **Suggested improvement:** In find-skills, before any install / fuse / skip recommendation: fetch the skill's own SKILL.md (and note which bundled files were NOT read), record its licence, and compare it line by line with the installed skill that covers the same step — naming clashes, not only overlaps. A verdict given before that read is labelled provisional.
 
 **Principle:** A description of a skill is marketing; the skill is its text. Judge fit, overlap and conflict from the source, and say which parts of the bundle were not read.
+
+### Observation 420: The handoff was read before the checkout was brought up to date
+
+**Status:** OPEN
+**Date:** 2026-10-03
+**Session context:** A planning and filing chat opened on the main checkout; the owner's opening line named a backlog item and a ruling (D490) the local files did not have.
+**Skill:** session-handoff
+**Type:** internal
+**Phase/Area:** The ready-to-paste opening line / what a new chat does first
+
+**Issue:** The new chat read `HANDOFF.md` and searched the backlog first, found neither the item nor the ruling, and only then fetched: the main checkout was nine commits behind `origin/main` (the previous chat's work had merged through a pull request from a worktree). The first read was of a stale handoff block and had to be repeated.
+
+**Suggested improvement:** In session-handoff, the opening line it gives the owner starts with "bring the checkout up to date (`git pull --ff-only`), then read HANDOFF.md" whenever the next chat starts on `main` after a merge; `HANDOFF.md`'s head already says "git fetch before acting on a block" — say it before READING too.
+
+**Principle:** A handoff kept in the repo is only as current as the checkout that reads it: update first, read second.

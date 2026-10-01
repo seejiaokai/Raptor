@@ -1532,6 +1532,10 @@ answers, no check resizes a button (D487). Both Fable and Astra
 read the changed guide before he approves it (D70); copied upstream text gets its credit line. **Context:**
 `raptor-port/docs/superpowers/specs/2026-10-02-workflow-skills-fusion.md` §1, §3–§5. **Place — D486: after the reset of his weekly
 allowance (Monday 5 Oct 26, 19:00, D484), a fresh chat on its own branch.**
+**3 Oct 26 — he sent the whole `mattpocock/skills` collection and asked whether to implement it:** read at the source; the
+agent's verdict is not whole (D486's reasoning), with three small pieces PROPOSED to ride with this job — a word list (screen
+name, meaning, code name), two lines for the debugging guide, one line for `[CODE-TIDY-AUDIT]`'s brief. **Waiting on his yes or
+no** — the spec's §8.
 
 ### [CODE-TIDY-AUDIT] One tidiness audit of the code before the database step — a report for him, nothing restructured on its word (D486, 2 Oct 26)
 The "thermo-nuclear" rubric, read at its source, is a reviewer's checklist for ONE change; the audit is our adaptation of it to

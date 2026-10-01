@@ -183,6 +183,38 @@ and the smallest safe fix; a style preference or a guess is not a finding. It cu
 "what counts as a finding" rule are APPROVED — what goes in; the wording is still read by Fable and Astra and approved by him
 (D70). The evidence rules (§5) are not added. §3 and §4 above are as first proposed: build from this section and Astra's report.
 
+## 8. The rest of `mattpocock/skills`, read 3 Oct 26 — PROPOSALS, not ruled until he says so
+
+He sent the whole collection (github.com/mattpocock/skills — MIT, about 30 skills) and asked whether to implement it. Read at
+the source that day, the skill's own text: `grilling`, `grill-me`, `grill-with-docs`, `domain-modeling`, `to-spec`,
+`to-tickets`, `triage`, `diagnosing-bugs`, `improve-codebase-architecture`, `wait-what`, `handoff`, `retro`,
+`setup-matt-pocock-skills`, `implement`, `code-review`, the git guard's script, and the head of `to-questionnaire`. **NOT
+read:** `tdd`, `codebase-design`, `prototype`, `research`, `wizard`, `wayfinder`, `teach`, `writing-for-agents`, `pr`,
+`implement-spec`, `ask-matt`, the in-progress and deprecated folders, and each skill's side files (the glossary and ADR
+formats, the triage brief) — read one before fusing anything from it.
+
+**The host's verdict: not installed whole — D486's reasoning holds for the whole collection.** It is built around three things
+this repo already has in a stricter form, and installing it would make a second of each: an issue tracker with labels
+(`to-spec`, `to-tickets`, `triage`, `wayfinder`, the setup skill) against the ONE backlog; a handoff written to a temporary
+folder against `HANDOFF.md`; decision records (ADRs) against the rulings. Its `implement` and `code-review` end a build on a
+code read and the tests — exactly what the bug-check order says is not a bug check.
+
+**Proposed to take — three small pieces, documents only, riding with `[SKILL-FUSION]`:**
+1. **A word list** (their `GLOSSARY.md`, from `domain-modeling`): one page — the name a thing has on screen, what it means in
+   a sentence, and the name it has in the code. Theirs forbids the code name; ours keeps it, because the translation is the
+   point here: it is what the plain-language rule keeps failing at, and what a brief to Astra needs. A reference doc under
+   `raptor-port/docs/`, searched when writing to him or briefing a reviewer — never loaded in every chat. A term settled in a
+   planning round is added the moment it is settled.
+2. **Two lines for the debugging guide** (`.claude/skills/systematic-debugging/SKILL.md`, from `diagnosing-bugs`): before any
+   theory, build ONE quick check that fails on this exact fault, and name it; and write three to five ranked guesses, each
+   with what it predicts, before testing any — ours says "form a single hypothesis", which anchors on the first idea.
+3. **One line for `[CODE-TIDY-AUDIT]`'s brief** (from `improve-codebase-architecture`): the deletion test — would removing
+   this piece gather the complexity in one place, or only move it; report it only if it gathers.
+
+**Looked at, not proposed:** the git guard refuses every push, which breaks "push a branch freely" (D60); `wait-what` is one
+sentence the plain-language rule already says; `retro` is what the task observer does; `to-questionnaire` is a fair shape for
+`[IT-QUESTIONS]` and needs no install to copy.
+
 **Other corrections from the review:** the source asks for equal-width digits only on numbers that CHANGE (extending it to
 every column was this spec's); APEX has a fourth label, "untrusted", that §5 left out. Every measurement in §2 was re-checked
 by Astra and is right.
