@@ -162,13 +162,18 @@ export function AvailWindow() {
        owner's own case. */
     const flagWorld = !ver ? 'live' : ofw ? 'issued' : 'none'
     let evsById: Record<string, any[]> | null = null
+    /* …and the RECORD's own sim brief / debrief windows, from the same rebuild ([CROWD-SIM-BRIEF], phase 7): the issued
+       face flags a man's sim brief as the day went out, never today's — one collected day, both halves */
+    let simw: any[] | undefined
     if (flagWorld === 'issued') {
       evsById = {}
-      for (const x of ((collectEvents()[di] || {}).events || [])) (evsById[x.id] = evsById[x.id] || []).push(x)
+      const rec: any = collectEvents()[di] || {}
+      for (const x of (rec.events || [])) (evsById[x.id] = evsById[x.id] || []).push(x)
+      simw = rec.simwin || []
     }
     const own = flagWorld !== 'none' && lbl.found
     const flagsFor = (id: string) => [
-      ...(own ? crowdClashes(di, id, lbl.s, lbl.e, lbl.name, evsById ? (evsById[id] || []) : undefined) : []),
+      ...(own ? crowdClashes(di, id, lbl.s, lbl.e, lbl.name, evsById ? (evsById[id] || []) : undefined, simw) : []),
       ...personWarnMsgs(di, id),
     ]
     const worst: Record<string, { sev: string, msg: string } | undefined> = {}

@@ -29,6 +29,7 @@ import { initStore, setSession, notify } from '../state/store'
 import * as view from '../state/view'
 import { DAYS } from '../engine/data'
 import { boardHTML } from './board'
+import { setSlotVal } from '../engine/slots'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
@@ -118,5 +119,48 @@ describe('what it does NOT do', () => {
     const c = cellOf(boardHTML(MON, true), 's:0.oft.0.+')
     expect(c, 'a frozen preview has no drop targets to fill').toBeFalsy()
     expect(el(boardHTML(MON, true)).querySelectorAll('.sb-slot.empty').length, 'none anywhere').toBe(0)
+  })
+})
+
+/* [OIL-READ-LEFTOVERS] 2 (Fable F4, 22 Sep 26; [DB-READINESS] group A, phase 7) — THE SECOND SPARE SEAT MUST NOT LEAVE A
+   HOLE. A full row opens a spare PAIR, and a drop on the second of the pair wrote past the end of the saved list, leaving
+   a gap that is saved as `null` inside a list declared as text (engine/schema.ts `pax?: string[]`). Readers guard it; the
+   saved shape was wrong, in every stored day, plan and issued version that held such a row. The writer pads instead. */
+describe('a drop on the SECOND spare seat leaves no hole in the saved list', () => {
+  const spareKeys = (fill: string) =>
+    ([...cellOf(boardHTML(MON), fill)!.querySelectorAll('.sb-slot.empty')] as HTMLElement[]).map(s => s.getAttribute('data-slot') || '')
+
+  it('AMT passengers: every entry is text, the skipped seat is blank, the man sits where he was dropped', () => {
+    const fill = amt(['bane', 'stiff'])
+    const keys = spareKeys(fill)
+    expect(keys.length, 'a full row opens a spare pair').toBe(2)
+    expect(setSlotVal(keys[1], 'wolf')).toBe(true)
+    const pax = (DAYS[MON] as any).sims.amt[0].pax
+    expect(pax.length).toBe(4)
+    expect(Object.keys(pax).length, 'no hole: every index is present').toBe(4)
+    expect(pax.every((v: any) => typeof v === 'string'), JSON.stringify(pax)).toBe(true)
+    expect(pax[2]).toBe('')
+    expect(pax[3]).toBe('wolf')
+    expect(JSON.stringify(pax), 'and it saves with no null').not.toContain('null')
+    /* the skipped seat is still offered as a seat */
+    expect(spareKeys(fill).some(k => /\.pax\.2$/.test(k)), 'the first spare is still a door').toBe(true)
+  })
+
+  it('OFT extras: the same', () => {
+    const fill = oft(['wolf', 'rocky'])
+    const keys = spareKeys(fill)
+    expect(keys.length).toBe(2)
+    expect(setSlotVal(keys[1], 'plasma')).toBe(true)
+    const more = (DAYS[MON] as any).sims.oft[0].more
+    expect(Object.keys(more).length, 'no hole').toBe(more.length)
+    expect(more.every((v: any) => typeof v === 'string'), JSON.stringify(more)).toBe(true)
+    expect(more[more.length - 1]).toBe('plasma')
+    expect(JSON.stringify(more)).not.toContain('null')
+  })
+
+  it('a drop on the FIRST spare is unchanged — nothing padded, nothing moved', () => {
+    const fill = amt(['bane', 'stiff'])
+    expect(setSlotVal(spareKeys(fill)[0], 'wolf')).toBe(true)
+    expect((DAYS[MON] as any).sims.amt[0].pax).toEqual(['bane', 'stiff', 'wolf'])
   })
 })

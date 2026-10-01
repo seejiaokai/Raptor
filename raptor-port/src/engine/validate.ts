@@ -115,6 +115,11 @@ export function restClear(di:any,id:any){const m=REST[di]; const v=m&&m[id]; ret
    running collectEvents() again for every name in the palette. SC SPARE lines
    are absent here exactly as they are absent from the engine. */
 export let EVD:any={};
+/* …and the day's SIM brief / debrief windows, published the same way ([CROWD-SIM-BRIEF], phase 7): events.ts builds
+   them (`simwin` — one per OFT EP line, one for the AMT block, each naming the men on it) and until now only the
+   warning pass below could read them, so the ALL AVAIL window could not ask whether an event sits inside a crowd
+   man's own sim brief (crowdClashes). Reassigned by every validate(), like EVD — re-read, never cache. */
+export let SIMW:any={};
 /* ONE PERSON'S WORKING DAY, out of the events they are on that day — the ONE
    definition of it (extracted 20 Aug 26 for the Insights work-hours section;
    the long-work-day note below is its other reader).
@@ -170,6 +175,15 @@ export const noBriefSays=(lg:any,what:string)=>{const [bs,bt]=legBriefWin(lg)
 export const debriefSays=(lg:any,what:string)=>{const [ls,de]=legDebriefWin(lg)
   return `Not enough time to attend the ${lg.label} debrief — ${what} sits inside ${hm24(ls)}–${hm24(de)} (land + ${lgT(VCONF.debrief)})`}
 
+/* THE SAME FOR A SIM ([CROWD-SIM-BRIEF], phase 7): the two sentences the pass below used to build inline, lifted so the
+   ALL AVAIL window says them in the list's own words. `sw` is one of the day's sim windows (events.ts simwin). The
+   warning list is byte-identical — the reference comparison (tfin.js 728/0) is the proof. */
+export const simBriefSays=(sw:any,what:string)=>`No time for the ${sw.label} brief — ${what} sits inside ${hm24(sw.bs)}–${hm24(sw.be)}`
+export const simDebriefSays=(sw:any,what:string)=>`No time for the ${sw.label} debrief — ${what} sits inside ${hm24(sw.ds)}–${hm24(sw.de)}`
+/* does this sim window carry a brief / a debrief that measures anything — the pass's own two tests, one body */
+export const simHasBrief=(sw:any)=>sw.bs!=null&&sw.be!=null&&sw.be>sw.bs
+export const simHasDebrief=(sw:any)=>sw.ds!=null&&sw.de!=null&&sw.de>sw.ds
+
 /** [ALL-AVAIL-WINDOW] — DOES AN EVENT HE STANDS BEHIND A PLACEHOLDER ON SIT
  *  INSIDE ONE OF HIS OWN FLYING LEGS' BRIEF OR DEBRIEF? (owner, D36 + D38.)
  *
@@ -187,9 +201,9 @@ export const debriefSays=(lg:any,what:string)=>{const [ls,de]=legDebriefWin(lg)
  *  the same rule about that one event, for that one man, without adding
  *  anything to the warning list — which stays byte-identical to the reference.
  *
- *  Flight brief and debrief only. The SIM brief/debrief windows are built
- *  inside the pass from the day's private sim table and are not reachable from
- *  here; that half is filed in OUTSTANDING.md rather than guessed at.
+ *  AND HIS SIM BRIEF AND DEBRIEF ([CROWD-SIM-BRIEF], phase 7): a man on the OFT at 10:00 is busy for the box and
+ *  free for the quarter-hour before it, so he stands behind a 09:50 event — flagged with the sim brief, in the
+ *  warning list's own words (simBriefSays / simDebriefSays). The day's sim windows are SIMW, published beside EVD.
  *
  *  WHICH WORLD'S EVENTS. By default the LIVE day's (EVD) — the working copy.
  *  A caller reading an ISSUED face hands in that version's own events (`evs`,
@@ -200,8 +214,11 @@ export const debriefSays=(lg:any,what:string)=>{const [ls,de]=legDebriefWin(lg)
  *  is no red "booked elsewhere" half here any more. It was written for exactly
  *  that issued case; on the working copy it could never fire, because the crowd
  *  is resolved with this same day's `personBusy` and already leaves every busy
- *  man out. A check that cannot fire is a comment that vouches. */
-export function crowdClashes(di:any,id:any,s:number|null,e:number|null,label:string,evs?:any[]):{sev:string,msg:string}[]{
+ *  man out. A check that cannot fire is a comment that vouches.
+ *
+ *  `simw` is the sim half of the same choice: the day's sim windows of the world being read — the live day's (SIMW)
+ *  by default, the RECORD's own when an issued face hands them in with `evs` (an empty list is an answer). */
+export function crowdClashes(di:any,id:any,s:number|null,e:number|null,label:string,evs?:any[],simw?:any[]):{sev:string,msg:string}[]{
   const p=PEOPLE[id]
   /* ground crew carry no flight brief of their own to lose — the same
      exemption the pass above makes */
@@ -211,6 +228,10 @@ export function crowdClashes(di:any,id:any,s:number|null,e:number|null,label:str
     const [bs,bt]=legBriefWin(lg), [ls,de]=legDebriefWin(lg);
     if(bs!=null&&bt!=null&&overlap(s,e,bs,bt))out.push({sev:'adv',msg:noBriefSays(lg,label)});
     if(ls!=null&&overlap(s,e,ls,de))out.push({sev:'adv',msg:debriefSays(lg,label)});
+  });
+  (simw||SIMW[di]||[]).forEach((sw:any)=>{ if(!sw||(sw.ids||[]).indexOf(id)<0)return;
+    if(simHasBrief(sw)&&overlap(s,e,sw.bs,sw.be))out.push({sev:'adv',msg:simBriefSays(sw,label)});
+    if(simHasDebrief(sw)&&overlap(s,e,sw.ds,sw.de))out.push({sev:'adv',msg:simDebriefSays(sw,label)});
   });
   return out;
 }
@@ -245,7 +266,7 @@ export function fltNoLen(f:any):boolean{
 export const FLT_NO_LEN_SAYS=(st:any,sa?:any)=>`takes off and lands at the same time (${hm24(st)}) — one of the two is wrong; ${sa?'a shift with no length earns nobody any OIL until it is fixed':'the day still earns from the report and debrief'}`;
 function validateCore(){
   const ev=collectEvents(), all:any[]=[], byDay:any[]=[], sev:any={}, chip:any={}, dash:any={}, trace:any={};
-  REST={}; EVD={};
+  REST={}; EVD={}; SIMW={};
   /* EACH MARK ALSO FILED BY ITS CLASS ([LEAVE-LATE-PUBLISHED], D184/D185, 26 Sep 26): a published face shows the rings
      and flags it went out with, except those raised by a LIVE_ON_FACE warning, which it takes from today. A ring is the
      worst of a man's warnings, so it cannot be split afterwards — every mark is written to the day's whole map (what
@@ -559,6 +580,7 @@ function validateCore(){
     const di=day.di, ws:any[]=[], seen=new Set();
     /* publish this day's events for the crew picker (see dayEvents) */
     const evd:any=EVD[di]={}; day.events.forEach((e:any)=>{(evd[e.id]=evd[e.id]||[]).push(e);});
+    SIMW[di]=day.simwin||[];
     /* the same rule can fire off two legs of the same sortie pair, so identical
        rows are collapsed rather than printed twice. */
     /* key = the slot-key of the FIRST item the message names, so a click on the
@@ -892,13 +914,13 @@ function validateCore(){
       const mine=(byE[id]||[]);
       const hits=(s:any,e:any)=>mine.filter((o:any)=>overlap(s,e,o.s,o.e)).map((o:any)=>o.label)
         .concat(timedInput.filter((i:any)=>i.id===id&&overlap(s,e,i.s,i.e)).map((i:any)=>i.type));
-      if(sw.bs!=null&&sw.be!=null&&sw.be>sw.bs){ const h=hits(sw.bs,sw.be);
+      if(simHasBrief(sw)){ const h=hits(sw.bs,sw.be);
         /* amber like NO_BRIEF (owner, 4 Aug 26) — same rule, sim flavour */
         if(h.length){markChip(di,id,'SB');markRing(di,id,'adv');
-          add('adv','SIM_BRIEF',[id],`No time for the ${sw.label} brief — ${h.join(', ')} sits inside ${hm24(sw.bs)}–${hm24(sw.be)}`,sw.key);} }
-      if(sw.ds!=null&&sw.de!=null&&sw.de>sw.ds){ const h=hits(sw.ds,sw.de);
+          add('adv','SIM_BRIEF',[id],simBriefSays(sw,h.join(', ')),sw.key);} }
+      if(simHasDebrief(sw)){ const h=hits(sw.ds,sw.de);
         if(h.length){markChip(di,id,'SD');markRing(di,id,'adv');
-          add('adv','SIM_DEBRIEF',[id],`No time for the ${sw.label} debrief — ${h.join(', ')} sits inside ${hm24(sw.ds)}–${hm24(sw.de)}`,sw.key);} }
+          add('adv','SIM_DEBRIEF',[id],simDebriefSays(sw,h.join(', ')),sw.key);} }
     }));
     /* ---- double-turn summary --------------------------------------------
        One line at the head of the day telling the next scheduler how many
@@ -1599,8 +1621,8 @@ function withIssuedWeek(fn:any){
 /* the complete set of module state validateCore() reassigns — snapshotted before
    the OFFICIAL run and restored after, so WORKING's globals (which every edit
    surface reads) survive the second run untouched. */
-function snapGlobals(){ return {WARN,REST,EVD,RUNLEN,RUNSEED,NEXTON,EVDAYS,PREVSUN,NEXTMON,CREWREST_BODY,XD_CACHE}; }
-function restoreGlobals(g:any){ WARN=g.WARN;REST=g.REST;EVD=g.EVD;RUNLEN=g.RUNLEN;RUNSEED=g.RUNSEED;NEXTON=g.NEXTON;EVDAYS=g.EVDAYS;PREVSUN=g.PREVSUN;NEXTMON=g.NEXTMON;CREWREST_BODY=g.CREWREST_BODY;XD_CACHE=g.XD_CACHE; }
+function snapGlobals(){ return {WARN,REST,EVD,SIMW,RUNLEN,RUNSEED,NEXTON,EVDAYS,PREVSUN,NEXTMON,CREWREST_BODY,XD_CACHE}; }
+function restoreGlobals(g:any){ WARN=g.WARN;REST=g.REST;EVD=g.EVD;SIMW=g.SIMW;RUNLEN=g.RUNLEN;RUNSEED=g.RUNSEED;NEXTON=g.NEXTON;EVDAYS=g.EVDAYS;PREVSUN=g.PREVSUN;NEXTMON=g.NEXTMON;CREWREST_BODY=g.CREWREST_BODY;XD_CACHE=g.XD_CACHE; }
 export const sevOf=(di:any,id:any)=>WARN.sev[di]&&WARN.sev[di][id];
 export const chipOf=(di:any,id:any)=>WARN.chip&&WARN.chip[di]&&WARN.chip[di][id];
 /* the ring STROKE, published per person like the ring colour above it: true

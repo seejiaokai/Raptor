@@ -155,7 +155,11 @@ export function storesLoad() {
     seen.add(k)
     out.push([k, lab])
   }
-  STORE_CFG = out.length ? out : STORE_STD.map(p => [p[0], p[1]])
+  /* A STORED EMPTY LIST IS A DECISION ([STORE-READER-SWEEP], [DB-READINESS] phase 7): the list's own ✕ can remove every
+     store, storesSave writes `[]`, and reading that as "nothing saved" put the standard six back at the next load.
+     Empty-because-every-row-was-bad still falls back — that is damage, not a decision (the Leave War's
+     readManningRules draws the same line). */
+  STORE_CFG = out.length || (Array.isArray(raw) && raw.length === 0) ? out : STORE_STD.map(p => [p[0], p[1]])
 }
 
 export function storesReset() {

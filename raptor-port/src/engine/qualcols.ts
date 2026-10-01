@@ -73,7 +73,10 @@ const sameCols = (a: readonly QualCol[], b: readonly QualCol[]) =>
 export function qualColsLoad(): void {
   const raw = store.get('qualcols', null)
   cols = DEFAULT_QUAL_COLS
-  if (!Array.isArray(raw) || !raw.length) return
+  if (!Array.isArray(raw)) return
+  /* a stored EMPTY list is a decision — the Quals page's column delete has no last-column guard, and `[]` is what it
+     writes — so it reads back empty, not as the default ten ([STORE-READER-SWEEP], [DB-READINESS] phase 7) */
+  if (!raw.length) { cols = []; return }
   const clean: QualCol[] = []
   for (const c of raw) {
     if (!c || typeof c !== 'object' || typeof c.k !== 'string' || typeof c.h !== 'string' || !c.k) return

@@ -61,6 +61,11 @@ export interface TeamSlot {
  *  every subset of slots (2^n), and no real crew combination needs more. */
 export const MAX_TEAM_SLOTS = 6
 
+/** The most counters the app keeps. ONE number for the two ends ([STORE-READER-SWEEP], [DB-READINESS] phase 7): the
+ *  store's reader refuses a longer list as damage and falls back to the built-in set, so the writer must never save
+ *  one — the 61st counter used to save, and the next reload replaced every counter the squadron had built. */
+export const MAX_MANNING_RULES = 60
+
 export type RuleCount =
   /** Sum the availability of everyone matching the filter. */
   | { kind: 'people'; filter: CrewFilter }

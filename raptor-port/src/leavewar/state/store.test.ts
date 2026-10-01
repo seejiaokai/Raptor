@@ -2,7 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import {
   advanceStage, getState, getVersion, initStore, lwCanRedo, lwCanUndo, lwRedo, lwUndo, setBidState, setCell, createWar, selectWar, setRole, setBidWindow, setCellRange, setDayEvent, setDayEventRange, addEventBand, removeEventBand, moveEvent, moveEventProblem, addEventType, grantOil, grantTo, reasonRequired, HALF_STEP_MSG, setDayAward, awardsOnDay, updateLedgerEntry, removeLedgerEntry, setOilPolicy, setBalance, figureCtxOf, updateEventType, removeEventType, resetEventTypes, addEventRow, removeEventRow, eventRowUsed, MAX_EVENT_ROWS, setManningThreshold, resetManningThreshold, saveManningRule, deleteManningRule, resetManningRules, setQualCatalog, orderedManningIds, moveManningRow, toggleManningRow, setPeople, clearBidWindow, reopenStage, subscribe, setCells, clearCells, setBidStates, moveCells, movableCells, moveProblem, setViewer,
 } from './store'
-import { FIGURES, figureParts, makeWar, seedRequirements, type CounterName } from '../engine'
+import { FIGURES, figureParts, makeWar, seedRequirements, MAX_MANNING_RULES, type CounterName } from '../engine'
 import { balanceOf, figureLines } from '../engine/counters'
 import { localBackend, memoryBackend } from './storage'
 import { fileAbsence } from '../testkit'
@@ -1635,6 +1635,26 @@ describe('custom manning counters', () => {
     legacy.write('manningthresh', JSON.stringify({ ip: { amber: 9, red: 8 } }))
     initStore(legacy)
     expect(getState().requirements.default.rules.find(r => r.id === 'ip')!.threshold).toEqual({ amber: 4, red: 3 })
+  })
+
+  /* [STORE-READER-SWEEP] ([DB-READINESS] group A, phase 7): the reader refuses a list longer than MAX_MANNING_RULES — its
+     guard against a damaged store — and the writer had no limit at all, so the 61st counter saved and the next reload
+     put the built-in set back over every counter the squadron had built. The writer now keeps the reader's limit. */
+  it('the list is full at the limit the reload keeps — one more is refused, and a reload keeps them all', () => {
+    const backend = memoryBackend()
+    initStore(backend)
+    setRole('admin')
+    let n = getState().requirements.default.rules.length
+    for (let i = 0; n < MAX_MANNING_RULES; i++, n++)
+      expect(saveManningRule({ ...nvgRule(), id: `extra-${i}`, label: `EXTRA ${i}` }), `counter ${n + 1}`).toBe(true)
+    expect(getState().requirements.default.rules.length).toBe(MAX_MANNING_RULES)
+    expect(saveManningRule({ ...nvgRule(), id: 'one-too-many', label: 'ONE TOO MANY' }), 'a new counter past the limit').toBe(false)
+    expect(saveManningRule({ ...nvgRule(), id: 'extra-0', label: 'RENAMED' }), 'reworking one already there still saves').toBe(true)
+    initStore(backend)
+    const after = getState().requirements.default.rules
+    expect(after.length, 'the squadron\'s own counters, not the built-in set').toBe(MAX_MANNING_RULES)
+    expect(after.find(r => r.id === 'extra-0')!.label).toBe('RENAMED')
+    expect(after.some(r => r.id === 'one-too-many')).toBe(false)
   })
 
   it('deleting EVERY counter is a decision that survives a reload — the seed does not resurrect', () => {

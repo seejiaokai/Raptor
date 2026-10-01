@@ -12,6 +12,7 @@ import {
   ackReplacement, advanceStage, awardsIn, cellProblem, getState, setBidState, initStore as lwInitStore, lwEditLists, lwHistInit, rawState, setCell, setCells, clearCells, setBidStates, setDayAward, setPeople, setRole, setViewer,
 } from './state/store'
 import { memoryBackend } from './state/storage'
+import { MAX_CARRIED_REMARK } from './engine/warrecs'
 import { wireLeaveWarSync, sliceInput, syncAbsences } from './sync'
 import { globalRedo, globalUndo } from '../undo'
 import { _resetTimeline } from '../undo/timeline'
@@ -275,6 +276,31 @@ describe('a cut leave says its own last day (AB3)', () => {
     expect(sliceInput(row, '2026-02-09', '2026-02-10', true).remarks).toBe('till 10 Feb Bali')
     expect(sliceInput(row, '2026-02-12', '2026-02-12', false).remarks).toBe('till 12 Feb Bali')
     expect(sliceInput({ ...row, remarks: 'on 9 Feb' }, '2026-02-16', '2026-02-16', false).remarks).toBe('on 16 Feb')
+  })
+})
+
+/* A REMARK CARRIED BACK ONTO A REQUEST IS KEPT AT THE LENGTH A RELOAD KEEPS ([STORE-READER-SWEEP], [DB-READINESS] group
+   A, phase 7). Approving a bid writes its remark onto the leave WITH its date ("… on 18 Feb"), which can carry a
+   200-letter remark past 200; taking the approval back stored that whole text on the request, and the store's reader
+   cuts a carried remark at MAX_CARRIED_REMARK — so the record in memory and the record after a reload differed, and the
+   date came back cut mid-word. The writer now keeps the reader's length. */
+describe('a carried remark is stored at the length a reload keeps', () => {
+  it('approve → take back → approve → take back: the request never holds more than the reader keeps', () => {
+    setRole('admin')
+    const cell = [{ personId: 'ammo', date: '2026-02-18' }]
+    setCells(cell, 'LL')
+    advanceStage()
+    setBidStates(cell, 'approved')                             // the war approves: a leave on the Inputs page
+    /* its remark typed to the box's limit on the Inputs page (the box holds 200 letters) */
+    expect(writeInputs(() => { (rowsOf('ammo', 'LL')[0] as any).remarks = 'B'.repeat(200) })).toBe(true)
+    setBidStates(cell, 'pending')                              // taken back: a request carrying that remark
+    const req = () => recsAt('ammo', '2026-02-18').find((r: any) => r.kind === 'request') as any
+    expect(req()?.carried?.remarks, 'carried whole — 200 letters').toBe('B'.repeat(200))
+    setBidStates(cell, 'approved')                             // back to a leave: the remark gains its date
+    const leave = rowsOf('ammo', 'LL')[0] as any
+    expect(String(leave.remarks).length, 'the date takes it past 200').toBeGreaterThan(MAX_CARRIED_REMARK)
+    setBidStates(cell, 'pending')
+    expect(String(req()?.carried?.remarks).length, 'what is stored is what a reload reads').toBeLessThanOrEqual(MAX_CARRIED_REMARK)
   })
 })
 

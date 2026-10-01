@@ -45,7 +45,7 @@
    reader the issued schedule's green edge shares.
    ===================================================================== */
 import { DAYS } from '../engine/data'
-import { INPUTS, inpId, inpWin, inpMeta, inpLabel } from '../engine/inputs'
+import { INPUTS, inpId, inpWin, inpMeta, inpLabel, oilAsks } from '../engine/inputs'
 import { PEOPLE, whoId, isSpecial } from '../engine/people'
 import { HOOKS } from '../engine/hooks'
 import { schedWrite, SCHED_TYPES } from '../state/sched-commit'
@@ -601,7 +601,21 @@ function inertWhy(di: any, item: string): string {
   if (!item || !item.startsWith('i:')) return plain
   const iid = item.slice(2)
   const inp = (evOf(di).inputs || []).find((i: any) => String(i.iid) === iid)
-  if (!inp) return plain
+  if (!inp) {
+    /* A REQUEST THAT NEVER ASKS THE OIL QUESTION ([OIL-PERSONAL-PLACEHOLDER], phase 7): since its placeholder's crowd is
+       counted, the window's "Who earns OIL" half lists the men behind it — and "nothing measurable" beside a row with
+       written times would send the scheduler looking for a missing time. The kind is the reason, so the kind is said.
+       Read off the ROW on the installed day (`srcType`, written with the row), so an issued face says what the record
+       says; the live request only where an older row carries none. */
+    const g = ((DAYS[+di] || {}).ground || []).find((x: any) => x && x.src != null && String(x.src) === iid && !x.kept)
+    const req = (INPUTS as any[]).find(r => r && String(r.iid || '') === iid)
+    const type = (g && g.srcType) || (req && req.type)
+    if (g && type && !oilAsks(type)) {
+      const meta: any = inpMeta(type)
+      return `a ${String((meta && meta.name) || type).trim()} request earns no OIL`
+    }
+    return plain
+  }
   const what = String(inp.type || 'request').trim() || 'request'
   const row = (INPUTS as any[]).find(r => r && String(inpId(r)) === iid)
   const when = row && row.date ? ` on ${String(row.date)}` : ''

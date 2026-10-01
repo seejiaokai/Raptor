@@ -39,8 +39,20 @@ describe('qualcols persistence', () => {
     s.setItem('sqn142_qualcols', '{not json')
     qualColsLoad()
     expect(qualCols()).toBe(DEFAULT_QUAL_COLS)
-    s.setItem('sqn142_qualcols', '[]')
+  })
+
+  /* [STORE-READER-SWEEP] ([DB-READINESS] group A, phase 7): a list EMPTIED through the app's own control is a decision
+     — the writer stores `[]` — and the reader took an empty list for "nothing saved" and put the standard set back at
+     the next load. A stored empty list now reads back empty; anything unusable still falls back. */
+  /* (this file used to pin a stored `[]` as "unusable" beside the two cases above — but `[]` is exactly what the Quals
+     page's own column delete writes once the last column is removed, so that assertion pinned the defect) */
+  it('every column removed on the Quals page stays removed after a reload', () => {
+    const s = fakeStore(); storeBackend.impl = s
+    expect(setQualCols([])).toBe(true)
+    expect(s.m.get('sqn142_qualcols'), 'the writer stores the empty list').toBe('[]')
+    resetQualCols()
+    expect(qualCols()).toHaveLength(10)
     qualColsLoad()
-    expect(qualCols()).toBe(DEFAULT_QUAL_COLS)
+    expect(qualCols(), 'the default ten do not come back').toEqual([])
   })
 })

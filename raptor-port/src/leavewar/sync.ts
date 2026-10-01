@@ -104,6 +104,7 @@ import { renameCallsign } from '../engine/slots'
 import { callsignProblem } from '../state/roster-add'
 import { setPublishGate } from '../state/inputgate-hook'
 import { absencesAt, setAbsenceRows } from './state/merge'
+import { MAX_CARRIED_REMARK } from './engine/warrecs'
 import { cs, dm, installInputGate } from './inputgate'
 import { projectPeople, qualCatalogue } from './state/raptorRoster'
 import {
@@ -454,6 +455,16 @@ function cutDates(cuts: Map<string, Set<string>>): boolean {
   return ok
 }
 
+/* THE REMARK A REQUEST CARRIES, AT THE LENGTH THE STORE'S READER KEEPS ([STORE-READER-SWEEP], [DB-READINESS] group A,
+   phase 7 — engine/warrecs.ts readCarried cuts at MAX_CARRIED_REMARK). Approving writes the remark onto the leave WITH its
+   date ("… on 18 Feb"), which can carry a 200-letter remark past the limit; stored whole, the record in memory and the
+   record after a reload differed, the date cut mid-word. Over the limit, the date goes first — the next approval writes
+   it again (withRemarksTail) — and the typist's own words are kept up to the limit. */
+function carriedRemark(text: unknown): string {
+  const s = String(text ?? '')
+  return s.length <= MAX_CARRIED_REMARK ? s : withRemarksTail(s, null, null, 'none').slice(0, MAX_CARRIED_REMARK)
+}
+
 /** un-approve approved leave back into a request of `to` (design §5.2
  *  `lw.decideApproved`, §24): the Input shrinks / splits / goes on those dates,
  *  and a request carrying its remark and moved marks takes its place. Refused
@@ -482,7 +493,7 @@ function doorDecideApproved(items: Array<{ personId: string; date: string; iid: 
     const rec: RequestRec = {
       id: newRecId(), kind: 'request', code, state: to,
       ...(row.lwMoved?.[it.date] ? { shiftedFrom: row.lwMoved[it.date] } : {}),
-      carried: { ...(row.remarks ? { remarks: String(row.remarks) } : {}), ...(row.lwMoved?.[it.date] ? { lwMoved: { [it.date]: row.lwMoved[it.date] } } : {}) },
+      carried: { ...(row.remarks ? { remarks: carriedRemark(row.remarks) } : {}), ...(row.lwMoved?.[it.date] ? { lwMoved: { [it.date]: row.lwMoved[it.date] } } : {}) },
     }
     if (!rec.carried!.remarks && !rec.carried!.lwMoved) delete rec.carried
     adds.push({ personId: it.personId, date: it.date, drop: [], add: [rec] })
