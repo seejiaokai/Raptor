@@ -2127,3 +2127,18 @@ restore — repeatable, all-or-nothing, and safe for files whose bytes (line end
 **Suggested improvement:** In DECISIONS.md step 2 say which cell by position ("the cell right after the date") and show one example row; in the script, refuse a row whose fourth cell opens with REPLACED / SPENT ("the mark belongs at the start of the cell after the date") instead of reading it as a narrowing. After any replacement, verify: the old number is in DECISIONS-ARCHIVE.md once and in no live file.
 
 **Principle:** When a tool accepts a near-miss as a different valid input, "it ran clean" proves nothing; check the outcome the step exists to produce (here: the old ruling is gone from the live list), not the tool's exit.
+
+### Observation 408: A new ruling's row that says it "answers" an older ruling is refused until the older row carries a mark naming it — the recording steps do not say so
+
+**Status:** OPEN
+**Date:** 2026-10-01
+**Session context:** [WARN-HIDE-KEPT] — recording D475 (his approval of a mock-up). Its "what it means" cell ended "It answers D469's 'a picture first'"; `backlog-archive.mjs --rulings` converted the row, then the gate failed ("D475 is new and changes D469, but D469's full row carries no mark naming D475") and the script put every file back.
+**Skill:** repo rule .claude/rules/record-decisions.md / DECISIONS.md "Recording a ruling", step 2
+**Type:** internal
+**Phase/Area:** Recording a ruling that completes (not replaces or narrows) an earlier one
+
+**Issue:** The gate reads a list of relation verbs in a new row (`answers`, `settles`, `narrows`, `replaces`, `extends` … followed by a D-number) as "this ruling changes that one" and requires a back-mark in the older ruling's full row (ANSWERED / NARROWED / … BY D<n>). DECISIONS.md step 2 names only REPLACED, SPENT and NARROWED, so a row that merely says which open question it answers trips the gate with no hint in the written steps that an approval or an answer needs a back-mark too. The first run cost a failed filing and a search of the script for the verb list.
+
+**Suggested improvement:** In DECISIONS.md step 2 add one sentence: "A ruling that ANSWERS or SETTLES an open point of an earlier one is a change to it too — write `**— ANSWERED <date> BY D<n>: …**` at the end of the earlier ruling's fourth cell, then run the script"; and have the gate's message list the accepted mark words rather than only NARROWED.
+
+**Principle:** When a checker enforces a wider rule than the written procedure states, the procedure is the defect — write the checker's vocabulary into the step it guards.

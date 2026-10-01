@@ -3,6 +3,8 @@
 **Branch:** `claude/warn-hide-kept`, cut from `main` after PR #477 (`[DB-READINESS]` phase 7) merged.
 **Rulings:** D469, D471, D472, D475 (full rows `.claude/decisions-full/scheduler.md`). **Backlog:** `OUTSTANDING.md` `[WARN-HIDE-KEPT]`.
 **Picture:** `docs/mock/warn-hide.html` — APPROVED as drawn, 1 Oct 26 (D475: "The mock up looks good. Proceed"), its three calls with it (§7).
+**v2 (1 Oct 26)** — round 1 of the red team folded in (both REVISE; every finding accepted; no second round, said so):
+`docs/superpowers/briefs/2026-10-01-warn-hide-kept-dispositions-r1.md`. v1 = commit 03946015.
 **Process:** HEAVY, said so — saved data, the published record and the warning list are all touched, and a defect in
 any of them is silent. This plan is red-teamed by BOTH reviewers before the build (D353); Astra designs the scenarios;
 the walk; then BOTH read the final code.
@@ -55,9 +57,19 @@ the walk; then BOTH read the final code.
 
 ### 3.2 Each mark knows its warning; the bundle is drawn "as shown"
 - In `validateCore` every mark site passes the code of the warning beside it (about 30 sites gain an argument; the 18
-  that already name a live code are unchanged; `cls(code)` answers the same for every code that freezes). Each mark is
-  also appended to `marks` — `{k:'sev'|'chip'|'dash', di, id, v, code}`; each trace to `traces` — `{pdi, id, t, di, code}`
-  (`CREW_REST` / `DAYS_RUN`, the day the breach is on). The maps are still written as they are today.
+  that already name a live code are unchanged; `cls(code)` answers the same for every code that freezes). The codes, site
+  by site, are the table in Astra's report ("Mark attribution audit"): the DT chip belongs to `DT_SUM`, the TT chip at the
+  same-day turn to `TURN` (at the crew-rest site to `CREW_TIGHT`), and the four sites that choose between `DNIF_FLY` /
+  `LEAVE_FLY` / `INPUT_FLY` AFTER marking hoist that choice above the marks (Fable F5). Each mark is
+  also appended to `marks` — `{k:'sev'|'chip'|'dash', di, id, v, code}`; each trace to `traces` — `{pdi, id, t, di, code,
+  key}` (`CREW_REST` / `DAYS_RUN`: the day the breach is on, and the breach warning's own hide key). The maps are still
+  written as they are today.
+- **A mark that crosses the week's edge** (Sunday's "Breaks Monday"; the 7-day run's forward dotted mark) has no warning
+  in the loaded week (`di:null`). Its trace carries the key its warning WILL have on next Monday (the same body words it:
+  the crew-rest sentence, the run sentence), and it is kept unless that key is among **next Monday's effective hides** —
+  read from the next week's saved copy (`weekctx.ts`): its working hides when that Monday is a draft, its current issued
+  version's `w.wo` when it is published (D471). No saved copy, or a target that cannot be resolved → the mark stays
+  (Astra 2, Fable F2).
 - `shownOf(raw, hidden)` (pure, memoised per raw bundle): **nothing hidden → the raw bundle itself** (so every byte of
   today's behaviour, and the reference parity, is untouched). Otherwise a copy: each hidden warning replaced by a copy
   carrying `off:true` (same index — `data-wix` and the focus stay valid); `sev` / `chip` / `dash` / `fz` / `lv` /
@@ -66,8 +78,10 @@ the walk; then BOTH read the final code.
   showing, and two warnings of one code on one man both have to be hidden before that code's flag goes.
 - `validate()`: `WARN` and `workingWarn()` become `shownOf(raw working, working set)`; `OFFICIAL` (`officialRaw()`) stays
   RAW — it is the comparison's detector and what a version stores, and a hide must never read there as "warnings on this
-  day changed". A test pins: with nothing hidden, `shownOf(raw) === raw`, and replaying `marks` rebuilds the very maps
-  the day loop wrote (both demo weeks).
+  day changed". `shownOf` COPIES — a raw warning never carries `off`, and the stored `w.sev/chip/dash` stay raw
+  (Fable F7). `WARN.all` carries the `off` copies. Tests pin: with nothing hidden, `shownOf(raw) === raw`; and the REPLAY
+  itself, forced with an empty hidden set, rebuilds the very maps the day loop wrote (both demo weeks and the every-code
+  fixtures — the identity fast path proves nothing, Astra).
 
 ### 3.3 Every reader — the roll-call (§5)
 The maps are already filtered, so every puck that reads them follows without a per-surface change. Four kinds of reader
@@ -77,6 +91,10 @@ need their own line, and §5 names each:
   (`engine/warnhide.ts`), used by every counter;
 - a reader that works out a flag FROM THE LIST, past the maps (an exempt desk row, an exempt flying line, the ALL AVAIL
   window's reasons, the names lit by an open day box, the days a puck's tap opens, the drop toast) skips `off` warnings;
+- the two places that read a bundle's IDENTITY as "which world is this" (`html.ts:666`, `dayWarnHTML:1047`) stay
+  right by construction: the face is a memoised shown bundle (§3.4), so under `withOfficialWarn` `WARN` is the object
+  `officialWarn()` returns, and with nothing published or diverging the shown working and shown official bundles are one
+  object (the memo is per raw bundle). Two tests pin it (Astra 3);
 - an ENGINE question about whether a breach already EXISTS (the pre-drop crew-rest probe) reads the RAW working bundle
   (`rawWarn()`), never the shown one — a hidden breach is still there, and placing a man must not read as creating it.
 
@@ -84,26 +102,37 @@ need their own line, and §5 names each:
 - **At issue** (`HOOKS.issuedWarn`): the stored slice `w` stays the RAW slice (the comparison's basis, as today), and gains
   `w.wo` — the keys of the day's warnings hidden as it goes out (effective keys only: a stale key is not stored);
   `w.shown` — the frozen-class rings / chips / dashes as shown, when anything is hidden; and `w.face` is taken from the
-  shown bundle (its warnings carry `off`, its rings are the shown ones). `wo` and `shown` ride inside `w`, so
+  shown OFFICIAL bundle (`shownOf(OFFICIAL, working keys)` — never `WARN`, which judges the day with the working copy's
+  neighbours; Fable F8.1): its warnings carry `off`, its rings are the shown ones. `wo` and `shown` ride inside `w`, so
   `retiredEntry` / `issuedFromRetired` carry them with no change; `warnSliceKey` reads neither.
-- **The face** (`faceWarn`, `versionFaceWarn`): a published day's warnings — stored and live — are marked `off` by the
+- **The face** (`faceWarn`, `versionFaceWarn`) is built on `shownOf(OFFICIAL, working keys)` — so with nothing published,
+  and for every draft day, View-only Sched shows the working hides (Fable F4: v1 returned the raw bundle there). Each
+  published day is then overlaid: its warnings — stored and live — are marked `off` by the
   ISSUED keys (`w.wo`), never the working set; its frozen marks are `w.shown` when present; its live marks are replayed
   from today's official `marks` under the issued keys. A draft day inside the face keeps the working set. The next-day
   mark (`trace`, live by D183) follows the hide state of the breach's own day: the issued keys when that day is
   published, the working set when it is not.
 - **Pending** — a new axis beside `warnDelta`: `hideDelta(di)` (`publish.ts`, through `HOOKS.hideNow(di)`): for each
-  warning of today's judgement of the ISSUED day (both classes), "hidden on the working copy" against "hidden as
-  issued"; **each one that differs is ONE pending change** (`kind:'hide'`, `addr:'hide:<di>.<n>'`, carrying the warning's
-  words and which way it went). `dayDelta` concatenates it, so the day's count, "Not yet signed" / "Not yet published",
-  the publish button and the sign-offs (through `pendingKey`) follow with no further change. A warning that exists only
-  on the working copy (an edit not yet out) is not in that list: its hide goes out with the edit that raised it.
-  Hide then unhide → nothing pending and the four are valid again (D98).
-- **The pending list** (`ui/pendlist.ts`): "Warning hidden" / "Warning flagged again", the warning's own words under it,
-  in the group "The day" (D346); counted under "changes" in the Amendments panel.
+  warning of today's judgement of the ISSUED day (both classes) **that the working copy also raises** (by key — a stale
+  hide of a warning the working copy no longer has is the content axis's business, never a hide line; Fable F3a),
+  "hidden on the working copy" against "hidden as issued"; **each one that differs is ONE pending change** —
+  `kind:'hide'`, `addr:'hide:<di>.<fingerprint of the key>'` (never an index, never the words: the four sign-offs are
+  bound to this string, and a re-sorted list or a rename must not drop them — Fable F3b), `from` / `to` the plain
+  `shown` / `hidden`. A warning that exists only on the working copy (an edit not yet out) is not in that set: its hide
+  goes out with the edit that raised it. Hide then unhide → nothing pending and the four are valid again (D98).
+- **Wired into BOTH authorities, as `warnDelta` is** (Fable F1 = Astra 4): `dayDelta` (the publish button, "Not yet
+  signed", the sign-offs through `pendingKey`, the AL's stored `diff`) AND `dayPendingItemsIn` (the day's count, the To
+  go out list, the Amendments panel, the AL's stored `units` / `ukinds`); `dayDeltaCore` untouched. `PendItem.axis`
+  gains `'hide'`; `itemCounts` / `diffCounts` gain `hide` and it stays inside "changes" (no new word on the panel).
+- **The pending list** (`ui/pendlist.ts pendItemWords`): "Warning hidden" / "Warning flagged again", the warning's own
+  words under it (looked up by key in today's official list), in the group "The day" (D346), its sort weight beside the
+  warnings line; a tap takes the view to the warning's line (the item carries the warning's slot key — D99).
 - **Publishing the amendment (or the EOD version)** stores the new keys — nothing pending. **Unpublish** falls back to the
   version before; the working hides stay and read pending again (D101). **"Load onto working copy"** sets the day's
-  working hides to the loaded version's (`HOOKS.setDayHides(di, keys)`), so a day loaded back to what is published reads
-  nothing pending (D98); its confirm's count includes them.
+  working hides to the loaded version's (`HOOKS.setDayHides(di, keys)`, inside `loadVersionToWorkingCopy`, BEFORE the
+  load's `afterSchedMutate()` so the command saves them — Fable F8.2), so a day loaded back to what is published reads
+  nothing pending (D98); `dayDiscardCount` and the load's "already at this version" short-circuit count a hide
+  difference.
 - **A saved plan, a template:** hides belong to the DAY, not to a plan; a key that matches no warning is inert.
 
 ### 3.5 Kept with the day, for everyone
@@ -112,15 +141,25 @@ need their own line, and §5 names each:
   re-sync stays, harmless.
 - A toggle re-runs `validate()` (the bundle is "as shown"), on the click, on Undo / Redo and on a restored record.
 - **A history line** (new — he did not ask; the hide is now shared, so "who hid it" has to be answerable): "hid a
-  warning — <its words>" / "flagged a warning again — …", under "The day".
+  warning — <its words>" / "flagged a warning again — …", under "The day". Its data path (Astra 5, Fable F8.6):
+  `schedWriteValue` forwards a `meta {key, words, hidden, di}` to the command; `changelines.ts` gains a `sched.mutes`
+  branch that writes the line from that meta (never from the stored key — it holds ids); the Undo / Redo line's day
+  collection learns `sched.mutes`; `undo/describe.ts` says "hiding a warning" / "flagging a warning again".
+- Undo is at the DAY's grain: another scheduler's hide on the same day since yours refuses your Undo and names him, as
+  another's edit of that day does today (D148).
 - Roles: unchanged — `sched.warnMute` is already a scheduler's write in `state/perms.ts` (the §11 table has its row).
 
 ### 3.6 The lists, as drawn in the picture
+- **Every renderer reads `w.off` and nothing else** — never `warnShown` / the working set (Fable F6): under a face or a
+  look the bundle's own `off` is the issued state, and a working-copy hide must not strike a published line before its
+  amendment.
 - Edit Schedule and the board: the line in place, `.hid` (struck out, grey, dashed outline on the week), its ✕ become ↺
-  at full strength; `WMOPEN`, `toggleWarnMuted`, `.wmuted-h` and the "N hidden" line are removed.
+  at full strength; `WMOPEN`, `toggleWarnMuted`, `.wmuted-h` and the "N hidden" line are removed (the + Wave menu's own
+  "N hidden · Manage" is another feature and is not touched — Fable F8.9).
 - View-only Sched, a look at a version, a guest: the same struck line with no button (call 1, §7).
 - Every issue hidden: Edit Schedule keeps a quiet bar, "✓ No issues · tap to review"; the board's heading reads "No
-  conflicts flagged for <day> ✓" with the struck line under it (call 2, §7).
+  conflicts flagged for <day> ✓" with the struck line under it, the phone's fold still opening it; the ⓘ popup says
+  "Nothing flagged" and lists the struck lines (call 2, §7 — these branches key on the SHOWN count; Fable F8.5).
 - The bar's colour and the "N warning" count come from what is shown.
 - A tap on a struck line still jumps to and lights its crew (so a scheduler can see what was hidden).
 
@@ -160,7 +199,7 @@ by itself (reads the filtered maps); **L** = a list, draws the line struck; **C*
 | 4 | The ALL AVAIL window's reason under a puck, its "flagged" class and "N men are flagged" | `ui/html.ts personWarnMsgs` (789–796), `AvailWindow.tsx` 175–198, 243, 345 | S |
 | 5 | An exempt duty desk's own red ring + C (a `noconf` block), week and board | `ui/html.ts exemptDeskOwn` (578–586) | S |
 | 6 | An exempt flying line's own ring (SC SPARE, AVALON, BB) | `ui/html.ts` 1765–1778 | S |
-| 7 | The red time box of a flying line that takes off and lands at the same time | `ui/html.ts` 1703–1714, `board.ts` 209–215 (`fltNoLen`, not the bundle) | S — hidden when the day's `FLT_NO_LEN` warning for that line is `off`; the next-week peek (`peek.ts` 105) has no warning list and keeps it — said in §10 |
+| 7 | The red time box of a flying line that takes off and lands at the same time | `ui/html.ts` 1703–1714, `board.ts` 209–215 (`fltNoLen`, not the bundle) | S — hidden when the day's `FLT_NO_LEN` warning for that line is `off` (found by its slot key); under a saved-plan preview it stays as today (a plan is drawn with no flags). The next-week preview (`peek.ts` 105) follows the target day's effective hides, read as the cross-week marks read them (Astra 1) — the warning's words come from one engine helper the validator and the preview share |
 | 8 | Edit Schedule's and View-only Sched's day list: the count, the worst colour, the rows | `ui/html.ts dayWarnHTML` (1030–1148) | C + L |
 | 9 | …its "also flagged on Tue, Wed" line and the list narrowed to one man | `engine/avail.ts personWarns` (137), `state/view.ts selectPerson` (570–602) | S (a day counts when a SHOWN warning names him or a shown trace is on him) + L |
 | 10 | …its "new once signed" / "goes away once signed" rows and "N to clear once signed" | `ui/html.ts` 1047–1054, 1114 | — compared by code, people and day, the hide state not in it: a hide is its own pending line, never a "new" or "gone" warning |
@@ -176,7 +215,7 @@ by itself (reads the filtered maps); **L** = a list, draws the line struck; **C*
 | 20 | A published day on View-only Sched; the 👁 look at a version, week and board | `validate.ts faceWarn` / `versionFaceWarn`; `html.ts` 143–253; `SchedBoard.tsx` 253 | the ISSUED hide state (§3.4): F + C + L, no button |
 | 21 | A guest's View-only Sched | `html.ts` 247, 1588 | F for the pucks; no list is drawn for a guest today — unchanged |
 | 22 | The printed schedule (PDF) and the CSV | `ui/printpdf.ts`, `ui/export.ts` | — neither prints a warning, a ring or a chip today, so D471's "printed schedule drops the flag" already holds; a test pins that they read no warning |
-| 23 | The next-week preview, the Inputs calendar, the Medical view, OIL Earn mode, the placeholder pucks, the Leave War, the Tracker | — | — draw no warning flag |
+| 23 | The Inputs calendar, the Medical view, OIL Earn mode, the placeholder pucks, the Leave War, the Tracker; the next-week preview's pucks | — | — draw no warning flag (the preview's one mark is row 7) |
 | 24 | The top-bar counters | `validate.ts` 1525–1529 | — the elements are gone (20 Aug 26); untouched |
 | 25 | The ✕ / ↺ itself; a tap on a list row (week, board, the popup) | `ui/interactions.ts` 1222–1242, 1260, 1341–1381 | the key from the DISPLAYED bundle's warning; rows keep their index |
 
@@ -203,20 +242,28 @@ All three stand as drawn (D475).
    kept; two warnings of one code on one man; a hidden crew-rest breach drops the dotted mark on the day before; a hidden
    7-day run drops its dotted run; the key under a rename.
 2. State — the boot read-back; the session reset; the toggle re-validates; Undo / Redo; a restored record.
-   Tests: hide → reload → still hidden and still SAVED after the next edit of that day; hide → sign out → sign in.
+   Tests (`state/warnhide-kept.test.ts`, written and RED on `main`'s code, 1 Oct 26): hide → reload → still hidden and
+   still SAVED after the next edit of that day; hide → sign out → sign in; a member; Undo / Redo then a reload.
 3. The lists and the counts — `dayWarnHTML`, `boardWarnHTML`, and every counter of §5; the CSS; `WMOPEN` removed.
-4. The published day — `issuedWarn` (`wo`, `shown`, the shown face), `faceWarn`, `versionFaceWarn`, `hideDelta`,
-   `pendlist`, the load, the history line.
-5. Documents — `ui-contracts.md` §Muting a check (rewritten), `data-schema.md`, `data-model.md` §9,
+4. The published day — `issuedWarn` (`wo`, `shown`, the shown face), `faceWarn`, `versionFaceWarn`, `hideDelta` in
+   both authorities, `pendlist`, the load, the history line. Tests against EVERY authority after a hide on a published
+   day (`dayDelta`, `dayPendingItems`, the head's count, the list, the four, the publish button, `alIssue.units` /
+   `ukinds`, the load's confirm) and all back to zero on the unhide; `warnDelta` stays `[]`; `pendingKey` unchanged when
+   a live warning is inserted above the hidden one and when a named man is renamed; a stale hide pends nothing; the face
+   with nothing published (View-only Sched follows the working hides); a published day beside a draft day; a working
+   hide changes nothing on the face until the amendment; the ALL AVAIL chip's world mark with an active hide; a hide
+   alone draws no "new once signed" / "goes away once signed" row; the cross-week marks, both ways.
+5. Documents — `ui-contracts.md` §Muting a check (rewritten), `data-schema.md` (`w.wo`, `w.shown`, the key's shape, stale keys), `engine/schema.ts WarnSlice`, `data-model.md` §9,
    `feature-impact.md` (the Warnings row, the frozen-face row), `engine-rules.md` (the published day's warnings),
    the comments at `view.ts`, `file-map.md`, the behaviour register lines, `OUTSTANDING.md`.
 6. The FULL check — §11.
 
 ## 10. Left as it is, said so
 - The Logic page's "fired N×" counts a hidden warning (§5 row 15).
-- The next-week preview keeps the red time box of a nought-minute line (it draws no warnings at all).
-- A crew-rest or 7-day mark that crosses the week's edge (Sunday → next Monday) points at a warning in a week that is
-  not loaded; it follows that week's hides only once that week is the one on screen.
+- *(v1 left two more — the next-week preview's red time box and the marks that cross the week's edge; both are now
+  BUILT, round 1.)* A cross-week mark whose next week has no saved copy, or whose target cannot be resolved, stays.
+- Stale keys (a hide whose warning is no longer raised) stay in the day's row — inert, and live again if the same
+  situation returns.
 - A callsign in a warning's words belonging to a man the warning does not name: renaming HIM changes the words and the
   hidden warning returns (the key folds only the named men).
 
