@@ -77,3 +77,77 @@ export function rowsSame(L, r1, r2) {
   const d = L.diff(r1, r2)
   return [...d.put.map(k => 'put ' + k), ...d.del.map(k => 'del ' + k), ...d.newBatches.map(k => 'batch ' + k)]
 }
+
+/* wait until the last toast has faded, so a picture never shows an earlier step's words */
+export async function toastGone(p, max = 14000) {
+  const t0 = Date.now()
+  while (Date.now() - t0 < max) { const t = await toastNow(p); if (!t || !t.shown) return true; await p.waitForTimeout(250) }
+  return false
+}
+export const REASON = /cannot crew a jet; name the people flying it/
+/* ONE DOOR ATTEMPT, judged the same way every time: the reason painted; the seats, the pending marks, the day head, the
+   Undo list and button, the change history and every saved row as they were. `needReason:false` = a gesture the app does
+   not treat as a placement at all (nothing may happen, and nothing need be said). */
+export function makeAttempt({ L, p, di, keys }) {
+  return async function attempt(id, did, fn, { needReason = true } = {}) {
+    const mine = []
+    await toastGone(p)
+    const s1 = await snap(p, di, keys), r1 = await L.rows(p); await toasts(p)
+    let err = null, ret = null
+    try { ret = await fn(async n => { await L.shot(p, n); mine.push(n + '.png') }) } catch (e) { err = String(e && e.message || e).split('\n')[0].slice(0, 300) }
+    const now = await toastNow(p)
+    await L.shot(p, id); mine.push(id + '.png')
+    await L.settle(p, 700)
+    const ts = await toasts(p)
+    const s2 = await snap(p, di, keys), r2 = await L.rows(p)
+    const d = same(s1, s2), rd = rowsSame(L, r1, r2)
+    const reason = ts.filter(t => REASON.test(t))
+    const ok = !err && !d.length && !rd.length && (reason.length > 0 || !needReason)
+    row(id, did,
+      err ? 'GESTURE ERROR: ' + err : `toast: ${ts.map(t => '"' + t + '"').join(' · ') || '(none — the app did nothing)'}${now && now.shown && ts.length ? ' (painted in the picture)' : ''}${ret && ret.note ? ' · ' + ret.note : ''}`,
+      d.length || rd.length ? `CHANGED: ${[...d, ...rd].join(' | ')}` : `seats as they were (${Object.entries(s2.seats).filter(([k]) => /^\d/.test(k)).map(([k, v]) => k + '=' + (v.val || 'empty')).join(', ')}); pending marks ${s2.pendingDay.length} = before; day head "${s2.head ? s2.head.tag + ' ' + s2.head.pending : ''}"; Undo list ${s2.hist.ix}/${s2.hist.n} = before; change history ${s2.elog} lines = before; no row written`,
+      ok ? 'PASS' : 'FAIL', mine)
+    await p.keyboard.press('Escape'); await L.sleep(200)
+    return { ok, d, rd, ts, ret }
+  }
+}
+
+/* ---------- the ALL AVAIL count chip and its window, as a person reads them (C34, C35) ---------- */
+/* every count chip PAINTED inside a scope */
+export async function chips(p, scope) {
+  return p.evaluate(s => {
+    const root = document.querySelector(s); if (!root) return []
+    return [...root.querySelectorAll('.oilcount')].map(e => {
+      const r = e.getBoundingClientRect(), cs = getComputedStyle(e)
+      return { txt: (e.innerText || '').trim(), title: e.getAttribute('title') || '', ver: e.dataset.oilver || '', item: e.dataset.oilsent || '',
+        painted: r.width > 2 && r.height > 2 && cs.visibility !== 'hidden' && cs.display !== 'none' && +cs.opacity > 0.05 && e.offsetParent !== null }
+    }).filter(c => c.painted)
+  }, scope)
+}
+/* the open ALL AVAIL window */
+export async function win(p) {
+  return p.evaluate(() => {
+    const w = [...document.querySelectorAll('.availwin')].find(x => !x.hidden && (x.offsetWidth || x.offsetHeight))
+    if (!w) return { open: false }
+    const t = e => e ? (e.innerText || e.textContent || '').replace(/\s+/g, ' ').trim() : ''
+    const r = w.getBoundingClientRect()
+    const men = [...w.querySelectorAll('[data-awp]')].map(x => { const seat = x.querySelector('.seat'); const why = x.querySelector('.rwhy'); const wr = why ? why.getBoundingClientRect() : null
+      return { id: x.dataset.awp, cs: (window.PEOPLE[x.dataset.awp] || {}).cs || x.dataset.awp, cls: x.className.replace('rpuck', '').trim(), seatCls: seat ? seat.className : '', why: t(why),
+        whyOnScreen: wr ? wr.width > 4 && wr.height > 4 : null } })
+    return { open: true, title: t(w.querySelector('.win-ttl')), tabs: [...w.querySelectorAll('.win-tab')].map(x => t(x) + (x.classList.contains('on') ? ' [on]' : '')), one: t(w.querySelector('.win-one')),
+      from: t(w.querySelector('.win-from')), foot: t(w.querySelector('.win-foot')), n: men.length, ids: men.map(m => m.id), men,
+      flagged: men.filter(m => m.why || /clash|flag|warn/.test(m.cls)).map(m => m.cs + ': ' + m.why), earnControls: men.filter(m => /oilpk/.test(m.seatCls)).length,
+      rect: { left: Math.round(r.left), top: Math.round(r.top), width: Math.round(r.width), height: Math.round(r.height), viewport: innerWidth + 'x' + innerHeight } }
+  })
+}
+export async function closeWin(p) { const x = p.locator('.availwin:not([hidden]) .win-x:visible').first(); if (await x.count()) { await x.click().catch(() => {}); await p.waitForTimeout(300) } }
+/* tap the first painted chip inside a scope; returns the window */
+export async function openChip(p, scope, { touch = false } = {}) {
+  await closeWin(p)
+  const c = p.locator(`${scope} .oilcount:visible`).first()
+  if (!(await c.count())) return { open: false, why: 'NO CHIP to tap in ' + scope }
+  await c.evaluate(e => e.scrollIntoView({ block: 'center', inline: 'center' })); await p.waitForTimeout(300)
+  try { if (touch) await c.tap({ timeout: 3000 }); else await c.click({ timeout: 3000 }) } catch (e) { const b = await c.boundingBox(); if (b) { if (touch) await p.touchscreen.tap(b.x + b.width / 2, b.y + b.height / 2); else await p.mouse.click(b.x + b.width / 2, b.y + b.height / 2) } }
+  await p.waitForTimeout(600)
+  return win(p)
+}

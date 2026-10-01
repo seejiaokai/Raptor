@@ -89,7 +89,11 @@ export async function boardRow(p, di, iid) {
     const b = document.querySelector('#schedBoard'); if (!b || !b.offsetWidth) return { err: 'board not open' }
     if (ri < 0) return { ri, err: 'no row for the request on this day' }
     const host = b.querySelector(`[data-fill="g:${d}.${ri}.+"]`) || b.querySelector(`[data-slot="g:${d}.${ri}"]`)
-    const row = host ? host.closest('.sb-arow') : [...b.querySelectorAll('.sb-arow.gr-frominput')].find(r => r.querySelector(`[data-oilsent="i:${i}"]`)) || null
+    /* in OIL Earn the row is drawn read-only, without its seat addresses: find it by its chip, else by its remark */
+    const rq = window.INPUTS.find(x => x.iid === i)
+    const val = r => [...r.querySelectorAll('textarea, input')].map(e => e.value).concat([(r.innerText || '')]).join(' | ')
+    const row = host ? host.closest('.sb-arow') : [...b.querySelectorAll('.sb-arow.gr-frominput')].find(r => r.querySelector(`[data-oilsent="i:${i}"]`))
+      || [...b.querySelectorAll('.sb-arow.gr-frominput')].filter(r => r.offsetParent !== null).find(r => rq && rq.remarks && val(r).includes(rq.remarks)) || null
     if (!row) return { ri, err: 'row not drawn' }
     const item = row.querySelector('.oilitem')
     const t = e => e ? (e.innerText || e.value || e.textContent || '').replace(/\s+/g, ' ').trim() : ''
@@ -119,7 +123,36 @@ export async function weekRow(p, surf, di, iid) {
 /* ---------- gestures ---------- */
 /* arm the row's NAME seat ('name') or its extras zone ('extras') on the open board and pick a puck from the crew list */
 export async function place(S, p, di, ri, where, pid) {
-  return S.handPut(p, where === 'name' ? `g:${di}.${ri}` : `g:${di}.${ri}.+`, pid)
+  if (where === 'name') return S.handPut(p, `g:${di}.${ri}`, pid)
+  /* the extras: press the row's own "+ add" (the middle of the zone can be a puck already standing there — a tap on
+     THAT arms its seat, and the pick would replace it: the walker's mistake of 1 Oct, not the app's) */
+  const key = `g:${di}.${ri}.+`
+  const before = await S.seatHolds(p, key)
+  const add = p.locator(`#schedBoard [data-fill="${key}"] .addz:visible`).first()
+  if (!(await add.count())) return S.handPut(p, key, pid)
+  await add.evaluate(e => e.scrollIntoView({ block: 'center' })); await p.waitForTimeout(150)
+  /* a real press where "+ add" is drawn; if it has no box of its own, just right of the last puck in the zone */
+  let pt = await p.evaluate(k => {
+    const z = document.querySelector(`#schedBoard [data-fill="${k}"]`); const a = z.querySelector('.addz'); const zr = z.getBoundingClientRect()
+    const ar = a ? a.getBoundingClientRect() : null
+    if (ar && ar.width > 4 && ar.height > 4) return { x: ar.left + ar.width / 2, y: ar.top + ar.height / 2, how: 'on "+ add"' }
+    const seats = [...z.querySelectorAll('.seat')]; const last = seats.length ? seats[seats.length - 1].getBoundingClientRect() : null
+    return { x: Math.min(zr.right - 6, (last ? last.right : zr.left) + 18), y: (last ? last.top + last.height / 2 : zr.top + zr.height / 2), how: 'right of the last puck' }
+  }, key)
+  await p.mouse.click(pt.x, pt.y); await p.waitForTimeout(250)
+  const armed = await p.evaluate(() => (window.ARM && window.ARM.key) || null)
+  const pk = p.locator(`#sbRoster .rpuck[data-person="${pid}"]:visible`).first()
+  const offered = await pk.count()
+  let msg = null
+  if (armed && offered) {
+    await pk.evaluate(e => e.scrollIntoView({ block: 'center' })); await p.waitForTimeout(100)
+    try { await pk.click({ timeout: 2500 }) } catch { const bb = await pk.boundingBox(); if (bb) await p.mouse.click(bb.x + bb.width / 2, bb.y + bb.height / 2) }
+    await p.waitForTimeout(420)
+    msg = await S.toast(p)
+  }
+  await p.keyboard.press('Escape'); await p.waitForTimeout(150)
+  const after = await S.seatHolds(p, key)
+  return { armed: !!armed, armedKey: armed, offered: !!offered, before, after, took: after.includes(pid) && before.every(x => after.includes(x)), msg }
 }
 /* a real pointer drag of a crew-list puck onto the row's NAME seat on the open board */
 export async function dragIn(W, p, di, ri, pid, where = 'name') {
@@ -138,6 +171,11 @@ export async function rowBtn(p, attr, di, ri) {
   if (!(await b.count())) return 'no such button'
   await b.evaluate(e => e.scrollIntoView({ block: 'center' })); await p.waitForTimeout(150)
   await b.click(); await p.waitForTimeout(600)
+  /* CX opens the "Cancel this item" sheet: its own "Cancel line" button confirms (a plain CX, no reason typed) */
+  const conf = p.getByRole('button', { name: 'Cancel line', exact: true })
+  if (await conf.count() && await conf.first().isVisible()) { await conf.first().click(); await p.waitForTimeout(600); return 'pressed, then "Cancel line" on the sheet' }
+  const un = p.getByRole('button', { name: 'Un-cancel', exact: true })
+  if (await un.count() && await un.first().isVisible()) { await un.first().click(); await p.waitForTimeout(600); return 'pressed, then "Un-cancel" on the sheet' }
   return 'pressed'
 }
 /* bring a board row to the middle of the window for its picture */

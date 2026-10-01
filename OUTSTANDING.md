@@ -93,7 +93,7 @@ award fix are due before the tables are settled. What to finish before the hand-
 
 **Ruled, to build next (D469, 1 Oct 26):** [WARN-HIDE-KEPT] — a hidden warning stays hidden for everyone until unhidden, flags no puck, and its line stays in the list struck out; a mock-up and three readings to him first, then its own branch and FULL check, after `[DB-READINESS]` phase 7.
 
-**Placed by their own lines — not his rulings:** from the `[DB-READINESS]` phase 7 walk (1 Oct 26), none of them this batch's — low, each with the next change there: [INP-TILL-STALE] (a remark keeps a "till" date its request no longer reaches — new data), [OIL-INERT-TAP-SILENT], [OG-TAG-OVER-COUNT], [MEMBER-EDITPAGE-CHECK] (a check, not a known fault); from the group-A FULL walk (30 Sep 26) — with group B:
+**Placed by their own lines — not his rulings:** from the `[DB-READINESS]` phase 7 walk (1 Oct 26), none of them this batch's — low, each with the next change there: [COUNT-CHIP-PHONE-TAP] (medium — on a phone's edit week a finger tap on an ALL AVAIL count arms the row instead of opening the window; his iPhone look first), [INP-TILL-STALE] (a remark keeps a "till" date its request no longer reaches — new data), [OIL-INERT-TAP-SILENT], [OG-TAG-OVER-COUNT], [MEMBER-EDITPAGE-CHECK] (a check, not a known fault); from the group-A FULL walk (30 Sep 26) — with group B:
 [UNDO-PUBLISH-ERASES-ISSUANCE], [TRK-IMPORT-ONE-GROUP], [TRK-FIRST-ORDER-PLACE] (low); low, with the next change there:
 [TRK-UNDO-WRITES-DEFAULTS], [SECDEFAULT-OFFER-BEHIND-BOARD], [BLOCK-NO-HISTORY-LINE], [ACCOUNTS-SEED-FIRST-WRITE] (demo
 only), [SETTINGS-LIST-ROWS] (a stage-2 split, only if it bites), [LW-OIL-DATECHIP-HIDDEN], [READONLY-WEEK-WORDS];
@@ -1609,3 +1609,16 @@ developer bridge on this PC, the page drew the Amendments panel with "Discard ma
 was pressed. The rule is that the page, the write path and the command gate all ask `raptor-port/src/state/perms.ts`.
 **To do:** press each as a member in a walk and confirm the write path refuses with its reason; if the page gate is the only
 thing between a member and those buttons, gate the panel too. **Place:** low — a check to run with the next roles work.
+
+### [COUNT-CHIP-PHONE-TAP] On a phone's edit week a finger tap on an ALL AVAIL count does not open the window (walk find, 1 Oct 26)
+Found by walker C of the `[DB-READINESS]` phase 7 walk (its F1) and reproduced by the host (`raptor-port/scripts/handpass/p7-h-phonetap.mjs`;
+picture `raptor-port/docs/img/handpass/2026-10-01-dbr-phase7/h/H-phonetap-editsched-1-finger.png`) — on that build AND on the
+build before the batch (`9191910b`), so it is older than phase 7. **What happens:** at 390 px on Edit Schedule, a finger tap on
+the count under an ALL / ALL AVAIL puck arms the row ("Planning Ground · OPS BRIEF", the crew drawer opens) instead of opening
+the ALL AVAIL window; walker C saw the puck above the count highlighted on View-only Sched. The count is 20 × 14 px and sits
+2 px under its puck, inside the row's own tap zone. On the phone's BOARD the same count opens the window (walker A). **Seen
+in Chromium's phone emulation only — not yet on his iPhone** (compare D158, a touch-emulation quirk closed for the Tracker):
+his look first. **To do, if it is real on the device:** the count takes its own tap before the row's arm (and a touch target
+a finger can hit — D37 says the count reads on every seat the puck lands on, and D38 that its tap opens the window); a
+browser test with a real touch sequence at phone width (bug-check order §7.8). **Tier:** WALK. **Place:** medium — the next
+phone job, after his look.

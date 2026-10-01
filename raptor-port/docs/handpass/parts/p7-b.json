@@ -953,5 +953,2477 @@
    "B18-9-editweek-working-window.png",
    "B18-10-viewsched-window-after-reload.png"
   ]
+ },
+ "w1p-sim-flags-phone": {
+  "at": "2026-10-01T02:25:46.131Z",
+  "base": "http://localhost:4206",
+  "checks": [
+   {
+    "name": "B14p view: the window is a bottom panel across the phone (a 12 px gutter each side)",
+    "ok": true,
+    "detail": "{\"x\":12,\"y\":309,\"w\":366,\"h\":523}"
+   },
+   {
+    "name": "B14p view: Echo and Talisman listed, amber, with the brief sentence",
+    "ok": true,
+    "detail": "{\"e\":\"No time for the OFT EP-1 brief — OPS BRIEF sits inside 09:45–10:00\",\"t\":\"No time for the OFT EP-1 brief — OPS BRIEF sits inside 09:45–10:00\"}"
+   },
+   {
+    "name": "B14p view: Echo's reason is painted amber and sits with him (under his puck, inside the window)",
+    "ok": true,
+    "detail": "{\"why\":\"rgb(229, 168, 59)\",\"whyBox\":{\"x\":199,\"y\":433,\"w\":170,\"h\":26},\"puckBox\":{\"x\":199,\"y\":412,\"w\":74,\"h\":15},\"win\":{\"x\":12,\"y\":309,\"w\":366,\"h\":523}}"
+   },
+   {
+    "name": "B14p view: Talisman's wrapped reason stays with him when the list is scrolled to him",
+    "ok": true,
+    "detail": "{\"whyBox\":{\"x\":21,\"y\":722,\"w\":170,\"h\":26},\"puckBox\":{\"x\":21,\"y\":701,\"w\":74,\"h\":15},\"win\":{\"x\":12,\"y\":309,\"w\":366,\"h\":523}}"
+   },
+   {
+    "name": "B14p view: a tap on Talisman gives the full sentence in the foot",
+    "ok": true,
+    "detail": "Talisman — No time for the OFT EP-1 brief — OPS BRIEF sits inside 09:45–10:00"
+   },
+   {
+    "name": "B14p board: the window is a bottom panel across the phone (a 12 px gutter each side)",
+    "ok": true,
+    "detail": "{\"x\":12,\"y\":309,\"w\":366,\"h\":523}"
+   },
+   {
+    "name": "B14p board: Echo and Talisman listed, amber, with the brief sentence",
+    "ok": true,
+    "detail": "{\"e\":\"No time for the OFT EP-1 brief — OPS BRIEF sits inside 09:45–10:00\",\"t\":\"No time for the OFT EP-1 brief — OPS BRIEF sits inside 09:45–10:00\"}"
+   },
+   {
+    "name": "B14p board: Echo's reason is painted amber and sits with him (under his puck, inside the window)",
+    "ok": true,
+    "detail": "{\"why\":\"rgb(229, 168, 59)\",\"whyBox\":{\"x\":199,\"y\":433,\"w\":170,\"h\":26},\"puckBox\":{\"x\":199,\"y\":412,\"w\":74,\"h\":15},\"win\":{\"x\":12,\"y\":309,\"w\":366,\"h\":523}}"
+   },
+   {
+    "name": "B14p board: Talisman's wrapped reason stays with him when the list is scrolled to him",
+    "ok": true,
+    "detail": "{\"whyBox\":{\"x\":21,\"y\":722,\"w\":170,\"h\":26},\"puckBox\":{\"x\":21,\"y\":701,\"w\":74,\"h\":15},\"win\":{\"x\":12,\"y\":309,\"w\":366,\"h\":523}}"
+   },
+   {
+    "name": "B14p board: a tap on Talisman gives the full sentence in the foot",
+    "ok": true,
+    "detail": "Talisman — No time for the OFT EP-1 brief — OPS BRIEF sits inside 09:45–10:00"
+   }
+  ],
+  "facts": {
+   "B14p.view": {
+    "chip": "36",
+    "one": "Who’s available 36",
+    "from": "who was free when this day was issued — Original",
+    "rect": {
+     "x": 12,
+     "y": 309,
+     "w": 366,
+     "h": 523
+    },
+    "echo": {
+     "flag": "AMBER",
+     "why": "No time for the OFT EP-1 brief — OPS BRIEF sits inside 09:45–10:00",
+     "whyBox": {
+      "x": 199,
+      "y": 433,
+      "w": 170,
+      "h": 26
+     },
+     "puckBox": {
+      "x": 199,
+      "y": 412,
+      "w": 74,
+      "h": 15
+     },
+     "paint": {
+      "row": "rgb(241, 244, 247)|rgba(0, 0, 0, 0)|rgb(241, 244, 247)",
+      "puck": "none|rgb(234, 251, 243)|rgba(0, 0, 0, 0)",
+      "why": "rgb(229, 168, 59)"
+     }
+    },
+    "tal": {
+     "flag": "AMBER",
+     "why": "No time for the OFT EP-1 brief — OPS BRIEF sits inside 09:45–10:00"
+    },
+    "nomad": {
+     "flag": "AMBER",
+     "why": "No time for the OFT EP-1 brief — OPS BRIEF sits inside 09:45–10:00"
+    },
+    "foot": "Tap a puck for why. 5 men are flagged.",
+    "footAfterTap": "Talisman — No time for the OFT EP-1 brief — OPS BRIEF sits inside 09:45–10:00"
+   },
+   "B14p.view.tap": "tapped",
+   "B14p.board": {
+    "chip": "36",
+    "one": "Who’s available 36",
+    "from": "who is free as things stand now",
+    "rect": {
+     "x": 12,
+     "y": 309,
+     "w": 366,
+     "h": 523
+    },
+    "echo": {
+     "flag": "AMBER",
+     "why": "No time for the OFT EP-1 brief — OPS BRIEF sits inside 09:45–10:00",
+     "whyBox": {
+      "x": 199,
+      "y": 433,
+      "w": 170,
+      "h": 26
+     },
+     "puckBox": {
+      "x": 199,
+      "y": 412,
+      "w": 74,
+      "h": 15
+     },
+     "paint": {
+      "row": "rgb(241, 244, 247)|rgba(0, 0, 0, 0)|rgb(241, 244, 247)",
+      "puck": "none|rgb(234, 251, 243)|rgba(0, 0, 0, 0)",
+      "why": "rgb(229, 168, 59)"
+     }
+    },
+    "tal": {
+     "flag": "AMBER",
+     "why": "No time for the OFT EP-1 brief — OPS BRIEF sits inside 09:45–10:00"
+    },
+    "nomad": {
+     "flag": "AMBER",
+     "why": "No time for the OFT EP-1 brief — OPS BRIEF sits inside 09:45–10:00"
+    },
+    "foot": "Tap a puck for why. 5 men are flagged.",
+    "footAfterTap": "Talisman — No time for the OFT EP-1 brief — OPS BRIEF sits inside 09:45–10:00"
+   },
+   "B14p.board.tap": "tapped",
+   "errors": []
+  },
+  "errors": [],
+  "pics": [
+   "B14p-view-0-before-tap.png",
+   "B14p-view-1-window.png",
+   "B14p-view-2-window-talisman.png",
+   "B14p-view-3-window-foot.png",
+   "B14p-board-0-before-tap.png",
+   "B14p-board-1-window.png",
+   "B14p-board-2-window-talisman.png",
+   "B14p-board-3-window-foot.png"
+  ],
+  "out": {
+   "view": {
+    "chip": "36",
+    "one": "Who’s available 36",
+    "from": "who was free when this day was issued — Original",
+    "rect": {
+     "x": 12,
+     "y": 309,
+     "w": 366,
+     "h": 523
+    },
+    "echo": {
+     "flag": "AMBER",
+     "why": "No time for the OFT EP-1 brief — OPS BRIEF sits inside 09:45–10:00",
+     "whyBox": {
+      "x": 199,
+      "y": 433,
+      "w": 170,
+      "h": 26
+     },
+     "puckBox": {
+      "x": 199,
+      "y": 412,
+      "w": 74,
+      "h": 15
+     },
+     "paint": {
+      "row": "rgb(241, 244, 247)|rgba(0, 0, 0, 0)|rgb(241, 244, 247)",
+      "puck": "none|rgb(234, 251, 243)|rgba(0, 0, 0, 0)",
+      "why": "rgb(229, 168, 59)"
+     }
+    },
+    "tal": {
+     "flag": "AMBER",
+     "why": "No time for the OFT EP-1 brief — OPS BRIEF sits inside 09:45–10:00"
+    },
+    "nomad": {
+     "flag": "AMBER",
+     "why": "No time for the OFT EP-1 brief — OPS BRIEF sits inside 09:45–10:00"
+    },
+    "foot": "Tap a puck for why. 5 men are flagged.",
+    "footAfterTap": "Talisman — No time for the OFT EP-1 brief — OPS BRIEF sits inside 09:45–10:00"
+   },
+   "board": {
+    "chip": "36",
+    "one": "Who’s available 36",
+    "from": "who is free as things stand now",
+    "rect": {
+     "x": 12,
+     "y": 309,
+     "w": 366,
+     "h": 523
+    },
+    "echo": {
+     "flag": "AMBER",
+     "why": "No time for the OFT EP-1 brief — OPS BRIEF sits inside 09:45–10:00",
+     "whyBox": {
+      "x": 199,
+      "y": 433,
+      "w": 170,
+      "h": 26
+     },
+     "puckBox": {
+      "x": 199,
+      "y": 412,
+      "w": 74,
+      "h": 15
+     },
+     "paint": {
+      "row": "rgb(241, 244, 247)|rgba(0, 0, 0, 0)|rgb(241, 244, 247)",
+      "puck": "none|rgb(234, 251, 243)|rgba(0, 0, 0, 0)",
+      "why": "rgb(229, 168, 59)"
+     }
+    },
+    "tal": {
+     "flag": "AMBER",
+     "why": "No time for the OFT EP-1 brief — OPS BRIEF sits inside 09:45–10:00"
+    },
+    "nomad": {
+     "flag": "AMBER",
+     "why": "No time for the OFT EP-1 brief — OPS BRIEF sits inside 09:45–10:00"
+    },
+    "foot": "Tap a puck for why. 5 men are flagged.",
+    "footAfterTap": "Talisman — No time for the OFT EP-1 brief — OPS BRIEF sits inside 09:45–10:00"
+   }
+  }
+ },
+ "w2-second-spare-seat": {
+  "at": "2026-10-01T02:38:15.858Z",
+  "base": "http://localhost:4206",
+  "table": [
+   {
+    "id": "B20",
+    "did": "Monday published as it stood (four boxes, Publish day). Board, AMT BOX (8 passengers): Sidewinder dragged from the crew list onto the SECOND empty seat of the spare pair",
+    "screen": "seats drawn: pax.0:prowler pax.1:drill pax.2:taipan pax.3:nasty pax.4:ignite pax.5:rocky pax.6:bruise pax.7:psy pax.8:+ pax.9:mamba; day head 1 pending",
+    "stored": "stored pax = [\"prowler\",\"drill\",\"taipan\",\"nasty\",\"ignite\",\"rocky\",\"bruise\",\"psy\",\"\",\"mamba\"]; nulls in the day's sims: 0",
+    "verdict": "PASS",
+    "pics": [
+     "B20-0-mon-amt-box-full-row-spare-pair.png",
+     "B20-1-mon-dragged-onto-second-spare.png"
+    ]
+   },
+   {
+    "id": "B21",
+    "did": "Undo, then the same seat armed by a tap and Sidewinder picked from the crew list",
+    "screen": "seats drawn: pax.0:prowler pax.1:drill pax.2:taipan pax.3:nasty pax.4:ignite pax.5:rocky pax.6:bruise pax.7:psy pax.8:+ pax.9:mamba; toast \"Sidewinder — SDO duty & Sim BOX clash (+2 more)\"",
+    "stored": "stored pax = [\"prowler\",\"drill\",\"taipan\",\"nasty\",\"ignite\",\"rocky\",\"bruise\",\"psy\",\"\",\"mamba\"] — the same text as the drag's",
+    "verdict": "PASS",
+    "pics": [
+     "B21-1-mon-tap-arm-second-spare.png"
+    ]
+   },
+   {
+    "id": "B22",
+    "did": "Wednesday board. AMT BOX: Anvil and Ace put on its two seats, then Vapor DRAGGED from the crew list onto the second spare. New OFT row (+ Row, \"EP-2\" 17:00–18:00; Saber, Ledger, Ranger, Piston by tap): Blade DRAGGED onto the second spare",
+    "screen": "AMT BOX seats: p:shaft w:dj x0:+ x1:vegas; EP-2 seats: p:stiff w:drill x0:bane x1:pump x2:+ x3:slash",
+    "stored": "AMT BOX more = [\"\",\"vegas\"]; EP-2 more = [\"bane\",\"pump\",\"\",\"slash\"]; nulls: []",
+    "verdict": "PASS",
+    "pics": [
+     "B22-1-wed-amt-box-drag-second-spare.png",
+     "B22b-0-wed-new-oft-full-row-spare-pair.png",
+     "B22b-1-wed-new-oft-drag-second-spare.png"
+    ]
+   },
+   {
+    "id": "B23",
+    "did": "IAT-3 (Recon / Quill): its second spare armed by a tap, Sidewinder picked from the crew list. EP-2: after Undo, the same seat by tap + crew list",
+    "screen": "IAT-3 seats: p:prism w:nasty x0:+ x1:mamba; EP-2 seats: p:stiff w:drill x0:bane x1:pump x2:+ x3:slash",
+    "stored": "IAT-3 more = [\"\",\"mamba\"]; EP-2 more = [\"bane\",\"pump\",\"\",\"slash\"]",
+    "verdict": "PASS",
+    "pics": [
+     "B23-0-wed-iat3-spare-pair.png",
+     "B23-1-wed-iat3-tap-arm-second-spare.png",
+     "B23b-1-wed-new-oft-tap-arm-second-spare.png"
+    ]
+   },
+   {
+    "id": "B25",
+    "did": "Monday AMT BOX and Wednesday EP-2: the board's Undo, then Redo, after the second-spare placement",
+    "screen": "Monday: undo pax.0:prowler pax.1:drill pax.2:taipan pax.3:nasty pax.4:ignite pax.5:rocky pax.6:bruise pax.7:psy pax.8:+ pax.9:+ / redo pax.0:prowler pax.1:drill pax.2:taipan pax.3:nasty pax.4:ignite pax.5:rocky pax.6:bruise pax.7:psy pax.8:+ pax.9:mamba; EP-2: undo p:stiff w:drill x0:bane x1:pump x2:+ x3:+ / redo p:stiff w:drill x0:bane x1:pump x2:+ x3:slash",
+    "stored": "Monday pax after undo [\"prowler\",\"drill\",\"taipan\",\"nasty\",\"ignite\",\"rocky\",\"bruise\",\"psy\"], after redo [\"prowler\",\"drill\",\"taipan\",\"nasty\",\"ignite\",\"rocky\",\"bruise\",\"psy\",\"\",\"mamba\"]; EP-2 more after undo [\"bane\",\"pump\"], after redo [\"bane\",\"pump\",\"\",\"slash\"]",
+    "verdict": "PASS",
+    "pics": [
+     "B25-1-mon-after-undo.png",
+     "B25-2-mon-after-redo.png",
+     "B25-3-wed-new-oft-after-undo.png"
+    ]
+   },
+   {
+    "id": "B24",
+    "did": "Reload (working copies); Wednesday signed and published (Publish day), Monday signed and its amendment published (Publish AL1); every stored week row read; View-only Sched for both days; reload; the board again. Before that, on the published Monday: the day's count → the changes window, To go out",
+    "screen": "Monday read \"1 pending\", changes window lines: []; reload: same seats {\"mon\":\"pax.0:prowler pax.1:drill pax.2:taipan pax.3:nasty pax.4:ignite pax.5:rocky pax.6:bruise pax.7:psy pax.8:+ pax.9:mamba\",\"wed\":{\"iat\":\"p:prism w:nasty x0:+ x1:mamba\",\"amt\":\"p:shaft w:dj x0:+ x1:vegas\",\"ep2\":\"p:stiff w:drill x0:bane x1:pump x2:+ x3:slash\"}}; published {\"pressed\":true,\"label\":\"Publish day\"} / {\"pressed\":true,\"label\":\"Publish AL1\"}, heads [\"AL1\",\"ORIG\"]; View-only Sched rows: {\"iat\":\"prism,nasty,mamba\",\"ep2\":\"stiff,drill,bane,pump,slash\",\"box\":\"shaft,dj,vegas\",\"mon\":\"prowler,drill,taipan,nasty,ignite,rocky,bruise,psy,mamba\"}",
+    "stored": "14 stored lists read, not text: []; the padded ones: [\"weeks/13-07-2026#0 d.sims.amt[1].pax [BOX] = [\\\"prowler\\\",\\\"drill\\\",\\\"taipan\\\",\\\"nasty\\\",\\\"ignite\\\",\\\"rocky\\\",\\\"bruise\\\",\\\"psy\\\",\\\"\\\",\\\"mamba\\\"]\",\"weeks/13-07-2026:is:2026-07-15#0~0 d.sims.amt[1].more [BOX] = [\\\"\\\",\\\"vegas\\\"]\",\"weeks/13-07-2026:is:2026-07-15#0~0 d.sims.oft[1].more [IAT-3] = [\\\"\\\",\\\"mamba\\\"]\",\"weeks/13-07-2026:is:2026-07-15#0~0 d.sims.oft[2].more [EP-2] = [\\\"bane\\\",\\\"pump\\\",\\\"\\\",\\\"slash\\\"]\",\"weeks/13-07-2026:is:2026-07-13#1~0 snap.d.sims.amt[1].pax [BOX] = [\\\"prowler\\\",\\\"drill\\\",\\\"taipan\\\",\\\"nasty\\\",\\\"ignite\\\",\\\"rocky\\\",\\\"bruise\\\",\\\"psy\\\",\\\"\\\",\\\"mamba\\\"]\",\"weeks/13-07-2026#2 d.sims.amt[1].more [BOX] = [\\\"\\\",\\\"vegas\\\"]\",\"weeks/13-07-2026#2 d.sims.oft[1].more [IAT-3] = [\\\"\\\",\\\"mamba\\\"]\",\"weeks/13-07-2026#2 d.sims.oft[2].more [EP-2] = [\\\"bane\\\",\\\"pump\\\",\\\"\\\",\\\"slash\\\"]\"]",
+    "verdict": "PASS",
+    "pics": [
+     "B24c-1-mon-changes-window-one-placement.png",
+     "B24-1-wed-sims-after-reload.png",
+     "B24-2-mon-board-AL1-published.png",
+     "B24-3-viewsched-wed-issued-sims.png",
+     "B24-4-viewsched-wed-issued-amt.png",
+     "B24-5-viewsched-mon-issued-amt.png",
+     "B24-6-viewsched-mon-after-reload.png",
+     "B24-7-wed-board-after-publication-reload.png"
+    ]
+   }
+  ],
+  "checks": [
+   {
+    "name": "B20 the full AMT BOX (8 passengers) offers a spare PAIR: two empty seats after the eighth",
+    "ok": true,
+    "detail": "pax.0:prowler pax.1:drill pax.2:taipan pax.3:nasty pax.4:ignite pax.5:rocky pax.6:bruise pax.7:psy pax.8:+ pax.9:+"
+   },
+   {
+    "name": "B20 Sidewinder dragged from the crew list onto the SECOND spare (pax.9) — every row it wrote is named by its change-log batch",
+    "ok": true,
+    "detail": "put 2 [settings/elog:mrldi1s0l91a.000006, weeks/13-07-2026#0] · del 0 [] · batches sched.mutate/2"
+   },
+   {
+    "name": "B20 Sidewinder dragged from the crew list onto the SECOND spare (pax.9) — wrote exactly what it should",
+    "ok": true,
+    "detail": "put 2 [settings/elog:mrldi1s0l91a.000006, weeks/13-07-2026#0] · del 0 [] · batches sched.mutate/2"
+   },
+   {
+    "name": "B20 he sits where he was dropped: seat pax.9 holds Sidewinder",
+    "ok": true,
+    "detail": "pax.0:prowler pax.1:drill pax.2:taipan pax.3:nasty pax.4:ignite pax.5:rocky pax.6:bruise pax.7:psy pax.8:+ pax.9:mamba"
+   },
+   {
+    "name": "B20 the first spare (pax.8) is still offered, empty",
+    "ok": true,
+    "detail": "pax.0:prowler pax.1:drill pax.2:taipan pax.3:nasty pax.4:ignite pax.5:rocky pax.6:bruise pax.7:psy pax.8:+ pax.9:mamba"
+   },
+   {
+    "name": "B20 stored: the list is 10 long, the skipped seat is \"\" and he is at index 9",
+    "ok": true,
+    "detail": "[\"prowler\",\"drill\",\"taipan\",\"nasty\",\"ignite\",\"rocky\",\"bruise\",\"psy\",\"\",\"mamba\"]"
+   },
+   {
+    "name": "B20 stored: every entry is text — no null anywhere in the day's sims",
+    "ok": true,
+    "detail": "{\"pax\":[\"prowler\",\"drill\",\"taipan\",\"nasty\",\"ignite\",\"rocky\",\"bruise\",\"psy\",\"\",\"mamba\"],\"nulls\":[]}"
+   },
+   {
+    "name": "B24 the published Monday reads \"1 pending\" after the one placement",
+    "ok": true,
+    "detail": "1 pending"
+   },
+   {
+    "name": "B24 the changes window (To go out · AL1) says \"1 change\": one item, \"AMT BOX · passengers\", one line under it, \"Sidewinder\"",
+    "ok": true,
+    "detail": "{\"tabs\":[\"New to you 0\",\"All changes 6\",\"To go out · AL1 1\"],\"text\":[\"Waiting to go out as\",\"AL1\",\"· 1 change\",\"AMT BOX · passengers\",\"Saber\",\"15/7 09:00\",\"Sidewinder\",\"Tap a change to go to it.\"]}"
+   },
+   {
+    "name": "B25 Undo takes only him off: the eight passengers keep their seats, the spare pair is offered again",
+    "ok": true,
+    "detail": "pax.0:prowler pax.1:drill pax.2:taipan pax.3:nasty pax.4:ignite pax.5:rocky pax.6:bruise pax.7:psy pax.8:+ pax.9:+"
+   },
+   {
+    "name": "B25 stored after Undo: the list is the eight men again (the trailing blank trimmed, the men unmoved)",
+    "ok": true,
+    "detail": "[\"prowler\",\"drill\",\"taipan\",\"nasty\",\"ignite\",\"rocky\",\"bruise\",\"psy\"]"
+   },
+   {
+    "name": "B25 Redo puts him back on the SAME seat (pax.9), the first spare still empty",
+    "ok": true,
+    "detail": "pax.0:prowler pax.1:drill pax.2:taipan pax.3:nasty pax.4:ignite pax.5:rocky pax.6:bruise pax.7:psy pax.8:+ pax.9:mamba"
+   },
+   {
+    "name": "B25 stored after Redo: exactly what the drag stored",
+    "ok": true,
+    "detail": "{\"redo\":[\"prowler\",\"drill\",\"taipan\",\"nasty\",\"ignite\",\"rocky\",\"bruise\",\"psy\",\"\",\"mamba\"],\"drag\":\"[\\\"prowler\\\",\\\"drill\\\",\\\"taipan\\\",\\\"nasty\\\",\\\"ignite\\\",\\\"rocky\\\",\\\"bruise\\\",\\\"psy\\\",\\\"\\\",\\\"mamba\\\"]\"}"
+   },
+   {
+    "name": "B21 the second spare (pax.9) armed by a tap, Sidewinder picked from the crew list — every row it wrote is named by its change-log batch",
+    "ok": true,
+    "detail": "put 2 [settings/elog:mrldi1s0l91a.00000a, weeks/13-07-2026#0] · del 0 [] · batches sched.mutate/2"
+   },
+   {
+    "name": "B21 the second spare (pax.9) armed by a tap, Sidewinder picked from the crew list — wrote exactly what it should",
+    "ok": true,
+    "detail": "put 2 [settings/elog:mrldi1s0l91a.00000a, weeks/13-07-2026#0] · del 0 [] · batches sched.mutate/2"
+   },
+   {
+    "name": "B21 tap-arm: he sits on pax.9, pax.8 still offered",
+    "ok": true,
+    "detail": "pax.0:prowler pax.1:drill pax.2:taipan pax.3:nasty pax.4:ignite pax.5:rocky pax.6:bruise pax.7:psy pax.8:+ pax.9:mamba"
+   },
+   {
+    "name": "B21 tap-arm stores the SAME list as the drag (text, \"\" at 8, him at 9)",
+    "ok": true,
+    "detail": "{\"tap\":[\"prowler\",\"drill\",\"taipan\",\"nasty\",\"ignite\",\"rocky\",\"bruise\",\"psy\",\"\",\"mamba\"],\"drag\":\"[\\\"prowler\\\",\\\"drill\\\",\\\"taipan\\\",\\\"nasty\\\",\\\"ignite\\\",\\\"rocky\\\",\\\"bruise\\\",\\\"psy\\\",\\\"\\\",\\\"mamba\\\"]\"}"
+   },
+   {
+    "name": "B23 IAT-3 (both seats filled) offers a spare pair x0, x1",
+    "ok": true,
+    "detail": "p:prism w:nasty x0:+ x1:+"
+   },
+   {
+    "name": "B23 IAT-3's SECOND spare (x1) armed by a tap, Sidewinder picked from the crew list — every row it wrote is named by its change-log batch",
+    "ok": true,
+    "detail": "put 2 [settings/elog:mrldi1s0l91a.00000b, weeks/13-07-2026#2] · del 0 [] · batches sched.mutate/2"
+   },
+   {
+    "name": "B23 IAT-3's SECOND spare (x1) armed by a tap, Sidewinder picked from the crew list — wrote exactly what it should",
+    "ok": true,
+    "detail": "put 2 [settings/elog:mrldi1s0l91a.00000b, weeks/13-07-2026#2] · del 0 [] · batches sched.mutate/2"
+   },
+   {
+    "name": "B23 he sits on x1; the first spare x0 is still offered",
+    "ok": true,
+    "detail": "p:prism w:nasty x0:+ x1:mamba"
+   },
+   {
+    "name": "B23 stored: more = [\"\", \"mamba\"] — text only, no null",
+    "ok": true,
+    "detail": "[\"\",\"mamba\"]"
+   },
+   {
+    "name": "B22 the AMT BOX with two men offers a spare pair x0, x1",
+    "ok": true,
+    "detail": "p:shaft w:dj x0:+ x1:+"
+   },
+   {
+    "name": "B22 Vapor dragged from the crew list onto the AMT BOX's SECOND spare (x1) — every row it wrote is named by its change-log batch",
+    "ok": true,
+    "detail": "put 2 [settings/elog:mrldi1s0l91a.00000e, weeks/13-07-2026#2] · del 0 [] · batches sched.mutate/2"
+   },
+   {
+    "name": "B22 Vapor dragged from the crew list onto the AMT BOX's SECOND spare (x1) — wrote exactly what it should",
+    "ok": true,
+    "detail": "put 2 [settings/elog:mrldi1s0l91a.00000e, weeks/13-07-2026#2] · del 0 [] · batches sched.mutate/2"
+   },
+   {
+    "name": "B22 he sits on x1; the first spare x0 is still offered",
+    "ok": true,
+    "detail": "p:shaft w:dj x0:+ x1:vegas"
+   },
+   {
+    "name": "B22 stored: more = [\"\", \"vegas\"] — text only, no null",
+    "ok": true,
+    "detail": "[\"\",\"vegas\"]"
+   },
+   {
+    "name": "B22b \"+ Row\" added one OFT row",
+    "ok": true,
+    "detail": "{\"n0\":2,\"ri\":2}"
+   },
+   {
+    "name": "B22b the OFT row with both seats and two extras offers a spare pair x2, x3",
+    "ok": true,
+    "detail": "p:stiff w:drill x0:bane x1:pump x2:+ x3:+"
+   },
+   {
+    "name": "B22b Blade dragged from the crew list onto the SECOND spare (x3) — every row it wrote is named by its change-log batch",
+    "ok": true,
+    "detail": "put 2 [settings/elog:mrldi1s0l91a.00000n, weeks/13-07-2026#2] · del 0 [] · batches sched.mutate/2"
+   },
+   {
+    "name": "B22b Blade dragged from the crew list onto the SECOND spare (x3) — wrote exactly what it should",
+    "ok": true,
+    "detail": "put 2 [settings/elog:mrldi1s0l91a.00000n, weeks/13-07-2026#2] · del 0 [] · batches sched.mutate/2"
+   },
+   {
+    "name": "B22b he sits on x3; x2 is still offered",
+    "ok": true,
+    "detail": "p:stiff w:drill x0:bane x1:pump x2:+ x3:slash"
+   },
+   {
+    "name": "B22b stored: more = [\"bane\",\"pump\",\"\",\"slash\"] — text only, no null",
+    "ok": true,
+    "detail": "[\"bane\",\"pump\",\"\",\"slash\"]"
+   },
+   {
+    "name": "B25 (extras) Undo removes only Blade: the two extras keep x0, x1, the pair x2, x3 is offered; stored more = [\"bane\",\"pump\"]",
+    "ok": true,
+    "detail": "{\"seats\":\"p:stiff w:drill x0:bane x1:pump x2:+ x3:+\",\"more\":[\"bane\",\"pump\"]}"
+   },
+   {
+    "name": "B25 (extras) Redo puts him back on x3; stored more = [\"bane\",\"pump\",\"\",\"slash\"]",
+    "ok": true,
+    "detail": "{\"seats\":\"p:stiff w:drill x0:bane x1:pump x2:+ x3:slash\",\"more\":[\"bane\",\"pump\",\"\",\"slash\"]}"
+   },
+   {
+    "name": "B23b the same seat (x3) armed by a tap, Blade picked from the crew list — every row it wrote is named by its change-log batch",
+    "ok": true,
+    "detail": "put 2 [settings/elog:mrldi1s0l91a.00000r, weeks/13-07-2026#2] · del 0 [] · batches sched.mutate/2"
+   },
+   {
+    "name": "B23b the same seat (x3) armed by a tap, Blade picked from the crew list — wrote exactly what it should",
+    "ok": true,
+    "detail": "put 2 [settings/elog:mrldi1s0l91a.00000r, weeks/13-07-2026#2] · del 0 [] · batches sched.mutate/2"
+   },
+   {
+    "name": "B23b tap-arm stores the SAME list as the drag",
+    "ok": true,
+    "detail": "{\"seats\":\"p:stiff w:drill x0:bane x1:pump x2:+ x3:slash\",\"more\":[\"bane\",\"pump\",\"\",\"slash\"]}"
+   },
+   {
+    "name": "B24 reload (working copies) — a reload gives back exactly what was there",
+    "ok": true,
+    "detail": "week 13/07/2026"
+   },
+   {
+    "name": "B24 reload (working copies) — the reload wrote nothing",
+    "ok": true,
+    "detail": "no row changed"
+   },
+   {
+    "name": "B24 after a reload every row draws the same men on the same seats (Monday pax, Wednesday IAT-3, AMT BOX, EP-2)",
+    "ok": true,
+    "detail": "{\"s0\":{\"mon\":\"pax.0:prowler pax.1:drill pax.2:taipan pax.3:nasty pax.4:ignite pax.5:rocky pax.6:bruise pax.7:psy pax.8:+ pax.9:mamba\",\"wed\":{\"iat\":\"p:prism w:nasty x0:+ x1:mamba\",\"amt\":\"p:shaft w:dj x0:+ x1:vegas\",\"ep2\":\"p:stiff w:drill x0:bane x1:pump x2:+ x3:slash\"}},\"s1\":{\"mon\":\"pax.0:prowler pax.1:drill pax.2:taipan pax.3:nasty pax.4:ignite pax.5:rocky pax.6:bruise pax.7:psy pax.8:+ pax.9:mamba\",\"wed\":{\"iat\":\"p:prism w:nasty x0:+ x1:mamba\",\"amt\":\"p:shaft w:dj x0:+ x1:vegas\",\"ep2\":\"p:stiff w:drill x0:bane x1:pump x2:+ x3:slash\"}}}"
+   },
+   {
+    "name": "B24 after publication every `more` / `pax` list in every stored week row — the working days and the issued versions — is text only",
+    "ok": true,
+    "detail": "14 lists read"
+   },
+   {
+    "name": "B24 the padded lists are stored more than once (the working day and its issued version)",
+    "ok": true,
+    "detail": "[\"weeks/13-07-2026#0 d.sims.amt[1].pax [BOX] = [\\\"prowler\\\",\\\"drill\\\",\\\"taipan\\\",\\\"nasty\\\",\\\"ignite\\\",\\\"rocky\\\",\\\"bruise\\\",\\\"psy\\\",\\\"\\\",\\\"mamba\\\"]\",\"weeks/13-07-2026:is:2026-07-15#0~0 d.sims.amt[1].more [BOX] = [\\\"\\\",\\\"vegas\\\"]\",\"weeks/13-07-2026:is:2026-07-15#0~0 d.sims.oft[1].more [IAT-3] = [\\\"\\\",\\\"mamba\\\"]\",\"weeks/13-07-2026:is:2026-07-15#0~0 d.sims.oft[2].more [EP-2] = [\\\"bane\\\",\\\"pump\\\",\\\"\\\",\\\"slash\\\"]\",\"weeks/13-07-2026:is:2026-07-13#1~0 snap.d.sims.amt[1].pax [BOX] = [\\\"prowler\\\",\\\"drill\\\",\\\"taipan\\\",\\\"nasty\\\",\\\"ignite\\\",\\\"rocky\\\",\\\"bruise\\\",\\\"psy\\\",\\\"\\\",\\\"mamba\\\"]\",\"weeks/13-07-2026#2 d.sims.amt[1].more [BOX] = [\\\"\\\",\\\"vegas\\\"]\",\"weeks/13-07-2026#2 d.sims.oft[1].more [IAT-3] = [\\\"\\\",\\\"mamba\\\"]\",\"weeks/13-07-2026#2 d.sims.oft[2].more [EP-2] = [\\\"bane\\\",\\\"pump\\\",\\\"\\\",\\\"slash\\\"]\"]"
+   },
+   {
+    "name": "B24 View-only Sched (issued): IAT-3 shows Recon, Quill and Sidewinder; EP-2 shows Saber, Ledger, Ranger, Piston and Blade; the AMT BOX Anvil, Ace and Vapor",
+    "ok": true,
+    "detail": "{\"iat\":\"prism,nasty,mamba\",\"ep2\":\"stiff,drill,bane,pump,slash\",\"box\":\"shaft,dj,vegas\"}"
+   },
+   {
+    "name": "B24 View-only Sched (issued Monday): the AMT BOX shows its eight passengers and Sidewinder",
+    "ok": true,
+    "detail": "prowler,drill,taipan,nasty,ignite,rocky,bruise,psy,mamba"
+   },
+   {
+    "name": "B24 reload (after publication) — a reload gives back exactly what was there",
+    "ok": true,
+    "detail": "week 13/07/2026"
+   },
+   {
+    "name": "B24 reload (after publication) — the reload wrote nothing",
+    "ok": true,
+    "detail": "no row changed"
+   },
+   {
+    "name": "B24 after a reload the issued faces show the same",
+    "ok": true,
+    "detail": "{\"iat\":\"prism,nasty,mamba\",\"ep2\":\"stiff,drill,bane,pump,slash\",\"box\":\"shaft,dj,vegas\",\"mon\":\"prowler,drill,taipan,nasty,ignite,rocky,bruise,psy,mamba\"}"
+   },
+   {
+    "name": "B24 after the reload the stored lists are still text only",
+    "ok": true,
+    "detail": "[]"
+   },
+   {
+    "name": "B24 the board after publication and reload: the same seats",
+    "ok": true,
+    "detail": "{\"sW\":{\"iat\":\"p:prism w:nasty x0:+ x1:mamba\",\"amt\":\"p:shaft w:dj x0:+ x1:vegas\",\"ep2\":\"p:stiff w:drill x0:bane x1:pump x2:+ x3:slash\"},\"was\":{\"iat\":\"p:prism w:nasty x0:+ x1:mamba\",\"amt\":\"p:shaft w:dj x0:+ x1:vegas\",\"ep2\":\"p:stiff w:drill x0:bane x1:pump x2:+ x3:slash\"}}"
+   }
+  ],
+  "facts": {
+   "M.before.seats": "pax.0:prowler pax.1:drill pax.2:taipan pax.3:nasty pax.4:ignite pax.5:rocky pax.6:bruise pax.7:psy pax.8:+ pax.9:+",
+   "M.sign": {
+    "cur": "Ace",
+    "sked": "Anvil",
+    "plan": "Anvil",
+    "appr": "Anvil"
+   },
+   "M.pub": {
+    "pressed": true,
+    "label": "Publish day"
+   },
+   "M.head": {
+    "tag": "ORIG",
+    "pending": "5 changes",
+    "beak": "none",
+    "alpub": "",
+    "unpub": "Unpublish",
+    "signs": [
+     "— name —",
+     "— name —",
+     "— name —",
+     "— name —"
+    ],
+    "signed": "SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil",
+    "nys": ""
+   },
+   "M.before.stored": [
+    "prowler",
+    "drill",
+    "taipan",
+    "nasty",
+    "ignite",
+    "rocky",
+    "bruise",
+    "psy"
+   ],
+   "B20.toasts": [
+    "Monday published — APPROVED",
+    "Sidewinder — SDO duty & Sim BOX clash (+2 more)"
+   ],
+   "B20.after": {
+    "seats": "pax.0:prowler pax.1:drill pax.2:taipan pax.3:nasty pax.4:ignite pax.5:rocky pax.6:bruise pax.7:psy pax.8:+ pax.9:mamba",
+    "pax": [
+     "prowler",
+     "drill",
+     "taipan",
+     "nasty",
+     "ignite",
+     "rocky",
+     "bruise",
+     "psy",
+     "",
+     "mamba"
+    ],
+    "listsText": [
+     "\"pax\":[\"prowler\",\"drill\",\"taipan\",\"nasty\",\"ignite\",\"rocky\",\"bruise\",\"psy\",\"\",\"mamba\"]"
+    ],
+    "nulls": []
+   },
+   "B20.head": {
+    "tag": "ORIG",
+    "pending": "1 pending",
+    "beak": "none",
+    "alpub": "Publish AL1",
+    "unpub": "Unpublish",
+    "signs": [
+     "— name —",
+     "— name —",
+     "— name —",
+     "— name —"
+    ],
+    "signed": "SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil",
+    "nys": "Not yet signed"
+   },
+   "B24c.head": {
+    "tag": "ORIG",
+    "pending": "1 pending",
+    "beak": "none",
+    "alpub": "Publish AL1",
+    "unpub": "Unpublish",
+    "signs": [
+     "— name —",
+     "— name —",
+     "— name —",
+     "— name —"
+    ],
+    "signed": "SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil",
+    "nys": "Not yet signed"
+   },
+   "B24c.changes": {
+    "tabs": [
+     "New to you 0",
+     "All changes 6",
+     "To go out · AL1 1"
+    ],
+    "lines": [],
+    "text": [
+     "Waiting to go out as",
+     "AL1",
+     "· 1 change",
+     "AMT BOX · passengers",
+     "Saber",
+     "15/7 09:00",
+     "Sidewinder",
+     "Tap a change to go to it."
+    ]
+   },
+   "B24c.pending": "1 pending",
+   "B25.mon": {
+    "undo": {
+     "door": {
+      "present": true,
+      "title": "Undo — a change to the schedule",
+      "pressed": true,
+      "toasts": [
+       "Undid: a change to the schedule"
+      ]
+     },
+     "seats": "pax.0:prowler pax.1:drill pax.2:taipan pax.3:nasty pax.4:ignite pax.5:rocky pax.6:bruise pax.7:psy pax.8:+ pax.9:+",
+     "pax": [
+      "prowler",
+      "drill",
+      "taipan",
+      "nasty",
+      "ignite",
+      "rocky",
+      "bruise",
+      "psy"
+     ],
+     "head": null
+    },
+    "redo": {
+     "door": {
+      "present": true,
+      "title": "Redo — a change to the schedule",
+      "pressed": true,
+      "toasts": [
+       "Redid: a change to the schedule"
+      ]
+     },
+     "seats": "pax.0:prowler pax.1:drill pax.2:taipan pax.3:nasty pax.4:ignite pax.5:rocky pax.6:bruise pax.7:psy pax.8:+ pax.9:mamba",
+     "pax": [
+      "prowler",
+      "drill",
+      "taipan",
+      "nasty",
+      "ignite",
+      "rocky",
+      "bruise",
+      "psy",
+      "",
+      "mamba"
+     ]
+    }
+   },
+   "B21.after": {
+    "put": {
+     "armed": true,
+     "offered": true,
+     "before": [],
+     "after": [
+      "mamba"
+     ],
+     "took": true,
+     "msg": "Sidewinder — SDO duty & Sim BOX clash (+2 more)"
+    },
+    "seats": "pax.0:prowler pax.1:drill pax.2:taipan pax.3:nasty pax.4:ignite pax.5:rocky pax.6:bruise pax.7:psy pax.8:+ pax.9:mamba",
+    "pax": [
+     "prowler",
+     "drill",
+     "taipan",
+     "nasty",
+     "ignite",
+     "rocky",
+     "bruise",
+     "psy",
+     "",
+     "mamba"
+    ]
+   },
+   "B23.after": {
+    "put": {
+     "armed": true,
+     "offered": true,
+     "before": [],
+     "after": [
+      "mamba"
+     ],
+     "took": true,
+     "msg": "Sidewinder planned"
+    },
+    "seats": "p:prism w:nasty x0:+ x1:mamba",
+    "more": [
+     "",
+     "mamba"
+    ],
+    "nulls": [],
+    "text": [
+     "\"pax\":[\"boosh\",\"xray\",\"waldo\"]",
+     "\"more\":[\"\",\"mamba\"]"
+    ]
+   },
+   "B22.fill": [
+    {
+     "armed": true,
+     "offered": true,
+     "before": [],
+     "after": [
+      "shaft"
+     ],
+     "took": true,
+     "msg": "Anvil — SXO duty & Sim BOX clash (+2 more)"
+    },
+    {
+     "armed": true,
+     "offered": true,
+     "before": [],
+     "after": [
+      "dj"
+     ],
+     "took": true,
+     "msg": "Ace planned"
+    }
+   ],
+   "B22.after": {
+    "toasts": [
+     "Sidewinder — SDO duty & Sim BOX clash (+2 more)",
+     "Sidewinder planned",
+     "Anvil — SXO duty & Sim BOX clash (+2 more)",
+     "Ace planned"
+    ],
+    "seats": "p:shaft w:dj x0:+ x1:vegas",
+    "more": [
+     "",
+     "vegas"
+    ],
+    "nulls": []
+   },
+   "B22b.row": "<div class=\"ppl fcprcp\" data-fill=\"s:2.oft.2.+\"><span class=\"sb-slot empty\" data-slot=\"s:2.oft.2.p\" title=\"FCP — tap or drop a puck to fill\">+</span><span class=\"sb-slot empty\" data-slot=\"s:2.oft.2.w\" title=\"RCP — tap or drop a puck to fill\">+</span><span class=\"addz\" aria-hidden=\"true\">+ add</span></div>",
+   "B22b.fills": [
+    {
+     "slot": "p",
+     "who": "stiff",
+     "took": true,
+     "msg": "Saber planned"
+    },
+    {
+     "slot": "w",
+     "who": "drill",
+     "took": true,
+     "msg": "Ledger planned"
+    },
+    {
+     "slot": "x0",
+     "who": "bane",
+     "took": true,
+     "msg": "Ranger planned"
+    },
+    {
+     "slot": "x1",
+     "who": "pump",
+     "took": true,
+     "msg": "Piston planned"
+    }
+   ],
+   "B22b.after": {
+    "ri": 2,
+    "seats": "p:stiff w:drill x0:bane x1:pump x2:+ x3:slash",
+    "more": [
+     "bane",
+     "pump",
+     "",
+     "slash"
+    ],
+    "nulls": []
+   },
+   "B25.wed.ep2": {
+    "undo": {
+     "title": "Undo — a change to the schedule",
+     "seats": "p:stiff w:drill x0:bane x1:pump x2:+ x3:+",
+     "more": [
+      "bane",
+      "pump"
+     ]
+    },
+    "redo": {
+     "title": "Redo — a change to the schedule",
+     "seats": "p:stiff w:drill x0:bane x1:pump x2:+ x3:slash",
+     "more": [
+      "bane",
+      "pump",
+      "",
+      "slash"
+     ]
+    }
+   },
+   "B23b.after": {
+    "put": {
+     "armed": true,
+     "offered": true,
+     "before": [],
+     "after": [
+      "slash"
+     ],
+     "took": true,
+     "msg": "Blade planned"
+    },
+    "seats": "p:stiff w:drill x0:bane x1:pump x2:+ x3:slash",
+    "more": [
+     "bane",
+     "pump",
+     "",
+     "slash"
+    ]
+   },
+   "B24.reload": {
+    "before": {
+     "mon": "pax.0:prowler pax.1:drill pax.2:taipan pax.3:nasty pax.4:ignite pax.5:rocky pax.6:bruise pax.7:psy pax.8:+ pax.9:mamba",
+     "wed": {
+      "iat": "p:prism w:nasty x0:+ x1:mamba",
+      "amt": "p:shaft w:dj x0:+ x1:vegas",
+      "ep2": "p:stiff w:drill x0:bane x1:pump x2:+ x3:slash"
+     }
+    },
+    "after": {
+     "mon": "pax.0:prowler pax.1:drill pax.2:taipan pax.3:nasty pax.4:ignite pax.5:rocky pax.6:bruise pax.7:psy pax.8:+ pax.9:mamba",
+     "wed": {
+      "iat": "p:prism w:nasty x0:+ x1:mamba",
+      "amt": "p:shaft w:dj x0:+ x1:vegas",
+      "ep2": "p:stiff w:drill x0:bane x1:pump x2:+ x3:slash"
+     }
+    }
+   },
+   "B24.publish": {
+    "reload": {
+     "before": {
+      "mon": "pax.0:prowler pax.1:drill pax.2:taipan pax.3:nasty pax.4:ignite pax.5:rocky pax.6:bruise pax.7:psy pax.8:+ pax.9:mamba",
+      "wed": {
+       "iat": "p:prism w:nasty x0:+ x1:mamba",
+       "amt": "p:shaft w:dj x0:+ x1:vegas",
+       "ep2": "p:stiff w:drill x0:bane x1:pump x2:+ x3:slash"
+      }
+     },
+     "after": {
+      "mon": "pax.0:prowler pax.1:drill pax.2:taipan pax.3:nasty pax.4:ignite pax.5:rocky pax.6:bruise pax.7:psy pax.8:+ pax.9:mamba",
+      "wed": {
+       "iat": "p:prism w:nasty x0:+ x1:mamba",
+       "amt": "p:shaft w:dj x0:+ x1:vegas",
+       "ep2": "p:stiff w:drill x0:bane x1:pump x2:+ x3:slash"
+      }
+     }
+    },
+    "wedPub": {
+     "sign": {
+      "cur": "Ace",
+      "sked": "Anvil",
+      "plan": "Anvil",
+      "appr": "Anvil"
+     },
+     "pub": {
+      "pressed": true,
+      "label": "Publish day"
+     },
+     "head": {
+      "tag": "ORIG",
+      "pending": "22 changes",
+      "beak": "none",
+      "alpub": "",
+      "unpub": "Unpublish",
+      "signs": [
+       "— name —",
+       "— name —",
+       "— name —",
+       "— name —"
+      ],
+      "signed": "SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil",
+      "nys": ""
+     }
+    },
+    "monPub": {
+     "sign": {
+      "cur": "Ace",
+      "sked": "Anvil",
+      "plan": "Anvil",
+      "appr": "Anvil"
+     },
+     "pub": {
+      "pressed": true,
+      "label": "Publish AL1"
+     },
+     "head": {
+      "tag": "AL1",
+      "pending": "15 changes",
+      "beak": "none",
+      "alpub": "",
+      "unpub": "Unpublish",
+      "signs": [
+       "— name —",
+       "— name —",
+       "— name —",
+       "— name —"
+      ],
+      "signed": "SIGNED AL1 CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil",
+      "nys": ""
+     }
+    },
+    "lists": [
+     "weeks/13-07-2026#0 d.sims.amt[1].pax [BOX] = [\"prowler\",\"drill\",\"taipan\",\"nasty\",\"ignite\",\"rocky\",\"bruise\",\"psy\",\"\",\"mamba\"]",
+     "weeks/13-07-2026:is:2026-07-15#0~0 d.sims.amt[1].more [BOX] = [\"\",\"vegas\"]",
+     "weeks/13-07-2026:is:2026-07-15#0~0 d.sims.oft[1].more [IAT-3] = [\"\",\"mamba\"]",
+     "weeks/13-07-2026:is:2026-07-15#0~0 d.sims.oft[2].more [EP-2] = [\"bane\",\"pump\",\"\",\"slash\"]",
+     "weeks/13-07-2026:is:2026-07-13#1~0 snap.d.sims.amt[1].pax [BOX] = [\"prowler\",\"drill\",\"taipan\",\"nasty\",\"ignite\",\"rocky\",\"bruise\",\"psy\",\"\",\"mamba\"]",
+     "weeks/13-07-2026#2 d.sims.amt[1].more [BOX] = [\"\",\"vegas\"]",
+     "weeks/13-07-2026#2 d.sims.oft[1].more [IAT-3] = [\"\",\"mamba\"]",
+     "weeks/13-07-2026#2 d.sims.oft[2].more [EP-2] = [\"bane\",\"pump\",\"\",\"slash\"]"
+    ],
+    "allLists": 14,
+    "bad": [],
+    "view": {
+     "iat": [
+      {
+       "who": "prism",
+       "x": 261,
+       "y": 439
+      },
+      {
+       "who": "nasty",
+       "x": 339,
+       "y": 439
+      },
+      {
+       "who": "mamba",
+       "x": 261,
+       "y": 458
+      }
+     ],
+     "ep2": [
+      {
+       "who": "stiff",
+       "x": 261,
+       "y": 439
+      },
+      {
+       "who": "drill",
+       "x": 339,
+       "y": 439
+      },
+      {
+       "who": "bane",
+       "x": 261,
+       "y": 458
+      },
+      {
+       "who": "pump",
+       "x": 339,
+       "y": 458
+      },
+      {
+       "who": "slash",
+       "x": 261,
+       "y": 477
+      }
+     ],
+     "box": [
+      {
+       "who": "shaft",
+       "x": 261,
+       "y": 439
+      },
+      {
+       "who": "dj",
+       "x": 339,
+       "y": 439
+      },
+      {
+       "who": "vegas",
+       "x": 261,
+       "y": 458
+      }
+     ],
+     "mon": [
+      {
+       "who": "prowler",
+       "x": 261,
+       "y": 439
+      },
+      {
+       "who": "drill",
+       "x": 339,
+       "y": 439
+      },
+      {
+       "who": "taipan",
+       "x": 261,
+       "y": 458
+      },
+      {
+       "who": "nasty",
+       "x": 339,
+       "y": 458
+      },
+      {
+       "who": "ignite",
+       "x": 261,
+       "y": 477
+      },
+      {
+       "who": "rocky",
+       "x": 339,
+       "y": 477
+      },
+      {
+       "who": "bruise",
+       "x": 261,
+       "y": 496
+      },
+      {
+       "who": "psy",
+       "x": 339,
+       "y": 496
+      },
+      {
+       "who": "mamba",
+       "x": 261,
+       "y": 515
+      }
+     ],
+     "heads": [
+      "AL1",
+      "ORIG"
+     ]
+    },
+    "viewReloaded": {
+     "iat": "prism,nasty,mamba",
+     "ep2": "stiff,drill,bane,pump,slash",
+     "box": "shaft,dj,vegas",
+     "mon": "prowler,drill,taipan,nasty,ignite,rocky,bruise,psy,mamba"
+    },
+    "boardAfter": {
+     "iat": "p:prism w:nasty x0:+ x1:mamba",
+     "amt": "p:shaft w:dj x0:+ x1:vegas",
+     "ep2": "p:stiff w:drill x0:bane x1:pump x2:+ x3:slash"
+    }
+   },
+   "B24.storedLists": [
+    "weeks/13-07-2026#0 d.sims.amt[1].pax [BOX] = [\"prowler\",\"drill\",\"taipan\",\"nasty\",\"ignite\",\"rocky\",\"bruise\",\"psy\",\"\",\"mamba\"]",
+    "weeks/13-07-2026:is:2026-07-15#0~0 d.sims.amt[1].more [BOX] = [\"\",\"vegas\"]",
+    "weeks/13-07-2026:is:2026-07-15#0~0 d.sims.oft[1].more [IAT-3] = [\"\",\"mamba\"]",
+    "weeks/13-07-2026:is:2026-07-15#0~0 d.sims.oft[2].more [EP-2] = [\"bane\",\"pump\",\"\",\"slash\"]",
+    "weeks/13-07-2026:is:2026-07-13#1~0 snap.d.sims.amt[1].pax [BOX] = [\"prowler\",\"drill\",\"taipan\",\"nasty\",\"ignite\",\"rocky\",\"bruise\",\"psy\",\"\",\"mamba\"]",
+    "weeks/13-07-2026#2 d.sims.amt[1].more [BOX] = [\"\",\"vegas\"]",
+    "weeks/13-07-2026#2 d.sims.oft[1].more [IAT-3] = [\"\",\"mamba\"]",
+    "weeks/13-07-2026#2 d.sims.oft[2].more [EP-2] = [\"bane\",\"pump\",\"\",\"slash\"]"
+   ],
+   "B24.bad": [],
+   "B24.view": {
+    "iat": [
+     {
+      "who": "prism",
+      "x": 261,
+      "y": 439
+     },
+     {
+      "who": "nasty",
+      "x": 339,
+      "y": 439
+     },
+     {
+      "who": "mamba",
+      "x": 261,
+      "y": 458
+     }
+    ],
+    "ep2": [
+     {
+      "who": "stiff",
+      "x": 261,
+      "y": 439
+     },
+     {
+      "who": "drill",
+      "x": 339,
+      "y": 439
+     },
+     {
+      "who": "bane",
+      "x": 261,
+      "y": 458
+     },
+     {
+      "who": "pump",
+      "x": 339,
+      "y": 458
+     },
+     {
+      "who": "slash",
+      "x": 261,
+      "y": 477
+     }
+    ],
+    "box": [
+     {
+      "who": "shaft",
+      "x": 261,
+      "y": 439
+     },
+     {
+      "who": "dj",
+      "x": 339,
+      "y": 439
+     },
+     {
+      "who": "vegas",
+      "x": 261,
+      "y": 458
+     }
+    ],
+    "mon": [
+     {
+      "who": "prowler",
+      "x": 261,
+      "y": 439
+     },
+     {
+      "who": "drill",
+      "x": 339,
+      "y": 439
+     },
+     {
+      "who": "taipan",
+      "x": 261,
+      "y": 458
+     },
+     {
+      "who": "nasty",
+      "x": 339,
+      "y": 458
+     },
+     {
+      "who": "ignite",
+      "x": 261,
+      "y": 477
+     },
+     {
+      "who": "rocky",
+      "x": 339,
+      "y": 477
+     },
+     {
+      "who": "bruise",
+      "x": 261,
+      "y": 496
+     },
+     {
+      "who": "psy",
+      "x": 339,
+      "y": 496
+     },
+     {
+      "who": "mamba",
+      "x": 261,
+      "y": 515
+     }
+    ],
+    "heads": [
+     "AL1",
+     "ORIG"
+    ]
+   },
+   "B24.view.reloaded": {
+    "iat": "prism,nasty,mamba",
+    "ep2": "stiff,drill,bane,pump,slash",
+    "box": "shaft,dj,vegas",
+    "mon": "prowler,drill,taipan,nasty,ignite,rocky,bruise,psy,mamba"
+   },
+   "B24.board.after": {
+    "iat": "p:prism w:nasty x0:+ x1:mamba",
+    "amt": "p:shaft w:dj x0:+ x1:vegas",
+    "ep2": "p:stiff w:drill x0:bane x1:pump x2:+ x3:slash"
+   },
+   "errors": []
+  },
+  "errors": [],
+  "pics": [
+   "B20-0-mon-amt-box-full-row-spare-pair.png",
+   "B20-1-mon-dragged-onto-second-spare.png",
+   "B24c-1-mon-changes-window-one-placement.png",
+   "B25-1-mon-after-undo.png",
+   "B25-2-mon-after-redo.png",
+   "B21-1-mon-tap-arm-second-spare.png",
+   "B23-0-wed-iat3-spare-pair.png",
+   "B23-1-wed-iat3-tap-arm-second-spare.png",
+   "B22-1-wed-amt-box-drag-second-spare.png",
+   "B22b-0-wed-new-oft-full-row-spare-pair.png",
+   "B22b-1-wed-new-oft-drag-second-spare.png",
+   "B25-3-wed-new-oft-after-undo.png",
+   "B23b-1-wed-new-oft-tap-arm-second-spare.png",
+   "B24-1-wed-sims-after-reload.png",
+   "B24-2-mon-board-AL1-published.png",
+   "B24-3-viewsched-wed-issued-sims.png",
+   "B24-4-viewsched-wed-issued-amt.png",
+   "B24-5-viewsched-mon-issued-amt.png",
+   "B24-6-viewsched-mon-after-reload.png",
+   "B24-7-wed-board-after-publication-reload.png"
+  ]
+ },
+ "w3-compound-saturday": {
+  "at": "2026-10-01T02:34:53.759Z",
+  "base": "http://localhost:4206",
+  "table": [
+   {
+    "id": "B36",
+    "did": "Saturday 18 Jul. Inputs page: a timed Personal request for Ranger (10:00–11:00). Board: + Row twice in the OFT sims (EP-9 09:00–11:00 with Hunter / Ledger and Sidewinder on the SECOND spare; EP-10 13:00–15:00 with Blade / Basher and Piston on the FIRST spare); ALL AVAIL in the extras of the Personal row; OIL Earn on, Ledger tapped off, OIL Earn off. Then: reload; four boxes + Publish day; Leave War; reload; View-only Sched; Unpublish; Leave War; reload; four boxes + publish again; Leave War; reload",
+    "screen": "built: EP-9 p:prowler w:drill x0:+ x1:mamba · EP-10 p:slash w:glass x0:pump x1:+ · the Personal row's count 41, window lists 41 · OIL Earn drill:off glass:on mamba:on plasma:on prowler:on pump:on slash:on. Heads: built DRAFT/17 changes → published ORIG/22 changes → unpublished DRAFT/23 changes → again ORIG/28 changes. Leave War 18 Jul: published {\"Sidewinder\":{\"text\":\"HO*\",\"cls\":\"duty weekend act\"},\"Piston\":{\"text\":\"HO*\",\"cls\":\"duty weekend act\"},\"Ledger\":{\"text\":\"\",\"cls\":\"weekend act\"},\"Hunter\":{\"text\":\"HO*\",\"cls\":\"duty weekend act\"},\"Blade\":{\"text\":\"HO*\",\"cls\":\"duty weekend act\"},\"Basher\":{\"text\":\"HO*\",\"cls\":\"duty weekend act\"},\"Ranger\":{\"text\":\"\",\"cls\":\"weekend act\"},\"Anvil\":{\"text\":\"\",\"cls\":\"weekend act\"}}; unpublished {\"Sidewinder\":{\"text\":\"\",\"cls\":\"weekend act\"},\"Piston\":{\"text\":\"\",\"cls\":\"weekend act\"},\"Ledger\":{\"text\":\"\",\"cls\":\"weekend act\"},\"Hunter\":{\"text\":\"\",\"cls\":\"weekend act\"},\"Blade\":{\"text\":\"\",\"cls\":\"weekend act\"},\"Basher\":{\"text\":\"\",\"cls\":\"weekend act\"},\"Ranger\":{\"text\":\"\",\"cls\":\"weekend act\"},\"Anvil\":{\"text\":\"\",\"cls\":\"weekend act\"}}; again {\"Sidewinder\":{\"text\":\"HO*\",\"cls\":\"duty weekend act\"},\"Piston\":{\"text\":\"HO*\",\"cls\":\"duty weekend act\"},\"Ledger\":{\"text\":\"\",\"cls\":\"weekend act\"},\"Hunter\":{\"text\":\"HO*\",\"cls\":\"duty weekend act\"},\"Blade\":{\"text\":\"HO*\",\"cls\":\"duty weekend act\"},\"Basher\":{\"text\":\"HO*\",\"cls\":\"duty weekend act\"},\"Ranger\":{\"text\":\"\",\"cls\":\"weekend act\"},\"Anvil\":{\"text\":\"\",\"cls\":\"weekend act\"}}. View-only Sched: {\"tag\":\"ORIG\",\"versions\":[\"Original — as issued\",\"Working draft — not issued\"],\"ep9\":\"prowler,drill,mamba\",\"chips\":[\"41 | None of these 41 earn OIL today — tap to see each one (who was free when this day was issu\"]}",
+    "stored": "sims EP-9:[\"\",\"mamba\"] EP-10:[\"pump\"]; decisions {\"people\":{\"drill|r:rmrldi1s0n982u8\":\"deny\"}}; the Personal row [{\"who\":\"bane\",\"more\":[\"allavail\"]}]; week rows built: weeks/13-07-2026 weeks/13-07-2026#5; published: weeks/13-07-2026 weeks/13-07-2026#5 weeks/13-07-2026:is:2026-07-18#0~0; unpublished: weeks/13-07-2026 weeks/13-07-2026#5 weeks/13-07-2026:is:2026-07-18#0~0 weeks/13-07-2026:rx:2026-07-18#0~0; again: weeks/13-07-2026 weeks/13-07-2026#5 weeks/13-07-2026:is:2026-07-18#0~0 weeks/13-07-2026:is:2026-07-18#0~1 weeks/13-07-2026:rx:2026-07-18#0~0; padded lists: [\"weeks/13-07-2026#5 d.sims.oft[0].more = [\\\"\\\",\\\"mamba\\\"]\",\"weeks/13-07-2026:is:2026-07-18#0~0 d.sims.oft[0].more = [\\\"\\\",\\\"mamba\\\"]\",\"weeks/13-07-2026:is:2026-07-18#0~1 d.sims.oft[0].more = [\\\"\\\",\\\"mamba\\\"]\"]; not text: []",
+    "verdict": "PASS",
+    "pics": [
+     "B36-0-sat-board-built.png",
+     "B36-1-sat-oil-earn-ledger-off.png",
+     "B36-1-built-oil-earn-sims.png",
+     "B36-2-built-reloaded-oil-earn-sims.png",
+     "B36-3-sat-published.png",
+     "B36-3-published-oil-earn-sims.png",
+     "B36-4-published-leave-war.png",
+     "B36-5-published-reloaded-oil-earn-sims.png",
+     "B36-6-viewsched-sat-issued.png",
+     "B36-7-sat-unpublished.png",
+     "B36-8-unpublished-oil-earn-sims.png",
+     "B36-9-unpublished-leave-war.png",
+     "B36-10-unpublished-reloaded-oil-earn-sims.png",
+     "B36-11-sat-published-again.png",
+     "B36-12-published-again-oil-earn-sims.png",
+     "B36-13-published-again-leave-war.png",
+     "B36-14-published-again-reloaded-oil-earn-sims.png"
+    ]
+   }
+  ],
+  "checks": [
+   {
+    "name": "B36 the new sim row with both seats filled offers a spare pair",
+    "ok": true,
+    "detail": "p:prowler w:drill x0:+ x1:+"
+   },
+   {
+    "name": "B36 every man was taken by his seat",
+    "ok": true,
+    "detail": "[]"
+   },
+   {
+    "name": "B36 ALL AVAIL placed in the extras of the Personal row",
+    "ok": true,
+    "detail": "{\"armed\":true,\"armedKey\":\"g:5.0.+\",\"offered\":true,\"before\":[\"bane\"],\"after\":[\"bane\",\"allavail\"],\"took\":true,\"msg\":\"ALL AVAIL planned\"}"
+   },
+   {
+    "name": "B36 stored: EP-9 more = [\"\",\"mamba\"], EP-10 more = [\"pump\"], no null in the sims",
+    "ok": true,
+    "detail": "[\"EP-9: [\\\"\\\",\\\"mamba\\\"]\",\"EP-10: [\\\"pump\\\"]\"]"
+   },
+   {
+    "name": "B36 OIL Earn: Sidewinder (second spare) has an earning puck, on — as Piston (first spare) has",
+    "ok": true,
+    "detail": "[\"prowler:on@r:rmrldi1s0n982u8\",\"drill:on@r:rmrldi1s0n982u8\",\"mamba:on@r:rmrldi1s0n982u8\",\"slash:on@r:rmrldi1s0it2stw\",\"glass:on@r:rmrldi1s0it2stw\",\"pump:on@r:rmrldi1s0it2stw\"]"
+   },
+   {
+    "name": "B36 OIL Earn: Ledger reads off after the tap, the others still on",
+    "ok": true,
+    "detail": "[\"prowler:on\",\"drill:off\",\"mamba:on\",\"slash:on\",\"glass:on\",\"pump:on\"]"
+   },
+   {
+    "name": "B36 reload (built, not published) — a reload gives back exactly what was there",
+    "ok": true,
+    "detail": "week 13/07/2026"
+   },
+   {
+    "name": "B36 reload (built, not published) — the reload wrote nothing",
+    "ok": true,
+    "detail": "no row changed"
+   },
+   {
+    "name": "B36 built → reload: the same seats, crowd, decisions on screen and stored",
+    "ok": true,
+    "detail": "[]"
+   },
+   {
+    "name": "B36 reload (published) — a reload gives back exactly what was there",
+    "ok": true,
+    "detail": "week 13/07/2026"
+   },
+   {
+    "name": "B36 reload (published) — the reload wrote nothing",
+    "ok": true,
+    "detail": "no row changed"
+   },
+   {
+    "name": "B36 published → reload: the same seats, crowd, decisions, version on screen and stored",
+    "ok": true,
+    "detail": "[]"
+   },
+   {
+    "name": "B36 publication changed no seat, crowd or decision",
+    "ok": true,
+    "detail": "[]"
+   },
+   {
+    "name": "B36 Leave War after publication: Sidewinder (second spare) is credited as Piston (first spare) is; Ledger (tapped off) is not",
+    "ok": true,
+    "detail": "{\"Sidewinder\":{\"text\":\"HO*\",\"cls\":\"duty weekend act\"},\"Piston\":{\"text\":\"HO*\",\"cls\":\"duty weekend act\"},\"Ledger\":{\"text\":\"\",\"cls\":\"weekend act\"},\"Hunter\":{\"text\":\"HO*\",\"cls\":\"duty weekend act\"},\"Blade\":{\"text\":\"HO*\",\"cls\":\"duty weekend act\"},\"Basher\":{\"text\":\"HO*\",\"cls\":\"duty weekend act\"},\"Ranger\":{\"text\":\"\",\"cls\":\"weekend act\"},\"Anvil\":{\"text\":\"\",\"cls\":\"weekend act\"}}"
+   },
+   {
+    "name": "B36 View-only Sched (issued): EP-9 shows Hunter, Ledger and Sidewinder",
+    "ok": true,
+    "detail": "{\"tag\":\"ORIG\",\"versions\":[\"Original — as issued\",\"Working draft — not issued\"],\"ep9\":\"prowler,drill,mamba\",\"chips\":[\"41 | None of these 41 earn OIL today — tap to see each one (who was free when this day was issu\"]}"
+   },
+   {
+    "name": "B36 reload (unpublished) — a reload gives back exactly what was there",
+    "ok": true,
+    "detail": "week 13/07/2026"
+   },
+   {
+    "name": "B36 reload (unpublished) — the reload wrote nothing",
+    "ok": true,
+    "detail": "no row changed"
+   },
+   {
+    "name": "B36 unpublished → reload: the same on screen and stored",
+    "ok": true,
+    "detail": "[]"
+   },
+   {
+    "name": "B36 Unpublish changed no seat, crowd or decision",
+    "ok": true,
+    "detail": "[]"
+   },
+   {
+    "name": "B36 reload (published again) — a reload gives back exactly what was there",
+    "ok": true,
+    "detail": "week 13/07/2026"
+   },
+   {
+    "name": "B36 reload (published again) — the reload wrote nothing",
+    "ok": true,
+    "detail": "no row changed"
+   },
+   {
+    "name": "B36 published again → reload: the same on screen and stored",
+    "ok": true,
+    "detail": "[]"
+   },
+   {
+    "name": "B36 the second publication changed no seat, crowd or decision",
+    "ok": true,
+    "detail": "[]"
+   },
+   {
+    "name": "B36 Leave War after the second publication reads as after the first",
+    "ok": true,
+    "detail": "{\"first\":{\"Sidewinder\":{\"text\":\"HO*\",\"cls\":\"duty weekend act\"},\"Piston\":{\"text\":\"HO*\",\"cls\":\"duty weekend act\"},\"Ledger\":{\"text\":\"\",\"cls\":\"weekend act\"},\"Hunter\":{\"text\":\"HO*\",\"cls\":\"duty weekend act\"},\"Blade\":{\"text\":\"HO*\",\"cls\":\"duty weekend act\"},\"Basher\":{\"text\":\"HO*\",\"cls\":\"duty weekend act\"},\"Ranger\":{\"text\":\"\",\"cls\":\"weekend act\"},\"Anvil\":{\"text\":\"\",\"cls\":\"weekend act\"}},\"again\":{\"Sidewinder\":{\"text\":\"HO*\",\"cls\":\"duty weekend act\"},\"Piston\":{\"text\":\"HO*\",\"cls\":\"duty weekend act\"},\"Ledger\":{\"text\":\"\",\"cls\":\"weekend act\"},\"Hunter\":{\"text\":\"HO*\",\"cls\":\"duty weekend act\"},\"Blade\":{\"text\":\"HO*\",\"cls\":\"duty weekend act\"},\"Basher\":{\"text\":\"HO*\",\"cls\":\"duty weekend act\"},\"Ranger\":{\"text\":\"\",\"cls\":\"weekend act\"},\"Anvil\":{\"text\":\"\",\"cls\":\"weekend act\"}}}"
+   },
+   {
+    "name": "B36 every stored `more` / `pax` list (the working day and each issued version) is text only; the padded one reads [\"\",\"mamba\"] everywhere",
+    "ok": true,
+    "detail": "{\"padded\":[\"weeks/13-07-2026#5 d.sims.oft[0].more = [\\\"\\\",\\\"mamba\\\"]\",\"weeks/13-07-2026:is:2026-07-18#0~0 d.sims.oft[0].more = [\\\"\\\",\\\"mamba\\\"]\",\"weeks/13-07-2026:is:2026-07-18#0~1 d.sims.oft[0].more = [\\\"\\\",\\\"mamba\\\"]\"],\"bad\":[]}"
+   }
+  ],
+  "facts": {
+   "B36.req": {
+    "person": "bane",
+    "date": "Jul 18",
+    "allday": false,
+    "s": 600,
+    "e": 660,
+    "yr": 2026,
+    "type": "Personal",
+    "remarks": "P7 B36",
+    "mod": "2026-07-15",
+    "iid": "imrldi1s0cdiwoi",
+    "ord": 0,
+    "acc": "g"
+   },
+   "B36.puts": [
+    {
+     "k": "s:5.oft.0.p",
+     "who": "prowler",
+     "took": true,
+     "msg": "Hunter planned"
+    },
+    {
+     "k": "s:5.oft.0.w",
+     "who": "drill",
+     "took": true,
+     "msg": "Ledger planned"
+    },
+    {
+     "k": "s:5.oft.1.p",
+     "who": "slash",
+     "took": true,
+     "msg": "Blade planned"
+    },
+    {
+     "k": "s:5.oft.1.w",
+     "who": "glass",
+     "took": true,
+     "msg": "Basher planned"
+    },
+    {
+     "k": "s:5.oft.0.x1",
+     "who": "mamba",
+     "took": true,
+     "msg": "Sidewinder planned"
+    },
+    {
+     "k": "s:5.oft.1.x0",
+     "who": "pump",
+     "took": true,
+     "msg": "Piston planned"
+    }
+   ],
+   "B36.placeholder": {
+    "armed": true,
+    "armedKey": "g:5.0.+",
+    "offered": true,
+    "before": [
+     "bane"
+    ],
+    "after": [
+     "bane",
+     "allavail"
+    ],
+    "took": true,
+    "msg": "ALL AVAIL planned"
+   },
+   "B36.oilButton": "pressed",
+   "B36.oilPucks.before": [
+    {
+     "who": "plasma",
+     "item": "r:rmrldi1s0jvyny7",
+     "on": true
+    },
+    {
+     "who": "prowler",
+     "item": "r:rmrldi1s0n982u8",
+     "on": true
+    },
+    {
+     "who": "drill",
+     "item": "r:rmrldi1s0n982u8",
+     "on": true
+    },
+    {
+     "who": "mamba",
+     "item": "r:rmrldi1s0n982u8",
+     "on": true
+    },
+    {
+     "who": "slash",
+     "item": "r:rmrldi1s0it2stw",
+     "on": true
+    },
+    {
+     "who": "glass",
+     "item": "r:rmrldi1s0it2stw",
+     "on": true
+    },
+    {
+     "who": "pump",
+     "item": "r:rmrldi1s0it2stw",
+     "on": true
+    }
+   ],
+   "B36.tapOff": "tapped",
+   "B36.oild": "{\"people\":{\"drill|r:rmrldi1s0n982u8\":\"deny\"}}",
+   "B36.toasts": [
+    "Hunter planned",
+    "Ledger planned",
+    "Blade planned",
+    "Basher planned",
+    "Sidewinder planned",
+    "Piston planned",
+    "ALL AVAIL planned",
+    "OIL mode — tap a puck to take a man off that event, or an item to stop the whole item earning",
+    "Ledger earns nothing from EP-9"
+   ],
+   "B36.1-built": {
+    "head": {
+     "tag": "DRAFT",
+     "pending": "17 changes",
+     "beak": "locked",
+     "alpub": "",
+     "unpub": "",
+     "signs": [
+      "— name —",
+      "— name —",
+      "— name —",
+      "— name —"
+     ],
+     "signed": "",
+     "nys": ""
+    },
+    "ep9": "p:prowler w:drill x0:+ x1:mamba",
+    "ep10": "p:slash w:glass x0:pump x1:+",
+    "personalRow": {
+     "who": "bane",
+     "more": [
+      "allavail"
+     ],
+     "str": "10:00",
+     "end": "11:00"
+    },
+    "chip": "41",
+    "crowd": {
+     "n": 41,
+     "from": "who is free as things stand now",
+     "ids": "ammo,bapster,beams,boosh,bruise,casper,chaps,dice,dirty,divot,dj,fantom,freak,glass,haowen,harpoon,nact,nasty,pain,pike,prism,psy,pump,razer,riddler,rocky,salsa,shaft,shrek,slash,slipway,snap,spaceman,split,stiff,stuff,sufa,taipan,vegas,wolf,xray"
+    },
+    "oilPucks": "drill:off glass:on mamba:on plasma:on prowler:on pump:on slash:on",
+    "oild": "{\"people\":{\"drill|r:rmrldi1s0n982u8\":\"deny\"}}",
+    "stored": {
+     "more": "EP-9:[\"\",\"mamba\"] EP-10:[\"pump\"]",
+     "oild": "{\"people\":{\"drill|r:rmrldi1s0n982u8\":\"deny\"}}",
+     "nulls": 0,
+     "personal": "[{\"who\":\"bane\",\"more\":[\"allavail\"]}]"
+    },
+    "weekRows": "weeks/13-07-2026 weeks/13-07-2026#5",
+    "versions": "[\"al\",\"pending\",\"changes\",\"added\",\"als\",\"dayOK\",\"sign\",\"signBind\",\"orig\",\"cur\",\"ridV\",\"amV\",\"retired\",\"correcting\",\"drafts\",\"curDraft\"]"
+   },
+   "B36.2-built-reloaded": {
+    "head": {
+     "tag": "DRAFT",
+     "pending": "17 changes",
+     "beak": "locked",
+     "alpub": "",
+     "unpub": "",
+     "signs": [
+      "— name —",
+      "— name —",
+      "— name —",
+      "— name —"
+     ],
+     "signed": "",
+     "nys": ""
+    },
+    "ep9": "p:prowler w:drill x0:+ x1:mamba",
+    "ep10": "p:slash w:glass x0:pump x1:+",
+    "personalRow": {
+     "who": "bane",
+     "more": [
+      "allavail"
+     ],
+     "str": "10:00",
+     "end": "11:00"
+    },
+    "chip": "41",
+    "crowd": {
+     "n": 41,
+     "from": "who is free as things stand now",
+     "ids": "ammo,bapster,beams,boosh,bruise,casper,chaps,dice,dirty,divot,dj,fantom,freak,glass,haowen,harpoon,nact,nasty,pain,pike,prism,psy,pump,razer,riddler,rocky,salsa,shaft,shrek,slash,slipway,snap,spaceman,split,stiff,stuff,sufa,taipan,vegas,wolf,xray"
+    },
+    "oilPucks": "drill:off glass:on mamba:on plasma:on prowler:on pump:on slash:on",
+    "oild": "{\"people\":{\"drill|r:rmrldi1s0n982u8\":\"deny\"}}",
+    "stored": {
+     "more": "EP-9:[\"\",\"mamba\"] EP-10:[\"pump\"]",
+     "oild": "{\"people\":{\"drill|r:rmrldi1s0n982u8\":\"deny\"}}",
+     "nulls": 0,
+     "personal": "[{\"who\":\"bane\",\"more\":[\"allavail\"]}]"
+    },
+    "weekRows": "weeks/13-07-2026 weeks/13-07-2026#5",
+    "versions": "[\"al\",\"pending\",\"changes\",\"added\",\"als\",\"dayOK\",\"sign\",\"signBind\",\"orig\",\"cur\",\"ridV\",\"amV\",\"retired\",\"correcting\",\"drafts\",\"curDraft\"]"
+   },
+   "B36.pub1": {
+    "sign": {
+     "cur": "Ace",
+     "sked": "Anvil",
+     "plan": "Anvil",
+     "appr": "Anvil"
+    },
+    "pub": {
+     "pressed": true,
+     "label": "Publish day"
+    },
+    "toasts": [
+     "OIL mode — tap a puck to take a man off that event, or an item to stop the whole item earning",
+     "Back to editing the schedule",
+     "Saturday published — APPROVED"
+    ]
+   },
+   "B36.3-published": {
+    "head": {
+     "tag": "ORIG",
+     "pending": "22 changes",
+     "beak": "none",
+     "alpub": "",
+     "unpub": "Unpublish",
+     "signs": [
+      "— name —",
+      "— name —",
+      "— name —",
+      "— name —"
+     ],
+     "signed": "SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil",
+     "nys": ""
+    },
+    "ep9": "p:prowler w:drill x0:+ x1:mamba",
+    "ep10": "p:slash w:glass x0:pump x1:+",
+    "personalRow": {
+     "who": "bane",
+     "more": [
+      "allavail"
+     ],
+     "str": "10:00",
+     "end": "11:00"
+    },
+    "chip": "41",
+    "crowd": {
+     "n": 41,
+     "from": "who is free as things stand now",
+     "ids": "ammo,bapster,beams,boosh,bruise,casper,chaps,dice,dirty,divot,dj,fantom,freak,glass,haowen,harpoon,nact,nasty,pain,pike,prism,psy,pump,razer,riddler,rocky,salsa,shaft,shrek,slash,slipway,snap,spaceman,split,stiff,stuff,sufa,taipan,vegas,wolf,xray"
+    },
+    "oilPucks": "drill:off glass:on mamba:on plasma:on prowler:on pump:on slash:on",
+    "oild": "{\"people\":{\"drill|r:rmrldi1s0n982u8\":\"deny\"}}",
+    "stored": {
+     "more": "EP-9:[\"\",\"mamba\"] EP-10:[\"pump\"]",
+     "oild": "{\"people\":{\"drill|r:rmrldi1s0n982u8\":\"deny\"}}",
+     "nulls": 0,
+     "personal": "[{\"who\":\"bane\",\"more\":[\"allavail\"]}]"
+    },
+    "weekRows": "weeks/13-07-2026 weeks/13-07-2026#5 weeks/13-07-2026:is:2026-07-18#0~0",
+    "versions": "[\"al\",\"pending\",\"changes\",\"added\",\"als\",\"dayOK\",\"sign\",\"signBind\",\"orig\",\"cur\",\"ridV\",\"amV\",\"retired\",\"correcting\",\"drafts\",\"curDraft\"]"
+   },
+   "B36.4-published.leavewar": {
+    "Sidewinder": {
+     "text": "HO*",
+     "cls": "duty weekend act"
+    },
+    "Piston": {
+     "text": "HO*",
+     "cls": "duty weekend act"
+    },
+    "Ledger": {
+     "text": "",
+     "cls": "weekend act"
+    },
+    "Hunter": {
+     "text": "HO*",
+     "cls": "duty weekend act"
+    },
+    "Blade": {
+     "text": "HO*",
+     "cls": "duty weekend act"
+    },
+    "Basher": {
+     "text": "HO*",
+     "cls": "duty weekend act"
+    },
+    "Ranger": {
+     "text": "",
+     "cls": "weekend act"
+    },
+    "Anvil": {
+     "text": "",
+     "cls": "weekend act"
+    }
+   },
+   "B36.5-published-reloaded": {
+    "head": {
+     "tag": "ORIG",
+     "pending": "22 changes",
+     "beak": "none",
+     "alpub": "",
+     "unpub": "Unpublish",
+     "signs": [
+      "— name —",
+      "— name —",
+      "— name —",
+      "— name —"
+     ],
+     "signed": "SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil",
+     "nys": ""
+    },
+    "ep9": "p:prowler w:drill x0:+ x1:mamba",
+    "ep10": "p:slash w:glass x0:pump x1:+",
+    "personalRow": {
+     "who": "bane",
+     "more": [
+      "allavail"
+     ],
+     "str": "10:00",
+     "end": "11:00"
+    },
+    "chip": "41",
+    "crowd": {
+     "n": 41,
+     "from": "who is free as things stand now",
+     "ids": "ammo,bapster,beams,boosh,bruise,casper,chaps,dice,dirty,divot,dj,fantom,freak,glass,haowen,harpoon,nact,nasty,pain,pike,prism,psy,pump,razer,riddler,rocky,salsa,shaft,shrek,slash,slipway,snap,spaceman,split,stiff,stuff,sufa,taipan,vegas,wolf,xray"
+    },
+    "oilPucks": "drill:off glass:on mamba:on plasma:on prowler:on pump:on slash:on",
+    "oild": "{\"people\":{\"drill|r:rmrldi1s0n982u8\":\"deny\"}}",
+    "stored": {
+     "more": "EP-9:[\"\",\"mamba\"] EP-10:[\"pump\"]",
+     "oild": "{\"people\":{\"drill|r:rmrldi1s0n982u8\":\"deny\"}}",
+     "nulls": 0,
+     "personal": "[{\"who\":\"bane\",\"more\":[\"allavail\"]}]"
+    },
+    "weekRows": "weeks/13-07-2026 weeks/13-07-2026#5 weeks/13-07-2026:is:2026-07-18#0~0",
+    "versions": "[\"al\",\"pending\",\"changes\",\"added\",\"als\",\"dayOK\",\"sign\",\"signBind\",\"orig\",\"cur\",\"ridV\",\"amV\",\"retired\",\"correcting\",\"drafts\",\"curDraft\"]"
+   },
+   "B36.view": {
+    "tag": "ORIG",
+    "versions": [
+     "Original — as issued",
+     "Working draft — not issued"
+    ],
+    "ep9": "prowler,drill,mamba",
+    "chips": [
+     "41 | None of these 41 earn OIL today — tap to see each one (who was free when this day was issu"
+    ]
+   },
+   "B36.unpub": {
+    "did": {
+     "pressed": true,
+     "label": "Unpublish"
+    },
+    "toasts": [
+     "OIL mode — tap a puck to take a man off that event, or an item to stop the whole item earning",
+     "Back to editing the schedule",
+     "Schedule updated",
+     "Saturday unpublished — it is a draft again; publishing reissues the Original"
+    ]
+   },
+   "B36.8-unpublished": {
+    "head": {
+     "tag": "DRAFT",
+     "pending": "23 changes",
+     "beak": "locked",
+     "alpub": "",
+     "unpub": "",
+     "signs": [
+      "— name —",
+      "— name —",
+      "— name —",
+      "— name —"
+     ],
+     "signed": "",
+     "nys": ""
+    },
+    "ep9": "p:prowler w:drill x0:+ x1:mamba",
+    "ep10": "p:slash w:glass x0:pump x1:+",
+    "personalRow": {
+     "who": "bane",
+     "more": [
+      "allavail"
+     ],
+     "str": "10:00",
+     "end": "11:00"
+    },
+    "chip": "41",
+    "crowd": {
+     "n": 41,
+     "from": "who is free as things stand now",
+     "ids": "ammo,bapster,beams,boosh,bruise,casper,chaps,dice,dirty,divot,dj,fantom,freak,glass,haowen,harpoon,nact,nasty,pain,pike,prism,psy,pump,razer,riddler,rocky,salsa,shaft,shrek,slash,slipway,snap,spaceman,split,stiff,stuff,sufa,taipan,vegas,wolf,xray"
+    },
+    "oilPucks": "drill:off glass:on mamba:on plasma:on prowler:on pump:on slash:on",
+    "oild": "{\"people\":{\"drill|r:rmrldi1s0n982u8\":\"deny\"}}",
+    "stored": {
+     "more": "EP-9:[\"\",\"mamba\"] EP-10:[\"pump\"]",
+     "oild": "{\"people\":{\"drill|r:rmrldi1s0n982u8\":\"deny\"}}",
+     "nulls": 0,
+     "personal": "[{\"who\":\"bane\",\"more\":[\"allavail\"]}]"
+    },
+    "weekRows": "weeks/13-07-2026 weeks/13-07-2026#5 weeks/13-07-2026:is:2026-07-18#0~0 weeks/13-07-2026:rx:2026-07-18#0~0",
+    "versions": "[\"al\",\"pending\",\"changes\",\"added\",\"als\",\"dayOK\",\"sign\",\"signBind\",\"orig\",\"cur\",\"ridV\",\"amV\",\"retired\",\"correcting\",\"drafts\",\"curDraft\"]"
+   },
+   "B36.9-unpublished.leavewar": {
+    "Sidewinder": {
+     "text": "",
+     "cls": "weekend act"
+    },
+    "Piston": {
+     "text": "",
+     "cls": "weekend act"
+    },
+    "Ledger": {
+     "text": "",
+     "cls": "weekend act"
+    },
+    "Hunter": {
+     "text": "",
+     "cls": "weekend act"
+    },
+    "Blade": {
+     "text": "",
+     "cls": "weekend act"
+    },
+    "Basher": {
+     "text": "",
+     "cls": "weekend act"
+    },
+    "Ranger": {
+     "text": "",
+     "cls": "weekend act"
+    },
+    "Anvil": {
+     "text": "",
+     "cls": "weekend act"
+    }
+   },
+   "B36.10-unpublished-reloaded": {
+    "head": {
+     "tag": "DRAFT",
+     "pending": "23 changes",
+     "beak": "locked",
+     "alpub": "",
+     "unpub": "",
+     "signs": [
+      "— name —",
+      "— name —",
+      "— name —",
+      "— name —"
+     ],
+     "signed": "",
+     "nys": ""
+    },
+    "ep9": "p:prowler w:drill x0:+ x1:mamba",
+    "ep10": "p:slash w:glass x0:pump x1:+",
+    "personalRow": {
+     "who": "bane",
+     "more": [
+      "allavail"
+     ],
+     "str": "10:00",
+     "end": "11:00"
+    },
+    "chip": "41",
+    "crowd": {
+     "n": 41,
+     "from": "who is free as things stand now",
+     "ids": "ammo,bapster,beams,boosh,bruise,casper,chaps,dice,dirty,divot,dj,fantom,freak,glass,haowen,harpoon,nact,nasty,pain,pike,prism,psy,pump,razer,riddler,rocky,salsa,shaft,shrek,slash,slipway,snap,spaceman,split,stiff,stuff,sufa,taipan,vegas,wolf,xray"
+    },
+    "oilPucks": "drill:off glass:on mamba:on plasma:on prowler:on pump:on slash:on",
+    "oild": "{\"people\":{\"drill|r:rmrldi1s0n982u8\":\"deny\"}}",
+    "stored": {
+     "more": "EP-9:[\"\",\"mamba\"] EP-10:[\"pump\"]",
+     "oild": "{\"people\":{\"drill|r:rmrldi1s0n982u8\":\"deny\"}}",
+     "nulls": 0,
+     "personal": "[{\"who\":\"bane\",\"more\":[\"allavail\"]}]"
+    },
+    "weekRows": "weeks/13-07-2026 weeks/13-07-2026#5 weeks/13-07-2026:is:2026-07-18#0~0 weeks/13-07-2026:rx:2026-07-18#0~0",
+    "versions": "[\"al\",\"pending\",\"changes\",\"added\",\"als\",\"dayOK\",\"sign\",\"signBind\",\"orig\",\"cur\",\"ridV\",\"amV\",\"retired\",\"correcting\",\"drafts\",\"curDraft\"]"
+   },
+   "B36.pub2": {
+    "headBefore": {
+     "tag": "DRAFT",
+     "pending": "23 changes",
+     "beak": "locked",
+     "alpub": "",
+     "unpub": "",
+     "signs": [
+      "— name —",
+      "— name —",
+      "— name —",
+      "— name —"
+     ],
+     "signed": "",
+     "nys": ""
+    },
+    "sign": {
+     "cur": "Ace",
+     "sked": "Anvil",
+     "plan": "Anvil",
+     "appr": "Anvil"
+    },
+    "pub": {
+     "pressed": true,
+     "label": "Publish day"
+    },
+    "toasts": [
+     "OIL mode — tap a puck to take a man off that event, or an item to stop the whole item earning",
+     "Back to editing the schedule",
+     "Saturday published — APPROVED"
+    ]
+   },
+   "B36.12-published-again": {
+    "head": {
+     "tag": "ORIG",
+     "pending": "28 changes",
+     "beak": "none",
+     "alpub": "",
+     "unpub": "Unpublish",
+     "signs": [
+      "— name —",
+      "— name —",
+      "— name —",
+      "— name —"
+     ],
+     "signed": "SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil",
+     "nys": ""
+    },
+    "ep9": "p:prowler w:drill x0:+ x1:mamba",
+    "ep10": "p:slash w:glass x0:pump x1:+",
+    "personalRow": {
+     "who": "bane",
+     "more": [
+      "allavail"
+     ],
+     "str": "10:00",
+     "end": "11:00"
+    },
+    "chip": "41",
+    "crowd": {
+     "n": 41,
+     "from": "who is free as things stand now",
+     "ids": "ammo,bapster,beams,boosh,bruise,casper,chaps,dice,dirty,divot,dj,fantom,freak,glass,haowen,harpoon,nact,nasty,pain,pike,prism,psy,pump,razer,riddler,rocky,salsa,shaft,shrek,slash,slipway,snap,spaceman,split,stiff,stuff,sufa,taipan,vegas,wolf,xray"
+    },
+    "oilPucks": "drill:off glass:on mamba:on plasma:on prowler:on pump:on slash:on",
+    "oild": "{\"people\":{\"drill|r:rmrldi1s0n982u8\":\"deny\"}}",
+    "stored": {
+     "more": "EP-9:[\"\",\"mamba\"] EP-10:[\"pump\"]",
+     "oild": "{\"people\":{\"drill|r:rmrldi1s0n982u8\":\"deny\"}}",
+     "nulls": 0,
+     "personal": "[{\"who\":\"bane\",\"more\":[\"allavail\"]}]"
+    },
+    "weekRows": "weeks/13-07-2026 weeks/13-07-2026#5 weeks/13-07-2026:is:2026-07-18#0~0 weeks/13-07-2026:is:2026-07-18#0~1 weeks/13-07-2026:rx:2026-07-18#0~0",
+    "versions": "[\"al\",\"pending\",\"changes\",\"added\",\"als\",\"dayOK\",\"sign\",\"signBind\",\"orig\",\"cur\",\"ridV\",\"amV\",\"retired\",\"correcting\",\"drafts\",\"curDraft\"]"
+   },
+   "B36.13-published-again.leavewar": {
+    "Sidewinder": {
+     "text": "HO*",
+     "cls": "duty weekend act"
+    },
+    "Piston": {
+     "text": "HO*",
+     "cls": "duty weekend act"
+    },
+    "Ledger": {
+     "text": "",
+     "cls": "weekend act"
+    },
+    "Hunter": {
+     "text": "HO*",
+     "cls": "duty weekend act"
+    },
+    "Blade": {
+     "text": "HO*",
+     "cls": "duty weekend act"
+    },
+    "Basher": {
+     "text": "HO*",
+     "cls": "duty weekend act"
+    },
+    "Ranger": {
+     "text": "",
+     "cls": "weekend act"
+    },
+    "Anvil": {
+     "text": "",
+     "cls": "weekend act"
+    }
+   },
+   "B36.14-published-again-reloaded": {
+    "head": {
+     "tag": "ORIG",
+     "pending": "28 changes",
+     "beak": "none",
+     "alpub": "",
+     "unpub": "Unpublish",
+     "signs": [
+      "— name —",
+      "— name —",
+      "— name —",
+      "— name —"
+     ],
+     "signed": "SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil",
+     "nys": ""
+    },
+    "ep9": "p:prowler w:drill x0:+ x1:mamba",
+    "ep10": "p:slash w:glass x0:pump x1:+",
+    "personalRow": {
+     "who": "bane",
+     "more": [
+      "allavail"
+     ],
+     "str": "10:00",
+     "end": "11:00"
+    },
+    "chip": "41",
+    "crowd": {
+     "n": 41,
+     "from": "who is free as things stand now",
+     "ids": "ammo,bapster,beams,boosh,bruise,casper,chaps,dice,dirty,divot,dj,fantom,freak,glass,haowen,harpoon,nact,nasty,pain,pike,prism,psy,pump,razer,riddler,rocky,salsa,shaft,shrek,slash,slipway,snap,spaceman,split,stiff,stuff,sufa,taipan,vegas,wolf,xray"
+    },
+    "oilPucks": "drill:off glass:on mamba:on plasma:on prowler:on pump:on slash:on",
+    "oild": "{\"people\":{\"drill|r:rmrldi1s0n982u8\":\"deny\"}}",
+    "stored": {
+     "more": "EP-9:[\"\",\"mamba\"] EP-10:[\"pump\"]",
+     "oild": "{\"people\":{\"drill|r:rmrldi1s0n982u8\":\"deny\"}}",
+     "nulls": 0,
+     "personal": "[{\"who\":\"bane\",\"more\":[\"allavail\"]}]"
+    },
+    "weekRows": "weeks/13-07-2026 weeks/13-07-2026#5 weeks/13-07-2026:is:2026-07-18#0~0 weeks/13-07-2026:is:2026-07-18#0~1 weeks/13-07-2026:rx:2026-07-18#0~0",
+    "versions": "[\"al\",\"pending\",\"changes\",\"added\",\"als\",\"dayOK\",\"sign\",\"signBind\",\"orig\",\"cur\",\"ridV\",\"amV\",\"retired\",\"correcting\",\"drafts\",\"curDraft\"]"
+   },
+   "B36.lists": {
+    "padded": [
+     "weeks/13-07-2026#5 d.sims.oft[0].more = [\"\",\"mamba\"]",
+     "weeks/13-07-2026:is:2026-07-18#0~0 d.sims.oft[0].more = [\"\",\"mamba\"]",
+     "weeks/13-07-2026:is:2026-07-18#0~1 d.sims.oft[0].more = [\"\",\"mamba\"]"
+    ],
+    "bad": []
+   },
+   "errors": []
+  },
+  "errors": [],
+  "pics": [
+   "B36-0-sat-board-built.png",
+   "B36-1-sat-oil-earn-ledger-off.png",
+   "B36-1-built-oil-earn-sims.png",
+   "B36-2-built-reloaded-oil-earn-sims.png",
+   "B36-3-sat-published.png",
+   "B36-3-published-oil-earn-sims.png",
+   "B36-4-published-leave-war.png",
+   "B36-5-published-reloaded-oil-earn-sims.png",
+   "B36-6-viewsched-sat-issued.png",
+   "B36-7-sat-unpublished.png",
+   "B36-8-unpublished-oil-earn-sims.png",
+   "B36-9-unpublished-leave-war.png",
+   "B36-10-unpublished-reloaded-oil-earn-sims.png",
+   "B36-11-sat-published-again.png",
+   "B36-12-published-again-oil-earn-sims.png",
+   "B36-13-published-again-leave-war.png",
+   "B36-14-published-again-reloaded-oil-earn-sims.png"
+  ],
+  "out": {
+   "more": [
+    "EP-9: [\"\",\"mamba\"]",
+    "EP-10: [\"pump\"]"
+   ],
+   "earnBefore": [
+    "prowler:on@r:rmrldi1s0n982u8",
+    "drill:on@r:rmrldi1s0n982u8",
+    "mamba:on@r:rmrldi1s0n982u8",
+    "slash:on@r:rmrldi1s0it2stw",
+    "glass:on@r:rmrldi1s0it2stw",
+    "pump:on@r:rmrldi1s0it2stw"
+   ],
+   "earnAfter": [
+    "prowler:on",
+    "drill:off",
+    "mamba:on",
+    "slash:on",
+    "glass:on",
+    "pump:on"
+   ],
+   "oild": "{\"people\":{\"drill|r:rmrldi1s0n982u8\":\"deny\"}}",
+   "pub1": {
+    "sign": {
+     "cur": "Ace",
+     "sked": "Anvil",
+     "plan": "Anvil",
+     "appr": "Anvil"
+    },
+    "pub": {
+     "pressed": true,
+     "label": "Publish day"
+    },
+    "toasts": [
+     "OIL mode — tap a puck to take a man off that event, or an item to stop the whole item earning",
+     "Back to editing the schedule",
+     "Saturday published — APPROVED"
+    ]
+   },
+   "lw1": {
+    "Sidewinder": {
+     "text": "HO*",
+     "cls": "duty weekend act"
+    },
+    "Piston": {
+     "text": "HO*",
+     "cls": "duty weekend act"
+    },
+    "Ledger": {
+     "text": "",
+     "cls": "weekend act"
+    },
+    "Hunter": {
+     "text": "HO*",
+     "cls": "duty weekend act"
+    },
+    "Blade": {
+     "text": "HO*",
+     "cls": "duty weekend act"
+    },
+    "Basher": {
+     "text": "HO*",
+     "cls": "duty weekend act"
+    },
+    "Ranger": {
+     "text": "",
+     "cls": "weekend act"
+    },
+    "Anvil": {
+     "text": "",
+     "cls": "weekend act"
+    }
+   },
+   "view": {
+    "tag": "ORIG",
+    "versions": [
+     "Original — as issued",
+     "Working draft — not issued"
+    ],
+    "ep9": "prowler,drill,mamba",
+    "chips": [
+     "41 | None of these 41 earn OIL today — tap to see each one (who was free when this day was issu"
+    ]
+   },
+   "unpub": {
+    "did": {
+     "pressed": true,
+     "label": "Unpublish"
+    },
+    "toasts": [
+     "OIL mode — tap a puck to take a man off that event, or an item to stop the whole item earning",
+     "Back to editing the schedule",
+     "Schedule updated",
+     "Saturday unpublished — it is a draft again; publishing reissues the Original"
+    ]
+   },
+   "lw2": {
+    "Sidewinder": {
+     "text": "",
+     "cls": "weekend act"
+    },
+    "Piston": {
+     "text": "",
+     "cls": "weekend act"
+    },
+    "Ledger": {
+     "text": "",
+     "cls": "weekend act"
+    },
+    "Hunter": {
+     "text": "",
+     "cls": "weekend act"
+    },
+    "Blade": {
+     "text": "",
+     "cls": "weekend act"
+    },
+    "Basher": {
+     "text": "",
+     "cls": "weekend act"
+    },
+    "Ranger": {
+     "text": "",
+     "cls": "weekend act"
+    },
+    "Anvil": {
+     "text": "",
+     "cls": "weekend act"
+    }
+   },
+   "pub2": {
+    "headBefore": {
+     "tag": "DRAFT",
+     "pending": "23 changes",
+     "beak": "locked",
+     "alpub": "",
+     "unpub": "",
+     "signs": [
+      "— name —",
+      "— name —",
+      "— name —",
+      "— name —"
+     ],
+     "signed": "",
+     "nys": ""
+    },
+    "sign": {
+     "cur": "Ace",
+     "sked": "Anvil",
+     "plan": "Anvil",
+     "appr": "Anvil"
+    },
+    "pub": {
+     "pressed": true,
+     "label": "Publish day"
+    },
+    "toasts": [
+     "OIL mode — tap a puck to take a man off that event, or an item to stop the whole item earning",
+     "Back to editing the schedule",
+     "Saturday published — APPROVED"
+    ]
+   },
+   "lw3": {
+    "Sidewinder": {
+     "text": "HO*",
+     "cls": "duty weekend act"
+    },
+    "Piston": {
+     "text": "HO*",
+     "cls": "duty weekend act"
+    },
+    "Ledger": {
+     "text": "",
+     "cls": "weekend act"
+    },
+    "Hunter": {
+     "text": "HO*",
+     "cls": "duty weekend act"
+    },
+    "Blade": {
+     "text": "HO*",
+     "cls": "duty weekend act"
+    },
+    "Basher": {
+     "text": "HO*",
+     "cls": "duty weekend act"
+    },
+    "Ranger": {
+     "text": "",
+     "cls": "weekend act"
+    },
+    "Anvil": {
+     "text": "",
+     "cls": "weekend act"
+    }
+   },
+   "padded": [
+    "weeks/13-07-2026#5 d.sims.oft[0].more = [\"\",\"mamba\"]",
+    "weeks/13-07-2026:is:2026-07-18#0~0 d.sims.oft[0].more = [\"\",\"mamba\"]",
+    "weeks/13-07-2026:is:2026-07-18#0~1 d.sims.oft[0].more = [\"\",\"mamba\"]"
+   ],
+   "bad": []
+  }
+ },
+ "w4-foot-after-edit-behind": {
+  "at": "2026-10-01T02:41:08.357Z",
+  "base": "http://localhost:4206",
+  "checks": [
+   {
+    "name": "B19f after the time is edited behind the window the LIST follows: Talisman is listed with no flag",
+    "ok": true,
+    "detail": "{\"title\":\"OPS BRIEF Jul 14 · 09:20–09:40\",\"foot\":\"Talisman — No time for the OFT EP-1 brief — OPS BRIEF sits inside 09:45–10:00\",\"tal\":\"(listed, no flag)\"}"
+   },
+   {
+    "name": "B19f …and the FOOT no longer gives him a sentence about minutes the event has left",
+    "ok": false,
+    "detail": "Talisman — No time for the OFT EP-1 brief — OPS BRIEF sits inside 09:45–10:00"
+   },
+   {
+    "name": "B19f closing and re-opening the window gives a foot that agrees with the list",
+    "ok": true,
+    "detail": "Tap a puck for why. One man is flagged."
+   }
+  ],
+  "facts": {
+   "B19f": {
+    "opened": {
+     "foot": "Tap a puck for why. 3 men are flagged.",
+     "tal": "No time for the OFT EP-1 brief — OPS BRIEF sits inside 09:45–10:00"
+    },
+    "tapped": {
+     "title": "OPS BRIEF Jul 14 · 09:45–09:58",
+     "foot": "Talisman — No time for the OFT EP-1 brief — OPS BRIEF sits inside 09:45–10:00",
+     "tal": "No time for the OFT EP-1 brief — OPS BRIEF sits inside 09:45–10:00"
+    },
+    "edited": {
+     "title": "OPS BRIEF Jul 14 · 09:20–09:40",
+     "foot": "Talisman — No time for the OFT EP-1 brief — OPS BRIEF sits inside 09:45–10:00",
+     "tal": "(listed, no flag)"
+    },
+    "reopened": {
+     "title": "OPS BRIEF Jul 14 · 09:20–09:40",
+     "foot": "Tap a puck for why. One man is flagged.",
+     "tal": "(listed, no flag)"
+    }
+   },
+   "errors": []
+  },
+  "errors": [],
+  "pics": [
+   "B19f-1-foot-after-tap.png",
+   "B19f-2-foot-after-time-edited-behind.png",
+   "B19f-3-foot-after-reopen.png"
+  ],
+  "out": {
+   "opened": {
+    "foot": "Tap a puck for why. 3 men are flagged.",
+    "tal": "No time for the OFT EP-1 brief — OPS BRIEF sits inside 09:45–10:00"
+   },
+   "tapped": {
+    "title": "OPS BRIEF Jul 14 · 09:45–09:58",
+    "foot": "Talisman — No time for the OFT EP-1 brief — OPS BRIEF sits inside 09:45–10:00",
+    "tal": "No time for the OFT EP-1 brief — OPS BRIEF sits inside 09:45–10:00"
+   },
+   "edited": {
+    "title": "OPS BRIEF Jul 14 · 09:20–09:40",
+    "foot": "Talisman — No time for the OFT EP-1 brief — OPS BRIEF sits inside 09:45–10:00",
+    "tal": "(listed, no flag)"
+   },
+   "reopened": {
+    "title": "OPS BRIEF Jul 14 · 09:20–09:40",
+    "foot": "Tap a puck for why. One man is flagged.",
+    "tal": "(listed, no flag)"
+   }
+  }
+ },
+ "w5-where-the-second-spare-man-is-drawn": {
+  "at": "2026-10-01T02:43:16.549Z",
+  "base": "http://localhost:4206",
+  "checks": [],
+  "facts": {
+   "B24v": {
+    "second": {
+     "armed": true,
+     "offered": true,
+     "before": [],
+     "after": [
+      "mamba"
+     ],
+     "took": true,
+     "msg": "Sidewinder planned"
+    },
+    "board": {
+     "iat3": "p=prism@line1L w=nasty@line1R x0=+@line2L x1=mamba@line2R",
+     "ep3": "p=bane@line1L w=drill@line1R x0=slash@line2L x1=+@line2R"
+    },
+    "stored": [
+     "EP-4: null",
+     "IAT-3: [\"\",\"mamba\"]",
+     "EP-3: [\"slash\"]"
+    ],
+    "editWeek": {
+     "iat3": "prism@line1L nasty@line1R mamba@line2L",
+     "ep3": "bane@line1L drill@line1R slash@line2L"
+    },
+    "sign": {
+     "cur": "Ace",
+     "sked": "Anvil",
+     "plan": "Anvil",
+     "appr": "Anvil"
+    },
+    "pub": {
+     "pressed": true,
+     "label": "Publish day"
+    },
+    "view": {
+     "iat3": "prism@line1L nasty@line1R mamba@line2L",
+     "ep3": "bane@line1L drill@line1R slash@line2L"
+    }
+   },
+   "errors": []
+  },
+  "errors": [],
+  "pics": [
+   "B24v-1-board-second-and-first-spare.png",
+   "B24v-2-editweek-second-and-first-spare.png",
+   "B24v-3-viewsched-second-and-first-spare.png"
+  ],
+  "out": {
+   "second": {
+    "armed": true,
+    "offered": true,
+    "before": [],
+    "after": [
+     "mamba"
+    ],
+    "took": true,
+    "msg": "Sidewinder planned"
+   },
+   "board": {
+    "iat3": "p=prism@line1L w=nasty@line1R x0=+@line2L x1=mamba@line2R",
+    "ep3": "p=bane@line1L w=drill@line1R x0=slash@line2L x1=+@line2R"
+   },
+   "stored": [
+    "EP-4: null",
+    "IAT-3: [\"\",\"mamba\"]",
+    "EP-3: [\"slash\"]"
+   ],
+   "editWeek": {
+    "iat3": "prism@line1L nasty@line1R mamba@line2L",
+    "ep3": "bane@line1L drill@line1R slash@line2L"
+   },
+   "sign": {
+    "cur": "Ace",
+    "sked": "Anvil",
+    "plan": "Anvil",
+    "appr": "Anvil"
+   },
+   "pub": {
+    "pressed": true,
+    "label": "Publish day"
+   },
+   "view": {
+    "iat3": "prism@line1L nasty@line1R mamba@line2L",
+    "ep3": "bane@line1L drill@line1R slash@line2L"
+   }
+  }
  }
 }

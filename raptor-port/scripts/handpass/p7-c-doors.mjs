@@ -10,32 +10,12 @@ await C.toastSpy(p)
 const DI = 1
 const EP = '1.0.0.0.p', EW = '1.0.0.0.w', OP = '1.0.0.1.p', OW = '1.0.0.1.w'
 const KEYS = [EP, EW, OP, OW, 'g:1.1', 's:1.amt.1.p', 's:1.amt.1.w']
-const REASON = /cannot crew a jet; name the people flying it/
 const NAME = { all: 'ALL', allavail: 'ALL AVAIL' }
 const cs = id => p.evaluate(i => (window.PEOPLE[i] && window.PEOPLE[i].cs) || i, id)
 const pics = []
 const pic = async n => { await L.shot(p, n); pics.push(n + '.png'); return n + '.png' }
 
-async function attempt(id, did, fn) {
-  const mine = []
-  const s1 = await C.snap(p, DI, KEYS), r1 = await L.rows(p); await C.toasts(p)
-  let err = null, ret = null
-  try { ret = await fn(async n => { await L.shot(p, n); mine.push(n + '.png') }) } catch (e) { err = String(e && e.message || e).split('\n')[0].slice(0, 300) }
-  const now = await C.toastNow(p)
-  await L.shot(p, id); mine.push(id + '.png')
-  await L.settle(p, 700)
-  const ts = await C.toasts(p)
-  const s2 = await C.snap(p, DI, KEYS), r2 = await L.rows(p)
-  const d = C.same(s1, s2), rd = C.rowsSame(L, r1, r2)
-  const reason = ts.filter(t => REASON.test(t))
-  const ok = !err && !d.length && !rd.length && reason.length > 0
-  C.row(id, did,
-    err ? 'GESTURE ERROR: ' + err : `toast: ${ts.map(t => '"' + t + '"').join(' · ') || '(none)'}${now && now.shown ? ' (painted at the picture)' : ''}${ret && ret.note ? ' · ' + ret.note : ''}`,
-    d.length || rd.length ? `CHANGED: ${[...d, ...rd].join(' | ')}` : `seat as it was (${Object.entries(s2.seats).filter(([k]) => /^\d/.test(k)).map(([k, v]) => k + '=' + (v.val || 'empty')).join(', ')}); pending ${s2.pendingDay.length} = before; head "${s2.head ? s2.head.pending : ''}" signs [${s2.head ? s2.head.signs.join('/') : ''}]; Undo list ${s2.hist.ix}/${s2.hist.n} = before; history ${s2.elog} lines = before; no row written`,
-    ok ? 'PASS' : 'FAIL', mine)
-  await p.keyboard.press('Escape'); await L.sleep(200)
-  return { ok, d, rd, ts, ret }
-}
+const attempt = C.makeAttempt({ L, p, di: DI, keys: KEYS })
 /* tap-arm a seat on a surface, then tap a puck in that surface's crew list */
 async function armTap(surface, key, pid, shoot, shotId) {
   const root = surface === 'board' ? '#schedBoard' : '#eWeek'
@@ -143,6 +123,7 @@ for (const [kind, sk] of Object.entries(SRC)) {
 }
 /* the reverse: a NAMED cockpit man dragged onto the seat a placeholder holds (a swap would carry the placeholder in) */
 {
+  await C.toastGone(p)
   const s1 = await C.snap(p, DI, KEYS), r1 = await L.rows(p); await C.toasts(p)
   let err = null
   try { await W.drag(p, p.locator(`#schedBoard [data-slot="${OP}"] .puck:visible`).first(), p.locator(`#schedBoard [data-slot="${SRC.cp}"]:visible`).first()) } catch (e) { err = String(e.message).slice(0, 200) }
@@ -160,8 +141,9 @@ await attempt('C32-keyboard-enter', 'board: arm the empty front seat of VL #1, p
   await p.locator('#sbRoster .rpuck[data-person="allavail"] .puck').first().focus()
   await p.keyboard.press('Enter'); await L.sleep(300); await p.keyboard.press('Space'); await L.sleep(300)
   return { note: 'armed ' + await p.evaluate(() => window.armedKey()) }
-})
+}, { needReason: false })
 {
+  await C.toastGone(p)
   const s1 = await C.snap(p, DI, KEYS), r1 = await L.rows(p); await C.toasts(p)
   const seat = p.locator(`#schedBoard [data-slot="${EP}"]:visible`).first()
   await seat.evaluate(e => e.scrollIntoView({ block: 'center' })); await seat.click(); await L.sleep(250)

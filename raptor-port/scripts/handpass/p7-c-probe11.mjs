@@ -1,0 +1,26 @@
+/* p7 walker C — probe 11: how a warning is hidden on Edit Schedule (this week and the next), and the Quals ✕. */
+import { boot, world } from './p6-lib.mjs'
+import * as C from './p7-c-lib.mjs'
+const { L, W } = await boot()
+const { browser, p, errors } = await world(L)
+await C.toastSpy(p)
+await W.toEdit(L, p); await W.showDay(p, 1)
+const bar = p.locator('#eWeek .day[data-day="1"] .chkbar, #eWeek .day[data-day="1"] [data-chk], #eWeek .day[data-day="1"] .warnhead').first()
+console.log('day 1 warn area', await p.evaluate(() => { const d = document.querySelector('#eWeek .day[data-day="1"]'); const e = [...d.querySelectorAll('*')].find(x => /issues/.test(x.textContent || '') && x.children.length < 6 && /tap to review/.test(x.textContent || '')); return e ? e.outerHTML.slice(0, 600) + ' PARENT ' + e.parentElement.className : null }))
+const head = p.locator('#eWeek .day[data-day="1"] :text("tap to review")').first()
+await head.click(); await L.sleep(500)
+console.log('expanded', await p.evaluate(() => { const d = document.querySelector('#eWeek .day[data-day="1"]'); const e = [...d.querySelectorAll('*')].find(x => /tap to review|issues/.test(x.textContent || '') && x.querySelectorAll('button, [data-wmute], [data-mute]').length > 0 && x.children.length < 12); return e ? e.outerHTML.slice(0, 3000) : 'none' }))
+await L.shot(p, 'probe11-warn-open')
+console.log('weeks', await p.evaluate(() => [...document.querySelectorAll('[data-wk]')].filter(e => e.offsetParent !== null).map(e => e.dataset.wk + ':' + e.innerText.trim())))
+console.log('mute state', await p.evaluate(() => JSON.stringify({ muted: window.MUTED || window.WMUTE || null, keys: Object.keys(window).filter(k => /mute|hide|HID/i.test(k)) })))
+// quals ✕
+await L.go(p, 'quals'); await L.sleep(400); await p.click('#qEdit'); await L.sleep(300); await p.click('#qEditQuals'); await L.sleep(400)
+console.log('head html', await p.evaluate(() => [...document.querySelectorAll('#qtbl thead th')].slice(4, 7).map(e => e.outerHTML.slice(0, 500))))
+const x = p.locator('#qtbl thead th button').filter({ hasText: '✕' }).first()
+console.log('x count', await p.locator('#qtbl thead th button').count())
+const sx = p.locator('#qtbl thead th [data-qdel], #qtbl thead th .qx, #qtbl thead th button').first()
+await sx.click(); await L.sleep(500)
+console.log('after first ✕ on first column', await C.toasts(p), await p.evaluate(() => [...document.querySelectorAll('#qtbl thead th')].slice(4, 6).map(e => e.outerHTML.slice(0, 500))), await p.evaluate(() => [...document.querySelectorAll('[role=dialog], .airpop:not([hidden]), .modal')].filter(e => e.getClientRects().length).map(e => e.innerText.slice(0, 300))))
+await L.shot(p, 'probe11-quals-x')
+console.log('errors', errors)
+await browser.close()

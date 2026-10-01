@@ -1,0 +1,866 @@
+{
+ "walker": "A",
+ "base": "http://localhost:4205",
+ "at": "2026-10-01T03:01:41.655Z",
+ "scenarios": 30,
+ "verdicts": {
+  "A1": "PASS",
+  "A3": "PASS",
+  "A2": "PASS",
+  "A4": "PASS",
+  "A5": "PASS",
+  "A1-phone": "PASS",
+  "A3-phone": "PASS",
+  "A3r-desk": "PASS",
+  "A3r-phone": "PASS",
+  "A6": "PASS",
+  "A6e": "PASS",
+  "A7": "PASS",
+  "A8": "PASS",
+  "A9": "PASS",
+  "A10": "PASS",
+  "A11": "PASS",
+  "A12": "PASS",
+  "A13": "PASS",
+  "A26": "PASS",
+  "A27": "PASS",
+  "A28": "PASS",
+  "A26b": "PASS",
+  "A28b": "PASS",
+  "R0": "PASS",
+  "R1": "PASS",
+  "R2": "PASS",
+  "R3": "PASS",
+  "R4": "PASS",
+  "R3b": "PASS",
+  "R4b": "PASS"
+ },
+ "errors": [],
+ "rows": [
+  {
+   "id": "A1",
+   "did": "timed Personal (Ranger, Tue 14 Jul 10:00–11:00) filed on the Inputs page; ALL AVAIL put in the extras under its row (board: arm the + add zone, tap ALL AVAIL in the crew list)",
+   "screen": [
+    "placing allavail in the extras: armed true, offered true, the app said \"ALL AVAIL planned\", seat now holds [bane,allavail]",
+    "board chip beside allavail: \"33\" — title \"33 with nothing else on at that time — tap to see them (who is free as things stand now)\"",
+    "board window \"PERSONAL Jul 14 · 10:00–11:00\": Who’s available 33; lists 33; \"which answer\" line: \"who is free as things stand now\"; foot: \"Tap a puck for why. One man is flagged.\"; flagged: [\"Saint: VL SAT & APPOINTMENT clash\"]",
+    "OIL Earn button on this weekday's board: none drawn",
+    "edit week chip beside allavail: \"33\" — title \"33 with nothing else on at that time — tap to see them (who is free as things stand now)\"",
+    "edit week window \"PERSONAL Jul 14 · 10:00–11:00\": Who’s available 33; lists 33; \"who is free as things stand now\"; foot \"Tap a puck for why. One man is flagged.\""
+   ],
+   "data": [
+    "request Personal Jul 14 600–660 min acc=g",
+    "the day's row: who=bane more=[\"allavail\"] str=\"10:00\" end=\"11:00\"",
+    "Ranger (the requester) listed in the crowd: false",
+    "stored day row weeks/13-07-2026#1: present; the request's row who=bane more=[\"allavail\"]",
+    "Leave War 2026-07-14 (working copy, not published): {\"Reaper\":{\"text\":\"\",\"cls\":\" act\"},\"Anvil\":{\"text\":\"\",\"cls\":\" act\"},\"Blade\":{\"text\":\"\",\"cls\":\" act\"},\"Ranger\":{\"text\":\"\",\"cls\":\" act\"}}"
+   ],
+   "verdict": "PASS",
+   "why": [],
+   "pics": [
+    "A1-1-board-chip.png",
+    "A1-2-board-window.png",
+    "A1-6-editweek-chip.png",
+    "A1-7-editweek-window.png"
+   ],
+   "from": "p7-a-walk1-A1A3.json"
+  },
+  {
+   "id": "A3",
+   "did": "timed Personal (Ranger, Sat 18 Jul 10:00–11:00); ALL put in the extras",
+   "screen": [
+    "placing all in the extras: armed true, offered true, the app said \"ALL planned\", seat now holds [bane,all]",
+    "board chip beside all: \"44\" — title \"None of these 44 earn OIL today — tap to see each one (who is free as things stand now)\"",
+    "board window \"PERSONAL Jul 18 · 10:00–11:00\": Who’s available 44; lists 44; \"which answer\" line: \"who is free as things stand now\"; foot: \"Tap a puck for why.\"; flagged: []",
+    "OIL Earn chip beside all: \"44\" — title \"None of these 44 earn OIL today — tap to see each one (who is free as things stand now)\"",
+    "OIL Earn row: item cell \"PERSONAL\" [ain oilitem none] title \"Nothing on this row can earn OIL, so there is nothing to switch off\"",
+    "OIL Earn row puck Ranger: earn wrapper [seat oilpk inert] title \"Ranger — a personal request earns no OIL\"; puck title \"Ranger · IP · instructor pilot · SXO\"",
+    "OIL Earn row puck ALL: earn wrapper none; puck title \"ALL\"",
+    "OIL Earn window tabs: Who’s available 44 | Who earns OIL 0 of 44 [on]; heads: PILOTS · 0 EARN · WSOS · 0 EARN; \"who is free as things stand now\"; foot: \"Tap a puck to stop a man earning from this event.\"",
+    "earn half: 44 men; first three titles: \"Reaper — a personal request earns no OIL\" [seat oilpk inert] · \"Anvil — a personal request earns no OIL\" [seat oilpk inert] · \"Blade — a personal request earns no OIL\" [seat oilpk inert]",
+    "a tap on Reaper in the earn half: toast []; foot now \"Reaper — a personal request earns no OIL\"; tab Who earns OIL 0 of 44 [on]",
+    "available half with the mode on: lists 44; flagged []",
+    "edit week chip beside all: \"44\" — title \"None of these 44 earn OIL today — tap to see each one (who is free as things stand now)\"",
+    "edit week window \"PERSONAL Jul 18 · 10:00–11:00\": Who’s available 44; lists 44; \"who is free as things stand now\"; foot \"Tap a puck for why.\""
+   ],
+   "data": [
+    "request Personal Jul 18 600–660 min acc=g",
+    "the day's row: who=bane more=[\"all\"] str=\"10:00\" end=\"11:00\"",
+    "Ranger (the requester) listed in the crowd: false",
+    "the day's OIL decisions before / after the tap: null / null",
+    "stored day row weeks/13-07-2026#5: present; the request's row who=bane more=[\"all\"]",
+    "Leave War 2026-07-18 (working copy, not published): {\"Reaper\":{\"text\":\"\",\"cls\":\"weekend act\"},\"Anvil\":{\"text\":\"\",\"cls\":\"weekend act\"},\"Blade\":{\"text\":\"\",\"cls\":\"weekend act\"},\"Ranger\":{\"text\":\"\",\"cls\":\"weekend act\"}}"
+   ],
+   "verdict": "PASS",
+   "why": [],
+   "pics": [
+    "A3-3-board-oilearn-row.png",
+    "A3-5-window-earn-tapped.png",
+    "A3-9-reloaded.png"
+   ],
+   "from": "p7-a-walk1-A1A3.json"
+  },
+  {
+   "id": "A2",
+   "did": "all-day Personal (Ranger, Sat 18 Jul); ALL put in the row's NAME BOX (arm the name seat, tap ALL)",
+   "screen": [
+    "a tap on the filled name seat then all in the crew list: armed false, seat still holds [bane]",
+    "dragging all onto the name box: dragged; the app said []; the name seat now holds [all]",
+    "board chip beside all: \"44\" — title \"None of these 44 earn OIL today — tap to see each one (who is free as things stand now)\"",
+    "board window \"PERSONAL Jul 18\": Who’s available 44; lists 44; \"which answer\" line: \"who is free as things stand now\"; foot: \"Tap a puck for why.\"; flagged: []",
+    "OIL Earn chip beside all: \"44\" — title \"None of these 44 earn OIL today — tap to see each one (who is free as things stand now)\"",
+    "OIL Earn row: item cell \"PERSONAL\" [ain oilitem none] title \"Nothing on this row can earn OIL, so there is nothing to switch off\"",
+    "OIL Earn row puck ALL: earn wrapper none; puck title \"ALL\"",
+    "the requester's puck is not on the row (the name box holds the placeholder)",
+    "OIL Earn window tabs: Who’s available 44 | Who earns OIL 0 of 44 [on]; heads: PILOTS · 0 EARN · WSOS · 0 EARN; \"who is free as things stand now\"; foot: \"Tap a puck to stop a man earning from this event.\"",
+    "earn half: 44 men; first three titles: \"Reaper — a personal request earns no OIL\" [seat oilpk inert] · \"Anvil — a personal request earns no OIL\" [seat oilpk inert] · \"Blade — a personal request earns no OIL\" [seat oilpk inert]",
+    "a tap on Reaper in the earn half: toast []; foot now \"Reaper — a personal request earns no OIL\"; tab Who earns OIL 0 of 44 [on]",
+    "available half with the mode on: lists 44; flagged []",
+    "edit week chip beside all: \"44\" — title \"None of these 44 earn OIL today — tap to see each one (who is free as things stand now)\"",
+    "edit week window \"PERSONAL Jul 18\": Who’s available 44; lists 44; \"who is free as things stand now\"; foot \"Tap a puck for why.\""
+   ],
+   "data": [
+    "request Personal Jul 18 all day acc=g",
+    "the day's row: who=all more=[] str=\"\" end=\"\"",
+    "Ranger (the requester) listed in the crowd: false",
+    "the day's OIL decisions before / after the tap: null / null",
+    "stored day row weeks/13-07-2026#5: present; the request's row who=all more=[]",
+    "Leave War 2026-07-18 (working copy, not published): {\"Reaper\":{\"text\":\"\",\"cls\":\"weekend act\"},\"Anvil\":{\"text\":\"\",\"cls\":\"weekend act\"},\"Blade\":{\"text\":\"\",\"cls\":\"weekend act\"},\"Ranger\":{\"text\":\"\",\"cls\":\"weekend act\"}}"
+   ],
+   "verdict": "PASS",
+   "why": [],
+   "pics": [
+    "A2-1-board-chip.png",
+    "A2-2-board-window.png",
+    "A2-3-board-oilearn-row.png",
+    "A2-4-window-earn-half.png",
+    "A2-6-editweek-chip.png"
+   ],
+   "from": "p7-a-walk1-A2A5.json"
+  },
+  {
+   "id": "A4",
+   "did": "all-day Personal (Ranger, Thu 16 Jul); ALL AVAIL put in the extras",
+   "screen": [
+    "placing allavail in the extras: armed true, offered true, the app said \"ALL AVAIL planned\", seat now holds [bane,allavail]",
+    "board chip beside allavail: \"21\" — title \"21 with nothing else on at that time — tap to see them (who is free as things stand now)\"",
+    "board window \"PERSONAL Jul 16\": Who’s available 21; lists 21; \"which answer\" line: \"who is free as things stand now\"; foot: \"Tap a puck for why.\"; flagged: []",
+    "OIL Earn button on this weekday's board: none drawn",
+    "edit week chip beside allavail: \"21\" — title \"21 with nothing else on at that time — tap to see them (who is free as things stand now)\"",
+    "edit week window \"PERSONAL Jul 16\": Who’s available 21; lists 21; \"who is free as things stand now\"; foot \"Tap a puck for why.\""
+   ],
+   "data": [
+    "request Personal Jul 16 all day acc=g",
+    "the day's row: who=bane more=[\"allavail\"] str=\"\" end=\"\"",
+    "Ranger (the requester) listed in the crowd: false",
+    "stored day row weeks/13-07-2026#3: present; the request's row who=bane more=[\"allavail\"]",
+    "Leave War 2026-07-16 (working copy, not published): {\"Reaper\":{\"text\":\"\",\"cls\":\" act\"},\"Cinch\":{\"text\":\"\",\"cls\":\" act\"},\"Cobra\":{\"text\":\"\",\"cls\":\" act\"},\"Ranger\":{\"text\":\"\",\"cls\":\" act\"}}"
+   ],
+   "verdict": "PASS",
+   "why": [],
+   "pics": [
+    "A4-2-board-window.png",
+    "A4-6-editweek-chip.png"
+   ],
+   "from": "p7-a-walk1-A2A4A5.json"
+  },
+  {
+   "id": "A5",
+   "did": "timed Personal (Ranger, Sat 18 Jul 10:00–11:00); ALL in the name box AND ALL AVAIL in the extras",
+   "screen": [
+    "a tap on the filled name seat then all in the crew list: armed false, seat still holds [bane]",
+    "dragging all onto the name box: dragged; the app said []; the name seat now holds [all]",
+    "placing allavail in the extras: armed true, offered true, the app said \"ALL AVAIL planned\", seat now holds [all,allavail]",
+    "board chip beside all: \"44\" — title \"None of these 44 earn OIL today — tap to see each one (who is free as things stand now)\"",
+    "board chip beside allavail: \"44\" — title \"None of these 44 earn OIL today — tap to see each one (who is free as things stand now)\"",
+    "board window \"PERSONAL Jul 18 · 10:00–11:00\": Who’s available 44; lists 44; \"which answer\" line: \"who is free as things stand now\"; foot: \"Tap a puck for why.\"; flagged: []",
+    "second chip's window: lists 44; \"who is free as things stand now\"",
+    "OIL Earn chip beside all: \"44\" — title \"None of these 44 earn OIL today — tap to see each one (who is free as things stand now)\"",
+    "OIL Earn chip beside allavail: \"44\" — title \"None of these 44 earn OIL today — tap to see each one (who is free as things stand now)\"",
+    "OIL Earn row: item cell \"PERSONAL\" [ain oilitem none] title \"Nothing on this row can earn OIL, so there is nothing to switch off\"",
+    "OIL Earn row puck ALL: earn wrapper none; puck title \"ALL\"",
+    "OIL Earn row puck ALL AVAIL: earn wrapper none; puck title \"ALL AVAIL\"",
+    "the requester's puck is not on the row (the name box holds the placeholder)",
+    "OIL Earn window tabs: Who’s available 44 | Who earns OIL 0 of 44 [on]; heads: PILOTS · 0 EARN · WSOS · 0 EARN; \"who is free as things stand now\"; foot: \"Tap a puck to stop a man earning from this event.\"",
+    "earn half: 44 men; first three titles: \"Reaper — a personal request earns no OIL\" [seat oilpk inert] · \"Anvil — a personal request earns no OIL\" [seat oilpk inert] · \"Blade — a personal request earns no OIL\" [seat oilpk inert]",
+    "a tap on Reaper in the earn half: toast []; foot now \"Reaper — a personal request earns no OIL\"; tab Who earns OIL 0 of 44 [on]",
+    "available half with the mode on: lists 44; flagged []",
+    "edit week chip beside all: \"44\" — title \"None of these 44 earn OIL today — tap to see each one (who is free as things stand now)\"",
+    "edit week chip beside allavail: \"44\" — title \"None of these 44 earn OIL today — tap to see each one (who is free as things stand now)\"",
+    "edit week window \"PERSONAL Jul 18 · 10:00–11:00\": Who’s available 44; lists 44; \"who is free as things stand now\"; foot \"Tap a puck for why.\""
+   ],
+   "data": [
+    "request Personal Jul 18 600–660 min acc=g",
+    "the day's row: who=all more=[\"allavail\"] str=\"10:00\" end=\"11:00\"",
+    "Ranger (the requester) listed in the crowd: false",
+    "the day's OIL decisions before / after the tap: null / null",
+    "stored day row weeks/13-07-2026#5: present; the request's row who=all more=[\"allavail\"]",
+    "Leave War 2026-07-18 (working copy, not published): {\"Reaper\":{\"text\":\"\",\"cls\":\"weekend act\"},\"Anvil\":{\"text\":\"\",\"cls\":\"weekend act\"},\"Blade\":{\"text\":\"\",\"cls\":\"weekend act\"},\"Ranger\":{\"text\":\"\",\"cls\":\"weekend act\"}}"
+   ],
+   "verdict": "PASS",
+   "why": [],
+   "pics": [
+    "A5-1-board-chip.png",
+    "A5-2-board-window.png",
+    "A5-3-board-oilearn-row.png",
+    "A5-4-window-earn-half.png",
+    "A5-6-editweek-chip.png"
+   ],
+   "from": "p7-a-walk1-A2A5.json"
+  },
+  {
+   "id": "A1-phone",
+   "did": "timed Personal (Ranger, Tue 14 Jul 10:00–11:00) filed on the Inputs page; ALL AVAIL put in the extras under its row (board: arm the + add zone, tap ALL AVAIL in the crew list) — PHONE 390×844",
+   "screen": [
+    "placing allavail in the extras: armed true, offered true, the app said \"ALL AVAIL planned\", seat now holds [bane,allavail]",
+    "board chip beside allavail: \"33\" — title \"33 with nothing else on at that time — tap to see them (who is free as things stand now)\"",
+    "board window \"PERSONAL Jul 14 · 10:00–11:00\": Who’s available 33; lists 33; \"which answer\" line: \"who is free as things stand now\"; foot: \"Tap a puck for why. One man is flagged.\"; flagged: [\"Saint: VL SAT & APPOINTMENT clash\"]",
+    "OIL Earn button on this weekday's board: none drawn",
+    "edit week chip beside allavail: \"33\" — title \"33 with nothing else on at that time — tap to see them (who is free as things stand now)\"",
+    "edit week window \"PERSONAL Jul 14 · 10:00–11:00\": Who’s available 33; lists 33; \"who is free as things stand now\"; foot \"Tap a puck for why. One man is flagged.\""
+   ],
+   "data": [
+    "request Personal Jul 14 600–660 min acc=g",
+    "the day's row: who=bane more=[\"allavail\"] str=\"10:00\" end=\"11:00\"",
+    "Ranger (the requester) listed in the crowd: false",
+    "stored day row weeks/13-07-2026#1: present; the request's row who=bane more=[\"allavail\"]",
+    "Leave War 2026-07-14 (working copy, not published): {\"Reaper\":{\"text\":\"\",\"cls\":\" act\"},\"Anvil\":{\"text\":\"\",\"cls\":\" act\"},\"Blade\":{\"text\":\"\",\"cls\":\" act\"},\"Ranger\":{\"text\":\"\",\"cls\":\" act\"}}"
+   ],
+   "verdict": "PASS",
+   "why": [],
+   "pics": [
+    "A1-phone-1-board-chip.png",
+    "A1-phone-6-editweek-chip.png",
+    "A1-phone-7-editweek-window.png"
+   ],
+   "from": "p7-a-walk1-phone-A1A3.json"
+  },
+  {
+   "id": "A3-phone",
+   "did": "timed Personal (Ranger, Sat 18 Jul 10:00–11:00); ALL put in the extras — PHONE 390×844",
+   "screen": [
+    "placing all in the extras: armed true, offered true, the app said \"ALL planned\", seat now holds [bane,all]",
+    "board chip beside all: \"44\" — title \"None of these 44 earn OIL today — tap to see each one (who is free as things stand now)\"",
+    "board window \"PERSONAL Jul 18 · 10:00–11:00\": Who’s available 44; lists 44; \"which answer\" line: \"who is free as things stand now\"; foot: \"Tap a puck for why.\"; flagged: []",
+    "OIL Earn chip beside all: \"44\" — title \"None of these 44 earn OIL today — tap to see each one (who is free as things stand now)\"",
+    "OIL Earn row: item cell \"PERSONAL\" [ain oilitem none] title \"Nothing on this row can earn OIL, so there is nothing to switch off\"",
+    "OIL Earn row puck Ranger: earn wrapper [seat oilpk inert] title \"Ranger — a personal request earns no OIL\"; puck title \"Ranger · IP · instructor pilot · SXO\"",
+    "OIL Earn row puck ALL: earn wrapper none; puck title \"ALL\"",
+    "OIL Earn window tabs: Who’s available 44 | Who earns OIL 0 of 44 [on]; heads: PILOTS · 0 EARN · WSOS · 0 EARN; \"who is free as things stand now\"; foot: \"Tap a puck to stop a man earning from this event.\"",
+    "earn half: 44 men; first three titles: \"Reaper — a personal request earns no OIL\" [seat oilpk inert] · \"Anvil — a personal request earns no OIL\" [seat oilpk inert] · \"Blade — a personal request earns no OIL\" [seat oilpk inert]",
+    "a tap on Reaper in the earn half: toast []; foot now \"Reaper — a personal request earns no OIL\"; tab Who earns OIL 0 of 44 [on]",
+    "available half with the mode on: lists 44; flagged []",
+    "edit week chip beside all: \"44\" — title \"None of these 44 earn OIL today — tap to see each one (who is free as things stand now)\"",
+    "edit week window \"PERSONAL Jul 18 · 10:00–11:00\": Who’s available 44; lists 44; \"who is free as things stand now\"; foot \"Tap a puck for why.\""
+   ],
+   "data": [
+    "request Personal Jul 18 600–660 min acc=g",
+    "the day's row: who=bane more=[\"all\"] str=\"10:00\" end=\"11:00\"",
+    "Ranger (the requester) listed in the crowd: false",
+    "the day's OIL decisions before / after the tap: null / null",
+    "stored day row weeks/13-07-2026#5: present; the request's row who=bane more=[\"all\"]",
+    "Leave War 2026-07-18 (working copy, not published): {\"Reaper\":{\"text\":\"\",\"cls\":\"weekend act\"},\"Anvil\":{\"text\":\"\",\"cls\":\"weekend act\"},\"Blade\":{\"text\":\"\",\"cls\":\"weekend act\"},\"Ranger\":{\"text\":\"\",\"cls\":\"weekend act\"}}"
+   ],
+   "verdict": "PASS",
+   "why": [],
+   "pics": [
+    "A3-phone-1-board-chip.png",
+    "A3-phone-2-board-window.png",
+    "A3-phone-3-board-oilearn-row.png",
+    "A3-phone-4-window-earn-half.png",
+    "A3-phone-6-editweek-chip.png",
+    "A3-phone-7-editweek-window.png"
+   ],
+   "from": "p7-a-walk1-phone-A1A3.json"
+  },
+  {
+   "id": "A3r-desk",
+   "did": "timed Personal (Ranger, Sat 18 Jul 10:00–11:00) with ALL in the extras; OIL Earn on; a tap on Ranger's own puck on the row; the chip → the window → \"Who earns OIL\" → a tap on a man — desktop",
+   "screen": [
+    "Ranger's puck in OIL Earn: title \"Ranger — a personal request earns no OIL\"; painted with opacity 1, filter none, cursor default",
+    "a tap on Ranger's own puck: the app says [] (on screen now: null)",
+    "the window's box: left 1212, top 96, 212×540 in a 1440×900 window; foot before a tap: \"Tap a puck to stop a man earning from this event.\"",
+    "after a tap on Reaper: the foot reads \"Reaper — a personal request earns no OIL\" (10.5px, rgb(182, 192, 203)); inside the screen true; covered false; toasts []"
+   ],
+   "data": [],
+   "verdict": "PASS",
+   "why": [
+    "NOTE a tap on the requester's inert puck says NOTHING on screen — the reason is its hover title only (a finger cannot read it on the row; the window's foot is where a tap reads it)"
+   ],
+   "pics": [
+    "A3r-desk-1-requester-puck-tapped.png",
+    "A3r-desk-2-window-reason.png"
+   ],
+   "from": "p7-a-walk6-desk.json"
+  },
+  {
+   "id": "A3r-phone",
+   "did": "timed Personal (Ranger, Sat 18 Jul 10:00–11:00) with ALL in the extras; OIL Earn on; a tap on Ranger's own puck on the row; the chip → the window → \"Who earns OIL\" → a tap on a man — PHONE 390×844",
+   "screen": [
+    "Ranger's puck in OIL Earn: title \"Ranger — a personal request earns no OIL\"; painted with opacity 1, filter none, cursor default",
+    "a tap on Ranger's own puck: the app says [] (on screen now: null)",
+    "the window's box: left 12, top 309, 366×523 in a 390×844 window; foot before a tap: \"Tap a puck to stop a man earning from this event.\"",
+    "after a tap on Reaper: the foot reads \"Reaper — a personal request earns no OIL\" (10.5px, rgb(182, 192, 203)); inside the screen true; covered false; toasts []"
+   ],
+   "data": [],
+   "verdict": "PASS",
+   "why": [
+    "NOTE a tap on the requester's inert puck says NOTHING on screen — the reason is its hover title only (a finger cannot read it on the row; the window's foot is where a tap reads it)"
+   ],
+   "pics": [
+    "A3r-phone-1-requester-puck-tapped.png",
+    "A3r-phone-2-window-reason.png"
+   ],
+   "from": "p7-a-walk6-phone.json"
+  },
+  {
+   "id": "A6",
+   "did": "timed Personal (Ranger, Sat 18 Jul 10:00–11:00) with ALL AVAIL in the extras; then on the board: CX, CX again, ⓘ, ⓘ again, ✕ on its row, Undo; and a Sunday Personal row with only a named extra (Anvil)",
+   "screen": [
+    "A6-0-standing: chips painted — board 1, board with OIL Earn on 1, edit week 1 (\"44\"); row class [sb-arow c6r gr-frominput lateinp]; in the mode the item cell reads \"Nothing on this row can earn OIL, so there is nothing to switch off\"",
+    "CX pressed: pressed, then \"Cancel line\" on the sheet",
+    "A6-a-cancelled: chips painted — board 0, board with OIL Earn on 0, edit week 0; row class [sb-arow c6r cx gr-frominput lateinp]; in the mode the item cell reads \"row not drawn\"",
+    "CX pressed again: pressed, then \"Un-cancel\" on the sheet",
+    "A6-a2-uncancelled: chips painted — board 1, board with OIL Earn on 1, edit week 1 (\"44\"); row class [sb-arow c6r gr-frominput lateinp]; in the mode the item cell reads \"Nothing on this row can earn OIL, so there is nothing to switch off\"",
+    "ⓘ pressed: pressed",
+    "A6-b-infoonly: chips painted — board 0, board with OIL Earn on 0, edit week 0; row class [sb-arow c6r fyi gr-frominput lateinp]; in the mode the item cell reads \"row not drawn\"",
+    "ⓘ pressed again: pressed",
+    "A6-b2-uninfo: chips painted — board 1, board with OIL Earn on 1, edit week 1 (\"44\"); row class [sb-arow c6r gr-frominput lateinp]; in the mode the item cell reads \"Nothing on this row can earn OIL, so there is nothing to switch off\"",
+    "✕ on the row: pressed; the app said [\"Ground item removed — back under Personal Inputs — PERSONAL, 10:00–11:00, Ranger +1\"]",
+    "A6-c taken off: chips painted — board 0, OIL Earn 0, edit week 0",
+    "Undo (top bar, \"Undo — a change to the schedule\"): toasts [\"Undid: a change to the schedule\"]",
+    "A6-c2-undo-takenoff: chips painted — board 1, board with OIL Earn on 1, edit week 1 (\"44\"); row class [sb-arow c6r gr-frominput lateinp]; in the mode the item cell reads \"Nothing on this row can earn OIL, so there is nothing to switch off\"",
+    "A6-d-named-only: chips painted — board 0, board with OIL Earn on 0, edit week 0; row class [sb-arow c6r gr-frominput lateinp]; in the mode the item cell reads \"row not drawn\""
+   ],
+   "data": [
+    "row after CX: {\"prog\":\"PERSONAL\",\"str\":\"10:00\",\"end\":\"11:00\",\"who\":\"bane\",\"rmks\":\"P7 A6\",\"srcType\":\"Personal\",\"src\":\"imrldi1s0x4mojq\",\"srcv\":\"1fxvomk\",\"rid\":\"rimrldi1s0x4mojq\",\"more\":[\"allavail\"],\"cx\":true,\"cxr\":\"\"}",
+    "row after ⓘ: {\"prog\":\"PERSONAL\",\"str\":\"10:00\",\"end\":\"11:00\",\"who\":\"bane\",\"rmks\":\"P7 A6\",\"srcType\":\"Personal\",\"src\":\"imrldi1s0x4mojq\",\"srcv\":\"1fxvomk\",\"rid\":\"rimrldi1s0x4mojq\",\"more\":[\"allavail\"],\"cx\":false,\"info\":true}",
+    "request after ✕: acc=r; rows left for it on Saturday: []",
+    "row after Undo: {\"prog\":\"PERSONAL\",\"str\":\"10:00\",\"end\":\"11:00\",\"who\":\"bane\",\"rmks\":\"P7 A6\",\"srcType\":\"Personal\",\"src\":\"imrldi1s0x4mojq\",\"srcv\":\"1fxvomk\",\"rid\":\"rimrldi1s0x4mojq\",\"more\":[\"allavail\"],\"cx\":false,\"info\":false}",
+    "stored Sunday row: \"n/a\""
+   ],
+   "verdict": "PASS",
+   "why": [],
+   "pics": [
+    "A6-0-standing-board.png",
+    "A6-a-cancelled-board.png",
+    "A6-a-cancelled-board-oilearn.png",
+    "A6-a-cancelled-editweek.png",
+    "A6-a2-uncancelled-board.png",
+    "A6-b-infoonly-board.png",
+    "A6-b-infoonly-editweek.png",
+    "A6-b2-uninfo-editweek.png",
+    "A6-c-takenoff-board.png",
+    "A6-c2-undo-takenoff-board.png",
+    "A6-d-named-only-board-oilearn.png"
+   ],
+   "from": "p7-a-walk2.json"
+  },
+  {
+   "id": "A6e",
+   "did": "edit week, the row on screen: Sunday — Personal (Ranger) with only Anvil in the extras; Saturday — Personal (Ranger) with ALL AVAIL, then ⓘ (information-only)",
+   "screen": [
+    "ⓘ pressed: pressed",
+    "edit week Sunday: pucks on the day [\"bane\",\"shaft\"]; chips painted 0",
+    "edit week Saturday (information-only): chips painted 0"
+   ],
+   "data": [],
+   "verdict": "PASS",
+   "why": [],
+   "pics": [
+    "A6e-1-editweek-named-only-row.png",
+    "A6e-2-editweek-infoonly-row.png"
+   ],
+   "from": "p7-a-walk2b.json"
+  },
+  {
+   "id": "A7",
+   "did": "Personal (Ranger, Tue 14 Jul 10:00–11:00) with ALL AVAIL + Anvil in the extras; on the Inputs page its ✎ editor: times → 14:00–15:30, Save; Undo; Redo; reload",
+   "screen": [
+    "A7-1-before: day 1 row who=bane more=[\"allavail\",\"shaft\"] 10:00-11:00; board chip 32 \"32 with nothing else on at that time — tap to see them (who is free as things stand now)\"; window \"PERSONAL Jul 14 · 10:00–11:00\" Who’s available 32 · \"who is free as things stand now\" lists 32; edit week chip 32",
+    "editor: {\"did\":\"saved\",\"asked\":[]}; toasts [\"ALL AVAIL planned\",\"Anvil planned\",\"Schedule updated\",\"Input updated\"]",
+    "A7-2-after: day 1 row who=bane more=[\"allavail\",\"shaft\"] 14:00-15:30; board chip 33 \"33 with nothing else on at that time — tap to see them (who is free as things stand now)\"; window \"PERSONAL Jul 14 · 14:00–15:30\" Who’s available 33 · \"who is free as things stand now\" lists 33; edit week chip 33",
+    "the crowd before 32 (10:00–11:00) and after 33 (14:00–15:30); same men: false",
+    "A7: Undo (top bar \"Undo — a personal input\") → [\"Undid: a personal input\"]",
+    "A7-3-undone: day 1 row who=bane more=[\"allavail\",\"shaft\"] 10:00-11:00; board chip 32 \"32 with nothing else on at that time — tap to see them (who is free as things stand now)\"; window \"PERSONAL Jul 14 · 10:00–11:00\" Who’s available 32 · \"who is free as things stand now\" lists 32; edit week chip 32",
+    "A7: Redo (top bar \"Redo — a personal input\") → [\"Redid: a personal input\"]",
+    "A7-4-redone: day 1 row who=bane more=[\"allavail\",\"shaft\"] 14:00-15:30; board chip 33 \"33 with nothing else on at that time — tap to see them (who is free as things stand now)\"; window \"PERSONAL Jul 14 · 14:00–15:30\" Who’s available 33 · \"who is free as things stand now\" lists 33; edit week chip 33",
+    "A7-5-reloaded: day 1 row who=bane more=[\"allavail\",\"shaft\"] 14:00-15:30; board chip 33 \"33 with nothing else on at that time — tap to see them (who is free as things stand now)\"; window \"PERSONAL Jul 14 · 14:00–15:30\" Who’s available 33 · \"who is free as things stand now\" lists 33; edit week chip 33"
+   ],
+   "data": [
+    "A7-1-before: request Personal Jul 14 600-660 bane acc=g; rows on days [1]",
+    "A7-2-after: request Personal Jul 14 840-930 bane acc=g; rows on days [1]",
+    "A7-3-undone: request Personal Jul 14 600-660 bane acc=g; rows on days [1]",
+    "A7-4-redone: request Personal Jul 14 840-930 bane acc=g; rows on days [1]",
+    "A7-5-reloaded: request Personal Jul 14 840-930 bane acc=g; rows on days [1]"
+   ],
+   "verdict": "PASS",
+   "why": [],
+   "pics": [
+    "A7-1-before-window.png",
+    "A7-2-after-window.png",
+    "A7-2-after-editweek.png",
+    "A7-3-undone-board.png",
+    "A7-4-redone-board.png",
+    "A7-5-reloaded-editweek.png"
+   ],
+   "from": "p7-a-walk3-A7A8.json"
+  },
+  {
+   "id": "A8",
+   "did": "Personal (Ranger, Sat 18 Jul 10:00–11:00) with ALL AVAIL + Anvil; ✎ editor: type → Training (the OIL question answered Yes); Undo; Redo; reload; then ✎ type → Personal again",
+   "screen": [
+    "A8-1-before: day 5 row who=bane more=[\"allavail\",\"shaft\"] 10:00-11:00; board chip 43 \"None of these 43 earn OIL today — tap to see each one (who is free as things stand now)\"; window \"PERSONAL Jul 18 · 10:00–11:00\" Who’s available 43 · \"who is free as things stand now\" lists 43; edit week chip 43; OIL Earn item [ain oilitem none] \"Nothing on this row can earn OIL, so there is nothing to switch off\"; pucks Ranger: [inert] \"Ranger — a personal request earns no OIL\" ; ALL AVAIL: — ; Anvil: [inert] \"Anvil — a personal request earns no OIL\"; chip 43 \"None of these 43 earn OIL today — tap to see each one (who is free as things stand now)\"; Who earns OIL 0 of 43 [on] 43 inert, 0 on, of 43; e.g. \"Reaper — a personal request earns no OIL\"",
+    "editor (type → Training): {\"did\":\"saved\",\"asked\":[\"oil: OIL — Ranger, Training ✕ THIS INPUT FALLS ON A NON-WORKING DAY — 18 JUL (WEEKEND / PH) Does it deserve HO — half a day of OIL? Yes — credit HO No OIL The credit\"]}; toasts [\"ALL AVAIL planned\",\"Anvil planned\",\"OIL mode — tap a puck to take a man off that event, or an item to stop the whole item earning\",\"Back to editing the schedule\",\"Schedule updated\",\"Input updated\"]",
+    "A8-2-training: day 5 row who=bane more=[\"allavail\",\"shaft\"] 10:00-11:00; board chip 43 \"All 43 earn half a day — tap to see each one (who is free as things stand now)\"; window \"TRAINING Jul 18 · 10:00–11:00\" Who’s available 43 · \"who is free as things stand now\" lists 43; edit week chip 43; OIL Earn item [ain oilitem none] \"A request is answered for each person on it — tap a puck on this row, not the row itself\"; pucks Ranger: [on] \"Ranger earns half a day — tap to take him off this event\" ; ALL AVAIL: — ; Anvil: [on] \"Anvil earns half a day — tap to take him off this event\"; chip 43 \"All 43 earn half a day — tap to see each one (who is free as things stand now)\"; Who earns OIL 43 of 43 [on] 0 inert, 43 on, of 43; e.g. \"Reaper earns half a day — tap to take him off this event\"",
+    "A8: Undo (top bar \"Undo — a personal input\") → [\"Undid: a personal input\"]",
+    "A8-3-undone: day 5 row who=bane more=[\"allavail\",\"shaft\"] 10:00-11:00; board chip 43 \"None of these 43 earn OIL today — tap to see each one (who is free as things stand now)\"; window \"PERSONAL Jul 18 · 10:00–11:00\" Who’s available 43 · \"who is free as things stand now\" lists 43; edit week chip 43; OIL Earn item [ain oilitem none] \"Nothing on this row can earn OIL, so there is nothing to switch off\"; pucks Ranger: [inert] \"Ranger — a personal request earns no OIL\" ; ALL AVAIL: — ; Anvil: [inert] \"Anvil — a personal request earns no OIL\"; chip 43 \"None of these 43 earn OIL today — tap to see each one (who is free as things stand now)\"; Who earns OIL 0 of 43 [on] 43 inert, 0 on, of 43; e.g. \"Reaper — a personal request earns no OIL\"",
+    "A8: Redo (top bar \"Redo — a personal input\") → [\"Redid: a personal input\"]",
+    "A8-4-redone: day 5 row who=bane more=[\"allavail\",\"shaft\"] 10:00-11:00; board chip 43 \"All 43 earn half a day — tap to see each one (who is free as things stand now)\"; window \"TRAINING Jul 18 · 10:00–11:00\" Who’s available 43 · \"who is free as things stand now\" lists 43; edit week chip 43; OIL Earn item [ain oilitem none] \"A request is answered for each person on it — tap a puck on this row, not the row itself\"; pucks Ranger: [on] \"Ranger earns half a day — tap to take him off this event\" ; ALL AVAIL: — ; Anvil: [on] \"Anvil earns half a day — tap to take him off this event\"; chip 43 \"All 43 earn half a day — tap to see each one (who is free as things stand now)\"; Who earns OIL 43 of 43 [on] 0 inert, 43 on, of 43; e.g. \"Reaper earns half a day — tap to take him off this event\"",
+    "A8-5-reloaded: day 5 row who=bane more=[\"allavail\",\"shaft\"] 10:00-11:00; board chip 43 \"All 43 earn half a day — tap to see each one (who is free as things stand now)\"; window \"TRAINING Jul 18 · 10:00–11:00\" Who’s available 43 · \"who is free as things stand now\" lists 43; edit week chip 43; OIL Earn item [ain oilitem none] \"A request is answered for each person on it — tap a puck on this row, not the row itself\"; pucks Ranger: [on] \"Ranger earns half a day — tap to take him off this event\" ; ALL AVAIL: — ; Anvil: [on] \"Anvil earns half a day — tap to take him off this event\"; chip 43 \"All 43 earn half a day — tap to see each one (who is free as things stand now)\"; Who earns OIL 43 of 43 [on] 0 inert, 43 on, of 43; e.g. \"Reaper earns half a day — tap to take him off this event\"",
+    "editor (type → Personal again): {\"did\":\"saved\",\"asked\":[]}; toasts [\"OIL mode — tap a puck to take a man off that event, or an item to stop the whole item earning\",\"Back to editing the schedule\",\"Schedule updated\",\"Input updated\"]",
+    "A8-6-personal-again: day 5 row who=bane more=[\"allavail\",\"shaft\"] 10:00-11:00; board chip 43 \"None of these 43 earn OIL today — tap to see each one (who is free as things stand now)\"; window \"PERSONAL Jul 18 · 10:00–11:00\" Who’s available 43 · \"who is free as things stand now\" lists 43; edit week chip 43; OIL Earn item [ain oilitem none] \"Nothing on this row can earn OIL, so there is nothing to switch off\"; pucks Ranger: [inert] \"Ranger — a personal request earns no OIL\" ; ALL AVAIL: — ; Anvil: [inert] \"Anvil — a personal request earns no OIL\"; chip 43 \"None of these 43 earn OIL today — tap to see each one (who is free as things stand now)\"; Who earns OIL 0 of 43 [on] 43 inert, 0 on, of 43; e.g. \"Reaper — a personal request earns no OIL\""
+   ],
+   "data": [
+    "A8-1-before: request Personal Jul 18 600-660 bane acc=g; rows on days [5]; OIL decisions null",
+    "A8-2-training: request Training Jul 18 600-660 bane acc=g; rows on days [5]; OIL decisions null",
+    "A8-3-undone: request Personal Jul 18 600-660 bane acc=g; rows on days [5]; OIL decisions null",
+    "A8-4-redone: request Training Jul 18 600-660 bane acc=g; rows on days [5]; OIL decisions null",
+    "A8-5-reloaded: request Training Jul 18 600-660 bane acc=g; rows on days [5]; OIL decisions null",
+    "A8-6-personal-again: request Personal Jul 18 600-660 bane acc=g; rows on days [5]; OIL decisions null"
+   ],
+   "verdict": "PASS",
+   "why": [],
+   "pics": [
+    "A8-1-before-earn-half.png",
+    "A8-2-training-board.png",
+    "A8-2-training-earn-half.png",
+    "A8-3-undone-board.png",
+    "A8-4-redone-board.png",
+    "A8-5-reloaded-editweek.png",
+    "A8-6-personal-again-earn-half.png"
+   ],
+   "from": "p7-a-walk3-A7A8.json"
+  },
+  {
+   "id": "A9",
+   "did": "Training (Ranger, Sat 18 Jul 10:00–11:00, the OIL question Yes) with ALL AVAIL + Anvil; OIL Earn: one crowd man tapped off; ✎ type → Personal; Undo; Redo; reload",
+   "screen": [
+    "Training, earn half before the tap: Who earns OIL 43 of 43 [on]; first man \"Reaper earns half a day — tap to take him off this event\" [seat oilpk on]",
+    "after tapping Reaper: Who earns OIL 42 of 43 [on]; his title now \"Reaper was taken off this event — tap to put him back on it\" [seat oilpk off]; toasts [\"ALL AVAIL planned\",\"Anvil planned\",\"OIL mode — tap a puck to take a man off that event, or an item to stop the whole item earning\"]",
+    "A9-1-training: day 5 row who=bane more=[\"allavail\",\"shaft\"] 10:00-11:00; board chip 42 of 43 earn \"Some of these men earn OIL and some do not — tap to see each one (who is free as things stand now)\"; window \"TRAINING Jul 18 · 10:00–11:00\" Who’s available 43 · \"who is free as things stand now\" lists 43; edit week chip 42 of 43 earn; OIL Earn item [ain oilitem none] \"A request is answered for each person on it — tap a puck on this row, not the row itself\"; pucks Ranger: [on] \"Ranger earns half a day — tap to take him off this event\" ; ALL AVAIL: — ; Anvil: [on] \"Anvil earns half a day — tap to take him off this event\"; chip 42 of 43 earn \"Some of these men earn OIL and some do not — tap to see each one (who is free as things stand now)\"; Who earns OIL 42 of 43 [on] 0 inert, 42 on, of 43; e.g. \"Reaper was taken off this event — tap to put him back on it\"",
+    "editor (type → Personal): {\"did\":\"saved\",\"asked\":[]}; toasts [\"Back to editing the schedule\",\"OIL mode — tap a puck to take a man off that event, or an item to stop the whole item earning\",\"Back to editing the schedule\",\"Schedule updated\",\"Input updated\"]",
+    "A9-2-personal: day 5 row who=bane more=[\"allavail\",\"shaft\"] 10:00-11:00; board chip 43 \"None of these 43 earn OIL today — tap to see each one (who is free as things stand now)\"; window \"PERSONAL Jul 18 · 10:00–11:00\" Who’s available 43 · \"who is free as things stand now\" lists 43; edit week chip 43; OIL Earn item [ain oilitem none] \"Nothing on this row can earn OIL, so there is nothing to switch off\"; pucks Ranger: [inert] \"Ranger — a personal request earns no OIL\" ; ALL AVAIL: — ; Anvil: [inert] \"Anvil — a personal request earns no OIL\"; chip 43 \"None of these 43 earn OIL today — tap to see each one (who is free as things stand now)\"; Who earns OIL 0 of 43 [on] 43 inert, 0 on, of 43; e.g. \"Reaper — a personal request earns no OIL\"",
+    "A9: Undo (top bar \"Undo — a personal input\") → [\"Undid: a personal input\"]",
+    "A9-3-undone: day 5 row who=bane more=[\"allavail\",\"shaft\"] 10:00-11:00; board chip 42 of 43 earn \"Some of these men earn OIL and some do not — tap to see each one (who is free as things stand now)\"; window \"TRAINING Jul 18 · 10:00–11:00\" Who’s available 43 · \"who is free as things stand now\" lists 43; edit week chip 42 of 43 earn; OIL Earn item [ain oilitem none] \"A request is answered for each person on it — tap a puck on this row, not the row itself\"; pucks Ranger: [on] \"Ranger earns half a day — tap to take him off this event\" ; ALL AVAIL: — ; Anvil: [on] \"Anvil earns half a day — tap to take him off this event\"; chip 42 of 43 earn \"Some of these men earn OIL and some do not — tap to see each one (who is free as things stand now)\"; Who earns OIL 42 of 43 [on] 0 inert, 42 on, of 43; e.g. \"Reaper was taken off this event — tap to put him back on it\"",
+    "A9: Redo (top bar \"Redo — a personal input\") → [\"Redid: a personal input\"]",
+    "A9-4-redone: day 5 row who=bane more=[\"allavail\",\"shaft\"] 10:00-11:00; board chip 43 \"None of these 43 earn OIL today — tap to see each one (who is free as things stand now)\"; window \"PERSONAL Jul 18 · 10:00–11:00\" Who’s available 43 · \"who is free as things stand now\" lists 43; edit week chip 43; OIL Earn item [ain oilitem none] \"Nothing on this row can earn OIL, so there is nothing to switch off\"; pucks Ranger: [inert] \"Ranger — a personal request earns no OIL\" ; ALL AVAIL: — ; Anvil: [inert] \"Anvil — a personal request earns no OIL\"; chip 43 \"None of these 43 earn OIL today — tap to see each one (who is free as things stand now)\"; Who earns OIL 0 of 43 [on] 43 inert, 0 on, of 43; e.g. \"Reaper — a personal request earns no OIL\"",
+    "A9-5-reloaded: day 5 row who=bane more=[\"allavail\",\"shaft\"] 10:00-11:00; board chip 43 \"None of these 43 earn OIL today — tap to see each one (who is free as things stand now)\"; window \"PERSONAL Jul 18 · 10:00–11:00\" Who’s available 43 · \"who is free as things stand now\" lists 43; edit week chip 43; OIL Earn item [ain oilitem none] \"Nothing on this row can earn OIL, so there is nothing to switch off\"; pucks Ranger: [inert] \"Ranger — a personal request earns no OIL\" ; ALL AVAIL: — ; Anvil: [inert] \"Anvil — a personal request earns no OIL\"; chip 43 \"None of these 43 earn OIL today — tap to see each one (who is free as things stand now)\"; Who earns OIL 0 of 43 [on] 43 inert, 0 on, of 43; e.g. \"Reaper — a personal request earns no OIL\""
+   ],
+   "data": [
+    "the day's OIL decisions after the tap: {\"people\":{\"dice|i:imrldi1s028kfuq\":\"deny\"},\"pa\":{\"dice|i:imrldi1s028kfuq\":0}}",
+    "A9-1-training: request Training Jul 18 600-660 bane acc=g; rows on days [5]; OIL decisions {\"people\":{\"dice|i:imrldi1s028kfuq\":\"deny\"},\"pa\":{\"dice|i:imrldi1s028kfuq\":0}}",
+    "A9-2-personal: request Personal Jul 18 600-660 bane acc=g; rows on days [5]; OIL decisions {\"people\":{\"dice|i:imrldi1s028kfuq\":\"deny\"},\"pa\":{\"dice|i:imrldi1s028kfuq\":0}}",
+    "A9-3-undone: request Training Jul 18 600-660 bane acc=g; rows on days [5]; OIL decisions {\"people\":{\"dice|i:imrldi1s028kfuq\":\"deny\"},\"pa\":{\"dice|i:imrldi1s028kfuq\":0}}",
+    "A9-4-redone: request Personal Jul 18 600-660 bane acc=g; rows on days [5]; OIL decisions {\"people\":{\"dice|i:imrldi1s028kfuq\":\"deny\"},\"pa\":{\"dice|i:imrldi1s028kfuq\":0}}",
+    "A9-5-reloaded: request Personal Jul 18 600-660 bane acc=g; rows on days [5]; OIL decisions {\"people\":{\"dice|i:imrldi1s028kfuq\":\"deny\"},\"pa\":{\"dice|i:imrldi1s028kfuq\":0}}"
+   ],
+   "verdict": "PASS",
+   "why": [],
+   "pics": [
+    "A9-0-training-one-off.png",
+    "A9-1-training-earn-half.png",
+    "A9-2-personal-board.png",
+    "A9-2-personal-earn-half.png",
+    "A9-3-undone-board.png",
+    "A9-4-redone-board.png",
+    "A9-5-reloaded-editweek.png"
+   ],
+   "from": "p7-a-walk3-A9A10A11A12A13.json"
+  },
+  {
+   "id": "A10",
+   "did": "Personal (Ranger, Sat 18 Jul 10:00–11:00) with ALL AVAIL + Anvil; ✎ editor: date → Sun 19 Jul; Undo; Redo; reload; then ✎ date → Sat 18 Jul again",
+   "screen": [
+    "A10-1-before: day 5 row who=bane more=[\"allavail\",\"shaft\"] 10:00-11:00; board chip 43 \"None of these 43 earn OIL today — tap to see each one (who is free as things stand now)\"; window \"PERSONAL Jul 18 · 10:00–11:00\" Who’s available 43 · \"who is free as things stand now\" lists 43; edit week chip 43; OIL Earn item [ain oilitem none] \"Nothing on this row can earn OIL, so there is nothing to switch off\"; pucks Ranger: [inert] \"Ranger — a personal request earns no OIL\" ; ALL AVAIL: — ; Anvil: [inert] \"Anvil — a personal request earns no OIL\"; chip 43 \"None of these 43 earn OIL today — tap to see each one (who is free as things stand now)\"; Who earns OIL 0 of 43 [on] 43 inert, 0 on, of 43; e.g. \"Reaper — a personal request earns no OIL\"",
+    "editor (date → Sun 19 Jul): 19 Jul; toasts [\"ALL AVAIL planned\",\"Anvil planned\",\"OIL mode — tap a puck to take a man off that event, or an item to stop the whole item earning\",\"Back to editing the schedule\",\"Schedule updated\",\"Input updated\"]",
+    "A10-2-on-sunday: day 6 row who=bane more=[] 10:00-11:00; board chip (no chip); window (none) lists 0; edit week chip (no chip); OIL Earn item [ain oilitem none] \"Nothing on this row can earn OIL, so there is nothing to switch off\"; pucks Ranger: [inert] \"Ranger — a personal request earns no OIL\"; chip (no chip);  ",
+    "A10-2b-saturday-after-move: day 5 row (no row); board chip (no chip); window (none) lists 0; edit week chip (no chip)",
+    "A10: Undo (top bar \"Undo — a personal input\") → [\"Undid: a personal input\"]",
+    "A10-3-undone: day 5 row who=bane more=[\"allavail\",\"shaft\"] 10:00-11:00; board chip 43 \"None of these 43 earn OIL today — tap to see each one (who is free as things stand now)\"; window \"PERSONAL Jul 18 · 10:00–11:00\" Who’s available 43 · \"who is free as things stand now\" lists 43; edit week chip 43; OIL Earn item [ain oilitem none] \"Nothing on this row can earn OIL, so there is nothing to switch off\"; pucks Ranger: [inert] \"Ranger — a personal request earns no OIL\" ; ALL AVAIL: — ; Anvil: [inert] \"Anvil — a personal request earns no OIL\"; chip 43 \"None of these 43 earn OIL today — tap to see each one (who is free as things stand now)\"; Who earns OIL 0 of 43 [on] 43 inert, 0 on, of 43; e.g. \"Reaper — a personal request earns no OIL\"",
+    "A10: Redo (top bar \"Redo — a personal input\") → [\"Redid: a personal input\"]",
+    "A10-4-redone: day 6 row who=bane more=[] 10:00-11:00; board chip (no chip); window (none) lists 0; edit week chip (no chip); OIL Earn item [ain oilitem none] \"Nothing on this row can earn OIL, so there is nothing to switch off\"; pucks Ranger: [inert] \"Ranger — a personal request earns no OIL\"; chip (no chip);  ",
+    "A10-5-reloaded: day 6 row who=bane more=[] 10:00-11:00; board chip (no chip); window (none) lists 0; edit week chip (no chip); OIL Earn item [ain oilitem none] \"Nothing on this row can earn OIL, so there is nothing to switch off\"; pucks Ranger: [inert] \"Ranger — a personal request earns no OIL\"; chip (no chip);  ",
+    "editor (date → Sat 18 Jul again): 18 Jul; toasts [\"OIL mode — tap a puck to take a man off that event, or an item to stop the whole item earning\",\"Back to editing the schedule\",\"Schedule updated\",\"Input updated\"]",
+    "A10-6-back-on-saturday: day 5 row who=bane more=[\"allavail\",\"shaft\"] 10:00-11:00; board chip 43 \"None of these 43 earn OIL today — tap to see each one (who is free as things stand now)\"; window \"PERSONAL Jul 18 · 10:00–11:00\" Who’s available 43 · \"who is free as things stand now\" lists 43; edit week chip 43; OIL Earn item [ain oilitem none] \"Nothing on this row can earn OIL, so there is nothing to switch off\"; pucks Ranger: [inert] \"Ranger — a personal request earns no OIL\" ; ALL AVAIL: — ; Anvil: [inert] \"Anvil — a personal request earns no OIL\"; chip 43 \"None of these 43 earn OIL today — tap to see each one (who is free as things stand now)\"; Who earns OIL 0 of 43 [on] 43 inert, 0 on, of 43; e.g. \"Reaper — a personal request earns no OIL\"",
+    "A10-6b-sunday-after-return: day 6 row (no row); board chip (no chip); window (none) lists 0; edit week chip (no chip)"
+   ],
+   "data": [
+    "A10-1-before: request Personal Jul 18 600-660 bane acc=g; rows on days [5]; OIL decisions null",
+    "A10-2-on-sunday: request Personal Jul 19 600-660 bane acc=g; rows on days [6]; OIL decisions null",
+    "A10-2b-saturday-after-move: request Personal Jul 19 600-660 bane acc=g; rows on days [6]",
+    "Saturday's ground rows after the move: []",
+    "A10-3-undone: request Personal Jul 18 600-660 bane acc=g; rows on days [5]; OIL decisions null",
+    "A10-4-redone: request Personal Jul 19 600-660 bane acc=g; rows on days [6]; OIL decisions null",
+    "A10-5-reloaded: request Personal Jul 19 600-660 bane acc=g; rows on days [6]; OIL decisions null",
+    "A10-6-back-on-saturday: request Personal Jul 18 600-660 bane acc=g; rows on days [5]; OIL decisions null",
+    "A10-6b-sunday-after-return: request Personal Jul 18 600-660 bane acc=g; rows on days [5]"
+   ],
+   "verdict": "PASS",
+   "why": [],
+   "pics": [
+    "A10-1-before-board.png",
+    "A10-2-on-sunday-board.png",
+    "A10-3-undone-board.png",
+    "A10-4-redone-board.png",
+    "A10-6-back-on-saturday-board.png",
+    "A10x-editor-after-two-clicks.png"
+   ],
+   "from": "p7-a-walk3-A9A10A11A12A13.json"
+  },
+  {
+   "id": "A11",
+   "did": "Personal (Ranger, Sat 18 Jul 10:00–11:00) with ALL AVAIL + Anvil; ✕ on its row on the board (taken off); Undo; Redo; reload",
+   "screen": [
+    "A11-1-before: day 5 row who=bane more=[\"allavail\",\"shaft\"] 10:00-11:00; board chip 43 \"None of these 43 earn OIL today — tap to see each one (who is free as things stand now)\"; window \"PERSONAL Jul 18 · 10:00–11:00\" Who’s available 43 · \"who is free as things stand now\" lists 43; edit week chip 43; OIL Earn item [ain oilitem none] \"Nothing on this row can earn OIL, so there is nothing to switch off\"; pucks Ranger: [inert] \"Ranger — a personal request earns no OIL\" ; ALL AVAIL: — ; Anvil: [inert] \"Anvil — a personal request earns no OIL\"; chip 43 \"None of these 43 earn OIL today — tap to see each one (who is free as things stand now)\"; Who earns OIL 0 of 43 [on] 43 inert, 0 on, of 43; e.g. \"Reaper — a personal request earns no OIL\"",
+    "✕ on the row: removed; the app said [\"Ground item removed — back under Personal Inputs — PERSONAL, 10:00–11:00, Ranger +2\"]",
+    "A11-2-taken-off: day 5 row (no row); board chip (no chip); window (none) lists 0; edit week chip (no chip)",
+    "A11: Undo (top bar \"Undo — a change to the schedule\") → [\"Undid: a change to the schedule\"]",
+    "A11-3-undone: day 5 row who=bane more=[\"allavail\",\"shaft\"] 10:00-11:00; board chip 43 \"None of these 43 earn OIL today — tap to see each one (who is free as things stand now)\"; window \"PERSONAL Jul 18 · 10:00–11:00\" Who’s available 43 · \"who is free as things stand now\" lists 43; edit week chip 43; OIL Earn item [ain oilitem none] \"Nothing on this row can earn OIL, so there is nothing to switch off\"; pucks Ranger: [inert] \"Ranger — a personal request earns no OIL\" ; ALL AVAIL: — ; Anvil: [inert] \"Anvil — a personal request earns no OIL\"; chip 43 \"None of these 43 earn OIL today — tap to see each one (who is free as things stand now)\"; Who earns OIL 0 of 43 [on] 43 inert, 0 on, of 43; e.g. \"Reaper — a personal request earns no OIL\"",
+    "A11: Redo (top bar \"Redo — a change to the schedule\") → [\"Redid: a change to the schedule\"]",
+    "A11-4-redone: day 5 row (no row); board chip (no chip); window (none) lists 0; edit week chip (no chip)",
+    "A11-5-reloaded: day 5 row (no row); board chip (no chip); window (none) lists 0; edit week chip (no chip)"
+   ],
+   "data": [
+    "A11-1-before: request Personal Jul 18 600-660 bane acc=g; rows on days [5]; OIL decisions null",
+    "A11-2-taken-off: request Personal Jul 18 600-660 bane acc=r; rows on days []",
+    "A11-3-undone: request Personal Jul 18 600-660 bane acc=g; rows on days [5]; OIL decisions null",
+    "A11-4-redone: request Personal Jul 18 600-660 bane acc=r; rows on days []",
+    "A11-5-reloaded: request Personal Jul 18 600-660 bane acc=r; rows on days []"
+   ],
+   "verdict": "PASS",
+   "why": [],
+   "pics": [
+    "A11-2-taken-off-board.png",
+    "A11-3-undone-board.png"
+   ],
+   "from": "p7-a-walk3-A9A10A11A12A13.json"
+  },
+  {
+   "id": "A12",
+   "did": "Personal (Ranger, Sat 18 Jul 10:00–11:00) with ALL AVAIL + Anvil; ✕ on its line on the Inputs page (deleted); Undo; Redo; reload",
+   "screen": [
+    "A12-1-before: day 5 row who=bane more=[\"allavail\",\"shaft\"] 10:00-11:00; board chip 43 \"None of these 43 earn OIL today — tap to see each one (who is free as things stand now)\"; window \"PERSONAL Jul 18 · 10:00–11:00\" Who’s available 43 · \"who is free as things stand now\" lists 43; edit week chip 43; OIL Earn item [ain oilitem none] \"Nothing on this row can earn OIL, so there is nothing to switch off\"; pucks Ranger: [inert] \"Ranger — a personal request earns no OIL\" ; ALL AVAIL: — ; Anvil: [inert] \"Anvil — a personal request earns no OIL\"; chip 43 \"None of these 43 earn OIL today — tap to see each one (who is free as things stand now)\"; Who earns OIL 0 of 43 [on] 43 inert, 0 on, of 43; e.g. \"Reaper — a personal request earns no OIL\"",
+    "✕ on the Inputs line: gone; the app said [\"Input deleted\"]",
+    "A12-2-deleted: day 5 row (no row); board chip (no chip); window (none) lists 0; edit week chip (no chip)",
+    "A12: Undo (top bar \"Undo — a personal input\") → [\"Undid: a personal input\"]",
+    "A12-3-undone: day 5 row who=bane more=[\"allavail\",\"shaft\"] 10:00-11:00; board chip 43 \"None of these 43 earn OIL today — tap to see each one (who is free as things stand now)\"; window \"PERSONAL Jul 18 · 10:00–11:00\" Who’s available 43 · \"who is free as things stand now\" lists 43; edit week chip 43; OIL Earn item [ain oilitem none] \"Nothing on this row can earn OIL, so there is nothing to switch off\"; pucks Ranger: [inert] \"Ranger — a personal request earns no OIL\" ; ALL AVAIL: — ; Anvil: [inert] \"Anvil — a personal request earns no OIL\"; chip 43 \"None of these 43 earn OIL today — tap to see each one (who is free as things stand now)\"; Who earns OIL 0 of 43 [on] 43 inert, 0 on, of 43; e.g. \"Reaper — a personal request earns no OIL\"",
+    "A12: Redo (top bar \"Redo — a personal input\") → [\"Redid: a personal input\"]",
+    "A12-4-redone: day 5 row (no row); board chip (no chip); window (none) lists 0; edit week chip (no chip)",
+    "A12-5-reloaded: day 5 row (no row); board chip (no chip); window (none) lists 0; edit week chip (no chip)"
+   ],
+   "data": [
+    "A12-1-before: request Personal Jul 18 600-660 bane acc=g; rows on days [5]; OIL decisions null",
+    "A12-2-deleted: request (deleted); rows on days []",
+    "A12-3-undone: request Personal Jul 18 600-660 bane acc=g; rows on days [5]; OIL decisions null",
+    "A12-4-redone: request (deleted); rows on days []",
+    "A12-5-reloaded: request (deleted); rows on days []"
+   ],
+   "verdict": "PASS",
+   "why": [],
+   "pics": [
+    "A12-2-inputs-after-delete.png",
+    "A12-3-undone-board.png"
+   ],
+   "from": "p7-a-walk3-A9A10A11A12A13.json"
+  },
+  {
+   "id": "A13",
+   "did": "Personal (Ranger, Sat 18 Jul 10:00–11:00) with ALL AVAIL + Anvil; ✎ editor: person → Cobra, Save; Undo; Redo; reload",
+   "screen": [
+    "A13-1-before: day 5 row who=bane more=[\"allavail\",\"shaft\"] 10:00-11:00; board chip 43 \"None of these 43 earn OIL today — tap to see each one (who is free as things stand now)\"; window \"PERSONAL Jul 18 · 10:00–11:00\" Who’s available 43 · \"who is free as things stand now\" lists 43; edit week chip 43; OIL Earn item [ain oilitem none] \"Nothing on this row can earn OIL, so there is nothing to switch off\"; pucks Ranger: [inert] \"Ranger — a personal request earns no OIL\" ; ALL AVAIL: — ; Anvil: [inert] \"Anvil — a personal request earns no OIL\"; chip 43 \"None of these 43 earn OIL today — tap to see each one (who is free as things stand now)\"; Who earns OIL 0 of 43 [on] 43 inert, 0 on, of 43; e.g. \"Reaper — a personal request earns no OIL\"",
+    "editor (person → Cobra): saved; toasts [\"ALL AVAIL planned\",\"Anvil planned\",\"OIL mode — tap a puck to take a man off that event, or an item to stop the whole item earning\",\"Back to editing the schedule\",\"Schedule updated\",\"Input updated\"]",
+    "A13-2-handed-over: day 5 row who=taipan more=[\"allavail\",\"shaft\"] 10:00-11:00; board chip 43 \"None of these 43 earn OIL today — tap to see each one (who is free as things stand now)\"; window \"PERSONAL Jul 18 · 10:00–11:00\" Who’s available 43 · \"who is free as things stand now\" lists 43; edit week chip 43; OIL Earn item [ain oilitem none] \"Nothing on this row can earn OIL, so there is nothing to switch off\"; pucks Cobra: [inert] \"Cobra — a personal request earns no OIL\" ; ALL AVAIL: — ; Anvil: [inert] \"Anvil — a personal request earns no OIL\"; chip 43 \"None of these 43 earn OIL today — tap to see each one (who is free as things stand now)\"; Who earns OIL 0 of 43 [on] 43 inert, 0 on, of 43; e.g. \"Reaper — a personal request earns no OIL\"",
+    "crowd before 43, after 43; Ranger listed after: true; Cobra listed before / after: true / false",
+    "A13: Undo (top bar \"Undo — a personal input\") → [\"Undid: a personal input\"]",
+    "A13-3-undone: day 5 row who=bane more=[\"allavail\",\"shaft\"] 10:00-11:00; board chip 43 \"None of these 43 earn OIL today — tap to see each one (who is free as things stand now)\"; window \"PERSONAL Jul 18 · 10:00–11:00\" Who’s available 43 · \"who is free as things stand now\" lists 43; edit week chip 43; OIL Earn item [ain oilitem none] \"Nothing on this row can earn OIL, so there is nothing to switch off\"; pucks Ranger: [inert] \"Ranger — a personal request earns no OIL\" ; ALL AVAIL: — ; Anvil: [inert] \"Anvil — a personal request earns no OIL\"; chip 43 \"None of these 43 earn OIL today — tap to see each one (who is free as things stand now)\"; Who earns OIL 0 of 43 [on] 43 inert, 0 on, of 43; e.g. \"Reaper — a personal request earns no OIL\"",
+    "A13: Redo (top bar \"Redo — a personal input\") → [\"Redid: a personal input\"]",
+    "A13-4-redone: day 5 row who=taipan more=[\"allavail\",\"shaft\"] 10:00-11:00; board chip 43 \"None of these 43 earn OIL today — tap to see each one (who is free as things stand now)\"; window \"PERSONAL Jul 18 · 10:00–11:00\" Who’s available 43 · \"who is free as things stand now\" lists 43; edit week chip 43; OIL Earn item [ain oilitem none] \"Nothing on this row can earn OIL, so there is nothing to switch off\"; pucks Cobra: [inert] \"Cobra — a personal request earns no OIL\" ; ALL AVAIL: — ; Anvil: [inert] \"Anvil — a personal request earns no OIL\"; chip 43 \"None of these 43 earn OIL today — tap to see each one (who is free as things stand now)\"; Who earns OIL 0 of 43 [on] 43 inert, 0 on, of 43; e.g. \"Reaper — a personal request earns no OIL\"",
+    "A13-5-reloaded: day 5 row who=taipan more=[\"allavail\",\"shaft\"] 10:00-11:00; board chip 43 \"None of these 43 earn OIL today — tap to see each one (who is free as things stand now)\"; window \"PERSONAL Jul 18 · 10:00–11:00\" Who’s available 43 · \"who is free as things stand now\" lists 43; edit week chip 43; OIL Earn item [ain oilitem none] \"Nothing on this row can earn OIL, so there is nothing to switch off\"; pucks Cobra: [inert] \"Cobra — a personal request earns no OIL\" ; ALL AVAIL: — ; Anvil: [inert] \"Anvil — a personal request earns no OIL\"; chip 43 \"None of these 43 earn OIL today — tap to see each one (who is free as things stand now)\"; Who earns OIL 0 of 43 [on] 43 inert, 0 on, of 43; e.g. \"Reaper — a personal request earns no OIL\""
+   ],
+   "data": [
+    "A13-1-before: request Personal Jul 18 600-660 bane acc=g; rows on days [5]; OIL decisions null",
+    "A13-2-handed-over: request Personal Jul 18 600-660 taipan acc=g; rows on days [5]; OIL decisions null",
+    "A13-3-undone: request Personal Jul 18 600-660 bane acc=g; rows on days [5]; OIL decisions null",
+    "A13-4-redone: request Personal Jul 18 600-660 taipan acc=g; rows on days [5]; OIL decisions null",
+    "A13-5-reloaded: request Personal Jul 18 600-660 taipan acc=g; rows on days [5]; OIL decisions null"
+   ],
+   "verdict": "PASS",
+   "why": [],
+   "pics": [
+    "A13-2-handed-over-board.png",
+    "A13-2-handed-over-earn-half.png",
+    "A13-3-undone-board.png",
+    "A13-4-redone-board.png",
+    "A13-5-reloaded-editweek.png"
+   ],
+   "from": "p7-a-walk3-A9A10A11A12A13.json"
+  },
+  {
+   "id": "A26",
+   "did": "timed Personal (Ranger, Sat 18 Jul 10:00–11:00) with ALL AVAIL in the extras; Saturday signed (four boxes) and published; View-only Sched; the Leave War",
+   "screen": [
+    "before publishing: the board chip opens a list of 44; the three crowd men followed: Reaper, Anvil, Blade",
+    "Saturday's head before: tag \"DRAFT\", pending \"2 changes\"; signed {\"cur\":\"Ace\",\"sked\":\"Anvil\",\"plan\":\"Anvil\",\"appr\":\"Anvil\"}; Publish → {\"pressed\":true,\"label\":\"Publish day\"}; head after: tag \"ORIG\", pending \"7 changes\", signs [\"— name —\",\"— name —\",\"— name —\",\"— name —\"]; toasts [\"ALL AVAIL planned\",\"Schedule updated\",\"Saturday published — APPROVED\"]",
+    "the four signed again on the published day: {\"cur\":\"Ace\",\"sked\":\"Anvil\",\"plan\":\"Anvil\",\"appr\":\"Anvil\"}; boxes now [\"Ace\",\"Anvil\",\"Anvil\",\"Anvil\"]; pending \"11 changes\"",
+    "edit week chip after publishing: \"44\" — \"None of these 44 earn OIL today — tap to see each one (who is free as things stand now)\"",
+    "View-only Sched chip: \"44\" — \"None of these 44 earn OIL today — tap to see each one (who was free when this day was issued)\" (version 2026-07-18#0)",
+    "View-only Sched window \"PERSONAL Jul 18 · 10:00–11:00\": Who’s available 44; lists 44; \"who was free when this day was issued — Original\"; foot \"Tap a puck for why.\"",
+    "View-only Sched window has no \"Who earns OIL\" half (one list only)"
+   ],
+   "data": [
+    "Leave War 2026-07-18 after publishing: {\"Reaper\":{\"text\":\"\",\"cls\":\"weekend act\"},\"Anvil\":{\"text\":\"\",\"cls\":\"weekend act\"},\"Blade\":{\"text\":\"\",\"cls\":\"weekend act\"},\"Ranger\":{\"text\":\"\",\"cls\":\"weekend act\"},\"Fable\":{\"text\":\"FO*\",\"cls\":\"duty weekend act\"}}",
+    "stored Saturday row present: true; stored issued versions: [\"weeks/13-07-2026#5\",\"weeks/13-07-2026:is:2026-07-18#0~0\"]"
+   ],
+   "verdict": "PASS",
+   "why": [],
+   "pics": [
+    "A26-1-published-editweek.png",
+    "A26-2-viewsched-chip.png",
+    "A26-3-viewsched-window.png",
+    "A26-5-leavewar.png"
+   ],
+   "from": "p7-a-walk4.json"
+  },
+  {
+   "id": "A27",
+   "did": "on the published Saturday: a Local leave (LL, all day Sat 18 Jul) filed on the Inputs page for ONE crowd man (the first of the three)",
+   "screen": [
+    "leave filed for Reaper: toasts [\"All signed — no changes to publish right now\"]",
+    "working copy: chip \"43\" — \"None of these 43 earn OIL today — tap to see each one (who is free as things stand now)\"; window lists 43; \"who is free as things stand now\"",
+    "Saturday's head on the edit week: tag \"ORIG\", pending \"1 pending\", sign-off boxes [\"— name —\",\"— name —\",\"— name —\",\"— name —\"], signed line \"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\"",
+    "the changes window opened from Saturday's count: tabs [\"New to you 0\",\"All changes 12\",\"To go out · AL1 1\"]; lines [\"Waiting to go out as\",\"AL1\",\"· 1 change\",\"Reaper · LL\",\"Saber\",\"15/7 09:00\",\"filed\"]",
+    "View-only Sched: chip \"44\" — \"None of these 44 earn OIL today — tap to see each one (who was free when this day was issued)\"; window lists 44; \"who was free when this day was issued — Original\"; the day's head there: tag \"ORIG\", pending \"\", not-yet-signed \"\""
+   ],
+   "data": [
+    "Leave War 2026-07-18 with the leave filed: {\"Reaper\":{\"text\":\"LL\",\"cls\":\"weekend act\"},\"Anvil\":{\"text\":\"\",\"cls\":\"weekend act\"},\"Blade\":{\"text\":\"\",\"cls\":\"weekend act\"},\"Ranger\":{\"text\":\"\",\"cls\":\"weekend act\"}}"
+   ],
+   "verdict": "PASS",
+   "why": [],
+   "pics": [
+    "A27-1-working-copy-window.png",
+    "A27-2-editweek-pending-signs.png",
+    "A27-3-changes-window.png",
+    "A27-4-viewsched-issued-window.png",
+    "A27-5-leavewar.png"
+   ],
+   "from": "p7-a-walk4.json"
+  },
+  {
+   "id": "A28",
+   "did": "Undo the leave (the top bar's Undo); then a reload",
+   "screen": [
+    "Undo (top bar \"Undo — a personal input\") → [\"Undid: a personal input\"]",
+    "Saturday's head after the Undo: tag \"ORIG\", pending \"13 changes\", sign-off boxes [\"Ace\",\"Anvil\",\"Anvil\",\"Anvil\"]"
+   ],
+   "data": [
+    "the plans menu of Saturday: [data-plangolive=5] Live working copy ●live now — differences from Original go out as AL1 || [data-planpv=2026-07-18#0] Originalread-only — look, don't change || [data-plandup=1] + Alt Plan",
+    "the view page's Saturday picker: issued=Original — as issued | working=Working draft — not issued"
+   ],
+   "verdict": "PASS",
+   "why": [],
+   "pics": [
+    "A28-1-editweek-after-undo.png",
+    "A28-2-viewsched-after-undo.png",
+    "A28-3-viewsched-reloaded.png",
+    "A28-4-plans-menu.png"
+   ],
+   "from": "p7-a-walk4.json"
+  },
+  {
+   "id": "A26b",
+   "did": "Saturday — timed Personal (Ranger) with ALL AVAIL, signed and published; the Leave War grid: the SDO (Fable) and a crowd man on Sat 18 Jul, in one picture",
+   "screen": [],
+   "data": [
+    "Leave War 18 Jul: of Fable + the 44 crowd men, the cells carrying FO / HO: [\"Fable=FO*\"]; cells not drawn: 0"
+   ],
+   "verdict": "PASS",
+   "why": [],
+   "pics": [
+    "A26b-leavewar-fable-and-crowd.png"
+   ],
+   "from": "p7-a-walk5b.json"
+  },
+  {
+   "id": "A28b",
+   "did": "published Saturday (Personal, Ranger, ALL AVAIL): ✎ type → Training (OIL question: Yes) on the working copy; then the four signed and Publish AL1; then ✎ type → Personal, signed, Publish AL2 — the issued face, the pending mark, the sign-offs and the Leave War after each",
+   "screen": [
+    "editor (type → Training): {\"did\":\"saved\",\"asked\":[\"oil: OIL — Ranger, Training ✕ THIS INPUT FALLS ON A NON-WORKING DAY — 18 JUL (WEEKEND / PH) Does it deserve HO — half a day of OIL? Yes — credit HO No OIL The credit\"]}; toasts [\"ALL AVAIL planned\",\"Schedule updated\",\"Saturday published — APPROVED\",\"All signed — no changes to publish right now\",\"Input updated\"]",
+    "working copy: chip \"44\" — \"All 44 earn half a day — tap to see each one (who is free as things stand now)\"; head: tag \"ORIG\", pending \"1 pending\", sign-off boxes [\"— name —\",\"— name —\",\"— name —\",\"— name —\"]",
+    "View-only Sched (issued Original): chip \"44\" — \"None of these 44 earn OIL today — tap to see each one (who was free when this day was issued)\"; the row reads \"Ranger IP ALL AVAIL 44\"",
+    "signed {\"cur\":\"Ace\",\"sked\":\"Anvil\",\"plan\":\"Anvil\",\"appr\":\"Anvil\"}; Publish AL → {\"pressed\":true,\"label\":\"Publish AL1\"}; head: tag \"AL1\", pending \"18 changes\"; toasts [\"Published AL1 · 1 item on Sat only · approved by Anvil\"]",
+    "View-only Sched (issued AL1): chip \"44\" — \"All 44 earn half a day — tap to see each one (who was free when this day was issued)\"",
+    "editor (type → Personal): {\"did\":\"saved\",\"asked\":[]}; toasts [\"Input updated\"]",
+    "signed {\"cur\":\"Ace\",\"sked\":\"Anvil\",\"plan\":\"Anvil\",\"appr\":\"Anvil\"}; Publish AL → {\"pressed\":true,\"label\":\"Publish AL2\"}; head: tag \"AL2\", pending \"25 changes\"",
+    "View-only Sched (issued AL2): chip \"44\" — \"None of these 44 earn OIL today — tap to see each one (who was free when this day was issued)\""
+   ],
+   "data": [
+    "Leave War after ORIG (Personal): {\"Reaper\":{\"text\":\"\",\"cls\":\"weekend act\"},\"Anvil\":{\"text\":\"\",\"cls\":\"weekend act\"},\"Blade\":{\"text\":\"\",\"cls\":\"weekend act\"},\"Ranger\":{\"text\":\"\",\"cls\":\"weekend act\"}}",
+    "Leave War with the retype pending (issued is still Personal): {\"Reaper\":{\"text\":\"\",\"cls\":\"weekend act\"},\"Anvil\":{\"text\":\"\",\"cls\":\"weekend act\"},\"Blade\":{\"text\":\"\",\"cls\":\"weekend act\"},\"Ranger\":{\"text\":\"\",\"cls\":\"weekend act\"}}",
+    "Leave War after AL1 (Training, the OIL question Yes): {\"Reaper\":{\"text\":\"HO*\",\"cls\":\"duty weekend act\"},\"Anvil\":{\"text\":\"HO*\",\"cls\":\"duty weekend act\"},\"Blade\":{\"text\":\"HO*\",\"cls\":\"duty weekend act\"},\"Ranger\":{\"text\":\"HO*\",\"cls\":\"duty weekend act\"}}",
+    "Leave War after AL2 (Personal again): {\"Reaper\":{\"text\":\"\",\"cls\":\"weekend act\"},\"Anvil\":{\"text\":\"\",\"cls\":\"weekend act\"},\"Blade\":{\"text\":\"\",\"cls\":\"weekend act\"},\"Ranger\":{\"text\":\"\",\"cls\":\"weekend act\"}}"
+   ],
+   "verdict": "PASS",
+   "why": [],
+   "pics": [
+    "A28b-1-editweek-retyped-pending.png",
+    "A28b-2-viewsched-issued-unchanged.png",
+    "A28b-3-leavewar-after-AL1-training.png",
+    "A28b-4-leavewar-after-AL2-personal.png"
+   ],
+   "from": "p7-a-walk8.json"
+  },
+  {
+   "id": "R0",
+   "did": "the fixture: Saturday — timed Personal (Ranger) with ALL AVAIL, signed and published, then a Local leave for one crowd man (pending); Sunday — timed Personal (Ranger) with ALL AVAIL, then \"+ Alt Plan\" (Plan A parked, Plan B live); Mon 20 Jul (next week) — timed Personal (Ranger) with ALL AVAIL",
+   "screen": [
+    "Sunday \"+ Alt Plan\": true; the app said [\"ALL AVAIL planned\",\"Schedule updated\",\"Saturday published — APPROVED\",\"ALL AVAIL planned\",\"Schedule updated\",\"Sunday — \\\"Plan B\\\" is now the live day, edit over it\"]",
+    "working copy: Saturday chip 44 at publication, a leave now pending for Reaper"
+   ],
+   "data": [],
+   "verdict": "PASS",
+   "why": [],
+   "pics": [],
+   "from": "p7-a-walk5.json"
+  },
+  {
+   "id": "R1",
+   "did": "published Saturday, a leave pending: (a) edit week — the day's plans menu → \"Original\" (look only); (b) the board — the same menu; (c) View-only Sched — its picker \"Original — as issued\" / \"Working draft — not issued\"; in each: the chip, its window, a tap on a man",
+   "screen": [
+    "edit week, live working copy: chip \"43\" — \"None of these 43 earn OIL today — tap to see each one (who is free as things stand now)\"",
+    "edit week, previewing the Original: chip \"44\" — \"None of these 44 earn OIL today — tap to see each one (who was free when this day was issued)\" (version 2026-07-18#0)",
+    "its window \"PERSONAL Jul 18 · 10:00–11:00\": Who’s available 44; lists 44; \"who was free when this day was issued — Original\"; foot \"Tap a puck for why.\"",
+    "a tap on the first man: the window's foot reads \"Reaper — nothing else on the programme at that time.\"; day changed false, rows changed false",
+    "board, previewing the Original: chip \"44\" — \"None of these 44 earn OIL today — tap to see each one (who was free when this day was issued)\" (version 2026-07-18#0)",
+    "its window: Who’s available 44; lists 44; \"who was free when this day was issued — Original\"",
+    "OIL Earn button while the board previews the Original: {\"disabled\":true,\"title\":\"Show who earns OIL on this day, and change it\"}",
+    "View-only Sched, Saturday's picker: [\"issued=Original — as issued *\",\"working=Working draft — not issued\"]",
+    "View-only Sched, \"Working draft — not issued\" picked (true): chip \"43\" — \"None of these 43 earn OIL today — tap to see each one (who is free as things stand now)\"",
+    "its window: lists 43; \"who is free as things stand now\""
+   ],
+   "data": [],
+   "verdict": "PASS",
+   "why": [],
+   "pics": [
+    "R1-a1-editweek-preview-chip.png",
+    "R1-a2-editweek-preview-window.png",
+    "R1-b-board-preview-window.png",
+    "R1-c-viewsched-working-window.png"
+   ],
+   "from": "p7-a-walk5.json"
+  },
+  {
+   "id": "R2",
+   "did": "Sunday: Plan A (parked) previewed through View-only Sched's picker; the chip, its window, a tap on a man; then the live plan again",
+   "screen": [
+    "View-only Sched, Sunday's picker: [\"d:dr1=Plan A\",\"live=Plan B ● *\"]",
+    "Sunday live plan (Plan B): chip \"44\" — \"None of these 44 earn OIL today — tap to see each one (who is free as things stand now)\"",
+    "Sunday previewing Plan A: chip \"44\" — \"None of these 44 earn OIL today — tap to see each one (who is free as things stand now)\" (version d:dr1)",
+    "its window \"PERSONAL Jul 19 · 10:00–11:00\": Who’s available 44; lists 44; \"who is free as things stand now — Plan A\"; foot \"Tap a puck for why.\""
+   ],
+   "data": [],
+   "verdict": "PASS",
+   "why": [],
+   "pics": [
+    "R2-1-plan-preview-chip.png",
+    "R2-2-plan-preview-window.png"
+   ],
+   "from": "p7-a-walk5.json"
+  },
+  {
+   "id": "R3",
+   "did": "next week (20 Jul): timed Personal (Ranger, Mon 20 Jul) with ALL AVAIL in its extras, put there on that week's own board; back to this week; View-only Sched's \"Next week\" peek columns",
+   "screen": [
+    "the week buttons on Edit Schedule: [{\"wk\":\"06/07/2026\",\"txt\":\"Jul 06\"},{\"wk\":\"13/07/2026\",\"txt\":\"Jul 13\"},{\"wk\":\"20/07/2026\",\"txt\":\"Jul 20\"},{\"wk\":\"27/07/2026\",\"txt\":\"Jul 27\"}]",
+    "on its own week the row wears the chip: 33",
+    "View-only Sched: 7 peek columns; count chips in them 0; placeholder pucks drawn in them 1; the row reads \"TMENT 10:00 12:00 Vapor D Medical / PHA PERSONAL 10:00 11:00 Ranger IP ALL AVAIL P7 R3 peek MEDICAL APPT 10:30 12:30 Vapor D AIR\"",
+    "Edit Schedule: 7 peek columns; count chips in them 0; placeholder pucks drawn in them 1; the row reads \"TMENT 10:00 12:00 Vapor D Medical / PHA PERSONAL 10:00 11:00 Ranger IP ALL AVAIL P7 R3 peek MEDICAL APPT 10:30 12:30 Vapor D AIR\""
+   ],
+   "data": [
+    "loaded week now: 20/07/2026",
+    "loaded week now: 13/07/2026"
+   ],
+   "verdict": "PASS",
+   "why": [],
+   "pics": [
+    "R3-1-next-week-board-chip.png"
+   ],
+   "from": "p7-a-walk5.json"
+  },
+  {
+   "id": "R4",
+   "did": "sign out; sign in as the member (us — Ranger, the requester): View-only Sched — the published Saturday's chip and window, Sunday's (a draft); the pages he is offered; a tap on a man",
+   "screen": [
+    "the member's top bar: [\"View-only Sched\",\"Inputs\",\"Quals\",\"Logic\",\"Leave War\",\"Tracker\",\"Help\"]",
+    "member, View-only Sched Saturday: chip \"44\" — \"None of these 44 earn OIL today — tap to see each one (who was free when this day was issued)\"; picker [\"issued=Original — as issued *\",\"working=Working draft — not issued\"]",
+    "member's window \"PERSONAL Jul 18 · 10:00–11:00\": Who’s available 44; lists 44; \"who was free when this day was issued — Original\"; foot \"Tap a puck for why.\"",
+    "member's tap on the first man: foot \"Reaper — nothing else on the programme at that time.\"",
+    "member, Sunday (a draft): chips \"44\" — \"None of these 44 earn OIL today — tap to see each one (who is free as things stand now)\"; picker [\"d:dr1=Plan A\",\"live=Plan B ● *\"]",
+    "member's Sunday window: Who’s available 44; \"who is free as things stand now\"",
+    "asked for Edit Schedule as the member → the page shown is \"editsched\" (editsched); OIL Earn buttons on screen: 0"
+   ],
+   "data": [],
+   "verdict": "PASS",
+   "why": [],
+   "pics": [
+    "R4-1-member-viewsched-chip.png",
+    "R4-2-member-window.png",
+    "R4-3-member-sunday-window.png",
+    "R4-4-member-after-asking-edit.png"
+   ],
+   "from": "p7-a-walk5.json"
+  },
+  {
+   "id": "R3b",
+   "did": "next week's Monday (20 Jul): timed Personal (Ranger) with ALL AVAIL, placed on that week's board; back to 13 Jul; the peek column on View-only Sched and on Edit Schedule, its PERSONAL row brought on screen; a tap on the placeholder",
+   "screen": [
+    "on its own week the chip reads 33",
+    "View-only Sched: 7 peek columns (\"NEXT WEEK — CLICK A DAY TO LOAD IT Monday Jul 20 4 X 2 COMMO\"); the placeholder is drawn true, on screen true; count chips in the peek 0",
+    "View-only Sched: a tap where the chip would stand (right of the puck): ALL AVAIL window open false; the loaded week 13/07/2026 → 20/07/2026; toasts [\"ALL AVAIL planned\",\"Schedule updated\"]",
+    "Edit Schedule: 7 peek columns (\"NEXT WEEK — CLICK A DAY TO LOAD IT Monday Jul 20 4 X 2 COMMO\"); the placeholder is drawn true, on screen true; count chips in the peek 0",
+    "Edit Schedule: a tap where the chip would stand (right of the puck): ALL AVAIL window open false; the loaded week 13/07/2026 → 20/07/2026; toasts []"
+   ],
+   "data": [
+    "loaded week: 13/07/2026"
+   ],
+   "verdict": "PASS",
+   "why": [],
+   "pics": [
+    "R3b-peek-viewsched.png",
+    "R3b-peek-viewsched-after-tap.png",
+    "R3b-peek-editsched.png",
+    "R3b-peek-editsched-after-tap.png"
+   ],
+   "from": "p7-a-walk5b.json"
+  },
+  {
+   "id": "R4b",
+   "did": "Sunday (a draft): timed Personal (Ranger) with ALL AVAIL, put there by the admin; sign out; the member (Ranger) opens View-only Sched — the chip beside the placeholder, close up; the same seat as the admin sees it",
+   "screen": [
+    "admin: chip \"44\" [oilcount] 20x15 font 9px; chip ::before none ::after none; seat [seat] ::before none ::after none; a press on the chip's middle lands on the chip: true; things drawn over it: []",
+    "member: chip \"44\" [oilcount] 20x15 font 9px; chip ::before none ::after none; seat [seat] ::before none ::after \"OG\"; a press on the chip's middle lands on the chip: true; things drawn over it: []"
+   ],
+   "data": [
+    "admin: the seat: <span class=\"seat\" data-slot=\"g:6.0.x0\"><span class=\"puck allavail sm\" tabindex=\"0\" data-person=\"allavail\" title=\"ALL AVAIL\"><span class=\"nm\">ALL AVAIL</span></span><span class=\"oilcount\" data-oilsent=\"i:imrldi1s0o5y62z\" data-oilday=\"6\" data-oilver=\"\" data-oilofw=\"1\" title=\"None of these 44 earn OIL today — tap to see each one (who is free as things stand now)\">44</span></span>",
+    "member: the seat: <span class=\"seat\" data-slot=\"g:6.0.x0\" data-og=\"1\" title=\"A change new to you — see the changes\"><span class=\"puck allavail sm\" tabindex=\"0\" data-person=\"allavail\" title=\"ALL AVAIL\"><span class=\"nm\">ALL AVAIL</span></span><span class=\"oilcount\" data-oilsent=\"i:imrldi1s0o5y62z\" data-oilday=\"6\" data-oilver=\"\" data-oilofw=\"1\" title=\"None of these 44 earn OIL today — tap to see each one (who is free as things stand now)\">44</span></span>"
+   ],
+   "verdict": "PASS",
+   "why": [],
+   "pics": [
+    "R4b-admin-sunday-chip-closeup.png",
+    "R4b-member-sunday-chip-closeup.png"
+   ],
+   "from": "p7-a-walk7.json"
+  }
+ ]
+}

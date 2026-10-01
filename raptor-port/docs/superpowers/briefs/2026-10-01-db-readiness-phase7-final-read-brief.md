@@ -7,7 +7,7 @@ batch touches earned leave, the published record and saved data). You did not wr
 - **The change:** `git diff 7612b19d..HEAD -- raptor-port/src` (the base is `main`). Read every changed file whole where the
   change sits inside a larger body — `engine/oilev.ts` (`oilEvidence`), `engine/validate.ts` (`crowdClashes`, the sim
   brief block of the warning pass, `SIMW`), `engine/slots.ts` (`setSlotVal`), `ui/oilmode.ts` (`inertWhy`, `OIL_NO_MOVE`),
-  `ui/AvailWindow.tsx`, `ui/logic-html.ts`, `ui/drag.ts`, `engine/stores.ts`, `engine/cxreasons.ts`, `engine/qualcols.ts`,
+  `ui/AvailWindow.tsx`, `state/view.ts` (`AVAILWIN_FOOTID`), `ui/pops.ts`, `ui/logic-html.ts`, `ui/drag.ts`, `engine/stores.ts`, `engine/cxreasons.ts`, `engine/qualcols.ts`,
   `leavewar/state/store.ts` (`readManningRules`, `saveManningRule`), `leavewar/ui/CounterForm.tsx`, `leavewar/sync.ts`
   (`carriedRemark`, `doorDecideApproved`), `leavewar/engine/requirements.ts`, `probe-bridge.ts`.
 - **The plan:** `raptor-port/docs/superpowers/plans/2026-10-01-db-readiness-phase7-plan.md`.
@@ -43,6 +43,15 @@ Questions the build most wants answered (not a limit on what you look at):
    where the app cannot work with one? Is there a fourth reader of the same shape the sweep missed?
 5. `carriedRemark`: can it cut the typist's own words, or leave the Input and the request disagreeing?
 6. The four reworded on-screen sentences: any other sentence a person reads that still calls OIL pay or money?
+7. **D470** (ruled during the check, built after the walk began): `oilev.ts landedExtras` now gathers a request row's NAME
+   BOX like its extras — a real person who is not the request's holder. Every caller (`oilEarnedWork`, the hand-over
+   prune `pruneHandedOverDecisions`, `ui/oilmode.ts oilEligible`): can the holder ever be gathered (earning twice, or his
+   own No buried), can a man be credited from a row he is not on, does a hand-over to or from the man in the box leave a
+   stale decision deciding? The evidence sheet §2 names one choice: an already-published DEMO day carrying such a man is
+   not built around (D56 over D48) — say if you read the rulings differently.
+8. The ALL AVAIL window's foot now keeps WHO was tapped (`state/view.ts AVAILWIN_FOOTID`) and re-says the sentence at
+   every draw; on a Personal row its earn half's hint is the row's reason (`ui/oilmode.ts oilNoAskWhy`). Any state in
+   which the foot now says something untrue or goes blank when it should speak?
 
 ## What is NOT a finding (owner, D56)
 This app is pre-promulgation and its entire stored world is DEMO DATA that will be CLEARED before the database step. **Do

@@ -1,0 +1,11 @@
+{
+ "base": "http://localhost:4207",
+ "at": "2026-10-01T03:34:44.619Z",
+ "results": [
+  {
+   "name": "editsched: a finger tap on the count chip opens the window (phone)",
+   "ok": false,
+   "detail": "{\"chip\":{\"x\":207,\"y\":415,\"w\":20,\"h\":14},\"atCentre\":\"the chip\",\"puck\":{\"x\":204,\"y\":398,\"w\":74,\"h\":15},\"gap\":2}"
+  }
+ ]
+}

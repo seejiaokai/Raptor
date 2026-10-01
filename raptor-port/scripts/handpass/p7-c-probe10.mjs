@@ -1,0 +1,23 @@
+/* p7 walker C — probe 10: Quals → Edit quals, and the Leave War's + Counter form — their controls. */
+import { boot, world } from './p6-lib.mjs'
+const { L, W } = await boot()
+const { browser, p, errors } = await world(L)
+await L.go(p, 'quals'); await L.sleep(500)
+await p.click('#qEdit'); await L.sleep(400)
+console.log('QUALS buttons after Enable editing', await p.evaluate(() => [...document.querySelectorAll('button')].filter(e => e.offsetParent !== null && e.closest('.page:not([hidden]), [data-page]')).map(e => (e.id || e.className) + ':' + e.innerText.trim().slice(0, 30)).filter(s => !/^(mbtn|x$)/.test(s)).slice(0, 30)))
+const eq = p.locator('button:visible', { hasText: /quals|columns/i })
+console.log('candidates', await eq.evaluateAll(es => es.map(e => (e.id || e.className) + ':' + e.innerText.trim())))
+const b = p.locator('#qCols, #qEditCols, #qColsBtn, button:visible:has-text("Edit quals")').first()
+if (await b.count()) { await b.click(); await L.sleep(500) }
+console.log('QUALS EDITOR', await p.evaluate(() => { const c = [...document.querySelectorAll('[role=dialog], .modal, .airpop, .sheet, .qcedit, .qcols')].filter(e => e.getClientRects().length && !e.hidden); const e = c[c.length - 1]; return e ? (e.id || e.className) + ' :: ' + e.outerHTML.slice(0, 5000) : 'no editor found' }))
+console.log('qual heads', await p.evaluate(() => [...document.querySelectorAll('#qtbl thead th')].map(e => e.innerText.trim().slice(0, 14) + (e.querySelector('button') ? '[btn:' + [...e.querySelectorAll('button')].map(x => x.className + '/' + (x.title || x.innerText)).join(',') + ']' : '')).slice(0, 40)))
+await L.shot(p, 'probe10-quals')
+await p.keyboard.press('Escape'); await L.sleep(300)
+await L.go(p, 'leavewar'); await p.waitForSelector('[data-testid^="row-"]', { timeout: 15000 }); await L.sleep(800)
+await p.click('[data-testid="settings-open"]'); await L.sleep(500)
+await p.click('[data-testid="counter-add"]'); await L.sleep(600)
+console.log('LW COUNTER FORM', await p.evaluate(() => { const d = [...document.querySelectorAll('.bidsheet[role="dialog"], [role=dialog]')].filter(e => e.offsetWidth); const e = d[d.length - 1]; return e ? e.outerHTML.slice(0, 7000) : 'no dialog' }))
+await L.shot(p, 'probe10-counter')
+console.log('counters in store keys', await p.evaluate(() => Object.keys(localStorage).filter(k => /leavewar/.test(k) && /count/i.test(k))))
+console.log('errors', errors)
+await browser.close()
