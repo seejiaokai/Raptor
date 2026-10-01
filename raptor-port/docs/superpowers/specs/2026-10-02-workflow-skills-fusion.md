@@ -127,7 +127,7 @@ or fixed if small. This is what stops the large files growing back after an audi
 ## 4. PROPOSAL — five items from Make Interfaces Feel Better, as a checklist beside Impeccable (not yet ruled)
 
 **What the source really is.** Nineteen concrete rules, most about motion and icons in a different kind of app
-(React, Tailwind, an animation library — none of which most of this app uses). Installing it whole would bring
+(Tailwind and an animation library, which this app does not use — *corrected 2 Oct 26 by Astra's review: this line first said the app mostly does not use React; it does, in about 170 files, and the source also supports plain stylesheets*). Installing it whole would bring
 rules that do not apply. Five do, and matter on his iPhone:
 - **equal-width digits on any number that changes or sits in a column** (hours, counts, OIL balances) — the app
   uses this in 5 files today, so most tables do not have it;
@@ -162,3 +162,23 @@ sentences are sharper than ours and could each become one line in `bug-check-ord
    guide before he approves it (D70); upstream text copied gets its credit line.
 2. `[CODE-TIDY-AUDIT]` — §2: Astra's read can run before the reset (D484 allows what Astra can do); the report to
    him; each restructure he approves becomes its own backlog item.
+
+## 7. Astra's review of the three proposals (2 Oct 26 — asked for by him before he answers)
+
+One read-only run (`gpt-5.6-sol`, high reasoning); its report, whole: `raptor-port/docs/superpowers/briefs/2026-10-02-skills-fusion-astra-review.md`.
+The host checked its main claims against the files (the phone top bar's measured contract in `scheduler.css`; Impeccable's
+own 44 × 44 check; the order's §3 sentence on evidence; React's use) — each held. **The host agrees with all three verdicts.**
+
+| Proposal | Astra | What changes |
+|---|---|---|
+| §3 the tidiness guard | **Adopt with changes** | Drop the "1,000 lines, or about 100 more" numbers — the second was this spec's invention, and a number becomes a target (D141). Ask instead three things of the CHANGED lines only: a new responsibility put into an already busy file; a feature-only branch put into a shared flow; a helper that already exists. Never applied to `src/engine/` (verbatim ports — no tidying). No extra reader (D353). A note is FILED for his ruling, never fixed during the final read — a fix there spends that read's evidence. Astra's wording and its place (the order's §4) are in its report. |
+| §4 the look-and-feel checks | **Adopt with changes** | Impeccable already checks tap targets under 44 × 44, tabular digits and motion. New are only: never animate "all"; the nested-corner rule; and the honest report shape. **A control under 44 is NOT a finding by measurement alone** — the phone's top bar is deliberately 30 high so it fits one row (his own ruling of 24 Aug 26), and an invisible larger touch area there would overlap its neighbours. Only a demonstrated missed tap or an overlap is reported (D487 stands). Two real candidates found for equal-width digits: the Leave War's manning counts, and the Tracker's Complete / Done / Remaining figures — to be looked at on screen, not yet confirmed. |
+| §5 the three evidence rules | **Reject** | All three are already said: fresh evidence (`verification-before-completion`), a weaker check never standing in for a stronger (the order's §3), fixes followed by gates and a re-walk (the order's §5), checked against assumed (`raptor-port/CLAUDE.md` §Product bar). Repeating them adds words, not protection. **Withdrawn by the host.** |
+
+**One better fusion Astra found, from APEX (a fourth proposal, not yet ruled):** one sentence in the order's §4 — a reviewer's
+claim is not a finding unless it names a concrete way it fails (or the ruling it breaks), the changed code that causes it,
+and the smallest safe fix; a style preference or a guess is not a finding. It cuts false findings, which cost his time.
+
+**Other corrections from the review:** the source asks for equal-width digits only on numbers that CHANGE (extending it to
+every column was this spec's); APEX has a fourth label, "untrusted", that §5 left out. Every measurement in §2 was re-checked
+by Astra and is right.

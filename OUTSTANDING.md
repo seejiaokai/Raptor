@@ -121,6 +121,8 @@ Insights — [INSIGHTS-WORKING-COPY] (a question for him, any time — the chang
 The changes window — [HIST-PER-PAGE] (an idea, filed D349; a mock-up first, after the change-recording re-test). The
 phone — [PHONE-DISCARD-MARKS] (low, from the change-recording walk), [PHONE-WIDE-BOARD-BLANK] (medium, from the same walk). The bubble — [BUBBLE-SMALL-SEEN] (low, from the same walk).
 
+**His word, D488 (2 Oct 26):** [DISCARD-MARKS-REMOVE] — small; after the reset (D484), in a batch with other small Edit Schedule fixes (D485).
+
 **From the article he sent — his word, D486 (2 Oct 26):** [CODE-TIDY-AUDIT] (Astra's read can run before the reset, D484; the report to him; before [DB-STEP]) and [SKILL-FUSION] (after the reset, a fresh chat on its own branch; three proposals in it wait on his yes or no).
 
 **Waiting on him — no order exists:**
@@ -1297,6 +1299,8 @@ used). A Delete stays dead (D287). FULL tier. **Place:** after the change-record
 sooner — his call.
 
 ### [PHONE-DISCARD-MARKS] A phone has no door to "Discard marks" (found 28 Sep 26)
+**MOOT once `[DISCARD-MARKS-REMOVE]` is built (D488, 2 Oct 26): the button is being removed — and it never discarded a published
+day's pending changes, as the note below believed; it clears only the marks of days not yet published. Archive this with that build.**
 Found by the change-recording re-test's walker A1 (O4, `raptor-port/docs/handpass/parts/2026-09-28-cr-a1.md`): the
 Amendments panel that carries "Discard marks" is hidden under 820px, so on a phone a published day's pending changes can
 be discarded by no control (desktop only). **To do:** give the phone a way in (the day's pending list, or the ⓘ day
@@ -1600,12 +1604,27 @@ version storing its hours — a saved-data change. **The question for him:** lea
 for the amendment too? Evidence: `raptor-port/docs/handpass/2026-10-01-insights-which-copy-check.md` §5.2 finding 2. **ANSWERED — D482 (1 Oct 26): "A rule change logic page should
 move the mentioned work hours" — as built; closed.**
 
+### [DISCARD-MARKS-REMOVE] Remove the "Discard marks" button from the Amendments box (D488, 2 Oct 26)
+His ruling: remove it. It clears only the change marks of days not yet published (the edits stay), a first publish clears them
+anyway, and its name misleads. **To build:** take the button out of the Amendments box (`ui/ALPanel.tsx`), with its command, its
+count and its "Draft marks cleared (N)" history line (`state/sched-commit.ts commitDiscardPending`, `engine/publish.ts
+discardPending` / `discardableCount`) — check first that nothing else calls them; the tests that pin it change with it (five test
+files name it), and the old walk scripts under `scripts/handpass/` that press it are history, left alone. Rewrite the sentence in
+`raptor-port/docs/engine-rules.md` marked D488; check `ui-contracts.md`, `feature-impact.md` and the IT flow guide for the button
+(D201; the guide is re-shot only on his word, D403). Roll-call: the Amendments box on a desktop, the phone (the box is hidden
+there), a week with only draft days, a week with a published day carrying pending changes, the change history. LOOK / WALK tier
+by the order's questions — it removes a door and a command that writes the saved marks, so answer them honestly at build time.
+`[PHONE-DISCARD-MARKS]` is archived with it. **Not ruled, his to raise:** a button that puts a published day back to its last
+published version. **Place — D488: after the reset (D484), batched with other small Edit Schedule fixes (D485).**
+
 ### [SKILL-FUSION] Fuse the harder questioning into the planning step — and three proposals from the same read (D486, 2 Oct 26)
 From the article he sent (codelynx.dev — five recommended skills): none is installed whole (D486). To build, documents only: the
 planning skill (`.claude/skills/brainstorming/SKILL.md`) gains the decision tree, the rulings search first, questions by ROUNDS of
 at most four with a recommended answer each (replacing "one question per message" for him), product choices only, and "done
 means no branch left assumed". **Three PROPOSALS wait on his yes or no** — a standing three-line tidiness guard in the final code
-read's brief; five look-and-feel checks beside Impeccable; three evidence rules for the bug-check order. Whatever he
+read's brief; five look-and-feel checks beside Impeccable; three evidence rules for the bug-check order. **Astra read
+them 2 Oct 26 (the spec's §7): the first two adopt-with-changes, the third rejected and withdrawn, and one new proposal from it —
+a reviewer's claim is a finding only with a concrete failure, its cause and its fix.** Whatever he
 answers, no check resizes a button (D487). Both Fable and Astra
 read the changed guide before he approves it (D70); copied upstream text gets its credit line. **Context:**
 `raptor-port/docs/superpowers/specs/2026-10-02-workflow-skills-fusion.md` §1, §3–§5. **Place — D486: after the reset of his weekly
