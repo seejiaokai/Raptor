@@ -1534,7 +1534,7 @@ AL1 then use AL1 etc."* **The rule as it stands:** day by day, Insights counts t
 Original, or the latest amendment) and the working copy only for a day not yet published; changes waiting on a published day
 are not counted until they go out; a hidden warning is not counted, by the hides that version went out with. On EVERY page —
 Edit Schedule and the board included (the agent's reading, told to him) — and for every figure of the window. Full rows:
-`.claude/decisions-full/scheduler.md` D477, D478; the contract: `raptor-port/docs/ui-contracts.md` §Week Insights.
+`.claude/decisions-full/scheduler.md` D477, D478; the contract: `raptor-port/docs/ui-contracts.md` §Week Insights; the rule register (IN1): `raptor-port/docs/superpowers/specs/2026-10-01-insights-which-copy-behaviour-register.md`.
 **To build:** `engine/insights.ts computeInsights` takes the days and the warning bundle it must count instead of reading the
 working globals; `ui/Modals.tsx insightsHTML` hands it, per day, the current issued version's day and its issued face
 (`publish.ts dayCurVer` / `daySnapOf`, `validate.ts faceWarn` — the same world View-only Sched draws a published day from),
