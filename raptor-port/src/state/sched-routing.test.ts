@@ -70,10 +70,12 @@ describe('the lagging baseline stays in step', () => {
     undo()
     expect(schedBaselineClean()).toBe(true)
     caught = []; commitSchedVoid(SCHED_TYPES.mutate, () => {}); expect(caught.length).toBe(0)
-    // resetSession — clears WARNOFF, which rides the baseline (SR-007)
+    // resetSession — KEEPS the hidden warnings since D469 (1 Oct 26: hidden for everyone until someone flags it again);
+    // the baseline, which they ride (SR-007), stays in step either way
     expect(schedWriteValue(SCHED_TYPES.warnMute, () => view.toggleWarnOff(view.warnMuteKey({ di: 0, code: 'SOME_CHECK', who: [], msg: 'k' }))), 'the mute is kept (a real key, its day first)').toBe(false)
     expect(view.WARNOFF.size).toBeGreaterThan(0)
     resetSession({ user: 'ad', role: 'admin' })
+    expect(view.WARNOFF.size, 'the hide survives the sign-in').toBeGreaterThan(0)
     expect(schedBaselineClean()).toBe(true)
     caught = []; commitSchedVoid(SCHED_TYPES.mutate, () => {}); expect(caught.length).toBe(0)
   })

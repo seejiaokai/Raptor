@@ -1,6 +1,7 @@
 import { DAYS } from './data'
 import { PEOPLE } from './people'
 import { validate, WARN, EVD, workSpan } from './validate'
+import { shownWarns } from './warnhide'
 import { isStandalone } from './waves'
 /* =====================================================================
    WEEK INSIGHTS — make sense of the week (load, coverage, conflicts)
@@ -32,12 +33,12 @@ export function computeInsights(){
       const w=workSpan(ev[id]); if(!w)return;
       wm[id]=(wm[id]||0)+w.span; wd[id]=(wd[id]||0)+1;
     });
-    const dw=(WARN.byDay[di]&&WARN.byDay[di].warns)||[];
+    const dw=shownWarns(WARN.byDay[di]&&WARN.byDay[di].warns);   /* a hidden warning is not counted (owner D472, 1 Oct 26) */
     dayStats.push({dow:d.dow,ac:ds,forms:df,warns:dw.length,hard:dw.filter((x:any)=>x.sev==='hard').length});
   });
   const flyers=Object.keys(fc).map((id:any)=>({id,n:fc[id]})).sort((a:any,b:any)=>b.n-a.n||PEOPLE[a.id].cs.localeCompare(PEOPLE[b.id].cs));
   const idle=Object.keys(PEOPLE).filter((id:any)=>!PEOPLE[id].archived&&!PEOPLE[id].pers&&!fc[id]).sort((a:any,b:any)=>PEOPLE[a].cs.localeCompare(PEOPLE[b].cs));
-  const byType:any={}; WARN.all.forEach((w:any)=>byType[w.code]=(byType[w.code]||0)+1);
+  const byType:any={}; shownWarns(WARN.all).forEach((w:any)=>byType[w.code]=(byType[w.code]||0)+1);
   /* EVERYONE who has a scheduled hour, longest first — a load picture, so the
      name at the top is the one to look at. `PEOPLE[id]` is guarded because EVD
      is keyed by whatever the day's events carry; the flying list beside it

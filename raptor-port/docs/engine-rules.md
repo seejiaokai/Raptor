@@ -2598,6 +2598,17 @@ stay LIVE (below), which the face draws from today and which never make the day 
   date's frozen inputs, so the axis never moves on the day's own input changes (those are the details axis's). A rename
   is a label: warnings compare with callsigns keyed out (`warnMsgKey`), and the face re-words a frozen warning with
   today's callsign.
+- **The hides axis** (`hidePending` / `hideDelta`, kind `hide` — `[WARN-HIDE-KEPT]`, owner D471, 1 Oct 26: a warning
+  hidden on a day already published "waits" for the next amendment). Each issued version keeps the keys of the warnings
+  hidden as it went out (`snap.w.wo`); the face draws by THOSE keys (frozen and live warnings alike), never the working
+  copy's. The comparison: for every warning of today's judgement of the issued day that the working copy ALSO raises
+  (`validate.ts HOOKS.hideNow`), hidden-on-the-working-copy against hidden-as-issued — **one pending change per warning
+  that differs**, addressed `hide:<di>.<fingerprint of the warning's key>` (never its place in the list or its words: the
+  sign-offs are bound to it), `from` / `to` the plain `shown` / `hidden`. Wired into BOTH authorities, as the warnings
+  axis is: `dayDelta` and `dayPendingItemsIn`. It is never also the warnings axis — the stored slice and the official
+  pass stay as the rules raised them. A hide of a warning only the working copy has goes out with the edit that raised
+  it; a stale hide (its warning no longer raised) pends nothing. Unpublish falls back to the version before; "Load onto
+  working copy" sets the day's hides to the loaded version's (`HOOKS.setDayHides`).
 - **What stays LIVE on the face — drawn from today's judgement, never stored, never compared, so it alone never makes the
   day pending (`validate.ts LIVE_ON_FACE`, and the next-day mark):**
   - the dotted "breaks tomorrow's crew rest" mark and its run twin (`trace` — owner D183, "should be live to see the

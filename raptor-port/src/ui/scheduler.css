@@ -3178,20 +3178,27 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
 .dwlist .witem{padding:7px 9px;font-size:11px;line-height:1.35;gap:8px;border-radius:8px}
 .dwlist .witem.on{border-color:var(--accent);background:rgba(59,198,232,.10);box-shadow:0 0 0 1px rgba(59,198,232,.35)}
 .dwlist .witem b{color:var(--ink)}
-/* MUTE A CHECK on the edit week (owner, 29 Aug 26 — parity with the board's
-   Live-checks list, sharing view.WARNOFF so the two stay in sync). The text
-   span grows so the ✕/↺ sits flush right; the button and the "N hidden" reveal
-   mirror the board's .wln-mute / .wmuted-h recipe (scheduler.css §sb-warn). */
+/* HIDE A WARNING on the edit week (owner, 29 Aug 26 — parity with the board's
+   list, on the one set of the working copy's hides so the two stay in sync). The
+   text span grows so the ✕/↺ sits flush right; the button mirrors the board's
+   .wln-mute recipe (scheduler.css §sb-warn). */
 .dwlist .witem .wtx{flex:1;min-width:0;overflow-wrap:anywhere}
 .dwlist .witem-mute{flex:0 0 auto;align-self:flex-start;background:none;border:0;color:inherit;opacity:.5;cursor:pointer;font-size:12px;line-height:1.3;padding:0 3px;border-radius:5px}
 .dwlist .witem-mute:hover{opacity:1;background:rgba(255,255,255,.08)}
 /* the ONE check that carries an action (the missing leave war period, D19) — reads as a control, not as another muted glyph */
 .dwlist .witem-act{flex:0 0 auto;align-self:flex-start;background:var(--panel-2);border:1px solid var(--edge-2);color:var(--ink);cursor:pointer;font-size:11px;font-weight:600;line-height:1.3;padding:2px 7px;border-radius:6px;white-space:nowrap}
 .dwlist .witem-act:hover{background:var(--accent);border-color:var(--accent);color:#fff}
-.dwlist .witem.muted{opacity:.55}
-.dwlist .wmuted-h{display:flex;align-items:center;gap:3px;cursor:pointer;font-size:10.5px;color:var(--ink-3);padding:3px 4px;margin-top:1px;border-radius:6px}
-.dwlist .wmuted-h:hover{color:var(--ink-2)}
-.dwlist .wmuted-h .dwcar{margin-left:0;font-size:9px;opacity:.85}
+/* A HIDDEN WARNING'S LINE ([WARN-HIDE-KEPT], owner D469 / D475, 1 Oct 26 — "it shouldn't totally disappear, it should just
+   show a strike out and it's darker. Ready to be reactivated again for flagging"; the approved picture is
+   docs/mock/warn-hide.html). In its place in the list: struck out, grey, a dashed outline, its severity bar greyed; the
+   ↺ at full strength so it is easy to find. The same line is drawn on View-only Sched and under a look, with no button. */
+.dwlist .witem.hid{background:transparent;border-style:dashed;border-color:var(--edge)}
+.dwlist .witem.hid .wbar{background:var(--edge-2)}
+.dwlist .witem.hid>span:not(.wbar){color:var(--ink-3);text-decoration:line-through;text-decoration-color:var(--ink-3)}
+.dwlist .witem.hid b,.dwlist .witem.hid .wcode{color:var(--ink-3)}
+.dwlist .witem.hid .witem-mute{opacity:.9;color:var(--ink-2);font-size:14px;background:rgba(255,255,255,.07)}
+/* every issue of the day hidden (D472, D475): the bar stays so the list can be reached, quiet, saying "✓ No issues" */
+.daywarn.calm{background:var(--panel-2);border-color:var(--edge);color:var(--ink-2)}
 .dwclear{margin-top:1px;background:transparent;border:1px dashed var(--edge-2);color:var(--ink-3);
   border-radius:8px;padding:5px 8px;font-size:10.5px;font-weight:600;cursor:pointer;letter-spacing:.02em}
 .dwclear:hover{border-color:var(--accent);color:var(--accent)}
@@ -3964,7 +3971,10 @@ body.dw-lock{overflow:hidden}
 .sb-warn .wln-t{flex:1;min-width:0;overflow-wrap:anywhere}
 .sb-warn .wln-mute{flex:0 0 auto;background:none;border:0;color:inherit;opacity:.5;cursor:pointer;font-size:12px;line-height:1.3;padding:0 3px;border-radius:5px}
 .sb-warn .wln-mute:hover{opacity:1;background:rgba(255,255,255,.08)}
-.sb-warn .wln.muted{opacity:.55}
+/* a hidden warning's line on the board — the week's .witem.hid, in this list's shape (D469, D475) */
+.sb-warn .wln.hid{color:var(--ink-3);background:transparent;border-left-color:var(--edge-2)}
+.sb-warn .wln.hid .wln-t{text-decoration:line-through;text-decoration-color:var(--ink-3)}
+.sb-warn .wln.hid .wln-mute{opacity:.9;color:var(--ink-2);font-size:14px;background:rgba(255,255,255,.07)}
 /* THE WAY OUT, BESIDE THE REASON (owner's ruling D19; walk find, 22 Sep 26).
    Only the no-leave-war-period check grows an action, and it is the same
    recipe as the week's .witem-act so the two lists match. The row is allowed
@@ -3975,11 +3985,6 @@ body.dw-lock{overflow:hidden}
 .sb-warn .wln:has(.wln-act){flex-wrap:wrap}
 .sb-warn .wln-act{flex:0 0 auto;margin-top:3px;background:var(--panel-2);border:1px solid var(--edge-2);color:var(--ink);cursor:pointer;font-size:11px;font-weight:600;line-height:1.3;padding:2px 7px;border-radius:6px;white-space:nowrap}
 .sb-warn .wln-act:hover{background:var(--accent);border-color:var(--accent);color:#fff}
-/* the "N hidden" reveal for muted checks — always shown here (not the phone-only
-   caret rule), so a muted check is reachable to un-mute on either width */
-.sb-warn .wmuted-h{display:flex;align-items:center;gap:3px;cursor:pointer;font-size:11px;color:var(--ink-3);padding:4px 7px;margin-top:2px;border-radius:6px}
-.sb-warn .wmuted-h:hover{color:var(--ink-2)}
-.sb-warn .wmuted-h .sbw-car{display:inline;margin-right:2px;color:inherit}
 /* the desktop drag grip between the checks panel and the roster (owner, Aug 26 —
    "move the border to reduce the amount of warning shown. Vice versa"). A no-op
    until dragged: only when wireWarnSplit adds .sb-warn-sized does .sb-warn take

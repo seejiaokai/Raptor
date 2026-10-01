@@ -150,7 +150,7 @@ export function dayALs(di:any){di=+di;return SCHED.als.filter((a:any)=>+a.di===d
 /* per-kind counts off a frozen canonical diff — for the AL history and the
    pending summary (kinds: add | delete | change | move | input). */
 export function diffCounts(diff:any){const d=diff||[];const by=(k:any)=>d.filter((e:any)=>e.kind===k).length;
-  return {total:d.length,add:by('add'),del:by('delete'),chg:by('change'),mov:by('move'),inp:by('input'),oil:by('oil'),warn:by('warn')};}
+  return {total:d.length,add:by('add'),del:by('delete'),chg:by('change')+by('hide'),mov:by('move'),inp:by('input'),oil:by('oil'),warn:by('warn'),hide:by('hide')};}
 /* the verId a day is currently showing. The stamped cur[di] counts only while
    its snapshot still resolves; otherwise fall back to the NEWEST surviving issue
    for this day by per-day SEQ, then the Original, then null (never published).
@@ -206,7 +206,7 @@ export function dayShownPendCount(di:any){di=+di;return dayApproved(di)?dayPendi
    the units of the request row that edit re-landed, folded into it; `was` / `now`: the two records the details entry
    compares — the frozen copy and the live one, which may be ANOTHER record of the same man's (a medical takeover's tail,
    inputs.ts frozenInputMatch step 4, Fable's code read F2), so the words read one edit */
-export type PendItem = PendUnit & { axis: 'content'|'filing'|'input'|'oil'|'warn', inp?: DeltaEntry, val?: DeltaEntry, rows?: PendUnit[], oilFold?: boolean, was?: any, now?: any };
+export type PendItem = PendUnit & { axis: 'content'|'filing'|'input'|'oil'|'warn'|'hide', inp?: DeltaEntry, val?: DeltaEntry, rows?: PendUnit[], oilFold?: boolean, was?: any, now?: any };
 export function dayPendingItemsIn(sc:any,di:any,weekKey?:any):PendItem[]{di=+di;
   if(!((sc&&sc.dayOK)||{})[di])return [];
   const ver=dayCurVerIn(sc,di,weekKey), snap=ver!=null?daySnapIn(sc,di,ver,weekKey):null;
@@ -254,6 +254,11 @@ export function dayPendingItemsIn(sc:any,di:any,weekKey?:any):PendItem[]{di=+di;
   /* …and the warnings the issued face froze, when today's judgement of the issued day differs (the live book only —
      a stashed week has no official pass of its own) */
   if(sc===SCHED)warnDelta(di).forEach((e:any)=>items.push({kind:'warn',addr:'',jump:[],keys:[],entry:e,axis:'warn'}));
+  /* …and each warning hidden, or flagged again, since the version went out — ONE item each (hideDelta, D471). Wired here
+     AND into dayDelta, as the warnings axis is: this list is the day's count, the To go out list and the amendment's
+     item count; dayDelta is the publish button and the sign-offs — the two must never disagree (Fable F1, Astra 4). A
+     tap goes to the warning's own line (its slot key), where it has one. */
+  if(sc===SCHED)hidePending(di).forEach((x:any)=>items.push({kind:'hide',addr:'',jump:x.key?[String(x.key)]:[],keys:[],entry:x.entry,axis:'hide'}));
   return items;}
 /* the request a content unit belongs to, when the unit is on a field an input's re-landing writes — its ground row's
    words, times, remarks or holder (restore.ts dayKeys: gr:di.ri.{prog,str,end,rmks}, g:di.ri) — '' otherwise. A removal
@@ -285,7 +290,8 @@ export function dayPendingItems(di:any):PendItem[]{di=+di;return passMemo('pi',d
 /* the per-kind split of a day's items, the shape diffCounts gives a stored diff — for the
    Amendments panel's "N changes · N removals · N reorders · N input changes" */
 export function itemCounts(items:any){const d=items||[];const by=(k:any)=>d.filter((e:any)=>e.kind===k).length;
-  return {total:d.length,add:by('add'),del:by('delete'),chg:d.length-by('add')-by('delete')-by('move')-by('input')-by('oil')-by('warn'),mov:by('move'),inp:by('input'),oil:by('oil'),warn:by('warn')};}
+  /* a hidden warning counts under "changes" (chg takes whatever no other word names) — `hide` says how many of them */
+  return {total:d.length,add:by('add'),del:by('delete'),chg:d.length-by('add')-by('delete')-by('move')-by('input')-by('oil')-by('warn'),mov:by('move'),inp:by('input'),oil:by('oil'),warn:by('warn'),hide:by('hide')};}
 /* the marks "Discard marks" may clear: those on days never published (F-01 — a published day's
    divergence is published or put back, never silently dropped). The Amendments panel enables
    its button off this, so it is never offered when it could clear nothing (walk S2). */
@@ -520,7 +526,7 @@ function inputAxes(di:any,snap:any):{fil:DeltaEntry[],val:DeltaEntry[],changed:A
    none (demo data, D56). */
 /* a short, stable fingerprint of a string (FNV-1a, 32-bit) */
 function fp(t:string):string{let h=0x811c9dc5; for(let i=0;i<t.length;i++){h^=t.charCodeAt(i); h=Math.imul(h,0x01000193);} return (h>>>0).toString(36);}
-export function dayDelta(di:any):DeltaEntry[]{di=+di;return passMemo('dd',di,()=>dayDeltaCore(di).concat(warnDelta(di)));}
+export function dayDelta(di:any):DeltaEntry[]{di=+di;return passMemo('dd',di,()=>dayDeltaCore(di).concat(warnDelta(di)).concat(hideDelta(di)));}
 /* the comparison WITHOUT the warnings axis — what the official pass itself must be gated on (validate.ts
    officialDiverges): the warnings axis reads that pass's own output, so gating the pass on it would make the validator
    depend on itself */
@@ -632,6 +638,27 @@ function warnDelta(di:any):DeltaEntry[]{di=+di;
   const paNow=snap.pa?stableJson(peopleAttrsNow(snap.pa)):'', rvNow=cmpRv?stableJson(faceRuleVals(snap.d)):'';
   const was=storedWarnKey(snap.w)+'\n'+pa+'\n'+rv, k=liveWarnKey(now)+'\n'+paNow+'\n'+rvNow;
   return k===was?[]:[{addr:`warn:${di}`,kind:'warn',from:fp(was),to:fp(k)}];}
+/* ---- A WARNING HIDDEN ON A PUBLISHED DAY WAITS FOR THE NEXT AMENDMENT ([WARN-HIDE-KEPT], owner D471, 1 Oct 26 — "2. Waits")
+   A hide is the scheduler saying "I have seen this and it is no problem" — on a published day that changes what the
+   schedule SHOWS to everyone, so it goes out like every other change to a published day (D45): each issued version
+   keeps the keys of the warnings hidden as it went out (`w.wo`, validate.ts HOOKS.issuedWarn), the issued face draws by
+   THOSE keys (faceWarn), and this is the comparison — for every warning of today's judgement of the issued day that the
+   working copy also raises (HOOKS.hideNow), "hidden on the working copy" against "hidden as issued". EACH ONE THAT
+   DIFFERS IS ONE PENDING CHANGE; hide then flag-again is none (D98).
+   The entry's address is a FINGERPRINT OF THE WARNING'S KEY — never its place in the list, never its words: the four
+   sign-offs are bound to these entries (pendingKey), and a list that re-sorts or a man who is renamed must not drop
+   them (Fable F3). The key folds callsigns to ids, so a rename keeps it. `from` / `to` are the plain shown / hidden.
+   A version issued before this build has no `wo`: nothing was hidden when it went out. Unset hook (an engine-only test),
+   or a day with no stored warnings: nothing is compared. */
+export function hidePending(di:any):Array<{entry:DeltaEntry,hidden:boolean,code:string,who:string[],msg:string,sev:string,key?:string}>{di=+di;
+  if(!HOOKS.hideNow||!dayApproved(di))return [];
+  const ver=dayCurVer(di), snap:any=ver!=null?daySnapOf(di,ver):null;
+  if(!snap||!snap.w)return [];
+  const was=new Set<string>(((snap.w.wo||[]) as any[]).map(String));
+  return HOOKS.hideNow(di).filter((x:any)=>x.on!==was.has(x.k)).map((x:any)=>({
+    entry:{addr:`hide:${di}.${fp(x.k)}`,kind:'hide',from:x.on?'shown':'hidden',to:x.on?'hidden':'shown'} as DeltaEntry,
+    hidden:x.on,code:x.code,who:x.who,msg:x.msg,sev:x.sev,key:x.key}));}
+function hideDelta(di:any):DeltaEntry[]{ return hidePending(di).map((x:any)=>x.entry); }
 /* ONE REPAINT READS EACH DAY'S COMPARISON ONCE (Fable F9, 25 Sep 26 — measured: five published days signed through
    the app's selects cost one edit ~116 ms more at the phone's 4× slowdown, because D103's binding reads the whole
    pending comparison and a day's head, sign-off line and marker each asked for it several times). Inside
@@ -710,7 +737,9 @@ export function dayDiscardCount(di:any):number{di=+di;
     const u=requestRowUnit(units,inpId(p.inp),String(p.want||''),String(p.inp.acc||''),after,DAYS[di]);
     if(u){u.inp=true;return false;}
     return true;});
-  return units.length+decDrop+lone.length;}
+  /* …and each warning hidden or flagged again since the version went out: the load puts the day's hides back to the
+     loaded version's (drafts.ts loadVersionToWorkingCopy, D98), so each is an edit it replaces ([WARN-HIDE-KEPT]) */
+  return units.length+decDrop+lone.length+hideDelta(di).length;}
 /* WHAT A LOAD CAN PUT BACK OF A VERSION'S FILINGS (owner, D98, 25 Sep 26 — "if the change results in going back to the
    same as the published schedule … it shouldnt show as pending"). For every request covering this day: the state
    the version froze (`fil`, snapshot's filing fingerprint; absent = fresh), set only where it can be true without

@@ -130,7 +130,8 @@ const SIGNBIND: Spec = { dg: 'string', iso: 'string', base: 'string', rev: 'stri
    checked for shape loosely; the rings, flags, dashes and traces are per-person maps, null when empty */
 const ANYW: Spec = { $or: ['string', 'number', 'boolean', 'object'] }
 const WARNSLICE: Spec = { byDay: { $or: [{ di: 'number', dow: 'string', warns: [{ $map: ANYW }] }, 'object'] }, sev: 'object', chip: 'object', dash: 'object', trace: 'object', cs: { $opt: { $map: 'string' } },
-  face: { $opt: { warns: [{ $map: ANYW }], sev: 'object', chip: 'object', dash: 'object', cs: { $opt: { $map: 'string' } } } } }   // D187: the whole face at issue
+  face: { $opt: { warns: [{ $map: ANYW }], sev: 'object', chip: 'object', dash: 'object', cs: { $opt: { $map: 'string' } } } },   // D187: the whole face at issue
+  wo: { $opt: ['string'] }, shown: { $opt: { sev: 'object', chip: 'object', dash: 'object' } } }   // the hides a version went out with, and its marks as shown ([WARN-HIDE-KEPT], D469 / D471)
 /* the men on the day as the roster drew them, and the rule values the face prints (drawn as issued and compared — D179,
    Astra's code read #2); the roster at issue (`ros` — drawn by the day panel's "free all day", never compared) */
 const PEOPLEATTRS: Spec = { $map: { q: { $or: ['string', 'object'] }, seat: { $or: ['string', 'object'] }, pers: 'boolean', san: 'boolean', sxo: 'boolean', archived: 'boolean' } }
@@ -141,7 +142,7 @@ const DAYSNAP: Spec = { d: DAY, c: { $map: 'number' }, fil: { $opt: { $map: 'str
    `diff` replaces the old `keys` list, and there is no n/days/n0/adds/structAdds. */
 const ANYV: Spec = { $or: ['string', 'number', 'boolean'] }
 const ALDIFF: Spec = { addr: 'string', kind: { $lit: ['add', 'delete', 'change', 'move', 'input', 'oil', 'warn'] }, from: { $opt: ANYV }, to: { $opt: ANYV } }
-const UKINDS: Spec = { $opt: { total: 'number', add: 'number', del: 'number', chg: 'number', mov: 'number', inp: 'number', oil: 'number', warn: 'number?' } }   // D114; warn: the warnings item (D179)
+const UKINDS: Spec = { $opt: { total: 'number', add: 'number', del: 'number', chg: 'number', mov: 'number', inp: 'number', oil: 'number', warn: 'number?', hide: 'number?' } }   // D114; warn: the warnings item (D179)
 const AL: Spec = { id: 'string', di: 'number', iso: 'string', seq: 'number', snap: DAYSNAP, diff: [ALDIFF], units: 'number?', ukinds: UKINDS, sign: { $map: SIGNSET }, added: { $opt: ['string'] } }   // units: the item count as a person counts it (D109)
 const ONE: Spec = { $lit: [1] }
 /* [GLOBAL-UNDO] §6.1 — a retired-issuance snapshot (the append-only log, keyed

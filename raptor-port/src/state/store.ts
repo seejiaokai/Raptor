@@ -339,10 +339,9 @@ export function resetSession(s: any) {
      and clearing them here wiped the saved copy on the next history step
      (8 Sep 26 bug pass). */
   view.resetViewState('session')
-  /* [ARCH-STACK] follow-up #1 (SR-007): resetViewState('session') just CLEARED
-     WARNOFF, which rides the baseline. This is an out-of-band world change with
-     no snapshot restore, so histInit/histRestore never fire — re-sync explicitly,
-     or a mute → logout → login → edit would emit a bogus mute-clear. */
+  /* [ARCH-STACK] follow-up #1 (SR-007): re-sync the command layer's baseline after the view reset. The reset no longer
+     touches WARNOFF (a hidden warning is kept through a sign-in — D469, 1 Oct 26), so this is a no-op for the hides; it
+     stays as the belt for any future session-scoped field that rides the baseline. */
   resyncSchedBaseline()
   /* THE SIGNED-IN PERSON ([ACCOUNTS], D166 (3), 26 Sep 26): signing in makes you that
      callsign — `s.pid` is the account's person (null for someone signed in without
@@ -890,8 +889,14 @@ export function initStore(policy: { seedDemo: boolean } = { seedDemo: true }) {
   /* a week that came back from storage (state/persist.ts hydrate stashed
      it) is restored exactly as loadWeek would — applyWeekModel also
      re-lands the inputs — otherwise the seed lands as before */
-  if (stashHas(CURWEEK)) applyWeekModel(CURWEEK)
-  else {
+  /* …and its HIDDEN WARNINGS with it ([WARN-HIDE-KEPT], owner D469, 1 Oct 26 — "it can be hidden until another person
+     unhides it"): the week's saved hides (`wo`) go back into the set BEFORE the baseline below, exactly as loadWeek does.
+     The boot used to throw this return value away — the hides were not only unread: the baseline was then taken without
+     them, so the next edit of that day rewrote its row with none and they were gone from storage for good. */
+  view.WARNOFF.clear()
+  const booted = stashHas(CURWEEK) ? applyWeekModel(CURWEEK) : null
+  if (booted) ((booted as any).wo || []).forEach((k: any) => view.WARNOFF.add(k))
+  if (!stashHas(CURWEEK)) {
     /* CLEAR a hydrated 'g' BEFORE the seed lands (13 Sep 26, Astra/Fable inspect
        SID-IR-01/finding 5). INPUTS is global and persisted with its acc; a
        pristine CURWEEK is deliberately NOT stashed, so on a plain reload the

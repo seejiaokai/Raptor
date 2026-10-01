@@ -260,6 +260,12 @@ roster at issue, for the day panel's "free all day"). The face, the CSV and the 
 suggested brief; `ros` is drawn, never compared. A retired issuance keeps all of them (`publish.ts retireIssued`). Size: a copy of
 a day's few inputs and its warning list per version — measured in the evidence sheet. Declared in `src/engine/schema.ts`
 `DaySnapshot` / `WarnSlice`.
+**The hides a version went out with (`[WARN-HIDE-KEPT]`, D469 / D471, 1 Oct 26)** ride inside `w`: `w.wo` — the keys of
+the day's warnings hidden as it was issued (only those that match a warning; absent when nothing was hidden); `w.shown`
+— the rings, chips and dashes of the warnings that freeze AS SHOWN then (kept only beside `wo`); and in `w.face` a hidden
+warning carries `off: true`. `w.byDay` / `sev` / `chip` / `dash` stay as the rules raised them — they are the pending
+comparison's basis, and a hide is its own comparison (the working copy's `wo` against the version's `w.wo`, one pending
+change per warning that differs — `publish.ts hidePending`). An amendment's stored item counts (`ukinds`) gain `hide`.
 
 ### The week record — `weekStashSnap()` / the week stash
 
@@ -280,9 +286,13 @@ binding would be lost (a signature is content-valid only while its binding still
 { d: DAYS,                                  // the seven day objects
   c, p, ad, a, al, ok, sg, sb, o, cv, dr, cd, v, am, rt, cr,   // the SIXTEEN SCHED fields,
                                             //   short names, from schedFields()
-  wo: string[] }                            // muted warning ids (view.WARNOFF) — kept with the day for everyone until unhidden
-                                            //   (D469, 1 Oct 26; TODAY a sign-in still clears them and the boot does not read
-                                            //   them back for the week on screen — the build is `[WARN-HIDE-KEPT]`)
+  wo: string[] }                            // the warnings hidden on the WORKING copy (view.WARNOFF) — kept with the day
+                                            //   for everyone until someone flags one again (D469, 1 Oct 26; built by
+                                            //   `[WARN-HIDE-KEPT]`: read back at boot and week load, kept through a sign-in).
+                                            //   Each is a key — `<di>|<rule>|<person ids>|<the words, callsigns folded to @id>`
+                                            //   (engine/warnhide.ts hideKey) — filed in its day's row by that leading day.
+                                            //   A key whose warning is no longer raised stays, inert (it is live again if
+                                            //   the same situation returns) — not an error in the row.
 ```
 *(`un` — the stable ids of the requests a scheduler took off on this week — left the record 30 Sep 26: it is read from
 each request's own `acc: 'r'` mark, `store.ts takenOff` — `[DB-READINESS]` group A, F3-02.)*

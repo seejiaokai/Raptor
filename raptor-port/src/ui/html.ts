@@ -18,7 +18,8 @@ import { verSeq } from '../engine/verid'
 import { dayDrafts, curDraftId, isDraftVer, draftVerLabel } from '../engine/drafts'
 import { keyDay } from '../engine/keys'
 import { VCONF } from '../engine/rules'
-import { esc, SBDAY, WFOCUS, PFOCUS, DWOPEN, DPREV, AVSHUT, PIOPEN, VWORK, CURPAGE, lateShown, restArmed, unpubArmed, notePub, stSavedOn, warnShown, WMOPEN, displayedBundle } from '../state/view'
+import { esc, SBDAY, WFOCUS, PFOCUS, DWOPEN, DPREV, AVSHUT, PIOPEN, VWORK, CURPAGE, lateShown, restArmed, unpubArmed, notePub, stSavedOn, displayedBundle } from '../state/view'
+import { shownWarns } from '../engine/warnhide'
 import { canEditSched } from '../state/auth'
 import { isGuest, mayReadMedicalOf, isMember } from '../state/perms'
 import { chgDayCounts } from './changesmodel'
@@ -87,6 +88,17 @@ const dsh=(di:any,id:any)=>(PV&&!OFW)?false:dashOf(di,id)
    breach rang not at all. ONE reading, so the two surfaces cannot drift: the severity, the printed flag (the
    trace's CR / 7 caption where the trace owns it — traceLeads, via chip), the dash and the trace. `off` is the
    caller's own "no marks here" (a frozen preview, a read-only row) — exactly what it gated before. */
+/* THE RED TIME BOX OF A NOUGHT-MINUTE LINE IS THAT WARNING'S FLAG ([WARN-HIDE-KEPT], owner D469, 1 Oct 26 — "if it's
+   hidden, the pucks shouldn't have flagging for that specific item"): it is drawn off the rule itself (fltNoLen), not
+   off the warning list, so it asks the list whether THAT line's warning is hidden — found by the warning's own slot key
+   (`ff:<di>.<gi>.<li>.ld`, the key the validator files it under). One body for the week and the board. Under a
+   saved-plan preview the mark stays as it always was: a plan is drawn with no warnings to ask (a look at a published
+   version wears its flags — OFW — and asks that version's own list). */
+export function fltNoLenShown(di:any,fp:any,f:any,pv?:any){
+  if(!fltNoLen(f))return false;
+  if((pv||PV)&&!OFW)return true;
+  const g=WARN.byDay&&WARN.byDay[+di];
+  return !(((g&&g.warns)||[]) as any[]).some((w:any)=>w.off&&w.code==='FLT_NO_LEN'&&w.key===`${fp}.ld`);}
 export function puckMarks(di:any,id:any,off?:any){
   /* …except where the face being drawn wears its flags (OFW — an issued face, or a look at a published version, D187) */
   if(off&&!OFW)return {sev:null,flag:null,dash:false,trace:null}
@@ -580,7 +592,8 @@ export function exemptDeskOwn(di:any,key:any,id:any){
   const dw=((DAYS[+m[1]]||{}).dutywaves||[])[+m[2]]; if(!dw||!dw.noconf)return undefined;
   if((PV&&!OFW)||!id)return null;   /* official face shows these flags too (§8, Codex CRPF-008) */
   const rk=`d:${m[1]}.${m[2]}.${m[3]}`, g=WARN.byDay[di];
-  const hit=((g&&g.warns)||[]).find((x:any)=>(x.code==='DNIF_FLY'||x.code==='LEAVE_FLY'||x.code==='DOUBLE_BOOK')
+  /* a hidden warning flags no puck (D469) — this row works its flag out from the list, so it skips one */
+  const hit=shownWarns(g&&g.warns).find((x:any)=>(x.code==='DNIF_FLY'||x.code==='LEAVE_FLY'||x.code==='DOUBLE_BOOK')
     &&(x.who||[]).includes(id)&&(x.key===rk||x.also===rk));
   return hit?'C':null;
 }
@@ -789,7 +802,7 @@ export function personPuckHTML(di:any,id:any,oil?:any){
 export function personWarnMsgs(di:any,id:any):{sev:string,msg:string}[]{
   if(PV&&!OFW)return []
   const g=WARN.byDay&&WARN.byDay[+di]
-  return (((g&&g.warns)||[]) as any[])
+  return shownWarns(g&&g.warns)   /* a hidden warning is no reason and no flag here either (D469) */
     .filter(w=>w&&(w.who||[]).includes(String(id)))
     .map(w=>({sev:String(w.sev||'note'),msg:String(w.msg||'')}))
     .filter(w=>w.msg)
@@ -1057,14 +1070,15 @@ export function dayWarnHTML(di:any){
      day that wrecks tomorrow, or one whose only issues clear once signed — both
      worth seeing. Only bail when there is genuinely nothing to show. */
   if(!items.length&&!goneW.length)return soloTrace(di,pf);
-  const dw=items.map((x:any)=>x.w);
-  /* the header count stays the TRUE total — muting a check declutters the
-     list, it does not change what the day is (the board does the same). So
-     worst / nh / the issue count all read `dw`, the full set including any
-     muted rows; only the LIST below drops them. When the working day is clean but
-     signed warnings remain to clear, the header names those instead. */
+  /* A HIDDEN WARNING IS NOT COUNTED (owner D472, 1 Oct 26 — "if there are 3 issues initially and a scheduler clicks 1 to
+     hide it should just show 2 issues"; it replaces the Aug 26 "the header keeps its true count and colour"). The count,
+     the "N warning" and the bar's colour read the SHOWN warnings; the count line says nothing about a hidden one — it
+     is noticed only by opening the list, where its line stays in place, struck out and darker (D469). With every issue
+     hidden the bar stays, quiet, so that line can still be reached and flagged again (D475). `off` is the warning's own
+     mark from the bundle being drawn — the working copy's hides on Edit Schedule, the issued ones on a published face. */
+  const dw=shownWarns(items.map((x:any)=>x.w));
   const sevOfList=(ls:any[])=>ls.some((w:any)=>w.sev==='hard')?'hard':ls.some((w:any)=>w.sev==='adv')?'adv':'note';
-  const worst=dw.length?sevOfList(dw):sevOfList(goneW);
+  const worst=dw.length?sevOfList(dw):goneW.length?sevOfList(goneW):'calm';
   const nh=dw.filter((w:any)=>w.sev==='hard').length;
   const open=DWOPEN.has(di);
   const cs=pf&&PEOPLE[pf]?PEOPLE[pf].cs:'';
@@ -1073,39 +1087,36 @@ export function dayWarnHTML(di:any){
    +`${pf?`<span class="dwwho">${esc(cs)}</span>`:''}`
    +(dw.length
       ? `<b>⚠ ${dw.length} issue${dw.length>1?'s':''}</b>${nh?` · ${nh} warning`:''}`
-      : `<b>⚠ ${goneW.length} to clear once signed</b>`)
+      : goneW.length?`<b>⚠ ${goneW.length} to clear once signed</b>`:`<b>✓ No issues</b>`)
    +` · <span class="dwcue">${open?'tap to collapse':'tap to review'}</span>`
    +`<span class="dwcar">${open?'▲':'▼'}</span></div>`;
   if(open){
-    /* MUTING A CHECK IS AVAILABLE ON EDIT SCHEDULE TOO (owner, 29 Aug 26 —
-       "the hide warning option should be available on edit schedule too …
-       and both are in sync"). The board already lets a scheduler hide one
-       check; the mute set (view.WARNOFF) is keyed by the warning's CONTENT,
-       not by which surface it was hidden from, so rendering the same ✕ / ↺
-       controls here shares that one set — a check hidden on the board is
-       hidden on the week and vice versa, no extra wiring. Gated to Edit
-       Schedule (editMode()) exactly like the board's canEditSched(): the
-       View-only week stays the honest full record with no controls, so its
-       markup is byte-identical to before. The ✕/↺ clicks (data-woff) and the
-       reveal (data-wmtog) route through the SAME delegated handlers the board
-       uses — see interactions.ts. */
-    /* …never under a look at a version (PV): a record is read, not edited — no mute, no reveal, no "create the period",
-       and every warning it holds shown (Fable's and Astra's reads of D187) */
+    /* HIDING A WARNING IS ON EDIT SCHEDULE TOO (owner, 29 Aug 26 — "the hide warning option should be available on edit
+       schedule too … and both are in sync"): the ✕ / ↺ (data-woff) routes through the SAME handler the board's panel
+       uses (interactions.ts), on the one set of the working copy's hides. Gated to Edit Schedule (editMode()) exactly
+       like the board's canEditSched().
+       THE LINE STAYS WHERE IT IS, STRUCK OUT AND DARKER (owner D469 / D475, 1 Oct 26 — "it shouldn't totally disappear,
+       it should just show a strike out and it's darker. Ready to be reactivated again for flagging"): a hidden warning
+       keeps its place and its index, wears `.hid`, and its ✕ becomes ↺. The old "N hidden" fold is gone. EVERYONE who
+       opens the list sees the struck line — View-only Sched and a look at a version too, with no button there: only a
+       scheduler flags it again, and only on the working copy (D475). The mark is the warning's own `off`, never the
+       working copy's set: a published face shows the hides it went out with (D471). */
+    /* …never a button under a look at a version (PV): a record is read, not edited — no ✕ / ↺, no "create the period" */
     const ed=editMode()&&!PV;
-    const row=({w,ix}:any,muted?:boolean)=>{
+    const row=({w,ix}:any)=>{
       const names=(w.who||[]).map((id:any)=>PEOPLE[id]?PEOPLE[id].cs:id).join(', ');
-      const on=WFOCUS&&WFOCUS.di===di&&WFOCUS.ix===ix;
-      return `<div class="witem ${w.sev}${on?' on':''}${muted?' muted':''}" data-wdi="${di}" data-wix="${ix}" title="Jump to the puck that caused this">`
+      const on=WFOCUS&&WFOCUS.di===di&&WFOCUS.ix===ix, hid=!!w.off;
+      return `<div class="witem ${w.sev}${on?' on':''}${hid?' hid':''}" data-wdi="${di}" data-wix="${ix}" title="${hid?'Hidden — it flags no puck and is not counted. ':''}Jump to the puck that caused this">`
         +`<span class="wbar"></span><span${ed?' class="wtx"':''}><span class="wcode">${esc(wlbl(WCODE[w.code]||w.code))}</span>`
-        +`<b>${esc(names)}</b>${names?' — ':''}${esc(w.msg||'')}${sigNew(w)}</span>`
-        +(ed?`<button class="witem-mute" data-woff="${di}.${ix}" title="${muted?'Show this check again':'Hide this check — it comes back if the situation changes'}">${muted?'↺':'✕'}</button>`:'')
+        +`<b>${esc(names)}</b>${names?' — ':''}${esc(w.msg||'')}${hid?'':sigNew(w)}</span>`
+        +(ed?`<button class="witem-mute" data-woff="${di}.${ix}" title="${hid?'Flag this again':'Hide this warning — it flags no puck and is not counted; it comes back if the situation changes'}">${hid?'↺':'✕'}</button>`:'')
         /* THE WAY OUT, BESIDE THE REASON (owner's ruling D19, 22 Sep 26 —
            "indicate that the leave war period doesn't exist, create it"). Only
            this one check carries an action, and only for a scheduler: saying
            what is missing and leaving him to find the Leave War himself is half
            an answer. The year is read from the SAME hook the warning was
            written from, never parsed back out of its sentence. */
-        +(!PV&&mkPeriod(w,di)?`<button class="witem-act" data-mkperiod="${esc(mkPeriod(w,di))}" title="Creates the ${esc(mkPeriod(w,di))} leave war period in draft and takes you to the Leave War to set its bidding window">Create the ${esc(mkPeriod(w,di))} period</button>`:'')
+        +(!PV&&!hid&&mkPeriod(w,di)?`<button class="witem-act" data-mkperiod="${esc(mkPeriod(w,di))}" title="Creates the ${esc(mkPeriod(w,di))} leave war period in draft and takes you to the Leave War to set its bidding window">Create the ${esc(mkPeriod(w,di))} period</button>`:'')
         +`</div>`;
     };
     /* an OFFICIAL-only warning (it clears once the day is signed): struck through,
@@ -1117,26 +1128,16 @@ export function dayWarnHTML(di:any){
         +`<span class="wbar"></span><span${ed?' class="wtx"':''}><s><span class="wcode">${esc(wlbl(WCODE[w.code]||w.code))}</span> `
         +`<b>${esc(names)}</b></s> <span class="wsig gone">goes away once signed</span></span></div>`;
     };
-    /* split the muted checks out of the visible list (edit only). warnShown
-       reads the shared WARNOFF; the hidden ones gather under a "N hidden"
-       reveal so they stay reachable to un-mute, the board's shape. */
-    const shown=ed?items.filter((x:any)=>warnShown(x.w)):items;
-    const hidden=ed?items.filter((x:any)=>!warnShown(x.w)):[];
     /* the cross-day row ranks below this day's warnings and above its
        advisories (owner, 7 Aug 26): it is red business, but tomorrow's.
        items are already severity-sorted (validate.ts), so the seam is the
-       first non-hard row. */
-    const cut=shown.findIndex((x:any)=>x.w.sev!=='hard');
-    const hards=cut<0?shown:shown.slice(0,cut), rest=cut<0?[]:shown.slice(cut);
-    const mopen=WMOPEN.has(di);
+       first non-hard row. A hidden warning keeps its place in that order. */
+    const cut=items.findIndex((x:any)=>x.w.sev!=='hard');
+    const hards=cut<0?items:items.slice(0,cut), rest=cut<0?[]:items.slice(cut);
     h+=`<div class="dwlist">`+hards.map((x:any)=>row(x)).join('')
      +dayTraceHTML(di,pf)
      +rest.map((x:any)=>row(x)).join('')
      +goneW.map(goneRow).join('')
-     +(hidden.length
-        ? `<div class="wmuted-h${mopen?' open':''}" data-wmtog="${di}" title="Show or hide the checks you have muted">`
-          +`<span class="dwcar">${mopen?'▲':'▼'}</span>${hidden.length} hidden</div>`
-          +(mopen?hidden.map((x:any)=>row(x,true)).join(''):''):'')
      +(pf&&PFOCUS.days.length>1
         ? `<div class="dwecho">${esc(cs)} is also flagged on ${esc(PFOCUS.days.filter((x:any)=>x!==di).map(dowShort).join(', '))}</div>`:'')
      +(WFOCUS&&WFOCUS.di===di
@@ -1700,7 +1701,7 @@ function dayHTMLBody(di:any,ed:any,vsel?:any){
            scroll here; the key is built the same way validate.ts builds it.
            Emitted only on a line that actually raises the warning, so an ordinary
            week's markup — and the reference parity compare — is untouched. */
-        const noLen=fltNoLen(f);
+        const noLen=fltNoLenShown(di,fp,f);
         const badCls=noLen?' badtm':'';
         /* THE ADDRESS ONLY ON LIVE PAPER (the follow-up code read, G2). The
            MARK belongs on a frozen version preview — a line that went out with
@@ -1765,7 +1766,7 @@ function dayHTMLBody(di:any,ed:any,vsel?:any){
           const chk=!saExempt(w,f,a), fkey=`${di}.${gi}.${li}`;
           const own=(id:any)=>{ if((PV&&!OFW)||!id)return null;   /* official face shows these flags too (Codex CRPF-008) */
             const g=WARN.byDay[di];
-            const hit=((g&&g.warns)||[]).find((x:any)=>(x.code==='DNIF_FLY'||x.code==='LEAVE_FLY'||x.code==='SC_QUAL'||x.code==='DOUBLE_BOOK'||x.code==='QUAL')
+            const hit=shownWarns(g&&g.warns).find((x:any)=>(x.code==='DNIF_FLY'||x.code==='LEAVE_FLY'||x.code==='SC_QUAL'||x.code==='DOUBLE_BOOK'||x.code==='QUAL')   /* never a hidden one (D469) */
               /* also `x.also`, so the SECOND place of a one-man-two-places pair
                  rings when it sits in a DIFFERENT wave (an AVALON seat + a BB
                  seat): the clash anchors on the first place, the other in `also`
@@ -2173,7 +2174,8 @@ export function dayInfoHTML(di:any){
   const cc=(!ok&&!PV&&isMember())?chgDayCounts(di):null;
   const chg=cc&&cc.fresh?`${cc.fresh}&nbsp;new`:cc&&cc.all?`${cc.all}&nbsp;change${cc.all>1?'s':''}`:'';
   const dw=(WARN.byDay[di]&&WARN.byDay[di].warns)||[];
-  const nS=(v:any)=>dw.filter((w:any)=>w.sev===v).length;
+  /* a hidden warning is not counted (D472) — its line stays in the list below, struck out (D469) */
+  const dsh=shownWarns(dw), nS=(v:any)=>dsh.filter((w:any)=>w.sev===v).length;
   let ac=0,forms=0,cxn=0;
   (d.waves||[]).forEach((w:any)=>(w.formations||[]).forEach((f:any)=>{forms++;(f.aircraft||[]).forEach((a:any)=>{ac++; if(a.cx||f.cx)cxn++;});}));
   const sims=['amt','oft'].reduce((n:any,k:any)=>n+((((d.sims||{})[k])||[]).filter((r:any)=>!r.cx).length),0);
@@ -2203,9 +2205,9 @@ export function dayInfoHTML(di:any){
     +row('Leave / downchit',off)+row('Free all day',freeAll)
     +`</div>`;
   h+=`<div class="dip-h">Issues on this day</div>`;
-  if(!dw.length)h+=`<div class="dip-none">Nothing flagged — this day is clean ✓</div>`;
-  else{
-    h+=`<div class="dip-sev">`
+  if(!dsh.length)h+=`<div class="dip-none">Nothing flagged — this day is clean ✓</div>`;
+  if(dw.length){
+    if(dsh.length)h+=`<div class="dip-sev">`
       +(nS('hard')?`<b class="hard">${nS('hard')} warning</b>`:'')
       +(nS('adv')?`<b class="adv">${nS('adv')} advisory</b>`:'')
       +(nS('note')?`<b class="note">${nS('note')} note</b>`:'')+`</div>`;
@@ -2215,7 +2217,7 @@ export function dayInfoHTML(di:any){
          navigates says which row is lit (owner, 7 Aug 26; this panel and the
          cross-day row were the two that did not) */
       const on=WFOCUS&&WFOCUS.di===di&&WFOCUS.ix===ix;
-      return `<div class="witem ${w.sev}${on?' on':''}" data-adv="${di}.${ix}" title="Jump to the puck that caused this">`
+      return `<div class="witem ${w.sev}${on?' on':''}${w.off?' hid':''}" data-adv="${di}.${ix}" title="${w.off?'Hidden — it flags no puck and is not counted. ':''}Jump to the puck that caused this">`
         +`<span class="wbar"></span><span><span class="wcode">${SEVWORD[w.sev]} · ${esc(wlbl(WCODE[w.code]||w.code))}</span>`
         +`<b>${esc(names)}</b>${names?' — ':''}${esc(w.msg||'')}</span></div>`;}).join('')+`</div>`;
   }

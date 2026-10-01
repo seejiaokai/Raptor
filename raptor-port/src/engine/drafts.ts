@@ -674,6 +674,11 @@ export function loadVersionToWorkingCopy(di: any, ver: any) {
   LOADMOVED = multi.filter(x => (x.inp.acc || '') !== x.was).map(x => ({ id: inpId(x.inp), on: x.inp.acc === 'g',
     days: DAYS.map((d: any, dj: number) => (dj !== di && d && inputCoversDate(x.inp, d.dt)) ? String(d.dow || '').slice(0, 3) : '').filter(Boolean) }))
   LOADLEFT = LOADLEFT.filter(id => !LOADMOVED.some(m => m.id === id))
+  /* …AND THE WARNINGS THAT VERSION WENT OUT WITH HIDDEN ([WARN-HIDE-KEPT], owner D469 / D471 with D98): the day's working
+     hides become the loaded version's own (`w.wo`), so a day loaded back to what is published reads nothing pending. HERE,
+     before the caller's afterSchedMutate(), so the load's own command saves them (Fable F8.2). A saved plan carries no
+     hides — they belong to the day, not to a plan — so loading one leaves them alone. */
+  if (HOOKS.setDayHides && !isDraftVer(ver)) HOOKS.setDayHides(di, ((((snap as any).w || {}).wo) || []) as string[])
   if (dayApproved(di)) {
     rebaseDayPending(di)
   } else {

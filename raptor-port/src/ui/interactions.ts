@@ -9,6 +9,7 @@ import { standsOn } from '../engine/overlay'
 import { INPUTS, DATES, withRemarksTail, inpId, defaultAllday } from '../engine/inputs'
 import { DAYS } from '../engine/data'
 import { PEOPLE, isSpecial } from '../engine/people'
+import { hideDetail } from '../engine/warnhide'
 import { dayApproved, signClear, markEdit, dayCurVer, dayDiscardCount, verLabel, protectedWeek, alColor, nextSeq, daySnapOf, rowsLeftOut } from '../engine/publish'
 import { verSeq } from '../engine/verid'
 import { posKey } from '../engine/rowids'
@@ -1190,13 +1191,11 @@ export function routeClick(e: MouseEvent) {
      is what covers the other seven boxes this one call site never did. */
   /* (the board's "☰ Edit history · N changes" line is gone — the changes window is the list, [DRAFT-PENDING] D168) */
 
-  /* MUTE a specific check (owner, Aug 26 — "turn off that specific warning
-     advisory … but if things change that warning will appear again"). Admin-only,
-     keyed by the warning's CONTENT (view.warnMuteKey) so it comes back on its own
-     when validate() next rebuilds a different warning. CORRECTED 17 Sep 26: NOT
-     session-only — WARNOFF rides histSnap AND weekStashSnap (`wo`), so a mute
-     persists with its week and survives a reload. Caught
-     ABOVE the .wln jump so muting a row never also pans to its puck. */
+  /* HIDE a specific warning, or flag it again (owner, Aug 26 — "turn off that specific warning advisory … but if things
+     change that warning will appear again"; [WARN-HIDE-KEPT], owner D469, 1 Oct 26 — kept with its day for everyone
+     until someone flags it again). A scheduler's alone, keyed by the warning's CONTENT (view.warnMuteKey) so it comes
+     back by itself when validate() next writes a different warning. Caught ABOVE the .wln jump so the tap never also
+     pans to its puck. */
   /* THE MISSING LEAVE WAR PERIOD, CREATED FROM THE SCHEDULE (owner's ruling
      D19, 22 Sep 26). The day says a period for that year does not exist and
      that nothing can be paid for it; this is the way out sitting beside the
@@ -1222,16 +1221,20 @@ export function routeClick(e: MouseEvent) {
   const wo = t.closest('[data-woff]') as HTMLElement | null
   if (wo) {
     e.stopPropagation()
-    if (!canEditSched()) { HOOKS.toast('Only a scheduler can mute a check', 'warn'); return }
+    if (!canEditSched()) { HOOKS.toast('Only a scheduler can hide a warning', 'warn'); return }
     const [di, ix] = (wo.dataset.woff || '').split('.').map(Number)
     const g = view.displayedByDay(di), w = g && g.warns && g.warns[ix]
     if (w) {
-      /* [ARCH-STACK] follow-up #1 (row E): route the mute toggle through a
-         sched.warnMute command. schedWriteValue carries back the `shown` bool the
-         toast reads (R2-11). WARNOFF rides the baseline, so the command captures
-         the mute as a sched.mutes change. histPush kept below, in its old spot. */
-      const shown = schedWriteValue(SCHED_TYPES.warnMute, () => view.toggleWarnOff(view.warnMuteKey(w)))
-      HOOKS.toast(shown ? 'Check shown again' : 'Check hidden — it returns if the day changes', 'ok')
+      /* [ARCH-STACK] follow-up #1 (row E): the toggle is a sched.warnMute command. schedWriteValue carries back the
+         `shown` bool the toast reads (R2-11). WARNOFF rides the baseline, so the command captures the hide as a
+         sched.mutes change. histPush kept below, in its old spot.
+         The command carries WHAT was hidden, in words (its `detail` — engine/warnhide.ts hideDetail) — the change
+         history's line and the Undo label are written from it, never from the stored key, which holds ids
+         ([WARN-HIDE-KEPT]; state/changelines.ts, undo/describe.ts). */
+      const key = view.warnMuteKey(w), names = (w.who || []).map((id: any) => PEOPLE[id] ? PEOPLE[id].cs : id).join(', ')
+      const words = `${names}${names ? ' — ' : ''}${w.msg || ''}`
+      const shown = schedWriteValue(SCHED_TYPES.warnMute, () => view.toggleWarnOff(key), { key: hideDetail(!w.off, di, words) })
+      HOOKS.toast(shown ? 'Warning flagged again' : 'Warning hidden — no flag, not counted. It returns if the day changes', 'ok')
       /* a mute is an undo step now (owner, Aug 26 — "when I click undo I should
          revert my hidden warning changes"): WARNOFF rides the history snapshot,
          so push one after toggling. toggleWarnOff no-ops for a non-scheduler and
@@ -1240,10 +1243,6 @@ export function routeClick(e: MouseEvent) {
     }
     notify(); return
   }
-  /* show / hide the day's muted checks — the reveal so a muted one stays reachable */
-  const wm = t.closest('[data-wmtog]') as HTMLElement | null
-  if (wm) { view.toggleWarnMuted(+wm.dataset.wmtog!); notify(); e.stopPropagation(); return }
-
   /* make a scheduler note public / scheduler-only (owner, Aug 26). Caught before
      the text-cell routing below so tapping the header chip never opens an editor.
      Admin-gated at the write path; not an undo step (the owner asked undo only

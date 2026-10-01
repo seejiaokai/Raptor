@@ -56,7 +56,9 @@ export function warnDelta(before: any, after: any): any[] {
   if (!before || !after || !Array.isArray(after.all)) return []
   if (!Array.isArray(before.byDay) || !before.byDay.length) return []
   const seen = new Set((before.all || []).map(warnKey))
-  return after.all.filter((w: any) => w && w.sev !== 'note' && !seen.has(warnKey(w)))
+  /* …and never one that arrives already hidden (D469: the scheduler acknowledged that exact warning — it flags no puck,
+     so it must not shout either) */
+  return after.all.filter((w: any) => w && !w.off && w.sev !== 'note' && !seen.has(warnKey(w)))
     .map((w: any, i: number) => [w, i]).sort((a: any, b: any) => (rankOf(b[0]) - rankOf(a[0])) || (a[1] - b[1])).map((x: any) => x[0])
 }
 

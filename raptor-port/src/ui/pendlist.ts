@@ -23,7 +23,7 @@ import { DAYS } from '../engine/data'
 import { PEOPLE } from '../engine/people'
 import { INPUTS, inpId, inpLabel, inputCoversDate } from '../engine/inputs'
 import { officialSliceNow } from '../engine/validate'
-import { dayPendingItems, daySnapOf, dayCurVer, nextSeq, MOVE_LABELS, requestRow, warnMsgKey, warnCallsigns, peopleAttrsNow, faceRuleVals, faceRuleValsCompared } from '../engine/publish'
+import { dayPendingItems, daySnapOf, dayCurVer, nextSeq, MOVE_LABELS, requestRow, warnMsgKey, warnCallsigns, peopleAttrsNow, faceRuleVals, faceRuleValsCompared, hidePending } from '../engine/publish'
 import type { PendItem } from '../engine/publish'
 import { ELOG, elogWhen, elogWho, keyLabel, rowTouches, weekDates } from '../engine/editlog'
 import { CURWEEK } from '../engine/waves'
@@ -272,6 +272,15 @@ export function pendItemWords(di: number, it: PendItem): Words {
     if (!fil || (w as any).edited) return w
   }
   if (it.kind === 'warn') return faceWords(di)
+  /* a warning hidden, or flagged again, since the day went out ([WARN-HIDE-KEPT], D471): the line is led by its item
+     — the warning, in its own words — with what happened to it under it; a tap goes to the warning's own line, where
+     it has one */
+  if (it.kind === 'hide') {
+    const x = hidePending(di).find(h => h.entry.addr === e.addr)
+    const nm = x ? x.who.map((id: string) => cs(id)).filter(Boolean).join(', ') : ''
+    return { where: x ? `Warning · ${nm}${nm ? ' — ' : ''}${x.msg}` : 'A warning', from: e.to === 'hidden' ? 'flagged' : 'hidden', to: e.to === 'hidden' ? 'hidden' : 'flagged again',
+      who: '', when: '', jump: !!(it.jump && it.jump.length) }
+  }
   const byLog = (): { who: string; when: string } => {
     const r = lastEdit(it.keys || [])
     return r ? { who: elogWho(r), when: elogWhen(r.t) } : { who: 'earlier', when: '' }
@@ -389,7 +398,7 @@ const RANK = (it: PendItem) => {
   const a = String(it.addr || (it.entry && it.entry.addr) || ''), c = a.indexOf(':'), p = c < 0 ? '' : a.slice(0, c)
   if (it.kind === 'move') return 7
   if (it.kind === 'input') return 8
-  if (it.kind === 'oil' || it.kind === 'warn') return 9
+  if (it.kind === 'oil' || it.kind === 'warn' || it.kind === 'hide') return 9
   if (!p || ['ff', 'fr', 'wl', 'it', 'tr', 'st', 'ar', 'at', 'fa', 'ft', 'aa', 'au'].includes(p)) return 1
   if (p === 'a' || p === 'ap' || p === 'pn' || p === 'dn') return 2
   if (p === 's' || p === 'sr' || p === 'sn') return 3

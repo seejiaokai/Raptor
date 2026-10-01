@@ -31,7 +31,7 @@ import { weekBundle, shiftWeekKey } from './weeks-data'
 import { buildDay } from './events'
 import { INPUTS, inputsOn, frozenInputDiffs, inputCoversDate, isPersonal, inputDormant, baseYear, inpId } from './inputs'
 import { PEOPLE, isSpecial } from './people'
-import { stashDays, stashSched } from './weekstash'
+import { stashDays, stashSched, stashGet } from './weekstash'
 import { getWorld, filingActive, filingHas } from './world'
 import { dayCurVerIn, daySnapIn } from './publish'
 import { canonicalDiff } from './canonical'
@@ -229,6 +229,22 @@ export function nextMondayWorked(curWeek:any){
   const nextKey=shiftWeekKey(curWeek,1), nextBundle=bundle(nextKey), sc=stashSched(nextKey);
   return workedSet(nextBundle.days[0],0,!!((sc&&sc.dayOK)||{})[0]);
 }
+/* THE WARNINGS HIDDEN ON ONE DAY OF A WEEK THAT IS NOT LOADED ([WARN-HIDE-KEPT], owner D469 / D471 — Astra's and Fable's
+   plan reads): the keys in force there. A draft day: the hides its working copy carries (`wo`, kept with the day). A
+   PUBLISHED day: the hides its current issued version went out with (`w.wo`) — a hide made since waits for that day's
+   next amendment (D471), so it is not in force yet. A week never saved, or one that will not parse: none. Read by the two
+   marks that cross the week's edge (validate.ts shownOf — Sunday's "Breaks Monday", the run's forward mark) and by the
+   next-week preview's red time box (ui/peek.ts). Never throws — read inside validate(). */
+export function dayHidesIn(v:any,di:number):Set<string>{
+  const out=new Set<string>(), s=stashGet(v); if(!s)return out;
+  try{
+    const sc=stashSched(v);
+    if(sc&&(sc.dayOK||{})[di]){ const ver=dayCurVerIn(sc,di,v), snap:any=ver!=null?daySnapIn(sc,di,ver,v):null;
+      (((snap&&snap.w&&snap.w.wo)||[]) as any[]).forEach((k:any)=>out.add(String(k))); }
+    else ((JSON.parse(s).wo||[]) as any[]).forEach((k:any)=>{ if(String(k).split('|')[0]===String(di))out.add(String(k)); });
+  }catch(_e){ /* unreadable: nothing is hidden */ }
+  return out;}
+export function nextMondayHides(curWeek:any){ return dayHidesIn(shiftWeekKey(curWeek,1),0); }
 export function nextMondaySeed(curWeek:any){
   const nextBundle=bundle(shiftWeekKey(curWeek,1));
   const built=buildDay(nextBundle.days[0],0,null,null,true);

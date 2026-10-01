@@ -5,7 +5,7 @@ import { overlap, hm24, lgT, parseHM } from './time'
 import { collectEvents, shiftEvHard, scSeatHits, avSeatHits } from './events'
 import { HOOKS } from './hooks'
 import { sansGate, SANS_LABEL } from './avail'
-import { seedRunIn, prevSundaySeed, nextMondaySeed, nextMondayWorked, windowDiverges, windowFiling, windowInputs, filingDivergesAt } from './weekctx'
+import { seedRunIn, prevSundaySeed, nextMondaySeed, nextMondayWorked, nextMondayHides, windowDiverges, windowFiling, windowInputs, filingDivergesAt } from './weekctx'
 import { setWorld, setFiling, clearFiling } from './world'
 import { CURWEEK, isStandalone } from './waves'
 import { DAYS } from './data'
@@ -14,6 +14,7 @@ import { oilWouldEarn, oilOldBlockCrowd, oilEvidenceOf } from './oilev'
 import { keyDay, seatRow } from './keys'
 import { rowPlaces } from './slots'
 import { SCHED, approvedDays, dayApproved, dayDelta, dayDeltaCore, dayCurVer, daySnapOf } from './publish'
+import { hideKey, shownWarns } from './warnhide'
 
 /* the reference guards its header counters with $() lookups; the engine takes
    $ from the hooks (null outside a browser) so the guarded lines stay verbatim */
@@ -264,6 +265,16 @@ export function fltNoLen(f:any):boolean{
    shift "still earns from the report and debrief" was false, on the wave the
    squadron works most weekends, about money. */
 export const FLT_NO_LEN_SAYS=(st:any,sa?:any)=>`takes off and lands at the same time (${hm24(st)}) — one of the two is wrong; ${sa?'a shift with no length earns nobody any OIL until it is fixed':'the day still earns from the report and debrief'}`;
+/* the 7-day run's sentence — one body for the warning and for the dotted mark that points at it from the days before
+   (the mark carries the words its warning will have, so a hide of that warning is found — [WARN-HIDE-KEPT]) */
+const runSays=(id:any,n:any)=>`${PEOPLE[id]?PEOPLE[id].cs:id} is on the programme ${n} days in a row — ${VCONF.maxRun} is the limit, so a break day is due`;
+/* a nought-minute line's sentence — one body for the warning and for the next-week preview, which draws the line's red
+   time box without a warning list and asks whether THAT warning is hidden (ui/peek.ts) */
+export const fltNoLenMsg=(f:any,wv:any)=>`${f.cs||wv.label||'A flying line'} ${FLT_NO_LEN_SAYS(parseHM(f.to),isStandalone(wv))}`;
+/* a ring is the worst of a man's warnings, a chip the highest — the two merges every mark goes through (the day loop and
+   shownOf's replay share them) */
+const markWorse=(m:any,di:any,id:any,s:any)=>{m[di]=m[di]||{}; const c=m[di][id]; if(!c||SEVR[s]>SEVR[c])m[di][id]=s;};
+const markHigher=(m:any,di:any,id:any,c:any)=>{m[di]=m[di]||{}; if(!m[di][id]||RANK[c]>RANK[m[di][id]])m[di][id]=c;};
 function validateCore(){
   const ev=collectEvents(), all:any[]=[], byDay:any[]=[], sev:any={}, chip:any={}, dash:any={}, trace:any={};
   REST={}; EVD={}; SIMW={};
@@ -274,14 +285,20 @@ function validateCore(){
      A mark site of a live warning names its code; one that names none is frozen-class. */
   const fz:any={sev:{},chip:{},dash:{}}, lv:any={sev:{},chip:{},dash:{}};
   const cls=(code:any)=>code&&LIVE_ON_FACE.has(code)?lv:fz;
-  const ring=(m:any,di:any,id:any,s:any)=>{m[di]=m[di]||{}; const c=m[di][id]; if(!c||SEVR[s]>SEVR[c])m[di][id]=s;};
-  const flag=(m:any,di:any,id:any,c:any)=>{m[di]=m[di]||{}; if(!m[di][id]||RANK[c]>RANK[m[di][id]])m[di][id]=c;};
-  const markRing=(di:any,id:any,s:any,code?:any)=>{ring(sev,di,id,s); ring(cls(code).sev,di,id,s);};
-  const markChip=(di:any,id:any,c:any,code?:any)=>{flag(chip,di,id,c); flag(cls(code).chip,di,id,c);};
+  const ring=markWorse, flag=markHigher;
+  /* EACH MARK IS ALSO WRITTEN DOWN WITH ITS WARNING ([WARN-HIDE-KEPT], owner D469, 1 Oct 26 — "if it's hidden, the pucks
+     shouldn't have flagging for that specific item"). A ring is the worst of a man's warnings and a chip the highest, so
+     the maps cannot be un-merged afterwards: every mark site names the CODE of the warning it stands beside, and the mark
+     is kept in `marks` (and each next-day mark in `traces`, with the warning it points at). shownOf() below replays them
+     without the marks of a hidden warning — a mark goes when no SHOWN warning of that day and code names that man.
+     Nothing is hidden → the maps written here are the ones every surface reads, exactly as before. */
+  const marks:any[]=[], traces:any[]=[];
+  const markRing=(di:any,id:any,s:any,code?:any)=>{ring(sev,di,id,s); ring(cls(code).sev,di,id,s); marks.push({k:'sev',di,id,v:s,code});};
+  const markChip=(di:any,id:any,c:any,code?:any)=>{flag(chip,di,id,c); flag(cls(code).chip,di,id,c); marks.push({k:'chip',di,id,v:c,code});};
   /* the ring STYLE, which a chip cannot carry: a sanctioned late show rings
      dashed while still counting as the hard warning it is (owner, 6 Aug 26).
      Separate from sev because it is orthogonal — same red, different stroke. */
-  const markDash=(di:any,id:any,code?:any)=>{dash[di]=dash[di]||{}; dash[di][id]=true; const m=cls(code).dash; m[di]=m[di]||{}; m[di][id]=true;};
+  const markDash=(di:any,id:any,code?:any)=>{dash[di]=dash[di]||{}; dash[di][id]=true; const m=cls(code).dash; m[di]=m[di]||{}; m[di][id]=true; marks.push({k:'dash',di,id,v:true,code});};
   /* THE CAUSE, published on the day that CAUSED it (owner, 6 Aug 26). A crew-rest
      breach is raised on the day the man is told to report, but the day a
      scheduler can actually fix is the one BEFORE — so that day carries a
@@ -292,7 +309,8 @@ function validateCore(){
   /* MERGED, not replaced (5 Sep 26): the same puck can carry the crew-rest
      trace (its fields at the top level, unchanged) AND the run trace (nested
      under `run`) — day six of a run whose late landing also wrecks tomorrow. */
-  const markTrace=(pdi:any,id:any,t:any)=>{if(pdi==null)return; trace[pdi]=trace[pdi]||{}; trace[pdi][id]=Object.assign(trace[pdi][id]||{},t);};
+  /* `w` — the warning this mark points at: its day (null = next week's Monday), code, man and words (shownOf) */
+  const markTrace=(pdi:any,id:any,t:any,w?:any)=>{if(pdi==null)return; trace[pdi]=trace[pdi]||{}; trace[pdi][id]=Object.assign(trace[pdi][id]||{},t); traces.push({pdi,id,t,w});};
   const dur=(m:any)=>`${Math.floor(m/60)}h${String(Math.round(m%60)).padStart(2,'0')}`;
   /* CONSECUTIVE WORKING DAYS (owner, Aug 26) — nobody may be on the programme
      more than VCONF.maxRun days without a break day. Counted in day order off
@@ -336,7 +354,7 @@ function validateCore(){
      Monday, one lookahead day, like the crew-rest trace. Trace only — never a
      warning — so parity.test.ts (which compares WARN.byDay) is untouched. */
   {
-    const traceRun=(from:any,id:any,t:any)=>{ for(let k=from;k>=0;k--){ if(!RUNLEN[k]||RUNLEN[k][id]==null)break; markTrace(k,id,{run:t}); } };
+    const traceRun=(from:any,id:any,t:any)=>{ for(let k=from;k>=0;k--){ if(!RUNLEN[k]||RUNLEN[k][id]==null)break; markTrace(k,id,{run:t},{di:t.di,code:'DAYS_RUN',who:[id],msg:runSays(id,t.n)}); } };
     ev.forEach((day:any,i:any)=>{
       Object.keys(RUNLEN[i]||{}).forEach((id:any)=>{
         const n=RUNLEN[i][id];
@@ -557,7 +575,7 @@ function validateCore(){
              and NOT on the warning: parity.test.ts compares every field of
              WARN.byDay against the reference, while WARN.trace is port-only, so
              this stays clear of the reference entirely. */
-          markTrace(prevDi,id,{di,dow:day.dow,leaveBy,dashed,msg:crMsg,fromKey:prevFlyKey[id]});
+          markTrace(prevDi,id,{di,dow:day.dow,leaveBy,dashed,msg:crMsg,fromKey:prevFlyKey[id]},{di,code:'CREW_REST',who:[id],msg:crMsg});
         } else if(nominal<earliest||instructed<earliest){
           /* Chip, no ring (owner, 7 Aug 26). A tight turn is a note, not a
              problem to fix — and this was the ONLY TT that rang: the same-day
@@ -614,7 +632,7 @@ function validateCore(){
          still caught below as a hard conflict. */
       if(PEOPLE[id]&&PEOPLE[id].pers)return;
       const es=byP[id].slice().sort((a:any,b:any)=>a.to-b.to);
-      if(es.length>=2&&dturns(es))markChip(di,id,'DT');
+      if(es.length>=2&&dturns(es))markChip(di,id,'DT','DT_SUM');
       for(let i=0;i<es.length-1;i++){ const turn=es[i+1].to-es[i].ld;   // land → next T/O; need 30m dekit + 60m step = 90m
         /* The threshold and the mechanics are edited independently, so either
            can be the binding one: a 60 min threshold with 30 dekit + 60 step
@@ -624,7 +642,7 @@ function validateCore(){
            which is not a turn at all. It was reported as one, carrying a
            negative minute count ("Tight turn VL→VL: -85 min"), and the hard
            clash below now speaks for that case instead (owner, 11 Aug 26). */
-        if(turn>=0&&turn<need){markChip(di,id,'TT');add('adv','TURN',[id],`Tight turn ${es[i].label}→${es[i+1].label}: ${turn} min land→next T/O (needs ${need} min — threshold ${VCONF.tightTurn}, dekit+step ${VCONF.dekit}+${VCONF.step})`,es[i].key);} }
+        if(turn>=0&&turn<need){markChip(di,id,'TT','TURN');add('adv','TURN',[id],`Tight turn ${es[i].label}→${es[i+1].label}: ${turn} min land→next T/O (needs ${need} min — threshold ${VCONF.tightTurn}, dekit+step ${VCONF.dekit}+${VCONF.step})`,es[i].key);} }
     });
     /* C — two commitments at the same time for one person.
        Sortie-vs-sortie is the tight-turn rule's business, not this one.
@@ -664,18 +682,18 @@ function validateCore(){
         if(A.kind==='shift'||B.kind==='shift'){
           const sh=A.kind==='shift'?A:B, other=A.kind==='shift'?B:A;
           if(shiftEvHard(other)){
-            markChip(di,id,'C'); markRing(di,id,'hard');
+            markChip(di,id,'C','DOUBLE_BOOK'); markRing(di,id,'hard','DOUBLE_BOOK');
             add('hard','DOUBLE_BOOK',[id],`${sh.label} & ${other.label} clash`,kOf(sh)||kOf(other));
           } else {
             /* amber A, not the red conflict C — the puck has to say advisory at a
                glance, the way the note under it already does */
-            markChip(di,id,'A'); markRing(di,id,'adv');
+            markChip(di,id,'A','SHIFT_SOFT'); markRing(di,id,'adv','SHIFT_SOFT');
             add('adv','SHIFT_SOFT',[id],
               `${PEOPLE[id]?PEOPLE[id].cs:id} is on ${sh.label} (${hm24(sh.s)}–${hm24(sh.e)}) and also down for ${other.label}`,kOf(sh)||kOf(other));
           }
           continue;
         }
-        markChip(di,id,'C'); markRing(di,id,'hard');
+        markChip(di,id,'C','DOUBLE_BOOK'); markRing(di,id,'hard','DOUBLE_BOOK');
         /* two seats on the SAME line print the same label, so the general
            wording came out as "VL BFM & VL BFM clash" — which reads like a
            fault in the app rather than a fault in the plan. Name what actually
@@ -701,7 +719,7 @@ function validateCore(){
       if(sh.kind!=='shift'||sh.report==null||sh.report>=sh.s)return;
       const cs=PEOPLE[id]?PEOPLE[id].cs:id;
       const cut=(s:any,e:any,label:any)=>{
-        markChip(di,id,'A'); markRing(di,id,'adv');
+        markChip(di,id,'A','SC_INTIME'); markRing(di,id,'adv','SC_INTIME');
         add('adv','SC_INTIME',[id],
           `${cs} reports ${hm24(sh.report)} for ${sh.label} — ${label} (${hm24(s)}–${hm24(e)}) cuts into the in-time window before the ${hm24(sh.s)} start`,kOf(sh));};
       byE[id].forEach((o:any)=>{ if(o===sh)return;
@@ -728,8 +746,8 @@ function validateCore(){
            decision, Aug 26). "Fly with" is now an ordinary commitment: a man who
            says he is flying elsewhere is not available for this sortie, so it
            clashes exactly like a Meeting or an Appointment does. */
-        markChip(di,e.id,'C'); markRing(di,e.id,'hard');
-        const dn=isDownchit(inp.type),lv=isLeave(inp.type);
+        const dn=isDownchit(inp.type),lv=isLeave(inp.type), wc=dn?'DNIF_FLY':lv?'LEAVE_FLY':'INPUT_FLY';
+        markChip(di,e.id,'C',wc); markRing(di,e.id,'hard',wc);
         /* the REASON is the whole point of the flag — a downchit body planned to
            fly has to say what grounded them, not merely that something clashes. */
         const why=inp.remarks?` — reason: ${inp.remarks}`:'';
@@ -777,13 +795,13 @@ function validateCore(){
              typo'd or stale-store type out of this advisory. Mirrored in
              refwin.ts reinput as the explicit MEETING literal. */
           if(!overlap(e.s,e.e,inp.s,inp.e))return;
-          markChip(di,e.id,'A'); markRing(di,e.id,'adv');
+          markChip(di,e.id,'A','SHIFT_SOFT'); markRing(di,e.id,'adv','SHIFT_SOFT');
           add('adv','SHIFT_SOFT',[e.id],
             `${PEOPLE[e.id]?PEOPLE[e.id].cs:e.id} is on ${e.label} (${hm24(e.s)}–${hm24(e.e)}) and also down for ${inpLabel(inp)}`,kOf(e));
           return;
         }
         if(!overlap(e.s,e.e,inp.s,inp.e))return;
-        markChip(di,e.id,'C'); markRing(di,e.id,'hard');
+        { const wc=dn?'DNIF_FLY':lv?'LEAVE_FLY':'INPUT_FLY'; markChip(di,e.id,'C',wc); markRing(di,e.id,'hard',wc); }
         const why=inp.remarks?` — reason: ${inp.remarks}`:'';
         add('hard',dn?'DNIF_FLY':lv?'LEAVE_FLY':'INPUT_FLY',[e.id],
           (dn?'Downchit but tasked':lv?'On leave but tasked':`${inp.type} but tasked`)+` — ${e.label}${why}`,kOf(e)); }); });
@@ -804,8 +822,8 @@ function validateCore(){
         if(canSpare(inp.type))return;
         if(sa.work&&canWork(inp.type))return;
         if(!overlap(sa.s,sa.e,inp.s,inp.e))return;
-        markChip(di,sa.id,'C'); markRing(di,sa.id,'hard');
-        const dn=isDownchit(inp.type);
+        const dn=isDownchit(inp.type), wc=dn?'DNIF_FLY':'LEAVE_FLY';
+        markChip(di,sa.id,'C',wc); markRing(di,sa.id,'hard',wc);
         const why=inp.remarks?` — reason: ${inp.remarks}`:'';
         add('hard',dn?'DNIF_FLY':'LEAVE_FLY',[sa.id],
           `${inp.type} but on ${sa.label} — ${dn?'medically down':'overseas'}${why}`,sa.key);
@@ -866,7 +884,7 @@ function validateCore(){
       avSeatHits(di,sa.id,sa.s,sa.e,sa.key,sa.role==='DUTY').forEach((hit:any)=>{
         const pk=[sa.key,hit.key].sort().join('|')+'·'+sa.id;
         if(avPairSeen.has(pk))return; avPairSeen.add(pk);
-        markChip(di,sa.id,'C'); markRing(di,sa.id,'hard');
+        markChip(di,sa.id,'C','DOUBLE_BOOK'); markRing(di,sa.id,'hard','DOUBLE_BOOK');
         const mine=sa.role==='DUTY'?sa.label:`${sa.label} ${sa.role}`;
         /* `also` names the OTHER place, so that copy's puck can ring for the
            pair it is in (an exempt desk reads only its own rule — html.ts) */
@@ -898,10 +916,10 @@ function validateCore(){
         const hits=(s:any,e:any)=>others.filter((o:any)=>overlap(s,e,o.s,o.e)).map((o:any)=>o.label)
           .concat(timedInput.filter((i:any)=>i.id===id&&overlap(s,e,i.s,i.e)).map((i:any)=>i.type));
         const hb=hits(bs,bt);
-        if(hb.length){markChip(di,id,'NB');markRing(di,id,'adv');
+        if(hb.length){markChip(di,id,'NB','NO_BRIEF');markRing(di,id,'adv','NO_BRIEF');
           add('adv','NO_BRIEF',[id],noBriefSays(lg,hb.join(', ')),lg.slot);}
         const hd=hits(ls,de);
-        if(hd.length){markChip(di,id,'DB');markRing(di,id,'adv');
+        if(hd.length){markChip(di,id,'DB','DEBRIEF');markRing(di,id,'adv','DEBRIEF');
           add('adv','DEBRIEF',[id],debriefSays(lg,hd.join(', ')),lg.slot);}
       });
     });
@@ -916,10 +934,10 @@ function validateCore(){
         .concat(timedInput.filter((i:any)=>i.id===id&&overlap(s,e,i.s,i.e)).map((i:any)=>i.type));
       if(simHasBrief(sw)){ const h=hits(sw.bs,sw.be);
         /* amber like NO_BRIEF (owner, 4 Aug 26) — same rule, sim flavour */
-        if(h.length){markChip(di,id,'SB');markRing(di,id,'adv');
+        if(h.length){markChip(di,id,'SB','SIM_BRIEF');markRing(di,id,'adv','SIM_BRIEF');
           add('adv','SIM_BRIEF',[id],simBriefSays(sw,h.join(', ')),sw.key);} }
       if(simHasDebrief(sw)){ const h=hits(sw.ds,sw.de);
-        if(h.length){markChip(di,id,'SD');markRing(di,id,'adv');
+        if(h.length){markChip(di,id,'SD','SIM_DEBRIEF');markRing(di,id,'adv','SIM_DEBRIEF');
           add('adv','SIM_DEBRIEF',[id],simDebriefSays(sw,h.join(', ')),sw.key);} }
     }));
     /* ---- double-turn summary --------------------------------------------
@@ -941,7 +959,7 @@ function validateCore(){
       /* ef keeps the FLY event that set the day's END (null when a non-flying
          commitment did), so the note can name the debrief pad baked into it. */
       const s=w.s,e=w.e,ef=w.ef,span=w.span;
-      if(span>VCONF.longDay){markChip(di,id,'LD');markRing(di,id,'note');
+      if(span>VCONF.longDay){markChip(di,id,'LD','LONGDAY');markRing(di,id,'note','LONGDAY');
         /* NAME THE DEBRIEF ASSUMPTION (owner, 15 Aug 26 — the same "state the
            assumption" as crew rest). When a sortie closes the day, its end is
            the landing plus the assumed 2h debrief pad, so the note prints the
@@ -957,7 +975,7 @@ function validateCore(){
       const n=RUNLEN[idx][id];
       if(n>VCONF.maxRun){
         markChip(di,id,'RUN','DAYS_RUN'); markRing(di,id,'hard','DAYS_RUN');
-        add('hard','DAYS_RUN',[id],`${PEOPLE[id]?PEOPLE[id].cs:id} is on the programme ${n} days in a row — ${VCONF.maxRun} is the limit, so a break day is due`);}
+        add('hard','DAYS_RUN',[id],runSays(id,n));}
     });
     /* ---- crew rest across the day boundary -------------------------------
        12h clear from the previous day's last commitment — ANY commitment
@@ -1011,9 +1029,9 @@ function validateCore(){
            pairing as the crew-solo advisory. Ring only, no chip — the
            ILLEGAL_CREW shape. */
         if(p&&w&&p.seat==='FCP'&&w.seat==='RCP'&&!isInstrPilot(p.q)&&!isInstr(w.q)){
-          if(isOcu(p.q)&&isOcu(w.q)){markRing(di,ac.p,'adv');markRing(di,ac.w,'adv');markChip(di,ac.p,'CP');markChip(di,ac.w,'CP');add('adv','CREW_SOLO',[ac.p,ac.w],`${p.cs} (OCU pilot) with ${w.cs} (OCU WSO) in ${f.label} — a crew solo, only allowed under the Basic Course Syllabus`,ac.key);}
-          else if(isOcu(p.q)||isOcu(w.q)){markRing(di,ac.p,'hard');markRing(di,ac.w,'hard');markChip(di,ac.p,'CPH');markChip(di,ac.w,'CPH');add('hard','ILLEGAL_CREW',[ac.p,ac.w],isOcu(p.q)?`OCU pilot ${p.cs} with CAT ${w.q} WSO ${w.cs} — not an authorised combination (${f.label})`:`OCU WSO ${w.cs} with CAT ${p.q} pilot ${p.cs} — not an authorised combination (${f.label})`,ac.key);}
-          else if((p.q==='D'&&(w.q==='C'||w.q==='D'))||(p.q==='C'&&w.q==='D')){markRing(di,ac.p,'adv');markRing(di,ac.w,'adv');markChip(di,ac.p,'CP');markChip(di,ac.w,'CP');add('adv','CO_APPROVAL',[ac.p,ac.w],`CAT ${p.q} pilot ${p.cs} with CAT ${w.q} WSO ${w.cs} in ${f.label} — CO approval required`,ac.key);}
+          if(isOcu(p.q)&&isOcu(w.q)){markRing(di,ac.p,'adv','CREW_SOLO');markRing(di,ac.w,'adv','CREW_SOLO');markChip(di,ac.p,'CP','CREW_SOLO');markChip(di,ac.w,'CP','CREW_SOLO');add('adv','CREW_SOLO',[ac.p,ac.w],`${p.cs} (OCU pilot) with ${w.cs} (OCU WSO) in ${f.label} — a crew solo, only allowed under the Basic Course Syllabus`,ac.key);}
+          else if(isOcu(p.q)||isOcu(w.q)){markRing(di,ac.p,'hard','ILLEGAL_CREW');markRing(di,ac.w,'hard','ILLEGAL_CREW');markChip(di,ac.p,'CPH','ILLEGAL_CREW');markChip(di,ac.w,'CPH','ILLEGAL_CREW');add('hard','ILLEGAL_CREW',[ac.p,ac.w],isOcu(p.q)?`OCU pilot ${p.cs} with CAT ${w.q} WSO ${w.cs} — not an authorised combination (${f.label})`:`OCU WSO ${w.cs} with CAT ${p.q} pilot ${p.cs} — not an authorised combination (${f.label})`,ac.key);}
+          else if((p.q==='D'&&(w.q==='C'||w.q==='D'))||(p.q==='C'&&w.q==='D')){markRing(di,ac.p,'adv','CO_APPROVAL');markRing(di,ac.w,'adv','CO_APPROVAL');markChip(di,ac.p,'CP','CO_APPROVAL');markChip(di,ac.w,'CP','CO_APPROVAL');add('adv','CO_APPROVAL',[ac.p,ac.w],`CAT ${p.q} pilot ${p.cs} with CAT ${w.q} WSO ${w.cs} in ${f.label} — CO approval required`,ac.key);}
         }
         /* Personnel (ground crew) in a FRONT seat is illegal — they hold no
            flying qualification and may ride a rear seat only. In the REAR seat
@@ -1022,7 +1040,7 @@ function validateCore(){
            and combination checks below key on FCP/RCP and never catch a 'GND'
            seat, so these two lines are the whole story for personnel. */
         if(p&&p.pers){markChip(di,ac.p,'Q','QUAL');markRing(di,ac.p,'hard','QUAL');add('hard','QUAL',[ac.p],`${p.cs} is ground crew — cannot fly a front seat (${f.label})`,ac.key+'.p');}
-        if(w&&w.pers){markChip(di,ac.w,'CP');markRing(di,ac.w,'adv');add('adv','PAX_CREW',[ac.w],`${w.cs} is riding the rear seat of ${f.label} as an incentive passenger — this crew pairing needs approval`,ac.key+'.w');}
+        if(w&&w.pers){markChip(di,ac.w,'CP','PAX_CREW');markRing(di,ac.w,'adv','PAX_CREW');add('adv','PAX_CREW',[ac.w],`${w.cs} is riding the rear seat of ${f.label} as an incentive passenger — this crew pairing needs approval`,ac.key+'.w');}
         // Q — seat qualification: a WSO can't fly FCP. The rear seat carries no
         // instructor rule: any pilot may ride the back (owner, 7 Sep 26 — "don't
         // flag out that they are in an illegal seat"; the AAR supervision rule
@@ -1082,7 +1100,7 @@ function validateCore(){
       const crewAll=[...new Set(f.acs.reduce((a:any,x:any)=>a.concat([x.p,x.w]),[]).filter((id:any)=>id&&PEOPLE[id]&&!isSpecial(id)))];
       const ocuAll=crewAll.filter((id:any)=>PEOPLE[id]&&isOcu(PEOPLE[id].q));
       const anyIP=crewAll.some((id:any)=>PEOPLE[id]&&isInstr(PEOPLE[id].q));
-      if(ocuAll.length&&!anyIP){ocuAll.forEach((id:any)=>{markRing(di,id,'adv');markChip(di,id,'CP');});add('adv','OCU_NO_IP',ocuAll,`OCU in ${f.label} with no IP`,f.key);}
+      if(ocuAll.length&&!anyIP){ocuAll.forEach((id:any)=>{markRing(di,id,'adv','OCU_NO_IP');markChip(di,id,'CP','OCU_NO_IP');});add('adv','OCU_NO_IP',ocuAll,`OCU in ${f.label} with no IP`,f.key);}
       /* NO_IR — an instrument rating test needs an IR examiner aboard (owner,
          Aug 5 '26). The mission lives in f.shift (collectEvents folds f.msn
          into it); a per-aircraft IRT lives in that aircraft's remarks. IRT in
@@ -1091,11 +1109,11 @@ function validateCore(){
          same shape as OCU_NO_IP, and red: the sortie cannot be examined. */
       const isIR=(id:any)=>{const q=realP(id);return !!(q&&q.q==='IR');};
       if(/\bIRT\b/i.test(String(f.shift||''))&&crewAll.length&&!crewAll.some(isIR)){
-        crewAll.forEach((id:any)=>{markRing(di,id,'hard');markChip(di,id,'CPH');});
+        crewAll.forEach((id:any)=>{markRing(di,id,'hard','NO_IR');markChip(di,id,'CPH','NO_IR');});
         add('hard','NO_IR',crewAll,`IRT in ${f.label} with no IR examiner`,f.key);}
       f.acs.forEach((ac:any)=>{ if(!/\bIRT\b/i.test(String(ac.rmks||'')))return;
         const crew=[ac.p,ac.w].filter((id:any)=>id&&realP(id));
-        if(crew.length&&!crew.some(isIR)){crew.forEach((id:any)=>{markRing(di,id,'hard');markChip(di,id,'CPH');});
+        if(crew.length&&!crew.some(isIR)){crew.forEach((id:any)=>{markRing(di,id,'hard','NO_IR');markChip(di,id,'CPH','NO_IR');});
           add('hard','NO_IR',crew,`IRT remarks on ${f.label} with no IR examiner`,ac.key);}});
       /* SC currency — read off the shift as scheduled, both MAIN and SPARE.
          This is about the person's own qualification, not a clash with another
@@ -1127,12 +1145,12 @@ function validateCore(){
           day.input.forEach((inp:any)=>{ if(inp.id!==id)return;
             if(canSpare(inp.type))return;
             if(!overlap(f.s,f.e,inp.s,inp.e))return;
-            markChip(di,id,'C'); markRing(di,id,'hard');
+            const dn=isDownchit(inp.type), wc=dn?'DNIF_FLY':'LEAVE_FLY';
+            markChip(di,id,'C',wc); markRing(di,id,'hard',wc);
             const why=inp.remarks?` — reason: ${inp.remarks}`:'';
             /* say WHICH of the two disqualifies him — "overseas" and "medically
                down" are different problems and the scheduler fixes them
                differently */
-            const dn=isDownchit(inp.type);
             add('hard',dn?'DNIF_FLY':'LEAVE_FLY',[id],
               `${inp.type} but standing SC SPARE — ${dn?'medically down':'overseas'}`
               +`, ${f.label}${why}`,f.key); }); });
@@ -1163,7 +1181,7 @@ function validateCore(){
             scSeatHits(di,id,f.s,f.e,own).forEach((hit:any)=>{
               const pk=[own,hit.key].sort().join('|')+'·'+id;
               if(scPairSeen.has(pk))return; scPairSeen.add(pk);
-              markChip(di,id,'C'); markRing(di,id,'hard');
+              markChip(di,id,'C','DOUBLE_BOOK'); markRing(di,id,'hard','DOUBLE_BOOK');
               add('hard','DOUBLE_BOOK',[id],
                 `${PEOPLE[id].cs} is standing SC SPARE (${f.label} ${hm24(f.s)}–${hm24(f.e)})`
                 +` and also on ${hit.what} (${hm24(hit.s)}–${hm24(hit.e)})`,own); }); }); });
@@ -1227,7 +1245,7 @@ function validateCore(){
     sansChecks.forEach((c:any)=>{ const p=PEOPLE[c.id]; if(!p||!p.san)return;
       const g=sansGate(c.id,day.dt,c.domain,c.s,c.en);
       if(g.status!=='not-offered'&&g.status!=='window')return;
-      markRing(di,c.id,'adv');markChip(di,c.id,'A');
+      markRing(di,c.id,'adv','SANS_AVAIL');markChip(di,c.id,'A','SANS_AVAIL');
       const reason=g.status==='not-offered'?`not offering ${SANS_LABEL[c.domain]} today`
         :`available ${hm24(g.off.s)}–${hm24(g.off.e)} only`;
       add('adv','SANS_AVAIL',[c.id],`${p.cs} planned for ${c.label} — ${reason}`,c.key);
@@ -1269,7 +1287,7 @@ function validateCore(){
     ((DAYS[di]||{}).waves||[]).forEach((wv:any,gi:any)=>{
       (wv.formations||[]).forEach((f:any,li:any)=>{
         if(!fltNoLen(f))return;
-        add('adv','FLT_NO_LEN',[],`${f.cs||wv.label||'A flying line'} ${FLT_NO_LEN_SAYS(parseHM(f.to),isStandalone(wv))}`,`ff:${di}.${gi}.${li}.ld`);
+        add('adv','FLT_NO_LEN',[],fltNoLenMsg(f,wv),`ff:${di}.${gi}.${li}.ld`);
       });
     });
     const earnsOil=day.dow==='Saturday'||day.dow==='Sunday'||HOOKS.oilEarningDay(di);
@@ -1385,9 +1403,62 @@ function validateCore(){
      the same closure the day loop ran, one body, now three callers */
   CREWREST_BODY=crewRestDay;
   XD_CACHE=new Map();
-  WARN={all,byDay,sev,chip,dash,trace,fz,lv};
+  WARN={all,byDay,sev,chip,dash,trace,fz,lv,marks,traces};
   return WARN;
 }
+/* ---- A HIDDEN WARNING FLAGS NOTHING AND IS NOT COUNTED ([WARN-HIDE-KEPT], owner D469 / D472, 1 Oct 26) -------------
+   "If it's hidden, the pucks shouldn't have flagging for that specific item … it should just show a strike out and it's
+   darker" · "it should just show 2 issues". shownOf() is the bundle AS SHOWN under a set of hides:
+   · each hidden warning is replaced, at the same index, by a COPY carrying `off` (the raw warning is never touched — the
+     raw bundle is what a published version stores and what the pending comparison reads, and a hide must never read
+     there as "warnings on this day changed");
+   · the rings, chips, dashes and next-day marks are rebuilt by replaying `marks` / `traces` in the order the rules wrote
+     them, WITHOUT the marks of a hidden warning: a mark is dropped when no shown warning of that day and code names
+     that man. So a man with two warnings keeps the flag of the one still showing, and two warnings of one code on one
+     man must both be hidden before that code's flag goes;
+   · a mark that crosses the week's edge (Sunday's "Breaks Monday", the run's forward dotted mark) has no warning in this
+     week: it is dropped only when ITS warning is hidden on next week's Monday (`xwk` — engine/weekctx.ts
+     nextMondayHides: that Monday's working hides, or its issued version's when it is published, D471), and kept whenever
+     that cannot be told.
+   NOTHING HIDDEN → THE RAW BUNDLE ITSELF, so every byte of the old behaviour (and the reference parity) is untouched.
+   `off(w)` answers for one warning; `xwk(key)` for a next-Monday key; `force` runs the replay with nothing hidden (the
+   tests' proof that the replay rebuilds the very maps the day loop wrote). */
+export function shownOf(raw:any,off:(w:any)=>boolean,xwk?:(k:string)=>boolean,force?:boolean):any{
+  if(!raw||!raw.marks)return raw;
+  let any=false; const cp=new Map<any,any>();
+  const byDay=(raw.byDay||[]).map((g:any)=>{ if(!g||!g.warns)return g; let ch=false;
+    const ws=g.warns.map((w:any)=>{ if(!off(w))return w; ch=true; const c={...w,off:true}; cp.set(w,c); return c; });
+    if(ch)any=true; return ch?{...g,warns:ws}:g; });
+  /* the key a cross-week mark's warning WILL have on next week's Monday (day 0 of that week) */
+  const xHid=(t:any)=>!!(xwk&&t.w&&t.w.di==null&&xwk(hideKey({...t.w,di:0})));
+  if(!any&&!force&&!(raw.traces||[]).some(xHid))return raw;
+  const named:any={};
+  byDay.forEach((g:any)=>{ if(!g||!g.warns)return; g.warns.forEach((w:any)=>{ if(w.off)return;
+    const m=named[g.di]=named[g.di]||{}, st=m[w.code]=m[w.code]||new Set(); (w.who||[]).forEach((id:any)=>st.add(id)); }); });
+  const has=(di:any,code:any,id:any)=>!code||!!(named[di]&&named[di][code]&&named[di][code].has(id));
+  const sev:any={}, chip:any={}, dash:any={}, trace:any={}, fz:any={sev:{},chip:{},dash:{}}, lv:any={sev:{},chip:{},dash:{}};
+  (raw.marks||[]).forEach((m:any)=>{ if(!has(m.di,m.code,m.id))return; const c=m.code&&LIVE_ON_FACE.has(m.code)?lv:fz;
+    if(m.k==='sev'){markWorse(sev,m.di,m.id,m.v); markWorse(c.sev,m.di,m.id,m.v);}
+    else if(m.k==='chip'){markHigher(chip,m.di,m.id,m.v); markHigher(c.chip,m.di,m.id,m.v);}
+    else{dash[m.di]=dash[m.di]||{}; dash[m.di][m.id]=true; c.dash[m.di]=c.dash[m.di]||{}; c.dash[m.di][m.id]=true;} });
+  (raw.traces||[]).forEach((t:any)=>{ const w=t.w;
+    if(w&&(w.di==null?xHid(t):!has(w.di,w.code,t.id)))return;
+    trace[t.pdi]=trace[t.pdi]||{}; trace[t.pdi][t.id]=Object.assign(trace[t.pdi][t.id]||{},t.t); });
+  return {all:(raw.all||[]).map((w:any)=>cp.get(w)||w),byDay,sev,chip,dash,trace,fz,lv,marks:raw.marks,traces:raw.traces,raw};}
+/* the WORKING copy's hides, as the engine reads them (state/view.ts lends its set through HOOKS — the engine cannot import
+   state); unset (an engine-only test), nothing is hidden */
+const hidden=():Set<string>=>(HOOKS.hiddenKeys?HOOKS.hiddenKeys():NOHIDES)||NOHIDES;
+const NOHIDES=new Set<string>();
+/* one shown bundle per raw bundle, under the working hides (a toggle always re-validates, so a raw bundle is never asked
+   for twice under two sets — the signature is the belt beside those braces) */
+const SHOWN=new WeakMap<any,{sig:string,b:any}>();
+function shownWorking(raw:any){
+  const hs=hidden(), xw=(raw&&raw.traces||[]).some((t:any)=>t.w&&t.w.di==null)?nextMondayHides(CURWEEK):NOHIDES;
+  if(!hs.size&&!xw.size)return raw;
+  const sig=[...hs].sort().join('\u241f')+'\u241e'+[...xw].sort().join('\u241f'), hit=SHOWN.get(raw);
+  if(hit&&hit.sig===sig)return hit.b;
+  const b=shownOf(raw,(w:any)=>hs.size>0&&hs.has(hideKey(w)),(k:string)=>xw.has(k));
+  SHOWN.set(raw,{sig,b}); return b;}
 /* ---- THE TWO DOCUMENTS (published-schedule flagging, spec §5) ---------------
    validate() computes the WORKING bundle exactly as before — validateCore() above
    writes every module global (WARN/REST/EVD/RUNLEN/RUNSEED/NEXTON/EVDAYS/PREVSUN/
@@ -1409,12 +1480,26 @@ let FACE:any=null, FACE_OF:any=null, FACE_K='';
 /* a warning worded with a callsign since renamed reads today's (a rename is a label, 14 Sep 26) */
 const rewordSlice=(w:any,g:any)=>{ if(!g||!w.cs)return g; const ren=Object.keys(w.cs).filter((id:any)=>PEOPLE[id]&&PEOPLE[id].cs&&PEOPLE[id].cs!==w.cs[id]);
   if(!ren.length)return g; return {...g,warns:(g.warns||[]).map((x:any)=>{ let m=String(x.msg||''); ren.forEach((id:any)=>{ m=m.split(String(w.cs[id])).join(String(PEOPLE[id].cs)); }); return {...x,msg:m}; })}; };
+/* AND THE HIDES EACH FACE WENT OUT WITH ([WARN-HIDE-KEPT], owner D471, 1 Oct 26 — a hide on a day already published
+   "waits" for the next amendment, like every other change to it): the face is the official bundle AS SHOWN —
+   · a DRAFT day (and every day while nothing is published) under the WORKING copy's hides, so View-only Sched follows a
+     hide like Edit Schedule does (Fable's plan read F4: it used to hand back the raw pass here);
+   · a PUBLISHED day under the keys its current issued version stored (`w.wo`), never the working set: its frozen
+     warnings and its live ones alike carry `off` by those keys, its frozen marks are the ones it went out showing
+     (`w.shown`), its live marks are today's replayed under those keys, and a next-day mark follows the hide state of the
+     day its breach is on (that day's issued keys when it is published, the working set when it is not).
+   The memo holds because every toggle of a hide re-validates (a new OFFICIAL) and a version's own keys never change —
+   the key below carries the working set all the same. */
 function faceWarn(){
-  const off=OFFICIAL, fz:any[]=[];
+  const raw=OFFICIAL, fz:any[]=[];
   approvedDays().forEach((di:any)=>{ const v=dayCurVer(di), s=v!=null?daySnapOf(di,v):null; if(s&&s.w)fz.push({di,v,w:s.w}); });
-  if(!fz.length)return off;
-  const k=fz.map((x:any)=>`${x.di}=${x.v}`).join(',');
-  if(FACE&&FACE_OF===off&&FACE_K===k)return FACE;
+  if(!fz.length)return shownWorking(raw);
+  const hs=hidden(), xw=(raw&&raw.traces||[]).some((t:any)=>t.w&&t.w.di==null)?nextMondayHides(CURWEEK):NOHIDES;
+  const k=fz.map((x:any)=>`${x.di}=${x.v}`).join(',')+'\u241e'+[...hs].sort().join('\u241f')+'\u241e'+[...xw].sort().join('\u241f');
+  if(FACE&&FACE_OF===raw&&FACE_K===k)return FACE;
+  const issued:any={}; fz.forEach(({di,w}:any)=>{ issued[di]=new Set<string>((w.wo||[]) as string[]); });
+  const offBy=(w:any)=>{ const st:Set<string>=issued[w.di]||hs; return st.size>0&&st.has(hideKey(w)); };
+  const off=shownOf(raw,offBy,(key:string)=>xw.has(key));
   const byDay=(off.byDay||[]).slice(), sev={...off.sev}, chip={...off.chip}, dash={...off.dash}, trace={...off.trace};
   const put=(m:any,di:any,v:any)=>{ if(v)m[di]=v; else delete m[di]; };
   const reword=rewordSlice;
@@ -1433,14 +1518,19 @@ function faceWarn(){
   const merge=(fr:any,lv:any,worse:any)=>{ if(!lv)return fr||null; const o:any={...(fr||{})};
     Object.keys(lv).forEach((id:any)=>{ o[id]=o[id]==null?lv[id]:worse(o[id],lv[id]); }); return o; };
   fz.forEach(({di,w}:any)=>{ const g=reword(w,w.byDay), live=((off.byDay||[])[di]?.warns||[]).filter((x:any)=>LIVE_ON_FACE.has(x.code));
+    /* the frozen warnings, each carrying `off` when this version went out with it hidden (the key folds the callsign,
+       so a reworded line keys as it did then); the live ones already carry theirs, by the same keys (offBy) */
+    const wo:Set<string>=issued[di], frozen=((g&&g.warns)||[]).filter((x:any)=>!LIVE_ON_FACE.has(x.code)).map((x:any)=>wo.size&&wo.has(hideKey(x))?{...x,off:true}:x);
     /* severity order, as the day loop sorts its list (a stable sort: frozen before live within a severity) */
-    const ws=[...((g&&g.warns)||[]).filter((x:any)=>!LIVE_ON_FACE.has(x.code)),...live].sort((a:any,b:any)=>(SORD[a.sev]??3)-(SORD[b.sev]??3));
+    const ws=[...frozen,...live].sort((a:any,b:any)=>(SORD[a.sev]??3)-(SORD[b.sev]??3));
     byDay[di]=g||live.length?{...(g||{di,dow:(DAYS[di]||{}).dow}),warns:ws}:undefined;
-    put(sev,di,merge(w.sev,LV.sev[di],(a:any,b:any)=>SEVR[b]>SEVR[a]?b:a));
-    put(chip,di,merge(w.chip,LV.chip[di],(a:any,b:any)=>RANK[b]>RANK[a]?b:a));
-    put(dash,di,merge(w.dash,LV.dash[di],()=>true)); });
+    /* the frozen marks as the version went out SHOWING them (`shown` — stored only when something was hidden) */
+    const F=w.shown||w;
+    put(sev,di,merge(F.sev,LV.sev[di],(a:any,b:any)=>SEVR[b]>SEVR[a]?b:a));
+    put(chip,di,merge(F.chip,LV.chip[di],(a:any,b:any)=>RANK[b]>RANK[a]?b:a));
+    put(dash,di,merge(F.dash,LV.dash[di],()=>true)); });
   const all:any[]=[]; byDay.forEach((g:any)=>{ if(g&&g.warns)all.push(...g.warns); });
-  FACE={all,byDay,sev,chip,dash,trace}; FACE_OF=off; FACE_K=k;
+  FACE={all,byDay,sev,chip,dash,trace}; FACE_OF=raw; FACE_K=k;
   return FACE;
 }
 export function officialWarn(){ return faceWarn(); }
@@ -1465,9 +1555,11 @@ export function versionFaceWarn(di:any,ver:any):any{di=+di;
   if(f){ const g=rewordSlice({cs:f.cs||s.w.cs},{warns:f.warns||[]});
     byDay[di]={di,dow:(DAYS[di]||{}).dow,warns:(g&&g.warns)||[]};
     put(sev,f.sev); put(chip,f.chip); put(dash,f.dash); }
-  else { const g=rewordSlice(s.w,s.w.byDay);
-    byDay[di]={...(g||{di,dow:(DAYS[di]||{}).dow}),warns:((g&&g.warns)||[]).filter((x:any)=>!LIVE_ON_FACE.has(x.code))};
-    put(sev,s.w.sev); put(chip,s.w.chip); put(dash,s.w.dash); }
+  else { const g=rewordSlice(s.w,s.w.byDay), wo=new Set<string>((s.w.wo||[]) as string[]), F=s.w.shown||s.w;
+    /* …with the hides it went out with ([WARN-HIDE-KEPT]): its lines struck by its own keys, its marks as it showed them
+       (the whole stored face, above, already carries both) */
+    byDay[di]={...(g||{di,dow:(DAYS[di]||{}).dow}),warns:((g&&g.warns)||[]).filter((x:any)=>!LIVE_ON_FACE.has(x.code)).map((x:any)=>wo.size&&wo.has(hideKey(x))?{...x,off:true}:x)};
+    put(sev,F.sev); put(chip,F.chip); put(dash,F.dash); }
   delete trace[di];
   const all:any[]=[]; byDay.forEach((gg:any)=>{ if(gg&&gg.warns)all.push(...gg.warns); });
   const b={all,byDay,sev,chip,dash,trace}; m.set(k,b); return b;}
@@ -1506,9 +1598,31 @@ HOOKS.issuedWarn=(di:number)=>{ validate(); const s=warnSliceOf(OFFICIAL,di), g=
      and OIL warnings it went out with, since only the frozen class is kept for the comparison). Never compared
      (warnSliceKey reads byDay / sev / chip / dash only); drawn when an OLDER version is looked at. The next-day mark
      stays out: it is always today's (D183). */
-  const warns=(g&&g.warns)||[];
-  const face={warns,sev:(OFFICIAL.sev||{})[+di]||null,chip:(OFFICIAL.chip||{})[+di]||null,dash:(OFFICIAL.dash||{})[+di]||null};
-  return JSON.parse(JSON.stringify({...s,face})); };
+  /* AND THE HIDES IT GOES OUT WITH ([WARN-HIDE-KEPT], owner D469 / D471, 1 Oct 26): the slice above stays RAW — it is the
+     pending comparison's basis, and a hide must never read there as "warnings on this day changed" (warnSliceKey reads
+     byDay / sev / chip / dash only). Beside it: `wo` — the keys of the day's warnings hidden as it goes out (only those
+     that match a warning: a stale key is not issued); `shown` — the frozen-class marks as SHOWN, kept only when
+     something is hidden; and the face is the shown OFFICIAL slice — its hidden lines carry `off`, its rings are the
+     shown ones (never `WARN`: the working pass judges the day with the working copy's neighbours — Fable F8.1). */
+  void g;
+  const sh=shownWorking(OFFICIAL), gs=(sh.byDay||[])[+di], warns=(gs&&gs.warns)||[];
+  const face={warns,sev:(sh.sev||{})[+di]||null,chip:(sh.chip||{})[+di]||null,dash:(sh.dash||{})[+di]||null};
+  const wo=warns.filter((x:any)=>x.off).map((x:any)=>hideKey(x));
+  const out:any={...s,face};
+  if(wo.length){ out.wo=wo; const f=sh.fz||{}; out.shown={sev:(f.sev||{})[+di]||null,chip:(f.chip||{})[+di]||null,dash:(f.dash||{})[+di]||null}; }
+  return JSON.parse(JSON.stringify(out)); };
+/* THE HIDE STATE OF A PUBLISHED DAY, FOR ITS PENDING COMPARISON (publish.ts hideDelta — D471): every warning of today's
+   judgement of the ISSUED day that the WORKING copy also raises (a warning only the issued day has is the content
+   comparison's business; one only the working copy has goes out with the edit that raised it — Fable F3), with whether
+   it is hidden on the working copy, its words for the pending list and its slot key for the tap. One list per official
+   bundle and day (a toggle re-validates). */
+const HIDENOW=new WeakMap<any,Map<number,any[]>>();
+HOOKS.hideNow=(di:number)=>{ let m=HIDENOW.get(OFFICIAL); if(!m){m=new Map(); HIDENOW.set(OFFICIAL,m);}
+  let v=m.get(+di); if(v)return v;
+  const hs=hidden(), work=new Set<string>((((RAW_B.byDay||[])[+di]||{}).warns||[]).map((w:any)=>hideKey(w)));
+  v=((((OFFICIAL.byDay||[])[+di]||{}).warns||[]) as any[]).map((w:any)=>({k:hideKey(w),w})).filter((x:any)=>work.has(x.k))
+    .map(({k,w}:any)=>({k,on:hs.has(k),code:w.code,who:w.who||[],msg:String(w.msg||''),sev:w.sev,key:w.key}));
+  m.set(+di,v!); return v!; };
 /* one slice per day per official bundle, so publish.ts can key it once per validate */
 const SLICES=new WeakMap<any,Map<number,any>>();
 HOOKS.warnNow=(di:number)=>{ let m=SLICES.get(OFFICIAL); if(!m){m=new Map(); SLICES.set(OFFICIAL,m);}
@@ -1518,14 +1632,25 @@ HOOKS.warnNow=(di:number)=>{ let m=SLICES.get(OFFICIAL); if(!m){m=new Map(); SLI
    cross-day row will make — Fable's read of D187 #4). */
 let WORKING_B:any=WARN;
 export function workingWarn(){ return WORKING_B; }
+/* …and the same pass UNHIDDEN — every warning the rules raised, hidden or not. An engine question about whether a breach
+   already EXISTS reads this (the pre-drop crew-rest probe: a hidden breach is still there, and placing a man must not
+   read as creating it), never the bundle as shown ([WARN-HIDE-KEPT]). */
+let RAW_B:any=WARN;
+export function rawWarn(){ return RAW_B; }
 export function validate(){
-  const w = validateCore();          // WORKING — writes the module globals
-  WORKING_B = w;
-  OFFICIAL = officialFor(w);         // aliased, or a snapshot/restore OFFICIAL run
-  const hard=w.all.filter((x:any)=>x.sev==='hard').length;
-  const note=w.all.filter((x:any)=>x.sev==='note').length;
+  const raw = validateCore();        // WORKING, as the rules raised it — writes the module globals
+  RAW_B = raw;
+  if(HOOKS.validated)HOOKS.validated(raw);
+  /* what every surface reads is the bundle AS SHOWN (D469, D472): a hidden warning carries `off`, flags no puck */
+  const w = shownWorking(raw);
+  WARN = w; WORKING_B = w;
+  OFFICIAL = officialFor(raw);       // aliased, or a snapshot/restore OFFICIAL run — RAW either way: the pending comparison's detector, and what a version stores
+  if(HOOKS.validated&&OFFICIAL!==raw)HOOKS.validated(OFFICIAL);
+  const sh=shownWarns(w.all);
+  const hard=sh.filter((x:any)=>x.sev==='hard').length;
+  const note=sh.filter((x:any)=>x.sev==='note').length;
   if($('nHard'))$('nHard').textContent=hard;
-  if($('nAdv'))$('nAdv').textContent=w.all.length-hard-note;
+  if($('nAdv'))$('nAdv').textContent=sh.length-hard-note;
   if($('nNote'))$('nNote').textContent=note;
   return w;
 }
@@ -1740,7 +1865,8 @@ export function restIfPlaced(id:any,key:any,from?:any){
      him there changes nothing, so the answer is the existing warning's own
      message; when the two match, nothing is new. Same forward: a breach
      tomorrow that another late leg already causes is not this seat's. */
-  const already=(d:any,h:any)=>{const g=WARN.byDay&&WARN.byDay[d]; const w=g&&g.warns&&g.warns.find((x:any)=>x.code==='CREW_REST'&&(x.who||[]).indexOf(id)>=0); return !!w&&w.msg===h.msg;};
+  /* the RAW pass (rawWarn): a breach the scheduler has hidden is still there — placing him must not read as creating it */
+  const already=(d:any,h:any)=>{const g=RAW_B.byDay&&RAW_B.byDay[d]; const w=g&&g.warns&&g.warns.find((x:any)=>x.code==='CREW_REST'&&(x.who||[]).indexOf(id)>=0); return !!w&&w.msg===h.msg;};
   /* backward — his own report today against what ended yesterday */
   const prev=di>0?strip(EVDAYS[di-1]):PREVSUN;
   if(prev)CREWREST_BODY(prev,today,di,true,null,probe);
@@ -1750,7 +1876,7 @@ export function restIfPlaced(id:any,key:any,from?:any){
   const next=di<6?strip(EVDAYS[di+1]):NEXTMON;
   if(next&&next.fly)CREWREST_BODY({...today,di:null},next,di<6?di+1:null,true,null,probe);
   if(hit){
-    const t=di===6?traceOf(6,id):null;
+    const t=di===6?((RAW_B.trace&&RAW_B.trace[6]&&RAW_B.trace[6][id])||null):null;
     const dup=di<6?already(di+1,hit):!!(t&&t.leaveBy!=null&&t.msg===hit.msg);
     if(!dup)return {dir:'fwd',di:di<6?di+1:null,dow:next.dow,earliest:hit.earliest,leaveBy:hit.leaveBy,msg:hit.msg};
   }

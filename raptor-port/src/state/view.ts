@@ -10,6 +10,7 @@ import { markEdit, daySnapOf, dayApproved } from '../engine/publish'
 import { curDraftId, reconcileIssuedMarks, isDraftVer } from '../engine/drafts'
 import { isLead, isInstr, isOcu } from '../engine/people'
 import { HOOKS, runSchedEpilogue } from '../engine/hooks'
+import { hideKey } from '../engine/warnhide'
 import { canEditSched } from './auth'
 import { me } from './perms'
 import { flagDrop } from './dropflag'
@@ -592,7 +593,9 @@ export function selectPerson(id:any,inWeek?:any){
       for(let di=0;di<7;di++){
         const g=displayedByDay(di);
         const tr=displayedBundle(di).trace;
-        const hasWarn=!!(g&&g.warns&&g.warns.some((w:any)=>(w.who||[]).includes(id)));
+        /* a day counts when a SHOWN warning names him: a hidden one flags no puck, so a tap on his clean puck must not
+           open that day as "flagged" (D469) — its struck line is still in the day's own list */
+        const hasWarn=!!(g&&g.warns&&g.warns.some((w:any)=>!w.off&&(w.who||[]).includes(id)));
         if(hasWarn||(tr&&tr[di]&&tr[di][id]))days.push(di);
       }
       if(days.length){ PFOCUS={id,days}; days.forEach((di:any)=>DWOPEN.add(di)); }
@@ -772,31 +775,36 @@ const bellKeyOf=(page:any,who:any)=>`${page}|${who}`
 export function markBell(page:any,who:any,on=true){ const k=bellKeyOf(page,who); if(on)BELLLIT.add(k); else BELLLIT.delete(k) }
 export function bellLit(){ return BELLLIT.has(bellKeyOf(CURPAGE,me())) }
 export function clearBell(){ BELLLIT.delete(bellKeyOf(CURPAGE,me())) }
-/* MUTING A SPECIFIC BOARD WARNING (owner, Aug 26 — "turn off that specific
-   warning advisory in scheduler board mode, but if things change that warning
-   will appear again"). A session-only registry keyed by the warning's CONTENT
-   identity — the day, code, people and message the validator itself dedups on
-   (validate.ts's `seen`), NOT its position in the list. So the instant the
-   situation changes and validate() rebuilds WARN with a different message or a
-   different set of people, the key no longer matches and the warning shows
-   again — exactly the ask; a warning that persists unchanged stays hidden
-   because the scheduler already acknowledged it. The day's header keeps its
-   TRUE count and colour (a muted problem is still a problem — this declutters
-   the list, it does not lie about the day). Admin-gated at the write path,
-   cleared on login/logout — the LATEOFF precedent. WMOPEN is the per-day "show
-   the hidden ones" reveal (the PIOPEN pattern) so a muted warning is always
-   reachable to un-mute.
-   CHANGED BY D469 (owner, 1 Oct 26) — NOT BUILT YET ([WARN-HIDE-KEPT] in OUTSTANDING.md): a hidden warning stays hidden
-   for EVERYONE, across a reload and a sign-in, until someone unhides it (so "session-only" and "cleared on login/logout"
-   above go); while hidden the pucks carry no flag for that item (so "a muted problem is still a problem" goes for the
-   pucks); and its line stays in the day's list, struck out and darker, instead of under the WMOPEN reveal. Until the
-   build, this comment describes what the code still does. */
+/* HIDING A SPECIFIC WARNING (owner, Aug 26 — "turn off that specific warning advisory in scheduler board mode, but if
+   things change that warning will appear again"; rewritten by [WARN-HIDE-KEPT], owner D469 / D471 / D472 / D475,
+   1 Oct 26 — "it can be hidden until another person unhides it, but if it's hidden, the pucks shouldn't have flagging
+   for that specific item … it should just show a strike out and it's darker").
+   WARNOFF is the WORKING copy's hides for the week on screen, keyed by the warning's CONTENT — the day, the rule, the
+   men it names and its words (engine/warnhide.ts hideKey), never its place in the list. The instant the situation
+   changes and validate() writes a different warning the key no longer matches and it shows again; one that stands
+   unchanged stays hidden, because the scheduler acknowledged it.
+   · KEPT WITH ITS DAY, FOR EVERYONE (D469): it rides the day's saved row (`wo`) and the Undo snapshot; the boot and a
+     week load read it back (state/store.ts), and a sign-in does NOT clear it — it is schedule data, not one person's
+     view of it (so it is in the 'week' reset only, where loadWeek restores it straight after).
+   · WHAT A HIDE DOES is decided in the engine, once: validate() hands every surface the bundle AS SHOWN
+     (engine/validate.ts shownOf) — the hidden warning carries `off`, raises no ring, chip or dotted mark, and is not
+     counted (D472). A surface never asks this set; it reads the warning's own `off`, so a published face shows the
+     hides it WENT OUT with (D471), not the working copy's.
+   · Only a scheduler hides and flags again (the write path here and the command's permission, state/perms.ts). */
 export const WARNOFF=new Set<string>()
-export function warnMuteKey(w:any){ return `${w.di}|${w.code}|${(w.who||[]).join(',')}|${w.msg}` }
+export const warnMuteKey=(w:any)=>hideKey(w)
+/* is this warning hidden ON THE WORKING COPY — for the state tests and the ✕ / ↺'s own toast; the renderers read `w.off` */
 export function warnShown(w:any){ return !WARNOFF.has(warnMuteKey(w)) }
-export function toggleWarnOff(key:any){ if(!canEditSched())return false; if(WARNOFF.has(key)){WARNOFF.delete(key);return true} WARNOFF.add(key); return false }
-export const WMOPEN=new Set<number>()
-export function toggleWarnMuted(di:any){ if(WMOPEN.has(+di))WMOPEN.delete(+di); else WMOPEN.add(+di) }
+/* the ✕ / ↺: returns whether the warning is SHOWN afterwards. Re-validates — the bundle every surface reads is the one
+   "as shown", so it must be rebuilt in the same breath. */
+export function toggleWarnOff(key:any){ if(!canEditSched())return false; const was=WARNOFF.has(key); if(was)WARNOFF.delete(key); else WARNOFF.add(key); validate(); return was }
+HOOKS.hiddenKeys=()=>WARNOFF
+/* a load onto the working copy puts ONE day's hides back to the loaded version's (engine/drafts.ts — D98: a day back to
+   what was published reads nothing pending). The caller's own epilogue re-validates and saves. */
+HOOKS.setDayHides=(di:number,keys:string[])=>{
+  for(const k of [...WARNOFF]) if(String(k).split('|')[0]===String(di))WARNOFF.delete(k)
+  ;(keys||[]).forEach((k:any)=>WARNOFF.add(String(k)))
+}
 /* SCHEDULER NOTES CAN BE MADE PUBLIC (owner, Aug 26 — "Scheduler notes can
    toggle to show in view only schedule. In which it will show as Public notes in
    edit schedule and scheduler board but in view only schedule it shows Notes").
@@ -833,8 +841,9 @@ export function toggleNotePub(key:any){ if(!canEditSched())return false; const k
    armDrop, the View-as identity, the Leave War / Tracker role seams, the edit
    log — stays spelled out at each call site, because it is ordered, side-
    effecting and specific to login vs week-swap, not a flat "clear this" list.
-   WARNOFF is cleared here but loadWeek RESTORES it from the week's stash right
-   after (a scheduler's muted checks survive looking away and back). */
+   WARNOFF is cleared on a WEEK swap only — loadWeek RESTORES it from the arriving
+   week's saved copy right after. It is NOT cleared at a sign-in: a hidden warning is
+   kept with its day for everyone until someone flags it again (owner D469, 1 Oct 26). */
 type ResetScope = 'session' | 'week'
 export const VIEW_RESET: { name: string; scopes: ResetScope[]; reset: () => void }[] = [
   /* per-day / per-week panel and preview sets — both a new session and a new
@@ -846,8 +855,7 @@ export const VIEW_RESET: { name: string; scopes: ResetScope[]; reset: () => void
   { name:'PIOPEN',  scopes:['session','week'], reset:()=>PIOPEN.clear() },
   { name:'LATEOFF', scopes:['session','week'], reset:()=>LATEOFF.clear() },
   { name:'BELLLIT', scopes:['session','week'], reset:()=>BELLLIT.clear() },
-  { name:'WARNOFF', scopes:['session','week'], reset:()=>WARNOFF.clear() },
-  { name:'WMOPEN',  scopes:['session','week'], reset:()=>WMOPEN.clear() },
+  { name:'WARNOFF', scopes:['week'], reset:()=>WARNOFF.clear() },
   { name:'NOTEPUB', scopes:['session','week'], reset:()=>NOTEPUB.clear() },
   { name:'HISTMODE',scopes:['session','week'], reset:()=>setHistMode(false) },
   { name:'CARRYDAY',scopes:['session','week'], reset:()=>setCarryDay(null) },
@@ -1043,7 +1051,9 @@ export function warnFocusMap(){
   const m=new Map();
   DWOPEN.forEach((di:any)=>{const g=displayedByDay(di); if(!g||!g.warns||!g.warns.length)return;   /* per displayed version (Codex R3-004) */
     const ids=new Set(); let sev='adv';
-    g.warns.forEach((w:any)=>{(w.who||[]).forEach((id:any)=>ids.add(id)); if(w.sev==='hard')sev='hard';});
+    /* an open box lights the men its SHOWN warnings name — a hidden warning lights nobody (D469); a TAPPED hidden line
+       still lights its crew through WFOCUS above, so what was hidden can be found */
+    g.warns.forEach((w:any)=>{ if(w.off)return; (w.who||[]).forEach((id:any)=>ids.add(id)); if(w.sev==='hard')sev='hard';});
     if(ids.size)m.set(di,{ids,sev});});
   return m.size?{map:m,echo:null,sev:null}:null;
 }

@@ -589,8 +589,10 @@ function toastFail(r: CommitResult): boolean {
   return false
 }
 export function schedWrite(type: string, fn: () => void, meta?: any): void { toastFail(commitSchedVoid(type, fn, meta)) }
-export function schedWriteValue<T>(type: string, fn: () => T): T {
-  const { result, value } = commitSched(type, schedScope(), fn)
+/* `meta` — as schedWrite's: a fact the command carries to the change stream (a hide carries which warning, in words —
+   [WARN-HIDE-KEPT]) */
+export function schedWriteValue<T>(type: string, fn: () => T, meta?: any): T {
+  const { result, value } = commitSched(type, schedScope(), fn, meta)
   // on a rollback the captured value is stale — return a falsy default so a
   // rename/mute that was reverted does not report success (F-04)
   return toastFail(result) ? (undefined as any) : value

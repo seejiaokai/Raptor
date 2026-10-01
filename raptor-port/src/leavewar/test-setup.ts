@@ -6,6 +6,7 @@
 // TEST (not per initStore) keeps a reload test's filed leave across its
 // second initStore, exactly as the app's persisted Inputs do.
 import { beforeEach } from 'vitest'
+import '../testing/marks-guard'   // every validate() this suite runs is checked too ([WARN-HIDE-KEPT])
 import { INPUTS, inpId } from '../engine/inputs'
 import { SEED_ABSENCES, seedWars, warHolding } from './engine'
 import { inputRowFor } from './absences'

@@ -19,6 +19,7 @@
    The bubble prepends "Undid: " / "Redid: "; this returns the bare label. */
 import type { UndoEntry } from './types'
 import type { Change } from '../command'
+import { parseHideDetail } from '../engine/hidedetail'
 
 /* a person's callsign by id, for the Leave War's records (its ids carry the person, not his name) — installed by the
    app (state/undo-wire.ts), read LIVE when the entry is recorded; null when none is installed (tests). `defaultOf` —
@@ -50,7 +51,7 @@ const TYPE_PHRASE: Record<string, string> = {
   'sched.oil': 'an OIL decision',
   'sched.signClear': 'clearing a sign-off',
   'sched.stores': 'the stores on a jet',
-  'sched.warnMute': 'muting a warning',
+  'sched.warnMute': 'hiding a warning',
   'sched.draft.rename': 'renaming a saved plan',
   'sched.draft.delete': 'deleting a saved plan',
   'inputs.write': 'a personal input',
@@ -273,6 +274,8 @@ export function describeEntry(entry: UndoEntry): string {
   /* read only what the entry holds — a partial one (no closure yet, a test's) is still described */
   if (!Array.isArray(entry.forward)) entry = { ...entry, forward: [] }
   if (entry.type === 'sched.text') return textLabel(entry.detail) || TYPE_PHRASE['sched.text']
+  /* a warning hidden, or flagged again — which of the two, from the command's own detail ([WARN-HIDE-KEPT], D469) */
+  if (entry.type === 'sched.warnMute') { const h = parseHideDetail(entry.detail); return h && !h.hidden ? 'flagging a warning again' : TYPE_PHRASE['sched.warnMute'] }
   /* the Inputs calendar's own records — a day title (`plan/dm:<iso>`), a note or pucks row (`plan/pp:<id>`), one record
      each since [DB-READINESS] group A, phase 2 — saved through the Inputs page's door: with no input row, the change is
      on the calendar (the walk, R2: a day title read "a personal input") */

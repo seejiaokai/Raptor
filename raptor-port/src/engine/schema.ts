@@ -513,6 +513,15 @@ export type WarnSlice = {
   face?: { warns: any[]; sev: Record<string, string> | null; chip: Record<string, string> | null; dash: Record<string, boolean> | null; cs?: Record<string, string> }
   /** person id → the callsign its warnings were worded with (a rename is a label, never a change) */
   cs?: Record<string, string>
+  /** THE WARNINGS THIS VERSION WENT OUT WITH HIDDEN ([WARN-HIDE-KEPT], owner D469 / D471, 1 Oct 26) — their keys
+   *  (engine/warnhide.ts hideKey: day | rule | the men named | the words, callsigns folded to ids). Absent = nothing was
+   *  hidden. The published face strikes these lines and drops their flags; a hide made since waits for the next
+   *  amendment. Never compared as part of the warnings (the slice above stays as the rules raised it). */
+  wo?: string[]
+  /** …and the rings, flags and dashes of the warnings that freeze, AS SHOWN when it went out (the hidden ones' marks left
+   *  out) — kept only when `wo` is; the face draws these, the comparison reads `sev` / `chip` / `dash` above. In `face`,
+   *  a hidden warning carries `off: true` and its marks are the shown ones. */
+  shown?: { sev: Record<string, string> | null; chip: Record<string, string> | null; dash: Record<string, boolean> | null }
 }
 
 /** A per-day alternate draft blob — engine (drafts.ts). Since 15 Sep 26 (item 1a)
@@ -545,7 +554,7 @@ export type AlRecord = {
   units?: number
   /** Its per-kind split in the same unit (D114, 25 Sep 26 — a request taken off is "1 removal", not a removal and a
    *  filing); absent on a record issued before, which falls back to the diff's split (diffCounts). */
-  ukinds?: { total: number, add: number, del: number, chg: number, mov: number, inp: number, oil: number, warn?: number }
+  ukinds?: { total: number, add: number, del: number, chg: number, mov: number, inp: number, oil: number, warn?: number, hide?: number }   // hide: warnings hidden or flagged again (counted inside chg — D471)
   /** Signatures at issue, by day index (callsigns) — Phase 3 binds them. */
   sign: Record<number, SignSet>
 }
