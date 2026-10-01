@@ -139,6 +139,9 @@ rules that do not apply. Five do, and matter on his iPhone:
 And its report shape, worth taking for any look-and-feel review: a table of what WAS and was NOT inspected, and a
 short "considered but rejected" list — the same honesty as the roll-call's "no blank cells".
 It never changes a look he approved from a mock-up: a finding against an approved picture goes to him.
+**The buttons keep their size (D487, 2 Oct 26 — "im ok with how the size of the buttons are now"):** these checks REPORT, they
+never resize. A control that is hard to hit on a phone is offered a larger invisible touch area around a button that looks
+the same; any visible change is a picture to him first.
 
 ## 5. PROPOSAL — three ideas from APEX the bug-check order does not say in so many words (not yet ruled)
 

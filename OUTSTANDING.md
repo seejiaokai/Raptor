@@ -1605,7 +1605,8 @@ From the article he sent (codelynx.dev — five recommended skills): none is ins
 planning skill (`.claude/skills/brainstorming/SKILL.md`) gains the decision tree, the rulings search first, questions by ROUNDS of
 at most four with a recommended answer each (replacing "one question per message" for him), product choices only, and "done
 means no branch left assumed". **Three PROPOSALS wait on his yes or no** — a standing three-line tidiness guard in the final code
-read's brief; five look-and-feel checks beside Impeccable; three evidence rules for the bug-check order. Both Fable and Astra
+read's brief; five look-and-feel checks beside Impeccable; three evidence rules for the bug-check order. Whatever he
+answers, no check resizes a button (D487). Both Fable and Astra
 read the changed guide before he approves it (D70); copied upstream text gets its credit line. **Context:**
 `raptor-port/docs/superpowers/specs/2026-10-02-workflow-skills-fusion.md` §1, §3–§5. **Place — D486: after the reset of his weekly
 allowance (Monday 5 Oct 26, 19:00, D484), a fresh chat on its own branch.**

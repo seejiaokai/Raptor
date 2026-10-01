@@ -27,7 +27,7 @@ the later merge keeps both (D78).
   (or this branch if it has not), Opus 5.5; Fable and Astra read the changed guide before he approves it (D70).
 - **Not read at the source:** 13 of APEX's 16 step files, and Make Interfaces Feel Better's five reference files — read them
   before fusing anything from those two.
-- **Parallel (D302):** ruling D486 used here — a next chat takes D487 on; observation #419 used, #420 on.
+- **Parallel (D302):** rulings D486–D487 used here (D487: the buttons keep their size) — a next chat takes D488 on; observation #419 used, #420 on.
 <!-- /now -->
 
 <!-- now:claude/insights-which-copy -->
