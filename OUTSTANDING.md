@@ -1076,6 +1076,27 @@ natural keys — a week's start, week + day, a remark's date, person + counter);
 from the app's shipped lists. **The whole list — 29 questions in four groups (A: before the tables settle; B: the day lock;
 C: the design's other open questions; D: environment and process), each with its context — was given to him as a
 copyable text on 30 Sep 26, to send to IT; record their answers here as they come.**
+**ANSWERS FROM THE IT SIDE, 1 Oct 26 (told to him in person, relayed in chat the same day — heard, not in writing):**
+(1) *Timing:* the app is about 60% built with a lot of function still to come, so do NOT worry about the tables and schema
+now — do them at the END, or add to them as each new feature is created; IT's advice is NOT to put the app in the database
+yet. (2) *Why:* once it is there, every change means telling IT, a pull request, IT's review (does it need a new table?) and
+IT's merge; and no AI outside that environment can sign in to the app there, so bug checks become manual (as
+`[RESTRICTED-ENV-WORKFLOW]` already says). (3) *Who writes the tables:* HE does, with his AI — the table format and data
+schema, for IT to enter into Dataverse at the end. This reverses the 10 Sep agreement in
+`raptor-port/docs/handover-dataverse.md` ("You design the tables"). (4) *What the platform offers today:* no plug-ins and no
+Custom APIs; Dataverse functions work; Power Automate flows exist and can send a notification to a Teams chat group or to
+named users — NOT to an app role (so "the schedulers" would be a Teams group chat he creates). (5) *The change history's
+running number:* yes, the database can assign it (answers the `EditLog.seq` question above). (6) *A reading limit:* Dataverse
+"can only read 2000 lines of the latest" — his words; whether that is 2,000 rows per read with more pages to ask for, or a
+hard cap, is still to ask.
+**What it touches, each waiting on HIS decision (asked 1 Oct 26 — the agent's advice: follow IT; group A is whole once phase
+7 merges, group B and the lock's screens were always after the connection, so they simply wait):** D354 and D453's timing
+("the database step starts now"); `handover-dataverse.md` §What we agreed and §What happens next; the day lock's server-side
+check (D450, `data-model.md` §9 and §12 q8 — designed with one plug-in plus Custom APIs; with neither, a take-over and freeing
+an idle day need another route — a Dataverse function or a flow — to design when the lock is built); the 2,000-row reading
+limit against the Leave War's records and the change history (`data-model.md` §8 load by need). **To ask IT next:** an example
+of the format he wants the tables written in (one table, his way), the publisher prefix and naming rule, and what exactly the
+2,000 limit is.
 
 ### [LW-WINDOW-PRUNE-FLAKE-2] The month-window browser test's OTHER branch timed out once inside the full run — test-only (filed 30 Sep 26)
 `raptor-port/e2e/leavewar.spec.ts` "the grid draws a window of months over year-wide placeholders, keeps every row aligned,
