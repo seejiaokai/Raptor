@@ -106,7 +106,7 @@ export function setWeekCal(v: false | 'view' | 'board') { WEEKCAL = v }
    written beside the definitions there. (It lived here first, and view.ts
    imported it back — a loop between the two files, behind a comment that
    wrongly called this one a leaf. Caught at the final read, 23 Sep 26.) */
-export { AVAILWIN, setAvailWin, setAvailTab, AVAILWIN_FOOT, setAvailFoot, AVAILWIN_BOX, setAvailWinBox } from '../state/view'
+export { AVAILWIN, setAvailWin, setAvailTab, AVAILWIN_FOOT, AVAILWIN_FOOTID, setAvailFoot, AVAILWIN_BOX, setAvailWinBox } from '../state/view'
 export type { AvailWin, AvailBox } from '../state/view'
 
 /* ---- EVERY WINDOW CLOSES AT A SIGN-IN AND A SIGN-OUT ([ACCOUNTS], 26 Sep 26) ------

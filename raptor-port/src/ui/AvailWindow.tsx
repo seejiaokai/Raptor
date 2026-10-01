@@ -39,7 +39,7 @@ import { logAction } from '../engine/editlog'
 import { crowdClashes } from '../engine/validate'
 import { collectEvents } from '../engine/events'
 import {
-  AVAILWIN, setAvailWin, setAvailTab, AVAILWIN_FOOT, setAvailFoot,
+  AVAILWIN, setAvailWin, setAvailTab, AVAILWIN_FOOT, AVAILWIN_FOOTID, setAvailFoot,
   AVAILWIN_BOX, setAvailWinBox,
 } from './pops'
 
@@ -231,7 +231,7 @@ export function AvailWindow() {
             + `${gone.length === 1 ? 'is' : 'are'} no longer on the roster.</div>`
           : '')
     return {
-      lbl, lost, body, worst,
+      lbl, lost, body, worst, known,
       n: people.length,
       earn: earners(people),
       flagged: known.filter(id => !!worst[id]).length,
@@ -303,12 +303,21 @@ export function AvailWindow() {
     /* D38 — "I can click on the flagging as well". The reason is already under
        his puck; the tap gives the FULL sentence, which is the one the warning
        list uses, because a wrapped line is cut to fit and this one is not. */
-    const w = m.worst[id]
-    setAvailFoot(w
-      ? `${cs} — ${w.msg}`
-      : `${cs} — nothing else on the programme at that time.`)
+    setAvailFoot(whySays(id), id)
     notify()
   }
+  /* WHAT IS TRUE OF ONE MAN NOW — the foot's sentence, built from THIS draw's flags, at the tap and at every draw after
+     it (walker B's F1: the sentence kept from the tap outlived an edit made behind the window). */
+  const whySays = (id: string) => {
+    const cs = ((PEOPLE as any)[id] || {}).cs || id
+    const w = m ? m.worst[id] : undefined
+    return w ? `${cs} — ${w.msg}` : `${cs} — nothing else on the programme at that time.`
+  }
+  /* the foot kept from a tap: about a man still in the list → said afresh; about a man no longer behind the puck (or on
+     the earn half, where the foot is what a switch did) → as kept, or the tab's own hint */
+  const foot = !m ? '' : AVAILWIN_FOOTID && !oil
+    ? (m.known.includes(AVAILWIN_FOOTID) ? whySays(AVAILWIN_FOOTID) : '')
+    : AVAILWIN_FOOT
 
   /* UNDER A MASK THE HINT SAYS SO (walk W2, 23 Sep 26): with the event or the
      whole day switched off, "tap a puck to stop a man earning" invited a tap
@@ -317,7 +326,7 @@ export function AvailWindow() {
   /* A ROW WITH A START AND NO END ([ALLAVAIL-OPEN-ROW], D360 — "need to say something like no oil worked out due end
      time to the admin"): its crowd is counted over the assumed hour the title names, but the OIL half — where OIL is
      decided — says nobody is credited from it, and why, on the working copy and on an issued record alike. */
-  const hint = !m ? '' : AVAILWIN_FOOT || (m.lost ? '' : oil
+  const hint = !m ? '' : foot || (m.lost ? '' : oil
     ? (m.lbl.assumed ? `${OIL_OPEN_END}.`
       : ver ? 'Who earned OIL on the day as it was issued.'
       : masked ? (oilBlanketOn(di)

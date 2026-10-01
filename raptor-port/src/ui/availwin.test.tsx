@@ -318,6 +318,30 @@ describe("the owner's case — an ops brief inside a man's own debrief is FLAGGE
     expect(his!.className, 'no flag: 17:00 is the end of his 15:00–17:00 debrief').not.toMatch(/flagged|clash/)
   })
 
+  /* THE FOOT FOLLOWS THE ROW ([DB-READINESS] phase 7 walk, walker B's F1, 1 Oct 26 — older than the batch, found on the
+     sim flags and true of the flight ones too). The foot kept the SENTENCE it was given at the tap, so a time edited behind
+     the open window left the list saying "no flag" over a foot still saying "sits inside 15:00–17:00". The foot now keeps
+     WHO was tapped and says what is true of him now. */
+  it('a time edited BEHIND the open window: the foot about the tapped man follows the list', async () => {
+    debriefDay(TUE, ['15:30', '16:30'])
+    await openWin(TUE)
+    await click(rowOf(FLYER)!.querySelector('.puck'))
+    const foot = () => $('.availwin .win-foot').textContent || ''
+    expect(foot()).toContain('Not enough time to attend the VL BFM debrief')
+    await act(async () => {
+      const g = (DAYS[TUE] as any).ground[0]; g.str = '17:00'; g.end = '18:00'
+      validate(); notify()
+    })
+    expect(rowOf(FLYER)!.className, 'the list: no flag any more').not.toMatch(/flagged|clash/)
+    expect(foot(), 'and the foot no longer says there is one').not.toContain('debrief')
+    expect(foot()).toContain(`${cs(FLYER)} — nothing else on the programme at that time.`)
+    await act(async () => {
+      const g = (DAYS[TUE] as any).ground[0]; g.str = '15:30'; g.end = '16:30'
+      validate(); notify()
+    })
+    expect(foot(), 'and back again when the clash is back').toContain('Not enough time to attend the VL BFM debrief')
+  })
+
   it('and the hint under the list COUNTS him — the rows and the count are one reading', async () => {
     debriefDay(TUE, ['15:30', '16:30'])
     await openWin(TUE)
