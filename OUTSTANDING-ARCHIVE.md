@@ -2846,3 +2846,138 @@ the lock's build. **Place:** his answer at his look at phase 6 (c); nothing is b
 **CLOSED 1 Oct 26 — his answer "1" (D468, `.claude/rules/decisions/scheduler.md`): leave it.** Nothing to build; the rule
 lives in `raptor-port/docs/engine-rules.md` (the landing paragraph) and the phase 6 plan §8 item 14.
 
+
+*Moved here 2026-10-01 by backlog-archive.mjs ([OIL-PERSONAL-PLACEHOLDER]). Forward facts: `raptor-port/docs/handpass/2026-10-01-dbr-phase7-check.md`, `raptor-port/docs/engine-rules.md`, `raptor-port/docs/ui-contracts.md`.*
+
+### [OIL-PERSONAL-PLACEHOLDER] A placeholder on a landed "Personal" request row draws no count (23 Sep 26)
+**DONE 1 Oct 26 — `[DB-READINESS]` group A phase 7** (`claude/db-readiness-p7-oil-followups`): the crowd behind a placeholder on a
+Personal request's row is written down (the count, the window, frozen at publication) and earns nobody anything — every man reads
+"a personal request earns no OIL". Rule: `raptor-port/docs/engine-rules.md` (the Personal placeholder paragraph), `ui-contracts.md`;
+pins `src/engine/oilpersonalcrowd.test.ts`, `src/ui/oilpersonalcrowd.test.tsx`; walked and read by both — `raptor-port/docs/handpass/2026-10-01-dbr-phase7-check.md`.
+
+Found by Fable's scenario design, confirmed by reading (not walked). A "Personal" request can land on
+the ground programme (`ground:true`) but never asks the OIL question (`oilAsks` excludes it), and the
+request half of the evidence only records a placeholder's crowd for ASKING types — so ALL / ALL AVAIL
+dropped on such a row gets no membership: no count chip, no window, on any day. D27 says the count
+shows wherever the puck lands; D46 lets it land on a request row. **Pre-existing on `main`** (the
+membership code is `[OIL-SEATS-CAN-EARN]`'s), rare in practice. The fix touches the OIL evidence
+(`engine/oilev.ts` — record the crowd for any landed row standing a placeholder, earning or not), so
+it is FULL tier and wants both readers. Evidence: `raptor-port/docs/handpass/2026-09-23-allavail-window.md` §3.
+
+
+*Moved here 2026-10-01 by backlog-archive.mjs ([CROWD-SIM-BRIEF]). Forward facts: `raptor-port/docs/handpass/2026-10-01-dbr-phase7-check.md`, `raptor-port/docs/ui-contracts.md`.*
+
+### [CROWD-SIM-BRIEF] The D38 flag does not cover a crowd man's SIM brief/debrief (23 Sep 26)
+**DONE 1 Oct 26 — `[DB-READINESS]` group A phase 7:** the ALL AVAIL window flags an event inside a crowd man's own sim brief or
+debrief, in the warning list's own two sentences (one body); the issued face reads the record's own sim windows. Contract:
+`raptor-port/docs/ui-contracts.md`; pins `src/engine/crowdsim.test.ts`, `src/ui/availwin.test.tsx`; walked — `raptor-port/docs/handpass/2026-10-01-dbr-phase7-check.md` §6.
+
+The window flags an event that sits inside a crowd man's own FLIGHT brief or debrief (`crowdClashes`,
+`engine/validate.ts`). His SIM brief/debrief windows are built inside the warning pass from its
+private sim table and are not reachable from outside it, so a sim man behind an ALL AVAIL is listed
+clean. Needs the sim windows lifted into one body, as the flight ones were. WALK tier.
+
+
+*Moved here 2026-10-01 by backlog-archive.mjs ([OIL-WORDS]). Forward facts: `raptor-port/docs/handpass/2026-10-01-dbr-phase7-check.md`.*
+
+### [OIL-WORDS] Stop calling OIL "money" in the code comments (owner, D25, 22 Sep 26)
+**DONE 1 Oct 26 — `[DB-READINESS]` group A phase 7.** The line below was wrong on one count: FOUR on-screen sentences did say pay /
+paid (three on the Logic page, the drag message inside OIL Earn) — reworded and pinned (`src/ui/oilscreenwords.test.ts` reads every
+sentence the Logic page draws). The comments and test names followed in their own commit (38 files; the production bundle
+byte-identical before and after). Test variable names are left — code, not prose. Sheet: `raptor-port/docs/handpass/2026-10-01-dbr-phase7-check.md` §3, §8.
+
+OIL is banked TIME OFF, not pay. **Nothing on screen is wrong** — checked 22 Sep 26, no user-facing
+string says paid, pay or money. The shorthand is in CODE COMMENTS (`ui/oilmode.ts` ~117, 211, 294,
+455, 542, plus `engine/oil*.ts`) and some test names. **Tier: NONE.** Fold into any later pass that
+already touches those files; the definition now heads the OIL behaviour register.
+
+
+*Moved here 2026-10-01 by backlog-archive.mjs ([OIL-READ-LEFTOVERS]). Forward facts: `raptor-port/docs/handpass/2026-10-01-dbr-phase7-check.md`, `raptor-port/docs/data-schema.md`.*
+
+### [OIL-READ-LEFTOVERS] The four the two final code reads raised and this branch did not act on (22 Sep 26)
+**CLOSED 1 Oct 26 — `[DB-READINESS]` group A phase 7.** 1: already fixed by `[ALL-AVAIL-WINDOW]`, walked. 2: fixed — a drop on the
+second spare seat pads the saved list (`raptor-port/docs/data-schema.md`; pin `src/ui/simspare.test.tsx`). 3: closed, D54. 4: D56 —
+the walk tried every door 45 times and none lets a placeholder into a cockpit, so only data stored before 22 Sep 26 can hold one.
+Sheet: `raptor-port/docs/handpass/2026-10-01-dbr-phase7-check.md` §5, §6.2.
+
+Both providers read the finished OIL branch blind to each other and returned the SAME four defects;
+three were already fixed and the fourth (a nought-minute SC/AVALON/BB shift saying it still earns)
+was fixed in the same session. Reports and the reconciliation:
+`raptor-port/docs/superpowers/specs/2026-09-22-oil-seats-final-read-{fable,codex,reconciled}.md`.
+These four are what was deliberately left:
+
+1. **The saved-plan preview's chip and its tap disagree about which list it is** (Fable F3, LOW).
+   Wording, on a surface `[ALL-AVAIL-WINDOW]` replaces. Do it there or not at all.
+2. **The second spare sim seat leaves a hole in the stored crew array** (Fable F4, LOW). Check it
+   against `slots.ts`'s trailing-blank trim before changing anything — the array shape is that
+   file's contract, not D50's.
+3. **An already-issued weekend carrying a placeholder reads "1 pending" the moment this ships**
+   (Fable F5, LOW). **PART DONE 22 Sep 26, on his "ok fix this first".** The day used to say "1
+   pending" with no cell marked and nothing in History, while the chip beside the puck said "?" —
+   something changed, nothing said what, and the one place to look was never written down. The day
+   now NAMES it (`OIL_OLD_BLOCK`), so he is not republishing blind. **CLOSED — RULED D54 (23 Sep 26,
+   "leave it as it is"): the day raises the mark.** He republishes once per affected day and those
+   men get their OIL. Do not re-open it later as a bug (standing order §7.6).
+4. **A placeholder that reaches a cockpit by copy draws the jet as crewed** (Fable F8, LOW,
+   pre-existing). D47 belts the money on purpose and names this; the screen half is one advisory
+   away. A product call, not a defect against the plan.
+
+
+*Moved here 2026-10-01 by backlog-archive.mjs ([STORE-READER-SWEEP]). Forward facts: `raptor-port/docs/handpass/2026-10-01-dbr-phase7-check.md`, `raptor-port/docs/data-schema.md`.*
+
+### [STORE-READER-SWEEP] A stored record read more narrowly than it is written — sweep for more (22 Sep 26)
+**DONE 1 Oct 26 — `[DB-READINESS]` group A phase 7:** every stored record's reader paired with its writers across the three stores.
+No reader is narrower than its writer on official dates, earned leave or publish state. Four findings: the Leave War's counter
+limit, lists emptied on purpose, the carried remark's length — fixed, red first (`raptor-port/docs/data-schema.md`); hidden
+warnings — ruled D469 / D471 / D472, the build is `[WARN-HIDE-KEPT]`. The pairs found matching, and what the sweep did not walk:
+`raptor-port/docs/handpass/2026-10-01-dbr-phase7-check.md` §4.
+
+**TWO INSTANCES FOUND IN ONE FILE IN ONE EVENING, both silent, both about official
+dates.** `readPostOuts` insisted a posting record carry a LEAVING date, so every
+JOINING date `setPostIn` wrote was discarded at the next boot; and `setPeople`'s
+keep rule then tested membership of that record rather than the leaving date it
+means. Both fixed on `claude/oil-seats-can-earn`. Neither was found by a walk or
+a review — they came from re-reading the file around an unrelated fix.
+
+**The shape, so it can be looked for:** a writer grows a new case (a second date,
+a new field, a nullable end) and the untrusted-storage reader beside it is not
+widened with it. The write succeeds, the reload silently drops it, and nothing on
+screen says so. Two spot-checks came back clean (`readPersonEdits` matches
+`setPerson`'s type exactly; `readOilPolicy` covers both its fields) — the rest of
+`leavewar/state/store.ts`'s readers, and the scheduler's own storage seam, have
+not been walked. **Small, mechanical, and worth doing once**: for each reader,
+find its writer and diff the shapes. Priority: with the other small follow-ups.
+
+
+*Moved here 2026-10-01 by backlog-archive.mjs ([OIL-REQ-NAMEBOX]). Forward facts: `raptor-port/docs/handpass/2026-10-01-dbr-phase7-check.md`, `raptor-port/docs/engine-rules.md`.*
+
+### [OIL-REQ-NAMEBOX] A man typed into a REQUEST row's name box in place of the requester earns nothing — OPEN, 22 Sep 26
+**DONE 1 Oct 26 — D470, built and walked in `[DB-READINESS]` group A phase 7** (the ANSWERED line at the foot of this item). Fable's
+final read added one thing: the name box is KEPT when the member edits his own request (`src/engine/overlay.ts`, rule 6) — before,
+his next edit wrote his own name back over the scheduler's man. Sheet: `raptor-port/docs/handpass/2026-10-01-dbr-phase7-check.md` §7.
+
+**Deferred deliberately during `[OIL-SEATS-CAN-EARN]` step 6, not missed.** That step made a
+PLACEHOLDER on an accepted request's row count the people it stands for, in the name box and in the
+extras line alike. It left one case alone: a real, named person dragged into the name box in place
+of the man who filed the request. He does no worse than before — he earned nothing there yesterday
+either — but he is plainly doing the work, and D18 ("for 2 he should earn") is the same argument
+that got the extras line paid.
+
+**Why it was left.** In every path the app has, that box holds the requester, and the money already
+pays him from his own answer. Crediting "whoever is in the box" would move money on a case nobody
+has reported, inside a step whose scope the plan fixed. Doing it silently is exactly the shape the
+OIL build keeps getting bitten by.
+
+**What to do.** Put it to the owner as a walk question — can the scheduler put someone ELSE in a
+request row's name box, and if so should he earn from it? If yes, it is one line in
+`landedExtras` (treat the name box like the extras, the requester still excluded) plus a test.
+**Priority: with the other small OIL follow-ups, after the walk.**
+**ANSWERED — D470 (owner, 1 Oct 26): YES.** A man the scheduler puts in the name box of another man's request row earns from
+it as a man added under the row does; the member who filed still earns on his own answer. BUILT 1 Oct 26 in `[DB-READINESS]`
+group A phase 7 (`claude/db-readiness-p7-oil-followups`), red first — `raptor-port/src/engine/oilnamebox.test.ts`,
+`src/ui/oilclaimcrowd.test.tsx`; the rule `raptor-port/docs/engine-rules.md` (the D470 paragraph).
+**Context:** `raptor-port/docs/superpowers/specs/2026-09-22-oil-seats-can-earn-plan.md` §5 step 6;
+the body is `raptor-port/src/engine/oilev.ts` `landedExtras`, and its own comment says why.
+
+---
+

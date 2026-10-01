@@ -112,5 +112,21 @@ exclusion in the brief) → fix → re-walk what the fixes touched → the gates
    **ANSWERED: yes (D470, 1 Oct 26).**
 2. (Assumed, his to overturn) a crowd behind ALL / ALL AVAIL on a member's Personal row is counted and earns nothing.
 
-## 6. Build log
-*(written as each item lands)*
+## 6. Build log (1 Oct 26 — the whole phase in one chat; the evidence sheet is `docs/handpass/2026-10-01-dbr-phase7-check.md`)
+| Commit | What landed |
+|---|---|
+| `6fa6027a` | the handoff tidy: the two merged blocks removed, their residue filed |
+| `47531e0d` | this plan, and the scenario brief for Astra |
+| `5d4ac2e7` | **the build, each red first** — §1.1 the Personal row's crowd; §1.2 the sim brief / debrief flag; §1.3 the padded seat list; §1.5 the store-reader sweep's three fixes (the counter limit, the emptied lists, the carried remark). Gates run 1 green |
+| `cbeae8b0` | §1.6's on-screen half — the filed item said nothing on screen was wrong; four sentences were (three on the Logic page, the drag message in OIL Earn). Reworded and pinned |
+| `1a374ed2`, `0efffde3`, `bb42cd8d` | his rulings recorded: D469, D471, D472 (hidden warnings — the build is `[WARN-HIDE-KEPT]`, its own job) and D470 (§1.7, built here) |
+| `55f797f9`, `fed90ed4` | the walk's two fixes: the window's foot follows the man tapped; a Personal row's earn-half hint |
+| `11274558` | the walk — three walkers' tables, scripts and pictures; the sheet's roll-call, door check, break tests. Gates run 2 green |
+| `1900a16e` | both final reads saved (Fable REVISE F1–F3, Astra REVISE 1) and Fable's three fixed, red first — F1 changed §1.7's reach: the name box is now KEPT across the member's own edit (`engine/overlay.ts` rule 6) |
+| `815366dc` | Astra's finding: a finger tap on a count on the phone's week views — diagnosed and fixed, a real-touch browser test; the host's re-walk of every fix |
+| `711ec654` | §1.6 — the comments and test names, their own commit; the production bundle byte-identical before and after |
+**Differs from the plan as written:** §1.6 was not comments-only (four on-screen sentences); §1.7 grew by Fable's F1; §1.5's
+first finding became three rulings and a job of its own; the phone tap (`[COUNT-CHIP-PHONE-TAP]`) was not in the plan — older
+than the batch, fixed because Astra's read pressed it and the diagnosis was one CSS rule. **Left for him:** his look (the card
+is in the sheet, §9), and on his iPhone the count tap. **Left open, filed:** `[WARN-HIDE-KEPT]` (next), `[LOAD-MSG-SHORT]`,
+`[INP-TILL-STALE]`, `[OIL-INERT-TAP-SILENT]`, `[OG-TAG-OVER-COUNT]`, `[MEMBER-EDITPAGE-CHECK]`.

@@ -2052,3 +2052,63 @@ restore — repeatable, all-or-nothing, and safe for files whose bytes (line end
 **Suggested improvement:** (a) Fix a script file with the Edit tool, never with another inline script. (b) Make each replacement idempotent-or-refusing: assert the NEW text is absent before replacing, or have the anchor be consumed by the replacement. (c) After any failed edit script, read `git diff --stat` before re-running anything.
 
 **Principle:** A partial run changes the preconditions of its own re-run; an edit script needs a guard that the change is not already there, not only that its anchor is.
+
+### Observation 403: `sed -i` in Git Bash rewrote a CRLF file as LF — a one-line edit became a whole-file diff
+
+**Status:** OPEN
+**Date:** 2026-10-01
+**Session context:** [DB-READINESS] phase 7 — reverting one reworded comment line in `raptor-port/src/leavewar/state/store.ts` (the one CRLF file in that folder) with `sed -i`.
+**Skill:** repo guide raptor-port/CLAUDE.md §Build & verify; the python-edits-crlf memory (which names Python only)
+**Type:** internal
+**Phase/Area:** Scripted file edits on Windows Git Bash
+
+**Issue:** The repo's CRLF trap is written down for Python (`open(..., newline='')`). The same file bit twice in one session by two other routes: a Python pattern containing `\n` did not match its CRLF lines (silently, until the count assertion fired), and `sed -i` then converted every line ending, so `git diff --stat` showed the whole file changed for a one-line edit. Caught only because the diff stat was read before committing; restored with `git checkout -- <file>` and redone with the Edit tool.
+
+**Suggested improvement:** Widen the memory and the guide's line from "Python edits" to "ANY scripted edit": before a scripted edit, `file <path>` (it prints "with CRLF line terminators"); on a CRLF file use the Edit tool, which keeps line endings. After any scripted edit, read `git diff --stat` — a line count near the file's length is the tell.
+
+**Principle:** A trap recorded against one tool is a property of the FILE, not the tool; record it by what it is ("this file is CRLF — only the Edit tool is safe") so the next tool reached for does not rediscover it.
+
+### Observation 404: A mechanical rewording pass over-reached three ways — a dry run of the list is not a read of the diff
+
+**Status:** OPEN
+**Date:** 2026-10-01
+**Session context:** [DB-READINESS] phase 7, [OIL-WORDS] — a script that reworded "paid / pays / money" in comments and test titles across 38 files (comments found by a real parser, so no code could move).
+**Skill:** New skill candidate: mechanical-rewording (or a section of writing-plans / verification-before-completion)
+**Type:** open-source
+**Phase/Area:** Bulk comment / wording changes
+
+**Issue:** The parser guarantee held (the production bundle was byte-identical before and after), and the pass was still wrong in ways only reading found: (1) it reworded idioms that were never about the subject ("pays for itself" in a performance note) and the very sentence that STATES the rule ("is earned leave, not pay"); (2) word-for-word substitution made nonsense where the old phrase already held the new word ("credit credited", "the crowd is credit"); (3) it rewrote the test file whose job is to list the banned words; (4) test titles it renamed were quoted by name in an older evidence sheet and in another source comment. Each was caught by a different check: a narrowed file filter, a doubled-word grep over the added lines, `git checkout` of the one file, a grep of every renamed title across the docs.
+
+**Suggested improvement:** For any scripted rewording: (a) scope by FILE first, then by line, with an explicit leave-alone pattern for the rule's own statement; (b) after applying, grep the ADDED lines for doubled or ungrammatical joins and for the old words still present; (c) list every renamed test title and grep docs and code for the OLD title — a renamed test is a broken citation; (d) leave historical evidence as written and add a dated note giving the new names; (e) keep a "bundle identical" proof, and say what it does and does not prove (no code moved — not "the words are right").
+
+**Principle:** A proof that nothing executable changed says nothing about whether the prose is right; mechanical rewrites need a mechanical safety proof AND a human-style read of the added lines.
+
+### Observation 405: `git add -A` while helper agents were still writing swept their half-finished files into a commit
+
+**Status:** OPEN
+**Date:** 2026-10-01
+**Session context:** [DB-READINESS] phase 7 — the host committed a fix with `git add -A .` while three walker agents were writing scripts, reports and pictures into the same checkout.
+**Skill:** dispatching-parallel-agents; subagent-driven-development
+**Type:** open-source
+**Phase/Area:** Committing while delegated work is in flight
+
+**Issue:** The blanket add took the walkers' in-progress probe scripts and partial report files into a commit whose message described only the host's fix. Harmless here (they were later completed and committed again), but the commit no longer says what it holds, and a revert of that fix would have taken their work with it.
+
+**Suggested improvement:** In dispatching-parallel-agents: while any helper is writing into the checkout, the host stages by explicit path (`git add <files it changed>`), never `-A` / `.`; helpers' output is committed once, when they hand back, in its own commit.
+
+**Principle:** A commit should hold what its author did; when several writers share a working tree, "everything that changed" is no longer "what I changed".
+
+### Observation 406: Archiving a finished backlog item was refused because a ruling named the BACKLOG as one of its homes
+
+**Status:** OPEN
+**Date:** 2026-10-01
+**Session context:** [DB-READINESS] phase 7 close-out — `backlog-archive.mjs` moved an item, the document gate then failed ("D470 names OUTSTANDING.md as a home, but that file never mentions D470") and the script put both files back.
+**Skill:** repo rule .claude/rules/record-decisions.md; session-handoff (Step 3, "a known issue RESOLVED")
+**Type:** internal
+**Phase/Area:** Recording a ruling's homes; archiving
+
+**Issue:** The ruling was recorded while its backlog item was still open, and its "where it lives" cell listed that item beside its real homes. The record-decisions rule already says "never OUTSTANDING.md alone" — but listing the backlog at all plants a trap: the item is the one home that is GOING to leave, and the gate (rightly) refuses the move until the row is corrected. The script's roll-back made it a non-event; the fix was to point the row at the archive.
+
+**Suggested improvement:** In record-decisions.md's homes paragraph: name a backlog item in a ruling's row only as "filed as [ID]", never as a home; if it must be listed, the archiving step updates the row to `OUTSTANDING-ARCHIVE.md` FIRST. In session-handoff Step 3, add: "before archiving an item, grep the full rulings rows for `OUTSTANDING.md` + its id".
+
+**Principle:** A pointer to a place whose purpose is to be emptied is a pointer with an expiry date; name durable homes, and treat the transient one as a status.

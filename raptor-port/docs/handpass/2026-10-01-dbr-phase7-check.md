@@ -81,7 +81,7 @@ A scripted real browser on the production build (a frozen copy, `dist-p7`), desk
 fixed at Wed 15 Jul 26, every fixture through the app's own controls. Scenarios: Astra's design
 (`docs/superpowers/briefs/2026-10-01-db-readiness-phase7-scenarios-astra.md`). The walkers' own tables, every step:
 `docs/handpass/parts/p7-a.md`, `p7-b.md`, `p7-c.md`; pictures `docs/img/handpass/2026-10-01-dbr-phase7/{a,b,c,h}/`
-(115 + 84 + 186 + 35). **No console error, page error, 4xx or native dialog in any run. Every reload gave back the same
+(115 + 84 + 186 + 45 = 430). **No console error, page error, 4xx or native dialog in any run. Every reload gave back the same
 state and wrote nothing.**
 
 ### 6.1 The roll-call — every place the app draws the thing
@@ -173,3 +173,42 @@ gathers the holder; D56 over D48 read the same way by both.
 **Roll-call rows the reads added:** the name box after the member's own edit (now walked); the changes window's line for a
 request row's crowd change (now walked); the earn half's foot after a retype (unit test; not walked — no route keeps the
 window open across the Inputs page, D66); the window's "N men are flagged" count includes the sim flags (walked, B14).
+
+## 8. The comments (`[OIL-WORDS]`) and the gates on the final code
+**The comments and test names** — their own commit (`711ec654`), after every fix: 38 files, 285 lines, comments and test
+titles only, "paid / pays / money" about OIL reworded to "credited / earns / the credit". **Proof no code moved:** the
+production bundle built before and after is byte-identical (19 files compared); the typecheck is clean. **What that proof
+does not show** — that the words are right — was read by hand: the added lines searched for doubled words and for the old
+words (what is left is test VARIABLE names, code not prose); every renamed test title searched for across the documents
+(four were quoted, in `docs/handpass/parts/2026-09-22-oil-seats-break-tests.md` — left as written, a note at its head gives
+the new names). Tier NONE; nothing to walk.
+
+**The gates, run once more on the final code under the PC lock (1 Oct 26, commit `711ec654`):**
+| Gate | Result |
+|---|---|
+| unit | **7487 / 7487** (469 files) |
+| build | clean |
+| the original's assertions (`tfin`) | **728 / 0** |
+| browser tests (e2e) | **510 passed, 0 failed**, 49 skipped |
+| Tracker smoke | **445 / 0** |
+| rulecheck | OK (notes `AM39d` now covered — older, left) |
+| docsize | OK (OVER, deferred — D29) |
+| perf | **4 / 0** (board DOM 1024 ≤ 1150, week 5134 ≤ 5450) |
+Two earlier full runs in this phase were green too (after the build, 7453 / 7453; after the walk's fixes, 7475 / 7475).
+
+## 9. His look — the "look here" card
+On the branch's Vercel link, signed in as the admin. Five expectations, in the app's own words:
+1. **A Personal request with ALL AVAIL on it shows a count.** Inputs → a Personal request for any member, a weekday, with a
+   time; it lands on that day's programme by itself. On the Scheduler board, "+ add" under its row → ALL AVAIL. A number sits
+   beside the puck; a tap on it opens "Who's available".
+2. **Nobody earns from it.** The same on a Saturday with OIL Earn on: every man in the list reads "a personal request earns
+   no OIL", and the list's own line says "A personal request earns no OIL."
+3. **A man put in the name box earns (D470).** A Training request (OIL: Yes) for Ranger on a Saturday; drag another man onto
+   the row's name box. In OIL Earn he reads as earning, and Ranger still earns on his own answer. If Ranger then edits his
+   request's remarks, the other man stays in the box.
+4. **On your iPhone — the one thing only it can prove.** On View-only Sched or Edit Schedule, tap the small number under an
+   ALL AVAIL puck with a finger: the window opens. (Before, the tap picked the puck above it.)
+5. **The words.** The Logic page's OIL rules say "earn" and "credit" — never "pay".
+Not on the card because nothing shows: the saved-data fixes (§3), and the hidden-warning rulings — not built here.
+
+`Walk: docs/handpass/2026-10-01-dbr-phase7-check.md · 430 pictures · 3 things drawn over 25 surfaces (the count 12, the sim flag 7, the sim seats 6) · 218 scenario steps by three walkers + the host's re-walk of every fix (12 / 12, the phone tap on both week views) · MISSING: 3 fixed (the foot, the hint, the phone tap), 1 built on his ruling (D470), 3 ruled (D469, D471, D472 → [WARN-HIDE-KEPT]), 4 filed`
