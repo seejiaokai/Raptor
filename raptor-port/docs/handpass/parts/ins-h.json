@@ -1,0 +1,90 @@
+{
+ "parts": {
+  "sR1-dk": {
+   "at": "2026-10-01T15:16:49.036Z",
+   "base": "http://localhost:4211",
+   "phone": false,
+   "table": [
+    {
+     "id": "R1.a",
+     "did": "all seven days signed and published (tags ORIG ORIG ORIG ORIG ORIG ORIG ORIG); Admin → Users: New person \"Newbie\" (pilot) added (pmupog3ufgdvq67); Insights opened on Admin and on Edit Schedule",
+     "saw": "✓ every day is published [[\"ORIG\",\"ORIG\",\"ORIG\",\"ORIG\",\"ORIG\",\"ORIG\",\"ORIG\"]] · ✓ he is on the roster · ✓ \"Not on the flying programme\" does not list him · ✓ its count has not moved [20 → 20] · ✓ the whole window is word for word as before [identical]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-r1-a-all-published-foot.png",
+      "dk-02-r1-b-admin-users-newbie.png",
+      "dk-03-r1-b-added-insights-on-admin-foot.png"
+     ]
+    },
+    {
+     "id": "R1.b",
+     "did": "Tuesday: a man taken off a seat on the board ({\"before\":\"romeo\",\"after\":\"\"}); Insights; then signed and Publish AL1; Insights",
+     "saw": "✓ waiting: still not listed · ✓ after AL1 he is listed · ✓ and the count is one more for him and one more for the man taken off [20 → 22]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-04-r1-c-after-AL1-foot.png"
+     ]
+    },
+    {
+     "id": "R1.err",
+     "did": "the browser's error list through this scenario",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "sR2-dk": {
+   "at": "2026-10-01T15:16:58.315Z",
+   "base": "http://localhost:4211",
+   "phone": false,
+   "table": [
+    {
+     "id": "R1.a",
+     "did": "all seven days signed and published (tags ORIG ORIG ORIG ORIG ORIG ORIG ORIG); Admin → Users: New person \"Newbie\" (pilot) added (pmupog3ufgdvq67); Insights opened on Admin and on Edit Schedule",
+     "saw": "✓ every day is published [[\"ORIG\",\"ORIG\",\"ORIG\",\"ORIG\",\"ORIG\",\"ORIG\",\"ORIG\"]] · ✓ he is on the roster · ✓ \"Not on the flying programme\" does not list him · ✓ its count has not moved [20 → 20] · ✓ the whole window is word for word as before [identical]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-r1-a-all-published-foot.png",
+      "dk-02-r1-b-admin-users-newbie.png",
+      "dk-03-r1-b-added-insights-on-admin-foot.png"
+     ]
+    },
+    {
+     "id": "R1.b",
+     "did": "Tuesday: a man taken off a seat on the board ({\"before\":\"romeo\",\"after\":\"\"}); Insights; then signed and Publish AL1; Insights",
+     "saw": "✓ waiting: still not listed · ✓ after AL1 he is listed · ✓ and the count is one more for him and one more for the man taken off [20 → 22]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-04-r1-c-after-AL1-foot.png"
+     ]
+    },
+    {
+     "id": "R1.err",
+     "did": "the browser's error list through this scenario",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "R2.a",
+     "did": "only Tuesday published; Admin → Users: New person \"Rookie\" (WSO); Insights",
+     "saw": "✓ he is listed at once (six days are the working copy) · ✓ the count is one more [20 → 21]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-05-r2-a-draft-days-added-foot.png"
+     ]
+    },
+    {
+     "id": "R2.err",
+     "did": "the browser's error list through this scenario",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  }
+ }
+}

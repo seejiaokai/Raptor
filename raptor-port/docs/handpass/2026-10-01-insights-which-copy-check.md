@@ -1,6 +1,7 @@
 # [INSIGHTS-WHICH-COPY] which schedule the Insights window counts — the WALK bug check (1 Oct 26)
 
-Branch `claude/insights-which-copy`, the build walked: commit `b739c54c`, frozen in `raptor-port/dist-wh`. Rulings D477,
+Branch `claude/insights-which-copy`, the build walked: commit `b739c54c`, frozen in `raptor-port/dist-wh`; the final read's
+fix re-walked on the build re-frozen after it (§10). Rulings D477,
 D478 (D472 for the hidden warning); the rule IN1 (`docs/superpowers/specs/2026-10-01-insights-which-copy-behaviour-register.md`);
 the contract `docs/ui-contracts.md` §Week Insights. Pictures: `docs/img/handpass/2026-10-01-insights/` (`a/` the Opus
 walker, `s/` the Sonnet walker of the D476 trial, `host/` the host's own reproduction).
@@ -35,6 +36,7 @@ No clash between these rulings; D478 narrowed D477 the same evening (recorded in
 |---|---|
 | `engine/validate.ts issuedWorld()` — the days, the per-person events and the warnings of the week as everyone reads it; the official pass keeps the days and events it judged | `ui/insights-published.test.tsx` — 3 of its 5 cases failed on the code before |
 | `engine/insights.ts computeInsights()` reads that one world, never the working globals; returns the week's two totals | the same; `engine/insights.test.ts`, `ui/warnhide-readers.test.tsx` (row 14) still green |
+| "Not on the flying programme" lists the roster the days went out with (`issuedWorld().roster`) — the final read's fix, §10 | "IN1 — who is 'not on the flying programme' follows the published days' own rosters" — both cases red before |
 | `ui/Modals.tsx insightsHTML()` — the issues tile comes from the same computation (it was counted apart, off the working list) | "the issues tile is the sum of By day…" |
 
 ## 4. The roll-call — every place the window is drawn, and every figure in it
@@ -49,7 +51,8 @@ Its figures — each reads the ONE world (no blank cell):
 | Figure | Days as published | Events as published | Warnings as the face shows them |
 |---|---|---|---|
 | Sorties, Formations tiles; By day's sorties · formations | yes | — | — |
-| Aircrew flying; Flying load; Not on the flying programme | yes | — | — |
+| Aircrew flying; Flying load | yes | — | — |
+| Not on the flying programme | yes — and the ROSTER as published (§10; it read today's list of people until the final read) | — | — |
 | Work hours | — | yes | — |
 | the issues tile and its "N warning"; Conflicts by type; By day's issues | — | — | yes |
 | the title's dates | the loaded week's (the same in every version) | — | — |
@@ -118,6 +121,7 @@ No finding against the build itself; nothing was fixed, so there was no re-walk.
 | the days (the working `DAYS` handed back) | "a hide, a seat, a cancelled formation and a leave waiting on published Tuesday…" (sorties 30 against 32) |
 | the events (the working `EVD`) | the same case (the hours) |
 | the warnings (the working list) | that case, "a hide alone (D477)…" and "the issues tile is the sum of By day…" |
+| the roster (today's handed back) | "every day published: a man added since is not listed, and a man archived since still is…" |
 
 ## 7. Errors seen
 None — no console error, page error or 4xx in either walker's runs, nor in the host's.
@@ -130,14 +134,22 @@ None — no console error, page error or 4xx in either walker's runs, nor in the
 - The Sonnet walker did not export Print / CSV (the Opus walker did).
 
 ## 9. The gates
-On the final code (the commits after are documents, briefs and walk files only), under the PC lock, 1 Oct 26: unit
-**7558 / 7558** (474 files) · build clean · tfin **728 / 0** · e2e **518 passed, 0 failed**, 49 skipped · smoke
+Run twice under the PC lock, 1 Oct 26 — before the walk, and again on the FINAL code after the final read's fix (the
+counts below; the commits after are documents and walk files only): unit
+**7560 / 7560** (474 files) · build clean · tfin **728 / 0** · e2e **518 passed, 0 failed**, 49 skipped · smoke
 **445 / 0** · rulecheck OK · docsize OK (OVER, deferred — D29). `npm run perf` not run: the change draws nothing new (the
 window's markup is unchanged).
 
 ## 10. The final read — Astra (one reviewer, D353)
-See `docs/superpowers/briefs/2026-10-01-insights-which-copy-final-read-astra.md`; its findings and their dispositions are
-appended below when it is back.
+Given the finished code and this sheet (`docs/superpowers/briefs/2026-10-01-insights-which-copy-final-read-brief.md`); her report:
+`…-final-read-astra.md`. **Verdict REVISE — one finding, fixed.**
+| # | Finding | Disposition |
+|---|---|---|
+| 1 (MEDIUM) | "Not on the flying programme" was listed from TODAY's people, so a man added or archived on Admin → Users moved a figure of the window with every day published — against "every figure" (D478). The line itself is older than this build; the promise is new. No walker met it: nobody added or archived a man | **Confirmed, fixed red first** as she specified: `issuedWorld()` hands the roster of the days as published (each published day its version's `snap.ros`, a draft day today's); `computeInsights` lists from it. Two tests, both red before. **Re-walked by the host on the re-frozen build** (`scripts/handpass/ins-h-roster.mjs`, `parts/ins-h.json`, pictures `host/dk-01…05-r*`): every day published, "Newbie" added on Admin → Users — the window word for word as before (20 available); a Tuesday amendment out — he is listed (22, with the man taken off); only Tuesday published — "Rookie" listed at once (20 → 21). No error on screen |
+Her explicit negatives: no stale-week or snapshot-swap path for the kept days and events; a pending hide needs no second
+pass; a draft day's counts and warnings describe the same day; an unreadable published day is not reachable with new data
+(D56); the roll-call otherwise complete. **She agrees with all three dispositions of §5.2** (the board's door, the rule
+change, the negative hours).
 
 ## 11. The Sonnet-walker trial (D476) — the comparison
 | | Opus walker | Sonnet 5.5 walker |
@@ -146,6 +158,7 @@ appended below when it is back.
 | Verdicts | 17 pass, 2 recorded | 17 pass, 2 recorded — the same on every line |
 | The two recorded points | the same facts, the same numbers' direction | the same |
 | Found that the other missed | the negative work-hours figure — off the list, met while setting up scenario 3 its own way | nothing |
+| Missed by BOTH | the roster gap the final read found (§10) — it was not on the scenario list | the same |
 | False alarms | none | none |
 | Pictures | 281 saved; says all opened | 207 saved; says all opened at least once, but some only came back as "removed" by its viewer and were covered by a sibling picture of the same step |
 | Owned up to a weak check | — | yes — scenario 13's own comparison proved nothing; it said so |

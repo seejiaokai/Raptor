@@ -1546,7 +1546,8 @@ window, the published face; one reviewer — Astra, who found it). The Sonnet-wa
 **BUILT and WALK-checked 1 Oct 26** on `claude/insights-which-copy`: every figure of the window reads one world — each day's
 current issued version, the working copy only for a day not yet published (`engine/validate.ts issuedWorld`,
 `engine/insights.ts`, `ui/Modals.tsx`; tests `ui/insights-published.test.tsx`, rule IN1). Astra's 19 scenarios walked by an
-Opus walker and the trial's Sonnet walker, apart: no defect in the build. Evidence and his look card: `raptor-port/docs/handpass/2026-10-01-insights-which-copy-check.md`.
+Opus walker and the trial's Sonnet walker, apart: no defect met. Astra's final read then found one — "Not on the flying
+programme" followed today's roster — fixed red first and re-walked by the host. Evidence and his look card: `raptor-port/docs/handpass/2026-10-01-insights-which-copy-check.md`.
 **Left, all filed:** `[INSIGHTS-BOARD-DOOR]`, `[INSIGHTS-RULE-CHANGE]` (two questions for him), `[WORKSPAN-NEGATIVE]` (older, low).
 **Next:** his look on the preview, "merge live"; then this item leaves by the script.
 
