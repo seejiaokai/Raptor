@@ -2142,3 +2142,48 @@ restore — repeatable, all-or-nothing, and safe for files whose bytes (line end
 **Suggested improvement:** In DECISIONS.md step 2 add one sentence: "A ruling that ANSWERS or SETTLES an open point of an earlier one is a change to it too — write `**— ANSWERED <date> BY D<n>: …**` at the end of the earlier ruling's fourth cell, then run the script"; and have the gate's message list the accepted mark words rather than only NARROWED.
 
 **Principle:** When a checker enforces a wider rule than the written procedure states, the procedure is the defect — write the checker's vocabulary into the step it guards.
+
+### Observation 409: A new thing built "like X" was wired into one of X's two call sites — both reviewers caught it; a sibling call-site sweep would have caught it in the plan
+
+**Status:** OPEN
+**Date:** 2026-10-01
+**Session context:** [WARN-HIDE-KEPT] plan (Raptor): a new pending-change axis ("a hidden warning on a published day") designed beside the existing warnings axis. The plan said "the comparison concatenates it, so the count, the list and the sign-offs follow with no further change". Both red-team reviewers (Fable, Astra), independently, found the same HIGH: the existing axis is wired into TWO authorities (the comparison AND the counting list), the plan wired the new one into one — the publish button would light while the count read zero.
+**Skill:** writing-plans / claudex-loop (plan step); repo bug-check order §6 (roll-call)
+**Type:** open-source
+**Phase/Area:** Planning a feature described as "the same as an existing mechanism"
+
+**Issue:** The plan was written from a read of the mechanism's main function and a sub-agent's summary, and asserted that downstream consumers "follow automatically". Nobody had listed the existing sibling's own call sites. The roll-call in the plan covered READERS of the data (25 rows) but not the WRITERS/WIRINGS of the comparable mechanism.
+
+**Suggested improvement:** When a plan says a new thing behaves "like <existing thing>", add a mechanical step before the design is written: grep every call site of the existing thing's entry points (here `warnDelta(`) and list them in the plan as a table — "the sibling is wired at: A, B, C; the new one goes to: A, B, C (or not, because …)". No blank cells, the same rule as a surface roll-call.
+
+**Principle:** "It follows automatically" is a claim about call sites; when a new mechanism mirrors an old one, enumerate where the old one is plugged in and plug the new one into every socket by name.
+
+### Observation 410: A structural invariant asserted after EVERY run of the core function across the whole test suite — cheap, and it turns "the demo data never shows it" into a covered case
+
+**Status:** OPEN
+**Date:** 2026-10-01
+**Session context:** [WARN-HIDE-KEPT] build: about 48 call sites in a rules engine each had to be tagged with the code of the warning beside them; a mis-tagged site fails silently and only under a rare user action, and the demo fixtures do not raise every rule. A reviewer asked for "fixtures that raise every code through every loop".
+**Skill:** test-driven-development; repo bug-check order §8 ("tests loop over the roll-call")
+**Type:** open-source
+**Phase/Area:** Proving an invariant over many call sites
+
+**Issue:** Writing a fixture per rule would have been a day's work and would still depend on someone remembering to add one for the next rule. Instead the core function gained one optional hook (null in production), and a test setup file installed a checker on it for every test file of both suites — so each of ~7,500 existing tests' own schedules is checked the moment it is validated, and a future rule's first test checks the new site by itself. It found nothing here, and a deliberately broken site is caught by name.
+
+**Suggested improvement:** In the testing guidance, add the pattern: when an invariant must hold for every output of a central function, do not write per-case fixtures — install the invariant as a suite-wide guard (a no-op hook in production, set by a global test setup), throwing from inside the function so the failing test is the one that built the input. Pair it with one unit test that feeds the checker a broken example ("the guard bites").
+
+**Principle:** The existing suite is already the widest fixture set you have; attach the invariant to the function, not to new fixtures.
+
+### Observation 411: A known trap recorded only in a handoff note was hit again — a shell heredoc turned `\b` in generated test code into a backspace
+
+**Status:** OPEN
+**Date:** 2026-10-01
+**Session context:** [WARN-HIDE-KEPT] build: Python edit scripts passed through a Bash heredoc; a regex `\bhid\b` in the text to write arrived as backspace characters, so two assertions silently tested the wrong pattern and failed for a reason that took a character dump to see. An earlier chat's handoff block already said "a heredoc eats `\` — write Python edit scripts to a FILE".
+**Skill:** session-handoff ("Traps met" lines); repo docs/gates-and-deploy.md
+**Type:** internal
+**Phase/Area:** Where a tooling trap is recorded
+
+**Issue:** The trap was written in a `## Now` block that was removed when its branch merged, and in a memory note about a different tool (`node -e`). The next chat read neither at the moment it mattered. Mid-session the host switched to writing scripts with the file-write tool and the problem stopped.
+
+**Suggested improvement:** Traps that are about the TOOLS (not the task) belong in an always-loaded place, one line each: add "never pass code containing backslashes through a shell heredoc or `-e`; write the script to a file with the file tool and run it" to the project guide's Token discipline / tooling line, and have the handoff skill file tool traps there rather than in the branch's block.
+
+**Principle:** A trap noted where it was met dies with that note; a trap about a tool has to live where every user of the tool starts.

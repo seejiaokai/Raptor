@@ -267,7 +267,7 @@ export function SchedBoard() {
       /* pend is the LIVE discard count (dayDiscardCount) — computed here, OUTSIDE
          the withDaySnap block above, so pending is restored; one authority shared
          with the week renderer and the recovery handler (P2-IMPL-09). */
-      const pvd = isDraftVer(ver), armed = restArmed(di, ver), pend = dayDiscardCount(di)
+      const pvd = isDraftVer(ver), armed = restArmed(di, ver), pend = dayDiscardCount(di, ver)
       set(warnRef.current!, 'warn',
         `<div class="dprev-bar"${(!pvd && verSeq(ver) !== 0) ? ` style="--alc:${alColor(verSeq(ver))}"` : ''}>`
         + `<button class="dbeak dprev-back" data-golive="${di}" title="Return to your live working copy">← Back to live copy</button>`

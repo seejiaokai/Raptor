@@ -1031,7 +1031,7 @@ export function routeClick(e: MouseEvent) {
        the confirm button and this handler can never disagree (P2-IMPL-09).
        Captured HERE, before loadVersionToWorkingCopy swaps the day (and outside
        any withDaySnap that would zero it). */
-    const nd = dayDiscardCount(di)
+    const nd = dayDiscardCount(di, ver)   // the hides half is counted against the version being loaded
     /* already the current version with nothing diverging — close the preview
        without a history step. NOT when the version holds a row the load must leave out (D175): the day then differs
        from it by exactly that row, so "already at" would be untrue beside its "1 pending" — the load runs (nothing to

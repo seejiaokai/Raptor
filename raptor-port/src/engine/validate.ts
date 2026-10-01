@@ -1623,6 +1623,11 @@ HOOKS.hideNow=(di:number)=>{ let m=HIDENOW.get(OFFICIAL); if(!m){m=new Map(); HI
   v=((((OFFICIAL.byDay||[])[+di]||{}).warns||[]) as any[]).map((w:any)=>({k:hideKey(w),w})).filter((x:any)=>work.has(x.k))
     .map(({k,w}:any)=>({k,on:hs.has(k),code:w.code,who:w.who||[],msg:String(w.msg||''),sev:w.sev,key:w.key}));
   m.set(+di,v!); return v!; };
+/* …and what a LOAD of a version would change: the working copy's warnings of the day whose hidden state today differs from
+   the version's own keys (the load sets the day's hides to them — drafts.ts loadVersionToWorkingCopy). Counted over the
+   warnings the working copy RAISES, so a key that matches nothing counts nothing. */
+HOOKS.hideDiffTo=(di:number,keys:string[])=>{ const hs=hidden(), to=new Set<string>((keys||[]).map(String));
+  return ((((RAW_B.byDay||[])[+di]||{}).warns||[]) as any[]).filter((w:any)=>{ const k=hideKey(w); return hs.has(k)!==to.has(k); }).length; };
 /* one slice per day per official bundle, so publish.ts can key it once per validate */
 const SLICES=new WeakMap<any,Map<number,any>>();
 HOOKS.warnNow=(di:number)=>{ let m=SLICES.get(OFFICIAL); if(!m){m=new Map(); SLICES.set(OFFICIAL,m);}

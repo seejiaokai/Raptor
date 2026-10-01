@@ -566,6 +566,21 @@ export function setPage(p:any){
 /* ARM put-down for history.ts (ESM cannot reassign across modules) */
 export function armDrop(){ ARM=null }
 export function setWarnFocus(w:any){ WFOCUS=w }
+/* THE DAYS A MAN IS FLAGGED ON, in the displayed world — one body for the puck's tap (selectPerson) and for the ✕ / ↺ on a
+   warning while he is focused (toggleWarnOff: the days are otherwise only worked out at the tap, and "also flagged on
+   Thu" stood on after his only Thursday warning was hidden — Astra's scenario design, 1 Oct 26).
+   A day counts when a SHOWN warning names him, or a shown next-day mark is on him: a hidden warning flags no puck, so
+   his clean puck must not open that day as "flagged" (D469) — its struck line is still in the day's own list. */
+function personFlagDays(id:any):number[]{
+  const days:number[]=[];
+  for(let di=0;di<7;di++){
+    const g=displayedByDay(di);
+    const tr=displayedBundle(di).trace;
+    const hasWarn=!!(g&&g.warns&&g.warns.some((w:any)=>!w.off&&(w.who||[]).includes(id)));
+    if(hasWarn||(tr&&tr[di]&&tr[di][id]))days.push(di);
+  }
+  return days;
+}
 /* the model half of a puck click — the reference's handler body verbatim
    (2527-2549), with pk.closest('.week') passed in as inWeek. */
 export function selectPerson(id:any,inWeek?:any){
@@ -589,15 +604,7 @@ export function selectPerson(id:any,inWeek?:any){
          the view's world without a cycle. Off the view page every day resolves WORKING, so the
          behaviour is unchanged there (and a cross-day TRACE with no warning still counts, the
          forward-Monday-bust case, 23 Aug 26). */
-      const days:any[]=[];
-      for(let di=0;di<7;di++){
-        const g=displayedByDay(di);
-        const tr=displayedBundle(di).trace;
-        /* a day counts when a SHOWN warning names him: a hidden one flags no puck, so a tap on his clean puck must not
-           open that day as "flagged" (D469) — its struck line is still in the day's own list */
-        const hasWarn=!!(g&&g.warns&&g.warns.some((w:any)=>!w.off&&(w.who||[]).includes(id)));
-        if(hasWarn||(tr&&tr[di]&&tr[di][id]))days.push(di);
-      }
+      const days=personFlagDays(id);
       if(days.length){ PFOCUS={id,days}; days.forEach((di:any)=>DWOPEN.add(di)); }
     }
     SELSEEN=personCount(id);
@@ -797,7 +804,11 @@ export const warnMuteKey=(w:any)=>hideKey(w)
 export function warnShown(w:any){ return !WARNOFF.has(warnMuteKey(w)) }
 /* the ✕ / ↺: returns whether the warning is SHOWN afterwards. Re-validates — the bundle every surface reads is the one
    "as shown", so it must be rebuilt in the same breath. */
-export function toggleWarnOff(key:any){ if(!canEditSched())return false; const was=WARNOFF.has(key); if(was)WARNOFF.delete(key); else WARNOFF.add(key); validate(); return was }
+export function toggleWarnOff(key:any){ if(!canEditSched())return false; const was=WARNOFF.has(key); if(was)WARNOFF.delete(key); else WARNOFF.add(key); validate();
+  /* a man is focused (his puck was tapped): the days he is flagged on are re-read, so "also flagged on …" follows the hide
+     and the flag-again at once. The boxes already open stay open — the struck line is there to be seen. */
+  if(PFOCUS)PFOCUS={id:PFOCUS.id,days:personFlagDays(PFOCUS.id)};
+  return was }
 HOOKS.hiddenKeys=()=>WARNOFF
 /* a load onto the working copy puts ONE day's hides back to the loaded version's (engine/drafts.ts — D98: a day back to
    what was published reads nothing pending). The caller's own epilogue re-validates and saves. */

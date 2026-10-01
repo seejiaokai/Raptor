@@ -113,7 +113,7 @@ export function withDaySnap(di:any,ver:any,fn:any){
   if(!snap)return fn(false)
   /* capture the LIVE discard count BEFORE the swap zeroes pending (P2-IMPL-09) —
      the confirm button reads it as PVND, so it never shows "Discard 0 edits". */
-  const nd0=dayDiscardCount(di)
+  const nd0=dayDiscardCount(di,ver)
   const d0=DAYS[di], c0=SCHED.changes, p0=SCHED.pending, nd=PVND
   DAYS[di]=snap.d; SCHED.changes=snap.c||{}; SCHED.pending={}
   PV=true; PVV=ver; PVND=nd0

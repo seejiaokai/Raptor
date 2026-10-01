@@ -699,7 +699,11 @@ export function notYetSigned(di:any):boolean{di=+di;return dayApproved(di)&&dayH
    pending count (which a canonical-only change leaves at 0, and which withDaySnap
    zeroes during a preview render). MUST be read on the LIVE day, before any
    withDaySnap swap. */
-export function dayDiscardCount(di:any):number{di=+di;
+/* `toVer` — the version the load will put on the working copy (the one being looked at); unnamed, the current one. It
+   decides the HIDES half only: the load sets the day's hides to THAT version's, so what it replaces is counted against
+   that version's keys — loading an older version whose hides the working copy already matches replaces none (Astra's
+   scenario design, 1 Oct 26: it said "Discard 1 edit" and discarded nothing). The content half is unchanged. */
+export function dayDiscardCount(di:any,toVer?:any):number{di=+di;
   /* CONTENT ONLY — the count of working-draft edits that "Load onto working copy"
      actually DISCARDS. Recovery replaces DAYS (content) but NOT the global input
      filing state, so the filing axis must be EXCLUDED here or the confirm claims
@@ -737,9 +741,12 @@ export function dayDiscardCount(di:any):number{di=+di;
     const u=requestRowUnit(units,inpId(p.inp),String(p.want||''),String(p.inp.acc||''),after,DAYS[di]);
     if(u){u.inp=true;return false;}
     return true;});
-  /* …and each warning hidden or flagged again since the version went out: the load puts the day's hides back to the
-     loaded version's (drafts.ts loadVersionToWorkingCopy, D98), so each is an edit it replaces ([WARN-HIDE-KEPT]) */
-  return units.length+decDrop+lone.length+hideDelta(di).length;}
+  /* …and each warning whose hidden state the load will change: it puts the day's hides back to the LOADED version's
+     (drafts.ts loadVersionToWorkingCopy, D98), so each one that differs from that version's is an edit it replaces
+     ([WARN-HIDE-KEPT]). A saved plan carries no hides and changes none. */
+  const tsnap:any=toVer==null||String(toVer)===String(ver)?snap:(String(toVer).slice(0,2)==='d:'?null:daySnapOf(di,toVer));
+  const hides=tsnap&&tsnap.w&&HOOKS.hideDiffTo?HOOKS.hideDiffTo(di,((tsnap.w.wo||[]) as any[]).map(String)):0;
+  return units.length+decDrop+lone.length+hides;}
 /* WHAT A LOAD CAN PUT BACK OF A VERSION'S FILINGS (owner, D98, 25 Sep 26 — "if the change results in going back to the
    same as the published schedule … it shouldnt show as pending"). For every request covering this day: the state
    the version froze (`fil`, snapshot's filing fingerprint; absent = fresh), set only where it can be true without

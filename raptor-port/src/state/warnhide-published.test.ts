@@ -281,6 +281,24 @@ describe('WH7, WH8 — Unpublish, Load onto working copy, a look at an older ver
     expect(sevOf(TUE, 'wolf')).toBe('note')
   })
 
+  /* Astra's scenario design, its "missing call site" 3 (1 Oct 26): the load's confirm counted the pending hide against
+     the CURRENT version whichever version was being loaded — so loading an OLDER version whose hides the working copy
+     already matches said "Discard 1 edit" and discarded nothing. It counts against the version being loaded. */
+  it('the load\'s confirm counts the hides THAT version will change, not the current one\'s (D98)', async () => {
+    await boot(new MemoryBackend())
+    publish(TUE)
+    const orig = dayCurVer(TUE)
+    tap(byCode(TUE, 'LONGDAY')); amend(TUE)          // AL1 goes out with it hidden
+    const al1 = dayCurVer(TUE)
+    tap(byCode(TUE, 'LONGDAY'))                      // flagged again on the working copy: 1 pending against AL1
+    expect(kinds(TUE)).toEqual(['hide'])
+    expect(dayDiscardCount(TUE, al1), 'loading AL1 would hide it again — one edit replaced').toBe(1)
+    expect(dayDiscardCount(TUE, orig), 'loading the Original changes no hide: the working copy already matches it').toBe(0)
+    expect(dayDiscardCount(TUE), 'unnamed, it is the current version, as before').toBe(1)
+    schedWrite(SCHED_TYPES.mutate, () => { expect(loadVersionToWorkingCopy(TUE, orig)).toBe(true); view.afterSchedMutate() })
+    expect(kinds(TUE), 'and after that load the one difference from AL1 is still pending').toEqual(['hide'])
+  })
+
   it('a look at an older version shows the hides IT went out with (D187)', async () => {
     await boot(new MemoryBackend())
     publish(TUE)

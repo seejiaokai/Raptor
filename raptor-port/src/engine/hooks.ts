@@ -72,6 +72,9 @@ export const HOOKS = {
   hiddenKeys: null as null | (() => Set<string>),
   hideNow: null as null | ((di: number) => Array<{ k: string, on: boolean, code: string, who: string[], msg: string, sev: string, key?: string }>),
   setDayHides: null as null | ((di: number, keys: string[]) => void),
+  /* how many of the working copy's warnings on a day would change their hidden state if the day's hides became `keys` —
+     what a load of the version that went out with `keys` replaces (publish.ts dayDiscardCount; validate.ts sets it) */
+  hideDiffTo: null as null | ((di: number, keys: string[]) => number),
   /* THE DAY'S REAL DATE, and WHO AN ALL / ALL AVAIL PUCK STANDS FOR — the two
      other facts the OIL evidence block needs and the engine cannot know
      ([OIL-AUTO-REMOVE] §7.1/§7.3, engine/oilev.ts). The date is the week's own
