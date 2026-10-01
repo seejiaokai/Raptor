@@ -20,7 +20,7 @@ the later merge keeps both (D78).
 - **Where it started:** his opening line — tidy the two merged blocks away (phases 0–6 live, PR #476), then plan and build
   phase 7 with its own bug check, on a new branch cut from `main`. The context was compacted once mid-chat; the plan's build
   log (§6) and the evidence sheet were written as the work went and are the record.
-- **Shipped (on the branch, one PR):** the six small OIL follow-ups — a placeholder on a Personal request's row is counted
+- **Built (on the branch; ONE pull request to open once it is pushed):** the six small OIL follow-ups — a placeholder on a Personal request's row is counted
   and earns nobody; the ALL AVAIL window flags a man's sim brief / debrief; a sim row's seat list is saved without holes; the
   stored-record sweep's three fixes; D470 (a man in another man's request name box earns, and the box survives the member's
   own edit); the phone's finger tap on a count; OIL never called pay, on screen or in comments. All six archived.
@@ -32,11 +32,16 @@ the later merge keeps both (D78).
   `[LOAD-MSG-SHORT]` (a question for him), `[INP-TILL-STALE]`, `[OIL-INERT-TAP-SILENT]`, `[OG-TAG-OVER-COUNT]`,
   `[MEMBER-EDITPAGE-CHECK]`. Noticed, not this chat's: `[OIL-AWARD-IS-A-GRANT]` and `[OIL-EARNED-VS-GRANTED]` merged with
   PR #469 and still sit in the backlog (each now says so).
-- **Branch:** `claude/db-readiness-p7-oil-followups`; its PR was opened with this push — `gh pr list --head
-  claude/db-readiness-p7-oil-followups` (open when written; check before acting). If it has MERGED, the next chat starts
-  from `main` in a new worktree and never picks this branch.
-- **Gates:** the full set green on the final code under the PC lock — counts in §Gate baseline below. The PR's own checks:
-  read them before anything else (`gh run list --branch claude/db-readiness-p7-oil-followups --limit 2`).
+- **Branch:** `claude/db-readiness-p7-oil-followups` — **COMMITTED ON HIS PC, NOT PUSHED when this was written (1 Oct 26):
+  the app's permission check refused this chat's push** (the repo is public for now, D106), so there was no PR and no Vercel
+  link; he was asked to allow the push or run it himself. Check first: `git ls-remote --heads origin
+  claude/db-readiness-p7-oil-followups` and `gh pr list --head claude/db-readiness-p7-oil-followups`. If it is on GitHub
+  with no PR, open one (the PR text is ready in the plan's build log and the evidence sheet), unsubscribe from it at once and
+  hand him the Vercel link with the look card. If it has MERGED, the next chat starts from `main` in a new worktree and never
+  picks this branch.
+- **Gates:** the full set green on the final code under the PC lock — counts in §Gate baseline below. GitHub's own checks
+  have never run on this branch: read them after the first push, before anything else (`gh run list --branch
+  claude/db-readiness-p7-oil-followups --limit 2`).
 - **Open questions for him:** none from this chat beyond his look; `[LOAD-MSG-SHORT]` still waits.
 - **Parallel (D302):** this chat used D469–D472 and observations #401–#406. No other open branch known when written.
 - **Pick up here:** if he reports something from his look, fix it on this branch (red first, re-walk, the gates). Once he has
