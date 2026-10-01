@@ -179,6 +179,10 @@ own 44 × 44 check; the order's §3 sentence on evidence; React's use) — each 
 claim is not a finding unless it names a concrete way it fails (or the ruling it breaks), the changed code that causes it,
 and the smallest safe fix; a style preference or a guess is not a finding. It cuts false findings, which cost his time.
 
+**HIS ANSWER (D489, 2 Oct 26 — "1. yes"):** the guard as Astra rewrote it, the narrowed look-and-feel checks, and Astra's
+"what counts as a finding" rule are APPROVED — what goes in; the wording is still read by Fable and Astra and approved by him
+(D70). The evidence rules (§5) are not added. §3 and §4 above are as first proposed: build from this section and Astra's report.
+
 **Other corrections from the review:** the source asks for equal-width digits only on numbers that CHANGE (extending it to
 every column was this spec's); APEX has a fourth label, "untrusted", that §5 left out. Every measurement in §2 was re-checked
 by Astra and is right.

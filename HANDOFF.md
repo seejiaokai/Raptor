@@ -20,15 +20,15 @@ the later merge keeps both (D78).
 - **Done (documents only):** D486 recorded; the read and the fusion plan are in
   `raptor-port/docs/superpowers/specs/2026-10-02-workflow-skills-fusion.md`; two jobs filed — `[SKILL-FUSION]`, `[CODE-TIDY-AUDIT]`.
   No skill, guide or app file was changed.
-- **Waiting on him:** yes or no to the proposals AS ASTRA CHANGED THEM (the spec's §7 — the guard and the look-and-feel checks
-  narrowed, the evidence rules withdrawn, one new one from Astra), and whether Astra's tidiness read runs before the reset
-  (light work under D484).
+- **His answer (D489):** the proposals are approved AS ASTRA CHANGED THEM (the spec's §7 — the guard and the look-and-feel checks
+  narrowed, Astra's "what counts as a finding" rule added, the evidence rules withdrawn). **Waiting on him:** whether Astra's
+  tidiness read runs before the reset or after (he asked for the flow after Monday).
 - **Next:** `[CODE-TIDY-AUDIT]` — write Astra's brief from the spec's §2, run it, report to him in plain words.
   `[SKILL-FUSION]` — after the reset (Monday 5 Oct 26, 19:00), a fresh chat, a worktree on `main` once this branch has merged
   (or this branch if it has not), Opus 5.5; Fable and Astra read the changed guide before he approves it (D70).
 - **Not read at the source:** 13 of APEX's 16 step files, and Make Interfaces Feel Better's five reference files — read them
   before fusing anything from those two.
-- **Parallel (D302):** rulings D486–D488 used here (D487: the buttons keep their size; D488: "Discard marks" is removed — `[DISCARD-MARKS-REMOVE]`, filed, not built) — a next chat takes D489 on; observation #419 used, #420 on.
+- **Parallel (D302):** rulings D486–D489 used here (D487: the buttons keep their size; D488: "Discard marks" is removed — `[DISCARD-MARKS-REMOVE]`, filed, not built) — a next chat takes D490 on; observation #419 used, #420 on.
 <!-- /now -->
 
 <!-- now:claude/insights-which-copy -->

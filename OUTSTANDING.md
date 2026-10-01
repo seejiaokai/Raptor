@@ -1621,7 +1621,7 @@ published version. **Place — D488: after the reset (D484), batched with other 
 From the article he sent (codelynx.dev — five recommended skills): none is installed whole (D486). To build, documents only: the
 planning skill (`.claude/skills/brainstorming/SKILL.md`) gains the decision tree, the rulings search first, questions by ROUNDS of
 at most four with a recommended answer each (replacing "one question per message" for him), product choices only, and "done
-means no branch left assumed". **Three PROPOSALS wait on his yes or no** — a standing three-line tidiness guard in the final code
+means no branch left assumed". **APPROVED by him as Astra changed them (D489, 2 Oct 26) — build from the spec's §7.** As first filed: three proposals waited on his yes or no — a standing three-line tidiness guard in the final code
 read's brief; five look-and-feel checks beside Impeccable; three evidence rules for the bug-check order. **Astra read
 them 2 Oct 26 (the spec's §7): the first two adopt-with-changes, the third rejected and withdrawn, and one new proposal from it —
 a reviewer's claim is a finding only with a concrete failure, its cause and its fix.** Whatever he
