@@ -99,7 +99,7 @@ award fix are due before the tables are settled. What to finish before the hand-
 (answered D470 — a man in the name box of another man's request earns), [OIL-WORDS], [OIL-PERSONAL-PLACEHOLDER], [CROWD-SIM-BRIEF];
 evidence `raptor-port/docs/handpass/2026-10-01-dbr-phase7-check.md`. MERGED 1 Oct 26 (PR #477). ([OIL-RELINK-XWEEK] closed 1 Oct 26 by `[DB-READINESS]` phase 6 (c).)
 
-**Ruled, to build next (D469, 1 Oct 26):** [WARN-HIDE-KEPT] — a hidden warning stays hidden for everyone until unhidden, flags no puck, and its line stays in the list struck out; the three readings answered (D471, D472); on its own branch `claude/warn-hide-kept` (phase 7 merged, PR #477) — the mock-up sent to him 1 Oct 26 (`raptor-port/docs/mock/warn-hide.html`), then the plan, the build and its FULL check.
+**Ruled, to build next (D469, 1 Oct 26):** [WARN-HIDE-KEPT] — a hidden warning stays hidden for everyone until unhidden, flags no puck, and its line stays in the list struck out; the three readings answered (D471, D472); on its own branch `claude/warn-hide-kept` (phase 7 merged, PR #477) — the mock-up approved 1 Oct 26 (D475, `raptor-port/docs/mock/warn-hide.html`); now the plan, the build and its FULL check.
 
 **Placed by their own lines — not his rulings:** from the `[DB-READINESS]` phase 7 walk (1 Oct 26), none of them this batch's — low, each with the next change there: [COUNT-CHIP-PHONE-TAP] (fixed for Chromium in phase 7; his iPhone look left), [INP-TILL-STALE] (a remark keeps a "till" date its request no longer reaches — new data), [OIL-INERT-TAP-SILENT], [OG-TAG-OVER-COUNT], [MEMBER-EDITPAGE-CHECK] (a check, not a known fault); from the group-A FULL walk (30 Sep 26) — with group B:
 [UNDO-PUBLISH-ERASES-ISSUANCE], [TRK-IMPORT-ONE-GROUP], [TRK-FIRST-ORDER-PLACE] (low); low, with the next change there:
@@ -1535,7 +1535,7 @@ struck through and darker. **Every reading is now answered — the design is com
 on the board and the edit week, phone and desktop), then the build. **The picture — SENT 1 Oct 26:** `raptor-port/docs/mock/warn-hide.html`
 (pictures `raptor-port/docs/mock/img/warn-hide/`, script `raptor-port/scripts/handpass/wh-mock.mjs`), with three calls of the agent's put to him on
 it: View-only Sched shows the struck-out line too, without the ↺; a day with every issue hidden keeps a quiet "✓ No issues" bar
-that opens the list; the look of the hidden line. His answer: not yet given. **Kept, as he was read:** only a scheduler hides and unhides; a hide is an Undo step; a hidden warning
+that opens the list; the look of the hidden line. **APPROVED as drawn, 1 Oct 26 (D475 — "The mock up looks good. Proceed").** **Kept, as he was read:** only a scheduler hides and unhides; a hide is an Undo step; a hidden warning
 returns by itself when the situation changes (his Aug 26 words). **Tier:** FULL (the warning list, saved data, the published
 record). **Place:** the next job after `[DB-READINESS]` phase 7, on its own branch — the tables' shape is settled by the
 ruling itself (`wo` stays in the day's row), so IT is not waiting on the build.

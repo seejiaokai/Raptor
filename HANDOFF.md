@@ -16,7 +16,7 @@ the later merge keeps both (D78).
 ## Now
 
 <!-- now:claude/warn-hide-kept -->
-### `claude/warn-hide-kept` — `[WARN-HIDE-KEPT]` the hidden-warnings change (D469, D471, D472): the picture SENT, the plan being written — written 1 Oct 26 — verify before use
+### `claude/warn-hide-kept` — `[WARN-HIDE-KEPT]` the hidden-warnings change (D469, D471, D472): the picture APPROVED (D475), the plan being written — written 1 Oct 26 — verify before use
 - **Where it started:** his opening line — tidy the merged phase 7 block away (PR #477, live), then build `[WARN-HIDE-KEPT]`
   on a new branch cut from `main`: a picture to him first, then the build, with its own FULL bug check. No new ruling in it.
 - **Done so far:** the phase 7 block removed (its residue was all filed — checked item by item); the mock-up
@@ -24,12 +24,12 @@ the later merge keeps both (D78).
   `raptor-port/scripts/handpass/wh-mock.mjs` from the real built app at 2x) published to him as an Artifact page
   (https://claude.ai/artifact/5cBtGP2gHysgB5VbvuTGUZ — private to him). It shows the struck-out line on Edit Schedule and the
   Scheduler Board, desktop and phone, the puck without its flag, View-only Sched, and a day with every issue hidden.
-- **Three calls put to him on that page (unanswered when written):** (1) View-only Sched shows the struck-out line too,
+- **Three calls put to him on that page — all approved as drawn (D475, "The mock up looks good. Proceed"):** (1) View-only Sched shows the struck-out line too,
   without the ↺; (2) a day with every issue hidden keeps a quiet "✓ No issues" bar that opens the list; (3) the look of
   the hidden line (struck out, grey, dashed outline on Edit Schedule, the ↺ at full strength).
-- **Unfinished:** his answer on the picture; the plan and its red team (both reviewers — saved data and the published
+- **Unfinished:** the plan (`raptor-port/docs/superpowers/plans/2026-10-01-warn-hide-kept-plan.md`) and its red team (both reviewers — saved data and the published
   record); the build; the FULL check; his look; "merge live".
-- **Parallel (D302):** rulings: D474 is the last used on `main` — this chat takes D475 on; observations #408 on. No other
+- **Parallel (D302):** rulings: D475 used here (D474 was the last on `main`) — a next chat takes D476 on; observations #408 on. No other
   open branch known when written.
 - **Pick up here:** `OUTSTANDING.md` `[WARN-HIDE-KEPT]`; the three rulings' full rows in `.claude/decisions-full/scheduler.md`.
 <!-- /now -->
@@ -40,7 +40,7 @@ the later merge keeps both (D78).
    phase 7 no more database-readiness work until then; the table list (`raptor-port/docs/data-model.md`) is kept up to date as
    each feature is added, and he — with his AI — writes the table format for the IT side to enter. Next job: `[WARN-HIDE-KEPT]`.
    *Done while the step was "starting now" (29 Sep – 1 Oct 26):* `[IT-FLOW-GUIDE]` DONE (the guide for IT, `raptor-port/docs/it-flow-guide/`, 29 Sep 26); `[DB-SYNC-MODEL]`'s design DONE and merged (PR #475); `[DB-READINESS]` group A PLANNED 30 Sep 26 (plan v4,
-   `claude/db-readiness-table-shaping-4094f6`) — its build under way: phases 0–5 and 5b built 30 Sep 26, the group's FULL check done (the walk and both code reads, every finding fixed); phase 6 (a), (b), (d) built and FULL-checked 30 Sep 26 (`raptor-port/docs/handpass/2026-09-30-dbr-phase6-check.md`); phase 6 (c) v3 built and FULL-checked 1 Oct 26 on `claude/db-readiness-p6c-holder-base` (D467 — `…/2026-10-01-dbr-phase6c-check.md`) — phases 0–6 MERGED 1 Oct 26 on his "merge live" (PR #476); phase 7, the small OIL follow-ups, BUILT and FULL-checked 1 Oct 26 (`…/2026-10-01-dbr-phase7-check.md`) and MERGED the same day on his "merge live" (PR #477) — group A is closed (D453); `[WARN-HIDE-KEPT]` (D469, D471, D472) under way on `claude/warn-hide-kept`, its picture sent to him 1 Oct 26. The IT team is taking the app into Dataverse now, and he means to
+   `claude/db-readiness-table-shaping-4094f6`) — its build under way: phases 0–5 and 5b built 30 Sep 26, the group's FULL check done (the walk and both code reads, every finding fixed); phase 6 (a), (b), (d) built and FULL-checked 30 Sep 26 (`raptor-port/docs/handpass/2026-09-30-dbr-phase6-check.md`); phase 6 (c) v3 built and FULL-checked 1 Oct 26 on `claude/db-readiness-p6c-holder-base` (D467 — `…/2026-10-01-dbr-phase6c-check.md`) — phases 0–6 MERGED 1 Oct 26 on his "merge live" (PR #476); phase 7, the small OIL follow-ups, BUILT and FULL-checked 1 Oct 26 (`…/2026-10-01-dbr-phase7-check.md`) and MERGED the same day on his "merge live" (PR #477) — group A is closed (D453); `[WARN-HIDE-KEPT]` (D469, D471, D472) under way on `claude/warn-hide-kept`, its picture approved 1 Oct 26 (D475). The IT team is taking the app into Dataverse now, and he means to
    keep working on the app beside it. What to finish before the hand-over was put to him the same day; record his answer
    here and in `OUTSTANDING.md`'s priority list the moment he gives it. Everything below keeps its ORDER; its timing is overtaken — *and that hand-over now waits for the end (D473).*
 1. **HIS ORDER to the database step (D203, 26 Sep 26 — its timing overtaken by D354):** `[ACCOUNTS]`, `[ACCOUNTS-NEW-PERSON]`,

@@ -4086,6 +4086,9 @@ Both are board-side, admin-only, session-only, and DESKTOP-scoped for the resize
   next amendment (a pending change — D45, D103); the published and printed schedule drop the hidden item's flag too.
   **D472 (1 Oct 26):** a hidden warning is NOT COUNTED — a day with 3 issues and one hidden reads "2 issues", with no
   "1 hidden" beside it; the hidden one is seen only by opening the day's issues list, struck through and darker.
+  **D475 (1 Oct 26):** the mock-up (`docs/mock/warn-hide.html`) is approved as drawn — View-only Sched shows the struck-out
+  line too, with no ↺; a day with every issue hidden keeps a quiet "✓ No issues" bar that opens the list; the hidden line
+  is struck out and grey, dashed-outlined on Edit Schedule, its ↺ at full strength.
 - **Mute a specific check — on the board AND the edit week, in sync.** Each
   `.wln` row in the board's checks panel (`board.ts:boardWarnHTML`) and each
   `.witem` row in the edit week's day-issue list (`html.ts:dayWarnHTML`) carries
