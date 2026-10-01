@@ -30,8 +30,9 @@ the later merge keeps both (D78).
 - **BEFORE THE RESET — light work only (D484):** he is at 93% of his weekly Claude allowance; it resets **Monday 5 Oct 26, 19:00**.
   Until then: the picture of the Scheduler Board's Insights button (`[INSIGHTS-BOARD-DOOR]`, D481 — a mock-up, no build, no
   walkers; a fresh chat, a worktree on `main`), and anything Astra can do (it runs on his ChatGPT account). Nothing goes to
-  Sonnet meanwhile. Two questions he raised are with him: build features now and check them after the reset; one combined
-  check for a batch of features instead of one each — record his answer as a ruling.
+  Sonnet meanwhile. **D485 (2 Oct 26, "batch the checks"):** related features are built together on one branch and get ONE check for the lot,
+  sized by the riskiest change. He may also have features BUILT before the reset (tests and the PC's checks only) and their
+  batch check run after it — nothing merges before its check.
 - **AFTER THE RESET (D483, D484):** `[WORKSPAN-NEGATIVE]` — a new worktree on `main`, its own branch, a FULL check (it changes the
   measure the long-work-day warning shares). **The second Sonnet trial (D480) rides on its walk:** freeze the build as it
   stands BEFORE the fix for the two trial walkers (one Opus, one Sonnet, the same brief, neither told what is wrong), and
