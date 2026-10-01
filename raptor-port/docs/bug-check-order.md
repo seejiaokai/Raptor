@@ -278,6 +278,12 @@ that the other found, the false alarms, whether each opened its pictures, and th
 on that report nothing else goes to a cheaper model (the 17 Sep 26 rule, `guide-full.md` §Models): every other
 walker, the build, the roll-call and the reviews stay as they are. The open job: `OUTSTANDING.md`
 `[SONNET-WALKER-TRIAL]`.
+**A SECOND TRIAL (owner, D480, 1 Oct 26 — "One more trial").** The first ran on `[INSIGHTS-WHICH-COPY]`'s walk: the same
+verdict from both walkers on all 19 scenarios, no false alarm, about half the cost — on a build with nothing in it to catch.
+So on the NEXT walk one Sonnet 5.5 walker runs beside an Opus walker again, the same way, **on a build with known
+defects**: the build as it stood BEFORE its fix (or an earlier commit whose walk found real ones), neither walker told
+what is wrong, and the report says what each CAUGHT apart from whether each followed the brief. Until he rules on that
+second report nothing else goes to a cheaper model.
 
 **The owner's trigger rule, in one line:**
 

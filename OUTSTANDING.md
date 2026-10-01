@@ -111,7 +111,7 @@ first), [LW-SCRUBBER-FLAKY] (test-only),
 [PO-RESTORE-POSTING] (low, from its final code read), [LW-OFFER-ONLY-TAKEABLE] (low, with [LW-LOCKMARK]), [LW-HARNESS-VIEWER-PIN] (test-only, low), [CI-FAIL-PICTURES] (his call, low), [LW-DOZE-GUARDS] (low, check first); the shell — [SHELL-SIDEWAYS-BAR] (low, with the next top-bar change), [SAVE-NOTE-COVERS] (medium, next), [TRK-SAVE-FAIL-SAYS-SAVED] (low, with [DB-READINESS]), [TRK-ASYNC-STALE] (with [DB-READINESS]), [LW-WINDOW-PRUNE-FLAKE-2] (test-only, low); the Tracker — [TRK-REMOUNT-LANDING] (low, with the next Tracker change), [TRK-KEY-NAME-CLIP] (low, with the next Tracker change). The Tracker — [TRK-PINCH-ASK] (his next Tracker session), [TRK-FLEXBAR-INK] (a question for him, on the Tracker-palette
 look card — D157, merged PR #441).
 The amendment area — PR #434, #435, #437 and #438 MERGED (25–26 Sep 26); left (the small-fixes batch, PR #463, merged 29 Sep 26, filed): [PLAN-BANNER-DOOR] (low, filed by that batch's walk), [ROW-NO-TIME-MARK] (low, a future job, D361), [APP-FONTS-NOT-LOADED] (his call — found 29 Sep 26; every measured width rides on it), [GATELOCK-STALE-LIVE] (low, the check lock's stale rule), [DOCSIZE-MERGE-CEILING] (low, a false alarm of the document check on a merge), [PDF-PRINT-TWICE] (low, found by the IT flow guide research — to confirm in real Chrome), [LW-SEL-HALF-LABELS] (low, the drag sheet's half-day labels — D264), [ITFLOW-OIL-RESHOOT] (low, on his word — D403), [TRK-REFUSALS-UNTESTED] (low, test gaps the guide research found). Left from the amendment batch (D91–D111, merged): [AMEND-SMALL-SEEN] (any time). The docs and the checks — [DEPLOY-DOCS] (its operational half), [DOC-POINTERS-CODE] and
-[RULINGS-LF-PIN] (with the next code change), [PEEK-ISSUED] (a question for him, low), [RULING-HOME-HOOK] (low), [GUIDE-MAP-ROWS] (low, a question for him), [DOCS-SIZE-PASS] (low, its own documents-only pass), [INSIGHTS-WHICH-COPY] (RULED D477, D478 — BUILT 1 Oct 26 on `claude/insights-which-copy`, WALK tier; his look and "merge live" next), [SONNET-WALKER-TRIAL] (WALKED 1 Oct 26 with `[INSIGHTS-WHICH-COPY]` — the comparison is with him; his answer is a new ruling — D476), [INSIGHTS-BOARD-DOOR] (a question for him, low), [INSIGHTS-RULE-CHANGE] (a question for him, low), [WORKSPAN-NEGATIVE] (low, with the next change to the long-work-day rule) — [DOC-SUBHEADS], [RULING-HOMES-AUDIT]
+[RULINGS-LF-PIN] (with the next code change), [PEEK-ISSUED] (a question for him, low), [RULING-HOME-HOOK] (low), [GUIDE-MAP-ROWS] (low, a question for him), [DOCS-SIZE-PASS] (low, its own documents-only pass), [INSIGHTS-WHICH-COPY] (RULED D477, D478 — BUILT 1 Oct 26 on `claude/insights-which-copy`, WALK tier; his look and "merge live" next), [WORKSPAN-NEGATIVE] (**NEXT — the next chat, D483**; the second Sonnet-walker trial rides on its walk), [SONNET-WALKER-TRIAL] (the first walked 1 Oct 26; **ONE MORE, on a build with known defects — D480**, with `[WORKSPAN-NEGATIVE]`'s walk), [INSIGHTS-BOARD-DOOR] (RULED D481 — to build: a picture first; after `[WORKSPAN-NEGATIVE]`), [INSIGHTS-RULE-CHANGE] (ANSWERED D482 — closed; to archive at the next tidy) — [DOC-SUBHEADS], [RULING-HOMES-AUDIT]
 and [HANDOFF-SHAPE-GUARD] done on `claude/docs-tidy-subheads-audit-ec8f87` (28 Sep 26; archived),
 Roles — [QUALS-MEMBER-SCOPE] (folded into [ACCOUNTS], D200), and beside it [QUALS-PROTO-TOAST] (low, one line of words).
 The five-flags batch (built on `claude/five-flags-batch-build-ef7d85`, 26 Sep 26; FULL-checked and its PR from `claude/five-flags-batch-continue-2cfa70`, 27 Sep 26 — its five items archived) — his answers D270–D275 BUILT and FULL-checked on that branch, 27 Sep 26 (their three items archived); his look card's four questions answered 27 Sep 26 (D276–D279, nothing to build);
@@ -1549,7 +1549,7 @@ current issued version, the working copy only for a day not yet published (`engi
 Opus walker and the trial's Sonnet walker, apart: no defect met. Astra's final read then found one — "Not on the flying
 programme" followed today's roster — fixed red first and re-walked by the host. Evidence and his look card: `raptor-port/docs/handpass/2026-10-01-insights-which-copy-check.md`.
 **Left, all filed:** `[INSIGHTS-BOARD-DOOR]`, `[INSIGHTS-RULE-CHANGE]` (two questions for him), `[WORKSPAN-NEGATIVE]` (older, low).
-**Next:** his look on the preview, "merge live"; then this item leaves by the script.
+**His look card answered and "merge live" given 1 Oct 26 (D480–D483; PR #479).** After the merge this item leaves by the script.
 
 ### [SONNET-WALKER-TRIAL] One Sonnet 5.5 walker beside the Opus ones on the next walk, and the comparison reported to him (D476, 1 Oct 26)
 **His ruling (D476 — "Trial"):** to save tokens (the three walkers of the `[WARN-HIDE-KEPT]` FULL check cost about 1.9
@@ -1566,18 +1566,27 @@ move to Sonnet 5.5. Until then nothing else goes to a cheaper model.
 scenarios; no false alarm from either; the Opus walker alone met one older defect off the list; the Sonnet walker skipped
 one part (Print / CSV) and owned up to one weak check; about 613,000 tokens against about 620,000. The table: `raptor-port/docs/handpass/2026-10-01-insights-which-copy-check.md`
 §11. **Caveat told to him:** the build had no defect in it, so the trial does not show whether Sonnet catches what Opus
-catches. **Left: step 5 — his answer, recorded as a new ruling.** Until then nothing else goes to a cheaper model.
+catches. **HIS ANSWER — D480 (1 Oct 26): "One more trial".** A second trial on the NEXT walk, on a build with known defects: walk the
+build as it stood BEFORE its fix, neither walker told what is wrong, and report what each CAUGHT (`raptor-port/docs/bug-check-order.md`
+§4). **Its place:** `[WORKSPAN-NEGATIVE]`'s walk (the next chat, D483) — freeze the build before the fix for the two trial
+walkers. Then his answer to the second report is a new ruling. Until then nothing else goes to a cheaper model.
 
-### [INSIGHTS-BOARD-DOOR] The Scheduler Board has no way to open Insights — a question for him (found 1 Oct 26)
+### [INSIGHTS-BOARD-DOOR] The Scheduler Board gets a way to open Insights — RULED D481 (1 Oct 26), TO BUILD (found 1 Oct 26)
 Found by Astra's scenario design for `[INSIGHTS-WHICH-COPY]` and recorded by both walkers at both widths: while the
 Scheduler Board is up, its own bar carries no Insights button (Calendar, Highlight, Templates, Sort all, Undo, Redo, History,
 Sync, the bell, ✓ Done — D349's approved bar) and the shell's button and the phone's ☰ are covered by the board. It has
 always been so; not a defect of that build. A window opened on Edit Schedule before the board stays on top of it.
 **The question for him:** should the board gain a way in? On a phone its bar is ONE row and full (a control added there
 displaces one — `.claude/rules/decisions/scheduler.md` §Week navigation), so the phone's place would be the ⋯ menu.
-Evidence: `raptor-port/docs/handpass/2026-10-01-insights-which-copy-check.md` §5.2 finding 1. **Place:** low; put to him on that job's look card.
+Evidence: `raptor-port/docs/handpass/2026-10-01-insights-which-copy-check.md` §5.2 finding 1.
+**HIS ANSWER — D481 (1 Oct 26):** *"Yes, give me an insights button but where can we put the button? Is it too full for the
+phone too?"* **Proposed to him, his to confirm on a picture:** desktop — a button "Insights" in the board's bar beside the
+bell; phone — the bar is one row and full, so inside its ⋯ menu beside "Sort all" and "Desktop layout". **To build:** the
+door in `ui/SchedBoard.tsx`'s bar and its ⋯ menu (`setInsights`), the window already stacks above the board; a browser test
+that the window is topmost at its centre over the board at both widths. **Place:** its own small job (WALK tier), a picture
+first; after `[WORKSPAN-NEGATIVE]`. Full row: `.claude/decisions-full/scheduler.md` D481.
 
-### [INSIGHTS-RULE-CHANGE] A rule changed on the Logic page moves Insights' work hours at once, published days included — a question for him (found 1 Oct 26)
+### [INSIGHTS-RULE-CHANGE] A rule changed on the Logic page moves Insights' work hours at once, published days included — ANSWERED D482 (1 Oct 26): as built, CLOSED; to archive at the next tidy (found 1 Oct 26)
 Found by Astra's scenario design for `[INSIGHTS-WHICH-COPY]` (its scenario 2), walked by both walkers: with Tuesday
 published, "Flight debrief after land" 2h → 3h moved every flyer's Work hours +1h at once, the week's issues 33 → 35 and
 Tuesday 4 → 5 — and published Tuesday's own bar on View-only Sched read 5 at the same moment; the day went "1 pending";
@@ -1586,7 +1595,8 @@ publishing AL1 moved nothing more. So the window and the published day agree; bo
 invariants; D186 narrows it for the brief lead only), a published day's live warnings follow today's rules (D183–D185),
 and hours are worked out from the published day's content by today's rules. Holding them at the old rule would mean each
 version storing its hours — a saved-data change. **The question for him:** leave it, or should a published day's hours wait
-for the amendment too? Evidence: `raptor-port/docs/handpass/2026-10-01-insights-which-copy-check.md` §5.2 finding 2. **Place:** low; on that job's look card.
+for the amendment too? Evidence: `raptor-port/docs/handpass/2026-10-01-insights-which-copy-check.md` §5.2 finding 2. **ANSWERED — D482 (1 Oct 26): "A rule change logic page should
+move the mentioned work hours" — as built; closed.**
 
 ### [WORKSPAN-NEGATIVE] A line timed earlier than its wave's in-time gives a negative work-hours figure (found 1 Oct 26)
 Found by the Opus walker of `[INSIGHTS-WHICH-COPY]`, off its list; reproduced by the host. Nothing published; on Monday's
@@ -1596,8 +1606,10 @@ The cause: `engine/validate.ts workSpan` takes the wave's in-time as the report 
 landing, so the day's end falls before its start. Older than that build (the function is untouched; the same on `main`);
 it would happen again to new data, so it is real. It is the one measure the long-work-day warning shares, so the fix is a
 warning-rule change (FULL tier) — decide there what a report later than the take-off means (ignore the in-time for that
-line? flag it?). Pictures: `raptor-port/docs/img/handpass/2026-10-01-insights/host/`. **Place:** low, with the next change
-to the long-work-day rule or the in-time lines.
+line? flag it?). Pictures: `raptor-port/docs/img/handpass/2026-10-01-insights/host/`. **Place — D483 (1 Oct 26, "U can fix the older
+fault in the next chat"): NEXT, in the next chat, on its own branch, with a FULL check (it changes the measure the
+long-work-day warning shares). The second Sonnet-walker trial (D480) rides on its walk — freeze the build BEFORE the fix for
+the two trial walkers.**
 
 ### [DOCS-SIZE-PASS] Two always-read files are over their size tripwires — a documents-only pass is owed (found 1 Oct 26)
 `npm run docsize` on `main` (1 Oct 26, after PR #477): `OUTSTANDING.md` is about 150 lines over its ceiling of 1430, and

@@ -97,7 +97,7 @@ the data.)*
    (`a/dk-04-s1-c-board-bar.png`, `s/dk-04-s1-c-board-bar.png`). **Not a defect of this build and not a missing wire:**
    the board has never carried the button (D349's approved bar), and D478 is about what the window COUNTS — proven on the
    board's changes all the same (a change made on the board, ✓ Done, the window unchanged until AL1). Whether the board
-   should gain a way in is his: filed `[INSIGHTS-BOARD-DOOR]`, on the look card.
+   should gain a way in is his: filed `[INSIGHTS-BOARD-DOOR]`, on the look card. **Answered — D481: yes; its own small job.**
 2. **A rule changed on the Logic page moves the window at once, published days included** (both walkers; Astra's
    prediction 2). Flight debrief 2h → 3h: every flyer's Work hours +1h at once, the week's issues 33 → 35, Tuesday 4 → 5 —
    **and published Tuesday's own bar on View-only Sched read 5 at the same moment**; the day went "1 pending"; publishing
@@ -105,13 +105,14 @@ the data.)*
    app keeps no versions of its rules (the standing product invariant, narrowed only for the brief lead — D186), a
    published day's live warnings follow today's rules by ruling (D183–D185), and hours are worked out from the published
    day's CONTENT by today's rules. Holding hours at the old rule would need each version to store them — a saved-data
-   change nobody ruled. Told to him on the look card; filed `[INSIGHTS-RULE-CHANGE]` as a question.
+   change nobody ruled. Told to him on the look card; filed `[INSIGHTS-RULE-CHANGE]` as a question. **Answered the same day — D482: "A rule change
+   logic page should move the mentioned work hours" — as built; closed.**
 3. **A negative Work-hours figure** (Opus walker only, a side observation outside the 19; reproduced by the host —
    `host/dk-02-s3x-insights-wisp-bar.png`). With nothing published: a line's take-off and landing moved EARLIER than its
    wave's in-time (in-time 19:20, landing 11:25) → "Wisp -2h-30" with a full-width bar. **Confirmed older than this
    build** — the span is `validate.ts workSpan`, untouched here, and with nothing published the window reads the working
    copy exactly as on `main`. It would happen again to new data, so it is real; it sits in the one measure the long-work-day
-   warning shares, which is a warning-rule change (FULL tier), not this job's. Filed `[WORKSPAN-NEGATIVE]`, low.
+   warning shares, which is a warning-rule change (FULL tier), not this job's. Filed `[WORKSPAN-NEGATIVE]` — **fixed next, in the next chat (D483).**
 No finding against the build itself; nothing was fixed, so there was no re-walk.
 
 ## 6. The break tests (order §8.4)
@@ -166,6 +167,7 @@ change, the negative hours).
 | Cost | about 620,000 tokens, 926 actions, 76 minutes | about 613,000 tokens, 728 actions, 64 minutes |
 One walk, on a build that turned out to have no defect in it — so this trial shows the Sonnet walker follows the brief,
 reports honestly and raises no false alarm; it does NOT show whether it would catch a defect the Opus walker catches.
+**His answer — D480: "One more trial"** — on the next walk, on a build with known defects.
 
 ## 12. His look — the "look here" card (five minutes, on the preview link)
 1. On Edit Schedule, publish Tuesday (sign the four, Publish day). Open **Insights** and note Tuesday's line under "By day".

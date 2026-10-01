@@ -4769,6 +4769,12 @@ archived since does not move it on a week already published (Astra's final read,
 at once. It reads no page and no "working draft" switch, so the window says the same thing wherever it is opened.
 While nothing waits on any published day that world IS the working copy. A draft day's warnings are judged against its
 published neighbours as published — the same judgement View-only Sched draws. Pins: `ui/insights-published.test.tsx`.
+**A rule changed on the Logic page moves the work hours at once, published days included — as built, and ruled so (owner,
+D482, 1 Oct 26: "A rule change logic page should move the mentioned work hours").** A rule is not a change to a day: the
+app keeps no versions of its rules, and hours are worked out from the published day's content by today's rules.
+**The Scheduler Board gets a way to open the window (owner, D481, 1 Oct 26 — "Yes, give me an insights button") — NOT YET
+BUILT, `[INSIGHTS-BOARD-DOOR]`:** proposed to him — a button in the board's bar beside the bell on a desktop; inside the
+bar's ⋯ menu on a phone, whose bar is one row and full.
 *Before this build* every figure was worked out from the working copy on every page, so a change waiting on a published
 day — a hide included — already moved it.
 
