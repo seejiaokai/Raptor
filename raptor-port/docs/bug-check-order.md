@@ -270,6 +270,15 @@ bundle under them and mixes pre-fix and post-fix behaviour in one walk. The host
 without writing output and runs unit tests; the rebuild, the gates and the re-walk of the fixes wait for the
 walkers' reports.
 
+**A TRIAL, ON THE NEXT WALK ONLY (owner, D476, 1 Oct 26 — "Trial", to save tokens: the three walkers of one FULL
+check cost about 1.9 million).** ONE extra walker runs on Sonnet 5.5 beside the Opus ones — the same brief, the same
+scenario list, the same frozen build as ONE of the Opus walkers, in its own world; it replaces nobody. The host
+reproduces every finding of both, as above, and reports to him in plain words: what each found, what each missed
+that the other found, the false alarms, whether each opened its pictures, and the tokens each cost. Until he rules
+on that report nothing else goes to a cheaper model (the 17 Sep 26 rule, `guide-full.md` §Models): every other
+walker, the build, the roll-call and the reviews stay as they are. The open job: `OUTSTANDING.md`
+`[SONNET-WALKER-TRIAL]`.
+
 **The owner's trigger rule, in one line:**
 
 > Call one other model whenever a change affects more than one surface, door, role or app

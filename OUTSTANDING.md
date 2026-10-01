@@ -111,7 +111,7 @@ first), [LW-SCRUBBER-FLAKY] (test-only),
 [PO-RESTORE-POSTING] (low, from its final code read), [LW-OFFER-ONLY-TAKEABLE] (low, with [LW-LOCKMARK]), [LW-HARNESS-VIEWER-PIN] (test-only, low), [CI-FAIL-PICTURES] (his call, low), [LW-DOZE-GUARDS] (low, check first); the shell — [SHELL-SIDEWAYS-BAR] (low, with the next top-bar change), [SAVE-NOTE-COVERS] (medium, next), [TRK-SAVE-FAIL-SAYS-SAVED] (low, with [DB-READINESS]), [TRK-ASYNC-STALE] (with [DB-READINESS]), [LW-WINDOW-PRUNE-FLAKE-2] (test-only, low); the Tracker — [TRK-REMOUNT-LANDING] (low, with the next Tracker change), [TRK-KEY-NAME-CLIP] (low, with the next Tracker change). The Tracker — [TRK-PINCH-ASK] (his next Tracker session), [TRK-FLEXBAR-INK] (a question for him, on the Tracker-palette
 look card — D157, merged PR #441).
 The amendment area — PR #434, #435, #437 and #438 MERGED (25–26 Sep 26); left (the small-fixes batch, PR #463, merged 29 Sep 26, filed): [PLAN-BANNER-DOOR] (low, filed by that batch's walk), [ROW-NO-TIME-MARK] (low, a future job, D361), [APP-FONTS-NOT-LOADED] (his call — found 29 Sep 26; every measured width rides on it), [GATELOCK-STALE-LIVE] (low, the check lock's stale rule), [DOCSIZE-MERGE-CEILING] (low, a false alarm of the document check on a merge), [PDF-PRINT-TWICE] (low, found by the IT flow guide research — to confirm in real Chrome), [LW-SEL-HALF-LABELS] (low, the drag sheet's half-day labels — D264), [ITFLOW-OIL-RESHOOT] (low, on his word — D403), [TRK-REFUSALS-UNTESTED] (low, test gaps the guide research found). Left from the amendment batch (D91–D111, merged): [AMEND-SMALL-SEEN] (any time). The docs and the checks — [DEPLOY-DOCS] (its operational half), [DOC-POINTERS-CODE] and
-[RULINGS-LF-PIN] (with the next code change), [PEEK-ISSUED] (a question for him, low), [RULING-HOME-HOOK] (low), [GUIDE-MAP-ROWS] (low, a question for him), [DOCS-SIZE-PASS] (low, its own documents-only pass), [INSIGHTS-WHICH-COPY] (a question for him, low), [WARN-HIDE-DROP-NOTE] (a question for him, low) — [DOC-SUBHEADS], [RULING-HOMES-AUDIT]
+[RULINGS-LF-PIN] (with the next code change), [PEEK-ISSUED] (a question for him, low), [RULING-HOME-HOOK] (low), [GUIDE-MAP-ROWS] (low, a question for him), [DOCS-SIZE-PASS] (low, its own documents-only pass), [INSIGHTS-WHICH-COPY] (a question for him, low), [WARN-HIDE-DROP-NOTE] (a question for him, low), [SONNET-WALKER-TRIAL] (with the NEXT walk — D476) — [DOC-SUBHEADS], [RULING-HOMES-AUDIT]
 and [HANDOFF-SHAPE-GUARD] done on `claude/docs-tidy-subheads-audit-ec8f87` (28 Sep 26; archived),
 Roles — [QUALS-MEMBER-SCOPE] (folded into [ACCOUNTS], D200), and beside it [QUALS-PROTO-TOAST] (low, one line of words).
 The five-flags batch (built on `claude/five-flags-batch-build-ef7d85`, 26 Sep 26; FULL-checked and its PR from `claude/five-flags-batch-continue-2cfa70`, 27 Sep 26 — its five items archived) — his answers D270–D275 BUILT and FULL-checked on that branch, 27 Sep 26 (their three items archived); his look card's four questions answered 27 Sep 26 (D276–D279, nothing to build);
@@ -1564,6 +1564,18 @@ warning. Left as built: the crew list still strikes the man and says the same wo
 row 18 — the crew list reads the rules, not the hides). **The question for him:** when a drop recreates a clash he has
 already hidden, should that amber note stay, or should the drop say only "Saint planned"? **Place:** low — his answer
 first (it is on the look card of `raptor-port/docs/handpass/2026-10-01-warn-hide-check.md`); then a one-line change (WALK tier).
+
+### [SONNET-WALKER-TRIAL] One Sonnet 5.5 walker beside the Opus ones on the next walk, and the comparison reported to him (D476, 1 Oct 26)
+**His ruling (D476 — "Trial"):** to save tokens (the three walkers of the `[WARN-HIDE-KEPT]` FULL check cost about 1.9
+million), try Sonnet 5.5 as a walker — once, beside the Opus ones, not instead of them. Full row:
+`.claude/decisions-full/how-we-work.md` D476; the method: `raptor-port/docs/bug-check-order.md` §4.
+**To do, on the next WALK- or FULL-tier check (whichever job it is):** (1) fan the walk out as usual (D16, Opus); (2) spawn ONE
+extra walker with `model: "sonnet"`, handed the SAME brief, scenario share and frozen build as one of the Opus walkers,
+on its own port and its own picture folder; (3) reproduce every finding of both; (4) report to him, in plain words, a
+small table: what each found, what each missed that the other found, false alarms, pictures opened or not, tokens
+each cost; (5) record his answer as a new ruling — it decides whether walkers, documents-only chores and gate runs
+move to Sonnet 5.5. Until then nothing else goes to a cheaper model.
+**Place:** with the next walk — it adds one walker to that walk and nothing else; no build of its own.
 
 ### [DOCS-SIZE-PASS] Two always-read files are over their size tripwires — a documents-only pass is owed (found 1 Oct 26)
 `npm run docsize` on `main` (1 Oct 26, after PR #477): `OUTSTANDING.md` is about 150 lines over its ceiling of 1430, and
